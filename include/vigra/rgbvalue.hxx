@@ -155,6 +155,25 @@ class RGBValue
         return *this;
     }
 
+        /** construct from TinyVector
+        */
+    RGBValue(TinyVector<value_type, 3> const & r)
+    {
+        data_[0] = r[0];
+        data_[1] = r[1];
+        data_[2] = r[2];
+    }
+
+        /** assign TinyVector.
+        */    
+    RGBValue & operator=(TinyVector<value_type, 3> const & r)
+    {
+        data_[0] = r[0];
+        data_[1] = r[1];
+        data_[2] = r[2];
+        return *this;
+    }
+
         /** Unary negation (construct RGBValue with negative velues)
         */
     RGBValue operator-() const

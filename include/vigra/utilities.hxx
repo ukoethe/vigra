@@ -147,6 +147,13 @@ class Diff2D
         return *this;
     }
     
+        /** Unary negation.
+        */
+    Diff2D operator-() const
+    {
+        return Diff2D(-x, -y);
+    }
+    
         /** Increase coordinate by specified offset.
         */
     Diff2D & operator+=(Diff2D const & offset)

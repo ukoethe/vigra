@@ -68,25 +68,47 @@ class TinyVector
         /** STL-compatible definition of const iterator
         */
     typedef value_type const * const_iterator;
-
-        /** Construct from another sequence (must have length SIZE!)
-        */
-    template <class Iterator>   
-    TinyVector(Iterator i, Iterator end)
-    {
-        for(iterator p = begin(); i != end; ++i, ++p)
-            *p = static_cast<value_type>(*i);
-    }
     
         /** Construction with constant value 
         */    
-    explicit TinyVector(value_type initial)
+    explicit TinyVector(value_type const & initial)
     {
         for(iterator p = begin(); p != end(); ++p)
             *p = initial;
     }
     
-        /** Default constructor  
+        /** Construction with explicit values.
+            Call only if SIZE == 2 
+        */    
+    TinyVector(value_type const & i1, value_type const & i2)
+    {
+        data_[0] = i1;
+        data_[1] = i2;
+    }
+    
+        /** Construction with explicit values.
+            Call only if SIZE == 3 
+        */    
+    TinyVector(value_type const & i1, value_type const & i2, value_type const & i3)
+    {
+        data_[0] = i1;
+        data_[1] = i2;
+        data_[2] = i3;
+    }
+    
+        /** Construction with explicit values.
+            Call only if SIZE == 4 
+        */    
+    TinyVector(value_type const & i1, value_type const & i2, 
+               value_type const & i3, value_type const & i4)
+    {
+        data_[0] = i1;
+        data_[1] = i2;
+        data_[2] = i3;
+        data_[3] = i4;
+    }
+    
+       /** Default constructor  
         */    
     TinyVector()
     {}
@@ -136,6 +158,15 @@ class TinyVector
         return *this;
     }
 
+        /** Initialize from another sequence (must have length SIZE!)
+        */
+    template <class Iterator>   
+    void init(Iterator i, Iterator end)
+    {
+        for(iterator p = begin(); i != end; ++i, ++p)
+            *p = static_cast<value_type>(*i);
+    }
+    
         /** Unary negation (construct TinyVector with negative values)
         */
     TinyVector operator-() const
@@ -490,6 +521,19 @@ operator-=(TinyVector<V1, SIZE> & l, TinyVector<V2, SIZE> const & r)
     return l;
 }
 
+    /// componentwise multiply-assignment
+template <class V1, class V2, int SIZE>
+inline
+TinyVector<V1, SIZE> & 
+operator*=(TinyVector<V1, SIZE> & l, TinyVector<V2, SIZE> const & r)
+{
+    typename TinyVector<V1, SIZE>::iterator i1 = l.begin();
+    typename TinyVector<V2, SIZE>::const_iterator i2 = r.begin();
+    for(; i1 != l.end(); ++i1, ++i2)
+        *i1 *= *i2;
+    return l;
+}
+
 
     /// componentwise scalar multiply-assignment
 template <class V, int SIZE>
@@ -557,6 +601,19 @@ operator-(TinyVector<V1, SIZE> const & r1, TinyVector<V2, SIZE> const & r2)
     typename PromoteTraits<TinyVector<V1, SIZE>, TinyVector<V2 , SIZE> >::Promote res(r1);
     
     res -= r2;
+    
+    return res;
+}
+
+    /// component-wise multiplication
+template <class V1, class V2, int SIZE>
+inline 
+typename PromoteTraits<TinyVector<V1, SIZE>, TinyVector<V2, SIZE> >::Promote
+operator*(TinyVector<V1, SIZE> const & r1, TinyVector<V2, SIZE> const & r2)
+{
+    typename PromoteTraits<TinyVector<V1, SIZE>, TinyVector<V2 , SIZE> >::Promote res(r1);
+    
+    res *= r2;
     
     return res;
 }
