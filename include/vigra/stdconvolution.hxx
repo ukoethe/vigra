@@ -127,24 +127,24 @@ void internalPixelEvaluationByWrapReflectRepeat(int x, int y, int src_width, int
     int kernel_width = klr.x - kul.x + 1;
     int kernel_height = klr.y - kul.y + 1;
 
-    //Zeigt an wo der Kernel über die Grenzen hinausgeht
+    //Zeigt an wo der Kernel ’ber die Grenzen hinausgeht
     bool top_to_much = (y<klr.y) ? true : false;
     bool down_to_much = (src_height-y-1<-kul.y)? true : false;
     bool left_to_much = (x<klr.x)? true : false;
     bool right_to_much = (src_width-x-1<-kul.x)? true : false;
 
     //Die Richtung x und y !!!
-    //in der bei der Iteration über das aktuelle Bereich im Bild
+    //in der bei der Iteration ’ber das aktuelle Bereich im Bild
     //iteriert wird. Also wenn von ur->ll dann (-1, +1) und wenn lr->ul
     //dann (-1, -1).
     Diff2D way_increment;
 
-    /* iteriert wird immer aus dem gültigen in den ungültigen
+    /* iteriert wird immer aus dem g’ltigen in den ung’ltigen
        Bereich! dieser Tupel setzt sich wie folgt zusammen:
-       1. Wird bei der Iteration in X-Richtung ungültiger Bereich
+       1. Wird bei der Iteration in X-Richtung ung’ltiger Bereich
        erreicht so wird mit border_increment.first gesprungen und
        mit border_increment.third weiter iteriert.
-       2. Wird bei der Iteration in Y-Richtung ungültiger Bereich
+       2. Wird bei der Iteration in Y-Richtung ung’ltiger Bereich
        erreicht so wird mit border_increment.second gesprungen und
        mit border_increment.fourth weiter iteriert.
     */
@@ -234,19 +234,19 @@ void internalPixelEvaluationByWrapReflectRepeat(int x, int y, int src_width, int
 
     int yy = 0, xx;
 
-    //laeuft den zulässigen Bereich in y-Richtung durch
+    //laeuft den zul„ssigen Bereich in y-Richtung durch
     for(; yy < valid_step_count.second; ++yy, yys.y += way_increment.y, yk.y -= way_increment.y )
     {
         SrcIterator xxs = yys;
         KernelIterator xk  = yk;
 
-        //laeuft den zulässigen Bereich in x-Richtung durch
+        //laeuft den zul„ssigen Bereich in x-Richtung durch
         for(xx = 0; xx < valid_step_count.first; ++xx, xxs.x += way_increment.x, xk.x -= way_increment.x)
         {
             sum += ak(xk) * src_acc(xxs);
         }
 
-        //Nächstes ++xxs.x wuerde in unzulässigen Bereich
+        //N„chstes ++xxs.x wuerde in unzul„ssigen Bereich
         //bringen => Sprung in zulaessigen Bereich
         xxs.x += border_increment.first;
 
@@ -256,7 +256,7 @@ void internalPixelEvaluationByWrapReflectRepeat(int x, int y, int src_width, int
         }
     }
 
-    //Nächstes ++yys.y wuerde in unzulässigen Bereich
+    //N„chstes ++yys.y wuerde in unzul„ssigen Bereich
     //bringen => Sprung in zulaessigen Bereich
     yys.y += border_increment.second;
 
@@ -474,7 +474,7 @@ void convolveImage(SrcIterator src_ul, SrcIterator src_lr, SrcAccessor src_acc,
     DestIterator yd = dest_ul + Diff2D(xstart, ystart);
     SrcIterator ys = src_ul + Diff2D(xstart, ystart);
 
-    // Durchlauf über das ganze Bild (bei AVOID nur die "Mitte")
+    // Durchlauf ’ber das ganze Bild (bei AVOID nur die "Mitte")
     for(y=ystart; y < yend; ++y, ++ys.y, ++yd.y)
     {
         // create x iterators

@@ -227,7 +227,7 @@ void recursiveFilterLine(SrcIterator is, SrcIterator isend, SrcAccessor as,
     id += w - 1;
     if(border == BORDER_TREATMENT_CLIP)
     {    
-      //Korrekturfaktoren für b
+      //Korrekturfaktoren f’r b
         double bright = b;
         double bleft = VIGRA_CSTD::pow(b, w);// b^w
 
