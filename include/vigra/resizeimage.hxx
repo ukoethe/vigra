@@ -401,7 +401,7 @@ resizeImageInternalSplineInterpolation(SRCITERATOR is, SRCITERATOR iend, SRCACCE
     The function uses the bi-cubic, non-separable spline algorithm described in 
     [Hoschek/Lasser: 
     {\it "Grundlagen der geometrischen Datenverarbeitung"}, Teubner, 1992] to obtain 
-    obtimum interpolation quality.
+    optimal interpolation quality.
     
     The range of both the input and output images (resp. regions)
     must be given. The input image must have a size of at

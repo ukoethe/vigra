@@ -125,6 +125,7 @@ class ContractViolation : public StdException
     }
     
     ContractViolation(ContractViolation const & o)
+    : StdException(o)
     {
         snprintf(what_, bufsize_, "%s", o.what_);
     }
