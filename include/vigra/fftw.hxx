@@ -358,7 +358,7 @@ inline FFTWComplex operator /(FFTWComplex a, const double &b) {
 }
 
 #ifdef CMATH_NOT_IN_STD
-using abs;
+using ::abs;
 #else
 using std::abs;
 #endif
@@ -737,30 +737,30 @@ void moveDCToCenter(SrcImageIterator src_upperleft,
 
     // 2. Quadrant  zum 4.
     copyImage(srcIterRange(src_upperleft,
-                           src_upperleft  + vigra::Diff2D(w2, h2), sa),
-              destIter    (dest_upperleft + vigra::Diff2D(w1, h1), da));
+                           src_upperleft  + Diff2D(w2, h2), sa),
+              destIter    (dest_upperleft + Diff2D(w1, h1), da));
     
     // 4. Quadrant zum 2.
-    copyImage(srcIterRange(src_upperleft + vigra::Diff2D(w2, h2),
+    copyImage(srcIterRange(src_upperleft + Diff2D(w2, h2),
                            src_lowerright, sa),
               destIter    (dest_upperleft, da));
     
     // 1. Quadrant zum 3.    
-    copyImage(srcIterRange(src_upperleft  + vigra::Diff2D(w2, 0),
-                           src_upperleft  + vigra::Diff2D(w,  h2), sa),
-              destIter    (dest_upperleft + vigra::Diff2D(0,  h1), da));
+    copyImage(srcIterRange(src_upperleft  + Diff2D(w2, 0),
+                           src_upperleft  + Diff2D(w,  h2), sa),
+              destIter    (dest_upperleft + Diff2D(0,  h1), da));
     
     // 3. Quadrant zum 1.
-    copyImage(srcIterRange(src_upperleft  + vigra::Diff2D(0,  h2),
-                           src_upperleft  + vigra::Diff2D(w2, h), sa),
-              destIter    (dest_upperleft + vigra::Diff2D(w1, 0), da));
+    copyImage(srcIterRange(src_upperleft  + Diff2D(0,  h2),
+                           src_upperleft  + Diff2D(w2, h), sa),
+              destIter    (dest_upperleft + Diff2D(w1, 0), da));
 }
 
 template <class SrcImageIterator, class SrcAccessor,
           class DestImageIterator, class DestAccessor>
 inline void moveDCToCenter(
-    vigra::triple<SrcImageIterator, SrcImageIterator, SrcAccessor> src,
-    vigra::pair<DestImageIterator, DestAccessor> dest)
+    triple<SrcImageIterator, SrcImageIterator, SrcAccessor> src,
+    pair<DestImageIterator, DestAccessor> dest)
 {
     moveDCToCenter(src.first, src.second, src.third,
                           dest.first, dest.second);
@@ -794,30 +794,30 @@ void moveDCToUpperLeft(SrcImageIterator src_upperleft,
 
     // 2. Quadrant  zum 4.
     copyImage(srcIterRange(src_upperleft,
-                           src_upperleft  + vigra::Diff2D(w2, h2), sa),
-              destIter    (dest_upperleft + vigra::Diff2D(w1, h1), da));
+                           src_upperleft  + Diff2D(w2, h2), sa),
+              destIter    (dest_upperleft + Diff2D(w1, h1), da));
     
     // 4. Quadrant zum 2.
-    copyImage(srcIterRange(src_upperleft + vigra::Diff2D(w2, h2),
+    copyImage(srcIterRange(src_upperleft + Diff2D(w2, h2),
                            src_lowerright, sa),
               destIter    (dest_upperleft, da));
     
     // 1. Quadrant zum 3.    
-    copyImage(srcIterRange(src_upperleft  + vigra::Diff2D(w2, 0),
-                           src_upperleft  + vigra::Diff2D(w,  h2), sa),
-              destIter    (dest_upperleft + vigra::Diff2D(0,  h1), da));
+    copyImage(srcIterRange(src_upperleft  + Diff2D(w2, 0),
+                           src_upperleft  + Diff2D(w,  h2), sa),
+              destIter    (dest_upperleft + Diff2D(0,  h1), da));
     
     // 3. Quadrant zum 1.
-    copyImage(srcIterRange(src_upperleft  + vigra::Diff2D(0,  h2),
-                           src_upperleft  + vigra::Diff2D(w2, h), sa),
-              destIter    (dest_upperleft + vigra::Diff2D(w1, 0), da));
+    copyImage(srcIterRange(src_upperleft  + Diff2D(0,  h2),
+                           src_upperleft  + Diff2D(w2, h), sa),
+              destIter    (dest_upperleft + Diff2D(w1, 0), da));
 }
 
 template <class SrcImageIterator, class SrcAccessor,
           class DestImageIterator, class DestAccessor>
 inline void moveDCToUpperLeft(
-    vigra::triple<SrcImageIterator, SrcImageIterator, SrcAccessor> src,
-    vigra::pair<DestImageIterator, DestAccessor> dest)
+    triple<SrcImageIterator, SrcImageIterator, SrcAccessor> src,
+    pair<DestImageIterator, DestAccessor> dest)
 {
     moveDCToUpperLeft(src.first, src.second, src.third,
                           dest.first, dest.second);
