@@ -101,10 +101,13 @@ namespace vigra {
 
 class ContractViolation : public StdException
 {
+  protected:
+    static const int bufsize_ = 1100;
+    
   public:
     ContractViolation(char const * message)
     {
-        sprintf(what_, "%.1099s", message);
+        snprintf(what_, bufsize_, "%s", message);
     }
     
     ContractViolation()
@@ -114,7 +117,7 @@ class ContractViolation : public StdException
     
     ContractViolation(ContractViolation const & o)
     {
-        sprintf(what_, "%.1099s", o.what_);
+        snprintf(what_, bufsize_, "%s", o.what_);
     }
 
     virtual const char * what() const throw()
@@ -122,7 +125,7 @@ class ContractViolation : public StdException
         return what_;
     }
     
-    char what_[1100];
+    char what_[bufsize_];
 };
 
 class PreconditionViolation : public ContractViolation
@@ -130,12 +133,12 @@ class PreconditionViolation : public ContractViolation
   public:
     PreconditionViolation(char const * message, const char * file, int line)
     {
-        sprintf( what_, "\nPrecondition Violation!\n%.900s\n(%.150s:%d)\n", message, file, line);
+        snprintf( what_, bufsize_, "\nPrecondition Violation!\n%s\n(%s:%d)\n", message, file, line);
     }
     
     PreconditionViolation(char const * message)
     {
-        sprintf( what_, "\nPrecondition Violation!\n%.900s\n", message);
+        snprintf( what_, bufsize_, "\nPrecondition Violation!\n%s\n", message);
     }
 };
 
@@ -144,12 +147,12 @@ class PostconditionViolation : public ContractViolation
   public:
     PostconditionViolation(char const * message, const char * file, int line)
     {
-        sprintf( what_, "\nPostcondition Violation!\n%.900s\n(%.150s:%d)\n", message, file, line);
+        snprintf( what_, bufsize_, "\nPostcondition Violation!\n%s\n(%s:%d)\n", message, file, line);
     }
     
     PostconditionViolation(char const * message)
     {
-        sprintf( what_, "\nPostcondition Violation!\n%.900s\n", message);
+        snprintf( what_, bufsize_, "\nPostcondition Violation!\n%s\n", message);
     }
 };
 
@@ -158,12 +161,12 @@ class InvariantViolation : public ContractViolation
   public:
     InvariantViolation(char const * message, const char * file, int line)
     {
-        sprintf( what_, "\nInvariant Violation!\n%.900s\n(%.150s:%d)\n", message, file, line);
+        snprintf( what_, bufsize_, "\nInvariant Violation!\n%s\n(%s:%d)\n", message, file, line);
     }
     
     InvariantViolation(char const * message)
     {
-        sprintf( what_, "\nInvariant Violation!\n%.900s\n", message);
+        snprintf( what_, bufsize_, "\nInvariant Violation!\n%s\n", message);
     }
 };
 
@@ -181,7 +184,7 @@ class InvariantViolation : public ContractViolation
 #define vigra_fail(MESSAGE) \
         { \
             char buf[1000]; \
-            sprintf(buf, "%.900s (" __FILE__ ":%d)", (MESSAGE), __LINE__); \
+            snprintf(buf, 1000, "%s (" __FILE__ ":%d)", (MESSAGE), __LINE__); \
             throw std::runtime_error(buf); \
         } 
 
