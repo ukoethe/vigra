@@ -127,6 +127,10 @@
             <DD> <em>Requirements for 2D iterators</em>
         <DT>
             <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif">
+            \ref MultiIteratorPage
+            <DD> <em>Iterators for multi-dimensional arrays</em>
+        <DT>
+            <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif">
             \ref DataAccessors
             <DD> <em>Requirements for data accessors</em>
         <DT>
