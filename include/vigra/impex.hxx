@@ -509,12 +509,12 @@ namespace detail {
         typedef typename MArray::value_type DestValue;
         
         vigra::FindMinMax<SrcComponent> minmax;
-        for(int i=0; i<sget.size(sul); ++i)
+        for(unsigned int i=0; i<sget.size(sul); ++i)
         {
             vigra::inspectImage( sul, slr, Selector(sget, i), minmax );
         }
         const PromoteComponent scale = 255.0 / (minmax.max - minmax.min);
-        for(int i=0; i<sget.size(sul); ++i)
+        for(unsigned int i=0; i<sget.size(sul); ++i)
         {
             vigra::BasicImageView<DestValue> subImage = makeBasicImageView(array.bindOuter(i));
             vigra::transformImage( sul, slr, Selector(sget, i), subImage.upperLeft(), subImage.accessor(),
