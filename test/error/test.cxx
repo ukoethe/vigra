@@ -17,6 +17,17 @@ struct ErrorTest
             std::string message(c.what());
             should(0 == expected.compare(message.substr(0,expected.size())));
         }
+        try
+        {
+            vigra_assert(0, "Intentional error");
+            failTest("no exception thrown");
+        }
+        catch(vigra::ContractViolation & c)
+        {
+            std::string expected("\nPrecondition violation!\nIntentional error");
+            std::string message(c.what());
+            should(0 == expected.compare(message.substr(0,expected.size())));
+        }
     }
 
     void testPostcondition()
