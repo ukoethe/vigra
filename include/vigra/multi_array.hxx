@@ -1162,7 +1162,7 @@ void MultiArray <N, T, A>::deallocate (pointer & ptr, std::size_t s)
 
 template <class T>
 BasicImageView <T>
-makeBasicImageView (MultiArrayView <2, T, UnstridedArrayTag> &array)
+makeBasicImageView (MultiArrayView <2, T, UnstridedArrayTag> const &array)
 {
     return BasicImageView <T> (array.data (), array.shape (0),
                                array.shape (1));
@@ -1170,7 +1170,7 @@ makeBasicImageView (MultiArrayView <2, T, UnstridedArrayTag> &array)
 
 template <class T>
 BasicImageView <T>
-makeBasicImageView (MultiArray <3, T> &array)
+makeBasicImageView (MultiArray <3, T> const &array)
 {
     vigra_precondition (
         array.shape (0) == 1, "makeBasicImageView(): array.shape(0) must be 1.");
@@ -1180,7 +1180,7 @@ makeBasicImageView (MultiArray <3, T> &array)
 
 template <class T>
 BasicImageView <RGBValue<T> >
-makeRGBImageView (MultiArray<3, T> &array)
+makeRGBImageView (MultiArray<3, T> const &array)
 {
     vigra_precondition (
         array.shape (0) == 3, "makeRGBImageView(): array.shape(0) must be 3.");
