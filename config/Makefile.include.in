@@ -64,7 +64,7 @@ DEVELOPMENT_VERSION = yes
 %.d: $(curdir)/%.cxx
 	@echo updating header dependencies for $*.cxx
 	@rm -f $*.d
-	@(echo "$*.d \\" ; $(CXX) -M $(CXXFLAGS) $(CPPFLAGS) -c $*.cxx ) > $(curdir)/$*.d \
+	@(echo "$*.d \\" ; $(CXX) -M $(CXXFLAGS) $(CPPFLAGS) -c $(curdir)/$*.cxx ) > $*.d \
         || { rm -f $*.d; exit 1; }
 
 %.ld: $(curdir)/%.c
