@@ -269,7 +269,7 @@ template <class T, class Alloc>
 void ArrayVector<T, Alloc>::push_back( value_type const & t )
 {
     reserve();
-    alloc_.contruct(data_ + size_, t);
+    alloc_.construct(data_ + size_, t);
     ++size_;
 }
 
