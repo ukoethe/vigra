@@ -1,5 +1,5 @@
-Microsoft Developer Studio Workspace File, Format Version 5.00
-# WARNING: DO NOT EDIT OR DELETE THIS WORKSPACE FILE!
+Microsoft Developer Studio Workspace File, Format Version 6.00
+# WARNUNG: DIESE ARBEITSBEREICHSDATEI DARF NICHT BEARBEITET ODER GELÖSCHT WERDEN!
 
 ###############################################################################
 
@@ -76,6 +76,18 @@ Package=<4>
 ###############################################################################
 
 Project: "pyramid"=.\examples\pyramid.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "resize"=.\examples\resize.dsp - Package Owner=<4>
 
 Package=<5>
 {{{
