@@ -63,7 +63,7 @@ LIBTOOL=`echo $LIBTOOL | sed 's,$(top_builddir),$(vigra_builddir),'`
 dnl-------------------------------------------------------------------
 dnl           tiff, jpeg and fftw package configurations
 dnl-------------------------------------------------------------------
-VIGRA_FIND_PACKAGE(tiff, tiff, tiff.h, [support import/export of tiff images (default=yes)])
+VIGRA_FIND_PACKAGE(tiff, tiff, tiff.h, [support import/export of tiff images])
 if test $with_tiff = "yes";
 then
     TIFF_LIB="$with_tifflib -ltiff"
@@ -71,7 +71,7 @@ then
     LIBCPPFLAGS="$LIBCPPFLAGS -DHasTIFF $tiff_cppflags"
 fi
 
-VIGRA_FIND_PACKAGE(jpeg, jpeg, jpeglib.h, [support import/export of jpeg images (default=yes)])
+VIGRA_FIND_PACKAGE(jpeg, jpeg, jpeglib.h, [support import/export of jpeg images])
 if test $with_jpeg = "yes";
 then
     JPEG_LIB="$with_jpeglib -ljpeg"
@@ -79,9 +79,9 @@ then
     LIBCPPFLAGS="$LIBCPPFLAGS -DHasJPEG $jpeg_cppflags"
 fi
 
-VIGRA_FIND_PACKAGE(png, png, png.h, [support import/export of png images (default=yes)])
+VIGRA_FIND_PACKAGE(png, png, png.h, [support import/export of png images])
 
-VIGRA_FIND_PACKAGE(zlib, z, , [zlib compression library (required for libpng, default=yes)])
+VIGRA_FIND_PACKAGE(zlib, z, , [zlib compression library (required for libpng)])
 
 if test $with_png = "yes";
 then
@@ -96,7 +96,7 @@ then
     fi
 fi
 
-VIGRA_FIND_PACKAGE(fftw, fftw, fftw.h, [support fast Fourier transforms (default=yes)])
+VIGRA_FIND_PACKAGE(fftw, fftw, fftw.h, [support fast Fourier transforms])
 if test $with_fftw = "yes";
 then
     FFTW_LIB="$with_fftwlib -lfftw"

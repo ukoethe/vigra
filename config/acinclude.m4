@@ -709,7 +709,10 @@ AC_DEFUN([VIGRA_FIND_PACKAGE],
     AC_ARG_WITH([$1], [
   --with-$1
   --with-$1=dir
-  --without-$1       $4
+  --without-$1
+  --with-$1lib=dir
+  --with-$1inc=dir
+      $4. default: --with-$1
       if --with-$1 or --with-$1=yes is given: $1 package files will be 
          searched for in some standard directories (the default).
       if --with-$1=dir is given, and dir is a directory: $1 package files 
@@ -717,8 +720,8 @@ AC_DEFUN([VIGRA_FIND_PACKAGE],
       if --with-$1=no or --without-$1 is given: $1 package will
          not be used.
       alternatively, you can specify:], ,)
-    AC_ARG_WITH([$1lib], [    --with-$1lib=dir : the $1 package's lib directory], ,)
-    AC_ARG_WITH([$1inc], [    --with-$1inc=dir : the $1 package's include directory], ,)
+    AC_ARG_WITH([$1lib], [        --with-$1lib=dir : the $1 package's lib directory], ,)
+    AC_ARG_WITH([$1inc], [        --with-$1inc=dir : the $1 package's include directory], ,)
 
 
     # default is "yes"
