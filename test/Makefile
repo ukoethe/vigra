@@ -35,7 +35,7 @@ vc:
 	@rm -f testSuccess ; \
 	 for i in $(SUBDIRS); do \
 	        cd $$i; \
-	        make vc || exit 1; \
+	        make $$i.exe || exit 1; \
 	        cd ..; \
 	 done ; \
 	 touch testSuccess
