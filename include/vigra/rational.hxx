@@ -658,6 +658,17 @@ Rational<IntType>::operator*= (param_type i)
 {
     if(i == IntType(1))
         return *this;
+    IntType zero(0);
+    if(i == zero)
+        if(den == zero)
+            throw bad_rational();
+        else
+        {
+            num = zero;
+            den = IntType(1);
+            return *this;
+        }
+    
     IntType g = gcd(i, den);
     den /= g;
     num *= i / g;
