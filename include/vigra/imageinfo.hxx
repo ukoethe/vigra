@@ -190,15 +190,14 @@ class ImageExportInfo
     **/
     const char * getPixelType() const;
 
-        /** Set the image resolution in horizontal direction
-         **/
+    /** Set the image resolution in horizontal direction
+    **/
     ImageExportInfo & setXResolution( float );
-
-        /** Set the image resolution in vertical direction
-         **/
-    ImageExportInfo & setYResolution( float );
-    
     float getXResolution() const;
+
+    /** Set the image resolution in vertical direction
+    **/
+    ImageExportInfo & setYResolution( float );
     float getYResolution() const;
 
   private:
