@@ -237,8 +237,8 @@ inline double angularGaborSigma(int directionCount, double centerFrequency)
 
     A GaborFilterFamily can be used to quickly create a whole family
     of gabor filters in frequency space. Especially useful in
-    conjunction with applyFourierFilterFamily, since it's derived from
-    \ref ImageArray.
+    conjunction with \ref applyFourierFilterFamily, since it's derived
+    from \ref ImageArray.
 
     The filter parameters are chosen to make the center frequencies
     decrease in octaves with increasing scale indices, and to make the
@@ -278,14 +278,14 @@ protected:
 public:
     enum { stdFilterSize= 128, stdDirectionCount= 6, stdScaleCount= 4 };
 
-        /* Constructs a family of gabor filters in frequency
-           space. The filters will be calculated on construction, so
-           it makes sense to provide good parameters right now
-           although they can be changed later, too. If you leave them
-           out, the defaults are a \ref directionCount of 6, a \ref
-           scaleCount of 4 and a \ref maxCenterFrequency of
-           3/8(=0.375).
-         */
+        /** Constructs a family of gabor filters in frequency
+            space. The filters will be calculated on construction, so
+            it makes sense to provide good parameters right now
+            although they can be changed later, too. If you leave them
+            out, the defaults are a \ref directionCount of 6, a \ref
+            scaleCount of 4 and a \ref maxCenterFrequency of
+            3/8(=0.375).
+        */
     GaborFilterFamily(const Diff2D & size,
                       int directionCount = stdDirectionCount, int scaleCount = stdScaleCount,
                       double maxCenterFrequency = 3.0/8.0)
@@ -297,9 +297,9 @@ public:
         initFilters();
     }
 
-        /* Convenience variant of the above constructor taking width
-           and height separately. Also, this one serves as default
-           constructor constructing 128x128 pixel filters.
+        /** Convenience variant of the above constructor taking width
+            and height separately. Also, this one serves as default
+            constructor constructing 128x128 pixel filters.
          */
     GaborFilterFamily(int width= stdFilterSize, int height= -1,
                       int directionCount = stdDirectionCount, int scaleCount = stdScaleCount,
@@ -312,31 +312,31 @@ public:
         initFilters();
     }
 
-        /* Return the index of the filter with the given direction and
-           scale in this ImageArray. direction must in the range
-           0..directionCount()-1 and scale in the range
-           0..rangeCount()-1. This is useful for example if you used
-           \ref applyFourierFilterFamily() and got a resulting
-           ImageArray which still has the same order of images, but no
-           \ref getFilter() method anymore.
+        /** Return the index of the filter with the given direction and
+            scale in this ImageArray. direction must in the range
+            0..directionCount()-1 and scale in the range
+            0..rangeCount()-1. This is useful for example if you used
+            \ref applyFourierFilterFamily() and got a resulting
+            ImageArray which still has the same order of images, but no
+            \ref getFilter() method anymore.
          */
     int filterIndex(int direction, int scale) const
     {
         return scale*directionCount()+direction;
     }
 
-        /* Return the filter with the given direction and
-           scale. direction must in the range 0..directionCount()-1
-           and scale in the range 0..rangeCount()-1.
-           <tt>filters.getFilter(direction, scale)</tt> is the same as
-           <tt>filters[filterIndex(direction, scale)]</tt>.
+        /** Return the filter with the given direction and
+            scale. direction must in the range 0..directionCount()-1
+            and scale in the range 0..rangeCount()-1.
+            <tt>filters.getFilter(direction, scale)</tt> is the same as
+            <tt>filters[filterIndex(direction, scale)]</tt>.
          */
     ImageType const & getFilter(int direction, int scale) const
     {
         return images_[filterIndex(direction, scale)];
     }
 
-        /* Resize all filters (causing their recalculation).
+        /** Resize all filters (causing their recalculation).
          */
     virtual void resizeImages(const Diff2D &newSize)
     {
@@ -344,18 +344,18 @@ public:
         initFilters();
     }
 
-        /* Query the number of filter scales available.
+        /** Query the number of filter scales available.
          */
     int scaleCount() const
         { return scaleCount_; }
 
-        /* Query the number of filter directions available.
+        /** Query the number of filter directions available.
          */
     int directionCount() const
         { return directionCount_; }
 
-        /* Change the number of directions / scales. This causes the
-           recalculation of all filters.
+        /** Change the number of directions / scales. This causes the
+            recalculation of all filters.
          */
     void setDirectionScaleCounts(int directionCount, int scaleCount)
     {
@@ -365,16 +365,16 @@ public:
         initFilters();
     }
 
-        /* Return the center frequency of the filter(s) with
-           scale==0. Filters with scale>0 will have a center frequency
-           reduced in octaves:
-           <tt>centerFrequency= maxCenterFrequency / 2.0^scale</tt>
+        /** Return the center frequency of the filter(s) with
+            scale==0. Filters with scale>0 will have a center frequency
+            reduced in octaves:
+            <tt>centerFrequency= maxCenterFrequency / 2.0^scale</tt>
         */
     double maxCenterFrequency()
         { return maxCenterFrequency_; }
 
-        /* Change the center frequency of the filter(s) with
-           scale==0. See \ref maxCenterFrequency().
+        /** Change the center frequency of the filter(s) with
+            scale==0. See \ref maxCenterFrequency().
          */
     void setMaxCenterFrequency(double maxCenterFrequency)
     {
