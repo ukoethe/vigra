@@ -9,7 +9,7 @@ struct ColorConversionsTest
 {
     typedef vigra::RGBValue<double> RGB;
     typedef vigra::TinyVector<double, 3> Color;
-    typedef vigra::TinyVector<float, 3> (*PolarFct)(vigra::TinyVector<float, 3> const &);
+    typedef vigra::TinyVector<float, 3> (*PolarFct)(Color const &);
     enum { count = 15 };
     RGB black, red, green, blue, cyan, magenta, 
          yellow, white, gray, orange, violet, bordeaux, brown, bluegreen, darkgreen;
@@ -268,7 +268,7 @@ struct ColorConversionsTest
     {
         std::transform(original, original+count, transformed, 
                         vigra::RGBPrime2LabFunctor<double>());
-        std::transform(transformed, transformed+count, transformed, &vigra::lab2Polar);
+        std::transform(transformed, transformed+count, transformed, (PolarFct)&vigra::lab2Polar);
         std::transform(transformed, transformed+count, back, (PolarFct)&vigra::polar2Lab);
         std::transform(back, back+count, back,
                         vigra::Lab2RGBPrimeFunctor<double>());
@@ -289,7 +289,7 @@ struct ColorConversionsTest
     {
         std::transform(original, original+count, transformed, 
                         vigra::RGBPrime2LuvFunctor<double>());
-        std::transform(transformed, transformed+count, transformed, &vigra::luv2Polar);
+        std::transform(transformed, transformed+count, transformed, (PolarFct)&vigra::luv2Polar);
         std::transform(transformed, transformed+count, back, (PolarFct)&vigra::polar2Luv);
         std::transform(back, back+count, back,
                         vigra::Luv2RGBPrimeFunctor<double>());
@@ -310,7 +310,7 @@ struct ColorConversionsTest
     {
         std::transform(original, original+count, transformed, 
                         vigra::RGBPrime2YPrimePbPrFunctor<double>());
-        std::transform(transformed, transformed+count, transformed, &vigra::yPrimePbPr2Polar);
+        std::transform(transformed, transformed+count, transformed, (PolarFct)&vigra::yPrimePbPr2Polar);
         std::transform(transformed, transformed+count, back, (PolarFct)&vigra::polar2YPrimePbPr);
         std::transform(back, back+count, back,
                         vigra::YPrimePbPr2RGBPrimeFunctor<double>());
@@ -331,7 +331,7 @@ struct ColorConversionsTest
     {
         std::transform(original, original+count, transformed, 
                         vigra::RGBPrime2YPrimeCbCrFunctor<double>());
-        std::transform(transformed, transformed+count, transformed, &vigra::yPrimeCbCr2Polar);
+        std::transform(transformed, transformed+count, transformed, (PolarFct)&vigra::yPrimeCbCr2Polar);
         std::transform(transformed, transformed+count, back, (PolarFct)&vigra::polar2YPrimeCbCr);
         std::transform(back, back+count, back,
                         vigra::YPrimeCbCr2RGBPrimeFunctor<double>());
@@ -352,7 +352,7 @@ struct ColorConversionsTest
     {
         std::transform(original, original+count, transformed, 
                         vigra::RGBPrime2YPrimeIQFunctor<double>());
-        std::transform(transformed, transformed+count, transformed, &vigra::yPrimeIQ2Polar);
+        std::transform(transformed, transformed+count, transformed, (PolarFct)&vigra::yPrimeIQ2Polar);
         std::transform(transformed, transformed+count, back, (PolarFct)&vigra::polar2YPrimeIQ);
         std::transform(back, back+count, back,
                         vigra::YPrimeIQ2RGBPrimeFunctor<double>());
@@ -373,7 +373,7 @@ struct ColorConversionsTest
     {
         std::transform(original, original+count, transformed, 
                         vigra::RGBPrime2YPrimeUVFunctor<double>());
-        std::transform(transformed, transformed+count, transformed, &vigra::yPrimeUV2Polar);
+        std::transform(transformed, transformed+count, transformed, (PolarFct)&vigra::yPrimeUV2Polar);
         std::transform(transformed, transformed+count, back, (PolarFct)&vigra::polar2YPrimeUV);
         std::transform(back, back+count, back,
                         vigra::YPrimeUV2RGBPrimeFunctor<double>());
@@ -429,3 +429,4 @@ int main()
 
     return (failed != 0);
 }
+
