@@ -739,7 +739,7 @@ linearRangeMapping(
     typedef typename NumericTraits<DestValueType>::RealPromote Multiplier;
     typedef typename Multiplier::value_type MComponent;
     Multiplier scale(dest_max), offset(dest_max);
-    for(int i=0; i<src_min.size(); ++i)
+    for(unsigned int i=0; i<src_min.size(); ++i)
     { 
         MComponent diff = src_max[i] - src_min[i];
         scale[i] = diff == NumericTraits<MComponent>::zero()
