@@ -1,3 +1,5 @@
+curdir=.
+
 test: test.o
 #	$(CXX) -o test test.o $(IMPEX_LIB) $(FFTW3_LIB)
 	$(CXX) -o test test.o $(IMPEX_LIB) -L/software/fftw-3.0.1/SunOS-5.8/lib -lfftw3 -lm -Wl,--rpath -Wl,/software/fftw-3.0.1/SunOS-5.8/lib

@@ -1,3 +1,5 @@
+curdir=.
+
 all: test speedtest
 
 test: test.o

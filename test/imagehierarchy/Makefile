@@ -1,3 +1,5 @@
+curdir=.
+
 #OBJ = one_band_basic_image_test_suite.o
 #OBJ = gray_image_test_suite.o
 #OBJ = select_band_image_test_suite.o

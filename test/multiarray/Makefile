@@ -1,3 +1,5 @@
+curdir=.
+
 test: test.o
 	@test -d impex || mkdir impex
 	$(CXX) -o test test.o $(IMPEX_LIB)
