@@ -405,7 +405,10 @@ VIGRA_DEFINE_ITERATORTRAITS(VIGRA_PIXELTYPE)
 /*                                                      */
 /********************************************************/
 
-/** \brief Fundamental class template for images .
+/** \brief Fundamental class template for images.
+
+    A customized memory allocator can be specified as a templated argument
+    ans passed in the constructor.
 
     <b>\#include</b> "<a href="basicimage_8hxx-source.html">vigra/basicimage.hxx</a>"
 
@@ -516,7 +519,7 @@ class BasicImage
       height_(0)
     {}
 
-        /** construct image of size 0x0
+        /** construct image of size 0x0, use the specified allocator.
         */
     explicit BasicImage(Alloc const & alloc)
     : data_(0),
@@ -526,7 +529,7 @@ class BasicImage
       pallocator_(alloc)
     {}
 
-        /** construct image of size width x height
+        /** construct image of size width x height, use the specified allocator.
         */
     BasicImage(int width, int height, Alloc const & alloc = Alloc())
     : data_(0),
@@ -542,7 +545,7 @@ class BasicImage
         resize(width, height, value_type());
     }
 
-        /** construct image of size size.x x size.y
+        /** construct image of size size.x x size.y, use the specified allocator.
         */
     explicit BasicImage(difference_type const & size, Alloc const & alloc = Alloc())
     : data_(0),
@@ -560,7 +563,8 @@ class BasicImage
 
         /** construct image of size width*height and initialize every
         pixel with given data (use this constructor, if
-        value_type doesn't have a default constructor)
+        value_type doesn't have a default constructor). 
+        Use the specified allocator.
         */
     BasicImage(int width, int height, value_type const & d, Alloc const & alloc = Alloc())
     : data_(0),

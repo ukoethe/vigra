@@ -45,6 +45,9 @@ namespace vigra {
     the same interface, only operator< is missing from ImageArray. It
     offers additional functions for resizing the images and querying
     their common size. See \ref imageSize() for additional notes.
+    
+    A custimized allocator can be passed as a template argument and via the constructor.
+    By default, the allocator of the <tt>ImageType</tt> is reused.
 
     <b>\#include</b> "<a href="imagecontainer_8hxx-source.html">vigra/imagecontainer.hxx</a>"
 
@@ -77,7 +80,7 @@ public:
     typedef typename ImageVector::difference_type difference_type;
     typedef typename ImageVector::size_type size_type;
 
-        /** init an array of numImages equal-sized images
+        /** init an array of numImages equal-sized images; use the specified allocator.
          */
     ImageArray(unsigned int numImages, const Diff2D &imageSize, 
                Alloc const & alloc = Alloc())
@@ -88,8 +91,9 @@ public:
             images_[i].resize(Size2D(imageSize));
     }
 
-        /** Init an array of numImages equal-sized images, the size
-            depends on ImageType's default constructor.
+        /** Init an array of numImages equal-sized images. The size
+            depends on ImageType's default constructor (so it will
+            usually be 0x0); use the specified allocator.
          */
     ImageArray(unsigned int numImages= 0, Alloc const & alloc = Alloc())
         : images_(numImages, alloc)
@@ -98,7 +102,7 @@ public:
     }
 
         /** fill constructor: Init an array with numImages copies of
-            the given image. (STL-Sequence interface)
+            the given image. (STL-Sequence interface); use the specified allocator.
          */
     ImageArray(unsigned int numImages, const ImageType &image, Alloc const & alloc = Alloc())
         : imageSize_(image.size()),
@@ -108,7 +112,8 @@ public:
     
         /** range constructor: Construct an array containing copies of
             the images in [begin, end). Those images must all have the
-            same size, see \ref imageSize(). (STL-Sequence interface)
+            same size, see \ref imageSize(). (STL-Sequence interface); 
+            use the specified allocator.
          */
     template<class InputIterator>
     ImageArray(InputIterator begin, InputIterator end, Alloc const & alloc = Alloc())
