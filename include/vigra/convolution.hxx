@@ -221,11 +221,12 @@ namespace vigra {
     \code
     namespace vigra {
         template <class SrcIterator, class SrcAccessor,
-                  class DestIterator, class DestAccessor>
-        void gaussianSmoothing(SrcIterator supperleft,
-                                SrcIterator slowerright, SrcAccessor sa,
-                                DestIterator dupperleft, DestAccessor da,
-                                double scale);
+                  class DestIterator, class DestAccessor,
+                  class T>
+        void convolveImage(SrcIterator supperleft,
+                           SrcIterator slowerright, SrcAccessor sa,
+                           DestIterator dupperleft, DestAccessor da,
+                           Kernel1D<T> const & kx, Kernel1D<T> const & ky);
     }
     \endcode
 
@@ -234,11 +235,12 @@ namespace vigra {
     \code
     namespace vigra {
         template <class SrcIterator, class SrcAccessor,
-                  class DestIterator, class DestAccessor>
+                  class DestIterator, class DestAccessor,
+                  class T>
         inline void
-        gaussianSmoothing(triple<SrcIterator, SrcIterator, SrcAccessor> src,
-                          pair<DestIterator, DestAccessor> dest,
-                          double scale);
+        convolveImage(triple<SrcIterator, SrcIterator, SrcAccessor> src,
+                      pair<DestIterator, DestAccessor> dest,
+                      Kernel1D<T> const & kx, Kernel1D<T> const & ky);
     }
     \endcode
 
@@ -251,8 +253,12 @@ namespace vigra {
     vigra::FImage src(w,h), dest(w,h);
     ...
 
-    // smooth with scale = 3.0
-    vigra::gaussianSmoothing(srcImageRange(src), destImage(dest), 3.0);
+    // implement sobel filter in x-direction
+    Kernel1D<double> kx, ky;
+    kx.initSymmetricGradient();
+    ky.initBinomial(1);
+    
+    vigra::convolveImage(srcImageRange(src), destImage(dest), kx, ky);
 
     \endcode
 
@@ -400,7 +406,7 @@ void simpleSharpening(triple<SrcIterator, SrcIterator, SrcAccessor> src,
 
 
     This function use the 
-    \link gaussianSmoothing gaussianSmoothing \endlink()
+    \link vigra::gaussianSmoothing gaussianSmoothing \endlink()
     at first and scale the source image 
     (\code src \endcode) with the \code scale \endcode
     factor in an temporary image (\code tmp \endcode). At second the new 
