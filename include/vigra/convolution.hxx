@@ -195,12 +195,98 @@ namespace vigra {
 
 /** \addtogroup CommonConvolutionFilters Common Filters
 
-    These functions calculate Gaussian smoothings and Gaussian derivative
-    filters by appropriate sequences of calls to
-    \link SeparableConvolution#separableConvolveX separableConvolveX\endlink()
+    These functions calculate common filters by appropriate sequences of calls 
+    to \link SeparableConvolution#separableConvolveX separableConvolveX\endlink()
     and \link SeparableConvolution#separableConvolveY separableConvolveY\endlink().
 */
 //@{
+
+/********************************************************/
+/*                                                      */
+/*                    convolveImage                     */
+/*                                                      */
+/********************************************************/
+
+/** \brief Apply two separable filters successively, the first in x-direction, 
+           the second in y-direction.
+
+    This function is a shorthand for the concatenation of a call to
+    \link SeparableConvolution#separableConvolveX separableConvolveX\endlink()
+    and \link SeparableConvolution#separableConvolveY separableConvolveY\endlink() 
+    with the given kernels.
+
+    <b> Declarations:</b>
+
+    pass arguments explicitly:
+    \code
+    namespace vigra {
+        template <class SrcIterator, class SrcAccessor,
+                  class DestIterator, class DestAccessor>
+        void gaussianSmoothing(SrcIterator supperleft,
+                                SrcIterator slowerright, SrcAccessor sa,
+                                DestIterator dupperleft, DestAccessor da,
+                                double scale);
+    }
+    \endcode
+
+
+    use argument objects in conjuction with \ref ArgumentObjectFactories:
+    \code
+    namespace vigra {
+        template <class SrcIterator, class SrcAccessor,
+                  class DestIterator, class DestAccessor>
+        inline void
+        gaussianSmoothing(triple<SrcIterator, SrcIterator, SrcAccessor> src,
+                          pair<DestIterator, DestAccessor> dest,
+                          double scale);
+    }
+    \endcode
+
+    <b> Usage:</b>
+
+    <b>\#include</b> "<a href="convolution_8hxx-source.html">vigra/convolution.hxx</a>"
+
+
+    \code
+    vigra::FImage src(w,h), dest(w,h);
+    ...
+
+    // smooth with scale = 3.0
+    vigra::gaussianSmoothing(srcImageRange(src), destImage(dest), 3.0);
+
+    \endcode
+
+*/
+template <class SrcIterator, class SrcAccessor,
+          class DestIterator, class DestAccessor,
+          class T>
+void convolveImage(SrcIterator supperleft,
+                   SrcIterator slowerright, SrcAccessor sa,
+                   DestIterator dupperleft, DestAccessor da,
+                   Kernel1D<T> const & kx, Kernel1D<T> const & ky)
+{
+    typedef typename
+        NumericTraits<typename SrcAccessor::value_type>::RealPromote
+        TmpType;
+    BasicImage<TmpType> tmp(slowerright - supperleft);
+
+    separableConvolveX(srcIterRange(supperleft, slowerright, sa),
+                       destImage(tmp), kernel1d(kx));
+    separableConvolveY(srcImageRange(tmp),
+                       destIter(dupperleft, da), kernel1d(ky));
+}
+
+template <class SrcIterator, class SrcAccessor,
+          class DestIterator, class DestAccessor,
+          class T>
+inline void
+convolveImage(triple<SrcIterator, SrcIterator, SrcAccessor> src,
+              pair<DestIterator, DestAccessor> dest,
+              Kernel1D<T> const & kx, Kernel1D<T> const & ky)
+{
+    convolveImage(src.first, src.second, src.third,
+                  dest.first, dest.second, kx, ky);
+}
 
 /********************************************************/
 /*                                                      */
