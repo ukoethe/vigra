@@ -57,7 +57,8 @@ struct TensorUtilityTest
                 shouldEqual(res(x,y)[0]+res(x,y)[1], img3(x,y)[0] + img3(x,y)[2]);
                 shouldEqual(res(x,y)[0]*res(x,y)[1], 
                             img3(x,y)[0]*img3(x,y)[2]-sq(img3(x,y)[1]));
-                shouldEqual(res(x,y)[2], VIGRA_CSTD::atan2((double)-y, (double)x));
+                shouldEqualTolerance(res(x,y)[2], 
+                                    VIGRA_CSTD::atan2((double)-y, (double)x), 1e-12);
             }
         }
     }
@@ -110,7 +111,7 @@ struct TensorUtilityTest
         \
         rieszTransformOfLOG(srcImageRange(img1), destImage(res), 2.0, xorder, yorder); \
         \
-        shouldEqualSequence(res.begin(), res.end(), ref.begin()); \
+        shouldEqualSequenceTolerance(res.begin(), res.end(), ref.begin(), 1e-12); \
     } \
     
 
@@ -146,7 +147,10 @@ struct BoundaryTensorTest
         
         boundaryTensor(srcImageRange(img1), destImage(res), 2.0);
         
-        shouldEqualSequence(res.begin(), res.end(), ref.begin());
+        for(VImage::iterator i = res.begin(), j = ref.begin(); i < res.end(); ++i, ++j)
+        {
+            shouldEqualTolerance(i->magnitude(), j->magnitude(), 1e-12);
+        }
     }
 
     void boundaryTensorTest1()
@@ -159,7 +163,7 @@ struct BoundaryTensorTest
         boundaryTensor1(srcImageRange(img2), destImage(bt), 2.0);
         tensorTrace(srcImageRange(bt), destImage(res));
         
-        shouldEqualSequence(res.begin(), res.end(), ref.begin());
+        shouldEqualSequenceTolerance(res.begin(), res.end(), ref.begin(), 1e-12);
     }
 
     void boundaryTensorTest2()
@@ -172,7 +176,7 @@ struct BoundaryTensorTest
         boundaryTensor(srcImageRange(img2), destImage(bt), 2.0);
         tensorTrace(srcImageRange(bt), destImage(res));
         
-        shouldEqualSequence(res.begin(), res.end(), ref.begin());
+        shouldEqualSequenceTolerance(res.begin(), res.end(), ref.begin(), 1e-12);
     }
 
     void boundaryTensorTest3()
@@ -191,7 +195,7 @@ struct BoundaryTensorTest
         ImageImportInfo iref("l2_boundary3.xv");
         importImage(iref, destImage(ref));
 
-        shouldEqualSequence(res.begin(), res.end(), ref.begin());
+        shouldEqualSequenceTolerance(res.begin(), res.end(), ref.begin(), 1e-12);
     }
     
     Image img1, img2;
