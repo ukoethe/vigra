@@ -378,7 +378,7 @@ class test_suite
     
     virtual ~test_suite()
     {
-        for(int i=0; i != testcases_.size(); ++i) 
+        for(unsigned int i=0; i != testcases_.size(); ++i) 
             delete testcases_[i];        
     }
     
@@ -394,7 +394,7 @@ class test_suite
         int failed = 0;
         report_ = std::string("Entering test suite ") + name() + "\n";
         
-        for(int i=0; i != testcases_.size(); ++i) 
+        for(unsigned int i=0; i != testcases_.size(); ++i) 
         {
             int result = testcases_[i]->run();
             report_ += testcases_[i]->report_;
