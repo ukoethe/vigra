@@ -3,9 +3,11 @@ test: test.o
 	./test || { rm ./test ; exit 1; }
 
 vc: convolution.exe
-	devenv "..\test.sln" /build Release /project convolution
 	./convolution.exe || { rm ./convolution.exe ; exit 1; }
 
+convolution.exe:
+	devenv "..\test.sln" /build Release /project convolution
+        
 ifneq "$(MAKECMDGOALS)" "clean"
 include test.d
 endif

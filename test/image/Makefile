@@ -3,8 +3,10 @@ test: test.o
 	./test || { rm ./test ; exit 1; }
 
 vc: image.exe
-	devenv "..\test.sln" /build Release /project image
 	./image.exe || { rm ./image.exe ; exit 1; }
+
+image.exe:
+	devenv "..\test.sln" /build Release /project image
 
 ifneq "$(MAKECMDGOALS)" "clean"
 include test.d

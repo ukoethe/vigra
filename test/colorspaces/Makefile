@@ -3,8 +3,10 @@ test: test.o
 	./test || { rm ./test ; exit 1; }
 
 vc: colorspaces.exe
-	devenv "..\test.sln" /build Release /project colorspaces
 	./colorspaces.exe || { rm ./colorspaces.exe ; exit 1; }
+
+colorspaces.exe:
+	devenv "..\test.sln" /build Release /project colorspaces
 
 ifneq "$(MAKECMDGOALS)" "clean"
 include test.d

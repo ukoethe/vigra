@@ -11,8 +11,10 @@ test: test.o ../../current/src/impex/.libs/libvigraimpex.a
 	./test || { rm ./test ; exit 1; }
 
 vc: impex.exe
-	devenv "..\test.sln" /build Release /project impex
 	./impex.exe || { rm ./impex.exe ; exit 1; }
+
+impex.exe
+	devenv "..\test.sln" /build Release /project impex
 
 ifneq "$(MAKECMDGOALS)" "clean"
 include test.d
