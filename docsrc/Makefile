@@ -1,4 +1,4 @@
-                 DOC = $(HOME)/C++/doc++/src/doc++ -G -j -u -d $(DOCDIR) -B footer.html
+                 DOC = doc++ -G -j -u -d $(DOCDIR) -B footer.html
 	    DOCLATEX = doc++ -u -o $(DOCDIR)/latex/vigra.tex -t 
 	      DOCDIR = ../doc
 		 
