@@ -1,6 +1,6 @@
 /************************************************************************/
 /*                                                                      */
-/*               Copyright 1998-2003 by Ullrich Koethe                  */
+/*               Copyright 1998-2004 by Ullrich Koethe                  */
 /*       Cognitive Systems Group, University of Hamburg, Germany        */
 /*                                                                      */
 /*    This file is part of the VIGRA computer vision library.           */
@@ -36,23 +36,31 @@ struct MapTargetToSourceCoordinate
 {
     MapTargetToSourceCoordinate(Rational<int> const & samplingRatio, 
                                 Rational<int> const & offset)
-    : samplingRatio_(samplingRatio),
-      offset_(offset)
+    : a(samplingRatio.denominator()*offset.denominator()),
+      b(samplingRatio.numerator()*offset.numerator()),
+      c(samplingRatio.numerator()*offset.denominator())
     {}
     
+//        the following funcions are more efficient realizations of:
+//             rational_cast<T>(i / samplingRatio + offset);
+//        we need efficiency because this may be called in the inner loop
+
     int operator()(int i) const
     {
-        Rational<int> r = i / samplingRatio_ + offset_;
-        return r.numerator() / r.denominator();
+        return (i * a + b) / c;
     }
     
     double toDouble(int i) const
     {
-        Rational<int> r = i / samplingRatio_ + offset_;
-        return double(r.numerator()) / double(r.denominator());
+        return double(i * a + b) / c;
     }
-    
-    Rational<int> samplingRatio_, offset_;
+
+    Rational<int> toRational(int i) const
+    {
+        return Rational<int>(i * a + b, c);
+    }
+
+    int a, b, c;
 };
 
 } // namespace resampling_detail
@@ -130,15 +138,16 @@ createResamplingKernels(Kernel const & kernel,
     {
         int isrc = mapCoordinate(idest);
         double idsrc = mapCoordinate.toDouble(idest);
-        double offset = isrc - idsrc;
-        int left = VIGRA_CSTD::floor(offset - kernel.radius());
-        int right = VIGRA_CSTD::ceil(offset + kernel.radius());
+        double offset = idsrc - isrc;
+        double radius = kernel.radius();
+        int left = int(ceil(-radius - offset));
+        int right = int(floor(radius - offset));
         kernels[idest].initExplicitly(left, right);
         
-        double x = left - offset;
+        double x = left + offset;
         for(int i = left; i <= right; ++i, ++x)
             kernels[idest][i] = kernel(x);
-        // normalize!???
+        kernels[idest].normalize(1.0, kernel.derivativeOrder(), offset);
     }
 }
 
@@ -152,7 +161,6 @@ resamplingConvolveX(SrcIter sul, SrcIter slr, SrcAcc src,
                     Rational<int> const & samplingRatio, Rational<int> const & offset)
 {
     int wold = slr.x - sul.x;
-    int hold = slr.y - sul.y;
     int wnew = dlr.x - dul.x;
     
     int period = lcm(samplingRatio.numerator(), samplingRatio.denominator());
@@ -194,7 +202,6 @@ resamplingConvolveY(SrcIter sul, SrcIter slr, SrcAcc src,
                     Kernel const & kernel,
                     Rational<int> const & samplingRatio, Rational<int> const & offset)
 {
-    int wold = slr.x - sul.x;
     int hold = slr.y - sul.y;
     int hnew = dlr.y - dul.y;
     
