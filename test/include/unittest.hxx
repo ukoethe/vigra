@@ -20,7 +20,9 @@
 #include <exception>          // for exception, bad_exception
 #include <stdexcept>
 #include <strstream>
+#include <iostream>
 #include <cmath>
+#include "vigra/config.hxx"
 
 #ifdef _MSC_VER
 
@@ -365,7 +367,7 @@ eps_equal_impl(double left, double right, double epsilon, const char * message, 
 {
     detail::errstream buf;
     buf << message << " [" << left << " != " << right << "]";
-	should_impl(std::fabs(left - right) < epsilon, buf.str(), file, line); 
+    should_impl(VIGRA_CSTD::fabs(left - right) < epsilon, buf.str(), file, line); 
 }
 
 template <class Left, class Right>
