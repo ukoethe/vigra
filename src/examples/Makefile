@@ -13,7 +13,6 @@ FILES = \
     profile \
     pyramid \
     edge \
-    ascale \
     watershed \
     voronoi
     
