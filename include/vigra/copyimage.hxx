@@ -24,7 +24,6 @@
 #define VIGRA_COPYIMAGE_HXX
 
 #include "vigra/utilities.hxx"
-#include "vigra/iteratortraits.hxx"
 
 namespace vigra {
 
