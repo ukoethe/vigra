@@ -26,11 +26,12 @@
 #include "vigra/utilities.hxx"
 #include "vigra/accessor.hxx"
 #include "vigra/iteratortraits.hxx"
+#include "vigra/metaprogramming.hxx"
 
 namespace vigra {
 
 template <class IMAGEITERATOR>
-class ContigousMemoryColumnIteratorPolicy
+class StridedIteratorPolicy
 {
   public:
     typedef IMAGEITERATOR                            ImageIterator;
@@ -45,12 +46,12 @@ class ContigousMemoryColumnIteratorPolicy
 
     struct BaseType
     {
-        explicit BaseType(pointer c = 0, difference_type o = 0)
-        : current_(c), offset_(o)
+        explicit BaseType(pointer c = 0, difference_type stride = 0)
+        : current_(c), stride_(stride)
         {}
 
         pointer current_;
-        difference_type offset_;
+        difference_type stride_;
     };
 
     static void initialize(BaseType & d) {}
@@ -60,7 +61,7 @@ class ContigousMemoryColumnIteratorPolicy
 
     static index_reference dereference(BaseType const & d, difference_type n)
     {
-        return const_cast<index_reference>(d.current_[n*d.offset_]);
+        return const_cast<index_reference>(d.current_[n*d.stride_]);
     }
 
     static bool equal(BaseType const & d1, BaseType const & d2)
@@ -70,16 +71,16 @@ class ContigousMemoryColumnIteratorPolicy
         { return d1.current_ < d2.current_; }
 
     static difference_type difference(BaseType const & d1, BaseType const & d2)
-        { return (d1.current_ - d2.current_) / d1.offset_; }
+        { return (d1.current_ - d2.current_) / d1.stride_; }
 
     static void increment(BaseType & d)
-        { d.current_ += d.offset_; }
+        { d.current_ += d.stride_; }
 
     static void decrement(BaseType & d)
-        { d.current_ -= d.offset_; }
+        { d.current_ -= d.stride_; }
 
     static void advance(BaseType & d, difference_type n)
-        { d.current_ += d.offset_*n; }
+        { d.current_ += d.stride_*n; }
 };
 
 /** \addtogroup ImageIterators  Image Iterators
@@ -420,6 +421,163 @@ The following iterator traits must be defined for an image iterator:
 </p>
 */
 //@{
+
+namespace detail {
+
+template <class StridedOrUnstrided>
+class DirectionSelector;
+
+template <>
+class DirectionSelector<UnstridedArrayTag>
+{
+  public:
+
+    template <class T>
+    class type
+    {
+      public:
+        type(T base)
+        : current_(base)
+        {}
+
+        type(type const & rhs)
+        : current_(rhs.current_)
+        {}
+
+        type & operator=(type const & rhs)
+        {
+            current_ = rhs.current_;
+            return *this;
+        }
+
+        void operator++() {++current_;}
+        void operator++(int) {++current_;}
+        void operator--() {--current_;}
+        void operator--(int) {--current_;}
+        void operator+=(int dx) {current_ += dx; }
+        void operator-=(int dx) {current_ -= dx; }
+
+        bool operator==(type const & rhs) const
+         { return current_ == rhs.current_; }
+
+        bool operator!=(type const & rhs) const
+         { return current_ != rhs.current_; }
+
+        bool operator<(type const & rhs) const
+         { return current_ < rhs.current_; }
+
+        int operator-(type const & rhs) const
+         { return current_ - rhs.current_; }
+
+        T operator()() const
+        { return current_; }
+
+        T operator()(int d) const
+        { return current_ + d; }
+        
+        T current_;
+    };
+};
+
+template <>
+class DirectionSelector<StridedArrayTag>
+{
+  public:
+
+    template <class T>
+    class type
+    {
+      public:
+        type(int stride, T base = 0)
+        : stride_(stride),
+          current_(base)
+        {}
+
+        type(type const & rhs)
+        : stride_(rhs.stride_),
+          current_(rhs.current_)
+        {}
+        
+        type & operator=(type const & rhs)
+        {
+            stride_ = rhs.stride_;
+            current_ = rhs.current_;
+            return *this;
+        }
+
+        void operator++() {current_ += stride_; }
+        void operator++(int) {current_ += stride_; }
+        void operator--() {current_ -= stride_; }
+        void operator--(int) {current_ -= stride_; }
+        void operator+=(int dy) {current_ += dy*stride_; }
+        void operator-=(int dy) {current_ -= dy*stride_; }
+
+        bool operator==(type const & rhs) const
+         { return (current_ == rhs.current_); }
+
+        bool operator!=(type const & rhs) const
+         { return (current_ != rhs.current_); }
+
+        bool operator<(type const & rhs) const
+         { return (current_ < rhs.current_); }
+
+        int operator-(type const & rhs) const
+         { return (current_ - rhs.current_) / stride_; }
+
+        T operator()() const
+        { return current_; }
+
+        T operator()(int d) const
+        { return current_ + d*stride_; }
+
+        int stride_;
+        T current_;
+    };
+};
+
+template <class StridedOrUnstrided>
+class LinearIteratorSelector;
+
+template <>
+class LinearIteratorSelector<UnstridedArrayTag>
+{
+  public:
+    template <class IMAGEITERATOR>
+    class type
+    {
+      public:
+        typedef typename IMAGEITERATOR::pointer res;
+        
+        template <class DirSelect>
+        static res construct(typename IMAGEITERATOR::pointer data, DirSelect const &)
+        {
+            return data;
+        }
+    };
+};
+
+template <>
+class LinearIteratorSelector<StridedArrayTag>
+{
+  public:
+    template <class IMAGEITERATOR>
+    class type
+    {
+      public:
+        typedef IteratorAdaptor<StridedIteratorPolicy<IMAGEITERATOR> > res;
+        
+        template <class DirSelect>
+        static res construct(typename IMAGEITERATOR::pointer data, DirSelect const & d)
+        {
+            typedef typename res::BaseType Base;
+            return res(Base(data, d.stride_));
+        }
+    };
+};
+
+
+} // namespace detail
+
 /********************************************************/
 /*                                                      */
 /*                      ImageIteratorBase               */
@@ -449,12 +607,19 @@ The following iterator traits must be defined for an image iterator:
 
 */
 template <class IMAGEITERATOR,
-          class PIXELTYPE, class REFERENCE, class POINTER>
+          class PIXELTYPE, class REFERENCE, class POINTER,
+          class StridedOrUnstrided = UnstridedArrayTag>
 class ImageIteratorBase
 {
+    typedef typename 
+        detail::LinearIteratorSelector<StridedOrUnstrided>::template type<ImageIteratorBase>
+        RowIteratorSelector;
+    typedef typename 
+        detail::LinearIteratorSelector<StridedArrayTag>::template type<ImageIteratorBase>
+        ColumnIteratorSelector;
   public:
     typedef ImageIteratorBase<IMAGEITERATOR,
-                 PIXELTYPE, REFERENCE, POINTER> self_type;
+                 PIXELTYPE, REFERENCE, POINTER, StridedOrUnstrided> self_type;
 
         /** The underlying image's pixel type.
         */
@@ -486,182 +651,21 @@ class ImageIteratorBase
 
         /** The associated row iterator.
         */
-    typedef POINTER              row_iterator;
+    typedef typename RowIteratorSelector::res row_iterator;
 
         /** The associated column iterator.
         */
-    typedef IteratorAdaptor<ContigousMemoryColumnIteratorPolicy<self_type> >
-        column_iterator;
+    typedef typename ColumnIteratorSelector::res column_iterator;
 
         /** Let operations act in X direction
         */
-    class MoveX
-    {
-      public:
-             /** Makes x coordinate identical to rhs, but lets y untouched.
-                 Result is undefined if rhs points to different image. <br>
-                 Usage: <TT> iterator.x = iterator1.x </TT>
-             */
-        MoveX & operator=(MoveX const & rhs)
-        {
-            current_ = rhs.current_;
-            return *this;
-        }
-
-        /** @name Increment and Decrement X */
-        //@{
-            /** usage: <TT> ++iterator.x </TT>
-            */
-        void operator++() {++current_;}
-            /** usage: <TT> iterator.x++ </TT>
-            */
-        void operator++(int) {++current_;}
-            /** usage: <TT> --iterator.x </TT>
-            */
-        void operator--() {--current_;}
-            /** usage: <TT> iterator.x-- </TT>
-            */
-        void operator--(int) {--current_;}
-
-        //@}
-
-        /** @name Random Offset in X */
-        //@{
-            /** usage: <TT> iterator.x += 10 </TT>.
-            */
-        void operator+=(int dx) {current_ += dx; }
-            /** usage: <TT> iterator.x -= 10 </TT>.
-            */
-        void operator-=(int dx) {current_ -= dx; }
-
-        //@}
-        /** @name Comparison of X Coordinates */
-        //@{
-            /** usage: <TT> iterator.x == iterator1.x </TT>
-            */
-        bool operator==(MoveX const & rhs) const
-         { return current_ == rhs.current_; }
-            /** usage: <TT> iterator.x != iterator1.x </TT>
-            */
-        bool operator!=(MoveX const & rhs) const
-         { return current_ != rhs.current_; }
-            /** usage: <TT> iterator.x < iterator1.x </TT>
-            */
-        bool operator<(MoveX const & rhs) const
-         { return current_ < rhs.current_; }
-
-        //@}
-        /** @name Difference of X Coordinates */
-        //@{
-            /** usage: <TT> int dx = iterator.x - iterator1.x </TT>
-            */
-        int operator-(MoveX const & rhs) const
-         { return current_ - rhs.current_; }
-        //@}
-
-      private:
-        friend class self_type;
-
-        MoveX(pointer base)
-        : current_(base)
-        {}
-
-        MoveX(MoveX const & rhs)
-        : current_(rhs.current_)
-        {}
-
-        pointer current_;
-    };
+    typedef typename 
+        detail::DirectionSelector<StridedOrUnstrided>::template type<pointer> MoveX;
 
         /** Let operations act in Y direction
         */
-    class MoveY
-    {
-      public:
-
-             /** Makes y coordinate identical to rhs, but lets x untouched.
-                 Result is undefined if rhs points to different image. <br>
-                 Usage: <TT> iterator.y = iterator1.y </TT>
-             */
-        MoveY & operator=(MoveY const & rhs)
-        {
-            width_ = rhs.width_;
-            offset_ = rhs.offset_;
-            return *this;
-        }
-
-        /** @name Increment and Decrement Y */
-        //@{
-            /** usage: <TT> ++iterator.y </TT>
-            */
-        void operator++() {offset_ += width_; }
-            /** usage: <TT> iterator.y++ </TT>
-            */
-        void operator++(int) {offset_ += width_; }
-            /** usage: <TT> --iterator.y </TT>
-            */
-        void operator--() {offset_ -= width_; }
-            /** usage: <TT> iterator.y-- </TT>
-            */
-        void operator--(int) {offset_ -= width_; }
-
-        //@}
-
-        /** @name Random Offset in Y Direction */
-        //@{
-            /** usage: <TT> iterator.y += 20 </TT>
-            */
-        void operator+=(int dy) {offset_ += dy*width_; }
-            /** usage: <TT> iterator.y -= 20 </TT>
-            */
-        void operator-=(int dy) {offset_ -= dy*width_; }
-
-        //@}
-
-        /** @name Comparison of Y Coordinates */
-        //@{
-            /** usage: <TT> iterator.y == iterator1.y </TT>
-            */
-        bool operator==(MoveY const & rhs) const
-         { return (offset_ == rhs.offset_); }
-            /** usage: <TT> iterator.y != iterator1.y </TT>
-            */
-        bool operator!=(MoveY const & rhs) const
-         { return (offset_ != rhs.offset_); }
-            /** usage: <TT> iterator.y < iterator1.y </TT>
-            */
-        bool operator<(MoveY const & rhs) const
-         { return (offset_ < rhs.offset_); }
-
-        //@}
-
-        /** @name Difference of Y Coordinates */
-        //@{
-            /** usage: <TT> int dy = iterator.y - iterator1.y </TT>
-            */
-        int operator-(MoveY const & rhs) const
-         { return (offset_ - rhs.offset_) / width_; }
-
-        //@}
-
-      private:
-        friend class self_type;
-
-            // only construct within ImageIteratorBase
-        MoveY(int width)
-        : width_(width),
-          offset_(0)
-        {}
-
-            // only construct within ImageIteratorBase
-        MoveY(MoveY const & rhs)
-        : width_(rhs.width_),
-          offset_(rhs.offset_)
-        {}
-
-        int width_;
-        int offset_;
-    };
+    typedef typename 
+        detail::DirectionSelector<StridedArrayTag>::template type<int> MoveY;
 
     /** @name Comparison of Iterators */
     //@{
@@ -690,21 +694,55 @@ class ImageIteratorBase
 
     /** @name Specify coordinate to operate on */
     //@{
-        /// refer to x coordinate
+        /** Refer to iterator's x coordinate.
+            Usage examples:<br>
+            \code
+            ++iterator.x;        // move one step to the right
+            --iterator.x;        // move one step to the left
+            iterator.x += dx;    // move dx steps to the right
+            iterator.x -= dx;    // move dx steps to the left
+            bool notAtEndOfRow = iterator.x < lowerRight.x;   // compare x coordinates of two iterators
+            int width = lowerRight.x - upperLeft.x;           // calculate difference of x coordinates
+                                                              // between two iterators
+            \endcode
+        */
     MoveX x;
-        /// refer to y coordinate
+        /** Refer to iterator's y coordinate.
+            Usage examples:<br>
+            \code
+            ++iterator.y;        // move one step down
+            --iterator.y;        // move one step up
+            iterator.y += dy;    // move dy steps down
+            iterator.y -= dy;    // move dy steps up
+            bool notAtEndOfColumn = iterator.y < lowerRight.y; // compare y coordinates of two iterators
+            int height = lowerRight.y - upperLeft.y;           // calculate difference of y coordinates
+                                                               // between two iterators
+            \endcode
+        */
     MoveY y;
     //@}
 
   protected:
-        /** Construct from raw memory with 'width' of physical lines.
-        If the raw memory is encapsulated in an image object this
-        object should have a fatory function that constructs the
-        iterator.
+        /** Construct from raw memory with a vertical stride of <TT>ystride</TT>.
+        <TT>ystride</TT> must equal the physical image width (row length), 
+        even if the iterator will only be used for a sub image. This constructor
+        must only be called for unstrided iterators 
+        (<tt>StridedOrUnstrided == UnstridedArrayTag</tt>)
         */
-    ImageIteratorBase(pointer base, int width)
+    ImageIteratorBase(pointer base, int ystride)
     : x(base),
-      y(width)
+      y(ystride)
+    {}
+
+        /** Construct from raw memory with a horizontal stride of <TT>xstride</TT>
+        and a vertical stride of <TT>ystride</TT>. This constructor 
+        may be used for iterators that shall skip pixels. Thus, it
+        must only be called for strided iterators 
+        (<tt>StridedOrUnstrided == StridedArrayTag</tt>)
+        */
+    ImageIteratorBase(pointer base, int xstride, int ystride)
+    : x(xstride, base),
+      y(ystride)
     {}
 
         /** Copy constructor */
@@ -813,26 +851,27 @@ class ImageIteratorBase
         */
     pointer operator[](int dy) const
     {
-        return current() + dy*y.width_;
+        return x() + y(dy);
     }
     //@}
 
     row_iterator rowIterator() const
-        { return current(); }
+    { 
+        return RowIteratorSelector::construct(current(), x);
+    }
 
     column_iterator columnIterator() const
     {
-        typedef typename column_iterator::BaseType Iter;
-        return column_iterator(Iter(current(), y.width_));
+        return ColumnIteratorSelector::construct(current(), y);
     }
 
   private:
 
     pointer current() const
-        { return x.current_ + y.offset_; }
+        { return x() + y(); }
 
     pointer current(int dx, int dy) const
-        { return x.current_ + dx + y.offset_ + y.width_ * dy; }
+        { return x(dx) + y(dy); }
 };
 
 /********************************************************/
@@ -867,13 +906,15 @@ class ImageIterator
     typedef typename Base::pointer         pointer;
     typedef typename Base::difference_type difference_type;
 
-        /** Construct from raw memory with 'offset' between lines.
+        /** Construct from raw memory with a vertical stride of <TT>ystride</TT>.
+        <TT>ystride</TT> must equal the physical image width (row length), 
+        even if the iterator will only be used for a sub image.
         If the raw memory is encapsulated in an image object this
         object should have a factory function that constructs the
         iterator.
         */
-    ImageIterator(pointer base, int offset)
-    : Base(base, offset)
+    ImageIterator(pointer base, int ystride)
+    : Base(base, ystride)
     {}
 
         /** Default constructor */
@@ -911,13 +952,15 @@ class ConstImageIterator
     typedef typename Base::pointer         pointer;
     typedef typename Base::difference_type difference_type;
 
-        /** Construct from raw memory with 'offset' between lines.
+        /** Construct from raw memory with a vertical stride of <TT>ystride</TT>.
+        <TT>ystride</TT> must equal the physical image width (row length), 
+        even if the iterator will only be used for a sub image.
         If the raw memory is encapsulated in an image object this
         object should have a factory function that constructs the
         iterator.
         */
-    ConstImageIterator(pointer base, int offset)
-    : Base(base, offset)
+    ConstImageIterator(pointer base, int ystride)
+    : Base(base, ystride)
     {}
 
     ConstImageIterator(ImageIterator<PIXELTYPE> const & o)
@@ -930,6 +973,142 @@ class ConstImageIterator
     {}
 
     ConstImageIterator & operator=(ImageIterator<PIXELTYPE> const & o)
+    {
+        x = o.x;
+        y = o.y;
+        return *this;
+    }
+};
+
+/********************************************************/
+/*                                                      */
+/*                 StridedImageIterator                 */
+/*                                                      */
+/********************************************************/
+
+/** \brief Iterator to be used when pixels are to be skipped.
+
+    This iterator can be used when some pixels shall be automatically skipped, for example
+    if an image is to be sub-sampled: instead of advancing to the next pixel,
+    <tt>++iterator.x</tt> jumps to the pixel at a horizontal offset of <tt>xskip</tt>.
+    Likewise with <tt>yskip</tt> in vertical direction. Most functions and local types 
+    are inherited from ImageIteratorBase.
+    
+    <b> Usage:</b>
+    
+    \code
+    BImage img(w,h);
+    ...
+    int xskip = 2, yskip = 2;
+    int wskip = w / xskip + 1, hskip = h / yskip + 1;
+    
+    StridedImageIterator<BImage::value_type> upperLeft(&img(0,0), w, xskip, yskip);
+    StridedImageIterator<BImage::value_type> lowerRight = upperLeft + Diff2D(wskip, hskip);
+    
+    // now navigation with upperLeft and lowerRight lets the image appear to have half
+    // the original resolution in either dimension
+    \endcode
+
+    <b>\#include</b> "<a href="imageiterator_8hxx-source.html">vigra/imageiterator.hxx</a>"
+
+    Namespace: vigra
+
+*/
+template <class PIXELTYPE>
+class StridedImageIterator
+: public ImageIteratorBase<StridedImageIterator<PIXELTYPE>,
+                           PIXELTYPE, PIXELTYPE &, PIXELTYPE *, StridedArrayTag>
+{
+  public:
+    typedef ImageIteratorBase<StridedImageIterator<PIXELTYPE>,
+                              PIXELTYPE, PIXELTYPE &, PIXELTYPE *, StridedArrayTag> Base;
+
+    typedef typename Base::pointer         pointer;
+    typedef typename Base::difference_type difference_type;
+
+        /** Construct from raw memory with a vertical stride of <TT>ystride</TT>,
+        jumping by <tt>xskip</tt> horizontally and <tt>yskip</tt> vertically. 
+        <tt>ystride</tt> must be the physical width (row length) of the image.
+        */
+    StridedImageIterator(pointer base, int ystride, int xskip, int yskip)
+    : Base(base, xskip, ystride*yskip)
+    {}
+
+        /** Default constructor */
+    StridedImageIterator()
+    : Base()
+    {}
+
+};
+
+/********************************************************/
+/*                                                      */
+/*               ConstStridedImageIterator              */
+/*                                                      */
+/********************************************************/
+
+/** \brief Const iterator to be used when pixels are to be skipped.
+
+    This iterator can be used when some pixels shall be automatically skipped, for example
+    if an image is to be sub-sampled: instead of advancing to the next pixel,
+    <tt>++iterator.x</tt> jumps to the pixel at a horizontal offset of <tt>xskip</tt>.
+    Likewise with <tt>yskip</tt> in vertical direction. Most functions and local types 
+    are inherited from ImageIteratorBase.
+    
+    <b> Usage:</b>
+    
+    \code
+    BImage img(w,h);
+    ...
+    int xskip = 2, yskip = 2;
+    int wskip = w / xskip + 1, hskip = h / yskip + 1;
+    
+    ConstStridedImageIterator<BImage::value_type> upperLeft(&img(0,0), w, xskip, yskip);
+    ConstStridedImageIterator<BImage::value_type> lowerRight = upperLeft + Diff2D(wskip, hskip);
+    
+    // now navigation with upperLeft and lowerRight lets the image appear to have half
+    // the original resolution in either dimension
+    \endcode
+
+    <b>\#include</b> "<a href="imageiterator_8hxx-source.html">vigra/imageiterator.hxx</a>"
+
+    Namespace: vigra
+
+*/
+template <class PIXELTYPE>
+class ConstStridedImageIterator
+: public ImageIteratorBase<ConstStridedImageIterator<PIXELTYPE>,
+                           PIXELTYPE, PIXELTYPE const &, PIXELTYPE const *,
+                           StridedArrayTag>
+{
+  public:
+    typedef ImageIteratorBase<ConstStridedImageIterator<PIXELTYPE>,
+                        PIXELTYPE, PIXELTYPE const &, PIXELTYPE const *,
+                        StridedArrayTag> Base;
+
+    typedef typename Base::pointer         pointer;
+    typedef typename Base::difference_type difference_type;
+
+        /** Construct from raw memory with a vertical stride of <TT>ystride</TT>,
+        jumping by <tt>xskip</tt> horizontally and <tt>yskip</tt> vertically. 
+        <tt>ystride</tt> must be the physical width (row length) of the image.
+        */
+    ConstStridedImageIterator(pointer base, int ystride, int xskip, int yskip)
+    : Base(base, xskip, ystride*yskip)
+    {}
+
+        /** Copy-construct from mutable iterator */
+    ConstStridedImageIterator(StridedImageIterator<PIXELTYPE> const & o)
+    : Base(o.x, o.y)
+    {}
+
+        /** Default constructor */
+    ConstStridedImageIterator()
+    : Base()
+    {}
+
+        /** Assign mutable iterator */
+    ConstStridedImageIterator & operator=(StridedImageIterator<PIXELTYPE> const & o)
     {
         x = o.x;
         y = o.y;
@@ -961,6 +1140,40 @@ struct IteratorTraits<ConstImageIterator<T> >
 {
     typedef ConstImageIterator<T>                Iterator;
     typedef ConstImageIterator<T>                iterator;
+    typedef typename iterator::iterator_category iterator_category;
+    typedef typename iterator::value_type        value_type;
+    typedef typename iterator::reference         reference;
+    typedef typename iterator::index_reference   index_reference;
+    typedef typename iterator::pointer           pointer;
+    typedef typename iterator::difference_type   difference_type;
+    typedef typename iterator::row_iterator      row_iterator;
+    typedef typename iterator::column_iterator   column_iterator;
+    typedef StandardConstAccessor<T>             DefaultAccessor;
+    typedef StandardConstAccessor<T>             default_accessor;
+};
+
+template <class T>
+struct IteratorTraits<StridedImageIterator<T> >
+{
+    typedef StridedImageIterator<T>              Iterator;
+    typedef StridedImageIterator<T>              iterator;
+    typedef typename iterator::iterator_category iterator_category;
+    typedef typename iterator::value_type        value_type;
+    typedef typename iterator::reference         reference;
+    typedef typename iterator::index_reference   index_reference;
+    typedef typename iterator::pointer           pointer;
+    typedef typename iterator::difference_type   difference_type;
+    typedef typename iterator::row_iterator      row_iterator;
+    typedef typename iterator::column_iterator   column_iterator;
+    typedef StandardAccessor<T>                  DefaultAccessor;
+    typedef StandardAccessor<T>                  default_accessor;
+};
+
+template <class T>
+struct IteratorTraits<ConstStridedImageIterator<T> >
+{
+    typedef ConstStridedImageIterator<T>         Iterator;
+    typedef ConstStridedImageIterator<T>         iterator;
     typedef typename iterator::iterator_category iterator_category;
     typedef typename iterator::value_type        value_type;
     typedef typename iterator::reference         reference;
