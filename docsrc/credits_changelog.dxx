@@ -20,7 +20,8 @@
 
       \item Fixed bug with PNM export code.
       
-      \item added Canny edge detection algorithm
+      \item added Canny edge detection algorithm (code adapted from 
+      C implementation by \URL[Sven Utcke]{mailto:utcke@informatik.uni-hamburg.de})
       
 \end{itemize}
 
