@@ -1168,6 +1168,30 @@ class SplineImageView
     
     template <class Array>
     void coefficientArray(double x, double y, Array & res) const;
+    
+    bool isInsideX(double x) const
+    {
+        return x >= 0.0 && x <= width()-1.0;
+    }
+        
+    bool isInsideY(double y) const
+    {
+        return y >= 0.0 && y <= height()-1.0;
+    }
+        
+    bool isInside(double x, double y) const
+    {
+        return isInsideX(x) && isInsideY(y);
+    }
+    
+    bool sameFacet(double x0, double y0, double x1, double y1) const
+    {
+         x0 = VIGRA_CSTD::floor((ORDER % 2) ? x0 : x0 + 0.5);
+         y0 = VIGRA_CSTD::floor((ORDER % 2) ? y0 : y0 + 0.5);
+         x1 = VIGRA_CSTD::floor((ORDER % 2) ? x1 : x1 + 0.5);
+         y1 = VIGRA_CSTD::floor((ORDER % 2) ? y1 : y1 + 0.5);
+         return x0 == x1 && y0 == y1;
+    }
         
   protected:
   
@@ -1256,13 +1280,13 @@ SplineImageView<ORDER, VALUETYPE>::calculateIndices(double x, double y) const
     if(x > x0_ && x < x1_ && y > y0_ && y < y1_)
     {
         detail::SplineImageViewUnrollLoop1<ORDER>::exec(
-                                (ORDER % 2) ? (x - kcenter_) : (x + 0.5 - kcenter_), ix_);
+                                (ORDER % 2) ? int(x - kcenter_) : int(x + 0.5 - kcenter_), ix_);
         detail::SplineImageViewUnrollLoop1<ORDER>::exec(
-                                (ORDER % 2) ? (y - kcenter_) : (y + 0.5 - kcenter_), iy_);
+                                (ORDER % 2) ? int(y - kcenter_) : int(y + 0.5 - kcenter_), iy_);
     }
     else
     {
-        vigra_precondition(x >= 0.0 && y >= 0.0 && x <= w1_ && y <= h1_,
+        vigra_precondition(isInside(x, y),
              "SplineImageView<ORDER, VALUETYPE>::calculateIndices(): index out of bounds.");
 
         ix_[kcenter_] = (ORDER % 2) ?
