@@ -223,6 +223,10 @@
         \ref StandardImageTypes
         <DD> <em>The most common instanciations of \ref vigra::BasicImage</em>
     <DT>
+        <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif"> 
+        \ref VigraImpex
+        <DD> <em>Image import/export</em>
+    <DT>
         <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif">
         \ref ImageContainers
         <DD> <em>Classes to manage multiple images (ImageArray..)</em>
@@ -257,6 +261,10 @@
         \ref vigra::MultiArray
         <DD> <em>Array class that holds the actual memory</em>
     <DT>
+        <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif"> 
+        \ref VolumeImpex
+        <DD> <em>Import/export of volume data.</em>
+    <DT>
         <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif">
         \ref MultiArrayTags
         <DD> <em>Meta-programming tags to mark array's as strided or unstrided.</em>
@@ -276,6 +284,10 @@
         <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif">
         \ref VigraImpex
         <DD> <em>VIGRA's highlevel image import/export interface</em>
+    <DT>
+        <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif">
+        \ref VolumeImpex
+        <DD> <em>Import/export interface for volume data.</em>
     <DT>
         <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif">
         \ref TIFFImpex
