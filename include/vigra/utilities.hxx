@@ -25,6 +25,7 @@
 
 #include <cmath>     // for sqrt()
 #include <utility>    // for pair
+#include <iterator>   // iterator tags
 
 #include "vigra/config.hxx"
 #include "vigra/error.hxx"
@@ -60,6 +61,10 @@ struct VigraFalseType
     <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif"> 
      <b>vigra::Dist2D</b>
      <DD><em>Deprecated - use \ref vigra::Diff2D</em>
+    <DT>
+    <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif"> 
+     \ref vigra::IteratorAdaptor 
+     <DD><em>Quickly create STL-compatible 1D iterator adaptors</em>
      <DT>
     <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif"> 
      \ref TupleTypes
@@ -70,6 +75,344 @@ struct VigraFalseType
      <DD><em>M_PI, M_SQRT2</em>
     </DL>
 */
+
+/********************************************************/
+/*                                                      */
+/*                    IteratorAdaptor                   */
+/*                                                      */
+/********************************************************/
+
+/*! \brief Quckly create 1-dimensional iterator adapters.
+    
+    This class allow the easy creation of 1D iterator adpaters out 
+    of existing iterators. To use it, you must implement a policy class
+    that defines the iterator's behaviour. Then the policy is used to 
+    instantiate the IteratorAdapter template, which then automatically
+    obtains all required functions of an STL-compatible iterator.
+    General information on how this works can be found on the 
+    <a href="http://www.boost.org/libs/utility/iterator_adaptors.htm">Boost Iterator Adaptor</a>
+    page, although there are some differences in the details.
+    Here is an example policy class that just exports the behaviour
+    of the underlying iterator:
+    
+    \code
+    template <class Iterator>
+    class TrivialIteratorAdaptorPolicy
+    {
+      public:
+        // the underlying iterator
+        typedef Iterator                               BaseType;
+        
+        // the adpator's value type
+        typedef typename Iterator::value_type          value_type;
+        
+        // the adpator's difference type (result of 'iter1 - iter2',
+                                          argument of 'iter[n]')
+        typedef typename Iterator::difference_type     difference_type;
+        
+        // the adpator's reference type (result of '*iter')
+        typedef typename Iterator::reference           reference;
+        
+        // the adpator's index_reference type (result of 'iter[n]')
+        typedef typename Iterator::index_reference     index_reference;
+        
+        // the adpator's pointer type (result of 'iter.operator->()')
+        typedef typename Iterator::pointer             pointer;
+        
+        // the adpator's iterator category
+        typedef typename Iterator::iterator_category   iterator_category;
+
+        // do some additional initialization in the adaptor's constructor
+        static void initialize(BaseType & d) {}
+
+        // called by '*iter', 'iter->'
+        static reference dereference(BaseType const & d)
+            { return *d; }
+
+        // called by 'iter[n]'
+        static index_reference dereference(BaseType d, difference_type n)
+            { return d[n]; }
+
+        // called by 'iter1 == iter2', 'iter1 != iter2'
+        static bool equal(BaseType const & d1, BaseType const & d2)
+            { return d1 == d2; }
+
+        // called by 'iter1 < iter2', 'iter1 <= iter2', 'iter1 > iter2', 'iter1 >= iter2'
+        static bool less(BaseType const & d1, BaseType const & d2)
+            { return d1 < d2; }
+
+        // called by 'iter1 - iter2'
+        static difference_type difference(BaseType const & d1, BaseType const & d2)
+            { return d1 - d2; }
+
+        // called by '++iter', 'iter++'
+        static void increment(BaseType & d)
+            { ++d; }
+
+        // called by '--iter', 'iter--'
+        static void decrement(BaseType & d)
+            { --d; }
+
+        // called by 'iter += n', 'iter -= n'
+        static void advance(BaseType & d, difference_type n)
+            { d += n; }
+    };
+    \endcode
+    
+    This policy class is used like this:
+    
+    \code
+    SomeIterator iter = ...;
+    
+    vigra::IteratorAdaptor<SomeIterator> iter_adaptor(iter);
+    \endcode
+    
+    By changing the definition of the policy members, a wide range of 
+    adaptor behaviors can be achieved. If the base iterator isn't a
+    random access iterator, just drop the functions that cannot be implemented.
+    This simply means that some adaptor functions may not be called,
+    as one would expect from an iterator that doesn't support random access.
+    Note also that the <TT>BaseType</TT> needs not be an iterator -
+    it can be any type that contains the information necessary for the
+    adaptor to do it's work (and it's the type that is passed to the adpator's
+    constructor).
+    
+    <b>\#include</b> "<a href="utilities_8hxx-source.html">vigra/utilities.hxx</a>"<br>
+    Namespace: vigra
+
+*/
+template <class Policy>
+class IteratorAdaptor
+{
+  public:
+  
+    typedef typename Policy::BaseType BaseType;
+    typedef typename Policy::value_type        value_type;
+    typedef typename Policy::difference_type   difference_type;
+    typedef typename Policy::reference         reference;
+    typedef typename Policy::index_reference   index_reference;
+    typedef typename Policy::pointer           pointer;
+    typedef typename Policy::iterator_category iterator_category;
+    
+    IteratorAdaptor()
+    : adaptee_()
+    {}
+    
+    explicit IteratorAdaptor(BaseType const & o)
+    : adaptee_(o)
+    {
+        Policy::initialize(adaptee_);
+    }
+    
+    IteratorAdaptor(IteratorAdaptor const & o)
+    : adaptee_(o.adaptee_)
+    {}
+    
+    IteratorAdaptor & operator=(BaseType const & o)
+    {
+        if(this != &o)
+        {
+            adaptee_ = o;
+            Policy::initialize(adaptee_);
+        }
+        return *this;
+    }
+    
+    IteratorAdaptor & operator=(IteratorAdaptor const & o)
+    {
+        if(this != &o)
+            adaptee_ = o.adaptee_;
+        return *this;
+    }
+    
+    IteratorAdaptor & operator+=(difference_type d)
+    {
+        Policy::advance(adaptee_, d);
+        return *this;
+    }
+    
+    IteratorAdaptor operator+(difference_type d) const
+    {
+        return IteratorAdaptor(*this) += d;
+    }
+    
+    IteratorAdaptor & operator-=(difference_type d)
+    {
+        Policy::advance(adaptee_, -d);
+        return *this;
+    }
+    
+    IteratorAdaptor operator-(difference_type d) const
+    {
+        return IteratorAdaptor(*this) -= d;
+    }
+    
+    IteratorAdaptor & operator++()
+    {
+        Policy::increment(adaptee_);
+        return *this;
+    }
+    
+    IteratorAdaptor operator++(int)
+    {
+        IteratorAdaptor res(*this);
+        Policy::increment(adaptee_);
+        return res;
+    }
+    
+    IteratorAdaptor & operator--()
+    {
+        Policy::decrement(adaptee_);
+        return *this;
+    }
+    
+    IteratorAdaptor operator--(int)
+    {
+        IteratorAdaptor res(*this);
+        Policy::decrement(adaptee_);
+        return res;
+    }
+    
+    bool operator==(IteratorAdaptor const & o) const
+    {
+        return Policy::equal(adaptee_, o.adaptee_);
+    }
+    
+    bool operator!=(IteratorAdaptor const & o) const
+    {
+        return !Policy::equal(adaptee_, o.adaptee_);
+    }
+    
+    bool operator<(IteratorAdaptor const & o) const
+    {
+        return Policy::less(adaptee_, o.adaptee_);
+    }
+    
+    bool operator<=(IteratorAdaptor const & o) const
+    {
+        return !Policy::less(o.adaptee_, adaptee_);
+    }
+    
+    bool operator>(IteratorAdaptor const & o) const
+    {
+        return Policy::less(o.adaptee_, adaptee_);
+    }
+    
+    bool operator>=(IteratorAdaptor const & o) const
+    {
+        return !Policy::less(adaptee_, o.adaptee_);
+    }
+    
+    difference_type operator-(IteratorAdaptor const & o) const
+    {
+        return Policy::difference(adaptee_, o.adaptee_);
+    }
+    
+    reference operator*() const
+    {
+        return Policy::dereference(adaptee_);
+    }
+    
+    index_reference operator[](difference_type d) const
+    {
+        return Policy::dereference(adaptee_, d);
+    }
+    
+    pointer operator->() const
+    {
+        return &Policy::dereference(adaptee_);
+    }
+    
+  protected:
+
+    BaseType adaptee_;
+};
+
+template <class Diff>
+class Diff2DConstRowIteratorPolicy
+{
+  public:
+    typedef Diff                            BaseType;
+    typedef Diff                            value_type;
+    typedef typename Diff::MoveX            difference_type;
+    typedef Diff const &                    reference;
+    typedef Diff                            index_reference;
+    typedef Diff const *                    pointer;
+    typedef std::random_access_iterator_tag iterator_category;
+    
+    static void initialize(BaseType & d) {}
+    
+    static reference dereference(BaseType const & d)
+        { return d; }
+    
+    static index_reference dereference(BaseType d, difference_type n)
+    { 
+        d.x += n;
+        return d; 
+    }
+    
+    static bool equal(BaseType const & d1, BaseType const & d2)
+        { return d1.x == d2.x; }
+    
+    static bool less(BaseType const & d1, BaseType const & d2)
+        { return d1.x < d2.x; }
+    
+    static difference_type difference(BaseType const & d1, BaseType const & d2)
+        { return d1.x - d2.x; }
+    
+    static void increment(BaseType & d)
+        { ++d.x; }
+    
+    static void decrement(BaseType & d)
+        { --d.x; }
+    
+    static void advance(BaseType & d, difference_type n)
+        { d.x += n; }
+};
+
+template <class Diff>
+class Diff2DConstColumnIteratorPolicy
+{
+  public:
+    typedef Diff                            BaseType;
+    typedef Diff                            value_type;
+    typedef typename Diff::MoveY            difference_type;
+    typedef Diff const &                    reference;
+    typedef Diff                            index_reference;
+    typedef Diff const *                    pointer;
+    typedef std::random_access_iterator_tag iterator_category;
+    
+    static void initialize(BaseType & d) {}
+    
+    static reference dereference(BaseType const & d)
+        { return d; }
+    
+    static index_reference dereference(BaseType d, difference_type n)
+    { 
+        d.y += n;
+        return d; 
+    }
+    
+    static bool equal(BaseType const & d1, BaseType const & d2)
+        { return d1.y == d2.y; }
+    
+    static bool less(BaseType const & d1, BaseType const & d2)
+        { return d1.y < d2.y; }
+    
+    static difference_type difference(BaseType const & d1, BaseType const & d2)
+        { return d1.y - d2.y; }
+    
+    static void increment(BaseType & d)
+        { ++d.y; }
+    
+    static void decrement(BaseType & d)
+        { --d.y; }
+    
+    static void advance(BaseType & d, difference_type n)
+        { d.y += n; }
+};
+
+struct image_traverser_tag {};
 
 /********************************************************/
 /*                                                      */
@@ -112,11 +455,55 @@ struct VigraFalseType
     Image new_image(old_image.size() - Diff2D(10,10));  
     \endcode 
     
-    <b>\#include</b> "<a href="utilities_8hxx-source.html">vigra/utilities.hxx</a>"
+    <b>\#include</b> "<a href="utilities_8hxx-source.html">vigra/utilities.hxx</a>"<br>
+    Namespace: vigra
 */
 class Diff2D
 {
   public:
+        //@{
+        /** The iterator's value type.
+        */
+    typedef Diff2D value_type;
+    typedef Diff2D PixelType;
+        //@}
+            
+        /** the iterator's reference type (return type of <TT>*iter</TT>)
+        */
+    typedef Diff2D const &       reference;
+
+        /** the iterator's index reference type (return type of <TT>iter[diff]</TT>)
+        */
+    typedef Diff2D               index_reference;
+
+        /** the iterator's pointer type (return type of <TT>iter.operator->()</TT>)
+        */
+    typedef Diff2D const *       pointer;
+    
+        /** the iterator's difference type (argument type of <TT>iter[diff]</TT>)
+        */
+    typedef Diff2D               difference_type;
+
+        /** the iterator tag (image traverser)
+        */
+    typedef image_traverser_tag  iterator_category;
+    
+        /** The associated row iterator.
+        */
+    typedef IteratorAdaptor<Diff2DConstRowIteratorPolicy<Diff2D> >    row_iterator;
+     
+        /** The associated column iterator.
+        */
+   typedef IteratorAdaptor<Diff2DConstColumnIteratorPolicy<Diff2D> > column_iterator;
+
+        /** type of the iterator's x-navigator
+        */
+    typedef int MoveX;
+        /** type of the iterator's y-navigator
+        */
+    typedef int MoveY;
+
+
         /** Default Constructor. Init iterator at position (0,0)
         */
     Diff2D()
@@ -228,44 +615,41 @@ class Diff2D
       
         /** Access current coordinate.
         */
-    Diff2D & operator*()
-    {
-        return *this;
-    }
-    
-        /** Read current coordinate.
-        */
-    Diff2D operator*() const
+    reference operator*() const
     {
         return *this;
     }
     
         /** Read coordinate at an offset.
         */
-    Diff2D operator()(int const & dx, int const & dy) const
+    index_reference operator()(int const & dx, int const & dy) const
     {
         return Diff2D(x + dx, y + dy);
     }
 
         /** Read coordinate at an offset.
         */
-    Diff2D operator[](Diff2D const & offset) const
+    index_reference operator[](Diff2D const & offset) const
     {
         return Diff2D(x + offset.x, y + offset.y);
     }
     
-        /** the iterator's value type
+        /** Access current coordinate.
         */
-    typedef Diff2D value_type;
-        /** the iterator's PixelType
+    pointer operator->() const
+    {
+        return this;
+    }
+    
+        /** Get a row iterator at the current position.
         */
-    typedef Diff2D PixelType;
-        /** type of the x-navigator
+    row_iterator rowIterator() const
+        { return row_iterator(*this); }
+    
+        /** Get a column iterator at the current position.
         */
-    typedef int MoveX;
-        /** type of the y-navigator
-        */
-    typedef int MoveY;
+    column_iterator columnIterator() const
+        { return column_iterator(*this); }
 };
 
 
@@ -326,7 +710,8 @@ class Dist2D
 
     pair, triple, tuple4, tuple5
 
-    <b>\#include</b> "<a href="utilities_8hxx-source.html">vigra/utilities.hxx</a>"
+    <b>\#include</b> "<a href="utilities_8hxx-source.html">vigra/utilities.hxx</a>"<br>
+    Namespace: vigra
     
     VIGRA defines tuple types \p vigra::triple, \p vigra::tuple4, \p vigra::tuple5. 
     In addition, \p std::pair is imported into namespace vigra from the C++ standard 
