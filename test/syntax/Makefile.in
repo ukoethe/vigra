@@ -16,7 +16,7 @@ include ../Makefile.include
 
 EXTRA_CLEAN_TARGET = test.cxx
 
-CPPFLAGS := $(LIBCPPFLAGS)
+CPPFLAGS := $(LIBCPPFLAGS) $(FFTW_INCLUDES)
 
 HEADERS=$(shell ls $(vigra_srcdir)/include/vigra/*.hxx)
 

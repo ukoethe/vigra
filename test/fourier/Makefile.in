@@ -6,6 +6,8 @@ all: test
 
 include ../Makefile.include
 
+CPPFLAGS += $(FFTW_INCLUDES)
+
 test: test.o $(TESTIMAGES) $(PREINSTALL_IMPEX_LIB)
 	$(CXX) -o test test.o $(PREINSTALL_IMPEX_LIB) $(IMPEX_DEPLIBS) $(FFTW_LIB)
 	./test || { rm ./test$(EXEEXT) ; exit 1; }
