@@ -182,6 +182,8 @@ class PolynomialView
         /** Normalize the polynomial, i.e. dived by the highest coefficient.
         */
     void normalize();
+     
+    void balance();
         
         /** Get iterator for the coefficient sequence.
         */
@@ -391,6 +393,18 @@ PolynomialView<T>::normalize()
     for(unsigned int i = 0; i<order_; ++i)
         coeffs_[i] /= coeffs_[order_];
     coeffs_[order_] = T(1.0);
+}
+
+template <class T>
+void 
+PolynomialView<T>::balance()
+{
+    Real p0 = abs(coeffs_[0]), po = abs(coeffs_[order_]);
+    Real norm = (p0 > 0.0)
+                    ? VIGRA_CSTD::sqrt(p0*po) 
+                    : po;
+    for(unsigned int i = 0; i<=order_; ++i)
+        coeffs_[i] /= norm;
 }
 
 /*****************************************************************/
@@ -913,6 +927,7 @@ bool polynomialRoots(POLYNOMIAL const & poriginal, VECTOR & roots, bool polishRo
     p.minimizeOrder();
     if(p.order() == 0)
         return true;
+    p.balance();
 
     Complex x = detail::laguerreStartingGuess(p);
     
