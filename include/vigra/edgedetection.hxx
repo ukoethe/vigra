@@ -33,6 +33,7 @@
 #include "vigra/separableconvolution.hxx"
 #include "vigra/labelimage.hxx"
 
+
 namespace vigra {
 
 /** \addtogroup EdgeDetection Edge Detection
@@ -1264,7 +1265,7 @@ void internalCannyFindEdgels(BasicImage<PixelType> const & dx,
             
             if(maximum_found)
             {
-                double orientation = atan2(-grady, gradx) - M_PI / 2.0;
+                double orientation = atan2(-grady, gradx) - M_PI * 1.5;
                 if(orientation < 0.0)
                     orientation += 2.0*M_PI;
                 edgel.orientation = orientation;
@@ -1375,6 +1376,7 @@ void cannyEdgelList(SrcIterator ul, SrcIterator lr, SrcAccessor src,
     
     combineTwoImages(srcImageRange(dx), srcImage(dy), destImage(tmp),
                      MagnitudeFunctor<TmpType>());
+    
     
     // find edgels
     internalCannyFindEdgels(dx, dy, tmp, edgels);

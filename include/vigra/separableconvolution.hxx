@@ -23,7 +23,6 @@
 #ifndef VIGRA_SEPARABLECONVOLUTION_HXX
 #define VIGRA_SEPARABLECONVOLUTION_HXX
 
-#include <iostream>
 #include <cmath>
 #include <vector>
 #include "vigra/utilities.hxx"
@@ -1466,10 +1465,6 @@ Kernel1D<ARITHTYPE>::initGaussianDerivative(double std_dev,
     left_ = -radius;
     right_ = radius;
     norm_ = norm;
-
-    for (int i=0; i<2*radius+1;++i)
-        std::cerr << kernel_[i] << ' ';
-    std::cerr << std::endl;
 
     // best border treatment for Gaussian derivatives is 
     // BORDER_TREATMENT_REPEAT
