@@ -131,7 +131,7 @@ def convertBody(text):
     text = squared.sub(r'&#178', text)
     text = cube.sub(r'&#179', text)
     text = footer.sub(r'', text, 1)
-    text = stlLink.sub(r'http://www.sgi.com/Technology/STL', text)
+    text = stlLink.sub(r'http://www.sgi.com/tech/stl/', text)
     text = ruler.sub(r'<br>', text)
     text = docu.sub(docuReplacement, text)
     text = public.sub(publicReplacement, text, 1)
