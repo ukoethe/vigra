@@ -12,7 +12,7 @@ doc::
 	cat Doxyfile.in | sed "s/\(PROJECT_NUMBER *= \)/\1 $(VIGRA_VERSION)/" > Doxyfile
 	$(DOC)
 	python post.py $(DOCDIR) $(VIGRA_VERSION)
-        cp $(DOCDIR)/index.html $(DOCDIR)/index.html.in
+	cp $(DOCDIR)/index.html $(DOCDIR)/index.html.in
 	
 latex::
 	$(DOCLATEX)  $(FILES)
