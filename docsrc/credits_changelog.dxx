@@ -25,6 +25,8 @@
       
       <li> Improved documentation.
       
+      <li> Renamed CellGridImage into CrackEdgeImage in \ref EdgeDetection.
+      
       <li> Added \ref vigra::TinyVector.
 </UL>
 
