@@ -27,6 +27,11 @@
         <DD> <em>Images, image iterators, and supporting types and functions</em>
     <DT>
         <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif">
+        \ref MultiDimensionalArrays
+        <DD> <em>Arrays, iterators, and supporting types and functions
+             for arbitrary dimensions</em>
+    <DT>
+        <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif">
         \ref ImportExport
         <DD> <em>Conversion from and to other image data types</em>
     <DT>
@@ -237,6 +242,28 @@
         <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif">
         \ref ArgumentObjectFactories
         <DD> <em>Factory functions to create argument objects which simplify long argument lists </em>
+    </DL>
+*/
+
+/** \page MultiDimensionalArrays Multi-Dimensional Arrays and Iterators
+
+    <DL>
+    <DT>
+        <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif">
+        \ref vigra::MultiArrayView
+        <DD> <em>Interface for multi-dimensional arrays </em>
+    <DT>
+        <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif"> 
+        \ref vigra::MultiArray
+        <DD> <em>Array class that holds the actual memory</em>
+    <DT>
+        <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif">
+        \ref MultiArrayTags
+        <DD> <em>Meta-programming tags to mark array's as strided or unstrided.</em>
+    <DT>
+        <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif">
+        \ref MultiIteratorPage
+        <DD> <em>Iterators for multi-dimensional arrays</em>
     </DL>
 */
 
