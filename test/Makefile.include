@@ -2,9 +2,7 @@ ifneq "$(MAKECMDGOALS)" "clean"
 include ../../current/config/Makefile.include
 endif
 
-CPPFLAGS += \
- -I/software/boost-1.25.0/include -I../include \
- -I../../interactive/include
+CPPFLAGS += -I../include
 
 clean::
 	rm -f *.o test core *.d $(EXTRA_CLEAN_TARGET)
