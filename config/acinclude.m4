@@ -27,12 +27,12 @@ dnl example:
 dnl     VIGRA_FIND_PACKAGE(tiff, tiff, tiff.h, support import/export of tiff images)
 AC_DEFUN(VIGRA_FIND_PACKAGE,
 [
-    AC_ARG_WITH([$1], [  --with-$1=dir : $4.
-                    if dir='yes': $1 package files will be searched for in
-                       some standard directories.
-                    if dir is a directory: $1 package files will be searched for
-                       below dir using 'find'.
-                    alternatively, you can specify:], ,)
+    AC_ARG_WITH([$1], AC_HELP_STRING([--with-$1=dir],[$4])[
+      if dir='yes': $1 package files will be searched for in
+         some standard directories.
+      if dir is a directory: $1 package files will be searched for
+         below dir using 'find'.
+      alternatively, you can specify:], ,)
     AC_ARG_WITH([$1lib], [    --with-$1lib=dir : the $1 package's lib directory], ,)
     AC_ARG_WITH([$1inc], [    --with-$1inc=dir : the $1 package's include directory
                          ], ,)
@@ -58,7 +58,6 @@ AC_DEFUN(VIGRA_FIND_PACKAGE,
     else
       libpre="lib"
     fi
-
 
     if test ${with_[$1]:-""} = "" -a ${with_[$1]lib:-""} = "" -a ${with_[$1]inc:-""} = ""; then
         with_[$1]="no"
