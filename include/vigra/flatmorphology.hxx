@@ -586,8 +586,7 @@ discMedian(triple<SrcIterator, SrcIterator, SrcAccessor> src,
     \endcode
     
     
-    group arguments (use in conjuction with factory functions \ref srcRange(),
-    \ref mask(), and \ref dest()):
+    group arguments (use in conjuction with \ref ArgumentObjectFactories):
     \code
     namespace vigra {
         template <class SrcIterator, class SrcAccessor,
@@ -947,8 +946,7 @@ discRankOrderFilterWithMask(triple<SrcIterator, SrcIterator, SrcAccessor> src,
     \endcode
     
     
-    group arguments (use in conjuction with factory functions \ref srcRange(),
-    \ref mask(), and \ref dest()):
+    group arguments (use in conjuction with \ref ArgumentObjectFactories):
     \code
     namespace vigra {
         template <class SrcIterator, class SrcAccessor,
@@ -1028,8 +1026,7 @@ discErosionWithMask(triple<SrcIterator, SrcIterator, SrcAccessor> src,
     \endcode
     
     
-    group arguments (use in conjuction with factory functions \ref srcRange(),
-    \ref mask(), and \ref dest()):
+    group arguments (use in conjuction with \ref ArgumentObjectFactories):
     \code
     namespace vigra {
         template <class SrcIterator, class SrcAccessor,
@@ -1109,8 +1106,7 @@ discDilationWithMask(triple<SrcIterator, SrcIterator, SrcAccessor> src,
     \endcode
     
     
-    group arguments (use in conjuction with factory functions \ref srcRange(),
-    \ref mask(), and \ref dest()):
+    group arguments (use in conjuction with \ref ArgumentObjectFactories):
     \code
     namespace vigra {
         template <class SrcIterator, class SrcAccessor,
