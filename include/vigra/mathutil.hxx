@@ -1,6 +1,6 @@
 /************************************************************************/
 /*                                                                      */
-/*               Copyright 1998-2002 by Ullrich Koethe                  */
+/*               Copyright 1998-2005 by Ullrich Koethe                  */
 /*       Cognitive Systems Group, University of Hamburg, Germany        */
 /*                                                                      */
 /*    This file is part of the VIGRA computer vision library.           */
@@ -63,21 +63,21 @@ namespace vigra {
     Useful mathematical functions and functors.
 */
 //@{
-/*! The error function.
+    /*! The error function.
 
-    With the exception of Solaris (where <tt>erf()</tt> is provided as an extension of the 
-    C math library), VIGRA implements <tt>erf()</tt> as an approximation of the error 
-    function
-    
-    \f[
-        \mbox{erf}(x) = \int_0^x e^{-x^2} dx
-    \f]
-    
-    according to the formula given in Press et al. "Numerical Recipes".
+        If <tt>erf()</tt> is not provided in the C standard math library (as it should according to the
+        new C99 standard ?), VIGRA implements <tt>erf()</tt> as an approximation of the error 
+        function
+        
+        \f[
+            \mbox{erf}(x) = \int_0^x e^{-x^2} dx
+        \f]
+        
+        according to the formula given in Press et al. "Numerical Recipes".
 
-    <b>\#include</b> "<a href="mathutil_8hxx-source.html">vigra/mathutil.hxx</a>"<br>
-    Namespace: vigra
-*/
+        <b>\#include</b> "<a href="mathutil_8hxx-source.html">vigra/mathutil.hxx</a>"<br>
+        Namespace: vigra
+    */
 template <class T>
 double erf(T x)
 {
@@ -99,18 +99,59 @@ using VIGRA_CSTD::erf;
 #endif
 
 // import functions into namespace vigra which VIGRA is going to overload
-using std::abs;  
+
 using VIGRA_CSTD::pow;  
 using VIGRA_CSTD::floor;  
 using VIGRA_CSTD::ceil;  
+using std::abs;  
 
-/*! The square function.
+#define VIGRA_DEFINE_UNSIGNED_ABS(T) \
+    inline T abs(T t) { return t; }
 
-    sq(x) is needed so often that it makes sense to define it as a function.
+VIGRA_DEFINE_UNSIGNED_ABS(bool)
+VIGRA_DEFINE_UNSIGNED_ABS(unsigned char)
+VIGRA_DEFINE_UNSIGNED_ABS(unsigned short)
+VIGRA_DEFINE_UNSIGNED_ABS(unsigned int)
+VIGRA_DEFINE_UNSIGNED_ABS(unsigned long)
 
-    <b>\#include</b> "<a href="mathutil_8hxx-source.html">vigra/mathutil.hxx</a>"<br>
-    Namespace: vigra
-*/
+#undef VIGRA_DEFINE_UNSIGNED_ABS
+
+    /*! The rounding function.
+
+        Defined for all floating point types. Rounds towards the nearest integer for both 
+        positive and negative inputs.
+
+        <b>\#include</b> "<a href="mathutil_8hxx-source.html">vigra/mathutil.hxx</a>"<br>
+        Namespace: vigra
+    */
+inline float round(float t)
+{
+    return t >= 0.0
+               ? floor(t + 0.5)
+               : ceil(t - 0.5);
+}
+
+inline double round(double t)
+{
+    return t >= 0.0
+               ? floor(t + 0.5)
+               : ceil(t - 0.5);
+}
+
+inline long double round(long double t)
+{
+    return t >= 0.0
+               ? floor(t + 0.5)
+               : ceil(t - 0.5);
+}
+
+    /*! The square function.
+
+        sq(x) is needed so often that it makes sense to define it as a function.
+
+        <b>\#include</b> "<a href="mathutil_8hxx-source.html">vigra/mathutil.hxx</a>"<br>
+        Namespace: vigra
+    */
 template <class T>
 inline 
 typename NumericTraits<T>::Promote sq(T t)
@@ -119,14 +160,14 @@ typename NumericTraits<T>::Promote sq(T t)
 }
 
 #ifdef VIGRA_NO_HYPOT
-/*! Compute the Euclidean distance.
+    /*! Compute the Euclidean distance (length of the hypothenuse of a right-angled triangle).
 
-    The  hypot()  function  returns  the  sqrt(a*a  +  b*b).
-    It is implemented in a way that minimizes round-off error.
+        The  hypot()  function  returns  the  sqrt(a*a  +  b*b).
+        It is implemented in a way that minimizes round-off error.
 
-    <b>\#include</b> "<a href="mathutil_8hxx-source.html">vigra/mathutil.hxx</a>"<br>
-    Namespace: vigra
-*/
+        <b>\#include</b> "<a href="mathutil_8hxx-source.html">vigra/mathutil.hxx</a>"<br>
+        Namespace: vigra
+    */
 template <class T>
 T hypot(T a, T b) 
 { 
@@ -145,13 +186,13 @@ using ::hypot;
 
 #endif
 
-/*! The sign function.
+    /*! The sign function.
 
-    Returns 1, 0, or -1 depending on the signm of \a t.
+        Returns 1, 0, or -1 depending on the sign of \a t.
 
-    <b>\#include</b> "<a href="mathutil_8hxx-source.html">vigra/mathutil.hxx</a>"<br>
-    Namespace: vigra
-*/
+        <b>\#include</b> "<a href="mathutil_8hxx-source.html">vigra/mathutil.hxx</a>"<br>
+        Namespace: vigra
+    */
 template <class T>
 T sign(T t) 
 { 
@@ -162,19 +203,72 @@ T sign(T t)
                     : NumericTraits<T>::zero();
 }
 
-/*! The binary sign function.
+    /*! The binary sign function.
 
-    Transfers the sign of \a t2 to \a t1.
+        Transfers the sign of \a t2 to \a t1.
 
-    <b>\#include</b> "<a href="mathutil_8hxx-source.html">vigra/mathutil.hxx</a>"<br>
-    Namespace: vigra
-*/
+        <b>\#include</b> "<a href="mathutil_8hxx-source.html">vigra/mathutil.hxx</a>"<br>
+        Namespace: vigra
+    */
 template <class T1, class T2>
 T1 sign(T1 t1, T2 t2) 
 { 
     return t2 >= NumericTraits<T2>::zero()
                ? abs(t1)
                : -abs(t1);
+}
+
+#define VIGRA_DEFINE_NORM(T) \
+    inline NormTraits<T>::SquaredNormType squaredNorm(T t) { return sq(t); } \
+    inline NormTraits<T>::NormType norm(T t) { return abs(t); }
+
+VIGRA_DEFINE_NORM(bool)
+VIGRA_DEFINE_NORM(signed char)
+VIGRA_DEFINE_NORM(unsigned char)
+VIGRA_DEFINE_NORM(short)
+VIGRA_DEFINE_NORM(unsigned short)
+VIGRA_DEFINE_NORM(int)
+VIGRA_DEFINE_NORM(unsigned int)
+VIGRA_DEFINE_NORM(long)
+VIGRA_DEFINE_NORM(unsigned long)
+VIGRA_DEFINE_NORM(float)
+VIGRA_DEFINE_NORM(double)
+VIGRA_DEFINE_NORM(long double)
+
+#undef VIGRA_DEFINE_NORM
+
+template <class T>
+inline typename NormTraits<std::complex<T> >::SquaredNormType
+squaredNorm(std::complex<T> const & t)
+{
+    return sq(t.real()) + sq(t.imag());
+}
+
+#ifdef DOXYGEN // only for documentation
+    /*! The squared norm of a numerical object.
+
+        For scalar types: equals <tt>vigra::sq(t)</tt><br>.
+        For vectorial types: equals <tt>vigra::dot(t, t)</tt><br>.
+        For complex types: equals <tt>vigra::sq(t.real()) + vigra::sq(t.imag())</tt><br>.
+        For matrix types: results in the squared Frobenius norm (sum of squares of the matrix elements).
+    */
+NormTraits<T>::SquaredNormType squaredNorm(T const & t);
+
+#endif
+
+    /*! The norm of a numerical object.
+
+        For scalar types: implemented as <tt>abs(t)</tt><br>
+        otherwise: implemented as <tt>sqrt(squaredNorm(t))</tt>.
+
+        <b>\#include</b> "<a href="mathutil_8hxx-source.html">vigra/mathutil.hxx</a>"<br>
+        Namespace: vigra
+    */
+template <class T>
+inline typename NormTraits<T>::NormType 
+norm(T const & t)
+{
+    return VIGRA_CSTD::sqrt(static_cast<typename NormTraits<T>::NormType>(squaredNorm(t)));
 }
 
 //@}
