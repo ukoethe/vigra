@@ -140,7 +140,7 @@ class MultiArrayNavigator : public MultiArrayNavigator<MULTI_ITERATOR, N-1>
     {
         return inner_dimension_ == level ?
                     base_type::atEnd() :
-                    end_ <= i_; 
+	            !( i_ < end_);
     }
     
   protected:
@@ -200,7 +200,7 @@ class MultiArrayNavigator<MULTI_ITERATOR, 1>
     
     bool atEnd() const
     {
-        return end_ <= i_; 
+      return !( i_ < end_);
     }
     
   protected:
