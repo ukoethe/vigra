@@ -302,7 +302,7 @@ struct BasicImageViewTest
 {
     
     BasicImageViewTest()
-    : ImageTest<IMAGE>(IMAGE(this->internalMemory, Diff2D(3,3)))
+    : ImageTest<IMAGE>(IMAGE(ImageTest<IMAGE>::internalMemory, Diff2D(3,3)))
     {}
 
     // next lines needed due to gcc 2.95 bug
