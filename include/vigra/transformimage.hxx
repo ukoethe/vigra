@@ -604,9 +604,9 @@ class FunctorTraits<ScalarIntensityTransform<DestValueType, Multiplier> >
     type) explicit then.
 
     <b> Traits defined:</b>
-    
+
     <tt>FunctorTraits::isUnaryFunctor</tt> is true (<tt>VigraTrueType<tt>)
-    
+
     <b> Declaration:</b>
 
     \code
@@ -784,9 +784,9 @@ linearRangeMapping(
     otherwise to 'noresult'.
 
     <b> Traits defined:</b>
-    
+
     <tt>FunctorTraits::isUnaryFunctor</tt> is true (<tt>VigraTrueType<tt>)
-    
+
     <b> Usage:</b>
 
         <b>\#include</b> "<a href="transformimage_8hxx-source.html">vigra/transformimage.hxx</a>"<br>
@@ -894,9 +894,9 @@ class FunctorTraits<Threshold<SrcValueType, DestValueType> >
     for faster computation.
 
     <b> Traits defined:</b>
-    
+
     <tt>FunctorTraits::isUnaryFunctor</tt> is true (<tt>VigraTrueType<tt>)
-    
+
     <b> Usage:</b>
 
         <b>\#include</b> "<a href="transformimage_8hxx-source.html">vigra/transformimage.hxx</a>"<br>
@@ -1136,23 +1136,23 @@ class BrightnessContrastFunctor<RGBValue<unsigned char> >
 
     Calculate the magnitude or norm from a given vector-valued
     entity. The vector type will typically be some sort of
-    ref vigra::TinyVector. If the vector is represented by a pair of 
+    ref vigra::TinyVector. If the vector is represented by a pair of
     scalar-valued images, use \ref vigra::MagnitudeFunctor instead.
 
     At least, the vector type is required to have a function
     '<em>result</em><TT> = dot(v,v)</TT>'.
-    
+
     <b> Traits defined:</b>
-    
+
     <tt>FunctorTraits::isUnaryFunctor</tt> is true (<tt>VigraTrueType<tt>)
-    
+
     <b> Usage:</b>
 
         <b>\#include</b> "<a href="transformimage_8hxx-source.html">vigra/transformimage.hxx</a>"<br>
         Namespace: vigra
 
     \code
-    typedef vigra::TinyVector<float> Vector;
+    typedef vigra::TinyVector<float, 2> Vector;
     vigra::BasicImage<Vector> grad(width, height);
     vigra::FImage magn(width,height);
     ...
@@ -1170,11 +1170,11 @@ public:
   /** the functor's argument type
    */
   typedef ValueType argument_type;
-  
+
   /** the functor's result type
    */
   typedef typename NumericTraits<typename ValueType::value_type>::RealPromote result_type;
-  
+
   /** calculate transform '<TT>sqrt(v1*v1 + v2*v2 + ...)</TT>'.
    */
   result_type operator()( const argument_type &a ) const
@@ -1203,10 +1203,10 @@ class FunctorTraits<VectorNormFunctor<ValueType> >
     For an example of its usage see VectorNormFunctor
 
     <b> Traits defined:</b>
-    
+
     <tt>FunctorTraits::isUnaryFunctor</tt> is true (<tt>VigraTrueType<tt>)
-    
-    \see TinVector, dot()
+
+    \see TinyVector, dot()
 */
 template <class ValueType>
 class VectorNormSqFunctor

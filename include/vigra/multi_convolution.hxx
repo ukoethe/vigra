@@ -46,17 +46,17 @@ namespace detail
 /*                                                      */
 /********************************************************/
 
-template <class SrcIterator, class SrcShape, class SrcAccessor, 
+template <class SrcIterator, class SrcShape, class SrcAccessor,
           class DestIterator, class DestAccessor, class KernelIterator>
-void 
-internalSeparableConvolveMultiArrayTmp( 
-                      SrcIterator si, SrcShape const & shape, SrcAccessor src, 
+void
+internalSeparableConvolveMultiArrayTmp(
+                      SrcIterator si, SrcShape const & shape, SrcAccessor src,
                       DestIterator di, DestAccessor dest, KernelIterator kit)
 {
     enum { N = 1 + SrcIterator::level };
 
     typedef typename NumericTraits<typename DestAccessor::value_type>::RealPromote TmpType;
-    
+
     // temporay array to hold the current line to enable in-place operation
     ArrayVector<TmpType> tmp( shape[0] );
 
@@ -65,15 +65,15 @@ internalSeparableConvolveMultiArrayTmp(
 
     { // only operate on first dimension here
         SNavigator snav( si, shape, 0 );
-        DNavigator dnav( di, shape, 0 );        
+        DNavigator dnav( di, shape, 0 );
 
-        for( ; snav.hasMore(); snav++, dnav++ ) 
+        for( ; snav.hasMore(); snav++, dnav++ )
         {
              // first copy source to temp for maximum cache efficiency
              copyLine( snav.begin(), snav.end(), src,
                        tmp.begin(), typename AccessorTraits<TmpType>::default_accessor() );
 
-             convolveLine( srcIterRange(tmp.begin(), tmp.end(), 
+             convolveLine( srcIterRange(tmp.begin(), tmp.end(),
                                         typename AccessorTraits<TmpType>::default_const_accessor()),
                            destIter( dnav.begin(), dest ),
                            kernel1d( *kit ) );
@@ -82,19 +82,19 @@ internalSeparableConvolveMultiArrayTmp(
     }
 
     // operate on further dimensions
-    for( int d = 1; d < N; ++d, ++kit ) 
+    for( int d = 1; d < N; ++d, ++kit )
     {
         DNavigator dnav( di, shape, d );
 
         tmp.resize( shape[d] );
 
-        for( ; dnav.hasMore(); dnav++ ) 
+        for( ; dnav.hasMore(); dnav++ )
         {
              // first copy source to temp for maximum cache efficiency
              copyLine( dnav.begin(), dnav.end(), dest,
                        tmp.begin(), typename AccessorTraits<TmpType>::default_accessor() );
 
-             convolveLine( srcIterRange(tmp.begin(), tmp.end(), 
+             convolveLine( srcIterRange(tmp.begin(), tmp.end(),
                                         typename AccessorTraits<TmpType>::default_const_accessor()),
                            destIter( dnav.begin(), dest ),
                            kernel1d( *kit ) );
@@ -129,16 +129,16 @@ internalSeparableConvolveMultiArrayTmp(
 
     There are two variants of this functions: one takes a single kernel
     of type \ref vigra::Kernel1D which is then applied to all dimensions,
-    whereas the other requires an iterator referencing a sequence of 
-    \ref vigra::Kernel1D objects, one for every dimension of the data. 
-    Then the first kernel in this sequence is applied to the innermost 
-    dimension (e.g. the x-dimension of an image), while the last is applied to the 
+    whereas the other requires an iterator referencing a sequence of
+    \ref vigra::Kernel1D objects, one for every dimension of the data.
+    Then the first kernel in this sequence is applied to the innermost
+    dimension (e.g. the x-dimension of an image), while the last is applied to the
     outermost dimension (e.g. the z-dimension in a 3D image).
 
-    This function may work in-place, which means that <tt>siter == diter</tt> is allowed. 
-    A full-sized internal array is only allocated if working on the destination 
-    array directly would cause round-off errors (i.e. if 
-    <tt>typeid(typename NumericTraits<typename DestAccessor::value_type>::RealPromote) 
+    This function may work in-place, which means that <tt>siter == diter</tt> is allowed.
+    A full-sized internal array is only allocated if working on the destination
+    array directly would cause round-off errors (i.e. if
+    <tt>typeid(typename NumericTraits<typename DestAccessor::value_type>::RealPromote)
     != typeid(typename DestAccessor::value_type)</tt>.
 
     <b> Declarations:</b>
@@ -147,19 +147,19 @@ internalSeparableConvolveMultiArrayTmp(
     \code
     namespace vigra {
         // apply the same kernel to all dimensions
-        template <class SrcIterator, class SrcShape, class SrcAccessor, 
+        template <class SrcIterator, class SrcShape, class SrcAccessor,
                   class DestIterator, class DestAccessor, class T>
         void
-        separableConvolveMultiArray(SrcIterator siter, SrcShape const & shape, SrcAccessor src, 
-                                    DestIterator diter, DestAccessor dest, 
+        separableConvolveMultiArray(SrcIterator siter, SrcShape const & shape, SrcAccessor src,
+                                    DestIterator diter, DestAccessor dest,
                                     Kernel1D<T> const & kernel);
 
         // apply each kernel from the sequence `kernels´ in turn
-        template <class SrcIterator, class SrcShape, class SrcAccessor, 
+        template <class SrcIterator, class SrcShape, class SrcAccessor,
                   class DestIterator, class DestAccessor, class KernelIterator>
-        void 
-        separableConvolveMultiArray(SrcIterator siter, SrcShape const & shape, SrcAccessor src, 
-                                    DestIterator diter, DestAccessor dest, 
+        void
+        separableConvolveMultiArray(SrcIterator siter, SrcShape const & shape, SrcAccessor src,
+                                    DestIterator diter, DestAccessor dest,
                                     KernelIterator kernels);
     }
     \endcode
@@ -168,19 +168,19 @@ internalSeparableConvolveMultiArrayTmp(
     \code
     namespace vigra {
         // apply the same kernel to all dimensions
-        template <class SrcIterator, class SrcShape, class SrcAccessor, 
+        template <class SrcIterator, class SrcShape, class SrcAccessor,
                   class DestIterator, class DestAccessor, class T>
-        void 
-        separableConvolveMultiArray(triple<SrcIterator, SrcShape, SrcAccessor> const & source, 
-                                    pair<DestIterator, DestAccessor> const & dest, 
+        void
+        separableConvolveMultiArray(triple<SrcIterator, SrcShape, SrcAccessor> const & source,
+                                    pair<DestIterator, DestAccessor> const & dest,
                                     Kernel1D<T> const & kernel);
 
         // apply each kernel from the sequence `kernels´ in turn
-        template <class SrcIterator, class SrcShape, class SrcAccessor, 
+        template <class SrcIterator, class SrcShape, class SrcAccessor,
                   class DestIterator, class DestAccessor, class KernelIterator>
-        void 
-        separableConvolveMultiArray(triple<SrcIterator, SrcShape, SrcAccessor> const & source, 
-                                    pair<DestIterator, DestAccessor> const & dest, 
+        void
+        separableConvolveMultiArray(triple<SrcIterator, SrcShape, SrcAccessor> const & source,
+                                    pair<DestIterator, DestAccessor> const & dest,
                                     KernelIterator kernels);
     }
     \endcode
@@ -196,26 +196,26 @@ internalSeparableConvolveMultiArrayTmp(
     ...
     Kernel1D<float> gauss;
     gauss.initGaussian(sigma);
-    
+
     // perform Gaussian smoothing on all dimensions
     separableConvolveMultiArray(srcMultiArrayRange(source), destMultiArray(dest), gauss);
     \endcode
 
     \see vigra::Kernel1D, convolveLine()
 */
-template <class SrcIterator, class SrcShape, class SrcAccessor, 
+template <class SrcIterator, class SrcShape, class SrcAccessor,
           class DestIterator, class DestAccessor, class KernelIterator>
-void 
-separableConvolveMultiArray( SrcIterator s, SrcShape const & shape, SrcAccessor src, 
+void
+separableConvolveMultiArray( SrcIterator s, SrcShape const & shape, SrcAccessor src,
                              DestIterator d, DestAccessor dest, KernelIterator kernels )
 {
     typedef typename NumericTraits<typename DestAccessor::value_type>::RealPromote TmpType;
-    
+
     if(!IsSameType<TmpType, typename DestAccessor::value_type>::boolResult)
     {
         // need a temporary array to avoid rounding errors
         MultiArray<SrcShape::static_size, TmpType> tmpArray(shape);
-        detail::internalSeparableConvolveMultiArrayTmp( s, shape, src, 
+        detail::internalSeparableConvolveMultiArrayTmp( s, shape, src,
              tmpArray.traverser_begin(), typename AccessorTraits<TmpType>::default_accessor(), kernels );
         copyMultiArray(srcMultiArrayRange(tmpArray), destIter(d, dest));
     }
@@ -226,39 +226,39 @@ separableConvolveMultiArray( SrcIterator s, SrcShape const & shape, SrcAccessor 
     }
 }
 
-template <class SrcIterator, class SrcShape, class SrcAccessor, 
+template <class SrcIterator, class SrcShape, class SrcAccessor,
           class DestIterator, class DestAccessor, class KernelIterator>
 inline
-void separableConvolveMultiArray( 
-    triple<SrcIterator, SrcShape, SrcAccessor> const & source, 
+void separableConvolveMultiArray(
+    triple<SrcIterator, SrcShape, SrcAccessor> const & source,
     pair<DestIterator, DestAccessor> const & dest, KernelIterator kit )
 {
-    separableConvolveMultiArray( source.first, source.second, source.third, 
+    separableConvolveMultiArray( source.first, source.second, source.third,
                                  dest.first, dest.second, kit );
 }
 
-template <class SrcIterator, class SrcShape, class SrcAccessor, 
+template <class SrcIterator, class SrcShape, class SrcAccessor,
           class DestIterator, class DestAccessor, class T>
-inline void 
-separableConvolveMultiArray( SrcIterator s, SrcShape const & shape, SrcAccessor src, 
-                             DestIterator d, DestAccessor dest, 
+inline void
+separableConvolveMultiArray( SrcIterator s, SrcShape const & shape, SrcAccessor src,
+                             DestIterator d, DestAccessor dest,
                              Kernel1D<T> const & kernel )
 {
     ArrayVector<Kernel1D<T> > kernels(shape.size(), kernel);
-  
+
     separableConvolveMultiArray( s, shape, src, d, dest, kernels.begin() );
 }
 
-template <class SrcIterator, class SrcShape, class SrcAccessor, 
+template <class SrcIterator, class SrcShape, class SrcAccessor,
           class DestIterator, class DestAccessor, class T>
-inline void 
-separableConvolveMultiArray(triple<SrcIterator, SrcShape, SrcAccessor> const & source, 
-                            pair<DestIterator, DestAccessor> const & dest, 
+inline void
+separableConvolveMultiArray(triple<SrcIterator, SrcShape, SrcAccessor> const & source,
+                            pair<DestIterator, DestAccessor> const & dest,
                             Kernel1D<T> const & kernel )
 {
     ArrayVector<Kernel1D<T> > kernels(source.second.size(), kernel);
-  
-    separableConvolveMultiArray( source.first, source.second, source.third, 
+
+    separableConvolveMultiArray( source.first, source.second, source.third,
                                  dest.first, dest.second, kernels.begin() );
 }
 
@@ -272,22 +272,22 @@ separableConvolveMultiArray(triple<SrcIterator, SrcShape, SrcAccessor> const & s
 
     This function computes a convolution along one dimension (specified by
     the parameter <tt>dim</tt> of the given multi-dimensional array with the given
-    <tt>kernel</tt>. Both source and destination arrays are represented by 
-    iterators, shape objects and accessors. The destination array is required to 
+    <tt>kernel</tt>. Both source and destination arrays are represented by
+    iterators, shape objects and accessors. The destination array is required to
     already have the correct size.
 
-    This function may work in-place, which means that <tt>siter == diter</tt> is allowed. 
-    
+    This function may work in-place, which means that <tt>siter == diter</tt> is allowed.
+
     <b> Declarations:</b>
 
     pass arguments explicitly:
     \code
     namespace vigra {
-        template <class SrcIterator, class SrcShape, class SrcAccessor, 
+        template <class SrcIterator, class SrcShape, class SrcAccessor,
                   class DestIterator, class DestAccessor, class T>
-        void 
-        convolveMultiArrayOneDimension(SrcIterator siter, SrcShape const & shape, SrcAccessor src, 
-                                       DestIterator diter, DestAccessor dest, 
+        void
+        convolveMultiArrayOneDimension(SrcIterator siter, SrcShape const & shape, SrcAccessor src,
+                                       DestIterator diter, DestAccessor dest,
                                        unsigned int dim, vigra::Kernel1D<T> const & kernel);
     }
     \endcode
@@ -295,11 +295,11 @@ separableConvolveMultiArray(triple<SrcIterator, SrcShape, SrcAccessor> const & s
     use argument objects in conjunction with \ref ArgumentObjectFactories:
     \code
     namespace vigra {
-        template <class SrcIterator, class SrcShape, class SrcAccessor, 
+        template <class SrcIterator, class SrcShape, class SrcAccessor,
                   class DestIterator, class DestAccessor, class T>
-        void 
-        convolveMultiArrayOneDimension(triple<SrcIterator, SrcShape, SrcAccessor> const & source, 
-                                       pair<DestIterator, DestAccessor> const & dest, 
+        void
+        convolveMultiArrayOneDimension(triple<SrcIterator, SrcShape, SrcAccessor> const & source,
+                                       pair<DestIterator, DestAccessor> const & dest,
                                        unsigned int dim, vigra::Kernel1D<T> const & kernel);
     }
     \endcode
@@ -315,25 +315,25 @@ separableConvolveMultiArray(triple<SrcIterator, SrcShape, SrcAccessor> const & s
     ...
     Kernel1D<float> gauss;
     gauss.initGaussian(sigma);
-    
+
     // perform Gaussian smoothing along dimensions 1 (height)
     convolveMultiArrayOneDimension(srcMultiArrayRange(source), destMultiArray(dest), 1, gauss);
     \endcode
 
     \see separableConvolveMultiArray()
 */
-template <class SrcIterator, class SrcShape, class SrcAccessor, 
+template <class SrcIterator, class SrcShape, class SrcAccessor,
           class DestIterator, class DestAccessor, class T>
-void 
-convolveMultiArrayOneDimension(SrcIterator s, SrcShape const & shape, SrcAccessor src, 
-                               DestIterator d, DestAccessor dest, 
+void
+convolveMultiArrayOneDimension(SrcIterator s, SrcShape const & shape, SrcAccessor src,
+                               DestIterator d, DestAccessor dest,
                                unsigned int dim, vigra::Kernel1D<T> const & kernel )
 {
     enum { N = 1 + SrcIterator::level };
     vigra_precondition( dim < N,
                         "convolveMultiArrayOneDimension(): The dimension number to convolve must be smaller "
                         "than the data dimensionality" );
-    
+
     typedef typename NumericTraits<typename DestAccessor::value_type>::RealPromote TmpType;
     ArrayVector<TmpType> tmp( shape[dim] );
 
@@ -341,9 +341,9 @@ convolveMultiArrayOneDimension(SrcIterator s, SrcShape const & shape, SrcAccesso
     typedef MultiArrayNavigator<DestIterator, N> DNavigator;
 
     SNavigator snav( s, shape, dim );
-    DNavigator dnav( d, shape, dim );        
+    DNavigator dnav( d, shape, dim );
 
-    for( ; snav.hasMore(); snav++, dnav++ ) 
+    for( ; snav.hasMore(); snav++, dnav++ )
     {
          // first copy source to temp for maximum cache efficiency
          copyLine( snav.begin(), snav.end(), src,
@@ -355,14 +355,14 @@ convolveMultiArrayOneDimension(SrcIterator s, SrcShape const & shape, SrcAccesso
     }
 }
 
-template <class SrcIterator, class SrcShape, class SrcAccessor, 
+template <class SrcIterator, class SrcShape, class SrcAccessor,
           class DestIterator, class DestAccessor, class T>
-inline void 
-convolveMultiArrayOneDimension(triple<SrcIterator, SrcShape, SrcAccessor> const & source, 
-                               pair<DestIterator, DestAccessor> const & dest, 
+inline void
+convolveMultiArrayOneDimension(triple<SrcIterator, SrcShape, SrcAccessor> const & source,
+                               pair<DestIterator, DestAccessor> const & dest,
                                unsigned int dim, vigra::Kernel1D<T> const & kernel )
 {
-    convolveMultiArrayOneDimension( source.first, source.second, source.third, 
+    convolveMultiArrayOneDimension( source.first, source.second, source.third,
                                    dest.first, dest.second, dim, kernel );
 }
 
@@ -374,15 +374,15 @@ convolveMultiArrayOneDimension(triple<SrcIterator, SrcShape, SrcAccessor> const 
 
 /** \brief Isotropic Gaussian smoothing of a multi-dimensional arrays.
 
-    This function computes an isotropic convolution of the given multi-dimensional 
+    This function computes an isotropic convolution of the given multi-dimensional
     array with a Gaussian filter at the given standard deviation <tt>sigma</tt>.
-    Both source and destination arrays are represented by 
-    iterators, shape objects and accessors. The destination array is required to 
-    already have the correct size. This function may work in-place, which means 
+    Both source and destination arrays are represented by
+    iterators, shape objects and accessors. The destination array is required to
+    already have the correct size. This function may work in-place, which means
     that <tt>siter == diter</tt> is allowed. It is implemented by a call to
     \ref separableConvolveMultiArray() with the appropriate kernel.
     If the data are anisotropic (different pixel size along different dimensions)
-    you should call \ref separableConvolveMultiArray() directly with the appropriate 
+    you should call \ref separableConvolveMultiArray() directly with the appropriate
     anisotropic Gaussians.
 
     <b> Declarations:</b>
@@ -390,11 +390,11 @@ convolveMultiArrayOneDimension(triple<SrcIterator, SrcShape, SrcAccessor> const 
     pass arguments explicitly:
     \code
     namespace vigra {
-        template <class SrcIterator, class SrcShape, class SrcAccessor, 
+        template <class SrcIterator, class SrcShape, class SrcAccessor,
                   class DestIterator, class DestAccessor>
-        void 
-        gaussianSmoothMultiArray(SrcIterator siter, SrcShape const & shape, SrcAccessor src, 
-                                 DestIterator diter, DestAccessor dest, 
+        void
+        gaussianSmoothMultiArray(SrcIterator siter, SrcShape const & shape, SrcAccessor src,
+                                 DestIterator diter, DestAccessor dest,
                                  double sigma);
     }
     \endcode
@@ -402,11 +402,11 @@ convolveMultiArrayOneDimension(triple<SrcIterator, SrcShape, SrcAccessor> const 
     use argument objects in conjunction with \ref ArgumentObjectFactories:
     \code
     namespace vigra {
-        template <class SrcIterator, class SrcShape, class SrcAccessor, 
+        template <class SrcIterator, class SrcShape, class SrcAccessor,
                   class DestIterator, class DestAccessor>
-        void 
-        gaussianSmoothMultiArray(triple<SrcIterator, SrcShape, SrcAccessor> const & source, 
-                                 pair<DestIterator, DestAccessor> const & dest, 
+        void
+        gaussianSmoothMultiArray(triple<SrcIterator, SrcShape, SrcAccessor> const & source,
+                                 pair<DestIterator, DestAccessor> const & dest,
                                  double sigma);
     }
     \endcode
@@ -426,10 +426,10 @@ convolveMultiArrayOneDimension(triple<SrcIterator, SrcShape, SrcAccessor> const 
 
     \see separableConvolveMultiArray()
 */
-template <class SrcIterator, class SrcShape, class SrcAccessor, 
+template <class SrcIterator, class SrcShape, class SrcAccessor,
           class DestIterator, class DestAccessor>
-void 
-gaussianSmoothMultiArray( SrcIterator s, SrcShape const & shape, SrcAccessor src, 
+void
+gaussianSmoothMultiArray( SrcIterator s, SrcShape const & shape, SrcAccessor src,
                    DestIterator d, DestAccessor dest, double sigma )
 {
     typedef typename NumericTraits<typename DestAccessor::value_type>::RealPromote kernel_type;
@@ -439,14 +439,14 @@ gaussianSmoothMultiArray( SrcIterator s, SrcShape const & shape, SrcAccessor src
     separableConvolveMultiArray( s, shape, src, d, dest, gauss);
 }
 
-template <class SrcIterator, class SrcShape, class SrcAccessor, 
+template <class SrcIterator, class SrcShape, class SrcAccessor,
           class DestIterator, class DestAccessor>
-inline void 
-gaussianSmoothMultiArray(triple<SrcIterator, SrcShape, SrcAccessor> const & source, 
-                  pair<DestIterator, DestAccessor> const & dest, 
+inline void
+gaussianSmoothMultiArray(triple<SrcIterator, SrcShape, SrcAccessor> const & source,
+                  pair<DestIterator, DestAccessor> const & dest,
                   double sigma )
 {
-    gaussianSmoothMultiArray( source.first, source.second, source.third, 
+    gaussianSmoothMultiArray( source.first, source.second, source.third,
                               dest.first, dest.second, sigma );
 }
 
@@ -458,28 +458,28 @@ gaussianSmoothMultiArray(triple<SrcIterator, SrcShape, SrcAccessor> const & sour
 
 /** \brief Calculate Gaussian gradient of a multi-dimensional arrays.
 
-    This function computes the Gaussian gradient of the given multi-dimensional 
-    array with a sequence of first-derivative-of-Gaussian filters at the given 
+    This function computes the Gaussian gradient of the given multi-dimensional
+    array with a sequence of first-derivative-of-Gaussian filters at the given
     standard deviation <tt>sigma</tt> (differentiation is applied to each dimension
-    in turn, starting with the innermost dimension). Both source and destination arrays 
-    are represented by iterators, shape objects and accessors. The destination array is 
-    required to have a vector valued pixel type with as many elements as the number of 
+    in turn, starting with the innermost dimension). Both source and destination arrays
+    are represented by iterators, shape objects and accessors. The destination array is
+    required to have a vector valued pixel type with as many elements as the number of
     dimensions. This function is implemented by calls to
     \ref separableConvolveMultiArray() with the appropriate kernels.
     If the data are anisotropic (different pixel size along different dimensions)
-    you should call \ref separableConvolveMultiArray() directly with the appropriate 
+    you should call \ref separableConvolveMultiArray() directly with the appropriate
     anisotropic Gaussian derivatives.
-    
+
     <b> Declarations:</b>
 
     pass arguments explicitly:
     \code
     namespace vigra {
-        template <class SrcIterator, class SrcShape, class SrcAccessor, 
+        template <class SrcIterator, class SrcShape, class SrcAccessor,
                   class DestIterator, class DestAccessor>
-        void 
-        gaussianGradientMultiArray(SrcIterator siter, SrcShape const & shape, SrcAccessor src, 
-                                   DestIterator diter, DestAccessor dest, 
+        void
+        gaussianGradientMultiArray(SrcIterator siter, SrcShape const & shape, SrcAccessor src,
+                                   DestIterator diter, DestAccessor dest,
                                    double sigma);
     }
     \endcode
@@ -487,11 +487,11 @@ gaussianSmoothMultiArray(triple<SrcIterator, SrcShape, SrcAccessor> const & sour
     use argument objects in conjunction with \ref ArgumentObjectFactories:
     \code
     namespace vigra {
-        template <class SrcIterator, class SrcShape, class SrcAccessor, 
+        template <class SrcIterator, class SrcShape, class SrcAccessor,
                   class DestIterator, class DestAccessor>
-        void 
-        gaussianGradientMultiArray(triple<SrcIterator, SrcShape, SrcAccessor> const & source, 
-                                   pair<DestIterator, DestAccessor> const & dest, 
+        void
+        gaussianGradientMultiArray(triple<SrcIterator, SrcShape, SrcAccessor> const & source,
+                                   pair<DestIterator, DestAccessor> const & dest,
                                    double sigma);
     }
     \endcode
@@ -503,27 +503,27 @@ gaussianSmoothMultiArray(triple<SrcIterator, SrcShape, SrcAccessor> const & sour
     \code
     MultiArray<3, unsigned char>::size_type shape(width, height, depth);
     MultiArray<3, unsigned char> source(shape);
-    MultiArray<3, TinyVector<float> > dest(shape);
+    MultiArray<3, TinyVector<float, 3> > dest(shape);
     ...
     // compute Gaussian gradient at scale sigma
     gaussianGradientMultiArray(srcMultiArrayRange(source), destMultiArray(dest), sigma);
     \endcode
 
     <b> Required Interface:</b>
-    
+
     see \ref convolveImage(), in addition:
-    
+
     \code
     int dimension = 0;
     VectorElementAccessor<DestAccessor> elementAccessor(0, dest);
     \endcode
-    
+
     \see separableConvolveMultiArray()
 */
-template <class SrcIterator, class SrcShape, class SrcAccessor, 
+template <class SrcIterator, class SrcShape, class SrcAccessor,
           class DestIterator, class DestAccessor>
-void 
-gaussianGradientMultiArray( SrcIterator si, SrcShape const & shape, SrcAccessor src, 
+void
+gaussianGradientMultiArray( SrcIterator si, SrcShape const & shape, SrcAccessor src,
 			    DestIterator di, DestAccessor dest, double sigma )
 {
     typedef typename DestAccessor::value_type DestType;
@@ -534,9 +534,9 @@ gaussianGradientMultiArray( SrcIterator si, SrcShape const & shape, SrcAccessor 
     derivative.initGaussianDerivative(sigma, 1);
 
     typedef VectorElementAccessor<DestAccessor> ElementAccessor;
-    
+
     // compute gradient components
-    for(unsigned int d = 0; d < shape.size(); ++d ) 
+    for(unsigned int d = 0; d < shape.size(); ++d )
     {
         ArrayVector<Kernel1D<kernel_type> > kernels(shape.size(), gauss);
         kernels[d] = derivative;
@@ -544,13 +544,13 @@ gaussianGradientMultiArray( SrcIterator si, SrcShape const & shape, SrcAccessor 
     }
 }
 
-template <class SrcIterator, class SrcShape, class SrcAccessor, 
+template <class SrcIterator, class SrcShape, class SrcAccessor,
           class DestIterator, class DestAccessor>
-inline void 
-gaussianGradientMultiArray(triple<SrcIterator, SrcShape, SrcAccessor> const & source, 
+inline void
+gaussianGradientMultiArray(triple<SrcIterator, SrcShape, SrcAccessor> const & source,
                   pair<DestIterator, DestAccessor> const & dest, double sigma )
 {
-    gaussianGradientMultiArray( source.first, source.second, source.third, 
+    gaussianGradientMultiArray( source.first, source.second, source.third,
                               dest.first, dest.second, sigma );
 }
 
@@ -562,23 +562,23 @@ gaussianGradientMultiArray(triple<SrcIterator, SrcShape, SrcAccessor> const & so
 
 /** \brief Calculate gradient of a multi-dimensional arrays using symmetric difference filters.
 
-    This function computes the gradient of the given multi-dimensional 
-    array with a sequence of symmetric difference filters a (differentiation is applied 
-    to each dimension in turn, starting with the innermost dimension). Both source and 
-    destination arrays are represented by iterators, shape objects and accessors. 
-    The destination array is required to have a vector valued pixel type with as many 
+    This function computes the gradient of the given multi-dimensional
+    array with a sequence of symmetric difference filters a (differentiation is applied
+    to each dimension in turn, starting with the innermost dimension). Both source and
+    destination arrays are represented by iterators, shape objects and accessors.
+    The destination array is required to have a vector valued pixel type with as many
     elements as the number of dimensions. This function is implemented by calls to
     \ref convolveMultiArrayOneDimension() with the symmetric difference kernel.
-    
+
     <b> Declarations:</b>
 
     pass arguments explicitly:
     \code
     namespace vigra {
-        template <class SrcIterator, class SrcShape, class SrcAccessor, 
+        template <class SrcIterator, class SrcShape, class SrcAccessor,
                   class DestIterator, class DestAccessor>
-        void 
-        symmetricGradientMultiArray(SrcIterator siter, SrcShape const & shape, SrcAccessor src, 
+        void
+        symmetricGradientMultiArray(SrcIterator siter, SrcShape const & shape, SrcAccessor src,
                                     DestIterator diter, DestAccessor dest);
     }
     \endcode
@@ -586,10 +586,10 @@ gaussianGradientMultiArray(triple<SrcIterator, SrcShape, SrcAccessor> const & so
     use argument objects in conjunction with \ref ArgumentObjectFactories:
     \code
     namespace vigra {
-        template <class SrcIterator, class SrcShape, class SrcAccessor, 
+        template <class SrcIterator, class SrcShape, class SrcAccessor,
                   class DestIterator, class DestAccessor>
-        void 
-        symmetricGradientMultiArray(triple<SrcIterator, SrcShape, SrcAccessor> const & source, 
+        void
+        symmetricGradientMultiArray(triple<SrcIterator, SrcShape, SrcAccessor> const & source,
                                     pair<DestIterator, DestAccessor> const & dest);
     }
     \endcode
@@ -601,27 +601,27 @@ gaussianGradientMultiArray(triple<SrcIterator, SrcShape, SrcAccessor> const & so
     \code
     MultiArray<3, unsigned char>::size_type shape(width, height, depth);
     MultiArray<3, unsigned char> source(shape);
-    MultiArray<3, TinyVector<float> > dest(shape);
+    MultiArray<3, TinyVector<float, 3> > dest(shape);
     ...
     // compute gradient
     symmetricGradientMultiArray(srcMultiArrayRange(source), destMultiArray(dest));
     \endcode
 
     <b> Required Interface:</b>
-    
+
     see \ref convolveImage(), in addition:
-    
+
     \code
     int dimension = 0;
     VectorElementAccessor<DestAccessor> elementAccessor(0, dest);
     \endcode
-    
+
     \see convolveMultiArrayOneDimension()
 */
-template <class SrcIterator, class SrcShape, class SrcAccessor, 
+template <class SrcIterator, class SrcShape, class SrcAccessor,
           class DestIterator, class DestAccessor>
-void 
-symmetricGradientMultiArray(SrcIterator si, SrcShape const & shape, SrcAccessor src, 
+void
+symmetricGradientMultiArray(SrcIterator si, SrcShape const & shape, SrcAccessor src,
                    DestIterator di, DestAccessor dest)
 {
     typedef typename DestAccessor::value_type DestType;
@@ -633,7 +633,7 @@ symmetricGradientMultiArray(SrcIterator si, SrcShape const & shape, SrcAccessor 
     typedef VectorElementAccessor<DestAccessor> ElementAccessor;
 
     // compute gradient components
-    for(unsigned int d = 0; d < shape.size(); ++d ) 
+    for(unsigned int d = 0; d < shape.size(); ++d )
     {
         convolveMultiArrayOneDimension(si, shape, src,
 				                       di, ElementAccessor(d, dest),
@@ -641,13 +641,13 @@ symmetricGradientMultiArray(SrcIterator si, SrcShape const & shape, SrcAccessor 
     }
 }
 
-template <class SrcIterator, class SrcShape, class SrcAccessor, 
+template <class SrcIterator, class SrcShape, class SrcAccessor,
           class DestIterator, class DestAccessor>
-inline void 
-symmetricGradientMultiArray(triple<SrcIterator, SrcShape, SrcAccessor> const & source, 
+inline void
+symmetricGradientMultiArray(triple<SrcIterator, SrcShape, SrcAccessor> const & source,
                             pair<DestIterator, DestAccessor> const & dest )
 {
-    symmetricGradientMultiArray(source.first, source.second, source.third, 
+    symmetricGradientMultiArray(source.first, source.second, source.third,
                                 dest.first, dest.second);
 }
 
