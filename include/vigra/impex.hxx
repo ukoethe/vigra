@@ -44,6 +44,7 @@
 #include "vigra/inspectimage.hxx"
 #include "vigra/transformimage.hxx"
 #include "vigra/copyimage.hxx"
+#include "vigra/multi_array.hxx"
 
 // TODO
 // next refactoring: pluggable conversion algorithms
@@ -84,6 +85,9 @@ namespace vigra
         const size_type width = dec->getWidth();
         const size_type height = dec->getHeight();
         const size_type num_bands = dec->getNumBands();
+        
+        vigra_precondition(num_bands == a.size(ys),
+           "importImage(): number of bands (color channels) in file and destination image differ.");
 
         SrcValueType const * scanline;
         DstRowIterator xs;
@@ -367,7 +371,7 @@ namespace vigra
         const size_type height = lr.y - ul.y;
         enc->setWidth(width);
         enc->setHeight(height);
-        const size_type num_bands = a(ul).size();
+        const size_type num_bands = a.size(ul);
         enc->setNumBands(num_bands);
         enc->finalizeSettings();
 
@@ -383,6 +387,36 @@ namespace vigra
                     (enc->currentScanlineOfBand(b));
                 for( size_type x = 0; x < width; ++x, ++xs ) {
                     *scanline = a.getComponent( xs, b );
+                    scanline += enc->getOffset();
+                }
+            }
+            enc->nextScanline();
+        }
+    } // write_bands()
+
+    template< class MArray, class DstValueType >
+    void write_bands( Encoder * enc, MArray const & array, DstValueType)
+    {
+        typedef unsigned int size_type;
+
+        // complete decoder settings
+        const size_type width = array.shape(0);
+        const size_type height = array.shape(1);
+        enc->setWidth(width);
+        enc->setHeight(height);
+        const size_type num_bands = array.shape(2);
+        enc->setNumBands(num_bands);
+        enc->finalizeSettings();
+
+        DstValueType * scanline;
+
+        // iterate
+        for( size_type y = 0; y < height; ++y ) {
+            for( size_type b = 0; b < num_bands; ++b ) {
+                scanline = static_cast< DstValueType * >
+                    (enc->currentScanlineOfBand(b));
+                for( size_type x = 0; x < width; ++x) {
+                    *scanline = array(x, y, b);
                     scanline += enc->getOffset();
                 }
             }
@@ -463,15 +497,16 @@ namespace detail {
     };
     
     template < class SrcIterator, class SrcAccessor,
-               class DestIterator, class DestAccessor >
+               class MArray>
     void mapVectorImageToByteImage( SrcIterator sul, SrcIterator slr, SrcAccessor sget,
-                                    DestIterator dul, DestAccessor dget )
+                                    MArray & array )
     {
         typedef typename SrcAccessor::value_type SrcValue;
         typedef typename SrcValue::value_type SrcComponent;
         typedef typename NumericTraits<SrcValue>::RealPromote PromoteValue;
         typedef typename PromoteValue::value_type PromoteComponent;
         typedef detail::VectorComponentSelector<SrcAccessor> Selector;
+        typedef typename MArray::value_type DestValue;
         
         vigra::FindMinMax<SrcComponent> minmax;
         for(int i=0; i<sget.size(sul); ++i)
@@ -479,13 +514,12 @@ namespace detail {
             vigra::inspectImage( sul, slr, Selector(sget, i), minmax );
         }
         const PromoteComponent scale = 255.0 / (minmax.max - minmax.min);
-        PromoteValue offset;
         for(int i=0; i<sget.size(sul); ++i)
         {
-            offset[i] = -minmax.min;
+            vigra::BasicImageView<DestValue> subImage = makeBasicImageView(array.bindOuter(i));
+            vigra::transformImage( sul, slr, Selector(sget, i), subImage.upperLeft(), subImage.accessor(),
+                                   linearIntensityTransform( scale, -minmax.min ) );
         }
-        vigra::transformImage( sul, slr, sget, dul, dget,
-                               linearIntensityTransform( scale, offset ) );
     }
     
     template < class SrcIterator, class SrcAccessor,
@@ -504,6 +538,7 @@ namespace detail {
                                linearIntensityTransform( scale, offset ) );
     }
     
+    // export scalar images with conversion (if necessary)
     template < class SrcIterator, class SrcAccessor, class T >
     void exportImageWithConversion(SrcIterator sul, SrcIterator slr, SrcAccessor sget,
                                    Encoder * enc, const char * type, T zero, VigraTrueType /* is_scalar */ )
@@ -521,20 +556,32 @@ namespace detail {
         }
     }
         
+    // export vector images with conversion (if necessary)
     template < class SrcIterator, class SrcAccessor, class T >
     void exportImageWithConversion(SrcIterator sul, SrcIterator slr, SrcAccessor sget,
                                    Encoder * enc, const char * type, T zero, VigraFalseType /* is_scalar */ )
     {
-        if ( isPixelTypeSupported( enc->getFileType(), type ) ) {
+        int bands = sget.size(sul);
+        vigra_precondition(isBandNumberSupported(enc->getFileType(), bands),
+           "exportImage(): file format does not support requested number of bands (color channels)");
+        if ( isPixelTypeSupported( enc->getFileType(), type ) ) 
+        {
             enc->setPixelType( type );
             write_bands( enc, sul, slr, sget, zero );
-        } else {
+        }
+        else 
+        {
             // convert to unsigned char in the usual way
+            int w = slr.x - sul.x;
+            int h = slr.y - sul.y;
+            
+            typedef vigra::MultiArray<3, unsigned char> MArray;
+            MArray array(MArray::difference_type(w, h, bands));
+            
+            mapVectorImageToByteImage(sul, slr, sget, array);
+            
             enc->setPixelType( "UINT8" );
-            vigra::BRGBImage image(slr-sul);
-            mapVectorImageToByteImage(sul, slr, sget, image.upperLeft(), image.accessor());
-            write_bands( enc, image.upperLeft(),
-                         image.lowerRight(), image.accessor(), (unsigned char)0 );
+            write_bands( enc, array, (unsigned char)0 );
         }
     }
         
