@@ -7,6 +7,7 @@ QUICKSUBDIRS =  \
         convolution \
         morphology \
         fourier \
+        math \
         simpleanalysis
 
 
