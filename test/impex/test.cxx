@@ -13,18 +13,14 @@ class ByteImageExportImportTest
   public:
     ByteImageExportImportTest()
     {
-        ViffImage * viff = readViffImage("lenna.xv");
-        
-        shouldMsg(viff != 0, "Unable to read input image");
+        vigra::ImageImportInfo info("lenna.xv");
 
-        int w = viff->row_size;
-        int h = viff->col_size;
+        int w = info.width();
+        int h = info.height();
 
         img.resize(w, h);
 
-        importViffImage(viff, destImage(img));
-
-        freeViffImage(viff);
+        importImage(info, destImage(img));
     }
     
     void testFile(const char * filename);
@@ -47,7 +43,11 @@ class ByteImageExportImportTest
         should(info.width() == img.width());
         should(info.height() == img.height());
         should(info.isGrayscale());
+#ifndef NEWIMPEX
         should(info.pixelType() == vigra::ImageImportInfo::UINT8);
+#else
+        should(info.pixelType() == std::string("UINT8"));
+#endif
         
         Image res(info.width(), info.height());
         
@@ -72,7 +72,11 @@ class ByteImageExportImportTest
         should(info.width() == img.width());
         should(info.height() == img.height());
         should(info.isGrayscale());
+#ifndef NEWIMPEX
         should(info.pixelType() == vigra::ImageImportInfo::UINT8);
+#else
+        should(info.pixelType() == std::string("UINT8"));
+#endif
         
         Image res(info.width(), info.height());
         
@@ -100,7 +104,11 @@ class ByteImageExportImportTest
         should(info.width() == img.width());
         should(info.height() == img.height());
         should(info.isGrayscale());
+#ifndef NEWIMPEX
         should(info.pixelType() == vigra::ImageImportInfo::UINT8);
+#else
+        should(info.pixelType() == std::string("UINT8"));
+#endif
         
         Image res(info.width(), info.height());
         
@@ -146,16 +154,21 @@ class ByteImageExportImportTest
         exportImage(srcImageRange(img), 
                     vigra::ImageExportInfo("res.foo").setFileType("VIFF"));
         
-        ViffImage * viff = readViffImage("res.foo");
+        vigra::ImageImportInfo info("res.foo");
+
+        should(info.width() == img.width());
+        should(info.height() == img.height());
+        should(info.isGrayscale());
+#ifndef NEWIMPEX
+        should(info.pixelType() == vigra::ImageImportInfo::UINT8);
+#else
+        should(info.pixelType() == std::string("UINT8"));
+#endif
+        should(info.getFileType() == std::string("VIFF"));
         
-        should(viff != 0);
-        should((int)viff->row_size == img.width());
-        should((int)viff->col_size == img.height());
+        Image res(info.width(), info.height());
         
-        Image res(viff->row_size, viff->col_size);
-        
-        importViffImage(viff, destImage(res));
-        freeViffImage(viff);
+        importImage(info, destImage(res));
         
 	Image::ScanOrderIterator i = img.begin();
 	Image::ScanOrderIterator i1 = res.begin();
@@ -179,7 +192,11 @@ void ByteImageExportImportTest::testFile(const char * filename)
     should(info.width() == img.width());
     should(info.height() == img.height());
     should(info.isGrayscale());
+#ifndef NEWIMPEX
     should(info.pixelType() == vigra::ImageImportInfo::UINT8);
+#else
+    should(info.pixelType() == std::string("UINT8"));
+#endif
 
     Image res(info.width(), info.height());
 
@@ -202,18 +219,14 @@ class ByteRGBImageExportImportTest
   public:
     ByteRGBImageExportImportTest()
     {
-        ViffImage * viff = readViffImage("lennargb.xv");
-        
-        shouldMsg(viff != 0, "Unable to read input image");
+        vigra::ImageImportInfo info("lennargb.xv");
 
-        int w = viff->row_size;
-        int h = viff->col_size;
+        int w = info.width();
+        int h = info.height();
 
         img.resize(w, h);
 
-        importViffImage(viff, destImage(img));
-
-        freeViffImage(viff);
+        importImage(info, destImage(img));
     }
     
     void testFile(const char * fileName);
@@ -233,7 +246,11 @@ class ByteRGBImageExportImportTest
         should(info.width() == img.width());
         should(info.height() == img.height());
         should(info.isColor());
+#ifndef NEWIMPEX
         should(info.pixelType() == vigra::ImageImportInfo::UINT8);
+#else
+        should(info.pixelType() == std::string("UINT8"));
+#endif
         
         Image res(info.width(), info.height());
         
@@ -261,7 +278,11 @@ class ByteRGBImageExportImportTest
         should(info.width() == img.width());
         should(info.height() == img.height());
         should(info.isColor());
+#ifndef NEWIMPEX
         should(info.pixelType() == vigra::ImageImportInfo::UINT8);
+#else
+        should(info.pixelType() == std::string("UINT8"));
+#endif
         
         Image res(info.width(), info.height());
         
@@ -307,16 +328,21 @@ class ByteRGBImageExportImportTest
         exportImage(srcImageRange(img), 
                     vigra::ImageExportInfo("res.foo").setFileType("VIFF"));
         
-        ViffImage * viff = readViffImage("res.foo");
+        vigra::ImageImportInfo info("res.foo");
+
+        should(info.width() == img.width());
+        should(info.height() == img.height());
+        should(info.isColor());
+#ifndef NEWIMPEX
+        should(info.pixelType() == vigra::ImageImportInfo::UINT8);
+#else
+        should(info.pixelType() == std::string("UINT8"));
+#endif
+        should(info.getFileType() == std::string("VIFF"));
         
-        should(viff != 0);
-        should((int)viff->row_size == img.width());
-        should((int)viff->col_size == img.height());
+        Image res(info.width(), info.height());
         
-        Image res(viff->row_size, viff->col_size);
-        
-        importViffImage(viff, destImage(res));
-        freeViffImage(viff);
+        importImage(info, destImage(res));
         
 	Image::ScanOrderIterator i = img.begin();
 	Image::ScanOrderIterator i1 = res.begin();
@@ -340,7 +366,11 @@ void ByteRGBImageExportImportTest::testFile(const char * fileName)
     should(info.width() == img.width());
     should(info.height() == img.height());
     should(info.isColor());
-    should(info.pixelType() == vigra::ImageImportInfo::UINT8);
+#ifndef NEWIMPEX
+        should(info.pixelType() == vigra::ImageImportInfo::UINT8);
+#else
+        should(info.pixelType() == std::string("UINT8"));
+#endif
 
     Image res(info.width(), info.height());
 
@@ -362,28 +392,20 @@ class FloatImageExportImportTest
   public:
     FloatImageExportImportTest()
     {
-        ViffImage * viff = readViffImage("lenna.xv");
-        
-        shouldMsg(viff != 0, "Unable to read input image");
+        vigra::ImageImportInfo info("lenna.xv");
 
-        int w = viff->row_size;
-        int h = viff->col_size;
+        int w = info.width();
+        int h = info.height();
 
         img.resize(w, h);
 
-        importViffImage(viff, destImage(img));
-
-        freeViffImage(viff);
+        importImage(info, destImage(img));
         
-        viff = readViffImage("lennafloat.xv");
-        
-        shouldMsg(viff != 0, "Unable to read input image");
+        vigra::ImageImportInfo rinfo("lennafloat.xv");
 
         reread.resize(w, h);
 
-        importViffImage(viff, destImage(reread));
-
-        freeViffImage(viff);
+        importImage(rinfo, destImage(reread));
     }
     
     void testGIF()
@@ -395,7 +417,11 @@ class FloatImageExportImportTest
         should(info.width() == img.width());
         should(info.height() == img.height());
         should(info.isGrayscale());
+#ifndef NEWIMPEX
         should(info.pixelType() == vigra::ImageImportInfo::UINT8);
+#else
+        should(info.pixelType() == std::string("UINT8"));
+#endif
         
         Image res(info.width(), info.height());
         
@@ -421,7 +447,11 @@ class FloatImageExportImportTest
         should(info.width() == reread.width());
         should(info.height() == reread.height());
         should(info.isGrayscale());
+#ifndef NEWIMPEX
         should(info.pixelType() == vigra::ImageImportInfo::UINT8);
+#else
+        should(info.pixelType() == std::string("UINT8"));
+#endif
         
         Image res(info.width(), info.height());
         
@@ -449,7 +479,11 @@ class FloatImageExportImportTest
         should(info.width() == img.width());
         should(info.height() == img.height());
         should(info.isGrayscale());
+#ifndef NEWIMPEX
         should(info.pixelType() == vigra::ImageImportInfo::FLOAT);
+#else
+        should(info.pixelType() == std::string("FLOAT"));
+#endif
         
         Image res(info.width(), info.height());
         
@@ -474,7 +508,11 @@ class FloatImageExportImportTest
         should(info.width() == img.width());
         should(info.height() == img.height());
         should(info.isGrayscale());
+#ifndef NEWIMPEX
         should(info.pixelType() == vigra::ImageImportInfo::UINT8);
+#else
+        should(info.pixelType() == std::string("UINT8"));
+#endif
         
         Image res(info.width(), info.height());
         
@@ -499,7 +537,11 @@ class FloatImageExportImportTest
         should(info.width() == img.width());
         should(info.height() == img.height());
         should(info.isGrayscale());
+#ifndef NEWIMPEX
         should(info.pixelType() == vigra::ImageImportInfo::UINT8);
+#else
+        should(info.pixelType() == std::string("UINT8"));
+#endif
         
         Image res(info.width(), info.height());
         
@@ -524,7 +566,11 @@ class FloatImageExportImportTest
         should(info.width() == img.width());
         should(info.height() == img.height());
         should(info.isGrayscale());
+#ifndef NEWIMPEX
         should(info.pixelType() == vigra::ImageImportInfo::FLOAT);
+#else
+        should(info.pixelType() == std::string("FLOAT"));
+#endif
         
         Image res(info.width(), info.height());
         
@@ -549,28 +595,20 @@ class FloatRGBImageExportImportTest
   public:
     FloatRGBImageExportImportTest()
     {
-        ViffImage * viff = readViffImage("lennargb.xv");
-        
-        shouldMsg(viff != 0, "Unable to read input image");
+        vigra::ImageImportInfo info("lennargb.xv");
 
-        int w = viff->row_size;
-        int h = viff->col_size;
+        int w = info.width();
+        int h = info.height();
 
         img.resize(w, h);
 
-        importViffImage(viff, destImage(img));
-
-        freeViffImage(viff);
+        importImage(info, destImage(img));
         
-        viff = readViffImage("lennafloatrgb.xv");
-        
-        shouldMsg(viff != 0, "Unable to read input image");
+        vigra::ImageImportInfo rinfo("lennafloatrgb.xv");
 
         reread.resize(w, h);
 
-        importViffImage(viff, destImage(reread));
-
-        freeViffImage(viff);
+        importImage(rinfo, destImage(reread));
     }
     
     void testGIF()
@@ -582,7 +620,11 @@ class FloatRGBImageExportImportTest
         should(info.width() == img.width());
         should(info.height() == img.height());
         should(info.isColor());
+#ifndef NEWIMPEX
         should(info.pixelType() == vigra::ImageImportInfo::UINT8);
+#else
+        should(info.pixelType() == std::string("UINT8"));
+#endif
         
         Image res(info.width(), info.height());
         
@@ -608,7 +650,11 @@ class FloatRGBImageExportImportTest
         should(info.width() == reread.width());
         should(info.height() == reread.height());
         should(info.isColor());
+#ifndef NEWIMPEX
         should(info.pixelType() == vigra::ImageImportInfo::UINT8);
+#else
+        should(info.pixelType() == std::string("UINT8"));
+#endif
         
         Image res(info.width(), info.height());
         
@@ -636,7 +682,11 @@ class FloatRGBImageExportImportTest
         should(info.width() == img.width());
         should(info.height() == img.height());
         should(info.isColor());
+#ifndef NEWIMPEX
         should(info.pixelType() == vigra::ImageImportInfo::FLOAT);
+#else
+        should(info.pixelType() == std::string("FLOAT"));
+#endif
         
         Image res(info.width(), info.height());
         
@@ -661,7 +711,11 @@ class FloatRGBImageExportImportTest
         should(info.width() == img.width());
         should(info.height() == img.height());
         should(info.isColor());
+#ifndef NEWIMPEX
         should(info.pixelType() == vigra::ImageImportInfo::UINT8);
+#else
+        should(info.pixelType() == std::string("UINT8"));
+#endif
         
         Image res(info.width(), info.height());
         
@@ -686,7 +740,11 @@ class FloatRGBImageExportImportTest
         should(info.width() == img.width());
         should(info.height() == img.height());
         should(info.isColor());
+#ifndef NEWIMPEX
         should(info.pixelType() == vigra::ImageImportInfo::UINT8);
+#else
+        should(info.pixelType() == std::string("UINT8"));
+#endif
         
         Image res(info.width(), info.height());
         
@@ -711,7 +769,11 @@ class FloatRGBImageExportImportTest
         should(info.width() == img.width());
         should(info.height() == img.height());
         should(info.isColor());
+#ifndef NEWIMPEX
         should(info.pixelType() == vigra::ImageImportInfo::FLOAT);
+#else
+        should(info.pixelType() == std::string("FLOAT"));
+#endif
         
         Image res(info.width(), info.height());
         
@@ -739,182 +801,240 @@ class ImageExportImportFailureTest
     
     void testGIFExport()
     {
-        bool caught = false;
-        
         try
         {
             exportImage(srcImageRange(img), vigra::ImageExportInfo("intentionalFailure/res.gif"));
+            failTest("Failed to throw exception.");
         }
-        catch(vigra::PostconditionViolation &)
+        catch(vigra::PreconditionViolation & e)
         {
-            caught = true;
+            char const * expected = "\nPrecondition violation!\n"
+                                    "Unable to open file 'intentionalFailure/res.gif'.";
+            should(strncmp(expected, e.what(), strlen(expected)) == 0);
         }
-        should(caught == true);
+        catch(vigra::PostconditionViolation & e)  // for old impex
+        {}
     }
     
     void testGIFImport()
     {
-        bool caught = false;
-        
         try
         {
             vigra::ImageImportInfo info("foo.gif");
+            failTest("Failed to throw exception.");
         }
-        catch(vigra::PostconditionViolation &)
+        catch(vigra::PreconditionViolation & e)
         {
-            caught = true;
+            char const * expected = "\nPrecondition violation!\n"
+                                    "Unable to open file 'foo.gif'.";
+            should(strncmp(expected, e.what(), strlen(expected)) == 0);
         }
-        should(caught == true);
+        catch(vigra::PostconditionViolation & e)  // for old impex
+        {}
     }
         
     void testJPEGExport()
     {
-        bool caught = false;
-        
         try
         {
             exportImage(srcImageRange(img), vigra::ImageExportInfo("intentionalFailure/res.jpg"));
+            failTest("Failed to throw exception.");
         }
-        catch(vigra::PostconditionViolation &)
+        catch(vigra::PreconditionViolation & e)
         {
-            caught = true;
+            char const * expected = "\nPrecondition violation!\n"
+                                    "Unable to open file 'intentionalFailure/res.jpg'.";
+            should(strncmp(expected, e.what(), strlen(expected)) == 0);
         }
-        should(caught == true);
+        catch(vigra::PostconditionViolation & e)  // for old impex
+        {}
     }
     
     void testJPEGImport()
     {
-        bool caught = false;
-        
         try
         {
             vigra::ImageImportInfo info("foo.jpg");
+            failTest("Failed to throw exception.");
         }
-        catch(vigra::PostconditionViolation &)
+        catch(vigra::PreconditionViolation & e)
         {
-            caught = true;
+            char const * expected = "\nPrecondition violation!\n"
+                                    "Unable to open file 'foo.jpg'.";
+            should(strncmp(expected, e.what(), strlen(expected)) == 0);
         }
-        should(caught == true);
+        catch(vigra::PostconditionViolation & e)  // for old impex
+        {}
     }
         
     void testTIFFExport()
     {
-        bool caught = false;
-        
         try
         {
             exportImage(srcImageRange(img), vigra::ImageExportInfo("intentionalFailure/res.tif"));
+            failTest("Failed to throw exception.");
         }
-        catch(vigra::PostconditionViolation &)
+        catch(vigra::PreconditionViolation & e)
         {
-            caught = true;
+            char const * expected = "\nPrecondition violation!\n"
+                                    "Unable to open file 'intentionalFailure/res.tif'.";
+            should(strncmp(expected, e.what(), strlen(expected)) == 0);
         }
-        should(caught == true);
+        catch(vigra::PostconditionViolation & e)  // for old impex
+        {}
     }
     
     void testTIFFImport()
     {
-        bool caught = false;
-        
         try
         {
             vigra::ImageImportInfo info("foo.tif");
+            failTest("Failed to throw exception.");
         }
-        catch(vigra::PostconditionViolation &)
+        catch(vigra::PreconditionViolation & e)
         {
-            caught = true;
+            char const * expected = "\nPrecondition violation!\n"
+                                    "Unable to open file 'foo.tif'.";
+            should(strncmp(expected, e.what(), strlen(expected)) == 0);
         }
-        should(caught == true);
+        catch(vigra::PostconditionViolation & e)  // for old impex
+        {}
     }
         
     void testBMPExport()
     {
-        bool caught = false;
-        
         try
         {
             exportImage(srcImageRange(img), vigra::ImageExportInfo("intentionalFailure/res.bmp"));
+            failTest("Failed to throw exception.");
         }
-        catch(vigra::PostconditionViolation &)
+        catch(vigra::PreconditionViolation & e)
         {
-            caught = true;
+            char const * expected = "\nPrecondition violation!\n"
+                                    "Unable to open file 'intentionalFailure/res.bmp'.";
+            should(strncmp(expected, e.what(), strlen(expected)) == 0);
         }
-        should(caught == true);
+        catch(vigra::PostconditionViolation & e)  // for old impex
+        {}
     }
     
     void testBMPImport()
     {
-        bool caught = false;
-        
         try
         {
             vigra::ImageImportInfo info("foo.bmp");
+            failTest("Failed to throw exception.");
         }
-        catch(vigra::PostconditionViolation &)
+        catch(vigra::PreconditionViolation & e)
         {
-            caught = true;
+            char const * expected = "\nPrecondition violation!\n"
+                                    "Unable to open file 'foo.bmp'.";
+            should(strncmp(expected, e.what(), strlen(expected)) == 0);
         }
-        should(caught == true);
+        catch(vigra::PostconditionViolation & e)  // for old impex
+        {}
+    }
+        
+    void testPNMExport()
+    {
+        try
+        {
+            exportImage(srcImageRange(img), vigra::ImageExportInfo("intentionalFailure/res.pnm"));
+            failTest("Failed to throw exception.");
+        }
+        catch(vigra::PreconditionViolation & e)
+        {
+            char const * expected = "\nPrecondition violation!\n"
+                                    "Unable to open file 'intentionalFailure/res.pnm'.";
+            should(strncmp(expected, e.what(), strlen(expected)) == 0);
+        }
+        catch(vigra::PostconditionViolation & e)  // for old impex
+        {}
+    }
+    
+    void testPNMImport()
+    {
+        try
+        {
+            vigra::ImageImportInfo info("foo.pnm");
+            failTest("Failed to throw exception.");
+        }
+        catch(vigra::PreconditionViolation & e)
+        {
+            char const * expected = "\nPrecondition violation!\n"
+                                    "Unable to open file 'foo.pnm'.";
+            should(strncmp(expected, e.what(), strlen(expected)) == 0);
+        }
+        catch(vigra::PostconditionViolation & e)  // for old impex
+        {}
     }
         
     void testSUNExport()
     {
-        bool caught = false;
-        
         try
         {
             exportImage(srcImageRange(img), vigra::ImageExportInfo("intentionalFailure/res.ras"));
+            failTest("Failed to throw exception.");
         }
-        catch(vigra::PostconditionViolation &)
+        catch(vigra::PreconditionViolation & e)
         {
-            caught = true;
+            char const * expected = "\nPrecondition violation!\n"
+                                    "Unable to open file 'intentionalFailure/res.ras'.";
+            should(strncmp(expected, e.what(), strlen(expected)) == 0);
         }
-        should(caught == true);
+        catch(vigra::PostconditionViolation & e)  // for old impex
+        {}
     }
     
     void testSUNImport()
     {
-        bool caught = false;
-        
         try
         {
             vigra::ImageImportInfo info("foo.ras");
+            failTest("Failed to throw exception.");
         }
-        catch(vigra::PostconditionViolation &)
+        catch(vigra::PreconditionViolation & e)
         {
-            caught = true;
+            char const * expected = "\nPrecondition violation!\n"
+                                    "Unable to open file 'foo.ras'.";
+            should(strncmp(expected, e.what(), strlen(expected)) == 0);
         }
-        should(caught == true);
+        catch(vigra::PostconditionViolation & e)  // for old impex
+        {}
     }
         
     void testVIFFExport()
     {
-        bool caught = false;
-        
         try
         {
             exportImage(srcImageRange(img), vigra::ImageExportInfo("intentionalFailure/res.xv"));
+            failTest("Failed to throw exception.");
         }
-        catch(vigra::PostconditionViolation &)
+        catch(vigra::PreconditionViolation & e)
         {
-            caught = true;
+            char const * expected = "\nPrecondition violation!\n"
+                                    "Unable to open file 'intentionalFailure/res.xv'.";
+            should(strncmp(expected, e.what(), strlen(expected)) == 0);
         }
-        should(caught == true);
+        catch(vigra::PostconditionViolation & e)  // for old impex
+        {}
     }
     
     void testVIFFImport()
     {
-        bool caught = false;
-        
         try
         {
             vigra::ImageImportInfo info("foo.xv");
+            failTest("Failed to throw exception.");
         }
-        catch(vigra::PostconditionViolation &)
+        catch(vigra::PreconditionViolation & e)
         {
-            caught = true;
+            char const * expected = "\nPrecondition violation!\n"
+                                    "Unable to open file 'foo.xv'.";
+            should(strncmp(expected, e.what(), strlen(expected)) == 0);
         }
-        should(caught == true);
+        catch(vigra::PostconditionViolation & e)  // for old impex
+        {}
     }
         
     vigra::BImage img;
@@ -927,8 +1047,10 @@ class ImageImportExportTestSuite
     ImageImportExportTestSuite()
     : vigra::test_suite("ImageImportExportTestSuite")
     {
+#ifndef NEWIMPEX
         add( testCase(&ByteImageExportImportTest::testGIF));
         add( testCase(&ByteImageExportImportTest::testEmptyGIF));
+#endif
         add( testCase(&ByteImageExportImportTest::testJPEG));
         add( testCase(&ByteImageExportImportTest::testTIFF));
         add( testCase(&ByteImageExportImportTest::testBMP));
@@ -938,7 +1060,9 @@ class ImageImportExportTestSuite
         add( testCase(&ByteImageExportImportTest::testVIFF1));
         add( testCase(&ByteImageExportImportTest::testVIFF2));
 
+#ifndef NEWIMPEX
         add( testCase(&ByteRGBImageExportImportTest::testGIF));
+#endif
         add( testCase(&ByteRGBImageExportImportTest::testJPEG));
         add( testCase(&ByteRGBImageExportImportTest::testTIFF));
         add( testCase(&ByteRGBImageExportImportTest::testBMP));
@@ -948,28 +1072,36 @@ class ImageImportExportTestSuite
         add( testCase(&ByteRGBImageExportImportTest::testVIFF1));
         add( testCase(&ByteRGBImageExportImportTest::testVIFF2));
 
+#ifndef NEWIMPEX
         add( testCase(&FloatImageExportImportTest::testGIF));
+#endif
         add( testCase(&FloatImageExportImportTest::testJPEG));
         add( testCase(&FloatImageExportImportTest::testTIFF));
         add( testCase(&FloatImageExportImportTest::testBMP));
         add( testCase(&FloatImageExportImportTest::testSUN));
         add( testCase(&FloatImageExportImportTest::testVIFF));
 
+#ifndef NEWIMPEX
         add( testCase(&FloatRGBImageExportImportTest::testGIF));
+#endif
         add( testCase(&FloatRGBImageExportImportTest::testJPEG));
         add( testCase(&FloatRGBImageExportImportTest::testTIFF));
         add( testCase(&FloatRGBImageExportImportTest::testBMP));
         add( testCase(&FloatRGBImageExportImportTest::testSUN));
         add( testCase(&FloatRGBImageExportImportTest::testVIFF));
 
+#ifndef NEWIMPEX
         add( testCase(&ImageExportImportFailureTest::testGIFExport));
         add( testCase(&ImageExportImportFailureTest::testGIFImport));
+#endif
         add( testCase(&ImageExportImportFailureTest::testJPEGExport));
         add( testCase(&ImageExportImportFailureTest::testJPEGImport));
         add( testCase(&ImageExportImportFailureTest::testTIFFExport));
         add( testCase(&ImageExportImportFailureTest::testTIFFImport));
         add( testCase(&ImageExportImportFailureTest::testBMPExport));
         add( testCase(&ImageExportImportFailureTest::testBMPImport));
+        add( testCase(&ImageExportImportFailureTest::testPNMExport));
+        add( testCase(&ImageExportImportFailureTest::testPNMImport));
         add( testCase(&ImageExportImportFailureTest::testSUNExport));
         add( testCase(&ImageExportImportFailureTest::testSUNImport));
         add( testCase(&ImageExportImportFailureTest::testVIFFExport));
