@@ -98,7 +98,11 @@ using VIGRA_CSTD::erf;
 
 #endif
 
-using std::abs;  // import abs(real) and abs(int)
+// import functions into namespace vigra which VIGRA is going to overload
+using std::abs;  
+using VIGRA_CSTD::pow;  
+using VIGRA_CSTD::floor;  
+using VIGRA_CSTD::ceil;  
 
 /*! The square function.
 
@@ -113,6 +117,7 @@ typename NumericTraits<T>::Promote sq(T t)
 {
     return t*t;
 }
+
 //@}
 
 } // namespace vigra
