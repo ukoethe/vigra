@@ -373,7 +373,11 @@ should_impl(bool predicate, const char * message, const char * file, int line)
     } 
 }
 
-//////////////////////////////////Hinzugefuegt//////////////////////////////////////
+/******************Floating point comparison********************************/
+/**
+* See Knuth "The art of computer programming" (Vol II, Ch.4.2) 
+*/
+
 
 template<typename FPT>
 inline 
@@ -382,7 +386,8 @@ FPT fpt_abs( FPT arg )
     return arg < 0 ? -arg : arg;
 }
 
-//____________________________________________________________________________//
+
+/***********************************************************************/
 
 // both f1 and f2 are unsigned here
 template<typename FPT>
@@ -411,49 +416,17 @@ FPT safe_fpt_division( FPT f1, FPT f2 )
         */
 }
 
-//____________________________________________________________________________//
-
-/* template<typename FPT>
-class close_at_tolerance {
-public:
-    explicit    close_at_tolerance( FPT tolerance, bool strong_or_weak = true ) 
-    : m_tolerance( tolerance ), m_strong_or_weak( strong_or_weak ) {}
-
-    explicit    close_at_tolerance( int number_of_rounding_errors, bool strong_or_weak = true ) 
-    : m_tolerance( std::numeric_limits<FPT>::epsilon() * number_of_rounding_errors/2 ), 
-      m_strong_or_weak( strong_or_weak ) {}
-
-    bool        operator()( FPT left, FPT right ) const
-    {
-        std::cout << "close_at_tolerance begin :left = " << left << ", right = " << right << ", m_tolerance = " << m_tolerance << std::endl;
-        FPT diff = fpt_abs( left - right );
-        std::cout << "diff = " << diff << std::endl;
-        FPT d1   = safe_fpt_division( diff, fpt_abs( right ) );
-        std::cout << "d1 = " << d1 << endl;
-        FPT d2   = safe_fpt_division( diff, fpt_abs( left ) );
-        std::cout << "d2 = " << d2 <<"\nclose_at_tolerance end//" << endl;
-        
-        return m_strong_or_weak ? (d1 <= m_tolerance && d2 <= m_tolerance) 
-                                : (d1 <= m_tolerance || d2 <= m_tolerance);
-    }
-
-    // Data members
-
-private:
-    bool        m_strong_or_weak;
-    FPT         m_tolerance;
-};
-*/
+/***********************************************************************/
 
 template<typename FPT>
 class close_at_tolerance {
 public:
-    explicit    close_at_tolerance( FPT tolerance, bool strong_or_weak = true ) 
-    : m_tolerance( tolerance ), m_strong_or_weak( strong_or_weak ) {}
+    explicit    close_at_tolerance( FPT tolerance, bool strong_test = true ) 
+    : m_tolerance( tolerance ), m_strong_test( strong_test ) {}
 
-    explicit    close_at_tolerance( int number_of_rounding_errors, bool strong_or_weak = true ) 
+    explicit    close_at_tolerance( int number_of_rounding_errors, bool strong_test = true ) 
     : m_tolerance( vigra::NumericTraits<FPT>::epsilon() * number_of_rounding_errors / 2.0 ), 
-      m_strong_or_weak( strong_or_weak ) {}
+      m_strong_test( strong_test ) {}
 
     bool        operator()( FPT left, FPT right ) const
     {
@@ -469,31 +442,16 @@ public:
         FPT d1   = safe_fpt_division( diff, fpt_abs( right ) );
         FPT d2   = safe_fpt_division( diff, fpt_abs( left ) );
         
-        return m_strong_or_weak ? (d1 <= m_tolerance && d2 <= m_tolerance) 
+        return m_strong_test ? (d1 <= m_tolerance && d2 <= m_tolerance) 
                                 : (d1 <= m_tolerance || d2 <= m_tolerance);
     }
 
 private:
-    bool        m_strong_or_weak;
+    bool        m_strong_test;
     FPT         m_tolerance;
 };
 
-//////////////////////////////////////////////////ENDE der Hinzufuegung/////////////////////////////////
-
-///////////////////////////////////////////////////////////////////////////////////////////
-//                      Aenderung vorgenommen, original sah so aus:                     ///
-/*
- * inline void 
- * eps_equal_impl(double left, double right, double epsilon, const char * message, const char * file, int line)
- * {
- *     detail::errstream buf;
- *     buf << message << " [" << left << " != " << right << "]";
- *     should_impl(VIGRA_CSTD::fabs(left - right) < epsilon, buf.str(), file, line); 
- * }
- * 
- */
-///////////////////////////////////////////////////////////////////////////////////////////
-
+/*****************end of float comparison***********************************/
 
 inline void 
 tolerance_equal_impl(double left, double right, double epsilon, const char * message, const char * file, int line)
@@ -501,7 +459,25 @@ tolerance_equal_impl(double left, double right, double epsilon, const char * mes
     detail::errstream buf;
     buf << message << " [" << left << " != " << right << "]";
     
-    close_at_tolerance<double> fcomparator( epsilon , false);
+    close_at_tolerance<double> fcomparator( epsilon );
+    bool compare = fcomparator ( left , right );
+    should_impl(compare, buf.str(), file, line); 
+     
+}
+/*
+tolerance_equal_impl(float, float, double, const char *, const char *, int)':
+../include/unittest.hxx:474: call of overloaded `close_at_tolerance(double &)' is ambiguous
+../include/unittest.hxx:425: candidates are: vigra::detail::close_at_tolerance<float>::close_at_tolerance(float, bool = true) 
+geaendert in                                      Hier???
+tolerance_equal_impl(float left, float right, double epsilon, const char * message, const char * file, int line)
+*/
+inline void 
+tolerance_equal_impl(float left, float right, float epsilon, const char * message, const char * file, int line)
+{
+    detail::errstream buf;
+    buf << message << " [" << left << " != " << right << "]";
+    
+    close_at_tolerance<float> fcomparator( epsilon );
     bool compare = fcomparator ( left , right );
     should_impl(compare, buf.str(), file, line); 
      
@@ -525,7 +501,7 @@ equal_impl(double left, double right, const char * message, const char * file, i
 inline void 
 equal_impl(float left, float right, const char * message, const char * file, int line)
 {
-    tolerance_equal_impl(left, right, 1.0e-6, message, file, line); 
+    tolerance_equal_impl(left, right, 1.0e-6f, message, file, line); 
 }
  
 class test_case
