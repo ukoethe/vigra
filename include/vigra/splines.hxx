@@ -25,6 +25,8 @@
 #include <cmath>
 #include "vigra/config.hxx"
 #include "vigra/mathutil.hxx"
+#include "vigra/polynomial.hxx"
+#include "vigra/array_vector.hxx"
 
 namespace vigra {
 
@@ -75,9 +77,67 @@ class BSplineBase
     double radius() const
         { return (ORDER + 1) * 0.5; }
 
+    static double const * prefilterCoefficients()
+    { 
+        static double const * const b = calculatePrefilterCoefficients();
+        return b;
+    }
+    
+    static double const * calculatePrefilterCoefficients();
+    
+    typedef T WeightMatrix[ORDER+1][ORDER+1];
+    static WeightMatrix & weights()
+    {
+        static WeightMatrix & b = calculateWeightMatrix();
+        return b;
+    }
+    
+    static WeightMatrix & calculateWeightMatrix();
+    
   private:
     BSplineBase<ORDER-1, T> s1_;  
 };
+
+template <int ORDER, class T>
+double const * BSplineBase<ORDER, T>::calculatePrefilterCoefficients()
+{ 
+    static double b[ORDER / 2 == 0 ? 1 : ORDER / 2];
+    if(ORDER <= 1)
+        b[0] = 0.0;
+    else
+    {
+        static const int r = ORDER / 2;
+        StaticPolynomial<2*r, double> p(2*r);
+        BSplineBase spline;
+        for(int i = 0; i <= 2*r; ++i)
+            p[i] = spline(T(i-r));
+        ArrayVector<double> roots;
+        polynomialRealRoots(p, roots);
+        int k = 0;
+        for(unsigned int i = 0; i < roots.size(); ++i)
+            if(std::abs(roots[i]) < 1.0)
+                b[k++] = roots[i];
+    }
+    return b;
+}
+    
+template <int ORDER, class T>
+typename BSplineBase<ORDER, T>::WeightMatrix & 
+BSplineBase<ORDER, T>::calculateWeightMatrix()
+{
+    static WeightMatrix b;
+    double faculty = 1.0;
+    for(int d = 0; d <= ORDER; ++d)
+    {
+        if(d > 1)
+            faculty *= d;
+        double x = ORDER / 2;
+        BSplineBase spline;
+        for(int i = 0; i <= ORDER; ++i, --x)
+            b[d][i] = spline(x, d) / faculty;
+    }
+    return b;
+}
 
 template <int ORDER, class T = double>
 class BSpline
@@ -111,7 +171,10 @@ class BSplineBase<0, T>
 
     result_type operator()(first_argument_type x, second_argument_type derivative_order) const
     {
-        return 0.0;
+        if(derivative_order == 0)
+            return operator()(x);
+        else
+            return 0.0;
     }
     
     value_type operator[](value_type x) const
@@ -120,7 +183,7 @@ class BSplineBase<0, T>
     double radius() const
         { return 0.5; }
         
-    static double * prefilterCoefficients()
+    static double const * prefilterCoefficients()
     { 
         static double b[] = {0.0};
         return b;
@@ -168,7 +231,7 @@ class BSpline<1, T>
     double radius() const
         { return 1.0; }
         
-    static double * prefilterCoefficients()
+    static double const * prefilterCoefficients()
     { 
         static double b[] = {0.0};
         return b;
@@ -230,7 +293,7 @@ class BSpline<2, T>
     double radius() const
         { return 1.5; }
         
-    static double * prefilterCoefficients()
+    static double const * prefilterCoefficients()
     { 
         static double b[] = {2.0*M_SQRT2 - 3.0};
         return b;
@@ -323,7 +386,7 @@ class BSpline<3, T>
     double radius() const
         { return 2.0; }
         
-    static double * prefilterCoefficients()
+    static double const * prefilterCoefficients()
     { 
         static double b[] = {VIGRA_CSTD::sqrt(3.0) - 2.0};
         return b;
@@ -446,7 +509,7 @@ class BSpline<5, T>
     double radius() const
         { return 3.0; }
         
-    static double * prefilterCoefficients()
+    static double const * prefilterCoefficients()
     { 
         static double b[] = {-0.43057534709997114, -0.043096288203264652};
         return b;
@@ -459,7 +522,7 @@ class BSpline<5, T>
                             {-1.0/24.0, -5.0/12.0, 0.0, 5.0/12.0, 1.0/24.0},
                             { 1.0/12.0, 1.0/6.0, -0.5, 1.0/6.0, 1.0/12.0},
                             {-1.0/12.0, 1.0/6.0, 0.0, -1.0/6.0, 1.0/12.0},
-                            { 1.0/24.0, -1.0/6,0, 0.25, -1.0/6.0, 1.0/24.0},
+                            { 1.0/24.0, -1.0/6.0, 0.25, -1.0/6.0, 1.0/24.0},
                             {-1.0/120.0, 1.0/24.0, -1.0/12.0, 1.0/12.0, -1.0/24.0, 1.0/120.0}};
         return b;
     }
@@ -624,7 +687,7 @@ public:
     int radius() const
         {return 2;}
         
-    static double * prefilterCoefficients()
+    static double const * prefilterCoefficients()
     { 
         static double b[] = {0.0};
         return b;
