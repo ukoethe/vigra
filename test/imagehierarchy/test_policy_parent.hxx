@@ -1,7 +1,7 @@
 #ifndef VIGRA_TEST_POLICY_PARENT_HXX
 #define VIGRA_TEST_POLICY_PARENT_HXX
 
-#include "NewImHier.hxx"
+#include "vigra/imagehierarchy.hxx"
 
 /** Ist eine Oberklasse aller ImagePolicys. ImagePolicys stellen die Besonderheiten der einzelner
 * Bilder dar, z.B. Vector2ImagePolicy stellt die Besonderheiten der Bilder Vector2Image, DVector2Image FVector2Image,

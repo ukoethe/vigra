@@ -1,7 +1,7 @@
 #ifndef VARIABLE_BANDS_IMAGE_POLICY_HXX
 #define VARIABLE_BANDS_IMAGE_POLICY_HXX
 
-#include "NewImHier.hxx"
+#include "vigra/imagehierarchy.hxx"
 #include <unittest.hxx>
 
 /**An das template wird eine Policy-Klasse der Bilder der Imagehierarchie uebergeben

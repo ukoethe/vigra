@@ -1,7 +1,7 @@
 #ifndef SELECT_BAND_IMAGE_POLICY_HXX
 #define SELECT_BAND_IMAGE_POLICY_HXX
 
-#include "NewImHier.hxx"
+#include "vigra/imagehierarchy.hxx"
 #include <unittest.hxx>
 
 template <class MULTI_BAND_IMAGE_POLICY, int TO_SELECT_BAND>

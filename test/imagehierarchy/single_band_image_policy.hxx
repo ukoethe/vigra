@@ -1,7 +1,7 @@
 #ifndef SINGLE_BAND_IMAGE_POLICY_HXX
 #define SINGLE_BAND_IMAGE_POLICY_HXX
 
-#include "NewImHier.hxx"
+#include "vigra/imagehierarchy.hxx"
 #include <unittest.hxx>
 
 template<class IMAGEPOLICY>                                 // Bei der IMAGEPOLICY handelt es sich bis jetzt nur um GrayImage, spaeter soll SelectBandImage folgen
