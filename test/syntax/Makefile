@@ -14,6 +14,8 @@ endif
 
 include ../Makefile.include
 
+CPPFLAGS := $(LIBCPPFLAGS)
+
 HEADERS=$(shell ls ../../current/include/vigra/*.hxx)
 
 test.cxx: $(HEADERS)
