@@ -9,7 +9,7 @@
 /* warranty, and with no claim as to its suitability for any purpose. */
 /*                                                                    */
 /**********************************************************************/
- 
+
 #ifndef VIGRA_UNIT_TEST_HPP
 #define VIGRA_UNIT_TEST_HPP
 
@@ -19,7 +19,15 @@
 #include <typeinfo>           // for bad_cast, bad_typeid
 #include <exception>          // for exception, bad_exception
 #include <stdexcept>
+#if __GNUC__ >= 3
+#include <sstream>
+#define VIGRA_SSTREAM std::basic_stringstream<char>
+#define VIGRA_SSTREAM_STR(s) s.str().c_str()
+#else
 #include <strstream>
+#define VIGRA_SSTREAM std::strstream
+#define VIGRA_SSTREAM_STR(s) ((s << char()), s.str())
+#endif
 #include <iostream>
 #include <cmath>
 #include "vigra/config.hxx"
@@ -72,7 +80,7 @@
 
 #define VIGRA_ASSERT_MESSAGE(predicate, message) \
     vigra::detail::should_impl((predicate), message, __FILE__, __LINE__)
-    
+
 #define shouldMsg VIGRA_ASSERT_MESSAGE
 
 #define shouldEqual(left, right) \
@@ -100,8 +108,8 @@ namespace detail {
 
 struct errstream
 {
-    std::strstream buf;
-    char const * str() { buf << char(); return buf.str(); }
+    VIGRA_SSTREAM buf;
+    char const * str() { return VIGRA_SSTREAM_STR(buf); }
     template <class T>
     errstream & operator<<(T t) { buf << t;  return *this; }
 };
@@ -113,19 +121,19 @@ inline std::string & exception_checkpoint()
 }
 
 //  A separate reporting function was requested during formal review.
-inline void report_exception( detail::errstream & os, 
+inline void report_exception( detail::errstream & os,
                        const char * name, const char * info )
-{ 
-    os << "Unexpected " << name << " " << info << "\n"; 
+{
+    os << "Unexpected " << name << " " << info << "\n";
     if(exception_checkpoint().size() > 0)
     {
         os << "Last checkpoint: " << exception_checkpoint().c_str() << "\n";
     }
 }
 
-enum { 
-    unexpected_exception = -1, 
-    os_exception = -2, 
+enum {
+    unexpected_exception = -1,
+    os_exception = -2,
     memory_access_violation = -3,
     destructor_failure = -4
 };
@@ -144,14 +152,14 @@ template< class Generator >  // Generator is function object returning int
 int catch_signals( Generator function_object, detail::errstream & err, int timeout )
 {
     int result = 0;
-    __try 
+    __try
     {
         result = function_object();
 #if 0
         result = catch_exceptions(function_object, err, timeout);
 #endif
     }
-    __except (true) 
+    __except (true)
     {
         unsigned long exc = GetExceptionCode();
         switch (exc)
@@ -194,23 +202,23 @@ int catch_signals( Generator function_object, detail::errstream & err, int timeo
     int result;
 
 #if defined(linux) || defined(__linux)
-    signal(SIGFPE, &unit_test_signal_handler); 
-    signal(SIGTRAP, &unit_test_signal_handler); 
-    signal(SIGSEGV, &unit_test_signal_handler); 
-    signal(SIGBUS, &unit_test_signal_handler); 
+    signal(SIGFPE, &unit_test_signal_handler);
+    signal(SIGTRAP, &unit_test_signal_handler);
+    signal(SIGSEGV, &unit_test_signal_handler);
+    signal(SIGBUS, &unit_test_signal_handler);
 #else
-    sigset(SIGFPE, &unit_test_signal_handler); 
-    sigset(SIGTRAP, &unit_test_signal_handler); 
-    sigset(SIGSEGV, &unit_test_signal_handler); 
-    sigset(SIGBUS, &unit_test_signal_handler); 
+    sigset(SIGFPE, &unit_test_signal_handler);
+    sigset(SIGTRAP, &unit_test_signal_handler);
+    sigset(SIGSEGV, &unit_test_signal_handler);
+    sigset(SIGBUS, &unit_test_signal_handler);
 #endif
 
     if(timeout)
     {
 #if defined(linux) || defined(__linux)
-        signal(SIGALRM, &unit_test_signal_handler); 
+        signal(SIGALRM, &unit_test_signal_handler);
 #else
-        sigset(SIGALRM, &unit_test_signal_handler); 
+        sigset(SIGALRM, &unit_test_signal_handler);
 #endif
         alarm(timeout);
     }
@@ -252,16 +260,16 @@ int catch_signals( Generator function_object, detail::errstream & err, int timeo
         alarm(0);
 #if defined(linux) || defined(__linux)
 #else
-        sigrelse(SIGALRM); 
+        sigrelse(SIGALRM);
 #endif
     }
 
 #if defined(linux) || defined(__linux)
 #else
-    sigrelse(SIGFPE); 
-    sigrelse(SIGTRAP); 
-    sigrelse(SIGSEGV); 
-    sigrelse(SIGBUS); 
+    sigrelse(SIGFPE);
+    sigrelse(SIGTRAP);
+    sigrelse(SIGSEGV);
+    sigrelse(SIGBUS);
 #endif
 
     return result;
@@ -298,7 +306,7 @@ int catch_exceptions( Generator function_object, detail::errstream & err, int ti
     //  under some compilers, there is a lot of use of endl in the code below
     //  where a simple '\n' might appear to do.
 
-    //  The rules for catch & arguments are a bit different from function 
+    //  The rules for catch & arguments are a bit different from function
     //  arguments (ISO 15.3 paragraphs 18 & 19). Apparently const isn't
     //  required, but it doesn't hurt and some programmers ask for it.
 
@@ -362,23 +370,27 @@ int catch_exceptions( Generator function_object, detail::errstream & err)
 }
 
 namespace detail {
-  
-struct unit_test_failed 
+
+struct unit_test_failed
 : public std::exception
 {
     unit_test_failed(char const * message)
     : what_(message)
     {}
-    
-    virtual const char * what() const
+
+    virtual ~unit_test_failed() throw()
+    {
+    }
+
+    virtual const char * what() const throw()
     {
         return what_.c_str();
     }
-    
+
     std::string what_;
 };
 
-inline void 
+inline void
 checkpoint_impl(const char * message, const char * file, int line)
 {
     detail::errstream buf;
@@ -386,12 +398,12 @@ checkpoint_impl(const char * message, const char * file, int line)
     exception_checkpoint() = buf.str();
 }
 
-inline void 
+inline void
 should_impl(bool predicate, const char * message, const char * file, int line)
 {
     checkpoint_impl(message, file, line);
     if(!predicate)
-    { 
+    {
         detail::errstream buf;
         buf << message << " (" << file <<":" << line << ")";
         throw unit_test_failed(buf.str()); 
@@ -416,13 +428,13 @@ sequence_equal_impl(Iter1 i1, Iter1 end1, Iter2 i2, const char * file, int line)
 
 /******************Floating point comparison********************************/
 /**
-* See Knuth "The art of computer programming" (Vol II, Ch.4.2) 
+* See Knuth "The art of computer programming" (Vol II, Ch.4.2)
 */
 
 
 template<class FPT>
-inline 
-FPT fpt_abs( FPT arg ) 
+inline
+FPT fpt_abs( FPT arg )
 {
     return arg < 0 ? -arg : arg;
 }
@@ -432,11 +444,11 @@ FPT fpt_abs( FPT arg )
 
 // both f1 and f2 are unsigned here
 template<class FPT>
-inline 
+inline
 FPT safe_fpt_division( FPT f1, FPT f2 )
 {
         /*  ist f1 das absolute minimum (in diesem Fall einfach nur sehr kleine Zahl)
-        *   aber nicht null (1.65242e-28) und f2 = 0, 
+        *   aber nicht null (1.65242e-28) und f2 = 0,
         *   dann tritt die erste Bedingung in Kraft 0<1 && 1.65242e-28 > 0*1.79769e+308 (max)
         *   deshalb schlaegt es fehl sogar wenn min closed at tolarance zu 0 ist ???
         *   Der Vergleich aller Zahlen closed at tolarance zu 0 wuerden fehlschlagen;
@@ -445,12 +457,12 @@ FPT safe_fpt_division( FPT f1, FPT f2 )
         *   0 mit 0 zu Vergleichen bereitet keine Probleme.
         *   Ausweg: evl. eine extra Behandlung der F = 0 ???
         */
-        
-    return  ((f2 < 1) && (f1 > (f2 * vigra::NumericTraits<FPT>::max()))) ? 
+
+    return  ((f2 < 1) && (f1 > (f2 * vigra::NumericTraits<FPT>::max()))) ?
             vigra::NumericTraits<FPT>::max() :
             (((f2 > 1) && (f1 < (f2 * vigra::NumericTraits<FPT>::smallestPositive())) || (f1 == 0)) ? 0 : f1/f2 );
-            
-            
+
+
         /*  Die Multiplikation mit max in 1.ten Bedingung und mit min in der 2.ten ist eine Absicherung gegen
         *   die Owerflow bzw Underflow ???
         */
@@ -461,30 +473,30 @@ FPT safe_fpt_division( FPT f1, FPT f2 )
 template<class FPT>
 class close_at_tolerance {
 public:
-    explicit    close_at_tolerance( FPT tolerance, bool strong_test = true ) 
+    explicit    close_at_tolerance( FPT tolerance, bool strong_test = true )
         : m_strong_test( strong_test ),
           m_tolerance( tolerance ) {}
 
-    explicit    close_at_tolerance( int number_of_rounding_errors, bool strong_test = true ) 
+    explicit    close_at_tolerance( int number_of_rounding_errors, bool strong_test = true )
         : m_strong_test( strong_test ),
           m_tolerance( vigra::NumericTraits<FPT>::epsilon() * number_of_rounding_errors / 2.0 ) {}
-      
+
 
     bool        operator()( FPT left, FPT right ) const
     {
         if (left == 0 && right != 0)
         {
-                return (fpt_abs(right) <= m_tolerance);  
+                return (fpt_abs(right) <= m_tolerance);
         }
         if (right == 0 && left != 0)
         {
-                return (fpt_abs(left) <= m_tolerance);  
+                return (fpt_abs(left) <= m_tolerance);
         }
         FPT diff = fpt_abs( left - right );
         FPT d1   = safe_fpt_division( diff, fpt_abs( right ) );
         FPT d2   = safe_fpt_division( diff, fpt_abs( left ) );
-        
-        return m_strong_test ? (d1 <= m_tolerance && d2 <= m_tolerance) 
+
+        return m_strong_test ? (d1 <= m_tolerance && d2 <= m_tolerance)
                                 : (d1 <= m_tolerance || d2 <= m_tolerance);
     }
 
@@ -495,34 +507,34 @@ private:
 
 /*****************end of float comparison***********************************/
 
-inline void 
+inline void
 tolerance_equal_impl(double left, double right, double epsilon, const char * message, const char * file, int line)
 {
     detail::errstream buf;
     buf << message << " [" << left << " != " << right << "]";
-    
+
     close_at_tolerance<double> fcomparator( epsilon );
     bool compare = fcomparator ( left , right );
-    should_impl(compare, buf.str(), file, line); 
-     
+    should_impl(compare, buf.str(), file, line);
+
 }
 /*
 tolerance_equal_impl(float, float, double, const char *, const char *, int)':
 ../include/unittest.hxx:474: call of overloaded `close_at_tolerance(double &)' is ambiguous
-../include/unittest.hxx:425: candidates are: vigra::detail::close_at_tolerance<float>::close_at_tolerance(float, bool = true) 
+../include/unittest.hxx:425: candidates are: vigra::detail::close_at_tolerance<float>::close_at_tolerance(float, bool = true)
 geaendert in                                      Hier???
 tolerance_equal_impl(float left, float right, double epsilon, const char * message, const char * file, int line)
 */
-inline void 
+inline void
 tolerance_equal_impl(float left, float right, float epsilon, const char * message, const char * file, int line)
 {
     detail::errstream buf;
     buf << message << " [" << left << " != " << right << "]";
-    
+
     close_at_tolerance<float> fcomparator( epsilon );
     bool compare = fcomparator ( left , right );
-    should_impl(compare, buf.str(), file, line); 
-     
+    should_impl(compare, buf.str(), file, line);
+
 }
 
 template <class Iter1, class Iter2, class T>
@@ -538,26 +550,26 @@ sequence_equal_tolerance_impl(Iter1 i1, Iter1 end1, Iter2 i2, T epsilon, const c
 }
 
 template <class Left, class Right>
-inline void 
+inline void
 equal_impl(Left left, Right right, const char * message, const char * file, int line)
 {
     detail::errstream buf;
     buf << message << " [" << left << " != " << right << "]";
-    should_impl(left == right, buf.str(), file, line); 
+    should_impl(left == right, buf.str(), file, line);
 }
 
-inline void 
+inline void
 equal_impl(double left, double right, const char * message, const char * file, int line)
 {
-    tolerance_equal_impl(left, right, 1.0e-16, message, file, line); 
+    tolerance_equal_impl(left, right, 1.0e-16, message, file, line);
 }
 
-inline void 
+inline void
 equal_impl(float left, float right, const char * message, const char * file, int line)
 {
-    tolerance_equal_impl(left, right, 1.0e-6f, message, file, line); 
+    tolerance_equal_impl(left, right, 1.0e-6f, message, file, line);
 }
- 
+
 class test_case
 {
   public:
@@ -567,13 +579,13 @@ class test_case
     {}
 
     virtual ~test_case() {}
-    
+
     virtual int run() = 0;
     virtual void do_init() {}
     virtual void do_run() {}
     virtual void do_destroy() {}
 
-    virtual char const * name() { return name_.c_str(); } 
+    virtual char const * name() { return name_.c_str(); }
     virtual int size() const { return 1; }
 
     std::string name_;
@@ -592,30 +604,30 @@ class test_suite
     : detail::test_case(name),
       size_(0)
     {}
-    
+
     virtual ~test_suite()
     {
-        for(unsigned int i=0; i != testcases_.size(); ++i) 
-            delete testcases_[i];        
+        for(unsigned int i=0; i != testcases_.size(); ++i)
+            delete testcases_[i];
     }
-    
+
     virtual void add(detail::test_case * t, int timeout = 0)
     {
         t->timeout = timeout;
         testcases_.push_back(t);
         size_ += t->size();
     }
-    
+
     virtual int run()
     {
         int failed = 0;
         report_ = std::string("Entering test suite ") + name() + "\n";
-        
-        for(unsigned int i=0; i != testcases_.size(); ++i) 
+
+        for(unsigned int i=0; i != testcases_.size(); ++i)
         {
             int result = testcases_[i]->run();
             report_ += testcases_[i]->report_;
-            
+
             if(detail::critical_error(result))
             {
                 report_ += std::string("\nFatal error - aborting test suite ") + name() + ".\n";
@@ -623,33 +635,33 @@ class test_suite
             }
             else if(detail::unexpected_error(result))
                 failed++;
-            else 
+            else
                 failed += result;
         }
-        
-        if(failed) 
+
+        if(failed)
         {
             detail::errstream buf;
-            buf << "\n" << failed << " of " << size() << 
+            buf << "\n" << failed << " of " << size() <<
                 " tests failed in test suite " << name() << "\n";
             report_ += buf.str();
         }
-        else 
+        else
         {
             detail::errstream buf;
             buf << "All (" << size() <<
                ") tests passed in test suite " << name() << "\n";
             report_ += buf.str();
         }
-        
+
         report_ += std::string("Leaving test suite ") + name() + "\n";
 
         return failed;
     }
-    
+
     virtual int size() const { return size_; }
     virtual std::string report() { return report_; }
-  
+
     std::vector<detail::test_case *> testcases_;
     int size_;
 };
@@ -660,11 +672,11 @@ struct test_case_init_functor
 {
     detail::errstream & buf_;
     test_case * test_case_;
-    
+
     test_case_init_functor(detail::errstream & b, test_case * tc)
     : buf_(b), test_case_(tc)
     {}
-    
+
     int operator()()
     {
         try
@@ -684,11 +696,11 @@ struct test_case_run_functor
 {
     detail::errstream & buf_;
     test_case * test_case_;
-    
+
     test_case_run_functor(detail::errstream & b, test_case * tc)
     : buf_(b), test_case_(tc)
     {}
-    
+
     int operator()()
     {
         try
@@ -708,11 +720,11 @@ struct test_case_destroy_functor
 {
     detail::errstream & buf_;
     test_case *  test_case_;
-    
+
     test_case_destroy_functor(detail::errstream & b, test_case * tc)
     : buf_(b), test_case_(tc)
     {}
-    
+
     int operator()()
     {
         try
@@ -733,42 +745,42 @@ class class_test_case
 : public test_case
 {
   public:
-    
+
     class_test_case(void (TESTCASE::*fct)(), char const * name)
     : test_case(name),
       fct_(fct),
       testcase_(0)
     {}
-    
+
     virtual ~class_test_case()
     {
         delete testcase_;
     }
-    
+
     virtual void do_init()
     {
         testcase_ = new TESTCASE;
     }
-    
+
     int init()
     {
         exception_checkpoint() = "";
         report_ = "";
         int failed = 0;
-        
+
         detail::errstream buf;
         buf << "\nFailure in initialization of " << name() << "\n";
         if(testcase_ != 0)
         {
             buf << "Test case failed to clean up after previous run.\n";
             failed = 1;
-        }   
+        }
         else
         {
             failed = catch_exceptions(
                 detail::test_case_init_functor(buf, this), buf, timeout);
         }
-        
+
         if(failed)
         {
             report_ += buf.str();
@@ -776,49 +788,49 @@ class class_test_case
 
         return failed;
     }
-    
+
     virtual void do_run()
     {
-        if(testcase_ != 0) 
+        if(testcase_ != 0)
             (testcase_->*fct_)();
     }
-    
+
     virtual int run()
     {
         int failed = init();
-        
+
         if(failed)
             return failed;
-        
+
         detail::errstream buf;
         buf << "\nFailure in " << name() << "\n";
-        
+
         failed = catch_exceptions(
             detail::test_case_run_functor(buf, this), buf, timeout);
         if(failed)
             report_ += buf.str();
-            
+
         if(critical_error(failed))
             return failed;
-            
+
         int destruction_failed = destroy();
-        
-        return destruction_failed ? 
-                destruction_failed : 
+
+        return destruction_failed ?
+                destruction_failed :
                 failed;
     }
-    
+
     virtual void do_destroy()
     {
         delete testcase_;
         testcase_ = 0;
     }
-    
+
     int destroy()
     {
         detail::errstream buf;
         buf << "\nFailure in destruction of " << "\n";
-        
+
         int failed = catch_exceptions(
             detail::test_case_destroy_functor(buf, this), buf, timeout);
         if(failed)
@@ -831,34 +843,34 @@ class class_test_case
             return 0;
         }
     }
-    
+
     void (TESTCASE::*fct_)();
     TESTCASE * testcase_;
 };
-    
+
 class function_test_case
 : public test_case
 {
   public:
-    
+
     function_test_case(void (*fct)(), char const * name)
     : test_case(name),
       fct_(fct)
     {}
-    
+
     virtual void do_run()
     {
         (*fct_)();
     }
-    
+
     virtual int run()
     {
         report_ = "";
         exception_checkpoint() = "";
-        
+
         detail::errstream buf;
         buf << "\nFailure in " << name() << "\n";
-        
+
         int failed = catch_exceptions(
             detail::test_case_run_functor(buf, this), buf, timeout);
         if(failed)
@@ -868,7 +880,7 @@ class function_test_case
 
         return failed;
     }
-    
+
     void (*fct_)();
 };
 
@@ -922,16 +934,16 @@ class functor_test_case
 } // namespace detail
 
 template <class TESTCASE>
-inline 
-detail::test_case * 
+inline
+detail::test_case *
 create_test_case(void (TESTCASE::*fct)(), char const * name)
 {
     if(*name == '&') ++name;
     return new detail::class_test_case<TESTCASE>(fct, name);
 }
 
-inline 
-detail::test_case * 
+inline
+detail::test_case *
 create_test_case(void (*fct)(), char const * name)
 {
     if(*name == '&') ++name;
