@@ -189,7 +189,7 @@ inline
 void throw_runtime_error(char const * message, char const * file, int line)
 {
     char what_[1100];
-    sprintf(what_, "\n%.30s\n%.900s\n(%.100s:%d)\n");
+    sprintf(what_, "\n%.900s\n(%.100s:%d)\n", message, file, line);
     throw std::runtime_error(what_); 
 }
 
