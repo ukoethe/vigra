@@ -39,11 +39,11 @@ struct ImageFunctionsTest
         ++i;
         should(i == img.end());
 
-        mask = 1;
+        mask.init(1);
         mask.begin()[0] = 0;
         mask.begin()[8] = 0;
 
-        rgb = col;
+        rgb.init(col);
     }
 
     void copyImageTest()
@@ -446,6 +446,18 @@ struct ImageFunctionsTest
             shouldEqual(2.0*(acc(i) - 1.1), acc(i1));
         }
 
+        RGBImage img2(3,3);
+
+        transformImage(srcImageRange(rgb), destImage(img2), 
+                        linearIntensityTransform(2.0, RGBImage::value_type(0.0, -1.0, -2.0)));
+
+        shouldEqual(img2(0,0), RGBImage::value_type(2.0, 2.0, 2.0));
+
+        transformImage(srcImageRange(rgb), destImage(img2), 
+                        linearIntensityTransform(RGBImage::value_type(2.0, 3.0, 4.0), 
+                                                 RGBImage::value_type(0.0, -1.0, -2.0)));
+
+        shouldEqual(img2(0,0), RGBImage::value_type(2.0, 3.0, 4.0));
     }
 
     void scalarIntensityTransformTest()
@@ -453,7 +465,7 @@ struct ImageFunctionsTest
         Image img1(3,3);
 
         transformImage(srcImageRange(img), destImage(img1),
-					   vigra::linearIntensityTransform<Image::PixelType>(3.3));
+					   linearIntensityTransform<Image::value_type>(3.3));
 
         Image::ScanOrderIterator i = img.begin();
         Image::ScanOrderIterator i1 = img1.begin();
@@ -464,6 +476,13 @@ struct ImageFunctionsTest
             shouldEqual(3.3*acc(i), acc(i1));
         }
 
+        RGBImage img2(3,3);
+
+        transformImage(srcImageRange(rgb), destImage(img2), 
+                        linearIntensityTransform<RGBImage::value_type>(
+                                                 RGBImage::value_type(1.0, 2.0, 3.0)));
+
+        shouldEqual(img2(0,0), RGBImage::value_type(1.0, 4.0, 9.0));
     }
 
     void linearIntensityTransformIfTest()
@@ -491,6 +510,27 @@ struct ImageFunctionsTest
             shouldEqual(2.0*(acc(i) - 1.1), acc(i1));
         }
 
+    }
+
+    void linearRangeMappingTest()
+    {
+        BImage img1(3,3);
+
+        transformImage(srcImageRange(img), destImage(img1),
+					   linearRangeMapping(1.0, 10.0, 0, 255));
+
+        int res[] = {3, 34, 65, 96, 128, 159, 190, 221, 252 };
+        shouldEqualSequence(img1.begin(), img1.end(), res);
+
+        BRGBImage img2(3,3);
+
+        transformImage(srcImageRange(rgb), destImage(img2),
+					   linearRangeMapping(RGBImage::value_type(1.0, 1.0, 1.0),
+                                          RGBImage::value_type(3.0, 3.0, 3.0),
+                                          BRGBImage::value_type(0, 0, 0),
+                                          BRGBImage::value_type(255, 255, 255)));
+
+        shouldEqual(img2(0,0), BRGBImage::value_type(0, 128, 255));
     }
 
     void thresholdTest()
@@ -1062,6 +1102,7 @@ struct ImageFunctionsTestSuite
         add( testCase( &ImageFunctionsTest::linearIntensityTransformTest));
         add( testCase( &ImageFunctionsTest::scalarIntensityTransformTest));
         add( testCase( &ImageFunctionsTest::linearIntensityTransformIfTest));
+        add( testCase( &ImageFunctionsTest::linearRangeMappingTest));
         add( testCase( &ImageFunctionsTest::thresholdTest));
         add( testCase( &ImageFunctionsTest::brightnessContrastTest));
         add( testCase( &ImageFunctionsTest::gradientFunctionTest));
