@@ -24,8 +24,8 @@ AC_SUBST(MAJOR_VERSION)dnl
 AC_SUBST(MINOR_VERSION)dnl
 AC_SUBST(MICRO_VERSION)dnl
 
-AC_ARG_WITH( cc, [  --with-cc : your C compiler [default=gcc]], CC=$with_cc, [if test "x$CC" = "x" ; then CC=gcc ; fi])
-AC_ARG_WITH( cxx, [  --with-cxx : your C++ compiler [default=g++]], CXX=$with_cxx, [if test "x$CXX" = "x" ; then CXX=g++ ; fi])
+AC_ARG_WITH( cc, AC_HELP_STRING([--with-cc], [your C compiler (default=gcc)]), CC=$with_cc, [if test "x$CC" = "x" ; then CC=gcc ; fi])
+AC_ARG_WITH( cxx, AC_HELP_STRING([--with-cxx], [your C++ compiler (default=g++)]), CXX=$with_cxx, [if test "x$CXX" = "x" ; then CXX=g++ ; fi])
 
 AC_CANONICAL_SYSTEM
 
@@ -37,7 +37,7 @@ CXXFLAGS=-O
 LIBCFLAGS=
 LIBCXXFLAGS=
 VIGRA_INCLUDES='-I$(prefix)/include'
-CINCLUDES=
+CINCLUDES="$VIGRA_INCLUDES"
 CXXINCLUDES="$VIGRA_INCLUDES"
 
 AC_PROG_CC
@@ -49,13 +49,13 @@ VIGRA_PROG_INSTALL
 # Configure libtool
 AC_ENABLE_SHARED(no)
 AC_ENABLE_STATIC(yes)
-AC_LIBTOOL_SETUP
+AC_LIBTOOL_SETUP dnl tell autoconf about libtools prerequisites
 AC_PROG_LIBTOOL
 AC_LIBTOOL_CXX
 
 #########################################################
 
-AC_FIND_PACKAGE(tiff, tiff, tiff.h, [support import/export of tiff images [default=no]])
+VIGRA_FIND_PACKAGE(tiff, tiff, tiff.h, [support import/export of tiff images [default=no]])
 if test $with_tiff = "yes";
 then
     TIFF_LIB="-L$with_tifflib -ltiff"
@@ -64,7 +64,7 @@ then
     LIBCXXFLAGS="$LIBCXXFLAGS -DHasTIFF -I$with_tiffinc"
 fi
 
-AC_FIND_PACKAGE(jpeg, jpeg, jpeglib.h, [support import/export of jpeg images [default=no]])
+VIGRA_FIND_PACKAGE(jpeg, jpeg, jpeglib.h, [support import/export of jpeg images [default=no]])
 if test $with_jpeg = "yes";
 then
     JPEG_LIB="-L$with_jpeglib -ljpeg"
@@ -73,7 +73,7 @@ then
     LIBCXXFLAGS="$LIBCXXFLAGS -DHasJPEG -I$with_jpeginc"
 fi
 
-AC_FIND_PACKAGE(fftw, fftw, fftw.h, [support fast Fourier transforms [default=no]])
+VIGRA_FIND_PACKAGE(fftw, fftw, fftw.h, [support fast Fourier transforms [default=no]])
 if test $with_fftw = "yes";
 then
     FFTW_LIB="-L$with_fftwlib -lfftw"

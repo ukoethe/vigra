@@ -1,10 +1,10 @@
 #########################################################
 
-dnl AC_EXTRACT_REGEX(list, regEx)
-dnl variable $regExResult returns the first entry in 'list' that matches the 
+dnl VIGRA_EXTRACT_REGEX(list, regEx)
+dnl variable $regExResult returns the first entry in 'list' that matches the
 dnl regular expression 'regEx', using the 'expr' utility
 dnl $regExResult = "" if nothing is found
-AC_DEFUN(AC_EXTRACT_REGEX, 
+AC_DEFUN(VIGRA_EXTRACT_REGEX,
 [
     regExResult=""
     if test "$1" != ""; then
@@ -19,18 +19,18 @@ AC_DEFUN(AC_EXTRACT_REGEX,
 
 #########################################################
 
-dnl AC_FIND_PACKAGE(packageName, packageLib, packageInc, packageComment)
+dnl VIGRA_FIND_PACKAGE(packageName, packageLib, packageInc, packageComment)
 dnl defines with_packageName=yes/no
 dnl         with_packageNamelib=<path>/empty if not found
 dnl         with_packageNameinc=<path>/empty if not found
 dnl example:
-dnl     AC_FIND_PACKAGE(tiff, tiff, tiff.h, support import/export of tiff images)
-AC_DEFUN(AC_FIND_PACKAGE, 
+dnl     VIGRA_FIND_PACKAGE(tiff, tiff, tiff.h, support import/export of tiff images)
+AC_DEFUN(VIGRA_FIND_PACKAGE,
 [
-    AC_ARG_WITH([$1], [  --with-$1=dir : $4. 
-                    if dir='yes': $1 package files will be searched for in 
+    AC_ARG_WITH([$1], [  --with-$1=dir : $4.
+                    if dir='yes': $1 package files will be searched for in
                        some standard directories.
-                    if dir is a directory: $1 package files will be searched for   
+                    if dir is a directory: $1 package files will be searched for
                        below dir using 'find'.
                     alternatively, you can specify:], ,)
     AC_ARG_WITH([$1lib], [    --with-$1lib=dir : the $1 package's lib directory], ,)
@@ -45,25 +45,25 @@ AC_DEFUN(AC_FIND_PACKAGE,
         fi
         libext=a
     fi
-    
+
     if test "$solibext" = ""; then
         if test "$CYGWIN" = "yes" || test "$MINGW32" = "yes"; then
           solibext="dll"
         else
           solibext="so"
         fi
-    fi  
+    fi
     if test "$CYGWIN" = "yes" || test "$MINGW32" = "yes"; then
       libpre=""
     else
       libpre="lib"
     fi
 
-    
+
     if test ${with_[$1]:-""} = "" -a ${with_[$1]lib:-""} = "" -a ${with_[$1]inc:-""} = ""; then
         with_[$1]="no"
     fi
-    
+
     if test ${with_[$1]:-""} != "no"; then
         AC_MSG_CHECKING([for lib$2 ])
         dirs=""
@@ -81,15 +81,15 @@ AC_DEFUN(AC_FIND_PACKAGE,
             fi
         done
 
-        AC_EXTRACT_REGEX($found, \(.*lib\)/${libpre}$2\.$solibext)
+        VIGRA_EXTRACT_REGEX($found, \(.*lib\)/${libpre}$2\.$solibext)
         if test "$regExResult" = ""; then
-            AC_EXTRACT_REGEX($found, \(.*lib\)/${libpre}$2\.$libext)
+            VIGRA_EXTRACT_REGEX($found, \(.*lib\)/${libpre}$2\.$libext)
         fi
         if test "$regExResult" = ""; then
-            AC_EXTRACT_REGEX($found, \(.*\)/${libpre}$2\.$solibext)
+            VIGRA_EXTRACT_REGEX($found, \(.*\)/${libpre}$2\.$solibext)
         fi
         if test "$regExResult" = ""; then
-            AC_EXTRACT_REGEX($found, \(.*\)/${libpre}$2\.$libext)
+            VIGRA_EXTRACT_REGEX($found, \(.*\)/${libpre}$2\.$libext)
         fi
         if test "$regExResult" = ""; then
             with_[$1]lib=""
@@ -114,9 +114,9 @@ AC_DEFUN(AC_FIND_PACKAGE,
                 found="$found "`find $i -name patsubst([$3], .*/, ) -print 2> /dev/null`
             fi
         done
-        AC_EXTRACT_REGEX($found, \(.*include\)/patsubst([$3], \., \\.))
+        VIGRA_EXTRACT_REGEX($found, \(.*include\)/patsubst([$3], \., \\.))
         if test "$regExResult" = ""; then
-            AC_EXTRACT_REGEX($found, \(.*\)/patsubst([$3], \., \\.))
+            VIGRA_EXTRACT_REGEX($found, \(.*\)/patsubst([$3], \., \\.))
         fi
         if test "$regExResult" = ""; then
             with_[$1]inc=""
@@ -125,7 +125,7 @@ AC_DEFUN(AC_FIND_PACKAGE,
             with_[$1]inc=$regExResult
             AC_MSG_RESULT($with_[$1]inc)
         fi
-        
+
         if test "$with_[$1]lib" = "" -o "$with_[$1]inc" = ""; then
             with_[$1]="no"
             AC_MSG_WARN(  Configuring without [$1] support)
@@ -133,7 +133,7 @@ AC_DEFUN(AC_FIND_PACKAGE,
             with_[$1]="yes"
         fi
     fi
-    
+
 ])
 
 pushdef([VIGRA_PROG_INSTALL],
