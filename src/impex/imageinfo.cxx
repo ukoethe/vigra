@@ -120,7 +120,7 @@ void findImageSequence(const std::string &name_base,
 {
     // find out how many images we have
     char * name, * path, * base;
-    name = std::strdup(name_base.c_str());
+    name = strdup(name_base.c_str());
     base = basename(name);
     path = dirname(name);
     
