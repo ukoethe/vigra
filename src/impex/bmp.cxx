@@ -274,17 +274,17 @@ void BmpDecoderImpl::read_data ()
         read_1bit_data ();
         break;
     case 4:
-        if (info_header.compression)
+        if (info_header.compression) {
             read_rle4_data ();
-        else
+        } else {
             read_4bit_data ();
-        break;
+        } break;
     case 8:
-        if (info_header.compression)
+        if (info_header.compression) {
             read_rle8_data ();
-        else
+        } else {
             read_8bit_data ();
-        break;
+        } break;
     case 24:
         read_rgb_data ();
         break;
@@ -738,9 +738,12 @@ void BmpDecoderImpl::read_rgb_data ()
     // make room for the pixels
     pixels.resize(image_size);
 
-    // padding after each line
-    const unsigned int pad_size = ( 3 * info_header.width ) % 4;
-
+    // padding after each scanline.
+    // citing Kevin D. Quitt's mail to wotsit.org:
+    // In RGB encoding (no compression), when using 8 bits per pixel, lines
+    // must start on a long-word boundary (i.e., low two bits zero).
+    const unsigned int bytes_per_line = (info_header.width*24+31)/8;
+    const unsigned int pad_size = bytes_per_line - 3*info_header.width;
 
     // setup the base pointer at one line after the end
     unsigned char * base = pixels.data() + image_size;
@@ -986,9 +989,8 @@ void BmpEncoderImpl::write_rgb_data()
 {
     const unsigned int line_size = 3 * info_header.width;
     const unsigned int image_size = info_header.height * line_size;
-    unsigned int pad_size = ( 3 * info_header.width ) % 4;
-    if ( pad_size > 0 )
-        pad_size = 4 - pad_size;
+    const unsigned int bytes_per_line = (info_header.width*24+31)/8;
+    const unsigned int pad_size = bytes_per_line - 3*info_header.width;
 
     unsigned char * base = pixels.data() + image_size;
     unsigned char * mover = base;
