@@ -274,6 +274,72 @@ struct ImageFunctionsTest
         should(average() == 5.5);
     }
 
+    void findBoundingRectangleTest()
+    {
+        FindBoundingRectangle rect;
+
+        mask = 0;
+        mask(1,1) = 1;
+        
+        inspectImageIf(srcIterRange(Diff2D(0,0), img.size()), 
+                       maskImage(mask), rect);
+
+        should(rect.upperLeft.x == 1);
+        should(rect.upperLeft.y == 1);
+        should(rect.lowerRight.x == 2);
+        should(rect.lowerRight.y == 2);
+
+        mask(1,0) = 1;
+        
+        inspectImageIf(srcIterRange(Diff2D(0,0), img.size()), 
+                       maskImage(mask), rect);
+
+        should(rect.upperLeft.x == 1);
+        should(rect.upperLeft.y == 0);
+        should(rect.lowerRight.x == 2);
+        should(rect.lowerRight.y == 2);
+
+        mask(0,1) = 1;
+        
+        inspectImageIf(srcIterRange(Diff2D(0,0), img.size()), 
+                       maskImage(mask), rect);
+
+        should(rect.upperLeft.x == 0);
+        should(rect.upperLeft.y == 0);
+        should(rect.lowerRight.x == 2);
+        should(rect.lowerRight.y == 2);
+
+        mask(1,2) = 1;
+        
+        inspectImageIf(srcIterRange(Diff2D(0,0), img.size()), 
+                       maskImage(mask), rect);
+
+        should(rect.upperLeft.x == 0);
+        should(rect.upperLeft.y == 0);
+        should(rect.lowerRight.x == 2);
+        should(rect.lowerRight.y == 3);
+
+        mask(2,1) = 1;
+        
+        inspectImageIf(srcIterRange(Diff2D(0,0), img.size()), 
+                       maskImage(mask), rect);
+
+        should(rect.upperLeft.x == 0);
+        should(rect.upperLeft.y == 0);
+        should(rect.lowerRight.x == 3);
+        should(rect.lowerRight.y == 3);
+
+        FindBoundingRectangle rect1;
+        rect1(Diff2D(4,4));
+        
+        rect(rect1);
+
+        should(rect.upperLeft.x == 0);
+        should(rect.upperLeft.y == 0);
+        should(rect.lowerRight.x == 5);
+        should(rect.lowerRight.y == 5);
+    }
+
     void arrayOfRegionStatisticsTest()
     {
         BImage labels(3,3);
@@ -770,6 +836,7 @@ struct ImageFunctionsTestSuite
         add( testCase( &ImageFunctionsTest::findMinMaxIfTest));
         add( testCase( &ImageFunctionsTest::findAverageTest));
         add( testCase( &ImageFunctionsTest::findAverageIfTest));
+        add( testCase( &ImageFunctionsTest::findBoundingRectangleTest));
         add( testCase( &ImageFunctionsTest::arrayOfRegionStatisticsTest));
         add( testCase( &ImageFunctionsTest::arrayOfRegionStatisticsIfTest));
         add( testCase( &ImageFunctionsTest::writeArrayOfRegionStatisticsTest));
