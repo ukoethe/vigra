@@ -685,25 +685,41 @@ class FFTWPhaseAccessor
     Transform</a> package to perform Fourier transformations. VIGRA
     provides a wrapper for FFTW's complex number type (FFTWComplex),
     but FFTW's functions are used verbatim. If the image is stored as
-    a FFTWComplexImage, a FFT is performed like this:
+    a FFTWComplexImage, the simplest call to an FFT function is like this:
 
     \code
     vigra::FFTWComplexImage spatial(width,height), fourier(width,height);
     ... // fill image with data
 
-    // create a plan for optimal performance
-    fftwnd_plan forwardPlan=
-        fftw2d_create_plan(height, width, FFTW_FORWARD, FFTW_ESTIMATE );
-
-    // calculate FFT
-    fftwnd_one(forwardPlan, spatial.begin(), fourier.begin());
+    // create a plan with estimated performance optimization
+    fftw_plan forwardPlan = fftw_plan_dft_2d(height, width, 
+                                (fftw_complex *)spatial.begin(), (fftw_complex *)fourier.begin(), 
+                                FFTW_FORWARD, FFTW_ESTIMATE );
+    // calculate FFT (this can be repeated as often as needed, 
+    //                with fresh data written into the source array)
+    fftw_execute(forwardPlan);
+    
+    // release the plan memory
+    fftw_destroy_plan(forwardPlan);
+    
+    // likewise for the inverse transform
+    fftw_plan backwardPlan = fftw_plan_dft_2d(height, width, 
+                                 (fftw_complex *)fourier.begin(), (fftw_complex *)spatial.begin(), 
+                                 FFTW_BACKWARD, FFTW_ESTIMATE);        
+    fftw_execute(backwardPlan);
+    fftw_destroy_plan(backwardPlan);
+    
+    // do not forget to normalize the result according to the image size
+    transformImage(srcImageRange(spatial), destImage(spatial),
+                   std::bind1st(std::multiplies<FFTWComplex>(), 1.0 / width / height));
     \endcode
 
     Note that in the creation of a plan, the height must be given
     first. Note also that <TT>spatial.begin()</TT> may only be passed
-    to <TT>fftwnd_one</TT> if the transform shall be applied to the
-    entire image. When you want to retrict operation to an ROI, you
-    create a copy of the ROI in an image of appropriate size.
+    to <TT>fftw_plan_dft_2d</TT> if the transform shall be applied to the
+    entire image. When you want to restrict operation to an ROI, you
+    can create a copy of the ROI in an image of appropriate size, or
+    you may use the Guru interface to FFTW. 
 
     More information on using FFTW can be found <a href="http://www.fftw.org/doc/">here</a>.
 
@@ -792,18 +808,18 @@ class FFTWPhaseAccessor
     vigra::FFTWComplexImage spatial(width,height), fourier(width,height);
     ... // fill image with data
 
-    // create a plan for optimal performance
-    fftwnd_plan forwardPlan=
-        fftw2d_create_plan(height, width, FFTW_FORWARD, FFTW_ESTIMATE );
-
+    // create a plan with estimated performance optimization
+    fftw_plan forwardPlan = fftw_plan_dft_2d(height, width, 
+                                (fftw_complex *)spatial.begin(), (fftw_complex *)fourier.begin(), 
+                                FFTW_FORWARD, FFTW_ESTIMATE );
     // calculate FFT
-    fftwnd_one(forwardPlan, spatial.begin(), fourier.begin());
+    fftw_execute(forwardPlan);
 
     vigra::FFTWComplexImage rearrangedFourier(width, height);
     moveDCToCenter(srcImageRange(fourier), destImage(rearrangedFourier));
 
-    //delete the plan
-    fftwnd_destroy_plan(forwardPlan);
+    // delete the plan
+    fftw_destroy_plan(forwardPlan);
     \endcode
 */
 template <class SrcImageIterator, class SrcAccessor,
@@ -1000,31 +1016,10 @@ inline void moveDCToUpperLeft(
     \endcode
 
     For inspection of the result, \ref FFTWMagnitudeAccessor might be
-    useful.
-
-    As mentioned, you can pass along two FFTW-plans. This is useful to
-    speed up the application of many filters of the same size. Look into the FFTW
-    documentation for details. You can create optimized plans like this:
-
-    \code
-    // note that the height comes before the width here!
-    fftwnd_plan forwardPlan= fftw2d_create_plan(h, w, FFTW_FORWARD, FFTW_MEASURE );
-    fftwnd_plan backwardPlan= fftw2d_create_plan(h, w, FFTW_BACKWARD, FFTW_MEASURE | FFTW_IN_PLACE);
-
-    applyFourierFilter(srcImageRange(image), srcImage(filter), result,
-                       forwardPlan, backwardPlan);
-    \endcode
-
-    <em>Note</em>: The creation of the plans in this way can take
-    several seconds - the FFTW library will measure different possible
-    implementations to decide which one is the fastest for <em>this
-    specific environment</em>. The result of those measurements is
-    called "wisdom" in the FFTW slang and there are functions to save
-    it to disk.
-
+    useful. If you want to apply the same filter repeatedly, it may be more
+    efficient to use the FFTW functions directly with FFTW plans optimized
+    for good performance.
 */
-
-// applyFourierFilter versions without fftwnd_plans:
 template <class SrcImageIterator, class SrcAccessor,
           class FilterImageIterator, class FilterAccessor,
           class DestImageIterator, class DestAccessor>
@@ -1206,13 +1201,6 @@ void applyFourierFilterImplNormalization(FFTWComplexImage const & srcImage,
                                       SrcImageIterator srcLowerRight, SrcAccessor sa,
                                       const ImageArray<FilterType> &filters,
                                       ImageArray<FFTWComplexImage> &results)
-
-        template <class SrcImageIterator, class SrcAccessor, class FilterType>
-        void applyFourierFilterFamily(SrcImageIterator srcUpperLeft,
-                                      SrcImageIterator srcLowerRight, SrcAccessor sa,
-                                      const ImageArray<FilterType> &filters,
-                                      ImageArray<FFTWComplexImage> &results,
-                                      const fftwnd_plan &forwardPlan, const fftwnd_plan &backwardPlan)
     }
     \endcode
 
@@ -1224,13 +1212,6 @@ void applyFourierFilterImplNormalization(FFTWComplexImage const & srcImage,
         void applyFourierFilterFamily(triple<SrcImageIterator, SrcImageIterator, SrcAccessor> src,
                                       const ImageArray<FilterType> &filters,
                                       ImageArray<FFTWComplexImage> &results)
-
-        template <class SrcImageIterator, class SrcAccessor, class FilterType>
-        inline
-        void applyFourierFilterFamily(triple<SrcImageIterator, SrcImageIterator, SrcAccessor> src,
-                                      const ImageArray<FilterType> &filters,
-                                      ImageArray<FFTWComplexImage> &results,
-                                      const fftwnd_plan &forwardPlan, const fftwnd_plan &backwardPlan)
     }
     \endcode
 
@@ -1253,12 +1234,7 @@ void applyFourierFilterImplNormalization(FFTWComplexImage const & srcImage,
 
     vigra::applyFourierFilterFamily(srcImageRange(image), filters, results);
     \endcode
-
-    For details about the FFTW-plans, see the \ref
-    applyFourierFilter() example.
 */
-
-// applyFourierFilterFamily versions without fftwnd_plans:
 template <class SrcImageIterator, class SrcAccessor,
           class FilterType, class DestImage>
 inline
@@ -1371,31 +1347,145 @@ void applyFourierFilterFamilyImpl(
     fftw_destroy_plan(backwardPlan);
 }
 
-/********************************************************************/
+/********************************************************/
+/*                                                      */
+/*                fourierTransformReal                  */
+/*                                                      */
+/********************************************************/
 
+/** \brief Real Fourier transforms for even and odd boundary conditions
+           (aka. cosine and sine transforms).
+
+    If the image is real and has even symmetry, its Fourier transform
+    is also real and has even symmetry. The Fourier transform of a real image with odd
+    symmetry is imaginary and has odd symmetry. In either case, only about a quarter
+    of the pixels need to be stored because the rest can be calculated from the symmetry
+    properties. This is especially useful, if the original image is implicitly assumed
+    to have reflective or anti-reflective boundary conditions. Then the "negative"
+    pixel locations are defined as
+
+    \code
+    even (reflective boundary conditions):      f[-x] = f[x]     (x = 1,...,N-1)
+    odd (anti-reflective boundary conditions):  f[-1] = 0
+                                                f[-x] = -f[x-2]  (x = 2,...,N-1)
+    \endcode
+    
+    end similar at the other boundary (see the FFTW documentation for details). 
+    This has the advantage that more efficient Fourier transforms that use only
+    real numbers can be implemented. These are also known as cosine and sine transforms
+    respectively. 
+    
+    If you use the odd transform it is important to note that in the Fourier domain,
+    the DC component is always zero and is therefore dropped from the data structure.
+    This means that index 0 in an odd symmetric Fourier domain image refers to
+    the <i>first</i> harmonic. This is especially important if an image is first 
+    cosine transformed (even symmetry), then in the Fourier domain multiplied 
+    with an odd symmetric filter (e.g. a first derivative) and finally transformed
+    back to the spatial domain with a sine transform (odd symmetric). For this to work
+    properly the image must be shifted left or up by one pixel (depending on whether
+    the x- or y-axis is odd symmetric) before the inverse transform can be applied.
+    (see example below).
+    
+    The real Fourier transform functions are named <tt>fourierTransformReal??</tt>
+    where the questions marks stand for either <tt>E</tt> or <tt>O</tt> indicating
+    whether the x- and y-axis is to be transformed using even or odd symmetry.
+    The same functions can be used for both the forward and inverse transforms,
+    only the normalization changes. For signal processing, the following 
+    normalization factors are most appropriate:
+    
+    \code
+                          forward             inverse
+    ------------------------------------------------------------
+    X even, Y even           1.0         4.0 * (w-1) * (h-1)
+    X even, Y odd           -1.0        -4.0 * (w-1) * (h+1)
+    X odd,  Y even          -1.0        -4.0 * (w+1) * (h-1)
+    X odd,  Y odd            1.0         4.0 * (w+1) * (h+1)
+    \endcode
+
+    where <tt>w</tt> and <tt>h</tt> denote the image width and height.
+
+    <b> Declarations:</b>
+
+    pass arguments explicitly:
+    \code
+    namespace vigra {
+        template <class SrcTraverser, class SrcAccessor,
+                  class DestTraverser, class DestAccessor>
+        void
+        fourierTransformRealEE(SrcTraverser sul, SrcTraverser slr, SrcAccessor src,
+                               DestTraverser dul, DestAccessor dest, fftw_real norm);
+                               
+        fourierTransformRealEO, fourierTransformRealOE, fourierTransformRealOO likewise
+    }
+    \endcode
+
+
+    use argument objects in conjuction with \ref ArgumentObjectFactories:
+    \code
+    namespace vigra {
+        template <class SrcTraverser, class SrcAccessor,
+                  class DestTraverser, class DestAccessor>
+        void
+        fourierTransformRealEE(triple<SrcTraverser, SrcTraverser, SrcAccessor> src,
+                               pair<DestTraverser, DestAccessor> dest, fftw_real norm);
+                               
+        fourierTransformRealEO, fourierTransformRealOE, fourierTransformRealOO likewise
+    }
+    \endcode
+
+    <b> Usage:</b>
+
+        <b>\#include</b> "<a href="fftw3_8hxx-source.html">vigra/fftw3.hxx</a>"<br>
+        Namespace: vigra
+
+    \code
+    vigra::FImage spatial(width,height), fourier(width,height);
+    ... // fill image with data
+
+    // forward cosine transform == reflective boundary conditions
+    fourierTransformRealEE(srcImageRange(spatial), destImage(fourier), (fftw_real)1.0);
+
+    // multiply with a first derivative of Gaussian in x-direction
+    for(int y = 0; y < height; ++y)
+    {
+        for(int x = 1; x < width; ++x)
+        {
+            double dx = x * M_PI / (width - 1);
+            double dy = y * M_PI / (height - 1);
+            fourier(x-1, y) = fourier(x, y) * dx * exp(-(dx*dx + dy*dy) * scale*scale / 2.0);
+        }
+        fourier(width-1, y) = 0.0;
+    }
+    
+    // inverse transform -- odd symmetry in x-direction, even in y,
+    //                      due to symmetry of the filter
+    fourierTransformRealOE(srcImageRange(fourier), destImage(spatial), 
+                           (fftw_real)-4.0 * (width+1) * (height-1));
+    \endcode
+*/
 template <class SrcTraverser, class SrcAccessor,
           class DestTraverser, class DestAccessor>
 inline void
-realFourierTransformXEvenYEven(triple<SrcTraverser, SrcTraverser, SrcAccessor> src,
+fourierTransformRealEE(triple<SrcTraverser, SrcTraverser, SrcAccessor> src,
                                pair<DestTraverser, DestAccessor> dest, fftw_real norm)
 {
-    realFourierTransformXEvenYEven(src.first, src.second, src.third,
+    fourierTransformRealEE(src.first, src.second, src.third,
                                    dest.first, dest.second, norm);
 }
 
 template <class SrcTraverser, class SrcAccessor,
           class DestTraverser, class DestAccessor>
 inline void
-realFourierTransformXEvenYEven(SrcTraverser sul, SrcTraverser slr, SrcAccessor src,
+fourierTransformRealEE(SrcTraverser sul, SrcTraverser slr, SrcAccessor src,
                                DestTraverser dul, DestAccessor dest, fftw_real norm)
 {
-    realFourierTransformWorkImageImpl(sul, slr, src, dul, dest,
+    fourierTransformRealWorkImageImpl(sul, slr, src, dul, dest,
                                       norm, FFTW_REDFT00, FFTW_REDFT00);
 }
 
 template <class DestTraverser, class DestAccessor>
 inline void
-realFourierTransformXEvenYEven(
+fourierTransformRealEE(
          FFTWRealImage::const_traverser sul,
          FFTWRealImage::const_traverser slr,
          FFTWRealImage::Accessor src,
@@ -1405,10 +1495,10 @@ realFourierTransformXEvenYEven(
 
     // test for right memory layout (fftw expects a width*height fftw_real array)
     if (&(*(sul + Diff2D(w, 0))) == &(*(sul + Diff2D(0, 1))))
-        realFourierTransformImpl(sul, slr, dul, dest,
+        fourierTransformRealImpl(sul, slr, dul, dest,
                                  norm, FFTW_REDFT00, FFTW_REDFT00);
     else
-        realFourierTransformWorkImageImpl(sul, slr, src, dul, dest,
+        fourierTransformRealWorkImageImpl(sul, slr, src, dul, dest,
                                  norm, FFTW_REDFT00, FFTW_REDFT00);
 }
 
@@ -1417,26 +1507,26 @@ realFourierTransformXEvenYEven(
 template <class SrcTraverser, class SrcAccessor,
           class DestTraverser, class DestAccessor>
 inline void
-realFourierTransformXOddYEven(triple<SrcTraverser, SrcTraverser, SrcAccessor> src,
+fourierTransformRealOE(triple<SrcTraverser, SrcTraverser, SrcAccessor> src,
                                pair<DestTraverser, DestAccessor> dest, fftw_real norm)
 {
-    realFourierTransformXOddYEven(src.first, src.second, src.third,
+    fourierTransformRealOE(src.first, src.second, src.third,
                                    dest.first, dest.second, norm);
 }
 
 template <class SrcTraverser, class SrcAccessor,
           class DestTraverser, class DestAccessor>
 inline void
-realFourierTransformXOddYEven(SrcTraverser sul, SrcTraverser slr, SrcAccessor src,
+fourierTransformRealOE(SrcTraverser sul, SrcTraverser slr, SrcAccessor src,
                                DestTraverser dul, DestAccessor dest, fftw_real norm)
 {
-    realFourierTransformWorkImageImpl(sul, slr, src, dul, dest,
+    fourierTransformRealWorkImageImpl(sul, slr, src, dul, dest,
                                       norm, FFTW_RODFT00, FFTW_REDFT00);
 }
 
 template <class DestTraverser, class DestAccessor>
 inline void
-realFourierTransformXOddYEven(
+fourierTransformRealOE(
          FFTWRealImage::const_traverser sul,
          FFTWRealImage::const_traverser slr,
          FFTWRealImage::Accessor src,
@@ -1446,10 +1536,10 @@ realFourierTransformXOddYEven(
 
     // test for right memory layout (fftw expects a width*height fftw_real array)
     if (&(*(sul + Diff2D(w, 0))) == &(*(sul + Diff2D(0, 1))))
-        realFourierTransformImpl(sul, slr, dul, dest,
+        fourierTransformRealImpl(sul, slr, dul, dest,
                                  norm, FFTW_RODFT00, FFTW_REDFT00);
     else
-        realFourierTransformWorkImageImpl(sul, slr, src, dul, dest,
+        fourierTransformRealWorkImageImpl(sul, slr, src, dul, dest,
                                  norm, FFTW_RODFT00, FFTW_REDFT00);
 }
 
@@ -1458,26 +1548,26 @@ realFourierTransformXOddYEven(
 template <class SrcTraverser, class SrcAccessor,
           class DestTraverser, class DestAccessor>
 inline void
-realFourierTransformXEvenYOdd(triple<SrcTraverser, SrcTraverser, SrcAccessor> src,
+fourierTransformRealEO(triple<SrcTraverser, SrcTraverser, SrcAccessor> src,
                                pair<DestTraverser, DestAccessor> dest, fftw_real norm)
 {
-    realFourierTransformXEvenYOdd(src.first, src.second, src.third,
+    fourierTransformRealEO(src.first, src.second, src.third,
                                    dest.first, dest.second, norm);
 }
 
 template <class SrcTraverser, class SrcAccessor,
           class DestTraverser, class DestAccessor>
 inline void
-realFourierTransformXEvenYOdd(SrcTraverser sul, SrcTraverser slr, SrcAccessor src,
+fourierTransformRealEO(SrcTraverser sul, SrcTraverser slr, SrcAccessor src,
                                DestTraverser dul, DestAccessor dest, fftw_real norm)
 {
-    realFourierTransformWorkImageImpl(sul, slr, src, dul, dest,
+    fourierTransformRealWorkImageImpl(sul, slr, src, dul, dest,
                                       norm, FFTW_REDFT00, FFTW_RODFT00);
 }
 
 template <class DestTraverser, class DestAccessor>
 inline void
-realFourierTransformXEvenYOdd(
+fourierTransformRealEO(
          FFTWRealImage::const_traverser sul,
          FFTWRealImage::const_traverser slr,
          FFTWRealImage::Accessor src,
@@ -1487,10 +1577,10 @@ realFourierTransformXEvenYOdd(
 
     // test for right memory layout (fftw expects a width*height fftw_real array)
     if (&(*(sul + Diff2D(w, 0))) == &(*(sul + Diff2D(0, 1))))
-        realFourierTransformImpl(sul, slr, dul, dest,
+        fourierTransformRealImpl(sul, slr, dul, dest,
                                  norm, FFTW_REDFT00, FFTW_RODFT00);
     else
-        realFourierTransformWorkImageImpl(sul, slr, src, dul, dest,
+        fourierTransformRealWorkImageImpl(sul, slr, src, dul, dest,
                                  norm, FFTW_REDFT00, FFTW_RODFT00);
 }
 
@@ -1499,26 +1589,26 @@ realFourierTransformXEvenYOdd(
 template <class SrcTraverser, class SrcAccessor,
           class DestTraverser, class DestAccessor>
 inline void
-realFourierTransformXOddYOdd(triple<SrcTraverser, SrcTraverser, SrcAccessor> src,
+fourierTransformRealOO(triple<SrcTraverser, SrcTraverser, SrcAccessor> src,
                                pair<DestTraverser, DestAccessor> dest, fftw_real norm)
 {
-    realFourierTransformXOddYOdd(src.first, src.second, src.third,
+    fourierTransformRealOO(src.first, src.second, src.third,
                                    dest.first, dest.second, norm);
 }
 
 template <class SrcTraverser, class SrcAccessor,
           class DestTraverser, class DestAccessor>
 inline void
-realFourierTransformXOddYOdd(SrcTraverser sul, SrcTraverser slr, SrcAccessor src,
+fourierTransformRealOO(SrcTraverser sul, SrcTraverser slr, SrcAccessor src,
                                DestTraverser dul, DestAccessor dest, fftw_real norm)
 {
-    realFourierTransformWorkImageImpl(sul, slr, src, dul, dest,
+    fourierTransformRealWorkImageImpl(sul, slr, src, dul, dest,
                                       norm, FFTW_RODFT00, FFTW_RODFT00);
 }
 
 template <class DestTraverser, class DestAccessor>
 inline void
-realFourierTransformXOddYOdd(
+fourierTransformRealOO(
          FFTWRealImage::const_traverser sul,
          FFTWRealImage::const_traverser slr,
          FFTWRealImage::Accessor src,
@@ -1528,10 +1618,10 @@ realFourierTransformXOddYOdd(
 
     // test for right memory layout (fftw expects a width*height fftw_real array)
     if (&(*(sul + Diff2D(w, 0))) == &(*(sul + Diff2D(0, 1))))
-        realFourierTransformImpl(sul, slr, dul, dest,
+        fourierTransformRealImpl(sul, slr, dul, dest,
                                  norm, FFTW_RODFT00, FFTW_RODFT00);
     else
-        realFourierTransformWorkImageImpl(sul, slr, src, dul, dest,
+        fourierTransformRealWorkImageImpl(sul, slr, src, dul, dest,
                                  norm, FFTW_RODFT00, FFTW_RODFT00);
 }
 
@@ -1540,21 +1630,21 @@ realFourierTransformXOddYOdd(
 template <class SrcTraverser, class SrcAccessor,
           class DestTraverser, class DestAccessor>
 void
-realFourierTransformWorkImageImpl(SrcTraverser sul, SrcTraverser slr, SrcAccessor src,
+fourierTransformRealWorkImageImpl(SrcTraverser sul, SrcTraverser slr, SrcAccessor src,
                                   DestTraverser dul, DestAccessor dest,
                                   fftw_real norm, fftw_r2r_kind kindx, fftw_r2r_kind kindy)
 {
     FFTWRealImage workImage(slr - sul);
     copyImage(srcIterRange(sul, slr, src), destImage(workImage));
     FFTWRealImage const & cworkImage = workImage;
-    realFourierTransformImpl(cworkImage.upperLeft(), cworkImage.lowerRight(),
+    fourierTransformRealImpl(cworkImage.upperLeft(), cworkImage.lowerRight(),
                              dul, dest, norm, kindx, kindy);
 }
 
 
 template <class DestTraverser, class DestAccessor>
 void
-realFourierTransformImpl(
+fourierTransformRealImpl(
          FFTWRealImage::const_traverser sul,
          FFTWRealImage::const_traverser slr,
          DestTraverser dul, DestAccessor dest,
