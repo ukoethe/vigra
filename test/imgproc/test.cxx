@@ -511,6 +511,45 @@ struct ImageFunctionsTest
         should(col.green() < rgbf(col).green());
         should(col.blue() < rgbf(col).blue());
     }
+    
+    void gradientFunctionTest()
+    {
+        RGBImage in(3,3);
+        
+        for(int y=0; y<3; ++y)
+        {
+            for(int x=0; x<3; ++x)
+            {
+                in(x,y) = vigra::RGBValue<float>(float(x+y));
+            }
+        }
+        
+        Image res(3,3);
+        
+        gradientBasedTransform(
+          srcImageRange(in, vigra::RedAccessor<vigra::RGBValue<float> >()), 
+          destImage(res), vigra::MagnitudeFunctor<float>());
+        
+        for(int y=0; y<3; ++y)
+        {
+            for(int x=0; x<3; ++x)
+            {
+                should(fabs(res(x,y) - std::sqrt(2.0)) < 1e-6);
+            }
+        }
+        
+        gradientBasedTransform(
+          srcImageRange(in), 
+          destImage(res), vigra::RGBGradientMagnitudeFunctor<float>());
+        
+        for(int y=0; y<3; ++y)
+        {
+            for(int x=0; x<3; ++x)
+            {
+                should(fabs(res(x,y) - std::sqrt(6.0)) < 1e-6);
+            }
+        }
+    }
 
     void additionTest()
     {
@@ -879,6 +918,7 @@ struct ImageFunctionsTestSuite
         add( testCase( &ImageFunctionsTest::linearIntensityTransformIfTest));
         add( testCase( &ImageFunctionsTest::thresholdTest));
         add( testCase( &ImageFunctionsTest::brightnessContrastTest));
+        add( testCase( &ImageFunctionsTest::gradientFunctionTest));
         add( testCase( &ImageFunctionsTest::additionTest));
         add( testCase( &ImageFunctionsTest::additionIfTest));
         add( testCase( &ImageFunctionsTest::resizeNoInterpolationTest));
