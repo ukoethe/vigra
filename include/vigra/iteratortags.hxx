@@ -26,6 +26,8 @@
 
 struct image_traverser_tag {};
 
+struct multi_dimensional_traverser_tag {};
+
 struct forward_circulator_tag {};
 
 struct bidirectional_circulator_tag {};
