@@ -12,7 +12,7 @@
 	<Configurations>
 		<Configuration
 			Name="Debug|Win32"
-			OutputDirectory="."
+			OutputDirectory=".\Debug"
 			IntermediateDirectory=".\Debug"
 			ConfigurationType="1"
 			UseOfMFC="0"
@@ -23,7 +23,7 @@
 				Optimization="0"
 				AdditionalIncludeDirectories="..\..\include"
 				PreprocessorDefinitions="WIN32,_DEBUG,_CONSOLE"
-				RuntimeLibrary="5"
+				RuntimeLibrary="3"
 				UsePrecompiledHeader="2"
 				PrecompiledHeaderFile=".\Debug/watershed.pch"
 				AssemblerListingLocation=".\Debug/"
@@ -38,7 +38,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalOptions="/MACHINE:I386"
-				AdditionalDependencies="vigraimpex.lib libjpeg.lib libtiff.lib odbc32.lib odbccp32.lib"
+				AdditionalDependencies="libjpeg.lib libtiff.lib libpng13.lib"
 				OutputFile="./watershed.exe"
 				LinkIncremental="2"
 				SuppressStartupBanner="TRUE"
@@ -72,7 +72,7 @@
 		</Configuration>
 		<Configuration
 			Name="Release|Win32"
-			OutputDirectory=".\Release"
+			OutputDirectory=".\"
 			IntermediateDirectory=".\Release"
 			ConfigurationType="1"
 			UseOfMFC="0"

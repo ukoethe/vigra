@@ -41,7 +41,7 @@ RSC=rc.exe
 # PROP Intermediate_Dir "Release6.0"
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /YX /FD /c
-# ADD CPP /nologo /MD /W3 /GX /O2 /I "..\..\include" /I "..\..\..\jpeg-6b" /I "..\..\..\tiff-v3.5.7\libtiff" /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "HasJPEG" /D "HasTIFF" /YX /FD /c
+# ADD CPP /nologo /MD /W3 /GX /O2 /I "..\..\include" /I "..\..\..\jpeg-6b" /I "..\..\..\tiff-v3.5.7\libtiff" /D "NDEBUG" /D "WIN32" /D "_WINDOWS" /D "HasJPEG" /D "HasTIFF" /YX /FD /c
 # ADD BASE RSC /l 0x407
 # ADD RSC /l 0x407
 BSC32=bscmake.exe
@@ -64,7 +64,7 @@ LIB32=link.exe -lib
 # PROP Intermediate_Dir "Debug"
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /W3 /GX /Z7 /Od /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /YX /FD /c
-# ADD CPP /nologo /W3 /GX /Z7 /Od /I "..\..\..\tiffinclude" /I "..\..\..\jpeginclude" /I "..\..\..\jpeg-6b" /I "..\..\include" /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "HasTIFF" /D "HasJPEG" /YX /FD /c
+# ADD CPP /nologo /MDd /W3 /GX /Z7 /Od /I "..\..\..\tiffinclude" /I "..\..\..\jpeginclude" /I "..\..\include" /I "..\..\..\jpeg-6b" /I "..\..\..\tiff-v3.5.7\libtiff" /D "_DEBUG" /D "WIN32" /D "_WINDOWS" /D "HasJPEG" /D "HasTIFF" /YX /FD /c
 # ADD BASE RSC /l 0x407
 # ADD RSC /l 0x407
 BSC32=bscmake.exe
@@ -72,7 +72,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LIB32=link.exe -lib
 # ADD BASE LIB32 /nologo
-# ADD LIB32 /nologo /out:"..\..\lib\windows\vigraimpex.lib"
+# ADD LIB32 /nologo /out:"Debug6.0\vigraimpex.lib"
 
 !ENDIF 
 
@@ -82,87 +82,48 @@ LIB32=link.exe -lib
 # Name "impex - Win32 Debug"
 # Begin Source File
 
-SOURCE=.\block_read.c
+SOURCE=.\bmp.cxx
 # End Source File
 # Begin Source File
 
-SOURCE=.\bmp.c
+SOURCE=.\byteorder.cxx
 # End Source File
 # Begin Source File
 
-SOURCE=.\colors.c
+SOURCE=.\codecmanager.cxx
 # End Source File
 # Begin Source File
 
-SOURCE=.\cr_image.c
+SOURCE=.\gif.cxx
 # End Source File
 # Begin Source File
 
-SOURCE=.\error.c
+SOURCE=.\imageinfo.cxx
 # End Source File
 # Begin Source File
 
-SOURCE=.\freeimage.c
+SOURCE=.\jpeg.cxx
 # End Source File
 # Begin Source File
 
-SOURCE=.\fullpath.c
+SOURCE=.\png.cxx
+
+!IF  "$(CFG)" == "impex - Win32 Release"
+
+# SUBTRACT CPP /I "..\..\..\tiff-v3.5.7\libtiff"
+
+!ELSEIF  "$(CFG)" == "impex - Win32 Debug"
+
+!ENDIF 
+
 # End Source File
 # Begin Source File
 
-SOURCE=.\gif.c
+SOURCE=.\pnm.cxx
 # End Source File
 # Begin Source File
 
-SOURCE=.\image.c
-# End Source File
-# Begin Source File
-
-SOURCE=.\imagesize.c
-# End Source File
-# Begin Source File
-
-SOURCE=.\impex.cxx
-# End Source File
-# Begin Source File
-
-SOURCE=.\jpeg.c
-# End Source File
-# Begin Source File
-
-SOURCE=.\machorder.c
-# End Source File
-# Begin Source File
-
-SOURCE=.\machtype.c
-# End Source File
-# Begin Source File
-
-SOURCE=.\nt.c
-# End Source File
-# Begin Source File
-
-SOURCE=.\order.c
-# End Source File
-# Begin Source File
-
-SOURCE=.\pnm.c
-# End Source File
-# Begin Source File
-
-SOURCE=.\quantize.c
-# End Source File
-# Begin Source File
-
-SOURCE=.\readheader.c
-# End Source File
-# Begin Source File
-
-SOURCE=.\readimage.c
-# End Source File
-# Begin Source File
-
-SOURCE=.\sun.c
+SOURCE=.\sun.cxx
 # End Source File
 # Begin Source File
 
@@ -170,19 +131,11 @@ SOURCE=.\tiff.cxx
 # End Source File
 # Begin Source File
 
-SOURCE=.\utility.c
+SOURCE=.\viff.cxx
 # End Source File
 # Begin Source File
 
-SOURCE=.\utils.c
-# End Source File
-# Begin Source File
-
-SOURCE=.\viff.c
-# End Source File
-# Begin Source File
-
-SOURCE=.\writeimage.c
+SOURCE=.\void_vector.cxx
 # End Source File
 # End Target
 # End Project
