@@ -24,6 +24,13 @@
 
 namespace vigra {
 
+template <int N>
+class MetaInt
+{
+  public:
+    enum { value = N };
+};
+
 struct VigraTrueType
 {
    enum { asBool = true };
