@@ -22,7 +22,14 @@
       
       \item Added \Ref{BrightnessContrastFunctor}.
       
-      \item Added \URL[resize ]{Examples.html} example.
+      \item Added \Ref{greadientBasedTransformation}() and related 
+            \Ref{MagnitudeFunctor} and \Ref{RGBGradientMagnitudeFunctor}.
+      
+      \item Added \Ref{nonlinearDiffusion}().
+      
+      \item Added more smoothing methods to \URL[smooth]{Examples.html} example.
+      
+      \item Added \URL[resize]{Examples.html} example.
       
       \item Minor corrections and bug fixes.
       
