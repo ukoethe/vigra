@@ -975,8 +975,8 @@ class ConstImageIterator
 
     ConstImageIterator & operator=(ImageIterator<PIXELTYPE> const & o)
     {
-        x = o.x;
-        y = o.y;
+        Base::x = o.x;
+        Base::y = o.y;
         return *this;
     }
 };
@@ -1111,8 +1111,8 @@ class ConstStridedImageIterator
         /** Assign mutable iterator */
     ConstStridedImageIterator & operator=(StridedImageIterator<PIXELTYPE> const & o)
     {
-        x = o.x;
-        y = o.y;
+        Base::x = o.x;
+        Base::y = o.y;
         return *this;
     }
 };
@@ -1128,7 +1128,7 @@ class ConstStridedImageIterator
 
 template <class T>
 struct IteratorTraits<ImageIterator<T> >
-: IteratorTraitsBase<ImageIterator<T> >
+: public IteratorTraitsBase<ImageIterator<T> >
 {
     typedef typename AccessorTraits<T>::default_accessor  DefaultAccessor;
     typedef DefaultAccessor                               default_accessor;
@@ -1136,7 +1136,7 @@ struct IteratorTraits<ImageIterator<T> >
 
 template <class T>
 struct IteratorTraits<ConstImageIterator<T> >
-: IteratorTraitsBase<ConstImageIterator<T> >
+: public IteratorTraitsBase<ConstImageIterator<T> >
 {
     typedef typename AccessorTraits<T>::default_const_accessor  DefaultAccessor;
     typedef DefaultAccessor                               default_accessor;
@@ -1144,7 +1144,7 @@ struct IteratorTraits<ConstImageIterator<T> >
 
 template <class T>
 struct IteratorTraits<StridedImageIterator<T> >
-: IteratorTraitsBase<StridedImageIterator<T> >
+: public IteratorTraitsBase<StridedImageIterator<T> >
 {
     typedef typename AccessorTraits<T>::default_accessor  DefaultAccessor;
     typedef DefaultAccessor                               default_accessor;
@@ -1152,7 +1152,7 @@ struct IteratorTraits<StridedImageIterator<T> >
 
 template <class T>
 struct IteratorTraits<ConstStridedImageIterator<T> >
-: IteratorTraitsBase<ConstStridedImageIterator<T> >
+: public IteratorTraitsBase<ConstStridedImageIterator<T> >
 {
     typedef typename AccessorTraits<T>::default_const_accessor  DefaultAccessor;
     typedef DefaultAccessor                               default_accessor;
@@ -1163,7 +1163,7 @@ struct IteratorTraits<ConstStridedImageIterator<T> >
 #define VIGRA_DEFINE_ITERATORTRAITS(VALUETYPE) \
     template <>  \
     struct IteratorTraits<ImageIterator<VALUETYPE > > \
-    : IteratorTraitsBase<ImageIterator<VALUETYPE > > \
+    : public IteratorTraitsBase<ImageIterator<VALUETYPE > > \
     { \
         typedef typename AccessorTraits<VALUETYPE >::default_accessor  DefaultAccessor; \
         typedef DefaultAccessor                               default_accessor; \
@@ -1171,14 +1171,14 @@ struct IteratorTraits<ConstStridedImageIterator<T> >
     \
     template <>  \
     struct IteratorTraits<ConstImageIterator<VALUETYPE > > \
-    : IteratorTraitsBase<ConstImageIterator<VALUETYPE > > \
+    : public IteratorTraitsBase<ConstImageIterator<VALUETYPE > > \
     { \
         typedef typename AccessorTraits<VALUETYPE >::default_const_accessor  DefaultAccessor; \
         typedef DefaultAccessor                               default_accessor; \
     }; \
     template <>  \
     struct IteratorTraits<StridedImageIterator<VALUETYPE > > \
-    : IteratorTraitsBase<StridedImageIterator<VALUETYPE > > \
+    : public IteratorTraitsBase<StridedImageIterator<VALUETYPE > > \
     { \
         typedef typename AccessorTraits<VALUETYPE >::default_accessor  DefaultAccessor; \
         typedef DefaultAccessor                               default_accessor; \
@@ -1186,7 +1186,7 @@ struct IteratorTraits<ConstStridedImageIterator<T> >
     \
     template <>  \
     struct IteratorTraits<ConstStridedImageIterator<VALUETYPE > > \
-    : IteratorTraitsBase<ConstStridedImageIterator<VALUETYPE > > \
+    : public IteratorTraitsBase<ConstStridedImageIterator<VALUETYPE > > \
     { \
         typedef typename AccessorTraits<VALUETYPE >::default_const_accessor  DefaultAccessor; \
         typedef DefaultAccessor                               default_accessor; \

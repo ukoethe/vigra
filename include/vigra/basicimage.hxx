@@ -292,8 +292,8 @@ class ConstBasicImageIterator
     ConstBasicImageIterator &
     operator=(BasicImageIterator<PIXELTYPE, ITERATOR> const & rhs)
     {
-        x = rhs.x;
-        y = rhs.y;
+        Base::x = rhs.x;
+        Base::y = rhs.y;
         return *this;
     }
 
@@ -310,7 +310,7 @@ class ConstBasicImageIterator
 
 template <class T> 
 struct IteratorTraits<BasicImageIterator<T, T**> >
-: IteratorTraitsBase<BasicImageIterator<T, T**> >
+: public IteratorTraitsBase<BasicImageIterator<T, T**> >
 {
     typedef typename AccessorTraits<T>::default_accessor  DefaultAccessor;
     typedef DefaultAccessor                               default_accessor;
@@ -318,7 +318,7 @@ struct IteratorTraits<BasicImageIterator<T, T**> >
 
 template <class T> 
 struct IteratorTraits<ConstBasicImageIterator<T, T**> >
-: IteratorTraitsBase<ConstBasicImageIterator<T, T**> >
+: public IteratorTraitsBase<ConstBasicImageIterator<T, T**> >
 {
     typedef typename AccessorTraits<T>::default_const_accessor  DefaultAccessor;
     typedef DefaultAccessor                               default_accessor;
@@ -329,7 +329,7 @@ struct IteratorTraits<ConstBasicImageIterator<T, T**> >
 #define VIGRA_DEFINE_ITERATORTRAITS(VALUETYPE) \
     template <>  \
     struct IteratorTraits<BasicImageIterator<VALUETYPE, VALUETYPE **> > \
-    : IteratorTraitsBase<BasicImageIterator<VALUETYPE, VALUETYPE **> > \
+    : public IteratorTraitsBase<BasicImageIterator<VALUETYPE, VALUETYPE **> > \
     { \
         typedef typename AccessorTraits<VALUETYPE >::default_accessor  DefaultAccessor; \
         typedef DefaultAccessor                               default_accessor; \
@@ -337,7 +337,7 @@ struct IteratorTraits<ConstBasicImageIterator<T, T**> >
     \
     template <>  \
     struct IteratorTraits<ConstBasicImageIterator<VALUETYPE, VALUETYPE **> > \
-    : IteratorTraitsBase<ConstBasicImageIterator<VALUETYPE, VALUETYPE **> > \
+    : public IteratorTraitsBase<ConstBasicImageIterator<VALUETYPE, VALUETYPE **> > \
     { \
         typedef typename AccessorTraits<VALUETYPE >::default_const_accessor  DefaultAccessor; \
         typedef DefaultAccessor                               default_accessor; \
