@@ -32,7 +32,7 @@ namespace detail {
 template <class T>
 struct RequiresExplicitCast {
     template <class U>
-    static U cast(U v)
+    static U const & cast(U const & v)
         { return v; }
 };
 
@@ -58,6 +58,20 @@ VIGRA_SPECIALIZED_CAST(int)
 VIGRA_SPECIALIZED_CAST(unsigned int)
 VIGRA_SPECIALIZED_CAST(long)
 VIGRA_SPECIALIZED_CAST(unsigned long)
+
+template <>
+struct RequiresExplicitCast<float> {
+    template <class U>
+    static U cast(U v)
+        { return v; }
+};
+
+template <>
+struct RequiresExplicitCast<double> {
+    template <class U>
+    static U cast(U v)
+        { return v; }
+};
 
 #undef VIGRA_SPECIALIZED_CAST
 
@@ -111,7 +125,9 @@ class StandardAccessor
         /** read the current data item
         */
     template <class ITERATOR>
-    VALUETYPE const & operator()(ITERATOR & i) const { return *i; }
+    VALUETYPE const & operator()(ITERATOR const & i) const { return *i; }
+    
+    VALUETYPE const & operator()(VALUETYPE const * i) const { return *i; }
     
         /** read the data item at an offset (can be 1D or 2D or higher order difference)
         */
@@ -125,7 +141,7 @@ class StandardAccessor
             in <TT>value</TT> is automatically converted to <TT>VALUETYPE</TT>.
         */
     template <class V, class ITERATOR>
-    void set(V value, ITERATOR & i) const 
+    void set(V const & value, ITERATOR & i) const 
     { *i = detail::RequiresExplicitCast<VALUETYPE>::cast(value); }
     
         /** Write the data item at an offset (can be 1D or 2D or higher order difference).
@@ -133,7 +149,7 @@ class StandardAccessor
             in <TT>value</TT> is automatically converted to <TT>VALUETYPE</TT>.
         */
     template <class V, class ITERATOR, class DIFFERENCE>
-    void set(V value, ITERATOR & i, DIFFERENCE diff) const 
+    void set(V const & value, ITERATOR & i, DIFFERENCE diff) const 
     { 
         i[diff]= detail::RequiresExplicitCast<VALUETYPE>::cast(value); 
     }
@@ -150,21 +166,22 @@ class StandardValueAccessor
         /* read the current data item
         */
     template <class ITERATOR>
-    VALUETYPE operator()(ITERATOR & i) const { return *i; }
+    VALUETYPE operator()(ITERATOR & i) const 
+        { return detail::RequiresExplicitCast<VALUETYPE>::cast(*i); }
     
         /* read the data item at an offset (can be 1D or 2D or higher order difference)
         */
     template <class ITERATOR, class DIFFERENCE>
     VALUETYPE operator()(ITERATOR & i, DIFFERENCE diff) const
     { 
-        return i[diff]; 
+        return detail::RequiresExplicitCast<VALUETYPE>::cast(i[diff]); 
     }
-    
         /** Write the current data item. The type <TT>V</TT> of the passed
             in <TT>value</TT> is automatically converted to <TT>VALUETYPE</TT>.
         */
     template <class V, class ITERATOR>
-    void set(V value, ITERATOR & i) const { *i = detail::RequiresExplicitCast<VALUETYPE>::cast(value); }
+    void set(V value, ITERATOR & i) const 
+        { *i = detail::RequiresExplicitCast<VALUETYPE>::cast(value); }
     
         /** Write the data item at an offset (can be 1D or 2D or higher order difference).
             The type <TT>V</TT> of the passed
