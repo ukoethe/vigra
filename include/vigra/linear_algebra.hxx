@@ -66,7 +66,7 @@ class TemporaryMatrix;
 /** Matrix class.
 
     This is the basic class for all linear algebra computations. Matrices are
-    strored in a <i>row-major</i> format, i.e. the row index is varying fastest.
+    strored in a <i>column-major</i> format, i.e. the row index is varying fastest.
     This is the same format as in the lapack and gmm++ libraries, so it will
     be easy to interface these libraries. In fact, if you need optimized
     high performance code, you should use them. The VIGRA linear algebra
@@ -154,7 +154,7 @@ class Matrix
         /** construct with given shape and copy data from C-style array \a init.
             Data in this array are expected to be given in column-major
             order (the C standard order) and will automatically be
-            converted to the required row-major format. Note that the order of the axes is
+            converted to the required column-major format. Note that the order of the axes is
             <tt>difference_type(rows, columns)</tt> which
             is the opposite of the usual VIGRA convention.
          */
@@ -169,7 +169,7 @@ class Matrix
         /** construct with given shape and copy data from C-style array \a init.
             Data in this array are expected to be given in column-major
             order (the C standard order) and will automatically be
-            converted to the required row-major format. Note that the order of 
+            converted to the required column-major format. Note that the order of 
             the axes is <tt>(rows, columns)</tt> which
             is the opposite of the usual VIGRA convention.
          */
@@ -205,7 +205,7 @@ class Matrix
     }
     
         /** construct from a MultiArrayView. Allocates new memory and 
-            copies tha data. \a rhs is assumed to be in row-major order already.
+            copies tha data. \a rhs is assumed to be in column-major order already.
          */
     template<class U, class C>
     Matrix(const MultiArrayView<2, U, C> &rhs)
@@ -237,7 +237,7 @@ class Matrix
             If the size of \a rhs is the same as the matrix's old size, only the data
             are copied. Otherwise, new storage is allocated, which invalidates 
             all objects (array views, iterators) depending on the matrix. 
-            \a rhs is assumed to be in row-major order already.
+            \a rhs is assumed to be in column-major order already.
          */
     template <class U, class C>
     Matrix & operator=(const MultiArrayView<2, U, C> &rhs)
@@ -286,13 +286,13 @@ class Matrix
 
         /** read/write access to matrix element <tt>(row, column)</tt>.
             Note that the order of the argument is the opposite of the usual 
-            VIGRA convention due to row-major matrix order.
+            VIGRA convention due to column-major matrix order.
         */
     value_type & operator()(std::size_t row, std::size_t column);
 
         /** read access to matrix element <tt>(row, column)</tt>.
             Note that the order of the argument is the opposite of the usual 
-            VIGRA convention due to row-major matrix order.
+            VIGRA convention due to column-major matrix order.
         */
     value_type operator()(std::size_t row, std::size_t column) const;
 #endif
@@ -1629,15 +1629,15 @@ bool linearSolve(const MultiArrayView<2, T, C1> &a, const MultiArrayView<2, T, C
      */
 template <class T, class C1, class C2, class C3>
 bool 
-eigenSystem(MultiArrayView<2, T, C1> const & a, 
+symmetricEigensystem(MultiArrayView<2, T, C1> const & a, 
             MultiArrayView<2, T, C2> & ew, MultiArrayView<2, T, C3> & ev) 
 {
     unsigned int acols = columnCount(a);
     vigra_precondition(acols == rowCount(a),
-        "eigenSystem(): square input matrix required.");
+        "symmetricEigensystem(): square input matrix required.");
     vigra_precondition(1 == columnCount(ew) && acols == rowCount(ew) && 
                        acols == columnCount(ev) && acols == rowCount(ev),
-        "eigenSystem(): matrix shape mismatch.");
+        "symmetricEigensystem(): matrix shape mismatch.");
     
     ev.copy(a); // does nothing if &e == &a
     Matrix<T> de(acols, 2);
@@ -1668,7 +1668,7 @@ using linalg::rowVector;
 using linalg::columnVector;
 using linalg::linearSolve;
 using linalg::qrDecomposition;
-using linalg::eigenSystem;
+using linalg::symmetricEigensystem;
 
 } // namespace vigra
 
