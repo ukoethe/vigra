@@ -36,7 +36,8 @@ struct RequiresExplicitCast {
         { return v; }
 };
 
-#define VIGRA_SPECIALIZED_CAST(type) \
+#if !defined(_MSC_VER) || _MSC_VER >= 1300
+#  define VIGRA_SPECIALIZED_CAST(type) \
     template <> \
     struct RequiresExplicitCast<type> { \
         static type cast(float v) \
@@ -48,6 +49,32 @@ struct RequiresExplicitCast {
             { return v; } \
  \
     };
+#else
+#  define VIGRA_SPECIALIZED_CAST(type) \
+    template <> \
+    struct RequiresExplicitCast<type> { \
+        static type cast(float v) \
+            { return NumericTraits<type>::fromRealPromote(v); } \
+        static type cast(double v) \
+            { return NumericTraits<type>::fromRealPromote(v); } \
+        static type cast(signed char v) \
+            { return v; } \
+        static type cast(unsigned char v) \
+            { return v; } \
+        static type cast(short v) \
+            { return v; } \
+        static type cast(unsigned short v) \
+            { return v; } \
+        static type cast(int v) \
+            { return v; } \
+        static type cast(unsigned int v) \
+            { return v; } \
+        static type cast(long v) \
+            { return v; } \
+        static type cast(unsigned long v) \
+            { return v; } \
+    };
+#endif
 
 
 VIGRA_SPECIALIZED_CAST(signed char)

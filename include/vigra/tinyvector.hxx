@@ -583,17 +583,8 @@ TINYVECTOR_TRAITS(4)
 
 #endif // NO_PARTIAL_TEMPLATE_SPECIALIZATION
 
-/********************************************************/
-/*                                                      */
-/*                      TinyVector-Arithmetic           */
-/*                                                      */
-/********************************************************/
-
-/** \addtogroup TinyVectorOperators
- */
-//@{
-
-#define vigra_operator_unroll_loop(op) \
+#if !defined(_MSC_VER) || _MSC_VER >= 1300
+#  define vigra_operator_unroll_loop(op) \
     template <class V1, class V2> \
     inline \
     TinyVector<V1, 2> &  \
@@ -625,7 +616,22 @@ TINYVECTOR_TRAITS(4)
         l[2] op r[2]; \
         l[3] op r[3]; \
         return l; \
-    }
+    } 
+#else
+#  define vigra_operator_unroll_loop(op)
+#endif
+
+
+/********************************************************/
+/*                                                      */
+/*                      TinyVector-Arithmetic           */
+/*                                                      */
+/********************************************************/
+
+/** \addtogroup TinyVectorOperators
+ */
+//@{
+
 
     /// componentwise add-assignment
 template <class V1, class V2, int SIZE>
