@@ -26,7 +26,7 @@ struct TinyVectorTest
     void printVector(VECTOR const & v)
     {
         std::cerr << "(";
-        for(int i=0; i<v.size(); ++i)
+        for(unsigned int i=0; i<v.size(); ++i)
             std::cerr << (float)v[i] << ", ";
         std::cerr << ")\n";
     }
@@ -34,7 +34,7 @@ struct TinyVectorTest
     template <class VECTOR, class VALUE>
     bool equalValue(VECTOR const & v, VALUE const & vv)
     {
-        for(int i=0; i<v.size(); ++i)
+        for(unsigned int i=0; i<v.size(); ++i)
             if(v[i] != vv)
                 return false;
         return true;
@@ -43,7 +43,7 @@ struct TinyVectorTest
     template <class VECTOR1, class VECTOR2>
     bool equalVector(VECTOR1 const & v1, VECTOR2 const & v2)
     {
-        for(int i=0; i<v1.size(); ++i)
+        for(unsigned int i=0; i<v1.size(); ++i)
             if(v1[i] != v2[i])
                 return false;
         return true;
