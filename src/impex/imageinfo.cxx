@@ -21,7 +21,7 @@
 
 #include <algorithm>
 #include <iterator>
-#include <strstream>
+#include <sstream>
 #include <vector>
 #include <iterator>
 #include "vigra/imageinfo.hxx"
@@ -30,16 +30,16 @@
 namespace vigra
 {
     // build a string from a sequence.
-    template< class iterator >
-    std::string stringify( const iterator & start, const iterator & end )
+    template <class iterator>
+    std::string stringify (const iterator &start, const iterator &end)
     {
         typedef typename std::iterator_traits<iterator>::value_type value_type;
-        std::ostrstream out;
-        iterator last = end - 1;
-        std::copy( start, last,
-                   std::ostream_iterator<value_type>( out, " " ) );
-        out << *last << (char)0;
-        return out.str();
+        std::ostringstream out;
+        // do not place a space character after the last sequence element.
+        std::copy (start, end - 1,
+                   std::ostream_iterator <value_type> (out, " "));
+        out << *last;
+        return out.str ();
     }
 
     void validate_filetype( std::string filetype )
@@ -153,7 +153,7 @@ namespace vigra
 
             // check for JPEG compression
             int quality = -1;
-            std::istrstream compstream(comp.c_str());
+            std::istringstream compstream(comp.c_str());
             compstream >> quality;
             if ( quality != -1 ) {
                 enc->setCompressionType( "JPEG", quality );
