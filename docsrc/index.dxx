@@ -29,9 +29,12 @@
     Computer Vision and  Applications", volume 3, Acadamic Press, 1999. 
     If you don't have the book,  you may read a 
     \URL[draft of this article]{documents/GenericProg2D.ps}. A shorter article 
-    {\em "STL Style Generic Programming with Images"} describing some of the 
+    {\em "\URL[STL Style Generic Programming with Images]{http://kogs-www.informatik.uni-hamburg.de/~koethe/papers/GenericProg2DC++Report.ps.gz}"}
+    describing some of the 
     ideas has appeared in the January 2000 issue of
-    \URL[C++ Report Magazine]{http://www.creport.com/}.
+    \URL[C++ Report Magazine]{http://www.creport.com/}. The most comprehensive source of information is
+    U. K&ouml;the's PhD thesis {\em "\URL[Generische Programmierung f&uuml;r die Bildverarbeitung]{http://kogs-www.informatik.uni-hamburg.de/~koethe/papers/index.html#PhD}"}. 
+    However, this is written in German.
         
     VIGRA is subject to this \URL[LICENSE]{../LICENSE}. 
     
