@@ -23,7 +23,7 @@
 #define VIGRA_FUNCTOREXPRESSION_HXX 
 
 
-/** @name Functor Creation      
+/** @heading Functor Creation      
 
     Include-File:
     \URL[vigra/functorexpression.hxx]{../include/vigra/functorexpression.hxx}\\

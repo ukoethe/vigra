@@ -33,7 +33,7 @@
 /********************************************************/
 
 
-/**@name Numeric and Promotion Traits
+/**@heading Numeric and Promotion Traits
 
     These traits classes contain information that is used by generic
     algorithms and data structures to determine intermediate and result

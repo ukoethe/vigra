@@ -23,7 +23,10 @@
 #ifndef VIGRA_ERROR_HXX
 #define VIGRA_ERROR_HXX
 
-/** @name Error Reporting
+#include <stdio.h>
+#include "vigra/config.hxx"
+          
+/** @heading Error Reporting
 
     VIGRA defines the following exception classes:
     
@@ -90,13 +93,9 @@
     }
     \end{verbatim}
     
-*    @memo Exceptions and assertions provided by VIGRA
-*/
-/**
-*/
-#include <stdio.h>
-#include "vigra/config.hxx"
-          
+    @memo Exceptions and assertions provided by VIGRA
+**/
+
 namespace vigra {
 
 

@@ -30,7 +30,7 @@
 
 namespace vigra { 
 
-/** @name Image Data Structures and Iterators
+/** @heading Image Data Structures and Iterators
 
     Include-File:
     \URL[vigra/stdimage.hxx]{../include/vigra/stdimage.hxx}
