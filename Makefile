@@ -46,7 +46,9 @@ clean::
 	@cd src ; $(MAKE) clean ; cd ..
 
 distclean: clean
-	rm -f config.log config.cache config.status config/vigra-config config/Makefile.include
+	rm -f config/vigra-config config/Makefile.include
+	rm -f config.log config.cache config.status
+	cp config/Makefile.include.empty config/Makefile.include
 
 maintainer-clean: distclean
 	rm -f aclocal.m4 configure libtool
