@@ -236,12 +236,13 @@ struct BmpDecoderImpl
 
 // reads the header.
 BmpDecoderImpl::BmpDecoderImpl( const std::string & filename )
-    : scanline(-1),
+    :
 #ifdef _MSC_VER
-      stream (filename.c_str (), std::ios::binary)
+      stream (filename.c_str (), std::ios::binary),
 #else
-    stream (filename.c_str ())
+      stream (filename.c_str ()),
 #endif
+      scanline(-1)
 {
     if( !stream.good() )
     {

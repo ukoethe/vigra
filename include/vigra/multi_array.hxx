@@ -246,14 +246,14 @@ public:
 
 protected:
 
+        /** the shape of the image pointed to is stored here.
+	 */
+    difference_type m_shape;
+
         /** the strides (offset of a sample to the next) for every dimension
             are stored here.
         */
     difference_type m_stride;
-
-        /** the shape of the image pointed to is stored here.
-         */
-    difference_type m_shape;
 
         /** pointer to the image.
          */
