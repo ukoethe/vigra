@@ -55,7 +55,7 @@ namespace vigra {
     gradient at a zero crossing is greater than the given <TT>gradient_threshold</TT>,
     an edge point is marked (using <TT>edge_marker</TT>) in the destination image on
     the darker side of the zero crossing (note that zero crossings occur 
-    {\it between} pixels). For example:
+    <it>between</it> pixels). For example:
     
     \code
     sign of difference image     resulting edge points (*)

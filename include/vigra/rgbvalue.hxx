@@ -49,16 +49,15 @@ namespace vigra {
     methods, together with the necessary embedded typedefs, ensure
     compatibility of a RGBValue with a STL vector.
     
-    <a href="BasicArithmeticFunctionsforRGBValue.html">Arithmetic operations</a> 
-    on RGBValues are defined as component-wise applications of these 
+    \ref RGBValueOperators "Arithmetic operations" are defined as component-wise applications of these 
     operations. Addition, subtraction, and multiplication of two RGBValues 
     (+=, -=, *=, +, -, *, unary -), multiplication and division of an
     RGBValue with a double, and NumericTraits/PromoteTraits are defined, 
     so that RGBValue fulfills the requirements of a Linear Algebra. 
     
-    A number of <a href="AccessorsforRGBValue.html">Accessors</a> are provided
-    that allow access to the RGBValues as a whole, to a selected
-    component, or to the luminance value.
+    A number of \ref RGBValueAccessors "accessors" are provided
+    that support access to RGBValues as a whole, to a selected
+    color component, or to the luminance value.
     
     <b>\#include</b> "<a href="rgbvalue_8hxx-source.html">vigra/rgbvalue.hxx</a>"<br>
     Namespace: vigra
@@ -258,6 +257,7 @@ class RGBValue
     \brief <b>\#include</b> "<a href="rgbvalue_8hxx-source.html">vigra/rgbvalue.hxx</a>
     
     These functions fulfill the requirements of a Linear Algebra.
+    Return types are determined according to \ref RGBValueTraits.
 
     Namespace: vigra
     <p>
