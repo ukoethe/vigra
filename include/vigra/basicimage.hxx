@@ -4,6 +4,7 @@
 /*       Cognitive Systems Group, University of Hamburg, Germany        */
 /*                                                                      */
 /*    This file is part of the VIGRA computer vision library.           */
+/*    ( Version 1.1.4a, Nov 20 2001 )                                   */
 /*    You may use, modify, and distribute this software according       */
 /*    to the terms stated in the LICENSE file included in               */
 /*    the VIGRA distribution.                                           */
@@ -423,10 +424,10 @@ class RowIterator<BasicImageIterator<ValueType, ValueType **> >
 #else
 
 template <class IMAGE_ITERATOR>
-class BasicImageRowIterator<IMAGE_ITERATOR>
+class BasicImageRowIterator
 {
     typedef BasicImageRowIterator Self;
-    typedef typename ImageIterator::PixelType ValueType;
+    typedef typename IMAGE_ITERATOR::PixelType ValueType;
     typedef IMAGE_ITERATOR Adaptee;
 
     ValueType * data_;
@@ -577,10 +578,10 @@ class ConstRowIterator<ConstBasicImageIterator<ValueType, ValueType **> >
 #else
 
 template <class IMAGE_ITERATOR>
-class ConstBasicImageRowIterator<IMAGE_ITERATOR>
+class ConstBasicImageRowIterator
 {
     typedef ConstBasicImageRowIterator Self;
-    typedef typename ImageIterator::PixelType ValueType;
+    typedef typename IMAGE_ITERATOR::PixelType ValueType;
     typedef IMAGE_ITERATOR Adaptee;
 
     ValueType const * data_;

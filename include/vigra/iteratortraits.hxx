@@ -4,6 +4,7 @@
 /*       Cognitive Systems Group, University of Hamburg, Germany        */
 /*                                                                      */
 /*    This file is part of the VIGRA computer vision library.           */
+/*    ( Version 1.1.4a, Nov 20 2001 )                                   */
 /*    You may use, modify, and distribute this software according       */
 /*    to the terms stated in the LICENSE file included in               */
 /*    the VIGRA distribution.                                           */
@@ -64,10 +65,10 @@ struct IteratorTraits
 //@}
 
 template <class T>
-struct RowIterator;
+class RowIterator;
 
 template <class T>
-struct ConstRowIterator;
+class ConstRowIterator;
 
 template <> 
 struct IteratorTraits<Diff2D > 
