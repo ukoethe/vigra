@@ -1045,6 +1045,15 @@ class ArrayOfRegionStatistics
         regions.swap(newRegions);
     }
     
+    /** reset the contained functors to their initial state.
+        @memo
+    */
+    void reset()
+    {
+        RegionArray newRegions(regions.size());
+        regions.swap(newRegions);
+    }
+    
     /** update regions statistics for region 'label'
         @memo
     */
