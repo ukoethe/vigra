@@ -6,6 +6,7 @@
 #include "vigra/impex.hxx"
 
 using vigra::Diff2D;
+using namespace vigra;
 
 template <class IMAGE>
 struct ImageTest
@@ -171,6 +172,8 @@ struct ImageTest
 
     void copyImage()
     {
+        typedef typename Image::value_type Value;
+
         Image img1(img);
         typename Image::ScanOrderIterator i = img.begin();
         typename Image::ScanOrderIterator i1 = img1.begin();
@@ -184,9 +187,9 @@ struct ImageTest
         img.init(0);
         for(; i != img.end(); ++i)
         {
-            should(acc(i) == typename Image::value_type(0));
+			should(acc(i) == Value(0));
         }
-        img(1,1) = typename Image::value_type(200);
+        img(1,1) = Value(200);
         img1 = img;
         i = img.begin();
         i1 = img1.begin();

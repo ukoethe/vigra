@@ -5,6 +5,8 @@
 #include "vigra/convolution.hxx"
 #include "vigra/impex.hxx"
 
+using namespace vigra;
+
 struct ConvolutionTest
 {
     typedef vigra::DImage Image;
@@ -224,7 +226,7 @@ struct ConvolutionTest
     void separableGradientTest()
     {
         Image sepgrad(lenna.size());
-        importImage(vigra::ImageImportInfo("lenna128sepgrad.xv"), destImage(sepgrad));
+        importImage(vigra::ImageImportInfo("lenna128sepgrad.tif"), destImage(sepgrad));
 
         double epsilon = 0.00001;
         
@@ -261,7 +263,7 @@ struct ConvolutionTest
     void gradientTest()
     {
         Image sepgrad(lenna.size());
-        importImage(vigra::ImageImportInfo("lenna128sepgrad.xv"), destImage(sepgrad));
+        importImage(vigra::ImageImportInfo("lenna128sepgrad.tif"), destImage(sepgrad));
 
         double epsilon = 0.00001;
         
@@ -295,9 +297,9 @@ struct ConvolutionTest
         hessianMatrixOfGaussian(srcImageRange(lenna), 
             destImage(resxx), destImage(resxy), destImage(resyy), 1.0);
             
-        importImage(vigra::ImageImportInfo("lennahessxx.xv"), destImage(refxx));
-        importImage(vigra::ImageImportInfo("lennahessyy.xv"), destImage(refyy));
-        importImage(vigra::ImageImportInfo("lennahessxy.xv"), destImage(refxy));
+        importImage(vigra::ImageImportInfo("lennahessxx.tif"), destImage(refxx));
+        importImage(vigra::ImageImportInfo("lennahessyy.tif"), destImage(refyy));
+        importImage(vigra::ImageImportInfo("lennahessxy.tif"), destImage(refxy));
         
         Image::ScanOrderIterator i1 = resxx.begin();
         Image::ScanOrderIterator i1end = resxx.end();
@@ -308,11 +310,12 @@ struct ConvolutionTest
         Image::ScanOrderIterator r3 = refxy.begin();
         Image::Accessor acc = constimg.accessor();
         
+        double epsilon = 0.00001;
         for(; i1 != i1end; ++i1, ++i2, ++i3, ++r1, ++r2, ++r3)
         {
-            should(acc(i1) == acc(r1));
-            should(acc(i2) == acc(r2));
-            should(acc(i3) == acc(r3));
+            should(std::abs(acc(i1) - acc(r1)) < epsilon);
+            should(std::abs(acc(i2) - acc(r2)) < epsilon);
+            should(std::abs(acc(i3) - acc(r3)) < epsilon);
         }
     }
     
@@ -328,9 +331,9 @@ struct ConvolutionTest
         structureTensor(srcImageRange(lenna), 
             destImage(resxx), destImage(resxy), destImage(resyy), 1.0, 2.0);
             
-        importImage(vigra::ImageImportInfo("lennastxx.xv"), destImage(refxx));
-        importImage(vigra::ImageImportInfo("lennastyy.xv"), destImage(refyy));
-        importImage(vigra::ImageImportInfo("lennastxy.xv"), destImage(refxy));
+        importImage(vigra::ImageImportInfo("lennastxx.tif"), destImage(refxx));
+        importImage(vigra::ImageImportInfo("lennastyy.tif"), destImage(refyy));
+        importImage(vigra::ImageImportInfo("lennastxy.tif"), destImage(refxy));
         
         Image::ScanOrderIterator i1 = resxx.begin();
         Image::ScanOrderIterator i1end = resxx.end();
@@ -340,12 +343,20 @@ struct ConvolutionTest
         Image::ScanOrderIterator r2 = refyy.begin();
         Image::ScanOrderIterator r3 = refxy.begin();
         Image::Accessor acc = constimg.accessor();
-        
+        /*
         for(; i1 != i1end; ++i1, ++i2, ++i3, ++r1, ++r2, ++r3)
         {
             should(acc(i1) == acc(r1));
             should(acc(i2) == acc(r2));
             should(acc(i3) == acc(r3));
+        }
+        */
+        double epsilon = 0.00001;
+        for(; i1 != i1end; ++i1, ++i2, ++i3, ++r1, ++r2, ++r3)
+        {
+            should(std::abs(acc(i1) - acc(r1)) < epsilon);
+            should(std::abs(acc(i2) - acc(r2)) < epsilon);
+            should(std::abs(acc(i3) - acc(r3)) < epsilon);
         }
     }
     
@@ -503,13 +514,10 @@ struct ConvolutionTest
 
         nonlinearDiffusion(srcImageRange(lenna), destImage(res),
                            vigra::DiffusivityFunctor<double>(4.0), 4.0);
-        
-        ViffImage * viff = readViffImage("lenna128nonlinear.xv");
-        shouldMsg(viff != 0, "Unable to read test image \"lenna128nonlinear.xv\"\n");
+                
         Image comp(lenna.size());
-        importViffImage(viff, destImage(comp));        
-        freeViffImage(viff);
-        
+        importImage(vigra::ImageImportInfo("lenna128nonlinear.tif"), destImage(comp));
+
         Image::ScanOrderIterator i1 = res.begin();
         Image::ScanOrderIterator i1end = res.end();
         Image::ScanOrderIterator i2 = comp.begin();

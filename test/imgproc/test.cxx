@@ -4,7 +4,9 @@
 #include "unittest.h"
 #include "vigra/stdimage.hxx"
 #include "vigra/stdimagefunctions.hxx"
-#include "vigra/viff.hxx"
+#include "vigra/impex.hxx"
+
+using namespace vigra;
 
 struct ImageFunctionsTest
 {
@@ -780,22 +782,14 @@ struct ResizeImageSplineTest
 
     ResizeImageSplineTest()
     {
-        ViffImage * viff = readViffImage("lenna128.xv");
-
-        shouldMsg(viff != 0, "Unable to read test image \"lenna128.xv\"\n");
-
-        img.resize(viff->row_size,viff->col_size);
-        importViffImage(viff, destImage(img));
-        freeViffImage(viff);
-
-        viff = readViffImage("lenna128rgb.xv");
-
-        shouldMsg(viff != 0, "Unable to read test image \"lenna128rgb.xv\"\n");
-
-        rgb.resize(viff->row_size,viff->col_size);
-        importViffImage(viff, destImage(rgb));
-        freeViffImage(viff);
-
+        ImageImportInfo ginfo("lenna128.xv");
+        img.resize(ginfo.width(), ginfo.height());
+        importImage(ginfo, destImage(img));
+        
+        ImageImportInfo cinfo("lenna128rgb.xv");
+        rgb.resize(cinfo.width(), cinfo.height());
+        importImage(cinfo, destImage(rgb));
+        
     }
 
     void scalarExpand()

@@ -14,7 +14,8 @@ struct ErrorTest
         catch(vigra::ContractViolation & c)
         {
             std::string expected("\nPrecondition violation!\nIntentional error");
-            should(0 == expected.compare(c.what(), 0, expected.size()));
+            std::string message(c.what());
+            should(0 == expected.compare(message.substr(0,expected.size())));
         }
     }
 
@@ -28,7 +29,8 @@ struct ErrorTest
         catch(vigra::ContractViolation & c)
         {
             std::string expected("\nPostcondition violation!\nIntentional error");
-            should(0 == expected.compare(c.what(), 0, expected.size()));
+            std::string message(c.what());
+            should(0 == expected.compare(message.substr(0,expected.size())));
         }
     }
 
@@ -42,7 +44,8 @@ struct ErrorTest
         catch(vigra::ContractViolation & c)
         {
             std::string expected("\nInvariant violation!\nIntentional error");
-            should(0 == expected.compare(c.what(), 0, expected.size()));
+            std::string message(c.what());
+            should(0 == expected.compare(message.substr(0,expected.size())));
         }
     }
 };

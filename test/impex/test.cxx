@@ -5,6 +5,7 @@
 #include "vigra/impex.hxx"
 #include "unittest.h"
 
+using namespace vigra;
 
 class ByteImageExportImportTest
 {
