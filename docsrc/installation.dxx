@@ -33,14 +33,19 @@
                   --with-cc=gcc --with-cxx=g++ \
                   --with-jpeg=/path/to/libjpeg/installation \
                   --with-tiff=/path/to/libtiff/installation \
+                  --with-png=/path/to/libpng/installation \
+                  --with-zlib=/path/to/zlib/installation \
                   --with-fftw=/path/to/libfftw/installation
     \endcode    
     
-    Of course, the flags given to <tt>configure</tt> may vary for your build. 
+    Of course, the flags given to <tt>configure</tt> may vary for your build.
     In particular, if you drop <tt>--with-jpeg</tt>, <tt>--with-tiff</tt>, or
     <tt>--with-fftw</tt>, VIGRA will be build without support for these libraries.
     Invoke <tt>configure --help</tt> for a complete list of options, default settings
     and explanations. 
+    
+    On a LINUX system, it is often possible to run configure without any options.
+
     
     <li> build the library and the \ref Examples:
     
@@ -78,9 +83,13 @@
 
     <li> specify in the project settings if and where JPEG, TIFF, and FFTW libraries are installed: <br>
     <em> either</em> update the paths to the
-    include and library files for <a href="http://www.ijg.org/">jpeg.lib</a>,  
-    <a href="http://www.libtiff.org/">tiff.lib</a> on <a href="http://www.fftw.org/">fftw.lib</a> on your 
-    system - <em> or</em> - remove the <TT>HasJPEG</TT> and <TT>HasTIFF</TT> preprocessor flags.
+    include and library files for <a href="http://www.ijg.org/">libjpeg</a>,  
+    <a href="http://www.libtiff.org/">libtiff</a>,
+    <a href="http://www.libpng.org/">libpng</a>,
+    and <a href="http://www.fftw.org/">libfftw</a> on your 
+    system 
+     - <em> or</em> - 
+     remove the <TT>HasJPEG</TT>, <TT>HasTIFF</TT>, and <TT>HasPNG</TT> preprocessor flags.
     
     <li> MSVC 6.0 doesn't provide <TT>std::min()</TT> and <TT>std::max()</TT>. 
          If you don't already have your own implementation you must activate
