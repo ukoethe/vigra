@@ -69,6 +69,12 @@ namespace vigra {
         desc.fileExtensions.resize(1);
         desc.fileExtensions[0] = "png";
 
+        desc.bandNumbers.resize(4);
+        desc.bandNumbers[0] = 1;
+        desc.bandNumbers[1] = 2;
+        desc.bandNumbers[2] = 3;
+        desc.bandNumbers[3] = 4;
+        
         return desc;
     }
 
@@ -207,6 +213,8 @@ namespace vigra {
             bit_depth = 8;
         }
 
+
+#if 0
         // strip alpha channel
         if ( color_type & PNG_COLOR_MASK_ALPHA ) {
             if (setjmp(png->jmpbuf))
@@ -214,14 +222,22 @@ namespace vigra {
             png_set_strip_alpha(png);
             color_type ^= PNG_COLOR_MASK_ALPHA;
         }
+#endif /* #if 0 */
+
 
         // find out the number of components
         switch (color_type) {
         case PNG_COLOR_TYPE_GRAY:
             components = 1;
             break;
+        case PNG_COLOR_TYPE_GRAY_ALPHA:
+            components = 2;
+            break;
         case PNG_COLOR_TYPE_RGB:
             components = 3;
+            break;
+        case PNG_COLOR_TYPE_RGB_ALPHA:
+            components = 4;
             break;
         default:
             vigra_fail( "internal error: illegal color type." );

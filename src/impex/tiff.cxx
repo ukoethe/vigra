@@ -72,6 +72,12 @@ namespace vigra {
         desc.fileExtensions[0] = "tif";
         desc.fileExtensions[1] = "tiff";
 
+        desc.bandNumbers.resize(4);
+        desc.bandNumbers[0] = 1;
+        desc.bandNumbers[1] = 2;
+        desc.bandNumbers[2] = 3;
+        desc.bandNumbers[3] = 4;
+        
         return desc;
     }
 
@@ -543,6 +549,8 @@ namespace vigra {
             TIFFSetField( tiff, TIFFTAG_PHOTOMETRIC, PHOTOMETRIC_MINISBLACK );
         else if ( samples_per_pixel == 3 )
             TIFFSetField( tiff, TIFFTAG_PHOTOMETRIC, PHOTOMETRIC_RGB );
+        else 
+            TIFFSetField( tiff, TIFFTAG_PHOTOMETRIC, 10 /* undefined */ );
 
         // alloc memory
         stripbuffer = new tdata_t[1];

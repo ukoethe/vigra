@@ -69,6 +69,10 @@ namespace vigra {
         desc.fileExtensions.resize(1);
         desc.fileExtensions[0] = "ras";
 
+        desc.bandNumbers.resize(2);
+        desc.bandNumbers[0] = 1;
+        desc.bandNumbers[1] = 3;
+        
         return desc;
     }
 

@@ -303,6 +303,9 @@ namespace vigra {
         desc.fileExtensions.resize(1);
         desc.fileExtensions[0] = "xv";
 
+        desc.bandNumbers.resize(1);
+        desc.bandNumbers[0] = 0;
+        
         return desc;
     }
 
@@ -893,7 +896,7 @@ namespace vigra {
                 std::string msg("Unable to open file '");
                 msg += filename;
                 msg += "'.";
-                vigra_precondition(0, msg.c_str());
+                vigra_precondition(false, msg);
             }
         }
 

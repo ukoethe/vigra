@@ -62,6 +62,10 @@ namespace vigra
         desc.fileExtensions[0] = "jpg";
         desc.fileExtensions[1] = "jpeg";
 
+        desc.bandNumbers.resize(2);
+        desc.bandNumbers[0] = 1;
+        desc.bandNumbers[1] = 3;
+        
         return desc;
     }
 

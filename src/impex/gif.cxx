@@ -258,7 +258,11 @@ namespace {
         // init file extensions
         desc.fileExtensions.resize(1);
         desc.fileExtensions[0] = "gif";
-
+        
+        desc.bandNumbers.resize(2);
+        desc.bandNumbers[0] = 1;
+        desc.bandNumbers[1] = 3;
+        
         return desc;
     }
 
