@@ -136,5 +136,29 @@ AC_DEFUN(AC_FIND_PACKAGE,
     
 ])
 
+pushdef([VIGRA_PROG_INSTALL],
+[
+  dnl our own version, testing for the -p flag (--preserve-timestamp).
+  dnl we first have to save if the user specified INSTALL as the
+  dnl autoconf AC_PROG_INSTALL overwrites INSTALL:
+  test -n "$INSTALL" && vigra_save_INSTALL_given=$INSTALL
+  AC_PROG_INSTALL
 
-
+  if test -z "$vigra_save_INSTALL_given" ; then
+    # user hasn't overwritten INSTALL, autoconf found one for us
+    # now we'll test if it supports the -p flag
+    AC_MSG_CHECKING(for -p flag to install)
+    rm -f confinst.$$.* > /dev/null 2>&1
+    echo "Testtest" > confinst.$$.orig
+    ac_res=no
+    if ${INSTALL} -p confinst.$$.orig confinst.$$.new > /dev/null 2>&1 ; then
+      if test -f confinst.$$.new ; then
+        # OK, -p seems to do no harm to install
+        INSTALL="${INSTALL} -p"
+        ac_res=yes
+      fi
+    fi
+    rm -f confinst.$$.*
+    AC_MSG_RESULT($ac_res)
+  fi
+])dnl
