@@ -84,11 +84,244 @@ class ContigousMemoryColumnIteratorPolicy
 
 /** \addtogroup ImageIterators  Image Iterators
 
-    \brief General image iterator implementations.
+    \brief General image iterator definition and implementations.
     
-    These iterators may be used for any image data type that stores its
+<p>
+    The following tables describe the general requirements for image iterators
+    and their iterator traits. The iterator implementations provided here
+    may be used for any image data type that stores its
     data as a linear array of pixels. The array will be interpreted as a
-    row-major matrix with a particular width.
+    row-major matrix with a particular width. 
+</p>
+<h3>Requirements for Image Iterators</h3>
+<p>
+
+<table border=2 cellspacing=0 cellpadding=2 width="100%">
+<tr>
+    <th colspan=2>Local Types</th><th>Meaning</th>
+</tr>
+<tr>
+    <td colspan=2><tt>ImageIterator::value_type</tt></td><td>the underlying image's pixel type</td>
+</tr>
+<tr>
+    <td colspan=2><tt>ImageIterator::PixelType</tt></td><td>the underlying image's pixel type</td>
+</tr>
+<tr>
+    <td colspan=2><tt>ImageIterator::reference</tt></td>
+    <td>the iterator's reference type (return type of <TT>*iter</TT>). Will be 
+    <tt>value_type &</tt> for a mutable iterator, and convertible to 
+    <tt>value_type const &</tt> for a const iterator.</td>
+</tr>
+<tr>
+    <td colspan=2><tt>ImageIterator::index_reference</tt></td>
+    <td>the iterator's index reference type (return type of <TT>iter[diff]</TT>). Will be 
+    <tt>value_type &</tt> for a mutable iterator, and convertible to 
+    <tt>value_type const &</tt> for a const iterator.</td>
+</tr>
+<tr>
+    <td colspan=2><tt>ImageIterator::pointer</tt></td>
+    <td>the iterator's pointer type (return type of <TT>iter.operator->()</TT>). Will be 
+    <tt>value_type *</tt> for a mutable iterator, and convertible to 
+    <tt>value_type const *</tt> for a const iterator.</td>
+</tr>
+<tr>
+    <td colspan=2><tt>ImageIterator::difference_type</tt></td>
+    <td>the iterator's difference type (<TT>vigra::Diff2D</TT>)</td>
+</tr>
+<tr>
+    <td colspan=2><tt>ImageIterator::iterator_category</tt></td>
+    <td>the iterator tag (<tt>vigra::image_traverser_tag</tt>)</td>
+</tr>
+<tr>
+    <td colspan=2><tt>ImageIterator::row_iterator</tt></td><td>the associated row iterator</td>
+</tr>
+<tr>
+    <td colspan=2><tt>ImageIterator::column_iterator</tt></td><td>the associated column iterator</td>
+</tr>
+<tr>
+    <td colspan=2><tt>ImageIterator::MoveX</td><td>type of the horizontal navigator</td>
+</tr>
+<tr>
+    <td colspan=2><tt>ImageIterator::MoveY</td><td>type of the vertical navigator</td>
+</tr>
+<tr>
+  <th>Operation</th><th>Result</th><th>Semantics</th>
+</tr>
+<tr>
+    <td><tt>++i.x<br>i.x--</tt></td><td><tt>void</tt></td><td>increment x-coordinate</td>
+</tr>
+<tr>
+    <td><tt>--i.x<br>i.x--</tt></td><td><tt>void</tt></td><td>decrement x-coordinate</td>
+</tr>
+<tr>
+    <td><tt>i.x += dx</tt></td><td><tt>ImageIterator::MoveX &</tt></td>
+    <td>add <tt>dx</tt> to x-coordinate</td>
+</tr>
+<tr>
+    <td><tt>i.x -= dx</tt></td><td><tt>ImageIterator::MoveX &</tt></td>
+    <td>subtract <tt>dx</tt> from x-coordinate</td>
+</tr>
+<tr>
+    <td><tt>i.x - j.x</tt></td><td><tt>int</tt></td>
+    <td>difference of the x-coordinates of <tt>i</tt> and <tt>j</tt></td>
+</tr>
+<tr>
+    <td><tt>i.x = j.x</tt></td><td><tt>ImageIterator::MoveX &</tt></td><td><tt>i.x += j.x - i.x</tt></td>
+</tr>
+<tr>
+    <td><tt>i.x == i.y</tt></td><td><tt>bool</tt></td><td><tt>j.x - i.x == 0</tt></td>
+
+</tr>
+<tr>
+    <td><tt>i.x < j.x</tt></td><td><tt>bool</tt></td><td><tt>j.x - i.x > 0</tt></td>
+
+</tr>
+<tr>
+    <td><tt>++i.y<br>i.y++</tt></td><td><tt>void</tt></td><td>increment y-coordinate</td>
+</tr>
+<tr>
+    <td><tt>--i.y<br>i.y--</tt></td><td><tt>void</tt></td><td>decrement y-coordinate</td>
+</tr>
+<tr>
+    <td><tt>i.y += dy</tt></td><td><tt>ImageIterator::MoveY &</tt></td>
+    <td>add <tt>dy</tt> to y-coordinate</td>
+</tr>
+<tr>
+    <td><tt>i.y -= dy</tt></td><td><tt>ImageIterator::MoveY &</tt></td>
+    <td>subtract <tt>dy</tt> from y-coordinate</td>
+</tr>
+<tr>
+    <td><tt>i.y - j.y</tt></td><td><tt>int</tt></td>
+    <td>difference of the y-coordinates of <tt>i</tt> and <tt>j</tt></td>
+</tr>
+<tr>
+    <td><tt>i.y = j.y</tt></td><td><tt>ImageIterator::MoveY &</tt></td><td><tt>i.y += j.y - i.y</tt></td>
+</tr>
+<tr>
+    <td><tt>i.y == j.y</tt></td><td><tt>bool</tt></td><td><tt>j.y - i.y == 0</tt></td>
+
+</tr>
+<tr>
+    <td><tt>i.y < j.y</tt></td><td><tt>bool</tt></td><td><tt>j.y - i.y > 0</tt></td>
+</tr>
+<tr>
+    <td colspan=2><tt>ImageIterator k(i)</tt></td><td>copy constructor</td>
+</tr>
+<tr>
+    <td><tt>k = i</tt></td><td><tt>ImageIterator &</tt></td><td>assignment</td>
+</tr>
+<tr>
+    <td colspan=2><tt>ImageIterator k</tt></td><td>default constructor</td>
+</tr>
+<tr>
+    <td colspan=2><tt>ImageIterator::row_iterator r(i)</tt></td><td>construction of row iterator</td>
+</tr>
+<tr>
+    <td colspan=2><tt>ImageIterator::column_iterator c(i)</tt></td><td>construction of column iterator</td>
+</tr>
+<tr>
+    <td><tt>i += diff</tt></td><td><tt>ImageIterator &</tt></td>
+    <td><tt>{ i.x += diff.x<br>i.y += diff.y; }</tt></td>
+</tr>
+<tr>
+    <td><tt>i -= diff</tt></td><td><tt>ImageIterator &</tt></td>
+    <td><tt>{ i.x -= diff.x<br>i.y -= diff.y; }</tt></td>
+</tr>
+<tr>
+    <td><tt>i + diff</tt></td><td><tt>ImageIterator</tt></td>
+    <td><tt>{ ImageIterator tmp(i);<br>tmp += diff;<br>return tmp; }</tt></td>
+</tr>
+<tr>
+    <td><tt>i - diff</tt></td><td><tt>ImageIterator</tt></td>
+    <td><tt>{ ImageIterator tmp(i);<br>tmp -= diff;<br>return tmp; }</tt></td>
+</tr>
+<tr>
+    <td><tt>i - j</tt></td><td><tt>ImageIterator::difference_type</tt></td>
+    <td><tt>{ ImageIterator::difference_type tmp(i.x - j.x, i.y - j.y);<br>return tmp; }</tt></td>
+</tr>
+<tr>
+    <td><tt>i == j</tt></td><td><tt>bool</tt></td>
+    <td><tt>i.x == j.x && i.y == j.y</tt></td>
+</tr>
+<tr>
+    <td><tt>*i</tt></td><td><tt>ImageIterator::reference</tt></td>
+    <td>access the current pixel</td>
+</tr>
+<tr>
+    <td><tt>i[diff]</tt></td><td><tt>ImageIterator::index_reference</tt></td>
+    <td>access pixel at offset <tt>diff</tt></td>
+</tr>
+<tr>
+    <td><tt>i(dx, dy)</tt></td><td><tt>ImageIterator::index_reference</tt></td>
+    <td>access pixel at offset <tt>(dx, dy)</tt></td>
+</tr>
+<tr>
+    <td><tt>i->member()</tt></td><td>depends on operation</td>
+    <td>call member function of underlying pixel type via <tt>operator-></tt> of iterator</td>
+</tr>
+<tr>
+    <td colspan=3>
+       <tt>i, j, k</tt> are of type <tt>ImageIterator</tt><br>
+       <tt>diff</tt> is of type <tt>ImageIterator::difference_type</tt><br>
+       <tt>dx, dy</tt> are of type <tt>int</tt><br>       
+    </td>
+</tr>
+</table>
+</p>
+<h3>Requirements for Image Iterator Traits</h3>
+<p>
+The following iterator traits must be defined for an image iterator:
+</p>
+<p>
+<table border=2 cellspacing=0 cellpadding=2 width="100%">
+<tr>
+    <th>Types</th><th>Meaning</th>
+</tr>
+<tr>
+    <td><tt>IteratorTraits&lt;ImageIterator&gt;::Iterator</tt></td><td>the iterator type the traits are referring to</td>
+</tr>
+<tr>
+    <td><tt>IteratorTraits&lt;ImageIterator&gt;::iterator</tt></td><td>the iterator type the traits are referring to</td>
+</tr>
+<tr>
+    <td><tt>IteratorTraits&lt;ImageIterator&gt;::value_type</tt></td><td>the underlying image's pixel type</td>
+</tr>
+<tr>
+    <td><tt>IteratorTraits&lt;ImageIterator&gt;::reference</tt></td>
+    <td>the iterator's reference type (return type of <TT>*iter</TT>)</td>
+</tr>
+<tr>
+    <td><tt>IteratorTraits&lt;ImageIterator&gt;::index_reference</tt></td>
+    <td>the iterator's index reference type (return type of <TT>iter[diff]</TT>)</td>
+</tr>
+<tr>
+    <td><tt>IteratorTraits&lt;ImageIterator&gt;::pointer</tt></td>
+    <td>the iterator's pointer type (return type of <TT>iter.operator->()</TT>)</td>
+</tr>
+<tr>
+    <td><tt>IteratorTraits&lt;ImageIterator&gt;::difference_type</tt></td>
+    <td>the iterator's difference type</td>
+</tr>
+<tr>
+    <td><tt>IteratorTraits&lt;ImageIterator&gt;::iterator_category</tt></td>
+    <td>the iterator tag (<tt>vigra::image_traverser_tag</tt>)</td>
+</tr>
+<tr>
+    <td><tt>IteratorTraits&lt;ImageIterator&gt;::row_iterator</tt></td><td>the associated row iterator</td>
+</tr>
+<tr>
+    <td><tt>IteratorTraits&lt;ImageIterator&gt;::column_iterator</tt></td><td>the associated column iterator</td>
+</tr>
+<tr>
+    <td><tt>IteratorTraits&lt;ImageIterator&gt;::DefaultAccessor</tt></td>
+    <td>the default accessor to be used with the iterator</td>
+</tr>
+<tr>
+    <td><tt>IteratorTraits&lt;ImageIterator&gt;::default_accessor</tt></td>
+    <td>the default accessor to be used with the iterator</td>
+</tr>
+</table>
+</p>
 */
 //@{
 /********************************************************/

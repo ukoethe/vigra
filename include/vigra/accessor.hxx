@@ -88,7 +88,44 @@ struct RequiresExplicitCast<double> {
     all. Encapsulating access in an accessor enables a better
     decoupling of data structures and algorithms. 
     <a href="documents/DataAccessors.ps">This paper</a> contains
-    a detailed description of the concept.
+    a detailed description of the concept. Here is a brief list of the basic
+    accessor requirements:
+<p>
+<table border=2 cellspacing=0 cellpadding=2 width="100%">
+<tr>
+  <th>Operation</th><th>Result</th><th>Semantics</th>
+</tr>
+<tr>
+    <td><tt>accessor(iter)</tt></td><td>convertible to <br><tt>Iterator::value_type const &</tt></td>
+    <td>read data at the current position of the iterator</td>
+</tr>
+<tr>
+    <td><tt>accessor(iter, index)</tt></td><td>convertible to <br><tt>Accessor::value_type const &</tt></td>
+    <td>read data at offset <tt>index</tt> relative to iterator's current position 
+    (random-access iterator only)</td>
+</tr>
+<tr>
+    <td><tt>accessor.set(value, iter)</tt></td><td><tt>void</tt></td>
+    <td>write data <tt>value</tt> at the current position of the iterator (mutable iterator only)</td>
+</tr>
+<tr>
+    <td><tt>accessor.set(value, iter, index)</tt></td><td><tt>void</tt></td>
+    <td>write data <tt>value</tt> at offset <tt>index</tt> relative to iterator's current position 
+    (mutable random-access iterator only)</td>
+</tr>
+<tr>
+    <td colspan=2><tt>Accessor::value_type</tt></td>
+    <td>type of the data field the accessor refers to</td>
+</tr>
+<tr>
+    <td colspan=3>
+        <tt>iter</tt> is an iterator<br>
+        <tt>index</tt> has the iterator's index type (<tt>Iterator::difference_type</tt>)<br>
+        <tt>value</tt> is convertible to <tt>Accessor::value_type const &</tt>
+    </td>
+</tr>
+</table>
+</p>
 */
 //@{
 
