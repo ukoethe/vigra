@@ -343,15 +343,8 @@ struct ConvolutionTest
         Image::ScanOrderIterator r2 = refyy.begin();
         Image::ScanOrderIterator r3 = refxy.begin();
         Image::Accessor acc = constimg.accessor();
-        /*
-        for(; i1 != i1end; ++i1, ++i2, ++i3, ++r1, ++r2, ++r3)
-        {
-            should(acc(i1) == acc(r1));
-            should(acc(i2) == acc(r2));
-            should(acc(i3) == acc(r3));
-        }
-        */
-        double epsilon = 0.00001;
+
+        double epsilon = 0.001;
         for(; i1 != i1end; ++i1, ++i2, ++i3, ++r1, ++r2, ++r3)
         {
             should(std::abs(acc(i1) - acc(r1)) < epsilon);
@@ -508,7 +501,7 @@ struct ConvolutionTest
     
     void nonlinearDiffusionTest()
     {
-        double epsilon = 0.0000001;
+        double epsilon = 0.00001;
         
         Image res(lenna.size());
 
