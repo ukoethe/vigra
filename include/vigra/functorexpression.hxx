@@ -316,10 +316,10 @@
 
 #ifndef DOXYGEN
 
+#if !defined(NO_PARTIAL_TEMPLATE_SPECIALIZATION)
+
 #include <cmath>
 #include <vigra/numerictraits.hxx>
-
-#if !defined(NO_PARTIAL_TEMPLATE_SPECIALIZATION)
 
 
 namespace vigra {
@@ -1949,13 +1949,14 @@ operator,(UnaryAnalyser<EXPR1> const & e1,
                             UnaryAnalyser<EXPR2> > >(p);
 }
 
-#endif /* NO_PARTIAL_TEMPLATE_SPECIALIZATION */
-
 } // namespace functor
 
 } // namespace vigra
 
+#endif /* NO_PARTIAL_TEMPLATE_SPECIALIZATION */
+
 #endif // DOXYGEN
 
 #endif /* VIGRA_FUNCTOREXPRESSION_HXX  */
+
 
