@@ -1,7 +1,6 @@
 #include <iostream>
 #include <cmath>
 #include "vigra/stdimage.hxx"
-//#include "vigra/viff.hxx"
 #include "vigra/impex.hxx"
 #include "unittest.hxx"
 
@@ -24,12 +23,12 @@ public:
 
         importImage (info, destImage (img));
     }
-    
+
     void testListFormatsExtensions()
     {
-        std::string formats = impexListFormats();
-        std::string extensions = impexListExtensions();
-        
+        const std::string formats = impexListFormats();
+        const std::string extensions = impexListExtensions();
+
         shouldEqual(formats, "BMP GIF JPEG PNG PNM SUN TIFF VIFF");
         shouldEqual(extensions, "bmp gif jpeg jpg pbm pgm png pnm ppm ras tif tiff xv");
     }
