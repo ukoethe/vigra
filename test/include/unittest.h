@@ -58,6 +58,12 @@
     
 #define shouldMsg VIGRA_ASSERT_MESSAGE
 
+#define shouldEqual(left, right) \
+    vigra::detail::equal_impl(left, right, #left " == " #right, __FILE__, __LINE__)
+
+#define shouldEqualEps(left, right, eps) \
+    vigra::detail::eps_equal_impl(left, right, eps, #left " == " #right, __FILE__, __LINE__)
+
 #define VIGRA_ERROR(message) \
     vigra::detail::should_impl(false, message, __FILE__, __LINE__)
 
@@ -70,12 +76,11 @@ class test_suite;
 namespace detail {
 
 struct errstream
-: public std::ostream
 {
     std::strstream buf;
     char const * str() { buf << char(); return buf.str(); }
     template <class T>
-    errstream & operator<<(T t) { buf << t; return *this; }
+    errstream & operator<<(T t) { buf << t;  return *this; }
 };
 
 inline std::string & exception_checkpoint()
@@ -85,7 +90,7 @@ inline std::string & exception_checkpoint()
 }
 
 //  A separate reporting function was requested during formal review.
-void report_exception( std::ostream & os, 
+void report_exception( detail::errstream & os, 
                        const char * name, const char * info )
 { 
     os << "Unexpected " << name << " " << info << std::endl; 
@@ -113,7 +118,7 @@ inline bool unexpected_error(int i)
 #ifdef _MSC_VER
 
 template< class Generator >  // Generator is function object returning int
-int catch_signals( Generator function_object, std::ostream & err, int timeout )
+int catch_signals( Generator function_object, detail::errstream & err, int timeout )
 {
     int result = 0;
     __try 
@@ -156,7 +161,7 @@ static void unit_test_signal_handler(int sig)
 }
 
 template< class Generator >  // Generator is function object returning int
-int catch_signals( Generator function_object, std::ostream & err, int timeout)
+int catch_signals( Generator function_object, detail::errstream & err, int timeout)
 {
     volatile int sigtype;
     int result;
@@ -220,7 +225,7 @@ int catch_signals( Generator function_object, std::ostream & err, int timeout)
 #else  /* VIGRA_CANT_CATCH_SIGNALS */
 
 template< class Generator >  // Generator is function object returning int
-int catch_signals( Generator function_object, std::ostream & err )
+int catch_signals( Generator function_object, detail::errstream & err )
 {
      return function_object();
 }
@@ -230,7 +235,7 @@ int catch_signals( Generator function_object, std::ostream & err )
 } // namespace detail
 
 template< class Generator >  // Generator is function object returning int
-int catch_exceptions( Generator function_object, std::ostream & err, int timeout )
+int catch_exceptions( Generator function_object, detail::errstream & err, int timeout )
 {
     int result = detail::unexpected_exception;
 
@@ -299,7 +304,7 @@ int catch_exceptions( Generator function_object, std::ostream & err, int timeout
 
 template< class Generator >  // Generator is function object returning int
 inline
-int catch_exceptions( Generator function_object, std::ostream & err)
+int catch_exceptions( Generator function_object, detail::errstream & err)
 {
     return catch_exceptions(function_object, err, 0);
 }
@@ -339,6 +344,35 @@ should_impl(bool predicate, const char * message, const char * file, int line)
         buf << message << " (" << file <<":" << line << ")";
         throw unit_test_failed(buf.str()); 
     } 
+}
+
+inline void 
+eps_equal_impl(double left, double right, double epsilon, const char * message, const char * file, int line)
+{
+    detail::errstream buf;
+    buf << message << " [" << left << " != " << right << "]";
+    should_impl(fabs(left - right) < epsilon, buf.str(), file, line); 
+}
+
+template <class Left, class Right>
+inline void 
+equal_impl(Left left, Right right, const char * message, const char * file, int line)
+{
+    detail::errstream buf;
+    buf << message << " [" << left << " != " << right << "]";
+    should_impl(left == right, buf.str(), file, line); 
+}
+
+inline void 
+equal_impl(double left, double right, const char * message, const char * file, int line)
+{
+    eps_equal_impl(left, right, 1.0e-16, message, file, line); 
+}
+
+inline void 
+equal_impl(float left, float right, const char * message, const char * file, int line)
+{
+    eps_equal_impl(left, right, 1.0e-6, message, file, line); 
 }
 
 class test_case
@@ -580,7 +614,7 @@ class class_test_case
             detail::test_case_run_functor(buf, this), buf, timeout);
         if(failed)
             report_ += buf.str();
-        
+            
         if(critical_error(failed))
             return failed;
             
