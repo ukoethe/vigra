@@ -3,31 +3,18 @@ include ../../config/Makefile.include
 TARGET = libvigraimpex.la
 
 OBJS = \
-    block_read.lo \
-    cr_image.lo \
-    freeimage.lo \
-    fullpath.lo \
-    imagesize.lo \
-    machorder.lo \
-    machtype.lo \
-    order.lo \
-    readheader.lo \
-    readimage.lo \
-    utils.lo \
-    writeimage.lo \
-    impex.lo \
-    bmp.lo \
     gif.lo \
+    bmp.lo \
+    byteorder.lo \
+    codecmanager.lo \
+    imageinfo.lo \
     jpeg.lo \
+    png.lo \
+    pnm.lo \
     sun.lo \
     tiff.lo \
     viff.lo \
-    pnm.lo \
-    colors.lo \
-    error.lo \
-    image.lo \
-    quantize.lo \
-    utility.lo 
+    void_vector.lo 
 
 all: $(TARGET)
 

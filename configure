@@ -753,6 +753,15 @@ Optional Packages:
     --with-jpeglib=dir : the jpeg package's lib directory
     --with-jpeginc=dir : the jpeg package's include directory
 
+  --with-png=dir          support import/export of png images (default=no)
+      if dir='yes': png package files will be searched for in
+         some standard directories.
+      if dir is a directory: png package files will be searched for
+         below dir using 'find'.
+      alternatively, you can specify:
+    --with-pnglib=dir : the png package's lib directory
+    --with-pnginc=dir : the png package's include directory
+
   --with-fftw=dir         support fast Fourier transforms (default=no)
       if dir='yes': fftw package files will be searched for in
          some standard directories.
@@ -1164,7 +1173,7 @@ ac_configure="$SHELL $ac_aux_dir/configure" # This should be Cygnus configure.
 
 MAJOR_VERSION=1
 MINOR_VERSION=1
-MICRO_VERSION=5
+MICRO_VERSION=7
 
 echo "configuring VIGRA $MAJOR_VERSION.$MINOR_VERSION.$MICRO_VERSION"
 
@@ -2785,7 +2794,7 @@ test x"$silent" = xyes && libtool_flags="$libtool_flags --silent"
 case "$lt_target" in
 *-*-irix6*)
   # Find out which ABI we are using.
-  echo '#line 2788 "configure"' > conftest.$ac_ext
+  echo '#line 2797 "configure"' > conftest.$ac_ext
   if { (eval echo "$as_me:$LINENO: \"$ac_compile\"") >&5
   (eval $ac_compile) 2>&5
   ac_status=$?
@@ -3568,6 +3577,197 @@ fi
 
 
 
+# Check whether --with-png or --without-png was given.
+if test "${with_png+set}" = set; then
+  withval="$with_png"
+
+fi;
+
+# Check whether --with-pnglib or --without-pnglib was given.
+if test "${with_pnglib+set}" = set; then
+  withval="$with_pnglib"
+
+fi;
+
+# Check whether --with-pnginc or --without-pnginc was given.
+if test "${with_pnginc+set}" = set; then
+  withval="$with_pnginc"
+
+fi;
+
+    if test "$libext" = ""; then
+        if test "$CYGWIN" = "yes" || test "$MINGW32" = "yes"; then
+          libext="lib"
+        else
+          libext="a"
+        fi
+        libext=a
+    fi
+
+    if test "$solibext" = ""; then
+        if test "$CYGWIN" = "yes" || test "$MINGW32" = "yes"; then
+          solibext="dll"
+        else
+          solibext="so"
+        fi
+    fi
+    if test "$CYGWIN" = "yes" || test "$MINGW32" = "yes"; then
+      libpre=""
+    else
+      libpre="lib"
+    fi
+
+    if test ${with_png:-""} = "" -a ${with_pnglib:-""} = "" -a ${with_pnginc:-""} = ""; then
+        with_png="no"
+    fi
+
+    if test ${with_png:-""} != "no"; then
+        echo "$as_me:$LINENO: checking for libpng " >&5
+echo $ECHO_N "checking for libpng ... $ECHO_C" >&6
+        dirs=""
+        if test "$with_pnglib" != ""; then
+            dirs=$with_pnglib
+        elif test "$with_png" != "yes"; then
+            dirs=$with_png
+        else
+            dirs="/usr/local/lib /usr/local/gnu/lib /usr/local/png /opt/lib /opt/gnu/lib /opt/png /usr/lib"
+        fi
+        found=""
+        for i in $dirs; do
+            if test -d $i; then
+                found="$found "`find $i -name "${libpre}png.$solibext" -print 2> /dev/null; find $i -name "${libpre}png.$libext" -print 2> /dev/null`
+            fi
+        done
+
+
+    regExResult=""
+    if test "$found" != ""; then
+        for i in $found; do
+            regExResult=`expr "$i" : "\(.*lib\)/${libpre}png\.$solibext"`
+            if test "$regExResult" != ""; then
+                break
+            fi
+        done
+    fi
+
+        if test "$regExResult" = ""; then
+
+    regExResult=""
+    if test "$found" != ""; then
+        for i in $found; do
+            regExResult=`expr "$i" : "\(.*lib\)/${libpre}png\.$libext"`
+            if test "$regExResult" != ""; then
+                break
+            fi
+        done
+    fi
+
+        fi
+        if test "$regExResult" = ""; then
+
+    regExResult=""
+    if test "$found" != ""; then
+        for i in $found; do
+            regExResult=`expr "$i" : "\(.*\)/${libpre}png\.$solibext"`
+            if test "$regExResult" != ""; then
+                break
+            fi
+        done
+    fi
+
+        fi
+        if test "$regExResult" = ""; then
+
+    regExResult=""
+    if test "$found" != ""; then
+        for i in $found; do
+            regExResult=`expr "$i" : "\(.*\)/${libpre}png\.$libext"`
+            if test "$regExResult" != ""; then
+                break
+            fi
+        done
+    fi
+
+        fi
+        if test "$regExResult" = ""; then
+            with_pnglib=""
+            echo "$as_me:$LINENO: result: \"not found in $dirs\"" >&5
+echo "${ECHO_T}\"not found in $dirs\"" >&6
+        else
+            with_pnglib=$regExResult
+            echo "$as_me:$LINENO: result: $with_pnglib" >&5
+echo "${ECHO_T}$with_pnglib" >&6
+        fi
+
+        echo "$as_me:$LINENO: checking for png.h " >&5
+echo $ECHO_N "checking for png.h ... $ECHO_C" >&6
+        dirs=""
+        if test "$with_pnginc" != ""; then
+            dirs="$with_pnginc"
+        elif test "$with_png" != "yes"; then
+            dirs="$with_png"
+        else
+            dirs="/usr/local/include /usr/local/gnu/include /usr/local/png /opt/include /opt/gnu/include /opt/png /usr/include"
+        fi
+		        found=""
+        for i in $dirs; do
+            if test -d $i; then
+                found="$found "`find $i -name png.h -print 2> /dev/null`
+            fi
+        done
+
+    regExResult=""
+    if test "$found" != ""; then
+        for i in $found; do
+            regExResult=`expr "$i" : "\(.*include\)/png\.h"`
+            if test "$regExResult" != ""; then
+                break
+            fi
+        done
+    fi
+
+        if test "$regExResult" = ""; then
+
+    regExResult=""
+    if test "$found" != ""; then
+        for i in $found; do
+            regExResult=`expr "$i" : "\(.*\)/png\.h"`
+            if test "$regExResult" != ""; then
+                break
+            fi
+        done
+    fi
+
+        fi
+        if test "$regExResult" = ""; then
+            with_pnginc=""
+            echo "$as_me:$LINENO: result: \"not found in $dirs\"" >&5
+echo "${ECHO_T}\"not found in $dirs\"" >&6
+        else
+            with_pnginc=$regExResult
+            echo "$as_me:$LINENO: result: $with_pnginc" >&5
+echo "${ECHO_T}$with_pnginc" >&6
+        fi
+
+        if test "$with_pnglib" = "" -o "$with_pnginc" = ""; then
+            with_png="no"
+            { echo "$as_me:$LINENO: WARNING: Configuring without png support" >&5
+echo "$as_me: WARNING: Configuring without png support" >&2;}
+        else
+            with_png="yes"
+        fi
+    fi
+
+
+if test $with_png = "yes";
+then
+    PNG_LIB="-L$with_pnglib -lpng"
+    IMPEX_DEPLIBS="$IMPEX_DEPLIBS $PNG_LIB"
+    LIBCPPFLAGS="$LIBCPPFLAGS -DHasPNG -I$with_pnginc"
+fi
+
+
+
 # Check whether --with-fftw or --without-fftw was given.
 if test "${with_fftw+set}" = set; then
   withval="$with_fftw"
@@ -3763,6 +3963,7 @@ POSTINSTALLCPPFLAGS="$VIGRA_INCLUDES ${CPPFLAGS}"
 CPPFLAGS="-I$vigra_srcdir/include ${CPPFLAGS}"
 IMPEX_LIB="-L$libdir -lvigraimpex -lm $IMPEX_DEPLIBS"
 LIBS="$LIBS $IMPEX_LIB"
+
 
 
 
@@ -4389,6 +4590,7 @@ s,@vigra_srcdir@,$vigra_srcdir,;t t
 s,@vigra_builddir@,$vigra_builddir,;t t
 s,@TIFF_LIB@,$TIFF_LIB,;t t
 s,@JPEG_LIB@,$JPEG_LIB,;t t
+s,@PNG_LIB@,$PNG_LIB,;t t
 s,@FFTW_LIB@,$FFTW_LIB,;t t
 s,@RFFTW_LIB@,$RFFTW_LIB,;t t
 s,@FFTW_INCLUDES@,$FFTW_INCLUDES,;t t
@@ -4637,6 +4839,7 @@ echo "configure finished."
 echo ""
 echo "TIFF support enabled (--with-tiff): $with_tiff"
 echo "JPEG support enabled (--with-jpeg): $with_jpeg"
+echo "PMG  support enabled (--with-png):  $with_png"
 echo "FFTW support enabled (--with-fftw): $with_fftw"
 echo ""
 echopath "The vigraimpex library    will be installed in $libdir."

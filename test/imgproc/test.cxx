@@ -811,13 +811,10 @@ struct ResizeImageSplineTest
 
     void scalarExpand()
     {
-        ViffImage * viff = readViffImage("lenna288.xv");
+        ImageImportInfo info("lenna288.xv");
 
-        shouldMsg(viff != 0, "Unable to read test image \"lenna288.xv\"\n");
-
-        Image imgex(viff->row_size,viff->col_size);
-        importViffImage(viff, destImage(imgex));
-        freeViffImage(viff);
+        Image imgex(info.width(), info.height());
+        importImage(info, destImage(imgex));
 
         Image img1(imgex.width(), imgex.height());
         resizeImageSplineInterpolation(srcImageRange(img), destImageRange(img1));
@@ -834,14 +831,11 @@ struct ResizeImageSplineTest
 
     void scalarReduce()
     {
-        ViffImage * viff = readViffImage("lenna42.xv");
+        ImageImportInfo info("lenna42.xv");
 
-        shouldMsg(viff != 0, "Unable to read test image \"lenna42.xv\"\n");
-
-        Image imgred(viff->row_size,viff->col_size);
-        importViffImage(viff, destImage(imgred));
-        freeViffImage(viff);
-
+        Image imgred(info.width(), info.height());
+        importImage(info, destImage(imgred));
+        
         Image img1(imgred.width(), imgred.height());
 
         resizeImageSplineInterpolation(srcImageRange(img), destImageRange(img1));
@@ -858,14 +852,11 @@ struct ResizeImageSplineTest
 
     void rgbExpand()
     {
-        ViffImage * viff = readViffImage("lenna288rgb.xv");
+        ImageImportInfo info("lenna288rgb.xv");
 
-        shouldMsg(viff != 0, "Unable to read test image \"lenna288rgb.xv\"\n");
-
-        RGBImage rgbex(viff->row_size,viff->col_size);
-        importViffImage(viff, destImage(rgbex));
-        freeViffImage(viff);
-
+        RGBImage rgbex(info.width(), info.height());
+        importImage(info, destImage(rgbex));
+        
         RGBImage img1(rgbex.width(), rgbex.height());
 
         resizeImageSplineInterpolation(srcImageRange(rgb), destImageRange(img1));
@@ -884,14 +875,11 @@ struct ResizeImageSplineTest
 
     void rgbReduce()
     {
-        ViffImage * viff = readViffImage("lenna42rgb.xv");
+        ImageImportInfo info("lenna42rgb.xv");
 
-        shouldMsg(viff != 0, "Unable to read test image \"lenna42rgb.xv\"\n");
-
-        RGBImage rgbred(viff->row_size,viff->col_size);
-        importViffImage(viff, destImage(rgbred));
-        freeViffImage(viff);
-
+        RGBImage rgbred(info.width(), info.height());
+        importImage(info, destImage(rgbred));
+        
         RGBImage img1(rgbred.width(), rgbred.height());
 
         resizeImageSplineInterpolation(srcImageRange(rgb), destImageRange(img1));

@@ -429,14 +429,10 @@ struct ConvolutionTest
     
     void recursiveGradientTest()
     {
-        ViffImage * viff = readViffImage("lenna128recgrad.xv");
+        ImageImportInfo info("lenna128recgrad.xv");
 
-        shouldMsg(viff != 0, "Unable to read test image \"lenna128recgrad.xv\"\n");
-
-        Image recgrad(viff->row_size,viff->col_size);
-        importViffImage(viff, destImage(recgrad));
-        freeViffImage(viff);
-
+        Image recgrad(info.width(), info.height());
+        importImage(info, destImage(recgrad));
         
         Image tmp1(lenna);
         tmp1 = 0.0;

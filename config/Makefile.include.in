@@ -14,6 +14,7 @@ bindir = @bindir@
 docdir = @docdir@
 
 LIBS = @LIBS@
+PNG_LIB = @PNG_LIB@
 JPEG_LIB = @JPEG_LIB@
 TIFF_LIB = @TIFF_LIB@
 IMPEX_DEPLIBS = @IMPEX_DEPLIBS@

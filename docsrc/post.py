@@ -152,7 +152,7 @@ def findExplicitDeclarations(text):
     decl = {}
     t = text
     while len(t):
-        m = re.search(r'Declarations:[^\(]*?\s*([a-zA-Z_][a-zA-Z_0-9]*) *\(', t)
+        m = re.search(r'Declarations?:[^\(]*?\s*([a-zA-Z_][a-zA-Z_0-9]*) *\(', t)
         if not m: break
         decl[m.groups()[0]] = 1
         t = t[m.end():]

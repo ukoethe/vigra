@@ -4,6 +4,7 @@
 # update path according to where 'vigra-config' is installed
 CXXFLAGS  := -O $(shell ../../config/vigra-config --cppflags)
 IMPEX_LIB := $(shell ../../config/vigra-config --impex-lib)
+#IMPEX_LIB := ../impex/.libs/libvigraimpex.a -lm -L/software/tiff-v3.5.5/SunOS-5.6/lib -ltiff -L/software/jpeg-6b/SunOS-5.6/lib -ljpeg
 # if your 'make'-program does not support $(shell ...), write
 #    CXXFLAGS  = -O `../../config/vigra-config --cxxflags`
 #    IMPEX_LIB = `../../config/vigra-config --impex-lib`
