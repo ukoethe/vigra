@@ -22,6 +22,7 @@
 #include <fstream>
 #include <algorithm>
 #include <cctype> // std::tolower
+#include "vigra/config.hxx"
 #include "vigra/error.hxx"
 #include "codecmanager.hxx"
 
@@ -151,7 +152,7 @@ namespace vigra
         // get the magic string
         const unsigned int magiclen = 4;
         char fmagic[magiclen];
-#ifdef _MSC_VER
+#ifdef VIGRA_NEED_BIN_STREAMS
         std::ifstream stream(filename.c_str(), std::ios::binary);
 #else
         std::ifstream stream(filename.c_str());

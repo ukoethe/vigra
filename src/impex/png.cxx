@@ -23,6 +23,7 @@
 
 #include <stdexcept>
 #include <iostream>
+#include "vigra/config.hxx"
 #include "void_vector.hxx"
 #include "auto_file.hxx"
 #include "png.hxx"
@@ -133,7 +134,7 @@ namespace vigra {
     };
 
     PngDecoderImpl::PngDecoderImpl( const std::string & filename )
-#ifdef _MSC_VER
+#ifdef VIGRA_NEED_BIN_STREAMS
         : file( filename.c_str(), "rb" ), 
 #else
         : file( filename.c_str(), "r" ), 
@@ -403,7 +404,7 @@ namespace vigra {
     };
 
     PngEncoderImpl::PngEncoderImpl( const std::string & filename )
-#ifdef _MSC_VER
+#ifdef VIGRA_NEED_BIN_STREAMS
         : file( filename.c_str(), "wb" ), 
 #else
         : file( filename.c_str(), "w" ), 

@@ -22,6 +22,7 @@
 #include <cmath>
 #include <iostream>
 #include <fstream>
+#include "vigra/config.hxx"
 #include "error.hxx"
 #include "void_vector.hxx"
 #include "pnm.hxx"
@@ -211,7 +212,7 @@ namespace vigra {
 
     // reads the header.
     PnmDecoderImpl::PnmDecoderImpl( const std::string & filename )
-#ifdef _MSC_VER
+#ifdef VIGRA_NEED_BIN_STREAMS
         : stream( filename.c_str(), std::ios::binary )
 #else
         : stream( filename.c_str() )
@@ -442,7 +443,7 @@ namespace vigra {
     };
 
     PnmEncoderImpl::PnmEncoderImpl( const std::string & filename )
-#ifdef _MSC_VER
+#ifdef VIGRA_NEED_BIN_STREAMS
         : stream( filename.c_str(), std::ios::binary ), 
 #else
         : stream( filename.c_str() ), 

@@ -21,6 +21,7 @@
 
 #include <fstream>
 #include <stdexcept>
+#include "vigra/config.hxx"
 #include "error.hxx"
 #include "byteorder.hxx"
 #include "void_vector.hxx"
@@ -143,7 +144,7 @@ namespace vigra {
     };
 
     SunDecoderImpl::SunDecoderImpl( const std::string & filename )
-#ifdef _MSC_VER
+#ifdef VIGRA_NEED_BIN_STREAMS
         : stream( filename.c_str(), std::ios::binary ), 
 #else
         : stream( filename.c_str() ), 
@@ -362,7 +363,7 @@ namespace vigra {
     };
 
     SunEncoderImpl::SunEncoderImpl( const std::string & filename )
-#ifdef _MSC_VER
+#ifdef VIGRA_NEED_BIN_STREAMS
         : stream( filename.c_str(), std::ios::binary ), 
 #else
         : stream( filename.c_str() ), 

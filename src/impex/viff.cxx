@@ -21,6 +21,7 @@
 
 #include <iostream>
 #include <fstream>
+#include "vigra/config.hxx"
 #include "error.hxx"
 #include "byteorder.hxx"
 #include "void_vector.hxx"
@@ -511,7 +512,7 @@ namespace vigra {
     ViffDecoderImpl::ViffDecoderImpl( const std::string & filename )
         : pixelType("undefined"), current_scanline(-1)
     {
-#ifdef _MSC_VER
+#ifdef VIGRA_NEED_BIN_STREAMS
         std::ifstream stream( filename.c_str(), std::ios::binary );
 #else
         std::ifstream stream( filename.c_str() );
@@ -883,7 +884,7 @@ namespace vigra {
         void_vector_base bands;
 
         ViffEncoderImpl( const std::string & filename )
-#ifdef _MSC_VER
+#ifdef VIGRA_NEED_BIN_STREAMS
             : stream( filename.c_str(), std::ios::binary ), 
 #else
             : stream( filename.c_str() ), 

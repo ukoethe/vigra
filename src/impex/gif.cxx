@@ -23,6 +23,7 @@
 #include <stdexcept>
 #include <vector>
 #include <algorithm>
+#include "vigra/config.hxx"
 #include "error.hxx"
 #include "byteorder.hxx"
 #include "void_vector.hxx"
@@ -385,7 +386,7 @@ namespace {
     };
 
     GIFDecoderImpl::GIFDecoderImpl( const std::string & filename )
-#ifdef _MSC_VER
+#ifdef VIGRA_NEED_BIN_STREAMS
         : stream( filename.c_str(), std::ios::binary ), 
 #else
         : stream( filename.c_str() ), 
@@ -740,7 +741,7 @@ namespace {
     };
 
     GIFEncoderImpl::GIFEncoderImpl( const std::string & filename )
-#ifdef _MSC_VER
+#ifdef VIGRA_NEED_BIN_STREAMS
         : stream( filename.c_str(), std::ios::binary ), 
 #else
         : stream( filename.c_str() ), 

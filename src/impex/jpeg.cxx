@@ -23,6 +23,7 @@
 
 #include <stdexcept>
 #include <csetjmp>
+#include "vigra/config.hxx"
 #include "void_vector.hxx"
 #include "error.hxx"
 #include "auto_file.hxx"
@@ -165,7 +166,7 @@ namespace vigra
     };
 
     JPEGDecoderImpl::JPEGDecoderImpl( const std::string & filename )
-#ifdef _MSC_VER
+#ifdef VIGRA_NEED_BIN_STREAMS
         : file( filename.c_str(), "rb" ), 
 #else
         : file( filename.c_str(), "r" ), 
@@ -301,7 +302,7 @@ namespace vigra
     };
 
     JPEGEncoderImpl::JPEGEncoderImpl( const std::string & filename )
-#ifdef _MSC_VER
+#ifdef VIGRA_NEED_BIN_STREAMS
         : file( filename.c_str(), "wb" ), 
 #else
         : file( filename.c_str(), "w" ), 
