@@ -109,14 +109,14 @@
     \item edit #$VIGRA_PATH/src/impex/Makefile#: \\
      {\em either} update the 
      paths to the include files for \URL[libjpeg]{http://www.ijg.org/} and 
-    \URL[libtiff]{http://www.dms.csiro.au/~talbot/tiff/index.html} on your 
+    \URL[libtiff]{http://www.libtiff.org/} on your 
     system \\
     {\em or} comment out the lines #HAS_JPEG# and #HAS_TIFF#.
     
     \item edit the LIB macro in #$VIGRA_PATH/src/examples/Makefile#: \\
     {\em either} add the 
     paths to the library files \URL[libjpeg.a]{http://www.ijg.org/} and 
-    \URL[libtiff.a]{http://www.dms.csiro.au/~talbot/tiff/index.html} on your 
+    \URL[libtiff.a]{http://www.libtiff.org/} on your 
     system \\
     {\em or} remove -ljpeg and -ltiff.
     
@@ -143,7 +143,7 @@
     open the dialog Project:Settings:C++:Preprocessor and {\em either} update 
     the paths to the
     include files for \URL[jpeg.lib]{http://www.ijg.org/} and 
-    \URL[tiff.lib]{http://www.dms.csiro.au/~talbot/tiff/index.html} on your 
+    \URL[tiff.lib]{http://www.libtiff.org/} on your 
     system - {\em or} - remove the defines #HasJPEG# and #HasTIFF#.
     
     \item likewise, enter the path to jpeg.lib and tiff.lib in the dialog

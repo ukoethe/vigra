@@ -77,14 +77,13 @@ def convertHeading(text):
 def fixDocBaselinkSection(text):
     matchPos = re.match(r'<H3>Inherited from <A HREF=".*?"', text).regs
     end = matchPos[0][1]
-    link = re.sub(r'<H3>Inherited from <A HREF="(.*?)"', r'\1', text[0:end], re.S)
+    link = re.sub(r'<H3>Inherited from <A HREF="(.*?)"', r'\1', text[0:end])
     text = re.sub(r'<A HREF="(#DOC.*?)">', r'<A HREF="' + link + r'\1">', text)
     return text
 
 def fixDocBaselinkBug(text):
     res = re.search(r'<H3>Inherited from <A HREF=.*?(?=<H3>Inherited from <A HREF=|<A NAME="DOC.DOCU">)', text, re.S)
     if res != None:
-        newSections = []
         newText = ''
         lastEnd = 0
         start = 0
