@@ -42,3 +42,7 @@ clean:
 	rm -f *.o *.lo core a.out $(TARGET)
 	rm -f *.plg	
 	rm -rf Debug Release ii_files .libs
+
+ifneq "$(MAKECMDGOALS)" "clean"
+include $(patsubst %.lo, %.ld, $(OBJS))
+endif
