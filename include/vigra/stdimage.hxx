@@ -67,6 +67,26 @@ struct IteratorTraits<ConstBasicImageIterator<unsigned char, unsigned char **> >
 typedef BasicImage<unsigned char> BImage;
 
 template<>
+struct IteratorTraits<BasicImageIterator<short, short **> >
+{
+    typedef StandardAccessor<short> DefaultAccessor;
+};  
+
+template<>
+struct IteratorTraits<ConstBasicImageIterator<short, short **> >
+{
+    typedef StandardConstAccessor<short> DefaultAccessor;
+};  
+
+    /** Short integer (16-bit signed) image.
+        It uses \Ref{BasicImageIterator} and \Ref{StandardAccessor} and 
+        their const counterparts to access the data.
+        
+        Namespace: vigra
+    */
+typedef BasicImage<short> SImage;
+
+template<>
 struct IteratorTraits<BasicImageIterator<int, int **> >
 {
     typedef StandardAccessor<int> DefaultAccessor;

@@ -37,16 +37,16 @@ struct IteratorTraits
     typedef IteratorTraitsNotDefinedForThisCase DefaultAccessor;
 };
 
-template <>
-struct IteratorTraits<Diff2D>
+template <> 
+struct IteratorTraits<Diff2D > 
 {
-    typedef StandardAccessor<Diff2D> DefaultAccessor;
+    typedef StandardConstValueAccessor<Diff2D> DefaultAccessor;
 };
 
-template <>
-struct IteratorTraits<Diff2D const>
+template <> 
+struct IteratorTraits<Diff2D const> 
 {
-    typedef StandardConstAccessor<Diff2D> DefaultAccessor;
+    typedef StandardConstValueAccessor<Diff2D> DefaultAccessor;
 };
 
 template <class Iterator, class Accessor>

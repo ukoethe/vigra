@@ -1024,13 +1024,6 @@ struct IteratorTraits<ConstValueIterator<T> >
 
 typedef Diff2D CoordinateIterator;
 
-template <> 
-struct IteratorTraits<Diff2D > 
-{
-    typedef StandardConstValueAccessor<Diff2D> DefaultAccessor;
-};
-
-
 /** @heading CoordinateIterator 
 
     This used to be a separate class, 

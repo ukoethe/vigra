@@ -633,11 +633,11 @@ tiffToRGBImage(TiffImage * tiff, RGBImageIterator iter, RGBAccessor a)
                   "unable to read image data.");
             }
           
-            for(int y=0; y<h; ++y, ++yd.y)
+            for(unsigned int y=0; y<h; ++y, ++yd.y)
             {
                 RGBImageIterator xd(yd);
 
-                for(int x=0; x<w; ++x, ++xd.x)
+                for(unsigned int x=0; x<w; ++x, ++xd.x)
                 {
                     a.setRed(TIFFGetR(raster[x+y*w]), xd);
                     a.setGreen(TIFFGetG(raster[x+y*w]), xd);
@@ -676,7 +676,7 @@ tiffToRGBImage(TiffImage * tiff, RGBImageIterator iter, RGBAccessor a)
                 {
                   case 8:
                   {
-                    for(int y=0; y<h; ++y, ++yd.y)
+                    for(unsigned int y=0; y<h; ++y, ++yd.y)
                     {
                         uint8 *pr, *pg, *pb;
                         
@@ -699,7 +699,7 @@ tiffToRGBImage(TiffImage * tiff, RGBImageIterator iter, RGBAccessor a)
                         
                         RGBImageIterator xd(yd);
 
-                        for(int x=0; x<w; ++x, ++xd.x, pr+=offset, pg+=offset, pb+=offset)
+                        for(unsigned int x=0; x<w; ++x, ++xd.x, pr+=offset, pg+=offset, pb+=offset)
                         {
                             a.setRed(*pr, xd);
                             a.setGreen(*pg, xd);
@@ -710,7 +710,7 @@ tiffToRGBImage(TiffImage * tiff, RGBImageIterator iter, RGBAccessor a)
                   }
                   case 16:
                   {
-                    for(int y=0; y<h; ++y, ++yd.y)
+                    for(unsigned int y=0; y<h; ++y, ++yd.y)
                     {
                         uint16 *pr, *pg, *pb;
                         
@@ -733,7 +733,7 @@ tiffToRGBImage(TiffImage * tiff, RGBImageIterator iter, RGBAccessor a)
                         
                         RGBImageIterator xd(yd);
 
-                        for(int x=0; x<w; ++x, ++xd.x, pr+=offset, pg+=offset, pb+=offset)
+                        for(unsigned int x=0; x<w; ++x, ++xd.x, pr+=offset, pg+=offset, pb+=offset)
                         {
                             a.setRed(*pr, xd);
                             a.setGreen(*pg, xd);
@@ -744,7 +744,7 @@ tiffToRGBImage(TiffImage * tiff, RGBImageIterator iter, RGBAccessor a)
                   }
                   case 32:
                   {
-                    for(int y=0; y<h; ++y, ++yd.y)
+                    for(unsigned int y=0; y<h; ++y, ++yd.y)
                     {
                         uint32 *pr, *pg, *pb;
                         
@@ -767,7 +767,7 @@ tiffToRGBImage(TiffImage * tiff, RGBImageIterator iter, RGBAccessor a)
                         
                         RGBImageIterator xd(yd);
 
-                        for(int x=0; x<w; ++x, ++xd.x, pr+=offset, pg+=offset, pb+=offset)
+                        for(unsigned int x=0; x<w; ++x, ++xd.x, pr+=offset, pg+=offset, pb+=offset)
                         {
                             a.setRed(*pr, xd);
                             a.setGreen(*pg, xd);
@@ -790,7 +790,7 @@ tiffToRGBImage(TiffImage * tiff, RGBImageIterator iter, RGBAccessor a)
                 {
                   case 8:
                   {
-                    for(int y=0; y<h; ++y, ++yd.y)
+                    for(unsigned int y=0; y<h; ++y, ++yd.y)
                     {
                         int8 *pr, *pg, *pb;
                         
@@ -813,7 +813,7 @@ tiffToRGBImage(TiffImage * tiff, RGBImageIterator iter, RGBAccessor a)
                         
                         RGBImageIterator xd(yd);
 
-                        for(int x=0; x<w; ++x, ++xd.x, pr+=offset, pg+=offset, pb+=offset)
+                        for(unsigned int x=0; x<w; ++x, ++xd.x, pr+=offset, pg+=offset, pb+=offset)
                         {
                             a.setRed(*pr, xd);
                             a.setGreen(*pg, xd);
@@ -824,7 +824,7 @@ tiffToRGBImage(TiffImage * tiff, RGBImageIterator iter, RGBAccessor a)
                   }
                   case 16:
                   {
-                    for(int y=0; y<h; ++y, ++yd.y)
+                    for(unsigned int y=0; y<h; ++y, ++yd.y)
                     {
                         int16 *pr, *pg, *pb;
                         
@@ -847,7 +847,7 @@ tiffToRGBImage(TiffImage * tiff, RGBImageIterator iter, RGBAccessor a)
                         
                         RGBImageIterator xd(yd);
 
-                        for(int x=0; x<w; ++x, ++xd.x, pr+=offset, pg+=offset, pb+=offset)
+                        for(unsigned int x=0; x<w; ++x, ++xd.x, pr+=offset, pg+=offset, pb+=offset)
                         {
                             a.setRed(*pr, xd);
                             a.setGreen(*pg, xd);
@@ -858,7 +858,7 @@ tiffToRGBImage(TiffImage * tiff, RGBImageIterator iter, RGBAccessor a)
                   }
                   case 32:
                   {
-                    for(int y=0; y<h; ++y, ++yd.y)
+                    for(unsigned int y=0; y<h; ++y, ++yd.y)
                     {
                         int32 *pr, *pg, *pb;
                         
@@ -881,7 +881,7 @@ tiffToRGBImage(TiffImage * tiff, RGBImageIterator iter, RGBAccessor a)
                         
                         RGBImageIterator xd(yd);
 
-                        for(int x=0; x<w; ++x, ++xd.x, pr+=offset, pg+=offset, pb+=offset)
+                        for(unsigned int x=0; x<w; ++x, ++xd.x, pr+=offset, pg+=offset, pb+=offset)
                         {
                             a.setRed(*pr, xd);
                             a.setGreen(*pg, xd);
@@ -902,7 +902,7 @@ tiffToRGBImage(TiffImage * tiff, RGBImageIterator iter, RGBAccessor a)
                 {
                   case sizeof(float)*8:
                   {
-                    for(int y=0; y<h; ++y, ++yd.y)
+                    for(unsigned int y=0; y<h; ++y, ++yd.y)
                     {
                         float *pr, *pg, *pb;
                         
@@ -925,7 +925,7 @@ tiffToRGBImage(TiffImage * tiff, RGBImageIterator iter, RGBAccessor a)
                         
                         RGBImageIterator xd(yd);
 
-                        for(int x=0; x<w; ++x, ++xd.x, pr+=offset, pg+=offset, pb+=offset)
+                        for(unsigned int x=0; x<w; ++x, ++xd.x, pr+=offset, pg+=offset, pb+=offset)
                         {
                             a.setRed(*pr, xd);
                             a.setGreen(*pg, xd);
@@ -936,7 +936,7 @@ tiffToRGBImage(TiffImage * tiff, RGBImageIterator iter, RGBAccessor a)
                   }
                   case sizeof(double)*8:
                   {
-                    for(int y=0; y<h; ++y, ++yd.y)
+                    for(unsigned int y=0; y<h; ++y, ++yd.y)
                     {
                         double *pr, *pg, *pb;
                         
@@ -959,7 +959,7 @@ tiffToRGBImage(TiffImage * tiff, RGBImageIterator iter, RGBAccessor a)
                         
                         RGBImageIterator xd(yd);
 
-                        for(int x=0; x<w; ++x, ++xd.x, pr+=offset, pg+=offset, pb+=offset)
+                        for(unsigned int x=0; x<w; ++x, ++xd.x, pr+=offset, pg+=offset, pb+=offset)
                         {
                             a.setRed(*pr, xd);
                             a.setGreen(*pg, xd);

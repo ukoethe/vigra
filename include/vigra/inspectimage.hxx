@@ -221,9 +221,9 @@ inspectImageIf(ImageIterator upperleft,
         MaskImageIterator mx(mask_upperleft);
     
         for(int x=0; x<w; ++x, ++ix.x, ++mx.x)
-    {
-        if(ma(mx)) f(a(ix));
-    }
+        {
+            if(ma(mx)) f(a(ix));
+        }
     }
 }
 

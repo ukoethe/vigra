@@ -55,7 +55,7 @@
     
     The MESSAGE is passed to the exception and can be retrieved via
     the overloaded member function '#exception.what()#'. If the compiler
-    flag '#NDEBUD#' is {\em not} defined, the file name and line number of 
+    flag '#NDEBUG#' is {\em not} defined, the file name and line number of 
     the error are automatically included in the message.
     
     The following macro

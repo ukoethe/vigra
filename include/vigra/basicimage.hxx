@@ -440,18 +440,18 @@ class BasicImage
         @memo
         */
     BasicImage()
-    : width_(0),
-      height_(0),
-      data_(0)
+    : data_(0),
+      width_(0),
+      height_(0)      
     {}
     
         /** construct image of size width x height 
         @memo
         */
     BasicImage(int width, int height)
-    : width_(0),
-      height_(0),
-      data_(0)
+    : data_(0),
+      width_(0),
+      height_(0)      
     {
         vigra_precondition((width >= 0) && (height >= 0),
              "BasicImage::BasicImage(int width, int height): "
@@ -464,9 +464,9 @@ class BasicImage
         @memo
         */
     BasicImage(Diff2D size)
-    : width_(0),
-      height_(0),
-      data_(0)
+    : data_(0),
+      width_(0),
+      height_(0)      
     {
         vigra_precondition((size.x >= 0) && (size.y >= 0),
              "BasicImage::BasicImage(Diff2D size): "
@@ -481,9 +481,9 @@ class BasicImage
         @memo
         */
     BasicImage(int width, int height, PixelType d)
-    : width_(0),
-      height_(0),
-      data_(0)
+    : data_(0),
+      width_(0),
+      height_(0)      
     {
         vigra_precondition((width >= 0) && (height >= 0),
              "BasicImage::BasicImage(int width, int height, PixelType): "
@@ -496,9 +496,9 @@ class BasicImage
         @memo
         */
     BasicImage(const BasicImage & rhs)
-    : width_(0),
-      height_(0),
-      data_(0)
+    : data_(0),
+      width_(0),
+      height_(0)      
     {
         resizeCopy(rhs);
     }
@@ -607,7 +607,6 @@ class BasicImage
         {
             newdata = Allocator::allocate(rhs.width()*rhs.height());
 
-            ConstScanOrderIterator ir = rhs.begin();
             std::uninitialized_copy(rhs.begin(), rhs.end(), newdata);
 
             newlines = 

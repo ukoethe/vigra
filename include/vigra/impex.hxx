@@ -953,7 +953,7 @@ void exportImage(SrcIterator sul, SrcIterator slr, SrcAccessor sget,
         freeViffImage(viff);
 
         if(status == 0)
-            vigra_postcondition(0, "exportImage(): write vigra_failed");
+            vigra_postcondition(0, "exportImage(): write failed");
     }
     else if(info.isTiff())
     {
