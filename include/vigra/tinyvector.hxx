@@ -295,7 +295,7 @@ class TinyVectorView;
 
 /** \brief Base class for fixed size vectors.
 
-    This class contains functionality shared by 
+    This class contains functionality shared by
     \ref TinyVector and \ref TinyVectorBase, and enables these classes
     to be freely mixed within expressions. It is typically not used directly.
 
@@ -310,7 +310,7 @@ class TinyVectorBase
     TinyVectorBase & operator=(TinyVectorBase const & other); // do not use
 
   protected:
-  
+
     typedef typename detail::LoopType<SIZE>::type Loop;
 
     TinyVectorBase()
@@ -632,7 +632,7 @@ class TinyVectorView
     typedef typename BaseType::difference_type difference_type;
     typedef typename BaseType::scalar_multiplier scalar_multiplier;
 
-        /** Default constructor 
+        /** Default constructor
             (pointer to wrapped data is NULL).
         */
     TinyVectorView()
@@ -743,7 +743,8 @@ inline bool
 operator!=(TinyVectorBase<V1, SIZE, D1, D2> const & l,
            TinyVectorBase<V2, SIZE, D3, D4> const & r)
 {
-    return detail::LoopType<SIZE>::type::notEqual(l.begin(), r.begin());
+    typedef typename detail::LoopType<SIZE>::type ltype;
+    return ltype::notEqual(l.begin(), r.begin());
 }
 
 //@}
@@ -831,7 +832,8 @@ struct NumericTraits<TinyVector<T, SIZE> >
     fromPromote(TinyVectorBase<typename NumericTraits<T>::Promote, SIZE, D1, D2> const & v)
     {
         TinyVector<T, SIZE> res(detail::dontInit());
-        detail::LoopType<SIZE>::type::fromPromote(res.begin(), v.begin());
+        typedef typename detail::LoopType<SIZE>::type ltype;
+        ltype::fromPromote(res.begin(), v.begin());
         return res;
     }
 
@@ -840,7 +842,8 @@ struct NumericTraits<TinyVector<T, SIZE> >
     fromRealPromote(TinyVectorBase<typename NumericTraits<T>::RealPromote, SIZE, D1, D2> const & v)
     {
         TinyVector<T, SIZE> res(detail::dontInit());
-        detail::LoopType<SIZE>::type::fromRealPromote(res.begin(), v.begin());
+        typedef typename detail::LoopType<SIZE>::type ltype;
+        ltype::fromRealPromote(res.begin(), v.begin());
         return res;
     }
 };
@@ -1090,7 +1093,8 @@ TinyVector<V, SIZE>
 operator-(TinyVectorBase<V, SIZE, D1, D2> const & v)
 {
     TinyVector<V, SIZE> res(detail::dontInit());
-    detail::LoopType<SIZE>::type::neg(res.begin(), v.begin());
+    typedef typename detail::LoopType<SIZE>::type ltype;
+    ltype::neg(res.begin(), v.begin());
     return res;
 }
 
@@ -1101,7 +1105,8 @@ TinyVector<V, SIZE>
 abs(TinyVectorBase<V, SIZE, D1, D2> const & v)
 {
     TinyVector<V, SIZE> res(detail::dontInit());
-    detail::LoopType<SIZE>::type::abs(res.begin(), v.begin());
+    typedef typename detail::LoopType<SIZE>::type ltype;
+    ltype::abs(res.begin(), v.begin());
     return res;
 }
 
@@ -1113,7 +1118,8 @@ TinyVector<V, SIZE>
 ceil(TinyVectorBase<V, SIZE, D1, D2> const & v)
 {
     TinyVector<V, SIZE> res(detail::dontInit());
-    detail::LoopType<SIZE>::type::ceil(res.begin(), v.begin());
+    typedef typename detail::LoopType<SIZE>::type ltype;
+    ltype::ceil(res.begin(), v.begin());
     return res;
 }
 
@@ -1125,7 +1131,8 @@ TinyVector<V, SIZE>
 floor(TinyVectorBase<V, SIZE, D1, D2> const & v)
 {
     TinyVector<V, SIZE> res(detail::dontInit());
-    detail::LoopType<SIZE>::type::floor(res.begin(), v.begin());
+    typedef typename detail::LoopType<SIZE>::type ltype;
+    ltype::floor(res.begin(), v.begin());
     return res;
 }
 
@@ -1136,7 +1143,8 @@ typename PromoteTraits<V1, V2>::Promote
 dot(TinyVectorBase<V1, SIZE, D1, D2> const & l,
     TinyVectorBase<V2, SIZE, D3, D4> const & r)
 {
-    return detail::LoopType<SIZE>::type::dot(l.begin(), r.begin());
+    typedef typename detail::LoopType<SIZE>::type ltype;
+    return ltype::dot(l.begin(), r.begin());
 }
 
 //@}
