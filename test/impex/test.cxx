@@ -448,6 +448,38 @@ ByteRGBImageExportImportTest::testFile (const char *fileName)
         should (acc (i) == acc (i1));
 }
 
+class PNGInt16Test
+{
+  public:
+    void testByteOrder()
+    {
+        SImage i(1,1);
+        i(0,0) = 1;
+        exportImage(srcImageRange(i), ImageExportInfo("res.png"));
+        ImageImportInfo info("res.png");
+        shouldEqual(info.width(), 1);
+        shouldEqual(info.height(), 1);
+        shouldEqual(info.numBands(), 1);
+        shouldEqual(info.isGrayscale(), true);
+        shouldEqual(std::string(info.getPixelType()), std::string("INT16"));
+        i(0,0) = 0;
+        importImage(info, destImage(i));
+        shouldEqual(i(0,0), 1);
+
+        BasicImage<RGBValue<short> > rgb(1,1);
+        rgb(0,0) = RGBValue<short>(1,2,3);
+        exportImage(srcImageRange(rgb), ImageExportInfo("res.png"));
+        ImageImportInfo rgbinfo("res.png");
+        shouldEqual(rgbinfo.width(), 1);
+        shouldEqual(rgbinfo.height(), 1);
+        shouldEqual(rgbinfo.numBands(), 3);
+        shouldEqual(std::string(rgbinfo.getPixelType()), std::string("INT16"));
+        rgb(0,0) = RGBValue<short>(0,0,0);
+        importImage(rgbinfo, destImage(rgb));
+        shouldEqual(rgb(0,0), RGBValue<short>(1,2,3));
+    }
+};
+
 class FloatImageExportImportTest
 {
     typedef vigra::FImage Image;
@@ -1103,6 +1135,9 @@ struct ImageImportExportTestSuite : public vigra::test_suite
         add(testCase(&ByteRGBImageExportImportTest::testSUN));
         add(testCase(&ByteRGBImageExportImportTest::testVIFF1));
         add(testCase(&ByteRGBImageExportImportTest::testVIFF2));
+
+        // 16-bit PNG
+        add(testCase(&PNGInt16Test::testByteOrder));
 
         // grayscale float images
         add(testCase(&FloatImageExportImportTest::testGIF));
