@@ -346,7 +346,7 @@ struct IteratorTraitsBase
 
     <TT>srcMultiArrayRange(img)</TT>
     </td><td>
-        create argument object containing a \ref vigra::MultiArrayIterator 
+        create argument object containing a \ref vigra::MultiIterator 
         marking the begin of the array, a shape object giving the desired
         shape of the array (possibly a subarray) and the default const accessor for
         <tt>SomeType</tt>
@@ -356,7 +356,7 @@ struct IteratorTraitsBase
 
     <TT>srcMultiArrayRange(img, SomeAccessor())</TT>
     </td><td>
-        create argument object containing a \ref vigra::MultiArrayIterator 
+        create argument object containing a \ref vigra::MultiIterator 
         marking the begin of the array, a shape object giving the desired
         shape of the array (possibly a subarray) and the given accessor
 
@@ -365,7 +365,7 @@ struct IteratorTraitsBase
 
     <TT>srcMultiArray(img)</TT>
     </td><td>
-        create argument object containing a \ref vigra::MultiArrayIterator
+        create argument object containing a \ref vigra::MultiIterator
         marking the begin of the array, and the default const accessor for
         <tt>SomeType</tt>
 
@@ -374,7 +374,7 @@ struct IteratorTraitsBase
 
     <TT>srcMultiArray(img, SomeAccessor())</TT>
     </td><td>
-        create argument object containing a \ref vigra::MultiArrayIterator 
+        create argument object containing a \ref vigra::MultiIterator 
         marking the begin of the array and the given accessor
 
     </td></tr>
@@ -382,7 +382,7 @@ struct IteratorTraitsBase
 
     <TT>destMultiArrayRange(img)</TT>
     </td><td>
-        create argument object containing a \ref vigra::MultiArrayIterator 
+        create argument object containing a \ref vigra::MultiIterator 
         marking the begin of the array, a shape object giving the desired
         shape of the array (possibly a subarray) and the default accessor for
         <tt>SomeType</tt>
@@ -392,7 +392,7 @@ struct IteratorTraitsBase
 
     <TT>destMultiArrayRange(img, SomeAccessor())</TT>
     </td><td>
-        create argument object containing a \ref vigra::MultiArrayIterator's 
+        create argument object containing a \ref vigra::MultiIterator's 
         marking the begin of the array, a shape object giving the desired
         shape of the array (possibly a subarray) and the given accessor
 
@@ -401,7 +401,7 @@ struct IteratorTraitsBase
 
     <TT>destMultiArray(img)</TT>
     </td><td>
-        create argument object containing a \ref vigra::MultiArrayIterator 
+        create argument object containing a \ref vigra::MultiIterator 
         marking the begin of the array and the default accessor for
         <tt>SomeType</tt>
 
@@ -410,7 +410,7 @@ struct IteratorTraitsBase
 
     <TT>destMultiArray(img, SomeAccessor())</TT>
     </td><td>
-        create argument object containing a \ref vigra::MultiArrayIterator's 
+        create argument object containing a \ref vigra::MultiIterator's 
         marking the begin of the array and the given accessor
 
     </td></tr>

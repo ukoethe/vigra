@@ -60,7 +60,7 @@ namespace vigra {
 
 /** \addtogroup MathFunctions Mathematical Functions
 
-    Useful math functions that didn't make it into the C++ standard.
+    Useful mathematical functions and functors.
 */
 //@{
 /*! The error function.
@@ -70,7 +70,7 @@ namespace vigra {
     function
     
     \f[
-        \text{erf}(x) = \int_0^x e^{-x^2} dx
+        \mbox{erf}(x) = \int_0^x e^{-x^2} dx
     \f]
     
     according to the formula given in Press et al. "Numerical Recipes".

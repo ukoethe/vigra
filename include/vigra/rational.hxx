@@ -144,7 +144,7 @@ Rational<IntType> ceil(const Rational<IntType>& r);
 /*                                                      */
 /********************************************************/
 
-/*! Template for rational numbers.
+/** Template for rational numbers.
 
     This template can make use of arbitrary integer types, including
     user-defined (e.g. infinite precision) ones. Note, however,
@@ -160,8 +160,14 @@ Rational<IntType> ceil(const Rational<IntType>& r);
     <tt>Rational</tt> implements the required interface of an 
     \ref AlgebraicField and the required \ref RationalTraits "numeric and 
     promotion traits". All arithmetic and comparison operators, as well
-    as some algebraic functions are supported (see \ref RationalOperations
-    for details).
+    as some algebraic functions are supported .
+    
+    <b>See also:</b>
+    <ul>
+    <li> \ref RationalTraits
+    <li> \ref RationalOperations
+    </ul>
+    
 
     <b>\#include</b> "<a href="mathutil_8hxx-source.html">vigra/rational.hxx</a>"<br>
     Namespace: vigra

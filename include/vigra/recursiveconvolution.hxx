@@ -666,7 +666,7 @@ void recursiveSecondDerivativeLine(SrcIterator is, SrcIterator isend, SrcAccesso
 /*                                                      */
 /********************************************************/
 
-/** \brief Performs 1 dimensional recursive smoothing in x direction.
+/** \brief Performs 1 dimensional recursive filtering (1st and 2nd order) in x direction.
 
     It calls \ref recursiveFilterLine() for every row of the
     image. See \ref recursiveFilterLine() for more information about 
@@ -899,7 +899,7 @@ inline void recursiveSmoothX(
 /*                                                      */
 /********************************************************/
 
-/** \brief Performs 1 dimensional recursive smoothing in y direction.
+/** \brief Performs 1 dimensional recursive filtering (1st and 2nd order) in y direction.
 
     It calls \ref recursiveFilterLine() for every column of the
     image. See \ref recursiveFilterLine() for more information about 

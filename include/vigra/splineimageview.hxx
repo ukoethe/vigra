@@ -67,7 +67,7 @@ class SplineImageView
 
         /** The order of the spline used.
         */
-    enum { order = ORDER };
+    enum StaticOrder { order = ORDER };
     
         /** The type of the internal image holding the spline coefficients.
         */

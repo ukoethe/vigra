@@ -351,11 +351,11 @@ oddPolarFilters(SrcIterator supperleft, SrcIterator slowerright, SrcAccessor src
     The Riesz transforms of the Laplacian of Gaussian have the following transfer
     functions (defined in a polar coordinate representation of the frequency domain):
     
-    \[
-        F_{\sigma}(r, \phi)=(i \cos(\phi))^n (i \sin(\phi))^m r^2 e^{-r^2 \sigma^2 / 2}
-    \]
+    \f[
+        F_{\sigma}(r, \phi)=(i \cos \phi)^n (i \sin \phi)^m r^2 e^{-r^2 \sigma^2 / 2}
+    \f]
      
-    where <i>n<i> = <tt>xorder</tt> and <i>m<i> = <tt>yorder</tt> determine th e
+    where <i>n</i> = <tt>xorder</tt> and <i>m</i> = <tt>yorder</tt> determine th e
     order of the transform, and <tt>sigma &gt; 0</tt> is the scale of the Laplacian 
     of Gaussian. This function computes a good spatial domain approximation of 
     these transforms for <tt>xorder + yorder &lt;= 2</tt>. The filter responses may be used 
@@ -526,7 +526,7 @@ void rieszTransformOfLOG(triple<SrcIterator, SrcIterator, SrcAccessor> src,
     the boundary tensor as described in
     
     U. Köthe: <a href="http://kogs-www.informatik.uni-hamburg.de/~koethe/papers/abstracts/polarfilters.html">
-    <i>"Integrated Edge and Junction Detection with the Boundary Tensor"</i>, 
+    <i>"Integrated Edge and Junction Detection with the Boundary Tensor"</i></a>, 
      in: ICCV 03, Proc. of 9th Intl. Conf. on Computer Vision, Nice 2003, vol. 1, 
      pp. 424-431, Los Alamitos: IEEE Computer Society, 2003
      

@@ -29,9 +29,11 @@
 
 namespace vigra {
 
+#if 0
 /** \addtogroup MathFunctions Mathematical Functions
 */
 //@{
+#endif
 /*! The Gaussian function and its derivatives.
 
     Implemented as a unary functor. Since it supports the <tt>radius()</tt> function
@@ -39,6 +41,8 @@ namespace vigra {
 
     <b>\#include</b> "<a href="gaussians_8hxx-source.html">vigra/gaussians.hxx</a>"<br>
     Namespace: vigra
+
+    \ingroup MathFunctions
 */
 template <class T = double>
 class Gaussian
@@ -207,7 +211,7 @@ void Gaussian<T>::calculateHermitePolynomial()
 }
 
 
-//@}
+////@}
 
 } // namespace vigra
 

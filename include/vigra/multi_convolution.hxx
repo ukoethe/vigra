@@ -104,7 +104,12 @@ internalSeparableConvolveMultiArrayTmp(
 
 } // namespace detail
 
-/** \addtogroup MultiArrayConvolutionFilters Convolution filters for arbitrary dimensional arrays (MultiArray etc.)
+/** \addtogroup MultiArrayConvolutionFilters Convolution filters for multi-dimensional arrays.
+
+    These functions realize a separable convolution on an arbitrary dimensional
+    array that is specified by iterators (compatible to \ref MultiIteratorPage)
+    and shape objects. It can therefore be applied to a wide range of data structures
+    (\ref vigra::MultiArrayView, \ref vigra::MultiArray etc.).
 */
 //@{
 
@@ -124,7 +129,7 @@ internalSeparableConvolveMultiArrayTmp(
     There are two variants of this functions: one takes a single kernel
     of type \ref vigra::Kernel1D which is then applied to all dimensions,
     whereas the other requires an iterator referencing a sequence of 
-    \ref vigra::Kernel1Dobjects, one for every dimension of the data. 
+    \ref vigra::Kernel1D objects, one for every dimension of the data. 
     Then the first kernel in this sequence is applied to the innermost 
     dimension (e.g. the x-dimension of an image), while the last is applied to the 
     outermost dimension (e.g. the z-dimension in a 3D image).

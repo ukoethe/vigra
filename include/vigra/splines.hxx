@@ -33,7 +33,7 @@ namespace vigra {
 /** \addtogroup MathFunctions Mathematical Functions
 */
 //@{
-/*! B-Splines of arbitrary order and interpolating Catmull/Rom splines.
+/* B-Splines of arbitrary order and interpolating Catmull/Rom splines.
 
     <b>\#include</b> "<a href="splines_8hxx-source.html">vigra/splines.hxx</a>"<br>
     Namespace: vigra
@@ -44,9 +44,9 @@ namespace vigra {
 
     Implements the spline functions defined by the recursion
     
-    \f[ B_0(x) = \left{ \begin{array}{ll}
+    \f[ B_0(x) = \left\{ \begin{array}{ll}
                                   1 & -\frac{1}{2} \leq x < \frac{1}{2} \\
-                                  0 & \text{otherwise}
+                                  0 & \mbox{otherwise}
                         \end{array}\right.
     \f]
     
@@ -463,7 +463,8 @@ class BSpline<2, T>
 };
 
 template <class T>
-T BSpline<2, T>::exec(T x, unsigned int derivative_order) const
+BSpline<2, T>::result_type 
+BSpline<2, T>::exec(first_argument_type x, second_argument_type derivative_order) const
 {
     switch(derivative_order)
     {
@@ -575,7 +576,8 @@ class BSpline<3, T>
 };
 
 template <class T>
-T BSpline<3, T>::exec(T x, unsigned int derivative_order) const
+BSpline<3, T>::result_type 
+BSpline<3, T>::exec(first_argument_type x, second_argument_type derivative_order) const
 {
     switch(derivative_order)
     {
@@ -722,7 +724,8 @@ class BSpline<5, T>
 };
 
 template <class T>
-T BSpline<5, T>::exec(T x, unsigned int derivative_order) const
+BSpline<5, T>::result_type 
+BSpline<5, T>::exec(first_argument_type x, second_argument_type derivative_order) const
 {
     switch(derivative_order)
     {
@@ -863,10 +866,10 @@ typedef BSpline<5, double> QuinticBSplineKernel;
 
     Implements the Catmull/Rom cardinal function
     
-    \f[ f(x) = \left{ \begin{array}{ll}
-                                  \frac{3}{2}x^3 - \frac{5}{2}x^2 + 1 & |x| \leg 1 \\
-                                  -\frac{1}{2}x^3 + \frac{5}{2}x^2 -4x + 2 & |x| \leg 2 \\
-                                  0 & \text{otherwise}
+    \f[ f(x) = \left\{ \begin{array}{ll}
+                                  \frac{3}{2}x^3 - \frac{5}{2}x^2 + 1 & |x| \leq 1 \\
+                                  -\frac{1}{2}x^3 + \frac{5}{2}x^2 -4x + 2 & |x| \leq 2 \\
+                                  0 & \mbox{otherwise}
                         \end{array}\right.
     \f]
     
@@ -928,7 +931,8 @@ public:
 
 
 template <class T>
-T CatmullRomSpline<T>::operator()(T x) const
+CatmullRomSpline<T>::result_type 
+CatmullRomSpline<T>::operator()(argument_type x) const
 {
     x = VIGRA_CSTD::fabs(x);
     if (x <= 1.0)

@@ -485,6 +485,26 @@ class TinyVectorBase
     VIGRA algorithms typically use \ref vigra::VectorAccessor to access
     TinyVectors as a whole, or specific components of them.
 
+    See also:<br>
+    <DL>
+        <DT>
+            <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif">
+            \ref vigra::TinyVectorBase
+            <DD>
+        <DT>
+            <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif">
+            \ref vigra::TinyVectorView
+            <DD>
+        <DT>
+            <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif">
+            \ref TinyVectorTraits
+            <DD>
+        <DT>
+            <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif">
+            \ref TinyVectorOperators
+            <DD>
+    </DL>
+    
     <b>\#include</b> "<a href="tinyvector_8hxx-source.html">vigra/tinyvector.hxx</a>"<br>
     Namespace: vigra
 **/
@@ -615,6 +635,14 @@ class TinyVector
     VIGRA algorithms typically use \ref vigra::VectorAccessor to access
     TinyVectorViews as a whole, or specific components of them.
 
+    <b>See also:</b>
+    <ul>
+        <li> \ref vigra::TinyVectorBase
+        <li> \ref vigra::TinyVector
+        <li> \ref TinyVectorTraits
+        <li> \ref TinyVectorOperators
+    </ul>
+    
     <b>\#include</b> "<a href="tinyvector_8hxx-source.html">vigra/tinyvector.hxx</a>"<br>
     Namespace: vigra
 **/

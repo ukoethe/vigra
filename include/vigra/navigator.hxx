@@ -79,7 +79,9 @@ namespace vigra {
 */
 template <class MULTI_ITERATOR, unsigned int N>
 class MultiArrayNavigator 
+#ifndef DOXYGEN  // docygen doesn't understand this inheritance
 : public MultiArrayNavigator<MULTI_ITERATOR, N-1>
+#endif
 {
     typedef MultiArrayNavigator<MULTI_ITERATOR, N-1> base_type;
 

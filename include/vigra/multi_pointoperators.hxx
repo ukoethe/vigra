@@ -40,7 +40,9 @@ namespace vigra
 /** \addtogroup MultiPointoperators Point operators for multi-dimensional arrays.
 
     Copy, transform, and inspect arbitrary dimensional arrays which are represented
-    by iterators compatible to \ref vigra::MultiIterator.
+    by iterators compatible to \ref MultiIteratorPage. Note that are range is here
+    specified by a pair: an iterator referring to the first point of the array 
+    and a shape object specifying the size of the (rectangular) ROI.
 
     <b>\#include</b> "<a href="multi_pointoperators_8hxx-source.html">vigra/multi_pointoperators.hxx</a>"
 */

@@ -36,12 +36,6 @@ namespace vigra {
 template <class T> class Polynomial;
 template <unsigned int MAXORDER, class T> class StaticPolynomial;
 
-/** \addtogroup Polynomials Polynomials and root determination
-
-    Classes to represent polynomials and functions to find polynomial roots.
-*/
-//@{
-
 /*****************************************************************/
 /*                                                               */
 /*                         PolynomialView                        */
@@ -50,10 +44,15 @@ template <unsigned int MAXORDER, class T> class StaticPolynomial;
 
 /** Polynomial interface for an externally managed array.
 
-    The coefficient type <tt>T</tt> can be either a scalar or complex type.
+    The coefficient type <tt>T</tt> can be either a scalar or complex 
+    (compatible to <tt>std::complex</tt>) type.
+    
+    \see vigra::Polynomial, vigra::StaticPolynomial, polynomialRoots()
 
     <b>\#include</b> "<a href="polynomial_8hxx-source.html">vigra/polynomial.hxx</a>"<br>
     Namespace: vigra
+    
+    \ingroup Polynomials
 */
 template <class T>
 class PolynomialView
@@ -402,8 +401,12 @@ PolynomialView<T>::normalize()
 
     Most interesting functionality is inherited from \ref vigra::PolynomialView.
 
+    \see vigra::PolynomialView, vigra::StaticPolynomial, polynomialRoots()
+
     <b>\#include</b> "<a href="polynomial_8hxx-source.html">vigra/polynomial.hxx</a>"<br>
     Namespace: vigra
+    
+    \ingroup Polynomials
 */
 template <class T>
 class Polynomial
@@ -529,8 +532,12 @@ class Polynomial
     its memory statically which is much faster. Therefore, <tt>StaticPolynomial</tt>
     can only represent polynomials up to the given <tt>MAXORDER</tt>.
 
+    \see vigra::PolynomialView, vigra::Polynomial, polynomialRoots()
+
     <b>\#include</b> "<a href="polynomial_8hxx-source.html">vigra/polynomial.hxx</a>"<br>
     Namespace: vigra
+    
+    \ingroup Polynomials
 */
 template <unsigned int MAXORDER, class T>
 class StaticPolynomial
@@ -651,7 +658,7 @@ class StaticPolynomial
     T polynomial_[MAXORDER+1];
 };
 
-
+/************************************************************/
 
 namespace detail {
 
@@ -810,6 +817,12 @@ int laguerre1Root(POLYNOMIAL const & p, Complex & x, unsigned int multiplicity)
 
 } // namespace detail 
 
+/** \addtogroup Polynomials Polynomials and root determination
+
+    Classes to represent polynomials and functions to find polynomial roots.
+*/
+//@{
+
 /*****************************************************************/
 /*                                                               */
 /*                         polynomialRoots                       */
@@ -819,7 +832,7 @@ int laguerre1Root(POLYNOMIAL const & p, Complex & x, unsigned int multiplicity)
 /** Determine the roots of the polynomial <tt>poriginal</tt>.
 
     The roots are appended to the vector <tt>roots</tt>, with optional root
-    plishing as specified by <tt>polishRoots</tt> (default: do polishing). The function uses an 
+    polishing as specified by <tt>polishRoots</tt> (default: do polishing). The function uses an 
     improved version of Laguerre's algorithm. The improvements are as follows:
     
     <ul>
@@ -831,10 +844,36 @@ int laguerre1Root(POLYNOMIAL const & p, Complex & x, unsigned int multiplicity)
     
     The algorithm has been successfully used for polynomials up to order 80.
     The function stops and returns <tt>false</tt> if an iteration fails to converge within 
-    80 steps. 
+    80 steps. The type <tt>POLYNOMIAL</tt> must be compatible to 
+    \ref vigra::PolynomialView, <tt>VECTOR</tt> must be compatible to <tt>std::vector</tt>
+    with a <tt>value_type</tt> compatible to the type <tt>POLYNOMIAL::Complex</tt>.
 
-    <b>\#include</b> "<a href="polynomial_8hxx-source.html">vigra/polynomial.hxx</a>"<br>
-    Namespace: vigra
+    <b> Declaration:</b>
+
+    pass arguments explicitly:
+    \code
+    namespace vigra {
+        template <class POLYNOMIAL, class VECTOR>
+        bool 
+        polynomialRoots(POLYNOMIAL const & poriginal, VECTOR & roots, bool polishRoots = true);
+    }
+    \endcode
+
+
+    <b> Usage:</b>
+
+        <b>\#include</b> "<a href="polynomial_8hxx-source.html">vigra/polynomial.hxx</a>"<br>
+        Namespace: vigra
+
+    \code
+    // encode the polynomial  x^4 - 1
+    Polynomial<double> poly(4);
+    poly[0] = -1.0;
+    poly[4] =  1.0;
+
+    ArrayVector<std::complex<double> > roots;
+    polynomialRoots(poly, roots);
+    \endcode
 */
 template <class POLYNOMIAL, class VECTOR>
 bool polynomialRoots(POLYNOMIAL const & poriginal, VECTOR & roots, bool polishRoots)
@@ -949,9 +988,35 @@ polynomialRoots(POLYNOMIAL const & poriginal, VECTOR & roots)
 /** Determine the real roots of the polynomial <tt>p</tt>.
 
     This function simply calls \ref polynomialRoots() and than throws away all complex roots.
+    Accordingly, <tt>VECTOR</tt> must be compatible to <tt>std::vector</tt>
+    with a <tt>value_type</tt> compatible to the type <tt>POLYNOMIAL::Real</tt>.
 
-    <b>\#include</b> "<a href="polynomial_8hxx-source.html">vigra/polynomial.hxx</a>"<br>
-    Namespace: vigra
+    <b> Declaration:</b>
+
+    pass arguments explicitly:
+    \code
+    namespace vigra {
+        template <class POLYNOMIAL, class VECTOR>
+        bool 
+        polynomialRealRoots(POLYNOMIAL const & p, VECTOR & roots, bool polishRoots = true);
+    }
+    \endcode
+
+
+    <b> Usage:</b>
+
+        <b>\#include</b> "<a href="polynomial_8hxx-source.html">vigra/polynomial.hxx</a>"<br>
+        Namespace: vigra
+
+    \code
+    // encode the polynomial  x^4 - 1
+    Polynomial<double> poly(4);
+    poly[0] = -1.0;
+    poly[4] =  1.0;
+
+    ArrayVector<double> roots;
+    polynomialRealRoots(poly, roots);
+    \endcode
 */
 template <class POLYNOMIAL, class VECTOR>
 bool polynomialRealRoots(POLYNOMIAL const & p, VECTOR & roots, bool polishRoots)
