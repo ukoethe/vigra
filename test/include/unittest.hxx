@@ -1030,6 +1030,8 @@ create_test_case(detail::test_functor<FCT> const & fct, char const * name)
 } // namespace vigra
 
 
+#if !defined(__GNUC__) || __GNUC__ >= 3
+
 // provide more convenient output functions, used like:
 // std::cerr << 1, 2, 3, 4, "\n";
 template <class E, class T, class V>
@@ -1047,6 +1049,23 @@ std::basic_ostream<E,T> & operator,(std::basic_ostream<E,T> & o,
     return (o << t);
 }
 
+#else
+
+template <class V>
+inline
+std::ostream & operator,(std::ostream & o, V const & t)
+{
+    return (o << ' ' << t);
+}
+
+inline
+std::ostream & operator,(std::ostream & o, 
+              std::ostream & (*t)(std::ostream &))
+{
+    return (o << t);
+}
+
+#endif
 
 
 #endif /* VIGRA_UNIT_TEST_HPP */
