@@ -1074,6 +1074,8 @@ void applyFourierFilter(SrcImageIterator srcUpperLeft,
                            destUpperLeft, da);
 }
 
+typedef FFTWComplexImage::const_traverser FFTWConstTraverser;
+
 template <class FilterImageIterator, class FilterAccessor,
           class DestImageIterator, class DestAccessor>
 inline
