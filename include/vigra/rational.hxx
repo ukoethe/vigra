@@ -111,7 +111,10 @@ public:
     typedef typename If<typename TypeTraits<IntType>::isBuiltinType,
                         IntType, IntType const &>::type param_type;
 
-    Rational() : num(0), den(1) {}
+    Rational() 
+    : num(0), 
+      den(1) 
+    {}
     
     template <class U>
     Rational(Rational<U> const & r)
@@ -147,7 +150,7 @@ public:
     Rational& operator=(param_type n) { return assign(n, 1); }
 
     // Assign in place
-    Rational& assign(param_type n, param_type d);
+    Rational& assign(param_type n, param_type d, bool doNormalize = true);
 
     // Access to representation
     IntType numerator() const { return num; }
@@ -181,6 +184,30 @@ public:
     bool operator==(param_type i) const;
     bool operator< (param_type i) const;
     bool operator> (param_type i) const;
+    
+    bool is_pinf() const
+    {
+        IntType zero(0);
+        return den == zero && num > zero;
+    }
+
+    bool is_ninf() const
+    {
+        IntType zero(0);
+        return den == zero && num < zero;
+    }
+
+    bool is_inf() const
+    {
+        IntType zero(0);
+        return den == zero && num != zero;
+    }
+    
+    int sign() const
+    {
+        IntType zero(0);
+        return num == zero ? 0 : num < zero ? -1 : 1;
+    }
 
 private:
     // Implementation - numerator and denominator (normalized).
@@ -337,10 +364,7 @@ template <typename IntType>
 inline Rational<IntType> 
 operator/(typename Rational<IntType>::param_type l, Rational<IntType> const & r)
 {
-    IntType zero(0);
-    if(r.numerator() == zero)
-        throw bad_rational();
-    if(r.numerator() < zero)
+    if(r.numerator() < IntType(0))
         return Rational<IntType>(-r.denominator(), -r.numerator(), false) *= l;
     else
         return Rational<IntType>(r.denominator(), r.numerator(), false) *= l;
@@ -427,11 +451,13 @@ inline bool operator>=(IntType1 l, Rational<IntType2> const & r)
 
 // Assign in place
 template <typename IntType>
-inline Rational<IntType>& Rational<IntType>::assign(param_type n, param_type d)
+inline Rational<IntType>& 
+Rational<IntType>::assign(param_type n, param_type d, bool doNormalize)
 {
     num = n;
     den = d;
-    normalize();
+    if(doNormalize)
+        normalize();
     return *this;
 }
 
@@ -452,6 +478,21 @@ inline Rational<IntType> operator- (const Rational<IntType>& r)
 template <typename IntType>
 Rational<IntType>& Rational<IntType>::operator+= (const Rational<IntType>& r)
 {
+    IntType zero(0);
+    
+    // handle the Inf and NaN cases
+    if(den == zero)
+    {
+        if(r.den == zero && sign()*r.sign() < 0)
+            throw bad_rational(); 
+        return *this;
+    }
+    if(r.den == zero)
+    {
+        assign(r.num, zero, false); // Inf or -Inf
+        return *this;
+    }
+    
     // This calculation avoids overflow, and minimises the number of expensive
     // calculations. Thanks to Nickolay Mladenov for this algorithm.
     //
@@ -487,6 +528,21 @@ Rational<IntType>& Rational<IntType>::operator+= (const Rational<IntType>& r)
 template <typename IntType>
 Rational<IntType>& Rational<IntType>::operator-= (const Rational<IntType>& r)
 {
+    IntType zero(0);
+    
+    // handle the Inf and NaN cases
+    if(den == zero)
+    {
+        if(r.den == zero && sign()*r.sign() > 0)
+            throw bad_rational(); 
+        return *this;
+    }
+    if(r.den == zero)
+    {
+        assign(-r.num, zero, false); // Inf or -Inf
+        return *this;
+    }
+
     // Protect against self-modification
     IntType r_num = r.num;
     IntType r_den = r.den;
@@ -506,6 +562,25 @@ Rational<IntType>& Rational<IntType>::operator-= (const Rational<IntType>& r)
 template <typename IntType>
 Rational<IntType>& Rational<IntType>::operator*= (const Rational<IntType>& r)
 {
+    IntType zero(0);
+    
+    // handle the Inf and NaN cases
+    if(den == zero)
+    {
+        if(r.num == zero)
+            throw bad_rational(); 
+        num *= r.sign();
+        return *this;
+    }
+    if(r.den == zero)
+    {
+        if(num == zero)
+            throw bad_rational(); 
+        num *= r.sign();
+        den = zero;
+        return *this;
+    }
+    
     // Protect against self-modification
     IntType r_num = r.num;
     IntType r_den = r.den;
@@ -521,18 +596,31 @@ Rational<IntType>& Rational<IntType>::operator*= (const Rational<IntType>& r)
 template <typename IntType>
 Rational<IntType>& Rational<IntType>::operator/= (const Rational<IntType>& r)
 {
+    IntType zero(0);
+    
+    // handle the Inf and NaN cases
+    if(den == zero)
+    {
+        if(r.den == zero)
+            throw bad_rational(); 
+        if(r.num != zero)
+            num *= r.sign();
+        return *this;
+    }
+    if(r.num == zero)
+    {
+        if(num == zero)
+            throw bad_rational(); 
+        den = zero;
+        return *this;
+    }
+
+    if (num == zero)
+        return *this;
+
     // Protect against self-modification
     IntType r_num = r.num;
     IntType r_den = r.den;
-
-    // Avoid repeated construction
-    IntType zero(0);
-
-    // Trap division by zero
-    if (r_num == zero)
-        throw bad_rational();
-    if (num == zero)
-        return *this;
 
     // Avoid overflow and preserve normalization
     IntType gcd1 = gcd<IntType>(num, r_num);
@@ -582,8 +670,16 @@ Rational<IntType>::operator/= (param_type i)
 {
     if(i == IntType(1))
         return *this;
+
+    IntType zero(0);
+    if(i == zero)
+    {
+        den = zero;
+        return *this;
+    }
+    
     IntType g = gcd(i, num);
-    if(i < IntType(0))
+    if(i < zero)
     {
         num /= -g;
         den *= -i / g;
@@ -619,12 +715,14 @@ bool Rational<IntType>::operator< (const Rational<IntType>& r) const
 {
     // Avoid repeated construction
     IntType zero(0);
-
+    
     // If the two values have different signs, we don't need to do the
     // expensive calculations below. We take advantage here of the fact
     // that the denominator is always positive.
     if (num < zero && r.num >= zero) // -ve < +ve
         return true;
+    if(den == zero)
+        return false;
     if (num >= zero && r.num <= zero) // +ve or zero is not < -ve or zero
         return false;
 
@@ -645,6 +743,8 @@ bool Rational<IntType>::operator< (param_type i) const
     // that the denominator is always positive.
     if (num < zero && i >= zero) // -ve < +ve
         return true;
+    if(den == zero)
+        return false;
     if (num >= zero && i <= zero) // +ve or zero is not < -ve or zero
         return false;
 
@@ -672,7 +772,12 @@ bool Rational<IntType>::operator> (param_type i) const
 template <typename IntType>
 inline bool Rational<IntType>::operator== (const Rational<IntType>& r) const
 {
-    return ((num == r.num) && (den == r.den));
+    if(den == r.den)
+        if(den == IntType(0))
+            return sign() == r.sign();
+        else
+            return num == r.num;
+    return false;
 }
 
 template <typename IntType>
@@ -689,7 +794,10 @@ void Rational<IntType>::normalize()
     IntType zero(0);
 
     if (den == zero)
-        throw bad_rational();
+        if(num == zero)
+            throw bad_rational();
+        else
+            return;
 
     // Handle the case of zero separately, to avoid division by zero
     if (num == zero) {
@@ -750,12 +858,23 @@ pow(const Rational<IntType>& r, int e)
     if(e < 0)
     {
         if(r.numerator() == zero)
-            throw bad_rational();
+            return Rational<IntType>(IntType(1), zero, false);
+        if(r.denominator() == zero)
+            return Rational<IntType>(zero);
         ae = -e;
     }
     else
+    {
+        if(r.denominator() == zero)
+            if(e == 0)
+                throw bad_rational();
+            else
+                return r;
+        if(r.numerator() == zero)
+            return r;
         ae = e;
-   
+    }
+    
     IntType nold = r.numerator(), dold = r.denominator(),
             nnew = IntType(1), dnew = IntType(1);
     for(; ae != 0; ae >>= 1, nold *= nold, dold *= dold)
@@ -780,10 +899,10 @@ pow(const Rational<IntType>& r, int e)
 template <typename IntType>
 Rational<IntType> floor(const Rational<IntType>& r)
 {
-    IntType one(1);
-    return r.denominator() == one ?
-               r
-             : r.numerator() < IntType(0) ?
+    IntType zero(0), one(1);
+    if(r.denominator() == zero || r.denominator() == one)
+        return r;
+    return r.numerator() < zero ?
                    Rational<IntType>(r.numerator() / r.denominator() - one)
                  : Rational<IntType>(r.numerator() / r.denominator());
 }
@@ -791,10 +910,10 @@ Rational<IntType> floor(const Rational<IntType>& r)
 template <typename IntType>
 Rational<IntType> ceil(const Rational<IntType>& r)
 {
-    IntType one(1);
-    return r.denominator() == one ?
-               r
-             : r.numerator() < IntType(0) ?
+    IntType zero(0), one(1);
+    if(r.denominator() == zero || r.denominator() == one)
+        return r;
+    return r.numerator() < IntType(0) ?
                    Rational<IntType>(r.numerator() / r.denominator())
                  : Rational<IntType>(r.numerator() / r.denominator() + one);
 }
