@@ -71,7 +71,7 @@ TinyVector <int, N> defaultStride(const TinyVector <int, N> &shape)
     unstrided.
 
 <b>\#include</b>
-"<a href="multi_array_8hxx-source.html">vigra/multi_array.hxx</a>"
+"<a href="multi__array_8hxx-source.html">vigra/multi_array.hxx</a>"
 
 Namespace: vigra::detail
 */
@@ -97,7 +97,7 @@ struct MaybeStrided <0>
     MultiArrays that were indexed at the zero'th dimension as strided.
 
 <b>\#include</b>
-"<a href="multi_array_8hxx-source.html">vigra/multi_array.hxx</a>"
+"<a href="multi__array_8hxx-source.html">vigra/multi_array.hxx</a>"
 
 Namespace: vigra::detail
 */
@@ -122,7 +122,7 @@ struct MultiIteratorChooser
 /* specialization of the MultiIteratorChooser for strided arrays.
 
 <b>\#include</b>
-"<a href="multi_array_8hxx-source.html">vigra/multi_array.hxx</a>"
+"<a href="multi__array_8hxx-source.html">vigra/multi_array.hxx</a>"
 
 Namespace: vigra::detail
 */
@@ -145,7 +145,7 @@ struct MultiIteratorChooser <StridedArrayTag>
 /* specialization of the MultiIteratorChooser for unstrided arrays.
 
 <b>\#include</b>
-"<a href="multi_array_8hxx-source.html">vigra/multi_array.hxx</a>"
+"<a href="multi__array_8hxx-source.html">vigra/multi_array.hxx</a>"
 
 Namespace: vigra::detail
 */
@@ -200,7 +200,7 @@ The template parameter are as follows
 \endcode
 
 <b>\#include</b>
-"<a href="multi_array_8hxx-source.html">vigra/multi_array.hxx</a>"
+"<a href="multi__array_8hxx-source.html">vigra/multi_array.hxx</a>"
 
 Namespace: vigra
 */
@@ -894,7 +894,7 @@ The template parameters are as follows
 \endcode
 
 <b>\#include</b>
-"<a href="multi_array_8hxx-source.html">vigra/multi_array.hxx</a>"
+"<a href="multi__array_8hxx-source.html">vigra/multi_array.hxx</a>"
 
 Namespace: vigra
 */

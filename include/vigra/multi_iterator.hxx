@@ -433,7 +433,7 @@ but iterator performance will suffer significantly, as is experienced with
 This design is necessary for compilers that do not support partial
 specialization (otherwise, MultiIterator could be specialized directly).
 
-<b>\#include</b> "<a href="multi_iterator_8hxx-source.html">vigra/multi_iterator.hxx</a>"
+<b>\#include</b> "<a href="multi__iterator_8hxx-source.html">vigra/multi_iterator.hxx</a>"
 
 Namespace: vigra
 */
@@ -447,7 +447,7 @@ class MultiIteratorBase
         class <tt>type</tt>. This design is necessary for compilers that do not support partial
         specialization (otherwise, MultiIterator could be specialized directly).
 
-        <b>\#include</b> "<a href="multi_iterator_8hxx-source.html">vigra/multi_iterator.hxx</a>"
+        <b>\#include</b> "<a href="multi__iterator_8hxx-source.html">vigra/multi_iterator.hxx</a>"
 
         Namespace: vigra
         */
@@ -990,7 +990,7 @@ class MultiIteratorBase <1>
 
 This class wraps the MultiIteratorBase in a template of arity two.
 
-<b>\#include</b> "<a href="multi_iterator_8hxx-source.html">vigra/multi_iterator.hxx</a>"
+<b>\#include</b> "<a href="multi__iterator_8hxx-source.html">vigra/multi_iterator.hxx</a>"
 
 Namespace: vigra
 */
@@ -1159,7 +1159,7 @@ public:
 This design is necessary for compilers that do not support partial
 specialization (otherwise, StridedMultiIterator could be specialized directly).
 
-<b>\#include</b> "<a href="multi_iterator_8hxx-source.html">vigra/multi_iterator.hxx</a>"
+<b>\#include</b> "<a href="multi__iterator_8hxx-source.html">vigra/multi_iterator.hxx</a>"
 
 Namespace: vigra
 */
@@ -1174,7 +1174,7 @@ class StridedMultiIteratorBase
         class <tt>type</tt>. This design is necessary for compilers that do not support partial
         specialization (otherwise, MultiIterator could be specialized directly).
 
-        <b>\#include</b> "<a href="multi_iterator_8hxx-source.html">vigra/multi_iterator.hxx</a>"
+        <b>\#include</b> "<a href="multi__iterator_8hxx-source.html">vigra/multi_iterator.hxx</a>"
 
         Namespace: vigra
         */
@@ -1722,7 +1722,7 @@ class StridedMultiIteratorBase <1>
 
 This class wraps the StridedMultiIteratorBase in a template of arity two.
 
-<b>\#include</b> "<a href="multi_iterator_8hxx-source.html">vigra/multi_iterator.hxx</a>"
+<b>\#include</b> "<a href="multi__iterator_8hxx-source.html">vigra/multi_iterator.hxx</a>"
 
 Namespace: vigra
 */

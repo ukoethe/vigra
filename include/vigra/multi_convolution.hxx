@@ -186,7 +186,7 @@ internalSeparableConvolveMultiArrayTmp(
 
     <b> Usage:</b>
 
-    <b>\#include</b> "<a href="multi_convolution_8hxx-source.html">vigra/multi_convolution.hxx</a>"
+    <b>\#include</b> "<a href="multi__convolution_8hxx-source.html">vigra/multi_convolution.hxx</a>"
 
     \code
     MultiArray<3, unsigned char>::size_type shape(width, height, depth);
@@ -305,7 +305,7 @@ separableConvolveMultiArray(triple<SrcIterator, SrcShape, SrcAccessor> const & s
 
     <b> Usage:</b>
 
-    <b>\#include</b> "<a href="multi_convolution_8hxx-source.html">vigra/multi_convolution.hxx</a>"
+    <b>\#include</b> "<a href="multi__convolution_8hxx-source.html">vigra/multi_convolution.hxx</a>"
 
     \code
     MultiArray<3, unsigned char>::size_type shape(width, height, depth);
@@ -412,7 +412,7 @@ convolveMultiArrayOneDimension(triple<SrcIterator, SrcShape, SrcAccessor> const 
 
     <b> Usage:</b>
 
-    <b>\#include</b> "<a href="multi_convolution_8hxx-source.html">vigra/multi_convolution.hxx</a>"
+    <b>\#include</b> "<a href="multi__convolution_8hxx-source.html">vigra/multi_convolution.hxx</a>"
 
     \code
     MultiArray<3, unsigned char>::size_type shape(width, height, depth);
@@ -497,7 +497,7 @@ gaussianSmoothMultiArray(triple<SrcIterator, SrcShape, SrcAccessor> const & sour
 
     <b> Usage:</b>
 
-    <b>\#include</b> "<a href="multi_convolution_8hxx-source.html">vigra/multi_convolution.hxx</a>"
+    <b>\#include</b> "<a href="multi__convolution_8hxx-source.html">vigra/multi_convolution.hxx</a>"
 
     \code
     MultiArray<3, unsigned char>::size_type shape(width, height, depth);
@@ -595,7 +595,7 @@ gaussianGradientMultiArray(triple<SrcIterator, SrcShape, SrcAccessor> const & so
 
     <b> Usage:</b>
 
-    <b>\#include</b> "<a href="multi_convolution_8hxx-source.html">vigra/multi_convolution.hxx</a>"
+    <b>\#include</b> "<a href="multi__convolution_8hxx-source.html">vigra/multi_convolution.hxx</a>"
 
     \code
     MultiArray<3, unsigned char>::size_type shape(width, height, depth);

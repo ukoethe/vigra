@@ -61,7 +61,7 @@ void findImageSequence(const std::string &name_base,
     size of the slices found. 
 
     <b>\#include</b>
-    "<a href="multi_impex_8hxx-source.html">vigra/multi_impex.hxx</a>"
+    "<a href="multi__impex_8hxx-source.html">vigra/multi_impex.hxx</a>"
 
     Namespace: vigra
 */
@@ -117,7 +117,7 @@ void importVolume (MultiArray <3, T, Allocator> & volume,
     (the actual number of zeros depends on the depth).
 
     <b>\#include</b>
-    "<a href="multi_impex_8hxx-source.html">vigra/multi_impex.hxx</a>"
+    "<a href="multi__impex_8hxx-source.html">vigra/multi_impex.hxx</a>"
 
     Namespace: vigra
 */

@@ -321,7 +321,7 @@ struct IteratorTraitsBase
   \section MultiArrayBasedArgumentObjectFactories MultiArrayView Based Argument Object Factories
 
     <b>Include:</b> automatically included with 
-       "<a href="multi_array_8hxx-source.html">vigra/multi_array.hxx</a>"<br>
+       "<a href="multi__array_8hxx-source.html">vigra/multi_array.hxx</a>"<br>
     Namespace: vigra
 
     These factories can be used to create argument objects when we
