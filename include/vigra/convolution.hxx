@@ -35,10 +35,12 @@
 
 //@Include: bordertreatment.hxx stdconvolution.hxx 
 //@Include: separableconvolution.hxx recursiveconvolution.hxx
+//@Include: nonlineardiffusion.hxx
 
 #include "vigra/stdconvolution.hxx"
 #include "vigra/separableconvolution.hxx"
 #include "vigra/recursiveconvolution.hxx"
+#include "vigra/nonlineardiffusion.hxx"
 
 /** @heading Kernel Argument Object Factories
 
