@@ -239,7 +239,7 @@ void convolveImage(SrcIterator sul, SrcIterator slr, SrcAccessor as,
 	    if(!clip)
 	    {
 		// init the sum
-		SumType sum = as(xs);
+		SumType sum = NumericTraits<SumType>::zero();
 		
 		SrcIterator yys = xs - klr;
 		KernelIterator yk  = ki + klr;
@@ -256,15 +256,14 @@ void convolveImage(SrcIterator sul, SrcIterator slr, SrcAccessor as,
 		    }
 		}
 		
-		sum -= as(xs);
 		// store average in destination pixel
 		ad.set(DestTraits::fromRealPromote(sum), xd);
             }
 	    else
 	    {
 		// init the sum
-		SumType sum = as(xs);
-		KSumType ksum = ak(ki);
+		SumType sum = NumericTraits<SumType>::zero();
+		KSumType ksum = NumericTraits<KSumType>::zero();
 		
 		SrcIterator yys = xs + Diff2D(x0, y0);
 		KernelIterator yk  = ki - Diff2D(x0, y0);
@@ -283,9 +282,6 @@ void convolveImage(SrcIterator sul, SrcIterator slr, SrcAccessor as,
 			ksum += ak(xk);
 		    }
 		}
-		
-		sum -= as(xs);
-		ksum -= ak(ki);
 		
 		// store average in destination pixel
 		ad.set(DestTraits::fromRealPromote((norm / ksum) * sum), xd);
