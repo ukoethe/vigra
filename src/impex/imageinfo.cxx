@@ -35,7 +35,7 @@
 #include "codecmanager.hxx"
 
 #if defined(_WIN32)
-#  include <windows.h>
+#  include "vigra/windows.h"
 #else
 #  include <dirent.h>
 #endif
