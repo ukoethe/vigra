@@ -973,7 +973,7 @@ class Kernel1D
         return *this;
     }
     
-        /** Initialisation. 
+        /** Initialization. 
             This initializes the kernel with the given constant. The norm becomes
             v*size().
             
@@ -981,7 +981,7 @@ class Kernel1D
             can be used like this:
             
             \code
-            vigra::Kernel2D<float> roberts_gradient_x;
+            vigra::Kernel1D<float> roberts_gradient_x;
             
             roberts_gradient_x.initExplicitly(0, 1) = 1.0, -1.0;
             \endcode
