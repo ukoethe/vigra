@@ -333,6 +333,8 @@ operator==(TinyVector<V1, SIZE> const & l, TinyVector<V2, SIZE> const & r)
     return !(l != r);
 }
 
+#ifdef NO_PARTIAL_TEMPLATE_SPCIALIZATION
+
 template <class V1, class V2>
 inline bool 
 operator!=(TinyVector<V1, 2> const & l, TinyVector<V2, 2> const & r)
@@ -354,13 +356,14 @@ operator!=(TinyVector<V1, 4> const & l, TinyVector<V2, 4> const & r)
     return l[0] != r[0] || l[1] != r[1] || l[2] != r[2] || l[3] != r[3];
 }
 
-#ifndef NO_PARTIAL_TEMPLATE_SPECIALIZATION
+#endif // NO_PARTIAL_TEMPLATE_SPCIALIZATION
 
     /// component-wise not equal
 template <class V1, class V2, int SIZE>
 inline bool 
 operator!=(TinyVector<V1, SIZE> const & l, TinyVector<V2, SIZE> const & r)
 {
+    typedef typename TinyVector<V1, SIZE>::const_iterator CI;
     typename TinyVector<V1, SIZE>::const_iterator i1 = l.begin();
     typename TinyVector<V1, SIZE>::const_iterator i1end = l.end();
     typename TinyVector<V2, SIZE>::const_iterator i2 = r.begin();
@@ -369,8 +372,6 @@ operator!=(TinyVector<V1, SIZE> const & l, TinyVector<V2, SIZE> const & r)
             return true;
     return false;
 }
-
-#endif // NO_PARTIAL_TEMPLATE_SPECIALIZATION
 
 //@}
 
@@ -592,40 +593,40 @@ TINYVECTOR_TRAITS(4)
 /** \addtogroup TinyVectorOperators
  */
 //@{
-template <class V1, class V2>
-inline
-TinyVector<V1, 2> & 
-operator+=(TinyVector<V1, 2> & l, TinyVector<V2, 2> const & r)
-{
-    l[0] += r[0];
-    l[1] += r[1];
-    return l;
-}
 
-template <class V1, class V2>
-inline
-TinyVector<V1, 3> & 
-operator+=(TinyVector<V1, 3> & l, TinyVector<V2, 3> const & r)
-{
-    l[0] += r[0];
-    l[1] += r[1];
-    l[2] += r[2];
-    return l;
-}
-
-template <class V1, class V2>
-inline
-TinyVector<V1, 4> & 
-operator+=(TinyVector<V1, 4> & l, TinyVector<V2, 4> const & r)
-{
-    l[0] += r[0];
-    l[1] += r[1];
-    l[2] += r[2];
-    l[3] += r[3];
-    return l;
-}
-
-#ifndef NO_PARTIAL_TEMPLATE_SPECIALIZATION
+#define vigra_operator_unroll_loop(op) \
+    template <class V1, class V2> \
+    inline \
+    TinyVector<V1, 2> &  \
+    operator op(TinyVector<V1, 2> & l, TinyVector<V2, 2> const & r) \
+    { \
+        l[0] op r[0]; \
+        l[1] op r[1]; \
+        return l; \
+    } \
+    \
+    template <class V1, class V2> \
+    inline \
+    TinyVector<V1, 3> &  \
+    operator op(TinyVector<V1, 3> & l, TinyVector<V2, 3> const & r) \
+    { \
+        l[0] op r[0]; \
+        l[1] op r[1]; \
+        l[2] op r[2]; \
+        return l; \
+    } \
+    \
+    template <class V1, class V2> \
+    inline \
+    TinyVector<V1, 4> &  \
+    operator op(TinyVector<V1, 4> & l, TinyVector<V2, 4> const & r) \
+    { \
+        l[0] op r[0]; \
+        l[1] op r[1]; \
+        l[2] op r[2]; \
+        l[3] op r[3]; \
+        return l; \
+    } 
 
     /// componentwise add-assignment
 template <class V1, class V2, int SIZE>
@@ -641,42 +642,7 @@ operator+=(TinyVector<V1, SIZE> & l, TinyVector<V2, SIZE> const & r)
     return l;
 }
 
-#endif // NO_PARTIAL_TEMPLATE_SPECIALIZATION
-
-template <class V1, class V2>
-inline
-TinyVector<V1, 2> & 
-operator-=(TinyVector<V1, 2> & l, TinyVector<V2, 2> const & r)
-{
-    l[0] -= r[0];
-    l[1] -= r[1];
-    return l;
-}
-
-template <class V1, class V2>
-inline
-TinyVector<V1, 3> & 
-operator-=(TinyVector<V1, 3> & l, TinyVector<V2, 3> const & r)
-{
-    l[0] -= r[0];
-    l[1] -= r[1];
-    l[2] -= r[2];
-    return l;
-}
-
-template <class V1, class V2>
-inline
-TinyVector<V1, 4> & 
-operator-=(TinyVector<V1, 4> & l, TinyVector<V2, 4> const & r)
-{
-    l[0] -= r[0];
-    l[1] -= r[1];
-    l[2] -= r[2];
-    l[3] -= r[3];
-    return l;
-}
-
-#ifndef NO_PARTIAL_TEMPLATE_SPECIALIZATION
+vigra_operator_unroll_loop(+=)
 
     /// componentwise subtract-assignment
 template <class V1, class V2, int SIZE>
@@ -692,42 +658,7 @@ operator-=(TinyVector<V1, SIZE> & l, TinyVector<V2, SIZE> const & r)
     return l;
 }
 
-#endif // NO_PARTIAL_TEMPLATE_SPECIALIZATION
-
-template <class V1, class V2>
-inline
-TinyVector<V1, 2> & 
-operator*=(TinyVector<V1, 2> & l, TinyVector<V2, 2> const & r)
-{
-    l[0] *= r[0];
-    l[1] *= r[1];
-    return l;
-}
-
-template <class V1, class V2>
-inline
-TinyVector<V1, 3> & 
-operator*=(TinyVector<V1, 3> & l, TinyVector<V2, 3> const & r)
-{
-    l[0] *= r[0];
-    l[1] *= r[1];
-    l[2] *= r[2];
-    return l;
-}
-
-template <class V1, class V2>
-inline
-TinyVector<V1, 4> & 
-operator*=(TinyVector<V1, 4> & l, TinyVector<V2, 4> const & r)
-{
-    l[0] *= r[0];
-    l[1] *= r[1];
-    l[2] *= r[2];
-    l[3] *= r[3];
-    return l;
-}
-
-#ifndef NO_PARTIAL_TEMPLATE_SPECIALIZATION
+vigra_operator_unroll_loop(-=)
 
     /// componentwise multiply-assignment
 template <class V1, class V2, int SIZE>
@@ -743,40 +674,45 @@ operator*=(TinyVector<V1, SIZE> & l, TinyVector<V2, SIZE> const & r)
     return l;
 }
 
-#endif NO_PARTIAL_TEMPLATE_SPECIALIZATION
+vigra_operator_unroll_loop(*=)
 
-template <class V1>
-inline
-TinyVector<V1, 2> & 
-operator*=(TinyVector<V1, 2> & l, double r)
-{
-    l[0] *= r;
-    l[1] *= r;
-    return l;
-}
+#undef vigra_operator_unroll_loop
 
-template <class V1>
-inline
-TinyVector<V1, 3> & 
-operator*=(TinyVector<V1, 3> & l, double r)
-{
-    l[0] *= r;
-    l[1] *= r;
-    l[2] *= r;
-    return l;
-}
+#define vigra_operator_unroll_loop_double(op) \
+    template <class V1> \
+    inline \
+    TinyVector<V1, 2> &  \
+    operator op(TinyVector<V1, 2> & l, double r) \
+    { \
+        l[0] op r; \
+        l[1] op r; \
+        return l; \
+    } \
+    \
+    template <class V1> \
+    inline \
+    TinyVector<V1, 3> &  \
+    operator op(TinyVector<V1, 3> & l, double r) \
+    { \
+        l[0] op r; \
+        l[1] op r; \
+        l[2] op r; \
+        return l; \
+    } \
+    \
+    template <class V1, class V2> \
+    inline \
+    TinyVector<V1, 4> &  \
+    operator op(TinyVector<V1, 4> & l, double r) \
+    { \
+        l[0] op r; \
+        l[1] op r; \
+        l[2] op r; \
+        l[3] op r; \
+        return l; \
+    } 
 
-template <class V1>
-inline
-TinyVector<V1, 4> & 
-operator*=(TinyVector<V1, 4> & l, double r)
-{
-    l[0] *= r;
-    l[1] *= r;
-    l[2] *= r;
-    l[3] *= r;
-    return l;
-}
+vigra_operator_unroll_loop_double(*=)
 
     /// componentwise scalar multiply-assignment
 template <class V, int SIZE>
@@ -791,38 +727,7 @@ operator*=(TinyVector<V, SIZE> & l, double r)
     return l;
 }
 
-template <class V1>
-inline
-TinyVector<V1, 2> & 
-operator/=(TinyVector<V1, 2> & l, double r)
-{
-    l[0] /= r;
-    l[1] /= r;
-    return l;
-}
-
-template <class V1>
-inline
-TinyVector<V1, 3> & 
-operator/=(TinyVector<V1, 3> & l, double r)
-{
-    l[0] /= r;
-    l[1] /= r;
-    l[2] /= r;
-    return l;
-}
-
-template <class V1>
-inline
-TinyVector<V1, 4> & 
-operator/=(TinyVector<V1, 4> & l, double r)
-{
-    l[0] /= r;
-    l[1] /= r;
-    l[2] /= r;
-    l[3] /= r;
-    return l;
-}
+vigra_operator_unroll_loop_double(/=)
 
     /// componentwise scalar divide-assignment 
 template <class V, int SIZE>
@@ -835,6 +740,86 @@ operator/=(TinyVector<V, SIZE> & l, double r)
     for(; i != iend; ++i)
         *i /= r;
     return l;
+}
+
+#undef vigra_operator_unroll_loop_double
+
+    /// component-wise addition
+template <class V1, class V2, int SIZE>
+inline 
+typename PromoteTraits<TinyVector<V1, SIZE>, TinyVector<V2, SIZE> >::Promote
+operator+(TinyVector<V1, SIZE> const & r1, TinyVector<V2, SIZE> const & r2)
+{
+    typename PromoteTraits<TinyVector<V1, SIZE>, TinyVector<V2 , SIZE> >::Promote res(r1);
+    
+    res += r2;
+    
+    return res;
+}
+
+    /// component-wise subtraction
+template <class V1, class V2, int SIZE>
+inline 
+typename PromoteTraits<TinyVector<V1, SIZE>, TinyVector<V2, SIZE> >::Promote
+operator-(TinyVector<V1, SIZE> const & r1, TinyVector<V2, SIZE> const & r2)
+{
+    typename PromoteTraits<TinyVector<V1, SIZE>, TinyVector<V2 , SIZE> >::Promote res(r1);
+    
+    res -= r2;
+    
+    return res;
+}
+
+    /// component-wise multiplication
+template <class V1, class V2, int SIZE>
+inline 
+typename PromoteTraits<TinyVector<V1, SIZE>, TinyVector<V2, SIZE> >::Promote
+operator*(TinyVector<V1, SIZE> const & r1, TinyVector<V2, SIZE> const & r2)
+{
+    typename PromoteTraits<TinyVector<V1, SIZE>, TinyVector<V2 , SIZE> >::Promote res(r1);
+    
+    res *= r2;
+    
+    return res;
+}
+
+    /// component-wise left scalar multiplication
+template <class V, int SIZE>
+inline 
+typename NumericTraits<TinyVector<V, SIZE> >::RealPromote
+operator*(double v, TinyVector<V, SIZE> const & r)
+{
+    typename NumericTraits<TinyVector<V, SIZE> >::RealPromote res(r);
+    
+    res *= v;
+    
+    return res;
+}
+
+    /// component-wise right scalar multiplication
+template <class V, int SIZE>
+inline 
+typename NumericTraits<TinyVector<V, SIZE> >::RealPromote
+operator*(TinyVector<V, SIZE> const & r, double v)
+{
+    typename NumericTraits<TinyVector<V, SIZE> >::RealPromote res(r);
+    
+    res *= v;
+    
+    return res;
+}
+
+    /// component-wise scalar division
+template <class V, int SIZE>
+inline 
+typename NumericTraits<TinyVector<V, SIZE> >::RealPromote
+operator/(TinyVector<V, SIZE> const & r, double v)
+{
+    typename NumericTraits<TinyVector<V, SIZE> >::RealPromote res(r);
+    
+    res /= v;
+    
+    return res;
 }
 
 using VIGRA_CSTD::abs;
@@ -878,88 +863,6 @@ TinyVector<T, SIZE> abs(TinyVector<T, SIZE> const & v) {
 
 #ifndef NO_PARTIAL_TEMPLATE_SPECIALIZATION
 
-    /// component-wise addition
-template <class V1, class V2, int SIZE>
-inline 
-typename PromoteTraits<TinyVector<V1, SIZE>, TinyVector<V2, SIZE> >::Promote
-operator+(TinyVector<V1, SIZE> const & r1, TinyVector<V2, SIZE> const & r2)
-{
-    typename PromoteTraits<TinyVector<V1, SIZE>, TinyVector<V2 , SIZE> >::Promote res(r1);
-    
-    res += r2;
-    
-    return res;
-}
-
-    /// component-wise subtraction
-template <class V1, class V2, int SIZE>
-inline 
-typename PromoteTraits<TinyVector<V1, SIZE>, TinyVector<V2, SIZE> >::Promote
-operator-(TinyVector<V1, SIZE> const & r1, TinyVector<V2, SIZE> const & r2)
-{
-    typename PromoteTraits<TinyVector<V1, SIZE>, TinyVector<V2 , SIZE> >::Promote res(r1);
-    
-    res -= r2;
-    
-    return res;
-}
-
-    /// component-wise multiplication
-template <class V1, class V2, int SIZE>
-inline 
-typename PromoteTraits<TinyVector<V1, SIZE>, TinyVector<V2, SIZE> >::Promote
-operator*(TinyVector<V1, SIZE> const & r1, TinyVector<V2, SIZE> const & r2)
-{
-    typename PromoteTraits<TinyVector<V1, SIZE>, TinyVector<V2 , SIZE> >::Promote res(r1);
-    
-    res *= r2;
-    
-    return res;
-}
-
-#endif // NO_PARTIAL_TEMPLATE_SPECIALIZATION
-
-    /// component-wise left scalar multiplication
-template <class V, int SIZE>
-inline 
-typename NumericTraits<TinyVector<V, SIZE> >::RealPromote
-operator*(double v, TinyVector<V, SIZE> const & r)
-{
-    typename NumericTraits<TinyVector<V, SIZE> >::RealPromote res(r);
-    
-    res *= v;
-    
-    return res;
-}
-
-    /// component-wise right scalar multiplication
-template <class V, int SIZE>
-inline 
-typename NumericTraits<TinyVector<V, SIZE> >::RealPromote
-operator*(TinyVector<V, SIZE> const & r, double v)
-{
-    typename NumericTraits<TinyVector<V, SIZE> >::RealPromote res(r);
-    
-    res *= v;
-    
-    return res;
-}
-
-    /// component-wise scalar division
-template <class V, int SIZE>
-inline 
-typename NumericTraits<TinyVector<V, SIZE> >::RealPromote
-operator/(TinyVector<V, SIZE> const & r, double v)
-{
-    typename NumericTraits<TinyVector<V, SIZE> >::RealPromote res(r);
-    
-    res /= v;
-    
-    return res;
-}
-
-#ifndef NO_PARTIAL_TEMPLATE_SPECIALIZATION
-
 template <class V1, class V2>
 inline
 typename PromoteTraits<V1, V2>::Promote
@@ -995,7 +898,7 @@ dot(TinyVector<V1, 4> const & l, TinyVector<V2, 4> const & r)
 
 #endif // NO_PARTIAL_TEMPLATE_SPECIALIZATION
 
-/// dot product
+    /// dot product
 template <class V1, class V2, int SIZE>
 inline 
 typename PromoteTraits<V1, V2>::Promote
@@ -1009,7 +912,6 @@ dot(TinyVector<V1, SIZE> const & r1, TinyVector<V2, SIZE> const & r2)
         sum += *i1 * *i2;
     return sum;
 }
-
 
 using VIGRA_CSTD::ceil;
 
