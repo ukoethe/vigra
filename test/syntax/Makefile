@@ -8,17 +8,19 @@ syntax.exe: test.d
 	devenv "..\test.sln" /build Release /project syntax
 	./syntax.exe || { rm ./syntax.exe ; exit 1; }
 
-ifneq "$(MAKECMDGOALS)" "clean"
-include test.d
-endif
-
+ifneq "$(MAKECMDGOALS)" "vc"
 include ../Makefile.include
+else
+vigra_srcdir = ../..
+endif
 
 EXTRA_CLEAN_TARGET = test.cxx
 
 CPPFLAGS := $(LIBCPPFLAGS)
 
 HEADERS=$(shell ls $(vigra_srcdir)/include/vigra/*.hxx)
+
+vc: test.cxx
 
 test.cxx: $(HEADERS)
 	@echo creating test.cxx

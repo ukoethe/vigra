@@ -1,4 +1,9 @@
 #include <iostream>
+
+#ifdef NDEBUG
+#undef NDEBUG
+#endif
+
 #include "unittest.hxx"
 #include "vigra/error.hxx"
 

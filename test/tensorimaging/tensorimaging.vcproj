@@ -22,9 +22,9 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="C:\Users\Koethe\src\vigra\current\include;C:\Users\Koethe\src\vigra\test\include"
+				AdditionalIncludeDirectories="..\..\include;..\include"
 				PreprocessorDefinitions="WIN32,_DEBUG,_CONSOLE"
-				RuntimeLibrary="5"
+				RuntimeLibrary="3"
 				UsePrecompiledHeader="2"
 				PrecompiledHeaderFile=".\Debug/tensorimaging.pch"
 				AssemblerListingLocation=".\Debug/"
@@ -39,11 +39,11 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalOptions="/MACHINE:I386"
-				AdditionalDependencies="vigraimpex.lib libtiff.lib libjpeg.lib"
+				AdditionalDependencies="libtiff.lib libjpeg.lib libpng.lib zlib.lib"
 				OutputFile=".\Debug/tensorimaging.exe"
 				LinkIncremental="2"
 				SuppressStartupBanner="TRUE"
-				AdditionalLibraryDirectories="C:\Users\Koethe\lib\msvc.net"
+				AdditionalLibraryDirectories="C:\lib"
 				GenerateDebugInformation="TRUE"
 				ProgramDatabaseFile=".\Debug/tensorimaging.pdb"
 				SubSystem="1"/>
@@ -82,7 +82,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				InlineFunctionExpansion="1"
-				AdditionalIncludeDirectories="..\..\current\include;..\include"
+				AdditionalIncludeDirectories="..\..\include;..\include"
 				PreprocessorDefinitions="WIN32,NDEBUG,_CONSOLE"
 				StringPooling="TRUE"
 				RuntimeLibrary="2"
@@ -100,11 +100,11 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalOptions="/MACHINE:I386"
-				AdditionalDependencies="vigraimpex.lib libtiff.lib libjpeg.lib libpng.lib zlib.lib"
+				AdditionalDependencies="libtiff.lib libjpeg.lib libpng.lib zlib.lib"
 				OutputFile="tensorimaging.exe"
 				LinkIncremental="1"
 				SuppressStartupBanner="TRUE"
-				AdditionalLibraryDirectories="..\..\current\src\impex;C:\lib"
+				AdditionalLibraryDirectories="C:\lib"
 				ProgramDatabaseFile=".\Release/tensorimaging.pdb"
 				SubSystem="1"/>
 			<Tool

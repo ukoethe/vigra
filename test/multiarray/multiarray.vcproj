@@ -22,7 +22,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				InlineFunctionExpansion="1"
-				AdditionalIncludeDirectories="..\..\current\include;..\include"
+				AdditionalIncludeDirectories="..\..\include;..\include"
 				PreprocessorDefinitions="WIN32,NDEBUG,_CONSOLE"
 				StringPooling="TRUE"
 				RuntimeLibrary="2"
@@ -40,11 +40,11 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalOptions="/MACHINE:I386"
-				AdditionalDependencies="vigraimpex.lib libtiff.lib libjpeg.lib libpng.lib zlib.lib"
+				AdditionalDependencies="libtiff.lib libjpeg.lib libpng.lib zlib.lib"
 				OutputFile="multiarray.exe"
 				LinkIncremental="1"
 				SuppressStartupBanner="TRUE"
-				AdditionalLibraryDirectories="..\..\current\src\impex;C:\lib"
+				AdditionalLibraryDirectories="C:\lib"
 				ProgramDatabaseFile=".\Release/multiarray.pdb"
 				SubSystem="1"/>
 			<Tool
@@ -55,7 +55,9 @@
 				Description="Running tests"
 				CommandLine="..\testOrDelete multiarray.exe"/>
 			<Tool
-				Name="VCPreBuildEventTool"/>
+				Name="VCPreBuildEventTool"
+				Description="mkdir impex"
+				CommandLine="IF NOT EXIST impex mkdir impex"/>
 			<Tool
 				Name="VCPreLinkEventTool"/>
 			<Tool
@@ -84,9 +86,9 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="C:\Users\Koethe\src\vigra\current\include;C:\Users\Koethe\src\vigra\test\include"
+				AdditionalIncludeDirectories="..\..\include;..\include"
 				PreprocessorDefinitions="WIN32,_DEBUG,_CONSOLE"
-				RuntimeLibrary="5"
+				RuntimeLibrary="3"
 				UsePrecompiledHeader="2"
 				PrecompiledHeaderFile=".\Debug/multiarray.pch"
 				AssemblerListingLocation=".\Debug/"
@@ -101,11 +103,11 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalOptions="/MACHINE:I386"
-				AdditionalDependencies="vigraimpex.lib libtiff.lib libjpeg.lib"
+				AdditionalDependencies="libtiff.lib libjpeg.lib libpng.lib zlib.lib"
 				OutputFile=".\Debug/multiarray.exe"
 				LinkIncremental="2"
 				SuppressStartupBanner="TRUE"
-				AdditionalLibraryDirectories="C:\Users\Koethe\lib\msvc.net"
+				AdditionalLibraryDirectories="C:\lib"
 				GenerateDebugInformation="TRUE"
 				ProgramDatabaseFile=".\Debug/multiarray.pdb"
 				SubSystem="1"/>
@@ -115,7 +117,9 @@
 			<Tool
 				Name="VCPostBuildEventTool"/>
 			<Tool
-				Name="VCPreBuildEventTool"/>
+				Name="VCPreBuildEventTool"
+				Description="mkdir impex"
+				CommandLine="IF NOT EXIST impex mkdir impex"/>
 			<Tool
 				Name="VCPreLinkEventTool"/>
 			<Tool

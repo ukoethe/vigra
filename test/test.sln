@@ -1,6 +1,7 @@
 Microsoft Visual Studio Solution File, Format Version 8.00
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "convolution", "convolution\convolution.vcproj", "{DF27C171-3209-4A26-9E45-4A60DDB7C408}"
 	ProjectSection(ProjectDependencies) = postProject
+		{855B96D1-DC2F-4129-88FA-96A6F69683A5} = {855B96D1-DC2F-4129-88FA-96A6F69683A5}
 	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "error", "error\error.vcproj", "{09EC74B8-969C-4BDC-ABBC-CC3526EF65DE}"
@@ -9,14 +10,12 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "error", "error\error.vcproj
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "image", "image\image.vcproj", "{CBBA1213-D17F-4626-9205-4F01109021F4}"
 	ProjectSection(ProjectDependencies) = postProject
+		{855B96D1-DC2F-4129-88FA-96A6F69683A5} = {855B96D1-DC2F-4129-88FA-96A6F69683A5}
 	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "imgproc", "imgproc\imgproc.vcproj", "{8CBD8C9A-281F-4138-9AD6-DA43E687B8B4}"
 	ProjectSection(ProjectDependencies) = postProject
-	EndProjectSection
-EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "impex", "impex\impex.vcproj", "{89438040-2675-4051-B8F8-9B17926982CE}"
-	ProjectSection(ProjectDependencies) = postProject
+		{855B96D1-DC2F-4129-88FA-96A6F69683A5} = {855B96D1-DC2F-4129-88FA-96A6F69683A5}
 	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "morphology", "morphology\morphology.vcproj", "{82238335-B5DA-433B-950C-257AFFC2916C}"
@@ -39,19 +38,12 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "imagehierarchy", "imagehier
 	ProjectSection(ProjectDependencies) = postProject
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "fourier", "fourier\fourier.vcproj", "{F50BA3E6-22F6-42B4-8E0E-15FB88B4E8F7}"
-	ProjectSection(ProjectDependencies) = postProject
-	EndProjectSection
-EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "multiarray", "multiarray\multiarray.vcproj", "{3545E46C-E9CC-4C7F-8922-3C2857D63A92}"
 	ProjectSection(ProjectDependencies) = postProject
+		{855B96D1-DC2F-4129-88FA-96A6F69683A5} = {855B96D1-DC2F-4129-88FA-96A6F69683A5}
 	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "functorexpression", "functorexpression\functorexpression.vcproj", "{213371EE-EAB1-4879-9D23-EC4499C22F8D}"
-	ProjectSection(ProjectDependencies) = postProject
-	EndProjectSection
-EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "fourier_fftw3", "fourier_fftw3\fourier_fftw3.vcproj", "{F50BA3E6-22F6-42B4-8E0E-15FB88B4E8F7}"
 	ProjectSection(ProjectDependencies) = postProject
 	EndProjectSection
 EndProject
@@ -65,6 +57,7 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "multiconvolution", "multico
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "tensorimaging", "tensorimaging\tensorimaging.vcproj", "{0F057AD0-4971-4EC0-A2AE-F249290F88E4}"
 	ProjectSection(ProjectDependencies) = postProject
+		{855B96D1-DC2F-4129-88FA-96A6F69683A5} = {855B96D1-DC2F-4129-88FA-96A6F69683A5}
 	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "syntax", "syntax\syntax.vcproj", "{4FAFF206-B048-4048-A2E1-00E93C6D2606}"
@@ -73,6 +66,20 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "syntax", "syntax\syntax.vcp
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "utilities", "utilities\utilities.vcproj", "{3C75D96D-AF80-48D7-9A8A-27FF5D2F6051}"
 	ProjectSection(ProjectDependencies) = postProject
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "fourier", "fourier\fourier.vcproj", "{F50BA3E6-22F6-42B4-8E0E-15FB88B4E8F7}"
+	ProjectSection(ProjectDependencies) = postProject
+		{855B96D1-DC2F-4129-88FA-96A6F69683A5} = {855B96D1-DC2F-4129-88FA-96A6F69683A5}
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "impex", "..\src\impex\impex.vcproj", "{855B96D1-DC2F-4129-88FA-96A6F69683A5}"
+	ProjectSection(ProjectDependencies) = postProject
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "impextest", "impex\impextest.vcproj", "{A31505E2-3628-4504-B683-E1D1E935726B}"
+	ProjectSection(ProjectDependencies) = postProject
+		{855B96D1-DC2F-4129-88FA-96A6F69683A5} = {855B96D1-DC2F-4129-88FA-96A6F69683A5}
 	EndProjectSection
 EndProject
 Global
@@ -97,10 +104,6 @@ Global
 		{8CBD8C9A-281F-4138-9AD6-DA43E687B8B4}.Debug.Build.0 = Debug|Win32
 		{8CBD8C9A-281F-4138-9AD6-DA43E687B8B4}.Release.ActiveCfg = Release|Win32
 		{8CBD8C9A-281F-4138-9AD6-DA43E687B8B4}.Release.Build.0 = Release|Win32
-		{89438040-2675-4051-B8F8-9B17926982CE}.Debug.ActiveCfg = Debug|Win32
-		{89438040-2675-4051-B8F8-9B17926982CE}.Debug.Build.0 = Debug|Win32
-		{89438040-2675-4051-B8F8-9B17926982CE}.Release.ActiveCfg = Release|Win32
-		{89438040-2675-4051-B8F8-9B17926982CE}.Release.Build.0 = Release|Win32
 		{82238335-B5DA-433B-950C-257AFFC2916C}.Debug.ActiveCfg = Debug|Win32
 		{82238335-B5DA-433B-950C-257AFFC2916C}.Debug.Build.0 = Debug|Win32
 		{82238335-B5DA-433B-950C-257AFFC2916C}.Release.ActiveCfg = Release|Win32
@@ -119,9 +122,6 @@ Global
 		{213371EE-EAB1-4879-9D23-EC4499C22F8D}.Release.Build.0 = Release|Win32
 		{03F6A35C-E906-4616-B0B2-EF5A72A2FA09}.Debug.ActiveCfg = Debug|Win32
 		{03F6A35C-E906-4616-B0B2-EF5A72A2FA09}.Release.ActiveCfg = Release|Win32
-		{F50BA3E6-22F6-42B4-8E0E-15FB88B4E8F7}.Debug.ActiveCfg = Debug|Win32
-		{F50BA3E6-22F6-42B4-8E0E-15FB88B4E8F7}.Debug.Build.0 = Debug|Win32
-		{F50BA3E6-22F6-42B4-8E0E-15FB88B4E8F7}.Release.ActiveCfg = Release|Win32
 		{3545E46C-E9CC-4C7F-8922-3C2857D63A92}.Debug.ActiveCfg = Debug|Win32
 		{3545E46C-E9CC-4C7F-8922-3C2857D63A92}.Debug.Build.0 = Debug|Win32
 		{3545E46C-E9CC-4C7F-8922-3C2857D63A92}.Release.ActiveCfg = Release|Win32
@@ -130,10 +130,6 @@ Global
 		{213371EE-EAB1-4879-9D23-EC4499C22F8D}.Debug.Build.0 = Debug|Win32
 		{213371EE-EAB1-4879-9D23-EC4499C22F8D}.Release.ActiveCfg = Release|Win32
 		{213371EE-EAB1-4879-9D23-EC4499C22F8D}.Release.Build.0 = Release|Win32
-		{F50BA3E6-22F6-42B4-8E0E-15FB88B4E8F7}.Debug.ActiveCfg = Debug|Win32
-		{F50BA3E6-22F6-42B4-8E0E-15FB88B4E8F7}.Debug.Build.0 = Debug|Win32
-		{F50BA3E6-22F6-42B4-8E0E-15FB88B4E8F7}.Release.ActiveCfg = Release|Win32
-		{F50BA3E6-22F6-42B4-8E0E-15FB88B4E8F7}.Release.Build.0 = Release|Win32
 		{F51C470C-FED1-4482-85CD-38D50BA0D425}.Debug.ActiveCfg = Debug|Win32
 		{F51C470C-FED1-4482-85CD-38D50BA0D425}.Debug.Build.0 = Debug|Win32
 		{F51C470C-FED1-4482-85CD-38D50BA0D425}.Release.ActiveCfg = Release|Win32
@@ -154,6 +150,18 @@ Global
 		{3C75D96D-AF80-48D7-9A8A-27FF5D2F6051}.Debug.Build.0 = Debug|Win32
 		{3C75D96D-AF80-48D7-9A8A-27FF5D2F6051}.Release.ActiveCfg = Release|Win32
 		{3C75D96D-AF80-48D7-9A8A-27FF5D2F6051}.Release.Build.0 = Release|Win32
+		{F50BA3E6-22F6-42B4-8E0E-15FB88B4E8F7}.Debug.ActiveCfg = Debug|Win32
+		{F50BA3E6-22F6-42B4-8E0E-15FB88B4E8F7}.Debug.Build.0 = Debug|Win32
+		{F50BA3E6-22F6-42B4-8E0E-15FB88B4E8F7}.Release.ActiveCfg = Release|Win32
+		{F50BA3E6-22F6-42B4-8E0E-15FB88B4E8F7}.Release.Build.0 = Release|Win32
+		{855B96D1-DC2F-4129-88FA-96A6F69683A5}.Debug.ActiveCfg = Debug|Win32
+		{855B96D1-DC2F-4129-88FA-96A6F69683A5}.Debug.Build.0 = Debug|Win32
+		{855B96D1-DC2F-4129-88FA-96A6F69683A5}.Release.ActiveCfg = Release|Win32
+		{855B96D1-DC2F-4129-88FA-96A6F69683A5}.Release.Build.0 = Release|Win32
+		{A31505E2-3628-4504-B683-E1D1E935726B}.Debug.ActiveCfg = Debug|Win32
+		{A31505E2-3628-4504-B683-E1D1E935726B}.Debug.Build.0 = Debug|Win32
+		{A31505E2-3628-4504-B683-E1D1E935726B}.Release.ActiveCfg = Release|Win32
+		{A31505E2-3628-4504-B683-E1D1E935726B}.Release.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 	EndGlobalSection

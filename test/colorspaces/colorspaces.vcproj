@@ -21,6 +21,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
+				AdditionalIncludeDirectories="..\..\include;..\include"
 				PreprocessorDefinitions="WIN32;_WINDOWS;_DEBUG"
 				MinimalRebuild="TRUE"
 				BasicRuntimeChecks="3"
@@ -87,7 +88,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="2"
 				InlineFunctionExpansion="1"
-				AdditionalIncludeDirectories="..\..\current\include;..\include"
+				AdditionalIncludeDirectories="..\..\include;..\include"
 				PreprocessorDefinitions="WIN32;_CONSOLE;NDEBUG"
 				StringPooling="TRUE"
 				ExceptionHandling="TRUE"
@@ -104,10 +105,9 @@
 			<Tool
 				Name="VCLinkerTool"
 				IgnoreImportLibrary="TRUE"
-				AdditionalDependencies="vigraimpex.lib libtiff.lib libjpeg.lib libpng.lib zlib.lib"
 				OutputFile="colorspaces.exe"
 				LinkIncremental="1"
-				AdditionalLibraryDirectories="..\..\current\src\impex;C:\lib"
+				AdditionalLibraryDirectories=""
 				GenerateDebugInformation="TRUE"
 				SubSystem="1"
 				OptimizeReferences="2"

@@ -45,6 +45,11 @@ vc:
 	 done ; \
 	 touch testSuccess
 
+edit:
+	@for i in $(SUBDIRS); do \
+	        nc $$i/makefile.in; \
+	 done
+
 clean:
 	rm -f *.opt testSuccess	
 	@for i in $(SUBDIRS); do \
