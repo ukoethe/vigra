@@ -24,8 +24,11 @@
 #define VIGRA_POLARFILTERS_SPATIAL_HXX
 
 #include <cmath>
-#include <vector>
+#include <functional>
 #include "vigra/utilities.hxx"
+#include "vigra/array_vector.hxx"
+#include "vigra/basicimage.hxx"
+#include "vigra/combineimages.hxx"
 #include "vigra/numerictraits.hxx"
 #include "vigra/convolution.hxx"
 
@@ -35,7 +38,7 @@ namespace detail {
 
 /***********************************************************************/
 
-typedef std::vector<Kernel1D<double> > KernelArray;
+typedef ArrayVector<Kernel1D<double> > KernelArray;
 
 void
 initGaussianPolarFilters1(double std_dev, KernelArray & k)
@@ -50,23 +53,21 @@ initGaussianPolarFilters1(double std_dev, KernelArray & k)
     k.resize(4);
                             
     int radius = (int)(4.0*std_dev + 0.5);
-    double f = 1.0 / VIGRA_CSTD::sqrt(2.0 * M_PI) / std_dev;  // norm
-    iterator c;
-    int ix;
-
-    double a =  2.*0.16116715428 / VIGRA_CSTD::pow(std_dev, 5);
-    double b = -2.*0.68931741459 / VIGRA_CSTD::pow(std_dev, 3);
-    
     std_dev *= 1.08179074376;
+    double f = 1.0 / VIGRA_CSTD::sqrt(2.0 * M_PI) / std_dev;  // norm
+    double a = 0.558868151788 / VIGRA_CSTD::pow(std_dev, 5);
+    double b = -2.04251639729 / VIGRA_CSTD::pow(std_dev, 3);
     double sigma22 = -0.5 / std_dev / std_dev;
-    
+
+
     for(unsigned int i=0; i<k.size(); ++i)
     {
         k[i].initExplicitly(-radius, radius);
         k[i].setBorderTreatment(BORDER_TREATMENT_REFLECT);
     }
     
-    c = k[0].center();
+    int ix;
+    iterator c = k[0].center();
     for(ix=-radius; ix<=radius; ++ix)
     {
         double x = (double)ix;
@@ -109,19 +110,17 @@ initGaussianPolarFilters2(double std_dev, KernelArray & k)
                             
     int radius = (int)(4.0*std_dev + 0.5);
     double f = 1.0 / VIGRA_CSTD::sqrt(2.0 * M_PI) / std_dev;  // norm
-    iterator c;
-    int ix;
+    double sigma2 = std_dev*std_dev;   
+    double sigma22 = -0.5 / sigma2;
 
     for(unsigned int i=0; i<k.size(); ++i)
     {
         k[i].initExplicitly(-radius, radius);
         k[i].setBorderTreatment(BORDER_TREATMENT_REFLECT);
     }
-        
-    double sigma2 = std_dev*std_dev;   
-    double sigma22 = -0.5 / sigma2;
-
-    c = k[0].center();
+    
+    int ix;
+    iterator c = k[0].center();
     for(ix=-radius; ix<=radius; ++ix)
     {
         double x = (double)ix;
@@ -157,9 +156,10 @@ initGaussianPolarFilters3(double std_dev, KernelArray & k)
     k.resize(4);
                             
     int radius = (int)(4.0*std_dev + 0.5);
+    std_dev *= 1.15470053838;
+    double sigma22 = -0.5 / std_dev / std_dev;
     double f = 1.0 / VIGRA_CSTD::sqrt(2.0 * M_PI) / std_dev;  // norm
-    iterator c;
-    int ix;
+    double a = 0.883887052922 / VIGRA_CSTD::pow(std_dev, 5);
 
     for(unsigned int i=0; i<k.size(); ++i)
     {
@@ -167,13 +167,10 @@ initGaussianPolarFilters3(double std_dev, KernelArray & k)
         k[i].setBorderTreatment(BORDER_TREATMENT_REFLECT);
     }
         
-    double a =  0.3229320833 / VIGRA_CSTD::pow(std_dev, 5);
     double b = -1.3786348292 / VIGRA_CSTD::pow(std_dev, 3);
-    
-    std_dev *= 1.15470053838;
-    double sigma22 = -0.5 / std_dev / std_dev;
-        
-    c = k[0].center();
+
+    int ix;
+    iterator c = k[0].center();
     for(ix=-radius; ix<=radius; ++ix)
     {
         double x = (double)ix;
@@ -188,29 +185,30 @@ initGaussianPolarFilters3(double std_dev, KernelArray & k)
     }
         
     c = k[2].center();
-    double b2 = b / 3.0;
+    double a2 = 3.0 * a;
     for(ix=-radius; ix<=radius; ++ix)
     {
         double x = (double)ix;
-        c[ix] = f * (b2 + a * x * x) * VIGRA_CSTD::exp(sigma22 * x * x);
+        c[ix] = f * a2 * x * x * VIGRA_CSTD::exp(sigma22 * x * x);
     }
         
     c = k[3].center();
     for(ix=-radius; ix<=radius; ++ix)
     {
         double x = (double)ix;
-        c[ix] = f * x * (b + a * x * x) * VIGRA_CSTD::exp(sigma22 * x * x);
+        c[ix] = f * a * x * x * x * VIGRA_CSTD::exp(sigma22 * x * x);
     }
 }
 
 template <class SrcIterator, class SrcAccessor,
-          class DestIteratorEven, class DestAccessorEven>
-void evenPolarFilters(SrcIterator supperleft, SrcIterator slowerright, SrcAccessor sa,
-                  DestIteratorEven dupperleft_even, DestAccessorEven even,
-                  double scale, bool noLaplacian)
+          class DestIterator, class DestAccessor>
+void 
+evenPolarFilters(SrcIterator supperleft, SrcIterator slowerright, SrcAccessor src,
+                 DestIterator dupperleft, DestAccessor dest,
+                 double scale, bool noLaplacian)
 {
-    vigra_precondition(even.size(dupperleft_even) == 3,
-                       "polarFilters2(): image for even output must have 3 bands.");
+    vigra_precondition(dest.size(dupperleft) == 3,
+                       "evenPolarFilters(): image for even output must have 3 bands.");
 
     int w = slowerright.x - supperleft.x;
     int h = slowerright.y - supperleft.y;
@@ -220,46 +218,117 @@ void evenPolarFilters(SrcIterator supperleft, SrcIterator slowerright, SrcAccess
     typedef BasicImage<TinyVector<TmpType, 3> > TmpImage;    
     typedef typename TmpImage::traverser TmpTraverser;
     TmpImage t(w, h);
-    TmpTraverser tul(t.upperLeft());
-    TmpTraverser tlr(t.lowerRight());
     
     KernelArray k2;
     initGaussianPolarFilters2(scale, k2);
     
     // calculate filter responses for even filters  
     VectorElementAccessor<typename TmpImage::Accessor> tmpBand(0, t.accessor());
-    convolveImage(srcIterRange(supperleft, slowerright, sa),
+    convolveImage(srcIterRange(supperleft, slowerright, src),
                   destImage(t, tmpBand), k2[2], k2[0]);
     tmpBand.setIndex(1);
-    convolveImage(srcIterRange(supperleft, slowerright, sa),
+    convolveImage(srcIterRange(supperleft, slowerright, src),
                   destImage(t, tmpBand), k2[1], k2[1]);
     tmpBand.setIndex(2);
-    convolveImage(srcIterRange(supperleft, slowerright, sa),
+    convolveImage(srcIterRange(supperleft, slowerright, src),
                   destImage(t, tmpBand), k2[0], k2[2]);
 
     // create even tensor from filter responses  
-    for(; tul.y != tlr.y; ++tul.y, ++dupperleft_even.y)
+    TmpTraverser tul(t.upperLeft());
+    TmpTraverser tlr(t.lowerRight());
+    for(; tul.y != tlr.y; ++tul.y, ++dupperleft.y)
     {
         typename TmpTraverser::row_iterator tr = tul.rowIterator();
         typename TmpTraverser::row_iterator trend = tr + w;
-        typename DestIteratorEven::row_iterator e = dupperleft_even.rowIterator();
+        typename DestIterator::row_iterator d = dupperleft.rowIterator();
         if(noLaplacian)
         {
-            for(; tr != trend; ++tr, ++e)
+            for(; tr != trend; ++tr, ++d)
             {
-                TmpType d = 0.5*sq((*tr)[0]-(*tr)[2]) + 2.0*sq((*tr)[1]);
-                even.setComponent(d, e, 0);
-                even.setComponent(0, e, 1);
-                even.setComponent(d, e, 2);
+                TmpType v = 0.5*sq((*tr)[0]-(*tr)[2]) + 2.0*sq((*tr)[1]);
+                dest.setComponent(v, d, 0);
+                dest.setComponent(0, d, 1);
+                dest.setComponent(v, d, 2);
             }
         }
         else
         {
-            for(; tr != trend; ++tr, ++e)
+            for(; tr != trend; ++tr, ++d)
             {
-                even.setComponent(sq((*tr)[0]) + sq((*tr)[1]), e, 0);
-                even.setComponent(-(*tr)[1] * ((*tr)[0] + (*tr)[2]), e, 1);
-                even.setComponent(sq((*tr)[1]) + sq((*tr)[2]), e, 2);
+                dest.setComponent(sq((*tr)[0]) + sq((*tr)[1]), d, 0);
+                dest.setComponent(-(*tr)[1] * ((*tr)[0] + (*tr)[2]), d, 1);
+                dest.setComponent(sq((*tr)[1]) + sq((*tr)[2]), d, 2);
+            }
+        }      
+    }
+}
+
+template <class SrcIterator, class SrcAccessor,
+          class DestIterator, class DestAccessor>
+void 
+oddPolarFilters(SrcIterator supperleft, SrcIterator slowerright, SrcAccessor src,
+                DestIterator dupperleft, DestAccessor dest,
+                double scale, bool addResult)
+{
+    vigra_precondition(dest.size(dupperleft) == 3,
+                       "oddPolarFilters(): image for odd output must have 3 bands.");
+
+    int w = slowerright.x - supperleft.x;
+    int h = slowerright.y - supperleft.y;
+    
+    typedef typename 
+       NumericTraits<typename SrcAccessor::value_type>::RealPromote TmpType;
+    typedef BasicImage<TinyVector<TmpType, 4> > TmpImage;    
+    typedef typename TmpImage::traverser TmpTraverser;
+    TmpImage t(w, h);
+    
+    detail::KernelArray k1;
+    detail::initGaussianPolarFilters1(scale, k1);
+    
+    // calculate filter responses for odd filters  
+    VectorElementAccessor<typename TmpImage::Accessor> tmpBand(0, t.accessor());
+    convolveImage(srcIterRange(supperleft, slowerright, src),
+                  destImage(t, tmpBand), k1[3], k1[0]);
+    tmpBand.setIndex(1);
+    convolveImage(srcIterRange(supperleft, slowerright, src),
+                  destImage(t, tmpBand), k1[2], k1[1]);
+    tmpBand.setIndex(2);
+    convolveImage(srcIterRange(supperleft, slowerright, src),
+                  destImage(t, tmpBand), k1[1], k1[2]);
+    tmpBand.setIndex(3);
+    convolveImage(srcIterRange(supperleft, slowerright, src),
+                  destImage(t, tmpBand), k1[0], k1[3]);
+
+    // create odd tensor from filter responses  
+    TmpTraverser tul(t.upperLeft());
+    TmpTraverser tlr(t.lowerRight());
+    for(; tul.y != tlr.y; ++tul.y, ++dupperleft.y)
+    {
+        typename TmpTraverser::row_iterator tr = tul.rowIterator();
+        typename TmpTraverser::row_iterator trend = tr + w;
+        typename DestIterator::row_iterator d = dupperleft.rowIterator();
+        if(addResult)
+        {
+            for(; tr != trend; ++tr, ++d)
+            {
+                TmpType d0 = (*tr)[0] + (*tr)[2];
+                TmpType d1 = -(*tr)[1] - (*tr)[3];
+                
+                dest.setComponent(dest.getComponent(d, 0) + sq(d0), d, 0);
+                dest.setComponent(dest.getComponent(d, 1) + d0 * d1, d, 1);
+                dest.setComponent(dest.getComponent(d, 2) + sq(d1), d, 2);
+            }
+        }
+        else
+        {
+            for(; tr != trend; ++tr, ++d)
+            {
+                TmpType d0 = (*tr)[0] + (*tr)[2];
+                TmpType d1 = -(*tr)[1] - (*tr)[3];
+                
+                dest.setComponent(sq(d0), d, 0);
+                dest.setComponent(d0 * d1, d, 1);
+                dest.setComponent(sq(d1), d, 2);
             }
         }      
     }
@@ -270,6 +339,173 @@ void evenPolarFilters(SrcIterator supperleft, SrcIterator slowerright, SrcAccess
 /** \addtogroup CommonConvolutionFilters Common Filters
 */
 //@{
+
+template <class SrcIterator, class SrcAccessor,
+          class DestIterator, class DestAccessor>
+void rieszTransformOfLOG(SrcIterator supperleft, SrcIterator slowerright, SrcAccessor src,
+                         DestIterator dupperleft, DestAccessor dest,
+                         double scale, unsigned int xorder, unsigned int yorder)
+{
+    unsigned int order = xorder + yorder;
+    
+    vigra_precondition(order <= 2,
+            "rieszTransformOfLOG(): can only compute Riesz transforms up to order 2.");
+    vigra_precondition(scale > 0.0,
+            "rieszTransformOfLOG(): scale must be positive.");
+
+    int w = slowerright.x - supperleft.x;
+    int h = slowerright.y - supperleft.y;
+    
+    typedef typename NumericTraits<typename SrcAccessor::value_type>::RealPromote TmpType;
+    typedef BasicImage<TmpType> TmpImage;    
+
+    switch(order)
+    {
+        case 0:
+        {
+            detail::KernelArray k2;
+            detail::initGaussianPolarFilters2(scale, k2);
+
+            TmpImage t1(w, h), t2(w, h);
+            
+            convolveImage(srcIterRange(supperleft, slowerright, src),
+                          destImage(t1), k2[2], k2[0]);
+            convolveImage(srcIterRange(supperleft, slowerright, src),
+                          destImage(t2), k2[0], k2[2]);
+            combineTwoImages(srcImageRange(t1), srcImage(t2), 
+                             destIter(dupperleft, dest), std::plus<TmpType>());
+            break;
+        }
+        case 1:
+        {
+            detail::KernelArray k1;
+            detail::initGaussianPolarFilters1(scale, k1);
+
+            TmpImage t1(w, h), t2(w, h);
+            
+            if(xorder == 1)
+            {
+                convolveImage(srcIterRange(supperleft, slowerright, src),
+                            destImage(t1), k1[3], k1[0]);
+                convolveImage(srcIterRange(supperleft, slowerright, src),
+                            destImage(t2), k1[1], k1[2]);
+            }
+            else
+            {
+                convolveImage(srcIterRange(supperleft, slowerright, src),
+                            destImage(t1), k1[0], k1[3]);
+                convolveImage(srcIterRange(supperleft, slowerright, src),
+                            destImage(t2), k1[2], k1[1]);
+            }
+            combineTwoImages(srcImageRange(t1), srcImage(t2), 
+                             destIter(dupperleft, dest), std::plus<TmpType>());
+            break;
+        }
+        case 2:
+        {
+            detail::KernelArray k2;
+            detail::initGaussianPolarFilters2(scale, k2);
+            
+            convolveImage(srcIterRange(supperleft, slowerright, src),
+                          destIter(dupperleft, dest), k2[xorder], k2[yorder]);
+            break;
+        }
+        /* for test purposes only: compute 3rd order polar filters */
+        case 3:
+        {
+            detail::KernelArray k3;
+            detail::initGaussianPolarFilters3(scale, k3);
+
+            TmpImage t1(w, h), t2(w, h);
+            
+            if(xorder == 3)
+            {
+                convolveImage(srcIterRange(supperleft, slowerright, src),
+                            destImage(t1), k3[3], k3[0]);
+                convolveImage(srcIterRange(supperleft, slowerright, src),
+                            destImage(t2), k3[1], k3[2]);
+            }
+            else
+            {
+                convolveImage(srcIterRange(supperleft, slowerright, src),
+                            destImage(t1), k3[0], k3[3]);
+                convolveImage(srcIterRange(supperleft, slowerright, src),
+                            destImage(t2), k3[2], k3[1]);
+            }
+            combineTwoImages(srcImageRange(t1), srcImage(t2), 
+                             destIter(dupperleft, dest), std::minus<TmpType>());
+            break;
+        }
+    }
+}
+
+template <class SrcIterator, class SrcAccessor,
+          class DestIterator, class DestAccessor>
+inline
+void rieszTransformOfLOG(triple<SrcIterator, SrcIterator, SrcAccessor> src,
+                         pair<DestIterator, DestAccessor> dest,
+                         double scale, unsigned int xorder, unsigned int yorder)
+{
+    rieszTransformOfLOG(src.first, src.second, src.third, dest.first, dest.second,
+                        scale, xorder, yorder);
+}
+
+template <class SrcIterator, class SrcAccessor,
+          class DestIterator, class DestAccessor>
+void boundaryTensor(SrcIterator supperleft, SrcIterator slowerright, SrcAccessor src,
+                    DestIterator dupperleft, DestAccessor dest,
+                    double scale)
+{
+    vigra_precondition(dest.size(dupperleft) == 3,
+                       "boundaryTensor(): image for even output must have 3 bands.");
+    vigra_precondition(scale > 0.0,
+                       "boundaryTensor(): scale must be positive.");
+
+    detail::evenPolarFilters(supperleft, slowerright, src, 
+                             dupperleft, dest, scale, false);
+    detail::oddPolarFilters(supperleft, slowerright, src, 
+                             dupperleft, dest, scale, true);
+}
+
+template <class SrcIterator, class SrcAccessor,
+          class DestIterator, class DestAccessor>
+inline 
+void boundaryTensor(triple<SrcIterator, SrcIterator, SrcAccessor> src,
+                    pair<DestIterator, DestAccessor> dest,
+                    double scale)
+{
+    boundaryTensor(src.first, src.second, src.third,
+                   dest.first, dest.second, scale);
+}
+
+template <class SrcIterator, class SrcAccessor,
+          class DestIterator, class DestAccessor>
+void boundaryTensor1(SrcIterator supperleft, SrcIterator slowerright, SrcAccessor src,
+                    DestIterator dupperleft, DestAccessor dest,
+                    double scale)
+{
+    vigra_precondition(dest.size(dupperleft) == 3,
+                       "boundaryTensor1(): image for even output must have 3 bands.");
+    vigra_precondition(scale > 0.0,
+                       "boundaryTensor1(): scale must be positive.");
+
+    detail::evenPolarFilters(supperleft, slowerright, src, 
+                             dupperleft, dest, scale, true);
+    detail::oddPolarFilters(supperleft, slowerright, src, 
+                             dupperleft, dest, scale, true);
+}
+
+template <class SrcIterator, class SrcAccessor,
+          class DestIterator, class DestAccessor>
+inline 
+void boundaryTensor1(triple<SrcIterator, SrcIterator, SrcAccessor> src,
+                     pair<DestIterator, DestAccessor> dest,
+                     double scale)
+{
+    boundaryTensor1(src.first, src.second, src.third,
+                    dest.first, dest.second, scale);
+}
+
 
 /********************************************************/
 /*                                                      */
@@ -530,15 +766,15 @@ void polarFilters1(triple<SrcIterator, SrcIterator, SrcAccessor> src,
 template <class SrcIterator, class SrcAccessor,
           class DestIteratorEven, class DestAccessorEven,
           class DestIteratorOdd, class DestAccessorOdd>
-void polarFilters3(SrcIterator supperleft, SrcIterator slowerright, SrcAccessor sa,
-                  DestIteratorEven dupperleft_even, DestAccessorEven even,
-                  DestIteratorOdd dupperleft_odd, DestAccessorOdd odd,
-                  double scale)
+void boundaryTensor3(SrcIterator supperleft, SrcIterator slowerright, SrcAccessor sa,
+                     DestIteratorEven dupperleft_even, DestAccessorEven even,
+                     DestIteratorOdd dupperleft_odd, DestAccessorOdd odd,
+                     double scale)
 {
     vigra_precondition(even.size(dupperleft_even) == 3,
-                       "polarFilters3(): image for even output must have 3 bands.");
+                       "boundaryTensor3(): image for even output must have 3 bands.");
     vigra_precondition(odd.size(dupperleft_odd) == 3,
-                       "polarFilters3(): image for odd output must have 3 bands.");
+                       "boundaryTensor3(): image for odd output must have 3 bands.");
 
     detail::evenPolarFilters(supperleft, slowerright, sa, 
                              dupperleft_even, even, scale, false);
@@ -549,11 +785,7 @@ void polarFilters3(SrcIterator supperleft, SrcIterator slowerright, SrcAccessor 
     typedef typename 
        NumericTraits<typename SrcAccessor::value_type>::RealPromote TmpType;
     typedef BasicImage<TinyVector<TmpType, 4> > TmpImage;    
-    typedef typename TmpImage::traverser TmpTraverser;
     TmpImage t1(w, h), t2(w, h);
-    TmpTraverser tul1(t1.upperLeft());
-    TmpTraverser tlr1(t1.lowerRight());
-    TmpTraverser tul2(t2.upperLeft());
     
     detail::KernelArray k1, k3;
     detail::initGaussianPolarFilters1(scale, k1);
@@ -587,6 +819,10 @@ void polarFilters3(SrcIterator supperleft, SrcIterator slowerright, SrcAccessor 
                   destImage(t2, tmpBand), k3[2], k3[1]);
                   
     // create odd tensor from filter responses  
+    typedef typename TmpImage::traverser TmpTraverser;
+    TmpTraverser tul1(t1.upperLeft());
+    TmpTraverser tlr1(t1.lowerRight());
+    TmpTraverser tul2(t2.upperLeft());
     for(; tul1.y != tlr1.y; ++tul1.y, ++tul2.y, ++dupperleft_odd.y)
     {
         typename TmpTraverser::row_iterator tr1 = tul1.rowIterator();
@@ -595,10 +831,14 @@ void polarFilters3(SrcIterator supperleft, SrcIterator slowerright, SrcAccessor 
         typename DestIteratorOdd::row_iterator o = dupperleft_odd.rowIterator();
         for(; tr1 != trend1; ++tr1, ++tr2, ++o)
         {
-            TmpType d111 = 0.75*((*tr1)[0]+(*tr1)[1]-(*tr1)[3])+0.25*(*tr1)[2];
-            TmpType d122 = 0.25*((*tr1)[0]+(*tr1)[1]-(*tr1)[2])+0.75*(*tr1)[3];
-            TmpType d112 = 0.25*((*tr2)[0]+(*tr2)[1]-(*tr2)[2])+0.75*(*tr2)[3];
-            TmpType d222 = 0.75*((*tr2)[0]+(*tr2)[1]-(*tr2)[3])+0.25*(*tr2)[2];
+            TmpType d11 =  (*tr1)[0] + (*tr1)[2];
+            TmpType d12 = -(*tr1)[1] - (*tr1)[3];
+            TmpType d31 =  (*tr2)[0] - (*tr2)[2];
+            TmpType d32 =  (*tr2)[1] - (*tr2)[3];
+            TmpType d111 = 0.75 * d11 + 0.25 * d31;
+            TmpType d112 = 0.25 * (d12 + d32);
+            TmpType d122 = 0.25 * (d11 - d31);
+            TmpType d222 = 0.75 * d12 - 0.25 * d32;
             TmpType d2 = sq(d112);
             TmpType d3 = sq(d122);
             
@@ -613,13 +853,13 @@ template <class SrcIterator, class SrcAccessor,
           class DestIteratorEven, class DestAccessorEven,
           class DestIteratorOdd, class DestAccessorOdd>
 inline 
-void polarFilters3(triple<SrcIterator, SrcIterator, SrcAccessor> src,
-                  pair<DestIteratorEven, DestAccessorEven> even,
-                  pair<DestIteratorOdd, DestAccessorOdd> odd,
-                  double scale)
+void boundaryTensor3(triple<SrcIterator, SrcIterator, SrcAccessor> src,
+                     pair<DestIteratorEven, DestAccessorEven> even,
+                     pair<DestIteratorOdd, DestAccessorOdd> odd,
+                     double scale)
 {
-    polarFilters3(src.first, src.second, src.third,
-                 even.first, even.second, odd.first, odd.second, scale);
+    boundaryTensor3(src.first, src.second, src.third,
+                    even.first, even.second, odd.first, odd.second, scale);
 }
 
 //@}
