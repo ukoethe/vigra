@@ -165,7 +165,7 @@ struct VigraFalseType
     \code
     SomeIterator iter = ...;
     
-    vigra::IteratorAdaptor<SomeIterator> iter_adaptor(iter);
+    vigra::IteratorAdaptor<vigra::TrivialIteratorAdaptorPolicy<SomeIterator> > iter_adaptor(iter);
     \endcode
     
     By changing the definition of the policy members, a wide range of 
