@@ -953,7 +953,7 @@ ceil(TinyVector<T, SIZE> const & v)
     for(; d != dend; ++d, ++s)
         *d = ceil(*s);
     return res;
-};
+}
 
 using VIGRA_CSTD::floor;
 
@@ -995,7 +995,7 @@ floor(TinyVector<T, SIZE> const & v)
     for(; d != dend; ++d, ++s)
         *d = floor(*s);
     return res;
-};
+}
 
 //@}
 

@@ -644,7 +644,7 @@ ceil(RGBValue<V> const & r)
     return RGBValue<V>(ceil(r.red()), 
                        ceil(r.green()),
                        ceil(r.blue()));
-};
+}
 
 using VIGRA_CSTD::floor;
 
@@ -658,7 +658,7 @@ floor(RGBValue<V> const & r)
     return RGBValue<V>(floor(r.red()), 
                        floor(r.green()),
                        floor(r.blue()));
-};
+}
 
 //@}
 
