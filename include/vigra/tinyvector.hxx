@@ -245,6 +245,7 @@ class TinyVector
     \brief <b>\#include</b> "<a href="tinyvector_8hxx-source.html">vigra/tinyvector.hxx</a>
     
     These functions fulfill the requirements of a Linear Space (vector space).
+    Return types are determined according to \ref TinyVectorTraits.
 
     Namespace: vigra
     <p>
