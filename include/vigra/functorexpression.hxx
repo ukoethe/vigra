@@ -717,7 +717,7 @@ struct UnaryFunctor<VarFunctor<T> >;
 
 /************************************************************/
 
-#define makeAssignmentFunctor(name, op) \
+#define MAKE_ASSIGNMENT_FUNCTOR(name, op) \
     template <class V, class EXPR> \
     struct AssignmentFunctor_##name \
     { \
@@ -756,13 +756,13 @@ struct UnaryFunctor<VarFunctor<T> >;
 
 /************************************************************/
 
-makeAssignmentFunctor(assign, =);
-makeAssignmentFunctor(add, +=);
-makeAssignmentFunctor(subtract, -=);
-makeAssignmentFunctor(multiply, *=);
-makeAssignmentFunctor(divide, /=);
+MAKE_ASSIGNMENT_FUNCTOR(assign, =)
+MAKE_ASSIGNMENT_FUNCTOR(add, +=)
+MAKE_ASSIGNMENT_FUNCTOR(subtract, -=)
+MAKE_ASSIGNMENT_FUNCTOR(multiply, *=)
+MAKE_ASSIGNMENT_FUNCTOR(divide, /=)
 
-#undef makeAssignmentFunctor
+#undef MAKE_ASSIGNMENT_FUNCTOR
 
 /************************************************************/
 /*                                                          */
@@ -1060,7 +1060,7 @@ ifThenElse(UnaryFunctor<EXPR1> const & e1,
 /*                                                          */
 /************************************************************/
 
-#define makeFunctorUnaryFunction(function) \
+#define MAKE_FUNCTOR_UNARY_FUNCTION(function) \
     using std::function; \
     template <class EXPR> \
     struct Functor_##function; \
@@ -1142,21 +1142,21 @@ ifThenElse(UnaryFunctor<EXPR1> const & e1,
 
 /************************************************************/
 
-makeFunctorUnaryFunction(sqrt);
-makeFunctorUnaryFunction(exp);
-makeFunctorUnaryFunction(log);
-makeFunctorUnaryFunction(log10);
-makeFunctorUnaryFunction(sin);
-makeFunctorUnaryFunction(asin);
-makeFunctorUnaryFunction(cos);
-makeFunctorUnaryFunction(acos);
-makeFunctorUnaryFunction(tan);
-makeFunctorUnaryFunction(atan);
-makeFunctorUnaryFunction(abs);
-makeFunctorUnaryFunction(floor);
-makeFunctorUnaryFunction(ceil);
+MAKE_FUNCTOR_UNARY_FUNCTION(sqrt)
+MAKE_FUNCTOR_UNARY_FUNCTION(exp)
+MAKE_FUNCTOR_UNARY_FUNCTION(log)
+MAKE_FUNCTOR_UNARY_FUNCTION(log10)
+MAKE_FUNCTOR_UNARY_FUNCTION(sin)
+MAKE_FUNCTOR_UNARY_FUNCTION(asin)
+MAKE_FUNCTOR_UNARY_FUNCTION(cos)
+MAKE_FUNCTOR_UNARY_FUNCTION(acos)
+MAKE_FUNCTOR_UNARY_FUNCTION(tan)
+MAKE_FUNCTOR_UNARY_FUNCTION(atan)
+MAKE_FUNCTOR_UNARY_FUNCTION(abs)
+MAKE_FUNCTOR_UNARY_FUNCTION(floor)
+MAKE_FUNCTOR_UNARY_FUNCTION(ceil)
 
-#undef makeFunctorUnaryFunction
+#undef MAKE_FUNCTOR_UNARY_FUNCTION
 
 /************************************************************/
 /*                                                          */
@@ -1164,7 +1164,7 @@ makeFunctorUnaryFunction(ceil);
 /*                                                          */
 /************************************************************/
 
-#define makeFunctorUnaryOperator(name, op) \
+#define MAKE_FUNCTOR_UNARY_OPERATOR(name, op) \
     template <class EXPR> \
     struct Functor_##name; \
     \
@@ -1241,11 +1241,11 @@ makeFunctorUnaryFunction(ceil);
 
 /************************************************************/
 
-makeFunctorUnaryOperator(minus, -);
-makeFunctorUnaryOperator(negate, !);
-makeFunctorUnaryOperator(bitNegate, ~);
+MAKE_FUNCTOR_UNARY_OPERATOR(minus, -)
+MAKE_FUNCTOR_UNARY_OPERATOR(negate, !)
+MAKE_FUNCTOR_UNARY_OPERATOR(bitNegate, ~)
 
-#undef makeFunctorUnaryOperator
+#undef MAKE_FUNCTOR_UNARY_OPERATOR
 
 /************************************************************/
 /*                                                          */
@@ -1253,7 +1253,7 @@ makeFunctorUnaryOperator(bitNegate, ~);
 /*                                                          */
 /************************************************************/
 
-#define makeFunctorBinaryFunction(function) \
+#define MAKE_FUNCTOR_BINARY_FUNCTION(function) \
     using std::function; \
     template <class EXPR1, class EXPR2> \
     struct Functor_##function; \
@@ -1345,15 +1345,15 @@ makeFunctorUnaryOperator(bitNegate, ~);
 
 /************************************************************/
 
-makeFunctorBinaryFunction(pow);
-makeFunctorBinaryFunction(atan2);
-makeFunctorBinaryFunction(fmod);
+MAKE_FUNCTOR_BINARY_FUNCTION(pow)
+MAKE_FUNCTOR_BINARY_FUNCTION(atan2)
+MAKE_FUNCTOR_BINARY_FUNCTION(fmod)
 
-#undef makeFunctorBinaryFunction
+#undef MAKE_FUNCTOR_BINARY_FUNCTION
 
 /************************************************************/
 
-#define makeFunctorMinMax(name, op) \
+#define MAKE_FUNCTOR_MINMAX(name, op) \
     template <class EXPR1, class EXPR2> \
     struct Functor_##name; \
     \
@@ -1454,10 +1454,10 @@ makeFunctorBinaryFunction(fmod);
                                         UnaryFunctor<EXPR2> > >(p); \
     }
 
-makeFunctorMinMax(min, <);
-makeFunctorMinMax(max, >);
+MAKE_FUNCTOR_MINMAX(min, <)
+MAKE_FUNCTOR_MINMAX(max, >)
 
-#undef makeFunctorMinMax
+#undef MAKE_FUNCTOR_MINMAX
 
 /************************************************************/
 /*                                                          */
@@ -1465,7 +1465,7 @@ makeFunctorMinMax(max, >);
 /*                                                          */
 /************************************************************/
 
-#define makeFunctorBinaryOperator(name, op) \
+#define MAKE_FUNCTOR_BINARY_OPERATOR(name, op) \
     template <class EXPR1, class EXPR2> \
     struct Functor_##name; \
     \
@@ -1552,20 +1552,20 @@ makeFunctorMinMax(max, >);
 
 /************************************************************/
 
-makeFunctorBinaryOperator(add, +);
-makeFunctorBinaryOperator(subtract, -);
-makeFunctorBinaryOperator(multiply, *);
-makeFunctorBinaryOperator(divide, /);
-makeFunctorBinaryOperator(modulo, %);
-makeFunctorBinaryOperator(bitAnd, &);
-makeFunctorBinaryOperator(bitOr, |);
-makeFunctorBinaryOperator(bitXor, ^);
+MAKE_FUNCTOR_BINARY_OPERATOR(add, +)
+MAKE_FUNCTOR_BINARY_OPERATOR(subtract, -)
+MAKE_FUNCTOR_BINARY_OPERATOR(multiply, *)
+MAKE_FUNCTOR_BINARY_OPERATOR(divide, /)
+MAKE_FUNCTOR_BINARY_OPERATOR(modulo, %)
+MAKE_FUNCTOR_BINARY_OPERATOR(bitAnd, &)
+MAKE_FUNCTOR_BINARY_OPERATOR(bitOr, |)
+MAKE_FUNCTOR_BINARY_OPERATOR(bitXor, ^)
 
-#undef makeFunctorBinaryOperator
+#undef MAKE_FUNCTOR_BINARY_OPERATOR
 
 /************************************************************/
 
-#define makeFunctorBinaryOperatorBool(name, op) \
+#define MAKE_FUNCTOR_BINARY_OPERATOR_BOOL(name, op) \
     template <class EXPR1, class EXPR2> \
     struct Functor_##name; \
     \
@@ -1640,16 +1640,16 @@ makeFunctorBinaryOperator(bitXor, ^);
 
 /************************************************************/
 
-makeFunctorBinaryOperatorBool(equals, ==);
-makeFunctorBinaryOperatorBool(differs, !=);
-makeFunctorBinaryOperatorBool(less, <);
-makeFunctorBinaryOperatorBool(lessEqual, <=);
-makeFunctorBinaryOperatorBool(greater, >);
-makeFunctorBinaryOperatorBool(greaterEqual, >=);
-makeFunctorBinaryOperatorBool(and, &&);
-makeFunctorBinaryOperatorBool(or, ||);
+MAKE_FUNCTOR_BINARY_OPERATOR_BOOL(equals, ==)
+MAKE_FUNCTOR_BINARY_OPERATOR_BOOL(differs, !=)
+MAKE_FUNCTOR_BINARY_OPERATOR_BOOL(less, <)
+MAKE_FUNCTOR_BINARY_OPERATOR_BOOL(lessEqual, <=)
+MAKE_FUNCTOR_BINARY_OPERATOR_BOOL(greater, >)
+MAKE_FUNCTOR_BINARY_OPERATOR_BOOL(greaterEqual, >=)
+MAKE_FUNCTOR_BINARY_OPERATOR_BOOL(and, &&)
+MAKE_FUNCTOR_BINARY_OPERATOR_BOOL(or, ||)
 
-#undef makeFunctorBinaryOperatorBool
+#undef MAKE_FUNCTOR_BINARY_OPERATOR_BOOL
 
 /************************************************************/
 /*                                                          */

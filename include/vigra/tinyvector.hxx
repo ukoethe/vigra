@@ -584,7 +584,7 @@ TINYVECTOR_TRAITS(4)
 #endif // NO_PARTIAL_TEMPLATE_SPECIALIZATION
 
 #if !defined(_MSC_VER) || _MSC_VER >= 1300
-#  define vigra_operator_unroll_loop(op) \
+#  define VIGRA_OPERATOR_UNROLL_LOOP(op) \
     template <class V1, class V2> \
     inline \
     TinyVector<V1, 2> &  \
@@ -618,7 +618,7 @@ TINYVECTOR_TRAITS(4)
         return l; \
     } 
 #else
-#  define vigra_operator_unroll_loop(op)
+#  define VIGRA_OPERATOR_UNROLL_LOOP(op)
 #endif
 
 
@@ -647,7 +647,7 @@ operator+=(TinyVector<V1, SIZE> & l, TinyVector<V2, SIZE> const & r)
     return l;
 }
 
-vigra_operator_unroll_loop(+=)
+VIGRA_OPERATOR_UNROLL_LOOP(+=)
 
     /// componentwise subtract-assignment
 template <class V1, class V2, int SIZE>
@@ -663,7 +663,7 @@ operator-=(TinyVector<V1, SIZE> & l, TinyVector<V2, SIZE> const & r)
     return l;
 }
 
-vigra_operator_unroll_loop(-=)
+VIGRA_OPERATOR_UNROLL_LOOP(-=)
 
     /// componentwise multiply-assignment
 template <class V1, class V2, int SIZE>
@@ -679,11 +679,11 @@ operator*=(TinyVector<V1, SIZE> & l, TinyVector<V2, SIZE> const & r)
     return l;
 }
 
-vigra_operator_unroll_loop(*=)
+VIGRA_OPERATOR_UNROLL_LOOP(*=)
 
-#undef vigra_operator_unroll_loop
+#undef VIGRA_OPERATOR_UNROLL_LOOP
 
-#define vigra_operator_unroll_loop_double(op) \
+#define VIGRA_OPERATOR_UNROLL_LOOP_DOUBLE(op) \
     template <class V1> \
     inline \
     TinyVector<V1, 2> &  \
@@ -717,7 +717,7 @@ vigra_operator_unroll_loop(*=)
         return l; \
     }
 
-vigra_operator_unroll_loop_double(*=)
+VIGRA_OPERATOR_UNROLL_LOOP_DOUBLE(*=)
 
     /// componentwise scalar multiply-assignment
 template <class V, int SIZE>
@@ -732,7 +732,7 @@ operator*=(TinyVector<V, SIZE> & l, double r)
     return l;
 }
 
-vigra_operator_unroll_loop_double(/=)
+VIGRA_OPERATOR_UNROLL_LOOP_DOUBLE(/=)
 
     /// componentwise scalar divide-assignment
 template <class V, int SIZE>
@@ -747,7 +747,7 @@ operator/=(TinyVector<V, SIZE> & l, double r)
     return l;
 }
 
-#undef vigra_operator_unroll_loop_double
+#undef VIGRA_OPERATOR_UNROLL_LOOP_DOUBLE
 
     /// component-wise addition
 template <class V1, class V2, int SIZE>
