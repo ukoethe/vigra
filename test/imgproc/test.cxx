@@ -480,6 +480,38 @@ struct ImageFunctionsTest
 
     }
 
+    void brightnessContrastTest()
+    {
+        Image img1(3,3);
+
+        transformImage(srcImageRange(img), destImage(img1),
+              vigra::BrightnessContrastFunctor<double>(1.0, 1.0, 0.0, 255.0));
+
+        Image::ScanOrderIterator i = img.begin();
+        Image::ScanOrderIterator i1 = img1.begin();
+
+        for(; i != img.end(); ++i, ++i1)
+        {
+            should(fabs(*i - *i1) < 1.0e-10);
+        }
+        
+        vigra::BrightnessContrastFunctor<unsigned char> charf(10.0, 1.0);
+         
+        for(int k=1; k < 255; ++k)
+        {
+            should(k < charf(k));
+        }
+        should(0 == charf(0));
+        should(255 == charf(255));
+        
+        vigra::BrightnessContrastFunctor<vigra::RGBValue<float> > rgbf(2.0, 1.0,
+         vigra::RGBValue<float>(0.0), vigra::RGBValue<float>(255.0));
+         
+        should(col.red() < rgbf(col).red());
+        should(col.green() < rgbf(col).green());
+        should(col.blue() < rgbf(col).blue());
+    }
+
     void additionTest()
     {
         Image img1(3,3);
@@ -846,6 +878,7 @@ struct ImageFunctionsTestSuite
         add( testCase( &ImageFunctionsTest::linearIntensityTransformTest));
         add( testCase( &ImageFunctionsTest::linearIntensityTransformIfTest));
         add( testCase( &ImageFunctionsTest::thresholdTest));
+        add( testCase( &ImageFunctionsTest::brightnessContrastTest));
         add( testCase( &ImageFunctionsTest::additionTest));
         add( testCase( &ImageFunctionsTest::additionIfTest));
         add( testCase( &ImageFunctionsTest::resizeNoInterpolationTest));
