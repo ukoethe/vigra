@@ -481,31 +481,32 @@ gradientBasedTransform(triple<SrcImageIterator, SrcImageIterator, SrcAccessor> s
 */
 //@{
 
-template <class SrcValueType>
+template <class DestValueType, class Multiplier = double>
 class LinearIntensityTransform
 {
   public:
-        /* the functors argument type
+        /* the functors argument type (actually, since 
+           <tt>operator()</tt> is a template, much more types are possible)
         */
-    typedef SrcValueType argument_type;
+    typedef DestValueType argument_type;
 
         /* the functors result type
         */
-    typedef SrcValueType result_type;
+    typedef DestValueType result_type;
 
         /* \deprecated use argument_type and result_type
         */
-    typedef SrcValueType value_type;
+    typedef DestValueType value_type;
 
         /* type of the offset (used in internal calculations to prevent
-            overflows).
+            overflows and minimize round-off errors).
         */
     typedef typename
-            NumericTraits<SrcValueType>::Promote argument_promote;
+            NumericTraits<DestValueType>::RealPromote argument_promote;
 
         /* type of the scale factor
         */
-    typedef double scalar_multiplier_type;
+    typedef Multiplier scalar_multiplier_type;
 
         /* init scale and offset
         */
@@ -515,10 +516,10 @@ class LinearIntensityTransform
 
         /* calculate transform
         */
-    result_type operator()(argument_type const & s) const
+    template <class SrcValueType>
+    result_type operator()(SrcValueType const & s) const
     {
-        return NumericTraits<result_type>::
-                fromRealPromote(scale_ * (s + offset_));
+        return NumericTraits<result_type>::fromRealPromote(scale_ * (s + offset_));
     }
 
   private:
@@ -528,25 +529,26 @@ class LinearIntensityTransform
 };
 
 
-template <class SrcValueType>
+template <class DestValueType, class Multiplier = double>
 class ScalarIntensityTransform
 {
   public:
-        /* the functors argument type
+        /* the functors argument type (actually, since 
+           <tt>operator()</tt> is a template, much more types are possible)
         */
-    typedef SrcValueType argument_type;
+    typedef DestValueType argument_type;
 
         /* the functors result type
         */
-    typedef SrcValueType result_type;
+    typedef DestValueType result_type;
 
         /* \deprecated use argument_type and result_type
         */
-    typedef SrcValueType value_type;
+    typedef DestValueType value_type;
 
         /* type of the scale factor
         */
-    typedef double scalar_multiplier_type;
+    typedef Multiplier scalar_multiplier_type;
 
         /* init scale
         */
@@ -556,10 +558,10 @@ class ScalarIntensityTransform
 
         /* calculate transform
         */
-    result_type operator()(argument_type const & s) const
+    template <class SrcValueType>
+    result_type operator()(SrcValueType const & s) const
     {
-        return NumericTraits<result_type>::
-                fromRealPromote(scale_ * s);
+        return NumericTraits<result_type>::fromRealPromote(scale_ * s);
     }
 
   private:
@@ -589,12 +591,13 @@ class ScalarIntensityTransform
 
     \code
     namespace vigra {
-        template <class SrcValueType>
-        LinearIntensityTransform<SrcValueType>
-        linearIntensityTransform(double scale, SrcValueType offset)
+        template <class Multiplier, class DestValueType>
+        LinearIntensityTransform<DestValueType, Multiplier>
+        linearIntensityTransform(Multiplier scale, DestValueType offset);
 
-        ScalarIntensityTransform<SrcValueType>
-        linearIntensityTransform(double scale)
+        template <class DestValueType, class Multiplier>
+        ScalarIntensityTransform<DestValueType, Multiplier>
+        linearIntensityTransform(Multiplier scale);
     }
     \endcode
 
@@ -630,22 +633,122 @@ class ScalarIntensityTransform
 
     <b> Required Interface:</b>
 
-    The source value type must be a model of \ref LinearSpace in both cases.
+    The source and destination value types must be models of \ref LinearSpace in both cases.
 
 */
-template <class SrcValueType>
-LinearIntensityTransform<SrcValueType>
-linearIntensityTransform(double scale, SrcValueType offset)
+template <class Multiplier, class DestValueType>
+LinearIntensityTransform<DestValueType, Multiplier>
+linearIntensityTransform(Multiplier scale, DestValueType offset)
 {
-    return LinearIntensityTransform<SrcValueType>(scale, offset);
+    return LinearIntensityTransform<DestValueType, Multiplier>(scale, offset);
 }
 
-template <class SrcValueType>
-ScalarIntensityTransform<SrcValueType>
-linearIntensityTransform(double scale)
+template <class DestValueType, class Multiplier>
+ScalarIntensityTransform<DestValueType, Multiplier>
+linearIntensityTransform(Multiplier scale)
 {
-    return ScalarIntensityTransform<SrcValueType>(scale);
+    return ScalarIntensityTransform<DestValueType, Multiplier>(scale);
 }
+
+/********************************************************/
+/*                                                      */
+/*                   linearRangeMapping                 */
+/*                                                      */
+/********************************************************/
+
+/** \brief Map a source intensity range linearly to a destination range.
+
+    Factory function for a functor that linearly transforms the
+    source pixel values. The functor applies the transform
+    '<TT>destvalue = scale * (srcvalue + offset)</TT>' to every pixel,
+    where <tt>scale = (dest_max - dest_min) / (src_max - src_min)</tt>
+    and <tt>offset = dest_min / scale - src_min</tt>. As a result,
+    the pixel values <tt>src_max</tt>, <tt>src_min</tt> in the source image 
+    are mapped onto <tt>dest_max</tt>, <tt>dest_min</tt> respectively. 
+    This works for scalar as well as vector pixel types.
+
+    <b> Declaration:</b>
+
+    \code
+    namespace vigra {
+        template <class SrcValueType, class DestValueType>
+        LinearIntensityTransform<DestValueType, typename NumericTraits<DestValueType>::RealPromote>
+        linearRangeMapping(SrcValueType src_min, SrcValueType src_max, 
+                           DestValueType dest_min, DestValueType dest_max );
+    }
+    \endcode
+
+    <b> Usage:</b>
+
+        <b>\#include</b> "<a href="transformimage_8hxx-source.html">vigra/transformimage.hxx</a>"<br>
+        Namespace: vigra
+
+    \code
+    vigra::IImage src(width, height);
+    vigra::BImage dest(width, height);
+    ...
+    vigra::FindMinMax<IImage::PixelType> minmax;   // functor to find range
+
+    vigra::inspectImage(srcImageRange(src), minmax); // find original range
+
+    // transform to range 0...255
+    vigra::transformImage(srcImageRange(src), destImage(dest),
+                          linearRangeTransform(
+                            minmax.min, minmax.max,               // src range
+                            (unsigned char)0, (unsigned char)255) // dest range
+                          );
+    \endcode
+
+    <b> Required Interface:</b>
+
+    The source and destination value types must be models of \ref LinearSpace in both cases.
+
+*/
+template <class SrcValueType, class DestValueType>
+LinearIntensityTransform<DestValueType, typename NumericTraits<DestValueType>::RealPromote>
+linearRangeMapping(SrcValueType src_min, SrcValueType src_max, 
+                   DestValueType dest_min, DestValueType dest_max )
+{
+    return linearRangeMapping(src_min, src_max, dest_min, dest_max,
+            typename NumericTraits<DestValueType>::isScalar());
+} 
+
+template <class SrcValueType, class DestValueType>
+LinearIntensityTransform<DestValueType, typename NumericTraits<DestValueType>::RealPromote>
+linearRangeMapping(
+    SrcValueType src_min, SrcValueType src_max, 
+    DestValueType dest_min, DestValueType dest_max,
+    VigraTrueType /* isScalar */ )
+{
+    typedef typename NumericTraits<DestValueType>::RealPromote Multiplier;
+    Multiplier diff = src_max - src_min;
+    Multiplier scale = diff == NumericTraits<Multiplier>::zero()
+                     ? NumericTraits<Multiplier>::one() 
+                     : (dest_max - dest_min) / diff;
+    return LinearIntensityTransform<DestValueType, Multiplier>(
+                                   scale, dest_min / scale - src_min );
+} 
+
+template <class SrcValueType, class DestValueType>
+LinearIntensityTransform<DestValueType, typename NumericTraits<DestValueType>::RealPromote>
+linearRangeMapping(
+    SrcValueType src_min, SrcValueType src_max, 
+    DestValueType dest_min, DestValueType dest_max,
+    VigraFalseType /* isScalar */ )
+{
+    typedef typename NumericTraits<DestValueType>::RealPromote Multiplier;
+    typedef typename Multiplier::value_type MComponent;
+    Multiplier scale(dest_max), offset(dest_max);
+    for(int i=0; i<src_min.size(); ++i)
+    { 
+        MComponent diff = src_max[i] - src_min[i];
+        scale[i] = diff == NumericTraits<MComponent>::zero()
+                     ? NumericTraits<MComponent>::one() 
+                     : (dest_max[i] - dest_min[i]) / diff;
+        offset[i] = dest_min[i] / scale[i] - src_min[i];
+    }
+    return LinearIntensityTransform<DestValueType, Multiplier>(scale, offset);
+} 
 
 /********************************************************/
 /*                                                      */
