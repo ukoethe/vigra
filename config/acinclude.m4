@@ -508,238 +508,323 @@ test "$silent" = yes && exec AS_MESSAGE_FD>/dev/null
 m4_divert_pop([PARSE_ARGS])dnl
 ])# _AC_INIT_PARSE_ARGS
 
+dnl-------------------------------------------------------------------
+dnl      VIGRA external package configuration macros
+dnl-------------------------------------------------------------------
 
-#########################################################
-
-dnl VIGRA_EXTRACT_REGEX(list, regEx)
-dnl variable $regExResult returns the first entry in 'list' that matches the
-dnl regular expression 'regEx', using the 'expr' utility
-dnl $regExResult = "" if nothing is found
-AC_DEFUN([VIGRA_EXTRACT_REGEX],
-[
-    regExResult=""
-    if test "$1" != ""; then
-        for i in $1; do
-            regExResult=`expr "$i" : "$2"`
-            if test "$regExResult" != ""; then
-                break
-            fi
-        done
-    fi
-])dnl
-
-#########################################################
-
-dnl VIGRA_FINDPROG
-AC_DEFUN([VIGRA_FINDPROG],
-[
-    if test "$findprog" = ""; then
-        if test "$CYGWIN" = "yes"; then
-          findprog="/usr/bin/find"
-        else
-          findprog="find"
-        fi
-    fi
-])dnl
-
-#########################################################
-
-dnl VIGRA_FIND_LIBRARY(packageName, packageLib)
+dnl VIGRA_FIND_PATH(srcvariable, targetvariable, regexPattern)
 dnl example:
-dnl     VIGRA_FIND_LIBRARY(tiff, tiff)
-AC_DEFUN([VIGRA_FIND_LIBRARY],
+dnl     VIGRA_FIND_PATH(CPPFLAGS, INCLUDEPATH, [-I\(.*\)])
+AC_DEFUN([VIGRA_FIND_PATH],
 [
-    AC_MSG_CHECKING([for lib$2 ])
-
-    # check whether the include is in the path by default (e.g. /usr/include)
-    lib_found=""
-    if test "$with_[$1]lib" = "" -a "$with_[$1]" = "yes"; then
-        ac_save_LIBS="$LIBS"
-        LIBS="$LIBS -l$2"
-        AC_TRY_LINK([],
-[int main() {}
-],
-            lib_found="in default path",
-            lib_found="")
-        LIBS=$ac_save_LIBS
+for VIGRA_FIND_PATH_i in $[$1];  do 
+    VIGRA_FIND_PATH_r=`expr "$VIGRA_FIND_PATH_i" : "$3"`
+    if test -n "$VIGRA_FIND_PATH_r"; then
+        [$2]="$[$2] $VIGRA_FIND_PATH_r"
     fi
+done
+])dnl VIGRA_FIND_PATH
 
-    # if not found by default, try searching for it
-    if test "$lib_found" = ""; then
-        if test "$libext" = ""; then
-            libext="a"
-        fi
-
-        if test "$solibext" = ""; then
-            if test "$CYGWIN" = "yes"; then
-              solibext="dll.a"
-            else
-              solibext="so"
-            fi
-        fi
-
-        if test "$libpre" = ""; then
-            libpre="lib"
-        fi
-
-        VIGRA_FINDPROG
-
-        dirs=""
-        if test "$with_[$1]lib" != ""; then
-            dirs=$with_[$1]lib
-        elif test "$with_[$1]" != "yes"; then
-            dirs=$with_[$1]
-        else
-            dirs="/usr/local/lib /usr/local/gnu/lib /usr/local/[$1] /opt/lib /opt/gnu/lib /opt/[$1] /usr/lib"
-        fi
-        found=""
-        for i in $dirs; do
-            if test -d $i; then
-                found="$found `$findprog $i -follow -name "${libpre}[$2].$solibext" -print 2> /dev/null; $findprog $i -follow -name "${libpre}[$2].$libext" -print 2> /dev/null`"
-            fi
-        done
-
-        VIGRA_EXTRACT_REGEX($found, \(.*lib\)/${libpre}$2\.$solibext)
-        if test "$regExResult" = ""; then
-            VIGRA_EXTRACT_REGEX($found, \(.*lib\)/${libpre}$2\.$libext)
-        fi
-        if test "$regExResult" = ""; then
-            VIGRA_EXTRACT_REGEX($found, \(.*\)/${libpre}$2\.$solibext)
-        fi
-        if test "$regExResult" = ""; then
-            VIGRA_EXTRACT_REGEX($found, \(.*\)/${libpre}$2\.$libext)
-        fi
-        lib_found=$regExResult
-    fi
-    if test "$lib_found" = ""; then
-        with_[$1]lib=""
-        AC_MSG_RESULT([not found in $dirs])
+dnl VIGRA_DECLARE_PACKAGE(packageName, comment, defaultSetting)
+dnl declare command line switches and comment for the given package
+dnl example:
+dnl     VIGRA_FIND_PATH(tiff, [import TIFF images], "yes")
+AC_DEFUN([VIGRA_DECLARE_PACKAGE],
+[
+    if test "x$3" = "x"; then
+        with_[$1]default="yes"
     else
-        AC_MSG_RESULT($lib_found)
-        if test "$lib_found" != "/usr/lib" -a \
-                "$lib_found" != "in default path"; then
-            with_[$1]lib="-L$lib_found"
-        else
-            with_[$1]lib=""
-        fi
+        with_[$1]default="[$3]"
     fi
-])dnl
-
-#########################################################
-
-dnl VIGRA_FIND_INCLUDE(packageName, packageInc)
-dnl example:
-dnl     VIGRA_FIND_INCLUDE(tiff, tiff.h)
-AC_DEFUN([VIGRA_FIND_INCLUDE],
-[
-    if test "$2" != ""; then
-        AC_MSG_CHECKING([for $2 ])
-
-        # check whether the include is in the path by default (e.g. /usr/include)
-        include_found=""
-        if test "$with_[$1]inc" = "" -a "$with_[$1]" = "yes"; then
-            AC_TRY_COMPILE(
-[#include <stdio.h>  /* necessary because jpeglib.h fails to include it */
-#include <$2>
-], [],
-                include_found="in default path",
-                include_found="")
-        fi
-
-        # if not found by default, try searching for it
-        if test "$include_found" = ""; then
-            dirs=""
-            if test "$with_[$1]inc" != ""; then
-                dirs="$with_[$1]inc"
-            elif test "$with_[$1]" != "yes"; then
-                dirs="$with_[$1]"
-            else
-                dirs="/usr/local/include /usr/local/gnu/include /usr/local/[$1] /opt/include /opt/gnu/include /opt/[$1] /usr/include"
-            fi
-
-            # use find for searching
-            VIGRA_FINDPROG
-
-            # first, look for the given header file without directory components..
-            found=""
-            for i in $dirs; do
-                if test -d $i; then
-                    found="$found `$findprog $i -follow -name patsubst([$2], .*/, ) -print 2> /dev/null`"
-                fi
-            done
-
-            # now, check each found file for relative path prefix.
-            VIGRA_EXTRACT_REGEX($found, \(.*include\)/patsubst([$2], \., \\.))
-            if test "$regExResult" = ""; then
-                VIGRA_EXTRACT_REGEX($found, \(.*\)/patsubst([$2], \., \\.))
-            fi
-            include_found=$regExResult
-        fi
-
-        # report the search result and set result variables
-        if test "$include_found" = ""; then
-            with_[$1]inc=""
-            AC_MSG_RESULT([not found in $dirs])
-        else
-            AC_MSG_RESULT($include_found)
-            if test "$include_found" != "/usr/include" -a \
-                    "$include_found" != "in default path"; then
-                with_[$1]inc="$include_found"
-                [$1]_cppflags="-I$include_found"
-            else
-                with_[$1]inc=""
-                [$1]_cppflags=""
-            fi
-        fi
-    else
-        with_[$1]inc=""
-        [$1]_cppflags=""
-    fi
-])dnl
-
-#########################################################
-
-dnl VIGRA_FIND_PACKAGE(packageName, packageLib, packageInc, packageComment)
-dnl defines with_packageName=yes/no
-dnl         with_packageNamelib=<path>/empty if not found
-dnl         with_packageNameinc=<path>/empty if not found
-dnl example:
-dnl     VIGRA_FIND_PACKAGE(tiff, tiff, tiff.h, support import/export of tiff images)
-AC_DEFUN([VIGRA_FIND_PACKAGE],
-[
+    # $1 is the package name, $2 the description, $3 the default setting
     AC_ARG_WITH([$1], [
   --with-$1
   --with-$1=dir
   --without-$1
   --with-$1lib=dir
   --with-$1inc=dir
-      $4. default: --with-$1
+      $2. 
+      default: --with-$1=$3
       if --with-$1 or --with-$1=yes is given: $1 package files will be
-         searched for in some standard directories (the default).
-      if --with-$1=dir is given, and dir is a directory: $1 package files
-         will be searched for below 'dir' using 'find'.
+         searched for by 'pkg-config' and in some standard directories (the default).
+      if --with-$1=dir is given, and dir is a directory: $1 library files
+         will be looked up in 'dir'.
       if --with-$1=no or --without-$1 is given: $1 package will
          not be used.
-      alternatively, you can specify:], ,)
+      alternatively, you can specify:], ,[with_[$1]="$with_[$1]default"])
     AC_ARG_WITH([$1lib], [        --with-$1lib=dir : the $1 package's lib directory], ,)
     AC_ARG_WITH([$1inc], [        --with-$1inc=dir : the $1 package's include directory], ,)
 
+    # bring the user's response into a standard form
+    # if any flag is "no", the main flag should be "no", the others empty
+    if test "x$with_[$1]" = "xno" -o "x$with_[$1]lib" = "xno" -o "x$with_[$1]inc" = "xno"; then
+        with_[$1]="no"
+        with_[$1]lib=""
+        with_[$1]inc=""
+    else 
+        # here, the main flag is either "yes" or a path
+        # treat "yes" in the auxilliary flags as ""
+        if test "x$with_[$1]lib" = "xyes"; then
+            with_[$1]lib=""
+        fi
+        if test "x$with_[$1]inc" = "xyes"; then
+            with_[$1]inc=""
+        fi
+        # use a path given in the main flag as the library path
+        if test "$with_[$1]" != "yes" -a "$with_[$1]" != "$with_[$1]default" -a "x$with_[$1]lib" = "x"; then
+            with_[$1]lib="$with_[$1]"
+        fi
+        # remember in the main flag whether an explicit path was given
+        if test "x$with_[$1]lib" != "x" -o "x$with_[$1]inc" != "x"; then
+            with_[$1]="explicit"
+        else
+            with_[$1]="search"
+        fi
+    fi
+    # now $with_[$1] is either "no", "search", or "explicit"
+    # $with_[$1]lib and $with_[$1]inc are either "" or a path
+])dnl VIGRA_DECLARE_PACKAGE
 
-    # default is "yes"
-    if test ${with_[$1]:-""} = "" -a ${with_[$1]lib:-""} = "" -a ${with_[$1]inc:-""} = ""; then
-        with_[$1]="yes"
+dnl VIGRA_FIND_PACKAGE_PKGCONFIG(packageName, pkgconfigName, includeFile)
+dnl search for package using pkg-config (or $PKGCONFIG)
+dnl on success, $with_packageName is "yes", and $with_package_I, $with_package_L, $with_package_l are set
+dnl             otherwise $with_packageName is unchanged (i.e. "search")
+dnl example:
+dnl     VIGRA_FIND_PACKAGE_PKGCONFIG(fftw, fftw3, "fftw3.h")
+AC_DEFUN([VIGRA_FIND_PACKAGE_PKGCONFIG],
+[
+    if test "x$PKGCONFIG" != "x"; then
+        AC_MSG_CHECKING([if pkg-config knows about $1 ])
+        if $PKGCONFIG --exists "$2"; then
+            # save the state
+            SAVECPPFLAGS="$CPPFLAGS"
+            SAVELDFLAGS="$LDFLAGS"
+            SAVELIBS="$LIBS"
+            AC_LANG_SAVE
+            AC_LANG_CPLUSPLUS
+
+            # $1 is the package, $2 the pkg-config name, $3 the include name
+            CPPFLAGS=`$PKGCONFIG --cflags-only-I "$2"`
+            LDFLAGS=`$PKGCONFIG --libs-only-L "$2"`
+            LIBS=`$PKGCONFIG --libs-only-l "$2"`
+            AC_TRY_LINK(
+                    [#include <stdio.h>  /* for jpeglib.h */
+                     #include <$3>
+], [],
+                    [with_[$1]="yes"
+                     with_[$1]_I="$CPPFLAGS"
+                     with_[$1]_L="$LDFLAGS"
+                     with_[$1]_l="$LIBS"
+                    ],
+                    [with_[$1]_I=""
+                     with_[$1]_L=""
+                     with_[$1]_l=""
+                    ])
+            CPPFLAGS="$CPPFLAGS $SAVECPPFLAGS"
+            LDFLAGS="$LDFLAGS $SAVELDFLAGS"
+            LIBS="$LIBS $SAVELIBS"
+            AC_LANG_RESTORE
+        fi
+        if test "x$with_[$1]" = "xyes"; then
+            AC_MSG_RESULT([yes])
+        else
+            AC_MSG_RESULT([no (check \$PKG_CONFIG_PATH)])
+        fi
+    fi
+])dnl VIGRA_FIND_PACKAGE_PKGCONFIG
+
+dnl VIGRA_FIND_LIBRARY_EXPLICIT(packageName, libraryName, path)
+dnl search for a library in the given path
+dnl example:
+dnl     VIGRA_FIND_LIBRARY_EXPLICIT(zlib, z, /usr/local/lib)
+AC_DEFUN([VIGRA_FIND_LIBRARY_EXPLICIT],
+[
+    # save the state
+    SAVELDFLAGS="$LDFLAGS"
+    SAVELIBS="$LIBS"
+    AC_LANG_SAVE
+    AC_LANG_CPLUSPLUS
+         
+    # $1 is the package, $2 the library name, $3 the path
+    if test "x$3" != "x" ; then
+        LDFLAGS="-L$3 $SAVELDFLAGS"
+        LIBS="-l[$2] $SAVELIBS"
+        AC_TRY_LINK([],
+                    [],
+            [with_[$1]lib="$3"
+             with_[$1]_L="$LDFLAGS"
+             with_[$1]_l="$LIBS"],
+            with_[$1]lib="")
+    else
+        LIBS="-l[$2] $SAVELIBS"
+        AC_TRY_LINK([],
+                    [],
+            [with_[$1]lib="in default path"
+             with_[$1]_L="$LDFLAGS"
+             with_[$1]_l="$LIBS"],
+            with_[$1]lib="")
+    fi
+    # restore the state
+    AC_LANG_RESTORE
+    LDFLAGS="$SAVELDFLAGS"
+    LIBS="$SAVELIBS"
+])dnl VIGRA_FIND_LIBRARY_EXPLICIT
+
+dnl VIGRA_FIND_INCLUDE_EXPLICIT(packageName, includeName, path)
+dnl search for an include in the given path
+dnl example:
+dnl     VIGRA_FIND_INCLUDE_EXPLICIT(jpeg, jpeglib.h, /usr/local/include)
+AC_DEFUN([VIGRA_FIND_INCLUDE_EXPLICIT],
+[
+    # save the state
+    SAVECPPFLAGS="$CPPFLAGS"
+    AC_LANG_SAVE
+    AC_LANG_CPLUSPLUS
+           
+    # $1 is the package, $2 the include name, $3 the path
+    if test "x$3" != "x" ; then
+        CPPFLAGS="-I$3 $SAVECPPFLAGS"
+        AC_TRY_COMPILE(
+                [#include <stdio.h>  /* for jpeglib.h */
+                 #include <$2>
+], [],
+            [with_[$1]inc="$3"
+             with_[$1]_I="$CPPFLAGS"],
+             with_[$1]inc="")
+    else
+         AC_TRY_COMPILE(
+                [#include <stdio.h>  /* for jpeglib.h */
+                 #include <$2>
+], [],
+            [with_[$1]inc="in default path"
+             with_[$1]_I="$CPPFLAGS"],
+             with_[$1]inc="")
+    fi
+    # restore the state
+    AC_LANG_RESTORE
+    CPPFLAGS="$SAVECPPFLAGS"
+])dnl VIGRA_FIND_INCLUDE_EXPLICIT
+
+dnl VIGRA_FIND_LIBRARY(packageName, libraryName)
+dnl search for a library in a number of paths
+dnl if $with_packageName is "search" the following paths are tried 
+dnl              "", all in $LIBSEARCHPATH, /usr/local/lib/packageName, /usr/local/lib
+dnl if $with_packageName is "explicit" the path in $with_packageNamelib is tried
+dnl on success, $with_packageNamelib is either "in default path" or contains the path
+dnl             otherwise it is empty
+dnl example:
+dnl     VIGRA_FIND_LIBRARY(jpeg, jpeg)
+AC_DEFUN([VIGRA_FIND_LIBRARY],
+[
+    AC_MSG_CHECKING([for lib$2 ])
+
+    # if we got an explicit path, that's the only one we check
+    if test "x$with_[$1]" = "xexplicit" -a "x$with_[$1]lib" != "x"; then
+        VIGRA_FIND_LIBRARY_EXPLICIT($1, $2, "$with_[$1]lib")
+    else    
+        # otherwise check whether the library is found without explicit path 
+        # specification (e.g. because it is in /usr/lib)
+        if test "x$with_[$1]lib" = "x" ; then
+            VIGRA_FIND_LIBRARY_EXPLICIT($1, $2, "")
+        fi
+        # if this didn't work check whether the library path was in the 
+        # original $LDFLAGS or a few standard directories
+        if test "x$with_[$1]lib" = "x" ; then
+            for i in $LIBSEARCHPATH /usr/local/lib/[$1] /usr/local/lib; do
+                VIGRA_FIND_LIBRARY_EXPLICIT($1, $2, "$i")
+                if test "x$with_[$1]lib" != "x" ; then break; fi
+            done
+        fi
     fi
 
-    if test ${with_[$1]:-""} != "no"; then
+    # report the results back
+    if test "x$with_[$1]lib" = "x"; then
+        AC_MSG_RESULT([not found])
+        with_[$1]="no"
+    else
+        AC_MSG_RESULT($with_[$1]lib)
+        if test "$with_[$1]lib" = "in default path"; then
+            with_[$1]lib=""
+        fi
+    fi
+])dnl VIGRA_FIND_LIBRARY
 
-        VIGRA_FIND_INCLUDE($1, $3)
-        VIGRA_FIND_LIBRARY($1, $2)
-
-        if test "$lib_found" = ""; then
-            with_[$1]="no"
-            AC_MSG_WARN(  Configuring without [$1] support)
+dnl VIGRA_FIND_INCLUDE(packageName, includeName, pathPostfix)
+dnl search for an include in a number of paths
+dnl if $with_packageName is "search" the following paths are tried 
+dnl              "", include directories in the same directory tree as $with_packageNamelib,
+dnl              all in $LIBSEARCHPATH, /usr/local/include/packageName, /usr/local/include
+dnl if $with_packageName is "explicit" the path in $with_packageNamenc is tried
+dnl on success, $with_packageNameinc is either "in default path" or contains the path
+dnl             otherwise it is empty
+dnl example:
+dnl     VIGRA_FIND_INCLUDE(jpeg, jpeglib.h, )
+AC_DEFUN([VIGRA_FIND_INCLUDE],
+[
+    AC_MSG_CHECKING([for $2 ])
+    
+    # first check whether we got an explicit path
+    if test "x$with_[$1]" = "xexplicit" -a "x$with_[$1]inc" != "x"; then
+        VIGRA_FIND_INCLUDE_EXPLICIT($1, $2, "$with_[$1]inc")
+    else    
+        # otherwise check whether the library is found without explicit path 
+        # specification (e.g. because it is in /usr/lib)
+        if test "x$with_[$1]inc" = "x" ; then
+            VIGRA_FIND_INCLUDE_EXPLICIT($1, $2, "")
+        fi
+        # if this didn't work check whether the library path is in the 
+        # same tree as the library path, or among the directories in the
+        # original $CPPFLAGS or a few standard directories
+        if test -n "$3"; then
+            PATHPOSTFIX="/$3"
         else
-            with_[$1]="yes"
+            PATHPOSTFIX=""
+        fi
+        EXTRAINCSEARCHPATH=""
+        i="$with_[$1]lib"
+        while test "x$i" != "x"; do
+            if test -d "${i}/include"; then
+                EXTRAINCSEARCHPATH="$EXTRAINCSEARCHPATH ${i}/include"
+            fi
+            j=`expr "$i" : "\(.*\)/"`
+            i=$j
+        done
+        if test "x$with_[$1]inc" = "x" ; then            
+            for i in $EXTRAINCSEARCHPATH $INCSEARCHPATH /usr/local/include/[$1] /usr/local/include; do
+                 VIGRA_FIND_INCLUDE_EXPLICIT($1, $2, "$i$PATHPOSTFIX")
+                if test "x$with_[$1]inc" != "x" ; then break; fi
+            done
+        fi
+    fi
+
+    # report the results back
+    if test "x$with_[$1]inc" = "x"; then
+        AC_MSG_RESULT([not found])
+        with_[$1]="no"
+        with_[$1]lib=""
+    else
+        AC_MSG_RESULT($with_[$1]inc)
+        if test "$with_[$1]inc" = "in default path"; then
+            with_[$1]inc=""
+        fi
+    fi
+])dnl VIGRA_FIND_INCLUDE
+
+dnl VIGRA_FIND_PACKAGE(packageName, libraryName, includeName)
+dnl call VIGRA_FIND_LIBARY(packageName, libraryName) and VIGRA_FIND_INCLUDE(packageName, includeName)
+dnl on success, $with_packageName is "yes", and $with_package_I, $with_package_L, $with_package_l are set
+dnl             otherwise $with_packageName is "no"
+dnl example:
+dnl     VIGRA_FIND_PACKAGE(jpeg, jpeg, jpeglib.h)
+AC_DEFUN([VIGRA_FIND_PACKAGE],
+[
+    if test ${with_[$1]:-""} != "no"; then
+        VIGRA_FIND_LIBRARY($1, $2)
+        if test ${with_[$1]:-""} != "no"; then
+            VIGRA_FIND_INCLUDE($1, $3)
+            if test ${with_[$1]:-""} != "no"; then
+                with_[$1]="yes"
+            fi
         fi
     fi
 

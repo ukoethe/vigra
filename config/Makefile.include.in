@@ -6,8 +6,11 @@ VIGRA_VERSION = @MAJOR_VERSION@.@MINOR_VERSION@.@MICRO_VERSION@
 
 vigra_builddir = @vigra_builddir@
 vigra_srcdir = @vigra_srcdir@
+vigra_testdir = $(vigra_srcdir)/test
 prefix = @prefix@
 exec_prefix = @exec_prefix@
+pymoddir = @PYTHON_INSTALLDIR@
+python_sitedir = @python_sitedir@
 includedir = @includedir@
 libdir = @libdir@
 bindir = @bindir@
@@ -19,10 +22,12 @@ JPEG_LIB = @JPEG_LIB@
 TIFF_LIB = @TIFF_LIB@
 IMPEX_DEPLIBS = @IMPEX_DEPLIBS@
 IMPEX_LIB = @IMPEX_LIB@
+PREINSTALL_IMPEX_LIB = $(vigra_builddir)/src/impex/.libs/libvigraimpex.a
 FFTW_LIB = @FFTW_LIB@
-RFFTW_LIB = @RFFTW_LIB@
 VIGRA_INCLUDES = @VIGRA_INCLUDES@
 FFTW_INCLUDES = @FFTW_INCLUDES@
+BOOST_PYTHON_LIB = @BOOST_PYTHON_LIB@
+BOOST_INCLUDES = @BOOST_INCLUDES@
 
 CC = @CC@
 CFLAGS := @CFLAGS@
@@ -38,39 +43,40 @@ LINKC = $(LIBTOOL) --mode=link $(CC)
 LINKCXX = $(LIBTOOL) --tag=CXX --mode=link $(CXX)
 LINKCLIB = $(LINKC) -rpath $(libdir)
 LINKCXXLIB = $(LINKCXX) -rpath $(libdir)
-LIBINSTALL = $(LIBTOOL) --mode=install @INSTALL@
 INSTALL = @INSTALL@
+LIBINSTALL = $(LIBTOOL) --mode=install $(INSTALL)
+EXEEXT = @EXEEXT@
 
 DEVELOPMENT_VERSION = yes
 
 %.o: $(curdir)/%.c
-	$(CC) $(CFLAGS) $(CPPFLAGS) -c $(curdir)/$*.c
+	$(CC) $(CFLAGS) $(CPPFLAGS) -c "$(curdir)/$*.c"
 
 %.o: $(curdir)/%.cxx
-	$(CXX) $(CXXFLAGS) $(CPPFLAGS) -c $(curdir)/$*.cxx
+	$(CXX) $(CXXFLAGS) $(CPPFLAGS) -c "$(curdir)/$*.cxx"
 
 %.lo: $(curdir)/%.c
-	$(LIBCC) $(CFLAGS) $(LIBCPPFLAGS) -c $(curdir)/$*.c
+	$(LIBCC) $(CFLAGS) $(LIBCPPFLAGS) -c "$(curdir)/$*.c"
 
 %.lo: $(curdir)/%.cxx
-	$(LIBCXX) $(CXXFLAGS) $(LIBCPPFLAGS) -c $(curdir)/$*.cxx
+	$(LIBCXX) $(CXXFLAGS) $(LIBCPPFLAGS) -c "$(curdir)/$*.cxx"
 
 %.d: $(curdir)/%.c
 	@echo updating header dependencies for $*.c
 	@rm -f $*.d
-	@(echo "$*.d \\" ; $(CC) -M $(CFLAGS) $(CPPFLAGS) -c $(curdir)/$*.c ) > $*.d \
+	@(echo "$*.d \\" ; $(CC) -M $(CFLAGS) $(CPPFLAGS) -c "$(curdir)/$*.c" ) > $*.d \
         || { rm -f $*.d; exit 1; }
 
 %.d: $(curdir)/%.cxx
 	@echo updating header dependencies for $*.cxx
 	@rm -f $*.d
-	@(echo "$*.d \\" ; $(CXX) -M $(CXXFLAGS) $(CPPFLAGS) -c $(curdir)/$*.cxx ) > $*.d \
+	@(echo "$*.d \\" ; $(CXX) -M $(CXXFLAGS) $(CPPFLAGS) -c "$(curdir)/$*.cxx" ) > $*.d \
         || { rm -f $*.d; exit 1; }
 
 %.ld: $(curdir)/%.c
 	@echo updating header dependencies for $*.c
 	@rm -f $*.ld
-	@(echo "$*.ld \\" ; $(CC) -M $(CFLAGS) $(LIBCPPFLAGS) -c $(curdir)/$*.c ) > $*.ld \
+	@(echo "$*.ld \\" ; $(CC) -M $(CFLAGS) $(LIBCPPFLAGS) -c "$(curdir)/$*.c ") > $*.ld \
         || { rm -f $*.ld; exit 1; }
 
 %.ld: $(curdir)/%.cxx
