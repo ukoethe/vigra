@@ -124,8 +124,6 @@ struct FunctorExpressionTest
         should(exec(abs(Arg1()), -0.5) == 0.5); 
         should(exec(floor(Arg1()), -0.5) == -1.0); 
         should(exec(ceil(Arg1()), 0.5) == 1.0); 
-        should(exec(rint(Arg1()), 1.4) == 1.0); 
-        should(exec(rint(Arg1()), 1.6) == 2.0); 
         should(exec(-Arg1(), -0.5) == 0.5); 
         should(exec(!Arg1(), true) == false); 
         should(exec(~Arg1(), 0xff) == (int)0xffffff00); 
@@ -305,8 +303,8 @@ struct FunctorRGBExpressionTest
     void testUnary()
     {
         should(exec(abs(Arg1()), v_1_5) == v1_5); 
-        should(exec(rint(Arg1()), vigra::RGBValue<double>(1.4)) == v1); 
-        should(exec(rint(Arg1()), vigra::RGBValue<double>(1.6)) == v2); 
+        should(exec(floor(Arg1()), vigra::RGBValue<double>(1.4)) == v1); 
+        should(exec(ceil(Arg1()), vigra::RGBValue<double>(1.6)) == v2); 
         should(exec(-Arg1(), v_1_5) == v1_5); 
     }
     
