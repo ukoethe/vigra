@@ -1,6 +1,7 @@
 SUBDIRS = \
         error \
         pixeltypes \
+        colorspaces \
         image \
         impex \
         imgproc \
