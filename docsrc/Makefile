@@ -1,9 +1,9 @@
-                 DOC = doxygen
-	    DOCLATEX = doc++ -u -o $(DOCDIR)/latex/vigra.tex -t 
-	      DOCDIR = ../doc/vigra
-		 
+         DOC = doxygen
+    DOCLATEX = doc++ -u -o $(DOCDIR)/latex/vigra.tex -t
+      DOCDIR = ../doc/vigra
+
 FILES = \
-	index.dxx 
+	index.dxx
 
 all:: doc
 
@@ -16,15 +16,13 @@ doc::
 	$(DOC)
 	python post.py $(DOCDIR) $(VIGRA_VERSION)
 	cp $(DOCDIR)/index.html $(DOCDIR)/index.html.in
-	
+
 latex::
-	$(DOCLATEX)  $(FILES)
-	
-	
+	$(DOCLATEX) $(FILES)
+
 clean::
 	rm -f $(DOCDIR)/*.html $(DOCDIR)/*.gif $(DOCDIR)/*.pnm \
               $(DOCDIR)/gifs.db $(DOCDIR)/*.ps $(DOCDIR)/*.eps \
               $(DOCDIR)/dxxgifs* $(DOCDIR)/*.class $(DOCDIR)/*.in \
               $(DOCDIR)/formula.repository $(DOCDIR)/*.css \
               $(DOCDIR)/_formulas.* $(DOCDIR)/doxfont.ttf
-	
