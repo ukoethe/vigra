@@ -4,7 +4,7 @@ dnl VIGRA_EXTRACT_REGEX(list, regEx)
 dnl variable $regExResult returns the first entry in 'list' that matches the
 dnl regular expression 'regEx', using the 'expr' utility
 dnl $regExResult = "" if nothing is found
-AC_DEFUN(VIGRA_EXTRACT_REGEX,
+AC_DEFUN([VIGRA_EXTRACT_REGEX],
 [
     regExResult=""
     if test "$1" != ""; then
@@ -15,7 +15,7 @@ AC_DEFUN(VIGRA_EXTRACT_REGEX,
             fi
         done
     fi
-])
+])dnl
 
 #########################################################
 
@@ -25,7 +25,7 @@ dnl         with_packageNamelib=<path>/empty if not found
 dnl         with_packageNameinc=<path>/empty if not found
 dnl example:
 dnl     VIGRA_FIND_PACKAGE(tiff, tiff, tiff.h, support import/export of tiff images)
-AC_DEFUN(VIGRA_FIND_PACKAGE,
+AC_DEFUN([VIGRA_FIND_PACKAGE],
 [
     AC_ARG_WITH([$1], AC_HELP_STRING([--with-$1=dir],[$4])[
       if dir='yes': $1 package files will be searched for in
@@ -101,18 +101,20 @@ AC_DEFUN(VIGRA_FIND_PACKAGE,
         AC_MSG_CHECKING([for $3 ])
         dirs=""
         if test "$with_[$1]inc" != ""; then
-            dirs=$with_[$1]inc
+            dirs="$with_[$1]inc"
         elif test "$with_[$1]" != "yes"; then
-            dirs=$with_[$1]
+            dirs="$with_[$1]"
         else
             dirs="/usr/local/include /usr/local/gnu/include /usr/local/[$1] /opt/include /opt/gnu/include /opt/[$1] /usr/include"
         fi
+		dnl first, look for the given header file without directory components..
         found=""
         for i in $dirs; do
             if test -d $i; then
                 found="$found "`find $i -name patsubst([$3], .*/, ) -print 2> /dev/null`
             fi
         done
+		dnl now, check each found file for relative path prefix..
         VIGRA_EXTRACT_REGEX($found, \(.*include\)/patsubst([$3], \., \\.))
         if test "$regExResult" = ""; then
             VIGRA_EXTRACT_REGEX($found, \(.*\)/patsubst([$3], \., \\.))
@@ -133,9 +135,9 @@ AC_DEFUN(VIGRA_FIND_PACKAGE,
         fi
     fi
 
-])
+])dnl
 
-pushdef([VIGRA_PROG_INSTALL],
+AC_DEFUN([VIGRA_PROG_INSTALL],
 [
   dnl our own version, testing for the -p flag (--preserve-timestamp).
   dnl we first have to save if the user specified INSTALL as the
