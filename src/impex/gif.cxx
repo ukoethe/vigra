@@ -400,8 +400,11 @@ namespace {
         }
         
         // read the magic number
+        char buf[6];
+        read_array( stream, bo, buf, 6 );
         std::string magic(6, (std::string::value_type)0);
-        read_array( stream, bo, reinterpret_cast< char * >(magic.begin()), 6 );
+        
+        std::copy(buf, buf + 6, magic.begin());
         vigra_precondition( magic == "GIF87a" || magic == "GIF89a",
                             "the stored magic number is invalid" );
 
