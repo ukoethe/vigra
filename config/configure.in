@@ -11,7 +11,7 @@ elif test "x$prefix" = "x." ; then
     prefix=`pwd`
 fi
 
-AC_DOCDIR_DEFAULT(['${prefix}/doc/vigra'])
+VIGRA_DOCDIR_DEFAULT(['${prefix}/doc/vigra'])
 
 AC_CONFIG_AUX_DIR(config)
 
