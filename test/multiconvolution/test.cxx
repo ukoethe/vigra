@@ -142,9 +142,9 @@ struct MultiArraySeparableConvolutionTest
       {
         for( int x = 0; x < width; ++x ) 
         {
-	  const Image3D::value_type val = x + y + z;
+          const Image3D::value_type val = x + y + z;
           image( x, y, z ) = val;
-	}
+        }
       }
     }
   }
@@ -197,11 +197,11 @@ struct MultiArraySeparableConvolutionTest
                                    destMultiArray(dn),
                                    kernels.begin() );
 
-      separableConvolveMultiArray( srcMultiArrayRange(src),
-                                   destMultiArray(d1),
-                                   d,
-                                   kernels[d] );
-
+      convolveMultiArrayOneDimension( srcMultiArrayRange(src),
+                                      destMultiArray(d1),
+                                      d,
+                                      kernels[d] );
+ 
       shouldEqualSequence(  dn.begin(), dn.end(),
                             d1.begin() );
     }
@@ -224,9 +224,9 @@ struct MultiArraySeparableConvolutionTest
     int z;
 
     // x convolution
-    separableConvolveMultiArray( srcMultiArrayRange(src),
-                                 destMultiArray(dst1),
-                                 0, kernx );
+    convolveMultiArrayOneDimension( srcMultiArrayRange(src),
+                                    destMultiArray(dst1),
+                                    0, kernx );
 
     for( z = 0; z < depth; ++z ) 
     {
@@ -244,9 +244,9 @@ struct MultiArraySeparableConvolutionTest
 
 
     // y convolution
-    separableConvolveMultiArray( srcMultiArrayRange(src),
-                                 destMultiArray(dst1),
-                                 1, kerny );
+    convolveMultiArrayOneDimension( srcMultiArrayRange(src),
+                                    destMultiArray(dst1),
+                                    1, kerny );
 
     for( z = 0; z < depth; ++z ) 
     {
@@ -306,18 +306,18 @@ struct MultiArraySeparableConvolutionTest
     kernels[1].initGaussianDerivative( ksize, 1 );
 
     vigra::separableConvolveMultiArray( srcMultiArrayRange(src),
-					destMultiArray(da),
-					kernels.begin() );
+                                        destMultiArray(da),
+                                        kernels.begin() );
 
     copyMultiArray(srcMultiArrayRange(src), destMultiArray(db));
 
     vigra::separableConvolveMultiArray( srcMultiArrayRange(db),
-					destMultiArray(db),
-					kernels.begin() );
+                                        destMultiArray(db),
+                                        kernels.begin() );
 
     shouldEqualSequenceTolerance( da.begin(), da.end(),
-				  db.begin(),
-				  1e-5 );
+                                  db.begin(),
+                                  1e-5 );
   }
 
 
@@ -338,20 +338,20 @@ struct MultiArraySeparableConvolutionTest
     for( int i = 0; i < 3; ++i ) {
       const int d = 2-i;
 
-      vigra::separableConvolveMultiArray( srcMultiArrayRange(src),
-					  destMultiArray(da),
-					  d,
-					  kernel );
+      vigra::convolveMultiArrayOneDimension( srcMultiArrayRange(src),
+                                          destMultiArray(da),
+                                          d,
+                                          kernel );
 
       copyMultiArray(srcMultiArrayRange(src), destMultiArray(db));
 
-      vigra::separableConvolveMultiArray( srcMultiArrayRange(db),
-					  destMultiArray(db),
-					  d,
-					  kernel );
+      vigra::convolveMultiArrayOneDimension( srcMultiArrayRange(db),
+                                          destMultiArray(db),
+                                          d,
+                                          kernel );
 
       shouldEqualSequence( da.begin(), da.end(),
-			   db.begin() );
+                           db.begin() );
     }
   }
 
@@ -368,10 +368,10 @@ struct MultiArraySeparableConvolutionTest
 
     if( ! useGaussian )
       symmetricGradientMultiArray( srcMultiArrayRange(src),
-				   destMultiArray(grad) );
+                                   destMultiArray(grad) );
     else
       gaussianGradientMultiArray( srcMultiArrayRange(src),
-				  destMultiArray(grad), sigma );
+                                  destMultiArray(grad), sigma );
 
     Image3x3::value_type v;
     v[0] = 1; v[1] = 1; v[2] = 1;
@@ -387,8 +387,8 @@ struct MultiArraySeparableConvolutionTest
       {
         for( int x = b; x < width-b; ++x ) 
         {
-	  shouldEqualTolerance( dot(grad(x,y,z), v), v2, 1e-5 );
-	}
+          shouldEqualTolerance( dot(grad(x,y,z), v), v2, 1e-5 );
+        }
       }
     }
 
@@ -401,11 +401,11 @@ struct MultiArraySeparableConvolutionTest
     Image3D dst( src.size() );
     Image3x3 grad( src.size() );
     symmetricGradientMultiArray( srcMultiArrayRange(src),
-				 destMultiArray(grad) );
+                                 destMultiArray(grad) );
 
     transformMultiArray( srcMultiArrayRange(grad),
- 			 destMultiArray(dst),
- 			 VectorNormFunctor<Image3x3::value_type>() );
+                          destMultiArray(dst),
+                          VectorNormFunctor<Image3x3::value_type>() );
   }
 
   //--------------------------------------------
@@ -453,7 +453,7 @@ struct MultiArraySeparableConvolutionTest
     test_gradient_magnitude( srcImage );
   }
 
-};	//-- struct MultiArraySeparableConvolutionTest
+};        //-- struct MultiArraySeparableConvolutionTest
 
 //--------------------------------------------------------
 
@@ -473,7 +473,7 @@ struct MultiArraySeparableConvolutionTestSuite
         add( testCase( &MultiArraySeparableConvolutionTest::test_Valid1 ) );
         add( testCase( &MultiArraySeparableConvolutionTest::test_Valid2 ) );
         add( testCase( &MultiArraySeparableConvolutionTest::test_Valid3 ) );
-	add( testCase( &MultiArraySeparableConvolutionTest::test_InplaceN ) );
+        add( testCase( &MultiArraySeparableConvolutionTest::test_InplaceN ) );
         add( testCase( &MultiArraySeparableConvolutionTest::test_Inplace1 ) );
         add( testCase( &MultiArraySeparableConvolutionTest::test_gradient1 ) );
         add( testCase( &MultiArraySeparableConvolutionTest::test_gradient_magnitude ) );
