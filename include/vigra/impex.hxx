@@ -837,6 +837,33 @@ namespace detail {
 
 /** \brief Write an image, given an \ref vigra::ImageExportInfo object.
 
+    If the file format to be exported to supports the pixel type of the
+    source image, the pixel type will be kept (e.g. <tt>float</tt>
+    can be stored as TIFF without conversion, in contrast to most other
+    image export toolkits). Otherwise, the pixel values are transformed
+    to the range 0.255 and converted to <tt>unsigned char</tt>. Currently,
+    the following file formats are supported. The pixel types given in 
+    brackets are those that are written without conversion:
+    
+    <DL>
+    <DT>"BMP"<DD> Microsoft Windows bitmap image file (pixel types: UINT8 as gray and RGB).
+    <DT>"GIF"<DD> CompuServe graphics interchange format; 8-bit color (pixel types: UINT8 as gray and RGB).
+    <DT>"JPEG"<DD> Joint Photographic Experts Group JFIF format; compressed 24-bit color 
+                  (pixel types: UINT8 as gray and RGB). (only available if libjpeg is installed)
+    <DT>"PNG"<DD> Portable Network Graphic (pixel types: UINT8 and UINT16 with up to 4 channels). 
+                  (only available if libpng is installed)
+    <DT>"PBM"<DD> Portable bitmap format (black and white).
+    <DT>"PGM"<DD> Portable graymap format (pixel types: UINT8, INT16, INT32 as gray scale)).
+    <DT>"PNM"<DD> Portable anymap (pixel types: UINT8, INT16, INT32 as gray and RGB).
+    <DT>"PPM"<DD> Portable pixmap format (pixel types: UINT8, INT16, INT32 as RGB).
+    <DT>"SUN"<DD> SUN Rasterfile (pixel types: UINT8 as gray and RGB).
+    <DT>"TIFF"<DD> Tagged Image File Format 
+                (pixel types: UINT8, INT16, INT32, FLOAT, DOUBLE with up to 4 channels). 
+                (only available if libtiff is installed.)
+    <DT>"VIFF"<DD> Khoros Visualization image file 
+        (pixel types: UINT8, INT16, INT32, FLOAT, DOUBLE with arbitrary many channels).
+    </DL>
+    
     <b> Declarations:</b>
 
     pass arguments explicitly:
@@ -879,22 +906,9 @@ namespace detail {
 
     <UL>
 
-    <LI> the image file must be writable
-    <LI> the file type must be one of
+    <LI> the image file must be writable.
+    <LI> the file type must be one of the supported file types.
 
-            <DL>
-            <DT>"BMP"<DD> Microsoft Windows bitmap image file.
-            <DT>"GIF"<DD> CompuServe graphics interchange format; 8-bit color.
-            <DT>"JPEG"<DD> Joint Photographic Experts Group JFIF format; compressed 24-bit color. (only available if libjpeg is installed)
-            <DT>"PNG"<DD> Portable Network Graphic. (only available if libpng is installed)
-            <DT>"PBM"<DD> Portable bitmap format (black and white).
-            <DT>"PGM"<DD> Portable graymap format (gray scale).
-            <DT>"PNM"<DD> Portable anymap.
-            <DT>"PPM"<DD> Portable pixmap format (color).
-            <DT>"SUN"<DD> SUN Rasterfile.
-            <DT>"TIFF"<DD> Tagged Image File Format. (only available if libtiff is installed.)
-            <DT>"VIFF"<DD> Khoros Visualization image file.
-            </DL>
 
     </UL>
 **/
