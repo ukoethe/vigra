@@ -19,7 +19,7 @@
         but has not been tried yet)
     </ul>
 
-    VIGRA should work with any standard conforming C++ compiler
+    VIGRA should work with any standard conforming C++ compiler.
 
     <h3> Unix:</h3>
     
@@ -66,14 +66,15 @@
     
     </ul>
 
-    <h3> Windows:</h3>
+    <h3> Windows (Microsoft Visual C++ 6.0 and Visual C++.net):</h3>
     
     <ul>
     <li> uncompress and unpack the source distribution
 
     <li> go into the directory <TT>[some path]/vigra/src/</TT>
 
-    <li> load the solution <TT>vigra.sln</TT> into Visual Studio.net
+    <li> load the workspace <TT>vigra.dsw</TT> (MSVC 6.0) or 
+        <TT>vigra.sln</TT> (MSVC.net) into Visual Studio
 
     <li> specify in the project settings if and where JPEG, TIFF, and FFTW libraries are installed: <br>
     <em> either</em> update the paths to the

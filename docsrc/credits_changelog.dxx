@@ -22,6 +22,14 @@
 Many thanks to all!
 <p>
 
+<b> Changes from Version 1.1.5 to 1.1.6</b>
+
+<UL>
+
+      <li> Restored VIGRA compatibility with Microsoft Visual C++ 6.0
+           
+</UL>
+
 <b> Changes from Version 1.1.4 to 1.1.5</b>
 
 <UL>
