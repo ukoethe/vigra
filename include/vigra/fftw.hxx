@@ -49,6 +49,9 @@ namespace vigra {
     as well as \ref FFTWComplexOperators "arithmetic operators" and
     \ref FFTWComplexAccessors "accessors".
 
+    FFTWComplex implements the concepts \ref AlgebraicField and
+    \ref DivisionAlgebra.
+    
     <b>\#include</b> "<a href="fftw_8hxx-source.html">vigra/fftw.hxx</a>"<br>
     Namespace: vigra
 */
@@ -81,7 +84,7 @@ class FFTWComplex
     : fftw_complex(o)
     {}
 
-        /** Copy constructor.
+        /** Construct from TinyVector.
         */
     template <class T>
     FFTWComplex(TinyVector<T, 2> const & o)

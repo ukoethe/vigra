@@ -129,7 +129,7 @@ void tinyCopy2(T1 * t1, T2 const * t2, SizeType<SIZE>)
     operations. Addition and subtraction of two TinyVectors 
     (+=, -=, +, -, unary -), multiplication and division of an
     TinyVector with a double, and NumericTraits/PromoteTraits are defined, 
-    so that TinyVector fulfills the requirements of a Linear Space. 
+    so that TinyVector fulfills the requirements of \ref LinearAlgebra. 
     
     VIGRA algorithms typically use \ref vigra::VectorAccessor to access 
     TinyVectors as a whole, or specific components of them.
@@ -138,7 +138,8 @@ void tinyCopy2(T1 * t1, T2 const * t2, SizeType<SIZE>)
     Namespace: vigra
     
     <b>Note:</b> TinyVector does not work properly on Microsoft Visual C++
-    (in particular, it's unable to compile the arithmetic operators).
+    (in particular, it's unable to compile some templates for
+     arithmetic operators).
 **/
 template <class VALUETYPE, int SIZE>
 class TinyVector

@@ -343,7 +343,7 @@ sign of difference image     insert zero- and one-cells     resulting edge point
     Thus the edge points are marked where they actually are - in between the pixels. 
     An important property of the resulting edge image is that it conforms to the notion 
     of well-composedness as defined by Latecki et al., i.e. connected regions and edges 
-    obtained by a subsequent \ref Connected Components Labeling do not depend on 
+    obtained by a subsequent \ref Labeling do not depend on 
     whether 4- or 8-connectivity is used.
     The non-edge pixels (<TT>.</TT>) in the destination image remain unchanged. 
     The result conformes to the requirements of a \ref CrackEdgeImage. It can be further
@@ -1506,8 +1506,52 @@ inline void cannyEdgeImage(
                    scale, gradient_threshold, edge_marker);
 }
 
-
 //@}
+
+/** \page CrackEdgeImage Crack Edge Image
+
+Crack edges are marked <i>between</i> the pixels of an image. 
+A Crack Edge Image is an image that represents these edges. In order
+to accomodate the cracks, the Crack Edge Image must be twice as large
+as the original image (precisely (2*w - 1) by (2*h - 1)). A Crack Edge Image
+can easily be derived from a binary image or from the signs of the 
+response of a Laplacean filter. Consider the following sketch, where
+<TT>+</TT> encodes the foreground, <TT>-</TT> the background, and
+<TT>*</TT> the resulting crack edges.
+
+    \code
+sign of difference image         insert cracks         resulting CrackEdgeImage
+
+                                   + . - . -              . * . . .
+      + - -                        . . . . .              . * * * .
+      + + -               =>       + . + . -      =>      . . . * .
+      + + +                        . . . . .              . . . * *
+                                   + . + . +              . . . . .
+    \endcode
+
+Starting from the original binary image (left), we insert crack pixels
+to get to the double-sized image (center). Finally, we mark all 
+crack pixels whose non-crack neighbors have different signs as 
+crack edge points, while all other pixels (crack and non-crack) become 
+region pixels.
+
+<b>Requirements on a Crack Edge Image:</b>
+
+<ul>
+    <li>Crack Edge Images have odd width and height.
+    <li>Crack pixels have at least one odd coordinate.
+    <li>Only crack pixels may be marked as edge points.
+    <li>Crack pixels with two odd coordinates must be marked as edge points
+        whenever any of their neighboring crack pixels was marked.  
+</ul>
+
+The last two requirements ensure that both edges and regions are 4-connected. 
+Thus, 4-connectivity and 8-connectivity yield identical connected 
+components in a Crack Edge Image (so called <i>well-composedness</i>).
+This ensures that Crack Edge Images have nice topological properties
+(cf. L. J. Latecki: "Well-Composed Sets", Academic Press, 2000). 
+*/
+
 
 } // namespace vigra
 

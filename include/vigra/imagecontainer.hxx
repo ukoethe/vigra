@@ -6,7 +6,7 @@
 
 namespace vigra {
 
-/** \addtogroup TODOChoseOne Image Containers
+/** \addtogroup ImageContainers Image Containers
     Classes to manage multiple images (ImageArray..)
 */
 //@{
