@@ -23,6 +23,7 @@
 #define VIGRA_BASICIMAGEVIEW_HXX
 
 #include "vigra/imageiterator.hxx"
+#include "vigra/initimage.hxx"
 
 namespace vigra {
 
@@ -133,33 +134,33 @@ class BasicImageView
     BasicImageView()
     : data_(0),
       width_(0),
-      height_(0)
+      height_(0),
+      stride_(0)
     {}
 
         /** construct view of size w x h
         */
-    BasicImageView(const_pointer data, int w, int h)
+    BasicImageView(const_pointer data, int w, int h, int stride = 0)
     : data_(const_cast<pointer>(data)),
       width_(w),
-      height_(h)
+      height_(h),
+      stride_(stride == 0 ? w : stride)
     {}
 
         /** construct view of size size.x x size.y
         */
-    BasicImageView(const_pointer data, difference_type const & size)
+    BasicImageView(const_pointer data, difference_type const & size, int stride = 0)
     : data_(const_cast<pointer>(data)),
       width_(size.x),
-      height_(size.y)
+      height_(size.y),
+      stride_(stride == 0 ? size.x : stride)
     {}
 
         /** set Image with const value
         */
     BasicImageView & init(value_type const & pixel)
     {
-        ScanOrderIterator i = begin();
-        ScanOrderIterator iend = end();
-
-        for(; i != iend; ++i) *i = pixel;
+        initImage(upperLeft(), lowerRight(), accessor(), pixel);
 
         return *this;
     }
@@ -176,6 +177,14 @@ class BasicImageView
     int height() const
     {
         return height_;
+    }
+
+        /** stride of Image. 
+            Memory offset between the start of two successive rows.
+        */
+    int stride() const
+    {
+        return stride_;
     }
 
         /** size of Image
@@ -198,7 +207,7 @@ class BasicImageView
         */
     reference operator[](difference_type const & d)
     {
-        return data_[d.y*width() + d.x];
+        return data_[d.y*stride_ + d.x];
     }
 
         /** read pixel at given location. <br>
@@ -206,7 +215,7 @@ class BasicImageView
         */
     const_reference operator[](difference_type const & d) const
     {
-        return data_[d.y*width() + d.x];
+        return data_[d.y*stride_ + d.x];
     }
 
         /** access pixel at given location. <br>
@@ -214,7 +223,7 @@ class BasicImageView
         */
     reference operator()(int dx, int dy)
     {
-        return data_[dy*width() + dx];
+        return data_[dy*stride_ + dx];
     }
 
         /** read pixel at given location. <br>
@@ -222,7 +231,7 @@ class BasicImageView
         */
     const_reference operator()(int dx, int dy) const
     {
-        return data_[dy*width() + dx];
+        return data_[dy*stride_ + dx];
     }
 
         /** access pixel at given location.
@@ -231,7 +240,7 @@ class BasicImageView
         */
     pointer operator[](int dy)
     {
-        return data_ + dy*width();
+        return data_ + dy*stride_;
     }
 
         /** read pixel at given location.
@@ -240,14 +249,14 @@ class BasicImageView
         */
     const_pointer operator[](int dy) const
     {
-        return data_ + dy*width();
+        return data_ + dy*stride_;
     }
 
         /** init 2D random access iterator poining to upper left pixel
         */
     traverser upperLeft()
     {
-        return traverser(data_, width());
+        return traverser(data_, stride_);
     }
 
         /** init 2D random access iterator poining to
@@ -263,7 +272,7 @@ class BasicImageView
         */
     const_traverser upperLeft() const
     {
-        return const_traverser(data_, width());
+        return const_traverser(data_, stride_);
     }
 
         /** init 2D random access const iterator poining to
@@ -275,31 +284,47 @@ class BasicImageView
         return upperLeft() + size();
     }
 
-        /** init 1D random access iterator pointing to first pixel
+        /** init 1D random access iterator pointing to first pixel.
+            Note: Only works if stride equals width.
         */
     iterator begin()
     {
+        vigra_precondition(stride_ == width_,
+            "BasicImageView::begin(): "
+            "can only create scan order iterator if width() == stride().");
         return data_;
     }
 
-        /** init 1D random access iterator pointing past the end
+        /** init 1D random access iterator pointing past the end.
+            Note: Only works if stride equals width.
         */
     iterator end()
     {
+        vigra_precondition(stride_ == width_,
+            "BasicImageView::end(): "
+            "can only create scan order iterator if width() == stride().");
         return data_ + width() * height();
     }
 
-        /** init 1D random access const iterator pointing to first pixel
+        /** init 1D random access const iterator pointing to first pixel.
+            Note: Only works if stride equals width.
         */
     const_iterator begin() const
     {
+        vigra_precondition(stride_ == width_,
+            "BasicImageView::begin(): "
+            "can only create scan order iterator if width() == stride().");
         return data_;
     }
 
-        /** init 1D random access const iterator pointing past the end
+        /** init 1D random access const iterator pointing past the end.
+            Note: Only works if stride equals width.
         */
     const_iterator end() const
     {
+        vigra_precondition(stride_ == width_,
+            "BasicImageView::end(): "
+            "can only create scan order iterator if width() == stride().");
         return data_ + width() * height();
     }
 
@@ -320,7 +345,7 @@ class BasicImageView
   private:
 
     pointer data_;
-    int width_, height_;
+    int width_, height_, stride_;
 };
 
 
