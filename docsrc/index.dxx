@@ -309,6 +309,10 @@
         <DD> <em>Measure the 'cornerness' at each pixel </em>
     <DT>
         <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif"> 
+        \ref SymmetryDetection
+        <DD> <em>Measure the local symmetry at each pixel </em>
+    <DT>
+        <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif"> 
         \ref SeededRegionGrowing 
         <DD> <em>Region segmentation and voronoi tesselation</em>
     </DL>
