@@ -581,15 +581,17 @@ class BasicImage
 
         /** construct image of size size.x x size.y and initialize
         every pixel with given data (use this constructor, if
-        value_type doesn't have a default constructor)
+        value_type doesn't have a default constructor). Use the specified allocator.
         */
-    explicit BasicImage(difference_type const & size, value_type const & d)
+    explicit BasicImage(difference_type const & size, value_type const & d, Alloc const & alloc = Alloc())
     : data_(0),
       width_(0),
-      height_(0)
+      height_(0),
+      allocator_(alloc),
+      pallocator_(alloc)
     {
         vigra_precondition((size.x >= 0) && (size.y >= 0),
-             "BasicImage::BasicImage(Diff2D size): "
+             "BasicImage::BasicImage(Diff2D const & size, value_type const & v): "
              "size.x and size.y must be >= 0.\n");
 
         resize(size.x, size.y, d);
