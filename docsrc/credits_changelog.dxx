@@ -32,12 +32,17 @@
 Many thanks to all!
 <p>
 
-<b> Changes from Version 1.1.6 to 1.1.7</b>
+<b> Changes from Version 1.1.6 to 1.2.0</b>
 
 <UL>
 
       <li> Complete redesign of the image import/export library. 
       
+      <li> Added support for Microsoft Visual C++ 7.1 (.net 2003). 
+           This is the first Microsoft compiler that compiles VIGRA without
+           special configurations and work-arounds. Work-arounds for older
+           MS compilers will probably no longer be maintained.
+           
       <li> Added support for PNG image format.
            
       <li> Added cygwin support to the build system.
@@ -45,26 +50,28 @@ Many thanks to all!
       <li> Added \link PixelNeighborhood pixel neighborhood utilities \endlink 
            and \ref vigra::NeighborhoodCirculator.
       
-      <li> added \ref vigra::CrackContourCirculator
+      <li> Added \ref vigra::CrackContourCirculator
       
-      <li> added \ref recursiveFilterX() and \ref recursiveFilterY() that
+      <li> Added \ref recursiveFilterX() and \ref recursiveFilterY() that
            support negative filter coefficients and all
            \link BorderTreatmentMode BorderTreatmenModes \endlink
       
-      <li> changed \ref gaussianSmoothing() to use BORDER_TREATMENT_REFLECT
+      <li> Changed \ref gaussianSmoothing() to use BORDER_TREATMENT_REFLECT
       
-      <li> added \ref simpleSharpening() and \ref gaussianSharpening()
+      <li> Added \ref simpleSharpening() and \ref gaussianSharpening()
       
-      <li> added \ref vigra::Size2D, \ref vigra::Point2D, \ref vigra::Rect2D
+      <li> Added \ref vigra::Size2D, \ref vigra::Point2D, \ref vigra::Rect2D
       
-      <li> added \ref vigra::BasicImageView
+      <li> Added \ref vigra::BasicImageView
       
-      <li> split "utilities.hxx" into "diff2d.hxx", 
+      <li> Split "utilities.hxx" into "diff2d.hxx", 
           "interpolating_accessor.hxx", "iteratortags.hxx", "mathutil.hxx", 
           "metaprogramming.hxx", "tuple.hxx". "utilities.hxx" now includes 
           these other files.
       
-      <li> added \ref MultiDimensionalArrays and \ref VolumeImpex
+      <li> Added \ref MultiDimensionalArrays and \ref VolumeImpex
+      
+      <li> Redesigned \ref vigra::TinyVector, added \ref vigra::TinyVectorView
            
 </UL>
 
