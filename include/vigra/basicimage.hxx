@@ -561,7 +561,7 @@ class BasicImage
     }
 
         /** construct image of size width*height and initialize every
-        pixel with given data (use this constructor, if
+        pixel with the value \a d (use this constructor, if
         value_type doesn't have a default constructor). 
         Use the specified allocator.
         */
@@ -595,6 +595,41 @@ class BasicImage
              "size.x and size.y must be >= 0.\n");
 
         resize(size.x, size.y, d);
+    }
+
+
+        /** construct image of size width*height and copy the data from the
+            given C-style array \a d. Use the specified allocator.
+        */
+    BasicImage(int width, int height, const_pointer d, Alloc const & alloc = Alloc())
+    : data_(0),
+      width_(0),
+      height_(0),
+      allocator_(alloc),
+      pallocator_(alloc)
+    {
+        vigra_precondition((width >= 0) && (height >= 0),
+             "BasicImage::BasicImage(int width, int height, const_pointer ): "
+             "width and height must be >= 0.\n");
+
+        resizeCopy(width, height, d);
+    }
+
+        /** construct image of size size.x x size.y  and copy the data from the
+            given C-style array. Use the specified allocator.
+        */
+    explicit BasicImage(difference_type const & size, const_pointer d, Alloc const & alloc = Alloc())
+    : data_(0),
+      width_(0),
+      height_(0),
+      allocator_(alloc),
+      pallocator_(alloc)
+    {
+        vigra_precondition((size.x >= 0) && (size.y >= 0),
+             "BasicImage::BasicImage(Diff2D const & size, const_pointer): "
+             "size.x and size.y must be >= 0.\n");
+
+        resizeCopy(size.x, size.y, d);
     }
 
         /** copy rhs image
@@ -655,9 +690,17 @@ class BasicImage
         */
     void resize(int width, int height, value_type const & d);
 
+        /** resize image to given size and initialize by copying data
+            from the C-style arra \a data.
+        */
+    void resizeCopy(int width, int height, const_pointer data);
+
         /** resize image to size of other image and copy it's data
         */
-    void resizeCopy(const BasicImage & rhs);
+    void resizeCopy(const BasicImage & rhs)
+    {
+        resizeCopy(rhs.width(), rhs.height(), rhs.data_);
+    }
 
         /** swap the internal data with the rhs image in constant time
         */
@@ -940,26 +983,27 @@ BasicImage<PIXELTYPE, Alloc>::resize(int width, int height, value_type const & d
 
 template <class PIXELTYPE, class Alloc>
 void
-BasicImage<PIXELTYPE, Alloc>::resizeCopy(const BasicImage & rhs)
+BasicImage<PIXELTYPE, Alloc>::resizeCopy(int width, int height, const_pointer data)
 {
-    if (width_ != rhs.width() || height_ != rhs.height())  // change size?
+    int newsize = width*height;
+    if (width_ != width || height_ != height)  // change size?
     {
         value_type * newdata = 0;
         value_type ** newlines = 0;
-        if(rhs.width()*rhs.height() > 0)
+        if(newsize > 0)
         {
-            if (rhs.width()*rhs.height() != width_*height_) // different sizes, must reallocate
+            if (newsize != width_*height_) // different sizes, must reallocate
             {
-                newdata = allocator_.allocate(rhs.width()*rhs.height());
-                std::uninitialized_copy(rhs.begin(), rhs.end(), newdata);
-                newlines = initLineStartArray(newdata, rhs.width(), rhs.height());
+                newdata = allocator_.allocate(newsize);
+                std::uninitialized_copy(data, data + newsize, newdata);
+                newlines = initLineStartArray(newdata, width, height);
                 deallocate();
             }
             else // need only to reshape
             {
                 newdata = data_;
-                std::copy(rhs.begin(), rhs.end(), newdata);
-                newlines = initLineStartArray(newdata, rhs.width(), rhs.height());
+                std::copy(data, data + newsize, newdata);
+                newlines = initLineStartArray(newdata, width, height);
                 pallocator_.deallocate(lines_, height_);
             }
         }
@@ -970,12 +1014,12 @@ BasicImage<PIXELTYPE, Alloc>::resizeCopy(const BasicImage & rhs)
 
         data_ = newdata;
         lines_ = newlines;
-        width_ = rhs.width();
-        height_ = rhs.height();
+        width_ = width;
+        height_ = height;
     }
-    else if(rhs.width()*rhs.height() > 0) // keep size, copy data
+    else if(newsize > 0) // keep size, copy data
     {
-        std::copy(rhs.begin(), rhs.end(), data_);
+        std::copy(data, data + newsize, data_);
     }
 }
 
