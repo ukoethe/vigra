@@ -2,6 +2,8 @@ MAJOR_VERSION = @MAJOR_VERSION@
 MINOR_VERSION = @MINOR_VERSION@
 MICRO_VERSION = @MICRO_VERSION@
 
+vigra_builddir = @vigra_builddir@
+vigra_srcdir = @vigra_srcdir@
 builddir = @builddir@
 prefix = @prefix@
 exec_prefix = @exec_prefix@
@@ -10,19 +12,19 @@ libdir = @libdir@
 bindir = @bindir@
 
 CC = @CC@
-CFLAGS = @CFLAGS@ 
+CFLAGS = @CFLAGS@
 LIBCFLAGS = @LIBCFLAGS@
 CINCLUDES = @CINCLUDES@
 
 CXX = @CXX@
-CXXFLAGS = @CXXFLAGS@ 
-LIBCXXFLAGS = @LIBCXXFLAGS@ 
+CXXFLAGS = @CXXFLAGS@
+LIBCXXFLAGS = @LIBCXXFLAGS@
 CXXINCLUDES = @CXXINCLUDES@
 
 LD = @LD@
 LIBS = @LIBS@
 
-LIBTOOL = ${builddir}/libtool
+LIBTOOL = ${vigra_builddir}/libtool
 LIBCC = $(LIBTOOL) --mode=compile $(CC)
 LIBCXX = $(LIBTOOL) --tag=CXX --mode=compile $(CXX)
 LINKCLIB = $(LIBTOOL) --mode=link $(CC) -rpath $(libdir)
