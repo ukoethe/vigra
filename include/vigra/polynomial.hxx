@@ -36,73 +36,191 @@ namespace vigra {
 template <class T> class Polynomial;
 template <unsigned int MAXORDER, class T> class StaticPolynomial;
 
+/** \addtogroup Polynomials Polynomials and root determination
+
+    Classes to represent polynomials and functions to find polynomial roots.
+*/
+//@{
+
+/*****************************************************************/
+/*                                                               */
+/*                         PolynomialView                        */
+/*                                                               */
+/*****************************************************************/
+
+/** Polynomial interface for an externally managed array.
+
+    The coefficient type <tt>T</tt> can be either a scalar or complex type.
+
+    <b>\#include</b> "<a href="polynomial_8hxx-source.html">vigra/polynomial.hxx</a>"<br>
+    Namespace: vigra
+*/
 template <class T>
 class PolynomialView
 {
   public:
+    
+        /** Coefficient type of the polynomial
+        */
+    typedef T         value_type;
+
+        /** Promote type of <tt>value_type</tt>
+            used for polynomial calculations
+        */
     typedef typename NumericTraits<T>::RealPromote RealPromote;
+
+        /** Scalar type associated with <tt>RealPromote</tt>
+        */
     typedef typename NumericTraits<RealPromote>::ValueType Real;
+
+        /** Complex type associated with <tt>RealPromote</tt>
+        */
     typedef typename NumericTraits<RealPromote>::ComplexPromote Complex;
+
+        /** Iterator for the coefficient sequence
+        */
+    typedef T *       iterator;
+
+        /** Const iterator for the coefficient sequence
+        */
+    typedef T const * const_iterator;
+    
     typedef Polynomial<Real> RealPolynomial;
     typedef Polynomial<Complex> ComplexPolynomial;
     
-    typedef T         value_type;
-    typedef T *       iterator;
-    typedef T const * const_iterator;
     
-    
-    PolynomialView(T * coeffs, unsigned int order)
-    : coeffs_(coeffs),
-      order_(order),
-      epsilon_(1.0e-14)
-    {}
-    
-    PolynomialView(T * coeffs, unsigned int order, double epsilon)
+        /** Construct from a coefficient array of given <tt>order</tt>.
+
+            The externally managed array must have length <tt>order+1</tt>
+            and is interpreted as representing the polynomial:
+            
+            \code
+            coeffs[0] + x * coeffs[1] + x * x * coeffs[2] + ...
+            \endcode
+            
+            The coefficients are not copied, we only store a pointer to the 
+            array.<tt>epsilon</tt> (default: 1.0e-14) determines the precision 
+            of subsequent algorithms (especially root finding) performed on the
+            polynomial.
+        */
+    PolynomialView(T * coeffs, unsigned int order, double epsilon = 1.0e-14)
     : coeffs_(coeffs),
       order_(order),
       epsilon_(epsilon)
     {}
     
+        /// Access the coefficient of x^i
     T & operator[](unsigned int i)
         { return coeffs_[i]; }
     
+        /// Access the coefficient of x^i
     T const & operator[](unsigned int i) const
         { return coeffs_[i]; }
     
-    template <class U>
-    typename PromoteTraits<T, U>::Promote
-    operator()(U v) const;
+        /** Evaluate the polynomial at the point <tt>v</tt> 
+        
+            Multiplication must be defined between the types
+            <tt>V</tt> and <tt>PromoteTraits<T, V>::Promote</tt>.
+            If both <tt>V</tt> and <tt>V</tt> are scalar, the result will
+            be a scalar, otherwise it will be complex.
+        */
+    template <class V>
+    typename PromoteTraits<T, V>::Promote
+    operator()(V v) const;
     
+        /** Differentiate the polynomial <tt>n</tt> times.
+        */
     void differentiate(unsigned int n = 1);
-    void deflate(T const & v, unsigned int multiplicity = 1);
-    void forwardDeflate(T const & v);
-    void forwardBackwardDeflate(T v);
-    void backwardDeflate(T v);
-    void deflateConjugatePair(Complex const & v);
-    void minimizeOrder();    
-    void normalize();
     
+        /** Deflate the polynomial at the root <tt>r</tt> with 
+            the given <tt>multiplicity</tt>.
+            
+            The behavior of this function is undefined if <tt>r</tt>
+            is not a root with at least the given multiplicity.
+            This function calls forwardBackwardDeflate().
+        */
+    void deflate(T const & r, unsigned int multiplicity = 1);
+    
+        /** Forward-deflate the polynomial at the root <tt>r</tt>.
+            
+            The behavior of this function is undefined if <tt>r</tt>
+            is not a root. Forward deflation is best if <tt>r</tt> is
+            the biggest root (by magnitude).
+        */
+    void forwardDeflate(T const & v);
+    
+        /** Forward/backward eflate the polynomial at the root <tt>r</tt>.
+            
+            The behavior of this function is undefined if <tt>r</tt>
+            is not a root. Combined forward/backward deflation is best 
+            if <tt>r</tt> is an ontermediate root or we don't know
+            <tt>r</tt>'s relation to the other roots of the polynomial.
+        */
+    void forwardBackwardDeflate(T v);
+    
+        /** Backward-deflate the polynomial at the root <tt>r</tt>.
+            
+            The behavior of this function is undefined if <tt>r</tt>
+            is not a root. Backward deflation is best if <tt>r</tt> is
+            the snallest root (by magnitude).
+        */
+    void backwardDeflate(T v);
+    
+        /** Deflate the polynomial with the complex conjugate roots 
+            <tt>r</tt> and <tt>conj(r)</tt>.
+            
+            The behavior of this function is undefined if these are not
+            roots.
+        */
+    void deflateConjugatePair(Complex const & v);
+    
+        /** Adjust the polynomial's order if the highest coefficients are zero.
+        */
+    void minimizeOrder();    
+    
+        /** Normalize the polynomial, i.e. dived by the highest coefficient.
+        */
+    void normalize();
+        
+        /** Get iterator for the coefficient sequence.
+        */
     iterator begin()
         { return coeffs_; }
     
+        /** Get end iterator for the coefficient sequence.
+        */
     iterator end()
         { return begin() + size(); }
     
+        /** Get const_iterator for the coefficient sequence.
+        */
     const_iterator begin() const
         { return coeffs_; }
     
+        /** Get end const_iterator for the coefficient sequence.
+        */
     const_iterator end() const
         { return begin() + size(); }
     
+        /** Get length of the coefficient sequence (<tt>order() + 1</tt>).
+        */
     unsigned int size() const
         { return order_ + 1; }
         
+        /** Get order of the polynomial.
+        */
     unsigned int order() const
         { return order_; }
         
+        /** Get requested precision for polynomial algorithms 
+            (especially root finding).
+        */
     double epsilon() const
         { return epsilon_; }
         
+        /** Set requested precision for polynomial algorithms 
+            (especially root finding).
+        */
     void setEpsilon(double eps)
         { epsilon_ = eps; }
 
@@ -274,6 +392,19 @@ PolynomialView<T>::normalize()
     coeffs_[order_] = T(1.0);
 }
 
+/*****************************************************************/
+/*                                                               */
+/*                           Polynomial                          */
+/*                                                               */
+/*****************************************************************/
+
+/** Polynomial with internally managed array.
+
+    Most interesting functionality is inherited from \ref vigra::PolynomialView.
+
+    <b>\#include</b> "<a href="polynomial_8hxx-source.html">vigra/polynomial.hxx</a>"<br>
+    Namespace: vigra
+*/
 template <class T>
 class Polynomial
 : public PolynomialView<T>
@@ -289,6 +420,12 @@ class Polynomial
     typedef T *       iterator;
     typedef T const * const_iterator;    
     
+        /** Construct polynomial with given <tt>order</tt> and all coefficients
+            set to zero (they can be set later using <tt>operator[]</tt>
+            or the iterators). <tt>epsilon</tt> (default: 1.0e-14) determines 
+            the precision of subsequent algorithms (especially root finding) 
+            performed on the polynomial.
+        */
     Polynomial(unsigned int order = 0, double epsilon = 1.0e-14)
     : BaseType(epsilon),
       polynomial_(order + 1, T())
@@ -296,6 +433,8 @@ class Polynomial
         setCoeffs(&polynomial_[0], order);
     }
     
+        /** Copy constructor
+        */
     Polynomial(Polynomial const & p)
     : BaseType(p.epsilon()),
       polynomial_(p.begin(), p.end())
@@ -303,6 +442,8 @@ class Polynomial
         setCoeffs(&polynomial_[0], p.order());
     }
 
+        /** Construct polynomial by copying the given coefficient sequence.
+        */
     template <class ITER>
     Polynomial(ITER i, unsigned int order)
     : BaseType(),
@@ -311,6 +452,11 @@ class Polynomial
         setCoeffs(&polynomial_[0], order);
     }
     
+        /** Construct polynomial by copying the given coefficient sequence.
+            Set <tt>epsilon</tt> (default: 1.0e-14) as 
+            the precision of subsequent algorithms (especially root finding) 
+            performed on the polynomial.
+        */
     template <class ITER>
     Polynomial(ITER i, unsigned int order, double epsilon)
     : BaseType(epsilon),
@@ -319,6 +465,8 @@ class Polynomial
         setCoeffs(&polynomial_[0], order);
     }
     
+        /** Assigment
+        */
     Polynomial & operator=(Polynomial const & p)
     {
         if(this == &p)
@@ -330,6 +478,9 @@ class Polynomial
         return *this;
     }
     
+        /** Construct new polynomial representing the derivative of this
+            polynomial.
+        */
     Polynomial<T> getDerivative(unsigned int n = 1) const
     {
         Polynomial<T> res(*this);
@@ -337,19 +488,27 @@ class Polynomial
         return res;
     }
 
+        /** Construct new polynomial representing this polynomial after
+            deflation at the real root <tt>r</tt>.
+        */
     Polynomial<T> 
-    getDeflated(Real v) const
+    getDeflated(Real r) const
     {
         Polynomial<T> res(*this);
-        res.deflate(v);
+        res.deflate(r);
         return res;
     }
 
+        /** Construct new polynomial representing this polynomial after
+            deflation at the complex root <tt>r</tt>. The resulting
+            polynomial will have complex coefficients, even if this
+            polynomial had real ones.
+        */
     Polynomial<Complex> 
-    getDeflated(Complex const & v) const
+    getDeflated(Complex const & r) const
     {
         Polynomial<Complex> res(begin(), order(), epsilon());
-        res.deflate(v);
+        res.deflate(r);
         return res;
     }
 
@@ -357,6 +516,22 @@ class Polynomial
     ArrayVector<T> polynomial_;
 };
 
+/*****************************************************************/
+/*                                                               */
+/*                        StaticPolynomial                       */
+/*                                                               */
+/*****************************************************************/
+
+/** Polynomial with internally managed array of static length.
+
+    Most interesting functionality is inherited from \ref vigra::PolynomialView.
+    This class differs from \ref vigra::Polynomial in that it allocates
+    its memory statically which is much faster. Therefore, <tt>StaticPolynomial</tt>
+    can only represent polynomials up to the given <tt>MAXORDER</tt>.
+
+    <b>\#include</b> "<a href="polynomial_8hxx-source.html">vigra/polynomial.hxx</a>"<br>
+    Namespace: vigra
+*/
 template <unsigned int MAXORDER, class T>
 class StaticPolynomial
 : public PolynomialView<T>
@@ -374,6 +549,12 @@ class StaticPolynomial
     typedef T const * const_iterator;
     
     
+        /** Construct polynomial with given <tt>order <= MAXORDER</tt> and all 
+            coefficients set to zero (they can be set later using <tt>operator[]</tt>
+            or the iterators). <tt>epsilon</tt> (default: 1.0e-14) determines 
+            the precision of subsequent algorithms (especially root finding) 
+            performed on the polynomial.
+        */
     StaticPolynomial(unsigned int order = 0, double epsilon = 1.0e-14)
     : BaseType(epsilon)
     {
@@ -383,6 +564,8 @@ class StaticPolynomial
         setCoeffs(polynomial_, order);
     }
     
+        /** Copy constructor
+        */
     StaticPolynomial(StaticPolynomial const & p)
     : BaseType(p.epsilon())
     {
@@ -390,6 +573,9 @@ class StaticPolynomial
         setCoeffs(polynomial_, p.order());
     }
 
+        /** Construct polynomial by copying the given coefficient sequence.
+            <tt>order <= MAXORDER</tt> is required.
+        */
     template <class ITER>
     StaticPolynomial(ITER i, unsigned int order)
     : BaseType()
@@ -400,6 +586,11 @@ class StaticPolynomial
         setCoeffs(polynomial_, order);
     }
     
+        /** Construct polynomial by copying the given coefficient sequence.
+            <tt>order <= MAXORDER</tt> is required. Set <tt>epsilon</tt> (default: 1.0e-14) as 
+            the precision of subsequent algorithms (especially root finding) 
+            performed on the polynomial.
+        */
     template <class ITER>
     StaticPolynomial(ITER i, unsigned int order, double epsilon)
     : BaseType(epsilon)
@@ -410,6 +601,8 @@ class StaticPolynomial
         setCoeffs(polynomial_, order);
     }
     
+        /** Assigment.
+        */
     StaticPolynomial & operator=(StaticPolynomial const & p)
     {
         if(this == &p)
@@ -420,6 +613,9 @@ class StaticPolynomial
         return *this;
     }
     
+        /** Construct new polynomial representing the derivative of this
+            polynomial.
+        */
     StaticPolynomial getDerivative(unsigned int n = 1) const
     {
         StaticPolynomial res(*this);
@@ -427,19 +623,27 @@ class StaticPolynomial
         return res;
     }
 
+        /** Construct new polynomial representing this polynomial after
+            deflation at the real root <tt>r</tt>.
+        */
     StaticPolynomial 
-    getDeflated(Real v) const
+    getDeflated(Real r) const
     {
         StaticPolynomial res(*this);
-        res.deflate(v);
+        res.deflate(r);
         return res;
     }
 
+        /** Construct new polynomial representing this polynomial after
+            deflation at the complex root <tt>r</tt>. The resulting
+            polynomial will have complex coefficients, even if this
+            polynomial had real ones.
+        */
     StaticPolynomial<MAXORDER, Complex> 
-    getDeflated(Complex const & v) const
+    getDeflated(Complex const & r) const
     {
         StaticPolynomial<MAXORDER, Complex>  res(begin(), order(), epsilon());
-        res.deflate(v);
+        res.deflate(r);
         return res;
     }
 
@@ -606,6 +810,32 @@ int laguerre1Root(POLYNOMIAL const & p, Complex & x, unsigned int multiplicity)
 
 } // namespace detail 
 
+/*****************************************************************/
+/*                                                               */
+/*                         polynomialRoots                       */
+/*                                                               */
+/*****************************************************************/
+
+/** Determine the roots of the polynomial <tt>poriginal</tt>.
+
+    The roots are appended to the vector <tt>roots</tt>, with optional root
+    plishing as specified by <tt>polishRoots</tt> (default: do polishing). The function uses an 
+    improved version of Laguerre's algorithm. The improvements are as follows:
+    
+    <ul>
+    <li>It uses an clever initial guess for the iteration, according to a proposal by Tien Chen</li>
+    <li>It estimates each root's multiplicity, again according to Tien Chen, and reduces multiplicity
+        by switching to the polynomial's derivative (which has the same root, with multiplicity
+        reduces by one), as proposed by C. Bond.</li>
+    </ul>
+    
+    The algorithm has been successfully used for polynomials up to order 80.
+    The function stops and returns <tt>false</tt> if an iteration fails to converge within 
+    80 steps. 
+
+    <b>\#include</b> "<a href="polynomial_8hxx-source.html">vigra/polynomial.hxx</a>"<br>
+    Namespace: vigra
+*/
 template <class POLYNOMIAL, class VECTOR>
 bool polynomialRoots(POLYNOMIAL const & poriginal, VECTOR & roots, bool polishRoots)
 {
@@ -716,6 +946,13 @@ polynomialRoots(POLYNOMIAL const & poriginal, VECTOR & roots)
     return polynomialRoots(poriginal, roots, true);
 }
 
+/** Determine the real roots of the polynomial <tt>p</tt>.
+
+    This function simply calls \ref polynomialRoots() and than throws away all complex roots.
+
+    <b>\#include</b> "<a href="polynomial_8hxx-source.html">vigra/polynomial.hxx</a>"<br>
+    Namespace: vigra
+*/
 template <class POLYNOMIAL, class VECTOR>
 bool polynomialRealRoots(POLYNOMIAL const & p, VECTOR & roots, bool polishRoots)
 {
@@ -735,6 +972,8 @@ polynomialRealRoots(POLYNOMIAL const & poriginal, VECTOR & roots)
 {
     return polynomialRealRoots(poriginal, roots, true);
 }
+
+//@}
 
 } // namespace vigra
 
