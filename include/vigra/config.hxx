@@ -85,21 +85,31 @@
         #endif / _MSC_EXTENSIONS
     #endif // _MSC_VER < 1310
 
-
+    #define VIGRA_NEED_BIN_STREAMS
 #endif // _MSC_VER
 
 ///////////////////////////////////////////////////////////
 //                                                       //
-//                        egcs 1.1                       //
+//                           gcc                         //
 //                                                       //
 ///////////////////////////////////////////////////////////
 
 #if defined(__GNUC__) 
     #if  __GNUC__ < 2 || ((__GNUC__ == 2) && (__GNUC_MINOR__ <= 8))
-        #error "Need at least egcs 1.1 or g++ 2.95"
+        #error "Need at least g++ 2.95"
     #endif 
     #define HAS_HASH_CONTAINERS
 #endif  // __GNUC__
+
+///////////////////////////////////////////////////////////
+//                                                       //
+//                         MingW                         //
+//                                                       //
+///////////////////////////////////////////////////////////
+
+#if defined(__MINGW32__) 
+    #define VIGRA_NEED_BIN_STREAMS
+#endif  // __MINGW32__
 
 ///////////////////////////////////////////////////////////
 //                                                       //
