@@ -5,6 +5,8 @@
 #include "vigra/impex.hxx"
 #include "vigra/imagecontainer.hxx"
 #include "vigra/inspectimage.hxx"
+#include "vigra/pixelneighborhood.hxx"
+#include "vigra/contourcirculator.hxx"
 
 using vigra::Diff2D;
 using namespace vigra;
@@ -340,19 +342,355 @@ struct ImageContainerTestSuite
     }
 };
 
+struct NeighborhoodCirculatorTest
+{
+    typedef vigra::NeighborhoodCirculator<vigra::BImage::Iterator, vigra::EightNeighborCode>
+    EightCirculator;
+    typedef vigra::NeighborhoodCirculator<vigra::BImage::Iterator, vigra::FourNeighborCode>
+    FourCirculator;
+
+    vigra::BImage img;
+    EightCirculator eightCirc;
+    FourCirculator fourCirc;
+
+    NeighborhoodCirculatorTest()
+        : img(4, 4),
+          eightCirc(img.upperLeft() + vigra::Diff2D(1, 1)),
+          fourCirc(img.upperLeft() + vigra::Diff2D(1, 1))
+    {
+        for(int y= 0; y<img.height(); y++)
+            for(int x= 0; x<img.width(); x++)
+                img(x, y)= y*img.width() + x;
+    }
+
+    void testInit()
+    {
+        shouldEqual(*eightCirc, 6);
+        should(!eightCirc.isDiagonal());
+        shouldEqual(*fourCirc, 6);
+        should(!fourCirc.isDiagonal());
+    }
+
+    void testEightCirculateForward()
+    {
+        eightCirc++;
+        shouldEqual(*eightCirc, 2);
+        eightCirc++;
+        shouldEqual(*eightCirc, 1);
+        eightCirc++;
+        shouldEqual(*eightCirc, 0);
+        eightCirc++;
+        shouldEqual(*eightCirc, 4);
+        eightCirc++;
+        shouldEqual(*eightCirc, 8);
+        eightCirc++;
+        shouldEqual(*eightCirc, 9);
+        eightCirc++;
+        shouldEqual(*eightCirc, 10);
+        eightCirc++;
+        shouldEqual(*eightCirc, 6);
+    }
+
+    void testEightCirculateReverse()
+    {
+        eightCirc--;
+        shouldEqual(*eightCirc, 10);
+        eightCirc--;
+        shouldEqual(*eightCirc, 9);
+        eightCirc--;
+        shouldEqual(*eightCirc, 8);
+        eightCirc--;
+        shouldEqual(*eightCirc, 4);
+        eightCirc--;
+        shouldEqual(*eightCirc, 0);
+        eightCirc--;
+        shouldEqual(*eightCirc, 1);
+        eightCirc--;
+        shouldEqual(*eightCirc, 2);
+        eightCirc--;
+        shouldEqual(*eightCirc, 6);
+    }
+
+    void testFourCirculateForward()
+    {
+        fourCirc++;
+        shouldEqual(*fourCirc, 1);
+        fourCirc++;
+        shouldEqual(*fourCirc, 4);
+        fourCirc++;
+        shouldEqual(*fourCirc, 9);
+        fourCirc++;
+        shouldEqual(*fourCirc, 6);
+    }
+
+    void testFourCirculateReverse()
+    {
+        fourCirc--;
+        shouldEqual(*fourCirc, 9);
+        fourCirc--;
+        shouldEqual(*fourCirc, 4);
+        fourCirc--;
+        shouldEqual(*fourCirc, 1);
+        fourCirc--;
+        shouldEqual(*fourCirc, 6);
+    }
+
+    void testIsDiagonal()
+    {
+        for(int i=0; i<10; i++, eightCirc++, fourCirc++)
+        {
+            if(i%2)
+                should(eightCirc.isDiagonal());
+            else
+                should(!eightCirc.isDiagonal());
+            should(!fourCirc.isDiagonal());
+        }
+    }
+
+    void testEquality()
+    {
+        EightCirculator eightCirc2 = eightCirc;
+        should(eightCirc == eightCirc2);
+        eightCirc2++;
+        should(eightCirc != eightCirc2);
+        eightCirc2++;
+        should(eightCirc != eightCirc2);
+        eightCirc++;
+        should(eightCirc != eightCirc2);
+        eightCirc2--;
+        should(eightCirc == eightCirc2);
+
+        FourCirculator fourCirc2(img.upperLeft() + vigra::Diff2D(1, 1));
+        should(fourCirc == fourCirc2);
+        fourCirc--;
+        should(fourCirc != fourCirc2);
+
+        eightCirc2 = eightCirc + 3;
+        eightCirc += 3;
+        should(eightCirc == eightCirc2);
+
+        fourCirc2 = fourCirc + 3;
+        fourCirc += 3;
+        should(fourCirc == fourCirc2);
+    }
+
+    void testTurning()
+    {
+        for(int i=0; i<4; i++)
+        {
+            shouldEqual(*fourCirc, *eightCirc);
+            fourCirc.turnRight();
+            eightCirc.turnRight();
+        }
+
+        for(int i=0; i<4; i++)
+        {
+            shouldEqual(*fourCirc, *eightCirc);
+            fourCirc.turnLeft();
+            eightCirc.turnLeft();
+        }
+
+        fourCirc.turnLeft();
+        fourCirc.turnLeft();
+        eightCirc.turnRound();
+        shouldEqual(*fourCirc, *eightCirc);
+
+        eightCirc.turnRight();
+        eightCirc.turnRight();
+        fourCirc.turnRound();
+        shouldEqual(*fourCirc, *eightCirc);
+    }
+
+    void testMoving()
+    {
+        eightCirc.swapCenterNeighbor();
+        shouldEqual(*eightCirc, 5); // looking west from 6 now
+        eightCirc++;
+        shouldEqual(*eightCirc, 9);
+        eightCirc++;
+        shouldEqual(*eightCirc, 10);
+        eightCirc++;
+        shouldEqual(*eightCirc, 11);
+        eightCirc++;
+        shouldEqual(*eightCirc, 7); // looking east again
+
+        eightCirc+= 4; // looking west again
+        eightCirc.moveCenterToNeighbor();
+        shouldEqual(*eightCirc, 4);
+    }
+
+    void testMiscellaneous()
+    {
+        // test direction()
+        should(fourCirc.direction() == vigra::FourNeighborCode::East);
+
+        // test operator -
+        EightCirculator eightCirc2 = eightCirc;
+        for(int i=0; i<7; i++, eightCirc2++)
+            shouldEqual(eightCirc2 - eightCirc, i);
+
+        // test operator[]
+        should(eightCirc2[1] == *eightCirc);
+
+        // test base()
+        eightCirc += vigra::EightNeighborCode::SouthEast - eightCirc.direction();
+        eightCirc.moveCenterToNeighbor();
+        should(eightCirc.base() - img.upperLeft() == vigra::Diff2D(3, 3));
+        eightCirc.turnRound();
+        eightCirc.swapCenterNeighbor();
+        should(eightCirc.base() - img.upperLeft() == vigra::Diff2D(2, 2));
+        eightCirc.turnRound();
+        should(eightCirc.base() - img.upperLeft() == vigra::Diff2D(0, 0));
+    }
+};
+
+struct CrackContourCirculatorTest
+{
+    typedef vigra::CrackContourCirculator<vigra::BImage::traverser> CrackCirc;
+
+    vigra::BImage img;
+
+    CrackContourCirculatorTest()
+            : img(8,8)
+    {
+        static int imdata[] = {
+            0, 0, 0, 0, 0, 0, 0, 0,
+            0, 1, 1, 0, 0, 1, 0, 0,
+            0, 1, 1, 1, 1, 1, 1, 0,
+            0, 1, 1, 1, 1, 0, 0, 0,
+            0, 0, 0, 1, 1, 0, 0, 0,
+            0, 0, 1, 1, 1, 1, 1, 0,
+            0, 0, 1, 1, 1, 1, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0
+        };
+    
+        for(int i = 0; i<img.width()*img.height(); ++i)
+            img.begin()[i] = imdata[i];
+    }
+
+    void testInit()
+    {
+        CrackCirc crackCirc(img.upperLeft() + vigra::Diff2D(1, 1));
+        CrackCirc end = crackCirc;
+        
+        should(crackCirc.pos() == vigra::Diff2D(0, 0));
+        ++crackCirc;
+        should(crackCirc.pos() == vigra::Diff2D(0, 1));
+        ++crackCirc;
+        should(crackCirc.pos() == vigra::Diff2D(0, 2));
+        ++crackCirc;
+        should(crackCirc.pos() == vigra::Diff2D(0, 3));
+        ++crackCirc;
+        should(crackCirc.pos() == vigra::Diff2D(1, 3));
+        ++crackCirc;
+        should(crackCirc.pos() == vigra::Diff2D(2, 3));
+        ++crackCirc;
+        should(crackCirc.pos() == vigra::Diff2D(2, 4));
+        ++crackCirc;
+        should(crackCirc.pos() == vigra::Diff2D(1, 4));
+        ++crackCirc;
+        should(crackCirc.pos() == vigra::Diff2D(1, 5));
+        ++crackCirc;
+        should(crackCirc.pos() == vigra::Diff2D(1, 6));
+        ++crackCirc;
+        should(crackCirc.pos() == vigra::Diff2D(2, 6));
+        ++crackCirc;
+        should(crackCirc.pos() == vigra::Diff2D(3, 6));
+        ++crackCirc;
+        should(crackCirc.pos() == vigra::Diff2D(4, 6));
+        ++crackCirc;
+        should(crackCirc.pos() == vigra::Diff2D(5, 6));
+        ++crackCirc;
+        should(crackCirc.pos() == vigra::Diff2D(5, 5));
+        ++crackCirc;
+        should(crackCirc.pos() == vigra::Diff2D(6, 5));
+        ++crackCirc;
+        should(crackCirc.pos() == vigra::Diff2D(6, 4));
+        ++crackCirc;
+        should(crackCirc.pos() == vigra::Diff2D(5, 4));
+        ++crackCirc;
+        should(crackCirc.pos() == vigra::Diff2D(4, 4));
+        ++crackCirc;
+        should(crackCirc.pos() == vigra::Diff2D(4, 3));
+        ++crackCirc;
+        should(crackCirc.pos() == vigra::Diff2D(4, 2));
+        ++crackCirc;
+        should(crackCirc.pos() == vigra::Diff2D(5, 2));
+        ++crackCirc;
+        should(crackCirc.pos() == vigra::Diff2D(6, 2));
+        ++crackCirc;
+        should(crackCirc.pos() == vigra::Diff2D(6, 1));
+        ++crackCirc;
+        should(crackCirc.pos() == vigra::Diff2D(5, 1));
+        ++crackCirc;
+        should(crackCirc.pos() == vigra::Diff2D(5, 0));
+        ++crackCirc;
+        should(crackCirc.pos() == vigra::Diff2D(4, 0));
+        ++crackCirc;
+        should(crackCirc.pos() == vigra::Diff2D(4, 1));
+        ++crackCirc;
+        should(crackCirc.pos() == vigra::Diff2D(3, 1));
+        ++crackCirc;
+        should(crackCirc.pos() == vigra::Diff2D(2, 1));
+        ++crackCirc;
+        should(crackCirc.pos() == vigra::Diff2D(2, 0));
+        ++crackCirc;
+        should(crackCirc.pos() == vigra::Diff2D(1, 0));
+        ++crackCirc;
+        should(crackCirc == end);
+    }
+
+};
+
+struct NeighborhoodCirculatorTestSuite
+: public vigra::test_suite
+{
+    NeighborhoodCirculatorTestSuite()
+    : vigra::test_suite("NeighborhoodCirculatorTestSuite")
+    {
+        add( testCase( &NeighborhoodCirculatorTest::testInit));
+        add( testCase( &NeighborhoodCirculatorTest::testEightCirculateForward));
+        add( testCase( &NeighborhoodCirculatorTest::testEightCirculateReverse));
+        add( testCase( &NeighborhoodCirculatorTest::testFourCirculateForward));
+        add( testCase( &NeighborhoodCirculatorTest::testFourCirculateReverse));
+        add( testCase( &NeighborhoodCirculatorTest::testIsDiagonal));
+        add( testCase( &NeighborhoodCirculatorTest::testEquality));
+        add( testCase( &NeighborhoodCirculatorTest::testTurning));
+        add( testCase( &NeighborhoodCirculatorTest::testMoving));
+        add( testCase( &NeighborhoodCirculatorTest::testMiscellaneous));
+   }
+};
+
+struct CrackContourCirculatorTestSuite
+: public vigra::test_suite
+{
+    CrackContourCirculatorTestSuite()
+    : vigra::test_suite("CrackContourCirculatorTestSuite")
+    {
+        add( testCase( &CrackContourCirculatorTest::testInit));
+   }
+};
+
+struct ImageTestCollection
+: public vigra::test_suite
+{
+    ImageTestCollection()
+    : vigra::test_suite("ImageTestCollection")
+    {
+        add( new ImageTestSuite);
+        add( new ImageContainerTestSuite);
+        add( new NeighborhoodCirculatorTestSuite);
+        add( new CrackContourCirculatorTestSuite);
+   }
+};
+
 int main()
 {
-    ImageTestSuite test;
+    ImageTestCollection test;
 
     int failed = test.run();
 
     std::cout << test.report() << std::endl;
-
-	ImageContainerTestSuite containerTest;
-	
-	failed = failed || containerTest.run();
-
-	std::cout << containerTest.report() << std::endl;
 
     return (failed != 0);
 }
