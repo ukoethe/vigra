@@ -23,6 +23,7 @@
 
 #include "error.hxx"
 #include "tiff.hxx"
+#include <iostream>
 
 extern "C"
 {
@@ -77,7 +78,7 @@ namespace vigra {
         desc.bandNumbers[1] = 2;
         desc.bandNumbers[2] = 3;
         desc.bandNumbers[3] = 4;
-        
+
         return desc;
     }
 
@@ -249,7 +250,7 @@ namespace vigra {
                                      &photometric ) )
             vigra_fail( "TIFFDecoderImpl::init(): Photometric tag is not set."
                         " A suitable default was not found." );
-        
+
         // check photometric preconditions
         if ( samples_per_pixel == 1 )
             vigra_precondition( photometric == PHOTOMETRIC_MINISWHITE ||
@@ -304,7 +305,7 @@ namespace vigra {
                         case 32:
                             pixeltype = "INT32";
                             break;
-                    }       
+                    }
                     std::cerr << "Warning: no TIFFTAG_SAMPLEFORMAT or TIFFTAG_DATATYPE, "
                                  "guessing pixeltype '" << pixeltype << "'.\n";
                 }
@@ -434,7 +435,7 @@ namespace vigra {
 
     unsigned int TIFFDecoder::getOffset() const
     {
-        return pimpl->planarconfig == PLANARCONFIG_SEPARATE ? 
+        return pimpl->planarconfig == PLANARCONFIG_SEPARATE ?
             1 : pimpl->samples_per_pixel;
     }
 
@@ -561,14 +562,14 @@ namespace vigra {
         // set photometric
         if ( samples_per_pixel == 3 )
             TIFFSetField( tiff, TIFFTAG_PHOTOMETRIC, PHOTOMETRIC_RGB );
-        else 
+        else
             TIFFSetField( tiff, TIFFTAG_PHOTOMETRIC, PHOTOMETRIC_MINISBLACK );
 
         // alloc memory
         stripbuffer = new tdata_t[1];
         stripbuffer[0] = 0;
         stripbuffer[0] = _TIFFmalloc( TIFFStripSize(tiff) );
-        
+
         finalized = true;
     }
 
