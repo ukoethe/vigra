@@ -454,6 +454,11 @@ class TinyVectorBase
         */
     size_type size() const { return SIZE; }
 
+    pointer data() { return data_; }
+
+    const_pointer data() const { return data_; }
+
+
   protected:
     DATA data_;
 };
@@ -658,7 +663,7 @@ class TinyVectorView
     TinyVectorView(TinyVectorBase<T, SIZE, DATA, DERIVED> const & other)
     : BaseType()
     {
-        data_ = const_cast<pointer>(other.data_);
+        data_ = const_cast<pointer>(other.data());
     }
 
         /** Copy the data (not the pointer) of the rhs.
@@ -678,7 +683,6 @@ class TinyVectorView
         return *this;
     }
 };
-
 
 } // namespace vigra
 
