@@ -1,3 +1,5 @@
+#include "g++_relops_workaround.hxx"
+
 #include "rgb_images_policy.hxx"
 #include "rgb_basic_image_test.hxx"
 

@@ -1,3 +1,5 @@
+#include "g++_relops_workaround.hxx"
+
 #include "vector_4_image_policy.hxx"
 #include "basic_image_test.hxx"
 

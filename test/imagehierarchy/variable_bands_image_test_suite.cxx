@@ -1,3 +1,5 @@
+#include "g++_relops_workaround.hxx"
+
 #include "variable_bands_image_policy.hxx" 
 #include "vector_2_image_policy.hxx" 
 #include "vector_3_image_policy.hxx" 

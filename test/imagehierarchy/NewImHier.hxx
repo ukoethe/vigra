@@ -55,6 +55,7 @@ class ConstVectorProxy
     : data_(const_cast<TinyVector<value_type, 4> &>(v).begin()), size_(4)
     {}
 #endif                                                            //////AEND_1//////////////
+
     void reset(ConstVectorProxy const & v)
     {
         data_ = v.data_;
@@ -277,6 +278,14 @@ class VectorProxy
     
 #endif                                                              /////////AEND_4////////////
     
+    VectorProxy & operator=(value_type const & v)
+    {
+        vigra_precondition(size_ == 1,
+           "VectorProxy::operator=(): size mismatch.");
+        data_[0] = v;
+        return *this;
+    }
+    
     VectorProxy & operator=(VectorProxy const & v)
     {
         vigra_precondition(size_ == v.size(),
@@ -291,24 +300,6 @@ class VectorProxy
         vigra_precondition(size_ == v.size(),
            "VectorProxy::operator=(): size mismatch.");
         for(int i=0; i<size_; ++i)
-            data_[i] = v[i];
-        return *this;
-    }
-    
-    VectorProxy & operator=(value_type const & f)
-    {
-        vigra_precondition(size_ == 1,
-           "VectorProxy::operator=(): size mismatch.");
-        *data_ = f;
-        return *this;
-    }
-    
-    template <int N>
-    VectorProxy & operator=(TinyVector<value_type, N> const & v)
-    {
-        vigra_precondition(size_ == N,
-           "VectorProxy::operator=(): size mismatch.");
-        for(int i=0; i<N; ++i)
             data_[i] = v[i];
         return *this;
     }
@@ -1447,7 +1438,7 @@ class ConstSelectBandIterator
     
     row_iterator operator[](int dy) const
     {
-        return row_iterator(
+        return row_iterator(typename 
             row_iterator::BaseType(const_cast<pointer>(get(0, dy)), bands_));   //  braeuchte man hier nicht die Auswahl von bands?
     }
     
@@ -1458,13 +1449,14 @@ class ConstSelectBandIterator
     
     row_iterator rowIterator() const
     {
-        return (row_iterator(typename row_iterator::BaseType(get(), bands_)));
+        typedef typename row_iterator::BaseType BaseType;
+        return row_iterator(BaseType(get(), bands_));
     }
     
     column_iterator columnIterator() const
     {
         typedef typename column_iterator::BaseType BaseType;
-		return column_iterator(BaseType(get(), width_*bands_));
+	return column_iterator(BaseType(get(), width_*bands_));
     }
 };
 

@@ -1,16 +1,4 @@
-#ifdef __GNUC__
-
-#   define __STL_BEGIN_RELOPS_NAMESPACE namespace std { namespace rel_ops {
-#   define __STL_END_RELOPS_NAMESPACE }}
-#   define __STD_RELOPS std::rel_ops
- 
-#include <stl_relops.h>
-
-#   undef __STL_BEGIN_RELOPS_NAMESPACE 
-#   undef __STL_END_RELOPS_NAMESPACE 
-#   undef __STD_RELOPS
-
-#endif
+#include "g++_relops_workaround.hxx"
 
 #include "vector_3_image_policy.hxx"
 #include "imagehierarchy_test.hxx"

@@ -1,3 +1,5 @@
+#include "g++_relops_workaround.hxx"
+
 #include "single_band_image_policy.hxx" 
 #include "one_band_image_policy.hxx" 
 #include "single_band_image_test.hxx"

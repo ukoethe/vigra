@@ -1,12 +1,9 @@
 
-CXXFLAGS = -O -I /software/vigra1.1.4/include \
- -I /home/koethe/vigra/test/include \
+CXXFLAGS = -O -I../../current/include \
+ -I ../include \
  -I /software/boost-1.25.0/include
  
-LDFLAGS = \
- -L /software/vigra1.1.4/SunOS-5.6/lib \
- -L /software/tiff-v3.5.5/SunOS-5.6/lib \
- -L /software/jpeg-6b/SunOS-5.6/lib
+LDFLAGS = 
 
 #OBJ = one_band_basic_image_test_suite.o 
 #OBJ = gray_image_test_suite.o 
