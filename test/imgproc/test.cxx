@@ -961,7 +961,7 @@ struct ResizeImageTest
 
     /*Vergroesserungstest
     */
-    void testCubicFIRInterpolationExtensionWithLena()
+    void testCatmullRomInterpolationExtensionWithLena()
     {
         ImageImportInfo inforef("lenna367FIR.xv");
         Image ref(inforef.size());
@@ -977,7 +977,7 @@ struct ResizeImageTest
         
     /*Verkleinerungstest
     */
-    void testCubicFIRInterpolationReductionWithLena()
+    void testCatmullRomInterpolationReductionWithLena()
     {        
         ImageImportInfo inforef("lenna42FIR.xv");
         Image ref(inforef.size());
@@ -1009,7 +1009,7 @@ struct ResizeImageTest
         }
     }
     
-    void testCubicIIRInterpolationExtensionWithLena()
+    void testCubicInterpolationExtensionWithLena()
     {
         ImageImportInfo inforef("lenna367IIR.xv");
         Image ref(inforef.size());
@@ -1024,7 +1024,7 @@ struct ResizeImageTest
     
     /*Verkleinerungstest
     */
-    void testCubicIIRInterpolationReductionWithLena()
+    void testCubicInterpolationReductionWithLena()
     {        
         ImageImportInfo inforef("lenna42IIR.xv");
         Image ref(inforef.size());
@@ -1056,7 +1056,7 @@ struct ResizeImageTest
         }
     }
     
-    void testCubicFIRInterpolationExtensionHandControled()
+    void testCatmullRomInterpolationExtensionHandControled()
     {
         vigra::DImage src(6, 7), dest(10, 10, 145.346);
 
@@ -1210,12 +1210,11 @@ struct ImageFunctionsTestSuite
         add( testCase( &ResizeImageTest::scalarReduce));
         add( testCase( &ResizeImageTest::rgbExpand));
         add( testCase( &ResizeImageTest::rgbReduce));
-        add( testCase( &ResizeImageTest::testCubicFIRInterpolationExtensionWithLena));
-        add( testCase( &ResizeImageTest::testCubicFIRInterpolationReductionWithLena));
-        add( testCase( &ResizeImageTest::testCubicIIRInterpolationExtensionWithLena));
-        add( testCase( &ResizeImageTest::testCubicIIRInterpolationReductionWithLena));
-        add( testCase( &ResizeImageTest::testCubicFIRInterpolationExtensionHandControled));
-
+        add( testCase( &ResizeImageTest::testCatmullRomInterpolationExtensionWithLena));
+        add( testCase( &ResizeImageTest::testCatmullRomInterpolationReductionWithLena));
+        add( testCase( &ResizeImageTest::testCubicInterpolationExtensionWithLena));
+        add( testCase( &ResizeImageTest::testCubicInterpolationReductionWithLena));
+        add( testCase( &ResizeImageTest::testCatmullRomInterpolationExtensionHandControled));
         add( testCase( &SplineImageViewTest<2>::testPSF));
         add( testCase( &SplineImageViewTest<2>::testCoefficientArray));
         add( testCase( &SplineImageViewTest<2>::testImageResize));
