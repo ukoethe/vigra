@@ -779,6 +779,115 @@ class MultiImageAccessor2
 
 //@}
 
+template <class T>
+struct AccessorTraits
+{
+    typedef StandardAccessor<T>        default_accessor;
+    typedef StandardConstAccessor<T>   default_const_accessor;
+};
+
+#define VIGRA_DEFINE_ACCESSOR_TRAITS(VALUE, ACCESSOR, CONST_ACCESSOR) \
+    template <> \
+    struct AccessorTraits<VALUE > \
+    { \
+        typedef ACCESSOR<VALUE >         default_accessor; \
+        typedef CONST_ACCESSOR<VALUE >   default_const_accessor; \
+    };
+
+VIGRA_DEFINE_ACCESSOR_TRAITS(signed char, StandardValueAccessor, StandardConstValueAccessor) 
+VIGRA_DEFINE_ACCESSOR_TRAITS(unsigned char, StandardValueAccessor, StandardConstValueAccessor) 
+VIGRA_DEFINE_ACCESSOR_TRAITS(short, StandardValueAccessor, StandardConstValueAccessor) 
+VIGRA_DEFINE_ACCESSOR_TRAITS(unsigned short, StandardValueAccessor, StandardConstValueAccessor) 
+VIGRA_DEFINE_ACCESSOR_TRAITS(int, StandardValueAccessor, StandardConstValueAccessor) 
+VIGRA_DEFINE_ACCESSOR_TRAITS(unsigned int, StandardValueAccessor, StandardConstValueAccessor) 
+VIGRA_DEFINE_ACCESSOR_TRAITS(long, StandardValueAccessor, StandardConstValueAccessor) 
+VIGRA_DEFINE_ACCESSOR_TRAITS(unsigned long, StandardValueAccessor, StandardConstValueAccessor) 
+VIGRA_DEFINE_ACCESSOR_TRAITS(float, StandardValueAccessor, StandardConstValueAccessor) 
+VIGRA_DEFINE_ACCESSOR_TRAITS(double, StandardValueAccessor, StandardConstValueAccessor) 
+
+template <class T> class RGBValue;
+template <class T> class RGBAccessor;
+template <class T, int SIZE> class TinyVector;
+
+#ifndef NO_PARTIAL_TEMPLATE_SPECIALIZATION
+
+template <class T>
+struct AccessorTraits<RGBValue<T> >
+{
+    typedef RGBAccessor<RGBValue<T> >   default_accessor;
+    typedef RGBAccessor<RGBValue<T> >   default_const_accessor;
+};
+
+template <class T, int SIZE>
+struct AccessorTraits<TinyVector<T, SIZE> >
+{
+    typedef VectorAccessor<TinyVector<T, SIZE> >   default_accessor;
+    typedef VectorAccessor<TinyVector<T, SIZE> >   default_const_accessor;
+};
+
+#else // NO_PARTIAL_TEMPLATE_SPECIALIZATION
+
+VIGRA_DEFINE_ACCESSOR_TRAITS(RGBValue<unsigned char>, RGBAccessor, RGBAccessor)
+VIGRA_DEFINE_ACCESSOR_TRAITS(RGBValue<signed char>, RGBAccessor, RGBAccessor)
+VIGRA_DEFINE_ACCESSOR_TRAITS(RGBValue<short>, RGBAccessor, RGBAccessor)
+VIGRA_DEFINE_ACCESSOR_TRAITS(RGBValue<unsigned short>, RGBAccessor, RGBAccessor)
+VIGRA_DEFINE_ACCESSOR_TRAITS(RGBValue<int>, RGBAccessor, RGBAccessor)
+VIGRA_DEFINE_ACCESSOR_TRAITS(RGBValue<unsigned int>, RGBAccessor, RGBAccessor)
+VIGRA_DEFINE_ACCESSOR_TRAITS(RGBValue<long>, RGBAccessor, RGBAccessor)
+VIGRA_DEFINE_ACCESSOR_TRAITS(RGBValue<unsigned long>, RGBAccessor, RGBAccessor)
+VIGRA_DEFINE_ACCESSOR_TRAITS(RGBValue<float>, RGBAccessor, RGBAccessor)
+VIGRA_DEFINE_ACCESSOR_TRAITS(RGBValue<double>, RGBAccessor, RGBAccessor)
+
+#define VIGRA_PIXELTYPE TinyVector<unsigned char, 2>
+VIGRA_DEFINE_ACCESSOR_TRAITS(VIGRA_PIXELTYPE, VectorAccessor, VectorAccessor)
+#undef VIGRA_PIXELTYPE 
+#define VIGRA_PIXELTYPE TinyVector<unsigned char, 3>
+VIGRA_DEFINE_ACCESSOR_TRAITS(VIGRA_PIXELTYPE, VectorAccessor, VectorAccessor)
+#undef VIGRA_PIXELTYPE 
+#define VIGRA_PIXELTYPE TinyVector<unsigned char, 4>
+VIGRA_DEFINE_ACCESSOR_TRAITS(VIGRA_PIXELTYPE, VectorAccessor, VectorAccessor)
+#undef VIGRA_PIXELTYPE 
+#define VIGRA_PIXELTYPE TinyVector<short, 2>
+VIGRA_DEFINE_ACCESSOR_TRAITS(VIGRA_PIXELTYPE, VectorAccessor, VectorAccessor)
+#undef VIGRA_PIXELTYPE 
+#define VIGRA_PIXELTYPE TinyVector<short, 3>
+VIGRA_DEFINE_ACCESSOR_TRAITS(VIGRA_PIXELTYPE, VectorAccessor, VectorAccessor)
+#undef VIGRA_PIXELTYPE 
+#define VIGRA_PIXELTYPE TinyVector<short, 4>
+VIGRA_DEFINE_ACCESSOR_TRAITS(VIGRA_PIXELTYPE, VectorAccessor, VectorAccessor)
+#undef VIGRA_PIXELTYPE 
+#define VIGRA_PIXELTYPE TinyVector<int, 2>
+VIGRA_DEFINE_ACCESSOR_TRAITS(VIGRA_PIXELTYPE, VectorAccessor, VectorAccessor)
+#undef VIGRA_PIXELTYPE 
+#define VIGRA_PIXELTYPE TinyVector<int, 3>
+VIGRA_DEFINE_ACCESSOR_TRAITS(VIGRA_PIXELTYPE, VectorAccessor, VectorAccessor)
+#undef VIGRA_PIXELTYPE 
+#define VIGRA_PIXELTYPE TinyVector<int, 4>
+VIGRA_DEFINE_ACCESSOR_TRAITS(VIGRA_PIXELTYPE, VectorAccessor, VectorAccessor)
+#undef VIGRA_PIXELTYPE 
+#define VIGRA_PIXELTYPE TinyVector<float, 2>
+VIGRA_DEFINE_ACCESSOR_TRAITS(VIGRA_PIXELTYPE, VectorAccessor, VectorAccessor)
+#undef VIGRA_PIXELTYPE 
+#define VIGRA_PIXELTYPE TinyVector<float, 3>
+VIGRA_DEFINE_ACCESSOR_TRAITS(VIGRA_PIXELTYPE, VectorAccessor, VectorAccessor)
+#undef VIGRA_PIXELTYPE 
+#define VIGRA_PIXELTYPE TinyVector<float, 4>
+VIGRA_DEFINE_ACCESSOR_TRAITS(VIGRA_PIXELTYPE, VectorAccessor, VectorAccessor)
+#undef VIGRA_PIXELTYPE 
+#define VIGRA_PIXELTYPE TinyVector<double, 2>
+VIGRA_DEFINE_ACCESSOR_TRAITS(VIGRA_PIXELTYPE, VectorAccessor, VectorAccessor)
+#undef VIGRA_PIXELTYPE 
+#define VIGRA_PIXELTYPE TinyVector<double, 3>
+VIGRA_DEFINE_ACCESSOR_TRAITS(VIGRA_PIXELTYPE, VectorAccessor, VectorAccessor)
+#undef VIGRA_PIXELTYPE 
+#define VIGRA_PIXELTYPE TinyVector<double, 4>
+VIGRA_DEFINE_ACCESSOR_TRAITS(VIGRA_PIXELTYPE, VectorAccessor, VectorAccessor)
+#undef VIGRA_PIXELTYPE 
+
+#endif // NO_PARTIAL_TEMPLATE_SPECIALIZATION
+
+#undef VIGRA_DEFINE_ACCESSOR_TRAITS
+
 } // namespace vigra
 
 #endif // VIGRA_ACCESSOR_HXX
