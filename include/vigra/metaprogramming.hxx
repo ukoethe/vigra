@@ -79,6 +79,7 @@ class TypeTraits
 };
 
 #ifndef NO_PARTIAL_TEMPLATE_SPECIALIZATION
+
 template<class T> 
 class TypeTraits<T *>
 {
@@ -94,7 +95,8 @@ class TypeTraits<T const *>
     typedef VigraTrueType isPOD;
     typedef VigraTrueType isBuiltinType;
 };
-#endif
+
+#endif // NO_PARTIAL_TEMPLATE_SPECIALIZATION
 
 #define VIGRA_TYPE_TRAITS(type) \
 template<> \
@@ -121,6 +123,22 @@ VIGRA_TYPE_TRAITS(long double)
 #undef VIGRA_TYPE_TRAITS
 
 //@}
+
+#ifndef NO_PARTIAL_TEMPLATE_SPECIALIZATION
+
+template <class PREDICATE, class TRUECASE, class FALSECASE>
+struct If
+{
+    typedef TRUECASE type;
+};
+
+template <class TRUECASE, class FALSECASE>
+struct If<VigraFalseType, TRUECASE, FALSECASE>
+{
+    typedef FALSECASE type;
+};
+
+#endif // NO_PARTIAL_TEMPLATE_SPECIALIZATION
 
 } // namespace vigra
 
