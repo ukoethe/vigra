@@ -569,26 +569,6 @@ destIterRange(Iterator upperleft, Iterator lowerright, Accessor a)
 /****************************************************************/
 
 template <class PixelType, class Accessor>
-inline triple<typename BasicImage<PixelType>::Iterator, 
-              typename BasicImage<PixelType>::Iterator, Accessor>
-srcImageRange(BasicImage<PixelType> & img, Accessor a)
-{
-    return triple<typename BasicImage<PixelType>::Iterator, 
-                  typename BasicImage<PixelType>::Iterator, 
-          Accessor>(img.upperLeft(),
-                    img.lowerRight(),
-                a);
-}
-
-template <class PixelType, class Accessor>
-inline pair<typename BasicImage<PixelType>::Iterator, Accessor>
-srcImage(BasicImage<PixelType> & img, Accessor a)
-{
-    return pair<typename BasicImage<PixelType>::Iterator, 
-                Accessor>(img.upperLeft(), a);
-}
-
-template <class PixelType, class Accessor>
 inline triple<typename BasicImage<PixelType>::ConstIterator, 
               typename BasicImage<PixelType>::ConstIterator, Accessor>
 srcImageRange(BasicImage<PixelType> const & img, Accessor a)
@@ -629,14 +609,6 @@ destImage(BasicImage<PixelType> & img, Accessor a)
 }
 
 template <class PixelType, class Accessor>
-inline pair<typename BasicImage<PixelType>::Iterator, Accessor>
-maskImage(BasicImage<PixelType> & img, Accessor a)
-{
-    return pair<typename BasicImage<PixelType>::Iterator, 
-                Accessor>(img.upperLeft(), a);
-}
-
-template <class PixelType, class Accessor>
 inline pair<typename BasicImage<PixelType>::ConstIterator, Accessor>
 maskImage(BasicImage<PixelType> const & img, Accessor a)
 {
@@ -647,48 +619,25 @@ maskImage(BasicImage<PixelType> const & img, Accessor a)
 /****************************************************************/
 
 template <class PixelType>
-inline triple<typename BasicImage<PixelType>::Iterator, 
-              typename BasicImage<PixelType>::Iterator, 
-          typename BasicImage<PixelType>::Accessor>
-srcImageRange(BasicImage<PixelType> & img)
-{
-    return triple<typename BasicImage<PixelType>::Iterator, 
-                  typename BasicImage<PixelType>::Iterator, 
-          typename BasicImage<PixelType>::Accessor>(img.upperLeft(),
-                                        img.lowerRight(),
-                        img.accessor());
-}
-
-template <class PixelType>
-inline pair< typename BasicImage<PixelType>::Iterator, 
-             typename BasicImage<PixelType>::Accessor>
-srcImage(BasicImage<PixelType> & img)
-{
-    return pair<typename BasicImage<PixelType>::Iterator, 
-                typename BasicImage<PixelType>::Accessor>(img.upperLeft(), 
-                                         img.accessor());
-}
-
-template <class PixelType>
 inline triple<typename BasicImage<PixelType>::ConstIterator, 
               typename BasicImage<PixelType>::ConstIterator, 
-          typename BasicImage<PixelType>::Accessor>
+          typename BasicImage<PixelType>::ConstAccessor>
 srcImageRange(BasicImage<PixelType> const & img)
 {
     return triple<typename BasicImage<PixelType>::ConstIterator, 
                   typename BasicImage<PixelType>::ConstIterator, 
-          typename BasicImage<PixelType>::Accessor>(img.upperLeft(),
+          typename BasicImage<PixelType>::ConstAccessor>(img.upperLeft(),
                                         img.lowerRight(),
                         img.accessor());
 }
 
 template <class PixelType>
 inline pair< typename BasicImage<PixelType>::ConstIterator, 
-             typename BasicImage<PixelType>::Accessor>
+             typename BasicImage<PixelType>::ConstAccessor>
 srcImage(BasicImage<PixelType> const & img)
 {
     return pair<typename BasicImage<PixelType>::ConstIterator, 
-                typename BasicImage<PixelType>::Accessor>(img.upperLeft(), 
+                typename BasicImage<PixelType>::ConstAccessor>(img.upperLeft(), 
                                          img.accessor());
 }
 
@@ -716,22 +665,12 @@ destImage(BasicImage<PixelType> & img)
 }
 
 template <class PixelType>
-inline pair< typename BasicImage<PixelType>::Iterator, 
-             typename BasicImage<PixelType>::Accessor>
-maskImage(BasicImage<PixelType> & img)
-{
-    return pair<typename BasicImage<PixelType>::Iterator, 
-                typename BasicImage<PixelType>::Accessor>(img.upperLeft(), 
-                                         img.accessor());
-}
-
-template <class PixelType>
 inline pair< typename BasicImage<PixelType>::ConstIterator, 
-             typename BasicImage<PixelType>::Accessor>
+             typename BasicImage<PixelType>::ConstAccessor>
 maskImage(BasicImage<PixelType> const & img)
 {
     return pair<typename BasicImage<PixelType>::ConstIterator, 
-                typename BasicImage<PixelType>::Accessor>(img.upperLeft(), 
+                typename BasicImage<PixelType>::ConstAccessor>(img.upperLeft(), 
                                          img.accessor());
 }
 
