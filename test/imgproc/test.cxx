@@ -281,68 +281,74 @@ struct ImageFunctionsTest
 
     void findBoundingRectangleTest()
     {
-        vigra::FindBoundingRectangle rect;
+        vigra::FindBoundingRectangle findRect;
 
         mask = 0;
         mask(1,1) = 1;
 
         inspectImageIf(srcIterRange<Diff2D>(vigra::Diff2D(0,0), img.size()),
-                       maskImage(mask), rect);
+                       maskImage(mask), findRect);
 
-        should(rect.upperLeft.x == 1);
-        should(rect.upperLeft.y == 1);
-        should(rect.lowerRight.x == 2);
-        should(rect.lowerRight.y == 2);
+        Rect2D rect = findRect();
+        should(rect.upperLeft().x == 1);
+        should(rect.upperLeft().y == 1);
+        should(rect.lowerRight().x == 2);
+        should(rect.lowerRight().y == 2);
 
         mask(1,0) = 1;
 
         inspectImageIf(srcIterRange<Diff2D>(vigra::Diff2D(0,0), img.size()),
-                       maskImage(mask), rect);
+                       maskImage(mask), findRect);
 
-        should(rect.upperLeft.x == 1);
-        should(rect.upperLeft.y == 0);
-        should(rect.lowerRight.x == 2);
-        should(rect.lowerRight.y == 2);
+        rect = findRect();
+        should(rect.upperLeft().x == 1);
+        should(rect.upperLeft().y == 0);
+        should(rect.lowerRight().x == 2);
+        should(rect.lowerRight().y == 2);
 
         mask(0,1) = 1;
 
         inspectImageIf(srcIterRange<Diff2D>(vigra::Diff2D(0,0), img.size()),
-                       maskImage(mask), rect);
+                       maskImage(mask), findRect);
 
-        should(rect.upperLeft.x == 0);
-        should(rect.upperLeft.y == 0);
-        should(rect.lowerRight.x == 2);
-        should(rect.lowerRight.y == 2);
+        rect = findRect();
+        should(rect.upperLeft().x == 0);
+        should(rect.upperLeft().y == 0);
+        should(rect.lowerRight().x == 2);
+        should(rect.lowerRight().y == 2);
 
         mask(1,2) = 1;
 
         inspectImageIf(srcIterRange<Diff2D>(vigra::Diff2D(0,0), img.size()),
-                       maskImage(mask), rect);
+                       maskImage(mask), findRect);
 
-        should(rect.upperLeft.x == 0);
-        should(rect.upperLeft.y == 0);
-        should(rect.lowerRight.x == 2);
-        should(rect.lowerRight.y == 3);
+        rect = findRect();
+        should(rect.upperLeft().x == 0);
+        should(rect.upperLeft().y == 0);
+        should(rect.lowerRight().x == 2);
+        should(rect.lowerRight().y == 3);
 
         mask(2,1) = 1;
 
         inspectImageIf(srcIterRange<Diff2D>(vigra::Diff2D(0,0), img.size()),
-                       maskImage(mask), rect);
+                       maskImage(mask), findRect);
 
-        should(rect.upperLeft.x == 0);
-        should(rect.upperLeft.y == 0);
-        should(rect.lowerRight.x == 3);
-        should(rect.lowerRight.y == 3);
+        rect = findRect();
+        should(rect.upperLeft().x == 0);
+        should(rect.upperLeft().y == 0);
+        should(rect.lowerRight().x == 3);
+        should(rect.lowerRight().y == 3);
 
-        vigra::FindBoundingRectangle rect1;
-        rect1(vigra::Diff2D(4,4));
+        vigra::FindBoundingRectangle findRect1;
+        findRect1(vigra::Diff2D(4,4));
 
-        rect(rect1);
+        findRect(findRect1);
 
-        should(rect.upperLeft.x == 0);
-        should(rect.upperLeft.y == 0);
-        should(rect.lowerRight.x == 5);
-        should(rect.lowerRight.y == 5);
+        rect = findRect();
+        should(rect.upperLeft().x == 0);
+        should(rect.upperLeft().y == 0);
+        should(rect.lowerRight().x == 5);
+        should(rect.lowerRight().y == 5);
     }
 
     void arrayOfRegionStatisticsTest()
