@@ -36,7 +36,8 @@
 namespace vigra {
 
 /** @heading Edge Detection
-    @memo zero-crossing based edge detectors and related post-processing
+    @memo edge detectors based on first and second derivatives,
+          and related post-processing
 */
 //@{ 
                                     
@@ -49,7 +50,7 @@ namespace vigra {
 /** Detect and mark edges in an image.
     This operator applies an exponential filter to the source image 
     at the given #scale# and subtracts the result from the original image. 
-    Zero crossings are detected in the reulting difference image. Whenever the
+    Zero crossings are detected in the resulting difference image. Whenever the
     gradient at a zero crossing is greater than the given #gradient_threshold#,
     an edge point is marked (using #edge_marker#) in the destination image on
     the darker side of the zero crossing (note that zero crossings occur 
@@ -1112,8 +1113,6 @@ void beautifyCellGridImage(
                     edge_marker, background_marker);
 }
 
-//@}
-
 
 /* orientation will be given like this:
 
@@ -1129,7 +1128,10 @@ void beautifyCellGridImage(
 */
 struct Edgel
 {
-    float x, y, strength, orientation;
+    float x; 
+    float y;
+    float strength;
+    float orientation;
 };
 
 template <class PixelType>
@@ -1243,6 +1245,80 @@ void internalCannyFindEdgels(BasicImage<PixelType> const & dx,
     }
 }
 
+/********************************************************/
+/*                                                      */
+/*                      cannyEdgelList                  */
+/*                                                      */
+/********************************************************/
+
+/** Simple implementation of Canny's edge detector.
+    This operator first calls calculates the gradient vector for each
+    pixel of the image using a first derivative of a Gaussian at the 
+    given scale. Then a very simple non-maxima supression is performed: 
+    for each 3x3 neighborhood, it is determined whether the center pixel has 
+    larger gradient magnitude than its two neighbors in gradient direction
+    (where the direction is rounded into octands). If this is the case,
+    a new \Ref{Edgel} is appended to the given vector of #edgels#. The subpixel
+    edgel position is determined as the location of the maximum of a parabola 
+    which interpolates the three neighboring gradient magnitude values 
+    along the gradient direction. These values, along with the gradient magnitude
+    and direction, are written in the newly created edgel.
+    
+    {\bf Declarations:}
+    
+    pass arguments explicitly:
+    \begin{verbatim}
+    namespace vigra {
+        template <class SrcIterator, class SrcAccessor>
+        void cannyEdgelList(SrcIterator ul, SrcIterator lr, SrcAccessor src,
+                                std::vector<Edgel> & edgels, double scale);
+    }
+    \end{verbatim}
+    
+    use argument objects in conjuction with \Ref{Argument Object Factories}:
+    \begin{verbatim}
+    namespace vigra {
+        template <class SrcIterator, class SrcAccessor>
+        void 
+        cannyEdgelList(triple<SrcIterator, SrcIterator, SrcAccessor> src,
+                       std::vector<Edgel> & edgels, double scale);
+    }
+    \end{verbatim}
+    
+    {\bf Usage:}
+    
+    Include-File:
+        \URL[vigra/edgedetection.hxx]{../include/vigra/edgedetection.hxx}\\
+    Namespace: vigra
+    
+    \begin{verbatim}
+    vigra::BImage src(w,h);
+    
+    // empty edgel list
+    std::vector<vigra::Edgel> edgels;
+    ...
+    
+    // find edgels at scale 0.8  
+    vigra::cannyEdgelList(srcImageRange(src), edgels, 0.8);
+    \end{verbatim}
+
+    {\bf Required Interface:}
+    
+    \begin{verbatim}
+    SrcImageIterator src_upperleft;
+    SrcAccessor src_accessor;
+    
+    src_accessor(src_upperleft);
+    \end{verbatim}
+    
+    SrcAccessor::value_type must be a type convertible to float
+    
+    {\bf Preconditions:}
+    
+    \begin{verbatim}
+    scale > 0
+    \end{verbatim}
+*/
 template <class SrcIterator, class SrcAccessor>
 void cannyEdgelList(SrcIterator ul, SrcIterator lr, SrcAccessor src,
                         std::vector<Edgel> & edgels, double scale)
@@ -1283,13 +1359,91 @@ cannyEdgelList(triple<SrcIterator, SrcIterator, SrcAccessor> src,
     cannyEdgelList(src.first, src.second, src.third, edgels, scale);
 }
 
+/********************************************************/
+/*                                                      */
+/*                       cannyEdgeImage                 */
+/*                                                      */
+/********************************************************/
+
+/** Detect and mark edges in an image using Canny's algorithm.
+    This operator first calls \Ref{cannyEdgelList} to generate an 
+    edgel list for the given image. Than it scan this list and selects edgels
+    whose strength is above the given #gradient_threshold#. For each of these 
+    edgels, the edgel location is rounded to the nearest pixel, and that
+    pixl is marked with the given #edge_marker#.
+    
+    {\bf Declarations:}
+    
+    pass arguments explicitly:
+    \begin{verbatim}
+    namespace vigra {
+        template <class SrcIterator, class SrcAccessor,
+                  class DestIterator, class DestAccessor, 
+                  class SrcValue, class DestValue>
+        void cannyEdgeImage(
+                   SrcIterator sul, SrcIterator slr, SrcAccessor sa,
+                   DestIterator dul, DestAccessor da,
+                   double scale, float gradient_threshold, DestValue edge_marker);
+    }
+    \end{verbatim}
+    
+    use argument objects in conjuction with \Ref{Argument Object Factories}:
+    \begin{verbatim}
+    namespace vigra {
+        template <class SrcIterator, class SrcAccessor,
+                  class DestIterator, class DestAccessor, 
+                  class SrcValue, class DestValue>
+        inline void cannyEdgeImage(
+                   triple<SrcIterator, SrcIterator, SrcAccessor> src,
+                   pair<DestIterator, DestAccessor> dest,
+                   double scale, float gradient_threshold, DestValue edge_marker);
+    }
+    \end{verbatim}
+    
+    {\bf Usage:}
+    
+    Include-File:
+        \URL[vigra/edgedetection.hxx]{../include/vigra/edgedetection.hxx}\\
+    Namespace: vigra
+    
+    \begin{verbatim}
+    vigra::BImage src(w,h), edges(w,h);
+    
+    // empty edge image
+    edges = 0;
+    ...
+    
+    // find edges at scale 0.8 with gradient larger than 4.0, mark with 1 
+    vigra::cannyEdgeImage(srcImageRange(src), destImage(edges), 
+                                     0.8, 4.0, 1);
+    \end{verbatim}
+
+    {\bf Required Interface:}
+    
+    see also: \Ref{cannyEdgleList}.
+    
+    \begin{verbatim}
+    DestImageIterator dest_upperleft;
+    DestAccessor dest_accessor;
+    DestValue edge_marker;
+    
+    dest_accessor.set(edge_marker, dest_upperleft, vigra::Diff2D(1,1));
+    \end{verbatim}
+    
+    {\bf Preconditions:}
+    
+    \begin{verbatim}
+    scale > 0
+    gradient_threshold > 0
+    \end{verbatim}
+*/
 template <class SrcIterator, class SrcAccessor,
           class DestIterator, class DestAccessor, 
           class SrcValue, class DestValue>
 void cannyEdgeImage(
            SrcIterator sul, SrcIterator slr, SrcAccessor sa,
            DestIterator dul, DestAccessor da,
-           double scale, SrcValue gradient_threshold, DestValue edge_marker)
+           double scale, float gradient_threshold, DestValue edge_marker)
 {
     std::vector<Edgel> edgels;
     
@@ -1312,12 +1466,15 @@ template <class SrcIterator, class SrcAccessor,
 inline void cannyEdgeImage(
            triple<SrcIterator, SrcIterator, SrcAccessor> src,
            pair<DestIterator, DestAccessor> dest,
-           double scale, SrcValue gradient_threshold, DestValue edge_marker)
+           double scale, float gradient_threshold, DestValue edge_marker)
 {
     cannyEdgeImage(src.first, src.second, src.third,
                    dest.first, dest.second,
                    scale, gradient_threshold, edge_marker);
 }
+
+
+//@}
 
 } // namespace vigra
 
