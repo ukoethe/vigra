@@ -150,6 +150,9 @@
 		<File
 			RelativePath="viff.cxx">
 		</File>
+		<File
+			RelativePath="void_vector.cxx">
+		</File>
 	</Files>
 	<Globals>
 	</Globals>
