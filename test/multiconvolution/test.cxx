@@ -3,13 +3,115 @@
 
 #include "unittest.hxx"
 #include "vigra/multi_array.hxx"
+#include "vigra/multi_pointoperators.hxx"
 #include "vigra/multi_convolution.hxx"
 #include "vigra/basicimageview.hxx"
 #include "vigra/convolution.hxx" 
 #include "vigra/navigator.hxx"
+#include "vigra/functorexpression.hxx"
 
 using namespace vigra;
+using namespace vigra::functor;
 
+struct MultiArrayPointoperatorsTest
+{
+
+    typedef float PixelType;
+    typedef MultiArray<3,PixelType> Image3D;
+    typedef Image3D::difference_type Size3;
+
+    Image3D img;
+
+    MultiArrayPointoperatorsTest()
+    : img(Size3(5,4,3))
+    {
+        unsigned int i;
+        PixelType c = 0.1;
+        for(i=0; i<img.elementCount(); ++i, ++c)
+            img.data()[i] = c;
+    }
+
+    void testInit()
+    {
+        Image3D res(img.shape());
+        
+        should(res.shape() == Size3(5,4,3));
+
+        initMultiarray(destMultiArrayRange(res), 1.1);
+        
+        unsigned int x,y,z;
+        for(z=0; z<img.shape(2); ++z)
+            for(y=0; y<img.shape(1); ++y)
+                for(x=0; x<img.shape(0); ++x)
+                    shouldEqual(res(x,y,z), 1.1);
+    }
+
+    void testCopy()
+    {
+        Image3D res(img.shape());
+        
+        initMultiarray(destMultiArrayRange(res), 0.0);
+        
+        copyMultiarray(srcMultiArrayRange(img), destMultiArray(res));
+        
+        unsigned int x,y,z;
+        for(z=0; z<img.shape(2); ++z)
+            for(y=0; y<img.shape(1); ++y)
+                for(x=0; x<img.shape(0); ++x)
+                    shouldEqual(res(x,y,z), img(x,y,z));
+    }
+
+    void testTransform()
+    {
+        Image3D res(img.shape());
+        
+        initMultiarray(destMultiArrayRange(res), 0.0);
+        
+        transformMultiarray(srcMultiArrayRange(img), destMultiArray(res),
+                            Arg1() + Arg1());
+        
+        unsigned int x,y,z;
+        for(z=0; z<img.shape(2); ++z)
+            for(y=0; y<img.shape(1); ++y)
+                for(x=0; x<img.shape(0); ++x)
+                    shouldEqual(res(x,y,z), 2.0*img(x,y,z));
+    }
+
+    void testCombine2()
+    {
+        Image3D res(img.shape());
+        
+        initMultiarray(destMultiArrayRange(res), 0.0);
+        
+        combineTwoMultiarrays(srcMultiArrayRange(img), srcMultiArray(img), 
+                              destMultiArray(res),
+                              Arg1() + Arg2());
+        
+        unsigned int x,y,z;
+        for(z=0; z<img.shape(2); ++z)
+            for(y=0; y<img.shape(1); ++y)
+                for(x=0; x<img.shape(0); ++x)
+                    shouldEqual(res(x,y,z), 2.0*img(x,y,z));
+    }
+
+    void testCombine3()
+    {
+        Image3D res(img.shape());
+        
+        initMultiarray(destMultiArrayRange(res), 0.0);
+        
+        combineThreeMultiarrays(srcMultiArrayRange(img), 
+                                srcMultiArray(img), srcMultiArray(img), 
+                                destMultiArray(res),
+                                Arg1() + Arg2() + Arg3());
+        
+        unsigned int x,y,z;
+        for(z=0; z<img.shape(2); ++z)
+            for(y=0; y<img.shape(1); ++y)
+                for(x=0; x<img.shape(0); ++x)
+                    shouldEqual(res(x,y,z), 3.0*img(x,y,z));
+    }
+};
 
 struct MultiArraySeparableConvolutionTest
 {
@@ -56,7 +158,7 @@ struct MultiArraySeparableConvolutionTest
 
   void test_1DValidity( const Image3D &src, float ksize )
   {
-    std::cerr << "Testing 1D validity... ";
+//    std::cerr << "Testing 1D validity... ";
 
     Image3D d1( src.size() );
     Image3D dn( src.size() );
@@ -65,7 +167,7 @@ struct MultiArraySeparableConvolutionTest
     int depth = src.size()[2];
 
     for( int d = 0; d < 3; ++d ) {
-      std::cerr << "  Dim: " << d;
+//      std::cerr << "  Dim: " << d;
       std::vector<vigra::Kernel1D<float> > kernels( 3 );
 #if 0
       kernels[d].initGaussian( ksize );
@@ -85,14 +187,14 @@ struct MultiArraySeparableConvolutionTest
       shouldEqualSequence(  dn.begin(), dn.end(),
 			    d1.begin() );
     }
-    std::cerr << std::endl;
+//    std::cerr << std::endl;
   }
 
   // - - - - - - - - - - - - - - - - - - - - - - - -
 
   void test_1DValidityB( const Image3D &src, float ksize )
   {
-    std::cerr << "Testing 1D validity II... ";
+//    std::cerr << "Testing 1D validity II... ";
 
     Image3D dst1( src.size() );
     Image3D dst2( src.size() );
@@ -148,7 +250,7 @@ struct MultiArraySeparableConvolutionTest
 
   void test_2DValidity( const Image3D &src, float ksize )
   {
-    std::cerr << "Testing 2D validity... ";
+//    std::cerr << "Testing 2D validity... ";
 
     Image3D d2( src.size() );
     Image3D dn( src.size() );
@@ -215,6 +317,12 @@ struct MultiArraySeparableConvolutionTestSuite
     : vigra::test_suite("MultiArraySeparableConvolutionTestSuite")
     {
       //        add( testCase( &MultiArrayTest::test_default_ctor ) );
+        add( testCase( &MultiArrayPointoperatorsTest::testInit ) );
+        add( testCase( &MultiArrayPointoperatorsTest::testCopy ) );
+        add( testCase( &MultiArrayPointoperatorsTest::testTransform ) );
+        add( testCase( &MultiArrayPointoperatorsTest::testCombine2 ) );
+        add( testCase( &MultiArrayPointoperatorsTest::testCombine3 ) );
+        
         add( testCase( &MultiArraySeparableConvolutionTest::test_Valid1 ) );
         add( testCase( &MultiArraySeparableConvolutionTest::test_Valid2 ) );
         add( testCase( &MultiArraySeparableConvolutionTest::test_Valid3 ) );
