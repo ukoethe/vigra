@@ -440,6 +440,40 @@ namespace vigra
         }
     } // write_band()
 
+    template < class SrcIterator, class SrcAccessor,
+               class DestIterator, class DestAccessor >
+    void mapVectorImageToByteImage( SrcIterator sul, SrcIterator slr, SrcAccessor sget,
+                                    DestIterator dul, DestAccessor dget )
+    {
+        typedef typename SrcAccessor::value_type SrcValue;
+        typedef typename SrcValue::value_type SrcComponent;
+        typedef typename NumericTraits<SrcValue>::RealPromote PromoteValue;
+        typedef typename PromoteValue::value_type PromoteComponent;
+        
+        vigra::FindMinMax<SrcComponent> minmax;
+        vigra::inspectImage( sul, slr, sget, minmax );
+        const PromoteComponent scale = 255.0 / (minmax.max - minmax.min);
+        const PromoteValue offset( -minmax.min, -minmax.min, -minmax.min );
+        vigra::transformImage( sul, slr, sget, dul, dget,
+                               linearIntensityTransform( scale, offset ) );
+    }
+    
+    template < class SrcIterator, class SrcAccessor,
+               class DestIterator, class DestAccessor >
+    void mapScalarImageToByteImage( SrcIterator sul, SrcIterator slr, SrcAccessor sget,
+                                    DestIterator dul, DestAccessor dget )
+    {
+        typedef typename SrcAccessor::value_type SrcValue;
+        typedef typename NumericTraits<SrcValue>::RealPromote PromoteValue;
+        
+        vigra::FindMinMax<SrcValue> minmax;
+        vigra::inspectImage( sul, slr, sget, minmax );
+        const PromoteValue scale = 255.0 / (minmax.max - minmax.min);
+        const PromoteValue offset = -minmax.min;
+        vigra::transformImage( sul, slr, sget, dul, dget,
+                               linearIntensityTransform( scale, offset ) );
+    }
+    
     /*!
       \brief used for writing images of floating point vector type, such as floating point rgb.
 
@@ -482,12 +516,7 @@ namespace vigra
                 // convert to unsigned char in the usual way
                 enc->setPixelType( "UINT8" );
                 vigra::BRGBImage image(slr-sul);
-                vigra::FindMinMax<float> minmax;
-                vigra::inspectImage( sul, slr, sget, minmax );
-                const float scale = 255.0f / (minmax.max - minmax.min);
-                const typename vigra::RGBValue<float> offset( -minmax.min, -minmax.min, -minmax.min );
-                vigra::transformImage( sul, slr, sget, image.upperLeft(), image.accessor(),
-                                       linearIntensityTransform( scale, offset ) );
+                mapVectorImageToByteImage(sul, slr, sget, image.upperLeft(), image.accessor());
                 write_bands( enc.get(), image.upperLeft(),
                              image.lowerRight(), image.accessor(), (unsigned char)0 );
             }
@@ -501,12 +530,7 @@ namespace vigra
                 // convert to unsigned char in the usual way
                 enc->setPixelType( "UINT8" );
                 vigra::BRGBImage image(slr-sul);
-                vigra::FindMinMax<double> minmax;
-                vigra::inspectImage( sul, slr, sget, minmax );
-                const double scale = 255.0 / (minmax.max - minmax.min);
-                const typename vigra::RGBValue<double> offset( -minmax.min, -minmax.min, -minmax.min );
-                vigra::transformImage( sul, slr, sget, image.upperLeft(), image.accessor(),
-                                       linearIntensityTransform( scale, offset ) );
+                mapVectorImageToByteImage(sul, slr, sget, image.upperLeft(), image.accessor());
                 write_bands( enc.get(), image.upperLeft(),
                              image.lowerRight(), image.accessor(), (unsigned char)0 );
             }
@@ -557,12 +581,30 @@ namespace vigra
             write_bands( enc.get(), sul, slr, sget, (unsigned char)0 );
             break;
         case 2:
-            enc->setPixelType( "INT16" );
-            write_bands( enc.get(), sul, slr, sget, short() );
+            if ( isPixelTypeSupported( enc->getFileType(), "INT16" ) ) {
+                enc->setPixelType( "INT16" );
+                write_bands( enc.get(), sul, slr, sget, short() );
+            } else {
+                // convert to unsigned char in the usual way
+                enc->setPixelType( "UINT8" );
+                vigra::BRGBImage image(slr-sul);
+                mapVectorImageToByteImage(sul, slr, sget, image.upperLeft(), image.accessor());
+                write_bands( enc.get(), image.upperLeft(),
+                             image.lowerRight(), image.accessor(), (unsigned char)0 );
+            }
             break;
         case 4:
-            enc->setPixelType( "INT32" );
-            write_bands( enc.get(), sul, slr, sget, int() );
+            if ( isPixelTypeSupported( enc->getFileType(), "INT32" ) ) {
+                enc->setPixelType( "INT32" );
+                write_bands( enc.get(), sul, slr, sget, int() );
+            } else {
+                // convert to unsigned char in the usual way
+                enc->setPixelType( "UINT8" );
+                vigra::BRGBImage image(slr-sul);
+                mapVectorImageToByteImage(sul, slr, sget, image.upperLeft(), image.accessor());
+                write_bands( enc.get(), image.upperLeft(),
+                             image.lowerRight(), image.accessor(), (unsigned char)0 );
+            }
             break;
         default:
             vigra_precondition( false, "unsupported integer size" );
@@ -613,12 +655,7 @@ namespace vigra
                 // convert to unsigned char in the usual way
                 enc->setPixelType( "UINT8" );
                 vigra::BImage image(slr-sul);
-                vigra::FindMinMax<float> minmax;
-                vigra::inspectImage( sul, slr, sget, minmax );
-                const float scale = 255.0f / (minmax.max - minmax.min);
-                const float offset = -minmax.min;
-                vigra::transformImage( sul, slr, sget, image.upperLeft(), image.accessor(),
-                                       linearIntensityTransform( scale, offset ) );
+                mapScalarImageToByteImage(sul, slr, sget, image.upperLeft(), image.accessor());
                 write_band( enc.get(), image.upperLeft(),
                             image.lowerRight(), image.accessor(), (unsigned char)0 );
             }
@@ -632,12 +669,7 @@ namespace vigra
                 // convert to unsigned char in the usual way
                 enc->setPixelType( "UINT8" );
                 vigra::BImage image(slr-sul);
-                vigra::FindMinMax<double> minmax;
-                vigra::inspectImage( sul, slr, sget, minmax );
-                const double scale = 255.0 / (minmax.max - minmax.min);
-                const double offset = -minmax.min;
-                vigra::transformImage( sul, slr, sget, image.upperLeft(), image.accessor(),
-                                       linearIntensityTransform( scale, offset ) );
+                mapScalarImageToByteImage(sul, slr, sget, image.upperLeft(), image.accessor());
                 write_band( enc.get(), image.upperLeft(),
                             image.lowerRight(), image.accessor(), (unsigned char)0 );
             }
@@ -687,12 +719,30 @@ namespace vigra
             write_band( enc.get(), sul, slr, sget, (unsigned char)0 );
             break;
         case 2:
-            enc->setPixelType( "INT16" );
-            write_band( enc.get(), sul, slr, sget, short() );
+            if ( isPixelTypeSupported( enc->getFileType(), "INT16" ) ) {
+                enc->setPixelType( "INT16" );
+                write_band( enc.get(), sul, slr, sget, short() );
+            } else {
+                // convert to unsigned char in the usual way
+                enc->setPixelType( "UINT8" );
+                vigra::BImage image(slr-sul);
+                mapScalarImageToByteImage(sul, slr, sget, image.upperLeft(), image.accessor());
+                write_band( enc.get(), image.upperLeft(),
+                            image.lowerRight(), image.accessor(), (unsigned char)0 );
+            }
             break;
         case 4:
-            enc->setPixelType( "INT32" );
-            write_band( enc.get(), sul, slr, sget, int() );
+            if ( isPixelTypeSupported( enc->getFileType(), "INT32" ) ) {
+                enc->setPixelType( "INT32" );
+                write_band( enc.get(), sul, slr, sget, int() );
+            } else {
+                // convert to unsigned char in the usual way
+                enc->setPixelType( "UINT8" );
+                vigra::BImage image(slr-sul);
+                mapScalarImageToByteImage(sul, slr, sget, image.upperLeft(), image.accessor());
+                write_band( enc.get(), image.upperLeft(),
+                            image.lowerRight(), image.accessor(), (unsigned char)0 );
+            }
             break;
         default:
             vigra_precondition( false, "unsupported integer size" );
