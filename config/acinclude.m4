@@ -558,7 +558,7 @@ AC_DEFUN([VIGRA_FIND_PACKAGE],
           solibext="so"
         fi
     fi
-    
+
     if test "$libpre" = ""; then
         libpre="lib"
     fi
@@ -619,16 +619,16 @@ AC_DEFUN([VIGRA_FIND_PACKAGE],
         else
             dirs="/usr/local/include /usr/local/gnu/include /usr/local/[$1] /opt/include /opt/gnu/include /opt/[$1] /usr/include"
         fi
-        
-	dnl first, look for the given header file without directory components..
+
+        dnl first, look for the given header file without directory components..
         found=""
         for i in $dirs; do
             if test -d $i; then
                 found="$found "`$findprog $i -name patsubst([$3], .*/, ) -print 2> /dev/null`
             fi
         done
-        
-	dnl now, check each found file for relative path prefix..
+
+        dnl now, check each found file for relative path prefix..
         VIGRA_EXTRACT_REGEX($found, \(.*include\)/patsubst([$3], \., \\.))
         if test "$regExResult" = ""; then
             VIGRA_EXTRACT_REGEX($found, \(.*\)/patsubst([$3], \., \\.))
@@ -639,9 +639,11 @@ AC_DEFUN([VIGRA_FIND_PACKAGE],
         else
             AC_MSG_RESULT($regExResult)
             if test "$regExResult" != "/usr/include"; then
-                with_[$1]inc=$regExResult
+                with_[$1]inc="$regExResult"
+                [$1]_cppflags="-I$regExResult"
             else
                 with_[$1]inc=""
+                [$1]_cppflags=""
             fi
         fi
 
