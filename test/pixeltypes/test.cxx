@@ -246,9 +246,14 @@ struct RGBValueTest
         vigra::GreenAccessor<FV> green;
         vigra::BlueAccessor<FV> blue;
         vigra::RGBToGrayAccessor<FV> gray;
+        vigra::GrayToRGBAccessor<FV::value_type> gray2rgb;
 
-        FV pfa[] = { FV(0.0), FV(1.0)};
+        FV pfa[] = { FV(0.0), FV(1.0), FV(2.0)};
+        FV::value_type fa[] = { 0.0, 1.0, 2.0 };
         FV * pf = pfa;
+        
+        shouldEqual(gray2rgb(fa + 1), rgb(pfa + 1));
+        shouldEqual(gray2rgb(fa, 2), rgb(pfa, 2));
 
         should(rgb(pf) == vigra::NumericTraits<FV>::zero());
         should(red(pf) == 0.0);
