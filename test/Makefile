@@ -41,7 +41,7 @@ vc:
 	 touch testSuccess
 
 clean:
-	rm -f *.ncb *.opt testSuccess	
+	rm -f *.opt testSuccess	
 	@for i in $(SUBDIRS); do \
 	        cd $$i; \
 	        make clean; \
