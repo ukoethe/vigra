@@ -42,6 +42,10 @@
     <a href="profile_8cxx-example.html">profile.cxx</a> <br>
     Usage: <TT>profile infile</TT>, generates <TT>profile.gif</TT>
 
+    <li> Create series of slices through different color spaces.:
+    <a href="palette_8cxx-example.html">palette.cxx</a> <br>
+    Usage: <TT>palette lab</TT>, generates <TT>lab_*.gif</TT> (44 images)
+
     <li> Reduce image size by mean of a Gaussian pyramid:
     <a href="pyramid_8cxx-example.html">pyramid.cxx</a> <br>
     Usage: <TT>pyramid infile outfile</TT>
@@ -106,6 +110,11 @@
     Find the gray value profile along the image diagonal 
     by means of a \ref vigra::LineIterator<br>
     Usage: <TT>profile infile</TT>, generates <TT>profile.gif</TT>
+*/
+
+/** \example palette.cxx
+    Create series of slices through different color spaces.
+    Usage: <TT>palette luv</TT>, generates <TT>luv_*.gif</TT> (44 images)
 */
 
 /** \example pyramid.cxx

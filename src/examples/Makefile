@@ -11,6 +11,7 @@ FILES = \
     resize \
     smooth \
     profile \
+    palette \
     pyramid \
     edge \
     watershed \
@@ -38,6 +39,9 @@ smooth:  smooth.o
 
 profile:  profile.o 
 	$(CXX) $(CXXFLAGS) $(CXXINC) -o profile profile.o $(CXXLIBDIR) $(LIB)
+
+palette:  palette.o 
+	$(CXX) $(CXXFLAGS) $(CXXINC) -o palette palette.o $(CXXLIBDIR) $(LIB)
 
 pyramid:  pyramid.o 
 	$(CXX) $(CXXFLAGS) $(CXXINC) -o pyramid pyramid.o $(CXXLIBDIR) $(LIB)
