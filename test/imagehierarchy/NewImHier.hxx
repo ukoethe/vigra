@@ -1438,8 +1438,8 @@ class ConstSelectBandIterator
     
     row_iterator operator[](int dy) const
     {
-        return row_iterator(typename 
-            row_iterator::BaseType(const_cast<pointer>(get(0, dy)), bands_));   //  braeuchte man hier nicht die Auswahl von bands?
+        typedef typename row_iterator::BaseType BaseType;
+        return row_iterator(BaseType(const_cast<pointer>(get(0, dy)), bands_));   //  braeuchte man hier nicht die Auswahl von bands?
     }
     
     index_reference operator()(int const & dx, int const & dy) const
@@ -1456,7 +1456,7 @@ class ConstSelectBandIterator
     column_iterator columnIterator() const
     {
         typedef typename column_iterator::BaseType BaseType;
-	return column_iterator(BaseType(get(), width_*bands_));
+        return column_iterator(BaseType(get(), width_*bands_));
     }
 };
 
@@ -1516,8 +1516,8 @@ class SelectBandIterator
     
     row_iterator operator[](int dy) const
     {
-        return row_iterator(
-            row_iterator::BaseType(const_cast<pointer>(get(0, dy)), bands_));
+        typedef typename row_iterator::BaseType BaseType;
+        return row_iterator(BaseType(const_cast<pointer>(get(0, dy)), bands_));
     }
     
     index_reference operator()(int const & dx, int const & dy) const
@@ -1527,14 +1527,14 @@ class SelectBandIterator
     
     row_iterator rowIterator() const
     {
-        return (row_iterator(typename 
-            row_iterator::BaseType(const_cast<pointer>(get()), bands_)));
+        typedef typename row_iterator::BaseType BaseType;
+        return (row_iterator(BaseType(const_cast<pointer>(get()), bands_)));
     }
     
     column_iterator columnIterator() const
     {
-        return (column_iterator(typename 
-            column_iterator::BaseType(const_cast<pointer>(get()), width_*bands_)));
+        typedef typename column_iterator::BaseType BaseType;
+        return (column_iterator(BaseType(const_cast<pointer>(get()), width_*bands_)));
     }
 };
 

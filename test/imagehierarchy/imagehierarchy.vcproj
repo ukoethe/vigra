@@ -80,7 +80,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				InlineFunctionExpansion="1"
-				AdditionalIncludeDirectories="Z:\vigra\vigra_1.1.5._vom_18_4_2002\vigra\current\include;Z:\vigra\vigra_1.1.5._vom_18_4_2002\vigra\test\include;Z:\boost-1.25.0\include"
+				AdditionalIncludeDirectories="C:\Users\Koethe\src\boost_1_26_0;..\..\current\include;..\include"
 				PreprocessorDefinitions="WIN32;_WINDOWS;NDEBUG"
 				StringPooling="TRUE"
 				RuntimeLibrary="2"
