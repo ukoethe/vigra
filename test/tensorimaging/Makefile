@@ -1,5 +1,5 @@
 test: test.o
-	$(CXX) -o test test.o
+	$(CXX) -o test test.o $(IMPEX_LIB)
 	./test || { rm ./test ; exit 1; }
 
 tensorimaging.exe: test.d
