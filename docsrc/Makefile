@@ -9,7 +9,7 @@ all:: doc
 
 doc::
 	@if [ ! -d $(DOCDIR) ]; then mkdir $(DOCDIR); fi
-	cat Doxyfile.in | sed "s/\(PROJECT_NUMBER *= \)/\1 $(VIGRA_VERSION)/" >! Doxyfile
+	cat Doxyfile.in | sed "s/\(PROJECT_NUMBER *= \)/\1 $(VIGRA_VERSION)/" > Doxyfile
 	$(DOC)
 	python post.py $(DOCDIR) $(VIGRA_VERSION)
 	
