@@ -28,7 +28,7 @@
 
 namespace vigra {
 
-/** @heading Functions to Transform Images
+/** @heading Algorithms to Transform Images
     @memo apply functor to calculate a pixelwise transformation of one image
 */
 //@{
@@ -433,6 +433,233 @@ class Threshold
   
     SrcValueType lower_, higher_;
     DestValueType yesresult_, noresult_;
+};
+
+/********************************************************/
+/*                                                      */
+/*                BrightnessContrastFunctor             */
+/*                                                      */
+/********************************************************/
+
+/** Adjust brightness and contrast of an image.
+    This functor applies a gamma correction to each pixel in order to 
+    modify the brightness of the image. To the result of the gamma correction,
+    a similar transform is applied that modifies the contrast. The brightness and 
+    contrast parameters must be positive. Values greater than 1 will increase image 
+    brightness and contrast, values smaller than 1 decrease them. A value = 1 will
+    have no effect.
+    For \ref{RGBValue}'s, the transforms are applied component-wise. The pixel
+    values are assumed to lie between the given minimum and maximum
+    values. In case of RGB values, this is again understood component-wise. In case 
+    of #unsigned char#, min and max default to 0 and 255 respectively.
+    Precisely, the following transform is applied to each {\em PixelValue}:
+    
+    \[
+    \begin{array}{rcl}
+    V_1 & = & \frac{PixelValue - min}{max - min} \\ \\
+    V_2 & = & V_1^\frac{1}{brightness} \\ \\
+    V_3 & = & 2 V_2 - 1 \\ \\
+    V_4 & = & \left\lbrace
+        \begin{array}{l}
+         V_3^\frac{1}{contrast} \mbox{\rm \quad if  } V_3 \ge 0 \\ \\
+         - (-V_3)^\frac{1}{contrast} \mbox{\rm \quad otherwise}
+        \end{array} \right. \\ \\
+    Result & = & \frac{V_4 + 1}{2} (max - min) + min
+    \end{array}
+    \]
+    
+    If the #PixelType# is #unsigned char#, a look-up-table is used 
+    for faster computation.
+
+    {\bf Usage:}
+    
+        Include-File:
+        \URL[vigra/transformimage.hxx]{../include/vigra/transformimage.hxx}\\
+        Namespace: vigra
+    
+    \begin{verbatim}
+    vigra::BImage bimage(width, height);
+    double brightness, contrast;
+    ...
+    vigra::transformImage(srcImageRange(bimage), destImage(bimage),
+       vigra::BrightnessContrastFunctor<unsigned char>(brightness, contrast));
+    
+
+
+    vigra::FImage fimage(width, height);
+    ...
+    
+    vigra::FindMinmax<float> minmax;
+    vigra::inspectImage(srcImageRange(fimage), minmax);
+    
+    vigra::transformImage(srcImageRange(fimage), destImage(fimage),
+       vigra::BrightnessContrastFunctor<float>(brightness, contrast, minmax.min, minmax.max));
+    
+    
+    \end{verbatim}
+
+    {\bf Required Interface:}
+    
+    Scalar types: must be a linear algebra (+, - *, NumericTraits), 
+    strict weakly ordered (<), and #pow()# must be defined.
+    
+    RGB values: the component type must meet the above requirements.
+*/
+template <class PixelType>
+class BrightnessContrastFunctor
+{
+    typedef typename 
+        NumericTraits<PixelType>::RealPromote tmp_type;
+    double b_, c_;
+    PixelType min_;
+    tmp_type diff_;
+ 
+ public:
+    
+    typedef PixelType value_type;
+    
+    BrightnessContrastFunctor(double brightness, double contrast,
+                              PixelType const & min, PixelType const & max)
+    : b_(1.0/brightness), c_(1.0/contrast), min_(min), diff_(max - min)
+    {}
+    
+    value_type operator()(value_type const & v) const
+    {
+        tmp_type v1 = (v - min_) / diff_;
+        tmp_type brighter = pow(v1, b_);
+        tmp_type v2 = 2.0 * brighter - NumericTraits<tmp_type>::one();
+        tmp_type contrasted = (v2 < NumericTraits<tmp_type>::zero()) ?
+                                -pow(-v2, c_) :
+                                pow(v2, c_);
+        return value_type(0.5 * diff_ * 
+             (contrasted + NumericTraits<tmp_type>::one()) + min_);
+    }
+};
+
+template <>
+class BrightnessContrastFunctor<unsigned char>
+{
+    unsigned char lut[256];
+
+ public:
+    
+    typedef unsigned char value_type;
+    
+    BrightnessContrastFunctor(double brightness, double contrast,
+                              value_type const & min = 0, value_type const & max = 255)
+    {
+        BrightnessContrastFunctor<double> f(brightness, contrast, min, max);
+        
+        for(int i = min; i <= max; ++i)
+        {
+            lut[i] = static_cast<unsigned char>(f(i)+0.5);
+        }
+    }
+    
+    value_type operator()(value_type const & v) const
+    {
+        
+        return lut[v];
+    }
+};
+
+#ifndef NO_PARTIAL_TEMPLATE_SPECIALIZATION
+
+template <class ComponentType>
+class BrightnessContrastFunctor<RGBValue<ComponentType> >
+{
+    BrightnessContrastFunctor<ComponentType> red, green, blue;
+
+ public:
+    
+    typedef RGBValue<ComponentType> value_type;
+    
+    BrightnessContrastFunctor(double brightness, double contrast,
+                              value_type const & min, value_type const & max)
+    : red(brightness, contrast, min.red(), max.red()),
+      green(brightness, contrast, min.green(), max.green()),
+      blue(brightness, contrast, min.blue(), max.blue())
+    {}
+    
+    value_type operator()(value_type const & v) const
+    {
+        
+        return value_type(red(v.red()), green(v.green()), blue(v.blue()));
+    }
+};
+
+#else // NO_PARTIAL_TEMPLATE_SPECIALIZATION
+
+template <>
+class BrightnessContrastFunctor<RGBValue<int> >
+{
+    BrightnessContrastFunctor<int> red, green, blue;
+
+ public:
+    
+    typedef RGBValue<int> value_type;
+    
+    BrightnessContrastFunctor(double brightness, double contrast,
+                              value_type const & min, value_type const & max)
+    : red(brightness, contrast, min.red(), max.red()),
+      green(brightness, contrast, min.green(), max.green()),
+      blue(brightness, contrast, min.blue(), max.blue())
+    {}
+    
+    value_type operator()(value_type const & v) const
+    {
+        
+        return value_type(red(v.red()), green(v.green()), blue(v.blue()));
+    }
+};
+
+template <>
+class BrightnessContrastFunctor<RGBValue<float> >
+{
+    BrightnessContrastFunctor<float> red, green, blue;
+
+ public:
+    
+    typedef RGBValue<float> value_type;
+    
+    BrightnessContrastFunctor(double brightness, double contrast,
+                              value_type const & min, value_type const & max)
+    : red(brightness, contrast, min.red(), max.red()),
+      green(brightness, contrast, min.green(), max.green()),
+      blue(brightness, contrast, min.blue(), max.blue())
+    {}
+    
+    value_type operator()(value_type const & v) const
+    {
+        
+        return value_type(red(v.red()), green(v.green()), blue(v.blue()));
+    }
+};
+
+#endif // NO_PARTIAL_TEMPLATE_SPECIALIZATION
+
+template <>
+class BrightnessContrastFunctor<RGBValue<unsigned char> >
+{
+    BrightnessContrastFunctor<unsigned char> red, green, blue;
+    
+ public:
+    
+    typedef RGBValue<unsigned char> value_type;
+    
+    BrightnessContrastFunctor(double brightness, double contrast,
+       value_type const & min = value_type(0,0,0), 
+       value_type const & max = value_type(255, 255, 255))
+    : red(brightness, contrast, min.red(), max.red()),
+      green(brightness, contrast, min.green(), max.green()),
+      blue(brightness, contrast, min.blue(), max.blue())
+    {}
+    
+    value_type operator()(value_type const & v) const
+    {
+        
+        return value_type(red(v.red()), green(v.green()), blue(v.blue()));
+    }
 };
 
 //@}
