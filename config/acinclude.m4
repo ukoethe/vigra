@@ -548,25 +548,27 @@ AC_DEFUN([VIGRA_FIND_PACKAGE],
                          ], ,)
 
     if test "$libext" = ""; then
-        if test "$CYGWIN" = "yes" || test "$MINGW32" = "yes"; then
-          libext="lib"
-        else
-          libext="a"
-        fi
-        libext=a
+        libext="a"
     fi
 
     if test "$solibext" = ""; then
-        if test "$CYGWIN" = "yes" || test "$MINGW32" = "yes"; then
-          solibext="dll"
+        if test "$CYGWIN" = "yes"; then
+          solibext="dll.a"
         else
           solibext="so"
         fi
     fi
-    if test "$CYGWIN" = "yes" || test "$MINGW32" = "yes"; then
-      libpre=""
-    else
-      libpre="lib"
+    
+    if test "$libpre" = ""; then
+        libpre="lib"
+    fi
+
+    if test "$findprog" = ""; then
+        if test "$CYGWIN" = "yes"; then
+          findprog="/usr/bin/find"
+        else
+          findprog="find"
+        fi
     fi
 
     if test ${with_[$1]:-""} = "" -a ${with_[$1]lib:-""} = "" -a ${with_[$1]inc:-""} = ""; then
@@ -586,7 +588,7 @@ AC_DEFUN([VIGRA_FIND_PACKAGE],
         found=""
         for i in $dirs; do
             if test -d $i; then
-                found="$found "`find $i -name "${libpre}[$2].$solibext" -print 2> /dev/null; find $i -name "${libpre}[$2].$libext" -print 2> /dev/null`
+                found="$found "`$findprog $i -name "${libpre}[$2].$solibext" -print 2> /dev/null; $findprog $i -name "${libpre}[$2].$libext" -print 2> /dev/null`
             fi
         done
 
@@ -617,14 +619,16 @@ AC_DEFUN([VIGRA_FIND_PACKAGE],
         else
             dirs="/usr/local/include /usr/local/gnu/include /usr/local/[$1] /opt/include /opt/gnu/include /opt/[$1] /usr/include"
         fi
-		dnl first, look for the given header file without directory components..
+        
+	dnl first, look for the given header file without directory components..
         found=""
         for i in $dirs; do
             if test -d $i; then
-                found="$found "`find $i -name patsubst([$3], .*/, ) -print 2> /dev/null`
+                found="$found "`$findprog $i -name patsubst([$3], .*/, ) -print 2> /dev/null`
             fi
         done
-		dnl now, check each found file for relative path prefix..
+        
+	dnl now, check each found file for relative path prefix..
         VIGRA_EXTRACT_REGEX($found, \(.*include\)/patsubst([$3], \., \\.))
         if test "$regExResult" = ""; then
             VIGRA_EXTRACT_REGEX($found, \(.*\)/patsubst([$3], \., \\.))
@@ -633,11 +637,15 @@ AC_DEFUN([VIGRA_FIND_PACKAGE],
             with_[$1]inc=""
             AC_MSG_RESULT("not found in $dirs")
         else
-            with_[$1]inc=$regExResult
-            AC_MSG_RESULT($with_[$1]inc)
+            AC_MSG_RESULT($regExResult)
+            if test "$regExResult" != "/usr/include"; then
+                with_[$1]inc=$regExResult
+            else
+                with_[$1]inc=""
+            fi
         fi
 
-        if test "$with_[$1]lib" = "" -o "$with_[$1]inc" = ""; then
+        if test "$with_[$1]lib" = "" -o "$regExResult" = ""; then
             with_[$1]="no"
             AC_MSG_WARN(  Configuring without [$1] support)
         else
