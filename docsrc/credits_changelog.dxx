@@ -18,6 +18,26 @@
 
 </UL>
 
+<b> Changes from Version 1.1.4 to 1.1.5</b>
+
+<UL>
+
+      <li> Added more corner detectors (see \ref CornerDetection).
+           
+      <li> Extended \link FunctorExpressions functor expression library \endlink.
+           
+      <li> Added \link InitAlgo#initImageWithFunctor initImageWithFunctor\endlink().
+           
+      <li> Improved Gaussian derivative filters (higher accuracy, correct sign,
+           see \ref vigra#Kernel1D#initGaussianDerivative()).
+           
+      <li> Ported VIGRA to Microsoft VisualC++.net (however, this compiler
+           still doesn't support all VIGRA features, because it still
+           doesn't implement partial template specialization and
+           partial function ordering).
+           
+</UL>
+
 <b> Changes from Version 1.1.3 to 1.1.4</b>
 
 <UL>
