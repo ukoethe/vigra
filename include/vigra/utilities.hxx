@@ -32,21 +32,19 @@
 
 namespace vigra {
 
+struct forward_circulator_tag {};
+
+struct bidirectional_circulator_tag {};
+
+struct random_access_circulator_tag {};
+
 struct VigraTrueType
 {
-#ifdef NO_INLINE_STATIC_CONST_DEFINITION
-    enum { asBool = true };
-#else
-    static const bool asBool = true;
-#endif
+   enum { asBool = true };
 };
 struct VigraFalseType
 {
-#ifdef NO_INLINE_STATIC_CONST_DEFINITION
     enum { asBool = false };
-#else
-    static const bool asBool = false;
-#endif
 };
 
 /*! \page Utilities Utilities
