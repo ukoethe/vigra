@@ -27,6 +27,73 @@
 
 namespace vigra {
 
+namespace detail {
+
+template <class T>
+struct RequiresExplicitCast {
+    template <class U>
+    static U const & cast(U const & v)
+        { return v; }
+};
+
+template <>
+struct RequiresExplicitCast<signed char> {
+    template <class U>
+    static signed char cast(U const & v)
+        { return static_cast<signed char>(v); }
+};
+
+template <>
+struct RequiresExplicitCast<unsigned char> {
+    template <class U>
+    static unsigned char cast(U const & v)
+        { return static_cast<unsigned char>(v); }
+};
+
+template <>
+struct RequiresExplicitCast<short> {
+    template <class U>
+    static short cast(U const & v)
+        { return static_cast<short>(v); }
+};
+
+template <>
+struct RequiresExplicitCast<unsigned short> {
+    template <class U>
+    static unsigned short cast(U const & v)
+        { return static_cast<unsigned short>(v); }
+};
+
+template <>
+struct RequiresExplicitCast<int> {
+    template <class U>
+    static int cast(U const & v)
+        { return static_cast<int>(v); }
+};
+
+template <>
+struct RequiresExplicitCast<unsigned int> {
+    template <class U>
+    static unsigned int cast(U const & v)
+        { return static_cast<unsigned int>(v); }
+};
+
+template <>
+struct RequiresExplicitCast<long> {
+    template <class U>
+    static long cast(U const & v)
+        { return static_cast<long>(v); }
+};
+
+template <>
+struct RequiresExplicitCast<unsigned long> {
+    template <class U>
+    static unsigned long cast(U const & v)
+        { return static_cast<unsigned long>(v); }
+};
+
+} // namespace detail
+
 /** \addtogroup DataAccessors Data Accessors
 
     Basic templates to encapsulate access to the data of an iterator.
@@ -89,7 +156,8 @@ class StandardAccessor
             in <TT>value</TT> is automatically converted to <TT>VALUETYPE</TT>.
         */
     template <class V, class ITERATOR>
-    void set(V const & value, ITERATOR & i) const { *i = static_cast<VALUETYPE>(value); }
+    void set(V const & value, ITERATOR & i) const 
+    { *i = detail::RequiresExplicitCast<VALUETYPE>::cast(value); }
     
         /** Write the data item at a distance (can be 1D or 2D or higher distance).
             The type <TT>V</TT> of the passed
@@ -98,7 +166,7 @@ class StandardAccessor
     template <class V, class ITERATOR, class DISTANCE>
     void set(V const & value, ITERATOR & i, DISTANCE const & dist) const 
     { 
-        i[dist]= static_cast<VALUETYPE>(value); 
+        i[dist]= detail::RequiresExplicitCast<VALUETYPE>::cast(value); 
     }
 };
 
@@ -127,7 +195,7 @@ class StandardValueAccessor
             in <TT>value</TT> is automatically converted to <TT>VALUETYPE</TT>.
         */
     template <class V, class ITERATOR>
-    void set(V const & value, ITERATOR & i) const { *i = static_cast<VALUETYPE>(value); }
+    void set(V const & value, ITERATOR & i) const { *i = detail::RequiresExplicitCast<VALUETYPE>::cast(value); }
     
         /** Write the data item at a distance (can be 1D or 2D or higher distance).
             The type <TT>V</TT> of the passed
@@ -136,7 +204,7 @@ class StandardValueAccessor
     template <class V, class ITERATOR, class DISTANCE>
     void set(V const & value, ITERATOR & i, DISTANCE const & dist) const 
     { 
-        i[dist]= static_cast<VALUETYPE>(value); 
+        i[dist]= detail::RequiresExplicitCast<VALUETYPE>::cast(value); 
     }
 };
 
@@ -251,7 +319,7 @@ class VectorComponentAccessor
     template <class V, class ITERATOR>
     void set(V const & value, ITERATOR & i) const 
     { 
-        (*i)[index_] = static_cast<value_type>(value); 
+        (*i)[index_] = detail::RequiresExplicitCast<value_type>::cast(value); 
     }
     
         /** Write the data item at a distance (can be 1D or 2D or higher distance).
@@ -261,7 +329,7 @@ class VectorComponentAccessor
     template <class V, class ITERATOR, class DISTANCE>
     void set(V const & value, ITERATOR & i, DISTANCE const & dist) const 
     { 
-        i[dist][index_]= static_cast<value_type>(value); 
+        i[dist][index_]= detail::RequiresExplicitCast<value_type>::cast(value); 
     }
 };
 
@@ -455,7 +523,7 @@ class VectorAccessor
     template <class V, class ITERATOR>
     void setComponent(V const & value, ITERATOR & i, int idx) const
     { 
-        (*i)[idx] = static_cast<component_type>(value); 
+        (*i)[idx] = detail::RequiresExplicitCast<component_type>::cast(value); 
     }
     
         /** Read the component data at given vector index
@@ -475,7 +543,7 @@ class VectorAccessor
     void 
     setComponent(V const & value, ITERATOR & i, DISTANCE const & dist, int idx) const 
     { 
-        i[dist][idx] = static_cast<component_type>(value); 
+        i[dist][idx] = detail::RequiresExplicitCast<component_type>::cast(value); 
     }
 };
 

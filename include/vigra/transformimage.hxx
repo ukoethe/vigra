@@ -127,8 +127,7 @@ transformImage(SrcImageIterator src_upperleft,
 
         for(int x=0; x<w; ++x, ++six.x, ++dix.x)
         {
-            da.set(static_cast<typename 
-                 DestAccessor::value_type>(f(sa(six))), dix);
+            da.set(detail::RequiresExplicitCast<typename DestAccessor::value_type>::cast(f(sa(six))), dix);
         }
     }
 }
@@ -253,8 +252,7 @@ transformImageIf(SrcImageIterator src_upperleft,
 
         for(int x=0; x<w; ++x, ++six.x, ++mx.x, ++dix.x)
         {
-            if(ma(mx)) da.set(static_cast<typename 
-                DestAccessor::value_type>(f(sa(six))), dix);
+            if(ma(mx)) da.set(detail::RequiresExplicitCast<typename DestAccessor::value_type>::cast(f(sa(six))), dix);
         }
     }
 }

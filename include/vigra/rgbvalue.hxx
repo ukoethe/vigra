@@ -102,7 +102,7 @@ class RGBValue
     RGBValue(Iterator i, Iterator end)
     {
         for(iterator p = begin(); i != end; ++i, ++p)
-            *p = static_cast<value_type>(*i);
+            *p = detail::RequiresExplicitCast<value_type>::cast(*i);
     }
 
         /** Default constructor (sets all components to 0)  
@@ -139,9 +139,9 @@ class RGBValue
     template <class U>   
     RGBValue(RGBValue<U> const & r)
     {
-        data_[0] = static_cast<value_type>(r.red());
-        data_[1] = static_cast<value_type>(r.green());
-        data_[2] = static_cast<value_type>(r.blue());
+        data_[0] = detail::RequiresExplicitCast<value_type>::cast(r.red());
+        data_[1] = detail::RequiresExplicitCast<value_type>::cast(r.green());
+        data_[2] = detail::RequiresExplicitCast<value_type>::cast(r.blue());
     }
 
         /** Copy assignment.
@@ -149,9 +149,9 @@ class RGBValue
     template <class U>   
     RGBValue & operator=(RGBValue<U> const & r)
     {
-        data_[0] = static_cast<value_type>(r.red());
-        data_[1] = static_cast<value_type>(r.green());
-        data_[2] = static_cast<value_type>(r.blue());
+        data_[0] = detail::RequiresExplicitCast<value_type>::cast(r.red());
+        data_[1] = detail::RequiresExplicitCast<value_type>::cast(r.green());
+        data_[2] = detail::RequiresExplicitCast<value_type>::cast(r.blue());
         return *this;
     }
 
@@ -208,7 +208,7 @@ class RGBValue
         /** Calculate luminance.
         */
     value_type luminance() const { 
-         return static_cast<value_type>(0.3*red() + 0.59*green() + 0.11*blue()); }
+         return detail::RequiresExplicitCast<value_type>::cast(0.3*red() + 0.59*green() + 0.11*blue()); }
     
         /** Calculate magnitude.
         */
@@ -232,19 +232,19 @@ class RGBValue
             in <TT>value</TT> is automatically converted to <TT>VALUETYPE</TT>.
         */
     template <class V>
-    void setRed(V const & value) { data_[0] = static_cast<value_type>(value); }
+    void setRed(V const & value) { data_[0] = detail::RequiresExplicitCast<value_type>::cast(value); }
 
         /** Set green component.The type <TT>V</TT> of the passed
             in <TT>value</TT> is automatically converted to <TT>VALUETYPE</TT>.
         */
     template <class V>
-    void setGreen(V const & value) { data_[1] = static_cast<value_type>(value); }
+    void setGreen(V const & value) { data_[1] = detail::RequiresExplicitCast<value_type>::cast(value); }
 
         /** Set blue component.The type <TT>V</TT> of the passed
             in <TT>value</TT> is automatically converted to <TT>VALUETYPE</TT>.
         */
     template <class V>
-    void setBlue(V const & value) { data_[2] = static_cast<value_type>(value); }
+    void setBlue(V const & value) { data_[2] = detail::RequiresExplicitCast<value_type>::cast(value); }
 };
 
 /********************************************************/

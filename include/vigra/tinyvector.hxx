@@ -143,7 +143,7 @@ class TinyVector
         iterator p = begin();
         typename TinyVector<U, SIZE>::const_iterator q = r.begin();
         for(; p != end(); ++p, ++q)
-            *p = static_cast<value_type>(*q);
+            *p = detail::RequiresExplicitCast<value_type>::cast(*q);
     }
 
         /** Copy assignment.
@@ -154,7 +154,7 @@ class TinyVector
         iterator p = begin();
         typename TinyVector<U, SIZE>::const_iterator q = r.begin();
         for(; p != end(); ++p, ++q)
-            *p = static_cast<value_type>(*q);
+            *p = detail::RequiresExplicitCast<value_type>::cast(*q);
         return *this;
     }
 
@@ -164,7 +164,7 @@ class TinyVector
     void init(Iterator i, Iterator end)
     {
         for(iterator p = begin(); i != end; ++i, ++p)
-            *p = static_cast<value_type>(*i);
+            *p = detail::RequiresExplicitCast<value_type>::cast(*i);
     }
     
         /** Unary negation (construct TinyVector with negative values)
