@@ -18,17 +18,20 @@ Usage: $0 [OPTIONS]
 Options:
     [--version]    output version ("@MAJOR_VERSION@.@MINOR_VERSION@.@MICRO_VERSION@")
     [--target]     output platform this vigra version was configured for
-    [--impex_lib]  output flags for linking libvigraimpex
-    [--fftw_lib]   output flags for linking libfftw$fftwstatus
+    [--impex-lib]  output flags for linking libvigraimpex
+    [--fftw-lib]   output flags for linking libfftw$fftwstatus
     [--cxxflags]   output include flags for vigra$fftwflags
-   ([--libs]       synonym for --impex_lib)
+   ([--libs]       synonym for --impex-lib)
 EOF
     exit $1
 }
 
 if test $# -eq 0; then
+    echo "ERROR: no parameters given!"
     usage 1 1>&2
 fi
+
+try=false
 
 while test $# -gt 0; do
   case $1 in
@@ -56,8 +59,19 @@ while test $# -gt 0; do
           | sed "s,\$[({]prefix[})],@prefix@,"
       fi
       ;;
+    --help|-h|-?)
+      usage 0 1>&2
+      ;;
+    --try)
+      try=true
+      ;;
     *)
-      usage 1 1>&2
+      if $try; then
+        exit 2
+      else
+        echo "ERROR: unknown parameter '$1'!"
+        usage 2 1>&2
+      fi
       ;;
   esac
   shift
