@@ -31,14 +31,19 @@
 
 namespace vigra {
 
-/** @heading fixed size vectors 
+/** @heading Fixed Size Vectors 
     @memo TinyVector and related classes and functions  
-*/
+**/
 //@{
+
+#if 0 // work around for doc++ bug ???
+/** dummy */
+void dummy();
+#endif
 
 /********************************************************/
 /*                                                      */
-/*                      TinyVector                        */
+/*                      TinyVector                      */
 /*                                                      */
 /********************************************************/
 
@@ -55,12 +60,12 @@ namespace vigra {
     so that TinyVector fulfills the requirements of a Linear Space. 
     
     VIGRA algorithms typically use \Ref{VectorAccessor} to access 
-    TinyVectors as a whole, or specific components of it.
+    TinyVectors as a whole, or specific components of them.
     
     Include-File:
     \URL[vigra/tinyvector.hxx]{../include/vigra/tinyvector.hxx}\\
     Namespace: vigra
-*/
+**/
 template <class VALUETYPE, int SIZE>
 class TinyVector
 {
@@ -69,15 +74,15 @@ class TinyVector
     //@{
         /** STL-compatible definition of valuetype
         @memo
-    */
+        */
     typedef VALUETYPE value_type;
         /** STL-compatible definition of iterator
         @memo
-    */
+        */
     typedef value_type * iterator;
         /** STL-compatible definition of const iterator
         @memo
-    */
+        */
     typedef value_type const * const_iterator;
     //@}
     
@@ -85,8 +90,7 @@ class TinyVector
     //@{
         /** Construct from another sequence 
         @memo
-    */
-    
+        */
     template <class Iterator>   
     TinyVector(Iterator i, Iterator end)
     {
@@ -96,7 +100,7 @@ class TinyVector
     
         /** Construction with constant value 
         @memo
-    */    
+        */    
     explicit TinyVector(value_type initial)
     {
         for(iterator p = begin(); p != end(); ++p)
@@ -105,7 +109,7 @@ class TinyVector
     
         /** Default constructor (sets all components to 0)  
         @memo
-    */    
+        */    
     TinyVector()
     {
         for(iterator p = begin(); p != end(); ++p)
@@ -134,9 +138,9 @@ class TinyVector
 #endif // TEMPLATE_COPY_CONSTRUCTOR_BUG
 
     
-    /** Copy constructor.
-        @memo
-    */
+        /** Copy constructor.
+            @memo
+        */
     template <class U>   
     TinyVector(TinyVector<U, SIZE> const & r)
     {
@@ -148,7 +152,7 @@ class TinyVector
 
         /** Copy assignment.
         @memo
-    */    
+        */    
     template <class U>   
     TinyVector & operator=(TinyVector<U, SIZE> const & r)
     {
@@ -165,7 +169,7 @@ class TinyVector
     //@{
         /** Unary negation (construct TinyVector with negative values)
         @memo
-    */
+        */
     TinyVector operator-() const
     {
         TinyVector r;
@@ -178,7 +182,7 @@ class TinyVector
     
         /** Calculate magnitude.
         @memo
-    */
+        */
     typename NumericTraits<VALUETYPE>::RealPromote
     magnitude() const 
     {
@@ -191,7 +195,7 @@ class TinyVector
     
         /** Calculate squared magnitude.
         @memo
-    */
+        */
     typename NumericTraits<VALUETYPE>::Promote
     squaredMagnitude() const 
     { 

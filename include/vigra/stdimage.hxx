@@ -229,7 +229,6 @@ struct IteratorTraits<ConstBasicImageIterator<T, T **> >
 //@Include: imageiterator.hxx 
 //@Include: imageiteratoradapter.hxx
 //@Include: accessor.hxx
-//@Include: rgbvalue.hxx 
 
 
 /***********************************************************/
