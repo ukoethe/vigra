@@ -19,11 +19,11 @@
 /*                                                                      */
 /************************************************************************/
  
-#ifndef VIGRA_IMAGECONTAINER_HXX_
-#define VIGRA_IMAGECONTAINER_HXX_
+#ifndef VIGRA_IMAGECONTAINER_HXX
+#define VIGRA_IMAGECONTAINER_HXX
 
 #include "vigra/utilities.hxx"
-#include <vector>
+#include "vigra/array_vector.hxx"
 
 namespace vigra {
 
@@ -41,7 +41,7 @@ namespace vigra {
 /** \brief Fundamental class template for arrays of equal-sized images.
 
     An ImageArray manages an array of images of the type given as
-    template parameter. Use it like a std::vector<ImageType>, it has
+    template parameter. Use it like a ArrayVector<ImageType>, it has
     the same interface, only operator< is missing from ImageArray. It
     offers additional functions for resizing the images and querying
     their common size. See \ref imageSize() for additional notes.
@@ -57,7 +57,7 @@ class ImageArray
     Size2D imageSize_;
 
 protected:
-    typedef std::vector<ImageType, Alloc> ImageVector;
+    typedef ArrayVector<ImageType, Alloc> ImageVector;
     ImageVector images_;
 
 public:
@@ -85,7 +85,7 @@ public:
           images_(numImages, ImageType(), alloc)
     {
         for(unsigned int i=0; i<numImages; i++)
-            images_[i].resize(imageSize);
+            images_[i].resize(Size2D(imageSize));
     }
 
         /** Init an array of numImages equal-sized images, the size
@@ -401,7 +401,7 @@ public:
         if (newSize!=imageSize())
         {
             for(unsigned int i=0; i<size(); i++)
-                images_[i].resize(newSize);
+                images_[i].resize(Size2D(newSize));
             imageSize_= newSize;
         }
     }
@@ -423,4 +423,4 @@ public:
 
 } // namespace vigra
 
-#endif // VIGRA_IMAGECONTAINER_HXX_
+#endif // VIGRA_IMAGECONTAINER_HXX
