@@ -18,7 +18,7 @@ exec AS_MESSAGE_FD>&1
 # Initializations.
 #
 ac_default_prefix=/usr/local
-ac_default_docdir='$(prefix)/doc'
+ac_default_docdir='${prefix}/share/doc'
 cross_compiling=no
 subdirs=
 MFLAGS=
@@ -51,7 +51,7 @@ m4_divert_pop([DEFAULTS])dnl
 
 # AC_DOCDIR_DEFAULT(DOCDIR)
 # -------------------------
-AC_DEFUN([AC_DOCDIR_DEFAULT],
+AC_DEFUN([VIGRA_DOCDIR_DEFAULT],
 [m4_divert_text([DEFAULTS], [ac_default_docdir=$1])])
 
 #########################################################
@@ -219,17 +219,8 @@ x_libraries=NONE
 # by default will actually change.
 # Use braces instead of parens because sh, perl, etc. also accept them.
 AC_SUBST([bindir],         ['${exec_prefix}/bin'])dnl
-AC_SUBST([sbindir],        ['${exec_prefix}/sbin'])dnl
-AC_SUBST([libexecdir],     ['${exec_prefix}/libexec'])dnl
-AC_SUBST([datadir],        ['${prefix}/share'])dnl
-AC_SUBST([sysconfdir],     ['${prefix}/etc'])dnl
-AC_SUBST([sharedstatedir], ['${prefix}/com'])dnl
-AC_SUBST([localstatedir],  ['${prefix}/var'])dnl
 AC_SUBST([libdir],         ['${exec_prefix}/lib'])dnl
 AC_SUBST([includedir],     ['${prefix}/include'])dnl
-AC_SUBST([oldincludedir],  ['/usr/include'])dnl
-AC_SUBST([infodir],        ['${prefix}/info'])dnl
-AC_SUBST([mandir],         ['${prefix}/man'])dnl
 AC_SUBST([docdir],         [$ac_default_docdir])dnl
 
 ac_prev=
@@ -267,12 +258,6 @@ do
 
   --config-cache | -C)
     cache_file=config.cache ;;
-
-  -datadir | --datadir | --datadi | --datad | --data | --dat | --da)
-    ac_prev=datadir ;;
-  -datadir=* | --datadir=* | --datadi=* | --datad=* | --data=* | --dat=* \
-  | --da=*)
-    datadir=$ac_optarg ;;
 
   -disable-* | --disable-*)
     ac_feature=`expr "x$ac_option" : 'x-*disable-\(.*\)'`
@@ -331,36 +316,10 @@ do
   | --includ=* | --inclu=* | --incl=* | --inc=*)
     includedir=$ac_optarg ;;
 
-  -infodir | --infodir | --infodi | --infod | --info | --inf)
-    ac_prev=infodir ;;
-  -infodir=* | --infodir=* | --infodi=* | --infod=* | --info=* | --inf=*)
-    infodir=$ac_optarg ;;
-
   -libdir | --libdir | --libdi | --libd)
     ac_prev=libdir ;;
   -libdir=* | --libdir=* | --libdi=* | --libd=*)
     libdir=$ac_optarg ;;
-
-  -libexecdir | --libexecdir | --libexecdi | --libexecd | --libexec \
-  | --libexe | --libex | --libe)
-    ac_prev=libexecdir ;;
-  -libexecdir=* | --libexecdir=* | --libexecdi=* | --libexecd=* | --libexec=* \
-  | --libexe=* | --libex=* | --libe=*)
-    libexecdir=$ac_optarg ;;
-
-  -localstatedir | --localstatedir | --localstatedi | --localstated \
-  | --localstate | --localstat | --localsta | --localst \
-  | --locals | --local | --loca | --loc | --lo)
-    ac_prev=localstatedir ;;
-  -localstatedir=* | --localstatedir=* | --localstatedi=* | --localstated=* \
-  | --localstate=* | --localstat=* | --localsta=* | --localst=* \
-  | --locals=* | --local=* | --loca=* | --loc=* | --lo=*)
-    localstatedir=$ac_optarg ;;
-
-  -mandir | --mandir | --mandi | --mand | --man | --ma | --m)
-    ac_prev=mandir ;;
-  -mandir=* | --mandir=* | --mandi=* | --mand=* | --man=* | --ma=* | --m=*)
-    mandir=$ac_optarg ;;
 
   -nfp | --nfp | --nf)
     # Obsolete; use --without-fp.
@@ -373,15 +332,6 @@ do
   -no-recursion | --no-recursion | --no-recursio | --no-recursi \
   | --no-recurs | --no-recur | --no-recu | --no-rec | --no-re | --no-r)
     no_recursion=yes ;;
-
-  -oldincludedir | --oldincludedir | --oldincludedi | --oldincluded \
-  | --oldinclude | --oldinclud | --oldinclu | --oldincl | --oldinc \
-  | --oldin | --oldi | --old | --ol | --o)
-    ac_prev=oldincludedir ;;
-  -oldincludedir=* | --oldincludedir=* | --oldincludedi=* | --oldincluded=* \
-  | --oldinclude=* | --oldinclud=* | --oldinclu=* | --oldincl=* | --oldinc=* \
-  | --oldin=* | --oldi=* | --old=* | --ol=* | --o=*)
-    oldincludedir=$ac_optarg ;;
 
   -prefix | --prefix | --prefi | --pref | --pre | --pr | --p)
     ac_prev=prefix ;;
@@ -423,23 +373,6 @@ do
   | -silent | --silent | --silen | --sile | --sil)
     silent=yes ;;
 
-  -sbindir | --sbindir | --sbindi | --sbind | --sbin | --sbi | --sb)
-    ac_prev=sbindir ;;
-  -sbindir=* | --sbindir=* | --sbindi=* | --sbind=* | --sbin=* \
-  | --sbi=* | --sb=*)
-    sbindir=$ac_optarg ;;
-
-  -sharedstatedir | --sharedstatedir | --sharedstatedi \
-  | --sharedstated | --sharedstate | --sharedstat | --sharedsta \
-  | --sharedst | --shareds | --shared | --share | --shar \
-  | --sha | --sh)
-    ac_prev=sharedstatedir ;;
-  -sharedstatedir=* | --sharedstatedir=* | --sharedstatedi=* \
-  | --sharedstated=* | --sharedstate=* | --sharedstat=* | --sharedsta=* \
-  | --sharedst=* | --shareds=* | --shared=* | --share=* | --shar=* \
-  | --sha=* | --sh=*)
-    sharedstatedir=$ac_optarg ;;
-
   -site | --site | --sit)
     ac_prev=site ;;
   -site=* | --site=* | --sit=*)
@@ -449,13 +382,6 @@ do
     ac_prev=srcdir ;;
   -srcdir=* | --srcdir=* | --srcdi=* | --srcd=* | --src=* | --sr=*)
     srcdir=$ac_optarg ;;
-
-  -sysconfdir | --sysconfdir | --sysconfdi | --sysconfd | --sysconf \
-  | --syscon | --sysco | --sysc | --sys | --sy)
-    ac_prev=sysconfdir ;;
-  -sysconfdir=* | --sysconfdir=* | --sysconfdi=* | --sysconfd=* | --sysconf=* \
-  | --syscon=* | --sysco=* | --sysc=* | --sys=* | --sy=*)
-    sysconfdir=$ac_optarg ;;
 
   -target | --target | --targe | --targ | --tar | --ta | --t)
     ac_prev=target_alias ;;
@@ -546,9 +472,7 @@ do
 done
 
 # Be sure to have absolute paths.
-for ac_var in bindir sbindir libexecdir datadir sysconfdir sharedstatedir \
-              localstatedir libdir includedir oldincludedir \
-              infodir mandir docdir
+for ac_var in bindir libdir includedir docdir
 do
   eval ac_val=$`echo $ac_var`
   case $ac_val in
