@@ -1,87 +1,99 @@
 /** 
-@name Credits and Changelog
+\page CreditsChangelog Credits and Changelog
 
-{\bf Credits}
-\begin{itemize}
+<b> Credits</b>
+<UL>
 
-      \item \URL[Ullrich K&ouml;the]{http://kogs-www.informatik.uni-hamburg.de/~koethe/}
+      <li> <a href="http://kogs-www.informatik.uni-hamburg.de/~koethe/">Ullrich K&ouml;the</a>
              originated and wrote the library.
 
-      \item Mikhail Amchislavsky 
-      (\URL[mamchisl@ucdavis.edu]{mailto:mamchisl@ucdavis.edu})
+      <li> Mikhail Amchislavsky 
+      (<a href="mailto:mamchisl@ucdavis.edu">mamchisl@ucdavis.edu</a>)
       contributed the code to read and write PNM files. Many thanks!
 
 
-\end{itemize}
+</UL>
 
-{\bf Changes from Version 1.1.1 to 1.1.2}
+<b> Changes from Version 1.1.2 to 1.1.3</b>
 
-\begin{itemize}
+<UL>
 
-      \item Made VIGRA compile under MS Visual C++ 6.0.
+      <li> Switched from obsolete 
+           <a href="http://www.zib.de/Visual/software/doc++/index.html">doc++</a>
+           documentation generator to
+           <a href="http://www.doxygen.org">doxygen</a>. 
       
-      \item Added \Ref{BrightnessContrastFunctor}.
+      <li> Improved documentation.
       
-      \item Added \Ref{greadientBasedTransformation}() and related 
-            \Ref{MagnitudeFunctor} and \Ref{RGBGradientMagnitudeFunctor}.
-      
-      \item Added \Ref{nonlinearDiffusion}().
-      
-      \item Added more smoothing methods to \URL[smooth]{Examples.html} example.
-      
-      \item Added \URL[resize]{Examples.html} example.
-      
-      \item Minor corrections and bug fixes.
-      
-\end{itemize}
+      <li> Added \ref vigra::TinyVector.
+</UL>
 
-{\bf Changes from Version 1.1.0 to 1.1.1}
+<b> Changes from Version 1.1.1 to 1.1.2</b>
 
-\begin{itemize}
+<UL>
 
-      \item Fixed bug with PNM import code.
+      <li> Made VIGRA compile under MS Visual C++ 6.0.
       
-      \item added Canny edge detection algorithm (code adapted from 
-      C implementation by \URL[Sven Utcke]{mailto:utcke@informatik.uni-hamburg.de})
+      <li> Added \ref vigra::BrightnessContrastFunctor.
       
-\end{itemize}
-
-{\bf Changes from Version 1.0 to 1.1.0}
-
-\begin{itemize}
-
-      \item Put everything in namespace "vigra".
+      <li> Added \ref gradientBasedTransformation() and related 
+            \ref vigra::MagnitudeFunctor and \ref vigra::RGBGradientMagnitudeFunctor.
       
-      \item Renamed \\
-            VigraStdException => StdException.\\
+      <li> Added \ref nonlinearDiffusion().
+      
+      <li> Added more smoothing methods to <a href="Examples.html">smooth</a> example.
+      
+      <li> Added <a href="Examples.html">resize</a> example.
+      
+      <li> Minor corrections and bug fixes.
+      
+</UL>
+
+<b> Changes from Version 1.1.0 to 1.1.1</b>
+
+<UL>
+
+      <li> Fixed bug with PNM import code.
+      
+      <li> added Canny edge detection algorithm (code adapted from 
+      C implementation by <a href="mailto:utcke@informatik.uni-hamburg.de">Sven Utcke</a>)
+      
+</UL>
+
+<b> Changes from Version 1.0 to 1.1.0</b>
+
+<UL>
+
+      <li> Put everything in namespace "vigra".
+      
+      <li> Renamed <br>
+            VigraStdException => StdException.<br>
             vigraImpexListFormats() => impexListFormats()
       
       
-      \item Added expression templates for \URL[automated functor creation]{FunctorCreation.html}.
+      <li> Added expression templates for \ref FunctorExpressions "automated functor creation".
 
-      \item Added support for input/output of the PNM image file format
+      <li> Added support for input/output of the PNM image file format
        (contributed by  
-        \URL[Mikhail Amchislavsky]{mailto:mamchisl@ucdavis.edu}).
+        <a href="mailto:mamchisl@ucdavis.edu">Mikhail Amchislavsky</a>).
 
-      \item Improved support for the \URL[TIFF image format]{TIFFrelatedfunctions.html}.
+      <li> Improved support for the \ref TIFFImpex "TIFF image format".
             VIGRA can now read and create TIFF with various pixel types 
             (unsigned byte, short and long int, float, double).
             
-      \item Renamed Dist2D into \Ref{Diff2D}, since it represents a difference vector 
+      <li> Renamed Dist2D into \ref vigra::Diff2D, since it represents a difference vector 
             rather than a distance. Extended Diff2D so that it can also act as a 
-            \URL[CoordinateIterator]{CoordinateIterator.html}. Note that this 
-            required renaming #Dist2D::width# and #Dist2D::height# into #Diff2D::x# 
-            and #Diff2D::y# respectively.
+            \ref vigra::CoordinateIterator. Note that this 
+            required renaming <TT>Dist2D::width</TT> and <TT>Dist2D::height</TT> into <TT>Diff2D::x</TT> 
+            and <TT>Diff2D::y</TT> respectively.
             
-      \item Changed the documentation layout.
+      <li> Changed the documentation layout.
       
-      \item Improved \Ref{labelImage}() according to ideas of Prof. 
+      <li> Improved \ref labelImage() according to ideas of Prof. 
             Vladimir Kovalevsky.
       
-      \item Several minor changes and bug fixes.
+      <li> Several minor changes and bug fixes.
 
 
-\end{itemize}
-
-@memo Who contributed what?    
+</UL>
 */

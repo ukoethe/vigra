@@ -1,66 +1,132 @@
-/** @name Examples
+/** \page Examples Examples
+    
+    Demonstration programs for VIGRA's usage.
     
     Click on the hyperlinks to view the commented source code for the demos.
     Most examples can be applied to both gray-scale and RGB images. 
-    See \URL[Installation]{Installation.html} for instructions on how these
+    See <a href="Installation.html">Installation</a> for instructions on how these
     programms can be compiled. For convenience, the directory contains the test images 
-    \URL[lenna_gray.gif]{../src/examples/lenna_gray.gif} and 
-    \URL[lenna_color.gif]{../src/examples/lenna_color.gif}.
+    <a href="../src/examples/lenna_gray.gif">lenna_gray.gif</a> and 
+    <a href="../src/examples/lenna_color.gif">lenna_color.gif</a>.
     
-    \begin{itemize}
+    <ul>
     
-    \item Convert an image file into another file type:
-    \URL[convert.cxx]{../src/examples/convert.cxx} \\
-    Usage: #convert infile outfile#
+    <li> Convert an image file into another file type:
+    <a href="convert_8cxx-example.html">convert.cxx</a> <br>
+    Usage: <TT>convert infile outfile</TT>
     
-    \item Read an image file and write out a subimage:
-    \URL[subimage.cxx]{../src/examples/subimage.cxx} \\
-    Usage: #subimage infile outfile#
+    <li> Read an image file and write out a subimage:
+    <a href="subimage_8cxx-example.html">subimage.cxx</a> <br>
+    Usage: <TT>subimage infile outfile</TT>
     
-    \item Invert an image file (create a negative) using the function 
-    \Ref{transformImage}:
-    \URL[invert.cxx]{../src/examples/invert.cxx} \\
-    Usage: #invert infile outfile#
+    <li> Invert an image file (create a negative) using the function 
+    \ref transformImage():
+    <a href="invert_8cxx-example.html">invert.cxx</a> <br>
+    Usage: <TT>invert infile outfile</TT>
     
-    \item Invert an image file (create a negative) by coding the loop
+    <li> Invert an image file (create a negative) by coding the loop
     explicitly:
-    \URL[invert_explicitly.cxx]{../src/examples/invert_explicitly.cxx} \\
-    Usage: #invert_explicitly infile outfile#
+    <a href="invert__explicitly_8cxx-example.html">invert_explicitly.cxx</a> <br>
+    Usage: <TT>invert_explicitly infile outfile</TT>
     
-    \item Resize an image using \Ref{resizeImageSplineInterpolation}:
-    \URL[resize.cxx]{../src/examples/resize.cxx} \\
-    Usage: #resize infile outfile#
+    <li> Resize an image using \ref resizeImageSplineInterpolation():
+    <a href="resize_8cxx-example.html">resize.cxx</a> <br>
+    Usage: <TT>resize infile outfile</TT>
     
-    \item Smooth an image using \Ref{Recursive convolution functions}:
-    \URL[smooth.cxx]{../src/examples/smooth.cxx} \\
-    Usage: #smooth infile outfile#
+    <li> Smooth an image using \ref RecursiveConvolution functions:
+    <a href="smooth_8cxx-example.html">smooth.cxx</a> <br>
+    Usage: <TT>smooth infile outfile</TT>
     
-    \item Find the gray value profile along the image diagonal 
-    by means of a \Ref{LineIterator}:
-    \URL[profile.cxx]{../src/examples/profile.cxx} \\
-    Usage: #profile infile#, generates #profile.gif#
+    <li> Find the gray value profile along the image diagonal 
+    by means of a \ref vigra::LineIterator:
+    <a href="profile_8cxx-example.html">profile.cxx</a> <br>
+    Usage: <TT>profile infile</TT>, generates <TT>profile.gif</TT>
 
-    \item Reduce image size by mean of a Gaussian pyramid:
-    \URL[pyramid.cxx]{../src/examples/pyramid.cxx} \\
-    Usage: #pyramid infile outfile#
+    <li> Reduce image size by mean of a Gaussian pyramid:
+    <a href="pyramid_8cxx-example.html">pyramid.cxx</a> <br>
+    Usage: <TT>pyramid infile outfile</TT>
     
-    \item Find edges by means of a 
-    \URL[difference of exponential edge detector]{differenceOfExponentialEdgeImage.html}:
-    \URL[edge.cxx]{../src/examples/edge.cxx} \\
-    Usage: #edge infile outfile#
+    <li> Find edges by means of a 
+    \ref differenceOfExponentialEdgeImage():
+    <a href="edge_8cxx-example.html">edge.cxx</a> <br>
+    Usage: <TT>edge infile outfile</TT>
     
-    \item Segment image by means of the watershed algorithm, using 
-    \Ref{seededRegionGrowing}:
-    \URL[watershed.cxx]{../src/examples/watershed.cxx} \\
-    Usage: #watershed infile outfile#
+    <li> Segment image by means of the watershed algorithm, using 
+    \ref seededRegionGrowing():
+    <a href="watershed_8cxx-example.html">watershed.cxx</a> <br>
+    Usage: <TT>watershed infile outfile</TT>
     
-    \item Generate a Voronoi diagram, using \Ref{distanceTransform} and
-    \Ref{seededRegionGrowing}:
-    \URL[voronoi.cxx]{../src/examples/voronoi.cxx} \\
-    Usage: #voronoi#, generates: #distances.gif# (Euclidean distance transform) and #voronoi.gif#
+    <li> Generate a Voronoi diagram, using \ref distanceTransform() and
+    \ref seededRegionGrowing():
+    <a href="voronoi_8cxx-example.html">voronoi.cxx</a> <br>
+    Usage: <TT>voronoi</TT>, generates: <TT>distances.gif</TT> (Euclidean distance transform) and <TT>voronoi.gif</TT>
     (Voronoi diagram)
     
-    \end{itemize}
+    </ul>
+*/
+
+/** \example convert.cxx
+    Convert an image file into another file type
+    <br>
+    Usage: <TT>convert infile outfile</TT>
+*/
+
+/** \example subimage.cxx
+    Read an image file and write out a subimage
+    <br>
+    Usage: <TT>subimage infile outfile</TT>
+*/
     
-    @memo Demonstration programs for VIGRA's usage
+/** \example invert.cxx
+    Invert an image file (create a negative) using the function 
+    \ref transformImage
+    <br>
+    Usage: <TT>invert infile outfile</TT>
+*/
+    
+/** \example invert_explicitly.cxx
+    Invert an image file (create a negative) by coding the loop
+    explicitly
+    <br>
+    Usage: <TT>invert_explicitly infile outfile</TT>
+*/
+    
+/** \example resize.cxx
+    Resize an image using \ref resizeImageSplineInterpolation<br>
+    Usage: <TT>resize infile outfile</TT>
+*/
+    
+/** \example smooth.cxx
+    <li> Smooth an image using \ref RecursiveConvolution functions:
+    <a href="smooth_8cxx-example.html">smooth.cxx</a> <br>
+    Usage: <TT>smooth infile outfile</TT>
+*/
+    
+/** \example profile.cxx
+    Find the gray value profile along the image diagonal 
+    by means of a \ref vigra::LineIterator<br>
+    Usage: <TT>profile infile</TT>, generates <TT>profile.gif</TT>
+*/
+
+/** \example pyramid.cxx
+    Reduce image size by mean of a Gaussian pyramid<br>
+    Usage: <TT>pyramid infile outfile</TT>
+*/
+    
+/** \example edge.cxx
+    Find edges by means of a 
+    \ref differenceOfExponentialEdgeImage()<br>
+    Usage: <TT>edge infile outfile</TT>
+*/
+    
+/** \example watershed.cxx
+    Segment image by means of the watershed algorithm, using 
+    \ref seededRegionGrowing()<br>
+    Usage: <TT>watershed infile outfile</TT>
+*/
+    
+/** \example voronoi.cxx
+    <li> Generate a Voronoi diagram, using \ref distanceTransform and
+    \ref seededRegionGrowing()<br>
+    Usage: <TT>voronoi</TT>, generates: <TT>distances.gif</TT> (Euclidean distance transform) and <TT>voronoi.gif</TT> (Voronoi diagram)
 */

@@ -1,121 +1,120 @@
-/** @name Installation
+/** \page Installation Installation
 
-    VIGRA can be downloaded from \URL[http://kogs-www.informatik.uni-hamburg.de/~koethe/vigra/vigraVERSION_VERSION_VERSION.tar.gz]{http://kogs-www.informatik.uni-hamburg.de/~koethe/vigra/vigraVERSION_VERSION_VERSION.tar.gz}.
+    VIGRA can be downloaded from <a href="http://kogs-www.informatik.uni-hamburg.de/~koethe/vigra/vigraVERSION_VERSION_VERSION.tar.gz">http://kogs-www.informatik.uni-hamburg.de/~koethe/vigra/vigraVERSION_VERSION_VERSION.tar.gz</a>.
     
     VIGRA is known to work with the following compilers:
     
-    \begin{itemize}
-    \item SGI C++ 7.2 and 7.3 (CC -n32)
-    \item \URL[GNU g++ 2.95.1 and newer]{http://gcc.gnu.org/} 
+    <ul>
+    <li> SGI C++ 7.2 and 7.3 (CC -n32)
+    <li> <a href="http://gcc.gnu.org/">GNU g++ 2.95.1 and newer</a> 
           (formerly EGCS 1.1)
-    \item Microsoft Visual C++ 5.0, patchlevel 3
-    \end{itemize}
+    <li> Microsoft Visual C++ 5.0, patchlevel 3
+    </ul>
 
     VIGRA is known NOT to work with the following compilers:
 
-    \begin{itemize}
-    \item GNU g++ 2.8.x and earlier
-    \item SUN C++ 4.2 (Sun's old compiler, a new version exists, 
+    <ul>
+    <li> GNU g++ 2.8.x and earlier
+    <li> SUN C++ 4.2 (Sun's old compiler, a new version exists, 
         but has not been tried yet)
-    \end{itemize}
+    </ul>
 
     VIGRA should work with any standard conforming C++ compiler
 
-    {\bf Unix:}
+    <b> Unix:</b>
     
-    \begin{itemize}
-    \item uncompress and unpack the source distribution
-    \item set the following environment variables:
+    <ul>
+    <li> uncompress and unpack the source distribution
+    <li> set the following environment variables:
     
-    \begin{itemize}
-    \item tell the system where the VIGRA sources reside 
-    \begin{verbatim}
+    <ul>
+    <li> tell the system where the VIGRA sources reside 
+    \code
     > setenv VIGRA_PATH [some path]/vigraVERSION_VERSION_VERSION
-    \end{verbatim}    
-    \item specify which compiler and makefile will be used 
+    \endcode    
+    <li> specify which compiler and makefile will be used 
     (currently supported values:     
-    \begin{itemize}
-         \item "GCC" for \URL[GNU g++]{http://gcc.gnu.org/} (2.95.1 and 
+    <ul>
+         <li> "GCC" for <a href="http://gcc.gnu.org/">GNU g++</a> (2.95.1 and 
          newer) and EGCS 1.1, 
-         \item "IRIXCC7.2.0" for SGI C++ 7.2.0, 
-         \item "IRIXCC7.2.1" for SGI C++ 7.2.1,
-         \item "IRIXCC" for SGI C++ 7.3,
-         \item "COMPILER" for any compiler not in this list)
-    \end{itemize}
-    \begin{verbatim}
+         <li> "IRIXCC7.2.0" for SGI C++ 7.2.0, 
+         <li> "IRIXCC7.2.1" for SGI C++ 7.2.1,
+         <li> "IRIXCC" for SGI C++ 7.3,
+         <li> "COMPILER" for any compiler not in this list)
+    </ul>
+    \code
     > setenv VIGRA_COMPILER GCC       
-    \end{verbatim}    
+    \endcode    
     To add support for a new compiler, edit the file 
-    #$VIGRA_PATH/config/COMPILER.mak# in order to tell VIGRA how your 
+    <TT>$VIGRA_PATH/config/COMPILER.mak</TT> in order to tell VIGRA how your 
     compiler is invoked. In this case, you'll have to specify 
-    #setenv VIGRA_COMPILER COMPILER#. If your compiler does not conform to
+    <TT>setenv VIGRA_COMPILER COMPILER</TT>. If your compiler does not conform to
     the C++ standard, you may also need to add compiler specific settings
-    in the file #$VIGRA_PATH/include/vigra/config.hxx#.
+    in the file <TT>$VIGRA_PATH/include/vigra/config.hxx</TT>.
 
-    \item specify the subdirectory where binaries go (for example, libraries 
+    <li> specify the subdirectory where binaries go (for example, libraries 
      will be installed at
-     #$VIGRA_PATH/lib/$VIGRA_PLATFORM#)
-    \begin{verbatim}
+     <TT>$VIGRA_PATH/lib/$VIGRA_PLATFORM</TT>)
+    \code
     > setenv VIGRA_PLATFORM Solaris       
-    \end{verbatim}
+    \endcode
      This variable can be empty.
     
-    \end{itemize}
+    </ul>
     
-    \item specify if and where JPEG and TIFF libraries are installed: \\
+    <li> specify if and where JPEG and TIFF libraries are installed: <br>
     
-    \begin{itemize}
-    \item edit #$VIGRA_PATH/src/impex/Makefile#: \\
-     {\em either} update the 
-     paths to the include files for \URL[libjpeg]{http://www.ijg.org/} and 
-    \URL[libtiff]{http://www.libtiff.org/} on your 
-    system \\
-    {\em or} comment out the lines #HAS_JPEG# and #HAS_TIFF#.
+    <ul>
+    <li> edit <TT>$VIGRA_PATH/src/impex/Makefile</TT>: <br>
+     <em> either</em> update the 
+     paths to the include files for <a href="http://www.ijg.org/">libjpeg</a> and 
+    <a href="http://www.libtiff.org/">libtiff</a> on your 
+    system <br>
+    <em> or</em> comment out the lines <TT>HAS_JPEG</TT> and <TT>HAS_TIFF</TT>.
     
-    \item edit the LIB macro in #$VIGRA_PATH/src/examples/Makefile#: \\
-    {\em either} add the 
+    <li> edit the LIB macro in <TT>$VIGRA_PATH/src/examples/Makefile</TT>: <br>
+    <em> either</em> add the 
     paths to the library files libjpeg.a (or libjpeg.so) and 
     libtiff.a (or libtiff.so) on your 
-    system \\
-    {\em or} remove -ljpeg and -ltiff.
+    system <br>
+    <em> or</em> remove -ljpeg and -ltiff.
     
-    \end{itemize}
+    </ul>
     
-    \item build the library and the \Ref{Examples}:
+    <li> build the library and the \ref Examples:
     
-    \begin{verbatim}
+    \code
     > cd $VIGRA_PATH
     > make
-    \end{verbatim}
-    \end{itemize}
+    \endcode
+    </ul>
     
-    {\bf Windows:}
+    <b> Windows:</b>
     
-    \begin{itemize}
-    \item uncompress and unpack the source distribution
-    \item go into the directory #[some path]/vigra/src/#
-    \item load the workspace #vigra.dsw# into VisualC++
-    \item set #impex# as active project and
+    <ul>
+    <li> uncompress and unpack the source distribution
+    <li> go into the directory <TT>[some path]/vigra/src/</TT>
+    <li> load the workspace <TT>vigra.dsw</TT> into VisualC++
+    <li> set <TT>impex</TT> as active project and
     
-    \begin{itemize}
-    \item specify if and where JPEG and TIFF libraries are installed: \\
-    open the dialog Project:Settings:C++:Preprocessor and {\em either} update 
+    <ul>
+    <li> specify if and where JPEG and TIFF libraries are installed: <br>
+    open the dialog Project:Settings:C++:Preprocessor and <em> either</em> update 
     the paths to the
-    include files for \URL[jpeg.lib]{http://www.ijg.org/} and 
-    \URL[tiff.lib]{http://www.libtiff.org/} on your 
-    system - {\em or} - remove the defines #HasJPEG# and #HasTIFF#.
+    include files for <a href="http://www.ijg.org/">jpeg.lib</a> and 
+    <a href="http://www.libtiff.org/">tiff.lib</a> on your 
+    system - <em> or</em> - remove the defines <TT>HasJPEG</TT> and <TT>HasTIFF</TT>.
     
-    \item likewise, enter the path to jpeg.lib and tiff.lib in the dialog
+    <li> likewise, enter the path to jpeg.lib and tiff.lib in the dialog
     Project:Settings:Link or remove these libraries from the library list (do this for 
     all projects at once)
     
-    \item build the project #impex# (that is, the library #vigraimpex.lib#)
+    <li> build the project <TT>impex</TT> (that is, the library <TT>vigraimpex.lib</TT>)
     
-    \end{itemize}
-    \item build the other projects containing the \Ref{Examples} (These programs can be 
+    </ul>
+    <li> build the other projects containing the \ref Examples (These programs can be 
     invoked from the command line.)
-    \end{itemize}
+    </ul>
 
-    @memo
     
 */
