@@ -385,6 +385,31 @@ struct ConvolutionTest
         }
     }
     
+    void nonlinearDiffusionTest()
+    {
+        double epsilon = 0.0000001;
+        
+        Image res(lenna.size());
+
+        nonlinearDiffusion(srcImageRange(lenna), destImage(res),
+                           vigra::DiffusivityFunctor<double>(4.0), 4.0);
+        
+        ViffImage * viff = readViffImage("lenna128nonlinear.xv");
+        shouldMsg(viff != 0, "Unable to read test image \"lenna128nonlinear.xv\"\n");
+        Image comp(lenna.size());
+        importViffImage(viff, destImage(comp));        
+        freeViffImage(viff);
+        
+        Image::ScanOrderIterator i1 = res.begin();
+        Image::ScanOrderIterator i1end = res.end();
+        Image::ScanOrderIterator i2 = comp.begin();
+        
+        for(; i1 != i1end; ++i1, ++i2)
+        {
+            should(std::abs(*i1 - *i2) < epsilon);
+        }
+    }
+    
     Image constimg, lenna, rampimg;
 };
 
@@ -406,6 +431,7 @@ struct ConvolutionTestSuite
         add( testCase( &ConvolutionTest::recursiveSmoothTest));
         add( testCase( &ConvolutionTest::recursiveGradientTest));
         add( testCase( &ConvolutionTest::recursiveSecondDerivativeTest));
+        add( testCase( &ConvolutionTest::nonlinearDiffusionTest));
     }
 };
 
