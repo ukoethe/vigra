@@ -63,12 +63,13 @@ template <class IMAGE_ITERATOR>
 class ColumnIterator : private IMAGE_ITERATOR
 {
   public:
-        //@{
+        /** the iterator's value type
+        */
+    typedef typename IMAGE_ITERATOR::value_type value_type;
+
         /** the iterator's value type
         */
     typedef typename IMAGE_ITERATOR::value_type PixelType;
-    typedef typename IMAGE_ITERATOR::value_type value_type;
-        //@}
     
         /** the iterator's reference type (return type of <TT>*iter</TT>)
         */
@@ -268,12 +269,13 @@ template <class IMAGE_ITERATOR>
 class RowIterator : private IMAGE_ITERATOR
 {
   public:
-        //@{
+        /** the iterator's value type
+        */
+    typedef typename IMAGE_ITERATOR::value_type value_type;
+
         /** the iterator's value type
         */
     typedef typename IMAGE_ITERATOR::value_type PixelType;
-    typedef typename IMAGE_ITERATOR::value_type value_type;
-        //@}
     
         /** the iterator's reference type (return type of <TT>*iter</TT>)
         */
@@ -466,12 +468,13 @@ template <class IMAGE_ITERATOR>
 class LineIterator : private IMAGE_ITERATOR
 {
   public:
-        //@{
+        /** the iterator's value type
+        */
+    typedef typename IMAGE_ITERATOR::value_type value_type;
+
         /** the iterator's value type
         */
     typedef typename IMAGE_ITERATOR::value_type PixelType;
-    typedef typename IMAGE_ITERATOR::value_type value_type;
-        //@}
     
         /** the iterator's reference type (return type of <TT>*iter</TT>)
         */

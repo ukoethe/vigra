@@ -32,11 +32,34 @@ namespace vigra {
 /** \addtogroup ImageIterators
 */
 //@{
-/** \brief Define the default accessor for each image iterator.
+/** \brief Export associated information for each image iterator.
 
-    With each image iterator, a default accessor is associated. The type of
-    this accessor can be retrieved by means of IteratorTraits. This is, 
-    for example, used by the \ref IteratorBasedArgumentObjectFactories.
+    The IteratorTraits class contains the following fields:
+
+    \code
+    template <class T> 
+    struct IteratorTraits 
+    {
+        typedef T                                     Iterator;
+        typedef Iterator                              iterator;
+        typedef typename iterator::iterator_category  iterator_category;
+        typedef typename iterator::value_type         value_type;
+        typedef typename iterator::reference          reference;
+        typedef typename iterator::index_reference    index_reference;
+        typedef typename iterator::pointer            pointer;
+        typedef typename iterator::difference_type    difference_type;
+        typedef typename iterator::row_iterator       row_iterator;
+        typedef typename iterator::column_iterator    column_iterator;
+        typedef StandardAccessor<value_type>          DefaultAccessor;
+        typedef StandardAccessor<value_type>          default_accessor;
+    };
+    \endcode
+    
+    By (partially) specializing this template for an iterator class
+    the defaults given above can be changed as approiate. For example, iterators
+    for rgb images are associated with <TT>RGBAccessor<value_type></TT> 
+    instead of <TT>StandardAccessor<value_type></TT>. To get the accessor
+    associated with a given iterator, use code like this:
     
     \code
     template <class Iterator>
@@ -48,18 +71,29 @@ namespace vigra {
     }
     \endcode
     
-    <b>\#include</b> "<a href="iteratortraits_8hxx-source.html">vigra/iteratortraits.hxx</a>"
+    This technique is, for example, used by the 
+    \ref IteratorBasedArgumentObjectFactories. The possibility to retrieve the default accessor by means of a traits
+    class is especially important since this information is not
+    contained in the iterator directly.
     
+    <b>\#include</b> "<a href="iteratortraits_8hxx-source.html">vigra/iteratortraits.hxx</a>"
     Namespace: vigra
 */
 template <class T> 
 struct IteratorTraits 
 {
-    struct IteratorTraitsNotDefinedForThisCase
-    {};
-    
-    // must be defined due to Visual C++ bug
-    typedef IteratorTraitsNotDefinedForThisCase DefaultAccessor;
+    typedef T                                     Iterator;
+    typedef Iterator                              iterator;
+    typedef typename iterator::iterator_category  iterator_category;
+    typedef typename iterator::value_type         value_type;
+    typedef typename iterator::reference          reference;
+    typedef typename iterator::index_reference    index_reference;
+    typedef typename iterator::pointer            pointer;
+    typedef typename iterator::difference_type    difference_type;
+    typedef typename iterator::row_iterator       row_iterator;
+    typedef typename iterator::column_iterator    column_iterator;
+    typedef StandardAccessor<value_type>          DefaultAccessor;
+    typedef StandardAccessor<value_type>          default_accessor;
 };
 
 //@}

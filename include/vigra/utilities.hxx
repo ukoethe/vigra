@@ -84,14 +84,15 @@ struct VigraFalseType
 
 /*! \brief Quckly create 1-dimensional iterator adapters.
     
-    This class allow the easy creation of 1D iterator adpaters out 
-    of existing iterators. To use it, you must implement a policy class
-    that defines the iterator's behaviour. Then the policy is used to 
-    instantiate the IteratorAdapter template, which then automatically
+    This class supports the easy creation of 1D iterator adpaters out 
+    of existing iterators. To use it, you must first implement a policy class
+    that defines the iterator's behavior. The policy is used to 
+    instantiate the IteratorAdapter template, which thus automatically
     obtains all required functions of an STL-compatible iterator.
     General information on how this works can be found on the 
     <a href="http://www.boost.org/libs/utility/iterator_adaptors.htm">Boost Iterator Adaptor</a>
-    page, although there are some differences in the details.
+    page, although there are some differences in the details of the
+    boost and VIGRA implementations.
     Here is an example policy class that just exports the behaviour
     of the underlying iterator:
     
@@ -107,7 +108,7 @@ struct VigraFalseType
         typedef typename Iterator::value_type          value_type;
         
         // the adpator's difference type (result of 'iter1 - iter2',
-                                          argument of 'iter[n]')
+        //                                argument of 'iter[n]')
         typedef typename Iterator::difference_type     difference_type;
         
         // the adpator's reference type (result of '*iter')
@@ -174,8 +175,7 @@ struct VigraFalseType
     as one would expect from an iterator that doesn't support random access.
     Note also that the <TT>BaseType</TT> needs not be an iterator -
     it can be any type that contains the information necessary for the
-    adaptor to do it's work (and it's the type that is passed to the adpator's
-    constructor).
+    adaptor to do it's work.
     
     <b>\#include</b> "<a href="utilities_8hxx-source.html">vigra/utilities.hxx</a>"<br>
     Namespace: vigra
@@ -198,6 +198,11 @@ class IteratorAdaptor
     : adaptee_()
     {}
     
+        /** Construct from an instance of the policy class' BaseType
+            Note that the functions of the adaptor implement the
+            interface of an random access iterator as defined in the
+            C++ standard, so there is no need for explicit documentation.
+        */
     explicit IteratorAdaptor(BaseType const & o)
     : adaptee_(o)
     {
@@ -461,12 +466,13 @@ struct image_traverser_tag {};
 class Diff2D
 {
   public:
-        //@{
-        /** The iterator's value type.
+        /** The iterator's value type: a coordinate.
+        */
+    typedef Diff2D PixelType;
+    
+        /** The iterator's value type: a coordinate.
         */
     typedef Diff2D value_type;
-    typedef Diff2D PixelType;
-        //@}
             
         /** the iterator's reference type (return type of <TT>*iter</TT>)
         */

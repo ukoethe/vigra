@@ -465,12 +465,13 @@ class ImageIterator: public ImageIteratorBase<PIXELTYPE>
 {
   public:
 
-        //@{
+        /** The underlying image's pixel type.
+        */
+    typedef PIXELTYPE value_type;
+
         /** The underlying image's pixel type.
         */
     typedef PIXELTYPE PixelType;
-    typedef PIXELTYPE value_type;
-        //@}
             
         /** the iterator's reference type (return type of <TT>*iter</TT>)
         */
@@ -664,12 +665,13 @@ class ConstImageIterator: public ImageIteratorBase<PIXELTYPE>
 {
   public:
 
-        //@{
+        /** The underlying image's pixel type.
+        */
+    typedef PIXELTYPE value_type;
+
         /** The underlying image's pixel type.
         */
     typedef PIXELTYPE PixelType;
-    typedef PIXELTYPE value_type;
-        //@}
     
         /** the iterator's reference type (return type of <TT>*iter</TT>)
         */
@@ -955,12 +957,13 @@ template <class PIXELTYPE>
 class ConstValueIterator
 {
   public:
-        //@{
-        /** The underlying image's pixel type.
+        /** The type of the constant the iterator holds.
+        */
+   typedef PIXELTYPE value_type;
+
+        /** The type of the constant the iterator holds.
         */
     typedef PIXELTYPE PixelType;
-    typedef PIXELTYPE value_type;
-        //@}
     
         /** the iterator's reference type (return type of <TT>*iter</TT>)
         */

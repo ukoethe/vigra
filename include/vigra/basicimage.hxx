@@ -471,59 +471,69 @@ class BasicImage
 {
   public:
     
-        //@{
+        /** the BasicImage's pixel type
+        */
+    typedef PIXELTYPE value_type;
+    
         /** the BasicImage's pixel type
         */
     typedef PIXELTYPE PixelType;
-    typedef PIXELTYPE value_type;
-        //@}
-        
-        //@{
+
         /** the BasicImage's reference type (i.e. the
             return type of image[diff] and image(dx,dy))
         */
     typedef PIXELTYPE &       reference;
+
+        /** the BasicImage's const reference type (i.e. the
+            return type of image[diff] and image(dx,dy) when image is const)
+        */
     typedef PIXELTYPE const & const_reference;
-        //@}
-        
-        //@{
+
         /** the BasicImage's pointer type 
         */
     typedef PIXELTYPE *       pointer;
-    typedef PIXELTYPE const * const_pointer;
-        //@}
-        
-        //@{
-        /** the BasicImage's 1D random access iterator
-            (note: lower case 'iterator' is a STL compatible 1D random access iterator)
+
+        /** the BasicImage's const pointer type 
         */
-    typedef PIXELTYPE * ScanOrderIterator;
+    typedef PIXELTYPE const * const_pointer;
+
+        /** the BasicImage's 1D random access iterator
+            (note: lower case 'iterator' is a STL compatible 1D random 
+             access iterator, don't confuse with capitalized Iterator)
+        */
     typedef PIXELTYPE * iterator;
-        //@}
-        
+ 
+        /** the BasicImage's 1D random access iterator
+        */
+   typedef PIXELTYPE * ScanOrderIterator;
+
         /** the BasicImage's 1D random access const iterator
             (note: lower case 'const_iterator' is a STL compatible 1D 
             random access const iterator)
         */
-    typedef PIXELTYPE const * ConstScanOrderIterator;
     typedef PIXELTYPE const * const_iterator;
-        //@}
-        
-        //@{
+
+        /** the BasicImage's 1D random access const iterator
+        */
+    typedef PIXELTYPE const * ConstScanOrderIterator;
+
+        /** the BasicImage's 2D random access iterator ('traverser')
+        */
+    typedef BasicImageIterator<PixelType, PIXELTYPE **> traverser;
+
         /** the BasicImage's 2D random access iterator
-            (note: capitalized 'Iterator' is a 2D image iterator)
+            (note: capitalized 'Iterator' is a 2D image iterator,
+             don't confuse with lower case iterator)
         */
     typedef BasicImageIterator<PixelType, PIXELTYPE **> Iterator;
-    typedef BasicImageIterator<PixelType, PIXELTYPE **> traverser;
-        //@}
-        
-        //@{
+ 
+        /** the BasicImage's 2D random access const iterator ('conts traverser')
+        */
+    typedef ConstBasicImageIterator<PixelType, PIXELTYPE **> const_traverser;
+ 
         /** the BasicImage's 2D random access const iterator
-            (note: capitalized 'ConstIterator' is a 2D image const iterator)
         */
     typedef ConstBasicImageIterator<PixelType, PIXELTYPE **> ConstIterator; 
-    typedef ConstBasicImageIterator<PixelType, PIXELTYPE **> const_traverser;
-        //@}
 
         /** the BasicImage's difference type (argument type of image[diff])
         */

@@ -83,7 +83,7 @@ struct RequiresExplicitCast<double> {
     
     Data accessors are used to allow for flexible access to the data
     an interator points to. When we access the data directly, we
-    are bound to what <TT>operator*</TT> returns, if this method exists at 
+    are bound to what <TT>operator*()</TT> returns, if this method exists at 
     all. Encapsulating access in an accessor enables a better
     decoupling of data structures and algorithms. 
     <a href="documents/DataAccessors.ps">This paper</a> contains
@@ -97,20 +97,22 @@ struct RequiresExplicitCast<double> {
 /*                                                      */
 /********************************************************/
 
-/** \brief <TT>%StandardAccessor</TT> and <TT>StandardValueAccessor</TT>.
+/** \brief Encapsulate access to the values an iterator points to.
 
-    <TT>StandardAccessor</TT> is normally used with all relizations of 
-    \ref vigra::ImageIterator. It
-    simply encapsulates a call to the iterator's <TT>operator*()</TT> in both
-    the read and write function. If the iterator returns its items by 
-    value (such as \ref vigra::CoordinateIterator), you must use
-    <TT>StandardValueAccessor</TT> instead of <TT>StandardAccessor</TT> (both have 
-    the same interface, but the latter can be optimized better).
+    StandardAccessor is a trivial accessor that simply encapsulates 
+    the iterator's operator*() and operator[]() in its 
+    read and write functions. It passes its arguments <em>by reference</em>. 
+    If you want to return items by value, you 
+    must use StandardValueAccessor instead of StandardAccessor.
+    Both accessors have different optimization properties --
+    StandardAccessor is usually faster for compound pixel types,
+    while StandardValueAccessor is faster for the built-in types.
 
-    <b>\#include</b> "<a href="accessor_8hxx-source.html">vigra/accessor.hxx</a>"
-    
+    When a floating point number is assigned by means of an accessor
+    with integral value_type, the value is rounded and clipped as approriate.
+
+    <b>\#include</b> "<a href="accessor_8hxx-source.html">vigra/accessor.hxx</a>"<br>
     Namespace: vigra
-    
 */
 template <class VALUETYPE>
 class StandardAccessor
@@ -119,8 +121,6 @@ class StandardAccessor
         /** the value_type
         */
     typedef VALUETYPE value_type;
-    typedef typename NumericTraits<VALUETYPE>::Promote Promote;
-    typedef typename NumericTraits<VALUETYPE>::RealPromote RealPromote;
     
         /** read the current data item
         */
@@ -129,7 +129,7 @@ class StandardAccessor
     
     VALUETYPE const & operator()(VALUETYPE const * i) const { return *i; }
     
-        /** read the data item at an offset (can be 1D or 2D or higher order difference)
+        /** read the data item at an offset (can be 1D or 2D or higher order difference).
         */
     template <class ITERATOR, class DIFFERENCE>
     VALUETYPE const & operator()(ITERATOR & i, DIFFERENCE diff) const
@@ -139,14 +139,16 @@ class StandardAccessor
     
         /** Write the current data item. The type <TT>V</TT> of the passed
             in <TT>value</TT> is automatically converted to <TT>VALUETYPE</TT>.
+            In case of a conversion floating point -> intergral this includes rounding and clipping.
         */
     template <class V, class ITERATOR>
     void set(V const & value, ITERATOR & i) const 
     { *i = detail::RequiresExplicitCast<VALUETYPE>::cast(value); }
     
-        /** Write the data item at an offset (can be 1D or 2D or higher order difference).
+        /** Write the data item at an offset (can be 1D or 2D or higher order difference)..
             The type <TT>V</TT> of the passed
             in <TT>value</TT> is automatically converted to <TT>VALUETYPE</TT>.
+            In case of a conversion floating point -> intergral this includes rounding and clipping.
         */
     template <class V, class ITERATOR, class DIFFERENCE>
     void set(V const & value, ITERATOR & i, DIFFERENCE diff) const 
@@ -155,21 +157,43 @@ class StandardAccessor
     }
 };
 
+/** \brief Encapsulate access to the values an iterator points to.
+
+    StandardValueAccessor is a trivial accessor that simply encapsulates 
+    the iterator's operator*() and operator[]() in its 
+    read and write functions. It passes its arguments <em>by value</em>. 
+    If the iterator returns its items by reference (such as \ref vigra::ImageIterator), 
+    you can also use StandardAccessor.
+    These accessors have different optimization properties --
+    StandardAccessor is usually faster for compound pixel types,
+    while StandardValueAccessor is faster for the built-in types.
+    
+    When a floating point number is assigned by means of an accessor
+    with integral value_type, the value is rounded and clipped as approriate.
+
+    <b>\#include</b> "<a href="accessor_8hxx-source.html">vigra/accessor.hxx</a>"<br>
+    Namespace: vigra
+*/
 template <class VALUETYPE>
 class StandardValueAccessor
 {
   public:
-        /* the value_type
+        /** the value_type
         */
     typedef VALUETYPE value_type;
     
-        /* read the current data item
+        /** Read the current data item. The type <TT>ITERATOR::reference</TT>
+            is automatically converted to <TT>VALUETYPE</TT>.
+            In case of a conversion floating point -> intergral this includes rounding and clipping.
         */
     template <class ITERATOR>
     VALUETYPE operator()(ITERATOR & i) const 
         { return detail::RequiresExplicitCast<VALUETYPE>::cast(*i); }
     
-        /* read the data item at an offset (can be 1D or 2D or higher order difference)
+        /** Read the data item at an offset (can be 1D or 2D or higher order difference).
+            The type <TT>ITERATOR::index_reference</TT>
+            is automatically converted to <TT>VALUETYPE</TT>.
+            In case of a conversion floating point -> intergral this includes rounding and clipping.
         */
     template <class ITERATOR, class DIFFERENCE>
     VALUETYPE operator()(ITERATOR & i, DIFFERENCE diff) const
@@ -178,14 +202,16 @@ class StandardValueAccessor
     }
         /** Write the current data item. The type <TT>V</TT> of the passed
             in <TT>value</TT> is automatically converted to <TT>VALUETYPE</TT>.
+            In case of a conversion floating point -> intergral this includes rounding and clipping.
         */
     template <class V, class ITERATOR>
     void set(V value, ITERATOR & i) const 
         { *i = detail::RequiresExplicitCast<VALUETYPE>::cast(value); }
     
-        /** Write the data item at an offset (can be 1D or 2D or higher order difference).
+        /** Write the data item at an offset (can be 1D or 2D or higher order difference)..
             The type <TT>V</TT> of the passed
             in <TT>value</TT> is automatically converted to <TT>VALUETYPE</TT>.
+            In case of a conversion floating point -> intergral this includes rounding and clipping.
         */
     template <class V, class ITERATOR, class DIFFERENCE>
     void set(V value, ITERATOR & i, DIFFERENCE diff) const 
@@ -200,21 +226,19 @@ class StandardValueAccessor
 /*                                                      */
 /********************************************************/
 
-/** \brief <TT>%StandardConstAccessor</TT> and <TT>StandardConstValueAccessor</TT>.
+/** \brief Encapsulate read access to the values an iterator points to.
 
-    <TT>StandardConstAccessor</TT> is normally used with all 
-    realizations of \ref vigra::ConstImageIterator. It
-    simply encapsulates a call to the iterator's <TT>operator*()</TT> in its
-    read function (as a const accessor, it does not have a write
-    function). If the iterator returns its items by 
-    value (such as the \ref vigra::CoordinateIterator), you must use
-    <TT>StandardConstValueAccessor</TT> instead of <TT>StandardConstAccessor</TT> (both have 
-    the same interface, but the latter can be optimized better).
-    
-    <b>\#include</b> "<a href="accessor_8hxx-source.html">vigra/accessor.hxx</a>"
-    
+    StandardConstAccessor is a trivial accessor that simply encapsulates 
+    the iterator's operator*() and operator[]() in its 
+    read functions. It passes its arguments <em>by reference</em>. 
+    If the iterator returns its items by value (such as \ref vigra::CoordinateIterator), you 
+    must use StandardConstValueAccessor instead of StandardConstAccessor.
+    Both accessors also have different optimization properties --
+    StandardConstAccessor is usually faster for compound pixel types,
+    while StandardConstValueAccessor is faster for the built-in types.
+
+    <b>\#include</b> "<a href="accessor_8hxx-source.html">vigra/accessor.hxx</a>"<br>
     Namespace: vigra
-    
 */
 template <class VALUETYPE>
 class StandardConstAccessor
@@ -228,7 +252,7 @@ class StandardConstAccessor
     VALUETYPE const & operator()(ITERATOR & i) const 
         { return *i; }
     
-        /** read the data item at an offset (can be 1D or 2D or higher order difference)
+        /** read the data item at an offset (can be 1D or 2D or higher order difference).
         */
     template <class ITERATOR, class DIFFERENCE>
     VALUETYPE const & operator()(ITERATOR & i, DIFFERENCE diff) const
@@ -237,19 +261,41 @@ class StandardConstAccessor
     }
 };
 
+/** \brief Encapsulate access to the values an iterator points to.
+
+    StandardConstValueAccessor is a trivial accessor that simply encapsulates 
+    the iterator's operator*() and operator[]() in its 
+    read functions. It passes its arguments <em>by value</em>. 
+    If the iterator returns its items by reference (such as \ref vigra::ConstImageIterator), 
+    you can also use StandardConstAccessor.
+    These accessors have different optimization properties --
+    StandardConstAccessor is usually faster for compound pixel types,
+    while StandardConstValueAccessor is faster for the built-in types.
+
+    When an iterator passes a floating point number to an accessor
+    with integral value_type, the value is rounded and clipped as approriate.
+
+    <b>\#include</b> "<a href="accessor_8hxx-source.html">vigra/accessor.hxx</a>"<br>
+    Namespace: vigra
+*/
 template <class VALUETYPE>
 class StandardConstValueAccessor
 {
   public:
     typedef VALUETYPE value_type;
     
-        /* read the current data item
+        /** Read the current data item. The type <TT>ITERATOR::reference</TT>
+            is automatically converted to <TT>VALUETYPE</TT>.
+            In case of a conversion floating point -> intergral this includes rounding and clipping.
         */
     template <class ITERATOR>
     VALUETYPE operator()(ITERATOR & i) const 
         { return detail::RequiresExplicitCast<VALUETYPE>::cast(*i); }
     
-        /* read the data item at an offset (can be 1D or 2D or higher order difference)
+        /** Read the data item at an offset (can be 1D or 2D or higher order difference).
+            The type <TT>ITERATOR::index_reference</TT>
+            is automatically converted to <TT>VALUETYPE</TT>.
+            In case of a conversion floating point -> intergral this includes rounding and clipping.
         */
     template <class ITERATOR, class DIFFERENCE>
     VALUETYPE operator()(ITERATOR & i, DIFFERENCE diff) const
@@ -266,10 +312,27 @@ class StandardConstValueAccessor
 
 /** \brief Accessor for one component of a vector.
 
-    Usage:
+    This accessor allows to select a single component (a single 'band')
+    of a vector valued pixel type. The pixel type must support
+    <TT>operator[]</TT>. The index of the component to be selected
+    is passed in the constructor. The accessor returns its items 
+    <em>by reference</em>. If you want to pass/return items by value,
+    use VectorComponentValueAccessor. If a floating point number
+    is assigned by means of an accessor with integral value_type, the
+    value is rounded and clipped as appropriate. 
 
-    <b>\#include</b> "<a href="accessor_8hxx-source.html">vigra/accessor.hxx</a>"
+    <b>Usage:</b>
     
+    \code
+    vigra::BRGBImage image(w,h);
+    
+    // init red channel with 255
+    initImage(destImageRange(image, 
+                             VectorComponentAccessor<vigra::BRGBImage::value_type>(0)),
+              255);
+    \endcode
+    
+    <b>\#include</b> "<a href="accessor_8hxx-source.html">vigra/accessor.hxx</a>"<br>
     Namespace: vigra
     
 */
@@ -294,7 +357,7 @@ class VectorComponentAccessor
     value_type const & operator()(ITERATOR & i) const 
         { return (*i)[index_]; }
     
-        /** read the data item at an offset (can be 1D or 2D or higher order difference)
+        /** read the data item at an offset (can be 1D or 2D or higher order difference).
         */
     template <class ITERATOR, class DIFFERENCE>
     value_type const & operator()(ITERATOR & i, DIFFERENCE diff) const
@@ -303,7 +366,91 @@ class VectorComponentAccessor
     }
     
         /** Write the current data item. The type <TT>V</TT> of the passed
-            in <TT>value</TT> is automatically converted to <TT>VALUETYPE</TT>.
+            in <TT>value</TT> is automatically converted to <TT>value_type</TT>.
+            In case of a conversion floating point -> intergral this includes rounding and clipping.
+        */
+    template <class V, class ITERATOR>
+    void set(V const & value, ITERATOR & i) const 
+    { 
+        (*i)[index_] = detail::RequiresExplicitCast<value_type>::cast(value); 
+    }
+    
+        /** Write the data item at an offset (can be 1D or 2D or higher order difference)..
+            The type <TT>V</TT> of the passed
+            in <TT>value</TT> is automatically converted to <TT>value_type</TT>.
+            In case of a conversion floating point -> intergral this includes rounding and clipping.
+        */
+    template <class V, class ITERATOR, class DIFFERENCE>
+    void set(V const & value, ITERATOR & i, DIFFERENCE diff) const 
+    { 
+        i[diff][index_]= detail::RequiresExplicitCast<value_type>::cast(value); 
+    }
+};
+
+/** \brief Accessor for one component of a vector.
+
+    This accessor allows to select a single component (a single 'band')
+    of a vector valued pixel type. The pixel type must support
+    <TT>operator[]</TT>. The index of the component to be selected
+    is passed in the constructor. The accessor returns its items 
+    <em>by value</em>. If you want to pass/return items by reference,
+    use VectorComponentAccessor. If a floating point number
+    is assigned by means of an accessor with integral value_type, the
+    value is rounded and clipped as appropriate. 
+
+    <b>Usage:</b>
+    
+    \code
+    vigra::BRGBImage image(w,h);
+    
+    // init red channel with 255
+    initImage(destImageRange(image, 
+                             VectorComponentValueAccessor<vigra::BRGBImage::value_type>(0)),
+              255);
+    \endcode
+    
+    <b>\#include</b> "<a href="accessor_8hxx-source.html">vigra/accessor.hxx</a>"<br>
+    Namespace: vigra
+    
+*/
+template <class VECTORTYPE>
+class VectorComponentValueAccessor
+{
+    int index_;
+  public:
+        /** the value_type
+        */
+    typedef typename VECTORTYPE::value_type value_type;
+    
+        /** determine the component to be accessed
+        */
+    VectorComponentValueAccessor(int index)
+    : index_(index)
+    {}
+    
+        /** Read the current data item.
+            The type <TT>ITERATOR::index_reference::value_type</TT>
+            is automatically converted to <TT>value_type</TT>.
+            In case of a conversion floating point -> intergral this includes rounding and clipping.
+        */
+    template <class ITERATOR>
+    value_type operator()(ITERATOR & i) const 
+        { return detail::RequiresExplicitCast<value_type>::cast((*i)[index_]); }
+    
+        /** Read the data item at an offset (can be 1D or 2D or higher order difference).
+            The type <TT>ITERATOR::index_reference::value_type</TT>
+            is automatically converted to <TT>value_type</TT>.
+            In case of a conversion floating point -> intergral this includes rounding and clipping.
+        */
+    template <class ITERATOR, class DIFFERENCE>
+    value_type operator()(ITERATOR & i, DIFFERENCE diff) const
+    { 
+        return detail::RequiresExplicitCast<value_type>::cast(i[diff][index_]); 
+    }
+    
+        /** Write the current data item. The type <TT>V</TT> of the passed
+            in <TT>value</TT> is automatically converted to <TT>value_type</TT>.
+            In case of a conversion floating point -> intergral this includes rounding and clipping.
         */
     template <class V, class ITERATOR>
     void set(V value, ITERATOR & i) const 
@@ -311,9 +458,10 @@ class VectorComponentAccessor
         (*i)[index_] = detail::RequiresExplicitCast<value_type>::cast(value); 
     }
     
-        /** Write the data item at an offset (can be 1D or 2D or higher order difference).
+        /** Write the data item at an offset (can be 1D or 2D or higher order difference)..
             The type <TT>V</TT> of the passed
-            in <TT>value</TT> is automatically converted to <TT>VALUETYPE</TT>.
+            in <TT>value</TT> is automatically converted to <TT>value_type</TT>.
+            In case of a conversion floating point -> intergral this includes rounding and clipping.
         */
     template <class V, class ITERATOR, class DIFFERENCE>
     void set(V value, ITERATOR & i, DIFFERENCE diff) const 
@@ -333,10 +481,9 @@ class VectorComponentAccessor
     It encapsulates access to the sequences' begin() and end()
     functions.
     
-    Usage:
+    <b>Usage:</b>
 
-    <b>\#include</b> "<a href="accessor_8hxx-source.html">vigra/accessor.hxx</a>"
-    
+    <b>\#include</b> "<a href="accessor_8hxx-source.html">vigra/accessor.hxx</a>"<br>
     Namespace: vigra
     
     \code
@@ -426,8 +573,7 @@ class SequenceAccessor
     
     <b> Usage:</b>
     
-    <b>\#include</b> "<a href="accessor_8hxx-source.html">vigra/accessor.hxx</a>"
-    
+    <b>\#include</b> "<a href="accessor_8hxx-source.html">vigra/accessor.hxx</a>"<br>    
     Namespace: vigra
         
     The accessor has two modes of operation:
@@ -508,9 +654,10 @@ class VectorAccessor
         /** Set the component data at given vector index
             at given iterator position. The type <TT>V</TT> of the passed
             in <TT>value</TT> is automatically converted to <TT>component_type</TT>.
+            In case of a conversion floating point -> intergral this includes rounding and clipping.
         */
     template <class V, class ITERATOR>
-    void setComponent(V value, ITERATOR & i, int idx) const
+    void setComponent(V const & value, ITERATOR & i, int idx) const
     { 
         (*i)[idx] = detail::RequiresExplicitCast<component_type>::cast(value); 
     }
@@ -527,10 +674,11 @@ class VectorAccessor
     /** Set the component data at given vector index
         at an offset of given iterator position. The type <TT>V</TT> of the passed
         in <TT>value</TT> is automatically converted to <TT>component_type</TT>.
+            In case of a conversion floating point -> intergral this includes rounding and clipping.
     */
     template <class V, class ITERATOR, class DIFFERENCE>
     void 
-    setComponent(V value, ITERATOR & i, DIFFERENCE diff, int idx) const 
+    setComponent(V const & value, ITERATOR & i, DIFFERENCE diff, int idx) const 
     { 
         i[diff][idx] = detail::RequiresExplicitCast<component_type>::cast(value); 
     }
@@ -553,7 +701,6 @@ class VectorAccessor
     to access data.
     
     <b>\#include</b> "<a href="accessor_8hxx-source.html">vigra/accessor.hxx</a>"
-    
     Namespace: vigra
     
     <b> Required Interface:</b>
@@ -673,8 +820,7 @@ class BilinearInterpolatingAccessor
     
     <b> Usage:</b>
 
-    <b>\#include</b> "<a href="accessor_8hxx-source.html">vigra/accessor.hxx</a>"
-    
+    <b>\#include</b> "<a href="accessor_8hxx-source.html">vigra/accessor.hxx</a>"<br>    
     Namespace: vigra
     
     \code
