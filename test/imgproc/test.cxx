@@ -456,13 +456,13 @@ struct ImageFunctionsTest
 
         RGBImage img2(3,3);
 
-        transformImage(srcImageRange(rgb), destImage(img2), 
+        transformImage(srcImageRange(rgb), destImage(img2),
                         linearIntensityTransform(2.0, RGBImage::value_type(0.0, -1.0, -2.0)));
 
         shouldEqual(img2(0,0), RGBImage::value_type(2.0, 2.0, 2.0));
 
-        transformImage(srcImageRange(rgb), destImage(img2), 
-                        linearIntensityTransform(RGBImage::value_type(2.0, 3.0, 4.0), 
+        transformImage(srcImageRange(rgb), destImage(img2),
+                        linearIntensityTransform(RGBImage::value_type(2.0, 3.0, 4.0),
                                                  RGBImage::value_type(0.0, -1.0, -2.0)));
 
         shouldEqual(img2(0,0), RGBImage::value_type(2.0, 3.0, 4.0));
@@ -486,7 +486,7 @@ struct ImageFunctionsTest
 
         RGBImage img2(3,3);
 
-        transformImage(srcImageRange(rgb), destImage(img2), 
+        transformImage(srcImageRange(rgb), destImage(img2),
                         linearIntensityTransform<RGBImage::value_type>(
                                                  RGBImage::value_type(1.0, 2.0, 3.0)));
 
@@ -527,7 +527,7 @@ struct ImageFunctionsTest
         transformImage(srcImageRange(img), destImage(img1),
 					   linearRangeMapping(1.0, 10.0, 0, 255));
 
-#if defined(__CYGWIN__)
+#if defined(__i386__)
         int res[] = {3, 34, 65, 96, 127, 159, 190, 221, 252 };
 #else
         int res[] = {3, 34, 65, 96, 128, 159, 190, 221, 252 };
@@ -863,26 +863,26 @@ struct ResizeImageTest
     }
 
     void resizeLinearInterpolationReduceTest()
-    {        
+    {
         ImageImportInfo inforef("lenna42lin.xv");
         Image ref(inforef.size());
         importImage(inforef, destImage(ref));
 
         Image dest(inforef.size());
-        
+
         resizeImageLinearInterpolation(srcImageRange(img), destImageRange(dest));
-        
+
         shouldEqualSequenceTolerance(dest.begin(), dest.end(), ref.begin(), 1.0e-6f);
-        
+
         ImageImportInfo inforgb("lenna42linrgb.xv");
         RGBImage rgbref(inforgb.size());
         importImage(inforgb, destImage(rgbref));
 
         RGBImage rgbdest(inforgb.size());
-        
+
         resizeImageLinearInterpolation(srcImageRange(rgb), destImageRange(rgbdest));
-        
-        shouldEqualSequenceTolerance(rgbdest.begin(), rgbdest.end(), rgbref.begin(), 
+
+        shouldEqualSequenceTolerance(rgbdest.begin(), rgbdest.end(), rgbref.begin(),
                                      RGBImage::value_type(1.0e-6f));
     }
 
@@ -905,7 +905,7 @@ struct ResizeImageTest
 
         Image imgred(info.width(), info.height());
         importImage(info, destImage(imgred));
-        
+
         Image img1(imgred.width(), imgred.height());
 
         resizeImageSplineInterpolation(srcImageRange(img), destImageRange(img1));
@@ -919,7 +919,7 @@ struct ResizeImageTest
 
         RGBImage rgbex(info.width(), info.height());
         importImage(info, destImage(rgbex));
-        
+
         RGBImage img1(rgbex.width(), rgbex.height());
 
         resizeImageSplineInterpolation(srcImageRange(rgb), destImageRange(img1));
@@ -929,7 +929,7 @@ struct ResizeImageTest
         RGBImage::Accessor acc = img1.accessor();
 
         for(; i1 != img1.end(); ++i1, ++iex)
-        {   
+        {
             shouldEqualTolerance(acc.red(i1), acc.red(iex), 1e-4f);
             shouldEqualTolerance(acc.green(i1), acc.green(iex), 1e-4f);
             shouldEqualTolerance(acc.blue(i1), acc.blue(iex), 1e-4f);
@@ -942,7 +942,7 @@ struct ResizeImageTest
 
         RGBImage rgbred(info.width(), info.height());
         importImage(info, destImage(rgbred));
-        
+
         RGBImage img1(rgbred.width(), rgbred.height());
 
         resizeImageSplineInterpolation(srcImageRange(rgb), destImageRange(img1));
@@ -968,35 +968,35 @@ struct ResizeImageTest
         importImage(inforef, destImage(ref));
 
         Image dest(inforef.size());
-        
+
         resizeImageCatmullRomInterpolation(srcImageRange(img), destImageRange(dest));
-        
+
         shouldEqualSequenceTolerance(dest.begin(), dest.end(), ref.begin(), 1.0e-6f);
     }
 
-        
+
     /*Verkleinerungstest
     */
     void testCatmullRomInterpolationReductionWithLena()
-    {        
+    {
         ImageImportInfo inforef("lenna42FIR.xv");
         Image ref(inforef.size());
         importImage(inforef, destImage(ref));
 
         Image dest(inforef.size());
-        
+
         resizeImageCatmullRomInterpolation(srcImageRange(img), destImageRange(dest));
 
         shouldEqualSequenceTolerance(dest.begin(), dest.end(), ref.begin(), 1e-4f);
-        
+
         ImageImportInfo inforgb("lennargb42FIR.xv");
         RGBImage rgbref(inforgb.size());
         importImage(inforgb, destImage(rgbref));
 
         RGBImage rgbdest(inforgb.size());
-        
+
         resizeImageCatmullRomInterpolation(srcImageRange(rgb), destImageRange(rgbdest));
-        
+
         RGBImage::ScanOrderIterator i1 = rgbdest.begin();
         RGBImage::ScanOrderIterator iref = rgbref.begin();
         RGBImage::Accessor acc = rgbdest.accessor();
@@ -1008,7 +1008,7 @@ struct ResizeImageTest
             shouldEqualTolerance(acc.blue(i1), acc.blue(iref), 1e-4f);
         }
     }
-    
+
     void testCubicInterpolationExtensionWithLena()
     {
         ImageImportInfo inforef("lenna367IIR.xv");
@@ -1016,22 +1016,22 @@ struct ResizeImageTest
         importImage(inforef, destImage(ref));
 
         Image dest(inforef.size());
-        
+
         resizeImageSplineInterpolation(srcImageRange(img), destImageRange(dest));
 
         shouldEqualSequenceTolerance(dest.begin(), dest.end(), ref.begin(), 1e-4f);
     }
-    
+
     /*Verkleinerungstest
     */
     void testCubicInterpolationReductionWithLena()
-    {        
+    {
         ImageImportInfo inforef("lenna42IIR.xv");
         Image ref(inforef.size());
         importImage(inforef, destImage(ref));
 
         Image dest(inforef.size());
-        
+
         resizeImageSplineInterpolation(srcImageRange(img), destImageRange(dest));
 
         shouldEqualSequenceTolerance(dest.begin(), dest.end(), ref.begin(), 1e-4f);
@@ -1041,7 +1041,7 @@ struct ResizeImageTest
         importImage(inforgb, destImage(rgbref));
 
         RGBImage rgbdest(inforgb.size());
-        
+
         resizeImageSplineInterpolation(srcImageRange(rgb), destImageRange(rgbdest));
 
         RGBImage::ScanOrderIterator i1 = rgbdest.begin();
@@ -1055,7 +1055,7 @@ struct ResizeImageTest
             shouldEqualTolerance(acc.blue(i1), acc.blue(iref), 1e-4f);
         }
     }
-    
+
     void testCatmullRomInterpolationExtensionHandControled()
     {
         vigra::DImage src(6, 7), dest(10, 10, 145.346);
@@ -1065,8 +1065,8 @@ struct ResizeImageTest
           src.begin()[i] = 0.25 + i;
         }
 
-        static double refdata[100] = 
-        {           0.25,/**/    0.695816186557,   1.36111111111,       1.91666666667,      2.47222222222,    3.02777777778,    3.58333333333,      4.13888888889,      4.80418381344,/***/       5.25,/**/ 
+        static double refdata[100] =
+        {           0.25,/**/    0.695816186557,   1.36111111111,       1.91666666667,      2.47222222222,    3.02777777778,    3.58333333333,      4.13888888889,      4.80418381344,/***/       5.25,/**/
            3.80555555556,        4.25137174211,    4.91666666667,       5.47222222222,      6.02777777778,    6.58333333333,    7.13888888889,      7.69444444444,      8.359739369,              8.80555555556,
                     8.25,        8.69581618656,    9.36111111111,       9.91666666667,      10.4722222222,    11.0277777778,    11.5833333333,      12.1388888889,      12.8041838134,            13.25,
                    12.25,/**/    12.6958161866,    13.3611111111,/***/  13.9166666667,      14.4722222222,    15.0277777778,    15.5833333333,      16.1388888889,      16.8041838134,            17.25,/**/
@@ -1108,14 +1108,14 @@ struct SplineImageViewTest
         img(center, center) = 1.0;
         SplineImageView<N, double> view(srcImageRange(img), true);
         BSplineBase<N> spline;
-        
+
         double d0 = center;
         double epsilon = 1.0e-10;
         shouldEqualTolerance(view(d0,d0), spline(0.0)*spline(0.0), epsilon);
         shouldEqualTolerance(view(d0,d0, 1, 0), spline(0.0, 1)*spline(0.0), epsilon);
         shouldEqualTolerance(view(d0,d0, 0, 1), spline(0.0, 1)*spline(0.0), epsilon);
         for(double d = 0.2; d < spline.radius(); d += 1.0)
-        {        
+        {
             double d1 = d + d0;
             shouldEqualTolerance(view(d1,d0), spline(d)*spline(0.0), epsilon);
             shouldEqualTolerance(view(d0,d1), spline(d)*spline(0.0), epsilon);
@@ -1131,18 +1131,18 @@ struct SplineImageViewTest
     void testCoefficientArray()
     {
         double x = 5.3, y = 7.9;
-        double dx = (N % 2) ? x - VIGRA_CSTD::floor(x) : x - VIGRA_CSTD::floor(x + 0.5), 
+        double dx = (N % 2) ? x - VIGRA_CSTD::floor(x) : x - VIGRA_CSTD::floor(x + 0.5),
                dy = (N % 2) ? y - VIGRA_CSTD::floor(y) : y - VIGRA_CSTD::floor(y + 0.5);
-        
+
         Image coefficients;
         SplineImageView<N, double> view(srcImageRange(img));
         view.coefficientArray(x, y, coefficients);
-        
+
         double f_x_y = 0.0;
         for(int ny = 0; ny < N + 1; ++ny)
             for(int nx = 0; nx < N + 1; ++nx)
                 f_x_y += VIGRA_CSTD::pow(dx, nx) * VIGRA_CSTD::pow(dy, ny) * coefficients(nx, ny);
-                
+
         shouldEqualTolerance(f_x_y, view(x, y), 1e-12);
     }
 
@@ -1156,7 +1156,7 @@ struct SplineImageViewTest
         importImage(info, destImage(reference));
 
         SplineImageView<N, double> view(srcImageRange(img));
- 
+
         for(int y=0; y<reference.height(); ++y)
         {
             for(int x=0; x<reference.width(); ++x)
