@@ -57,7 +57,7 @@ namespace vigra {
     }
     \endcode
     
-    use argument objects in conjuction with \ref ArgumentObjectFactories:
+    use argument objects in conjunction with \ref ArgumentObjectFactories:
     \code
     namespace vigra {
         template <class SrcImageIterator, class SrcAccessor,
@@ -208,7 +208,7 @@ enum Reflect{horizontal = 1, vertical = 2};
     }
     \endcode
     
-    use argument objects in conjuction with \ref ArgumentObjectFactories:
+    use argument objects in conjunction with \ref ArgumentObjectFactories:
     \code
     namespace vigra {
         template <class SrcImageIterator, class SrcAccessor,
@@ -349,7 +349,7 @@ enum Transpose{major = 1, minor = 2};
     }
     \endcode
     
-    use argument objects in conjuction with \ref ArgumentObjectFactories:
+    use argument objects in conjunction with \ref ArgumentObjectFactories:
     \code
     namespace vigra {
         template <class SrcImageIterator, class SrcAccessor,
@@ -580,7 +580,7 @@ inline int sizeForResamplingFactor(int oldsize, double factor)
     }
     \endcode
     
-    use argument objects in conjuction with \ref ArgumentObjectFactories:
+    use argument objects in conjunction with \ref ArgumentObjectFactories:
     \code
     namespace vigra {
         template <class SrcImageIterator, class SrcAccessor,

@@ -896,7 +896,7 @@ class FFTWPhaseAccessor
     \endcode
 
 
-    use argument objects in conjuction with \ref ArgumentObjectFactories:
+    use argument objects in conjunction with \ref ArgumentObjectFactories:
     \code
     namespace vigra {
         template <class SrcImageIterator, class SrcAccessor,
@@ -1000,7 +1000,7 @@ inline void moveDCToCenter(
     \endcode
 
 
-    use argument objects in conjuction with \ref ArgumentObjectFactories:
+    use argument objects in conjunction with \ref ArgumentObjectFactories:
     \code
     namespace vigra {
         template <class SrcImageIterator, class SrcAccessor,
@@ -1102,7 +1102,7 @@ inline void moveDCToUpperLeft(
     }
     \endcode
 
-    use argument objects in conjuction with \ref ArgumentObjectFactories:
+    use argument objects in conjunction with \ref ArgumentObjectFactories:
     \code
     namespace vigra {
         template <class SrcImageIterator, class SrcAccessor,
@@ -1336,7 +1336,7 @@ void applyFourierFilterImplNormalization(FFTWComplexImage const & srcImage,
     }
     \endcode
 
-    use argument objects in conjuction with \ref ArgumentObjectFactories:
+    use argument objects in conjunction with \ref ArgumentObjectFactories:
     \code
     namespace vigra {
         template <class SrcImageIterator, class SrcAccessor, class FilterType>
@@ -1553,7 +1553,7 @@ void applyFourierFilterFamilyImpl(
     \endcode
 
 
-    use argument objects in conjuction with \ref ArgumentObjectFactories:
+    use argument objects in conjunction with \ref ArgumentObjectFactories:
     \code
     namespace vigra {
         template <class SrcTraverser, class SrcAccessor,

@@ -239,7 +239,7 @@ namespace vigra {
     \endcode
 
 
-    use argument objects in conjuction with \ref ArgumentObjectFactories:
+    use argument objects in conjunction with \ref ArgumentObjectFactories:
     \code
     namespace vigra {
         template <class SrcIterator, class SrcAccessor,
@@ -342,7 +342,7 @@ convolveImage(triple<SrcIterator, SrcIterator, SrcAccessor> src,
     \endcode
 
 
-    use argument objects in conjuction with \ref ArgumentObjectFactories:
+    use argument objects in conjunction with \ref ArgumentObjectFactories:
     \code
     namespace vigra {
       template <class SrcIterator, class SrcAccessor, 
@@ -444,7 +444,7 @@ void simpleSharpening(triple<SrcIterator, SrcIterator, SrcAccessor> src,
     \endcode
 
 
-    use argument objects in conjuction with \ref ArgumentObjectFactories:
+    use argument objects in conjunction with \ref ArgumentObjectFactories:
     \code
     namespace vigra {
       template <class SrcIterator, class SrcAccessor,
@@ -548,7 +548,7 @@ void gaussianSharpening(triple<SrcIterator, SrcIterator, SrcAccessor> src,
     \endcode
 
 
-    use argument objects in conjuction with \ref ArgumentObjectFactories:
+    use argument objects in conjunction with \ref ArgumentObjectFactories:
     \code
     namespace vigra {
         template <class SrcIterator, class SrcAccessor,
@@ -650,7 +650,7 @@ gaussianSmoothing(triple<SrcIterator, SrcIterator, SrcAccessor> src,
     \endcode
 
 
-    use argument objects in conjuction with \ref ArgumentObjectFactories:
+    use argument objects in conjunction with \ref ArgumentObjectFactories:
     \code
     namespace vigra {
         // write x and y component of the gradient into separate images
@@ -782,7 +782,7 @@ gaussianGradient(triple<SrcIterator, SrcIterator, SrcAccessor> src,
     \endcode
 
 
-    use argument objects in conjuction with \ref ArgumentObjectFactories:
+    use argument objects in conjunction with \ref ArgumentObjectFactories:
     \code
     namespace vigra {
         template <class SrcIterator, class SrcAccessor,
@@ -899,7 +899,7 @@ laplacianOfGaussian(triple<SrcIterator, SrcIterator, SrcAccessor> src,
     \endcode
 
 
-    use argument objects in conjuction with \ref ArgumentObjectFactories:
+    use argument objects in conjunction with \ref ArgumentObjectFactories:
     \code
     namespace vigra {
         template <class SrcIterator, class SrcAccessor,
@@ -1038,7 +1038,7 @@ hessianMatrixOfGaussian(triple<SrcIterator, SrcIterator, SrcAccessor> src,
     \endcode
 
 
-    use argument objects in conjuction with \ref ArgumentObjectFactories:
+    use argument objects in conjunction with \ref ArgumentObjectFactories:
     \code
     namespace vigra {
         template <class SrcIterator, class SrcAccessor,

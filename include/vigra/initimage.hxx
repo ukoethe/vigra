@@ -107,7 +107,7 @@ initLineFunctorIf(DestIterator d, DestIterator dend, DestAccessor dest,
     }
     \endcode
 
-    use argument objects in conjuction with \ref ArgumentObjectFactories:
+    use argument objects in conjunction with \ref ArgumentObjectFactories:
     \code
     namespace vigra {
         template <class ImageIterator, class Accessor, class VALUETYPE>
@@ -188,7 +188,7 @@ initImage(triple<ImageIterator, ImageIterator, Accessor> img, VALUETYPE v)
     }
     \endcode
 
-    use argument objects in conjuction with \ref ArgumentObjectFactories:
+    use argument objects in conjunction with \ref ArgumentObjectFactories:
     \code
     namespace vigra {
         template <class ImageIterator, class Accessor, class FUNCTOR>
@@ -278,7 +278,7 @@ initImageWithFunctor(triple<ImageIterator, ImageIterator, Accessor> img, FUNCTOR
     }
     \endcode    
     
-    use argument objects in conjuction with \ref ArgumentObjectFactories:
+    use argument objects in conjunction with \ref ArgumentObjectFactories:
     \code
     namespace vigra {
         template <class ImageIterator, class Accessor, 
@@ -376,7 +376,7 @@ initImageIf(triple<ImageIterator, ImageIterator, Accessor> img,
     }
     \endcode
 
-    use argument objects in conjuction with \ref ArgumentObjectFactories:
+    use argument objects in conjunction with \ref ArgumentObjectFactories:
     \code
     namespace vigra {
         template <class ImageIterator, class Accessor, class VALUETYPE>

@@ -122,7 +122,7 @@ inspectTwoLinesIf(SrcIterator1 s1,
     }
     \endcode
 
-    use argument objects in conjuction with \ref ArgumentObjectFactories:
+    use argument objects in conjunction with \ref ArgumentObjectFactories:
     \code
     namespace vigra {
         template <class ImageIterator, class Accessor, class Functor>
@@ -240,7 +240,7 @@ inspectImage(triple<ImageIterator, ImageIterator, Accessor> img,
     \endcode
 
 
-    use argument objects in conjuction with \ref ArgumentObjectFactories:
+    use argument objects in conjunction with \ref ArgumentObjectFactories:
     \code
     namespace vigra {
         template <class ImageIterator, class Accessor,
@@ -348,7 +348,7 @@ inspectImageIf(triple<ImageIterator, ImageIterator, Accessor> img,
     \endcode
 
 
-    use argument objects in conjuction with \ref ArgumentObjectFactories:
+    use argument objects in conjunction with \ref ArgumentObjectFactories:
     \code
     namespace vigra {
         template <class ImageIterator1, class Accessor1,
@@ -458,7 +458,7 @@ inspectTwoImages(triple<ImageIterator1, ImageIterator1, Accessor1> img1,
     \endcode
 
 
-    use argument objects in conjuction with \ref ArgumentObjectFactories:
+    use argument objects in conjunction with \ref ArgumentObjectFactories:
     \code
     namespace vigra {
         template <class ImageIterator1, class Accessor1,

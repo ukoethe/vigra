@@ -75,7 +75,7 @@ typedef TIFF TiffImage;
     }
     \endcode
 
-    use argument objects in conjuction with \ref ArgumentObjectFactories:
+    use argument objects in conjunction with \ref ArgumentObjectFactories:
     \code
     namespace vigra {
         template <class ImageIterator, class Accessor>
@@ -162,7 +162,7 @@ importTiffImage(TiffImage * tiff, ImageIterator iter, Accessor a, VigraFalseType
     }
     \endcode
 
-    use argument objects in conjuction with \ref ArgumentObjectFactories:
+    use argument objects in conjunction with \ref ArgumentObjectFactories:
     \code
     namespace vigra {
         template <class ImageIterator, class Accessor>
@@ -520,7 +520,7 @@ tiffToScalarImage(TiffImage * tiff, pair<ImageIterator, Accessor> dest)
     }
     \endcode
 
-    use argument objects in conjuction with \ref ArgumentObjectFactories:
+    use argument objects in conjunction with \ref ArgumentObjectFactories:
     \code
     namespace vigra {
         template <class RGBImageIterator, class RGBAccessor>
@@ -1009,7 +1009,7 @@ struct CreateTiffImage;
     }
     \endcode
 
-    use argument objects in conjuction with \ref ArgumentObjectFactories:
+    use argument objects in conjunction with \ref ArgumentObjectFactories:
     \code
     namespace vigra {
         template <class ImageIterator, class Accessor>
@@ -1084,7 +1084,7 @@ createTiffImage(triple<ImageIterator, ImageIterator, Accessor> src, TiffImage * 
     }
     \endcode
 
-    use argument objects in conjuction with \ref ArgumentObjectFactories:
+    use argument objects in conjunction with \ref ArgumentObjectFactories:
     \code
     namespace vigra {
         template <class ImageIterator, class Accessor>
@@ -1436,7 +1436,7 @@ struct CreateTiffImage<double>
                 }
     \endcode
 
-    use argument objects in conjuction with \ref ArgumentObjectFactories:
+    use argument objects in conjunction with \ref ArgumentObjectFactories:
     \code
     namespace vigra {
         template <class RGBImageIterator, class RGBAccessor>

@@ -69,7 +69,7 @@ namespace vigra {
     }
     \endcode
     
-    use argument objects in conjuction with \ref ArgumentObjectFactories:
+    use argument objects in conjunction with \ref ArgumentObjectFactories:
     \code
     namespace vigra {
         template <class SrcIterator, class SrcAccessor, 
@@ -212,7 +212,7 @@ localMinima(triple<SrcIterator, SrcIterator, SrcAccessor> src,
     }
     \endcode
     
-    use argument objects in conjuction with \ref ArgumentObjectFactories:
+    use argument objects in conjunction with \ref ArgumentObjectFactories:
     \code
     namespace vigra {
         template <class SrcIterator, class SrcAccessor, 
@@ -358,7 +358,7 @@ localMaxima(triple<SrcIterator, SrcIterator, SrcAccessor> src,
     }
     \endcode
     
-    use argument objects in conjuction with \ref ArgumentObjectFactories:
+    use argument objects in conjunction with \ref ArgumentObjectFactories:
     \code
     namespace vigra {
         template <class SrcIterator, class SrcAccessor, 
@@ -595,7 +595,7 @@ extendedLocalMinima(triple<SrcIterator, SrcIterator, SrcAccessor> src,
     }
     \endcode
     
-    use argument objects in conjuction with \ref ArgumentObjectFactories:
+    use argument objects in conjunction with \ref ArgumentObjectFactories:
     \code
     namespace vigra {
         template <class SrcIterator, class SrcAccessor, 
