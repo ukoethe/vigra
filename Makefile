@@ -13,7 +13,7 @@ install-exec:
 	$(INSTALL) --mode=755 $(vigra_builddir)/config/vigra-config $(bindir)
 
 install-includes:
-	if test $(includedir) != "$(vigra_builddir)/include" ; then \
+	if test "$(includedir)" != "$(vigra_builddir)/include" ; then \
           $(INSTALL) -d $(includedir)/vigra ; \
           $(INSTALL) --mode=644 $(vigra_builddir)/include/vigra/*.hxx $(includedir)/vigra ; \
           $(INSTALL) --mode=644 $(vigra_builddir)/include/vigra/*.h $(includedir)/vigra ; \
@@ -22,7 +22,7 @@ install-includes:
 install-docs:
 	$(INSTALL) -d $(docdir)
 	$(INSTALL) --mode=644 LICENSE $(docdir)
-	if test $(prefix) != $(vigra_builddir) ; then \
+	if test "$(docdir)" != "$(vigra_builddir)/doc/vigra" ; then \
           $(INSTALL) --mode=644 \
             $(vigra_builddir)/doc/vigra/*.html \
             $(vigra_builddir)/doc/vigra/classvigra*.gif $(vigra_builddir)/doc/vigra/form*.gif \
