@@ -37,7 +37,9 @@
             
       \item Renamed Dist2D into \Ref{Diff2D}, since it represents a difference vector 
             rather than a distance. Extended Diff2D so that it can also act as a 
-            \URL[CoordinateIterator]{CoordinateIterator.html}.
+            \URL[CoordinateIterator]{CoordinateIterator.html}. Note that this 
+            required renaming #Dist2D::width# and #Dist2D::height# into #Diff2D::x# 
+            and #Diff2D::y# respectively.
             
       \item Changed the documentation layout.
       

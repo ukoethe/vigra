@@ -2,7 +2,7 @@
     
     Click on the hyperlinks to view the commented source code for the demos.
     Most examples can be applied to both gray-scale and RGB images. 
-    See \URL[Installation]{index.html#installation} for instructions on how these
+    See \URL[Installation]{Installation.html} for instructions on how these
     programms can be compiled. For convenience, the directory contains the test images 
     \URL[lenna_gray.gif]{../src/examples/lenna_gray.gif} and 
     \URL[lenna_color.gif]{../src/examples/lenna_color.gif}.
