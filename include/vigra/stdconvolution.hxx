@@ -203,7 +203,7 @@ void convolveImage(SrcIterator sul, SrcIterator slr, SrcAccessor as,
     DestIterator yd = dul + Diff2D(xstart, ystart);
     SrcIterator ys = sul + Diff2D(xstart, ystart);
     
-    KSumType norm = ak(ki);
+    KSumType norm = NumericTraits<KSumType>::zero();
     int xx, yy;
     KernelIterator yk  = ki + klr;
     for(yy=0; yy<hk; ++yy, --yk.y)
@@ -215,7 +215,6 @@ void convolveImage(SrcIterator sul, SrcIterator slr, SrcAccessor as,
 	    norm += ak(xk);
 	}
     }
-    norm -= ak(ki);
     
     
     for(y=ystart; y < yend; ++y, ++ys.y, ++yd.y)
