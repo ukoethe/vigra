@@ -30,6 +30,7 @@
 #include <vigra/accessor.hxx>
 #include <vigra/numerictraits.hxx>
 #include <vigra/navigator.hxx>
+#include <vigra/metaprogramming.hxx>
 
 
 namespace vigra
@@ -210,7 +211,7 @@ separableConvolveMultiArray( SrcIterator s, SrcShape const & shape, SrcAccessor 
 {
     typedef typename NumericTraits<typename DestAccessor::value_type>::RealPromote TmpType;
     
-    if(typeid(TmpType) != typeid(typename DestAccessor::value_type))
+    if(!IsSameType<TmpType, typename DestAccessor::value_type>::boolResult)
     {
         // need a temporary array to avoid rounding errors
         MultiArray<SrcShape::static_size, TmpType> tmpArray(shape);
