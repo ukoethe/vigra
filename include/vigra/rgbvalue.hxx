@@ -66,6 +66,7 @@ template <class VALUETYPE>
 class RGBValue
 : public TinyVector<VALUETYPE, 3>
 {
+    typedef TinyVector<VALUETYPE, 3> Base;
   public:
         /** STL-compatible definition of valuetype
         */
@@ -80,53 +81,37 @@ class RGBValue
         /** Construct from explicit color values 
         */    
     RGBValue(value_type red, value_type green, value_type blue)
-    {
-        data_[0] = red;
-        data_[1] = green;
-        data_[2] = blue;
-    }
+    : Base(red, green, blue)
+    {}
     
         /** Construct gray value 
         */    
     RGBValue(value_type gray)
-    {
-        data_[0] = gray;
-        data_[1] = gray;
-        data_[2] = gray;
-    }
+    : Base(gray, gray, gray)
+    {}
     
         /** Construct from another sequence (must have length 3!)
         */
     template <class Iterator>   
     RGBValue(Iterator i, Iterator end)
-    {
-        for(iterator p = begin(); i != end; ++i, ++p)
-            *p = detail::RequiresExplicitCast<value_type>::cast(*i);
-    }
+    : Base(i[0], i[1], i[2])
+    {}
 
         /** Default constructor (sets all components to 0)  
         */    
     RGBValue()
-    {
-        data_[0] = 0;
-        data_[1] = 0;
-        data_[2] = 0;
-    }
+    : Base(0, 0, 0)
+    {}
 
 #if !defined(TEMPLATE_COPY_CONSTRUCTOR_BUG)
         
     RGBValue(RGBValue const & r)
-    {
-        data_[0] = r.red();
-        data_[1] = r.green();
-        data_[2] = r.blue();
-    }
+    : Base(r)
+    {}
 
     RGBValue & operator=(RGBValue const & r)
     {
-        data_[0] = r.red();
-        data_[1] = r.green();
-        data_[2] = r.blue();
+        Base::operator=(r);
         return *this;
     }
 
@@ -137,39 +122,29 @@ class RGBValue
         */
     template <class U>   
     RGBValue(RGBValue<U> const & r)
-    {
-        data_[0] = detail::RequiresExplicitCast<value_type>::cast(r.red());
-        data_[1] = detail::RequiresExplicitCast<value_type>::cast(r.green());
-        data_[2] = detail::RequiresExplicitCast<value_type>::cast(r.blue());
-    }
+    : Base(r)
+    {}
 
         /** Copy assignment.
         */    
     template <class U>   
     RGBValue & operator=(RGBValue<U> const & r)
     {
-        data_[0] = detail::RequiresExplicitCast<value_type>::cast(r.red());
-        data_[1] = detail::RequiresExplicitCast<value_type>::cast(r.green());
-        data_[2] = detail::RequiresExplicitCast<value_type>::cast(r.blue());
+        Base::operator=(r);
         return *this;
     }
 
         /** construct from TinyVector
         */
     RGBValue(TinyVector<value_type, 3> const & r)
-    {
-        data_[0] = r[0];
-        data_[1] = r[1];
-        data_[2] = r[2];
-    }
+    : Base(r)
+    {}
 
         /** assign TinyVector.
         */    
     RGBValue & operator=(TinyVector<value_type, 3> const & r)
     {
-        data_[0] = r[0];
-        data_[1] = r[1];
-        data_[2] = r[2];
+        Base::operator=(r);
         return *this;
     }
 
