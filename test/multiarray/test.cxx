@@ -536,7 +536,7 @@ struct MultiImpexTest
         shouldEqual(result(0,1,2), 3);
         shouldEqual(result(0,1,3), 4);
 
-        exportVolume(array, std::string("impex/test"), std::string(".png"));
+		exportVolume(array, std::string("impex/test"), std::string(".png"));
         
         importVolume(result, std::string("impex/test"), std::string(".png"));
         
@@ -545,6 +545,18 @@ struct MultiImpexTest
         shouldEqual(result(0,1,1), 2);
         shouldEqual(result(0,1,2), 3);
         shouldEqual(result(0,1,3), 4);
+
+#ifdef _WIN32
+        exportVolume(array, std::string("impex\\test"), std::string(".png"));
+        
+        importVolume(result, std::string("impex\\test"), std::string(".png"));
+        
+        shouldEqual(result.shape(), Shape(2,3,4));
+        shouldEqual(result(0,1,0), 1);
+        shouldEqual(result(0,1,1), 2);
+        shouldEqual(result(0,1,2), 3);
+        shouldEqual(result(0,1,3), 4);
+#endif // _WIN32
     }
 };
 
