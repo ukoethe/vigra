@@ -32,6 +32,7 @@ public = re.compile(r'<DT><h3>Public')
 arrow = re.compile(r'<IMG BORDER=0 SRC=icon1.gif></A>')
 bullet = re.compile(r'<IMG BORDER=0 SRC=icon[12].gif>')
 bullet2 = re.compile(r'<IMG SRC=icon2.gif>')
+links = re.compile(r'<I><A HREF="aindex.html"> alphabetic index.*?<br>')
 
 headingTableReplacement = r'<table cellpadding=5 bgcolor="#e0d090">\n<tr>\n\1\n' \
                r'</font></th>\n' \
@@ -49,7 +50,13 @@ publicReplacement = r'</DL></DL>\n' \
                     r'<th align=left ><font size=+2> Members </font></th>\n' \
                     r'<tr>\n</table>\n' \
                     r'<DL><DL>\n<DT><h3>Public'
-                    
+linkReplacement = r'[ <a href="http://kogs-www.informatik.uni-hamburg.de/~koethe/vigra/">VIGRA Homepage</a> |\n' \
+                  r' <a href="index.html">Documentation</a> |\n'\
+                  r' <a href="aindex.html">Alphabetic Index</a> |\n'\
+                  r' <a href="HIER.html">Class Hierarchy</a> ]\n</p>'
+bodyReplacement = r'<body  bgcolor="#f8f0e0" link="#0040b0" vlink="#a00040">\n'\
+                  r'<p align=right>\n' + linkReplacement
+
 def findHeading(text):
     result = heading.search(text, 1)
     if result == None: 
@@ -100,7 +107,7 @@ def fixDocBaselinkBug(text):
     return text
 
 def convertBody(text):
-    text = body.sub(r'<body  bgcolor="#f8f0e0" link="#0040b0" vlink="#a00040">', text, 1)
+    text = body.sub(bodyReplacement, text, 1)
     text = callOperator.sub(r'operator()', text)
     text = tag.sub(r'<\1>', text)
     text = atag.sub(r'<a name="\1">', text)
@@ -115,6 +122,7 @@ def convertBody(text):
     text = arrow.sub(r'<IMG BORDER=0 SRC="documents/pfeil.gif"></A>', text)
     text = bullet.sub(r'<IMG BORDER=0 SRC="documents/bullet.gif">', text)
     text = bullet2.sub('', text)
+    text = links.sub(r'<p align=center>\n' + linkReplacement, text)
     text = fixDocBaselinkBug(text)
     return text
     
