@@ -532,21 +532,29 @@ public:
         return m_shape [actual_dimension-1] * m_stride [actual_dimension-1];
     }
 
-        /** return the array's size (same as the shape).
+        /** return the array's size.
          */
     const size_type & size () const
     {
         return m_shape;
     }
 
-        /** return the array's shape.
+        /** return the array's shape (same as the <tt>size()</tt>).
          */
     const difference_type & shape () const
     {
         return m_shape;
     }
 
-        /** return the array's shape at a certain dimension.
+        /** return the array's size at a certain dimension.
+         */
+    int size (int n) const
+    {
+        return m_shape [n];
+    }
+
+        /** return the array's shape at a certain dimension 
+            (same as <tt>size(n)</tt>).
          */
     int shape (int n) const
     {
