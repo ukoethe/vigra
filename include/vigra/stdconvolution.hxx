@@ -608,7 +608,7 @@ void convolveImage(SrcIterator src_ul, SrcIterator src_lr, SrcAccessor src_acc,
                 SrcIterator yys = xs + Size2D(0, top);
                 KernelIterator yk  = ki - Size2D(0, top);
 
-                int xx, yy;
+                int yy;
                 for(yy = top; yy <= bottom; ++yy, ++yys.y, --yk.y)
                 {
                     internalPixelEvaluationByWrapReflectRepeat(yys.rowIterator(), src_acc, yk.rowIterator(), ak,
