@@ -80,11 +80,20 @@ then
 fi
 
 VIGRA_FIND_PACKAGE(png, png, png.h, [support import/export of png images (default=no)])
+
+VIGRA_FIND_PACKAGE(zlib, z, , [zlib compression library (required for libpng, default=no)])
+
 if test $with_png = "yes";
 then
-    PNG_LIB="-L$with_pnglib -lpng"
-    IMPEX_DEPLIBS="$IMPEX_DEPLIBS $PNG_LIB"
-    LIBCPPFLAGS="$LIBCPPFLAGS -DHasPNG $png_cppflags"
+    if test $with_zlib != "yes";
+    then 
+        AC_MSG_WARN([ zlib not found, configuring without support for dependent libpng])
+        with_png="no"
+    else
+        PNG_LIB="-L$with_pnglib -lpng -L$with_zliblib -lz"
+        IMPEX_DEPLIBS="$IMPEX_DEPLIBS $PNG_LIB"
+        LIBCPPFLAGS="$LIBCPPFLAGS -DHasPNG $png_cppflags"
+    fi
 fi
 
 VIGRA_FIND_PACKAGE(fftw, fftw, fftw.h, [support fast Fourier transforms (default=no)])
