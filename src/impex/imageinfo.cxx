@@ -153,7 +153,7 @@ void findImageSequence(const std::string &name_base,
     }
 
     closedir(dir);
-    
+   
     vigra_precondition(errno == 0,
           "importVolume(): I/O error while searching for images.");
           
