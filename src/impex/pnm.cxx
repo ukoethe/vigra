@@ -1,6 +1,6 @@
 /************************************************************************/
 /*                                                                      */
-/*               Copyright 2002 by Gunnar Kedenburg                     */
+/*               Copyright 2002-2004 by Gunnar Kedenburg                */
 /*       Cognitive Systems Group, University of Hamburg, Germany        */
 /*                                                                      */
 /*    This file is part of the VIGRA computer vision library.           */
@@ -285,7 +285,6 @@ namespace vigra {
 	stream >> height;
 
 	// bitmaps implicitly have maxval 1
-
 	if ( type != '1' && type != '4' ) {
             skip();
             stream >> maxval;
@@ -326,7 +325,11 @@ namespace vigra {
 #endif
 
 	// advance to the beginning of the "data section"
-        skip();
+	if (raw == false)
+	  skip();
+	else
+	  // XXX assumes 1-byte pixels
+	  stream.seekg( -width * height * components, ios::end );
     }
 
     void PnmDecoder::init( const std::string & filename )
