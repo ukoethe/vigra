@@ -34,8 +34,104 @@
 
 namespace vigra {
 
+/*****************************************************************/
+/*                                                               */
+/*                         CoscotFunction                        */
+/*                                                               */
+/*****************************************************************/
+
+/** \addtogroup MathFunctions Mathematical Functions
+*/
+//@{
+/*! The Coscot interpolation function.
+
+    Implements the Coscot interpolation function proposed by Maria Magnusson Seger
+    (maria@isy.liu.se) in the context of tomographic reconstruction. It provides a fast
+    transition between the pass- and stop-bands and minimal ripple outside the transition 
+    region. Both properties are important for this application and can be tuned by the parameters
+    <i>m</i> and </i>h</i> (with defaults 3 and 0.5). The function is defined by
+    
+    \f[ f_{m,h}(x) = \left{ \begin{array}{ll}
+                                   \frac{1}{2m}\sin(\pi x)\cot(\pi x / (2 m))(h + (1-h)\cos(\pi x/m)) & |x| \leg m \\
+                                  0 & \text{otherwise}
+                        \end{array}\right.
+    \f]
+    
+    It can be used as a functor, and as a kernel for 
+    \ref resamplingConvolveImage() to create a differentiable interpolant
+    of an image. 
+
+    <b>\#include</b> "<a href="gaussians_8hxx-source.html">vigra/resizeimage.hxx</a>"<br>
+    Namespace: vigra
+*/
+template <class T>
+class CoscotFunction
+{
+  public:
+  
+        /** the kernel's value type
+        */
+    typedef T            value_type;  
+        /** the unary functor's argument type
+        */
+    typedef T            argument_type;  
+        /** the splines polynomial order
+        */
+    typedef T            result_type; 
+
+    CoscotFunction(unsigned int m = 3, double h = 0.5)
+    : m_(m),
+      h_(h)
+    {}
+    
+        /** function (functor) call
+        */
+    result_type operator()(argument_type x) const
+    {
+        return x == 0.0 ? 
+                    1.0
+                  : abs(x) < m_ ?
+                        VIGRA_CSTD::sin(M_PI*x) / VIGRA_CSTD::tan(M_PI * x / 2.0 / m_) *
+                             (h_ + (1.0 - h_) * VIGRA_CSTD::cos(M_PI * x / m_)) / 2.0 / m_
+                      : 0.0;
+    }
+
+        /** index operator -- same as operator()
+        */
+    value_type operator[](value_type x) const
+        { return operator()(x); }
+    
+        /** Radius of the function's support.
+            Needed for  \ref resamplingConvolveImage(), equals m.
+        */
+    double radius() const
+        { return m_; }
+        
+        /** Derivative order of the function: always 0.
+        */
+    unsigned int derivativeOrder() const
+        { return 0; }
+
+        /** Prefilter coefficients for compatibility with \ref vigra::BSpline.
+            (array has zero length, since prefiltering is not necessary).
+        */
+    ArrayVector<double> const & prefilterCoefficients() const
+    { 
+        static ArrayVector<double> b;
+        return b;
+    }
+    
+  protected:
+    
+    unsigned int m_;
+    double h_;
+};
+
+//@}
+
+
 /** \addtogroup GeometricTransformations Geometric Transformations
-    Zoom up and down by repeating pixels, or using linear or spline interpolation
+    Zoom up and down by repeating pixels, or using various interpolation schemes.
 
     <b>\#include</b> "<a href="stdimagefunctions_8hxx-source.html">vigra/stdimagefunctions.hxx</a>"<br>
     <b>or</b><br>
@@ -450,196 +546,9 @@ resizeImageLinearInterpolation(triple<SrcIterator, SrcIterator, SrcAccessor> src
 /*                                                             */
 /***************************************************************/
 
-template <class SrcIterator, class SrcAccessor,
-          class DestIterator, class DestAccessor,
-          class SPLINE>
-void
-resizeImageSplineInterpolation(
-    SrcIterator src_iter, SrcIterator src_iter_end, SrcAccessor src_acc,
-    DestIterator dest_iter, DestIterator dest_iter_end, DestAccessor dest_acc,
-    SPLINE const & spline)
-{
+/** \brief Resize image using B-spline interpolation.
 
-    int width_old = src_iter_end.x - src_iter.x;
-    int height_old = src_iter_end.y - src_iter.y;
-
-    int width_new = dest_iter_end.x - dest_iter.x;
-    int height_new = dest_iter_end.y - dest_iter.y;
-
-    vigra_precondition((width_old > 1) && (height_old > 1),
-                 "resizeImageSplineInterpolation(): "
-                 "Source image to small.\n");
-
-    vigra_precondition((width_new > 1) && (height_new > 1),
-                 "resizeImageSplineInterpolation(): "
-                 "Destination image to small.\n");
-
-    Rational<int> xratio(width_new - 1, width_old - 1);
-    Rational<int> yratio(height_new - 1, height_old - 1);
-    Rational<int> offset(0);
-    resampling_detail::MapTargetToSourceCoordinate xmapCoordinate(xratio, offset);
-    resampling_detail::MapTargetToSourceCoordinate ymapCoordinate(yratio, offset);
-    int xperiod = lcm(xratio.numerator(), xratio.denominator());
-    int yperiod = lcm(yratio.numerator(), yratio.denominator());
-    
-    double const scale = 2.0;
-    
-    typedef typename SrcAccessor::value_type SRCVT;
-    typedef typename NumericTraits<SRCVT>::RealPromote TMPTYPE;
-    typedef BasicImage<TMPTYPE> TmpImage;
-    typedef typename TmpImage::traverser TmpImageIterator;
-
-    BasicImage<TMPTYPE> tmp(width_old, height_new);
-
-    BasicImage<TMPTYPE> line((height_old > width_old) ? height_old : width_old, 1);
-    typename BasicImage<TMPTYPE>::Accessor tmp_acc = tmp.accessor();
-
-    int x,y;
-    
-    ArrayVector<Kernel1D<double> > kernels(yperiod);    
-    createResamplingKernels(spline, ymapCoordinate, kernels);
-
-    typename BasicImage<TMPTYPE>::Iterator y_tmp = tmp.upperLeft();
-    typename TmpImageIterator::row_iterator line_tmp = line.upperLeft().rowIterator();
-
-    for(x=0; x<width_old; ++x, ++src_iter.x, ++y_tmp.x)
-    {
-
-        typename SrcIterator::column_iterator c_src = src_iter.columnIterator();
-        typename TmpImageIterator::column_iterator c_tmp = y_tmp.columnIterator();
-
-        for(unsigned int b = 0; b < spline.prefilterCoefficients().size(); ++b)
-        {
-            if(b == 0)
-                recursiveFilterLine(c_src, c_src + height_old, src_acc,
-                    line_tmp, line.accessor(), 
-                    spline.prefilterCoefficients()[b], BORDER_TREATMENT_REFLECT);
-            else
-                recursiveFilterLine(line_tmp, line_tmp + height_old, line.accessor(), 
-                    line_tmp, line.accessor(), 
-                    spline.prefilterCoefficients()[b], BORDER_TREATMENT_REFLECT);
-        }
-        if(height_new < height_old)
-        {
-            recursiveSmoothLine(line_tmp, line_tmp + height_old, line.accessor(),
-                 line_tmp, line.accessor(), (double)height_old/height_new/scale);
-        }
-        resamplingConvolveLine(line_tmp, line_tmp + height_old, line.accessor(),
-                               c_tmp, c_tmp + height_new, tmp_acc,
-                               kernels, ymapCoordinate);
-    }
-
-    y_tmp = tmp.upperLeft();
-
-    DestIterator dest = dest_iter;
-
-    kernels.resize(xperiod);    
-    createResamplingKernels(spline, xmapCoordinate, kernels);
-
-    for(y=0; y < height_new; ++y, ++y_tmp.y, ++dest_iter.y)
-    {
-        typename DestIterator::row_iterator r_dest = dest_iter.rowIterator();
-        typename TmpImageIterator::row_iterator r_tmp = y_tmp.rowIterator();
-
-        for(unsigned int b = 0; b < spline.prefilterCoefficients().size(); ++b)
-        {
-            if(b == 0)
-                recursiveFilterLine(r_tmp, r_tmp + width_old, tmp.accessor(),
-                    line_tmp, line.accessor(), 
-                    spline.prefilterCoefficients()[b], BORDER_TREATMENT_REFLECT);
-            else
-                recursiveFilterLine(line_tmp, line_tmp + height_old, line.accessor(), 
-                    line_tmp, line.accessor(), 
-                    spline.prefilterCoefficients()[b], BORDER_TREATMENT_REFLECT);
-        }
-
-        if(width_new < width_old)
-        {
-            recursiveSmoothLine(line_tmp, line_tmp + width_old, line.accessor(),
-                              line_tmp, line.accessor(), (double)width_old/width_new/scale);
-        }
-        resamplingConvolveLine(line_tmp, line_tmp + width_old, line.accessor(),
-                               r_dest, r_dest + width_new, dest_acc,
-                               kernels, xmapCoordinate);
-    }
-}
-
-template <class SrcIterator, class SrcAccessor,
-          class DestIterator, class DestAccessor,
-          class SPLINE>
-inline
-void
-resizeImageSplineInterpolation(triple<SrcIterator, SrcIterator, SrcAccessor> src,
-                      triple<DestIterator, DestIterator, DestAccessor> dest,
-                      SPLINE const & spline)
-{
-    resizeImageSplineInterpolation(src.first, src.second, src.third,
-                                   dest.first, dest.second, dest.third, spline);
-}
-
-/*****************************************************************/
-/*                                                               */
-/*              resizeImageCubicFIRInterpolation                 */
-/*                                                               */
-/*****************************************************************/
-
-template <class SrcIterator, class SrcAccessor,
-          class DestIterator, class DestAccessor>
-void
-resizeImageCubicFIRInterpolation(SrcIterator src_iter, SrcIterator src_iter_end, SrcAccessor src_acc,
-                      DestIterator dest_iter, DestIterator dest_iter_end, DestAccessor dest_acc)
-{
-    resizeImageSplineInterpolation(src_iter, src_iter_end, src_acc, dest_iter, dest_iter_end, dest_acc,
-                                  CatmullRomSpline<double>());
-}
-
-template <class SrcIterator, class SrcAccessor,
-          class DestIterator, class DestAccessor>
-inline
-void
-resizeImageCubicFIRInterpolation(triple<SrcIterator, SrcIterator, SrcAccessor> src,
-                      triple<DestIterator, DestIterator, DestAccessor> dest)
-{
-    resizeImageCubicFIRInterpolation(src.first, src.second, src.third,
-                                     dest.first, dest.second, dest.third);
-}
-
-/*****************************************************************/
-/*                                                               */
-/*            resizeImageCubicIIRInterpolation                   */
-/*                                                               */
-/*****************************************************************/
-
-template <class SrcIterator, class SrcAccessor,
-          class DestIterator, class DestAccessor>
-void
-resizeImageCubicIIRInterpolation(SrcIterator src_iter, SrcIterator src_iter_end, SrcAccessor src_acc,
-                      DestIterator dest_iter, DestIterator dest_iter_end, DestAccessor dest_acc)
-{
-    resizeImageSplineInterpolation(src_iter, src_iter_end, src_acc, dest_iter, dest_iter_end, dest_acc,
-                                  BSpline<3, double>());
-}
-
-template <class SrcIterator, class SrcAccessor,
-          class DestIterator, class DestAccessor>
-inline
-void
-resizeImageCubicIIRInterpolation(triple<SrcIterator, SrcIterator, SrcAccessor> src,
-                      triple<DestIterator, DestIterator, DestAccessor> dest)
-{
-    resizeImageCubicIIRInterpolation(src.first, src.second, src.third,
-                                   dest.first, dest.second, dest.third);
-}
-
-/********************************************************/
-/*                                                      */
-/*           resizeImageSplineInterpolation             */
-/*                                                      */
-/********************************************************/
-
-/** \brief Resize image using bi-cubic spline interpolation.
-
-    The function implements the bi-cubic, separable spline algorithm described in
+    The function implements separable spline interpolation algorithm described in
     
     M. Unser, A. Aldroubi, M. Eden, <i>"B-Spline Signal Processing"</i>
     IEEE Transactions on Signal Processing, vol. 41, no. 2, pp. 821-833 (part I),
@@ -746,6 +655,169 @@ resizeImageCubicIIRInterpolation(triple<SrcIterator, SrcIterator, SrcAccessor> s
 
 */
 template <class SrcIterator, class SrcAccessor,
+          class DestIterator, class DestAccessor,
+          class SPLINE>
+void
+resizeImageSplineInterpolation(
+    SrcIterator src_iter, SrcIterator src_iter_end, SrcAccessor src_acc,
+    DestIterator dest_iter, DestIterator dest_iter_end, DestAccessor dest_acc,
+    SPLINE const & spline)
+{
+
+    int width_old = src_iter_end.x - src_iter.x;
+    int height_old = src_iter_end.y - src_iter.y;
+
+    int width_new = dest_iter_end.x - dest_iter.x;
+    int height_new = dest_iter_end.y - dest_iter.y;
+
+    vigra_precondition((width_old > 1) && (height_old > 1),
+                 "resizeImageSplineInterpolation(): "
+                 "Source image to small.\n");
+
+    vigra_precondition((width_new > 1) && (height_new > 1),
+                 "resizeImageSplineInterpolation(): "
+                 "Destination image to small.\n");
+
+    Rational<int> xratio(width_new - 1, width_old - 1);
+    Rational<int> yratio(height_new - 1, height_old - 1);
+    Rational<int> offset(0);
+    resampling_detail::MapTargetToSourceCoordinate xmapCoordinate(xratio, offset);
+    resampling_detail::MapTargetToSourceCoordinate ymapCoordinate(yratio, offset);
+    int xperiod = lcm(xratio.numerator(), xratio.denominator());
+    int yperiod = lcm(yratio.numerator(), yratio.denominator());
+    
+    double const scale = 2.0;
+    
+    typedef typename SrcAccessor::value_type SRCVT;
+    typedef typename NumericTraits<SRCVT>::RealPromote TMPTYPE;
+    typedef BasicImage<TMPTYPE> TmpImage;
+    typedef typename TmpImage::traverser TmpImageIterator;
+
+    BasicImage<TMPTYPE> tmp(width_old, height_new);
+
+    BasicImage<TMPTYPE> line((height_old > width_old) ? height_old : width_old, 1);
+    typename BasicImage<TMPTYPE>::Accessor tmp_acc = tmp.accessor();
+    ArrayVector<double> const & prefilterCoeffs = spline.prefilterCoefficients();
+
+    int x,y;
+    
+    ArrayVector<Kernel1D<double> > kernels(yperiod);    
+    createResamplingKernels(spline, ymapCoordinate, kernels);
+
+    typename BasicImage<TMPTYPE>::Iterator y_tmp = tmp.upperLeft();
+    typename TmpImageIterator::row_iterator line_tmp = line.upperLeft().rowIterator();
+
+    for(x=0; x<width_old; ++x, ++src_iter.x, ++y_tmp.x)
+    {
+
+        typename SrcIterator::column_iterator c_src = src_iter.columnIterator();
+        typename TmpImageIterator::column_iterator c_tmp = y_tmp.columnIterator();
+
+        if(prefilterCoeffs.size() == 0)
+        {
+            if(height_new >= height_old)
+            {
+                resamplingConvolveLine(c_src, c_src + height_old, src_acc,
+                                       c_tmp, c_tmp + height_new, tmp_acc,
+                                       kernels, ymapCoordinate);
+            }
+            else
+            {
+                recursiveSmoothLine(c_src, c_src + height_old, src_acc,
+                     line_tmp, line.accessor(), (double)height_old/height_new/scale);
+                resamplingConvolveLine(line_tmp, line_tmp + height_old, line.accessor(),
+                                       c_tmp, c_tmp + height_new, tmp_acc,
+                                       kernels, ymapCoordinate);
+            }
+        }
+        else
+        {
+            recursiveFilterLine(c_src, c_src + height_old, src_acc,
+                                line_tmp, line.accessor(), 
+                                prefilterCoeffs[0], BORDER_TREATMENT_REFLECT);
+            for(unsigned int b = 1; b < prefilterCoeffs.size(); ++b)
+            {
+                recursiveFilterLine(line_tmp, line_tmp + height_old, line.accessor(), 
+                                    line_tmp, line.accessor(), 
+                                    prefilterCoeffs[b], BORDER_TREATMENT_REFLECT);
+            }
+            if(height_new < height_old)
+            {
+                recursiveSmoothLine(line_tmp, line_tmp + height_old, line.accessor(),
+                     line_tmp, line.accessor(), (double)height_old/height_new/scale);
+            }
+            resamplingConvolveLine(line_tmp, line_tmp + height_old, line.accessor(),
+                                   c_tmp, c_tmp + height_new, tmp_acc,
+                                   kernels, ymapCoordinate);
+        }
+    }
+
+    y_tmp = tmp.upperLeft();
+
+    DestIterator dest = dest_iter;
+
+    kernels.resize(xperiod);    
+    createResamplingKernels(spline, xmapCoordinate, kernels);
+
+    for(y=0; y < height_new; ++y, ++y_tmp.y, ++dest_iter.y)
+    {
+        typename DestIterator::row_iterator r_dest = dest_iter.rowIterator();
+        typename TmpImageIterator::row_iterator r_tmp = y_tmp.rowIterator();
+
+        if(prefilterCoeffs.size() == 0)
+        {
+            if(width_new >= width_old)
+            {
+                resamplingConvolveLine(r_tmp, r_tmp + width_old, tmp.accessor(),
+                                       r_dest, r_dest + width_new, dest_acc,
+                                       kernels, xmapCoordinate);
+            }
+            else
+            {
+                recursiveSmoothLine(r_tmp, r_tmp + width_old, tmp.accessor(),
+                                  line_tmp, line.accessor(), (double)width_old/width_new/scale);
+                resamplingConvolveLine(line_tmp, line_tmp + width_old, line.accessor(),
+                                       r_dest, r_dest + width_new, dest_acc,
+                                       kernels, xmapCoordinate);
+            }
+        }
+        else
+        {
+            recursiveFilterLine(r_tmp, r_tmp + width_old, tmp.accessor(),
+                                line_tmp, line.accessor(), 
+                                prefilterCoeffs[0], BORDER_TREATMENT_REFLECT);
+            for(unsigned int b = 1; b < prefilterCoeffs.size(); ++b)
+            {
+                recursiveFilterLine(line_tmp, line_tmp + width_old, line.accessor(), 
+                                    line_tmp, line.accessor(), 
+                                    prefilterCoeffs[b], BORDER_TREATMENT_REFLECT);
+            }
+            if(width_new < width_old)
+            {
+                recursiveSmoothLine(line_tmp, line_tmp + width_old, line.accessor(),
+                                    line_tmp, line.accessor(), (double)width_old/width_new/scale);
+            }
+            resamplingConvolveLine(line_tmp, line_tmp + width_old, line.accessor(),
+                                   r_dest, r_dest + width_new, dest_acc,
+                                   kernels, xmapCoordinate);
+        }
+    }
+}
+
+template <class SrcIterator, class SrcAccessor,
+          class DestIterator, class DestAccessor,
+          class SPLINE>
+inline
+void
+resizeImageSplineInterpolation(triple<SrcIterator, SrcIterator, SrcAccessor> src,
+                      triple<DestIterator, DestIterator, DestAccessor> dest,
+                      SPLINE const & spline)
+{
+    resizeImageSplineInterpolation(src.first, src.second, src.third,
+                                   dest.first, dest.second, dest.third, spline);
+}
+
+template <class SrcIterator, class SrcAccessor,
           class DestIterator, class DestAccessor>
 void
 resizeImageSplineInterpolation(SrcIterator is, SrcIterator iend, SrcAccessor sa,
@@ -764,6 +836,121 @@ resizeImageSplineInterpolation(triple<SrcIterator, SrcIterator, SrcAccessor> src
     resizeImageSplineInterpolation(src.first, src.second, src.third,
                                    dest.first, dest.second, dest.third);
 }
+
+/*****************************************************************/
+/*                                                               */
+/*              resizeImageCatmullRomInterpolation               */
+/*                                                               */
+/*****************************************************************/
+
+/** \brief Resize image using the Catmull/Rom interpolation function.
+
+    The function calls like \ref resizeImageSplineInterpolation() with 
+    \ref vigra::CatmullRomSpline as an interpolation kernel. 
+    The interpolated function has one continuous derivative.
+    (See \ref resizeImageSplineInterpolation() for more documentation)
+    
+    <b>\#include</b> "<a href="resizeimage_8hxx-source.html">vigra/resizeimage.hxx</a>"<br>
+    Namespace: vigra
+        
+*/
+template <class SrcIterator, class SrcAccessor,
+          class DestIterator, class DestAccessor>
+void
+resizeImageCatmullRomInterpolation(SrcIterator src_iter, SrcIterator src_iter_end, SrcAccessor src_acc,
+                      DestIterator dest_iter, DestIterator dest_iter_end, DestAccessor dest_acc)
+{
+    resizeImageSplineInterpolation(src_iter, src_iter_end, src_acc, dest_iter, dest_iter_end, dest_acc,
+                                  CatmullRomSpline<double>());
+}
+
+template <class SrcIterator, class SrcAccessor,
+          class DestIterator, class DestAccessor>
+inline
+void
+resizeImageCatmullRomInterpolation(triple<SrcIterator, SrcIterator, SrcAccessor> src,
+                      triple<DestIterator, DestIterator, DestAccessor> dest)
+{
+    resizeImageCatmullRomInterpolation(src.first, src.second, src.third,
+                                     dest.first, dest.second, dest.third);
+}
+
+/*****************************************************************/
+/*                                                               */
+/*              resizeImageCubicInterpolation                    */
+/*                                                               */
+/*****************************************************************/
+
+/** \brief Resize image using the cardinal B-spline interpolation function.
+
+    The function calls like \ref resizeImageSplineInterpolation() with 
+    \ref vigra::BSpline<3, double> and prefiltering as an interpolation kernel. 
+    The interpolated function has two continuous derivatives.
+    (See \ref resizeImageSplineInterpolation() for more documentation)
+    
+    <b>\#include</b> "<a href="resizeimage_8hxx-source.html">vigra/resizeimage.hxx</a>"<br>
+    Namespace: vigra
+        
+*/
+template <class SrcIterator, class SrcAccessor,
+          class DestIterator, class DestAccessor>
+void
+resizeImageCubicInterpolation(SrcIterator src_iter, SrcIterator src_iter_end, SrcAccessor src_acc,
+                      DestIterator dest_iter, DestIterator dest_iter_end, DestAccessor dest_acc)
+{
+    resizeImageSplineInterpolation(src_iter, src_iter_end, src_acc, dest_iter, dest_iter_end, dest_acc,
+                                  BSpline<3, double>());
+}
+
+template <class SrcIterator, class SrcAccessor,
+          class DestIterator, class DestAccessor>
+inline
+void
+resizeImageCubicInterpolation(triple<SrcIterator, SrcIterator, SrcAccessor> src,
+                      triple<DestIterator, DestIterator, DestAccessor> dest)
+{
+    resizeImageCubicInterpolation(src.first, src.second, src.third,
+                                   dest.first, dest.second, dest.third);
+}
+
+/*****************************************************************/
+/*                                                               */
+/*              resizeImageCoscotInterpolation                   */
+/*                                                               */
+/*****************************************************************/
+
+/** \brief Resize image using the Coscot interpolation function.
+
+    The function calls \ref resizeImageSplineInterpolation() with 
+    \ref vigra::CoscotFunction as an interpolation kernel. 
+    The interpolated function has one continuous derivative.
+    (See \ref resizeImageSplineInterpolation() for more documentation)
+    
+    <b>\#include</b> "<a href="resizeimage_8hxx-source.html">vigra/resizeimage.hxx</a>"<br>
+    Namespace: vigra
+        
+*/
+template <class SrcIterator, class SrcAccessor,
+          class DestIterator, class DestAccessor>
+void
+resizeImageCoscotInterpolation(SrcIterator src_iter, SrcIterator src_iter_end, SrcAccessor src_acc,
+                      DestIterator dest_iter, DestIterator dest_iter_end, DestAccessor dest_acc)
+{
+    resizeImageSplineInterpolation(src_iter, src_iter_end, src_acc, dest_iter, dest_iter_end, dest_acc,
+                                   CoscotFunction<double>());
+}
+
+template <class SrcIterator, class SrcAccessor,
+          class DestIterator, class DestAccessor>
+inline
+void
+resizeImageCoscotInterpolation(triple<SrcIterator, SrcIterator, SrcAccessor> src,
+                      triple<DestIterator, DestIterator, DestAccessor> dest)
+{
+    resizeImageCoscotInterpolation(src.first, src.second, src.third,
+                                   dest.first, dest.second, dest.third);
+}
+
 
 #if 0 // old version of the spline interpolation algorithm
 
@@ -1139,82 +1326,7 @@ resizeImageSplineInterpolation(triple<SrcIterator, SrcIterator, SrcAccessor> src
     resizeImageSplineInterpolation(src.first, src.second, src.third,
                                    dest.first, dest.second, dest.third);
 }
-#endif
-
-/*****************************************************************/
-/*                                                               */
-/*              resizeImageCoscotInterpolation                   */
-/*                                                               */
-/*****************************************************************/
-
-template <class T>
-class CoscotKernel
-{
-  public:
-  
-    typedef T            value_type;  
-    typedef T            argument_type;  
-    typedef T            result_type; 
-
-    CoscotKernel(unsigned int m = 3, double h = 0.5)
-    : m_(m),
-      h_(h)
-    {}
-    
-    result_type operator()(argument_type x) const
-    {
-        return x == 0.0 ? 
-                    1.0
-                  : abs(x) < m_ ?
-                        VIGRA_CSTD::sin(M_PI*x) / VIGRA_CSTD::tan(M_PI * x / 2.0 / m_) *
-                             (h_ + (1.0 - h_) * VIGRA_CSTD::cos(M_PI * x / m_)) / 2.0 / m_
-                      : 0.0;
-    }
-
-    value_type operator[](value_type x) const
-        { return operator()(x); }
-    
-    double radius() const
-        { return m_; }
-        
-    unsigned int derivativeOrder() const
-        { return 0; }
-
-    ArrayVector<double> const & prefilterCoefficients() const
-    { 
-        static ArrayVector<double> b(1, 0.0);
-        return b;
-    }
-    
-  protected:
-    
-    unsigned int m_;
-    double h_;
-};
-
-template <class SrcIterator, class SrcAccessor,
-          class DestIterator, class DestAccessor>
-void
-resizeImageCoscotInterpolation(SrcIterator src_iter, SrcIterator src_iter_end, SrcAccessor src_acc,
-                      DestIterator dest_iter, DestIterator dest_iter_end, DestAccessor dest_acc)
-{
-    resizeImageSplineInterpolation(src_iter, src_iter_end, src_acc, dest_iter, dest_iter_end, dest_acc,
-                                   CoscotKernel<double>());
-}
-
-template <class SrcIterator, class SrcAccessor,
-          class DestIterator, class DestAccessor>
-inline
-void
-resizeImageCoscotInterpolation(triple<SrcIterator, SrcIterator, SrcAccessor> src,
-                      triple<DestIterator, DestIterator, DestAccessor> dest)
-{
-    resizeImageCoscotInterpolation(src.first, src.second, src.third,
-                                   dest.first, dest.second, dest.third);
-}
-
-
-
+#endif  // old alghorithm version
 
 //@}
 
