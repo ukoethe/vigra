@@ -24,6 +24,7 @@
 #define VIGRA_LABELIMAGE_HXX
 
 #include <vector>
+#include <functional>
 #include "vigra/utilities.hxx"
 #include "vigra/stdimage.hxx"
 
@@ -40,8 +41,9 @@
 
 /** Find the connected components of a segmented image.
     Connected components are defined as regions with uniform 
-    pixel values. Thus, #SrcAccessor::value_type# must be equality 
-    comparable. The destination's value type should be large enough 
+    pixel values. Thus, #SrcAccessor::value_type# either must be equality 
+    comparable (first form), or an EqualityFunctor must be provided that realizes the 
+    desired predicate (second form). The destination's value type should be large enough 
     to hold the labels without overflow. Region numbers will be a 
     consecutive sequence starting with one and ending with the 
     region number returned by the function (inclusive). The parameter
@@ -58,17 +60,35 @@
     int labelImage(SrcIterator upperlefts, 
 		   SrcIterator lowerrights, SrcAccessor sa,
 		   DestIterator upperleftd, DestAccessor da,
-		   bool eight_neighbors)
-    \end{verbatim}
+		   bool eight_neighbors);
     
+    template <class SrcIterator, class SrcAccessor,
+              class DestIterator, class DestAccessor,
+              class EqualityFunctor>
+    int labelImage(SrcIterator upperlefts, 
+                   SrcIterator lowerrights, SrcAccessor sa,
+                   DestIterator upperleftd, DestAccessor da,
+	           bool eight_neighbors, EqualityFunctor equal);
+    \end{verbatim}
+                   
     use argument objects in conjuction with \Ref{Argument Object Factories}:
     \begin{verbatim}
     template <class SrcIterator, class SrcAccessor,
 	      class DestIterator, class DestAccessor>
-    inline 
     int labelImage(triple<SrcIterator, SrcIterator, SrcAccessor> src,
 		   pair<DestIterator, DestAccessor> dest,
-		   bool eight_neighbors)
+		   bool eight_neighbors);
+
+    template <class SrcIterator, class SrcAccessor,
+              class DestIterator, class DestAccessor,
+              class EqualityFunctor>
+    int labelImage(triple<SrcIterator, SrcIterator, SrcAccessor> src,
+                   pair<DestIterator, DestAccessor> dest,
+	           bool eight_neighbors, EqualityFunctor equal)
+    {
+        return labelImage(src.first, src.second, src.third,
+                          dest.first, dest.second, eight_neighbors, equal);
+    }
     \end{verbatim}
     
     Return:  the number of regions found (= largest region label)
@@ -111,15 +131,16 @@
     @memo
 */
 template <class SrcIterator, class SrcAccessor,
-          class DestIterator, class DestAccessor>
+          class DestIterator, class DestAccessor,
+          class EqualityFunctor>
 int labelImage(SrcIterator upperlefts, 
                SrcIterator lowerrights, SrcAccessor sa,
                DestIterator upperleftd, DestAccessor da,
-	       bool eight_neighbors)
+	       bool eight_neighbors, EqualityFunctor equal)
 {
     int w = lowerrights.x - upperlefts.x;
     int h = lowerrights.y - upperlefts.y;
-    int i;
+    int x,y,i;
     
     static const Diff2D left(-1,0);
     static const Diff2D top(0,-1);
@@ -127,36 +148,27 @@ int labelImage(SrcIterator upperlefts,
     static const Diff2D topleft(-1,-1);
     
     SrcIterator ys(upperlefts);
+    SrcIterator xs(ys);
 
-    // look up table to store region labels
-    std::vector<int> lut(w*h+1);
+    // temporary image to store region labels
     IImage labelimage(w, h);
     
-    // initialize lut
-    for(i=0;i<=w*h;i++)
-    {
-	lut[i] = i;
-    }
-    
     IImage::Iterator yt = labelimage.upperLeft();
-        
-    // pass 1: scan image from upper left to lower right
-    // find connected components
-    int num = 1; // count number of connected components found
-    
-    // special treatment for first pixel: always new region
-    *yt = num++;
-    
-    int x, y;
-    
-    SrcIterator xs(ys);
     IImage::Iterator xt(yt);
+        
+    // Kovalevsky's clever idea to use
+    // image iterator and scan order iterator simultaneously
+    IImage::ScanOrderIterator label = labelimage.begin();
+
+    // pass 1: scan image from upper left to lower right
+    // to find connected components
+    *xt = 0;
 
     // special treatment for first row
     for(x = 1, ++xs.x, ++xt.x; x != w; ++x, ++xs.x, ++xt.x)
     {
 	// check if same region
-	if(sa(xs) == sa(xs, left))
+	if(equal(sa(xs), sa(xs, left)))
 	{
 	    // same region as left pixel -> propagate label
 	    *xt = xt[left];
@@ -164,7 +176,7 @@ int labelImage(SrcIterator upperlefts,
 	else
 	{
 	    // new region
-	    *xt = num++;
+	    *xt = x;
 	}
     }
 
@@ -175,12 +187,13 @@ int labelImage(SrcIterator upperlefts,
 	xt = yt;
 	
 	// special treatment for first pixel of each row
-	if(sa(xs) == sa(xs, top))
+	if(equal(sa(xs), sa(xs, top)))
 	{
 	    // same region as top pixel -> propagate label
 	    *xt = xt[top];
 	}
-	else if(eight_neighbors && (x != w-1) && (sa(xs) == sa(xs,topright)))
+	else if(eight_neighbors && (x != w-1) && 
+                equal(sa(xs), sa(xs,topright)))
 	{
 	    // same region as upper right pixel
 	    *xt = xt[topright];
@@ -188,75 +201,58 @@ int labelImage(SrcIterator upperlefts,
 	else
 	{
 	    // new region
-	    *xt = num++;
+	    *xt = y*w;
 	}
 	
 	// regular processing
 	for(x = 1, ++xs.x, ++xt.x; x != w; ++x, ++xs.x, ++xt.x)
 	{
 	    // check if same region
-	    if(sa(xs) == sa(xs, left))
+	    if(equal(sa(xs), sa(xs, left)))
 	    {
 		// same region as left pixel
 		int left_lab = xt[left];
-		if(sa(xs) == sa(xs, top))
+                
+		if(equal(sa(xs), sa(xs, top)))
 		{
 		    // also same region as top pixel
 		    int top_lab = xt[top];
-		    // propagate top label
-		    *xt = top_lab;
-		    // check if luts need to be updated
-		    if(lut[top_lab] != lut[left_lab])
-		    {
-			// find smallest label of both regions
-			int left_lut = lut[left_lab];
-			while(left_lut != lut[left_lut])
-					left_lut = lut[left_lut];	
-			int top_lut = lut[top_lab];
-			while(top_lut != lut[top_lut])
-					top_lut = lut[top_lut];	
-			// set lut entries to smaller of these labels
-			if(left_lut < top_lut)
-			{
-			    lut[top_lab] = lut[left_lab] = 
-			    lut[top_lut] = left_lut;
-			}
-			else
-			{
-			    lut[top_lab] = lut[left_lab] = 
-			    lut[left_lut] = top_lut;
-			}							
-		    }
+                    
+                    if(top_lab == left_lab)
+                    {
+                        *xt = top_lab;
+                    }
+                    else if(top_lab < left_lab)
+                    {
+                        label[left_lab] = top_lab;
+                        *xt = top_lab;
+                    }
+                    else // top_lab > left_lab
+                    {
+                        label[top_lab] = left_lab;
+                        *xt = left_lab;
+                    }
 		}
 		else if(eight_neighbors && (x != w-1) && 
-                       (sa(xs) == sa(xs, topright)))
+                       equal(sa(xs), sa(xs, topright)))
 		{
 		    // also same region as upper right pixel
 		    int top_lab = xt[topright];
-		    // propagate top label
-		    *xt = top_lab;
-		    // check if luts need to be updated
-		    if(lut[top_lab] != lut[left_lab])
-		    {
-			// find smallest label of both regions
-			int left_lut = lut[left_lab];
-			while(left_lut != lut[left_lut])
-					left_lut = lut[left_lut];	
-			int top_lut = lut[top_lab];
-			while(top_lut != lut[top_lut])
-					top_lut = lut[top_lut];	
-			// set lut entries to smaller of these labels
-			if(left_lut < top_lut)
-			{
-			    lut[top_lab] = lut[left_lab] = 
-			    lut[top_lut] = left_lut;
-			}
-			else
-			{
-			    lut[top_lab] = lut[left_lab] = 
-			    lut[left_lut] = top_lut;
-			}							
-		    }
+                    
+                    if(top_lab == left_lab)
+                    {
+                        *xt = top_lab;
+                    }
+                    else if(top_lab < left_lab)
+                    {
+                        label[left_lab] = top_lab;
+                        *xt = top_lab;
+                    }
+                    else // top_lab > left_lab
+                    {
+                        label[top_lab] = left_lab;
+                        *xt = left_lab;
+                    }
 		}
 		else
 		{
@@ -264,44 +260,36 @@ int labelImage(SrcIterator upperlefts,
 		    *xt = left_lab;
 		}
 	    }
-	    else if(sa(xs) == sa(xs, top))
+	    else if(equal(sa(xs), sa(xs, top)))
 	    {
 		// same region as top pixel
 		// propagate label
 		*xt = xt[top];
 	    }
-	    else if(eight_neighbors && (sa(xs) == sa(xs, topleft)))
+	    else if(eight_neighbors && equal(sa(xs), sa(xs, topleft)))
 	    {
 		// same region as upper left pixel
 		int left_lab = xt[topleft];
-		if((x != w-1) && (sa(xs) == sa(xs, topright)))
+                
+		if((x != w-1) && equal(sa(xs), sa(xs, topright)))
 		{
 		    // also same region as upper right pixel
 		    int top_lab = xt[topright];
-		    // propagate top label
-		    *xt = top_lab;
-		    // check if luts need to be updated
-		    if(lut[top_lab] != lut[left_lab])
-		    {
-			// find smallest label of both regions
-			int left_lut = lut[left_lab];
-			while(left_lut != lut[left_lut])
-					left_lut = lut[left_lut];	
-			int top_lut = lut[top_lab];
-			while(top_lut != lut[top_lut])
-					top_lut = lut[top_lut];	
-			// set lut entries to smaller of these labels
-			if(left_lut < top_lut)
-			{
-			    lut[top_lab] = lut[left_lab] = 
-			    lut[top_lut] = left_lut;
-			}
-			else
-			{
-			    lut[top_lab] = lut[left_lab] = 
-			    lut[left_lut] = top_lut;
-			}							
-		    }
+                    
+                    if(top_lab == left_lab)
+                    {
+                        *xt = top_lab;
+                    }
+                    else if(top_lab < left_lab)
+                    {
+                        label[left_lab] = top_lab;
+                        *xt = top_lab;
+                    }
+                    else // top_lab > left_lab
+                    {
+                        label[top_lab] = left_lab;
+                        *xt = left_lab;
+                    }
 		}
 		else
 		{
@@ -309,7 +297,8 @@ int labelImage(SrcIterator upperlefts,
 		    *xt = left_lab;
 		}
 	    }
-	    else if(eight_neighbors && (x != w-1) && (sa(xs) == sa(xs, topright)))
+	    else if(eight_neighbors && (x != w-1) && 
+                    equal(sa(xs), sa(xs, topright)))
 	    {
 		// same region as top right pixel
 		// propagate label
@@ -318,52 +307,58 @@ int labelImage(SrcIterator upperlefts,
 	    else
 	    {
 		// new region
-		*xt = num++;
+		*xt = y*w+x;
 	    }
 	}
     }
 		    
-    // merge regions that consist of more than one label
-    for(i=1;i<num;i++)
-    {
-	int k = lut[i];
-	while(k != lut[k])
-	{
-	    // region has more than one label, find smallest
-	    k = lut[k];
-	}
-	lut[i] = k;
-    }
-    
-    // assign new labels
-    int count = 0;
-    for(i=1;i<num;i++)
-    {
-	if(lut[i] == i)
-	{
-	    lut[i] = ++count;
-	}
-	else
-	{
-	    lut[i] = lut[lut[i]];
-	}
-    }
-    
-    // pass 2: assign unambigous label to each pixel
+    // pass 2: assign contiguous labels to the regions
     DestIterator yd(upperleftd);
-    yt = labelimage.upperLeft();
 
-    for(y=0; y != h; ++y, ++yd.y, ++yt.y)
+    int count = 0;
+    i = 0;
+    for(y=0; y != h; ++y, ++yd.y)
     {
 	DestIterator xd(yd);
-	IImage::Iterator xt(yt);
-	for(x = 0; x != w; ++x, ++xd.x, ++xt.x)
+	for(x = 0; x != w; ++x, ++xd.x, ++i)
 	{
-	    da.set(lut[*xt], xd);
+            if(label[i] == i)
+            {
+	        label[i] = count++;
+            }
+            else
+            {
+	        label[i] = label[label[i]];
+            }
+	    da.set(label[i]+1, xd);
 	}
     }
-    
     return count;
+}
+
+template <class SrcIterator, class SrcAccessor,
+          class DestIterator, class DestAccessor,
+          class EqualityFunctor>
+inline 
+int labelImage(triple<SrcIterator, SrcIterator, SrcAccessor> src,
+               pair<DestIterator, DestAccessor> dest,
+	       bool eight_neighbors, EqualityFunctor equal)
+{
+    return labelImage(src.first, src.second, src.third,
+                      dest.first, dest.second, eight_neighbors, equal);
+}
+
+template <class SrcIterator, class SrcAccessor,
+          class DestIterator, class DestAccessor>
+inline 
+int labelImage(SrcIterator upperlefts, 
+               SrcIterator lowerrights, SrcAccessor sa,
+               DestIterator upperleftd, DestAccessor da,
+	       bool eight_neighbors)
+{
+    return labelImage(upperlefts, lowerrights, sa,
+                 upperleftd, da, eight_neighbors, 
+                 std::equal_to<typename SrcAccessor::value_type>());
 }
 
 template <class SrcIterator, class SrcAccessor,
@@ -374,7 +369,8 @@ int labelImage(triple<SrcIterator, SrcIterator, SrcAccessor> src,
 	       bool eight_neighbors)
 {
     return labelImage(src.first, src.second, src.third,
-                      dest.first, dest.second, eight_neighbors);
+                 dest.first, dest.second, eight_neighbors, 
+                 std::equal_to<typename SrcAccessor::value_type>());
 }
 
 /********************************************************/
@@ -385,9 +381,11 @@ int labelImage(triple<SrcIterator, SrcIterator, SrcAccessor> src,
 
 /** Find the connected components of a segmented image.
     Connected components are defined as regions with uniform 
-    pixel values. Thus, #SrcAccessor::value_type# must be equality 
-    comparable. All pixel equal to the given '#background_value#' remain 
-    untouched in the destination image.
+    pixel values. Thus, #SrcAccessor::value_type# either must be equality 
+    comparable (first form), or an EqualityFunctor must be provided that realizes the 
+    desired predicate (second form). All pixel equal to the given 
+    '#background_value#' are ignored when determining connected components
+    and remain untouched in the destination image and 
     
     The destination's value type should be large enough 
     to hold the labels without overflow. Region numbers will be a 
@@ -408,7 +406,16 @@ int labelImage(triple<SrcIterator, SrcIterator, SrcAccessor> src,
 		   SrcIterator lowerrights, SrcAccessor sa,
 		   DestIterator upperleftd, DestAccessor da,
 		   bool eight_neighbors,
-		   ValueType background_value )
+		   ValueType background_value );
+                                 
+    template <class SrcIterator, class SrcAccessor,
+              class DestIterator, class DestAccessor,
+	      class ValueType, class EqualityFunctor>
+    int labelImageWithBackground(SrcIterator upperlefts, 
+                   SrcIterator lowerrights, SrcAccessor sa,
+                   DestIterator upperleftd, DestAccessor da,
+	           bool eight_neighbors,
+	           ValueType background_value, EqualityFunctor equal);
     \end{verbatim}
     
     use argument objects in conjuction with \Ref{Argument Object Factories}:
@@ -420,8 +427,17 @@ int labelImage(triple<SrcIterator, SrcIterator, SrcAccessor> src,
     int labelImageWithBackground(triple<SrcIterator, SrcIterator, SrcAccessor> src,
 				 pair<DestIterator, DestAccessor> dest,
 				 bool eight_neighbors,
-				 ValueType background_value)
-    \end{verbatim}
+				 ValueType background_value);
+
+    template <class SrcIterator, class SrcAccessor,
+              class DestIterator, class DestAccessor,
+	      class ValueType, class EqualityFunctor>
+    inline
+    int labelImageWithBackground(triple<SrcIterator, SrcIterator, SrcAccessor> src,
+                                 pair<DestIterator, DestAccessor> dest,
+	                         bool eight_neighbors,
+			         ValueType background_value, EqualityFunctor equal);
+        \end{verbatim}
     
     Return:  the number of regions found (= largest region label)
     
@@ -467,16 +483,16 @@ int labelImage(triple<SrcIterator, SrcIterator, SrcAccessor> src,
 */
 template <class SrcIterator, class SrcAccessor,
           class DestIterator, class DestAccessor,
-	  class ValueType>
+	  class ValueType, class EqualityFunctor>
 int labelImageWithBackground(SrcIterator upperlefts, 
                SrcIterator lowerrights, SrcAccessor sa,
                DestIterator upperleftd, DestAccessor da,
 	       bool eight_neighbors,
-	       ValueType background_value )
+	       ValueType background_value, EqualityFunctor equal)
 {
     int w = lowerrights.x - upperlefts.x;
     int h = lowerrights.y - upperlefts.y;
-    int i;
+    int x,y,i;
     
     static const Diff2D left(-1,0);
     static const Diff2D top(0,-1);
@@ -484,49 +500,35 @@ int labelImageWithBackground(SrcIterator upperlefts,
     static const Diff2D topleft(-1,-1);
     
     SrcIterator ys(upperlefts);
+    SrcIterator xs(ys);
     
-    // look up table to store region labels
-    std::vector<int> lut(w*h+1);
+    // temporary image to store region labels
     IImage labelimage(w, h);
-    
-    // initialize lut
-    for(i=0;i<=w*h;i++)
-    {
-	lut[i] = i;
-    }
-    
+    IImage::ScanOrderIterator label = labelimage.begin();
     IImage::Iterator yt = labelimage.upperLeft();
+    IImage::Iterator  xt(yt);
     
     // pass 1: scan image from upper left to lower right
     // find connected components
-    int num = 1; // count number of connected components found
     
     // special treatment for first pixel: always new region
-    if(sa(ys) != background_value)
+    if(equal(sa(ys), background_value))
     {
-	*yt = num++;
+	*yt = -1;
     }
     else
     {
     	*yt = 0;
     }
     
-    int x, y;
-    
-    SrcIterator xs(ys);
-    IImage::Iterator  xt(yt);
-
     // special treatment for first row
     for(x = 1, ++xs.x, ++xt.x; x != w; ++x, ++xs.x, ++xt.x)
     {
-	if(sa(xs) == background_value)
+	if(equal(sa(xs), background_value))
 	{
-	    *xt = 0;
-	    continue;
+	    *xt = -1;
 	}
-	
-	// check if same region
-	if(sa(xs) == sa(xs, left))
+	else if(equal(sa(xs), sa(xs, left)))
 	{
 	    // same region as left pixel -> propagate label
 	    *xt = xt[left];
@@ -534,7 +536,7 @@ int labelImageWithBackground(SrcIterator upperlefts,
 	else
 	{
 	    // new region
-	    *xt = num++;
+	    *xt = x;
 	}
     }
 
@@ -545,15 +547,19 @@ int labelImageWithBackground(SrcIterator upperlefts,
 	xt = yt;
 	
 	// special treatment for first pixel of each row
-	if(sa(xs) != background_value)
+	if(equal(sa(xs), background_value))
 	{
-	    if(sa(xs) == sa(xs,top))
+	    *xt = -1;
+	}
+	else
+	{
+	    if(equal(sa(xs), sa(xs,top)))
 	    {
 		// same region as top pixel -> propagate label
 		*xt = xt[top];
 	    }
 	    else if(eight_neighbors && (x != w-1) && 
-                   (sa(xs) == sa(xs, topright)))
+                    equal(sa(xs), sa(xs, topright)))
 	    {
 		// same region as upper right pixel
 		*xt = xt[topright];
@@ -561,86 +567,62 @@ int labelImageWithBackground(SrcIterator upperlefts,
 	    else
 	    {
 		// new region
-		*xt = num++;
+		*xt = y*w;
 	    }
-	}
-	else
-	{
-	    *xt = 0;
 	}
 	
 	// regular processing
 	for(x = 1, ++xs.x, ++xt.x; x != w; ++x, ++xs.x, ++xt.x)
 	{
-	    if(sa(xs) == background_value)
+	    if(equal(sa(xs), background_value))
 	    {
-		*xt = 0;
-		continue;
+		*xt = -1;
 	    }
-	    
-	    // check if same region
-	    if(sa(xs) == sa(xs, left))
+	    else if(equal(sa(xs), sa(xs, left)))
 	    {
 		// same region as left pixel
 		int left_lab = xt[left];
-		if(sa(xs) == sa(xs, top))
+		if(equal(sa(xs), sa(xs, top)))
 		{
 		    // also same region as top pixel
 		    int top_lab = xt[top];
-		    // propagate top label
-		    *xt = top_lab;
-		    // check if luts need to be updated
-		    if(lut[top_lab] != lut[left_lab])
-		    {
-			// find smallest label of both regions
-			int left_lut = lut[left_lab];
-			while(left_lut != lut[left_lut])
-					left_lut = lut[left_lut];	
-			int top_lut = lut[top_lab];
-			while(top_lut != lut[top_lut])
-					top_lut = lut[top_lut];	
-			// set lut entries to smaller of these labels
-			if(left_lut < top_lut)
-			{
-			    lut[top_lab] = lut[left_lab] = 
-			    lut[top_lut] = left_lut;
-			}
-			else
-			{
-			    lut[top_lab] = lut[left_lab] = 
-			    lut[left_lut] = top_lut;
-			}							
-		    }
+
+                    if(top_lab == left_lab)
+                    {
+                        *xt = top_lab;
+                    }
+                    else if(top_lab < left_lab)
+                    {
+                        label[left_lab] = top_lab;
+                        *xt = top_lab;
+                    }
+                    else // top_lab > left_lab
+                    {
+                        label[top_lab] = left_lab;
+                        *xt = left_lab;
+                    }
 		}
 		else if(eight_neighbors && (x != w-1) && 
-                        (sa(xs) == sa(xs, topright)))
+                        equal(sa(xs), sa(xs, topright)))
 		{
 		    // also same region as upper right pixel
 		    int top_lab = xt[topright];
 		    // propagate top label
-		    *xt = top_lab;
-		    // check if luts need to be updated
-		    if(lut[top_lab] != lut[left_lab])
-		    {
-			// find smallest label of both regions
-			int left_lut = lut[left_lab];
-			while(left_lut != lut[left_lut])
-					left_lut = lut[left_lut];	
-			int top_lut = lut[top_lab];
-			while(top_lut != lut[top_lut])
-					top_lut = lut[top_lut];	
-			// set lut entries to smaller of these labels
-			if(left_lut < top_lut)
-			{
-			    lut[top_lab] = lut[left_lab] = 
-			    lut[top_lut] = left_lut;
-			}
-			else
-			{
-			    lut[top_lab] = lut[left_lab] = 
-			    lut[left_lut] = top_lut;
-			}							
-		    }
+
+                    if(top_lab == left_lab)
+                    {
+                        *xt = top_lab;
+                    }
+                    else if(top_lab < left_lab)
+                    {
+                        label[left_lab] = top_lab;
+                        *xt = top_lab;
+                    }
+                    else // top_lab > left_lab
+                    {
+                        label[top_lab] = left_lab;
+                        *xt = left_lab;
+                    }
 		}
 		else
 		{
@@ -648,44 +630,36 @@ int labelImageWithBackground(SrcIterator upperlefts,
 		    *xt = left_lab;
 		}
 	    }
-	    else if(sa(xs) == sa(xs, top))
+	    else if(equal(sa(xs), sa(xs, top)))
 	    {
 		// same region as top pixel
 		// propagate label
 		*xt = xt[top];
 	    }
-	    else if(eight_neighbors && (sa(xs) == sa(xs, topleft)))
+	    else if(eight_neighbors && 
+                    equal(sa(xs), sa(xs, topleft)))
 	    {
 		// same region as upper left pixel
 		int left_lab = xt[topleft];
-		if((x != w-1) && (sa(xs) == sa(xs, topright)))
+		if((x != w-1) && equal(sa(xs), sa(xs, topright)))
 		{
 		    // also same region as upper right pixel
 		    int top_lab = xt[topright];
-		    // propagate top label
-		    *xt = top_lab;
-		    // check if luts need to be updated
-		    if(lut[top_lab] != lut[left_lab])
-		    {
-			// find smallest label of both regions
-			int left_lut = lut[left_lab];
-			while(left_lut != lut[left_lut])
-					left_lut = lut[left_lut];	
-			int top_lut = lut[top_lab];
-			while(top_lut != lut[top_lut])
-					top_lut = lut[top_lut];	
-			// set lut entries to smaller of these labels
-			if(left_lut < top_lut)
-			{
-			    lut[top_lab] = lut[left_lab] = 
-			    lut[top_lut] = left_lut;
-			}
-			else
-			{
-			    lut[top_lab] = lut[left_lab] = 
-			    lut[left_lut] = top_lut;
-			}							
-		    }
+
+                    if(top_lab == left_lab)
+                    {
+                        *xt = top_lab;
+                    }
+                    else if(top_lab < left_lab)
+                    {
+                        label[left_lab] = top_lab;
+                        *xt = top_lab;
+                    }
+                    else // top_lab > left_lab
+                    {
+                        label[top_lab] = left_lab;
+                        *xt = left_lab;
+                    }
 		}
 		else
 		{
@@ -694,7 +668,7 @@ int labelImageWithBackground(SrcIterator upperlefts,
 		}
 	    }
 	    else if(eight_neighbors && (x != w-1) && 
-                    (sa(xs) == sa(xs, topright)))
+                    equal(sa(xs), sa(xs, topright)))
 	    {
 		// same region as top right pixel
 		// propagate label
@@ -703,52 +677,50 @@ int labelImageWithBackground(SrcIterator upperlefts,
 	    else
 	    {
 		// new region
-		*xt = num++;
+		*xt = x+y*w;
 	    }
 	}
     }
     
-    // merge regions that consist of more than one label
-    for(i=1;i<num;i++)
-    {
-	int k = lut[i];
-	while(k != lut[k])
-	{
-	    // region has more than one label, find smallest
-	    k = lut[k];
-	}
-	lut[i] = k;
-    }
-    
-    // assign new labels
-    int count = 0;
-    for(i=1;i<num;i++)
-    {
-	if(lut[i] == i)
-	{
-	    lut[i] = ++count;
-	}
-	else
-	{
-	    lut[i] = lut[lut[i]];
-	}
-    }
-    
-    // pass 2: assign unambigous label to each pixel
+    // pass 2: assign contiguous labels to the regions
     DestIterator yd(upperleftd);
-    yt = labelimage.upperLeft();
 
-    for(y=0; y != h; ++y, ++yd.y, ++yt.y)
+    int count = 0;
+    i = 0;
+    for(y=0; y != h; ++y, ++yd.y)
     {
 	DestIterator xd(yd);
-	IImage::Iterator xt(yt);
-	for(x = 0; x != w; ++x, ++xd.x, ++xt.x)
+	for(x = 0; x != w; ++x, ++xd.x, ++i)
 	{
-	    if(*xt != 0) da.set(lut[*xt], xd);
+            if(label[i] == -1) continue;
+            
+            if(label[i] == i)
+            {
+	        label[i] = count++;
+            }
+            else
+            {
+	        label[i] = label[label[i]];
+            }
+	    da.set(label[i]+1, xd);
 	}
     }
     
     return count;
+}
+
+template <class SrcIterator, class SrcAccessor,
+          class DestIterator, class DestAccessor,
+	  class ValueType, class EqualityFunctor>
+inline
+int labelImageWithBackground(triple<SrcIterator, SrcIterator, SrcAccessor> src,
+                             pair<DestIterator, DestAccessor> dest,
+	                     bool eight_neighbors,
+			     ValueType background_value, EqualityFunctor equal)
+{
+    return labelImageWithBackground(src.first, src.second, src.third,
+                                    dest.first, dest.second, 
+				    eight_neighbors, background_value, equal);
 }
 
 template <class SrcIterator, class SrcAccessor,
@@ -761,8 +733,25 @@ int labelImageWithBackground(triple<SrcIterator, SrcIterator, SrcAccessor> src,
 			     ValueType background_value)
 {
     return labelImageWithBackground(src.first, src.second, src.third,
-                                    dest.first, dest.second, 
-				    eight_neighbors, background_value);
+                            dest.first, dest.second, 
+			    eight_neighbors, background_value,
+                            std::equal_to<typename SrcAccessor::value_type>());
+}
+
+template <class SrcIterator, class SrcAccessor,
+          class DestIterator, class DestAccessor,
+	  class ValueType>
+inline
+int labelImageWithBackground(SrcIterator upperlefts, 
+               SrcIterator lowerrights, SrcAccessor sa,
+               DestIterator upperleftd, DestAccessor da,
+	       bool eight_neighbors,
+	       ValueType background_value)
+{
+    return labelImageWithBackground(upperlefts, lowerrights, sa,
+                            upperleftd, da, 
+			    eight_neighbors, background_value,
+                            std::equal_to<typename SrcAccessor::value_type>());
 }
 
 /********************************************************/
