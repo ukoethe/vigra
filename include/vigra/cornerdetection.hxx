@@ -26,7 +26,7 @@
 #include <vigra/utilities.hxx>
 #include <vigra/numerictraits.hxx>
 #include <vigra/stdimage.hxx>
-#include <vigra/stdimagefunctions.hxx>
+#include <vigra/combineimages.hxx>
 #include <vigra/convolution.hxx>
 
 namespace vigra {
