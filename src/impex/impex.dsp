@@ -64,7 +64,7 @@ LIB32=link.exe -lib
 # PROP Intermediate_Dir "Debug"
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /W3 /GX /Z7 /Od /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /YX /FD /c
-# ADD CPP /nologo /W3 /GX /Z7 /Od /I "..\..\..\tiffinclude" /I "..\..\..\jpeginclude" /I "..\..\include" /I "..\..\..\jpeg-6b" /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "HasTIFF" /D "HasJPEG" /YX /FD /c
+# ADD CPP /nologo /W3 /GX /Z7 /Od /I "..\..\..\tiffinclude" /I "..\..\..\jpeginclude" /I "..\..\..\jpeg-6b" /I "..\..\include" /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "HasTIFF" /D "HasJPEG" /YX /FD /c
 # ADD BASE RSC /l 0x407
 # ADD RSC /l 0x407
 BSC32=bscmake.exe
@@ -163,6 +163,10 @@ SOURCE=.\readimage.c
 # Begin Source File
 
 SOURCE=.\sun.c
+# End Source File
+# Begin Source File
+
+SOURCE=.\tiff.cxx
 # End Source File
 # Begin Source File
 
