@@ -463,7 +463,7 @@ class BSpline<2, T>
 };
 
 template <class T>
-BSpline<2, T>::result_type 
+typename BSpline<2, T>::result_type 
 BSpline<2, T>::exec(first_argument_type x, second_argument_type derivative_order) const
 {
     switch(derivative_order)
@@ -576,7 +576,7 @@ class BSpline<3, T>
 };
 
 template <class T>
-BSpline<3, T>::result_type 
+typename BSpline<3, T>::result_type 
 BSpline<3, T>::exec(first_argument_type x, second_argument_type derivative_order) const
 {
     switch(derivative_order)
@@ -724,7 +724,7 @@ class BSpline<5, T>
 };
 
 template <class T>
-BSpline<5, T>::result_type 
+typename BSpline<5, T>::result_type 
 BSpline<5, T>::exec(first_argument_type x, second_argument_type derivative_order) const
 {
     switch(derivative_order)
@@ -931,7 +931,7 @@ public:
 
 
 template <class T>
-CatmullRomSpline<T>::result_type 
+typename CatmullRomSpline<T>::result_type 
 CatmullRomSpline<T>::operator()(argument_type x) const
 {
     x = VIGRA_CSTD::fabs(x);
