@@ -32,65 +32,34 @@ namespace detail {
 template <class T>
 struct RequiresExplicitCast {
     template <class U>
-    static U const & cast(U const & v)
+    static U cast(U v)
         { return v; }
 };
 
-template <>
-struct RequiresExplicitCast<signed char> {
-    template <class U>
-    static signed char cast(U const & v)
-        { return static_cast<signed char>(v); }
-};
+#define VIGRA_SPECIALIZED_CAST(type) \
+    template <> \
+    struct RequiresExplicitCast<type> { \
+        template <class U> \
+        static U cast(U v) \
+            { return v; } \
+ \
+        static type cast(float const & v) \
+            { return NumericTraits<type>::fromRealPromote(v); } \
+        static type cast(double const & v) \
+            { return NumericTraits<type>::fromRealPromote(v); } \
+    };
 
-template <>
-struct RequiresExplicitCast<unsigned char> {
-    template <class U>
-    static unsigned char cast(U const & v)
-        { return static_cast<unsigned char>(v); }
-};
 
-template <>
-struct RequiresExplicitCast<short> {
-    template <class U>
-    static short cast(U const & v)
-        { return static_cast<short>(v); }
-};
+VIGRA_SPECIALIZED_CAST(signed char)
+VIGRA_SPECIALIZED_CAST(unsigned char)
+VIGRA_SPECIALIZED_CAST(short)
+VIGRA_SPECIALIZED_CAST(unsigned short)
+VIGRA_SPECIALIZED_CAST(int)
+VIGRA_SPECIALIZED_CAST(unsigned int)
+VIGRA_SPECIALIZED_CAST(long)
+VIGRA_SPECIALIZED_CAST(unsigned long)
 
-template <>
-struct RequiresExplicitCast<unsigned short> {
-    template <class U>
-    static unsigned short cast(U const & v)
-        { return static_cast<unsigned short>(v); }
-};
-
-template <>
-struct RequiresExplicitCast<int> {
-    template <class U>
-    static int cast(U const & v)
-        { return static_cast<int>(v); }
-};
-
-template <>
-struct RequiresExplicitCast<unsigned int> {
-    template <class U>
-    static unsigned int cast(U const & v)
-        { return static_cast<unsigned int>(v); }
-};
-
-template <>
-struct RequiresExplicitCast<long> {
-    template <class U>
-    static long cast(U const & v)
-        { return static_cast<long>(v); }
-};
-
-template <>
-struct RequiresExplicitCast<unsigned long> {
-    template <class U>
-    static unsigned long cast(U const & v)
-        { return static_cast<unsigned long>(v); }
-};
+#undef VIGRA_SPECIALIZED_CAST
 
 } // namespace detail
 
@@ -144,29 +113,29 @@ class StandardAccessor
     template <class ITERATOR>
     VALUETYPE const & operator()(ITERATOR & i) const { return *i; }
     
-        /** read the data item at a distance (can be 1D or 2D or higher distance)
+        /** read the data item at an offset (can be 1D or 2D or higher order difference)
         */
-    template <class ITERATOR, class DISTANCE>
-    VALUETYPE const & operator()(ITERATOR & i, DISTANCE const & dist) const
+    template <class ITERATOR, class DIFFERENCE>
+    VALUETYPE const & operator()(ITERATOR & i, DIFFERENCE diff) const
     { 
-        return i[dist]; 
+        return i[diff]; 
     }
     
         /** Write the current data item. The type <TT>V</TT> of the passed
             in <TT>value</TT> is automatically converted to <TT>VALUETYPE</TT>.
         */
     template <class V, class ITERATOR>
-    void set(V const & value, ITERATOR & i) const 
+    void set(V value, ITERATOR & i) const 
     { *i = detail::RequiresExplicitCast<VALUETYPE>::cast(value); }
     
-        /** Write the data item at a distance (can be 1D or 2D or higher distance).
+        /** Write the data item at an offset (can be 1D or 2D or higher order difference).
             The type <TT>V</TT> of the passed
             in <TT>value</TT> is automatically converted to <TT>VALUETYPE</TT>.
         */
-    template <class V, class ITERATOR, class DISTANCE>
-    void set(V const & value, ITERATOR & i, DISTANCE const & dist) const 
+    template <class V, class ITERATOR, class DIFFERENCE>
+    void set(V value, ITERATOR & i, DIFFERENCE diff) const 
     { 
-        i[dist]= detail::RequiresExplicitCast<VALUETYPE>::cast(value); 
+        i[diff]= detail::RequiresExplicitCast<VALUETYPE>::cast(value); 
     }
 };
 
@@ -183,28 +152,28 @@ class StandardValueAccessor
     template <class ITERATOR>
     VALUETYPE operator()(ITERATOR & i) const { return *i; }
     
-        /* read the data item at a distance (can be 1D or 2D or higher distance)
+        /* read the data item at an offset (can be 1D or 2D or higher order difference)
         */
-    template <class ITERATOR, class DISTANCE>
-    VALUETYPE operator()(ITERATOR & i, DISTANCE const & dist) const
+    template <class ITERATOR, class DIFFERENCE>
+    VALUETYPE operator()(ITERATOR & i, DIFFERENCE diff) const
     { 
-        return i[dist]; 
+        return i[diff]; 
     }
     
         /** Write the current data item. The type <TT>V</TT> of the passed
             in <TT>value</TT> is automatically converted to <TT>VALUETYPE</TT>.
         */
     template <class V, class ITERATOR>
-    void set(V const & value, ITERATOR & i) const { *i = detail::RequiresExplicitCast<VALUETYPE>::cast(value); }
+    void set(V value, ITERATOR & i) const { *i = detail::RequiresExplicitCast<VALUETYPE>::cast(value); }
     
-        /** Write the data item at a distance (can be 1D or 2D or higher distance).
+        /** Write the data item at an offset (can be 1D or 2D or higher order difference).
             The type <TT>V</TT> of the passed
             in <TT>value</TT> is automatically converted to <TT>VALUETYPE</TT>.
         */
-    template <class V, class ITERATOR, class DISTANCE>
-    void set(V const & value, ITERATOR & i, DISTANCE const & dist) const 
+    template <class V, class ITERATOR, class DIFFERENCE>
+    void set(V value, ITERATOR & i, DIFFERENCE diff) const 
     { 
-        i[dist]= detail::RequiresExplicitCast<VALUETYPE>::cast(value); 
+        i[diff]= detail::RequiresExplicitCast<VALUETYPE>::cast(value); 
     }
 };
 
@@ -242,12 +211,12 @@ class StandardConstAccessor
     VALUETYPE const & operator()(ITERATOR & i) const 
         { return *i; }
     
-        /** read the data item at a distance (can be 1D or 2D or higher distance)
+        /** read the data item at an offset (can be 1D or 2D or higher order difference)
         */
-    template <class ITERATOR, class DISTANCE>
-    VALUETYPE const & operator()(ITERATOR & i, DISTANCE const & dist) const
+    template <class ITERATOR, class DIFFERENCE>
+    VALUETYPE const & operator()(ITERATOR & i, DIFFERENCE diff) const
     { 
-        return i[dist]; 
+        return i[diff]; 
     }
 };
 
@@ -263,12 +232,12 @@ class StandardConstValueAccessor
     VALUETYPE operator()(ITERATOR & i) const 
         { return detail::RequiresExplicitCast<VALUETYPE>::cast(*i); }
     
-        /* read the data item at a distance (can be 1D or 2D or higher distance)
+        /* read the data item at an offset (can be 1D or 2D or higher order difference)
         */
-    template <class ITERATOR, class DISTANCE>
-    VALUETYPE operator()(ITERATOR & i, DISTANCE const & dist) const
+    template <class ITERATOR, class DIFFERENCE>
+    VALUETYPE operator()(ITERATOR & i, DIFFERENCE diff) const
     { 
-        return detail::RequiresExplicitCast<VALUETYPE>::cast(i[dist]); 
+        return detail::RequiresExplicitCast<VALUETYPE>::cast(i[diff]); 
     }
 };
 
@@ -305,33 +274,34 @@ class VectorComponentAccessor
         /** read the current data item
         */
     template <class ITERATOR>
-    value_type const & operator()(ITERATOR & i) const { return (*i)[index_]; }
+    value_type const & operator()(ITERATOR & i) const 
+        { return (*i)[index_]; }
     
-        /** read the data item at a distance (can be 1D or 2D or higher distance)
+        /** read the data item at an offset (can be 1D or 2D or higher order difference)
         */
-    template <class ITERATOR, class DISTANCE>
-    value_type const & operator()(ITERATOR & i, DISTANCE const & dist) const
+    template <class ITERATOR, class DIFFERENCE>
+    value_type const & operator()(ITERATOR & i, DIFFERENCE diff) const
     { 
-        return i[dist][index_]; 
+        return i[diff][index_]; 
     }
     
         /** Write the current data item. The type <TT>V</TT> of the passed
             in <TT>value</TT> is automatically converted to <TT>VALUETYPE</TT>.
         */
     template <class V, class ITERATOR>
-    void set(V const & value, ITERATOR & i) const 
+    void set(V value, ITERATOR & i) const 
     { 
         (*i)[index_] = detail::RequiresExplicitCast<value_type>::cast(value); 
     }
     
-        /** Write the data item at a distance (can be 1D or 2D or higher distance).
+        /** Write the data item at an offset (can be 1D or 2D or higher order difference).
             The type <TT>V</TT> of the passed
             in <TT>value</TT> is automatically converted to <TT>VALUETYPE</TT>.
         */
-    template <class V, class ITERATOR, class DISTANCE>
-    void set(V const & value, ITERATOR & i, DISTANCE const & dist) const 
+    template <class V, class ITERATOR, class DIFFERENCE>
+    void set(V value, ITERATOR & i, DIFFERENCE diff) const 
     { 
-        i[dist][index_]= detail::RequiresExplicitCast<value_type>::cast(value); 
+        i[diff][index_]= detail::RequiresExplicitCast<value_type>::cast(value); 
     }
 };
 
@@ -398,22 +368,22 @@ class SequenceAccessor
          return (*i).end(); 
     }
     
-    /** get begin iterator for sequence at a distance
+    /** get begin iterator for sequence at an offset
         of given iterator position
     */
-    template <class ITERATOR, class DISTANCE>
-    iterator begin(ITERATOR & i, DISTANCE const & dist)  const
+    template <class ITERATOR, class DIFFERENCE>
+    iterator begin(ITERATOR & i, DIFFERENCE diff)  const
     { 
-        return i[dist].begin(); 
+        return i[diff].begin(); 
     }
     
-    /** get end iterator for sequence at a 2D distance
+    /** get end iterator for sequence at a 2D difference vector
         of given iterator position
     */
-    template <class ITERATOR, class DISTANCE>
-    iterator end(ITERATOR & i, DISTANCE const & dist)  const
+    template <class ITERATOR, class DIFFERENCE>
+    iterator end(ITERATOR & i, DIFFERENCE diff)  const
     { 
-        return i[dist].end(); 
+        return i[diff].end(); 
     }
 
     /** get size of sequence at given iterator position
@@ -421,10 +391,10 @@ class SequenceAccessor
     template <class ITERATOR>
     int size(ITERATOR & i) const { return (*i).size(); }
 
-    /** get size of sequence at 2D distance of given iterator position
+    /** get size of sequence at 2D difference vector of given iterator position
     */
-    template <class ITERATOR, class DISTANCE>
-    int size(ITERATOR & i, DISTANCE const & dist) const { return i[dist].size(); }
+    template <class ITERATOR, class DIFFERENCE>
+    int size(ITERATOR & i, DIFFERENCE diff) const { return i[diff].size(); }
 };
 
 /********************************************************/
@@ -513,9 +483,9 @@ class VectorAccessor
             at given iterator position 
         */
     template <class ITERATOR>
-    component_type getComponent(ITERATOR & i, int idx) const 
+    component_type const & getComponent(ITERATOR & i, int idx) const 
     { 
-        return detail::RequiresExplicitCast<component_type>::cast((*i)[idx]); 
+        return (*i)[idx]; 
     }
     
         /** Set the component data at given vector index
@@ -523,29 +493,29 @@ class VectorAccessor
             in <TT>value</TT> is automatically converted to <TT>component_type</TT>.
         */
     template <class V, class ITERATOR>
-    void setComponent(V const & value, ITERATOR & i, int idx) const
+    void setComponent(V value, ITERATOR & i, int idx) const
     { 
         (*i)[idx] = detail::RequiresExplicitCast<component_type>::cast(value); 
     }
     
         /** Read the component data at given vector index
-            at a distance of given iterator position
+            at an offset of given iterator position
         */
-    template <class ITERATOR, class DISTANCE>
-    component_type getComponent(ITERATOR & i, DISTANCE const & dist, int idx) const
+    template <class ITERATOR, class DIFFERENCE>
+    component_type const & getComponent(ITERATOR & i, DIFFERENCE diff, int idx) const
     { 
-        return detail::RequiresExplicitCast<component_type>::cast(i[dist][idx]); 
+        return i[diff][idx]; 
     }
     
     /** Set the component data at given vector index
-        at a distance of given iterator position. The type <TT>V</TT> of the passed
+        at an offset of given iterator position. The type <TT>V</TT> of the passed
         in <TT>value</TT> is automatically converted to <TT>component_type</TT>.
     */
-    template <class V, class ITERATOR, class DISTANCE>
+    template <class V, class ITERATOR, class DIFFERENCE>
     void 
-    setComponent(V const & value, ITERATOR & i, DISTANCE const & dist, int idx) const 
+    setComponent(V value, ITERATOR & i, DIFFERENCE diff, int idx) const 
     { 
-        i[dist][idx] = detail::RequiresExplicitCast<component_type>::cast(value); 
+        i[diff][idx] = detail::RequiresExplicitCast<component_type>::cast(value); 
     }
 };
 
@@ -596,7 +566,7 @@ class BilinearInterpolatingAccessor
     : a_(a)
     {}
     
-    /** Interpolate the data item at a non-integer distance.
+    /** Interpolate the data item at a non-integer position.
         Ensure that no outside pixels are accessed if 
         (x, y) is near the image border (as long as
         0 <= x <= width-1, 0 <= y <= height-1).
@@ -643,7 +613,7 @@ class BilinearInterpolatingAccessor
         return ret;
     }
 
-    /** Interpolate the data item at a non-integer distance.
+    /** Interpolate the data item at a non-integer position.
         This function works as long as 0 <= x < width-1, 
         0 <= y < height-1. It is slightly faster than <TT>operator()</TT>.
     */
@@ -726,16 +696,16 @@ class MultiImageAccessor2
 
         /** read the current data item
         */
-    template <class DISTANCE>
-    value_type operator()(DISTANCE const & d) const
+    template <class DIFFERENCE>
+    value_type operator()(DIFFERENCE d) const
     { 
         return std::make_pair(a1_(i1_, d), a2_(i2_, i.x, i.y)); 
     }
     
-        /** read the data item at a distance
+        /** read the data item at an offset
         */
-    template <class DISTANCE1, class DISTANCE2>
-    value_type operator()(DISTANCE1 const & d1, DISTANCE2 d2) const
+    template <class DIFFERENCE1, class DIFFERENCE2>
+    value_type operator()(DIFFERENCE1 d1, DIFFERENCE2 d2) const
     { 
         d2 += d1;
         return std::make_pair(a1_(i1_, d2), a2_(i2_, d2)); 
