@@ -57,7 +57,7 @@ class LineBasedColumnIteratorPolicy
         difference_type offset_;
     };
 
-    static void initialize(BaseType & d) {}
+    static void initialize(BaseType &) {}
 
     static reference dereference(BaseType const & d)
         { return const_cast<reference>(*(*d.line_start_ + d.offset_)); }
@@ -98,14 +98,14 @@ class LineBasedColumnIteratorPolicy
     <b>\#include</b> "<a href="basicimage_8hxx-source.html">vigra/basicimage.hxx</a>"
     Namespace: vigra
 */
-template <class IMAGEITERATOR, class PIXELTYPE, 
+template <class IMAGEITERATOR, class PIXELTYPE,
           class REFERENCE, class POINTER, class LINESTARTITERATOR>
 class BasicImageIteratorBase
 {
-  public:    
-    typedef ImageIteratorBase<IMAGEITERATOR, 
+  public:
+    typedef ImageIteratorBase<IMAGEITERATOR,
                  PIXELTYPE, REFERENCE, POINTER> self_type;
-  
+
     typedef LINESTARTITERATOR    LineStartIterator;
     typedef PIXELTYPE            value_type;
     typedef PIXELTYPE            PixelType;
@@ -231,27 +231,27 @@ class BasicImageIteratorBase
 /** Implementation of the standard image iterator for \ref vigra::BasicImage.
     See \ref vigra::ImageIterator for documentation.
 
-    <b>\#include</b> "<a href="basicimage_8hxx-source.html">vigra/basicimage.hxx</a>"    
+    <b>\#include</b> "<a href="basicimage_8hxx-source.html">vigra/basicimage.hxx</a>"
     Namespace: vigra
-*/    
+*/
 template <class PIXELTYPE, class ITERATOR>
 class BasicImageIterator
-: public BasicImageIteratorBase<BasicImageIterator<PIXELTYPE, ITERATOR>, 
+: public BasicImageIteratorBase<BasicImageIterator<PIXELTYPE, ITERATOR>,
                             PIXELTYPE, PIXELTYPE &, PIXELTYPE *, ITERATOR>
 {
   public:
 
-    typedef BasicImageIteratorBase<BasicImageIterator, PIXELTYPE, 
+    typedef BasicImageIteratorBase<BasicImageIterator, PIXELTYPE,
                                 PIXELTYPE &, PIXELTYPE *, ITERATOR> Base;
-                                
-    
+
+
     BasicImageIterator(ITERATOR line)
     : Base(line)
     {}
-    
+
     BasicImageIterator()
     : Base()
-    {}  
+    {}
 };
 
 /********************************************************/
@@ -263,40 +263,40 @@ class BasicImageIterator
 /** Implementation of the standard const image iterator for \ref vigra::BasicImage.
     See \ref vigra::ConstImageIterator for documentation.
 
-    <b>\#include</b> "<a href="basicimage_8hxx-source.html">vigra/basicimage.hxx</a>"    
+    <b>\#include</b> "<a href="basicimage_8hxx-source.html">vigra/basicimage.hxx</a>"
     Namespace: vigra
-*/    
+*/
 template <class PIXELTYPE, class ITERATOR>
 class ConstBasicImageIterator
-: public BasicImageIteratorBase<ConstBasicImageIterator<PIXELTYPE, ITERATOR>, 
+: public BasicImageIteratorBase<ConstBasicImageIterator<PIXELTYPE, ITERATOR>,
                     PIXELTYPE, PIXELTYPE const &, PIXELTYPE const *, ITERATOR>
 {
   public:
 
-    typedef BasicImageIteratorBase<ConstBasicImageIterator, 
+    typedef BasicImageIteratorBase<ConstBasicImageIterator,
               PIXELTYPE, PIXELTYPE const &, PIXELTYPE const *, ITERATOR> Base;
-                                
-    
+
+
     ConstBasicImageIterator(ITERATOR line)
     : Base(line)
     {}
-    
+
     ConstBasicImageIterator(BasicImageIterator<PIXELTYPE, ITERATOR> const & rhs)
     : Base(rhs.x, rhs.y)
     {}
-    
+
     ConstBasicImageIterator()
     : Base()
-    {}  
+    {}
 
-    ConstBasicImageIterator & 
+    ConstBasicImageIterator &
     operator=(BasicImageIterator<PIXELTYPE, ITERATOR> const & rhs)
     {
         x = rhs.x;
         y = rhs.y;
         return *this;
     }
-    
+
 };
 
 template <class T> struct IteratorTraits;
@@ -375,13 +375,13 @@ class BasicImage
 
         /** the BasicImage's 2D random access const iterator ('const traverser')
         */
-    typedef 
-        ConstBasicImageIterator<PIXELTYPE, PIXELTYPE **> 
+    typedef
+        ConstBasicImageIterator<PIXELTYPE, PIXELTYPE **>
         const_traverser;
 
         /** deprecated, use <TT>const_traverser</TT> instead
         */
-    typedef 
+    typedef
         ConstBasicImageIterator<PIXELTYPE, PIXELTYPE **>
         ConstIterator;
 
@@ -684,7 +684,7 @@ class BasicImage
 };
 
 template <class PIXELTYPE>
-BasicImage<PIXELTYPE> & 
+BasicImage<PIXELTYPE> &
 BasicImage<PIXELTYPE>::operator=(const BasicImage<PIXELTYPE> & rhs)
 {
     if(this != &rhs)
@@ -707,7 +707,7 @@ BasicImage<PIXELTYPE>::operator=(const BasicImage<PIXELTYPE> & rhs)
 }
 
 template <class PIXELTYPE>
-BasicImage<PIXELTYPE> &  
+BasicImage<PIXELTYPE> &
 BasicImage<PIXELTYPE>::operator=(value_type pixel)
 {
     ScanOrderIterator i = begin();
@@ -719,7 +719,7 @@ BasicImage<PIXELTYPE>::operator=(value_type pixel)
 }
 
 template <class PIXELTYPE>
-BasicImage<PIXELTYPE> &  
+BasicImage<PIXELTYPE> &
 BasicImage<PIXELTYPE>::init(value_type const & pixel)
 {
     ScanOrderIterator i = begin();
@@ -731,7 +731,7 @@ BasicImage<PIXELTYPE>::init(value_type const & pixel)
 }
 
 template <class PIXELTYPE>
-void  
+void
 BasicImage<PIXELTYPE>::resize(int width, int height, value_type const & d)
 {
     vigra_precondition((width >= 0) && (height >= 0),
@@ -758,7 +758,7 @@ BasicImage<PIXELTYPE>::resize(int width, int height, value_type const & d)
 
 
 template <class PIXELTYPE>
-void  
+void
 BasicImage<PIXELTYPE>::resizeCopy(const BasicImage & rhs)
 {
     value_type * newdata = 0;
@@ -781,7 +781,7 @@ BasicImage<PIXELTYPE>::resizeCopy(const BasicImage & rhs)
 }
 
 template <class PIXELTYPE>
-void   
+void
 BasicImage<PIXELTYPE>::deallocate()
 {
     if(data_)
@@ -797,7 +797,7 @@ BasicImage<PIXELTYPE>::deallocate()
 }
 
 template <class PIXELTYPE>
-PIXELTYPE **   
+PIXELTYPE **
 BasicImage<PIXELTYPE>::initLineStartArray(value_type * data, int width, int height)
 {
     value_type ** lines = new PIXELTYPE*[height];
