@@ -1,85 +1,195 @@
 #include <iostream>
 #include "unittest.h"
 #include "vigra/stdimage.hxx"
+#include "vigra/imageiterator.hxx"
 #include "vigra/viff.hxx"
 #include "vigra/impex.hxx"
 
-struct BImageTest
-{
-    typedef vigra::BImage Image;
+using vigra::Diff2D;
 
-    BImageTest()
+template <class IMAGE>
+struct ImageTest
+{
+    typedef IMAGE Image;
+    static typename Image::value_type data[];
+
+    ImageTest()
     : img(3,3)
     {
-        Image::Accessor acc = img.accessor();
-        Image::ScanOrderIterator i = img.begin();
+        typename Image::Accessor acc = img.accessor();
+        typename Image::ScanOrderIterator i = img.begin();
 
-        acc.set(1, i);
+        acc.set(data[0], i);
         ++i;
-        acc.set(2, i);
+        acc.set(data[1], i);
         ++i;
-        acc.set(3, i);
+        acc.set(data[2], i);
         ++i;
-        acc.set(4, i);
+        acc.set(data[3], i);
         ++i;
-        acc.set(5, i);
+        acc.set(data[4], i);
         ++i;
-        acc.set(6, i);
+        acc.set(data[5], i);
         ++i;
-        acc.set(7, i);
+        acc.set(data[6], i);
         ++i;
-        acc.set(8, i);
+        acc.set(data[7], i);
         ++i;
-        acc.set(9, i);
+        acc.set(data[8], i);
         ++i;
         should(i == img.end());
     }
 
-    void scanImage()
+    template <class Iterator>
+    void scanImage(Iterator ul, Iterator lr)
     {
-        Image::Iterator y = img.upperLeft();
-        Image::Iterator lr = img.lowerRight();
-        Image::Iterator x = y;
-        Image::Accessor acc = img.accessor();
+        Iterator y = ul;
+        Iterator x = ul;
+        typename Image::Accessor acc = img.accessor();
 
-        should(acc(x) == 1);
+        should(acc(x) == data[0]);
         ++x.x;
-        should(acc(x) == 2);
+        should(acc(x) == data[1]);
         ++x.x;
-        should(acc(x) == 3);
+        should(acc(x) == data[2]);
         ++x.x;
         should(x.x == lr.x);
 
         ++y.y;
         x = y;
-        should(acc(x) == 4);
+        should(acc(x) == data[3]);
         ++x.x;
-        should(acc(x) == 5);
+        should(acc(x) == data[4]);
         ++x.x;
-        should(acc(x) == 6);
+        should(acc(x) == data[5]);
         ++y.y;
         x = y;
-        should(acc(x) == 7);
+        should(acc(x) == data[6]);
         ++x.x;
-        should(acc(x) == 8);
+        should(acc(x) == data[7]);
         ++x.x;
-        should(acc(x) == 9);
+        should(acc(x) == data[8]);
         ++y.y;
         should(y.y == lr.y);
 
-        y = img.upperLeft();
-        should(acc(y, vigra::Diff2D(1,1)) == 5);
+        y = ul;
+        should(acc(y, vigra::Diff2D(1,1)) == data[4]);
+    }
 
-        Image::ScanOrderIterator i = img.begin();
-        should(acc(i, 4) == 5);
+    template <class Iterator>
+    void scanRows(Iterator r1, Iterator r2, Iterator r3, int w)
+    {
+        Iterator end = r1 + w;
+        typename Image::Accessor acc = img.accessor();
+
+        should(acc(r1) == data[0]);
+        ++r1;
+        should(acc(r1) == data[1]);
+        ++r1;
+        should(acc(r1) == data[2]);
+        ++r1;
+        should(r1 == end);
+
+        end = r2 + w;
+        should(acc(r2) == data[3]);
+        ++r2;
+        should(acc(r2) == data[4]);
+        ++r2;
+        should(acc(r2) == data[5]);
+        ++r2;
+        should(r2 == end);
+
+        end = r3 + w;
+        should(acc(r3) == data[6]);
+        ++r3;
+        should(acc(r3) == data[7]);
+        ++r3;
+        should(acc(r3) == data[8]);
+        ++r3;
+        should(r3 == end);
+    }
+
+    template <class Iterator>
+    void scanColumns(Iterator c1, Iterator c2, Iterator c3, int h)
+    {
+        Iterator end = c1 + h;
+        typename Image::Accessor acc = img.accessor();
+
+        should(acc(c1) == data[0]);
+        ++c1;
+        should(acc(c1) == data[3]);
+        ++c1;
+        should(acc(c1) == data[6]);
+        ++c1;
+        should(c1 == end);
+
+        end = c2 + h;
+        should(acc(c2) == data[1]);
+        ++c2;
+        should(acc(c2) == data[4]);
+        ++c2;
+        should(acc(c2) == data[7]);
+        ++c2;
+        should(c2 == end);
+
+        end = c3 + h;
+        should(acc(c3) == data[2]);
+        ++c3;
+        should(acc(c3) == data[5]);
+        ++c3;
+        should(acc(c3) == data[8]);
+        ++c3;
+        should(c3 == end);
+    }
+
+    void testBasicImageIterator()
+    {
+        typename Image::Iterator ul = img.upperLeft();
+        typename Image::Iterator lr = img.lowerRight();
+
+        scanImage(ul, lr);
+        scanRows(ul.rowIterator(), (ul+Diff2D(0,1)).rowIterator(), 
+                 (ul+Diff2D(0,2)).rowIterator(), img.width());
+        scanColumns(ul.columnIterator(), (ul+Diff2D(1,0)).columnIterator(), 
+                 (ul+Diff2D(2,0)).columnIterator(), img.height());
+
+        typename Image::Accessor acc = img.accessor();
+        typename Image::ScanOrderIterator i = img.begin();
+        should(acc(i, 4) == data[4]);
+    }
+    
+    void testImageIterator()
+    {
+        vigra::ImageIterator<typename Image::value_type> ul(img.begin(), img.width());
+        vigra::ImageIterator<typename Image::value_type> lr = ul + img.size();
+        scanImage(ul, lr);
+        scanRows(ul.rowIterator(), (ul+Diff2D(0,1)).rowIterator(), 
+                 (ul+Diff2D(0,2)).rowIterator(), img.width());
+        scanColumns(ul.columnIterator(), (ul+Diff2D(1,0)).columnIterator(), 
+                 (ul+Diff2D(2,0)).columnIterator(), img.height());
     }
 
     void copyImage()
     {
-        Image img1 = img;
-        Image::ScanOrderIterator i = img.begin();
-        Image::ScanOrderIterator i1 = img1.begin();
-        Image::Accessor acc = img.accessor();
+        Image img1(img);
+        typename Image::ScanOrderIterator i = img.begin();
+        typename Image::ScanOrderIterator i1 = img1.begin();
+        typename Image::Accessor acc = img.accessor();
+
+        for(; i != img.end(); ++i, ++i1)
+        {
+            should(acc(i) == acc(i1));
+        }
+        
+        img.init(0);
+        for(; i != img.end(); ++i)
+        {
+            should(acc(i) == typename Image::value_type(0));
+        }
+        img(1,1) = typename Image::value_type(200);
+        img1 = img;
+        i = img.begin();
+        i1 = img1.begin();
 
         for(; i != img.end(); ++i, ++i1)
         {
@@ -87,6 +197,48 @@ struct BImageTest
         }
     }
 
+    Image img;
+};
+
+typedef ImageTest<vigra::BImage> BImageTest;
+
+unsigned char BImageTest::data[] = {1,2,3,4,5,6,7,8,9};
+
+typedef ImageTest<vigra::DImage> DImageTest;
+
+double DImageTest::data[] = {1.1,2.2,3.3,4.4,5.5,6.6,7.7,8.8,9.9};
+
+typedef ImageTest<vigra::BRGBImage> BRGBImageTest;
+typedef vigra::RGBValue<unsigned char> BRGB;
+BRGB BRGBImageTest::data[] = {
+    BRGB(1,1,1),
+    BRGB(2,2,2),
+    BRGB(3,3,3),
+    BRGB(4,4,4),
+    BRGB(5,5,5),
+    BRGB(6,6,6),
+    BRGB(7,7,7),
+    BRGB(8,8,8),
+    BRGB(9,9,9)
+};
+
+typedef ImageTest<vigra::FRGBImage> FRGBImageTest;
+typedef vigra::RGBValue<float> FRGB;
+FRGB FRGBImageTest::data[] = {
+    FRGB(1.1, 1.1, 1.1),
+    FRGB(2.2, 2.2, 2.2),
+    FRGB(3.3, 3.3, 3.3),
+    FRGB(4.4, 4.4, 4.4),
+    FRGB(5.5, 5.5, 5.5),
+    FRGB(6.6, 6.6, 6.6),
+    FRGB(7.7, 7.7, 7.7),
+    FRGB(8.8, 8.8, 8.8),
+    FRGB(9.9, 9.9, 9.9)
+};
+
+struct BImageImpexTest
+: public BImageTest
+{
     void storeLoadViffImage()
     {
         ViffImage * viff = createViffImage(srcImageRange(img));
@@ -118,38 +270,6 @@ struct BImageTest
         }
     }
 
-
-#if 0
-    void storeLoadGifImage()
-    {
-        LugImage * lug = createLugImage(srcImageRange(img));
-        writeLugImage("test.gif", lug);
-
-        freeLugImage(lug);
-        lug = 0;
-
-        lug = readLugImage("test.gif");
-
-        should(lug != 0);
-        should(lug->xsize == 3);
-        should(lug->ysize == 3);
-
-        Image img1(3,3);
-
-        importLugImage(lug, destImage(img1));
-        freeLugImage(lug);
-
-        Image::ScanOrderIterator i = img.begin();
-        Image::ScanOrderIterator i1 = img1.begin();
-        Image::Accessor acc = img.accessor();
-
-        for(; i != img.end(); ++i, ++i1)
-        {
-            should(acc(i) == acc(i1));
-        }
-    }
-#endif /* #if 0 */
-
     void storeLoadGifImage()
     {
         exportImage(srcImageRange(img), vigra::ImageExportInfo("test.gif"));
@@ -173,93 +293,11 @@ struct BImageTest
             should(acc(i) == acc(i1));
         }
     }
-
-    Image img;
 };
 
-struct DImageTest
+struct DImageImpexTest
+: public DImageTest
 {
-    typedef vigra::DImage Image;
-
-    DImageTest()
-    : img(3,3)
-    {
-        Image::Accessor acc = img.accessor();
-        Image::ScanOrderIterator i = img.begin();
-
-        acc.set(1.1, i);
-        ++i;
-        acc.set(2.2, i);
-        ++i;
-        acc.set(3.3, i);
-        ++i;
-        acc.set(4.4, i);
-        ++i;
-        acc.set(5.5, i);
-        ++i;
-        acc.set(6.6, i);
-        ++i;
-        acc.set(7.7, i);
-        ++i;
-        acc.set(8.8, i);
-        ++i;
-        acc.set(9.9, i);
-        ++i;
-        should(i == img.end());
-    }
-
-    void scanImage()
-    {
-        Image::Iterator y = img.upperLeft();
-        Image::Iterator lr = img.lowerRight();
-        Image::Iterator x = y;
-        Image::Accessor acc = img.accessor();
-
-        should(acc(x) == 1.1);
-        ++x.x;
-        should(acc(x) == 2.2);
-        ++x.x;
-        should(acc(x) == 3.3);
-        ++x.x;
-        should(x.x == lr.x);
-
-        ++y.y;
-        x = y;
-        should(acc(x) == 4.4);
-        ++x.x;
-        should(acc(x) == 5.5);
-        ++x.x;
-        should(acc(x) == 6.6);
-        ++y.y;
-        x = y;
-        should(acc(x) == 7.7);
-        ++x.x;
-        should(acc(x) == 8.8);
-        ++x.x;
-        should(acc(x) == 9.9);
-        ++y.y;
-        should(y.y == lr.y);
-
-        y = img.upperLeft();
-        should(acc(y, vigra::Diff2D(1,1)) == 5.5);
-
-        Image::ScanOrderIterator i = img.begin();
-        should(acc(i, 4) == 5.5);
-    }
-
-    void copyImage()
-    {
-        Image img1 = img;
-        Image::ScanOrderIterator i = img.begin();
-        Image::ScanOrderIterator i1 = img1.begin();
-        Image::Accessor acc = img.accessor();
-
-        for(; i != img.end(); ++i, ++i1)
-        {
-            should(acc(i) == acc(i1));
-        }
-    }
-
     void storeLoadImage()
     {
         ViffImage * viff = createViffImage(srcImageRange(img));
@@ -290,93 +328,11 @@ struct DImageTest
             should(acc(i) == acc(i1));
         }
     }
-
-    Image img;
 };
 
-struct BRGBImageTest
+struct BRGBImageImpexTest
+: public BRGBImageTest
 {
-    typedef vigra::BRGBImage Image;
-
-    BRGBImageTest()
-    : img(3,3), c1(1, 2, 3), c2(4, 5, 6), c3(7, 8, 9)
-    {
-        Image::Accessor acc = img.accessor();
-        Image::ScanOrderIterator i = img.begin();
-
-        acc.set(c1, i);
-        ++i;
-        acc.set(c2, i);
-        ++i;
-        acc.set(c3, i);
-        ++i;
-        acc.set(c2, i);
-        ++i;
-        acc.set(c3, i);
-        ++i;
-        acc.set(c1, i);
-        ++i;
-        acc.set(c3, i);
-        ++i;
-        acc.set(c1, i);
-        ++i;
-        acc.set(c2, i);
-        ++i;
-        should(i == img.end());
-    }
-
-    void scanImage()
-    {
-        Image::Iterator y = img.upperLeft();
-        Image::Iterator lr = img.lowerRight();
-        Image::Iterator x = y;
-        Image::Accessor acc = img.accessor();
-
-        should(acc(x) == c1);
-        ++x.x;
-        should(acc(x) == c2);
-        ++x.x;
-        should(acc(x) == c3);
-        ++x.x;
-        should(x.x == lr.x);
-
-        ++y.y;
-        x = y;
-        should(acc(x) == c2);
-        ++x.x;
-        should(acc(x) == c3);
-        ++x.x;
-        should(acc(x) == c1);
-        ++y.y;
-        x = y;
-        should(acc(x) == c3);
-        ++x.x;
-        should(acc(x) == c1);
-        ++x.x;
-        should(acc(x) == c2);
-        ++y.y;
-        should(y.y == lr.y);
-
-        y = img.upperLeft();
-        should(acc(y, vigra::Diff2D(1,1)) == c3);
-
-        Image::ScanOrderIterator i = img.begin();
-        should(acc(i, 4) == c3);
-    }
-
-    void copyImage()
-    {
-        Image img1 = img;
-        Image::ScanOrderIterator i = img.begin();
-        Image::ScanOrderIterator i1 = img1.begin();
-        Image::Accessor acc = img.accessor();
-
-        for(; i != img.end(); ++i, ++i1)
-        {
-            should(acc(i) == acc(i1));
-        }
-    }
-
     void storeLoadViffImage()
     {
         ViffImage * viff = createViffImage(srcImageRange(img));
@@ -407,50 +363,6 @@ struct BRGBImageTest
             should(acc(i) == acc(i1));
         }
     }
-
-
-#if 0
-    void storeLoadGifImage()
-    {
-        LugImage * lug = readLugImage("lenna.gif");
-
-        should(lug != 0);
-
-        Image img1(lug->xsize, lug->ysize);
-                
-        importLugImage(lug, destImage(img1));
-        freeLugImage(lug);
-                
-        lug = createLugImage(srcImageRange(img1));
-        write_rgb_file("test.rgb", lug);
-
-        read_rgb_file("test.rgb", lug, img1.width(), img1.height());
-        ViffImage * viff = readViffImage("lenna.xv");
-                
-        should(lug != 0);
-        should(viff != 0);
-        should(lug->xsize == viff->row_size);
-        should(lug->ysize == viff->col_size);
-
-        Image img2(lug->xsize, lug->ysize);
-
-        importLugImage(lug, destImage(img1));
-        freeLugImage(lug);
-
-        importViffImage(viff, destImage(img2));
-        freeViffImage(viff);
-
-        Image::ScanOrderIterator i1 = img1.begin();
-        Image::ScanOrderIterator i2 = img2.begin();
-        Image::Accessor acc = img1.accessor();
-
-        for(; i1 != img1.end(); ++i1, ++i2)
-        {
-            should(acc(i1) == acc(i2));
-        }
-    }
-
-#endif /* #if 0 */
 
     void storeLoadGifImage()
     {
@@ -491,94 +403,11 @@ struct BRGBImageTest
             should(acc(i1) == acc(i2));
         }
     }
-
-    Image img;
-    Image::value_type c1, c2, c3;
 };
 
-struct FRGBImageTest
+struct FRGBImageImpexTest
+: public FRGBImageTest
 {
-    typedef vigra::FRGBImage Image;
-
-    FRGBImageTest()
-    : img(3,3), c1(1.1, 2.2, 3.3), c2(4.4, 5.5, 6.6), c3(7.7, 8.8, 9.9)
-    {
-        Image::Accessor acc = img.accessor();
-        Image::ScanOrderIterator i = img.begin();
-
-        acc.set(c1, i);
-        ++i;
-        acc.set(c2, i);
-        ++i;
-        acc.set(c3, i);
-        ++i;
-        acc.set(c2, i);
-        ++i;
-        acc.set(c3, i);
-        ++i;
-        acc.set(c1, i);
-        ++i;
-        acc.set(c3, i);
-        ++i;
-        acc.set(c1, i);
-        ++i;
-        acc.set(c2, i);
-        ++i;
-        should(i == img.end());
-    }
-
-    void scanImage()
-    {
-        Image::Iterator y = img.upperLeft();
-        Image::Iterator lr = img.lowerRight();
-        Image::Iterator x = y;
-        Image::Accessor acc = img.accessor();
-
-        should(acc(x) == c1);
-        ++x.x;
-        should(acc(x) == c2);
-        ++x.x;
-        should(acc(x) == c3);
-        ++x.x;
-        should(x.x == lr.x);
-
-        ++y.y;
-        x = y;
-        should(acc(x) == c2);
-        ++x.x;
-        should(acc(x) == c3);
-        ++x.x;
-        should(acc(x) == c1);
-        ++y.y;
-        x = y;
-        should(acc(x) == c3);
-        ++x.x;
-        should(acc(x) == c1);
-        ++x.x;
-        should(acc(x) == c2);
-        ++y.y;
-        should(y.y == lr.y);
-
-        y = img.upperLeft();
-        should(acc(y, vigra::Diff2D(1,1)) == c3);
-
-        Image::ScanOrderIterator i = img.begin();
-        should(acc(i, 4) == c3);
-    }
-
-    void copyImage()
-    {
-        Image img1 = img;
-        Image::ScanOrderIterator i = img.begin();
-        Image::ScanOrderIterator i1 = img1.begin();
-        Image::Accessor acc = img.accessor();
-
-        for(; i != img.end(); ++i, ++i1)
-        {
-            should(acc(i) == acc(i1));
-        }
-    }
-
     void storeLoadImage()
     {
         ViffImage * viff = createViffImage(srcImageRange(img));
@@ -609,9 +438,6 @@ struct FRGBImageTest
             should(acc(i) == acc(i1));
         }
     }
-
-    Image img;
-    Image::value_type c1, c2, c3;
 };
 
 struct ImageTestSuite
@@ -620,20 +446,24 @@ struct ImageTestSuite
     ImageTestSuite()
     : vigra::test_suite("ImageTestSuite")
     {
-        add( testCase( &BImageTest::scanImage));
+        add( testCase( &BImageTest::testBasicImageIterator));
+        add( testCase( &BImageTest::testImageIterator));
         add( testCase( &BImageTest::copyImage));
-        add( testCase( &BImageTest::storeLoadViffImage));
-        add( testCase( &BImageTest::storeLoadGifImage));
-        add( testCase( &DImageTest::scanImage));
+        add( testCase( &BImageImpexTest::storeLoadViffImage));
+        add( testCase( &BImageImpexTest::storeLoadGifImage));
+        add( testCase( &DImageTest::testBasicImageIterator));
+        add( testCase( &DImageTest::testImageIterator));
         add( testCase( &DImageTest::copyImage));
-        add( testCase( &DImageTest::storeLoadImage));
-        add( testCase( &BRGBImageTest::scanImage));
+        add( testCase( &DImageImpexTest::storeLoadImage));
+        add( testCase( &BRGBImageTest::testBasicImageIterator));
+        add( testCase( &BRGBImageTest::testImageIterator));
         add( testCase( &BRGBImageTest::copyImage));
-        add( testCase( &BRGBImageTest::storeLoadViffImage));
-        add( testCase( &BRGBImageTest::storeLoadGifImage));
-        add( testCase( &FRGBImageTest::scanImage));
+        add( testCase( &BRGBImageImpexTest::storeLoadViffImage));
+        add( testCase( &BRGBImageImpexTest::storeLoadGifImage));
+        add( testCase( &FRGBImageTest::testBasicImageIterator));
+        add( testCase( &FRGBImageTest::testImageIterator));
         add( testCase( &FRGBImageTest::copyImage));
-        add( testCase( &FRGBImageTest::storeLoadImage));
+        add( testCase( &FRGBImageImpexTest::storeLoadImage));
     }
 };
 
