@@ -735,42 +735,71 @@ Optional Packages:
   --with-cc               your C compiler (default=gcc)
   --with-cxx              your C++ compiler (default=g++)
   --with-gnu-ld           assume the C compiler uses GNU ld default=no
-  --with-tiff=dir         support import/export of tiff images (default=no)
-      if dir='yes': tiff package files will be searched for in
-         some standard directories.
-      if dir is a directory: tiff package files will be searched for
-         below dir using 'find'.
+
+  --with-tiff
+  --with-tiff=dir
+  --without-tiff       support import/export of tiff images (default=yes)
+      if --with-tiff or --with-tiff=yes is given: tiff package files will be
+         searched for in some standard directories (the default).
+      if --with-tiff=dir is given, and dir is a directory: tiff package files
+         will be searched for below 'dir' using 'find'.
+      if --with-tiff=no or --without-tiff is given: tiff package will
+         not be used.
       alternatively, you can specify:
     --with-tifflib=dir : the tiff package's lib directory
     --with-tiffinc=dir : the tiff package's include directory
 
-  --with-jpeg=dir         support import/export of jpeg images (default=no)
-      if dir='yes': jpeg package files will be searched for in
-         some standard directories.
-      if dir is a directory: jpeg package files will be searched for
-         below dir using 'find'.
+  --with-jpeg
+  --with-jpeg=dir
+  --without-jpeg       support import/export of jpeg images (default=yes)
+      if --with-jpeg or --with-jpeg=yes is given: jpeg package files will be
+         searched for in some standard directories (the default).
+      if --with-jpeg=dir is given, and dir is a directory: jpeg package files
+         will be searched for below 'dir' using 'find'.
+      if --with-jpeg=no or --without-jpeg is given: jpeg package will
+         not be used.
       alternatively, you can specify:
     --with-jpeglib=dir : the jpeg package's lib directory
     --with-jpeginc=dir : the jpeg package's include directory
 
-  --with-png=dir          support import/export of png images (default=no)
-      if dir='yes': png package files will be searched for in
-         some standard directories.
-      if dir is a directory: png package files will be searched for
-         below dir using 'find'.
+  --with-png
+  --with-png=dir
+  --without-png       support import/export of png images (default=yes)
+      if --with-png or --with-png=yes is given: png package files will be
+         searched for in some standard directories (the default).
+      if --with-png=dir is given, and dir is a directory: png package files
+         will be searched for below 'dir' using 'find'.
+      if --with-png=no or --without-png is given: png package will
+         not be used.
       alternatively, you can specify:
     --with-pnglib=dir : the png package's lib directory
     --with-pnginc=dir : the png package's include directory
 
-  --with-fftw=dir         support fast Fourier transforms (default=no)
-      if dir='yes': fftw package files will be searched for in
-         some standard directories.
-      if dir is a directory: fftw package files will be searched for
-         below dir using 'find'.
+  --with-zlib
+  --with-zlib=dir
+  --without-zlib       zlib compression library (required for libpng, default=yes)
+      if --with-zlib or --with-zlib=yes is given: zlib package files will be
+         searched for in some standard directories (the default).
+      if --with-zlib=dir is given, and dir is a directory: zlib package files
+         will be searched for below 'dir' using 'find'.
+      if --with-zlib=no or --without-zlib is given: zlib package will
+         not be used.
+      alternatively, you can specify:
+    --with-zliblib=dir : the zlib package's lib directory
+    --with-zlibinc=dir : the zlib package's include directory
+
+  --with-fftw
+  --with-fftw=dir
+  --without-fftw       support fast Fourier transforms (default=yes)
+      if --with-fftw or --with-fftw=yes is given: fftw package files will be
+         searched for in some standard directories (the default).
+      if --with-fftw=dir is given, and dir is a directory: fftw package files
+         will be searched for below 'dir' using 'find'.
+      if --with-fftw=no or --without-fftw is given: fftw package will
+         not be used.
       alternatively, you can specify:
     --with-fftwlib=dir : the fftw package's lib directory
     --with-fftwinc=dir : the fftw package's include directory
-
 
 Some influential environment variables:
   CC          C compiler command
@@ -2794,7 +2823,7 @@ test x"$silent" = xyes && libtool_flags="$libtool_flags --silent"
 case "$lt_target" in
 *-*-irix6*)
   # Find out which ABI we are using.
-  echo '#line 2797 "configure"' > conftest.$ac_ext
+  echo '#line 2826 "configure"' > conftest.$ac_ext
   if { (eval echo "$as_me:$LINENO: \"$ac_compile\"") >&5
   (eval $ac_compile) 2>&5
   ac_status=$?
@@ -3213,21 +3242,60 @@ if test "${with_tiffinc+set}" = set; then
 
 fi;
 
-    if test "$libext" = ""; then
-        libext="a"
+
+    # default is "yes"
+    if test ${with_tiff:-""} = "" -a ${with_tifflib:-""} = "" -a ${with_tiffinc:-""} = ""; then
+        with_tiff="yes"
     fi
 
-    if test "$solibext" = ""; then
-        if test "$CYGWIN" = "yes"; then
-          solibext="dll.a"
-        else
-          solibext="so"
+    if test ${with_tiff:-""} != "no"; then
+
+
+    if test "tiff.h" != ""; then
+        echo "$as_me:$LINENO: checking for tiff.h " >&5
+echo $ECHO_N "checking for tiff.h ... $ECHO_C" >&6
+
+        # check whether the include is in the path by default (e.g. /usr/include)
+        include_found=""
+        if test "$with_tiffinc" = "" -a "$with_tiff" = "yes"; then
+            cat >conftest.$ac_ext <<_ACEOF
+#include <stdio.h>  /* necessary because jpeglib.h fails to include it */
+#include <tiff.h>
+
+_ACEOF
+rm -f conftest.$ac_objext
+if { (eval echo "$as_me:$LINENO: \"$ac_compile\"") >&5
+  (eval $ac_compile) 2>&5
+  ac_status=$?
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); } &&
+         { ac_try='test -s conftest.$ac_objext'
+  { (eval echo "$as_me:$LINENO: \"$ac_try\"") >&5
+  (eval $ac_try) 2>&5
+  ac_status=$?
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); }; }; then
+  include_found="in default path"
+else
+  echo "$as_me: failed program was:" >&5
+cat conftest.$ac_ext >&5
+include_found=""
+fi
+rm -f conftest.$ac_objext conftest.$ac_ext
         fi
-    fi
 
-    if test "$libpre" = ""; then
-        libpre="lib"
-    fi
+        # if not found by default, try searching for it
+        if test "$include_found" = ""; then
+            dirs=""
+            if test "$with_tiffinc" != ""; then
+                dirs="$with_tiffinc"
+            elif test "$with_tiff" != "yes"; then
+                dirs="$with_tiff"
+            else
+                dirs="/usr/local/include /usr/local/gnu/include /usr/local/tiff /opt/include /opt/gnu/include /opt/tiff /usr/include"
+            fi
+
+            # use find for searching
 
     if test "$findprog" = ""; then
         if test "$CYGWIN" = "yes"; then
@@ -3237,13 +3305,128 @@ fi;
         fi
     fi
 
-    if test ${with_tiff:-""} = "" -a ${with_tifflib:-""} = "" -a ${with_tiffinc:-""} = ""; then
-        with_tiff="no"
+
+            # first, look for the given header file without directory components..
+            found=""
+            for i in $dirs; do
+                if test -d $i; then
+                    found="$found "`$findprog $i -name tiff.h -print 2> /dev/null`
+                fi
+            done
+
+            # now, check each found file for relative path prefix.
+
+    regExResult=""
+    if test "$found" != ""; then
+        for i in $found; do
+            regExResult=`expr "$i" : "\(.*include\)/tiff\.h"`
+            if test "$regExResult" != ""; then
+                break
+            fi
+        done
     fi
 
-    if test ${with_tiff:-""} != "no"; then
-        echo "$as_me:$LINENO: checking for libtiff " >&5
+            if test "$regExResult" = ""; then
+
+    regExResult=""
+    if test "$found" != ""; then
+        for i in $found; do
+            regExResult=`expr "$i" : "\(.*\)/tiff\.h"`
+            if test "$regExResult" != ""; then
+                break
+            fi
+        done
+    fi
+
+            fi
+            include_found=$regExResult
+        fi
+
+        # report the search result and set result variables
+        if test "$include_found" = ""; then
+            with_tiffinc=""
+            echo "$as_me:$LINENO: result: not found in $dirs" >&5
+echo "${ECHO_T}not found in $dirs" >&6
+        else
+            echo "$as_me:$LINENO: result: $include_found" >&5
+echo "${ECHO_T}$include_found" >&6
+            if test "$include_found" != "/usr/include" -a \
+                    "$include_found" != "in default path"; then
+                with_tiffinc="$include_found"
+                tiff_cppflags="-I$include_found"
+            else
+                with_tiffinc=""
+                tiff_cppflags=""
+            fi
+        fi
+    else
+        with_tiffinc=""
+        tiff_cppflags=""
+    fi
+
+
+    echo "$as_me:$LINENO: checking for libtiff " >&5
 echo $ECHO_N "checking for libtiff ... $ECHO_C" >&6
+
+    # check whether the include is in the path by default (e.g. /usr/include)
+    lib_found=""
+    if test "$with_tifflib" = "" -a "$with_tiff" = "yes"; then
+        ac_save_LIBS="$LIBS"
+        LIBS="$LIBS -ltiff"
+        cat >conftest.$ac_ext <<_ACEOF
+int main() {}
+
+_ACEOF
+rm -f conftest.$ac_objext conftest$ac_exeext
+if { (eval echo "$as_me:$LINENO: \"$ac_link\"") >&5
+  (eval $ac_link) 2>&5
+  ac_status=$?
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); } &&
+         { ac_try='test -s conftest$ac_exeext'
+  { (eval echo "$as_me:$LINENO: \"$ac_try\"") >&5
+  (eval $ac_try) 2>&5
+  ac_status=$?
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); }; }; then
+  lib_found="in default path"
+else
+  echo "$as_me: failed program was:" >&5
+cat conftest.$ac_ext >&5
+lib_found=""
+fi
+rm -f conftest.$ac_objext conftest$ac_exeext conftest.$ac_ext
+        LIBS=$ac_save_LIBS
+    fi
+
+    # if not found by default, try searching for it
+    if test "$lib_found" = ""; then
+        if test "$libext" = ""; then
+            libext="a"
+        fi
+
+        if test "$solibext" = ""; then
+            if test "$CYGWIN" = "yes"; then
+              solibext="dll.a"
+            else
+              solibext="so"
+            fi
+        fi
+
+        if test "$libpre" = ""; then
+            libpre="lib"
+        fi
+
+
+    if test "$findprog" = ""; then
+        if test "$CYGWIN" = "yes"; then
+          findprog="/usr/bin/find"
+        else
+          findprog="find"
+        fi
+    fi
+
+
         dirs=""
         if test "$with_tifflib" != ""; then
             dirs=$with_tifflib
@@ -3309,75 +3492,25 @@ echo $ECHO_N "checking for libtiff ... $ECHO_C" >&6
     fi
 
         fi
-        if test "$regExResult" = ""; then
+        lib_found=$regExResult
+    fi
+    if test "$lib_found" = ""; then
+        with_tifflib=""
+        echo "$as_me:$LINENO: result: not found in $dirs" >&5
+echo "${ECHO_T}not found in $dirs" >&6
+    else
+        echo "$as_me:$LINENO: result: $lib_found" >&5
+echo "${ECHO_T}$lib_found" >&6
+        if test "$lib_found" != "/usr/lib" -a \
+                "$lib_found" != "in default path"; then
+            with_tifflib="-L$lib_found"
+        else
             with_tifflib=""
-            echo "$as_me:$LINENO: result: \"not found in $dirs\"" >&5
-echo "${ECHO_T}\"not found in $dirs\"" >&6
-        else
-            with_tifflib=$regExResult
-            echo "$as_me:$LINENO: result: $with_tifflib" >&5
-echo "${ECHO_T}$with_tifflib" >&6
         fi
-
-        echo "$as_me:$LINENO: checking for tiff.h " >&5
-echo $ECHO_N "checking for tiff.h ... $ECHO_C" >&6
-        dirs=""
-        if test "$with_tiffinc" != ""; then
-            dirs="$with_tiffinc"
-        elif test "$with_tiff" != "yes"; then
-            dirs="$with_tiff"
-        else
-            dirs="/usr/local/include /usr/local/gnu/include /usr/local/tiff /opt/include /opt/gnu/include /opt/tiff /usr/include"
-        fi
-
-                found=""
-        for i in $dirs; do
-            if test -d $i; then
-                found="$found "`$findprog $i -name tiff.h -print 2> /dev/null`
-            fi
-        done
-
-
-    regExResult=""
-    if test "$found" != ""; then
-        for i in $found; do
-            regExResult=`expr "$i" : "\(.*include\)/tiff\.h"`
-            if test "$regExResult" != ""; then
-                break
-            fi
-        done
     fi
 
-        if test "$regExResult" = ""; then
 
-    regExResult=""
-    if test "$found" != ""; then
-        for i in $found; do
-            regExResult=`expr "$i" : "\(.*\)/tiff\.h"`
-            if test "$regExResult" != ""; then
-                break
-            fi
-        done
-    fi
-
-        fi
-        if test "$regExResult" = ""; then
-            with_tiffinc=""
-            echo "$as_me:$LINENO: result: \"not found in $dirs\"" >&5
-echo "${ECHO_T}\"not found in $dirs\"" >&6
-        else
-            echo "$as_me:$LINENO: result: $regExResult" >&5
-echo "${ECHO_T}$regExResult" >&6
-            if test "$regExResult" != "/usr/include"; then
-                with_tiffinc="$regExResult"
-                tiff_cppflags="-I$regExResult"
-            else
-                with_tiffinc=""
-                tiff_cppflags=""
-            fi
-        fi
-
-        if test "$with_tifflib" = "" -o "$regExResult" = ""; then
+        if test "$lib_found" = ""; then
             with_tiff="no"
             { echo "$as_me:$LINENO: WARNING: Configuring without tiff support" >&5
 echo "$as_me: WARNING: Configuring without tiff support" >&2;}
@@ -3389,7 +3522,7 @@ echo "$as_me: WARNING: Configuring without tiff support" >&2;}
 
 if test $with_tiff = "yes";
 then
-    TIFF_LIB="-L$with_tifflib -ltiff"
+    TIFF_LIB="$with_tifflib -ltiff"
     IMPEX_DEPLIBS="$IMPEX_DEPLIBS $TIFF_LIB"
     LIBCPPFLAGS="$LIBCPPFLAGS -DHasTIFF $tiff_cppflags"
 fi
@@ -3414,21 +3547,60 @@ if test "${with_jpeginc+set}" = set; then
 
 fi;
 
-    if test "$libext" = ""; then
-        libext="a"
+
+    # default is "yes"
+    if test ${with_jpeg:-""} = "" -a ${with_jpeglib:-""} = "" -a ${with_jpeginc:-""} = ""; then
+        with_jpeg="yes"
     fi
 
-    if test "$solibext" = ""; then
-        if test "$CYGWIN" = "yes"; then
-          solibext="dll.a"
-        else
-          solibext="so"
+    if test ${with_jpeg:-""} != "no"; then
+
+
+    if test "jpeglib.h" != ""; then
+        echo "$as_me:$LINENO: checking for jpeglib.h " >&5
+echo $ECHO_N "checking for jpeglib.h ... $ECHO_C" >&6
+
+        # check whether the include is in the path by default (e.g. /usr/include)
+        include_found=""
+        if test "$with_jpeginc" = "" -a "$with_jpeg" = "yes"; then
+            cat >conftest.$ac_ext <<_ACEOF
+#include <stdio.h>  /* necessary because jpeglib.h fails to include it */
+#include <jpeglib.h>
+
+_ACEOF
+rm -f conftest.$ac_objext
+if { (eval echo "$as_me:$LINENO: \"$ac_compile\"") >&5
+  (eval $ac_compile) 2>&5
+  ac_status=$?
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); } &&
+         { ac_try='test -s conftest.$ac_objext'
+  { (eval echo "$as_me:$LINENO: \"$ac_try\"") >&5
+  (eval $ac_try) 2>&5
+  ac_status=$?
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); }; }; then
+  include_found="in default path"
+else
+  echo "$as_me: failed program was:" >&5
+cat conftest.$ac_ext >&5
+include_found=""
+fi
+rm -f conftest.$ac_objext conftest.$ac_ext
         fi
-    fi
 
-    if test "$libpre" = ""; then
-        libpre="lib"
-    fi
+        # if not found by default, try searching for it
+        if test "$include_found" = ""; then
+            dirs=""
+            if test "$with_jpeginc" != ""; then
+                dirs="$with_jpeginc"
+            elif test "$with_jpeg" != "yes"; then
+                dirs="$with_jpeg"
+            else
+                dirs="/usr/local/include /usr/local/gnu/include /usr/local/jpeg /opt/include /opt/gnu/include /opt/jpeg /usr/include"
+            fi
+
+            # use find for searching
 
     if test "$findprog" = ""; then
         if test "$CYGWIN" = "yes"; then
@@ -3438,13 +3610,128 @@ fi;
         fi
     fi
 
-    if test ${with_jpeg:-""} = "" -a ${with_jpeglib:-""} = "" -a ${with_jpeginc:-""} = ""; then
-        with_jpeg="no"
+
+            # first, look for the given header file without directory components..
+            found=""
+            for i in $dirs; do
+                if test -d $i; then
+                    found="$found "`$findprog $i -name jpeglib.h -print 2> /dev/null`
+                fi
+            done
+
+            # now, check each found file for relative path prefix.
+
+    regExResult=""
+    if test "$found" != ""; then
+        for i in $found; do
+            regExResult=`expr "$i" : "\(.*include\)/jpeglib\.h"`
+            if test "$regExResult" != ""; then
+                break
+            fi
+        done
     fi
 
-    if test ${with_jpeg:-""} != "no"; then
-        echo "$as_me:$LINENO: checking for libjpeg " >&5
+            if test "$regExResult" = ""; then
+
+    regExResult=""
+    if test "$found" != ""; then
+        for i in $found; do
+            regExResult=`expr "$i" : "\(.*\)/jpeglib\.h"`
+            if test "$regExResult" != ""; then
+                break
+            fi
+        done
+    fi
+
+            fi
+            include_found=$regExResult
+        fi
+
+        # report the search result and set result variables
+        if test "$include_found" = ""; then
+            with_jpeginc=""
+            echo "$as_me:$LINENO: result: not found in $dirs" >&5
+echo "${ECHO_T}not found in $dirs" >&6
+        else
+            echo "$as_me:$LINENO: result: $include_found" >&5
+echo "${ECHO_T}$include_found" >&6
+            if test "$include_found" != "/usr/include" -a \
+                    "$include_found" != "in default path"; then
+                with_jpeginc="$include_found"
+                jpeg_cppflags="-I$include_found"
+            else
+                with_jpeginc=""
+                jpeg_cppflags=""
+            fi
+        fi
+    else
+        with_jpeginc=""
+        jpeg_cppflags=""
+    fi
+
+
+    echo "$as_me:$LINENO: checking for libjpeg " >&5
 echo $ECHO_N "checking for libjpeg ... $ECHO_C" >&6
+
+    # check whether the include is in the path by default (e.g. /usr/include)
+    lib_found=""
+    if test "$with_jpeglib" = "" -a "$with_jpeg" = "yes"; then
+        ac_save_LIBS="$LIBS"
+        LIBS="$LIBS -ljpeg"
+        cat >conftest.$ac_ext <<_ACEOF
+int main() {}
+
+_ACEOF
+rm -f conftest.$ac_objext conftest$ac_exeext
+if { (eval echo "$as_me:$LINENO: \"$ac_link\"") >&5
+  (eval $ac_link) 2>&5
+  ac_status=$?
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); } &&
+         { ac_try='test -s conftest$ac_exeext'
+  { (eval echo "$as_me:$LINENO: \"$ac_try\"") >&5
+  (eval $ac_try) 2>&5
+  ac_status=$?
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); }; }; then
+  lib_found="in default path"
+else
+  echo "$as_me: failed program was:" >&5
+cat conftest.$ac_ext >&5
+lib_found=""
+fi
+rm -f conftest.$ac_objext conftest$ac_exeext conftest.$ac_ext
+        LIBS=$ac_save_LIBS
+    fi
+
+    # if not found by default, try searching for it
+    if test "$lib_found" = ""; then
+        if test "$libext" = ""; then
+            libext="a"
+        fi
+
+        if test "$solibext" = ""; then
+            if test "$CYGWIN" = "yes"; then
+              solibext="dll.a"
+            else
+              solibext="so"
+            fi
+        fi
+
+        if test "$libpre" = ""; then
+            libpre="lib"
+        fi
+
+
+    if test "$findprog" = ""; then
+        if test "$CYGWIN" = "yes"; then
+          findprog="/usr/bin/find"
+        else
+          findprog="find"
+        fi
+    fi
+
+
         dirs=""
         if test "$with_jpeglib" != ""; then
             dirs=$with_jpeglib
@@ -3510,75 +3797,25 @@ echo $ECHO_N "checking for libjpeg ... $ECHO_C" >&6
     fi
 
         fi
-        if test "$regExResult" = ""; then
+        lib_found=$regExResult
+    fi
+    if test "$lib_found" = ""; then
+        with_jpeglib=""
+        echo "$as_me:$LINENO: result: not found in $dirs" >&5
+echo "${ECHO_T}not found in $dirs" >&6
+    else
+        echo "$as_me:$LINENO: result: $lib_found" >&5
+echo "${ECHO_T}$lib_found" >&6
+        if test "$lib_found" != "/usr/lib" -a \
+                "$lib_found" != "in default path"; then
+            with_jpeglib="-L$lib_found"
+        else
             with_jpeglib=""
-            echo "$as_me:$LINENO: result: \"not found in $dirs\"" >&5
-echo "${ECHO_T}\"not found in $dirs\"" >&6
-        else
-            with_jpeglib=$regExResult
-            echo "$as_me:$LINENO: result: $with_jpeglib" >&5
-echo "${ECHO_T}$with_jpeglib" >&6
         fi
-
-        echo "$as_me:$LINENO: checking for jpeglib.h " >&5
-echo $ECHO_N "checking for jpeglib.h ... $ECHO_C" >&6
-        dirs=""
-        if test "$with_jpeginc" != ""; then
-            dirs="$with_jpeginc"
-        elif test "$with_jpeg" != "yes"; then
-            dirs="$with_jpeg"
-        else
-            dirs="/usr/local/include /usr/local/gnu/include /usr/local/jpeg /opt/include /opt/gnu/include /opt/jpeg /usr/include"
-        fi
-
-                found=""
-        for i in $dirs; do
-            if test -d $i; then
-                found="$found "`$findprog $i -name jpeglib.h -print 2> /dev/null`
-            fi
-        done
-
-
-    regExResult=""
-    if test "$found" != ""; then
-        for i in $found; do
-            regExResult=`expr "$i" : "\(.*include\)/jpeglib\.h"`
-            if test "$regExResult" != ""; then
-                break
-            fi
-        done
     fi
 
-        if test "$regExResult" = ""; then
 
-    regExResult=""
-    if test "$found" != ""; then
-        for i in $found; do
-            regExResult=`expr "$i" : "\(.*\)/jpeglib\.h"`
-            if test "$regExResult" != ""; then
-                break
-            fi
-        done
-    fi
-
-        fi
-        if test "$regExResult" = ""; then
-            with_jpeginc=""
-            echo "$as_me:$LINENO: result: \"not found in $dirs\"" >&5
-echo "${ECHO_T}\"not found in $dirs\"" >&6
-        else
-            echo "$as_me:$LINENO: result: $regExResult" >&5
-echo "${ECHO_T}$regExResult" >&6
-            if test "$regExResult" != "/usr/include"; then
-                with_jpeginc="$regExResult"
-                jpeg_cppflags="-I$regExResult"
-            else
-                with_jpeginc=""
-                jpeg_cppflags=""
-            fi
-        fi
-
-        if test "$with_jpeglib" = "" -o "$regExResult" = ""; then
+        if test "$lib_found" = ""; then
             with_jpeg="no"
             { echo "$as_me:$LINENO: WARNING: Configuring without jpeg support" >&5
 echo "$as_me: WARNING: Configuring without jpeg support" >&2;}
@@ -3590,7 +3827,7 @@ echo "$as_me: WARNING: Configuring without jpeg support" >&2;}
 
 if test $with_jpeg = "yes";
 then
-    JPEG_LIB="-L$with_jpeglib -ljpeg"
+    JPEG_LIB="$with_jpeglib -ljpeg"
     IMPEX_DEPLIBS="$IMPEX_DEPLIBS $JPEG_LIB"
     LIBCPPFLAGS="$LIBCPPFLAGS -DHasJPEG $jpeg_cppflags"
 fi
@@ -3615,21 +3852,60 @@ if test "${with_pnginc+set}" = set; then
 
 fi;
 
-    if test "$libext" = ""; then
-        libext="a"
+
+    # default is "yes"
+    if test ${with_png:-""} = "" -a ${with_pnglib:-""} = "" -a ${with_pnginc:-""} = ""; then
+        with_png="yes"
     fi
 
-    if test "$solibext" = ""; then
-        if test "$CYGWIN" = "yes"; then
-          solibext="dll.a"
-        else
-          solibext="so"
+    if test ${with_png:-""} != "no"; then
+
+
+    if test "png.h" != ""; then
+        echo "$as_me:$LINENO: checking for png.h " >&5
+echo $ECHO_N "checking for png.h ... $ECHO_C" >&6
+
+        # check whether the include is in the path by default (e.g. /usr/include)
+        include_found=""
+        if test "$with_pnginc" = "" -a "$with_png" = "yes"; then
+            cat >conftest.$ac_ext <<_ACEOF
+#include <stdio.h>  /* necessary because jpeglib.h fails to include it */
+#include <png.h>
+
+_ACEOF
+rm -f conftest.$ac_objext
+if { (eval echo "$as_me:$LINENO: \"$ac_compile\"") >&5
+  (eval $ac_compile) 2>&5
+  ac_status=$?
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); } &&
+         { ac_try='test -s conftest.$ac_objext'
+  { (eval echo "$as_me:$LINENO: \"$ac_try\"") >&5
+  (eval $ac_try) 2>&5
+  ac_status=$?
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); }; }; then
+  include_found="in default path"
+else
+  echo "$as_me: failed program was:" >&5
+cat conftest.$ac_ext >&5
+include_found=""
+fi
+rm -f conftest.$ac_objext conftest.$ac_ext
         fi
-    fi
 
-    if test "$libpre" = ""; then
-        libpre="lib"
-    fi
+        # if not found by default, try searching for it
+        if test "$include_found" = ""; then
+            dirs=""
+            if test "$with_pnginc" != ""; then
+                dirs="$with_pnginc"
+            elif test "$with_png" != "yes"; then
+                dirs="$with_png"
+            else
+                dirs="/usr/local/include /usr/local/gnu/include /usr/local/png /opt/include /opt/gnu/include /opt/png /usr/include"
+            fi
+
+            # use find for searching
 
     if test "$findprog" = ""; then
         if test "$CYGWIN" = "yes"; then
@@ -3639,13 +3915,128 @@ fi;
         fi
     fi
 
-    if test ${with_png:-""} = "" -a ${with_pnglib:-""} = "" -a ${with_pnginc:-""} = ""; then
-        with_png="no"
+
+            # first, look for the given header file without directory components..
+            found=""
+            for i in $dirs; do
+                if test -d $i; then
+                    found="$found "`$findprog $i -name png.h -print 2> /dev/null`
+                fi
+            done
+
+            # now, check each found file for relative path prefix.
+
+    regExResult=""
+    if test "$found" != ""; then
+        for i in $found; do
+            regExResult=`expr "$i" : "\(.*include\)/png\.h"`
+            if test "$regExResult" != ""; then
+                break
+            fi
+        done
     fi
 
-    if test ${with_png:-""} != "no"; then
-        echo "$as_me:$LINENO: checking for libpng " >&5
+            if test "$regExResult" = ""; then
+
+    regExResult=""
+    if test "$found" != ""; then
+        for i in $found; do
+            regExResult=`expr "$i" : "\(.*\)/png\.h"`
+            if test "$regExResult" != ""; then
+                break
+            fi
+        done
+    fi
+
+            fi
+            include_found=$regExResult
+        fi
+
+        # report the search result and set result variables
+        if test "$include_found" = ""; then
+            with_pnginc=""
+            echo "$as_me:$LINENO: result: not found in $dirs" >&5
+echo "${ECHO_T}not found in $dirs" >&6
+        else
+            echo "$as_me:$LINENO: result: $include_found" >&5
+echo "${ECHO_T}$include_found" >&6
+            if test "$include_found" != "/usr/include" -a \
+                    "$include_found" != "in default path"; then
+                with_pnginc="$include_found"
+                png_cppflags="-I$include_found"
+            else
+                with_pnginc=""
+                png_cppflags=""
+            fi
+        fi
+    else
+        with_pnginc=""
+        png_cppflags=""
+    fi
+
+
+    echo "$as_me:$LINENO: checking for libpng " >&5
 echo $ECHO_N "checking for libpng ... $ECHO_C" >&6
+
+    # check whether the include is in the path by default (e.g. /usr/include)
+    lib_found=""
+    if test "$with_pnglib" = "" -a "$with_png" = "yes"; then
+        ac_save_LIBS="$LIBS"
+        LIBS="$LIBS -lpng"
+        cat >conftest.$ac_ext <<_ACEOF
+int main() {}
+
+_ACEOF
+rm -f conftest.$ac_objext conftest$ac_exeext
+if { (eval echo "$as_me:$LINENO: \"$ac_link\"") >&5
+  (eval $ac_link) 2>&5
+  ac_status=$?
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); } &&
+         { ac_try='test -s conftest$ac_exeext'
+  { (eval echo "$as_me:$LINENO: \"$ac_try\"") >&5
+  (eval $ac_try) 2>&5
+  ac_status=$?
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); }; }; then
+  lib_found="in default path"
+else
+  echo "$as_me: failed program was:" >&5
+cat conftest.$ac_ext >&5
+lib_found=""
+fi
+rm -f conftest.$ac_objext conftest$ac_exeext conftest.$ac_ext
+        LIBS=$ac_save_LIBS
+    fi
+
+    # if not found by default, try searching for it
+    if test "$lib_found" = ""; then
+        if test "$libext" = ""; then
+            libext="a"
+        fi
+
+        if test "$solibext" = ""; then
+            if test "$CYGWIN" = "yes"; then
+              solibext="dll.a"
+            else
+              solibext="so"
+            fi
+        fi
+
+        if test "$libpre" = ""; then
+            libpre="lib"
+        fi
+
+
+    if test "$findprog" = ""; then
+        if test "$CYGWIN" = "yes"; then
+          findprog="/usr/bin/find"
+        else
+          findprog="find"
+        fi
+    fi
+
+
         dirs=""
         if test "$with_pnglib" != ""; then
             dirs=$with_pnglib
@@ -3711,75 +4102,25 @@ echo $ECHO_N "checking for libpng ... $ECHO_C" >&6
     fi
 
         fi
-        if test "$regExResult" = ""; then
+        lib_found=$regExResult
+    fi
+    if test "$lib_found" = ""; then
+        with_pnglib=""
+        echo "$as_me:$LINENO: result: not found in $dirs" >&5
+echo "${ECHO_T}not found in $dirs" >&6
+    else
+        echo "$as_me:$LINENO: result: $lib_found" >&5
+echo "${ECHO_T}$lib_found" >&6
+        if test "$lib_found" != "/usr/lib" -a \
+                "$lib_found" != "in default path"; then
+            with_pnglib="-L$lib_found"
+        else
             with_pnglib=""
-            echo "$as_me:$LINENO: result: \"not found in $dirs\"" >&5
-echo "${ECHO_T}\"not found in $dirs\"" >&6
-        else
-            with_pnglib=$regExResult
-            echo "$as_me:$LINENO: result: $with_pnglib" >&5
-echo "${ECHO_T}$with_pnglib" >&6
         fi
-
-        echo "$as_me:$LINENO: checking for png.h " >&5
-echo $ECHO_N "checking for png.h ... $ECHO_C" >&6
-        dirs=""
-        if test "$with_pnginc" != ""; then
-            dirs="$with_pnginc"
-        elif test "$with_png" != "yes"; then
-            dirs="$with_png"
-        else
-            dirs="/usr/local/include /usr/local/gnu/include /usr/local/png /opt/include /opt/gnu/include /opt/png /usr/include"
-        fi
-
-                found=""
-        for i in $dirs; do
-            if test -d $i; then
-                found="$found "`$findprog $i -name png.h -print 2> /dev/null`
-            fi
-        done
-
-
-    regExResult=""
-    if test "$found" != ""; then
-        for i in $found; do
-            regExResult=`expr "$i" : "\(.*include\)/png\.h"`
-            if test "$regExResult" != ""; then
-                break
-            fi
-        done
     fi
 
-        if test "$regExResult" = ""; then
 
-    regExResult=""
-    if test "$found" != ""; then
-        for i in $found; do
-            regExResult=`expr "$i" : "\(.*\)/png\.h"`
-            if test "$regExResult" != ""; then
-                break
-            fi
-        done
-    fi
-
-        fi
-        if test "$regExResult" = ""; then
-            with_pnginc=""
-            echo "$as_me:$LINENO: result: \"not found in $dirs\"" >&5
-echo "${ECHO_T}\"not found in $dirs\"" >&6
-        else
-            echo "$as_me:$LINENO: result: $regExResult" >&5
-echo "${ECHO_T}$regExResult" >&6
-            if test "$regExResult" != "/usr/include"; then
-                with_pnginc="$regExResult"
-                png_cppflags="-I$regExResult"
-            else
-                with_pnginc=""
-                png_cppflags=""
-            fi
-        fi
-
-        if test "$with_pnglib" = "" -o "$regExResult" = ""; then
+        if test "$lib_found" = ""; then
             with_png="no"
             { echo "$as_me:$LINENO: WARNING: Configuring without png support" >&5
 echo "$as_me: WARNING: Configuring without png support" >&2;}
@@ -3789,11 +4130,318 @@ echo "$as_me: WARNING: Configuring without png support" >&2;}
     fi
 
 
+
+
+
+# Check whether --with-zlib or --without-zlib was given.
+if test "${with_zlib+set}" = set; then
+  withval="$with_zlib"
+
+fi;
+
+# Check whether --with-zliblib or --without-zliblib was given.
+if test "${with_zliblib+set}" = set; then
+  withval="$with_zliblib"
+
+fi;
+
+# Check whether --with-zlibinc or --without-zlibinc was given.
+if test "${with_zlibinc+set}" = set; then
+  withval="$with_zlibinc"
+
+fi;
+
+
+    # default is "yes"
+    if test ${with_zlib:-""} = "" -a ${with_zliblib:-""} = "" -a ${with_zlibinc:-""} = ""; then
+        with_zlib="yes"
+    fi
+
+    if test ${with_zlib:-""} != "no"; then
+
+
+    if test "" != ""; then
+        echo "$as_me:$LINENO: checking for  " >&5
+echo $ECHO_N "checking for  ... $ECHO_C" >&6
+
+        # check whether the include is in the path by default (e.g. /usr/include)
+        include_found=""
+        if test "$with_zlibinc" = "" -a "$with_zlib" = "yes"; then
+            cat >conftest.$ac_ext <<_ACEOF
+#include <stdio.h>  /* necessary because jpeglib.h fails to include it */
+#include <>
+
+_ACEOF
+rm -f conftest.$ac_objext
+if { (eval echo "$as_me:$LINENO: \"$ac_compile\"") >&5
+  (eval $ac_compile) 2>&5
+  ac_status=$?
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); } &&
+         { ac_try='test -s conftest.$ac_objext'
+  { (eval echo "$as_me:$LINENO: \"$ac_try\"") >&5
+  (eval $ac_try) 2>&5
+  ac_status=$?
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); }; }; then
+  include_found="in default path"
+else
+  echo "$as_me: failed program was:" >&5
+cat conftest.$ac_ext >&5
+include_found=""
+fi
+rm -f conftest.$ac_objext conftest.$ac_ext
+        fi
+
+        # if not found by default, try searching for it
+        if test "$include_found" = ""; then
+            dirs=""
+            if test "$with_zlibinc" != ""; then
+                dirs="$with_zlibinc"
+            elif test "$with_zlib" != "yes"; then
+                dirs="$with_zlib"
+            else
+                dirs="/usr/local/include /usr/local/gnu/include /usr/local/zlib /opt/include /opt/gnu/include /opt/zlib /usr/include"
+            fi
+
+            # use find for searching
+
+    if test "$findprog" = ""; then
+        if test "$CYGWIN" = "yes"; then
+          findprog="/usr/bin/find"
+        else
+          findprog="find"
+        fi
+    fi
+
+
+            # first, look for the given header file without directory components..
+            found=""
+            for i in $dirs; do
+                if test -d $i; then
+                    found="$found "`$findprog $i -name  -print 2> /dev/null`
+                fi
+            done
+
+            # now, check each found file for relative path prefix.
+
+    regExResult=""
+    if test "$found" != ""; then
+        for i in $found; do
+            regExResult=`expr "$i" : "\(.*include\)/"`
+            if test "$regExResult" != ""; then
+                break
+            fi
+        done
+    fi
+
+            if test "$regExResult" = ""; then
+
+    regExResult=""
+    if test "$found" != ""; then
+        for i in $found; do
+            regExResult=`expr "$i" : "\(.*\)/"`
+            if test "$regExResult" != ""; then
+                break
+            fi
+        done
+    fi
+
+            fi
+            include_found=$regExResult
+        fi
+
+        # report the search result and set result variables
+        if test "$include_found" = ""; then
+            with_zlibinc=""
+            echo "$as_me:$LINENO: result: not found in $dirs" >&5
+echo "${ECHO_T}not found in $dirs" >&6
+        else
+            echo "$as_me:$LINENO: result: $include_found" >&5
+echo "${ECHO_T}$include_found" >&6
+            if test "$include_found" != "/usr/include" -a \
+                    "$include_found" != "in default path"; then
+                with_zlibinc="$include_found"
+                zlib_cppflags="-I$include_found"
+            else
+                with_zlibinc=""
+                zlib_cppflags=""
+            fi
+        fi
+    else
+        with_zlibinc=""
+        zlib_cppflags=""
+    fi
+
+
+    echo "$as_me:$LINENO: checking for libz " >&5
+echo $ECHO_N "checking for libz ... $ECHO_C" >&6
+
+    # check whether the include is in the path by default (e.g. /usr/include)
+    lib_found=""
+    if test "$with_zliblib" = "" -a "$with_zlib" = "yes"; then
+        ac_save_LIBS="$LIBS"
+        LIBS="$LIBS -lz"
+        cat >conftest.$ac_ext <<_ACEOF
+int main() {}
+
+_ACEOF
+rm -f conftest.$ac_objext conftest$ac_exeext
+if { (eval echo "$as_me:$LINENO: \"$ac_link\"") >&5
+  (eval $ac_link) 2>&5
+  ac_status=$?
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); } &&
+         { ac_try='test -s conftest$ac_exeext'
+  { (eval echo "$as_me:$LINENO: \"$ac_try\"") >&5
+  (eval $ac_try) 2>&5
+  ac_status=$?
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); }; }; then
+  lib_found="in default path"
+else
+  echo "$as_me: failed program was:" >&5
+cat conftest.$ac_ext >&5
+lib_found=""
+fi
+rm -f conftest.$ac_objext conftest$ac_exeext conftest.$ac_ext
+        LIBS=$ac_save_LIBS
+    fi
+
+    # if not found by default, try searching for it
+    if test "$lib_found" = ""; then
+        if test "$libext" = ""; then
+            libext="a"
+        fi
+
+        if test "$solibext" = ""; then
+            if test "$CYGWIN" = "yes"; then
+              solibext="dll.a"
+            else
+              solibext="so"
+            fi
+        fi
+
+        if test "$libpre" = ""; then
+            libpre="lib"
+        fi
+
+
+    if test "$findprog" = ""; then
+        if test "$CYGWIN" = "yes"; then
+          findprog="/usr/bin/find"
+        else
+          findprog="find"
+        fi
+    fi
+
+
+        dirs=""
+        if test "$with_zliblib" != ""; then
+            dirs=$with_zliblib
+        elif test "$with_zlib" != "yes"; then
+            dirs=$with_zlib
+        else
+            dirs="/usr/local/lib /usr/local/gnu/lib /usr/local/zlib /opt/lib /opt/gnu/lib /opt/zlib /usr/lib"
+        fi
+        found=""
+        for i in $dirs; do
+            if test -d $i; then
+                found="$found "`$findprog $i -name "${libpre}z.$solibext" -print 2> /dev/null; $findprog $i -name "${libpre}z.$libext" -print 2> /dev/null`
+            fi
+        done
+
+
+    regExResult=""
+    if test "$found" != ""; then
+        for i in $found; do
+            regExResult=`expr "$i" : "\(.*lib\)/${libpre}z\.$solibext"`
+            if test "$regExResult" != ""; then
+                break
+            fi
+        done
+    fi
+
+        if test "$regExResult" = ""; then
+
+    regExResult=""
+    if test "$found" != ""; then
+        for i in $found; do
+            regExResult=`expr "$i" : "\(.*lib\)/${libpre}z\.$libext"`
+            if test "$regExResult" != ""; then
+                break
+            fi
+        done
+    fi
+
+        fi
+        if test "$regExResult" = ""; then
+
+    regExResult=""
+    if test "$found" != ""; then
+        for i in $found; do
+            regExResult=`expr "$i" : "\(.*\)/${libpre}z\.$solibext"`
+            if test "$regExResult" != ""; then
+                break
+            fi
+        done
+    fi
+
+        fi
+        if test "$regExResult" = ""; then
+
+    regExResult=""
+    if test "$found" != ""; then
+        for i in $found; do
+            regExResult=`expr "$i" : "\(.*\)/${libpre}z\.$libext"`
+            if test "$regExResult" != ""; then
+                break
+            fi
+        done
+    fi
+
+        fi
+        lib_found=$regExResult
+    fi
+    if test "$lib_found" = ""; then
+        with_zliblib=""
+        echo "$as_me:$LINENO: result: not found in $dirs" >&5
+echo "${ECHO_T}not found in $dirs" >&6
+    else
+        echo "$as_me:$LINENO: result: $lib_found" >&5
+echo "${ECHO_T}$lib_found" >&6
+        if test "$lib_found" != "/usr/lib" -a \
+                "$lib_found" != "in default path"; then
+            with_zliblib="-L$lib_found"
+        else
+            with_zliblib=""
+        fi
+    fi
+
+
+        if test "$lib_found" = ""; then
+            with_zlib="no"
+            { echo "$as_me:$LINENO: WARNING: Configuring without zlib support" >&5
+echo "$as_me: WARNING: Configuring without zlib support" >&2;}
+        else
+            with_zlib="yes"
+        fi
+    fi
+
+
+
 if test $with_png = "yes";
 then
-    PNG_LIB="-L$with_pnglib -lpng"
-    IMPEX_DEPLIBS="$IMPEX_DEPLIBS $PNG_LIB"
-    LIBCPPFLAGS="$LIBCPPFLAGS -DHasPNG $png_cppflags"
+    if test $with_zlib != "yes";
+    then
+        { echo "$as_me:$LINENO: WARNING:  zlib not found, configuring without support for dependent libpng" >&5
+echo "$as_me: WARNING:  zlib not found, configuring without support for dependent libpng" >&2;}
+        with_png="no"
+    else
+        PNG_LIB="$with_pnglib -lpng $with_zliblib -lz"
+        IMPEX_DEPLIBS="$IMPEX_DEPLIBS $PNG_LIB"
+        LIBCPPFLAGS="$LIBCPPFLAGS -DHasPNG $png_cppflags"
+    fi
 fi
 
 
@@ -3816,21 +4464,60 @@ if test "${with_fftwinc+set}" = set; then
 
 fi;
 
-    if test "$libext" = ""; then
-        libext="a"
+
+    # default is "yes"
+    if test ${with_fftw:-""} = "" -a ${with_fftwlib:-""} = "" -a ${with_fftwinc:-""} = ""; then
+        with_fftw="yes"
     fi
 
-    if test "$solibext" = ""; then
-        if test "$CYGWIN" = "yes"; then
-          solibext="dll.a"
-        else
-          solibext="so"
+    if test ${with_fftw:-""} != "no"; then
+
+
+    if test "fftw.h" != ""; then
+        echo "$as_me:$LINENO: checking for fftw.h " >&5
+echo $ECHO_N "checking for fftw.h ... $ECHO_C" >&6
+
+        # check whether the include is in the path by default (e.g. /usr/include)
+        include_found=""
+        if test "$with_fftwinc" = "" -a "$with_fftw" = "yes"; then
+            cat >conftest.$ac_ext <<_ACEOF
+#include <stdio.h>  /* necessary because jpeglib.h fails to include it */
+#include <fftw.h>
+
+_ACEOF
+rm -f conftest.$ac_objext
+if { (eval echo "$as_me:$LINENO: \"$ac_compile\"") >&5
+  (eval $ac_compile) 2>&5
+  ac_status=$?
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); } &&
+         { ac_try='test -s conftest.$ac_objext'
+  { (eval echo "$as_me:$LINENO: \"$ac_try\"") >&5
+  (eval $ac_try) 2>&5
+  ac_status=$?
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); }; }; then
+  include_found="in default path"
+else
+  echo "$as_me: failed program was:" >&5
+cat conftest.$ac_ext >&5
+include_found=""
+fi
+rm -f conftest.$ac_objext conftest.$ac_ext
         fi
-    fi
 
-    if test "$libpre" = ""; then
-        libpre="lib"
-    fi
+        # if not found by default, try searching for it
+        if test "$include_found" = ""; then
+            dirs=""
+            if test "$with_fftwinc" != ""; then
+                dirs="$with_fftwinc"
+            elif test "$with_fftw" != "yes"; then
+                dirs="$with_fftw"
+            else
+                dirs="/usr/local/include /usr/local/gnu/include /usr/local/fftw /opt/include /opt/gnu/include /opt/fftw /usr/include"
+            fi
+
+            # use find for searching
 
     if test "$findprog" = ""; then
         if test "$CYGWIN" = "yes"; then
@@ -3840,13 +4527,128 @@ fi;
         fi
     fi
 
-    if test ${with_fftw:-""} = "" -a ${with_fftwlib:-""} = "" -a ${with_fftwinc:-""} = ""; then
-        with_fftw="no"
+
+            # first, look for the given header file without directory components..
+            found=""
+            for i in $dirs; do
+                if test -d $i; then
+                    found="$found "`$findprog $i -name fftw.h -print 2> /dev/null`
+                fi
+            done
+
+            # now, check each found file for relative path prefix.
+
+    regExResult=""
+    if test "$found" != ""; then
+        for i in $found; do
+            regExResult=`expr "$i" : "\(.*include\)/fftw\.h"`
+            if test "$regExResult" != ""; then
+                break
+            fi
+        done
     fi
 
-    if test ${with_fftw:-""} != "no"; then
-        echo "$as_me:$LINENO: checking for libfftw " >&5
+            if test "$regExResult" = ""; then
+
+    regExResult=""
+    if test "$found" != ""; then
+        for i in $found; do
+            regExResult=`expr "$i" : "\(.*\)/fftw\.h"`
+            if test "$regExResult" != ""; then
+                break
+            fi
+        done
+    fi
+
+            fi
+            include_found=$regExResult
+        fi
+
+        # report the search result and set result variables
+        if test "$include_found" = ""; then
+            with_fftwinc=""
+            echo "$as_me:$LINENO: result: not found in $dirs" >&5
+echo "${ECHO_T}not found in $dirs" >&6
+        else
+            echo "$as_me:$LINENO: result: $include_found" >&5
+echo "${ECHO_T}$include_found" >&6
+            if test "$include_found" != "/usr/include" -a \
+                    "$include_found" != "in default path"; then
+                with_fftwinc="$include_found"
+                fftw_cppflags="-I$include_found"
+            else
+                with_fftwinc=""
+                fftw_cppflags=""
+            fi
+        fi
+    else
+        with_fftwinc=""
+        fftw_cppflags=""
+    fi
+
+
+    echo "$as_me:$LINENO: checking for libfftw " >&5
 echo $ECHO_N "checking for libfftw ... $ECHO_C" >&6
+
+    # check whether the include is in the path by default (e.g. /usr/include)
+    lib_found=""
+    if test "$with_fftwlib" = "" -a "$with_fftw" = "yes"; then
+        ac_save_LIBS="$LIBS"
+        LIBS="$LIBS -lfftw"
+        cat >conftest.$ac_ext <<_ACEOF
+int main() {}
+
+_ACEOF
+rm -f conftest.$ac_objext conftest$ac_exeext
+if { (eval echo "$as_me:$LINENO: \"$ac_link\"") >&5
+  (eval $ac_link) 2>&5
+  ac_status=$?
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); } &&
+         { ac_try='test -s conftest$ac_exeext'
+  { (eval echo "$as_me:$LINENO: \"$ac_try\"") >&5
+  (eval $ac_try) 2>&5
+  ac_status=$?
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); }; }; then
+  lib_found="in default path"
+else
+  echo "$as_me: failed program was:" >&5
+cat conftest.$ac_ext >&5
+lib_found=""
+fi
+rm -f conftest.$ac_objext conftest$ac_exeext conftest.$ac_ext
+        LIBS=$ac_save_LIBS
+    fi
+
+    # if not found by default, try searching for it
+    if test "$lib_found" = ""; then
+        if test "$libext" = ""; then
+            libext="a"
+        fi
+
+        if test "$solibext" = ""; then
+            if test "$CYGWIN" = "yes"; then
+              solibext="dll.a"
+            else
+              solibext="so"
+            fi
+        fi
+
+        if test "$libpre" = ""; then
+            libpre="lib"
+        fi
+
+
+    if test "$findprog" = ""; then
+        if test "$CYGWIN" = "yes"; then
+          findprog="/usr/bin/find"
+        else
+          findprog="find"
+        fi
+    fi
+
+
         dirs=""
         if test "$with_fftwlib" != ""; then
             dirs=$with_fftwlib
@@ -3912,75 +4714,25 @@ echo $ECHO_N "checking for libfftw ... $ECHO_C" >&6
     fi
 
         fi
-        if test "$regExResult" = ""; then
+        lib_found=$regExResult
+    fi
+    if test "$lib_found" = ""; then
+        with_fftwlib=""
+        echo "$as_me:$LINENO: result: not found in $dirs" >&5
+echo "${ECHO_T}not found in $dirs" >&6
+    else
+        echo "$as_me:$LINENO: result: $lib_found" >&5
+echo "${ECHO_T}$lib_found" >&6
+        if test "$lib_found" != "/usr/lib" -a \
+                "$lib_found" != "in default path"; then
+            with_fftwlib="-L$lib_found"
+        else
             with_fftwlib=""
-            echo "$as_me:$LINENO: result: \"not found in $dirs\"" >&5
-echo "${ECHO_T}\"not found in $dirs\"" >&6
-        else
-            with_fftwlib=$regExResult
-            echo "$as_me:$LINENO: result: $with_fftwlib" >&5
-echo "${ECHO_T}$with_fftwlib" >&6
         fi
-
-        echo "$as_me:$LINENO: checking for fftw.h " >&5
-echo $ECHO_N "checking for fftw.h ... $ECHO_C" >&6
-        dirs=""
-        if test "$with_fftwinc" != ""; then
-            dirs="$with_fftwinc"
-        elif test "$with_fftw" != "yes"; then
-            dirs="$with_fftw"
-        else
-            dirs="/usr/local/include /usr/local/gnu/include /usr/local/fftw /opt/include /opt/gnu/include /opt/fftw /usr/include"
-        fi
-
-                found=""
-        for i in $dirs; do
-            if test -d $i; then
-                found="$found "`$findprog $i -name fftw.h -print 2> /dev/null`
-            fi
-        done
-
-
-    regExResult=""
-    if test "$found" != ""; then
-        for i in $found; do
-            regExResult=`expr "$i" : "\(.*include\)/fftw\.h"`
-            if test "$regExResult" != ""; then
-                break
-            fi
-        done
     fi
 
-        if test "$regExResult" = ""; then
 
-    regExResult=""
-    if test "$found" != ""; then
-        for i in $found; do
-            regExResult=`expr "$i" : "\(.*\)/fftw\.h"`
-            if test "$regExResult" != ""; then
-                break
-            fi
-        done
-    fi
-
-        fi
-        if test "$regExResult" = ""; then
-            with_fftwinc=""
-            echo "$as_me:$LINENO: result: \"not found in $dirs\"" >&5
-echo "${ECHO_T}\"not found in $dirs\"" >&6
-        else
-            echo "$as_me:$LINENO: result: $regExResult" >&5
-echo "${ECHO_T}$regExResult" >&6
-            if test "$regExResult" != "/usr/include"; then
-                with_fftwinc="$regExResult"
-                fftw_cppflags="-I$regExResult"
-            else
-                with_fftwinc=""
-                fftw_cppflags=""
-            fi
-        fi
-
-        if test "$with_fftwlib" = "" -o "$regExResult" = ""; then
+        if test "$lib_found" = ""; then
             with_fftw="no"
             { echo "$as_me:$LINENO: WARNING: Configuring without fftw support" >&5
 echo "$as_me: WARNING: Configuring without fftw support" >&2;}
@@ -3992,7 +4744,7 @@ echo "$as_me: WARNING: Configuring without fftw support" >&2;}
 
 if test $with_fftw = "yes";
 then
-    FFTW_LIB="-L$with_fftwlib -lfftw"
+    FFTW_LIB="$with_fftwlib -lfftw"
     RFFTW_LIB="-L$with_fftwlib -lrfftw -lfftw"
     FFTW_INCLUDES="$fftw_cppflags"
     CPPFLAGS="$FFTW_INCLUDES $CPPFLAGS"
