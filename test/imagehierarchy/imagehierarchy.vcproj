@@ -87,7 +87,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				InlineFunctionExpansion="1"
-				AdditionalIncludeDirectories="..\..\interactive\include;C:\Users\Koethe\src\boost_1_26_0;..\..\current\include;..\include"
+				AdditionalIncludeDirectories="..\..\current\include;..\include"
 				PreprocessorDefinitions="WIN32;_WINDOWS;NDEBUG"
 				StringPooling="TRUE"
 				RuntimeLibrary="2"
@@ -97,14 +97,14 @@
 				Detect64BitPortabilityProblems="TRUE"
 				DebugInformationFormat="3"/>
 			<Tool
-				Name="VCCustomBuildTool"
-				Description="Running tests"
-				Outputs="dummy"/>
+				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
 				IgnoreImportLibrary="TRUE"
+				AdditionalDependencies="vigraimpex.lib libtiff.lib libjpeg.lib libpng.lib zlib.lib"
 				OutputFile="$(OutDir)/imagehierarchy.exe"
 				LinkIncremental="1"
+				AdditionalLibraryDirectories="..\..\current\src\impex;C:\lib"
 				GenerateDebugInformation="TRUE"
 				SubSystem="1"
 				OptimizeReferences="2"
@@ -124,7 +124,7 @@
 				ProxyFileName="imagehierarchy_p.c"/>
 			<Tool
 				Name="VCPostBuildEventTool"
-				Description="Performing registration"
+				Description="Running tests"
 				CommandLine="&quot;$(TargetPath)&quot; /RegServer"/>
 			<Tool
 				Name="VCPreBuildEventTool"/>

@@ -86,7 +86,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				InlineFunctionExpansion="1"
-				AdditionalIncludeDirectories="..\include;..\..\current\include"
+				AdditionalIncludeDirectories="..\..\current\include;..\include"
 				PreprocessorDefinitions="WIN32;_CONSOLE;NDEBUG"
 				StringPooling="TRUE"
 				RuntimeLibrary="2"
@@ -96,15 +96,14 @@
 				Detect64BitPortabilityProblems="TRUE"
 				DebugInformationFormat="3"/>
 			<Tool
-				Name="VCCustomBuildTool"
-				Description="Running tests"
-				CommandLine="pixeltypes.exe"
-				Outputs="dummy"/>
+				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
 				IgnoreImportLibrary="TRUE"
+				AdditionalDependencies="vigraimpex.lib libtiff.lib libjpeg.lib libpng.lib zlib.lib"
 				OutputFile="pixeltypes.exe"
 				LinkIncremental="1"
+				AdditionalLibraryDirectories="..\..\current\src\impex;C:\lib"
 				GenerateDebugInformation="TRUE"
 				SubSystem="1"
 				OptimizeReferences="2"
@@ -123,7 +122,9 @@
 				InterfaceIdentifierFileName="pixeltypes_i.c"
 				ProxyFileName="pixeltypes_p.c"/>
 			<Tool
-				Name="VCPostBuildEventTool"/>
+				Name="VCPostBuildEventTool"
+				Description="Running tests"
+				CommandLine="..\testOrDelete pixeltypes.exe"/>
 			<Tool
 				Name="VCPreBuildEventTool"/>
 			<Tool

@@ -87,7 +87,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="2"
 				InlineFunctionExpansion="1"
-				AdditionalIncludeDirectories="C:\Users\Koethe\src\vigra\current\include;C:\Users\Koethe\src\vigra\test\include"
+				AdditionalIncludeDirectories="..\..\current\include;..\include"
 				PreprocessorDefinitions="WIN32;_CONSOLE;NDEBUG"
 				StringPooling="TRUE"
 				ExceptionHandling="TRUE"
@@ -100,17 +100,14 @@
 				DebugInformationFormat="0"
 				CompileAs="0"/>
 			<Tool
-				Name="VCCustomBuildTool"
-				Description="Running tests"
-				CommandLine="colorspaces.exe"
-				Outputs="dummy"/>
+				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
 				IgnoreImportLibrary="TRUE"
-				AdditionalDependencies="vigraimpex.lib libtiff.lib libjpeg.lib libpng13.lib"
+				AdditionalDependencies="vigraimpex.lib libtiff.lib libjpeg.lib libpng.lib zlib.lib"
 				OutputFile="colorspaces.exe"
 				LinkIncremental="1"
-				AdditionalLibraryDirectories="C:\Users\Koethe\lib\msvc.net"
+				AdditionalLibraryDirectories="..\..\current\src\impex;C:\lib"
 				GenerateDebugInformation="TRUE"
 				SubSystem="1"
 				OptimizeReferences="2"
@@ -129,7 +126,9 @@
 				InterfaceIdentifierFileName="colorspaces_i.c"
 				ProxyFileName="colorspaces_p.c"/>
 			<Tool
-				Name="VCPostBuildEventTool"/>
+				Name="VCPostBuildEventTool"
+				Description="Running tests"
+				CommandLine="..\testOrDelete colorspaces.exe"/>
 			<Tool
 				Name="VCPreBuildEventTool"/>
 			<Tool

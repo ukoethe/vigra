@@ -69,7 +69,7 @@
 				Optimization="2"
 				InlineFunctionExpansion="1"
 				OmitFramePointers="TRUE"
-				AdditionalIncludeDirectories="&quot;C:\Users\Koethe\src\fftw-3.0.1\api&quot;;C:\Users\Koethe\src\vigra\current\include;C:\Users\Koethe\src\vigra\test\include"
+				AdditionalIncludeDirectories="..\..\current\include;..\include;C:\include"
 				PreprocessorDefinitions="WIN32;NDEBUG;_CONSOLE"
 				StringPooling="TRUE"
 				RuntimeLibrary="2"
@@ -80,17 +80,13 @@
 				DebugInformationFormat="0"
 				CompileAs="0"/>
 			<Tool
-				Name="VCCustomBuildTool"
-				Description="Running tests"
-				CommandLine="fourier.exe
-"
-				Outputs="dummy"/>
+				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="vigraimpex.lib libtiff.lib libjpeg.lib libpng13.lib fftw3.lib"
+				AdditionalDependencies="vigraimpex.lib libtiff.lib libjpeg.lib libpng.lib zlib.lib fftw3.lib"
 				OutputFile="$(OutDir)/fourier.exe"
 				LinkIncremental="1"
-				AdditionalLibraryDirectories="C:\Users\Koethe\lib\msvc.net"
+				AdditionalLibraryDirectories="..\..\current\src\impex;C:\lib"
 				GenerateDebugInformation="TRUE"
 				SubSystem="1"
 				OptimizeReferences="2"
@@ -99,7 +95,9 @@
 			<Tool
 				Name="VCMIDLTool"/>
 			<Tool
-				Name="VCPostBuildEventTool"/>
+				Name="VCPostBuildEventTool"
+				Description="Running tests"
+				CommandLine="..\testOrDelete fourier.exe"/>
 			<Tool
 				Name="VCPreBuildEventTool"/>
 			<Tool

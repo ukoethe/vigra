@@ -82,7 +82,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				InlineFunctionExpansion="1"
-				AdditionalIncludeDirectories="C:\Users\Koethe\src\vigra\current\include;C:\Users\Koethe\src\vigra\test\include"
+				AdditionalIncludeDirectories="..\..\current\include;..\include"
 				PreprocessorDefinitions="WIN32,NDEBUG,_CONSOLE"
 				StringPooling="TRUE"
 				RuntimeLibrary="2"
@@ -96,26 +96,24 @@
 				SuppressStartupBanner="TRUE"
 				CompileAs="0"/>
 			<Tool
-				Name="VCCustomBuildTool"
-				Description="Running tests"
-				CommandLine="tensorimaging.exe
-"
-				Outputs="dummy"/>
+				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalOptions="/MACHINE:I386"
-				AdditionalDependencies="vigraimpex.lib libtiff.lib libjpeg.lib libpng13.lib"
+				AdditionalDependencies="vigraimpex.lib libtiff.lib libjpeg.lib libpng.lib zlib.lib"
 				OutputFile="tensorimaging.exe"
 				LinkIncremental="1"
 				SuppressStartupBanner="TRUE"
-				AdditionalLibraryDirectories="C:\Users\Koethe\lib\msvc.net"
+				AdditionalLibraryDirectories="..\..\current\src\impex;C:\lib"
 				ProgramDatabaseFile=".\Release/tensorimaging.pdb"
 				SubSystem="1"/>
 			<Tool
 				Name="VCMIDLTool"
 				TypeLibraryName=".\Release/tensorimaging.tlb"/>
 			<Tool
-				Name="VCPostBuildEventTool"/>
+				Name="VCPostBuildEventTool"
+				Description="Running tests"
+				CommandLine="..\testOrDelete tensorimaging.exe"/>
 			<Tool
 				Name="VCPreBuildEventTool"/>
 			<Tool
