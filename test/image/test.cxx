@@ -307,6 +307,70 @@ struct BasicImageViewTest
     }
 };
 
+template <class T>
+struct StridedImageIteratorTest
+{
+    T * data_;
+    
+    StridedImageIteratorTest()
+    : data_(testData(T()))
+    {}
+
+    void testIterator()
+    {
+        int w = 3, h = 3;
+        int xskip = 2, yskip = 2;
+        int ws = w / xskip + 1, hs = h / yskip + 1;
+        
+        StridedImageIterator<T> ul(data_, w, xskip, yskip);
+        StridedImageIterator<T> lr = ul + Diff2D(ws, hs);
+        
+        shouldEqual(ws, lr.x - ul.x);
+        shouldEqual(hs, lr.y - ul.y);
+        shouldEqual(Diff2D(ws, hs), lr - ul);
+        
+        StridedImageIterator<T> x = ul;
+        StridedImageIterator<T>::row_iterator r = ul.rowIterator();
+        StridedImageIterator<T>::row_iterator rend = r + ws;
+        shouldEqual(data_[0], *x);
+        shouldEqual(data_[0], *r);
+        should(x.x < lr.x);
+        should(r < rend);
+        ++x.x;
+        ++r;
+        shouldEqual(data_[2], *x);
+        shouldEqual(data_[2], *r);
+        should(x.x < lr.x);
+        should(r < rend);
+        ++x.x;
+        ++r;
+        should(x.x == lr.x);
+        should(r == rend);
+        
+        ++ul.y;
+        x = ul;
+        r = ul.rowIterator();
+        rend = r + ws;
+        shouldEqual(data_[6], *x);
+        shouldEqual(data_[6], *r);
+        should(x.x < lr.x);
+        should(r < rend);
+        ++x.x;
+        ++r;
+        shouldEqual(data_[8], *x);
+        shouldEqual(data_[8], *r);
+        should(x.x < lr.x);
+        should(r < rend);
+        ++x.x;
+        ++r;
+        should(x.x == lr.x);
+        should(r == rend);
+
+        ++ul.y;
+        should(ul.y == lr.y);
+    }
+};
+
 
 struct ImageTestSuite
 : public vigra::test_suite
@@ -338,6 +402,8 @@ struct ImageTestSuite
         add( testCase( &BasicImageViewTest<BasicImageView<RGBValue<float> > >::testIterator));
         add( testCase( &BasicImageViewTest<BasicImageView<RGBValue<float> > >::testIndex));
         add( testCase( &BasicImageViewTest<BasicImageView<RGBValue<float> > >::copyImage));
+        add( testCase( &StridedImageIteratorTest<unsigned char>::testIterator));
+        add( testCase( &StridedImageIteratorTest<RGBValue<float> >::testIterator));
     }
 };
 
@@ -353,13 +419,6 @@ struct CompareFunctor
     double operator()()
 		{ return sumDifference_; }
 };
-
-// for shouldEqual:
-std::ostream & operator <<(std::ostream &s, Diff2D size)
-{
-	s << "Diff2D(" << size.x << ", " << size.y << ")";
-    return s;
-}
 
 struct ImageContainerTests
 {
