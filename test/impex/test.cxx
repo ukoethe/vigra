@@ -49,6 +49,33 @@ class ByteImageExportImportTest
 	}
     }
 
+    void testEmptyGIF()
+    {
+        Image img(100,100);
+        
+        img = 0;
+        
+        exportImage(srcImageRange(img), ImageExportInfo("res.gif"));
+        
+        ImageImportInfo info("res.gif");
+        
+        should(info.width() == img.width());
+        should(info.height() == img.height());
+        should(info.isGrayscale());
+        
+        Image res(info.width(), info.height());
+        
+        importImage(info, destImage(res));
+        
+	Image::ScanOrderIterator i = res.begin();
+	Image::Accessor acc = res.accessor();
+
+	for(; i != res.end(); ++i)
+	{
+            should(acc(i) == 0);
+	}
+    }
+
     void testJPEG()
     {
         exportImage(srcImageRange(img), 
@@ -959,6 +986,7 @@ class ImageImportExportTestSuite
     : TestSuite("ImageImportExportTestSuite")
     {
         add( testCase(&ByteImageExportImportTest::testGIF));
+        add( testCase(&ByteImageExportImportTest::testEmptyGIF));
         add( testCase(&ByteImageExportImportTest::testJPEG));
         add( testCase(&ByteImageExportImportTest::testTIFF));
         add( testCase(&ByteImageExportImportTest::testBMP));
