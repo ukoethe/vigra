@@ -3,6 +3,10 @@
     <DL>
     <DT>
         <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif"> 
+        \ref Concepts
+        <DD><em>generic interface definitions</em>
+    <DT>
+        <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif"> 
         \ref Utilities
         <DD><em>Basic helper functionality needed throughout</em>
     <DT>
@@ -100,6 +104,34 @@
     
 */
 
+/** \page Concepts Concepts
+
+    <DL>
+    <DT>
+    Description of the generic interface concepts used within VIGRA.
+    <p>
+    <DD>
+        <DL>
+        <DT>
+            <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif"> 
+            \ref AlgebraicConcepts
+            <DD> <em>Requirements for types that implement arithmetic operations</em>
+        <DT>
+            <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif"> 
+            \ref ImageIterators
+            <DD> <em>Requirements for 2D iterators</em>
+        <DT>
+            <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif"> 
+            \ref DataAccessors
+            <DD> <em>Requirements for data accessors</em>
+        <DT>
+            <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif"> 
+            \ref CrackEdgeImage
+            <DD>
+        </DL>
+    </DL>
+*/
+
 /** \page PixelTypes Pixel Types
 
     <DL>
@@ -181,6 +213,10 @@
         <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif"> 
         \ref StandardImageTypes
         <DD> <em>The most common instanciations of \ref vigra::BasicImage</em>
+    <DT>
+        <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif"> 
+        \ref ImageContainers
+        <DD> <em>Classes to manage multiple images (ImageArray..)</em>
     <DT>
         <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif"> 
         \ref ImageIterators
@@ -271,6 +307,11 @@
                  functionality</em>
     <DT>
         <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif"> 
+        \ref GaborFilter
+        <DD> <em>Gabor filter generation and related
+                 functionality</em>
+    <DT>
+        <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif"> 
         \ref Morphology
         <DD> <em>erosion, dilation, and median with disc structuring functions</em>
     </DL>
@@ -316,6 +357,190 @@
         \ref SeededRegionGrowing 
         <DD> <em>Region segmentation and voronoi tesselation</em>
     </DL>
+*/
+
+/** \page AlgebraicConcepts Algebraic Concepts
+
+The algebraic concepts decribe requirements for algebraic types, that is
+for types that support arithmetic operations. The built-in types are concepts
+of \ref AlgebraicField and \ref DivisionAlgebra.
+
+\anchor AlgebraicRing
+
+<h3>Algebraic Ring</h3>
+
+<ul>
+    <li>A model of Algebraic Ring implements <tt>Assignable</TT>, <tt>Default Constructible</TT>, 
+        <tt>Equality Comparable</TT> and <tt>Strict Weakly Comparable</TT> 
+        as defined in the C++ standard (cf. the 
+        <a href="WWW_STL_DOCU">Standard Template Library documentation</a>).
+        
+    <li>A model of Algebraic Ring implements addition, subtraction and unary negation. The associated
+    \link NumericTraits NumericTraits \endlink define a 'zero' element, the type of the
+    result of addition and subtraction, and a type conversion function. 
+    Addition must be commutative.
+    
+    \code
+    ModelOfAlgebraicRing a, b;
+    NumericTraits<ModelOfAlgebraicRing>::Promote c;
+    
+    ModelOfAlgebraicRing zero = NumericTraits<ModelOfAlgebraicRing>::zero();
+    
+    b += a;
+    b -= a;
+    b = -a;
+    c = a + b;
+    c = a - b;
+    c = a;
+    a = NumericTraits<ModelOfAlgebraicRing>::fromPromote(c);
+    
+    assert(a + zero == a);
+    assert(a + b == b + a);
+    assert(a - b == a + (-b));
+    \endcode
+
+    <li>If mixed-type addition and subtraction are supported, 
+    \link PromoteTraits PromoteTraits \endlink define the result type:
+        
+    \code
+    ModelOfAlgebraicRing1 a;
+    ModelOfAlgebraicRing2 b;
+    
+    PromoteTraits<ModelOfAlgebraicRing1, ModelOfAlgebraicRing2>::Promote c;
+         
+    c = a + b;
+    \endcode
+    
+    <li>A model of Algebraic Ring implements multiplication. The associated
+    \link NumericTraits NumericTraits \endlink define a 'one' element, the type of the
+    result of multiplication, and a type conversion function. 
+    
+    \code
+    ModelOfAlgebraicRing a, b;
+    NumericTraits<ModelOfAlgebraicRing>::RealPromote c;
+    
+    ModelOfAlgebraicRing one = NumericTraits<ModelOfAlgebraicRing>::one();
+    
+    b *= a;
+    c = a * b;
+    c = a;
+    a = NumericTraits<ModelOfAlgebraicRing>::fromRealPromote(c);
+    
+    assert(a * one == a);
+    \endcode
+</ul>
+
+\anchor AlgebraicField 
+<h3>Algebraic Field</h3>
+
+<ul>
+    <li>A model of Algebraic Field implements \ref AlgebraicRing as defined above.
+    
+    <li>A model of Algebraic Field implements division. Division is undefined if
+    and only if the right operand is 'zero'.
+    
+    \code
+    ModelOfAlgebraicField a, b;
+    typename NumericTraits<ModelOfAlgebraicField>::RealPromote c;
+    
+    ModelOfAlgebraicField zero = NumericTraits<ModelOfAlgebraicField>::zero();
+    
+    if(a != zero) b /= a;
+    if(a != zero) c = b / a;
+    \endcode
+       
+</ul>
+
+
+\anchor LinearSpace 
+
+<h3>Linear Space</h3>
+
+<ul>
+    <li>A model of Linear Space implements <tt>Assignable</TT>, <tt>Default Constructible</TT> 
+        and <tt>Equality Comparable</TT> 
+        as defined in the C++ standard (cf. the 
+        <a href="WWW_STL_DOCU">Standard Template Library documentation</a>).
+        
+    <li>A model of Algebraic Ring implements addition, subtraction and unary negation. The associated
+    \link NumericTraits NumericTraits \endlink define a 'zero' element, the type of the
+    result of addition and subtraction, and a type conversion function. 
+    Addition must be commutative. (This part of the requirements is identical to
+    \ref AlgebraicRing above.)
+    
+    \code
+    ModelOfAlgebraicRing a, b;
+    NumericTraits<ModelOfAlgebraicRing>::Promote c;
+    
+    ModelOfAlgebraicRing zero = NumericTraits<ModelOfAlgebraicRing>::zero();
+    
+    b += a;
+    b -= a;
+    b = -a;
+    c = a + b;
+    c = a - b;
+    c = a;
+    a = NumericTraits<ModelOfAlgebraicRing>::fromPromote(c);
+    
+    assert(a + zero == a);
+    assert(a + b == b + a);
+    assert(a - b == a + (-b));
+    \endcode
+
+    <li>If mixed-type addition and subtraction are supported, 
+    \link PromoteTraits PromoteTraits \endlink define the result type:
+        
+    \code
+    ModelOfAlgebraicRing1 a;
+    ModelOfAlgebraicRing2 b;
+    
+    PromoteTraits<ModelOfAlgebraicRing1, ModelOfAlgebraicRing2>::Promote c;
+         
+    c = a + b;
+    \endcode
+    
+    <li>A model of Algebraic Ring implements multiplication and division with 'double'. 
+      (Note that the outer product could be defined with an arbitrary model of 
+      \ref AlgebraicField. For simplicity, VIGRA restricts this to only 'double'.)
+      The associated \link NumericTraits NumericTraits \endlink define the type of the
+      results, and a type conversion function. 
+    
+    \code
+    ModelOfAlgebraicRing a;
+    double f;
+    NumericTraits<ModelOfAlgebraicRing>::RealPromote c;
+    
+    
+    a *= f;
+    c = a * f;
+    c = f * a;
+    
+    if(f != 0.0) a /= f;
+    if(f != 0.0) c = a / f;
+    
+    c = a;
+    a = NumericTraits<ModelOfAlgebraicRing>::fromRealPromote(c);
+    \endcode
+</ul>
+
+\anchor LinearAlgebra 
+<h3>Linear Algebra</h3>
+
+<ul>
+    <li>A model of Linear Algebra implements \ref LinearSpace and
+        \ref AlgebraicRing as defined above.
+       
+</ul>
+
+\anchor DivisionAlgebra 
+<h3>Division Algebra</h3>
+
+<ul>
+    <li>A model of Division Algebra implements \ref LinearSpace and
+        \ref AlgebraicField as defined above.
+       
+</ul>
+
 */
 
 /** \namespace vigra
