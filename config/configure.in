@@ -1,7 +1,8 @@
 AC_INIT(include/vigra/config.hxx)
 
 AC_PREFIX_DEFAULT([`pwd`])
-builddir=`pwd`
+vigra_srcdir=`pwd`
+vigra_builddir=`pwd`
 
 # expand prefix and exec_prefix
 if test "x$prefix" = "xNONE" ; then
@@ -10,7 +11,7 @@ elif test "x$prefix" = "x." ; then
     prefix=`pwd`
 fi
 
-AC_CONFIG_AUX_DIR(config) 
+AC_CONFIG_AUX_DIR(config)
 
 # Set version
 MAJOR_VERSION=1
@@ -33,8 +34,8 @@ AC_MINGW32
 
 CFLAGS=-O
 CXXFLAGS=-O
-LIBCFLAGS=-I$builddir/include
-LIBCXXFLAGS=-I$builddir/include
+LIBCFLAGS=-I$vigra_srcdir/include
+LIBCXXFLAGS=-I$vigra_srcdir/include
 CINCLUDES=
 CXXINCLUDES='-I$(prefix)/include'
 
@@ -56,7 +57,8 @@ AC_LIBTOOL_CXX
 AC_FIND_PACKAGE(tiff, tiff, tiff.h, [support import/export of tiff images [default=no]])
 if test $with_tiff = "yes";
 then
-    LIBS="$LIBS -L$with_tifflib -ltiff"
+    TIFFLIB="-L$with_tifflib -ltiff"
+    LIBS="$LIBS $TIFFLIB"
     LIBCFLAGS="$LIBCFLAGS -DHasTIFF -I$with_tiffinc"
     LIBCXXFLAGS="$LIBCXXFLAGS -DHasTIFF -I$with_tiffinc"
 fi
@@ -64,19 +66,27 @@ fi
 AC_FIND_PACKAGE(jpeg, jpeg, jpeglib.h, [support import/export of jpeg images [default=no]])
 if test $with_jpeg = "yes";
 then
-    LIBS="$LIBS -L$with_jpeglib -ljpeg"
+    JPEGLIB="-L$with_jpeglib -ljpeg"
+    LIBS="$LIBS $JPEGLIB"
     LIBCFLAGS="$LIBCFLAGS -DHasJPEG -I$with_jpeginc"
     LIBCXXFLAGS="$LIBCXXFLAGS -DHasJPEG -I$with_jpeginc"
 fi
+
+DEPLIBS="$LIBS"
 
 #########################################################
 
 LIBS="-L$libdir -lvigraimpex $LIBS -lm"
 
-AC_SUBST(builddir)
+AC_SUBST(vigra_srcdir)
+AC_SUBST(vigra_builddir)
+AC_SUBST(TIFFLIB)
+AC_SUBST(JPEGLIB)
+AC_SUBST(DEPLIBS)
 AC_SUBST(CINCLUDES)
 AC_SUBST(CXXINCLUDES)
 AC_SUBST(LIBCFLAGS)
 AC_SUBST(LIBCXXFLAGS)
 
-AC_OUTPUT(config/Makefile.include vigra-config)
+AC_OUTPUT(config/Makefile.include config/vigra-config)
+chmod +x config/vigra-config
