@@ -69,6 +69,7 @@
 	#endif // (_MSC_VER < 1300)
 
     #define NO_PARTIAL_TEMPLATE_SPECIALIZATION
+    #define NO_OUT_OF_LINE_MEMBER_TEMPLATES
     #include <cmath>
 
     #ifdef _MSC_EXTENSIONS
