@@ -15,8 +15,8 @@
         <DD><em>Exceptions and assertions</em>
     <DT>
         <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif">
-        \ref NumericPromotionTraits
-        <DD><em>Meta-information about arithmetic types</em>
+        \ref MathFunctionality
+        <DD><em>Number types, mathematical constants and functions etc.</em>
     <DT>
         <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif">
         \ref PixelTypes
@@ -141,6 +141,39 @@
     </DL>
 */
 
+/** \page MathFunctionality Mathematical tools
+
+    <b>Number types, mathematical constants, traits, and functions</b>
+    <p>
+    <DL>
+        <DT>
+            <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif">
+            \ref AlgebraicConcepts
+            <DD> <em>Requirements for types that implement arithmetic operations</em>
+        <DT>
+            <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif">
+            \ref NumericPromotionTraits
+            <DD><em>Meta-information about arithmetic types</em>
+        <DT>
+            <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif">
+            \ref vigra::Rational, \ref vigra::TinyVector, \ref vigra::FFTWComplex
+            <DD> <em>Number types</em>
+        <DT>
+            <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif">
+            \ref Polynomials
+            <DD> <em>Polynomials and root determination</em>
+        <DT>
+            <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif">
+            \ref MathConstants
+            <DD><em>M_PI, M_SQRT2</em>
+        <DT>
+            <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif">
+            \ref MathFunctions
+            <DD><em>and functors</em>
+    </DL>
+
+*/
+
 /** \page PixelTypes Pixel Types
 
     <DL>
@@ -231,6 +264,10 @@
         \ref StandardImageTypes
         <DD> <em>The most common instanciations of \ref vigra::BasicImage</em>
     <DT>
+        <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif">
+        \ref vigra::SplineImageView
+        <DD> <em>Wrap a discrete image as a continous function</em>
+    <DT>
         <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif"> 
         \ref VigraImpex
         <DD> <em>Image import/export</em>
@@ -274,12 +311,24 @@
         <DD> <em>Import/export of volume data.</em>
     <DT>
         <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif">
+        \ref MultiPointoperators
+        <DD> <em>Point operators on multi-dimensional arrays</em>
+    <DT>
+        <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif">
+        \ref MultiArrayConvolutionFilters
+        <DD> <em>Separable convolution of multi-dimensional arrays</em>
+    <DT>
+        <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif">
         \ref MultiArrayTags
-        <DD> <em>Meta-programming tags to mark array's as strided or unstrided.</em>
+        <DD> <em>Meta-programming tags to mark array's as strided or unstrided</em>
     <DT>
         <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif">
         \ref MultiIteratorPage
         <DD> <em>Iterators for multi-dimensional arrays</em>
+    <DT>
+        <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif">
+        \ref vigra::MultiArrayNavigator
+        <DD> <em>Navigator utility for multi-dimensional arrays</em>
     </DL>
 */
 
@@ -337,21 +386,29 @@
     <DT>
         <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif">
         \ref GeometricTransformations
-        <DD><em>image resize and interpolation</em>
+        <DD><em>image mirroring, resizing and interpolation</em>
+    <DT>
+        <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif">
+        \ref vigra::SplineImageView
+        <DD> <em>Wrap a discrete image as a continous function</em>
     <DT>
         <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif">
         \ref Convolution
-        <DD> <em>1D and 2D filters, including separable and recursive convolution, and non-linear diffusion</em>
+        <DD> <em>1D, 2D, and nD filters, including separable and recursive convolution, and non-linear diffusion</em>
     <DT>
         <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif">
         \ref FourierTransform
-        <DD> <em>forward and backward FFT, FFT plan generation, and related
+        <DD> <em>forward and backward FFT, cosine transform, and related
                  functionality</em>
     <DT>
         <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif">
         \ref GaborFilter
         <DD> <em>Gabor filter generation and related
                  functionality</em>
+    <DT>
+        <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif">
+        \ref TensorImaging
+        <DD> <em>Tensor image processing</em>
     <DT>
         <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif">
         \ref Morphology
@@ -382,6 +439,10 @@
         <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif">
         \ref DistanceTransform
         <DD><em>Distance transform using Euclidean, Manhattan, or chessboard metrics </em>
+    <DT>
+        <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif">
+        \ref TensorImaging
+        <DD> <em>Tensor image analysis</em>
     <DT>
         <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif">
         \ref EdgeDetection

@@ -5,16 +5,14 @@
     VIGRA is known to work with the following compilers:
     
     <ul>
-    <li> SGI C++ 7.2 and 7.3 (CC -n32)
-    <li> <a href="http://gcc.gnu.org/">GNU g++ 2.95.1 and newer</a> 
-          (formerly EGCS 1.1)
+    <li> <a href="http://gcc.gnu.org/">GNU g++ 2.95.3 and newer</a> 
     <li> Microsoft Visual C++ 6.0 and C++.net
     </ul>
 
     VIGRA is known NOT to work with the following compilers:
 
     <ul>
-    <li> GNU g++ 2.8.x and earlier
+    <li> GNU g++ 2.9.2 and earlier
     <li> SUN C++ 4.2 (Sun's old compiler, a new version exists, 
         but has not been tried yet)
     </ul>
@@ -71,15 +69,16 @@
     
     </ul>
 
-    <h3> Windows (Microsoft Visual C++ 6.0 and C++.net):</h3>
+    <h3> Windows (Microsoft Visual C++ 7.1, also known as C++.net 2003):</h3>
     
     <ul>
     <li> uncompress and unpack the source distribution
 
     <li> go into the directory <TT>[some path]/vigra/src/</TT>
 
-    <li> load the workspace <TT>vigra.dsw</TT> (C++ 6.0) or 
-        <TT>vigra.sln</TT> (C++.net) into Visual Studio
+    <li> load the workspace <TT>vigra.sln</TT> into Visual Studio
+    (<b>note:</b> A Visual C++ 6.0 workspace <TT>vigra.dsw</TT> and workarounds 
+      for compiler bugs are still in the distribution but will no longer be maintained.)
 
     <li> specify in the project settings if and where JPEG, TIFF, and FFTW libraries are installed: <br>
     <em> either</em> update the paths to the
@@ -87,15 +86,10 @@
     <a href="http://www.libtiff.org/">libtiff</a>,
     <a href="http://www.libpng.org/">libpng</a>,
     and <a href="http://www.fftw.org/">libfftw</a> on your 
-    system 
-     - <em> or</em> - 
+    system <br>
+     -- <em> or</em> -- 
      remove the <TT>HasJPEG</TT>, <TT>HasTIFF</TT>, and <TT>HasPNG</TT> preprocessor flags.
     
-    <li> MSVC 6.0 doesn't provide <TT>std::min()</TT> and <TT>std::max()</TT>. 
-         If you don't already have your own implementation you must activate
-         the VIGRA implementation of these functions by defining the 
-         preprocessor macro <TT>VIGRA_NO_STD_MINMAX</TT> in the project settings.
-
     <li> build the workspace (that is, the library <TT>vigraimpex.lib</TT> and the \ref Examples)
 
     <li> the \ref Examples can now be invoked from the command line (DOS prompt).

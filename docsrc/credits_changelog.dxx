@@ -26,11 +26,57 @@
       (<a href="mailto:rezniche@kogs.informatik.uni-hamburg.de">rezniche@kogs.informatik.uni-hamburg.de</a>)
       added a number of image processing algorithms.
 
+      <li> Christian Dennis Rahn
+      (<a href="mailto:rahn@informatik.uni-hamburg.de">rahn@informatik.uni-hamburg.de</a>)
+      implemented much of the \ref MultiArrayConvolutionFilters.
+
       <li> Numerous people reported bugs and made suggestions.
 </UL>
 
 Many thanks to all!
 <p>
+
+<b> Changes from Version 1.2.0 to 1.3.0</b>
+
+<UL>
+
+      <li> Added algorithms for \ref MultiDimensionalArrays:
+           \ref MultiPointoperators and \ref MultiArrayConvolutionFilters
+           and the \link vigra::MultiArrayNavigator navigator utility\endlink.
+      
+      <li> Added \ref vigra::Rational
+           
+      <li> Added \ref vigra::Polynomial and \ref polynomialRoots().
+           
+      <li> Added more \link MathFunctions mathematical functions and functors\endlink.
+           
+      <li> Added \ref vigra::SplineImageView.
+      
+      <li> Added \link TensorImaging tensor image processing and analysis\endlink
+      
+      <li> Added 2nd order \ref recursiveFilterX() and \ref recursiveFilterY()
+      
+      <li> Added \ref ResamplingConvolutionFilters and reimplemented 
+           \ref resizeImageSplineInterpolation() in terms of them.
+      
+      <li> Added \link MultiArrayToImage multiarray to image wrappers\endlink.
+      
+      <li> Added \link GeometricTransformations image mirroring and rotation\endlink.
+      
+      <li> Added \link FourierTransform fftw3.hxx to support FFTW version 3\endlink
+           (unfortunately, this is incompatible to FFTW 2, which is still supported in
+           <tt>fftw.hxx</tt> but should no longer be used within VIGRA).
+           
+      <li> Added \ref vigra::ArrayVector as a <tt>std::vector</tt> alternative
+           whose memory is guaranteed to be one contiguous piece and whose
+           iterator is guaranteed to be a <tt>value_type *</tt>.
+      
+      <li> Added an <tt>allocator</tt> template parameters to all classes
+           that allocate dynamic memory.
+      
+      <li> Bug fixes in the code and documentation.
+           
+</UL>
 
 <b> Changes from Version 1.1.6 to 1.2.0</b>
 
