@@ -70,8 +70,11 @@ void findImageSequence(const std::string &name_base,
     WIN32_FIND_DATA FileData;
     
     std::string base, path;
-    int split = name_base.rfind('/');
-    if(split == -1)
+
+	// on Windows, both '/' and '\' are valid path separators
+	// note: std::basic_string.rfind() may return unsigned int, so exlicitely use std::max<int>()
+	int split = std::max<int>(name_base.rfind('/'), name_base.rfind('\\'));  
+	if(split == -1)
     {
         path = ".";
         base = name_base;
