@@ -1062,7 +1062,8 @@ class Kernel1D
         */
     void initDiscreteGaussian(double std_dev, value_type norm);
     
-        /** Init as a Gaussian function with norm 1. 
+        /** Init as a LOineberg's discrete analog of the Gaussian function 
+            with norm 1. 
          */
     void initDiscreteGaussian(double std_dev) 
     {
