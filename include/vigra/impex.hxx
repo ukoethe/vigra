@@ -440,6 +440,30 @@ namespace vigra
         }
     } // write_band()
 
+namespace detail {
+
+    template <class VECTOR_ACCESSOR>
+    struct VectorComponentSelector
+    {
+        VECTOR_ACCESSOR inner_;
+        int index_;
+        
+        typedef typename VECTOR_ACCESSOR::component_type component_type;
+
+        VectorComponentSelector(VECTOR_ACCESSOR const & a, int i)
+        : inner_(a),
+          index_(i)
+        {}
+        
+        template <class ITERATOR>
+        component_type const & operator()(ITERATOR const & i) const 
+        { 
+            return inner_.getComponent(i, index_); 
+        }
+    };
+    
+} // namespace detail
+
     template < class SrcIterator, class SrcAccessor,
                class DestIterator, class DestAccessor >
     void mapVectorImageToByteImage( SrcIterator sul, SrcIterator slr, SrcAccessor sget,
@@ -449,11 +473,19 @@ namespace vigra
         typedef typename SrcValue::value_type SrcComponent;
         typedef typename NumericTraits<SrcValue>::RealPromote PromoteValue;
         typedef typename PromoteValue::value_type PromoteComponent;
+        typedef detail::VectorComponentSelector<SrcAccessor> Selector;
         
         vigra::FindMinMax<SrcComponent> minmax;
-        vigra::inspectImage( sul, slr, sget, minmax );
+        for(int i=0; i<sget.size(sul); ++i)
+        {
+            vigra::inspectImage( sul, slr, Selector(sget, i), minmax );
+        }
         const PromoteComponent scale = 255.0 / (minmax.max - minmax.min);
-        const PromoteValue offset( -minmax.min, -minmax.min, -minmax.min );
+        PromoteValue offset;
+        for(int i=0; i<sget.size(sul); ++i)
+        {
+            offset[i] = -minmax.min;
+        }
         vigra::transformImage( sul, slr, sget, dul, dget,
                                linearIntensityTransform( scale, offset ) );
     }
