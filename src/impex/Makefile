@@ -25,6 +25,12 @@ install: all
 	$(INSTALL) -d $(libdir)
 	$(LIBINSTALL) $(TARGET) $(libdir)
 
+vcinstall: vigraimpex.lib
+	cp vigraimpex.lib /cygdrive/c/Users/Koethe/lib/msvc.net
+
+vigraimpex.lib: $(patsubst %.lo, %.ld, $(OBJS))  # MSVC
+	devenv "..\vigra.sln" /build Release /project impex
+
 clean:
 	rm -f *.o *.lo *.ld core a.out $(TARGET)
 	rm -f *.plg	
