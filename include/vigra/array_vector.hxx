@@ -45,6 +45,8 @@ public:
     typedef unsigned int size_type;
     typedef int          difference_type;
     typedef Alloc        allocator_type;
+    typedef std::reverse_iterator<iterator> reverse_iterator;
+    typedef std::reverse_iterator<const_iterator> const_reverse_iterator;
 
 public:
     ArrayVector();
@@ -95,6 +97,26 @@ public:
     inline iterator end()
     {
         return data() + size();
+    }
+
+    inline reverse_iterator rbegin()
+    {
+        return (reverse_iterator(end()));
+    }
+
+    inline const_reverse_iterator rbegin() const
+    {
+        return (const_reverse_iterator(end()));
+    }
+
+    inline reverse_iterator rend()
+    {    
+        return (reverse_iterator(begin()));
+    }
+
+    inline const_reverse_iterator rend() const
+    {    
+        return (const_reverse_iterator(begin()));
     }
 
     reference front()
