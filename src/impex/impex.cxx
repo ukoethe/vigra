@@ -75,7 +75,7 @@ std::string vigraImpexListFormats()
 ImageImportInfo::ImageImportInfo(char const * filename)
 : filename_(filename),
   filetype_(0),
-  colorspace_(VigraImpexUndefinedColorspace),
+  colorspace_(UNDEF),
   viff_(0),
   impex_(0)
 {
@@ -99,7 +99,7 @@ void ImageImportInfo::deleteInternalImages()
         vigraImpexDestroyImage(impex_);
         impex_ = 0;
     }
-    colorspace_ = VigraImpexUndefinedColorspace;
+    colorspace_ = UNDEF;
 }
 
 void ImageImportInfo::loadImage(char const * filename)
@@ -116,11 +116,23 @@ void ImageImportInfo::loadImage(char const * filename)
                
         if(viff_->num_data_bands == 3 || viff_->map_scheme == VFF_MS_ONEPERBAND)
         {
-            colorspace_ = VigraImpexRGBColorspace;
+            colorspace_ = RGB;
         }
         else
         {
-            colorspace_ = VigraImpexGRAYColorspace;
+            colorspace_ = GRAY;
+        }
+        width_ = viff_->row_size;
+        height_ = viff_->col_size;
+        switch(viff_->data_storage_type)
+        {
+            case VFF_TYP_1_BYTE: pixelType_ = UINT8;  break;
+            case VFF_TYP_2_BYTE: pixelType_ = INT16;  break;
+            case VFF_TYP_4_BYTE: pixelType_ = INT32;  break;
+            case VFF_TYP_FLOAT:  pixelType_ = FLOAT;  break;
+            case VFF_TYP_DOUBLE: pixelType_ = DOUBLE; break;
+            default:
+                fail("ImageImportInfo::loadImage(): unsupported pixel type.");
         }
     }
     else
@@ -140,12 +152,15 @@ void ImageImportInfo::loadImage(char const * filename)
                
         if(vigraImpexIsGrayImage(impex_))
         {
-            colorspace_ = VigraImpexGRAYColorspace;
+            colorspace_ = GRAY;
         }
         else
         {
-            colorspace_ = VigraImpexRGBColorspace;
+            colorspace_ = RGB;
         }
+        width_ = impex_->columns;
+        height_ = impex_->rows;
+        pixelType_ = UINT8;
     }
 }
 

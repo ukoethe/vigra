@@ -95,5 +95,11 @@ class InvariantViolation : public ContractViolation
 #define invariant(PREDICATE, MESSAGE) \
         if(PREDICATE); else throw InvariantViolation(MESSAGE, __FILE__, __LINE__)
             
+#define fail(MESSAGE) \
+        { \
+            char buf[1000]; \
+            sprintf(buf, "%.900s (" __FILE__ ":%d)", (MESSAGE), __LINE__); \
+            throw std::runtime_error(buf); \
+        } 
 
 #endif // VIGRA_ERROR_HXX

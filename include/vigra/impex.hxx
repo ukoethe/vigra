@@ -133,6 +133,11 @@ class ImageExportInfo
 class ImageImportInfo
 {
   public:
+    enum ColorSpace { GRAY = VigraImpexGRAYColorspace,
+                      RGB = VigraImpexRGBColorspace,
+                      UNDEF = VigraImpexUndefinedColorspace };
+    enum PixelType { UINT8, INT16, INT32, FLOAT, DOUBLE };
+    
         /** Construct ImageImportInfo object.
             The image with the given filename is read into memory.
             The file type will be determined by the first few bytes of the
@@ -159,6 +164,8 @@ class ImageImportInfo
         return viff_ != 0; 
     }
     char const * fileName() const { return filename_.c_str(); }
+    
+    bool fileIsLoaded() const { return viff_ || impex_; }
 
         /** Get width of the image.
 
@@ -166,11 +173,8 @@ class ImageImportInfo
         **/
     int width() const
     {
-        if(isViff()) return viff_->row_size;
-        if (impex_ != 0) return impex_->columns;
-        
-        precondition(0, "ImageImportInfo::width(): No image loaded");
-        return -1;
+        precondition(fileIsLoaded(), "ImageImportInfo::width(): No image loaded");
+        return width_;
     }
         /** Get height of the image.
 
@@ -178,11 +182,8 @@ class ImageImportInfo
         **/
     int height() const
     {
-        if(isViff()) return viff_->col_size;
-        if (impex_ != 0) return impex_->rows;
-        
-        precondition(0, "ImageImportInfo::height(): No image loaded");
-        return -1;
+        precondition(fileIsLoaded(), "ImageImportInfo::height(): No image loaded");
+        return height_;
     }
         /** Get size of the image.
 
@@ -198,7 +199,7 @@ class ImageImportInfo
         **/
     bool isGrayscale() const
     {
-        return colorspace_ == VigraImpexGRAYColorspace;
+        return colorSpace() == GRAY;
     }
         /** Returns true if the image is colored (RGB).
 
@@ -206,7 +207,19 @@ class ImageImportInfo
         **/
     bool isColor() const
     {
-        return colorspace_ == VigraImpexRGBColorspace;
+        return colorSpace() == RGB;
+    }
+    
+    ColorSpace colorSpace() const 
+    {
+        precondition(fileIsLoaded(), "ImageImportInfo::colorSpace(): No image loaded");
+        return colorspace_; 
+    }
+    
+    PixelType pixelType() const 
+    { 
+        precondition(fileIsLoaded(), "ImageImportInfo::pixelType(): No image loaded");
+        return pixelType_; 
     }
     
         /** Returns true if the image 1 byte per pixel (gray) or
@@ -216,8 +229,7 @@ class ImageImportInfo
         **/
     bool isByte() const
     {
-        if(!isViff()) return true;  
-        return viff_->data_storage_type == VFF_TYP_1_BYTE;
+        return pixelType() == UINT8;
     }
     
     void findFileTypeFromMagicString(char const * filename);
@@ -226,7 +238,9 @@ class ImageImportInfo
     
     std::string filename_;
     ImageFileTypeInfo * filetype_;
-    VigraImpexColorspaceType colorspace_;
+    ColorSpace colorspace_;
+    int width_, height_;
+    PixelType pixelType_;
     ViffImage * viff_;
     VigraImpexImage * impex_;
     

@@ -577,11 +577,11 @@ struct IfThenElseFunctor
     {
         typename 
             ResultTraits1<IfThenElseFunctor, T>::Res 
-            r2(expr2_(v1, v2, v3));
+            r2(expr2_(v1));
         typename 
             ResultTraits1<IfThenElseFunctor, T>::Res 
-            r3(expr3_(v1, v2, v3));
-        return expr1_(v1, v2, v3) ? r2 : r3;
+            r3(expr3_(v1));
+        return expr1_(v1) ? r2 : r3;
     }
 
     template <class T1, class T2> 
@@ -590,11 +590,11 @@ struct IfThenElseFunctor
     {
         typename 
             ResultTraits2<IfThenElseFunctor, T1, T2>::Res 
-            r2(expr2_(v1, v2, v3));
+            r2(expr2_(v1, v2));
         typename 
             ResultTraits2<IfThenElseFunctor, T1, T2>::Res 
-            r3(expr3_(v1, v2, v3));
-        return expr1_(v1, v2, v3) ? r2 : r3;
+            r3(expr3_(v1, v2));
+        return expr1_(v1, v2) ? r2 : r3;
     }
 
     template <class T1, class T2, class T3> 
