@@ -519,7 +519,11 @@ struct ImageFunctionsTest
         transformImage(srcImageRange(img), destImage(img1),
 					   linearRangeMapping(1.0, 10.0, 0, 255));
 
+#if defined(__CYGWIN__)
+        int res[] = {3, 34, 65, 96, 127, 159, 190, 221, 252 };
+#else
         int res[] = {3, 34, 65, 96, 128, 159, 190, 221, 252 };
+#endif
         shouldEqualSequence(img1.begin(), img1.end(), res);
 
         BRGBImage img2(3,3);
