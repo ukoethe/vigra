@@ -149,6 +149,10 @@ class Diff2DConstColumnIteratorPolicy
      <DD><em>Deprecated - use \ref vigra::Diff2D</em>
     <DT>
     <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif">
+     \ref PixelNeighborhood
+     <DD><em>4- and 8-neighborhood definitions and circulators</em>
+    <DT>
+    <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif">
      \ref vigra::IteratorAdaptor
      <DD><em>Quickly create STL-compatible 1D iterator adaptors</em>
      <DT>

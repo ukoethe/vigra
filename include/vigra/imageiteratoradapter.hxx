@@ -29,7 +29,7 @@ namespace vigra {
 
 /** \addtogroup ImageIteratorAdapters Image Iterator Adapters
 
-     Iterate over rows, columns, and other image subsets
+     Iterate over rows, columns, neighborhoods, contours, and other image subsets
 */
 //@{
 
