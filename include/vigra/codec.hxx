@@ -41,8 +41,50 @@
 
 namespace vigra
 {
+    template <class T>
+    struct TypeAsString
+    {
+        static std::string result() { return "undefined"; }
+    };
+    
+    template <>
+    struct TypeAsString<unsigned char>
+    {
+        static std::string result() { return "UINT8"; }
+    };
+    
+    template <>
+    struct TypeAsString<short>
+    {
+        static std::string result() { return "INT16"; }
+    };
+    
+    template <>
+    struct TypeAsString<int>
+    {
+        static std::string result() { return "INT32"; }
+    };
+    
+    template <>
+    struct TypeAsString<long>
+    {
+        static std::string result() { return "INT32"; }
+    };
+    
+    template <>
+    struct TypeAsString<float>
+    {
+        static std::string result() { return "FLOAT"; }
+    };
+    
+    template <>
+    struct TypeAsString<double>
+    {
+        static std::string result() { return "DOUBLE"; }
+    };
+    
+    
     // codec description
-
     struct CodecDesc
     {
         std::string fileType;
@@ -123,6 +165,9 @@ namespace vigra
     // functions to query the capabilities of certain codecs
 
     std::vector<std::string> queryCodecPixelTypes( const std::string & );
+
+    bool negotiatePixelType( std::string const & codecname,
+                 std::string const & srcPixeltype, std::string & destPixeltype);
 
     bool isPixelTypeSupported( const std::string &, const std::string & );
 
