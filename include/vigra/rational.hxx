@@ -852,13 +852,6 @@ void Rational<IntType>::normalize()
     }
 }
 
-template <typename IntType>
-std::ostream& operator<< (std::ostream& os, const Rational<IntType>& r)
-{
-    os << r.numerator() << '/' << r.denominator();
-    return os;
-}
-
 // Type conversion
 template <typename T, typename IntType>
 inline T rational_cast(const Rational<IntType>& src)
@@ -956,6 +949,15 @@ Rational<IntType> ceil(const Rational<IntType>& r)
 
 
 } // namespace vigra
+
+template <typename IntType>
+std::ostream& operator<< (std::ostream& os, const vigra::Rational<IntType>& r)
+{
+    os << r.numerator() << '/' << r.denominator();
+    return os;
+}
+
+
 
 #endif  // VIGRA_RATIONAL_HPP
 
