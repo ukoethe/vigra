@@ -614,7 +614,7 @@ namespace vigra {
     void ViffDecoderImpl::color_map()
     {
         void_vector_base temp_bands;
-        unsigned int temp_num_bands;
+        size_t temp_num_bands;
 
         if ( header.map_storage_type == VFF_MAPTYP_1_BYTE ) {
             typedef unsigned char map_storage_type;
