@@ -12,17 +12,6 @@ libdir = @libdir@
 bindir = @bindir@
 docdir = @datadir@/doc/vigra
 
-CC = @CC@
-CFLAGS := @CFLAGS@
-LIBCFLAGS := @LIBCFLAGS@
-CINCLUDES := @CINCLUDES@
-
-CXX = @CXX@
-CXXFLAGS := @CXXFLAGS@
-LIBCXXFLAGS := @LIBCXXFLAGS@
-CXXINCLUDES := @CXXINCLUDES@
-
-LD = @LD@
 LIBS = @LIBS@
 JPEG_LIB = @JPEG_LIB@
 TIFF_LIB = @TIFF_LIB@
@@ -32,36 +21,43 @@ FFTW_LIB = @FFTW_LIB@
 VIGRA_INCLUDES = @VIGRA_INCLUDES@
 FFTW_INCLUDES = @FFTW_INCLUDES@
 
-LIBTOOL = ${vigra_builddir}/libtool
+CC = @CC@
+CFLAGS := @CFLAGS@
+CXX = @CXX@
+CXXFLAGS := @CXXFLAGS@
+CPPFLAGS := @CPPFLAGS@
+LD = @LD@
+
+LIBTOOL = @LIBTOOL@
 LIBCC = $(LIBTOOL) --mode=compile $(CC)
 LIBCXX = $(LIBTOOL) --tag=CXX --mode=compile $(CXX)
-LINKCLIB = $(LIBTOOL) --mode=link $(CC) -rpath $(libdir)
-LINKCXXLIB = $(LIBTOOL) --mode=link $(CXX) -rpath $(libdir)
 LINKC = $(LIBTOOL) --mode=link $(CC)
 LINKCXX = $(LIBTOOL) --tag=CXX --mode=link $(CXX)
+LINKCLIB = $(LINKC) -rpath $(libdir)
+LINKCXXLIB = $(LINKCXX) -rpath $(libdir)
 LIBINSTALL = $(LIBTOOL) --mode=install @INSTALL@
 INSTALL = @INSTALL@
 
 %.o: %.c
-	$(CC) $(CFLAGS) $(CINCLUDES) -c $*.c
+    $(CC) $(CFLAGS) $(CPPFLAGS) -c $*.c
 
 %.o: %.cxx
-	$(CXX) $(CXXFLAGS) $(CXXINCLUDES) -c $*.cxx
+    $(CXX) $(CXXFLAGS) $(CPPFLAGS) -c $*.cxx
 
 %.lo: %.c
-	$(LIBCC) $(CFLAGS) $(LIBCFLAGS) $(CINCLUDES) -c $*.c
+    $(LIBCC) $(CFLAGS) $(CPPFLAGS) $(LIBCPPFLAGS) -c $*.c
 
 %.lo: %.cxx
-	$(LIBCXX) $(CXXFLAGS) $(LIBCXXFLAGS) $(CXXINCLUDES) -c $*.cxx
+    $(LIBCXX) $(CXXFLAGS) $(CPPFLAGS) $(LIBCPPFLAGS) -c $*.cxx
 
 %.d: %.c
-	@echo updating header dependencies for $*.c
-	@rm -f $*.d
-	@(echo -e "$*.d \c" ; $(CC) -M $(CFLAGS) $(CINCLUDES) -c $*.c) > $*.d \
+    @echo updating header dependencies for $*.c
+    @rm -f $*.d
+    @(echo -e "$*.d \c" ; $(CC) -M $(CFLAGS) $(CPPFLAGS) -c $*.c) > $*.d \
         || { rm -f $*.d; exit 1; }
 
 %.d: %.cxx
-	@echo updating header dependencies for $*.cxx
-	@rm -f $*.d
-	@(echo -e "$*.d \c" ; $(CXX) -M $(CXXFLAGS) $(CXXINCLUDES) -c $*.cxx) > $*.d \
+    @echo updating header dependencies for $*.cxx
+    @rm -f $*.d
+    @(echo -e "$*.d \c" ; $(CXX) -M $(CXXFLAGS) $(CPPFLAGS) -c $*.cxx) > $*.d \
         || { rm -f $*.d; exit 1; }

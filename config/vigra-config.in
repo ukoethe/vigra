@@ -20,7 +20,7 @@ Options:
     [--target]     output platform this vigra version was configured for
     [--impex-lib]  output flags for linking libvigraimpex
     [--fftw-lib]   output flags for linking libfftw$fftwstatus
-    [--cxxflags]   output include flags for vigra$fftwflags
+    [--cppflags]   output include flags for vigra$fftwflags
    ([--libs]       synonym for --impex-lib)
 EOF
     exit $1
@@ -41,8 +41,8 @@ while test $# -gt 0; do
     --target|--platform)
       echo @target@
       ;;
-    --cxxincludes|--cxxflags)
-      echo '@CXXINCLUDES@' \
+    --cppflags|--cxxincludes|--cxxflags|--cincludes|--cflags)
+      echo '@CPPFLAGS@' \
         | sed "s,\$[({]prefix[})],@prefix@,"
       ;;
     --impex_lib|--impex-lib|--libs)

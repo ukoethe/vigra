@@ -34,11 +34,9 @@ AC_MINGW32
 
 CFLAGS=-O
 CXXFLAGS=-O
-LIBCFLAGS=
-LIBCXXFLAGS=
+LIBCPPFLAGS=
 VIGRA_INCLUDES='-I$(prefix)/include'
-CINCLUDES="$VIGRA_INCLUDES"
-CXXINCLUDES="$VIGRA_INCLUDES"
+CPPFLAGS="$VIGRA_INCLUDES $CPPFLAGS"
 
 AC_PROG_CC
 AC_PROG_CXX
@@ -46,12 +44,15 @@ AM_PROG_LD
 AC_SUBST(LD)
 VIGRA_PROG_INSTALL
 
-# Configure libtool
-AC_ENABLE_SHARED(no)
-AC_ENABLE_STATIC(yes)
+dnl-------------------------------------------------------------------
+dnl                     libtool configuration
+dnl-------------------------------------------------------------------
+AC_ENABLE_SHARED(yes)
+AC_ENABLE_STATIC(no)
 AC_LIBTOOL_SETUP dnl tell autoconf about libtools prerequisites
 AC_PROG_LIBTOOL
 AC_LIBTOOL_CXX
+LIBTOOL=`echo $LIBTOOL | sed 's,$(top_builddir),'$vigra_interactive_builddir,`
 
 #########################################################
 
@@ -60,8 +61,7 @@ if test $with_tiff = "yes";
 then
     TIFF_LIB="-L$with_tifflib -ltiff"
     IMPEX_DEPLIBS="$IMPEX_DEPLIBS $TIFF_LIB"
-    LIBCFLAGS="$LIBCFLAGS -DHasTIFF -I$with_tiffinc"
-    LIBCXXFLAGS="$LIBCXXFLAGS -DHasTIFF -I$with_tiffinc"
+    LIBCPPFLAGS="$LIBCXXFLAGS -DHasTIFF -I$with_tiffinc"
 fi
 
 VIGRA_FIND_PACKAGE(jpeg, jpeg, jpeglib.h, [support import/export of jpeg images [default=no]])
@@ -69,8 +69,7 @@ if test $with_jpeg = "yes";
 then
     JPEG_LIB="-L$with_jpeglib -ljpeg"
     IMPEX_DEPLIBS="$IMPEX_DEPLIBS $JPEG_LIB"
-    LIBCFLAGS="$LIBCFLAGS -DHasJPEG -I$with_jpeginc"
-    LIBCXXFLAGS="$LIBCXXFLAGS -DHasJPEG -I$with_jpeginc"
+    LIBCPPFLAGS="$LIBCXXFLAGS -DHasJPEG -I$with_jpeginc"
 fi
 
 VIGRA_FIND_PACKAGE(fftw, fftw, fftw.h, [support fast Fourier transforms [default=no]])
@@ -78,7 +77,7 @@ if test $with_fftw = "yes";
 then
     FFTW_LIB="-L$with_fftwlib -lfftw"
     FFTW_INCLUDES="-I$with_fftwinc"
-    CXXINCLUDES="$CXXINCLUDES $FFTW_INCLUDES"
+    CPPFLAGS="$FFTW_INCLUDES $CPPFLAGS"
 fi
 
 #########################################################
@@ -97,10 +96,7 @@ AC_SUBST(IMPEX_LIB)
 AC_SUBST(IMPEX_DEPLIBS)
 AC_SUBST(VIGRA_INCLUDES)
 
-AC_SUBST(CINCLUDES)
-AC_SUBST(CXXINCLUDES)
-AC_SUBST(LIBCFLAGS)
-AC_SUBST(LIBCXXFLAGS)
+AC_SUBST(LIBCPPFLAGS)
 
 AC_OUTPUT(config/Makefile.include config/vigra-config)
 chmod +x config/vigra-config
