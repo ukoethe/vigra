@@ -94,7 +94,7 @@ void tinyCopy2(T1 * t1, T2 const * t2, SizeType<4>)
 
 #endif // NO_PARTIAL_TEMPLATE_SPECIALIZATION
 
-template <int SIZE, class T1>
+template <class T1, int SIZE>
 inline
 void tinyCopy1(T1 * t1, T1 const * t2, SizeType<SIZE>)
 {
@@ -102,7 +102,7 @@ void tinyCopy1(T1 * t1, T1 const * t2, SizeType<SIZE>)
         *t1 = *t2;
 }
 
-template <int SIZE, class T1, class T2>
+template <class T1, class T2, int SIZE>
 inline
 void tinyCopy2(T1 * t1, T2 const * t2, SizeType<SIZE>)
 {
@@ -350,7 +350,7 @@ operator<<(std::ostream & out, TinyVector<V1, SIZE> const & l)
  */
 //@{
     /// component-wise equal
-template <class V1, class V2, int SIZE>
+template <class V1, int SIZE, class V2>
 inline bool
 operator==(TinyVector<V1, SIZE> const & l, TinyVector<V2, SIZE> const & r)
 {
@@ -383,7 +383,7 @@ operator!=(TinyVector<V1, 4> const & l, TinyVector<V2, 4> const & r)
 #endif // NO_PARTIAL_TEMPLATE_SPCIALIZATION
 
     /// component-wise not equal
-template <class V1, class V2, int SIZE>
+template <class V1, int SIZE, class V2>
 inline bool
 operator!=(TinyVector<V1, SIZE> const & l, TinyVector<V2, SIZE> const & r)
 {
@@ -658,7 +658,7 @@ TINYVECTOR_TRAITS(4)
 
 
     /// componentwise add-assignment
-template <class V1, class V2, int SIZE>
+template <class V1, int SIZE, class V2>
 inline
 TinyVector<V1, SIZE> &
 operator+=(TinyVector<V1, SIZE> & l, TinyVector<V2, SIZE> const & r)
@@ -674,7 +674,7 @@ operator+=(TinyVector<V1, SIZE> & l, TinyVector<V2, SIZE> const & r)
 VIGRA_OPERATOR_UNROLL_LOOP(+=)
 
     /// componentwise subtract-assignment
-template <class V1, class V2, int SIZE>
+template <class V1, int SIZE, class V2>
 inline
 TinyVector<V1, SIZE> &
 operator-=(TinyVector<V1, SIZE> & l, TinyVector<V2, SIZE> const & r)
@@ -690,7 +690,7 @@ operator-=(TinyVector<V1, SIZE> & l, TinyVector<V2, SIZE> const & r)
 VIGRA_OPERATOR_UNROLL_LOOP(-=)
 
     /// componentwise multiply-assignment
-template <class V1, class V2, int SIZE>
+template <class V1, int SIZE, class V2>
 inline
 TinyVector<V1, SIZE> &
 operator*=(TinyVector<V1, SIZE> & l, TinyVector<V2, SIZE> const & r)
@@ -774,7 +774,7 @@ operator/=(TinyVector<V, SIZE> & l, double r)
 #undef VIGRA_OPERATOR_UNROLL_LOOP_DOUBLE
 
     /// component-wise addition
-template <class V1, class V2, int SIZE>
+template <class V1, int SIZE, class V2>
 inline
 typename PromoteTraits<TinyVector<V1, SIZE>, TinyVector<V2, SIZE> >::Promote
 operator+(TinyVector<V1, SIZE> const & r1, TinyVector<V2, SIZE> const & r2)
@@ -787,7 +787,7 @@ operator+(TinyVector<V1, SIZE> const & r1, TinyVector<V2, SIZE> const & r2)
 }
 
     /// component-wise subtraction
-template <class V1, class V2, int SIZE>
+template <class V1, int SIZE, class V2>
 inline
 typename PromoteTraits<TinyVector<V1, SIZE>, TinyVector<V2, SIZE> >::Promote
 operator-(TinyVector<V1, SIZE> const & r1, TinyVector<V2, SIZE> const & r2)
@@ -800,7 +800,7 @@ operator-(TinyVector<V1, SIZE> const & r1, TinyVector<V2, SIZE> const & r2)
 }
 
     /// component-wise multiplication
-template <class V1, class V2, int SIZE>
+template <class V1, int SIZE, class V2>
 inline
 typename PromoteTraits<TinyVector<V1, SIZE>, TinyVector<V2, SIZE> >::Promote
 operator*(TinyVector<V1, SIZE> const & r1, TinyVector<V2, SIZE> const & r2)
@@ -928,7 +928,7 @@ dot(TinyVector<V1, 4> const & l, TinyVector<V2, 4> const & r)
 #endif // NO_PARTIAL_TEMPLATE_SPECIALIZATION
 
     /// dot product
-template <class V1, class V2, int SIZE>
+template <class V1, int SIZE, class V2>
 inline
 typename PromoteTraits<V1, V2>::Promote
 dot(TinyVector<V1, SIZE> const & r1, TinyVector<V2, SIZE> const & r2)
