@@ -1,6 +1,6 @@
 /************************************************************************/
 /*                                                                      */
-/*               Copyright 2002 by Gunnar Kedenburg                     */
+/*               Copyright 2002 by Ullrich Koethe                       */
 /*       Cognitive Systems Group, University of Hamburg, Germany        */
 /*                                                                      */
 /*    This file is part of the VIGRA computer vision library.           */
@@ -47,20 +47,6 @@ namespace {
         if(!stream.good())
             return -1;
         return count;
-    }
-    
-    void write_data_blocks(std::ofstream & stream, unsigned char * data, int size)
-    {
-        static int chunk_size = 254;
-        while(size > chunk_size)
-        {
-            stream.put((unsigned char)chunk_size);
-            stream.write(data, chunk_size);
-            size -= chunk_size;
-            data += chunk_size;
-        }
-        stream.put((unsigned char)size);
-        stream.write(data, size);
     }
     
     struct ColorCluster
@@ -189,12 +175,12 @@ namespace {
     };
     
     
-    void find_color_map(void_vector<unsigned char> & data, void_vector<unsigned char> & colors)
+    void find_color_clusters(void_vector<unsigned char> & data, 
+            std::vector<ColorCluster> & clusters, void_vector<unsigned char> & colors)
     {
-        int count = colors.size() / 3;
+        int count = clusters.size();
         int size = data.size() / 3;
         int i, current;
-        std::vector<ColorCluster> clusters(count);
         for(i=0; i<size; ++i)
         {
             clusters[0].add(data.begin()+3*i);
@@ -224,6 +210,23 @@ namespace {
             else
             {
                 clusters[i].average(colors.begin() + 3*i);
+            }
+        }
+    }
+    
+    void find_color_indices(void_vector<unsigned char> & data, 
+           std::vector<ColorCluster> & clusters, void_vector<unsigned char> & indices)
+    {
+        int count = clusters.size();
+        unsigned char * base = data.begin();
+        
+        int i;
+        for(i=0; i<count; ++i)
+        {
+            for(int j=0; j<clusters[i].size(); ++j)
+            {
+                int offset = (clusters[i].entries[j] - base) / 3;
+                indices[offset] = i;
             }
         }
     }
@@ -305,8 +308,8 @@ namespace {
         write_field( stream, bo, width );
         write_field( stream, bo, height );
         write_field( stream, bo, (unsigned char)0xf7 );
-        write_field( stream, bo, (unsigned char)0 );
-        write_field( stream, bo, (unsigned char)0 );
+        write_field( stream, bo, (unsigned char)0 );  // background
+        write_field( stream, bo, (unsigned char)0 );  // must be zero
     }
 
     bool GIFHeader::local_from_stream( std::ifstream & stream, const byteorder & bo )
@@ -774,7 +777,7 @@ namespace {
     
     void GIFEncoderImpl::writeImageData()
     {
-        stream.put(header.bits_per_pixel);
+        stream.put(header.bits_per_pixel); // code size
         if(components == 3)
         {
             outputEncodedData(indices);
@@ -783,6 +786,8 @@ namespace {
         {
             outputEncodedData(bands);
         }
+        stream.put(0);   // end of raster stream
+        stream.put(';'); // GIF terminator
     }
     
     void GIFEncoderImpl::reduceTo256Colors()
@@ -793,14 +798,10 @@ namespace {
         maps.resize(header.maplength);
         if(components == 3)
         {
-            find_color_map(bands, maps);
-
-#if 0
-            
-            /* ??? not yet implemented */
-            find_nearest_index(bands, maps, indices);
-#endif /* #if 0 */
-
+            std::vector<ColorCluster> clusters(256);
+            find_color_clusters(bands, clusters, maps);
+            indices.resize(header.width*header.height);
+            find_color_indices(bands, clusters, indices);
         }
         else
         {
@@ -856,123 +857,120 @@ namespace {
             } \
         }
 
-          /* ??? this algorithm does not work */
-          int
-            bits,
-            byte_count,
-            number_bits,
-            data_size = header.bits_per_pixel;
-          unsigned int  i;
+        int
+          bits,
+          byte_count,
+          number_bits,
+          data_size = header.bits_per_pixel;
+        unsigned int  i;
 
-          long
-            datum;
+        long
+          datum;
 
-          register int k;
+        register int k;
 
-          register unsigned char *p;
+        register unsigned char *p;
 
-          void_vector<short> hash_code(MaxHashTable);
-          void_vector<short> hash_prefix(MaxHashTable);
-          
-          short
-            clear_code,
-            end_of_information_code,
-            free_code,
-            index,
-            max_code,
-            waiting_code;
+        void_vector<short> hash_code(MaxHashTable);
+        void_vector<short> hash_prefix(MaxHashTable);
+        void_vector<short> hash_suffix(MaxHashTable);
+        
+        short
+          clear_code,
+          end_of_information_code,
+          free_code,
+          index,
+          max_code,
+          waiting_code;
 
-          void_vector<unsigned char> packet(256);
-          void_vector<unsigned char> hash_suffix(MaxHashTable);
+        void_vector<unsigned char> packet(256);
 
-         /*
-            Initialize GIF encoder.
-          */
-          number_bits=data_size;
-          max_code=MaxCode(number_bits);
-          clear_code=((short) 1 << (data_size-1));
-          end_of_information_code=clear_code+1;
-          free_code=clear_code+2;
-          byte_count=0;
-          datum=0;
-          bits=0;
-          for (i=0; i < MaxHashTable; i++)
-            hash_code[i]=0;
-          GIFOutputCode(clear_code);
-          /*
-            Encode pixels.
-          */
-          p=indices.begin();
-          waiting_code=*p;
-          for (i=0; i < indices.size(); i++)
+        /*
+          Initialize GIF encoder.
+        */
+        number_bits=data_size+1;
+        max_code=MaxCode(number_bits);
+        clear_code=((short) 1 << data_size);
+        end_of_information_code=clear_code+1;
+        free_code=clear_code+2;
+        byte_count=0;
+        datum=0;
+        bits=0;
+        for (i=0; i < MaxHashTable; i++)
+          hash_code[i]=0;
+        GIFOutputCode(clear_code);
+        /*
+          Encode pixels.
+        */
+        p=indices.begin();
+        waiting_code=*p;
+        for (i=0; i < indices.size(); i++)
+        {
+          if(i > 0)
           {
-            if(i > 0)
+            /*
+              Probe hash table.
+            */
+            index=*p & 0xff;
+            k=(int) ((int) index << (MaxGIFBits-8))+waiting_code;
+            if (k >= MaxHashTable)
+              k-=MaxHashTable;
+            GIFOutputCode(waiting_code);
+            if (free_code < MaxGIFTable)
             {
-              /*
-                Probe hash table.
-              */
-              index=*p & 0xff;
-              k=(int) ((int) index << (MaxGIFBits-8))+waiting_code;
-              if (k >= MaxHashTable)
-                k-=MaxHashTable;
-              GIFOutputCode(waiting_code);
-              if (free_code < MaxGIFTable)
-                {
-                  hash_code[k]=free_code++;
-                  hash_prefix[k]=waiting_code;
-                  hash_suffix[k]=index;
-                }
-              else
-                {
-                  /*
-                    Fill the hash table with empty entries.
-                  */
-                  for (k=0; k < MaxHashTable; k++)
-                    hash_code[k]=0;
-                  /*
-                    Reset compressor and issue a clear code.
-                  */
-                  free_code=clear_code+2;
-                  GIFOutputCode(clear_code);
-                  number_bits=data_size;
-                  max_code=MaxCode(number_bits);
-                }
-              waiting_code=index;
+                hash_code[k]=free_code++;
+                hash_prefix[k]=waiting_code;
+                hash_suffix[k]=index;
             }
-            p++;
+            else
+            {
+                /*
+                  Fill the hash table with empty entries.
+                */
+                for (k=0; k < MaxHashTable; k++)
+                  hash_code[k]=0;
+                /*
+                  Reset compressor and issue a clear code.
+                */
+                free_code=clear_code+2;
+                GIFOutputCode(clear_code);
+                number_bits=data_size+1;
+                max_code=MaxCode(number_bits);
+            }
+            waiting_code=index;
           }
-          /*
-            Flush out the buffered code.
-          */
-          GIFOutputCode(waiting_code);
-          GIFOutputCode(end_of_information_code);
-          if (bits > 0)
+          p++;
+        }
+        /*
+          Flush out the buffered code.
+        */
+        GIFOutputCode(waiting_code);
+        GIFOutputCode(end_of_information_code);
+        if (bits > 0)
+        {
+            /*
+              Add a character to current packet.
+            */
+            packet[byte_count++]=(unsigned char) (datum & 0xff);
+            if (byte_count >= 254)
             {
-              /*
-                Add a character to current packet.
-              */
-              packet[byte_count++]=(unsigned char) (datum & 0xff);
-              if (byte_count >= 254)
-                {
-                  stream.put(byte_count);
-                  stream.write(packet.begin(),byte_count);
-                  byte_count=0;
-                }
+                stream.put(byte_count);
+                stream.write(packet.begin(),byte_count);
+                byte_count=0;
             }
-          /*
-            Flush accumulated data.
-          */
-          if (byte_count > 0)
-            {
-                  stream.put(byte_count);
-                  stream.write(packet.begin(),byte_count);
-            }
+        }
+        /*
+          Flush accumulated data.
+        */
+        if (byte_count > 0)
+        {
+                stream.put(byte_count);
+                stream.write(packet.begin(),byte_count);
+        }
     }
     
     void GIFEncoder::init( const std::string & filename )
     {
-        vigra_fail("GIF output no longer supported. "
-                   "Use PNG (GIF's successor) or another format.");
         pimpl = new GIFEncoderImpl(filename);
     }
 
