@@ -31,6 +31,61 @@
 
 namespace vigra {
 
+template <class IMAGEITERATOR>
+class LineBasedColumnIteratorPolicy
+{
+  public:
+    typedef IMAGEITERATOR                             ImageIterator;
+    typedef typename IMAGEITERATOR::LineStartIterator LineStartIterator;
+    typedef typename ImageIterator::value_type        value_type;
+    typedef typename ImageIterator::difference_type::MoveY            
+                                                      difference_type;
+    typedef typename ImageIterator::reference         reference;
+    typedef typename ImageIterator::index_reference   index_reference;
+    typedef typename ImageIterator::pointer           pointer;
+    typedef std::random_access_iterator_tag           iterator_category;
+    
+    
+    struct BaseType
+    {
+        explicit BaseType(LineStartIterator c = LineStartIterator(), 
+                          difference_type o = 0)
+        : line_start_(c), offset_(o)
+        {}
+        
+        LineStartIterator line_start_;
+        difference_type offset_;
+    };
+    
+    static void initialize(BaseType & d) {}
+    
+    static reference dereference(BaseType const & d)
+        { return const_cast<reference>(*(*d.line_start_ + d.offset_)); }
+    
+    static index_reference dereference(BaseType const & d, difference_type n)
+    { 
+        return const_cast<index_reference>(*(d.line_start_[n] + d.offset_));
+    }
+    
+    static bool equal(BaseType const & d1, BaseType const & d2)
+        { return d1.line_start_ == d2.line_start_; }
+    
+    static bool less(BaseType const & d1, BaseType const & d2)
+        { return d1.line_start_ < d2.line_start_; }
+    
+    static difference_type difference(BaseType const & d1, BaseType const & d2)
+        { return d1.line_start_ - d2.line_start_; }
+    
+    static void increment(BaseType & d)
+        { ++d.line_start_; }
+    
+    static void decrement(BaseType & d)
+        { --d.line_start_; }
+    
+    static void advance(BaseType & d, difference_type n)
+        { d.line_start_ += n; }
+};
+
 /********************************************************/
 /*                                                      */
 /*                  BasicImageIteratorBase              */
@@ -40,16 +95,14 @@ namespace vigra {
 template <class PIXELTYPE, class ITERATOR>
 class BasicImageIteratorBase
 {
-  protected:
-    typedef ITERATOR Iterator;
-
   public:
+    typedef ITERATOR  LineStartIterator;
     typedef PIXELTYPE PixelType;
     typedef PIXELTYPE value_type;
     
     typedef int MoveX;
     
-    typedef Iterator MoveY;
+    typedef LineStartIterator MoveY;
     
     bool operator==(BasicImageIteratorBase const & rhs) const
     {
@@ -70,7 +123,7 @@ class BasicImageIteratorBase
     MoveY y;
 
   protected:
-    BasicImageIteratorBase(Iterator line)
+    BasicImageIteratorBase(LineStartIterator line)
     : x(0),
       y(line)
     {}
@@ -95,51 +148,51 @@ class BasicImageIteratorBase
         return *this;
     }
     
-    inline BasicImageIteratorBase & operator+=(Diff2D const & s)
+    BasicImageIteratorBase & operator+=(Diff2D const & s)
     {
         x += s.x;
         y += s.y;
         return *this;
     }
 
-    inline BasicImageIteratorBase & operator-=(Diff2D const & s)
+    BasicImageIteratorBase & operator-=(Diff2D const & s)
     {
         x -= s.x;
         y -= s.y;
         return *this;
     }
     
-    inline PixelType & current()
+    PixelType & current()
     {
         return *(*y + x );
     }
     
-    inline PixelType & current(Diff2D const & dist)
+    PixelType & current(Diff2D const & dist)
     {
         return *(*(y + dist.y) + x + dist.x);
     }
     
-    inline PixelType & current(int const & dx, int const & dy)
+    PixelType & current(int const & dx, int const & dy)
     {
         return *(*(y + dy) + x + dx);
     }
     
-    inline PixelType const & current() const
+    PixelType const & current() const
     {
         return *(*y + x );
     }
 
-    inline PixelType const & current(Diff2D const & dist) const
+    PixelType const & current(Diff2D const & dist) const
     {
         return *(*(y + dist.y) + x + dist.x);
     }
 
-    inline PixelType const & current(int const & dx, int const & dy) const
+    PixelType const & current(int const & dx, int const & dy) const
     {
         return *(*(y + dy) + x + dx);
     }
     
-    inline Iterator line() const
+    LineStartIterator line() const
     {
         return y;
     }
@@ -164,20 +217,30 @@ class BasicImageIterator
   public:
 
     typedef PIXELTYPE PixelType;
+    typedef PIXELTYPE value_type;
     
-    inline BasicImageIterator(ITERATOR line)
+    typedef Diff2D               difference_type;
+    typedef PIXELTYPE &          reference;
+    typedef PIXELTYPE &          index_reference;
+    typedef PIXELTYPE *          pointer;
+    typedef image_traverser_tag  iterator_category;
+    typedef PIXELTYPE *          row_iterator;
+    typedef IteratorAdaptor<LineBasedColumnIteratorPolicy<BasicImageIterator> > 
+                                 column_iterator;
+    
+    BasicImageIterator(ITERATOR line)
     : BasicImageIteratorBase<PIXELTYPE, ITERATOR>(line)
     {}
     
-    inline BasicImageIterator()
+    BasicImageIterator()
     : BasicImageIteratorBase<PIXELTYPE, ITERATOR>()
     {}  
     
-    inline BasicImageIterator(const BasicImageIterator & rhs)
+    BasicImageIterator(const BasicImageIterator & rhs)
     : BasicImageIteratorBase<PIXELTYPE, ITERATOR>(rhs)
     {}  
     
-    inline BasicImageIterator & operator=(const BasicImageIterator & rhs)
+    BasicImageIterator & operator=(const BasicImageIterator & rhs)
     {
         if(this != &rhs)
         {
@@ -186,13 +249,13 @@ class BasicImageIterator
         return *this;
     }
 
-    inline BasicImageIterator & operator+=(Diff2D const & s)
+    BasicImageIterator & operator+=(Diff2D const & s)
     {
         BasicImageIteratorBase<PIXELTYPE, ITERATOR>::operator+=(s);
         return *this;
     }
 
-    inline BasicImageIterator & operator-=(Diff2D const & s)
+    BasicImageIterator & operator-=(Diff2D const & s)
     {
         BasicImageIteratorBase<PIXELTYPE, ITERATOR>::operator-=(s);
         return *this;
@@ -203,7 +266,7 @@ class BasicImageIterator
         return Diff2D(this->x - rhs.x, this->y - rhs.y);
     }
 
-    inline BasicImageIterator operator+(Diff2D const & s) const
+    BasicImageIterator operator+(Diff2D const & s) const
     {
         BasicImageIterator ret(*this);
         
@@ -212,7 +275,7 @@ class BasicImageIterator
         return ret;
     }
 
-    inline BasicImageIterator operator-(Diff2D const & s) const
+    BasicImageIterator operator-(Diff2D const & s) const
     {
         BasicImageIterator ret(*this);
         
@@ -221,54 +284,38 @@ class BasicImageIterator
         return ret;
     }
 
-    inline PixelType & operator*()
+    reference operator*() const
     {
-        return this->current();
+        return const_cast<reference>(current());
     }
     
-    inline PixelType const & operator*() const
+    pointer operator->() const
     {
-        return this->current();
+        return const_cast<pointer>(&current());
     }
     
-    inline PixelType * operator->()
+    index_reference operator[](Diff2D const & d) const
     {
-        return &(this->current)();
+        return const_cast<index_reference>(current(d));
     }
     
-    inline PixelType const * operator->() const
+    index_reference operator()(int dx, int dy) const
     {
-        return &(this->current)();
+        return const_cast<index_reference>(current(dx, dy));
     }
     
-    inline PixelType & operator[](Diff2D const & d)
+    pointer operator[](int dy) const
     {
-        return this->current(d);
+        return const_cast<pointer>(y[dy] + x);
     }
     
-    inline PixelType const & operator[](Diff2D const & d) const
-    {
-        return this->current(d);
-    }
+    row_iterator rowIterator() const
+        { return const_cast<row_iterator>(&current()); }
     
-    inline PixelType * operator[](int const & dy) 
-    {
-        return this->y[dy] + this->x;
-    }
-    
-    inline PixelType const * operator[](int const & dy) const
-    {
-        return this->y[dy] + this->x;
-    }
-    
-    inline PixelType & operator()(int const & dx, int const & dy)
-    {
-        return this->current(dx, dy);
-    }
-    
-    inline PixelType const & operator()(int const & dx, int const & dy) const
-    {
-        return this->current(dx, dy);
+    column_iterator columnIterator() const
+    { 
+        return 
+           column_iterator(typename column_iterator::BaseType(line(), x));
     }
 };
 
@@ -290,25 +337,34 @@ class ConstBasicImageIterator: public BasicImageIteratorBase<PIXELTYPE, ITERATOR
 {
   public:
 
-    typedef PIXELTYPE const PixelType;
+    typedef PIXELTYPE            PixelType;
+    typedef PIXELTYPE            value_type;
+    typedef Diff2D               difference_type;
+    typedef PIXELTYPE const &    reference;
+    typedef PIXELTYPE const &    index_reference;
+    typedef PIXELTYPE const *    pointer;
+    typedef image_traverser_tag  iterator_category;
+    typedef PIXELTYPE const *    row_iterator;
+    typedef IteratorAdaptor<LineBasedColumnIteratorPolicy<ConstBasicImageIterator> > 
+                                 column_iterator;
     
-    inline ConstBasicImageIterator(ITERATOR line)
+    ConstBasicImageIterator(ITERATOR line)
     : BasicImageIteratorBase<PIXELTYPE, ITERATOR>(line)
     {}
     
-    inline ConstBasicImageIterator()
+    ConstBasicImageIterator()
     : BasicImageIteratorBase<PIXELTYPE, ITERATOR>()
     {}  
     
-    inline ConstBasicImageIterator(const ConstBasicImageIterator & rhs)
+    ConstBasicImageIterator(const ConstBasicImageIterator & rhs)
     : BasicImageIteratorBase<PIXELTYPE, ITERATOR>(rhs)
     {}  
     
-    inline ConstBasicImageIterator(const BasicImageIteratorBase<PIXELTYPE, ITERATOR> & rhs)
+    ConstBasicImageIterator(const BasicImageIteratorBase<PIXELTYPE, ITERATOR> & rhs)
     : BasicImageIteratorBase<PIXELTYPE, ITERATOR>(rhs)
     {}  
     
-    inline ConstBasicImageIterator & operator=(const ConstBasicImageIterator & rhs)
+    ConstBasicImageIterator & operator=(const ConstBasicImageIterator & rhs)
     {
         if(this != &rhs)
         {
@@ -317,7 +373,7 @@ class ConstBasicImageIterator: public BasicImageIteratorBase<PIXELTYPE, ITERATOR
         return *this;
     }
 
-    inline ConstBasicImageIterator & operator=(const BasicImageIteratorBase<PIXELTYPE, ITERATOR> & rhs)
+    ConstBasicImageIterator & operator=(const BasicImageIteratorBase<PIXELTYPE, ITERATOR> & rhs)
     {
         if(this != &rhs)
         {
@@ -326,13 +382,13 @@ class ConstBasicImageIterator: public BasicImageIteratorBase<PIXELTYPE, ITERATOR
         return *this;
     }
 
-    inline ConstBasicImageIterator & operator+=(Diff2D const & s)
+    ConstBasicImageIterator & operator+=(Diff2D const & s)
     {
         BasicImageIteratorBase<PIXELTYPE, ITERATOR>::operator+=(s);
         return *this;
     }
 
-    inline ConstBasicImageIterator & operator-=(Diff2D const & s)
+    ConstBasicImageIterator & operator-=(Diff2D const & s)
     {
         BasicImageIteratorBase<PIXELTYPE, ITERATOR>::operator-=(s);
         return *this;
@@ -343,7 +399,7 @@ class ConstBasicImageIterator: public BasicImageIteratorBase<PIXELTYPE, ITERATOR
         return Diff2D(this->x - rhs.x, this->y - rhs.y);
     }
 
-    inline ConstBasicImageIterator operator+(Diff2D const & s) const
+    ConstBasicImageIterator operator+(Diff2D const & s) const
     {
         ConstBasicImageIterator ret(*this);
         
@@ -352,7 +408,7 @@ class ConstBasicImageIterator: public BasicImageIteratorBase<PIXELTYPE, ITERATOR
         return ret;
     }
 
-    inline ConstBasicImageIterator operator-(Diff2D const & s) const
+    ConstBasicImageIterator operator-(Diff2D const & s) const
     {
         ConstBasicImageIterator ret(*this);
         
@@ -361,334 +417,42 @@ class ConstBasicImageIterator: public BasicImageIteratorBase<PIXELTYPE, ITERATOR
         return ret;
     }
 
-    inline PixelType & operator*() const
+    reference operator*() const
     {
-        return this->current();
+        return current();
     }
     
-    inline PixelType * operator->() const
+    pointer operator->() const
     {
-        return &(this->current)();
+        return &current();
     }
     
-    inline PixelType & operator[](Diff2D const & d) const
+    index_reference operator[](Diff2D const & d) const
     {
-        return this->current(d.x, d.y);
+        return current(d.x, d.y);
     }
     
-    inline PixelType * operator[](int const & dy) const
+    index_reference operator()(int dx, int dy) const
     {
-        return this->y[dy] + this->x;
+        return current(dx, dy);
     }
     
-    inline PixelType & operator()(int const & dx, int const & dy) const
+    pointer operator[](int dy) const
     {
-        return this->current(dx, dy);
+        return y[dy] + x;
+    }
+    
+    row_iterator rowIterator() const
+        { return &current(); }
+    
+    column_iterator columnIterator() const
+    { 
+        return 
+           column_iterator(typename column_iterator::BaseType(line(), x));
     }
 };
 
 template <class T> struct IteratorTraits;
-
-/********************************************************/
-/*                                                      */
-/*                      RowIterator                     */
-/*                                                      */
-/********************************************************/
-
-/* Specialization for higher performance.
-*/
-#ifndef NO_PARTIAL_TEMPLATE_SPECIALIZATION
-template <class T>
-class RowIterator;
-
-template <class ValueType>
-class RowIterator<BasicImageIterator<ValueType, ValueType **> >
-{
-    typedef RowIterator Self;
-    typedef BasicImageIterator<ValueType, ValueType **> Adaptee;
-
-    ValueType * data_;
-    
-  public:
-
-    typedef ValueType PixelType;
-    
-    RowIterator(Adaptee const & i)
-    : data_(&const_cast<ValueType &>(*i))
-    {}
-    
-    RowIterator(ValueType * d)
-    : data_(d)
-    {}
-    
-#else
-
-template <class IMAGE_ITERATOR>
-class BasicImageRowIterator
-{
-    typedef BasicImageRowIterator Self;
-    typedef typename IMAGE_ITERATOR::PixelType ValueType;
-    typedef IMAGE_ITERATOR Adaptee;
-
-    ValueType * data_;
-    
-  public:
-
-    typedef ValueType PixelType;
-    
-    BasicImageRowIterator(IMAGE_ITERATOR const & i)
-    : data_(&const_cast<ValueType &>(*i))
-    {}
-    
-    BasicImageRowIterator(ValueType * d)
-    : data_(d)
-    {}
-    
-#endif
-
-    Self & operator=(Adaptee const & i)
-    {
-        data_ = &const_cast<ValueType &>(*i);
-        return *this;
-    }
-    
-    Self & operator++()
-    {
-        ++data_;
-        return *this;
-    }
-
-    Self operator++(int)
-    {
-        Self ret(*this);
-        data_++;
-        return ret;
-    }
-    
-    Self & operator--()
-    {
-        --data_;
-        return *this;
-    }
-    
-    Self operator--(int)
-    {
-        Self ret(*this);
-        data_--;
-        return ret;
-    }
-    
-    Self & operator+=(int d)
-    {
-        data_ += d;
-        return *this;
-    }
-    
-    Self & operator-=(int d)
-    {
-        data_ -= d;
-        return *this;
-    }
-
-    Self operator+(int d) const
-    {
-        return Self(data_ + d);
-    }
-
-    Self operator-(int d) const
-    {
-        return Self(data_ - d);
-    }
-
-    int operator-(Self const & c) const 
-    {
-        return data_ - c.data_;
-    }
-    
-    bool operator==(Self const & c) const
-    {
-        return data_ == c.data_;
-    }
-    
-    bool operator!=(Self const & c) const
-    {
-        return data_ != c.data_;
-    }
-    
-    bool operator<(Self const & c) const
-    {
-        return data_ < c.data_;
-    }
-    
-    PixelType & operator*()
-    {
-        return *data_; 
-    }
-    
-    PixelType const & operator*() const
-    {
-        return *data_; 
-    }
-    
-    PixelType * operator->()
-    {
-        return data_; 
-    }
-    
-    PixelType const * operator->() const
-    {
-        return data_; 
-    }
-    
-    PixelType & operator[](int d)
-    {
-        return data_[d];
-    }
-
-    PixelType const & operator[](int d) const
-    {
-        return data_[d];
-    }
-};
-
-#ifndef NO_PARTIAL_TEMPLATE_SPECIALIZATION
-template <class T>
-class ConstRowIterator;
-
-template <class ValueType>
-class ConstRowIterator<ConstBasicImageIterator<ValueType, ValueType **> >
-{
-    typedef ConstRowIterator Self;
-    typedef ConstBasicImageIterator<ValueType, ValueType **> Adaptee;
-
-    ValueType const * data_;
-    
-  public:
-
-    typedef ValueType const PixelType;
-    
-    ConstRowIterator(Adaptee const & i)
-    : data_(&(*i))
-    {}
-    
-    ConstRowIterator(ValueType const * d)
-    : data_(d)
-    {}
-    
-#else
-
-template <class IMAGE_ITERATOR>
-class ConstBasicImageRowIterator
-{
-    typedef ConstBasicImageRowIterator Self;
-    typedef typename IMAGE_ITERATOR::PixelType ValueType;
-    typedef IMAGE_ITERATOR Adaptee;
-
-    ValueType const * data_;
-    
-  public:
-
-    typedef ValueType const PixelType;
-    
-    ConstBasicImageRowIterator(IMAGE_ITERATOR  const & i)
-    : data_(&(*i))
-    {}
-    
-    ConstBasicImageRowIterator(ValueType * d)
-    : data_(d)
-    {}
-    
-#endif
-
-    Self & operator=(Adaptee const & i)
-    {
-        data_ = &(*i);
-        return *this;
-    }
-    
-    Self & operator++()
-    {
-        ++data_;
-        return *this;
-    }
-
-    Self operator++(int)
-    {
-        Self ret(*this);
-        data_++;
-        return ret;
-    }
-    
-    Self & operator--()
-    {
-        --data_;
-        return *this;
-    }
-    
-    Self operator--(int)
-    {
-        Self ret(*this);
-        data_--;
-        return ret;
-    }
-    
-    Self & operator+=(int d)
-    {
-        data_ += d;
-        return *this;
-    }
-    
-    Self & operator-=(int d)
-    {
-        data_ -= d;
-        return *this;
-    }
-
-    Self operator+(int d) const
-    {
-        return Self(data_ + d);
-    }
-
-    Self operator-(int d) const
-    {
-        return Self(data_ - d);
-    }
-
-    int operator-(Self const & c) const 
-    {
-        return data_ - c.data_;
-    }
-    
-    bool operator==(Self const & c) const
-    {
-        return data_ == c.data_;
-    }
-    
-    bool operator!=(Self const & c) const
-    {
-        return data_ != c.data_;
-    }
-    
-    bool operator<(Self const & c) const
-    {
-        return data_ < c.data_;
-    }
-    
-    PixelType & operator*() const
-    {
-        return *data_; 
-    }
-    
-    PixelType * operator->() const
-    {
-        return data_; 
-    }
-    
-    PixelType & operator[](int d) const
-    {
-        return data_[d];
-    }
-};
 
 /********************************************************/
 /*                                                      */
@@ -707,31 +471,69 @@ class BasicImage
 {
   public:
     
+        //@{
         /** the BasicImage's pixel type
         */
     typedef PIXELTYPE PixelType;
-    
-        /** the BasicImage's pixel type
-        */
     typedef PIXELTYPE value_type;
-    
+        //@}
+        
+        //@{
+        /** the BasicImage's reference type (i.e. the
+            return type of image[diff] and image(dx,dy))
+        */
+    typedef PIXELTYPE &       reference;
+    typedef PIXELTYPE const & const_reference;
+        //@}
+        
+        //@{
+        /** the BasicImage's pointer type 
+        */
+    typedef PIXELTYPE *       pointer;
+    typedef PIXELTYPE const * const_pointer;
+        //@}
+        
+        //@{
         /** the BasicImage's 1D random access iterator
+            (note: lower case 'iterator' is a STL compatible 1D random access iterator)
         */
     typedef PIXELTYPE * ScanOrderIterator;
-    
+    typedef PIXELTYPE * iterator;
+        //@}
+        
         /** the BasicImage's 1D random access const iterator
+            (note: lower case 'const_iterator' is a STL compatible 1D 
+            random access const iterator)
         */
     typedef PIXELTYPE const * ConstScanOrderIterator;
-    
+    typedef PIXELTYPE const * const_iterator;
+        //@}
+        
+        //@{
         /** the BasicImage's 2D random access iterator
+            (note: capitalized 'Iterator' is a 2D image iterator)
         */
     typedef BasicImageIterator<PixelType, PIXELTYPE **> Iterator;
-    
+    typedef BasicImageIterator<PixelType, PIXELTYPE **> traverser;
+        //@}
+        
+        //@{
         /** the BasicImage's 2D random access const iterator
+            (note: capitalized 'ConstIterator' is a 2D image const iterator)
         */
     typedef ConstBasicImageIterator<PixelType, PIXELTYPE **> ConstIterator; 
+    typedef ConstBasicImageIterator<PixelType, PIXELTYPE **> const_traverser;
+        //@}
 
-        /** the BasicImage's default accessor
+        /** the BasicImage's difference type (argument type of image[diff])
+        */
+    typedef Diff2D difference_type;
+
+         /** the BasicImage's size type (result type of image.size())
+        */
+    typedef Diff2D size_type;
+
+       /** the BasicImage's default accessor
         */
     typedef typename
           IteratorTraits<Iterator>::DefaultAccessor Accessor;
@@ -841,9 +643,21 @@ class BasicImage
         return *this;
     }
      
-        /** set Image with const value 
+        /** \deprecated set Image with const value 
         */
     BasicImage & operator=(PixelType pixel)
+    {
+        ScanOrderIterator i = begin();
+        ScanOrderIterator iend = end();
+        
+        for(; i != iend; ++i) *i = pixel;
+        
+        return *this;
+    }
+    
+        /** set Image with const value 
+        */
+    BasicImage & init(PixelType const & pixel)
     {
         ScanOrderIterator i = begin();
         ScanOrderIterator iend = end();
@@ -937,14 +751,14 @@ class BasicImage
         
         /** size of Image 
         */
-    inline Diff2D size() const
+    Diff2D size() const
     { 
         return Diff2D(width(), height()); 
     }
     
         /** test whether a given coordinate is inside the image
         */
-    inline bool isInside(Diff2D const & d) const
+    bool isInside(Diff2D const & d) const
     {
         return d.x >= 0 && d.y >= 0 &&
                d.x < width() && d.y < height();
@@ -953,7 +767,7 @@ class BasicImage
         /** access pixel at given location. <br>
 	    usage: <TT> PixelType value = image[Diff2D(1,2)] </TT>
         */
-    inline PixelType & operator[](Diff2D const & d)
+    PixelType & operator[](Diff2D const & d)
     { 
         return lines_[d.y][d.x]; 
     }
@@ -961,7 +775,7 @@ class BasicImage
         /** read pixel at given location. <br>
 	    usage: <TT> PixelType value = image[Diff2D(1,2)] </TT>
         */
-    inline PixelType const & operator[](Diff2D const & d) const
+    PixelType const & operator[](Diff2D const & d) const
     { 
         return lines_[d.y][d.x]; 
     }
@@ -969,7 +783,7 @@ class BasicImage
         /** access pixel at given location. <br>
 	    usage: <TT> PixelType value = image(1,2) </TT>
         */
-    inline PixelType & operator()(int const & dx, int const & dy)
+    PixelType & operator()(int dx, int dy)
     { 
         return lines_[dy][dx]; 
     }
@@ -977,7 +791,7 @@ class BasicImage
         /** read pixel at given location. <br>
 	    usage: <TT> PixelType value = image(1,2) </TT>
         */
-    inline PixelType const & operator()(int const & dx, int const & dy) const
+    PixelType const & operator()(int dx, int dy) const
     { 
         return lines_[dy][dx]; 
     }
@@ -986,7 +800,7 @@ class BasicImage
 	        Note that the 'x' index is the trailing index. <br>
 	    usage: <TT> PixelType value = image[2][1] </TT>
         */
-    inline PixelType * operator[](int const & dy)
+    PixelType * operator[](int dy)
     { 
         return lines_[dy]; 
     }
@@ -995,7 +809,7 @@ class BasicImage
 	        Note that the 'x' index is the trailing index. <br>
 	    usage: <TT> PixelType value = image[2][1] </TT>
         */
-    inline PixelType const * operator[](int const & dy) const
+    PixelType const * operator[](int dy) const
     { 
         return lines_[dy]; 
     }
