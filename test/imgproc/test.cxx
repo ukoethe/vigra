@@ -888,7 +888,7 @@ struct ResizeImageTest
 
     void scalarExpand()
     {
-        ImageImportInfo info("lenna288.xv");
+        ImageImportInfo info("lenna288neu.xv");
 
         Image imgex(info.width(), info.height());
         importImage(info, destImage(imgex));
@@ -901,7 +901,7 @@ struct ResizeImageTest
 
     void scalarReduce()
     {
-        ImageImportInfo info("lenna42.xv");
+        ImageImportInfo info("lenna42neu.xv");
 
         Image imgred(info.width(), info.height());
         importImage(info, destImage(imgred));
@@ -915,7 +915,7 @@ struct ResizeImageTest
 
     void rgbExpand()
     {
-        ImageImportInfo info("lenna288rgb.xv");
+        ImageImportInfo info("lenna288rgbneu.xv");
 
         RGBImage rgbex(info.width(), info.height());
         importImage(info, destImage(rgbex));
@@ -938,7 +938,7 @@ struct ResizeImageTest
 
     void rgbReduce()
     {
-        ImageImportInfo info("lenna42rgb.xv");
+        ImageImportInfo info("lenna42rgbneu.xv");
 
         RGBImage rgbred(info.width(), info.height());
         importImage(info, destImage(rgbred));
