@@ -28,7 +28,7 @@
     <DT>
         <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif"> 
         \ref ColorConversions
-        <DD><em>Non-scalar types such as RGBValue and TinyVector</em>
+        <DD><em>Convert between RGB and other color spaces, such as L*u*v*, Y'PbPr</em>
     <DT>
         <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif"> 
         \ref ImageProcessing
