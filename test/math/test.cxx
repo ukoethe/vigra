@@ -136,8 +136,8 @@ struct SplineTest
         
         if(n == 0)
         {
-            shouldEqual(ps[0], 0.0);
-            shouldEqual(psb[0], 0.0);
+            shouldEqual(ps.size(), 0);
+            shouldEqual(psb.size(), 0);
         }
         else
         {
