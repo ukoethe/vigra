@@ -5,6 +5,7 @@
 #include "vigra/array_vector.hxx"
 #include "vigra/splines.hxx"
 #include "vigra/gaussians.hxx"
+#include "vigra/rational.hxx"
 
 static double coefficients[][12] = 
 {
@@ -83,7 +84,7 @@ struct HighOrderPolynomialTest
         
         vigra::ArrayVector<std::complex<double> > roots;
         
-        should(polynomialRoots(p, roots));        
+        should(vigra::polynomialRoots(p, roots));        
         shouldEqual(roots.size(), order);
         for(unsigned int i = 0; i<roots.size(); ++i)
         {
@@ -209,6 +210,52 @@ struct FunctionsTest
     }
 };
 
+struct RationalTest
+{
+    void testGcdLcm()
+    {
+        shouldEqual(vigra::gcd(24, 18), 6);
+        shouldEqual(vigra::lcm(6, 4), 12);
+    }
+    
+    void testOperators()
+    {
+        typedef vigra::Rational<int> R;
+        shouldEqual(R(3,4) + R(12,6), R(11,4));
+        shouldEqual(R(3,4) - R(12,6), R(-5,4));
+        shouldEqual(R(3,4) * R(12,6), R(3,2));
+        shouldEqual(R(3,4) / R(12,6), R(3,8));
+        shouldEqual(abs(R(-3,4)), R(3,4));
+        should(R(3,4) == R(9,12));
+        should(R(3,4) != R(12,6));
+        should(R(3,4) < R(12,6));
+        should(R(19,4) > R(12,6));
+        should(R(3,4) <= R(12,6));
+        should(R(19,4) >= R(12,6));
+
+        shouldEqual(R(3,4) + 2, R(11,4));
+        shouldEqual(R(3,4) - 2, R(-5,4));
+        shouldEqual(R(3,4) * 2, R(3,2));
+        shouldEqual(R(3,4) / 2, R(3,8));
+        should(!(R(3,4) == 2));
+        should(R(3,4) != 2);
+        should(R(3,4) < 2);
+        should(R(19,4) > 2);
+        should(R(3,4) <= 2);
+        should(R(19,4) >= 2);
+
+        shouldEqual(2 + R(3,4), R(11,4));
+        shouldEqual(2 - R(3,4), R(5,4));
+        shouldEqual(2 * R(3,4), R(3,2));
+        shouldEqual(2 / R(3,4), R(8, 3));
+        should(!(2 == R(3,4)));
+        should(2 != R(3,4));
+        should(2 > R(3,4));
+        should(2 < R(19,4));
+        should(2 >= R(3,4));
+        should(2 <= R(19,4));
+    }
+};
 
 struct MathTestSuite
 : public vigra::test_suite
@@ -246,6 +293,8 @@ struct MathTestSuite
         add( testCase(&SplineTest<3>::testWeightMatrix));
         add( testCase(&SplineTest<5>::testWeightMatrix));
         add( testCase(&FunctionsTest::testGaussians));
+        add( testCase(&RationalTest::testGcdLcm));
+        add( testCase(&RationalTest::testOperators));
     }
 };
 
