@@ -27,7 +27,7 @@
 #include "vigra/resizeimage.hxx"
 #include "vigra/impex.hxx"
 
-using namespace vigra; // MSVC doesn't support Koenig lookup
+using namespace vigra; 
 
 // Gaussian reduction to next pyramid level
 template <class Image>

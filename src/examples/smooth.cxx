@@ -26,7 +26,7 @@
 #include "vigra/nonlineardiffusion.hxx"
 #include "vigra/impex.hxx"
 
-using namespace vigra; // MSVC doesn't support Koenig lookup
+using namespace vigra; 
 
 
 int main(int argc, char ** argv)
