@@ -1,6 +1,6 @@
 /************************************************************************/
 /*                                                                      */
-/*               Copyright 1998-2002 by Ullrich Koethe                  */
+/*               Copyright 1998-2003 by Ullrich Koethe                  */
 /*       Cognitive Systems Group, University of Hamburg, Germany        */
 /*                                                                      */
 /*    This file is part of the VIGRA computer vision library.           */
@@ -19,42 +19,18 @@
 /*                                                                      */
 /************************************************************************/
 
+#ifndef VIGRA_ITERATORTAGS_HXX
+#define VIGRA_ITERATORTAGS_HXX
 
-#ifndef VIGRA_BASICS_HXX
-#define VIGRA_BASICS_HXX
+#include <iterator>   // iterator tags
 
-#include "vigra/config.hxx"
-#include "vigra/error.hxx"
-#include "vigra/metaprogramming.hxx"
-#include "vigra/tuple.hxx"
-#include "vigra/diff2d.hxx"
-#include "vigra/mathutil.hxx"
+struct image_traverser_tag {};
 
-/*! \page Utilities Utilities
-    Basic helper functionality needed throughout.
+struct forward_circulator_tag {};
 
-    <DL>
-    <DT>
-    <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif">
-     \ref RangesAndPoints
-     <DD><em>2-dimensioanl positions, extents, amd rectangles</em>
-    <DT>
-    <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif">
-     \ref PixelNeighborhood
-     <DD><em>4- and 8-neighborhood definitions and circulators</em>
-    <DT>
-    <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif">
-     \ref vigra::IteratorAdaptor
-     <DD><em>Quickly create STL-compatible 1D iterator adaptors</em>
-     <DT>
-    <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif">
-     \ref TupleTypes
-     <DD><em>pair, triple, tuple4, tuple5</em>
-      <DT>
-    <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif">
-     \ref MathConstants
-     <DD><em>M_PI, M_SQRT2</em>
-    </DL>
-*/
+struct bidirectional_circulator_tag {};
 
-#endif // VIGRA_BASICS_HXX
+struct random_access_circulator_tag {};
+
+
+#endif /* VIGRA_ITERATORTAGS_HXX */

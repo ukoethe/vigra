@@ -19,42 +19,36 @@
 /*                                                                      */
 /************************************************************************/
 
+#ifndef VIGRA_MATHUTIL_HXX
+#define VIGRA_MATHUTIL_HXX
 
-#ifndef VIGRA_BASICS_HXX
-#define VIGRA_BASICS_HXX
 
-#include "vigra/config.hxx"
-#include "vigra/error.hxx"
-#include "vigra/metaprogramming.hxx"
-#include "vigra/tuple.hxx"
-#include "vigra/diff2d.hxx"
-#include "vigra/mathutil.hxx"
+/*! \page MathConstants Mathematical Constants
 
-/*! \page Utilities Utilities
-    Basic helper functionality needed throughout.
+    <TT>M_PI, M_SQRT2</TT>
 
-    <DL>
-    <DT>
-    <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif">
-     \ref RangesAndPoints
-     <DD><em>2-dimensioanl positions, extents, amd rectangles</em>
-    <DT>
-    <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif">
-     \ref PixelNeighborhood
-     <DD><em>4- and 8-neighborhood definitions and circulators</em>
-    <DT>
-    <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif">
-     \ref vigra::IteratorAdaptor
-     <DD><em>Quickly create STL-compatible 1D iterator adaptors</em>
-     <DT>
-    <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif">
-     \ref TupleTypes
-     <DD><em>pair, triple, tuple4, tuple5</em>
-      <DT>
-    <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif">
-     \ref MathConstants
-     <DD><em>M_PI, M_SQRT2</em>
-    </DL>
+    <b>\#include</b> "<a href="utilities_8hxx-source.html">vigra/utilities.hxx</a>"
+
+    Since <TT>M_PI</TT> and <TT>M_SQRT2</TT> are not officially standardized,
+    we provide definitions here for those compilers that don't support them.
+
+    \code
+    #ifndef M_PI
+    #    define M_PI     3.14159265358979323846
+    #endif
+
+    #ifndef M_SQRT2
+    #    define M_SQRT2  1.41421356237309504880
+    #endif
+    \endcode
 */
+#ifndef M_PI
+#    define M_PI     3.14159265358979323846
+#endif
 
-#endif // VIGRA_BASICS_HXX
+#ifndef M_SQRT2
+#    define M_SQRT2  1.41421356237309504880
+#endif
+
+
+#endif /* VIGRA_MATHUTIL_HXX */

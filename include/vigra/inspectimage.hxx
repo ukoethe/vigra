@@ -18,8 +18,8 @@
 /*  WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE. */
 /*                                                                      */
 /************************************************************************/
- 
- 
+
+
 #ifndef VIGRA_INSPECTIMAGE_HXX
 #define VIGRA_INSPECTIMAGE_HXX
 
@@ -46,7 +46,7 @@ namespace vigra {
 
 template <class SrcIterator, class SrcAccessor, class Functor>
 void
-inspectLine(SrcIterator s, 
+inspectLine(SrcIterator s,
             SrcIterator send, SrcAccessor src,
             Functor & f)
 {
@@ -55,10 +55,10 @@ inspectLine(SrcIterator s,
 }
 
 template <class SrcIterator, class SrcAccessor,
-          class MaskIterator, class MaskAccessor, 
+          class MaskIterator, class MaskAccessor,
           class Functor>
 void
-inspectLineIf(SrcIterator s, 
+inspectLineIf(SrcIterator s,
               SrcIterator send, SrcAccessor src,
               MaskIterator m, MaskAccessor mask,
               Functor & f)
@@ -69,10 +69,10 @@ inspectLineIf(SrcIterator s,
 }
 
 template <class SrcIterator1, class SrcAccessor1,
-          class SrcIterator2, class SrcAccessor2, 
+          class SrcIterator2, class SrcAccessor2,
           class Functor>
 void
-inspectTwoLines(SrcIterator1 s1, 
+inspectTwoLines(SrcIterator1 s1,
                 SrcIterator1 s1end, SrcAccessor1 src1,
                 SrcIterator2 s2, SrcAccessor2 src2,
                 Functor & f)
@@ -82,11 +82,11 @@ inspectTwoLines(SrcIterator1 s1,
 }
 
 template <class SrcIterator1, class SrcAccessor1,
-          class SrcIterator2, class SrcAccessor2, 
-          class MaskIterator, class MaskAccessor, 
+          class SrcIterator2, class SrcAccessor2,
+          class MaskIterator, class MaskAccessor,
           class Functor>
 void
-inspectTwoLinesIf(SrcIterator1 s1, 
+inspectTwoLinesIf(SrcIterator1 s1,
                   SrcIterator1 s1end, SrcAccessor1 src1,
                   SrcIterator2 s2, SrcAccessor2 src2,
                   MaskIterator m, MaskAccessor mask,
@@ -109,9 +109,9 @@ inspectTwoLinesIf(SrcIterator1 s1,
     The results must be stored in the functor, which serves as a return
     value.
     The function uses an accessor to access the pixel data.
-    
+
     <b> Declarations:</b>
-    
+
     pass arguments explicitly:
     \code
     namespace vigra {
@@ -121,7 +121,7 @@ inspectTwoLinesIf(SrcIterator1 s1,
                      Accessor a, Functor & f)
     }
     \endcode
-        
+
     use argument objects in conjuction with \ref ArgumentObjectFactories:
     \code
     namespace vigra {
@@ -131,36 +131,36 @@ inspectTwoLinesIf(SrcIterator1 s1,
              Functor & f)
     }
     \endcode
-    
+
     <b> Usage:</b>
-    
+
         <b>\#include</b> "<a href="inspectimage_8hxx-source.html">vigra/inspectimage.hxx</a>"<br>
         Namespace: vigra
-    
+
     \code
     // init functor
     vigra::BImage img;
-    
-    vigra::FindMinMax<vigra::BImage::PixelType> minmax();   
-    
+
+    vigra::FindMinMax<vigra::BImage::PixelType> minmax();
+
     vigra::inspectImage(srcImageRange(img), minmax);
-    
+
     cout << "Min: " << minmax.min << " Max: " << minmax.max;
 
     \endcode
 
     <b> Required Interface:</b>
-    
+
     \code
     ConstImageIterator upperleft, lowerright;
     ConstImageIterator::row_iterator ix = upperleft.rowIterator();
-    
+
     Accessor accessor;
     Functor functor;
-    
+
     functor(accessor(ix));         // return not used
     \endcode
-    
+
 */
 template <class ImageIterator, class Accessor, class Functor>
 void
@@ -168,14 +168,14 @@ inspectImage(ImageIterator upperleft, ImageIterator lowerright,
          Accessor a, Functor & f)
 {
     int w = lowerright.x - upperleft.x;
-    
+
     for(; upperleft.y<lowerright.y; ++upperleft.y)
     {
-        inspectLine(upperleft.rowIterator(), 
+        inspectLine(upperleft.rowIterator(),
                     upperleft.rowIterator() + w, a, f);
     }
 }
-    
+
 template <class ImageIterator, class Accessor, class Functor>
 inline
 void
@@ -191,12 +191,12 @@ namespace functor
 }
 
 template <class ImageIterator, class Accessor, class Functor>
-inline 
+inline
 void
 inspectImage(ImageIterator upperleft, ImageIterator lowerright,
          Accessor a, functor::UnaryAnalyser<Functor> const & f)
 {
-    inspectImage(upperleft, lowerright, a, 
+    inspectImage(upperleft, lowerright, a,
                  const_cast<functor::UnaryAnalyser<Functor> &>(f));
 }
 
@@ -206,7 +206,7 @@ void
 inspectImage(triple<ImageIterator, ImageIterator, Accessor> img,
          functor::UnaryAnalyser<Functor> const & f)
 {
-    inspectImage(img.first, img.second, img.third, 
+    inspectImage(img.first, img.second, img.third,
                  const_cast<functor::UnaryAnalyser<Functor> &>(f));
 }
 
@@ -219,27 +219,27 @@ inspectImage(triple<ImageIterator, ImageIterator, Accessor> img,
 /** \brief Apply read-only functor to every pixel in the ROI.
 
     This function can be used to collect statistics of the roi etc.
-    The functor is called whenever the return value of the mask's 
+    The functor is called whenever the return value of the mask's
     accessor is not zero.
     The results must be stored in the functor, which serves as a return
     value.
     Accessors are used to access the pixel and mask data.
-    
+
     <b> Declarations:</b>
-    
+
     pass arguments explicitly:
     \code
     namespace vigra {
         template <class ImageIterator, class Accessor,
                   class MaskImageIterator, class MaskAccessor, class Functor>
         void
-        inspectImageIf(ImageIterator upperleft, ImageIterator lowerright, 
+        inspectImageIf(ImageIterator upperleft, ImageIterator lowerright,
                MaskImageIterator mask_upperleft, MaskAccessor ma,
                Functor & f)
     }
     \endcode
-    
-    
+
+
     use argument objects in conjuction with \ref ArgumentObjectFactories:
     \code
     namespace vigra {
@@ -251,57 +251,57 @@ inspectImage(triple<ImageIterator, ImageIterator, Accessor> img,
                Functor & f)
     }
     \endcode
-    
+
     <b> Usage:</b>
-    
+
         <b>\#include</b> "<a href="inspectimage_8hxx-source.html">vigra/inspectimage.hxx</a>"<br>
         Namespace: vigra
-    
+
     \code
     vigra::BImage img(100, 100);
     vigra::BImage mask(100, 100);
-    
+
     // init functor
-    vigra::FindMinMax<vigra::BImage::PixelType> minmax();    
-    
-    vigra::inspectImageIf(srcImageRange(img), 
+    vigra::FindMinMax<vigra::BImage::PixelType> minmax();
+
+    vigra::inspectImageIf(srcImageRange(img),
                           maskImage(mask), minmax);
-    
+
     cout << "Min: " << minmax.min << " Max: " << minmax.max;
 
     \endcode
 
     <b> Required Interface:</b>
-    
+
     \code
     ConstImageIterator upperleft, lowerright;
     MaskImageIterator mask_upperleft;
     ConstImageIterator::row_iterator ix = upperleft.rowIterator();
     MaskImageIterator::row_iterator mx = mask_upperleft.rowIterator();
-    
+
     Accessor accessor;
     MaskAccessor mask_accessor;
-    
+
     Functor functor;
 
-    if(mask_accessor(mx)) functor(accessor(ix)); 
+    if(mask_accessor(mx)) functor(accessor(ix));
     \endcode
-    
+
 */
 template <class ImageIterator, class Accessor,
       class MaskImageIterator, class MaskAccessor, class Functor>
 void
-inspectImageIf(ImageIterator upperleft, 
+inspectImageIf(ImageIterator upperleft,
                ImageIterator lowerright, Accessor a,
            MaskImageIterator mask_upperleft, MaskAccessor ma,
            Functor & f)
 {
     int w = lowerright.x - upperleft.x;
-            
+
     for(; upperleft.y<lowerright.y; ++upperleft.y, ++mask_upperleft.y)
     {
-        inspectLineIf(upperleft.rowIterator(), 
-                      upperleft.rowIterator() + w, a, 
+        inspectLineIf(upperleft.rowIterator(),
+                      upperleft.rowIterator() + w, a,
                       mask_upperleft.rowIterator(), ma, f);
     }
 }
@@ -314,7 +314,7 @@ inspectImageIf(triple<ImageIterator, ImageIterator, Accessor> img,
                pair<MaskImageIterator, MaskAccessor> mask,
                Functor & f)
 {
-    inspectImageIf(img.first, img.second, img.third, 
+    inspectImageIf(img.first, img.second, img.third,
                    mask.first, mask.second, f);
 }
 
@@ -326,33 +326,33 @@ inspectImageIf(triple<ImageIterator, ImageIterator, Accessor> img,
 
 /** \brief Apply read-only functor to every pixel of both images.
 
-    This function can be used to collect statistics for each region of a 
-    labeled image, especially in conjunction with 
-    the \ref ArrayOfRegionStatistics functor. The results must be 
-    stored in the functor which serves as a return value. 
+    This function can be used to collect statistics for each region of a
+    labeled image, especially in conjunction with
+    the \ref ArrayOfRegionStatistics functor. The results must be
+    stored in the functor which serves as a return value.
     Accessors are used to access the pixel data.
-    
+
     <b> Declarations:</b>
-    
+
     pass arguments explicitly:
     \code
     namespace vigra {
         template <class ImageIterator1, class Accessor1,
-              class ImageIterator2, class Accessor2, 
+              class ImageIterator2, class Accessor2,
               class Functor>
         void
-        inspectTwoImages(ImageIterator1 upperleft1, ImageIterator1 lowerright1, Accessor1 a1, 
+        inspectTwoImages(ImageIterator1 upperleft1, ImageIterator1 lowerright1, Accessor1 a1,
                  ImageIterator2 upperleft2, Accessor2 a2,
                  Functor & f)
     }
     \endcode
-    
-    
+
+
     use argument objects in conjuction with \ref ArgumentObjectFactories:
     \code
     namespace vigra {
         template <class ImageIterator1, class Accessor1,
-              class ImageIterator2, class Accessor2, 
+              class ImageIterator2, class Accessor2,
               class Functor>
         void
         inspectTwoImages(triple<ImageIterator1, ImageIterator1, Accessor1> img1,
@@ -360,60 +360,60 @@ inspectImageIf(triple<ImageIterator, ImageIterator, Accessor> img,
                  Functor & f)
     }
     \endcode
-    
+
     <b> Usage:</b>
-    
+
         <b>\#include</b> "<a href="inspectimage_8hxx-source.html">vigra/inspectimage.hxx</a>"<br>
         Namespace: vigra
-    
+
     \code
     vigra::BImage image1;
     vigra::BImage image2;
-    
+
     SomeStatisticsFunctor stats(...);     // init functor
-    
+
     vigra::inspectTwoImages(srcImageRange(image1), srcImage(image2),
                             region_stats);
-    
-    
+
+
     \endcode
 
     <b> Required Interface:</b>
-    
+
     \code
     ImageIterator1 upperleft1, lowerright1;
     ImageIterator2 upperleft2;
     ImageIterator1::row_iterator ix1 = upperleft1.rowIterator();
     ImageIterator2::row_iterator ix2 = upperleft2.rowIterator();
-    
+
     Accessor1 accessor1;
     Accessor2 accessor2;
-    
+
     Functor functor;
     functor(accessor1(ix1), accessor2(ix2));  // return not used
     \endcode
-    
+
 */
 template <class ImageIterator1, class Accessor1,
-          class ImageIterator2, class Accessor2, 
+          class ImageIterator2, class Accessor2,
       class Functor>
 void
-inspectTwoImages(ImageIterator1 upperleft1, ImageIterator1 lowerright1, Accessor1 a1, 
+inspectTwoImages(ImageIterator1 upperleft1, ImageIterator1 lowerright1, Accessor1 a1,
                  ImageIterator2 upperleft2, Accessor2 a2,
          Functor & f)
 {
     int w = lowerright1.x - upperleft1.x;
-    
+
     for(; upperleft1.y<lowerright1.y; ++upperleft1.y, ++upperleft2.y)
     {
-        inspectTwoLines(upperleft1.rowIterator(), 
-                        upperleft1.rowIterator() + w, a1, 
+        inspectTwoLines(upperleft1.rowIterator(),
+                        upperleft1.rowIterator() + w, a1,
                         upperleft2.rowIterator(), a2, f);
     }
 }
 
 template <class ImageIterator1, class Accessor1,
-      class ImageIterator2, class Accessor2, 
+      class ImageIterator2, class Accessor2,
       class Functor>
 inline
 void
@@ -421,7 +421,7 @@ inspectTwoImages(triple<ImageIterator1, ImageIterator1, Accessor1> img1,
          pair<ImageIterator2, Accessor2> img2,
          Functor & f)
 {
-    inspectTwoImages(img1.first, img1.second, img1.third, 
+    inspectTwoImages(img1.first, img1.second, img1.third,
                      img2.first, img2.second, f);
 }
 
@@ -433,37 +433,37 @@ inspectTwoImages(triple<ImageIterator1, ImageIterator1, Accessor1> img1,
 
 /** \brief Apply read-only functor to those pixels of both images where
     the mask image is non-zero.
-    
-    This function can be used to collect statistics for selected regions of a 
-    labeled image, especially in conjunction with 
-    the \ref ArrayOfRegionStatistics functor. The results must be 
-    stored in the functor which serves as a return value. 
+
+    This function can be used to collect statistics for selected regions of a
+    labeled image, especially in conjunction with
+    the \ref ArrayOfRegionStatistics functor. The results must be
+    stored in the functor which serves as a return value.
     Accessors are used to access the pixel data.
-    
+
     <b> Declarations:</b>
-    
+
     pass arguments explicitly:
     \code
     namespace vigra {
         template <class ImageIterator1, class Accessor1,
-                  class ImageIterator2, class Accessor2, 
-                  class MaskImageIterator, class MaskAccessor, 
+                  class ImageIterator2, class Accessor2,
+                  class MaskImageIterator, class MaskAccessor,
                   class Functor>
         void
-        inspectTwoImagesIf(ImageIterator1 upperleft1, ImageIterator1 lowerright1, Accessor1 a1, 
+        inspectTwoImagesIf(ImageIterator1 upperleft1, ImageIterator1 lowerright1, Accessor1 a1,
                          ImageIterator2 upperleft2, Accessor2 a2,
                          MaskImageIterator mupperleft, MaskAccessor mask,
                          Functor & f)
     }
     \endcode
-    
-    
+
+
     use argument objects in conjuction with \ref ArgumentObjectFactories:
     \code
     namespace vigra {
         template <class ImageIterator1, class Accessor1,
-                  class ImageIterator2, class Accessor2, 
-                  class MaskImageIterator, class MaskAccessor, 
+                  class ImageIterator2, class Accessor2,
+                  class MaskImageIterator, class MaskAccessor,
                   class Functor>
         void
         inspectTwoImagesIf(triple<ImageIterator1, ImageIterator1, Accessor1> img1,
@@ -472,26 +472,26 @@ inspectTwoImages(triple<ImageIterator1, ImageIterator1, Accessor1> img1,
                  Functor & f)
     }
     \endcode
-    
+
     <b> Usage:</b>
-    
+
         <b>\#include</b> "<a href="inspectimage_8hxx-source.html">vigra/inspectimage.hxx</a>"<br>
         Namespace: vigra
-    
+
     \code
     vigra::BImage image1;
     vigra::BImage image2;
     vigra::BImage maskimage;
-    
+
     SomeStatisticsFunctor stats(...);     // init functor
-    
+
     vigra::inspectTwoImagesIf(srcImageRange(image1), srcImage(image2),
                               srcImage(maskimage), region_stats);
-    
+
     \endcode
 
     <b> Required Interface:</b>
-    
+
     \code
     ImageIterator1 upperleft1, lowerright1;
     ImageIterator2 upperleft2;
@@ -499,41 +499,41 @@ inspectTwoImages(triple<ImageIterator1, ImageIterator1, Accessor1> img1,
     ImageIterator1::row_iterator ix1 = upperleft1.rowIterator();
     ImageIterator2::row_iterator ix2 = upperleft2.rowIterator();
     MaskImageIterator::row_iterator mx = mupperleft.rowIterator();
-    
+
     Accessor1 accessor1;
     Accessor2 accessor2;
     MaskAccessor mask;
-    
+
     Functor functor;
     if(mask(mx))
-        functor(accessor1(ix1), accessor2(ix2)); 
+        functor(accessor1(ix1), accessor2(ix2));
     \endcode
-    
+
 */
 template <class ImageIterator1, class Accessor1,
-          class ImageIterator2, class Accessor2, 
-          class MaskImageIterator, class MaskAccessor, 
+          class ImageIterator2, class Accessor2,
+          class MaskImageIterator, class MaskAccessor,
       class Functor>
 void
-inspectTwoImagesIf(ImageIterator1 upperleft1, ImageIterator1 lowerright1, Accessor1 a1, 
+inspectTwoImagesIf(ImageIterator1 upperleft1, ImageIterator1 lowerright1, Accessor1 a1,
                  ImageIterator2 upperleft2, Accessor2 a2,
                  MaskImageIterator mupperleft, MaskAccessor mask,
                  Functor & f)
 {
     int w = lowerright1.x - upperleft1.x;
-    
+
     for(; upperleft1.y<lowerright1.y; ++upperleft1.y, ++upperleft2.y, ++mupperleft.y)
     {
-        inspectTwoLinesIf(upperleft1.rowIterator(), 
-                          upperleft1.rowIterator() + w, a1, 
-                          upperleft2.rowIterator(), a2, 
+        inspectTwoLinesIf(upperleft1.rowIterator(),
+                          upperleft1.rowIterator() + w, a1,
+                          upperleft2.rowIterator(), a2,
                           mupperleft.rowIterator(), mask, f);
     }
 }
 
 template <class ImageIterator1, class Accessor1,
-          class ImageIterator2, class Accessor2, 
-          class MaskImageIterator, class MaskAccessor, 
+          class ImageIterator2, class Accessor2,
+          class MaskImageIterator, class MaskAccessor,
           class Functor>
 inline
 void
@@ -542,9 +542,9 @@ inspectTwoImagesIf(triple<ImageIterator1, ImageIterator1, Accessor1> img1,
          pair<MaskImageIterator, MaskAccessor> m,
          Functor & f)
 {
-    inspectTwoImagesIf(img1.first, img1.second, img1.third, 
-                     img2.first, img2.second, 
-                     m.first, m.second, 
+    inspectTwoImagesIf(img1.first, img1.second, img1.third,
+                     img2.first, img2.second,
+                     m.first, m.second,
                      f);
 }
 
@@ -567,59 +567,59 @@ inspectTwoImagesIf(triple<ImageIterator1, ImageIterator1, Accessor1> img1,
     This Functor can also be used in conjunction with
     \ref ArrayOfRegionStatistics to find the extremes of all regions in
     a labeled image.
-    
+
     <b> Usage:</b>
-    
+
         <b>\#include</b> "<a href="inspectimage_8hxx-source.html">vigra/inspectimage.hxx</a>"<br>
         Namespace: vigra
-    
+
     \code
     vigra::BImage img;
-    
+
     vigra::FindMinMax<vigra::BImage::PixelType> minmax;   // init functor
-    
+
     vigra::inspectImage(srcImageRange(img), minmax);
-    
+
     cout << "Min: " << minmax.min << " Max: " << minmax.max;
-    
+
     \endcode
 
     <b> Required Interface:</b>
-    
+
     \code
     VALUETYPE v1, v2(v1);
-    
+
     v1 < v2;
     v1 = v2;
     \endcode
-    
+
 */
 template <class VALUETYPE>
 class FindMinMax
 {
    public:
-   
+
         /** the functor's argument type
         */
     typedef VALUETYPE argument_type;
-   
+
         /** the functor's result type
         */
     typedef VALUETYPE result_type;
-   
+
         /** \deprecated use argument_type
         */
     typedef VALUETYPE value_type;
-   
+
         /** init min and max
         */
     FindMinMax()
     : count(0)
     {}
-    
+
         /** update min and max
         */
-    void operator()(argument_type const & v) 
+    void operator()(argument_type const & v)
     {
         if(count)
         {
@@ -633,19 +633,19 @@ class FindMinMax
         }
         ++count;
     }
-    
+
         /** update min and max with components of RGBValue<VALUETYPE>
         */
-    void operator()(RGBValue<VALUETYPE> const & v) 
+    void operator()(RGBValue<VALUETYPE> const & v)
     {
         operator()(v.red());
         operator()(v.green());
         operator()(v.blue());
     }
-    
+
         /** merge two statistics
         */
-    void operator()(FindMinMax const & v) 
+    void operator()(FindMinMax const & v)
     {
         if(v.count)
         {
@@ -662,20 +662,20 @@ class FindMinMax
         }
         count += v.count;
     }
-    
+
         /** the current min
         */
     VALUETYPE min;
-    
+
         /** the current max
         */
     VALUETYPE max;
-    
+
         /** the number of values processed so far
         */
     unsigned int count;
-    
-}; 
+
+};
 
 /********************************************************/
 /*                                                      */
@@ -689,46 +689,46 @@ class FindMinMax
     This Functor can also be used in conjunction with
     \ref ArrayOfRegionStatistics to find the average of all regions in
     a labeled image.
-    
+
     <b> Usage:</b>
-    
+
         <b>\#include</b> "<a href="inspectimage_8hxx-source.html">vigra/inspectimage.hxx</a>"<br>
         Namespace: vigra
-    
+
     \code
     vigra::BImage img;
-    
+
     vigra::FindAverage<vigra::BImage::PixelType> average;   // init functor
-    
+
     vigra::inspectImage(srcImageRange(img), average);
-    
+
     cout << "Average: " << average();
-    
+
     \endcode
 
     <b> Required Interface:</b>
-    
+
     \code
     VALUETYPE v1, v2(v1);
-    
+
     v1 < v2;
     v1 = v2;
     \endcode
-    
+
 */
 template <class VALUETYPE>
 class FindAverage
 {
    public:
-   
+
         /** the functor's argument type
         */
     typedef VALUETYPE argument_type;
-   
+
         /** the functor's result type
         */
     typedef typename NumericTraits<VALUETYPE>::RealPromote result_type;
-   
+
         /** \deprecated use argument_type and result_type
         */
     typedef typename NumericTraits<VALUETYPE>::RealPromote value_type;
@@ -738,41 +738,41 @@ class FindAverage
     FindAverage()
     : count(0), sum(NumericTraits<result_type>::zero())
     {}
-    
+
         /** update average
         */
-    void operator()(argument_type const & v) 
+    void operator()(argument_type const & v)
     {
         sum += v;
         ++count;
     }
-    
+
         /** merge two statistics
         */
-    void operator()(FindAverage const & v) 
+    void operator()(FindAverage const & v)
     {
         sum += v.sum;
         count += v.count;
     }
-    
+
         /** return current average
         */
     result_type average() const
     {
         return sum / (double)count;
     }
-    
+
         /** return current average
         */
     result_type operator()() const
     {
         return sum / (double)count;
     }
-    
+
     unsigned int count;
     result_type sum;
-    
-}; 
+
+};
 
 /********************************************************/
 /*                                                      */
@@ -780,26 +780,26 @@ class FindAverage
 /*                                                      */
 /********************************************************/
 
-/** \brief Calculate the size of an ROI in an image. 
+/** \brief Calculate the size of an ROI in an image.
 
     This Functor is often used in conjunction with
     \ref ArrayOfRegionStatistics to find the sizes of all regions in
     a labeled image.
-    
+
     <b> Usage:</b>
-    
+
     <b>\#include</b> "<a href="inspectimage_8hxx-source.html">vigra/inspectimage.hxx</a>"<br>
         Namespace: vigra
 
     \code
     vigra::BImage img, mask;
-    
+
     vigra::FindROISize<vigra::BImage::PixelType> roisize;   // init functor
-    
+
     vigra::inspectImageIf(srcImageRange(img), srcImage(mask), roisize);
-    
+
     cout << "Size of ROI: " << roisize.count;
-    
+
     \endcode
 
 */
@@ -807,58 +807,58 @@ template <class VALUETYPE>
 class FindROISize
 {
    public:
-   
+
         /** the functor's argument type
         */
     typedef VALUETYPE argument_type;
-   
+
         /** the functor's result type
         */
     typedef unsigned int result_type;
-   
+
         /** \deprecated use argument_type and result_type
         */
     typedef VALUETYPE value_type;
-   
+
         /** init counter to 0
         */
     FindROISize()
     : count(0)
     {}
-    
+
         /** update counter
         */
-    void operator()(argument_type const &) 
+    void operator()(argument_type const &)
     {
         ++count;
     }
-    
+
         /** return current size
         */
-    result_type operator()() const 
+    result_type operator()() const
     {
         return count;
     }
-    
+
         /** return current size
         */
-    result_type size() const 
+    result_type size() const
     {
         return count;
     }
-    
+
         /** merge two statistics
         */
-    void operator()(FindROISize const & o) 
+    void operator()(FindROISize const & o)
     {
         count += o.count;
     }
-    
+
         /** the current counter
         */
     result_type count;
-    
-}; 
+
+};
 
 /********************************************************/
 /*                                                      */
@@ -866,81 +866,81 @@ class FindROISize
 /*                                                      */
 /********************************************************/
 
-/** \brief Calculate the bounding rectangle of an ROI in an image. 
+/** \brief Calculate the bounding rectangle of an ROI in an image.
 
     As always in VIGRA, <TT>roiRect.lowerRight</TT> is <em> just outside the rectangle</em>.
     That is, the last pixel actually in the rectangle is <TT>roiRect.lowerRight - Diff2D(1,1)</TT>.
     This Functor is often used in conjunction with
-    \ref ArrayOfRegionStatistics to find the bounding rectangles 
+    \ref ArrayOfRegionStatistics to find the bounding rectangles
     of all regions in a labeled image.
-    
+
     <b> Usage:</b>
-    
+
     <b>\#include</b> "<a href="inspectimage_8hxx-source.html">vigra/inspectimage.hxx</a>"<br>
         Namespace: vigra
 
     \code
     vigra::BImage img, mask;
     ...
-    
+
     vigra::FindBoundingRectangle roiRect;   // init functor
-    
+
     // Diff2D is used as the iterator for the source image. This
-    // simulates an image where each pixel value equals that pixel's 
+    // simulates an image where each pixel value equals that pixel's
     // coordinates. Tha image 'mask' determines the ROI.
-    vigra::inspectImageIf(srcIterRange(Diff2D(0,0), img.size()), 
+    vigra::inspectImageIf(srcIterRange(Diff2D(0,0), img.size()),
                           srcImage(mask), roiRect);
-    
-    cout << "Upper left of ROI: " << 
+
+    cout << "Upper left of ROI: " <<
         roiRect.upperLeft.x << ", " << roiRect.upperLeft.y << endl;
-    cout << "Lower right of ROI: " << 
+    cout << "Lower right of ROI: " <<
         roiRect.lowerRight.x << ", " << roiRect.lowerRight.y << endl;
-    
+
     \endcode
 
 */
 class FindBoundingRectangle
 {
   public:
-  
+
         /** the functor's argument type
         */
     typedef Diff2D argument_type;
-    
+
         /** the functors result type
         */
     typedef pair<Diff2D, Diff2D> result_type;
-    
+
         /** \deprecated use argument_type
         */
     typedef Diff2D value_type;
-    
+
         /** Upper left of the region as seen so far
         */
-    Diff2D upperLeft;
-    
+    Point2D upperLeft;
+
         /** Lower right of the region as seen so far
         */
-    Diff2D lowerRight;
-    
+    Point2D lowerRight;
+
         /** are the functors contents valid ?
         */
     bool valid;
-    
+
         /** init rectangle to invalid values
         */
     FindBoundingRectangle()
     : valid(false)
     {}
-    
+
         /** update rectangle by including the coordinate coord
         */
-    void operator()(argument_type const & coord) 
+    void operator()(argument_type const & coord)
     {
         if(!valid)
         {
-            upperLeft = coord;
-            lowerRight = coord + Diff2D(1,1);
+            upperLeft = Point2D(coord);
+            lowerRight = Point2D(coord + Diff2D(1,1));
             valid = true;
         }
         else
@@ -951,10 +951,10 @@ class FindBoundingRectangle
             lowerRight.y = std::max(lowerRight.y, coord.y + 1);
         }
     }
-    
+
         /** update rectangle by merging it with another rectangle
         */
-    void operator()(FindBoundingRectangle const & otherRegion) 
+    void operator()(FindBoundingRectangle const & otherRegion)
     {
         if(!valid)
         {
@@ -970,11 +970,11 @@ class FindBoundingRectangle
             lowerRight.y = std::max(lowerRight.y, otherRegion.lowerRight.y);
         }
     }
-    
+
         /** Get current rectangle. <TT>result_type::first</TT> is the upper
             left corner of the rectangle, <TT>result_type::second</TT>
             the lower right.
-            
+
         */
     result_type operator()() const
     {
@@ -988,28 +988,28 @@ class FindBoundingRectangle
 /*                                                      */
 /********************************************************/
 
-/** \brief Stores and returns the last value it has seen. 
+/** \brief Stores and returns the last value it has seen.
 
     This Functor is best used in conjunction with
     \ref ArrayOfRegionStatistics to realize a look-up table.
-    
+
     <b> Usage:</b>
-    
+
     <b>\#include</b> "<a href="inspectimage_8hxx-source.html">vigra/inspectimage.hxx</a>"<br>
         Namespace: vigra
 
     \code
     vigra::BImage img;
-    
+
     vigra::ArrayOfRegionStatistics<LastValueFunctor<unsigned char> > lut(255);
-    
+
     for(int i=0; i<256; ++i)
     {
         lut[i] = ...; // init look-up table
     }
-    
+
     vigra::transformImage(srcImageRange(img), destImage(img), lut);
-    
+
     \endcode
 
 */
@@ -1017,19 +1017,19 @@ template <class VALUETYPE>
 class LastValueFunctor
 {
    public:
-   
+
         /** the functor's argument type
         */
     typedef VALUETYPE argument_type;
-   
+
         /** the functor's result type
         */
     typedef VALUETYPE result_type;
-   
+
         /** \deprecated use argument_type and result_type
         */
     typedef VALUETYPE value_type;
-   
+
         /** default initialization of value
         */
     LastValueFunctor()
@@ -1038,11 +1038,11 @@ class LastValueFunctor
         /** replace value
         */
     void operator=(argument_type const & v) { value = v; }
-        
+
         /** replace value
         */
     void operator()(argument_type const & v) { value = v; }
-    
+
         /** return current value
         */
     result_type const & operator()() const { return value; }
@@ -1050,8 +1050,8 @@ class LastValueFunctor
         /** the current value
         */
     VALUETYPE value;
-    
-}; 
+
+};
 
 /********************************************************/
 /*                                                      */
@@ -1059,14 +1059,14 @@ class LastValueFunctor
 /*                                                      */
 /********************************************************/
 
-/** \brief Calculate statistics for all regions of a labeled image. 
+/** \brief Calculate statistics for all regions of a labeled image.
 
     This Functor encapsulates an array of statistics functors, one
-    for each label, and selects the one to be updated according to the 
-    pixel's label. 
-    
+    for each label, and selects the one to be updated according to the
+    pixel's label.
+
     <b> Usage:</b>
-    
+
     <b>\#include</b> "<a href="inspectimage_8hxx-source.html">vigra/inspectimage.hxx</a>"<br>
         Namespace: vigra
 
@@ -1075,40 +1075,40 @@ class LastValueFunctor
     vigra::IImage labels;
     int max_label;
     ...
-    
+
     // init functor as an array of 'max_label' FindMinMax-Functors
-    vigra::ArrayOfRegionStatistics<vigra::FindMinMax<vigra::BImage::PixelType> > 
-                                                         minmax(max_label);   
-        
+    vigra::ArrayOfRegionStatistics<vigra::FindMinMax<vigra::BImage::PixelType> >
+                                                         minmax(max_label);
+
     vigra::inspectTwoImages(srcImageRange(img), srcImage(labels), minmax);
-    
+
     for(int i=0; i<= max_label; ++i)
     {
-        cout << "Max gray lavel of region " << i << ": " 
+        cout << "Max gray lavel of region " << i << ": "
              << minmax.region[i].max << endl;
     }
-    
+
     // init functor as an array of 'max_label' FindAverage-Functors
-    vigra::ArrayOfRegionStatistics<vigra::FindAverage<vigra::BImage::PixelType> > 
-                                                         average(max_label);   
-        
+    vigra::ArrayOfRegionStatistics<vigra::FindAverage<vigra::BImage::PixelType> >
+                                                         average(max_label);
+
     vigra::inspectTwoImages(srcImageRange(img), srcImage(labels), average);
-    
+
     // write back the average of each region into the original image
     vigra::transformImage(srcImageRange(labels), destImage(img), average);
-    
+
     \endcode
-    
+
     <b> Required Interface:</b>
 
     \code
     RegionStatistics region;
     RegionStatistics::argument_type a;
     RegionStatistics::result_type r;
-    
+
     region(a);     // update statistics
     r = region();  // return statistics
-    
+
     \endcode
 */
 template <class RegionStatistics, class LabelType = int>
@@ -1117,43 +1117,43 @@ class ArrayOfRegionStatistics
     typedef std::vector<RegionStatistics> RegionArray;
 
   public:
-         /** argument type of the contained statistics object 
+         /** argument type of the contained statistics object
              becomes first argument of the analyser
          */
     typedef typename RegionStatistics::argument_type first_argument_type;
-    
+
          /** label type is used to determine the region to be updated
          */
     typedef LabelType second_argument_type;
-    
-         /** label type is also used to determine the region to be 
+
+         /** label type is also used to determine the region to be
              returned by the 1 argument operator()
          */
     typedef LabelType argument_type;
 
-         /** result type of the contained statistics object 
+         /** result type of the contained statistics object
              becomes result type of the analyser
          */
     typedef typename RegionStatistics::result_type result_type;
-    
+
          /** the value type of the array: the contained statistics object.
              <b>Note:</b> this definition was different in older
              VIGRA versions. The old definition was wrong.
          */
     typedef RegionStatistics value_type;
-    
+
          /** the array's reference type
          */
     typedef RegionStatistics & reference;
-    
+
          /** the array's const reference type
          */
     typedef RegionStatistics const & const_reference;
-    
+
          /** type to iterate over the statistics array
          */
     typedef typename RegionArray::iterator iterator;
-    
+
          /** type to iterate over a const statistics array
          */
     typedef typename RegionArray::const_iterator const_iterator;
@@ -1162,14 +1162,14 @@ class ArrayOfRegionStatistics
         */
     ArrayOfRegionStatistics()
     {}
-    
+
         /** init array of RegionStatistics with index domain
             0...max_region_label.
         */
     ArrayOfRegionStatistics(unsigned int max_region_label)
     : regions(max_region_label+1)
     {}
-    
+
         /** resize array to new index domain 0...max_region_label.
             All bin are re-initialized.
         */
@@ -1178,7 +1178,7 @@ class ArrayOfRegionStatistics
         RegionArray newRegions(max_region_label+1);
         regions.swap(newRegions);
     }
-    
+
         /** reset the contained functors to their initial state.
         */
     void reset()
@@ -1186,66 +1186,66 @@ class ArrayOfRegionStatistics
         RegionArray newRegions(regions.size());
         regions.swap(newRegions);
     }
-    
+
         /** update regions statistics for region <TT>label</TT>. The label type
             is converted to <TT>unsigned int</TT>.
         */
     void operator()(first_argument_type const & v, second_argument_type label) {
         regions[static_cast<unsigned int>(label)](v);
     }
-    
+
         /** merge second region into first
         */
     void merge(argument_type label1, argument_type label2) {
         regions[static_cast<unsigned int>(label1)](regions[static_cast<unsigned int>(label2)]);
     }
-    
+
         /** ask for maximal index (label) allowed
         */
-    unsigned int maxRegionLabel() const 
-        { return size() - 1; } 
+    unsigned int maxRegionLabel() const
+        { return size() - 1; }
 
         /** ask for array size (i.e. maxRegionLabel() + 1)
         */
-    unsigned int size() const 
-        { return regions.size(); } 
+    unsigned int size() const
+        { return regions.size(); }
 
         /** access the statistics for a region via its label. The label type
             is converted to <TT>unsigned int</TT>.
         */
-    result_type operator()(argument_type label) const 
+    result_type operator()(argument_type label) const
         { return regions[static_cast<unsigned int>(label)](); }
-    
+
         /** read the statistics functor for a region via its label
         */
-    const_reference operator[](argument_type label) const 
+    const_reference operator[](argument_type label) const
         { return regions[static_cast<unsigned int>(label)]; }
-    
+
         /** access the statistics functor for a region via its label
         */
-    reference operator[](argument_type label) 
+    reference operator[](argument_type label)
         { return regions[static_cast<unsigned int>(label)]; }
-    
+
         /** iterator to the begin of the region array
         */
-    iterator begin() 
-        { return regions.begin(); } 
-    
+    iterator begin()
+        { return regions.begin(); }
+
         /** const iterator to the begin of the region array
         */
     const_iterator begin() const
-        { return regions.begin(); } 
-    
+        { return regions.begin(); }
+
         /** iterator to the end of the region array
         */
-    iterator end() 
-        { return regions.end(); } 
-    
+    iterator end()
+        { return regions.end(); }
+
         /** const iterator to the end of the region array
         */
     const_iterator end() const
-        { return regions.end(); } 
-    
+        { return regions.end(); }
+
   private:
     std::vector<RegionStatistics> regions;
 };

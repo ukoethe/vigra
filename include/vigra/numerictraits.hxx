@@ -25,7 +25,7 @@
 
 #include <limits.h>
 #include <cfloat>
-#include <vigra/utilities.hxx>
+#include "vigra/metaprogramming.hxx"
 
 /********************************************************/
 /*                                                      */

@@ -19,7 +19,7 @@
 /*                                                                      */
 /************************************************************************/
  
-#ifndef IMAGECONTAINER_HXX 
+#ifndef IMAGECONTAINER_HXX
 #define IMAGECONTAINER_HXX
 
 #include "vigra/utilities.hxx"
@@ -53,7 +53,7 @@ namespace vigra {
 template <class ImageType>
 class ImageArray
 {
-    Diff2D imageSize_;
+    Size2D imageSize_;
 
 protected:
     std::vector<ImageType> images_;
@@ -91,7 +91,7 @@ public:
     ImageArray(unsigned int numImages= 0)
         : images_(numImages)
     {
-        imageSize_= empty()? Diff2D(0, 0) : front().size();
+        imageSize_= empty()? Size2D(0, 0) : front().size();
     }
 
         /** fill constructor: Init an array with numImages copies of
@@ -109,7 +109,7 @@ public:
          */
     template<class InputIterator>
     ImageArray(InputIterator begin, InputIterator end)
-        : imageSize_(begin!=end? (*begin).size() : Diff2D(0,0)),
+        : imageSize_(begin!=end? (*begin).size() : Size2D(0,0)),
           images_(begin, end)
     {
     }
@@ -357,7 +357,7 @@ public:
          */
     void swap(const_reference other)
     {
-        Diff2D oldImageSize = imageSize_;
+        Size2D oldImageSize = imageSize_;
         images_.swap(other.images_);
         imageSize_ = other.imageSize_;
         other.imageSize_ = oldImageSize;
@@ -384,7 +384,7 @@ public:
             manually</em>. ImageArray currently has no way to detect or
             prevent this.
          */
-    Diff2D imageSize() const
+    Size2D imageSize() const
         { return imageSize_; }
 
         /** Resize all images to a common new size (No-op if
@@ -410,7 +410,7 @@ public:
         */
     void resizeImages(int width, int height)
     {
-        resizeImages(Diff2D(width, height));
+        resizeImages(Size2D(width, height));
     }
 };
 

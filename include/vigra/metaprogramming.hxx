@@ -18,43 +18,22 @@
 /*  WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE. */
 /*                                                                      */
 /************************************************************************/
+ 
+#ifndef VIGRA_METAPROGRAMMING_HXX
+#define VIGRA_METAPROGRAMMING_HXX
 
+namespace vigra {
 
-#ifndef VIGRA_BASICS_HXX
-#define VIGRA_BASICS_HXX
+struct VigraTrueType
+{
+   enum { asBool = true };
+};
 
-#include "vigra/config.hxx"
-#include "vigra/error.hxx"
-#include "vigra/metaprogramming.hxx"
-#include "vigra/tuple.hxx"
-#include "vigra/diff2d.hxx"
-#include "vigra/mathutil.hxx"
+struct VigraFalseType
+{
+    enum { asBool = false };
+};
 
-/*! \page Utilities Utilities
-    Basic helper functionality needed throughout.
+} // namespace vigra
 
-    <DL>
-    <DT>
-    <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif">
-     \ref RangesAndPoints
-     <DD><em>2-dimensioanl positions, extents, amd rectangles</em>
-    <DT>
-    <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif">
-     \ref PixelNeighborhood
-     <DD><em>4- and 8-neighborhood definitions and circulators</em>
-    <DT>
-    <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif">
-     \ref vigra::IteratorAdaptor
-     <DD><em>Quickly create STL-compatible 1D iterator adaptors</em>
-     <DT>
-    <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif">
-     \ref TupleTypes
-     <DD><em>pair, triple, tuple4, tuple5</em>
-      <DT>
-    <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif">
-     \ref MathConstants
-     <DD><em>M_PI, M_SQRT2</em>
-    </DL>
-*/
-
-#endif // VIGRA_BASICS_HXX
+#endif /* VIGRA_METAPROGRAMMING_HXX */

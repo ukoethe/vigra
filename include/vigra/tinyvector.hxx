@@ -194,7 +194,7 @@ class TinyVector
         data_[3] = i4;
     }
 
-       /** Default constructor
+       /** Default constructor (initializes all components with zero)
         */
     TinyVector()
     {

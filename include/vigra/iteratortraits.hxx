@@ -97,24 +97,6 @@ struct IteratorTraits
 
 //@}
 
-template <> 
-struct IteratorTraits<Diff2D > 
-{
-    typedef Diff2D                               Iterator;
-    typedef Iterator                             iterator;
-    typedef iterator::iterator_category          iterator_category;
-    typedef iterator::value_type                 value_type;
-    typedef iterator::reference                  reference;
-    typedef iterator::index_reference            index_reference;
-    typedef iterator::pointer                    pointer;
-    typedef iterator::difference_type            difference_type;
-    typedef iterator::row_iterator               row_iterator;
-    typedef iterator::column_iterator            column_iterator;
-    typedef StandardConstValueAccessor<Diff2D>   DefaultAccessor;
-    typedef StandardConstValueAccessor<Diff2D>   default_accessor;
-    
-};
-
 } // namespace vigra
 
 #endif // VIGRA_ITERATORTRAITS_HXX

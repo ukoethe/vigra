@@ -391,7 +391,7 @@ class BasicImage
 
          /** the BasicImage's size type (result type of image.size())
         */
-    typedef Diff2D size_type;
+    typedef Size2D size_type;
 
        /** the BasicImage's default accessor
         */
@@ -535,9 +535,9 @@ class BasicImage
 
         /** size of Image
         */
-    difference_type size() const
+    size_type size() const
     {
-        return difference_type(width(), height());
+        return size_type(width(), height());
     }
 
         /** test whether a given coordinate is inside the image
@@ -892,7 +892,7 @@ class BasicImageView
 
          /** the BasicImageView's size type (result type of image.size())
         */
-    typedef Diff2D size_type;
+    typedef Size2D size_type;
 
        /** the BasicImageView's default accessor
         */
@@ -964,9 +964,9 @@ class BasicImageView
 
         /** size of Image
         */
-    difference_type size() const
+    size_type size() const
     {
-        return difference_type(width(), height());
+        return size_type(width(), height());
     }
 
         /** test whether a given coordinate is inside the image

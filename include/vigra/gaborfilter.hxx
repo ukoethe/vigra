@@ -303,7 +303,7 @@ public:
     GaborFilterFamily(int width= stdFilterSize, int height= -1,
                       int directionCount = stdDirectionCount, int scaleCount = stdScaleCount,
                       double maxCenterFrequency = 3.0/8.0)
-        : ParentClass(directionCount*scaleCount, Diff2D(width, height > 0 ? height : width)),
+        : ParentClass(directionCount*scaleCount, Size2D(width, height > 0 ? height : width)),
           scaleCount_(scaleCount),
           directionCount_(directionCount),
           maxCenterFrequency_(maxCenterFrequency)

@@ -72,7 +72,7 @@ std::string impexListExtensions();
 
 /** \brief Test whether a file is an image format known to VIGRA.
 
-    This checks the first few bytes of the file and compares them with the 
+    This checks the first few bytes of the file and compares them with the
     "magic strings" of each recognized image format.
 
     <b> Usage:</b>
@@ -117,7 +117,7 @@ class ImageExportInfo
 
     const char * getFileName() const;
 
-    /** Store image as given file type. 
+    /** Store image as given file type.
     
         This will override any type guessed
         from the file name's extension. Recognized file types:
@@ -127,7 +127,7 @@ class ImageExportInfo
         <DT>"GIF"<DD> CompuServe graphics interchange format; 8-bit color.
         <DT>"JPEG"<DD> Joint Photographic Experts Group JFIF format;
         compressed 24-bit color (only available if libjpeg is installed).
-        <DT>"PNG"<DD> Portable Network Graphic 
+        <DT>"PNG"<DD> Portable Network Graphic
         (only available if libpng is installed).
         <DT>"PBM"<DD> Portable bitmap format (black and white).
         <DT>"PGM"<DD> Portable graymap format (gray scale).
@@ -158,7 +158,7 @@ class ImageExportInfo
     ImageExportInfo & setFileType( const char * );
     const char * getFileType() const;
 
-    /** Set compression type. 
+    /** Set compression type.
     
         Recognized strings: "LZW",
         "RunLength", "1" ... "100". A number is interpreted as the
@@ -258,9 +258,9 @@ class ImageImportInfo
         /** Get the file type of the image associated with this
             info object.
             
-            See ImageImportInfo::ImageImportInfo for a list of the 
+            See ImageImportInfo::ImageImportInfo for a list of the
             available file types.
-        **/        
+        **/
     const char * getFileType() const;
 
         /** Get width of the image.
@@ -277,7 +277,7 @@ class ImageImportInfo
 
         /** Get size of the image.
          **/
-    Diff2D size() const;
+    Size2D size() const;
 
         /** Returns true if the image is gray scale.
          **/
@@ -287,7 +287,7 @@ class ImageImportInfo
          **/
     bool isColor() const;
 
-        /** Query the pixel type of the image. 
+        /** Query the pixel type of the image.
         
             Possible values are:
             <DL>
