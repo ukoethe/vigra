@@ -13,6 +13,7 @@ FILES = \
     profile \
     pyramid \
     edge \
+    ascale \
     watershed \
     voronoi
     
@@ -41,6 +42,9 @@ profile:  profile.o
 
 pyramid:  pyramid.o 
 	$(CXX) $(CXXFLAGS) $(CXXINC) -o pyramid pyramid.o $(CXXLIBDIR) $(LIB)
+
+ascale:  morphological_appropriate_scale.o 
+	$(CXX) $(CXXFLAGS) $(CXXINC) -o ascale morphological_appropriate_scale.o $(CXXLIBDIR) $(LIB)
 
 edge:  edge.o 
 	$(CXX) $(CXXFLAGS) $(CXXINC) -o edge edge.o $(CXXLIBDIR) $(LIB)
