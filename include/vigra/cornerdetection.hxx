@@ -70,58 +70,26 @@ struct RohrCornerFunctor
     }
 };
 
+template <class SrcType>
+struct BeaudetCornerFunctor
+{
+    typedef typename NumericTraits<SrcType>::RealPromote argument_type;
+    typedef argument_type result_type;
+    
+    result_type operator()(argument_type a1, 
+                        argument_type a2, argument_type a3) const
+    {
+	return (a3*a3 - a1*a2);
+    }
+};
+
 /** \addtogroup CornerDetection Corner Detection
-    Measure the 'cornerness' at each pixel
+    Measure the 'cornerness' at each pixel.
+    Note: The Kitchen-Rosenfeld detector is not implemented because of its
+    inferior performance. The SUSAN detector is missing because it's patented.
 */
 //@{ 
                                     
-template <class SrcIterator, class SrcAccessor,
-          class DestIterator, class DestAccessor,
-          class CornerFunctor>
-void
-structureTensorBasedCornerDetection(SrcIterator sul, SrcIterator slr, SrcAccessor as,
-                       DestIterator dul, DestAccessor ad,
-		       CornerFunctor cf, double scale)
-{
-    vigra_precondition(scale > 0.0,
-                 "structureTensorBasedCornerDetection(): Scale must be > 0");
-		 
-    int w = slr.x - sul.x;
-    int h = slr.y - sul.y;
-    
-    if(w <= 0 || h <= 0) return;
-    
-    typedef typename 
-        NumericTraits<typename SrcAccessor::value_type>::RealPromote TmpType;
-	
-    typedef BasicImage<TmpType> TmpImage;
-    
-    TmpImage gx(w,h);
-    TmpImage gy(w,h);
-    TmpImage gxy(w,h);
-
-    structureTensor(srcIterRange(sul, slr, as), 
-                    destImage(gx), destImage(gxy), destImage(gy), 
-                    scale, scale);
-                    
-    combineThreeImages(srcImageRange(gx), srcImage(gy), srcImage(gxy), 
-                       destIter(dul, ad), cf );
-}
-
-template <class SrcIterator, class SrcAccessor,
-          class DestIterator, class DestAccessor,
-          class CornerFunctor>
-inline 
-void structureTensorBasedCornerDetection(
-           triple<SrcIterator, SrcIterator, SrcAccessor> src,
-	   pair<DestIterator, DestAccessor> dest,
-	   CornerFunctor cf, double scale)
-{
-    structureTensorBasedCornerDetection(src.first, src.second, src.third,
-                            dest.first, dest.second,
-			    cf, scale);
-}
-
 /********************************************************/
 /*                                                      */
 /*                 cornerResponseFunction               */
@@ -567,6 +535,142 @@ void rohrCornerDetector(
 	   double scale)
 {
     rohrCornerDetector(src.first, src.second, src.third,
+                            dest.first, dest.second,
+			    scale);
+}
+
+/********************************************************/
+/*                                                      */
+/*                 beaudetCornerDetector                */
+/*                                                      */
+/********************************************************/
+
+/** \brief Find corners in an image (4).
+
+    This algorithm implements a corner detector  
+    according to [P.R. Beaudet: <em> "Rotationally Invariant Image Operators"</em>, 
+    Proc. Intl. Joint Conf. on Pattern Recognition, Kyoto, Japan, 1978, pp. 579-583]. 
+    
+    The algorithm calculates the corner strength as the negative determinant of the 
+    \link CommonConvolutionFilters#hessianMatrixOfGaussian Hessian Matrix\endlink. 
+    The local maxima of the corner strength denote the corners in the gray level 
+    image. 
+    
+    The source value type must be a linear algebra, i.e. addition, subtraction, and
+    multiplication with itself, multiplication with doubles and 
+    \ref NumericTraits "NumericTraits" must 
+    be defined.
+    
+    <b> Declarations:</b>
+    
+    pass arguments explicitly:
+    \code
+    namespace vigra {
+        template <class SrcIterator, class SrcAccessor,
+	          class DestIterator, class DestAccessor>
+        void
+        beaudetCornerDetector(SrcIterator sul, SrcIterator slr, SrcAccessor as,
+			   DestIterator dul, DestAccessor ad,
+			   double scale)
+    }
+    \endcode
+    
+    use argument objects in conjuction with \ref ArgumentObjectFactories:
+    \code
+    namespace vigra {
+        template <class SrcIterator, class SrcAccessor,
+	          class DestIterator, class DestAccessor>
+        inline 
+        void beaudetCornerDetector(
+	           triple<SrcIterator, SrcIterator, SrcAccessor> src,
+	           pair<DestIterator, DestAccessor> dest,
+	           double scale)
+    }
+    \endcode
+    
+    <b> Usage:</b>
+    
+        <b>\#include</b> "<a href="cornerdetection_8hxx-source.html">vigra/cornerdetection.hxx</a>"<br>
+    Namespace: vigra
+    
+    \code
+    vigra::BImage src(w,h), corners(w,h);
+    vigra::FImage beaudet_corner_strength(w,h);
+    
+    // empty corner image
+    corners = 0;
+    ...
+    
+    // find corner response at scale 1.0
+    vigra::beaudetCornerDetector(srcImageRange(src), destImage(beaudet_corner_strength), 
+                              1.0);
+    
+    // find local maxima of corner response, mark with 1
+    vigra::localMaxima(srcImageRange(beaudet_corner_strength), destImage(corners));
+    \endcode
+
+    <b> Required Interface:</b>
+    
+    \code
+    SrcImageIterator src_upperleft, src_lowerright;
+    DestImageIterator dest_upperleft;
+    
+    SrcAccessor src_accessor;
+    DestAccessor dest_accessor;
+    
+    SrcAccessor::value_type u = src_accessor(src_upperleft);
+    double d;
+    
+    u = u + u
+    u = u - u
+    u = u * u
+    u = d * u
+    
+    dest_accessor.set(u, dest_upperleft);
+    \endcode
+*/
+template <class SrcIterator, class SrcAccessor,
+          class DestIterator, class DestAccessor>
+void
+beaudetCornerDetector(SrcIterator sul, SrcIterator slr, SrcAccessor as,
+                       DestIterator dul, DestAccessor ad,
+		       double scale)
+{
+    vigra_precondition(scale > 0.0,
+                 "beaudetCornerDetector(): Scale must be > 0");
+		 
+    int w = slr.x - sul.x;
+    int h = slr.y - sul.y;
+    
+    if(w <= 0 || h <= 0) return;
+    
+    typedef typename 
+        NumericTraits<typename SrcAccessor::value_type>::RealPromote TmpType;
+	
+    typedef BasicImage<TmpType> TmpImage;
+    
+    TmpImage gx(w,h);
+    TmpImage gy(w,h);
+    TmpImage gxy(w,h);
+
+    hessianMatrixOfGaussian(srcIterRange(sul, slr, as), 
+                    destImage(gx), destImage(gxy), destImage(gy), 
+                    scale);
+    BeaudetCornerFunctor<typename SrcAccessor::value_type > cf;
+                    
+    combineThreeImages(srcImageRange(gx), srcImage(gy), srcImage(gxy), 
+                       destIter(dul, ad), cf );
+}
+
+template <class SrcIterator, class SrcAccessor,
+          class DestIterator, class DestAccessor>
+inline 
+void beaudetCornerDetector(
+           triple<SrcIterator, SrcIterator, SrcAccessor> src,
+	   pair<DestIterator, DestAccessor> dest,
+	   double scale)
+{
+    beaudetCornerDetector(src.first, src.second, src.third,
                             dest.first, dest.second,
 			    scale);
 }
