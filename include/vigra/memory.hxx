@@ -42,7 +42,7 @@ void destroy_n(T * p, int n, VigraFalseType /* isPOD */)
 template <class T>
 void destroy_n(T * p, int n)
 {
-    destroy_n(p, n, TypeTraits<T>::isPOD());
+    destroy_n(p, n, typename TypeTraits<T>::isPOD());
 }
 
 /********************************************************************/
@@ -61,7 +61,7 @@ void destroy(T * p, VigraFalseType /* isPOD */)
 template <class T>
 void destroy(T * p)
 {
-    destroy(p, TypeTraits<T>::isPOD());
+    destroy(p, typename TypeTraits<T>::isPOD());
 }
 
 } } // namespace vigra::detail
