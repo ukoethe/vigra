@@ -28,6 +28,8 @@
 #include <memory>
 #include <algorithm>
 #include "vigra/utilities.hxx"
+#include "vigra/iteratortraits.hxx"
+#include "vigra/accessor.hxx"
 
 namespace vigra {
 
@@ -299,7 +301,105 @@ class ConstBasicImageIterator
 
 };
 
-template <class T> struct IteratorTraits;
+/********************************************************/
+/*                                                      */
+/*             definition of iterator traits            */
+/*                                                      */
+/********************************************************/
+
+
+#ifndef NO_PARTIAL_TEMPLATE_SPECIALIZATION
+
+template <class T> 
+struct IteratorTraits<BasicImageIterator<T, T**> >
+: IteratorTraitsBase<BasicImageIterator<T, T**> >
+{
+    typedef typename AccessorTraits<T>::default_accessor  DefaultAccessor;
+    typedef DefaultAccessor                               default_accessor;
+};
+
+template <class T> 
+struct IteratorTraits<ConstBasicImageIterator<T, T**> >
+: IteratorTraitsBase<ConstBasicImageIterator<T, T**> >
+{
+    typedef typename AccessorTraits<T>::default_const_accessor  DefaultAccessor;
+    typedef DefaultAccessor                               default_accessor;
+};
+
+#else // NO_PARTIAL_TEMPLATE_SPECIALIZATION
+
+#define VIGRA_DEFINE_ITERATORTRAITS(VALUETYPE) \
+    template <>  \
+    struct IteratorTraits<BasicImageIterator<VALUETYPE, VALUETYPE **> > \
+    : IteratorTraitsBase<BasicImageIterator<VALUETYPE, VALUETYPE **> > \
+    { \
+        typedef typename AccessorTraits<VALUETYPE >::default_accessor  DefaultAccessor; \
+        typedef DefaultAccessor                               default_accessor; \
+    }; \
+    \
+    template <>  \
+    struct IteratorTraits<ConstBasicImageIterator<VALUETYPE, VALUETYPE **> > \
+    : IteratorTraitsBase<ConstBasicImageIterator<VALUETYPE, VALUETYPE **> > \
+    { \
+        typedef typename AccessorTraits<VALUETYPE >::default_const_accessor  DefaultAccessor; \
+        typedef DefaultAccessor                               default_accessor; \
+    };
+
+VIGRA_DEFINE_ITERATORTRAITS(RGBValue<unsigned char>)
+VIGRA_DEFINE_ITERATORTRAITS(RGBValue<short>)
+VIGRA_DEFINE_ITERATORTRAITS(RGBValue<int>)
+VIGRA_DEFINE_ITERATORTRAITS(RGBValue<float>)
+VIGRA_DEFINE_ITERATORTRAITS(RGBValue<double>)
+
+#define VIGRA_PIXELTYPE TinyVector<unsigned char, 2>
+VIGRA_DEFINE_ITERATORTRAITS(VIGRA_PIXELTYPE) 
+#undef VIGRA_PIXELTYPE 
+#define VIGRA_PIXELTYPE TinyVector<unsigned char, 3>
+VIGRA_DEFINE_ITERATORTRAITS(VIGRA_PIXELTYPE) 
+#undef VIGRA_PIXELTYPE
+#define VIGRA_PIXELTYPE TinyVector<unsigned char, 4>
+VIGRA_DEFINE_ITERATORTRAITS(VIGRA_PIXELTYPE) 
+#undef VIGRA_PIXELTYPE
+#define VIGRA_PIXELTYPE TinyVector<short, 2>
+VIGRA_DEFINE_ITERATORTRAITS(VIGRA_PIXELTYPE) 
+#undef VIGRA_PIXELTYPE 
+#define VIGRA_PIXELTYPE TinyVector<short, 3>
+VIGRA_DEFINE_ITERATORTRAITS(VIGRA_PIXELTYPE) 
+#undef VIGRA_PIXELTYPE
+#define VIGRA_PIXELTYPE TinyVector<short, 4>
+VIGRA_DEFINE_ITERATORTRAITS(VIGRA_PIXELTYPE) 
+#undef VIGRA_PIXELTYPE
+#define VIGRA_PIXELTYPE TinyVector<int, 2>
+VIGRA_DEFINE_ITERATORTRAITS(VIGRA_PIXELTYPE) 
+#undef VIGRA_PIXELTYPE 
+#define VIGRA_PIXELTYPE TinyVector<int, 3>
+VIGRA_DEFINE_ITERATORTRAITS(VIGRA_PIXELTYPE) 
+#undef VIGRA_PIXELTYPE
+#define VIGRA_PIXELTYPE TinyVector<int, 4>
+VIGRA_DEFINE_ITERATORTRAITS(VIGRA_PIXELTYPE) 
+#undef VIGRA_PIXELTYPE
+#define VIGRA_PIXELTYPE TinyVector<float, 2>
+VIGRA_DEFINE_ITERATORTRAITS(VIGRA_PIXELTYPE) 
+#undef VIGRA_PIXELTYPE 
+#define VIGRA_PIXELTYPE TinyVector<float, 3>
+VIGRA_DEFINE_ITERATORTRAITS(VIGRA_PIXELTYPE) 
+#undef VIGRA_PIXELTYPE
+#define VIGRA_PIXELTYPE TinyVector<float, 4>
+VIGRA_DEFINE_ITERATORTRAITS(VIGRA_PIXELTYPE) 
+#undef VIGRA_PIXELTYPE
+#define VIGRA_PIXELTYPE TinyVector<double, 2>
+VIGRA_DEFINE_ITERATORTRAITS(VIGRA_PIXELTYPE) 
+#undef VIGRA_PIXELTYPE
+#define VIGRA_PIXELTYPE TinyVector<double, 3>
+VIGRA_DEFINE_ITERATORTRAITS(VIGRA_PIXELTYPE) 
+#undef VIGRA_PIXELTYPE
+#define VIGRA_PIXELTYPE TinyVector<double, 4>
+VIGRA_DEFINE_ITERATORTRAITS(VIGRA_PIXELTYPE) 
+#undef VIGRA_PIXELTYPE
+
+#undef VIGRA_DEFINE_ITERATORTRAITS
+
+#endif // NO_PARTIAL_TEMPLATE_SPECIALIZATION
 
 /********************************************************/
 /*                                                      */

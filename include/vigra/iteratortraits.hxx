@@ -81,6 +81,24 @@ namespace vigra {
 template <class T> 
 struct IteratorTraits 
 {
+    typedef T                                          Iterator;
+    typedef Iterator                                   iterator;
+    typedef typename iterator::iterator_category       iterator_category;
+    typedef typename iterator::value_type              value_type;
+    typedef typename iterator::reference               reference;
+    typedef typename iterator::index_reference         index_reference;
+    typedef typename iterator::pointer                 pointer;
+    typedef typename iterator::difference_type         difference_type;
+    typedef typename iterator::row_iterator            row_iterator;
+    typedef typename iterator::column_iterator         column_iterator;
+    typedef typename 
+        AccessorTraits<value_type>::default_accessor   DefaultAccessor;
+    typedef DefaultAccessor                            default_accessor;
+};
+
+template <class T> 
+struct IteratorTraitsBase 
+{
     typedef T                                     Iterator;
     typedef Iterator                              iterator;
     typedef typename iterator::iterator_category  iterator_category;
@@ -91,8 +109,6 @@ struct IteratorTraits
     typedef typename iterator::difference_type    difference_type;
     typedef typename iterator::row_iterator       row_iterator;
     typedef typename iterator::column_iterator    column_iterator;
-    typedef StandardAccessor<value_type>          DefaultAccessor;
-    typedef StandardAccessor<value_type>          default_accessor;
 };
 
 /***********************************************************/
