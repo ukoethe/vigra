@@ -122,7 +122,7 @@ Many thanks to all!
       <li> Used  \ref vigra::IteratorAdaptor to implement improved
            row and column iterators for images.
 
-      <li> Added \ref rowIterator() and columnIterator() functions
+      <li> Added rowIterator() and columnIterator() functions
            returning optimized iterator adapters to all 2D iterators 
            (e.g. vigra::ImageIterator). Changed algorithms to make use 
            of these new members.

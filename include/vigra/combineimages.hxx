@@ -157,7 +157,7 @@ combineThreeLines(SrcIterator1 s1,
     
     Note that <TT>SrcValueType</TT> must be replaced with the appropriate type (e.g. 
     the promote type of the input images' pixel type, see also 
-    \URef{NumericandPromotionTraits})
+    \ref NumericPromotionTraits)
     
     <b> Required Interface:</b>
     
@@ -297,7 +297,7 @@ combineTwoImages(triple<SrcImageIterator1, SrcImageIterator1, SrcAccessor1> src1
 
     Note that <TT>SrcValueType</TT> must be replaced with the appropriate type (e.g. 
     the promote type of the input images' pixel type, see also 
-    \URef{NumericandPromotionTraits})
+    \ref NumericPromotionTraits)
     
     <b> Required Interface:</b>
     

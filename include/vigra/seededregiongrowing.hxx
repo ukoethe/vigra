@@ -544,7 +544,7 @@ class SeedRgDirectValueFunctor
         */
     typedef Value value_type;
 
-        /** \the return type of the cost() function
+        /** the return type of the cost() function
         */
     typedef Value cost_type;
 
