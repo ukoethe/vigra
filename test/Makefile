@@ -1,15 +1,18 @@
-SUBDIRS = \
+QUICKSUBDIRS =  \
         error \
         pixeltypes \
         colorspaces \
-        image \
-        impex \
         imgproc \
         functorexpression \
         convolution \
         morphology \
         fourier \
         simpleanalysis
+
+
+SUBDIRS = $(QUICKSUBDIRS) \
+        image \
+        impex 
 
 all::
 	@rm -f testSuccess ; \
@@ -18,7 +21,14 @@ all::
 	        make || exit 1; \
 	        cd ..; \
 	 done ; \
-	 touch testSuccess;
+	 touch testSuccess
+
+quick::
+	@for i in $(QUICKSUBDIRS); do \
+	        cd $$i; \
+	        make || exit 1; \
+	        cd ..; \
+	 done
 
 clean::
 	rm -f *.ncb *.opt testSuccess	
@@ -26,4 +36,4 @@ clean::
 	        cd $$i; \
 	        make clean; \
 	        cd ..; \
-	done
+	 done
