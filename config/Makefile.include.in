@@ -58,23 +58,23 @@ DEVELOPMENT_VERSION = yes
 %.d: %.c
 	@echo updating header dependencies for $*.c
 	@rm -f $*.d
-	@$(CC) -M $(CFLAGS) $(CPPFLAGS) -c $*.c | sed "s@$*.o@$*.d $*.o@" > $*.d \
+	@(echo "$*.d \\" ; $(CC) -M $(CFLAGS) $(CPPFLAGS) -c $*.c ) > $*.d \
         || { rm -f $*.d; exit 1; }
 
 %.d: %.cxx
 	@echo updating header dependencies for $*.cxx
 	@rm -f $*.d
-	@$(CXX) -M $(CXXFLAGS) $(CPPFLAGS) -c $*.cxx | sed "s@$*.o@$*.d $*.o@" > $*.d \
+	@(echo "$*.d \\" ; $(CXX) -M $(CXXFLAGS) $(CPPFLAGS) -c $*.cxx ) > $*.d \
         || { rm -f $*.d; exit 1; }
 
 %.ld: %.c
 	@echo updating header dependencies for $*.c
 	@rm -f $*.ld
-	@$(CC) -M $(CFLAGS) $(CPPFLAGS) -c $*.c | sed "s@$*.o@$*.ld $*.lo@" > $*.ld \
+	@(echo "$*.ld \\" ; $(CC) -M $(CFLAGS) $(LIBCPPFLAGS) -c $*.c ) > $*.ld \
         || { rm -f $*.ld; exit 1; }
 
 %.ld: %.cxx
 	@echo updating header dependencies for $*.cxx
 	@rm -f $*.ld
-	@$(CXX) -M $(CXXFLAGS) $(CPPFLAGS) -c $*.cxx | sed "s@$*.o@$*.ld $*.lo@" > $*.ld \
+	@(echo "$*.ld \\" ; $(CXX) -M $(CXXFLAGS) $(LIBCPPFLAGS) -c $*.cxx ) > $*.ld \
         || { rm -f $*.ld; exit 1; }
