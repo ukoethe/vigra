@@ -57,7 +57,7 @@ internalSeparableConvolveMultiArrayTmp(
     typedef typename NumericTraits<typename DestAccessor::value_type>::RealPromote TmpType;
     
     // temporay array to hold the current line to enable in-place operation
-    ArrayVector<TmpType> tmp;
+    ArrayVector<TmpType> tmp( shape[0] );
 
     typedef MultiArrayNavigator<SrcIterator, N> SNavigator;
     typedef MultiArrayNavigator<DestIterator, N> DNavigator;
@@ -66,16 +66,15 @@ internalSeparableConvolveMultiArrayTmp(
         SNavigator snav( si, shape, 0 );
         DNavigator dnav( di, shape, 0 );        
 
-        tmp.resize( shape[0] );
-
         for( ; snav.hasMore(); snav++, dnav++ ) 
         {
-             convolveLine( srcIterRange( snav.begin(), snav.end(), src ),
-                           destIter( tmp.begin(), StandardValueAccessor<TmpType>() ),
+             // first copy source to temp for maximum cache efficiency
+             copyLine( snav.begin(), snav.end(), src,
+                       tmp.begin(), StandardValueAccessor<TmpType>() );
+
+             convolveLine( srcIterRange(tmp.begin(), tmp.end(), StandardConstValueAccessor<TmpType>()),
+                           destIter( dnav.begin(), dest ),
                            kernel1d( *kit ) );
-             // copy temp result to target object
-             copyLine( tmp.begin(), tmp.end(), StandardConstValueAccessor<TmpType>(),
-                       dnav.begin(), dest );
         }
         ++kit;
     }
@@ -89,13 +88,13 @@ internalSeparableConvolveMultiArrayTmp(
 
         for( ; dnav.hasMore(); dnav++ ) 
         {
-             convolveLine( srcIterRange( dnav.begin(), dnav.end(), dest ),
-                           destIter( tmp.begin(), StandardValueAccessor<TmpType>() ),
-                           kernel1d( *kit ) );
+             // first copy source to temp for maximum cache efficiency
+             copyLine( dnav.begin(), dnav.end(), dest,
+                       tmp.begin(), StandardValueAccessor<TmpType>() );
 
-             // copy temp result to target object
-             copyLine( tmp.begin(), tmp.end(), StandardConstValueAccessor<TmpType>(),
-                       dnav.begin(), dest);
+             convolveLine( srcIterRange(tmp.begin(), tmp.end(), StandardConstValueAccessor<TmpType>()),
+                           destIter( dnav.begin(), dest ),
+                           kernel1d( *kit ) );
         }
     }
 }
@@ -125,7 +124,7 @@ internalSeparableConvolveMultiArrayTmp(
       In order to reduce memory consumption this uses an internal
       buffer only of the size of the largest dimension of the source
       object. However, this also results in a slightly reduced
-      execution speed.
+      execution speed due to some data copying.
 
       \note This function may work in-place, which means that \a
       source == \a dest is allowed.
@@ -226,11 +225,9 @@ separableConvolveMultiArray( SrcIterator s, SrcShape const & shape, SrcAccessor 
     vigra_precondition( dim < N,
                         "separableConvolveMultiArray(): The dimension number to convolve must be smaller "
                         "than the data dimensionality" );
-
-    typedef typename NumericTraits<typename DestAccessor::value_type>::RealPromote TmpType;
     
-    // temporay array to hold the current line to enable in-place operation
-    ArrayVector<TmpType> tmp(shape[dim]);
+    typedef typename NumericTraits<typename DestAccessor::value_type>::RealPromote TmpType;
+    ArrayVector<TmpType> tmp( shape[dim] );
 
     typedef MultiArrayNavigator<SrcIterator, N> SNavigator;
     typedef MultiArrayNavigator<DestIterator, N> DNavigator;
@@ -240,12 +237,13 @@ separableConvolveMultiArray( SrcIterator s, SrcShape const & shape, SrcAccessor 
 
     for( ; snav.hasMore(); snav++, dnav++ ) 
     {
-         convolveLine( srcIterRange( snav.begin(), snav.end(), src ),
-                       destIter( tmp.begin(), StandardValueAccessor<TmpType>() ),
+         // first copy source to temp for maximum cache efficiency
+         copyLine( snav.begin(), snav.end(), src,
+		   tmp.begin(), StandardValueAccessor<TmpType>() );
+
+         convolveLine( srcIterRange( tmp.begin(), tmp.end(), StandardConstValueAccessor<TmpType>()),
+                       destIter( dnav.begin(), dest ),
                        kernel1d( kernel ) );
-         // copy temp result to target object
-         copyLine( tmp.begin(), tmp.end(), StandardConstValueAccessor<TmpType>(),
-                   dnav.begin(), dest );
     }
 }
 
@@ -315,24 +313,38 @@ gaussianSmoothMultiArray(triple<SrcIterator, SrcShape, SrcAccessor> const & sour
     \a source and stores the gradient in the vector-valued \a
     dest.
 
-    The data is differentiated by symmetric differences for each
-    dimension.
+    The data is partially differentiated using a convolution with an
+    isotropic Gaussian smoothing filter which is differentiated in the
+    single respective dimension.
 
-    In order to apply this function to anisotropic data, one should
-    consider first applying an anisotropic smoothing before calling
-    this function. Another option is calling
-    separableConvolveMultiArray() several times with appropriate
-    derivative filters.
+    In order to apply this function to data of anisotropic resolution,
+    one should consider calling separableConvolveMultiArray() several
+    times with appropriate derivative filters.
 
     The production of vector-valued output eases the operation on
     n-dimensional input data instead of n separate component data
     sets. Also, typically the whole vector is of interest, not only
     one component at a time. If this would be the case, simple
-    separated convolution is preferablly used.
+    separated convolution is preferable.
 
     As vector-valued element type a TinyVector of suiting dimension
-    can be used. However, at least a VectorComponentAccessor must be
+    can be used. However, at least a VectorElementAccessor must be
     applicable to the destination element data type.
+
+    <b> Usage:</b>
+
+        <b>\#include</b> "<a href="multi_convolution_8hxx-source.html">vigra/multi_convolution.hxx</a>"<br>
+        Namespace: vigra
+
+    \code
+    typedef vigra::TinyVector<float> Vector;
+    vigra::MultiArray<float> img(width,height,depth);
+    vigra::MultiArray<Vector> grad(width, height,depth);
+    ...
+    vigra::gaussianGradientMultiArray( srcMultiArrayRange(img),
+                                       destMultiArray(grad), 0.7 );
+
+    \endcode
 
     \see separableConvolveMultiArray()
 */
@@ -340,9 +352,9 @@ template <class SrcIterator, class SrcShape, class SrcAccessor,
           class DestIterator, class DestAccessor>
 void 
 gaussianGradientMultiArray( SrcIterator si, SrcShape const & shape, SrcAccessor src, 
-                   DestIterator di, DestAccessor dest, double sigma )
+			    DestIterator di, DestAccessor dest, double sigma )
 {
-    typedef typename NumericTraits<typename DestAccessor::value_type>::RealPromote kernel_type;
+    typedef typename NumericTraits<typename DestAccessor::value_type::value_type>::RealPromote kernel_type;
 
     Kernel1D<kernel_type> gauss, derivative;
     gauss.initGaussian(sigma);
@@ -369,23 +381,57 @@ gaussianGradientMultiArray(triple<SrcIterator, SrcShape, SrcAccessor> const & so
                               dest.first, dest.second, sigma );
 }
 
+
+
+
+/** \brief Symmetric gradient
+
+    This function computes the gradient of the data
+    \a source and stores the gradient in the vector-valued \a
+    dest.
+
+    The data is differentiated by symmetric differences for each
+    dimension.
+
+    In order to apply this function to anisotropic data, one should
+    consider first applying an anisotropic smoothing before calling
+    this function. Another option is calling
+    separableConvolveMultiArray() several times with appropriate
+    derivative filters.
+
+    The production of vector-valued output eases the operation on
+    n-dimensional input data instead of n separate component data
+    sets. Also, typically the whole vector is of interest, not only
+    one component at a time. If this would be the case, simple
+    separated convolution is preferablly used.
+
+    As vector-valued element type a TinyVector of suiting dimension
+    can be used. However, at least a VectorComponentAccessor must be
+    applicable to the destination element data type.
+
+    For an example of its usage, see gaussianGradientMultiArray().
+
+    \see separableConvolveMultiArray(), gaussianGradientMultiArray()
+*/
 template <class SrcIterator, class SrcShape, class SrcAccessor, 
           class DestIterator, class DestAccessor>
 void 
 symmetricGradientMultiArray(SrcIterator si, SrcShape const & shape, SrcAccessor src, 
                    DestIterator di, DestAccessor dest)
 {
-    typedef typename NumericTraits<typename DestAccessor::value_type>::RealPromote kernel_type;
+  typedef typename NumericTraits<typename DestAccessor::value_type::value_type>::RealPromote kernel_type;
 
     Kernel1D<kernel_type> filter;
     filter.initSymmetricGradient();
 
     typedef VectorElementAccessor<DestAccessor> ElementAccessor;
-    
+
     // compute gradient components
     for( int d = 0; d < shape.size(); ++d ) 
     {
-        separableConvolveMultiArray( si, shape, src, di, ElementAccessor(d, dest), d, filter);
+        separableConvolveMultiArray( si, shape, src,
+				     di, ElementAccessor(d, dest),
+				     d, filter);
     }
 }
 
@@ -398,8 +444,6 @@ symmetricGradientMultiArray(triple<SrcIterator, SrcShape, SrcAccessor> const & s
     symmetricGradientMultiArray( source.first, source.second, source.third, 
                               dest.first, dest.second );
 }
-
-
 
 } //-- namespace vigra
 
