@@ -404,24 +404,11 @@ public:
         return m_ptr [m_stride[0]*x + m_stride[1]*y + m_stride[2]*z + m_stride[3]*u + m_stride[4]*v];
     }
 
-
-#if 0
-        /** shape assignment.
+        /** Copy the data of the right-hand array.
          */
-    template <class CN>
-    reference operator= (const MultiArrayView <N, T, CN>& rhs)
-    {
-        assert (shape () == rhs.shape ());
-        difference_type nav;
-        if (shape () != nav)
-            (*this) [nav] = rhs [nav];
-        while (inc_navigator (nav))
-            (*this) [nav] = rhs [nav];
-    }
-#endif /* #if 0 */
+    template <class U, class CN>
+    void copy(const MultiArrayView <N, U, CN>& rhs);
 
-
-#ifndef NO_OUT_OF_LINE_MEMBER_TEMPLATES
         /** bind the M outmost dimensions to certain indices.
             this reduces the dimensionality of the image to
             max { 1, N-M }
@@ -444,27 +431,6 @@ public:
     template <unsigned int M>
     MultiArrayView <N-1, T, typename detail::MaybeStrided <M>::type >
     bind (int d) const;
-#else
-    template <unsigned int M>
-    MultiArrayView <N-M, T, C> bindOuter (const TinyVector <int, M> &d) const
-    {
-        return bindOuterImpl(*this, d);
-    }
-
-    template <unsigned int M>
-    MultiArrayView <N-M, T, StridedArrayTag>
-    bindInner (const TinyVector <int, M> &d) const
-    {
-        return bindInnerImpl(*this, d);
-    }
-
-    template <unsigned int M>
-    MultiArrayView <N-1, T, typename detail::MaybeStrided <M>::type >
-    bind (int d) const
-    {
-        return bindImpl<M>(*this, d);
-    }
-#endif
 
         /** bind the outmost dimension to a certain index.
             this reduces the dimensionality of the image to
@@ -484,20 +450,6 @@ public:
          */
     MultiArrayView <N-1, T, StridedArrayTag>
     bindAt (int m, int d) const;
-
-        /** bind dimension m to index d.
-            this reduces the dimensionality of the image to
-            max { 1, N-1 }
-         */
-    MultiArrayView <N-1, T, StridedArrayTag>
-    bindRow (int d) const;
-
-        /** bind dimension m to index d.
-            this reduces the dimensionality of the image to
-            max { 1, N-1 }
-         */
-    MultiArrayView <N-1, T, C>
-    bindColumn (int d) const;
 
         /** create a rectangular subarray that spans between the
             points p and q, where p is in the subarray, q not.
@@ -529,7 +481,10 @@ public:
          */
     std::size_t elementCount () const
     {
-        return m_shape [actual_dimension-1] * m_stride [actual_dimension-1];
+        std::size_t ret = m_shape[0];
+        for(unsigned int i = 1; i < actual_dimension; ++i)
+            ret *= m_shape[i];
+        return ret;
     }
 
         /** return the array's size.
@@ -640,7 +595,20 @@ MultiArrayView <N, T, C>::MultiArrayView
     : m_shape (shape), m_stride (stride), m_ptr (ptr)
 {}
 
-#ifndef NO_OUT_OF_LINE_MEMBER_TEMPLATES
+template <unsigned int N, class T, class C>
+template <class U, class CN>
+void 
+MultiArrayView <N, T, C>::copy(const MultiArrayView <N, U, CN>& rhs)
+{
+    vigra_precondition (shape () == rhs.shape (),
+        "MultiArrayView::copy(): shape mismatch.");
+    difference_type nav;
+    if (shape () != nav)
+        (*this) [nav] = rhs [nav];
+    while (inc_navigator (nav))
+        (*this) [nav] = rhs [nav];
+}
+
 template <unsigned int N, class T, class C>
 template <unsigned int M>
 MultiArrayView <N-M, T, C>
@@ -714,79 +682,6 @@ MultiArrayView <N, T, C>::bind (int d) const
         (shape, stride, m_ptr + d * m_stride[M]);
 }
 
-#else // NO_OUT_OF_LINE_MEMBER_TEMPLATES
-template <unsigned int N, class T, class C, unsigned int M>
-MultiArrayView <N-M, T, C>
-bindOuterImpl(MultiArrayView <N, T, C> const & self, const TinyVector <int, M> &d)
-{
-    TinyVector <int, M> stride;
-    stride.init (self.stride().begin () + N-M, self.stride().end ());
-    typename MultiArrayView <N, T, C>::pointer ptr = self.data() + dot (d, stride);
-    static const int NNew = (N-M == 0) ? 1 : N-M;
-    TinyVector <int, NNew> inner_shape, inner_stride;
-    if (N-M == 0)
-    {
-        inner_shape [0] = 1;
-        inner_stride [0] = 0;
-    }
-    else
-    {
-        inner_shape.init (self.shape().begin (), self.shape().end () - M);
-        inner_stride.init (self.stride().begin (), self.stride().end () - M);
-    }
-    return MultiArrayView <N-M, T, C> (inner_shape, inner_stride, ptr);
-}
-
-template <unsigned int N, class T, class C, unsigned int M>
-MultiArrayView <N - M, T, StridedArrayTag>
-bindInnerImpl(MultiArrayView <N, T, C> const & self, const TinyVector <int, M> &d)
-{
-    TinyVector <int, M> stride;
-    stride.init (self.stride().begin (), self.stride().end () - N + M);
-    typename MultiArrayView <N, T, C>::pointer ptr = self.data() + dot (d, stride);
-    static const int NNew = (N-M == 0) ? 1 : N-M;
-    TinyVector <int, NNew> outer_shape, outer_stride;
-    if (N-M == 0)
-    {
-        outer_shape [0] = 1;
-        outer_stride [0] = 0;
-    }
-    else
-    {
-        outer_shape.init (self.shape().begin () + M, self.shape().end ());
-        outer_stride.init (self.stride().begin () + M, self.stride().end ());
-    }
-    return MultiArrayView <N-M, T, StridedArrayTag>
-        (outer_shape, outer_stride, ptr);
-}
-
-template <unsigned int M, unsigned int N, class T, class C>
-MultiArrayView <N-1, T, typename detail::MaybeStrided <M>::type >
-bindImpl(MultiArrayView <N, T, C> const & self, int d)
-{
-    static const int NNew = (N-1 == 0) ? 1 : N-1;
-    TinyVector <int, NNew> shape, stride;
-    // the remaining dimensions are 0..n-1,n+1..N-1
-    if (N-1 == 0)
-    {
-        shape[0] = 1;
-        stride[0] = 0;
-    }
-    else
-    {
-        std::copy (self.shape().begin (), self.shape().begin () + M, shape.begin ());
-        std::copy (self.shape().begin () + M+1, self.shape().end (),
-                   shape.begin () + M);
-        std::copy (self.stride().begin (), self.stride().begin () + M, stride.begin ());
-        std::copy (self.stride().begin () + M+1, self.stride().end (),
-                   stride.begin () + M);
-    }
-    return MultiArrayView <N-1, T, typename detail::MaybeStrided <M>::type>
-        (shape, stride, self.data() + d * self.stride(M));
-}
-
-#endif // NO_OUT_OF_LINE_MEMBER_TEMPLATES
-
 template <unsigned int N, class T, class C>
 MultiArrayView <N - 1, T, C>
 MultiArrayView <N, T, C>::bindOuter (int d) const
@@ -853,20 +748,6 @@ MultiArrayView <N, T, C>::bindAt (int n, int d) const
     }
     return MultiArrayView <N-1, T, StridedArrayTag>
         (shape, stride, m_ptr + d * m_stride[n]);
-}
-
-template <unsigned int N, class T, class C>
-MultiArrayView <N-1, T, StridedArrayTag>
-MultiArrayView <N, T, C>::bindRow (int d) const
-{
-    return this->bindInner (d);
-}
-
-template <unsigned int N, class T, class C>
-MultiArrayView <N-1, T, C>
-MultiArrayView <N, T, C>::bindColumn (int d) const
-{
-    return this->bindOuter (d);
 }
 
 /********************************************************/
@@ -1013,6 +894,12 @@ public:
          */
     MultiArray (const MultiArray &rhs);
 
+        /** construct by copying from a MultiArrayView
+         */
+    template <class U, class C>
+    MultiArray (const MultiArrayView<N, U, C>  &rhs,
+                allocator_type const & alloc = allocator_type());
+
         /** assignment.<br>
             <em>Note:</em> this operation invalidates all dependent objects
             (array views and iterators)
@@ -1130,6 +1017,18 @@ MultiArray <N, T, A>::MultiArray (const MultiArray &rhs)
     m_alloc (rhs.m_alloc)
 {
     allocate (this->m_ptr, this->elementCount (), rhs.data ());
+}
+
+template <unsigned int N, class T, class A>
+template <class U, class C>
+MultiArray <N, T, A>::MultiArray (const MultiArrayView<N, U, C> &rhs,
+                                  allocator_type const & alloc)
+    : MultiArrayView <N, T> (rhs.shape(), 
+                             detail::defaultStride <MultiArrayView<N,T>::actual_dimension> (rhs.shape()), 0),
+    m_alloc (alloc)
+{
+    allocate (this->m_ptr, this->elementCount (), NumericTraits<T>::zero ());  // double initialization !!!
+    this->copy(rhs);
 }
 
 template <unsigned int N, class T, class A>
