@@ -51,7 +51,7 @@ namespace vigra
 /** tag for marking a MultiArray strided.
 
 <b>\#include</b>
-"<a href="multi_array_8hxx-source.html">vigra/multi_iterator.hxx</a>"
+"<a href="multi_array_8hxx-source.html">vigra/multi_array.hxx</a>"
 
 Namespace: vigra
 */
@@ -66,7 +66,7 @@ struct StridedArrayTag {};
 /** tag for marking a MultiArray unstrided.
 
 <b>\#include</b>
-"<a href="multi_array_8hxx-source.html">vigra/multi_iterator.hxx</a>"
+"<a href="multi_array_8hxx-source.html">vigra/multi_array.hxx</a>"
 
 Namespace: vigra
 */
@@ -107,7 +107,7 @@ TinyVector <int, N> defaultStride (const TinyVector <int, N> &shape)
     unstrided.
 
 <b>\#include</b>
-"<a href="multi_array_8hxx-source.html">vigra/multi_iterator.hxx</a>"
+"<a href="multi_array_8hxx-source.html">vigra/multi_array.hxx</a>"
 
 Namespace: vigra::detail
 */
@@ -133,7 +133,7 @@ struct MaybeStrided <0>
     MultiArrays that were indexed at the zero'th dimension as strided.
 
 <b>\#include</b>
-"<a href="multi_array_8hxx-source.html">vigra/multi_iterator.hxx</a>"
+"<a href="multi_array_8hxx-source.html">vigra/multi_array.hxx</a>"
 
 Namespace: vigra::detail
 */
@@ -158,7 +158,7 @@ struct MultiIteratorChooser
 /* specialization of the MultiIteratorChooser for strided arrays.
 
 <b>\#include</b>
-"<a href="multi_array_8hxx-source.html">vigra/multi_iterator.hxx</a>"
+"<a href="multi_array_8hxx-source.html">vigra/multi_array.hxx</a>"
 
 Namespace: vigra::detail
 */
@@ -181,7 +181,7 @@ struct MultiIteratorChooser <StridedArrayTag>
 /* specialization of the MultiIteratorChooser for unstrided arrays.
 
 <b>\#include</b>
-"<a href="multi_array_8hxx-source.html">vigra/multi_iterator.hxx</a>"
+"<a href="multi_array_8hxx-source.html">vigra/multi_array.hxx</a>"
 
 Namespace: vigra::detail
 */
@@ -421,6 +421,8 @@ public:
         return m_ptr [m_stride[0]*x + m_stride[1]*y + m_stride[2]*z + m_stride[3]*u + m_stride[4]*v];
     }
 
+
+#if 0
         /** shape assignment.
          */
     template <class CN>
@@ -433,13 +435,15 @@ public:
         while (inc_navigator (nav))
             (*this) [nav] = rhs [nav];
     }
+#endif /* #if 0 */
+
     
         /** bind the M outmost dimensions to certain indices.
             this reduces the dimensionality of the image to
             min { 1, N-M }
         */
     template <unsigned int M>
-    MultiArrayView <N-M, T, C> bindOuter (const TinyVector <int, M> &d);
+    MultiArrayView <N-M, T, C> bindOuter (const TinyVector <int, M> &d) const;
 
         /** bind the M innermost dimensions to certain indices.
             this reduces the dimensionality of the image to
@@ -447,40 +451,40 @@ public:
         */
     template <unsigned int M>
     MultiArrayView <N-M, T, StridedArrayTag>
-    bindInner (const TinyVector <int, M> &d);
+    bindInner (const TinyVector <int, M> &d) const;
 
         /** bind the outmost dimension to a certain index.
             this reduces the dimensionality of the image to
             min { 1, N-1 }
         */
-    MultiArrayView <N-1, T, C> bindOuter (int d);
+    MultiArrayView <N-1, T, C> bindOuter (int d) const;
     
         /** bind the innermost dimension to a certain index.
             this reduces the dimensionality of the image to
             min { 1, N-1 }
         */
-    MultiArrayView <N-1, T, StridedArrayTag> bindInner (int d);
+    MultiArrayView <N-1, T, StridedArrayTag> bindInner (int d) const;
 
         /** bind dimension m to index d.
             this reduces the dimensionality of the image to
             min { 1, N-1 }
          */
     MultiArrayView <N-1, T, StridedArrayTag>
-    bindAt (int m, int d);
+    bindAt (int m, int d) const;
 
         /** bind dimension m to index d.
             this reduces the dimensionality of the image to
             min { 1, N-1 }
          */
     MultiArrayView <N-1, T, StridedArrayTag>
-    bindRow (int d);
+    bindRow (int d) const;
 
         /** bind dimension m to index d.
             this reduces the dimensionality of the image to
             min { 1, N-1 }
          */
     MultiArrayView <N-1, T, C>
-    bindColumn (int d);
+    bindColumn (int d) const;
     
         /** bind dimension M to index d.
             this reduces the dimensionality of the image to
@@ -488,13 +492,13 @@ public:
          */
     template <unsigned int M>
     MultiArrayView <N-1, T, typename detail::MaybeStrided <M>::type >
-    bind (int d);
+    bind (int d) const;
 
         /** create a rectangular subarray that spans between the
             points p and q, where p is in the subarray, q not.
         */
     MultiArrayView subarray (const difference_type &p,
-                             const difference_type &q)
+                             const difference_type &q) const
     {
         const int offset = dot (m_stride, p);
         return MultiArrayView (q - p, m_stride, m_ptr + offset);
@@ -507,7 +511,7 @@ public:
             a single band image.
         */
     MultiArrayView <N, T, StridedArrayTag>
-    stridearray (const difference_type &s)
+    stridearray (const difference_type &s) const
     {
         difference_type shape = m_shape;
         for (unsigned int i = 0; i < actual_dimension; ++i)
@@ -626,7 +630,7 @@ MultiArrayView <N, T, C>::MultiArrayView
 template <unsigned int N, class T, class C>
 template <unsigned int M>
 MultiArrayView <N-M, T, C>
-MultiArrayView <N, T, C>::bindOuter (const TinyVector <int, M> &d)
+MultiArrayView <N, T, C>::bindOuter (const TinyVector <int, M> &d) const
 {
     TinyVector <int, M> stride;
     stride.init (m_stride.begin () + N-M, m_stride.end ());
@@ -649,7 +653,7 @@ MultiArrayView <N, T, C>::bindOuter (const TinyVector <int, M> &d)
 template <unsigned int N, class T, class C>
 template <unsigned int M>
 MultiArrayView <N - M, T, StridedArrayTag>
-MultiArrayView <N, T, C>::bindInner (const TinyVector <int, M> &d)
+MultiArrayView <N, T, C>::bindInner (const TinyVector <int, M> &d) const
 {
     TinyVector <int, M> stride;
     stride.init (m_stride.begin (), m_stride.end () - N + M);
@@ -672,7 +676,7 @@ MultiArrayView <N, T, C>::bindInner (const TinyVector <int, M> &d)
 
 template <unsigned int N, class T, class C>
 MultiArrayView <N - 1, T, C>
-MultiArrayView <N, T, C>::bindOuter (int d)
+MultiArrayView <N, T, C>::bindOuter (int d) const
 {
     static const int NNew = (N-1 == 0) ? 1 : N-1;
     TinyVector <int, NNew> inner_shape, inner_stride;
@@ -692,7 +696,7 @@ MultiArrayView <N, T, C>::bindOuter (int d)
 
 template <unsigned int N, class T, class C>
 MultiArrayView <N - 1, T, StridedArrayTag>
-MultiArrayView <N, T, C>::bindInner (int d)
+MultiArrayView <N, T, C>::bindInner (int d) const
 {
     static const int NNew = (N-1 == 0) ? 1 : N-1;
     TinyVector <int, NNew> outer_shape, outer_stride;
@@ -712,7 +716,7 @@ MultiArrayView <N, T, C>::bindInner (int d)
 
 template <unsigned int N, class T, class C>
 MultiArrayView <N - 1, T, StridedArrayTag>
-MultiArrayView <N, T, C>::bindAt (int n, int d)
+MultiArrayView <N, T, C>::bindAt (int n, int d) const
 {
     vigra_precondition (
         n < static_cast <int> (N),
@@ -741,7 +745,7 @@ MultiArrayView <N, T, C>::bindAt (int n, int d)
 template <unsigned int N, class T, class C>
 template <unsigned int M>
 MultiArrayView <N-1, T, typename detail::MaybeStrided <M>::type >
-MultiArrayView <N, T, C>::bind (int d)
+MultiArrayView <N, T, C>::bind (int d) const
 {
     static const int NNew = (N-1 == 0) ? 1 : N-1;
     TinyVector <int, NNew> shape, stride;
@@ -766,14 +770,14 @@ MultiArrayView <N, T, C>::bind (int d)
 
 template <unsigned int N, class T, class C>
 MultiArrayView <N-1, T, StridedArrayTag>
-MultiArrayView <N, T, C>::bindRow (int d)
+MultiArrayView <N, T, C>::bindRow (int d) const
 {
     return this->bindInner (d);
 }
 
 template <unsigned int N, class T, class C>
 MultiArrayView <N-1, T, C>
-MultiArrayView <N, T, C>::bindColumn (int d)
+MultiArrayView <N, T, C>::bindColumn (int d) const
 {
     return this->bindOuter (d);
 }
