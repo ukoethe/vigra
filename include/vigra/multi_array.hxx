@@ -1179,6 +1179,82 @@ void MultiArray <N, T, A>::deallocate (pointer & ptr, std::size_t s)
     ptr = 0;
 }
 
+
+/** \brief Argument factory for MultiArrayView data
+*/
+template <unsigned int N, class T, class C>
+inline triple<typename MultiArrayView<N,T,C>::const_traverser,
+		      typename MultiArrayView<N,T,C>::difference_type,
+		      StandardConstValueAccessor<T> >
+srcMultiArrayRange( MultiArrayView<N,T,C> const & array )
+{
+    return triple<typename MultiArrayView<N,T,C>::const_traverser,
+                  typename MultiArrayView<N,T,C>::difference_type,
+                  StandardConstValueAccessor<T> >
+      ( array.traverser_begin(),
+        array.shape(),
+        StandardConstValueAccessor<T>() );
+}
+
+
+/** \brief Argument factory for MultiArrayView data
+*/
+template <unsigned int N, class T, class C>
+inline pair<typename MultiArrayView<N,T,C>::const_traverser,
+		    StandardConstValueAccessor<T> >
+srcMultiArray( MultiArrayView<N,T,C> const & array )
+{
+    return pair<typename MultiArrayView<N,T,C>::const_traverser,
+		        StandardConstValueAccessor<T> >
+      ( array.traverser_begin(),
+        StandardConstValueAccessor<T>() );
+}
+
+
+/** \brief Argument factory for MultiArrayView data
+*/
+template <unsigned int N, class T, class C>
+inline triple<typename MultiArrayView<N,T,C>::traverser,
+	          typename MultiArrayView<N,T,C>::difference_type,
+	          StandardValueAccessor<T> >
+destMultiArrayRange( MultiArrayView<N,T,C> & array )
+{
+    return triple<typename MultiArrayView<N,T,C>::traverser,
+                  typename MultiArrayView<N,T,C>::difference_type,
+                  StandardValueAccessor<T> >
+      ( array.traverser_begin(),
+        array.shape(),
+        StandardValueAccessor<T>() );
+}
+
+
+/** \brief Argument factory for MultiArrayView data
+*/
+template <unsigned int N, class T, class C, class Accessor>
+inline pair<typename MultiArrayView<N,T,C>::traverser,
+	        Accessor>
+destMultiArray( MultiArrayView<N,T,C> & array, Accessor a )
+{
+    return pair<typename MultiArrayView<N,T,C>::traverser, Accessor> 
+          ( array.traverser_begin(), a );
+}
+
+
+/** \brief Argument factory for MultiArrayView data
+*/
+template <unsigned int N, class T, class C>
+inline pair<typename MultiArrayView<N,T,C>::traverser,
+	        StandardValueAccessor<T> >
+destMultiArray( MultiArrayView<N,T,C> & array )
+{
+    return pair<typename MultiArrayView<N,T,C>::traverser,
+                StandardValueAccessor<T> >
+        ( array.traverser_begin(),
+		  StandardValueAccessor<T>() );
+}
+
+
+
 template <class T>
 BasicImageView <T>
 makeBasicImageView (MultiArrayView <2, T, UnstridedArrayTag> const &array)
