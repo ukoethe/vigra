@@ -323,7 +323,7 @@ template <typename IntType>
 inline Rational<IntType> 
 operator-(typename Rational<IntType>::param_type l, Rational<IntType> const & r)
 {
-    return -r += l;
+    return (-r) += l;
 }
 
 template <typename IntType>
@@ -337,9 +337,13 @@ template <typename IntType>
 inline Rational<IntType> 
 operator/(typename Rational<IntType>::param_type l, Rational<IntType> const & r)
 {
-    if(r.numerator() == IntType(0))
+    IntType zero(0);
+    if(r.numerator() == zero)
         throw bad_rational();
-    return Rational<IntType>(r.denominator(), r.numerator(), false) *= l;
+    if(r.numerator() < zero)
+        return Rational<IntType>(-r.denominator(), -r.numerator(), false) *= l;
+    else
+        return Rational<IntType>(r.denominator(), r.numerator(), false) *= l;
 }
 
 template <typename IntType1, typename IntType2>
@@ -579,8 +583,16 @@ Rational<IntType>::operator/= (param_type i)
     if(i == IntType(1))
         return *this;
     IntType g = gcd(i, num);
-    num /= g;
-    den *= i / g;
+    if(i < IntType(0))
+    {
+        num /= -g;
+        den *= -i / g;
+    }
+    else
+    {
+        num /= g;
+        den *= i / g;
+    }
     return *this;
 }
 
