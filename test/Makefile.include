@@ -1,19 +1,18 @@
-CXXFLAGS = -O -I../include \
-	`vigra-config --cxxflags` \
-	-I/software/fftw-2.1.3/include \
-	-I/software/boost-1.25.0/include
-FFTW_LIB = -L/software/fftw-2.1.3/SunOS-5.6/lib -lfftw
-VIGRAIMPEX_LIB = `vigra-config --libs`
+ifneq "$(MAKECMDGOALS)" "clean"
+include ../../current/config/Makefile.include
+endif
+
+BOOST_FLAGS = -I/software/boost-1.25.0/include -I../include
 
 clean::
 	rm -f *.o test core *.d
 	rm -rf Debug ii_files *.plg *.ilk
 
 %.o: %.cxx
-	$(CXX) $(CXXFLAGS) -c $*.cxx
+	$(CXX) $(CXXFLAGS) $(CXXINCLUDES) $(BOOST_FLAGS) -c $*.cxx
 
 %.d: %.cxx
 	@echo updating header dependencies for $*.cxx
 	@rm -f $*.d
-	@(echo "$*.d \c" ; $(CXX) -M $(CXXFLAGS) -c $*.cxx) > $*.d \
+	@(echo -e "$*.d \c" ; $(CXX) -M $(CXXFLAGS) $(CXXINCLUDES) $(BOOST_FLAGS) -c $*.cxx) > $*.d \
         || { rm -f $*.d; exit 1; }

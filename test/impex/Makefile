@@ -1,5 +1,5 @@
 test: test.o
-	$(CXX) -o test test.o $(VIGRAIMPEX_LIB)
+	$(CXX) -o test test.o $(vigra_builddir)/src/impex/libvigraimpex.a $(IMPEX_DEPLIBS)
 	./test || { rm ./test ; exit 1; }
 
 ifneq "$(MAKECMDGOALS)" "clean"

@@ -30,7 +30,7 @@ select_band_image_test_suite.o \
 single_band_image_test_suite.o
 
 test: $(OBJ)
-	$(CXX) -o test $(OBJ) $(VIGRAIMPEX_LIB)
+	$(CXX) -o test $(OBJ) $(IMPEX_LIB)
 	./test || { rm ./test ; exit 1; }
 
 # Fuer Tests von IRGBImage, FRGBImage, DRGBImage, BRGBImage den Kommentar loeschen.
