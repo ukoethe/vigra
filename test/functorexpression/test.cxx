@@ -1,10 +1,10 @@
 #include <iostream>
 #include <algorithm>
-#include <cmath>
 #include "unittest.h"
 #include "vigra/functorexpression.hxx"
 #include "vigra/rgbvalue.hxx"
 
+using namespace vigra::functor;
 
 template <class EXPR, class T1>
 typename ResultTraits1<UnaryFunctor<EXPR>, T1>::Res 
@@ -213,8 +213,8 @@ struct FunctorExpressionTest
 
 struct FunctorRGBExpressionTest
 {    
-    RGBValue<double> v1_5, v2_5, v3_0, v_1_5;
-    RGBValue<int> v0, v1, v2;
+    vigra::RGBValue<double> v1_5, v2_5, v3_0, v_1_5;
+    vigra::RGBValue<int> v0, v1, v2;
     
     FunctorRGBExpressionTest()
     : v1_5(1.5),
@@ -260,7 +260,7 @@ struct FunctorRGBExpressionTest
     
     void testAssignment()
     {
-        RGBValue<double> v(0.0);
+        vigra::RGBValue<double> v(0.0);
         exec(Var(v) = Arg1(), v1_5);
         should(v == v1_5);
         exec(Var(v) = Arg2(), 1, v2_5);
@@ -281,7 +281,7 @@ struct FunctorRGBExpressionTest
     
     void testIfThen()
     {
-        RGBValue<double> v(v3_0);
+        vigra::RGBValue<double> v(v3_0);
         exec(ifThen(Arg1(), Var(v) = Param(v1_5)), false);
         should(v == v3_0);
         exec(ifThen(Arg1(), Var(v) = Param(v1_5)), true);
@@ -305,8 +305,8 @@ struct FunctorRGBExpressionTest
     void testUnary()
     {
         should(exec(abs(Arg1()), v_1_5) == v1_5); 
-        should(exec(rint(Arg1()), RGBValue<double>(1.4)) == v1); 
-        should(exec(rint(Arg1()), RGBValue<double>(1.6)) == v2); 
+        should(exec(rint(Arg1()), vigra::RGBValue<double>(1.4)) == v1); 
+        should(exec(rint(Arg1()), vigra::RGBValue<double>(1.6)) == v2); 
         should(exec(-Arg1(), v_1_5) == v1_5); 
     }
     
@@ -341,14 +341,14 @@ struct FunctorRGBExpressionTest
     void testApply()
     {
         should(exec(applyFct(
-          (RGBValue<double> (*)(RGBValue<double> const &))&abs, Arg1()), 
+          (vigra::RGBValue<double> (*)(vigra::RGBValue<double> const &))&vigra::abs, Arg1()), 
           v_1_5) == v1_5); 
     }
     
     void testSequence()
     {
-        RGBValue<int> data[] = { v0, v1, v2, RGBValue<int>(3)};
-        RGBValue<int> sum(0);
+        vigra::RGBValue<int> data[] = { v0, v1, v2, vigra::RGBValue<int>(3)};
+        vigra::RGBValue<int> sum(0);
         int count = 0;
         
         std::for_each(data, data+4, 
@@ -358,7 +358,7 @@ struct FunctorRGBExpressionTest
         ));
         
         should(count == 4); 
-        should(sum == RGBValue<int>(6)); 
+        should(sum == vigra::RGBValue<int>(6)); 
     }  
 };
 

@@ -5,7 +5,7 @@
 
 struct FlatMorphologyTest
 {
-    typedef BImage Image;
+    typedef vigra::BImage Image;
 
     FlatMorphologyTest()
     : img(7,7), mask(7,7)

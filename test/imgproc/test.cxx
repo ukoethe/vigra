@@ -1,5 +1,6 @@
 #include <iostream>
 #include <functional>
+#include <cmath>
 #include "unittest.h"
 #include "vigra/stdimage.hxx"
 #include "vigra/stdimagefunctions.hxx"
@@ -7,8 +8,8 @@
 
 struct ImageFunctionsTest
 {
-    typedef DImage Image;
-    typedef FRGBImage RGBImage;
+    typedef vigra::DImage Image;
+    typedef vigra::FRGBImage RGBImage;
 
     ImageFunctionsTest()
     : img(3,3), mask(3,3), rgb(3,3), col(1.0, 2.0, 3.0)
@@ -86,7 +87,7 @@ struct ImageFunctionsTest
 
     void copyRedBandTest()
     {
-        RedAccessor<RGBImage::value_type> red;
+        vigra::RedAccessor<RGBImage::value_type> red;
 
         copyImage(srcImageRange(rgb, red), destImage(img));
 
@@ -114,7 +115,7 @@ struct ImageFunctionsTest
 
     void copyGreenBandTest()
     {
-        GreenAccessor<RGBImage::value_type> green;
+        vigra::GreenAccessor<RGBImage::value_type> green;
 
         copyImage(srcImageRange(rgb, green), destImage(img));
 
@@ -142,7 +143,7 @@ struct ImageFunctionsTest
 
     void copyBlueBandTest()
     {
-        BlueAccessor<RGBImage::value_type> blue;
+        vigra::BlueAccessor<RGBImage::value_type> blue;
 
         copyImage(srcImageRange(rgb, blue), destImage(img));
 
@@ -170,7 +171,7 @@ struct ImageFunctionsTest
 
     void rgbToGrayTest()
     {
-        RGBToGrayAccessor<RGBImage::value_type> gray;
+        vigra::RGBToGrayAccessor<RGBImage::value_type> gray;
 
         copyImage(srcImageRange(rgb, gray), destImage(img));
 
@@ -234,7 +235,7 @@ struct ImageFunctionsTest
 
     void findMinMaxTest()
     {
-        FindMinMax<Image::value_type> minmax;
+        vigra::FindMinMax<Image::value_type> minmax;
 
         inspectImage(srcImageRange(img), minmax);
 
@@ -245,7 +246,7 @@ struct ImageFunctionsTest
 
     void findMinMaxIfTest()
     {
-        FindMinMax<Image::value_type> minmax;
+        vigra::FindMinMax<Image::value_type> minmax;
 
         inspectImageIf(srcImageRange(img), maskImage(mask), minmax);
 
@@ -256,7 +257,7 @@ struct ImageFunctionsTest
 
     void findAverageTest()
     {
-        FindAverage<Image::value_type> average;
+        vigra::FindAverage<Image::value_type> average;
 
         inspectImage(srcImageRange(img), average);
 
@@ -266,7 +267,7 @@ struct ImageFunctionsTest
 
     void findAverageIfTest()
     {
-        FindAverage<Image::value_type> average;
+        vigra::FindAverage<Image::value_type> average;
 
         inspectImageIf(srcImageRange(img), maskImage(mask), average);
 
@@ -276,12 +277,12 @@ struct ImageFunctionsTest
 
     void findBoundingRectangleTest()
     {
-        FindBoundingRectangle rect;
+        vigra::FindBoundingRectangle rect;
 
         mask = 0;
         mask(1,1) = 1;
         
-        inspectImageIf(srcIterRange(Diff2D(0,0), img.size()), 
+        inspectImageIf(srcIterRange(vigra::Diff2D(0,0), img.size()), 
                        maskImage(mask), rect);
 
         should(rect.upperLeft.x == 1);
@@ -291,7 +292,7 @@ struct ImageFunctionsTest
 
         mask(1,0) = 1;
         
-        inspectImageIf(srcIterRange(Diff2D(0,0), img.size()), 
+        inspectImageIf(srcIterRange(vigra::Diff2D(0,0), img.size()), 
                        maskImage(mask), rect);
 
         should(rect.upperLeft.x == 1);
@@ -301,7 +302,7 @@ struct ImageFunctionsTest
 
         mask(0,1) = 1;
         
-        inspectImageIf(srcIterRange(Diff2D(0,0), img.size()), 
+        inspectImageIf(srcIterRange(vigra::Diff2D(0,0), img.size()), 
                        maskImage(mask), rect);
 
         should(rect.upperLeft.x == 0);
@@ -311,7 +312,7 @@ struct ImageFunctionsTest
 
         mask(1,2) = 1;
         
-        inspectImageIf(srcIterRange(Diff2D(0,0), img.size()), 
+        inspectImageIf(srcIterRange(vigra::Diff2D(0,0), img.size()), 
                        maskImage(mask), rect);
 
         should(rect.upperLeft.x == 0);
@@ -321,7 +322,7 @@ struct ImageFunctionsTest
 
         mask(2,1) = 1;
         
-        inspectImageIf(srcIterRange(Diff2D(0,0), img.size()), 
+        inspectImageIf(srcIterRange(vigra::Diff2D(0,0), img.size()), 
                        maskImage(mask), rect);
 
         should(rect.upperLeft.x == 0);
@@ -329,8 +330,8 @@ struct ImageFunctionsTest
         should(rect.lowerRight.x == 3);
         should(rect.lowerRight.y == 3);
 
-        FindBoundingRectangle rect1;
-        rect1(Diff2D(4,4));
+        vigra::FindBoundingRectangle rect1;
+        rect1(vigra::Diff2D(4,4));
         
         rect(rect1);
 
@@ -342,12 +343,12 @@ struct ImageFunctionsTest
 
     void arrayOfRegionStatisticsTest()
     {
-        BImage labels(3,3);
+        vigra::BImage labels(3,3);
         labels = 1;
         labels.begin()[0] = 0;
         labels.begin()[8] = 0;
 
-        ArrayOfRegionStatistics<FindMinMax<Image::value_type> > stats(1);
+        vigra::ArrayOfRegionStatistics<vigra::FindMinMax<Image::value_type> > stats(1);
 
         inspectTwoImages(srcImageRange(img), srcImage(labels), stats);
 
@@ -361,12 +362,12 @@ struct ImageFunctionsTest
 
     void arrayOfRegionStatisticsIfTest()
     {
-        BImage labels(3,3);
+        vigra::BImage labels(3,3);
         labels = 1;
         labels.begin()[4] = 2;
         labels.begin()[5] = 2;
 
-        ArrayOfRegionStatistics<FindMinMax<Image::value_type> > stats(2);
+        vigra::ArrayOfRegionStatistics<vigra::FindMinMax<Image::value_type> > stats(2);
 
         inspectTwoImagesIf(srcImageRange(img), srcImage(labels), maskImage(mask), stats);
 
@@ -381,12 +382,12 @@ struct ImageFunctionsTest
 
     void writeArrayOfRegionStatisticsTest()
     {
-        BImage labels(3,3);
+        vigra::BImage labels(3,3);
         labels = 1;
         labels.begin()[0] = 0;
         labels.begin()[8] = 0;
 
-        ArrayOfRegionStatistics<FindAverage<Image::value_type> > stats(1);
+        vigra::ArrayOfRegionStatistics<vigra::FindAverage<Image::value_type> > stats(1);
 
         inspectTwoImages(srcImageRange(img), srcImage(labels), stats);
 
@@ -409,7 +410,7 @@ struct ImageFunctionsTest
 
     void linearIntensityTransformTest()
     {
-        LinearIntensityTransform<Image::value_type> trans(2.0, -1.1);
+        vigra::LinearIntensityTransform<Image::value_type> trans(2.0, -1.1);
 
         Image img1(3,3);
 
@@ -428,7 +429,7 @@ struct ImageFunctionsTest
 
     void linearIntensityTransformIfTest()
     {
-        LinearIntensityTransform<Image::value_type> trans(2.0, -1.1);
+        vigra::LinearIntensityTransform<Image::value_type> trans(2.0, -1.1);
 
         Image img1(3,3);
         img1 = 42.0;
@@ -455,7 +456,7 @@ struct ImageFunctionsTest
 
     void thresholdTest()
     {
-        Threshold<Image::value_type, Image::value_type> trans(2.0, 9.0, 0.0, 1.0);
+        vigra::Threshold<Image::value_type, Image::value_type> trans(2.0, 9.0, 0.0, 1.0);
 
         Image img1(3,3);
 
@@ -608,59 +609,59 @@ struct ImageFunctionsTest
         Image::ScanOrderIterator i1 = img1.begin();
         Image::Accessor acc = img.accessor();
 
-        should(abs(acc(i1) - 1.1) < epsilon);
+        should(std::abs(acc(i1) - 1.1) < epsilon);
         ++i1;
-        should(abs(acc(i1) - 1.65) < epsilon);
+        should(std::abs(acc(i1) - 1.65) < epsilon);
         ++i1;
-        should(abs(acc(i1) - 2.2) < epsilon);
+        should(std::abs(acc(i1) - 2.2) < epsilon);
         ++i1;
-        should(abs(acc(i1) - 2.75) < epsilon);
+        should(std::abs(acc(i1) - 2.75) < epsilon);
         ++i1;
-        should(abs(acc(i1) - 3.3) < epsilon);
-        ++i1;
-
-        should(abs(acc(i1) - 2.75) < epsilon);
-        ++i1;
-        should(abs(acc(i1) - 3.3) < epsilon);
-        ++i1;
-        should(abs(acc(i1) - 3.85) < epsilon);
-        ++i1;
-        should(abs(acc(i1) - 4.4) < epsilon);
-        ++i1;
-        should(abs(acc(i1) - 4.95) < epsilon);
+        should(std::abs(acc(i1) - 3.3) < epsilon);
         ++i1;
 
-        should(abs(acc(i1) - 4.4) < epsilon);
+        should(std::abs(acc(i1) - 2.75) < epsilon);
         ++i1;
-        should(abs(acc(i1) - 4.95) < epsilon);
+        should(std::abs(acc(i1) - 3.3) < epsilon);
         ++i1;
-        should(abs(acc(i1) - 5.5) < epsilon);
+        should(std::abs(acc(i1) - 3.85) < epsilon);
         ++i1;
-        should(abs(acc(i1) - 6.05) < epsilon);
+        should(std::abs(acc(i1) - 4.4) < epsilon);
         ++i1;
-        should(abs(acc(i1) - 6.6) < epsilon);
-        ++i1;
-
-        should(abs(acc(i1) - 6.05) < epsilon);
-        ++i1;
-        should(abs(acc(i1) - 6.6) < epsilon);
-        ++i1;
-        should(abs(acc(i1) - 7.15) < epsilon);
-        ++i1;
-        should(abs(acc(i1) - 7.7) < epsilon);
-        ++i1;
-        should(abs(acc(i1) - 8.25) < epsilon);
+        should(std::abs(acc(i1) - 4.95) < epsilon);
         ++i1;
 
-        should(abs(acc(i1) - 7.7) < epsilon);
+        should(std::abs(acc(i1) - 4.4) < epsilon);
         ++i1;
-        should(abs(acc(i1) - 8.25) < epsilon);
+        should(std::abs(acc(i1) - 4.95) < epsilon);
         ++i1;
-        should(abs(acc(i1) - 8.8) < epsilon);
+        should(std::abs(acc(i1) - 5.5) < epsilon);
         ++i1;
-        should(abs(acc(i1) - 9.35) < epsilon);
+        should(std::abs(acc(i1) - 6.05) < epsilon);
         ++i1;
-        should(abs(acc(i1) - 9.9) < epsilon);
+        should(std::abs(acc(i1) - 6.6) < epsilon);
+        ++i1;
+
+        should(std::abs(acc(i1) - 6.05) < epsilon);
+        ++i1;
+        should(std::abs(acc(i1) - 6.6) < epsilon);
+        ++i1;
+        should(std::abs(acc(i1) - 7.15) < epsilon);
+        ++i1;
+        should(std::abs(acc(i1) - 7.7) < epsilon);
+        ++i1;
+        should(std::abs(acc(i1) - 8.25) < epsilon);
+        ++i1;
+
+        should(std::abs(acc(i1) - 7.7) < epsilon);
+        ++i1;
+        should(std::abs(acc(i1) - 8.25) < epsilon);
+        ++i1;
+        should(std::abs(acc(i1) - 8.8) < epsilon);
+        ++i1;
+        should(std::abs(acc(i1) - 9.35) < epsilon);
+        ++i1;
+        should(std::abs(acc(i1) - 9.9) < epsilon);
 
         Image img2(3,3);
         img2 = 0;
@@ -677,15 +678,15 @@ struct ImageFunctionsTest
     }
 
     Image img;
-    BImage mask;
+    vigra::BImage mask;
     RGBImage rgb;
     RGBImage::value_type col;
 };
 
 struct ResizeImageSplineTest
 {
-    typedef FImage Image;
-    typedef FRGBImage RGBImage;
+    typedef vigra::FImage Image;
+    typedef vigra::FRGBImage RGBImage;
 
     ResizeImageSplineTest()
     {
@@ -718,7 +719,7 @@ struct ResizeImageSplineTest
         freeViffImage(viff);
 
         Image img1(imgex.width(), imgex.height());
-        double epsilon = 0.000001;
+        double epsilon = 0.0001;
 
         resizeImageSplineInterpolation(srcImageRange(img), destImageRange(img1));
 
@@ -728,7 +729,7 @@ struct ResizeImageSplineTest
 
         for(; i1 != img1.end(); ++i1, ++iex)
         {
-            should(abs(acc(i1) - acc(iex)) < epsilon);
+            should(std::abs(acc(i1) - acc(iex)) < epsilon);
         }
     }
 
@@ -743,7 +744,7 @@ struct ResizeImageSplineTest
         freeViffImage(viff);
         
         Image img1(imgred.width(), imgred.height());
-        double epsilon = 0.000001;
+        double epsilon = 0.0001;
 
         resizeImageSplineInterpolation(srcImageRange(img), destImageRange(img1));
 
@@ -753,7 +754,7 @@ struct ResizeImageSplineTest
 
         for(; i1 != img1.end(); ++i1, ++ired)
         {
-            should(abs(acc(i1) - acc(ired)) < epsilon);
+            should(std::abs(acc(i1) - acc(ired)) < epsilon);
         }
     }
 
@@ -778,9 +779,9 @@ struct ResizeImageSplineTest
 
         for(; i1 != img1.end(); ++i1, ++iex)
         {   
-            should(abs(acc.red(i1) - acc.red(iex)) < epsilon);
-            should(abs(acc.green(i1) - acc.green(iex)) < epsilon);
-            should(abs(acc.blue(i1) - acc.blue(iex)) < epsilon);
+            should(std::abs(acc.red(i1) - acc.red(iex)) < epsilon);
+            should(std::abs(acc.green(i1) - acc.green(iex)) < epsilon);
+            should(std::abs(acc.blue(i1) - acc.blue(iex)) < epsilon);
         }
     }
 
@@ -805,9 +806,9 @@ struct ResizeImageSplineTest
 
         for(; i1 != img1.end(); ++i1, ++ired)
         {
-            should(abs(acc.red(i1) - acc.red(ired)) < epsilon);
-            should(abs(acc.green(i1) - acc.green(ired)) < epsilon);
-            should(abs(acc.blue(i1) - acc.blue(ired)) < epsilon);
+            should(std::abs(acc.red(i1) - acc.red(ired)) < epsilon);
+            should(std::abs(acc.green(i1) - acc.green(ired)) < epsilon);
+            should(std::abs(acc.blue(i1) - acc.blue(ired)) < epsilon);
         }
     }
 

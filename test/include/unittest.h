@@ -182,7 +182,7 @@ class TestSuite
                          " - assertion failed: " + e.what() + "\n";
             return 1;
         }
-        catch(VigraStdException & e)
+        catch(vigra::StdException & e)
         {
             report_ += std::string("\nFailure in initialization of ") + t->name() + 
                          " - unexpected exception: " + e.what() + "\n";
@@ -213,7 +213,7 @@ class TestSuite
                          " - assertion failed: " + e.what() + "\n";
             return 1;
         }
-        catch(VigraStdException & e)
+        catch(vigra::StdException & e)
         {
             report_ += std::string("\nFailure in ") + t->name() + 
                          " - unexpected exception: " + e.what() + "\n";
@@ -241,7 +241,7 @@ class TestSuite
                          " - assertion failed: " + e.what() + "\n";
             return 1;
         }
-        catch(VigraStdException & e)
+        catch(vigra::StdException & e)
         {
             report_ += std::string("\nFailure in destruction of ") + t->name() + 
                          " - unexpected exception: " + e.what() + "\n";

@@ -1,4 +1,5 @@
 #include <iostream>
+#include <cmath>
 #include "vigra/stdimage.hxx"
 #include "vigra/viff.hxx"
 #include "vigra/impex.hxx"
@@ -7,7 +8,7 @@
 
 class ByteImageExportImportTest
 {
-    typedef BImage Image;
+    typedef vigra::BImage Image;
   public:
     ByteImageExportImportTest()
     {
@@ -27,14 +28,14 @@ class ByteImageExportImportTest
     
     void testGIF()
     {
-        exportImage(srcImageRange(img), ImageExportInfo("res.gif"));
+        exportImage(srcImageRange(img), vigra::ImageExportInfo("res.gif"));
         
-        ImageImportInfo info("res.gif");
+        vigra::ImageImportInfo info("res.gif");
         
         should(info.width() == img.width());
         should(info.height() == img.height());
         should(info.isGrayscale());
-        should(info.pixelType() == ImageImportInfo::UINT8);
+        should(info.pixelType() == vigra::ImageImportInfo::UINT8);
         
         Image res(info.width(), info.height());
         
@@ -56,14 +57,14 @@ class ByteImageExportImportTest
         
         img = 0;
         
-        exportImage(srcImageRange(img), ImageExportInfo("res.gif"));
+        exportImage(srcImageRange(img), vigra::ImageExportInfo("res.gif"));
         
-        ImageImportInfo info("res.gif");
+        vigra::ImageImportInfo info("res.gif");
         
         should(info.width() == img.width());
         should(info.height() == img.height());
         should(info.isGrayscale());
-        should(info.pixelType() == ImageImportInfo::UINT8);
+        should(info.pixelType() == vigra::ImageImportInfo::UINT8);
         
         Image res(info.width(), info.height());
         
@@ -81,14 +82,14 @@ class ByteImageExportImportTest
     void testJPEG()
     {
         exportImage(srcImageRange(img), 
-                    ImageExportInfo("res.jpg").setCompression("100"));
+                    vigra::ImageExportInfo("res.jpg").setCompression("100"));
         
-        ImageImportInfo info("res.jpg");
+        vigra::ImageImportInfo info("res.jpg");
         
         should(info.width() == img.width());
         should(info.height() == img.height());
         should(info.isGrayscale());
-        should(info.pixelType() == ImageImportInfo::UINT8);
+        should(info.pixelType() == vigra::ImageImportInfo::UINT8);
         
         Image res(info.width(), info.height());
         
@@ -101,7 +102,7 @@ class ByteImageExportImportTest
 	float sum = 0;
         for(; i != img.end(); ++i, ++i1)
 	{
-            sum += abs(acc(i) - acc(i1));
+            sum += std::abs(acc(i) - acc(i1));
 	}
         should(sum / (info.width() * info.height()) < 0.1);
     }
@@ -109,14 +110,14 @@ class ByteImageExportImportTest
     void testTIFF()
     {
         exportImage(srcImageRange(img), 
-                    ImageExportInfo("res.tif").setCompression("RunLength"));
+                    vigra::ImageExportInfo("res.tif").setCompression("RunLength"));
         
-        ImageImportInfo info("res.tif");
+        vigra::ImageImportInfo info("res.tif");
         
         should(info.width() == img.width());
         should(info.height() == img.height());
         should(info.isGrayscale());
-        should(info.pixelType() == ImageImportInfo::UINT8);
+        should(info.pixelType() == vigra::ImageImportInfo::UINT8);
         
         Image res(info.width(), info.height());
         
@@ -134,14 +135,14 @@ class ByteImageExportImportTest
     
     void testBMP()
     {
-        exportImage(srcImageRange(img), ImageExportInfo("res.bmp"));
+        exportImage(srcImageRange(img), vigra::ImageExportInfo("res.bmp"));
         
-        ImageImportInfo info("res.bmp");
+        vigra::ImageImportInfo info("res.bmp");
         
         should(info.width() == img.width());
         should(info.height() == img.height());
         should(info.isGrayscale());
-        should(info.pixelType() == ImageImportInfo::UINT8);
+        should(info.pixelType() == vigra::ImageImportInfo::UINT8);
         
         Image res(info.width(), info.height());
         
@@ -159,14 +160,14 @@ class ByteImageExportImportTest
     
     void testSUN()
     {
-        exportImage(srcImageRange(img), ImageExportInfo("res.ras"));
+        exportImage(srcImageRange(img), vigra::ImageExportInfo("res.ras"));
         
-        ImageImportInfo info("res.ras");
+        vigra::ImageImportInfo info("res.ras");
         
         should(info.width() == img.width());
         should(info.height() == img.height());
         should(info.isGrayscale());
-        should(info.pixelType() == ImageImportInfo::UINT8);
+        should(info.pixelType() == vigra::ImageImportInfo::UINT8);
         
         Image res(info.width(), info.height());
         
@@ -184,14 +185,14 @@ class ByteImageExportImportTest
     
     void testVIFF1()
     {
-        exportImage(srcImageRange(img), ImageExportInfo("res.xv"));
+        exportImage(srcImageRange(img), vigra::ImageExportInfo("res.xv"));
         
-        ImageImportInfo info("res.xv");
+        vigra::ImageImportInfo info("res.xv");
         
         should(info.width() == img.width());
         should(info.height() == img.height());
         should(info.isGrayscale());
-        should(info.pixelType() == ImageImportInfo::UINT8);
+        should(info.pixelType() == vigra::ImageImportInfo::UINT8);
         
         Image res(info.width(), info.height());
         
@@ -210,7 +211,7 @@ class ByteImageExportImportTest
     void testVIFF2()
     {
         exportImage(srcImageRange(img), 
-                    ImageExportInfo("res.foo").setFileType("VIFF"));
+                    vigra::ImageExportInfo("res.foo").setFileType("VIFF"));
         
         ViffImage * viff = readViffImage("res.foo");
         
@@ -238,7 +239,7 @@ class ByteImageExportImportTest
 
 class ByteRGBImageExportImportTest
 {
-    typedef BRGBImage Image;
+    typedef vigra::BRGBImage Image;
   public:
     ByteRGBImageExportImportTest()
     {
@@ -258,14 +259,14 @@ class ByteRGBImageExportImportTest
     
     void testGIF()
     {
-        exportImage(srcImageRange(img), ImageExportInfo("res.gif"));
+        exportImage(srcImageRange(img), vigra::ImageExportInfo("res.gif"));
         
-        ImageImportInfo info("res.gif");
+        vigra::ImageImportInfo info("res.gif");
         
         should(info.width() == img.width());
         should(info.height() == img.height());
         should(info.isColor());
-        should(info.pixelType() == ImageImportInfo::UINT8);
+        should(info.pixelType() == vigra::ImageImportInfo::UINT8);
         
         Image res(info.width(), info.height());
         
@@ -284,14 +285,14 @@ class ByteRGBImageExportImportTest
     void testJPEG()
     {
         exportImage(srcImageRange(img), 
-                    ImageExportInfo("res.jpg").setCompression("100"));
+                    vigra::ImageExportInfo("res.jpg").setCompression("100"));
         
-        ImageImportInfo info("res.jpg");
+        vigra::ImageImportInfo info("res.jpg");
         
         should(info.width() == img.width());
         should(info.height() == img.height());
         should(info.isColor());
-        should(info.pixelType() == ImageImportInfo::UINT8);
+        should(info.pixelType() == vigra::ImageImportInfo::UINT8);
         
         Image res(info.width(), info.height());
         
@@ -312,14 +313,14 @@ class ByteRGBImageExportImportTest
     void testTIFF()
     {
         exportImage(srcImageRange(img), 
-                    ImageExportInfo("res.tif").setCompression("RunLength"));
+                    vigra::ImageExportInfo("res.tif").setCompression("RunLength"));
         
-        ImageImportInfo info("res.tif");
+        vigra::ImageImportInfo info("res.tif");
         
         should(info.width() == img.width());
         should(info.height() == img.height());
         should(info.isColor());
-        should(info.pixelType() == ImageImportInfo::UINT8);
+        should(info.pixelType() == vigra::ImageImportInfo::UINT8);
         
         Image res(info.width(), info.height());
         
@@ -337,14 +338,14 @@ class ByteRGBImageExportImportTest
     
     void testBMP()
     {
-        exportImage(srcImageRange(img), ImageExportInfo("res.bmp"));
+        exportImage(srcImageRange(img), vigra::ImageExportInfo("res.bmp"));
         
-        ImageImportInfo info("res.bmp");
+        vigra::ImageImportInfo info("res.bmp");
         
         should(info.width() == img.width());
         should(info.height() == img.height());
         should(info.isColor());
-        should(info.pixelType() == ImageImportInfo::UINT8);
+        should(info.pixelType() == vigra::ImageImportInfo::UINT8);
         
         Image res(info.width(), info.height());
         
@@ -362,14 +363,14 @@ class ByteRGBImageExportImportTest
     
     void testSUN()
     {
-        exportImage(srcImageRange(img), ImageExportInfo("res.ras"));
+        exportImage(srcImageRange(img), vigra::ImageExportInfo("res.ras"));
         
-        ImageImportInfo info("res.ras");
+        vigra::ImageImportInfo info("res.ras");
         
         should(info.width() == img.width());
         should(info.height() == img.height());
         should(info.isColor());
-        should(info.pixelType() == ImageImportInfo::UINT8);
+        should(info.pixelType() == vigra::ImageImportInfo::UINT8);
         
         Image res(info.width(), info.height());
         
@@ -387,14 +388,14 @@ class ByteRGBImageExportImportTest
     
     void testVIFF1()
     {
-        exportImage(srcImageRange(img), ImageExportInfo("res.xv"));
+        exportImage(srcImageRange(img), vigra::ImageExportInfo("res.xv"));
         
-        ImageImportInfo info("res.xv");
+        vigra::ImageImportInfo info("res.xv");
         
         should(info.width() == img.width());
         should(info.height() == img.height());
         should(info.isColor());
-        should(info.pixelType() == ImageImportInfo::UINT8);
+        should(info.pixelType() == vigra::ImageImportInfo::UINT8);
         
         Image res(info.width(), info.height());
         
@@ -413,7 +414,7 @@ class ByteRGBImageExportImportTest
     void testVIFF2()
     {
         exportImage(srcImageRange(img), 
-                    ImageExportInfo("res.foo").setFileType("VIFF"));
+                    vigra::ImageExportInfo("res.foo").setFileType("VIFF"));
         
         ViffImage * viff = readViffImage("res.foo");
         
@@ -441,7 +442,7 @@ class ByteRGBImageExportImportTest
 
 class FloatImageExportImportTest
 {
-    typedef FImage Image;
+    typedef vigra::FImage Image;
   public:
     FloatImageExportImportTest()
     {
@@ -471,14 +472,14 @@ class FloatImageExportImportTest
     
     void testGIF()
     {
-        exportImage(srcImageRange(img), ImageExportInfo("res.gif"));
+        exportImage(srcImageRange(img), vigra::ImageExportInfo("res.gif"));
         
-        ImageImportInfo info("res.gif");
+        vigra::ImageImportInfo info("res.gif");
         
         should(info.width() == img.width());
         should(info.height() == img.height());
         should(info.isGrayscale());
-        should(info.pixelType() == ImageImportInfo::UINT8);
+        should(info.pixelType() == vigra::ImageImportInfo::UINT8);
         
         Image res(info.width(), info.height());
         
@@ -497,14 +498,14 @@ class FloatImageExportImportTest
     void testJPEG()
     {
         exportImage(srcImageRange(img), 
-                    ImageExportInfo("res.jpg").setCompression("100"));
+                    vigra::ImageExportInfo("res.jpg").setCompression("100"));
         
-        ImageImportInfo info("res.jpg");
+        vigra::ImageImportInfo info("res.jpg");
         
         should(info.width() == reread.width());
         should(info.height() == reread.height());
         should(info.isGrayscale());
-        should(info.pixelType() == ImageImportInfo::UINT8);
+        should(info.pixelType() == vigra::ImageImportInfo::UINT8);
         
         Image res(info.width(), info.height());
         
@@ -517,7 +518,7 @@ class FloatImageExportImportTest
 	float sum = 0;
         for(; i != reread.end(); ++i, ++i1)
 	{
-            sum += abs(acc(i) - acc(i1));
+            sum += std::abs(acc(i) - acc(i1));
 	}
         should(sum / (info.width() * info.height()) < 0.1);
     }
@@ -525,14 +526,14 @@ class FloatImageExportImportTest
     void testTIFF()
     {
         exportImage(srcImageRange(img), 
-                    ImageExportInfo("res.tif").setCompression("LZW"));
+                    vigra::ImageExportInfo("res.tif").setCompression("LZW"));
         
-        ImageImportInfo info("res.tif");
+        vigra::ImageImportInfo info("res.tif");
         
         should(info.width() == img.width());
         should(info.height() == img.height());
         should(info.isGrayscale());
-        should(info.pixelType() == ImageImportInfo::FLOAT);
+        should(info.pixelType() == vigra::ImageImportInfo::FLOAT);
         
         Image res(info.width(), info.height());
         
@@ -550,14 +551,14 @@ class FloatImageExportImportTest
     
     void testBMP()
     {
-        exportImage(srcImageRange(img), ImageExportInfo("res.bmp"));
+        exportImage(srcImageRange(img), vigra::ImageExportInfo("res.bmp"));
         
-        ImageImportInfo info("res.bmp");
+        vigra::ImageImportInfo info("res.bmp");
         
         should(info.width() == img.width());
         should(info.height() == img.height());
         should(info.isGrayscale());
-        should(info.pixelType() == ImageImportInfo::UINT8);
+        should(info.pixelType() == vigra::ImageImportInfo::UINT8);
         
         Image res(info.width(), info.height());
         
@@ -575,14 +576,14 @@ class FloatImageExportImportTest
     
     void testSUN()
     {
-        exportImage(srcImageRange(img), ImageExportInfo("res.ras"));
+        exportImage(srcImageRange(img), vigra::ImageExportInfo("res.ras"));
         
-        ImageImportInfo info("res.ras");
+        vigra::ImageImportInfo info("res.ras");
         
         should(info.width() == img.width());
         should(info.height() == img.height());
         should(info.isGrayscale());
-        should(info.pixelType() == ImageImportInfo::UINT8);
+        should(info.pixelType() == vigra::ImageImportInfo::UINT8);
         
         Image res(info.width(), info.height());
         
@@ -600,14 +601,14 @@ class FloatImageExportImportTest
     
     void testVIFF()
     {
-        exportImage(srcImageRange(img), ImageExportInfo("res.xv"));
+        exportImage(srcImageRange(img), vigra::ImageExportInfo("res.xv"));
         
-        ImageImportInfo info("res.xv");
+        vigra::ImageImportInfo info("res.xv");
         
         should(info.width() == img.width());
         should(info.height() == img.height());
         should(info.isGrayscale());
-        should(info.pixelType() == ImageImportInfo::FLOAT);
+        should(info.pixelType() == vigra::ImageImportInfo::FLOAT);
         
         Image res(info.width(), info.height());
         
@@ -628,7 +629,7 @@ class FloatImageExportImportTest
 
 class FloatRGBImageExportImportTest
 {
-    typedef FRGBImage Image;
+    typedef vigra::FRGBImage Image;
   public:
     FloatRGBImageExportImportTest()
     {
@@ -658,14 +659,14 @@ class FloatRGBImageExportImportTest
     
     void testGIF()
     {
-        exportImage(srcImageRange(img), ImageExportInfo("res.gif"));
+        exportImage(srcImageRange(img), vigra::ImageExportInfo("res.gif"));
         
-        ImageImportInfo info("res.gif");
+        vigra::ImageImportInfo info("res.gif");
         
         should(info.width() == img.width());
         should(info.height() == img.height());
         should(info.isColor());
-        should(info.pixelType() == ImageImportInfo::UINT8);
+        should(info.pixelType() == vigra::ImageImportInfo::UINT8);
         
         Image res(info.width(), info.height());
         
@@ -684,14 +685,14 @@ class FloatRGBImageExportImportTest
     void testJPEG()
     {
         exportImage(srcImageRange(img), 
-                    ImageExportInfo("res.jpg").setCompression("100"));
+                    vigra::ImageExportInfo("res.jpg").setCompression("100"));
         
-        ImageImportInfo info("res.jpg");
+        vigra::ImageImportInfo info("res.jpg");
         
         should(info.width() == reread.width());
         should(info.height() == reread.height());
         should(info.isColor());
-        should(info.pixelType() == ImageImportInfo::UINT8);
+        should(info.pixelType() == vigra::ImageImportInfo::UINT8);
         
         Image res(info.width(), info.height());
         
@@ -712,14 +713,14 @@ class FloatRGBImageExportImportTest
     void testTIFF()
     {
         exportImage(srcImageRange(img), 
-                    ImageExportInfo("res.tif").setCompression("LZW"));
+                    vigra::ImageExportInfo("res.tif").setCompression("LZW"));
         
-        ImageImportInfo info("res.tif");
+        vigra::ImageImportInfo info("res.tif");
         
         should(info.width() == img.width());
         should(info.height() == img.height());
         should(info.isColor());
-        should(info.pixelType() == ImageImportInfo::FLOAT);
+        should(info.pixelType() == vigra::ImageImportInfo::FLOAT);
         
         Image res(info.width(), info.height());
         
@@ -737,14 +738,14 @@ class FloatRGBImageExportImportTest
     
     void testBMP()
     {
-        exportImage(srcImageRange(img), ImageExportInfo("res.bmp"));
+        exportImage(srcImageRange(img), vigra::ImageExportInfo("res.bmp"));
         
-        ImageImportInfo info("res.bmp");
+        vigra::ImageImportInfo info("res.bmp");
         
         should(info.width() == img.width());
         should(info.height() == img.height());
         should(info.isColor());
-        should(info.pixelType() == ImageImportInfo::UINT8);
+        should(info.pixelType() == vigra::ImageImportInfo::UINT8);
         
         Image res(info.width(), info.height());
         
@@ -762,14 +763,14 @@ class FloatRGBImageExportImportTest
     
     void testSUN()
     {
-        exportImage(srcImageRange(img), ImageExportInfo("res.ras"));
+        exportImage(srcImageRange(img), vigra::ImageExportInfo("res.ras"));
         
-        ImageImportInfo info("res.ras");
+        vigra::ImageImportInfo info("res.ras");
         
         should(info.width() == img.width());
         should(info.height() == img.height());
         should(info.isColor());
-        should(info.pixelType() == ImageImportInfo::UINT8);
+        should(info.pixelType() == vigra::ImageImportInfo::UINT8);
         
         Image res(info.width(), info.height());
         
@@ -787,14 +788,14 @@ class FloatRGBImageExportImportTest
     
     void testVIFF()
     {
-        exportImage(srcImageRange(img), ImageExportInfo("res.xv"));
+        exportImage(srcImageRange(img), vigra::ImageExportInfo("res.xv"));
         
-        ImageImportInfo info("res.xv");
+        vigra::ImageImportInfo info("res.xv");
         
         should(info.width() == img.width());
         should(info.height() == img.height());
         should(info.isColor());
-        should(info.pixelType() == ImageImportInfo::FLOAT);
+        should(info.pixelType() == vigra::ImageImportInfo::FLOAT);
         
         Image res(info.width(), info.height());
         
@@ -826,9 +827,9 @@ class ImageExportImportFailureTest
         
         try
         {
-            exportImage(srcImageRange(img), ImageExportInfo("intentionalFailure/res.gif"));
+            exportImage(srcImageRange(img), vigra::ImageExportInfo("intentionalFailure/res.gif"));
         }
-        catch(PostconditionViolation &)
+        catch(vigra::PostconditionViolation &)
         {
             caught = true;
         }
@@ -841,9 +842,9 @@ class ImageExportImportFailureTest
         
         try
         {
-            ImageImportInfo info("foo.gif");
+            vigra::ImageImportInfo info("foo.gif");
         }
-        catch(PostconditionViolation &)
+        catch(vigra::PostconditionViolation &)
         {
             caught = true;
         }
@@ -856,9 +857,9 @@ class ImageExportImportFailureTest
         
         try
         {
-            exportImage(srcImageRange(img), ImageExportInfo("intentionalFailure/res.jpg"));
+            exportImage(srcImageRange(img), vigra::ImageExportInfo("intentionalFailure/res.jpg"));
         }
-        catch(PostconditionViolation &)
+        catch(vigra::PostconditionViolation &)
         {
             caught = true;
         }
@@ -871,9 +872,9 @@ class ImageExportImportFailureTest
         
         try
         {
-            ImageImportInfo info("foo.jpg");
+            vigra::ImageImportInfo info("foo.jpg");
         }
-        catch(PostconditionViolation &)
+        catch(vigra::PostconditionViolation &)
         {
             caught = true;
         }
@@ -886,9 +887,9 @@ class ImageExportImportFailureTest
         
         try
         {
-            exportImage(srcImageRange(img), ImageExportInfo("intentionalFailure/res.tif"));
+            exportImage(srcImageRange(img), vigra::ImageExportInfo("intentionalFailure/res.tif"));
         }
-        catch(PostconditionViolation &)
+        catch(vigra::PostconditionViolation &)
         {
             caught = true;
         }
@@ -901,9 +902,9 @@ class ImageExportImportFailureTest
         
         try
         {
-            ImageImportInfo info("foo.tif");
+            vigra::ImageImportInfo info("foo.tif");
         }
-        catch(PostconditionViolation &)
+        catch(vigra::PostconditionViolation &)
         {
             caught = true;
         }
@@ -916,9 +917,9 @@ class ImageExportImportFailureTest
         
         try
         {
-            exportImage(srcImageRange(img), ImageExportInfo("intentionalFailure/res.bmp"));
+            exportImage(srcImageRange(img), vigra::ImageExportInfo("intentionalFailure/res.bmp"));
         }
-        catch(PostconditionViolation &)
+        catch(vigra::PostconditionViolation &)
         {
             caught = true;
         }
@@ -931,9 +932,9 @@ class ImageExportImportFailureTest
         
         try
         {
-            ImageImportInfo info("foo.bmp");
+            vigra::ImageImportInfo info("foo.bmp");
         }
-        catch(PostconditionViolation &)
+        catch(vigra::PostconditionViolation &)
         {
             caught = true;
         }
@@ -946,9 +947,9 @@ class ImageExportImportFailureTest
         
         try
         {
-            exportImage(srcImageRange(img), ImageExportInfo("intentionalFailure/res.ras"));
+            exportImage(srcImageRange(img), vigra::ImageExportInfo("intentionalFailure/res.ras"));
         }
-        catch(PostconditionViolation &)
+        catch(vigra::PostconditionViolation &)
         {
             caught = true;
         }
@@ -961,9 +962,9 @@ class ImageExportImportFailureTest
         
         try
         {
-            ImageImportInfo info("foo.ras");
+            vigra::ImageImportInfo info("foo.ras");
         }
-        catch(PostconditionViolation &)
+        catch(vigra::PostconditionViolation &)
         {
             caught = true;
         }
@@ -976,9 +977,9 @@ class ImageExportImportFailureTest
         
         try
         {
-            exportImage(srcImageRange(img), ImageExportInfo("intentionalFailure/res.xv"));
+            exportImage(srcImageRange(img), vigra::ImageExportInfo("intentionalFailure/res.xv"));
         }
-        catch(PostconditionViolation &)
+        catch(vigra::PostconditionViolation &)
         {
             caught = true;
         }
@@ -991,16 +992,16 @@ class ImageExportImportFailureTest
         
         try
         {
-            ImageImportInfo info("foo.xv");
+            vigra::ImageImportInfo info("foo.xv");
         }
-        catch(PostconditionViolation &)
+        catch(vigra::PostconditionViolation &)
         {
             caught = true;
         }
         should(caught == true);
     }
         
-    BImage img;
+    vigra::BImage img;
 };
 
 class ImageImportExportTestSuite

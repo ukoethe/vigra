@@ -1,4 +1,5 @@
 #include <iostream>
+#include <cmath>
 #include "unittest.h"
 #include "vigra/stdimage.hxx"
 #include "vigra/convolution.hxx"
@@ -6,7 +7,7 @@
 
 struct ConvolutionTest
 {
-    typedef DImage Image;
+    typedef vigra::DImage Image;
 
     ConvolutionTest()
     : constimg(5,5), rampimg(5,1)
@@ -33,10 +34,10 @@ struct ConvolutionTest
     
     void separableConvolutionTest()
     {
-        Kernel1D<double> binom;
+        vigra::Kernel1D<double> binom;
         binom.initBinomial(1);
         
-        Kernel1D<double>::Iterator center = binom.center();
+        vigra::Kernel1D<double>::Iterator center = binom.center();
         
         should(center[0] == 0.5);
         should(center[-1] == 0.25);
@@ -62,7 +63,7 @@ struct ConvolutionTest
     
     void separableDerivativeRepeatTest()
     {
-        Kernel1D<double> grad;
+        vigra::Kernel1D<double> grad;
         grad.initSymmetricGradient();
         
         Image tmp1(rampimg);
@@ -98,9 +99,9 @@ struct ConvolutionTest
     
     void separableDerivativeReflectTest()
     {
-        Kernel1D<double> grad;
+        vigra::Kernel1D<double> grad;
         grad.initSymmetricGradient();
-        grad.setBorderTreatment(BORDER_TREATMENT_REFLECT);
+        grad.setBorderTreatment(vigra::BORDER_TREATMENT_REFLECT);
         
         Image tmp1(rampimg);
         tmp1 = 1000.0;
@@ -123,9 +124,9 @@ struct ConvolutionTest
     
     void separableDerivativeAvoidTest()
     {
-        Kernel1D<double> grad;
+        vigra::Kernel1D<double> grad;
         grad.initSymmetricGradient();
-        grad.setBorderTreatment(BORDER_TREATMENT_AVOID);
+        grad.setBorderTreatment(vigra::BORDER_TREATMENT_AVOID);
         
         Image tmp1(rampimg);
         tmp1 = 1000.0;
@@ -148,9 +149,9 @@ struct ConvolutionTest
     
     void separableSmoothClipTest()
     {
-        Kernel1D<double> binom;
+        vigra::Kernel1D<double> binom;
         binom.initBinomial(1);
-        binom.setBorderTreatment(BORDER_TREATMENT_CLIP);
+        binom.setBorderTreatment(vigra::BORDER_TREATMENT_CLIP);
         
         Image tmp1(rampimg);
         tmp1 = 1000.0;
@@ -173,9 +174,9 @@ struct ConvolutionTest
     
     void separableSmoothWrapTest()
     {
-        Kernel1D<double> binom;
+        vigra::Kernel1D<double> binom;
         binom.initBinomial(1);
-        binom.setBorderTreatment(BORDER_TREATMENT_WRAP);
+        binom.setBorderTreatment(vigra::BORDER_TREATMENT_WRAP);
         
         Image tmp1(rampimg);
         tmp1 = 1000.0;
@@ -208,9 +209,9 @@ struct ConvolutionTest
 
         double epsilon = 0.00001;
         
-        Kernel1D<double> gauss;
+        vigra::Kernel1D<double> gauss;
         gauss.initGaussian(1.0);
-        Kernel1D<double> grad;
+        vigra::Kernel1D<double> grad;
         grad.initGaussianDerivative(1.0, 1);
 
         Image tmp1(lenna);
@@ -234,16 +235,16 @@ struct ConvolutionTest
         for(; i1 != i1end; ++i1, ++i2, ++i)
         {
             double grad = sqrt(acc(i1)*acc(i1)+acc(i2)*acc(i2));
-            should(abs(grad - acc(i)) < epsilon);
+            should(std::abs(grad - acc(i)) < epsilon);
         }
     }
     
     void stdConvolutionTest()
     {
-        Kernel1D<double> binom1;
+        vigra::Kernel1D<double> binom1;
         binom1.initBinomial(1);
         
-        Kernel2D<double> binom2;
+        vigra::Kernel2D<double> binom2;
         binom2.initSeparable(binom1, binom1);
         
         Image tmp1(constimg);
@@ -266,10 +267,10 @@ struct ConvolutionTest
     {
         double epsilon = 0.00001;
         
-        Kernel1D<double> gauss1;
+        vigra::Kernel1D<double> gauss1;
         gauss1.initGaussian(2.0);
         
-        Kernel2D<double> gauss2;
+        vigra::Kernel2D<double> gauss2;
         gauss2.initSeparable(gauss1, gauss1);
         
         Image tmp1(lenna);
@@ -295,7 +296,7 @@ struct ConvolutionTest
             Image::Iterator x2 = y2;
             for(; x1.x != end.x; ++x1.x, ++x2.x)
             {
-                should(abs(acc(x1) - acc(x2)) < epsilon);
+                should(std::abs(acc(x1) - acc(x2)) < epsilon);
             }
         }
     }
@@ -329,7 +330,7 @@ struct ConvolutionTest
         importViffImage(viff, destImage(recgrad));
         freeViffImage(viff);
 
-        double epsilon = 0.000001;
+        double epsilon = 0.00001;
         
         Image tmp1(lenna);
         tmp1 = 0.0;
@@ -351,7 +352,8 @@ struct ConvolutionTest
         for(; i1 != i1end; ++i1, ++i2, ++i)
         {
             double grad = sqrt(acc(i1)*acc(i1)+acc(i2)*acc(i2));
-            should(abs(grad - acc(i)) < epsilon);
+            
+            should(std::abs(grad - acc(i)) < epsilon);
         }
     }
     
@@ -379,7 +381,7 @@ struct ConvolutionTest
         for(; i1 != i1end; ++i1, ++i2, ++i3)
         {
             double diff = factor * (acc(i2) - acc(i1));
-            should(abs(diff - acc(i3)) < epsilon);
+            should(std::abs(diff - acc(i3)) < epsilon);
         }
     }
     

@@ -1,5 +1,6 @@
 #include <iostream>
 #include <functional>
+#include <cmath>
 #include "unittest.h"
 #include "vigra/stdimage.hxx"
 #include "vigra/labelimage.hxx"
@@ -11,7 +12,7 @@
 
 struct LabelingTest
 {
-    typedef DImage Image;
+    typedef vigra::DImage Image;
 
     LabelingTest()
     : img1(5,5), img2(5,5), img3(9,5), img4(11,11)
@@ -320,7 +321,7 @@ struct LabelingTest
     
 struct EdgeDetectionTest
 {
-    typedef DImage Image;
+    typedef vigra::DImage Image;
 
     EdgeDetectionTest()
     : img1(5,5), img2(9,11)
@@ -391,7 +392,7 @@ struct EdgeDetectionTest
     
     void edgeToCellGridTest()
     {
-        img1.upperLeft()[Diff2D(2,2)] = 0.0;
+        img1.upperLeft()[vigra::Diff2D(2,2)] = 0.0;
         
         Image res(9,9);
         res = 0.0;
@@ -424,7 +425,7 @@ struct EdgeDetectionTest
     
     void removeShortEdgesTest()
     {
-        img1.upperLeft()[Diff2D(2,2)] = 0.0;
+        img1.upperLeft()[vigra::Diff2D(2,2)] = 0.0;
         
         Image res(9,9);
         res = 0.0;
@@ -458,7 +459,7 @@ struct EdgeDetectionTest
     
     void beautifyCellGridTest()
     {
-        img1.upperLeft()[Diff2D(2,2)] = 0.0;
+        img1.upperLeft()[vigra::Diff2D(2,2)] = 0.0;
         
         Image res(9,9);
         res = 0.0;
@@ -523,7 +524,7 @@ struct EdgeDetectionTest
     
 struct DistanceTransformTest
 {
-    typedef DImage Image;
+    typedef vigra::DImage Image;
 
     DistanceTransformTest()
     : img(7,7)
@@ -564,12 +565,12 @@ struct DistanceTransformTest
         {
             for(x=0; x<7; ++x)
             {
-                double dist = acc(i, Diff2D(x,y));
-                double dist1 = abs(2.0 - x) + abs(2.0 - y);
-                double dist2 = abs(5.0 - x) + abs(5.0 - y);
+                double dist = acc(i, vigra::Diff2D(x,y));
+                double dist1 = std::abs(2.0 - x) + std::abs(2.0 - y);
+                double dist2 = std::abs(5.0 - x) + std::abs(5.0 - y);
                 double desired = (dist1 < dist2) ? dist1 : dist2;
                 
-                should(abs(dist - desired) < epsilon);
+                should(std::abs(dist - desired) < epsilon);
             }
         }
     }
@@ -590,14 +591,14 @@ struct DistanceTransformTest
         {
             for(x=0; x<7; ++x)
             {
-                double dist = acc(i, Diff2D(x,y));
-                double dist1 = sqrt((2.0 - x)*(2.0 - x) +
+                double dist = acc(i, vigra::Diff2D(x,y));
+                double dist1 = std::sqrt((2.0 - x)*(2.0 - x) +
                                          (2.0 - y)*(2.0 - y));
-                double dist2 = sqrt((5.0 - x)*(5.0 - x) +
+                double dist2 = std::sqrt((5.0 - x)*(5.0 - x) +
                                          (5.0 - y)*(5.0 - y));
                 double desired = (dist1 < dist2) ? dist1 : dist2;
                 
-                should(abs(dist - desired) < epsilon);
+                should(std::abs(dist - desired) < epsilon);
             }
         }
     }
@@ -618,14 +619,14 @@ struct DistanceTransformTest
         {
             for(x=0; x<7; ++x)
             {
-                double dist = acc(i, Diff2D(x,y));
-                double dist1 = abs(2.0 - x) < abs(2.0 - y) ?
-                                      abs(2.0 - y) : abs(2.0 - x);
-                double dist2 = abs(5.0 - x) < abs(5.0 - y) ?
-                                      abs(5.0 - y) : abs(5.0 - x);
+                double dist = acc(i, vigra::Diff2D(x,y));
+                double dist1 = std::abs(2.0 - x) < std::abs(2.0 - y) ?
+                                      std::abs(2.0 - y) : std::abs(2.0 - x);
+                double dist2 = std::abs(5.0 - x) < std::abs(5.0 - y) ?
+                                      std::abs(5.0 - y) : std::abs(5.0 - x);
                 double desired = (dist1 < dist2) ? dist1 : dist2;
                 
-                should(abs(dist - desired) < epsilon);
+                should(std::abs(dist - desired) < epsilon);
             }
         }
     }
@@ -636,7 +637,7 @@ struct DistanceTransformTest
 
 struct LocalMinMaxTest
 {
-    typedef DImage Image;
+    typedef vigra::DImage Image;
 
     LocalMinMaxTest()
     : img(9,9)
@@ -784,7 +785,7 @@ struct LocalMinMaxTest
 
 struct RegionGrowingTest
 {
-    typedef DImage Image;
+    typedef vigra::DImage Image;
 
     RegionGrowingTest()
     : img(7,7), seeds(7,7)
@@ -837,7 +838,7 @@ struct RegionGrowingTest
         
         Image res(img);
         
-        ArrayOfRegionStatistics<DirectCostFunctor> cost(2);
+        vigra::ArrayOfRegionStatistics<DirectCostFunctor> cost(2);
         seededRegionGrowing(srcImageRange(img), srcImage(seeds), 
                             destImage(res), cost);
         
@@ -849,14 +850,14 @@ struct RegionGrowingTest
         {
             for(x=0; x<7; ++x)
             {
-                double dist = acc(i, Diff2D(x,y));
-                double dist1 = sqrt((2.0 - x)*(2.0 - x) +
+                double dist = acc(i, vigra::Diff2D(x,y));
+                double dist1 = std::sqrt((2.0 - x)*(2.0 - x) +
                                          (2.0 - y)*(2.0 - y));
-                double dist2 = sqrt((5.0 - x)*(5.0 - x) +
+                double dist2 = std::sqrt((5.0 - x)*(5.0 - x) +
                                          (5.0 - y)*(5.0 - y));
                 double desired = (dist1 <= dist2) ? 1 : 2;
                 
-                should(abs(dist - desired) < epsilon);
+                should(std::abs(dist - desired) < epsilon);
             }
         }
     }
@@ -866,7 +867,7 @@ struct RegionGrowingTest
 
 struct CornerDetectionTest
 {
-    typedef DImage Image;
+    typedef vigra::DImage Image;
 
     CornerDetectionTest()
     : img(7,7)

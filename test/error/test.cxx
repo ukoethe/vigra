@@ -12,7 +12,7 @@ struct ErrorTest
 		{
 			precondition(0, "Intentional error");
 		}
-		catch(ContractViolation & c)
+		catch(vigra::ContractViolation & c)
 		{
 			caughtIt = true;
 			std::cout << "Testing error reporting: " << c.what() << std::endl;
@@ -29,7 +29,7 @@ struct ErrorTest
 		{
 			postcondition(0, "Intentional error");
 		}
-		catch(ContractViolation & c)
+		catch(vigra::ContractViolation & c)
 		{
 			caughtIt = true;
 			std::cout << "Testing error reporting: " << c.what() << std::endl;
@@ -46,7 +46,7 @@ struct ErrorTest
 		{
 			invariant(0, "Intentional error");
 		}
-		catch(ContractViolation & c)
+		catch(vigra::ContractViolation & c)
 		{
 			caughtIt = true;
 			std::cout << "Testing error reporting: " << c.what() << std::endl;
