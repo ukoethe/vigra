@@ -47,6 +47,7 @@ VIGRA_PROG_INSTALL
 
 LIBCPPFLAGS=
 VIGRA_INCLUDES='-I$(prefix)/include'
+VIGRA_INCPATH='$(prefix)/include'
 
 dnl-------------------------------------------------------------------
 dnl                     libtool configuration
@@ -125,12 +126,13 @@ AC_SUBST(FFTW_INCLUDES)
 AC_SUBST(IMPEX_LIB)
 AC_SUBST(IMPEX_DEPLIBS)
 AC_SUBST(VIGRA_INCLUDES)
+AC_SUBST(VIGRA_INCPATH)
 AC_SUBST(POSTINSTALLCPPFLAGS)
 
 AC_SUBST(LIBCPPFLAGS)
 
 AC_OUTPUT(config/Makefile.include config/vigra-config doc/vigra/index.html)
-chmod +x config/vigra-config
+chmod +x config/vigra-config # for src/examples
 
 [echopath()
 {

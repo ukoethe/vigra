@@ -16,13 +16,14 @@ usage()
   cat <<EOF
 Usage: $0 [OPTIONS]
 Options:
-    [--version]    output version ("@MAJOR_VERSION@.@MINOR_VERSION@.@MICRO_VERSION@")
-    [--target]     output platform this vigra version was configured for
-    [--impex-lib]  output flags for linking libvigraimpex
-    [--fftw-lib]   output flags for linking libfftw$fftwstatus
-    [--rfftw-lib]  output flags for linking librfftw and libfftw$fftwstatus
-    [--cppflags]   output include flags for vigra$fftwflags
-   ([--libs]       synonym for --impex-lib)
+    [--version]      output version ("@MAJOR_VERSION@.@MINOR_VERSION@.@MICRO_VERSION@")
+    [--target]       output platform this vigra version was configured for
+    [--impex-lib]    output flags for linking libvigraimpex
+    [--fftw-lib]     output flags for linking libfftw$fftwstatus
+    [--rfftw-lib]    output flags for linking librfftw and libfftw$fftwstatus
+    [--cppflags]     output include flags for vigra$fftwflags
+    [--include-path] output path to VIGRA includes
+   ([--libs]         synonym for --impex-lib)
 EOF
     exit $1
 }
@@ -35,7 +36,7 @@ echopath()
 }
 
 if test $# -eq 0; then
-    echo "ERROR: no parameters given!"
+    echo "ERROR: no parameters given!" 1>&2
     usage 1 1>&2
 fi
 
@@ -68,6 +69,9 @@ while test $# -gt 0; do
       else
         echopath '@RFFTW_LIB@'
       fi
+      ;;
+    --include_path|--include-path|--includepath)
+      echopath '@VIGRA_INCPATH@'
       ;;
     --help|-h|-?)
       usage 0 1>&2
