@@ -48,12 +48,6 @@ struct VigraFalseType
 #endif
 };
 
-/********************************************************/
-/*                                                      */
-/*                      Diff2D                          */
-/*                                                      */
-/********************************************************/
-
 /*! \page Utilities Utilities
     Basic helper functionality needed throughout.
      
@@ -70,8 +64,18 @@ struct VigraFalseType
     <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif"> 
      \ref TupleTypes
      <DD><em>pair, triple, tuple4, tuple5</em>
-     </DL>
+      <DT>
+    <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif"> 
+     \ref MathConstants
+     <DD><em>M_PI, _M_SQRT2</em>
+    </DL>
 */
+
+/********************************************************/
+/*                                                      */
+/*                      Diff2D                          */
+/*                                                      */
+/********************************************************/
 
 /*! \brief Two dimensional difference vector.
     
@@ -433,5 +437,32 @@ struct tuple5 {
 
 
 } // namespace vigra
+
+/*! \page MathConstants Mathematical Constants 
+
+    <TT>M_PI, M_SQRT2</TT>
+
+    <b>\#include</b> "<a href="utilities_8hxx-source.html">vigra/utilities.hxx</a>"
+    
+    Since <TT>M_PI</TT> and <TT>M_SQRT2</TT> are not officially standardized, 
+    we provide definitions here for those compilers that don't support them.   
+    
+    \code
+    #ifndef M_PI
+    #    define M_PI     3.14159265358979323846
+    #endif
+
+    #ifndef M_SQRT2
+    #    define M_SQRT2  1.41421356237309504880
+    #endif
+    \endcode
+*/
+#ifndef M_PI
+#    define M_PI     3.14159265358979323846
+#endif
+
+#ifndef M_SQRT2
+#    define M_SQRT2  1.41421356237309504880
+#endif
 
 #endif // VIGRA_BASICS_HXX
