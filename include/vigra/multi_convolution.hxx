@@ -255,7 +255,7 @@ separableConvolveMultiArray(triple<SrcIterator, SrcShape, SrcAccessor> const & s
                             pair<DestIterator, DestAccessor> const & dest, 
                             Kernel1D<T> const & kernel )
 {
-    ArrayVector<Kernel1D<T> > kernels(shape.size(), kernel);
+    ArrayVector<Kernel1D<T> > kernels(source.second.size(), kernel);
   
     separableConvolveMultiArray( source.first, source.second, source.third, 
                                  dest.first, dest.second, kernels.begin() );

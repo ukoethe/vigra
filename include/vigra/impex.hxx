@@ -556,7 +556,7 @@ namespace detail {
             int h = slr.y - sul.y;
             
             typedef vigra::MultiArray<3, T> MArray;
-            MArray array(MArray::difference_type(w, h, bands));
+            MArray array(typename MArray::difference_type(w, h, bands));
             
             mapVectorImageToLowerPixelType(sul, slr, sget, array);
             

@@ -750,14 +750,17 @@ struct ImageTest
 
 typedef ImageTest<vigra::BImage> BImageTest;
 
+template <>
 unsigned char BImageTest::data[] = {1,2,3,4,5,6,7,8,9};
 
 typedef ImageTest<vigra::DImage> DImageTest;
 
+template <>
 double DImageTest::data[] = {1.1,2.2,3.3,4.4,5.5,6.6,7.7,8.8,9.9};
 
 typedef ImageTest<vigra::BRGBImage> BRGBImageTest;
 typedef vigra::RGBValue<unsigned char> BRGB;
+template <>
 BRGB BRGBImageTest::data[] = {
     BRGB(1,1,1),
     BRGB(2,2,2),
@@ -772,6 +775,7 @@ BRGB BRGBImageTest::data[] = {
 
 typedef ImageTest<vigra::FRGBImage> FRGBImageTest;
 typedef vigra::RGBValue<float> FRGB;
+template <>
 FRGB FRGBImageTest::data[] = {
     FRGB(1.1, 1.1, 1.1),
     FRGB(2.2, 2.2, 2.2),

@@ -160,7 +160,7 @@ struct TinyVectorTest
 
         should(dot(bv3, bv3) == bv3.squaredMagnitude());
         should(dot(iv3, bv3) == iv3.squaredMagnitude());
-        should(dot(fv3, fv3) == fv3.squaredMagnitude());
+        shouldEqual(dot(fv3, fv3), fv3.squaredMagnitude());
 
         shouldEqualTolerance(VIGRA_CSTD::sqrt(
                 (typename NumericTraits<typename BV::value_type>::RealPromote)

@@ -1,5 +1,5 @@
 ifneq "$(MAKECMDGOALS)" "clean"
-include ../../current/config/Makefile.include
+include ../../current/build.cygwin.gcc3.4/config/Makefile.include
 endif
 
 CPPFLAGS += -I../include

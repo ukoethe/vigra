@@ -132,7 +132,7 @@ class MultiArrayNavigator
          */
     bool hasMore() const
     {
-        return inner_dimension_ == level ?
+        return this->inner_dimension_ == level ?
                     base_type::hasMore() :
                     i_ < end_; 
     }
@@ -141,7 +141,7 @@ class MultiArrayNavigator
          */
     bool atEnd() const
     {
-        return inner_dimension_ == level ?
+        return this->inner_dimension_ == level ?
                     base_type::atEnd() :
 	            !( i_ < end_);
     }
@@ -150,8 +150,8 @@ class MultiArrayNavigator
     void reset(MULTI_ITERATOR const & i)
     {
         end_ = i_ = i;
-        if(inner_dimension_ != level)
-            end_.template dim<level>() += shape_[level];
+        if(this->inner_dimension_ != level)
+            end_.template dim<level>() += this->shape_[level];
         base_type::reset(i);
     }
     

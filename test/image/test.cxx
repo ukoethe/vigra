@@ -283,16 +283,16 @@ struct BasicImageTest
     void swapImage()
     {
         IMAGE other(1,1);
-        other(0,0) = data[2];
+        other(0,0) = this->data[2];
         
-        img.swap(other);
+        this->img.swap(other);
         
-        shouldEqual(img.width(), 1);
-        shouldEqual(img.height(), 1);
-        shouldEqual(img(0,0), data[2]);
+        shouldEqual(this->img.width(), 1);
+        shouldEqual(this->img.height(), 1);
+        shouldEqual(this->img(0,0), this->data[2]);
         shouldEqual(other.width(), 3);
         shouldEqual(other.height(), 3);
-        shouldEqual(other(2,2), data[8]);
+        shouldEqual(other(2,2), this->data[8]);
     }
 };
 
@@ -302,7 +302,7 @@ struct BasicImageViewTest
 {
     
     BasicImageViewTest()
-    : ImageTest<IMAGE>(IMAGE(internalMemory, Diff2D(3,3)))
+    : ImageTest<IMAGE>(IMAGE(this->internalMemory, Diff2D(3,3)))
     {}
 
     // next lines needed due to gcc 2.95 bug

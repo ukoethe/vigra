@@ -477,7 +477,7 @@ class Polynomial
         ArrayVector<T> tmp(p.begin(), p.end());
         polynomial_.swap(tmp);
         setCoeffs(&polynomial_[0], p.order());
-        epsilon_ = p.epsilon_;
+        this->epsilon_ = p.epsilon_;
         return *this;
     }
     
@@ -510,7 +510,7 @@ class Polynomial
     Polynomial<Complex> 
     getDeflated(Complex const & r) const
     {
-        Polynomial<Complex> res(begin(), order(), epsilon());
+        Polynomial<Complex> res(this->begin(), this->order(), this->epsilon());
         res.deflate(r);
         return res;
     }
@@ -616,7 +616,7 @@ class StaticPolynomial
             return *this;
         std::copy(p.begin(), p.end(), polynomial_);
         setCoeffs(polynomial_, p.order());
-        epsilon_ = p.epsilon_;
+        this->epsilon_ = p.epsilon_;
         return *this;
     }
     
@@ -649,7 +649,7 @@ class StaticPolynomial
     StaticPolynomial<MAXORDER, Complex> 
     getDeflated(Complex const & r) const
     {
-        StaticPolynomial<MAXORDER, Complex>  res(begin(), order(), epsilon());
+        StaticPolynomial<MAXORDER, Complex>  res(this->begin(), this->order(), this->epsilon());
         res.deflate(r);
         return res;
     }

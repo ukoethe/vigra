@@ -1058,7 +1058,7 @@ MultiArray <N, T, A>::MultiArray (const difference_type &shape,
         this->m_shape [0] = 1;
         this->m_stride [0] = 0;
     }
-    allocate (this->m_ptr, elementCount (), NumericTraits<T>::zero ());
+    allocate (this->m_ptr, this->elementCount (), NumericTraits<T>::zero ());
 }
 
 template <unsigned int N, class T, class A>
@@ -1088,7 +1088,7 @@ MultiArray <N, T, A>::MultiArray (const difference_type &shape,
         this->m_shape [0] = 1;
         this->m_stride [0] = 0;
     }
-    allocate (this->m_ptr, elementCount (), init);
+    allocate (this->m_ptr, this->elementCount (), init);
 }
 
 template <unsigned int N, class T, class A>
@@ -1096,13 +1096,13 @@ MultiArray <N, T, A>::MultiArray (const MultiArray &rhs)
     : MultiArrayView <N, T> (rhs.m_shape, rhs.m_stride, 0),
     m_alloc (rhs.m_alloc)
 {
-    allocate (this->m_ptr, elementCount (), rhs.data ());
+    allocate (this->m_ptr, this->elementCount (), rhs.data ());
 }
 
 template <unsigned int N, class T, class A>
 MultiArray <N, T, A>::~MultiArray ()
 {
-    deallocate (this->m_ptr, elementCount ());
+    deallocate (this->m_ptr, this->elementCount ());
 }
 
 template <unsigned int N, class T, class A>
@@ -1113,7 +1113,7 @@ MultiArray <N, T, A>::operator= (const MultiArray &rhs)
         return *this;
     pointer new_ptr;
     allocate (new_ptr, rhs.elementCount (), rhs.data ());
-    deallocate (this->m_ptr, elementCount ());
+    deallocate (this->m_ptr, this->elementCount ());
     m_alloc = rhs.m_alloc;
     this->m_shape = rhs.m_shape;
     this->m_stride = rhs.m_stride;
@@ -1132,7 +1132,7 @@ void MultiArray <N, T, A>::reshape (const difference_type & new_shape,
     std::size_t new_size = new_shape [MultiArrayView<N,T>::actual_dimension-1] * new_stride [MultiArrayView<N,T>::actual_dimension-1];
     T *new_ptr;
     allocate (new_ptr, new_size, init);
-    deallocate (this->m_ptr, elementCount ());
+    deallocate (this->m_ptr, this->elementCount ());
     this->m_ptr = new_ptr;
     this->m_shape = new_shape;
     this->m_stride = new_stride;
