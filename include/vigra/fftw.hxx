@@ -778,6 +778,7 @@ void applyFourierFilter(
     DestImageIterator destUpperLeft, DestAccessor da)
 {
     int w= srcLowerRight.x - srcUpperLeft.x;
+    int h= srcLowerRight.y - srcUpperLeft.y;
 
     // test for right memory layout (fftw expects a 2*width*height floats array)
     if (&(*(srcUpperLeft + Diff2D(w, 0))) == &(*(srcUpperLeft + Diff2D(0, 1))))
@@ -1080,6 +1081,7 @@ void applyFourierFilterFamily(
     const fftwnd_plan &forwardPlan, const fftwnd_plan &backwardPlan)
 {
     int w= srcLowerRight.x - srcUpperLeft.x;
+    int h= srcLowerRight.y - srcUpperLeft.y;
 
     // test for right memory layout (fftw expects a 2*width*height floats array)
     if (&(*(srcUpperLeft + Diff2D(w, 0))) == &(*(srcUpperLeft + Diff2D(0, 1))))

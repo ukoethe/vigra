@@ -222,12 +222,14 @@ struct IsDerivedFrom
 {
     typedef char falseResult[1];
     typedef char trueResult[2];
+    
     static falseResult * test(...) { return 0; }
     static trueResult * test(BASE const *) { return 0; }
-    static DERIVED const * derived() { return 0; }
+    
+    enum { resultSize = sizeof(*test((DERIVED const *)0)) };
     
     typedef typename 
-        IfBool<sizeof(*test(derived())) == 2, VigraTrueType, VigraFalseType>::type
+        IfBool<(resultSize == 2), VigraTrueType, VigraFalseType>::type
         result;
 };
 

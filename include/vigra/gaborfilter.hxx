@@ -268,7 +268,7 @@ protected:
                 double angle = direction * M_PI / directionCount();
                 double centerFrequency =
                     maxCenterFrequency_ / VIGRA_CSTD::pow(2.0, (double)scale);
-                createGaborFilter(destImageRange(images_[filterIndex(direction, scale)]),
+                createGaborFilter(destImageRange(this->images_[filterIndex(direction, scale)]),
                                   angle, centerFrequency,
                                   angularGaborSigma(directionCount(), centerFrequency),
                                   radialGaborSigma(centerFrequency));
@@ -336,7 +336,7 @@ public:
          */
     ImageType const & getFilter(int direction, int scale) const
     {
-        return images_[filterIndex(direction, scale)];
+        return this->images_[filterIndex(direction, scale)];
     }
 
         /** Resize all filters (causing their recalculation).
@@ -362,7 +362,7 @@ public:
          */
     void setDirectionScaleCounts(int directionCount, int scaleCount)
     {
-        resize(directionCount * scaleCount);
+        this->resize(directionCount * scaleCount);
         scaleCount_ = scaleCount;
         directionCount_ = directionCount;
         initFilters();
