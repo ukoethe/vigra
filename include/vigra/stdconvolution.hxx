@@ -1019,6 +1019,16 @@ class Kernel2D
 	*/
     Iterator center() { return kernel_.upperLeft() - left_; }
     
+        /** Access kernel entry at given position.
+	*/
+    value_type & operator()(int x, int y) 
+        { return kernel_[Diff2D(x,y) - left_]; }
+    
+        /** Read kernel entry at given position.
+	*/
+    value_type operator()(int x, int y) const
+        { return kernel_[Diff2D(x,y) - left_]; }
+    
         /** Norm of the kernel (i.e. sum of its elements).
 	*/
     value_type norm() const { return norm_; }
