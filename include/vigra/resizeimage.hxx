@@ -723,7 +723,7 @@ void resizeLineCubicIIRInterpolation(
     StandardAccessor<TMPTYPE> tmp_acc;
 
     recursiveFilterLine(src_iter, src_iter_end, src_acc, tmp_iter, tmp_acc,
-                        sqrt(3.0) - 2.0, BORDER_TREATMENT_REFLECT);
+                        VIGRA_CSTD::sqrt(3.0) - 2.0, BORDER_TREATMENT_REFLECT);
 
     CubicBSplineKernel kernel;
     dest_acc.set(DestTraits::fromRealPromote(kernel[0.0] * tmp[0] + 2.0 * kernel[1.0] * tmp[1]),
