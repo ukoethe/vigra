@@ -32,47 +32,10 @@
 #include "vigra/imageiterator.hxx"
 #include "vigra/numerictraits.hxx"
 #include "vigra/multi_iterator.hxx"
+#include "vigra/metaprogramming.hxx"
 
 namespace vigra
 {
-
-/**  \addtogroup MultiArrayTags Multi-dimensional Array Tags
-      Meta-programming tags to mark array's as strided or unstrided.
-*/
-
-//@{
-
-/********************************************************/
-/*                                                      */
-/*                   StridedArrayTag                    */
-/*                                                      */
-/********************************************************/
-
-/** tag for marking a MultiArray strided.
-
-<b>\#include</b>
-"<a href="multi_array_8hxx-source.html">vigra/multi_array.hxx</a>"
-
-Namespace: vigra
-*/
-struct StridedArrayTag {};
-
-/********************************************************/
-/*                                                      */
-/*                  UnstridedArrayTag                   */
-/*                                                      */
-/********************************************************/
-
-/** tag for marking a MultiArray unstrided.
-
-<b>\#include</b>
-"<a href="multi_array_8hxx-source.html">vigra/multi_array.hxx</a>"
-
-Namespace: vigra
-*/
-struct UnstridedArrayTag {};
-
-//@}
 
 namespace detail
 {
