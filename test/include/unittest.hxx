@@ -569,7 +569,7 @@ tolerance_equal_impl(T1 left, T2 right, T3 epsilon,
     buf << message << " [" << left << " != " << right << "]";
 
     bool compare = true;
-    for(int i=0; i<epsilon.size(); ++i)
+    for(unsigned int i=0; i<epsilon.size(); ++i)
     {
         close_at_tolerance<typename T3::value_type> fcomparator( epsilon[i] );
         compare = compare && fcomparator ( left[i] , right[i] );
