@@ -487,8 +487,8 @@ namespace detail {
         
         FindMinMax<SrcValue> minmax;
         inspectImage( sul, slr, sget, minmax );
-        double scale = ((double)NumericTraits<DestValue>::max()- (double)NumericTraits<DestValue>::min()) / 
-                                   (minmax.max - minmax.min);
+        double scale = (double)NumericTraits<DestValue>::max() / (minmax.max - minmax.min) -
+                       (double)NumericTraits<DestValue>::min() / (minmax.max - minmax.min);
         double offset = -minmax.min + NumericTraits<DestValue>::min() / scale;
         transformImage( sul, slr, sget, dul, dget,
                         linearIntensityTransform( scale, offset ) );
@@ -525,8 +525,8 @@ namespace detail {
             VectorElementAccessor<SrcAccessor> band(i, sget);
             inspectImage( sul, slr, band, minmax );
         }
-        double scale = ((double)NumericTraits<DestValue>::max()- (double)NumericTraits<DestValue>::min()) /
-                        (minmax.max - minmax.min);
+        double scale = (double)NumericTraits<DestValue>::max() / (minmax.max - minmax.min) -
+                       (double)NumericTraits<DestValue>::min() / (minmax.max - minmax.min);
         double offset = -minmax.min + NumericTraits<DestValue>::min() / scale;
         for(unsigned int i=0; i<sget.size(sul); ++i)
         {
