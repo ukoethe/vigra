@@ -1092,10 +1092,12 @@ class BrightnessContrastFunctor<RGBValue<unsigned char> >
 
     Calculate the magnitude or norm from a given vector-valued
     entity. The vector type will typically be some sort of
-    TinyVector.
+    ref vigra::TinyVector. If the vector is represented by a pair of 
+    scalar-valued images, use \ref vigra::MagnitudeFunctor instead.
 
     At least, the vector type is required to have a function
     '<em>result</em><TT> = dot(v,v)</TT>'.
+    
 
     <b> Usage:</b>
 
@@ -1112,7 +1114,7 @@ class BrightnessContrastFunctor<RGBValue<unsigned char> >
                           );
     \endcode
 
-    \see TinVector, dot()
+    \see vigra::TinyVector, dot(), vigra::MagnitudeFunctor
 */
 template <class ValueType>
 class VectorNormFunctor

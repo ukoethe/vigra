@@ -531,6 +531,9 @@ combineThreeImages(triple<SrcImageIterator1, SrcImageIterator1, SrcAccessor1> sr
 
 /** Calculate the magnitude from two arguments.
     Can be used in conjunction with \ref gradientBasedTransform().
+    
+    If the gradient is represented by a vector-valued image instead of 
+    a pair of scalar images, use \ref vigra::VectorNormFunctor.
 */
 template <class ValueType>
 class MagnitudeFunctor
