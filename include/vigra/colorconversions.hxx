@@ -26,6 +26,179 @@
 #include <cmath>
 #include "vigra/rgbvalue.hxx"
 
+/** \page ColorConversions  Color Space Conversions
+
+    Convert between RGB, R'G'B', XYZ, L*a*b*, L*u*v*, Y'PbPr, Y'CbCr, Y'IQ, and Y'UV color spaces.
+
+    <b>\#include</b> "<a href="colorconversions_8hxx-source.html">vigra/colorconversions.hxx</a>"<br>
+    Namespace: vigra
+    
+    <UL>
+    <LI> <b>RGB/R'G'B'</b><br>
+        <em>linear and non-linear (gamma corrected) additive color</em>
+        <p>
+        <DL>
+        <DT> <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif">
+             vigra::RGB2RGBPrimeFunctor
+        <DT> <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif">
+             vigra::RGBPrime2RGBFunctor
+        </DL><p>
+    <LI> <b>XYZ</b><br>
+        <em>device independent color representation 
+               (according to Publication CIE  No  15.2 "Colorimetry"
+                and ITU-R Recommendation BT.709)</em>
+        <p>
+        <DL>
+        <DT> <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif">
+             vigra::RGB2XYZFunctor
+        <DT> <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif">
+             vigra::RGBPrime2XYZFunctor
+        <DT> <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif">
+             vigra::XYZ2RGBFunctor
+        <DT> <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif">
+             vigra::XYZ2RGBPrimeFunctor
+        </DL><p>
+    <LI> <b>L*a*b* </b><br>
+        <em>perceptually uniform color representation 
+               (according to Publication CIE No 15.2 "Colorimetry" and
+               ITU-R Recommendation BT.709)</em>
+        <p>
+        <DL>
+        <DT> <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif">
+             vigra::RGB2LabFunctor
+        <DT> <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif">
+             vigra::RGBPrime2LabFunctor
+        <DT> <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif">
+             vigra::XYZ2LabFunctor
+        <DT> <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif">
+             vigra::Lab2RGBFunctor
+        <DT> <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif">
+             vigra::Lab2RGBPrimeFunctor
+        <DT> <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif">
+             vigra::Lab2XYZFunctor
+        <DT> <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif">
+             \ref polar2Lab "vigra::polar2Lab"()
+        <DT> <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif">
+             \ref lab2Polar "vigra::lab2Polar"()
+        </DL><p>
+    <LI> <b>L*u*v* </b><br>
+        <em>perceptually uniform color representation 
+               (according to Publication CIE No 15.2 "Colorimetry" and
+               ITU-R Recommendation BT.709)</em>
+        <p>
+        <DL>
+        <DT> <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif">
+             vigra::RGB2LuvFunctor
+        <DT> <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif">
+             vigra::RGBPrime2LuvFunctor
+        <DT> <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif">
+             vigra::XYZ2LuvFunctor
+        <DT> <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif">
+             vigra::Luv2RGBFunctor
+        <DT> <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif">
+             vigra::Luv2RGBPrimeFunctor
+        <DT> <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif">
+             vigra::Luv2XYZFunctor
+        <DT> <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif">
+             \ref polar2Luv "vigra::polar2Luv"()
+        <DT> <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif">
+             \ref luv2Polar "vigra::luv2Polar"()
+        </DL><p>
+    <LI> <b>Y'PbPr and Y'CbCr </b><br>
+        <em>color difference coding
+                (according to ITU-R Recommendation BT. 601)</em>
+        <p>
+        <DL>
+        <DT> <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif">
+             vigra::RGBPrime2YPrimePbPrFunctor
+        <DT> <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif">
+             vigra::YPrimePbPr2RGBPrimeFunctor
+        <DT> <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif">
+             \ref polar2YPrimePbPr "vigra::polar2YPrimePbPr"()
+        <DT> <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif">
+             \ref yPrimePbPr2Polar "vigra::yPrimePbPr2Polar"()
+        <DT> <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif">
+             vigra::RGBPrime2YPrimeCbCrFunctor
+        <DT> <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif">
+             vigra::YPrimeCbCr2RGBPrimeFunctor
+        <DT> <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif">
+             \ref polar2YPrimeCbCr "vigra::polar2YPrimeCbCr"()
+        <DT> <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif">
+             \ref yPrimeCbCr2Polar "vigra::yPrimeCbCr2Polar"()
+        </DL><p>
+    <LI> <b>Y'UV and Y'IQ </b><br>
+        <em>analog video coding according to NTSC and PAL standards</em>
+        <p>
+        <DL>
+        <DT> <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif">
+             vigra::RGBPrime2YPrimeUVFunctor
+        <DT> <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif">
+             vigra::YPrimeUV2RGBPrimeFunctor
+        <DT> <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif">
+             \ref polar2YPrimeUV "vigra::polar2YPrimeUV"()
+        <DT> <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif">
+             \ref yPrimeUV2Polar "vigra::yPrimeUV2Polar"()
+        <DT> <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif">
+             vigra::RGBPrime2YPrimeIQFunctor
+        <DT> <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif">
+             vigra::YPrimeIQ2RGBPrimeFunctor
+        <DT> <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif">
+             \ref polar2YPrimeIQ "vigra::polar2YPrimeIQ"()
+        <DT> <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif">
+             \ref yPrimeIQ2Polar "vigra::yPrimeIQ2Polar"()
+        </DL><p>
+    </UL>
+    
+    \anchor _details
+    This module provides conversion from RGB/R'G'B' into more perceptually uniform
+    color spaces. In image analysis, colors are usually converted into another color space 
+    in order to get good estimates of perceived color differences by just calculating 
+    Euclidean distances between the transformed colors. The L*a*b* and L*u*v* were 
+    designed with exactly this application in mind and thus give the best results. But these
+    conversions are also the most computationally demanding. The Y'PbPr color differenc
+    space (designed for the coding of digital video) is computationally much cheaper, and 
+    almost as good. Y'CbCr represents esentially the same transformation, but the colors 
+    are stored so that they can be stored with 8 bits per channel with minimal loss of 
+    information. The other transformations are of lesser interest here: XYZ is a device independent
+    (but not perceptually uniform) color representation, and Y'IQ and Y'UV are the color 
+    spaces used by the PAL and NTSC analog video standards. Detailed information about
+    these color spaces and their transformations can be found in 
+    <a href="http://www.inforamp.net/~poynton/ColorFAQ.html">Charles Poynton's Color FAQ</a>
+    
+    When you want to perform a color conversion, you must first know in which
+    color space the data are given. Although this sounds trivial, it is
+    quite often done wrong in practice, because the distinction
+    between RGB and R'G'B' is frequently overlooked: nowadays, most images are stored in 
+    R'G'B' space, and treating them as RGB leads to wrong results. RGB and R'G'B' are 
+    related by a so called <em>gamma correction</em>:
+    
+    \f[
+        R' = R_{max} \left(\frac{R}{R_{max}} \right)^{0.45} \qquad
+        G' = G_{max} \left(\frac{G}{G_{max}} \right)^{0.45} \qquad
+        B' = B_{max} \left(\frac{B}{B_{max}} \right)^{0.45}
+    \f]
+    
+    (where usually \f$ R_{max} = G_{max} = B_{max} = 255 \f$). In practice, you can 
+    distinguish the two kinds of red, green, and blue by displaying the images: if they look
+    too dark, they are probably RGB, if they are OK, they are likely R'G'B'. The distinction
+    is important because some conversions start at RGB (XYZ, L*a*b*, L*u*v*), while others
+    start at R'G'B' (Y'PbPr, Y'CbCr, Y'IQ, and Y'UV). The names of VIGRA's color conversion
+    functors always make clear to which color space thay must be applied.
+    
+    In addition VIGRA provides a <em>polar coordinate interface</em>
+    to several color spaces (L*a*b*, L*u*v*, Y'PbPr, Y'CbCr, Y'IQ, and Y'UV). This
+    interface makes use of the fact that these color spaces are conceptually similar:
+    they represent colors by a "brightness" coordinate (L* or Y') and a pair of 
+    "chromaticity" coordinates that span a plane of colors with constant brightness.
+    The polar representation transforms chroma coordinates into a color "angle"
+    (similar to hue in the HSV system) and a "saturation". The polar coordinates are 
+    normalized so that a color angle of 0 degrees is always associated with red
+    (green is at about 120 degrees, blue at about 240 degrees - exact values differ
+    between color spaces). A saturation of 1 is the highest saturation that any RGB color 
+    has after transformation into the respective color space, and saturation 0 corresponds to
+    gray. Polar coordinates provide a more intuitive interface to color specification by 
+    users and make different color spaces somewhat comparable.
+*/
 namespace vigra {
 
 namespace detail
@@ -47,6 +220,23 @@ double gammaCorrection(double value, double gamma, double norm)
 
 } // namespace detail
 
+/** \brief Convert linear (raw) RGB into non-linear (gamma corrected) R'G'B'.
+
+    <b>\#include</b> "<a href="colorconversions_8hxx-source.html">vigra/colorconversions.hxx</a>"<br>
+    Namespace: vigra
+    
+    The functor realizes the transformation
+    
+    \f[
+        R' = R_{max} \left(\frac{R}{R_{max}} \right)^{0.45} \qquad
+        G' = G_{max} \left(\frac{G}{G_{max}} \right)^{0.45} \qquad
+        B' = B_{max} \left(\frac{B}{B_{max}} \right)^{0.45}
+    \f]
+    
+    By default, \f$ R_{max} = G_{max} = B_{max} = 255 \f$. This default can be overridden
+    in the constructor. If both source and target colors components are stored 
+    as <tt>unsigned char</tt>, a look-up-table will be used to speed up the transformation.
+*/
 template <class From, class To>
 class RGB2RGBPrimeFunctor
 {
@@ -56,12 +246,19 @@ class RGB2RGBPrimeFunctor
     
   public:
   
+        /** the functor's value type
+        */
     typedef RGBValue<To> value_type;
     
+        /** constructor
+            \arg max - the maximum value for each RGB component
+        */
     RGB2RGBPrimeFunctor(component_type max = 255.0)
     : max_(max)
     {}
     
+        /** apply the transformation
+        */
     value_type operator()(TinyVector<From, 3> const & rgb)
     {
         return RGBValue<To>(
@@ -94,6 +291,23 @@ class RGB2RGBPrimeFunctor<unsigned char, unsigned char>
     }
 };
 
+/** \brief Convert non-linear (gamma corrected) R'G'B' into non-linear (raw) RGB.
+
+    <b>\#include</b> "<a href="colorconversions_8hxx-source.html">vigra/colorconversions.hxx</a>"<br>
+    Namespace: vigra
+    
+    The functor realizes the transformation
+    
+    \f[
+        R = R_{max} \left(\frac{R'}{R_{max}} \right)^{1/0.45} \qquad
+        G = G_{max} \left(\frac{G'}{G_{max}} \right)^{1/0.45} \qquad
+        B = B_{max} \left(\frac{B'}{B_{max}} \right)^{1/0.45}
+    \f]
+    
+    By default, \f$ R_{max} = G_{max} = B_{max} = 255 \f$. This default can be overridden
+    in the constructor. If both source and target colors components are stored 
+    as <tt>unsigned char</tt>, a look-up-table will be used to speed up the transformation.
+*/
 template <class From, class To>
 class RGBPrime2RGBFunctor
 {
@@ -104,12 +318,19 @@ class RGBPrime2RGBFunctor
     
   public:
   
+        /** the functor's value type
+        */
     typedef RGBValue<To> value_type;
     
+        /** constructor
+            \arg max - the maximum value for each RGB component
+        */
     RGBPrime2RGBFunctor(component_type max = 255.0)
     : max_(max), gamma_(1.0/0.45)
     {}
     
+        /** apply the transformation
+        */
     value_type operator()(TinyVector<From, 3> const & rgb)
     {
         return RGBValue<To>(
@@ -142,6 +363,26 @@ class RGBPrime2RGBFunctor<unsigned char, unsigned char>
     }
 };
 
+/** \brief Convert linear (raw) RGB into standardized tri-stimulus XYZ.
+
+    <b>\#include</b> "<a href="colorconversions_8hxx-source.html">vigra/colorconversions.hxx</a>"<br>
+    Namespace: vigra
+    
+    According to ITU-R Recommendation BT.709, the functor realizes the transformation
+    
+    \f[
+        \begin{array}{rcl}
+        X & = & 0.412453\enspace R / R_{max} + 0.357580\enspace G / G_{max} + 0.180423\enspace B / B_{max}\\
+        Y & = & 0.212671\enspace R / R_{max} + 0.715160\enspace G / G_{max} + 0.072169\enspace B / B_{max} \\
+        Z & = & 0.019334\enspace R / R_{max} + 0.119193\enspace G / G_{max} + 0.950227\enspace B / B_{max}
+        \end{array}
+    \f]
+    
+    By default, \f$ R_{max} = G_{max} = B_{max} = 255 \f$. This default can be overridden
+    in the constructor. X, Y, and Z are always positive and reach their maximum for white. 
+    The white point is obtained by transforming RGB(255, 255, 255). It corresponds to the 
+    D65 illuminant. Y represents the <em>luminance</em> ("brightness") of the color.
+*/
 template <class T>
 class RGB2XYZFunctor
 {
@@ -151,12 +392,19 @@ class RGB2XYZFunctor
     
   public:
   
+        /** the functor's value type
+        */
     typedef TinyVector<component_type, 3> value_type;
     
+        /** constructor
+            \arg max - the maximum value for each RGB component
+        */
     RGB2XYZFunctor(component_type max = 255.0)
     : max_(max)
     {}
     
+        /** apply the transformation
+        */
     value_type operator()(TinyVector<T, 3> const & rgb)
     {
         component_type red = rgb[0] / max_;
@@ -170,6 +418,20 @@ class RGB2XYZFunctor
     }
 };
 
+/** \brief Convert non-linear (gamma corrected) R'G'B' into standardized tri-stimulus XYZ.
+
+    <b>\#include</b> "<a href="colorconversions_8hxx-source.html">vigra/colorconversions.hxx</a>"<br>
+    Namespace: vigra
+    
+    The functor realizes the transformation
+    
+    \f[
+        R'G'B' \Rightarrow RGB \Rightarrow XYZ
+    \f]
+    
+    See vigra::RGBPrime2RGBFunctor and vigra::RGB2XYZFunctor for a description of the two 
+    steps.
+*/
 template <class T>
 class RGBPrime2XYZFunctor
 {
@@ -179,12 +441,19 @@ class RGBPrime2XYZFunctor
     
   public:
   
+        /** the functor's value type
+        */
     typedef TinyVector<component_type, 3> value_type;
     
+        /** constructor
+            \arg max - the maximum value for each RGB component
+        */
     RGBPrime2XYZFunctor(component_type max = 255.0)
     : max_(max), gamma_(1.0/ 0.45)
     {}
     
+        /** apply the transformation
+        */
     value_type operator()(TinyVector<T, 3> const & rgb)
     {
         component_type red = detail::gammaCorrection(rgb[0]/max_, gamma_);
@@ -198,6 +467,24 @@ class RGBPrime2XYZFunctor
     }
 };
 
+/** \brief Convert standardized tri-stimulus XYZ into linear (raw) RGB.
+
+    <b>\#include</b> "<a href="colorconversions_8hxx-source.html">vigra/colorconversions.hxx</a>"<br>
+    Namespace: vigra
+    
+    According to ITU-R Recommendation BT.709, the functor realizes the transformation
+    
+    \f[
+        \begin{array}{rcl}
+        R & = & R_{max} (3.2404813432\enspace X - 1.5371515163\enspace Y - 0.4985363262\enspace Z) \\
+        G & = & G_{max} (-0.9692549500\enspace X + 1.8759900015\enspace Y + 0.0415559266\enspace Z) \\
+        B & = & B_{max} (0.0556466391\enspace X - 0.2040413384\enspace Y + 1.0573110696\enspace Z)
+        \end{array}
+    \f]
+    
+    By default, \f$ R_{max} = G_{max} = B_{max} = 255 \f$. This default can be overridden
+    in the constructor. This is the inverse transform of vigra::RGB2XYZFunctor.
+*/
 template <class T>
 class XYZ2RGBFunctor
 {
@@ -207,12 +494,19 @@ class XYZ2RGBFunctor
     
   public:
   
+        /** the functor's value type
+        */
     typedef RGBValue<T> value_type;
     
+        /** constructor
+            \arg max - the maximum value for each RGB component
+        */
     XYZ2RGBFunctor(component_type max = 255.0)
     : max_(max)
     {}
     
+        /** apply the transformation
+        */
     template <class V>
     value_type operator()(TinyVector<V, 3> const & xyz)
     {
@@ -225,6 +519,20 @@ class XYZ2RGBFunctor
     }
 };
 
+/** \brief Convert standardized tri-stimulus XYZ into non-linear (gamma corrected) R'G'B'.
+
+    <b>\#include</b> "<a href="colorconversions_8hxx-source.html">vigra/colorconversions.hxx</a>"<br>
+    Namespace: vigra
+    
+    The functor realizes the transformation
+    
+    \f[
+        XYZ \Rightarrow RGB \Rightarrow R'G'B'
+    \f]
+    
+    See vigra::XYZ2RGBFunctor and vigra::RGB2RGBPrimeFunctor for a description of the two 
+    steps.
+*/
 template <class T>
 class XYZ2RGBPrimeFunctor
 {
@@ -234,12 +542,19 @@ class XYZ2RGBPrimeFunctor
     
   public:
   
+        /** the functor's value type
+        */
     typedef RGBValue<T> value_type;
     
+        /** constructor
+            \arg max - the maximum value for each RGB component
+        */
     XYZ2RGBPrimeFunctor(component_type max = 255.0)
     : max_(max), gamma_(0.45)
     {}
     
+        /** apply the transformation
+        */
     template <class V>
     value_type operator()(TinyVector<V, 3> const & xyz)
     {
@@ -252,6 +567,33 @@ class XYZ2RGBPrimeFunctor
     }
 };
 
+/** \brief Convert standardized tri-stimulus XYZ into perceptual uniform CIE L*u*v*.
+
+    <b>\#include</b> "<a href="colorconversions_8hxx-source.html">vigra/colorconversions.hxx</a>"<br>
+    Namespace: vigra
+    
+    The functor realizes the transformation
+    
+    \f[
+        \begin{array}{rcl}
+        L^{*} & = & 116 \left( \frac{Y}{Y_n} \right)^\frac{1}{3}-16 \quad \mbox{if} \quad 0.008856 < \frac{Y}{Y_n}\\
+        & & \\
+        L^{*} & = & 903.3\enspace \frac{Y}{Y_n} \quad \mbox{otherwise} \\
+        & & \\
+        
+        u' & = & \frac{4 X}{X+15 Y + 3 Z}, \quad 
+             v' = \frac{9 Y}{X+15 Y + 3 Z}\\
+        & & \\
+        u^{*} & = & 13 L^{*} (u' - u_n'), \quad v^{*} = 13 L^{*} (v' - v_n')
+        \end{array}
+    \f]
+    
+    where \f$(X_n, Y_n, Z_n)\f$ is the reference white point, and 
+    \f$u_n' = 0.197839, v_n'=0.468342\f$ are the quantities \f$u', v'\f$ calculated for this
+    point. \f$L^{*}\f$ represents the
+    <em>lighness</em> ("brightness") of the color, and \f$u^{*}, v^{*}\f$ code the 
+    chromaticity.
+*/
 template <class T>
 class XYZ2LuvFunctor
 {
@@ -261,6 +603,8 @@ class XYZ2LuvFunctor
     
   public:
   
+        /** the functor's value type
+        */
     typedef TinyVector<component_type, 3> value_type;
     
     XYZ2LuvFunctor()
@@ -292,6 +636,13 @@ class XYZ2LuvFunctor
     }
 };
 
+/** \brief Convert perceptual uniform CIE L*u*v* into standardized tri-stimulus XYZ.
+
+    <b>\#include</b> "<a href="colorconversions_8hxx-source.html">vigra/colorconversions.hxx</a>"<br>
+    Namespace: vigra
+    
+    The functor realizes the inverse of the transformation described in vigra::XYZ2LuvFunctor
+*/
 template <class T>
 class Luv2XYZFunctor
 {
@@ -301,12 +652,16 @@ class Luv2XYZFunctor
     
   public:
   
+        /** the functor's value type
+        */
     typedef TinyVector<component_type, 3> value_type;
     
     Luv2XYZFunctor()
     : gamma_(3.0)
     {}
     
+        /** apply the transformation
+        */
     value_type operator()(TinyVector<T, 3> const & luv)
     {
         value_type result;
@@ -331,6 +686,29 @@ class Luv2XYZFunctor
     }
 };
 
+/** \brief Convert standardized tri-stimulus XYZ into perceptual uniform CIE L*a*b*.
+
+    <b>\#include</b> "<a href="colorconversions_8hxx-source.html">vigra/colorconversions.hxx</a>"<br>
+    Namespace: vigra
+    
+    The functor realizes the transformation
+    
+    \f[
+        \begin{array}{rcl}
+        L^{*} & = & 116 \left( \frac{Y}{Y_n} \right)^\frac{1}{3}-16 \quad \mbox{if} \quad 0.008856 < \frac{Y}{Y_n}\\
+        & & \\
+        L^{*} & = & 903.3\enspace \frac{Y}{Y_n} \quad \mbox{otherwise} \\
+        & & \\
+        a^{*} & = & 500 \left[ \left( \frac{X}{X_n} \right)^\frac{1}{3} - \left( \frac{Y}{Y_n} \right)^\frac{1}{3} \right] \\
+        & & \\
+        b^{*} & = & 200 \left[ \left( \frac{Y}{Y_n} \right)^\frac{1}{3} - \left( \frac{Z}{Z_n} \right)^\frac{1}{3} \right] \\
+        \end{array}
+    \f]
+    
+    where \f$(X_n, Y_n, Z_n)\f$ is the reference white point. \f$L^{*}\f$ represents the
+    <em>lighness</em> ("brightness") of the color, and \f$a^{*}, b^{*}\f$ code the 
+    chromaticity.
+*/
 template <class T>
 class XYZ2LabFunctor
 {
@@ -340,12 +718,16 @@ class XYZ2LabFunctor
     
   public:
   
+        /** the functor's value type
+        */
     typedef TinyVector<component_type, 3> value_type;
     
     XYZ2LabFunctor()
     : gamma_(1.0/3.0)
     {}
     
+        /** apply the transformation
+        */
     value_type operator()(TinyVector<T, 3> const & xyz)
     {
         component_type xgamma = std::pow(xyz[0] / 0.950456, gamma_);
@@ -362,6 +744,13 @@ class XYZ2LabFunctor
     }
 };
 
+/** \brief Convert perceptual uniform CIE L*a*b* into standardized tri-stimulus XYZ.
+
+    <b>\#include</b> "<a href="colorconversions_8hxx-source.html">vigra/colorconversions.hxx</a>"<br>
+    Namespace: vigra
+    
+    The functor realizes the inverse of the transformation described in vigra::XYZ2LabFunctor
+*/
 template <class T>
 class Lab2XYZFunctor
 {
@@ -373,10 +762,14 @@ class Lab2XYZFunctor
   
     typedef TinyVector<component_type, 3> value_type;
     
+        /** the functor's value type
+        */
     Lab2XYZFunctor()
     : gamma_(3.0)
     {}
     
+        /** apply the transformation
+        */
     value_type operator()(TinyVector<T, 3> const & lab)
     {
         component_type Y = lab[0] < 8.0 ?
@@ -394,16 +787,38 @@ class Lab2XYZFunctor
 };
 
 
-/*
-L in [0, 100]
-u in [-83.077, 175.015]
-v in [-134.101, 107.393]
-maximum saturation: 179.04 
-red = [53.2406, 175.015, 37.7522]
+/** \brief Convert linear (raw) RGB into perceptual uniform CIE L*u*v*.
+
+    <b>\#include</b> "<a href="colorconversions_8hxx-source.html">vigra/colorconversions.hxx</a>"<br>
+    Namespace: vigra
+    
+    The functor realizes the transformation
+    
+    \f[
+        RGB \Rightarrow XYZ \Rightarrow L^*u^*v^*
+    \f]
+    
+    See vigra::RGB2XYZFunctor and vigra::XYZ2LuvFunctor for a description of the two 
+    steps. The resulting color components will have the following bounds:
+    
+    \f[
+        \begin{array}{rcl}
+        0 \leq & L^* & \leq 100 \\
+        -83.077 \leq & u^* & \leq 175.015 \\
+        -134.101 \leq & v^* & \leq 107.393
+        \end{array}
+    \f]
 */
 template <class T>
 class RGB2LuvFunctor
 {
+    /*
+    L in [0, 100]
+    u in [-83.077, 175.015]
+    v in [-134.101, 107.393]
+    maximum saturation: 179.04 
+    red = [53.2406, 175.015, 37.7522]
+    */
     typedef typename NumericTraits<T>::RealPromote component_type;
     
     RGB2XYZFunctor<T> rgb2xyz;
@@ -411,28 +826,57 @@ class RGB2LuvFunctor
     
   public:
   
+        /** the functor's value type
+        */
     typedef typename XYZ2LuvFunctor<component_type>::value_type value_type;
     
+        /** constructor
+            \arg max - the maximum value for each RGB component
+        */
     RGB2LuvFunctor(component_type max = 255.0)
     : rgb2xyz(max)
     {}
     
+        /** apply the transformation
+        */
     value_type operator()(TinyVector<T, 3> const & rgb)
     {
         return xyz2luv(rgb2xyz(rgb));
     }
 };
 
-/*
-L in [0, 100]
-a in [-86.1813, 98.2352]
-b in [-107.862, 94.4758] 
-maximum saturation: 133.809
-red = [53.2406, 80.0942, 67.2015]
+/** \brief Convert linear (raw) RGB into perceptual uniform CIE L*a*b*.
+
+    <b>\#include</b> "<a href="colorconversions_8hxx-source.html">vigra/colorconversions.hxx</a>"<br>
+    Namespace: vigra
+    
+    The functor realizes the transformation
+    
+    \f[
+        RGB \Rightarrow XYZ \Rightarrow L^*a^*b^*
+    \f]
+    
+    See vigra::RGB2XYZFunctor and vigra::XYZ2LabFunctor for a description of the two 
+    steps. The resulting color components will have the following bounds:
+    
+    \f[
+        \begin{array}{rcl}
+        0 \leq & L^* & \leq 100 \\
+        -86.1813 \leq & u^* & \leq 98.2352 \\
+        -107.862 \leq & v^* & \leq 94.4758
+        \end{array}
+    \f]
 */
 template <class T>
 class RGB2LabFunctor
 {
+    /*
+    L in [0, 100]
+    a in [-86.1813, 98.2352]
+    b in [-107.862, 94.4758] 
+    maximum saturation: 133.809
+    red = [53.2406, 80.0942, 67.2015]
+    */
     typedef typename NumericTraits<T>::RealPromote component_type;
     
     RGB2XYZFunctor<T> rgb2xyz;
@@ -440,18 +884,32 @@ class RGB2LabFunctor
     
   public:
   
+        /** the functor's value type
+        */
     typedef typename XYZ2LabFunctor<component_type>::value_type value_type;
     
+        /** constructor
+            \arg max - the maximum value for each RGB component
+        */
     RGB2LabFunctor(component_type max = 255.0)
     : rgb2xyz(max)
     {}
     
+        /** apply the transformation
+        */
     value_type operator()(TinyVector<T, 3> const & rgb)
     {
         return xyz2lab(rgb2xyz(rgb));
     }
 };
 
+/** \brief Convert perceptual uniform CIE L*u*v* into linear (raw) RGB.
+
+    <b>\#include</b> "<a href="colorconversions_8hxx-source.html">vigra/colorconversions.hxx</a>"<br>
+    Namespace: vigra
+    
+    The functor realizes the inverse of the transformation described in vigra::RGB2LuvFunctor
+*/
 template <class T>
 class Luv2RGBFunctor
 {
@@ -462,12 +920,16 @@ class Luv2RGBFunctor
     
   public:
   
+        /** the functor's value type
+        */
     typedef typename XYZ2RGBFunctor<T>::value_type value_type;
     
     Luv2RGBFunctor(component_type max = 255.0)
     : xyz2rgb(max)
     {}
     
+        /** apply the transformation
+        */
     template <class V>
     value_type operator()(TinyVector<V, 3> const & luv)
     {
@@ -475,6 +937,13 @@ class Luv2RGBFunctor
     }
 };
 
+/** \brief Convert perceptual uniform CIE L*a*b* into linear (raw) RGB.
+
+    <b>\#include</b> "<a href="colorconversions_8hxx-source.html">vigra/colorconversions.hxx</a>"<br>
+    Namespace: vigra
+    
+    The functor realizes the inverse of the transformation described in vigra::RGB2LabFunctor
+*/
 template <class T>
 class Lab2RGBFunctor
 {
@@ -485,12 +954,19 @@ class Lab2RGBFunctor
     
   public:
   
+        /** the functor's value type
+        */
     typedef typename XYZ2RGBFunctor<T>::value_type value_type;
     
+        /** constructor
+            \arg max - the maximum value for each RGB component
+        */
     Lab2RGBFunctor(component_type max = 255.0)
     : xyz2rgb(max)
     {}
     
+        /** apply the transformation
+        */
     template <class V>
     value_type operator()(TinyVector<V, 3> const & lab)
     {
@@ -498,6 +974,28 @@ class Lab2RGBFunctor
     }
 };
 
+/** \brief Convert non-linear (gamma corrected) R'G'B' into perceptual uniform CIE L*u*v*.
+
+    <b>\#include</b> "<a href="colorconversions_8hxx-source.html">vigra/colorconversions.hxx</a>"<br>
+    Namespace: vigra
+    
+    The functor realizes the transformation
+    
+    \f[
+        R'G'B' \Rightarrow RGB \Rightarrow XYZ \Rightarrow L^*u^*v^*
+    \f]
+    
+    See vigra::RGBPrime2RGBFunctor, vigra::RGB2XYZFunctor and vigra::XYZ2LuvFunctor for a description of the three 
+    steps. The resulting color components will have the following bounds:
+    
+    \f[
+        \begin{array}{rcl}
+        0 \leq & L^* & \leq 100 \\
+        -83.077 \leq & u^* & \leq 175.015 \\
+        -134.101 \leq & v^* & \leq 107.393
+        \end{array}
+    \f]
+*/
 template <class T>
 class RGBPrime2LuvFunctor
 {
@@ -508,18 +1006,47 @@ class RGBPrime2LuvFunctor
     
   public:
   
+        /** the functor's value type
+        */
     typedef typename XYZ2LuvFunctor<component_type>::value_type value_type;
     
+        /** constructor
+            \arg max - the maximum value for each RGB component
+        */
     RGBPrime2LuvFunctor(component_type max = 255.0)
     : rgb2xyz(max)
     {}
     
+        /** apply the transformation
+        */
     value_type operator()(TinyVector<T, 3> const & rgb)
     {
         return xyz2luv(rgb2xyz(rgb));
     }
 };
 
+/** \brief Convert non-linear (gamma corrected) R'G'B' into perceptual uniform CIE L*a*b*.
+
+    <b>\#include</b> "<a href="colorconversions_8hxx-source.html">vigra/colorconversions.hxx</a>"<br>
+    Namespace: vigra
+    
+    The functor realizes the transformation
+    
+    \f[
+        R'G'B' \Rightarrow RGB \Rightarrow XYZ \Rightarrow L^*a^*b^*
+    \f]
+    
+    See vigra::RGBPrime2RGBFunctor, vigra::RGB2XYZFunctor and vigra::XYZ2LabFunctor for a description of the three 
+    steps. The resulting color components will have the following bounds:
+    
+    \f[
+        \begin{array}{rcl}
+        0 \leq & L^* & \leq 100 \\
+        -86.1813 \leq & u^* & \leq 98.2352 \\
+        -107.862 \leq & v^* & \leq 94.4758
+        \end{array}
+    \f]
+*/
 template <class T>
 class RGBPrime2LabFunctor
 {
@@ -530,18 +1057,32 @@ class RGBPrime2LabFunctor
     
   public:
   
+        /** the functor's value type
+        */
     typedef typename XYZ2LabFunctor<component_type>::value_type value_type;
     
+        /** constructor
+            \arg max - the maximum value for each RGB component
+        */
     RGBPrime2LabFunctor(component_type max = 255.0)
     : rgb2xyz(max)
     {}
     
+        /** apply the transformation
+        */
     value_type operator()(TinyVector<T, 3> const & rgb)
     {
         return xyz2lab(rgb2xyz(rgb));
     }
 };
 
+/** \brief Convert perceptual uniform CIE L*u*v* into non-linear (gamma corrected) R'G'B'.
+
+    <b>\#include</b> "<a href="colorconversions_8hxx-source.html">vigra/colorconversions.hxx</a>"<br>
+    Namespace: vigra
+    
+    The functor realizes the inverse of the transformation described in vigra::RGBPrime2LuvFunctor
+*/
 template <class T>
 class Luv2RGBPrimeFunctor
 {
@@ -552,12 +1093,19 @@ class Luv2RGBPrimeFunctor
     
   public:
   
+        /** the functor's value type
+        */
     typedef typename XYZ2RGBFunctor<T>::value_type value_type;
     
+        /** constructor
+            \arg max - the maximum value for each RGB component
+        */
     Luv2RGBPrimeFunctor(component_type max = 255.0)
     : xyz2rgb(max)
     {}
     
+        /** apply the transformation
+        */
     template <class V>
     value_type operator()(TinyVector<V, 3> const & luv)
     {
@@ -565,6 +1113,13 @@ class Luv2RGBPrimeFunctor
     }
 };
 
+/** \brief Convert perceptual uniform CIE L*a*b* into non-linear (gamma corrected) R'G'B'.
+
+    <b>\#include</b> "<a href="colorconversions_8hxx-source.html">vigra/colorconversions.hxx</a>"<br>
+    Namespace: vigra
+    
+    The functor realizes the inverse of the transformation described in vigra::RGBPrime2LabFunctor
+*/
 template <class T>
 class Lab2RGBPrimeFunctor
 {
@@ -575,12 +1130,19 @@ class Lab2RGBPrimeFunctor
     
   public:
   
+        /** the functor's value type
+        */
     typedef typename XYZ2RGBFunctor<T>::value_type value_type;
     
+        /** constructor
+            \arg max - the maximum value for each RGB component
+        */
     Lab2RGBPrimeFunctor(component_type max = 255.0)
     : xyz2rgb(max)
     {}
     
+        /** apply the transformation
+        */
     template <class V>
     value_type operator()(TinyVector<V, 3> const & lab)
     {
@@ -588,28 +1150,63 @@ class Lab2RGBPrimeFunctor
     }
 };
 
-/*
-Y in [0, 1]
-Pb in [-0.5, 0.5]
-Pr in [-0.5, 0.5]
-maximum saturation: 0.533887
-red = [0.299, -0.168736, 0.5]
+/** \brief Convert non-linear (gamma corrected) R'G'B' into Y'PbPr color difference components.
+
+    <b>\#include</b> "<a href="colorconversions_8hxx-source.html">vigra/colorconversions.hxx</a>"<br>
+    Namespace: vigra
+    
+    According to ITU-R Recommendation BT.601, the functor realizes the transformation
+    
+    \f[
+        \begin{array}{rcl}
+        Y' & = & 0.299\enspace R / R_{max} + 0.587\enspace G / G_{max} + 0.114\enspace B / B_{max}\\
+        Pb & = & -0.1687358916\enspace R / R_{max} + 0.3312641084\enspace G / G_{max} + 0.5\enspace B / B_{max} \\
+        Pr & = & 0.5\enspace R / R_{max} + 0.4186875892\enspace G / G_{max} + 0.0813124108\enspace B / B_{max}
+        \end{array}
+    \f]
+    
+    By default, \f$ R_{max} = G_{max} = B_{max} = 255 \f$. This default can be overridden
+    in the constructor. Y' represents the <em>luminance</em> ("brightness") of the color, and
+    Pb and Pr are the blue (B'-Y') and red (R'-Y') color difference components. 
+    The transformation is scaled so that the following bounds apply:
+    
+    \f[
+        \begin{array}{rcl}
+        0 \leq & Y' & \leq 1 \\
+        -0.5 \leq & Pb & \leq 0.5 \\
+        -0.5 \leq & Pr & \leq 0.5
+        \end{array}
+    \f]
 */
 template <class T>
 class RGBPrime2YPrimePbPrFunctor
 {
+    /*
+    Y in [0, 1]
+    Pb in [-0.5, 0.5]
+    Pr in [-0.5, 0.5]
+    maximum saturation: 0.533887
+    red = [0.299, -0.168736, 0.5]
+    */
     typedef typename NumericTraits<T>::RealPromote component_type;
     
     component_type max_;
     
   public:
   
+        /** the functor's value type
+        */
     typedef TinyVector<component_type, 3> value_type;
     
+        /** constructor
+            \arg max - the maximum value for each RGB component
+        */
     RGBPrime2YPrimePbPrFunctor(component_type max = 255.0)
     : max_(max)
     {}
     
+        /** apply the transformation
+        */
     value_type operator()(TinyVector<T, 3> const & rgb)
     {
         component_type red = rgb[0] / max_;
@@ -624,6 +1221,13 @@ class RGBPrime2YPrimePbPrFunctor
     }
 };
 
+/** \brief Convert Y'PbPr color difference components into non-linear (gamma corrected) R'G'B'.
+
+    <b>\#include</b> "<a href="colorconversions_8hxx-source.html">vigra/colorconversions.hxx</a>"<br>
+    Namespace: vigra
+    
+    The functor realizes the inverse of the transformation described in vigra::RGBPrime2YPrimePbPrFunctor
+*/
 template <class T>
 class YPrimePbPr2RGBPrimeFunctor
 {
@@ -633,12 +1237,19 @@ class YPrimePbPr2RGBPrimeFunctor
     
   public:
   
+        /** the functor's value type
+        */
     typedef RGBValue<T> value_type;
     
+        /** constructor
+            \arg max - the maximum value for each RGB component
+        */
     YPrimePbPr2RGBPrimeFunctor(component_type max = 255.0)
     : max_(max)
     {}
     
+        /** apply the transformation
+        */
     template <class V>
     value_type operator()(TinyVector<V, 3> const & ypbpr)
     {
@@ -651,28 +1262,62 @@ class YPrimePbPr2RGBPrimeFunctor
     }
 };
 
-/*
-Y in [0, 1]
-I in [-0.596, 0.596]
-Q in [-0.523, 0.523]
-maximum saturation: 0.632582
-red = [0.299, 0.596, 0.212]
+/** \brief Convert non-linear (gamma corrected) R'G'B' into Y'IQ components.
+
+    <b>\#include</b> "<a href="colorconversions_8hxx-source.html">vigra/colorconversions.hxx</a>"<br>
+    Namespace: vigra
+    
+    According to the PAL analog videa standard, the functor realizes the transformation
+    
+    \f[
+        \begin{array}{rcl}
+        Y' & = & 0.299\enspace R / R_{max} + 0.587\enspace G / G_{max} + 0.114\enspace B / B_{max}\\
+        I & = & 0.596\enspace R / R_{max} - 0.274\enspace G / G_{max} - 0.322\enspace B / B_{max} \\
+        Q & = & 0.212\enspace R / R_{max} - 0.523\enspace G / G_{max} + 0.311\enspace B / B_{max}
+        \end{array}
+    \f]
+    
+    By default, \f$ R_{max} = G_{max} = B_{max} = 255 \f$. This default can be overridden
+    in the constructor. Y' represents the <em>luminance</em> ("brightness") of the color. 
+    The transformation is scaled so that the following bounds apply:
+    
+    \f[
+        \begin{array}{rcl}
+        0 \leq & Y' & \leq 1 \\
+        -0.596 \leq & I & \leq 0.596 \\
+        -0.523 \leq & Q & \leq 0.523
+        \end{array}
+    \f]
 */
 template <class T>
 class RGBPrime2YPrimeIQFunctor
 {
+    /*
+    Y in [0, 1]
+    I in [-0.596, 0.596]
+    Q in [-0.523, 0.523]
+    maximum saturation: 0.632582
+    red = [0.299, 0.596, 0.212]
+    */
     typedef typename NumericTraits<T>::RealPromote component_type;
     
     component_type max_;
     
   public:
   
+        /** the functor's value type
+        */
     typedef TinyVector<component_type, 3> value_type;
     
+        /** constructor
+            \arg max - the maximum value for each RGB component
+        */
     RGBPrime2YPrimeIQFunctor(component_type max = 255.0)
     : max_(max)
     {}
     
+        /** apply the transformation
+        */
     value_type operator()(TinyVector<T, 3> const & rgb)
     {
         component_type red = rgb[0] / max_;
@@ -687,6 +1332,13 @@ class RGBPrime2YPrimeIQFunctor
     }
 };
 
+/** \brief Convert Y'IQ color components into non-linear (gamma corrected) R'G'B'.
+
+    <b>\#include</b> "<a href="colorconversions_8hxx-source.html">vigra/colorconversions.hxx</a>"<br>
+    Namespace: vigra
+    
+    The functor realizes the inverse of the transformation described in vigra::RGBPrime2YPrimeIQFunctor
+*/
 template <class T>
 class YPrimeIQ2RGBPrimeFunctor
 {
@@ -696,12 +1348,16 @@ class YPrimeIQ2RGBPrimeFunctor
     
   public:
   
+        /** the functor's value type
+        */
     typedef RGBValue<T> value_type;
     
     YPrimeIQ2RGBPrimeFunctor(component_type max = 255.0)
     : max_(max)
     {}
     
+        /** apply the transformation
+        */
     template <class V>
     value_type operator()(TinyVector<V, 3> const & yiq)
     {
@@ -714,28 +1370,62 @@ class YPrimeIQ2RGBPrimeFunctor
     }
 };
 
-/*
-Y in [0, 1]
-U in [-0.436, 0.436]
-V in [-0.615, 0.615]
-maximum saturation: 0.632324
-red = [0.299, -0.147, 0.615]
+/** \brief Convert non-linear (gamma corrected) R'G'B' into Y'UV components.
+
+    <b>\#include</b> "<a href="colorconversions_8hxx-source.html">vigra/colorconversions.hxx</a>"<br>
+    Namespace: vigra
+    
+    According to the NTSC analog videa standard, the functor realizes the transformation
+    
+    \f[
+        \begin{array}{rcl}
+        Y' & = & 0.299\enspace R / R_{max} + 0.587\enspace G / G_{max} + 0.114\enspace B / B_{max}\\
+        U & = & -0.147\enspace R / R_{max} - 0.289\enspace G / G_{max} + 0.436\enspace B / B_{max} \\
+        V & = & 0.615\enspace R / R_{max} - 0.515\enspace G / G_{max} - 0.100\enspace B / B_{max}
+        \end{array}
+    \f]
+    
+    By default, \f$ R_{max} = G_{max} = B_{max} = 255 \f$. This default can be overridden
+    in the constructor. Y' represents the <em>luminance</em> ("brightness") of the color. 
+    The transformation is scaled so that the following bounds apply:
+    
+    \f[
+        \begin{array}{rcl}
+        0 \leq & Y' & \leq 1 \\
+        -0.436 \leq & U & \leq 0.436 \\
+        -0.615 \leq & V & \leq 0.615
+        \end{array}
+    \f]
 */
 template <class T>
 class RGBPrime2YPrimeUVFunctor
 {
+    /*
+    Y in [0, 1]
+    U in [-0.436, 0.436]
+    V in [-0.615, 0.615]
+    maximum saturation: 0.632324
+    red = [0.299, -0.147, 0.615]
+    */
     typedef typename NumericTraits<T>::RealPromote component_type;
     
     component_type max_;
     
   public:
   
+        /** the functor's value type
+        */
     typedef TinyVector<component_type, 3> value_type;
     
+        /** constructor
+            \arg max - the maximum value for each RGB component
+        */
     RGBPrime2YPrimeUVFunctor(component_type max = 255.0)
     : max_(max)
     {}
     
+        /** apply the transformation
+        */
     value_type operator()(TinyVector<T, 3> const & rgb)
     {
         component_type red = rgb[0] / max_;
@@ -750,6 +1440,13 @@ class RGBPrime2YPrimeUVFunctor
     }
 };
 
+/** \brief Convert Y'UV color components into non-linear (gamma corrected) R'G'B'.
+
+    <b>\#include</b> "<a href="colorconversions_8hxx-source.html">vigra/colorconversions.hxx</a>"<br>
+    Namespace: vigra
+    
+    The functor realizes the inverse of the transformation described in vigra::RGBPrime2YPrimeUVFunctor
+*/
 template <class T>
 class YPrimeUV2RGBPrimeFunctor
 {
@@ -759,12 +1456,19 @@ class YPrimeUV2RGBPrimeFunctor
     
   public:
   
+        /** the functor's value type
+        */
     typedef RGBValue<T> value_type;
     
+        /** constructor
+            \arg max - the maximum value for each RGB component
+        */
     YPrimeUV2RGBPrimeFunctor(component_type max = 255.0)
     : max_(max)
     {}
     
+        /** apply the transformation
+        */
     template <class V>
     value_type operator()(TinyVector<V, 3> const & yuv)
     {
@@ -777,28 +1481,52 @@ class YPrimeUV2RGBPrimeFunctor
     }
 };
 
-/*
-Y in [16, 235]
-Cb in [16, 240]
-Cr in [16, 240]
-maximum saturation: 119.591
-red = [81.481, 90.203, 240]
+/** \brief Convert non-linear (gamma corrected) R'G'B' into Y'CbCr color difference components.
+
+    <b>\#include</b> "<a href="colorconversions_8hxx-source.html">vigra/colorconversions.hxx</a>"<br>
+    Namespace: vigra
+    
+    This functor basically applies the same transformation as vigra::RGBPrime2YPrimePbPrFunctor
+    but the color components are scaled so that they can be coded as 8 bit intergers with
+    minimal loss of information:
+    
+    \f[
+        \begin{array}{rcl}
+        16\leq & Y' & \leq 235 \\
+        16 \leq & Cb & \leq 240 \\
+        16 \leq & Cr & \leq 240
+        \end{array}
+    \f]
 */
 template <class T>
 class RGBPrime2YPrimeCbCrFunctor
 {
+    /*
+    Y in [16, 235]
+    Cb in [16, 240]
+    Cr in [16, 240]
+    maximum saturation: 119.591
+    red = [81.481, 90.203, 240]
+    */
     typedef typename NumericTraits<T>::RealPromote component_type;
     
     component_type max_;
     
   public:
   
+        /** the functor's value type
+        */
     typedef TinyVector<component_type, 3> value_type;
     
+        /** constructor
+            \arg max - the maximum value for each RGB component
+        */
     RGBPrime2YPrimeCbCrFunctor(component_type max = 255.0)
     : max_(max)
     {}
     
+        /** apply the transformation
+        */
     value_type operator()(TinyVector<T, 3> const & rgb)
     {
         component_type red = rgb[0] / max_;
@@ -813,6 +1541,13 @@ class RGBPrime2YPrimeCbCrFunctor
     }
 };
 
+/** \brief Convert Y'CbCr color difference components into non-linear (gamma corrected) R'G'B'.
+
+    <b>\#include</b> "<a href="colorconversions_8hxx-source.html">vigra/colorconversions.hxx</a>"<br>
+    Namespace: vigra
+    
+    The functor realizes the inverse of the transformation described in vigra::RGBPrime2YPrimeCbCrFunctor
+*/
 template <class T>
 class YPrimeCbCr2RGBPrimeFunctor
 {
@@ -822,12 +1557,19 @@ class YPrimeCbCr2RGBPrimeFunctor
     
   public:
   
+        /** the functor's value type
+        */
     typedef RGBValue<T> value_type;
     
+        /** constructor
+            \arg max - the maximum value for each RGB component
+        */
     YPrimeCbCr2RGBPrimeFunctor(component_type max = 255.0)
     : max_(max)
     {}
     
+        /** apply the transformation
+        */
     template <class V>
     value_type operator()(TinyVector<V, 3> const & ycbcr)
     {
@@ -899,6 +1641,51 @@ YUV: white = [229.992, 1, 9.81512e-17]
 
 */
 
+/** \addtogroup PolarColors Polar Color Coordinates
+    
+    Transform colors from/to a polar representation (hue, brighness, saturation).
+    In many situations, this is more inituitive than direct initialization in a 
+    particular color space. The polar coordinates are 
+    normalized so that a color angle of 0 degrees is always associated with red
+    (green is at about 120 degrees, blue at about 240 degrees - exact values differ
+    between color spaces). A saturation of 1 is the highest saturation that any RGB color 
+    gets after transformation into the respective color space, and saturation 0 corresponds to
+    gray. Thus, different color spaces become somewhat comparable.
+*/
+//@{
+/** \brief Init L*a*b* color triple from polar representation.
+
+    <b>\#include</b> "<a href="colorconversions_8hxx-source.html">vigra/colorconversions.hxx</a>"<br>
+    Namespace: vigra
+    
+    <b> Declarations:</b>
+    
+    \code
+    TinyVector<float, 3>
+    polar2Lab(double color, double brightness, double saturation);
+    
+    TinyVector<float, 3>
+    polar2Lab(TinyVector<float, 3> const & polar);
+    \endcode
+    
+    \arg color - the color angle in degrees
+    \arg brightness - between 0 and 1
+    \arg saturation - between 0 and 1
+    
+    L*a*b* polar coordinates of some important colors:
+    
+    \code
+    black   = [*, 0, 0]    * - arbitrary
+    white   = [*, 1, 0]    * - arbitrary
+    
+    red     = [      0, 0.532406, 0.781353]
+    yellow  = [62.8531, 0.971395, 0.724189]
+    green   = [96.0184, 0.877351, 0.895108]
+    cyan    = [156.378, 0.911133, 0.374577]
+    blue    = [266.287, 0.322957, 0.999997]
+    magenta = [288.237, 0.603235, 0.863482]
+    \endcode
+*/
 inline TinyVector<float, 3>
 polar2Lab(double color, double brightness, double saturation)
 {
@@ -918,6 +1705,14 @@ polar2Lab(TinyVector<float, 3> const & polar)
     return polar2Lab(polar[0], polar[1], polar[2]);
 }
 
+/** \brief Create polar representation form L*a*b*
+
+    <b>\#include</b> "<a href="colorconversions_8hxx-source.html">vigra/colorconversions.hxx</a>"<br>
+    Namespace: vigra
+    
+    This realizes the inverse of the transformation described in 
+    \link PolarColors#polar2Lab polar2Lab\endlink().
+*/
 inline TinyVector<float, 3>
 lab2Polar(TinyVector<float, 3> const & lab)
 {
@@ -931,6 +1726,39 @@ lab2Polar(TinyVector<float, 3> const & lab)
     return result;
 }
 
+/** \brief Init L*u*v* color triple from polar representation.
+
+    <b>\#include</b> "<a href="colorconversions_8hxx-source.html">vigra/colorconversions.hxx</a>"<br>
+    Namespace: vigra
+    
+    <b> Declarations:</b>
+    
+    \code
+    TinyVector<float, 3>
+    polar2Luv(double color, double brightness, double saturation);
+    
+    TinyVector<float, 3>
+    polar2Luv(TinyVector<float, 3> const & polar);
+    \endcode
+    
+    \arg color - the color angle in degrees
+    \arg brightness - between 0 and 1
+    \arg saturation - between 0 and 1
+    
+    L*u*v* polar coordinates of some important colors:
+    
+    \code
+    black   = [*, 0, 0]    * - arbitrary
+    white   = [*, 1, 0]    * - arbitrary
+    
+    red     = [      0, 0.532406,        1]
+    yellow  = [   73.7, 0.971395, 0.597953]
+    green   = [115.552, 0.877351, 0.758352]
+    cyan    = [  180.0, 0.911133, 0.402694]
+    blue    = [  253.7, 0.322957, 0.729883]
+    magenta = [295.553, 0.603235, 0.767457]
+    \endcode
+*/
 inline TinyVector<float, 3>
 polar2Luv(double color, double brightness, double saturation)
 {
@@ -950,6 +1778,14 @@ polar2Luv(TinyVector<float, 3> const & polar)
     return polar2Luv(polar[0], polar[1], polar[2]);
 }
 
+/** \brief Create polar representation form L*u*v*
+
+    <b>\#include</b> "<a href="colorconversions_8hxx-source.html">vigra/colorconversions.hxx</a>"<br>
+    Namespace: vigra
+    
+    This realizes the inverse of the transformation described in 
+    \link PolarColors#polar2Luv polar2Luv\endlink().
+*/
 inline TinyVector<float, 3>
 luv2Polar(TinyVector<float, 3> const & luv)
 {
@@ -963,6 +1799,39 @@ luv2Polar(TinyVector<float, 3> const & luv)
     return result;
 }
 
+/** \brief Init Y'PbPr color triple from polar representation.
+
+    <b>\#include</b> "<a href="colorconversions_8hxx-source.html">vigra/colorconversions.hxx</a>"<br>
+    Namespace: vigra
+    
+    <b> Declarations:</b>
+    
+    \code
+    TinyVector<float, 3>
+    polar2YPrimePbPr(double color, double brightness, double saturation);
+    
+    TinyVector<float, 3>
+    polar2YPrimePbPr(TinyVector<float, 3> const & polar);
+    \endcode
+    
+    \arg color - the color angle in degrees
+    \arg brightness - between 0 and 1
+    \arg saturation - between 0 and 1
+    
+    Y'PbPr polar coordinates of some important colors:
+    
+    \code
+    black   = [*, 0, 0]    * - arbitrary
+    white   = [*, 1, 0]    * - arbitrary
+    
+    red     = [      0,  0.299, 0.988419]
+    yellow  = [62.1151,  0.886, 0.948831]
+    green   = [123.001,  0.587,        1]
+    cyan    = [  180.0,  0.701, 0.988419]
+    blue    = [242.115,  0.114, 0.948831]
+    magenta = [303.001,  0.413,        1]
+    \endcode
+*/
 inline TinyVector<float, 3>
 polar2YPrimePbPr(double color, double brightness, double saturation)
 {
@@ -982,6 +1851,14 @@ polar2YPrimePbPr(TinyVector<float, 3> const & polar)
     return polar2YPrimePbPr(polar[0], polar[1], polar[2]);
 }
 
+/** \brief Create polar representation form Y'PbPr
+
+    <b>\#include</b> "<a href="colorconversions_8hxx-source.html">vigra/colorconversions.hxx</a>"<br>
+    Namespace: vigra
+    
+    This realizes the inverse of the transformation described in 
+    \link PolarColors#polar2YPrimePbPr polar2YPrimePbPr\endlink().
+*/
 inline TinyVector<float, 3>
 yPrimePbPr2Polar(TinyVector<float, 3> const & ypbpr)
 {
@@ -995,6 +1872,40 @@ yPrimePbPr2Polar(TinyVector<float, 3> const & ypbpr)
     return result;
 }
 
+/** \fn TinyVector<float, 3> polar2YPrimeCbCr(double color, double brightness, double saturation)
+    \brief Init Y'CbCr color triple from polar representation.
+
+    <b>\#include</b> "<a href="colorconversions_8hxx-source.html">vigra/colorconversions.hxx</a>"<br>
+    Namespace: vigra
+    
+    <b> Declarations:</b>
+    
+    \code
+    TinyVector<float, 3>
+    polar2YPrimeCbCr(double color, double brightness, double saturation);
+    
+    TinyVector<float, 3>
+    polar2YPrimeCbCr(TinyVector<float, 3> const & polar);
+    \endcode
+    
+    \arg color - the color angle in degrees
+    \arg brightness - between 0 and 1
+    \arg saturation - between 0 and 1
+    
+    Y'CbCr polar coordinates of some important colors:
+    
+    \code
+    black   = [*, 0, 0]    * - arbitrary
+    white   = [*, 1, 0]    * - arbitrary
+    
+    red     = [      0,  0.299, 0.988419]
+    yellow  = [62.1151,  0.886, 0.948831]
+    green   = [123.001,  0.587,        1]
+    cyan    = [  180.0,  0.701, 0.988419]
+    blue    = [242.115,  0.114, 0.948831]
+    magenta = [303.001,  0.413,        1]
+    \endcode
+*/
 inline TinyVector<float, 3>
 polar2YPrimeCbCr(double color, double brightness, double saturation)
 {
@@ -1014,6 +1925,14 @@ polar2YPrimeCbCr(TinyVector<float, 3> const & polar)
     return polar2YPrimeCbCr(polar[0], polar[1], polar[2]);
 }
 
+/** \brief Create polar representation form Y'CbCr
+
+    <b>\#include</b> "<a href="colorconversions_8hxx-source.html">vigra/colorconversions.hxx</a>"<br>
+    Namespace: vigra
+    
+    This realizes the inverse of the transformation described in 
+    \link PolarColors#polar2YPrimeCbCr polar2YPrimeCbCr\endlink().
+*/
 inline TinyVector<float, 3>
 yPrimeCbCr2Polar(TinyVector<float, 3> const & ycbcr)
 {
@@ -1029,6 +1948,39 @@ yPrimeCbCr2Polar(TinyVector<float, 3> const & ycbcr)
     return result;
 }
 
+/** \brief Init Y'IQ color triple from polar representation.
+
+    <b>\#include</b> "<a href="colorconversions_8hxx-source.html">vigra/colorconversions.hxx</a>"<br>
+    Namespace: vigra
+    
+    <b> Declarations:</b>
+    
+    \code
+    TinyVector<float, 3>
+    polar2YPrimeIQ(double color, double brightness, double saturation);
+    
+    TinyVector<float, 3>
+    polar2YPrimeIQ(TinyVector<float, 3> const & polar);
+    \endcode
+    
+    \arg color - the color angle in degrees
+    \arg brightness - between 0 and 1
+    \arg saturation - between 0 and 1
+    
+    Y'IQ polar coordinates of some important colors:
+    
+    \code
+    black   = [*, 0, 0]    * - arbitrary
+    white   = [*, 1, 0]    * - arbitrary
+    
+    red     = [      0, 0.299,        1]
+    yellow  = [63.5851, 0.886, 0.707681]
+    green   = [137.231, 0.587, 0.933362]
+    cyan    = [  180.0, 0.701,        1]
+    blue    = [243.585, 0.114, 0.707681]
+    magenta = [317.231, 0.413, 0.933362]
+    \endcode
+*/
 inline TinyVector<float, 3>
 polar2YPrimeIQ(double color, double brightness, double saturation)
 {
@@ -1048,6 +2000,14 @@ polar2YPrimeIQ(TinyVector<float, 3> const & polar)
     return polar2YPrimeIQ(polar[0], polar[1], polar[2]);
 }
 
+/** \brief Create polar representation form Y'IQ
+
+    <b>\#include</b> "<a href="colorconversions_8hxx-source.html">vigra/colorconversions.hxx</a>"<br>
+    Namespace: vigra
+    
+    This realizes the inverse of the transformation described in 
+    \link PolarColors#polar2YPrimeIQ polar2YPrimeIQ\endlink().
+*/
 inline TinyVector<float, 3>
 yPrimeIQ2Polar(TinyVector<float, 3> const & yiq)
 {
@@ -1061,10 +2021,43 @@ yPrimeIQ2Polar(TinyVector<float, 3> const & yiq)
     return result;
 }
 
+/** \brief Init Y'UV color triple from polar representation.
+
+    <b>\#include</b> "<a href="colorconversions_8hxx-source.html">vigra/colorconversions.hxx</a>"<br>
+    Namespace: vigra
+    
+    <b> Declarations:</b>
+    
+    \code
+    TinyVector<float, 3>
+    polar2YPrimeUV(double color, double brightness, double saturation);
+    
+    TinyVector<float, 3>
+    polar2YPrimeUV(TinyVector<float, 3> const & polar);
+    \endcode
+    
+    \arg color - the color angle in degrees
+    \arg brightness - between 0 and 1
+    \arg saturation - between 0 and 1
+    
+    Y'UV polar coordinates of some important colors:
+    
+    \code
+    black   = [*, 0, 0]    * - arbitrary
+    white   = [*, 1, 0]    * - arbitrary
+    
+    red     = [      0, 0.299,        1]
+    yellow  = [63.5851, 0.886, 0.707681]
+    green   = [137.231, 0.587, 0.933362]
+    cyan    = [  180.0, 0.701,        1]
+    blue    = [243.585, 0.114, 0.707681]
+    magenta = [317.231, 0.413, 0.933362]
+    \endcode
+*/
 inline TinyVector<float, 3>
 polar2YPrimeUV(double color, double brightness, double saturation)
 {
-    double angle = (color+13.4429)/180.0*M_PI;
+    double angle = (color+13.4569)/180.0*M_PI;
     double normsat = saturation*0.632324;
     
     TinyVector<float, 3> result;
@@ -1080,6 +2073,14 @@ polar2YPrimeUV(TinyVector<float, 3> const & polar)
     return polar2YPrimeUV(polar[0], polar[1], polar[2]);
 }
 
+/** \brief Create polar representation form Y'UV
+
+    <b>\#include</b> "<a href="colorconversions_8hxx-source.html">vigra/colorconversions.hxx</a>"<br>
+    Namespace: vigra
+    
+    This realizes the inverse of the transformation described in 
+    \link PolarColors#polar2YPrimeUV polar2YPrimeUV\endlink().
+*/
 inline TinyVector<float, 3>
 yPrimeUV2Polar(TinyVector<float, 3> const & yuv)
 {
@@ -1092,6 +2093,8 @@ yPrimeUV2Polar(TinyVector<float, 3> const & yuv)
     result[2] = std::sqrt(yuv[1]*yuv[1] + yuv[2]*yuv[2])/0.632324;
     return result;
 }
+
+//@}
 
 } // namespace vigra 
 
