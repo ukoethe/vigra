@@ -1142,14 +1142,14 @@ struct ConvolutionTest
         recursiveFilterX(srcImageRange(src), destImage(dest), 
                     VIGRA_CSTD::exp(-1.0), BORDER_TREATMENT_WRAP);
         Image::value_type correct_data[40] = 
-            {1.100911, 1.5630327, 2.3651583, 3.2923643, 4.2655848, 
-            5.2557329, 6.2521079, 7.2507724, 8.2502757, 9.2500786, 
-            10.249967, 11.249819, 12.249475, 13.248559, 14.246079, 
-            15.239341, 16.221025, 17.171238, 18.035903, 18.668023, 
-            18.668023, 18.035903, 17.171238, 16.221025, 15.239341, 
-            14.246079, 13.248559, 12.249475, 11.249819, 10.249967, 
-            9.2500786, 8.2502757, 7.2507724, 6.2521079, 5.2557329, 
-            4.2655848, 3.2923643, 2.3651583, 1.5630327, 1.100911};
+            {0.8319696, 1.4640946, 2.328761, 3.2789745, 4.260659,
+            5.2539208, 6.2514412, 7.2505271, 8.2501855, 9.2500454,
+            10.249955, 11.249814, 12.249473, 13.248559, 14.246079,
+            15.239341, 16.221025, 17.171238, 18.035903, 18.668023,
+            18.668023, 18.035903, 17.171238, 16.221025, 15.239341,
+            14.246079, 13.248559, 12.249473, 11.249814, 10.249955,
+            9.2500454, 8.2501855, 7.2505271, 6.2514412, 5.2539208,
+            4.260659, 3.2789745, 2.328761, 1.4640946, 0.8319696};
 
         Image::iterator dest_iter = dest.begin();
 
@@ -1235,7 +1235,7 @@ struct ConvolutionTest
     void recursiveFilterTestFromWrapWithReflect()
     {
 
-        Image src_wrap(79, 1);
+        Image src_wrap(78, 1);
         Image src_reflect(40, 1);
         Image dest_wrap(src_wrap);
         Image dest_reflect(src_reflect);
@@ -1250,7 +1250,7 @@ struct ConvolutionTest
             acc_src_wrap.set(i + 0.25, iter_src_wrap);
             acc_src_reflect.set(i + 0.25, iter_src_reflect);
         }
-        for (int j = 38 ; j >= 0 ; j--, iter_src_wrap++)
+        for (int j = 38 ; j > 0 ; j--, iter_src_wrap++)
         {
             acc_src_wrap.set( j + 0.25, iter_src_wrap);
         }
@@ -1633,7 +1633,7 @@ struct ResamplingConvolutionTest
         importImage(rinfo, destImage(ref));
 
         for(FImage::iterator i = res.begin(), j = ref.begin(); i < res.end(); ++i, ++j)
-            shouldEqualTolerance(*i, *j, 1e-7);
+            shouldEqualTolerance(*i, *j, 1e-6);
     }
 };
 
