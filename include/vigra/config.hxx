@@ -72,9 +72,14 @@
     #include <cmath>
 
     #ifdef _MSC_EXTENSIONS
-        namespace std {
+	#ifndef CMATH_NOT_IN_STD
+            namespace std {
+	#endif // CMATH_NOT_IN_STD
             inline double abs(double v) { return fabs(v); }
-        }
+            inline float  abs(float v)  { return fabs(v); }
+	#ifndef CMATH_NOT_IN_STD
+            }
+	#endif // CMATH_NOT_IN_STD
     #endif
 
 
