@@ -69,6 +69,14 @@
 	#endif // (_MSC_VER < 1300)
 
     #define NO_PARTIAL_TEMPLATE_SPECIALIZATION
+    #include <cmath>
+
+    #ifdef _MSC_EXTENSIONS
+        namespace std {
+            inline double abs(double v) { return fabs(v); }
+        }
+    #endif
+
 
 #endif // _MSC_VER
 

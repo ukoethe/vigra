@@ -188,11 +188,7 @@ class RGBValue
         */
     typename NumericTraits<VALUETYPE>::RealPromote
     magnitude() const { 
-#ifndef CMATH_NOT_IN_STD
-         return std::sqrt(squaredMagnitude());
-#else
-         return sqrt(squaredMagnitude());
-#endif
+         return VIGRA_CSTD::sqrt(squaredMagnitude());
     }
     
         /** Calculate squared magnitude.
@@ -640,11 +636,7 @@ dot(RGBValue<V1> const & r1, RGBValue<V2> const & r2)
     return r1.red()*r2.red() + r1.green()*r2.green() + r1.blue()*r2.blue();
 }
 
-#ifdef CMATH_NOT_IN_STD
-    using ::ceil;
-#else
-    using std::ceil;
-#endif
+using VIGRA_CSTD::ceil;
 
     /** Apply ceil() function to each RGB component.
     */
@@ -658,11 +650,7 @@ ceil(RGBValue<V> const & r)
                        ceil(r.blue()));
 };
 
-#ifdef CMATH_NOT_IN_STD
-    using ::floor;
-#else
-    using std::floor;
-#endif
+using VIGRA_CSTD::floor;
 
     /** Apply floor() function to each RGB component.
     */

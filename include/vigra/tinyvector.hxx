@@ -269,7 +269,11 @@ class TinyVector
     typename NumericTraits<VALUETYPE>::Promote
     squaredMagnitude() const 
     { 
-         return dot(*this, *this);
+        const_iterator i = begin();
+        typename NumericTraits<VALUETYPE>::Promote sum = *i * *i;
+        for(++i; i < end(); ++i)
+          sum += *i * *i;
+        return sum;
     }
     
         /** Access component by index.
@@ -539,7 +543,7 @@ struct PromoteTraits<TinyVector<type1, SIZE>, TinyVector<type2, SIZE> > \
     static Promote toPromote(TinyVector<type1, SIZE> const & v) { \
         return static_cast<Promote>(v); } \
     static Promote toPromote(TinyVector<type2, SIZE> const & v) { \
-        return static_cast<Promote>(v); } \
+       return static_cast<Promote>(v); } \
 };
 
 #define TINYVECTOR_TRAITS(SIZE) \
@@ -868,7 +872,7 @@ TinyVector<T, SIZE> abs(TinyVector<T, SIZE> const & v) {
     return res;
 }
 
-#ifndef NO_PARTIAL_TEMPLATE_SPECIALIZATION
+//#ifndef NO_PARTIAL_TEMPLATE_SPECIALIZATION
 
     /// component-wise addition
 template <class V1, class V2, int SIZE>
@@ -909,7 +913,7 @@ operator*(TinyVector<V1, SIZE> const & r1, TinyVector<V2, SIZE> const & r2)
     return res;
 }
 
-#endif // NO_PARTIAL_TEMPLATE_SPECIALIZATION
+//#endif // NO_PARTIAL_TEMPLATE_SPECIALIZATION
 
     /// component-wise left scalar multiplication
 template <class V, int SIZE>
@@ -950,6 +954,8 @@ operator/(TinyVector<V, SIZE> const & r, double v)
     return res;
 }
 
+#ifndef NO_PARTIAL_TEMPLATE_SPECIALIZATION
+
 template <class V1, class V2>
 inline
 typename PromoteTraits<V1, V2>::Promote
@@ -983,7 +989,9 @@ dot(TinyVector<V1, 4> const & l, TinyVector<V2, 4> const & r)
     return sum;
 }
 
-    /// dot product
+#endif // NO_PARTIAL_TEMPLATE_SPECIALIZATION
+
+/// dot product
 template <class V1, class V2, int SIZE>
 inline 
 typename PromoteTraits<V1, V2>::Promote
@@ -998,11 +1006,8 @@ dot(TinyVector<V1, SIZE> const & r1, TinyVector<V2, SIZE> const & r2)
     return sum;
 }
 
-#ifdef CMATH_NOT_IN_STD
-    using ::ceil;
-#else
-    using std::ceil;
-#endif
+
+using VIGRA_CSTD::ceil;
 
 template <class V1>
 inline
@@ -1044,11 +1049,7 @@ ceil(TinyVector<T, SIZE> const & v)
     return res;
 };
 
-#ifdef CMATH_NOT_IN_STD
-    using ::floor;
-#else
-    using std::floor;
-#endif
+using VIGRA_CSTD::floor;
 
 template <class V1>
 inline
