@@ -221,9 +221,12 @@ struct NumericTraits<fftw_complex>
     typedef fftw_complex Type;
     typedef fftw_complex Promote;
     typedef fftw_complex RealPromote;
+    typedef fftw_complex ComplexPromote;
+    typedef fftw_real    ValueType;
     typedef VigraFalseType isIntegral;
     typedef VigraFalseType isScalar;
     typedef VigraFalseType isOrdered;
+    typedef VigraTrueType  isComplex;
 
     static FFTWComplex zero() { return FFTWComplex(0.0, 0.0); }
     static FFTWComplex one() { return FFTWComplex(1.0, 0.0); }
@@ -241,9 +244,12 @@ struct NumericTraits<FFTWComplex>
     typedef FFTWComplex Type;
     typedef FFTWComplex Promote;
     typedef FFTWComplex RealPromote;
+    typedef FFTWComplex ComplexPromote;
+    typedef fftw_real   ValueType;
     typedef VigraFalseType isIntegral;
     typedef VigraFalseType isScalar;
     typedef VigraFalseType isOrdered;
+    typedef VigraTrueType  isComplex;
 
     static FFTWComplex zero() { return FFTWComplex(0.0, 0.0); }
     static FFTWComplex one() { return FFTWComplex(1.0, 0.0); }

@@ -316,10 +316,13 @@ struct NumericTraits<RGBValue<T> >
     typedef RGBValue<T> Type;
     typedef RGBValue<typename NumericTraits<T>::Promote> Promote;
     typedef RGBValue<typename NumericTraits<T>::RealPromote> RealPromote;
-
-    typedef typename NumericTraits<T>::isIntegral isIntegral;
-    typedef VigraFalseType isScalar;
+    typedef RGBValue<typename NumericTraits<T>::ComplexPromote> ComplexPromote;
+    typedef T ValueType; 
+    
+    typedef typename NumericTraits<T>::isIntegral isIntegral; 
+    typedef VigraFalseType isScalar; 
     typedef VigraFalseType isOrdered;
+    typedef VigraFalseType isComplex; 
 
     static RGBValue<T> zero() {
         return RGBValue<T>(NumericTraits<T>::zero());
@@ -373,12 +376,16 @@ struct PromoteTraits<double, RGBValue<T> >
 template<>\
 struct NumericTraits<RGBValue<T> >\
 {\
-    typedef RGBValue<T> Type;\
-    typedef RGBValue<NumericTraits<T>::Promote> Promote;\
-    typedef RGBValue<NumericTraits<T>::RealPromote> RealPromote;\
-    typedef NumericTraits<T>::isIntegral isIntegral;\
-    typedef VigraFalseType isScalar;\
-    typedef VigraFalseType isOrdered;\
+    typedef RGBValue<T> Type; \
+    typedef RGBValue<NumericTraits<T>::Promote> Promote; \
+    typedef RGBValue<NumericTraits<T>::RealPromote> RealPromote; \
+    typedef RGBValue<NumericTraits<T>::ComplexPromote> ComplexPromote; \
+    typedef T ValueType; \
+    \
+    typedef NumericTraits<T>::isIntegral isIntegral; \
+    typedef VigraFalseType isScalar; \
+    typedef VigraFalseType isOrdered; \
+    typedef VigraFalseType isComplex; \
     \
     static RGBValue<T> zero() { \
         return RGBValue<T>(NumericTraits<T>::zero()); \

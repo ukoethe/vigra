@@ -134,8 +134,14 @@
     <b> <TT>NumericTraits<ArithmeticType></TT></b>:
     
     <table>
-    <tr>
-    <td>
+    <tr><td>
+    <b> <TT>typedef ... Type;</TT></b>
+    </td><td>
+    
+            the type itself 
+        
+    </td></tr>
+    <tr><td>
     <b> <TT>typedef ... Promote;</TT></b>
     </td><td>
     
@@ -145,10 +151,25 @@
     <tr><td>
     <b> <TT>typedef ... RealPromote;</TT></b>
     </td><td>
-            promote type for multiplication and division
+            promote type for multiplication and division with a real number
     
     (only defined if <TT>ArithmeticType</TT> supports these operations) 
     
+    </td></tr>
+    <tr><td>
+    <b> <TT>typedef ... ComplexPromote;</TT></b>
+    </td><td>
+    
+            promote type for complex arithmetic 
+        
+    </td></tr>
+    <tr><td>
+    <b> <TT>typedef ... ValueType;</TT></b>
+    </td><td>
+    
+            for scalar types: the type itself<br>
+            otherwise: typename Type::value_type (if defined)
+        
     </td></tr>
     <tr><td>
     <b> <TT>static Promote toPromote(ArithmeticType v);</TT></b>
@@ -206,6 +227,24 @@
     
     </td></tr>
     <tr><td>
+    <b> <TT>static ArithmeticType min();</TT></b>
+    </td><td>
+    the smallest number representable in this type.<br>
+    Only available if isOrdered is VigraTrueType. For integral types,
+    this equals <TT>INT_MIN</TT> etc., for real valued types it is <TT>-FLT_MAX</TT>
+    etc. (<b>not</b> <TT>FLT_MIN</TT> -- this is the smallest positive <tt>float</tt>)
+    
+    </td></tr>
+    <tr><td>
+    <b> <TT>static ArithmeticType max();</TT></b>
+    </td><td>
+    the largest number representable in this type.<br>
+    Only available if isOrdered is VigraTrueType. For integral types,
+    this equals <TT>INT_MAX</TT> etc., for real valued types it is <TT>FLT_MAX</TT>
+    etc.
+    
+    </td></tr>
+    <tr><td>
     <b> <TT>static ArithmeticType one();</TT></b>
     </td><td>
     create neutral element of multiplication 
@@ -218,15 +257,32 @@
     
     </td></tr>
     <tr><td>
-    <b> <TT>static const bool is_integral;</TT></b>
+    <b> <TT>typedef ... isIntegral;</TT></b>
     </td><td>
-        true if <TT>ArithmeticType</TT> is an integral type, false otherwise 
+        VigraTrueType if <TT>ArithmeticType</TT> is an integral type, 
+        VigraFalseType otherwise 
     
     </td></tr>
     <tr><td>
-    <b> <TT>static const bool is_scalar;</TT></b>
+    <b> <TT>typedef ... isScalar;</TT></b>
     </td><td>
-        true if <TT>ArithmeticType</TT> is a scalar type, false otherwise 
+        VigraTrueType if <TT>ArithmeticType</TT> is a scalar type, 
+        VigraFalseType otherwise 
+    
+    </td></tr>
+    <tr><td>
+    <tr><td>
+    <b> <TT>typedef ... isOrdered;</TT></b>
+    </td><td>
+        VigraTrueType if <TT>ArithmeticType</TT> supports operator<(), 
+        VigraFalseType otherwise 
+    
+    </td></tr>
+    <tr><td>
+    <b> <TT>typedef ... isComplex;</TT></b>
+    </td><td>
+        VigraTrueType if <TT>ArithmeticType</TT> is a complex number, 
+        VigraFalseType otherwise 
     
     </td></tr>
     <tr><td>
@@ -308,11 +364,16 @@ struct Error_NumericTraits_not_specialized_for_this_case { };
 template<class A>
 struct NumericTraits
 {
+    typedef Error_NumericTraits_not_specialized_for_this_case Type;
     typedef Error_NumericTraits_not_specialized_for_this_case Promote;
     typedef Error_NumericTraits_not_specialized_for_this_case RealPromote;
+    typedef Error_NumericTraits_not_specialized_for_this_case ComplexPromote;
+    typedef Error_NumericTraits_not_specialized_for_this_case ValueType;
+
     typedef Error_NumericTraits_not_specialized_for_this_case isScalar;
     typedef Error_NumericTraits_not_specialized_for_this_case isIntegral;
     typedef Error_NumericTraits_not_specialized_for_this_case isOrdered;
+    typedef Error_NumericTraits_not_specialized_for_this_case isComplex;
 };
 
 #ifndef NO_BOOL
@@ -322,9 +383,13 @@ struct NumericTraits<bool>
     typedef bool Type;
     typedef int Promote;
     typedef double RealPromote;
+    typedef std::complex<RealPromote> ComplexPromote;
+    typedef Type ValueType;
+
     typedef VigraTrueType isIntegral;
     typedef VigraTrueType isScalar;
     typedef VigraTrueType isOrdered;
+    typedef VigraFalseType isComplex;
     
     static bool zero() { return false; }
     static bool one() { return true; }
@@ -356,9 +421,13 @@ struct NumericTraits<signed char>
     typedef signed char Type;
     typedef int Promote;
     typedef double RealPromote;
+    typedef std::complex<RealPromote> ComplexPromote;
+    typedef Type ValueType;
+
     typedef VigraTrueType isIntegral;
     typedef VigraTrueType isScalar;
     typedef VigraTrueType isOrdered;
+    typedef VigraFalseType isComplex;
     
     static signed char zero() { return 0; }
     static signed char one() { return 1; }
@@ -390,9 +459,13 @@ struct NumericTraits<unsigned char>
     typedef unsigned char Type;
     typedef int Promote;
     typedef double RealPromote;
+    typedef std::complex<RealPromote> ComplexPromote;
+    typedef Type ValueType;
+
     typedef VigraTrueType isIntegral;
     typedef VigraTrueType isScalar;
     typedef VigraTrueType isOrdered;
+    typedef VigraFalseType isComplex;
     
     static unsigned char zero() { return 0; }
     static unsigned char one() { return 1; }
@@ -423,9 +496,13 @@ struct NumericTraits<short int>
     typedef short int Type;
     typedef int Promote;
     typedef double RealPromote;
+    typedef std::complex<RealPromote> ComplexPromote;
+    typedef Type ValueType;
+
     typedef VigraTrueType isIntegral;
     typedef VigraTrueType isScalar;
     typedef VigraTrueType isOrdered;
+    typedef VigraFalseType isComplex;
     
     static short int zero() { return 0; }
     static short int one() { return 1; }
@@ -459,10 +536,14 @@ struct NumericTraits<short unsigned int>
     typedef short unsigned int Type;
     typedef int Promote;
     typedef double RealPromote;
+    typedef std::complex<RealPromote> ComplexPromote;
+    typedef Type ValueType;
+
 
     typedef VigraTrueType isIntegral;
     typedef VigraTrueType isScalar;
     typedef VigraTrueType isOrdered;
+    typedef VigraFalseType isComplex;
 
     static short unsigned int zero() { return 0; }
     static short unsigned int one() { return 1; }
@@ -494,9 +575,13 @@ struct NumericTraits<int>
     typedef int Type;
     typedef int Promote;
     typedef double RealPromote;
+    typedef std::complex<RealPromote> ComplexPromote;
+    typedef Type ValueType;
+
     typedef VigraTrueType isIntegral;
     typedef VigraTrueType isScalar;
     typedef VigraTrueType isOrdered;
+    typedef VigraFalseType isComplex;
 
     static int zero() { return 0; }
     static int one() { return 1; }
@@ -527,9 +612,13 @@ struct NumericTraits<unsigned int>
     typedef unsigned int Type;
     typedef unsigned int Promote;
     typedef double RealPromote;
+    typedef std::complex<RealPromote> ComplexPromote;
+    typedef Type ValueType;
+
     typedef VigraTrueType isIntegral;
     typedef VigraTrueType isScalar;
     typedef VigraTrueType isOrdered;
+    typedef VigraFalseType isComplex;
     
     static unsigned int zero() { return 0; }
     static unsigned int one() { return 1; }
@@ -560,9 +649,13 @@ struct NumericTraits<long>
     typedef long Type;
     typedef long Promote;
     typedef double RealPromote;
+    typedef std::complex<RealPromote> ComplexPromote;
+    typedef Type ValueType;
+
     typedef VigraTrueType isIntegral;
     typedef VigraTrueType isScalar;
     typedef VigraTrueType isOrdered;
+    typedef VigraFalseType isComplex;
     
     static long zero() { return 0; }
     static long one() { return 1; }
@@ -593,9 +686,13 @@ struct NumericTraits<unsigned long>
     typedef unsigned long Type;
     typedef unsigned long Promote;
     typedef double RealPromote;
+    typedef std::complex<RealPromote> ComplexPromote;
+    typedef Type ValueType;
+
     typedef VigraTrueType isIntegral;
     typedef VigraTrueType isScalar;
     typedef VigraTrueType isOrdered;
+    typedef VigraFalseType isComplex;
     
     static unsigned long zero() { return 0; }
     static unsigned long one() { return 1; }
@@ -625,10 +722,14 @@ struct NumericTraits<float>
 {
     typedef float Type;
     typedef float Promote;
-    typedef float RealPromote;
+    typedef double RealPromote;
+    typedef std::complex<RealPromote> ComplexPromote;
+    typedef Type ValueType;
+    
     typedef VigraFalseType isIntegral;
     typedef VigraTrueType isScalar;
     typedef VigraTrueType isOrdered;
+    typedef VigraFalseType isComplex;
     
     static float zero() { return 0.0; }
     static float one() { return 1.0; }
@@ -650,9 +751,13 @@ struct NumericTraits<double>
     typedef double Type;
     typedef double Promote;
     typedef double RealPromote;
+    typedef std::complex<RealPromote> ComplexPromote;
+    typedef Type ValueType;
+
     typedef VigraFalseType isIntegral;
     typedef VigraTrueType isScalar;
     typedef VigraTrueType isOrdered;
+    typedef VigraFalseType isComplex;
     
     static double zero() { return 0.0; }
     static double one() { return 1.0; }
@@ -674,9 +779,13 @@ struct NumericTraits<long double>
     typedef long double Type;
     typedef long double Promote;
     typedef long double RealPromote;
+    typedef std::complex<RealPromote> ComplexPromote;
+    typedef Type ValueType;
+
     typedef VigraFalseType isIntegral;
     typedef VigraTrueType isScalar;
     typedef VigraTrueType isOrdered;
+    typedef VigraFalseType isComplex;
     
     static long double zero() { return 0.0; }
     static long double one() { return 1.0; }
@@ -691,6 +800,37 @@ struct NumericTraits<long double>
     static long double fromPromote(Promote v) { return v; }
     static long double fromRealPromote(RealPromote v) { return v; }
 };
+
+#ifndef NO_PARTIAL_TEMPLATE_SPECIALIZATION
+
+template<class T>
+struct NumericTraits<std::complex<T> >
+{
+    typedef std::complex<T> Type;
+    typedef std::complex<typename NumericTraits<T>::Promote> Promote;
+    typedef std::complex<typename NumericTraits<T>::RealPromote> RealPromote;
+    typedef std::complex<RealPromote> ComplexPromote;
+    typedef T ValueType;
+
+    typedef VigraFalseType isIntegral;
+    typedef VigraFalseType isScalar;
+    typedef VigraFalseType isOrdered;
+    typedef VigraTrueType isComplex;
+    
+    static double zero() { return Type(0.0); }
+    static double one() { return Type(1.0); }
+    static double nonZero() { return one(); }
+    static double epsilon() { return Type(NumericTraits<T>::epsilon()); }
+    static double smallestPositive() { return Type(NumericTraits<T>::smallestPositive()); }
+
+    static Promote toPromote(Type const & v) { return v; }
+    static Type fromPromote(Promote const & v) { return v; }
+    static Type fromRealPromote(RealPromote v) { return Type(v); }
+};
+
+#endif // NO_PARTIAL_TEMPLATE_SPECIALIZATION
+
+
 
 /********************************************************/
 /*                                                      */

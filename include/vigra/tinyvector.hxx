@@ -251,7 +251,7 @@ struct UnrollLoop<0>
 };
 
 template <bool PREDICATE>
-struct If
+struct TinyVectorIf
 {
     template <class T, class F>
     struct res
@@ -261,7 +261,7 @@ struct If
 };
 
 template <>
-struct If<false>
+struct TinyVectorIf<false>
 {
     template <class T, class F>
     struct res
@@ -273,7 +273,7 @@ struct If<false>
 template <int SIZE>
 struct LoopType
 {
-    typedef typename If<SIZE < 5>::
+    typedef typename TinyVectorIf<SIZE < 5>::
             template res<UnrollLoop<SIZE>, ExecLoop<SIZE> >::type type;
 };
 
@@ -802,10 +802,13 @@ struct NumericTraits<TinyVector<T, SIZE> >
     typedef TinyVector<T, SIZE> Type;
     typedef TinyVector<typename NumericTraits<T>::Promote, SIZE> Promote;
     typedef TinyVector<typename NumericTraits<T>::RealPromote, SIZE> RealPromote;
-
+    typedef TinyVector<typename NumericTraits<T>::ComplexPromote, SIZE> ComplexPromote;
+    typedef T ValueType; 
+    
     typedef typename NumericTraits<T>::isIntegral isIntegral;
     typedef VigraFalseType isScalar;
     typedef VigraFalseType isOrdered;
+    typedef VigraFalseType isComplex; 
 
     static TinyVector<T, SIZE> zero() {
         return TinyVector<T, SIZE>(NumericTraits<T>::zero());
@@ -857,10 +860,13 @@ struct NumericTraits<TinyVectorView<T, SIZE> >
     typedef TinyVector<T, SIZE> Type;
     typedef TinyVector<typename NumericTraits<T>::Promote, SIZE> Promote;
     typedef TinyVector<typename NumericTraits<T>::RealPromote, SIZE> RealPromote;
+    typedef TinyVector<typename NumericTraits<T>::ComplexPromote, SIZE> ComplexPromote;
+    typedef T ValueType; 
 
     typedef typename NumericTraits<T>::isIntegral isIntegral;
     typedef VigraFalseType isScalar;
     typedef VigraFalseType isOrdered;
+    typedef VigraFalseType isComplex; 
 };
 
 template <class T1, class T2, int SIZE>
@@ -921,9 +927,12 @@ struct NumericTraits<TinyVector<T, SIZE> >\
     typedef TinyVector<T, SIZE> Type;\
     typedef TinyVector<NumericTraits<T>::Promote, SIZE> Promote;\
     typedef TinyVector<NumericTraits<T>::RealPromote, SIZE> RealPromote;\
+    typedef TinyVector<NumericTraits<T>::ComplexPromote, SIZE> ComplexPromote;\
+    typedef T ValueType; \
     typedef NumericTraits<T>::isIntegral isIntegral;\
     typedef VigraFalseType isScalar;\
     typedef VigraFalseType isOrdered;\
+    typedef VigraFalseType isComplex;\
     \
     static TinyVector<T, SIZE> zero() { \
         return TinyVector<T, SIZE>(NumericTraits<T>::zero()); \
