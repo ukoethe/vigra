@@ -29,9 +29,11 @@
 #define VIGRA_SSTREAM_STR(s) ((s << char()), s.str())
 #endif
 #include <iostream>
+#include <limits.h>
+#include <cfloat>
 #include <cmath>
 #include "vigra/config.hxx"
-#include "vigra/numerictraits.hxx"
+#include "vigra/error.hxx"
 
 #ifdef _MSC_VER
 
@@ -280,7 +282,7 @@ int catch_signals( Generator function_object, detail::errstream & err, int timeo
 #else  /* VIGRA_CANT_CATCH_SIGNALS */
 
 template< class Generator >  // Generator is function object returning int
-int catch_signals( Generator function_object, detail::errstream & err )
+int catch_signals( Generator function_object, detail::errstream & err , int)
 {
      return function_object();
 }
@@ -432,6 +434,36 @@ sequence_equal_impl(Iter1 i1, Iter1 end1, Iter2 i2, const char * file, int line)
 */
 
 
+template<class T>
+struct FloatTraits;
+
+template<>
+struct FloatTraits<float>
+{
+    static float epsilon() { return FLT_EPSILON; }
+    static float smallestPositive() { return FLT_MIN; }
+    static float min() { return -FLT_MAX; }
+    static float max() { return FLT_MAX; }
+};
+
+template<>
+struct FloatTraits<double>
+{
+    static double epsilon() { return DBL_EPSILON; }
+    static double smallestPositive() { return DBL_MIN; }
+    static double min() { return -DBL_MAX; }
+    static double max() { return DBL_MAX; }
+};
+
+template<>
+struct FloatTraits<long double>
+{
+    static long double epsilon() { return LDBL_EPSILON; }
+    static long double smallestPositive() { return LDBL_MIN; }
+    static long double min() { return -LDBL_MAX; }
+    static long double max() { return LDBL_MAX; }
+};
+
 template<class FPT>
 inline
 FPT fpt_abs( FPT arg )
@@ -457,12 +489,9 @@ FPT safe_fpt_division( FPT f1, FPT f2 )
         *   0 mit 0 zu Vergleichen bereitet keine Probleme.
         *   Ausweg: evl. eine extra Behandlung der F = 0 ???
         */
-
-    return  ((f2 < 1) && (f1 > (f2 * vigra::NumericTraits<FPT>::max()))) ?
-            vigra::NumericTraits<FPT>::max() :
-            (((f2 > 1) && (f1 < (f2 * vigra::NumericTraits<FPT>::smallestPositive())) || (f1 == 0)) ? 0 : f1/f2 );
-
-
+    return  ((f2 < 1) && (f1 > (f2 *    FloatTraits<FPT>::max()))) ? 
+            FloatTraits<FPT>::max() :
+            (((f2 > 1) && (f1 < (f2 * FloatTraits<FPT>::smallestPositive())) || (f1 == 0)) ? 0 : f1/f2 );
         /*  Die Multiplikation mit max in 1.ten Bedingung und mit min in der 2.ten ist eine Absicherung gegen
         *   die Owerflow bzw Underflow ???
         */
@@ -479,8 +508,7 @@ public:
 
     explicit    close_at_tolerance( int number_of_rounding_errors, bool strong_test = true )
         : m_strong_test( strong_test ),
-          m_tolerance( vigra::NumericTraits<FPT>::epsilon() * number_of_rounding_errors / 2.0 ) {}
-
+          m_tolerance( FloatTraits<FPT>::epsilon() * number_of_rounding_errors / 2.0 ) {}
 
     bool        operator()( FPT left, FPT right ) const
     {
