@@ -29,34 +29,6 @@
 
 namespace vigra {
 
-namespace detail {
-
-// helper class for metaprogramm to access a particular iterator level
-template <unsigned int N>
-class UpcastIterator
-{
-  public:
-    template <class Iterator>
-    class res
-    {
-        typedef typename UpcastIterator<N-1>::
-               template res<typename Iterator::base_type::base_type>::type type;
-    };
-}; 
-
-template <>
-class UpcastIterator<0>
-{
-  public:
-    template <class Iterator>
-    class res
-    {
-        typedef Iterator type;
-    };
-}; 
-
-
-} // namespace detail
 
 template <unsigned int N, class T, 
           class REFERENCE = T &, class POINTER = T *> class MultiIterator;
@@ -478,6 +450,7 @@ class MultiIteratorBase
     template <class T, class REFERENCE, class POINTER>
     class type : public MultiIterator <N-1, T, REFERENCE, POINTER>
     {
+    public:
             /** the type of the parent in the inheritance hierarchy.
              */
         typedef MultiIterator <N-1, T, REFERENCE, POINTER> base_type;
@@ -485,8 +458,6 @@ class MultiIteratorBase
             /** the iterator's level in the dimension hierarchy
              */
         enum { level = N-1 };
-
-    public:
 
             /** the iterator's value type
              */
@@ -666,24 +637,6 @@ class MultiIteratorBase
             return ret;
         }
         
-            /** Return the multi-iterator that operates on dimension K in order
-                to manipulate this dimension directly. Usage:
-                
-                \code
-                
-                MultiIterator<3, int> i3 = ...;
-                
-                i3.dim<2>()++;  // increment outer dimension
-                i3.dim<0>()++;  // increment inner dimension
-                \endcode
-            */
-        template <unsigned int K>
-        typename detail::UpcastIterator<level-K>::template res<type>::type &
-        dim()
-        {
-            return *this;
-        }
-        
       protected:
       
         difference_type 
@@ -708,12 +661,11 @@ class MultiIteratorBase <2>
     template <class T, class REFERENCE, class POINTER>
     class type : public MultiIterator <1, T, REFERENCE, POINTER>
     {
-        typedef MultiIterator <1, T, REFERENCE, POINTER> base_type;
-
-        enum { level = 1 };
 
     public:
 
+        enum { level = 1 };
+        typedef MultiIterator <1, T, REFERENCE, POINTER> base_type;
         typedef T value_type;
         typedef value_type &reference;
         typedef const value_type &const_reference;
@@ -816,13 +768,6 @@ class MultiIteratorBase <2>
             return ret;
         }
         
-        template <unsigned int K>
-        typename detail::UpcastIterator<level-K>::template res<type>::type &
-        dim()
-        {
-            return *this;
-        }
-        
       protected:
       
         difference_type 
@@ -847,10 +792,10 @@ class MultiIteratorBase <1>
     template <class T, class REFERENCE, class POINTER>
     class type
     {
-        enum { level = 0 };
 
     public:
 
+        enum { level = 0 };
         typedef T value_type;
         typedef value_type &reference;
         typedef const value_type &const_reference;
@@ -964,12 +909,6 @@ class MultiIteratorBase <1>
             return m_ptr < rhs.m_ptr;
         }
         
-        template <unsigned int K>
-        type & dim()
-        {
-            return *this;
-        }
-        
       protected:
       
         difference_type 
@@ -999,11 +938,11 @@ template <unsigned int N, class T, class REFERENCE, class POINTER>
 class MultiIterator 
 : public MultiIteratorBase <N>::template type <T, REFERENCE, POINTER>
 {
+public:
+
         /** the type of the parent in the inheritance hierarchy.
          */
     typedef typename MultiIteratorBase <N>::template type <T, REFERENCE, POINTER> base_type;
-
-public:
 
         /** the iterator's value type
          */
@@ -1093,6 +1032,24 @@ public:
         ret -= d;
         return ret;
     }
+
+        /** Return the multi-iterator that operates on dimension K in order
+            to manipulate this dimension directly. Usage:
+               
+            \code
+                
+            MultiIterator<3, int> i3 = ...;
+                
+            i3.dim<2>()++;  // increment outer dimension
+            i3.dim<0>()++;  // increment inner dimension
+            \endcode
+        */
+    template <unsigned int K>
+    MultiIterator<K+1, T, REFERENCE, POINTER> &
+    dim()
+    {
+        return *this;
+    }
 };
 
 
@@ -1131,6 +1088,8 @@ class StridedMultiIteratorBase
     template <class T, class REFERENCE, class POINTER>
     class type : public StridedMultiIterator <N-1, T, REFERENCE, POINTER>
     {
+    public:
+
             /** the type of the parent in the inheritance hierarchy.
              */
         typedef StridedMultiIterator <N-1, T, REFERENCE, POINTER> base_type;
@@ -1138,8 +1097,6 @@ class StridedMultiIteratorBase
             /** the iterator's level in the dimension hierarchy
              */
         enum { level = N-1 };
-
-    public:
 
             /** the iterator's value type
              */
@@ -1325,25 +1282,7 @@ class StridedMultiIteratorBase
             ret += m_shape [level-1];
             return ret;
         }
-        
-            /** Return the multi-iterator that operates on dimension K in order
-                to manipulate this dimension directly. Usage:
-                
-                \code
-                
-                StridedMultiIterator<3, int> i3 = ...;
-                
-                i3.dim<2>()++;  // increment outer dimension
-                i3.dim<0>()++;  // increment inner dimension
-                \endcode
-            */
-        template <unsigned int K>
-        typename detail::UpcastIterator<N-1-K>::template res<type>::type &
-        dim()
-        {
-            return *this;
-        }
-        
+
       protected:
       
         difference_type 
@@ -1368,12 +1307,9 @@ class StridedMultiIteratorBase <2>
     template <class T, class REFERENCE, class POINTER>
     class type : public StridedMultiIterator <1, T, REFERENCE, POINTER>
     {
-        typedef StridedMultiIterator <1, T, REFERENCE, POINTER> base_type;
-
-        enum { level = 1 };
-
     public:
-
+        enum { level = 1 };
+        typedef StridedMultiIterator <1, T, REFERENCE, POINTER> base_type;
         typedef T value_type;
         typedef value_type &reference;
         typedef const value_type &const_reference;
@@ -1475,14 +1411,7 @@ class StridedMultiIteratorBase <2>
             ret += m_shape [level-1];
             return ret;
         }
-        
-        template <unsigned int K>
-        typename detail::UpcastIterator<level-K>::template res<type>::type &
-        dim()
-        {
-            return *this;
-        }
-        
+
       protected:
       
         difference_type 
@@ -1623,13 +1552,7 @@ class StridedMultiIteratorBase <1>
         {
             return m_ptr < rhs.m_ptr;
         }
-        
-        template <unsigned int K>
-        type & dim()
-        {
-            return *this;
-        }
-        
+
       protected:
       
         difference_type 
@@ -1659,12 +1582,12 @@ template <unsigned int N, class T, class REFERENCE, class POINTER>
 class StridedMultiIterator
     : public StridedMultiIteratorBase <N>::template type <T, REFERENCE, POINTER>
 {
+public:
+
         /** the type of the parent in the inheritance hierarchy.
          */
     typedef typename StridedMultiIteratorBase <
         N>::template type <T, REFERENCE, POINTER> base_type;
-
-public:
 
         /** the iterator's value type
          */
@@ -1753,6 +1676,24 @@ public:
         StridedMultiIterator ret = *this;
         ret -= d;
         return ret;
+    }
+
+        /** Return the multi-iterator that operates on dimension K in order
+            to manipulate this dimension directly. Usage:
+                
+            \code
+            
+            StridedMultiIterator<3, int> i3 = ...;
+                
+            i3.dim<2>()++;  // increment outer dimension
+            i3.dim<0>()++;  // increment inner dimension
+            \endcode
+        */
+    template <unsigned int K>
+    StridedMultiIterator<K+1, T, REFERENCE, POINTER> &
+    dim()
+    {
+        return *this;
     }
 };
 
