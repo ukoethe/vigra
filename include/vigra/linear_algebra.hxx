@@ -1823,6 +1823,39 @@ void cdiv(T xr, T xi, T yr, T yi, T & cdivr, T & cdivi)
     }
 }
 
+template <class T, class C>
+int splitQR(MultiArrayView<2, T, C> & H, int n, int l, double eps, 
+             T & p, T & q, T & r, T & s, T & w, T & x, T & y, T & z)
+{
+    int m = n-2;
+    while(m >= l) 
+    {
+        z = H(m, m);
+        r = x - z;
+        s = y - z;
+        p = (r * s - w) / H(m+1, m) + H(m, m+1);
+        q = H(m+1, m+1) - z - r - s;
+        r = H(m+2, m+1);
+        s = abs(p) + abs(q) + abs(r);
+        p = p / s;
+        q = q / s;
+        r = r / s;
+        if(m == l) 
+        {
+            break;
+        }
+        if(abs(H(m, m-1)) * (abs(q) + abs(r)) <
+            eps * (abs(p) * (abs(H(m-1, m-1)) + abs(z) +
+            abs(H(m+1, m+1))))) 
+        {
+                break;
+        }
+        --m;
+    }
+    return m;
+}
+
+
 
 // Nonsymmetric reduction from Hessenberg to real Schur form.
 
@@ -2022,7 +2055,7 @@ bool hessenbergQrDecomposition(MultiArrayView<2, T, C1> & H, MultiArrayView<2, T
                 return false;
 
             // Look for two consecutive small sub-diagonal elements
-
+#if 0
             int m = n-2;
             while(m >= l) 
             {
@@ -2048,7 +2081,8 @@ bool hessenbergQrDecomposition(MultiArrayView<2, T, C1> & H, MultiArrayView<2, T
                 }
                 --m;
             }
-
+#endif
+            int m = splitQR(H, n, l, eps, p, q, r, s, w, x, y, z);
             for(int i = m+2; i <= n; ++i) 
             {
                 H(i, i-2) = 0.0;
