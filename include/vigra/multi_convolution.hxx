@@ -23,94 +23,228 @@
 #ifndef VIGRA_MULTI_CONVOLUTION_H
 #define VIGRA_MULTI_CONVOLUTION_H
 
+ //#define MC_SHOW_CONVOLUTION       //-- should not be uncommented
+
 #include <vector>
 #include <list>
 #include <algorithm>
+#include <iterator>
 
 #include <vigra/separableconvolution.hxx>
 #include <vigra/multi_array.hxx>
+#include <vigra/accessor.hxx>
+#include <vigra/navigator.hxx>
+
+
+namespace std
+{
+  /** \brief Overloaded version of std::distance
+
+      This overloaded function is just for working around a potential
+      bug in MultiIterator.
+   */
+  template<unsigned int N, class T, class R, class P>
+  inline typename vigra::StridedMultiIterator<N,T,R,P>::difference_type
+  distance( vigra::StridedMultiIterator<N,T,R,P> first,
+	    vigra::StridedMultiIterator<N,T,R,P> last )
+  {
+    typename vigra::StridedMultiIterator<N,T,R,P>::difference_type c = 0;
+    for( ; first != last; ++first ) {
+      ++c;
+    }
+    return c;
+  }
+
+};	//-- namespace std
+
+
+
+//----------------------------------------------------------------
 
 namespace vigra
 {
 
-  /********************************************************/
-  /*                                                      */
-  /*        internalSeparableConvolveMultiarray           */
-  /*                                                      */
-  /********************************************************/
-
-  template <class T, class C, class A>
-  inline
-  void internalSeparableConvolveMultiarray( const MultiArrayView<1,T,C> &src,
-					    MultiArrayView<1,T,C> &dst,
-					    std::list<const vigra::Kernel1D<A> *> &kernels,
-					    std::vector<T> &tmp )
+  /** \brief Argument factory for MultiArrayView data
+   */
+  template <unsigned int N, class T, class C>
+  inline vigra::triple<typename MultiArrayView<N,T,C>::const_traverser,
+		       typename MultiArrayView<N,T,C>::difference_type,
+		       StandardConstValueAccessor<T> >
+  srcMultiArrayRange( const MultiArrayView<N,T,C> & array )
   {
-    const int len = src.shape(0);
-
-    tuple5< typename Kernel1D<A>::const_iterator,
-      typename Kernel1D<A>::ConstAccessor,
-      int, int, BorderTreatmentMode> kernel = vigra::kernel1d( * kernels.front() );
-
-
-    vigra::convolveLine( src.traverser_begin(), src.traverser_end(),
-			 StandardConstAccessor<T>(),
-			 tmp.begin(), StandardAccessor<T>(),
-			 kernel.first, kernel.second, kernel.third,
-			 kernel.fourth, kernel.fifth );
-
-    std::copy( tmp.begin(), tmp.begin() + len,
-	       dst.traverser_begin() );
-
-//     vigra::convolveLine( srcIterRange( src.traverser_begin(), src.traverser_end(),
-// 				       vigra::StandardConstAccessor<T>() ),
-// 			 destIter( dst.traverser_begin() ),
-// 			 kernel );
+    return vigra::triple<typename MultiArrayView<N,T,C>::const_traverser,
+                         typename MultiArrayView<N,T,C>::difference_type,
+                         StandardConstValueAccessor<T> >
+      ( array.traverser_begin(),
+	array.shape(),
+	StandardConstValueAccessor<T>() );
   }
 
-  // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-  template <unsigned int N, class T, class C, class A>
-  inline
-  void internalSeparableConvolveMultiarray( const MultiArrayView<N,T,C> &source,
-					    MultiArrayView<N,T,C> &dest,
-					    std::list<const vigra::Kernel1D<A> *> &kernels,
-					    std::vector<T> &tmp )
+  /** \brief Argument factory for MultiArrayView data
+   */
+  template <unsigned int N, class T, class C>
+  inline triple<typename MultiArrayView<N,T,C>::traverser,
+		typename MultiArrayView<N,T,C>::difference_type,
+		StandardValueAccessor<T> >
+  destMultiArrayRange( MultiArrayView<N,T,C> & array )
   {
-    const int dimensions = N;
-    const MultiArrayView<N,T,C> *src = &source;
-    MultiArrayView<N,T,C> *dst = &dest;
+    return vigra::triple<typename MultiArrayView<N,T,C>::traverser,
+                         typename MultiArrayView<N,T,C>::difference_type,
+                         StandardValueAccessor<T> >
+      ( array.traverser_begin(),
+	array.shape(),
+	StandardValueAccessor<T>() );
+  }
 
-    typedef typename std::list<const vigra::Kernel1D<A> *>::iterator KIterator;
 
-    KIterator kit = kernels.begin();
+  /** \brief Argument factory for MultiArrayView data
+   */
+  template <unsigned int N, class T, class C, class Accessor>
+  vigra::pair<typename MultiArrayView<N,T,C>::traverser,
+	      Accessor>
+  destMultiArray( MultiArrayView<N,T,C> & array, Accessor a )
+  {
+    return vigra::pair<typename MultiArrayView<N,T,C>::traverser,
+      Accessor> ( array.traverser_begin(), a );
+  }
 
-    for( int d = 0; d < dimensions; ++d, ++kit ) {
-      const Kernel1D<A> *ktmp = (*kit);
-      kit = kernels.erase( kit );
 
-      const int dsize = src->shape( d );      
-      for( int i = 0; i < dsize; ++i ) {
-	  
-	MultiArrayView<N-1,T,StridedArrayTag> hyposrc = src->bindAt( d, i );
-	MultiArrayView<N-1,T,StridedArrayTag> hypodst = dst->bindAt( d, i );
-	
-	vigra::internalSeparableConvolveMultiarray( hyposrc, hypodst, kernels, tmp );
-      }
-      src = dst;
-      kit = kernels.insert( kit, ktmp );
+  /** \brief Argument factory for MultiArrayView data
+   */
+  template <unsigned int N, class T, class C>
+  vigra::pair<typename MultiArrayView<N,T,C>::traverser,
+	      vigra::StandardValueAccessor<T> >
+  destMultiArray( MultiArrayView<N,T,C> & array )
+  {
+    return vigra::pair<typename MultiArrayView<N,T,C>::traverser,
+      vigra::StandardValueAccessor<T> >( array.traverser_begin(),
+					 vigra::StandardValueAccessor<T>() );
+  }
+
+
+
+  //---------------------------------------------------------------------------
+
+  /********************************************************/
+  /*                                                      */
+  /*           Some internal slave functions              */
+  /*                                                      */
+  /********************************************************/
+
+  namespace detail
+  {
+
+    /** A small helper
+     */
+    template <typename Iterator, typename Accessor>
+    inline triple<Iterator, Iterator, Accessor>
+    srcRange( Iterator b, Iterator e, Accessor a)
+    {
+      return triple<Iterator, Iterator, Accessor>( b, e, a);
     }
-  }
+
+
+    /** A small helper
+     */
+    template <typename Iterator, typename Accessor>
+    pair<Iterator,Accessor>
+    destRange( Iterator it, Accessor a )
+    {
+      return pair<Iterator,Accessor>( it, a );
+    }
+
+
+    //-----------------------------------------------------------------------
+
+
+    /********************************************************/
+    /*                                                      */
+    /*        internalSeparableConvolveMultiarray           */
+    /*                                                      */
+    /********************************************************/
+
+    template <class S, class D, typename KernelIterator>
+    inline
+    void internalSeparableConvolveMultiarrayTmp( S source, D dest,
+						 KernelIterator kit )
+    {
+      typedef typename S::first_type SMIT;
+      typedef typename D::first_type DMIT;
+      enum { N = 1 + SMIT::level };
+
+      typedef vigra::MultiArrayNavigator<SMIT, N> SNavigator;
+      typedef vigra::MultiArrayNavigator<DMIT, N> DNavigator;
+
+      { //-- only operate on first dimension here
+#if defined MC_SHOW_CONVOLUTION
+	std::cerr << "*Dim: " << 0 << std::endl;
+#endif
+        SNavigator snav( source.first, source.second, 0 );
+	DNavigator dnav( dest.first, source.second, 0 );	
+
+	for( ; snav.hasMore(); snav++, dnav++ ) {
+ 	  vigra::convolveLine( srcRange( snav.begin(), snav.end(), source.third ),
+ 			       destRange( dnav.begin(), dest.second ),
+ 			       kernel1d( *kit ) );
+	}
+	++kit;
+      }
+
+      //-- operate on further dimensions
+      typedef typename NumericTraits<typename D::second_type::value_type>::RealPromote TmpType;
+      std::vector<TmpType> tmp;
+
+      for( int d = 1; d < N; ++d, ++kit ) {
+	DNavigator dnav( dest.first, source.second, d );
+
+	tmp.resize( source.second[d] );
+#if defined MC_SHOW_CONVOLUTION
+ 	std::cerr << "*Dim: " << d << " = " << source.second[d]
+		  << ", " << dnav.end() - dnav.begin()
+		  << ", " << std::distance( dnav.begin(), dnav.end() )
+		  << std::endl;
+#endif
+
+	for( ; dnav.hasMore(); dnav++ ) {
+#if defined MC_SHOW_CONVOLUTION
+	  std::cerr << ".";
+#endif
+ 	  vigra::convolveLine( srcRange( dnav.begin(), dnav.end(), dest.second ),
+ 		 	       destRange( tmp.begin(), StandardValueAccessor<TmpType>() ),
+ 			       kernel1d( *kit ) );
+
+	  //-- copy temp result to target object
+	  vigra::copyLine( tmp.begin(), tmp.end(), StandardConstValueAccessor<TmpType>(),
+			   dnav.begin(), dest.second );
+	}
+#if defined MC_SHOW_CONVOLUTION
+	std::cerr << std::endl;
+#endif
+      }
+    }
+
+
+  };	//-- namespace detail
+
+
 
 
   // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+  /********************************************************/
+  /*                                                      */
+  /*             separableConvolveMultiarray              */
+  /*                                                      */
+  /********************************************************/
+
   /** \brief Separated convolution on MultiArray
 
       This function computes a separated convolution on all dimensions
       of the given MultiArray \a source. The result will be stored in
-      \a dest.
+      \a dest. \a dest is required to already have the correct size.
 
-      The parameter \a kernels is a vector containing 1D kernels, each
+      The argument \a kernels is an iterator referencing 1D kernels, each
       for every dimension of the data. The first kernel in this list
       is applied to the innermost dimension (e.g. the x-dimension of
       an image), whilst the last is applied to the outermost dimension
@@ -129,49 +263,186 @@ namespace vigra
       size.
 
       \see Kernel1D, convolveLine()
-
- */
-  template <unsigned int N, class T, class C, class A>
+  */
+  template <class S, class D, class KernelIterator>
   inline
-  void separableConvolveMultiarray( const MultiArrayView<N,T,C> &source,
-				    MultiArrayView<N,T,C> &dest,
-				    const std::vector<vigra::Kernel1D<A> > &kernels )
-{
-  vigra_precondition( kernels.size() >= N, "The kernels vector must have a length of"
-		      " at least the data dimensionality" );
-
-  const size_t tsize = *std::max_element( source.shape().begin(),
-					  source.shape().end() );
-  std::vector<T> tmp( tsize );
-
-  std::list<const vigra::Kernel1D<A> *> kernelList;
-  for( int i = 0; i < N; ++i )
-    kernelList.push_back( &kernels[i] );
-
-  vigra::internalSeparableConvolveMultiarray( source, dest, kernelList, tmp );
-}
+  void separableConvolveMultiarray( S source, D dest, KernelIterator kit )
+  {
+    vigra::detail::internalSeparableConvolveMultiarrayTmp( source, dest, kit );
+  }
 
 
 
   // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
   /** \overload
+
+      This overloaded function computes an isotropic convolution where
+      the given kernel \a kernel is applied to each dimension
+      individually.
    */
-  template <unsigned int N, class T, class C, class A>
+  template <typename S, typename D, typename A>
   inline
-  void separableConvolveMultiarray( const MultiArrayView<N,T,C> &source,
-				    MultiArrayView<N,T,C> &dest,
+  void separableConvolveMultiarray( S source, D dest,
 				    const vigra::Kernel1D<A> &kernel )
-{
-  const size_t tsize = *std::max_element( source.shape().begin(),
-					  source.shape().end() );
-  std::vector<T> tmp( tsize );
+  {
+    enum { N = 1 + S::first_type::level };
+    
+    std::list<const vigra::Kernel1D<A> *> kernelList( N );
+    for( int i = 0; i < N; ++i )
+      kernelList[i] = kernel;
   
-  std::list<const vigra::Kernel1D<A> *> kernelList;
-  for( int i = 0; i < N; ++i )
-    kernelList.push_back( &kernel );
-  
-  vigra::internalSeparableConvolveMultiarray( source, dest, kernelList, tmp );
-}
+    vigra::internalSeparableConvolveMultiarray( source, dest,
+						kernelList.begin() );
+  }
+
+
+
+  // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+  /** \overload
+
+      This overloaded function computes a convolution with the given
+      kernel \a kernel only on the dimension \a dim of the MultiArray
+      \a source.
+
+      This may be used to e.g. smooth data only in one dimension.
+   */
+  template <typename S, typename D, typename A>
+  inline
+  void separableConvolveMultiarray( S source, D dest,
+				    unsigned int dim,
+				    const vigra::Kernel1D<A> &kernel )
+  {
+    enum { N = 1 + S::first_type::level };
+    vigra_precondition( dim < N,
+			"The dimension number to convolve must be smaller "
+			"than the data dimensionality" );
+
+#if 0
+    //-- for the moment being this is a suboptimal
+    //-- implementation in terms of speed.
+    
+    std::vector<vigra::Kernel1D<A> > kernels( N );
+    kernels[dim] = kernel;
+    vigra::separableConvolveMultiarray( source, dest,
+					kernels.begin() );
+
+#else
+    typedef typename S::first_type SMIT;
+    typedef typename D::first_type DMIT;
+
+    typedef vigra::MultiArrayNavigator<SMIT, N> SNavigator;
+    typedef vigra::MultiArrayNavigator<DMIT, N> DNavigator;
+
+    SNavigator snav( source.first, source.second, dim );
+    DNavigator dnav( dest.first, source.second, dim );
+
+    for( ; snav.hasMore(); snav++, dnav++ ) {
+      vigra::convolveLine( detail::srcRange( snav.begin(), snav.end(), source.third ),
+			   detail::destRange( dnav.begin(), dest.second ),
+			   kernel1d(kernel) );
+    }
+#endif
+  }
+
+
+
+  /********************************************************/
+  /*                                                      */
+  /*                  gaussianSmoothing                   */
+  /*                                                      */
+  /********************************************************/
+
+
+  /** \brief Isotropic Gaussian smoothing of a MultiArrayView
+
+      This performs an isotropic smoothing using a Gaussian filter
+      kernel on the given MultiArrayView data \a source. The result
+      will be stored in \a dest.
+
+      Both arrays, \a source and \a dest, must be equal in dimensions
+      and size.
+
+      An anisotropic smoothing can be realized using the
+      separableConvolveMultiarray() function given a set of the
+      respective filter kernels as a parameter.
+
+      \see separableConvolveMultiarray()
+  */
+  template <typename S, typename D>
+  inline
+  void gaussianSmoothing( S source, D dest, double sigma )
+  {
+    enum { N = 1 + S::first_type::level };
+    
+    vigra_precondition( sigma > 0,
+			"The kernel standard deviation sigma "
+			"must be greater than zero" );
+
+    std::vector<vigra::Kernel1D<double> > kernels( N );
+    for( unsigned int i = 0; i < N; ++i )
+      kernels[i].initGaussian( sigma );
+
+    vigra::separableConvolveMultiarray( source, dest, kernels.begin() );
+  }
+
+
+
+/** \brief Gaussian smoothed gradient
+
+    This function computes the gradient of the data
+    \a source and stores the gradient in the vector-valued \a
+    dest.
+
+    The data is differentiated by symmetric differences for each
+    dimension.
+
+    In order to apply this function to anisotropic data, one should
+    consider first applying an anisotropic smoothing before calling
+    this function. Another option is calling
+    separableConvolveMultiarray() several times with appropriate
+    derivative filters.
+
+    The production of vector-valued output eases the operation on
+    n-dimensional input data instead of n separate component data
+    sets. Also, typically the whole vector is of interest, not only
+    one component at a time. If this would be the case, simple
+    separated convolution is preferablly used.
+
+    As vector-valued element type a TinyVector of suiting dimension
+    can be used. However, at least a VectorComponentAccessor must be
+    applicable to the destination element data type.
+
+    \see separableConvolveMultiarray()
+*/
+  template <typename S, typename D>
+  inline
+  void symmetricGradient( S source, D dest )
+  {
+    enum { N = 1 + S::first_type::level };
+
+    //  vigra_precondition( D::ActualDimension == N,
+    //  vigra_precondition( D::value_type == N,
+
+    //   vigra_precondition( (*dest).size() == N,
+    // 		      "The pixel dimension of the destination data "
+    // 		      "must match the data dimensions of the source data" );
+
+    typedef typename NumericTraits<typename S::first_type::value_type>::RealPromote kernel_type;
+
+    Kernel1D<kernel_type> filter;
+    filter.initSymmetricGradient();
+
+    typedef typename D::first_type DestType;
+    typedef typename DestType::value_type VectorType;
+    typedef VectorComponentAccessor<VectorType> VAccessor;
+    
+    //-- compute gradient components
+    for( int d = 0; d < N; ++d ) {
+      separableConvolveMultiarray( source,
+				   std::pair<DestType, VAccessor>( dest.first, VAccessor(d) ),
+				   d, filter );
+    }
+  }
 
 
 
