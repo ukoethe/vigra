@@ -94,6 +94,8 @@ namespace vigra
 
         virtual void * currentScanlineOfBand( unsigned int ) = 0;
         virtual void nextScanline() = 0;
+        
+        struct TIFFNoLZWException {};
     };
 
     // codec factory for registration at the codec manager
