@@ -1,5 +1,8 @@
 #!/bin/sh
 
+prefix="@prefix@"
+exec_prefix="@exec_prefix@"
+
 usage()
 {
     cat <<EOF
@@ -22,13 +25,10 @@ while test $# -gt 0; do
       echo @MAJOR_VERSION@.@MINOR_VERSION@.@MICRO_VERSION@
       ;;
     --cxxflags)
-      echo "@CXXINCLUDES@" \
-        | sed "s,\$(prefix),@prefix@,"
+      echo "@CXXINCLUDES@"
       ;;
     --libs)
-      echo "@LIBS@" \
-        | sed "s,\$(exec_prefix),@exec_prefix@," \
-        | sed "s,\$(prefix),@prefix@,"
+      echo "@LIBS@"
       ;;
     *)
       usage 1 1>&2
