@@ -56,7 +56,7 @@ namespace vigra {
     gradient at a zero crossing is greater than the given <TT>gradient_threshold</TT>,
     an edge point is marked (using <TT>edge_marker</TT>) in the destination image on
     the darker side of the zero crossing (note that zero crossings occur 
-    <it>between</it> pixels). For example:
+    <i>between</i> pixels). For example:
     
     \code
     sign of difference image     resulting edge points (*)
@@ -72,7 +72,7 @@ namespace vigra {
     \ref differenceOfExponentialCrackEdgeImage(). 
 
     The source value type 
-    (<TT>SrcAccessor::value_type</TT>) must be a linear algabra, i.e. addition, 
+    (<TT>SrcAccessor::value_type</TT>) must be a linear algebra, i.e. addition, 
     subtraction and multiplication of the type with itself, and multiplication 
     with double and 
     \ref NumericTraits "NumericTraits" must 
@@ -160,11 +160,11 @@ namespace vigra {
 */
 template <class SrcIterator, class SrcAccessor,
           class DestIterator, class DestAccessor, 
-          class SrcValue, class DestValue>
+          class GradValue, class DestValue>
 void differenceOfExponentialEdgeImage(
                SrcIterator sul, SrcIterator slr, SrcAccessor sa,
            DestIterator dul, DestAccessor da,
-           double scale, SrcValue gradient_threshold, DestValue edge_marker)
+           double scale, GradValue gradient_threshold, DestValue edge_marker)
 {
     vigra_precondition(scale > 0,
                  "differenceOfExponentialEdgeImage(): scale > 0 required.");
@@ -268,12 +268,12 @@ void differenceOfExponentialEdgeImage(
 
 template <class SrcIterator, class SrcAccessor,
           class DestIterator, class DestAccessor,
-          class SrcValue>
+          class GradValue>
 inline 
 void differenceOfExponentialEdgeImage(
                SrcIterator sul, SrcIterator slr, SrcAccessor sa,
            DestIterator dul, DestAccessor da,
-           double scale, SrcValue gradient_threshold)
+           double scale, GradValue gradient_threshold)
 {
     differenceOfExponentialEdgeImage(sul, slr, sa, dul, da, 
                                         scale, gradient_threshold, 1);
@@ -281,12 +281,12 @@ void differenceOfExponentialEdgeImage(
 
 template <class SrcIterator, class SrcAccessor,
           class DestIterator, class DestAccessor, 
-      class SrcValue, class DestValue>
+      class GradValue, class DestValue>
 inline 
 void differenceOfExponentialEdgeImage(
            triple<SrcIterator, SrcIterator, SrcAccessor> src,
        pair<DestIterator, DestAccessor> dest,
-       double scale, SrcValue gradient_threshold,
+       double scale, GradValue gradient_threshold,
        DestValue edge_marker)
 {
     differenceOfExponentialEdgeImage(src.first, src.second, src.third,
@@ -297,12 +297,12 @@ void differenceOfExponentialEdgeImage(
 
 template <class SrcIterator, class SrcAccessor,
           class DestIterator, class DestAccessor,
-          class SrcValue>
+          class GradValue>
 inline 
 void differenceOfExponentialEdgeImage(
            triple<SrcIterator, SrcIterator, SrcAccessor> src,
        pair<DestIterator, DestAccessor> dest,
-       double scale, SrcValue gradient_threshold)
+       double scale, GradValue gradient_threshold)
 {
     differenceOfExponentialEdgeImage(src.first, src.second, src.third,
                                         dest.first, dest.second,
@@ -319,10 +319,10 @@ void differenceOfExponentialEdgeImage(
 
     This operator applies an exponential filter to the source image 
     at the given <TT>scale</TT> and subtracts the result from the original image. 
-    Zero crossings are detected in the reulting difference image. Whenever the
+    Zero crossings are detected in the resulting difference image. Whenever the
     gradient at a zero crossing is greater than the given <TT>gradient_threshold</TT>,
     an edge point is marked (using <TT>edge_marker</TT>) in the destination image 
-    {\it between} the corresponding original pixels. Topologically, this means we 
+    <i>between</i>} the corresponding original pixels. Topologically, this means we 
     must insert additional pixels between the original ones to represent the
     boundaries between the pixels (the so called zero- and one-cells, with the original
     pixels being two-cells). Within VIGRA, such an image is called \ref CrackEdgeImage.
@@ -350,7 +350,7 @@ sign of difference image     insert zero- and one-cells     resulting edge point
     improved by the post-processing operations \ref removeShortEdges() and
     \ref closeGapsInCrackEdgeImage().
     
-    The source value type (<TT>SrcAccessor::value_type</TT>) must be a linear algabra, i.e. addition, 
+    The source value type (<TT>SrcAccessor::value_type</TT>) must be a linear algebra, i.e. addition, 
     subtraction and multiplication of the type with itself, and multiplication 
     with double and 
     \ref NumericTraits "NumericTraits" must 
@@ -443,11 +443,12 @@ sign of difference image     insert zero- and one-cells     resulting edge point
     \endcode
 */
 template <class SrcIterator, class SrcAccessor,
-          class DestIterator, class DestAccessor, class DestValue>
+          class DestIterator, class DestAccessor,
+          class GradValue, class DestValue>
 void differenceOfExponentialCrackEdgeImage(
                SrcIterator sul, SrcIterator slr, SrcAccessor sa,
            DestIterator dul, DestAccessor da,
-           double scale, double gradient_threshold, 
+           double scale, GradValue gradient_threshold, 
            DestValue edge_marker)
 {
     vigra_precondition(scale > 0,
@@ -626,12 +627,13 @@ void differenceOfExponentialCrackEdgeImage(
 }
 
 template <class SrcIterator, class SrcAccessor,
-          class DestIterator, class DestAccessor, class DestValue>
+          class DestIterator, class DestAccessor,
+          class GradValue, class DestValue>
 inline 
 void differenceOfExponentialCrackEdgeImage(
            triple<SrcIterator, SrcIterator, SrcAccessor> src,
        pair<DestIterator, DestAccessor> dest,
-       double scale, double gradient_threshold,
+       double scale, GradValue gradient_threshold,
        DestValue edge_marker)
 {
     differenceOfExponentialCrackEdgeImage(src.first, src.second, src.third,
@@ -789,7 +791,7 @@ void removeShortEdges(
     It closes one pixel wide gaps in the edges resulting from this algorithm. 
     Since these gaps are usually caused by zero crossing slightly below the gradient 
     threshold used in edge detection, this algorithms acts like a weak hysteresis 
-    thresholding. The newly found edge pixels are marked with the givem <TT>edge_marker</TT>.
+    thresholding. The newly found edge pixels are marked with the given <TT>edge_marker</TT>.
     The image's value type must be equality comparable. 
     
     Note that this algorithm, unlike most other algorithms in VIGRA, operates in-place, 
@@ -1413,11 +1415,11 @@ cannyEdgelList(triple<SrcIterator, SrcIterator, SrcAccessor> src,
     namespace vigra {
         template <class SrcIterator, class SrcAccessor,
                   class DestIterator, class DestAccessor, 
-                  class DestValue>
+                  class GradValue, class DestValue>
         void cannyEdgeImage(
                    SrcIterator sul, SrcIterator slr, SrcAccessor sa,
                    DestIterator dul, DestAccessor da,
-                   double scale, float gradient_threshold, DestValue edge_marker);
+                   double scale, GradValue gradient_threshold, DestValue edge_marker);
     }
     \endcode
     
@@ -1426,11 +1428,11 @@ cannyEdgelList(triple<SrcIterator, SrcIterator, SrcAccessor> src,
     namespace vigra {
         template <class SrcIterator, class SrcAccessor,
                   class DestIterator, class DestAccessor, 
-                  class DestValue>
+                  class GradValue, class DestValue>
         inline void cannyEdgeImage(
                    triple<SrcIterator, SrcIterator, SrcAccessor> src,
                    pair<DestIterator, DestAccessor> dest,
-                   double scale, float gradient_threshold, DestValue edge_marker);
+                   double scale, GradValue gradient_threshold, DestValue edge_marker);
     }
     \endcode
     
@@ -1472,11 +1474,11 @@ cannyEdgelList(triple<SrcIterator, SrcIterator, SrcAccessor> src,
 */
 template <class SrcIterator, class SrcAccessor,
           class DestIterator, class DestAccessor, 
-          class DestValue>
+          class GradValue, class DestValue>
 void cannyEdgeImage(
            SrcIterator sul, SrcIterator slr, SrcAccessor sa,
            DestIterator dul, DestAccessor da,
-           double scale, float gradient_threshold, DestValue edge_marker)
+           double scale, GradValue gradient_threshold, DestValue edge_marker)
 {
     std::vector<Edgel> edgels;
     
@@ -1495,11 +1497,11 @@ void cannyEdgeImage(
 
 template <class SrcIterator, class SrcAccessor,
           class DestIterator, class DestAccessor, 
-          class DestValue>
+          class GradValue, class DestValue>
 inline void cannyEdgeImage(
            triple<SrcIterator, SrcIterator, SrcAccessor> src,
            pair<DestIterator, DestAccessor> dest,
-           double scale, double gradient_threshold, DestValue edge_marker)
+           double scale, GradValue gradient_threshold, DestValue edge_marker)
 {
     cannyEdgeImage(src.first, src.second, src.third,
                    dest.first, dest.second,
