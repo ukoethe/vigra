@@ -3,7 +3,7 @@
 #include "unittest.h"
 #include "vigra/stdimage.hxx"
 #include "vigra/convolution.hxx"
-#include "vigra/viff.hxx"
+#include "vigra/impex.hxx"
 
 struct ConvolutionTest
 {
@@ -197,6 +197,30 @@ struct ConvolutionTest
         should(acc(i1) == 2.75);
     }
     
+    void gaussianSmoothingTest()
+    {
+        vigra::Kernel1D<double> gauss;
+        gauss.initGaussian(1.0);
+
+        Image tmp1(lenna.size());
+        Image tmp2(lenna.size());
+
+        separableConvolveX(srcImageRange(lenna), destImage(tmp1), kernel1d(gauss));
+        separableConvolveY(srcImageRange(tmp1), destImage(tmp2), kernel1d(gauss));
+        
+        gaussianSmoothing(srcImageRange(lenna), destImage(tmp1), 1.0);
+        
+        Image::ScanOrderIterator i1 = tmp1.begin();
+        Image::ScanOrderIterator i1end = tmp1.end();
+        Image::ScanOrderIterator i2 = tmp2.begin();
+        Image::Accessor acc = constimg.accessor();
+        
+        for(; i1 != i1end; ++i1, ++i2)
+        {
+            should(acc(i1) == acc(i2));
+        }
+    }
+    
     void separableGradientTest()
     {
         ViffImage * viff = readViffImage("lenna128sepgrad.xv");
@@ -236,6 +260,102 @@ struct ConvolutionTest
         {
             double grad = sqrt(acc(i1)*acc(i1)+acc(i2)*acc(i2));
             should(std::abs(grad - acc(i)) < epsilon);
+        }
+    }
+    
+    void gradientTest()
+    {
+        ViffImage * viff = readViffImage("lenna128sepgrad.xv");
+
+        shouldMsg(viff != 0, "Unable to read test image \"lenna128sepgrad.xv\"\n");
+
+        Image sepgrad(viff->row_size,viff->col_size);
+        importViffImage(viff, destImage(sepgrad));
+        freeViffImage(viff);
+
+        double epsilon = 0.00001;
+        
+        Image tmpx(lenna.size());
+        Image tmpy(lenna.size());
+
+        gaussianGradient(srcImageRange(lenna), destImage(tmpx), destImage(tmpy), 1.0);
+        
+        Image::ScanOrderIterator i1 = tmpx.begin();
+        Image::ScanOrderIterator i1end = tmpx.end();
+        Image::ScanOrderIterator i2 = tmpy.begin();
+        Image::ScanOrderIterator i = sepgrad.begin();
+        Image::Accessor acc = constimg.accessor();
+        
+        for(; i1 != i1end; ++i1, ++i2, ++i)
+        {
+            double grad = sqrt(acc(i1)*acc(i1)+acc(i2)*acc(i2));
+            should(std::abs(grad - acc(i)) < epsilon);
+        }
+    }
+    
+    void hessianTest()
+    {
+        Image resxx(lenna.size());
+        Image resxy(lenna.size());
+        Image resyy(lenna.size());
+        Image refxx(lenna.size());
+        Image refxy(lenna.size());
+        Image refyy(lenna.size());
+
+        hessianMatrixOfGaussian(srcImageRange(lenna), 
+            destImage(resxx), destImage(resxy), destImage(resyy), 1.0);
+            
+        importImage(vigra::ImageImportInfo("lennahessxx.xv"), destImage(refxx));
+        importImage(vigra::ImageImportInfo("lennahessyy.xv"), destImage(refyy));
+        importImage(vigra::ImageImportInfo("lennahessxy.xv"), destImage(refxy));
+        
+        Image::ScanOrderIterator i1 = resxx.begin();
+        Image::ScanOrderIterator i1end = resxx.end();
+        Image::ScanOrderIterator i2 = resyy.begin();
+        Image::ScanOrderIterator i3 = resxy.begin();
+        Image::ScanOrderIterator r1 = refxx.begin();
+        Image::ScanOrderIterator r2 = refyy.begin();
+        Image::ScanOrderIterator r3 = refxy.begin();
+        Image::Accessor acc = constimg.accessor();
+        
+        for(; i1 != i1end; ++i1, ++i2, ++i3, ++r1, ++r2, ++r3)
+        {
+            should(acc(i1) == acc(r1));
+            should(acc(i2) == acc(r2));
+            should(acc(i3) == acc(r3));
+        }
+    }
+    
+    void structureTensorTest()
+    {
+        Image resxx(lenna.size());
+        Image resxy(lenna.size());
+        Image resyy(lenna.size());
+        Image refxx(lenna.size());
+        Image refxy(lenna.size());
+        Image refyy(lenna.size());
+
+        structureTensor(srcImageRange(lenna), 
+            destImage(resxx), destImage(resxy), destImage(resyy), 1.0, 2.0);
+            
+        importImage(vigra::ImageImportInfo("lennastxx.xv"), destImage(refxx));
+        importImage(vigra::ImageImportInfo("lennastyy.xv"), destImage(refyy));
+        importImage(vigra::ImageImportInfo("lennastxy.xv"), destImage(refxy));
+        
+        Image::ScanOrderIterator i1 = resxx.begin();
+        Image::ScanOrderIterator i1end = resxx.end();
+        Image::ScanOrderIterator i2 = resyy.begin();
+        Image::ScanOrderIterator i3 = resxy.begin();
+        Image::ScanOrderIterator r1 = refxx.begin();
+        Image::ScanOrderIterator r2 = refyy.begin();
+        Image::ScanOrderIterator r3 = refxy.begin();
+        Image::Accessor acc = constimg.accessor();
+        
+        for(; i1 != i1end; ++i1, ++i2, ++i3, ++r1, ++r2, ++r3)
+        {
+            should(acc(i1) == acc(r1));
+            should(acc(i2) == acc(r2));
+            should(acc(i3) == acc(r3));
         }
     }
     
@@ -425,7 +545,11 @@ struct ConvolutionTestSuite
         add( testCase( &ConvolutionTest::separableDerivativeAvoidTest));
         add( testCase( &ConvolutionTest::separableSmoothClipTest));
         add( testCase( &ConvolutionTest::separableSmoothWrapTest));
+        add( testCase( &ConvolutionTest::gaussianSmoothingTest));
         add( testCase( &ConvolutionTest::separableGradientTest));
+        add( testCase( &ConvolutionTest::gradientTest));
+        add( testCase( &ConvolutionTest::hessianTest));
+        add( testCase( &ConvolutionTest::structureTensorTest));
         add( testCase( &ConvolutionTest::stdConvolutionTest));
         add( testCase( &ConvolutionTest::stdVersusSeparableConvolutionTest));
         add( testCase( &ConvolutionTest::recursiveSmoothTest));
