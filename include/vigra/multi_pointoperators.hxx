@@ -52,20 +52,24 @@ namespace vigra
 /*                                                      */
 /********************************************************/
 
-template <class Iterator, class Accessor, class VALUETYPE>
+template <class Iterator, class Shape, class Accessor, 
+          class VALUETYPE>
 inline void
-initMultiArrayImpl(Iterator s, Iterator send, Accessor a,  VALUETYPE v, MetaInt<0>)
+initMultiArrayImpl(Iterator s, Shape const & shape, Accessor a,  VALUETYPE v, MetaInt<0>)
 {
-    initLine(s, send, a, v);
+    initLine(s, s + shape[0], a, v);
 }
     
-template <class Iterator, class Accessor, class VALUETYPE, int N>
+template <class Iterator, class Shape, class Accessor, 
+          class VALUETYPE, int N>
 void
-initMultiArrayImpl(Iterator s, Iterator send, Accessor a,  VALUETYPE v, MetaInt<N>)
+initMultiArrayImpl(Iterator s, Shape const & shape, Accessor a,  
+                   VALUETYPE v, MetaInt<N>)
 {
+    Iterator send = s + shape[N];
     for(; s != send; ++s)
     {
-        initMultiArrayImpl(s.begin(), s.end(), a, v, MetaInt<N-1>());
+        initMultiArrayImpl(s.begin(), shape, a, v, MetaInt<N-1>());
     }
 }
     
@@ -73,16 +77,19 @@ initMultiArrayImpl(Iterator s, Iterator send, Accessor a,  VALUETYPE v, MetaInt<
 
     This function can be used to init the array which must be represented by
     a pair of iterators compatible to \ref vigra::MultiIterator.
-    It uses an accessor to access the data alements.
+    It uses an accessor to access the data alements. Note that the iterator range 
+    must be specified by a shape object, because otherwise we could not control
+    the range simultaneously in all dimensions (this is a necessary consequence
+    of the \ref vigra::MultiIterator design).
     
     <b> Declarations:</b>
     
     pass arguments explicitly:
     \code
     namespace vigra {
-        template <class Iterator, class Accessor, class VALUETYPE>
+        template <class Iterator, class Shape, class Accessor, class VALUETYPE>
         void
-        initMultiArray(Iterator s, Iterator send, Accessor a,  VALUETYPE v);
+        initMultiArray(Iterator s, Shape const & shape, Accessor a,  VALUETYPE v);
     }
     \endcode
 
@@ -111,7 +118,7 @@ initMultiArrayImpl(Iterator s, Iterator send, Accessor a,  VALUETYPE v, MetaInt<
     <b> Required Interface:</b>
     
     \code
-    MultiIterator begin, end;
+    MultiIterator begin;
     
     Accessor accessor;
     VALUETYPE v;
@@ -120,11 +127,11 @@ initMultiArrayImpl(Iterator s, Iterator send, Accessor a,  VALUETYPE v, MetaInt<
     \endcode
     
 */
-template <class Iterator, class Accessor, class VALUETYPE>
+template <class Iterator, class Shape, class Accessor, class VALUETYPE>
 inline void
-initMultiArray(Iterator s, Iterator send, Accessor a,  VALUETYPE v)
+initMultiArray(Iterator s, Shape const & shape, Accessor a,  VALUETYPE v)
 {
-    initMultiArrayImpl(s, send, a, v, MetaInt<Iterator::level>());
+    initMultiArrayImpl(s, shape, a, v, MetaInt<Iterator::level>());
 }
     
 template <class Iterator, class Shape, class Accessor, class VALUETYPE>
@@ -132,7 +139,7 @@ inline
 void
 initMultiArray(triple<Iterator, Shape, Accessor> const & s, VALUETYPE v)
 {
-    initMultiArray(s.first, s.first + s.second[s.second.size()-1], s.third, v);
+    initMultiArray(s.first, s.second, s.third, v);
 }
     
 /********************************************************/
@@ -141,24 +148,25 @@ initMultiArray(triple<Iterator, Shape, Accessor> const & s, VALUETYPE v)
 /*                                                      */
 /********************************************************/
 
-template <class SrcIterator, class SrcAccessor,
+template <class SrcIterator, class SrcShape, class SrcAccessor,
           class DestIterator, class DestAccessor>
 inline void
-copyMultiArrayImpl(SrcIterator s, SrcIterator send, SrcAccessor src,
+copyMultiArrayImpl(SrcIterator s, SrcShape const & shape, SrcAccessor src,
                DestIterator d, DestAccessor dest, MetaInt<0>)
 {
-    copyLine(s, send, src, d, dest);
+    copyLine(s, s + shape[0], src, d, dest);
 }
     
-template <class SrcIterator, class SrcAccessor,
+template <class SrcIterator, class SrcShape, class SrcAccessor,
           class DestIterator, class DestAccessor, int N>
 void
-copyMultiArrayImpl(SrcIterator s, SrcIterator send, SrcAccessor src,
+copyMultiArrayImpl(SrcIterator s, SrcShape const & shape, SrcAccessor src,
                    DestIterator d, DestAccessor dest, MetaInt<N>)
 {
+    SrcIterator send = s + shape[N];
     for(; s != send; ++s, ++d)
     {
-        copyMultiArrayImpl(s.begin(), s.end(), src, d.begin(), dest, MetaInt<N-1>());
+        copyMultiArrayImpl(s.begin(), shape, src, d.begin(), dest, MetaInt<N-1>());
     }
 }
     
@@ -166,18 +174,21 @@ copyMultiArrayImpl(SrcIterator s, SrcIterator send, SrcAccessor src,
 
     If necessary, type conversion takes place. The arrays must be represented by
     iterators compatible with \ref vigra::MultiIterator.
-    The function uses accessors to access the data elements.
+    The function uses accessors to access the data elements. Note that the iterator range 
+    must be specified by a shape object, because otherwise we could not control
+    the range simultaneously in all dimensions (this is a necessary consequence
+    of the \ref vigra::MultiIterator design).
     
     <b> Declarations:</b>
     
     pass arguments explicitly:
     \code
     namespace vigra {
-        template <class SrcIterator, class SrcAccessor,
+        template <class SrcIterator, class SrcShape, class SrcAccessor,
                   class DestIterator, class DestAccessor>
         void
         copyMultiArray(SrcIterator s, 
-                       SrcIterator send, SrcAccessor src,
+                       SrcShape const & shape, SrcAccessor src,
                        DestIterator d, DestAccessor dest);
     }
     \endcode
@@ -211,7 +222,7 @@ copyMultiArrayImpl(SrcIterator s, SrcIterator send, SrcAccessor src,
     <b> Required Interface:</b>
     
     \code
-    MultiIterator src_begin, src_end, dest_begin;
+    MultiIterator src_begin, dest_begin;
     
     SrcAccessor src_accessor;
     DestAccessor dest_accessor;
@@ -221,14 +232,14 @@ copyMultiArrayImpl(SrcIterator s, SrcIterator send, SrcAccessor src,
     \endcode
     
 */
-template <class SrcIterator, class SrcAccessor,
+template <class SrcIterator, class SrcShape, class SrcAccessor,
           class DestIterator, class DestAccessor>
 inline void
 copyMultiArray(SrcIterator s, 
-               SrcIterator send, SrcAccessor src,
+               SrcShape const & shape, SrcAccessor src,
                DestIterator d, DestAccessor dest)
 {    
-    copyMultiArrayImpl(s, send, src, d, dest, MetaInt<SrcIterator::level>());
+    copyMultiArrayImpl(s, shape, src, d, dest, MetaInt<SrcIterator::level>());
 }
 
 template <class SrcIterator, class SrcShape, class SrcAccessor,
@@ -238,7 +249,7 @@ copyMultiArray(triple<SrcIterator, SrcShape, SrcAccessor> const & src,
                pair<DestIterator, DestAccessor> const & dest)
 {
     
-    copyMultiArray(src.first, src.first + src.second[src.second.size()-1], src.third, dest.first, dest.second);
+    copyMultiArray(src.first, src.second, src.third, dest.first, dest.second);
 }
 
 /********************************************************/
@@ -247,27 +258,26 @@ copyMultiArray(triple<SrcIterator, SrcShape, SrcAccessor> const & src,
 /*                                                      */
 /********************************************************/
 
-template <class SrcIterator, class SrcAccessor,
-          class DestIterator, class DestAccessor,
-          class Functor>
+template <class SrcIterator, class SrcShape, class SrcAccessor,
+          class DestIterator, class DestAccessor, class Functor>
 inline void
-transformMultiArrayImpl(SrcIterator s, SrcIterator send, SrcAccessor src,
+transformMultiArrayImpl(SrcIterator s, SrcShape const & shape, SrcAccessor src,
                DestIterator d, DestAccessor dest, Functor const & f, MetaInt<0>)
 {
-    transformLine(s, send, src, d, dest, f);
+    transformLine(s, s + shape[0], src, d, dest, f);
 }
     
-template <class SrcIterator, class SrcAccessor,
-          class DestIterator, class DestAccessor, 
-          class Functor, int N>
+template <class SrcIterator, class SrcShape, class SrcAccessor,
+          class DestIterator, class DestAccessor, class Functor, int N>
 void
-transformMultiArrayImpl(SrcIterator s, SrcIterator send, SrcAccessor src,
+transformMultiArrayImpl(SrcIterator s, SrcShape const & shape, SrcAccessor src,
                    DestIterator d, DestAccessor dest, 
                    Functor const & f, MetaInt<N>)
 {
+    SrcIterator send = s + shape[N];
     for(; s != send; ++s, ++d)
     {
-        transformMultiArrayImpl(s.begin(), s.end(), src, d.begin(), dest, 
+        transformMultiArrayImpl(s.begin(), shape, src, d.begin(), dest, 
                                 f, MetaInt<N-1>());
     }
 }
@@ -281,18 +291,21 @@ transformMultiArrayImpl(SrcIterator s, SrcIterator send, SrcAccessor src,
     The function uses accessors to access the pixel data.
     Note that the unary functors of the STL can be used in addition to
     the functors specifically defined in \ref TransformFunctor.
-    Creation of new functors is easiest by using \ref FunctorExpressions.
+    Creation of new functors is easiest by using \ref FunctorExpressions. Note that the iterator range 
+    must be specified by a shape object, because otherwise we could not control
+    the range simultaneously in all dimensions (this is a necessary consequence
+    of the \ref vigra::MultiIterator design).
 
     <b> Declarations:</b>
 
     pass arguments explicitly:
     \code
     namespace vigra {
-        template <class SrcIterator, class SrcAccessor,
-                  class DestIterator, class DestAccessor,
+        template <class SrcIterator, class SrcShape, class SrcAccessor,
+                  class DestIterator, class DestAccessor, 
                   class Functor>
         void
-        transformMultiArray(SrcIterator s, SrcIterator send, SrcAccessor src,
+        transformMultiArray(SrcIterator s, SrcShape const & shape, SrcAccessor src,
                             DestIterator d, DestAccessor dest, Functor const & f);
     }
     \endcode
@@ -302,7 +315,8 @@ transformMultiArrayImpl(SrcIterator s, SrcIterator send, SrcAccessor src,
     \code
     namespace vigra {
         template <class SrcIterator, class SrcShape, class SrcAccessor,
-                  class DestIterator, class DestAccessor, class Functor>
+                  class DestIterator, class DestAccessor, 
+                  class Functor>
         void
         transformMultiArray(triple<SrcIterator, SrcShape, SrcAccessor> const & src,
                        pair<DestIterator, DestAccessor> const & dest, Functor const & f);
@@ -342,24 +356,25 @@ transformMultiArrayImpl(SrcIterator s, SrcIterator send, SrcAccessor src,
     \endcode
 
 */
-template <class SrcIterator, class SrcAccessor,
-          class DestIterator, class DestAccessor,
+template <class SrcIterator, class SrcShape, class SrcAccessor,
+          class DestIterator, class DestAccessor, 
           class Functor>
 inline void
-transformMultiArray(SrcIterator s, SrcIterator send, SrcAccessor src,
+transformMultiArray(SrcIterator s, SrcShape const & shape, SrcAccessor src,
                     DestIterator d, DestAccessor dest, Functor const & f)
 {    
-    transformMultiArrayImpl(s, send, src, d, dest, f, MetaInt<SrcIterator::level>());
+    transformMultiArrayImpl(s, shape, src, d, dest, f, MetaInt<SrcIterator::level>());
 }
 
 template <class SrcIterator, class SrcShape, class SrcAccessor,
-          class DestIterator, class DestAccessor, class Functor>
+          class DestIterator, class DestAccessor, 
+          class Functor>
 inline void
 transformMultiArray(triple<SrcIterator, SrcShape, SrcAccessor> const & src,
                pair<DestIterator, DestAccessor> const & dest, Functor const & f)
 {
     
-    transformMultiArray(src.first, src.first + src.second[src.second.size()-1], src.third, 
+    transformMultiArray(src.first, src.second, src.third, 
                         dest.first, dest.second, f);
 }
 
@@ -369,31 +384,32 @@ transformMultiArray(triple<SrcIterator, SrcShape, SrcAccessor> const & src,
 /*                                                      */
 /********************************************************/
 
-template <class SrcIterator1, class SrcAccessor1,
+template <class SrcIterator1, class SrcShape, class SrcAccessor1,
           class SrcIterator2, class SrcAccessor2,
-          class DestIterator, class DestAccessor,
+          class DestIterator, class DestAccessor, 
           class Functor>
 inline void
-combineTwoMultiArraysImpl(SrcIterator1 s1, SrcIterator1 s1end, SrcAccessor1 src1,
+combineTwoMultiArraysImpl(SrcIterator1 s1, SrcShape const & shape, SrcAccessor1 src1,
                SrcIterator2 s2, SrcAccessor2 src2,
                DestIterator d, DestAccessor dest, Functor const & f, MetaInt<0>)
 {
-    combineTwoLines(s1, s1end, src1, s2, src2, d, dest, f);
+    combineTwoLines(s1, s1 + shape[0], src1, s2, src2, d, dest, f);
 }
     
-template <class SrcIterator1, class SrcAccessor1,
+template <class SrcIterator1, class SrcShape, class SrcAccessor1,
           class SrcIterator2, class SrcAccessor2,
           class DestIterator, class DestAccessor, 
           class Functor, int N>
 void
-combineTwoMultiArraysImpl(SrcIterator1 s1, SrcIterator1 s1end, SrcAccessor1 src1,
+combineTwoMultiArraysImpl(SrcIterator1 s1, SrcShape const & shape, SrcAccessor1 src1,
                SrcIterator2 s2, SrcAccessor2 src2,
                DestIterator d, DestAccessor dest, 
-                   Functor const & f, MetaInt<N>)
+               Functor const & f, MetaInt<N>)
 {
+    SrcIterator1 s1end = s1 + shape[N];
     for(; s1 != s1end; ++s1, ++s2, ++d)
     {
-        combineTwoMultiArraysImpl(s1.begin(), s1.end(), src1, 
+        combineTwoMultiArraysImpl(s1.begin(), shape, src1, 
                                   s2.begin(), src2, d.begin(), dest, 
                                   f, MetaInt<N-1>());
     }
@@ -409,19 +425,22 @@ combineTwoMultiArraysImpl(SrcIterator1 s1, SrcIterator1 s1end, SrcAccessor1 src1
     The function uses accessors to access the pixel data.
     Note that the binary functors of the STL can be used in addition to
     the functors specifically defined in \ref CombineFunctor.
-    Creation of new functors is easiest by using \ref FunctorExpressions.
+    Creation of new functors is easiest by using \ref FunctorExpressions. Note that the iterator range 
+    must be specified by a shape object, because otherwise we could not control
+    the range simultaneously in all dimensions (this is a necessary consequence
+    of the \ref vigra::MultiIterator design).
     
     <b> Declarations:</b>
     
     pass arguments explicitly:
     \code
     namespace vigra {
-        template <class SrcIterator1, class SrcAccessor1,
+        template <class SrcIterator1, class SrcShape, class SrcAccessor1,
                   class SrcIterator2, class SrcAccessor2,
-                  class DestIterator, class DestAccessor,
+                  class DestIterator, class DestAccessor, 
                   class Functor>
-        void
-        combineTwoMultiArrays(SrcIterator1 s1, SrcIterator1 s1end, SrcAccessor1 src1,
+        inline void
+        combineTwoMultiArrays(SrcIterator1 s1, SrcShape const & shape, SrcAccessor1 src1,
                        SrcIterator2 s2, SrcAccessor2 src2,
                        DestIterator d, DestAccessor dest, Functor const & f);
             }
@@ -486,16 +505,16 @@ combineTwoMultiArraysImpl(SrcIterator1 s1, SrcIterator1 s1end, SrcAccessor1 src1
     
     
 */
-template <class SrcIterator1, class SrcAccessor1,
+template <class SrcIterator1, class SrcShape, class SrcAccessor1,
           class SrcIterator2, class SrcAccessor2,
-          class DestIterator, class DestAccessor,
+          class DestIterator, class DestAccessor, 
           class Functor>
 inline void
-combineTwoMultiArrays(SrcIterator1 s1, SrcIterator1 s1end, SrcAccessor1 src1,
+combineTwoMultiArrays(SrcIterator1 s1, SrcShape const & shape, SrcAccessor1 src1,
                SrcIterator2 s2, SrcAccessor2 src2,
                DestIterator d, DestAccessor dest, Functor const & f)
 {    
-    combineTwoMultiArraysImpl(s1, s1end, src1, s2, src2, d, dest, f, 
+    combineTwoMultiArraysImpl(s1, shape, src1, s2, src2, d, dest, f, 
                               MetaInt<SrcIterator1::level>());
 }
 
@@ -509,7 +528,7 @@ combineTwoMultiArrays(triple<SrcIterator1, SrcShape, SrcAccessor1> const & src1,
 {
     
     combineTwoMultiArrays(
-           src1.first, src1.first + src1.second[src1.second.size()-1], src1.third, 
+           src1.first, src1.second, src1.third, 
            src2.first, src2.second, dest.first, dest.second, f);
 }
 
@@ -519,35 +538,36 @@ combineTwoMultiArrays(triple<SrcIterator1, SrcShape, SrcAccessor1> const & src1,
 /*                                                      */
 /********************************************************/
 
-template <class SrcIterator1, class SrcAccessor1,
+template <class SrcIterator1, class SrcShape, class SrcAccessor1,
           class SrcIterator2, class SrcAccessor2,
           class SrcIterator3, class SrcAccessor3,
-          class DestIterator, class DestAccessor,
+          class DestIterator, class DestAccessor, 
           class Functor>
 inline void
-combineThreeMultiArraysImpl(SrcIterator1 s1, SrcIterator1 s1end, SrcAccessor1 src1,
+combineThreeMultiArraysImpl(SrcIterator1 s1, SrcShape const & shape, SrcAccessor1 src1,
                SrcIterator2 s2, SrcAccessor2 src2,
                SrcIterator3 s3, SrcAccessor3 src3,
                DestIterator d, DestAccessor dest, Functor const & f, MetaInt<0>)
 {
-    combineThreeLines(s1, s1end, src1, s2, src2, s3, src3, d, dest, f);
+    combineThreeLines(s1, s1 + shape[0], src1, s2, src2, s3, src3, d, dest, f);
 }
     
-template <class SrcIterator1, class SrcAccessor1,
+template <class SrcIterator1, class SrcShape, class SrcAccessor1,
           class SrcIterator2, class SrcAccessor2,
           class SrcIterator3, class SrcAccessor3,
           class DestIterator, class DestAccessor, 
           class Functor, int N>
 void
-combineThreeMultiArraysImpl(SrcIterator1 s1, SrcIterator1 s1end, SrcAccessor1 src1,
+combineThreeMultiArraysImpl(SrcIterator1 s1, SrcShape const & shape, SrcAccessor1 src1,
                SrcIterator2 s2, SrcAccessor2 src2,
                SrcIterator3 s3, SrcAccessor3 src3,
                DestIterator d, DestAccessor dest, 
                    Functor const & f, MetaInt<N>)
 {
+    SrcIterator1 s1end = s1 + shape[N];
     for(; s1 != s1end; ++s1, ++s2, ++s3, ++d)
     {
-        combineThreeMultiArraysImpl(s1.begin(), s1.end(), src1, 
+        combineThreeMultiArraysImpl(s1.begin(), shape, src1, 
                                   s2.begin(), src2, s3.begin(), src3, d.begin(), dest, 
                                   f, MetaInt<N-1>());
     }
@@ -564,13 +584,13 @@ combineThreeMultiArraysImpl(SrcIterator1 s1, SrcIterator1 s1end, SrcAccessor1 sr
     pass arguments explicitly:
     \code
     namespace vigra {
-        template <class SrcIterator1, class SrcAccessor1,
+        template <class SrcIterator1, class SrcShape, class SrcAccessor1,
                   class SrcIterator2, class SrcAccessor2,
                   class SrcIterator3, class SrcAccessor3,
-                  class DestIterator, class DestAccessor,
+                  class DestIterator, class DestAccessor, 
                   class Functor>
         void
-        combineThreeMultiArrays(SrcIterator1 s1, SrcIterator1 s1end, SrcAccessor1 src1,
+        combineThreeMultiArrays(SrcIterator1 s1, SrcShape const & shape, SrcAccessor1 src1,
                        SrcIterator2 s2, SrcAccessor2 src2,
                        SrcIterator3 s3, SrcAccessor3 src3,
                        DestIterator d, DestAccessor dest, Functor const & f);
@@ -584,7 +604,8 @@ combineThreeMultiArraysImpl(SrcIterator1 s1, SrcIterator1 s1end, SrcAccessor1 sr
         template <class SrcIterator1, class SrcShape, class SrcAccessor1,
                   class SrcIterator2, class SrcAccessor2,
                   class SrcIterator3, class SrcAccessor3,
-                  class DestIterator, class DestAccessor, class Functor>
+                  class DestIterator, class DestAccessor, 
+                  class Functor>
         inline void
         combineThreeMultiArrays(triple<SrcIterator1, SrcShape, SrcAccessor1> const & src1,
                        pair<SrcIterator2, SrcAccessor2> const & src2,
@@ -617,25 +638,26 @@ combineThreeMultiArraysImpl(SrcIterator1 s1, SrcIterator1 s1end, SrcAccessor1 sr
     
     \endcode
 */
-template <class SrcIterator1, class SrcAccessor1,
+template <class SrcIterator1, class SrcShape, class SrcAccessor1,
           class SrcIterator2, class SrcAccessor2,
           class SrcIterator3, class SrcAccessor3,
-          class DestIterator, class DestAccessor,
+          class DestIterator, class DestAccessor, 
           class Functor>
 inline void
-combineThreeMultiArrays(SrcIterator1 s1, SrcIterator1 s1end, SrcAccessor1 src1,
+combineThreeMultiArrays(SrcIterator1 s1, SrcShape const & shape, SrcAccessor1 src1,
                SrcIterator2 s2, SrcAccessor2 src2,
                SrcIterator3 s3, SrcAccessor3 src3,
                DestIterator d, DestAccessor dest, Functor const & f)
 {    
-    combineThreeMultiArraysImpl(s1, s1end, src1, s2, src2, s3, src3, d, dest, f, 
+    combineThreeMultiArraysImpl(s1, shape, src1, s2, src2, s3, src3, d, dest, f, 
                               MetaInt<SrcIterator1::level>());
 }
 
 template <class SrcIterator1, class SrcShape, class SrcAccessor1,
           class SrcIterator2, class SrcAccessor2,
           class SrcIterator3, class SrcAccessor3,
-          class DestIterator, class DestAccessor, class Functor>
+          class DestIterator, class DestAccessor, 
+          class Functor>
 inline void
 combineThreeMultiArrays(triple<SrcIterator1, SrcShape, SrcAccessor1> const & src1,
                pair<SrcIterator2, SrcAccessor2> const & src2,
@@ -644,7 +666,7 @@ combineThreeMultiArrays(triple<SrcIterator1, SrcShape, SrcAccessor1> const & src
 {
     
     combineThreeMultiArrays(
-           src1.first, src1.first + src1.second[src1.second.size()-1], src1.third, 
+           src1.first, src1.second, src1.third, 
            src2.first, src2.second, src3.first, src3.second, dest.first, dest.second, f);
 }
 
@@ -654,20 +676,21 @@ combineThreeMultiArrays(triple<SrcIterator1, SrcShape, SrcAccessor1> const & src
 /*                                                      */
 /********************************************************/
 
-template <class Iterator, class Accessor, class Functor>
+template <class Iterator, class Shape, class Accessor, class Functor>
 inline void
-inspectMultiArrayImpl(Iterator s, Iterator send, Accessor a,  Functor & f, MetaInt<0>)
+inspectMultiArrayImpl(Iterator s, Shape const & shape, Accessor a,  Functor & f, MetaInt<0>)
 {
-    inspectLine(s, send, a, f);
+    inspectLine(s, s + shape[0], a, f);
 }
     
-template <class Iterator, class Accessor, class Functor, int N>
+template <class Iterator, class Shape, class Accessor, class Functor, int N>
 void
-inspectMultiArrayImpl(Iterator s, Iterator send, Accessor a,  Functor & f, MetaInt<N>)
+inspectMultiArrayImpl(Iterator s, Shape const & shape, Accessor a,  Functor & f, MetaInt<N>)
 {
+    Iterator send = s + shape[N];
     for(; s != send; ++s)
     {
-        inspectMultiArrayImpl(s.begin(), s.end(), a, f, MetaInt<N-1>());
+        inspectMultiArrayImpl(s.begin(), shape, a, f, MetaInt<N-1>());
     }
 }
     
@@ -677,16 +700,19 @@ inspectMultiArrayImpl(Iterator s, Iterator send, Accessor a,  Functor & f, MetaI
     The results must be stored in the functor, which serves as a return
     value. The arrays must be represented by
     iterators compatible with \ref vigra::MultiIterator.
-    The function uses an accessor to access the pixel data.
+    The function uses an accessor to access the pixel data. Note that the iterator range 
+    must be specified by a shape object, because otherwise we could not control
+    the range simultaneously in all dimensions (this is a necessary consequence
+    of the \ref vigra::MultiIterator design).
 
     <b> Declarations:</b>
 
     pass arguments explicitly:
     \code
     namespace vigra {
-        template <class Iterator, class Accessor, class Functor>
+        template <class Iterator, class Shape, class Accessor, class Functor>
         void
-        inspectMultiArray(Iterator s, Iterator send, Accessor a,  Functor & f);
+        inspectMultiArray(Iterator s, Shape const & shape, Accessor a,  Functor & f);
     }
     \endcode
 
@@ -729,19 +755,18 @@ inspectMultiArrayImpl(Iterator s, Iterator send, Accessor a,  Functor & f, MetaI
     \endcode
 
 */
-template <class Iterator, class Accessor, class Functor>
+template <class Iterator, class Shape, class Accessor, class Functor>
 inline void
-inspectMultiArray(Iterator s, Iterator send, Accessor a,  Functor & f)
+inspectMultiArray(Iterator s, Shape const & shape, Accessor a,  Functor & f)
 {
-    inspectMultiArrayImpl(s, send, a, f, MetaInt<Iterator::level>());
+    inspectMultiArrayImpl(s, shape, a, f, MetaInt<Iterator::level>());
 }
     
 template <class Iterator, class Shape, class Accessor, class Functor>
-inline 
-void
+inline void
 inspectMultiArray(triple<Iterator, Shape, Accessor> const & s, Functor & f)
 {
-    inspectMultiArray(s.first, s.first + s.second[s.second.size()-1], s.third, f);
+    inspectMultiArray(s.first, s.second, s.third, f);
 }
     
 /********************************************************/
@@ -750,28 +775,29 @@ inspectMultiArray(triple<Iterator, Shape, Accessor> const & s, Functor & f)
 /*                                                      */
 /********************************************************/
 
-template <class Iterator1, class Accessor1, 
+template <class Iterator1, class Shape, class Accessor1, 
           class Iterator2, class Accessor2, 
           class Functor>
 inline void
-inspectTwoMultiArraysImpl(Iterator1 s1, Iterator1 s1end, Accessor1 a1,
+inspectTwoMultiArraysImpl(Iterator1 s1, Shape const & shape, Accessor1 a1,
                           Iterator2 s2, Accessor2 a2,
                           Functor & f, MetaInt<0>)
 {
-    inspectTwoLines(s1, s1end, a1, s2, a2, f);
+    inspectTwoLines(s1, s1 + shape[0], a1, s2, a2, f);
 }
     
-template <class Iterator1, class Accessor1, 
+template <class Iterator1, class Shape, class Accessor1, 
           class Iterator2, class Accessor2, 
           class Functor, int N>
 void
-inspectTwoMultiArraysImpl(Iterator1 s1, Iterator1 s1end, Accessor1 a1,
+inspectTwoMultiArraysImpl(Iterator1 s1, Shape const & shape, Accessor1 a1,
                           Iterator2 s2, Accessor2 a2,
                           Functor & f, MetaInt<N>)
 {
+    Iterator1 s1end = s1 + shape[N];
     for(; s1 != s1end; ++s1, ++s2)
     {
-        inspectTwoMultiArraysImpl(s1.begin(), s1.end(), a1, 
+        inspectTwoMultiArraysImpl(s1.begin(), shape, a1, 
                                   s2.begin(), a2, f, MetaInt<N-1>());
     }
 }
@@ -782,18 +808,21 @@ inspectTwoMultiArraysImpl(Iterator1 s1, Iterator1 s1end, Accessor1 a1,
     The results must be stored in the functor, which serves as a return
     value. The arrays must be represented by
     iterators compatible with \ref vigra::MultiIterator.
-    The function uses an accessor to access the pixel data.
+    The function uses an accessor to access the pixel data. Note that the iterator range 
+    must be specified by a shape object, because otherwise we could not control
+    the range simultaneously in all dimensions (this is a necessary consequence
+    of the \ref vigra::MultiIterator design).
 
     <b> Declarations:</b>
 
     pass arguments explicitly:
     \code
     namespace vigra {
-        template <class Iterator1, class Accessor1, 
+        template <class Iterator1, class Shape, class Accessor1, 
                   class Iterator2, class Accessor2, 
                   class Functor>
         void
-        inspectTwoMultiArrays(Iterator1 s1, Iterator1 s1end, Accessor1 a1,
+        inspectTwoMultiArrays(Iterator1 s1, Shape const & shape, Accessor1 a1,
                               Iterator2 s2, Accessor2 a2, Functor & f);
     }
     \endcode
@@ -839,25 +868,25 @@ inspectTwoMultiArraysImpl(Iterator1 s1, Iterator1 s1end, Accessor1 a1,
     \endcode
 
 */
-template <class Iterator1, class Accessor1, 
+template <class Iterator1, class Shape, class Accessor1, 
           class Iterator2, class Accessor2, 
           class Functor>
 inline void
-inspectTwoMultiArrays(Iterator1 s1, Iterator1 s1end, Accessor1 a1,
+inspectTwoMultiArrays(Iterator1 s1, Shape const & shape, Accessor1 a1,
                       Iterator2 s2, Accessor2 a2, Functor & f)
 {
-    inspectTwoMultiArraysImpl(s1, s1end, a1, s2, a2, f, MetaInt<Iterator1::level>());
+    inspectTwoMultiArraysImpl(s1, shape, a1, s2, a2, f, MetaInt<Iterator1::level>());
 }
     
-template <class Iterator1, class Shape1, class Accessor1, 
+template <class Iterator1, class Shape, class Accessor1, 
           class Iterator2, class Accessor2, 
           class Functor>
 inline 
 void
-inspectTwoMultiArrays(triple<Iterator1, Shape1, Accessor1> const & s1, 
+inspectTwoMultiArrays(triple<Iterator1, Shape, Accessor1> const & s1, 
                       pair<Iterator2, Accessor2> const & s2, Functor & f)
 {
-    inspectTwoMultiArrays(s1.first, s1.first + s1.second[s1.second.size()-1], s1.third, 
+    inspectTwoMultiArrays(s1.first, s1.second, s1.third, 
                           s2.first, s2.second, f);
 }
     
