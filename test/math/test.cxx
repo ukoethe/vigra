@@ -58,7 +58,7 @@ static C reference[][12] =
 (std::cerr << #v1 << " == " << #v2 << ": " << (v1) << " " << (v2) << std::endl)
 #undef shouldEqualTolerance
 #define shouldEqualTolerance(v1, v2, e) \
-(std::cerr << #v1 << " == " << #v2 << ": " << (v1) << " " << (v2) << std::endl)
+(std::cerr << #v1 << " == " << #v2 << ": " << (v1) << " " << (v2) << " " << (v1 - v2) << std::endl)
 #endif
 
 template <unsigned int N, class POLYNOMIAL>
@@ -263,6 +263,24 @@ struct FunctionsTest
         shouldEqualTolerance(g5(-1.0), 0.034553286464660257, epsilon);
         shouldEqualTolerance(g5(2.711252359948531), 0, epsilon);
         shouldEqualTolerance(g5(5.713940027745611), 0, epsilon);
+    }
+
+    void closeAtToleranceTest()
+    {
+        double a = 0.0, b = vigra::NumericTraits<double>::epsilon(), c = 1000.0, d = 1000.1;
+
+        using vigra::closeAtTolerance;
+        should(closeAtTolerance(a, b));
+        should(closeAtTolerance(c, c + b));
+        should(closeAtTolerance(c, d, 1.0));
+        should(closeAtTolerance(-a, -b));
+        should(closeAtTolerance(-c, -c + b));
+        should(closeAtTolerance(-c, -d, 1.0));
+        should(!closeAtTolerance(c, -c));
+        should(!closeAtTolerance(a, c));
+        should(!closeAtTolerance(c, d));
+        should(!closeAtTolerance(-a, -c));
+        should(!closeAtTolerance(-c, -d));
     }
 };
 
@@ -1040,6 +1058,7 @@ struct MathTestSuite
         add( testCase(&SplineTest<5>::testWeightMatrix));
 
         add( testCase(&FunctionsTest::testGaussians));
+        add( testCase(&FunctionsTest::closeAtToleranceTest));
 
         add( testCase(&RationalTest::testGcdLcm));
         add( testCase(&RationalTest::testOperators));
