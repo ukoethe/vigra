@@ -2,6 +2,7 @@
 /************************************************************************/
 /*                                                                      */
 /*               Copyright 2003 by Christian-Dennis Rahn                */
+/*                        and Ullrich Koethe                            */
 /*       Cognitive Systems Group, University of Hamburg, Germany        */
 /*                                                                      */
 /*    This file is part of the VIGRA computer vision library.           */
@@ -36,104 +37,20 @@
 #include <vigra/navigator.hxx>
 
 
-namespace std
-{
-  /** \brief Overloaded version of std::distance
-
-      This overloaded function is just for working around a potential
-      bug in MultiIterator.
-   */
-  template<unsigned int N, class T, class R, class P>
-  inline typename vigra::StridedMultiIterator<N,T,R,P>::difference_type
-  distance( vigra::StridedMultiIterator<N,T,R,P> first,
-	    vigra::StridedMultiIterator<N,T,R,P> last )
-  {
-    typename vigra::StridedMultiIterator<N,T,R,P>::difference_type c = 0;
-    for( ; first != last; ++first ) {
-      ++c;
-    }
-    return c;
-  }
-
-};	//-- namespace std
-
-
-
-//----------------------------------------------------------------
-
 namespace vigra
 {
 
-  /** \brief Argument factory for MultiArrayView data
-   */
-  template <unsigned int N, class T, class C>
-  inline vigra::triple<typename MultiArrayView<N,T,C>::const_traverser,
-		       typename MultiArrayView<N,T,C>::difference_type,
-		       StandardConstValueAccessor<T> >
-  srcMultiArrayRange( const MultiArrayView<N,T,C> & array )
-  {
-    return vigra::triple<typename MultiArrayView<N,T,C>::const_traverser,
-                         typename MultiArrayView<N,T,C>::difference_type,
-                         StandardConstValueAccessor<T> >
-      ( array.traverser_begin(),
-	array.shape(),
-	StandardConstValueAccessor<T>() );
-  }
 
+//---------------------------------------------------------------------------
 
-  /** \brief Argument factory for MultiArrayView data
-   */
-  template <unsigned int N, class T, class C>
-  inline triple<typename MultiArrayView<N,T,C>::traverser,
-		typename MultiArrayView<N,T,C>::difference_type,
-		StandardValueAccessor<T> >
-  destMultiArrayRange( MultiArrayView<N,T,C> & array )
-  {
-    return vigra::triple<typename MultiArrayView<N,T,C>::traverser,
-                         typename MultiArrayView<N,T,C>::difference_type,
-                         StandardValueAccessor<T> >
-      ( array.traverser_begin(),
-	array.shape(),
-	StandardValueAccessor<T>() );
-  }
+/********************************************************/
+/*                                                      */
+/*           Some internal slave functions              */
+/*                                                      */
+/********************************************************/
 
-
-  /** \brief Argument factory for MultiArrayView data
-   */
-  template <unsigned int N, class T, class C, class Accessor>
-  vigra::pair<typename MultiArrayView<N,T,C>::traverser,
-	      Accessor>
-  destMultiArray( MultiArrayView<N,T,C> & array, Accessor a )
-  {
-    return vigra::pair<typename MultiArrayView<N,T,C>::traverser,
-      Accessor> ( array.traverser_begin(), a );
-  }
-
-
-  /** \brief Argument factory for MultiArrayView data
-   */
-  template <unsigned int N, class T, class C>
-  vigra::pair<typename MultiArrayView<N,T,C>::traverser,
-	      vigra::StandardValueAccessor<T> >
-  destMultiArray( MultiArrayView<N,T,C> & array )
-  {
-    return vigra::pair<typename MultiArrayView<N,T,C>::traverser,
-      vigra::StandardValueAccessor<T> >( array.traverser_begin(),
-					 vigra::StandardValueAccessor<T>() );
-  }
-
-
-
-  //---------------------------------------------------------------------------
-
-  /********************************************************/
-  /*                                                      */
-  /*           Some internal slave functions              */
-  /*                                                      */
-  /********************************************************/
-
-  namespace detail
-  {
+namespace detail
+{
 
     /** A small helper
      */
@@ -225,20 +142,20 @@ namespace vigra
     }
 
 
-  };	//-- namespace detail
+};	//-- namespace detail
 
 
 
 
-  // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-  /********************************************************/
-  /*                                                      */
-  /*             separableConvolveMultiarray              */
-  /*                                                      */
-  /********************************************************/
+/********************************************************/
+/*                                                      */
+/*             separableConvolveMultiarray              */
+/*                                                      */
+/********************************************************/
 
-  /** \brief Separated convolution on MultiArray
+/** \brief Separated convolution on MultiArray
 
       This function computes a separated convolution on all dimensions
       of the given MultiArray \a source. The result will be stored in
@@ -263,29 +180,30 @@ namespace vigra
       size.
 
       \see Kernel1D, convolveLine()
-  */
-  template <class S, class D, class KernelIterator>
-  inline
-  void separableConvolveMultiarray( S source, D dest, KernelIterator kit )
-  {
+*/
+template <class S, class D, class KernelIterator>
+inline
+void separableConvolveMultiarray( S source, D dest, KernelIterator kit )
+{
     vigra::detail::internalSeparableConvolveMultiarrayTmp( source, dest, kit );
-  }
+}
 
 
 
-  // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-  /** \overload
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+/** \overload
 
       This overloaded function computes an isotropic convolution where
       the given kernel \a kernel is applied to each dimension
       individually.
    */
-  template <typename S, typename D, typename A>
-  inline
-  void separableConvolveMultiarray( S source, D dest,
+template <class S, class D, class A>
+inline
+void separableConvolveMultiarray( S source, D dest,
 				    const vigra::Kernel1D<A> &kernel )
-  {
-    enum { N = 1 + S::first_type::level };
+{
+    typedef typename S::first_type SF;
+    const int N = 1 + SF::level;
     
     std::list<const vigra::Kernel1D<A> *> kernelList( N );
     for( int i = 0; i < N; ++i )
@@ -293,12 +211,12 @@ namespace vigra
   
     vigra::internalSeparableConvolveMultiarray( source, dest,
 						kernelList.begin() );
-  }
+}
 
 
 
-  // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-  /** \overload
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+/** \overload
 
       This overloaded function computes a convolution with the given
       kernel \a kernel only on the dimension \a dim of the MultiArray
@@ -306,13 +224,14 @@ namespace vigra
 
       This may be used to e.g. smooth data only in one dimension.
    */
-  template <typename S, typename D, typename A>
-  inline
-  void separableConvolveMultiarray( S source, D dest,
+template <class S, class D, class A>
+inline
+void separableConvolveMultiarray( S source, D dest,
 				    unsigned int dim,
 				    const vigra::Kernel1D<A> &kernel )
-  {
-    enum { N = 1 + S::first_type::level };
+{
+    typedef typename S::first_type SF;
+    const int N = 1 + SF::level;
     vigra_precondition( dim < N,
 			"The dimension number to convolve must be smaller "
 			"than the data dimensionality" );
@@ -342,18 +261,18 @@ namespace vigra
 			   kernel1d(kernel) );
     }
 #endif
-  }
+}
 
 
 
-  /********************************************************/
-  /*                                                      */
-  /*                  gaussianSmoothing                   */
-  /*                                                      */
-  /********************************************************/
+/********************************************************/
+/*                                                      */
+/*                  gaussianSmoothing                   */
+/*                                                      */
+/********************************************************/
 
 
-  /** \brief Isotropic Gaussian smoothing of a MultiArrayView
+/** \brief Isotropic Gaussian smoothing of a MultiArrayView
 
       This performs an isotropic smoothing using a Gaussian filter
       kernel on the given MultiArrayView data \a source. The result
@@ -367,12 +286,13 @@ namespace vigra
       respective filter kernels as a parameter.
 
       \see separableConvolveMultiarray()
-  */
-  template <typename S, typename D>
-  inline
-  void gaussianSmoothing( S source, D dest, double sigma )
-  {
-    enum { N = 1 + S::first_type::level };
+*/
+template <class S, class D>
+inline
+void gaussianSmoothing( S source, D dest, double sigma )
+{
+    typedef typename S::first_type SF;
+    const unsigned int N = 1 + SF::level;
     
     vigra_precondition( sigma > 0,
 			"The kernel standard deviation sigma "
@@ -383,7 +303,7 @@ namespace vigra
       kernels[i].initGaussian( sigma );
 
     vigra::separableConvolveMultiarray( source, dest, kernels.begin() );
-  }
+}
 
 
 
@@ -414,11 +334,12 @@ namespace vigra
 
     \see separableConvolveMultiarray()
 */
-  template <typename S, typename D>
-  inline
-  void symmetricGradient( S source, D dest )
-  {
-    enum { N = 1 + S::first_type::level };
+template <typename S, typename D>
+inline
+void symmetricGradient( S source, D dest )
+{
+    typedef typename S::first_type SF;
+    const int N = 1 + SF::level;
 
     //  vigra_precondition( D::ActualDimension == N,
     //  vigra_precondition( D::value_type == N,
@@ -442,7 +363,7 @@ namespace vigra
 				   std::pair<DestType, VAccessor>( dest.first, VAccessor(d) ),
 				   d, filter );
     }
-  }
+}
 
 
 
