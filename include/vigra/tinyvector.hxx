@@ -27,6 +27,7 @@
 #include <cstdlib>  // abs(int)
 #include <iosfwd>   // ostream
 #include "vigra/config.hxx"
+#include "vigra/error.hxx"
 #include "vigra/numerictraits.hxx"
 
 namespace vigra {
