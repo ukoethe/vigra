@@ -134,8 +134,8 @@ public:
     };
 };
 
-/** @heading Seeded Region Growing
-    @memo region segmentation and voronoi tesselation
+/** \addtogroup SeededRegionGrowing Seeded Region Growing
+    Region segmentation and voronoi tesselation
 */
 //@{ 
                                     
@@ -145,14 +145,15 @@ public:
 /*                                                      */
 /********************************************************/
 
-/** Region Segmentation by means of Seeded Region Growing.
+/** \brief Region Segmentation by means of Seeded Region Growing.
+
     This algorithm implements seeded region growing as described in 
     
-    R. Adams, L. Bischof: "{\em Seeded Region Growing}", IEEE Trans. on Pattern
+    R. Adams, L. Bischof: "<em> Seeded Region Growing</em>", IEEE Trans. on Pattern
     Analysis and Maschine Intelligence, vol 16, no 6, 1994, and
     
     Ullrich K\"othe: 
-    {\em "\URL[Primary Image Segmentation]{http://kogs-www.informatik.uni-hamburg.de/~koethe/papers/#primary}"}, 
+    <em> "<a href="http://kogs-www.informatik.uni-hamburg.de/~koethe/papers/#primary">Primary Image Segmentation</a>"</em>, 
     in: G. Sagerer, S. 
     Posch, F. Kummert (eds.): Mustererkennung 1995, Proc. 17. DAGM-Symposium, 
     Springer 1995
@@ -165,25 +166,25 @@ public:
     the existing regions so that a cost function is minimized. This 
     works as follows:
     
-    \begin{enumerate}
+    <ol>
     
-    \item Find all candidate pixels that are 4-adjacent to a seed region.
+    <li> Find all candidate pixels that are 4-adjacent to a seed region.
     Calculate the cost for aggregating each candidate into its adajacent region 
     and put the candidates into a priority queue.
     
-    \item While( priority queue is not empty)
+    <li> While( priority queue is not empty)
     
-        \begin{enumerate}
+        <ol>
         
-        \item Take the candidate with least cost from the queue. If it has not
+        <li> Take the candidate with least cost from the queue. If it has not
         already been merged, merge it with it's adjacent region.
         
-        \item Put all candidates that are 4-adjacent to the pixel just processed
+        <li> Put all candidates that are 4-adjacent to the pixel just processed
         into the priority queue.
 
-        \end{enumerate}
+        </ol>
     
-    \end{enumerate}
+    </ol>
     
     This algorithm will always lead to a complete, 4-connected tesselation of
     the image. 
@@ -192,34 +193,34 @@ public:
     region statistics functor. The source image contains feature values for each
     pixel which will be used by the region statistics functor to calculate and 
     update statistics for each region and to calculate the cost for each
-    candidate. The #RegionStatisticsFunctor# must be compatible to the 
-    \Ref{ArrayOfRegionStatistics} functor and contains an {\em array} of 
+    candidate. The <TT>RegionStatisticsFunctor</TT> must be compatible to the 
+    \ref ArrayOfRegionStatistics functor and contains an <em> array</em> of 
     statistics objects for each region. The indices must correspond to the
     labels of the seed regions. The statistics for the initial regions must have
-    been calculated prior to calling #seededRegionGrowing# (for example by 
-    means of \Ref{inspectTwoImagesIf}). 
+    been calculated prior to calling <TT>seededRegionGrowing()</TT> (for example by 
+    means of \ref inspectTwoImagesIf()). 
     
     For each candidate 
-    #x# that is adjacent to region #i#, the algorithm will call 
-    #stats[i].cost(as(x))# to get the cost (where #x# is a #SrcImageIterator# 
-    and #as# is 
+    <TT>x</TT> that is adjacent to region <TT>i</TT>, the algorithm will call 
+    <TT>stats[i].cost(as(x))</TT> to get the cost (where <TT>x</TT> is a <TT>SrcImageIterator</TT> 
+    and <TT>as</TT> is 
     the SrcAccessor). When a candidate has been merged with a region, the
-    statistics are updated by calling #stats[i].operator()(as(x))#. Since
-    the #RegionStatisticsFunctor# is passed by reference, this will overwrite
+    statistics are updated by calling <TT>stats[i].operator()(as(x))</TT>. Since
+    the <TT>RegionStatisticsFunctor</TT> is passed by reference, this will overwrite
     the original statistics.
     
     If a candidate could be merged into more than one regions with identical 
     cost, the algorithm will favour the nearest region. 
     
     In some cases, the cost only depends on the feature value of the current
-    pixel. Then the update operation will simply be a no-op, and the #cost()#
+    pixel. Then the update operation will simply be a no-op, and the <TT>cost()</TT>
     function returns its argument. This behavior is implemented by the 
-    \Ref{SeedRgDirectValueFunctor}.
+    \ref SeedRgDirectValueFunctor.
     
-    {\bf Declarations:}
+    <b> Declarations:</b>
     
     pass arguments explicitly:
-    \begin{verbatim}
+    \code
     namespace vigra {
         template <class SrcImageIterator, class SrcAccessor, 
                   class SeedImageIterator, class SeedAccessor,
@@ -231,10 +232,10 @@ public:
 			         DestImageIterator destul, DestAccessor ad,
 		                 RegionStatisticsFunctor & stats);
     }
-    \end{verbatim}
+    \endcode
     
-    use argument objects in conjuction with \Ref{Argument Object Factories}:
-    \begin{verbatim}
+    use argument objects in conjuction with \ref ArgumentObjectFactories:
+    \code
     namespace vigra {
         template <class SrcImageIterator, class SrcAccessor, 
                   class SeedImageIterator, class SeedAccessor,
@@ -246,17 +247,16 @@ public:
 		           pair<DestImageIterator, DestAccessor> img4,
 		           RegionStatisticsFunctor & stats);
     }
-    \end{verbatim}
+    \endcode
     
-    {\bf Usage:}
+    <b> Usage:</b>
     
-    Include-File:
-    \URL[vigra/seededregiongrowing.hxx]{../include/vigra/seededregiongrowing.hxx}\\
+    <b>\#include</b> "<a href="seededregiongrowing_8hxx-source.html">vigra/seededregiongrowing.hxx</a>"<br>
     Namespace: vigra
     
     Example: implementation of the voronoi tesselation
     
-    \begin{verbatim}
+    \code
     vigra::BImage points(w,h);
     vigra::FImage dist(x,y);
     
@@ -280,11 +280,11 @@ public:
     // find voronoi region of each point 
    vigra:: seededRegionGrowing(srcImageRange(dist), srcImage(points), 
                                destImage(points), stats);
-    \end{verbatim}
+    \endcode
 
-    {\bf Required Interface:}
+    <b> Required Interface:</b>
     
-    \begin{verbatim}
+    \code
     SrcImageIterator src_upperleft, src_lowerright;
     SeedImageIterator seed_upperleft;
     DestImageIterator dest_upperleft;
@@ -307,9 +307,9 @@ public:
     
     // set result
     dest_accessor.set(seed_accessor(seed_upperleft), dest_upperleft);
-    \end{verbatim}
+    \endcode
     
-    Further requirements are determined by the #RegionStatisticsFunctor#. 
+    Further requirements are determined by the <TT>RegionStatisticsFunctor</TT>. 
 */
 template <class SrcImageIterator, class SrcAccessor, 
           class SeedImageIterator, class SeedAccessor,
@@ -440,18 +440,18 @@ seededRegionGrowing(triple<SrcImageIterator, SrcImageIterator, SrcAccessor> img1
 /*                                                      */
 /********************************************************/
 
-/** Statistics functor to be used for seeded region growing.
+/** \brief Statistics functor to be used for seeded region growing.
+
     This functor can be used if the cost of a candidate during 
-    \Ref{seededRegionGrowing} is equal to the feature value of that
+    \ref seededRegionGrowing() is equal to the feature value of that
     candidate and does not depend on properties of the region it is going to 
     be merged with.
 
-    Include-File:
-    \URL[vigra/seededregiongrowing.hxx]{../include/vigra/seededregiongrowing.hxx}\\
+    <b>\#include</b> "<a href="seededregiongrowing_8hxx-source.html">vigra/seededregiongrowing.hxx</a>"<br>
     Namespace: vigra
     
     
-     {\bf Required Interface:}
+     <b> Required Interface:</b>
      
      no requirements
 */
@@ -463,12 +463,10 @@ class SeedRgDirectValueFunctor
     typedef Value cost_type;
     
         /** Do nothing (since we need not update region statistics).
-            @memo
         */
     void operator()(Value const &) const {}
 
         /** Return argument (since cost is identical to feature value)
-            @memo
         */
     Value const & cost(Value const & v) const
     {

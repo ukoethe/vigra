@@ -29,10 +29,11 @@
 
 namespace vigra {
 
-/** @heading Algorithms to Transform Images
-    @memo apply functor to calculate a pixelwise transformation of one image
+/** \addtogroup TransformAlgo Algorithms to Transform Images
+    Apply functor to calculate a pixelwise transformation of one image
+    
+    @{
 */
-//@{
 
 /********************************************************/
 /*                                                      */
@@ -40,15 +41,19 @@ namespace vigra {
 /*                                                      */
 /********************************************************/
 
-/** Transform source image into destination image.
+/** \brief Apply unary point transformation to each pixel.
+
     The transformation given by the functor is applied to every source 
     pixel and the result written into the corresponding destination pixel.
     The function uses accessors to access the pixel data.
+    Note that the unary functors of the STL can be used in addition to
+    the functors specifically defined in \ref TransformFunctor.
+    Creation of new functors is easiest by using \ref FunctorExpressions.
     
-    {\bf Declarations:}
+    <b> Declarations:</b>
     
     pass arguments explicitly:
-    \begin{verbatim}
+    \code
     namespace vigra {
         template <class SrcImageIterator, class SrcAccessor,
               class DestImageIterator, class DestAccessor, class Functor>
@@ -58,11 +63,11 @@ namespace vigra {
                DestImageIterator dest_upperleft, DestAccessor da,
                Functor f)
     }
-    \end{verbatim}
+    \endcode
     
     
-    use argument objects in conjuction with \Ref{Argument Object Factories}:
-    \begin{verbatim}
+    use argument objects in conjuction with \ref ArgumentObjectFactories:
+    \code
     namespace vigra {
         template <class SrcImageIterator, class SrcAccessor,
               class DestImageIterator, class DestAccessor, class Functor>
@@ -71,15 +76,14 @@ namespace vigra {
                pair<DestImageIterator, DestAccessor> dest,
                Functor f)
     }
-    \end{verbatim}
+    \endcode
     
-    {\bf Usage:}
+    <b> Usage:</b>
     
-        Include-File:
-        \URL[vigra/transformimage.hxx]{../include/vigra/transformimage.hxx}\\
+        <b>\#include</b> "<a href="transformimage_8hxx-source.html">vigra/transformimage.hxx</a>"<br>
         Namespace: vigra
     
-    \begin{verbatim}
+    \code
     
     #include <math.h>         // for sqrt()
     
@@ -87,11 +91,11 @@ namespace vigra {
                           destImage(dest), 
                           &::sqrt );
     
-    \end{verbatim}
+    \endcode
 
-    {\bf Required Interface:}
+    <b> Required Interface:</b>
     
-    \begin{verbatim}
+    \code
     SrcImageIterator src_upperleft, src_lowerright;
     DestImageIterator      dest_upperleft;
     
@@ -102,9 +106,8 @@ namespace vigra {
 
     dest_accessor.set(functor(src_accessor(src_upperleft)), dest_upperleft);
 
-    \end{verbatim}
+    \endcode
     
-    @memo
 */
 template <class SrcImageIterator, class SrcAccessor,
           class DestImageIterator, class DestAccessor, class Functor>
@@ -148,17 +151,22 @@ transformImage(triple<SrcImageIterator, SrcImageIterator, SrcAccessor> src,
 /*                                                      */
 /********************************************************/
 
-/** Transform source ROI into destination ROI.
+/** \brief Apply unary point transformation to each pixel within the ROI
+    (i.e., where the mask is non-zero).
+
     The transformation given by the functor is applied to every source 
     pixel in the ROI (i.e. when the return vlaue of the mask's accessor
     is not zero)
     and the result is written into the corresponding destination pixel.
     The function uses accessors to access the pixel data.
+    Note that the unary functors of the STL can be used in addition to
+    the functors specifically defined in \ref TransformFunctor.
+    Creation of new functors is easiest by using \ref FunctorExpressions.
     
-    {\bf Declarations:}
+    <b> Declarations:</b>
     
     pass arguments explicitly:
-    \begin{verbatim}
+    \code
     namespace vigra {
         template <class SrcImageIterator, class SrcAccessor,
               class MaskImageIterator, class MaskAccessor,
@@ -171,11 +179,11 @@ transformImage(triple<SrcImageIterator, SrcImageIterator, SrcAccessor> src,
             DestImageIterator dest_upperleft, DestAccessor da,
             Functor f)
     }
-    \end{verbatim}
+    \endcode
     
     
-    use argument objects in conjuction with \Ref{Argument Object Factories}:
-    \begin{verbatim}
+    use argument objects in conjuction with \ref ArgumentObjectFactories:
+    \code
     namespace vigra {
         template <class SrcImageIterator, class SrcAccessor,
               class MaskImageIterator, class MaskAccessor,
@@ -187,15 +195,14 @@ transformImage(triple<SrcImageIterator, SrcImageIterator, SrcAccessor> src,
                  pair<DestImageIterator, DestAccessor> dest,
                  Functor f)
     }
-    \end{verbatim}
+    \endcode
     
-    {\bf Usage:}
+    <b> Usage:</b>
     
-        Include-File:
-        \URL[vigra/transformimage.hxx]{../include/vigra/transformimage.hxx}\\
+        <b>\#include</b> "<a href="transformimage_8hxx-source.html">vigra/transformimage.hxx</a>"<br>
         Namespace: vigra
     
-    \begin{verbatim}
+    \code
     #include <math.h>         // for sqrt()
     
     vigra::transformImageIf(srcImageRange(src), 
@@ -203,11 +210,11 @@ transformImage(triple<SrcImageIterator, SrcImageIterator, SrcAccessor> src,
                             destImage(dest), 
                             &::sqrt );
 
-    \end{verbatim}
+    \endcode
 
-    {\bf Required Interface:}
+    <b> Required Interface:</b>
     
-    \begin{verbatim}
+    \code
     SrcImageIterator src_upperleft, src_lowerright;
     DestImageIterator  dest_upperleft;
     MaskImageIterator mask_upperleft;
@@ -220,9 +227,8 @@ transformImage(triple<SrcImageIterator, SrcImageIterator, SrcAccessor> src,
     if(mask_accessor(mask_uppeleft))
        dest_accessor.set(functor(src_accessor(src_upperleft)), dest_upperleft);
 
-    \end{verbatim}
+    \endcode
     
-    @memo
 */
 template <class SrcImageIterator, class SrcAccessor,
           class MaskImageIterator, class MaskAccessor,
@@ -275,18 +281,20 @@ transformImageIf(triple<SrcImageIterator, SrcImageIterator, SrcAccessor> src,
 /*                                                      */
 /********************************************************/
 
-/** Calculate a function of the image gradient. The gradient and the function
-    represented by #Functor f# are calculated in one go: for each location, the
+/** \brief Calculate a function of the image gradient. 
+
+    The gradient and the function
+    represented by <TT>Functor f</TT> are calculated in one go: for each location, the
     symmetric difference in x- and y-directions (asymmetric difference at the 
     image borders) are passed to the given functor, and the result is written 
     the destination image. Functors to be used with this function
-    include \Ref{MagnitudeFunctor} and 
-    \Ref{RGBGradientMagnitudeFunctor}.
+    include \ref MagnitudeFunctor and 
+    \ref RGBGradientMagnitudeFunctor.
     
-    {\bf Declarations:}
+    <b> Declarations:</b>
     
     pass arguments explicitly:
-    \begin{verbatim}
+    \code
     namespace vigra {
         template <class SrcImageIterator, class SrcAccessor,
                   class DestImageIterator, class DestAccessor, class Functor>
@@ -294,11 +302,11 @@ transformImageIf(triple<SrcImageIterator, SrcImageIterator, SrcAccessor> src,
         gradientBasedTransform(SrcImageIterator srcul, SrcImageIterator srclr, SrcAccessor sa,
                       DestImageIterator destul, DestAccessor da, Functor f)
     }
-    \end{verbatim}
+    \endcode
     
     
-    use argument objects in conjuction with \Ref{Argument Object Factories}:
-    \begin{verbatim}
+    use argument objects in conjuction with \ref ArgumentObjectFactories:
+    \code
     namespace vigra {
         template <class SrcImageIterator, class SrcAccessor,
                   class DestImageIterator, class DestAccessor, class Functor>
@@ -306,25 +314,24 @@ transformImageIf(triple<SrcImageIterator, SrcImageIterator, SrcAccessor> src,
         gradientBasedTransform(triple<SrcImageIterator, SrcImageIterator, SrcAccessor> src,
                        pair<DestImageIterator, DestAccessor> dest, Functor const & f)
     }
-    \end{verbatim}
+    \endcode
     
-    {\bf Usage:}
+    <b> Usage:</b>
     
-    Include-File:
-    \URL[vigra/transformimage.hxx]{../include/vigra/transformimage.hxx}
+    <b>\#include</b> "<a href="transformimage_8hxx-source.html">vigra/transformimage.hxx</a>"
     
     
-    \begin{verbatim}
+    \code
     vigra::FImage src(w,h), magnitude(w,h);    
     ...
     
     gradientBasedTransform(srcImageRange(src), destImage(magnitude),
                                 vigra::MagnitudeFunctor<float>());
-    \end{verbatim}
+    \endcode
 
-    {\bf Required Interface:}
+    <b> Required Interface:</b>
     
-    \begin{verbatim}
+    \code
     SrcImageIterator is, isend;
     DestImageIterator id;
     
@@ -341,9 +348,8 @@ transformImageIf(triple<SrcImageIterator, SrcImageIterator, SrcAccessor> src,
     
     dest_accessor.set(f(diffx, diffy), id);
 
-    \end{verbatim}
+    \endcode
 
-    @memo
 */
 
 template <class SrcImageIterator, class SrcAccessor,
@@ -439,13 +445,11 @@ gradientBasedTransform(triple<SrcImageIterator, SrcImageIterator, SrcAccessor> s
                   dest.first, dest.second, grad);
 }
 
-//@}
+/** @} */
+/** \addtogroup TransformFunctor Functors to Transform Images
 
-/** @heading Functors to Transform Images
-
-    Note that the unary functors of the STL can also be used.
-    
-    @memo frequently used pixel transformations
+    Note that the unary functors of the STL can also be used in
+    connection with \ref transformImage().
 */
 //@{
 
@@ -454,7 +458,6 @@ class LinearIntensityTransform
 {
    public:
         /* the functors value type
-            @memo
         */
     typedef SrcValueType value_type;
     
@@ -462,14 +465,12 @@ class LinearIntensityTransform
             NumericTraits<SrcValueType>::RealPromote SrcPromote;
     
         /* init scale and offset
-            @memo
         */
     LinearIntensityTransform(double scale, SrcPromote offset)
     : scale_(scale), offset_(offset)
     {}
     
         /* calculate transform
-            @memo
         */
     value_type operator()(value_type const & s) const
     {
@@ -489,29 +490,30 @@ class LinearIntensityTransform
 /*                                                      */
 /********************************************************/
 
-/** Factory function for a functor that linearly transforms the 
+/** \brief Apply a linear transform to the source pixel values 
+
+    Factory function for a functor that linearly transforms the 
     source pixel values. The functor applies the transform 
-    '#destvalue = scale * (srcvalue + offset)#' to every pixel.
+    '<TT>destvalue = scale * (srcvalue + offset)</TT>' to every pixel.
     This can, for example, be used to transform images into the visible 
     range 0...255 or to invert an image.
     
-    {\bf Declaration:}
+    <b> Declaration:</b>
     
-    \begin{verbatim}
+    \code
     namespace vigra {
         template <class SrcValueType>
         LinearIntensityTransform<SrcValueType>
         linearIntensityTransform(double scale, SrcValueType offset)
     }
-    \end{verbatim}
+    \endcode
     
-    {\bf Usage:}
+    <b> Usage:</b>
     
-        Include-File:
-        \URL[vigra/transformimage.hxx]{../include/vigra/transformimage.hxx}\\
+        <b>\#include</b> "<a href="transformimage_8hxx-source.html">vigra/transformimage.hxx</a>"<br>
         Namespace: vigra
     
-    \begin{verbatim}
+    \code
     vigra::IImage src(width, height);
     vigra::BImage dest(width, height);
     ...
@@ -525,13 +527,13 @@ class LinearIntensityTransform
                             255.0 / (minmax.max - minmax.min), // scaling
                           - minmax.min));                    // offset
      
-    \end{verbatim}
+    \endcode
 
-    {\bf Required Interface:}
+    <b> Required Interface:</b>
     
-    The source value type must be a model of \Ref{LinearSpace}.
+    The source value type must be a model of \ref LinearSpace.
     
-    @memo Apply a linear transform to the source pixel values 
+    
     
 */
 template <class SrcValueType>
@@ -548,19 +550,19 @@ linearIntensityTransform(double scale, SrcValueType offset)
 /*                                                      */
 /********************************************************/
 
-/** Threshold an image.
+/** \brief Threshold an image.
+
     If a source pixel is above or equal the lower and below 
     or equal the higher threshold (i.e. within the closed interval
     [lower, heigher]) the destination pixel is set to 'yesresult',
     otherwise to 'noresult'.
 
-    {\bf Usage:}
+    <b> Usage:</b>
     
-        Include-File:
-        \URL[vigra/transformimage.hxx]{../include/vigra/transformimage.hxx}\\
+        <b>\#include</b> "<a href="transformimage_8hxx-source.html">vigra/transformimage.hxx</a>"<br>
         Namespace: vigra
     
-    \begin{verbatim}
+    \code
     vigra::BImage src(width, height), dest(width, height);
     ...
     vigra::transformImage(src.upperLeft(), src.lowerRight(), src.accessor(),
@@ -568,18 +570,18 @@ linearIntensityTransform(double scale, SrcValueType offset)
        vigra::Threshold<
           vigra::BImage::PixelType, vigra::BImage::PixelType>(10, 100, 0, 255));
     
-    \end{verbatim}
+    \endcode
 
-    {\bf Required Interface:}
+    <b> Required Interface:</b>
     
-    \begin{verbatim}
+    \code
     
     SrcValueType   src;
     DestValueType  dest, yesresult, noresult;
     
     dest = ((src < lower) || (higher < src)) ? noresult : yesresult;
     
-    \end{verbatim}
+    \endcode
     
 */
 template <class SrcValueType, class DestValueType>
@@ -587,7 +589,6 @@ class Threshold
 {
    public:
     /** init thresholds and return values
-        @memo
     */
     Threshold(SrcValueType lower, SrcValueType higher,
               DestValueType noresult, DestValueType yesresult)
@@ -596,7 +597,6 @@ class Threshold
     {}
     
     /** calculate transform
-        @memo
     */
     DestValueType operator()(SrcValueType s) const
     {
@@ -615,43 +615,43 @@ class Threshold
 /*                                                      */
 /********************************************************/
 
-/** Adjust brightness and contrast of an image.
+/** \brief Adjust brightness and contrast of an image.
+
     This functor applies a gamma correction to each pixel in order to 
     modify the brightness of the image. To the result of the gamma correction,
-    a similar transform is applied that modifies the contrast. The brightness and 
+    another transform is applied that modifies the contrast. The brightness and 
     contrast parameters must be positive. Values greater than 1 will increase image 
     brightness and contrast, values smaller than 1 decrease them. A value = 1 will
     have no effect.
-    For \ref{RGBValue}'s, the transforms are applied component-wise. The pixel
+    For \ref RGBValue "RGBValue's", the transforms are applied component-wise. The pixel
     values are assumed to lie between the given minimum and maximum
-    values. In case of RGB values, this is again understood component-wise. In case 
-    of #unsigned char#, min and max default to 0 and 255 respectively.
-    Precisely, the following transform is applied to each {\em PixelValue}:
+    values. In case of RGB, this is again understood component-wise. In case 
+    of <TT>unsigned char</TT>, min and max default to 0 and 255 respectively.
+    Precisely, the following transform is applied to each <em> PixelValue</em>:
     
-    \[
+    \f[
     \begin{array}{rcl}
-    V_1 & = & \frac{PixelValue - min}{max - min} \\ \\
-    V_2 & = & V_1^\frac{1}{brightness} \\ \\
-    V_3 & = & 2 V_2 - 1 \\ \\
+    V_1 & = & \frac{PixelValue - min}{max - min} \\
+    V_2 & = & V_1^\frac{1}{brightness} \\
+    V_3 & = & 2 V_2 - 1 \\
     V_4 & = & \left\lbrace
         \begin{array}{l}
-         V_3^\frac{1}{contrast} \mbox{\rm \quad if  } V_3 \ge 0 \\ \\
+         V_3^\frac{1}{contrast} \mbox{\rm \quad if  } V_3 \ge 0 \\
          - (-V_3)^\frac{1}{contrast} \mbox{\rm \quad otherwise}
-        \end{array} \right. \\ \\
+        \end{array} \right. \\
     Result & = & \frac{V_4 + 1}{2} (max - min) + min
     \end{array}
-    \]
+    \f]
     
-    If the #PixelType# is #unsigned char#, a look-up-table is used 
+    If the <TT>PixelType</TT> is <TT>unsigned char</TT>, a look-up-table is used 
     for faster computation.
 
-    {\bf Usage:}
+    <b> Usage:</b>
     
-        Include-File:
-        \URL[vigra/transformimage.hxx]{../include/vigra/transformimage.hxx}\\
+        <b>\#include</b> "<a href="transformimage_8hxx-source.html">vigra/transformimage.hxx</a>"<br>
         Namespace: vigra
     
-    \begin{verbatim}
+    \code
     vigra::BImage bimage(width, height);
     double brightness, contrast;
     ...
@@ -670,12 +670,12 @@ class Threshold
        vigra::BrightnessContrastFunctor<float>(brightness, contrast, minmax.min, minmax.max));
     
     
-    \end{verbatim}
+    \endcode
 
-    {\bf Required Interface:}
+    <b> Required Interface:</b>
     
     Scalar types: must be a linear algebra (+, - *, NumericTraits), 
-    strict weakly ordered (<), and #pow()# must be defined.
+    strict weakly ordered (<), and <TT>pow()</TT> must be defined.
     
     RGB values: the component type must meet the above requirements.
 */

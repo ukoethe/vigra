@@ -30,9 +30,10 @@
 
 namespace vigra {
 
-/** @heading Local Minima and Maxima
+/** \addtogroup LocalMinMax Local Minima and Maxima
 
-    @memo Including extremal plateaus larger than 1 pixel
+    Detect local minima and maxima of the gray level,
+    including extremal plateaus larger than 1 pixel
 */
 //@{
 
@@ -42,19 +43,20 @@ namespace vigra {
 /*                                                      */
 /********************************************************/
 
-/** Find local minima in an image.
+/** \brief Find local minima in an image.
+
     The minima are found only when the have a size of one pixel.
-    Use \Ref{extendedLocalMinima}() to find minimal plateaus. Minima are
+    Use \ref extendedLocalMinima() to find minimal plateaus. Minima are
     marked in the destination image with the given marker value
     (default is 1), all other destination pixels remain unchanged.
-    #SrcAccessor::value_type# must be less-comparable.
+    <TT>SrcAccessor::value_type</TT> must be less-comparable.
     A pixel at the image border will never be marked as minimum. 
     The function uses accessors. 
     
-    {\bf Declarations:}
+    <b> Declarations:</b>
     
     pass arguments explicitly:
-    \begin{verbatim}
+    \code
     namespace vigra {
         template <class SrcIterator, class SrcAccessor, 
 	          class DestIterator, class DestAccessor, 
@@ -64,10 +66,10 @@ namespace vigra {
 		    DestIterator dul, DestAccessor da, 
 		    DestValue marker = NumericTraits<DestValue>::one())
     }
-    \end{verbatim}
+    \endcode
     
-    use argument objects in conjuction with \Ref{Argument Object Factories}:
-    \begin{verbatim}
+    use argument objects in conjuction with \ref ArgumentObjectFactories:
+    \code
     namespace vigra {
         template <class SrcIterator, class SrcAccessor, 
 	          class DestIterator, class DestAccessor, 
@@ -77,26 +79,25 @@ namespace vigra {
 		    pair<DestIterator, DestAccessor> dest,
 		    DestValue marker = NumericTraits<DestValue>::one())
     }
-    \end{verbatim}
+    \endcode
     
-    {\bf Usage:}
+    <b> Usage:</b>
     
-        Include-File:
-        \URL[vigra/localminmax.hxx]{../include/vigra/localminmax.hxx}\\
+        <b>\#include</b> "<a href="localminmax_8hxx-source.html">vigra/localminmax.hxx</a>"<br>
     Namespace: vigra
     
-    \begin{verbatim}
+    \code
     vigra::BImage src(w,h), minima(w,h);
     
     // init destiniation image
     minima = 0;
     
     vigra::localMinima(srcImageRange(src), destImage(minima));
-    \end{verbatim}
+    \endcode
 
-    {\bf Required Interface:}
+    <b> Required Interface:</b>
     
-    \begin{verbatim}
+    \code
     SrcImageIterator src_upperleft, src_lowerright;
     DestImageIterator dest_upperleft;
     
@@ -109,9 +110,8 @@ namespace vigra {
     
     DestValue marker;
     dest_accessor.set(marker, dest_upperleft);
-    \end{verbatim}
+    \endcode
 
-    @memo
 */
 template <class SrcIterator, class SrcAccessor, 
           class DestIterator, class DestAccessor, class DestValue>
@@ -186,19 +186,20 @@ localMinima(triple<SrcIterator, SrcIterator, SrcAccessor> src,
 /*                                                      */
 /********************************************************/
 
-/** Find local maxima in an image.
+/** \brief Find local maxima in an image.
+
     The maxima are found only when the have a size of one pixel.
-    Use \Ref{extendedLocalMaxima}() to find maximal plateaus. Maxima are
+    Use \ref extendedLocalMaxima() to find maximal plateaus. Maxima are
     marked in the destination image with the given marker value
     (default is 1), all other destination pixels remain unchanged.
-    #SrcAccessor::value_type# must be less-comparable.
+    <TT>SrcAccessor::value_type</TT> must be less-comparable.
     A pixel at the image border will never be marked as maximum. 
     The function uses accessors. 
     
-    {\bf Declarations:}
+    <b> Declarations:</b>
     
     pass arguments explicitly:
-    \begin{verbatim}
+    \code
     namespace vigra {
         template <class SrcIterator, class SrcAccessor, 
 	          class DestIterator, class DestAccessor, 
@@ -208,10 +209,10 @@ localMinima(triple<SrcIterator, SrcIterator, SrcAccessor> src,
 		    DestIterator dul, DestAccessor da, 
 		    DestValue marker = NumericTraits<DestValue>::one())
     }
-    \end{verbatim}
+    \endcode
     
-    use argument objects in conjuction with \Ref{Argument Object Factories}:
-    \begin{verbatim}
+    use argument objects in conjuction with \ref ArgumentObjectFactories:
+    \code
     namespace vigra {
         template <class SrcIterator, class SrcAccessor, 
 	          class DestIterator, class DestAccessor, 
@@ -221,26 +222,25 @@ localMinima(triple<SrcIterator, SrcIterator, SrcAccessor> src,
 		    pair<DestIterator, DestAccessor> dest,
 		    DestValue marker = NumericTraits<DestValue>::one())
     }
-    \end{verbatim}
+    \endcode
     
-    {\bf Usage:}
+    <b> Usage:</b>
     
-        Include-File:
-        \URL[vigra/localminmax.hxx]{../include/vigra/localminmax.hxx}\\
+        <b>\#include</b> "<a href="localminmax_8hxx-source.html">vigra/localminmax.hxx</a>"<br>
     Namespace: vigra
     
-    \begin{verbatim}
+    \code
     vigra::BImage src(w,h), maxima(w,h);
     
     // init destiniation image
     maxima = 0;
     
     vigra::localMaxima(srcImageRange(src), destImage(maxima));
-    \end{verbatim}
+    \endcode
 
-    {\bf Required Interface:}
+    <b> Required Interface:</b>
     
-    \begin{verbatim}
+    \code
     SrcImageIterator src_upperleft, src_lowerright;
     DestImageIterator dest_upperleft;
     
@@ -253,9 +253,8 @@ localMinima(triple<SrcIterator, SrcIterator, SrcAccessor> src,
     
     DestValue marker;
     dest_accessor.set(marker, dest_upperleft);
-    \end{verbatim}
+    \endcode
 
-    @memo
 */
 template <class SrcIterator, class SrcAccessor, 
           class DestIterator, class DestAccessor, class DestValue>
@@ -330,22 +329,23 @@ localMaxima(triple<SrcIterator, SrcIterator, SrcAccessor> src,
 /*                                                      */
 /********************************************************/
 
-/** Find local minimal regions in an image.
+/** \brief Find local minimal regions in an image.
+
     This function finds regions of uniform pixel value
     whose neighboring regions are all have larger values
     (minimal plateaus of arbitrary size). Minimal regions are
     marked in the destination image with the given marker value
     (default is 1), all other destination pixels remain unchanged.
-    #SrcAccessor::value_type# must be equality-comparable and
+    <TT>SrcAccessor::value_type</TT> must be equality-comparable and
     less-comparable.
     A pixel at the image border will never be marked as minimum or 
     minimal plateau. 
     The function uses accessors. 
     
-    {\bf Declarations:}
+    <b> Declarations:</b>
     
     pass arguments explicitly:
-    \begin{verbatim}
+    \code
     namespace vigra {
         template <class SrcIterator, class SrcAccessor, 
 	          class DestIterator, class DestAccessor, 
@@ -355,10 +355,10 @@ localMaxima(triple<SrcIterator, SrcIterator, SrcAccessor> src,
 		            DestIterator dul, DestAccessor da, 
 		            DestValue marker = NumericTraits<DestValue>::one())
     }
-    \end{verbatim}
+    \endcode
     
-    use argument objects in conjuction with \Ref{Argument Object Factories}:
-    \begin{verbatim}
+    use argument objects in conjuction with \ref ArgumentObjectFactories:
+    \code
     namespace vigra {
         template <class SrcIterator, class SrcAccessor, 
 	          class DestIterator, class DestAccessor, 
@@ -368,26 +368,25 @@ localMaxima(triple<SrcIterator, SrcIterator, SrcAccessor> src,
 		            pair<DestIterator, DestAccessor> dest,
 		            DestValue marker = NumericTraits<DestValue>::one())
     }
-    \end{verbatim}
+    \endcode
     
-    {\bf Usage:}
+    <b> Usage:</b>
     
-        Include-File:
-        \URL[vigra/localminmax.hxx]{../include/vigra/localminmax.hxx}\\
+        <b>\#include</b> "<a href="localminmax_8hxx-source.html">vigra/localminmax.hxx</a>"<br>
     Namespace: vigra
     
-    \begin{verbatim}
+    \code
     vigra::BImage src(w,h), minima(w,h);
     
     // init destiniation image
     minima = 0;
     
     vigra::extendedLocalMinima(srcImageRange(src), destImage(minima));
-    \end{verbatim}
+    \endcode
 
-    {\bf Required Interface:}
+    <b> Required Interface:</b>
     
-    \begin{verbatim}
+    \code
     SrcImageIterator src_upperleft, src_lowerright;
     DestImageIterator dest_upperleft;
     
@@ -401,9 +400,8 @@ localMaxima(triple<SrcIterator, SrcIterator, SrcAccessor> src,
     
     DestValue marker;
     dest_accessor.set(marker, dest_upperleft);
-    \end{verbatim}
+    \endcode
 
-    @memo
 */
 template <class SrcIterator, class SrcAccessor, 
           class DestIterator, class DestAccessor, class DestValue>
@@ -568,22 +566,23 @@ extendedLocalMinima(triple<SrcIterator, SrcIterator, SrcAccessor> src,
 /*                                                      */
 /********************************************************/
 
-/** Find local maximal regions in an image.
+/** \brief Find local maximal regions in an image.
+
     This function finds regions of uniform pixel value
     whose neighboring regions are all have smaller values
     (maximal plateaus of arbitrary size). Maximal regions are
     marked in the destination image with the given marker value
     (default is 1), all other destination pixels remain unchanged.
-    #SrcAccessor::value_type# must be equality-comparable and
+    <TT>SrcAccessor::value_type</TT> must be equality-comparable and
     less-comparable.
     A pixel at the image border will never be marked as maximum or 
     maximal plateau. 
     The function uses accessors. 
     
-    {\bf Declarations:}
+    <b> Declarations:</b>
     
     pass arguments explicitly:
-    \begin{verbatim}
+    \code
     namespace vigra {
         template <class SrcIterator, class SrcAccessor, 
 	          class DestIterator, class DestAccessor, 
@@ -593,10 +592,10 @@ extendedLocalMinima(triple<SrcIterator, SrcIterator, SrcAccessor> src,
 		            DestIterator dul, DestAccessor da, 
 		            DestValue marker = NumericTraits<DestValue>::one())
     }
-    \end{verbatim}
+    \endcode
     
-    use argument objects in conjuction with \Ref{Argument Object Factories}:
-    \begin{verbatim}
+    use argument objects in conjuction with \ref ArgumentObjectFactories:
+    \code
     namespace vigra {
         template <class SrcIterator, class SrcAccessor, 
 	          class DestIterator, class DestAccessor, 
@@ -606,26 +605,25 @@ extendedLocalMinima(triple<SrcIterator, SrcIterator, SrcAccessor> src,
 		            pair<DestIterator, DestAccessor> dest,
 		            DestValue marker = NumericTraits<DestValue>::one())
     }
-    \end{verbatim}
+    \endcode
     
-    {\bf Usage:}
+    <b> Usage:</b>
     
-        Include-File:
-        \URL[vigra/localminmax.hxx]{../include/vigra/localminmax.hxx}\\
+        <b>\#include</b> "<a href="localminmax_8hxx-source.html">vigra/localminmax.hxx</a>"<br>
     Namespace: vigra
     
-    \begin{verbatim}
+    \code
     vigra::BImage src(w,h), maxima(w,h);
     
     // init destiniation image
     maxima = 0;
     
     vigra::extendedLocalMaxima(srcImageRange(src), destImage(maxima));
-    \end{verbatim}
+    \endcode
 
-    {\bf Required Interface:}
+    <b> Required Interface:</b>
     
-    \begin{verbatim}
+    \code
     SrcImageIterator src_upperleft, src_lowerright;
     DestImageIterator dest_upperleft;
     
@@ -639,9 +637,8 @@ extendedLocalMinima(triple<SrcIterator, SrcIterator, SrcAccessor> src,
     
     DestValue marker;
     dest_accessor.set(marker, dest_upperleft);
-    \end{verbatim}
+    \endcode
 
-    @memo
 */
 template <class SrcIterator, class SrcAccessor, 
           class DestIterator, class DestAccessor, class DestValue>

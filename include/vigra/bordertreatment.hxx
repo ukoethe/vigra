@@ -25,48 +25,45 @@
 
 namespace vigra {
 
-/********************************************************/
-/*                                                      */
-/*                      BorderTreatmentMode             */
-/*                                                      */
-/********************************************************/
 
-/** Choose between different border treatment modes.
-    In the convolution algorithms, these modes apply to 
+/*! \page BorderTreatmentMode BorderTreatmentMode
+
+    Choose between different border treatment modes. In the convolution 
+    algorithms, these modes apply to 
     all image pixels where the kernel does not completely fit inside 
     the image.
     
-    Include-File:
-    \URL[vigra/bordertreatment.hxx]{../include/vigra/bordertreatment.hxx}\\
+    <b>\#include</b> "<a href="bordertreatment_8hxx-source.html">vigra/bordertreatment.hxx</a>"<br>
     Namespace: vigra
+    
+    \code
+    enum BorderTreatmentMode 
+    {
+          // do not operate on a pixel where the kernel does 
+          // not fit in the image
+       BORDER_TREATMENT_AVOID, 
+
+          // clip kernel at image border (this is only useful if the
+          //  kernel is >= 0 everywhere)
+       BORDER_TREATMENT_CLIP, 
+
+          // repeat the nearest valid pixel
+       BORDER_TREATMENT_REPEAT,
+
+          // reflect image at last row/column 
+       BORDER_TREATMENT_REFLECT, 
+
+          // wrap image around (periodic boundary conditions)
+       BORDER_TREATMENT_WRAP
+    };
+    \endcode
 */   
 enum BorderTreatmentMode 
 {
-      /** do not operate on a pixel where the kernel does not fit in the
-          image
-          @memo
-      */
    BORDER_TREATMENT_AVOID, 
-   
-      /** clip kernel at image border (this is only useful if the
-          kernel is >= 0 everywhere)
-          @memo
-      */
    BORDER_TREATMENT_CLIP, 
-   
-      /** repeat the last valid pixel
-          @memo
-      */
    BORDER_TREATMENT_REPEAT,
-   
-      /** reflect image at last line 
-          @memo
-      */
    BORDER_TREATMENT_REFLECT, 
-   
-      /** wrap image around (periodic boundary conditions)
-          @memo
-      */
    BORDER_TREATMENT_WRAP
 };
 

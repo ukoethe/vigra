@@ -27,17 +27,17 @@
 
 namespace vigra {
 
-/** @heading Data Accessors
+/** \addtogroup DataAccessors Data Accessors
 
+    Basic templates to encapsulate access to the data of an iterator.
+    
     Data accessors are used to allow for flexible access to the data
     an interator points to. When we access the data directly, we
-    are bound to what #operator*# returns, if this method exists at 
+    are bound to what <TT>operator*</TT> returns, if this method exists at 
     all. Encapsulating access in an accessor enables a better
     decoupling of data structures and algorithms. 
-    \URL[This paper]{documents/DataAccessors.ps} contains
+    <a href="documents/DataAccessors.ps">This paper</a> contains
     a detailed description of the concept.
-    
-    @memo Basic templates to encapsulate access to the data of an iterator
 */
 //@{
 
@@ -47,16 +47,17 @@ namespace vigra {
 /*                                                      */
 /********************************************************/
 
-/** StandardAccessor and StandardValueAccessor.
-    #StandardAccessor# is normally used with all \Ref{ImageIterator}s. It
-    simply encapsulates a call to the iterator's #operator*()# in both
+/** \brief <TT>%StandardAccessor</TT> and <TT>StandardValueAccessor</TT>.
+
+    <TT>StandardAccessor</TT> is normally used with all relizations of 
+    \ref vigra::ImageIterator. It
+    simply encapsulates a call to the iterator's <TT>operator*()</TT> in both
     the read and write function. If the iterator returns its items by 
-    value (such as the \Ref{CoordinateIterator}), you must use
-    #StandardValueAccessor# instead of #StandardAccessor# (both have 
+    value (such as \ref vigra::CoordinateIterator), you must use
+    <TT>StandardValueAccessor</TT> instead of <TT>StandardAccessor</TT> (both have 
     the same interface, but the latter can be optimized better).
 
-    Include-File:
-    \URL[vigra/accessor.hxx]{../include/vigra/accessor.hxx}
+    <b>\#include</b> "<a href="accessor_8hxx-source.html">vigra/accessor.hxx</a>"
     
     Namespace: vigra
     
@@ -65,21 +66,18 @@ template <class VALUETYPE>
 class StandardAccessor
 {
   public:
-    /** the value_type
-        @memo
-    */
+        /** the value_type
+        */
     typedef VALUETYPE value_type;
     typedef typename NumericTraits<VALUETYPE>::Promote Promote;
     typedef typename NumericTraits<VALUETYPE>::RealPromote RealPromote;
     
         /** read the current data item
-            @memo
         */
     template <class ITERATOR>
     VALUETYPE const & operator()(ITERATOR & i) const { return *i; }
     
         /** read the data item at a distance (can be 1D or 2D or higher distance)
-            @memo
         */
     template <class ITERATOR, class DISTANCE>
     VALUETYPE const & operator()(ITERATOR & i, DISTANCE const & dist) const
@@ -88,13 +86,11 @@ class StandardAccessor
     }
     
         /** write the current data item
-            @memo
         */
     template <class ITERATOR>
     void set(VALUETYPE const & v, ITERATOR & i) const { *i = v; }
     
         /** write the data item at a distance (can be 1D or 2D or higher distance)
-            @memo
         */
     template <class ITERATOR, class DISTANCE>
     void set(VALUETYPE const & v, ITERATOR & i, DISTANCE const & dist) const 
@@ -107,35 +103,30 @@ template <class VALUETYPE>
 class StandardValueAccessor
 {
   public:
-    /* the value_type
-        @memo
-    */
+        /* the value_type
+        */
     typedef VALUETYPE value_type;
     
-    /* read the current data item
-        @memo
-    */
+        /* read the current data item
+        */
     template <class ITERATOR>
     VALUETYPE operator()(ITERATOR & i) const { return *i; }
     
-    /* read the data item at a distance (can be 1D or 2D or higher distance)
-        @memo
-    */
+        /* read the data item at a distance (can be 1D or 2D or higher distance)
+        */
     template <class ITERATOR, class DISTANCE>
     VALUETYPE operator()(ITERATOR & i, DISTANCE const & dist) const
     { 
         return i[dist]; 
     }
     
-    /* write the current data item
-        @memo
-    */
+        /* write the current data item
+        */
     template <class ITERATOR>
     void set(VALUETYPE const & v, ITERATOR & i) const { *i = v; }
     
-    /* write the data item at a distance (can be 1D or 2D or higher distance)
-        @memo
-    */
+        /* write the data item at a distance (can be 1D or 2D or higher distance)
+        */
     template <class ITERATOR, class DISTANCE>
     void set(VALUETYPE const & v, ITERATOR & i, DISTANCE const & dist) const 
     { 
@@ -149,17 +140,18 @@ class StandardValueAccessor
 /*                                                      */
 /********************************************************/
 
-/** StandardConstAccessor and StandardConstValueAccessor.
-    #StandardConstAccessor# is normally used with all \Ref{ConstImageIterator}s. It
-    simply encapsulates a call to the iterator's #operator*()# in its
+/** \brief <TT>%StandardConstAccessor</TT> and <TT>StandardConstValueAccessor</TT>.
+
+    <TT>StandardConstAccessor</TT> is normally used with all 
+    realizations of \ref vigra::ConstImageIterator. It
+    simply encapsulates a call to the iterator's <TT>operator*()</TT> in its
     read function (as a const accessor, it does not have a write
     function). If the iterator returns its items by 
-    value (such as the \Ref{CoordinateIterator}), you must use
-    #StandardConstValueAccessor# instead of #StandardConstAccessor# (both have 
+    value (such as the \ref vigra::CoordinateIterator), you must use
+    <TT>StandardConstValueAccessor</TT> instead of <TT>StandardConstAccessor</TT> (both have 
     the same interface, but the latter can be optimized better).
     
-    Include-File:
-    \URL[vigra/accessor.hxx]{../include/vigra/accessor.hxx}
+    <b>\#include</b> "<a href="accessor_8hxx-source.html">vigra/accessor.hxx</a>"
     
     Namespace: vigra
     
@@ -170,15 +162,13 @@ class StandardConstAccessor
   public:
     typedef VALUETYPE value_type;
     
-    /** read the current data item
-        @memo
-    */
+        /** read the current data item
+        */
     template <class ITERATOR>
     VALUETYPE const & operator()(ITERATOR & i) const { return *i; }
     
-    /** read the data item at a distance (can be 1D or 2D or higher distance)
-        @memo
-    */
+        /** read the data item at a distance (can be 1D or 2D or higher distance)
+        */
     template <class ITERATOR, class DISTANCE>
     VALUETYPE const & operator()(ITERATOR & i, DISTANCE const & dist) const
     { 
@@ -192,15 +182,13 @@ class StandardConstValueAccessor
   public:
     typedef VALUETYPE value_type;
     
-    /* read the current data item
-        @memo
-    */
+        /* read the current data item
+        */
     template <class ITERATOR>
     VALUETYPE operator()(ITERATOR & i) const { return *i; }
     
-    /* read the data item at a distance (can be 1D or 2D or higher distance)
-        @memo
-    */
+        /* read the data item at a distance (can be 1D or 2D or higher distance)
+        */
     template <class ITERATOR, class DISTANCE>
     VALUETYPE operator()(ITERATOR & i, DISTANCE const & dist) const
     { 
@@ -214,18 +202,18 @@ class StandardConstValueAccessor
 /*                                                      */
 /********************************************************/
 
-/** Accessor for items that are STL compatible sequences.
+/** \brief Accessor for items that are STL compatible sequences.
+
     It encapsulates access to the sequences' begin() and end()
     functions.
     
     Usage:
 
-    Include-File:
-    \URL[vigra/accessor.hxx]{../include/vigra/accessor.hxx}
+    <b>\#include</b> "<a href="accessor_8hxx-source.html">vigra/accessor.hxx</a>"
     
     Namespace: vigra
     
-    \begin{verbatim}
+    \code
     typedef std::list<std::list<int> > ListOfLists;
     
     ListOfLists ll;
@@ -240,7 +228,7 @@ class StandardConstValueAccessor
             *i = 10;
         }
     }
-    \end{verbatim}
+    \endcode
 */
 template <class SEQUENCE>
 class SequenceAccessor
@@ -248,17 +236,14 @@ class SequenceAccessor
 {
   public:
     /** the sequence's value_type
-        @memo
     */
     typedef typename SEQUENCE::value_type component_type;
 
     /** the sequence's iterator type
-        @memo
     */
     typedef typename SEQUENCE::iterator iterator;
     
     /** get begin iterator for sequence at given iterator position
-        @memo
     */
     template <class ITERATOR>
     iterator begin(ITERATOR & i) const
@@ -267,7 +252,6 @@ class SequenceAccessor
     }
     
     /** get end iterator for sequence at given iterator position
-        @memo
     */
     template <class ITERATOR>
     iterator end(ITERATOR & i)  const
@@ -277,7 +261,6 @@ class SequenceAccessor
     
     /** get begin iterator for sequence at a distance
         of given iterator position
-        @memo
     */
     template <class ITERATOR, class DISTANCE>
     iterator begin(ITERATOR & i, DISTANCE const & dist)  const
@@ -287,7 +270,6 @@ class SequenceAccessor
     
     /** get end iterator for sequence at a 2D distance
         of given iterator position
-        @memo
     */
     template <class ITERATOR, class DISTANCE>
     iterator end(ITERATOR & i, DISTANCE const & dist)  const
@@ -296,13 +278,11 @@ class SequenceAccessor
     }
 
     /** get size of sequence at given iterator position
-        @memo
     */
     template <class ITERATOR>
     int size(ITERATOR & i) const { return (*i).size(); }
 
     /** get size of sequence at 2D distance of given iterator position
-        @memo
     */
     template <class ITERATOR, class DISTANCE>
     int size(ITERATOR & i, DISTANCE const & dist) const { return i[dist].size(); }
@@ -314,23 +294,23 @@ class SequenceAccessor
 /*                                                      */
 /********************************************************/
 
-/** Accessor for items that are STL compatible vectors.
+/** \brief Accessor for items that are STL compatible vectors.
+
     It encapsulates access to a vector's access functionality.
     
-    {\bf Usage:}
+    <b> Usage:</b>
     
-    Include-File:
-    \URL[vigra/accessor.hxx]{../include/vigra/accessor.hxx}
+    <b>\#include</b> "<a href="accessor_8hxx-source.html">vigra/accessor.hxx</a>"
     
     Namespace: vigra
         
     The accessor has two modes of operation:
     
-    \begin{enumerate}
-    \item Access the vector's iterator via the #begin()# and #end()#
+    <ol>
+    <li> Access the vector's iterator via the <TT>begin()</TT> and <TT>end()</TT>
     functions:
     
-    \begin{verbatim}
+    \code
     typedef std::list<std::vector<int> > ListOfVectors;
     
     ListOfVectors ll;
@@ -345,10 +325,10 @@ class SequenceAccessor
             *i = 10;
         }
     }
-    \end{verbatim}
-    \item Access the vector's components via an index (internally calls 
-    the vector's #operator[]# ):
-    \begin{verbatim}
+    \endcode
+    <li> Access the vector's components via an index (internally calls 
+    the vector's <TT>operator[]</TT> ):
+    \code
     typedef std::list<std::vector<int> > ListOfVectors;
     
     ListOfVectors ll;
@@ -363,12 +343,12 @@ class SequenceAccessor
             a.setComponent(10, li, i);
         }
     }
-    \end{verbatim}
-    \end{enumerate}
+    \endcode
+    </ol>
     
-    {\bf Required Interface:}
+    <b> Required Interface:</b>
     
-    \begin{verbatim}
+    \code
     VECTOR v;
     VECTOR::iterator i;
     value_type d;
@@ -379,7 +359,7 @@ class SequenceAccessor
     i = v.begin();
     i = v.end();
     v.size();
-    \end{verbatim}
+    \endcode
 */
 template <class VECTOR>
 class VectorAccessor
@@ -387,13 +367,11 @@ class VectorAccessor
 {
   public:
     /** the vector's value_type
-        @memo
     */
     typedef typename VECTOR::value_type component_type;
 
     /** read the component data at given vector index
         at given iterator position 
-        @memo
     */
     template <class ITERATOR>
     component_type getComponent(ITERATOR & i, int idx) const 
@@ -403,7 +381,6 @@ class VectorAccessor
     
     /** set the component data at given vector index
         at given iterator position 
-        @memo
     */
     template <class ITERATOR>
     void setComponent(component_type v, ITERATOR & i, int idx) const
@@ -413,7 +390,6 @@ class VectorAccessor
     
     /** read the component data at given vector index
         at a distance of given iterator position
-        @memo
     */
     template <class ITERATOR, class DISTANCE>
     component_type getComponent(ITERATOR & i, DISTANCE const & dist, int idx) const
@@ -423,7 +399,6 @@ class VectorAccessor
     
     /** set the component data at given vector index
         at a distance of given iterator position
-        @memo
     */
     template <class ITERATOR, class DISTANCE>
     void 
@@ -440,7 +415,8 @@ class VectorAccessor
 /*                                                      */
 /********************************************************/
 
-/** Bilinear interpolation at non-integer positions.
+/** \brief Bilinear interpolation at non-integer positions.
+
     This accessor allows an image be accessed at arbitrary non-integer
     coordinates and performs an bi-linear interpolation to
     obtain a pixel value.
@@ -448,14 +424,13 @@ class VectorAccessor
     accessor originally associated with the iterator)
     to access data.
     
-    Include-File:
-    \URL[vigra/accessor.hxx]{../include/vigra/accessor.hxx}
+    <b>\#include</b> "<a href="accessor_8hxx-source.html">vigra/accessor.hxx</a>"
     
     Namespace: vigra
     
-    {\bf Required Interface:}
+    <b> Required Interface:</b>
     
-    \begin{verbatim}
+    \code
     ITERATOR iter;
     ACCESSOR a;
     VALUETYPE destvalue;
@@ -464,19 +439,17 @@ class VectorAccessor
     
     destvalue = s * a(iter, x, y) + s * a(iter, x, y);
     
-    \end{verbatim}
+    \endcode
 */
 template <class ACCESSOR, class VALUETYPE>
 class BilinearInterpolatingAccessor
 {
   public:
     /** the iterators' pixel type
-        @memo
     */
     typedef VALUETYPE value_type;
     
     /** init from given accessor
-        @memo
     */
     BilinearInterpolatingAccessor(ACCESSOR a)
     : a_(a)
@@ -486,7 +459,6 @@ class BilinearInterpolatingAccessor
         Ensure that no outside pixels are accessed if 
         (x, y) is near the image border (as long as
         0 <= x <= width-1, 0 <= y <= height-1).
-        @memo
     */
     template <class ITERATOR>
     value_type operator()(ITERATOR & i, float x, float y) const 
@@ -532,8 +504,7 @@ class BilinearInterpolatingAccessor
 
     /** Interpolate the data item at a non-integer distance.
         This function works as long as 0 <= x < width-1, 
-        0 <= y < height-1. It is slightly faster than #operator()#.
-        @memo
+        0 <= y < height-1. It is slightly faster than <TT>operator()</TT>.
     */
     template <class ITERATOR>
     value_type unchecked(ITERATOR & i, float x, float y) const 
@@ -558,27 +529,27 @@ class BilinearInterpolatingAccessor
 /*                                                      */
 /********************************************************/
 
-/** Access two images simultaneously.
+/** \brief Access two images simultaneously.
+
     This accessor is used when two images need to be treated as one
     because an algorithm accepts only one image. For example, 
-    \Ref{seededRegionGrowing}() uses only one image two calculate
+    \ref seededRegionGrowing() uses only one image two calculate
     the cost for aggregating each pixel into a region. Somtimes, we
     need more information to calcuate this cost, for example gray value
     and local gradient magnitude. These values can be stored in two images,
-    which appear as only one when we pass a #MultiImageAccessor2# to
-    the lagorithms. Of course, the cost functor must accept a #pair# 
+    which appear as only one when we pass a <TT>MultiImageAccessor2</TT> to
+    the lagorithms. Of course, the cost functor must accept a <TT>pair</TT> 
     of values for this to work. Instead of an actual image iterator, we
-    pass a \URL[CoordinateIterator]{CoordinateIterator.html} which 
+    pass a <a href="CoordinateIterator.html">CoordinateIterator</a> which 
     selects the right pixels form both images.
     
-    {\bf Usage:}
+    <b> Usage:</b>
 
-    Include-File:
-    \URL[vigra/accessor.hxx]{../include/vigra/accessor.hxx}
+    <b>\#include</b> "<a href="accessor_8hxx-source.html">vigra/accessor.hxx</a>"
     
     Namespace: vigra
     
-    \begin{verbatim}
+    \code
     using namespace vigra;
     
     FImage gray_values(w,h), gradient_magnitude(w,h);
@@ -593,7 +564,7 @@ class BilinearInterpolatingAccessor
         srcImage(seeds), 
         destImage(labels), 
         SomeCostFunctor());       
-    \end{verbatim}   
+    \endcode   
 */
 
 template <class Iter1, class Acc1, class Iter2, class Acc2>
@@ -602,20 +573,17 @@ class MultiImageAccessor2
   public:
         /** The accessors value_type: construct a pair that contains
             the corresponding image values.
-            @memo
         */
     typedef pair<typename Acc1::value_type, typename Acc2::value_type>
             value_type;
     
         /** Construct from two image iterators and associated accessors.
-            @memo
         */
     MultiImageAccessor2(Iter1 i1, Acc1 a1, Iter2 i2, Acc2 a2)
     : i1_(i1), a1_(a1), i2_(i2), a2_(a2)
     {}
 
         /** read the current data item
-            @memo
         */
     template <class DISTANCE>
     value_type operator()(DISTANCE const & d) const
@@ -624,7 +592,6 @@ class MultiImageAccessor2
     }
     
         /** read the data item at a distance
-            @memo
         */
     template <class DISTANCE1, class DISTANCE2>
     value_type operator()(DISTANCE1 const & d1, DISTANCE2 d2) const

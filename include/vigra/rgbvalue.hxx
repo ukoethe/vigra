@@ -31,67 +31,52 @@
 
 namespace vigra {
 
-/** @heading RGB Values 
-    @memo RGBValue and related classes and functions  
-*/
-//@{
-
 /********************************************************/
 /*                                                      */
 /*                      RGBValue                        */
 /*                                                      */
 /********************************************************/
 
-/** Class for a single RGB value.
+/** \brief Class for a single RGB value.
+
     This class contains three values (of the specified type) that represent 
     red, green, and blue color channels. There are three possibilities
-    to access these values: accessor functions (\Ref{red}(), \Ref{green}(),
-    \Ref{blue}()), index operator (operator[](dx), where 0 is red,
+    to access these values: accessor functions (\ref red(), \ref green(),
+    \ref blue()), index operator (operator[](dx), where 0 is red,
     1 is green and 2 is blue) and iterator (STL-compatible random access
     iterator that references the three colors in turn). The latter two
     methods, together with the necessary embedded typedefs, ensure
     compatibility of a RGBValue with a STL vector.
     
-    \URL[Arithmetic operations]{BasicArithmeticFunctionsforRGBValue.html} 
+    <a href="BasicArithmeticFunctionsforRGBValue.html">Arithmetic operations</a> 
     on RGBValues are defined as component-wise applications of these 
     operations. Addition, subtraction, and multiplication of two RGBValues 
     (+=, -=, *=, +, -, *, unary -), multiplication and division of an
     RGBValue with a double, and NumericTraits/PromoteTraits are defined, 
     so that RGBValue fulfills the requirements of a Linear Algebra. 
     
-    A number of \URL[Accessors]{AccessorsforRGBValue.html} are provided
+    A number of <a href="AccessorsforRGBValue.html">Accessors</a> are provided
     that allow access to the RGBValues as a whole, to a selected
     component, or to the luminance value.
     
-    Include-File:
-    \URL[vigra/rgbvalue.hxx]{../include/vigra/rgbvalue.hxx}\\
+    <b>\#include</b> "<a href="rgbvalue_8hxx-source.html">vigra/rgbvalue.hxx</a>"<br>
     Namespace: vigra
 */
 template <class VALUETYPE>
 class RGBValue
 {
   public:
-    /** @name Local Types */
-    //@{
         /** STL-compatible definition of valuetype
-        @memo
-    */
+        */
     typedef VALUETYPE value_type;
         /** STL-compatible definition of iterator
-        @memo
-    */
+        */
     typedef value_type * iterator;
         /** STL-compatible definition of const iterator
-        @memo
-    */
+        */
     typedef value_type const * const_iterator;
-    //@}
-    
-    /** @name Construction and Assignment */
-    //@{
         /** Construct from explicit color values 
-        @memo
-    */    
+        */    
     RGBValue(value_type red, value_type green, value_type blue)
     {
         rgb_[0] = red;
@@ -100,8 +85,7 @@ class RGBValue
     }
     
         /** Construct gray value 
-        @memo
-    */    
+        */    
     RGBValue(value_type gray)
     {
         rgb_[0] = gray;
@@ -110,8 +94,7 @@ class RGBValue
     }
     
         /** Default constructor (sets all components to 0)  
-        @memo
-    */    
+        */    
     RGBValue()
     {
         rgb_[0] = 0;
@@ -139,9 +122,8 @@ class RGBValue
 #endif // TEMPLATE_COPY_CONSTRUCTOR_BUG
 
     
-    /** Copy constructor.
-        @memo
-    */
+        /** Copy constructor.
+        */
     template <class U>   
     RGBValue(RGBValue<U> const & r)
     {
@@ -151,8 +133,7 @@ class RGBValue
     }
 
         /** Copy assignment.
-        @memo
-    */    
+        */    
     template <class U>   
     RGBValue & operator=(RGBValue<U> const & r)
     {
@@ -162,122 +143,99 @@ class RGBValue
         return *this;
     }
 
-    //@}
-    
-    /** @name Methods */
-    //@{
         /** Unary negation (construct RGBValue with negative velues)
-        @memo
-    */
+        */
     RGBValue operator-() const
     {
         return RGBValue(-red(), -green(), -blue());
     }
     
         /** Access red component.
-        @memo
-    */
+        */
     value_type & red() { return rgb_[0]; }
     
         /** Access green component.
-        @memo
-    */
+        */
     value_type & green() { return rgb_[1]; }
      
         /** Access blue component.
-        @memo
-    */
+        */
     value_type & blue() { return rgb_[2]; }
     
         /** Get red component.
-        @memo
-    */
+        */
     value_type red() const { return rgb_[0]; }
     
         /** Get green component.
-        @memo
-    */
+        */
     value_type green() const { return rgb_[1]; }
     
         /** Get blue component.
-        @memo
-    */
+        */
     value_type blue() const { return rgb_[2]; }
     
         /** Calculate luminance.
-        @memo
-    */
+        */
     value_type luminance() const { 
          return 0.3*red() + 0.59*green() + 0.11*blue(); }
     
         /** Calculate magnitude.
-        @memo
-    */
+        */
     typename NumericTraits<VALUETYPE>::RealPromote
     magnitude() const { 
 #ifndef CMATH_NOT_IN_STD
-         return std::sqrt(red()*red() + green()*green() + blue()*blue());
+         return std::sqrt(squaredMagnitude());
 #else
-         return sqrt(red()*red() + green()*green() + blue()*blue());
+         return sqrt(squaredMagnitude());
 #endif
     }
     
         /** Calculate squared magnitude.
-        @memo
-    */
+        */
     typename NumericTraits<VALUETYPE>::Promote
     squaredMagnitude() const { 
          return red()*red() + green()*green() + blue()*blue();
     }
     
         /** Set red component.
-        @memo
-    */
+        */
     void setRed(value_type const & v) { rgb_[0] = v; }
 
         /** Set green component.
-        @memo
-    */
+        */
     void setGreen(value_type const & v) { rgb_[1] = v; }
 
         /** Set blue component.
-        @memo
-    */
+        */
     void setBlue(value_type const & v) { rgb_[2] = v; }
     
         /** Access component by index.
-        @memo
-    */
+        */
     value_type & operator[](int const & color) { return rgb_[color]; }
     
         /** Get component by index.
-        @memo
-    */
+        */
     value_type operator[](int const & color) const { return rgb_[color]; }
     
         /** Get random access iterator to begin of vector (i.e. red).
-        @memo
-    */
+        */
     iterator begin() { return rgb_; }
+
         /** Get random access iterator past-the-end of vector.
-        @memo
-    */
+        */
     iterator end() { return rgb_ + 3; }
     
         /** Get const random access iterator to begin of vector (i.e. red).
-        @memo
-    */
+        */
     const_iterator begin() const { return rgb_; }
+
         /** Get const random access iterator past-the-end of vector.
-        @memo
-    */
+        */
     const_iterator end() const { return rgb_ + 3; }
     
         /** Size of RGB vector is always 3.
-        @memo
-    */
+        */
     int size() const { return 3; }
-    //@}
     
   private:
     value_type rgb_[3];
@@ -289,11 +247,14 @@ class RGBValue
 /*                                                      */
 /********************************************************/
 
-/** @heading Basic Comparison Functions for RGBValue
+/** \addtogroup RGBValueOperators Functions for RGBValue
 
-    Include-File:
-    \URL[vigra/rgbvalue.hxx]{../include/vigra/rgbvalue.hxx}\\
+    \brief <b>\#include</b> "<a href="rgbvalue_8hxx-source.html">vigra/rgbvalue.hxx</a>
+    
+    These functions fulfill the requirements of a Linear Algebra.
+
     Namespace: vigra
+    <p>
     
  */
 //@{
@@ -328,13 +289,13 @@ operator!=(RGBValue<V1> const & l, RGBValue<V2> const & r)
 /*                                                      */
 /********************************************************/
 
-/** @heading Numeric and Promote Traits of RGBValue
+/** \page RGBValueTraits Numeric and Promote Traits of RGBValue
     The numeric and promote traits for RGBValues follow 
-    the general specifications for \Ref{Numeric and Promotion Traits}. 
+    the general specifications for \ref NumericPromotionTraits. 
     They are implemented in terms of the traits of the basic types by 
     partial template specialization:
     
-    \begin{verbatim}
+    \code
     
     template <class T>
     struct NumericTraits<RGBValue<T> >
@@ -353,14 +314,12 @@ operator!=(RGBValue<V1> const & l, RGBValue<V2> const & r)
     { 
         typedef RGBValue<typename PromoteTraits<T1, T2>::Promote> Promote;
     };
-    \end{verbatim}
+    \endcode
 
-    Include-File:
-    \URL[vigra/rgbvalue.hxx]{../include/vigra/rgbvalue.hxx}\\
+    <b>\#include</b> "<a href="rgbvalue_8hxx-source.html">vigra/rgbvalue.hxx</a>"<br>
     Namespace: vigra
     
 */
-//@{
 
 #if !defined(NO_PARTIAL_TEMPLATE_SPECIALIZATION)
 
@@ -578,7 +537,6 @@ rgb_promtraits2(float, int);
 
 #endif // NO_PARTIAL_TEMPLATE_SPECIALIZATION
 
-//@}
 
 /********************************************************/
 /*                                                      */
@@ -586,13 +544,7 @@ rgb_promtraits2(float, int);
 /*                                                      */
 /********************************************************/
 
-/** @heading Basic Arithmetic Functions for RGBValue
-    
-    Include-File:
-    \URL[vigra/rgbvalue.hxx]{../include/vigra/rgbvalue.hxx}\\
-    Namespace: vigra
-
-    @memo These functions fulfill the requirements of a Linear Algebra    
+/** \addtogroup RGBValueOperators
  */
 //@{
     /// componentwise add-assignment
@@ -792,12 +744,11 @@ rint(RGBValue<V> const & r)
 /*                                                      */
 /********************************************************/
 
-/** @heading Accessors for RGBValue */
+/** \defgroup RGBValueAccessors Accessors for RGBValue */
 //@{
     /** Encapsulate access to rgb values.
 
-    Include-File:
-    \URL[vigra/rgbvalue.hxx]{../include/vigra/rgbvalue.hxx}\\
+    <b>\#include</b> "<a href="rgbvalue_8hxx-source.html">vigra/rgbvalue.hxx</a>"<br>
     Namespace: vigra
     */
 template <class RGBVALUE>
@@ -809,7 +760,6 @@ class RGBAccessor
     typedef typename RGBVALUE::value_type component_type;
 
         /** Get value of the red component
-        @memo
         */
     template <class RGBIterator>
     component_type red(RGBIterator & rgb) const
@@ -818,7 +768,6 @@ class RGBAccessor
     }
     
         /** Set value of the red component
-        @memo
         */
     template <class RGBIterator>
     void setRed(component_type const & v, RGBIterator & rgb) const
@@ -827,7 +776,6 @@ class RGBAccessor
     }
     
         /** Get value of the red component at a distance
-        @memo
         */
     template <class RGBIterator, class DISTANCE>
     component_type red(RGBIterator & rgb, DISTANCE const & dist) const
@@ -836,7 +784,6 @@ class RGBAccessor
     }
     
         /** Set value of the red component at a distance
-        @memo
         */
     template <class RGBIterator, class DISTANCE>
     void setRed(component_type const & v, RGBIterator & rgb, DISTANCE const & dist) const
@@ -845,7 +792,6 @@ class RGBAccessor
     }
        
         /** Get value of the green component
-        @memo
         */
     template <class RGBIterator>
     component_type green(RGBIterator & rgb) const
@@ -854,7 +800,6 @@ class RGBAccessor
     }
     
         /** Set value of the green component
-        @memo
         */
     template <class RGBIterator>
     void setGreen(component_type const & v, RGBIterator & rgb) const
@@ -863,7 +808,6 @@ class RGBAccessor
     }
     
         /** Get value of the green component at a distance
-        @memo
         */
     template <class RGBIterator, class DISTANCE>
     component_type green(RGBIterator & rgb, DISTANCE const & d) const
@@ -872,7 +816,6 @@ class RGBAccessor
     }
     
         /** Set value of the green component at a distance
-        @memo
         */
     template <class RGBIterator, class DISTANCE>
     void setGreen(component_type const & v, RGBIterator & rgb, DISTANCE const & d) const
@@ -881,7 +824,6 @@ class RGBAccessor
     }
     
         /** Get value of the blue component
-        @memo
         */
     template <class RGBIterator>
     component_type blue(RGBIterator & rgb) const
@@ -890,7 +832,6 @@ class RGBAccessor
     }
     
         /** Set value of the blue component
-        @memo
         */
     template <class RGBIterator>
     void setBlue(component_type const & v, RGBIterator & rgb) const
@@ -899,7 +840,6 @@ class RGBAccessor
     }
     
         /** Get value of the blue component at a distance
-        @memo
         */
     template <class RGBIterator, class DISTANCE>
     component_type blue(RGBIterator & rgb, DISTANCE const & d) const
@@ -908,7 +848,6 @@ class RGBAccessor
     }
     
         /** Set value of the blue component at a distance
-        @memo
         */
     template <class RGBIterator, class DISTANCE>
     void setBlue(component_type const & v, RGBIterator & rgb, DISTANCE const & d) const
@@ -927,8 +866,7 @@ class RGBAccessor
 
     /** Encapsulate access to red band of an rgb value.
 
-    Include-File:
-    \URL[vigra/rgbvalue.hxx]{../include/vigra/rgbvalue.hxx}\\
+    <b>\#include</b> "<a href="rgbvalue_8hxx-source.html">vigra/rgbvalue.hxx</a>"<br>
     Namespace: vigra
     */
 template <class RGBVALUE>
@@ -938,7 +876,6 @@ class RedAccessor
     typedef typename RGBVALUE::value_type value_type;
 
         /** Get value of the red component
-        @memo
         */
     template <class ITERATOR>
     value_type operator()(ITERATOR & i) const { 
@@ -946,7 +883,6 @@ class RedAccessor
     }
 
         /** Get value of the red component at a distance
-        @memo
         */
     template <class ITERATOR, class DISTANCE>
     value_type operator()(ITERATOR & i, DISTANCE const & d) const 
@@ -955,7 +891,6 @@ class RedAccessor
     }
     
         /** Set value of the red component
-        @memo
         */
     template <class ITERATOR>
     void set(value_type const & v, ITERATOR & i) const { 
@@ -964,7 +899,6 @@ class RedAccessor
     
 
         /** Set value of the red component at a distance
-        @memo
         */
     template <class ITERATOR, class DISTANCE>
     void set(value_type const & v, ITERATOR & i, DISTANCE const & d) const 
@@ -981,8 +915,7 @@ class RedAccessor
 
     /** Encapsulate access to green band of an rgb value.
 
-    Include-File:
-    \URL[vigra/rgbvalue.hxx]{../include/vigra/rgbvalue.hxx}\\
+    <b>\#include</b> "<a href="rgbvalue_8hxx-source.html">vigra/rgbvalue.hxx</a>"<br>
     Namespace: vigra
     */
 template <class RGBVALUE>
@@ -992,7 +925,6 @@ class GreenAccessor
     typedef typename RGBVALUE::value_type value_type;
 
         /** Get value of the green component
-        @memo
         */
     template <class ITERATOR>
     value_type operator()(ITERATOR & i) const { 
@@ -1000,7 +932,6 @@ class GreenAccessor
     }
 
         /** Get value of the green component at a distance
-        @memo
         */
     template <class ITERATOR, class DISTANCE>
     value_type operator()(ITERATOR & i, DISTANCE const & d) const 
@@ -1009,7 +940,6 @@ class GreenAccessor
     }
     
         /** Set value of the green component
-        @memo
         */
     template <class ITERATOR>
     void set(value_type v, ITERATOR & i) const { 
@@ -1018,7 +948,6 @@ class GreenAccessor
     
 
         /** Set value of the green component at a distance
-        @memo
         */
     template <class ITERATOR, class DISTANCE>
     void set(value_type v, ITERATOR & i, DISTANCE const & d) const 
@@ -1035,8 +964,7 @@ class GreenAccessor
 
     /** Encapsulate access to blue band of an rgb value.
 
-    Include-File:
-    \URL[vigra/rgbvalue.hxx]{../include/vigra/rgbvalue.hxx}\\
+    <b>\#include</b> "<a href="rgbvalue_8hxx-source.html">vigra/rgbvalue.hxx</a>"<br>
     Namespace: vigra
     */
 template <class RGBVALUE>
@@ -1046,7 +974,6 @@ class BlueAccessor
     typedef typename RGBVALUE::value_type value_type;
 
         /** Get value of the blue component
-        @memo
         */
     template <class ITERATOR>
     value_type operator()(ITERATOR & i) const { 
@@ -1054,7 +981,6 @@ class BlueAccessor
     }
 
         /** Get value of the blue component at a distance
-        @memo
         */
     template <class ITERATOR, class DISTANCE>
     value_type operator()(ITERATOR & i, DISTANCE const & d) const 
@@ -1063,7 +989,6 @@ class BlueAccessor
     }
     
         /** Set value of the blue component
-        @memo
         */
     template <class ITERATOR>
     void set(value_type v, ITERATOR & i) const { 
@@ -1072,7 +997,6 @@ class BlueAccessor
     
 
         /** Set value of the blue component at a distance
-        @memo
         */
     template <class ITERATOR, class DISTANCE>
     void set(value_type v, ITERATOR & i, DISTANCE const & d) const 
@@ -1089,8 +1013,7 @@ class BlueAccessor
 
     /** Encapsulate access to luminance of an rgb value.
 
-    Include-File:
-    \URL[vigra/rgbvalue.hxx]{../include/vigra/rgbvalue.hxx}\\
+    <b>\#include</b> "<a href="rgbvalue_8hxx-source.html">vigra/rgbvalue.hxx</a>"<br>
     Namespace: vigra
     */
 template <class RGBVALUE>
@@ -1100,14 +1023,12 @@ class RGBToGrayAccessor
     typedef typename RGBVALUE::value_type value_type;
 
         /** Get value of the luminance
-        @memo
         */
     template <class ITERATOR>
     value_type operator()(ITERATOR & i) const { 
                 return (*i).luminance(); }
 
         /** Get value of the luminance at a distance
-        @memo
         */
     template <class ITERATOR, class DISTANCE>
     value_type operator()(ITERATOR & i, DISTANCE const & d) const 
@@ -1116,8 +1037,6 @@ class RGBToGrayAccessor
     }
 };
 
-
-//@}
 
 //@}
 

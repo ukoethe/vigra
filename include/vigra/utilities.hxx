@@ -54,130 +54,129 @@ struct VigraFalseType
 /*                                                      */
 /********************************************************/
 
-/** @heading Utilities
-    @memo Basic helper functionality needed throughout
+/*! \page Utilities Utilities
+    Basic helper functionality needed throughout.
+     
+    <DL>
+    <DT>
+    <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif"> 
+     \ref vigra::Diff2D 
+     <DD><em>Two dimensional difference vector</em>
+     <DT>
+    <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif"> 
+     <b>vigra::Dist2D</b>
+     <DD><em>Deprecated - use \ref vigra::Diff2D</em>
+     <DT>
+    <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif"> 
+     \ref TupleTypes
+     <DD><em>pair, triple, tuple4, tuple5</em>
+     </DL>
 */
-//@{
 
-/** Two dimensional difference vector.
+/*! \brief Two dimensional difference vector.
     
     This class acts primarily as a difference vector for specifying 
     pixel coordinates and region sizes. In addition, Diff2D fulfills 
-    the requirements of an \Ref{ImageIterator}, so that it can be used to
+    the requirements of an \ref ImageIterator, so that it can be used to
     simulate an image whose pixels' values equal their coordinates. This
-    secondary usage is explained on page \Ref{CoordinateIterator}.
+    secondary usage is explained on page \ref CoordinateIterator.
     
     Standard usage as a difference vector is mainly needed in the context
-    of images. For example, Diff2D may be used as an index for #operator[]#:
+    of images. For example, Diff2D may be used as an index for <TT>operator[]<TT>:
     
-    \begin{verbatim}
+    \code
     vigra::Diff2D location(...);
     
     value = image[location];    
-    \end{verbatim}
+    \endcode
     
     This is especially important in connection with accessors, where the
-    offset variant of #operator()# takes only one offset object:
+    offset variant of <TT>operator()<TT> takes only one offset object:
     
-    \begin{verbatim}
+    \code
     // accessor(iterator, dx, dy); is not allowed
     value = accessor(iterator, vigra::Diff2D(dx, dy));
-    \end{verbatim}
+    \endcode
     
     
-    Diff2D is also returned by #image.size()#, so that we can create 
+    Diff2D is also returned by <TT>image.size()<TT>, so that we can create 
     new images by calculating their size using Diff2D's arithmetic 
     functions:
     
-    \begin{verbatim}
+    \code
     // create an image that is 10 pixels smaller in each direction
     Image new_image(old_image.size() - Diff2D(10,10));  
-    \end{verbatim} 
+    \endcode 
     
-    Include-File: \URL[vigra/utilities.hxx]{../include/vigra/utilities.hxx}
+    <b>\#include</b> "<a href="utilities_8hxx-source.html">vigra/utilities.hxx</a>"
 */
 class Diff2D
 {
   public:
-    /** @name Construction and Assignment */
-    //@{
         /** Default Constructor. Init iterator at position (0,0)
-	    @memo
-	*/
+        */
     Diff2D()
     : x(0), y(0)
     {}
     
         /** Construct at given position.
-	    @memo
-	*/
+        */
     Diff2D(int ax, int ay)
     : x(ax), y(ay)
     {}
     
         /** Copy Constructor.
-	    @memo
-	*/
+        */
     Diff2D(Diff2D const & v)
     : x(v.x), y(v.y)
     {}
     
         /** Copy Assigment.
-	    @memo
-	*/
+        */
     Diff2D & operator=(Diff2D const & v)
     {
         if(this != &v)
-	{
-	    x = v.x;
-	    y = v.y;
-	}
-	return *this;
+        {
+            x = v.x;
+            y = v.y;
+        }
+        return *this;
     }
     
         /** Increase coordinate by specified offset.
-	    @memo
-	*/
+        */
     Diff2D & operator+=(Diff2D const & offset)
     {
         x += offset.x;
-	y += offset.y;
+        y += offset.y;
         return *this;
     }
     
         /** Decrease coordinate by specified vector.
-	    @memo
-	*/
+        */
     Diff2D & operator-=(Diff2D const & offset)
     {
         x -= offset.x;
-	y -= offset.y;
+        y -= offset.y;
         return *this;
     }
-    //@}
-    
-    /** @name Methods */
-    //@{
 
-        /** Create vector by adding specified offset.
-	    @memo
-	*/
+       /** Create vector by adding specified offset.
+        */
     Diff2D operator+(Diff2D const & offset) const
     {
         return Diff2D(x + offset.x, y + offset.y);
     }
     
         /** Create vector by subtracting specified offset.
-	    @memo
-	*/
+        */
     Diff2D operator-(Diff2D const & offset) const
     {
         return Diff2D(x - offset.x, y - offset.y);
     }
     
         /** Calculate length of difference vector.
-	    @memo
-	*/
+        */
     double magnitude() const
     {
 #ifndef CMATH_NOT_IN_STD
@@ -188,101 +187,76 @@ class Diff2D
     }
     
         /** Equality.
-	    @memo
-	*/
+        */
     bool operator==(Diff2D const & r) const
     {
         return (x == r.x) && (y == r.y);
     }
     
         /** Inequality.
-	    @memo
-	*/
+        */
     bool operator!=(Diff2D const & r) const
     {
         return (x != r.x) || (y != r.y);
     }
     
-    //@}
-  
-    /** @name Data members. */
-    //@{
-    
-        /** Used for both access to the current x-coordinate {\em and}
+        /** Used for both access to the current x-coordinate \em and
             to specify that an iterator navigation command is to be
-            applied in x-direction. \\
-            usage:  # x = diff2d.x # (use Diff2D::x as component of difference vector) \\
-            or #&nbsp; ++diff.x &nbsp;# (use Diff2D as iterator, move right)
-            @memo
-	*/
+            applied in x-direction. <br>
+            usage:  <TT> x = diff2d.x </TT> (use \p Diff2D::x  as component of difference vector) <br>
+            or <TT>&nbsp; ++diff.x &nbsp; </TT> (use Diff2D as iterator, move right)
+         */
     int x;
-        /** Used for both access to the current y-coordinate {\em and}
+        /** Used for both access to the current y-coordinate \em and
             to specify that an iterator navigation command is to be
-            applied in y-direction. \\
-            usage:  # y = diff2d.y # (use Diff2D::y as component of difference vector) \\
-            or #&nbsp; ++diff.y &nbsp;# (use Diff2D as iterator, move down)
-            @memo
-	*/
+            applied in y-direction. <br>
+            usage:  <TT> y = diff2d.y </TT> (use \p Diff2D::y as component of difference vector) <br>
+            or <TT>&nbsp; ++diff.y &nbsp; </TT> (use Diff2D as iterator, move right)
+        */
     int y;
-    
-    //@}
-    
-    /** @name Functionality for use as ImageIterator. */
-    //@{
-  
+      
         /** Access current coordinate.
-	    @memo
-	*/
+        */
     Diff2D & operator*()
     {
         return *this;
     }
     
         /** Read current coordinate.
-	    @memo
-	*/
+        */
     Diff2D operator*() const
     {
         return *this;
     }
     
         /** Read coordinate at an offset.
-	    @memo
-	*/
+        */
     Diff2D operator()(int const & dx, int const & dy) const
     {
         return Diff2D(x + dx, y + dy);
     }
 
         /** Read coordinate at an offset.
-	    @memo
-	*/
+        */
     Diff2D operator[](Diff2D const & offset) const
     {
         return Diff2D(x + offset.x, y + offset.y);
     }
     
-    //@}
-
-    /** @name an ImageIterator's required embedded types
-    */
-    //@{
         /** the iterator's value type
-	    @memo
-	*/
+        */
     typedef Diff2D value_type;
+        /** the iterator's PixelType
+        */
     typedef Diff2D PixelType;
         /** type of the x-navigator
-	    @memo
-	*/
+        */
     typedef int MoveX;
         /** type of the y-navigator
-	    @memo
-	*/
+        */
     typedef int MoveY;
-    
-    //@}
 };
+
 
 /********************************************************/
 /*                                                      */
@@ -337,6 +311,51 @@ class Dist2D
  };
 
 
+/*! \page TupleTypes Tuple Types 
+
+    pair, triple, tuple4, tuple5
+
+    <b>\#include</b> "<a href="utilities_8hxx-source.html">vigra/utilities.hxx</a>"
+    
+    VIGRA defines tuple types \p vigra::triple, \p vigra::tuple4, \p vigra::tuple5. 
+    In addition, \p std::pair is imported into namespace vigra from the C++ standard 
+    library. All these types are defined similarly:
+    
+    <ul>
+    
+    <li> They are parameterized by the respective number of types. For each tuple,
+    a constructor is defined that takes that many arguments, e.g.:
+    \code
+    template <class First, class Second, class Third>
+    class Triple { ... };
+    \endcode
+    </li>
+    <li> A number of \p typedef's tells the types stored in the tuple:
+    
+    \code
+    typedef ... first_type; 
+    typedef ... second_type; 
+    typedef ... third_type;  // triple, tuple4, tuple5 only
+    typedef ... forth_type;  // tuple4, tuple5 only
+    typedef ... fifth_type;  // tuple5 only
+    \endcode
+    </li>
+    <li> Items are stored in the following public attributes:
+    
+    \code
+    
+    first; 
+    second; 
+    third;  // triple, tuple4, tuple5 only
+    forth;  // tuple4, tuple5 only
+    fifth;  // tuple5 only
+    
+    \endcode
+    </li>
+    </ul>
+
+    
+*/
 
 /********************************************************/
 /*                                                      */
@@ -412,54 +431,6 @@ struct tuple5 {
     : first(a), second(b), third(c), fourth(d), fifth(e) {}
 };
 
-/** @heading Tuple Types
-
-    VIGRA defines tuple types #vigra::triple#, #vigra::tuple4#, #vigra::tuple5#. 
-    In addition, #pair# is imported into namespace vigra from the C++ standard 
-    library. All these types are defined similarly:
-    
-    \begin{itemize}
-    
-    \item They are parameterized by the respective number of types. For each tuple,
-    a constructor is defined that takes that many arguments.
-    
-    \item A number of #typedef#s tells the types stored in the tuple:
-    
-    \begin{verbatim}
-    
-    typedef ... first_type; 
-    typedef ... second_type; 
-    typedef ... third_type;  // triple, tuple4, tuple5 only
-    typedef ... forth_type;  // tuple4, tuple5 only
-    typedef ... fifth_type;  // tuple5 only
-    
-    \end{verbatim}
-    
-    \item Items are stored in the following public attributes:
-    
-    \begin{verbatim}
-    
-    first; 
-    second; 
-    third;  // triple, tuple4, tuple5 only
-    forth;  // tuple4, tuple5 only
-    fifth;  // tuple5 only
-    
-    \end{verbatim}
-    
-    \end{itemize}
-
-    Include-File: \URL[vigra/utilities.hxx]{../include/vigra/utilities.hxx}
-
-    @memo pair, triple, tuple4, tuple5
-*/
-
-/** @heading Dist2D
-
-    This class is deprecated - use \Ref{Diff2D} instead.
-*/
-
-//@}
 
 } // namespace vigra
 

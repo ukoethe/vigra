@@ -381,23 +381,25 @@ void internalConvolveLineAvoid(SrcIterator is, SrcIterator iend, SrcAccessor sa,
 /*                                                      */
 /********************************************************/
 
-/** @heading One-dimensional and separable convolution functions
+/** \addtogroup SeparableConvolution One-dimensional and separable convolution functions
+    
+    Perform 1D convolution and separable filtering in 2 dimensions.
     
     These generic convolution functions implement
     the standard convolution operation for a wide range of images and
     signals that fit into the required interface. They need a suitable 
     kernel to operate.
-    
-    @memo 1D convolution and separable filters in 2 dimensions
 */
 //@{
 
-/** Performs a 1 dimensional convolution of the source signal using the given
-    kernel. The KernelIterator must point to the center iterator, and
+/** \brief Performs a 1 dimensional convolution of the source signal using the given
+    kernel. 
+    
+    The KernelIterator must point to the center iterator, and
     the kernel's size is given by its left (kleft <= 0) and right
     (kright >= 0) borders. The signal must always be larger than the kernel.
     At those positions where the kernel does not completely fit 
-    into the signal's range, the specified \Ref{BorderTreatmentMode} is 
+    into the signal's range, the specified \ref BorderTreatmentMode is 
     applied. 
     
     The signal's value_type (SrcAccessor::value_type) must be a
@@ -408,10 +410,10 @@ void internalConvolveLineAvoid(SrcIterator is, SrcIterator iend, SrcAccessor sa,
     i.e. the arithmetic operations (+, -, *, /) and NumericTraits must
     be defined.
     
-    {\bf Declarations:}
+    <b> Declarations:</b>
     
     pass arguments explicitly:
-    \begin{verbatim}
+    \code
     namespace vigra {
         template <class SrcIterator, class SrcAccessor,
 	          class DestIterator, class DestAccessor, 
@@ -421,11 +423,11 @@ void internalConvolveLineAvoid(SrcIterator is, SrcIterator iend, SrcAccessor sa,
 		          KernelIterator ik, KernelAccessor ka,
 		          int kleft, int kright, BorderTreatmentMode border)
     }
-    \end{verbatim}
+    \endcode
     
     
-    use argument objects in conjuction with \Ref{Argument Object Factories}:
-    \begin{verbatim}
+    use argument objects in conjuction with \ref ArgumentObjectFactories:
+    \code
     namespace vigra {
         template <class SrcIterator, class SrcAccessor,
 	          class DestIterator, class DestAccessor, 
@@ -435,15 +437,14 @@ void internalConvolveLineAvoid(SrcIterator is, SrcIterator iend, SrcAccessor sa,
 		          tuple5<KernelIterator, KernelAccessor,
 			         int, int, BorderTreatmentMode> kernel)
     }
-    \end{verbatim}
+    \endcode
     
-    {\bf Usage:}
+    <b> Usage:</b>
     
-    Include-File:
-    \URL[vigra/separableconvolution.hxx]{../include/vigra/separableconvolution.hxx}
+    <b>\#include</b> "<a href="separableconvolution_8hxx-source.html">vigra/separableconvolution.hxx</a>"
     
     
-    \begin{verbatim}
+    \code
     std::vector<float> src, dest;    
     ...
     
@@ -459,11 +460,11 @@ void internalConvolveLineAvoid(SrcIterator is, SrcIterator iend, SrcAccessor sa,
 	     kernel+2, KernelAccessor(), -2, 2, BORDER_TREATMENT_REFLECT);
     //       ^^^^^^^^  this is the center of the kernel	     
     
-    \end{verbatim}
+    \endcode
 
-    {\bf Required Interface:}
+    <b> Required Interface:</b>
     
-    \begin{verbatim}
+    \code
     RandomAccessIterator is, isend;
     RandomAccessIterator id;
     RandomAccessIterator ik;
@@ -480,11 +481,11 @@ void internalConvolveLineAvoid(SrcIterator is, SrcIterator iend, SrcAccessor sa,
     dest_accessor.set(
         NumericTraits<DestAccessor::value_type>::fromRealPromote(s), id);
 
-    \end{verbatim}
+    \endcode
     
     If border == BORDER_TREATMENT_CLIP:
 
-    \begin{verbatim}
+    \code
     NumericTraits<KernelAccessor::value_type>::RealPromote k = kernel_accessor(ik);
     
     k = k + k;
@@ -492,20 +493,19 @@ void internalConvolveLineAvoid(SrcIterator is, SrcIterator iend, SrcAccessor sa,
     k = k * k;
     k = k / k;
 
-    \end{verbatim}
+    \endcode
 
-    {\bf Preconditions:}
+    <b> Preconditions:</b>
     
-    \begin{verbatim}
+    \code
     kleft <= 0
     kright >= 0
     iend - is >= kright + kleft + 1
-    \end{verbatim}
+    \endcode
 
     If border == BORDER_TREATMENT_CLIP: Sum of kernel elements must be
     != 0.
 
-    @memo
 */
 template <class SrcIterator, class SrcAccessor,
           class DestIterator, class DestAccessor, 
@@ -592,15 +592,16 @@ void convolveLine(triple<SrcIterator, SrcIterator, SrcAccessor> src,
 /*                                                      */
 /********************************************************/
 
-/** Performs a 1 dimensional convolution in x direction by 
-    calling \Ref{convolveLine}() for every row of the
-    image. See \Ref{convolveLine}() for more information about required interfaces
+/** \brief Performs a 1 dimensional convolution in x direction.
+
+    It calls \ref convolveLine() for every row of the
+    image. See \ref convolveLine() for more information about required interfaces
     and vigra_preconditions.
     
-    {\bf Declarations:}
+    <b> Declarations:</b>
     
     pass arguments explicitly:
-    \begin{verbatim}
+    \code
     namespace vigra {
         template <class SrcImageIterator, class SrcAccessor,
 	          class DestImageIterator, class DestAccessor, 
@@ -611,11 +612,11 @@ void convolveLine(triple<SrcIterator, SrcIterator, SrcAccessor> src,
 			        KernelIterator ik, KernelAccessor ka,
 			        int kleft, int kright, BorderTreatmentMode border)
     }
-    \end{verbatim}
+    \endcode
     
     
-    use argument objects in conjuction with \Ref{Argument Object Factories}:
-    \begin{verbatim}
+    use argument objects in conjuction with \ref ArgumentObjectFactories:
+    \code
     namespace vigra {
         template <class SrcImageIterator, class SrcAccessor,
 	          class DestImageIterator, class DestAccessor, 
@@ -625,15 +626,14 @@ void convolveLine(triple<SrcIterator, SrcIterator, SrcAccessor> src,
 		                tuple5<KernelIterator, KernelAccessor,
 			                     int, int, BorderTreatmentMode> kernel)
     }
-    \end{verbatim}
+    \endcode
     
-    {\bf Usage:}
+    <b> Usage:</b>
     
-    Include-File:
-    \URL[vigra/separableconvolution.hxx]{../include/vigra/separableconvolution.hxx}
+    <b>\#include</b> "<a href="separableconvolution_8hxx-source.html">vigra/separableconvolution.hxx</a>"
     
     
-    \begin{verbatim}
+    \code
     vigra::FImage src(w,h), dest(w,h);    
     ...
     
@@ -643,9 +643,8 @@ void convolveLine(triple<SrcIterator, SrcIterator, SrcAccessor> src,
     
     vigra::separableConvolveX(srcImageRange(src), destImage(dest), kernel1d(kernel));
     
-    \end{verbatim}
+    \endcode
 
-    @memo
 */
 template <class SrcIterator, class SrcAccessor,
           class DestIterator, class DestAccessor, 
@@ -704,15 +703,16 @@ separableConvolveX(triple<SrcIterator, SrcIterator, SrcAccessor> src,
 /*                                                      */
 /********************************************************/
 
-/** Performs a 1 dimensional convolution in y direction by 
-    calling \Ref{convolveLine}() for every column of the
-    image. See \Ref{convolveLine}() for more information about required interfaces
+/** \brief Performs a 1 dimensional convolution in y direction.
+
+    It calls \ref convolveLine() for every column of the
+    image. See \ref convolveLine() for more information about required interfaces
     and vigra_preconditions.
     
-    {\bf Declarations:}
+    <b> Declarations:</b>
     
     pass arguments explicitly:
-    \begin{verbatim}
+    \code
     namespace vigra {
         template <class SrcImageIterator, class SrcAccessor,
 	          class DestImageIterator, class DestAccessor, 
@@ -723,11 +723,11 @@ separableConvolveX(triple<SrcIterator, SrcIterator, SrcAccessor> src,
 			        KernelIterator ik, KernelAccessor ka,
 			        int kleft, int kright, BorderTreatmentMode border)
     }
-    \end{verbatim}
+    \endcode
     
     
-    use argument objects in conjuction with \Ref{Argument Object Factories}:
-    \begin{verbatim}
+    use argument objects in conjuction with \ref ArgumentObjectFactories:
+    \code
     namespace vigra {
         template <class SrcImageIterator, class SrcAccessor,
 	          class DestImageIterator, class DestAccessor, 
@@ -737,15 +737,14 @@ separableConvolveX(triple<SrcIterator, SrcIterator, SrcAccessor> src,
 		                tuple5<KernelIterator, KernelAccessor,
 			                     int, int, BorderTreatmentMode> kernel)
     }
-    \end{verbatim}
+    \endcode
     
-    {\bf Usage:}
+    <b> Usage:</b>
     
-    Include-File:
-    \URL[vigra/separableconvolution.hxx]{../include/vigra/separableconvolution.hxx}
+    <b>\#include</b> "<a href="separableconvolution_8hxx-source.html">vigra/separableconvolution.hxx</a>"
     
     
-    \begin{verbatim}
+    \code
     vigra::FImage src(w,h), dest(w,h);    
     ...
     
@@ -755,9 +754,8 @@ separableConvolveX(triple<SrcIterator, SrcIterator, SrcAccessor> src,
     
     vigra::separableConvolveY(srcImageRange(src), destImage(dest), kernel1d(kernel));
     
-    \end{verbatim}
+    \endcode
 
-    @memo
 */
 template <class SrcIterator, class SrcAccessor,
           class DestIterator, class DestAccessor, 
@@ -816,12 +814,13 @@ separableConvolveY(triple<SrcIterator, SrcIterator, SrcAccessor> src,
 /*                                                      */
 /********************************************************/
 
-/** Generic 1 dimensional convolution kernel.
+/** \brief Generic 1 dimensional convolution kernel.
+
     This kernel may be used for convolution of 1 dimensional signals or for
     separable convolution of multidimensional signals. 
     
     Convlution functions access the kernel via a 1 dimensional random access
-    iterator which they get by calling \Ref{center}(). This iterator
+    iterator which they get by calling \ref center(). This iterator
     points to the center of the kernel. The kernel's size is given by its left() (<=0) 
     and right() (>= 0) methods. The desired border treatment mode is
     returned by borderTreatment().
@@ -831,15 +830,14 @@ separableConvolveY(triple<SrcIterator, SrcIterator, SrcAccessor> src,
     must define multiplication with doubles and NumericTraits.
     
     
-    The kernel defines a factory function \Ref{kernel1d()} to create an argument object
-    (see \Ref{Kernel Argument Object Factories}).
+    The kernel defines a factory function kernel1d() to create an argument object
+    (see \ref KernelArgumentObjectFactories).
 
-    {\bf Usage:}
+    <b> Usage:</b>
     
-    Include-File:
-    \URL[vigra/stdconvolution.hxx]{../include/vigra/stdconvolution.hxx}
+    <b>\#include</b> "<a href="stdconvolution_8hxx-source.html">vigra/stdconvolution.hxx</a>"
     
-    \begin{verbatim}
+    \code
     vigra::FImage src(w,h), dest(w,h);    
     ...
     
@@ -848,17 +846,17 @@ separableConvolveY(triple<SrcIterator, SrcIterator, SrcAccessor> src,
     kernel.initGaussian(3.0);
     
     vigra::separableConvolveX(srcImageRange(src), destImage(dest), kernel1d(kernel));
-    \end{verbatim}
+    \endcode
 
-    {\bf Required Interface:}
+    <b> Required Interface:</b>
     
-    \begin{verbatim}
+    \code
     value_type v = vigra::NumericTraits<value_type>::one(); // if norm is not
                                                             // given explicitly
     double d;
     
     v = d * v; 
-    \end{verbatim}
+    \endcode
 */
 
 template <class ARITHTYPE>
@@ -866,17 +864,14 @@ class Kernel1D
 {
   public:
         /** the kernel's value type
-	    @memo
 	*/
     typedef ARITHTYPE value_type;
     
         /** 1D random access iterator over the kernel's values
-	    @memo
 	*/
     typedef typename std::vector<value_type>::iterator Iterator;
     
         /** the kernel's accessor
-	    @memo
 	*/
     typedef StandardAccessor<value_type> Accessor;
     
@@ -922,7 +917,6 @@ class Kernel1D
         /** Default constructor.
 	    Creates a kernel of size 1 which would copy the signal
 	    unchanged.
-	    @memo
 	*/
     Kernel1D()
     : kernel_(),
@@ -935,7 +929,6 @@ class Kernel1D
     }
     
         /** Copy constructor.
-	    @memo
 	*/
     Kernel1D(Kernel1D const & k)
     : left_(k.left_),
@@ -946,7 +939,6 @@ class Kernel1D
     {}
     
         /** Copy assignment.
-	    @memo
 	*/
     Kernel1D & operator=(Kernel1D const & k)
     {
@@ -968,15 +960,14 @@ class Kernel1D
 	    Instead of a single value an initializer list of length size() 
 	    can be used like this:
 	    
-	    \begin{verbatim}
+	    \code
 	    vigra::Kernel2D<float> roberts_gradient_x;
 	    
 	    roberts_gradient_x.initExplicitly(0, 1) = 1.0, -1.0;
-	    \end{verbatim}
+	    \endcode
 	    
 	    In this case, the norm will be set to the sum of the init values. 
 	    An initializer list of wrong length will result in a run-time error.
-	    @memo
 	*/
     InitProxy operator=(value_type const & v)
     {
@@ -988,7 +979,6 @@ class Kernel1D
     }
     
         /** Destructor.
-	    @memo
 	*/
     ~Kernel1D() 
     {}
@@ -998,23 +988,21 @@ class Kernel1D
 	    always 3*std_dev. 'norm' denotes the sum of all bins of the kernel.
 	    
 	    Precondition:  
-	    \begin{verbatim}
+	    \code
 	    std_dev >= 0.0
-	    \end{verbatim}
+	    \endcode
 	    
 	    Postconditions: 
-	    \begin{verbatim}
+	    \code
 	    1. left()  == -(int)(3.0*std_dev + 0.5)
 	    2. right() ==  (int)(3.0*std_dev + 0.5)
 	    3. borderTreatment() == BORDER_TREATMENT_CLIP
 	    4. norm() == norm
-	    \end{verbatim}
-	    @memo
+	    \endcode
 	*/
     void initGaussian(double std_dev, value_type norm);
     
         /** Init as a Gaussian function with norm 1. 
-	    @memo
          */
     void initGaussian(double std_dev) 
     {
@@ -1027,29 +1015,27 @@ class Kernel1D
 	    The radius of the kernel is always 3*std_dev.
 	    'norm' denotes the norm of the kernel as given by
 	      
-	    \[ \sum_{i=left()}^{right()} 
+	    \f[ \sum_{i=left()}^{right()} 
 	                 \frac{(-i)^{order}kernel[i]}{order!} = norm
-	    \]
+	    \f]
 	    
 	    Preconditions:  
-	    \begin{verbatim}
+	    \code
 	    1. std_dev >= 0.0
 	    2. order   >= 1
-	    \end{verbatim}
+	    \endcode
 	    
 	    Postconditions: 
-	    \begin{verbatim}
+	    \code
 	    1. left()  == -(int)(3.0*std_dev + 0.5)
 	    2. right() ==  (int)(3.0*std_dev + 0.5)
 	    3. borderTreatment() == BORDER_TREATMENT_REPEAT
 	    4. norm() == norm
-	    \end{verbatim}
-	    @memo
+	    \endcode
 	*/
     void initGaussianDerivative(double std_dev, int order, value_type norm);
     
         /** Init as a Gaussian derivative with norm 1. 
-	    @memo
          */
     void initGaussianDerivative(double std_dev, int order) 
     {
@@ -1061,23 +1047,21 @@ class Kernel1D
 	    of the kernel.
 	    
 	    Precondition:  
-	    \begin{verbatim}
+	    \code
 	    radius   >= 0
-	    \end{verbatim}
+	    \endcode
 	    
 	    Postconditions: 
-	    \begin{verbatim}
+	    \code
 	    1. left()  == -radius
 	    2. right() ==  radius
 	    3. borderTreatment() == BORDER_TREATMENT_REFLECT
 	    4. norm() == norm
-	    \end{verbatim}
-	    @memo
+	    \endcode
 	*/
     void initBinomial(int radius, value_type norm);
     
         /** Init as a Binomial filter with norm 1. 
-	    @memo
          */
     void initBinomial(int radius) 
     {
@@ -1089,23 +1073,21 @@ class Kernel1D
 	    of the kernel. The window size is (2*radius+1) * (2*radius+1)
 	    
 	    Precondition:  
-	    \begin{verbatim}
+	    \code
 	    radius   >= 0
-	    \end{verbatim}
+	    \endcode
 	    
 	    Postconditions: 
-	    \begin{verbatim}
+	    \code
 	    1. left()  == -radius
 	    2. right() ==  radius
 	    3. borderTreatment() == BORDER_TREATMENT_CLIP
 	    4. norm() == norm
-	    \end{verbatim}
-	    @memo
+	    \endcode
 	*/
     void initAveraging(int radius, value_type norm);
     
         /** Init as a Averaging filter with norm 1. 
-	    @memo
          */
     void initAveraging(int radius) 
     {
@@ -1114,22 +1096,20 @@ class Kernel1D
     
         /** 
 	    Init as a symmetric gradient filter of the form
-	   #[ 0.5 * norm, 0.0 * norm, -0.5 * norm]#
+	   <TT>[ 0.5 * norm, 0.0 * norm, -0.5 * norm]</TT>
 	    
 	    Postconditions: 
-	    \begin{verbatim}
+	    \code
 	    1. left()  == -1
 	    2. right() ==  1
 	    3. borderTreatment() == BORDER_TREATMENT_REPEAT
 	    4. norm() == norm
-	    \end{verbatim}
-	    @memo
+	    \endcode
 	*/
     void 
     initSymmetricGradient(value_type norm );
     
         /** Init as a symmetric gradient filter with norm 1. 
-	    @memo
          */
     void initSymmetricGradient() 
     {
@@ -1141,35 +1121,34 @@ class Kernel1D
 	    A comma-separated initializer list is given after the assignment 
 	    operator. This function is used like this:
 		
-	    \begin{verbatim}
+	    \code
 	    // define horizontal Roberts filter
 	    vigra::Kernel1D<float> roberts_gradient_x;
 	    
 	    roberts_gradient_x.initExplicitly(0, 1) = 1.0, -1.0;
-	    \end{verbatim}
+	    \endcode
 	    
 	    The norm is set to the sum of the initialzer values. If the wrong number of 
 	    values is given, a run-time error results. It is, however, possible to give 
 	    just one initializer. This creates an averaging filter with the given constant:
 	    
-	    \begin{verbatim}
+	    \code
 	    vigra::Kernel1D<float> average5x1;
 	    
 	    average5x1.initExplicitly(-2, 2) = 1.0/5.0;
-	    \end{verbatim}
+	    \endcode
 	    
 	    Here, the norm is set to value*size().
 		
-	    {\bf Preconditions:}
+	    <b> Preconditions:</b>
 	    
-	    \begin{verbatim}
+	    \code
 	    
 	    1. left <= 0
 	    2. right >= 0
 	    3. the number of values in the initializer list 
 	       is 1 or equals the size of the kernel.
-	    \end{verbatim}
-	    @memo
+	    \endcode
 	*/
     Kernel1D & initExplicitly(int left, int right)
     {
@@ -1189,11 +1168,10 @@ class Kernel1D
         /** Get iterator to center of kernel 
 	    
 	    Postconditions: 
-	    \begin{verbatim}
+	    \code
 	    
 	    center()[left()] ... center()[right()] are valid kernel positions 
-	    \end{verbatim}
-	    @memo
+	    \endcode
 	*/
     Iterator center() 
     {
@@ -1203,11 +1181,10 @@ class Kernel1D
         /** Access kernel value at specified location. 
 	    
 	    Preconditions: 
-	    \begin{verbatim}
+	    \code
 	    
 	    left() <= location <= right() 
-	    \end{verbatim}
-	    @memo
+	    \endcode
 	*/
     value_type operator[](int location) 
     {
@@ -1215,39 +1192,32 @@ class Kernel1D
     }
     
         /** left border of kernel (inclusive), always <= 0
-	    @memo
 	*/
     int left() const { return left_; }
     
         /** right border of kernel (inclusive), always >= 0
-	    @memo
 	*/
     int right() const { return right_; }
     
         /** size of kernel (right() - left() + 1)
-	    @memo
 	*/
     int size() const { return right_ - left_ + 1; }
     
         /** current border treatment mode
-	    @memo
 	*/
     BorderTreatmentMode borderTreatment() const 
     { return border_treatment_; }
     
         /** Set border treatment mode. 
-	    @memo
 	*/
     void setBorderTreatment( BorderTreatmentMode new_mode)
     { border_treatment_ = new_mode; }
     
         /** norm of kernel
-	    @memo
 	*/
     value_type norm() const { return norm_; }
     
         /** set a new norm and normalize kernel
-	    @memo
 	*/
     void
     normalize(value_type norm) 
@@ -1278,7 +1248,6 @@ class Kernel1D
     }
     
         /** normalize kernel to norm 1.
-	    @memo
 	*/
     void
     normalize() 
@@ -1287,7 +1256,6 @@ class Kernel1D
     }
     
         /** get an accessor
-	    @memo
 	*/
     Accessor accessor() const { return Accessor(); }
     

@@ -51,8 +51,8 @@ struct InternalCornerResponseFunctor
     }
 };
 
-/** @heading Corner Detection
-    @memo measure the 'cornerness' at each pixel
+/** \addtogroup CornerDetection Corner Detection
+    Measure the 'cornerness' at each pixel
 */
 //@{ 
                                     
@@ -62,19 +62,20 @@ struct InternalCornerResponseFunctor
 /*                                                      */
 /********************************************************/
 
-/** Find corners in an image.
+/** \brief Find corners in an image.
+
     This algorithm implements the so called 'corner response function'
     to measure the 'cornerness' of each pixel in the image, according to
-    [C.G. Harris and M.J. Stevens: {\em "A Combined Corner and Edge Detector"},
+    [C.G. Harris and M.J. Stevens: <em> "A Combined Corner and Edge Detector"</em>,
     Proc. of 4th Alvey Vision Conference, 1988]. We have found this to be a
     very robust corner detector, although it moves the corners somewhat into one
     region, depending on the scale.
     
-    The algorithm proceeds as follows: At the given #scale#, it calculates the 
+    The algorithm proceeds as follows: At the given <TT>scale</TT>, it calculates the 
     structure tensor (which is the smoothed matrix of gradient products) at each 
     pixel like this:
     
-    \[ 
+    \f[ 
         \left( 
 	\begin{array}{cc}
 	G^s * (g_x^s g_x^s) & G^s * (g_x^s g_y^s) \\
@@ -87,7 +88,7 @@ struct InternalCornerResponseFunctor
 	C & B \\
 	\end{array} 
         \right)
-    \]
+    \f]
     
     where <math>G<sup>s</sup> *</math> denotes convolution with a Gaussian filter at 
     scale s, <math>g<sub>x</sub><sup>s</sup></math> and 
@@ -95,22 +96,22 @@ struct InternalCornerResponseFunctor
     derivatives in x and y directions at scale s, and products mean pixelwise
     multiplication. Then the corner response is calculated pixelwise as 
     
-    \[
+    \f[
         CornerResponse = A B - C^2 - 0.04 (A + B)^2
-    \]
+    \f]
     
     The local maxima of the corner response denote the corners in the gray level 
     function.
     
     The source value type must be an linaer algebra, i.e. addition, subtraction, and
     multiplication with itself, multiplication with doubles and 
-    \URL[NumericTraits]{templatestructNumericTraitsArithmeticType.html} must 
+    \ref NumericTraits "NumericTraits" must 
     be defined. (Sorry, only the built-in types are currently supported.)
     
-    {\bf Declarations:}
+    <b> Declarations:</b>
     
     pass arguments explicitly:
-    \begin{verbatim}
+    \code
     namespace vigra {
         template <class SrcIterator, class SrcAccessor,
 	          class DestIterator, class DestAccessor>
@@ -119,10 +120,10 @@ struct InternalCornerResponseFunctor
 			       DestIterator dul, DestAccessor ad,
 			       double scale)
     }
-    \end{verbatim}
+    \endcode
     
-    use argument objects in conjuction with \Ref{Argument Object Factories}:
-    \begin{verbatim}
+    use argument objects in conjuction with \ref ArgumentObjectFactories:
+    \code
     namespace vigra {
         template <class SrcIterator, class SrcAccessor,
 	          class DestIterator, class DestAccessor>
@@ -132,15 +133,14 @@ struct InternalCornerResponseFunctor
 	           pair<DestIterator, DestAccessor> dest,
 	           double scale)
     }
-    \end{verbatim}
+    \endcode
     
-    {\bf Usage:}
+    <b> Usage:</b>
     
-        Include-File:
-        \URL[vigra/cornerdetection.hxx]{../include/vigra/cornerdetection.hxx}\\
+        <b>\#include</b> "<a href="cornerdetection_8hxx-source.html">vigra/cornerdetection.hxx</a>"<br>
     Namespace: vigra
     
-    \begin{verbatim}
+    \code
     vigra::BImage src(w,h), corners(w,h);
     vigra::FImage corner_response(w,h);
     
@@ -163,11 +163,11 @@ struct InternalCornerResponseFunctor
     // combine thresholding and local maxima
     vigra::combineTwoImages(srcImageRange(corners), srcImage(corner_response),
                      destImage(corners), std::multiplies<float>());
-    \end{verbatim}
+    \endcode
 
-    {\bf Required Interface:}
+    <b> Required Interface:</b>
     
-    \begin{verbatim}
+    \code
     SrcImageIterator src_upperleft, src_lowerright;
     DestImageIterator dest_upperleft;
     
@@ -183,7 +183,7 @@ struct InternalCornerResponseFunctor
     u = d * u
     
     dest_accessor.set(u, dest_upperleft);
-    \end{verbatim}
+    \endcode
 */
 template <class SrcIterator, class SrcAccessor,
           class DestIterator, class DestAccessor>

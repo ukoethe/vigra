@@ -28,11 +28,10 @@
 
 namespace vigra {
 
-/** @heading Algorithms to Combine Images
+/** \addtogroup CombineAlgo Algorithms to Combine Images
 
+    Apply functor to calculate a pixelwise transformation depending on multiple images.
     Note that the binary functors of the STL may be used with these functions.
-
-    @memo apply functor to calculate a pixelwise transformation depending on multiple images
 */
 //@{
 
@@ -42,16 +41,20 @@ namespace vigra {
 /*                                                      */
 /********************************************************/
 
-/** Combine two source images into destination image.
+/** \brief Combine two source images into destination image.
+
     The transformation given by the functor is applied to the source 
     pixels and the result written into the corresponding destination pixel.
     This is typically used for operations like add and subtract.
     The function uses accessors to access the pixel data.
+    Note that the binary functors of the STL can be used in addition to
+    the functors specifically defined in \ref CombineFunctor.
+    Creation of new functors is easiest by using \ref FunctorExpressions.
     
-    {\bf Declarations:}
+    <b> Declarations:</b>
     
     pass arguments explicitly:
-    \begin{verbatim}
+    \code
     namespace vigra {
         template <class SrcImageIterator1, class SrcAccessor1,
               class SrcImageIterator2, class SrcAccessor2,
@@ -64,11 +67,11 @@ namespace vigra {
                  DestImageIterator dest_upperleft, DestAccessor da,
                  Functor f)
     }
-    \end{verbatim}
+    \endcode
     
     
-    use argument objects in conjuction with \Ref{Argument Object Factories}:
-    \begin{verbatim}
+    use argument objects in conjuction with \ref ArgumentObjectFactories:
+    \code
     namespace vigra {
         template <class SrcImageIterator1, class SrcAccessor1,
               class SrcImageIterator2, class SrcAccessor2,
@@ -80,15 +83,14 @@ namespace vigra {
                  pair<DestImageIterator, DestAccessor> dest,
                  Functor f)
     }
-    \end{verbatim}
+    \endcode
     
-    {\bf Usage:}
+    <b> Usage:</b>
     
-        Include-File:
-        \URL[vigra/combineimages.hxx]{../include/vigra/combineimages.hxx}\\
+        <b>\#include</b> "<a href="combineimages_8hxx-source.html">vigra/combineimages.hxx</a>"<br>
         Namespace: vigra
     
-    \begin{verbatim}
+    \code
     #include <functional>     // for plus
 
     vigra::combineTwoImages(
@@ -97,15 +99,15 @@ namespace vigra {
                 destIter(dest.upperLeft()),  
                 std::plus<SrcValueType>());
     
-    \end{verbatim}
+    \endcode
     
-    Note that #SrcValueType# must be replaced with the appropriate type (e.g. 
+    Note that <TT>SrcValueType</TT> must be replaced with the appropriate type (e.g. 
     the promote type of the input images' pixel type, see also 
     \URef{NumericandPromotionTraits})
     
-    {\bf Required Interface:}
+    <b> Required Interface:</b>
     
-    \begin{verbatim}
+    \code
     SrcImageIterator1 src1_upperleft, src1_lowerright;
     SrcImageIterator2 src2_upperleft;
     DestImageIterator dest_upperleft;
@@ -120,9 +122,8 @@ namespace vigra {
           functor(src1_accessor(src1_upperleft), src2_accessor(src2_upperleft)), 
       dest_upperleft);
 
-    \end{verbatim}
+    \endcode
     
-    @memo
     
 */
 template <class SrcImageIterator1, class SrcAccessor1,
@@ -176,18 +177,22 @@ combineTwoImages(triple<SrcImageIterator1, SrcImageIterator1, SrcAccessor1> src1
 /*                                                      */
 /********************************************************/
 
-/** Combine ROI of two source images into destination image.
+/** \brief Combine ROI of two source images into destination image.
+
     The transformation given by the functor is applied to all source 
     pixels in the ROI (i.e. whenever the return value of the mask's accessor
     is not zero)
     and the result written into the corresponding destination pixel.
     This is typically used for operations like add and subtract.
     The function uses accessors to access the pixel data.
+    Note that the binary functors of the STL can be used in addition to
+    the functors specifically defined in \ref CombineFunctor.
+    Creation of new functors is easiest by using \ref FunctorExpressions.
     
-    {\bf Declarations:}
+    <b> Declarations:</b>
     
     pass arguments explicitly:
-    \begin{verbatim}
+    \code
     namespace vigra {
         template <class SrcImageIterator1, class SrcAccessor1,
               class SrcImageIterator2, class SrcAccessor2,
@@ -202,11 +207,11 @@ combineTwoImages(triple<SrcImageIterator1, SrcImageIterator1, SrcAccessor1> src1
                    DestImageIterator dest_upperleft, DestAccessor da,
                    Functor f)
     }
-    \end{verbatim}
+    \endcode
     
     
-    use argument objects in conjuction with \Ref{Argument Object Factories}:
-    \begin{verbatim}
+    use argument objects in conjuction with \ref ArgumentObjectFactories:
+    \code
     namespace vigra {
         template <class SrcImageIterator1, class SrcAccessor1,
               class SrcImageIterator2, class SrcAccessor2,
@@ -220,15 +225,14 @@ combineTwoImages(triple<SrcImageIterator1, SrcImageIterator1, SrcAccessor1> src1
                    pair<DestImageIterator, DestAccessor> dest,
                    Functor f)
     }
-    \end{verbatim}
+    \endcode
     
-    {\bf Usage:}
+    <b> Usage:</b>
     
-        Include-File:
-        \URL[vigra/combineimages.hxx]{../include/vigra/combineimages.hxx}\\
+        <b>\#include</b> "<a href="combineimages_8hxx-source.html">vigra/combineimages.hxx</a>"<br>
         Namespace: vigra
     
-    \begin{verbatim}
+    \code
     #include <functional>     // for plus
 
     vigra::combineTwoImagesIf(
@@ -238,15 +242,15 @@ combineTwoImages(triple<SrcImageIterator1, SrcImageIterator1, SrcAccessor1> src1
                 destIter(dest.upperLeft()),
                 std::plus<SrcValueType>());
     
-    \end{verbatim}
+    \endcode
 
-    Note that #SrcValueType# must be replaced with the appropriate type (e.g. 
+    Note that <TT>SrcValueType</TT> must be replaced with the appropriate type (e.g. 
     the promote type of the input images' pixel type, see also 
     \URef{NumericandPromotionTraits})
     
-    {\bf Required Interface:}
+    <b> Required Interface:</b>
     
-    \begin{verbatim}
+    \code
     SrcImageIterator1 src1_upperleft, src1_lowerright;
     SrcImageIterator2 src2_upperleft;
     MaskImageIterator mask_upperleft;
@@ -264,9 +268,8 @@ combineTwoImages(triple<SrcImageIterator1, SrcImageIterator1, SrcAccessor1> src1
           functor(src1_accessor(src1_upperleft), src2_accessor(src2_upperleft)), 
       dest_upperleft);
 
-    \end{verbatim}
+    \endcode
     
-    @memo
 */
 template <class SrcImageIterator1, class SrcAccessor1,
           class SrcImageIterator2, class SrcAccessor2,
@@ -325,15 +328,17 @@ combineTwoImagesIf(triple<SrcImageIterator1, SrcImageIterator1, SrcAccessor1> sr
 /*                                                      */
 /********************************************************/
 
-/** Combine three source images into destination image.
+/** \brief Combine three source images into destination image.
+
     The transformation given by the functor is applied to the source 
     pixels and the result written into the corresponding destination pixel.
     The function uses accessors to access the pixel data.
+    Creation of new functors is easiest by using \ref FunctorExpressions.
     
-    {\bf Declarations:}
+    <b> Declarations:</b>
     
     pass arguments explicitly:
-    \begin{verbatim}
+    \code
     namespace vigra {
         template <class SrcImageIterator1, class SrcAccessor1,
               class SrcImageIterator2, class SrcAccessor2,
@@ -348,11 +353,11 @@ combineTwoImagesIf(triple<SrcImageIterator1, SrcImageIterator1, SrcAccessor1> sr
                    DestImageIterator dest_upperleft, DestAccessor da,
                    Functor f)
     }
-    \end{verbatim}
+    \endcode
     
     
-    use argument objects in conjuction with \Ref{Argument Object Factories}:
-    \begin{verbatim}
+    use argument objects in conjuction with \ref ArgumentObjectFactories:
+    \code
     namespace vigra {
         template <class SrcImageIterator1, class SrcAccessor1,
               class SrcImageIterator2, class SrcAccessor2,
@@ -366,15 +371,14 @@ combineTwoImagesIf(triple<SrcImageIterator1, SrcImageIterator1, SrcAccessor1> sr
                  pair<DestImageIterator, DestAccessor> dest,
                  Functor f)
     }
-    \end{verbatim}
+    \endcode
     
-    {\bf Usage:}
+    <b> Usage:</b>
     
-        Include-File:
-        \URL[vigra/combineimages.hxx]{../include/vigra/combineimages.hxx}\\
+        <b>\#include</b> "<a href="combineimages_8hxx-source.html">vigra/combineimages.hxx</a>"<br>
         Namespace: vigra
     
-    \begin{verbatim}
+    \code
     vigra::combineThreeImages(
                 srcIterRange(src1.upperLeft(), src1.lowerRight()), 
                 srcIter(src2.upperLeft()), 
@@ -382,11 +386,11 @@ combineTwoImagesIf(triple<SrcImageIterator1, SrcImageIterator1, SrcAccessor1> sr
                 destIter(dest.upperLeft()),  
                 SomeThreeArgumentFunctor());
     
-    \end{verbatim}
+    \endcode
 
-    {\bf Required Interface:}
+    <b> Required Interface:</b>
     
-    \begin{verbatim}
+    \code
     SrcImageIterator1 src1_upperleft, src1_lowerright;
     SrcImageIterator2 src2_upperleft;
     SrcImageIterator3 src3_upperleft;
@@ -405,9 +409,8 @@ combineTwoImagesIf(triple<SrcImageIterator1, SrcImageIterator1, SrcAccessor1> sr
               src3_accessor(src3_upperleft)), 
       dest_upperleft);
 
-    \end{verbatim}
+    \endcode
     
-    @memo
     
 */
 template <class SrcImageIterator1, class SrcAccessor1,
@@ -466,9 +469,9 @@ combineThreeImages(triple<SrcImageIterator1, SrcImageIterator1, SrcAccessor1> sr
     
 //@}
 
-/** @heading Functors to Combine Images
+/** \addtogroup CombineFunctor Functors to Combine Images
 
-    @memo common functors with several arguments
+    Common functors with several arguments
 */
 //@{
 
@@ -479,20 +482,18 @@ combineThreeImages(triple<SrcImageIterator1, SrcImageIterator1, SrcAccessor1> sr
 /********************************************************/
 
 /** Calculate the magnitude from two arguments.
-    Can be used in conjunction with \Ref{gradientBasedTransform}.
+    Can be used in conjunction with \ref gradientBasedTransform().
 */
 template <class ValueType>
 class MagnitudeFunctor
 {
   public:
         /* the functor's value type
-            @memo
         */
     typedef ValueType value_type;
     
-        /** calculate transform '#sqrt(v1*v1 + v2*v2)#'. 
+        /** calculate transform '<TT>sqrt(v1*v1 + v2*v2)</TT>'. 
             
-            @memo
         */
     value_type operator()(value_type const & v1, value_type const & v2) const
     {
@@ -512,27 +513,26 @@ class MagnitudeFunctor
 
 
 /** Calculate the gradient magnitude from RGB arguments.
-    Can be used in conjunction with \Ref{gradientBasedTransform}.
+    Can be used in conjunction with \ref gradientBasedTransform().
 */
 template <class ValueType>
 class RGBGradientMagnitudeFunctor
 {
   public:
         /* the functor's value type
-            @memo
         */
     typedef ValueType value_type;
     
         /** Calculate the gradient magnitude form given RGB components.
             The function returns 
             
-            \[ \sqrt{|\nabla red|^2 + |\nabla green|^2 + |\nabla blue|^2}
-            \]
+            \f[ \sqrt{|\nabla red|^2 + |\nabla green|^2 + |\nabla blue|^2}
+            \f]
             
-            where $|\nabla red|^2$ is defined by #gx.red()*gx.red() + gy.red()*gy.red()#.
+            where \f$|\nabla red|^2\f$ is defined by <TT>gx.red()*gx.red() + gy.red()*gy.red()</TT>.
             
-            #ValueType# (the RGB's component type) must support addition, multiplication, 
-            abd #sqrt()#.
+            <TT>ValueType</TT> (the RGB's component type) must support addition, multiplication, 
+            abd <TT>sqrt()</TT>.
         */
     ValueType 
     operator()(RGBValue<ValueType> const & gx, RGBValue<ValueType> const & gy) const

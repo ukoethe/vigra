@@ -29,60 +29,60 @@
 
 namespace vigra {
 
-/** @heading TIFF related functions
+/** \defgroup TIFFImpex Import/export of the TIFF format
+
+    TIFF conversion and file export/import.
+    
+    Normally, you need not call the TIFF functions directly. They are
+    available much more conveniently via \ref importImage() and \ref exportImage() 
+    
     TIFF (Tagged Image File Format) is a very versatile image format - 
     one can store different pixel types (byte, integer, float, double) and
     color models (black and white, RGB, mapped RGB, other color systems). 
-    See the TIFF documentation at 
-    \URL[http://www.libtiff.org/]{http://www.libtiff.org/} for details.
-    
-    @memo TIFF conversion and file export/import
-     
+    For more details and information on how to create a TIFF image,
+    refer to the TIFF documentation at 
+    <a href="http://www.libtiff.org/">http://www.libtiff.org/</a> for details.
 */
 //@{
 
-/** @heading Convert TIFF images
-    @memo TIFF images files can store byte, int, float, double pixel types
-*/
-//@{
 /********************************************************/
 /*                                                      */
 /*                     importTiffImage                  */
 /*                                                      */
 /********************************************************/
 
-/** Convert given TiffImage into image specified by iterator range.
+/** \brief Convert given TiffImage into image specified by iterator range.
+
     Accessors are used to write the data.    
-    This function calls \Ref{tiffToScalarImage} or \Ref{tiffToRGBImage}, depending on 
+    This function calls \ref tiffToScalarImage() or \ref tiffToRGBImage(), depending on 
     the accessor's value_type.
 
     
-    {\bf Declarations:}
+    <b> Declarations:</b>
     
     pass arguments explicitly:
-    \begin{verbatim}
+    \code
     namespace vigra {
         template <class ImageIterator, class Accessor>
         void
         importTiffImage(TiffImage * tiff, ImageIterator iter, Accessor a)
     }
-    \end{verbatim}
+    \endcode
 
-    use argument objects in conjuction with \Ref{Argument Object Factories}:
-    \begin{verbatim}
+    use argument objects in conjuction with \ref ArgumentObjectFactories:
+    \code
     namespace vigra {
         template <class ImageIterator, class Accessor>
         void
         importTiffImage(TiffImage * tiff, pair<ImageIterator, Accessor> dest)
     }
-    \end{verbatim}
+    \endcode
     
-    {\bf Usage:}
+    <b> Usage:</b>
 
-    Include-File:
-    \URL[vigra/tiff.hxx]{../include/vigra/tiff.hxx}
+    <b>\#include</b> "<a href="tiff_8hxx-source.html">vigra/tiff.hxx</a>"
     
-    \begin{verbatim}
+    \code
     uint32 w, h;
     TiffImage * tiff = TIFFOpen("tiffimage.tiff", "r");
     TIFFGetField(tiff, TIFFTAG_IMAGEWIDTH, &w);
@@ -93,17 +93,16 @@ namespace vigra {
     vigra::importTiffImage(tiff, destImage(img));
     
     TIFFClose(tiff);
-    \end{verbatim}
+    \endcode
     
-    {\bf Required Interface:}
+    <b> Required Interface:</b>
     
-    see \Ref{tiffToScalarImage} and \Ref{tiffToRGBImage}
+    see \ref tiffToScalarImage() and \ref tiffToRGBImage()
     
-    {\bf Preconditions:}
+    <b> Preconditions:</b>
     
-    see \Ref{tiffToScalarImage} and \Ref{tiffToRGBImage}
+    see \ref tiffToScalarImage() and \ref tiffToRGBImage()
     
-    @memo
 */
 template <class ImageIterator, class Accessor>
 inline void
@@ -142,35 +141,35 @@ importTiffImage(TiffImage * tiff, ImageIterator iter, Accessor a, VigraFalseType
 /*                                                      */
 /********************************************************/
 
-/** Convert single-band TiffImage to scalar image.
+/** \brief Convert single-band TiffImage to scalar image.
+
     This function uses accessors to write the data.
     
-    {\bf Declarations:}
+    <b> Declarations:</b>
     
     pass arguments explicitly:
-    \begin{verbatim}
+    \code
     namespace vigra {
         template <class ImageIterator, class Accessor>
         void
         tiffToScalarImage(TiffImage * tiff, ImageIterator iter, Accessor a)
     }
-    \end{verbatim}
+    \endcode
 
-    use argument objects in conjuction with \Ref{Argument Object Factories}:
-    \begin{verbatim}
+    use argument objects in conjuction with \ref ArgumentObjectFactories:
+    \code
     namespace vigra {
         template <class ImageIterator, class Accessor>
         void
         tiffToScalarImage(TiffImage * tiff, pair<ImageIterator, Accessor> dest)
     }
-    \end{verbatim}
+    \endcode
     
-    {\bf Usage:}
+    <b> Usage:</b>
 
-    Include-File:
-    \URL[vigra/tiff.hxx]{../include/vigra/tiff.hxx}
+    <b>\#include</b> "<a href="tiff_8hxx-source.html">vigra/tiff.hxx</a>"
     
-    \begin{verbatim}
+    \code
     uint32 w, h;
     uint16 photometric
     TiffImage * tiff = TIFFOpen("tiffimage.tiff", "r");
@@ -189,24 +188,24 @@ importTiffImage(TiffImage * tiff, ImageIterator iter, Accessor a, VigraFalseType
     vigra::tiffToScalarImage(tiff, destImage(img));
     
     TIFFClose(tiff);
-    \end{verbatim}
+    \endcode
     
-    {\bf Required Interface:}
+    <b> Required Interface:</b>
     
-    \begin{verbatim}
+    \code
     ImageIterator upperleft;
     <unsigned char, short, long, float, double> value;
     
     Accessor accessor;
                
     accessor.set(value, upperleft);
-    \end{verbatim}
+    \endcode
     
-    {\bf Preconditions:}
+    <b> Preconditions:</b>
     
     ImageIterator must refer to a large enough image.
     
-    \begin{verbatim}
+    \code
     uint16 sampleFormat, samplesPerPixel, bitsPerSample, photometric;
            
     TIFFGetField(tiff, TIFFTAG_SAMPLEFORMAT, &sampleFormat);
@@ -224,9 +223,8 @@ importTiffImage(TiffImage * tiff, ImageIterator iter, Accessor a, VigraFalseType
        bitsPerSample == 32 || 
        bitsPerSample == 64
     
-    \end{verbatim}
+    \endcode
     
-    @memo
 */
 template <class ImageIterator, class Accessor>
 void
@@ -498,38 +496,38 @@ tiffToScalarImage(TiffImage * tiff, pair<ImageIterator, Accessor> dest)
 /*                                                      */
 /********************************************************/
 
-/** Convert RGB (3-band or color-mapped) TiffImage 
+/** \brief Convert RGB (3-band or color-mapped) TiffImage 
     to RGB image.
-    This function uses \Ref{RGBAccessor} to write the data.
+    
+    This function uses \ref RGBAccessor to write the data.
     A RGBImageIterator is an iterator which is associated with a
     RGBAccessor.
     
-    {\bf Declarations:}
+    <b> Declarations:</b>
     
     pass arguments explicitly:
-    \begin{verbatim}
+    \code
     namespace vigra {
         template <class RGBImageIterator, class RGBAccessor>
         void
         tiffToRGBImage(TiffImage * tiff, RGBImageIterator iter, RGBAccessor a)
     }
-    \end{verbatim}
+    \endcode
 
-    use argument objects in conjuction with \Ref{Argument Object Factories}:
-    \begin{verbatim}
+    use argument objects in conjuction with \ref ArgumentObjectFactories:
+    \code
     namespace vigra {
         template <class RGBImageIterator, class RGBAccessor>
         void
         tiffToRGBImage(TiffImage * tiff, pair<RGBImageIterator, RGBAccessor> dest)
     }
-    \end{verbatim}
+    \endcode
 
-    {\bf Usage:}
+    <b> Usage:</b>
 
-    Include-File:
-    \URL[vigra/tiff.hxx]{../include/vigra/tiff.hxx}
+    <b>\#include</b> "<a href="tiff_8hxx-source.html">vigra/tiff.hxx</a>"
     
-    \begin{verbatim}
+    \code
     uint32 w, h;
     uint16 photometric
     TiffImage * tiff = TIFFOpen("tiffimage.tiff", "r");
@@ -548,11 +546,11 @@ tiffToScalarImage(TiffImage * tiff, pair<ImageIterator, Accessor> dest)
     vigra::tiffToRGBImage(tiff, destImage(img));
     
     TIFFClose(tiff);
-    \end{verbatim}
+    \endcode
     
-    {\bf Required Interface:}
+    <b> Required Interface:</b>
     
-    \begin{verbatim}
+    \code
     ImageIterator upperleft;
     <unsigned char, short, long, float, double> rvalue, gvalue, bvalue;
     
@@ -561,13 +559,13 @@ tiffToScalarImage(TiffImage * tiff, pair<ImageIterator, Accessor> dest)
     accessor.setRed(rvalue, upperleft);
     accessor.setGreen(gvalue, upperleft);
     accessor.setBlue(bvalue, upperleft);
-    \end{verbatim}
+    \endcode
     
-    {\bf Preconditions:}
+    <b> Preconditions:</b>
     
     ImageIterator must refer to a large enough image.
     
-    \begin{verbatim}
+    \code
     uint16 sampleFormat, samplesPerPixel, bitsPerSample, photometric;
            
     TIFFGetField(tiff, TIFFTAG_SAMPLEFORMAT, &sampleFormat);
@@ -584,9 +582,8 @@ tiffToScalarImage(TiffImage * tiff, pair<ImageIterator, Accessor> dest)
        bitsPerSample == 16 || 
        bitsPerSample == 32 || 
        bitsPerSample == 64
-    \end{verbatim}
+    \endcode
     
-    @memo
 */
 template <class RGBImageIterator, class RGBAccessor>
 void
@@ -1021,39 +1018,39 @@ struct CreateTiffImage;
 /*                                                      */
 /********************************************************/
 
-/** Create a TiffImage from the given iterator range.
+/** \brief Create a TiffImage from the given iterator range.
+
     Type and size of the TiffImage are determined by the input image. 
     Currently, the function can create scalar images and RGB images of type 
     unsigned char, short, int, float, and double.
     This function uses accessors to read the data.
     
-    {\bf Declarations:}
+    <b> Declarations:</b>
     
     pass arguments explicitly:
-    \begin{verbatim}
+    \code
     namespace vigra {
         template <class ImageIterator, class Accessor>
         inline TiffImage *
         createTiffImage(ImageIterator upperleft, ImageIterator lowerright, 
                         Accessor a)
     }
-    \end{verbatim}
+    \endcode
 
-    use argument objects in conjuction with \Ref{Argument Object Factories}:
-    \begin{verbatim}
+    use argument objects in conjuction with \ref ArgumentObjectFactories:
+    \code
     namespace vigra {
         template <class ImageIterator, class Accessor>
         inline TiffImage *
         createTiffImage(triple<ImageIterator, ImageIterator, Accessor> src)
     }
-    \end{verbatim}
+    \endcode
 
-    {\bf Usage:}
+    <b> Usage:</b>
 
-    Include-File:
-    \URL[vigra/tiff.hxx]{../include/vigra/tiff.hxx}
+    <b>\#include</b> "<a href="tiff_8hxx-source.html">vigra/tiff.hxx</a>"
     
-    \begin{verbatim}
+    \code
     vigra::BImage img(width, height);
     
     ...
@@ -1063,18 +1060,17 @@ struct CreateTiffImage;
     vigra::createTiffImage(srcImageRange(img), tiff);
 
     TIFFClose(tiff);   // implicitly writes the image to the disk
-    \end{verbatim}
+    \endcode
     
-    {\bf Required Interface:}
+    <b> Required Interface:</b>
     
-    \begin{verbatim}
+    \code
     ImageIterator upperleft;
     Accessor accessor;
                            
     accessor(upperleft);   // result written into TiffImage
-    \end{verbatim}
+    \endcode
     
-    @memo
 */
 template <class ImageIterator, class Accessor>
 inline void
@@ -1098,38 +1094,38 @@ createTiffImage(triple<ImageIterator, ImageIterator, Accessor> src, TiffImage * 
 /*                                                      */
 /********************************************************/
 
-/** Create a single-band TiffImage from the given scalar image.
+/** \brief Create a single-band TiffImage from the given scalar image.
+
     Type and size of the TiffImage are determined by the input image 
     (may be one of unsigned char, short, int, float, or double).
     This function uses accessors to read the data.
     
-    {\bf Declarations:}
+    <b> Declarations:</b>
     
     pass arguments explicitly:
-    \begin{verbatim}
+    \code
     namespace vigra {
         template <class ImageIterator, class Accessor>
         inline TiffImage *
         createScalarTiffImage(ImageIterator upperleft, ImageIterator lowerright, 
                   Accessor a)
     }
-    \end{verbatim}
+    \endcode
 
-    use argument objects in conjuction with \Ref{Argument Object Factories}:
-    \begin{verbatim}
+    use argument objects in conjuction with \ref ArgumentObjectFactories:
+    \code
     namespace vigra {
         template <class ImageIterator, class Accessor>
         inline TiffImage *
         createScalarTiffImage(triple<ImageIterator, ImageIterator, Accessor> src)
     }
-    \end{verbatim}
+    \endcode
 
-    {\bf Usage:}
+    <b> Usage:</b>
 
-    Include-File:
-    \URL[vigra/tiff.hxx]{../include/vigra/tiff.hxx}
+    <b>\#include</b> "<a href="tiff_8hxx-source.html">vigra/tiff.hxx</a>"
     
-    \begin{verbatim}
+    \code
     vigra::BImage img(width, height);
     
     ...
@@ -1139,18 +1135,17 @@ createTiffImage(triple<ImageIterator, ImageIterator, Accessor> src, TiffImage * 
     vigra::createScalarTiffImage(srcImageRange(img), tiff);
 
     TIFFClose(tiff);   // implicitly writes the image to the disk
-    \end{verbatim}
+    \endcode
     
-    {\bf Required Interface:}
+    <b> Required Interface:</b>
     
-    \begin{verbatim}
+    \code
     ImageIterator upperleft;
     Accessor accessor;
                            
     accessor(upperleft);   // result written into TiffImage
-    \end{verbatim}
+    \endcode
     
-    @memo
 */
 template <class ImageIterator, class Accessor>
 inline void
@@ -1449,40 +1444,40 @@ struct CreateTiffImage<double>
 /*                                                      */
 /********************************************************/
 
-/** Create a 3-band TiffImage from the given RGB image.
+/** \brief Create a 3-band TiffImage from the given RGB image.
+
     Type and size of the TiffImage are determined by the input image 
     (may be one of unsigned char, int, float, or double).
-    This function uses \Ref{RGBAccessor} to read the data. A
+    This function uses \ref RGBAccessor to read the data. A
     RGBImageIterator is an iterator that is associated with a
     RGBAccessor.
     
-    {\bf Declarations:}
+    <b> Declarations:</b>
     
     pass arguments explicitly:
-    \begin{verbatim}
+    \code
     namespace vigra {
         template <class RGBImageIterator, class RGBAccessor>
         TiffImage *
         createRGBTiffImage(RGBImageIterator upperleft, RGBImageIterator lowerright,
                    RGBAccessor a)
                 }
-    \end{verbatim}
+    \endcode
 
-    use argument objects in conjuction with \Ref{Argument Object Factories}:
-    \begin{verbatim}
+    use argument objects in conjuction with \ref ArgumentObjectFactories:
+    \code
     namespace vigra {
         template <class RGBImageIterator, class RGBAccessor>
         inline TiffImage *
         createRGBTiffImage(triple<RGBImageIterator, RGBImageIterator, RGBAccessor> src)
     }
-    \end{verbatim}
+    \endcode
 
-    {\bf Usage:}
+    <b> Usage:</b>
 
-    Include-File:
-    \URL[vigra/tiff.hxx]{../include/vigra/tiff.hxx}
+    <b>\#include</b> "<a href="tiff_8hxx-source.html">vigra/tiff.hxx</a>"
     
-    \begin{verbatim}
+    \code
     vigra::BRGBImage img(width, height);
     
     ...
@@ -1492,20 +1487,19 @@ struct CreateTiffImage<double>
     vigra::createRGBTiffImage(srcImageRange(img), tiff);
 
     TIFFClose(tiff);   // implicitly writes the image to the disk
-    \end{verbatim}
+    \endcode
     
-    {\bf Required Interface:}
+    <b> Required Interface:</b>
     
-    \begin{verbatim}
+    \code
     ImageIterator upperleft;
     RGBAccessor accessor;
                            
     accessor.red(upperleft);     // result written into TiffImage
     accessor.green(upperleft);   // result written into TiffImage
     accessor.blue(upperleft);    // result written into TiffImage
-    \end{verbatim}
+    \endcode
     
-    @memo
 */
 template <class RGBImageIterator, class RGBAccessor>
 inline void
@@ -1823,8 +1817,6 @@ struct CreateTiffImage<RGBValue<double> >
     }
 };
 
-
-//@}
 
 //@}
 

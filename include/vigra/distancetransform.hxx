@@ -262,8 +262,9 @@ internalDistanceTransform(SrcImageIterator src_upperleft,
 /*                                                      */
 /********************************************************/
 
-/** @heading Distance Transform
-    @memo using Euclidean, Manhattan, or chessboard metrics
+/** \addtogroup DistanceTransform Distance Transform
+    Perform a distance transform using either the Euclidean, Manhattan, 
+    or chessboard metrics.
 */
 //@{
 
@@ -277,21 +278,21 @@ internalDistanceTransform(SrcImageIterator src_upperleft,
     
     The parameter 'norm' gives the distance norm to be used:
     
-    \begin{itemize}
+    <ul>
 
-    \item norm == 0: use chessboard distance (L-infinity norm)
-    \item norm == 1: use Manhattan distance (L1 norm)
-    \item norm == 2: use Euclidean distance (L2 norm)
+    <li> norm == 0: use chessboard distance (L-infinity norm)
+    <li> norm == 1: use Manhattan distance (L1 norm)
+    <li> norm == 2: use Euclidean distance (L2 norm)
     
-    \end{itemize}
+    </ul>
     
     If you use the L2 norm, the destination pixels must be real valued to give
     correct results.
     
-    {\bf Declarations:}
+    <b> Declarations:</b>
     
     pass arguments explicitly:
-    \begin{verbatim}
+    \code
     namespace vigra {
         template <class SrcImageIterator, class SrcAccessor,
                            class DestImageIterator, class DestAccessor,
@@ -301,11 +302,11 @@ internalDistanceTransform(SrcImageIterator src_upperleft,
                         DestImageIterator dest_upperleft, DestAccessor da,
                         ValueType background, int norm)
     }
-    \end{verbatim}
+    \endcode
     
     
-    use argument objects in conjuction with \Ref{Argument Object Factories}:
-    \begin{verbatim}
+    use argument objects in conjuction with \ref ArgumentObjectFactories:
+    \code
     namespace vigra {
         template <class SrcImageIterator, class SrcAccessor,
                            class DestImageIterator, class DestAccessor,
@@ -315,16 +316,15 @@ internalDistanceTransform(SrcImageIterator src_upperleft,
             pair<DestImageIterator, DestAccessor> dest,
             ValueType background, int norm)
     }
-    \end{verbatim}
+    \endcode
     
-    {\bf Usage:}
+    <b> Usage:</b>
     
-    Include-File:
-    \URL[vigra/distancetransform.hxx]{../include/vigra/distancetransform.hxx}\\
+    <b>\#include</b> "<a href="distancetransform_8hxx-source.html">vigra/distancetransform.hxx</a>"<br>
     Namespace: vigra
     
     
-    \begin{verbatim}
+    \code
     
     vigra::BImage src(w,h), edges(w,h);
     vigra::FImage distance(w, h);
@@ -341,11 +341,11 @@ internalDistanceTransform(SrcImageIterator src_upperleft,
     vigra::distanceTransform(srcImageRange(edges), destImage(distance),
                              0,                   2);
     //                       ^ background label   ^ norm (Euclidean)
-    \end{verbatim}
+    \endcode
 
-    {\bf Required Interface:}
+    <b> Required Interface:</b>
     
-    \begin{verbatim}
+    \code
     
     SrcImageIterator src_upperleft, src_lowerright;
     DestImageIterator dest_upperleft;
@@ -360,10 +360,7 @@ internalDistanceTransform(SrcImageIterator src_upperleft,
     da(dest_upperleft) < distance;
     da.set(distance, dest_upperleft);
  
-    \end{verbatim}
-    
-
-    @memo
+    \endcode
 */
 template <class SrcImageIterator, class SrcAccessor,
                    class DestImageIterator, class DestAccessor,

@@ -35,9 +35,9 @@
 
 namespace vigra {
 
-/** @heading Edge Detection
-    @memo edge detectors based on first and second derivatives,
-          and related post-processing
+/** \addtogroup EdgeDetection Edge Detection
+    Edge detectors based on first and second derivatives,
+          and related post-processing.
 */
 //@{ 
                                     
@@ -47,39 +47,40 @@ namespace vigra {
 /*                                                      */
 /********************************************************/
 
-/** Detect and mark edges in an image using the Shen/Castan zero-crossing detector.
+/** \brief Detect and mark edges in an edge image using the Shen/Castan zero-crossing detector.
+
     This operator applies an exponential filter to the source image 
-    at the given #scale# and subtracts the result from the original image. 
+    at the given <TT>scale</TT> and subtracts the result from the original image. 
     Zero crossings are detected in the resulting difference image. Whenever the
-    gradient at a zero crossing is greater than the given #gradient_threshold#,
-    an edge point is marked (using #edge_marker#) in the destination image on
+    gradient at a zero crossing is greater than the given <TT>gradient_threshold</TT>,
+    an edge point is marked (using <TT>edge_marker</TT>) in the destination image on
     the darker side of the zero crossing (note that zero crossings occur 
     {\it between} pixels). For example:
     
-    \begin{verbatim}
+    \code
     sign of difference image     resulting edge points (*)
     
         + - -                          * * .
         + + -               =>         . * *
         + + +                          . . .
-    \end{verbatim}
+    \endcode
     
-    Non-edge pixels (#.#) remain untouched in the destination image. 
-    The result can be improved by the post-processing operation \Ref{removeShortEdges}.
+    Non-edge pixels (<TT>.</TT>) remain untouched in the destination image. 
+    The result can be improved by the post-processing operation \ref removeShortEdges().
     A more accurate edge placement can be achieved with the function 
-    \Ref{differenceOfExponentialCellGridImage}. 
+    \ref differenceOfExponentialCrackEdgeImage(). 
 
     The source value type 
-    (#SrcAccessor::value_type#) must be a linear algabra, i.e. addition, 
+    (<TT>SrcAccessor::value_type</TT>) must be a linear algabra, i.e. addition, 
     subtraction and multiplication of the type with itself, and multiplication 
     with double and 
-    \URL[NumericTraits]{templatestructNumericTraitsArithmeticType.html} must 
+    \ref NumericTraits "NumericTraits" must 
     be defined. In addition, this type must be less-comparable.
     
-    {\bf Declarations:}
+    <b> Declarations:</b>
     
     pass arguments explicitly:
-    \begin{verbatim}
+    \code
     namespace vigra {
         template <class SrcIterator, class SrcAccessor,
               class DestIterator, class DestAccessor,
@@ -91,10 +92,10 @@ namespace vigra {
                double scale, GradValue gradient_threshold, 
                DestValue edge_marker = NumericTraits<DestValue>::one())
     }
-    \end{verbatim}
+    \endcode
     
-    use argument objects in conjuction with \Ref{Argument Object Factories}:
-    \begin{verbatim}
+    use argument objects in conjuction with \ref ArgumentObjectFactories:
+    \code
     namespace vigra {
         template <class SrcIterator, class SrcAccessor,
               class DestIterator, class DestAccessor, 
@@ -107,15 +108,14 @@ namespace vigra {
                double scale, GradValue gradient_threshold,
                DestValue edge_marker = NumericTraits<DestValue>::one())
     }
-    \end{verbatim}
+    \endcode
     
-    {\bf Usage:}
+    <b> Usage:</b>
     
-        Include-File:
-        \URL[vigra/edgedetection.hxx]{../include/vigra/edgedetection.hxx}\\
+        <b>\#include</b> "<a href="edgedetection_8hxx-source.html">vigra/edgedetection.hxx</a>"<br>
     Namespace: vigra
     
-    \begin{verbatim}
+    \code
     vigra::BImage src(w,h), edges(w,h);
     
     // empty edge image
@@ -125,11 +125,11 @@ namespace vigra {
     // find edges at scale 0.8 with gradient larger than 4.0, mark with 1 
     vigra::differenceOfExponentialEdgeImage(srcImageRange(src), destImage(edges), 
                                      0.8, 4.0, 1);
-    \end{verbatim}
+    \endcode
 
-    {\bf Required Interface:}
+    <b> Required Interface:</b>
     
-    \begin{verbatim}
+    \code
     SrcImageIterator src_upperleft, src_lowerright;
     DestImageIterator dest_upperleft;
     
@@ -148,14 +148,14 @@ namespace vigra {
     
     DestValue edge_marker;
     dest_accessor.set(edge_marker, dest_upperleft);
-    \end{verbatim}
+    \endcode
     
-    {\bf Preconditions:}
+    <b> Preconditions:</b>
     
-    \begin{verbatim}
+    \code
     scale > 0
     gradient_threshold > 0
-    \end{verbatim}
+    \endcode
 */
 template <class SrcIterator, class SrcAccessor,
           class DestIterator, class DestAccessor, 
@@ -310,25 +310,26 @@ void differenceOfExponentialEdgeImage(
 
 /********************************************************/
 /*                                                      */
-/*         differenceOfExponentialCellGridImage         */
+/*        differenceOfExponentialCrackEdgeImage         */
 /*                                                      */
 /********************************************************/
 
-/** Detect and mark edges in an cell grid image using the Shen/Castan zero-crossing detector.
+/** \brief Detect and mark edges in a crack edge image using the Shen/Castan zero-crossing detector.
+
     This operator applies an exponential filter to the source image 
-    at the given #scale# and subtracts the result from the original image. 
+    at the given <TT>scale</TT> and subtracts the result from the original image. 
     Zero crossings are detected in the reulting difference image. Whenever the
-    gradient at a zero crossing is greater than the given #gradient_threshold#,
-    an edge point is marked (using #edge_marker#) in the destination image 
+    gradient at a zero crossing is greater than the given <TT>gradient_threshold</TT>,
+    an edge point is marked (using <TT>edge_marker</TT>) in the destination image 
     {\it between} the corresponding original pixels. Topologically, this means we 
     must insert additional pixels between the original ones to represent the
     boundaries between the pixels (the so called zero- and one-cells, with the original
-    pixels being two-cells). Within VIGRA, such an image is called \Ref{Cell Grid Image}.
+    pixels being two-cells). Within VIGRA, such an image is called \ref CrackEdgeImage.
     To allow insertion of the zero- and one-cells, the destination image must have twice the 
-    size of the original (precisely, #(2*w-1)# by #(2*h-1)# pixels). Then the algorithm 
+    size of the original (precisely, <TT>(2*w-1)</TT> by <TT>(2*h-1)</TT> pixels). Then the algorithm 
     proceeds as follows:
     
-    \begin{verbatim}
+    \code
 sign of difference image     insert zero- and one-cells     resulting edge points (*)
 
                                      + . - . -                   . * . . .
@@ -336,64 +337,63 @@ sign of difference image     insert zero- and one-cells     resulting edge point
       + + -               =>         + . + . -           =>      . . . * .
       + + +                          . . . . .                   . . . * *
                                      + . + . +                   . . . . .
-    \end{verbatim}
+    \endcode
     
     Thus the edge points are marked where they actually are - in between the pixels. 
     An important property of the resulting edge image is that it conforms to the notion 
     of well-composedness as defined by Latecki et al., i.e. connected regions and edges 
-    obtained by a subsequent \Ref{Connected Components Labeling} do not depend on 
+    obtained by a subsequent \ref Connected Components Labeling do not depend on 
     whether 4- or 8-connectivity is used.
-    The non-edge pixels (#.#) in the destination image remain unchanged. 
-    The result conformes to the requirements of a \Ref{Cell Grid Image}. It can be further
-    improved by the post-processing operations \Ref{removeShortEdges} and
-    \Ref{closeGapsInCellGridImage}.
+    The non-edge pixels (<TT>.</TT>) in the destination image remain unchanged. 
+    The result conformes to the requirements of a \ref CrackEdgeImage. It can be further
+    improved by the post-processing operations \ref removeShortEdges() and
+    \ref closeGapsInCrackEdgeImage().
     
-    The source value type (#SrcAccessor::value_type#) must be a linear algabra, i.e. addition, 
+    The source value type (<TT>SrcAccessor::value_type</TT>) must be a linear algabra, i.e. addition, 
     subtraction and multiplication of the type with itself, and multiplication 
     with double and 
-    \URL[NumericTraits]{templatestructNumericTraitsArithmeticType.html} must 
+    \ref NumericTraits "NumericTraits" must 
     be defined. In addition, this type must be less-comparable.
     
-    {\bf Declarations:}
+    <b> Declarations:</b>
     
     pass arguments explicitly:
-    \begin{verbatim}
+    \code
     namespace vigra {
         template <class SrcIterator, class SrcAccessor,
               class DestIterator, class DestAccessor,
               class GradValue,
               class DestValue = DestAccessor::value_type>
-        void differenceOfExponentialCellGridImage(
+        void differenceOfExponentialCrackEdgeImage(
                SrcIterator sul, SrcIterator slr, SrcAccessor sa,
                DestIterator dul, DestAccessor da,
                double scale, GradValue gradient_threshold, 
                DestValue edge_marker = NumericTraits<DestValue>::one())
     }
-    \end{verbatim}
+    \endcode
     
-    use argument objects in conjuction with \Ref{Argument Object Factories}:
-    \begin{verbatim}
+    use argument objects in conjuction with \ref ArgumentObjectFactories:
+    \code
     namespace vigra {
         template <class SrcIterator, class SrcAccessor,
               class DestIterator, class DestAccessor, 
               class GradValue,
               class DestValue = DestAccessor::value_type>
         inline 
-        void differenceOfExponentialCellGridImage(
+        void differenceOfExponentialCrackEdgeImage(
                triple<SrcIterator, SrcIterator, SrcAccessor> src,
                pair<DestIterator, DestAccessor> dest,
                double scale, GradValue gradient_threshold,
                DestValue edge_marker = NumericTraits<DestValue>::one())
     }
-    \end{verbatim}
+    \endcode
     
-    {\bf Usage:}
+    <b> Usage:</b>
     
-        Include-File:
-        \URL[vigra/edgedetection.hxx]{../include/vigra/edgedetection.hxx}\\
+        <b>\#include</b> "<a href="edgedetection_8hxx-source.html">vigra/edgedetection.hxx</a>"<br>
     Namespace: vigra
     
-    \begin{verbatim}
+    \code
     vigra::BImage src(w,h), edges(2*w-1,2*h-1);
     
     // empty edge image
@@ -401,13 +401,13 @@ sign of difference image     insert zero- and one-cells     resulting edge point
     ...
     
     // find edges at scale 0.8 with gradient larger than 4.0, mark with 1 
-    vigra::differenceOfExponentialCellGridImage(srcImageRange(src), destImage(edges), 
+    vigra::differenceOfExponentialCrackEdgeImage(srcImageRange(src), destImage(edges), 
                                      0.8, 4.0, 1);
-    \end{verbatim}
+    \endcode
 
-    {\bf Required Interface:}
+    <b> Required Interface:</b>
     
-    \begin{verbatim}
+    \code
     SrcImageIterator src_upperleft, src_lowerright;
     DestImageIterator dest_upperleft;
     
@@ -426,34 +426,34 @@ sign of difference image     insert zero- and one-cells     resulting edge point
     
     DestValue edge_marker;
     dest_accessor.set(edge_marker, dest_upperleft);
-    \end{verbatim}
+    \endcode
     
-    {\bf Preconditions:}
+    <b> Preconditions:</b>
     
-    \begin{verbatim}
+    \code
     scale > 0
     gradient_threshold > 0
-    \end{verbatim}
+    \endcode
     
     The destination image must have twice the size of the source:
-    \begin{verbatim}
+    \code
     w_dest = 2 * w_src - 1
     h_dest = 2 * h_src - 1
-    \end{verbatim}
+    \endcode
 */
 template <class SrcIterator, class SrcAccessor,
           class DestIterator, class DestAccessor, class DestValue>
-void differenceOfExponentialCellGridImage(
+void differenceOfExponentialCrackEdgeImage(
                SrcIterator sul, SrcIterator slr, SrcAccessor sa,
            DestIterator dul, DestAccessor da,
            double scale, double gradient_threshold, 
            DestValue edge_marker)
 {
     vigra_precondition(scale > 0,
-                 "differenceOfExponentialCellGridImage(): scale > 0 required.");
+                 "differenceOfExponentialCrackEdgeImage(): scale > 0 required.");
          
     vigra_precondition(gradient_threshold > 0,
-                 "differenceOfExponentialCellGridImage(): "
+                 "differenceOfExponentialCrackEdgeImage(): "
          "gradient_threshold > 0 required.");
          
     int w = slr.x - sul.x;
@@ -627,13 +627,13 @@ void differenceOfExponentialCellGridImage(
 template <class SrcIterator, class SrcAccessor,
           class DestIterator, class DestAccessor, class DestValue>
 inline 
-void differenceOfExponentialCellGridImage(
+void differenceOfExponentialCrackEdgeImage(
            triple<SrcIterator, SrcIterator, SrcAccessor> src,
        pair<DestIterator, DestAccessor> dest,
        double scale, double gradient_threshold,
        DestValue edge_marker)
 {
-    differenceOfExponentialCellGridImage(src.first, src.second, src.third,
+    differenceOfExponentialCrackEdgeImage(src.first, src.second, src.third,
                                         dest.first, dest.second,
                     scale, gradient_threshold,
                     edge_marker);
@@ -645,36 +645,37 @@ void differenceOfExponentialCellGridImage(
 /*                                                      */
 /********************************************************/
 
-/** Remove short edges from an edge image.
-    This algorithm is applied as a post-processing operation of 
-    \Ref{differenceOfExponentialEdgeImage} and \Ref{differenceOfExponentialCellGridImage}. 
-    It removes all edges that are shorter than #min_edge_length#. The corresponding
-    pixels are set to the #non_edge_marker#. The idea behind this algorithms is
+/** \brief Remove short edges from an edge image.
+
+    This algorithm can be applied as a post-processing operation of 
+    \ref differenceOfExponentialEdgeImage() and \ref differenceOfExponentialCrackEdgeImage(). 
+    It removes all edges that are shorter than <TT>min_edge_length</TT>. The corresponding
+    pixels are set to the <TT>non_edge_marker</TT>. The idea behind this algorithms is
     that very short edges are probably caused by noise and don't represent interesting
     image structure. Technically, the algorithms executes a connected components labeling,
     so the image's value type must be equality comparable. 
     
-    If the source image fulfilled the requirements of a \Ref{Cell Grid Image},
+    If the source image fulfills the requirements of a \ref CrackEdgeImage,
     it will still do so after application of this algorithm.
     
     Note that this algorithm, unlike most other algorithms in VIGRA, operates in-place, 
     i.e. on only one image. Also, the algorithm assumes that all non-edges pixels are already
-    marked with the given #non_edge_marker# value.
+    marked with the given <TT>non_edge_marker</TT> value.
     
-    {\bf Declarations:}
+    <b> Declarations:</b>
     
     pass arguments explicitly:
-    \begin{verbatim}
+    \code
     namespace vigra {
         template <class Iterator, class Accessor, class SrcValue>
         void removeShortEdges(
                Iterator sul, Iterator slr, Accessor sa,
                int min_edge_length, SrcValue non_edge_marker)
     }
-    \end{verbatim}
+    \endcode
     
-    use argument objects in conjuction with \Ref{Argument Object Factories}:
-    \begin{verbatim}
+    use argument objects in conjuction with \ref ArgumentObjectFactories:
+    \code
     namespace vigra {
         template <class Iterator, class Accessor, class SrcValue>
         inline 
@@ -682,15 +683,14 @@ void differenceOfExponentialCellGridImage(
                triple<Iterator, Iterator, Accessor> src,
                int min_edge_length, SrcValue non_edge_marker)
     }
-    \end{verbatim}
+    \endcode
     
-    {\bf Usage:}
+    <b> Usage:</b>
     
-        Include-File:
-        \URL[vigra/edgedetection.hxx]{../include/vigra/edgedetection.hxx}\\
+        <b>\#include</b> "<a href="edgedetection_8hxx-source.html">vigra/edgedetection.hxx</a>"<br>
     Namespace: vigra
     
-    \begin{verbatim}
+    \code
     vigra::BImage src(w,h), edges(w,h);
     
     // empty edge image
@@ -703,11 +703,11 @@ void differenceOfExponentialCellGridImage(
                     
     // zero edges shorter than 10 pixels
     vigra::removeShortEdges(srcImageRange(edges), 10, 0);
-    \end{verbatim}
+    \endcode
 
-    {\bf Required Interface:}
+    <b> Required Interface:</b>
     
-    \begin{verbatim}
+    \code
     SrcImageIterator src_upperleft, src_lowerright;
     DestImageIterator dest_upperleft;
     
@@ -720,7 +720,7 @@ void differenceOfExponentialCellGridImage(
     
     SrcValue non_edge_marker;
     src_accessor.set(non_edge_marker, src_upperleft);
-    \end{verbatim}
+    \endcode
 */
 template <class Iterator, class Accessor, class Value>
 void removeShortEdges(
@@ -774,55 +774,55 @@ void removeShortEdges(
 
 /********************************************************/
 /*                                                      */
-/*             closeGapsInCellGridImage                 */
+/*             closeGapsInCrackEdgeImage                */
 /*                                                      */
 /********************************************************/
 
-/** Close one-pixel wide gaps in a cell grid edge image.
+/** \brief Close one-pixel wide gaps in a cell grid edge image.
+
     This algorithm is typically applied as a post-processing operation of 
-    \Ref{differenceOfExponentialCellGridImage}. The source image must fulfill
-    the requirements of a \Ref{Cell Grid Image}, and will still do so after 
+    \ref differenceOfExponentialCrackEdgeImage(). The source image must fulfill
+    the requirements of a \ref CrackEdgeImage, and will still do so after 
     application of this algorithm.
 
     It closes one pixel wide gaps in the edges resulting from this algorithm. 
     Since these gaps are usually caused by zero crossing slightly below the gradient 
     threshold used in edge detection, this algorithms acts like a weak hysteresis 
-    thresholding. The newly found edge pixels are marked with the givem #edge_marker#.
+    thresholding. The newly found edge pixels are marked with the givem <TT>edge_marker</TT>.
     The image's value type must be equality comparable. 
     
     Note that this algorithm, unlike most other algorithms in VIGRA, operates in-place, 
     i.e. on only one image.
     
-    {\bf Declarations:}
+    <b> Declarations:</b>
     
     pass arguments explicitly:
-    \begin{verbatim}
+    \code
     namespace vigra {
         template <class SrcIterator, class SrcAccessor, class SrcValue>
-        void closeGapsInCellGridImage(
+        void closeGapsInCrackEdgeImage(
                SrcIterator sul, SrcIterator slr, SrcAccessor sa, 
                SrcValue edge_marker)
     }
-    \end{verbatim}
+    \endcode
     
-    use argument objects in conjuction with \Ref{Argument Object Factories}:
-    \begin{verbatim}
+    use argument objects in conjuction with \ref ArgumentObjectFactories:
+    \code
     namespace vigra {
         template <class SrcIterator, class SrcAccessor, class SrcValue>
         inline
-        void closeGapsInCellGridImage(
+        void closeGapsInCrackEdgeImage(
                triple<SrcIterator, SrcIterator, SrcAccessor> src,
                SrcValue edge_marker)
     }
-    \end{verbatim}
+    \endcode
     
-    {\bf Usage:}
+    <b> Usage:</b>
     
-        Include-File:
-        \URL[vigra/edgedetection.hxx]{../include/vigra/edgedetection.hxx}\\
+        <b>\#include</b> "<a href="edgedetection_8hxx-source.html">vigra/edgedetection.hxx</a>"<br>
     Namespace: vigra
     
-    \begin{verbatim}
+    \code
     vigra::BImage src(w,h), edges(2*w-1, 2*h-1);
     
     // empty edge image
@@ -830,19 +830,19 @@ void removeShortEdges(
     ...
     
     // find edges at scale 0.8 with gradient larger than 4.0, mark with 1 
-    vigra::differenceOfExponentialCellGridImage(srcImageRange(src), destImage(edges), 
+    vigra::differenceOfExponentialCrackEdgeImage(srcImageRange(src), destImage(edges), 
                                          0.8, 4.0, 1);
                     
     // close gaps, mark with 1
-    vigra::closeGapsInCellGridImage(srcImageRange(edges), 1);
+    vigra::closeGapsInCrackEdgeImage(srcImageRange(edges), 1);
                     
     // zero edges shorter than 20 pixels
     vigra::removeShortEdges(srcImageRange(edges), 10, 0);
-    \end{verbatim}
+    \endcode
 
-    {\bf Required Interface:}
+    <b> Required Interface:</b>
     
-    \begin{verbatim}
+    \code
     SrcImageIterator src_upperleft, src_lowerright;
     
     SrcAccessor src_accessor;
@@ -855,10 +855,10 @@ void removeShortEdges(
     
     SrcValue edge_marker;
     src_accessor.set(edge_marker, src_upperleft);
-    \end{verbatim}
+    \endcode
 */
 template <class SrcIterator, class SrcAccessor, class SrcValue>
-void closeGapsInCellGridImage(
+void closeGapsInCrackEdgeImage(
                SrcIterator sul, SrcIterator slr, SrcAccessor sa, 
            SrcValue edge_marker)
 {
@@ -966,28 +966,29 @@ void closeGapsInCellGridImage(
 
 template <class SrcIterator, class SrcAccessor, class SrcValue>
 inline
-void closeGapsInCellGridImage(
+void closeGapsInCrackEdgeImage(
            triple<SrcIterator, SrcIterator, SrcAccessor> src,
        SrcValue edge_marker)
 {
-    closeGapsInCellGridImage(src.first, src.second, src.third,
+    closeGapsInCrackEdgeImage(src.first, src.second, src.third,
                     edge_marker);
 }
 
 /********************************************************/
 /*                                                      */
-/*               beautifyCellGridImage                  */
+/*              beautifyCrackEdgeImage                  */
 /*                                                      */
 /********************************************************/
 
-/** Beautify Cell Grid Edge Image for visualization.
+/** \brief Beautify crack edge image for visualization.
+
     This algorithm is applied as a post-processing operation of 
-    \Ref{differenceOfExponentialCellGridImage}. The source image must fulfill
-    the requirements of a \Ref{Cell Grid Image}, but will {\bf not} do so after 
+    \ref differenceOfExponentialCrackEdgeImage(). The source image must fulfill
+    the requirements of a \ref CrackEdgeImage, but will <b> not</b> do so after 
     application of this algorithm. In particular, the algorithm removes zero-cells 
     marked as edges to avoid staircase effects on diagonal lines like this:
     
-    \begin{verbatim}
+    \code
     original edge points (*)     resulting edge points
     
           . * . . .                   . * . . .
@@ -995,46 +996,45 @@ void closeGapsInCellGridImage(
           . . . * .           =>      . . . * .
           . . . * *                   . . . . *
           . . . . .                   . . . . .
-    \end{verbatim}
+    \endcode
     
     Therfore, this algorithm should only be applied as a vizualization aid, i.e. 
-    for human inspection. The algorithm assumes that edges are marked with #edge_marker#, 
-    and background pixels with #background_marker#. The image's value type must be 
+    for human inspection. The algorithm assumes that edges are marked with <TT>edge_marker</TT>, 
+    and background pixels with <TT>background_marker</TT>. The image's value type must be 
     equality comparable. 
     
     Note that this algorithm, unlike most other algorithms in VIGRA, operates in-place, 
     i.e. on only one image.
     
-    {\bf Declarations:}
+    <b> Declarations:</b>
     
     pass arguments explicitly:
-    \begin{verbatim}
+    \code
     namespace vigra {
         template <class SrcIterator, class SrcAccessor, class SrcValue>
-        void beautifyCellGridImage(
+        void beautifyCrackEdgeImage(
                SrcIterator sul, SrcIterator slr, SrcAccessor sa, 
                SrcValue edge_marker, SrcValue background_marker)
     }
-    \end{verbatim}
+    \endcode
     
-    use argument objects in conjuction with \Ref{Argument Object Factories}:
-    \begin{verbatim}
+    use argument objects in conjuction with \ref ArgumentObjectFactories:
+    \code
     namespace vigra {
         template <class SrcIterator, class SrcAccessor, class SrcValue>
         inline
-        void beautifyCellGridImage(
+        void beautifyCrackEdgeImage(
                    triple<SrcIterator, SrcIterator, SrcAccessor> src,
                SrcValue edge_marker, SrcValue background_marker)
     }
-    \end{verbatim}
+    \endcode
     
-    {\bf Usage:}
+    <b> Usage:</b>
     
-        Include-File:
-        \URL[vigra/edgedetection.hxx]{../include/vigra/edgedetection.hxx}\\
+        <b>\#include</b> "<a href="edgedetection_8hxx-source.html">vigra/edgedetection.hxx</a>"<br>
     Namespace: vigra
     
-    \begin{verbatim}
+    \code
     vigra::BImage src(w,h), edges(2*w-1, 2*h-1);
     
     // empty edge image
@@ -1042,19 +1042,19 @@ void closeGapsInCellGridImage(
     ...
     
     // find edges at scale 0.8 with gradient larger than 4.0, mark with 1 
-    vigra::differenceOfExponentialCellGridImage(srcImageRange(src), destImage(edges), 
+    vigra::differenceOfExponentialCrackEdgeImage(srcImageRange(src), destImage(edges), 
                                          0.8, 4.0, 1);
                     
     // beautify edge image for visualization
-    vigra::beautifyCellGridImage(srcImageRange(edges), 1, 0);
+    vigra::beautifyCrackEdgeImage(srcImageRange(edges), 1, 0);
     
     // show to the user
     window.open(edges);
-    \end{verbatim}
+    \endcode
 
-    {\bf Required Interface:}
+    <b> Required Interface:</b>
     
-    \begin{verbatim}
+    \code
     SrcImageIterator src_upperleft, src_lowerright;
     
     SrcAccessor src_accessor;
@@ -1067,10 +1067,10 @@ void closeGapsInCellGridImage(
     
     SrcValue background_marker;
     src_accessor.set(background_marker, src_upperleft);
-    \end{verbatim}
+    \endcode
 */
 template <class SrcIterator, class SrcAccessor, class SrcValue>
-void beautifyCellGridImage(
+void beautifyCrackEdgeImage(
                SrcIterator sul, SrcIterator slr, SrcAccessor sa, 
            SrcValue edge_marker, SrcValue background_marker)
 {
@@ -1105,11 +1105,11 @@ void beautifyCellGridImage(
 
 template <class SrcIterator, class SrcAccessor, class SrcValue>
 inline
-void beautifyCellGridImage(
+void beautifyCrackEdgeImage(
            triple<SrcIterator, SrcIterator, SrcAccessor> src,
            SrcValue edge_marker, SrcValue background_marker)
 {
-    beautifyCellGridImage(src.first, src.second, src.third,
+    beautifyCrackEdgeImage(src.first, src.second, src.third,
                     edge_marker, background_marker);
 }
 
@@ -1120,17 +1120,14 @@ class Edgel
 {
   public:
         /** The edgel's sub-pixel x coordinate.
-            @memo
         */    
     float x; 
 
         /** The edgel's sub-pixel y coordinate.
-            @memo
         */    
     float y;
 
         /** The edgel's strength (magnitude of the gradient vector).
-            @memo
         */    
     float strength;
     
@@ -1141,7 +1138,7 @@ class Edgel
         counter-clockwise in radians like this:
 
 
-        \begin{verbatim}
+        \code
 
   edgel axis
       \  (bright side)
@@ -1155,14 +1152,13 @@ class Edgel
            |
            |
     y-axis V
-        \end{verbatim}
+        \endcode
 
         So, for example a vertical edge with its dark side on the left
         has orientation PI/2, and a horizontal edge with dark side on top
         has orientation 0. Obviously, the edge's orientation changes
         by PI if the contrast is reversed.
 
-        @memo
         */
     float orientation;
 };
@@ -1284,47 +1280,47 @@ void internalCannyFindEdgels(BasicImage<PixelType> const & dx,
 /*                                                      */
 /********************************************************/
 
-/** Simple implementation of Canny's edge detector.
+/** \brief Simple implementation of Canny's edge detector.
+
     This operator first calculates the gradient vector for each
     pixel of the image using first derivatives of a Gaussian at the 
     given scale. Then a very simple non-maxima supression is performed: 
     for each 3x3 neighborhood, it is determined whether the center pixel has 
     larger gradient magnitude than its two neighbors in gradient direction
     (where the direction is rounded into octands). If this is the case,
-    a new \Ref{Edgel} is appended to the given vector of #edgels#. The subpixel
+    a new \ref Edgel is appended to the given vector of <TT>edgels</TT>. The subpixel
     edgel position is determined by fitting a parabola 
     to the three gradient magnitude values 
     mentioned above. The sub-pixel location of the parabola's tip 
     and the gradient magnitude and direction are written in the newly created edgel.
     
-    {\bf Declarations:}
+    <b> Declarations:</b>
     
     pass arguments explicitly:
-    \begin{verbatim}
+    \code
     namespace vigra {
         template <class SrcIterator, class SrcAccessor>
         void cannyEdgelList(SrcIterator ul, SrcIterator lr, SrcAccessor src,
                                 std::vector<Edgel> & edgels, double scale);
     }
-    \end{verbatim}
+    \endcode
     
-    use argument objects in conjuction with \Ref{Argument Object Factories}:
-    \begin{verbatim}
+    use argument objects in conjuction with \ref ArgumentObjectFactories:
+    \code
     namespace vigra {
         template <class SrcIterator, class SrcAccessor>
         void 
         cannyEdgelList(triple<SrcIterator, SrcIterator, SrcAccessor> src,
                        std::vector<Edgel> & edgels, double scale);
     }
-    \end{verbatim}
+    \endcode
     
-    {\bf Usage:}
+    <b> Usage:</b>
     
-    Include-File:
-        \URL[vigra/edgedetection.hxx]{../include/vigra/edgedetection.hxx}\\
+    <b>\#include</b> "<a href="edgedetection_8hxx-source.html">vigra/edgedetection.hxx</a>"<br>
     Namespace: vigra
     
-    \begin{verbatim}
+    \code
     vigra::BImage src(w,h);
     
     // empty edgel list
@@ -1333,24 +1329,24 @@ void internalCannyFindEdgels(BasicImage<PixelType> const & dx,
     
     // find edgels at scale 0.8  
     vigra::cannyEdgelList(srcImageRange(src), edgels, 0.8);
-    \end{verbatim}
+    \endcode
 
-    {\bf Required Interface:}
+    <b> Required Interface:</b>
     
-    \begin{verbatim}
+    \code
     SrcImageIterator src_upperleft;
     SrcAccessor src_accessor;
     
     src_accessor(src_upperleft);
-    \end{verbatim}
+    \endcode
     
     SrcAccessor::value_type must be a type convertible to float
     
-    {\bf Preconditions:}
+    <b> Preconditions:</b>
     
-    \begin{verbatim}
+    \code
     scale > 0
-    \end{verbatim}
+    \endcode
 */
 template <class SrcIterator, class SrcAccessor>
 void cannyEdgelList(SrcIterator ul, SrcIterator lr, SrcAccessor src,
@@ -1398,17 +1394,18 @@ cannyEdgelList(triple<SrcIterator, SrcIterator, SrcAccessor> src,
 /*                                                      */
 /********************************************************/
 
-/** Detect and mark edges in an image using Canny's algorithm.
-    This operator first calls \Ref{cannyEdgelList} to generate an 
+/** \brief Detect and mark edges in an edge image using Canny's algorithm.
+
+    This operator first calls \ref cannyEdgelList() to generate an 
     edgel list for the given image. Than it scans this list and selects edgels
-    whose strength is above the given #gradient_threshold#. For each of these 
+    whose strength is above the given <TT>gradient_threshold</TT>. For each of these 
     edgels, the edgel's location is rounded to the nearest pixel, and that
-    pixel marked with the given #edge_marker#.
+    pixel marked with the given <TT>edge_marker</TT>.
     
-    {\bf Declarations:}
+    <b> Declarations:</b>
     
     pass arguments explicitly:
-    \begin{verbatim}
+    \code
     namespace vigra {
         template <class SrcIterator, class SrcAccessor,
                   class DestIterator, class DestAccessor, 
@@ -1418,10 +1415,10 @@ cannyEdgelList(triple<SrcIterator, SrcIterator, SrcAccessor> src,
                    DestIterator dul, DestAccessor da,
                    double scale, float gradient_threshold, DestValue edge_marker);
     }
-    \end{verbatim}
+    \endcode
     
-    use argument objects in conjuction with \Ref{Argument Object Factories}:
-    \begin{verbatim}
+    use argument objects in conjuction with \ref ArgumentObjectFactories:
+    \code
     namespace vigra {
         template <class SrcIterator, class SrcAccessor,
                   class DestIterator, class DestAccessor, 
@@ -1431,15 +1428,14 @@ cannyEdgelList(triple<SrcIterator, SrcIterator, SrcAccessor> src,
                    pair<DestIterator, DestAccessor> dest,
                    double scale, float gradient_threshold, DestValue edge_marker);
     }
-    \end{verbatim}
+    \endcode
     
-    {\bf Usage:}
+    <b> Usage:</b>
     
-    Include-File:
-        \URL[vigra/edgedetection.hxx]{../include/vigra/edgedetection.hxx}\\
+    <b>\#include</b> "<a href="edgedetection_8hxx-source.html">vigra/edgedetection.hxx</a>"<br>
     Namespace: vigra
     
-    \begin{verbatim}
+    \code
     vigra::BImage src(w,h), edges(w,h);
     
     // empty edge image
@@ -1449,26 +1445,26 @@ cannyEdgelList(triple<SrcIterator, SrcIterator, SrcAccessor> src,
     // find edges at scale 0.8 with gradient larger than 4.0, mark with 1 
     vigra::cannyEdgeImage(srcImageRange(src), destImage(edges), 
                                      0.8, 4.0, 1);
-    \end{verbatim}
+    \endcode
 
-    {\bf Required Interface:}
+    <b> Required Interface:</b>
     
-    see also: \Ref{cannyEdgelList}.
+    see also: \ref cannyEdgelList().
     
-    \begin{verbatim}
+    \code
     DestImageIterator dest_upperleft;
     DestAccessor dest_accessor;
     DestValue edge_marker;
     
     dest_accessor.set(edge_marker, dest_upperleft, vigra::Diff2D(1,1));
-    \end{verbatim}
+    \endcode
     
-    {\bf Preconditions:}
+    <b> Preconditions:</b>
     
-    \begin{verbatim}
+    \code
     scale > 0
     gradient_threshold > 0
-    \end{verbatim}
+    \endcode
 */
 template <class SrcIterator, class SrcAccessor,
           class DestIterator, class DestAccessor, 

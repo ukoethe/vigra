@@ -34,8 +34,21 @@
 /********************************************************/
 
 
-/**@heading Numeric and Promotion Traits
+/** \page NumericPromotionTraits Numeric and Promotion Traits
 
+    Meta-information about arithmetic types.
+    
+    <DL>
+    <DT>
+    <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif"> 
+    \ref NumericTraits
+    <DD><em>Unary traits for promotion, conversion, creation of arithmetic objects</em>
+    <DT>
+    <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif"> 
+    \ref PromoteTraits
+    <DD><em>Binary traits for promotion of arithmetic objects</em>
+    </DL>
+    
     These traits classes contain information that is used by generic
     algorithms and data structures to determine intermediate and result
     types of numerical calculations, to convert between different 
@@ -46,17 +59,20 @@
     
     NumericTraits are implemented as template specializations of one
     arithmetic type, while PromoteTraits are specialized for a pair of
-    arithmetic types that shall be combined in one operation.
-    
-* @memo   Meta-information about arithmetic types
+    arithmetic types that shall be combined in one operation.    
 */
-//@{
-/**@heading template<> struct NumericTraits<ArithmeticType>
+
+/** \page NumericTraits template<> struct NumericTraits<ArithmeticType>
+
+    Unary traits for promotion, conversion, creation of arithmetic objects.
+
+    <b>\#include</b> 
+    "<a href="numerictraits_8hxx-source.html">vigra/numerictraits.hxx</a>"
 
     This traits class is used derive important properties of
     an arithmetic type. Consider the following algorithm:
     
-    \begin{verbatim}
+    \code
     // calculate the sum of a sequence of bytes
     int sumBytes(unsigned char * begin, unsigned char * end)
     {
@@ -64,7 +80,7 @@
         for(; begin != end; ++begin)  result += *begin;
         return result;
     }
-    \end{verbatim} 
+    \endcode 
     
     The return type of this function can not be 'unsigned char' because
     the summation would very likely overflow. Since we know the source
@@ -73,10 +89,10 @@
     sequence of floats. If we want to make this 
     algorithm generic, we would like to derive the appropriate return 
     type automatically. This can be done with NumericTraits. 
-    The code would look like this (we use \Ref{Data Accessors} to 
+    The code would look like this (we use \ref DataAccessors to 
     read the data from the sequence):
     
-    \begin{verbatim}
+    \code
     // calculate the sum of any sequence
     template <class Iterator, class Accessor>
     typename vigra::NumericTraits<typename Accessor::value_type>::Promote
@@ -99,147 +115,154 @@
         
         return result;
     }
-    \end{verbatim}
+    \endcode
     
     In this example NumericTraits is not only used to deduce the 
     ReturnType of the operation, but also to initialize it with the
     constant 'zero'. This is necessary since we do not know in general,
     which expression must be used to obtain a zero of some arbitrary
-    type - '#ResultType result = 0;#' would only work if the 
-    ResultType had an constructor taking an '#int#' argument, and we 
+    type - '<TT>ResultType result = 0;</TT>' would only work if the 
+    ResultType had an constructor taking an '<TT>int</TT>' argument, and we 
     would not even have any guarantee as to what the semantics of this
     constructor are. In addition, the traits are used to cast the 
     source type into the promote type.
     
     Similarly, an algorithm that needs multiplication would use the 
-    return type #RealPromote# and the functions #one()# and
-    #toRealPromote()#. The following members are defined in 
-    {\bf #NumericTraits<ArithmeticType>#}:
+    return type <TT>RealPromote</TT> and the functions <TT>one()</TT> and
+    <TT>toRealPromote()</TT>. The following members are defined in 
+    <b> <TT>NumericTraits<ArithmeticType></TT></b>:
     
-    \begin{tabular}{ll}
-    {\bf #typedef ... Promote;#} & 
+    <table>
+    <tr>
+    <td>
+    <b> <TT>typedef ... Promote;</TT></b>
+    </td><td>
     
             promote type for addition and subtraction 
         
-        \\
+    </td></tr>
+    <tr><td>
+    <b> <TT>typedef ... RealPromote;</TT></b>
+    </td><td>
+            promote type for multiplication and division
+    
+    (only defined if <TT>ArithmeticType</TT> supports these operations) 
+    
+    </td></tr>
+    <tr><td>
+    <b> <TT>static Promote toPromote(ArithmeticType v);</TT></b>
+    </td><td>
+        convert to <TT>Promote</TT> type 
+    
+    </td></tr>
+    <tr><td>
+    <b> <TT>static RealPromote toRealPromote(ArithmeticType v);</TT></b>
+    </td><td>
+        convert to <TT>RealPromote</TT> type 
 
-    {\bf #typedef ... RealPromote;#} &
+    (only defined if <TT>ArithmeticType</TT> supports multiplication) 
     
-        promote type for multiplication and division
+    </td></tr>
+    <tr><td>
+    <b> <TT>static ArithmeticType fromPromote(Promote v);</TT></b> 
+    </td><td>
+        convert from <TT>Promote</TT> type
     
-    (only defined if #ArithmeticType# supports these operations) 
-    
-    \\
+    if <TT>v</TT> is outside the range of <TT>ArithmeticType</TT> it is clipped;
 
-    {\bf #static Promote toPromote(ArithmeticType v);#} &
-    
-        convert to #Promote# type 
-    
-    \\
-    
-    {\bf #static RealPromote toRealPromote(ArithmeticType v);#} &
-    
-        convert to #RealPromote# type 
-
-    (only defined if #ArithmeticType# supports multiplication) 
-    
-    \\
-    
-    {\bf #static ArithmeticType fromPromote(Promote v);#} &
-    
-        convert from #Promote# type
-    
-    if #v# is outside the range of #ArithmeticType# it is clipped;
-
-    \\
-    
-    {\bf #static ArithmeticType fromRealPromote(RealPromote v);#} &
-    
-        convert from #RealPromote# type 
+    </td></tr>
+    <tr><td>
+    <b> <TT>static ArithmeticType fromRealPromote(RealPromote v);</TT></b>
+    </td><td>
+        convert from <TT>RealPromote</TT> type 
     
     (only defined if 
-    #ArithmeticType# supports multiplication)
+    <TT>ArithmeticType</TT> supports multiplication)
     
-    if #ArithmeticType# is an integral type, the result is rounded 
+    if <TT>ArithmeticType</TT> is an integral type, the result is rounded 
     
-    if #v# is outside the range of #ArithmeticType# it is clipped
+    if <TT>v</TT> is outside the range of <TT>ArithmeticType</TT> it is clipped
     
-    \\
-
-    {\bf #static ArithmeticType zero();#} & 
-    
+    </td></tr>
+    <tr><td>
+    <b> <TT>static ArithmeticType zero();</TT></b>
+    </td><td>
     create neutral element of addition
     
-    i.e. #(ArithmeticType a = ...,# 
-    #  a + NumericTraits<ArithmeticType>::zero() == a)# 
-    must always yield #true# 
+    i.e. <TT>(ArithmeticType a = ...,</TT> 
+    <TT>  a + NumericTraits<ArithmeticType>::zero() == a)</TT> 
+    must always yield <TT>true</TT> 
     
-    \\
-
-    {\bf #static ArithmeticType nonZero();#} & 
-    
+    </td></tr>
+    <tr><td>
+    <b> <TT>static ArithmeticType nonZero();</TT></b>
+    </td><td>
     create a non-zero element (if multiplication is defined, this yields one())
     
-    i.e. #(ArithmeticType a = ...,# 
-    #  a + NumericTraits<ArithmeticType>::nonZero() == a)# 
-    must always yield #false# 
+    i.e. <TT>(ArithmeticType a = ...,</TT> 
+    <TT>  a + NumericTraits<ArithmeticType>::nonZero() == a)</TT> 
+    must always yield <TT>false</TT> 
     
-    \\
-    
-    {\bf #static ArithmeticType one();#} & 
-    
+    </td></tr>
+    <tr><td>
+    <b> <TT>static ArithmeticType one();</TT></b>
+    </td><td>
     create neutral element of multiplication 
     
-    (only defined if #ArithmeticType# supports multiplication)
+    (only defined if <TT>ArithmeticType</TT> supports multiplication)
     
-    i.e. #(ArithmeticType a = ...,# 
-    #  a * NumericTraits<ArithmeticType>::one() == a)# 
-    must always yield #true# 
+    i.e. <TT>(ArithmeticType a = ...,</TT> 
+    <TT>  a * NumericTraits<ArithmeticType>::one() == a)</TT> 
+    must always yield <TT>true</TT> 
     
-    \\
+    </td></tr>
+    <tr><td>
+    <b> <TT>static const bool is_integral;</TT></b>
+    </td><td>
+        true if <TT>ArithmeticType</TT> is an integral type, false otherwise 
     
-    {\bf #static const bool is_integral;#} & 
+    </td></tr>
+    <tr><td>
+    <b> <TT>static const bool is_scalar;</TT></b>
+    </td><td>
+        true if <TT>ArithmeticType</TT> is a scalar type, false otherwise 
     
-        true if #ArithmeticType# is an integral type, false otherwise 
+    </td></tr>
+    <tr><td>
+    </table>
     
-    \\
-    
-    {\bf #static const bool is_scalar;#} &
-    
-        true if #ArithmeticType# is a scalar type, false otherwise 
-    
-    \\
-    
-    \end{tabular}
-    
-    NumericTraits for the built-in types are defined in Include-File: 
-    \URL[numerictraits.hxx]{../include/numerictraits.hxx}
+    NumericTraits for the built-in types are defined in <b>\#include</b> 
+    "<a href="numerictraits_8hxx-source.html">vigra/numerictraits.hxx</a>"
     
     Namespace: vigra
     
-* @memo Unary traits for promotion, conversion, creation of arithmetic objects
 */
 
-/**@heading template<> struct PromoteTraits<ArithmeticType1, ArithmeticType2>
+/** \page PromoteTraits template<> struct PromoteTraits<ArithmeticType1, ArithmeticType2>
+
+    Binary traits for promotion of arithmetic objects.
+    
+    <b>\#include</b> 
+    "<a href="numerictraits_8hxx-source.html">vigra/numerictraits.hxx</a>"
 
     This traits class is used to determine the appropriate result type
     of arithmetic expressions which depend of two arguments. Consider
     the following function:
     
-    \begin{verbatim}
+    \code
     template <class T>
     T min(T t1, T t2)
     {
         return (t1 < t2) ? t1 : t2;
     }
-    \end{verbatim}
+    \endcode
     
     This template is only applicable if both arguments have the same
     type. However, sometimes we may want to use the function in cases
     where the argument types differ. The we can deduce the approrpiate
-    return type by using #PromoteTraits#:
+    return type by using <TT>PromoteTraits</TT>:
     
-    \begin{verbatim}
+    \code
     template <class T1, class T2>
     typename vigra::PromoteTraits<T1, T2>::Promote
     min(T1 t1, T2 t2)
@@ -247,39 +270,35 @@
         return (t1 < t2) ? vigra::PromoteTraits<T1, T2>::toPromote(t1) : 
                            vigra::PromoteTraits<T1, T2>::toPromote(t2);
     }    
-    \end{verbatim}
+    \endcode
     
     In addition, the traits class provide static functions to cast the
-    arguments to the promote type. For example, if #T1# were #int# and 
-    #T2# were #float#, the #Promote# type would be #float#. 
+    arguments to the promote type. For example, if <TT>T1</TT> were <TT>int</TT> and 
+    <TT>T2</TT> were <TT>float</TT>, the <TT>Promote</TT> type would be <TT>float</TT>. 
     The following members are defined in 
-    {\bf #PromoteTraits<ArithmeticType1, ArithmeticType2>#}:
+    <b> <TT>PromoteTraits<ArithmeticType1, ArithmeticType2></TT></b>:
     
-    \begin{tabular}{ll}
-    {\bf #typedef ... Promote;#} & 
-    
+    <table>
+    <tr>
+    <td>
+    <b> <TT>typedef ... Promote;</TT></b>
+    </td><td>
             promote type 
-        
-        \\
-
-    {\bf #static Promote toPromote(ArithmeticType1 v);#} 
+    </td></tr>
+    <tr><td>
+    <b> <TT>static Promote toPromote(ArithmeticType1 v);</TT></b> 
     
-    {\bf #static Promote toPromote(ArithmeticType2 v);#}  &
+    <b> <TT>static Promote toPromote(ArithmeticType2 v);</TT></b>
+    </td><td>
+        convert to <TT>Promote</TT> type 
+    </td></tr>
+    </table>
     
-        convert to #Promote# type 
-    
-    \\
-    
-    \end{tabular}
-    
-    PromoteTraits for the built-in types are defined in Include-File: 
-    \URL[numerictraits.hxx]{../include/numerictraits.hxx}
+    PromoteTraits for the built-in types are defined in <b>\#include</b> 
+    "<a href="numerictraits_8hxx-source.html">vigra/numerictraits.hxx</a>"
     
     Namespace: vigra
-    
-* @memo   Binary traits for promotion of arithmetic objects
 */
-//@}
 
 namespace vigra {
 

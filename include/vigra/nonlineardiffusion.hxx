@@ -155,8 +155,9 @@ void internalNonlinearDiffusionAOSStep(
     }
 }
 
-/** @heading Non-linear Diffusion
-    @memo Edge-preserving smoothing
+/** \addtogroup NonLinearDiffusion Non-linear Diffusion
+    
+    Perform edge-preserving smoothing.
 */
 //@{
 
@@ -166,22 +167,23 @@ void internalNonlinearDiffusionAOSStep(
 /*                                                      */
 /********************************************************/
 
-/** Perform edge-preserving smoothing at the given scale 
-    by solving the non-linear diffusion equation 
+/** \brief Perform edge-preserving smoothing at the given scale.
+
+    The algorithm solves the non-linear diffusion equation 
     
-    \[
+    \f[
         \frac{\partial}{\partial t} u =
-        \frac{\partial}{\partial {\bf x}}
+        \frac{\partial}{\partial <b> x</b>}
           \left( g(|\nabla u|) 
-                 \frac{\partial}{\partial {\bf x}} u
+                 \frac{\partial}{\partial <b> x</b>} u
           \right)
-    \]
+    \f]
     
-    where {\em t} is the time, {\bf x} is the location vector, 
-    {\em u(}{\bf x}{\em , t)} is the smoothed image at time {\em t}, and 
-    {\em g(.)} is the location dependent diffusivity. At time zero, the image
-    {\em u(}{\bf x}{\em , 0)} is simply the original image. The time is
-    propotional to the square of the scale parameter: {\em t = s^{2} / 2}.
+    where <em> t</em> is the time, <b> x</b> is the location vector, 
+    <em> u(</em><b> x</b><em> , t)</em> is the smoothed image at time <em> t</em>, and 
+    <em> g(.)</em> is the location dependent diffusivity. At time zero, the image
+    <em> u(</em><b> x</b><em> , 0)</em> is simply the original image. The time is
+    propotional to the square of the scale parameter: <em> t = s^{2</em> / 2}.
     The diffusion
     equation is solved iteratively according 
     to the Additive Operator Splitting Scheme (AOS) from
@@ -193,12 +195,12 @@ void internalNonlinearDiffusionAOSStep(
         1st Intl. Conf. on Scale-Space Theory in Computer Vision 1997,
         Springer LNCS 1252}
 
-    #DiffusivityFunctor# implements the gradient dependent local diffusivity. 
+    <TT>DiffusivityFunctor</TT> implements the gradient dependent local diffusivity. 
     It is passed
-    as an argument to \Ref{gradientBasedTransform}. The return value must be
+    as an argument to \ref gradientBasedTransform(). The return value must be
     between 0 and 1 and determines the weight a pixel gets when
     its neighbors are smoothed. Weickert recommends the use of the diffusivity
-    implemented by class \Ref{DiffusivityFunctor}. It's also possible to use 
+    implemented by class \ref DiffusivityFunctor. It's also possible to use 
     other functors, for example one that always returns 1, in which case 
     we obtain the solution to the linear diffusion equation, i.e. 
     Gaussian convolution.
@@ -208,16 +210,16 @@ void internalNonlinearDiffusionAOSStep(
     NumericTraits defined. The value_type of the DiffusivityFunctor must be the 
     scalar field over wich the source value type's linear space is defined.
     
-    In addition to #nonlinearDiffusion()#, there is an algorithm 
-    #nonlinearDiffusionExplicit()# which implements the Explicit Scheme
+    In addition to <TT>nonlinearDiffusion()</TT>, there is an algorithm 
+    <TT>nonlinearDiffusionExplicit()</TT> which implements the Explicit Scheme
     described in the above article. Both algorithms have the same interface,
     but the explicit scheme gives slightly more accurate approximations of 
     the diffusion process at the cost of much slower processing.
     
-    {\bf Declarations:}
+    <b> Declarations:</b>
     
     pass arguments explicitly:
-    \begin{verbatim}
+    \code
     namespace vigra {
         template <class SrcIterator, class SrcAccessor, 
                   class DestIterator, class DestAccessor,
@@ -226,11 +228,11 @@ void internalNonlinearDiffusionAOSStep(
                            DestIterator dul, DestAccessor ad,
                            DiffusivityFunctor const & weight, double scale);
     }
-    \end{verbatim}
+    \endcode
     
     
-    use argument objects in conjuction with \Ref{Argument Object Factories}:
-    \begin{verbatim}
+    use argument objects in conjuction with \ref ArgumentObjectFactories:
+    \code
     namespace vigra {
         template <class SrcIterator, class SrcAccessor, 
                   class DestIterator, class DestAccessor,
@@ -240,41 +242,38 @@ void internalNonlinearDiffusionAOSStep(
             pair<DestIterator, DestAccessor> dest,
             DiffusivityFunctor const & weight, double scale);
     }
-    \end{verbatim}
+    \endcode
     
-    {\bf Usage:}
+    <b> Usage:</b>
     
-    Include-File:
-    \URL[vigra/nonlineardiffusion.hxx]{../include/vigra/nonlineardiffusion.hxx}
+    <b>\#include</b> "<a href="nonlineardiffusion_8hxx-source.html">vigra/nonlineardiffusion.hxx</a>"
     
     
-    \begin{verbatim}
+    \code
     FImage src(w,h), dest(w,h); 
     float edge_threshold, scale;   
     ...
     
     nonlinearDiffusion(srcImageRange(src), destImage(dest),
                        DiffusivityFunctor<float>(edge_threshold), scale);
-    \end{verbatim}
+    \endcode
 
-    {\bf Required Interface:}
+    <b> Required Interface:</b>
     
-    \begin{itemize}
+    <ul>
     
-    \item #SrcIterator# and #DestIterator# are models of ImageIterator
-    \item #SrcAccessor# and #DestAccessor# are models of StandardAccessor
-    \item #SrcAccessor::value_type# is a linear space
-    \item #DiffusivityFunctor# conforms to the requirements of 
-          \Ref{gradientBasedTransform}. Its range is between 0 and 1.
-    \item #DiffusivityFunctor::value_type# is an algebraic field
+    <li> <TT>SrcIterator</TT> and <TT>DestIterator</TT> are models of ImageIterator
+    <li> <TT>SrcAccessor</TT> and <TT>DestAccessor</TT> are models of StandardAccessor
+    <li> <TT>SrcAccessor::value_type</TT> is a linear space
+    <li> <TT>DiffusivityFunctor</TT> conforms to the requirements of
+          \ref gradientBasedTransform(). Its range is between 0 and 1.
+    <li> <TT>DiffusivityFunctor::value_type</TT> is an algebraic field
     
-    \end{itemize}
+    </ul>
     
-    {\bf Precondition:}
+    <b> Precondition:</b>
     
-    #scale > 0#
-    
-    @memo Non-linear diffusion
+    <TT>scale > 0</TT>
 */
 template <class SrcIterator, class SrcAccessor, 
           class DestIterator, class DestAccessor,
@@ -603,30 +602,29 @@ void nonlinearDiffusionExplicit(
 /*                                                      */
 /********************************************************/
 
-/** Diffusivity functor for non-linear diffusion. 
+/** \brief Diffusivity functor for non-linear diffusion. 
+
     This functor implements the diffusivity recommended by Weickert:
     
-    \[
+    \f[
         g(|\nabla u|) = 1 - 
            \exp{\left(\frac{-3.315}{(|\nabla u| / thresh)^4}\right)}
-    \]
+    \f]
     
     
-    where #thresh# is a threshold that determines whether a specific gradient 
+    where <TT>thresh</TT> is a threshold that determines whether a specific gradient 
     magnitude is interpreted as a significant edge (above the threshold) 
-    or as noise. It is meant to be used with \Ref{nonlinearDiffusion}.
+    or as noise. It is meant to be used with \ref nonlinearDiffusion().
 */
 template <class Value>
 class DiffusivityFunctor
 {
   public:
-         /** the functors value type (must be a field with #sqrt()# defined)
-             @memo
+         /** the functors value type (must be a field with <TT>sqrt()</TT> defined)
          */
     typedef Value value_type;
     
          /** init functor with given edge threshold
-             @memo
          */
     DiffusivityFunctor(Value const & thresh)
     : weight_(thresh*thresh), 
@@ -635,7 +633,6 @@ class DiffusivityFunctor
     {}
     
          /** calculate diffusivity from scalar arguments
-             @memo
          */
     Value operator()(Value const & gx, Value const & gy) const
     {
@@ -645,7 +642,6 @@ class DiffusivityFunctor
     }
     
          /** calculate diffusivity from RGB arguments
-             @memo
          */
     Value operator()(RGBValue<Value> const & gx, RGBValue<Value> const & gy) const
     {

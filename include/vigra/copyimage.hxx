@@ -27,8 +27,8 @@
 
 namespace vigra {
 
-/** @heading Algorithms to Copy Images
-    @memo copy image or ROI
+/** \addtogroup CopyAlgo Algorithms to Copy Images
+    Copy images or regions
 */
 //@{
 
@@ -38,14 +38,15 @@ namespace vigra {
 /*                                                      */
 /********************************************************/
 
-/** Copy source image into destination image.
+/** \brief Copy source image into destination image.
+
     If necessary, type conversion takes place.
     The function uses accessors to access the pixel data.
     
-    {\bf Declarations:}
+    <b> Declarations:</b>
     
     pass arguments explicitly:
-    \begin{verbatim}
+    \code
     namespace vigra {
         template <class SrcImageIterator, class SrcAccessor,
               class DestImageIterator, class DestAccessor>
@@ -54,11 +55,11 @@ namespace vigra {
               SrcImageIterator src_lowerright, SrcAccessor sa,
               DestImageIterator dest_upperleft, DestAccessor da)
     }
-    \end{verbatim}
+    \endcode
     
     
-    use argument objects in conjuction with \Ref{Argument Object Factories}:
-    \begin{verbatim}
+    use argument objects in conjuction with \ref ArgumentObjectFactories:
+    \code
     namespace vigra {
         template <class SrcImageIterator, class SrcAccessor,
               class DestImageIterator, class DestAccessor>
@@ -66,22 +67,21 @@ namespace vigra {
         copyImage(triple<SrcImageIterator, SrcImageIterator, SrcAccessor> src,
               pair<DestImageIterator, DestAccessor> dest)
     }
-    \end{verbatim}
+    \endcode
     
-    {\bf Usage:}
+    <b> Usage:</b>
     
-        Include-File:
-        \URL[vigra/copyimage.hxx]{../include/vigra/copyimage.hxx}\\
+        <b>\#include</b> "<a href="copyimage_8hxx-source.html">vigra/copyimage.hxx</a>"<br>
         Namespace: vigra
     
-    \begin{verbatim}
+    \code
     vigra::copyImage(srcImageRange(src), destImage(dest));
     
-    \end{verbatim}
+    \endcode
 
-    {\bf Required Interface:}
+    <b> Required Interface:</b>
     
-    \begin{verbatim}
+    \code
     SrcImageIterator src_upperleft, src_lowerright;
     DestImageIterator      dest_upperleft;
     
@@ -90,9 +90,8 @@ namespace vigra {
 
     dest_accessor.set(src_accessor(src_upperleft), dest_upperleft);
 
-    \end{verbatim}
+    \endcode
     
-    @memo
 */
 template <class SrcImageIterator, class SrcAccessor,
           class DestImageIterator, class DestAccessor>
@@ -134,16 +133,17 @@ copyImage(triple<SrcImageIterator, SrcImageIterator, SrcAccessor> src,
 /*                                                      */
 /********************************************************/
 
-/** Copy source ROI into destination image.
+/** \brief Copy source ROI into destination image.
+
     Pixel values are copied whenever the return value of the mask's
     accessor is not zero.
     If necessary, type conversion takes place.
     The function uses accessors to access the pixel data.
     
-    {\bf Declarations:}
+    <b> Declarations:</b>
     
     pass arguments explicitly:
-    \begin{verbatim}
+    \code
     namespace vigra {
         template <class SrcImageIterator, class SrcAccessor,
               class MaskImageIterator, class MaskAccessor,
@@ -154,11 +154,11 @@ copyImage(triple<SrcImageIterator, SrcImageIterator, SrcAccessor> src,
             MaskImageIterator mask_upperleft, MaskAccessor ma,
             DestImageIterator dest_upperleft, DestAccessor da)
     }
-    \end{verbatim}
+    \endcode
     
     
-    use argument objects in conjuction with \Ref{Argument Object Factories}:
-    \begin{verbatim}
+    use argument objects in conjuction with \ref ArgumentObjectFactories:
+    \code
     namespace vigra {
         template <class SrcImageIterator, class SrcAccessor,
               class MaskImageIterator, class MaskAccessor,
@@ -168,22 +168,21 @@ copyImage(triple<SrcImageIterator, SrcImageIterator, SrcAccessor> src,
             pair<MaskImageIterator, MaskAccessor> mask,
             pair<DestImageIterator, DestAccessor> dest)
     }
-    \end{verbatim}
+    \endcode
     
-    {\bf Usage:}
+    <b> Usage:</b>
     
-        Include-File:
-        \URL[vigra/copyimage.hxx]{../include/vigra/copyimage.hxx}\\
+        <b>\#include</b> "<a href="copyimage_8hxx-source.html">vigra/copyimage.hxx</a>"<br>
         Namespace: vigra
     
-    \begin{verbatim}
+    \code
     vigra::copyImageIf(srcImageRange(src), maskImage(mask), destImage(dest));
 
-    \end{verbatim}
+    \endcode
 
-    {\bf Required Interface:}
+    <b> Required Interface:</b>
     
-    \begin{verbatim}
+    \code
     SrcImageIterator src_upperleft, src_lowerright;
     DestImageIterator dest_upperleft;
     MaskImageIterator mask_upperleft;
@@ -196,9 +195,8 @@ copyImage(triple<SrcImageIterator, SrcImageIterator, SrcAccessor> src,
     if(mask_accessor(mask_uppeleft))
         dest_accessor.set(src_accessor(src_upperleft), dest_upperleft);
 
-    \end{verbatim}
+    \endcode
     
-    @memo
 */
 template <class SrcImageIterator, class SrcAccessor,
           class MaskImageIterator, class MaskAccessor,

@@ -30,8 +30,9 @@
 
 namespace vigra {
 
-/** @heading Algorithms to Inspect Images
-    @memo apply read-only functor to every pixel
+/** \addtogroup InspectAlgo Algorithms to Inspect Images
+
+    Apply read-only functor to every pixel
 */
 //@{
 
@@ -41,41 +42,41 @@ namespace vigra {
 /*                                                      */
 /********************************************************/
 
-/** Apply read-only functor to every pixel in the image.
+/** \brief Apply read-only functor to every pixel in the image.
+
     This function can be used to collect statistics of the image etc.
     The results must be stored in the functor, which serves as a return
     value.
     The function uses an accessor to access the pixel data.
     
-    {\bf Declarations:}
+    <b> Declarations:</b>
     
     pass arguments explicitly:
-    \begin{verbatim}
+    \code
     namespace vigra {
         template <class ImageIterator, class Accessor, class Functor>
         void
         inspectImage(ImageIterator upperleft, ImageIterator lowerright,
                      Accessor a, Functor & f)
     }
-    \end{verbatim}
+    \endcode
         
-    use argument objects in conjuction with \Ref{Argument Object Factories}:
-    \begin{verbatim}
+    use argument objects in conjuction with \ref ArgumentObjectFactories:
+    \code
     namespace vigra {
         template <class ImageIterator, class Accessor, class Functor>
         void
         inspectImage(triple<ImageIterator, ImageIterator, Accessor> img,
              Functor & f)
     }
-    \end{verbatim}
+    \endcode
     
-    {\bf Usage:}
+    <b> Usage:</b>
     
-        Include-File:
-        \URL[vigra/inspectimage.hxx]{../include/vigra/inspectimage.hxx}\\
+        <b>\#include</b> "<a href="inspectimage_8hxx-source.html">vigra/inspectimage.hxx</a>"<br>
         Namespace: vigra
     
-    \begin{verbatim}
+    \code
     // init functor
     vigra::BImage img;
     
@@ -85,19 +86,18 @@ namespace vigra {
     
     cout << "Min: " << minmax.min << " Max: " << minmax.max;
 
-    \end{verbatim}
+    \endcode
 
-    {\bf Required Interface:}
+    <b> Required Interface:</b>
     
-    \begin{verbatim}
+    \code
     ConstImageIterator upperleft, lowerright;
     Accessor accessor;
     Functor functor;
     
     functor(accessor(upperleft));         // return not used
-    \end{verbatim}
+    \endcode
     
-    @memo
 */
 template <class ImageIterator, class Accessor, class Functor>
 void
@@ -133,7 +133,8 @@ inspectImage(triple<ImageIterator, ImageIterator, Accessor> img,
 /*                                                      */
 /********************************************************/
 
-/** Apply read-only functor to every pixel in the ROI.
+/** \brief Apply read-only functor to every pixel in the ROI.
+
     This function can be used to collect statistics of the roi etc.
     The functor is called whenever the return value of the mask's 
     accessor is not zero.
@@ -141,10 +142,10 @@ inspectImage(triple<ImageIterator, ImageIterator, Accessor> img,
     value.
     Accessors are used to access the pixel and mask data.
     
-    {\bf Declarations:}
+    <b> Declarations:</b>
     
     pass arguments explicitly:
-    \begin{verbatim}
+    \code
     namespace vigra {
         template <class ImageIterator, class Accessor,
                   class MaskImageIterator, class MaskAccessor, class Functor>
@@ -153,11 +154,11 @@ inspectImage(triple<ImageIterator, ImageIterator, Accessor> img,
                MaskImageIterator mask_upperleft, MaskAccessor ma,
                Functor & f)
     }
-    \end{verbatim}
+    \endcode
     
     
-    use argument objects in conjuction with \Ref{Argument Object Factories}:
-    \begin{verbatim}
+    use argument objects in conjuction with \ref ArgumentObjectFactories:
+    \code
     namespace vigra {
         template <class ImageIterator, class Accessor,
               class MaskImageIterator, class MaskAccessor, class Functor>
@@ -166,15 +167,14 @@ inspectImage(triple<ImageIterator, ImageIterator, Accessor> img,
                pair<MaskImageIterator, MaskAccessor> mask,
                Functor & f)
     }
-    \end{verbatim}
+    \endcode
     
-    {\bf Usage:}
+    <b> Usage:</b>
     
-        Include-File:
-        \URL[vigra/inspectimage.hxx]{../include/vigra/inspectimage.hxx}\\
+        <b>\#include</b> "<a href="inspectimage_8hxx-source.html">vigra/inspectimage.hxx</a>"<br>
         Namespace: vigra
     
-    \begin{verbatim}
+    \code
     vigra::BImage img(100, 100);
     vigra::BImage mask(100, 100);
     
@@ -186,11 +186,11 @@ inspectImage(triple<ImageIterator, ImageIterator, Accessor> img,
     
     cout << "Min: " << minmax.min << " Max: " << minmax.max;
 
-    \end{verbatim}
+    \endcode
 
-    {\bf Required Interface:}
+    <b> Required Interface:</b>
     
-    \begin{verbatim}
+    \code
     ImageIterator upperleft, lowerright;
     MaskImageIterator mask_upperleft;
     
@@ -200,9 +200,8 @@ inspectImage(triple<ImageIterator, ImageIterator, Accessor> img,
     Functor functor;
 
     if(mask_accessor(mask_upperleft)) functor(accessor(upperleft)); 
-    \end{verbatim}
+    \endcode
     
-    @memo
 */
 template <class ImageIterator, class Accessor,
       class MaskImageIterator, class MaskAccessor, class Functor>
@@ -245,17 +244,18 @@ inspectImageIf(triple<ImageIterator, ImageIterator, Accessor> img,
 /*                                                      */
 /********************************************************/
 
-/** Apply read-only functor to every pixel of both images.
+/** \brief Apply read-only functor to every pixel of both images.
+
     This function can be used to collect statistics for each region of a 
     labeled image, especially in conjunction with 
-    the \Ref{ArrayOfRegionStatistics} functor. The results must be 
+    the \ref ArrayOfRegionStatistics functor. The results must be 
     stored in the functor which serves as a return value. 
     Accessors are used to access the pixel data.
     
-    {\bf Declarations:}
+    <b> Declarations:</b>
     
     pass arguments explicitly:
-    \begin{verbatim}
+    \code
     namespace vigra {
         template <class ImageIterator1, class Accessor1,
               class ImageIterator2, class Accessor2, 
@@ -265,11 +265,11 @@ inspectImageIf(triple<ImageIterator, ImageIterator, Accessor> img,
                  ImageIterator2 upperleft2, Accessor2 a2,
                  Functor & f)
     }
-    \end{verbatim}
+    \endcode
     
     
-    use argument objects in conjuction with \Ref{Argument Object Factories}:
-    \begin{verbatim}
+    use argument objects in conjuction with \ref ArgumentObjectFactories:
+    \code
     namespace vigra {
         template <class ImageIterator1, class Accessor1,
               class ImageIterator2, class Accessor2, 
@@ -279,15 +279,14 @@ inspectImageIf(triple<ImageIterator, ImageIterator, Accessor> img,
                          pair<ImageIterator2, Accessor2> img2,
                  Functor & f)
     }
-    \end{verbatim}
+    \endcode
     
-    {\bf Usage:}
+    <b> Usage:</b>
     
-        Include-File:
-        \URL[vigra/inspectimage.hxx]{../include/vigra/inspectimage.hxx}\\
+        <b>\#include</b> "<a href="inspectimage_8hxx-source.html">vigra/inspectimage.hxx</a>"<br>
         Namespace: vigra
     
-    \begin{verbatim}
+    \code
     vigra::BImage image1;
     vigra::BImage image2;
     
@@ -297,11 +296,11 @@ inspectImageIf(triple<ImageIterator, ImageIterator, Accessor> img,
                             region_stats);
     
     
-    \end{verbatim}
+    \endcode
 
-    {\bf Required Interface:}
+    <b> Required Interface:</b>
     
-    \begin{verbatim}
+    \code
     ImageIterator1 upperleft1, lowerright1;
     ImageIterator2 upperleft2;
     
@@ -310,9 +309,8 @@ inspectImageIf(triple<ImageIterator, ImageIterator, Accessor> img,
     
     Functor functor;
     functor(accessor1(upperleft1), accessor2(upperleft2));  // return not used
-    \end{verbatim}
+    \endcode
     
-    @memo
 */
 template <class ImageIterator1, class Accessor1,
           class ImageIterator2, class Accessor2, 
@@ -356,18 +354,19 @@ inspectTwoImages(triple<ImageIterator1, ImageIterator1, Accessor1> img1,
 /*                                                      */
 /********************************************************/
 
-/** Apply read-only functor to those pixels of both images where
+/** \brief Apply read-only functor to those pixels of both images where
     the mask image is non-zero.
+    
     This function can be used to collect statistics for selected regions of a 
     labeled image, especially in conjunction with 
-    the \Ref{ArrayOfRegionStatistics} functor. The results must be 
+    the \ref ArrayOfRegionStatistics functor. The results must be 
     stored in the functor which serves as a return value. 
     Accessors are used to access the pixel data.
     
-    {\bf Declarations:}
+    <b> Declarations:</b>
     
     pass arguments explicitly:
-    \begin{verbatim}
+    \code
     namespace vigra {
         template <class ImageIterator1, class Accessor1,
                   class ImageIterator2, class Accessor2, 
@@ -379,11 +378,11 @@ inspectTwoImages(triple<ImageIterator1, ImageIterator1, Accessor1> img1,
                          MaskImageIterator mupperleft, MaskAccessor mask,
                          Functor & f)
     }
-    \end{verbatim}
+    \endcode
     
     
-    use argument objects in conjuction with \Ref{Argument Object Factories}:
-    \begin{verbatim}
+    use argument objects in conjuction with \ref ArgumentObjectFactories:
+    \code
     namespace vigra {
         template <class ImageIterator1, class Accessor1,
                   class ImageIterator2, class Accessor2, 
@@ -395,15 +394,14 @@ inspectTwoImages(triple<ImageIterator1, ImageIterator1, Accessor1> img1,
                  pair<MaskImageIterator, MaskAccessor> mimg,
                  Functor & f)
     }
-    \end{verbatim}
+    \endcode
     
-    {\bf Usage:}
+    <b> Usage:</b>
     
-        Include-File:
-        \URL[vigra/inspectimage.hxx]{../include/vigra/inspectimage.hxx}\\
+        <b>\#include</b> "<a href="inspectimage_8hxx-source.html">vigra/inspectimage.hxx</a>"<br>
         Namespace: vigra
     
-    \begin{verbatim}
+    \code
     vigra::BImage image1;
     vigra::BImage image2;
     vigra::BImage maskimage;
@@ -413,11 +411,11 @@ inspectTwoImages(triple<ImageIterator1, ImageIterator1, Accessor1> img1,
     vigra::inspectTwoImagesIf(srcImageRange(image1), srcImage(image2),
                               srcImage(maskimage), region_stats);
     
-    \end{verbatim}
+    \endcode
 
-    {\bf Required Interface:}
+    <b> Required Interface:</b>
     
-    \begin{verbatim}
+    \code
     ImageIterator1 upperleft1, lowerright1;
     ImageIterator2 upperleft2;
     MaskImageIterator upperleftm;
@@ -429,9 +427,8 @@ inspectTwoImages(triple<ImageIterator1, ImageIterator1, Accessor1> img1,
     Functor functor;
     if(mask(upperleftm))
         functor(accessor1(upperleft1), accessor2(upperleft2)); 
-    \end{verbatim}
+    \endcode
     
-    @memo
 */
 template <class ImageIterator1, class Accessor1,
           class ImageIterator2, class Accessor2, 
@@ -478,8 +475,8 @@ inspectTwoImagesIf(triple<ImageIterator1, ImageIterator1, Accessor1> img1,
 
 //@}
 
-/** @heading Functors To Inspect Images
-    @memo functors which report image statistics
+/** \addtogroup InspectFunctor Functors To Inspect Images
+    Functors which report image statistics
 */
 //@{
 
@@ -489,19 +486,19 @@ inspectTwoImagesIf(triple<ImageIterator1, ImageIterator1, Accessor1> img1,
 /*                                                      */
 /********************************************************/
 
-/** Find the minimum and maximum pixel value in an image or ROI.
+/** \brief Find the minimum and maximum pixel value in an image or ROI.
+
     In addition the size of the ROI is calculated.
     This Functor can also be used in conjunction with
-    \Ref{ArrayOfRegionStatistics} to find the extremes of all regions in
+    \ref ArrayOfRegionStatistics to find the extremes of all regions in
     a labeled image.
     
-    {\bf Usage:}
+    <b> Usage:</b>
     
-        Include-File:
-        \URL[vigra/inspectimage.hxx]{../include/vigra/inspectimage.hxx}\\
+        <b>\#include</b> "<a href="inspectimage_8hxx-source.html">vigra/inspectimage.hxx</a>"<br>
         Namespace: vigra
     
-    \begin{verbatim}
+    \code
     vigra::BImage img;
     
     vigra::FindMinMax<BImage::PixelType> minmax;   // init functor
@@ -510,16 +507,16 @@ inspectTwoImagesIf(triple<ImageIterator1, ImageIterator1, Accessor1> img1,
     
     cout << "Min: " << minmax.min << " Max: " << minmax.max;
     
-    \end{verbatim}
+    \endcode
 
-    {\bf Required Interface:}
+    <b> Required Interface:</b>
     
-    \begin{verbatim}
+    \code
     VALUETYPE v1, v2(v1);
     
     v1 < v2;
     v1 = v2;
-    \end{verbatim}
+    \endcode
     
 */
 template <class VALUETYPE>
@@ -528,19 +525,16 @@ class FindMinMax
    public:
    
         /** the functor's value type
-        @memo
     */
     typedef VALUETYPE value_type;
    
     /** init min and max
-    @memo
     */
     FindMinMax()
     : count(0)
     {}
     
     /** update min and max
-        @memo
     */
     void operator()(VALUETYPE const & v) 
     {
@@ -558,7 +552,6 @@ class FindMinMax
     }
     
     /** merge two statistics
-        @memo
     */
     void operator()(FindMinMax const & v) 
     {
@@ -579,17 +572,14 @@ class FindMinMax
     }
     
     /** the current min
-        @memo
     */
     VALUETYPE min;
     
     /** the current max
-        @memo
     */
     VALUETYPE max;
     
     /** the number of values processed so far
-        @memo
     */
     unsigned int count;
     
@@ -601,19 +591,19 @@ class FindMinMax
 /*                                                      */
 /********************************************************/
 
-/** Find the average pixel value in an image or ROI.
+/** \brief  Find the average pixel value in an image or ROI.
+
     In addition the size of the ROI is calculated.
     This Functor can also be used in conjunction with
-    \Ref{ArrayOfRegionStatistics} to find the average of all regions in
+    \ref ArrayOfRegionStatistics to find the average of all regions in
     a labeled image.
     
-    {\bf Usage:}
+    <b> Usage:</b>
     
-        Include-File:
-        \URL[vigra/inspectimage.hxx]{../include/vigra/inspectimage.hxx}\\
+        <b>\#include</b> "<a href="inspectimage_8hxx-source.html">vigra/inspectimage.hxx</a>"<br>
         Namespace: vigra
     
-    \begin{verbatim}
+    \code
     vigra::BImage img;
     
     vigra::FindAverage<vigra::BImage::PixelType> average;   // init functor
@@ -622,16 +612,16 @@ class FindMinMax
     
     cout << "Average: " << average();
     
-    \end{verbatim}
+    \endcode
 
-    {\bf Required Interface:}
+    <b> Required Interface:</b>
     
-    \begin{verbatim}
+    \code
     VALUETYPE v1, v2(v1);
     
     v1 < v2;
     v1 = v2;
-    \end{verbatim}
+    \endcode
     
 */
 template <class VALUETYPE>
@@ -640,19 +630,16 @@ class FindAverage
    public:
    
         /** the functor's value type
-        @memo
     */
     typedef typename NumericTraits<VALUETYPE>::RealPromote value_type;
    
     /** init average
-    @memo
     */
     FindAverage()
     : count(0), sum(NumericTraits<value_type>::zero())
     {}
     
     /** update average
-        @memo
     */
     void operator()(VALUETYPE const & v) 
     {
@@ -661,7 +648,6 @@ class FindAverage
     }
     
     /** merge two statistics
-        @memo
     */
     void operator()(FindAverage const & v) 
     {
@@ -670,7 +656,6 @@ class FindAverage
     }
     
     /** return current average
-        @memo
     */
     value_type average() const
     {
@@ -678,7 +663,6 @@ class FindAverage
     }
     
     /** return current average
-        @memo
     */
     value_type operator()() const
     {
@@ -696,18 +680,18 @@ class FindAverage
 /*                                                      */
 /********************************************************/
 
-/** Calculate the size of an ROI in an image. 
+/** \brief Calculate the size of an ROI in an image. 
+
     This Functor is often used in conjunction with
-    \Ref{ArrayOfRegionStatistics} to find the sizes of all regions in
+    \ref ArrayOfRegionStatistics to find the sizes of all regions in
     a labeled image.
     
-    {\bf Usage:}
+    <b> Usage:</b>
     
-    Include-File:
-    \URL[vigra/inspectimage.hxx]{../include/vigra/inspectimage.hxx}\\
+    <b>\#include</b> "<a href="inspectimage_8hxx-source.html">vigra/inspectimage.hxx</a>"<br>
         Namespace: vigra
 
-    \begin{verbatim}
+    \code
     vigra::BImage img, mask;
     
     vigra::FindROISize<vigra::BImage::PixelType> roisize;   // init functor
@@ -716,7 +700,7 @@ class FindAverage
     
     cout << "Size of ROI: " << roisize.count;
     
-    \end{verbatim}
+    \endcode
 
 */
 template <class VALUETYPE>
@@ -725,19 +709,16 @@ class FindROISize
    public:
    
         /** the functor's value type
-        @memo
     */
     typedef VALUETYPE value_type;
    
     /** init counter to 0
-    @memo
     */
     FindROISize()
     : count(0)
     {}
     
     /** update counter
-        @memo
     */
     void operator()(VALUETYPE const &) 
     {
@@ -745,7 +726,6 @@ class FindROISize
     }
     
     /** return current size
-        @memo
     */
     int operator()() const 
     {
@@ -753,7 +733,6 @@ class FindROISize
     }
     
     /** return current size
-        @memo
     */
     int size() const 
     {
@@ -761,7 +740,6 @@ class FindROISize
     }
     
     /** merge two statistics
-        @memo
     */
     void operator()(FindROISize const & o) 
     {
@@ -769,7 +747,6 @@ class FindROISize
     }
     
     /** the current counter
-        @memo
     */
     unsigned int count;
     
@@ -781,20 +758,20 @@ class FindROISize
 /*                                                      */
 /********************************************************/
 
-/** Calculate the bounding rectangle of an ROI in an image. 
-    As always in VIGRA, #roiRect.lowerRight# is {\em just outside the rectangle}.
-    That is, the last pixel actually in the rectangle is #roiRect.lowerRight - Diff2D(1,1)#.
+/** \brief Calculate the bounding rectangle of an ROI in an image. 
+
+    As always in VIGRA, <TT>roiRect.lowerRight</TT> is <em> just outside the rectangle</em>.
+    That is, the last pixel actually in the rectangle is <TT>roiRect.lowerRight - Diff2D(1,1)</TT>.
     This Functor is often used in conjunction with
-    \Ref{ArrayOfRegionStatistics} to find the bounding rectangles 
+    \ref ArrayOfRegionStatistics to find the bounding rectangles 
     of all regions in a labeled image.
     
-    {\bf Usage:}
+    <b> Usage:</b>
     
-    Include-File:
-    \URL[vigra/inspectimage.hxx]{../include/vigra/inspectimage.hxx}\\
+    <b>\#include</b> "<a href="inspectimage_8hxx-source.html">vigra/inspectimage.hxx</a>"<br>
         Namespace: vigra
 
-    \begin{verbatim}
+    \code
     vigra::BImage img, mask;
     ...
     
@@ -811,40 +788,34 @@ class FindROISize
     cout << "Lower right of ROI: " << 
         roiRect.lowerRight.x << ", " << roiRect.lowerRight.y << endl;
     
-    \end{verbatim}
+    \endcode
 
 */
 class FindBoundingRectangle
 {
   public:
         /** the functor's value type
-            @memo
         */
     typedef Diff2D value_type;
     
         /** Upper left of the region as seen so far
-            @memo
         */
     Diff2D upperLeft;
         /** Lower right of the region as seen so far
-            @memo
         */
     Diff2D lowerRight;
     
         /** are the functors contents valid ?
-            @memo
         */
     bool valid;
     
         /** init rectangle to invalid values
-        @memo
         */
     FindBoundingRectangle()
     : valid(false)
     {}
     
         /** update rectangle by including the coordinate coord
-            @memo
         */
     void operator()(Diff2D const & coord) 
     {
@@ -864,7 +835,6 @@ class FindBoundingRectangle
     }
     
         /** update rectangle by merging it with another rectangle
-            @memo
         */
     void operator()(FindBoundingRectangle const & otherRegion) 
     {
@@ -890,17 +860,17 @@ class FindBoundingRectangle
 /*                                                      */
 /********************************************************/
 
-/** Stores and returns the last value it has seen. 
+/** \brief Stores and returns the last value it has seen. 
+
     This Functor is best used in conjunction with
-    \Ref{ArrayOfRegionStatistics} to realize a look-up table.
+    \ref ArrayOfRegionStatistics to realize a look-up table.
     
-    {\bf Usage:}
+    <b> Usage:</b>
     
-    Include-File:
-    \URL[vigra/inspectimage.hxx]{../include/vigra/inspectimage.hxx}\\
+    <b>\#include</b> "<a href="inspectimage_8hxx-source.html">vigra/inspectimage.hxx</a>"<br>
         Namespace: vigra
 
-    \begin{verbatim}
+    \code
     vigra::BImage img;
     
     vigra::ArrayOfRegionStatistics<LastValueFunctor<unsigned char> > lut(255);
@@ -912,7 +882,7 @@ class FindBoundingRectangle
     
     vigra::transformImage(srcImageRange(img), destImage(img), lut);
     
-    \end{verbatim}
+    \endcode
 
 */
 template <class VALUETYPE>
@@ -921,33 +891,27 @@ class LastValueFunctor
    public:
    
         /** the functor's value type
-        @memo
     */
     typedef VALUETYPE value_type;
    
     /** default initialization of value
-        @memo
     */
     LastValueFunctor()
     {}
 
         /** replace value
-        @memo
     */
     void operator=(VALUETYPE const & v) { value = v; }
         
     /** replace value
-        @memo
     */
     void operator()(VALUETYPE const & v) { value = v; }
     
     /** return current value
-        @memo
     */
     VALUETYPE operator()() const { return value; }
 
     /** the current value
-        @memo
     */
     VALUETYPE value;
     
@@ -959,18 +923,18 @@ class LastValueFunctor
 /*                                                      */
 /********************************************************/
 
-/** Calculate statistics for all regions of a labeled image. 
+/** \brief Calculate statistics for all regions of a labeled image. 
+
     This Functor encapsulates an array of statistics functors, one
     for each label, and selects the one to be updated according to the 
     pixel's label. 
     
-    {\bf Usage:}
+    <b> Usage:</b>
     
-    Include-File:
-    \URL[vigra/inspectimage.hxx]{../include/vigra/inspectimage.hxx}\\
+    <b>\#include</b> "<a href="inspectimage_8hxx-source.html">vigra/inspectimage.hxx</a>"<br>
         Namespace: vigra
 
-    \begin{verbatim}
+    \code
     vigra::BImage img;
     vigra::IImage labels;
     int max_label;
@@ -997,18 +961,18 @@ class LastValueFunctor
     // write back the average of each region into the original image
     vigra::transformImage(srcImageRange(labels), destImage(img), average);
     
-    \end{verbatim}
+    \endcode
     
-    {\bf Required Interface:}
+    <b> Required Interface:</b>
 
-    \begin{verbatim}
+    \code
     RegionStatistics region;
     RegionStatistics::value_type v;
     
     region(v);     // update statistics
     v = region();  // return statistics
     
-    \end{verbatim}
+    \endcode
 */
 template <class RegionStatistics>
 class ArrayOfRegionStatistics
@@ -1022,14 +986,12 @@ class ArrayOfRegionStatistics
     typedef typename RegionArray::iterator iterator;
 
     /** init array of RegionStatistics with default size 0.
-        @memo
     */
     ArrayOfRegionStatistics()
     {}
     
     /** init array of RegionStatistics with index domain
         0...max_region_label.
-        @memo
     */
     ArrayOfRegionStatistics(int max_region_label)
     : regions(max_region_label+1)
@@ -1037,7 +999,6 @@ class ArrayOfRegionStatistics
     
     /** resize array to new index domain 0...max_region_label.
         All bin are re-initialized.
-        @memo
     */
     void resize(int max_region_label)
     {
@@ -1046,7 +1007,6 @@ class ArrayOfRegionStatistics
     }
     
     /** reset the contained functors to their initial state.
-        @memo
     */
     void reset()
     {
@@ -1055,51 +1015,42 @@ class ArrayOfRegionStatistics
     }
     
     /** update regions statistics for region 'label'
-        @memo
     */
     void operator()(value_type const & v, int label) {
         regions[label](v);
     }
     
     /** merge second region into first
-        @memo
     */
     void merge(int label1, int label2) {
         regions[label1](regions[label2]);
     }
     
     /** ask for maximal index (label) allowed
-        @memo
     */
     int maxRegionLabel() const { return size() - 1; } 
 
     /** ask for array size (i.e. maxRegionLabel() + 1)
-        @memo
     */
     int size() const { return regions.size(); } 
 
     /** access the statistics for a region via its label
-        @memo
     */
     value_type operator()(int label) const { return regions[label](); }
     
     /** read the statistics functor for a region via its label
-        @memo
     */
     RegionStatistics const & operator[](int label) const { return regions[label]; }
     
     /** access the statistics functor for a region via its label
-        @memo
     */
     RegionStatistics & operator[](int label) { return regions[label]; }
     
     /** iterator to the begin of the region array
-        @memo
     */
     iterator begin() { return regions.begin(); } 
     
     /** iterator to the end of the region array
-        @memo
     */
     iterator end() { return regions.end(); } 
     

@@ -23,35 +23,37 @@
 #define VIGRA_FUNCTOREXPRESSION_HXX 
 
 
-/** @heading Functor Creation      
+/** \page FunctorExpressions Functor Expressions  
 
-    Include-File:
-    \URL[vigra/functorexpression.hxx]{../include/vigra/functorexpression.hxx}\\
+    Simple automatic functor creation by means of expression templates
+    (also known as a "lambda library").    
+
+    <b>\#include</b> "<a href="functorexpression_8hxx-source.html">vigra/functorexpression.hxx</a>"<br>
     Namespace: vigra::functor
     
-    {\bf Note:} This functionality is not available under Microsoft Visual C++, 
+    <b> Note:</b> This functionality is not available under Microsoft Visual C++, 
     because support for partial template specialization is required.
 
-    {\bf Motivation}
+    <b> Motivation</b>
     
     Many generic algorithms are made more flexible by means of functors
     which define part of the algorithms' behavior according to the
     needs of a specific situation. For example, we can apply an exponential
-    to each pixel by passing a pointer to the #exp# function 
-    to #transformImage()#:
+    to each pixel by passing a pointer to the <TT>exp</TT> function 
+    to <TT>transformImage()</TT>:
     
-    \begin{verbatim}
+    \code
     vigra::FImage src(w,h), dest(w,h);
     ... // fill src
     
     vigra::transformImage(srcImageRange(src), destImage(dest), &exp);    
-    \end{verbatim}
+    \endcode
     
     However, this only works for simple operations. If we wanted to 
     apply the exponential to a scaled pixel value (i.e. we want to execute
-    #exp(-beta*v)#), we first need to implement a new functor:
+    <TT>exp(-beta*v)</TT>), we first need to implement a new functor:
     
-    \begin{verbatim}
+    \code
     struct Exponential
     {
         Exponential(double b)
@@ -66,46 +68,46 @@
         
         double beta;
     };
-    \end{verbatim}
+    \endcode
     
     This functor would be used like this:
     
-    \begin{verbatim}
+    \code
     double beta =  ...;
     vigra::transformImage(srcImageRange(src), destImage(dest), 
                    Exponential(beta));    
-    \end{verbatim}
+    \endcode
     
     However, this approach has some disadvantages:
     
-    \begin{itemize}
+    <UL>
     
-    \item Writing a functor is more work then simply programm the loop
+    <li> Writing a functor is more work then simply programm the loop
           directly, i.e. non-generically. Programmers will tend to
           avoid generic constructs, if they require so much writing. 
-    \item Often, functors are only needed for a single expression. 
+    <li> Often, functors are only needed for a single expression. 
           It is not desirable to get into the trouble of introducing 
           and documenting a new class if that class is used only once.
-    \item Functors cannot be implemented directly at the point of use.
+    <li> Functors cannot be implemented directly at the point of use.
           Thus, to find out exactly what a functor is doing, one needs
           to look somewhere else. This complicates use and maintainance
           ot generic code.
     
-    \end{itemize}
+    </UL>
     
     Therefore, it is necessary to provide a means to generate functors on 
     the fly where they are needed. The C++ standard library contains so called
     "functor combinators" that allow to construct complicated functors from 
-    simpler ones. The above problem "apply #exp(-beta*v)# to every pixel"
+    simpler ones. The above problem "apply <TT>exp(-beta*v)</TT> to every pixel"
     would be solved like this:
     
-    \begin{verbatim}
+    \code
     float beta = ...;
     
     vigra::transformImage(srcImageRange(src), destImage(dest), 
                    std::compose1(std::ptr_fun(exp),
                                  std::bind1st(std::multiplies<float>(), -beta)));
-    \end{verbatim}
+    \endcode
  
     I won't go into details on how this works. Suffice it to say that
     this technique requires a functional programming style that is unfamiliar
@@ -114,10 +116,10 @@
     certain expressions from being implementable this way. Therefore, VIGRA
     provides a better and simpler means to create functors on the fly.
     
-    {\bf Automatic Functor Creation}
+    <b> Automatic Functor Creation</b>
     
     Automatic functor creation in VIGRA is based on a technique called
-    \URL[Expression Templates]{http://extreme.indiana.edu/~tveldhui/papers/Expression-Templates/exprtmpl.html}.
+    <a href="http://extreme.indiana.edu/~tveldhui/papers/Expression-Templates/exprtmpl.html">Expression Templates</a>.
     This means that C++ operators are
     overloaded so that they don't execute the specified operation directly, 
     but instead produce a functor which will later calculate the result.
@@ -127,45 +129,45 @@
     are not available on compilers that dont support this C++ feature
     (in particular, on Microsoft Visual C++).
     
-    The above problem "apply #exp(-beta*v)# to every pixel" will be solved
+    The above problem "apply <TT>exp(-beta*v)</TT> to every pixel" will be solved
     like this:
     
-    \begin{verbatim}
+    \code
     using namespace vigra::functor;
     
     float beta = ...;
     
     transformImage(srcImageRange(src), destImage(dest), 
                    exp(Param(-beta)*Arg1()));
-    \end{verbatim}
+    \endcode
     
     Here, four expression templates have been used to create the desired
     functor:
     
-    \begin{description}
+    <DL>
     
-    \item[#Param(-beta):#] creates a functor that represents a 
-         constant (#-beta# in this case)
+    <DT><b><TT>Param(-beta):</TT></b><DD> creates a functor that represents a 
+         constant (<TT>-beta</TT> in this case)
          
-    \item[#Arg1():#] represents the first argument of the expression (i.e.
-         the pixels of image #src# in the example). Likewise, #Arg2()# and
-         #Arg3()# are defined to represent more arguments. These are needed
+    <DT><b><TT>Arg1():</TT></b><DD> represents the first argument of the expression (i.e.
+         the pixels of image <TT>src</TT> in the example). Likewise, <TT>Arg2()</TT> and
+         <TT>Arg3()</TT> are defined to represent more arguments. These are needed
          for algorithms that have multiple input images, such as
-         \Ref{combineTwoImages}() and \Ref{combineThreeImages}().
+         \ref combineTwoImages() and \ref combineThreeImages().
          
-    \item[* (multiplication):] creates a functor that returns the product of
+    <DT><b>* (multiplication):</b><DD> creates a functor that returns the product of
          its arguments. Likewise, the other C++ operators (i.e. 
-         #+, -, *, /, %, ==, !=, <, <=, >, >=, &&, ||, &, |, ^, !, ~#) 
+         <TT>+, -, *, /, %, ==, !=, <, <=, >, >=, &&, ||, &, |, ^, !, ~</TT>) 
          are overloaded.
     
-    \item[#exp():#] creates a functor that takes the exponential of its 
+    <DT><b><TT>exp():</TT></b><DD> creates a functor that takes the exponential of its 
         argument. Likewise, the other algebraic functions
-        (i.e. #sqrt, exp, log, log10, sin, asin, cos, acos, tan, 
-        atan, abs, floor, ceil, rint, pow, atan2, fmod, min, max#) 
+        (i.e. <TT>sqrt, exp, log, log10, sin, asin, cos, acos, tan, 
+        atan, abs, floor, ceil, rint, pow, atan2, fmod, min, max</TT>) 
         are overloaded.
 .
     
-    \end{description}
+    </DL>
     
     We will explain additional capabilities of the functor creation mechanism 
     by means of examples.
@@ -174,7 +176,7 @@
     For example, to calculate the gradient magnitude from the components
     of the gradient vector, you may write:
     
-    \begin{verbatim}
+    \code
     using namespace vigra::functor;
     
     vigra::FImage gradient_x(w,h), gradient_y(w,h), magnitude(w,h);
@@ -183,12 +185,12 @@
     combineTwoImages(srcImageRange(gradient_x), srcImage(gradient_y),
                      destImage(magnitude),
                      sqrt(Arg1()*Arg1() + Arg2()*Arg2()));
-    \end{verbatim}
+    \endcode
     
     It is also possible to build other functions into functor expressions. Suppose 
-    you want to apply #my_complicated_function()# to the sum of two images:
+    you want to apply <TT>my_complicated_function()</TT> to the sum of two images:
     
-    \begin{verbatim}
+    \code
     using namespace vigra::functor;
     
     vigra::FImage src1(w,h), src2(w,h), dest(w,h);
@@ -197,16 +199,16 @@
     
     combineTwoImages(srcImageRange(src1), srcImage(src2), destImage(dest),
                      applyFct(&my_complicated_function, Arg1()+Arg2()));    
-    \end{verbatim}
+    \endcode
     
     [Note that the arguments of the wrapped function are passed as additional
-    arguments to #applyFct()#]
+    arguments to <TT>applyFct()</TT>]
     
-    You can implement conditional expression by means of the #ifThenElse()# 
+    You can implement conditional expression by means of the <TT>ifThenElse()</TT> 
     functor. It corresponds to the "? :" operator that cannot be overloaded.
-    #ifThenElse()# can be used, for example, to threshold an image:
+    <TT>ifThenElse()</TT> can be used, for example, to threshold an image:
     
-    \begin{verbatim}
+    \code
     using namespace vigra::functor;
     
     vigra::FImage src(w,h), thresholded(w,h);
@@ -219,13 +221,13 @@
                               Param(0.0),    // yes branch
                               Param(1.0))    // no  branch
                   );
-    \end{verbatim}
+    \endcode
 
-    You can use the #Var()# functor to assign values to a variable 
-    (#=, +=, -=, *=, /=#&nbsp; are suported). For example, the average gray
+    You can use the <TT>Var()</TT> functor to assign values to a variable 
+    (<TT>=, +=, -=, *=, /=</TT>&nbsp; are suported). For example, the average gray
     value of the image is calculated like this:
     
-    \begin{verbatim}
+    \code
     using namespace vigra::functor;
     
     vigra::FImage src(w,h);
@@ -236,14 +238,14 @@
     inspectImage(srcImageRange(src), Var(sum) += Arg1());
     
     std::cout << "Average: " << (sum / (w*h)) << std::endl;
-    \end{verbatim}
+    \endcode
     
-    For use in \Ref{inspectImage}() and its relatives, there is a second
-    conditional functor #ifThen()# that emulates the #if()# statement
-    and does not return a value. Using #ifThen()#, we can calculate the size
+    For use in \ref inspectImage() and its relatives, there is a second
+    conditional functor <TT>ifThen()</TT> that emulates the <TT>if()</TT> statement
+    and does not return a value. Using <TT>ifThen()</TT>, we can calculate the size
     of an image region:
     
-    \begin{verbatim}
+    \code
     using namespace vigra::functor;
     
     vigra::IImage label_image(w,h);
@@ -257,14 +259,14 @@
                         Var(size) += Param(1)));
                         
     std::cout << "Size of region " << region_label << ": " << size << std::endl;
-    \end{verbatim}
+    \endcode
     
     Often, we want to execute several commands in one functor. This can be done
-    by means of the overloaded #operator,()# ("operator comma"). Expressions
+    by means of the overloaded <TT>operator,()</TT> ("operator comma"). Expressions
     seperated by a comma will be executed in succession. We can thus 
     simultaneously find the size and the average gray value of a region:
     
-    \begin{verbatim}
+    \code
     using namespace vigra::functor;
     
     vigra::FImage src(w,h);
@@ -284,17 +286,17 @@
 
     std::cout << "Region " << region_label << ": size = " << size << 
                                               ", average = " << sum / size << std::endl;
-    \end{verbatim}
+    \endcode
     
     [Note that the list of comma-separated expressions must be enclosed in parentheses.]
     
     A comma separated list of expressions can also be applied in the context of
-    \Ref{transformImage}() and its cousins. Here, a general rule of C++ applies: The 
+    \ref transformImage() and its cousins. Here, a general rule of C++ applies: The 
     return value of a comma expression is the value of its last subexpression.
     For example, we can initialize an image so that each pixel contains its 
     address in scan order:
     
-    \begin{verbatim}
+    \code
     using namespace vigra::functor;
     
     vigra::IImage img(w,h);
@@ -306,13 +308,13 @@
                   Var(count) += 1,  
                   Var(count)     // this is the result of the comma expression
               ));
-    \end{verbatim}
+    \endcode
     
     Further information about how this mechanism works can be found in
-    \URL[this paper]{documents/FunctorFactory.ps} (sorry, slightly out of date).
-    
-    @memo Expression templates to automate functor creation. 
+    <a href="documents/FunctorFactory.ps">this paper</a> (sorry, slightly out of date).
 */
+
+#ifndef DOXYGEN
 
 #include <cmath>
 #include <vigra/numerictraits.hxx>
@@ -684,6 +686,8 @@ makeAssignmentFunctor(subtract, -=);
 makeAssignmentFunctor(multiply, *=);
 makeAssignmentFunctor(divide, /=);
 
+#undef makeAssignmentFunctor
+
 /************************************************************/
 /*                                                          */
 /*                          variables                       */
@@ -1024,6 +1028,8 @@ makeFunctorUnaryFunction(floor);
 makeFunctorUnaryFunction(ceil);
 makeFunctorUnaryFunction(rint);
 
+#undef makeFunctorUnaryFunction
+
 /************************************************************/
 /*                                                          */
 /*                functors for unary operators              */
@@ -1098,6 +1104,8 @@ makeFunctorUnaryFunction(rint);
 makeFunctorUnaryOperator(minus, -);
 makeFunctorUnaryOperator(negate, !);
 makeFunctorUnaryOperator(bitNegate, ~);
+
+#undef makeFunctorUnaryOperator
 
 /************************************************************/
 /*                                                          */
@@ -1185,6 +1193,8 @@ makeFunctorUnaryOperator(bitNegate, ~);
 makeFunctorBinaryFunction(pow);
 makeFunctorBinaryFunction(atan2);
 makeFunctorBinaryFunction(fmod);
+
+#undef makeFunctorBinaryFunction
 
 /************************************************************/
 
@@ -1274,6 +1284,8 @@ makeFunctorBinaryFunction(fmod);
 makeFunctorMinMax(min, <);
 makeFunctorMinMax(max, >);
 
+#undef makeFunctorMinMax
+
 /************************************************************/
 /*                                                          */
 /*               functors for binary operators              */
@@ -1362,6 +1374,8 @@ makeFunctorBinaryOperator(bitAnd, &);
 makeFunctorBinaryOperator(bitOr, |);
 makeFunctorBinaryOperator(bitXor, ^);
 
+#undef makeFunctorBinaryOperator
+
 /************************************************************/
 
 #define makeFunctorBinaryOperatorBool(name, op) \
@@ -1436,6 +1450,8 @@ makeFunctorBinaryOperatorBool(greater, >);
 makeFunctorBinaryOperatorBool(greaterEqual, >=);
 makeFunctorBinaryOperatorBool(and, &&);
 makeFunctorBinaryOperatorBool(or, ||);
+
+#undef makeFunctorBinaryOperatorBool
 
 /************************************************************/
 /*                                                          */
@@ -1699,6 +1715,8 @@ operator,(UnaryAnalyser<EXPR1> const & e1,
 } // namespace functor
 
 } // namespace vigra
+
+#endif // DOXYGEN
 
 #endif /* VIGRA_FUNCTOREXPRESSION_HXX  */
 

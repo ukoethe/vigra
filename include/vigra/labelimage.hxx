@@ -30,8 +30,9 @@
 
 namespace vigra {
 
-/** @heading Connected Components Labeling
-    @memo using 4 or 8 connectivity
+/** \addtogroup Labeling Connected Components Labeling
+     The connected components algorithm may use either 4 or 8 connectivity.
+     By means of a functor the merge criterium can be defined arbitrarily. 
 */
 //@{
 
@@ -41,22 +42,23 @@ namespace vigra {
 /*                                                      */
 /********************************************************/
 
-/** Find the connected components of a segmented image.
+/** \brief Find the connected components of a segmented image.
+
     Connected components are defined as regions with uniform 
-    pixel values. Thus, #SrcAccessor::value_type# either must be equality 
+    pixel values. Thus, <TT>SrcAccessor::value_type</TT> either must be equality 
     comparable (first form), or an EqualityFunctor must be provided that realizes the 
     desired predicate (second form). The destination's value type should be large enough 
     to hold the labels without overflow. Region numbers will be a 
     consecutive sequence starting with one and ending with the 
     region number returned by the function (inclusive). The parameter
-    '#eight_neighbors#' determines whether the regions should be 
+    '<TT>eight_neighbors</TT>' determines whether the regions should be 
     4-connected or 8-connected.
     The function uses accessors. 
     
-    {\bf Declarations:}
+    <b> Declarations:</b>
     
     pass arguments explicitly:
-    \begin{verbatim}
+    \code
     namespace vigra {
         template <class SrcIterator, class SrcAccessor,
 	          class DestIterator, class DestAccessor>
@@ -73,10 +75,10 @@ namespace vigra {
                        DestIterator upperleftd, DestAccessor da,
 	               bool eight_neighbors, EqualityFunctor equal);
     }
-    \end{verbatim}
+    \endcode
                    
-    use argument objects in conjuction with \Ref{Argument Object Factories}:
-    \begin{verbatim}
+    use argument objects in conjuction with \ref ArgumentObjectFactories:
+    \code
     namespace vigra {
         template <class SrcIterator, class SrcAccessor,
 	          class DestIterator, class DestAccessor>
@@ -91,17 +93,16 @@ namespace vigra {
                        pair<DestIterator, DestAccessor> dest,
 	               bool eight_neighbors, EqualityFunctor equal)
     }
-    \end{verbatim}
+    \endcode
     
     Return:  the number of regions found (= largest region label)
     
-    {\bf Usage:}
+    <b> Usage:</b>
     
-        Include-File:
-        \URL[vigra/labelimage.hxx]{../include/vigra/labelimage.hxx}\\
+        <b>\#include</b> "<a href="labelimage_8hxx-source.html">vigra/labelimage.hxx</a>"<br>
     Namespace: vigra
     
-    \begin{verbatim}
+    \code
     vigra::BImage src(w,h);
     vigra::IImage labels(w,h);
     
@@ -112,11 +113,11 @@ namespace vigra {
     
     // find 4-connected regions 
     vigra::labelImage(srcImageRange(src), destImage(labels), false);
-    \end{verbatim}
+    \endcode
 
-    {\bf Required Interface:}
+    <b> Required Interface:</b>
     
-    \begin{verbatim}
+    \code
     SrcImageIterator src_upperleft, src_lowerright;
     DestImageIterator dest_upperleft;
     
@@ -132,9 +133,8 @@ namespace vigra {
     
     int i;
     dest_accessor.set(i, dest_upperleft);
-    \end{verbatim}
+    \endcode
 
-    @memo
 */
 template <class SrcIterator, class SrcAccessor,
           class DestIterator, class DestAccessor,
@@ -320,26 +320,28 @@ int labelImage(triple<SrcIterator, SrcIterator, SrcAccessor> src,
 /*                                                      */
 /********************************************************/
 
-/** Find the connected components of a segmented image.
+/** \brief Find the connected components of a segmented image,
+    excluding the background from labeling.
+    
     Connected components are defined as regions with uniform 
-    pixel values. Thus, #SrcAccessor::value_type# either must be equality 
+    pixel values. Thus, <TT>SrcAccessor::value_type</TT> either must be equality 
     comparable (first form), or an EqualityFunctor must be provided that realizes the 
     desired predicate (second form). All pixel equal to the given 
-    '#background_value#' are ignored when determining connected components
+    '<TT>background_value</TT>' are ignored when determining connected components
     and remain untouched in the destination image and 
     
     The destination's value type should be large enough 
     to hold the labels without overflow. Region numbers will be a 
     consecutive sequence starting with one and ending with the 
     region number returned by the function (inclusive). The parameter
-    '#eight_neighbors#' determines whether the regions should be 
+    '<TT>eight_neighbors</TT>' determines whether the regions should be 
     4-connected or 8-connected.
     The function uses accessors. 
     
-    {\bf Declarations:}
+    <b> Declarations:</b>
     
     pass arguments explicitly:
-    \begin{verbatim}
+    \code
     namespace vigra {
         template <class SrcIterator, class SrcAccessor,
 	          class DestIterator, class DestAccessor,
@@ -359,10 +361,10 @@ int labelImage(triple<SrcIterator, SrcIterator, SrcAccessor> src,
 	               bool eight_neighbors,
 	               ValueType background_value, EqualityFunctor equal);
     }
-    \end{verbatim}
+    \endcode
     
-    use argument objects in conjuction with \Ref{Argument Object Factories}:
-    \begin{verbatim}
+    use argument objects in conjuction with \ref ArgumentObjectFactories:
+    \code
     namespace vigra {
         template <class SrcIterator, class SrcAccessor,
 	          class DestIterator, class DestAccessor,
@@ -382,17 +384,16 @@ int labelImage(triple<SrcIterator, SrcIterator, SrcAccessor> src,
 	                             bool eight_neighbors,
 			             ValueType background_value, EqualityFunctor equal);
     }
-    \end{verbatim}
+    \endcode
     
     Return:  the number of regions found (= largest region label)
     
-    {\bf Usage:}
+    <b> Usage:</b>
     
-        Include-File:
-        \URL[vigra/labelimage.hxx]{../include/vigra/labelimage.hxx}\\
+        <b>\#include</b> "<a href="labelimage_8hxx-source.html">vigra/labelimage.hxx</a>"<br>
     Namespace: vigra
     
-    \begin{verbatim}
+    \code
     vigra::BImage src(w,h);
     vigra::IImage labels(w,h);
     
@@ -404,11 +405,11 @@ int labelImage(triple<SrcIterator, SrcIterator, SrcAccessor> src,
     // find 4-connected regions of foreground (= white pixels) only
     vigra::labelImageWithBackground(srcImageRange(src), destImage(labels), 
                              false, 0);
-    \end{verbatim}
+    \endcode
 
-    {\bf Required Interface:}
+    <b> Required Interface:</b>
     
-    \begin{verbatim}
+    \code
     SrcImageIterator src_upperleft, src_lowerright;
     DestImageIterator dest_upperleft;
     
@@ -427,9 +428,8 @@ int labelImage(triple<SrcIterator, SrcIterator, SrcAccessor> src,
     
     int i;
     dest_accessor.set(i, dest_upperleft);
-    \end{verbatim}
+    \endcode
 
-    @memo
 */
 template <class SrcIterator, class SrcAccessor,
           class DestIterator, class DestAccessor,
@@ -612,16 +612,18 @@ int labelImageWithBackground(SrcIterator upperlefts,
 
 /********************************************************/
 /*                                                      */
-/*             regionImageToCellGridImage               */
+/*            regionImageToCrackEdgeImage               */
 /*                                                      */
 /********************************************************/
 
-/** Transform a labeled image into a \Ref{Cell Grid Image}.
-    This algorithm inserts border pixels between regions in a labeled
-    image like this (#a# and #c# are the original labels, and #0# 
-    is the value of #edge_marker# and denotes the inserted edges): 
+/** \brief Transform a labeled image into a crack edge image.
+
+    This algorithm inserts border pixels (so called "crack edges" between 
+    regions in a labeled
+    image like this (<TT>a</TT> and <TT>c</TT> are the original labels, and <TT>0</TT> 
+    is the value of <TT>edge_marker</TT> and denotes the inserted edges): 
     
-    \begin{verbatim}
+    \code
        original image     insert zero- and one-cells 
     
 					 a 0 c c c          
@@ -629,50 +631,49 @@ int labelImageWithBackground(SrcIterator upperlefts,
 	  a a c               =>         a a a 0 c          
 	  a a a                          a a a 0 0          
 					 a a a a a          
-    \end{verbatim}
+    \endcode
     
     The algorithm assumes that the original labeled image contains 
     no background. Therefore, it is suitable as a post-processing 
-    operation of \Ref{labelImage} or \Ref{seededRegionGrowing}. 
+    operation of \ref labelImage() or \ref seededRegionGrowing(). 
     
-    The destination image must be double the size of the original
-    (precisely, #(2*w-1)# by #(2*h-1)# pixels). The source value type
-    (#SrcAccessor::value-type#) must be equality-comparable.
+    The destination image must be twice the size of the original
+    (precisely, <TT>(2*w-1)</TT> by <TT>(2*h-1)</TT> pixels). The source value type
+    (<TT>SrcAccessor::value-type</TT>) must be equality-comparable.
     
-    {\bf Declarations:}
+    <b> Declarations:</b>
     
     pass arguments explicitly:
-    \begin{verbatim}
+    \code
     namespace vigra {
         template <class SrcIterator, class SrcAccessor,
 	          class DestIterator, class DestAccessor, class DestValue>
-        void regionImageToCellGridImage(
+        void regionImageToCrackEdgeImage(
 		       SrcIterator sul, SrcIterator slr, SrcAccessor sa,
 		       DestIterator dul, DestAccessor da,
 		       DestValue edge_marker)
     }
-    \end{verbatim}
+    \endcode
     
-    use argument objects in conjuction with \Ref{Argument Object Factories}:
-    \begin{verbatim}
+    use argument objects in conjuction with \ref ArgumentObjectFactories:
+    \code
     namespace vigra {
         template <class SrcIterator, class SrcAccessor,
 	          class DestIterator, class DestAccessor, class DestValue>
         inline 
-        void regionImageToCellGridImage(
+        void regionImageToCrackEdgeImage(
 	           triple<SrcIterator, SrcIterator, SrcAccessor> src,
 	           pair<DestIterator, DestAccessor> dest,
 	           DestValue edge_marker)
     }
-    \end{verbatim}
+    \endcode
     
-    {\bf Usage:}
+    <b> Usage:</b>
     
-        Include-File:
-        \URL[vigra/labelimage.hxx]{../include/vigra/labelimage.hxx}\\
+        <b>\#include</b> "<a href="labelimage_8hxx-source.html">vigra/labelimage.hxx</a>"<br>
     Namespace: vigra
     
-    \begin{verbatim}
+    \code
     vigra::BImage src(w,h);
     vigra::IImage labels(w,h);
     vigra::IImage cellgrid(2*w-1, 2*h-1);
@@ -686,12 +687,12 @@ int labelImageWithBackground(SrcIterator upperlefts,
     vigra::labelImage(srcImageRange(src), destImage(labels), false);
     
     // create cell grid image, mark edges with 0
-    vigra::regionImageToCellGridImage(srcImageRange(labels), destImage(cellgrid), 0);
-    \end{verbatim}
+    vigra::regionImageToCrackEdgeImage(srcImageRange(labels), destImage(cellgrid), 0);
+    \endcode
 
-    {\bf Required Interface:}
+    <b> Required Interface:</b>
     
-    \begin{verbatim}
+    \code
     ImageIterator src_upperleft, src_lowerright;
     ImageIterator dest_upperleft;
     
@@ -704,20 +705,19 @@ int labelImageWithBackground(SrcIterator upperlefts,
     
     DestValue edge_marker;
     dest_accessor.set(edge_marker, dest_upperleft);
-    \end{verbatim}
+    \endcode
 
-    {\bf Preconditions:}
+    <b> Preconditions:</b>
     
     The destination image must have twice the size of the source:
-    \begin{verbatim}
+    \code
     w_dest = 2 * w_src - 1
     h_dest = 2 * h_src - 1
-    \end{verbatim}
-    @memo
+    \endcode
 */
 template <class SrcIterator, class SrcAccessor,
           class DestIterator, class DestAccessor, class DestValue>
-void regionImageToCellGridImage(
+void regionImageToCrackEdgeImage(
                SrcIterator sul, SrcIterator slr, SrcAccessor sa,
 	       DestIterator dul, DestAccessor da,
 	       DestValue edge_marker)
@@ -817,12 +817,12 @@ void regionImageToCellGridImage(
 template <class SrcIterator, class SrcAccessor,
           class DestIterator, class DestAccessor, class DestValue>
 inline 
-void regionImageToCellGridImage(
+void regionImageToCrackEdgeImage(
            triple<SrcIterator, SrcIterator, SrcAccessor> src,
 	   pair<DestIterator, DestAccessor> dest,
 	   DestValue edge_marker)
 {
-    regionImageToCellGridImage(src.first, src.second, src.third,
+    regionImageToCrackEdgeImage(src.first, src.second, src.third,
                                         dest.first, dest.second,
 					edge_marker);
 }
@@ -833,27 +833,28 @@ void regionImageToCellGridImage(
 /*                                                      */
 /********************************************************/
 
-/** Transform a labeled image into an edge image.
-    This algorithm marks all pixels with the given #edge_marker# how belong 
+/** \brief Transform a labeled image into an edge image.
+
+    This algorithm marks all pixels with the given <TT>edge_marker</TT> how belong 
     to a different region (label) than their right or lower neighbors: 
     
-    \begin{verbatim}
+    \code
        original image                     edges 
                                  (assuming edge_marker == 1)
     
 	  a c c                            1 1 *          
 	  a a c               =>           * 1 1          
 	  a a a                            * * *          
-    \end{verbatim}
+    \endcode
     
     The non-edge pixels of the destination image will not be touched.
-    The source value type (#SrcAccessor::value-type#) must be 
+    The source value type (<TT>SrcAccessor::value-type</TT>) must be 
     equality-comparable.
     
-    {\bf Declarations:}
+    <b> Declarations:</b>
     
     pass arguments explicitly:
-    \begin{verbatim}
+    \code
     namespace vigra {
         template <class SrcIterator, class SrcAccessor,
                   class DestIterator, class DestAccessor, class DestValue>
@@ -862,10 +863,10 @@ void regionImageToCellGridImage(
 	               DestIterator dul, DestAccessor da,
 	               DestValue edge_marker)
     }
-    \end{verbatim}
+    \endcode
     
-    use argument objects in conjuction with \Ref{Argument Object Factories}:
-    \begin{verbatim}
+    use argument objects in conjuction with \ref ArgumentObjectFactories:
+    \code
     namespace vigra {
         template <class SrcIterator, class SrcAccessor,
 	          class DestIterator, class DestAccessor, class DestValue>
@@ -875,15 +876,14 @@ void regionImageToCellGridImage(
 	           pair<DestIterator, DestAccessor> dest,
 	           DestValue edge_marker)
     }
-    \end{verbatim}
+    \endcode
     
-    {\bf Usage:}
+    <b> Usage:</b>
     
-        Include-File:
-        \URL[vigra/labelimage.hxx]{../include/vigra/labelimage.hxx}\\
+        <b>\#include</b> "<a href="labelimage_8hxx-source.html">vigra/labelimage.hxx</a>"<br>
     Namespace: vigra
     
-    \begin{verbatim}
+    \code
     vigra::BImage src(w,h);
     vigra::IImage labels(w,h);
     vigra::IImage edges(w, h);
@@ -899,11 +899,11 @@ void regionImageToCellGridImage(
     
     // create edge image, mark edges with 0
     vigra::regionImageToEdgeImage(srcImageRange(labels), destImage(edges), 0);
-    \end{verbatim}
+    \endcode
 
-    {\bf Required Interface:}
+    <b> Required Interface:</b>
     
-    \begin{verbatim}
+    \code
     ImageIterator src_upperleft, src_lowerright;
     ImageIterator dest_upperleft;
     
@@ -916,9 +916,8 @@ void regionImageToCellGridImage(
     
     DestValue edge_marker;
     dest_accessor.set(edge_marker, dest_upperleft);
-    \end{verbatim}
+    \endcode
 
-    @memo
 */
 template <class SrcIterator, class SrcAccessor,
           class DestIterator, class DestAccessor, class DestValue>

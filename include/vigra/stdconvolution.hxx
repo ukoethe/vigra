@@ -30,24 +30,26 @@
 
 namespace vigra {
 
-/** @heading Two-dimensional convolution functions
+/** \addtogroup StandardConvolution Two-dimensional convolution functions
+    
+    Perform 2D non-separable convolution, with and without ROI mask.
     
     These generic convolution functions implement
     the standard 2D convolution operation for images that fit 
     into the required interface. Arbitrary ROI's are supported
     by the mask version of the algorithm.
     The functions need a suitable 2D kernel to operate.
-    
-    @memo 2D non-separable convolution, with and without ROI mask
 */
 //@{
 
-/** Performs a 2 dimensional convolution of the source image using the given
-    kernel. The KernelIterator must point to the center of the kernel, and
+/** \brief Performs a 2 dimensional convolution of the source image using the given
+    kernel. 
+    
+    The KernelIterator must point to the center of the kernel, and
     the kernel's size is given by its upper left (x and y of distance <= 0) and 
     lower right (distance >= 0) corners. The image must always be larger than the 
     kernel. At those positions where the kernel does not completely fit 
-    into the image, the specified \Ref{BorderTreatmentMode} is 
+    into the image, the specified \ref BorderTreatmentMode is 
     applied. Only BORDER_TREATMENT_CLIP and BORDER_TREATMENT_AVOID are currently 
     supported.
     
@@ -59,10 +61,10 @@ namespace vigra {
     i.e. the arithmetic operations (+, -, *, /) and NumericTraits must
     be defined.
     
-    {\bf Declarations:}
+    <b> Declarations:</b>
     
     pass arguments explicitly:
-    \begin{verbatim}
+    \code
     namespace vigra {
         template <class SrcIterator, class SrcAccessor, 
 	          class DestIterator, class DestAccessor,
@@ -72,11 +74,11 @@ namespace vigra {
 		           KernelIterator ki, KernelAccessor ak, 
 		           Diff2D kul, Diff2D klr, BorderTreatmentMode border)
     }
-    \end{verbatim}
+    \endcode
     
     
-    use argument objects in conjuction with \Ref{Argument Object Factories}:
-    \begin{verbatim}
+    use argument objects in conjuction with \ref ArgumentObjectFactories:
+    \code
     namespace vigra {
         template <class SrcIterator, class SrcAccessor, 
 	          class DestIterator, class DestAccessor,
@@ -87,16 +89,15 @@ namespace vigra {
            tuple5<KernelIterator, KernelAccessor, Diff2D, Diff2D, 
                                              BorderTreatmentMode> kernel)
     }
-    \end{verbatim}
+    \endcode
     
-    {\bf Usage:}
+    <b> Usage:</b>
     
-    Include-File:
-    \URL[vigra/stdconvolution.hxx]{../include/vigra/stdconvolution.hxx}\\
+    <b>\#include</b> "<a href="stdconvolution_8hxx-source.html">vigra/stdconvolution.hxx</a>"<br>
     Namespace: vigra
     
     
-    \begin{verbatim}
+    \code
     vigra::FImage src(w,h), dest(w,h);    
     ...
     
@@ -109,11 +110,11 @@ namespace vigra {
 			 0.125, 0.0, -0.125;
         
     vigra::convolveImage(srcImageRange(src), destImage(dest), kernel2d(sobel));	     
-    \end{verbatim}
+    \endcode
 
-    {\bf Required Interface:}
+    <b> Required Interface:</b>
     
-    \begin{verbatim}
+    \code
     ImageIterator sul, slr;
     ImageIterator dul;
     ImageIterator ik;
@@ -137,11 +138,11 @@ namespace vigra {
     k -= k;
     k = k / k;
 
-    \end{verbatim}
+    \endcode
 
-    {\bf Preconditions:}
+    <b> Preconditions:</b>
     
-    \begin{verbatim}
+    \code
     kul.x <= 0
     kul.y <= 0
     klr.x >= 0
@@ -149,12 +150,11 @@ namespace vigra {
     slr.x - sul.x >= klr.x + kul.x + 1
     slr.y - sul.y >= klr.y + kul.y + 1
     border == BORDER_TREATMENT_CLIP || border == BORDER_TREATMENT_AVOID
-    \end{verbatim}
+    \endcode
 
     If border == BORDER_TREATMENT_CLIP: Sum of kernel elements must be
     != 0.
 
-    @memo
 */
 template <class SrcIterator, class SrcAccessor, 
           class DestIterator, class DestAccessor,
@@ -312,22 +312,24 @@ void convolveImage(
 }
 
 
-/** Performs a 2 dimensional convolution of the source image within the 
-    given ROI mask using the given kernel. The ROI is applied as follows: 
+/** \brief Performs a 2 dimensional convolution of the source image within the 
+    given ROI mask using the given kernel. 
+    
+    The ROI is applied as follows: 
     Only pixel under the ROI are used in the calculations. Whenever a part of the 
     kernel lies outside the ROI, the kernel is renormalized to its original
-    norm (analogous to the CLIP \Ref{BorderTreatmentMode}). An convolution result is 
+    norm (analogous to the CLIP \ref BorderTreatmentMode). An convolution result is 
     calculated whenever at the current kernel position {\it at least one pixel of the 
     kernel is within the ROI}. I.e., pixels not under the ROI may nevertheless
     be assigned a value if they are {\it near} the ROI. Thus, this algorithm is also
     useful as an interpolator. To get rid of the results outside the ROI mask, a 
-    subsequent \Ref{copyImageIf}() must be performed. 
+    subsequent \ref copyImageIf() must be performed. 
     
     The KernelIterator must point to the center of the kernel, and
     the kernel's size is given by its upper left (x and y of distance <= 0) and 
     lower right (distance >= 0) corners. The image must always be larger than the 
     kernel. At those positions where the kernel does not completely fit 
-    into the image, the specified \Ref{BorderTreatmentMode} is 
+    into the image, the specified \ref BorderTreatmentMode is 
     applied. Only BORDER_TREATMENT_CLIP and BORDER_TREATMENT_AVOID are currently 
     supported.
     
@@ -339,10 +341,10 @@ void convolveImage(
     i.e. the arithmetic operations (+, -, *, /) and NumericTraits must
     be defined.
     
-    {\bf Declarations:}
+    <b> Declarations:</b>
     
     pass arguments explicitly:
-    \begin{verbatim}
+    \code
     namespace vigra {
         template <class SrcIterator, class SrcAccessor, 
 	          class MaskIterator, class MaskAccessor,
@@ -355,11 +357,11 @@ void convolveImage(
 			      KernelIterator ki, KernelAccessor ak, 
 			      Diff2D kul, Diff2D klr, BorderTreatmentMode border)
     }
-    \end{verbatim}
+    \endcode
     
     
-    use argument objects in conjuction with \Ref{Argument Object Factories}:
-    \begin{verbatim}
+    use argument objects in conjuction with \ref ArgumentObjectFactories:
+    \code
     namespace vigra {
         template <class SrcIterator, class SrcAccessor, 
 	          class MaskIterator, class MaskAccessor,
@@ -373,16 +375,15 @@ void convolveImage(
            tuple5<KernelIterator, KernelAccessor, Diff2D, Diff2D, 
     	                                      BorderTreatmentMode> kernel)
     }
-    \end{verbatim}
+    \endcode
     
-    {\bf Usage:}
+    <b> Usage:</b>
     
-    Include-File:
-    \URL[vigra/stdconvolution.hxx]{../include/vigra/stdconvolution.hxx}\\
+    <b>\#include</b> "<a href="stdconvolution_8hxx-source.html">vigra/stdconvolution.hxx</a>"<br>
     Namespace: vigra
     
     
-    \begin{verbatim}
+    \code
     vigra::FImage src(w,h), dest(w,h); 
     vigra::CImage mask(w,h);   
     ...
@@ -396,11 +397,11 @@ void convolveImage(
 			 0.0625, 0.125, 0.0625;
         
     vigra::convolveImage(srcImageRange(src), maskImage(mask), destImage(dest), kernel2d(binom));	     
-    \end{verbatim}
+    \endcode
 
-    {\bf Required Interface:}
+    <b> Required Interface:</b>
     
-    \begin{verbatim}
+    \code
     ImageIterator sul, slr;
     ImageIterator mul;
     ImageIterator dul;
@@ -428,11 +429,11 @@ void convolveImage(
     k -= k;
     k = k / k;
 
-    \end{verbatim}
+    \endcode
 
-    {\bf Preconditions:}
+    <b> Preconditions:</b>
     
-    \begin{verbatim}
+    \code
     kul.x <= 0
     kul.y <= 0
     klr.x >= 0
@@ -440,11 +441,10 @@ void convolveImage(
     slr.x - sul.x >= klr.x + kul.x + 1
     slr.y - sul.y >= klr.y + kul.y + 1
     border == BORDER_TREATMENT_CLIP || border == BORDER_TREATMENT_AVOID
-    \end{verbatim}
+    \endcode
 
     Sum of kernel elements must be != 0.
 
-    @memo
 */
 template <class SrcIterator, class SrcAccessor, 
           class DestIterator, class DestAccessor,
@@ -597,32 +597,32 @@ void convolveImageWithMask(
 /*                                                      */
 /********************************************************/
 
-/** Generic 2 dimensional convolution kernel.
+/** \brief Generic 2 dimensional convolution kernel.
+
     This kernel may be used for convolution of 2 dimensional signals. 
     
     Convolution functions access the kernel via an ImageIterator
-    which they get by calling \Ref{center}(). This iterator
+    which they get by calling \ref center(). This iterator
     points to the center of the kernel. The kernel's size is given by its upperLeft() 
     (upperLeft().x <= 0, upperLeft().y <= 0) 
     and lowerRight() (lowerRight().x >= 0, lowerRight().y >= 0) methods. 
     The desired border treatment mode is returned by borderTreatment().
-    (Note that the \Ref{Standard and masked convolution functions} don't currently 
+    (Note that the \ref StandardConvolution "2D convolution functions" don't currently 
     support all modes.)
     
     The different init functions create a kernel with the specified
     properties. The requirements for the kernel's value_type depend 
     on the init function used. At least NumericTraits must be defined.
     
-    The kernel defines a factory function \Ref{kernel2d()} to create an argument object
-    (see \Ref{Kernel Argument Object Factories}).
+    The kernel defines a factory function kernel2d() to create an argument object
+    (see \ref KernelArgumentObjectFactories).
     
-    {\bf Usage:}
+    <b> Usage:</b>
     
-    Include-File:
-    \URL[vigra/stdconvolution.hxx]{../include/vigra/stdconvolution.hxx}\\
+    <b>\#include</b> "<a href="stdconvolution_8hxx-source.html">vigra/stdconvolution.hxx</a>"<br>
     Namespace: vigra
     
-    \begin{verbatim}
+    \code
     vigra::FImage src(w,h), dest(w,h);    
     ...
     
@@ -635,13 +635,13 @@ void convolveImageWithMask(
 			 0.125, 0.0, -0.125;
         
     vigra::convolveImage(srcImageRange(src), destImage(dest), kernel2d(sobel));	     
-    \end{verbatim}
+    \endcode
 
-    {\bf Required Interface:}
+    <b> Required Interface:</b>
     
-    \begin{verbatim}
+    \code
     value_type v = NumericTraits<value_type>::one();
-    \end{verbatim}
+    \endcode
 
     See also the init functions.
     
@@ -652,17 +652,14 @@ class Kernel2D
 {
   public:
         /** the kernel's value type
-	    @memo
 	*/
     typedef ARITHTYPE value_type;
     
         /** 2D random access iterator over the kernel's values
-	    @memo
 	*/
     typedef typename BasicImage<value_type>::Iterator Iterator;
     
         /** the kernel's accessor
-	    @memo
 	*/
     typedef typename BasicImage<value_type>::Accessor Accessor;
     
@@ -711,7 +708,6 @@ class Kernel2D
         /** Default constructor.
 	    Creates a kernel of size 1x1 which would copy the signal
 	    unchanged.
-	    @memo
 	*/
     Kernel2D()
     : kernel_(1, 1, Kernel2D<ARITHTYPE>::one()),
@@ -721,7 +717,6 @@ class Kernel2D
     {}
     
         /** Copy constructor.
-	    @memo
 	*/
     Kernel2D(Kernel2D const & k)
     : left_(k.left_),
@@ -732,7 +727,6 @@ class Kernel2D
     {}
     
         /** Copy assignment.
-	    @memo
 	*/
     Kernel2D & operator=(Kernel2D const & k)
     {
@@ -753,18 +747,17 @@ class Kernel2D
 	    Instead of a single value an initializer list of length width()*height() 
 	    can be used like this:
 	    
-	    \begin{verbatim}
+	    \code
 	    vigra::Kernel2D<float> binom;
 	    
 	    binom.initExplicitly(Diff2D(-1,-1), Diff2D(1,1)) =  
 				 0.0625, 0.125, 0.0625,
 				 0.125,  0.25,  0.125,
 				 0.0625, 0.125, 0.0625;
-	    \end{verbatim}
+	    \endcode
 	    
 	    In this case, the norm will be set to the sum of the init values. 
 	    An initializer list of wrong length will result in a run-time error.
-	    @memo
 	*/
     InitProxy operator=(value_type const & v)
     {
@@ -777,23 +770,22 @@ class Kernel2D
     }
     
         /** Destructor.
-	    @memo
 	*/
     ~Kernel2D() 
     {}
     
         /** Init the 2D kernel as the cartesian product of two 1D kernels
-	    of type \Ref{Kernel1D}. The norm becomes the product of the two original
+	    of type \ref Kernel1D. The norm becomes the product of the two original
 	    norms.
 	    
-	    {\bf Required Interface:}
+	    <b> Required Interface:</b>
 	    
 	    The kernel's value_type must be a linear algebra.
 	    
-	    \begin{verbatim}
+	    \code
 	    vigra::Kernel2D<...>::value_type v;
 	    v = v * v;
-	    \end{verbatim}
+	    \endcode
 	*/
     void initSeparable(Kernel1D<value_type> & kx, 
                        Kernel1D<value_type> & ky)
@@ -827,24 +819,24 @@ class Kernel2D
 	    given explicitly by iterators and sizes. The norm becomes the 
 	    sum of the resulting kernel values.
 		    
-	    {\bf Required Interface:}
+	    <b> Required Interface:</b>
 	    
 	    The kernel's value_type must be a linear algebra.
 	    
-	    \begin{verbatim}
+	    \code
 	    vigra::Kernel2D<...>::value_type v;
 	    v = v * v;
 	    v += v;
-	    \end{verbatim}
+	    \endcode
 	    
-	    {\bf Preconditions:}
+	    <b> Preconditions:</b>
 	    
-	    \begin{verbatim}
+	    \code
 	    xleft <= 0;
 	    xright >= 0;
 	    yleft <= 0;
 	    yright >= 0;	    
-	    \end{verbatim}
+	    \endcode
 	*/
     template <class KernelIterator>
     void initSeparable(KernelIterator kxcenter, int xleft, int xright,
@@ -888,23 +880,23 @@ class Kernel2D
       
         /** Init the 2D kernel as a circular averaging filter. The norm will be 
 	    calculated as 
-	    #NumericTraits<value_type>::one() / (number of non-zero kernel values)#.
+	    <TT>NumericTraits<value_type>::one() / (number of non-zero kernel values)</TT>.
 	    The kernel's value_type must be a linear space.
 		
-	    {\bf Required Interface:}
+	    <b> Required Interface:</b>
 	    
-	    \begin{verbatim}
+	    \code
 	    value_type v = vigra::NumericTraits<value_type>::one(); 
 
 	    double d; 
 	    v = d * v; 
-	    \end{verbatim}
+	    \endcode
 	    
-	    {\bf Precondition:}
+	    <b> Precondition:</b>
 	    
-	    \begin{verbatim}
+	    \code
 	    radius > 0;
-	    \end{verbatim}	
+	    \endcode	
 	*/
     void initDisk(int radius)
     {
@@ -957,7 +949,7 @@ class Kernel2D
 	    A comma-separated initializer list is given after the assignment operator.
 	    This function is used like this:
 		
-	    \begin{verbatim}
+	    \code
 	    // define horizontal Sobel filter
 	    vigra::Kernel2D<float> sobel;
 	    
@@ -965,30 +957,30 @@ class Kernel2D
 				 0.125, 0.0, -0.125,
 				 0.25,  0.0, -0.25,
 				 0.125, 0.0, -0.125;
-	    \end{verbatim}
+	    \endcode
 	    
 	    The norm is set to the sum of the initialzer values. If the wrong number of 
 	    values is given, a run-time error results. It is, however, possible to give 
 	    just one initializer. This creates an averaging filter with the given constant:
 	    
-	    \begin{verbatim}
+	    \code
 	    vigra::Kernel2D<float> average3x3;
 	    
 	    average3x3.initExplicitly(Diff2D(-1,-1), Diff2D(1,1)) = 1.0/9.0;
-	    \end{verbatim}
+	    \endcode
 	    
 	    Here, the norm is set to value*width()*height().
 		
-	    {\bf Preconditions:}
+	    <b> Preconditions:</b>
 	    
-	    \begin{verbatim}
+	    \code
 	    1. upperleft.x <= 0;
 	    2. upperleft.y <= 0;
 	    3. lowerright.x >= 0;
 	    4. lowerright.y >= 0;
 	    5. the number of values in the initializer list 
 	       is 1 or equals the size of the kernel.
-	    \end{verbatim}	
+	    \endcode	
 	*/
     Kernel2D & initExplicitly(Diff2D upperleft, Diff2D lowerright)
     {
@@ -1008,37 +1000,30 @@ class Kernel2D
     }
     
         /** Coordinates of the upper left corner of the kernel.
-	    @memo
 	*/
     Diff2D upperLeft() const { return left_; }
     
         /** Coordinates of the lower right corner of the kernel.
-	    @memo
 	*/
     Diff2D lowerRight() const { return right_; }
 
         /** Width of the kernel.
-	    @memo
 	*/
     int width() const { return right_.x - left_.x + 1; }
 
         /** Height of the kernel.
-	    @memo
 	*/
     int height() const { return right_.y - left_.y + 1; }
 
         /** ImageIterator that points to the center of the kernel (coordinate (0,0)).
-	    @memo
 	*/
     Iterator center() { return kernel_.upperLeft() - left_; }
     
         /** Norm of the kernel (i.e. sum of its elements).
-	    @memo
 	*/
     value_type norm() const { return norm_; }
     
         /** The kernels default accessor.
-	    @memo
 	*/
     Accessor accessor() const { return Accessor(); }
     
@@ -1046,16 +1031,16 @@ class Kernel2D
 	    elements.) The kernel's value_type must be a division algebra or 
 	    algebraic field.
 		
-	    {\bf Required Interface:}
+	    <b> Required Interface:</b>
 	    
-	    \begin{verbatim}
+	    \code
 	    value_type v = vigra::NumericTraits<value_type>::one(); // if norm is not 
 	                                                            // given explicitly
 							     
 	    v += v; 
 	    v = v * v; 
 	    v = v / v; 
-	    \end{verbatim}
+	    \endcode
 	*/
     void normalize(value_type norm) 
     { 
@@ -1080,7 +1065,6 @@ class Kernel2D
     }
     
         /** Normalize the kernel to norm 1.
-	    @memo
 	*/
     void normalize() 
     {
@@ -1088,15 +1072,13 @@ class Kernel2D
     }
     
         /** current border treatment mode
-	    @memo
 	*/
     BorderTreatmentMode borderTreatment() const 
     { return border_treatment_; }
     
         /** Set border treatment mode. 
-	    Only #BORDER_TREATMENT_CLIP# and #BORDER_TREATMENT_AVOID# are currently
+	    Only <TT>BORDER_TREATMENT_CLIP</TT> and <TT>BORDER_TREATMENT_AVOID</TT> are currently
 	    allowed.
-	    @memo
 	*/
     void setBorderTreatment( BorderTreatmentMode new_mode)
     { 

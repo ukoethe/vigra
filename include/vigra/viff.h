@@ -361,68 +361,45 @@ extern "C" {
 
 typedef xvimage ViffImage;
 
-/** @heading read/write/create/delete VIFF images 
-    See the \URL[VIFF format decription]{documents/viff.ps} for details.
-    @memo
+/** \defgroup VIFFFunctions Read/write/create/delete VIFF images 
+    See the <a href="documents/viff.ps">VIFF format decription</a> for details.
+   @{
 */
-//@{
-    /** Create ViffImage and read contents from given file.
+    /** \brief Create ViffImage and read contents from given file.
     
-        {\bf Declaration: }
-	\begin{verbatim}
-	ViffImage * readViffImage(char * filename);
-	\end{verbatim}
-    
-	Include-File:
-	\URL[vigra/viff.h]{../include/vigra/viff.h}
+	\#include: "<a href="viff_8h-source.html">vigra/viff.h</a>"
 	
     */
 ViffImage * readViffImage(char * filename);
 
 
-    /** Delete ViffImage and free memory.
+    /** \brief Delete ViffImage and free memory.
     
-        {\bf Declaration: }
-	\begin{verbatim}
-	freeViffImage(ViffImage * image);
-	\end{verbatim}
-
-	Include-File:
-	\URL[vigra/viff.h]{../include/vigra/viff.h}
+	\#include: "<a href="viff_8h-source.html">vigra/viff.h</a>"
 	
     */
 void freeViffImage(ViffImage * img);
 
     /** Write ViffImage to file.
     
-        {\bf Declaration: }
-	\begin{verbatim}
+        <b> Declaration: </b>
+	\code
 	void writeViffImage(char * filename, ViffImage * img);
-	\end{verbatim}
+	\endcode
 
-	Include-File:
-	\URL[vigra/viff.h]{../include/vigra/viff.h}
+	\#include: "<a href="viff_8h-source.html">vigra/viff.h</a>"
 	
     */
 int writeViffImage(char * filename, ViffImage * img);
 
-    /** Create ViffImage with given characteristics. This is normally 
-    only called within the function \Ref{createViffImage}. See
-    the \URL[VIFF format decription]{documents/viff.ps} for more details.
+    /** \brief Create ViffImage with given characteristics. 
     
+    This is normally 
+    only called within the function \ref createViffImage. See
+    the <a href="documents/viff.ps">VIFF format decription</a> for more details.
     
-        {\bf Declaration: }
-	\begin{verbatim}
-	ViffImage * createimage(int height, int width, int type,
-				     int number_of_images, int number_of_bands,
-				     char * comment,
-				     int map_row_size, int map_col_size, 
-				     int map_scheme, int map_storage_type,
-				     int location_type, int location_dim);
-	\end{verbatim}
-        
-	Include-File:
-	\URL[vigra/viff.h]{../include/vigra/viff.h}
+            
+	\#include: "<a href="viff_8h-source.html">vigra/viff.h</a>"
 	
     */
 ViffImage * createimage(int height, int width, int type,
@@ -432,65 +409,51 @@ ViffImage * createimage(int height, int width, int type,
 			     int map_scheme, int map_storage_type,
 			     int location_type, int location_dim);
 		     
-    /** Create ViffImage with identical characteristics.
-        (Data are not copied.) See
-        the \URL[VIFF format decription]{documents/viff.ps} for more details.
+    /** \brief Create ViffImage with identical characteristics.
     
-        {\bf Declaration: }
-	\begin{verbatim}
-	ViffImage * createsameimage(ViffImage * img);
-	\end{verbatim}
-
-	Include-File:
-	\URL[vigra/viff.h]{../include/vigra/viff.h}
+        (Data are not copied.) See
+        the <a href="documents/viff.ps">VIFF format decription</a> for more details.
+    
+	\#include: "<a href="viff_8h-source.html">vigra/viff.h</a>"
 	
     */
 ViffImage * createsameimage(ViffImage * img);
 
-    /** Create single-band xvimage with given size and type. This is normally 
-       only called within the function \Ref{createViffImage}. See
-       the \URL[VIFF format decription]{documents/viff.ps} for more details.
+    /** \brief Create single-band xvimage with given size and type. 
     
-        {\bf Declaration: }
-	\begin{verbatim}
-	ViffImage * createsimpleimage(int height, int width, int type);
-	\end{verbatim}
-
-	Include-File:
-	\URL[vigra/viff.h]{../include/vigra/viff.h}
+       This is normally 
+       only called within the function \ref createViffImage. See
+       the <a href="documents/viff.ps">VIFF format decription</a> for more details.
+    
+	\#include: "<a href="viff_8h-source.html">vigra/viff.h</a>"
 	
     */
 ViffImage * createsimpleimage(int height, int width, int type);
 
-    /** Create multi-band (multi-spectral) ViffImage with given 
-        characteristics. This is normally 
-        only called within the function \Ref{createViffImage}. See
-        the \URL[VIFF format decription]{documents/viff.ps} for more details.
-    
-        {\bf Declaration: }
-	\begin{verbatim}
-	ViffImage * 
-	createmultibandimage(int height, int width, int type, int number_of_bands);
-	\end{verbatim}
-
-        'type' may be one of the following:
-        begin{description}
-        \item[VFF_TYP_1_BYTE]: pixels are byte (unsigned char) 
-        \item[VFF_TYP_2_BYTE]: pixels are two byte (short int) 
-        \item[VFF_TYP_4_BYTE]: pixels are four byte (integer) 
-        \item[VFF_TYP_FLOAT]: pixels are float (single precision)
-        \item[VFF_TYP_COMPLEX]: pixels are complex float 
-        \item[VFF_TYP_DOUBLE]: pixels are float (double precision)
-        \end{description}
+    /** \brief Create multi-band (multi-spectral) ViffImage with given 
+        characteristics. 
         
-	Include-File:
-	\URL[vigra/viff.h]{../include/vigra/viff.h}
+        This is normally 
+        only called within the function \ref createViffImage. See
+        the <a href="documents/viff.ps">VIFF format decription</a> for more details.
+    
+        'type' may be one of the following:
+        <DL>
+        <DT>VFF_TYP_1_BYTE:<DD> pixels are byte (unsigned char) 
+        <DT>VFF_TYP_2_BYTE:<DD> pixels are two byte (short int) 
+        <DT>VFF_TYP_4_BYTE:<DD> pixels are four byte (integer) 
+        <DT>VFF_TYP_FLOAT:<DD> pixels are float (single precision)
+        <DT>VFF_TYP_COMPLEX:<DD> pixels are complex float 
+        <DT>VFF_TYP_DOUBLE:<DD> pixels are float (double precision)
+        </DL>
+        
+	\#include: "<a href="viff_8h-source.html">vigra/viff.h</a>"
 	
     */
 ViffImage * 
 createmultibandimage(int height, int width, int type, int number_of_bands);
 
-//@}
+/**@}*/
 
 } /* extern "C" */
 

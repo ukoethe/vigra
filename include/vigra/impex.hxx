@@ -48,12 +48,45 @@ struct ImageFileTypeInfo
 
 };
 
-std::string impexListFormats();
-
-/** @heading VIGRA's Image Import/Export Facilities
-    @memo supports GIF, TIFF, JPEG, BMP, PBM, PGM, PNM, PPM, SunRaster, KHOROS-VIFF formats
+/** \addtogroup VigraImpex VIGRA's Image Import/Export Facilities
+    
+    supports GIF, TIFF, JPEG, BMP, PNM (PBM, PGM, PPM), SunRaster, KHOROS-VIFF formats
 **/
 //@{
+
+/** \brief List the image formats VIGRA can read and write.
+
+    This is useful for creating error messages if VIGRA encounters an
+    image format it doesn't recognize.
+
+    <b> Usage:</b>
+
+    <b>\#include</b> "<a href="impex_8hxx-source.html">vigra/impex.hxx</a>"<br>
+    Namespace: vigra
+
+    \code
+    std::cout << "supported formats: " << vigra::impexListFormats() << std::endl;
+    \endcode
+
+**/
+std::string impexListFormats();
+
+/** \brief Test whether a file is an image format known to VIGRA.
+
+    This checks the first few bytes of the file and compares them with the 
+    "magic strings" of each recognized image format.
+
+    <b> Usage:</b>
+
+    <b>\#include</b> "<a href="impex_8hxx-source.html">vigra/impex.hxx</a>"<br>
+    Namespace: vigra
+
+    \code
+    std::cout << "is image: " << vigra::isImage("foo.bmp") << std::endl;
+    \endcode
+
+**/
+bool isImage(char const * filename);
 
 /********************************************************/
 /*                                                      */
@@ -61,28 +94,10 @@ std::string impexListFormats();
 /*                                                      */
 /********************************************************/
 
-/** List the image formats VIGRA can read and write.
-    This is useful for creating error messages if VIGRA encounters an
-    image format it doesn't recognize.
+/** \brief Argument object for the function exportImage().
 
-    {\bf Usage:}
-
-    Include-File:
-    \URL[vigra/impex.hxx]{../include/vigra/impex.hxx}\\
-    Namespace: vigra
-
-    \begin{verbatim}
-    std::cout << "supported formats: " << vigra::impexListFormats() << std::endl;
-    \end{verbatim}
-
-**/
-std::string impexListFormats();
-
-/** Argument object for the function \Ref{exportImage} (see there for usage
-    example). This object must
+    See \ref exportImage() for usage example. This object must
     be used to define the properties of an image to be written to disk.
-
-    @memo Argument object for the function \Ref{exportImage}
 **/
 class ImageExportInfo
 {
@@ -90,30 +105,29 @@ class ImageExportInfo
         /** Construct ImageExportInfo object.
             The image will be stored under the given filename.
             The file type will be guessed from the extension unless overridden
-            by \Ref{setFileType}. Recognized extensions: '.bmp', '.gif', '.jpeg',
+            by \ref setFileType(). Recognized extensions: '.bmp', '.gif', '.jpeg',
             '.jpg', '.p7', '.pbm', '.pgm', '.pnm', '.ppm',
             '.ras', '.tif', '.tiff', '.xv'. JPEG and TIFF are only available when
             libjpeg and libtiff are installed.
 
-            @memo
         **/
     ImageExportInfo(char const * filename);
 
         /** Store image as given file type. This will override any type guessed
             from the file name's extension. Recognized file types:
 
-            \begin{description}
-            \item["BMP"] Microsoft Windows bitmap image file.
-            \item["GIF"] CompuServe graphics interchange format; 8-bit color.
-            \item["JPEG"] Joint Photographic Experts Group JFIF format; compressed 24-bit color. (only available if libjpeg is installed)
-            \item["PBM"]  Portable bitmap format (black and white).
-            \item["PGM"]  Portable graymap format (gray scale).
-            \item["PNM"]  Portable anymap.
-            \item["PPM"] Portable pixmap format (color).
-            \item["SUN"]  SUN Rasterfile.
-            \item["TIFF"] Tagged Image File Format. (only vailable if libtiff is installed.)
-            \item["VIFF"] Khoros Visualization image file.
-            \end{description}
+            <DL>
+            <DT>"BMP"<DD> Microsoft Windows bitmap image file.
+            <DT>"GIF"<DD> CompuServe graphics interchange format; 8-bit color.
+            <DT>"JPEG"<DD> Joint Photographic Experts Group JFIF format; compressed 24-bit color. (only available if libjpeg is installed)
+            <DT>"PBM"<DD> Portable bitmap format (black and white).
+            <DT>"PGM"<DD> Portable graymap format (gray scale).
+            <DT>"PNM"<DD> Portable anymap.
+            <DT>"PPM"<DD> Portable pixmap format (color).
+            <DT>"SUN"<DD> SUN Rasterfile.
+            <DT>"TIFF"<DD> Tagged Image File Format. (only available if libtiff is installed.)
+            <DT>"VIFF"<DD> Khoros Visualization image file.
+            </DL>
 
             With the exception of TIFF and VIFF, all file types store 1 byte (gray scale
             and mapped RGB) or 3 bytes (RGB) per pixel.
@@ -128,7 +142,6 @@ class ImageExportInfo
             If this happens, convert the image to 'unsigned char' or 'RGBValue<unsigned char>'
             prior to exporting.
 
-            @memo
         **/
     ImageExportInfo & setFileType(char const * filetype);
 
@@ -138,7 +151,6 @@ class ImageExportInfo
             as the compression quality for JPEG compression. JPEG compression is supported
             by the JPEG and TIFF formats.
 
-            @memo
         **/
     ImageExportInfo & setCompression(char const * compression);
 
@@ -168,11 +180,11 @@ class ImageExportInfo
 /*                                                      */
 /********************************************************/
 
-/** Argument object for the function \Ref{importImage} (see there for usage
-    example). This object must be used to read an image from disk and
-    enquire about its properties.
+/** \brief Argument object for the function importImage().
 
-    @memo Argument object for the function \Ref{importImage}
+    See \ref importImage() for a usage
+    example. This object must be used to read an image from disk and
+    enquire about its properties.
 **/
 class ImageImportInfo
 {
@@ -187,20 +199,19 @@ class ImageImportInfo
             The file type will be determined by the first few bytes of the
             file (magic number). Recognized file types:
 
-            \begin{description}
-            \item["BMP"] Microsoft Windows bitmap image file.
-            \item["GIF"] CompuServe graphics interchange format; 8-bit color.
-            \item["JPEG"] Joint Photographic Experts Group JFIF format; compressed 24-bit color. (only available if libjpeg is installed)
-            \item["PBM"]  Portable bitmap format (black and white).
-            \item["PGM"]  Portable graymap format (gray scale).
-            \item["PNM"]  Portable anymap.
-            \item["PPM"] Portable pixmap format (color).
-            \item["SUN"]  SUN Rasterfile.
-            \item["TIFF"] Tagged Image File Format. (only vailable if libtiff is installed.)
-            \item["VIFF"] Khoros Visualization image file.
-            \end{description}
+            <DL>
+            <DT>"BMP"<DD> Microsoft Windows bitmap image file.
+            <DT>"GIF"<DD> CompuServe graphics interchange format; 8-bit color.
+            <DT>"JPEG"<DD> Joint Photographic Experts Group JFIF format; compressed 24-bit color. (only available if libjpeg is installed)
+            <DT>"PBM"<DD> Portable bitmap format (black and white).
+            <DT>"PGM"<DD> Portable graymap format (gray scale).
+            <DT>"PNM"<DD> Portable anymap.
+            <DT>"PPM"<DD> Portable pixmap format (color).
+            <DT>"SUN"<DD> SUN Rasterfile.
+            <DT>"TIFF"<DD> Tagged Image File Format. (only available if libtiff is installed.)
+            <DT>"VIFF"<DD> Khoros Visualization image file.
+            </DL>
 
-            @memo
         **/
     ImageImportInfo(char const * filename);
 
@@ -210,14 +221,12 @@ class ImageImportInfo
     void deleteInternalImages();
 
         /** Returns true if the image is a KHOROS VIFF image.
-            @memo
         **/
     bool isViff() const
     {
         return viff_ != 0;
     }
         /** Returns true if the image is a TIFF image.
-            @memo
         **/
     bool isTiff() const
     {
@@ -229,7 +238,6 @@ class ImageImportInfo
     bool fileIsLoaded() const { return viff_|| tiff_ || impex_ ; }
 
         /** Get width of the image.
-            @memo
         **/
     int width() const
     {
@@ -238,7 +246,6 @@ class ImageImportInfo
     }
 
         /** Get height of the image.
-            @memo
         **/
     int height() const
     {
@@ -247,7 +254,6 @@ class ImageImportInfo
     }
 
         /** Get size of the image.
-            @memo
         **/
     Diff2D size() const
     {
@@ -255,7 +261,6 @@ class ImageImportInfo
     }
 
         /** Returns true if the image is gray scale.
-            @memo
         **/
     bool isGrayscale() const
     {
@@ -263,7 +268,6 @@ class ImageImportInfo
     }
 
         /** Returns true if the image is colored (RGB).
-            @memo
         **/
     bool isColor() const
     {
@@ -271,14 +275,11 @@ class ImageImportInfo
     }
 
         /** Query the color space of the image. Possible values are:
-            \begin{description}
-
-            \item["ImageImportInfo::GRAY"] grayscale image
-            \item["ImageImportInfo::RGB"] RGB image
-            \item["ImageImportInfo::UNDEF"] unsupported color space
-
-            \end{description}
-            @memo
+            <DL>
+            <DT>"ImageImportInfo::GRAY"<DD> grayscale image
+            <DT>"ImageImportInfo::RGB"<DD> RGB image
+            <DT>"ImageImportInfo::UNDEF"<DD> unsupported color space
+            </DL>
         **/
     ColorSpace colorSpace() const
     {
@@ -287,16 +288,13 @@ class ImageImportInfo
     }
 
         /** Query the pixel type of the image. Possible values are:
-            \begin{description}
-
-            \item["ImageImportInfo::UINT8"] 8-bit unsigned integer (unsigned char)
-            \item["ImageImportInfo::UINT16"] 16-bit signed integer (short)
-            \item["ImageImportInfo::UINT32"] 32-bit signed integer (long)
-            \item["ImageImportInfo::FLOAT"] 32-bit floating point (float)
-            \item["ImageImportInfo::DOUBLE"] 64-bit floating point (double)
-
-            \end{description}
-            @memo
+            <DL>
+            <DT>"ImageImportInfo::UINT8"<DD> 8-bit unsigned integer (unsigned char)
+            <DT>"ImageImportInfo::UINT16"<DD> 16-bit signed integer (short)
+            <DT>"ImageImportInfo::UINT32"<DD> 32-bit signed integer (long)
+            <DT>"ImageImportInfo::FLOAT"<DD> 32-bit floating point (float)
+            <DT>"ImageImportInfo::DOUBLE"<DD> 64-bit floating point (double)
+            </DL>
         **/
     PixelType pixelType() const
     {
@@ -306,7 +304,6 @@ class ImageImportInfo
 
         /** Returns true if the image has 1 byte per pixel (gray) or
             3 bytes per pixel (RGB).
-            @memo
         **/
     bool isByte() const
     {
@@ -478,43 +475,42 @@ void internalImportScalarImage(VigraImpexImage const * image,
 /*                                                      */
 /********************************************************/
 
-/** Read an image, given an \Ref{ImageImportInfo} object.
+/** \brief Read an image, given an \ref vigra::ImageImportInfo object.
 
     This function uses code adapted from
-    \URL[ImageMagick 4.0]{http://www.wizards.dupont.com/cristy/ImageMagick.html}
+    <a href="http://www.imagemagick.org/">ImageMagick 4.0</a>
     &copy; 1998 E. I. du Pont de Nemours and Company
 
     This function uses code adapted from
-    \URL[KHOROS 1.0]{http://www.khoral.com/}
+    <a href="http://www.khoral.com/">KHOROS 1.0</a>
     &copy; 1990, University of New Mexico
 
-    {\bf Declarations:}
+    <b> Declarations:</b>
 
     pass arguments explicitly:
-    \begin{verbatim}
+    \code
     namespace vigra {
         template <class ImageIterator, class Accessor>
         void
         importImage(ImageImportInfo const & image, ImageIterator iter, Accessor a)
     }
-    \end{verbatim}
+    \endcode
 
-    use argument objects in conjuction with \Ref{Argument Object Factories}:
-    \begin{verbatim}
+    use argument objects in conjuction with \ref ArgumentObjectFactories:
+    \code
     namespace vigra {
         template <class ImageIterator, class Accessor>
         inline void
         importImage(ImageImportInfo const & image, pair<ImageIterator, Accessor> dest)
     }
-    \end{verbatim}
+    \endcode
 
-    {\bf Usage:}
+    <b> Usage:</b>
 
-    Include-File:
-    \URL[vigra/impex.hxx]{../include/vigra/impex.hxx}\\
+    <b>\#include</b> "<a href="impex_8hxx-source.html">vigra/impex.hxx</a>"<br>
     Namespace: vigra
 
-    \begin{verbatim}
+    \code
 
     vigra::ImageImportInfo info("myimage.gif");
 
@@ -535,28 +531,28 @@ void internalImportScalarImage(VigraImpexImage const * image,
         ...
     }
 
-    \end{verbatim}
+    \endcode
 
-    {\bf Preconditions:}
+    <b> Preconditions:</b>
 
-    \begin{itemize}
+    <UL>
 
-    \item the image file must be readable
-    \item the file type must be one of
+    <LI> the image file must be readable
+    <LI> the file type must be one of
 
-        \begin{description}
-        \item["BMP"] Microsoft Windows bitmap image file.
-        \item["GIF"] CompuServe graphics interchange format; 8-bit color.
-        \item["JPEG"] Joint Photographic Experts Group JFIF format; compressed 24-bit color. (only available if libjpeg is installed)
-        \item["PBM"]  Portable bitmap format (black and white).
-        \item["PGM"]  Portable graymap format (gray scale).
-        \item["PNM"]  Portable anymap.
-        \item["PPM"] Portable pixmap format (color).
-        \item["SUN"]  SUN Rasterfile.
-        \item["TIFF"] Tagged Image File Format. (only vailable if libtiff is installed.)
-        \item["VIFF"] Khoros Visualization image file.
-        \end{description}
-    \end{itemize}
+            <DL>
+            <DT>"BMP"<DD> Microsoft Windows bitmap image file.
+            <DT>"GIF"<DD> CompuServe graphics interchange format; 8-bit color.
+            <DT>"JPEG"<DD> Joint Photographic Experts Group JFIF format; compressed 24-bit color. (only available if libjpeg is installed)
+            <DT>"PBM"<DD> Portable bitmap format (black and white).
+            <DT>"PGM"<DD> Portable graymap format (gray scale).
+            <DT>"PNM"<DD> Portable anymap.
+            <DT>"PPM"<DD> Portable pixmap format (color).
+            <DT>"SUN"<DD> SUN Rasterfile.
+            <DT>"TIFF"<DD> Tagged Image File Format. (only available if libtiff is installed.)
+            <DT>"VIFF"<DD> Khoros Visualization image file.
+            </DL>
+    </UL>
 **/
 template <class ImageIterator, class Accessor>
 inline void
@@ -870,44 +866,43 @@ void internalExportImage(SrcIterator sul, SrcIterator slr, SrcAccessor sget,
 /*                                                      */
 /********************************************************/
 
-/** Write an image, given an \Ref{ImageExportInfo} object.
+/** \brief Write an image, given an \ref vigra::ImageExportInfo object.
 
     This function uses code adapted from
-    \URL[ImageMagick 4.0]{http://www.wizards.dupont.com/cristy/ImageMagick.html}
+    <a href="http://www.wizards.dupont.com/cristy/ImageMagick.html">ImageMagick 4.0</a>
     &copy; 1998 E. I. du Pont de Nemours and Company
 
     This function uses code adapted from
-    \URL[KHOROS 1.0]{http://www.khoral.com/}
+    <a href="http://www.khoral.com/">KHOROS 1.0</a>
     &copy; 1990, University of New Mexico
 
-    {\bf Declarations:}
+    <b> Declarations:</b>
 
     pass arguments explicitly:
-    \begin{verbatim}
+    \code
     namespace vigra {
         template <class SrcIterator, class SrcAccessor>
         void exportImage(SrcIterator sul, SrcIterator slr, SrcAccessor sget,
                          ImageExportInfo const & info)
     }
-    \end{verbatim}
+    \endcode
 
 
-    use argument objects in conjuction with \Ref{Argument Object Factories}:
-    \begin{verbatim}
+    use argument objects in conjuction with \ref ArgumentObjectFactories:
+    \code
     namespace vigra {
         template <class SrcIterator, class SrcAccessor>
         void exportImage(SrcIterator sul, SrcIterator slr, SrcAccessor sget,
                          ImageExportInfo const & info)
     }
-    \end{verbatim}
+    \endcode
 
-    {\bf Usage:}
+    <b> Usage:</b>
 
-        Include-File:
-        \URL[vigra/impex.hxx]{../include/vigra/impex.hxx}\\
+    <b>\#include</b> "<a href="impex_8hxx-source.html">vigra/impex.hxx</a>"<br>
     Namespace: vigra
 
-    \begin{verbatim}
+    \code
 
 
     vigra::BRGBImage out(w, h);
@@ -917,29 +912,29 @@ void internalExportImage(SrcIterator sul, SrcIterator slr, SrcAccessor sget,
     vigra::exportImage(srcImageRange(out),
                       vigra::ImageExportInfo("myimage.jpg").setCompression("80"));
 
-    \end{verbatim}
+    \endcode
 
-    {\bf Preconditions:}
+    <b> Preconditions:</b>
 
-    \begin{itemize}
+    <UL>
 
-    \item the image file must be writable
-    \item the file type must be one of
+    <LI> the image file must be writable
+    <LI> the file type must be one of
 
-        \begin{description}
-        \item["BMP"] Microsoft Windows bitmap image file.
-        \item["GIF"] CompuServe graphics interchange format; 8-bit color.
-        \item["JPEG"] Joint Photographic Experts Group JFIF format; compressed 24-bit color. (only available if libjpeg is installed)
-        \item["PBM"]  Portable bitmap format (black and white).
-        \item["PGM"]  Portable graymap format (gray scale).
-        \item["PNM"]  Portable anymap.
-        \item["PPM"] Portable pixmap format (color).
-        \item["SUN"]  SUN Rasterfile.
-        \item["TIFF"] Tagged Image File Format. (only vailable if libtiff is installed.)
-        \item["VIFF"] Khoros Visualization image file.
-        \end{description}
+            <DL>
+            <DT>"BMP"<DD> Microsoft Windows bitmap image file.
+            <DT>"GIF"<DD> CompuServe graphics interchange format; 8-bit color.
+            <DT>"JPEG"<DD> Joint Photographic Experts Group JFIF format; compressed 24-bit color. (only available if libjpeg is installed)
+            <DT>"PBM"<DD> Portable bitmap format (black and white).
+            <DT>"PGM"<DD> Portable graymap format (gray scale).
+            <DT>"PNM"<DD> Portable anymap.
+            <DT>"PPM"<DD> Portable pixmap format (color).
+            <DT>"SUN"<DD> SUN Rasterfile.
+            <DT>"TIFF"<DD> Tagged Image File Format. (only available if libtiff is installed.)
+            <DT>"VIFF"<DD> Khoros Visualization image file.
+            </DL>
 
-    \end{itemize}
+    </UL>
 **/
 template <class SrcIterator, class SrcAccessor>
 inline

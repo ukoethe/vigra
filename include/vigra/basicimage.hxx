@@ -150,6 +150,12 @@ class BasicImageIteratorBase
 /*                                                      */
 /********************************************************/
 
+/** Implementation of the standard image iterator for \ref vigra::BasicImage.
+    See \ref vigra::ImageIterator for documentation.
+
+    <b>\#include</b> "<a href="basicimage_8hxx-source.html">vigra/basicimage.hxx</a>"    
+    Namespace: vigra
+*/    
 template <class PIXELTYPE, class ITERATOR>
 class BasicImageIterator
 : public BasicImageIteratorBase<PIXELTYPE, ITERATOR>
@@ -272,6 +278,12 @@ class BasicImageIterator
 /*                                                      */
 /********************************************************/
 
+/** Implementation of the standard const image iterator for \ref vigra::BasicImage.
+    See \ref vigra::ConstImageIterator for documentation.
+
+    <b>\#include</b> "<a href="basicimage_8hxx-source.html">vigra/basicimage.hxx</a>"    
+    Namespace: vigra
+*/    
 template <class PIXELTYPE, class ITERATOR>
 class ConstBasicImageIterator: public BasicImageIteratorBase<PIXELTYPE, ITERATOR>
 {
@@ -369,9 +381,9 @@ template <class T> struct IteratorTraits;
 /*                                                      */
 /********************************************************/
 
-/** Basic building block for images.
+/** \brief Fundamental class template for images .
 
-    Include-File: \URL[vigra/basicimage.hxx]{../include/vigra/basicimage.hxx}
+    <b>\#include</b> "<a href="basicimage_8hxx-source.html">vigra/basicimage.hxx</a>"
     
     Namespace: vigra
 */    
@@ -380,64 +392,49 @@ class BasicImage
 {
   public:
     
-    /** @name Local Types */
-    //@{
         /** the BasicImage's pixel type
-        @memo
         */
     typedef PIXELTYPE PixelType;
     
         /** the BasicImage's pixel type
-        @memo
         */
     typedef PIXELTYPE value_type;
     
         /** the BasicImage's 1D random access iterator
-        @memo
         */
     typedef PIXELTYPE * ScanOrderIterator;
     
         /** the BasicImage's 1D random access const iterator
-        @memo
         */
     typedef PIXELTYPE const * ConstScanOrderIterator;
     
         /** the BasicImage's 2D random access iterator
-        @memo
         */
     typedef BasicImageIterator<PixelType, PIXELTYPE **> Iterator;
     
         /** the BasicImage's 2D random access const iterator
-        @memo
         */
     typedef ConstBasicImageIterator<PixelType, PIXELTYPE **> ConstIterator; 
 
         /** the BasicImage's default accessor
-        @memo
         */
     typedef typename
           IteratorTraits<Iterator>::DefaultAccessor Accessor;
 
         /** the BasicImage's default const accessor
-        @memo
         */
     typedef typename 
           IteratorTraits<ConstIterator>::DefaultAccessor ConstAccessor;
     
-        struct Allocator
-        {
-            static PixelType * allocate(int n) { 
-                      return (PixelType *)::operator new(n*sizeof(PixelType)); }
-            static void deallocate(PixelType * p) {
-                     ::operator delete(p); }
-        };
+    struct Allocator
+    {
+        static PixelType * allocate(int n) { 
+                  return (PixelType *)::operator new(n*sizeof(PixelType)); }
+        static void deallocate(PixelType * p) {
+                 ::operator delete(p); }
+    };
     
-    //@}
-    
-    /** @name Con-/Destruction and Assignment */
-    //@{
         /** construct image of size 0x0 
-        @memo
         */
     BasicImage()
     : data_(0),
@@ -446,7 +443,6 @@ class BasicImage
     {}
     
         /** construct image of size width x height 
-        @memo
         */
     BasicImage(int width, int height)
     : data_(0),
@@ -461,7 +457,6 @@ class BasicImage
     }
     
         /** construct image of size size.x x size.y 
-        @memo
         */
     BasicImage(Diff2D size)
     : data_(0),
@@ -478,7 +473,6 @@ class BasicImage
         /** construct image of size width*height and initialize every
         pixel with given data (use this constructor, if 
         PixelType doesn't have a default constructor)
-        @memo
         */
     BasicImage(int width, int height, PixelType d)
     : data_(0),
@@ -493,7 +487,6 @@ class BasicImage
     }
     
         /** copy rhs image 
-        @memo
         */
     BasicImage(const BasicImage & rhs)
     : data_(0),
@@ -504,7 +497,6 @@ class BasicImage
     }
     
         /** destructor 
-        @memo
         */
     ~BasicImage() 
     { 
@@ -512,7 +504,6 @@ class BasicImage
     }
 
         /** copy rhs image (image is resized if necessary)
-        @memo
         */
     BasicImage & operator=(const BasicImage & rhs)
     {
@@ -536,7 +527,6 @@ class BasicImage
     }
      
         /** set Image with const value 
-        @memo
         */
     BasicImage & operator=(PixelType pixel)
     {
@@ -550,7 +540,6 @@ class BasicImage
     
         /** reset image to specified size (dimensions must not be negative)
         (old data are destroyed) 
-        @memo
         */
     void resize(int width, int height)
     {
@@ -559,7 +548,6 @@ class BasicImage
 
         /** reset image to specified size (dimensions must not be negative)
         (old data are destroyed) 
-        @memo
         */
     void resize(Diff2D size)
     {
@@ -569,7 +557,6 @@ class BasicImage
         /** reset image to specified size and initialize it with
             given data (use this if PixelType doesn't have a default
             constructor, dimensions must not be negative, old data are destroyed) 
-        @memo
         */
     void resize(int width, int height, PixelType d)
     {
@@ -597,7 +584,6 @@ class BasicImage
 
 
         /** resize image to size of other image and copy it's data 
-        @memo
         */
     void resizeCopy(const BasicImage & rhs)
     {
@@ -620,12 +606,7 @@ class BasicImage
         height_ = rhs.height(); 
     }
 
-    //@}
-    
-    /** @name Methods */
-    //@{
         /** width of Image 
-        @memo
         */
     int width() const
     { 
@@ -633,7 +614,6 @@ class BasicImage
     }
     
         /** height of Image 
-        @memo
         */
     int height() const
     { 
@@ -641,7 +621,6 @@ class BasicImage
     }
         
         /** size of Image 
-        @memo
         */
     inline Diff2D size() const
     { 
@@ -649,7 +628,6 @@ class BasicImage
     }
     
         /** test whether a given coordinate is inside the image
-        @memo
         */
     inline bool isInside(Diff2D const & d) const
     {
@@ -657,36 +635,32 @@ class BasicImage
                d.x < width() && d.y < height();
     }
         
-        /** access pixel at given location. \\
-	    usage: # PixelType value = image[Diff2D(1,2)] #
-        @memo
+        /** access pixel at given location. <br>
+	    usage: <TT> PixelType value = image[Diff2D(1,2)] </TT>
         */
     inline PixelType & operator[](Diff2D const & d)
     { 
         return lines_[d.y][d.x]; 
     }
         
-        /** read pixel at given location. \\
-	    usage: # PixelType value = image[Diff2D(1,2)] #
-        @memo
+        /** read pixel at given location. <br>
+	    usage: <TT> PixelType value = image[Diff2D(1,2)] </TT>
         */
     inline PixelType const & operator[](Diff2D const & d) const
     { 
         return lines_[d.y][d.x]; 
     }
         
-        /** access pixel at given location. \\
-	    usage: # PixelType value = image(1,2) #
-        @memo
+        /** access pixel at given location. <br>
+	    usage: <TT> PixelType value = image(1,2) </TT>
         */
     inline PixelType & operator()(int const & dx, int const & dy)
     { 
         return lines_[dy][dx]; 
     }
         
-        /** read pixel at given location. \\
-	    usage: # PixelType value = image(1,2) #
-        @memo
+        /** read pixel at given location. <br>
+	    usage: <TT> PixelType value = image(1,2) </TT>
         */
     inline PixelType const & operator()(int const & dx, int const & dy) const
     { 
@@ -694,9 +668,8 @@ class BasicImage
     }
         
         /** access pixel at given location. 
-	        Note that the 'x' index is the trailing index. \\
-	    usage: # PixelType value = image[2][1] #
-        @memo
+	        Note that the 'x' index is the trailing index. <br>
+	    usage: <TT> PixelType value = image[2][1] </TT>
         */
     inline PixelType * operator[](int const & dy)
     { 
@@ -704,9 +677,8 @@ class BasicImage
     }
         
         /** read pixel at given location. 
-	        Note that the 'x' index is the trailing index. \\
-	    usage: # PixelType value = image[2][1] #
-        @memo
+	        Note that the 'x' index is the trailing index. <br>
+	    usage: <TT> PixelType value = image[2][1] </TT>
         */
     inline PixelType const * operator[](int const & dy) const
     { 
@@ -714,7 +686,6 @@ class BasicImage
     }
         
         /** init 2D random access iterator poining to upper left pixel
-        @memo
         */
     Iterator upperLeft()
     {
@@ -724,7 +695,6 @@ class BasicImage
         /** init 2D random access iterator poining to 
          pixel(width, height), i.e. one pixel right and below lower right 
          corner of the image as is common in C/C++.
-        @memo
         */
     Iterator lowerRight()
     {
@@ -732,7 +702,6 @@ class BasicImage
     }   
     
         /** init 2D random access const iterator poining to upper left pixel
-        @memo
         */
     ConstIterator upperLeft() const
     {
@@ -742,7 +711,6 @@ class BasicImage
         /** init 2D random access const iterator poining to 
          pixel(width, height), i.e. one pixel right and below lower right 
          corner of the image as is common in C/C++.
-        @memo
         */
     ConstIterator lowerRight() const
     {
@@ -750,7 +718,6 @@ class BasicImage
     }   
 
         /** init 1D random access iterator pointing to first pixel
-        @memo
         */
     ScanOrderIterator begin()
     {
@@ -758,7 +725,6 @@ class BasicImage
     }
     
         /** init 1D random access iterator pointing past the end
-        @memo
         */
     ScanOrderIterator end()
     {
@@ -766,7 +732,6 @@ class BasicImage
     }
     
         /** init 1D random access const iterator pointing to first pixel
-        @memo
         */
     ConstScanOrderIterator begin() const
     {
@@ -774,7 +739,6 @@ class BasicImage
     }
     
         /** init 1D random access const iterator pointing past the end
-        @memo
         */
     ConstScanOrderIterator end() const
     {
@@ -782,7 +746,6 @@ class BasicImage
     }
     
         /** return default accessor
-        @memo
         */
     Accessor accessor() 
     {
@@ -790,13 +753,11 @@ class BasicImage
     }
 
         /** return default const accessor
-        @memo
         */
     ConstAccessor accessor() const
     {
         return ConstAccessor();
     }
-     //@}
     
   private:
   

@@ -29,8 +29,8 @@
 
 namespace vigra {
 
-/** erosion, dilation, and median with disc structuring functions
-    @heading Basic Morphologic Operations
+/** \addtogroup Morphology Basic Morphological Operations
+    Perform erosion, dilation, and median with disc structuring functions
 */
 //@{
 
@@ -40,17 +40,18 @@ namespace vigra {
 /*                                                      */
 /********************************************************/
 
-/** Apply rank order filter with disc structuring function to the image.
-    The pixel values of the source image {\bf must} be in the range
+/** \brief Apply rank order filter with disc structuring function to the image.
+
+    The pixel values of the source image <b> must</b> be in the range
     0...255. Radius must be >= 0. Rank must be in the range 0.0 <= rank 
     <= 1.0. The filter acts as a minimum filter if rank = 0.0, 
     as a median if rank = 0.5, and as a maximum filter if rank = 1.0.
     Accessor are used to access the pixel data.
     
-    {\bf Declarations:}
+    <b> Declarations:</b>
     
     pass arguments explicitely:
-    \begin{verbatim}
+    \code
     namespace vigra {
         template <class SrcIterator, class SrcAccessor,
 	          class DestIterator, class DestAccessor>
@@ -60,11 +61,11 @@ namespace vigra {
 			    DestIterator upperleft2, DestAccessor da,
 			    int radius, float rank)
     }
-    \end{verbatim}
+    \endcode
     
     
-    use argument objects in conjuction with \Ref{Argument Object Factories}:
-    \begin{verbatim}
+    use argument objects in conjuction with \ref ArgumentObjectFactories:
+    \code
     namespace vigra {
         template <class SrcIterator, class SrcAccessor,
 	          class DestIterator, class DestAccessor>
@@ -73,24 +74,23 @@ namespace vigra {
 			    pair<DestIterator, DestAccessor> dest,
 			    int radius, float rank)
     }
-    \end{verbatim}
+    \endcode
     
-    {\bf Usage:}
+    <b> Usage:</b>
     
-        Include-File:
-        \URL[vigra/flatmorphology.hxx]{../include/vigra/flatmorphology.hxx}\\
+        <b>\#include</b> "<a href="flatmorphology_8hxx-source.html">vigra/flatmorphology.hxx</a>"<br>
     Namespace: vigra
     
-    \begin{verbatim}
+    \code
     vigra::CImage src, dest;
     
     // do median filtering
     vigra::discRankOrderFilter(srcImageRange(src), destImage(dest), 10, 0.5);
-    \end{verbatim}
+    \endcode
 
-    {\bf Required Interface:}
+    <b> Required Interface:</b>
     
-    \begin{verbatim}
+    \code
     SrcIterator src_upperleft;
     DestIterator dest_upperleft;
     int x, y;
@@ -103,18 +103,17 @@ namespace vigra {
     value = src_accessor(src_upperleft, x, y); 
     
     dest_accessor.set(value, dest_upperleft, x, y);
-    \end{verbatim}
+    \endcode
     
-    {\bf Preconditions:}
+    <b> Preconditions:</b>
     
-    \begin{verbatim}
+    \code
     for all source pixels: 0 <= value <= 255
     
     (rank >= 0.0) && (rank <= 1.0)
     radius >= 0
-    \end{verbatim}
+    \endcode
     
-    @memo
 */
 template <class SrcIterator, class SrcAccessor,
           class DestIterator, class DestAccessor>
@@ -355,14 +354,15 @@ discRankOrderFilter(triple<SrcIterator, SrcIterator, SrcAccessor> src,
 /*                                                      */
 /********************************************************/
 
-/** Apply erosion (minimum) filter with disc of given radius to image.
+/** \brief Apply erosion (minimum) filter with disc of given radius to image.
+
     This is an abbreviation vor the rank order filter with rank = 0.0.
-    See \Ref{discRankOrderFilter}() for more information.
+    See \ref discRankOrderFilter() for more information.
     
-    {\bf Declarations:}
+    <b> Declarations:</b>
     
     pass arguments explicitely:
-    \begin{verbatim}
+    \code
     namespace vigra {
         template <class SrcIterator, class SrcAccessor,
 	          class DestIterator, class DestAccessor>
@@ -372,11 +372,11 @@ discRankOrderFilter(triple<SrcIterator, SrcIterator, SrcAccessor> src,
 		    DestIterator upperleft2, DestAccessor da,
 		    int radius)
     }
-    \end{verbatim}
+    \endcode
     
     
-    use argument objects in conjuction with \Ref{Argument Object Factories}:
-    \begin{verbatim}
+    use argument objects in conjuction with \ref ArgumentObjectFactories:
+    \code
     namespace vigra {
         template <class SrcIterator, class SrcAccessor,
 	          class DestIterator, class DestAccessor>
@@ -385,9 +385,8 @@ discRankOrderFilter(triple<SrcIterator, SrcIterator, SrcAccessor> src,
 		    pair<DestIterator, DestAccessor> dest,
 		    int radius)
     }
-    \end{verbatim}
+    \endcode
 
-    @memo
 */
 template <class SrcIterator, class SrcAccessor,
           class DestIterator, class DestAccessor>
@@ -423,14 +422,15 @@ discErosion(triple<SrcIterator, SrcIterator, SrcAccessor> src,
 /*                                                      */
 /********************************************************/
 
-/** Apply dilation (maximum) filter with disc of given radius to image.
+/** \brief Apply dilation (maximum) filter with disc of given radius to image.
+
     This is an abbreviation vor the rank order filter with rank = 1.0.
-    See \Ref{discRankOrderFilter}() for more information.
+    See \ref discRankOrderFilter() for more information.
     
-    {\bf Declarations:}
+    <b> Declarations:</b>
     
     pass arguments explicitely:
-    \begin{verbatim}
+    \code
     namespace vigra {
         template <class SrcIterator, class SrcAccessor,
 	          class DestIterator, class DestAccessor>
@@ -440,11 +440,11 @@ discErosion(triple<SrcIterator, SrcIterator, SrcAccessor> src,
 		    DestIterator upperleft2, DestAccessor da,
 		    int radius)
     }
-    \end{verbatim}
+    \endcode
     
     
-    use argument objects in conjuction with \Ref{Argument Object Factories}:
-    \begin{verbatim}
+    use argument objects in conjuction with \ref ArgumentObjectFactories:
+    \code
     namespace vigra {
         template <class SrcIterator, class SrcAccessor,
 	          class DestIterator, class DestAccessor>
@@ -453,9 +453,8 @@ discErosion(triple<SrcIterator, SrcIterator, SrcAccessor> src,
 		    pair<DestIterator, DestAccessor> dest,
 		    int radius)
     }
-    \end{verbatim}
+    \endcode
 
-    @memo
 */
 template <class SrcIterator, class SrcAccessor,
           class DestIterator, class DestAccessor>
@@ -491,14 +490,15 @@ discDilation(triple<SrcIterator, SrcIterator, SrcAccessor> src,
 /*                                                      */
 /********************************************************/
 
-/** Apply median filter with disc of given radius to image.
+/** \brief Apply median filter with disc of given radius to image.
+
     This is an abbreviation vor the rank order filter with rank = 0.5.
-    See \Ref{discRankOrderFilter}() for more information.
+    See \ref discRankOrderFilter() for more information.
     
-    {\bf Declarations:}
+    <b> Declarations:</b>
     
     pass arguments explicitely:
-    \begin{verbatim}
+    \code
     namespace vigra {
         template <class SrcIterator, class SrcAccessor,
 	          class DestIterator, class DestAccessor>
@@ -508,11 +508,11 @@ discDilation(triple<SrcIterator, SrcIterator, SrcAccessor> src,
 		    DestIterator upperleft2, DestAccessor da,
 		    int radius)
     }
-    \end{verbatim}
+    \endcode
     
     
-    use argument objects in conjuction with \Ref{Argument Object Factories}:
-    \begin{verbatim}
+    use argument objects in conjuction with \ref ArgumentObjectFactories:
+    \code
     namespace vigra {
         template <class SrcIterator, class SrcAccessor,
 	          class DestIterator, class DestAccessor>
@@ -521,9 +521,8 @@ discDilation(triple<SrcIterator, SrcIterator, SrcAccessor> src,
 		    pair<DestIterator, DestAccessor> dest,
 		    int radius)
     }
-    \end{verbatim}
+    \endcode
 
-    @memo
 */
 template <class SrcIterator, class SrcAccessor,
           class DestIterator, class DestAccessor>
@@ -559,9 +558,10 @@ discMedian(triple<SrcIterator, SrcIterator, SrcAccessor> src,
 /*                                                      */
 /********************************************************/
 
-/** Apply rank order filter with disc structuring function to the image
+/** \brief Apply rank order filter with disc structuring function to the image
     using a mask.
-    The pixel values of the source image {\bf must} be in the range
+    
+    The pixel values of the source image <b> must</b> be in the range
     0...255. Radius must be >= 0. Rank must be in the range 0.0 <= rank 
     <= 1.0. The filter acts as a minimum filter if rank = 0.0, 
     as a median if rank = 0.5, and as a maximum filter if rank = 1.0.
@@ -572,10 +572,10 @@ discMedian(triple<SrcIterator, SrcIterator, SrcAccessor> src,
     one pixel with mask value 'true'. Source pixels with mask value
     'false' are ignored during the calculation of the rank order.
     
-    {\bf Declarations:}
+    <b> Declarations:</b>
     
     pass arguments explicitely:
-    \begin{verbatim}
+    \code
     namespace vigra {
         template <class SrcIterator, class SrcAccessor,
 	          class MaskIterator, class MaskAccessor,
@@ -587,12 +587,12 @@ discMedian(triple<SrcIterator, SrcIterator, SrcAccessor> src,
 				    DestIterator upperleft2, DestAccessor da,
 				    int radius, float rank)
     }
-    \end{verbatim}
+    \endcode
     
     
-    group arguments (use in conjuction with factory functions \Ref{srcRange}(),
-    \Ref{mask}(), and \Ref{dest}()):
-    \begin{verbatim}
+    group arguments (use in conjuction with factory functions \ref srcRange(),
+    \ref mask(), and \ref dest()):
+    \code
     namespace vigra {
         template <class SrcIterator, class SrcAccessor,
 	          class MaskIterator, class MaskAccessor,
@@ -603,25 +603,24 @@ discMedian(triple<SrcIterator, SrcIterator, SrcAccessor> src,
 				    pair<DestIterator, DestAccessor> dest,
 				    int radius, float rank)
     }
-    \end{verbatim}
+    \endcode
     
-    {\bf Usage:}
+    <b> Usage:</b>
     
-        Include-File:
-        \URL[vigra/flatmorphology.hxx]{../include/vigra/flatmorphology.hxx}\\
+        <b>\#include</b> "<a href="flatmorphology_8hxx-source.html">vigra/flatmorphology.hxx</a>"<br>
     Namespace: vigra
     
-    \begin{verbatim}
+    \code
     vigra::CImage src, dest, mask;
     
     // do median filtering
     vigra::discRankOrderFilterWithMask(srcImageRange(src), 
                                 maskImage(mask), destImage(dest), 10, 0.5);
-    \end{verbatim}
+    \endcode
 
-    {\bf Required Interface:}
+    <b> Required Interface:</b>
     
-    \begin{verbatim}
+    \code
     SrcIterator src_upperleft;
     DestIterator dest_upperleft;
     MaskIterator mask_upperleft;
@@ -638,18 +637,17 @@ discMedian(triple<SrcIterator, SrcIterator, SrcAccessor> src,
     value = src_accessor(src_upperleft, x, y); 
     
     dest_accessor.set(value, dest_upperleft, x, y);
-    \end{verbatim}
+    \endcode
     
-    {\bf Preconditions:}
+    <b> Preconditions:</b>
     
-    \begin{verbatim}
+    \code
     for all source pixels: 0 <= value <= 255
     
     (rank >= 0.0) && (rank <= 1.0)
     radius >= 0
-    \end{verbatim}
+    \endcode
     
-    @memo
 */
 template <class SrcIterator, class SrcAccessor,
           class MaskIterator, class MaskAccessor,
@@ -933,15 +931,16 @@ discRankOrderFilterWithMask(triple<SrcIterator, SrcIterator, SrcAccessor> src,
 /*                                                      */
 /********************************************************/
 
-/** Apply erosion (minimum) filter with disc of given radius to image
+/** \brief Apply erosion (minimum) filter with disc of given radius to image
     using a mask.
-    This is an abbreviation vor the masked rank order filter with 
-    rank = 0.0. See \Ref{discRankOrderFilterWithMask}() for more information.
     
-    {\bf Declarations:}
+    This is an abbreviation vor the masked rank order filter with 
+    rank = 0.0. See \ref discRankOrderFilterWithMask() for more information.
+    
+    <b> Declarations:</b>
     
     pass arguments explicitely:
-    \begin{verbatim}
+    \code
     namespace vigra {
         template <class SrcIterator, class SrcAccessor,
 	          class MaskIterator, class MaskAccessor,
@@ -953,12 +952,12 @@ discRankOrderFilterWithMask(triple<SrcIterator, SrcIterator, SrcAccessor> src,
 			    DestIterator upperleft2, DestAccessor da,
 			    int radius)
     }
-    \end{verbatim}
+    \endcode
     
     
-    group arguments (use in conjuction with factory functions \Ref{srcRange}(),
-    \Ref{mask}(), and \Ref{dest}()):
-    \begin{verbatim}
+    group arguments (use in conjuction with factory functions \ref srcRange(),
+    \ref mask(), and \ref dest()):
+    \code
     namespace vigra {
         template <class SrcIterator, class SrcAccessor,
 	          class MaskIterator, class MaskAccessor,
@@ -969,9 +968,8 @@ discRankOrderFilterWithMask(triple<SrcIterator, SrcIterator, SrcAccessor> src,
 			    pair<DestIterator, DestAccessor> dest,
 			    int radius)
     }
-    \end{verbatim}
+    \endcode
 
-    @memo
 */
 template <class SrcIterator, class SrcAccessor,
           class MaskIterator, class MaskAccessor,
@@ -1014,15 +1012,16 @@ discErosionWithMask(triple<SrcIterator, SrcIterator, SrcAccessor> src,
 /*                                                      */
 /********************************************************/
 
-/** Apply dilation (maximum) filter with disc of given radius to image
+/** \brief Apply dilation (maximum) filter with disc of given radius to image
     using a mask.
-    This is an abbreviation vor the masked rank order filter with 
-    rank = 1.0. See \Ref{discRankOrderFilterWithMask}() for more information.
     
-    {\bf Declarations:}
+    This is an abbreviation vor the masked rank order filter with 
+    rank = 1.0. See \ref discRankOrderFilterWithMask() for more information.
+    
+    <b> Declarations:</b>
     
     pass arguments explicitely:
-    \begin{verbatim}
+    \code
     namespace vigra {
         template <class SrcIterator, class SrcAccessor,
 	          class MaskIterator, class MaskAccessor,
@@ -1034,12 +1033,12 @@ discErosionWithMask(triple<SrcIterator, SrcIterator, SrcAccessor> src,
 			    DestIterator upperleft2, DestAccessor da,
 			    int radius)
     }
-    \end{verbatim}
+    \endcode
     
     
-    group arguments (use in conjuction with factory functions \Ref{srcRange}(),
-    \Ref{mask}(), and \Ref{dest}()):
-    \begin{verbatim}
+    group arguments (use in conjuction with factory functions \ref srcRange(),
+    \ref mask(), and \ref dest()):
+    \code
     namespace vigra {
         template <class SrcIterator, class SrcAccessor,
 	          class MaskIterator, class MaskAccessor,
@@ -1050,9 +1049,8 @@ discErosionWithMask(triple<SrcIterator, SrcIterator, SrcAccessor> src,
 			    pair<DestIterator, DestAccessor> dest,
 			    int radius)
     }
-    \end{verbatim}
+    \endcode
 
-    @memo
 */
 template <class SrcIterator, class SrcAccessor,
           class MaskIterator, class MaskAccessor,
@@ -1095,15 +1093,16 @@ discDilationWithMask(triple<SrcIterator, SrcIterator, SrcAccessor> src,
 /*                                                      */
 /********************************************************/
 
-/** Apply median filter with disc of given radius to image
+/** \brief Apply median filter with disc of given radius to image
     using a mask.
-    This is an abbreviation vor the masked rank order filter with 
-    rank = 0.5. See \Ref{discRankOrderFilterWithMask}() for more information.
     
-    {\bf Declarations:}
+    This is an abbreviation vor the masked rank order filter with 
+    rank = 0.5. See \ref discRankOrderFilterWithMask() for more information.
+    
+    <b> Declarations:</b>
     
     pass arguments explicitely:
-    \begin{verbatim}
+    \code
     namespace vigra {
         template <class SrcIterator, class SrcAccessor,
 	          class MaskIterator, class MaskAccessor,
@@ -1115,12 +1114,12 @@ discDilationWithMask(triple<SrcIterator, SrcIterator, SrcAccessor> src,
 			    DestIterator upperleft2, DestAccessor da,
 			    int radius)
     }
-    \end{verbatim}
+    \endcode
     
     
-    group arguments (use in conjuction with factory functions \Ref{srcRange}(),
-    \Ref{mask}(), and \Ref{dest}()):
-    \begin{verbatim}
+    group arguments (use in conjuction with factory functions \ref srcRange(),
+    \ref mask(), and \ref dest()):
+    \code
     namespace vigra {
         template <class SrcIterator, class SrcAccessor,
 	          class MaskIterator, class MaskAccessor,
@@ -1131,9 +1130,8 @@ discDilationWithMask(triple<SrcIterator, SrcIterator, SrcAccessor> src,
 			    pair<DestIterator, DestAccessor> dest,
 			    int radius)
     }
-    \end{verbatim}
+    \endcode
 
-    @memo
 */
 template <class SrcIterator, class SrcAccessor,
           class MaskIterator, class MaskAccessor,

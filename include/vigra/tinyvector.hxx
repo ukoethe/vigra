@@ -31,65 +31,46 @@
 
 namespace vigra {
 
-/** @heading Fixed Size Vectors 
-    @memo TinyVector and related classes and functions  
-**/
-//@{
-
-#if 0 // work around for doc++ bug ???
-/** dummy */
-void dummy();
-#endif
-
 /********************************************************/
 /*                                                      */
 /*                      TinyVector                      */
 /*                                                      */
 /********************************************************/
 
-/** Class for fixed size vectors.
+/** \brief Class for fixed size vectors.
+
     This class contains an array of size SIZE of the specified VALUETYPE. 
     The interface conforms with STL vector, except that there are no functions
     that change the size of a TinyVector. 
     
-    \URL[Arithmetic operations]{BasicArithmeticFunctionsforTinyVector.html} 
+    \ref TinyVectorOperators "Arithmetic operations"
     on TinyVectors are defined as component-wise applications of these 
     operations. Addition and subtraction of two TinyVectors 
     (+=, -=, +, -, unary -), multiplication and division of an
     TinyVector with a double, and NumericTraits/PromoteTraits are defined, 
     so that TinyVector fulfills the requirements of a Linear Space. 
     
-    VIGRA algorithms typically use \Ref{VectorAccessor} to access 
+    VIGRA algorithms typically use \ref vigra::VectorAccessor to access 
     TinyVectors as a whole, or specific components of them.
     
-    Include-File:
-    \URL[vigra/tinyvector.hxx]{../include/vigra/tinyvector.hxx}\\
+    <b>\#include</b> "<a href="tinyvector_8hxx-source.html">vigra/tinyvector.hxx</a>"<br>
     Namespace: vigra
 **/
 template <class VALUETYPE, int SIZE>
 class TinyVector
 {
   public:
-    /** @name Local Types */
-    //@{
         /** STL-compatible definition of valuetype
-        @memo
         */
     typedef VALUETYPE value_type;
         /** STL-compatible definition of iterator
-        @memo
         */
     typedef value_type * iterator;
         /** STL-compatible definition of const iterator
-        @memo
         */
     typedef value_type const * const_iterator;
-    //@}
-    
-    /** @name Construction and Assignment */
-    //@{
+
         /** Construct from another sequence 
-        @memo
         */
     template <class Iterator>   
     TinyVector(Iterator i, Iterator end)
@@ -99,7 +80,6 @@ class TinyVector
     }
     
         /** Construction with constant value 
-        @memo
         */    
     explicit TinyVector(value_type initial)
     {
@@ -108,7 +88,6 @@ class TinyVector
     }
     
         /** Default constructor (sets all components to 0)  
-        @memo
         */    
     TinyVector()
     {
@@ -139,8 +118,7 @@ class TinyVector
 
     
         /** Copy constructor.
-            @memo
-        */
+            */
     template <class U>   
     TinyVector(TinyVector<U, SIZE> const & r)
     {
@@ -151,7 +129,6 @@ class TinyVector
     }
 
         /** Copy assignment.
-        @memo
         */    
     template <class U>   
     TinyVector & operator=(TinyVector<U, SIZE> const & r)
@@ -163,12 +140,7 @@ class TinyVector
         return *this;
     }
 
-    //@}
-    
-    /** @name Methods */
-    //@{
         /** Unary negation (construct TinyVector with negative values)
-        @memo
         */
     TinyVector operator-() const
     {
@@ -181,7 +153,6 @@ class TinyVector
     }
     
         /** Calculate magnitude.
-        @memo
         */
     typename NumericTraits<VALUETYPE>::RealPromote
     magnitude() const 
@@ -194,7 +165,6 @@ class TinyVector
     }
     
         /** Calculate squared magnitude.
-        @memo
         */
     typename NumericTraits<VALUETYPE>::Promote
     squaredMagnitude() const 
@@ -207,39 +177,31 @@ class TinyVector
    }
     
         /** Access component by index.
-        @memo
         */
     value_type & operator[](int const & i) { return data_[i]; }
     
         /** Get component by index.
-        @memo
         */
     value_type operator[](int const & i) const { return data_[i]; }
     
         /** Get random access iterator to begin of vector.
-        @memo
         */
     iterator begin() { return data_; }
         /** Get random access iterator past-the-end of vector.
-        @memo
         */
     iterator end() { return data_ + SIZE; }
     
         /** Get const random access iterator to begin of vector.
-        @memo
         */
     const_iterator begin() const { return data_; }
     
         /** Get const random access iterator past-the-end of vector.
-        @memo
         */
     const_iterator end() const { return data_ + SIZE; }
     
         /** Size of TinyVector vector always equals the template parameter SIZE.
-        @memo
         */
     int size() const { return SIZE; }
-    //@}
     
   private:
     value_type data_[SIZE];
@@ -251,11 +213,14 @@ class TinyVector
 /*                                                      */
 /********************************************************/
 
-/** @heading Basic Comparison Functions for TinyVector
+/** \addtogroup TinyVectorOperators Functions for TinyVector
 
-    Include-File:
-    \URL[vigra/tinyvector.hxx]{../include/vigra/tinyvector.hxx}\\
+    \brief <b>\#include</b> "<a href="tinyvector_8hxx-source.html">vigra/tinyvector.hxx</a>
+    
+    These functions fulfill the requirements of a Linear Space (vector space).
+
     Namespace: vigra
+    <p>
     
  */
 //@{
@@ -291,13 +256,13 @@ operator!=(TinyVector<V1, SIZE> const & l, TinyVector<V2, SIZE> const & r)
 /*                                                      */
 /********************************************************/
 
-/** @heading Numeric and Promote Traits of TinyVector
+/** \page TinyVectorTraits Numeric and Promote Traits of TinyVector
     The numeric and promote traits for TinyVectors follow 
-    the general specifications for \Ref{Numeric and Promotion Traits}. 
+    the general specifications for \ref NumericPromotionTraits. 
     They are implemented in terms of the traits of the basic types by 
     partial template specialization:
     
-    \begin{verbatim}
+    \code
     
     template <class T, int SIZE>
     struct NumericTraits<TinyVector<T, SIZE> >
@@ -316,19 +281,17 @@ operator!=(TinyVector<V1, SIZE> const & l, TinyVector<V2, SIZE> const & r)
     { 
         typedef TinyVector<typename PromoteTraits<T1, T2>::Promote, SIZE> Promote;
     };
-    \end{verbatim}
+    \endcode
 
-    Include-File:
-    \URL[vigra/tinyvector.hxx]{../include/vigra/tinyvector.hxx}\\
+    <b>\#include</b> "<a href="tinyvector_8hxx-source.html">vigra/tinyvector.hxx</a>"<br>
     Namespace: vigra
     
     On compilers that don't support pertial template specialization (e.g.
     MS VisualC++), the traits classes are explicitly specialized for 
-    #TinyVector<VALUETYPE, SIZE># with 
-    #VALUETYPE = unsigned char | int | float | double# and #SIZE = 2 | 3 | 4#.
+    <TT>TinyVector<VALUETYPE, SIZE></TT> with 
+    <TT>VALUETYPE = unsigned char | int | float | double</TT> and <TT>SIZE = 2 | 3 | 4</TT>.
     
 */
-//@{
 
 #if !defined(NO_PARTIAL_TEMPLATE_SPECIALIZATION)
 
@@ -496,21 +459,13 @@ TINYVECTOR_TRAITS(4)
 
 #endif // NO_PARTIAL_TEMPLATE_SPECIALIZATION
 
-//@}
-
 /********************************************************/
 /*                                                      */
 /*                      TinyVector-Arithmetic           */
 /*                                                      */
 /********************************************************/
 
-/** @heading Basic Arithmetic Functions for TinyVector
-    
-    Include-File:
-    \URL[vigra/tinyvector.hxx]{../include/vigra/tinyvector.hxx}\\
-    Namespace: vigra
-
-    @memo These functions fulfill the requirements of a Linear Space    
+/** \addtogroup TinyVectorOperators
  */
 //@{
     /// componentwise add-assignment
@@ -680,8 +635,6 @@ rint(TinyVector<V, SIZE> const & r)
     return res;
 }
 
-
-//@}
 
 //@}
 

@@ -46,9 +46,9 @@ extern "C"
 
 struct LugRGBEntry
 {
-	unsigned char red;
-	unsigned char green;
-	unsigned char blue;
+        unsigned char red;
+        unsigned char green;
+        unsigned char blue;
 };
 
 inline 
@@ -68,19 +68,29 @@ byte *fill_bw_pallete(byte * buffer)
   return buffer;
 }
 
-/** @heading LUG file import and export
+/** \page LUGImpex Import/export via the LUG library
+
+    Supports GIF, TIFF, JPEG, PS, and other formats.
+
+    <DL>
+        <DT> <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif">
+              \ref LUGFunctions "LUG Functions"
+        <DD> Read/write/delete LUG images
+
+        <DT> <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif"> 
+            \ref ConvertLugImages
+        <DD> <em>Convert LUG to/from any images supporting ImageIterators</em>
+    </DL>
+
     LUG is a simple gateway for many common image
     data formats, including GIF, TIFF, JPEG and PostScript. The source code for LUG
     (Libraria de Utilidades Graficas - Graphics Utilities Library) is
     available at 
-    \URL[http://www.uniovi.es/~rivero/LUG/]{http://www.uniovi.es/~rivero/LUG/}.
+    <a href="http://www.uniovi.es/~rivero/LUG/">http://www.uniovi.es/~rivero/LUG/</a>.
     LUG supports some formats (e.g. GIF, PostScript) on its own and uses 
     other public domain libraries for the rest (TIFF, JPEG). Unlike VIFF, 
     LUG can only handle 'byte' (scalar, RGB and mapped RGB) pixel types. 
-
-    @memo supports GIF, TIFF, JPEG, PS, and other formats
 */
-//@{
 
 /********************************************************/
 /*                                                      */
@@ -88,136 +98,108 @@ byte *fill_bw_pallete(byte * buffer)
 /*                                                      */
 /********************************************************/
 
-/** @heading read/write/delete LUG images
+/** \defgroup LUGFunctions Read/write/delete LUG Images
     These functions are convenience functions to simplify LUG's usage 
     in the context of VIGRA. You can
     always use the original LUG functions for the same or related purposes 
     (see LUG documentation for details). 
-    @memo
 */
 //@{
-    /** Create LugImage and read contents from given file.
-    
-        {\bf Declaration: }
-	\begin{verbatim}
-	LugImage * readLugImage(char * filename);
-	\end{verbatim}
-    
-	Include-File:
-	\URL[vigra/lug.hxx]{../include/vigra/lug.hxx}
-	
+    /** \brief Create LugImage and read contents from given file.
+        
+        <b>\#include</b> "<a href="lug_8hxx-source.html">vigra/lug.hxx</a>"
+        
     */
 inline
 LugImage *
 readLugImage(const char* filename)
 {
-	LugImage * image = new LugImage;
-	if (!image)
-		return 0;
+        LugImage * image = new LugImage;
+        if (!image)
+                return 0;
 
-	read_lug_file(const_cast<char*>(filename), image);
-	return image;
+        read_lug_file(const_cast<char*>(filename), image);
+        return image;
 }
 
-    /** Write LugImage to given file. The output file format is determined 
+    /** \brief Write LugImage to given file. 
+    
+        The output file format is determined 
         by the file name extension. For example, 'test.gif' will be a GIF file.
         You can override this convention by using alternative write functions.
         See the LUG manual for details. 
     
-        {\bf Declaration: }
-	\begin{verbatim}
-	LugImage * writeLugImage(char * filename, LugImage* image);
-	\end{verbatim}
-    
-	Include-File:
-	\URL[vigra/lug.hxx]{../include/vigra/lug.hxx}
-	
+        <b>\#include</b> "<a href="lug_8hxx-source.html">vigra/lug.hxx</a>"
+        
     */
 inline
 void
 writeLugImage(const char* filename, LugImage* image)
 {
-	if (!image)
-		return;
+        if (!image)
+                return;
 
-	write_lug_file(const_cast<char*>(filename), image);
+        write_lug_file(const_cast<char*>(filename), image);
 }
 
-    /* Create LugImage if given size and color depth.
+    /** \brief Create LugImage if given size and color depth.
+    
         Depth is either 8 or 24.
     
-        {\bf Declaration: }
-	\begin{verbatim}
-	LugImage * createLugImage(int width, int height, int depth)
-	\end{verbatim}
-    
-	Include-File:
-	\URL[vigra/lug.hxx]{../include/vigra/lug.hxx}
-	
+        <b>\#include</b> "<a href="lug_8hxx-source.html">vigra/lug.hxx</a>"
+        
     */
 inline
 LugImage *
 createLugImage(int width, int height, int depth)
 {
-	LugImage * img = new LugImage;
-	allocatebitmap(img, width, height, depth, 0);
-	return img;
+        LugImage * img = new LugImage;
+        allocatebitmap(img, width, height, depth, 0);
+        return img;
 }
 
 inline
 LugImage *
 createLugImage(int width, int height, int depth, int colors)
 {
-	LugImage * img = new LugImage;
-	allocatebitmap(img, width, height, depth, colors);
-	return img;
+        LugImage * img = new LugImage;
+        allocatebitmap(img, width, height, depth, colors);
+        return img;
 }
 
 inline
 LugImage *
 createLugImage()
 {
-	LugImage * img = new LugImage;
-	return img;
+        LugImage * img = new LugImage;
+        return img;
 }
 
-    /** Delete LugImage and free memory.
+    /** \brief Delete LugImage and free memory.
     
-        {\bf Declaration: }
-	\begin{verbatim}
-	void freeLugImage(LugImage * image)
-	\end{verbatim}
-    
-	Include-File:
-	\URL[vigra/lug.hxx]{../include/vigra/lug.hxx}
-	
+        <b>\#include</b> "<a href="lug_8hxx-source.html">vigra/lug.hxx</a>"
+        
     */
 inline
 void
 freeLugImage(LugImage * image)
 {
-	freebitmap(image);
-	delete image;
+        freebitmap(image);
+        delete image;
 }
 
-    /** Test if LugImage is a grayscale image.
+    /** \brief Test if LugImage is a grayscale image.
     
-        {\bf Declaration: }
-	\begin{verbatim}
-	int isagrayscaled(LugImage * image)
-	\end{verbatim}
-    
-	Include-File:
-	\URL[vigra/lug.hxx]{../include/vigra/lug.hxx}
-	
+        <b>\#include</b> "<a href="lug_8hxx-source.html">vigra/lug.hxx</a>"
+        
     */
 int
 isagrayscaled(LugImage *);
 
 //@}
 
-/** @heading Convert LugImages 
-    @memo to/from any image supporting ImageIterators
+/** \defgroup ConvertLugImages Convert LUG Images
+    to/from any images supporting ImageIterators
 */
 //@{
 /********************************************************/
@@ -226,34 +208,34 @@ isagrayscaled(LugImage *);
 /*                                                      */
 /********************************************************/
 
-/** Convert given lug into image specified by iterator range.
+/** \brief Convert given lug into image specified by iterator range.
+
     Accessors are used to write the data.    
-    This function calls \Ref{lugToScalarImage} or \Ref{lugToRGBImage}, depending on 
+    This function calls \ref lugToScalarImage() or \ref lugToRGBImage(), depending on 
     the accessor's value_type.
 
     
-    {\bf Declarations:}
+    <b> Declarations:</b>
     
     pass arguments explicitly:
-    \begin{verbatim}
+    \code
     template <class ImageIterator, class Accessor>
     void
     importLugImage(LugImage * lug, ImageIterator iter, Accessor a)
-    \end{verbatim}
+    \endcode
 
-    use argument objects in conjuction with \Ref{Argument Object Factories}:
-    \begin{verbatim}
+    use argument objects in conjuction with \ref ArgumentObjectFactories:
+    \code
     template <class ImageIterator, class Accessor>
     void
     importLugImage(LugImage * lug, pair<ImageIterator, Accessor> dest)
-    \end{verbatim}
+    \endcode
     
-    {\bf Usage:}
+    <b> Usage:</b>
 
-    Include-File:
-    \URL[vigra/lug.hxx]{../include/vigra/lug.hxx}
+    <b>\#include</b> "<a href="lug_8hxx-source.html">vigra/lug.hxx</a>"
     
-    \begin{verbatim}
+    \code
     LugImage * lug = readimage("scalarimage.gif");
     
     BImage img(lug->xsize, lug->ysize);
@@ -261,17 +243,16 @@ isagrayscaled(LugImage *);
     importLugImage(lug, destImage(img));
     
     freeLugImage(lug);
-    \end{verbatim}
+    \endcode
     
-    {\bf Required Interface:}
+    <b> Required Interface:</b>
     
-    see \Ref{lugToScalarImage} and \Ref{lugToRGBImage}
+    see \ref lugToScalarImage() and \ref lugToRGBImage()
     
-    {\bf Preconditions:}
+    <b> Preconditions:</b>
     
-    see \Ref{lugToScalarImage} and \Ref{lugToRGBImage}
+    see \ref lugToScalarImage() and \ref lugToRGBImage()
     
-    @memo
 */
 template <class ImageIterator, class Accessor>
 inline void
@@ -310,31 +291,31 @@ importLugImage(LugImage * lug, ImageIterator iter, Accessor a, VigraFalseType)
 /*                                                      */
 /********************************************************/
 
-/** Convert single-band LugImage to scalar image.
+/** \brief Convert single-band LugImage to scalar image.
+
     This function uses accessors to write the data.
     
-    {\bf Declarations:}
+    <b> Declarations:</b>
     
     pass arguments explicitly:
-    \begin{verbatim}
+    \code
     template <class ImageIterator, class Accessor>
     void
     lugToScalarImage(LugImage * img, ImageIterator iter, Accessor a)
-    \end{verbatim}
+    \endcode
 
-    use argument objects in conjuction with \Ref{Argument Object Factories}:
-    \begin{verbatim}
+    use argument objects in conjuction with \ref ArgumentObjectFactories:
+    \code
     template <class ImageIterator, class Accessor>
     void
     lugToScalarImage(LugImage * img, pair<ImageIterator, Accessor> dest)
-    \end{verbatim}
+    \endcode
     
-    {\bf Usage:}
+    <b> Usage:</b>
 
-    Include-File:
-    \URL[vigra/lug.hxx]{../include/vigra/lug.hxx}
+    <b>\#include</b> "<a href="lug_8hxx-source.html">vigra/lug.hxx</a>"
     
-    \begin{verbatim}
+    \code
     LugImage * lug = readLugImage("scalarimage.tif");
     
     BImage img(lug->xsize, lug->ysize);
@@ -342,26 +323,25 @@ importLugImage(LugImage * lug, ImageIterator iter, Accessor a, VigraFalseType)
     lugToScalarImage(lug, destImage(img));
     
     freeLugImage(lug);
-    \end{verbatim}
+    \endcode
     
-    {\bf Required Interface:}
+    <b> Required Interface:</b>
     
-    \begin{verbatim}
+    \code
     ImageIterator upperleft;
     unsigned char value;
     
     Accessor accessor;
-		       
+                       
     accessor.set(value, upperleft);
-    \end{verbatim}
+    \endcode
     
-    {\bf Preconditions:}
+    <b> Preconditions:</b>
     
-    \begin{verbatim}
+    \code
     isagrayscaled(lug)
-    \end{verbatim}
+    \endcode
     
-    @memo
 */
 template <class ImageIterator, class Accessor>
 void
@@ -371,25 +351,25 @@ lugToScalarImage(LugImage * img, ImageIterator iter, Accessor a)
     int h = img->ysize;
 
     vigra_precondition(img,
-		"lugToScalarImage(): " 
-	      	"NULL pointer to input data.");
+                "lugToScalarImage(): " 
+                      "NULL pointer to input data.");
    
     vigra_precondition(isagrayscaled(img),
-		"lugToScalarImage(): " 
-	      	"Source image is not scalar.");
+                "lugToScalarImage(): " 
+                      "Source image is not scalar.");
 
     // now we have a color map with 256 entries and r=g=b
     ImageIterator yd(iter);
-	
+        
     unsigned char * pindex = img->r;
     struct LugRGBEntry * cmap = (struct LugRGBEntry *) img->cmap;
     for(int y = 0; y < h; ++y, ++yd.y)
     {
-	ImageIterator xd(yd);
-	for(int x = 0; x < w; ++x, ++pindex, ++xd.x)
-	{
-	    a.set(cmap[*pindex].red, xd);
-	}
+        ImageIterator xd(yd);
+        for(int x = 0; x < w; ++x, ++pindex, ++xd.x)
+        {
+            a.set(cmap[*pindex].red, xd);
+        }
     }
 }
 
@@ -407,31 +387,31 @@ lugToScalarImage(LugImage * img, pair<ImageIterator, Accessor> dest)
 /*                                                      */
 /********************************************************/
 
-/** Convert LugImage to RGB image.
+/** \brief Convert LugImage to RGB image.
+
     This function uses accessors to write the data.
     
-    {\bf Declarations:}
+    <b> Declarations:</b>
     
     pass arguments explicitly:
-    \begin{verbatim}
+    \code
     template <class ImageIterator, class RGBAccessor>
     void
     lugToRGBImage(LugImage * img, ImageIterator iter, RGBAccessor a)
-    \end{verbatim}
+    \endcode
 
-    use argument objects in conjuction with \Ref{Argument Object Factories}:
-    \begin{verbatim}
+    use argument objects in conjuction with \ref ArgumentObjectFactories:
+    \code
     template <class ImageIterator, class RGBAccessor>
     void
     lugToRGBImage(LugImage * img, pair<ImageIterator, RGBAccessor> dest)
-    \end{verbatim}
+    \endcode
     
-    {\bf Usage:}
+    <b> Usage:</b>
 
-    Include-File:
-    \URL[vigra/lug.hxx]{../include/vigra/lug.hxx}
+    <b>\#include</b> "<a href="lug_8hxx-source.html">vigra/lug.hxx</a>"
     
-    \begin{verbatim}
+    \code
     LugImage * lug = readLugImage("rgbimage.gif");
     
     BRGBImage img(lug->xsize, lug->ysize);
@@ -439,82 +419,81 @@ lugToScalarImage(LugImage * img, pair<ImageIterator, Accessor> dest)
     lugToRGBImage(lug, destImage(img));
     
     freeLugImage(lug);
-    \end{verbatim}
+    \endcode
     
-    {\bf Required Interface:}
+    <b> Required Interface:</b>
     
-    \begin{verbatim}
+    \code
     ImageIterator upperleft;
     unsigned char value;
     
     RGBAccessor accessor;
-		       
+                       
     accessor.setRed(value, upperleft);
     accessor.setGreen(value, upperleft);
     accessor.setBlue(value, upperleft);
-    \end{verbatim}
+    \endcode
     
-    @memo
 */
 template <class ImageIterator, class Accessor>
 void
 lugToRGBImage(LugImage * img, ImageIterator upperleft, Accessor a)
 {
     vigra_precondition(img,
-	    "lugToRGBImage(LugImage *, RGBImageIterator): " 
-	    "NULL pointer to input data.");
+            "lugToRGBImage(LugImage *, RGBImageIterator): " 
+            "NULL pointer to input data.");
 
     int x = 0;
     int y = 0;
     int w = img->xsize;
     int h = img->ysize;
-	
+        
     if(img->depth > 8)
     {
-	// real multiband image
-	vigra_precondition( (img->r && img->g && img->b),
-		"lugToRGBImage(): " 
-		"NULL pointer to pixel data.");
+        // real multiband image
+        vigra_precondition( (img->r && img->g && img->b),
+                "lugToRGBImage(): " 
+                "NULL pointer to pixel data.");
 
-	ImageIterator yd(upperleft);
+        ImageIterator yd(upperleft);
 
-	unsigned char * pred = img->r;
-	unsigned char * pgreen = img->g;
-	unsigned char * pblue = img->b;
-	for(y = 0; y < h; ++y, ++yd.y)
-	{
-	    ImageIterator xd(yd);
-	    for(x = 0; x < w; ++x, ++pred, ++pgreen, ++pblue, ++xd.x)
-	    {
-		    a.setRed(*pred, xd);
-		    a.setGreen(*pgreen, xd);
-		    a.setBlue(*pblue, xd);
-	    }
-	}
+        unsigned char * pred = img->r;
+        unsigned char * pgreen = img->g;
+        unsigned char * pblue = img->b;
+        for(y = 0; y < h; ++y, ++yd.y)
+        {
+            ImageIterator xd(yd);
+            for(x = 0; x < w; ++x, ++pred, ++pgreen, ++pblue, ++xd.x)
+            {
+                    a.setRed(*pred, xd);
+                    a.setGreen(*pgreen, xd);
+                    a.setBlue(*pblue, xd);
+            }
+        }
     }
     else
     {
-	// scalar data with color map
-	vigra_precondition(img->r,
-		"lugToRGBImage(): " 
-		"NULL pointer to pixel data.");
-	// data only in r-buffer
-	unsigned char * ps = img->r;
-	
-	struct LugRGBEntry * cmap = (struct LugRGBEntry *) img->cmap;
+        // scalar data with color map
+        vigra_precondition(img->r,
+                "lugToRGBImage(): " 
+                "NULL pointer to pixel data.");
+        // data only in r-buffer
+        unsigned char * ps = img->r;
+        
+        struct LugRGBEntry * cmap = (struct LugRGBEntry *) img->cmap;
     
-	ImageIterator yd(upperleft);
+        ImageIterator yd(upperleft);
     
-	for(y = 0; y < h; ++y, ++yd.y)
-	{
-	    ImageIterator xd(yd);
-	    for(x = 0; x < w; ++x, ++ps, ++xd.x)
-	    {
-		    a.setRed(cmap[*ps].red, xd);
-		    a.setGreen(cmap[*ps].green, xd);
-		    a.setBlue(cmap[*ps].blue, xd);
-	    }
-	}
+        for(y = 0; y < h; ++y, ++yd.y)
+        {
+            ImageIterator xd(yd);
+            for(x = 0; x < w; ++x, ++ps, ++xd.x)
+            {
+                    a.setRed(cmap[*ps].red, xd);
+                    a.setGreen(cmap[*ps].green, xd);
+                    a.setBlue(cmap[*ps].blue, xd);
+            }
+        }
     }
 }
 
@@ -532,39 +511,39 @@ lugToRGBImage(LugImage * img, pair<ImageIterator, Accessor> dest)
 /*                                                      */
 /********************************************************/
 
-/** Create a LUG image from the given iterator range.
+/** \brief Create a LUG image from the given iterator range.
+
     It is automatically determined whether a scalar or RGB image must 
     be created. This function uses accessors to read the data. 
     Note, however, that LUG images can only store 'unsigned char' pixel
     values, so all scalar types are converted to 'unsigned char' during conversion, 
     while all RGB types are converted to RGBValue<unsigned char>. Use the 
-    \URL[VIFF]{VIFFrelatedfunctions.html} image format, if this is not 
+    <a href="VIFFrelatedfunctions.html">VIFF</a> image format, if this is not 
     acceptable.
     
     
-    {\bf Declarations:}
+    <b> Declarations:</b>
     
     pass arguments explicitly:
-    \begin{verbatim}
+    \code
     template <class ImageIterator, class Accessor>
     inline LugImage *
     createLugImage(ImageIterator upperleft, ImageIterator lowerright, 
                     Accessor a)
-    \end{verbatim}
+    \endcode
 
-    use argument objects in conjuction with \Ref{Argument Object Factories}:
-    \begin{verbatim}
+    use argument objects in conjuction with \ref ArgumentObjectFactories:
+    \code
     template <class ImageIterator, class Accessor>
     inline LugImage *
     createLugImage(triple<ImageIterator, ImageIterator, Accessor> src)
-    \end{verbatim}
+    \endcode
 
-    {\bf Usage:}
+    <b> Usage:</b>
 
-    Include-File:
-    \URL[vigra/viff.hxx]{../include/vigra/viff.hxx}
+    <b>\#include</b> "<a href="viff_8hxx-source.html">vigra/viff.hxx</a>"
     
-    \begin{verbatim}
+    \code
     BImage img(width, height);
     
     ...
@@ -575,18 +554,17 @@ lugToRGBImage(LugImage * img, pair<ImageIterator, Accessor> dest)
     writeLugImage("output.gif", lug); 
     
     freeimage(lug);
-    \end{verbatim}
+    \endcode
     
-    {\bf Required Interface:}
+    <b> Required Interface:</b>
     
-    \begin{verbatim}
+    \code
     ImageIterator upperleft;
     Accessor accessor;
                            
     accessor(upperleft);   // result written into xvimage
-    \end{verbatim}
+    \endcode
     
-    @memo
 */
 template <class ImageIterator, class Accessor>
 inline LugImage *
@@ -628,35 +606,35 @@ createLugImage(ImageIterator upperleft, ImageIterator lowerright,
 /*                                                      */
 /********************************************************/
 
-/** Create a gray-scaled LugImage from the given scalar image.
+/** \brief Create a gray-scaled LugImage from the given scalar image.
+
     The size of the LugImage is determined by the input image.
     This function uses accessors to read the data. All pixel data types are 
     converted to 'unsigned char' during conversion.  Use the 
-    \URL[VIFF]{VIFFrelatedfunctions.html} image format, if this is not 
+    <a href="VIFFrelatedfunctions.html">VIFF</a> image format, if this is not 
     acceptable.
     
-    {\bf Declarations:}
+    <b> Declarations:</b>
     
     pass arguments explicitly:
-    \begin{verbatim}
+    \code
     template <class ImageIterator, class Accessor>
     LugImage *
     createScalarLugImage(ImageIterator upperleft, ImageIterator lowerright, Accessor a)
-    \end{verbatim}
+    \endcode
 
-    use argument objects in conjuction with \Ref{Argument Object Factories}:
-    \begin{verbatim}
+    use argument objects in conjuction with \ref ArgumentObjectFactories:
+    \code
     template <class ImageIterator, class Accessor>
     LugImage *
     createScalarLugImage(triple<ImageIterator, ImageIterator, Accessor> src)
-    \end{verbatim}
+    \endcode
     
-    {\bf Usage:}
+    <b> Usage:</b>
 
-    Include-File:
-    \URL[vigra/lug.hxx]{../include/vigra/lug.hxx}
+    <b>\#include</b> "<a href="lug_8hxx-source.html">vigra/lug.hxx</a>"
     
-    \begin{verbatim}
+    \code
     BImage img(width, height);
     ...
     
@@ -665,20 +643,19 @@ createLugImage(ImageIterator upperleft, ImageIterator lowerright,
     writeLugImage("scalarimage.tif", lug);
     
     freeLugImage(lug);
-    \end{verbatim}
+    \endcode
     
-    {\bf Required Interface:}
+    <b> Required Interface:</b>
     
-    \begin{verbatim}
+    \code
     ImageIterator upperleft;
     unsigned char value;
     
     Accessor accessor;
-		       
+                       
     value = accessor(upperleft);
-    \end{verbatim}
+    \endcode
     
-    @memo
 */
 template <class ImageIterator, class Accessor>
 LugImage *
@@ -693,7 +670,7 @@ createScalarLugImage(ImageIterator upperleft, ImageIterator lowerright, Accessor
 
     LugImage * img = createLugImage(w, h, 8, 256);
     if (!img)
-	    return 0;
+            return 0;
     
     // create the gray scaled palette
     fill_bw_pallete(img->cmap);
@@ -703,11 +680,11 @@ createScalarLugImage(ImageIterator upperleft, ImageIterator lowerright, Accessor
 
     for(y = 0; y < h; ++y, ++yd.y)
     {
-	ImageIterator xd(yd);
-	for(x = 0; x < w; ++x, ++pindex, ++xd.x)
-	{
-	    *pindex = a(xd);
-	}
+        ImageIterator xd(yd);
+        for(x = 0; x < w; ++x, ++pindex, ++xd.x)
+        {
+            *pindex = a(xd);
+        }
     }
     return img;
 }
@@ -726,35 +703,35 @@ createScalarLugImage(triple<ImageIterator, ImageIterator, Accessor> src)
 /*                                                      */
 /********************************************************/
 
-/** Create a RGB LugImage from the given RGB image.
+/** \brief Create a RGB LugImage from the given RGB image.
+
     The size of the LugImage is determined by the input image.
     This function uses accessors to read the data. All pixel data types are 
     converted to 'RGBValue<unsigned char>' during conversion. Use the 
-    \URL[VIFF]{VIFFrelatedfunctions.html} image format, if this is not 
+    <a href="VIFFrelatedfunctions.html">VIFF</a> image format, if this is not 
     acceptable.
     
-    {\bf Declarations:}
+    <b> Declarations:</b>
     
     pass arguments explicitly:
-    \begin{verbatim}
+    \code
     template <class ImageIterator, class RGBAccessor>
     LugImage *
     createRGBLugImage(ImageIterator upperleft, ImageIterator lowerright, RGBAccessor a)
-    \end{verbatim}
+    \endcode
 
-    use argument objects in conjuction with \Ref{Argument Object Factories}:
-    \begin{verbatim}
+    use argument objects in conjuction with \ref ArgumentObjectFactories:
+    \code
     template <class ImageIterator, class RGBAccessor>
     LugImage *
     createRGBLugImage(triple<ImageIterator, ImageIterator, RGBAccessor> src)
-    \end{verbatim}
+    \endcode
     
-    {\bf Usage:}
+    <b> Usage:</b>
 
-    Include-File:
-    \URL[vigra/lug.hxx]{../include/vigra/lug.hxx}
+    <b>\#include</b> "<a href="lug_8hxx-source.html">vigra/lug.hxx</a>"
     
-    \begin{verbatim}
+    \code
     BRGBImage img(width, height);
     ...
     
@@ -763,22 +740,21 @@ createScalarLugImage(triple<ImageIterator, ImageIterator, Accessor> src)
     writeLugImage("rgbimage.gif", lug);
     
     freeLugImage(lug);
-    \end{verbatim}
+    \endcode
     
-    {\bf Required Interface:}
+    <b> Required Interface:</b>
     
-    \begin{verbatim}
+    \code
     ImageIterator upperleft;
     unsigned char value;
     
     RGBAccessor accessor;
-		       
+                       
     value = accessor.red(upperleft);
     value = accessor.green(upperleft);
     value = accessor.blue(upperleft);
-    \end{verbatim}
+    \endcode
     
-    @memo
 */
 template <class ImageIterator, class Accessor>
 LugImage *
@@ -792,7 +768,7 @@ createRGBLugImage(ImageIterator upperleft, ImageIterator lowerright, Accessor a)
 
     LugImage * img = createLugImage(w, h, 24, 0);
     if (!img)
-	    return 0;
+            return 0;
 
     unsigned char * pred = img->r;
     unsigned char * pgreen = img->g;
@@ -801,13 +777,13 @@ createRGBLugImage(ImageIterator upperleft, ImageIterator lowerright, Accessor a)
 
     for(y = 0; y < h; ++y, ++yd.y)
     {
-	ImageIterator xd(yd);
-	for(x = 0; x < w; ++x, ++pred, ++pgreen, ++pblue, ++xd.x)
-	{
-	    *pred   = a.red(xd);
-	    *pgreen = a.green(xd);
-	    *pblue  = a.blue(xd);
-	}
+        ImageIterator xd(yd);
+        for(x = 0; x < w; ++x, ++pred, ++pgreen, ++pblue, ++xd.x)
+        {
+            *pred   = a.red(xd);
+            *pgreen = a.green(xd);
+            *pblue  = a.blue(xd);
+        }
     }
     return img;
 }
@@ -819,8 +795,6 @@ createRGBLugImage(triple<ImageIterator, ImageIterator, Accessor> src)
 {
     return createRGBLugImage(src.first, src.second, src.third);
 }
-
-//@}
 
 //@}
 

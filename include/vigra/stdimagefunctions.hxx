@@ -23,24 +23,48 @@
 #ifndef VIGRA_STDIMAGEFUNCTIONS_HXX
 #define VIGRA_STDIMAGEFUNCTIONS_HXX
 
-/** @heading Basic Image Algorithms And Functors 
+/** \page PointOperators Point Operators 
 
-    Include-File:
-    \URL[vigra/stdimagefunctions.hxx]{../include/vigra/stdimagefunctions.hxx}\\
-        Namespace: vigra
+    <DL>
+    <DT>
+        <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif"> 
+        \ref InitAlgo
+        <DD><em>init images or image borders </em>
+    <DT>
+        <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif"> 
+        \ref InspectAlgo
+        <DD> <em>Apply read-only functor to every pixel</em>
+    <DT>
+        <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif"> 
+        \ref InspectFunctor
+        <DD><em>Functors which report image statistics</em>
+    <DT>
+        <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif"> 
+        \ref CopyAlgo
+        <DD> <em>Copy images or regions</em>
+    <DT>
+        <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif"> 
+        \ref TransformAlgo
+        <DD><em>apply functor to calculate a pixelwise transformation of one image</em>
+    <DT>
+        <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif"> 
+        \ref TransformFunctor
+        <DD> <em>frequently used unary transformation functors</em>
+    <DT>
+        <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif"> 
+        \ref CombineAlgo
+        <DD><em>apply functor to calculate a pixelwise transformation from several image</em>
+    <DT>
+        <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif"> 
+        \ref CombineFunctor
+        <DD> <em>frequently used binary transformations functors</em>
+    </DL>
+    
+    <b>\#include</b> "<a href="stdimagefunctions_8hxx-source.html">vigra/stdimagefunctions.hxx</a>"<br>
+    Namespace: vigra
         
-    see also: \URL[Automatic Functor Creation]{FunctorCreation.html}
-
-    @memo Init, inspect, copy, transform, combine, and resize images
+    see also: \ref FunctorExpressions "Automatic Functor Creation"
 */
-//@{
-
-//@Include: initimage.hxx 
-//@Include: inspectimage.hxx 
-//@Include: copyimage.hxx 
-//@Include: transformimage.hxx 
-//@Include: combineimages.hxx 
-//@Include: resizeimage.hxx
 
 #include "vigra/initimage.hxx"
 #include "vigra/inspectimage.hxx"
@@ -48,7 +72,5 @@
 #include "vigra/transformimage.hxx"
 #include "vigra/combineimages.hxx"
 #include "vigra/resizeimage.hxx"
-
-//@}
 
 #endif // VIGRA_STDIMAGEFUNCTIONS_HXX

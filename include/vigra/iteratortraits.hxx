@@ -27,6 +27,29 @@
 
 namespace vigra {
 
+/** \addtogroup ImageIterators
+*/
+//@{
+/** \brief Define the default accessor for each image iterator.
+
+    With each image iterator, a default accessor is associated. The type of
+    this accessor can be retrieved by means of IteratorTraits. This is, 
+    for example, used by the \ref IteratorBasedArgumentObjectFactories.
+    
+    \code
+    template <class Iterator>
+    void foo(Iterator i)
+    {
+        typedef typename IteratorTraits<Iterator>::DefaultAccessor Accessor;
+        Accessor a;
+        ...
+    }
+    \endcode
+    
+    <b>\#include</b> "<a href="iteratortraits_8hxx-source.html">vigra/iteratortraits.hxx</a>"
+    
+    Namespace: vigra
+*/
 template <class T> 
 struct IteratorTraits 
 {
@@ -36,6 +59,8 @@ struct IteratorTraits
     // must be defined due to Visual C++ bug
     typedef IteratorTraitsNotDefinedForThisCase DefaultAccessor;
 };
+
+//@}
 
 template <> 
 struct IteratorTraits<Diff2D > 

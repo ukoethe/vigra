@@ -23,121 +23,159 @@
 #ifndef VIGRA_CONVOLUTION_HXX
 #define VIGRA_CONVOLUTION_HXX
 
-/** @heading Functions to Convolve Images and Signals 
+/** \page Convolution Functions to Convolve Images and Signals 
 
-    Include-File:
-    \URL[vigra/convolution.hxx]{../include/vigra/convolution.hxx}\\
-    Namespace: vigra
+    1D and 2D filters, including separable and recursive convolution, and non-linear diffusion
     
-    @memo including standard and separable convolution, and recursive filters.
-*/
-//@{
+    <b>\#include</b> "<a href="convolution_8hxx-source.html">vigra/convolution.hxx</a>"<br>
+    Namespace: vigra
 
-//@Include: bordertreatment.hxx stdconvolution.hxx 
-//@Include: separableconvolution.hxx recursiveconvolution.hxx
-//@Include: nonlineardiffusion.hxx
+    <DL>
+    <DT>
+        <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif"> 
+        \ref BorderTreatmentMode
+        <DD><em>Choose between different border treatment modes </em>
+    <DT>
+        <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif"> 
+        \ref StandardConvolution
+        <DD><em>2D non-separable convolution, with and without ROI mask </em>
+    <DT>
+        <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif"> 
+        \ref vigra::Kernel2D
+        <DD><em>Generic 2-dimensional convolution kernel </em>
+    <DT>
+        <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif"> 
+        \ref SeparableConvolution
+        <DD> <em>1D convolution and separable filters in 2 dimensions </em>
+    <DT>
+        <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif"> 
+        \ref vigra::Kernel1D
+        <DD> <em>Generic 1-dimensional convolution kernel </em>
+    <DT>
+        <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif"> 
+        \ref RecursiveConvolution
+        <DD> <em>Recursive implementation of the exponential filter and its derivatives </em>
+    <DT>
+        <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif"> 
+        \ref NonLinearDiffusion
+        <DD> <em>Edge-preserving smoothing </em>
+    <DT>
+        <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif"> 
+        \ref KernelArgumentObjectFactories
+        <DD> <em>Factory functions to create argument objects to simplify passing kernels</em>
+    </DL>
+*/
 
 #include "vigra/stdconvolution.hxx"
 #include "vigra/separableconvolution.hxx"
 #include "vigra/recursiveconvolution.hxx"
 #include "vigra/nonlineardiffusion.hxx"
 
-/** @heading Kernel Argument Object Factories
+/** \page KernelArgumentObjectFactories Kernel Argument Object Factories
 
     These factory functions allow to create argument objects for 1D
     and 2D convolution kernel analogously to 
-    \Ref{Argument Object Factories} for images. 
-    
-    @memo Factory functions to create argument objects to simplify passing kernels
-*/
-//@{
-    /** @heading kernel1d()
+    \ref ArgumentObjectFactories for images. 
+
+    \section Kernel1dFactory kernel1d()
         
-	These factories can be used to create argument objects when we 
-	are given instances or subclasses of \Ref{Kernel1D}
-	(analogous to the \Ref{Argument Object Factories} for images).
-	These factory functions access #kernel.center()#,
-        #kernel.left()#, #kernel.right()#, #kernel.accessor()#,
-	and  #kernel.borderTreatment()# to obtain the necessary 
+	Pass a \ref vigra::Kernel1D to a 1D or separable convolution algorithm.
+        
+        These factories can be used to create argument objects when we 
+	are given instances or subclasses of \ref vigra::Kernel1D
+	(analogous to the \ref ArgumentObjectFactories for images).
+	These factory functions access <TT>kernel.center()</TT>,
+        <TT>kernel.left()</TT>, <TT>kernel.right()</TT>, <TT>kernel.accessor()</TT>,
+	and  <TT>kernel.borderTreatment()</TT> to obtain the necessary 
 	information. The following factory functions are provided:
 	
-	\begin{tabular}{ll}
-	#vigra::Kernel1D<SomeType> kernel;# & 
-	
-	    \\
-	    
-	#kernel1d(kernel)# &
+	<table>
+        <tr><td>
+            \htmlonly
+            <th bgcolor="#f0e0c0" colspan=2 align=left>
+            \endhtmlonly
+            <TT>\ref vigra::Kernel1D "vigra::Kernel1D<SomeType>" kernel;</TT>
+            \htmlonly
+            </th>
+            \endhtmlonly
+        </td></tr>
+        <tr><td>
+	<TT>kernel1d(kernel)</TT>
+        </td><td>
 	    create argument object from information provided by 
 	    kernel
 	    
-	    \\
-	    
-	#kernel1d(kernel, vigra::BORDER_TREATMENT_CLIP)# &
+        </td></tr>
+        <tr><td>
+	<TT>kernel1d(kernel, vigra::BORDER_TREATMENT_CLIP)</TT>
+        </td><td>
 	    create argument object from information provided by 
 	    kernel, but use given border treatment mode
 	    
-	    \\
-	    
-	#kernel1d(kerneliterator, kernelaccessor,#
-	#                kernelleft, kernelright,#
-	#                vigra::BORDER_TREATMENT_CLIP)# &
+        </td></tr>
+        <tr><td>
+	<TT>kernel1d(kerneliterator, kernelaccessor,</TT><br>
+	<TT>                kernelleft, kernelright,</TT><br>
+	<TT>                vigra::BORDER_TREATMENT_CLIP)</TT>
+        </td><td>
 	    create argument object from explicitly given iterator
 	    (pointing to the center of th kernel), accessor,
 	    left and right boundaries, and border treatment mode
 
-	    \\
-	\end{tabular}
+	</table>
 	
 	For usage examples see 
-	\Ref{One-dimensional and separable convolution functions}.
-	
-	@memo Argument Object Factories for \Ref{Kernel1D}
-    */
-    /** @heading kernel2d()
+	\ref SeparableConvolution "one-dimensional and separable convolution functions".
+
+    \section Kernel2dFactory kernel2d()
         
+	Pass a \ref vigra::Kernel2D to a 2D (non-separable) convolution algorithm.
+                
 	These factories can be used to create argument objects when we 
-	are given instances or subclasses of \Ref{Kernel2D}
-	(analogous to the \Ref{Argument Object Factories} for images).
-	These factory functions access #kernel.center()#,
-        #kernel.upperLeft()#, #kernel.lowerRight()#, #kernel.accessor()#,
-	and  #kernel.borderTreatment()# to obtain the necessary 
+	are given instances or subclasses of \ref vigra::Kernel2D
+	(analogous to the \ref ArgumentObjectFactories for images).
+	These factory functions access <TT>kernel.center()</TT>,
+        <TT>kernel.upperLeft()</TT>, <TT>kernel.lowerRight()</TT>, <TT>kernel.accessor()</TT>,
+	and  <TT>kernel.borderTreatment()</TT> to obtain the necessary 
 	information. The following factory functions are provided:
 	
-	\begin{tabular}{ll}
-	#vigra::Kernel2D<SomeType> kernel;# & 
-	
-	    \\
-	    
-	#kernel2d(kernel)# &
+	<table>
+        <tr><td>
+            \htmlonly
+            <th bgcolor="#f0e0c0" colspan=2 align=left>
+            \endhtmlonly
+            <TT>\ref vigra::Kernel2D "vigra::Kernel2D<SomeType>" kernel;</TT>
+            \htmlonly
+            </th>
+            \endhtmlonly
+        </td></tr>
+        <tr><td>
+	<TT>kernel2d(kernel)</TT>
+        </td><td>
 	    create argument object from information provided by 
 	    kernel
 	    
-	    \\
-	    
-	#kernel2d(kernel, vigra::BORDER_TREATMENT_CLIP)# &
+        </td></tr>
+        <tr><td>
+	<TT>kernel2d(kernel, vigra::BORDER_TREATMENT_CLIP)</TT>
+        </td><td>
 	    create argument object from information provided by 
 	    kernel, but use given border treatment mode
 	    
-	    \\
-	    
-	#kernel2d(kerneliterator, kernelaccessor,#
-	#                upperleft, lowerright,#
-	#                vigra::BORDER_TREATMENT_CLIP)# &
+        </td></tr>
+        <tr><td>
+	<TT>kernel2d(kerneliterator, kernelaccessor,</TT>
+	<TT>                upperleft, lowerright,</TT>
+	<TT>                vigra::BORDER_TREATMENT_CLIP)</TT>
+        </td><td>
 	    create argument object from explicitly given iterator
 	    (pointing to the center of th kernel), accessor,
 	    upper left and lower right corners, and border treatment mode
 
-	    \\
-	\end{tabular}
+	</table>
 	
-	For usage examples see \Ref{Two-dimensional convolution functions}.
-	
-	@memo Argument Object Factories for \Ref{Kernel2D}
+	For usage examples see \ref StandardConvolution "two-dimensional convolution functions".
     */
-//@}
-
-//@}
-
 
 
 #endif // VIGRA_CONVOLUTION_HXX

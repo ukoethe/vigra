@@ -32,8 +32,12 @@
 
 namespace vigra {
 
-/** @heading Algorithms to Resize Images
-    @memo zoom up and down by repeating pixels, or using linear or spline interpolation
+/** \addtogroup GeometricTransformations Geometric Transformations
+    Zoom up and down by repeating pixels, or using linear or spline interpolation
+    
+    <b>\#include</b> "<a href="stdimagefunctions_8hxx-source.html">vigra/stdimagefunctions.hxx</a>"<br>   
+    <b>or</b><br>
+    <b>\#include</b> "<a href="resizeimage_8hxx-source.html">vigra/resizeimage.hxx</a>"<br>   
 */
 //@{
 
@@ -93,10 +97,10 @@ void resizeBandLimitLine(SrcIterator is, SrcIterator isend, SrcAccessor as,
 /*                                                      */
 /********************************************************/
 
-template <class SRCITERATOR, class SRCACCESSOR, class VALUETYPE>
+template <class SrcIterator, class SrcAccessor, class VALUETYPE>
 void 
-resizeCalculateSplineCoefficients(SRCITERATOR i1, SRCITERATOR iend, 
-                SRCACCESSOR a, VALUETYPE * i2)
+resizeCalculateSplineCoefficients(SrcIterator i1, SrcIterator iend, 
+                SrcAccessor a, VALUETYPE * i2)
 {
     int n = iend - i1;
     
@@ -197,11 +201,11 @@ resizeImageInternalSplineGradient(SrcIterator in, SrcIterator inend, SrcAccessor
 /*                                                      */
 /********************************************************/
 
-template <class SRCITERATOR, class SRCACCESSOR,
-          class DESTITERATOR, class DESTACCESSOR>
+template <class SrcIterator, class SrcAccessor,
+          class DestIterator, class DestAccessor>
 void 
-resizeImageInternalSplineInterpolation(SRCITERATOR is, SRCITERATOR iend, SRCACCESSOR sa,
-                      DESTITERATOR id, DESTITERATOR idend, DESTACCESSOR da)
+resizeImageInternalSplineInterpolation(SrcIterator is, SrcIterator iend, SrcAccessor sa,
+                      DestIterator id, DestIterator idend, DestAccessor da)
 {
     int w = iend.x - is.x;
     int h = iend.y - is.y;
@@ -209,11 +213,11 @@ resizeImageInternalSplineInterpolation(SRCITERATOR is, SRCITERATOR iend, SRCACCE
     int wnew = idend.x - id.x;
     int hnew = idend.y - id.y;
         
-    typedef typename SRCACCESSOR::value_type SRCVT;
+    typedef typename SrcAccessor::value_type SRCVT;
     typedef typename NumericTraits<SRCVT>::RealPromote TMPTYPE;
     typedef typename BasicImage<TMPTYPE>::Iterator TMPITER;
     typedef 
-        NumericTraits<typename DESTACCESSOR::value_type> DestTraits;
+        NumericTraits<typename DestAccessor::value_type> DestTraits;
 
     BasicImage<TMPTYPE> dx(w,h);
     BasicImage<TMPTYPE> dy(w,h);
@@ -224,8 +228,8 @@ resizeImageInternalSplineInterpolation(SRCITERATOR is, SRCITERATOR iend, SRCACCE
     
     typename BasicImage<TMPTYPE>::Accessor ta;
     
-    SRCITERATOR in = is;
-    DESTITERATOR io = id;
+    SrcIterator in = is;
+    DestIterator io = id;
     
     TMPITER idx = dx.upperLeft();
     TMPITER idy = dy.upperLeft();
@@ -244,7 +248,7 @@ resizeImageInternalSplineInterpolation(SRCITERATOR is, SRCITERATOR iend, SRCACCE
     // calculate x derivatives
     for(y=0; y<h; ++y, ++in.y, ++idx.y)
     {
-        RowIterator<SRCITERATOR> sr = in;
+        RowIterator<SrcIterator> sr = in;
         RowIterator<TMPITER> dr = idx;
         resizeImageInternalSplineGradient(sr, sr+w, accessorAdapter(sr, sa),
                                           it, r, dr);
@@ -255,7 +259,7 @@ resizeImageInternalSplineInterpolation(SRCITERATOR is, SRCITERATOR iend, SRCACCE
     // calculate y derivatives
     for(x=0; x<w; ++x, ++in.x, ++idy.x)
     {
-        ColumnIterator<SRCITERATOR> sc = in;
+        ColumnIterator<SrcIterator> sc = in;
         ColumnIterator<TMPITER> dc = idy;
         resizeImageInternalSplineGradient(sc, sc+h, accessorAdapter(sc, sa),  
                                           it, r, dc);
@@ -280,7 +284,7 @@ resizeImageInternalSplineInterpolation(SRCITERATOR is, SRCITERATOR iend, SRCACCE
     int oy = 0;
     int ox,xx,yy;
     
-    DESTITERATOR xxd = id, yyd = id;
+    DestIterator xxd = id, yyd = id;
 
     static Diff2D down(0,1), right(1,0), downright(1,1);
    
@@ -291,13 +295,13 @@ resizeImageInternalSplineInterpolation(SRCITERATOR is, SRCITERATOR iend, SRCACCE
         ou = 0.0;
         ox = 0;
         
-        SRCITERATOR xs = in;
+        SrcIterator xs = in;
         for(x=0; x<w-1; ++x, ++xs.x, ou -= 1.0)
         {
             if(x < w-2 && ou >= 1.0) continue;
             int x1 = x+1;
             
-            DESTITERATOR xd = id + Diff2D(ox,oy);
+            DestIterator xd = id + Diff2D(ox,oy);
             W[0][0] = sa(xs);
             W[0][1] = dy(x, y);
             W[0][2] = sa(xs, down);
@@ -371,7 +375,7 @@ resizeImageInternalSplineInterpolation(SRCITERATOR is, SRCITERATOR iend, SRCACCE
                 a3 = W[2][0] + W[2][1] + W[2][2] + W[2][3];
                 a4 = W[3][0] + W[3][1] + W[3][2] + W[3][3];
 
-                DESTITERATOR xxd = yyd;
+                DestIterator xxd = yyd;
                 for(u=ou, xx=ox; u<1.0; u+=du, ++xxd.x, ++xx)
                 {
                     da.set(DestTraits::fromRealPromote(a1 + u * (a2 + u * (a3 + u * a4))), xxd);
@@ -397,7 +401,8 @@ resizeImageInternalSplineInterpolation(SRCITERATOR is, SRCITERATOR iend, SRCACCE
 /*                                                      */
 /********************************************************/
 
-/** Resize image using bi-cubic spline interpolation.
+/** \brief Resize image using bi-cubic spline interpolation.
+
     The function uses the bi-cubic, non-separable spline algorithm described in 
     [Hoschek/Lasser: 
     {\it "Grundlagen der geometrischen Datenverarbeitung"}, Teubner, 1992] to obtain 
@@ -411,13 +416,13 @@ resizeImageInternalSplineInterpolation(SRCITERATOR is, SRCITERATOR iend, SRCACCE
     exponential filter. The source value_type (SrcAccessor::value_type) must 
     be a linear algebra, i.e. it must support addition, subtraction,
     and multiplication (+, -, *), multiplication with a scalar 
-    real number and \URL[NumericTraits]{templatestructNumericTraitsArithmeticType.html}.
+    real number and \ref NumericTraits "NumericTraits".
     The function uses accessors. 
     
-    {\bf Declarations:}
+    <b> Declarations:</b>
     
     pass arguments explicitly:
-    \begin{verbatim}
+    \code
     namespace vigra {
         template <class SrcImageIterator, class SrcAccessor,
               class DestImageIterator, class DestAccessor>
@@ -426,11 +431,11 @@ resizeImageInternalSplineInterpolation(SRCITERATOR is, SRCITERATOR iend, SRCACCE
               SrcImageIterator is, SrcImageIterator iend, SrcAccessor sa,
           DestImageIterator id, DestImageIterator idend, DestAccessor da)
     }
-    \end{verbatim}
+    \endcode
     
     
-    use argument objects in conjuction with \Ref{Argument Object Factories}:
-    \begin{verbatim}
+    use argument objects in conjuction with \ref ArgumentObjectFactories:
+    \code
     namespace vigra {
         template <class SrcImageIterator, class SrcAccessor,
               class DestImageIterator, class DestAccessor>
@@ -439,24 +444,23 @@ resizeImageInternalSplineInterpolation(SRCITERATOR is, SRCITERATOR iend, SRCACCE
               triple<SrcImageIterator, SrcImageIterator, SrcAccessor> src,
           triple<DestImageIterator, DestImageIterator, DestAccessor> dest)
     }
-    \end{verbatim}
+    \endcode
     
-    {\bf Usage:}
+    <b> Usage:</b>
     
-        Include-File:
-        \URL[vigra/resizeimage.hxx]{../include/vigra/resizeimage.hxx}\\
+        <b>\#include</b> "<a href="resizeimage_8hxx-source.html">vigra/resizeimage.hxx</a>"<br>
         Namespace: vigra
     
-    \begin{verbatim}
+    \code
     vigra::resizeImageSplineInterpolation(
                src.upperLeft(), src.lowerRight(), src.accessor(), 
                dest.upperLeft(), dest.lowerRight(), dest.accessor());
     
-    \end{verbatim}
+    \endcode
 
-    {\bf Required Interface:}
+    <b> Required Interface:</b>
     
-    \begin{verbatim}
+    \code
     SrcImageIterator src_upperleft, src_lowerright;
     DestImageIterator dest_upperleft, src_lowerright;
     
@@ -479,24 +483,23 @@ resizeImageInternalSplineInterpolation(SRCITERATOR is, SRCITERATOR iend, SRCACCE
         NumericTraits<DestAccessor::value_type>::fromRealPromote(u), 
     dest_upperleft);
 
-    \end{verbatim}
+    \endcode
 
-    {\bf Preconditions:}
+    <b> Preconditions:</b>
     
-    \begin{verbatim}
+    \code
     src_lowerright.x - src_upperleft.x > 3
     src_lowerright.y - src_upperleft.y > 3
     dest_lowerright.x - dest_upperleft.x > 1
     dest_lowerright.y - dest_upperleft.y > 1
-    \end{verbatim}
+    \endcode
     
-    @memo
 */
-template <class SRCITERATOR, class SRCACCESSOR,
-          class DESTITERATOR, class DESTACCESSOR>
+template <class SrcIterator, class SrcAccessor,
+          class DestIterator, class DestAccessor>
 void 
-resizeImageSplineInterpolation(SRCITERATOR is, SRCITERATOR iend, SRCACCESSOR sa,
-                      DESTITERATOR id, DESTITERATOR idend, DESTACCESSOR da)
+resizeImageSplineInterpolation(SrcIterator is, SrcIterator iend, SrcAccessor sa,
+                      DestIterator id, DestIterator idend, DestAccessor da)
 {
     int w = iend.x - is.x;
     int h = iend.y - is.y;
@@ -515,13 +518,13 @@ resizeImageSplineInterpolation(SRCITERATOR is, SRCITERATOR iend, SRCACCESSOR sa,
     
     if(wnew < w || hnew < h)
     {
-        typedef typename SRCACCESSOR::value_type SRCVT;
+        typedef typename SrcAccessor::value_type SRCVT;
         typedef typename NumericTraits<SRCVT>::RealPromote TMPTYPE;
         typedef typename BasicImage<TMPTYPE>::Iterator TMPITER;
     
         BasicImage<TMPTYPE> t(w,h);
         TMPITER it = t.upperLeft();
-        SRCITERATOR in = is;
+        SrcIterator in = is;
     
         if(wnew < w)
         {
@@ -549,12 +552,12 @@ resizeImageSplineInterpolation(SRCITERATOR is, SRCITERATOR iend, SRCACCESSOR sa,
     }
 }
 
-template <class SRCITERATOR, class SRCACCESSOR,
-          class DESTITERATOR, class DESTACCESSOR>
+template <class SrcIterator, class SrcAccessor,
+          class DestIterator, class DestAccessor>
 inline
 void 
-resizeImageSplineInterpolation(triple<SRCITERATOR, SRCITERATOR, SRCACCESSOR> src,
-                      triple<DESTITERATOR, DESTITERATOR, DESTACCESSOR> dest)
+resizeImageSplineInterpolation(triple<SrcIterator, SrcIterator, SrcAccessor> src,
+                      triple<DestIterator, DestIterator, DestAccessor> dest)
 {
     resizeImageSplineInterpolation(src.first, src.second, src.third,
                                    dest.first, dest.second, dest.third);
@@ -566,11 +569,11 @@ resizeImageSplineInterpolation(triple<SRCITERATOR, SRCITERATOR, SRCACCESSOR> src
 /*                                                      */
 /********************************************************/
 
-template <class SRCITERATOR, class SRCACCESSOR, 
-          class DESTITERATOR, class DESTACCESSOR>
+template <class SrcIterator, class SrcAccessor, 
+          class DestIterator, class DestAccessor>
 void 
-resizeLineLinearInterpolation(SRCITERATOR i1, SRCITERATOR iend, SRCACCESSOR as,
-                           DESTITERATOR id, DESTITERATOR idend, DESTACCESSOR ad)
+resizeLineLinearInterpolation(SrcIterator i1, SrcIterator iend, SrcAccessor as,
+                           DestIterator id, DestIterator idend, DestAccessor ad)
 {
     int wold = iend - i1;
     int wnew = idend - id;
@@ -578,7 +581,7 @@ resizeLineLinearInterpolation(SRCITERATOR i1, SRCITERATOR iend, SRCACCESSOR as,
     if((wold <= 1) || (wnew <= 1)) return; // oder error ? 
     
     typedef 
-        NumericTraits<typename DESTACCESSOR::value_type> DestTraits;
+        NumericTraits<typename DestAccessor::value_type> DestTraits;
 
     ad.set(DestTraits::fromRealPromote(as(i1)), id);
     ++id;
@@ -609,7 +612,8 @@ resizeLineLinearInterpolation(SRCITERATOR i1, SRCITERATOR iend, SRCACCESSOR as,
 /*                                                      */
 /********************************************************/
 
-/** Resize image using linear interpolation.
+/** \brief Resize image using linear interpolation.
+
     The function uses the standard separable bilinear interpolation algorithm to 
     obtain a good compromize between quality and speed.
     
@@ -620,13 +624,13 @@ resizeLineLinearInterpolation(SRCITERATOR i1, SRCITERATOR iend, SRCACCESSOR as,
     is smoothed (band limited) using a recursive
     exponential filter. The source value_type (SrcAccessor::value_type) must 
     be a linear space, i.e. it must support addition, multiplication 
-    with a scalar real number and \URL[NumericTraits]{templatestructNumericTraitsArithmeticType.html}.
+    with a scalar real number and \ref NumericTraits "NumericTraits".
     The function uses accessors. 
     
-    {\bf Declarations:}
+    <b> Declarations:</b>
     
     pass arguments explicitly:
-    \begin{verbatim}
+    \code
     namespace vigra {
         template <class SrcImageIterator, class SrcAccessor,
               class DestImageIterator, class DestAccessor>
@@ -635,11 +639,11 @@ resizeLineLinearInterpolation(SRCITERATOR i1, SRCITERATOR iend, SRCACCESSOR as,
               SrcImageIterator is, SrcImageIterator iend, SrcAccessor sa,
           DestImageIterator id, DestImageIterator idend, DestAccessor da)
     }
-    \end{verbatim}
+    \endcode
     
     
-    use argument objects in conjuction with \Ref{Argument Object Factories}:
-    \begin{verbatim}
+    use argument objects in conjuction with \ref ArgumentObjectFactories:
+    \code
     namespace vigra {
         template <class SrcImageIterator, class SrcAccessor,
               class DestImageIterator, class DestAccessor>
@@ -648,24 +652,23 @@ resizeLineLinearInterpolation(SRCITERATOR i1, SRCITERATOR iend, SRCACCESSOR as,
               triple<SrcImageIterator, SrcImageIterator, SrcAccessor> src,
           triple<DestImageIterator, DestImageIterator, DestAccessor> dest)
     }
-    \end{verbatim}
+    \endcode
     
-    {\bf Usage:}
+    <b> Usage:</b>
     
-        Include-File:
-        \URL[vigra/resizeimage.hxx]{../include/vigra/resizeimage.hxx}\\
+        <b>\#include</b> "<a href="resizeimage_8hxx-source.html">vigra/resizeimage.hxx</a>"<br>
         Namespace: vigra
     
-    \begin{verbatim}
+    \code
     vigra::resizeImageLinearInterpolation(
                src.upperLeft(), src.lowerRight(), src.accessor(), 
                dest.upperLeft(), dest.lowerRight(), dest.accessor());
     
-    \end{verbatim}
+    \endcode
 
-    {\bf Required Interface:}
+    <b> Required Interface:</b>
     
-    \begin{verbatim}
+    \code
     SrcImageIterator src_upperleft, src_lowerright;
     DestImageIterator dest_upperleft, src_lowerright;
     
@@ -684,24 +687,23 @@ resizeLineLinearInterpolation(SRCITERATOR i1, SRCITERATOR iend, SRCACCESSOR as,
         NumericTraits<DestAccessor::value_type>::fromRealPromote(u), 
     dest_upperleft);
 
-    \end{verbatim}
+    \endcode
     
-    {\bf Preconditions:}
+    <b> Preconditions:</b>
     
-    \begin{verbatim}
+    \code
     src_lowerright.x - src_upperleft.x > 1
     src_lowerright.y - src_upperleft.y > 1
     dest_lowerright.x - dest_upperleft.x > 1
     dest_lowerright.y - dest_upperleft.y > 1
-    \end{verbatim}
+    \endcode
     
-    @memo
 */
-template <class SRCITERATOR, class SRCACCESSOR,
-          class DESTITERATOR, class DESTACCESSOR>
+template <class SrcIterator, class SrcAccessor,
+          class DestIterator, class DestAccessor>
 void 
-resizeImageLinearInterpolation(SRCITERATOR is, SRCITERATOR iend, SRCACCESSOR sa,
-                      DESTITERATOR id, DESTITERATOR idend, DESTACCESSOR da)
+resizeImageLinearInterpolation(SrcIterator is, SrcIterator iend, SrcAccessor sa,
+                      DestIterator id, DestIterator idend, DestAccessor da)
 {
     int w = iend.x - is.x;
     int h = iend.y - is.y;
@@ -718,7 +720,7 @@ resizeImageLinearInterpolation(SRCITERATOR is, SRCITERATOR iend, SRCACCESSOR sa,
         
     double const scale = 2.0;
     
-    typedef typename SRCACCESSOR::value_type SRCVT;
+    typedef typename SrcAccessor::value_type SRCVT;
     typedef typename NumericTraits<SRCVT>::RealPromote TMPTYPE;
     
     BasicImage<TMPTYPE> tmp(w, hnew);
@@ -733,7 +735,7 @@ resizeImageLinearInterpolation(SRCITERATOR is, SRCITERATOR iend, SRCACCESSOR sa,
     
     for(x=0; x<w; ++x, ++is.x, ++yt.x)
     {
-        ColumnIterator<SRCITERATOR> c1(is);
+        ColumnIterator<SrcIterator> c1(is);
         ColumnIterator<typename BasicImage<TMPTYPE>::Iterator> ct(yt);
     
         if(hnew < h)
@@ -755,7 +757,7 @@ resizeImageLinearInterpolation(SRCITERATOR is, SRCITERATOR iend, SRCACCESSOR sa,
     
     for(y=0; y < hnew; ++y, ++yt.y, ++id.y)
     {
-        RowIterator<DESTITERATOR> rd(id);
+        RowIterator<DestIterator> rd(id);
         RowIterator<typename BasicImage<TMPTYPE>::Iterator> rt(yt);
     
         if(wnew < w)
@@ -774,12 +776,12 @@ resizeImageLinearInterpolation(SRCITERATOR is, SRCITERATOR iend, SRCACCESSOR sa,
     }
 }
 
-template <class SRCITERATOR, class SRCACCESSOR,
-          class DESTITERATOR, class DESTACCESSOR>
+template <class SrcIterator, class SrcAccessor,
+          class DestIterator, class DestAccessor>
 inline
 void 
-resizeImageLinearInterpolation(triple<SRCITERATOR, SRCITERATOR, SRCACCESSOR> src,
-                               triple<DESTITERATOR, DESTITERATOR, DESTACCESSOR> dest)
+resizeImageLinearInterpolation(triple<SrcIterator, SrcIterator, SrcAccessor> src,
+                               triple<DestIterator, DestIterator, DestAccessor> dest)
 {
     resizeImageLinearInterpolation(src.first, src.second, src.third,
                                    dest.first, dest.second, dest.third);
@@ -791,11 +793,11 @@ resizeImageLinearInterpolation(triple<SRCITERATOR, SRCITERATOR, SRCACCESSOR> src
 /*                                                      */
 /********************************************************/
 
-template <class SRCITERATOR, class SRCACCESSOR, 
-          class DESTITERATOR, class DESTACCESSOR>
+template <class SrcIterator, class SrcAccessor, 
+          class DestIterator, class DestAccessor>
 void 
-resizeLineNoInterpolation(SRCITERATOR i1, SRCITERATOR iend, SRCACCESSOR as,
-                           DESTITERATOR id, DESTITERATOR idend, DESTACCESSOR ad)
+resizeLineNoInterpolation(SrcIterator i1, SrcIterator iend, SrcAccessor as,
+                           DestIterator id, DestIterator idend, DestAccessor ad)
 {
     int wold = iend - i1;
     int wnew = idend - id;
@@ -826,11 +828,12 @@ resizeLineNoInterpolation(SRCITERATOR i1, SRCITERATOR iend, SRCACCESSOR as,
 
 /********************************************************/
 /*                                                      */
-/*           resizeImageLinearInterpolation             */
+/*              resizeImageNoInterpolation              */
 /*                                                      */
 /********************************************************/
 
-/** Resize image by repeating pixel values.
+/** \brief Resize image by repeating the nearest pixel values.
+
     This algorithm is very fast and does not require any arithmetic on the pixel types.
     
     The range must of both the input and output images (resp. regions)
@@ -840,10 +843,10 @@ resizeLineNoInterpolation(SRCITERATOR i1, SRCITERATOR iend, SRCACCESSOR as,
     source pixels. 
     The function uses accessors. 
     
-    {\bf Declarations:}
+    <b> Declarations:</b>
     
     pass arguments explicitly:
-    \begin{verbatim}
+    \code
     namespace vigra {
         template <class SrcImageIterator, class SrcAccessor,
               class DestImageIterator, class DestAccessor>
@@ -852,11 +855,11 @@ resizeLineNoInterpolation(SRCITERATOR i1, SRCITERATOR iend, SRCACCESSOR as,
               SrcImageIterator is, SrcImageIterator iend, SrcAccessor sa,
           DestImageIterator id, DestImageIterator idend, DestAccessor da)
     }
-    \end{verbatim}
+    \endcode
     
     
-    use argument objects in conjuction with \Ref{Argument Object Factories}:
-    \begin{verbatim}
+    use argument objects in conjuction with \ref ArgumentObjectFactories:
+    \code
     namespace vigra {
         template <class SrcImageIterator, class SrcAccessor,
               class DestImageIterator, class DestAccessor>
@@ -865,24 +868,23 @@ resizeLineNoInterpolation(SRCITERATOR i1, SRCITERATOR iend, SRCACCESSOR as,
               triple<SrcImageIterator, SrcImageIterator, SrcAccessor> src,
           triple<DestImageIterator, DestImageIterator, DestAccessor> dest)
     }
-    \end{verbatim}
+    \endcode
     
-    {\bf Usage:}
+    <b> Usage:</b>
     
-        Include-File:
-        \URL[vigra/resizeimage.hxx]{../include/vigra/resizeimage.hxx}\\
+        <b>\#include</b> "<a href="resizeimage_8hxx-source.html">vigra/resizeimage.hxx</a>"<br>
         Namespace: vigra
     
-    \begin{verbatim}
+    \code
     vigra::resizeImageNoInterpolation(
                src.upperLeft(), src.lowerRight(), src.accessor(), 
                dest.upperLeft(), dest.lowerRight(), dest.accessor());
     
-    \end{verbatim}
+    \endcode
 
-    {\bf Required Interface:}
+    <b> Required Interface:</b>
     
-    \begin{verbatim}
+    \code
     SrcImageIterator src_upperleft, src_lowerright;
     DestImageIterator dest_upperleft, src_lowerright;
     
@@ -891,24 +893,23 @@ resizeLineNoInterpolation(SRCITERATOR i1, SRCITERATOR iend, SRCACCESSOR as,
     
     dest_accessor.set(src_accessor(src_upperleft), dest_upperleft);
 
-    \end{verbatim}
+    \endcode
     
-    {\bf Preconditions:}
+    <b> Preconditions:</b>
     
-    \begin{verbatim}
+    \code
     src_lowerright.x - src_upperleft.x > 1
     src_lowerright.y - src_upperleft.y > 1
     dest_lowerright.x - dest_upperleft.x > 1
     dest_lowerright.y - dest_upperleft.y > 1
-    \end{verbatim}
+    \endcode
     
-    @memo
 */
-template <class SRCITERATOR, class SRCACCESSOR,
-          class DESTITERATOR, class DESTACCESSOR>
+template <class SrcIterator, class SrcAccessor,
+          class DestIterator, class DestAccessor>
 void 
-resizeImageNoInterpolation(SRCITERATOR is, SRCITERATOR iend, SRCACCESSOR sa,
-                      DESTITERATOR id, DESTITERATOR idend, DESTACCESSOR da)
+resizeImageNoInterpolation(SrcIterator is, SrcIterator iend, SrcAccessor sa,
+                      DestIterator id, DestIterator idend, DestAccessor da)
 {
     int w = iend.x - is.x;
     int h = iend.y - is.y;
@@ -923,7 +924,7 @@ resizeImageNoInterpolation(SRCITERATOR is, SRCITERATOR iend, SRCACCESSOR sa,
                  "resizeImageNoInterpolation(): "
          "Destination image to small.\n");
         
-    typedef typename SRCACCESSOR::value_type SRCVT;
+    typedef typename SrcAccessor::value_type SRCVT;
 
     BasicImage<SRCVT> tmp(w, hnew);
     
@@ -933,7 +934,7 @@ resizeImageNoInterpolation(SRCITERATOR is, SRCITERATOR iend, SRCACCESSOR sa,
 
     for(x=0; x<w; ++x, ++is.x, ++yt.x)
     {
-        ColumnIterator<SRCITERATOR> c1(is);
+        ColumnIterator<SrcIterator> c1(is);
         ColumnIterator<typename BasicImage<SRCVT>::Iterator> ct(yt);
     
     resizeLineNoInterpolation(c1, c1 + h, accessorAdapter(c1, sa), 
@@ -944,7 +945,7 @@ resizeImageNoInterpolation(SRCITERATOR is, SRCITERATOR iend, SRCACCESSOR sa,
     
     for(y=0; y < hnew; ++y, ++yt.y, ++id.y)
     {
-        RowIterator<DESTITERATOR> rd(id);
+        RowIterator<DestIterator> rd(id);
         RowIterator<typename BasicImage<SRCVT>::Iterator> rt(yt);
     
     resizeLineNoInterpolation(rt, rt + w, accessorAdapter(rt, tmp.accessor()),  
@@ -952,12 +953,12 @@ resizeImageNoInterpolation(SRCITERATOR is, SRCITERATOR iend, SRCACCESSOR sa,
     }
 }
 
-template <class SRCITERATOR, class SRCACCESSOR,
-          class DESTITERATOR, class DESTACCESSOR>
+template <class SrcIterator, class SrcAccessor,
+          class DestIterator, class DestAccessor>
 inline
 void 
-resizeImageNoInterpolation(triple<SRCITERATOR, SRCITERATOR, SRCACCESSOR> src,
-                           triple<DESTITERATOR, DESTITERATOR, DESTACCESSOR> dest)
+resizeImageNoInterpolation(triple<SrcIterator, SrcIterator, SrcAccessor> src,
+                           triple<DestIterator, DestIterator, DestAccessor> dest)
 {
     resizeImageNoInterpolation(src.first, src.second, src.third,
                                    dest.first, dest.second, dest.third);
