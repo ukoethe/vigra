@@ -1,5 +1,6 @@
 SUBDIRS = \
         error \
+        pixeltypes \
         image \
         impex \
         imgproc \
