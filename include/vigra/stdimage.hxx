@@ -30,11 +30,13 @@
 
 namespace vigra { 
 
-#define VIGRA_DEFINE_ITERATORTRAITS(ITERATOR, VALUETYPE, ACCESSOR) \
+#define VIGRA_DEFINE_ITERATORTRAITS(VALUETYPE, ACCESSOR, CONSTACCESSOR) \
     template<> \
-    struct IteratorTraits<ITERATOR<VALUETYPE, VALUETYPE **> > \
+    struct IteratorTraits< \
+        BasicImageIterator<VALUETYPE, VALUETYPE &, VALUETYPE *> > \
     { \
-        typedef ITERATOR<VALUETYPE, VALUETYPE **>    Iterator; \
+        typedef BasicImageIterator<VALUETYPE, VALUETYPE &, VALUETYPE *> \
+                                                     Iterator; \
         typedef Iterator                             iterator; \
         typedef iterator::iterator_category          iterator_category; \
         typedef iterator::value_type                 value_type; \
@@ -46,6 +48,25 @@ namespace vigra {
         typedef iterator::column_iterator            column_iterator; \
         typedef ACCESSOR<VALUETYPE >                 default_accessor; \
         typedef ACCESSOR<VALUETYPE >                 DefaultAccessor; \
+    }; \
+    template<> \
+    struct IteratorTraits< \
+        BasicImageIterator<VALUETYPE, VALUETYPE const &, VALUETYPE const *> > \
+    { \
+        typedef \
+          BasicImageIterator<VALUETYPE, VALUETYPE const &, VALUETYPE const *> \
+                                                     Iterator; \
+        typedef Iterator                             iterator; \
+        typedef iterator::iterator_category          iterator_category; \
+        typedef iterator::value_type                 value_type; \
+        typedef iterator::reference                  reference; \
+        typedef iterator::index_reference            index_reference; \
+        typedef iterator::pointer                    pointer; \
+        typedef iterator::difference_type            difference_type; \
+        typedef iterator::row_iterator               row_iterator; \
+        typedef iterator::column_iterator            column_iterator; \
+        typedef CONSTACCESSOR<VALUETYPE >            default_accessor; \
+        typedef CONSTACCESSOR<VALUETYPE >            DefaultAccessor; \
     };
 
 /** \addtogroup StandardImageTypes Standard Image Types
@@ -54,8 +75,7 @@ namespace vigra {
 */
 //@{
 
-VIGRA_DEFINE_ITERATORTRAITS(BasicImageIterator, unsigned char, StandardValueAccessor)
-VIGRA_DEFINE_ITERATORTRAITS(ConstBasicImageIterator, unsigned char, StandardConstValueAccessor)
+VIGRA_DEFINE_ITERATORTRAITS(unsigned char, StandardValueAccessor, StandardConstValueAccessor)
 
     /** Byte (8-bit unsigned) image.
         It uses \ref vigra::BasicImageIterator and \ref vigra::StandardAccessor and 
@@ -66,8 +86,7 @@ VIGRA_DEFINE_ITERATORTRAITS(ConstBasicImageIterator, unsigned char, StandardCons
     */
 typedef BasicImage<unsigned char> BImage;
 
-VIGRA_DEFINE_ITERATORTRAITS(BasicImageIterator, short, StandardValueAccessor)
-VIGRA_DEFINE_ITERATORTRAITS(ConstBasicImageIterator, short, StandardConstValueAccessor)
+VIGRA_DEFINE_ITERATORTRAITS(short, StandardValueAccessor, StandardConstValueAccessor)
 
 
     /** Short integer (16-bit signed) image.
@@ -79,8 +98,7 @@ VIGRA_DEFINE_ITERATORTRAITS(ConstBasicImageIterator, short, StandardConstValueAc
     */
 typedef BasicImage<short> SImage;
 
-VIGRA_DEFINE_ITERATORTRAITS(BasicImageIterator, int, StandardValueAccessor)
-VIGRA_DEFINE_ITERATORTRAITS(ConstBasicImageIterator, int, StandardConstValueAccessor)
+VIGRA_DEFINE_ITERATORTRAITS(int, StandardValueAccessor, StandardConstValueAccessor)
 
     /** Integer (32-bit signed) image.
         It uses \ref vigra::BasicImageIterator and \ref vigra::StandardAccessor and 
@@ -91,8 +109,7 @@ VIGRA_DEFINE_ITERATORTRAITS(ConstBasicImageIterator, int, StandardConstValueAcce
     */
 typedef BasicImage<int> IImage;
 
-VIGRA_DEFINE_ITERATORTRAITS(BasicImageIterator, float, StandardValueAccessor)
-VIGRA_DEFINE_ITERATORTRAITS(ConstBasicImageIterator, float, StandardConstValueAccessor)
+VIGRA_DEFINE_ITERATORTRAITS(float, StandardValueAccessor, StandardConstValueAccessor)
 
     /** Float (float) image.
         It uses \ref vigra::BasicImageIterator and \ref vigra::StandardAccessor and 
@@ -103,8 +120,7 @@ VIGRA_DEFINE_ITERATORTRAITS(ConstBasicImageIterator, float, StandardConstValueAc
     */
 typedef BasicImage<float> FImage;
 
-VIGRA_DEFINE_ITERATORTRAITS(BasicImageIterator, double, StandardValueAccessor)
-VIGRA_DEFINE_ITERATORTRAITS(ConstBasicImageIterator, double, StandardConstValueAccessor)
+VIGRA_DEFINE_ITERATORTRAITS(double, StandardValueAccessor, StandardConstValueAccessor)
 
     /** Double (double) image.
         It uses \ref vigra::BasicImageIterator and \ref vigra::StandardAccessor and 
@@ -115,8 +131,7 @@ VIGRA_DEFINE_ITERATORTRAITS(ConstBasicImageIterator, double, StandardConstValueA
  */
 typedef BasicImage<double> DImage;
 
-VIGRA_DEFINE_ITERATORTRAITS(BasicImageIterator, RGBValue<unsigned char>, RGBAccessor)
-VIGRA_DEFINE_ITERATORTRAITS(ConstBasicImageIterator, RGBValue<unsigned char>, RGBAccessor)
+VIGRA_DEFINE_ITERATORTRAITS(RGBValue<unsigned char>, RGBAccessor, RGBAccessor)
 
     /** Byte (3x 8-bit unsigned) RGB image.
         The pixel type is \ref vigra::RGBValue "vigra::RGBValue<unsigned char>".
@@ -128,8 +143,7 @@ VIGRA_DEFINE_ITERATORTRAITS(ConstBasicImageIterator, RGBValue<unsigned char>, RG
     */
 typedef BasicImage<RGBValue<unsigned char> > BRGBImage;
 
-VIGRA_DEFINE_ITERATORTRAITS(BasicImageIterator, RGBValue<int>, RGBAccessor)
-VIGRA_DEFINE_ITERATORTRAITS(ConstBasicImageIterator, RGBValue<int>, RGBAccessor)
+VIGRA_DEFINE_ITERATORTRAITS(RGBValue<int>, RGBAccessor, RGBAccessor)
 
     /** Integer (3x 32-bit signed) RGB image.
         The pixel type is \ref vigra::RGBValue "RGBValue<int>".
@@ -141,8 +155,7 @@ VIGRA_DEFINE_ITERATORTRAITS(ConstBasicImageIterator, RGBValue<int>, RGBAccessor)
     */
 typedef BasicImage<RGBValue<int> > IRGBImage;
 
-VIGRA_DEFINE_ITERATORTRAITS(BasicImageIterator, RGBValue<float>, RGBAccessor)
-VIGRA_DEFINE_ITERATORTRAITS(ConstBasicImageIterator, RGBValue<float>, RGBAccessor)
+VIGRA_DEFINE_ITERATORTRAITS(RGBValue<float>, RGBAccessor, RGBAccessor)
 
     /** Floating-point (3x float) RGB image.
         The pixel type is \ref vigra::RGBValue "RGBValue<float>".
@@ -154,8 +167,7 @@ VIGRA_DEFINE_ITERATORTRAITS(ConstBasicImageIterator, RGBValue<float>, RGBAccesso
     */
 typedef BasicImage<RGBValue<float> > FRGBImage;
 
-VIGRA_DEFINE_ITERATORTRAITS(BasicImageIterator, RGBValue<double>, RGBAccessor)
-VIGRA_DEFINE_ITERATORTRAITS(ConstBasicImageIterator, RGBValue<double>, RGBAccessor)
+VIGRA_DEFINE_ITERATORTRAITS(RGBValue<double>, RGBAccessor, RGBAccessor)
 
     /** Double-precision floating-point (3x double) RGB image.
         The pixel type is \ref vigra::RGBValue "RGBValue<double>".
@@ -168,28 +180,22 @@ VIGRA_DEFINE_ITERATORTRAITS(ConstBasicImageIterator, RGBValue<double>, RGBAccess
 typedef BasicImage<RGBValue<double> > DRGBImage;
 
 #define VIGRA_PIXELTYPE TinyVector<float, 2>
-VIGRA_DEFINE_ITERATORTRAITS(BasicImageIterator, VIGRA_PIXELTYPE, VectorAccessor) 
-VIGRA_DEFINE_ITERATORTRAITS(ConstBasicImageIterator, VIGRA_PIXELTYPE, VectorAccessor) 
+VIGRA_DEFINE_ITERATORTRAITS(VIGRA_PIXELTYPE, VectorAccessor, VectorAccessor) 
 #undef VIGRA_PIXELTYPE 
 #define VIGRA_PIXELTYPE TinyVector<float, 3>
-VIGRA_DEFINE_ITERATORTRAITS(BasicImageIterator, VIGRA_PIXELTYPE, VectorAccessor) 
-VIGRA_DEFINE_ITERATORTRAITS(ConstBasicImageIterator, VIGRA_PIXELTYPE, VectorAccessor) 
+VIGRA_DEFINE_ITERATORTRAITS(VIGRA_PIXELTYPE, VectorAccessor, VectorAccessor) 
 #undef VIGRA_PIXELTYPE
 #define VIGRA_PIXELTYPE TinyVector<float, 4>
-VIGRA_DEFINE_ITERATORTRAITS(BasicImageIterator, VIGRA_PIXELTYPE, VectorAccessor) 
-VIGRA_DEFINE_ITERATORTRAITS(ConstBasicImageIterator, VIGRA_PIXELTYPE, VectorAccessor) 
+VIGRA_DEFINE_ITERATORTRAITS(VIGRA_PIXELTYPE, VectorAccessor, VectorAccessor) 
 #undef VIGRA_PIXELTYPE
 #define VIGRA_PIXELTYPE TinyVector<double, 2>
-VIGRA_DEFINE_ITERATORTRAITS(BasicImageIterator, VIGRA_PIXELTYPE, VectorAccessor) 
-VIGRA_DEFINE_ITERATORTRAITS(ConstBasicImageIterator, VIGRA_PIXELTYPE, VectorAccessor) 
+VIGRA_DEFINE_ITERATORTRAITS(VIGRA_PIXELTYPE, VectorAccessor, VectorAccessor) 
 #undef VIGRA_PIXELTYPE
 #define VIGRA_PIXELTYPE TinyVector<double, 3>
-VIGRA_DEFINE_ITERATORTRAITS(BasicImageIterator, VIGRA_PIXELTYPE, VectorAccessor) 
-VIGRA_DEFINE_ITERATORTRAITS(ConstBasicImageIterator, VIGRA_PIXELTYPE, VectorAccessor) 
+VIGRA_DEFINE_ITERATORTRAITS(VIGRA_PIXELTYPE, VectorAccessor, VectorAccessor) 
 #undef VIGRA_PIXELTYPE
 #define VIGRA_PIXELTYPE TinyVector<double, 4>
-VIGRA_DEFINE_ITERATORTRAITS(BasicImageIterator, VIGRA_PIXELTYPE, VectorAccessor) 
-VIGRA_DEFINE_ITERATORTRAITS(ConstBasicImageIterator, VIGRA_PIXELTYPE, VectorAccessor) 
+VIGRA_DEFINE_ITERATORTRAITS(VIGRA_PIXELTYPE, VectorAccessor, VectorAccessor) 
 #undef VIGRA_PIXELTYPE
 
     /** Floating-point TinyVector image.
@@ -259,9 +265,9 @@ typedef BasicImage<TinyVector<double, 4> > DVector4Image;
 #ifndef NO_PARTIAL_TEMPLATE_SPECIALIZATION
 
 template <class T>
-struct IteratorTraits<BasicImageIterator<T, T **> >
+struct IteratorTraits<BasicImageIterator<T, T &, T *> >
 {
-    typedef BasicImageIterator<T, T **>          Iterator;
+    typedef BasicImageIterator<T, T &, T *>      Iterator;
     typedef Iterator                             iterator;
     typedef typename iterator::iterator_category iterator_category;
     typedef typename iterator::value_type        value_type;
@@ -276,20 +282,20 @@ struct IteratorTraits<BasicImageIterator<T, T **> >
 };  
 
 template <class T>
-struct IteratorTraits<ConstBasicImageIterator<T, T **> >
+struct IteratorTraits<BasicImageIterator<T, T const &, T const *> >
 {
-    typedef ConstBasicImageIterator<T, T **>     Iterator;
-    typedef Iterator                             iterator;
-    typedef typename iterator::iterator_category iterator_category;
-    typedef typename iterator::value_type        value_type;
-    typedef typename iterator::reference         reference;
-    typedef typename iterator::index_reference   index_reference;
-    typedef typename iterator::pointer           pointer;
-    typedef typename iterator::difference_type   difference_type;
-    typedef typename iterator::row_iterator      row_iterator;
-    typedef typename iterator::column_iterator   column_iterator;
-    typedef StandardConstAccessor<T>             DefaultAccessor; 
-    typedef StandardConstAccessor<T>             default_accessor; 
+    typedef BasicImageIterator<T, T const &, T const *>     Iterator;
+    typedef Iterator                                        iterator;
+    typedef typename iterator::iterator_category            iterator_category;
+    typedef typename iterator::value_type                   value_type;
+    typedef typename iterator::reference                    reference;
+    typedef typename iterator::index_reference              index_reference;
+    typedef typename iterator::pointer                      pointer;
+    typedef typename iterator::difference_type              difference_type;
+    typedef typename iterator::row_iterator                 row_iterator;
+    typedef typename iterator::column_iterator              column_iterator;
+    typedef StandardConstAccessor<T>                        DefaultAccessor; 
+    typedef StandardConstAccessor<T>                        default_accessor; 
 };  
 
 #endif
@@ -640,107 +646,107 @@ destIterRange(Iterator upperleft, Iterator lowerright, Accessor a)
 /****************************************************************/
 
 template <class PixelType, class Accessor>
-inline triple<typename BasicImage<PixelType>::ConstIterator, 
-              typename BasicImage<PixelType>::ConstIterator, Accessor>
+inline triple<typename BasicImage<PixelType>::const_traverser, 
+              typename BasicImage<PixelType>::const_traverser, Accessor>
 srcImageRange(BasicImage<PixelType> const & img, Accessor a)
 {
-    return triple<typename BasicImage<PixelType>::ConstIterator, 
-                  typename BasicImage<PixelType>::ConstIterator, 
+    return triple<typename BasicImage<PixelType>::const_traverser, 
+                  typename BasicImage<PixelType>::const_traverser, 
           Accessor>(img.upperLeft(),
                     img.lowerRight(),
                 a);
 }
 
 template <class PixelType, class Accessor>
-inline pair<typename BasicImage<PixelType>::ConstIterator, Accessor>
+inline pair<typename BasicImage<PixelType>::const_traverser, Accessor>
 srcImage(BasicImage<PixelType> const & img, Accessor a)
 {
-    return pair<typename BasicImage<PixelType>::ConstIterator, 
+    return pair<typename BasicImage<PixelType>::const_traverser, 
                 Accessor>(img.upperLeft(), a);
 }
 
 template <class PixelType, class Accessor>
-inline triple<typename BasicImage<PixelType>::Iterator, 
-              typename BasicImage<PixelType>::Iterator, Accessor>
+inline triple<typename BasicImage<PixelType>::traverser, 
+              typename BasicImage<PixelType>::traverser, Accessor>
 destImageRange(BasicImage<PixelType> & img, Accessor a)
 {
-    return triple<typename BasicImage<PixelType>::Iterator, 
-                  typename BasicImage<PixelType>::Iterator, 
+    return triple<typename BasicImage<PixelType>::traverser, 
+                  typename BasicImage<PixelType>::traverser, 
           Accessor>(img.upperLeft(),
                     img.lowerRight(),
                 a);
 }
 
 template <class PixelType, class Accessor>
-inline pair<typename BasicImage<PixelType>::Iterator, Accessor>
+inline pair<typename BasicImage<PixelType>::traverser, Accessor>
 destImage(BasicImage<PixelType> & img, Accessor a)
 {
-    return pair<typename BasicImage<PixelType>::Iterator, 
+    return pair<typename BasicImage<PixelType>::traverser, 
                 Accessor>(img.upperLeft(), a);
 }
 
 template <class PixelType, class Accessor>
-inline pair<typename BasicImage<PixelType>::ConstIterator, Accessor>
+inline pair<typename BasicImage<PixelType>::const_traverser, Accessor>
 maskImage(BasicImage<PixelType> const & img, Accessor a)
 {
-    return pair<typename BasicImage<PixelType>::ConstIterator, 
+    return pair<typename BasicImage<PixelType>::const_traverser, 
                 Accessor>(img.upperLeft(), a);
 }
 
 /****************************************************************/
 
 template <class PixelType>
-inline triple<typename BasicImage<PixelType>::ConstIterator, 
-              typename BasicImage<PixelType>::ConstIterator, 
+inline triple<typename BasicImage<PixelType>::const_traverser, 
+              typename BasicImage<PixelType>::const_traverser, 
           typename BasicImage<PixelType>::ConstAccessor>
 srcImageRange(BasicImage<PixelType> const & img)
 {
-    return triple<typename BasicImage<PixelType>::ConstIterator, 
-                  typename BasicImage<PixelType>::ConstIterator, 
+    return triple<typename BasicImage<PixelType>::const_traverser, 
+                  typename BasicImage<PixelType>::const_traverser, 
           typename BasicImage<PixelType>::ConstAccessor>(img.upperLeft(),
                                         img.lowerRight(),
                         img.accessor());
 }
 
 template <class PixelType>
-inline pair< typename BasicImage<PixelType>::ConstIterator, 
+inline pair< typename BasicImage<PixelType>::const_traverser, 
              typename BasicImage<PixelType>::ConstAccessor>
 srcImage(BasicImage<PixelType> const & img)
 {
-    return pair<typename BasicImage<PixelType>::ConstIterator, 
+    return pair<typename BasicImage<PixelType>::const_traverser, 
                 typename BasicImage<PixelType>::ConstAccessor>(img.upperLeft(), 
                                          img.accessor());
 }
 
 template <class PixelType>
-inline triple< typename BasicImage<PixelType>::Iterator, 
-               typename BasicImage<PixelType>::Iterator, 
+inline triple< typename BasicImage<PixelType>::traverser, 
+               typename BasicImage<PixelType>::traverser, 
            typename BasicImage<PixelType>::Accessor>
 destImageRange(BasicImage<PixelType> & img)
 {
-    return triple<typename BasicImage<PixelType>::Iterator, 
-                  typename BasicImage<PixelType>::Iterator, 
+    return triple<typename BasicImage<PixelType>::traverser, 
+                  typename BasicImage<PixelType>::traverser, 
           typename BasicImage<PixelType>::Accessor>(img.upperLeft(),
                                         img.lowerRight(),
                         img.accessor());
 }
 
 template <class PixelType>
-inline pair< typename BasicImage<PixelType>::Iterator, 
+inline pair< typename BasicImage<PixelType>::traverser, 
              typename BasicImage<PixelType>::Accessor>
 destImage(BasicImage<PixelType> & img)
 {
-    return pair<typename BasicImage<PixelType>::Iterator, 
+    return pair<typename BasicImage<PixelType>::traverser, 
                 typename BasicImage<PixelType>::Accessor>(img.upperLeft(), 
                                          img.accessor());
 }
 
 template <class PixelType>
-inline pair< typename BasicImage<PixelType>::ConstIterator, 
+inline pair< typename BasicImage<PixelType>::const_traverser, 
              typename BasicImage<PixelType>::ConstAccessor>
 maskImage(BasicImage<PixelType> const & img)
 {
-    return pair<typename BasicImage<PixelType>::ConstIterator, 
+    return pair<typename BasicImage<PixelType>::const_traverser, 
                 typename BasicImage<PixelType>::ConstAccessor>(img.upperLeft(), 
                                          img.accessor());
 }
