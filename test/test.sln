@@ -67,6 +67,14 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "tensorimaging", "tensorimag
 	ProjectSection(ProjectDependencies) = postProject
 	EndProjectSection
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "syntax", "syntax\syntax.vcproj", "{4FAFF206-B048-4048-A2E1-00E93C6D2606}"
+	ProjectSection(ProjectDependencies) = postProject
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "utilities", "utilities\utilities.vcproj", "{3C75D96D-AF80-48D7-9A8A-27FF5D2F6051}"
+	ProjectSection(ProjectDependencies) = postProject
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfiguration) = preSolution
 		Debug = Debug
@@ -110,12 +118,10 @@ Global
 		{213371EE-EAB1-4879-9D23-EC4499C22F8D}.Release.ActiveCfg = Release|Win32
 		{213371EE-EAB1-4879-9D23-EC4499C22F8D}.Release.Build.0 = Release|Win32
 		{03F6A35C-E906-4616-B0B2-EF5A72A2FA09}.Debug.ActiveCfg = Debug|Win32
-		{03F6A35C-E906-4616-B0B2-EF5A72A2FA09}.Debug.Build.0 = Debug|Win32
 		{03F6A35C-E906-4616-B0B2-EF5A72A2FA09}.Release.ActiveCfg = Release|Win32
 		{F50BA3E6-22F6-42B4-8E0E-15FB88B4E8F7}.Debug.ActiveCfg = Debug|Win32
 		{F50BA3E6-22F6-42B4-8E0E-15FB88B4E8F7}.Debug.Build.0 = Debug|Win32
 		{F50BA3E6-22F6-42B4-8E0E-15FB88B4E8F7}.Release.ActiveCfg = Release|Win32
-		{F50BA3E6-22F6-42B4-8E0E-15FB88B4E8F7}.Release.Build.0 = Release|Win32
 		{3545E46C-E9CC-4C7F-8922-3C2857D63A92}.Debug.ActiveCfg = Debug|Win32
 		{3545E46C-E9CC-4C7F-8922-3C2857D63A92}.Debug.Build.0 = Debug|Win32
 		{3545E46C-E9CC-4C7F-8922-3C2857D63A92}.Release.ActiveCfg = Release|Win32
@@ -140,6 +146,14 @@ Global
 		{0F057AD0-4971-4EC0-A2AE-F249290F88E4}.Debug.Build.0 = Debug|Win32
 		{0F057AD0-4971-4EC0-A2AE-F249290F88E4}.Release.ActiveCfg = Release|Win32
 		{0F057AD0-4971-4EC0-A2AE-F249290F88E4}.Release.Build.0 = Release|Win32
+		{4FAFF206-B048-4048-A2E1-00E93C6D2606}.Debug.ActiveCfg = Debug|Win32
+		{4FAFF206-B048-4048-A2E1-00E93C6D2606}.Debug.Build.0 = Debug|Win32
+		{4FAFF206-B048-4048-A2E1-00E93C6D2606}.Release.ActiveCfg = Release|Win32
+		{4FAFF206-B048-4048-A2E1-00E93C6D2606}.Release.Build.0 = Release|Win32
+		{3C75D96D-AF80-48D7-9A8A-27FF5D2F6051}.Debug.ActiveCfg = Debug|Win32
+		{3C75D96D-AF80-48D7-9A8A-27FF5D2F6051}.Debug.Build.0 = Debug|Win32
+		{3C75D96D-AF80-48D7-9A8A-27FF5D2F6051}.Release.ActiveCfg = Release|Win32
+		{3C75D96D-AF80-48D7-9A8A-27FF5D2F6051}.Release.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 	EndGlobalSection
