@@ -2,7 +2,7 @@
 # CXX = g++
 
 # update path according to where 'vigra-config' is installed
-CXXFLAGS  := -O $(shell ../../config/vigra-config --cxxflags)
+CXXFLAGS  := -O $(shell ../../config/vigra-config --cppflags)
 IMPEX_LIB := $(shell ../../config/vigra-config --impex-lib)
 # if your 'make'-program does not support $(shell ...), write
 #    CXXFLAGS  = -O `../../config/vigra-config --cxxflags`
