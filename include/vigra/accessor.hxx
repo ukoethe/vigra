@@ -851,7 +851,7 @@ class MultiImageAccessor2
     template <class DIFFERENCE>
     value_type operator()(DIFFERENCE const & d) const
     {
-        return std::make_pair(a1_(i1_, d), a2_(i2_, i.x, i.y));
+        return std::make_pair(a1_(i1_, d), a2_(i2_, d));
     }
 
         /** read the data item at an offset
