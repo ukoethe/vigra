@@ -53,11 +53,23 @@ INSTALL = @INSTALL@
 %.d: %.c
 	@echo updating header dependencies for $*.c
 	@rm -f $*.d
-	@(echo -e "$*.d \c" ; $(CC) -M $(CFLAGS) $(CPPFLAGS) -c $*.c) > $*.d \
+	@$(CC) -M $(CFLAGS) $(CPPFLAGS) -c $*.c | sed "s@$*.o@$*.d $*.o@" > $*.d \
         || { rm -f $*.d; exit 1; }
 
 %.d: %.cxx
 	@echo updating header dependencies for $*.cxx
 	@rm -f $*.d
-	@(echo -e "$*.d \c" ; $(CXX) -M $(CXXFLAGS) $(CPPFLAGS) -c $*.cxx) > $*.d \
+	@$(CXX) -M $(CXXFLAGS) $(CPPFLAGS) -c $*.cxx | sed "s@$*.o@$*.d $*.o@" > $*.d \
         || { rm -f $*.d; exit 1; }
+
+%.ld: %.c
+	@echo updating header dependencies for $*.c
+	@rm -f $*.ld
+	@$(CC) -M $(CFLAGS) $(CPPFLAGS) -c $*.c | sed "s@$*.o@$*.ld $*.lo@" > $*.ld \
+        || { rm -f $*.ld; exit 1; }
+
+%.ld: %.cxx
+	@echo updating header dependencies for $*.cxx
+	@rm -f $*.ld
+	@$(CXX) -M $(CXXFLAGS) $(CPPFLAGS) -c $*.cxx | sed "s@$*.o@$*.ld $*.lo@" > $*.ld \
+        || { rm -f $*.ld; exit 1; }
