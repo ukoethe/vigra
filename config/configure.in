@@ -68,7 +68,7 @@ if test $with_tiff = "yes";
 then
     TIFF_LIB="-L$with_tifflib -ltiff"
     IMPEX_DEPLIBS="$IMPEX_DEPLIBS $TIFF_LIB"
-    LIBCPPFLAGS="$LIBCPPFLAGS -DHasTIFF -I$with_tiffinc"
+    LIBCPPFLAGS="$LIBCPPFLAGS -DHasTIFF $tiff_cppflags"
 fi
 
 VIGRA_FIND_PACKAGE(jpeg, jpeg, jpeglib.h, [support import/export of jpeg images (default=no)])
@@ -76,7 +76,7 @@ if test $with_jpeg = "yes";
 then
     JPEG_LIB="-L$with_jpeglib -ljpeg"
     IMPEX_DEPLIBS="$IMPEX_DEPLIBS $JPEG_LIB"
-    LIBCPPFLAGS="$LIBCPPFLAGS -DHasJPEG -I$with_jpeginc"
+    LIBCPPFLAGS="$LIBCPPFLAGS -DHasJPEG $jpeg_cppflags"
 fi
 
 VIGRA_FIND_PACKAGE(png, png, png.h, [support import/export of png images (default=no)])
@@ -84,7 +84,7 @@ if test $with_png = "yes";
 then
     PNG_LIB="-L$with_pnglib -lpng"
     IMPEX_DEPLIBS="$IMPEX_DEPLIBS $PNG_LIB"
-    LIBCPPFLAGS="$LIBCPPFLAGS -DHasPNG -I$with_pnginc"
+    LIBCPPFLAGS="$LIBCPPFLAGS -DHasPNG $png_cppflags"
 fi
 
 VIGRA_FIND_PACKAGE(fftw, fftw, fftw.h, [support fast Fourier transforms (default=no)])
@@ -92,7 +92,7 @@ if test $with_fftw = "yes";
 then
     FFTW_LIB="-L$with_fftwlib -lfftw"
     RFFTW_LIB="-L$with_fftwlib -lrfftw -lfftw"
-    FFTW_INCLUDES="-I$with_fftwinc"
+    FFTW_INCLUDES="$fftw_cppflags"
     CPPFLAGS="$FFTW_INCLUDES $CPPFLAGS"
 fi
 
