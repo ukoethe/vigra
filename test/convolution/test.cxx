@@ -14,15 +14,12 @@ struct ConvolutionTest
     ConvolutionTest()
     : constimg(5,5), rampimg(5,1)
     {
-        constimg = 1.0;
+        constimg.init(1.0);
         
-        ViffImage * viff = readViffImage("lenna128.xv");
+        ImageImportInfo info("lenna128.xv");
 
-        shouldMsg(viff != 0, "Unable to read test image \"lenna128.xv\"\n");
-
-        lenna.resize(viff->row_size,viff->col_size);
-        importViffImage(viff, destImage(lenna));
-        freeViffImage(viff);
+        lenna.resize(info.width(), info.height());
+        importImage(info, destImage(lenna));
 
         Image::ScanOrderIterator i = rampimg.begin();
         Image::ScanOrderIterator end = rampimg.end();
@@ -234,9 +231,9 @@ struct ConvolutionTest
         grad.initGaussianDerivative(1.0, 1);
 
         Image tmp1(lenna);
-        tmp1 = 0.0;
+        tmp1.init(0.0);
         Image tmp2(lenna);
-        tmp2 = 0.0;
+        tmp2.init(0.0);
         Image tmp3(lenna);
 
         separableConvolveX(srcImageRange(lenna), destImage(tmp3), kernel1d(grad));
