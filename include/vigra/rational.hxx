@@ -163,7 +163,7 @@ Rational<IntType> ceil(const Rational<IntType>& r);
     <tt>Rational</tt> implements the required interface of an
     \ref AlgebraicField and the required \ref RationalTraits "numeric and
     promotion traits". All arithmetic and comparison operators, as well
-    as some algebraic functions are supported .
+    as the relevant algebraic functions are supported .
 
     <b>See also:</b>
     <ul>
