@@ -1,4 +1,4 @@
-//-- -*- c++ -*-
+// -*- c++ -*-
 // $Id$
 
 #include "unittest.hxx"
@@ -137,18 +137,22 @@ struct MultiArraySeparableConvolutionTest
     const int width = size[0];
     const int height = size[1];
     const int depth = size[2];
-    for( int z = 0; z < depth; ++z ) {
-      for( int y = 0; y < height; ++y ) {
-	for( int x = 0; x < width; ++x ) {
-	
-	  Image3D::value_type val = 80;
+    for( int z = 0; z < depth; ++z ) 
+    {
+      for( int y = 0; y < height; ++y ) 
+      {
+        for( int x = 0; x < width; ++x ) 
+        {
+        
+          Image3D::value_type val = 80;
 
-	  if( (x > b) && x < (width-b) &&
-	      (y > b) && y < (height-b) &&
-	      (z > b)  && z < (depth-b) ) {
-	    val = 220;
-	  }
-	  image( x, y, z ) = val;
+          if( (x > b) && x < (width-b) &&
+              (y > b) && y < (height-b) &&
+              (z > b)  && z < (depth-b) ) 
+          {
+            val = 220;
+          }
+          image( x, y, z ) = val;
         }
       }
     }
@@ -158,44 +162,35 @@ struct MultiArraySeparableConvolutionTest
 
   void test_1DValidity( const Image3D &src, float ksize )
   {
-//    std::cerr << "Testing 1D validity... ";
-
     Image3D d1( src.size() );
     Image3D dn( src.size() );
     Image3D dest3( src.size() );
 
     int depth = src.size()[2];
 
-    for( int d = 0; d < 3; ++d ) {
-//      std::cerr << "  Dim: " << d;
+    for( int d = 0; d < 3; ++d ) 
+    {
       std::vector<vigra::Kernel1D<float> > kernels( 3 );
-#if 0
-      kernels[d].initGaussian( ksize );
-#else
       kernels[d].initGaussianDerivative( ksize, 1 );
-#endif
 
       separableConvolveMultiArray( srcMultiArrayRange(src),
-				   destMultiArray(dn),
-				   kernels.begin() );
+                                   destMultiArray(dn),
+                                   kernels.begin() );
 
       separableConvolveMultiArray( srcMultiArrayRange(src),
-				   destMultiArray(d1),
-				   d,
-				   kernels[d] );
+                                   destMultiArray(d1),
+                                   d,
+                                   kernels[d] );
 
       shouldEqualSequence(  dn.begin(), dn.end(),
-			    d1.begin() );
+                            d1.begin() );
     }
-//    std::cerr << std::endl;
   }
 
   // - - - - - - - - - - - - - - - - - - - - - - - -
 
   void test_1DValidityB( const Image3D &src, float ksize )
   {
-//    std::cerr << "Testing 1D validity II... ";
-
     Image3D dst1( src.size() );
     Image3D dst2( src.size() );
 
@@ -208,50 +203,48 @@ struct MultiArraySeparableConvolutionTest
 
     int z;
 
-    //-- x
+    // x convolution
     separableConvolveMultiArray( srcMultiArrayRange(src),
-				 destMultiArray(dst1),
-				 0, kernx );
+                                 destMultiArray(dst1),
+                                 0, kernx );
 
-    for( z = 0; z < depth; ++z ) {
+    for( z = 0; z < depth; ++z ) 
+    {
       BasicImageView<Image3D::value_type> sslice =
-	makeBasicImageView( src.bindOuter(z) );
+        makeBasicImageView( src.bindOuter(z) );
       BasicImageView<Image3D::value_type> dslice =
-	makeBasicImageView( dst2.bindOuter(z) );
+        makeBasicImageView( dst2.bindOuter(z) );
       
       vigra::separableConvolveX( srcImageRange(sslice), destImage(dslice),
-				 vigra::kernel1d(kernx) );
+                                 vigra::kernel1d(kernx) );
     }
 
     shouldEqualSequence(  dst1.begin(), dst1.end(),
-			  dst2.begin() );
+                          dst2.begin() );
 
 
-    //-- y
+    // y convolution
     separableConvolveMultiArray( srcMultiArrayRange(src),
-				 destMultiArray(dst1),
-				 1, kerny );
+                                 destMultiArray(dst1),
+                                 1, kerny );
 
-    for( z = 0; z < depth; ++z ) {
+    for( z = 0; z < depth; ++z ) 
+    {
       BasicImageView<Image3D::value_type> sslice =
-	makeBasicImageView( src.bindOuter(z) );
+        makeBasicImageView( src.bindOuter(z) );
       BasicImageView<Image3D::value_type> dslice =
-	makeBasicImageView( dst2.bindOuter(z) );
+        makeBasicImageView( dst2.bindOuter(z) );
       
       vigra::separableConvolveY( srcImageRange(sslice), destImage(dslice),
-				 vigra::kernel1d(kerny) );
+                                 vigra::kernel1d(kerny) );
     }
 
     shouldEqualSequence(  dst1.begin(), dst1.end(),
-			  dst2.begin() );
+                          dst2.begin() );
   }
-
-  // - - - - - - - - - - - - - - - - - - - - - - - -
 
   void test_2DValidity( const Image3D &src, float ksize )
   {
-//    std::cerr << "Testing 2D validity... ";
-
     Image3D d2( src.size() );
     Image3D dn( src.size() );
 
@@ -261,24 +254,23 @@ struct MultiArraySeparableConvolutionTest
     kernels[0].initGaussian( ksize );
     kernels[1].initGaussianDerivative( ksize, 1 );
 
-    for( int z = 0; z < depth; ++z ) {
+    for( int z = 0; z < depth; ++z )
+    {
       BasicImageView<Image3D::value_type> sslice =
-	makeBasicImageView( src.bindOuter(z) );
+        makeBasicImageView( src.bindOuter(z) );
       BasicImageView<Image3D::value_type> dslice =
-	makeBasicImageView( d2.bindOuter(z) );
+        makeBasicImageView( d2.bindOuter(z) );
       
       vigra::convolveImage( srcImageRange(sslice), destImage(dslice),
-			    kernels[0], kernels[1] );
+                            kernels[0], kernels[1] );
     }
 
     separableConvolveMultiArray( srcMultiArrayRange(src),
-				 destMultiArray(dn),
-				 kernels.begin() );
+                                 destMultiArray(dn),
+                                 kernels.begin() );
 
     shouldEqualSequence( dn.begin(), dn.end(),
-			 d2.begin() );
-    
-//    std::cerr << std::endl;
+                         d2.begin() );
   }
 
   Size3 size;
@@ -306,9 +298,9 @@ struct MultiArraySeparableConvolutionTest
     test_2DValidity( srcImage, kernelSize );
   }
 
-};	//-- struct MultiArraySeparableConvolutionTest
+}; // struct MultiArraySeparableConvolutionTest
 
-//----------------------------------------------------------
+//--------------------------------------------------------
 
 struct MultiArraySeparableConvolutionTestSuite
 : public vigra::test_suite
@@ -316,7 +308,7 @@ struct MultiArraySeparableConvolutionTestSuite
   MultiArraySeparableConvolutionTestSuite()
     : vigra::test_suite("MultiArraySeparableConvolutionTestSuite")
     {
-      //        add( testCase( &MultiArrayTest::test_default_ctor ) );
+        // add( testCase( &MultiArrayTest::test_default_ctor ) );
         add( testCase( &MultiArrayPointoperatorsTest::testInit ) );
         add( testCase( &MultiArrayPointoperatorsTest::testCopy ) );
         add( testCase( &MultiArrayPointoperatorsTest::testTransform ) );
@@ -327,9 +319,9 @@ struct MultiArraySeparableConvolutionTestSuite
         add( testCase( &MultiArraySeparableConvolutionTest::test_Valid2 ) );
         add( testCase( &MultiArraySeparableConvolutionTest::test_Valid3 ) );
     }
-};	//-- struct MultiArraySeparableConvolutionTestSuite
+}; // struct MultiArraySeparableConvolutionTestSuite
 
-//----------------------------------------------------------
+//--------------------------------------------------------
 
 int main()
 {
