@@ -511,9 +511,13 @@ struct FixedPointTest
         shouldEqual((vigra::FixedPoint<3,4>(-3.5).value), -56);
         shouldEqual((-vigra::FixedPoint<3,4>(3.5).value), -56);
 
-        try { vigra::FixedPoint<1, 8>(2); failTest("No exception thrown"); } catch(vigra::PreconditionViolation &) {}
         try { vigra::FixedPoint<1, 8>(3.75); failTest("No exception thrown"); } catch(vigra::PreconditionViolation &) {}
 
+        shouldEqual((vigra::NumericTraits<vigra::FixedPoint<1, 8> >::zero()).value, 0);
+        shouldEqual((vigra::NumericTraits<vigra::FixedPoint<1, 8> >::one()).value, 1 << 8);
+        shouldEqual((vigra::NumericTraits<vigra::FixedPoint<1, 8> >::max()).value, (1 << 9) - 1);
+        shouldEqual((vigra::NumericTraits<vigra::FixedPoint<1, 8> >::min()).value, -((1 << 9) - 1));
+        
         vigra::FixedPoint<2, 8> v(3.75);
         shouldEqual((vigra::FixedPoint<2, 8>(v).value), 15 << 6);
         shouldEqual((vigra::FixedPoint<3, 10>(v).value), 15 << 8);
@@ -525,14 +529,19 @@ struct FixedPointTest
         shouldEqual((vigra::FixedPoint<2, 2>(-v).value), -15);
         shouldEqual((vigra::FixedPoint<2, 0>(-v).value), -4);
 
-        should(floor(v) == 3);
-        should(ceil(v) == 4);
+        shouldEqual((double)v, 3.75);
+        should((frac(v) == vigra::FixedPoint<0, 8>(0.75)));
+        should((dual_frac(v) == vigra::FixedPoint<0, 8>(0.25)));
+        should(vigra::floor(v) == 3);
+        should(vigra::ceil(v) == 4);
         should(round(v) == 4);
-        should(abs(v) == v);
-        should(floor(-v) == -4);
-        should(ceil(-v) == -3);
+        should(vigra::abs(v) == v);
+        should((frac(-v) == vigra::FixedPoint<0, 8>(0.25)));
+        should((dual_frac(-v) == vigra::FixedPoint<0, 8>(0.75)));
+        should(vigra::floor(-v) == -4);
+        should(vigra::ceil(-v) == -3);
         should(round(-v) == -4);
-        should(abs(-v) == v);
+        should(vigra::abs(-v) == v);
 
         vigra::FixedPoint<3, 10> v1;
         shouldEqual((v1 = v).value, 15 << 8);
@@ -578,6 +587,19 @@ struct FixedPointTest
     {
         vigra::FixedPoint<1, 16> t1(0.75), t2(0.25);
         signed char v1 = 1, v2 = 2, v4 = 4, v8 = 8;
+        
+        should((vigra::FixedPoint<1, 16>(t1) += t1) == (vigra::FixedPoint<1, 16>(1.5)));
+        should((vigra::FixedPoint<1, 16>(t1) -= t1) == (vigra::FixedPoint<1, 16>(0.0)));
+        should((vigra::FixedPoint<2, 16>(t1) *= t1) == (vigra::FixedPoint<1, 16>(9.0 / 16.0)));
+        
+        should(--t1 == (vigra::FixedPoint<1, 16>(-0.25)));
+        should(t1 == (vigra::FixedPoint<1, 16>(-0.25)));
+        should(++t1 == (vigra::FixedPoint<1, 16>(0.75)));
+        should(t1 == (vigra::FixedPoint<1, 16>(0.75)));
+        should(t1++ == (vigra::FixedPoint<1, 16>(0.75)));
+        should(t1 == (vigra::FixedPoint<1, 16>(1.75)));
+        should(t1-- == (vigra::FixedPoint<1, 16>(1.75)));
+        should(t1 == (vigra::FixedPoint<1, 16>(0.75)));
 
         shouldEqual((t1 * vigra::fixedPoint(v1)).value, 3 << 14);
         shouldEqual((t2 * vigra::fixedPoint(v1)).value, 1 << 14);
@@ -591,18 +613,18 @@ struct FixedPointTest
         shouldEqual((vigra::FixedPoint<8, 2>(-t1 * vigra::fixedPoint(v1))).value, -3);
         shouldEqual((vigra::FixedPoint<8, 2>(-t2 * vigra::fixedPoint(v1))).value, -1);
 
-        shouldEqual(floor(t1 * vigra::fixedPoint(v1) + t2 * vigra::fixedPoint(v2)), 1);
-        shouldEqual(ceil(t1 * vigra::fixedPoint(v1) + t2 * vigra::fixedPoint(v2)), 2);
+        shouldEqual(vigra::floor(t1 * vigra::fixedPoint(v1) + t2 * vigra::fixedPoint(v2)), 1);
+        shouldEqual(vigra::ceil(t1 * vigra::fixedPoint(v1) + t2 * vigra::fixedPoint(v2)), 2);
         shouldEqual(round(t1 * vigra::fixedPoint(v1) + t2 * vigra::fixedPoint(v2)), 1);
-        shouldEqual(floor(t1 * vigra::fixedPoint(v4) + t2 * vigra::fixedPoint(v8)), 5);
-        shouldEqual(ceil(t1 * vigra::fixedPoint(v4) + t2 * vigra::fixedPoint(v8)), 5);
+        shouldEqual(vigra::floor(t1 * vigra::fixedPoint(v4) + t2 * vigra::fixedPoint(v8)), 5);
+        shouldEqual(vigra::ceil(t1 * vigra::fixedPoint(v4) + t2 * vigra::fixedPoint(v8)), 5);
         shouldEqual(round(t1 * vigra::fixedPoint(v4) + t2 * vigra::fixedPoint(v8)), 5);
 
-        shouldEqual(floor(t1 * -vigra::fixedPoint(v1) - t2 * vigra::fixedPoint(v2)), -2);
-        shouldEqual(ceil(t1 * -vigra::fixedPoint(v1) - t2 * vigra::fixedPoint(v2)), -1);
+        shouldEqual(vigra::floor(t1 * -vigra::fixedPoint(v1) - t2 * vigra::fixedPoint(v2)), -2);
+        shouldEqual(vigra::ceil(t1 * -vigra::fixedPoint(v1) - t2 * vigra::fixedPoint(v2)), -1);
         shouldEqual(round(t1 * -vigra::fixedPoint(v1) - t2 * vigra::fixedPoint(v2)), -1);
-        shouldEqual(floor(t1 * -vigra::fixedPoint(v4) - t2 * vigra::fixedPoint(v8)), -5);
-        shouldEqual(ceil(t1 * -vigra::fixedPoint(v4) - t2 * vigra::fixedPoint(v8)), -5);
+        shouldEqual(vigra::floor(t1 * -vigra::fixedPoint(v4) - t2 * vigra::fixedPoint(v8)), -5);
+        shouldEqual(vigra::ceil(t1 * -vigra::fixedPoint(v4) - t2 * vigra::fixedPoint(v8)), -5);
         shouldEqual(round(t1 * -vigra::fixedPoint(v4) - t2 * vigra::fixedPoint(v8)), -5);
 
         double d1 = 1.0 / 3.0, d2 = 1.0 / 7.0;
@@ -700,6 +722,13 @@ struct LinalgTest
             }
         }
         
+        Matrix aa(r, c, tref, vigra::ColumnMajor);
+        shouldEqual(aa.rowCount(), r);
+        shouldEqual(aa.columnCount(), c);
+        for(unsigned int i=0, k=0; i<r; ++i)
+            for(unsigned int j=0; j<c; ++j, ++k)
+                shouldEqual(aa(i,j), a(i,j));
+
         Matrix b = a;
         shouldEqual(b.rowCount(), r);
         shouldEqual(b.columnCount(), c);
@@ -800,6 +829,11 @@ struct LinalgTest
 
         should(isSymmetric(random_symmetric_matrix(10)));
         should(!isSymmetric(random_matrix(10, 10)));
+
+        Matrix tm(2, 2, tref2);
+        vigra::TinyVector<double, 2> tv(1.0, 2.0), tvrref(7.0, 9.0), tvlref(11.0, 7.0);
+        shouldEqual(tm * tv, tvrref);
+        shouldEqual(tv * tm, tvlref);
     }
     
     void testQR()
