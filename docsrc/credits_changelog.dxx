@@ -9,7 +9,7 @@
 
       <li> Mikhail Amchislavsky 
       (<a href="mailto:mamchisl@ucdavis.edu">mamchisl@ucdavis.edu</a>)
-      contributed the code to read and write PNM files. Many thanks!
+      contributed the code to read and write PNM files.
 
       <li> Hans Meine 
       (<a href="mailto:hans_meine@gmx.net">hans_meine@gmx.net</a>)
@@ -19,15 +19,18 @@
 
 </UL>
 
+Many thanks to all!
+<p>
+
 <b> Changes from Version 1.1.4 to 1.1.5</b>
 
 <UL>
 
+      <li> Added \ref vigra::ImageArray.
+           
       <li> Added more corner detectors (see \ref CornerDetection).
            
       <li> Added local symmetry detector (see \ref SymmetryDetection).
-           
-      <li> Added \ref vigra#ImageArray.
            
       <li> Added Gabor filter code (see \ref GaborFilter).
            
@@ -42,6 +45,10 @@
            still doesn't support all VIGRA features, because it still
            doesn't implement partial template specialization and
            partial function ordering).
+           
+      <li> Finished the new build system.
+           
+      <li> Improved the documentation.
            
 </UL>
 
