@@ -29,6 +29,7 @@
 #include "vigra/numerictraits.hxx"
 #include "vigra/imageiteratoradapter.hxx"
 #include "vigra/bordertreatment.hxx"
+#include "vigra/gaussians.hxx"
 
 namespace vigra {
 
@@ -1280,35 +1281,11 @@ class Kernel1D
         */
     value_type norm() const { return norm_; }
     
-        /** set a new norm and normalize kernel
+        /** set a new norm and normalize kernel, use the normalization formula
+            for the given </tt>derivativeOrder</tt>.
         */
     void
-    normalize(value_type norm) 
-    { 
-        // normalize
-        Iterator i = kernel_.begin();
-        Iterator iend = kernel_.end();
-        typename NumericTraits<value_type>::RealPromote sum = *i;
-        ++i;
-        
-        for(; i!= iend; ++i)  
-        {
-            sum += *i;
-        }
-        
-        vigra_precondition(sum != NumericTraits<value_type>::zero(),
-                     "Kernel1D<ARITHTYPE>::normalize(): "
-                     "Cannot normalize a kernel with sum = 0");
-        
-        sum = norm / sum;
-        i = kernel_.begin();
-        for(; i != iend; ++i)  
-        {
-            *i = *i * sum;
-        }        
-
-        norm_ = norm;
-    }
+    normalize(value_type norm, unsigned int derivativeOrder = 0);
     
         /** normalize kernel to norm 1.
         */
@@ -1333,6 +1310,48 @@ class Kernel1D
     value_type norm_;
 };
 
+template <class ARITHTYPE>
+void Kernel1D<ARITHTYPE>::normalize(value_type norm, 
+                          unsigned int derivativeOrder) 
+{
+    typedef typename NumericTraits<value_type>::RealPromote TmpType;    
+    
+    // find kernel sum
+    Iterator k = kernel_.begin();
+    TmpType sum = NumericTraits<TmpType>::zero();
+    
+    if(derivativeOrder == 0)
+    {
+        for(; k < kernel_.end(); ++k)  
+        {
+            sum += *k;
+        }
+    }
+    else
+    {
+        unsigned int faculty = 1;
+        for(unsigned int i = 2; i <= derivativeOrder; ++i)
+            faculty *= i;
+        for(ARITHTYPE x = left(); x <= right(); ++x, ++k)  
+        {
+            sum += *k * VIGRA_CSTD::pow(-x, int(derivativeOrder)) / faculty;
+        }
+    }
+    
+    vigra_precondition(sum != NumericTraits<value_type>::zero(),
+                    "Kernel1D<ARITHTYPE>::normalize(): "
+                    "Cannot normalize a kernel with sum = 0");
+    // normalize
+    sum = norm / sum;
+    k = kernel_.begin();
+    for(; k != kernel_.end(); ++k)  
+    {
+        *k = *k * sum;
+    }        
+
+    norm_ = norm;
+}
+    
 /***********************************************************************/
 
 template <class ARITHTYPE>
@@ -1344,37 +1363,20 @@ void Kernel1D<ARITHTYPE>::initGaussian(double std_dev,
     
     if(std_dev > 0.0)
     {              
+        Gaussian<ARITHTYPE> gauss(std_dev);
+        
         // first calculate required kernel sizes
-        int radius = (int)(3.0*std_dev + 0.5);
+        int radius = (int)(gauss.radius() + 0.5);
         if(radius == 0)
             radius = 1;
 
-        // allocate the kernels
-        std::vector<double> kernel(radius*2+1);
-    
-        double sigma2 = 2.0*std_dev*std_dev;    // square of x variance
-
-        // fill the the x kernel
-        std::vector<double>::iterator x = kernel.begin() + radius;
-
-        // fill in the Gaussian
-        double sum = *x = 1.0;
-        int i;
-        for(i=1; i<=radius; ++i)
-        {
-            x[i] = VIGRA_CSTD::exp(-(double)i*i/sigma2);
-            x[-i] = x[i];
-            sum += x[i] + x[i];
-        }
-        // normalize
-        value_type scale = (1.0 / sum) * norm;
-
+        // allocate the kernel
         kernel_.erase(kernel_.begin(), kernel_.end());
         kernel_.reserve(radius*2+1);
 
-        for(i=0; i<=radius*2; ++i)
+        for(ARITHTYPE x = -radius; x <= radius; ++x)
         {
-            kernel_.push_back(kernel[i] * scale);
+            kernel_.push_back(gauss(x));
         }
         left_ = -radius;
         right_ = radius;
@@ -1382,12 +1384,12 @@ void Kernel1D<ARITHTYPE>::initGaussian(double std_dev,
     else
     {
         kernel_.erase(kernel_.begin(), kernel_.end());
-        kernel_.push_back(norm);
+        kernel_.push_back(1.0);
         left_ = 0;
         right_ = 0;
     }
     
-    norm_ = norm;
+    normalize(norm);
 
     // best border treatment for Gaussians is BORDER_TREATMENT_CLIP
     border_treatment_ = BORDER_TREATMENT_CLIP;  
@@ -1427,7 +1429,7 @@ void Kernel1D<ARITHTYPE>::initDiscreteGaussian(double std_dev,
             }
         }
         
-        // the following rescaling ensures that the numbers stay in an sensible range 
+        // the following rescaling ensures that the numbers stay in a sensible range 
         // during the rest of the iteration, so no other rescaling is needed
         double er = VIGRA_CSTD::exp(-radius*radius / (2.0*std_dev*std_dev));
         warray[radius+1] = er * warray[radius+1] / warray[radius];
@@ -1474,137 +1476,44 @@ Kernel1D<ARITHTYPE>::initGaussianDerivative(double std_dev,
     vigra_precondition(order >= 0,
               "Kernel1D::initGaussianDerivative(): Order must be >= 0.");
               
-    vigra_precondition(std_dev >= 0.0,
-              "Kernel1D::initGaussianDerivative(): "
-              "Standard deviation must be >= 0.");
-              
     if(order == 0)
     {
         initGaussian(std_dev, norm);
         return;
     }
               
+    vigra_precondition(std_dev > 0.0,
+              "Kernel1D::initGaussianDerivative(): "
+              "Standard deviation must be > 0.");
+              
+    Gaussian<ARITHTYPE> gauss(std_dev, order);
+    
     // first calculate required kernel sizes
-     int radius = (int)((3.0+0.5*order)*std_dev + 0.5);
+    int radius = (int)(gauss.radius() + 0.5);
    
     // allocate the kernels
-    std::vector<double> kernel(radius*2+1);
-    
-    double sigma2 = 2.0*std_dev*std_dev;    // square of x variance
-    
-    // fill the the x kernel
-    std::vector<double>::iterator x = kernel.begin() + radius;
-    
-    if(order == 1)
+    kernel_.clear();
+    kernel_.reserve(radius*2+1);
+
+    // fill the kernel and calculate the DC component 
+    // introduced by truncation of the Geussian
+    ARITHTYPE dc = 0.0;
+    for(ARITHTYPE x = -radius; x <= radius; ++x)
     {
-        // fill in the first derivative and calculate sum for normalization
-        double sum = *x = 0.0;
-        int i;
-        for(i=1; i<=radius; ++i)
-        {
-            double xc = (double) i;
-            x[i] = -xc * VIGRA_CSTD::exp(-xc*xc/sigma2);
-            x[-i] = -x[i];
-            sum += -2.0 * xc * x[i];
-        }
-        
-        // normalize
-        value_type scale = (1.0 / sum) * norm;
-        
-        kernel_.erase(kernel_.begin(), kernel_.end());
-        kernel_.reserve(radius*2+1);
-        
-        for(i=0; i<=radius*2+1; ++i)
-        {
-            kernel_.push_back(kernel[i] * scale);
-        }
+        kernel_.push_back(gauss(x));
+        dc += kernel_[kernel_.size()-1];
     }
-    else
+    dc /= (2.0*radius + 1.0);
+                
+    // remove DC
+    for(unsigned int i=0; i < kernel_.size(); ++i)
     {
-        // calculate derivative recursively according to
-        //            -x*x/t
-        //    f(x) = e
-        //
-        //     (n+1)                    (n)           (n-1)
-        //    f     (x) = -2/t * [ x * f   (x) + n * f     (x) ]
-        //
-        //
-        int w = 2*radius+1;
-        std::vector<double> buf(3*w);
-        
-        std::vector<double>::iterator x0 = buf.begin() + radius;
-        std::vector<double>::iterator x1 = x0 + w;
-        std::vector<double>::iterator x2 = x1 + w;
-        std::vector<double>::iterator xt;
-        
-        // fill x0 with Gaussian and x1 with first derivative
-        int i;
-        for(i=-radius; i<=radius; ++i)
-        {
-            double xc = (double) i;
-            x0[i] = VIGRA_CSTD::exp(-xc*xc/sigma2);
-            x1[i] = -2.0 * xc / sigma2 * x0[i];
-        }
-        
-        // now iterate until desired derivative is reached
-        int current;
-        for(current = 2; current <= order; ++current)
-        {
-            if(current != 2)
-            {
-                // rotate
-                xt = x0;
-                x0 = x1;
-                x1 = x2;
-                x2 = xt;
-            }
-            for(i=-radius; i<=radius; ++i)
-            {
-                double xc = (double) i;
-                x2[i] = -2.0 / sigma2 * (xc*x1[i] + x0[i]*(current-1));
-            }
-        }
-        
-        // find faculty of order
-        double fac = 1.0;
-        for(current=order; current>1; --current)
-        {
-            fac *= (double)current;
-        }
-        
-        double dc = 0.0;
-        // calculate the DC component that was introduced
-        // by truncation of the Geussian
-        for(i=-radius; i<=radius; ++i)
-        {
-            dc += x2[i];
-        }
-        dc /= (2.0*radius + 1.0);
-        
-        // fill the results in the kernel, and
-        // calculate sum for normalization
-        double sum = 0.0;
-        for(i=-radius; i<=radius; ++i)
-        {
-            x[i] = x2[i] - dc;
-            sum += VIGRA_CSTD::pow(-(double)i, (double)order) / fac * x[i];
-        }
-        
-        // normalize
-        value_type scale = (1.0 / sum) * norm;
-        
-        kernel_.erase(kernel_.begin(), kernel_.end());
-        kernel_.reserve(radius*2+1);
-        
-        for(i=0; i<radius*2+1; ++i)
-        {
-            kernel_.push_back(kernel[i] * scale);
-        }
+        kernel_[i] -= dc;
     }
-        
+    
     left_ = -radius;
     right_ = radius;
-    norm_ = norm;
+    normalize(norm, order);
 
     // best border treatment for Gaussian derivatives is 
     // BORDER_TREATMENT_REPEAT
