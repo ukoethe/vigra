@@ -4,6 +4,7 @@
 /*       Cognitive Systems Group, University of Hamburg, Germany        */
 /*                                                                      */
 /*    This file is part of the VIGRA computer vision library.           */
+/*    ( Version 1.1.4a, Nov 20 2001 )                                   */
 /*    You may use, modify, and distribute this software according       */
 /*    to the terms stated in the LICENSE file included in               */
 /*    the VIGRA distribution.                                           */
@@ -58,51 +59,51 @@
 #include "vigra/tiff.h"
 #include "vigra/impex.h"
 
-Export VigraImpexImage *vigraImpexReadTIFFImage( VigraImpexImageInfo *image_info)
+extern "C"  VigraImpexImage *vigraImpexReadTIFFImage( VigraImpexImageInfo *image_info)
 {
   vigra_fail( "TIFF library is not available");
   return 0;
 }
-Export unsigned int vigraImpexWriteTIFFImage( VigraImpexImageInfo *image_info,VigraImpexImage *image)
+extern "C"  unsigned int vigraImpexWriteTIFFImage( VigraImpexImageInfo *image_info,VigraImpexImage *image)
 {
   vigra_fail( "TIFF library is not available");
   return 0;
 }
-Export	void TIFFClose(TiffImage*)
+extern "C" 	void TIFFClose(TiffImage*)
 {
   vigra_fail( "TIFF library is not available");
 }
-Export	TiffImage* TIFFOpen(const char*, const char*)
-{
-  vigra_fail( "TIFF library is not available");
-  return 0;
-}
-Export	int TIFFGetField(TiffImage*, ttag_t, ...)
+extern "C" 	TiffImage* TIFFOpen(const char*, const char*)
 {
   vigra_fail( "TIFF library is not available");
   return 0;
 }
-Export	int TIFFSetField(TiffImage*, ttag_t, ...)
+extern "C" 	int TIFFGetField(TiffImage*, ttag_t, ...)
 {
   vigra_fail( "TIFF library is not available");
   return 0;
 }
-Export	tsize_t TIFFScanlineSize(TiffImage*)
+extern "C" 	int TIFFSetField(TiffImage*, ttag_t, ...)
 {
   vigra_fail( "TIFF library is not available");
   return 0;
 }
-Export	int TIFFReadScanline(TiffImage*, tdata_t, uint32, tsample_t)
+extern "C" 	tsize_t TIFFScanlineSize(TiffImage*)
 {
   vigra_fail( "TIFF library is not available");
   return 0;
 }
-Export	int TIFFWriteScanline(TiffImage*, tdata_t, uint32, tsample_t)
+extern "C" 	int TIFFReadScanline(TiffImage*, tdata_t, uint32, tsample_t)
 {
   vigra_fail( "TIFF library is not available");
   return 0;
 }
-Export	int TIFFReadRGBAImage(TiffImage*, uint32, uint32, uint32*, int)
+extern "C" 	int TIFFWriteScanline(TiffImage*, tdata_t, uint32, tsample_t)
+{
+  vigra_fail( "TIFF library is not available");
+  return 0;
+}
+extern "C" 	int TIFFReadRGBAImage(TiffImage*, uint32, uint32, uint32*, int)
 {
   vigra_fail( "TIFF library is not available");
   return 0;
