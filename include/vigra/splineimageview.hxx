@@ -1092,28 +1092,30 @@ class SplineImageView
     }
     
     value_type operator()(double x, double y) const;
-    value_type operator()(double x, unsigned int dx, double y, unsigned int dy) const;
+    value_type operator()(double x, double y, unsigned int dx, unsigned int dy) const;
     value_type dx(double x, double y) const
-        { return operator()(x, 1, y, 0); }
+        { return operator()(x, y, 1, 0); }
     value_type dy(double x, double y) const
-        { return operator()(x, 0, y, 1); }
+        { return operator()(x, y, 0, 1); }
     value_type dxx(double x, double y) const
-        { return operator()(x, 2, y, 0); }
+        { return operator()(x, y, 2, 0); }
     value_type dxy(double x, double y) const
-        { return operator()(x, 1, y, 1); }
+        { return operator()(x, y, 1, 1); }
     value_type dyy(double x, double y) const
-        { return operator()(x, 0, y, 2); }
+        { return operator()(x, y, 0, 2); }
     value_type dx3(double x, double y) const
-        { return operator()(x, 3, y, 0); }
+        { return operator()(x, y, 3, 0); }
     value_type dy3(double x, double y) const
-        { return operator()(x, 0, y, 3); }
+        { return operator()(x, y, 0, 3); }
     value_type dxxy(double x, double y) const
-        { return operator()(x, 2, y, 1); }
+        { return operator()(x, y, 2, 1); }
     value_type dxyy(double x, double y) const
-        { return operator()(x, 1, y, 2); }
+        { return operator()(x, y, 1, 2); }
     
     value_type operator()(difference_type const & d) const
         { return operator()(d[0], d[1]); }
+    value_type operator()(difference_type const & d, unsigned int dx, unsigned int dy) const
+        { return operator()(d[0], d[1], dx, dy); }
     value_type dx(difference_type const & d) const
         { return dx(d[0], d[1]); }
     value_type dy(difference_type const & d) const
@@ -1362,8 +1364,8 @@ VALUETYPE SplineImageView<ORDER, VALUETYPE>::operator()(double x, double y) cons
 }
 
 template <int ORDER, class VALUETYPE>
-VALUETYPE SplineImageView<ORDER, VALUETYPE>::operator()(double x, unsigned int dx,
-                                                 double y, unsigned int dy) const
+VALUETYPE SplineImageView<ORDER, VALUETYPE>::operator()(double x, double y,
+                                                 unsigned int dx, unsigned int dy) const
 {
     calculateIndices(x, y);
     derivCoefficients(u_, dx, kx_);
