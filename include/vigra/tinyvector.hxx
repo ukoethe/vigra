@@ -298,7 +298,7 @@ class TinyVectorView;
 /** \brief Base class for fixed size vectors.
 
     This class contains functionality shared by
-    \ref TinyVector and \ref TinyVectorBase, and enables these classes
+    \ref TinyVector and \ref TinyVectorView, and enables these classes
     to be freely mixed within expressions. It is typically not used directly.
 
     <b>\#include</b> "<a href="tinyvector_8hxx-source.html">vigra/tinyvector.hxx</a>"<br>
@@ -504,7 +504,7 @@ class TinyVectorBase
             \ref TinyVectorOperators
             <DD>
     </DL>
-    
+
     <b>\#include</b> "<a href="tinyvector_8hxx-source.html">vigra/tinyvector.hxx</a>"<br>
     Namespace: vigra
 **/
@@ -642,7 +642,7 @@ class TinyVector
         <li> \ref TinyVectorTraits
         <li> \ref TinyVectorOperators
     </ul>
-    
+
     <b>\#include</b> "<a href="tinyvector_8hxx-source.html">vigra/tinyvector.hxx</a>"<br>
     Namespace: vigra
 **/
@@ -835,12 +835,12 @@ struct NumericTraits<TinyVector<T, SIZE> >
     typedef TinyVector<typename NumericTraits<T>::Promote, SIZE> Promote;
     typedef TinyVector<typename NumericTraits<T>::RealPromote, SIZE> RealPromote;
     typedef TinyVector<typename NumericTraits<T>::ComplexPromote, SIZE> ComplexPromote;
-    typedef T ValueType; 
-    
+    typedef T ValueType;
+
     typedef typename NumericTraits<T>::isIntegral isIntegral;
     typedef VigraFalseType isScalar;
     typedef VigraFalseType isOrdered;
-    typedef VigraFalseType isComplex; 
+    typedef VigraFalseType isComplex;
 
     static TinyVector<T, SIZE> zero() {
         return TinyVector<T, SIZE>(NumericTraits<T>::zero());
@@ -893,12 +893,12 @@ struct NumericTraits<TinyVectorView<T, SIZE> >
     typedef TinyVector<typename NumericTraits<T>::Promote, SIZE> Promote;
     typedef TinyVector<typename NumericTraits<T>::RealPromote, SIZE> RealPromote;
     typedef TinyVector<typename NumericTraits<T>::ComplexPromote, SIZE> ComplexPromote;
-    typedef T ValueType; 
+    typedef T ValueType;
 
     typedef typename NumericTraits<T>::isIntegral isIntegral;
     typedef VigraFalseType isScalar;
     typedef VigraFalseType isOrdered;
-    typedef VigraFalseType isComplex; 
+    typedef VigraFalseType isComplex;
 };
 
 template <class T1, class T2, int SIZE>
