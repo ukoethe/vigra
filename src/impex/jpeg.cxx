@@ -23,7 +23,7 @@
 
 #include <stdexcept>
 #include <csetjmp>
-#include "vigra/void_vector.hxx"
+#include "void_vector.hxx"
 #include "error.hxx"
 #include "auto_file.hxx"
 #include "jpeg.hxx"

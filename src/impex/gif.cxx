@@ -25,7 +25,7 @@
 #include <algorithm>
 #include "error.hxx"
 #include "byteorder.hxx"
-#include "vigra/void_vector.hxx"
+#include "void_vector.hxx"
 #include "gif.hxx"
 
 #define BitSet(byte,bit)  (((byte) & (bit)) == (bit))

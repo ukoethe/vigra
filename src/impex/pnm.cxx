@@ -23,7 +23,7 @@
 #include <iostream>
 #include <fstream>
 #include "error.hxx"
-#include "vigra/void_vector.hxx"
+#include "void_vector.hxx"
 #include "pnm.hxx"
 #include "byteorder.hxx"
 
