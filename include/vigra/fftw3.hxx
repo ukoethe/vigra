@@ -1424,7 +1424,7 @@ realFourierTransformXOddYEven(SrcTraverser sul, SrcTraverser slr, SrcAccessor sr
                                DestTraverser dul, DestAccessor dest, fftw_real norm)
 {
     realFourierTransformWorkImageImpl(sul, slr, src, dul, dest, 
-                                      norm, FFTW_REDFT00, FFTW_RODFT00);
+                                      norm, FFTW_RODFT00, FFTW_REDFT00);
 }
 
 template <class DestTraverser, class DestAccessor>
@@ -1440,10 +1440,10 @@ realFourierTransformXOddYEven(
     // test for right memory layout (fftw expects a width*height fftw_real array)
     if (&(*(sul + Diff2D(w, 0))) == &(*(sul + Diff2D(0, 1))))
         realFourierTransformImpl(sul, slr, dul, dest, 
-                                 norm, FFTW_REDFT00, FFTW_RODFT00);
+                                 norm, FFTW_RODFT00, FFTW_REDFT00);
     else
         realFourierTransformWorkImageImpl(sul, slr, src, dul, dest, 
-                                 norm, FFTW_REDFT00, FFTW_RODFT00);
+                                 norm, FFTW_RODFT00, FFTW_REDFT00);
 }
 
 /********************************************************************/
@@ -1465,7 +1465,7 @@ realFourierTransformXEvenYOdd(SrcTraverser sul, SrcTraverser slr, SrcAccessor sr
                                DestTraverser dul, DestAccessor dest, fftw_real norm)
 {
     realFourierTransformWorkImageImpl(sul, slr, src, dul, dest, 
-                                      norm, FFTW_RODFT00, FFTW_REDFT00);
+                                      norm, FFTW_REDFT00, FFTW_RODFT00);
 }
 
 template <class DestTraverser, class DestAccessor>
@@ -1481,10 +1481,10 @@ realFourierTransformXEvenYOdd(
     // test for right memory layout (fftw expects a width*height fftw_real array)
     if (&(*(sul + Diff2D(w, 0))) == &(*(sul + Diff2D(0, 1))))
         realFourierTransformImpl(sul, slr, dul, dest, 
-                                 norm, FFTW_RODFT00, FFTW_REDFT00);
+                                 norm, FFTW_REDFT00, FFTW_RODFT00);
     else
         realFourierTransformWorkImageImpl(sul, slr, src, dul, dest, 
-                                 norm, FFTW_RODFT00, FFTW_REDFT00);
+                                 norm, FFTW_REDFT00, FFTW_RODFT00);
 }
 
 /********************************************************************/
