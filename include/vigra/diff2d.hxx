@@ -433,17 +433,6 @@ struct IteratorTraits<Diff2D >
 
 };
 
-} // namespace vigra
-
-inline
-std::ostream & operator<<(std::ostream & o, vigra::Diff2D const & d)
-{
-    o << '(' << d.x << ", " << d.y << ')';
-    return o;
-}
-
-namespace vigra {
-
 template <class DIFF, class Accessor>
 inline triple<Diff2D, Diff2D, Accessor>
 srcIterRange(Diff2D const & upperleft, DIFF const & lowerright, Accessor a)
@@ -532,7 +521,7 @@ destIterRange(Diff2D const & upperleft, DIFF const & lowerright)
 /*                                                      */
 /********************************************************/
 
-/*! \brief Two dimensional size object.
+/** \brief Two dimensional size object.
 
     Specializes \ref Diff2D for the specification of a 2-dimensional
     extent, in contrast to a point or position (for the latter
@@ -615,24 +604,13 @@ public:
     }
 };
 
-} // namespace vigra
-
-inline
-std::ostream &operator <<(std::ostream &s, vigra::Size2D const &d)
-{
-    s << '(' << d.x << 'x' << d.y << ')';
-    return s;
-}
-
-namespace vigra {
-
 /********************************************************/
 /*                                                      */
 /*                     Point2D                          */
 /*                                                      */
 /********************************************************/
 
-/*! \brief Two dimensional point or position.
+/** \brief Two dimensional point or position.
 
     Specializes \ref Diff2D for the specification of a 2-dimensional
     point or position, in contrast to an extent (for the latter
@@ -825,7 +803,7 @@ inline Point2D operator+(Size2D const & s, Point2D const & p)
 /*                                                      */
 /********************************************************/
 
-/*! \brief Two dimensional rectangle.
+/** \brief Two dimensional rectangle.
 
     This class stores a 2-dimensional rectangular range or region. Thus,
     it follows the VIGRA convention that the upper left corner is inside
@@ -1269,18 +1247,6 @@ public:
     }
 };
 
-} // namespace vigra
-
-inline
-std::ostream &operator <<(std::ostream &s, vigra::Rect2D const &r)
-{
-    s << "[" << r.upperLeft() << " to " << r.lowerRight()
-      << " = " << r.size() << "]";
-    return s;
-}
-
-namespace vigra {
-
 /********************************************************/
 /*                                                      */
 /*                      Dist2D                          */
@@ -1338,5 +1304,27 @@ class Dist2D
 //@}
 
 } // namespace vigra
+
+inline
+std::ostream & operator<<(std::ostream & o, vigra::Diff2D const & d)
+{
+    o << '(' << d.x << ", " << d.y << ')';
+    return o;
+}
+
+inline
+std::ostream &operator <<(std::ostream &s, vigra::Size2D const &d)
+{
+    s << '(' << d.x << 'x' << d.y << ')';
+    return s;
+}
+
+inline
+std::ostream &operator <<(std::ostream &s, vigra::Rect2D const &r)
+{
+    s << "[" << r.upperLeft() << " to " << r.lowerRight()
+      << " = " << r.size() << "]";
+    return s;
+}
 
 #endif // VIGRA_DIFF2D_HXX
