@@ -44,7 +44,7 @@
 #undef RGB
 #endif
 
-#elif defined(__unix)
+#elif defined(__unix) || defined(unix)
 
 #include <unistd.h>
 #include <signal.h>
@@ -193,13 +193,25 @@ int catch_signals( Generator function_object, detail::errstream & err, int timeo
     volatile int sigtype;
     int result;
 
+#if defined(linux) || defined(__linux)
+    signal(SIGFPE, &unit_test_signal_handler); 
+    signal(SIGTRAP, &unit_test_signal_handler); 
+    signal(SIGSEGV, &unit_test_signal_handler); 
+    signal(SIGBUS, &unit_test_signal_handler); 
+#else
     sigset(SIGFPE, &unit_test_signal_handler); 
     sigset(SIGTRAP, &unit_test_signal_handler); 
     sigset(SIGSEGV, &unit_test_signal_handler); 
     sigset(SIGBUS, &unit_test_signal_handler); 
+#endif
+
     if(timeout)
     {
+#if defined(linux) || defined(__linux)
+        signal(SIGALRM, &unit_test_signal_handler); 
+#else
         sigset(SIGALRM, &unit_test_signal_handler); 
+#endif
         alarm(timeout);
     }
 
@@ -234,15 +246,23 @@ int catch_signals( Generator function_object, detail::errstream & err, int timeo
                 result = os_exception;
         }
     }
+
     if(timeout)
     {
         alarm(0);
+#if defined(linux) || defined(__linux)
+#else
         sigrelse(SIGALRM); 
+#endif
     }
+
+#if defined(linux) || defined(__linux)
+#else
     sigrelse(SIGFPE); 
     sigrelse(SIGTRAP); 
     sigrelse(SIGSEGV); 
     sigrelse(SIGBUS); 
+#endif
 
     return result;
 }
