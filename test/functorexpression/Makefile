@@ -8,7 +8,7 @@ test:: test.o
 	./test || { rm ./test; exit 1; }
 
 clean::
-	rm -f *.o test core res.xv *.plg *ilk
+	rm -f *.o test core res.xv *.plg *ilk *.d
 	rm -rf Debug ii_files
 	
 
