@@ -105,6 +105,12 @@
 //                                                       //
 ///////////////////////////////////////////////////////////
 
+#ifdef CMATH_NOT_IN_STD
+    #define VIGRA_CSTD
+#else
+    #define VIGRA_CSTD std
+#endif
+
 #ifdef NO_TYPENAME
     #define typename
 #endif
