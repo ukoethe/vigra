@@ -328,7 +328,6 @@ namespace vigra {
     
 	<b> Usage:</b>
 
-todo-------------?????????????------------------    
 	<b>\#include</b> "<a href="stdconvolution_8hxx-source.html">vigra/stdconvolution.hxx</a>"<br>
 	Namespace: vigra
     
@@ -1377,6 +1376,9 @@ todo-------------?????????????------------------
 /*
 
 $Log$
+Revision 1.16  2003/03/21 13:29:15  rezniche
+some comments is added
+
 Revision 1.15  2003/03/20 14:02:46  rezniche
 All other bordertreatmentmodes is now implemented. The calculation of pixelvalue
 for different modes was in extra functions moved.
