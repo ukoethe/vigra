@@ -3,6 +3,7 @@
 	ProjectType="Visual C++"
 	Version="7.10"
 	Name="impex"
+	ProjectGUID="{855B96D1-DC2F-4129-88FA-96A6F69683A5}"
 	SccProjectName=""
 	SccLocalPath="">
 	<Platforms>
@@ -20,7 +21,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="&quot;C:\Users\Koethe\src\libpng-1.2.5&quot;;&quot;C:\Programme\zlib-1.1.3&quot;;&quot;C:\Users\Koethe\src\tiff-v3.5.7\libtiff&quot;;&quot;C:\Users\Koethe\src\jpeg-6b&quot;;C:\Users\Koethe\src\vigra\current\include"
+				AdditionalIncludeDirectories="..\..\include;c:\include"
 				PreprocessorDefinitions="WIN32,_DEBUG,_WINDOWS,HasTIFF,HasJPEG,HasPNG"
 				RuntimeLibrary="3"
 				UsePrecompiledHeader="2"
