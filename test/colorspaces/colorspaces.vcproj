@@ -85,7 +85,7 @@
 				PreprocessorDefinitions="WIN32;_CONSOLE;NDEBUG"
 				StringPooling="TRUE"
 				ExceptionHandling="TRUE"
-				RuntimeLibrary="4"
+				RuntimeLibrary="2"
 				EnableFunctionLevelLinking="TRUE"
 				UsePrecompiledHeader="0"
 				ProgramDataBaseFileName="$(IntDir)/"

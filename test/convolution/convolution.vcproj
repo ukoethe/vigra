@@ -78,10 +78,10 @@
 				AdditionalIncludeDirectories="C:\Users\Koethe\src\vigra\current\include;C:\Users\Koethe\src\vigra\test\include"
 				PreprocessorDefinitions="WIN32,NDEBUG,_CONSOLE"
 				StringPooling="TRUE"
-				RuntimeLibrary="4"
+				RuntimeLibrary="2"
 				EnableFunctionLevelLinking="TRUE"
 				UsePrecompiledHeader="0"
-				PrecompiledHeaderFile=".\Release/convolution.pch"
+				PrecompiledHeaderFile=""
 				AssemblerListingLocation=".\Release/"
 				ObjectFile=".\Release/"
 				ProgramDataBaseFileName=".\Release/"
@@ -93,11 +93,13 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalOptions="/MACHINE:I386"
-				AdditionalDependencies="odbc32.lib odbccp32.lib vigraimpex.lib libtiff.lib libjpeg.lib"
+				AdditionalDependencies="vigraimpex.lib libtiff.lib libjpeg.lib"
 				OutputFile="convolution.exe"
 				LinkIncremental="1"
 				SuppressStartupBanner="TRUE"
 				AdditionalLibraryDirectories="C:\Users\Koethe\lib\msvc.net"
+				IgnoreDefaultLibraryNames=""
+				GenerateDebugInformation="TRUE"
 				ProgramDatabaseFile=".\Release/convolution.pdb"
 				SubSystem="1"/>
 			<Tool

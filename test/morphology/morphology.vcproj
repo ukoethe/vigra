@@ -24,7 +24,7 @@
 				AdditionalIncludeDirectories="C:\Users\Koethe\src\vigra\current\include;C:\Users\Koethe\src\vigra\test\include"
 				PreprocessorDefinitions="WIN32,NDEBUG,_CONSOLE"
 				StringPooling="TRUE"
-				RuntimeLibrary="4"
+				RuntimeLibrary="2"
 				EnableFunctionLevelLinking="TRUE"
 				UsePrecompiledHeader="2"
 				PrecompiledHeaderFile=".\Release/morphology.pch"
