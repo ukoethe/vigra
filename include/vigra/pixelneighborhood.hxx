@@ -1,6 +1,6 @@
 /************************************************************************/
 /*                                                                      */
-/*               Copyright 1998-2002 by Ullrich Koethe                  */
+/*          Copyright 1998-2002 by Hans Meine, Ullrich Koethe           */
 /*       Cognitive Systems Group, University of Hamburg, Germany        */
 /*                                                                      */
 /*    This file is part of the VIGRA computer vision library.           */
@@ -904,7 +904,8 @@ public:
     }
 
         /** Exchange the center with the current neighbor.
-            Equivalent to <tt>circ.moveCenterToNeighbor().turnRound()</tt>.
+            Equivalent to <tt>circ.moveCenterToNeighbor().turnRound()</tt>
+            (but shorter and more efficient).
         */
     NeighborhoodCirculator & swapCenterNeighbor()
     {
