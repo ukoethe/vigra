@@ -2,6 +2,7 @@
 #include "unittest.hxx"
 #include "vigra/polynomial.hxx"
 #include "vigra/array_vector.hxx"
+#include "vigra/gaussians.hxx"
 
 static double coefficients[][12] = 
 {
@@ -97,6 +98,44 @@ struct HighOrderPolynomialTest
     }
 };
 
+struct FunctionsTest
+{
+    // ??? add spline tests here !
+    
+    void testGaussians()
+    {
+        vigra::Gaussian<double> g,
+                          g1(2.0, 1),
+                          g2(1.0, 2),
+                          g3(2.0, 3);
+        
+        double epsilon = 1e-15;
+        shouldEqualTolerance(g(0.0), 0.3989422804014327, epsilon);
+        shouldEqualTolerance(g(0.5), 0.35206532676429952, epsilon);
+        shouldEqualTolerance(g(1.0), 0.24197072451914337, epsilon);
+        shouldEqualTolerance(g(-1.0), 0.24197072451914337, epsilon);
+        
+        shouldEqualTolerance(g1(0.0), 0, epsilon);
+        shouldEqualTolerance(g1(0.5), -0.024166757300178077, epsilon);
+        shouldEqualTolerance(g1(1.0), -0.044008165845537441, epsilon);
+        shouldEqualTolerance(g1(-1.0), 0.044008165845537441, epsilon);
+        
+        shouldEqualTolerance(g2(0.0), -0.3989422804014327, epsilon);
+        shouldEqualTolerance(g2(0.5), -0.26404899507322466, epsilon);
+        shouldEqualTolerance(g2(1.0), 0, epsilon);
+        shouldEqualTolerance(g2(-1.0), 0, epsilon);
+        shouldEqualTolerance(g2(1.5), 0.16189699458236467, epsilon);
+        shouldEqualTolerance(g2(-1.5), 0.16189699458236467, epsilon);
+
+        shouldEqualTolerance(g3(0.0), 0, epsilon);
+        shouldEqualTolerance(g3(0.5), 0.017747462392318277, epsilon);
+        shouldEqualTolerance(g3(1.0), 0.030255614018806987, epsilon);
+        shouldEqualTolerance(g3(-1.0), -0.030255614018806987, epsilon);
+        shouldEqualTolerance(g3(2.0*VIGRA_CSTD::sqrt(3.0)), 0, epsilon);
+        shouldEqualTolerance(g3(-2.0*VIGRA_CSTD::sqrt(3.0)), 0, epsilon);
+    }
+};
+
 
 struct MathTestSuite
 : public vigra::test_suite
@@ -118,6 +157,7 @@ struct MathTestSuite
         add( testCase((&PolynomialTest<1, P2>::testPolynomial)));
         add( testCase((&PolynomialTest<2, P2>::testPolynomial)));
         add( testCase(&HighOrderPolynomialTest::testPolynomial));
+        add( testCase(&FunctionsTest::testGaussians));
     }
 };
 
