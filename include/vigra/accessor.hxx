@@ -96,6 +96,14 @@ namespace vigra {
 </tr>
 </table>
 </p>
+
+    The template <tt>AccessorTraits&lt;T&gt;</tt> can be used to find the default accessor
+    associated with the type <tt>T</tt>, e.g.
+    
+    \code
+    typedef typename AccessorTraits<typename Image::value_type>::default_accessor       Accessor;
+    typedef typename AccessorTraits<typename Image::value_type>::default_const_accessor ConstAccessor;
+    \endcode
 */
 //@{
 
