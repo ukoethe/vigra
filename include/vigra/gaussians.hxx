@@ -25,7 +25,7 @@
 #include <cmath>
 #include "vigra/config.hxx"
 #include "vigra/mathutil.hxx"
-#include "vigra/polynomial.hxx"
+#include "vigra/array_vector.hxx"
 
 namespace vigra {
 
@@ -49,29 +49,28 @@ class Gaussian
     explicit Gaussian(T sigma = 1.0, unsigned int derivativeOrder = 0)
     : sigma_(sigma),
       sigma2_(-0.5 / sigma / sigma),
-      norm_(derivativeOrder == 1 ?
-               -1.0 / (VIGRA_CSTD::sqrt(2.0 * M_PI) * sigma * sigma * sigma)
-             :  1.0 / VIGRA_CSTD::sqrt(2.0 * M_PI) / sigma),
+      norm_(0.0),
       order_(derivativeOrder),
-      hermitePolynomial_(derivativeOrder / 2)
+      hermitePolynomial_(derivativeOrder / 2 + 1)
     {
         vigra_precondition(sigma_ > 0.0,
             "Gaussian::Gaussian(): sigma > 0 required.");
+        switch(order_)
+        {
+            case 1:
+            case 2:
+                norm_ = -1.0 / (VIGRA_CSTD::sqrt(2.0 * M_PI) * sq(sigma) * sigma);
+                break;
+            case 3:
+                norm_ = 1.0 / (VIGRA_CSTD::sqrt(2.0 * M_PI) * sq(sigma) * sq(sigma) * sigma);
+                break;
+            default:
+                norm_ = 1.0 / VIGRA_CSTD::sqrt(2.0 * M_PI) / sigma;
+        }
         calculateHermitePolynomial();
     }
 
-    result_type operator()(argument_type x) const
-    {
-        T x2 = x * x;
-        if(order_ == 0)
-            return norm_ * VIGRA_CSTD::exp(x2 * sigma2_);
-        else if(order_ == 1)
-            return x * norm_ * VIGRA_CSTD::exp(x2 * sigma2_);
-        else if(order_ % 2 == 0)
-            return hermitePolynomial_(x2) * norm_ * VIGRA_CSTD::exp(x2 * sigma2_);
-        else
-            return x * hermitePolynomial_(x2) * norm_ * VIGRA_CSTD::exp(x2 * sigma2_);
-    }
+    result_type operator()(argument_type x) const;
 
     value_type sigma() const
         { return sigma_; }
@@ -83,13 +82,47 @@ class Gaussian
         { return sigmaMultiple * sigma_ + 0.5 * derivativeOrder(); }
 
   private:
-    void calculateHermitePolynomial();
+    void calculateHermitePolynomial();    
+    T horner(T x) const;
     
     T sigma_, sigma2_, norm_;
     unsigned int order_;
-    Polynomial<T> hermitePolynomial_;
+    ArrayVector<T> hermitePolynomial_;
 };
 
+template <class T>
+typename Gaussian<T>::result_type 
+Gaussian<T>::operator()(argument_type x) const
+{
+    T x2 = x * x;
+    T g  = norm_ * VIGRA_CSTD::exp(x2 * sigma2_);
+    switch(order_)
+    {
+        case 0:
+            return g;
+        case 1:
+            return x * g;
+        case 2:
+            return (1.0 - sq(x / sigma_)) * g;
+        case 3:
+            return (3.0 - sq(x / sigma_)) * x * g;
+        default:
+            return order_ % 2 == 0 ?
+                       g * horner(x2)
+                     : x * g * horner(x2);
+    }
+}
+
+template <class T>
+T Gaussian<T>::horner(T x) const
+{
+    int i = order_ / 2;
+    T res = hermitePolynomial_[i];
+    for(--i; i >= 0; --i)
+        res = x * res + hermitePolynomial_[i];
+    return res;
+}
+    
 template <class T>
 void Gaussian<T>::calculateHermitePolynomial()
 {
@@ -121,7 +154,7 @@ void Gaussian<T>::calculateHermitePolynomial()
             hn1 = hn0;
             hn0 = ht;
         }
-        for(unsigned int i = 0; i <= hermitePolynomial_.order(); ++i)
+        for(unsigned int i = 0; i < hermitePolynomial_.size(); ++i)
             hermitePolynomial_[i] = order_ % 2 == 0 ?
                                          hn1[2*i]
                                        : hn1[2*i+1];
