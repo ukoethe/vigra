@@ -46,10 +46,13 @@ int main(int argc, char ** argv)
         double sizefactor;
         std::cerr << "Resize factor ? ";
         std::cin >> sizefactor;
+        int method;
+        std::cerr << "Method (0 - pixel repetition, 1 - linear, 2 - spline ? ";
+        std::cin >> method;
         
         // calculate new image size
-        int nw = (int)(sizefactor*info.width()-0.5);
-        int nh = (int)(sizefactor*info.height()-0.5);
+        int nw = (int)(sizefactor*(info.width()-1) + 1.5);
+        int nh = (int)(sizefactor*(info.height()-1) + 1.5);
         
         if(info.isGrayscale())
         {
@@ -60,10 +63,24 @@ int main(int argc, char ** argv)
             // import the image just read
             importImage(info, destImage(in));
             
-            // resize the image, using a bi-cubic spline algorithms
-            resizeImageSplineInterpolation(srcImageRange(in), 
-                destImageRange(out));
-            
+            switch(method)
+            {
+              case 0:
+                // resize the image, using a bi-cubic spline algorithms
+                resizeImageNoInterpolation(srcImageRange(in), 
+                    destImageRange(out));
+                break;
+              case 1:
+                // resize the image, using a bi-cubic spline algorithms
+                resizeImageLinearInterpolation(srcImageRange(in), 
+                    destImageRange(out));
+                break;
+              default:
+                // resize the image, using a bi-cubic spline algorithms
+                resizeImageSplineInterpolation(srcImageRange(in), 
+                    destImageRange(out));
+            }
+
             // write the image to the file given as second argument
             // the file type will be determined from the file name's extension
             exportImage(srcImageRange(out), vigra::ImageExportInfo(argv[2]));
@@ -77,9 +94,23 @@ int main(int argc, char ** argv)
             // import the image just read
             importImage(info, destImage(in));
             
-            // resize the image, using a bi-cubic spline algorithms
-            resizeImageSplineInterpolation(srcImageRange(in), 
-                destImageRange(out));
+            switch(method)
+            {
+              case 0:
+                // resize the image, using a bi-cubic spline algorithms
+                resizeImageNoInterpolation(srcImageRange(in), 
+                    destImageRange(out));
+                break;
+              case 1:
+                // resize the image, using a bi-cubic spline algorithms
+                resizeImageLinearInterpolation(srcImageRange(in), 
+                    destImageRange(out));
+                break;
+              default:
+                // resize the image, using a bi-cubic spline algorithms
+                resizeImageSplineInterpolation(srcImageRange(in), 
+                    destImageRange(out));
+            }
             
             // write the image to the file given as second argument
             // the file type will be determined from the file name's extension
