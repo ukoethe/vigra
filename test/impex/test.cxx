@@ -38,7 +38,10 @@ public:
 
     void testGIF ()
     {
-        vigra::ImageImportInfo info ("lenna.gif");
+        vigra::ImageExportInfo exportinfo ("res.gif");
+        exportImage (srcImageRange (img), exportinfo);
+
+        vigra::ImageImportInfo info ("res.gif");
 
         should (info.width () == img.width ());
         should (info.height () == img.height ());
@@ -250,7 +253,9 @@ public:
 
     void testGIF ()
     {
-        vigra::ImageImportInfo info ("lennargb.gif");
+        exportImage (srcImageRange (img), vigra::ImageExportInfo ("res.gif"));
+
+        vigra::ImageImportInfo info ("res.gif");
 
         should (info.width () == img.width ());
         should (info.height () == img.height ());
@@ -258,15 +263,17 @@ public:
         should (info.pixelType () == vigra::ImageImportInfo::UINT8);
 
         Image res (info.width (), info.height ());
+        Image ref (info.width (), info.height ());
 
         importImage (info, destImage (res));
+        importImage (vigra::ImageImportInfo("lenna_gifref.xv"), destImage (ref));
 
-        Image::ScanOrderIterator i = img.begin ();
+        Image::ScanOrderIterator i = ref.begin ();
         Image::ScanOrderIterator i1 = res.begin ();
-        Image::Accessor acc = img.accessor ();
+        Image::Accessor acc = ref.accessor ();
 
         float sum = 0;
-        for (; i != img.end (); ++i, ++i1)
+        for (; i != ref.end (); ++i, ++i1)
                 sum += (acc (i) - acc (i1)).magnitude ();
 
         should (sum / (info.width () * info.height ()) < 0.1);
@@ -457,6 +464,31 @@ public:
         reread.resize (w, h);
 
         importImage (rinfo, destImage (reread));
+    }
+
+    void testGIF()
+    {
+        exportImage (srcImageRange (img), vigra::ImageExportInfo ("res.gif"));
+
+        vigra::ImageImportInfo info ("res.gif");
+
+        should (info.width () == reread.width ());
+        should (info.height () == reread.height ());
+        should (info.isGrayscale ());
+        should (info.getPixelType () == std::string ("UINT8"));
+
+        Image res (info.width (), info.height ());
+
+        importImage (info, destImage (res));
+
+        Image::ScanOrderIterator i = reread.begin ();
+        Image::ScanOrderIterator i1 = res.begin ();
+        Image::Accessor acc = reread.accessor ();
+
+        float sum = 0;
+        for (; i != reread.end (); ++i, ++i1)
+            sum += std::abs (acc (i) - acc (i1));
+        should (sum / (info.width () * info.height ()) < 0.1);
     }
 
     void testJPEG ()
@@ -751,19 +783,7 @@ public:
 
     void testGIFExport()
     {
-        try
-        {
-            vigra::ImageExportInfo exportinfo ("res.gif");
-            exportImage (srcImageRange (img), exportinfo);
-            failTest("No exception thrown");
-        }
-        catch(std::runtime_error & e)
-        {
-            std::string expected("\nGIF output no longer supported");
-            std::string message(e.what());
-            should(0 == expected.compare(message.substr(0,expected.size())));
-        }
-
+        testExport("gif");
     }
 
     void testGIFImport()
@@ -927,6 +947,7 @@ struct ImageImportExportTestSuite : public vigra::test_suite
         add(testCase(&ByteRGBImageExportImportTest::testVIFF2));
 
         // grayscale float images
+        add(testCase(&FloatImageExportImportTest::testGIF));
         add(testCase(&FloatImageExportImportTest::testJPEG));
         add(testCase(&FloatImageExportImportTest::testTIFF));
         add(testCase(&FloatImageExportImportTest::testBMP));
