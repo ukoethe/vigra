@@ -1,14 +1,14 @@
 #include <iostream>
 #include <cmath>
+#include "vigra/convolution.hxx"
 #include "unittest.hxx"
 #include "vigra/stdimage.hxx"
-#include "vigra/convolution.hxx"
 #include "vigra/impex.hxx"
 #include "vigra/combineimages.hxx"
 
 using namespace vigra;
 
-vigra::DImage getSymmetricImage(){
+vigra::DImage getSymmetricLine(){
     vigra::DImage src(40, 1);
 
     vigra::DImage::Accessor acc_src = src.accessor();
@@ -24,15 +24,66 @@ vigra::DImage getSymmetricImage(){
     }
     return src;
 }
+vigra::DImage getSymmetricImage(){
+    vigra::DImage src(10, 6);
+
+    vigra::DImage::Accessor acc_src = src.accessor();
+    vigra::DImage::iterator iter_src = src.begin();
+
+    int i = 0;
+    for(int y = 0; y < 6; y++){
+	int x = 0;
+	for ( ; x < 5 ; i++, x++, iter_src++){
+	    acc_src.set(i + 0.25, iter_src);
+	}
+	i--;
+	for ( ; x < 10 ; i--, x++, iter_src++){
+	    acc_src.set(i + 0.25, iter_src);
+	}
+	(y%2 == 0)? i += 3 : i+= 2;
+    }
+    return src;
+}
+
+vigra::DImage getUnsymmetricImage(){
+    vigra::DImage src(10, 6);
+
+    vigra::DImage::Accessor acc_src = src.accessor();
+    vigra::DImage::iterator iter_src = src.begin();
+
+    int i = 0;
+    for(int y = 0; y < 6; y++){
+	for (int x = 0 ; x < 10 ; i++, x++, iter_src++){
+	    acc_src.set(i + 0.25, iter_src);
+	}
+	(y%2 == 0)? i++ : i+= 2;
+    }
+    return src;
+}
 
 struct ConvolutionTest
 {
     typedef vigra::DImage Image;
 
     ConvolutionTest()
-    : constimg(5,5), rampimg(5,1)
+    : constimg(5,5), 
+      rampimg(5,1), 
+      sym_image(getSymmetricImage()), 
+      unsym_image(getUnsymmetricImage())
     {
         constimg.init(1.0);
+        
+        vigra::Kernel1D<double> binom1;
+        binom1.initBinomial(1);
+        sym_kernel.initSeparable(binom1, binom1);
+
+	unsym_kernel.initExplicitly(Diff2D(-1,-1), Diff2D(1,1)) = 1,   2,   4,
+	                                                          5,   11,  3,
+	                                                          6,   8,   7 ;
+	unsym_kernel.normalize(1);
+
+	line_kernel.initExplicitly(Diff2D(-2,0), Diff2D(2,0)) = 1, 4,   12,   4, 1 ;
+	line_kernel.normalize(1);
         
         ImageImportInfo info("lenna128.xv");
 
@@ -48,7 +99,335 @@ struct ConvolutionTest
             acc.set(k, i);
         }
     }
+    void stdConvolutionTestOnConstImage()
+    {        
+        Image tmp_clip(constimg);
+        tmp_clip = 0.0;
+        Image tmp_wrap(constimg);
+        tmp_wrap = 0.0;
+        Image tmp_avoid(constimg);
+        tmp_avoid = 0.0;
+        Image tmp_repeat(constimg);
+        tmp_repeat = 0.0;
+        Image tmp_reflect(constimg);
+        tmp_reflect = 0.0;
+
+        convolveImage(srcImageRange(constimg), destImage(tmp_clip), kernel2d(sym_kernel, BORDER_TREATMENT_CLIP));
+
+        convolveImage(srcImageRange(constimg), destImage(tmp_avoid), kernel2d(sym_kernel, BORDER_TREATMENT_AVOID));
+        
+	convolveImage(srcImageRange(constimg), destImage(tmp_wrap), kernel2d(sym_kernel, BORDER_TREATMENT_WRAP));
+
+        convolveImage(srcImageRange(constimg), destImage(tmp_repeat), kernel2d(sym_kernel, BORDER_TREATMENT_REPEAT));
+
+        convolveImage(srcImageRange(constimg), destImage(tmp_reflect), kernel2d(sym_kernel, BORDER_TREATMENT_REFLECT));
+	
+        Image::ScanOrderIterator i_src = constimg.begin();
+        Image::ScanOrderIterator i_src_end = constimg.end();
+        Image::ScanOrderIterator i_clip = tmp_clip.begin();
+        Image::ScanOrderIterator i_avoid = tmp_avoid.begin();
+        Image::ScanOrderIterator i_wrap = tmp_wrap.begin();
+        Image::ScanOrderIterator i_repeat = tmp_repeat.begin();
+        Image::ScanOrderIterator i_reflect = tmp_reflect.begin();
+        Image::Accessor acc = constimg.accessor();
+        
+        for(int y = 0; i_src != i_src_end; y++){
+	    for(int x = 0; x < constimg.size().x; x++, ++i_src, ++i_clip, ++i_wrap, ++i_repeat, ++i_reflect, ++i_avoid){
+		should(acc(i_src) == acc(i_clip));
+		should(acc(i_src) == acc(i_wrap));
+		should(acc(i_src) == acc(i_repeat));
+		should(acc(i_src) == acc(i_reflect));
+		if(x != 0 && y != 0 && x != 4 && y != 4){
+		    should(acc(i_src) == acc(i_avoid)); 
+		}else{
+		    should(acc(i_avoid) == 0);
+		}
+	    }
+        }
+
+
+	//@todo Import<->Export funktioniert nicht wie frueher???
+// 	Image dest_lenna(lenna);
+//         convolveImage(srcImageRange(lenna), destImage(dest_lenna), kernel2d(sym_kernel, BORDER_TREATMENT_REFLECT));
+//         exportImage(srcImageRange(dest_lenna), ImageExportInfo("lenna_convolve_128x120.xv"));
+
+    }
     
+
+    void stdConvolutionTestWithAvoid(){
+	Image dest(sym_image);
+	dest.init(42.1);
+
+        convolveImage(srcImageRange(sym_image), destImage(dest), kernel2d(sym_kernel, BORDER_TREATMENT_AVOID));
+
+	Image::Iterator i_dest_2D = dest.upperLeft();
+	Image::ScanOrderIterator i_dest = dest.begin();
+	Image::ScanOrderIterator i_dest_end = dest.end();
+	Image::Accessor acc = dest.accessor();
+
+	//Kontrollierung der Randbehandlung und ein paar Pixel
+	//aus der Mitte.
+	should (acc(i_dest_2D + Diff2D(1,1)) == 3);
+	should (acc(i_dest_2D + Diff2D(8,2)) == 4.5);
+        for(int y = 0; i_dest != i_dest_end; y++){
+	    for(int x = 0; x < dest.size().x; x++, ++i_dest){
+		if(x == 0 || y == 0 || x == 9 || y == 9){
+		    should(acc(i_dest) == 42.1);
+		}
+	    }
+        }
+
+    }
+    
+    void stdConvolutionTestWithClip(){
+	Image dest(sym_image);
+	dest.init(42.1);
+
+        convolveImage(srcImageRange(sym_image), destImage(dest), kernel2d(unsym_kernel, BORDER_TREATMENT_CLIP));
+
+	Image::Iterator i_dest_2D = dest.upperLeft();
+	Image::ScanOrderIterator i_dest = dest.begin();
+	Image::ScanOrderIterator i_dest_end = dest.end();
+	Image::Accessor acc = dest.accessor();
+
+	//Kontrollierung der Randbehandlung und ein paar Pixel
+	//aus der Mitte.
+	shouldEqualTolerance (acc(i_dest_2D + Diff2D(0,0)), 0.88157,   1E-4);
+	shouldEqualTolerance (acc(i_dest_2D + Diff2D(3,0)), 3.75,      1E-4);
+	shouldEqualTolerance (acc(i_dest_2D + Diff2D(9,0)), 1.199999,  1E-4);
+	shouldEqualTolerance (acc(i_dest_2D + Diff2D(9,2)), 3.5642913, 1E-4);
+	shouldEqualTolerance (acc(i_dest_2D + Diff2D(9,5)), 7.5603463, 1E-4);
+	shouldEqualTolerance (acc(i_dest_2D + Diff2D(3,5)), 10.225,    1E-4);
+	shouldEqualTolerance (acc(i_dest_2D + Diff2D(0,5)), 7.6833271, 1E-4);
+	shouldEqualTolerance (acc(i_dest_2D + Diff2D(0,2)), 3.3712039, 1E-4);
+
+	shouldEqualTolerance (acc(i_dest_2D + Diff2D(3,2)), 6.05852,   1E-4);
+	shouldEqualTolerance (acc(i_dest_2D + Diff2D(6,4)), 9.14363,   1E-4);
+    }
+    
+    void stdConvolutionTestWithWrap(){
+	Image dest(unsym_image);
+	dest.init(42.1);
+
+        convolveImage(srcImageRange(unsym_image), destImage(dest), kernel2d(unsym_kernel, BORDER_TREATMENT_WRAP));
+
+	Image::Iterator i_dest_2D = dest.upperLeft();
+	Image::ScanOrderIterator i_dest = dest.begin();
+	Image::ScanOrderIterator i_dest_end = dest.end();
+	Image::Accessor acc = dest.accessor();
+
+	//Kontrollierung der Randbehandlung und ein paar Pixel
+	//aus der Mitte.
+	shouldEqualTolerance (acc(i_dest_2D + Diff2D(0,0)), 30.2926,   1E-5);
+	shouldEqualTolerance (acc(i_dest_2D + Diff2D(3,0)), 30.3138,   1E-5);
+	shouldEqualTolerance (acc(i_dest_2D + Diff2D(9,0)), 33.7606,   1E-5);
+	shouldEqualTolerance (acc(i_dest_2D + Diff2D(9,2)), 25.9309,   1E-5);
+	shouldEqualTolerance (acc(i_dest_2D + Diff2D(9,5)), 50.25,     1E-5);
+	shouldEqualTolerance (acc(i_dest_2D + Diff2D(3,5)), 46.8032,   1E-5);
+	shouldEqualTolerance (acc(i_dest_2D + Diff2D(0,5)), 46.7819,   1E-5);
+	shouldEqualTolerance (acc(i_dest_2D + Diff2D(0,2)), 22.4628,   1E-5);
+
+	shouldEqualTolerance (acc(i_dest_2D + Diff2D(2,3)), 33.0798,   1E-5);
+	shouldEqualTolerance (acc(i_dest_2D + Diff2D(6,4)), 48.4841,   1E-5);
+    }
+    
+    void stdConvolutionTestWithReflect(){
+	Image dest(unsym_image);
+	dest.init(42.1);
+
+        convolveImage(srcImageRange(unsym_image), destImage(dest), kernel2d(unsym_kernel, BORDER_TREATMENT_REFLECT));
+
+	Image::Iterator i_dest_2D = dest.upperLeft();
+	Image::ScanOrderIterator i_dest = dest.begin();
+	Image::ScanOrderIterator i_dest_end = dest.end();
+	Image::Accessor acc = dest.accessor();
+
+	//Kontrollierung der Randbehandlung und ein paar Pixel
+	//aus der Mitte.
+	shouldEqualTolerance (acc(i_dest_2D + Diff2D(0,0)), 7.35638,   1E-5);
+	shouldEqualTolerance (acc(i_dest_2D + Diff2D(3,0)), 9.76064,   1E-5);
+	shouldEqualTolerance (acc(i_dest_2D + Diff2D(9,0)), 15.25,     1E-5);
+	shouldEqualTolerance (acc(i_dest_2D + Diff2D(9,2)), 27.9734,   1E-5);
+	shouldEqualTolerance (acc(i_dest_2D + Diff2D(9,5)), 59.1436,   1E-5);
+	shouldEqualTolerance (acc(i_dest_2D + Diff2D(3,5)), 53.6543,   1E-5);
+	shouldEqualTolerance (acc(i_dest_2D + Diff2D(0,5)), 51.25,     1E-5);
+	shouldEqualTolerance (acc(i_dest_2D + Diff2D(0,2)), 20.0798,   1E-5);
+
+	shouldEqualTolerance (acc(i_dest_2D + Diff2D(2,3)), 33.0798,   1E-5);
+	shouldEqualTolerance (acc(i_dest_2D + Diff2D(6,4)), 48.4841,   1E-5);
+    }
+    
+    void stdConvolutionTestWithRepeat(){
+	Image dest(unsym_image);
+	dest.init(42.1);
+
+        convolveImage(srcImageRange(unsym_image), destImage(dest), kernel2d(unsym_kernel, BORDER_TREATMENT_REPEAT));
+
+	Image::Iterator i_dest_2D = dest.upperLeft();
+	Image::ScanOrderIterator i_dest = dest.begin();
+	Image::ScanOrderIterator i_dest_end = dest.end();
+	Image::Accessor acc = dest.accessor();
+
+	//Kontrollierung der Randbehandlung und ein paar Pixel
+	//aus der Mitte.
+	shouldEqualTolerance (acc(i_dest_2D + Diff2D(0,0)), 2.14362,   1E-5);
+	shouldEqualTolerance (acc(i_dest_2D + Diff2D(3,0)), 4.84574,   1E-5);
+	shouldEqualTolerance (acc(i_dest_2D + Diff2D(9,0)), 10.5904,   1E-5);
+	shouldEqualTolerance (acc(i_dest_2D + Diff2D(9,2)), 28.2287,   1E-5);
+	shouldEqualTolerance (acc(i_dest_2D + Diff2D(9,5)), 61.0372,   1E-5);
+	shouldEqualTolerance (acc(i_dest_2D + Diff2D(3,5)), 55.2926,   1E-5);
+	shouldEqualTolerance (acc(i_dest_2D + Diff2D(0,5)), 52.5904,   1E-5);
+	shouldEqualTolerance (acc(i_dest_2D + Diff2D(0,2)), 19.7819,   1E-5);
+
+	shouldEqualTolerance (acc(i_dest_2D + Diff2D(2,3)), 33.0798,   1E-5);
+	shouldEqualTolerance (acc(i_dest_2D + Diff2D(6,4)), 48.4841,   1E-5);
+    }
+
+    void stdConvolutionTestFromWrapWithReflect(){
+    
+	Image src_wrap(78, 1);
+	Image src_reflect(40, 1);
+	Image dest_wrap(src_wrap);
+	Image dest_reflect(src_reflect);
+
+	Image::Accessor acc_src_wrap = src_wrap.accessor();
+	Image::iterator iter_src_wrap = src_wrap.begin();
+	Image::Accessor acc_src_reflect = src_reflect.accessor();
+	Image::iterator iter_src_reflect = src_reflect.begin();
+
+	for (int i = 0 ; i < 40 ; i++, iter_src_wrap++, iter_src_reflect++){
+	    acc_src_wrap.set(i + 0.25, iter_src_wrap);
+	    acc_src_reflect.set(i + 0.25, iter_src_reflect);
+	}
+	for (int j = 38 ; j >= 1 ; j--, iter_src_wrap++){
+	    acc_src_wrap.set( j + 0.25, iter_src_wrap);
+	}
+    
+        convolveImage(srcImageRange(src_wrap), destImage(dest_wrap), kernel2d(line_kernel, BORDER_TREATMENT_WRAP));
+        convolveImage(srcImageRange(src_reflect), destImage(dest_reflect), kernel2d(line_kernel, BORDER_TREATMENT_REFLECT));
+
+	Image::iterator iter_dest_wrap = dest_wrap.begin();
+	Image::Accessor acc_dest_wrap = dest_wrap.accessor();
+	Image::iterator iter_dest_reflect = dest_reflect.begin();
+	Image::iterator end_dest_reflect = dest_reflect.end();
+	Image::Accessor acc_dest_reflect = dest_reflect.accessor();
+
+	while(iter_dest_reflect != end_dest_reflect){
+	    shouldEqualTolerance(acc_dest_wrap(iter_dest_wrap), acc_dest_reflect(iter_dest_reflect), 1e-6);
+	    iter_dest_wrap++;
+	    iter_dest_reflect++;
+	}
+    }
+  
+    void stdConvolutionTestFromRepeatWithAvoid(){
+	Image src_avoid(40, 1);
+	src_avoid.init(2.47);
+	Image src_repeat(36, 1);
+    
+	Image dest_repeat(src_repeat);
+	Image dest_avoid(src_avoid);
+
+	Image::Accessor acc_src_avoid = src_avoid.accessor();
+	Image::iterator iter_src_avoid = src_avoid.begin();
+	Image::Accessor acc_src_repeat = src_repeat.accessor();
+	Image::iterator iter_src_repeat = src_repeat.begin();
+
+	int i = 0;
+	for ( ; i < 20 ; i++, iter_src_avoid++){
+	    if(i > 1){
+		acc_src_repeat.set(i + 0.47, iter_src_repeat);
+		acc_src_avoid.set(i + 0.47, iter_src_avoid);
+		iter_src_repeat++;
+	    }
+	}
+	i--;
+
+	for ( ; i >= 0 ; i--, iter_src_avoid++){
+	    if(i > 1){
+		acc_src_repeat.set(i + 0.47, iter_src_repeat);
+		acc_src_avoid.set(i + 0.47, iter_src_avoid);
+		iter_src_repeat++;
+	    }
+	}
+
+	convolveImage(srcImageRange(src_repeat), destImage(dest_repeat), kernel2d(line_kernel, BORDER_TREATMENT_REPEAT));
+	convolveImage(srcImageRange(src_avoid), destImage(dest_avoid), kernel2d(line_kernel, BORDER_TREATMENT_AVOID));
+
+	Image::Accessor acc_dest_repeat = dest_repeat.accessor();
+	Image::iterator dest_iter_repeat = dest_repeat.begin();
+
+	Image::Accessor acc_dest_avoid = dest_avoid.accessor();
+	Image::iterator dest_iter_avoid = dest_avoid.begin();
+
+	for (int i = 0 ; i < 39 ; i++, dest_iter_avoid++){
+	    if (i < 2 || i > 37){
+		should(acc_dest_avoid(dest_iter_avoid) == 2.47);
+	    }else{
+		should(acc_dest_avoid(dest_iter_avoid) == acc_dest_repeat(dest_iter_repeat));
+		dest_iter_repeat++;
+	    }
+	}
+    }
+  
+    /**
+     * Es wird die Positionierung der einzelnen 
+     * Punkte relativ zueinander getestet.
+     */
+    void stdConvolutionTestOfAllTreatmentsRelatively(){
+	Image src(40, 1);
+
+	Image::Accessor acc_src = src.accessor();
+	Image::iterator iter_src = src.begin();
+
+	int i = 0;
+	for ( ; i < 20 ; i++, iter_src++){
+	    acc_src.set(i + 0.25, iter_src);
+	}
+	i--;
+	for ( ; i >= 0 ; i--, iter_src++){
+	    acc_src.set(i + 0.25, iter_src);
+	}
+
+	Image dest_avoid(src);
+	Image dest_repeat(src);
+	Image dest_reflect(src);
+	Image dest_wrap(src);
+	Image dest_clip(src);
+
+	convolveImage(srcImageRange(src), destImage(dest_avoid), kernel2d(line_kernel, BORDER_TREATMENT_AVOID));
+	convolveImage(srcImageRange(src), destImage(dest_repeat), kernel2d(line_kernel, BORDER_TREATMENT_REPEAT));
+	convolveImage(srcImageRange(src), destImage(dest_reflect), kernel2d(line_kernel, BORDER_TREATMENT_REFLECT));
+	convolveImage(srcImageRange(src), destImage(dest_wrap), kernel2d(line_kernel, BORDER_TREATMENT_WRAP));
+	convolveImage(srcImageRange(src), destImage(dest_clip), kernel2d(line_kernel, BORDER_TREATMENT_CLIP));
+
+	iter_src = src.begin();
+	Image::iterator iter_dest_avoid = dest_avoid.begin();
+	Image::iterator iter_dest_repeat = dest_repeat.begin();
+	Image::iterator iter_dest_reflect = dest_reflect.begin();
+	Image::iterator iter_dest_wrap = dest_wrap.begin();
+	Image::iterator iter_dest_clip = dest_clip.begin();
+
+	for (int x = 0 ;  x < 40 ; x++){
+	    if(x > 1 && x < 38 ){
+		shouldEqualTolerance(iter_dest_avoid[x], iter_dest_repeat[x], 1e-5);
+		shouldEqualTolerance(iter_dest_avoid[x], iter_dest_reflect[x], 1e-5);
+		shouldEqualTolerance(iter_dest_avoid[x], iter_dest_wrap[x], 1e-5);
+		shouldEqualTolerance(iter_dest_avoid[x], iter_dest_clip[x], 1e-5);
+	    }else{
+		should(iter_dest_avoid[x] == iter_src[x]);
+		should(iter_dest_repeat[x] < iter_dest_reflect[x]);
+		should(iter_dest_repeat[x] < iter_dest_clip[x]);
+		if (x < 1 || x > 38){
+		    should(iter_dest_clip[x] < iter_dest_reflect[x]);
+		}
+		else{
+		    should(iter_dest_clip[x] > iter_dest_reflect[x]);
+		}
+	    }
+	}
+
+    }
+
     void separableConvolutionTest()
     {
         vigra::Kernel1D<double> binom;
@@ -490,7 +869,7 @@ struct ConvolutionTest
         // Hier wird an einem symmetrischen Bild /\ getestet 
         // ob die korrekten Daten eingehalten wurden.
 
-        Image src(getSymmetricImage());
+        Image src(getSymmetricLine());
         dest = src;
         recursiveFilterX(srcImageRange(src), destImage(dest), 
                VIGRA_CSTD::exp(-1.0), BORDER_TREATMENT_AVOID);
@@ -561,7 +940,7 @@ struct ConvolutionTest
         // Hier wird an einem symmetrischen Bild /\ (Groesse 40x1)  getestet 
         // ob die korrekten Daten eingehalten wurden.
 
-        Image src(getSymmetricImage());
+        Image src(getSymmetricLine());
         dest = src;
         recursiveFilterX(srcImageRange(src), destImage(dest), 
                 VIGRA_CSTD::exp(-1.0), BORDER_TREATMENT_REFLECT);
@@ -714,7 +1093,7 @@ struct ConvolutionTest
         // Hier wird an einem symmetrischen Bild /\ (Groesse 40x1)  getestet 
         // ob die korrekten Daten eingehalten wurden.
 
-        Image src(getSymmetricImage());
+        Image src(getSymmetricLine());
         dest = src;
         recursiveFilterX(srcImageRange(src), destImage(dest), 
                     VIGRA_CSTD::exp(-1.0), BORDER_TREATMENT_WRAP);
@@ -786,7 +1165,7 @@ struct ConvolutionTest
         // Hier wird an einem symmetrischen Bild /\ (Groesse 40x1)  getestet 
         // ob die korrekten Daten eingehalten wurden.
 
-        Image src(getSymmetricImage());
+        Image src(getSymmetricLine());
         dest = src;
         recursiveFilterX(srcImageRange(src), destImage(dest), 
                 VIGRA_CSTD::exp(-1.0), BORDER_TREATMENT_REPEAT);
@@ -1083,7 +1462,9 @@ struct ConvolutionTest
         }
     }
     
-    Image constimg, lenna, rampimg;
+    Image constimg, lenna, rampimg, sym_image, unsym_image;
+    vigra::Kernel2D<double> sym_kernel, unsym_kernel, line_kernel;
+    
 };
 
 struct ConvolutionTestSuite
@@ -1092,6 +1473,16 @@ struct ConvolutionTestSuite
     ConvolutionTestSuite()
     : vigra::test_suite("ConvolutionTestSuite")
     {
+	add( testCase( &ConvolutionTest::stdConvolutionTestOnConstImage));
+	add( testCase( &ConvolutionTest::stdConvolutionTestWithAvoid));
+	add( testCase( &ConvolutionTest::stdConvolutionTestWithClip));
+	add( testCase( &ConvolutionTest::stdConvolutionTestWithWrap));
+	add( testCase( &ConvolutionTest::stdConvolutionTestWithReflect));
+	add( testCase( &ConvolutionTest::stdConvolutionTestWithRepeat));
+	add( testCase( &ConvolutionTest::stdConvolutionTestFromWrapWithReflect));
+	add( testCase( &ConvolutionTest::stdConvolutionTestFromRepeatWithAvoid));
+	add( testCase( &ConvolutionTest::stdConvolutionTestOfAllTreatmentsRelatively));
+
         add( testCase( &ConvolutionTest::separableConvolutionTest));
         add( testCase( &ConvolutionTest::separableDerivativeRepeatTest));
         add( testCase( &ConvolutionTest::separableDerivativeReflectTest));
