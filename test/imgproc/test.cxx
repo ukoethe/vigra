@@ -281,6 +281,15 @@ struct ImageFunctionsTest
         should(average() == 5.5);
     }
 
+    void reduceFunctorTest()
+    {
+        ReduceFunctor<std::plus<double>, double> f(std::plus<double>(), 0.0);
+        
+        inspectImage(srcImageRange(img), f);
+
+        shouldEqual(f(), 49.5);
+    }
+
     void findBoundingRectangleTest()
     {
         vigra::FindBoundingRectangle findRect;
@@ -1189,6 +1198,7 @@ struct ImageFunctionsTestSuite
         add( testCase( &ImageFunctionsTest::findMinMaxIfTest));
         add( testCase( &ImageFunctionsTest::findAverageTest));
         add( testCase( &ImageFunctionsTest::findAverageIfTest));
+        add( testCase( &ImageFunctionsTest::reduceFunctorTest));
         add( testCase( &ImageFunctionsTest::findBoundingRectangleTest));
         add( testCase( &ImageFunctionsTest::arrayOfRegionStatisticsTest));
         add( testCase( &ImageFunctionsTest::arrayOfRegionStatisticsIfTest));
