@@ -23,6 +23,12 @@
 #include <iostream>
 #include <cmath>
 #include "vigra/config.hxx"
+//#include "vigra/nummerictraits.hxx"
+
+
+#include <boost/limits.hpp>
+#include <boost/test/detail/class_properties.hpp>
+
 
 #ifdef _MSC_VER
 
@@ -77,8 +83,18 @@
 #define shouldEqual(left, right) \
     vigra::detail::equal_impl(left, right, #left " == " #right, __FILE__, __LINE__)
 
-#define shouldEqualEps(left, right, eps) \
-    vigra::detail::eps_equal_impl(left, right, eps, #left " == " #right, __FILE__, __LINE__)
+
+////////////////////////////////// umbenannt !!!! /////////////////////////////////////
+
+//#define shouldEqualEps(left, right, eps) \
+//    vigra::detail::eps_equal_impl(left, right, eps, #left " == " #right, __FILE__, __LINE__)
+
+//////////////////////////////////////////////////////////////////////////////////////
+
+#define shouldEqualTolerance(left, right, eps) \
+    vigra::detail::tolerance_equal_impl(left, right, eps, #left " == " #right, __FILE__, __LINE__)
+
+
 
 #define VIGRA_ERROR(message) \
     vigra::detail::should_impl(false, message, __FILE__, __LINE__)
@@ -362,12 +378,139 @@ should_impl(bool predicate, const char * message, const char * file, int line)
     } 
 }
 
+//////////////////////////////////Hinzugefuegt//////////////////////////////////////
+
+template<typename FPT>
+inline 
+FPT fpt_abs( FPT arg ) 
+{
+    return arg < 0 ? -arg : arg;
+}
+
+//____________________________________________________________________________//
+
+// both f1 and f2 are unsigned here
+template<typename FPT>
+
+inline 
+FPT safe_fpt_division( FPT f1, FPT f2 )
+{
+        /*  ist f1 das absolute minimum (in diesem Fall einfach nur sehr kleine Zahl)
+        *   aber nicht null (1.65242e-28) und f2 = 0, 
+        *   dann tritt die erste Bedingung in Kraft 0<1 && 1.65242e-28 > 0*1.79769e+308 (max)
+        *   deshalb schlaegt es fehl sogar wenn min closed at tolarance zu 0 ist ???
+        *   Der Vergleich aller Zahlen closed at tolarance zu 0 wuerden fehlschlagen;
+        *   Sie umzudrehen bringt nichts, denn diese Funktion wird symetrisch fuer beide
+        *   angewendet wird.
+        *   0 mit 0 zu Vergleichen bereitet keine Probleme.
+        *   Ausweg: evl. eine extra Behandlung der F = 0 ???
+        */
+        
+    return  ((f2 < 1) && (f1 > (f2 * std::numeric_limits<FPT>::max()))) ? 
+            std::numeric_limits<FPT>::max() :
+            (((f2 > 1) && (f1 < (f2 * std::numeric_limits<FPT>::min())) || (f1 == 0)) ? 0 : f1/f2 );
+            
+            
+        /*  Die Multiplikation mit max in 1.ten Bedingung und mit min in der 2.ten ist eine Absicherung gegen
+        *   die Owerflow bzw Underflow ???
+        */
+}
+
+//____________________________________________________________________________//
+
+/* template<typename FPT>
+class close_at_tolerance {
+public:
+    explicit    close_at_tolerance( FPT tolerance, bool strong_or_weak = true ) 
+    : m_tolerance( tolerance ), m_strong_or_weak( strong_or_weak ) {}
+
+    explicit    close_at_tolerance( int number_of_rounding_errors, bool strong_or_weak = true ) 
+    : m_tolerance( std::numeric_limits<FPT>::epsilon() * number_of_rounding_errors/2 ), 
+      m_strong_or_weak( strong_or_weak ) {}
+
+    bool        operator()( FPT left, FPT right ) const
+    {
+        std::cout << "close_at_tolerance begin :left = " << left << ", right = " << right << ", m_tolerance = " << m_tolerance << std::endl;
+        FPT diff = fpt_abs( left - right );
+        std::cout << "diff = " << diff << std::endl;
+        FPT d1   = safe_fpt_division( diff, fpt_abs( right ) );
+        std::cout << "d1 = " << d1 << endl;
+        FPT d2   = safe_fpt_division( diff, fpt_abs( left ) );
+        std::cout << "d2 = " << d2 <<"\nclose_at_tolerance end//" << endl;
+        
+        return m_strong_or_weak ? (d1 <= m_tolerance && d2 <= m_tolerance) 
+                                : (d1 <= m_tolerance || d2 <= m_tolerance);
+    }
+
+    // Data members
+
+private:
+    bool        m_strong_or_weak;
+    FPT         m_tolerance;
+};
+*/
+
+template<typename FPT>
+class close_at_tolerance {
+public:
+    explicit    close_at_tolerance( FPT tolerance, bool strong_or_weak = true ) 
+    : m_tolerance( tolerance ), m_strong_or_weak( strong_or_weak ) {}
+
+    explicit    close_at_tolerance( int number_of_rounding_errors, bool strong_or_weak = true ) 
+    : m_tolerance( std::numeric_limits<FPT>::epsilon() * number_of_rounding_errors/2 ), 
+      m_strong_or_weak( strong_or_weak ) {}
+
+    bool        operator()( FPT left, FPT right ) const
+    {
+        if (left == 0 && right != 0)
+        {
+                return (fpt_abs(right) <= m_tolerance);  
+        }
+        if (right == 0 && left != 0)
+        {
+                return (fpt_abs(left) <= m_tolerance);  
+        }
+        FPT diff = fpt_abs( left - right );
+        FPT d1   = safe_fpt_division( diff, fpt_abs( right ) );
+        FPT d2   = safe_fpt_division( diff, fpt_abs( left ) );
+        
+        return m_strong_or_weak ? (d1 <= m_tolerance && d2 <= m_tolerance) 
+                                : (d1 <= m_tolerance || d2 <= m_tolerance);
+    }
+
+private:
+    bool        m_strong_or_weak;
+    FPT         m_tolerance;
+};
+
+//////////////////////////////////////////////////ENDE der Hinzufuegung/////////////////////////////////
+
+///////////////////////////////////////////////////////////////////////////////////////////
+//                      Aenderung vorgenommen, original sah so aus:                     ///
+/*
+ * inline void 
+ * eps_equal_impl(double left, double right, double epsilon, const char * message, const char * file, int line)
+ * {
+ *     detail::errstream buf;
+ *     buf << message << " [" << left << " != " << right << "]";
+ *     should_impl(VIGRA_CSTD::fabs(left - right) < epsilon, buf.str(), file, line); 
+ * }
+ * 
+ */
+///////////////////////////////////////////////////////////////////////////////////////////
+
+
 inline void 
-eps_equal_impl(double left, double right, double epsilon, const char * message, const char * file, int line)
+tolerance_equal_impl(double left, double right, double epsilon, const char * message, const char * file, int line)
 {
     detail::errstream buf;
     buf << message << " [" << left << " != " << right << "]";
-    should_impl(VIGRA_CSTD::fabs(left - right) < epsilon, buf.str(), file, line); 
+    
+    close_at_tolerance<double> fcomparator( epsilon , false);
+    bool compare = fcomparator ( left , right );
+    cout << "left = " << left << ", right = " << right << " and left == right is " << compare << endl << endl;
+    should_impl(compare, buf.str(), file, line); 
+     
 }
 
 template <class Left, class Right>
@@ -382,15 +525,15 @@ equal_impl(Left left, Right right, const char * message, const char * file, int 
 inline void 
 equal_impl(double left, double right, const char * message, const char * file, int line)
 {
-    eps_equal_impl(left, right, 1.0e-16, message, file, line); 
+    tolerance_equal_impl(left, right, 1.0e-16, message, file, line); 
 }
 
 inline void 
 equal_impl(float left, float right, const char * message, const char * file, int line)
 {
-    eps_equal_impl(left, right, 1.0e-6, message, file, line); 
+    tolerance_equal_impl(left, right, 1.0e-6, message, file, line); 
 }
-
+ 
 class test_case
 {
   public:
