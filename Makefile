@@ -23,15 +23,15 @@ install-docs:
 	$(INSTALL) -d $(docdir)
 	$(INSTALL) --mode=644 LICENSE $(docdir)
 	if test $(prefix) != $(vigra_builddir) ; then \
+          $(INSTALL) --mode=644 \
+            $(vigra_builddir)/doc/vigra/*.html \
+            $(vigra_builddir)/doc/vigra/classvigra*.gif $(vigra_builddir)/doc/vigra/form*.gif \
+            $(vigra_builddir)/doc/vigra/doxygen.gif $(vigra_builddir)/doc/vigra/doxygen.css \
+            $(docdir) ; \
           $(INSTALL) -d $(docdir)/documents ; \
           $(INSTALL) --mode=644 \
-            $(vigra_builddir)/doc/*.html \
-            $(vigra_builddir)/doc/classvigra*.gif $(vigra_builddir)/doc/form*.gif \
-            $(vigra_builddir)/doc/doxygen.gif $(vigra_builddir)/doc/doxygen.css \
-            $(docdir) ; \
-          $(INSTALL) --mode=644 \
-            $(vigra_builddir)/doc/documents/*.ps \
-            $(vigra_builddir)/doc/documents/*.gif \
+            $(vigra_builddir)/doc/vigra/documents/*.ps \
+            $(vigra_builddir)/doc/vigra/documents/*.gif \
             $(docdir)/documents ; \
         fi
 
