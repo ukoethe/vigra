@@ -23,7 +23,7 @@
 #define VIGRA_DIFF2D_HXX
 
 #include <cmath> // for sqrt()
-#include <iosfwd> 
+#include <iosfwd>
 #include "vigra/config.hxx"
 #include "vigra/iteratortags.hxx"
 #include "vigra/iteratortraits.hxx"
@@ -429,8 +429,8 @@ class Diff2D
 };
 
 
-template <> 
-struct IteratorTraits<Diff2D > 
+template <>
+struct IteratorTraits<Diff2D >
 {
     typedef Diff2D                               Iterator;
     typedef Iterator                             iterator;
@@ -444,10 +444,10 @@ struct IteratorTraits<Diff2D >
     typedef iterator::column_iterator            column_iterator;
     typedef StandardConstValueAccessor<Diff2D>   DefaultAccessor;
     typedef StandardConstValueAccessor<Diff2D>   default_accessor;
-    
+
 };
 
-}
+} // namespace vigra
 
 inline
 std::ostream & operator<<(std::ostream & o, vigra::Diff2D const & d)
@@ -506,9 +506,9 @@ template <class DIFF>
 inline triple<Diff2D, Diff2D, IteratorTraits<Diff2D>::DefaultAccessor>
 srcIterRange(Diff2D const & upperleft, DIFF const & lowerright)
 {
-    return triple<Diff2D, Diff2D, 
+    return triple<Diff2D, Diff2D,
                   IteratorTraits<Diff2D>::DefaultAccessor>(
-                  upperleft, lowerright, 
+                  upperleft, lowerright,
                   IteratorTraits<Diff2D>::DefaultAccessor());
 }
 
@@ -532,9 +532,9 @@ template <class DIFF>
 inline triple<Diff2D, Diff2D, IteratorTraits<Diff2D>::DefaultAccessor>
 destIterRange(Diff2D const & upperleft, DIFF const & lowerright)
 {
-    return triple<Diff2D, Diff2D, 
+    return triple<Diff2D, Diff2D,
                   IteratorTraits<Diff2D>::DefaultAccessor>(
-                  upperleft, lowerright, 
+                  upperleft, lowerright,
                   IteratorTraits<Diff2D>::DefaultAccessor());
 }
 
@@ -642,6 +642,17 @@ public:
         return Size2D(x - offset.x, y - offset.y);
     }
 };
+
+} // namespace vigra
+
+inline
+std::ostream &operator <<(std::ostream &s, vigra::Size2D const &d)
+{
+    s << '(' << d.x << 'x' << d.y << ')';
+    return s;
+}
+
+namespace vigra {
 
 /********************************************************/
 /*                                                      */
@@ -1251,7 +1262,17 @@ public:
     }
 };
 
+} // namespace vigra
 
+inline
+std::ostream &operator <<(std::ostream &s, vigra::Rect2D const &r)
+{
+    s << "[" << r.upperLeft() << " to " << r.lowerRight()
+      << " = " << r.size() << "]";
+    return s;
+}
+
+namespace vigra {
 
 /********************************************************/
 /*                                                      */
