@@ -24,7 +24,7 @@
 #define VIGRA_CONVOLUTION_HXX
 
 #include <functional>
-#include "stdconvolution.hxx"
+#include "vigra/stdconvolution.hxx"
 #include "vigra/separableconvolution.hxx"
 #include "vigra/recursiveconvolution.hxx"
 #include "vigra/nonlineardiffusion.hxx"
