@@ -1080,6 +1080,94 @@ class BrightnessContrastFunctor<RGBValue<unsigned char> >
     }
 };
 
+
+
+/********************************************************/
+/*                                                      */
+/*                     VectorNormFunctor                */
+/*                                                      */
+/********************************************************/
+
+/** \brief A functor for computing the vector norm
+
+    Calculate the magnitude or norm from a given vector-valued
+    entity. The vector type will typically be some sort of
+    TinyVector.
+
+    At least, the vector type is required to have a function
+    '<em>result</em><TT> = dot(v,v)</TT>'.
+
+    <b> Usage:</b>
+
+        <b>\#include</b> "<a href="transformimage_8hxx-source.html">vigra/transformimage.hxx</a>"<br>
+        Namespace: vigra
+
+    \code
+    typedef vigra::TinyVector<float> Vector;
+    vigra::BasicImage<Vector> grad(width, height);
+    vigra::FImage magn(width,height);
+    ...
+    vigra::transformImage(srcImageRange(grad), destImage(magn),
+                          VectorNormFunctor<float>()
+                          );
+    \endcode
+
+    \see TinVector, dot()
+*/
+template <class ValueType>
+class VectorNormFunctor
+{
+public:
+  /** the functor's argument type
+   */
+  typedef ValueType argument_type;
+  
+  /** the functor's result type
+   */
+  typedef typename NumericTraits<typename ValueType::value_type>::RealPromote result_type;
+  
+  /** calculate transform '<TT>sqrt(v1*v1 + v2*v2 + ...)</TT>'.
+   */
+  result_type operator()( const argument_type &a ) const
+  {
+    return VIGRA_CSTD::sqrt( dot(a,a) );
+  }
+};    //-- class VectorNormFunctor
+
+
+/** \brief A functor for computing the squared vector norm
+
+    Calculate the squared magnitude or norm from a given
+    vector-valued entity. The vector type will typically be some
+    sort of TinyVector.
+
+    At least, the vector type is required to have a function
+    '<em>result</em><TT> = dot(v,v)</TT>'.
+
+    For an example of its usage see VectorNormFunctor
+
+    \see TinVector, dot()
+*/
+template <class ValueType>
+class VectorNormSqFunctor
+{
+public:
+  /** the functor's argument type
+   */
+  typedef ValueType argument_type;
+
+  /** the functor's result type
+   */
+  typedef typename NumericTraits<typename ValueType::value_type>::RealPromote result_type;
+
+  /** calculate transform '<TT>v1*v1 + v2*v2 + ...</TT>'.
+   */
+  result_type operator()( const argument_type &a ) const
+  {
+    return dot(a,a);
+  }
+};    //-- class VectorNormSqFunctor
+
 //@}
 
 } // namespace vigra
