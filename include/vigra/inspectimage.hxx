@@ -907,6 +907,10 @@ class FindBoundingRectangle
         */
     typedef Diff2D argument_type;
     
+        /** the functors result type
+        */
+    typedef pair<Diff2D, Diff2D> result_type;
+    
         /** \deprecated use argument_type
         */
     typedef Diff2D value_type;
@@ -965,6 +969,16 @@ class FindBoundingRectangle
             lowerRight.x = std::max(lowerRight.x, otherRegion.lowerRight.x);
             lowerRight.y = std::max(lowerRight.y, otherRegion.lowerRight.y);
         }
+    }
+    
+        /** Get current rectangle. <TT>result_type::first</TT> is the upper
+            left corner of the rectangle, <TT>result_type::second</TT>
+            the lower right.
+            
+        */
+    result_type operator()() const
+    {
+        return std::make_pair(upperLeft, lowerRight);
     }
 };
 
