@@ -14,4 +14,6 @@ clean:
 %.d: %.cxx
 	dependHeader.csh "$(CXXFLAGS)" "$(CXXINC)" $*.cxx 
 
+ifneq "$(MAKECMDGOALS)" "clean"
 include test.d
+endif
