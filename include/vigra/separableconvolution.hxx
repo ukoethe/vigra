@@ -1345,7 +1345,7 @@ void Kernel1D<ARITHTYPE>::normalize(value_type norm,
         unsigned int faculty = 1;
         for(unsigned int i = 2; i <= derivativeOrder; ++i)
             faculty *= i;
-        for(double x = left() + offset; x <= right(); ++x, ++k)  
+        for(double x = left() + offset; k < kernel_.end(); ++x, ++k)  
         {
             sum += *k * VIGRA_CSTD::pow(-x, int(derivativeOrder)) / faculty;
         }
