@@ -166,7 +166,7 @@ void internalPixelEvaluationByWrapReflectRepeat(int x, int y, int src_width, int
         way_increment = Diff2D(-1, -1);
         border_increment.third = -border_increment.third;
         border_increment.fourth = -border_increment.fourth;
-        valid_step_count = make_pair((yys - src_ul).x + 1, kernel_height);
+        valid_step_count = std::make_pair((yys - src_ul).x + 1, kernel_height);
     }
     else if(top_to_much && !left_to_much && !right_to_much)
     {
@@ -175,7 +175,7 @@ void internalPixelEvaluationByWrapReflectRepeat(int x, int y, int src_width, int
         way_increment = Diff2D(-1, -1);
         border_increment.third = -border_increment.third;
         border_increment.fourth = -border_increment.fourth;
-        valid_step_count = make_pair(kernel_width, (yys - src_ul).y + 1);
+        valid_step_count = std::make_pair(kernel_width, (yys - src_ul).y + 1);
     }
     else if(right_to_much && !top_to_much && !down_to_much)
     {
@@ -184,7 +184,7 @@ void internalPixelEvaluationByWrapReflectRepeat(int x, int y, int src_width, int
         way_increment = Diff2D(1, 1);
         border_increment.first = -border_increment.first;
         border_increment.second = -border_increment.second;
-        valid_step_count = make_pair((src_lr - yys).x, kernel_height);
+        valid_step_count = std::make_pair((src_lr - yys).x, kernel_height);
     }
     else if(down_to_much && !left_to_much && !right_to_much)
     {
@@ -193,7 +193,7 @@ void internalPixelEvaluationByWrapReflectRepeat(int x, int y, int src_width, int
         way_increment = Diff2D(1, 1);
         border_increment.first = -border_increment.first;
         border_increment.second = -border_increment.second;
-        valid_step_count = make_pair(kernel_width, (src_lr - yys).y);
+        valid_step_count = std::make_pair(kernel_width, (src_lr - yys).y);
     }
     else if(down_to_much && left_to_much)
     {
@@ -202,7 +202,7 @@ void internalPixelEvaluationByWrapReflectRepeat(int x, int y, int src_width, int
         way_increment = Diff2D(-1, 1);
         border_increment.second = -border_increment.second;
         border_increment.third = -border_increment.third;
-        valid_step_count = make_pair((yys - src_ul).x + 1, (src_lr - yys).y);
+        valid_step_count = std::make_pair((yys - src_ul).x + 1, (src_lr - yys).y);
     }
     else if(down_to_much && right_to_much)
     {
@@ -211,7 +211,7 @@ void internalPixelEvaluationByWrapReflectRepeat(int x, int y, int src_width, int
         way_increment = Diff2D(1, 1);
         border_increment.first = -border_increment.first;
         border_increment.second = -border_increment.second;
-        valid_step_count = make_pair((src_lr - yys).x, (src_lr - yys).y);
+        valid_step_count = std::make_pair((src_lr - yys).x, (src_lr - yys).y);
     }
     else if(top_to_much && left_to_much)
     {
@@ -220,7 +220,7 @@ void internalPixelEvaluationByWrapReflectRepeat(int x, int y, int src_width, int
         way_increment = Diff2D(-1, -1);
         border_increment.third = -border_increment.third;
         border_increment.fourth = -border_increment.fourth;
-        valid_step_count = make_pair((yys - src_ul).x + 1, (yys - src_ul).y + 1);
+        valid_step_count = std::make_pair((yys - src_ul).x + 1, (yys - src_ul).y + 1);
     }
     else
     { //top_to_much && right_to_much
@@ -229,7 +229,7 @@ void internalPixelEvaluationByWrapReflectRepeat(int x, int y, int src_width, int
         way_increment = Diff2D(1, -1);
         border_increment.first = -border_increment.first;
         border_increment.fourth = -border_increment.fourth;
-        valid_step_count = make_pair((src_lr - yys).x, (yys - src_ul).y + 1);
+        valid_step_count = std::make_pair((src_lr - yys).x, (yys - src_ul).y + 1);
     }
 
     int yy = 0, xx;
