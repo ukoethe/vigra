@@ -2,3 +2,4 @@
 libvigraimpex.la
 .libs
 *.ld
+*.loT
