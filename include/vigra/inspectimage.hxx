@@ -551,7 +551,7 @@ inspectTwoImagesIf(triple<ImageIterator1, ImageIterator1, Accessor1> img1,
     \code
     vigra::BImage img;
     
-    vigra::FindMinMax<BImage::PixelType> minmax;   // init functor
+    vigra::FindMinMax<vigra::BImage::PixelType> minmax;   // init functor
     
     vigra::inspectImage(srcImageRange(img), minmax);
     
@@ -574,19 +574,27 @@ class FindMinMax
 {
    public:
    
-        /** the functor's value type
-    */
+        /** the functor's argument type
+        */
+    typedef VALUETYPE argument_type;
+   
+        /** the functor's result type
+        */
+    typedef VALUETYPE result_type;
+   
+        /** \deprecated use argument_type
+        */
     typedef VALUETYPE value_type;
    
-    /** init min and max
-    */
+        /** init min and max
+        */
     FindMinMax()
     : count(0)
     {}
     
-    /** update min and max
-    */
-    void operator()(VALUETYPE const & v) 
+        /** update min and max
+        */
+    void operator()(argument_type const & v) 
     {
         if(count)
         {
@@ -601,8 +609,8 @@ class FindMinMax
         ++count;
     }
     
-    /** update min and max with components of RGBValue<VALUETYPE>
-    */
+        /** update min and max with components of RGBValue<VALUETYPE>
+        */
     void operator()(RGBValue<VALUETYPE> const & v) 
     {
         operator()(v.red());
@@ -610,36 +618,36 @@ class FindMinMax
         operator()(v.blue());
     }
     
-    /** merge two statistics
-    */
+        /** merge two statistics
+        */
     void operator()(FindMinMax const & v) 
     {
         if(v.count)
         {
             if(count)
-                {
-                    if(v.min < min) min = v.min;
+            {
+                if(v.min < min) min = v.min;
                 if((this->max) < v.max) max = v.max;
-                }
-                else
-                {
+            }
+            else
+            {
                 min = v.min;
                 max = v.max;
-                }
+            }
         }
         count += v.count;
     }
     
-    /** the current min
-    */
+        /** the current min
+        */
     VALUETYPE min;
     
-    /** the current max
-    */
+        /** the current max
+        */
     VALUETYPE max;
     
-    /** the number of values processed so far
-    */
+        /** the number of values processed so far
+        */
     unsigned int count;
     
 }; 
@@ -688,48 +696,56 @@ class FindAverage
 {
    public:
    
-        /** the functor's value type
-    */
-    typedef typename NumericTraits<VALUETYPE>::RealPromote value_type;
+        /** the functor's argument type
+        */
+    typedef VALUETYPE argument_type;
    
-    /** init average
-    */
+        /** the functor's result type
+        */
+    typedef typename NumericTraits<VALUETYPE>::RealPromote result_type;
+   
+        /** \deprecated use argument_type and result_type
+        */
+    typedef typename NumericTraits<VALUETYPE>::RealPromote value_type;
+
+        /** init average
+        */
     FindAverage()
-    : count(0), sum(NumericTraits<value_type>::zero())
+    : count(0), sum(NumericTraits<result_type>::zero())
     {}
     
-    /** update average
-    */
-    void operator()(VALUETYPE const & v) 
+        /** update average
+        */
+    void operator()(argument_type const & v) 
     {
         sum += v;
         ++count;
     }
     
-    /** merge two statistics
-    */
+        /** merge two statistics
+        */
     void operator()(FindAverage const & v) 
     {
         sum += v.sum;
         count += v.count;
     }
     
-    /** return current average
-    */
-    value_type average() const
+        /** return current average
+        */
+    result_type average() const
     {
         return sum / (double)count;
     }
     
-    /** return current average
-    */
-    value_type operator()() const
+        /** return current average
+        */
+    result_type operator()() const
     {
         return sum / (double)count;
     }
     
     unsigned int count;
-    value_type sum;
+    result_type sum;
     
 }; 
 
@@ -767,47 +783,55 @@ class FindROISize
 {
    public:
    
-        /** the functor's value type
-    */
+        /** the functor's argument type
+        */
+    typedef VALUETYPE argument_type;
+   
+        /** the functor's result type
+        */
+    typedef unsigned int result_type;
+   
+        /** \deprecated use argument_type and result_type
+        */
     typedef VALUETYPE value_type;
    
-    /** init counter to 0
-    */
+        /** init counter to 0
+        */
     FindROISize()
     : count(0)
     {}
     
-    /** update counter
-    */
-    void operator()(VALUETYPE const &) 
+        /** update counter
+        */
+    void operator()(argument_type const &) 
     {
         ++count;
     }
     
-    /** return current size
-    */
-    int operator()() const 
+        /** return current size
+        */
+    result_type operator()() const 
     {
         return count;
     }
     
-    /** return current size
-    */
-    int size() const 
+        /** return current size
+        */
+    result_type size() const 
     {
         return count;
     }
     
-    /** merge two statistics
-    */
+        /** merge two statistics
+        */
     void operator()(FindROISize const & o) 
     {
         count += o.count;
     }
     
-    /** the current counter
-    */
-    unsigned int count;
+        /** the current counter
+        */
+    result_type count;
     
 }; 
 
@@ -853,13 +877,19 @@ class FindROISize
 class FindBoundingRectangle
 {
   public:
-        /** the functor's value type
+  
+        /** the functor's argument type
+        */
+    typedef Diff2D argument_type;
+    
+        /** \deprecated use argument_type
         */
     typedef Diff2D value_type;
     
         /** Upper left of the region as seen so far
         */
     Diff2D upperLeft;
+    
         /** Lower right of the region as seen so far
         */
     Diff2D lowerRight;
@@ -876,7 +906,7 @@ class FindBoundingRectangle
     
         /** update rectangle by including the coordinate coord
         */
-    void operator()(Diff2D const & coord) 
+    void operator()(argument_type const & coord) 
     {
         if(!valid)
         {
@@ -949,29 +979,37 @@ class LastValueFunctor
 {
    public:
    
-        /** the functor's value type
-    */
+        /** the functor's argument type
+        */
+    typedef VALUETYPE argument_type;
+   
+        /** the functor's result type
+        */
+    typedef VALUETYPE result_type;
+   
+        /** \deprecated use argument_type and result_type
+        */
     typedef VALUETYPE value_type;
    
-    /** default initialization of value
-    */
+        /** default initialization of value
+        */
     LastValueFunctor()
     {}
 
         /** replace value
-    */
-    void operator=(VALUETYPE const & v) { value = v; }
+        */
+    void operator=(argument_type const & v) { value = v; }
         
-    /** replace value
-    */
-    void operator()(VALUETYPE const & v) { value = v; }
+        /** replace value
+        */
+    void operator()(argument_type const & v) { value = v; }
     
-    /** return current value
-    */
-    VALUETYPE operator()() const { return value; }
+        /** return current value
+        */
+    result_type const & operator()() const { return value; }
 
-    /** the current value
-    */
+        /** the current value
+        */
     VALUETYPE value;
     
 }; 
@@ -1026,92 +1064,148 @@ class LastValueFunctor
 
     \code
     RegionStatistics region;
-    RegionStatistics::value_type v;
+    RegionStatistics::argument_type a;
+    RegionStatistics::result_type r;
     
-    region(v);     // update statistics
-    v = region();  // return statistics
+    region(a);     // update statistics
+    r = region();  // return statistics
     
     \endcode
 */
-template <class RegionStatistics>
+template <class RegionStatistics, class LabelType = int>
 class ArrayOfRegionStatistics
 {
     typedef std::vector<RegionStatistics> RegionArray;
 
   public:
-         ///
-    typedef typename RegionStatistics::value_type value_type;
-         ///
-    typedef typename RegionArray::iterator iterator;
+         /** argument type of the contained statistics object 
+             becomes first argument of the analyser
+         */
+    typedef typename RegionStatistics::argument_type first_argument_type;
+    
+         /** label type is used to determine the region to be updated
+         */
+    typedef LabelType second_argument_type;
+    
+         /** label type is also used to determine the region to be 
+             returned by the 1 argument operator()
+         */
+    typedef LabelType argument_type;
 
-    /** init array of RegionStatistics with default size 0.
-    */
+         /** result type of the contained statistics object 
+             becomes result type of the analyser
+         */
+    typedef typename RegionStatistics::result_type result_type;
+    
+         /** the value type of the array: the contained statistics object.
+             <b>Note:</b> this definition was different in older
+             VIGRA versions. The old definition was wrong.
+         */
+    typedef RegionStatistics value_type;
+    
+         /** the array's reference type
+         */
+    typedef RegionStatistics & reference;
+    
+         /** the array's const reference type
+         */
+    typedef RegionStatistics const & const_reference;
+    
+         /** type to iterate over the statistics array
+         */
+    typedef typename RegionArray::iterator iterator;
+    
+         /** type to iterate over a const statistics array
+         */
+    typedef typename RegionArray::const_iterator const_iterator;
+
+        /** init array of RegionStatistics with default size 0.
+        */
     ArrayOfRegionStatistics()
     {}
     
-    /** init array of RegionStatistics with index domain
-        0...max_region_label.
-    */
-    ArrayOfRegionStatistics(int max_region_label)
+        /** init array of RegionStatistics with index domain
+            0...max_region_label.
+        */
+    ArrayOfRegionStatistics(unsigned int max_region_label)
     : regions(max_region_label+1)
     {}
     
-    /** resize array to new index domain 0...max_region_label.
-        All bin are re-initialized.
-    */
-    void resize(int max_region_label)
+        /** resize array to new index domain 0...max_region_label.
+            All bin are re-initialized.
+        */
+    void resize(unsigned int max_region_label)
     {
         RegionArray newRegions(max_region_label+1);
         regions.swap(newRegions);
     }
     
-    /** reset the contained functors to their initial state.
-    */
+        /** reset the contained functors to their initial state.
+        */
     void reset()
     {
         RegionArray newRegions(regions.size());
         regions.swap(newRegions);
     }
     
-    /** update regions statistics for region 'label'
-    */
-    void operator()(value_type const & v, int label) {
-        regions[label](v);
+        /** update regions statistics for region <TT>label</TT>. The label type
+            is converted to <TT>unsigned int</TT>.
+        */
+    void operator()(first_argument_type const & v, second_argument_type label) {
+        regions[static_cast<unsigned int>(label)](v);
     }
     
-    /** merge second region into first
-    */
-    void merge(int label1, int label2) {
-        regions[label1](regions[label2]);
+        /** merge second region into first
+        */
+    void merge(argument_type label1, argument_type label2) {
+        regions[static_cast<unsigned int>(label1)](regions[static_cast<unsigned int>(label2)]);
     }
     
-    /** ask for maximal index (label) allowed
-    */
-    int maxRegionLabel() const { return size() - 1; } 
+        /** ask for maximal index (label) allowed
+        */
+    unsigned int maxRegionLabel() const 
+        { return size() - 1; } 
 
-    /** ask for array size (i.e. maxRegionLabel() + 1)
-    */
-    int size() const { return regions.size(); } 
+        /** ask for array size (i.e. maxRegionLabel() + 1)
+        */
+    unsigned int size() const 
+        { return regions.size(); } 
 
-    /** access the statistics for a region via its label
-    */
-    value_type operator()(int label) const { return regions[label](); }
+        /** access the statistics for a region via its label. The label type
+            is converted to <TT>unsigned int</TT>.
+        */
+    result_type operator()(argument_type label) const 
+        { return regions[static_cast<unsigned int>(label)](); }
     
-    /** read the statistics functor for a region via its label
-    */
-    RegionStatistics const & operator[](int label) const { return regions[label]; }
+        /** read the statistics functor for a region via its label
+        */
+    const_reference operator[](argument_type label) const 
+        { return regions[static_cast<unsigned int>(label)]; }
     
-    /** access the statistics functor for a region via its label
-    */
-    RegionStatistics & operator[](int label) { return regions[label]; }
+        /** access the statistics functor for a region via its label
+        */
+    reference operator[](argument_type label) 
+        { return regions[static_cast<unsigned int>(label)]; }
     
-    /** iterator to the begin of the region array
-    */
-    iterator begin() { return regions.begin(); } 
+        /** iterator to the begin of the region array
+        */
+    iterator begin() 
+        { return regions.begin(); } 
     
-    /** iterator to the end of the region array
-    */
-    iterator end() { return regions.end(); } 
+        /** const iterator to the begin of the region array
+        */
+    const_iterator begin() const
+        { return regions.begin(); } 
+    
+        /** iterator to the end of the region array
+        */
+    iterator end() 
+        { return regions.end(); } 
+    
+        /** const iterator to the end of the region array
+        */
+    const_iterator end() const
+        { return regions.end(); } 
     
   private:
     std::vector<RegionStatistics> regions;

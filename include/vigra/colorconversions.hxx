@@ -240,15 +240,23 @@ double gammaCorrection(double value, double gamma, double norm)
 template <class From, class To>
 class RGB2RGBPrimeFunctor
 {
-    typedef typename NumericTraits<To>::RealPromote component_type;
-    
-    component_type max_;
-    
   public:
   
-        /** the functor's value type
+        /** the functor's argument type
+        */
+    typedef TinyVector<From, 3> argument_type;
+  
+        /** the functor's result type
+        */
+    typedef RGBValue<To> result_type;
+  
+        /** \deprecated use argument_type and result_type
         */
     typedef RGBValue<To> value_type;
+  
+        /** the result component's promote type
+        */
+    typedef typename NumericTraits<To>::RealPromote component_type;
     
         /** constructor
             \arg max - the maximum value for each RGB component
@@ -259,13 +267,16 @@ class RGB2RGBPrimeFunctor
     
         /** apply the transformation
         */
-    value_type operator()(TinyVector<From, 3> const & rgb)
+    result_type operator()(argument_type const & rgb)
     {
         return RGBValue<To>(
             NumericTraits<To>::fromRealPromote(detail::gammaCorrection(rgb[0], 0.45, max_)),
             NumericTraits<To>::fromRealPromote(detail::gammaCorrection(rgb[1], 0.45, max_)),
             NumericTraits<To>::fromRealPromote(detail::gammaCorrection(rgb[2], 0.45, max_)));
     }
+    
+  private:
+    component_type max_;    
 };
 
 template <>
@@ -311,16 +322,23 @@ class RGB2RGBPrimeFunctor<unsigned char, unsigned char>
 template <class From, class To>
 class RGBPrime2RGBFunctor
 {
-    typedef typename NumericTraits<To>::RealPromote component_type;
-    
-    component_type max_;
-    double gamma_;
-    
   public:
   
-        /** the functor's value type
+        /** the functor's argument type
+        */
+    typedef TinyVector<From, 3> argument_type;
+  
+        /** the functor's result type
+        */
+    typedef RGBValue<To> result_type;
+  
+        /** \deprecated use argument_type and result_type
         */
     typedef RGBValue<To> value_type;
+  
+        /** the result component's promote type
+        */
+    typedef typename NumericTraits<To>::RealPromote component_type;
     
         /** constructor
             \arg max - the maximum value for each RGB component
@@ -331,13 +349,17 @@ class RGBPrime2RGBFunctor
     
         /** apply the transformation
         */
-    value_type operator()(TinyVector<From, 3> const & rgb)
+    result_type operator()(argument_type const & rgb)
     {
         return RGBValue<To>(
             NumericTraits<To>::fromRealPromote(detail::gammaCorrection(rgb[0], gamma_, max_)),
             NumericTraits<To>::fromRealPromote(detail::gammaCorrection(rgb[1], gamma_, max_)),
             NumericTraits<To>::fromRealPromote(detail::gammaCorrection(rgb[2], gamma_, max_)));
     }
+
+  private:
+    component_type max_;
+    double gamma_;
 };
 
 template <>
@@ -386,13 +408,21 @@ class RGBPrime2RGBFunctor<unsigned char, unsigned char>
 template <class T>
 class RGB2XYZFunctor
 {
-    typedef typename NumericTraits<T>::RealPromote component_type;
-    
-    component_type max_;
-    
   public:
   
-        /** the functor's value type
+        /** the result's component type
+        */
+    typedef typename NumericTraits<T>::RealPromote component_type;
+
+        /** the functor's argument type
+        */
+    typedef TinyVector<T, 3> argument_type;
+  
+        /** the functor's result type
+        */
+    typedef TinyVector<component_type, 3> result_type;
+  
+        /** \deprecated use argument_type and result_type
         */
     typedef TinyVector<component_type, 3> value_type;
     
@@ -405,17 +435,20 @@ class RGB2XYZFunctor
     
         /** apply the transformation
         */
-    value_type operator()(TinyVector<T, 3> const & rgb)
+    result_type operator()(argument_type const & rgb)
     {
         component_type red = rgb[0] / max_;
         component_type green = rgb[1] / max_;
         component_type blue = rgb[2] / max_;
-        value_type result;
+        result_type result;
         result[0] = 0.412453*red + 0.357580*green + 0.180423*blue;
         result[1] = 0.212671*red + 0.715160*green + 0.072169*blue;
         result[2] = 0.019334*red + 0.119193*green + 0.950227*blue;
         return result;
     }
+
+  private:
+    component_type max_;
 };
 
 /** \brief Convert non-linear (gamma corrected) R'G'B' into standardized tri-stimulus XYZ.
@@ -435,13 +468,21 @@ class RGB2XYZFunctor
 template <class T>
 class RGBPrime2XYZFunctor
 {
-    typedef typename NumericTraits<T>::RealPromote component_type;
-    
-    component_type max_, gamma_;
-    
   public:
   
-        /** the functor's value type
+        /** the result's component type
+        */
+    typedef typename NumericTraits<T>::RealPromote component_type;
+
+        /** the functor's argument type
+        */
+    typedef TinyVector<T, 3> argument_type;
+  
+        /** the functor's result type
+        */
+    typedef TinyVector<component_type, 3> result_type;
+  
+        /** \deprecated use argument_type and result_type
         */
     typedef TinyVector<component_type, 3> value_type;
     
@@ -454,17 +495,20 @@ class RGBPrime2XYZFunctor
     
         /** apply the transformation
         */
-    value_type operator()(TinyVector<T, 3> const & rgb)
+    result_type operator()(argument_type const & rgb)
     {
         component_type red = detail::gammaCorrection(rgb[0]/max_, gamma_);
         component_type green = detail::gammaCorrection(rgb[1]/max_, gamma_);
         component_type blue = detail::gammaCorrection(rgb[2]/max_, gamma_);
-        value_type result;
+        result_type result;
         result[0] = 0.412453*red + 0.357580*green + 0.180423*blue;
         result[1] = 0.212671*red + 0.715160*green + 0.072169*blue;
         result[2] = 0.019334*red + 0.119193*green + 0.950227*blue;
         return result;
     }
+
+  private:
+    component_type max_, gamma_;
 };
 
 /** \brief Convert standardized tri-stimulus XYZ into linear (raw) RGB.
@@ -493,8 +537,17 @@ class XYZ2RGBFunctor
     component_type max_;
     
   public:
+        /** the functor's argument type. (Actually, the argument type
+            is more general: <TT>TinyVector<V, 3></TT> with arbitrary
+            <TT>V</TT>. But this cannot be expressed in a typedef.)
+        */
+    typedef TinyVector<T, 3> argument_type;
   
-        /** the functor's value type
+        /** the functor's result type
+        */
+    typedef RGBValue<T> result_type;
+  
+        /** \deprecated use argument_type and result_type
         */
     typedef RGBValue<T> value_type;
     
@@ -542,7 +595,18 @@ class XYZ2RGBPrimeFunctor
     
   public:
   
-        /** the functor's value type
+  public:
+        /** the functor's argument type. (actually, the argument type
+            is more general: <TT>TinyVector<V, 3></TT> with arbitrary
+            <TT>V</TT>. But this cannot be expressed in a typedef.)
+        */
+    typedef TinyVector<T, 3> argument_type;
+  
+        /** the functor's result type
+        */
+    typedef RGBValue<T> result_type;
+  
+        /** \deprecated use argument_type and result_type
         */
     typedef RGBValue<T> value_type;
     
@@ -597,13 +661,21 @@ class XYZ2RGBPrimeFunctor
 template <class T>
 class XYZ2LuvFunctor
 {
-    typedef typename NumericTraits<T>::RealPromote component_type;
-    
-    component_type gamma_;
-    
   public:
   
-        /** the functor's value type
+        /** the result's component type
+        */
+    typedef typename NumericTraits<T>::RealPromote component_type;
+
+        /** the functor's argument type
+        */
+    typedef TinyVector<T, 3> argument_type;
+  
+        /** the functor's result type
+        */
+    typedef TinyVector<component_type, 3> result_type;
+  
+        /** \deprecated use argument_type and result_type
         */
     typedef TinyVector<component_type, 3> value_type;
     
@@ -611,9 +683,9 @@ class XYZ2LuvFunctor
     : gamma_(1.0/3.0)
     {}
     
-    value_type operator()(TinyVector<T, 3> const & xyz)
+    result_type operator()(TinyVector<T, 3> const & xyz)
     {
-        value_type result;
+        result_type result;
         if(xyz[1] == NumericTraits<T>::zero())
         {
             result[0] = NumericTraits<component_type>::zero();
@@ -634,6 +706,9 @@ class XYZ2LuvFunctor
         }
         return result;
     }
+
+  private:
+    component_type gamma_;
 };
 
 /** \brief Convert perceptual uniform CIE L*u*v* into standardized tri-stimulus XYZ.
@@ -646,13 +721,21 @@ class XYZ2LuvFunctor
 template <class T>
 class Luv2XYZFunctor
 {
-    typedef typename NumericTraits<T>::RealPromote component_type;
-    
-    component_type gamma_;
-    
   public:
   
-        /** the functor's value type
+        /** the result's component type
+        */
+    typedef typename NumericTraits<T>::RealPromote component_type;
+
+        /** the functor's argument type
+        */
+    typedef TinyVector<T, 3> argument_type;
+  
+        /** the functor's result type
+        */
+    typedef TinyVector<component_type, 3> result_type;
+  
+        /** \deprecated use argument_type and result_type
         */
     typedef TinyVector<component_type, 3> value_type;
     
@@ -662,9 +745,9 @@ class Luv2XYZFunctor
     
         /** apply the transformation
         */
-    value_type operator()(TinyVector<T, 3> const & luv)
+    result_type operator()(TinyVector<T, 3> const & luv)
     {
-        value_type result;
+        result_type result;
         if(luv[0] == NumericTraits<T>::zero())
         {
             result[0] = NumericTraits<component_type>::zero();
@@ -684,6 +767,9 @@ class Luv2XYZFunctor
         }
         return result;
     }
+
+  private:
+    component_type gamma_;
 };
 
 /** \brief Convert standardized tri-stimulus XYZ into perceptual uniform CIE L*a*b*.
@@ -712,13 +798,21 @@ class Luv2XYZFunctor
 template <class T>
 class XYZ2LabFunctor
 {
-    typedef typename NumericTraits<T>::RealPromote component_type;
-    
-    component_type gamma_;
-    
   public:
   
-        /** the functor's value type
+        /** the result's component type
+        */
+    typedef typename NumericTraits<T>::RealPromote component_type;
+
+        /** the functor's argument type
+        */
+    typedef TinyVector<T, 3> argument_type;
+  
+        /** the functor's result type
+        */
+    typedef TinyVector<component_type, 3> result_type;
+  
+        /** \deprecated use argument_type and result_type
         */
     typedef TinyVector<component_type, 3> value_type;
     
@@ -728,7 +822,7 @@ class XYZ2LabFunctor
     
         /** apply the transformation
         */
-    value_type operator()(TinyVector<T, 3> const & xyz)
+    result_type operator()(TinyVector<T, 3> const & xyz)
     {
         component_type xgamma = std::pow(xyz[0] / 0.950456, gamma_);
         component_type ygamma = std::pow(xyz[1], gamma_);
@@ -736,12 +830,15 @@ class XYZ2LabFunctor
         component_type L = xyz[1] < 0.008856 ?
                               903.3 * xyz[1] :
                               116.0 * ygamma - 16.0;
-        value_type result;
+        result_type result;
         result[0] = L;
         result[1] = 500.0*(xgamma - ygamma);
         result[2] = 200.0*(ygamma - zgamma);
         return result;
     }
+
+  private:
+    component_type gamma_;
 };
 
 /** \brief Convert perceptual uniform CIE L*a*b* into standardized tri-stimulus XYZ.
@@ -754,12 +851,22 @@ class XYZ2LabFunctor
 template <class T>
 class Lab2XYZFunctor
 {
-    typedef typename NumericTraits<T>::RealPromote component_type;
-    
-    component_type gamma_;
-    
   public:
   
+        /** the result's component type
+        */
+    typedef typename NumericTraits<T>::RealPromote component_type;
+
+        /** the functor's argument type
+        */
+    typedef TinyVector<T, 3> argument_type;
+  
+        /** the functor's result type
+        */
+    typedef TinyVector<component_type, 3> result_type;
+  
+        /** \deprecated use argument_type and result_type
+        */
     typedef TinyVector<component_type, 3> value_type;
     
         /** the functor's value type
@@ -770,7 +877,7 @@ class Lab2XYZFunctor
     
         /** apply the transformation
         */
-    value_type operator()(TinyVector<T, 3> const & lab)
+    result_type operator()(TinyVector<T, 3> const & lab)
     {
         component_type Y = lab[0] < 8.0 ?
                               lab[0] / 903.3 :
@@ -778,12 +885,15 @@ class Lab2XYZFunctor
         component_type ygamma = std::pow(Y, 1.0 / gamma_);
         component_type X = std::pow(lab[1] / 500.0 + ygamma, gamma_) * 0.950456;
         component_type Z = std::pow(-lab[2] / 200.0 + ygamma, gamma_) * 1.088754;
-        value_type result;
+        result_type result;
         result[0] = X;
         result[1] = Y;
         result[2] = Z;
         return result;
     }
+
+  private:
+    component_type gamma_;
 };
 
 
@@ -819,16 +929,23 @@ class RGB2LuvFunctor
     maximum saturation: 179.04 
     red = [53.2406, 175.015, 37.7522]
     */
-    typedef typename NumericTraits<T>::RealPromote component_type;
-    
-    RGB2XYZFunctor<T> rgb2xyz;
-    XYZ2LuvFunctor<component_type> xyz2luv;
-    
   public:
   
-        /** the functor's value type
+        /** the result's component type
         */
-    typedef typename XYZ2LuvFunctor<component_type>::value_type value_type;
+    typedef typename NumericTraits<T>::RealPromote component_type;
+
+        /** the functor's argument type
+        */
+    typedef TinyVector<T, 3> argument_type;
+  
+        /** the functor's result type
+        */
+    typedef typename XYZ2LuvFunctor<component_type>::result_type result_type;
+  
+        /** \deprecated use argument_type and result_type
+        */
+    typedef typename XYZ2LuvFunctor<component_type>::result_type value_type;
     
         /** constructor
             \arg max - the maximum value for each RGB component
@@ -839,10 +956,14 @@ class RGB2LuvFunctor
     
         /** apply the transformation
         */
-    value_type operator()(TinyVector<T, 3> const & rgb)
+    result_type operator()(TinyVector<T, 3> const & rgb)
     {
         return xyz2luv(rgb2xyz(rgb));
     }
+
+  private:
+    RGB2XYZFunctor<T> rgb2xyz;
+    XYZ2LuvFunctor<component_type> xyz2luv;
 };
 
 /** \brief Convert linear (raw) RGB into perceptual uniform CIE L*a*b*.
@@ -877,16 +998,23 @@ class RGB2LabFunctor
     maximum saturation: 133.809
     red = [53.2406, 80.0942, 67.2015]
     */
-    typedef typename NumericTraits<T>::RealPromote component_type;
-    
-    RGB2XYZFunctor<T> rgb2xyz;
-    XYZ2LabFunctor<component_type> xyz2lab;
-    
   public:
   
-        /** the functor's value type
+        /** the result's component type
         */
-    typedef typename XYZ2LabFunctor<component_type>::value_type value_type;
+    typedef typename NumericTraits<T>::RealPromote component_type;
+
+        /** the functor's argument type
+        */
+    typedef TinyVector<T, 3> argument_type;
+  
+        /** the functor's result type
+        */
+    typedef typename XYZ2LabFunctor<component_type>::result_type result_type;
+  
+        /** \deprecated use argument_type and result_type
+        */
+    typedef typename XYZ2LabFunctor<component_type>::result_type value_type;
     
         /** constructor
             \arg max - the maximum value for each RGB component
@@ -897,10 +1025,14 @@ class RGB2LabFunctor
     
         /** apply the transformation
         */
-    value_type operator()(TinyVector<T, 3> const & rgb)
+    result_type operator()(TinyVector<T, 3> const & rgb)
     {
         return xyz2lab(rgb2xyz(rgb));
     }
+
+  private:
+    RGB2XYZFunctor<T> rgb2xyz;
+    XYZ2LabFunctor<component_type> xyz2lab;
 };
 
 /** \brief Convert perceptual uniform CIE L*u*v* into linear (raw) RGB.
@@ -919,10 +1051,19 @@ class Luv2RGBFunctor
     Luv2XYZFunctor<component_type> luv2xyz;
     
   public:
-  
-        /** the functor's value type
+        /** the functor's argument type. (Actually, the argument type
+            is more general: <TT>TinyVector<V, 3></TT> with arbitrary
+            <TT>V</TT>. But this cannot be expressed in a typedef.)
         */
-    typedef typename XYZ2RGBFunctor<T>::value_type value_type;
+    typedef TinyVector<T, 3> argument_type;
+  
+        /** the functor's result type
+        */
+    typedef typename XYZ2RGBFunctor<T>::result_type result_type;
+  
+        /** \deprecated use argument_type and result_type
+        */
+    typedef typename XYZ2RGBFunctor<T>::result_type value_type;
     
     Luv2RGBFunctor(component_type max = 255.0)
     : xyz2rgb(max)
@@ -931,7 +1072,7 @@ class Luv2RGBFunctor
         /** apply the transformation
         */
     template <class V>
-    value_type operator()(TinyVector<V, 3> const & luv)
+    result_type operator()(TinyVector<V, 3> const & luv)
     {
         return xyz2rgb(luv2xyz(luv));
     }
@@ -954,9 +1095,19 @@ class Lab2RGBFunctor
     
   public:
   
-        /** the functor's value type
+        /** the functor's argument type. (Actually, the argument type
+            is more general: <TT>TinyVector<V, 3></TT> with arbitrary
+            <TT>V</TT>. But this cannot be expressed in a typedef.)
         */
-    typedef typename XYZ2RGBFunctor<T>::value_type value_type;
+    typedef TinyVector<T, 3> argument_type;
+  
+        /** the functor's result type
+        */
+    typedef typename XYZ2RGBFunctor<T>::result_type result_type;
+  
+        /** \deprecated use argument_type and result_type
+        */
+    typedef typename XYZ2RGBFunctor<T>::result_type value_type;
     
         /** constructor
             \arg max - the maximum value for each RGB component
@@ -968,7 +1119,7 @@ class Lab2RGBFunctor
         /** apply the transformation
         */
     template <class V>
-    value_type operator()(TinyVector<V, 3> const & lab)
+    result_type operator()(TinyVector<V, 3> const & lab)
     {
         return xyz2rgb(lab2xyz(lab));
     }
@@ -999,16 +1150,23 @@ class Lab2RGBFunctor
 template <class T>
 class RGBPrime2LuvFunctor
 {
-    typedef typename NumericTraits<T>::RealPromote component_type;
-    
-    RGBPrime2XYZFunctor<T> rgb2xyz;
-    XYZ2LuvFunctor<component_type> xyz2luv;
-    
   public:
   
-        /** the functor's value type
+        /** the result's component type
         */
-    typedef typename XYZ2LuvFunctor<component_type>::value_type value_type;
+    typedef typename NumericTraits<T>::RealPromote component_type;
+
+        /** the functor's argument type
+        */
+    typedef TinyVector<T, 3> argument_type;
+  
+        /** the functor's result type
+        */
+    typedef typename XYZ2LuvFunctor<component_type>::result_type result_type;
+  
+        /** \deprecated use argument_type and result_type
+        */
+    typedef typename XYZ2LuvFunctor<component_type>::result_type value_type;
     
         /** constructor
             \arg max - the maximum value for each RGB component
@@ -1019,10 +1177,14 @@ class RGBPrime2LuvFunctor
     
         /** apply the transformation
         */
-    value_type operator()(TinyVector<T, 3> const & rgb)
+    result_type operator()(TinyVector<T, 3> const & rgb)
     {
         return xyz2luv(rgb2xyz(rgb));
     }
+
+  private:
+    RGBPrime2XYZFunctor<T> rgb2xyz;
+    XYZ2LuvFunctor<component_type> xyz2luv;
 };
 
 /** \brief Convert non-linear (gamma corrected) R'G'B' into perceptual uniform CIE L*a*b*.
@@ -1050,16 +1212,23 @@ class RGBPrime2LuvFunctor
 template <class T>
 class RGBPrime2LabFunctor
 {
-    typedef typename NumericTraits<T>::RealPromote component_type;
-    
-    RGBPrime2XYZFunctor<T> rgb2xyz;
-    XYZ2LabFunctor<component_type> xyz2lab;
-    
   public:
   
-        /** the functor's value type
+        /** the result's component type
         */
-    typedef typename XYZ2LabFunctor<component_type>::value_type value_type;
+    typedef typename NumericTraits<T>::RealPromote component_type;
+
+        /** the functor's argument type
+        */
+    typedef TinyVector<T, 3> argument_type;
+  
+        /** the functor's result type
+        */
+    typedef typename XYZ2LabFunctor<component_type>::result_type result_type;
+  
+        /** \deprecated use argument_type and result_type
+        */
+    typedef typename XYZ2LabFunctor<component_type>::result_type value_type;
     
         /** constructor
             \arg max - the maximum value for each RGB component
@@ -1070,10 +1239,14 @@ class RGBPrime2LabFunctor
     
         /** apply the transformation
         */
-    value_type operator()(TinyVector<T, 3> const & rgb)
+    result_type operator()(TinyVector<T, 3> const & rgb)
     {
         return xyz2lab(rgb2xyz(rgb));
     }
+
+  private:
+    RGBPrime2XYZFunctor<T> rgb2xyz;
+    XYZ2LabFunctor<component_type> xyz2lab;
 };
 
 /** \brief Convert perceptual uniform CIE L*u*v* into non-linear (gamma corrected) R'G'B'.
@@ -1093,9 +1266,19 @@ class Luv2RGBPrimeFunctor
     
   public:
   
-        /** the functor's value type
+        /** the functor's argument type. (Actually, the argument type
+            is more general: <TT>TinyVector<V, 3></TT> with arbitrary
+            <TT>V</TT>. But this cannot be expressed in a typedef.)
         */
-    typedef typename XYZ2RGBFunctor<T>::value_type value_type;
+    typedef TinyVector<T, 3> argument_type;
+  
+        /** the functor's result type
+        */
+    typedef typename XYZ2RGBFunctor<T>::result_type result_type;
+  
+        /** \deprecated use argument_type and result_type
+        */
+    typedef typename XYZ2RGBFunctor<T>::result_type value_type;
     
         /** constructor
             \arg max - the maximum value for each RGB component
@@ -1107,7 +1290,7 @@ class Luv2RGBPrimeFunctor
         /** apply the transformation
         */
     template <class V>
-    value_type operator()(TinyVector<V, 3> const & luv)
+    result_type operator()(TinyVector<V, 3> const & luv)
     {
         return xyz2rgb(luv2xyz(luv));
     }
@@ -1130,9 +1313,19 @@ class Lab2RGBPrimeFunctor
     
   public:
   
-        /** the functor's value type
+        /** the functor's argument type. (Actually, the argument type
+            is more general: <TT>TinyVector<V, 3></TT> with arbitrary
+            <TT>V</TT>. But this cannot be expressed in a typedef.)
         */
-    typedef typename XYZ2RGBFunctor<T>::value_type value_type;
+    typedef TinyVector<T, 3> argument_type;
+  
+        /** the functor's result type
+        */
+    typedef typename XYZ2RGBFunctor<T>::result_type result_type;
+  
+        /** \deprecated use argument_type and result_type
+        */
+    typedef typename XYZ2RGBFunctor<T>::result_type value_type;
     
         /** constructor
             \arg max - the maximum value for each RGB component
@@ -1144,7 +1337,7 @@ class Lab2RGBPrimeFunctor
         /** apply the transformation
         */
     template <class V>
-    value_type operator()(TinyVector<V, 3> const & lab)
+    result_type operator()(TinyVector<V, 3> const & lab)
     {
         return xyz2rgb(lab2xyz(lab));
     }
@@ -1188,13 +1381,21 @@ class RGBPrime2YPrimePbPrFunctor
     maximum saturation: 0.533887
     red = [0.299, -0.168736, 0.5]
     */
-    typedef typename NumericTraits<T>::RealPromote component_type;
-    
-    component_type max_;
-    
   public:
   
-        /** the functor's value type
+        /** the result's component type
+        */
+    typedef typename NumericTraits<T>::RealPromote component_type;
+
+        /** the functor's argument type
+        */
+    typedef TinyVector<T, 3> argument_type;
+  
+        /** the functor's result type
+        */
+    typedef TinyVector<component_type, 3> result_type;
+  
+        /** \deprecated use argument_type and result_type
         */
     typedef TinyVector<component_type, 3> value_type;
     
@@ -1207,18 +1408,21 @@ class RGBPrime2YPrimePbPrFunctor
     
         /** apply the transformation
         */
-    value_type operator()(TinyVector<T, 3> const & rgb)
+    result_type operator()(TinyVector<T, 3> const & rgb)
     {
         component_type red = rgb[0] / max_;
         component_type green = rgb[1] / max_;
         component_type blue = rgb[2] / max_;
         
-        value_type result;
+        result_type result;
         result[0] = 0.299*red + 0.587*green + 0.114*blue;
         result[1] = -0.1687358916*red - 0.3312641084*green + 0.5*blue;
         result[2] = 0.5*red - 0.4186875892*green - 0.0813124108*blue;
         return result;
     }
+
+  private:
+    component_type max_;
 };
 
 /** \brief Convert Y'PbPr color difference components into non-linear (gamma corrected) R'G'B'.
@@ -1237,7 +1441,17 @@ class YPrimePbPr2RGBPrimeFunctor
     
   public:
   
-        /** the functor's value type
+        /** the functor's argument type. (Actually, the argument type
+            is more general: <TT>TinyVector<V, 3></TT> with arbitrary
+            <TT>V</TT>. But this cannot be expressed in a typedef.)
+        */
+    typedef TinyVector<T, 3> argument_type;
+  
+        /** the functor's result type
+        */
+    typedef RGBValue<T> result_type;
+  
+        /** \deprecated use argument_type and result_type
         */
     typedef RGBValue<T> value_type;
     
@@ -1251,14 +1465,14 @@ class YPrimePbPr2RGBPrimeFunctor
         /** apply the transformation
         */
     template <class V>
-    value_type operator()(TinyVector<V, 3> const & ypbpr)
+    result_type operator()(TinyVector<V, 3> const & ypbpr)
     {
         component_type nred =   ypbpr[0] + 1.402*ypbpr[2];
         component_type ngreen = ypbpr[0] - 0.3441362862*ypbpr[1] - 0.7141362862*ypbpr[2];
         component_type nblue =  ypbpr[0] + 1.772*ypbpr[1];
-        return value_type(NumericTraits<T>::fromRealPromote(nred * max_),
-                          NumericTraits<T>::fromRealPromote(ngreen * max_),
-                          NumericTraits<T>::fromRealPromote(nblue * max_));
+        return result_type(NumericTraits<T>::fromRealPromote(nred * max_),
+                           NumericTraits<T>::fromRealPromote(ngreen * max_),
+                           NumericTraits<T>::fromRealPromote(nblue * max_));
     }
 };
 
@@ -1299,13 +1513,21 @@ class RGBPrime2YPrimeIQFunctor
     maximum saturation: 0.632582
     red = [0.299, 0.596, 0.212]
     */
-    typedef typename NumericTraits<T>::RealPromote component_type;
-    
-    component_type max_;
-    
   public:
   
-        /** the functor's value type
+        /** the result's component type
+        */
+    typedef typename NumericTraits<T>::RealPromote component_type;
+
+        /** the functor's argument type
+        */
+    typedef TinyVector<T, 3> argument_type;
+  
+        /** the functor's result type
+        */
+    typedef TinyVector<component_type, 3> result_type;
+  
+        /** \deprecated use argument_type and result_type
         */
     typedef TinyVector<component_type, 3> value_type;
     
@@ -1318,18 +1540,21 @@ class RGBPrime2YPrimeIQFunctor
     
         /** apply the transformation
         */
-    value_type operator()(TinyVector<T, 3> const & rgb)
+    result_type operator()(TinyVector<T, 3> const & rgb)
     {
         component_type red = rgb[0] / max_;
         component_type green = rgb[1] / max_;
         component_type blue = rgb[2] / max_;
         
-        value_type result;
+        result_type result;
         result[0] = 0.299*red + 0.587*green + 0.114*blue;
         result[1] = 0.596*red - 0.274*green - 0.322*blue;
         result[2] = 0.212*red - 0.523*green + 0.311*blue;
         return result;
     }
+
+  private:
+    component_type max_;
 };
 
 /** \brief Convert Y'IQ color components into non-linear (gamma corrected) R'G'B'.
@@ -1348,10 +1573,23 @@ class YPrimeIQ2RGBPrimeFunctor
     
   public:
   
-        /** the functor's value type
+        /** the functor's argument type. (Actually, the argument type
+            is more general: <TT>TinyVector<V, 3></TT> with arbitrary
+            <TT>V</TT>. But this cannot be expressed in a typedef.)
+        */
+    typedef TinyVector<T, 3> argument_type;
+  
+        /** the functor's result type
+        */
+    typedef RGBValue<T> result_type;
+  
+        /** \deprecated use argument_type and result_type
         */
     typedef RGBValue<T> value_type;
     
+        /** constructor
+            \arg max - the maximum value for each RGB component
+        */
     YPrimeIQ2RGBPrimeFunctor(component_type max = 255.0)
     : max_(max)
     {}
@@ -1359,14 +1597,14 @@ class YPrimeIQ2RGBPrimeFunctor
         /** apply the transformation
         */
     template <class V>
-    value_type operator()(TinyVector<V, 3> const & yiq)
+    result_type operator()(TinyVector<V, 3> const & yiq)
     {
         component_type nred =   yiq[0] + 0.9548892043*yiq[1] + 0.6221039350*yiq[2];
         component_type ngreen = yiq[0] - 0.2713547827*yiq[1] - 0.6475120259*yiq[2];
         component_type nblue =  yiq[0] - 1.1072510054*yiq[1] + 1.7024603738*yiq[2];
-        return value_type(NumericTraits<T>::fromRealPromote(nred * max_),
-                          NumericTraits<T>::fromRealPromote(ngreen * max_),
-                          NumericTraits<T>::fromRealPromote(nblue * max_));
+        return result_type(NumericTraits<T>::fromRealPromote(nred * max_),
+                           NumericTraits<T>::fromRealPromote(ngreen * max_),
+                           NumericTraits<T>::fromRealPromote(nblue * max_));
     }
 };
 
@@ -1407,13 +1645,21 @@ class RGBPrime2YPrimeUVFunctor
     maximum saturation: 0.632324
     red = [0.299, -0.147, 0.615]
     */
-    typedef typename NumericTraits<T>::RealPromote component_type;
-    
-    component_type max_;
-    
   public:
   
-        /** the functor's value type
+        /** the result's component type
+        */
+    typedef typename NumericTraits<T>::RealPromote component_type;
+
+        /** the functor's argument type
+        */
+    typedef TinyVector<T, 3> argument_type;
+  
+        /** the functor's result type
+        */
+    typedef TinyVector<component_type, 3> result_type;
+  
+        /** \deprecated use argument_type and result_type
         */
     typedef TinyVector<component_type, 3> value_type;
     
@@ -1426,18 +1672,21 @@ class RGBPrime2YPrimeUVFunctor
     
         /** apply the transformation
         */
-    value_type operator()(TinyVector<T, 3> const & rgb)
+    result_type operator()(TinyVector<T, 3> const & rgb)
     {
         component_type red = rgb[0] / max_;
         component_type green = rgb[1] / max_;
         component_type blue = rgb[2] / max_;
         
-        value_type result;
+        result_type result;
         result[0] = 0.299*red + 0.587*green + 0.114*blue;
         result[1] = -0.1471376975*red - 0.2888623025*green + 0.436*blue;
         result[2] = 0.6149122807*red - 0.5149122807*green - 0.100*blue;
         return result;
     }
+
+  private:
+    component_type max_;
 };
 
 /** \brief Convert Y'UV color components into non-linear (gamma corrected) R'G'B'.
@@ -1456,7 +1705,17 @@ class YPrimeUV2RGBPrimeFunctor
     
   public:
   
-        /** the functor's value type
+        /** the functor's argument type. (Actually, the argument type
+            is more general: <TT>TinyVector<V, 3></TT> with arbitrary
+            <TT>V</TT>. But this cannot be expressed in a typedef.)
+        */
+    typedef TinyVector<T, 3> argument_type;
+  
+        /** the functor's result type
+        */
+    typedef RGBValue<T> result_type;
+  
+        /** \deprecated use argument_type and result_type
         */
     typedef RGBValue<T> value_type;
     
@@ -1470,14 +1729,14 @@ class YPrimeUV2RGBPrimeFunctor
         /** apply the transformation
         */
     template <class V>
-    value_type operator()(TinyVector<V, 3> const & yuv)
+    result_type operator()(TinyVector<V, 3> const & yuv)
     {
         component_type nred =   yuv[0] + 1.140*yuv[2];
         component_type ngreen = yuv[0] - 0.3946517044*yuv[1] - 0.580681431*yuv[2];
         component_type nblue =  yuv[0] + 2.0321100920*yuv[1];
-        return value_type(NumericTraits<T>::fromRealPromote(nred * max_),
-                          NumericTraits<T>::fromRealPromote(ngreen * max_),
-                          NumericTraits<T>::fromRealPromote(nblue * max_));
+        return result_type(NumericTraits<T>::fromRealPromote(nred * max_),
+                           NumericTraits<T>::fromRealPromote(ngreen * max_),
+                           NumericTraits<T>::fromRealPromote(nblue * max_));
     }
 };
 
@@ -1508,13 +1767,21 @@ class RGBPrime2YPrimeCbCrFunctor
     maximum saturation: 119.591
     red = [81.481, 90.203, 240]
     */
-    typedef typename NumericTraits<T>::RealPromote component_type;
-    
-    component_type max_;
-    
   public:
   
-        /** the functor's value type
+        /** the result's component type
+        */
+    typedef typename NumericTraits<T>::RealPromote component_type;
+
+        /** the functor's argument type
+        */
+    typedef TinyVector<T, 3> argument_type;
+  
+        /** the functor's result type
+        */
+    typedef TinyVector<component_type, 3> result_type;
+  
+        /** \deprecated use argument_type and result_type
         */
     typedef TinyVector<component_type, 3> value_type;
     
@@ -1527,18 +1794,21 @@ class RGBPrime2YPrimeCbCrFunctor
     
         /** apply the transformation
         */
-    value_type operator()(TinyVector<T, 3> const & rgb)
+    result_type operator()(TinyVector<T, 3> const & rgb)
     {
         component_type red = rgb[0] / max_;
         component_type green = rgb[1] / max_;
         component_type blue = rgb[2] / max_;
         
-        value_type result;
+        result_type result;
         result[0] = 16.0 + 65.481*red + 128.553*green + 24.966*blue;
         result[1] = 128.0 - 37.79683972*red - 74.20316028*green + 112.0*blue;
         result[2] = 128.0 + 112.0*red - 93.78601998*green - 18.21398002*blue;
         return result;
     }
+
+  private:
+    component_type max_;
 };
 
 /** \brief Convert Y'CbCr color difference components into non-linear (gamma corrected) R'G'B'.
@@ -1557,7 +1827,17 @@ class YPrimeCbCr2RGBPrimeFunctor
     
   public:
   
-        /** the functor's value type
+        /** the functor's argument type. (Actually, the argument type
+            is more general: <TT>TinyVector<V, 3></TT> with arbitrary
+            <TT>V</TT>. But this cannot be expressed in a typedef.)
+        */
+    typedef TinyVector<T, 3> argument_type;
+  
+        /** the functor's result type
+        */
+    typedef RGBValue<T> result_type;
+  
+        /** \deprecated use argument_type and result_type
         */
     typedef RGBValue<T> value_type;
     
@@ -1571,7 +1851,7 @@ class YPrimeCbCr2RGBPrimeFunctor
         /** apply the transformation
         */
     template <class V>
-    value_type operator()(TinyVector<V, 3> const & ycbcr)
+    result_type operator()(TinyVector<V, 3> const & ycbcr)
     {
         component_type y = ycbcr[0] - 16.0;
         component_type cb = ycbcr[1] - 128.0;
@@ -1580,9 +1860,9 @@ class YPrimeCbCr2RGBPrimeFunctor
         component_type nred =   0.00456621*y + 0.006258928571*cr;
         component_type ngreen = 0.00456621*y - 0.001536322706*cb - 0.003188108420*cr;
         component_type nblue =  0.00456621*y + 0.007910714286*cb;
-        return value_type(NumericTraits<T>::fromRealPromote(nred * max_),
-                          NumericTraits<T>::fromRealPromote(ngreen * max_),
-                          NumericTraits<T>::fromRealPromote(nblue * max_));
+        return result_type(NumericTraits<T>::fromRealPromote(nred * max_),
+                           NumericTraits<T>::fromRealPromote(ngreen * max_),
+                           NumericTraits<T>::fromRealPromote(nblue * max_));
     }
 };
 

@@ -193,7 +193,7 @@ public:
     region statistics functor. The source image contains feature values for each
     pixel which will be used by the region statistics functor to calculate and 
     update statistics for each region and to calculate the cost for each
-    candidate. The <TT>RegionStatisticsFunctor</TT> must be compatible to the 
+    candidate. The <TT>RegionStatisticsArray</TT> must be compatible to the 
     \ref ArrayOfRegionStatistics functor and contains an <em> array</em> of 
     statistics objects for each region. The indices must correspond to the
     labels of the seed regions. The statistics for the initial regions must have
@@ -206,7 +206,7 @@ public:
     and <TT>as</TT> is 
     the SrcAccessor). When a candidate has been merged with a region, the
     statistics are updated by calling <TT>stats[i].operator()(as(x))</TT>. Since
-    the <TT>RegionStatisticsFunctor</TT> is passed by reference, this will overwrite
+    the <TT>RegionStatisticsArray</TT> is passed by reference, this will overwrite
     the original statistics.
     
     If a candidate could be merged into more than one regions with identical 
@@ -225,12 +225,12 @@ public:
         template <class SrcImageIterator, class SrcAccessor, 
                   class SeedImageIterator, class SeedAccessor,
                   class DestImageIterator, class DestAccessor,
-	          class RegionStatisticsFunctor>
+	          class RegionStatisticsArray>
         void seededRegionGrowing(SrcImageIterator srcul, 
                                  SrcImageIterator srclr, SrcAccessor as, 
                                  SeedImageIterator seedsul, SeedAccessor aseeds,
 			         DestImageIterator destul, DestAccessor ad,
-		                 RegionStatisticsFunctor & stats);
+		                 RegionStatisticsArray & stats);
     }
     \endcode
     
@@ -240,12 +240,12 @@ public:
         template <class SrcImageIterator, class SrcAccessor, 
                   class SeedImageIterator, class SeedAccessor,
                   class DestImageIterator, class DestAccessor,
-	          class RegionStatisticsFunctor>
+	          class RegionStatisticsArray>
         inline void
         seededRegionGrowing(triple<SrcImageIterator, SrcImageIterator, SrcAccessor> img1,
 		           pair<SeedImageIterator, SeedAccessor> img3,
 		           pair<DestImageIterator, DestAccessor> img4,
-		           RegionStatisticsFunctor & stats);
+		           RegionStatisticsArray & stats);
     }
     \endcode
     
@@ -293,10 +293,10 @@ public:
     SeedAccessor seed_accessor;
     DestAccessor dest_accessor;
     
-    RegionStatisticsFunctor stats;
+    RegionStatisticsArray stats;
     
     // calculate costs
-    RegionStatisticsFunctor::value_type cost = 
+    RegionStatisticsArray::value_type::cost_type cost = 
         stats[seed_accessor(seed_upperleft)].cost(src_accessor(src_upperleft));
     
     // compare costs
@@ -309,17 +309,17 @@ public:
     dest_accessor.set(seed_accessor(seed_upperleft), dest_upperleft);
     \endcode
     
-    Further requirements are determined by the <TT>RegionStatisticsFunctor</TT>. 
+    Further requirements are determined by the <TT>RegionStatisticsArray</TT>. 
 */
 template <class SrcImageIterator, class SrcAccessor, 
           class SeedImageIterator, class SeedAccessor,
           class DestImageIterator, class DestAccessor,
-	  class RegionStatisticsFunctor>
+	  class RegionStatisticsArray>
 void seededRegionGrowing(SrcImageIterator srcul, 
                          SrcImageIterator srclr, SrcAccessor as, 
                          SeedImageIterator seedsul, SeedAccessor aseeds,
 			 DestImageIterator destul, DestAccessor ad,
-		         RegionStatisticsFunctor & stats)
+		         RegionStatisticsArray & stats)
 {
     int w = srclr.x - srcul.x;
     int h = srclr.y - srcul.y;
@@ -327,8 +327,9 @@ void seededRegionGrowing(SrcImageIterator srcul,
 
     SrcImageIterator isy = srcul, isx = srcul;  // iterators for the src image
 
-    typedef typename RegionStatisticsFunctor::value_type TmpType;
-    typedef InternalSeedRgPixel<TmpType> Pixel;
+    typedef typename RegionStatisticsArray::value_type RegionStatistics;
+    typedef typename RegionStatistics::cost_type CostType;
+    typedef InternalSeedRgPixel<CostType> Pixel;
     
     typename Pixel::Allocator allocator;
     
@@ -366,7 +367,7 @@ void seededRegionGrowing(SrcImageIterator srcul,
                     cneighbor = irx[dist[i]];
                     if(cneighbor > 0)
                     {
-                        TmpType cost = stats[cneighbor].cost(as(isx));
+                        CostType cost = stats[cneighbor].cost(as(isx));
 
                         Pixel * pixel = 
                             allocator.create(pos, pos+dist[i], cost, count++, cneighbor);
@@ -405,7 +406,7 @@ void seededRegionGrowing(SrcImageIterator srcul,
         {
 	    if(irx[dist[i]] == 0)
 	    {
-	        TmpType cost = stats[lab].cost(as(isx, dist[i]));
+	        CostType cost = stats[lab].cost(as(isx, dist[i]));
 
 	        Pixel * new_pixel = 
                     allocator.create(pos+dist[i], nearest, cost, count++, lab);
@@ -421,12 +422,12 @@ void seededRegionGrowing(SrcImageIterator srcul,
 template <class SrcImageIterator, class SrcAccessor, 
           class SeedImageIterator, class SeedAccessor,
           class DestImageIterator, class DestAccessor,
-	  class RegionStatisticsFunctor>
+	  class RegionStatisticsArray>
 inline void
 seededRegionGrowing(triple<SrcImageIterator, SrcImageIterator, SrcAccessor> img1,
 		   pair<SeedImageIterator, SeedAccessor> img3,
 		   pair<DestImageIterator, DestAccessor> img4,
-		   RegionStatisticsFunctor & stats)
+		   RegionStatisticsArray & stats)
 {
     seededRegionGrowing(img1.first, img1.second, img1.third, 
                         img3.first, img3.second, 
@@ -459,16 +460,30 @@ template <class Value>
 class SeedRgDirectValueFunctor
 {
   public:
+        /** the functor's argument type
+        */
+    typedef Value argument_type;
+
+        /** the functor's result type (unused, only necessary for 
+            use of SeedRgDirectValueFunctor in \ref vigra::ArrayOfRegionStatistics
+        */
+    typedef Value result_type;
+
+        /** \deprecated use argument_type
+        */
     typedef Value value_type;
+    
+        /** \the return type of the cost() function
+        */
     typedef Value cost_type;
     
         /** Do nothing (since we need not update region statistics).
         */
-    void operator()(Value const &) const {}
+    void operator()(argument_type const &) const {}
 
         /** Return argument (since cost is identical to feature value)
         */
-    Value const & cost(Value const & v) const
+    cost_type const & cost(argument_type const & v) const
     {
         return v;
     }

@@ -536,14 +536,26 @@ template <class ValueType>
 class MagnitudeFunctor
 {
   public:
-        /* the functor's value type
+        /** the functor's first argument type
+        */
+    typedef ValueType first_argument_type;
+    
+        /** the functor's second argument type
+        */
+    typedef ValueType second_argument_type;
+    
+        /** the functor's result type
+        */
+    typedef typename NumericTraits<ValueType>::RealPromote result_type;
+    
+        /** \deprecated use first_argument_type, second_argument_type, result_type
         */
     typedef ValueType value_type;
     
         /** calculate transform '<TT>sqrt(v1*v1 + v2*v2)</TT>'. 
             
         */
-    value_type operator()(value_type const & v1, value_type const & v2) const
+    result_type operator()(first_argument_type const & v1, second_argument_type const & v2) const
     {
 #ifndef CMATH_NOT_IN_STD
         return std::sqrt(v1*v1 + v2*v2);
@@ -567,7 +579,19 @@ template <class ValueType>
 class RGBGradientMagnitudeFunctor
 {
   public:
-        /* the functor's value type
+        /** the functor's first argument type
+        */
+    typedef RGBValue<ValueType> first_argument_type;
+    
+        /** the functor's second argument type
+        */
+    typedef RGBValue<ValueType> second_argument_type;
+    
+        /** the functor's result type
+        */
+    typedef typename NumericTraits<ValueType>::RealPromote result_type;
+    
+        /** \deprecated use first_argument_type, second_argument_type, result_type
         */
     typedef ValueType value_type;
     
@@ -582,8 +606,8 @@ class RGBGradientMagnitudeFunctor
             <TT>ValueType</TT> (the RGB's component type) must support addition, multiplication, 
             abd <TT>sqrt()</TT>.
         */
-    ValueType 
-    operator()(RGBValue<ValueType> const & gx, RGBValue<ValueType> const & gy) const
+    result_type 
+    operator()(first_argument_type const & gx, second_argument_type const & gy) const
     {
 #ifndef CMATH_NOT_IN_STD
         return std::sqrt(gx.red()*gx.red() + gx.green()*gx.green() +

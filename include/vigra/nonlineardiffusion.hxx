@@ -195,17 +195,17 @@ void internalNonlinearDiffusionAOSStep(
     <em> u(</em><b> x</b><em> , t)</em> is the smoothed image at time <em> t</em>, and 
     <em> g(.)</em> is the location dependent diffusivity. At time zero, the image
     <em> u(</em><b> x</b><em> , 0)</em> is simply the original image. The time is
-    propotional to the square of the scale parameter: <em> t = s^{2</em> / 2}.
+    propotional to the square of the scale parameter: \f$t = s^2\f$.
     The diffusion
     equation is solved iteratively according 
     to the Additive Operator Splitting Scheme (AOS) from
     
-    {\small
-    J. Weickert: {\em "Recursive Separable Schemes for Nonlinear Diffusion 
-    Filters"}, 
+    
+    J. Weickert: <em>"Recursive Separable Schemes for Nonlinear Diffusion 
+    Filters"</em>, 
     in: B. ter Haar Romeny, L. Florack, J. Koenderingk, M. Viergever (eds.):
         1st Intl. Conf. on Scale-Space Theory in Computer Vision 1997,
-        Springer LNCS 1252}
+        Springer LNCS 1252
 
     <TT>DiffusivityFunctor</TT> implements the gradient dependent local diffusivity. 
     It is passed
@@ -632,7 +632,23 @@ template <class Value>
 class DiffusivityFunctor
 {
   public:
-         /** the functors value type (must be a field with <TT>sqrt()</TT> defined)
+         /** the functors first argument type (must be an algebraic field with <TT>exp()</TT> defined).
+             However, the functor also works with RGBValue<first_argument_type> (this hack is
+             necessary since Microsoft C++ doesn't support partial specialization).   
+         */
+    typedef Value first_argument_type;
+    
+         /** the functors second argument type (same as first).
+             However, the functor also works with RGBValue<second_argument_type> (this hack is
+             necessary since Microsoft C++ doesn't support partial specialization).   
+         */
+    typedef Value second_argument_type;
+    
+         /** the functors result type
+         */
+    typedef typename NumericTraits<Value>::RealPromote result_type;
+    
+         /** \deprecated use first_argument_type, second_argument_type, result_type
          */
     typedef Value value_type;
     
@@ -640,13 +656,13 @@ class DiffusivityFunctor
          */
     DiffusivityFunctor(Value const & thresh)
     : weight_(thresh*thresh), 
-      one_(NumericTraits<Value>::one()),
-      zero_(NumericTraits<Value>::zero())
+      one_(NumericTraits<result_type>::one()),
+      zero_(NumericTraits<result_type>::zero())
     {}
     
          /** calculate diffusivity from scalar arguments
          */
-    Value operator()(Value const & gx, Value const & gy) const
+    result_type operator()(first_argument_type const & gx, second_argument_type const & gy) const
     {
         Value mag = (gx*gx + gy*gy) / weight_;
                      
@@ -655,9 +671,9 @@ class DiffusivityFunctor
     
          /** calculate diffusivity from RGB arguments
          */
-    Value operator()(RGBValue<Value> const & gx, RGBValue<Value> const & gy) const
+    result_type operator()(RGBValue<Value> const & gx, RGBValue<Value> const & gy) const
     {
-        Value mag = (gx.red()*gx.red() + 
+        result_type mag = (gx.red()*gx.red() + 
                      gx.green()*gx.green() +
                      gx.blue()*gx.blue() +
                      gy.red()*gy.red() + 
@@ -667,9 +683,9 @@ class DiffusivityFunctor
         return (mag == zero_) ? one_ : one_ - exp(-3.315 / mag / mag);
     }
     
-    Value weight_;
-    Value one_;
-    Value zero_;
+    result_type weight_;
+    result_type one_;
+    result_type zero_;
 };
 
 //@}

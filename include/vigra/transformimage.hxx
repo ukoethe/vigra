@@ -485,31 +485,46 @@ template <class SrcValueType>
 class LinearIntensityTransform
 {
    public:
-        /* the functors value type
+        /* the functors argument type
+        */
+    typedef SrcValueType argument_type;
+    
+        /* the functors result type
+        */
+    typedef SrcValueType result_type;
+    
+        /* \deprecated use argument_type and result_type
         */
     typedef SrcValueType value_type;
     
+        /** type of the offset (used in internal culculations to prevent
+            overflow).
+        */
     typedef typename 
-            NumericTraits<SrcValueType>::RealPromote SrcPromote;
+            NumericTraits<SrcValueType>::Promote argument_promote;
+    
+        /** type of the scale factor 
+        */
+    typedef double scalar_multiplier_type;
     
         /* init scale and offset
         */
-    LinearIntensityTransform(double scale, SrcPromote offset)
+    LinearIntensityTransform(scalar_multiplier_type scale, argument_promote offset)
     : scale_(scale), offset_(offset)
     {}
     
         /* calculate transform
         */
-    value_type operator()(value_type const & s) const
+    result_type operator()(argument_type const & s) const
     {
         return NumericTraits<SrcValueType>::
-                fromRealPromote(scale_ * (SrcPromote(s) + offset_));
+                fromRealPromote(scale_ * (s + offset_));
     }
     
   private:
   
-    double scale_;
-    SrcPromote offset_;
+    scalar_multiplier_type scale_;
+    argument_promote offset_;
 };
 
 /********************************************************/
@@ -616,25 +631,34 @@ template <class SrcValueType, class DestValueType>
 class Threshold
 {
    public:
-    /** init thresholds and return values
-    */
-    Threshold(SrcValueType lower, SrcValueType higher,
-              DestValueType noresult, DestValueType yesresult)
+   
+        /** the functor's argument type
+        */
+    typedef SrcValueType argument_type;
+    
+        /** the functor's result type
+        */
+    typedef DestValueType result_type;
+    
+        /** init thresholds and return values
+        */
+    Threshold(argument_type lower, argument_type higher,
+              result_type noresult, result_type yesresult)
     : lower_(lower), higher_(higher),
       yesresult_(yesresult), noresult_(noresult)
     {}
     
-    /** calculate transform
-    */
-    DestValueType operator()(SrcValueType s) const
+        /** calculate transform
+        */
+    result_type operator()(argument_type s) const
     {
         return ((s < lower_) || (higher_ < s)) ? noresult_ : yesresult_;
     }
     
   private:
   
-    SrcValueType lower_, higher_;
-    DestValueType yesresult_, noresult_;
+    argument_type lower_, higher_;
+    result_type yesresult_, noresult_;
 };
 
 /********************************************************/
@@ -711,31 +735,54 @@ template <class PixelType>
 class BrightnessContrastFunctor
 {
     typedef typename 
-        NumericTraits<PixelType>::RealPromote tmp_type;
-    double b_, c_;
-    PixelType min_;
-    tmp_type diff_;
+        NumericTraits<PixelType>::RealPromote promote_type;
  
  public:
     
+        /** the functor's argument type
+        */
+    typedef PixelType argument_type;
+    
+        /** the functor's result type
+        */
+    typedef PixelType result_type;
+    
+        /** \deprecated use argument_type and result_type
+        */
     typedef PixelType value_type;
     
+        /** Init functor for argument range <TT>[min, max]</TT>.
+            <TT>brightness</TT> and <TT>contrast</TT> values > 1 will
+            increase brightness and contrast, < 1 will decrease them, and == 1 means
+            no change.
+        */
     BrightnessContrastFunctor(double brightness, double contrast,
-                              PixelType const & min, PixelType const & max)
-    : b_(1.0/brightness), c_(1.0/contrast), min_(min), diff_(max - min)
+                              argument_type const & min, argument_type const & max)
+    : b_(1.0/brightness), 
+      c_(1.0/contrast), 
+      min_(min), 
+      diff_(max - min),
+      zero_(NumericTraits<promote_type>::zero()),
+      one_(NumericTraits<promote_type>::one())
     {}
     
-    value_type operator()(value_type const & v) const
+        /** Calculate modified gray or color value
+        */
+    result_type operator()(argument_type const & v) const
     {
-        tmp_type v1 = (v - min_) / diff_;
-        tmp_type brighter = pow(v1, b_);
-        tmp_type v2 = 2.0 * brighter - NumericTraits<tmp_type>::one();
-        tmp_type contrasted = (v2 < NumericTraits<tmp_type>::zero()) ?
-                                -pow(-v2, c_) :
-                                pow(v2, c_);
-        return value_type(0.5 * diff_ * 
-             (contrasted + NumericTraits<tmp_type>::one()) + min_);
+        promote_type v1 = (v - min_) / diff_;
+        promote_type brighter = pow(v1, b_);
+        promote_type v2 = 2.0 * brighter - one_;
+        promote_type contrasted = (v2 < zero_) ?
+                                     -pow(-v2, c_) :
+                                      pow(v2, c_);
+        return result_type(0.5 * diff_ * (contrasted + one_) + min_);
     }
+    
+  private:
+    double b_, c_;
+    argument_type min_;
+    promote_type diff_, zero_, one_;
 };
 
 template <>
