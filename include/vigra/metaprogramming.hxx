@@ -81,16 +81,26 @@ template<class T>
 class TypeTraits
 {
   public:
+    typedef VigraFalseType isConst;
     typedef VigraFalseType isPOD;
     typedef VigraFalseType isBuiltinType;
 };
 
 #ifndef NO_PARTIAL_TEMPLATE_SPECIALIZATION
 
+template<class T>
+class TypeTraits<T const>
+: public TypeTraits<T>
+{
+  public:
+    typedef VigraTrueType isConst;
+};
+
 template<class T> 
 class TypeTraits<T *>
 {
   public:
+    typedef VigraFalseType isConst;
     typedef VigraTrueType isPOD;
     typedef VigraTrueType isBuiltinType;
 };
@@ -99,6 +109,7 @@ template<class T>
 class TypeTraits<T const *>
 {
   public:
+    typedef VigraFalseType isConst;
     typedef VigraTrueType isPOD;
     typedef VigraTrueType isBuiltinType;
 };
@@ -110,6 +121,7 @@ template<> \
 class TypeTraits<type> \
 { \
   public: \
+    typedef VigraFalseType isConst; \
     typedef VigraTrueType isPOD; \
     typedef VigraTrueType isBuiltinType; \
 };
@@ -131,8 +143,6 @@ VIGRA_TYPE_TRAITS(long double)
 
 //@}
 
-#ifndef NO_PARTIAL_TEMPLATE_SPECIALIZATION
-
 template <class L, class R>
 struct And;
 
@@ -140,24 +150,28 @@ template <>
 struct And<VigraFalseType, VigraFalseType>
 {
     typedef VigraFalseType result;
+    static const bool boolResult = false;
 };
 
 template <>
 struct And<VigraFalseType, VigraTrueType>
 {
     typedef VigraFalseType result;
+    static const bool boolResult = false;
 };
 
 template <>
 struct And<VigraTrueType, VigraFalseType>
 {
     typedef VigraFalseType result;
+    static const bool boolResult = false;
 };
 
 template <>
 struct And<VigraTrueType, VigraTrueType>
 {
     typedef VigraTrueType result;
+    static const bool boolResult = true;
 };
 
 template <class L, class R>
@@ -167,25 +181,31 @@ template <>
 struct Or<VigraFalseType, VigraFalseType>
 {
     typedef VigraFalseType result;
+    static const bool boolResult = false;
 };
 
 template <>
 struct Or<VigraTrueType, VigraFalseType>
 {
     typedef VigraTrueType result;
+    static const bool boolResult = true;
 };
 
 template <>
 struct Or<VigraFalseType, VigraTrueType>
 {
     typedef VigraTrueType result;
+    static const bool boolResult = true;
 };
 
 template <>
 struct Or<VigraTrueType, VigraTrueType>
 {
     typedef VigraTrueType result;
+    static const bool boolResult = true;
 };
+
+#ifndef NO_PARTIAL_TEMPLATE_SPECIALIZATION
 
 template <class PREDICATE, class TRUECASE, class FALSECASE>
 struct If;
@@ -237,13 +257,14 @@ struct IsDerivedFrom
     typedef char falseResult[1];
     typedef char trueResult[2];
     
-    static falseResult * test(...) { return 0; }
-    static trueResult * test(BASE const *) { return 0; }
+    static falseResult * testIsDerivedFrom(...);
+    static trueResult * testIsDerivedFrom(BASE const *);
     
-    enum { resultSize = sizeof(*test((DERIVED const *)0)) };
+    enum { resultSize = sizeof(*testIsDerivedFrom((DERIVED const *)0)) };
     
+    static const bool boolResult = (resultSize == 2);
     typedef typename 
-        IfBool<(resultSize == 2), VigraTrueType, VigraFalseType>::type
+        IfBool<boolResult, VigraTrueType, VigraFalseType>::type
         result;
 };
 
