@@ -20,6 +20,7 @@
 #include <wtypes.h>
 #include <winbase.h>
 #include <excpt.h>
+#define snprintf _snprintf
 
 #elif defined(__unix)
 
