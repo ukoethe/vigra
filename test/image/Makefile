@@ -6,7 +6,6 @@ ifneq "$(MAKECMDGOALS)" "clean"
 include test.d
 endif
 
-include ../Makefile.include
+EXTRA_CLEAN_TARGET=test.gif test.xv test.ras
 
-clean::
-	rm -f test.gif test.xv test.ras
+include ../Makefile.include

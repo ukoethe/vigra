@@ -7,5 +7,5 @@ CPPFLAGS += \
  -I../../interactive/include
 
 clean::
-	rm -f *.o test core *.d
+	rm -f *.o test core *.d $(EXTRA_CLEAN_TARGET)
 	rm -rf Debug ii_files *.plg *.ilk
