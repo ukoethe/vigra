@@ -39,7 +39,7 @@ struct MultiArrayPointoperatorsTest
 
         initMultiarray(destMultiArrayRange(res), 1.1);
         
-        unsigned int x,y,z;
+        int x,y,z;
         for(z=0; z<img.shape(2); ++z)
             for(y=0; y<img.shape(1); ++y)
                 for(x=0; x<img.shape(0); ++x)
@@ -54,7 +54,7 @@ struct MultiArrayPointoperatorsTest
         
         copyMultiarray(srcMultiArrayRange(img), destMultiArray(res));
         
-        unsigned int x,y,z;
+        int x,y,z;
         for(z=0; z<img.shape(2); ++z)
             for(y=0; y<img.shape(1); ++y)
                 for(x=0; x<img.shape(0); ++x)
@@ -70,7 +70,7 @@ struct MultiArrayPointoperatorsTest
         transformMultiarray(srcMultiArrayRange(img), destMultiArray(res),
                             Arg1() + Arg1());
         
-        unsigned int x,y,z;
+        int x,y,z;
         for(z=0; z<img.shape(2); ++z)
             for(y=0; y<img.shape(1); ++y)
                 for(x=0; x<img.shape(0); ++x)
@@ -87,7 +87,7 @@ struct MultiArrayPointoperatorsTest
                               destMultiArray(res),
                               Arg1() + Arg2());
         
-        unsigned int x,y,z;
+        int x,y,z;
         for(z=0; z<img.shape(2); ++z)
             for(y=0; y<img.shape(1); ++y)
                 for(x=0; x<img.shape(0); ++x)
@@ -105,7 +105,7 @@ struct MultiArrayPointoperatorsTest
                                 destMultiArray(res),
                                 Arg1() + Arg2() + Arg3());
         
-        unsigned int x,y,z;
+        int x,y,z;
         for(z=0; z<img.shape(2); ++z)
             for(y=0; y<img.shape(1); ++y)
                 for(x=0; x<img.shape(0); ++x)
