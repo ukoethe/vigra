@@ -4,6 +4,7 @@
 /*       Cognitive Systems Group, University of Hamburg, Germany        */
 /*                                                                      */
 /*    This file is part of the VIGRA computer vision library.           */
+/*    ( Version 1.3.0, Sep 10 2004 )                                    */
 /*    You may use, modify, and distribute this software according       */
 /*    to the terms stated in the LICENSE file included in               */
 /*    the VIGRA distribution.                                           */
@@ -520,14 +521,14 @@ class MultiIteratorBase
              */
         void operator++ ()
         {
-            m_ptr += m_stride [level];
+            type::m_ptr += type::m_stride [level];
         }
 
             /** prefix-decrement the iterator in it's current dimension
              */
         void operator-- ()
         {
-            m_ptr -= m_stride [level];
+            type::m_ptr -= type::m_stride [level];
         }
 
             /** postfix-increment the iterator in it's current dimension
@@ -553,7 +554,7 @@ class MultiIteratorBase
             */
         type & operator+= (difference_type n)
         {
-            m_ptr += n * m_stride [level];
+            type::m_ptr += n * type::m_stride [level];
             return *this;
         }
         
@@ -562,7 +563,7 @@ class MultiIteratorBase
             */
         type & operator+= (multi_difference_type const & d)
         {
-            m_ptr += total_stride(d.begin());
+            type::m_ptr += total_stride(d.begin());
             return *this;
         }
 
@@ -571,7 +572,7 @@ class MultiIteratorBase
             */
         type & operator-= (difference_type n)
         {
-            m_ptr -= n * m_stride [level];
+            type::m_ptr -= n * type::m_stride [level];
             return *this;
         }
         
@@ -580,7 +581,7 @@ class MultiIteratorBase
             */
         type & operator-= (multi_difference_type const & d)
         {
-            m_ptr -= total_stride(d.begin());
+            type::m_ptr -= total_stride(d.begin());
             return *this;
         }
         
@@ -590,7 +591,7 @@ class MultiIteratorBase
             */
         difference_type operator- (type const & d) const
         {
-            return (m_ptr - d.m_ptr) / m_stride[level];
+            return (type::m_ptr - d.m_ptr) / type::m_stride[level];
         }
 
         /* operators *, ->, ==, !=, < inherited */
@@ -600,14 +601,14 @@ class MultiIteratorBase
             */
         reference operator[] (difference_type n) const
         {
-            return m_ptr [n* m_stride [level]];
+            return type::m_ptr [n* type::m_stride [level]];
         }
 
             /** access the array element at the given offset.
             */
         reference operator[] (multi_difference_type const & d) const
         {
-            return m_ptr [total_stride(d.begin())];
+            return type::m_ptr [total_stride(d.begin())];
         }
 
             /** Return the (N-1)-dimensional multi-iterator that points to 
@@ -643,7 +644,7 @@ class MultiIteratorBase
         next_type end () const
         {
             next_type ret = *this;
-            ret += m_shape [level-1];
+            ret += type::m_shape [level-1];
             return ret;
         }
 
@@ -667,7 +668,7 @@ class MultiIteratorBase
         {
             vigra_precondition(d <= level,
                 "MultiIterator<N>::iteratorForDimension(d): d < N required");
-            return iterator(m_ptr, &m_stride [d], 0);
+            return iterator(type::m_ptr, &type::m_stride [d], 0);
         }
         
       protected:
@@ -675,7 +676,7 @@ class MultiIteratorBase
         difference_type 
         total_stride(typename multi_difference_type::const_iterator d) const
         {
-            return d[level]*m_stride[level] + base_type::total_stride(d);
+            return d[level]*type::m_stride[level] + base_type::total_stride(d);
         }
     };
 };
@@ -729,12 +730,12 @@ class MultiIteratorBase <2>
 
         void operator++ ()
         {
-            m_ptr += m_stride [level];
+            type::m_ptr += m_stride [level];
         }
 
         void operator-- ()
         {
-            m_ptr -= m_stride [level];
+            type::m_ptr -= m_stride [level];
         }
 
         type operator++ (int)
@@ -753,41 +754,41 @@ class MultiIteratorBase <2>
 
         type & operator+= (difference_type n)
         {
-            m_ptr += n * m_stride [level];
+            type::m_ptr += n * m_stride [level];
             return *this;
         }
         
         type & operator+= (multi_difference_type const & d)
         {
-            m_ptr += total_stride(d.begin());
+            type::m_ptr += total_stride(d.begin());
             return *this;
         }
 
         type  &operator-= (difference_type n)
         {
-            m_ptr -= n * m_stride [level];
+            type::m_ptr -= n * m_stride [level];
             return *this;
         }
         
         type & operator-= (multi_difference_type const & d)
         {
-            m_ptr -= total_stride(d.begin());
+            type::m_ptr -= total_stride(d.begin());
             return *this;
         }
         
         difference_type operator- (type const & d) const
         {
-            return (m_ptr - d.m_ptr) / m_stride[level];
+            return (type::m_ptr - d.m_ptr) / m_stride[level];
         }
 
         reference operator[] (difference_type n) const
         {
-            return m_ptr [n*m_stride [level]];
+            return type::m_ptr [n*m_stride [level]];
         }
 
         reference operator[] (multi_difference_type const & d) const
         {
-            return m_ptr [total_stride(d.begin())];
+            return type::m_ptr [total_stride(d.begin())];
         }
 
         next_type begin () const
@@ -806,7 +807,7 @@ class MultiIteratorBase <2>
         {
             vigra_precondition(d <= level,
                 "MultiIterator<N>::iteratorForDimension(d): d < N required");
-            return iterator(m_ptr, &m_stride [d], 0);
+            return iterator(type::m_ptr, &m_stride [d], 0);
         }
         
       protected:
@@ -1255,14 +1256,14 @@ class StridedMultiIteratorBase
              */
         void operator++ ()
         {
-            m_ptr += m_stride [level];
+            type::m_ptr += type::m_stride [level];
         }
 
             /** prefix-decrement the iterator in it's current dimension
              */
         void operator-- ()
         {
-            m_ptr -= m_stride [level];
+            type::m_ptr -= type::m_stride [level];
         }
 
             /** postfix-increment the iterator in it's current dimension
@@ -1288,7 +1289,7 @@ class StridedMultiIteratorBase
             */
         type &operator+= (difference_type n)
         {
-            m_ptr += n * m_stride [level];
+            type::m_ptr += n * type::m_stride [level];
             return *this;
         }
 
@@ -1297,7 +1298,7 @@ class StridedMultiIteratorBase
             */
         type & operator+= (multi_difference_type const & d)
         {
-            m_ptr += total_stride(d.begin());
+            type::m_ptr += total_stride(d.begin());
             return *this;
         }
 
@@ -1306,7 +1307,7 @@ class StridedMultiIteratorBase
             */
         type &operator-= (difference_type n)
         {
-            m_ptr -= n * m_stride [level];
+            type::m_ptr -= n * type::m_stride [level];
             return *this;
         }
 
@@ -1315,7 +1316,7 @@ class StridedMultiIteratorBase
             */
         type & operator-= (multi_difference_type const & d)
         {
-            m_ptr -= total_stride(d.begin());
+            type::m_ptr -= total_stride(d.begin());
             return *this;
         }
         
@@ -1325,7 +1326,7 @@ class StridedMultiIteratorBase
             */
         difference_type operator- (type const & d) const
         {
-            return (m_ptr - d.m_ptr) / m_stride[level];
+            return (type::m_ptr - d.m_ptr) / type::m_stride[level];
         }
 
         /* operators *, ->, ==, !=, < inherited */
@@ -1335,14 +1336,14 @@ class StridedMultiIteratorBase
             */
         reference operator[] (difference_type n) const
         {
-            return m_ptr [n* m_stride [level]];
+            return type::m_ptr [n* type::m_stride [level]];
         }
 
             /** access the array element at the given offset.
             */
         reference operator[] (multi_difference_type const & d) const
         {
-            return m_ptr [total_stride(d.begin())];
+            return type::m_ptr [total_stride(d.begin())];
         }
         
             /** Return the (N-1)-dimensional multi-iterator that points to 
@@ -1378,7 +1379,7 @@ class StridedMultiIteratorBase
         next_type end () const
         {
             next_type ret = *this;
-            ret += m_shape [level-1];
+            ret += type::m_shape [level-1];
             return ret;
         }
         
@@ -1402,7 +1403,7 @@ class StridedMultiIteratorBase
         {
             vigra_precondition(d <= N,
                 "StridedMultiIterator<N>::iteratorForDimension(d): d <= N required");
-            return iterator(m_ptr, &m_stride [d], 0);
+            return iterator(type::m_ptr, &type::m_stride [d], 0);
         }
 
       protected:
@@ -1410,7 +1411,7 @@ class StridedMultiIteratorBase
         difference_type 
         total_stride(typename multi_difference_type::const_iterator d) const
         {
-            return d[level]*m_stride[level] + base_type::total_stride(d);
+            return d[level]*type::m_stride[level] + base_type::total_stride(d);
         }
     };
 };
@@ -1462,12 +1463,12 @@ class StridedMultiIteratorBase <2>
 
         void operator++ ()
         {
-            m_ptr += m_stride [level];
+            type::m_ptr += m_stride [level];
         }
 
         void operator-- ()
         {
-            m_ptr -= m_stride [level];
+            type::m_ptr -= m_stride [level];
         }
 
         type operator++ (int)
@@ -1486,41 +1487,41 @@ class StridedMultiIteratorBase <2>
 
         type &operator+= (int n)
         {
-            m_ptr += n * m_stride [level];
+            type::m_ptr += n * m_stride [level];
             return *this;
         }
 
         type & operator+= (multi_difference_type const & d)
         {
-            m_ptr += total_stride(d.begin());
+            type::m_ptr += total_stride(d.begin());
             return *this;
         }
 
         type  &operator-= (difference_type n)
         {
-            m_ptr -= n * m_stride [level];
+            type::m_ptr -= n * m_stride [level];
             return *this;
         }
         
         type & operator-= (multi_difference_type const & d)
         {
-            m_ptr -= total_stride(d.begin());
+            type::m_ptr -= total_stride(d.begin());
             return *this;
         }
 
         reference operator[] (difference_type n) const
         {
-            return m_ptr [n*m_stride [level]];
+            return type::m_ptr [n*m_stride [level]];
         }
         
         difference_type operator- (type const & d) const
         {
-            return (m_ptr - d.m_ptr) / m_stride[level];
+            return (type::m_ptr - d.m_ptr) / m_stride[level];
         }
 
         reference operator[] (multi_difference_type const & d) const
         {
-            return m_ptr [total_stride(d.begin())];
+            return type::m_ptr [total_stride(d.begin())];
         }
 
         next_type begin () const
@@ -1537,9 +1538,9 @@ class StridedMultiIteratorBase <2>
         
         iterator iteratorForDimension(unsigned int d) const
         {
-            vigra_precondition(d <= N,
+            vigra_precondition(d <= type::N,
                 "StridedMultiIterator<N>::iteratorForDimension(d): d <= N required");
-            return iterator(m_ptr, &m_stride [d], 0);
+            return iterator(type::m_ptr, &m_stride [d], 0);
         }
 
       protected:
