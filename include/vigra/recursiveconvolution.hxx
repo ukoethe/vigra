@@ -62,7 +62,7 @@ namespace vigra {
         \begin{array}{rcl}
         a_{i, causal} & = & source_i + b * a_{i-1, causal} \\
         a_{i, anticausal} & = & source_i + b * a_{i+1, anticausal} \\
-        dest_i & = & \frac{1 - b}{1 + b}(a_{i, causal} + a_{i, anticausal})
+        dest_i & = & \frac{1 - b}{1 + b}(a_{i, causal} + a_{i, anticausal} - source_i)
         \end{array}
     \f]
    
