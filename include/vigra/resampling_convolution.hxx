@@ -104,6 +104,8 @@ resamplingConvolveLine(SrcIter s, SrcIter send, SrcAcc src,
         KernelIter k = kernel->center() + kernel->right();
         if(lbound < 0 || hbound >= wo)
         {    
+            vigra_precondition(-lbound < wo && wo2 - hbound >= 0,
+                "resamplingConvolveLine(): kernel or offset larger than image.");
             for(int m=lbound; m <= hbound; ++m, --k)
             {
                 int mm = (m < 0) ?
@@ -163,6 +165,11 @@ resamplingConvolveX(SrcIter sul, SrcIter slr, SrcAcc src,
     int wold = slr.x - sul.x;
     int wnew = dlr.x - dul.x;
     
+    vigra_precondition(!samplingRatio.is_inf() && samplingRatio > 0,
+                "resamplingConvolveX(): sampling ratio must be > 0 and < infinity");
+    vigra_precondition(!offset.is_inf(),
+                "resamplingConvolveX(): offset must be < infinity");
+
     int period = lcm(samplingRatio.numerator(), samplingRatio.denominator());
     resampling_detail::MapTargetToSourceCoordinate mapCoordinate(samplingRatio, offset);
     
@@ -205,6 +212,11 @@ resamplingConvolveY(SrcIter sul, SrcIter slr, SrcAcc src,
     int hold = slr.y - sul.y;
     int hnew = dlr.y - dul.y;
     
+    vigra_precondition(!samplingRatio.is_inf() && samplingRatio > 0,
+                "resamplingConvolveY(): sampling ratio must be > 0 and < infinity");
+    vigra_precondition(!offset.is_inf(),
+                "resamplingConvolveY(): offset must be < infinity");
+
     int period = lcm(samplingRatio.numerator(), samplingRatio.denominator());
     
     resampling_detail::MapTargetToSourceCoordinate mapCoordinate(samplingRatio, offset);
