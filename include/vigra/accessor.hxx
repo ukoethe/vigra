@@ -23,6 +23,7 @@
 #define VIGRA_ACCESSOR_HXX
 
 #include "vigra/numerictraits.hxx"
+#include "vigra/tuple.hxx"
 
 namespace vigra {
 
