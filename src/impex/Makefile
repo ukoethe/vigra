@@ -44,7 +44,7 @@ OBJS = \
 
 
 install: all
-	@if [ ! -d $(LIBDIR) ]; then mkdir $(LIBDIR) ; fi
+	@if [ ! -d $(LIBDIR) ]; then mkdir -p $(LIBDIR) ; fi
 	cp $(TARGET) $(LIBDIR)
 
 all: $(TARGET)
