@@ -369,11 +369,11 @@ struct EdgeDetectionTest
             for(int x=0; x<40; ++x)
             {
                 if(x==y)
-                    imgCanny(x,y) = 1.0;
+                    imgCanny(x,y) = 0.0;
                 else if(x > y) 
                     imgCanny(x,y) = 2.0;
                 else
-                    imgCanny(x,y) = 0.0;
+                    imgCanny(x,y) = -2.0;
             }
         }
     }
@@ -536,13 +536,16 @@ struct EdgeDetectionTest
     {
         std::vector<vigra::Edgel> edgels;
         cannyEdgelList(srcImageRange(imgCanny), edgels, 1.0);
-        should(edgels.size() == 75);
-        
-        for(int i=0; i<75; ++i)
+        int count = 0;
+        for(int i=0; i<edgels.size(); ++i)
         {
+            if (edgels[i].strength < 1.0e-10)
+                continue;  // ignore edgels that result from round off error during convolution
+            ++count;
             should(edgels[i].x == edgels[i].y);
             should(fabs(edgels[i].orientation-M_PI*0.75) < 0.1);
-        }   
+        }
+        should(count == 75);
     }
     
     void cannyEdgeImageTest()
@@ -916,16 +919,18 @@ struct CornerDetectionTest
     typedef vigra::DImage Image;
 
     CornerDetectionTest()
-    : img(7,7)
+    : img(9,9)
     {
         static const double in[] = {
-            1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0,
-            1.0, 1.0, 0.0, 0.0, 0.0, 1.0, 1.0,
-            1.0, 1.0, 1.0, 0.0, 1.0, 1.0, 1.0,
-            1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0,
-            1.0, 1.0, 1.0, 0.0, 1.0, 1.0, 1.0,
-            1.0, 1.0, 0.0, 0.0, 0.0, 1.0, 1.0,
-            1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0};
+            1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0,
+            1.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 1.0,
+            1.0, 1.0, 1.0, 0.0, 0.0, 0.0, 1.0, 1.0, 1.0,
+            1.0, 1.0, 1.0, 1.0, 0.0, 1.0, 1.0, 1.0, 1.0,
+            1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0,
+            1.0, 1.0, 1.0, 1.0, 0.0, 1.0, 1.0, 1.0, 1.0,
+            1.0, 1.0, 1.0, 0.0, 0.0, 0.0, 1.0, 1.0, 1.0,
+            1.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 1.0,
+            1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0};
         
         Image::ScanOrderIterator i = img.begin();
         Image::ScanOrderIterator end = img.end();
@@ -948,13 +953,15 @@ struct CornerDetectionTest
         localMaxima(srcImageRange(tmp), destImage(res), 1.0);
         
         static const double desired[] = {
-                   0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
-                   0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0,
-                   0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
-                   0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
-                   0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
-                   0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0,
-                   0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
+                   0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+                   0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+                   0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0,
+                   0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+                   0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+                   0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+                   0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0,
+                   0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+                   0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
                                          
         const double * i1 = desired;
         const double * i1end = i1 + 49;

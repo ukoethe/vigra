@@ -1,7 +1,7 @@
 include $(VIGRA_PATH)/config/Makefile.include
 
 		   CXXFLAGS = -O -I../include -I.
-	                LIB = -lm
+	                LIB = -lm -lvigraimpex -ltiff -ljpeg
 		 
 test:: test.o
 	$(CXX) $(CXXFLAGS) $(CXXINC) -o test test.o $(CXXLIBDIR) $(LIB)
