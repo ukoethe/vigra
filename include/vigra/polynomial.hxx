@@ -173,9 +173,19 @@ class PolynomialView
         */
     void deflateConjugatePair(Complex const & v);
     
-        /** Adjust the polynomial's order if the highest coefficients are zero.
+        /** Adjust the polynomial's order if the highest coefficients are near zero.
+            The order is reduced as long as the ratio between the absolute values
+            of the leading coefficient and the biggest coefficient is below the given
+            \a epsilon.
         */
-    void minimizeOrder();    
+    void minimizeOrder(double epsilon);    
+    
+        /** Adjust the polynomial's order if the highest coefficients are near zero.
+            The order is reduced as long as the ratio between the absolute values
+            of the leading coefficient and the biggest coefficient is below this->epsilon().
+        */
+    void minimizeOrder()
+        { minimizeOrder(epsilon_); }
     
         /** Normalize the polynomial, i.e. dived by the highest coefficient.
         */
@@ -376,9 +386,12 @@ PolynomialView<T>::deflateConjugatePair(Complex const & v)
     
 template <class T>
 void 
-PolynomialView<T>::minimizeOrder()
+PolynomialView<T>::minimizeOrder(double epsilon)
 {
-    while(std::abs(coeffs_[order_]) < epsilon_ && order_ > 0)
+    Real m = std::abs(coeffs_[0]);
+    for(unsigned int k = 1; k <= order_; ++k)
+        m = std::max(m, std::abs(coeffs_[k]));
+    while(std::abs(coeffs_[order_]) / m < epsilon && order_ > 0)
             --order_;
 }
 
@@ -653,6 +666,13 @@ class StaticPolynomial
         res.deflate(r);
         return res;
     }
+    
+    void setOrder(unsigned int order)
+    {
+        vigra_precondition(order <= MAXORDER,
+            "taticPolynomial::setOrder(): order exceeds MAXORDER.");
+        this->order_ = order;
+    }
 
   protected:
     T polynomial_[MAXORDER+1];
@@ -887,7 +907,6 @@ bool polynomialRoots(POLYNOMIAL const & poriginal, VECTOR & roots, bool polishRo
 
     WorkPolynomial p(poriginal.begin(), poriginal.order(), eps);
     p.minimizeOrder();
-        
     if(p.order() == 0)
         return true;
 
@@ -911,6 +930,7 @@ bool polynomialRoots(POLYNOMIAL const & poriginal, VECTOR & roots, bool polishRo
             // find root estimate using Laguerre's method on deflated polynomial p;
             // zero return indicates failure to converge
             multiplicity = detail::laguerre1Root(p, x, multiplicity);
+        
             if(multiplicity == 0)
                 return false;
             // polish root on original polynomial poriginal;
