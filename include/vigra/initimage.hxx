@@ -62,6 +62,28 @@ initLineIf(DestIterator d, DestIterator dend, DestAccessor dest,
             dest.set(v, d);
 }
 
+template <class DestIterator, class DestAccessor, class FUNCTOR>
+void
+initLineFunctor(DestIterator d, DestIterator dend, DestAccessor dest,
+         FUNCTOR f)
+{
+    for(; d != dend; ++d)
+        dest.set(f(), d);
+}
+
+template <class DestIterator, class DestAccessor, 
+          class MaskIterator, class MaskAccessor, 
+          class FUNCTOR>
+void
+initLineFunctorIf(DestIterator d, DestIterator dend, DestAccessor dest,
+           MaskIterator m, MaskAccessor mask,
+           FUNCTOR f)
+{
+    for(; d != dend; ++d, ++m)
+        if(mask(m))
+            dest.set(f(), d);
+}
+
 /********************************************************/
 /*                                                      */
 /*                        initImage                     */
@@ -140,6 +162,94 @@ void
 initImage(triple<ImageIterator, ImageIterator, Accessor> img, VALUETYPE v)
 {
     initImage(img.first, img.second, img.third, v);
+}
+    
+/********************************************************/
+/*                                                      */
+/*                        initImage                     */
+/*                                                      */
+/********************************************************/
+
+/** \brief Write the result of a functor call to every pixel in an image or rectangular ROI.
+
+    This function can be used to init the image by calling the given 
+    functor for each pixel.
+    It uses an accessor to access the pixel data.
+    
+    <b> Declarations:</b>
+    
+    pass arguments explicitly:
+    \code
+    namespace vigra {
+        template <class ImageIterator, class Accessor, class FUNCTOR>
+        void
+        initImageWithFunctor(ImageIterator upperleft, ImageIterator lowerright, 
+                  Accessor a,  FUNCTOR f);
+    }
+    \endcode
+
+    use argument objects in conjuction with \ref ArgumentObjectFactories:
+    \code
+    namespace vigra {
+        template <class ImageIterator, class Accessor, class FUNCTOR>
+        void
+        initImageWithFunctor(triple<ImageIterator, ImageIterator, Accessor> img, FUNCTOR f);
+    }
+    \endcode
+    
+    <b> Usage:</b>
+    
+        <b>\#include</b> "<a href="initimage_8hxx-source.html">vigra/initimage.hxx</a>"<br>
+        Namespace: vigra
+    
+    \code
+    struct Counter {
+        Counter() : count(0) {}
+        
+        int operator()() const { return count++; }
+    
+        mutable int count;
+    };
+    
+    vigra::IImage img(100, 100);
+    
+    // write the current count in every pixel
+    vigra::initImageWithFunctor(destImageRange(img), Counter());
+    \endcode
+
+    <b> Required Interface:</b>
+    
+    \code
+    ImageIterator upperleft, lowerright;
+    ImageIterator::row_iterator ix = upperleft.rowIterator();
+    
+    Accessor accessor;
+    Functor f;
+    
+    accessor.set(f(), ix); 
+    \endcode
+    
+*/
+template <class ImageIterator, class Accessor, class FUNCTOR>
+void
+initImageWithFunctor(ImageIterator upperleft, ImageIterator lowerright, 
+          Accessor a,  FUNCTOR f)
+{
+    int w = lowerright.x - upperleft.x;
+    
+    for(; upperleft.y < lowerright.y; ++upperleft.y)
+    {
+        initLineFunctor(upperleft.rowIterator(), 
+                 upperleft.rowIterator() + w, a, f);
+    }
+}
+    
+template <class ImageIterator, class Accessor, class FUNCTOR>
+inline 
+void
+initImageWithFunctor(triple<ImageIterator, ImageIterator, Accessor> img, FUNCTOR f)
+{
+    initImageWithFunctor(img.first, img.second, img.third, f);
 }
     
 /********************************************************/
