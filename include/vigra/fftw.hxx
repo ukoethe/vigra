@@ -826,19 +826,20 @@ inline void moveDCToUpperLeft(
 /*                                                      */
 /********************************************************/
 
-/** \brief Apply a filter (in frequency space) to a (spatial) image.
+/** \brief Apply a filter (defined in the frequency domain) to an image.
 
-    After transferring the image into frequency space, the DC pixel is
-    cleared, it is multiplied pixel-wise with the filter and
-    transformed back. The result is always put into a given
-    FFTWComplexImage which must have the right size. Finally, the
+    After transferring the image into the frequency domain, 
+    it is multiplied pixel-wise with the filter and
+    transformed back. The result is always put into the given
+    FFTWComplexImage <TT>destImg</TT> which must have the right size. Finally, the
     result will be normalized to compensate for the two FFTs.
 
-    The input and filter images might be scalar images (conversion can
-    be made on-the-fly with an accessor) or FFTWComplexImages (for the
-    input image one conversion is saved in that case). The DC pixel is
-    expected to be in the upper left, the same position where the FFTW
-    expects it (see \ref moveDCToUpperLeft()).
+    The input and filter images can be scalar images (more precisely,
+    <TT>SrcAccessor::value_type</TT> must be scalar) or FFTWComplexImages 
+    (in this case, one conversion is saved). 
+    
+    The DC entry of the filter must be in the upper left, which is
+    the position where FFTW expects it (see \ref moveDCToUpperLeft()).
 
     You can optionally pass two fftwnd_plans as last parameters, the
     forward plan and the in-place backward plan. Both must have been
@@ -854,15 +855,15 @@ inline void moveDCToUpperLeft(
         void applyFourierFilter(SrcImageIterator srcUpperLeft,
                                 SrcImageIterator srcLowerRight, SrcAccessor sa,
                                 FilterImageIterator filterUpperLeft, FilterAccessor fa,
-                                FFTWComplexImage &destImg)
+                                FFTWComplexImage & destImg)
 
         template <class SrcImageIterator, class SrcAccessor,
             class FilterImageIterator, class FilterAccessor>
         void applyFourierFilter(SrcImageIterator srcUpperLeft,
                                 SrcImageIterator srcLowerRight, SrcAccessor sa,
                                 FilterImageIterator filterUpperLeft, FilterAccessor fa,
-                                FFTWComplexImage &destImg,
-                                const fftwnd_plan &forwardPlan, const fftwnd_plan &backwardPlan)
+                                FFTWComplexImage & destImg,
+                                const fftwnd_plan & forwardPlan, const fftwnd_plan & backwardPlan)
     }
     \endcode
 
@@ -892,6 +893,20 @@ inline void moveDCToUpperLeft(
     Namespace: vigra
 
     \code
+    // create a Gaussian filter in Fourier space
+    vigra::FImage gaussFilter(w, h), filter(w, h);
+    for(int y=0; y<h; ++y)
+        for(int x=0; x<w; ++x)
+        {
+            xx = float(x - w / 2) / w;
+            yy = float(y - h / 2) / h;
+            
+            gaussFilter(x,y) = std::exp(-(xx*xx + yy*yy) / 2.0 * scale);
+        }
+    
+    // applyFourierFilter() expects the filter's DC in the upper left
+    moveDCToUpperLeft(srcImageRange(gaussFilter), destImage(filter));
+
     vigra::FFTWComplexImage result(w, h);
 
     vigra::applyFourierFilter(srcImageRange(image), srcImage(filter), result);
@@ -900,8 +915,8 @@ inline void moveDCToUpperLeft(
     For inspection of the result, \ref FFTWMagnitudeAccessor might be
     useful.
 
-    As mentioned, you can pass along two FFTW-plans. This is useful if
-    you apply many filters of the same size. Look into the FFTW
+    As mentioned, you can pass along two FFTW-plans. This is useful to
+    speed up the application of many filters of the same size. Look into the FFTW
     documentation for details. You can create optimized plans like this:
 
     \code
@@ -1055,9 +1070,6 @@ void applyFourierFilterImpl(ConstBasicImageIterator<FFTWComplex, FFTWComplex **>
     // FFT from srcImage to destImage
     fftwnd_one(forwardPlan, const_cast<FFTWComplex *>(&(*srcUpperLeft)), destImg.begin());
 
-    // clear DC pixel
-    destImg(0, 0)= NumericTraits<FFTWComplex>::zero();
-
     // convolve in freq. domain (in destImage)
     combineTwoImages(srcImageRange(destImg), srcIter(filterUpperLeft, fa),
                      destImage(destImg), std::multiplies<FFTWComplex>());
@@ -1076,26 +1088,16 @@ void applyFourierFilterImpl(ConstBasicImageIterator<FFTWComplex, FFTWComplex **>
 /*                                                        */
 /**********************************************************/
 
-/** \brief Apply an array of filters (in frequency space) to a (spatial) image.
+/** \brief Apply an array of filters (defined in the frequency domain) to an image.
 
-    This is mostly the same stuff as \ref applyFourierFilter() and
-    differs only in the fact that it applies many filters from a given
-    array to one image. Compared to multiple calls to
-    applyFourierFilter(), this saves additional transformations of the
-    given spatial image into frequency space.
+    This provides the same functionality as \ref applyFourierFilter(),
+    but applying several filters at once allows to avoid 
+    repeated Fourier transforms of the source image.
 
-    The input images might again be a scalar images (conversion can be
-    made on-the-fly with an accessor) or FFTWComplexImage (saving one
-    conversion in this case). The filters and results are handled with
-    ImageArrays, while the filters must be scalar images as before,
-    and the results are put into FFTWComplexImages. Note however that
-    this time, applyFourierFilterFamily will care about the right
-    dimensions of the results parameter if they don't fit.
-
-    Again, you can optionally pass two fftwnd_plans as last
-    parameters, the forward plan and the in-place backward plan. Both
-    must have been created for the right image size (see sample code).
-
+    Filters and result images must be stored in \ref vigra::ImageArray data 
+    structures. In contrast to \ref applyFourierFilter(), this function adjusts
+    the size of the result images and the the length of the array.
+    
     <b> Declarations:</b>
 
     pass arguments explicitly:
@@ -1289,9 +1291,6 @@ void applyFourierFilterFamilyImpl(ConstBasicImageIterator<FFTWComplex, FFTWCompl
     FFTWComplexImage freqImage(w, h);
 
     fftwnd_one(forwardPlan, const_cast<FFTWComplex *>(&(*srcUpperLeft)), freqImage.begin());
-
-    // clear DC pixel
-    freqImage(0, 0)= NumericTraits<fftw_complex>::zero();
 
     // convolve with filters in freq. domain
     for (int i= 0;  i < filters.size(); i++)
