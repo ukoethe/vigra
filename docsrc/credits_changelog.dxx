@@ -14,7 +14,17 @@
 
 \end{itemize}
 
-{\bf Changes from Version 1.0 to 1.1}
+{\bf Changes from Version 1.1.0 to 1.1.1}
+
+\begin{itemize}
+
+      \item Fixed bug with PNM export code.
+      
+      \item added Canny edge detection algorithm
+      
+\end{itemize}
+
+{\bf Changes from Version 1.0 to 1.1.0}
 
 \begin{itemize}
 
