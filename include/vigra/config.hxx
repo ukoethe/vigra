@@ -68,20 +68,22 @@
 		#endif // VIGRA_NO_STD_MINMAX
 	#endif // (_MSC_VER < 1300)
 
-    #define NO_PARTIAL_TEMPLATE_SPECIALIZATION
-    #define NO_OUT_OF_LINE_MEMBER_TEMPLATES
-    #include <cmath>
+    #if _MSC_VER < 1310
+        #define NO_PARTIAL_TEMPLATE_SPECIALIZATION
+        #define NO_OUT_OF_LINE_MEMBER_TEMPLATES
+        #include <cmath>
 
-    #ifdef _MSC_EXTENSIONS
-	#ifndef CMATH_NOT_IN_STD
-            namespace std {
-	#endif // CMATH_NOT_IN_STD
-            inline double abs(double v) { return fabs(v); }
-            inline float  abs(float v)  { return fabs(v); }
-	#ifndef CMATH_NOT_IN_STD
-            }
-	#endif // CMATH_NOT_IN_STD
-    #endif
+        #ifdef _MSC_EXTENSIONS
+	    #ifndef CMATH_NOT_IN_STD
+                namespace std {
+	    #endif // CMATH_NOT_IN_STD
+                inline double abs(double v) { return fabs(v); }
+                inline float  abs(float v)  { return fabs(v); }
+	    #ifndef CMATH_NOT_IN_STD
+                }
+	    #endif // CMATH_NOT_IN_STD
+        #endif / _MSC_EXTENSIONS
+    #endif // _MSC_VER < 1310
 
 
 #endif // _MSC_VER
