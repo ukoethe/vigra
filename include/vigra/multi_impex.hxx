@@ -28,18 +28,16 @@
 #include <sstream>
 #include <iostream>
 #include <string>
-#include <cstring>
-#include <sys/types.h>
-#include <libgen.h>
-#include <dirent.h>
-#include <errno.h>
-#include <regex.h>
 #include "vigra/basicimageview.hxx"
 #include "vigra/impex.hxx"
 #include "vigra/multi_array.hxx"
 
 namespace vigra {
 
+void findImageSequence(const std::string &name_base,
+                       const std::string &name_ext,
+                       std::vector<std::string> & numbers);
+                       
 /** \addtogroup VolumeImpex Import/export of volume data.
 */
 
@@ -54,10 +52,12 @@ namespace vigra {
 /** \brief Function for importing a 3D volume.
 
     The data are expected to be stored in a by-slice manner,
-    where the slices are enumerated from <tt>name_base+"000"+name_ext</tt>
-    (the number of zeros depends on the depth of the given volume).
-    The <tt>volume</tt> will be reshaped to match the number and size of the images
-    found. 
+    where the slices are enumerated from <tt>name_base+"[0-9]+"+name_ext</tt>.
+    <tt>name_base</tt> may contain a path. All slice files with the same name base and 
+    extension are considered part of the same volume. Slice numbers must be non-negative,
+    but can otherwise start anywhere and need not be successive. Slices will be read 
+    in ascending order. All slices must have the same size. The <tt>volume</tt> 
+    will be reshaped to match the count and size of the slices found. 
 
     <b>\#include</b>
     "<a href="multi_impex_8hxx-source.html">vigra/multi_impex.hxx</a>"
@@ -69,55 +69,17 @@ void importVolume (MultiArray <3, T, Allocator> & volume,
                    const std::string &name_base,
                    const std::string &name_ext)
 {
-    // find out how many images we have
-    char * name, * path, * base;
-    name = std::strdup(name_base.c_str());
-    base = basename(name);
-    path = dirname(name);
+    std::vector<std::string> numbers;
+    findImageSequence(name_base, name_ext, numbers);
     
-    DIR * dir = opendir(path);
-    if(!dir)
-    {
-        free(name);
-        vigra_fail("importVolume(): Unable to open directory.");
-    }
-      
-    regex_t    re;
-    std::string pattern = std::string(base) + "[0-9]+" + name_ext;  
-    if (regcomp(&re, pattern.c_str(), REG_EXTENDED|REG_NOSUB) != 0) 
-    {
-        closedir(dir);
-        free(name);
-        vigra_fail("importVolume(): Failed to compile regular expression.");
-    }
-    
-    int count = 0;
-    dirent * dp;
-    errno = 0;
-    while ((dp = readdir(dir)) != NULL) 
-    {
-        if(regexec(&re, dp->d_name, (size_t) 0, NULL, 0) == 0)
-            ++count;
-    }
-
-    regfree(&re);
-    closedir(dir);
-    free(name);
-    
-    vigra_precondition(errno == 0,
-          "importVolume(): Error while searching for images.");
-    vigra_precondition(count > 0,
-          "importVolume(): No image with given basename found.");
+    std::string message("importVolume(): No files matching '");
+    message += name_base + "[0-9]+" + name_ext + "' found.";
+    vigra_precondition(numbers.size() > 0, message.c_str());
           
-    int numlen = static_cast <int> (std::ceil (std::log10 (count)));
-    for (unsigned int i = 0; i < count; ++i) 
+    for (unsigned int i = 0; i < numbers.size(); ++i) 
     {
         // build the filename
-        std::stringstream stream;
-        stream << std::setfill ('0') << std::setw (numlen) << i;
-        std::string name_num;
-        stream >> name_num;
-        std::string name = name_base + name_num + name_ext;
+        std::string name = name_base + numbers[i] + name_ext;
 
         // import the image
         ImageImportInfo info (name.c_str ());
@@ -126,7 +88,7 @@ void importVolume (MultiArray <3, T, Allocator> & volume,
         if(i == 0)
         {
             volume.reshape(typename 
-              MultiArray <3, T>::difference_type(info.width(), info.height(), count));
+              MultiArray <3, T>::difference_type(info.width(), info.height(), numbers.size()));
         }
 
         // generate a basic image view to the current layer
