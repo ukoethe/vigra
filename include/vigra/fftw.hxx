@@ -51,7 +51,7 @@ namespace vigra {
 
     FFTWComplex implements the concepts \ref AlgebraicField and
     \ref DivisionAlgebra.
-    
+
     <b>\#include</b> "<a href="fftw_8hxx-source.html">vigra/fftw.hxx</a>"<br>
     Namespace: vigra
 */
@@ -101,7 +101,7 @@ class FFTWComplex
         im = o.im;
         return *this;
     }
-    
+
         /** Assignment.
         */
     FFTWComplex& operator=(fftw_complex const & o)
@@ -760,7 +760,7 @@ class FFTWPhaseAccessor
 
     vigra::FFTWComplexImage rearrangedFourier(width, height);
     moveDCToCenter(srcImageRange(fourier), destImage(rearrangedFourier));
-                                 
+
     //delete the plan
     fftwnd_destroy_plan(forwardPlan);
     \endcode
@@ -1005,6 +1005,7 @@ void applyFourierFilter(SrcImageIterator srcUpperLeft,
                         FilterImageIterator filterUpperLeft, FilterAccessor fa,
                         DestImageIterator destUpperLeft, DestAccessor da)
 {
+    // copy real input images into a complex one...
     int w= srcLowerRight.x - srcUpperLeft.x;
     int h= srcLowerRight.y - srcUpperLeft.y;
 
@@ -1012,6 +1013,7 @@ void applyFourierFilter(SrcImageIterator srcUpperLeft,
     copyImage(srcIterRange(srcUpperLeft, srcLowerRight, sa),
               destImage(workImage, FFTWWriteRealAccessor()));
 
+    // ...and call the impl
     FFTWComplexImage const & cworkImage = workImage;
     applyFourierFilterImpl(cworkImage.upperLeft(), cworkImage.lowerRight(), cworkImage.accessor(),
                            filterUpperLeft, fa,
@@ -1055,6 +1057,7 @@ void applyFourierFilterImpl(ConstBasicImageIterator<FFTWComplex, FFTWComplex **>
                             FilterImageIterator filterUpperLeft, FilterAccessor fa,
                             DestImageIterator destUpperLeft, DestAccessor da)
 {
+    // create plans and call variant with plan parameters
     int w= srcLowerRight.x - srcUpperLeft.x;
     int h= srcLowerRight.y - srcUpperLeft.y;
 
@@ -1067,7 +1070,7 @@ void applyFourierFilterImpl(ConstBasicImageIterator<FFTWComplex, FFTWComplex **>
                            filterUpperLeft, fa,
                            destUpperLeft, da,
                            forwardPlan, backwardPlan);
-                                 
+
     fftwnd_destroy_plan(forwardPlan);
     fftwnd_destroy_plan(backwardPlan);
 }
@@ -1342,7 +1345,7 @@ void applyFourierFilterFamilyImpl(ConstBasicImageIterator<FFTWComplex, FFTWCompl
     applyFourierFilterFamilyImpl(srcUpperLeft, srcLowerRight, sa,
                                  filters, results,
                                  forwardPlan, backwardPlan);
-                                 
+
     fftwnd_destroy_plan(forwardPlan);
     fftwnd_destroy_plan(backwardPlan);
 }
