@@ -309,19 +309,21 @@ class TinyVector
     value_type data_[SIZE];
 };
 
+} // namespace vigra
+
 /********************************************************/
 /*                                                      */
 /*                     TinyVector Output                */
 /*                                                      */
 /********************************************************/
 
-/** \addtogroup TinyVectorOperators 
+/** \addtogroup TinyVectorOperators
  */
 //@{
     /// stream output
 template <class V1, int SIZE>
 std::ostream &
-operator<<(std::ostream & out, TinyVector<V1, SIZE> const & l)
+operator<<(std::ostream & out, vigra::TinyVector<V1, SIZE> const & l)
 {
     out << "(";
     int i;
@@ -336,6 +338,8 @@ operator<<(std::ostream & out, TinyVector<V1, SIZE> const & l)
 /*                     TinyVector Comparison            */
 /*                                                      */
 /********************************************************/
+
+namespace vigra {
 
 /** \addtogroup TinyVectorOperators Functions for TinyVector
 
@@ -640,7 +644,7 @@ TINYVECTOR_TRAITS(4)
         l[2] op r[2]; \
         l[3] op r[3]; \
         return l; \
-    } 
+    }
 #else
 #  define VIGRA_OPERATOR_UNROLL_LOOP(op)
 #endif
