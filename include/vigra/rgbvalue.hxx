@@ -194,15 +194,15 @@ class RGBValue
     
         /** Get red component.
         */
-    value_type red() const { return data_[0]; }
+    value_type const & red() const { return data_[0]; }
     
         /** Get green component.
         */
-    value_type green() const { return data_[1]; }
+    value_type const & green() const { return data_[1]; }
     
         /** Get blue component.
         */
-    value_type blue() const { return data_[2]; }
+    value_type const & blue() const { return data_[2]; }
     
         /** Calculate luminance.
         */
@@ -231,19 +231,19 @@ class RGBValue
             in <TT>value</TT> is automatically converted to <TT>VALUETYPE</TT>.
         */
     template <class V>
-    void setRed(V const & value) { data_[0] = detail::RequiresExplicitCast<value_type>::cast(value); }
+    void setRed(V value) { data_[0] = detail::RequiresExplicitCast<value_type>::cast(value); }
 
         /** Set green component.The type <TT>V</TT> of the passed
             in <TT>value</TT> is automatically converted to <TT>VALUETYPE</TT>.
         */
     template <class V>
-    void setGreen(V const & value) { data_[1] = detail::RequiresExplicitCast<value_type>::cast(value); }
+    void setGreen(V value) { data_[1] = detail::RequiresExplicitCast<value_type>::cast(value); }
 
         /** Set blue component.The type <TT>V</TT> of the passed
             in <TT>value</TT> is automatically converted to <TT>VALUETYPE</TT>.
         */
     template <class V>
-    void setBlue(V const & value) { data_[2] = detail::RequiresExplicitCast<value_type>::cast(value); }
+    void setBlue(V value) { data_[2] = detail::RequiresExplicitCast<value_type>::cast(value); }
 };
 
 /********************************************************/
@@ -727,7 +727,7 @@ class RGBAccessor
         /** Get value of the red component
         */
     template <class RGBIterator>
-    component_type red(RGBIterator & rgb) const
+    component_type const & red(RGBIterator & rgb) const
     {
         return (*rgb).red();
     }
@@ -736,32 +736,32 @@ class RGBAccessor
             in <TT>value</TT> is automatically converted to <TT>component_type</TT>.
         */
     template <class V, class RGBIterator>
-    void setRed(V const & value, RGBIterator & rgb) const
+    void setRed(V value, RGBIterator & rgb) const
     {
         (*rgb).setRed(value);
     }
     
-        /** Get value of the red component at a distance
+        /** Get value of the red component at an offset
         */
-    template <class RGBIterator, class DISTANCE>
-    component_type red(RGBIterator & rgb, DISTANCE const & dist) const
+    template <class RGBIterator, class DIFFERENCE>
+    component_type const & red(RGBIterator & rgb, DIFFERENCE diff) const
     {
-        return rgb[dist].red();
+        return rgb[diff].red();
     }
     
-        /** Set value of the red component at a distance. The type <TT>V</TT> of the passed
+        /** Set value of the red component at an offset. The type <TT>V</TT> of the passed
             in <TT>value</TT> is automatically converted to <TT>component_type</TT>.
         */
-    template <class V, class RGBIterator, class DISTANCE>
-    void setRed(V const & value, RGBIterator & rgb, DISTANCE const & dist) const
+    template <class V, class RGBIterator, class DIFFERENCE>
+    void setRed(V value, RGBIterator & rgb, DIFFERENCE diff) const
     {
-        rgb[dist].setRed(value);
+        rgb[diff].setRed(value);
     }
        
         /** Get value of the green component
         */
     template <class RGBIterator>
-    component_type green(RGBIterator & rgb) const
+    component_type const & green(RGBIterator & rgb) const
     {
         return (*rgb).green();
     }
@@ -770,24 +770,24 @@ class RGBAccessor
             in <TT>value</TT> is automatically converted to <TT>component_type</TT>.
         */
     template <class V, class RGBIterator>
-    void setGreen(V const & value, RGBIterator & rgb) const
+    void setGreen(V value, RGBIterator & rgb) const
     {
         (*rgb).setGreen(value);
     }
     
-        /** Get value of the green component at a distance
+        /** Get value of the green component at an offset
         */
-    template <class RGBIterator, class DISTANCE>
-    component_type green(RGBIterator & rgb, DISTANCE const & d) const
+    template <class RGBIterator, class DIFFERENCE>
+    component_type const & green(RGBIterator & rgb, DIFFERENCE d) const
     {
         return rgb[d].green();
     }
     
-        /** Set value of the green component at a distance. The type <TT>V</TT> of the passed
+        /** Set value of the green component at an offset. The type <TT>V</TT> of the passed
             in <TT>value</TT> is automatically converted to <TT>component_type</TT>.
         */
-    template <class V, class RGBIterator, class DISTANCE>
-    void setGreen(V const & value, RGBIterator & rgb, DISTANCE const & d) const
+    template <class V, class RGBIterator, class DIFFERENCE>
+    void setGreen(V value, RGBIterator & rgb, DIFFERENCE d) const
     {
         rgb[d].setGreen(value);
     }
@@ -795,7 +795,7 @@ class RGBAccessor
         /** Get value of the blue component
         */
     template <class RGBIterator>
-    component_type blue(RGBIterator & rgb) const
+    component_type const & blue(RGBIterator & rgb) const
     {
         return (*rgb).blue();
     }
@@ -804,24 +804,24 @@ class RGBAccessor
             in <TT>value</TT> is automatically converted to <TT>component_type</TT>.
         */
     template <class V, class RGBIterator>
-    void setBlue(V const & value, RGBIterator & rgb) const
+    void setBlue(V value, RGBIterator & rgb) const
     {
         (*rgb).setBlue(value);
     }
     
-        /** Get value of the blue component at a distance
+        /** Get value of the blue component at an offset
         */
-    template <class RGBIterator, class DISTANCE>
-    component_type blue(RGBIterator & rgb, DISTANCE const & d) const
+    template <class RGBIterator, class DIFFERENCE>
+    component_type const & blue(RGBIterator & rgb, DIFFERENCE d) const
     {
         return rgb[d].blue();
     }
     
-        /** Set value of the blue component at a distance. The type <TT>V</TT> of the passed
+        /** Set value of the blue component at an offset. The type <TT>V</TT> of the passed
             in <TT>value</TT> is automatically converted to <TT>component_type</TT>.
         */
-    template <class V, class RGBIterator, class DISTANCE>
-    void setBlue(V const & value, RGBIterator & rgb, DISTANCE const & d) const
+    template <class V, class RGBIterator, class DIFFERENCE>
+    void setBlue(V value, RGBIterator & rgb, DIFFERENCE d) const
     {
         rgb[d].setBlue(value);
     }
@@ -849,14 +849,14 @@ class RedAccessor
         /** Get value of the red component
         */
     template <class ITERATOR>
-    value_type operator()(ITERATOR & i) const { 
+    value_type const & operator()(ITERATOR & i) const { 
         return (*i).red(); 
     }
 
-        /** Get value of the red component at a distance
+        /** Get value of the red component at an offset
         */
-    template <class ITERATOR, class DISTANCE>
-    value_type operator()(ITERATOR & i, DISTANCE const & d) const 
+    template <class ITERATOR, class DIFFERENCE>
+    value_type const & operator()(ITERATOR & i, DIFFERENCE d) const 
     { 
         return i[d].red(); 
     }
@@ -865,16 +865,16 @@ class RedAccessor
             in <TT>value</TT> is automatically converted to <TT>value_type</TT>.
         */
     template <class V, class ITERATOR>
-    void set(V const & value, ITERATOR & i) const { 
+    void set(V value, ITERATOR & i) const { 
         (*i).setRed(value); 
     }
     
 
-        /** Set value of the red component at a distance. The type <TT>V</TT> of the passed
+        /** Set value of the red component at an offset. The type <TT>V</TT> of the passed
             in <TT>value</TT> is automatically converted to <TT>value_type</TT>.
         */
-    template <class V, class ITERATOR, class DISTANCE>
-    void set(V const & value, ITERATOR & i, DISTANCE const & d) const 
+    template <class V, class ITERATOR, class DIFFERENCE>
+    void set(V value, ITERATOR & i, DIFFERENCE d) const 
     { 
         i[d].setRed(value); 
     }
@@ -900,14 +900,14 @@ class GreenAccessor
         /** Get value of the green component
         */
     template <class ITERATOR>
-    value_type operator()(ITERATOR & i) const { 
+    value_type const & operator()(ITERATOR & i) const { 
         return (*i).green(); 
     }
 
-        /** Get value of the green component at a distance
+        /** Get value of the green component at an offset
         */
-    template <class ITERATOR, class DISTANCE>
-    value_type operator()(ITERATOR & i, DISTANCE const & d) const 
+    template <class ITERATOR, class DIFFERENCE>
+    value_type const & operator()(ITERATOR & i, DIFFERENCE d) const 
     { 
         return i[d].green(); 
     }
@@ -916,16 +916,16 @@ class GreenAccessor
             in <TT>value</TT> is automatically converted to <TT>value_type</TT>.
         */
     template <class V, class ITERATOR>
-    void set(V const & value, ITERATOR & i) const { 
+    void set(V value, ITERATOR & i) const { 
         (*i).setGreen(value); 
     }
     
 
-        /** Set value of the green component at a distance. The type <TT>V</TT> of the passed
+        /** Set value of the green component at an offset. The type <TT>V</TT> of the passed
             in <TT>value</TT> is automatically converted to <TT>value_type</TT>.
         */
-    template <class V, class ITERATOR, class DISTANCE>
-    void set(V const & value, ITERATOR & i, DISTANCE const & d) const 
+    template <class V, class ITERATOR, class DIFFERENCE>
+    void set(V value, ITERATOR & i, DIFFERENCE d) const 
     { 
         i[d].setGreen(value); 
     }
@@ -951,14 +951,14 @@ class BlueAccessor
         /** Get value of the blue component
         */
     template <class ITERATOR>
-    value_type operator()(ITERATOR & i) const { 
+    value_type const & operator()(ITERATOR & i) const { 
         return (*i).blue(); 
     }
 
-        /** Get value of the blue component at a distance
+        /** Get value of the blue component at an offset
         */
-    template <class ITERATOR, class DISTANCE>
-    value_type operator()(ITERATOR & i, DISTANCE const & d) const 
+    template <class ITERATOR, class DIFFERENCE>
+    value_type const & operator()(ITERATOR & i, DIFFERENCE d) const 
     { 
         return i[d].blue(); 
     }
@@ -967,16 +967,16 @@ class BlueAccessor
             in <TT>value</TT> is automatically converted to <TT>value_type</TT>.
         */
     template <class V, class ITERATOR>
-    void set(V const & value, ITERATOR & i) const { 
+    void set(V value, ITERATOR & i) const { 
         (*i).setBlue(value); 
     }
     
 
-        /** Set value of the blue component at a distance. The type <TT>V</TT> of the passed
+        /** Set value of the blue component at an offset. The type <TT>V</TT> of the passed
             in <TT>value</TT> is automatically converted to <TT>value_type</TT>.
         */
-    template <class V, class ITERATOR, class DISTANCE>
-    void set(V const & value, ITERATOR & i, DISTANCE const & d) const 
+    template <class V, class ITERATOR, class DIFFERENCE>
+    void set(V value, ITERATOR & i, DIFFERENCE d) const 
     { 
         i[d].setBlue(value); 
     }
@@ -1005,10 +1005,10 @@ class RGBToGrayAccessor
     value_type operator()(ITERATOR & i) const { 
                 return (*i).luminance(); }
 
-        /** Get value of the luminance at a distance
+        /** Get value of the luminance at an offset
         */
-    template <class ITERATOR, class DISTANCE>
-    value_type operator()(ITERATOR & i, DISTANCE const & d) const 
+    template <class ITERATOR, class DIFFERENCE>
+    value_type operator()(ITERATOR & i, DIFFERENCE d) const 
     { 
         return i[d].luminance(); 
     }
