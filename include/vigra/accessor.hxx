@@ -239,7 +239,8 @@ class StandardConstAccessor
         /** read the current data item
         */
     template <class ITERATOR>
-    VALUETYPE const & operator()(ITERATOR & i) const { return *i; }
+    VALUETYPE const & operator()(ITERATOR & i) const 
+        { return *i; }
     
         /** read the data item at a distance (can be 1D or 2D or higher distance)
         */
@@ -259,14 +260,15 @@ class StandardConstValueAccessor
         /* read the current data item
         */
     template <class ITERATOR>
-    VALUETYPE operator()(ITERATOR & i) const { return *i; }
+    VALUETYPE operator()(ITERATOR & i) const 
+        { return detail::RequiresExplicitCast<VALUETYPE>::cast(*i); }
     
         /* read the data item at a distance (can be 1D or 2D or higher distance)
         */
     template <class ITERATOR, class DISTANCE>
     VALUETYPE operator()(ITERATOR & i, DISTANCE const & dist) const
     { 
-        return i[dist]; 
+        return detail::RequiresExplicitCast<VALUETYPE>::cast(i[dist]); 
     }
 };
 
@@ -513,7 +515,7 @@ class VectorAccessor
     template <class ITERATOR>
     component_type getComponent(ITERATOR & i, int idx) const 
     { 
-        return (*i)[idx]; 
+        return detail::RequiresExplicitCast<component_type>::cast((*i)[idx]); 
     }
     
         /** Set the component data at given vector index
@@ -532,7 +534,7 @@ class VectorAccessor
     template <class ITERATOR, class DISTANCE>
     component_type getComponent(ITERATOR & i, DISTANCE const & dist, int idx) const
     { 
-        return i[dist][idx]; 
+        return detail::RequiresExplicitCast<component_type>::cast(i[dist][idx]); 
     }
     
     /** Set the component data at given vector index
