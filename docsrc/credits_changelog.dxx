@@ -27,6 +27,7 @@ Many thanks to all!
 <UL>
 
       <li> Restored VIGRA compatibility with Microsoft Visual C++ 6.0
+           (in addition to C++.net)
            
 </UL>
 

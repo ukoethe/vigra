@@ -8,7 +8,7 @@
     <li> SGI C++ 7.2 and 7.3 (CC -n32)
     <li> <a href="http://gcc.gnu.org/">GNU g++ 2.95.1 and newer</a> 
           (formerly EGCS 1.1)
-    <li> Microsoft Visual C++.net
+    <li> Microsoft Visual C++ 6.0 and C++.net
     </ul>
 
     VIGRA is known NOT to work with the following compilers:
@@ -66,15 +66,15 @@
     
     </ul>
 
-    <h3> Windows (Microsoft Visual C++ 6.0 and Visual C++.net):</h3>
+    <h3> Windows (Microsoft Visual C++ 6.0 and C++.net):</h3>
     
     <ul>
     <li> uncompress and unpack the source distribution
 
     <li> go into the directory <TT>[some path]/vigra/src/</TT>
 
-    <li> load the workspace <TT>vigra.dsw</TT> (MSVC 6.0) or 
-        <TT>vigra.sln</TT> (MSVC.net) into Visual Studio
+    <li> load the workspace <TT>vigra.dsw</TT> (C++ 6.0) or 
+        <TT>vigra.sln</TT> (C++.net) into Visual Studio
 
     <li> specify in the project settings if and where JPEG, TIFF, and FFTW libraries are installed: <br>
     <em> either</em> update the paths to the
@@ -82,7 +82,7 @@
     <a href="http://www.libtiff.org/">tiff.lib</a> on <a href="http://www.fftw.org/">fftw.lib</a> on your 
     system - <em> or</em> - remove the <TT>HasJPEG</TT> and <TT>HasTIFF</TT> preprocessor flags.
     
-    <li> build the solution(that is, the library <TT>vigraimpex.lib</TT> and the \ref Examples)
+    <li> build the workspace (that is, the library <TT>vigraimpex.lib</TT> and the \ref Examples)
 
     <li> the \ref Examples can now be invoked from the command line (DOS prompt).
     </ul>
