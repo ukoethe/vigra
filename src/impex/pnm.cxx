@@ -329,7 +329,7 @@ namespace vigra {
 	  skip();
 	else
 	  // XXX assumes 1-byte pixels
-	  stream.seekg( -width * height * components, ios::end );
+	  stream.seekg( -width * height * components, std::ios::end );
     }
 
     void PnmDecoder::init( const std::string & filename )
