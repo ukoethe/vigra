@@ -11,7 +11,7 @@ elif test "x$prefix" = "x." ; then
     prefix=`pwd`
 fi
 
-AC_DOCDIR_DEFAULT(['$(prefix)/doc/vigra'])
+AC_DOCDIR_DEFAULT(['${prefix}/doc/vigra'])
 
 AC_CONFIG_AUX_DIR(config)
 
@@ -114,3 +114,21 @@ AC_SUBST(LIBCPPFLAGS)
 
 AC_OUTPUT(config/Makefile.include config/vigra-config doc/vigra/index.html)
 chmod +x config/vigra-config
+
+[echopath()
+{
+    echo "$1" \
+    | sed "s,\$[({]exec_prefix[})],$exec_prefix," \
+    | sed "s,\$[({]prefix[})],$prefix,"
+}]
+
+echo "configure finished."
+echo ""
+echo "TIFF support enabled (--with-tiff): $with_tiff"
+echo "JPEG support enabled (--with-jpeg): $with_jpeg"
+echo "FFTW support enabled (--with-fftw): $with_fftw"
+echo ""
+echopath "The vigraimpex library    will be installed in $libdir."
+echopath "The 'vigra-config' script will be installed in $bindir."
+echopath "The include files         will be installed in $includedir."
+echopath "The documentation         will be installed in $docdir."
