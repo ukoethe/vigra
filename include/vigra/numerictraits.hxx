@@ -722,7 +722,7 @@ struct NumericTraits<float>
 {
     typedef float Type;
     typedef float Promote;
-    typedef double RealPromote;
+    typedef float RealPromote;
     typedef std::complex<RealPromote> ComplexPromote;
     typedef Type ValueType;
     
