@@ -65,7 +65,7 @@ namespace vigra {
                  SrcImageIterator1 src1_lowerright, SrcAccessor1 sa1,
                  SrcImageIterator2 src2_upperleft, SrcAccessor2 sa2,
                  DestImageIterator dest_upperleft, DestAccessor da,
-                 Functor f)
+                 Functor const & f)
     }
     \endcode
     
@@ -81,7 +81,7 @@ namespace vigra {
         combineTwoImages(triple<SrcImageIterator1, SrcImageIterator1, SrcAccessor1> src1,
                  pair<SrcImageIterator2, SrcAccessor2> src2,
                  pair<DestImageIterator, DestAccessor> dest,
-                 Functor f)
+                 Functor const & f)
     }
     \endcode
     
@@ -135,7 +135,7 @@ combineTwoImages(SrcImageIterator1 src1_upperleft,
                  SrcImageIterator1 src1_lowerright, SrcAccessor1 sa1,
                  SrcImageIterator2 src2_upperleft, SrcAccessor2 sa2,
                  DestImageIterator dest_upperleft, DestAccessor da,
-         Functor f)
+         Functor const & f)
 {
     int w = src1_lowerright.x - src1_upperleft.x;
     int h = src1_lowerright.y - src1_upperleft.y;
@@ -164,7 +164,7 @@ void
 combineTwoImages(triple<SrcImageIterator1, SrcImageIterator1, SrcAccessor1> src1,
              pair<SrcImageIterator2, SrcAccessor2> src2,
              pair<DestImageIterator, DestAccessor> dest,
-         Functor f)
+         Functor const & f)
 {
     combineTwoImages(src1.first, src1.second, src1.third, 
                      src2.first, src2.second, 
@@ -205,7 +205,7 @@ combineTwoImages(triple<SrcImageIterator1, SrcImageIterator1, SrcAccessor1> src1
                    SrcImageIterator2 src2_upperleft, SrcAccessor2 sa2,
                    MaskImageIterator mask_upperleft, MaskAccessor ma,
                    DestImageIterator dest_upperleft, DestAccessor da,
-                   Functor f)
+                   Functor const & f)
     }
     \endcode
     
@@ -223,7 +223,7 @@ combineTwoImages(triple<SrcImageIterator1, SrcImageIterator1, SrcAccessor1> src1
                    pair<SrcImageIterator2, SrcAccessor2> src2,
                    pair<MaskImageIterator, MaskAccessor> mask,
                    pair<DestImageIterator, DestAccessor> dest,
-                   Functor f)
+                   Functor const & f)
     }
     \endcode
     
@@ -282,7 +282,7 @@ combineTwoImagesIf(SrcImageIterator1 src1_upperleft,
                    SrcImageIterator2 src2_upperleft, SrcAccessor2 sa2,
                    MaskImageIterator mask_upperleft, MaskAccessor ma,
                DestImageIterator dest_upperleft, DestAccessor da,
-               Functor f)
+               Functor const & f)
 {
     int w = src1_lowerright.x - src1_upperleft.x;
     int h = src1_lowerright.y - src1_upperleft.y;
@@ -314,7 +314,7 @@ combineTwoImagesIf(triple<SrcImageIterator1, SrcImageIterator1, SrcAccessor1> sr
                pair<SrcImageIterator2, SrcAccessor2> src2,
                pair<MaskImageIterator, MaskAccessor> mask,
                pair<DestImageIterator, DestAccessor> dest,
-               Functor f)
+               Functor const & f)
 {
     combineTwoImagesIf(src1.first, src1.second, src1.third, 
                        src2.first, src2.second, 
@@ -351,7 +351,7 @@ combineTwoImagesIf(triple<SrcImageIterator1, SrcImageIterator1, SrcAccessor1> sr
                    SrcImageIterator2 src2_upperleft, SrcAccessor2 sa2,
                    SrcImageIterator3 src2_upperleft, SrcAccessor3 sa3,
                    DestImageIterator dest_upperleft, DestAccessor da,
-                   Functor f)
+                   Functor const & f)
     }
     \endcode
     
@@ -369,7 +369,7 @@ combineTwoImagesIf(triple<SrcImageIterator1, SrcImageIterator1, SrcAccessor1> sr
                  pair<SrcImageIterator2, SrcAccessor2> src2,
                  pair<SrcImageIterator3, SrcAccessor3> src3,
                  pair<DestImageIterator, DestAccessor> dest,
-                 Functor f)
+                 Functor const & f)
     }
     \endcode
     
@@ -424,7 +424,7 @@ combineThreeImages(SrcImageIterator1 src1_upperleft,
                    SrcImageIterator2 src2_upperleft, SrcAccessor2 sa2,
                    SrcImageIterator3 src3_upperleft, SrcAccessor3 sa3,
                    DestImageIterator dest_upperleft, DestAccessor da,
-                   Functor f)
+                   Functor const & f)
 {
     int w = src1_lowerright.x - src1_upperleft.x;
     int h = src1_lowerright.y - src1_upperleft.y;
@@ -458,7 +458,7 @@ combineThreeImages(triple<SrcImageIterator1, SrcImageIterator1, SrcAccessor1> sr
              pair<SrcImageIterator2, SrcAccessor2> src2,
              pair<SrcImageIterator3, SrcAccessor3> src3,
              pair<DestImageIterator, DestAccessor> dest,
-             Functor f)
+             Functor const & f)
 {
     combineThreeImages(src1.first, src1.second, src1.third, 
                      src2.first, src2.second, 

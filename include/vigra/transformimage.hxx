@@ -61,7 +61,7 @@ namespace vigra {
         transformImage(SrcImageIterator src_upperleft, 
                SrcImageIterator src_lowerright, SrcAccessor sa,
                DestImageIterator dest_upperleft, DestAccessor da,
-               Functor f)
+               Functor const & f)
     }
     \endcode
     
@@ -74,7 +74,7 @@ namespace vigra {
         void
         transformImage(triple<SrcImageIterator, SrcImageIterator, SrcAccessor> src,
                pair<DestImageIterator, DestAccessor> dest,
-               Functor f)
+               Functor const & f)
     }
     \endcode
     
@@ -115,7 +115,7 @@ void
 transformImage(SrcImageIterator src_upperleft, 
                SrcImageIterator src_lowerright, SrcAccessor sa,
                DestImageIterator dest_upperleft, DestAccessor da,
-           Functor f)
+           Functor const & f)
 {
     int w = src_lowerright.x - src_upperleft.x;
     int h = src_lowerright.y - src_upperleft.y;
@@ -139,7 +139,7 @@ inline
 void
 transformImage(triple<SrcImageIterator, SrcImageIterator, SrcAccessor> src,
            pair<DestImageIterator, DestAccessor> dest,
-           Functor f)
+           Functor const & f)
 {
     transformImage(src.first, src.second, src.third, 
                    dest.first, dest.second, f);
@@ -177,7 +177,7 @@ transformImage(triple<SrcImageIterator, SrcImageIterator, SrcAccessor> src,
             SrcImageIterator src_lowerright, SrcAccessor sa,
             MaskImageIterator mask_upperleft, MaskAccessor ma,
             DestImageIterator dest_upperleft, DestAccessor da,
-            Functor f)
+            Functor const & f)
     }
     \endcode
     
@@ -193,7 +193,7 @@ transformImage(triple<SrcImageIterator, SrcImageIterator, SrcAccessor> src,
         transformImageIf(triple<SrcImageIterator, SrcImageIterator, SrcAccessor> src,
                  pair<MaskImageIterator, MaskAccessor> mask,
                  pair<DestImageIterator, DestAccessor> dest,
-                 Functor f)
+                 Functor const & f)
     }
     \endcode
     
@@ -239,7 +239,7 @@ transformImageIf(SrcImageIterator src_upperleft,
             SrcImageIterator src_lowerright, SrcAccessor sa,
             MaskImageIterator mask_upperleft, MaskAccessor ma,
             DestImageIterator dest_upperleft, DestAccessor da,
-            Functor f)
+            Functor const & f)
 {
     int w = src_lowerright.x - src_upperleft.x;
     int h = src_lowerright.y - src_upperleft.y;
@@ -268,7 +268,7 @@ void
 transformImageIf(triple<SrcImageIterator, SrcImageIterator, SrcAccessor> src,
              pair<MaskImageIterator, MaskAccessor> mask,
              pair<DestImageIterator, DestAccessor> dest,
-             Functor f)
+             Functor const & f)
 {
     transformImageIf(src.first, src.second, src.third, 
                      mask.first, mask.second, 
@@ -300,7 +300,7 @@ transformImageIf(triple<SrcImageIterator, SrcImageIterator, SrcAccessor> src,
                   class DestImageIterator, class DestAccessor, class Functor>
         void
         gradientBasedTransform(SrcImageIterator srcul, SrcImageIterator srclr, SrcAccessor sa,
-                      DestImageIterator destul, DestAccessor da, Functor f)
+                      DestImageIterator destul, DestAccessor da, Functor const & f)
     }
     \endcode
     
@@ -312,7 +312,7 @@ transformImageIf(triple<SrcImageIterator, SrcImageIterator, SrcAccessor> src,
                   class DestImageIterator, class DestAccessor, class Functor>
         void
         gradientBasedTransform(triple<SrcImageIterator, SrcImageIterator, SrcAccessor> src,
-                       pair<DestImageIterator, DestAccessor> dest, Functor const & f)
+                       pair<DestImageIterator, DestAccessor> dest, Functor const & const & f)
     }
     \endcode
     
@@ -356,7 +356,7 @@ template <class SrcImageIterator, class SrcAccessor,
           class DestImageIterator, class DestAccessor, class Functor>
 void
 gradientBasedTransform(SrcImageIterator srcul, SrcImageIterator srclr, SrcAccessor sa,
-              DestImageIterator destul, DestAccessor da, Functor grad)
+              DestImageIterator destul, DestAccessor da, Functor const & grad)
 {
     int w = srclr.x - srcul.x;
     int h = srclr.y - srcul.y;
