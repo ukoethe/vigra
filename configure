@@ -3214,25 +3214,27 @@ if test "${with_tiffinc+set}" = set; then
 fi;
 
     if test "$libext" = ""; then
-        if test "$CYGWIN" = "yes" || test "$MINGW32" = "yes"; then
-          libext="lib"
-        else
-          libext="a"
-        fi
-        libext=a
+        libext="a"
     fi
 
     if test "$solibext" = ""; then
-        if test "$CYGWIN" = "yes" || test "$MINGW32" = "yes"; then
-          solibext="dll"
+        if test "$CYGWIN" = "yes"; then
+          solibext="dll.a"
         else
           solibext="so"
         fi
     fi
-    if test "$CYGWIN" = "yes" || test "$MINGW32" = "yes"; then
-      libpre=""
-    else
-      libpre="lib"
+
+    if test "$libpre" = ""; then
+        libpre="lib"
+    fi
+
+    if test "$findprog" = ""; then
+        if test "$CYGWIN" = "yes"; then
+          findprog="/usr/bin/find"
+        else
+          findprog="find"
+        fi
     fi
 
     if test ${with_tiff:-""} = "" -a ${with_tifflib:-""} = "" -a ${with_tiffinc:-""} = ""; then
@@ -3253,7 +3255,7 @@ echo $ECHO_N "checking for libtiff ... $ECHO_C" >&6
         found=""
         for i in $dirs; do
             if test -d $i; then
-                found="$found "`find $i -name "${libpre}tiff.$solibext" -print 2> /dev/null; find $i -name "${libpre}tiff.$libext" -print 2> /dev/null`
+                found="$found "`$findprog $i -name "${libpre}tiff.$solibext" -print 2> /dev/null; $findprog $i -name "${libpre}tiff.$libext" -print 2> /dev/null`
             fi
         done
 
@@ -3327,12 +3329,14 @@ echo $ECHO_N "checking for tiff.h ... $ECHO_C" >&6
         else
             dirs="/usr/local/include /usr/local/gnu/include /usr/local/tiff /opt/include /opt/gnu/include /opt/tiff /usr/include"
         fi
-		        found=""
+
+	        found=""
         for i in $dirs; do
             if test -d $i; then
-                found="$found "`find $i -name tiff.h -print 2> /dev/null`
+                found="$found "`$findprog $i -name tiff.h -print 2> /dev/null`
             fi
         done
+
 
     regExResult=""
     if test "$found" != ""; then
@@ -3362,12 +3366,16 @@ echo $ECHO_N "checking for tiff.h ... $ECHO_C" >&6
             echo "$as_me:$LINENO: result: \"not found in $dirs\"" >&5
 echo "${ECHO_T}\"not found in $dirs\"" >&6
         else
-            with_tiffinc=$regExResult
-            echo "$as_me:$LINENO: result: $with_tiffinc" >&5
-echo "${ECHO_T}$with_tiffinc" >&6
+            echo "$as_me:$LINENO: result: $regExResult" >&5
+echo "${ECHO_T}$regExResult" >&6
+            if test "$regExResult" != "/usr/include"; then
+                with_tiffinc=$regExResult
+            else
+                with_tiffinc=""
+            fi
         fi
 
-        if test "$with_tifflib" = "" -o "$with_tiffinc" = ""; then
+        if test "$with_tifflib" = "" -o "$regExResult" = ""; then
             with_tiff="no"
             { echo "$as_me:$LINENO: WARNING: Configuring without tiff support" >&5
 echo "$as_me: WARNING: Configuring without tiff support" >&2;}
@@ -3405,25 +3413,27 @@ if test "${with_jpeginc+set}" = set; then
 fi;
 
     if test "$libext" = ""; then
-        if test "$CYGWIN" = "yes" || test "$MINGW32" = "yes"; then
-          libext="lib"
-        else
-          libext="a"
-        fi
-        libext=a
+        libext="a"
     fi
 
     if test "$solibext" = ""; then
-        if test "$CYGWIN" = "yes" || test "$MINGW32" = "yes"; then
-          solibext="dll"
+        if test "$CYGWIN" = "yes"; then
+          solibext="dll.a"
         else
           solibext="so"
         fi
     fi
-    if test "$CYGWIN" = "yes" || test "$MINGW32" = "yes"; then
-      libpre=""
-    else
-      libpre="lib"
+
+    if test "$libpre" = ""; then
+        libpre="lib"
+    fi
+
+    if test "$findprog" = ""; then
+        if test "$CYGWIN" = "yes"; then
+          findprog="/usr/bin/find"
+        else
+          findprog="find"
+        fi
     fi
 
     if test ${with_jpeg:-""} = "" -a ${with_jpeglib:-""} = "" -a ${with_jpeginc:-""} = ""; then
@@ -3444,7 +3454,7 @@ echo $ECHO_N "checking for libjpeg ... $ECHO_C" >&6
         found=""
         for i in $dirs; do
             if test -d $i; then
-                found="$found "`find $i -name "${libpre}jpeg.$solibext" -print 2> /dev/null; find $i -name "${libpre}jpeg.$libext" -print 2> /dev/null`
+                found="$found "`$findprog $i -name "${libpre}jpeg.$solibext" -print 2> /dev/null; $findprog $i -name "${libpre}jpeg.$libext" -print 2> /dev/null`
             fi
         done
 
@@ -3518,12 +3528,14 @@ echo $ECHO_N "checking for jpeglib.h ... $ECHO_C" >&6
         else
             dirs="/usr/local/include /usr/local/gnu/include /usr/local/jpeg /opt/include /opt/gnu/include /opt/jpeg /usr/include"
         fi
-		        found=""
+
+	        found=""
         for i in $dirs; do
             if test -d $i; then
-                found="$found "`find $i -name jpeglib.h -print 2> /dev/null`
+                found="$found "`$findprog $i -name jpeglib.h -print 2> /dev/null`
             fi
         done
+
 
     regExResult=""
     if test "$found" != ""; then
@@ -3553,12 +3565,16 @@ echo $ECHO_N "checking for jpeglib.h ... $ECHO_C" >&6
             echo "$as_me:$LINENO: result: \"not found in $dirs\"" >&5
 echo "${ECHO_T}\"not found in $dirs\"" >&6
         else
-            with_jpeginc=$regExResult
-            echo "$as_me:$LINENO: result: $with_jpeginc" >&5
-echo "${ECHO_T}$with_jpeginc" >&6
+            echo "$as_me:$LINENO: result: $regExResult" >&5
+echo "${ECHO_T}$regExResult" >&6
+            if test "$regExResult" != "/usr/include"; then
+                with_jpeginc=$regExResult
+            else
+                with_jpeginc=""
+            fi
         fi
 
-        if test "$with_jpeglib" = "" -o "$with_jpeginc" = ""; then
+        if test "$with_jpeglib" = "" -o "$regExResult" = ""; then
             with_jpeg="no"
             { echo "$as_me:$LINENO: WARNING: Configuring without jpeg support" >&5
 echo "$as_me: WARNING: Configuring without jpeg support" >&2;}
@@ -3596,25 +3612,27 @@ if test "${with_pnginc+set}" = set; then
 fi;
 
     if test "$libext" = ""; then
-        if test "$CYGWIN" = "yes" || test "$MINGW32" = "yes"; then
-          libext="lib"
-        else
-          libext="a"
-        fi
-        libext=a
+        libext="a"
     fi
 
     if test "$solibext" = ""; then
-        if test "$CYGWIN" = "yes" || test "$MINGW32" = "yes"; then
-          solibext="dll"
+        if test "$CYGWIN" = "yes"; then
+          solibext="dll.a"
         else
           solibext="so"
         fi
     fi
-    if test "$CYGWIN" = "yes" || test "$MINGW32" = "yes"; then
-      libpre=""
-    else
-      libpre="lib"
+
+    if test "$libpre" = ""; then
+        libpre="lib"
+    fi
+
+    if test "$findprog" = ""; then
+        if test "$CYGWIN" = "yes"; then
+          findprog="/usr/bin/find"
+        else
+          findprog="find"
+        fi
     fi
 
     if test ${with_png:-""} = "" -a ${with_pnglib:-""} = "" -a ${with_pnginc:-""} = ""; then
@@ -3635,7 +3653,7 @@ echo $ECHO_N "checking for libpng ... $ECHO_C" >&6
         found=""
         for i in $dirs; do
             if test -d $i; then
-                found="$found "`find $i -name "${libpre}png.$solibext" -print 2> /dev/null; find $i -name "${libpre}png.$libext" -print 2> /dev/null`
+                found="$found "`$findprog $i -name "${libpre}png.$solibext" -print 2> /dev/null; $findprog $i -name "${libpre}png.$libext" -print 2> /dev/null`
             fi
         done
 
@@ -3709,12 +3727,14 @@ echo $ECHO_N "checking for png.h ... $ECHO_C" >&6
         else
             dirs="/usr/local/include /usr/local/gnu/include /usr/local/png /opt/include /opt/gnu/include /opt/png /usr/include"
         fi
-		        found=""
+
+	        found=""
         for i in $dirs; do
             if test -d $i; then
-                found="$found "`find $i -name png.h -print 2> /dev/null`
+                found="$found "`$findprog $i -name png.h -print 2> /dev/null`
             fi
         done
+
 
     regExResult=""
     if test "$found" != ""; then
@@ -3744,12 +3764,16 @@ echo $ECHO_N "checking for png.h ... $ECHO_C" >&6
             echo "$as_me:$LINENO: result: \"not found in $dirs\"" >&5
 echo "${ECHO_T}\"not found in $dirs\"" >&6
         else
-            with_pnginc=$regExResult
-            echo "$as_me:$LINENO: result: $with_pnginc" >&5
-echo "${ECHO_T}$with_pnginc" >&6
+            echo "$as_me:$LINENO: result: $regExResult" >&5
+echo "${ECHO_T}$regExResult" >&6
+            if test "$regExResult" != "/usr/include"; then
+                with_pnginc=$regExResult
+            else
+                with_pnginc=""
+            fi
         fi
 
-        if test "$with_pnglib" = "" -o "$with_pnginc" = ""; then
+        if test "$with_pnglib" = "" -o "$regExResult" = ""; then
             with_png="no"
             { echo "$as_me:$LINENO: WARNING: Configuring without png support" >&5
 echo "$as_me: WARNING: Configuring without png support" >&2;}
@@ -3787,25 +3811,27 @@ if test "${with_fftwinc+set}" = set; then
 fi;
 
     if test "$libext" = ""; then
-        if test "$CYGWIN" = "yes" || test "$MINGW32" = "yes"; then
-          libext="lib"
-        else
-          libext="a"
-        fi
-        libext=a
+        libext="a"
     fi
 
     if test "$solibext" = ""; then
-        if test "$CYGWIN" = "yes" || test "$MINGW32" = "yes"; then
-          solibext="dll"
+        if test "$CYGWIN" = "yes"; then
+          solibext="dll.a"
         else
           solibext="so"
         fi
     fi
-    if test "$CYGWIN" = "yes" || test "$MINGW32" = "yes"; then
-      libpre=""
-    else
-      libpre="lib"
+
+    if test "$libpre" = ""; then
+        libpre="lib"
+    fi
+
+    if test "$findprog" = ""; then
+        if test "$CYGWIN" = "yes"; then
+          findprog="/usr/bin/find"
+        else
+          findprog="find"
+        fi
     fi
 
     if test ${with_fftw:-""} = "" -a ${with_fftwlib:-""} = "" -a ${with_fftwinc:-""} = ""; then
@@ -3826,7 +3852,7 @@ echo $ECHO_N "checking for libfftw ... $ECHO_C" >&6
         found=""
         for i in $dirs; do
             if test -d $i; then
-                found="$found "`find $i -name "${libpre}fftw.$solibext" -print 2> /dev/null; find $i -name "${libpre}fftw.$libext" -print 2> /dev/null`
+                found="$found "`$findprog $i -name "${libpre}fftw.$solibext" -print 2> /dev/null; $findprog $i -name "${libpre}fftw.$libext" -print 2> /dev/null`
             fi
         done
 
@@ -3900,12 +3926,14 @@ echo $ECHO_N "checking for fftw.h ... $ECHO_C" >&6
         else
             dirs="/usr/local/include /usr/local/gnu/include /usr/local/fftw /opt/include /opt/gnu/include /opt/fftw /usr/include"
         fi
-		        found=""
+
+	        found=""
         for i in $dirs; do
             if test -d $i; then
-                found="$found "`find $i -name fftw.h -print 2> /dev/null`
+                found="$found "`$findprog $i -name fftw.h -print 2> /dev/null`
             fi
         done
+
 
     regExResult=""
     if test "$found" != ""; then
@@ -3935,12 +3963,16 @@ echo $ECHO_N "checking for fftw.h ... $ECHO_C" >&6
             echo "$as_me:$LINENO: result: \"not found in $dirs\"" >&5
 echo "${ECHO_T}\"not found in $dirs\"" >&6
         else
-            with_fftwinc=$regExResult
-            echo "$as_me:$LINENO: result: $with_fftwinc" >&5
-echo "${ECHO_T}$with_fftwinc" >&6
+            echo "$as_me:$LINENO: result: $regExResult" >&5
+echo "${ECHO_T}$regExResult" >&6
+            if test "$regExResult" != "/usr/include"; then
+                with_fftwinc=$regExResult
+            else
+                with_fftwinc=""
+            fi
         fi
 
-        if test "$with_fftwlib" = "" -o "$with_fftwinc" = ""; then
+        if test "$with_fftwlib" = "" -o "$regExResult" = ""; then
             with_fftw="no"
             { echo "$as_me:$LINENO: WARNING: Configuring without fftw support" >&5
 echo "$as_me: WARNING: Configuring without fftw support" >&2;}
