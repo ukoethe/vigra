@@ -56,11 +56,13 @@ struct TinyVectorTest
     }
     
     TinyVectorTest()
-    : bv0(0), bv1(1), bv3(df, df+3), 
-      iv0(0), iv1(1), iv3(df, df+3), 
-      fv0(0.0), fv1(1.0), fv3(df, df+3)
+    : bv0(0), bv1(1), bv3(), 
+      iv0(0), iv1(1), iv3(), 
+      fv0(0.0), fv1(1.0), fv3()
     {
-        
+        bv3.init(df, df+3);
+        iv3.init(df, df+3);
+        fv3.init(df, df+3);
     }
     
     void testConstruction()
