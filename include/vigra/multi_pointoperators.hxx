@@ -143,7 +143,7 @@ initMultiArrayImpl(Iterator s, Shape const & shape, Accessor a,
     and the result is written into the current element. Internally,
     functors are recognized by the meta function 
     <tt>FunctorTraits&lt;FUNCTOR&gt;::</tt><tt>isInitializer</tt> yielding <tt>VigraTrueType</tt>.
-    Make sure that your functor correctly defines <tt>FunctorTrits</tt> because
+    Make sure that your functor correctly defines <tt>FunctorTraits</tt> because
     otherwise the code will not compile.
     
     \code
@@ -676,7 +676,7 @@ transformMultiArrayImpl(SrcIterator s, SrcShape const & sshape, SrcAccessor src,
     meta functions <tt>FunctorTraits&lt;FUNCTOR&gt;::</tt><tt>isUnaryAnalyser</tt> and
     <tt>FunctorTraits&lt;FUNCTOR&gt;::</tt><tt>isInitializer</tt> which must both yield 
     <tt>VigraTrueType</tt>. Make sure that your functor correctly defines 
-    <tt>FunctorTrits</tt> because otherwise reduce mode will not work. In addition,
+    <tt>FunctorTraits</tt> because otherwise reduce mode will not work. In addition,
     the functor must be copy constructible in order to start each reduction
     with a fresh functor.
     
@@ -1118,7 +1118,7 @@ combineTwoMultiArraysImpl(
     meta functions <tt>FunctorTraits&lt;FUNCTOR&gt;::</tt><tt>isBinaryAnalyser</tt> and
     <tt>FunctorTraits&lt;FUNCTOR&gt;::</tt><tt>isInitializer</tt> which must both yield 
     <tt>VigraTrueType</tt>. Make sure that your functor correctly defines 
-    <tt>FunctorTrits</tt> because otherwise reduce mode will not work. In addition,
+    <tt>FunctorTraits</tt> because otherwise reduce mode will not work. In addition,
     the functor must be copy constructible in order to start each reduction
     with a fresh functor.
     
