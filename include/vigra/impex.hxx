@@ -171,7 +171,7 @@ namespace vigra
         std::string pixeltype = dec->getPixelType();
 
         if ( pixeltype == "UINT8" )
-            read_bands( dec.get(), iter, a, unsigned char() );
+            read_bands( dec.get(), iter, a, (unsigned char)0 );
         else if ( pixeltype == "INT16" )
             read_bands( dec.get(), iter, a, short() );
         else if ( pixeltype == "INT32" )
@@ -215,7 +215,7 @@ namespace vigra
         std::string pixeltype = dec->getPixelType();
 
         if ( pixeltype == "UINT8" )
-            read_band( dec.get(), iter, a, unsigned char() );
+            read_band( dec.get(), iter, a, (unsigned char)0 );
         else if ( pixeltype == "INT16" )
             read_band( dec.get(), iter, a, short() );
         else if ( pixeltype == "INT32" )
@@ -489,7 +489,7 @@ namespace vigra
                 vigra::transformImage( sul, slr, sget, image.upperLeft(), image.accessor(),
                                        linearIntensityTransform( scale, offset ) );
                 write_bands( enc.get(), image.upperLeft(),
-                             image.lowerRight(), image.accessor(), unsigned char() );
+                             image.lowerRight(), image.accessor(), (unsigned char)0 );
             }
             break;
         case 8:
@@ -508,7 +508,7 @@ namespace vigra
                 vigra::transformImage( sul, slr, sget, image.upperLeft(), image.accessor(),
                                        linearIntensityTransform( scale, offset ) );
                 write_bands( enc.get(), image.upperLeft(),
-                             image.lowerRight(), image.accessor(), unsigned char() );
+                             image.lowerRight(), image.accessor(), (unsigned char)0 );
             }
             break;
         default:
@@ -554,7 +554,7 @@ namespace vigra
         switch(sizeof(SrcValueType)) {
         case 1:
             enc->setPixelType( "UINT8" );
-            write_bands( enc.get(), sul, slr, sget, unsigned char() );
+            write_bands( enc.get(), sul, slr, sget, (unsigned char)0 );
             break;
         case 2:
             enc->setPixelType( "INT16" );
@@ -620,7 +620,7 @@ namespace vigra
                 vigra::transformImage( sul, slr, sget, image.upperLeft(), image.accessor(),
                                        linearIntensityTransform( scale, offset ) );
                 write_band( enc.get(), image.upperLeft(),
-                            image.lowerRight(), image.accessor(), unsigned char() );
+                            image.lowerRight(), image.accessor(), (unsigned char)0 );
             }
             break;
         case 8:
@@ -639,7 +639,7 @@ namespace vigra
                 vigra::transformImage( sul, slr, sget, image.upperLeft(), image.accessor(),
                                        linearIntensityTransform( scale, offset ) );
                 write_band( enc.get(), image.upperLeft(),
-                            image.lowerRight(), image.accessor(), unsigned char() );
+                            image.lowerRight(), image.accessor(), (unsigned char)0 );
             }
             break;
         default:
@@ -684,7 +684,7 @@ namespace vigra
         switch(sizeof(SrcValueType)) {
         case 1:
             enc->setPixelType( "UINT8" );
-            write_band( enc.get(), sul, slr, sget, unsigned char() );
+            write_band( enc.get(), sul, slr, sget, (unsigned char)0 );
             break;
         case 2:
             enc->setPixelType( "INT16" );
