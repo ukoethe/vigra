@@ -1,6 +1,7 @@
 QUICKSUBDIRS =  \
         syntax \
         error \
+        utilities \
         pixeltypes \
         colorspaces \
         imgproc \
