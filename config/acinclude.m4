@@ -610,41 +610,46 @@ AC_DEFUN([VIGRA_FIND_PACKAGE],
             AC_MSG_RESULT($with_[$1]lib)
         fi
 
-        AC_MSG_CHECKING([for $3 ])
-        dirs=""
-        if test "$with_[$1]inc" != ""; then
-            dirs="$with_[$1]inc"
-        elif test "$with_[$1]" != "yes"; then
-            dirs="$with_[$1]"
-        else
-            dirs="/usr/local/include /usr/local/gnu/include /usr/local/[$1] /opt/include /opt/gnu/include /opt/[$1] /usr/include"
-        fi
-
-        dnl first, look for the given header file without directory components..
-        found=""
-        for i in $dirs; do
-            if test -d $i; then
-                found="$found "`$findprog $i -name patsubst([$3], .*/, ) -print 2> /dev/null`
-            fi
-        done
-
-        dnl now, check each found file for relative path prefix..
-        VIGRA_EXTRACT_REGEX($found, \(.*include\)/patsubst([$3], \., \\.))
-        if test "$regExResult" = ""; then
-            VIGRA_EXTRACT_REGEX($found, \(.*\)/patsubst([$3], \., \\.))
-        fi
-        if test "$regExResult" = ""; then
-            with_[$1]inc=""
-            AC_MSG_RESULT("not found in $dirs")
-        else
-            AC_MSG_RESULT($regExResult)
-            if test "$regExResult" != "/usr/include"; then
-                with_[$1]inc="$regExResult"
-                [$1]_cppflags="-I$regExResult"
+        if test "$3" != ""; then
+            AC_MSG_CHECKING([for $3 ])
+            dirs=""
+            if test "$with_[$1]inc" != ""; then
+                dirs="$with_[$1]inc"
+            elif test "$with_[$1]" != "yes"; then
+                dirs="$with_[$1]"
             else
-                with_[$1]inc=""
-                [$1]_cppflags=""
+                dirs="/usr/local/include /usr/local/gnu/include /usr/local/[$1] /opt/include /opt/gnu/include /opt/[$1] /usr/include"
             fi
+
+            dnl first, look for the given header file without directory components..
+            found=""
+            for i in $dirs; do
+                if test -d $i; then
+                    found="$found "`$findprog $i -name patsubst([$3], .*/, ) -print 2> /dev/null`
+                fi
+            done
+
+            dnl now, check each found file for relative path prefix..
+            VIGRA_EXTRACT_REGEX($found, \(.*include\)/patsubst([$3], \., \\.))
+            if test "$regExResult" = ""; then
+                VIGRA_EXTRACT_REGEX($found, \(.*\)/patsubst([$3], \., \\.))
+            fi
+            if test "$regExResult" = ""; then
+                with_[$1]inc=""
+                AC_MSG_RESULT("not found in $dirs")
+            else
+                AC_MSG_RESULT($regExResult)
+                if test "$regExResult" != "/usr/include"; then
+                    with_[$1]inc="$regExResult"
+                    [$1]_cppflags="-I$regExResult"
+                else
+                    with_[$1]inc=""
+                    [$1]_cppflags=""
+                fi
+            fi
+        else
+            with_[$1]inc=""
+            [$1]_cppflags=""
         fi
 
         if test "$with_[$1]lib" = "" -o "$regExResult" = ""; then
