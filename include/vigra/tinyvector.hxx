@@ -178,7 +178,7 @@ class TinyVector
     
         /** Get component by index.
         */
-    value_type operator[](int const & i) const { return data_[i]; }
+    value_type const & operator[](int const & i) const { return data_[i]; }
     
         /** Get random access iterator to begin of vector.
         */
