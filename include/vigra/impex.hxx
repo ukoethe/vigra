@@ -27,6 +27,7 @@
 #include "vigra/impex.h"
 #include "vigra/stdimage.hxx"
 #include "vigra/viff.hxx"
+#include "vigra/tiff.hxx"
 
 typedef unsigned int 
    (*ImageExportFunctionPointer)(VigraImpexImageInfo *image_info,VigraImpexImage *image);
@@ -106,6 +107,10 @@ class ImageExportInfo
     { 
         return (filetype_ != 0) ? strcmp(filetype_->typeTag, "VIFF") == 0 : false; 
     }
+    bool isTiff() const 
+    { 
+        return (filetype_ != 0) ? strcmp(filetype_->typeTag, "TIFF") == 0 : false; 
+    }
     char const * fileName() const { return filename_.c_str(); }
     void guessFiletypeFromExtension(char const * filename);
     void initImageInfo(VigraImpexImageInfo &) const;
@@ -163,9 +168,13 @@ class ImageImportInfo
     { 
         return viff_ != 0; 
     }
+    bool isTiff() const 
+    { 
+        return tiff_ != 0; 
+    }
     char const * fileName() const { return filename_.c_str(); }
     
-    bool fileIsLoaded() const { return viff_ || impex_; }
+    bool fileIsLoaded() const { return viff_|| tiff_ || impex_ ; }
 
         /** Get width of the image.
 
@@ -242,6 +251,7 @@ class ImageImportInfo
     int width_, height_;
     PixelType pixelType_;
     ViffImage * viff_;
+    TiffImage * tiff_;
     VigraImpexImage * impex_;
     
   private:
@@ -470,6 +480,10 @@ importImage(ImageImportInfo const & image, ImageIterator iter, Accessor a)
     if(image.isViff())
     {
         importViffImage(image.viff_, iter, a);
+    }
+    else if(image.isTiff())
+    {
+        importTiffImage(image.tiff_, iter, a);
     }
     else
     {
@@ -840,6 +854,30 @@ void exportImage(SrcIterator sul, SrcIterator slr, SrcAccessor sget,
             
         if(status == 0)
             postcondition(0, "exportImage(): write failed");
+    }
+    else if(info.isTiff())
+    {
+        TiffImage * tiff = TIFFOpen((char *)info.fileName(), "w");
+        postcondition(tiff != 0, 
+               "exportImage(): Unable to open image");
+        
+        switch(info.compression_)
+        {
+            case VigraImpexLZWCompression:
+                TIFFSetField(tiff, TIFFTAG_COMPRESSION, COMPRESSION_LZW);
+                break;
+            case VigraImpexRunlengthEncodedCompression:
+                TIFFSetField(tiff, TIFFTAG_COMPRESSION, COMPRESSION_PACKBITS);
+                break;
+            case VigraImpexJPEGCompression:
+                TIFFSetField(tiff, TIFFTAG_COMPRESSION, COMPRESSION_JPEG);
+                TIFFSetField(tiff, TIFFTAG_JPEGQUALITY, info.quality_);
+                break;
+            default:   
+                TIFFSetField(tiff, TIFFTAG_COMPRESSION, COMPRESSION_NONE);
+        }
+        createTiffImage(sul, slr, sget, tiff);
+        TIFFClose(tiff);
     }
     else
     {

@@ -28,7 +28,6 @@
 #include "bmp.h"
 #include "sun.h"
 #include "jpeg.h"
-#include "vtiff.h"
 #include "pnm.h"
 
 static ImageFileTypeInfo imageFileTypeInfo[] = 
@@ -40,11 +39,6 @@ static ImageFileTypeInfo imageFileTypeInfo[] =
 #endif
     {"BMP", ".bmp", "BM", 2, &vigraImpexWriteBMPImage, &vigraImpexReadBMPImage}, 
     {"SUN", ".ras", "\131\246\152\225", 4, &vigraImpexWriteSUNImage, &vigraImpexReadSUNImage}, 
-#ifdef HasTIFF
-    {"TIFF", ".tif", "\115\115\000\052", 4, &vigraImpexWriteTIFFImage, &vigraImpexReadTIFFImage}, 
-    {"TIFF", ".tiff", "\111\111\052\000", 4, &vigraImpexWriteTIFFImage, &vigraImpexReadTIFFImage}, 
-#endif
-    {"VIFF", ".xv", "\253\1", 2, 0, 0}, 
     {"PBM", ".pbm", "P1", 2, &vigraImpexWritePNMImage, &vigraImpexReadPNMImage}, 
     {"PGM", ".pgm", "P2", 2, &vigraImpexWritePNMImage, &vigraImpexReadPNMImage}, 
     {"PPM", ".ppm", "P3", 2, &vigraImpexWritePNMImage, &vigraImpexReadPNMImage}, 
@@ -53,6 +47,11 @@ static ImageFileTypeInfo imageFileTypeInfo[] =
     {"PPM", ".ppm", "P6", 2, &vigraImpexWritePNMImage, &vigraImpexReadPNMImage},
     {"P7",  ".p7", "P7", 2,   &vigraImpexWritePNMImage, &vigraImpexReadPNMImage}, 	
     {"PNM", ".pnm", "P8", 2, &vigraImpexWritePNMImage, &vigraImpexReadPNMImage}, 	    
+#ifdef HasTIFF
+    {"TIFF", ".tif", "\115\115\000\052", 4, 0, 0}, 
+    {"TIFF", ".tiff", "\111\111\052\000", 4, 0, 0}, 
+#endif
+    {"VIFF", ".xv", "\253\1", 2, 0, 0}, 
     {0, 0, 0, 0, 0, 0}
 };
 
@@ -77,6 +76,7 @@ ImageImportInfo::ImageImportInfo(char const * filename)
   filetype_(0),
   colorspace_(UNDEF),
   viff_(0),
+  tiff_(0),
   impex_(0)
 {
     loadImage(filename);
@@ -93,6 +93,11 @@ void ImageImportInfo::deleteInternalImages()
     {
         freeViffImage(viff_);
         viff_ = 0;
+    }
+    if(tiff_) 
+    {
+        if(strcmp(filename_.c_str(), "-") != 0) TIFFClose(tiff_);
+        tiff_ = 0;
     }
     if(impex_) 
     {
@@ -131,6 +136,61 @@ void ImageImportInfo::loadImage(char const * filename)
             case VFF_TYP_4_BYTE: pixelType_ = INT32;  break;
             case VFF_TYP_FLOAT:  pixelType_ = FLOAT;  break;
             case VFF_TYP_DOUBLE: pixelType_ = DOUBLE; break;
+            default:
+                fail("ImageImportInfo::loadImage(): unsupported pixel type.");
+        }
+    }
+    else if(strcmp(filetype_->typeTag, "TIFF") == 0)
+    {
+        tiff_ = TIFFOpen((char *)filename, "r");
+        postcondition(tiff_ != 0, 
+               "ImageImportInfo::loadImage(): Unable to open image");
+               
+        uint16 sampleFormat = 1, bitsPerSample, photometric;
+        uint32 w,h;
+        TIFFGetField(tiff_, TIFFTAG_SAMPLEFORMAT, &sampleFormat);
+        TIFFGetField(tiff_, TIFFTAG_BITSPERSAMPLE, &bitsPerSample);
+        TIFFGetField(tiff_, TIFFTAG_IMAGEWIDTH, &w);
+        TIFFGetField(tiff_, TIFFTAG_IMAGELENGTH, &h);
+        TIFFGetField(tiff_, TIFFTAG_PHOTOMETRIC, &photometric);
+        
+        switch(photometric)
+        {
+            case PHOTOMETRIC_MINISWHITE:
+            case PHOTOMETRIC_MINISBLACK:
+                colorspace_ = GRAY;
+                break;
+            case PHOTOMETRIC_RGB:
+            case PHOTOMETRIC_PALETTE:
+                colorspace_ = RGB;
+                break;
+            default:
+                fail("ImageImportInfo::loadImage(): unsupported color model.");
+        }
+        width_ = w;
+        height_ = h;
+        switch(sampleFormat)
+        {
+            case SAMPLEFORMAT_UINT:
+            case SAMPLEFORMAT_INT:
+                switch(bitsPerSample)
+                {
+                    case 8: pixelType_ = UINT8;  break;
+                    case 16: pixelType_ = INT16;  break;
+                    case 32: pixelType_ = INT32;  break;
+                    default:
+                        fail("ImageImportInfo::loadImage(): unsupported pixel type.");
+                }
+                break;
+            case SAMPLEFORMAT_IEEEFP:
+                switch(bitsPerSample)
+                {
+                    case 8*sizeof(float):  pixelType_ = FLOAT;  break;
+                    case 8*sizeof(double): pixelType_ = DOUBLE; break;
+                    default:
+                        fail("ImageImportInfo::loadImage(): unsupported pixel type.");
+                }
+                break;
             default:
                 fail("ImageImportInfo::loadImage(): unsupported pixel type.");
         }
