@@ -54,6 +54,10 @@
 #undef RGB
 #endif
 
+#elif defined(__CYGWIN__)
+
+#define VIGRA_CANT_CATCH_SIGNALS
+
 #elif defined(__unix) || defined(unix)
 
 #include <unistd.h>
@@ -432,14 +436,19 @@ sequence_equal_impl(Iter1 i1, Iter1 end1, Iter2 i2, const char * file, int line)
 /**
 * See Knuth "The art of computer programming" (Vol II, Ch.4.2)
 */
-
+struct ScalarType {};
+struct VectorType {};
 
 template<class T>
-struct FloatTraits;
+struct FloatTraits
+{
+    typedef VectorType ScalarOrVector;
+};
 
 template<>
 struct FloatTraits<float>
 {
+    typedef ScalarType ScalarOrVector;
     static float epsilon() { return FLT_EPSILON; }
     static float smallestPositive() { return FLT_MIN; }
     static float min() { return -FLT_MAX; }
@@ -449,6 +458,7 @@ struct FloatTraits<float>
 template<>
 struct FloatTraits<double>
 {
+    typedef ScalarType ScalarOrVector;
     static double epsilon() { return DBL_EPSILON; }
     static double smallestPositive() { return DBL_MIN; }
     static double min() { return -DBL_MAX; }
@@ -458,6 +468,7 @@ struct FloatTraits<double>
 template<>
 struct FloatTraits<long double>
 {
+    typedef ScalarType ScalarOrVector;
     static long double epsilon() { return LDBL_EPSILON; }
     static long double smallestPositive() { return LDBL_MIN; }
     static long double min() { return -LDBL_MAX; }
@@ -535,34 +546,43 @@ private:
 
 /*****************end of float comparison***********************************/
 
-inline void
-tolerance_equal_impl(double left, double right, double epsilon, const char * message, const char * file, int line)
+template <class T1, class T2, class T3>
+void
+tolerance_equal_impl(T1 left, T2 right, T3 epsilon, 
+                     const char * message, const char * file, int line, ScalarType)
 {
     detail::errstream buf;
     buf << message << " [" << left << " != " << right << "]";
 
-    close_at_tolerance<double> fcomparator( epsilon );
+    close_at_tolerance<T3> fcomparator( epsilon );
     bool compare = fcomparator ( left , right );
     should_impl(compare, buf.str(), file, line);
 
 }
-/*
-tolerance_equal_impl(float, float, double, const char *, const char *, int)':
-../include/unittest.hxx:474: call of overloaded `close_at_tolerance(double &)' is ambiguous
-../include/unittest.hxx:425: candidates are: vigra::detail::close_at_tolerance<float>::close_at_tolerance(float, bool = true)
-geaendert in                                      Hier???
-tolerance_equal_impl(float left, float right, double epsilon, const char * message, const char * file, int line)
-*/
-inline void
-tolerance_equal_impl(float left, float right, float epsilon, const char * message, const char * file, int line)
+
+template <class T1, class T2, class T3>
+void
+tolerance_equal_impl(T1 left, T2 right, T3 epsilon, 
+                     const char * message, const char * file, int line, VectorType)
 {
     detail::errstream buf;
     buf << message << " [" << left << " != " << right << "]";
 
-    close_at_tolerance<float> fcomparator( epsilon );
-    bool compare = fcomparator ( left , right );
+    bool compare = true;
+    for(int i=0; i<epsilon.size(); ++i)
+    {
+        close_at_tolerance<typename T3::value_type> fcomparator( epsilon[i] );
+        compare = compare && fcomparator ( left[i] , right[i] );
+    }
     should_impl(compare, buf.str(), file, line);
+}
 
+template <class T1, class T2, class T3>
+void
+tolerance_equal_impl(T1 left, T2 right, T3 epsilon, const char * message, const char * file, int line)
+{
+    tolerance_equal_impl(left, right, epsilon, 
+                         message, file, line, typename FloatTraits<T3>::ScalarOrVector());
 }
 
 template <class Iter1, class Iter2, class T>
@@ -578,7 +598,7 @@ sequence_equal_tolerance_impl(Iter1 i1, Iter1 end1, Iter2 i2, T epsilon, const c
 }
 
 template <class Left, class Right>
-inline void
+void
 equal_impl(Left left, Right right, const char * message, const char * file, int line)
 {
     detail::errstream buf;
@@ -594,6 +614,18 @@ equal_impl(double left, double right, const char * message, const char * file, i
 
 inline void
 equal_impl(float left, float right, const char * message, const char * file, int line)
+{
+    tolerance_equal_impl(left, right, 1.0e-6f, message, file, line);
+}
+
+inline void
+equal_impl(float left, double right, const char * message, const char * file, int line)
+{
+    tolerance_equal_impl(left, right, 1.0e-6f, message, file, line);
+}
+
+inline void
+equal_impl(double left, float right, const char * message, const char * file, int line)
 {
     tolerance_equal_impl(left, right, 1.0e-6f, message, file, line);
 }
