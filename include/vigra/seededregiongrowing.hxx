@@ -187,7 +187,7 @@ enum SRGType { KeepContours, CompleteGrow };
     
     </ol>
     
-    If <tt>SRGType == CompleteGrow</tt> (the default), this algorithm 
+    If <tt>SRGType == CompleteGrow</tt> (the default), this algorithm
     will produce a complete 4-connected tesselation of the image.
     If <tt>SRGType == KeepContours</tt>, a one-pixel-wide border will be left
     between the regions. The border pixels get label -1.
@@ -226,10 +226,10 @@ enum SRGType { KeepContours, CompleteGrow };
     pass arguments explicitly:
     \code
     namespace vigra {
-       template <class SrcImageIterator, class SrcAccessor,
-                 class SeedImageIterator, class SeedAccessor,
-                 class DestImageIterator, class DestAccessor,
-                 class RegionStatisticsArray>
+        template <class SrcImageIterator, class SrcAccessor,
+                  class SeedImageIterator, class SeedAccessor,
+                  class DestImageIterator, class DestAccessor,
+                  class RegionStatisticsArray>
         void seededRegionGrowing(SrcImageIterator srcul,
                                  SrcImageIterator srclr, SrcAccessor as,
                                  SeedImageIterator seedsul, SeedAccessor aseeds,
@@ -446,7 +446,7 @@ template <class SrcImageIterator, class SrcAccessor,
           class SeedImageIterator, class SeedAccessor,
           class DestImageIterator, class DestAccessor,
           class RegionStatisticsArray>
-inline void 
+inline void
 seededRegionGrowing(SrcImageIterator srcul,
                     SrcImageIterator srclr, SrcAccessor as,
                     SeedImageIterator seedsul, SeedAccessor aseeds,
@@ -521,7 +521,7 @@ class SeedRgDirectValueFunctor
         */
     typedef Value argument_type;
 
-        /** the functor's result type (unused, only necessary for 
+        /** the functor's result type (unused, only necessary for
             use of SeedRgDirectValueFunctor in \ref vigra::ArrayOfRegionStatistics
         */
     typedef Value result_type;
