@@ -30,18 +30,18 @@ namespace vigra {
 /*                                                      */
 /********************************************************/
 
-/** \brief A navigator that provides acces to the 1D subranges of an 
+/** \brief A navigator that provides acces to the 1D subranges of an
     n-dimensional range given by a \ref vigra::MultiIterator and an nD shape.
 
     Normally, the innermost loop of an iteration extends over the innermost
     dimension of a given array. Sometimes, however, it is necessary to have
-    some other dimension in the inner loop. For example, instead of iterating over 
+    some other dimension in the inner loop. For example, instead of iterating over
     the rows, the inner loop should extend over the columns. The class MultiArrayNavigator
-    encapsulates the necessary functionality. Given an arbitrary dimensional 
+    encapsulates the necessary functionality. Given an arbitrary dimensional
     array (represented by a vigra::MultiIterator/shape pair), and the desired
     inner loop dimension <TT>d</TT>, it moves the encapsulated iterator to all possible
-    starting points of 1D subsets along the given dimension (e.g. all columns). By calling 
-    <TT>begin()</TT> and <TT>end()</TT>, one can then obtain an STL-compatible 1-dimensional 
+    starting points of 1D subsets along the given dimension (e.g. all columns). By calling
+    <TT>begin()</TT> and <TT>end()</TT>, one can then obtain an STL-compatible 1-dimensional
     iterator for the current subset.
 
     The template parameters specify the embedded iterator type and its dimension.
@@ -78,8 +78,8 @@ namespace vigra {
     \endcode
 */
 template <class MULTI_ITERATOR, unsigned int N>
-class MultiArrayNavigator 
-#ifndef DOXYGEN  // docygen doesn't understand this inheritance
+class MultiArrayNavigator
+#ifndef DOXYGEN  // doxygen doesn't understand this inheritance
 : public MultiArrayNavigator<MULTI_ITERATOR, N-1>
 #endif
 {
@@ -95,19 +95,19 @@ class MultiArrayNavigator
         /** The iterator type for the inner loop (result of begin() and end()).
          */
     typedef typename MULTI_ITERATOR::iterator iterator;
-    
+
         /** Construct navigator for multi-dimensional iterator <TT>i</TT>, array shape <TT>shape</TT>
             and inner loop dimension <TT>inner_dimension</TT>.
          */
     MultiArrayNavigator(MULTI_ITERATOR const & i, shape_type const & shape, unsigned int inner_dimension)
     : base_type(i, shape, inner_dimension),
-      i_(i), 
+      i_(i),
       end_(i)
     {
         if(inner_dimension != level)
             end_.template dim<level>() += shape[level];
     }
-    
+
         /** Advance to next starting location.
          */
     void operator++()
@@ -120,23 +120,23 @@ class MultiArrayNavigator
                 base_type::reset(i_);
         }
     }
-    
+
         /** Advance to next starting location.
          */
     void operator++(int)
     {
         ++*this;
     }
-    
+
         /** true if there are more elements.
          */
     bool hasMore() const
     {
         return this->inner_dimension_ == level ?
                     base_type::hasMore() :
-                    i_ < end_; 
+                    i_ < end_;
     }
-    
+
         /** true if iterator is exhausted.
          */
     bool atEnd() const
@@ -145,7 +145,7 @@ class MultiArrayNavigator
                     base_type::atEnd() :
 	            !( i_ < end_);
     }
-    
+
   protected:
     void reset(MULTI_ITERATOR const & i)
     {
@@ -154,7 +154,7 @@ class MultiArrayNavigator
             end_.template dim<level>() += this->shape_[level];
         base_type::reset(i);
     }
-    
+
     MULTI_ITERATOR i_, end_;
 };
 
@@ -169,7 +169,7 @@ class MultiArrayNavigator<MULTI_ITERATOR, 1>
     MultiArrayNavigator(MULTI_ITERATOR const & i, shape_type const & shape, unsigned int inner_dimension)
     : shape_(shape),
       inner_dimension_(inner_dimension),
-      i_(i), 
+      i_(i),
       end_(i)
     {
         if(inner_dimension != level)
@@ -180,32 +180,32 @@ class MultiArrayNavigator<MULTI_ITERATOR, 1>
     {
         ++i_.template dim<level>();
     }
-    
+
     void operator++(int)
     {
         ++*this;
     }
-    
+
     iterator begin() const
     {
         return i_.iteratorForDimension(inner_dimension_);
     }
-    
+
     iterator end() const
     {
         return begin() + shape_[inner_dimension_];
     }
-    
+
     bool hasMore() const
     {
-        return i_ < end_; 
+        return i_ < end_;
     }
-    
+
     bool atEnd() const
     {
       return !( i_ < end_);
     }
-    
+
   protected:
     void reset(MULTI_ITERATOR const & i)
     {
@@ -213,7 +213,7 @@ class MultiArrayNavigator<MULTI_ITERATOR, 1>
         if(inner_dimension_ != level)
             end_.template dim<level>() += shape_[level];
     }
-    
+
     shape_type shape_;
     unsigned int inner_dimension_;
     MULTI_ITERATOR i_, end_;
