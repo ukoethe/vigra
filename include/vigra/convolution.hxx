@@ -359,35 +359,35 @@ convolveImage(triple<SrcIterator, SrcIterator, SrcAccessor> src,
     \endcode
 
 */    
-    template <class SrcIterator, class SrcAccessor,
-	      class DestIterator, class DestAccessor>
-    void simpleSharpening(SrcIterator src_ul, SrcIterator src_lr, SrcAccessor src_acc,
-                        DestIterator dest_ul, DestAccessor dest_acc, double sharpening_factor)
-    {
+template <class SrcIterator, class SrcAccessor,
+	  class DestIterator, class DestAccessor>
+void simpleSharpening(SrcIterator src_ul, SrcIterator src_lr, SrcAccessor src_acc,
+                    DestIterator dest_ul, DestAccessor dest_acc, double sharpening_factor)
+{
 
-	vigra_precondition(sharpening_factor >= 0.0,
-			   "simpleSharpening(): amount of sharpening must be >= 0.");
+    vigra_precondition(sharpening_factor >= 0.0,
+		       "simpleSharpening(): amount of sharpening must be >= 0.");
 
-	vigra::Kernel2D<double> kernel;
+    Kernel2D<double> kernel;
 
-	kernel.initExplicitly(Diff2D(-1,-1), Diff2D(1,1)) = -sharpening_factor/16.0,    -sharpening_factor/8.0,    -sharpening_factor/16.0,
-                                                            -sharpening_factor/8.0,   1.0+sharpening_factor*0.75,  -sharpening_factor/8.0,
-                                                            -sharpening_factor/16.0,    -sharpening_factor/8.0,    -sharpening_factor/16.0;
+    kernel.initExplicitly(Diff2D(-1,-1), Diff2D(1,1)) = -sharpening_factor/16.0,    -sharpening_factor/8.0,    -sharpening_factor/16.0,
+                                                        -sharpening_factor/8.0,   1.0+sharpening_factor*0.75,  -sharpening_factor/8.0,
+                                                        -sharpening_factor/16.0,    -sharpening_factor/8.0,    -sharpening_factor/16.0;
 
-	convolveImage(src_ul, src_lr, src_acc, dest_ul, dest_acc, 
-		      kernel.center(), kernel.accessor(), 
-		      kernel.upperLeft(), kernel.lowerRight() , BORDER_TREATMENT_REFLECT );
-    }
-    
-    template <class SrcIterator, class SrcAccessor, 
-	      class DestIterator, class DestAccessor>
-    inline
-    void simpleSharpening(triple<SrcIterator, SrcIterator, SrcAccessor> src,
-			pair<DestIterator, DestAccessor> dest, double sharpening_factor)
-    {
-	simpleSharpening(src.first, src.second, src.third,
-			 dest.first, dest.second, sharpening_factor);
-    }
+    convolveImage(src_ul, src_lr, src_acc, dest_ul, dest_acc, 
+		  kernel.center(), kernel.accessor(), 
+		  kernel.upperLeft(), kernel.lowerRight() , BORDER_TREATMENT_REFLECT );
+}
+
+template <class SrcIterator, class SrcAccessor, 
+	  class DestIterator, class DestAccessor>
+inline
+void simpleSharpening(triple<SrcIterator, SrcIterator, SrcAccessor> src,
+		    pair<DestIterator, DestAccessor> dest, double sharpening_factor)
+{
+    simpleSharpening(src.first, src.second, src.third,
+		     dest.first, dest.second, sharpening_factor);
+}
 
 
 /********************************************************/
@@ -457,49 +457,51 @@ convolveImage(triple<SrcIterator, SrcIterator, SrcAccessor> src,
     \endcode
 
 */    
-    template <class SrcIterator, class SrcAccessor,
-	      class DestIterator, class DestAccessor>
-    void gaussianSharpening(SrcIterator src_ul, SrcIterator src_lr, SrcAccessor src_acc,
-			    DestIterator dest_ul, DestAccessor dest_acc, double sharpening_factor, 
-			    double scale)
+template <class SrcIterator, class SrcAccessor,
+	  class DestIterator, class DestAccessor>
+void gaussianSharpening(SrcIterator src_ul, SrcIterator src_lr, SrcAccessor src_acc,
+			DestIterator dest_ul, DestAccessor dest_acc, double sharpening_factor, 
+			double scale)
+{
+    vigra_precondition(sharpening_factor >= 0.0,
+		       "gaussianSharpening(): amount of sharpening must be >= 0");
+    vigra_precondition(scale >= 0.0,
+		       "gaussianSharpening(): scale parameter should be >= 0.");
+
+    typedef typename NumericTraits<typename SrcAccessor::value_type>::RealPromote ValueType;
+
+    BasicImage<ValueType> tmp(src_lr - src_ul);
+    typename BasicImage<ValueType>::Accessor tmp_acc = tmp.accessor();
+
+    gaussianSmoothing(src_ul, src_lr, src_acc, tmp.upperLeft(), tmp_acc, scale);
+
+    SrcIterator i_src = src_ul;
+    DestIterator i_dest = dest_ul;
+    typename BasicImage<ValueType>::traverser tmp_ul = tmp.upperLeft();
+    typename BasicImage<ValueType>::traverser i_tmp = tmp_ul;
+
+    for(; i_src.y != src_lr.y ; i_src.y++, i_dest.y++, i_tmp.y++ )
     {
-	vigra_precondition(sharpening_factor >= 0.0,
-			   "gaussianSharpening(): amount of sharpening must be >= 0");
-	vigra_precondition(scale >= 0.0,
-			   "gaussianSharpening(): scale parameter should be >= 0.");
-
-	typedef typename NumericTraits<typename SrcAccessor::value_type>::RealPromote ValueType;
-
-	BasicImage<ValueType> tmp(src_lr - src_ul);
-	BasicImage<ValueType>::Accessor tmp_acc = tmp.accessor();
-
-	gaussianSmoothing(src_ul, src_lr, src_acc, tmp.upperLeft(), tmp_acc, scale);
-	
-	SrcIterator i_src = src_ul;
-	DestIterator i_dest = dest_ul;
-	BasicImage<ValueType>::traverser tmp_ul = tmp.upperLeft();
-	BasicImage<ValueType>::traverser i_tmp = tmp_ul;
-
-	for(; i_src.y != src_lr.y ; i_src.y++, i_dest.y++, i_tmp.y++ ){
-	    for (;i_src.x != src_lr.x ; i_src.x++, i_dest.x++, i_tmp.x++ ){
-		dest_acc.set((1.0 + sharpening_factor)*src_acc(i_src) - sharpening_factor*tmp_acc(i_tmp), i_dest);
-	    }
-	    i_src.x = src_ul.x;
-	    i_dest.x = dest_ul.x;
-	    i_tmp.x = tmp_ul.x;
+	for (;i_src.x != src_lr.x ; i_src.x++, i_dest.x++, i_tmp.x++ )
+        {
+	    dest_acc.set((1.0 + sharpening_factor)*src_acc(i_src) - sharpening_factor*tmp_acc(i_tmp), i_dest);
 	}
+	i_src.x = src_ul.x;
+	i_dest.x = dest_ul.x;
+	i_tmp.x = tmp_ul.x;
     }
+}
 
-    template <class SrcIterator, class SrcAccessor,
-	      class DestIterator, class DestAccessor>
-    void gaussianSharpening(triple<SrcIterator, SrcIterator, SrcAccessor> src,
-			    pair<DestIterator, DestAccessor> dest, double sharpening_factor, 
-			    double scale)
-    {
-	gaussianSharpening(src.first, src.second, src.third,
-			   dest.first, dest.second,
-			   sharpening_factor, scale);
-    }
+template <class SrcIterator, class SrcAccessor,
+	  class DestIterator, class DestAccessor>
+void gaussianSharpening(triple<SrcIterator, SrcIterator, SrcAccessor> src,
+			pair<DestIterator, DestAccessor> dest, double sharpening_factor, 
+			double scale)
+{
+    gaussianSharpening(src.first, src.second, src.third,
+		       dest.first, dest.second,
+		       sharpening_factor, scale);
+}
 
 
 
