@@ -11,6 +11,10 @@
       (<a href="mailto:mamchisl@ucdavis.edu">mamchisl@ucdavis.edu</a>)
       contributed the code to read and write PNM files. Many thanks!
 
+      <li> Hans Meine 
+      (<a href="mailto:hans_meine@gmx.net">hans_meine@gmx.net</a>)
+      contributed interface code for the FFTW Fourier transform library.
+
 
 </UL>
 
@@ -21,7 +25,9 @@
       <li> Added \ref FourierTransform "Fourier transform" support, 
            and \ref vigra::FFTWComplex "FFTWComplex" complex number type.
 
-      <li> Added \ref vigra::IteratorAdaptor remplate for quick and
+      <li> Added convolution convenience functions (see \ref CommonConvolutionFilters).
+
+      <li> Added \ref vigra::IteratorAdaptor template for quick and
            easy generation of iterator adaptors.
 
       <li> Used  \ref vigra::IteratorAdaptor to implement improved
@@ -35,8 +41,14 @@
       <li> Added rounding and clipping to accessor functions when
            floating point values are converted to intergral numbers.
            
-      <li> Added STL-compatible typedefs to all iterators and vigra::BasicImage.
+      <li> Added STL-compatible typedefs to all functors, iterators and 
+           vigra::BasicImage.
            
+      <li> Removed ConstRowIterator and ConstColumnsIterator. Thanks
+           to the new typedefs, RowIterator and ColumnIterator are
+           automatically const when the underlying iterator was const. Thus,
+           separate const iterators are not necessary.
+
       <li> Major performance tuning. Many algorithms now actually perform
            as fast as their inflexible C counterparts. Thanks to
            <a href="mailto:viola@merl.com">Paul Viola</a> for doing benchmarks.
