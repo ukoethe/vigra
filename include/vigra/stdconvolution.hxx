@@ -227,16 +227,16 @@ void convolveImage(SrcIterator sul, SrcIterator slr, SrcAccessor as,
         for(x=xstart; x < xend; ++x, ++xs.x, ++xd.x)
         {
             // how much of the kernel fits into the image ?
-	    bool clip = false;
+	    bool nearBorder = false;
 	    
 	    int x0, y0, x1, y1;
 	    
-	    y0 = (y<klr.y) ? clip = true, -y : -klr.y;
-	    y1 = (h-y-1<-kul.y) ? clip = true, h-y-1 : -kul.y;	    
-	    x0 = (x<klr.x) ? clip = true, -x : -klr.x;
-	    x1 = (w-x-1<-kul.x) ? clip = true, w-x-1 : -kul.x;
+	    y0 = (y<klr.y) ? nearBorder = true, -y : -klr.y;
+	    y1 = (h-y-1<-kul.y) ? nearBorder = true, h-y-1 : -kul.y;	    
+	    x0 = (x<klr.x) ? nearBorder = true, -x : -klr.x;
+	    x1 = (w-x-1<-kul.x) ? nearBorder = true, w-x-1 : -kul.x;
 	    
-	    if(!clip)
+	    if(!nearBorder)
 	    {
 		// init the sum
 		SumType sum = NumericTraits<SumType>::zero();
