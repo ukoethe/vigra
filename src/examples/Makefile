@@ -8,6 +8,7 @@ FILES = \
     subimage \
     invert \
     invert_explicitly \
+    resize \
     smooth \
     profile \
     pyramid \
@@ -28,6 +29,9 @@ invert:  invert.o
 
 invert_explicitly:  invert_explicitly.o 
 	$(CXX) $(CXXFLAGS) $(CXXINC) -o invert_explicitly invert_explicitly.o $(CXXLIBDIR) $(LIB)
+
+resize:  resize.o 
+	$(CXX) $(CXXFLAGS) $(CXXINC) -o resize resize.o $(CXXLIBDIR) $(LIB)
 
 smooth:  smooth.o 
 	$(CXX) $(CXXFLAGS) $(CXXINC) -o smooth smooth.o $(CXXLIBDIR) $(LIB)

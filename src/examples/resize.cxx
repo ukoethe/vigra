@@ -22,9 +22,8 @@
 
 #include <iostream>
 #include "vigra/stdimage.hxx"
-#include "vigra/edgedetection.hxx"
+#include "vigra/resizeimage.hxx"
 #include "vigra/impex.hxx"
-
 
 int main(int argc, char ** argv)
 {
@@ -38,54 +37,56 @@ int main(int argc, char ** argv)
     
     try
     {
+        // read image given as first argument
+        // file type is determined automatically
         vigra::ImageImportInfo info(argv[1]);
         
-        vigra_precondition(info.isGrayscale(), "Sorry, cannot operate on color images");
+        double sizefactor;
+        cerr << "Resize factor ? ";
+        cin >> sizefactor;
         
-        vigra::BImage in(info.width(), info.height());
-
-        importImage(info, destImage(in));
-
-        // input width of edge detection filter
-        int which;
-        std::cout << "Use Canny or Shen-Castan detector (1 or 2) ? ";
-        std::cin >> which;
-
-        // input width of edge detection filter
-        double scale;
-        std::cout << "Operator scale ? ";
-        std::cin >> scale;
-
-        // input threshold for gradient magnitude
-        double threshold;
-        std::cout << "Gradient threshold ? ";
-        std::cin >> threshold;
-    
-        // create output image of appropriate size
-        vigra::BImage out(info.width(), info.height());
+        // calculate new image size
+        int nw = (int)(sizefactor*info.width()-0.5);
+        int nh = (int)(sizefactor*info.height()-0.5);
         
-        // paint output image white
-        out = 255;
-        
-        if(which == 2)
+        if(info.isGrayscale())
         {
-            // call edge detection algorithm
-            // edges will be marked black
-            differenceOfExponentialEdgeImage(srcImageRange(in), destImage(out),
-                           scale, threshold, 0);
+            // create a gray scale image of appropriate size
+            vigra::BImage in(info.width(), info.height());
+            vigra::BImage out(nw, nh);
+            
+            // import the image just read
+            importImage(info, destImage(in));
+            
+            // resize the image, using a bi-cubic spline algorithms
+            resizeImageSplineInterpolation(srcImageRange(in), 
+                destImageRange(out));
+            
+            // write the image to the file given as second argument
+            // the file type will be determined from the file name's extension
+            exportImage(srcImageRange(out), vigra::ImageExportInfo(argv[2]));
         }
         else
         {
-            // call edge detection algorithm
-            // edges will be marked black
-            cannyEdgeImage(srcImageRange(in), destImage(out),
-                           scale, threshold, 0);
+            // create a RGB image of appropriate size
+            vigra::BRGBImage in(info.width(), info.height());
+            vigra::BRGBImage out(nw, nh);
+            
+            // import the image just read
+            importImage(info, destImage(in));
+            
+            // resize the image, using a bi-cubic spline algorithms
+            resizeImageSplineInterpolation(srcImageRange(in), 
+                destImageRange(out));
+            
+            // write the image to the file given as second argument
+            // the file type will be determined from the file name's extension
+            exportImage(srcImageRange(out), vigra::ImageExportInfo(argv[2]));
         }
-        
-        exportImage(srcImageRange(out), vigra::ImageExportInfo(argv[2]));
     }
     catch (vigra::StdException & e)
     {
+        // catch any errors that might have occured and print their reason
         std::cout << e.what() << std::endl;
         return 1;
     }
