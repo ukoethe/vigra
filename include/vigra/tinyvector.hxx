@@ -642,6 +642,14 @@ class TinyVector
         Loop::assign(BaseType::data_, r.data_);
     }
 
+        /** Constructor from C array.
+        */
+    explicit TinyVector(const_pointer data)
+    : BaseType()
+    {
+        Loop::assign(BaseType::data_, data);
+    }
+
         /** Copy assignment.
         */
     TinyVector & operator=(TinyVector const & r)
@@ -1160,9 +1168,7 @@ typename PromoteTraits<TinyVector<V1, SIZE>, TinyVector<V2, SIZE> >::Promote
 operator+(TinyVectorBase<V1, SIZE, D1, D2> const & l,
           TinyVectorBase<V2, SIZE, D3, D4> const & r)
 {
-    typename PromoteTraits<TinyVector<V1, SIZE>, TinyVector<V2 , SIZE> >::Promote res(l);
-    res += r;
-    return res;
+    return typename PromoteTraits<TinyVector<V1, SIZE>, TinyVector<V2 , SIZE> >::Promote(l) += r;
 }
 
     /// component-wise subtraction
@@ -1172,9 +1178,7 @@ typename PromoteTraits<TinyVector<V1, SIZE>, TinyVector<V2, SIZE> >::Promote
 operator-(TinyVectorBase<V1, SIZE, D1, D2> const & l,
           TinyVectorBase<V2, SIZE, D3, D4> const & r)
 {
-    typename PromoteTraits<TinyVector<V1, SIZE>, TinyVector<V2 , SIZE> >::Promote res(l);
-    res -= r;
-    return res;
+    return typename PromoteTraits<TinyVector<V1, SIZE>, TinyVector<V2 , SIZE> >::Promote(l) -= r;
 }
 
     /// component-wise multiplication
@@ -1184,9 +1188,7 @@ typename PromoteTraits<TinyVector<V1, SIZE>, TinyVector<V2, SIZE> >::Promote
 operator*(TinyVectorBase<V1, SIZE, D1, D2> const & l,
           TinyVectorBase<V2, SIZE, D3, D4> const & r)
 {
-    typename PromoteTraits<TinyVector<V1, SIZE>, TinyVector<V2 , SIZE> >::Promote res(l);
-    res *= r;
-    return res;
+    return typename PromoteTraits<TinyVector<V1, SIZE>, TinyVector<V2 , SIZE> >::Promote(l) *= r;
 }
 
     /// component-wise left scalar multiplication
