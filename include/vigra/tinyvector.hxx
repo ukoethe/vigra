@@ -29,6 +29,7 @@
 #include "vigra/config.hxx"
 #include "vigra/error.hxx"
 #include "vigra/numerictraits.hxx"
+#include "vigra/error.hxx"
 
 namespace vigra {
 
