@@ -1304,7 +1304,7 @@ class Kernel1D
 
 template <class ARITHTYPE>
 void Kernel1D<ARITHTYPE>::initGaussian(double std_dev, 
-                                       Kernel1D<ARITHTYPE>::value_type norm)
+                                       typename Kernel1D<ARITHTYPE>::value_type norm)
 {
     vigra_precondition(std_dev >= 0.0,
               "Kernel1D::initGaussian(): Standard deviation must be >= 0.");
@@ -1362,7 +1362,7 @@ template <class ARITHTYPE>
 void 
 Kernel1D<ARITHTYPE>::initGaussianDerivative(double std_dev, 
                     int order,
-                    Kernel1D<ARITHTYPE>::value_type norm)
+                    typename Kernel1D<ARITHTYPE>::value_type norm)
 {
     vigra_precondition(order >= 0,
               "Kernel1D::initGaussianDerivative(): Order must be >= 0.");
@@ -1509,7 +1509,7 @@ Kernel1D<ARITHTYPE>::initGaussianDerivative(double std_dev,
 template <class ARITHTYPE>
 void 
 Kernel1D<ARITHTYPE>::initBinomial(int radius, 
-                           Kernel1D<ARITHTYPE>::value_type norm)
+                           typename Kernel1D<ARITHTYPE>::value_type norm)
 {
     vigra_precondition(radius > 0,
               "Kernel1D::initBinomial(): Radius must be > 0.");
@@ -1554,7 +1554,7 @@ Kernel1D<ARITHTYPE>::initBinomial(int radius,
 
 template <class ARITHTYPE>
 void Kernel1D<ARITHTYPE>::initAveraging(int radius, 
-                                       Kernel1D<ARITHTYPE>::value_type norm)
+                                       typename Kernel1D<ARITHTYPE>::value_type norm)
 {
     vigra_precondition(radius > 0,
               "Kernel1D::initAveraging(): Radius must be > 0.");
@@ -1583,7 +1583,7 @@ void Kernel1D<ARITHTYPE>::initAveraging(int radius,
 
 template <class ARITHTYPE>
 void 
-Kernel1D<ARITHTYPE>::initSymmetricGradient(Kernel1D<ARITHTYPE>::value_type norm)
+Kernel1D<ARITHTYPE>::initSymmetricGradient(typename Kernel1D<ARITHTYPE>::value_type norm)
 {
     kernel_.erase(kernel_.begin(), kernel_.end());
     kernel_.reserve(3);

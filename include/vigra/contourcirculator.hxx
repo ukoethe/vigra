@@ -114,7 +114,7 @@ public:
             the region pixel, if the direction was West).
         */
     CrackContourCirculator(IMAGEITERATOR const & in_the_region,
-                           FourNeighborCode::Direction dir = FourNeighborCode::West)
+                           vigra::FourNeighborCode::Direction dir = vigra::FourNeighborCode::West)
         : neighborCirc_(in_the_region, EightNeighborCode::code(dir)),
           label_(*(neighborCirc_.center())),
           pos_(0, 0)
