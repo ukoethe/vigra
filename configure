@@ -738,7 +738,10 @@ Optional Packages:
 
   --with-tiff
   --with-tiff=dir
-  --without-tiff       support import/export of tiff images (default=yes)
+  --without-tiff
+  --with-tifflib=dir
+  --with-tiffinc=dir
+      support import/export of tiff images. default: --with-tiff
       if --with-tiff or --with-tiff=yes is given: tiff package files will be
          searched for in some standard directories (the default).
       if --with-tiff=dir is given, and dir is a directory: tiff package files
@@ -746,12 +749,15 @@ Optional Packages:
       if --with-tiff=no or --without-tiff is given: tiff package will
          not be used.
       alternatively, you can specify:
-    --with-tifflib=dir : the tiff package's lib directory
-    --with-tiffinc=dir : the tiff package's include directory
+        --with-tifflib=dir : the tiff package's lib directory
+        --with-tiffinc=dir : the tiff package's include directory
 
   --with-jpeg
   --with-jpeg=dir
-  --without-jpeg       support import/export of jpeg images (default=yes)
+  --without-jpeg
+  --with-jpeglib=dir
+  --with-jpeginc=dir
+      support import/export of jpeg images. default: --with-jpeg
       if --with-jpeg or --with-jpeg=yes is given: jpeg package files will be
          searched for in some standard directories (the default).
       if --with-jpeg=dir is given, and dir is a directory: jpeg package files
@@ -759,12 +765,15 @@ Optional Packages:
       if --with-jpeg=no or --without-jpeg is given: jpeg package will
          not be used.
       alternatively, you can specify:
-    --with-jpeglib=dir : the jpeg package's lib directory
-    --with-jpeginc=dir : the jpeg package's include directory
+        --with-jpeglib=dir : the jpeg package's lib directory
+        --with-jpeginc=dir : the jpeg package's include directory
 
   --with-png
   --with-png=dir
-  --without-png       support import/export of png images (default=yes)
+  --without-png
+  --with-pnglib=dir
+  --with-pnginc=dir
+      support import/export of png images. default: --with-png
       if --with-png or --with-png=yes is given: png package files will be
          searched for in some standard directories (the default).
       if --with-png=dir is given, and dir is a directory: png package files
@@ -772,12 +781,15 @@ Optional Packages:
       if --with-png=no or --without-png is given: png package will
          not be used.
       alternatively, you can specify:
-    --with-pnglib=dir : the png package's lib directory
-    --with-pnginc=dir : the png package's include directory
+        --with-pnglib=dir : the png package's lib directory
+        --with-pnginc=dir : the png package's include directory
 
   --with-zlib
   --with-zlib=dir
-  --without-zlib       zlib compression library (required for libpng, default=yes)
+  --without-zlib
+  --with-zliblib=dir
+  --with-zlibinc=dir
+      zlib compression library (required for libpng). default: --with-zlib
       if --with-zlib or --with-zlib=yes is given: zlib package files will be
          searched for in some standard directories (the default).
       if --with-zlib=dir is given, and dir is a directory: zlib package files
@@ -785,12 +797,15 @@ Optional Packages:
       if --with-zlib=no or --without-zlib is given: zlib package will
          not be used.
       alternatively, you can specify:
-    --with-zliblib=dir : the zlib package's lib directory
-    --with-zlibinc=dir : the zlib package's include directory
+        --with-zliblib=dir : the zlib package's lib directory
+        --with-zlibinc=dir : the zlib package's include directory
 
   --with-fftw
   --with-fftw=dir
-  --without-fftw       support fast Fourier transforms (default=yes)
+  --without-fftw
+  --with-fftwlib=dir
+  --with-fftwinc=dir
+      support fast Fourier transforms. default: --with-fftw
       if --with-fftw or --with-fftw=yes is given: fftw package files will be
          searched for in some standard directories (the default).
       if --with-fftw=dir is given, and dir is a directory: fftw package files
@@ -798,8 +813,8 @@ Optional Packages:
       if --with-fftw=no or --without-fftw is given: fftw package will
          not be used.
       alternatively, you can specify:
-    --with-fftwlib=dir : the fftw package's lib directory
-    --with-fftwinc=dir : the fftw package's include directory
+        --with-fftwlib=dir : the fftw package's lib directory
+        --with-fftwinc=dir : the fftw package's include directory
 
 Some influential environment variables:
   CC          C compiler command
@@ -2823,7 +2838,7 @@ test x"$silent" = xyes && libtool_flags="$libtool_flags --silent"
 case "$lt_target" in
 *-*-irix6*)
   # Find out which ABI we are using.
-  echo '#line 2826 "configure"' > conftest.$ac_ext
+  echo '#line 2841 "configure"' > conftest.$ac_ext
   if { (eval echo "$as_me:$LINENO: \"$ac_compile\"") >&5
   (eval $ac_compile) 2>&5
   ac_status=$?
