@@ -101,8 +101,6 @@ struct IteratorTraits
     
     Factory functions to create argument objects which simplify long argument lists.
 
-    <b>\#include</b> "<a href="stdimage_8hxx-source.html">vigra/stdimage.hxx</a>"
-    
     <DL>
     <DT>
         <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif"> 
@@ -196,6 +194,9 @@ struct IteratorTraits
 
   \section ImageBasedArgumentObjectFactories Image Based Argument Object Factories
         
+    <b>Include:</b> automatically included with the image classes<br>
+    Namespace: vigra
+    
     These factories can be used to create argument objects when we 
     are given instances or subclasses of \ref vigra::BasicImage (see
     \ref StandardImageTypes for instances defined per default).
@@ -299,6 +300,9 @@ struct IteratorTraits
 
   \section IteratorBasedArgumentObjectFactories Iterator Based Argument Object Factories
         
+    <b>\#include</b> "<a href="iteratortraits_8hxx-source.html">vigra/iteratortraits.hxx</a>"
+    Namespace: vigra
+    
     These factories can be used to create argument objects when we 
     are given \ref ImageIterators.
     These factory functions use \ref vigra::IteratorTraits to
