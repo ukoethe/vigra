@@ -3,6 +3,8 @@
 #include "vigra/stdimage.hxx"
 #include "vigra/flatmorphology.hxx"
 
+using namespace vigra;
+
 struct FlatMorphologyTest
 {
     typedef vigra::BImage Image;

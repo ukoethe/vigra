@@ -10,6 +10,8 @@
 #include "vigra/seededregiongrowing.hxx"
 #include "vigra/cornerdetection.hxx"
 
+using namespace vigra;
+
 struct LabelingTest
 {
     typedef vigra::DImage Image;
