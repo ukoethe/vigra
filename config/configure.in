@@ -1,0 +1,82 @@
+AC_INIT(include/vigra/config.hxx)
+
+AC_PREFIX_DEFAULT([`pwd`])
+builddir=`pwd`
+
+# expand prefix and exec_prefix
+if test "x$prefix" = "xNONE" ; then
+    prefix=$ac_default_prefix
+elif test "x$prefix" = "x." ; then
+    prefix=`pwd`
+fi
+
+AC_CONFIG_AUX_DIR(config) 
+
+# Set version
+MAJOR_VERSION=1
+MINOR_VERSION=1
+MICRO_VERSION=5
+
+echo "configuring VIGRA $MAJOR_VERSION.$MINOR_VERSION.$MICRO_VERSION"
+
+AC_SUBST(MAJOR_VERSION)dnl
+AC_SUBST(MINOR_VERSION)dnl
+AC_SUBST(MICRO_VERSION)dnl
+
+AC_ARG_WITH( cc, [  --with-cc : your C compiler [default=gcc]], CC=$with_cc, [if test "x$CC" = "x" ; then CC=gcc ; fi])
+AC_ARG_WITH( cxx, [  --with-cxx : your C++ compiler [default=g++]], CXX=$with_cxx, [if test "x$CXX" = "x" ; then CXX=g++ ; fi])
+
+AC_CANONICAL_SYSTEM
+
+AC_CYGWIN
+AC_MINGW32
+
+CFLAGS=-O
+CXXFLAGS=-O
+LIBCFLAGS=-I$builddir/include
+LIBCXXFLAGS=-I$builddir/include
+CINCLUDES=
+CXXINCLUDES='-I$(prefix)/include'
+
+AC_PROG_CC
+AC_PROG_CXX
+AM_PROG_LD
+AC_SUBST(LD)
+AC_PROG_INSTALL
+
+# Configure libtool
+AC_ENABLE_SHARED(no)
+AC_ENABLE_STATIC(yes)
+AC_LIBTOOL_SETUP
+AC_PROG_LIBTOOL
+AC_LIBTOOL_CXX
+
+#########################################################
+
+AC_FIND_PACKAGE(tiff, tiff, tiff.h, [support import/export of tiff images [default=no]])
+if test $with_tiff = "yes";
+then
+    LIBS="$LIBS -L$with_tifflib -ltiff"
+    LIBCFLAGS="$LIBCFLAGS -DHasTIFF -I$with_tiffinc"
+    LIBCXXFLAGS="$LIBCXXFLAGS -DHasTIFF -I$with_tiffinc"
+fi
+
+AC_FIND_PACKAGE(jpeg, jpeg, jpeglib.h, [support import/export of jpeg images [default=no]])
+if test $with_jpeg = "yes";
+then
+    LIBS="$LIBS -L$with_jpeglib -ljpeg"
+    LIBCFLAGS="$LIBCFLAGS -DHasJPEG -I$with_jpeginc"
+    LIBCXXFLAGS="$LIBCXXFLAGS -DHasJPEG -I$with_jpeginc"
+fi
+
+#########################################################
+
+LIBS="-L$libdir -lvigraimpex $LIBS -lm"
+
+AC_SUBST(builddir)
+AC_SUBST(CINCLUDES)
+AC_SUBST(CXXINCLUDES)
+AC_SUBST(LIBCFLAGS)
+AC_SUBST(LIBCXXFLAGS)
+
+AC_OUTPUT(config/Makefile.include vigra-config)

@@ -1,16 +1,12 @@
-SUBDIRS = \
-        impex \
-        examples
+all::
+	@cd impex ; $(MAKE) all ; cd ..
 
-all:: libs examples
-
-libs::
-	cd impex; $(MAKE)
+install::
+	@cd impex ; $(MAKE) install ; cd ..
 
 examples::
-	cd examples; $(MAKE)
+	@cd examples ; $(MAKE) all ; cd ..
 
 clean::
-	rm -f *.ncb *.opt 
-	cd impex; $(MAKE) -i clean
-	cd examples; $(MAKE) -i clean
+	@cd impex ; $(MAKE) clean ; cd ..
+	@cd examples ; $(MAKE) clean ; cd ..

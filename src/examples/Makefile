@@ -1,7 +1,5 @@
-include $(VIGRA_PATH)/config/Makefile.include
+include ../../config/Makefile.include
 
-CXXFLAGS = -O -I../include 
-LIB = -lvigraimpex -ljpeg -ltiff -lm
                  		   
 FILES = \
     convert \
@@ -11,7 +9,6 @@ FILES = \
     resize \
     smooth \
     profile \
-    palette \
     pyramid \
     edge \
     watershed \
@@ -20,43 +17,37 @@ FILES = \
 all: $(FILES)
 
 convert:  convert.o 
-	$(CXX) $(CXXFLAGS) $(CXXINC) -o convert convert.o $(CXXLIBDIR) $(LIB)
+	$(CXX) $(CXXFLAGS) $(CXXINCLUDES) -o convert convert.o $(LIBS) 
 
 subimage:  subimage.o 
-	$(CXX) $(CXXFLAGS) $(CXXINC) -o subimage subimage.o $(CXXLIBDIR) $(LIB)
+	$(CXX) $(CXXFLAGS) $(CXXINCLUDES) -o subimage subimage.o $(LIBS) 
 
 invert:  invert.o 
-	$(CXX) $(CXXFLAGS) $(CXXINC) -o invert invert.o $(CXXLIBDIR) $(LIB)
+	$(CXX) $(CXXFLAGS) $(CXXINCLUDES) -o invert invert.o $(LIBS) 
 
 invert_explicitly:  invert_explicitly.o 
-	$(CXX) $(CXXFLAGS) $(CXXINC) -o invert_explicitly invert_explicitly.o $(CXXLIBDIR) $(LIB)
+	$(CXX) $(CXXFLAGS) $(CXXINCLUDES) -o invert_explicitly invert_explicitly.o $(LIBS) 
 
 resize:  resize.o 
-	$(CXX) $(CXXFLAGS) $(CXXINC) -o resize resize.o $(CXXLIBDIR) $(LIB)
+	$(CXX) $(CXXFLAGS) $(CXXINCLUDES) -o resize resize.o $(LIBS) 
 
 smooth:  smooth.o 
-	$(CXX) $(CXXFLAGS) $(CXXINC) -o smooth smooth.o $(CXXLIBDIR) $(LIB)
+	$(CXX) $(CXXFLAGS) $(CXXINCLUDES) -o smooth smooth.o $(LIBS) 
 
 profile:  profile.o 
-	$(CXX) $(CXXFLAGS) $(CXXINC) -o profile profile.o $(CXXLIBDIR) $(LIB)
-
-palette:  palette.o 
-	$(CXX) $(CXXFLAGS) $(CXXINC) -o palette palette.o $(CXXLIBDIR) $(LIB)
+	$(CXX) $(CXXFLAGS) $(CXXINCLUDES) -o profile profile.o $(LIBS) 
 
 pyramid:  pyramid.o 
-	$(CXX) $(CXXFLAGS) $(CXXINC) -o pyramid pyramid.o $(CXXLIBDIR) $(LIB)
-
-#ascale:  morphological_appropriate_scale.o 
-#	$(CXX) $(CXXFLAGS) $(CXXINC) -o ascale morphological_appropriate_scale.o $(CXXLIBDIR) $(LIB)
+	$(CXX) $(CXXFLAGS) $(CXXINCLUDES) -o pyramid pyramid.o $(LIBS) 
 
 edge:  edge.o 
-	$(CXX) $(CXXFLAGS) $(CXXINC) -o edge edge.o $(CXXLIBDIR) $(LIB)
+	$(CXX) $(CXXFLAGS) $(CXXINCLUDES) -o edge edge.o $(LIBS) 
 
 watershed:  watershed.o 
-	$(CXX) $(CXXFLAGS) $(CXXINC) -o watershed watershed.o $(CXXLIBDIR) $(LIB)
+	$(CXX) $(CXXFLAGS) $(CXXINCLUDES) -o watershed watershed.o $(LIBS) 
 
 voronoi:  voronoi.o 
-	$(CXX) $(CXXFLAGS) $(CXXINC) -o voronoi voronoi.o $(CXXLIBDIR) $(LIB)
+	$(CXX) $(CXXFLAGS) $(CXXINCLUDES) -o voronoi voronoi.o $(LIBS) 
 
 clean:
 	rm -f *.o $(FILES) *.exe core *.plg *ilk *.lib *.pdb *.exp \

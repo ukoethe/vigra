@@ -1,1 +1,8 @@
 lib
+aclocal.m4
+config.log
+config.cache
+config.status
+configure
+libtool
+vigra-config

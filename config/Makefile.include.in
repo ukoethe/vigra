@@ -1,0 +1,57 @@
+MAJOR_VERSION = @MAJOR_VERSION@
+MINOR_VERSION = @MINOR_VERSION@
+MICRO_VERSION = @MICRO_VERSION@
+
+builddir = @builddir@
+prefix = @prefix@
+exec_prefix = @exec_prefix@
+includedir = @includedir@
+libdir = @libdir@
+bindir = @bindir@
+
+CC = @CC@
+CFLAGS = @CFLAGS@ 
+LIBCFLAGS = @LIBCFLAGS@
+CINCLUDES = @CINCLUDES@
+
+CXX = @CXX@
+CXXFLAGS = @CXXFLAGS@ 
+LIBCXXFLAGS = @LIBCXXFLAGS@ 
+CXXINCLUDES = @CXXINCLUDES@
+
+LD = @LD@
+LIBS = @LIBS@
+
+LIBTOOL = ${builddir}/libtool
+LIBCC = $(LIBTOOL) --mode=compile $(CC)
+LIBCXX = $(LIBTOOL) --tag=CXX --mode=compile $(CXX)
+LINKCLIB = $(LIBTOOL) --mode=link $(CC) -rpath $(libdir)
+LINKCXXLIB = $(LIBTOOL) --mode=link $(CXX) -rpath $(libdir)
+LINKC = $(LIBTOOL) --mode=link $(CC)
+LINKCXX = $(LIBTOOL) --tag=CXX --mode=link $(CXX)
+LIBINSTALL = $(LIBTOOL) --mode=install @INSTALL@
+INSTALL = @INSTALL@
+
+%.o: %.c
+	$(CC) $(CFLAGS) $(CINCLUDES) -c $*.c
+
+%.o: %.cxx
+	$(CXX) $(CXXFLAGS) $(CXXINCLUDES) -c $*.cxx
+
+%.lo: %.c
+	$(LIBCC) $(CFLAGS) $(LIBCFLAGS) $(CINCLUDES) -c $*.c
+
+%.lo: %.cxx
+	$(LIBCXX) $(CXXFLAGS) $(LIBCXXFLAGS) $(CXXINCLUDES) -c $*.cxx
+
+%.d: %.c
+	@echo creating $@
+	@set -e; $(CC) -M $(CFLAGS) $(CINCLUDES) -c $*.c \
+            | sed 's/\($*\)\.o[ :]*/\1.o $@ : /g' > $@; \
+                [ -s $@ ] || rm -f $@
+
+%.d: %.cxx
+	@echo creating $@
+	@set -e; $(CXX) -M $(CXXFLAGS) $(CXXINCLUDES) -c $*.cxx \
+            | sed 's/\($*\)\.o[ :]*/\1.o $@ : /g' > $@; \
+                [ -s $@ ] || rm -f $@
