@@ -1,8 +1,8 @@
 include $(VIGRA_PATH)/config/Makefile.include
 
-CXXFLAGS = -O -I../include 
-LIB = -lvigraimpex -ljpeg -ltiff -lm
-                 		   
+CXXFLAGS = -O -I../include
+LIB = -lvigraimpex -ljpeg -ltiff -lm  -L/software/jpeg-6b/SunOS-5.6/lib -L/software/tiff-v3.5.5/SunOS-5.6/lib
+
 FILES = \
     convert \
     subimage \
@@ -16,46 +16,46 @@ FILES = \
     edge \
     watershed \
     voronoi
-    
+
 all: $(FILES)
 
-convert:  convert.o 
+convert:  convert.o
 	$(CXX) $(CXXFLAGS) $(CXXINC) -o convert convert.o $(CXXLIBDIR) $(LIB)
 
-subimage:  subimage.o 
+subimage:  subimage.o
 	$(CXX) $(CXXFLAGS) $(CXXINC) -o subimage subimage.o $(CXXLIBDIR) $(LIB)
 
-invert:  invert.o 
+invert:  invert.o
 	$(CXX) $(CXXFLAGS) $(CXXINC) -o invert invert.o $(CXXLIBDIR) $(LIB)
 
-invert_explicitly:  invert_explicitly.o 
+invert_explicitly:  invert_explicitly.o
 	$(CXX) $(CXXFLAGS) $(CXXINC) -o invert_explicitly invert_explicitly.o $(CXXLIBDIR) $(LIB)
 
-resize:  resize.o 
+resize:  resize.o
 	$(CXX) $(CXXFLAGS) $(CXXINC) -o resize resize.o $(CXXLIBDIR) $(LIB)
 
-smooth:  smooth.o 
+smooth:  smooth.o
 	$(CXX) $(CXXFLAGS) $(CXXINC) -o smooth smooth.o $(CXXLIBDIR) $(LIB)
 
-profile:  profile.o 
+profile:  profile.o
 	$(CXX) $(CXXFLAGS) $(CXXINC) -o profile profile.o $(CXXLIBDIR) $(LIB)
 
-palette:  palette.o 
+palette:  palette.o
 	$(CXX) $(CXXFLAGS) $(CXXINC) -o palette palette.o $(CXXLIBDIR) $(LIB)
 
-pyramid:  pyramid.o 
+pyramid:  pyramid.o
 	$(CXX) $(CXXFLAGS) $(CXXINC) -o pyramid pyramid.o $(CXXLIBDIR) $(LIB)
 
-#ascale:  morphological_appropriate_scale.o 
+#ascale:  morphological_appropriate_scale.o
 #	$(CXX) $(CXXFLAGS) $(CXXINC) -o ascale morphological_appropriate_scale.o $(CXXLIBDIR) $(LIB)
 
-edge:  edge.o 
+edge:  edge.o
 	$(CXX) $(CXXFLAGS) $(CXXINC) -o edge edge.o $(CXXLIBDIR) $(LIB)
 
-watershed:  watershed.o 
+watershed:  watershed.o
 	$(CXX) $(CXXFLAGS) $(CXXINC) -o watershed watershed.o $(CXXLIBDIR) $(LIB)
 
-voronoi:  voronoi.o 
+voronoi:  voronoi.o
 	$(CXX) $(CXXFLAGS) $(CXXINC) -o voronoi voronoi.o $(CXXLIBDIR) $(LIB)
 
 clean:

@@ -1,0 +1,12 @@
+convert
+subimage
+invert
+invert_explicitly
+resize
+smooth
+profile
+palette
+pyramid
+edge
+watershed
+voronoi
