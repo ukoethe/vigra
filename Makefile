@@ -58,3 +58,5 @@ autoconf:
 	aclocal --acdir=. && \
 	autoconf && mv configure ..
 #	autoconf --output=../configure
+
+.PHONY: autoconf all clean distclean doc docclean examples install install-docs install-exec install-includes
