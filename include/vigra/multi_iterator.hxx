@@ -1015,6 +1015,15 @@ public:
         return ret;
     }
 
+        /** difference of two iterators in the current dimension.
+            The result of this operation is undefined if the iterator
+            doesn't point to element 0 in all dimensions below its current dimension.
+        */
+    difference_type operator- (MultiIterator const & d) const
+    {
+        return base_type::operator-(d);
+    }
+
         /** subtraction within current dimension
          */
     MultiIterator operator- (difference_type n) const
@@ -1661,6 +1670,15 @@ public:
         return ret;
     }
 
+        /** difference of two iterators in the current dimension.
+            The result of this operation is undefined if the iterator
+            doesn't point to element 0 in all dimensions below its current dimension.
+        */
+    difference_type operator- (StridedMultiIterator const & d) const
+    {
+        return base_type::operator-(d);
+    }
+    
         /** subtraction within current dimension
          */
     StridedMultiIterator operator- (difference_type n) const
