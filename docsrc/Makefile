@@ -1,7 +1,8 @@
+include ../config/Makefile.include
+
          DOC = doxygen
     DOCLATEX = doc++ -u -o $(DOCDIR)/latex/vigra.tex -t
-      DOCDIR = ../doc/vigra
-#      DOCDIR = doctest/vigra
+      DOCDIR = $(docdir)
 
 FILES = \
 	index.dxx
@@ -9,7 +10,7 @@ FILES = \
 all:: doc
 
 doc::
-	@if [ ! -d $(DOCDIR) ]; then mkdir $(DOCDIR); fi
+	@if [ ! -d $(DOCDIR) ]; then mkdir -p $(DOCDIR); fi
 	@rm -f $(DOCDIR)/*.html
 	cat Doxyfile.in | \
           sed -e "s/\(PROJECT_NUMBER *= \)/\1 $(VIGRA_VERSION)/" \
@@ -23,7 +24,7 @@ latex::
 	$(DOCLATEX) $(FILES)
 
 clean::
-	rm -f $(DOCDIR)/*.html $(DOCDIR)/*.gif $(DOCDIR)/*.pnm \
+	rm -f $(DOCDIR)/*.html $(DOCDIR)/*.gif $(DOCDIR)/*.pnm $(DOCDIR)/*.png \
               $(DOCDIR)/gifs.db $(DOCDIR)/*.ps $(DOCDIR)/*.eps \
               $(DOCDIR)/dxxgifs* $(DOCDIR)/*.class $(DOCDIR)/*.in \
               $(DOCDIR)/formula.repository $(DOCDIR)/*.css \

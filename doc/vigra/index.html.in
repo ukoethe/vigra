@@ -22,7 +22,7 @@
 <th align=right ><a href="http://kogs-www.informatik.uni-hamburg.de/~koethe/vigra/"><IMG border=0 ALT="VIGRA" SRC="documents/vigra.gif"></a></th></tr>
 </table><p>
 <p>
-
+<h3 align="center">CVS version</h3>
 <p>
 
 <dl compact>
@@ -32,7 +32,7 @@
 <p>
 <a name="_details"></a> <center>
  <h2><a name="Main">VIGRA - Vision with Generic Algorithms</a>
-</h2> Version 1.2.0 by <a href="http://kogs-www.informatik.uni-hamburg.de/~koethe/">Ullrich K&ouml;the</a> </center>
+</h2> CVS version by <a href="http://kogs-www.informatik.uni-hamburg.de/~koethe/">Ullrich K&ouml;the</a> </center>
 
 <p>
 VIGRA is a computer vision library that puts its main emphasize on <em>flexible algorithms</em>, because algorithms represent the principle know-how of this field. The library was consequently built using <em>generic programming</em> as introduced by Stepanov and Musser and exemplified in the C++ <a href="http://www.sgi.com/tech/stl/">Standard Template Library</a>. By writing a few adapters (image iterators and accessors) you can use VIGRA's algorithms on top of <em>your</em> data structures, within <em>your</em> environment. Alternatively, you can also use the data structures provided within VIGRA, which can be easily adapted to a wide range of applications. VIGRA's flexibility comes almost for free: Since the design uses compile-time polymorphism (templates), performance of the compiled program approaches that of a traditional, hand tuned, inflexible, solution.
@@ -61,7 +61,7 @@ University of Hamburg, Germany</i>
 <I>html generated using <A HREF="http://www.doxygen.org">doxygen</A> and <A HREF="http://www.python.org">Python</A></I>
 <br>
 <i>
-VIGRA 1.2.0 (5 Aug 2003)
+VIGRA CVS version (5 Aug 2003)
 </i>
 </tr>
 </table>
