@@ -157,27 +157,27 @@ class RGBValue
 
         /** Access red component.
         */
-    value_type & red() { return data_[0]; }
+    value_type & red() { return (*this)[0]; }
 
         /** Access green component.
         */
-    value_type & green() { return data_[1]; }
+    value_type & green() { return (*this)[1]; }
 
         /** Access blue component.
         */
-    value_type & blue() { return data_[2]; }
+    value_type & blue() { return (*this)[2]; }
 
         /** Get red component.
         */
-    value_type const & red() const { return data_[0]; }
+    value_type const & red() const { return (*this)[0]; }
 
         /** Get green component.
         */
-    value_type const & green() const { return data_[1]; }
+    value_type const & green() const { return (*this)[1]; }
 
         /** Get blue component.
         */
-    value_type const & blue() const { return data_[2]; }
+    value_type const & blue() const { return (*this)[2]; }
 
         /** Calculate luminance.
         */
@@ -203,27 +203,27 @@ class RGBValue
             in <TT>value</TT> is automatically converted to <TT>VALUETYPE</TT>.
         */
     template <class V>
-    void setRed(V value) { data_[0] = detail::RequiresExplicitCast<value_type>::cast(value); }
+    void setRed(V value) { (*this)[0] = detail::RequiresExplicitCast<value_type>::cast(value); }
 
         /** Set green component.The type <TT>V</TT> of the passed
             in <TT>value</TT> is automatically converted to <TT>VALUETYPE</TT>.
         */
     template <class V>
-    void setGreen(V value) { data_[1] = detail::RequiresExplicitCast<value_type>::cast(value); }
+    void setGreen(V value) { (*this)[1] = detail::RequiresExplicitCast<value_type>::cast(value); }
 
         /** Set blue component.The type <TT>V</TT> of the passed
             in <TT>value</TT> is automatically converted to <TT>VALUETYPE</TT>.
         */
     template <class V>
-    void setBlue(V value) { data_[2] = detail::RequiresExplicitCast<value_type>::cast(value); }
+    void setBlue(V value) { (*this)[2] = detail::RequiresExplicitCast<value_type>::cast(value); }
 
 
     template <class V>
     void setRGB(V r, V g, V b) 
     { 
-        data_[0] = detail::RequiresExplicitCast<value_type>::cast(r); 
-        data_[1] = detail::RequiresExplicitCast<value_type>::cast(g); 
-        data_[2] = detail::RequiresExplicitCast<value_type>::cast(b); 
+        (*this)[0] = detail::RequiresExplicitCast<value_type>::cast(r); 
+        (*this)[1] = detail::RequiresExplicitCast<value_type>::cast(g); 
+        (*this)[2] = detail::RequiresExplicitCast<value_type>::cast(b); 
     }
 };
 
