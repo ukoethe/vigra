@@ -587,7 +587,8 @@ class LinearIteratorSelector<StridedArrayTag>
 /** \brief Base class for 2D random access iterators.
 
     This class contains the navigational part of the iterator.
-    Use derived classes to specifiy the access to the pixels.
+    It is usually not constructed directly, but via some derived class such as
+    \ref ImageIterator or \ref StridedImageIterator.
 
     <b>\#include</b> "<a href="imageiterator_8hxx-source.html">vigra/imageiterator.hxx</a>"
 
@@ -597,8 +598,8 @@ class LinearIteratorSelector<StridedArrayTag>
     this:
 
     \code
-    vigra::ImageIteratorBase<SomePixelType> iterator(base, width);
-    vigra::ImageIteratorBase<SomePixelType> iterator1(base, width);
+    vigra::ImageIterator<SomePixelType> iterator(base, width);
+    vigra::ImageIterator<SomePixelType> iterator1(base, width);
     \endcode
 
     See the paper: U. Koethe:
