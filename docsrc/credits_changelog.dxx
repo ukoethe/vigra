@@ -34,7 +34,7 @@
       
       <li> Renamed CellGridImage into CrackEdgeImage in \ref EdgeDetection.
       
-      <li> Added \ref vigra::TinyVector.
+      <li> Added \ref vigra::TinyVector and made vigra::RGBValue derive from it.
 </UL>
 
 <b> Changes from Version 1.1.1 to 1.1.2</b>
@@ -45,7 +45,7 @@
       
       <li> Added \ref vigra::BrightnessContrastFunctor.
       
-      <li> Added \ref gradientBasedTransformation() and related 
+      <li> Added \ref gradientBasedTransform() and related 
             \ref vigra::MagnitudeFunctor and \ref vigra::RGBGradientMagnitudeFunctor.
       
       <li> Added \ref nonlinearDiffusion().
