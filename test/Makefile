@@ -8,6 +8,7 @@ SUBDIRS = \
         functorexpression \
         convolution \
         morphology \
+        fourier \
         simpleanalysis
 
 all::
