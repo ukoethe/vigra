@@ -179,14 +179,14 @@ struct LabelingTest
         }
     }
     
-    void labelingToCellGridTest()
+    void labelingToCrackEdgeTest()
     {
         Image tmp(img1);
         Image res(9, 9);
         
         should(2 == labelImage(srcImageRange(img1), destImage(tmp), false));
         
-        regionImageToCellGridImage(srcImageRange(tmp), destImage(res), 0.0);
+        regionImageToCrackEdgeImage(srcImageRange(tmp), destImage(res), 0.0);
         
         static const double desired[] = { 
                1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0,  
@@ -403,14 +403,14 @@ struct EdgeDetectionTest
         }
     }
     
-    void edgeToCellGridTest()
+    void edgeToCrackEdgeTest()
     {
         img1.upperLeft()[vigra::Diff2D(2,2)] = 0.0;
         
         Image res(9,9);
         res = 0.0;
         
-        differenceOfExponentialCellGridImage(srcImageRange(img1), 
+        differenceOfExponentialCrackEdgeImage(srcImageRange(img1), 
                                                 destImage(res), 
                                                 0.7, 0.1, 1.0);
         
@@ -443,7 +443,7 @@ struct EdgeDetectionTest
         Image res(9,9);
         res = 0.0;
         
-        differenceOfExponentialCellGridImage(srcImageRange(img1), 
+        differenceOfExponentialCrackEdgeImage(srcImageRange(img1), 
                                                 destImage(res), 
                                                 0.7, 0.1, 1.0);
         removeShortEdges(srcImageRange(res), 9, 0.0);
@@ -470,17 +470,17 @@ struct EdgeDetectionTest
         }
     }
     
-    void beautifyCellGridTest()
+    void beautifyCrackEdgeTest()
     {
         img1.upperLeft()[vigra::Diff2D(2,2)] = 0.0;
         
         Image res(9,9);
         res = 0.0;
         
-        differenceOfExponentialCellGridImage(srcImageRange(img1), 
+        differenceOfExponentialCrackEdgeImage(srcImageRange(img1), 
                                                 destImage(res), 
                                                 0.7, 0.1, 1.0);
-        beautifyCellGridImage(srcImageRange(res), 1.0, 0.0);
+        beautifyCrackEdgeImage(srcImageRange(res), 1.0, 0.0);
         
         static const double desired[] = {
             0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
@@ -504,9 +504,9 @@ struct EdgeDetectionTest
         }
     }
     
-    void closeGapsInCellGridTest()
+    void closeGapsInCrackEdgeTest()
     {
-        closeGapsInCellGridImage(srcImageRange(img2), 1.0);
+        closeGapsInCrackEdgeImage(srcImageRange(img2), 1.0);
         
         static const double desired[] = {
             0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
@@ -979,17 +979,17 @@ struct SimpleAnalysisTestSuite
         add( testCase( &LabelingTest::labelingFourTest2));
         add( testCase( &LabelingTest::labelingFourTest3));
         add( testCase( &LabelingTest::labelingFourTest4));
-        add( testCase( &LabelingTest::labelingToCellGridTest));
+        add( testCase( &LabelingTest::labelingToCrackEdgeTest));
         add( testCase( &LabelingTest::labelingEightTest1));
         add( testCase( &LabelingTest::labelingEightTest2));
         add( testCase( &LabelingTest::labelingFourWithBackgroundTest1));
         add( testCase( &LabelingTest::labelingFourWithBackgroundTest2));
         add( testCase( &LabelingTest::labelingEightWithBackgroundTest));
         add( testCase( &EdgeDetectionTest::edgeDetectionTest));
-        add( testCase( &EdgeDetectionTest::edgeToCellGridTest));
+        add( testCase( &EdgeDetectionTest::edgeToCrackEdgeTest));
         add( testCase( &EdgeDetectionTest::removeShortEdgesTest));
-        add( testCase( &EdgeDetectionTest::beautifyCellGridTest));
-        add( testCase( &EdgeDetectionTest::closeGapsInCellGridTest));
+        add( testCase( &EdgeDetectionTest::beautifyCrackEdgeTest));
+        add( testCase( &EdgeDetectionTest::closeGapsInCrackEdgeTest));
         add( testCase( &EdgeDetectionTest::cannyEdgelListTest));
         add( testCase( &EdgeDetectionTest::cannyEdgeImageTest));
         add( testCase( &DistanceTransformTest::distanceTransformL1Test));
