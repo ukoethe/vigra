@@ -96,6 +96,14 @@ using VIGRA_CSTD::erf;
 
 #endif
 
+template <class T>
+inline
+typename NumericTraits<T>::Promote
+sq(T const & t)
+{
+    return t*t;
+}
+
 //@}
 
 } // namespace vigra
