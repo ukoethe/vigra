@@ -583,11 +583,7 @@ class Diff2D
         */
     double magnitude() const
     {
-#ifndef CMATH_NOT_IN_STD
-        return std::sqrt((double)(x*x + y*y));
-#else
-        return sqrt((double)(x*x + y*y));
-#endif
+        return VIGRA_CSTD::sqrt((double)(x*x + y*y));
     }
     
         /** Equality.

@@ -98,22 +98,15 @@ class FFTWComplex
     value_type squaredMagnitude() const
         { return c_re(*this)*c_re(*this)+c_im(*this)*c_im(*this); }
         
-#ifdef CMATH_NOT_IN_STD
-    value_type magnitude() const
-        { return sqrt(squaredMagnitude()); }
-    value_type phase() const
-        { return atan2(c_im(*this),c_re(*this)); }
-#else
         /** Magnitude (length of radius vector).
         */
     value_type magnitude() const
-        { return std::sqrt(squaredMagnitude()); }
+        { return VIGRA_CSTD::sqrt(squaredMagnitude()); }
 
         /** Phase angle.
         */
     value_type phase() const
-        { return std::atan2(c_im(*this),c_re(*this)); }
-#endif
+        { return VIGRA_CSTD::atan2(c_im(*this),c_re(*this)); }
 
         /** Access components as if number were a vector.
         */
@@ -357,11 +350,7 @@ inline FFTWComplex operator /(FFTWComplex a, const double &b) {
     return a;
 }
 
-#ifdef CMATH_NOT_IN_STD
-using ::abs;
-#else
-using std::abs;
-#endif
+using VIGRA_CSTD::abs;
 
     /// absolute value (= magnitude)
 inline FFTWComplex::value_type abs(const FFTWComplex &a)

@@ -521,11 +521,7 @@ operator/=(RGBValue<V> & l, double r)
     return l;
 }
 
-#ifndef CMATH_NOT_IN_STD
-using std::abs;
-#else
-using ::abs;
-#endif
+using VIGRA_CSTD::abs;
 
     /// component-wise absolute value
 template <class T>

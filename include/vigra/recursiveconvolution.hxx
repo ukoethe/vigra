@@ -147,11 +147,7 @@ void recursiveSmoothLine(SrcIterator is, SrcIterator isend, SrcAccessor as,
     std::vector<TempType> vline(w);
     typename std::vector<TempType>::iterator line = vline.begin();
     
-#ifndef CMATH_NOT_IN_STD
-    double b = std::exp(-1.0/scale);
-#else
-    double b = exp(-1.0/scale);
-#endif
+    double b = VIGRA_CSTD::exp(-1.0/scale);
     double norm = (1.0 - b) / (1.0 + b);
     TempType old = (1.0 / (1.0 - b)) * as(is);
 
@@ -270,11 +266,7 @@ void recursiveFirstDerivativeLine(SrcIterator is, SrcIterator isend, SrcAccessor
     std::vector<TempType> vline(w);
     typename std::vector<TempType>::iterator line = vline.begin();
     
-#ifndef CMATH_NOT_IN_STD
-    double b = std::exp(-1.0/scale);
-#else
-    double b = exp(-1.0/scale);
-#endif
+    double b = VIGRA_CSTD::exp(-1.0/scale);
     double norm = (1.0 - b) * (1.0 - b) / 2.0 / b;
     TempType old = (1.0 / (1.0 - b)) * as(is);
 
@@ -392,11 +384,7 @@ void recursiveSecondDerivativeLine(SrcIterator is, SrcIterator isend, SrcAccesso
     std::vector<TempType> vline(w);
     typename std::vector<TempType>::iterator line = vline.begin();
         
-#ifndef CMATH_NOT_IN_STD
-    double b = std::exp(-1.0/scale);
-#else
-    double b = exp(-1.0/scale);
-#endif
+    double b = VIGRA_CSTD::exp(-1.0/scale);
     double a = -2.0 / (1.0 - b);
     double norm = (1.0 - b) * (1.0 - b) * (1.0 - b) / (1.0 + b);
     TempType old = (1.0 / (1.0 - b)) * as(is);
