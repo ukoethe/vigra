@@ -454,6 +454,8 @@ class MultiIteratorBase
             /** the type of the parent in the inheritance hierarchy.
              */
         typedef MultiIterator <N-1, T, REFERENCE, POINTER> base_type;
+
+    public:
         
             /** the iterator's level in the dimension hierarchy
              */
@@ -792,9 +794,7 @@ class MultiIteratorBase <1>
     template <class T, class REFERENCE, class POINTER>
     class type
     {
-
-    public:
-
+      public:
         enum { level = 0 };
         typedef T value_type;
         typedef value_type &reference;
@@ -1093,6 +1093,8 @@ class StridedMultiIteratorBase
             /** the type of the parent in the inheritance hierarchy.
              */
         typedef StridedMultiIterator <N-1, T, REFERENCE, POINTER> base_type;
+
+    public:
         
             /** the iterator's level in the dimension hierarchy
              */
@@ -1282,7 +1284,7 @@ class StridedMultiIteratorBase
             ret += m_shape [level-1];
             return ret;
         }
-
+        
       protected:
       
         difference_type 
@@ -1439,7 +1441,6 @@ class StridedMultiIteratorBase <1>
     public:
 
         enum { level = 0 };
-
         typedef T value_type;
         typedef value_type &reference;
         typedef const value_type &const_reference;
