@@ -68,7 +68,7 @@ int main(int argc, char ** argv)
     }
     catch (vigra::StdException & e)
     {
-        // catch any errors that might have occured and pront their reason
+        // catch any errors that might have occured and print their reason
         std::cout << e.what() << std::endl;
         return 1;
     }
