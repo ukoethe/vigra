@@ -25,9 +25,15 @@
 #include "vigra/utilities.hxx"
 #include "vigra/numerictraits.hxx"
 #include "vigra/rgbvalue.hxx"
-#include "tiff.h"
+extern "C"
+{
+#include <tiff.h>
+#include <tiffio.h>
+}
 
 namespace vigra {
+
+typedef TIFF TiffImage;
 
 /** \defgroup TIFFImpex Import/export of the TIFF format
 
