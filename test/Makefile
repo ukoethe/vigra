@@ -1,4 +1,5 @@
 QUICKSUBDIRS =  \
+        syntax \
         error \
         pixeltypes \
         colorspaces \
@@ -6,7 +7,7 @@ QUICKSUBDIRS =  \
         functorexpression \
         convolution \
         morphology \
-        fourier \
+        fourier_fftw3 \
         math \
         tensorimaging \
         simpleanalysis
