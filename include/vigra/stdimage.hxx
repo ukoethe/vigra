@@ -33,9 +33,9 @@ namespace vigra {
 #define VIGRA_DEFINE_ITERATORTRAITS(VALUETYPE, ACCESSOR, CONSTACCESSOR) \
     template<> \
     struct IteratorTraits< \
-        BasicImageIterator<VALUETYPE, VALUETYPE &, VALUETYPE *> > \
+        BasicImageIterator<VALUETYPE, VALUETYPE **> > \
     { \
-        typedef BasicImageIterator<VALUETYPE, VALUETYPE &, VALUETYPE *> \
+        typedef BasicImageIterator<VALUETYPE, VALUETYPE **> \
                                                      Iterator; \
         typedef Iterator                             iterator; \
         typedef iterator::iterator_category          iterator_category; \
@@ -51,10 +51,10 @@ namespace vigra {
     }; \
     template<> \
     struct IteratorTraits< \
-        BasicImageIterator<VALUETYPE, VALUETYPE const &, VALUETYPE const *> > \
+        ConstBasicImageIterator<VALUETYPE, VALUETYPE **> > \
     { \
         typedef \
-          BasicImageIterator<VALUETYPE, VALUETYPE const &, VALUETYPE const *> \
+          ConstBasicImageIterator<VALUETYPE, VALUETYPE **> \
                                                      Iterator; \
         typedef Iterator                             iterator; \
         typedef iterator::iterator_category          iterator_category; \
@@ -265,9 +265,9 @@ typedef BasicImage<TinyVector<double, 4> > DVector4Image;
 #ifndef NO_PARTIAL_TEMPLATE_SPECIALIZATION
 
 template <class T>
-struct IteratorTraits<BasicImageIterator<T, T &, T *> >
+struct IteratorTraits<BasicImageIterator<T, T **> >
 {
-    typedef BasicImageIterator<T, T &, T *>      Iterator;
+    typedef BasicImageIterator<T, T **>          Iterator;
     typedef Iterator                             iterator;
     typedef typename iterator::iterator_category iterator_category;
     typedef typename iterator::value_type        value_type;
@@ -282,20 +282,20 @@ struct IteratorTraits<BasicImageIterator<T, T &, T *> >
 };  
 
 template <class T>
-struct IteratorTraits<BasicImageIterator<T, T const &, T const *> >
+struct IteratorTraits<ConstBasicImageIterator<T, T **> >
 {
-    typedef BasicImageIterator<T, T const &, T const *>     Iterator;
-    typedef Iterator                                        iterator;
-    typedef typename iterator::iterator_category            iterator_category;
-    typedef typename iterator::value_type                   value_type;
-    typedef typename iterator::reference                    reference;
-    typedef typename iterator::index_reference              index_reference;
-    typedef typename iterator::pointer                      pointer;
-    typedef typename iterator::difference_type              difference_type;
-    typedef typename iterator::row_iterator                 row_iterator;
-    typedef typename iterator::column_iterator              column_iterator;
-    typedef StandardConstAccessor<T>                        DefaultAccessor; 
-    typedef StandardConstAccessor<T>                        default_accessor; 
+    typedef ConstBasicImageIterator<T, T **> Iterator;
+    typedef Iterator                               iterator;
+    typedef typename iterator::iterator_category   iterator_category;
+    typedef typename iterator::value_type          value_type;
+    typedef typename iterator::reference           reference;
+    typedef typename iterator::index_reference     index_reference;
+    typedef typename iterator::pointer             pointer;
+    typedef typename iterator::difference_type     difference_type;
+    typedef typename iterator::row_iterator        row_iterator;
+    typedef typename iterator::column_iterator     column_iterator;
+    typedef StandardConstAccessor<T>               DefaultAccessor; 
+    typedef StandardConstAccessor<T>               default_accessor; 
 };  
 
 #endif
