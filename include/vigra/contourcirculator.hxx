@@ -195,6 +195,14 @@ public:
     pointer operator->() const
         { return &pos_; }
 
+        /** Access pixel to the right of the crack edge (outside of
+         * the region bounded by the crack contour we walk on). Note
+         * that after operator++, the iterator can still point to the
+         * same pixel (looking from another direction now).
+         */
+    IMAGEITERATOR outerPixel() const
+        { return NEIGHBORHOODCIRCULATOR(neighborCirc_).turnRight().base(); }
+
         /** Get the offset from the current corner of the contour
             to the next one.
         */
