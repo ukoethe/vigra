@@ -1325,7 +1325,7 @@ template <class Array>
 void 
 SplineImageView<ORDER, VALUETYPE>::coefficientArray(double x, double y, Array & res) const
 {
-    Spline::WeightMatrix & weights = Spline::weights();
+    typename Spline::WeightMatrix & weights = Spline::weights();
     InternalValue tmp[ksize_][ksize_]; 
     
     calculateIndices(x, y);
