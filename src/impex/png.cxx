@@ -21,10 +21,6 @@
 
 #ifdef HasPNG
 
-#if PNG_LIBPNG_VER < 10201
-#error "please update your libpng to at least 1.2.1"
-#endif
-
 #include <stdexcept>
 #include <iostream>
 #include "void_vector.hxx"
@@ -36,6 +32,10 @@ extern "C"
 {
 #include <png.h>
 }
+
+#if PNG_LIBPNG_VER < 10201
+#error "please update your libpng to at least 1.2.1"
+#endif
 
 // TODO: per-scanline reading/writing
 
