@@ -319,17 +319,16 @@ class TinyVectorView;
 template <class VALUETYPE, int SIZE, class DATA, class DERIVED>
 class TinyVectorBase
 {
-    typedef typename detail::LoopType<SIZE>::type Loop;
-
-    friend class TinyVector<VALUETYPE, SIZE>;
-    friend class TinyVectorView<VALUETYPE, SIZE>;
-
-    TinyVectorBase()
-    {}
-
     TinyVectorBase(TinyVectorBase const &); // do not use
 
     TinyVectorBase & operator=(TinyVectorBase const & other); // do not use
+
+  protected:
+  
+    typedef typename detail::LoopType<SIZE>::type Loop;
+
+    TinyVectorBase()
+    {}
 
   public:
         /** STL-compatible definition of valuetype
@@ -469,7 +468,7 @@ class TinyVectorBase
         */
     size_type size() const { return SIZE; }
 
-  private:
+  protected:
     DATA data_;
 };
 
