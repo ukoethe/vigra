@@ -223,13 +223,8 @@ struct ConvolutionTest
     
     void separableGradientTest()
     {
-        ViffImage * viff = readViffImage("lenna128sepgrad.xv");
-
-        shouldMsg(viff != 0, "Unable to read test image \"lenna128sepgrad.xv\"\n");
-
-        Image sepgrad(viff->row_size,viff->col_size);
-        importViffImage(viff, destImage(sepgrad));
-        freeViffImage(viff);
+        Image sepgrad(lenna.size());
+        importImage(vigra::ImageImportInfo("lenna128sepgrad.xv"), destImage(sepgrad));
 
         double epsilon = 0.00001;
         
@@ -265,13 +260,8 @@ struct ConvolutionTest
     
     void gradientTest()
     {
-        ViffImage * viff = readViffImage("lenna128sepgrad.xv");
-
-        shouldMsg(viff != 0, "Unable to read test image \"lenna128sepgrad.xv\"\n");
-
-        Image sepgrad(viff->row_size,viff->col_size);
-        importViffImage(viff, destImage(sepgrad));
-        freeViffImage(viff);
+        Image sepgrad(lenna.size());
+        importImage(vigra::ImageImportInfo("lenna128sepgrad.xv"), destImage(sepgrad));
 
         double epsilon = 0.00001;
         
@@ -279,7 +269,7 @@ struct ConvolutionTest
         Image tmpy(lenna.size());
 
         gaussianGradient(srcImageRange(lenna), destImage(tmpx), destImage(tmpy), 1.0);
-        
+
         Image::ScanOrderIterator i1 = tmpx.begin();
         Image::ScanOrderIterator i1end = tmpx.end();
         Image::ScanOrderIterator i2 = tmpy.begin();
