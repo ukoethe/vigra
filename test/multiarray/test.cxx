@@ -1,6 +1,7 @@
 #include "unittest.hxx"
 #include "vigra/multi_array.hxx"
-#include "vigra/stdimage.hxx"
+#include "vigra/multi_impex.hxx"
+#include "vigra/basicimageview.hxx"
 
 using namespace vigra;
 
@@ -444,6 +445,51 @@ public:
     }
 };
 
+struct MultiImpexTest
+{
+    typedef MultiArray<3, unsigned char> Array;
+    typedef Array::difference_type Shape;
+    typedef Array::traverser Traverser;
+    
+    Array array;
+    
+    MultiImpexTest()
+    : array(Shape(2,3,4))
+    {
+        int value = 1;
+        
+        Traverser i3 = array.traverser_begin ();
+
+        for (; i3 != array.traverser_end(); ++i3, ++value) 
+        {
+            Traverser::next_type i2 = i3.begin ();
+            for (; i2 != i3.end(); ++i2) 
+            {
+                Traverser::next_type::next_type i1 = i2.begin ();
+                for (; i1 != i2.end(); ++i1)
+                {
+                    *i1 = value;
+                }
+            }
+        }
+    }
+    
+    void testImpex()
+    {
+        exportVolume(array, std::string("test"), std::string(".png"));
+        
+        Array result;
+        
+        importVolume(result, std::string("test"), std::string(".png"));
+        
+        shouldEqual(result.shape(), Shape(2,3,4));
+        shouldEqual(result(0,1,0), 1);
+        shouldEqual(result(0,1,1), 2);
+        shouldEqual(result(0,1,2), 3);
+        shouldEqual(result(0,1,3), 4);
+    }
+};
+
 template <class IMAGE>
 struct ImageTest
 {
@@ -723,6 +769,7 @@ struct MultiArrayTestSuite
         add( testCase( &MultiArrayTest::test_reshape) );
         add( testCase( &MultiArrayTest::test_subarray ) );
         add( testCase( &MultiArrayTest::test_stridearray ) );
+        add( testCase( &MultiImpexTest::testImpex ) );
     }
 };
 

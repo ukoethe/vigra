@@ -6,6 +6,6 @@ ifneq "$(MAKECMDGOALS)" "clean"
 include test.d
 endif
 
-EXTRA_CLEAN_TARGET=test.gif test.xv test.ras
+EXTRA_CLEAN_TARGET=test?.png
 
 include ../Makefile.include
