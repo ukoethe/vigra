@@ -743,7 +743,7 @@ struct LinalgTest
             Matrix a = random_symmetric_matrix (size);
             Matrix ew(size, 1);
             Matrix ev(size, size);
-            should(eigenSystem(a, ew, ev));
+            should(symmetricEigensystem(a, ew, ev));
             Matrix id = ev * transpose(ev);
             shouldEqualSequenceTolerance(id.data(), id.data()+size*size, idref.data(), epsilon);
             Matrix ae = ev * diagonalMatrix(ew) * transpose(ev);
