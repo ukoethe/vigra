@@ -812,7 +812,7 @@ class ImageExportImportFailureTest
                                     "Unable to open file 'intentionalFailure/res.gif'.";
             should(strncmp(expected, e.what(), strlen(expected)) == 0);
         }
-        catch(vigra::PostconditionViolation & e)  // for old impex
+        catch(vigra::PostconditionViolation &)  // for old impex
         {}
     }
     
@@ -829,7 +829,7 @@ class ImageExportImportFailureTest
                                     "Unable to open file 'foo.gif'.";
             should(strncmp(expected, e.what(), strlen(expected)) == 0);
         }
-        catch(vigra::PostconditionViolation & e)  // for old impex
+        catch(vigra::PostconditionViolation &)  // for old impex
         {}
     }
         
@@ -846,7 +846,7 @@ class ImageExportImportFailureTest
                                     "Unable to open file 'intentionalFailure/res.jpg'.";
             should(strncmp(expected, e.what(), strlen(expected)) == 0);
         }
-        catch(vigra::PostconditionViolation & e)  // for old impex
+        catch(vigra::PostconditionViolation &)  // for old impex
         {}
     }
     
@@ -863,7 +863,7 @@ class ImageExportImportFailureTest
                                     "Unable to open file 'foo.jpg'.";
             should(strncmp(expected, e.what(), strlen(expected)) == 0);
         }
-        catch(vigra::PostconditionViolation & e)  // for old impex
+        catch(vigra::PostconditionViolation &)  // for old impex
         {}
     }
         
@@ -880,7 +880,7 @@ class ImageExportImportFailureTest
                                     "Unable to open file 'intentionalFailure/res.tif'.";
             should(strncmp(expected, e.what(), strlen(expected)) == 0);
         }
-        catch(vigra::PostconditionViolation & e)  // for old impex
+        catch(vigra::PostconditionViolation &)  // for old impex
         {}
     }
     
@@ -897,7 +897,7 @@ class ImageExportImportFailureTest
                                     "Unable to open file 'foo.tif'.";
             should(strncmp(expected, e.what(), strlen(expected)) == 0);
         }
-        catch(vigra::PostconditionViolation & e)  // for old impex
+        catch(vigra::PostconditionViolation &)  // for old impex
         {}
     }
         
@@ -914,7 +914,7 @@ class ImageExportImportFailureTest
                                     "Unable to open file 'intentionalFailure/res.bmp'.";
             should(strncmp(expected, e.what(), strlen(expected)) == 0);
         }
-        catch(vigra::PostconditionViolation & e)  // for old impex
+        catch(vigra::PostconditionViolation &)  // for old impex
         {}
     }
     
@@ -931,7 +931,7 @@ class ImageExportImportFailureTest
                                     "Unable to open file 'foo.bmp'.";
             should(strncmp(expected, e.what(), strlen(expected)) == 0);
         }
-        catch(vigra::PostconditionViolation & e)  // for old impex
+        catch(vigra::PostconditionViolation &)  // for old impex
         {}
     }
         
@@ -948,7 +948,7 @@ class ImageExportImportFailureTest
                                     "Unable to open file 'intentionalFailure/res.pnm'.";
             should(strncmp(expected, e.what(), strlen(expected)) == 0);
         }
-        catch(vigra::PostconditionViolation & e)  // for old impex
+        catch(vigra::PostconditionViolation &)  // for old impex
         {}
     }
     
@@ -965,7 +965,7 @@ class ImageExportImportFailureTest
                                     "Unable to open file 'foo.pnm'.";
             should(strncmp(expected, e.what(), strlen(expected)) == 0);
         }
-        catch(vigra::PostconditionViolation & e)  // for old impex
+        catch(vigra::PostconditionViolation &)  // for old impex
         {}
     }
         
@@ -982,7 +982,7 @@ class ImageExportImportFailureTest
                                     "Unable to open file 'intentionalFailure/res.ras'.";
             should(strncmp(expected, e.what(), strlen(expected)) == 0);
         }
-        catch(vigra::PostconditionViolation & e)  // for old impex
+        catch(vigra::PostconditionViolation &)  // for old impex
         {}
     }
     
@@ -999,7 +999,7 @@ class ImageExportImportFailureTest
                                     "Unable to open file 'foo.ras'.";
             should(strncmp(expected, e.what(), strlen(expected)) == 0);
         }
-        catch(vigra::PostconditionViolation & e)  // for old impex
+        catch(vigra::PostconditionViolation &)  // for old impex
         {}
     }
         
@@ -1016,7 +1016,7 @@ class ImageExportImportFailureTest
                                     "Unable to open file 'intentionalFailure/res.xv'.";
             should(strncmp(expected, e.what(), strlen(expected)) == 0);
         }
-        catch(vigra::PostconditionViolation & e)  // for old impex
+        catch(vigra::PostconditionViolation &)  // for old impex
         {}
     }
     
@@ -1033,7 +1033,7 @@ class ImageExportImportFailureTest
                                     "Unable to open file 'foo.xv'.";
             should(strncmp(expected, e.what(), strlen(expected)) == 0);
         }
-        catch(vigra::PostconditionViolation & e)  // for old impex
+        catch(vigra::PostconditionViolation &)  // for old impex
         {}
     }
         

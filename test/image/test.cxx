@@ -486,9 +486,10 @@ struct CompareFunctor
 };
 
 // for shouldEqual:
-class std::ostream & operator <<(std::ostream &s, Diff2D size)
+std::ostream & operator <<(std::ostream &s, Diff2D size)
 {
 	s << "Diff2D(" << size.x << ", " << size.y << ")";
+    return s;
 }
 
 struct ImageContainerTests

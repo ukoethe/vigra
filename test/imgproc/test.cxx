@@ -827,7 +827,7 @@ struct ResizeImageSplineTest
 
         for(; i1 != img1.end(); ++i1, ++iex)
         {
-            shouldEqualTolerance(acc(i1), acc(iex), 1e-4);
+            shouldEqualTolerance(acc(i1), acc(iex), 1e-4f);
         }
     }
 
@@ -851,7 +851,7 @@ struct ResizeImageSplineTest
 
         for(; i1 != img1.end(); ++i1, ++ired)
         {
-            shouldEqualTolerance(acc(i1), acc(ired), 1e-4);
+            shouldEqualTolerance(acc(i1), acc(ired), 1e-4f);
         }
     }
 
@@ -875,9 +875,9 @@ struct ResizeImageSplineTest
 
         for(; i1 != img1.end(); ++i1, ++iex)
         {   
-            shouldEqualTolerance(acc.red(i1), acc.red(iex), 1e-4);
-            shouldEqualTolerance(acc.green(i1), acc.green(iex), 1e-4);
-            shouldEqualTolerance(acc.blue(i1), acc.blue(iex), 1e-4);
+            shouldEqualTolerance(acc.red(i1), acc.red(iex), 1e-4f);
+            shouldEqualTolerance(acc.green(i1), acc.green(iex), 1e-4f);
+            shouldEqualTolerance(acc.blue(i1), acc.blue(iex), 1e-4f);
         }
     }
 
@@ -901,9 +901,9 @@ struct ResizeImageSplineTest
 
         for(; i1 != img1.end(); ++i1, ++ired)
         {
-            shouldEqualTolerance(acc.red(i1), acc.red(ired), 1e-4);
-            shouldEqualTolerance(acc.green(i1), acc.green(ired), 1e-4);
-            shouldEqualTolerance(acc.blue(i1), acc.blue(ired), 1e-4);
+            shouldEqualTolerance(acc.red(i1), acc.red(ired), 1e-4f);
+            shouldEqualTolerance(acc.green(i1), acc.green(ired), 1e-4f);
+            shouldEqualTolerance(acc.blue(i1), acc.blue(ired), 1e-4f);
         }
     }
 
