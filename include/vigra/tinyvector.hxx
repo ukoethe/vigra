@@ -37,6 +37,16 @@ using VIGRA_CSTD::abs;
 using VIGRA_CSTD::ceil;
 using VIGRA_CSTD::floor;
 
+
+template <class V1, int SIZE, class D1, class D2>
+class TinyVectorBase;
+
+template <class V1, int SIZE, class D1, class D2>
+inline
+typename TinyVectorBase<V1, SIZE, D1, D2>::SquaredNormType
+squaredNorm(TinyVectorBase<V1, SIZE, D1, D2> const & t);
+
+
 namespace detail {
 
 #define VIGRA_EXEC_LOOP(NAME, OPER) \
