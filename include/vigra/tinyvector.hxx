@@ -289,32 +289,18 @@ class TinyVectorView;
 
 /********************************************************/
 /*                                                      */
-/*                      TinyVector                      */
+/*                    TinyVectorBase                    */
 /*                                                      */
 /********************************************************/
 
-/** \brief Class for fixed size vectors.
+/** \brief Base class for fixed size vectors.
 
-    This class contains an array of size SIZE of the specified VALUETYPE.
-    The interface conforms with STL vector, except that there are no functions
-    that change the size of a TinyVector.
-
-    \ref TinyVectorOperators "Arithmetic operations"
-    on TinyVectors are defined as component-wise applications of these
-    operations. Addition and subtraction of two TinyVectors
-    (+=, -=, +, -, unary -), multiplication and division of an
-    TinyVector with a double, and NumericTraits/PromoteTraits are defined,
-    so that TinyVector fulfills the requirements of \ref LinearAlgebra.
-
-    VIGRA algorithms typically use \ref vigra::VectorAccessor to access
-    TinyVectors as a whole, or specific components of them.
+    This class contains functionality shared by 
+    \ref TinyVector and \ref TinyVectorBase, and enables these classes
+    to be freely mixed within expressions. It is typically not used directly.
 
     <b>\#include</b> "<a href="tinyvector_8hxx-source.html">vigra/tinyvector.hxx</a>"<br>
     Namespace: vigra
-
-    <b>Note:</b> TinyVector does not work properly on Microsoft Visual C++
-    (in particular, it's unable to compile some templates for
-     arithmetic operators).
 **/
 template <class VALUETYPE, int SIZE, class DATA, class DERIVED>
 class TinyVectorBase
@@ -472,6 +458,25 @@ class TinyVectorBase
     DATA data_;
 };
 
+/** \brief Class for fixed size vectors.
+
+    This class contains an array of size SIZE of the specified VALUETYPE.
+    The interface conforms to STL vector, except that there are no functions
+    that change the size of a TinyVector.
+
+    \ref TinyVectorOperators "Arithmetic operations"
+    on TinyVectors are defined as component-wise applications of these
+    operations. Addition and subtraction of two TinyVectors
+    (+=, -=, +, -, unary -), multiplication and division of an
+    TinyVector with a double, and NumericTraits/PromoteTraits are defined,
+    so that TinyVector fulfills the requirements of \ref LinearAlgebra.
+
+    VIGRA algorithms typically use \ref vigra::VectorAccessor to access
+    TinyVectors as a whole, or specific components of them.
+
+    <b>\#include</b> "<a href="tinyvector_8hxx-source.html">vigra/tinyvector.hxx</a>"<br>
+    Namespace: vigra
+**/
 template <class T, int SIZE>
 class TinyVector
 : public TinyVectorBase<T, SIZE, T[SIZE], TinyVector<T, SIZE> >
@@ -582,6 +587,27 @@ class TinyVector
     {}
 };
 
+/** \brief Wrapper for fixed size vectors.
+
+    This class wraps an array of size SIZE of the specified VALUETYPE.
+    Thus, the array can be accessed with an interface similar to
+    that of std::vector (except that there are no functions
+    that change the size of a TinyVectorView). The TinyVectorView
+    does <em>not</em> assume ownership of the given memory.
+
+    \ref TinyVectorOperators "Arithmetic operations"
+    on TinyVectorViews are defined as component-wise applications of these
+    operations. Addition and subtraction of two TinyVectorViews
+    (+=, -=, +, -, unary -), multiplication and division of an
+    TinyVectorViews with a double, and NumericTraits/PromoteTraits are defined,
+    so that TinyVectorView fulfills the requirements of \ref LinearAlgebra.
+
+    VIGRA algorithms typically use \ref vigra::VectorAccessor to access
+    TinyVectorViews as a whole, or specific components of them.
+
+    <b>\#include</b> "<a href="tinyvector_8hxx-source.html">vigra/tinyvector.hxx</a>"<br>
+    Namespace: vigra
+**/
 template <class T, int SIZE>
 class TinyVectorView
 : public TinyVectorBase<T, SIZE, T *, TinyVectorView<T, SIZE> >
