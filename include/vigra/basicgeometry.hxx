@@ -24,6 +24,7 @@
 
 #include "vigra/error.hxx"
 #include "vigra/stdimage.hxx"
+#include "vigra/copyimage.hxx"
 #include <cmath>
 
 namespace vigra {
@@ -37,18 +38,19 @@ void rotateImage(SrcIterator is, SrcIterator end, SrcAccessor as,
     int ws = end.x - is.x;
     int hs = end.y - is.y;
 
-    if(rotation%90 !=0 && rotation !=0)
-    {
-        vigra_precondition(false, 
+    vigra_precondition(rotation % 90 == 0, 
                 "rotateImage(): "
-                "This function rotates images only about 90, 180 and -90 degree");
+                "This function rotates images only about multiples of 90 degree");
 
-        //rotation = 0;
-    }
-    else rotation = rotation%360; 
+    rotation = rotation%360; 
+    if (rotation < 0)
+        rotation += 360;
     
     switch(rotation)
     {
+        case 0:
+            copyImage(is, end, as, id, ad);
+            break;
         case 90: 
             is.x += (ws-1);
             for(x=0; x != ws; x++, is.x--, id.y++)
@@ -61,7 +63,7 @@ void rotateImage(SrcIterator is, SrcIterator end, SrcAccessor as,
                 }
         
             }
-        break;
+            break;
 
         case 180:
             end.x--;
@@ -76,7 +78,7 @@ void rotateImage(SrcIterator is, SrcIterator end, SrcAccessor as,
                 }
         
             }
-        break;
+            break;
 
         case 270:  
             is.y += (hs-1);
@@ -90,24 +92,19 @@ void rotateImage(SrcIterator is, SrcIterator end, SrcAccessor as,
                 }
         
             }
-        break;
-        
-        case 0:    
-            for(x=0; x != ws; x++, is.x++, id.x++)
-            {
-                typename SrcIterator::column_iterator cs = is.columnIterator();
-                typename DestIterator::column_iterator cd = id.columnIterator();
-                for(y=0; y != hs; y++, cs++, cd++)
-                {
-                    ad.set(as(cs), cd);
-                }
-        
-            }
-        break;
-
+            break;
         default: //not needful, because of the exception handig in if-statement 
             vigra_fail("internal error"); 
     }
+}
+
+template <class SrcImageIterator, class SrcAccessor,
+          class DestImageIterator, class DestAccessor>
+inline void 
+rotateImage(triple<SrcImageIterator, SrcImageIterator, SrcAccessor> src,
+              pair<DestImageIterator, DestAccessor> dest, int rotation)
+{
+    rotateImage(src.first, src.second, src.third, dest.first, dest.second, rotation);
 }
 
 /*
@@ -175,6 +172,15 @@ void reflectImage(SrcIterator is, SrcIterator end, SrcAccessor as,
                    "   'and' is included");
 }
 
+template <class SrcImageIterator, class SrcAccessor,
+          class DestImageIterator, class DestAccessor>
+inline void 
+reflectImage(triple<SrcImageIterator, SrcImageIterator, SrcAccessor> src,
+              pair<DestImageIterator, DestAccessor> dest, Reflect reflect)
+{
+    reflectImage(src.first, src.second, src.third, dest.first, dest.second, reflect);
+}
+
 enum Transpose{major = 1, minor = 2};
 
 template <class SrcIterator, class SrcAccessor, 
@@ -235,6 +241,15 @@ void transposeImage(SrcIterator is, SrcIterator end, SrcAccessor as,
                    "This function transposes major or minor,"
                    "   'and' is included");
 
+}
+
+template <class SrcImageIterator, class SrcAccessor,
+          class DestImageIterator, class DestAccessor>
+inline void 
+transposeImage(triple<SrcImageIterator, SrcImageIterator, SrcAccessor> src,
+              pair<DestImageIterator, DestAccessor> dest, Transpose transpose)
+{
+    transposeImage(src.first, src.second, src.third, dest.first, dest.second, transpose);
 }
 
 /********************************************************/
@@ -320,6 +335,13 @@ void resampleLine(SrcIterator src_iter, SrcIterator src_iter_end, SrcAccessor sr
 /*                                                      */
 /********************************************************/
 
+inline int sizeForResamplingFactor(int oldsize, double factor)
+{
+    return (factor < 1.0)
+        ? (int)VIGRA_CSTD::ceil(oldsize * factor) 
+        : (int)(oldsize * factor);
+}
+
 /** \brief Resample image by a given factor.
 
     This algorithm is very fast and does not require any arithmetic on the pixel types.
@@ -394,15 +416,12 @@ resampleImage(SrcIterator is, SrcIterator iend, SrcAccessor sa,
     int width_old = iend.x - is.x;
     int height_old = iend.y - is.y;
     
-    int width_new = 0;
-    int height_new = 0;
-
     //Bei Verkleinerung muss das dest-Bild ceiling(src*factor), da z.B.
     //aus 6x6 grossem Bild wird eins 18x18 grosses gemacht bei Vergroesserungsfaktor 3.1
     //umgekehrt damit wir vom 18x18 zu 6x6 (und nicht 5x5) bei Vergroesserung von 1/3.1
     //muss das kleinste Integer das groesser als 18/3.1 ist genommen werden.
-    (factor < 1)? height_new = (int)ceil(height_old * factor) : height_new = (int)(height_old * factor);
-    (factor < 1)? width_new = (int)ceil(width_old * factor) : width_new = (int)(width_old * factor);
+    int height_new = sizeForResamplingFactor(height_old, factor);
+    int width_new = sizeForResamplingFactor(width_old, factor);
     
     vigra_precondition((width_old > 1) && (height_old > 1),
                  "resampleImage(): "
@@ -430,7 +449,6 @@ resampleImage(SrcIterator is, SrcIterator iend, SrcAccessor sa,
 
     yt = tmp.upperLeft();
 
-    typename BasicImage<SRCVT>::Iterator dest = id ;
     for(y=0; y < height_new; ++y, ++yt.y, ++id.y) 
     {
         typename DestIterator::row_iterator rd = id.rowIterator();
@@ -446,7 +464,7 @@ inline void
 resampleImage(triple<SrcImageIterator, SrcImageIterator, SrcAccessor> src,
               pair<DestImageIterator, DestAccessor> dest, double factor)
 {
-    resampleImage(src.first, scr.second, src.third, dest.first, dest.second, factor);
+    resampleImage(src.first, src.second, src.third, dest.first, dest.second, factor);
 }
 
 
