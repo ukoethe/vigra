@@ -1089,7 +1089,7 @@ void SplineImageView<ORDER, VALUETYPE>::init()
 {
     ArrayVector<double> const & b = k_.prefilterCoefficients();
     
-    for(unsigned int i=0; i<b.size() && b[i] != 0.0; ++i)
+    for(unsigned int i=0; i<b.size(); ++i)
     {
         recursiveFilterX(srcImageRange(image_), destImage(image_), b[i], BORDER_TREATMENT_REFLECT);
         recursiveFilterY(srcImageRange(image_), destImage(image_), b[i], BORDER_TREATMENT_REFLECT);
