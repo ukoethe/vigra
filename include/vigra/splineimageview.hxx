@@ -1213,7 +1213,7 @@ class SplineImageView
 template <int ORDER, class VALUETYPE>
 void SplineImageView<ORDER, VALUETYPE>::init()
 {
-    double * b = Spline::prefilterCoefficients();
+    double const * b = Spline::prefilterCoefficients();
     
     for(unsigned int i=0; i<kcenter_; ++i)
     {
