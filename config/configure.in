@@ -36,8 +36,9 @@ CFLAGS=-O
 CXXFLAGS=-O
 LIBCFLAGS=-I$vigra_srcdir/include
 LIBCXXFLAGS=-I$vigra_srcdir/include
+VIGRA_INCLUDES='-I$(prefix)/include'
 CINCLUDES=
-CXXINCLUDES='-I$(prefix)/include'
+CXXINCLUDES="$VIGRA_INCLUDES"
 
 AC_PROG_CC
 AC_PROG_CXX
@@ -57,8 +58,8 @@ AC_LIBTOOL_CXX
 AC_FIND_PACKAGE(tiff, tiff, tiff.h, [support import/export of tiff images [default=no]])
 if test $with_tiff = "yes";
 then
-    TIFFLIB="-L$with_tifflib -ltiff"
-    LIBS="$LIBS $TIFFLIB"
+    TIFF_LIB="-L$with_tifflib -ltiff"
+    IMPEX_DEPLIBS="$IMPEX_DEPLIBS $TIFF_LIB"
     LIBCFLAGS="$LIBCFLAGS -DHasTIFF -I$with_tiffinc"
     LIBCXXFLAGS="$LIBCXXFLAGS -DHasTIFF -I$with_tiffinc"
 fi
@@ -66,23 +67,34 @@ fi
 AC_FIND_PACKAGE(jpeg, jpeg, jpeglib.h, [support import/export of jpeg images [default=no]])
 if test $with_jpeg = "yes";
 then
-    JPEGLIB="-L$with_jpeglib -ljpeg"
-    LIBS="$LIBS $JPEGLIB"
+    JPEG_LIB="-L$with_jpeglib -ljpeg"
+    IMPEX_DEPLIBS="$IMPEX_DEPLIBS $JPEG_LIB"
     LIBCFLAGS="$LIBCFLAGS -DHasJPEG -I$with_jpeginc"
     LIBCXXFLAGS="$LIBCXXFLAGS -DHasJPEG -I$with_jpeginc"
 fi
 
-DEPLIBS="$LIBS"
+AC_FIND_PACKAGE(fftw, fftw, fftw.h, [support fast Fourier transforms [default=no]])
+if test $with_fftw = "yes";
+then
+    FFTW_LIB="-L$with_fftwlib -lfftw"
+    FFTW_INCLUDES="-I$with_fftwinc"
+    CXXINCLUDES="$CXXINCLUDES $FFTW_INCLUDES"
+fi
 
 #########################################################
 
-LIBS="-L$libdir -lvigraimpex $LIBS -lm"
+IMPEX_LIB="-L$libdir -lvigraimpex -lm $IMPEX_DEPLIBS"
+LIBS="$LIBS $IMPEX_LIB"
 
 AC_SUBST(vigra_srcdir)
 AC_SUBST(vigra_builddir)
-AC_SUBST(TIFFLIB)
-AC_SUBST(JPEGLIB)
-AC_SUBST(DEPLIBS)
+
+AC_SUBST(TIFF_LIB)
+AC_SUBST(JPEG_LIB)
+AC_SUBST(FFTW_LIB)
+AC_SUBST(IMPEX_LIB)
+AC_SUBST(IMPEX_DEPLIBS)
+
 AC_SUBST(CINCLUDES)
 AC_SUBST(CXXINCLUDES)
 AC_SUBST(LIBCFLAGS)
