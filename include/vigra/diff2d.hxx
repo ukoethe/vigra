@@ -86,7 +86,7 @@ class Diff2DConstColumnIteratorPolicy
     typedef Diff const *                    pointer;
     typedef std::random_access_iterator_tag iterator_category;
 
-    static void initialize(BaseType & d) {}
+    static void initialize(BaseType & /*d*/) {}
 
     static reference dereference(BaseType const & d)
         { return d; }
@@ -728,31 +728,31 @@ inline Point2D operator*(Point2D l, double r)
     l *= r;
     return l;
 }
-    
+
 inline Point2D operator*(double l, Point2D r)
 {
     r *= l;
     return r;
 }
-    
+
 inline Size2D operator*(Size2D l, double r)
 {
     l *= r;
     return l;
 }
-    
+
 inline Size2D operator*(double l, Size2D r)
 {
     r *= l;
     return r;
 }
-    
+
 inline Point2D operator/(Point2D l, double r)
 {
     l /= r;
     return l;
 }
-    
+
 inline Size2D operator/(Size2D l, double r)
 {
     l /= r;
@@ -764,31 +764,31 @@ inline Point2D operator*(Point2D l, int r)
     l *= r;
     return l;
 }
-    
+
 inline Point2D operator*(int l, Point2D r)
 {
     r *= l;
     return r;
 }
-    
+
 inline Size2D operator*(Size2D l, int r)
 {
     l *= r;
     return l;
 }
-    
+
 inline Size2D operator*(int l, Size2D r)
 {
     r *= l;
     return r;
 }
-    
+
 inline Point2D operator/(Point2D l, int r)
 {
     l /= r;
     return l;
 }
-    
+
 inline Size2D operator/(Size2D l, int r)
 {
     l /= r;
