@@ -37,6 +37,9 @@
 #ifdef DIFFERENCE
 #undef DIFFERENCE
 #endif
+#ifdef RGB
+#undef RGB
+#endif
 
 #elif defined(__unix)
 
