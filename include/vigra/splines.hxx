@@ -27,6 +27,7 @@
 #include "vigra/mathutil.hxx"
 #include "vigra/polynomial.hxx"
 #include "vigra/array_vector.hxx"
+#include "vigra/fixedpoint.hxx"
 
 namespace vigra {
 
@@ -272,6 +273,15 @@ class BSplineBase<0, T>
          return exec(x, derivativeOrder_);
     }
 
+    template <unsigned int IntBits, unsigned int FracBits>
+    FixedPoint<IntBits, FracBits> operator()(FixedPoint<IntBits, FracBits> x) const
+    {
+        typedef FixedPoint<IntBits, FracBits> Value;
+        return x.value < Value::ONE_HALF && -Value::ONE_HALF <= x.value 
+                   ? Value(Value::ONE, FPNoShift)
+                   : Value(0, FPNoShift);
+    }
+
     result_type operator()(first_argument_type x, second_argument_type derivative_order) const
     {        
          return exec(x, derivativeOrder_ + derivative_order);
@@ -338,6 +348,16 @@ class BSpline<1, T>
     result_type operator()(argument_type x) const
     {
         return exec(x, derivativeOrder_);
+    }
+
+    template <unsigned int IntBits, unsigned int FracBits>
+    FixedPoint<IntBits, FracBits> operator()(FixedPoint<IntBits, FracBits> x) const
+    {
+        typedef FixedPoint<IntBits, FracBits> Value;
+        int v = abs(x.value);
+        return v < Value::ONE ? 
+                Value(Value::ONE - v, FPNoShift)
+                : Value(0, FPNoShift);
     }
 
     result_type operator()(first_argument_type x, second_argument_type derivative_order) const
@@ -425,6 +445,26 @@ class BSpline<2, T>
     result_type operator()(argument_type x) const
     {
         return exec(x, derivativeOrder_);
+    }
+
+    template <unsigned int IntBits, unsigned int FracBits>
+    FixedPoint<IntBits, FracBits> operator()(FixedPoint<IntBits, FracBits> x) const
+    {
+        typedef FixedPoint<IntBits, FracBits> Value;
+        enum { ONE_HALF = Value::ONE_HALF, THREE_HALVES = ONE_HALF * 3, THREE_QUARTERS = THREE_HALVES / 2,
+               PREMULTIPLY_SHIFT1 = FracBits <= 16 ? 0 : FracBits - 16,
+               PREMULTIPLY_SHIFT2 = FracBits - 1 <= 16 ? 0 : FracBits - 17,
+               POSTMULTIPLY_SHIFT1 = FracBits - 2*PREMULTIPLY_SHIFT1, 
+               POSTMULTIPLY_SHIFT2 = FracBits - 2*PREMULTIPLY_SHIFT2  }; 
+        int v = abs(x.value);
+        return v == ONE_HALF 
+                   ? Value(ONE_HALF, FPNoShift)
+                   : v <= ONE_HALF 
+                       ? Value(THREE_QUARTERS - 
+                               (int)(sq((unsigned)v >> PREMULTIPLY_SHIFT2) >> POSTMULTIPLY_SHIFT2), FPNoShift)
+                       : v < THREE_HALVES
+                            ? Value((int)(sq((unsigned)(THREE_HALVES-v) >> PREMULTIPLY_SHIFT1) >> (POSTMULTIPLY_SHIFT1 + 1)), FPNoShift)
+                            : Value(0, FPNoShift);
     }
 
     result_type operator()(first_argument_type x, second_argument_type derivative_order) const
@@ -531,6 +571,26 @@ class BSpline<3, T>
     result_type operator()(argument_type x) const
     {
         return exec(x, derivativeOrder_);
+    }
+
+    template <unsigned int IntBits, unsigned int FracBits>
+    FixedPoint<IntBits, FracBits> operator()(FixedPoint<IntBits, FracBits> x) const
+    {
+        typedef FixedPoint<IntBits, FracBits> Value;
+        enum { ONE = Value::ONE, TWO = 2 * ONE, TWO_THIRDS = TWO / 3, ONE_SIXTH = ONE / 6,
+               PREMULTIPLY_SHIFT = FracBits <= 16 ? 0 : FracBits - 16,
+               POSTMULTIPLY_SHIFT = FracBits - 2*PREMULTIPLY_SHIFT }; 
+        int v = abs(x.value);
+        return v == ONE
+                   ? Value(ONE_SIXTH, FPNoShift)
+                   : v < ONE 
+                       ? Value(TWO_THIRDS + 
+                               (((int)(sq((unsigned)v >> PREMULTIPLY_SHIFT) >> (POSTMULTIPLY_SHIFT + PREMULTIPLY_SHIFT))
+                                       * (((v >> 1) - ONE) >> PREMULTIPLY_SHIFT)) >> POSTMULTIPLY_SHIFT), FPNoShift)
+                       : v < TWO
+                            ? Value((int)((sq((unsigned)(TWO-v) >> PREMULTIPLY_SHIFT) >> (POSTMULTIPLY_SHIFT + PREMULTIPLY_SHIFT))
+                                      * ((unsigned)(TWO-v) >> PREMULTIPLY_SHIFT) / 6) >> POSTMULTIPLY_SHIFT, FPNoShift)
+                            : Value(0, FPNoShift);
     }
 
     result_type operator()(first_argument_type x, second_argument_type derivative_order) const
