@@ -57,6 +57,10 @@ T squaredNorm(const MultiArrayView<2, T, C> &a);
 template <class T, class ALLOC>
 class TemporaryMatrix;
 
+template <class T, class C1, class C2>
+void transpose(const MultiArrayView<2, T, C1> &v, MultiArrayView<2, T, C2> &r);
+
+
 /********************************************************/
 /*                                                      */
 /*                        Matrix                        */
@@ -400,6 +404,10 @@ Matrix<T, ALLOC> & Matrix<T, ALLOC>::operator/=(T other)
     return *this;
 }
 
+// TemporaryMatrix is provided as an optimization: Functions returning a matrix can 
+// use TemporaryMatrix to make explicit that it was allocated as a temporary data structure.
+// Functions receiving a TemporaryMatrix can thus often avoid to allocate new temporary 
+// memory.
 template <class T, class ALLOC = std::allocator<T> >
 class TemporaryMatrix
 : public Matrix<T, ALLOC>
@@ -525,85 +533,6 @@ columnVector(MultiArrayView<2, T, C> const & m, int d)
     return m.subarray(Shape(0, d), Shape(rowCount(m), d+1));
 }
 
-    /** calculate the inner product of two matrices representing vectors. 
-        That is, matrix \a x must have a single row, and matrix \a y must 
-        have a single column, and the other dimensions must match.
-    
-    <b>\#include</b> "<a href="linear__algebra_8hxx-source.html">vigra/linear_algebra.hxx</a>"<br>
-        Namespaces: vigra and vigra::linalg
-     */ 
-template <class T, class C1, class C2>
-T dot(const MultiArrayView<2, T, C1> &x, const MultiArrayView<2, T, C2> &y)
-{
-    const unsigned int n = columnCount(x);
-    vigra_precondition(n == rowCount(y) && 1 == rowCount(x) && 1 == columnCount(y),
-       "dot(): shape mismatch.");
-    T ret = NumericTraits<T>::zero();
-    for(unsigned int i = 0; i < n; ++i)
-        ret += x(0, i) * y(i, 0);
-    return ret;
-}
-
-    /** calculate the inner product of two vectors. The vector
-        lenths must match.
-    
-    <b>\#include</b> "<a href="linear__algebra_8hxx-source.html">vigra/linear_algebra.hxx</a>"<br>
-        Namespaces: vigra and vigra::linalg
-     */ 
-template <class T, class C1, class C2>
-T dot(const MultiArrayView<1, T, C1> &x, const MultiArrayView<1, T, C2> &y)
-{
-    const unsigned int n = x.elementCount();
-    vigra_precondition(n == y.elementCount(),
-       "dot(): shape mismatch.");
-    T ret = NumericTraits<T>::zero();
-    for(unsigned int i = 0; i < n; ++i)
-        ret += x(i) * y(i);
-    return ret;
-}
-
-    /** calculate the outer product of two matrices representing vectors. 
-        That is, matrix \a x must have a single column, and matrix \a y must 
-        have a single row, and the other dimensions must match. The result
-        is written into \a r.
-    
-    <b>\#include</b> "<a href="linear__algebra_8hxx-source.html">vigra/linear_algebra.hxx</a>"<br>
-        Namespaces: vigra and vigra::linalg
-     */ 
-template <class T, class C1, class C2, class C3>
-void outer(const MultiArrayView<2, T, C1> &x, const MultiArrayView<2, T, C2> &y,
-      MultiArrayView<2, T, C3> &r)
-{
-    const unsigned int rows = rowCount(r);
-    const unsigned int cols = columnCount(r);
-    vigra_precondition(rows == rowCount(x) && cols == columnCount(y) && 
-                       1 == columnCount(x) && 1 == rowCount(y),
-       "outer(): shape mismatch.");
-    for(unsigned int i = 0; i < cols; ++i)
-        for(unsigned int j = 0; j < rows; ++j)
-            r(j, i) = x(j, 0) * y(0, i);
-}
-
-    /** calculate the outer product of two matrices representing vectors. 
-        That is, matrix \a x must have a single column, and matrix \a y must 
-        have a single row, and the other dimensions must match. The result
-        is returned as a temporary matrix.
-    
-    <b>\#include</b> "<a href="linear__algebra_8hxx-source.html">vigra/linear_algebra.hxx</a>"<br>
-        Namespaces: vigra and vigra::linalg
-     */ 
-template <class T, class C1, class C2>
-TemporaryMatrix<T> 
-outer(const MultiArrayView<2, T, C1> &x, const MultiArrayView<2, T, C2> &y)
-{
-    const unsigned int rows = rowCount(x);
-    const unsigned int cols = columnCount(y);
-    vigra_precondition(1 == columnCount(x) && 1 == rowCount(y),
-       "outer(): shape mismatch.");
-    TemporaryMatrix<T> ret(rows, cols);
-    outer(x, y, ret);
-    return ret;
-}
 
     /** calculate the squared Frobenius norm of a matrix. 
         Equal to the sum of squares of the matrix elements.
@@ -804,63 +733,6 @@ TemporaryMatrix<T> transpose(TemporaryMatrix<T> const & v)
     }
 }
 
-    /** invert square matrix \a v.
-        The result is written into \a r which must have the same shape.
-        The inverse is calculated by means of QR decomposition. If \a v
-        is not invertible, <tt>vigra::PreconditionViolation</tt> exception is thrown.
-    
-    <b>\#include</b> "<a href="linear__algebra_8hxx-source.html">vigra/linear_algebra.hxx</a>"<br>
-        Namespaces: vigra and vigra::linalg
-     */ 
-template <class T, class C1, class C2>
-void inverse(const MultiArrayView<2, T, C1> &v, MultiArrayView<2, T, C2> &r)
-{
-    const unsigned int n = rowCount(r);
-    vigra_precondition(n == columnCount(v) && n == rowCount(v) && n == columnCount(r),
-       "inverse(): matrices must be square.");
-    vigra_precondition(linearSolve(v, identityMatrix<T>(n), r),
-        "inverse(): matrix is not invertible.");
-}
- 
-    /** create the inverse of square matrix \a v.
-        The result is returned as a temporary matrix.
-        The inverse is calculated by means of QR decomposition. If \a v
-        is not invertible, <tt>vigra::PreconditionViolation</tt> exception is thrown.
-        Usage:
-        
-        \code
-        vigra::Matrix<double> v(n, n);
-        v = ...;
-        
-        vigra::Matrix<double> m = inverse(v);
-        \endcode
-    
-    <b>\#include</b> "<a href="linear__algebra_8hxx-source.html">vigra/linear_algebra.hxx</a>"<br>
-        Namespaces: vigra and vigra::linalg
-     */ 
-template <class T, class C>
-TemporaryMatrix<T> inverse(const MultiArrayView<2, T, C> &v)
-{
-    const unsigned int n = rowCount(v);
-    vigra_precondition(n == columnCount(v),
-       "inverse(): matrix must be square.");
-    TemporaryMatrix<T> ret = identityMatrix<T>(n);
-    vigra_precondition(linearSolve(v, ret, ret),
-        "inverse(): matrix is not invertible.");
-    return ret;
-}
- 
-template <class T>
-TemporaryMatrix<T> inverse(const TemporaryMatrix<T> &v)
-{
-    const unsigned int n = v.rowCount();
-    vigra_precondition(n == v.columnCount(),
-       "inverse(): matrix must be square.");
-    vigra_precondition(linearSolve(v, identityMatrix<T>(n), v),
-        "inverse(): matrix is not invertible.");
-    return v;
-}
- 
     /** add matrices \a a and \a b.
         The result is written into \a r. All three matrices must have the same shape.
     
@@ -883,7 +755,6 @@ void add(const MultiArrayView<2, T, C1> &a, const MultiArrayView<2, T, C2> &b,
         }
     }
 }
-
  
     /** add matrices \a a and \a b.
         The two matrices must have the same shape.
@@ -1006,19 +877,99 @@ operator-(const TemporaryMatrix<T> &a)
     return const_cast<TemporaryMatrix<T> &>(a) *= -NumericTraits<T>::one();
 }
 
-    /** multiply matrix \a a with scalar \a b.
+    /** calculate the inner product of two matrices representing vectors. 
+        That is, matrix \a x must have a single row, and matrix \a y must 
+        have a single column, and the other dimensions must match.
+    
+    <b>\#include</b> "<a href="linear__algebra_8hxx-source.html">vigra/linear_algebra.hxx</a>"<br>
+        Namespaces: vigra and vigra::linalg
+     */ 
+template <class T, class C1, class C2>
+T dot(const MultiArrayView<2, T, C1> &x, const MultiArrayView<2, T, C2> &y)
+{
+    const unsigned int n = columnCount(x);
+    vigra_precondition(n == rowCount(y) && 1 == rowCount(x) && 1 == columnCount(y),
+       "dot(): shape mismatch.");
+    T ret = NumericTraits<T>::zero();
+    for(unsigned int i = 0; i < n; ++i)
+        ret += x(0, i) * y(i, 0);
+    return ret;
+}
+
+    /** calculate the inner product of two vectors. The vector
+        lenths must match.
+    
+    <b>\#include</b> "<a href="linear__algebra_8hxx-source.html">vigra/linear_algebra.hxx</a>"<br>
+        Namespaces: vigra and vigra::linalg
+     */ 
+template <class T, class C1, class C2>
+T dot(const MultiArrayView<1, T, C1> &x, const MultiArrayView<1, T, C2> &y)
+{
+    const unsigned int n = x.elementCount();
+    vigra_precondition(n == y.elementCount(),
+       "dot(): shape mismatch.");
+    T ret = NumericTraits<T>::zero();
+    for(unsigned int i = 0; i < n; ++i)
+        ret += x(i) * y(i);
+    return ret;
+}
+
+    /** calculate the outer product of two matrices representing vectors. 
+        That is, matrix \a x must have a single column, and matrix \a y must 
+        have a single row, and the other dimensions must match. The result
+        is written into \a r.
+    
+    <b>\#include</b> "<a href="linear__algebra_8hxx-source.html">vigra/linear_algebra.hxx</a>"<br>
+        Namespaces: vigra and vigra::linalg
+     */ 
+template <class T, class C1, class C2, class C3>
+void outer(const MultiArrayView<2, T, C1> &x, const MultiArrayView<2, T, C2> &y,
+      MultiArrayView<2, T, C3> &r)
+{
+    const unsigned int rows = rowCount(r);
+    const unsigned int cols = columnCount(r);
+    vigra_precondition(rows == rowCount(x) && cols == columnCount(y) && 
+                       1 == columnCount(x) && 1 == rowCount(y),
+       "outer(): shape mismatch.");
+    for(unsigned int i = 0; i < cols; ++i)
+        for(unsigned int j = 0; j < rows; ++j)
+            r(j, i) = x(j, 0) * y(0, i);
+}
+
+    /** calculate the outer product of two matrices representing vectors. 
+        That is, matrix \a x must have a single column, and matrix \a y must 
+        have a single row, and the other dimensions must match. The result
+        is returned as a temporary matrix.
+    
+    <b>\#include</b> "<a href="linear__algebra_8hxx-source.html">vigra/linear_algebra.hxx</a>"<br>
+        Namespaces: vigra and vigra::linalg
+     */ 
+template <class T, class C1, class C2>
+TemporaryMatrix<T> 
+outer(const MultiArrayView<2, T, C1> &x, const MultiArrayView<2, T, C2> &y)
+{
+    const unsigned int rows = rowCount(x);
+    const unsigned int cols = columnCount(y);
+    vigra_precondition(1 == columnCount(x) && 1 == rowCount(y),
+       "outer(): shape mismatch.");
+    TemporaryMatrix<T> ret(rows, cols);
+    outer(x, y, ret);
+    return ret;
+}
+
+	/** multiply matrix \a a with scalar \a b.
         The result is written into \a r. \a a and \a r must have the same shape.
     
     <b>\#include</b> "<a href="linear__algebra_8hxx-source.html">vigra/linear_algebra.hxx</a>"<br>
         Namespace: vigra::linalg
      */ 
 template <class T, class C1, class C2>
-void mul(const MultiArrayView<2, T, C1> &a, T b, MultiArrayView<2, T, C2> &r)
+void smul(const MultiArrayView<2, T, C1> &a, T b, MultiArrayView<2, T, C2> &r)
 {
     const unsigned int rows = rowCount(a);
     const unsigned int cols = columnCount(a);
     vigra_precondition(rows == rowCount(r) && cols == columnCount(r),
-                       "mul(): Matrix sizes must agree.");
+                       "smul(): Matrix sizes must agree.");
     
     for(unsigned int i = 0; i < cols; ++i)
         for(unsigned int j = 0; j < rows; ++j)
@@ -1032,26 +983,26 @@ void mul(const MultiArrayView<2, T, C1> &a, T b, MultiArrayView<2, T, C2> &r)
         Namespace: vigra::linalg
      */ 
 template <class T, class C2, class C3>
-void mul(T a, const MultiArrayView<2, T, C2> &b, MultiArrayView<N, T, C3> &r)
+void smul(T a, const MultiArrayView<2, T, C2> &b, MultiArrayView<2, T, C3> &r)
 {
-    mul(b, a, r);
+    smul(b, a, r);
 }
 
-    /** multiply matrices \a a and \a b.
+    /** perform matrix multiplication of matrices \a a and \a b.
         The result is written into \a r. The three matrices must have matching shapes.
     
     <b>\#include</b> "<a href="linear__algebra_8hxx-source.html">vigra/linear_algebra.hxx</a>"<br>
         Namespace: vigra::linalg
      */ 
 template <class T, class C1, class C2, class C3>
-void mul(const MultiArrayView<2, T, C1> &a, const MultiArrayView<2, T, C2> &b,
+void mmul(const MultiArrayView<2, T, C1> &a, const MultiArrayView<2, T, C2> &b,
          MultiArrayView<2, T, C3> &r)
 {
     const unsigned int rrows = rowCount(r);
     const unsigned int rcols = columnCount(r);
     const unsigned int acols = columnCount(a);
     vigra_precondition(rrows == rowCount(a) && rcols == columnCount(b) && acols == rowCount(b),
-                       "mul(): Matrix shapes must agree.");
+                       "mmul(): Matrix shapes must agree.");
 
     for(unsigned int i = 0; i < rcols; ++i) {
         for(unsigned int j = 0; j < rrows; ++j) {
@@ -1063,7 +1014,7 @@ void mul(const MultiArrayView<2, T, C1> &a, const MultiArrayView<2, T, C2> &b,
     }
 }
 
-    /** multiply matrices \a a and \a b.
+    /** perform matrix multiplication of matrices \a a and \a b.
         \a a and \a b must have matching shapes.
         The result is returned as a temporary matrix. 
     
@@ -1072,10 +1023,49 @@ void mul(const MultiArrayView<2, T, C1> &a, const MultiArrayView<2, T, C2> &b,
      */ 
 template <class T, class C1, class C2>
 inline TemporaryMatrix<T>
-mul(const MultiArrayView<2, T, C1> &a, const MultiArrayView<2, T, C2> &b)
+mmul(const MultiArrayView<2, T, C1> &a, const MultiArrayView<2, T, C2> &b)
 {
     TemporaryMatrix<T> ret(rowCount(a), columnCount(b));
-    mul(a, b, ret);
+    mmul(a, b, ret);
+    return ret;
+}
+
+    /** multiply two matrices \a a and \a b pointwise.
+        The result is written into \a r. All three matrices must have the same shape.
+    
+    <b>\#include</b> "<a href="linear__algebra_8hxx-source.html">vigra/linear_algebra.hxx</a>"<br>
+        Namespace: vigra::linalg
+     */ 
+template <class T, class C1, class C2, class C3>
+void pmul(const MultiArrayView<2, T, C1> &a, const MultiArrayView<2, T, C2> &b,
+              MultiArrayView<2, T, C3> &r)
+{
+    const unsigned int rrows = rowCount(r);
+    const unsigned int rcols = columnCount(r);
+    vigra_precondition(rrows == rowCount(a) && rcols == columnCount(a) && 
+                       rrows == rowCount(b) && rcols == columnCount(b),
+                       "pmul(): Matrix shapes must agree.");
+
+    for(unsigned int i = 0; i < rcols; ++i) {
+        for(unsigned int j = 0; j < rrows; ++j) {
+            r(j, i) = a(j, i) * b(j, i);
+        }
+    }
+}
+
+    /** multiply matrices \a a and \a b pointwise.
+        \a a and \a b must have matching shapes.
+        The result is returned as a temporary matrix. 
+    
+    <b>\#include</b> "<a href="linear__algebra_8hxx-source.html">vigra/linear_algebra.hxx</a>"<br>
+        Namespace: vigra::linalg
+     */ 
+template <class T, class C1, class C2>
+inline TemporaryMatrix<T>
+pmul(const MultiArrayView<2, T, C1> &a, const MultiArrayView<2, T, C2> &b)
+{
+    TemporaryMatrix<T> ret(rowCount(a), columnCount(b));
+    pmul(a, b, ret);
     return ret;
 }
 
@@ -1119,7 +1109,7 @@ operator*(T a, const TemporaryMatrix<T> &b)
     return const_cast<TemporaryMatrix<T> &>(b) *= b;
 }
 
-    /** multiply matrices \a a and \a b.
+    /** perform matrix multiplication of matrices \a a and \a b.
         \a a and \a b must have matching shapes.
         The result is returned as a temporary matrix. 
     
@@ -1131,7 +1121,7 @@ inline TemporaryMatrix<T>
 operator*(const MultiArrayView<2, T, C1> &a, const MultiArrayView<2, T, C2> &b)
 {
     TemporaryMatrix<T> ret(rowCount(a), columnCount(b));
-    mul(a, b, ret);
+    mmul(a, b, ret);
     return ret;
 }
 
@@ -1142,18 +1132,56 @@ operator*(const MultiArrayView<2, T, C1> &a, const MultiArrayView<2, T, C2> &b)
         Namespace: vigra::linalg
      */ 
 template <class T, class C1, class C2>
-void div(const MultiArrayView<2, T, C1> &a, T b, MultiArrayView<2, T, C2> &r)
+void sdiv(const MultiArrayView<2, T, C1> &a, T b, MultiArrayView<2, T, C2> &r)
 {
     const unsigned int rows = rowCount(a);
     const unsigned int cols = columnCount(a);
     vigra_precondition(rows == rowCount(r) && cols == columnCount(r),
-                       "div(): Matrix sizes must agree.");
+                       "sdiv(): Matrix sizes must agree.");
     
     for(unsigned int i = 0; i < cols; ++i)
         for(unsigned int j = 0; j < rows; ++j)
             r(j, i) = a(j, i) / b;
 }
 
+    /** divide two matrices \a a and \a b pointwise.
+        The result is written into \a r. All three matrices must have the same shape.
+    
+    <b>\#include</b> "<a href="linear__algebra_8hxx-source.html">vigra/linear_algebra.hxx</a>"<br>
+        Namespace: vigra::linalg
+     */ 
+template <class T, class C1, class C2, class C3>
+void pdiv(const MultiArrayView<2, T, C1> &a, const MultiArrayView<2, T, C2> &b,
+              MultiArrayView<2, T, C3> &r)
+{
+    const unsigned int rrows = rowCount(r);
+    const unsigned int rcols = columnCount(r);
+    vigra_precondition(rrows == rowCount(a) && rcols == columnCount(a) && 
+                       rrows == rowCount(b) && rcols == columnCount(b),
+                       "pdiv(): Matrix shapes must agree.");
+
+    for(unsigned int i = 0; i < rcols; ++i) {
+        for(unsigned int j = 0; j < rrows; ++j) {
+            r(j, i) = a(j, i) * b(j, i);
+        }
+    }
+}
+
+    /** divide matrices \a a and \a b pointwise.
+        \a a and \a b must have matching shapes.
+        The result is returned as a temporary matrix. 
+    
+    <b>\#include</b> "<a href="linear__algebra_8hxx-source.html">vigra/linear_algebra.hxx</a>"<br>
+        Namespace: vigra::linalg
+     */ 
+template <class T, class C1, class C2>
+inline TemporaryMatrix<T>
+pdiv(const MultiArrayView<2, T, C1> &a, const MultiArrayView<2, T, C2> &b)
+{
+    TemporaryMatrix<T> ret(rowCount(a), columnCount(b));
+    pdiv(a, b, ret);
+    return ret;
+}
 
     /** divide matrix \a a by scalar \a b.
         The result is returned as a temporary matrix. 
@@ -1173,6 +1201,63 @@ inline TemporaryMatrix<T>
 operator/(const TemporaryMatrix<T> &a, T b)
 {
     return const_cast<TemporaryMatrix<T> &>(a) /= b;
+}
+
+    /** invert square matrix \a v.
+        The result is written into \a r which must have the same shape.
+        The inverse is calculated by means of QR decomposition. If \a v
+        is not invertible, <tt>vigra::PreconditionViolation</tt> exception is thrown.
+    
+    <b>\#include</b> "<a href="linear__algebra_8hxx-source.html">vigra/linear_algebra.hxx</a>"<br>
+        Namespaces: vigra and vigra::linalg
+     */ 
+template <class T, class C1, class C2>
+void inverse(const MultiArrayView<2, T, C1> &v, MultiArrayView<2, T, C2> &r)
+{
+    const unsigned int n = rowCount(r);
+    vigra_precondition(n == columnCount(v) && n == rowCount(v) && n == columnCount(r),
+       "inverse(): matrices must be square.");
+    vigra_precondition(linearSolve(v, identityMatrix<T>(n), r),
+        "inverse(): matrix is not invertible.");
+}
+ 
+    /** create the inverse of square matrix \a v.
+        The result is returned as a temporary matrix.
+        The inverse is calculated by means of QR decomposition. If \a v
+        is not invertible, <tt>vigra::PreconditionViolation</tt> exception is thrown.
+        Usage:
+        
+        \code
+        vigra::Matrix<double> v(n, n);
+        v = ...;
+        
+        vigra::Matrix<double> m = inverse(v);
+        \endcode
+    
+    <b>\#include</b> "<a href="linear__algebra_8hxx-source.html">vigra/linear_algebra.hxx</a>"<br>
+        Namespaces: vigra and vigra::linalg
+     */ 
+template <class T, class C>
+TemporaryMatrix<T> inverse(const MultiArrayView<2, T, C> &v)
+{
+    const unsigned int n = rowCount(v);
+    vigra_precondition(n == columnCount(v),
+       "inverse(): matrix must be square.");
+    TemporaryMatrix<T> ret = identityMatrix<T>(n);
+    vigra_precondition(linearSolve(v, ret, ret),
+        "inverse(): matrix is not invertible.");
+    return ret;
+}
+ 
+template <class T>
+TemporaryMatrix<T> inverse(const TemporaryMatrix<T> &v)
+{
+    const unsigned int n = v.rowCount();
+    vigra_precondition(n == v.columnCount(),
+       "inverse(): matrix must be square.");
+    vigra_precondition(linearSolve(v, identityMatrix<T>(n), v),
+        "inverse(): matrix is not invertible.");
+    return v;
 }
 
     /** QR decomposition.
@@ -1301,7 +1386,7 @@ housholderTridiagonalMatrixization(MultiArrayView<2, T, C1> &a, MultiArrayView<2
     MultiArrayView<1, T, C2> d = b.bindOuter(0);
     MultiArrayView<1, T, C2> e = b.bindOuter(1);
     
-    for(int j = 0; j < n; ++j) 
+    for(unsigned int j = 0; j < n; ++j) 
     {
         d(j) = a(n-1, j);
     }
@@ -1392,36 +1477,36 @@ housholderTridiagonalMatrixization(MultiArrayView<2, T, C1> &a, MultiArrayView<2
  
     // Accumulate transformations.
  
-    for(int i = 0; i < n-1; ++i) 
+    for(unsigned int i = 0; i < n-1; ++i) 
     {
         a(n-1, i) = a(i, i);
         a(i, i) = 1.0;
         T h = d(i+1);
         if(h != 0.0) 
         {
-            for(int k = 0; k <= i; ++k) 
+            for(unsigned int k = 0; k <= i; ++k) 
             {
                 d(k) = a(k, i+1) / h;
             }
-            for(int j = 0; j <= i; ++j) 
+            for(unsigned int j = 0; j <= i; ++j) 
             {
                 T g = 0.0;
-                for(int k = 0; k <= i; ++k) 
+                for(unsigned int k = 0; k <= i; ++k) 
                 {
                     g += a(k, i+1) * a(k, j);
                 }
-                for(int k = 0; k <= i; ++k) 
+                for(unsigned int k = 0; k <= i; ++k) 
                 {
                     a(k, j) -= g * d(k);
                 }
             }
         }
-        for(int k = 0; k <= i; ++k) 
+        for(unsigned int k = 0; k <= i; ++k) 
         {
             a(k, i+1) = 0.0;
         }
     }
-    for(int j = 0; j < n; ++j) 
+    for(unsigned int j = 0; j < n; ++j) 
     {
         d(j) = a(n-1, j);
         a(n-1, j) = 0.0;
@@ -1445,7 +1530,7 @@ tridiagonalMatrixEigensystem(MultiArrayView<2, T, C1> &de, MultiArrayView<2, T, 
     MultiArrayView<1, T, C2> d = de.bindOuter(0);
     MultiArrayView<1, T, C2> e = de.bindOuter(1);
     
-    for(int i = 1; i < n; i++) {
+    for(unsigned int i = 1; i < n; i++) {
        e(i-1) = e(i);
     }
     e(n-1) = 0.0;
@@ -1453,12 +1538,12 @@ tridiagonalMatrixEigensystem(MultiArrayView<2, T, C1> &de, MultiArrayView<2, T, 
     T f = 0.0;
     T tst1 = 0.0;
     T eps = VIGRA_CSTD::pow(2.0,-52.0);
-    for(int l = 0; l < n; ++l) 
+    for(unsigned int l = 0; l < n; ++l) 
     {
         // Find small subdiagonalMatrix element
  
         tst1 = std::max(tst1, abs(d(l)) + abs(e(l)));
-        int m = l;
+        unsigned int m = l;
 
         // Original while-loop from Java code
         while(m < n) 
@@ -1492,7 +1577,7 @@ tridiagonalMatrixEigensystem(MultiArrayView<2, T, C1> &de, MultiArrayView<2, T, 
                 d(l+1) = e(l) * (p + r);
                 T dl1 = d(l+1);
                 T h = g - d(l);
-                for(int i = l+2; i < n; ++i)
+                for(unsigned int i = l+2; i < n; ++i)
                 {
                    d(i) -= h;
                 }
@@ -1507,7 +1592,7 @@ tridiagonalMatrixEigensystem(MultiArrayView<2, T, C1> &de, MultiArrayView<2, T, 
                 T el1 = e(l+1);
                 T s = 0.0;
                 T s2 = 0.0;
-                for(int i = m-1; i >= l; --i)
+                for(int i = m-1; i >= (int)l; --i)
                 {
                     c3 = c2;
                     c2 = c;
@@ -1523,7 +1608,7 @@ tridiagonalMatrixEigensystem(MultiArrayView<2, T, C1> &de, MultiArrayView<2, T, 
   
                     // Accumulate transformation.
   
-                    for(int k = 0; k < n; ++k)
+                    for(unsigned int k = 0; k < n; ++k)
                     {
                          h = z(k, i+1);
                          z(k, i+1) = s * z(k, i) + c * h;
@@ -1544,11 +1629,11 @@ tridiagonalMatrixEigensystem(MultiArrayView<2, T, C1> &de, MultiArrayView<2, T, 
    
     // Sort eigenvalues and corresponding vectors.
  
-    for(int i = 0; i < n-1; ++i) 
+    for(unsigned int i = 0; i < n-1; ++i) 
     {
         int k = i;
         T p = abs(d(i));
-        for(int j = i+1; j < n; ++j)
+        for(unsigned int j = i+1; j < n; ++j)
         {
             T p1 = abs(d(j));
             if(p < p1)
@@ -1560,7 +1645,7 @@ tridiagonalMatrixEigensystem(MultiArrayView<2, T, C1> &de, MultiArrayView<2, T, 
         if(k != i)
         {
             std::swap(d(k), d(i));
-            for(int j = 0; j < n; ++j)
+            for(unsigned int j = 0; j < n; ++j)
             {
                 std::swap(z(j, i), z(j, k));
             }
