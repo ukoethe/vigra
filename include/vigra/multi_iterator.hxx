@@ -953,7 +953,12 @@ class MultiIteratorBase <1>
         {
             return m_ptr < rhs.m_ptr;
         }
-        
+
+        bool operator<= (const type &rhs) const
+        {
+            return m_ptr <= rhs.m_ptr;
+        }
+
         iterator iteratorForDimension(unsigned int d) const
         {
             vigra_precondition(d == 0,
@@ -1659,6 +1664,11 @@ class StridedMultiIteratorBase <1>
         bool operator< (const type &rhs) const
         {
             return m_ptr < rhs.m_ptr;
+        }
+
+        bool operator<= (const type &rhs) const
+        {
+            return m_ptr <= rhs.m_ptr;
         }
         
         iterator iteratorForDimension(unsigned int d) const
