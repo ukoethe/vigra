@@ -19,11 +19,12 @@
 
       <li> Gunnar Kedenburg 
       (<a href="mailto:gunnar@haquebright.de">gunnar@haquebright.de</a>)
-      completely rewrote the image import/export library.
+      completely rewrote the image import/export library and implemented
+      much of the \ref vigra::MultiArray functionality.
 
       <li> Yevgen Reznichenko
       (<a href="mailto:rezniche@kogs.informatik.uni-hamburg.de">rezniche@kogs.informatik.uni-hamburg.de</a>)
-      added \ref recursiveFilterX() and \ref recursiveFilterY().
+      added a number of image processing algorithms.
 
       <li> Numerous people reported bugs and made suggestions.
 </UL>
@@ -52,12 +53,18 @@ Many thanks to all!
       
       <li> changed \ref gaussianSmoothing() to use BORDER_TREATMENT_REFLECT
       
+      <li> added \ref simpleSharpening() and \ref gaussianSharpening()
+      
       <li> added \ref vigra::Size2D, \ref vigra::Point2D, \ref vigra::Rect2D
+      
+      <li> added \ref vigra::BasicImageView
       
       <li> split "utilities.hxx" into "diff2d.hxx", 
           "interpolating_accessor.hxx", "iteratortags.hxx", "mathutil.hxx", 
           "metaprogramming.hxx", "tuple.hxx". "utilities.hxx" now includes 
           these other files.
+      
+      <li> added \ref MultiDimensionalArrays and \ref VolumeImpex
            
 </UL>
 
