@@ -30,6 +30,9 @@ all: $(TARGETS)
 convert:  convert.o
 	$(CXX) -o convert convert.o $(IMPEX_LIB)
 
+distance:  distance.o
+	$(CXX) -o distance distance.o $(IMPEX_LIB)
+
 subimage:  subimage.o
 	$(CXX) -o subimage subimage.o $(IMPEX_LIB)
 
