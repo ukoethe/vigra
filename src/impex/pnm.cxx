@@ -218,7 +218,7 @@ namespace vigra {
         : stream( filename.c_str() )
 #endif
     {
-	long maxval;
+        long maxval;
         char type;
 
         if(!stream.good())
@@ -235,63 +235,63 @@ namespace vigra {
         // read the type, find out if the file is raw or ascii
         type = stream.get();
 
-	switch (type) {
-	case '1': // plain bitmap
+        switch (type) {
+        case '1': // plain bitmap
             raw = false;
             bilevel = true;
             components = 1;
             maxval = 1;
             pixeltype = "UINT8";
             break;
-	case '2': // plain graymap
+        case '2': // plain graymap
             raw = false;
             bilevel = false;
             components = 1;
             break;
-	case '3': // plain pixmap
+        case '3': // plain pixmap
             raw = false;
             bilevel = false;
             components = 3;
             break;
-	case '4': // raw bitmap
+        case '4': // raw bitmap
             raw = true;
             bilevel = true;
             components = 1;
             maxval = 1;
             pixeltype = "UINT8";
             break;
-	case '5': // raw graymap
+        case '5': // raw graymap
             raw = true;
             bilevel = false;
             components = 1;
             maxval = 255;
             pixeltype = "UINT8";
             break;
-	case '6': // raw pixmap
+        case '6': // raw pixmap
             raw = true;
             bilevel = false;
             components = 3;
             maxval = 255;
             pixeltype = "UINT8";
             break;
-	default:
+        default:
             vigra_precondition( false, "unknown magic number in file" );
-	}
+        }
 
         // read width, height and maxval
-	skip();
-	stream >> width;
         skip();
-	stream >> height;
+        stream >> width;
+        skip();
+        stream >> height;
 
-	// bitmaps implicitly have maxval 1
-	if ( type != '1' && type != '4' ) {
+        // bitmaps implicitly have maxval 1
+        if ( type != '1' && type != '4' ) {
             skip();
             stream >> maxval;
-	}
+        }
 
-	// select a pixeltype depending on maxval
-	int bits = 0;
+        // select a pixeltype depending on maxval
+        int bits = 0;
         do
         {
             ++bits;
@@ -300,22 +300,22 @@ namespace vigra {
         while(maxval > 0);
         
         vigra_precondition( bits >= 0, "the file's maxval field is corrupt" );
-	if ( bits <= 8 )
+        if ( bits <= 8 )
             pixeltype = "UINT8";
-	else if ( bits <= 15 )
+        else if ( bits <= 15 )
             pixeltype = "INT16";
-	else if ( bits <= 31 )
+        else if ( bits <= 31 )
             pixeltype = "INT32";
-	else
+        else
             vigra_precondition( false,
                                 "the file's maxval field is too large" );
 
-	// adjust the buffer size
-	if ( pixeltype == "UINT8" )
+        // adjust the buffer size
+        if ( pixeltype == "UINT8" )
             bands.resize( width * components );
-	else if ( pixeltype == "INT16" )
+        else if ( pixeltype == "INT16" )
             bands.resize( width * components * 2 );
-	else if ( pixeltype == "INT32" )
+        else if ( pixeltype == "INT32" )
             bands.resize( width * components * 4 );
 
 #ifdef DEBUG
@@ -324,12 +324,19 @@ namespace vigra {
                   << "x " << pixeltype << std::endl;
 #endif
 
-	// advance to the beginning of the "data section"
-	if (raw == false)
-	  skip();
-	else
-	  // XXX assumes 1-byte pixels
-	  stream.seekg( -width * height * components, std::ios::end );
+        // advance to the beginning of the "data section"
+        if (raw == false)
+          skip();
+        else
+        {
+          // XXX assumes 1-byte pixels
+#if defined(__GNUC__) && __GNUC__ == 2
+          typedef streamoff streamOffset;
+#else
+          typedef std::ifstream::off_type streamOffset;
+#endif
+          stream.seekg( -static_cast<streamOffset>(width * height * components), std::ios::end );
+        }
     }
 
     void PnmDecoder::init( const std::string & filename )
