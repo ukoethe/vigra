@@ -16,10 +16,11 @@ usage()
 Usage: $0 [OPTIONS]
 Options:
     [--version]    output version ("@MAJOR_VERSION@.@MINOR_VERSION@.@MICRO_VERSION@")
+    [--target]     output platform this vigra version was configured for
     [--impex_lib]  output flags for linking libvigraimpex
     [--fftw_lib]   output flags for linking libfftw$fftwstatus
-   ([--libs]       synonym for --impex_lib)
     [--cxxflags]   output include flags for vigra$fftwflags
+   ([--libs]       synonym for --impex_lib)
 EOF
     exit $1
 }
@@ -32,6 +33,9 @@ while test $# -gt 0; do
   case $1 in
     --version)
       echo @MAJOR_VERSION@.@MINOR_VERSION@.@MICRO_VERSION@
+      ;;
+    --target|--platform)
+      echo @target@
       ;;
     --cxxflags)
       echo '@CXXINCLUDES@' \
