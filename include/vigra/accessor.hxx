@@ -4,6 +4,7 @@
 /*       Cognitive Systems Group, University of Hamburg, Germany        */
 /*                                                                      */
 /*    This file is part of the VIGRA computer vision library.           */
+/*    ( Version 1.1.4, Nov 23 2001 )                                    */
 /*    You may use, modify, and distribute this software according       */
 /*    to the terms stated in the LICENSE file included in               */
 /*    the VIGRA distribution.                                           */
@@ -39,14 +40,14 @@ struct RequiresExplicitCast {
 #define VIGRA_SPECIALIZED_CAST(type) \
     template <> \
     struct RequiresExplicitCast<type> { \
-        template <class U> \
-        static U cast(U v) \
-            { return v; } \
- \
         static type cast(float const & v) \
             { return NumericTraits<type>::fromRealPromote(v); } \
         static type cast(double const & v) \
             { return NumericTraits<type>::fromRealPromote(v); } \
+        template <class U> \
+        static U cast(U v) \
+            { return v; } \
+ \
     };
 
 
