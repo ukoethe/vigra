@@ -1004,7 +1004,7 @@ class Kernel1D
     {}
     
         /** 
-            Init as a Gaussian function. The radius of the kernel is 
+            Init as a sampled Gaussian function. The radius of the kernel is 
             always 3*std_dev. 'norm' denotes the sum of all bins of the kernel.
             
             Precondition:  
@@ -1029,6 +1029,32 @@ class Kernel1D
         initGaussian(std_dev, one());
     }
     
+    
+        /** 
+            Init as Lindeberg's discrete analog of the Gaussian function. The radius of the kernel is 
+            always 3*std_dev. 'norm' denotes the sum of all bins of the kernel.
+            
+            Precondition:  
+            \code
+            std_dev >= 0.0
+            \endcode
+            
+            Postconditions: 
+            \code
+            1. left()  == -(int)(3.0*std_dev + 0.5)
+            2. right() ==  (int)(3.0*std_dev + 0.5)
+            3. borderTreatment() == BORDER_TREATMENT_REFLECT
+            4. norm() == norm
+            \endcode
+        */
+    void initDiscreteGaussian(double std_dev, value_type norm);
+    
+        /** Init as a Gaussian function with norm 1. 
+         */
+    void initDiscreteGaussian(double std_dev) 
+    {
+        initDiscreteGaussian(std_dev, one());
+    }
     
         /** 
             Init as a Gaussian derivative of order 'order'. 
@@ -1061,6 +1087,14 @@ class Kernel1D
     {
         initGaussianDerivative(std_dev, order, one());
     }
+    
+        /** Init as a filter to build 2D polar separable filters.
+            Two of these 1D filters are combined to form a 2D filter. 
+            <tt>order2</tt> tells the order of the combined filter and must be
+            1, 2 or 3. <tt>order1</tt> tells the order of the part being built 
+            and must be <tt>&leq; 2</tt> if  <tt>order2</tt> was 2, <tt>&leq; 3</tt> otherwise.
+         */
+    void initGaussianPolarFilter(double std_dev, unsigned int order1, unsigned int order2) ;
     
         /** 
             Init as a Binomial filter. 'norm' denotes the sum of all bins 
@@ -1308,12 +1342,14 @@ void Kernel1D<ARITHTYPE>::initGaussian(double std_dev,
 {
     vigra_precondition(std_dev >= 0.0,
               "Kernel1D::initGaussian(): Standard deviation must be >= 0.");
-              
-    // first calculate required kernel sizes
-    int radius = (int)(3.0*std_dev + 0.5);
     
     if(std_dev > 0.0)
-    {
+    {              
+        // first calculate required kernel sizes
+        int radius = (int)(3.0*std_dev + 0.5);
+        if(radius == 0)
+            radius = 1;
+
         // allocate the kernels
         std::vector<double> kernel(radius*2+1);
     
@@ -1341,19 +1377,91 @@ void Kernel1D<ARITHTYPE>::initGaussian(double std_dev,
         {
             kernel_.push_back(kernel[i] * scale);
         }
+        left_ = -radius;
+        right_ = radius;
     }
     else
     {
         kernel_.erase(kernel_.begin(), kernel_.end());
         kernel_.push_back(norm);
+        left_ = 0;
+        right_ = 0;
     }
     
-    left_ = -radius;
-    right_ = radius;
     norm_ = norm;
 
     // best border treatment for Gaussians is BORDER_TREATMENT_CLIP
     border_treatment_ = BORDER_TREATMENT_CLIP;  
+}
+
+/***********************************************************************/
+
+template <class ARITHTYPE>
+void Kernel1D<ARITHTYPE>::initDiscreteGaussian(double std_dev, 
+                                       value_type norm)
+{
+    vigra_precondition(std_dev >= 0.0,
+              "Kernel1D::initDiscreteGaussian(): Standard deviation must be >= 0.");
+              
+    if(std_dev > 0.0)
+    {
+        // first calculate required kernel sizes
+        int radius = (int)(3.0*std_dev + 0.5);
+        if(radius == 0)
+            radius = 1;
+            
+        double f = 2.0 / std_dev / std_dev;
+
+        // allocate the working array
+        int maxIndex = (int)(2.0 * (radius + 5.0 * VIGRA_CSTD::sqrt((double)radius)) + 0.5);
+        std::vector<double> warray(maxIndex+1);
+        warray[maxIndex] = 0.0;
+        warray[maxIndex-1] = 1.0;
+        
+        for(int i = maxIndex-2; i >= radius; --i)
+        {
+            warray[i] = warray[i+2] + f * (i+1) * warray[i+1];
+            if(warray[i] > 1.0e40)
+            {
+                warray[i+1] /= warray[i];
+                warray[i] = 1.0;
+            }
+        }
+        
+        // the following rescaling ensures that the numbers stay in an sensible range 
+        // during the rest of the iteration, so no other rescaling is needed
+        double er = VIGRA_CSTD::exp(-radius*radius / (2.0*std_dev*std_dev));
+        warray[radius+1] = er * warray[radius+1] / warray[radius];
+        warray[radius] = er;
+        
+        for(int i = radius-1; i >= 0; --i)
+        {
+            warray[i] = warray[i+2] + f * (i+1) * warray[i+1];
+            er += warray[i];
+        }
+        
+        double scale = norm / (2*er - warray[0]);
+    
+        initExplicitly(-radius, radius);
+        iterator c = center();
+
+        for(int i=0; i<=radius; ++i)
+        {
+            c[i] = c[-i] = warray[i] * scale;
+        }
+    }
+    else
+    {
+        kernel_.erase(kernel_.begin(), kernel_.end());
+        kernel_.push_back(norm);
+        left_ = 0;
+        right_ = 0;
+    }
+    
+    norm_ = norm;
+
+    // best border treatment for Gaussians is BORDER_TREATMENT_REFLECT
+    border_treatment_ = BORDER_TREATMENT_REFLECT;  
 }
 
 /***********************************************************************/
@@ -1503,6 +1611,182 @@ Kernel1D<ARITHTYPE>::initGaussianDerivative(double std_dev,
     // BORDER_TREATMENT_REPEAT
     border_treatment_ = BORDER_TREATMENT_REPEAT;  
 }
+
+/***********************************************************************/
+
+template <class ARITHTYPE>
+void 
+Kernel1D<ARITHTYPE>::initGaussianPolarFilter(double std_dev, unsigned int order1, unsigned int order2)
+{
+    vigra_precondition(std_dev >= 0.0,
+              "Kernel1D::initGaussianPolarFilter(): "
+              "Standard deviation must be >= 0.");
+                            
+    vigra_precondition(order2 == 1 || order2 == 2 || order2 == 3,
+              "Kernel1D::initGaussianPolarFilter(): "
+              "order2 must be 1, 2 or 3.");
+
+    int radius = (int)(4.0*std_dev + 0.5);
+    double f = 1.0 / VIGRA_CSTD::sqrt(2.0 * M_PI) / std_dev;  // norm
+    
+    // allocate the kernel
+    initExplicitly(-radius, radius);
+    iterator c = center();
+    int ix;
+    
+    switch(order2)
+    {
+        case 1:
+        {
+            double a =  2.*0.16116715428 / VIGRA_CSTD::pow(std_dev, 5);
+            double b = -2.*0.68931741459 / VIGRA_CSTD::pow(std_dev, 3);
+            
+            std_dev *= 1.08179074376;
+            double sigma22 = -0.5 / std_dev / std_dev;
+            
+            switch(order1)
+            {
+                case 0:
+                {
+                    for(ix=-radius; ix<=radius; ++ix)
+                    {
+                        double x = (double)ix;
+                        c[ix] = f * VIGRA_CSTD::exp(sigma22 * x * x);
+                    }
+                    break;
+                }
+                case 1:
+                {
+                    for(ix=-radius; ix<=radius; ++ix)
+                    {
+                        double x = (double)ix;
+                        c[ix] = f * x * VIGRA_CSTD::exp(sigma22 * x * x);
+                    }
+                    break;
+                }
+                case 2:
+                {
+                    b /= 3.0;
+                    for(ix=-radius; ix<=radius; ++ix)
+                    {
+                        double x = (double)ix;
+                        c[ix] = f * (b + a * x * x) * VIGRA_CSTD::exp(sigma22 * x * x);
+                    }
+                    break;
+                }
+                case 3:
+                {
+                    for(ix=-radius; ix<=radius; ++ix)
+                    {
+                        double x = (double)ix;
+                        c[ix] = f * x * (b + a * x * x) * VIGRA_CSTD::exp(sigma22 * x * x);
+                    }
+                    break;
+                }
+                default:
+                    vigra_fail("Kernel1D::initGaussianPolarFilter(): order1 must be <= 3.");
+            }
+            break;
+        }
+        case 2:
+        {
+            double sigma2 = std_dev*std_dev;   
+            double sigma22 = -0.5 / sigma2;
+            switch(order1)
+            {
+                case 0:
+                {
+                    for(ix=-radius; ix<=radius; ++ix)
+                    {
+                        double x = (double)ix;
+                        c[ix] = f * VIGRA_CSTD::exp(sigma22 * x * x);
+                    }
+                    break;
+                }
+                case 1:
+                {
+                    f /= sigma2;
+                    for(ix=-radius; ix<=radius; ++ix)
+                    {
+                        double x = (double)ix;
+                        c[ix] = f * x * VIGRA_CSTD::exp(sigma22 * x * x);
+                    }
+                    break;
+                }
+                case 2:
+                {
+                    f /= (sigma2 * sigma2);
+                    for(ix=-radius; ix<=radius; ++ix)
+                    {
+                        double x = (double)ix;
+                        c[ix] = f * (x * x - sigma2) * VIGRA_CSTD::exp(sigma22 * x * x);
+                    }
+                    break;
+                }
+                default:
+                    vigra_fail("Kernel1D::initGaussianPolarFilter(): order1 must be <= 2.");
+            }
+            break;
+        }
+        
+        case 3:
+        {
+            double a =  0.3229320833 / VIGRA_CSTD::pow(std_dev, 5);
+            double b = -1.3786348292 / VIGRA_CSTD::pow(std_dev, 3);
+            
+            std_dev *= 1.15470053838;
+            double sigma22 = -0.5 / std_dev / std_dev;
+            
+            switch(order1)
+            {
+                case 0:
+                {
+                    for(ix=-radius; ix<=radius; ++ix)
+                    {
+                        double x = (double)ix;
+                        c[ix] = f * VIGRA_CSTD::exp(sigma22 * x * x);
+                    }
+                    break;
+                }
+                case 1:
+                {
+                    for(ix=-radius; ix<=radius; ++ix)
+                    {
+                        double x = (double)ix;
+                        c[ix] = f * x * VIGRA_CSTD::exp(sigma22 * x * x);
+                    }
+                    break;
+                }
+                case 2:
+                {
+                    b /= 3.0;
+                    for(ix=-radius; ix<=radius; ++ix)
+                    {
+                        double x = (double)ix;
+                        c[ix] = f * (b + a * x * x) * VIGRA_CSTD::exp(sigma22 * x * x);
+                    }
+                    break;
+                }
+                case 3:
+                {
+                    for(ix=-radius; ix<=radius; ++ix)
+                    {
+                        double x = (double)ix;
+                        c[ix] = f * x * (b + a * x * x) * VIGRA_CSTD::exp(sigma22 * x * x);
+                    }
+                    break;
+                }
+                default:
+                    vigra_fail("Kernel1D::initGaussianPolarFilter(): order1 must be <= 3.");
+            }
+            break;
+        }
+        
+        default:
+            vigra_fail("Kernel1D::initGaussianPolarFilter(): internal error.");
+    }
+    border_treatment_ = BORDER_TREATMENT_REFLECT;  
+}              
 
 /***********************************************************************/
 
