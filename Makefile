@@ -25,8 +25,8 @@ install-docs:
 	if test "$(docdir)" != "$(vigra_builddir)/doc/vigra" ; then \
           $(INSTALL) --mode=644 \
             $(vigra_builddir)/doc/vigra/*.html \
-            $(vigra_builddir)/doc/vigra/classvigra*.gif $(vigra_builddir)/doc/vigra/form*.gif \
-            $(vigra_builddir)/doc/vigra/doxygen.gif $(vigra_builddir)/doc/vigra/doxygen.css \
+            $(vigra_builddir)/doc/vigra/classvigra*.png $(vigra_builddir)/doc/vigra/form*.png \
+            $(vigra_builddir)/doc/vigra/doxygen.png $(vigra_builddir)/doc/vigra/doxygen.css \
             $(docdir) ; \
           $(INSTALL) -d $(docdir)/documents ; \
           $(INSTALL) --mode=644 \
