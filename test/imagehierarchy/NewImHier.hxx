@@ -1,18 +1,17 @@
 #ifndef VIGRA_IMAGEHIERARCHY_HXX
 #define VIGRA_IMAGEHIERARCHY_HXX
 
-#include "vigra/stdimage.hxx"  //~koethe/vigra/current/include/vigra >  
+#include "vigra/stdimage.hxx" 
 #include "vigra/stdimagefunctions.hxx"
 #include "vigra/imageiterator.hxx"
 #include "vigra/accessor.hxx"
 #include "vigra/utilities.hxx"
-#include "vigra/initimage.hxx"
-#include "boost/smart_ptr.hpp"   //~koethe/boost/boost/boost >   
+#include "boost/smart_ptr.hpp" 
 #include "boost/static_assert.hpp"
 
 namespace vigra {
 
-typedef float GrayValue;                            /////////GrayValue ist eine float Zahl
+typedef float GrayValue;                     
 
 /** Stellt ein Pixel dar, also ein Einband, Zweiband, Dreiband oder Vierband Pixel, also je nachdem um was es
 * fuer ein Pixel handelt, soviele Eintraege enthaelt auch der Vectorproxy, also z.B. ein Vierband-Pixel als 
