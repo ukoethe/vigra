@@ -1,8 +1,7 @@
 //-- -*- c++ -*-
 /************************************************************************/
 /*                                                                      */
-/*               Copyright 2003 by Christian-Dennis Rahn                */
-/*                        and Ullrich Koethe                            */
+/*               Copyright 2003 by Ullrich Koethe                       */
 /*       Cognitive Systems Group, University of Hamburg, Germany        */
 /*                                                                      */
 /*    This file is part of the VIGRA computer vision library.           */
@@ -151,24 +150,41 @@ initMultiArray(triple<Iterator, Shape, Accessor> const & s, VALUETYPE v)
 /********************************************************/
 
 template <class SrcIterator, class SrcShape, class SrcAccessor,
-          class DestIterator, class DestAccessor>
-inline void
-copyMultiArrayImpl(SrcIterator s, SrcShape const & shape, SrcAccessor src,
-               DestIterator d, DestAccessor dest, MetaInt<0>)
+          class DestIterator, class DestShape, class DestAccessor>
+void
+copyMultiArrayImpl(SrcIterator s, SrcShape const & sshape, SrcAccessor src,
+               DestIterator d, DestShape const & dshape, DestAccessor dest, MetaInt<0>)
 {
-    copyLine(s, s + shape[0], src, d, dest);
+    if(sshape[0] == 1)
+    {
+        initLine(d, d + dshape[0], dest, src(s));
+    }
+    else
+    {
+        copyLine(s, s + sshape[0], src, d, dest);
+    }
 }
     
 template <class SrcIterator, class SrcShape, class SrcAccessor,
-          class DestIterator, class DestAccessor, int N>
+          class DestIterator, class DestShape, class DestAccessor, int N>
 void
-copyMultiArrayImpl(SrcIterator s, SrcShape const & shape, SrcAccessor src,
-                   DestIterator d, DestAccessor dest, MetaInt<N>)
+copyMultiArrayImpl(SrcIterator s, SrcShape const & sshape, SrcAccessor src,
+                   DestIterator d, DestShape const & dshape, DestAccessor dest, MetaInt<N>)
 {
-    SrcIterator send = s + shape[N];
-    for(; s != send; ++s, ++d)
+    DestIterator dend = d + dshape[N];
+    if(sshape[N] == 1)
     {
-        copyMultiArrayImpl(s.begin(), shape, src, d.begin(), dest, MetaInt<N-1>());
+        for(; d != dend; ++d)
+        {
+            copyMultiArrayImpl(s.begin(), sshape, src, d.begin(), dshape, dest, MetaInt<N-1>());
+        }
+    }
+    else
+    {
+        for(; d != dend; ++s, ++d)
+        {
+            copyMultiArrayImpl(s.begin(), sshape, src, d.begin(), dshape, dest, MetaInt<N-1>());
+        }
     }
 }
     
@@ -241,7 +257,7 @@ copyMultiArray(SrcIterator s,
                SrcShape const & shape, SrcAccessor src,
                DestIterator d, DestAccessor dest)
 {    
-    copyMultiArrayImpl(s, shape, src, d, dest, MetaInt<SrcIterator::level>());
+    copyMultiArrayImpl(s, shape, src, d, shape, dest, MetaInt<SrcIterator::level>());
 }
 
 template <class SrcIterator, class SrcShape, class SrcAccessor,
@@ -254,6 +270,32 @@ copyMultiArray(triple<SrcIterator, SrcShape, SrcAccessor> const & src,
     copyMultiArray(src.first, src.second, src.third, dest.first, dest.second);
 }
 
+template <class SrcIterator, class SrcShape, class SrcAccessor,
+          class DestIterator, class DestShape, class DestAccessor>
+void
+copyMultiArray(SrcIterator s, SrcShape const & sshape, SrcAccessor src,
+               DestIterator d, DestShape const & dshape, DestAccessor dest)
+{    
+    vigra_precondition(sshape.size() == dshape.size(),
+        "copyMultiArray(): dimensionality of source and destination array differ");
+    for(unsigned int i=0; i<sshape.size(); ++i)
+        vigra_precondition(sshape[i] == 1 || sshape[i] == dshape[i],
+            "copyMultiArray(): mismatch between source and destination shapes:\n"
+            "length of each source dimension must either be 1 or equal to the corresponding "
+            "destination length.");
+    copyMultiArrayImpl(s, sshape, src, d, dshape, dest, MetaInt<SrcIterator::level>());
+}
+
+template <class SrcIterator, class SrcShape, class SrcAccessor,
+          class DestIterator, class DestShape, class DestAccessor>
+inline void
+copyMultiArray(triple<SrcIterator, SrcShape, SrcAccessor> const & src,
+               triple<DestIterator, DestShape, DestAccessor> const & dest)
+{
+    
+    copyMultiArray(src.first, src.second, src.third, dest.first, dest.second, dest.third);
+}
+
 /********************************************************/
 /*                                                      */
 /*                 transformMultiArray                  */
@@ -261,27 +303,124 @@ copyMultiArray(triple<SrcIterator, SrcShape, SrcAccessor> const & src,
 /********************************************************/
 
 template <class SrcIterator, class SrcShape, class SrcAccessor,
-          class DestIterator, class DestAccessor, class Functor>
-inline void
-transformMultiArrayImpl(SrcIterator s, SrcShape const & shape, SrcAccessor src,
-               DestIterator d, DestAccessor dest, Functor const & f, MetaInt<0>)
+          class DestIterator, class DestShape, class DestAccessor, 
+          class Functor>
+void
+transformMultiArrayReduceImpl(SrcIterator s, SrcShape const & sshape, SrcAccessor src,
+               DestIterator d, DestShape const & dshape, DestAccessor dest, 
+               SrcShape const & reduceShape,
+               Functor const & ff, MetaInt<0>)
 {
-    transformLine(s, s + shape[0], src, d, dest, f);
+    DestIterator dend = d + dshape[0];
+    for(; d != dend; ++s.template dim<0>(), ++d)
+    {
+        Functor f = ff;
+        inspectMultiArray(s, reduceShape, src, f);
+        dest.set(f(), d);
+    }
 }
     
 template <class SrcIterator, class SrcShape, class SrcAccessor,
-          class DestIterator, class DestAccessor, class Functor, int N>
+          class DestIterator, class DestShape, class DestAccessor, 
+          class Functor, int N>
 void
-transformMultiArrayImpl(SrcIterator s, SrcShape const & shape, SrcAccessor src,
-                   DestIterator d, DestAccessor dest, 
+transformMultiArrayReduceImpl(SrcIterator s, SrcShape const & sshape, SrcAccessor src,
+                   DestIterator d, DestShape const & dshape, DestAccessor dest, 
+                   SrcShape const & reduceShape,
                    Functor const & f, MetaInt<N>)
 {
-    SrcIterator send = s + shape[N];
-    for(; s != send; ++s, ++d)
+    DestIterator dend = d + dshape[N];
+    for(; d != dend; ++s.template dim<N>(), ++d)
     {
-        transformMultiArrayImpl(s.begin(), shape, src, d.begin(), dest, 
-                                f, MetaInt<N-1>());
+        transformMultiArrayReduceImpl(s, sshape, src, d.begin(), dshape, dest,
+                                      reduceShape, f, MetaInt<N-1>());
     }
+}
+
+template <class SrcIterator, class SrcShape, class SrcAccessor,
+          class DestIterator, class DestShape, class DestAccessor, 
+          class Functor>
+void
+transformMultiArrayImpl(SrcIterator s, SrcShape const & sshape, SrcAccessor src,
+               DestIterator d, DestShape const & dshape, DestAccessor dest, 
+               Functor const & f, VigraTrueType)
+{
+    // reduce mode
+    SrcShape reduceShape = sshape;
+    for(unsigned int i=0; i<dshape.size(); ++i)
+    {
+        vigra_precondition(dshape[i] == 1 || sshape[i] == dshape[i],
+            "transformMultiArray(): mismatch between source and destination shapes:\n"
+            "In 'reduce'-mode, the length of each destination dimension must either be 1\n"
+            "or equal to the corresponding source length.");
+        if(dshape[i] != 1)
+            reduceShape[i] = 1;
+    }
+    transformMultiArrayReduceImpl(s, sshape, src, d, dshape, dest, reduceShape,
+                                  f, MetaInt<SrcIterator::level>());
+}
+    
+template <class SrcIterator, class SrcShape, class SrcAccessor,
+          class DestIterator, class DestShape, class DestAccessor, 
+          class Functor>
+void
+transformMultiArrayExpandImpl(SrcIterator s, SrcShape const & sshape, SrcAccessor src,
+               DestIterator d, DestShape const & dshape, DestAccessor dest, 
+               Functor const & f, MetaInt<0>)
+{
+    if(sshape[0] == 1)
+    {
+        initLine(d, d + dshape[0], dest, f(src(s)));
+    }
+    else
+    {
+        transformLine(s, s + sshape[0], src, d, dest, f);
+    }
+}
+    
+template <class SrcIterator, class SrcShape, class SrcAccessor,
+          class DestIterator, class DestShape, class DestAccessor, 
+          class Functor, int N>
+void
+transformMultiArrayExpandImpl(SrcIterator s, SrcShape const & sshape, SrcAccessor src,
+                   DestIterator d, DestShape const & dshape, DestAccessor dest, 
+                   Functor const & f, MetaInt<N>)
+{
+    DestIterator dend = d + dshape[N];
+    if(sshape[N] == 1)
+    {
+        for(; d != dend; ++d)
+        {
+            transformMultiArrayExpandImpl(s.begin(), sshape, src, d.begin(), dshape, dest,
+                                          f, MetaInt<N-1>());
+        }
+    }
+    else
+    {
+        for(; d != dend; ++s, ++d)
+        {
+            transformMultiArrayExpandImpl(s.begin(), sshape, src, d.begin(), dshape, dest,
+                                          f, MetaInt<N-1>());
+        }
+    }
+}
+
+template <class SrcIterator, class SrcShape, class SrcAccessor,
+          class DestIterator, class DestShape, class DestAccessor, 
+          class Functor>
+void
+transformMultiArrayImpl(SrcIterator s, SrcShape const & sshape, SrcAccessor src,
+               DestIterator d, DestShape const & dshape, DestAccessor dest, 
+               Functor const & f, VigraFalseType)
+{
+    // expand mode
+    for(unsigned int i=0; i<sshape.size(); ++i)
+        vigra_precondition(sshape[i] == 1 || sshape[i] == dshape[i],
+            "transformMultiArray(): mismatch between source and destination shapes:\n"
+            "In 'expand'-mode, the length of each source dimension must either be 1\n"
+            "or equal to the corresponding destination length.");
+    transformMultiArrayExpandImpl(s, sshape, src, d, dshape, dest, 
+                                  f, MetaInt<SrcIterator::level>());
 }
     
 /** \brief Transform a multi-dimensional array with a unary function or functor.
@@ -293,10 +432,10 @@ transformMultiArrayImpl(SrcIterator s, SrcShape const & shape, SrcAccessor src,
     The function uses accessors to access the pixel data.
     Note that the unary functors of the STL can be used in addition to
     the functors specifically defined in \ref TransformFunctor.
-    Creation of new functors is easiest by using \ref FunctorExpressions. Note that the iterator range 
-    must be specified by a shape object, because otherwise we could not control
-    the range simultaneously in all dimensions (this is a necessary consequence
-    of the \ref vigra::MultiIterator design).
+    Creation of new functors is easiest by using \ref FunctorExpressions. Note that the 
+    iterator range must be specified by a shape object, because otherwise we could 
+    not control the range simultaneously in all dimensions (this is a necessary 
+    consequence of the \ref vigra::MultiIterator design).
 
     <b> Declarations:</b>
 
@@ -365,7 +504,8 @@ inline void
 transformMultiArray(SrcIterator s, SrcShape const & shape, SrcAccessor src,
                     DestIterator d, DestAccessor dest, Functor const & f)
 {    
-    transformMultiArrayImpl(s, shape, src, d, dest, f, MetaInt<SrcIterator::level>());
+    transformMultiArrayExpandImpl(s, shape, src, d, shape, dest, 
+                                  f, MetaInt<SrcIterator::level>());
 }
 
 template <class SrcIterator, class SrcShape, class SrcAccessor,
@@ -380,6 +520,36 @@ transformMultiArray(triple<SrcIterator, SrcShape, SrcAccessor> const & src,
                         dest.first, dest.second, f);
 }
 
+template <class SrcIterator, class SrcShape, class SrcAccessor,
+          class DestIterator, class DestShape, class DestAccessor, 
+          class Functor>
+void
+transformMultiArray(SrcIterator s, SrcShape const & sshape, SrcAccessor src,
+               DestIterator d, DestShape const & dshape, DestAccessor dest, 
+               Functor const & f)
+{    
+    vigra_precondition(sshape.size() == dshape.size(),
+        "transformMultiArray(): dimensionality of source and destination array differ");
+    typedef FunctorTraits<Functor> FT;
+    typedef typename 
+        And<typename FT::isInitializer, typename FT::isUnaryAnalyser>::result
+        isAnalyserInitializer;
+    transformMultiArrayImpl(s, sshape, src, d, dshape, dest, 
+                            f, isAnalyserInitializer());
+}
+
+template <class SrcIterator, class SrcShape, class SrcAccessor,
+          class DestIterator, class DestShape, class DestAccessor, 
+          class Functor>
+inline void
+transformMultiArray(triple<SrcIterator, SrcShape, SrcAccessor> const & src,
+               triple<DestIterator, DestShape, DestAccessor> const & dest, 
+               Functor const & f)
+{
+    transformMultiArray(src.first, src.second, src.third, 
+                        dest.first, dest.second, dest.third, f);
+}
+
 /********************************************************/
 /*                                                      */
 /*                combineTwoMultiArrays                 */
@@ -388,35 +558,159 @@ transformMultiArray(triple<SrcIterator, SrcShape, SrcAccessor> const & src,
 
 template <class SrcIterator1, class SrcShape, class SrcAccessor1,
           class SrcIterator2, class SrcAccessor2,
-          class DestIterator, class DestAccessor, 
+          class DestIterator, class DestShape, class DestAccessor, 
           class Functor>
-inline void
-combineTwoMultiArraysImpl(SrcIterator1 s1, SrcShape const & shape, SrcAccessor1 src1,
+void
+combineTwoMultiArraysReduceImpl(
+               SrcIterator1 s1, SrcShape const & sshape, SrcAccessor1 src1,
                SrcIterator2 s2, SrcAccessor2 src2,
-               DestIterator d, DestAccessor dest, Functor const & f, MetaInt<0>)
+               DestIterator d,  DestShape const & dshape, DestAccessor dest, 
+               SrcShape const & reduceShape,
+               Functor const & ff, MetaInt<0>)
 {
-    combineTwoLines(s1, s1 + shape[0], src1, s2, src2, d, dest, f);
+    DestIterator dend = d + dshape[0];
+    for(; d != dend; ++s1.template dim<0>(), ++s2.template dim<0>(), ++d)
+    {
+        Functor f = ff;
+        inspectTwoMultiArrays(s1, reduceShape, src1, s2, src2, f);
+        dest.set(f(), d);
+    }
 }
     
 template <class SrcIterator1, class SrcShape, class SrcAccessor1,
           class SrcIterator2, class SrcAccessor2,
-          class DestIterator, class DestAccessor, 
+          class DestIterator, class DestShape, class DestAccessor, 
           class Functor, int N>
 void
-combineTwoMultiArraysImpl(SrcIterator1 s1, SrcShape const & shape, SrcAccessor1 src1,
+combineTwoMultiArraysReduceImpl(
+               SrcIterator1 s1, SrcShape const & sshape, SrcAccessor1 src1,
                SrcIterator2 s2, SrcAccessor2 src2,
-               DestIterator d, DestAccessor dest, 
+               DestIterator d,  DestShape const & dshape, DestAccessor dest, 
+               SrcShape const & reduceShape,
                Functor const & f, MetaInt<N>)
 {
-    SrcIterator1 s1end = s1 + shape[N];
-    for(; s1 != s1end; ++s1, ++s2, ++d)
+    DestIterator dend = d + dshape[N];
+    for(; d != dend; ++s1.template dim<N>(), ++s2.template dim<N>(), ++d)
     {
-        combineTwoMultiArraysImpl(s1.begin(), shape, src1, 
-                                  s2.begin(), src2, d.begin(), dest, 
-                                  f, MetaInt<N-1>());
+        combineTwoMultiArraysReduceImpl(s1, sshape, src1, s2, src2, 
+                                        d.begin(), dshape, dest,
+                                        reduceShape, f, MetaInt<N-1>());
+    }
+}
+
+template <class SrcIterator1, class SrcShape1, class SrcAccessor1,
+          class SrcIterator2, class SrcShape2, class SrcAccessor2,
+          class DestIterator, class DestShape, class DestAccessor, 
+          class Functor>
+void
+combineTwoMultiArraysImpl(
+               SrcIterator1 s1, SrcShape1 const & sshape1, SrcAccessor1 src1,
+               SrcIterator2 s2, SrcShape2 const & sshape2, SrcAccessor2 src2,
+               DestIterator d, DestShape const & dshape, DestAccessor dest, 
+               Functor const & f, VigraTrueType)
+{
+    // reduce mode
+    SrcShape1 reduceShape = sshape1;
+    for(unsigned int i=0; i<dshape.size(); ++i)
+    {
+        vigra_precondition(sshape1[i] == sshape2[i] && 
+                           (dshape[i] == 1 || sshape1[i] == dshape[i]),
+            "combineTwoMultiArrays(): mismatch between source and destination shapes:\n"
+            "In 'reduce'-mode, the two source shapes must be equal, and\n"
+            "the length of each destination dimension must either be 1\n"
+            "or equal to the corresponding source length.");
+        if(dshape[i] != 1)
+            reduceShape[i] = 1;
+    }
+    combineTwoMultiArraysReduceImpl(s1, sshape1, src1, s2, src2, 
+                                    d, dshape, dest, reduceShape,
+                                    f, MetaInt<SrcIterator1::level>());
+}
+    
+template <class SrcIterator1, class SrcShape1, class SrcAccessor1,
+          class SrcIterator2, class SrcShape2, class SrcAccessor2,
+          class DestIterator, class DestShape, class DestAccessor, 
+          class Functor>
+void
+combineTwoMultiArraysExpandImpl(
+               SrcIterator1 s1, SrcShape1 const & sshape1, SrcAccessor1 src1,
+               SrcIterator2 s2, SrcShape2 const & sshape2, SrcAccessor2 src2,
+               DestIterator d, DestShape const & dshape, DestAccessor dest, 
+               Functor const & f, MetaInt<0>)
+{
+    DestIterator dend = d + dshape[0];
+    if(sshape1[0] == 1 && sshape2[0] == 1)
+    {
+        initLine(d, dend, dest, f(src1(s1), src2(s2)));
+    }
+    else if(sshape1[0] == 1)
+    {
+        typename SrcAccessor1::value_type sv1 = src1(s1);
+        for(; d != dend; ++d, ++s2)
+            dest.set(f(sv1, src2(s2)), d);
+    }
+    else if(sshape2[0] == 1)
+    {
+        typename SrcAccessor2::value_type sv2 = src2(s2);
+        for(; d != dend; ++d, ++s1)
+            dest.set(f(src1(s1), sv2), d);
+    }
+    else
+    {
+        combineTwoLines(s1, s1 + sshape1[0], src1, s2, src2, d, dest, f);
     }
 }
     
+template <class SrcIterator1, class SrcShape1, class SrcAccessor1,
+          class SrcIterator2, class SrcShape2, class SrcAccessor2,
+          class DestIterator, class DestShape, class DestAccessor, 
+          class Functor, int N>
+void
+combineTwoMultiArraysExpandImpl(
+               SrcIterator1 s1, SrcShape1 const & sshape1, SrcAccessor1 src1,
+               SrcIterator2 s2, SrcShape2 const & sshape2, SrcAccessor2 src2,
+               DestIterator d, DestShape const & dshape, DestAccessor dest, 
+               Functor const & f, MetaInt<N>)
+{
+    DestIterator dend = d + dshape[N];
+    int s1inc = sshape1[N] == 1
+                    ? 0 
+                    : 1;
+    int s2inc = sshape2[N] == 1
+                    ? 0 
+                    : 1;
+    for(; d != dend; ++d, s1 += s1inc, s2 += s2inc)
+    {
+        combineTwoMultiArraysExpandImpl(s1.begin(), sshape1, src1, 
+                                        s2.begin(), sshape2, src2, 
+                                        d.begin(), dshape, dest,
+                                        f, MetaInt<N-1>());
+    }
+}
+
+template <class SrcIterator1, class SrcShape1, class SrcAccessor1,
+          class SrcIterator2, class SrcShape2, class SrcAccessor2,
+          class DestIterator, class DestShape, class DestAccessor, 
+          class Functor>
+void
+combineTwoMultiArraysImpl(
+               SrcIterator1 s1, SrcShape1 const & sshape1, SrcAccessor1 src1,
+               SrcIterator2 s2, SrcShape2 const & sshape2, SrcAccessor2 src2,
+               DestIterator d, DestShape const & dshape, DestAccessor dest, 
+               Functor const & f, VigraFalseType)
+{
+    // expand mode
+    for(unsigned int i=0; i<sshape1.size(); ++i)
+        vigra_precondition((sshape1[i] == 1 || sshape1[i] == dshape[i]) &&
+                           (sshape2[i] == 1 || sshape2[i] == dshape[i]),
+            "combineTwoMultiArrays(): mismatch between source and destination shapes:\n"
+            "In 'expand'-mode, the length of each source dimension must either be 1\n"
+            "or equal to the corresponding destination length.");
+    combineTwoMultiArraysExpandImpl(s1, sshape1, src1, s2, sshape2, src2, 
+                                    d, dshape, dest, 
+                                    f, MetaInt<SrcIterator1::level>());
+}
+
 /** \brief Combine two multi-dimensional arrays into one using a binary function or functor.
 
     The transformation given by the functor is applied to the source 
@@ -516,8 +810,8 @@ combineTwoMultiArrays(SrcIterator1 s1, SrcShape const & shape, SrcAccessor1 src1
                SrcIterator2 s2, SrcAccessor2 src2,
                DestIterator d, DestAccessor dest, Functor const & f)
 {    
-    combineTwoMultiArraysImpl(s1, shape, src1, s2, src2, d, dest, f, 
-                              MetaInt<SrcIterator1::level>());
+    combineTwoMultiArraysExpandImpl(s1, shape, src1, s2, shape, src2, d, shape, dest, f, 
+                                    MetaInt<SrcIterator1::level>());
 }
 
 template <class SrcIterator1, class SrcShape, class SrcAccessor1,
@@ -532,6 +826,44 @@ combineTwoMultiArrays(triple<SrcIterator1, SrcShape, SrcAccessor1> const & src1,
     combineTwoMultiArrays(
            src1.first, src1.second, src1.third, 
            src2.first, src2.second, dest.first, dest.second, f);
+}
+
+template <class SrcIterator1, class SrcShape1, class SrcAccessor1,
+          class SrcIterator2, class SrcShape2, class SrcAccessor2,
+          class DestIterator, class DestShape, class DestAccessor, 
+          class Functor>
+void
+combineTwoMultiArrays(
+               SrcIterator1 s1, SrcShape1 const & sshape1, SrcAccessor1 src1,
+               SrcIterator2 s2, SrcShape2 const & sshape2, SrcAccessor2 src2,
+               DestIterator d, DestShape const & dshape, DestAccessor dest, 
+               Functor const & f)
+{    
+    vigra_precondition(sshape1.size() == dshape.size() && sshape2.size() == dshape.size(),
+        "combineTwoMultiArrays(): dimensionality of source and destination arrays differ");
+    
+    typedef FunctorTraits<Functor> FT;
+    typedef typename 
+        And<typename FT::isInitializer, typename FT::isBinaryAnalyser>::result
+        isAnalyserInitializer;
+    combineTwoMultiArraysImpl(s1, sshape1, src1, s2, sshape2, src2, d, dshape, dest, 
+                              f, isAnalyserInitializer());
+}
+
+template <class SrcIterator1, class SrcShape1, class SrcAccessor1,
+          class SrcIterator2, class SrcShape2, class SrcAccessor2,
+          class DestIterator, class DestShape, class DestAccessor, 
+          class Functor>
+inline void
+combineTwoMultiArrays(
+               triple<SrcIterator1, SrcShape1, SrcAccessor1> const & src1,
+               triple<SrcIterator2, SrcShape2, SrcAccessor2> const & src2,
+               triple<DestIterator, DestShape, DestAccessor> const & dest, 
+               Functor const & f)
+{
+    combineTwoMultiArrays(src1.first, src1.second, src1.third, 
+                          src2.first, src2.second, src2.third, 
+                          dest.first, dest.second, dest.third, f);
 }
 
 /********************************************************/
@@ -576,7 +908,8 @@ combineThreeMultiArraysImpl(SrcIterator1 s1, SrcShape const & shape, SrcAccessor
 }
     
     
-/** \brief Combine three multi-dimensional arrays into one using a binary function or functor.
+/** \brief Combine three multi-dimensional arrays into one using a 
+           ternary function or functor.
 
     Except for the fact that it operates on three input arrays, this function is
     identical to \ref combineTwoMultiArrays().
