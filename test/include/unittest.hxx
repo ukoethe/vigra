@@ -38,21 +38,36 @@
 #define testCase(function)  createTestCase(function, #function "()")
 #define testSuite(testsuite)  ( new testsuite )
 
-#define should(p) \
-    if(p); else\
+#define checkpoint(message) \
     { \
         char buf[1000]; \
-        sprintf(buf, "\"" #p "\" (" __FILE__ ":%d)", __LINE__); \
-        throw UnitTestFailed(buf); \
+        sprintf(buf, "%s (" __FILE__ ":%d)", (message), __LINE__); \
+        testCheckpoint_ = buf; \
+    } 
+
+#define should(p) \
+    {\
+        checkpoint(#p) \
+        if(p); else\
+        { \
+            char buf[1000]; \
+            sprintf(buf, "\"" #p "\" (" __FILE__ ":%d)", __LINE__); \
+            throw UnitTestFailed(buf); \
+        } \
     }
 
 #define shouldMsg(p, message) \
-    if(p); else \
-    { \
-        char buf[1000]; \
-        sprintf(buf, "%s (" __FILE__ ":%d)", message, __LINE__); \
-        throw UnitTestFailed(buf); \
+    {\
+        checkpoint(message) \
+        if(p); else \
+        { \
+            char buf[1000]; \
+            sprintf(buf, "%s (" __FILE__ ":%d)", (message), __LINE__); \
+            throw UnitTestFailed(buf); \
+        } \
     } 
+
+#define fail(message) shouldMsg(false, message)
 
 struct UnitTestFailed 
 {
@@ -68,6 +83,8 @@ struct UnitTestFailed
     std::string what_;
 };
 
+static std::string testCheckpoint_;
+
 class TestCase
 {
   public:
@@ -81,6 +98,15 @@ class TestCase
     virtual int run() = 0;
     virtual void init() {}
     virtual void destroy() {}
+    virtual bool hasCheckpoint() const 
+    {
+        return testCheckpoint_.size() > 0;
+    }
+    
+    virtual std::string getCheckpointMessage() const 
+    {
+        return testCheckpoint_;
+    }
 
     virtual char const * name() { return name_.c_str(); } 
     virtual void setName(char const * name) { name_ = name; }
@@ -160,6 +186,13 @@ class TestSuite
         {
             report_ += std::string("\nFailure in initialization of ") + t->name() + 
                          " - unexpected exception: " + e.what() + "\n";
+
+            if(t->hasCheckpoint())
+            {
+                report_ += "Last checkpoint: " + 
+                                t->getCheckpointMessage() + "\n";
+            }
+        
             return 1;
         }
 
@@ -184,6 +217,12 @@ class TestSuite
         {
             report_ += std::string("\nFailure in ") + t->name() + 
                          " - unexpected exception: " + e.what() + "\n";
+            if(t->hasCheckpoint())
+            {
+                report_ += "Last checkpoint: " + 
+                                t->getCheckpointMessage() + "\n";
+            }
+        
             return 1;
         }
 
@@ -206,6 +245,12 @@ class TestSuite
         {
             report_ += std::string("\nFailure in destruction of ") + t->name() + 
                          " - unexpected exception: " + e.what() + "\n";
+            if(t->hasCheckpoint())
+            {
+                report_ += "Last checkpoint: " + 
+                                t->getCheckpointMessage() + "\n";
+            }
+        
             return 1;
         }
 
@@ -247,6 +292,11 @@ static int doRun(TestSuite * ts, TestCase * tc)
                 ts->report_ += " - unrecognized exception or signal\n";
         }
         
+        if(tc->hasCheckpoint())
+        {
+            ts->report_ += "Last checkpoint: " + 
+                            tc->getCheckpointMessage() + "\n";
+        }
         current_failed++;
     }
    
@@ -271,6 +321,11 @@ static int doRun(TestSuite * ts, TestCase * tc)
                 ts->report_ += " - unrecognized exception or signal\n";
         }
         
+        if(tc->hasCheckpoint())
+        {
+            ts->report_ += "Last checkpoint: " + 
+                            tc->getCheckpointMessage() + "\n";
+        }
         current_failed++;
     }
     
@@ -295,6 +350,11 @@ static int doRun(TestSuite * ts, TestCase * tc)
                 ts->report_ += " - unrecognized exception or signal\n";
         }
         
+        if(tc->hasCheckpoint())
+        {
+            ts->report_ += "Last checkpoint: " + 
+                            tc->getCheckpointMessage() + "\n";
+        }
         current_failed++;
     }
 
@@ -346,6 +406,12 @@ static int doRun(TestSuite * ts, TestCase * tc)
                     ts->report_ += " - memory access violation\n";
                     break;
             }
+            
+            if(tc->hasCheckpoint())
+            {
+                ts->report_ += "Last checkpoint: " + 
+                                tc->getCheckpointMessage() + "\n";
+            }
         
             ++current_failed;
         }
@@ -355,6 +421,12 @@ static int doRun(TestSuite * ts, TestCase * tc)
         ts->report_ += "\nFailure in initialization of ";
         ts->report_ += tc->name();
         ts->report_ += " - unrecognized exception\n";
+        
+        if(tc->hasCheckpoint())
+        {
+            ts->report_ += "Last checkpoint: " + 
+                            tc->getCheckpointMessage() + "\n";
+        }
         
         ++current_failed;
     }
@@ -387,6 +459,12 @@ static int doRun(TestSuite * ts, TestCase * tc)
                     break;
             }
         
+            if(tc->hasCheckpoint())
+            {
+                ts->report_ += "Last checkpoint: " + 
+                                tc->getCheckpointMessage() + "\n";
+            }
+        
             ++current_failed;
         }
     }
@@ -395,6 +473,12 @@ static int doRun(TestSuite * ts, TestCase * tc)
         ts->report_ += "\nFailure in ";
         ts->report_ += tc->name();
         ts->report_ += " - unrecognized exception\n";
+        
+        if(tc->hasCheckpoint())
+        {
+            ts->report_ += "Last checkpoint: " + 
+                            tc->getCheckpointMessage() + "\n";
+        }
         
         ++current_failed;
     }
@@ -427,6 +511,12 @@ static int doRun(TestSuite * ts, TestCase * tc)
                     break;
             }
         
+            if(tc->hasCheckpoint())
+            {
+                ts->report_ += "Last checkpoint: " + 
+                                tc->getCheckpointMessage() + "\n";
+            }
+        
             ++current_failed;
         }
     }
@@ -435,6 +525,12 @@ static int doRun(TestSuite * ts, TestCase * tc)
         ts->report_ += "\nFailure in destruction of ";
         ts->report_ += tc->name();
         ts->report_ += " - unrecognized exception\n";
+        
+        if(tc->hasCheckpoint())
+        {
+            ts->report_ += "Last checkpoint: " + 
+                            tc->getCheckpointMessage() + "\n";
+        }
         
         ++current_failed;
     }
@@ -469,11 +565,13 @@ class ClassTestCase
                          "to clean up after previous run.");
         }
         
+        testCheckpoint_ = "";
         testcase_ = new TESTCASE;
     }
     
     virtual int run()
     {
+        testCheckpoint_ = "";
         if(testcase_ != 0) (testcase_->*fct_)();
         
         return 0;
@@ -481,6 +579,7 @@ class ClassTestCase
     
     virtual void destroy()
     {
+        testCheckpoint_ = "";
         TESTCASE * toDelete = testcase_;
         testcase_ = 0;
         delete toDelete; 
@@ -502,6 +601,7 @@ class FunctionTestCase
     
     virtual int run()
     {
+        testCheckpoint_ = "";
         (*fct_)();
         
         return 0;
