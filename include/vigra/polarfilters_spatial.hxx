@@ -27,8 +27,6 @@
 #include <vector>
 #include "vigra/utilities.hxx"
 #include "vigra/numerictraits.hxx"
-#include "vigra/imageiteratoradapter.hxx"
-#include "vigra/bordertreatment.hxx"
 #include "vigra/convolution.hxx"
 
 namespace vigra {
@@ -42,7 +40,8 @@ typedef std::vector<Kernel1D<double> > KernelArray;
 void
 initGaussianPolarFilters1(double std_dev, KernelArray & k)
 {
-    typedef Kernel1D<double>::iterator iterator;
+    typedef KernelArray::value_type Kernel;
+    typedef Kernel::iterator iterator;
     
     vigra_precondition(std_dev >= 0.0,
               "initGaussianPolarFilter1(): "
@@ -208,7 +207,7 @@ template <class SrcIterator, class SrcAccessor,
           class DestIteratorEven, class DestAccessorEven>
 void evenPolarFilters(SrcIterator supperleft, SrcIterator slowerright, SrcAccessor sa,
                   DestIteratorEven dupperleft_even, DestAccessorEven even,
-                  double scale)
+                  double scale, bool noLaplacian)
 {
     vigra_precondition(even.size(dupperleft_even) == 3,
                        "polarFilters2(): image for even output must have 3 bands.");
@@ -244,11 +243,24 @@ void evenPolarFilters(SrcIterator supperleft, SrcIterator slowerright, SrcAccess
         typename TmpTraverser::row_iterator tr = tul.rowIterator();
         typename TmpTraverser::row_iterator trend = tr + w;
         typename DestIteratorEven::row_iterator e = dupperleft_even.rowIterator();
-        for(; tr != trend; ++tr, ++e)
+        if(noLaplacian)
         {
-            even.setComponent(sq((*tr)[0]) + sq((*tr)[1]), e, 0);
-            even.setComponent(-(*tr)[1] * ((*tr)[0] + (*tr)[2]), e, 1);
-            even.setComponent(sq((*tr)[1]) + sq((*tr)[2]), e, 2);
+            for(; tr != trend; ++tr, ++e)
+            {
+                TmpType d = 0.5*sq((*tr)[0]-(*tr)[2]) + 2.0*sq((*tr)[1]);
+                even.setComponent(d, e, 0);
+                even.setComponent(0, e, 1);
+                even.setComponent(d, e, 2);
+            }
+        }
+        else
+        {
+            for(; tr != trend; ++tr, ++e)
+            {
+                even.setComponent(sq((*tr)[0]) + sq((*tr)[1]), e, 0);
+                even.setComponent(-(*tr)[1] * ((*tr)[0] + (*tr)[2]), e, 1);
+                even.setComponent(sq((*tr)[1]) + sq((*tr)[2]), e, 2);
+            }
         }      
     }
 }
@@ -332,7 +344,7 @@ void polarFilters2(SrcIterator supperleft, SrcIterator slowerright, SrcAccessor 
                        "polarFilters2(): image for odd output must have 3 bands.");
 
     detail::evenPolarFilters(supperleft, slowerright, sa, 
-                             dupperleft_even, even, scale);
+                             dupperleft_even, even, scale, false);
     
     int w = slowerright.x - supperleft.x;
     int h = slowerright.y - supperleft.y;
@@ -410,6 +422,9 @@ void polarFilters1(SrcIterator supperleft, SrcIterator slowerright, SrcAccessor 
     int w = slowerright.x - supperleft.x;
     int h = slowerright.y - supperleft.y;
     
+    detail::evenPolarFilters(supperleft, slowerright, sa, 
+                             dupperleft_even, even, scale, true);
+    
     typedef typename 
        NumericTraits<typename SrcAccessor::value_type>::RealPromote TmpType;
     typedef BasicImage<TinyVector<TmpType, 4> > TmpImage;    
@@ -417,37 +432,12 @@ void polarFilters1(SrcIterator supperleft, SrcIterator slowerright, SrcAccessor 
     TmpImage t(w, h);
     TmpTraverser tul(t.upperLeft());
     TmpTraverser tlr(t.lowerRight());
- 
-    detail::KernelArray k2;
-    detail::initGaussianPolarFilters2(scale, k2);
-    
-    // calculate filter responses for even filters  
-    VectorElementAccessor<typename TmpImage::Accessor> tmpBand(0, t.accessor());
-    convolveImage(srcIterRange(supperleft, slowerright, sa),
-                  destImage(t, tmpBand), k2[2], k2[0]);
-    tmpBand.setIndex(1);
-    convolveImage(srcIterRange(supperleft, slowerright, sa),
-                  destImage(t, tmpBand), k2[0], k2[2]);
-
-    // create even tensor from filter responses  
-    for(; tul.y != tlr.y; ++tul.y, ++dupperleft_even.y)
-    {
-        typename TmpTraverser::row_iterator tr = tul.rowIterator();
-        typename TmpTraverser::row_iterator trend = tr + w;
-        typename DestIteratorEven::row_iterator e = dupperleft_even.rowIterator();
-        for(; tr != trend; ++tr, ++e)
-        {
-            even.setComponent(0.5*sq((*tr)[0]-(*tr)[1]), e, 0);
-            even.setComponent(0, e, 1);
-            even.setComponent(0.5*sq((*tr)[0]-(*tr)[1]), e, 2);
-        }      
-    }
    
     detail::KernelArray k1;
     detail::initGaussianPolarFilters1(scale, k1);
     
     // calculate filter responses for odd filters  
-    tmpBand.setIndex(0);
+    VectorElementAccessor<typename TmpImage::Accessor> tmpBand(0, t.accessor());
     convolveImage(srcIterRange(supperleft, slowerright, sa),
                   destImage(t, tmpBand), k1[3], k1[0]);
     tmpBand.setIndex(1);
@@ -551,7 +541,7 @@ void polarFilters3(SrcIterator supperleft, SrcIterator slowerright, SrcAccessor 
                        "polarFilters3(): image for odd output must have 3 bands.");
 
     detail::evenPolarFilters(supperleft, slowerright, sa, 
-                             dupperleft_even, even, scale);
+                             dupperleft_even, even, scale, false);
     
     int w = slowerright.x - supperleft.x;
     int h = slowerright.y - supperleft.y;
