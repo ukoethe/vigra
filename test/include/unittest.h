@@ -28,46 +28,24 @@
 
 #else
 
-#error unsupported system, sorry
+#define CANT_CATCH_SIGNALS
 
 #endif
-
-#include <vigra/config.hxx>
-
 
 #define testCase(function)  createTestCase(function, #function "()")
 #define testSuite(testsuite)  ( new testsuite )
 
 #define checkpoint(message) \
-    { \
-        char buf[1000]; \
-        sprintf(buf, "%s (" __FILE__ ":%d)", (message), __LINE__); \
-        testCheckpoint_ = buf; \
-    } 
+    checkpointImpl(message, __FILE__, __LINE__)
 
-#define should(p) \
-    {\
-        checkpoint(#p) \
-        if(p); else\
-        { \
-            char buf[1000]; \
-            sprintf(buf, "\"" #p "\" (" __FILE__ ":%d)", __LINE__); \
-            throw UnitTestFailed(buf); \
-        } \
-    }
+#define should(predicate) \
+    shouldImpl((predicate), #predicate, __FILE__, __LINE__)
 
-#define shouldMsg(p, message) \
-    {\
-        checkpoint(message) \
-        if(p); else \
-        { \
-            char buf[1000]; \
-            sprintf(buf, "%s (" __FILE__ ":%d)", (message), __LINE__); \
-            throw UnitTestFailed(buf); \
-        } \
-    } 
-
-#define failTest(message) shouldMsg(false, message)
+#define shouldMsg(predicate, message) \
+    shouldImpl((predicate), message, __FILE__, __LINE__)
+    
+#define failTest(message) \
+    shouldImpl(false, message, __FILE__, __LINE__)
 
 struct UnitTestFailed 
 {
@@ -83,7 +61,31 @@ struct UnitTestFailed
     std::string what_;
 };
 
-static std::string testCheckpoint_;
+inline std::string & testCheckpoint()
+{
+    static std::string testCheckpoint_;
+    return testCheckpoint_;
+}
+
+inline void 
+checkpointImpl(const char * message, const char * file, int line)
+{
+    char buf[1000]; 
+    snprintf(buf, 1000, "\"%s\" (%s:%d)", message, file, line); 
+    testCheckpoint() = buf;
+}
+
+inline void 
+shouldImpl(bool predicate, const char * message, const char * file, int line)
+{
+    checkpointImpl(message, file, line);
+    if(!predicate)
+    { 
+        char buf[1000]; 
+        snprintf(buf, 1000, "\"%s\" (%s:%d)", message, file, line); 
+        throw UnitTestFailed(buf); 
+    } 
+}
 
 class TestCase
 {
@@ -100,12 +102,12 @@ class TestCase
     virtual void destroy() {}
     virtual bool hasCheckpoint() const 
     {
-        return testCheckpoint_.size() > 0;
+        return testCheckpoint().size() > 0;
     }
     
     virtual std::string getCheckpointMessage() const 
     {
-        return testCheckpoint_;
+        return testCheckpoint();
     }
 
     virtual char const * name() { return name_.c_str(); } 
@@ -170,21 +172,20 @@ class TestSuite
         return failed;
     }
     
-    virtual int tryInit(TestCase * t)
+    virtual void handleError(const char * where, TestCase * t)
     {
         try
         {
-            t->init();
+            throw;
         }
         catch(UnitTestFailed & e)
         {
-            report_ += std::string("\nFailure in initialization of ") + t->name() + 
+            report_ += std::string("\nFailure in ") + where + t->name() + 
                          " - assertion failed: " + e.what() + "\n";
-            return 1;
         }
-        catch(vigra::StdException & e)
+        catch(std::exception & e)
         {
-            report_ += std::string("\nFailure in initialization of ") + t->name() + 
+            report_ += std::string("\nFailure in ") + where + t->name() + 
                          " - unexpected exception: " + e.what() + "\n";
 
             if(t->hasCheckpoint())
@@ -192,7 +193,18 @@ class TestSuite
                 report_ += "Last checkpoint: " + 
                                 t->getCheckpointMessage() + "\n";
             }
-        
+        }
+    }
+    
+    virtual int tryInit(TestCase * t)
+    {
+        try
+        {
+            t->init();
+        }
+        catch(...)
+        {
+            handleError("initialization of ", t);
             return 1;
         }
 
@@ -207,22 +219,9 @@ class TestSuite
         {
             res = t->run();
         }
-        catch(UnitTestFailed & e)
+        catch(...)
         {
-            report_ += std::string("\nFailure in ") + t->name() + 
-                         " - assertion failed: " + e.what() + "\n";
-            return 1;
-        }
-        catch(vigra::StdException & e)
-        {
-            report_ += std::string("\nFailure in ") + t->name() + 
-                         " - unexpected exception: " + e.what() + "\n";
-            if(t->hasCheckpoint())
-            {
-                report_ += "Last checkpoint: " + 
-                                t->getCheckpointMessage() + "\n";
-            }
-        
+            handleError("", t);
             return 1;
         }
 
@@ -235,22 +234,9 @@ class TestSuite
         {
             t->destroy();
         }
-        catch(UnitTestFailed & e)
+        catch(...)
         {
-            report_ += std::string("\nFailure in destruction of ") + t->name() + 
-                         " - assertion failed: " + e.what() + "\n";
-            return 1;
-        }
-        catch(vigra::StdException & e)
-        {
-            report_ += std::string("\nFailure in destruction of ") + t->name() + 
-                         " - unexpected exception: " + e.what() + "\n";
-            if(t->hasCheckpoint())
-            {
-                report_ += "Last checkpoint: " + 
-                                t->getCheckpointMessage() + "\n";
-            }
-        
+            handleError("destruction of ", t);
             return 1;
         }
 
@@ -265,7 +251,44 @@ class TestSuite
     std::string report_;
 };
 
+static void handleUnrecognizedException(const char * where, TestSuite * ts, TestCase * tc)
+{
+    ts->report_ += std::string("\nFailure in ") + where + tc->name() + 
+                               " - unrecognized exception\n";
+
+    if(tc->hasCheckpoint())
+    {
+        ts->report_ += "Last checkpoint: " + 
+                        tc->getCheckpointMessage() + "\n";
+    }
+}
+
+#ifndef CANT_CATCH_SIGNALS
+
 #ifdef _MSC_VER
+
+static void handleSignal(const char * where, TestSuite * ts, TestCase * tc)
+{
+    ts->report_ += std::string("\nFailure in ") + where + tc->name();
+
+    switch (GetExceptionCode())
+    {
+        case EXCEPTION_ACCESS_VIOLATION:
+            ts->report_ += " - memory access violation\n";
+            break;
+        case EXCEPTION_INT_DIVIDE_BY_ZERO:
+            ts->report_ += " - integer divide by zero\n";
+            break;
+        default:
+            ts->report_ += " - unrecognized exception or signal\n";
+    }
+
+    if(tc->hasCheckpoint())
+    {
+        ts->report_ += "Last checkpoint: " + 
+                        tc->getCheckpointMessage() + "\n";
+    }
+}
    
 static int doRun(TestSuite * ts, TestCase * tc)
 {
@@ -277,26 +300,7 @@ static int doRun(TestSuite * ts, TestCase * tc)
     }
     __except (true) 
     {
-        ts->report_ += "\nFailure in initialization of ";
-        ts->report_ += tc->name();
-
-        switch (GetExceptionCode())
-        {
-            case EXCEPTION_ACCESS_VIOLATION:
-                ts->report_ += " - memory access violation\n";
-                break;
-            case EXCEPTION_INT_DIVIDE_BY_ZERO:
-                ts->report_ += " - integer divide by zero\n";
-                break;
-            default:
-                ts->report_ += " - unrecognized exception or signal\n";
-        }
-        
-        if(tc->hasCheckpoint())
-        {
-            ts->report_ += "Last checkpoint: " + 
-                            tc->getCheckpointMessage() + "\n";
-        }
+        handleSignal("initialization of ", ts, tc);
         current_failed++;
     }
    
@@ -306,26 +310,7 @@ static int doRun(TestSuite * ts, TestCase * tc)
     }
     __except (true) 
     {
-        ts->report_ += "\nFailure in ";
-        ts->report_ += tc->name();
-        
-        switch (GetExceptionCode())
-        {
-            case EXCEPTION_ACCESS_VIOLATION:
-                ts->report_ += " - memory access violation\n";
-                break;
-            case EXCEPTION_INT_DIVIDE_BY_ZERO:
-                ts->report_ += " - integer divide by zero\n";
-                break;
-            default:
-                ts->report_ += " - unrecognized exception or signal\n";
-        }
-        
-        if(tc->hasCheckpoint())
-        {
-            ts->report_ += "Last checkpoint: " + 
-                            tc->getCheckpointMessage() + "\n";
-        }
+        handleSignal("", ts, tc);
         current_failed++;
     }
     
@@ -335,26 +320,7 @@ static int doRun(TestSuite * ts, TestCase * tc)
     }
     __except (true) 
     {
-        ts->report_ += "\nFailure in destruction of ";
-        ts->report_ += tc->name();
-        
-        switch (GetExceptionCode())
-        {
-            case EXCEPTION_ACCESS_VIOLATION:
-                ts->report_ += " - memory access violation\n";
-                break;
-            case EXCEPTION_INT_DIVIDE_BY_ZERO:
-                ts->report_ += " - integer divide by zero\n";
-                break;
-            default:
-                ts->report_ += " - unrecognized exception or signal\n";
-        }
-        
-        if(tc->hasCheckpoint())
-        {
-            ts->report_ += "Last checkpoint: " + 
-                            tc->getCheckpointMessage() + "\n";
-        }
+        handleSignal("destruction of ", ts, tc);
         current_failed++;
     }
 
@@ -363,13 +329,44 @@ static int doRun(TestSuite * ts, TestCase * tc)
 
 #elif defined(__unix)
 
-static jmp_buf unitTestJumpBuffer;
+inline jmp_buf & unitTestJumpBuffer()
+{
+    static jmp_buf unitTestJumpBuffer_;
+    return unitTestJumpBuffer_;
+}
 
 static void unitTestSignalHandler(int sig, int code, struct sigcontext * c)
 {
-    longjmp(unitTestJumpBuffer, sig);
+    longjmp(unitTestJumpBuffer(), sig);
 }
 
+static void handleSignal(int sigtype, const char * where, TestSuite * ts, TestCase * tc)
+{
+    ts->report_ += std::string("\nFailure in ") + where + tc->name();
+
+    switch(sigtype)
+    {
+        case SIGTRAP:
+            ts->report_ += " - SIGTRAP (perhaps integer divide by zero)\n";
+            break;
+        case SIGFPE:
+            ts->report_ += " - SIGFPE (arithmetic exception)\n";
+            break;
+        case SIGSEGV:
+        case SIGBUS:
+            ts->report_ += " - memory access violation\n";
+            break;
+        default:
+            ts->report_ += " - unrecognized signal\n";
+    }
+
+    if(tc->hasCheckpoint())
+    {
+        ts->report_ += "Last checkpoint: " + 
+                        tc->getCheckpointMessage() + "\n";
+    }
+}
+   
 static int doRun(TestSuite * ts, TestCase * tc)
 {
     int current_failed = 0;
@@ -383,51 +380,20 @@ static int doRun(TestSuite * ts, TestCase * tc)
 
     try 
     {
-        sigtype = setjmp(unitTestJumpBuffer);
+        sigtype = setjmp(unitTestJumpBuffer());
         if(sigtype == 0)
         {
            current_failed += ts->tryInit(tc);
         }
         else
         {
-            ts->report_ += "\nFailure in initialization of ";
-            ts->report_ += tc->name();
-            
-            switch(sigtype)
-            {
-                case SIGTRAP:
-                    ts->report_ += " - SIGTRAP (perhaps integer divide by zero)\n";
-                    break;
-                case SIGFPE:
-                    ts->report_ += " - SIGFPE (arithmetic exception)\n";
-                    break;
-                case SIGSEGV:
-                case SIGBUS:
-                    ts->report_ += " - memory access violation\n";
-                    break;
-            }
-            
-            if(tc->hasCheckpoint())
-            {
-                ts->report_ += "Last checkpoint: " + 
-                                tc->getCheckpointMessage() + "\n";
-            }
-        
+            handleSignal(sigtype, "initialization of ", ts, tc);
             ++current_failed;
         }
     }
     catch(...) 
     {
-        ts->report_ += "\nFailure in initialization of ";
-        ts->report_ += tc->name();
-        ts->report_ += " - unrecognized exception\n";
-        
-        if(tc->hasCheckpoint())
-        {
-            ts->report_ += "Last checkpoint: " + 
-                            tc->getCheckpointMessage() + "\n";
-        }
-        
+        handleUnrecognizedException("initialization of ", ts, tc);
         ++current_failed;
     }
     
@@ -435,51 +401,20 @@ static int doRun(TestSuite * ts, TestCase * tc)
    
     try 
     {
-        sigtype = setjmp(unitTestJumpBuffer);
+        sigtype = setjmp(unitTestJumpBuffer());
         if(sigtype == 0)
         {
            current_failed += ts->tryRun(tc);
         }
         else
         {
-            ts->report_ += "\nFailure in ";
-            ts->report_ += tc->name();
-            
-            switch(sigtype)
-            {
-                case SIGTRAP:
-                    ts->report_ += " - SIGTRAP (perhaps integer divide by zero)\n";
-                    break;
-                case SIGFPE:
-                    ts->report_ += " - SIGFPE (arithmetic exception)\n";
-                    break;
-                case SIGSEGV:
-                case SIGBUS:
-                    ts->report_ += " - memory access violation\n";
-                    break;
-            }
-        
-            if(tc->hasCheckpoint())
-            {
-                ts->report_ += "Last checkpoint: " + 
-                                tc->getCheckpointMessage() + "\n";
-            }
-        
+            handleSignal(sigtype, "", ts, tc);
             ++current_failed;
         }
     }
     catch(...) 
     {
-        ts->report_ += "\nFailure in ";
-        ts->report_ += tc->name();
-        ts->report_ += " - unrecognized exception\n";
-        
-        if(tc->hasCheckpoint())
-        {
-            ts->report_ += "Last checkpoint: " + 
-                            tc->getCheckpointMessage() + "\n";
-        }
-        
+        handleUnrecognizedException("", ts, tc);
         ++current_failed;
     }
     
@@ -487,58 +422,72 @@ static int doRun(TestSuite * ts, TestCase * tc)
    
     try 
     {
-        sigtype = setjmp(unitTestJumpBuffer);
+        sigtype = setjmp(unitTestJumpBuffer());
         if(sigtype == 0)
         {
            current_failed += ts->tryDestroy(tc);
         }
         else
         {
-            ts->report_ += "\nFailure in destruction of ";
-            ts->report_ += tc->name();
-            
-            switch(sigtype)
-            {
-                case SIGTRAP:
-                    ts->report_ += " - SIGTRAP (perhaps integer divide by zero)\n";
-                    break;
-                case SIGFPE:
-                    ts->report_ += " - SIGFPE (arithmetic exception)\n";
-                    break;
-                case SIGSEGV:
-                case SIGBUS:
-                    ts->report_ += " - memory access violation\n";
-                    break;
-            }
-        
-            if(tc->hasCheckpoint())
-            {
-                ts->report_ += "Last checkpoint: " + 
-                                tc->getCheckpointMessage() + "\n";
-            }
-        
+            handleSignal(sigtype, "destruction of ", ts, tc);
             ++current_failed;
         }
     }
     catch(...) 
     {
-        ts->report_ += "\nFailure in destruction of ";
-        ts->report_ += tc->name();
-        ts->report_ += " - unrecognized exception\n";
-        
-        if(tc->hasCheckpoint())
-        {
-            ts->report_ += "Last checkpoint: " + 
-                            tc->getCheckpointMessage() + "\n";
-        }
-        
+        handleUnrecognizedException("destruction of ", ts, tc);
         ++current_failed;
     }
 
     return current_failed;
 }
 
-#endif
+#endif  /* _MSC_VER || __unix */
+
+#else  /* CANT_CATCH_SIGNALS */
+
+static int doRun(TestSuite * ts, TestCase * tc)
+{
+    int current_failed = 0;
+
+    try 
+    {
+        current_failed += ts->tryInit(tc);
+    }
+    catch(...) 
+    {
+        handleUnrecognizedException("initialization of ", ts, tc);
+        ++current_failed;
+    }
+    
+    if(current_failed) return current_failed;
+   
+    try 
+    {
+        current_failed += ts->tryRun(tc);
+    }
+    catch(...) 
+    {
+        handleUnrecognizedException("", ts, tc);
+        ++current_failed;
+    }
+    
+    if(current_failed) return current_failed;
+   
+    try 
+    {
+        current_failed += ts->tryDestroy(tc);
+    }
+    catch(...) 
+    {
+        handleUnrecognizedException("destruction of ", ts, tc);
+        ++current_failed;
+    }
+
+    return current_failed;
+}
+
+#endif /* CANT_CATCH_SIGNALS */
 
 template <class TESTCASE>
 class ClassTestCase
@@ -565,13 +514,13 @@ class ClassTestCase
                          "to clean up after previous run.");
         }
         
-        testCheckpoint_ = "";
+        testCheckpoint() = "";
         testcase_ = new TESTCASE;
     }
     
     virtual int run()
     {
-        testCheckpoint_ = "";
+        testCheckpoint() = "";
         if(testcase_ != 0) (testcase_->*fct_)();
         
         return 0;
@@ -579,7 +528,7 @@ class ClassTestCase
     
     virtual void destroy()
     {
-        testCheckpoint_ = "";
+        testCheckpoint() = "";
         TESTCASE * toDelete = testcase_;
         testcase_ = 0;
         delete toDelete; 
@@ -601,7 +550,7 @@ class FunctionTestCase
     
     virtual int run()
     {
-        testCheckpoint_ = "";
+        testCheckpoint() = "";
         (*fct_)();
         
         return 0;
