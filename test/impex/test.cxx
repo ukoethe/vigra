@@ -1037,6 +1037,40 @@ class ImageExportImportFailureTest
         {}
     }
         
+    
+    void testUnknownFormat()
+    {
+        try
+        {
+            vigra::ImageImportInfo info("Makefile");
+            failTest("Failed to throw exception.");
+        }
+        catch(vigra::PreconditionViolation & e)
+        {
+            char const * expected = "\nPrecondition violation!\n"
+                                    "Unknown file type";
+            should(strncmp(expected, e.what(), strlen(expected)) == 0);
+        }
+        catch(vigra::PostconditionViolation & e)  // for old impex
+        {
+            char const * expected = "\nPostcondition violation!\n"
+                                    "ImageImportInfo::loadImage(): Unknown file type";
+            should(strncmp(expected, e.what(), strlen(expected)) == 0);
+        }
+        
+        try
+        {
+            exportImage(srcImageRange(img), vigra::ImageExportInfo("foo.flop"));
+            failTest("Failed to throw exception.");
+        }
+        catch(vigra::PreconditionViolation & e)
+        {
+            char const * expected = "\nPrecondition violation!\n"
+                                    "ImageExportInfo::initImageInfo(): No filetype specified";
+            should(strncmp(expected, e.what(), strlen(expected)) == 0);
+        }
+    }
+        
     vigra::BImage img;
 };
 
@@ -1106,6 +1140,7 @@ class ImageImportExportTestSuite
         add( testCase(&ImageExportImportFailureTest::testSUNImport));
         add( testCase(&ImageExportImportFailureTest::testVIFFExport));
         add( testCase(&ImageExportImportFailureTest::testVIFFImport));
+        add( testCase(&ImageExportImportFailureTest::testUnknownFormat));
     }
 };
 
