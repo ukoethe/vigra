@@ -119,7 +119,7 @@ void ImageImportInfo::loadImage(char const * filename)
     deleteInternalImages();
 
     filetype_ = findFileTypeFromMagicString(filename);
-    vigra_postcondition(filetype_->typeTag != 0,
+    vigra_postcondition(filetype_ != 0,
       "ImageImportInfo::loadImage(): Unknown file type");
 
     if(strcmp(filetype_->typeTag, "VIFF") == 0)
