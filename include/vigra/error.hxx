@@ -23,13 +23,10 @@
 #ifndef VIGRA_ERROR_HXX
 #define VIGRA_ERROR_HXX
 
+#include <stdexcept>
 #include <stdio.h>
 #include "vigra/config.hxx"
           
-#ifdef _MSC_VER
-#  define snprintf _snprintf
-#endif
-
 /*! \page ErrorReporting Error Reporting
 
     <b>\#include</b> "<a href="error_8hxx-source.html">vigra/error.hxx</a>"
@@ -105,38 +102,27 @@
 
 namespace vigra {
 
-
 class ContractViolation : public StdException
 {
-  protected:
-#ifdef NO_INLINE_STATIC_CONST_DEFINITION
-    enum { bufsize_ = 1100 };
-#else
-    static const int bufsize_ = 1100;
-#endif
-    
   public:
-    ContractViolation(char const * message)
+    ContractViolation(char const * prefix, char const * message, 
+                      char const * file, int line)
     {
-        snprintf(what_, bufsize_, "%s", message);
+        sprintf(what_, "\n%.30s\n%.900s\n(%.100s:%d)\n", prefix, message, file, line);
     }
     
-    ContractViolation()
+    ContractViolation(char const * prefix, char const * message)
     {
-        what_[0] = 0;
+        sprintf(what_, "\n%.30s\n%.900s\n", prefix, message);
     }
     
-    ContractViolation(ContractViolation const & o)
-    : StdException(o)
-    {
-        snprintf(what_, bufsize_, "%s", o.what_);
-    }
-
     virtual const char * what() const throw()
     {
         return what_;
     }
-    
+  
+  private:
+    enum { bufsize_ = 1100 };
     char what_[bufsize_];
 };
 
@@ -144,42 +130,36 @@ class PreconditionViolation : public ContractViolation
 {
   public:
     PreconditionViolation(char const * message, const char * file, int line)
-    {
-        snprintf( what_, bufsize_, "\nPrecondition violation!\n%s\n(%s:%d)\n", message, file, line);
-    }
+    : ContractViolation("Precondition violation!", message, file, line)
+    {}
     
     PreconditionViolation(char const * message)
-    {
-        snprintf( what_, bufsize_, "\nPrecondition violation!\n%s\n", message);
-    }
+    : ContractViolation("Precondition violation!", message)
+    {}
 };
 
 class PostconditionViolation : public ContractViolation
 {
   public:
     PostconditionViolation(char const * message, const char * file, int line)
-    {
-        snprintf( what_, bufsize_, "\nPostcondition violation!\n%s\n(%s:%d)\n", message, file, line);
-    }
+    : ContractViolation("Postcondition violation!", message, file, line)
+    {}
     
     PostconditionViolation(char const * message)
-    {
-        snprintf( what_, bufsize_, "\nPostcondition violation!\n%s\n", message);
-    }
+    : ContractViolation("Postcondition violation!", message)
+    {}
 };
 
 class InvariantViolation : public ContractViolation
 {
   public:
     InvariantViolation(char const * message, const char * file, int line)
-    {
-        snprintf( what_, bufsize_, "\nInvariant violation!\n%s\n(%s:%d)\n", message, file, line);
-    }
+    : ContractViolation("Invariant violation!", message, file, line)
+    {}
     
     InvariantViolation(char const * message)
-    {
-        snprintf( what_, bufsize_, "\nInvariant violation!\n%s\n", message);
-    }
+    : ContractViolation("Invariant violation!", message)
+    {}
 };
 
 #ifndef NDEBUG
@@ -208,9 +188,9 @@ void throw_postcondition_error(bool predicate, char const * message, char const 
 inline
 void throw_runtime_error(char const * message, char const * file, int line)
 {
-    char buf[1000]; 
-    snprintf(buf, 1000, "%s (%s:%d)", message, file, line); 
-    throw std::runtime_error(buf); 
+    char what_[1100];
+    sprintf(what_, "\n%.30s\n%.900s\n(%.100s:%d)\n");
+    throw std::runtime_error(what_); 
 }
 
 #define vigra_precondition(PREDICATE, MESSAGE) vigra::throw_precondition_error((PREDICATE), MESSAGE, __FILE__, __LINE__)
