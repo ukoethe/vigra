@@ -466,15 +466,15 @@ class ImageIteratorBase
 
         /** the iterator's reference type (return type of <TT>*iter</TT>)
         */
-    typedef PIXELTYPE &          reference;
+    typedef REFERENCE            reference;
 
         /** the iterator's index reference type (return type of <TT>iter[diff]</TT>)
         */
-    typedef PIXELTYPE &          index_reference;
+    typedef REFERENCE            index_reference;
 
         /** the iterator's pointer type (return type of <TT>iter.operator->()</TT>)
         */
-    typedef PIXELTYPE *          pointer;
+    typedef POINTER              pointer;
 
         /** the iterator's difference type (argument type of <TT>iter[diff]</TT>)
         */
@@ -731,6 +731,8 @@ class ImageIteratorBase
     }
 
   public:
+    /** @name Random navigation */
+    //@{
         /** Add offset via Diff2D
         */
     IMAGEITERATOR & operator+=(difference_type const & s)
@@ -747,6 +749,29 @@ class ImageIteratorBase
         y -= s.y;
         return static_cast<IMAGEITERATOR &>(*this);
     }
+
+        /** Add a distance
+        */
+    IMAGEITERATOR operator+(difference_type const & s) const
+    {
+        IMAGEITERATOR ret(static_cast<IMAGEITERATOR const &>(*this));
+
+        ret += s;
+
+        return ret;
+    }
+
+        /** Subtract a distance
+        */
+    IMAGEITERATOR operator-(difference_type const & s) const
+    {
+        IMAGEITERATOR ret(static_cast<IMAGEITERATOR const &>(*this));
+
+        ret -= s;
+
+        return ret;
+    }
+   //@}
 
     /** @name Access the Pixels */
     //@{
@@ -856,31 +881,6 @@ class ImageIterator
     : Base()
     {}
 
-    /** @name Construct iterator at a distance */
-    //@{
-        /** Add a distance
-        */
-    ImageIterator operator+(difference_type const & s) const
-    {
-        ImageIterator ret(*this);
-
-        ret += s;
-
-        return ret;
-    }
-
-        /** Subtract a distance
-        */
-    ImageIterator operator-(difference_type const & s) const
-    {
-        ImageIterator ret(*this);
-
-        ret -= s;
-
-        return ret;
-    }
-   //@}
-
 };
 
 /********************************************************/
@@ -934,31 +934,6 @@ class ConstImageIterator
         Base::operator=(o);
         return *this;
     }
-    
-    /** @name Construct iterator at a distance */
-    //@{
-        /** Add a distance
-        */
-    ConstImageIterator operator+(difference_type const & s) const
-    {
-        ConstImageIterator ret(*this);
-
-        ret += s;
-
-        return ret;
-    }
-
-        /** Subtract a distance
-        */
-    ConstImageIterator operator-(difference_type const & s) const
-    {
-        ConstImageIterator ret(*this);
-
-        ret -= s;
-
-        return ret;
-    }
-   //@}
 };
 
 #ifndef NO_PARTIAL_TEMPLATE_SPECIALIZATION
