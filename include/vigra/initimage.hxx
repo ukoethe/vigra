@@ -24,6 +24,7 @@
 #define VIGRA_INITIMAGE_HXX
 
 #include "vigra/utilities.hxx"
+#include "vigra/iteratortraits.hxx"
 
 namespace vigra {
 
@@ -82,10 +83,12 @@ namespace vigra {
     
     \code
     ImageIterator upperleft, lowerright;
+    IteratorTraits<ImageIterator>::RowIterator ix(upperleft);
+    
     Accessor accessor;
     VALUETYPE v;
     
-    accessor.set(v, upperleft); 
+    accessor.set(v, ix); 
     \endcode
     
 */
@@ -95,16 +98,16 @@ initImage(ImageIterator upperleft, ImageIterator lowerright,
           Accessor a,  VALUETYPE v)
 {
     int w = lowerright.x - upperleft.x;
-    int h = lowerright.y - upperleft.y;
     
-    for(int y=0; y<h; ++y, ++upperleft.y)
+    for(; upperleft.y < lowerright.y; ++upperleft.y)
     {
-        ImageIterator ix(upperleft);
+        typename IteratorTraits<ImageIterator>::RowIterator ix(upperleft);
+        typename IteratorTraits<ImageIterator>::RowIterator ixend = ix + w;
     
-        for(int x=0; x<w; ++x, ++ix.x)
-    {
-        a.set(v, ix);
-    }
+        for(; ix != ixend; ++ix)
+        {
+            a.set(v, ix);
+        }
     }
 }
     
@@ -175,11 +178,14 @@ initImage(triple<ImageIterator, ImageIterator, Accessor> img, VALUETYPE v)
     \code
     ImageIterator upperleft, lowerright;
     MaskImageIterator mask_upperleft;
+    IteratorTraits<ImageIterator>::RowIterator ix(upperleft);
+    teratorTraits<MaskImageIterator>::RowIterator mx(mask_upperleft);
+    
     Accessor accessor;
     MaskAccessor mask_accessor;
     VALUETYPE v;
     
-    if(mask_accessor(mask_upperleft)) accessor.set(v, upperleft); 
+    if(mask_accessor(mx)) accessor.set(v, ix); 
     \endcode
     
 */
@@ -192,14 +198,14 @@ initImageIf(ImageIterator upperleft, ImageIterator lowerright, Accessor a,
           VALUETYPE v)
 {
     int w = lowerright.x - upperleft.x;
-    int h = lowerright.y - upperleft.y;
         
-    for(int y=0; y<h; ++y, ++upperleft.y, ++mask_upperleft.y)
+    for(; upperleft.y < lowerright.y; ++upperleft.y, ++mask_upperleft.y)
     {
-        ImageIterator ix(upperleft);
-        MaskImageIterator mx(mask_upperleft);
+        typename IteratorTraits<ImageIterator>::RowIterator ix(upperleft);
+        typename IteratorTraits<ImageIterator>::RowIterator ixend = ix + w;
+        typename IteratorTraits<MaskImageIterator>::RowIterator mx(mask_upperleft);
     
-        for(int x=0; x<w; ++x, ++ix.x, ++mx.x)
+        for(; ix < ixend; ++ix, ++mx)
         {
             if(ma(mx)) a.set(v, ix);
         }
@@ -267,13 +273,7 @@ initImageIf(triple<ImageIterator, ImageIterator, Accessor> img,
 
     <b> Required Interface:</b>
     
-    \code
-    ImageIterator upperleft, lowerright;
-    Accessor accessor;
-    VALUETYPE v;
-    
-    accessor.set(v, upperleft); 
-    \endcode
+    see \ref initImage()
     
 */
 template <class ImageIterator, class Accessor, class VALUETYPE>

@@ -379,17 +379,51 @@ inline FFTWComplex conj(const FFTWComplex &a)
 /** \addtogroup StandardImageTypes
 */
 //@{
+
+#ifndef NO_PARTIAL_TEMPLATE_SPECIALIZATION
+
 template<>
 struct IteratorTraits<BasicImageIterator<FFTWComplex, FFTWComplex **> >
 {
-    typedef StandardAccessor<FFTWComplex> DefaultAccessor;
+    typedef BasicImageIterator<FFTWComplex, FFTWComplex **> Iterator;
+    typedef StandardAccessor<FFTWComplex > DefaultAccessor; \
+    typedef RowIterator<Iterator> RowIterator; \
+    static RowIterator make_row_iterator(Iterator const & i) \
+        { return RowIterator(i); } \
 };  
 
 template<>
 struct IteratorTraits<ConstBasicImageIterator<FFTWComplex, FFTWComplex **> >
 {
-    typedef StandardConstAccessor<FFTWComplex> DefaultAccessor;
+    typedef ConstBasicImageIterator<FFTWComplex, FFTWComplex **> Iterator;
+    typedef StandardConstAccessor<FFTWComplex > DefaultAccessor; \
+    typedef ConstRowIterator<Iterator> RowIterator; \
+    static RowIterator make_row_iterator(Iterator const & i) \
+        { return RowIterator(i); } \
 };  
+#else
+
+template<>
+struct IteratorTraits<BasicImageIterator<FFTWComplex, FFTWComplex **> >
+{
+    typedef BasicImageIterator<FFTWComplex, FFTWComplex **> Iterator;
+    typedef StandardAccessor<FFTWComplex > DefaultAccessor; \
+    typedef BasicImageRowIterator<Iterator> RowIterator; \
+    static RowIterator make_row_iterator(Iterator const & i) \
+        { return RowIterator(i); } \
+};  
+
+template<>
+struct IteratorTraits<ConstBasicImageIterator<FFTWComplex, FFTWComplex **> >
+{
+    typedef ConstBasicImageIterator<FFTWComplex, FFTWComplex **> Iterator;
+    typedef StandardConstAccessor<FFTWComplex > DefaultAccessor; \
+    typedef ConstBasicImageRowIterator<Iterator> RowIterator; \
+    static RowIterator make_row_iterator(Iterator const & i) \
+        { return RowIterator(i); } \
+};
+  
+#endif
 
     /** Complex (FFTWComplex) image.
         It uses \ref vigra::BasicImageIterator and \ref vigra::StandardAccessor and 

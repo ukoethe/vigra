@@ -24,6 +24,7 @@
 #define VIGRA_COPYIMAGE_HXX
 
 #include "vigra/utilities.hxx"
+#include "vigra/iteratortraits.hxx"
 
 namespace vigra {
 
@@ -84,11 +85,13 @@ namespace vigra {
     \code
     SrcImageIterator src_upperleft, src_lowerright;
     DestImageIterator      dest_upperleft;
+    IteratorTraits<SrcImageIterator>::RowIterator sx(src_upperleft);
+    IteratorTraits<DestImageIterator>::RowIterator dx(dest_upperleft);
     
     SrcAccessor src_accessor;
     DestAccessor dest_accessor;
 
-    dest_accessor.set(src_accessor(src_upperleft), dest_upperleft);
+    dest_accessor.set(src_accessor(sx), dx);
 
     \endcode
     
@@ -101,14 +104,14 @@ copyImage(SrcImageIterator src_upperleft,
           DestImageIterator dest_upperleft, DestAccessor da)
 {
     int w = src_lowerright.x - src_upperleft.x;
-    int h = src_lowerright.y - src_upperleft.y;
     
-    for(int y=0; y<h; ++y, ++src_upperleft.y, ++dest_upperleft.y)
+    for(; src_upperleft.y<src_lowerright.y; ++src_upperleft.y, ++dest_upperleft.y)
     {
-        SrcImageIterator six(src_upperleft);
-        DestImageIterator dix(dest_upperleft);
+        typename IteratorTraits<SrcImageIterator>::RowIterator six(src_upperleft);
+        typename IteratorTraits<SrcImageIterator>::RowIterator sixend = six + w;
+        typename IteratorTraits<DestImageIterator>::RowIterator dix(dest_upperleft);
 
-        for(int x=0; x<w; ++x, ++six.x, ++dix.x)
+        for(; six < sixend; ++six, ++dix)
         {
             da.set(detail::RequiresExplicitCast<typename DestAccessor::value_type>::cast(sa(six)), 
                dix);
@@ -186,14 +189,17 @@ copyImage(triple<SrcImageIterator, SrcImageIterator, SrcAccessor> src,
     SrcImageIterator src_upperleft, src_lowerright;
     DestImageIterator dest_upperleft;
     MaskImageIterator mask_upperleft;
+    IteratorTraits<SrcImageIterator>::RowIterator sx(src_upperleft);
+    IteratorTraits<MaskImageIterator>::RowIterator mx(mask_upperleft);
+    IteratorTraits<DestImageIterator>::RowIterator dx(dest_upperleft);
     
     SrcAccessor src_accessor;
     DestAccessor dest_accessor;
     MaskAccessor mask_accessor;
     Functor functor;
     
-    if(mask_accessor(mask_uppeleft))
-        dest_accessor.set(src_accessor(src_upperleft), dest_upperleft);
+    if(mask_accessor(mx))
+        dest_accessor.set(src_accessor(sx), dx);
 
     \endcode
     
@@ -208,16 +214,16 @@ copyImageIf(SrcImageIterator src_upperleft,
         DestImageIterator dest_upperleft, DestAccessor da)
 {
     int w = src_lowerright.x - src_upperleft.x;
-    int h = src_lowerright.y - src_upperleft.y;
     
-    for(int y=0; y<h; ++y, 
+    for(; src_upperleft.y<src_lowerright.y; 
              ++src_upperleft.y, ++mask_upperleft.y, ++dest_upperleft.y)
     {
-        SrcImageIterator six(src_upperleft);
-        MaskImageIterator mx(mask_upperleft);
-        DestImageIterator       dix(dest_upperleft);
+        typename IteratorTraits<SrcImageIterator>::RowIterator six(src_upperleft);
+        typename IteratorTraits<SrcImageIterator>::RowIterator sixend = six + w;
+        typename IteratorTraits<MaskImageIterator>::RowIterator mx(mask_upperleft);
+        typename IteratorTraits<DestImageIterator>::RowIterator dix(dest_upperleft);
 
-        for(int x=0; x<w; ++x, ++six.x, ++mx.x, ++dix.x)
+        for(; six < sixend; ++six, ++mx, ++dix)
         {
             if(ma(mx)) da.set(detail::RequiresExplicitCast<typename 
                      DestAccessor::value_type>::cast(sa(six)), dix);

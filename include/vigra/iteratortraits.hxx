@@ -24,6 +24,7 @@
 #define VIGRA_ITERATORTRAITS_HXX
 
 #include <vigra/accessor.hxx>
+#include <vigra/imageiteratoradapter.hxx>
 
 namespace vigra {
 
@@ -62,16 +63,30 @@ struct IteratorTraits
 
 //@}
 
+template <class T>
+struct RowIterator;
+
+template <class T>
+struct ConstRowIterator;
+
 template <> 
 struct IteratorTraits<Diff2D > 
 {
-    typedef StandardConstValueAccessor<Diff2D> DefaultAccessor;
+    typedef Diff2D Iterator;
+    typedef StandardConstValueAccessor<Diff2D> DefaultAccessor; \
+    typedef RowIterator<Iterator> RowIterator; \
+    static RowIterator make_row_iterator(Iterator const & i) \
+        { return RowIterator(i); } \
 };
 
 template <> 
 struct IteratorTraits<Diff2D const> 
 {
-    typedef StandardConstValueAccessor<Diff2D> DefaultAccessor;
+    typedef Diff2D const Iterator;
+    typedef StandardConstValueAccessor<Diff2D> DefaultAccessor; \
+    typedef ConstRowIterator<Iterator> RowIterator; \
+    static RowIterator make_row_iterator(Iterator const & i) \
+        { return RowIterator(i); } \
 };
 
 template <class Iterator, class Accessor>

@@ -24,6 +24,7 @@
 #define VIGRA_COMBINEIMAGES_HXX
 
 #include "vigra/utilities.hxx"
+#include "vigra/iteratortraits.hxx"
 #include <cmath>
 
 namespace vigra {
@@ -111,6 +112,9 @@ namespace vigra {
     SrcImageIterator1 src1_upperleft, src1_lowerright;
     SrcImageIterator2 src2_upperleft;
     DestImageIterator dest_upperleft;
+    IteratorTraits<SrcImageIterator1>::RowIterator sx1(src1_upperleft);
+    IteratorTraits<SrcImageIterator2>::RowIterator sx2(src2_upperleft);
+    IteratorTraits<DestImageIterator>::RowIterator dx(dest_upperleft);
     
     SrcAccessor1 src1_accessor;
     SrcAccessor2 src2_accessor;
@@ -119,8 +123,8 @@ namespace vigra {
     Functor functor;
 
     dest_accessor.set(
-          functor(src1_accessor(src1_upperleft), src2_accessor(src2_upperleft)), 
-      dest_upperleft);
+          functor(src1_accessor(sx1), src2_accessor(sx2)), 
+          dx);
 
     \endcode
     
@@ -138,16 +142,16 @@ combineTwoImages(SrcImageIterator1 src1_upperleft,
          Functor const & f)
 {
     int w = src1_lowerright.x - src1_upperleft.x;
-    int h = src1_lowerright.y - src1_upperleft.y;
     
-    for(int y=0; y<h; 
-            ++y, ++src1_upperleft.y, ++src2_upperleft.y, ++dest_upperleft.y)
+    for(; src1_upperleft.y < src1_lowerright.y; 
+            ++src1_upperleft.y, ++src2_upperleft.y, ++dest_upperleft.y)
     {
-        SrcImageIterator1 ix1(src1_upperleft);
-        SrcImageIterator2 ix2(src2_upperleft);
-        DestImageIterator dix(dest_upperleft);
+        typename IteratorTraits<SrcImageIterator1>::RowIterator ix1(src1_upperleft);
+        typename IteratorTraits<SrcImageIterator1>::RowIterator ix1end = ix1 + w;
+        typename IteratorTraits<SrcImageIterator2>::RowIterator ix2(src2_upperleft);
+        typename IteratorTraits<DestImageIterator>::RowIterator dix(dest_upperleft);
 
-        for(int x=0; x<w; ++x, ++ix1.x, ++ix2.x, ++dix.x)
+        for(; ix1 != ix1end; ++ix1, ++ix2, ++dix)
         {
             da.set(detail::RequiresExplicitCast<typename DestAccessor::value_type>::cast(f(sa1(ix1), sa2(ix2))), dix);
         }
@@ -254,6 +258,11 @@ combineTwoImages(triple<SrcImageIterator1, SrcImageIterator1, SrcAccessor1> src1
     SrcImageIterator2 src2_upperleft;
     MaskImageIterator mask_upperleft;
     DestImageIterator dest_upperleft;
+    IteratorTraits<SrcImageIterator1>::RowIterator sx1(src1_upperleft);
+    IteratorTraits<SrcImageIterator2>::RowIterator sx2(src2_upperleft);
+    IteratorTraits<MaskImageIterator>::RowIterator mx(mask_upperleft);
+    IteratorTraits<DestImageIterator>::RowIterator dx(dest_upperleft);
+    
     
     SrcAccessor1 src1_accessor;
     SrcAccessor2 src2_accessor;
@@ -262,10 +271,10 @@ combineTwoImages(triple<SrcImageIterator1, SrcImageIterator1, SrcAccessor1> src1
     
     Functor functor;
     
-    if(mask_accessor(mask_upperleft))
+    if(mask_accessor(mx))
        dest_accessor.set(
-          functor(src1_accessor(src1_upperleft), src2_accessor(src2_upperleft)), 
-      dest_upperleft);
+          functor(src1_accessor(sx1), src2_accessor(sx2)), 
+          dx);
 
     \endcode
     
@@ -284,17 +293,18 @@ combineTwoImagesIf(SrcImageIterator1 src1_upperleft,
                Functor const & f)
 {
     int w = src1_lowerright.x - src1_upperleft.x;
-    int h = src1_lowerright.y - src1_upperleft.y;
     
-    for(int y=0; y<h; ++y, ++src1_upperleft.y, ++src2_upperleft.y, 
-                           ++dest_upperleft.y, ++mask_upperleft.y)
+    for(; src1_upperleft.y < src1_lowerright.y;
+          ++src1_upperleft.y, ++src2_upperleft.y, 
+          ++dest_upperleft.y, ++mask_upperleft.y)
     {
-        SrcImageIterator1 ix1(src1_upperleft);
-        SrcImageIterator2 ix2(src2_upperleft);
-        MaskImageIterator mix(mask_upperleft);
-        DestImageIterator dix(dest_upperleft);
+        typename IteratorTraits<SrcImageIterator1>::RowIterator ix1(src1_upperleft);
+        typename IteratorTraits<SrcImageIterator1>::RowIterator ix1end = ix1 + w;
+        typename IteratorTraits<SrcImageIterator2>::RowIterator ix2(src2_upperleft);
+        typename IteratorTraits<MaskImageIterator>::RowIterator mix(mask_upperleft);
+        typename IteratorTraits<DestImageIterator>::RowIterator dix(dest_upperleft);
 
-        for(int x=0; x<w; ++x, ++ix1.x, ++ix2.x, ++dix.x, ++mix.x)
+        for(; ix1 != ix1end; ++ix1, ++ix2, ++dix, ++mix)
         {
             if(ma(mix)) da.set(detail::RequiresExplicitCast<typename DestAccessor::value_type>::cast(f(sa1(ix1), sa2(ix2))), dix);
         }
@@ -393,6 +403,10 @@ combineTwoImagesIf(triple<SrcImageIterator1, SrcImageIterator1, SrcAccessor1> sr
     SrcImageIterator2 src2_upperleft;
     SrcImageIterator3 src3_upperleft;
     DestImageIterator dest_upperleft;
+    IteratorTraits<SrcImageIterator1>::RowIterator sx1(src1_upperleft);
+    IteratorTraits<SrcImageIterator2>::RowIterator sx2(src2_upperleft);
+    IteratorTraits<SrcImageIterator3>::RowIterator sx3(src3_upperleft);
+    IteratorTraits<DestImageIterator>::RowIterator dx(dest_upperleft);
     
     SrcAccessor1 src1_accessor;
     SrcAccessor2 src2_accessor;
@@ -402,10 +416,10 @@ combineTwoImagesIf(triple<SrcImageIterator1, SrcImageIterator1, SrcAccessor1> sr
     Functor functor;
 
     dest_accessor.set(
-          functor(src1_accessor(src1_upperleft), 
-              src2_accessor(src2_upperleft), 
-              src3_accessor(src3_upperleft)), 
-      dest_upperleft);
+          functor(src1_accessor(sx1), 
+                  src2_accessor(sx2), 
+                  src3_accessor(sx3)), 
+          dx);
 
     \endcode
     
@@ -425,18 +439,18 @@ combineThreeImages(SrcImageIterator1 src1_upperleft,
                    Functor const & f)
 {
     int w = src1_lowerright.x - src1_upperleft.x;
-    int h = src1_lowerright.y - src1_upperleft.y;
     
-    for(int y=0; y<h; 
-            ++y, ++src1_upperleft.y, ++src2_upperleft.y, ++src3_upperleft.y, 
+    for(; src1_upperleft.y < src1_lowerright.y;
+        ++src1_upperleft.y, ++src2_upperleft.y, ++src3_upperleft.y, 
         ++dest_upperleft.y)
     {
-        SrcImageIterator1 ix1(src1_upperleft);
-        SrcImageIterator2 ix2(src2_upperleft);
-        SrcImageIterator3 ix3(src3_upperleft);
-        DestImageIterator dix(dest_upperleft);
+        typename IteratorTraits<SrcImageIterator1>::RowIterator ix1(src1_upperleft);
+        typename IteratorTraits<SrcImageIterator1>::RowIterator ix1end = ix1 + w;
+        typename IteratorTraits<SrcImageIterator2>::RowIterator ix2(src2_upperleft);
+        typename IteratorTraits<SrcImageIterator3>::RowIterator ix3(src3_upperleft);
+        typename IteratorTraits<DestImageIterator>::RowIterator dix(dest_upperleft);
 
-        for(int x=0; x<w; ++x, ++ix1.x, ++ix2.x, ++ix3.x, ++dix.x)
+        for(; ix1 != ix1end; ++ix1, ++ix2, ++ix3, ++dix)
         {
             da.set(detail::RequiresExplicitCast<typename DestAccessor::value_type>::cast(f(sa1(ix1), sa2(ix2), sa3(ix3))), 
            dix);

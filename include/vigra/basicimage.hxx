@@ -390,6 +390,307 @@ template <class T> struct IteratorTraits;
 
 /********************************************************/
 /*                                                      */
+/*                      RowIterator                     */
+/*                                                      */
+/********************************************************/
+
+/* Specialization for higher performance.
+*/
+#ifndef NO_PARTIAL_TEMPLATE_SPECIALIZATION
+template <class T>
+class RowIterator;
+
+template <class ValueType>
+class RowIterator<BasicImageIterator<ValueType, ValueType **> >
+{
+    typedef RowIterator Self;
+    typedef BasicImageIterator<ValueType, ValueType **> Adaptee;
+
+    ValueType * data_;
+    
+  public:
+
+    typedef ValueType PixelType;
+    
+    RowIterator(Adaptee const & i)
+    : data_(&const_cast<ValueType &>(*i))
+    {}
+    
+    RowIterator(ValueType * d)
+    : data_(d)
+    {}
+    
+#else
+
+template <class IMAGE_ITERATOR>
+class BasicImageRowIterator<IMAGE_ITERATOR>
+{
+    typedef BasicImageRowIterator Self;
+    typedef typename ImageIterator::PixelType ValueType;
+    typedef IMAGE_ITERATOR Adaptee;
+
+    ValueType * data_;
+    
+  public:
+
+    typedef ValueType PixelType;
+    
+    BasicImageRowIterator(IMAGE_ITERATOR const & i)
+    : data_(&const_cast<ValueType &>(*i))
+    {}
+    
+    BasicImageRowIterator(ValueType * d)
+    : data_(d)
+    {}
+    
+#endif
+
+    Self & operator=(Adaptee const & i)
+    {
+        data_ = &const_cast<ValueType &>(*i);
+        return *this;
+    }
+    
+    Self & operator++()
+    {
+        ++data_;
+        return *this;
+    }
+
+    Self operator++(int)
+    {
+        Self ret(*this);
+        data_++;
+        return ret;
+    }
+    
+    Self & operator--()
+    {
+        --data_;
+        return *this;
+    }
+    
+    Self operator--(int)
+    {
+        Self ret(*this);
+        data_--;
+        return ret;
+    }
+    
+    Self & operator+=(int d)
+    {
+        data_ += d;
+        return *this;
+    }
+    
+    Self & operator-=(int d)
+    {
+        data_ -= d;
+        return *this;
+    }
+
+    Self operator+(int d) const
+    {
+        return Self(data_ + d);
+    }
+
+    Self operator-(int d) const
+    {
+        return Self(data_ - d);
+    }
+
+    int operator-(Self const & c) const 
+    {
+        return data_ - c.data_;
+    }
+    
+    bool operator==(Self const & c) const
+    {
+        return data_ == c.data_;
+    }
+    
+    bool operator!=(Self const & c) const
+    {
+        return data_ != c.data_;
+    }
+    
+    bool operator<(Self const & c) const
+    {
+        return data_ < c.data_;
+    }
+    
+    PixelType & operator*()
+    {
+        return *data_; 
+    }
+    
+    PixelType const & operator*() const
+    {
+        return *data_; 
+    }
+    
+    PixelType * operator->()
+    {
+        return data_; 
+    }
+    
+    PixelType const * operator->() const
+    {
+        return data_; 
+    }
+    
+    PixelType & operator[](int d)
+    {
+        return data_[d];
+    }
+
+    PixelType const & operator[](int d) const
+    {
+        return data_[d];
+    }
+};
+
+#ifndef NO_PARTIAL_TEMPLATE_SPECIALIZATION
+template <class T>
+class ConstRowIterator;
+
+template <class ValueType>
+class ConstRowIterator<ConstBasicImageIterator<ValueType, ValueType **> >
+{
+    typedef ConstRowIterator Self;
+    typedef ConstBasicImageIterator<ValueType, ValueType **> Adaptee;
+
+    ValueType const * data_;
+    
+  public:
+
+    typedef ValueType const PixelType;
+    
+    ConstRowIterator(Adaptee const & i)
+    : data_(&(*i))
+    {}
+    
+    ConstRowIterator(ValueType const * d)
+    : data_(d)
+    {}
+    
+#else
+
+template <class IMAGE_ITERATOR>
+class ConstBasicImageRowIterator<IMAGE_ITERATOR>
+{
+    typedef ConstBasicImageRowIterator Self;
+    typedef typename ImageIterator::PixelType ValueType;
+    typedef IMAGE_ITERATOR Adaptee;
+
+    ValueType const * data_;
+    
+  public:
+
+    typedef ValueType const PixelType;
+    
+    ConstBasicImageRowIterator(IMAGE_ITERATOR  const & i)
+    : data_(&(*i))
+    {}
+    
+    ConstBasicImageRowIterator(ValueType * d)
+    : data_(d)
+    {}
+    
+#endif
+
+    Self & operator=(Adaptee const & i)
+    {
+        data_ = &(*i);
+        return *this;
+    }
+    
+    Self & operator++()
+    {
+        ++data_;
+        return *this;
+    }
+
+    Self operator++(int)
+    {
+        Self ret(*this);
+        data_++;
+        return ret;
+    }
+    
+    Self & operator--()
+    {
+        --data_;
+        return *this;
+    }
+    
+    Self operator--(int)
+    {
+        Self ret(*this);
+        data_--;
+        return ret;
+    }
+    
+    Self & operator+=(int d)
+    {
+        data_ += d;
+        return *this;
+    }
+    
+    Self & operator-=(int d)
+    {
+        data_ -= d;
+        return *this;
+    }
+
+    Self operator+(int d) const
+    {
+        return Self(data_ + d);
+    }
+
+    Self operator-(int d) const
+    {
+        return Self(data_ - d);
+    }
+
+    int operator-(Self const & c) const 
+    {
+        return data_ - c.data_;
+    }
+    
+    bool operator==(Self const & c) const
+    {
+        return data_ == c.data_;
+    }
+    
+    bool operator!=(Self const & c) const
+    {
+        return data_ != c.data_;
+    }
+    
+    bool operator<(Self const & c) const
+    {
+        return data_ < c.data_;
+    }
+    
+    PixelType & operator*() const
+    {
+        return *data_; 
+    }
+    
+    PixelType * operator->() const
+    {
+        return data_; 
+    }
+    
+    PixelType & operator[](int d) const
+    {
+        return data_[d];
+    }
+};
+
+/********************************************************/
+/*                                                      */
 /*                     BasicImage                       */
 /*                                                      */
 /********************************************************/
