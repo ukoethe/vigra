@@ -240,6 +240,7 @@ exec 6>&1
 # Initializations.
 #
 ac_default_prefix=/usr/local
+ac_default_docdir='$(prefix)/doc'
 cross_compiling=no
 subdirs=
 MFLAGS=
@@ -260,6 +261,7 @@ PACKAGE_BUGREPORT=
 
 ac_unique_file="include/vigra/config.hxx"
 ac_default_prefix=`pwd`
+ac_default_docdir='$(prefix)/doc/vigra'
 
 # Initialize some variables set by options.
 ac_init_help=
@@ -298,6 +300,7 @@ includedir='${prefix}/include'
 oldincludedir='/usr/include'
 infodir='${prefix}/info'
 mandir='${prefix}/man'
+docdir=$ac_default_docdir
 
 ac_prev=
 for ac_option
@@ -349,6 +352,11 @@ do
    { (exit 1); exit 1; }; }
     ac_feature=`echo $ac_feature | sed 's/-/_/g'`
     eval "enable_$ac_feature=no" ;;
+
+  -docdir | --docdir | --docdi | --docd | --doc | --do)
+    ac_prev=docdir ;;
+  -docdir=* | --docdir=* | --docdi=* | --docd=* | --doc=* | --do=* )
+    docdir=$ac_optarg ;;
 
   -enable-* | --enable-*)
     ac_feature=`expr "x$ac_option" : 'x-*enable-\([^=]*\)'`
@@ -617,7 +625,8 @@ done
 
 # Be sure to have absolute paths.
 for ac_var in bindir sbindir libexecdir datadir sysconfdir sharedstatedir \
-              localstatedir libdir includedir oldincludedir infodir mandir
+              localstatedir libdir includedir oldincludedir \
+              infodir mandir docdir
 do
   eval ac_val=$`echo $ac_var`
   case $ac_val in
@@ -770,17 +779,9 @@ For better control, use the options below.
 
 Fine tuning of the installation directories:
   --bindir=DIR           user executables [EPREFIX/bin]
-  --sbindir=DIR          system admin executables [EPREFIX/sbin]
-  --libexecdir=DIR       program executables [EPREFIX/libexec]
-  --datadir=DIR          read-only architecture-independent data [PREFIX/share]
-  --sysconfdir=DIR       read-only single-machine data [PREFIX/etc]
-  --sharedstatedir=DIR   modifiable architecture-independent data [PREFIX/com]
-  --localstatedir=DIR    modifiable single-machine data [PREFIX/var]
   --libdir=DIR           object code libraries [EPREFIX/lib]
   --includedir=DIR       C header files [PREFIX/include]
-  --oldincludedir=DIR    C header files for non-gcc [/usr/include]
-  --infodir=DIR          info documentation [PREFIX/info]
-  --mandir=DIR           man documentation [PREFIX/man]
+  --docdir=DIR           html documentation [$ac_default_docdir]
 _ACEOF
 
   cat <<\_ACEOF
@@ -1208,6 +1209,8 @@ if test "x$prefix" = "xNONE" ; then
 elif test "x$prefix" = "x." ; then
     prefix=`pwd`
 fi
+
+
 
 ac_aux_dir=
 for ac_dir in config $srcdir/config; do
@@ -2858,7 +2861,7 @@ test x"$silent" = xyes && libtool_flags="$libtool_flags --silent"
 case "$lt_target" in
 *-*-irix6*)
   # Find out which ABI we are using.
-  echo '#line 2861 "configure"' > conftest.$ac_ext
+  echo '#line 2864 "configure"' > conftest.$ac_ext
   if { (eval echo "$as_me:$LINENO: \"$ac_compile\"") >&5
   (eval $ac_compile) 2>&5
   ac_status=$?
@@ -3832,7 +3835,8 @@ then
 fi
 
 
-CPPFLAGS="$VIGRA_INCLUDES ${CPPFLAGS}"
+POSTINSTALLCPPFLAGS="$VIGRA_INCLUDES ${CPPFLAGS}"
+CPPFLAGS="-I$vigra_srcdir/include ${CPPFLAGS}"
 IMPEX_LIB="-L$libdir -lvigraimpex -lm $IMPEX_DEPLIBS"
 LIBS="$LIBS $IMPEX_LIB"
 
@@ -3850,7 +3854,8 @@ LIBS="$LIBS $IMPEX_LIB"
 
 
 
-ac_config_files="$ac_config_files config/Makefile.include config/vigra-config"
+
+ac_config_files="$ac_config_files config/Makefile.include config/vigra-config doc/vigra/index.html"
 cat >confcache <<\_ACEOF
 # This file is a shell script that caches the results of configure
 # tests run on this system so they can be shared between configure
@@ -4350,6 +4355,7 @@ do
   # Handling of arguments.
   "config/Makefile.include" ) CONFIG_FILES="$CONFIG_FILES config/Makefile.include" ;;
   "config/vigra-config" ) CONFIG_FILES="$CONFIG_FILES config/vigra-config" ;;
+  "doc/vigra/index.html" ) CONFIG_FILES="$CONFIG_FILES doc/vigra/index.html" ;;
   *) { { echo "$as_me:$LINENO: error: invalid argument: $ac_config_target" >&5
 echo "$as_me: error: invalid argument: $ac_config_target" >&2;}
    { (exit 1); exit 1; }; };;
@@ -4422,6 +4428,7 @@ s,@includedir@,$includedir,;t t
 s,@oldincludedir@,$oldincludedir,;t t
 s,@infodir@,$infodir,;t t
 s,@mandir@,$mandir,;t t
+s,@docdir@,$docdir,;t t
 s,@build_alias@,$build_alias,;t t
 s,@host_alias@,$host_alias,;t t
 s,@target_alias@,$target_alias,;t t
@@ -4473,6 +4480,7 @@ s,@FFTW_INCLUDES@,$FFTW_INCLUDES,;t t
 s,@IMPEX_LIB@,$IMPEX_LIB,;t t
 s,@IMPEX_DEPLIBS@,$IMPEX_DEPLIBS,;t t
 s,@VIGRA_INCLUDES@,$VIGRA_INCLUDES,;t t
+s,@POSTINSTALLCPPFLAGS@,$POSTINSTALLCPPFLAGS,;t t
 s,@LIBCPPFLAGS@,$LIBCPPFLAGS,;t t
 CEOF
 
