@@ -24,6 +24,7 @@
 
 #include <cmath>
 #include "vigra/config.hxx"
+#include "vigra/numerictraits.hxx"
 
 /*! \page MathConstants Mathematical Constants
 
@@ -96,14 +97,19 @@ using VIGRA_CSTD::erf;
 
 #endif
 
+/*! The square function.
+
+    sq(x) is needed so often that it makes sense to define it as a function.
+
+    <b>\#include</b> "<a href="utilities_8hxx-source.html">vigra/mathutil.hxx</a>"<br>
+    Namespace: vigra
+*/
 template <class T>
-inline
-typename NumericTraits<T>::Promote
-sq(T const & t)
+inline 
+typename NumericTraits<T>::Promote sq(T t)
 {
     return t*t;
 }
-
 //@}
 
 } // namespace vigra
