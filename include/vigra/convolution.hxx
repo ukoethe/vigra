@@ -41,7 +41,11 @@
     <DT>
         <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif">
         \ref CommonConvolutionFilters
-        <DD><em>Short-hands for the most common convolution filters</em>
+        <DD><em>Short-hands for the most common 2D convolution filters</em>
+    <DT>
+        <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif">
+        \ref MultiArrayConvolutionFilters
+        <DD><em>Convolution filters for arbitrary dimensional arrays (MultiArray etc.)</em>
     <DT>
         <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif">
         \ref BorderTreatmentMode
@@ -612,14 +616,16 @@ gaussianSmoothing(triple<SrcIterator, SrcIterator, SrcAccessor> src,
     This function is a shorthand for the concatenation of a call to
     \link SeparableConvolution#separableConvolveX separableConvolveX\endlink()
     and \link SeparableConvolution#separableConvolveY separableConvolveY\endlink() with the
-    appropriate kernels at the given scale. Note that this function produces
-    <i>two</i> result images.
+    appropriate kernels at the given scale. Note that this function can either produce
+    two separate result images for the x- and y-components of the gradient, or write
+    into a vector valued image (with at least two components).
 
     <b> Declarations:</b>
 
     pass arguments explicitly:
     \code
     namespace vigra {
+        // write x and y component of the gradient into separate images
         template <class SrcIterator, class SrcAccessor,
                   class DestIteratorX, class DestAccessorX,
                   class DestIteratorY, class DestAccessorY>
@@ -628,6 +634,14 @@ gaussianSmoothing(triple<SrcIterator, SrcIterator, SrcAccessor> src,
                                 DestIteratorX dupperleftx, DestAccessorX dax,
                                 DestIteratorY dupperlefty, DestAccessorY day,
                                 double scale);
+
+        // write x and y component of the gradient into a vector-valued image
+        template <class SrcIterator, class SrcAccessor,
+                class DestIterator, class DestAccessor>
+        void gaussianGradient(SrcIterator supperleft,
+                                SrcIterator slowerright, SrcAccessor src,
+                                DestIterator dupperleft, DestAccessor dest,
+                                double scale);
     }
     \endcode
 
@@ -635,14 +649,23 @@ gaussianSmoothing(triple<SrcIterator, SrcIterator, SrcAccessor> src,
     use argument objects in conjuction with \ref ArgumentObjectFactories:
     \code
     namespace vigra {
+        // write x and y component of the gradient into separate images
         template <class SrcIterator, class SrcAccessor,
                   class DestIteratorX, class DestAccessorX,
                   class DestIteratorY, class DestAccessorY>
         inline void
         gaussianGradient(triple<SrcIterator, SrcIterator, SrcAccessor> src,
-                          pair<DestIteratorX, DestAccessorX> destx,
-                          pair<DestIteratorY, DestAccessorY> desty,
-                          double scale);
+                         pair<DestIteratorX, DestAccessorX> destx,
+                         pair<DestIteratorY, DestAccessorY> desty,
+                         double scale);
+
+        // write x and y component of the gradient into a vector-valued image
+        template <class SrcIterator, class SrcAccessor,
+                class DestIterator, class DestAccessor>
+        inline void
+        gaussianGradient(triple<SrcIterator, SrcIterator, SrcAccessor> src,
+                         pair<DestIterator, DestAccessor> dest,
+                         double scale);
     }
     \endcode
 
@@ -691,16 +714,39 @@ void gaussianGradient(SrcIterator supperleft,
 }
 
 template <class SrcIterator, class SrcAccessor,
+          class DestIterator, class DestAccessor>
+void gaussianGradient(SrcIterator supperleft,
+                        SrcIterator slowerright, SrcAccessor src,
+                        DestIterator dupperleft, DestAccessor dest,
+                        double scale)
+{
+    VectorElementAccessor<DestAccessor> gradx(0, dest), grady(1, dest);
+    gaussianGradient(supperleft, slowerright, src, 
+                     dupperleft, gradx, dupperleft, grady, scale);
+}
+
+template <class SrcIterator, class SrcAccessor,
           class DestIteratorX, class DestAccessorX,
           class DestIteratorY, class DestAccessorY>
 inline void
 gaussianGradient(triple<SrcIterator, SrcIterator, SrcAccessor> src,
-                  pair<DestIteratorX, DestAccessorX> destx,
-                  pair<DestIteratorY, DestAccessorY> desty,
-                  double scale)
+                 pair<DestIteratorX, DestAccessorX> destx,
+                 pair<DestIteratorY, DestAccessorY> desty,
+                 double scale)
 {
     gaussianGradient(src.first, src.second, src.third,
                  destx.first, destx.second, desty.first, desty.second, scale);
+}
+
+template <class SrcIterator, class SrcAccessor,
+          class DestIterator, class DestAccessor>
+inline void
+gaussianGradient(triple<SrcIterator, SrcIterator, SrcAccessor> src,
+                 pair<DestIterator, DestAccessor> dest,
+                 double scale)
+{
+    gaussianGradient(src.first, src.second, src.third,
+                     dest.first, dest.second, scale);
 }
 
 /********************************************************/
