@@ -14,4 +14,3 @@ clean::
 	rm -f *.ncb *.opt 
 	cd impex; $(MAKE) -i clean
 	cd examples; $(MAKE) -i clean
-      
