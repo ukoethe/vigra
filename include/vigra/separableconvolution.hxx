@@ -594,8 +594,8 @@ void convolveLine(triple<SrcIterator, SrcIterator, SrcAccessor> src,
 
 /** \brief Performs a 1 dimensional convolution in x direction.
 
-    It calls \ref convolveLine() for every row of the
-    image. See \ref convolveLine() for more information about required interfaces
+    It calls \link SeparableConvolution#convolveLine convolveLine\endlink() for every row of the
+    image. See \link SeparableConvolution#convolveLine convolveLine\endlink() for more information about required interfaces
     and vigra_preconditions.
     
     <b> Declarations:</b>
@@ -705,8 +705,8 @@ separableConvolveX(triple<SrcIterator, SrcIterator, SrcAccessor> src,
 
 /** \brief Performs a 1 dimensional convolution in y direction.
 
-    It calls \ref convolveLine() for every column of the
-    image. See \ref convolveLine() for more information about required interfaces
+    It calls \link SeparableConvolution#convolveLine convolveLine\endlink() for every column of the
+    image. See \link SeparableConvolution#convolveLine convolveLine\endlink() for more information about required interfaces
     and vigra_preconditions.
     
     <b> Declarations:</b>

@@ -194,8 +194,9 @@ namespace vigra {
 /** \addtogroup CommonConvolutionFilters Common Filters
     
     These functions calculate Gaussian smoothings and Gaussian derivative
-    filters by appropriate sequences of calls to \ref separableConvolveX() 
-    and \ref separableConvolveY().
+    filters by appropriate sequences of calls to 
+    \link SeparableConvolution#separableConvolveX separableConvolveX\endlink() 
+    and \link SeparableConvolution#separableConvolveY separableConvolveY\endlink().
 */
 //@{
 
@@ -208,7 +209,8 @@ namespace vigra {
 /** \brief Perform isotropic Gaussian convolution.
 
     This function is a shorthand for the concatenation of a call to
-    \ref separableConvolveX() and \ref separableConvolveY() with a
+    \link SeparableConvolution#separableConvolveX separableConvolveX\endlink() 
+    and \link SeparableConvolution#separableConvolveY separableConvolveY\endlink() with a
     Gaussian kernel of the given scale.
     
     <b> Declarations:</b>
@@ -295,7 +297,8 @@ gaussianSmoothing(triple<SrcIterator, SrcIterator, SrcAccessor> src,
     Gaussian filter.
 
     This function is a shorthand for the concatenation of a call to
-    \ref separableConvolveX() and \ref separableConvolveY() with the
+    \link SeparableConvolution#separableConvolveX separableConvolveX\endlink() 
+    and \link SeparableConvolution#separableConvolveY separableConvolveY\endlink() with the
     appropriate kernels at the given scale. Not that this function produces
     <i>two</i> result images.
     
@@ -396,8 +399,8 @@ gaussianGradient(triple<SrcIterator, SrcIterator, SrcAccessor> src,
 /** \brief Filter image with the Laplacian of Gaussian operator
     at the given scale.
 
-    This function calls \ref separableConvolveX() and 
-    \ref separableConvolveY() with the appropriate 2nd derivative 
+    This function calls \link SeparableConvolution#separableConvolveX separableConvolveX\endlink() and 
+    \link SeparableConvolution#separableConvolveY separableConvolveY\endlink() with the appropriate 2nd derivative 
     of Gaussian kernels in x- and y-direction and then sums the results
     to get the Laplacian.
     
@@ -505,8 +508,10 @@ laplacianOfGaussian(triple<SrcIterator, SrcIterator, SrcAccessor> src,
     
     where \f$G_{xx}, G_{xy}, G_{yy}\f$ denote 2nd derivatives of Gaussians
     at the given scale, and
-    \f$\ast\f$ is the convolution symbol. This function calls \ref separableConvolveX() and 
-    \ref separableConvolveY() with the appropriate 2nd derivative 
+    \f$\ast\f$ is the convolution symbol. This function calls 
+    \link SeparableConvolution#separableConvolveX separableConvolveX\endlink() and 
+    \link SeparableConvolution#separableConvolveY separableConvolveY\endlink() 
+    with the appropriate 2nd derivative 
     of Gaussian kernels and puts the results in 
     the three destination images. The first destination image will
     contain the second derivative in x-direction, the second one the mixed 
@@ -633,6 +638,10 @@ hessianMatrixOfGaussian(triple<SrcIterator, SrcIterator, SrcAccessor> src,
                 \begin{array}{cc}
                 G \ast (I_x I_x) & G \ast (I_x I_y) \\
                 G \ast (I_x I_y) & G \ast (I_y I_y)
+                \end{array} \right) = \left(
+                \begin{array}{cc}
+                A & C \\
+                C & B
                 \end{array} \right)
 	    \f]
     
@@ -640,7 +649,8 @@ hessianMatrixOfGaussian(triple<SrcIterator, SrcIterator, SrcAccessor> src,
     \f$I_x, I_y\f$ are the gradient components taken at the <i>inner scale</i>,
     \f$\ast\f$ is the convolution symbol, and \f$I_x I_x\f$ etc. are pixelwise
     products of the 1st derivative images. This function calls 
-    \ref separableConvolveX() and \ref separableConvolveY() with the 
+    \link SeparableConvolution#separableConvolveX separableConvolveX\endlink() 
+    and \link SeparableConvolution#separableConvolveY separableConvolveY\endlink() with the 
     appropriate Gaussian kernels and puts the results in 
     the three destination images. The first destination image will
     contain \f$G \ast (I_x I_x)\f$, the second one \f$G \ast (I_x I_y)\f$, and the 
