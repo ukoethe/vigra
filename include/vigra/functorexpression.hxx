@@ -670,8 +670,9 @@ Param(T const & v)
 
 
 template <class EXPR>
-struct UnaryAnalyser
+class UnaryAnalyser
 {
+  public:
     UnaryAnalyser(EXPR const & e)
     : expr_(e)
     {}
