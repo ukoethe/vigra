@@ -133,8 +133,65 @@ VIGRA_TYPE_TRAITS(long double)
 
 #ifndef NO_PARTIAL_TEMPLATE_SPECIALIZATION
 
+template <class L, class R>
+struct And;
+
+template <>
+struct And<VigraFalseType, VigraFalseType>
+{
+    typedef VigraFalseType result;
+};
+
+template <>
+struct And<VigraFalseType, VigraTrueType>
+{
+    typedef VigraFalseType result;
+};
+
+template <>
+struct And<VigraTrueType, VigraFalseType>
+{
+    typedef VigraFalseType result;
+};
+
+template <>
+struct And<VigraTrueType, VigraTrueType>
+{
+    typedef VigraTrueType result;
+};
+
+template <class L, class R>
+struct Or;
+
+template <>
+struct Or<VigraFalseType, VigraFalseType>
+{
+    typedef VigraFalseType result;
+};
+
+template <>
+struct Or<VigraTrueType, VigraFalseType>
+{
+    typedef VigraTrueType result;
+};
+
+template <>
+struct Or<VigraFalseType, VigraTrueType>
+{
+    typedef VigraTrueType result;
+};
+
+template <>
+struct Or<VigraTrueType, VigraTrueType>
+{
+    typedef VigraTrueType result;
+};
+
 template <class PREDICATE, class TRUECASE, class FALSECASE>
-struct If
+struct If;
+
+template <class TRUECASE, class FALSECASE>
+struct If<VigraTrueType, TRUECASE, FALSECASE>
 {
     typedef TRUECASE type;
 };
@@ -143,6 +200,35 @@ template <class TRUECASE, class FALSECASE>
 struct If<VigraFalseType, TRUECASE, FALSECASE>
 {
     typedef FALSECASE type;
+};
+
+template <bool PREDICATE, class TRUECASE, class FALSECASE>
+struct IfBool;
+
+template <class TRUECASE, class FALSECASE>
+struct IfBool<true, TRUECASE, FALSECASE>
+{
+    typedef TRUECASE type;
+};
+
+template <class TRUECASE, class FALSECASE>
+struct IfBool<false, TRUECASE, FALSECASE>
+{
+    typedef FALSECASE type;
+};
+
+template <class DERIVED, class BASE>
+struct IsDerivedFrom
+{
+    typedef char falseResult[1];
+    typedef char trueResult[2];
+    static falseResult * test(...) { return 0; }
+    static trueResult * test(BASE const *) { return 0; }
+    static DERIVED const * derived() { return 0; }
+    
+    typedef typename 
+        IfBool<sizeof(*test(derived())) == 2, VigraTrueType, VigraFalseType>::type
+        result;
 };
 
 #endif // NO_PARTIAL_TEMPLATE_SPECIALIZATION
