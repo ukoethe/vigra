@@ -227,7 +227,8 @@ inspectImageIf(ImageIterator upperleft,
     
         for(; ix < ixend; ++ix, ++mx)
         {
-            if(ma(mx)) f(a(ix));
+            if(ma(mx)) 
+                f(a(ix));
         }
     }
 }
@@ -462,7 +463,8 @@ inspectTwoImagesIf(ImageIterator1 upperleft1, ImageIterator1 lowerright1, Access
     
         for(; ix1 < ix1end; ++ix1, ++ix2, ++ixm)
         {
-            if(mask(ixm)) f(a1(ix1), a2(ix2));
+            if(mask(ixm)) 
+                f(a1(ix1), a2(ix2));
         }
     }
 }

@@ -153,7 +153,7 @@ combineTwoImages(SrcImageIterator1 src1_upperleft,
 
         for(; ix1 != ix1end; ++ix1, ++ix2, ++dix)
         {
-            da.set(detail::RequiresExplicitCast<typename DestAccessor::value_type>::cast(f(sa1(ix1), sa2(ix2))), dix);
+            da.set(f(sa1(ix1), sa2(ix2)), dix);
         }
     }
 }
@@ -306,7 +306,8 @@ combineTwoImagesIf(SrcImageIterator1 src1_upperleft,
 
         for(; ix1 != ix1end; ++ix1, ++ix2, ++dix, ++mix)
         {
-            if(ma(mix)) da.set(detail::RequiresExplicitCast<typename DestAccessor::value_type>::cast(f(sa1(ix1), sa2(ix2))), dix);
+            if(ma(mix)) 
+                da.set(f(sa1(ix1), sa2(ix2)), dix);
         }
     }
 }
@@ -452,8 +453,7 @@ combineThreeImages(SrcImageIterator1 src1_upperleft,
 
         for(; ix1 != ix1end; ++ix1, ++ix2, ++ix3, ++dix)
         {
-            da.set(detail::RequiresExplicitCast<typename DestAccessor::value_type>::cast(f(sa1(ix1), sa2(ix2), sa3(ix3))), 
-           dix);
+            da.set(f(sa1(ix1), sa2(ix2), sa3(ix3)), dix);
         }
     }
 }

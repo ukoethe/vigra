@@ -113,8 +113,7 @@ copyImage(SrcImageIterator src_upperleft,
 
         for(; six < sixend; ++six, ++dix)
         {
-            da.set(detail::RequiresExplicitCast<typename DestAccessor::value_type>::cast(sa(six)), 
-               dix);
+            da.set(sa(six), dix);
         }
     }
 }
@@ -225,8 +224,8 @@ copyImageIf(SrcImageIterator src_upperleft,
 
         for(; six < sixend; ++six, ++mx, ++dix)
         {
-            if(ma(mx)) da.set(detail::RequiresExplicitCast<typename 
-                     DestAccessor::value_type>::cast(sa(six)), dix);
+            if(ma(mx)) 
+                da.set(sa(six), dix);
         }
     }
 }

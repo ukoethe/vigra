@@ -207,7 +207,8 @@ initImageIf(ImageIterator upperleft, ImageIterator lowerright, Accessor a,
     
         for(; ix < ixend; ++ix, ++mx)
         {
-            if(ma(mx)) a.set(v, ix);
+            if(ma(mx)) 
+                a.set(v, ix);
         }
     }
 }

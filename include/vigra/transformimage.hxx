@@ -130,7 +130,7 @@ transformImage(SrcImageIterator src_upperleft,
 
         for(; six != send; ++six, ++dix)
         {
-            da.set(detail::RequiresExplicitCast<typename DestAccessor::value_type>::cast(f(sa(six))), dix);
+            da.set(f(sa(six)), dix);
         }
     }
 }
@@ -258,7 +258,8 @@ transformImageIf(SrcImageIterator src_upperleft,
 
         for(; six != send; ++six, ++mx, ++dix)
         {
-            if(ma(mx)) da.set(detail::RequiresExplicitCast<typename DestAccessor::value_type>::cast(f(sa(six))), dix);
+            if(ma(mx)) 
+                da.set(f(sa(six)), dix);
         }
     }
 }
