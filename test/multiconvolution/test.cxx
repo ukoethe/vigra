@@ -34,16 +34,16 @@ struct MultiArrayPointoperatorsTest
     void testInit()
     {
         Image3D res(img.shape());
-        
+        const Image3D::value_type ini = 1.1;
         should(res.shape() == Size3(5,4,3));
 
-        initMultiArray(destMultiArrayRange(res), 1.1);
+        initMultiArray(destMultiArrayRange(res), ini);
         
         int x,y,z;
         for(z=0; z<img.shape(2); ++z)
             for(y=0; y<img.shape(1); ++y)
                 for(x=0; x<img.shape(0); ++x)
-                    shouldEqual(res(x,y,z), 1.1);
+                    shouldEqual(res(x,y,z), ini);
     }
 
     void testCopy()
@@ -129,6 +129,26 @@ struct MultiArraySeparableConvolutionTest
 
 
   // - - - - - - - - - - - - - - - - - - - - - - - -
+
+  void makeWedge( Image3D &image )
+  {
+    const Size3 size = image.shape();
+    const int width = size[0];
+    const int height = size[1];
+    const int depth = size[2];
+    for( int z = 0; z < depth; ++z ) 
+    {
+      for( int y = 0; y < height; ++y ) 
+      {
+        for( int x = 0; x < width; ++x ) 
+        {
+	  const Image3D::value_type val = x + y + z;
+          image( x, y, z ) = val;
+	}
+      }
+    }
+  }
+
 
   void makeBox( Image3D &image )
   {
@@ -273,12 +293,129 @@ struct MultiArraySeparableConvolutionTest
                          d2.begin() );
   }
 
-  Size3 size;
+
+  // - - - - - - - - - - - - - - - - - - - - - - - -
+
+  void test_inplacenessN( const Image3D &src, float ksize )
+  {
+    Image3D da( src.size() );
+    Image3D db( src.size() );
+
+    std::vector<vigra::Kernel1D<float> > kernels( 3 );
+    kernels[0].initGaussian( ksize );
+    kernels[1].initGaussianDerivative( ksize, 1 );
+
+    vigra::separableConvolveMultiArray( srcMultiArrayRange(src),
+					destMultiArray(da),
+					kernels.begin() );
+
+    copyMultiArray(srcMultiArrayRange(src), destMultiArray(db));
+
+    vigra::separableConvolveMultiArray( srcMultiArrayRange(db),
+					destMultiArray(db),
+					kernels.begin() );
+
+    shouldEqualSequenceTolerance( da.begin(), da.end(),
+				  db.begin(),
+				  1e-5 );
+  }
+
+
+  // - - - - - - - - - - - - - - - - - - - - - - - -
+
+  void test_inplaceness1( const Image3D &src, float ksize, bool useDerivative )
+  {
+    Image3D da( src.size() );
+    Image3D db( src.size() );
+
+    Kernel1D<float> kernel;
+    if( ! useDerivative )
+      kernel.initGaussian( ksize );
+    else
+      kernel.initGaussianDerivative( ksize, 1 );
+
+
+    for( int i = 0; i < 3; ++i ) {
+      const int d = 2-i;
+
+      vigra::separableConvolveMultiArray( srcMultiArrayRange(src),
+					  destMultiArray(da),
+					  d,
+					  kernel );
+
+      copyMultiArray(srcMultiArrayRange(src), destMultiArray(db));
+
+      vigra::separableConvolveMultiArray( srcMultiArrayRange(db),
+					  destMultiArray(db),
+					  d,
+					  kernel );
+
+      shouldEqualSequence( da.begin(), da.end(),
+			   db.begin() );
+    }
+  }
+
+
+  // - - - - - - - - - - - - - - - - - - - - - - - -
+
+  void test_gradient1( const Image3D &base, bool useGaussian )
+  {
+    const double sigma = kernelSize/2;
+    const int b = useGaussian ? int( 0.5 + 3*sigma ) : 1;
+    Image3D src( base.size() );
+    Image3x3 grad( src.size() );
+    makeWedge( src );
+
+    if( ! useGaussian )
+      symmetricGradientMultiArray( srcMultiArrayRange(src),
+				   destMultiArray(grad) );
+    else
+      gaussianGradientMultiArray( srcMultiArrayRange(src),
+				  destMultiArray(grad), sigma );
+
+    Image3x3::value_type v;
+    v[0] = 1; v[1] = 1; v[2] = 1;
+    const float v2 = dot(v,v);
+
+    const Size3 size = src.shape();
+    const int width = size[0];
+    const int height = size[1];
+    const int depth = size[2];
+    for( int z = b; z < depth-b; ++z ) 
+    {
+      for( int y = b; y < height-b; ++y ) 
+      {
+        for( int x = b; x < width-b; ++x ) 
+        {
+	  shouldEqualTolerance( dot(grad(x,y,z), v), v2, 1e-5 );
+	}
+      }
+    }
+
+  }
+
+
+  void test_gradient_magnitude( const Image3D &src )
+  {
+    // just a test for mere compileability
+    Image3D dst( src.size() );
+    Image3x3 grad( src.size() );
+    symmetricGradientMultiArray( srcMultiArrayRange(src),
+				 destMultiArray(grad) );
+
+    transformMultiArray( srcMultiArrayRange(grad),
+ 			 destMultiArray(dst),
+ 			 VectorNormFunctor<Image3x3::value_type>() );
+  }
+
+  //--------------------------------------------
+
+  const Size3 size;
   Image3D srcImage;
   const float kernelSize;
 
   MultiArraySeparableConvolutionTest()
-    : size( 60, 60, 40 ),
+    : size( 60, 70, 50 ),
       srcImage( size ),
       kernelSize( 1.8 )
   {
@@ -291,14 +428,32 @@ struct MultiArraySeparableConvolutionTest
   }
 
   void test_Valid3() {
-    test_1DValidityB( srcImage, kernelSize );
+   test_1DValidityB( srcImage, kernelSize );
   }
 
   void test_Valid2() {
     test_2DValidity( srcImage, kernelSize );
   }
 
-}; // struct MultiArraySeparableConvolutionTest
+  void test_InplaceN() {
+    test_inplacenessN( srcImage, kernelSize );
+  }
+
+  void test_Inplace1() {
+    test_inplaceness1( srcImage, kernelSize, false );
+    test_inplaceness1( srcImage, kernelSize, true );
+  }
+
+  void test_gradient1() {
+    test_gradient1( srcImage, false );
+    test_gradient1( srcImage, true );
+  }
+
+  void test_gradient_magnitude() {
+    test_gradient_magnitude( srcImage );
+  }
+
+};	//-- struct MultiArraySeparableConvolutionTest
 
 //--------------------------------------------------------
 
@@ -318,6 +473,10 @@ struct MultiArraySeparableConvolutionTestSuite
         add( testCase( &MultiArraySeparableConvolutionTest::test_Valid1 ) );
         add( testCase( &MultiArraySeparableConvolutionTest::test_Valid2 ) );
         add( testCase( &MultiArraySeparableConvolutionTest::test_Valid3 ) );
+	add( testCase( &MultiArraySeparableConvolutionTest::test_InplaceN ) );
+        add( testCase( &MultiArraySeparableConvolutionTest::test_Inplace1 ) );
+        add( testCase( &MultiArraySeparableConvolutionTest::test_gradient1 ) );
+        add( testCase( &MultiArraySeparableConvolutionTest::test_gradient_magnitude ) );
     }
 }; // struct MultiArraySeparableConvolutionTestSuite
 
@@ -329,7 +488,6 @@ int main()
   MultiArraySeparableConvolutionTestSuite test1;
   int failed = test1.run();
   std::cout << test1.report() << std::endl;
-  
   return (failed != 0);
 }
 
