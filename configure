@@ -3255,7 +3255,7 @@ CFLAGS="$lt_save_CFLAGS"
 exec 5>>./config.log
 
 
-LIBTOOL=`echo $LIBTOOL | sed 's,$(top_builddir),'$vigra_builddir,`
+LIBTOOL=`echo $LIBTOOL | sed 's,$(top_builddir),$(vigra_builddir),'`
 
 
 
