@@ -413,18 +413,34 @@ inline FFTWComplex conj(const FFTWComplex &a)
 
 //@}
 
-typedef BasicImage<fftw_real> FFTWRealImage;
 
+/** \addtogroup StandardImageTypes
+*/
+//@{
+
+/********************************************************/
+/*                                                      */
+/*                      FFTWRealImage                   */
+/*                                                      */
+/********************************************************/
+
+    /** Float (<tt>fftw_real</tt>) image.
+        The type <tt>fftw_real</tt> (either <tt>float</tt> or <tt>double</tt>)
+        is defined during compilation of fftw and imported into VIGRA
+        from <tt>fftw.h</tt>. FFTWRealImage uses \ref vigra::BasicImageIterator 
+        and \ref vigra::StandardAccessor and 
+        their const counterparts to access the data.
+        
+        <b>\#include</b> "<a href="fftw_8hxx-source.html">vigra/fftw.hxx</a>"<br>
+        Namespace: vigra
+    */
+typedef BasicImage<fftw_real> FFTWRealImage;
 
 /********************************************************/
 /*                                                      */
 /*                     FFTWComplexImage                 */
 /*                                                      */
 /********************************************************/
-
-/** \addtogroup StandardImageTypes
-*/
-//@{
 
 template<>
 struct IteratorTraits<BasicImageIterator<FFTWComplex, FFTWComplex **> >
@@ -477,7 +493,13 @@ typedef BasicImage<FFTWComplex> FFTWComplexImage;
 /*                                                      */
 /********************************************************/
 
-/** \defgroup FFTWComplexAccessors Accessors for FFTWComplex */
+/** \addtogroup DataAccessors
+*/
+//@{
+/** \defgroup FFTWComplexAccessors Accessors for FFTWComplex 
+
+    Encapsulate access to pixels of type FFTWComplex
+*/
 //@{
     /** Encapsulate access to the the real part of a complex number.
 
@@ -631,6 +653,7 @@ class FFTWPhaseAccessor
     }
 };
 
+//@}
 //@}
 
 /********************************************************/

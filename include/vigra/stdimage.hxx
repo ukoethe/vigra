@@ -30,12 +30,6 @@
 
 namespace vigra { 
 
-/** \addtogroup StandardImageTypes Standard Image Types
-
-    \brief The most common instantiations of the \ref vigra::BasicImage template
-*/
-//@{
-
 #define VIGRA_DEFINE_ITERATORTRAITS(ITERATOR, VALUETYPE, ACCESSOR) \
     template<> \
     struct IteratorTraits<ITERATOR<VALUETYPE, VALUETYPE **> > \
@@ -53,6 +47,12 @@ namespace vigra {
         typedef ACCESSOR<VALUETYPE >                 default_accessor; \
         typedef ACCESSOR<VALUETYPE >                 DefaultAccessor; \
     };   
+
+/** \addtogroup StandardImageTypes Standard Image Types
+
+    \brief The most common instantiations of the \ref vigra::BasicImage template
+*/
+//@{
 
 VIGRA_DEFINE_ITERATORTRAITS(BasicImageIterator, unsigned char, StandardValueAccessor);
 VIGRA_DEFINE_ITERATORTRAITS(ConstBasicImageIterator, unsigned char, StandardConstValueAccessor);

@@ -668,6 +668,9 @@ floor(RGBValue<V> const & r)
 /*                                                      */
 /********************************************************/
 
+/** \addtogroup DataAccessors
+*/
+//@{
 /** \defgroup RGBValueAccessors Accessors for RGBValue */
 //@{
     /** Encapsulate access to rgb values.
@@ -974,6 +977,7 @@ class RGBToGrayAccessor
 };
 
 
+//@}
 //@}
 
 
