@@ -25,13 +25,13 @@ while test $# -gt 0; do
       echo @MAJOR_VERSION@.@MINOR_VERSION@.@MICRO_VERSION@
       ;;
     --cxxflags)
-      echo "@CXXINCLUDES@" \
-        | sed "s,\$(prefix),@prefix@,"
+      echo '@CXXINCLUDES@' \
+        | sed "s,\$[({]prefix[})],@prefix@,"
       ;;
     --libs)
-      echo "@LIBS@" \
-        | sed "s,\$(exec_prefix),@exec_prefix@," \
-        | sed "s,\$(prefix),@prefix@,"
+      echo '@LIBS@' \
+        | sed "s,\$[({]exec_prefix[})],@exec_prefix@," \
+        | sed "s,\$[({]prefix[})],@prefix@,"
       ;;
     *)
       usage 1 1>&2
