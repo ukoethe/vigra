@@ -40,6 +40,10 @@ namespace vigra {
     (with the exception of <tt>resize()</tt>) but the image's
     memory is provided from the outside instead of allocated internally.
     
+    A <tt>BasicImageView</tt> can also be created from a 
+    \ref vigra::MultiArrayView with the appropriate shape -- see
+    \ref MultiArrayToImage.
+    
     <b>\#include</b> "<a href="basicimageview_8hxx-source.html">vigra/basicimageview.hxx</a>"
 
     Namespace: vigra
