@@ -360,6 +360,23 @@ struct ImageFunctionsTest
         should(stats[1].count == 7);
         should(stats[1].min == 2.2);
         should(stats[1].max == 8.8);
+
+        vigra::ArrayOfRegionStatistics<vigra::FindBoundingRectangle> stats1(1);
+        labels.init(0);
+        labels(1,1) = 1;
+        
+        inspectTwoImages(srcIterRange(vigra::Diff2D(0,0), img.size()), 
+                         srcImage(labels), stats1);
+
+
+        should(stats1[0].upperLeft.x == 0);
+        should(stats1[0].upperLeft.y == 0);
+        should(stats1[0].lowerRight.x == 3);
+        should(stats1[0].lowerRight.y == 3);
+        should(stats1[1].upperLeft.x == 1);
+        should(stats1[1].upperLeft.y == 1);
+        should(stats1[1].lowerRight.x == 2);
+        should(stats1[1].lowerRight.y == 2);
     }
 
     void arrayOfRegionStatisticsIfTest()
