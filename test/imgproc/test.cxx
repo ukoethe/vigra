@@ -885,68 +885,6 @@ struct ResizeImageTest
         shouldEqualSequenceTolerance(rgbdest.begin(), rgbdest.end(), rgbref.begin(), 
                                      RGBImage::value_type(1.0e-6f));
     }
-    
-    void scalarSplineImageView2()
-    {
-        ImageImportInfo info("splineimageview2.xv");
-
-        Image reference(info.width(), info.height());
-        importImage(info, destImage(reference));
-
-        SplineImageView<2, double> view(srcImageRange(img), 0.0);
- 
-        for(int y=0; y<reference.height(); ++y)
-        {
-            for(int x=0; x<reference.width(); ++x)
-            {
-                double dx = (double)x / (reference.width() - 1) * (img.width() - 1);
-                double dy = (double)y / (reference.height() - 1) * (img.height() - 1);
-                shouldEqualTolerance(view(dx, dy), reference(x, y), 1e-4);
-            }
-        }
-    }
-
-    void scalarSplineImageView3()
-    {
-        ImageImportInfo info("splineimageview3.xv");
-
-        Image reference(info.width(), info.height());
-        importImage(info, destImage(reference));
-
-//        CubicSplineImageView<double> viewo(srcImageRange(img), 0.0);
-        SplineImageView<3, double> view(srcImageRange(img), 0.0);
-       
-        for(int y=0; y<reference.height(); ++y)
-        {
-            for(int x=0; x<reference.width(); ++x)
-            {
-                double dx = (double)x / (reference.width() - 1) * (img.width() - 1);
-                double dy = (double)y / (reference.height() - 1) * (img.height() - 1);
-                shouldEqualTolerance(view(dx, dy), reference(x, y), 1e-4);
-            }
-        }
-    }
-
-    void scalarSplineImageView5()
-    {
-        ImageImportInfo info("splineimageview5.xv");
-
-        Image reference(info.width(), info.height());
-        importImage(info, destImage(reference));
-
-//        QuinticSplineImageView<double> viewo(srcImageRange(img));
-        SplineImageView<5, double> view(srcImageRange(img));
-       
-        for(int y=0; y<reference.height(); ++y)
-        {
-            for(int x=0; x<reference.width(); ++x)
-            {
-                double dx = (double)x / (reference.width() - 1) * (img.width() - 1);
-                double dy = (double)y / (reference.height() - 1) * (img.height() - 1);
-                shouldEqualTolerance(reference(x, y), view(dx, dy), 1e-4);
-            }
-        }
-    }
 
     void scalarExpand()
     {
@@ -1149,6 +1087,70 @@ struct ResizeImageTest
     RGBImage rgb;
 };
 
+template <int N>
+struct SplineImageViewTest
+{
+    typedef vigra::DImage Image;
+    Image img;
+
+    SplineImageViewTest()
+    {
+        ImageImportInfo ginfo("lenna128.xv");
+        img.resize(ginfo.width(), ginfo.height());
+        importImage(ginfo, destImage(img));
+    }
+
+    void testPSF()
+    {
+        int center = 10;
+        Image img(2*center+1, 2*center+1);
+        img.init(0.0);
+        img(center, center) = 1.0;
+        SplineImageView<N, double> view(srcImageRange(img), true);
+        BSplineBase<N> spline;
+        
+        double d0 = center;
+        double epsilon = 1.0e-10;
+        shouldEqualTolerance(view(d0,d0), spline(0.0)*spline(0.0), epsilon);
+        shouldEqualTolerance(view(d0,d0, 1, 0), spline(0.0, 1)*spline(0.0), epsilon);
+        shouldEqualTolerance(view(d0,d0, 0, 1), spline(0.0, 1)*spline(0.0), epsilon);
+        for(double d = 0.2; d < spline.radius(); d += 1.0)
+        {        
+            double d1 = d + d0;
+            shouldEqualTolerance(view(d1,d0), spline(d)*spline(0.0), epsilon);
+            shouldEqualTolerance(view(d0,d1), spline(d)*spline(0.0), epsilon);
+            shouldEqualTolerance(view(d1,d1), spline(d)*spline(d), epsilon);
+            shouldEqualTolerance(view(d1, d0, 1, 0), spline(d, 1)*spline(0.0), epsilon);
+            shouldEqualTolerance(view(d0, d1, 0, 1), spline(d, 1)*spline(0.0), epsilon);
+            shouldEqualTolerance(view(d1, d1, 1, 0), spline(d, 1)*spline(d), epsilon);
+            shouldEqualTolerance(view(d1, d1, 0, 1), spline(d, 1)*spline(d), epsilon);
+            shouldEqualTolerance(view(d1, d1, 1, 1), spline(d, 1)*spline(d, 1), epsilon);
+        }
+    }
+
+    void testImageResize()
+    {
+        char name[200];
+        sprintf(name, "splineimageview%d.xv", N);
+        ImageImportInfo info(name);
+
+        Image reference(info.width(), info.height());
+        importImage(info, destImage(reference));
+
+        SplineImageView<N, double> view(srcImageRange(img));
+ 
+        for(int y=0; y<reference.height(); ++y)
+        {
+            for(int x=0; x<reference.width(); ++x)
+            {
+                double dx = (double)x / (reference.width() - 1) * (img.width() - 1);
+                double dy = (double)y / (reference.height() - 1) * (img.height() - 1);
+                shouldEqualTolerance(view(dx, dy), reference(x, y), 1e-4);
+            }
+        }
+    }
+};
+
 
 struct ImageFunctionsTestSuite
 : public vigra::test_suite
@@ -1194,9 +1196,12 @@ struct ImageFunctionsTestSuite
         add( testCase( &ResizeImageTest::testCubicIIRInterpolationExtensionWithLena));
         add( testCase( &ResizeImageTest::testCubicIIRInterpolationReductionWithLena));
         add( testCase( &ResizeImageTest::testCubicFIRInterpolationExtensionHandControled));
-        add( testCase( &ResizeImageTest::scalarSplineImageView2));
-        add( testCase( &ResizeImageTest::scalarSplineImageView3));
-        add( testCase( &ResizeImageTest::scalarSplineImageView5));
+        add( testCase( &SplineImageViewTest<2>::testPSF));
+        add( testCase( &SplineImageViewTest<2>::testImageResize));
+        add( testCase( &SplineImageViewTest<3>::testPSF));
+        add( testCase( &SplineImageViewTest<3>::testImageResize));
+        add( testCase( &SplineImageViewTest<5>::testPSF));
+        add( testCase( &SplineImageViewTest<5>::testImageResize));
     }
 };
 
