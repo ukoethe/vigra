@@ -25,6 +25,7 @@
 
 #include "vigra/utilities.hxx"
 #include "vigra/numerictraits.hxx"
+#include "vigra/rgbvalue.hxx"
 
 namespace vigra {
 
