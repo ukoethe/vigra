@@ -156,15 +156,15 @@
     in order to get good estimates of perceived color differences by just calculating 
     Euclidean distances between the transformed colors. The L*a*b* and L*u*v* were 
     designed with exactly this application in mind and thus give the best results. But these
-    conversions are also the most computationally demanding. The Y'PbPr color differenc
+    conversions are also the most computationally demanding. The Y'PbPr color difference
     space (designed for the coding of digital video) is computationally much cheaper, and 
-    almost as good. Y'CbCr represents esentially the same transformation, but the colors 
-    are stored so that they can be stored with 8 bits per channel with minimal loss of 
+    almost as good. Y'CbCr represents esentially the same transformation, but the color values 
+    are scaled so that they can be stored with 8 bits per channel with minimal loss of 
     information. The other transformations are of lesser interest here: XYZ is a device independent
     (but not perceptually uniform) color representation, and Y'IQ and Y'UV are the color 
     spaces used by the PAL and NTSC analog video standards. Detailed information about
     these color spaces and their transformations can be found in 
-    <a href="http://www.inforamp.net/~poynton/ColorFAQ.html">Charles Poynton's Color FAQ</a>
+    <a href="http://www.poynton.com/ColorFAQ.html">Charles Poynton's Color FAQ</a>
     
     When you want to perform a color conversion, you must first know in which
     color space the data are given. Although this sounds trivial, it is
@@ -181,24 +181,28 @@
     
     (where usually \f$ R_{max} = G_{max} = B_{max} = 255 \f$). In practice, you can 
     distinguish the two kinds of red, green, and blue by displaying the images: if they look
-    too dark, they are probably RGB, if they are OK, they are likely R'G'B'. The distinction
-    is important because some conversions start at RGB (XYZ, L*a*b*, L*u*v*), while others
-    start at R'G'B' (Y'PbPr, Y'CbCr, Y'IQ, and Y'UV). The names of VIGRA's color conversion
-    functors always make clear to which color space thay must be applied.
+    too dark, they are probably RGB, if they are OK, they are likely R'G'B'. (However,
+    this may also be misleading: Some graphics cards and display programs silently apply a 
+    gamma correction to every image, so that RGB appears correct and R'G'B' is too bright.)
+    The distinction between RGB and R'G'B' is important because some conversions start at 
+    RGB (XYZ, L*a*b*, L*u*v*), while others start at R'G'B' (Y'PbPr, Y'CbCr, Y'IQ, and Y'UV). 
+    The names of VIGRA's color conversion functors always make clear to which color space 
+    they must be applied.
     
     In addition VIGRA provides a <em>polar coordinate interface</em>
     to several color spaces (L*a*b*, L*u*v*, Y'PbPr, Y'CbCr, Y'IQ, and Y'UV). This
     interface makes use of the fact that these color spaces are conceptually similar:
     they represent colors by a "brightness" coordinate (L* or Y') and a pair of 
-    "chromaticity" coordinates that span a plane of colors with constant brightness.
+    "chromaticity" coordinates that span a plane of colors with equal brightness.
     The polar representation transforms chroma coordinates into a color "angle"
     (similar to hue in the HSV system) and a "saturation". The polar coordinates are 
     normalized so that a color angle of 0 degrees is always associated with red
     (green is at about 120 degrees, blue at about 240 degrees - exact values differ
     between color spaces). A saturation of 1 is the highest saturation that any RGB color 
-    has after transformation into the respective color space, and saturation 0 corresponds to
-    gray. Polar coordinates provide a more intuitive interface to color specification by 
-    users and make different color spaces somewhat comparable.
+    in the unit cube can have after transformation into the respective color space, 
+    and saturation 0 corresponds to gray. Polar coordinates provide a more intuitive 
+    interface to color specification by users and make different color spaces somewhat 
+    comparable.
 */
 namespace vigra {
 
@@ -260,7 +264,7 @@ class RGB2RGBPrimeFunctor
     typedef typename NumericTraits<To>::RealPromote component_type;
     
         /** Default constructor.
-            The maximum value for each RGB componentdefaults to 255
+            The maximum value for each RGB component defaults to 255
         */
     RGB2RGBPrimeFunctor()
     : max_(255.0)
