@@ -672,7 +672,11 @@ dot(TinyVector<V1, SIZE> const & r1, TinyVector<V2, SIZE> const & r2)
     return sum;
 }
 
-using std::ceil;
+#ifdef CMATH_NOT_IN_STD
+    using ::ceil;
+#else
+    using std::ceil;
+#endif
 
     /** Apply ceil() function to each vector component.
     */
@@ -689,7 +693,11 @@ ceil(TinyVector<T, SIZE> const & v)
     return res;
 };
 
-using std::floor;
+#ifdef CMATH_NOT_IN_STD
+    using ::floor;
+#else
+    using std::floor;
+#endif
 
     /** Apply floor() function to each vector component.
     */
