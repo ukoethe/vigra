@@ -19,6 +19,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "pixeltypes", "pixeltypes\pi
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "imagehierarchy", "imagehierarchy\imagehierarchy.vcproj", "{03F6A35C-E906-4616-B0B2-EF5A72A2FA09}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "fourier", "fourier\fourier.vcproj", "{F50BA3E6-22F6-42B4-8E0E-15FB88B4E8F7}"
+EndProject
 Global
 	GlobalSection(SolutionConfiguration) = preSolution
 		ConfigName.0 = Debug
@@ -67,6 +69,10 @@ Global
 		{03F6A35C-E906-4616-B0B2-EF5A72A2FA09}.Debug.Build.0 = Debug|Win32
 		{03F6A35C-E906-4616-B0B2-EF5A72A2FA09}.Release.ActiveCfg = Release|Win32
 		{03F6A35C-E906-4616-B0B2-EF5A72A2FA09}.Release.Build.0 = Release|Win32
+		{F50BA3E6-22F6-42B4-8E0E-15FB88B4E8F7}.Debug.ActiveCfg = Debug|Win32
+		{F50BA3E6-22F6-42B4-8E0E-15FB88B4E8F7}.Debug.Build.0 = Debug|Win32
+		{F50BA3E6-22F6-42B4-8E0E-15FB88B4E8F7}.Release.ActiveCfg = Release|Win32
+		{F50BA3E6-22F6-42B4-8E0E-15FB88B4E8F7}.Release.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 	EndGlobalSection
