@@ -47,11 +47,11 @@ clean::
 
 distclean: clean
 	rm -f config/vigra-config config/Makefile.include
-	rm -f config.log config.cache config.status
+	rm -f config.log config.cache config.status libtool
 	cp config/Makefile.include.empty config/Makefile.include
 
 maintainer-clean: distclean docclean
-	rm -f config/aclocal.m4 configure libtool
+	rm -f config/aclocal.m4 configure
 
 autoconf:
 	cd config && \
