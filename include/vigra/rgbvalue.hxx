@@ -28,6 +28,7 @@
 #include "vigra/config.hxx"
 #include "vigra/numerictraits.hxx"
 #include "vigra/accessor.hxx"
+#include "vigra/tinyvector.hxx"
 
 namespace vigra {
 
@@ -64,6 +65,7 @@ namespace vigra {
 */
 template <class VALUETYPE>
 class RGBValue
+: public TinyVector<VALUETYPE, 3>
 {
   public:
         /** STL-compatible definition of valuetype
@@ -71,51 +73,61 @@ class RGBValue
     typedef VALUETYPE value_type;
         /** STL-compatible definition of iterator
         */
-    typedef value_type * iterator;
+    typedef typename TinyVector<VALUETYPE, 3>::iterator iterator;
         /** STL-compatible definition of const iterator
         */
-    typedef value_type const * const_iterator;
+    typedef typename TinyVector<VALUETYPE, 3>::const_iterator const_iterator;
+    
         /** Construct from explicit color values 
         */    
     RGBValue(value_type red, value_type green, value_type blue)
     {
-        rgb_[0] = red;
-        rgb_[1] = green;
-        rgb_[2] = blue;
+        data_[0] = red;
+        data_[1] = green;
+        data_[2] = blue;
     }
     
         /** Construct gray value 
         */    
     RGBValue(value_type gray)
     {
-        rgb_[0] = gray;
-        rgb_[1] = gray;
-        rgb_[2] = gray;
+        data_[0] = gray;
+        data_[1] = gray;
+        data_[2] = gray;
     }
     
+        /** Construct from another sequence (must have length 3!)
+        */
+    template <class Iterator>   
+    RGBValue(Iterator i, Iterator end)
+    {
+        for(iterator p = begin(); i != end; ++i, ++p)
+            *p = static_cast<value_type>(*i);
+    }
+
         /** Default constructor (sets all components to 0)  
         */    
     RGBValue()
     {
-        rgb_[0] = 0;
-        rgb_[1] = 0;
-        rgb_[2] = 0;
+        data_[0] = 0;
+        data_[1] = 0;
+        data_[2] = 0;
     }
 
 #if !defined(TEMPLATE_COPY_CONSTRUCTOR_BUG)
         
     RGBValue(RGBValue const & r)
     {
-        rgb_[0] = r.red();
-        rgb_[1] = r.green();
-        rgb_[2] = r.blue();
+        data_[0] = r.red();
+        data_[1] = r.green();
+        data_[2] = r.blue();
     }
 
     RGBValue & operator=(RGBValue const & r)
     {
-        rgb_[0] = r.red();
-        rgb_[1] = r.green();
-        rgb_[2] = r.blue();
+        data_[0] = r.red();
+        data_[1] = r.green();
+        data_[2] = r.blue();
         return *this;
     }
 
@@ -127,9 +139,9 @@ class RGBValue
     template <class U>   
     RGBValue(RGBValue<U> const & r)
     {
-        rgb_[0] = static_cast<value_type>(r.red());
-        rgb_[1] = static_cast<value_type>(r.green());
-        rgb_[2] = static_cast<value_type>(r.blue());
+        data_[0] = static_cast<value_type>(r.red());
+        data_[1] = static_cast<value_type>(r.green());
+        data_[2] = static_cast<value_type>(r.blue());
     }
 
         /** Copy assignment.
@@ -137,9 +149,9 @@ class RGBValue
     template <class U>   
     RGBValue & operator=(RGBValue<U> const & r)
     {
-        rgb_[0] = static_cast<value_type>(r.red());
-        rgb_[1] = static_cast<value_type>(r.green());
-        rgb_[2] = static_cast<value_type>(r.blue());
+        data_[0] = static_cast<value_type>(r.red());
+        data_[1] = static_cast<value_type>(r.green());
+        data_[2] = static_cast<value_type>(r.blue());
         return *this;
     }
 
@@ -152,32 +164,32 @@ class RGBValue
     
         /** Access red component.
         */
-    value_type & red() { return rgb_[0]; }
+    value_type & red() { return data_[0]; }
     
         /** Access green component.
         */
-    value_type & green() { return rgb_[1]; }
+    value_type & green() { return data_[1]; }
      
         /** Access blue component.
         */
-    value_type & blue() { return rgb_[2]; }
+    value_type & blue() { return data_[2]; }
     
         /** Get red component.
         */
-    value_type red() const { return rgb_[0]; }
+    value_type red() const { return data_[0]; }
     
         /** Get green component.
         */
-    value_type green() const { return rgb_[1]; }
+    value_type green() const { return data_[1]; }
     
         /** Get blue component.
         */
-    value_type blue() const { return rgb_[2]; }
+    value_type blue() const { return data_[2]; }
     
         /** Calculate luminance.
         */
     value_type luminance() const { 
-         return 0.3*red() + 0.59*green() + 0.11*blue(); }
+         return static_cast<value_type>(0.3*red() + 0.59*green() + 0.11*blue()); }
     
         /** Calculate magnitude.
         */
@@ -201,50 +213,19 @@ class RGBValue
             in <TT>value</TT> is automatically converted to <TT>VALUETYPE</TT>.
         */
     template <class V>
-    void setRed(V const & value) { rgb_[0] = static_cast<value_type>(value); }
+    void setRed(V const & value) { data_[0] = static_cast<value_type>(value); }
 
         /** Set green component.The type <TT>V</TT> of the passed
             in <TT>value</TT> is automatically converted to <TT>VALUETYPE</TT>.
         */
     template <class V>
-    void setGreen(V const & value) { rgb_[1] = static_cast<value_type>(value); }
+    void setGreen(V const & value) { data_[1] = static_cast<value_type>(value); }
 
         /** Set blue component.The type <TT>V</TT> of the passed
             in <TT>value</TT> is automatically converted to <TT>VALUETYPE</TT>.
         */
     template <class V>
-    void setBlue(V const & value) { rgb_[2] = static_cast<value_type>(value); }
-    
-        /** Access component by index.
-        */
-    value_type & operator[](int const & color) { return rgb_[color]; }
-    
-        /** Get component by index.
-        */
-    value_type operator[](int const & color) const { return rgb_[color]; }
-    
-        /** Get random access iterator to begin of vector (i.e. red).
-        */
-    iterator begin() { return rgb_; }
-
-        /** Get random access iterator past-the-end of vector.
-        */
-    iterator end() { return rgb_ + 3; }
-    
-        /** Get const random access iterator to begin of vector (i.e. red).
-        */
-    const_iterator begin() const { return rgb_; }
-
-        /** Get const random access iterator past-the-end of vector.
-        */
-    const_iterator end() const { return rgb_ + 3; }
-    
-        /** Size of RGB vector is always 3.
-        */
-    int size() const { return 3; }
-    
-  private:
-    value_type rgb_[3];
+    void setBlue(V const & value) { data_[2] = static_cast<value_type>(value); }
 };
 
 /********************************************************/
@@ -341,19 +322,13 @@ struct NumericTraits<RGBValue<T> >
     typedef VigraFalseType isOrdered;
     
     static RGBValue<T> zero() { 
-        return RGBValue<T>(NumericTraits<T>::zero(),
-                           NumericTraits<T>::zero(),
-                           NumericTraits<T>::zero()); 
+        return RGBValue<T>(NumericTraits<T>::zero()); 
     }
     static RGBValue<T> one() { 
-        return RGBValue<T>(NumericTraits<T>::one(),
-                           NumericTraits<T>::one(),
-                           NumericTraits<T>::one()); 
+        return RGBValue<T>(NumericTraits<T>::one()); 
     }
     static RGBValue<T> nonZero() { 
-        return RGBValue<T>(NumericTraits<T>::nonZero(),
-                           NumericTraits<T>::nonZero(),
-                           NumericTraits<T>::nonZero()); 
+        return RGBValue<T>(NumericTraits<T>::nonZero()); 
     }
     
     static Promote toPromote(RGBValue<T> const & v) { 
@@ -394,121 +369,52 @@ struct PromoteTraits<double, RGBValue<T> >
 
 #else // NO_PARTIAL_TEMPLATE_SPECIALIZATION
 
-template<>
-struct NumericTraits<RGBValue<unsigned char> >
-{
-    typedef RGBValue<unsigned char> Type;
-    typedef RGBValue<int> Promote;
-    typedef RGBValue<float> RealPromote;
-    typedef VigraTrueType isIntegral;
-    typedef VigraFalseType isScalar;
-    typedef VigraFalseType isOrdered;
-    
-    static RGBValue<unsigned char> zero() { 
-        return RGBValue<unsigned char>(0, 0, 0); 
-    }
-    static RGBValue<unsigned char> one() { 
-        return RGBValue<unsigned char>(1, 1, 1); 
-    }
-    static RGBValue<unsigned char> nonZero() { 
-        return RGBValue<unsigned char>(1, 1, 1); 
-    }
-    
-    static Promote toPromote(RGBValue<unsigned char> const & v) { 
-        return Promote(v); 
-    }
-    static RealPromote toRealPromote(RGBValue<unsigned char> const & v) { 
-        return RealPromote(v); 
-    }
-    static RGBValue<unsigned char> fromPromote(Promote const & v) { 
-        unsigned char red = NumericTraits<unsigned char>::fromPromote(v.red());
-        unsigned char green = NumericTraits<unsigned char>::fromPromote(v.green());
-        unsigned char blue = NumericTraits<unsigned char>::fromPromote(v.blue());
-        
-        return RGBValue<unsigned char>(red, green, blue); 
-    }
-    static RGBValue<unsigned char> fromRealPromote(RealPromote const & v) {
-        unsigned char red = NumericTraits<unsigned char>::fromRealPromote(v.red());
-        unsigned char green = NumericTraits<unsigned char>::fromRealPromote(v.green());
-        unsigned char blue = NumericTraits<unsigned char>::fromRealPromote(v.blue());
-        
-        return RGBValue<unsigned char>(red, green, blue); 
-    }
+#define RGBVALUE_NUMTRAITS(T) \
+template<>\
+struct NumericTraits<RGBValue<T> >\
+{\
+    typedef RGBValue<T> Type;\
+    typedef RGBValue<NumericTraits<T>::Promote> Promote;\
+    typedef RGBValue<NumericTraits<T>::RealPromote> RealPromote;\
+    typedef NumericTraits<T>::isIntegral isIntegral;\
+    typedef VigraFalseType isScalar;\
+    typedef VigraFalseType isOrdered;\
+    \
+    static RGBValue<T> zero() { \
+        return RGBValue<T>(NumericTraits<T>::zero()); \
+    }\
+    static RGBValue<T> one() { \
+        return RGBValue<T>(NumericTraits<T>::one()); \
+    }\
+    static RGBValue<T> nonZero() { \
+        return RGBValue<T>(NumericTraits<T>::nonZero()); \
+    }\
+    \
+    static Promote toPromote(RGBValue<T> const & v) { \
+        return Promote(v); \
+    }\
+    static RealPromote toRealPromote(RGBValue<T> const & v) { \
+        return RealPromote(v); \
+    }\
+    static RGBValue<T> fromPromote(Promote const & v) { \
+        RGBValue<T> res;\
+        RGBValue<T>::iterator d = res.begin();\
+        Promote::const_iterator s = v.begin();\
+        for(; d != res.end(); ++d, ++s)\
+            *d = NumericTraits<T>::fromPromote(*s);\
+        return res;\
+    }\
+    static RGBValue<T> fromRealPromote(RealPromote const & v) {\
+        RGBValue<T> res;\
+        RGBValue<T>::iterator d = res.begin();\
+        RealPromote::const_iterator s = v.begin();\
+        for(; d != res.end(); ++d, ++s)\
+            *d = NumericTraits<T>::fromRealPromote(*s);\
+        return res;\
+    }\
 };
 
-template<>
-struct NumericTraits<RGBValue<int> >
-{
-    typedef RGBValue<int> Type;
-    typedef RGBValue<int> Promote;
-    typedef RGBValue<float> RealPromote;
-    typedef VigraTrueType isIntegral;
-    typedef VigraFalseType isScalar;
-    typedef VigraFalseType isOrdered;
-    
-    static RGBValue<int> zero() { 
-        return RGBValue<int>(0, 0, 0); 
-    }
-    static RGBValue<int> one() { 
-        return RGBValue<int>(1, 1, 1); 
-    }
-    static RGBValue<int> nonZero() { 
-        return RGBValue<int>(1, 1, 1); 
-    }
-    
-    static Promote toPromote(RGBValue<int> const & v) { 
-        return v; 
-    }
-    static RealPromote toRealPromote(RGBValue<int> const & v) { 
-        return RealPromote(v); 
-    }
-    static RGBValue<int> fromPromote(Promote const & v) { 
-        return v; 
-    }
-    static RGBValue<int> fromRealPromote(RealPromote const & v) {
-        int red = NumericTraits<int>::fromRealPromote(v.red());
-        int green = NumericTraits<int>::fromRealPromote(v.green());
-        int blue = NumericTraits<int>::fromRealPromote(v.blue());
-        
-        return RGBValue<int>(red, green, blue); 
-    }
-};
-
-template<>
-struct NumericTraits<RGBValue<float> >
-{
-    typedef RGBValue<float> Type;
-    typedef RGBValue<float> Promote;
-    typedef RGBValue<float> RealPromote;
-    typedef VigraFalseType isIntegral;
-    typedef VigraFalseType isScalar;
-    typedef VigraFalseType isOrdered;
-    
-    static RGBValue<float> zero() { 
-        return RGBValue<float>(0.0, 0.0, 0.0); 
-    }
-    static RGBValue<float> one() { 
-        return RGBValue<float>(1.0, 1.0, 1.0); 
-    }
-    static RGBValue<float> nonZero() { 
-        return RGBValue<float>(1.0, 1.0, 1.0); 
-    }
-    
-    static Promote toPromote(RGBValue<float> const & v) { 
-        return v; 
-    }
-    static RealPromote toRealPromote(RGBValue<float> const & v) { 
-        return v; 
-    }
-    static RGBValue<float> fromPromote(Promote const & v) { 
-        return v; 
-    }
-    static RGBValue<float> fromRealPromote(RealPromote const & v) {
-        return v; 
-    }
-};
-
-#define rgb_promtraits1(type1) \
+#define RGBVALUE_PROMTRAITS1(type1) \
 template<> \
 struct PromoteTraits<RGBValue<type1>, RGBValue<type1> > \
 { \
@@ -517,7 +423,7 @@ struct PromoteTraits<RGBValue<type1>, RGBValue<type1> > \
         return static_cast<Promote>(v); } \
 };
 
-#define rgb_promtraits2(type1, type2) \
+#define RGBVALUE_PROMTRAITS2(type1, type2) \
 template<> \
 struct PromoteTraits<RGBValue<type1>, RGBValue<type2> > \
 { \
@@ -528,18 +434,30 @@ struct PromoteTraits<RGBValue<type1>, RGBValue<type2> > \
         return static_cast<Promote>(v); } \
 };
 
-rgb_promtraits1(unsigned char);
-rgb_promtraits1(float);
-rgb_promtraits1(int);
-rgb_promtraits2(float, unsigned char);
-rgb_promtraits2(unsigned char, float);
-rgb_promtraits2(int, unsigned char);
-rgb_promtraits2(unsigned char, int);
-rgb_promtraits2(int, float);
-rgb_promtraits2(float, int);
+RGBVALUE_NUMTRAITS(unsigned char)
+RGBVALUE_NUMTRAITS(int)
+RGBVALUE_NUMTRAITS(float)
+RGBVALUE_NUMTRAITS(double)
+RGBVALUE_PROMTRAITS1(unsigned char)
+RGBVALUE_PROMTRAITS1(int)
+RGBVALUE_PROMTRAITS1(float)
+RGBVALUE_PROMTRAITS1(double)
+RGBVALUE_PROMTRAITS2(float, unsigned char)
+RGBVALUE_PROMTRAITS2(unsigned char, float)
+RGBVALUE_PROMTRAITS2(int, unsigned char)
+RGBVALUE_PROMTRAITS2(unsigned char, int)
+RGBVALUE_PROMTRAITS2(int, float)
+RGBVALUE_PROMTRAITS2(float, int)
+RGBVALUE_PROMTRAITS2(double, unsigned char)
+RGBVALUE_PROMTRAITS2(unsigned char, double)
+RGBVALUE_PROMTRAITS2(int, double)
+RGBVALUE_PROMTRAITS2(double, int)
+RGBVALUE_PROMTRAITS2(double, float)
+RGBVALUE_PROMTRAITS2(float, double)
 
-#undef rgb_promtraits1
-#undef rgb_promtraits2
+#undef RGBVALUE_NUMTRAITS
+#undef RGBVALUE_PROMTRAITS1
+#undef RGBVALUE_PROMTRAITS2
 
 #endif // NO_PARTIAL_TEMPLATE_SPECIALIZATION
 
