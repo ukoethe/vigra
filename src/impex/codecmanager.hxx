@@ -68,10 +68,10 @@ namespace vigra
         getEncoder( const std::string & fileName,
                     const std::string & fileType = "undefined" ) const;
 
-    private:
-
         // try to figure out the correct file type
         std::string getFileTypeByMagicString( const std::string & filename ) const;
+
+    private:
 
         // this will only be called by the singleton pattern
         CodecManager();
