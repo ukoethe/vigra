@@ -1,0 +1,118 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN"><html><head><TITLE>VIGRA Installation </TITLE></head>
+<body  bgcolor="#f8f0e0" link="#0040b0" vlink="#a00040">
+<basefont face="Helvetica,Arial" size=3>
+<p align=right>
+[ <a href="http://kogs-www.informatik.uni-hamburg.de/~koethe/vigra/">VIGRA Homepage</a> |
+ <a href="index.html">Documentation</a> |
+ <a href="aindex.html">Alphabetic Index</a> |
+ <a href="HIER.html">Class Hierarchy</a> ]
+</p>
+<table border=0 cellspacing=0 bgcolor="#e0d090" width="100%" cellpadding=5>
+<tr>
+<th align=left valign=top>
+<A HREF ="#DOC.DOCU" ><IMG BORDER=0 ALT="details" SRC="doc/documents/pfeilGross.gif"></A>
+</th>
+<th><font size="+2">  VIGRA Installation   
+</font></th>
+<th align=right ><a href="index.html"><IMG border=0 ALT="VIGRA" SRC="doc/documents/vigra.gif"></a></th></tr>
+</table>
+
+<br>
+
+<P>VIGRA can be downloaded from 
+<A HREF="http://kogs-www.informatik.uni-hamburg.de/~koethe/vigra/vigraVERSION_VERSION_VERSION.tar.gz">http://kogs-www.informatik.uni-hamburg.de/~koethe/vigra/vigraVERSION_VERSION_VERSION.tar.gz</A>.<P>VIGRA is known to work with the following compilers:<P><UL>
+<LI> SGI C++ 7.2 and 7.3 (CC -n32)
+<LI> <A HREF="http://gcc.gnu.org/">GNU g++ 2.95.1 and newer</A> 
+(formerly EGCS 1.1)
+<LI> Microsoft Visual C++ 5.0, patchlevel 3
+</UL><P>VIGRA is known NOT to work with the following compilers:<P><UL>
+<LI> GNU g++ 2.8.x and earlier
+<LI> SUN C++ 4.2 (Sun's old compiler, a new version exists, 
+but has not been tried yet)
+</UL><P>VIGRA should work with any standard conforming C++ compiler<P><B>Unix:</b><P><UL>
+<LI> uncompress and unpack the source distribution
+<LI> set the following environment variables:<P><UL>
+<LI> tell the system where the VIGRA sources reside 
+<PRE>
+    &gt; setenv VIGRA_PATH [some path]/vigraVERSION_VERSION_VERSION
+    </pre><P><LI> specify which compiler and makefile will be used 
+(currently supported values:     
+<UL>
+<LI> "GCC" for <A HREF="http://gcc.gnu.org/">GNU g++</A> (2.95.1 and 
+newer) and EGCS 1.1, 
+<LI> "IRIXCC7.2.0" for SGI C++ 7.2.0, 
+<LI> "IRIXCC7.2.1" for SGI C++ 7.2.1,
+<LI> "IRIXCC" for SGI C++ 7.3,
+<LI> "COMPILER" for any compiler not in this list)
+</UL>
+<PRE>
+    &gt; setenv VIGRA_COMPILER GCC       
+    </pre><P>To add support for a new compiler, edit the file 
+<TT>$VIGRA_PATH/config/COMPILER.mak</TT> in order to tell VIGRA how your 
+compiler is invoked. In this case, you'll have to specify 
+<TT>setenv VIGRA_COMPILER COMPILER</TT>. If your compiler does not conform to
+the C++ standard, you may also need to add compiler specific settings
+in the file <TT>$VIGRA_PATH/include/vigra/config.hxx</TT>.<P><LI> specify the subdirectory where binaries go (for example, libraries 
+will be installed at
+<TT>$VIGRA_PATH/lib/$VIGRA_PLATFORM</TT>)
+<PRE>
+    &gt; setenv VIGRA_PLATFORM Solaris       
+    </pre><P>This variable can be empty.<P></UL><P><LI> specify if and where JPEG and TIFF libraries are installed: <BR><P><UL>
+<LI> edit <TT>$VIGRA_PATH/src/impex/Makefile</TT>: <BR>
+<EM>either</EM> update the 
+paths to the include files for <A HREF="http://www.ijg.org/">libjpeg</A> and 
+<A HREF="http://www.libtiff.org/">libtiff</A> on your 
+system <BR>
+<EM>or</EM> comment out the lines <TT>HAS_JPEG</TT> and <TT>HAS_TIFF</TT>.<P><LI> edit the LIB macro in <TT>$VIGRA_PATH/src/examples/Makefile</TT>: <BR>
+<EM>either</EM> add the 
+paths to the library files <A HREF="http://www.ijg.org/">libjpeg.a</A> and 
+<A HREF="http://www.libtiff.org/">libtiff.a</A> on your 
+system <BR>
+<EM>or</EM> remove -ljpeg and -ltiff.<P></UL><P><LI> build the library and the <!1><A HREF="Examples.html">Examples</A>:<P><PRE>
+    &gt; cd $VIGRA_PATH
+    &gt; make
+    </pre>
+</UL><P><B>Windows:</b><P><UL>
+<LI> uncompress and unpack the source distribution
+<LI> go into the directory <TT>[some path]/vigra/src/</TT>
+<LI> load the workspace <TT>vigra.dsw</TT> into VisualC++
+<LI> set <TT>impex</TT> as active project and<P><UL>
+<LI> specify if and where JPEG and TIFF libraries are installed: <BR>
+open the dialog Project:Settings:C++:Preprocessor and <EM>either</EM> update 
+the paths to the
+include files for <A HREF="http://www.ijg.org/">jpeg.lib</A> and 
+<A HREF="http://www.libtiff.org/">tiff.lib</A> on your 
+system - <EM>or</EM> - remove the defines <TT>HasJPEG</TT> and <TT>HasTIFF</TT>.<P><LI> likewise, enter the path to jpeg.lib and tiff.lib in the dialog
+Project:Settings:Link or remove these libraries from the library list (do this for 
+all projects at once)<P><LI> build the project <TT>impex</TT> (that is, the library <TT>vigraimpex.lib</TT>)<P></UL>
+<LI> build the other projects containing the <!1><A HREF="Examples.html">Examples</A> (These programs can be 
+invoked from the command line.)
+</UL>
+
+</BLOCKQUOTE>
+<p align=right>
+[ <a href="http://kogs-www.informatik.uni-hamburg.de/~koethe/vigra/">VIGRA Homepage</a> |
+ <a href="index.html">Documentation</a> |
+ <a href="aindex.html">Alphabetic Index</a> |
+ <a href="HIER.html">Class Hierarchy</a> ]
+</p>
+<table border=0 cellspacing=0 width="100%"  bgcolor="#e0d090" cellpadding=5>
+<tr>
+<td>
+<p>
+<i>&copy; <A HREF="http://kogs-www.informatik.uni-hamburg.de/~koethe/">Ullrich K&ouml;the</A>     (<A HREF="mailto:koethe@informatik.uni-hamburg.de">koethe@informatik.uni-hamburg.de</A>)</i> <br>
+<i><A HREF="http://kogs-www.informatik.uni-hamburg.de/">
+Cognitive Systems Group</a>, 
+University of Hamburg, Germany</i>
+<td>
+<p align=right>
+<I>html generated using <A HREF="http://www.zib.de/Visual/software/doc++/index.html">doc++</A></I>
+<br>
+<i>
+VIGRA VERSION_VERSION_VERSION ( Nov 29 2000 )
+</i>
+</tr>
+</table>
+
+
+</BODY>
