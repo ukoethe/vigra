@@ -17,6 +17,7 @@ install-includes:
           $(INSTALL) -d $(includedir)/vigra ; \
           $(INSTALL) --mode=644 $(vigra_builddir)/include/vigra/*.hxx $(includedir)/vigra ; \
         fi
+install-headers: install-includes
 
 install-docs:
 	$(INSTALL) -d $(docdir)
@@ -60,4 +61,4 @@ autoconf:
 	aclocal --acdir=. && \
 	autoconf --output=../configure
 
-.PHONY: autoconf all clean distclean doc docclean examples install install-docs install-exec install-includes
+.PHONY: autoconf all clean distclean doc docclean examples install install-docs install-exec install-includes install-headers
