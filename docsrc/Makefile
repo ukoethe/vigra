@@ -11,17 +11,7 @@ doc::
 	@if [ ! -d $(DOCDIR) ]; then mkdir $(DOCDIR); fi
 	@makefooter.csh $(VIGRA_VERSION)
 	$(DOC) $(FILES)
-	@for i in $(DOCDIR)/*.html ; do \
-		echo $$i; \
-		cat $$i | sed -f postprocess_doc.sed > /tmp/t.html ; \
-		mv /tmp/t.html $$i; \
-	done
-	@cat $(DOCDIR)/aindex.html | \
-              sed 's?<H2>Variables</H2>?<H2>typedefs</H2>?' > /tmp/t.html; \
-              mv /tmp/t.html $(DOCDIR)/aindex.html
-	@cat $(DOCDIR)/index.html | \
-              sed 's?VERSION_VERSION_VERSION?$(VIGRA_VERSION)?g' > \
-              /tmp/t.html; mv /tmp/t.html $(DOCDIR)/index.html
+	python postprocessing.py $(DOCDIR) $(VIGRA_VERSION)
 	
 latex::
 	$(DOCLATEX)  $(FILES)

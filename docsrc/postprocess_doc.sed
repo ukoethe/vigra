@@ -2,6 +2,8 @@ s?<body>?<body  background="documents/background.gif">?
 s?<BODY>?<body  background="documents/background.gif">?
 
 \?^<H2><A HREF ="#DOC.DOCU" >? { 
+    i\
+    <a href="index.html"><IMG align=right border=0 SRC="documents/vigra.gif"></a>
     \?typedef? n
     \?\&gt; *class? {
         s?: *private.* *</H2>?</H2>?
