@@ -18,8 +18,8 @@
 /*  WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE. */
 /*                                                                      */
 /************************************************************************/
- 
- 
+
+
 #ifndef VIGRA_RGBVALUE_HXX
 #define VIGRA_RGBVALUE_HXX
 
@@ -40,7 +40,7 @@ namespace vigra {
 
 /** \brief Class for a single RGB value.
 
-    This class contains three values (of the specified type) that represent 
+    This class contains three values (of the specified type) that represent
     red, green, and blue color channels. There are three possibilities
     to access these values: accessor functions (\ref red(), \ref green(),
     \ref blue()), index operator (operator[](dx), where 0 is red,
@@ -48,17 +48,17 @@ namespace vigra {
     iterator that references the three colors in turn). The latter two
     methods, together with the necessary embedded typedefs, ensure
     compatibility of a RGBValue with a STL vector.
-    
-    \ref RGBValueOperators "Arithmetic operations" are defined as component-wise applications of these 
-    operations. Addition, subtraction, and multiplication of two RGBValues 
+
+    \ref RGBValueOperators "Arithmetic operations" are defined as component-wise applications of these
+    operations. Addition, subtraction, and multiplication of two RGBValues
     (+=, -=, *=, +, -, *, unary -), multiplication and division of an
-    RGBValue with a double, and NumericTraits/PromoteTraits are defined, 
-    so that RGBValue fulfills the requirements of a \ref LinearAlgebra. 
-    
+    RGBValue with a double, and NumericTraits/PromoteTraits are defined,
+    so that RGBValue fulfills the requirements of a \ref LinearAlgebra.
+
     A number of \ref RGBValueAccessors "accessors" are provided
     that support access to RGBValues as a whole, to a selected
     color component, or to the luminance value.
-    
+
     <b>\#include</b> "<a href="rgbvalue_8hxx-source.html">vigra/rgbvalue.hxx</a>"<br>
     Namespace: vigra
 */
@@ -77,34 +77,34 @@ class RGBValue
         /** STL-compatible definition of const iterator
         */
     typedef typename TinyVector<VALUETYPE, 3>::const_iterator const_iterator;
-    
-        /** Construct from explicit color values 
-        */    
+
+        /** Construct from explicit color values
+        */
     RGBValue(value_type red, value_type green, value_type blue)
     : Base(red, green, blue)
     {}
-    
-        /** Construct gray value 
-        */    
+
+        /** Construct gray value
+        */
     RGBValue(value_type gray)
     : Base(gray, gray, gray)
     {}
-    
+
         /** Construct from another sequence (must have length 3!)
         */
-    template <class Iterator>   
+    template <class Iterator>
     RGBValue(Iterator i, Iterator end)
     : Base(i[0], i[1], i[2])
     {}
 
-        /** Default constructor (sets all components to 0)  
-        */    
+        /** Default constructor (sets all components to 0)
+        */
     RGBValue()
     : Base(0, 0, 0)
     {}
 
 #if !defined(TEMPLATE_COPY_CONSTRUCTOR_BUG)
-        
+
     RGBValue(RGBValue const & r)
     : Base(r)
     {}
@@ -117,17 +117,17 @@ class RGBValue
 
 #endif // TEMPLATE_COPY_CONSTRUCTOR_BUG
 
-    
+
         /** Copy constructor.
         */
-    template <class U>   
+    template <class U>
     RGBValue(RGBValue<U> const & r)
     : Base(r)
     {}
 
         /** Copy assignment.
-        */    
-    template <class U>   
+        */
+    template <class U>
     RGBValue & operator=(RGBValue<U> const & r)
     {
         Base::operator=(r);
@@ -141,64 +141,64 @@ class RGBValue
     {}
 
         /** assign TinyVector.
-        */    
+        */
     RGBValue & operator=(TinyVector<value_type, 3> const & r)
     {
         Base::operator=(r);
         return *this;
     }
 
-        /** Unary negation (construct RGBValue with negative velues)
+        /** Unary negation (construct RGBValue with negative values)
         */
     RGBValue operator-() const
     {
         return RGBValue(-red(), -green(), -blue());
     }
-    
+
         /** Access red component.
         */
     value_type & red() { return data_[0]; }
-    
+
         /** Access green component.
         */
     value_type & green() { return data_[1]; }
-     
+
         /** Access blue component.
         */
     value_type & blue() { return data_[2]; }
-    
+
         /** Get red component.
         */
     value_type const & red() const { return data_[0]; }
-    
+
         /** Get green component.
         */
     value_type const & green() const { return data_[1]; }
-    
+
         /** Get blue component.
         */
     value_type const & blue() const { return data_[2]; }
-    
+
         /** Calculate luminance.
         */
-    value_type luminance() const { 
+    value_type luminance() const {
          return detail::RequiresExplicitCast<value_type>::cast(0.3*red() + 0.59*green() + 0.11*blue()); }
-    
+
         /** Calculate magnitude.
         */
     typename NumericTraits<VALUETYPE>::RealPromote
-    magnitude() const { 
+    magnitude() const {
          return VIGRA_CSTD::sqrt(
             (typename NumericTraits<VALUETYPE>::RealPromote)squaredMagnitude());
     }
-    
+
         /** Calculate squared magnitude.
         */
     typename NumericTraits<VALUETYPE>::Promote
-    squaredMagnitude() const { 
+    squaredMagnitude() const {
          return red()*red() + green()*green() + blue()*blue();
     }
-    
+
         /** Set red component. The type <TT>V</TT> of the passed
             in <TT>value</TT> is automatically converted to <TT>VALUETYPE</TT>.
         */
@@ -227,19 +227,19 @@ class RGBValue
 /** \addtogroup RGBValueOperators Functions for RGBValue
 
     \brief <b>\#include</b> "<a href="rgbvalue_8hxx-source.html">vigra/rgbvalue.hxx</a>
-    
+
     These functions fulfill the requirements of a Linear Algebra.
     Return types are determined according to \ref RGBValueTraits.
 
     Namespace: vigra
     <p>
-    
+
  */
 //@{
     /// component-wise equal
 template <class V1, class V2>
 inline
-bool 
+bool
 operator==(RGBValue<V1> const & l, RGBValue<V2> const & r)
 {
     return (l.red() == r.red()) &&
@@ -250,7 +250,7 @@ operator==(RGBValue<V1> const & l, RGBValue<V2> const & r)
     /// component-wise not equal
 template <class V1, class V2>
 inline
-bool 
+bool
 operator!=(RGBValue<V1> const & l, RGBValue<V2> const & r)
 {
     return (l.red() != r.red()) ||
@@ -268,13 +268,13 @@ operator!=(RGBValue<V1> const & l, RGBValue<V2> const & r)
 /********************************************************/
 
 /** \page RGBValueTraits Numeric and Promote Traits of RGBValue
-    The numeric and promote traits for RGBValues follow 
-    the general specifications for \ref NumericPromotionTraits. 
-    They are implemented in terms of the traits of the basic types by 
+    The numeric and promote traits for RGBValues follow
+    the general specifications for \ref NumericPromotionTraits.
+    They are implemented in terms of the traits of the basic types by
     partial template specialization:
-    
+
     \code
-    
+
     template <class T>
     struct NumericTraits<RGBValue<T> >
     {
@@ -286,17 +286,17 @@ operator!=(RGBValue<V1> const & l, RGBValue<V2> const & r)
 
         // etc.
     };
-    
+
     template <class T1, class T2>
-    struct PromoteTraits<RGBValue<T1>, RGBValue<T2> > 
-    { 
+    struct PromoteTraits<RGBValue<T1>, RGBValue<T2> >
+    {
         typedef RGBValue<typename PromoteTraits<T1, T2>::Promote> Promote;
     };
     \endcode
 
     <b>\#include</b> "<a href="rgbvalue_8hxx-source.html">vigra/rgbvalue.hxx</a>"<br>
     Namespace: vigra
-    
+
 */
 
 #if !defined(NO_PARTIAL_TEMPLATE_SPECIALIZATION)
@@ -311,24 +311,24 @@ struct NumericTraits<RGBValue<T> >
     typedef typename NumericTraits<T>::isIntegral isIntegral;
     typedef VigraFalseType isScalar;
     typedef VigraFalseType isOrdered;
-    
-    static RGBValue<T> zero() { 
-        return RGBValue<T>(NumericTraits<T>::zero()); 
+
+    static RGBValue<T> zero() {
+        return RGBValue<T>(NumericTraits<T>::zero());
     }
-    static RGBValue<T> one() { 
-        return RGBValue<T>(NumericTraits<T>::one()); 
+    static RGBValue<T> one() {
+        return RGBValue<T>(NumericTraits<T>::one());
     }
-    static RGBValue<T> nonZero() { 
-        return RGBValue<T>(NumericTraits<T>::nonZero()); 
+    static RGBValue<T> nonZero() {
+        return RGBValue<T>(NumericTraits<T>::nonZero());
     }
-    
-    static Promote toPromote(RGBValue<T> const & v) { 
-        return Promote(v); 
+
+    static Promote toPromote(RGBValue<T> const & v) {
+        return Promote(v);
     }
-    static RealPromote toRealPromote(RGBValue<T> const & v) { 
-        return RealPromote(v); 
+    static RealPromote toRealPromote(RGBValue<T> const & v) {
+        return RealPromote(v);
     }
-    static RGBValue<T> fromPromote(Promote const & v) { 
+    static RGBValue<T> fromPromote(Promote const & v) {
         return RGBValue<T>(NumericTraits<T>::fromPromote(v.red()),
                            NumericTraits<T>::fromPromote(v.green()),
                            NumericTraits<T>::fromPromote(v.blue()));
@@ -465,7 +465,7 @@ RGBVALUE_PROMTRAITS2(float, double)
     /// componentwise add-assignment
 template <class V1, class V2>
 inline
-RGBValue<V1> & 
+RGBValue<V1> &
 operator+=(RGBValue<V1> & l, RGBValue<V2> const & r)
 {
     l.red() += r.red();
@@ -477,7 +477,7 @@ operator+=(RGBValue<V1> & l, RGBValue<V2> const & r)
     /// componentwise subtract-assignment
 template <class V1, class V2>
 inline
-RGBValue<V1> & 
+RGBValue<V1> &
 operator-=(RGBValue<V1> & l, RGBValue<V2> const & r)
 {
     l.red() -= r.red();
@@ -489,7 +489,7 @@ operator-=(RGBValue<V1> & l, RGBValue<V2> const & r)
     /// componentwise multiply-assignment
 template <class V1, class V2>
 inline
-RGBValue<V1> & 
+RGBValue<V1> &
 operator*=(RGBValue<V1> & l, RGBValue<V2> const & r)
 {
     l.red() *= r.red();
@@ -501,7 +501,7 @@ operator*=(RGBValue<V1> & l, RGBValue<V2> const & r)
     /// componentwise scalar multiply-assignment
 template <class V>
 inline
-RGBValue<V> & 
+RGBValue<V> &
 operator*=(RGBValue<V> & l, double r)
 {
     l.red() *= r;
@@ -510,10 +510,10 @@ operator*=(RGBValue<V> & l, double r)
     return l;
 }
 
-    /// componentwise scalar divide-assignment 
+    /// componentwise scalar divide-assignment
 template <class V>
 inline
-RGBValue<V> & 
+RGBValue<V> &
 operator/=(RGBValue<V> & l, double r)
 {
     l.red() /= r;
@@ -527,7 +527,7 @@ using VIGRA_CSTD::abs;
     /// component-wise absolute value
 template <class T>
 inline
-RGBValue<T> abs(RGBValue<T> const & v) { 
+RGBValue<T> abs(RGBValue<T> const & v) {
     return RGBValue<T>(abs(v.red()), abs(v.green()),  abs(v.blue()));
 }
 
@@ -535,85 +535,85 @@ RGBValue<T> abs(RGBValue<T> const & v) {
 
     /// component-wise addition
 template <class V1, class V2>
-inline 
+inline
 typename PromoteTraits<RGBValue<V1>, RGBValue<V2> >::Promote
 operator+(RGBValue<V1> const & r1, RGBValue<V2> const & r2)
 {
     typename PromoteTraits<RGBValue<V1>, RGBValue<V2> >::Promote res(r1);
-    
+
     res += r2;
-    
+
     return res;
 }
 
     /// component-wise subtraction
 template <class V1, class V2>
-inline 
+inline
 typename PromoteTraits<RGBValue<V1>, RGBValue<V2> >::Promote
 operator-(RGBValue<V1> const & r1, RGBValue<V2> const & r2)
 {
     typename PromoteTraits<RGBValue<V1>, RGBValue<V2> >::Promote res(r1);
-    
+
     res -= r2;
-    
+
     return res;
 }
 
     /// component-wise multiplication
 template <class V1, class V2>
-inline 
+inline
 typename PromoteTraits<RGBValue<V1>, RGBValue<V2> >::Promote
 operator*(RGBValue<V1> const & r1, RGBValue<V2> const & r2)
 {
     typename PromoteTraits<RGBValue<V1>, RGBValue<V2> >::Promote res(r1);
-    
+
     res *= r2;
-    
+
     return res;
 }
 
     /// component-wise left scalar multiplication
 template <class V>
-inline 
+inline
 typename NumericTraits<RGBValue<V> >::RealPromote
 operator*(double v, RGBValue<V> const & r)
 {
     typename NumericTraits<RGBValue<V> >::RealPromote res(r);
-    
+
     res *= v;
-    
+
     return res;
 }
 
     /// component-wise right scalar multiplication
 template <class V>
-inline 
+inline
 typename NumericTraits<RGBValue<V> >::RealPromote
 operator*(RGBValue<V> const & r, double v)
 {
     typename NumericTraits<RGBValue<V> >::RealPromote res(r);
-    
+
     res *= v;
-    
+
     return res;
 }
 
     /// component-wise scalar division
 template <class V>
-inline 
+inline
 typename NumericTraits<RGBValue<V> >::RealPromote
 operator/(RGBValue<V> const & r, double v)
 {
     typename NumericTraits<RGBValue<V> >::RealPromote res(r);
-    
+
     res /= v;
-    
+
     return res;
 }
 
     /// cross product
 template <class V1, class V2>
-inline 
+inline
 typename PromoteTraits<RGBValue<V1>, RGBValue<V2> >::Promote
 cross(RGBValue<V1> const & r1, RGBValue<V2> const & r2)
 {
@@ -626,7 +626,7 @@ cross(RGBValue<V1> const & r1, RGBValue<V2> const & r2)
 
     /// dot product
 template <class V1, class V2>
-inline 
+inline
 typename PromoteTraits<V1, V2>::Promote
 dot(RGBValue<V1> const & r1, RGBValue<V2> const & r2)
 {
@@ -642,7 +642,7 @@ inline
 RGBValue<V>
 ceil(RGBValue<V> const & r)
 {
-    return RGBValue<V>(ceil(r.red()), 
+    return RGBValue<V>(ceil(r.red()),
                        ceil(r.green()),
                        ceil(r.blue()));
 }
@@ -656,7 +656,7 @@ inline
 RGBValue<V>
 floor(RGBValue<V> const & r)
 {
-    return RGBValue<V>(floor(r.red()), 
+    return RGBValue<V>(floor(r.red()),
                        floor(r.green()),
                        floor(r.blue()));
 }
@@ -680,11 +680,11 @@ floor(RGBValue<V> const & r)
     Namespace: vigra
     */
 template <class RGBVALUE>
-class RGBAccessor 
+class RGBAccessor
 : public VectorAccessor<RGBVALUE>
 {
   public:
-  
+
     typedef typename RGBVALUE::value_type component_type;
 
         /** Get value of the red component
@@ -694,7 +694,7 @@ class RGBAccessor
     {
         return (*rgb).red();
     }
-    
+
         /** Set value of the red component. The type <TT>V</TT> of the passed
             in <TT>value</TT> is automatically converted to <TT>component_type</TT>.
         */
@@ -703,7 +703,7 @@ class RGBAccessor
     {
         (*rgb).setRed(value);
     }
-    
+
         /** Get value of the red component at an offset
         */
     template <class RGBIterator, class DIFFERENCE>
@@ -711,7 +711,7 @@ class RGBAccessor
     {
         return rgb[diff].red();
     }
-    
+
         /** Set value of the red component at an offset. The type <TT>V</TT> of the passed
             in <TT>value</TT> is automatically converted to <TT>component_type</TT>.
         */
@@ -720,7 +720,7 @@ class RGBAccessor
     {
         rgb[diff].setRed(value);
     }
-       
+
         /** Get value of the green component
         */
     template <class RGBIterator>
@@ -728,7 +728,7 @@ class RGBAccessor
     {
         return (*rgb).green();
     }
-    
+
         /** Set value of the green component. The type <TT>V</TT> of the passed
             in <TT>value</TT> is automatically converted to <TT>component_type</TT>.
         */
@@ -737,7 +737,7 @@ class RGBAccessor
     {
         (*rgb).setGreen(value);
     }
-    
+
         /** Get value of the green component at an offset
         */
     template <class RGBIterator, class DIFFERENCE>
@@ -745,7 +745,7 @@ class RGBAccessor
     {
         return rgb[d].green();
     }
-    
+
         /** Set value of the green component at an offset. The type <TT>V</TT> of the passed
             in <TT>value</TT> is automatically converted to <TT>component_type</TT>.
         */
@@ -754,7 +754,7 @@ class RGBAccessor
     {
         rgb[d].setGreen(value);
     }
-    
+
         /** Get value of the blue component
         */
     template <class RGBIterator>
@@ -762,7 +762,7 @@ class RGBAccessor
     {
         return (*rgb).blue();
     }
-    
+
         /** Set value of the blue component. The type <TT>V</TT> of the passed
             in <TT>value</TT> is automatically converted to <TT>component_type</TT>.
         */
@@ -771,7 +771,7 @@ class RGBAccessor
     {
         (*rgb).setBlue(value);
     }
-    
+
         /** Get value of the blue component at an offset
         */
     template <class RGBIterator, class DIFFERENCE>
@@ -779,7 +779,7 @@ class RGBAccessor
     {
         return rgb[d].blue();
     }
-    
+
         /** Set value of the blue component at an offset. The type <TT>V</TT> of the passed
             in <TT>value</TT> is automatically converted to <TT>component_type</TT>.
         */
@@ -812,34 +812,34 @@ class RedAccessor
         /** Get value of the red component
         */
     template <class ITERATOR>
-    value_type const & operator()(ITERATOR const & i) const { 
-        return (*i).red(); 
+    value_type const & operator()(ITERATOR const & i) const {
+        return (*i).red();
     }
 
         /** Get value of the red component at an offset
         */
     template <class ITERATOR, class DIFFERENCE>
-    value_type const & operator()(ITERATOR const & i, DIFFERENCE d) const 
-    { 
-        return i[d].red(); 
+    value_type const & operator()(ITERATOR const & i, DIFFERENCE d) const
+    {
+        return i[d].red();
     }
-    
+
         /** Set value of the red component. The type <TT>V</TT> of the passed
             in <TT>value</TT> is automatically converted to <TT>value_type</TT>.
         */
     template <class V, class ITERATOR>
-    void set(V value, ITERATOR const & i) const { 
-        (*i).setRed(value); 
+    void set(V value, ITERATOR const & i) const {
+        (*i).setRed(value);
     }
-    
+
 
         /** Set value of the red component at an offset. The type <TT>V</TT> of the passed
             in <TT>value</TT> is automatically converted to <TT>value_type</TT>.
         */
     template <class V, class ITERATOR, class DIFFERENCE>
-    void set(V value, ITERATOR const & i, DIFFERENCE d) const 
-    { 
-        i[d].setRed(value); 
+    void set(V value, ITERATOR const & i, DIFFERENCE d) const
+    {
+        i[d].setRed(value);
     }
 };
 
@@ -863,34 +863,34 @@ class GreenAccessor
         /** Get value of the green component
         */
     template <class ITERATOR>
-    value_type const & operator()(ITERATOR const & i) const { 
-        return (*i).green(); 
+    value_type const & operator()(ITERATOR const & i) const {
+        return (*i).green();
     }
 
         /** Get value of the green component at an offset
         */
     template <class ITERATOR, class DIFFERENCE>
-    value_type const & operator()(ITERATOR const & i, DIFFERENCE d) const 
-    { 
-        return i[d].green(); 
+    value_type const & operator()(ITERATOR const & i, DIFFERENCE d) const
+    {
+        return i[d].green();
     }
-    
+
         /** Set value of the green component. The type <TT>V</TT> of the passed
             in <TT>value</TT> is automatically converted to <TT>value_type</TT>.
         */
     template <class V, class ITERATOR>
-    void set(V value, ITERATOR const & i) const { 
-        (*i).setGreen(value); 
+    void set(V value, ITERATOR const & i) const {
+        (*i).setGreen(value);
     }
-    
+
 
         /** Set value of the green component at an offset. The type <TT>V</TT> of the passed
             in <TT>value</TT> is automatically converted to <TT>value_type</TT>.
         */
     template <class V, class ITERATOR, class DIFFERENCE>
-    void set(V value, ITERATOR const & i, DIFFERENCE d) const 
-    { 
-        i[d].setGreen(value); 
+    void set(V value, ITERATOR const & i, DIFFERENCE d) const
+    {
+        i[d].setGreen(value);
     }
 };
 
@@ -914,34 +914,34 @@ class BlueAccessor
         /** Get value of the blue component
         */
     template <class ITERATOR>
-    value_type const & operator()(ITERATOR const & i) const { 
-        return (*i).blue(); 
+    value_type const & operator()(ITERATOR const & i) const {
+        return (*i).blue();
     }
 
         /** Get value of the blue component at an offset
         */
     template <class ITERATOR, class DIFFERENCE>
-    value_type const & operator()(ITERATOR const & i, DIFFERENCE d) const 
-    { 
-        return i[d].blue(); 
+    value_type const & operator()(ITERATOR const & i, DIFFERENCE d) const
+    {
+        return i[d].blue();
     }
-    
+
         /** Set value of the blue component. The type <TT>V</TT> of the passed
             in <TT>value</TT> is automatically converted to <TT>value_type</TT>.
         */
     template <class V, class ITERATOR>
-    void set(V value, ITERATOR const & i) const { 
-        (*i).setBlue(value); 
+    void set(V value, ITERATOR const & i) const {
+        (*i).setBlue(value);
     }
-    
+
 
         /** Set value of the blue component at an offset. The type <TT>V</TT> of the passed
             in <TT>value</TT> is automatically converted to <TT>value_type</TT>.
         */
     template <class V, class ITERATOR, class DIFFERENCE>
-    void set(V value, ITERATOR const & i, DIFFERENCE d) const 
-    { 
-        i[d].setBlue(value); 
+    void set(V value, ITERATOR const & i, DIFFERENCE d) const
+    {
+        i[d].setBlue(value);
     }
 };
 
@@ -965,15 +965,15 @@ class RGBToGrayAccessor
         /** Get value of the luminance
         */
     template <class ITERATOR>
-    value_type operator()(ITERATOR const & i) const { 
+    value_type operator()(ITERATOR const & i) const {
                 return (*i).luminance(); }
 
         /** Get value of the luminance at an offset
         */
     template <class ITERATOR, class DIFFERENCE>
-    value_type operator()(ITERATOR const & i, DIFFERENCE d) const 
-    { 
-        return i[d].luminance(); 
+    value_type operator()(ITERATOR const & i, DIFFERENCE d) const
+    {
+        return i[d].luminance();
     }
 };
 
