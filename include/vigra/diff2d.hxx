@@ -716,6 +716,79 @@ inline Point2D operator+(Size2D const & s, Point2D const & p)
     return Point2D(s.x + p.x, s.y + p.y);
 }
 
+inline Point2D operator*(Point2D l, double r)
+{
+    l *= r;
+    return l;
+}
+    
+inline Point2D operator*(double l, Point2D r)
+{
+    r *= l;
+    return r;
+}
+    
+inline Size2D operator*(Size2D l, double r)
+{
+    l *= r;
+    return l;
+}
+    
+inline Size2D operator*(double l, Size2D r)
+{
+    r *= l;
+    return r;
+}
+    
+inline Point2D operator/(Point2D l, double r)
+{
+    l /= r;
+    return l;
+}
+    
+inline Size2D operator/(Size2D l, double r)
+{
+    l /= r;
+    return l;
+}
+
+inline Point2D operator*(Point2D l, int r)
+{
+    l *= r;
+    return l;
+}
+    
+inline Point2D operator*(int l, Point2D r)
+{
+    r *= l;
+    return r;
+}
+    
+inline Size2D operator*(Size2D l, int r)
+{
+    l *= r;
+    return l;
+}
+    
+inline Size2D operator*(int l, Size2D r)
+{
+    r *= l;
+    return r;
+}
+    
+inline Point2D operator/(Point2D l, int r)
+{
+    l /= r;
+    return l;
+}
+    
+inline Size2D operator/(Size2D l, int r)
+{
+    l /= r;
+    return l;
+}
+
+
 /********************************************************/
 /*                                                      */
 /*                      Rect2D                          */
@@ -1059,7 +1132,7 @@ public:
          * rectangle and the point. If isEmpty returns true, the union
          * will be a rectangle containing only the given point.
          */
-    Rect2D operator|(Point2D const &p)
+    Rect2D operator|(Point2D const &p) const
     {
         Rect2D result(*this);
         result |= p;
