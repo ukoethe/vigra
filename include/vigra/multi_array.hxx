@@ -1110,26 +1110,24 @@ makeBasicImageView (MultiArrayView <2, T, UnstridedArrayTag> &array)
 }
 
 template <class T>
+BasicImageView <T>
+makeBasicImageView (MultiArray <3, T> &array)
+{
+    vigra_precondition (
+        array.shape (0) == 1, "makeBasicImageView(): array.shape(0) must be 1.");
+    return BasicImageView <T> (array.data (), 
+                               array.shape (1), array.shape (2));
+}
+
+template <class T>
 BasicImageView <RGBValue<T> >
-makeRGBImageView (MultiArrayView<3, T, UnstridedArrayTag> const &array)
+makeRGBImageView (MultiArray<3, T> &array)
 {
     vigra_precondition (
         array.shape (0) == 3, "makeRGBImageView(): array.shape(0) must be 3.");
     return BasicImageView <RGBValue<T> > (
         reinterpret_cast <RGBValue <T> *> (array.data ()), 
         array.shape (1), array.shape (2));
-}
-
-template <class T>
-BasicImageView <RGBValue<T> >
-makeRGBImageView (MultiArrayView <2, T, StridedArrayTag> const &array)
-{
-    vigra_precondition (
-        array.stride (0) == 3,
-        "makeRGBImageView(): array's inner stride must be 3.");
-    return BasicImageView <RGBValue<T> >(
-        reinterpret_cast <RGBValue<T> *> (array.data ()), 
-        array.shape (0), array.shape (1));
 }
 
 } // namespace vigra
