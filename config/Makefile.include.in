@@ -43,38 +43,38 @@ INSTALL = @INSTALL@
 
 DEVELOPMENT_VERSION = yes
 
-%.o: %.c
-	$(CC) $(CFLAGS) $(CPPFLAGS) -c $*.c
+%.o: $(curdir)/%.c
+	$(CC) $(CFLAGS) $(CPPFLAGS) -c $(curdir)/$*.c
 
-%.o: %.cxx
-	$(CXX) $(CXXFLAGS) $(CPPFLAGS) -c $*.cxx
+%.o: $(curdir)/%.cxx
+	$(CXX) $(CXXFLAGS) $(CPPFLAGS) -c $(curdir)/$*.cxx
 
-%.lo: %.c
-	$(LIBCC) $(CFLAGS) $(LIBCPPFLAGS) -c $*.c
+%.lo: $(curdir)/%.c
+	$(LIBCC) $(CFLAGS) $(LIBCPPFLAGS) -c $(curdir)/$*.c
 
-%.lo: %.cxx
-	$(LIBCXX) $(CXXFLAGS) $(LIBCPPFLAGS) -c $*.cxx
+%.lo: $(curdir)/%.cxx
+	$(LIBCXX) $(CXXFLAGS) $(LIBCPPFLAGS) -c $(curdir)/$*.cxx
 
-%.d: %.c
+%.d: $(curdir)/%.c
 	@echo updating header dependencies for $*.c
 	@rm -f $*.d
-	@(echo "$*.d \\" ; $(CC) -M $(CFLAGS) $(CPPFLAGS) -c $*.c ) > $*.d \
+	@(echo "$*.d \\" ; $(CC) -M $(CFLAGS) $(CPPFLAGS) -c $(curdir)/$*.c ) > $*.d \
         || { rm -f $*.d; exit 1; }
 
-%.d: %.cxx
+%.d: $(curdir)/%.cxx
 	@echo updating header dependencies for $*.cxx
 	@rm -f $*.d
-	@(echo "$*.d \\" ; $(CXX) -M $(CXXFLAGS) $(CPPFLAGS) -c $*.cxx ) > $*.d \
+	@(echo "$*.d \\" ; $(CXX) -M $(CXXFLAGS) $(CPPFLAGS) -c $*.cxx ) > $(curdir)/$*.d \
         || { rm -f $*.d; exit 1; }
 
-%.ld: %.c
+%.ld: $(curdir)/%.c
 	@echo updating header dependencies for $*.c
 	@rm -f $*.ld
-	@(echo "$*.ld \\" ; $(CC) -M $(CFLAGS) $(LIBCPPFLAGS) -c $*.c ) > $*.ld \
+	@(echo "$*.ld \\" ; $(CC) -M $(CFLAGS) $(LIBCPPFLAGS) -c $(curdir)/$*.c ) > $*.ld \
         || { rm -f $*.ld; exit 1; }
 
-%.ld: %.cxx
+%.ld: $(curdir)/%.cxx
 	@echo updating header dependencies for $*.cxx
 	@rm -f $*.ld
-	@(echo "$*.ld \\" ; $(CXX) -M $(CXXFLAGS) $(LIBCPPFLAGS) -c $*.cxx ) > $*.ld \
+	@(echo "$*.ld \\" ; $(CXX) -M $(CXXFLAGS) $(LIBCPPFLAGS) -c $(curdir)/$*.cxx ) > $*.ld \
         || { rm -f $*.ld; exit 1; }

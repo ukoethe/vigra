@@ -1,23 +1,11 @@
-AC_INIT(include/vigra/config.hxx)
-
-AC_PREFIX_DEFAULT([`pwd`])
-vigra_srcdir=`pwd`
-vigra_builddir=`pwd`
-
-# expand prefix and exec_prefix
-if test "x$prefix" = "xNONE" ; then
-    prefix=$ac_default_prefix
-elif test "x$prefix" = "x." ; then
-    prefix=`pwd`
-fi
-
-AC_CONFIG_AUX_DIR(config)
+AC_INIT(vigra, 1.3.1)
 
 dnl-------------------------------------------------------------------
 dnl                   vigra/interactive version
 dnl-------------------------------------------------------------------
+
 MAJOR_VERSION=1
-MINOR_VERSION=2
+MINOR_VERSION=3
 MICRO_VERSION=1
 
 echo "configuring VIGRA $MAJOR_VERSION.$MINOR_VERSION.$MICRO_VERSION"
@@ -27,12 +15,38 @@ AC_SUBST(MINOR_VERSION)dnl
 AC_SUBST(MICRO_VERSION)dnl
 
 dnl-------------------------------------------------------------------
+dnl                   determine directories
+dnl-------------------------------------------------------------------
+
+AC_PREFIX_DEFAULT([`pwd`])
+
+vigra_builddir=`pwd`
+vigra_srcdir=`expr $0 : "\(.*\)/"`
+
+if test "x$vigra_srcdir" = "x" ; then 
+    vigra_srcdir=`pwd` ; 
+else
+    cd $vigra_srcdir
+    vigra_srcdir=`pwd`
+    cd $vigra_builddir ;
+fi
+
+# expand prefix and exec_prefix
+if test "x$prefix" = "xNONE" ; then
+    prefix=$ac_default_prefix
+elif test "x$prefix" = "x." ; then
+    prefix=`pwd`
+fi
+
+AC_CONFIG_AUX_DIR($vigra_srcdir/config)
+
+dnl-------------------------------------------------------------------
 dnl              compiler and platform configuration
 dnl-------------------------------------------------------------------
 AC_CANONICAL_SYSTEM
 
-AC_CYGWIN
-AC_MINGW32
+dnl AC_CYGWIN seems to be part of AC_CANONICAL_SYSTEM
+dnl AC_MINGW32 seems to be part of AC_CANONICAL_SYSTEM
 
 CFLAGS=-O
 CXXFLAGS=-O
@@ -131,7 +145,14 @@ AC_SUBST(POSTINSTALLCPPFLAGS)
 
 AC_SUBST(LIBCPPFLAGS)
 
-AC_OUTPUT(config/Makefile.include config/vigra-config doc/vigra/index.html)
+AC_OUTPUT(
+config/Makefile.include 
+config/vigra-config 
+doc/vigra/index.html 
+src/Makefile 
+src/impex/Makefile 
+src/examples/Makefile 
+Makefile)
 chmod +x config/vigra-config # for src/examples
 
 [echopath()
@@ -148,6 +169,7 @@ echo "JPEG support enabled (--with-jpeg): $with_jpeg"
 echo "PNG  support enabled (--with-png):  $with_png"
 echo "FFTW support enabled (--with-fftw): $with_fftw"
 echo ""
+echopath "The vigra sources are taken from $vigra_srcdir."
 echopath "The vigraimpex library    will be installed in $libdir."
 echopath "The 'vigra-config' script will be installed in $bindir."
 echopath "The include files         will be installed in $includedir."
