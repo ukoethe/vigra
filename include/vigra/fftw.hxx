@@ -515,25 +515,25 @@ class FFTWRealAccessor
 
         /// Read real part at iterator position.
     template <class ITERATOR>
-    value_type operator()(ITERATOR & i) const {
+    value_type operator()(ITERATOR const & i) const {
         return c_re(*i);
     }
 
         /// Read real part at offset from iterator position.
     template <class ITERATOR, class DIFFERENCE>
-    value_type operator()(ITERATOR & i, DIFFERENCE d) const {
+    value_type operator()(ITERATOR const & i, DIFFERENCE d) const {
         return c_re(i[d]);
     }
 
         /// Write real part at iterator position.
     template <class ITERATOR>
-    void set(value_type const & v, ITERATOR & i) const {
+    void set(value_type const & v, ITERATOR const & i) const {
         c_re(*i)= v;
     }
 
         /// Write real part at offset from iterator position.
     template <class ITERATOR, class DIFFERENCE>
-    void set(value_type const & v, ITERATOR & i, DIFFERENCE d) const {
+    void set(value_type const & v, ITERATOR const & i, DIFFERENCE d) const {
         c_re(i[d])= v;
     }
 };
@@ -551,25 +551,25 @@ class FFTWImaginaryAccessor
 
         /// Read imaginary part at iterator position.
     template <class ITERATOR>
-    value_type operator()(ITERATOR & i) const {
+    value_type operator()(ITERATOR const & i) const {
         return c_im(*i);
     }
 
         /// Read imaginary part at offset from iterator position.
     template <class ITERATOR, class DIFFERENCE>
-    value_type operator()(ITERATOR & i, DIFFERENCE d) const {
+    value_type operator()(ITERATOR const & i, DIFFERENCE d) const {
         return c_im(i[d]);
     }
 
         /// Write imaginary part at iterator position.
     template <class ITERATOR>
-    void set(value_type const & v, ITERATOR & i) const {
+    void set(value_type const & v, ITERATOR const & i) const {
         c_im(*i)= v;
     }
 
         /// Write imaginary part at offset from iterator position.
     template <class ITERATOR, class DIFFERENCE>
-    void set(value_type const & v, ITERATOR & i, DIFFERENCE d) const {
+    void set(value_type const & v, ITERATOR const & i, DIFFERENCE d) const {
         c_im(i[d])= v;
     }
 };
@@ -590,7 +590,7 @@ class FFTWWriteRealAccessor: public FFTWRealAccessor
             to 0.
         */
     template <class ITERATOR>
-    void set(value_type const & v, ITERATOR & i) const {
+    void set(value_type const & v, ITERATOR const & i) const {
         c_re(*i)= v;
         c_im(*i)= 0;
     }
@@ -599,7 +599,7 @@ class FFTWWriteRealAccessor: public FFTWRealAccessor
             to 0.
         */
     template <class ITERATOR, class DIFFERENCE>
-    void set(value_type const & v, ITERATOR & i, DIFFERENCE d) const {
+    void set(value_type const & v, ITERATOR const & i, DIFFERENCE d) const {
         c_re(i[d])= v;
         c_im(i[d])= 0;
     }
@@ -618,13 +618,13 @@ class FFTWMagnitudeAccessor
 
         /// Read magnitude at iterator position.
     template <class ITERATOR>
-    value_type operator()(ITERATOR & i) const {
+    value_type operator()(ITERATOR const & i) const {
         return (*i).magnitude();
     }
 
         /// Read magnitude at offset from iterator position.
     template <class ITERATOR, class DIFFERENCE>
-    value_type operator()(ITERATOR & i, DIFFERENCE d) const {
+    value_type operator()(ITERATOR const & i, DIFFERENCE d) const {
         return (i[d]).magnitude();
     }
 };
@@ -642,13 +642,13 @@ class FFTWPhaseAccessor
 
         /// Read phase at iterator position.
     template <class ITERATOR>
-    value_type operator()(ITERATOR & i) const {
+    value_type operator()(ITERATOR const & i) const {
         return (*i).phase();
     }
 
         /// Read phase at offset from iterator position.
     template <class ITERATOR, class DIFFERENCE>
-    value_type operator()(ITERATOR & i, DIFFERENCE d) const {
+    value_type operator()(ITERATOR const & i, DIFFERENCE d) const {
         return (i[d]).phase();
     }
 };
