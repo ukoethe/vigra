@@ -97,8 +97,8 @@
     
     \section Documentation Documentation
     
-    The documentation can be found in \p @datadir@/doc/vigra/, the start file is 
-    \p @datadir@/doc/vigra/index.html (this file).
+    The documentation can be found in \p @docdir@, the start file is 
+    \p @docdir@/index.html (this file).
     
     
     
