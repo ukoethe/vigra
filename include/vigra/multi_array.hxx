@@ -220,7 +220,7 @@ public:
 
         /** size type
          */
-    typedef std::size_t size_type;
+    typedef TinyVector <int, actual_dimension> size_type;
 
         /** difference type (used for offsetting)
          */
@@ -505,11 +505,18 @@ public:
             (shape, m_stride * s, m_ptr);
     }
 
-        /** the array's size (number of pixels)
+        /** number of the elements in the array.
          */
-    size_type size () const
+    std::size_t elementCount () const
     {
         return m_shape [actual_dimension-1] * m_stride [actual_dimension-1];
+    }
+
+        /** return the array's size (same as the shape).
+         */
+    const size_type & size () const
+    {
+        return m_shape;
     }
 
         /** return the array's shape.
@@ -927,16 +934,16 @@ protected:
         /** allocate memory for s pixels, write its address into the given
             pointer and initialize the pixels with init.
         */
-    void allocate (pointer &ptr, size_type s, const_reference init);
+    void allocate (pointer &ptr, std::size_t s, const_reference init);
 
         /** allocate memory for s pixels, write its address into the given
             pointer and initialize the linearized pixels to the values of init.
         */
-    void allocate (pointer &ptr, size_type s, const_pointer init);
+    void allocate (pointer &ptr, std::size_t s, const_pointer init);
 
         /** deallocate the memory (of length s) starting at the given address.
          */
-    void deallocate (pointer &ptr, size_type s);
+    void deallocate (pointer &ptr, std::size_t s);
 
 public:
 
@@ -998,7 +1005,7 @@ public:
          */
     iterator end ()
     {
-        return data() + size();
+        return data() + elementCount();
     }
 
         /** sequential const iterator pointing to the first array element.
@@ -1012,7 +1019,7 @@ public:
          */
     const_iterator end () const
     {
-        return data() + size();
+        return data() + elementCount();
     }
 };
 
@@ -1030,7 +1037,7 @@ MultiArray <N, T, A>::MultiArray (const difference_type &shape)
         m_shape [0] = 1;
         m_stride [0] = 0;
     }
-    allocate (m_ptr, size (), NumericTraits<T>::zero ());
+    allocate (m_ptr, elementCount (), NumericTraits<T>::zero ());
 }
 
 template <unsigned int N, class T, class A>
@@ -1043,7 +1050,7 @@ MultiArray <N, T, A>::MultiArray (const difference_type &shape,
         m_shape [0] = 1;
         m_stride [0] = 0;
     }
-    allocate (m_ptr, size (), init);
+    allocate (m_ptr, elementCount (), init);
 }
 
 template <unsigned int N, class T, class A>
@@ -1056,7 +1063,7 @@ MultiArray <N, T, A>::MultiArray (const difference_type &shape,
         m_shape [0] = 1;
         m_stride [0] = 0;
     }
-    allocate (m_ptr, size (), init);
+    allocate (m_ptr, elementCount (), init);
 }
 
 template <unsigned int N, class T, class A>
@@ -1064,13 +1071,13 @@ MultiArray <N, T, A>::MultiArray (const MultiArray &rhs)
     : MultiArrayView <N, T> (rhs.m_shape, rhs.m_stride, 0),
     m_alloc (rhs.m_alloc)
 {
-    allocate (m_ptr, size (), rhs.data ());
+    allocate (m_ptr, elementCount (), rhs.data ());
 }
 
 template <unsigned int N, class T, class A>
 MultiArray <N, T, A>::~MultiArray ()
 {
-    deallocate (m_ptr, size ());
+    deallocate (m_ptr, elementCount ());
 }
 
 template <unsigned int N, class T, class A>
@@ -1080,8 +1087,8 @@ MultiArray <N, T, A>::operator= (const MultiArray &rhs)
     if (this == &rhs)
         return *this;
     pointer new_ptr;
-    allocate (new_ptr, rhs.size (), rhs.data ());
-    deallocate (m_ptr, size ());
+    allocate (new_ptr, rhs.elementCount (), rhs.data ());
+    deallocate (m_ptr, elementCount ());
     m_alloc = rhs.m_alloc;
     m_shape = rhs.m_shape;
     m_stride = rhs.m_stride;
@@ -1097,27 +1104,27 @@ void MultiArray <N, T, A>::reshape (const difference_type & new_shape,
         return;
 
     difference_type new_stride = detail::defaultStride <actual_dimension> (new_shape);
-    size_type new_size = new_shape [actual_dimension-1] * new_stride [actual_dimension-1];
+    std::size_t new_size = new_shape [actual_dimension-1] * new_stride [actual_dimension-1];
     T *new_ptr;
     allocate (new_ptr, new_size, init);
-    deallocate (m_ptr, size ());
+    deallocate (m_ptr, elementCount ());
     m_ptr = new_ptr;
     m_shape = new_shape;
     m_stride = new_stride;
 }
 
 template <unsigned int N, class T, class A>
-void MultiArray <N, T, A>::allocate (pointer & ptr, size_type s,
+void MultiArray <N, T, A>::allocate (pointer & ptr, std::size_t s,
                                      const_reference init)
 {
     ptr = m_alloc.allocate (s);
-    size_type i;
+    std::size_t i;
     try {
         for (i = 0; i < s; ++i)
             m_alloc.construct (ptr + i, init);
     }
     catch (...) {
-        for (size_type j = 0; j < i; ++j)
+        for (std::size_t j = 0; j < i; ++j)
             m_alloc.destroy (ptr + j);
         m_alloc.deallocate (ptr, s);
         throw;
@@ -1125,17 +1132,17 @@ void MultiArray <N, T, A>::allocate (pointer & ptr, size_type s,
 }
 
 template <unsigned int N, class T, class A>
-void MultiArray <N, T, A>::allocate (pointer & ptr, size_type s,
+void MultiArray <N, T, A>::allocate (pointer & ptr, std::size_t s,
                                      const_pointer init)
 {
     ptr = m_alloc.allocate (s);
-    size_type i;
+    std::size_t i;
     try {
         for (i = 0; i < s; ++i, ++init)
             m_alloc.construct (ptr + i, *init);
     }
     catch (...) {
-        for (size_type j = 0; j < i; ++j)
+        for (std::size_t j = 0; j < i; ++j)
             m_alloc.destroy (ptr + j);
         m_alloc.deallocate (ptr, s);
         throw;
@@ -1143,11 +1150,11 @@ void MultiArray <N, T, A>::allocate (pointer & ptr, size_type s,
 }
 
 template <unsigned int N, class T, class A>
-void MultiArray <N, T, A>::deallocate (pointer & ptr, size_type s)
+void MultiArray <N, T, A>::deallocate (pointer & ptr, std::size_t s)
 {
     if (ptr == 0)
         return;
-    for (size_type i = 0; i < s; ++i)
+    for (std::size_t i = 0; i < s; ++i)
         m_alloc.destroy (ptr + i);
     m_alloc.deallocate (ptr, s);
     ptr = 0;
