@@ -45,6 +45,7 @@ docclean::
 
 clean::
 	@cd src ; $(MAKE) clean ; cd ..
+	rm -f a.exe a.out
 
 distclean: clean
 	rm -f config/vigra-config config/Makefile.include
