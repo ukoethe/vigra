@@ -26,6 +26,7 @@
 #include <functional>
 #include "vigra/stdimage.hxx"
 #include "vigra/copyimage.hxx"
+#include "vigra/transformimage.hxx"
 #include "vigra/combineimages.hxx"
 #include "vigra/numerictraits.hxx"
 #include "vigra/imagecontainer.hxx"
