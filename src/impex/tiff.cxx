@@ -156,6 +156,7 @@ namespace vigra {
     TIFFDecoderImpl::TIFFDecoderImpl( const std::string & filename )
     {
         tiff = TIFFOpen( filename.c_str(), "r" );
+
         if ( !tiff ) {
             std::string msg("Unable to open file '");
             msg += filename;
