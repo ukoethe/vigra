@@ -206,6 +206,88 @@ struct IteratorTraits<ConstBasicImageIterator<RGBValue<float>, RGBValue<float> *
     */
 typedef BasicImage<RGBValue<float> > FRGBImage;
 
+#define vigra_tinyvectoriteratortraits(T, SIZE) \
+template<> \
+struct IteratorTraits<BasicImageIterator<TinyVector<T, SIZE>, TinyVector<T, SIZE> **> > \
+{ \
+    typedef VectorAccessor<TinyVector<T, SIZE> > DefaultAccessor; \
+};   \
+ \
+template<> \
+struct IteratorTraits<ConstBasicImageIterator<TinyVector<T, SIZE>, TinyVector<T, SIZE> ** > > \
+{ \
+    typedef VectorAccessor<TinyVector<T, SIZE> > DefaultAccessor; \
+};   \
+
+vigra_tinyvectoriteratortraits(float, 2);
+vigra_tinyvectoriteratortraits(float, 3);
+vigra_tinyvectoriteratortraits(float, 4);
+vigra_tinyvectoriteratortraits(double, 2);
+vigra_tinyvectoriteratortraits(double, 3);
+vigra_tinyvectoriteratortraits(double, 4);
+
+#undef vigra_tinyvectoriteratortraits
+
+    /** Floating-point TinyVector image.
+        The pixel type is \ref vigra::TinyVector "TinyVector<float, 2>".
+        It uses \ref vigra::BasicImageIterator and \ref vigra::VectorAccessor and 
+        their const counterparts to access the data.
+        
+        <b>\#include</b> "<a href="stdimage_8hxx-source.html">vigra/stdimage.hxx</a>"<br>
+        Namespace: vigra
+    */
+typedef BasicImage<TinyVector<float, 2> > FVector2Image; 
+
+    /** Floating-point TinyVector image.
+        The pixel type is \ref vigra::TinyVector "TinyVector<float, 3>".
+        It uses \ref vigra::BasicImageIterator and \ref vigra::VectorAccessor and 
+        their const counterparts to access the data.
+        
+        <b>\#include</b> "<a href="stdimage_8hxx-source.html">vigra/stdimage.hxx</a>"<br>
+        Namespace: vigra
+    */
+typedef BasicImage<TinyVector<float, 3> > FVector3Image; 
+
+    /** Floating-point TinyVector image.
+        The pixel type is \ref vigra::TinyVector "TinyVector<float, 4>".
+        It uses \ref vigra::BasicImageIterator and \ref vigra::VectorAccessor and 
+        their const counterparts to access the data.
+        
+        <b>\#include</b> "<a href="stdimage_8hxx-source.html">vigra/stdimage.hxx</a>"<br>
+        Namespace: vigra
+    */
+typedef BasicImage<TinyVector<float, 4> > FVector4Image; 
+
+    /** Floating-point TinyVector image.
+        The pixel type is \ref vigra::TinyVector "TinyVector<double, 2>".
+        It uses \ref vigra::BasicImageIterator and \ref vigra::VectorAccessor and 
+        their const counterparts to access the data.
+        
+        <b>\#include</b> "<a href="stdimage_8hxx-source.html">vigra/stdimage.hxx</a>"<br>
+        Namespace: vigra
+    */
+typedef BasicImage<TinyVector<double, 2> > DVector2Image; 
+
+    /** Floating-point TinyVector image.
+        The pixel type is \ref vigra::TinyVector "TinyVector<double, 3>".
+        It uses \ref vigra::BasicImageIterator and \ref vigra::VectorAccessor and 
+        their const counterparts to access the data.
+        
+        <b>\#include</b> "<a href="stdimage_8hxx-source.html">vigra/stdimage.hxx</a>"<br>
+        Namespace: vigra
+    */
+typedef BasicImage<TinyVector<double, 3> > DVector3Image; 
+
+    /** Floating-point TinyVector image.
+        The pixel type is \ref vigra::TinyVector "TinyVector<double, 4>".
+        It uses \ref vigra::BasicImageIterator and \ref vigra::VectorAccessor and 
+        their const counterparts to access the data.
+        
+        <b>\#include</b> "<a href="stdimage_8hxx-source.html">vigra/stdimage.hxx</a>"<br>
+        Namespace: vigra
+    */
+typedef BasicImage<TinyVector<double, 4> > DVector4Image; 
+
 #ifndef NO_PARTIAL_TEMPLATE_SPECIALIZATION
 
 template <class T>
