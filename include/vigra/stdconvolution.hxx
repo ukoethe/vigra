@@ -1372,34 +1372,3 @@ namespace vigra {
 } // namespace vigra
 
 #endif // VIGRA_STDCONVOLUTION_HXX
-
-/*
-
-$Log$
-Revision 1.16  2003/03/21 13:29:15  rezniche
-some comments is added
-
-Revision 1.15  2003/03/20 14:02:46  rezniche
-All other bordertreatmentmodes is now implemented. The calculation of pixelvalue
-for different modes was in extra functions moved.
-
-Revision 1.10  2003/02/27 18:36:47  rezniche
-Some comments added and the structure changed.
-
-Revision 1.9  2003/02/26 14:34:49  rezniche
-By Wrap was the spring incorrect
-
-Revision 1.8  2003/02/26 14:30:00  rezniche
-Some bugs fixed.
-
-Revision 1.7  2003/02/25 14:09:35  rezniche
-It's run!!!
-
-Revision 1.6  2003/02/24 19:45:39  rezniche
-Some bugs was corrected.
-
-Revision 1.5  2003/02/19 18:32:28  rezniche
-first commit.
-
-
-*/
