@@ -462,8 +462,6 @@ namespace detail {
         }
     };
     
-} // namespace detail
-
     template < class SrcIterator, class SrcAccessor,
                class DestIterator, class DestAccessor >
     void mapVectorImageToByteImage( SrcIterator sul, SrcIterator slr, SrcAccessor sget,
@@ -506,6 +504,110 @@ namespace detail {
                                linearIntensityTransform( scale, offset ) );
     }
     
+    template < class SrcIterator, class SrcAccessor, class T >
+    void exportImageWithConversion(SrcIterator sul, SrcIterator slr, SrcAccessor sget,
+                                   Encoder * enc, const char * type, T zero, VigraTrueType /* is_scalar */ )
+    {
+        if ( isPixelTypeSupported( enc->getFileType(), type ) ) {
+            enc->setPixelType( type );
+            write_band( enc, sul, slr, sget, zero );
+        } else {
+            // convert to unsigned char in the usual way
+            enc->setPixelType( "UINT8" );
+            vigra::BImage image(slr-sul);
+            mapScalarImageToByteImage(sul, slr, sget, image.upperLeft(), image.accessor());
+            write_band( enc, image.upperLeft(),
+                        image.lowerRight(), image.accessor(), (unsigned char)0 );
+        }
+    }
+        
+    template < class SrcIterator, class SrcAccessor, class T >
+    void exportImageWithConversion(SrcIterator sul, SrcIterator slr, SrcAccessor sget,
+                                   Encoder * enc, const char * type, T zero, VigraFalseType /* is_scalar */ )
+    {
+        if ( isPixelTypeSupported( enc->getFileType(), type ) ) {
+            enc->setPixelType( type );
+            write_bands( enc, sul, slr, sget, zero );
+        } else {
+            // convert to unsigned char in the usual way
+            enc->setPixelType( "UINT8" );
+            vigra::BRGBImage image(slr-sul);
+            mapVectorImageToByteImage(sul, slr, sget, image.upperLeft(), image.accessor());
+            write_bands( enc, image.upperLeft(),
+                         image.lowerRight(), image.accessor(), (unsigned char)0 );
+        }
+    }
+        
+    template <class IsIntegral, int SIZE>
+    struct ExportImageImpl;
+    
+    template <>
+    struct ExportImageImpl<VigraTrueType, 1>
+    {
+        template < class SrcIterator, class SrcAccessor >
+        static void exec(SrcIterator sul, SrcIterator slr, SrcAccessor sget,
+                         Encoder * enc, VigraTrueType /* is_scalar */)
+        {
+            enc->setPixelType( "UINT8" );
+            write_band( enc, sul, slr, sget, (unsigned char)0 );
+        }
+        
+        template < class SrcIterator, class SrcAccessor >
+        static void exec(SrcIterator sul, SrcIterator slr, SrcAccessor sget,
+                         Encoder * enc, VigraFalseType /* is_scalar */)
+        {
+            enc->setPixelType( "UINT8" );
+            write_bands( enc, sul, slr, sget, (unsigned char)0 );
+        }
+    };
+    
+    template <>
+    struct ExportImageImpl<VigraTrueType, 2>
+    {
+        template < class SrcIterator, class SrcAccessor, class IsScalar >
+        static void exec(SrcIterator sul, SrcIterator slr, SrcAccessor sget,
+                         Encoder * enc, IsScalar isScalar)
+        {
+            exportImageWithConversion( sul, slr, sget, enc, "INT16", short(), isScalar);
+        }
+    };
+    
+    template <>
+    struct ExportImageImpl<VigraTrueType, 4>
+    {
+        template < class SrcIterator, class SrcAccessor, class IsScalar >
+        static void exec(SrcIterator sul, SrcIterator slr, SrcAccessor sget,
+                         Encoder * enc, IsScalar isScalar)
+        {
+            exportImageWithConversion( sul, slr, sget, enc, "INT32", int(), isScalar );
+        }
+    };
+    
+    template <>
+    struct ExportImageImpl<VigraFalseType, 4>
+    {
+        template < class SrcIterator, class SrcAccessor, class IsScalar >
+        static void exec(SrcIterator sul, SrcIterator slr, SrcAccessor sget,
+                         Encoder * enc, IsScalar isScalar)
+        {
+            exportImageWithConversion( sul, slr, sget, enc, "FLOAT", float(), isScalar );
+        }
+    };
+    
+    template <>
+    struct ExportImageImpl<VigraFalseType, 8>
+    {
+        template < class SrcIterator, class SrcAccessor, class IsScalar >
+        static void exec(SrcIterator sul, SrcIterator slr, SrcAccessor sget,
+                         Encoder * enc, IsScalar isScalar)
+        {
+            exportImageWithConversion( sul, slr, sget, enc, "DOUBLE", double(), isScalar );
+        }
+    };
+    
+} // namespace detail
+    
+
     /*!
       \brief used for writing images of floating point vector type, such as floating point rgb.
 
@@ -538,38 +640,7 @@ namespace detail {
 
         std::auto_ptr<Encoder> enc = encoder(info);
 
-        switch(sizeof(SrcValueType)) {
-        case 4:
-            // pixel type is float
-            if ( isPixelTypeSupported( enc->getFileType(), "FLOAT" ) ) {
-                enc->setPixelType( "FLOAT" );
-                write_bands( enc.get(), sul, slr, sget, float() );
-            } else {
-                // convert to unsigned char in the usual way
-                enc->setPixelType( "UINT8" );
-                vigra::BRGBImage image(slr-sul);
-                mapVectorImageToByteImage(sul, slr, sget, image.upperLeft(), image.accessor());
-                write_bands( enc.get(), image.upperLeft(),
-                             image.lowerRight(), image.accessor(), (unsigned char)0 );
-            }
-            break;
-        case 8:
-            // pixel type is double
-            if ( isPixelTypeSupported( enc->getFileType(), "DOUBLE" ) ) {
-                enc->setPixelType( "DOUBLE" );
-                write_bands( enc.get(), sul, slr, sget, double() );
-            } else {
-                // convert to unsigned char in the usual way
-                enc->setPixelType( "UINT8" );
-                vigra::BRGBImage image(slr-sul);
-                mapVectorImageToByteImage(sul, slr, sget, image.upperLeft(), image.accessor());
-                write_bands( enc.get(), image.upperLeft(),
-                             image.lowerRight(), image.accessor(), (unsigned char)0 );
-            }
-            break;
-        default:
-            vigra_precondition( false, "unsupported floating point size" );
-        }
+        detail::ExportImageImpl<VigraFalseType, sizeof(SrcValueType)>::exec( sul, slr, sget, enc.get(), VigraFalseType() );
 
         // close the encoder
         enc->close();
@@ -607,40 +678,7 @@ namespace detail {
 
         std::auto_ptr<Encoder> enc = encoder(info);
 
-        switch(sizeof(SrcValueType)) {
-        case 1:
-            enc->setPixelType( "UINT8" );
-            write_bands( enc.get(), sul, slr, sget, (unsigned char)0 );
-            break;
-        case 2:
-            if ( isPixelTypeSupported( enc->getFileType(), "INT16" ) ) {
-                enc->setPixelType( "INT16" );
-                write_bands( enc.get(), sul, slr, sget, short() );
-            } else {
-                // convert to unsigned char in the usual way
-                enc->setPixelType( "UINT8" );
-                vigra::BRGBImage image(slr-sul);
-                mapVectorImageToByteImage(sul, slr, sget, image.upperLeft(), image.accessor());
-                write_bands( enc.get(), image.upperLeft(),
-                             image.lowerRight(), image.accessor(), (unsigned char)0 );
-            }
-            break;
-        case 4:
-            if ( isPixelTypeSupported( enc->getFileType(), "INT32" ) ) {
-                enc->setPixelType( "INT32" );
-                write_bands( enc.get(), sul, slr, sget, int() );
-            } else {
-                // convert to unsigned char in the usual way
-                enc->setPixelType( "UINT8" );
-                vigra::BRGBImage image(slr-sul);
-                mapVectorImageToByteImage(sul, slr, sget, image.upperLeft(), image.accessor());
-                write_bands( enc.get(), image.upperLeft(),
-                             image.lowerRight(), image.accessor(), (unsigned char)0 );
-            }
-            break;
-        default:
-            vigra_precondition( false, "unsupported integer size" );
-        }
+        detail::ExportImageImpl<VigraTrueType, sizeof(SrcValueType)>::exec( sul, slr, sget, enc.get(), VigraFalseType() );
 
         // close the encoder
         enc->close();
@@ -677,38 +715,7 @@ namespace detail {
 
         std::auto_ptr<Encoder> enc = encoder(info);
 
-        switch(sizeof(SrcValueType)) {
-        case 4:
-            // pixel type is float
-            if ( isPixelTypeSupported( enc->getFileType(), "FLOAT" ) ) {
-                enc->setPixelType( "FLOAT" );
-                write_band( enc.get(), sul, slr, sget, float() );
-            } else {
-                // convert to unsigned char in the usual way
-                enc->setPixelType( "UINT8" );
-                vigra::BImage image(slr-sul);
-                mapScalarImageToByteImage(sul, slr, sget, image.upperLeft(), image.accessor());
-                write_band( enc.get(), image.upperLeft(),
-                            image.lowerRight(), image.accessor(), (unsigned char)0 );
-            }
-            break;
-        case 8:
-            // pixel type is double
-            if ( isPixelTypeSupported( enc->getFileType(), "DOUBLE" ) ) {
-                enc->setPixelType( "DOUBLE" );
-                write_band( enc.get(), sul, slr, sget, double() );
-            } else {
-                // convert to unsigned char in the usual way
-                enc->setPixelType( "UINT8" );
-                vigra::BImage image(slr-sul);
-                mapScalarImageToByteImage(sul, slr, sget, image.upperLeft(), image.accessor());
-                write_band( enc.get(), image.upperLeft(),
-                            image.lowerRight(), image.accessor(), (unsigned char)0 );
-            }
-            break;
-        default:
-            vigra_precondition( false, "unsupported floating point size" );
-        }
+        detail::ExportImageImpl<VigraFalseType, sizeof(SrcValueType)>::exec( sul, slr, sget, enc.get(), VigraTrueType() );
 
         // close the encoder
         enc->close();
@@ -745,109 +752,34 @@ namespace detail {
 
         std::auto_ptr<Encoder> enc = encoder(info);
 
-        switch(sizeof(SrcValueType)) {
-        case 1:
-            enc->setPixelType( "UINT8" );
-            write_band( enc.get(), sul, slr, sget, (unsigned char)0 );
-            break;
-        case 2:
-            if ( isPixelTypeSupported( enc->getFileType(), "INT16" ) ) {
-                enc->setPixelType( "INT16" );
-                write_band( enc.get(), sul, slr, sget, short() );
-            } else {
-                // convert to unsigned char in the usual way
-                enc->setPixelType( "UINT8" );
-                vigra::BImage image(slr-sul);
-                mapScalarImageToByteImage(sul, slr, sget, image.upperLeft(), image.accessor());
-                write_band( enc.get(), image.upperLeft(),
-                            image.lowerRight(), image.accessor(), (unsigned char)0 );
-            }
-            break;
-        case 4:
-            if ( isPixelTypeSupported( enc->getFileType(), "INT32" ) ) {
-                enc->setPixelType( "INT32" );
-                write_band( enc.get(), sul, slr, sget, int() );
-            } else {
-                // convert to unsigned char in the usual way
-                enc->setPixelType( "UINT8" );
-                vigra::BImage image(slr-sul);
-                mapScalarImageToByteImage(sul, slr, sget, image.upperLeft(), image.accessor());
-                write_band( enc.get(), image.upperLeft(),
-                            image.lowerRight(), image.accessor(), (unsigned char)0 );
-            }
-            break;
-        default:
-            vigra_precondition( false, "unsupported integer size" );
-        }
+        detail::ExportImageImpl<VigraTrueType, sizeof(SrcValueType)>::exec( sul, slr, sget, enc.get(), VigraTrueType() );
 
-        // close the encoder
         enc->close();
     }
 
     template < class SrcIterator, class SrcAccessor >
     inline
-    void exportVectorImage( SrcIterator sul, SrcIterator slr, SrcAccessor sget,
-                            const ImageExportInfo & info, VigraFalseType )
+    void exportImage( SrcIterator sul, SrcIterator slr, SrcAccessor sget,
+                      const ImageExportInfo & info, VigraFalseType is_scalar)
     {
-        exportFloatingVectorImage( sul, slr, sget, info );
-    }
-
-    template < class SrcIterator, class SrcAccessor >
-    inline
-    void exportVectorImage( SrcIterator sul, SrcIterator slr, SrcAccessor sget,
-                            const ImageExportInfo & info, VigraTrueType )
-    {
-        exportIntegralVectorImage( sul, slr, sget, info );
-    }
-
-    template < class SrcIterator, class SrcAccessor >
-    inline
-    void exportVectorImage( SrcIterator sul, SrcIterator slr, SrcAccessor sget,
-                            const ImageExportInfo & info )
-    {
-        typedef typename NumericTraits<typename SrcAccessor::value_type>::isIntegral is_integral;
-        exportVectorImage( sul, slr, sget, info, is_integral() );
-    }
-
-    template < class SrcIterator, class SrcAccessor >
-    inline
-    void exportScalarImage( SrcIterator sul, SrcIterator slr, SrcAccessor sget,
-                            const ImageExportInfo & info, VigraFalseType )
-    {
-        exportFloatingScalarImage( sul, slr, sget, info );
-    }
-
-    template < class SrcIterator, class SrcAccessor >
-    inline
-    void exportScalarImage( SrcIterator sul, SrcIterator slr, SrcAccessor sget,
-                            const ImageExportInfo & info, VigraTrueType )
-    {
-        exportIntegralScalarImage( sul, slr, sget, info );
-    }
-
-    template < class SrcIterator, class SrcAccessor >
-    inline
-    void exportScalarImage( SrcIterator sul, SrcIterator slr, SrcAccessor sget,
-                            const ImageExportInfo & info )
-    {
-        typedef typename NumericTraits<typename SrcAccessor::value_type>::isIntegral is_integral;
-        exportScalarImage( sul, slr, sget, info, is_integral() );
+        typedef typename SrcAccessor::value_type AccessorValueType;
+        typedef typename AccessorValueType::value_type SrcValueType;
+        typedef typename NumericTraits<SrcValueType>::isIntegral is_integral;
+        std::auto_ptr<Encoder> enc = encoder(info);
+        detail::ExportImageImpl<is_integral, sizeof(SrcValueType)>::exec( sul, slr, sget, enc.get(), is_scalar);
+        enc->close();
     }
 
     template < class SrcIterator, class SrcAccessor >
     inline
     void exportImage( SrcIterator sul, SrcIterator slr, SrcAccessor sget,
-                      const ImageExportInfo & info, VigraFalseType )
+                      const ImageExportInfo & info, VigraTrueType is_scalar )
     {
-        exportVectorImage( sul, slr, sget, info );
-    }
-
-    template < class SrcIterator, class SrcAccessor >
-    inline
-    void exportImage( SrcIterator sul, SrcIterator slr, SrcAccessor sget,
-                      const ImageExportInfo & info, VigraTrueType )
-    {
-        exportScalarImage( sul, slr, sget, info );
+        typedef typename SrcAccessor::value_type SrcValueType;
+        typedef typename NumericTraits<SrcValueType>::isIntegral is_integral;
+        std::auto_ptr<Encoder> enc = encoder(info);
+        detail::ExportImageImpl<is_integral, sizeof(SrcValueType)>::exec( sul, slr, sget, enc.get(), is_scalar );
+        enc->close();
     }
 
 /********************************************************/
