@@ -331,12 +331,18 @@ namespace vigra {
             stripbuffer = new tdata_t[samples_per_pixel];
             for( unsigned int i = 0; i < samples_per_pixel; ++i ) {
                 stripbuffer[i] = 0;
+            }
+            for( unsigned int i = 0; i < samples_per_pixel; ++i ) {
                 stripbuffer[i] = _TIFFmalloc(stripsize);
+                if(stripbuffer[i] == 0)
+                    throw std::bad_alloc();
             }
         } else {
             stripbuffer = new tdata_t[1];
             stripbuffer[0] = 0;
             stripbuffer[0] = _TIFFmalloc(stripsize);
+            if(stripbuffer[0] == 0)
+                throw std::bad_alloc();
         }
 
         // let the codec read a new strip
@@ -580,6 +586,8 @@ namespace vigra {
         stripbuffer = new tdata_t[1];
         stripbuffer[0] = 0;
         stripbuffer[0] = _TIFFmalloc( TIFFStripSize(tiff) );
+        if(stripbuffer[0] == 0)
+            throw std::bad_alloc();  
 
         finalized = true;
     }
