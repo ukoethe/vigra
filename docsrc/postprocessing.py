@@ -41,19 +41,21 @@ href = re.compile(r'<a href=([^"].*?)>', re.I)
 vigraLogo = r'<IMG border=0 ALT="VIGRA" SRC="documents/vigra.gif">'
 
 # some longish replacement strings
-headingTableReplacement = r'<table cellpadding=5 bgcolor="#e0d090">\n<tr>\n\1\n' \
+tableHeader = r'<table border=0 cellspacing=0 bgcolor="#e0d090" width="100%" cellpadding=5>'
+headingTableReplacement = tableHeader + r'\n<tr>\n\1\n' \
                r'</font></th>\n' \
                r'<th align=right ><a href="index.html">' + vigraLogo + \
                r'</a></th></tr>\n</table>\n'
-headingArrowReplacement = r'<th align=right valign=top>\n' \
+headingArrowReplacement = r'<th align=left valign=top>\n' \
                r'<A HREF ="#DOC.DOCU" >' \
                r'<IMG BORDER=0 ALT="details" SRC="documents/pfeilGross.gif"></A>\n' \
-               r'</th>\n<th width="100%"><font size="+2">'
-docuReplacement = r'<table  bgcolor="#e0d090" width="100%" cellpadding=5>\n<tr>\n' \
+               r'</th>\n<th><font size="+2">'
+docuReplacement = tableHeader + r'\n<tr>\n' \
                   r'<th align=left ><font size="+2"> \1 </font></th>\n' \
                   r'</tr>\n</table>'
-publicReplacement = r'<table  bgcolor="#e0d090" width="100%" cellpadding=5>\n<tr>\n' \
+publicReplacement = tableHeader + r'\n<tr>\n' \
                     r'<th align=left ><font size="+2"> Member Index </font></th>\n' \
+                    r'<td align=right>(click on <IMG ALT="+" SRC="documents/pfeil.gif"> to get details)\n</td>\n' \
                     r'</tr>\n</table>\n' \
                     r'<DL>\n<DT><B><BR>Public'
 linkReplacement = r'[ <a href="http://kogs-www.informatik.uni-hamburg.de/~koethe/vigra/">VIGRA Homepage</a> |\n' \
@@ -139,8 +141,8 @@ def convertBody(text):
 def convertAIndex(text):
     text = re.sub(r'<H2>Variables</H2>', r'<H2>typedefs</H2>', text)
     text = re.sub(r'<H1>Table of contents</H1>', 
-                   r'<table  bgcolor="#e0d090" width="100%" cellpadding=5>\n<tr>\n' \
-                   r'<th align=left width="100%"><font size="+3">Table of Contents</font></th>\n' \
+                   tableHeader + r'\n<tr>\n' \
+                   r'<th align=left><font size="+2">Table of Contents</font></th>\n' \
                    r'<th align=right ><a href="index.html">' + vigraLogo + \
                    r'</a><tr>\n</table>',
                    text)
@@ -149,8 +151,8 @@ def convertAIndex(text):
   
 def convertHIER(text):
     text = re.sub(r'<H1>(.*?)</H1>', 
-                   r'<table  bgcolor="#e0d090" width="100%" cellpadding=5>\n<tr>\n' \
-                   r'<th align=left width="100%"><font size="+3">\1</font></th>\n' \
+                   tableHeader + r'\n<tr>\n' \
+                   r'<th align=left><font size="+2">\1</font></th>\n' \
                    r'<th align=right ><a href="index.html">' + vigraLogo + \
                    r'</a><tr>\n</table>',
                    text)
