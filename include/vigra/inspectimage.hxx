@@ -27,6 +27,7 @@
 #include <algorithm>
 #include "vigra/utilities.hxx"
 #include "vigra/numerictraits.hxx"
+#include "vigra/rgbvalue.hxx"
 
 namespace vigra {
 
@@ -549,6 +550,15 @@ class FindMinMax
             max = v;
         }
         ++count;
+    }
+    
+    /** update min and max with components of RGBValue<VALUETYPE>
+    */
+    void operator()(RGBValue<VALUETYPE> const & v) 
+    {
+        operator()(v.red());
+        operator()(v.green());
+        operator()(v.blue());
     }
     
     /** merge two statistics
