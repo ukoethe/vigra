@@ -280,7 +280,6 @@ resizeImageInternalSplineInterpolation(SRCITERATOR is, SRCITERATOR iend, SRCACCE
     int oy = 0;
     int ox,xx,yy;
     
-    DESTITERATOR yd = id;
     DESTITERATOR xxd = id, yyd = id;
 
     static Diff2D down(0,1), right(1,0), downright(1,1);

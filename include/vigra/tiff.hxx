@@ -291,12 +291,12 @@ tiffToScalarImage(TiffImage * tiff, ImageIterator iter, Accessor a)
             {
               case 1:
               {
-                for(int y=0; y<h; ++y, ++yd.y)
+                for(unsigned int y=0; y<h; ++y, ++yd.y)
                 {
                     TIFFReadScanline(tiff, buf, y);
                     ImageIterator xd(yd);
 
-                    for(int x=0; x<w; ++x, ++xd.x)
+                    for(unsigned int x=0; x<w; ++x, ++xd.x)
                     {
                         if(fillorder == FILLORDER_MSB2LSB)
                         {
@@ -312,12 +312,12 @@ tiffToScalarImage(TiffImage * tiff, ImageIterator iter, Accessor a)
               }
               case 8:
               {
-                for(int y=0; y<h; ++y, ++yd.y)
+                for(unsigned int y=0; y<h; ++y, ++yd.y)
                 {
                     TIFFReadScanline(tiff, buf, y);
                     ImageIterator xd(yd);
 
-                    for(int x=0; x<w; ++x, ++xd.x)
+                    for(unsigned int x=0; x<w; ++x, ++xd.x)
                     {
                         a.set(offset + scale*((uint8 *)buf)[x], xd);
                     }
@@ -326,12 +326,12 @@ tiffToScalarImage(TiffImage * tiff, ImageIterator iter, Accessor a)
               }
               case 16:
               {
-                for(int y=0; y<h; ++y, ++yd.y)
+                for(unsigned int y=0; y<h; ++y, ++yd.y)
                 {
                     TIFFReadScanline(tiff, buf, y);
                     ImageIterator xd(yd);
 
-                    for(int x=0; x<w; ++x, ++xd.x)
+                    for(unsigned int x=0; x<w; ++x, ++xd.x)
                     {
                         a.set(((uint16 *)buf)[x], xd);
                     }
@@ -340,12 +340,12 @@ tiffToScalarImage(TiffImage * tiff, ImageIterator iter, Accessor a)
               }
               case 32:
               {
-                for(int y=0; y<h; ++y, ++yd.y)
+                for(unsigned int y=0; y<h; ++y, ++yd.y)
                 {
                     TIFFReadScanline(tiff, buf, y);
                     ImageIterator xd(yd);
 
-                    for(int x=0; x<w; ++x, ++xd.x)
+                    for(unsigned int x=0; x<w; ++x, ++xd.x)
                     {
                         a.set(((uint32 *)buf)[x], xd);
                     }
@@ -364,12 +364,12 @@ tiffToScalarImage(TiffImage * tiff, ImageIterator iter, Accessor a)
             {
               case 1:
               {
-                for(int y=0; y<h; ++y, ++yd.y)
+                for(unsigned int y=0; y<h; ++y, ++yd.y)
                 {
                     TIFFReadScanline(tiff, buf, y);
                     ImageIterator xd(yd);
 
-                    for(int x=0; x<w; ++x, ++xd.x)
+                    for(unsigned int x=0; x<w; ++x, ++xd.x)
                     {
                         if(fillorder == FILLORDER_MSB2LSB)
                         {
@@ -385,12 +385,12 @@ tiffToScalarImage(TiffImage * tiff, ImageIterator iter, Accessor a)
               }
               case 8:
               {
-                for(int y=0; y<h; ++y, ++yd.y)
+                for(unsigned int y=0; y<h; ++y, ++yd.y)
                 {
                     TIFFReadScanline(tiff, buf, y);
                     ImageIterator xd(yd);
 
-                    for(int x=0; x<w; ++x, ++xd.x)
+                    for(unsigned int x=0; x<w; ++x, ++xd.x)
                     {
                         a.set(offset + scale*((uint8 *)buf)[x], xd);
                     }
@@ -399,12 +399,12 @@ tiffToScalarImage(TiffImage * tiff, ImageIterator iter, Accessor a)
               }
               case 16:
               {
-                for(int y=0; y<h; ++y, ++yd.y)
+                for(unsigned int y=0; y<h; ++y, ++yd.y)
                 {
                     TIFFReadScanline(tiff, buf, y);
                     ImageIterator xd(yd);
 
-                    for(int x=0; x<w; ++x, ++xd.x)
+                    for(unsigned int x=0; x<w; ++x, ++xd.x)
                     {
                         a.set(((int16 *)buf)[x], xd);
                     }
@@ -413,12 +413,12 @@ tiffToScalarImage(TiffImage * tiff, ImageIterator iter, Accessor a)
               }
               case 32:
               {
-                for(int y=0; y<h; ++y, ++yd.y)
+                for(unsigned int y=0; y<h; ++y, ++yd.y)
                 {
                     TIFFReadScanline(tiff, buf, y);
                     ImageIterator xd(yd);
 
-                    for(int x=0; x<w; ++x, ++xd.x)
+                    for(unsigned int x=0; x<w; ++x, ++xd.x)
                     {
                         a.set(((int32 *)buf)[x], xd);
                     }
@@ -437,12 +437,12 @@ tiffToScalarImage(TiffImage * tiff, ImageIterator iter, Accessor a)
             {
               case sizeof(float)*8:
               {
-                for(int y=0; y<h; ++y, ++yd.y)
+                for(unsigned int y=0; y<h; ++y, ++yd.y)
                 {
                     TIFFReadScanline(tiff, buf, y);
                     ImageIterator xd(yd);
 
-                    for(int x=0; x<w; ++x, ++xd.x)
+                    for(unsigned int x=0; x<w; ++x, ++xd.x)
                     {
                         a.set(((float *)buf)[x], xd);
                     }
@@ -451,12 +451,12 @@ tiffToScalarImage(TiffImage * tiff, ImageIterator iter, Accessor a)
               }
               case sizeof(double)*8:
               {
-                for(int y=0; y<h; ++y, ++yd.y)
+                for(unsigned int y=0; y<h; ++y, ++yd.y)
                 {
                     TIFFReadScanline(tiff, buf, y);
                     ImageIterator xd(yd);
 
-                    for(int x=0; x<w; ++x, ++xd.x)
+                    for(unsigned int x=0; x<w; ++x, ++xd.x)
                     {
                         a.set(((double *)buf)[x], xd);
                     }
