@@ -64,8 +64,8 @@ namespace vigra
 
         \code
         namespace vigra {
-           template< class SrcValueType, class ImageIterator, class Accessor >
-           void read_bands( Decoder * dec, ImageIterator ys, Accessor a )
+            template< class ImageIterator, class Accessor, class SrcValueType >
+            void read_bands( Decoder * dec, ImageIterator ys, Accessor a, SrcValueType )
         }
         \endcode
 
@@ -73,8 +73,8 @@ namespace vigra
       \param ys  image iterator referencing the upper left pixel of the destination image
       \param a   image accessor for the destination image
     */
-    template< class SrcValueType, class ImageIterator, class Accessor >
-    void read_bands( Decoder * dec, ImageIterator ys, Accessor a )
+    template< class ImageIterator, class Accessor, class SrcValueType >
+    void read_bands( Decoder * dec, ImageIterator ys, Accessor a, SrcValueType )
     {
         typedef unsigned int size_type;
         typedef typename ImageIterator::row_iterator DstRowIterator;
@@ -85,7 +85,7 @@ namespace vigra
         const size_type height = dec->getHeight();
         const size_type num_bands = dec->getNumBands();
 
-        SrcValueType * scanline;
+        SrcValueType const * scanline;
         DstRowIterator xs;
 
         // iterate
@@ -93,7 +93,7 @@ namespace vigra
             dec->nextScanline();
             for( size_type b = 0; b < num_bands; ++b ) {
                 xs = ys.rowIterator();
-                scanline = static_cast< SrcValueType * >
+                scanline = static_cast< SrcValueType const * >
                     (dec->currentScanlineOfBand(b));
                 for( size_type x = 0; x < width; ++x, ++xs ) {
                     a.setComponent( *scanline, xs, b );
@@ -113,8 +113,8 @@ namespace vigra
 
         \code
         namespace vigra {
-            template< class SrcValueType, class ImageIterator, class Accessor >
-            void read_band( Decoder * dec, ImageIterator ys, Accessor a )
+            template< class ImageIterator, class Accessor, class SrcValueType >
+            void read_band( Decoder * dec, ImageIterator ys, Accessor a, SrcValueType )
         }
         \endcode
 
@@ -122,8 +122,8 @@ namespace vigra
       \param ys  image iterator referencing the upper left pixel of the destination image
       \param a   image accessor for the destination image
     */
-    template< class SrcValueType, class ImageIterator, class Accessor >
-    void read_band( Decoder * dec, ImageIterator ys, Accessor a )
+    template< class ImageIterator, class Accessor, class SrcValueType >
+    void read_band( Decoder * dec, ImageIterator ys, Accessor a, SrcValueType )
     {
         typedef unsigned int size_type;
         typedef typename ImageIterator::row_iterator DstRowIterator;
@@ -131,13 +131,13 @@ namespace vigra
         const size_type width = dec->getWidth();
         const size_type height = dec->getHeight();
 
-        SrcValueType * scanline;
+        SrcValueType const * scanline;
         DstRowIterator xs;
 
         for( size_type y = 0; y < height; ++y, ++ys.y ) {
             dec->nextScanline();
             xs = ys.rowIterator();
-            scanline = static_cast< SrcValueType * >(dec->currentScanlineOfBand(0));
+            scanline = static_cast< SrcValueType const * >(dec->currentScanlineOfBand(0));
             for( size_type x = 0; x < width; ++x, ++xs )
                 a.set( scanline[x], xs );
         }
@@ -171,15 +171,15 @@ namespace vigra
         std::string pixeltype = dec->getPixelType();
 
         if ( pixeltype == "UINT8" )
-            read_bands< const unsigned char >( dec.get(), iter, a );
+            read_bands( dec.get(), iter, a, unsigned char() );
         else if ( pixeltype == "INT16" )
-            read_bands< const short >( dec.get(), iter, a );
+            read_bands( dec.get(), iter, a, short() );
         else if ( pixeltype == "INT32" )
-            read_bands< const int >( dec.get(), iter, a );
+            read_bands( dec.get(), iter, a, int() );
         else if ( pixeltype == "FLOAT" )
-            read_bands< const float >( dec.get(), iter, a );
+            read_bands( dec.get(), iter, a, float() );
         else if ( pixeltype == "DOUBLE" )
-            read_bands< const double >( dec.get(), iter, a );
+            read_bands( dec.get(), iter, a, double() );
         else
             vigra_precondition( false, "invalid pixeltype" );
 
@@ -215,15 +215,15 @@ namespace vigra
         std::string pixeltype = dec->getPixelType();
 
         if ( pixeltype == "UINT8" )
-            read_band< const unsigned char >( dec.get(), iter, a );
+            read_band( dec.get(), iter, a, unsigned char() );
         else if ( pixeltype == "INT16" )
-            read_band< const short >( dec.get(), iter, a );
+            read_band( dec.get(), iter, a, short() );
         else if ( pixeltype == "INT32" )
-            read_band< const int >( dec.get(), iter, a );
+            read_band( dec.get(), iter, a, int() );
         else if ( pixeltype == "FLOAT" )
-            read_band< const float >( dec.get(), iter, a );
+            read_band( dec.get(), iter, a, float() );
         else if ( pixeltype == "DOUBLE" )
-            read_band< const double >( dec.get(), iter, a );
+            read_band( dec.get(), iter, a, double() );
         else
             vigra_precondition( false, "invalid pixeltype" );
 
@@ -344,8 +344,8 @@ namespace vigra
 
         \code
         namespace vigra {
-            template< class DstValueType, class ImageIterator, class Accessor >
-            void write_bands( Encoder * enc, ImageIterator ul, ImageIterator lr, Accessor a )
+            template< class ImageIterator, class Accessor, class DstValueType >
+            void write_bands( Encoder * enc, ImageIterator ul, ImageIterator lr, Accessor a, DstValueType )
         }
         \endcode
 
@@ -354,8 +354,8 @@ namespace vigra
       \param lr  image iterator referencing the lower right pixel of the source image
       \param a   image accessor for the source image
     */
-    template< class DstValueType, class ImageIterator, class Accessor >
-    void write_bands( Encoder * enc, ImageIterator ul, ImageIterator lr, Accessor a )
+    template< class ImageIterator, class Accessor, class DstValueType >
+    void write_bands( Encoder * enc, ImageIterator ul, ImageIterator lr, Accessor a, DstValueType)
     {
         typedef unsigned int size_type;
         typedef typename ImageIterator::row_iterator SrcRowIterator;
@@ -400,8 +400,8 @@ namespace vigra
 
         \code
         namespace vigra {
-            template< class DstValueType, class ImageIterator, class Accessor >
-            void write_band( Encoder * enc, ImageIterator ul, ImageIterator lr, Accessor a )
+            template< class ImageIterator, class Accessor, class DstValueType >
+            void write_band( Encoder * enc, ImageIterator ul, ImageIterator lr, Accessor a, DstValueType )
         }
         \endcode
 
@@ -410,8 +410,8 @@ namespace vigra
       \param lr  image iterator referencing the lower right pixel of the source image
       \param a   image accessor for the source image
     */
-    template< class DstValueType, class ImageIterator, class Accessor >
-    void write_band( Encoder * enc, ImageIterator ul, ImageIterator lr, Accessor a )
+    template< class ImageIterator, class Accessor, class DstValueType >
+    void write_band( Encoder * enc, ImageIterator ul, ImageIterator lr, Accessor a, DstValueType)
     {
         typedef unsigned int size_type;
         typedef typename ImageIterator::row_iterator SrcRowIterator;
@@ -434,8 +434,8 @@ namespace vigra
         for(  y = 0; y < height; ++y, ++ys.y ) {
             xs = ys.rowIterator();
             scanline = static_cast< DstValueType * >(enc->currentScanlineOfBand(0));
-            for( size_type x = 0; x < width; ++x, ++xs )
-                *scanline++ = a(xs);
+            for( size_type x = 0; x < width; ++x, ++xs, ++scanline )
+                *scanline = a(xs);
             enc->nextScanline();
         }
     } // write_band()
@@ -477,7 +477,7 @@ namespace vigra
             // pixel type is float
             if ( isPixelTypeSupported( enc->getFileType(), "FLOAT" ) ) {
                 enc->setPixelType( "FLOAT" );
-                write_bands<float>( enc.get(), sul, slr, sget );
+                write_bands( enc.get(), sul, slr, sget, float() );
             } else {
                 // convert to unsigned char in the usual way
                 enc->setPixelType( "UINT8" );
@@ -488,15 +488,15 @@ namespace vigra
                 const typename vigra::RGBValue<float> offset( -minmax.min, -minmax.min, -minmax.min );
                 vigra::transformImage( sul, slr, sget, image.upperLeft(), image.accessor(),
                                        linearIntensityTransform( scale, offset ) );
-                write_bands< unsigned char >( enc.get(), image.upperLeft(),
-                                              image.lowerRight(), image.accessor() );
+                write_bands( enc.get(), image.upperLeft(),
+                             image.lowerRight(), image.accessor(), unsigned char() );
             }
             break;
         case 8:
             // pixel type is double
             if ( isPixelTypeSupported( enc->getFileType(), "DOUBLE" ) ) {
                 enc->setPixelType( "DOUBLE" );
-                write_bands<double>( enc.get(), sul, slr, sget );
+                write_bands( enc.get(), sul, slr, sget, double() );
             } else {
                 // convert to unsigned char in the usual way
                 enc->setPixelType( "UINT8" );
@@ -507,8 +507,8 @@ namespace vigra
                 const typename vigra::RGBValue<double> offset( -minmax.min, -minmax.min, -minmax.min );
                 vigra::transformImage( sul, slr, sget, image.upperLeft(), image.accessor(),
                                        linearIntensityTransform( scale, offset ) );
-                write_bands< unsigned char >( enc.get(), image.upperLeft(),
-                                              image.lowerRight(), image.accessor() );
+                write_bands( enc.get(), image.upperLeft(),
+                             image.lowerRight(), image.accessor(), unsigned char() );
             }
             break;
         default:
@@ -554,15 +554,15 @@ namespace vigra
         switch(sizeof(SrcValueType)) {
         case 1:
             enc->setPixelType( "UINT8" );
-            write_bands< unsigned char >( enc.get(), sul, slr, sget );
+            write_bands( enc.get(), sul, slr, sget, unsigned char() );
             break;
         case 2:
             enc->setPixelType( "INT16" );
-            write_bands<short>( enc.get(), sul, slr, sget );
+            write_bands( enc.get(), sul, slr, sget, short() );
             break;
         case 4:
             enc->setPixelType( "INT32" );
-            write_bands<int>( enc.get(), sul, slr, sget );
+            write_bands( enc.get(), sul, slr, sget, int() );
             break;
         default:
             vigra_precondition( false, "unsupported integer size" );
@@ -608,7 +608,7 @@ namespace vigra
             // pixel type is float
             if ( isPixelTypeSupported( enc->getFileType(), "FLOAT" ) ) {
                 enc->setPixelType( "FLOAT" );
-                write_band<float>( enc.get(), sul, slr, sget );
+                write_band( enc.get(), sul, slr, sget, float() );
             } else {
                 // convert to unsigned char in the usual way
                 enc->setPixelType( "UINT8" );
@@ -619,15 +619,15 @@ namespace vigra
                 const float offset = -minmax.min;
                 vigra::transformImage( sul, slr, sget, image.upperLeft(), image.accessor(),
                                        linearIntensityTransform( scale, offset ) );
-                write_band< unsigned char >( enc.get(), image.upperLeft(),
-                                             image.lowerRight(), image.accessor() );
+                write_band( enc.get(), image.upperLeft(),
+                            image.lowerRight(), image.accessor(), unsigned char() );
             }
             break;
         case 8:
             // pixel type is double
             if ( isPixelTypeSupported( enc->getFileType(), "DOUBLE" ) ) {
                 enc->setPixelType( "DOUBLE" );
-                write_band<double>( enc.get(), sul, slr, sget );
+                write_band( enc.get(), sul, slr, sget, double() );
             } else {
                 // convert to unsigned char in the usual way
                 enc->setPixelType( "UINT8" );
@@ -638,8 +638,8 @@ namespace vigra
                 const double offset = -minmax.min;
                 vigra::transformImage( sul, slr, sget, image.upperLeft(), image.accessor(),
                                        linearIntensityTransform( scale, offset ) );
-                write_band< unsigned char >( enc.get(), image.upperLeft(),
-                                             image.lowerRight(), image.accessor() );
+                write_band( enc.get(), image.upperLeft(),
+                            image.lowerRight(), image.accessor(), unsigned char() );
             }
             break;
         default:
@@ -684,15 +684,15 @@ namespace vigra
         switch(sizeof(SrcValueType)) {
         case 1:
             enc->setPixelType( "UINT8" );
-            write_band< unsigned char >( enc.get(), sul, slr, sget );
+            write_band( enc.get(), sul, slr, sget, unsigned char() );
             break;
         case 2:
             enc->setPixelType( "INT16" );
-            write_band<short>( enc.get(), sul, slr, sget );
+            write_band( enc.get(), sul, slr, sget, short() );
             break;
         case 4:
             enc->setPixelType( "INT32" );
-            write_band<int>( enc.get(), sul, slr, sget );
+            write_band( enc.get(), sul, slr, sget, int() );
             break;
         default:
             vigra_precondition( false, "unsupported integer size" );
