@@ -448,12 +448,50 @@ The following iterator traits must be defined for an image iterator:
     for a discussion of the concepts behind ImageIterators.
 
 */
-template <class PIXELTYPE>
+template <class IMAGEITERATOR, 
+          class PIXELTYPE, class REFERENCE, class POINTER>
 class ImageIteratorBase
 {
   public:
-    typedef PIXELTYPE PixelType;
+    typedef ImageIteratorBase<IMAGEITERATOR, 
+                 PIXELTYPE, REFERENCE, POINTER> self_type;
+  
+        /** The underlying image's pixel type.
+        */
     typedef PIXELTYPE value_type;
+
+        /** deprecated, use <TT>value_type</TT> instead.
+        */
+    typedef PIXELTYPE PixelType;
+
+        /** the iterator's reference type (return type of <TT>*iter</TT>)
+        */
+    typedef PIXELTYPE &          reference;
+
+        /** the iterator's index reference type (return type of <TT>iter[diff]</TT>)
+        */
+    typedef PIXELTYPE &          index_reference;
+
+        /** the iterator's pointer type (return type of <TT>iter.operator->()</TT>)
+        */
+    typedef PIXELTYPE *          pointer;
+
+        /** the iterator's difference type (argument type of <TT>iter[diff]</TT>)
+        */
+    typedef Diff2D               difference_type;
+
+        /** the iterator tag (image traverser)
+        */
+    typedef image_traverser_tag  iterator_category;
+
+        /** The associated row iterator.
+        */
+    typedef POINTER              row_iterator;
+
+        /** The associated column iterator.
+        */
+    typedef IteratorAdaptor<ContigousMemoryColumnIteratorPolicy<self_type> >
+        column_iterator;
 
         /** Let operations act in X direction
         */
@@ -522,9 +560,9 @@ class ImageIteratorBase
         //@}
 
       private:
-        friend class ImageIteratorBase<PixelType>;
+        friend class self_type;
 
-        MoveX(PixelType * base)
+        MoveX(pointer base)
         : current_(base)
         {}
 
@@ -532,7 +570,7 @@ class ImageIteratorBase
         : current_(rhs.current_)
         {}
 
-        PixelType * current_;
+        pointer current_;
     };
 
         /** Let operations act in Y direction
@@ -607,15 +645,15 @@ class ImageIteratorBase
         //@}
 
       private:
-        friend class ImageIteratorBase<PixelType>;
+        friend class self_type;
 
-            // only construct within ImageIteratorBase<PixelType>
+            // only construct within ImageIteratorBase
         MoveY(int width)
         : width_(width),
           offset_(0)
         {}
 
-            // only construct within ImageIteratorBase<PixelType>
+            // only construct within ImageIteratorBase
         MoveY(MoveY const & rhs)
         : width_(rhs.width_),
           offset_(rhs.offset_)
@@ -643,9 +681,9 @@ class ImageIteratorBase
 
         /** usage: <TT> Diff2D dist = iterator - iterator1 </TT>
         */
-    Diff2D operator-(ImageIteratorBase const & rhs) const
+    difference_type operator-(ImageIteratorBase const & rhs) const
     {
-        return Diff2D(x - rhs.x, y - rhs.y);
+        return difference_type(x - rhs.x, y - rhs.y);
     }
 
     //@}
@@ -664,8 +702,8 @@ class ImageIteratorBase
         object should have a fatory function that constructs the
         iterator.
         */
-    ImageIteratorBase(PixelType const * base, int width)
-    : x(const_cast<PixelType *>(base)),
+    ImageIteratorBase(pointer base, int width)
+    : x(base),
       y(width)
     {}
 
@@ -692,72 +730,84 @@ class ImageIteratorBase
         return *this;
     }
 
+  public:
         /** Add offset via Diff2D
         */
-    ImageIteratorBase & operator+=(Diff2D const & s)
+    IMAGEITERATOR & operator+=(difference_type const & s)
     {
         x += s.x;
         y += s.y;
-        return *this;
+        return static_cast<IMAGEITERATOR &>(*this);
     }
         /** Subtract offset via Diff2D
         */
-    ImageIteratorBase & operator-=(Diff2D const & s)
+    IMAGEITERATOR & operator-=(difference_type const & s)
     {
         x -= s.x;
         y -= s.y;
-        return *this;
+        return static_cast<IMAGEITERATOR &>(*this);
     }
 
-        /** access current pixel. <br>
-            usage: <TT> SomePixelType value = iterator.current() </TT>
+    /** @name Access the Pixels */
+    //@{
+        /** Access current pixel. <br>
+            usage: <TT> SomePixelType value = *iterator </TT>
         */
-    PixelType & current()
+    reference operator*() const
     {
-        return *(x.current_ + y.offset_);
+        return *current();
     }
 
-        /** access pixel at offset (dx, dy) from current pixel. <br>
-            usage: <TT> SomePixelType value = iterator.current(dx, dy) </TT>
+        /** Call member of current pixel. <br>
+            usage: <TT> iterator->pixelMemberFunction() </TT>
         */
-    PixelType & current(int const & dx, int const & dy)
+    pointer operator->() const
     {
-        return *(x.current_ + dx + y.offset_ + y.width_ * dy);
+        return current();
     }
 
-        /** access pixel at offset d from current pixel. <br>
-            usage: <TT> SomePixelType value = iterator.current(Diff2D(1,1)) </TT>
+        /** Access pixel at offset from current location. <br>
+            usage: <TT> SomePixelType value = iterator[Diff2D(1,1)] </TT>
         */
-    PixelType & current(Diff2D const & d)
+    index_reference operator[](Diff2D const & d) const
     {
-        return *(x.current_ + d.x + y.offset_ + y.width_ * d.y);
+        return *current(d.x, d.y);
     }
 
-        /** read current pixel. <br>
-            usage: <TT> SomePixelType value = iterator.current() </TT>
+        /** Access pixel at offset (dx, dy) from current location. <br>
+            usage: <TT> SomePixelType value = iterator(dx, dy) </TT>
         */
-    PixelType const & current() const
+    index_reference operator()(int dx, int dy) const
     {
-        return *(x.current_ + y.offset_);
+        return *current(dx, dy);
     }
 
-        /** read pixel with offset (dx, dy) from current pixel. <br>
-            usage: <TT> SomePixelType value = iterator.current(dx, dy) </TT>
+        /** Read pixel with offset [dy][dx] from current pixel.
+            Note that the 'x' index is the trailing index. <br>
+            usage: <TT> SomePixelType value = iterator[dy][dx] </TT>
         */
-    PixelType const & current(int dx, int dy) const
+    pointer operator[](int dy) const
     {
-        return *(x.current_ + dx + y.offset_ + y.width_ * dy);
+        return current() + dy*y.width_;
     }
+    //@}
 
-        /** read pixel with offset d from current pixel. <br>
-            usage: <TT> SomePixelType value = iterator.current(Diff2D(1,1)) </TT>
-        */
-    PixelType const & current(Diff2D const & d) const
+    row_iterator rowIterator() const
+        { return current(); }
+
+    column_iterator columnIterator() const
     {
-        return *(x.current_ + d.x + y.offset_ + y.width_ * d.y);
+        typedef typename column_iterator::BaseType Iter;
+        return column_iterator(Iter(current(), y.width_));
     }
-
-    int width() const { return y.width_; }
+    
+  private:
+  
+    pointer current() const
+        { return x.current_ + y.offset_; }
+  
+    pointer current(int dx, int dy) const
+        { return x.current_ + dx + y.offset_ + y.width_ * dy; }
 };
 
 /********************************************************/
@@ -769,16 +819,7 @@ class ImageIteratorBase
 /** \brief Standard 2D random access iterator for images that store the
     data in a linear array.
 
-    Adds <TT>%operator*()</TT>, <TT>operator()(dx, dy)</TT>, <TT>operator[](dy)</TT> and <TT>operator[](Diff2D)</TT>
-    to access the current
-    pixel and the pixel at distance (dx, dy).
-    The usage examples assume that you constructed two iterators like
-    this:
-
-    \code
-    vigra::ImageIteratorBase<SomePixelType> iterator(base, width);
-    vigra::ImageIteratorBase<SomePixelType> iterator1(base, width);
-    \endcode
+    Most functions and local types are inherited from ImageIteratorBase.
 
     See the paper: U. Koethe:
     <a href="documents/GenericProg2D.ps">Reusable Algorithms in Image Processing</a>
@@ -790,105 +831,36 @@ class ImageIteratorBase
 
 */
 template <class PIXELTYPE>
-class ImageIterator: public ImageIteratorBase<PIXELTYPE>
+class ImageIterator
+: public ImageIteratorBase<ImageIterator<PIXELTYPE>, 
+                           PIXELTYPE, PIXELTYPE &, PIXELTYPE *>
 {
   public:
-
-        /** The underlying image's pixel type.
-        */
-    typedef PIXELTYPE value_type;
-
-        /** The underlying image's pixel type.
-        */
-    typedef PIXELTYPE PixelType;
-
-        /** the iterator's reference type (return type of <TT>*iter</TT>)
-        */
-    typedef PIXELTYPE &          reference;
-
-        /** the iterator's index reference type (return type of <TT>iter[diff]</TT>)
-        */
-    typedef PIXELTYPE &          index_reference;
-
-        /** the iterator's pointer type (return type of <TT>iter.operator->()</TT>)
-        */
-    typedef PIXELTYPE *          pointer;
-
-        /** the iterator's difference type (argument type of <TT>iter[diff]</TT>)
-        */
-    typedef Diff2D               difference_type;
-
-        /** the iterator tag (image traverser)
-        */
-    typedef image_traverser_tag  iterator_category;
-
-        /** The associated row iterator.
-        */
-    typedef PIXELTYPE * row_iterator;
-
-        /** The associated column iterator.
-        */
-    typedef IteratorAdaptor<ContigousMemoryColumnIteratorPolicy<ImageIterator> >
-        column_iterator;
+    typedef ImageIteratorBase<ImageIterator<PIXELTYPE>, 
+                              PIXELTYPE, PIXELTYPE &, PIXELTYPE *> Base;
+                              
+    typedef typename Base::pointer         pointer;
+    typedef typename Base::difference_type difference_type;
 
         /** Construct from raw memory with 'offset' between lines.
         If the raw memory is encapsulated in an image object this
-        object should have a fatory function that constructs the
+        object should have a factory function that constructs the
         iterator.
         */
     ImageIterator(pointer base, int offset)
-    : ImageIteratorBase<PIXELTYPE>(base, offset)
-    {}
-
-        /** Copy constructor */
-    ImageIterator(const ImageIterator & rhs)
-    : ImageIteratorBase<PIXELTYPE>(rhs)
+    : Base(base, offset)
     {}
 
         /** Default constructor */
     ImageIterator()
-    : ImageIteratorBase<PIXELTYPE>()
+    : Base()
     {}
-
-        /** Copy assignment */
-    ImageIterator & operator=(const ImageIterator & rhs)
-    {
-        if(this != &rhs)
-        {
-            ImageIteratorBase<PIXELTYPE>::operator=(rhs);
-        }
-        return *this;
-    }
-
-    /** @name Computed Assignment */
-    //@{
-        /** Add offset via Diff2D
-        */
-    ImageIterator & operator+=(Diff2D const & s)
-    {
-        ImageIteratorBase<PIXELTYPE>::operator+=(s);
-        return *this;
-    }
-        /** Subtract offset via Diff2D
-        */
-    ImageIterator & operator-=(Diff2D const & s)
-    {
-        ImageIteratorBase<PIXELTYPE>::operator-=(s);
-        return *this;
-    }
-
-    //@}
-
-    Diff2D operator-(ImageIterator const & rhs) const
-    {
-        return Diff2D(x - rhs.x, y - rhs.y);
-    }
 
     /** @name Construct iterator at a distance */
     //@{
         /** Add a distance
         */
-    ImageIterator operator+(Diff2D const & s) const
+    ImageIterator operator+(difference_type const & s) const
     {
         ImageIterator ret(*this);
 
@@ -896,9 +868,10 @@ class ImageIterator: public ImageIteratorBase<PIXELTYPE>
 
         return ret;
     }
+
         /** Subtract a distance
         */
-    ImageIterator operator-(Diff2D const & s) const
+    ImageIterator operator-(difference_type const & s) const
     {
         ImageIterator ret(*this);
 
@@ -907,59 +880,6 @@ class ImageIterator: public ImageIteratorBase<PIXELTYPE>
         return ret;
     }
    //@}
-
-    /** @name Access the Pixels */
-    //@{
-        /** Access current pixel. <br>
-            usage: <TT> SomePixelType value = *iterator </TT>
-        */
-    reference operator*() const
-    {
-        return const_cast<reference>(current());
-    }
-
-        /** Call member of current pixel. <br>
-            usage: <TT> iterator->pixelMemberFunction() </TT>
-        */
-    pointer operator->() const
-    {
-        return const_cast<pointer>(&current());
-    }
-
-        /** Access pixel at offset from current location. <br>
-            usage: <TT> SomePixelType value = iterator[Diff2D(1,1)] </TT>
-        */
-    index_reference operator[](Diff2D const & d) const
-    {
-        return const_cast<index_reference>(current(d));
-    }
-
-        /** Access pixel at offset (dx, dy) from current location. <br>
-            usage: <TT> SomePixelType value = iterator(dx, dy) </TT>
-        */
-    index_reference operator()(int dx, int dy) const
-    {
-        return const_cast<index_reference>(current(dx, dy));
-    }
-
-        /** Read pixel with offset [dy][dx] from current pixel.
-            Note that the 'x' index is the trailing index. <br>
-            usage: <TT> SomePixelType value = iterator[dy][dx] </TT>
-        */
-    pointer operator[](int dy) const
-    {
-        return const_cast<pointer>(&current()+dy*width());
-    }
-    //@}
-
-    row_iterator rowIterator() const
-        { return const_cast<row_iterator>(&current()); }
-
-    column_iterator columnIterator() const
-    {
-        typedef typename column_iterator::BaseType Iter;
-        return column_iterator(Iter(const_cast<pointer>(&current()), width()));
-    }
 
 };
 
@@ -972,16 +892,7 @@ class ImageIterator: public ImageIteratorBase<PIXELTYPE>
 /** \brief Standard 2D random access const iterator for images that
     store the data as a linear array.
 
-    Adds <TT>operator*()</TT>, <TT>operator()(dx, dy)</TT>, and <TT>operator[](dy)</TT>
-    to access the current
-    pixel and the pixel at distance (dx, dy).
-    The usage examples assume that you constructed two iterators like
-    this:
-
-    \code
-    vigra::ConstImageIterator<SomePixelType> iterator(base, width)
-    vigra::ConstImageIterator<SomePixelType> iterator1(base, width)
-    \endcode
+    Most functions are inherited from ImageIteratorBase.
 
     <b>\#include</b> "<a href="imageiterator_8hxx-source.html">vigra/imageiterator.hxx</a>"
 
@@ -989,118 +900,46 @@ class ImageIterator: public ImageIteratorBase<PIXELTYPE>
 
 */
 template <class PIXELTYPE>
-class ConstImageIterator: public ImageIteratorBase<PIXELTYPE>
+class ConstImageIterator
+: public ImageIteratorBase<ConstImageIterator<PIXELTYPE>, 
+                           PIXELTYPE, PIXELTYPE const &, PIXELTYPE const *>
 {
   public:
-
-        /** The underlying image's pixel type.
-        */
-    typedef PIXELTYPE value_type;
-
-        /** The underlying image's pixel type.
-        */
-    typedef PIXELTYPE PixelType;
-
-        /** the iterator's reference type (return type of <TT>*iter</TT>)
-        */
-    typedef PIXELTYPE const &    reference;
-
-        /** the iterator's index reference type (return type of <TT>iter[diff]</TT>)
-        */
-    typedef PIXELTYPE const &    index_reference;
-
-        /** the iterator's pointer type (return type of <TT>iter.operator->()</TT>)
-        */
-    typedef PIXELTYPE const *    pointer;
-
-        /** the iterator's difference type (argument type of <TT>iter[diff]</TT>)
-        */
-    typedef Diff2D               difference_type;
-
-        /** the iterator tag (image traverser)
-        */
-    typedef image_traverser_tag  iterator_category;
-
-        /** The associated row iterator.
-        */
-    typedef PIXELTYPE const * row_iterator;
-
-        /** The associated column iterator.
-        */
-    typedef IteratorAdaptor<ContigousMemoryColumnIteratorPolicy<ConstImageIterator> >
-        column_iterator;
+    typedef ImageIteratorBase<ConstImageIterator<PIXELTYPE>, 
+                        PIXELTYPE, PIXELTYPE const &, PIXELTYPE const *> Base;
+    
+    typedef typename Base::pointer         pointer;
+    typedef typename Base::difference_type difference_type;
 
         /** Construct from raw memory with 'offset' between lines.
         If the raw memory is encapsulated in an image object this
-        object should have a fatory function that constructs the
+        object should have a factory function that constructs the
         iterator.
         */
     ConstImageIterator(pointer base, int offset)
-    : ImageIteratorBase<PIXELTYPE>(base, offset)
+    : Base(base, offset)
     {}
 
-        /** Copy constructor */
-    ConstImageIterator(const ConstImageIterator & rhs)
-    : ImageIteratorBase<PIXELTYPE>(rhs)
+    ConstImageIterator(Base const & o)
+    : Base(o)
     {}
 
-        /** Defult constructor */
+        /** Default constructor */
     ConstImageIterator()
-    : ImageIteratorBase<PIXELTYPE>()
+    : Base()
     {}
 
-        /** Constructor from mutable iterator */
-    ConstImageIterator(const ImageIterator<PIXELTYPE> & rhs)
-    : ImageIteratorBase<PIXELTYPE>(rhs)
-    {}
-
-        /** Copy assignment */
-    ConstImageIterator & operator=(const ConstImageIterator & rhs)
+    ConstImageIterator & operator=(Base const & o)
     {
-        if(this != &rhs)
-        {
-            ImageIteratorBase<PIXELTYPE>::operator=(rhs);
-        }
+        Base::operator=(o);
         return *this;
     }
-
-        /** Assignment from mutable iterator */
-    ConstImageIterator &
-    operator=(const ImageIterator<PIXELTYPE> & rhs)
-    {
-        ImageIteratorBase<PIXELTYPE>::operator=(rhs);
-        return *this;
-    }
-
-    /** @name Computed Assignment */
-    //@{
-        /** Add offset via Diff2D
-        */
-    ConstImageIterator & operator+=(Diff2D const & s)
-    {
-        ImageIteratorBase<PIXELTYPE>::operator+=(s);
-        return *this;
-    }
-        /** Subtract offset via Diff2D
-        */
-    ConstImageIterator & operator-=(Diff2D const & s)
-    {
-        ImageIteratorBase<PIXELTYPE>::operator-=(s);
-        return *this;
-    }
-
-    //@}
-
-    Diff2D operator-(ConstImageIterator const & rhs) const
-    {
-        return Diff2D(x - rhs.x, y - rhs.y);
-    }
-
+    
     /** @name Construct iterator at a distance */
     //@{
         /** Add a distance
         */
-    ConstImageIterator operator+(Diff2D const & s) const
+    ConstImageIterator operator+(difference_type const & s) const
     {
         ConstImageIterator ret(*this);
 
@@ -1108,9 +947,10 @@ class ConstImageIterator: public ImageIteratorBase<PIXELTYPE>
 
         return ret;
     }
+
         /** Subtract a distance
         */
-    ConstImageIterator operator-(Diff2D const & s) const
+    ConstImageIterator operator-(difference_type const & s) const
     {
         ConstImageIterator ret(*this);
 
@@ -1118,61 +958,7 @@ class ConstImageIterator: public ImageIteratorBase<PIXELTYPE>
 
         return ret;
     }
-    //@}
-
-    /** @name Access the Pixels */
-    //@{
-        /** Read current pixel. <br>
-            usage: <TT> SomePixelType value = *iterator </TT>
-        */
-    reference operator*() const
-    {
-       return current();
-    }
-
-        /** Call member of current pixel. <br>
-            usage: <TT> iterator->pixelMemberFunction() </TT>
-        */
-    pointer operator->() const
-    {
-        return &current();
-    }
-
-        /** Read pixel at offset (dx, dy) from current location. <br>
-            usage: <TT> SomePixelType value = iterator(dx, dy) </TT>
-        */
-    index_reference operator()(int dx, int dy) const
-    {
-       return current(dx, dy);
-    }
-
-        /** Read pixel at offset from current location. <br>
-            usage: <TT> SomePixelType value = iterator[Diff2D(1,1)] </TT>
-        */
-    index_reference operator[](Diff2D const & d) const
-    {
-        return current(d);
-    }
-
-        /** Read pixel with offset [dy][dx] from current pixel.
-            Note that the 'x' index is the trailing index. <br>
-            usage: <TT> SomePixelType value = iterator[dy][dx] </TT>
-        */
-    pointer operator[](int dy) const
-    {
-        return &current()+dy*width();
-    }
-    //@}
-
-    row_iterator rowIterator() const
-        { return &(this->current()); }
-
-    column_iterator columnIterator() const
-    {
-        typedef typename column_iterator::BaseType Iter;
-        return column_iterator(Iter(&current(), width()));
-    }
-
+   //@}
 };
 
 #ifndef NO_PARTIAL_TEMPLATE_SPECIALIZATION
