@@ -24,6 +24,7 @@
 #define VIGRA_COMBINEIMAGES_HXX
 
 #include "vigra/utilities.hxx"
+#include <cmath>
 
 namespace vigra {
 
@@ -478,6 +479,7 @@ combineThreeImages(triple<SrcImageIterator1, SrcImageIterator1, SrcAccessor1> sr
 /********************************************************/
 
 /** Calculate the magnitude from two arguments.
+    Can be used in conjunction with \Ref{gradientBasedTransform}.
 */
 template <class ValueType>
 class MagnitudeFunctor
@@ -488,16 +490,55 @@ class MagnitudeFunctor
         */
     typedef ValueType value_type;
     
-        /** calculate transform '#sqrt(v1*v1 + v2*v2)#'. Note that
-            the appropriate #sqrt()# function must be included
+        /** calculate transform '#sqrt(v1*v1 + v2*v2)#'. 
             
             @memo
         */
     value_type operator()(value_type const & v1, value_type const & v2) const
     {
-        return sqrt(v1*v1 + v2*v2);
+        return std::sqrt(v1*v1 + v2*v2);
     }
 };
+
+/********************************************************/
+/*                                                      */
+/*             RGBGradientMagnitudeFunctor              */
+/*                                                      */
+/********************************************************/
+
+
+/** Calculate the gradient magnitude from RGB arguments.
+    Can be used in conjunction with \Ref{gradientBasedTransform}.
+*/
+template <class ValueType>
+class RGBGradientMagnitudeFunctor
+{
+  public:
+        /* the functor's value type
+            @memo
+        */
+    typedef ValueType value_type;
+    
+        /** Calculate the gradient magnitude form given RGB components.
+            The function returns 
+            
+            \[ \sqrt{|\nabla red|^2 + |\nabla green|^2 + |\nabla blue|^2}
+            \]
+            
+            where $|\nabla red|^2$ is defined by #gx.red()*gx.red() + gy.red()*gy.red()#.
+            
+            #ValueType# (the RGB's component type) must support addition, multiplication, 
+            abd #sqrt()#.
+        */
+    ValueType 
+    operator()(RGBValue<ValueType> const & gx, RGBValue<ValueType> const & gy) const
+    {
+        return sqrt(gx.red()*gx.red() + gx.green()*gx.green() +
+                    gx.blue()*gx.blue() + gy.red()*gy.red() + 
+                    gy.green()*gy.green() + gy.blue()*gy.blue());
+    }
+};
+
 //@}
 
 } // namespace vigra

@@ -226,13 +226,13 @@ transformImage(triple<SrcImageIterator, SrcImageIterator, SrcAccessor> src,
 template <class SrcImageIterator, class SrcAccessor,
           class MaskImageIterator, class MaskAccessor,
           class DestImageIterator, class DestAccessor,
-      class Functor>
+          class Functor>
 void
 transformImageIf(SrcImageIterator src_upperleft, 
             SrcImageIterator src_lowerright, SrcAccessor sa,
             MaskImageIterator mask_upperleft, MaskAccessor ma,
-        DestImageIterator dest_upperleft, DestAccessor da,
-        Functor f)
+            DestImageIterator dest_upperleft, DestAccessor da,
+            Functor f)
 {
     int w = src_lowerright.x - src_upperleft.x;
     int h = src_lowerright.y - src_upperleft.y;
@@ -255,7 +255,7 @@ transformImageIf(SrcImageIterator src_upperleft,
 template <class SrcImageIterator, class SrcAccessor,
           class MaskImageIterator, class MaskAccessor,
           class DestImageIterator, class DestAccessor,
-      class Functor>
+          class Functor>
 inline
 void
 transformImageIf(triple<SrcImageIterator, SrcImageIterator, SrcAccessor> src,
@@ -266,6 +266,176 @@ transformImageIf(triple<SrcImageIterator, SrcImageIterator, SrcAccessor> src,
     transformImageIf(src.first, src.second, src.third, 
                      mask.first, mask.second, 
              dest.first, dest.second, f);
+}
+
+/********************************************************/
+/*                                                      */
+/*               gradientBasedTransform                 */
+/*                                                      */
+/********************************************************/
+
+/** Calculate a function of the image gradient. The gradient and the function
+    represented by #Functor f# are calculated in one go: for each location, the
+    symmetric difference in x- and y-directions (asymmetric difference at the 
+    image borders) are passed to the given functor, and the result is written 
+    the destination image. Functors to be used with this function
+    include \Ref{MagnitudeFunctor} and 
+    \Ref{RGBGradientMagnitudeFunctor}.
+    
+    {\bf Declarations:}
+    
+    pass arguments explicitly:
+    \begin{verbatim}
+    namespace vigra {
+        template <class SrcImageIterator, class SrcAccessor,
+                  class DestImageIterator, class DestAccessor, class Functor>
+        void
+        gradientBasedTransform(SrcImageIterator srcul, SrcImageIterator srclr, SrcAccessor sa,
+                      DestImageIterator destul, DestAccessor da, Functor f)
+    }
+    \end{verbatim}
+    
+    
+    use argument objects in conjuction with \Ref{Argument Object Factories}:
+    \begin{verbatim}
+    namespace vigra {
+        template <class SrcImageIterator, class SrcAccessor,
+                  class DestImageIterator, class DestAccessor, class Functor>
+        void
+        gradientBasedTransform(triple<SrcImageIterator, SrcImageIterator, SrcAccessor> src,
+                       pair<DestImageIterator, DestAccessor> dest, Functor const & f)
+    }
+    \end{verbatim}
+    
+    {\bf Usage:}
+    
+    Include-File:
+    \URL[vigra/transformimage.hxx]{../include/vigra/transformimage.hxx}
+    
+    
+    \begin{verbatim}
+    vigra::FImage src(w,h), magnitude(w,h);    
+    ...
+    
+    gradientBasedTransform(srcImageRange(src), destImage(magnitude),
+                                vigra::MagnitudeFunctor<float>());
+    \end{verbatim}
+
+    {\bf Required Interface:}
+    
+    \begin{verbatim}
+    SrcImageIterator is, isend;
+    DestImageIterator id;
+    
+    SrcAccessor src_accessor;
+    DestAccessor dest_accessor;
+    
+    typename NumericTraits<typename SrcAccessor::value_type>::RealPromote 
+        diffx, diffy;
+        
+    diffx = src_accessor(is, Diff2D(-1,0)) - src_accessor(is, Diff2D(1,0));
+    diffy = src_accessor(is, Diff2D(0,-1)) - src_accessor(is, Diff2D(0,1));
+        
+    Functor f;
+    
+    dest_accessor.set(f(diffx, diffy), id);
+
+    \end{verbatim}
+
+    @memo
+*/
+
+template <class SrcImageIterator, class SrcAccessor,
+          class DestImageIterator, class DestAccessor, class Functor>
+void
+gradientBasedTransform(SrcImageIterator srcul, SrcImageIterator srclr, SrcAccessor sa,
+              DestImageIterator destul, DestAccessor da, Functor grad)
+{
+    int w = srclr.x - srcul.x;
+    int h = srclr.y - srcul.y;
+    int x,y;
+    
+    SrcImageIterator sy = srcul;
+    DestImageIterator dy = destul;
+    
+    static const Diff2D left(-1,0);
+    static const Diff2D right(1,0);
+    static const Diff2D top(0,-1);
+    static const Diff2D bottom(0,1);
+    
+    typename NumericTraits<typename SrcAccessor::value_type>::RealPromote 
+             diffx, diffy;
+    
+    SrcImageIterator sx = sy;
+    DestImageIterator dx = dy;
+
+    diffx = sa(sx) - sa(sx, right);
+    diffy = sa(sx) - sa(sx, bottom);
+    da.set(grad(diffx, diffy), dx);
+
+    for(x=2, ++sx.x, ++dx.x; x<w; ++x, ++sx.x, ++dx.x)
+    {
+        diffx = (sa(sx, left) - sa(sx, right)) / 2.0;
+        diffy = sa(sx) - sa(sx, bottom);
+        da.set(grad(diffx, diffy), dx);
+    }
+
+    diffx = sa(sx, left) - sa(sx);
+    diffy = sa(sx) - sa(sx, bottom);
+    da.set(grad(diffx, diffy), dx);
+    
+    ++sy.y; 
+    ++dy.y;
+
+    for(y=2; y<h; ++y, ++sy.y, ++dy.y)
+    {
+        sx = sy;
+        dx = dy;
+        
+        diffx = sa(sx) - sa(sx, right);
+        diffy = (sa(sx, top) - sa(sx, bottom)) / 2.0;
+        da.set(grad(diffx, diffy), dx);
+        
+        for(x=2, ++sx.x, ++dx.x; x<w; ++x, ++sx.x, ++dx.x)
+        {
+            diffx = (sa(sx, left) - sa(sx, right)) / 2.0;
+            diffy = (sa(sx, top) - sa(sx, bottom)) / 2.0;
+            da.set(grad(diffx, diffy), dx);
+        }
+        
+        diffx = sa(sx, left) - sa(sx);
+        diffy = (sa(sx, top) - sa(sx, bottom)) / 2.0;
+        da.set(grad(diffx, diffy), dx);
+    }
+    
+    sx = sy;
+    dx = dy;
+
+    diffx = sa(sx) - sa(sx, right);
+    diffy = sa(sx, top) - sa(sx);
+    da.set(grad(diffx, diffy), dx);
+
+    for(x=2, ++sx.x, ++dx.x; x<w; ++x, ++sx.x, ++dx.x)
+    {
+        diffx = (sa(sx, left) - sa(sx, right)) / 2.0;
+        diffy = sa(sx, top) - sa(sx);
+        da.set(grad(diffx, diffy), dx);
+    }
+
+    diffx = sa(sx, left) - sa(sx);
+    diffy = sa(sx, top) - sa(sx);
+    da.set(grad(diffx, diffy), dx);
+}
+
+template <class SrcImageIterator, class SrcAccessor,
+          class DestImageIterator, class DestAccessor, class Functor>
+inline
+void
+gradientBasedTransform(triple<SrcImageIterator, SrcImageIterator, SrcAccessor> src,
+               pair<DestImageIterator, DestAccessor> dest, Functor const & grad)
+{
+    gradientBasedTransform(src.first, src.second, src.third,
+                  dest.first, dest.second, grad);
 }
 
 //@}
@@ -415,7 +585,7 @@ template <class SrcValueType, class DestValueType>
 class Threshold
 {
    public:
-    /** init thresholds and resturn values
+    /** init thresholds and return values
         @memo
     */
     Threshold(SrcValueType lower, SrcValueType higher,
