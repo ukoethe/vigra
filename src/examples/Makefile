@@ -1,4 +1,15 @@
-include ../../config/Makefile.include
+# uncomment if CXX does not expand to the compiler you want to use
+# CXX = g++
+
+# update path according to where 'vigra-config' is installed
+CXXFLAGS  := -O $(shell ../../config/vigra-config --cxxflags)
+IMPEX_LIB := $(shell ../../config/vigra-config --impex-lib)
+# if your 'make'-program does not support $(shell ...), write
+#    CXXFLAGS  = -O `../../config/vigra-config --cxxflags`
+#    IMPEX_LIB = `../../config/vigra-config --impex-lib`
+
+%.o: %.cxx
+	$(CXX) $(CXXFLAGS) -c $*.cxx
 
 TARGETS = \
     convert \
@@ -16,37 +27,37 @@ TARGETS = \
 all: $(TARGETS)
 
 convert:  convert.o
-	$(CXX) $(CXXFLAGS) $(CXXINCLUDES) -o convert convert.o $(IMPEX_LIB)
+	$(CXX) -o convert convert.o $(IMPEX_LIB)
 
 subimage:  subimage.o
-	$(CXX) $(CXXFLAGS) $(CXXINCLUDES) -o subimage subimage.o $(IMPEX_LIB)
+	$(CXX) -o subimage subimage.o $(IMPEX_LIB)
 
 invert:  invert.o
-	$(CXX) $(CXXFLAGS) $(CXXINCLUDES) -o invert invert.o $(IMPEX_LIB)
+	$(CXX) -o invert invert.o $(IMPEX_LIB)
 
 invert_explicitly:  invert_explicitly.o
-	$(CXX) $(CXXFLAGS) $(CXXINCLUDES) -o invert_explicitly invert_explicitly.o $(IMPEX_LIB)
+	$(CXX) -o invert_explicitly invert_explicitly.o $(IMPEX_LIB)
 
 resize:  resize.o
-	$(CXX) $(CXXFLAGS) $(CXXINCLUDES) -o resize resize.o $(IMPEX_LIB)
+	$(CXX) -o resize resize.o $(IMPEX_LIB)
 
 smooth:  smooth.o
-	$(CXX) $(CXXFLAGS) $(CXXINCLUDES) -o smooth smooth.o $(IMPEX_LIB)
+	$(CXX) -o smooth smooth.o $(IMPEX_LIB)
 
 profile:  profile.o
-	$(CXX) $(CXXFLAGS) $(CXXINCLUDES) -o profile profile.o $(IMPEX_LIB)
+	$(CXX) -o profile profile.o $(IMPEX_LIB)
 
 pyramid:  pyramid.o
-	$(CXX) $(CXXFLAGS) $(CXXINCLUDES) -o pyramid pyramid.o $(IMPEX_LIB)
+	$(CXX) -o pyramid pyramid.o $(IMPEX_LIB)
 
 edge:  edge.o
-	$(CXX) $(CXXFLAGS) $(CXXINCLUDES) -o edge edge.o $(IMPEX_LIB)
+	$(CXX) -o edge edge.o $(IMPEX_LIB)
 
 watershed:  watershed.o
-	$(CXX) $(CXXFLAGS) $(CXXINCLUDES) -o watershed watershed.o $(IMPEX_LIB)
+	$(CXX) -o watershed watershed.o $(IMPEX_LIB)
 
 voronoi:  voronoi.o
-	$(CXX) $(CXXFLAGS) $(CXXINCLUDES) -o voronoi voronoi.o $(IMPEX_LIB)
+	$(CXX) -o voronoi voronoi.o $(IMPEX_LIB)
 
 clean:
 	rm -f *.o $(TARGETS) *.exe core *.plg *ilk *.lib *.pdb *.exp \

@@ -1,4 +1,4 @@
-CXXFLAGS = -O -I../include `vigra-config --cxxflags` -I/software/boost-1.25.0/include
+include ../Makefile.include
 
 #OBJ = one_band_basic_image_test_suite.o
 #OBJ = gray_image_test_suite.o
@@ -64,4 +64,3 @@ ifneq "$(MAKECMDGOALS)" "clean"
 include $(patsubst %.o, %.d, $(OBJ))
 endif
 
-include ../Makefile.include

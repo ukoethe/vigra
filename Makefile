@@ -14,24 +14,24 @@ install-exec:
 
 install-includes:
 	if test $(includedir) != "$(vigra_builddir)/include" ; then \
-            $(INSTALL) -d $(includedir)/vigra ; \
-            $(INSTALL) --mode=644 $(vigra_builddir)/include/vigra/*.hxx $(includedir)/vigra ; \
-            $(INSTALL) --mode=644 $(vigra_builddir)/include/vigra/*.h $(includedir)/vigra ; \
-    fi
+          $(INSTALL) -d $(includedir)/vigra ; \
+          $(INSTALL) --mode=644 $(vigra_builddir)/include/vigra/*.hxx $(includedir)/vigra ; \
+          $(INSTALL) --mode=644 $(vigra_builddir)/include/vigra/*.h $(includedir)/vigra ; \
+        fi
 
 install-docs:
 	if test $(prefix) != $(vigra_builddir) ; then \
-        $(INSTALL) -d $(prefix)/doc/documents ; \
-            $(INSTALL) --mode=644 \
-                 $(vigra_builddir)/doc/*.html \
-                 $(vigra_builddir)/doc/classvigra*.gif $(vigra_builddir)/doc/form*.gif \
-                 $(vigra_builddir)/doc/doxygen.gif $(vigra_builddir)/doc/doxygen.css \
-               $(prefix)/doc ; \
-            $(INSTALL) --mode=644 \
-                 $(vigra_builddir)/doc/documents/*.ps \
-                 $(vigra_builddir)/doc/documents/*.gif \
-               $(prefix)/doc/documents ; \
-    fi
+          $(INSTALL) -d $(docdir)/documents ; \
+          $(INSTALL) --mode=644 \
+            $(vigra_builddir)/doc/*.html \
+            $(vigra_builddir)/doc/classvigra*.gif $(vigra_builddir)/doc/form*.gif \
+            $(vigra_builddir)/doc/doxygen.gif $(vigra_builddir)/doc/doxygen.css \
+            $(docdir) ; \
+          $(INSTALL) --mode=644 \
+            $(vigra_builddir)/doc/documents/*.ps \
+            $(vigra_builddir)/doc/documents/*.gif \
+            $(docdir)/documents ; \
+        fi
 
 examples::
 	@cd src ; $(MAKE) examples ; cd ..
@@ -50,8 +50,8 @@ distclean: clean
 	rm -f config.log config.cache config.status
 	cp config/Makefile.include.empty config/Makefile.include
 
-maintainer-clean: distclean
-	rm -f aclocal.m4 configure libtool
+maintainer-clean: distclean docclean
+	rm -f config/aclocal.m4 configure libtool
 
 autoconf:
 	cd config && \

@@ -2,17 +2,17 @@ ifneq "$(MAKECMDGOALS)" "clean"
 include ../../current/config/Makefile.include
 endif
 
-BOOST_FLAGS = -I/software/boost-1.25.0/include -I../include
+CXXINCLUDES += -I/software/boost-1.25.0/include -I../include
 
 clean::
 	rm -f *.o test core *.d
 	rm -rf Debug ii_files *.plg *.ilk
 
 %.o: %.cxx
-	$(CXX) $(CXXFLAGS) $(CXXINCLUDES) $(BOOST_FLAGS) -c $*.cxx
+	$(CXX) $(CXXFLAGS) $(CXXINCLUDES) -c $*.cxx
 
 %.d: %.cxx
 	@echo updating header dependencies for $*.cxx
 	@rm -f $*.d
-	@(echo -e "$*.d \c" ; $(CXX) -M $(CXXFLAGS) $(CXXINCLUDES) $(BOOST_FLAGS) -c $*.cxx) > $*.d \
+	@(echo "$*.d \c" ; $(CXX) -M $(CXXFLAGS) $(CXXINCLUDES) -c $*.cxx) > $*.d \
         || { rm -f $*.d; exit 1; }

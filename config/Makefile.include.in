@@ -10,16 +10,17 @@ exec_prefix = @exec_prefix@
 includedir = @includedir@
 libdir = @libdir@
 bindir = @bindir@
+docdir = @datadir@/doc/vigra
 
 CC = @CC@
-CFLAGS = @CFLAGS@
-LIBCFLAGS = @LIBCFLAGS@
-CINCLUDES = @CINCLUDES@
+CFLAGS := @CFLAGS@
+LIBCFLAGS := @LIBCFLAGS@
+CINCLUDES := @CINCLUDES@
 
 CXX = @CXX@
-CXXFLAGS = @CXXFLAGS@
-LIBCXXFLAGS = @LIBCXXFLAGS@
-CXXINCLUDES = @CXXINCLUDES@
+CXXFLAGS := @CXXFLAGS@ 
+LIBCXXFLAGS := @LIBCXXFLAGS@
+CXXINCLUDES := @CXXINCLUDES@
 
 LD = @LD@
 LIBS = @LIBS@
@@ -54,13 +55,13 @@ INSTALL = @INSTALL@
 	$(LIBCXX) $(CXXFLAGS) $(LIBCXXFLAGS) $(CXXINCLUDES) -c $*.cxx
 
 %.d: %.c
-	@echo creating $@
-	@set -e; $(CC) -M $(CFLAGS) $(CINCLUDES) -c $*.c \
-            | sed 's/\($*\)\.o[ :]*/\1.o $@ : /g' > $@; \
-                [ -s $@ ] || rm -f $@
+	@echo updating header dependencies for $*.c
+	@rm -f $*.d
+	@(echo "$*.d \c" ; $(CC) -M $(CFLAGS) $(CINCLUDES) -c $*.c) > $*.d \
+        || { rm -f $*.d; exit 1; }
 
 %.d: %.cxx
-	@echo creating $@
-	@set -e; $(CXX) -M $(CXXFLAGS) $(CXXINCLUDES) -c $*.cxx \
-            | sed 's/\($*\)\.o[ :]*/\1.o $@ : /g' > $@; \
-                [ -s $@ ] || rm -f $@
+	@echo updating header dependencies for $*.cxx
+	@rm -f $*.d
+	@(echo "$*.d \c" ; $(CXX) -M $(CXXFLAGS) $(CXXINCLUDES) -c $*.cxx) > $*.d \
+        || { rm -f $*.d; exit 1; }
