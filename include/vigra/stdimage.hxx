@@ -264,14 +264,14 @@ struct IteratorTraits<BasicImageIterator<T, T **> >
 {
     typedef BasicImageIterator<T, T **>          Iterator;
     typedef Iterator                             iterator;
-    typedef iterator::iterator_category          iterator_category;
-    typedef iterator::value_type                 value_type;
-    typedef iterator::reference                  reference;
-    typedef iterator::index_reference            index_reference;
-    typedef iterator::pointer                    pointer;
-    typedef iterator::difference_type            difference_type;
-    typedef iterator::row_iterator               row_iterator;
-    typedef iterator::column_iterator            column_iterator;
+    typedef typename iterator::iterator_category iterator_category;
+    typedef typename iterator::value_type        value_type;
+    typedef typename iterator::reference         reference;
+    typedef typename iterator::index_reference   index_reference;
+    typedef typename iterator::pointer           pointer;
+    typedef typename iterator::difference_type   difference_type;
+    typedef typename iterator::row_iterator      row_iterator;
+    typedef typename iterator::column_iterator   column_iterator;
     typedef StandardAccessor<T>                  DefaultAccessor; 
     typedef StandardAccessor<T>                  default_accessor; 
 };  
@@ -281,14 +281,14 @@ struct IteratorTraits<ConstBasicImageIterator<T, T **> >
 {
     typedef ConstBasicImageIterator<T, T **>     Iterator;
     typedef Iterator                             iterator;
-    typedef iterator::iterator_category          iterator_category;
-    typedef iterator::value_type                 value_type;
-    typedef iterator::reference                  reference;
-    typedef iterator::index_reference            index_reference;
-    typedef iterator::pointer                    pointer;
-    typedef iterator::difference_type            difference_type;
-    typedef iterator::row_iterator               row_iterator;
-    typedef iterator::column_iterator            column_iterator;
+    typedef typename iterator::iterator_category iterator_category;
+    typedef typename iterator::value_type        value_type;
+    typedef typename iterator::reference         reference;
+    typedef typename iterator::index_reference   index_reference;
+    typedef typename iterator::pointer           pointer;
+    typedef typename iterator::difference_type   difference_type;
+    typedef typename iterator::row_iterator      row_iterator;
+    typedef typename iterator::column_iterator   column_iterator;
     typedef StandardConstAccessor<T>             DefaultAccessor; 
     typedef StandardConstAccessor<T>             default_accessor; 
 };  
