@@ -142,12 +142,12 @@ class PreconditionViolation : public ContractViolation
   public:
     PreconditionViolation(char const * message, const char * file, int line)
     {
-        snprintf( what_, bufsize_, "\nPrecondition Violation!\n%s\n(%s:%d)\n", message, file, line);
+        snprintf( what_, bufsize_, "\nPrecondition violation!\n%s\n(%s:%d)\n", message, file, line);
     }
     
     PreconditionViolation(char const * message)
     {
-        snprintf( what_, bufsize_, "\nPrecondition Violation!\n%s\n", message);
+        snprintf( what_, bufsize_, "\nPrecondition violation!\n%s\n", message);
     }
 };
 
@@ -156,12 +156,12 @@ class PostconditionViolation : public ContractViolation
   public:
     PostconditionViolation(char const * message, const char * file, int line)
     {
-        snprintf( what_, bufsize_, "\nPostcondition Violation!\n%s\n(%s:%d)\n", message, file, line);
+        snprintf( what_, bufsize_, "\nPostcondition violation!\n%s\n(%s:%d)\n", message, file, line);
     }
     
     PostconditionViolation(char const * message)
     {
-        snprintf( what_, bufsize_, "\nPostcondition Violation!\n%s\n", message);
+        snprintf( what_, bufsize_, "\nPostcondition violation!\n%s\n", message);
     }
 };
 
@@ -170,12 +170,12 @@ class InvariantViolation : public ContractViolation
   public:
     InvariantViolation(char const * message, const char * file, int line)
     {
-        snprintf( what_, bufsize_, "\nInvariant Violation!\n%s\n(%s:%d)\n", message, file, line);
+        snprintf( what_, bufsize_, "\nInvariant violation!\n%s\n(%s:%d)\n", message, file, line);
     }
     
     InvariantViolation(char const * message)
     {
-        snprintf( what_, bufsize_, "\nInvariant Violation!\n%s\n", message);
+        snprintf( what_, bufsize_, "\nInvariant violation!\n%s\n", message);
     }
 };
 
