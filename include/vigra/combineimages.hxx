@@ -29,7 +29,7 @@ namespace vigra {
 
 /** @heading Functions to Combine Images
 
-    Note that the binary functors of the STL may also be used.
+    Note that the binary functors of the STL may be used with these functions.
 
     @memo apply functor to calculate a pixelwise transformation depending on multiple images
 */
@@ -463,6 +463,41 @@ combineThreeImages(triple<SrcImageIterator1, SrcImageIterator1, SrcAccessor1> sr
 }
 
     
+//@}
+
+/** @heading Functors to Combine Images
+
+    @memo common functors with several arguments
+*/
+//@{
+
+/********************************************************/
+/*                                                      */
+/*                    MagnitudeFunctor                  */
+/*                                                      */
+/********************************************************/
+
+/** Calculate the magnitude from two arguments.
+*/
+template <class ValueType>
+class MagnitudeFunctor
+{
+  public:
+        /* the functor's value type
+            @memo
+        */
+    typedef ValueType value_type;
+    
+        /** calculate transform '#sqrt(v1*v1 + v2*v2)#'. Note that
+            the appropriate #sqrt()# function must be included
+            
+            @memo
+        */
+    value_type operator()(value_type const & v1, value_type const & v2) const
+    {
+        return sqrt(v1*v1 + v2*v2);
+    }
+};
 //@}
 
 } // namespace vigra
