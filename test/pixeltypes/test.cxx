@@ -4,6 +4,7 @@
 #include "vigra/accessor.hxx"
 #include "vigra/tinyvector.hxx"
 #include "vigra/rgbvalue.hxx"
+#include "vigra/diff2d.hxx"
 
 using namespace vigra;
 
@@ -499,7 +500,7 @@ int main()
     std::cout << test2.report() << std::endl;
 
     Rect2DTestSuite test3;
-    failed += test.run();
+    failed += test3.run();
     std::cout << test3.report() << std::endl;
 
     return (failed != 0);
