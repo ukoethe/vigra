@@ -813,7 +813,7 @@ BasicImage<PIXELTYPE>::initLineStartArray(value_type * data, int width, int heig
 /*                                                      */
 /********************************************************/
 
-/** \brief Fundamental class template for images .
+/** \brief BasicImage using foreign memory.
 
     <b>\#include</b> "<a href="basicimage_8hxx-source.html">vigra/basicimage.hxx</a>"
 
