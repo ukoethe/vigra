@@ -25,6 +25,7 @@
 
 #include <stdexcept>
 #include <stdio.h>
+#include <string>
 #include "vigra/config.hxx"
           
 /*! \page ErrorReporting Error Reporting
@@ -171,10 +172,24 @@ void throw_invariant_error(bool predicate, char const * message, char const * fi
 }
 
 inline
+void throw_invariant_error(bool predicate, std::string message, char const * file, int line)
+{
+    if(!predicate)
+	   throw vigra::InvariantViolation(message.c_str(), file, line); 
+}
+
+inline
 void throw_precondition_error(bool predicate, char const * message, char const * file, int line)
 {
     if(!predicate)
 	   throw vigra::PreconditionViolation(message, file, line); 
+}
+
+inline
+void throw_precondition_error(bool predicate, std::string message, char const * file, int line)
+{
+    if(!predicate)
+	   throw vigra::PreconditionViolation(message.c_str(), file, line); 
 }
 
 inline
@@ -185,10 +200,25 @@ void throw_postcondition_error(bool predicate, char const * message, char const 
 }
 
 inline
+void throw_postcondition_error(bool predicate, std::string message, char const * file, int line)
+{
+    if(!predicate)
+	   throw vigra::PostconditionViolation(message.c_str(), file, line); 
+}
+
+inline
 void throw_runtime_error(char const * message, char const * file, int line)
 {
     char what_[1100];
     sprintf(what_, "\n%.900s\n(%.100s:%d)\n", message, file, line);
+    throw std::runtime_error(what_); 
+}
+
+inline
+void throw_runtime_error(std::string message, char const * file, int line)
+{
+    char what_[1100];
+    sprintf(what_, "\n%.900s\n(%.100s:%d)\n", message.c_str(), file, line);
     throw std::runtime_error(what_); 
 }
 
@@ -221,6 +251,27 @@ void throw_postcondition_error(bool predicate, char const * message)
 {
     if(!predicate)
 	   throw vigra::PostconditionViolation(message); 
+}
+
+inline
+void throw_invariant_error(bool predicate, std::string message)
+{
+    if(!predicate)
+	   throw vigra::InvariantViolation(message.c_str()); 
+}
+
+inline
+void throw_precondition_error(bool predicate, std::string message)
+{
+    if(!predicate)
+	   throw vigra::PreconditionViolation(message.c_str()); 
+}
+
+inline
+void throw_postcondition_error(bool predicate, std::string message)
+{
+    if(!predicate)
+	   throw vigra::PostconditionViolation(message.c_str()); 
 }
 
 #define vigra_precondition(PREDICATE, MESSAGE) vigra::throw_precondition_error((PREDICATE), MESSAGE)
