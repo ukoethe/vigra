@@ -58,6 +58,14 @@ struct ImageFileTypeInfo
     This is useful for creating error messages if VIGRA encounters an
     image format it doesn't recognize.
 
+    <b> Declaration:</b>
+    
+    \code
+    namespace vigra {
+        std::string impexListFormats();
+    }
+    \endcode
+    
     <b> Usage:</b>
 
     <b>\#include</b> "<a href="impex_8hxx-source.html">vigra/impex.hxx</a>"<br>
@@ -75,6 +83,14 @@ std::string impexListFormats();
     This checks the first few bytes of the file and compares them with the 
     "magic strings" of each recognized image format.
 
+    <b> Declaration:</b>
+    
+    \code
+    namespace vigra {
+        bool isImage(char const * filename);
+    }
+    \endcode
+    
     <b> Usage:</b>
 
     <b>\#include</b> "<a href="impex_8hxx-source.html">vigra/impex.hxx</a>"<br>

@@ -185,9 +185,9 @@ void internalNonlinearDiffusionAOSStep(
     
     \f[
         \frac{\partial}{\partial t} u =
-        \frac{\partial}{\partial <b> x</b>}
+        \frac{\partial}{\partial x}
           \left( g(|\nabla u|) 
-                 \frac{\partial}{\partial <b> x</b>} u
+                 \frac{\partial}{\partial x} u
           \right)
     \f]
     

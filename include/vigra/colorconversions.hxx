@@ -1707,6 +1707,14 @@ polar2Lab(TinyVector<float, 3> const & polar)
 
 /** \brief Create polar representation form L*a*b*
 
+    <b> Declaration:</b>
+    
+    \code
+    namespace vigra {
+        TinyVector<float, 3> lab2Polar(TinyVector<float, 3> const & lab);
+    }
+    \endcode
+    
     <b>\#include</b> "<a href="colorconversions_8hxx-source.html">vigra/colorconversions.hxx</a>"<br>
     Namespace: vigra
     
@@ -1780,6 +1788,14 @@ polar2Luv(TinyVector<float, 3> const & polar)
 
 /** \brief Create polar representation form L*u*v*
 
+    <b> Declaration:</b>
+    
+    \code
+    namespace vigra {
+        TinyVector<float, 3> luv2Polar(TinyVector<float, 3> const & luv);
+    }
+    \endcode
+    
     <b>\#include</b> "<a href="colorconversions_8hxx-source.html">vigra/colorconversions.hxx</a>"<br>
     Namespace: vigra
     
@@ -1853,6 +1869,14 @@ polar2YPrimePbPr(TinyVector<float, 3> const & polar)
 
 /** \brief Create polar representation form Y'PbPr
 
+    <b> Declaration:</b>
+    
+    \code
+    namespace vigra {
+        TinyVector<float, 3> yPrimePbPr2Polar(TinyVector<float, 3> const & ypbpr);
+    }
+    \endcode
+    
     <b>\#include</b> "<a href="colorconversions_8hxx-source.html">vigra/colorconversions.hxx</a>"<br>
     Namespace: vigra
     
@@ -1927,6 +1951,14 @@ polar2YPrimeCbCr(TinyVector<float, 3> const & polar)
 
 /** \brief Create polar representation form Y'CbCr
 
+    <b> Declaration:</b>
+    
+    \code
+    namespace vigra {
+        TinyVector<float, 3> yPrimeCbCr2Polar(TinyVector<float, 3> const & ycbcr);
+    }
+    \endcode
+    
     <b>\#include</b> "<a href="colorconversions_8hxx-source.html">vigra/colorconversions.hxx</a>"<br>
     Namespace: vigra
     
@@ -2002,6 +2034,14 @@ polar2YPrimeIQ(TinyVector<float, 3> const & polar)
 
 /** \brief Create polar representation form Y'IQ
 
+    <b> Declaration:</b>
+    
+    \code
+    namespace vigra {
+        TinyVector<float, 3> yPrimeIQ2Polar(TinyVector<float, 3> const & yiq);
+    }
+    \endcode
+    
     <b>\#include</b> "<a href="colorconversions_8hxx-source.html">vigra/colorconversions.hxx</a>"<br>
     Namespace: vigra
     
@@ -2075,6 +2115,14 @@ polar2YPrimeUV(TinyVector<float, 3> const & polar)
 
 /** \brief Create polar representation form Y'UV
 
+    <b> Declaration:</b>
+    
+    \code
+    namespace vigra {
+        TinyVector<float, 3> yPrimeUV2Polar(TinyVector<float, 3> const & yuv);
+    }
+    \endcode
+    
     <b>\#include</b> "<a href="colorconversions_8hxx-source.html">vigra/colorconversions.hxx</a>"<br>
     Namespace: vigra
     
