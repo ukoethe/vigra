@@ -2,55 +2,55 @@
 
     <DL>
     <DT>
-        <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif"> 
+        <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif">
         \ref Concepts
         <DD><em>generic interface definitions</em>
     <DT>
-        <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif"> 
+        <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif">
         \ref Utilities
         <DD><em>Basic helper functionality needed throughout</em>
     <DT>
-        <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif"> 
+        <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif">
         \ref ErrorReporting
         <DD><em>Exceptions and assertions</em>
     <DT>
-        <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif"> 
+        <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif">
         \ref NumericPromotionTraits
         <DD><em>Meta-information about arithmetic types</em>
     <DT>
-        <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif"> 
+        <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif">
         \ref PixelTypes
         <DD><em>Non-scalar types such as RGBValue and TinyVector</em>
     <DT>
-        <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif"> 
+        <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif">
         \ref ImageDataStructures
         <DD> <em>Images, image iterators, and supporting types and functions</em>
     <DT>
-        <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif"> 
+        <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif">
         \ref ImportExport
         <DD> <em>Conversion from and to other image data types</em>
     <DT>
-        <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif"> 
+        <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif">
         \ref ColorConversions
         <DD><em>Convert between RGB and other color spaces, such as L*u*v*, Y'PbPr</em>
     <DT>
-        <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif"> 
+        <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif">
         \ref ImageProcessing
         <DD> <em>Point operators, image arithmetic, convolution, morphology</em>
     <DT>
-        <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif"> 
+        <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif">
         \ref ImageAnalysis
         <DD> <em>Segmentation and feature extraction algorithms</em>
     <DT>
-        <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif"> 
+        <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif">
         \ref Examples
         <DD> <em>Demonstration programs for VIGRA's usage </em>
     <DT>
-        <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif"> 
+        <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif">
         \ref CreditsChangelog
         <DD> <em>Who contributed what?</em>
     <DT>
-        <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif"> 
+        <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif">
         \ref Installation
         <DD>
     </DL>
@@ -62,42 +62,42 @@
     by <a href="http://kogs-www.informatik.uni-hamburg.de/~koethe/">Ullrich K&ouml;the</a>
     </CENTER>
     
-    VIGRA  is a computer vision library that puts its main emphasize on 
+    VIGRA  is a computer vision library that puts its main emphasize on
     <em>flexible algorithms</em>, because
     algorithms represent the principle know-how of this field.
     The library was consequently built
     using <em>generic programming</em> as introduced by Stepanov
-    and Musser  and exemplified in the C++ 
+    and Musser  and exemplified in the C++
     <a href="WWW_STL_DOCU">Standard Template Library</a>.
-    By writing a few adapters (image iterators and accessors) 
-    you can use VIGRA's algorithms on top of 
+    By writing a few adapters (image iterators and accessors)
+    you can use VIGRA's algorithms on top of
     <em>your</em> data structures, within <em>your</em> environment. Alternatively,
     you can also use the data structures provided within VIGRA, which can
-    be easily adapted to a wide range of applications. VIGRA's flexibility 
+    be easily adapted to a wide range of applications. VIGRA's flexibility
     comes almost for free: Since the design uses compile-time polymorphism
-    (templates), performance of the compiled program approaches that 
+    (templates), performance of the compiled program approaches that
     of a traditional, hand tuned, inflexible, solution.
     
-    VIGRA's design is documented in the chapter <em>"Reusable Software in 
-    Computer Vision"</em> by 
-    <a href="http://kogs-www.informatik.uni-hamburg.de/~koethe/">Ullrich K&ouml;the</a>, 
-    in: B. J&auml;hne, H. Hau&szlig;ecker, P. Gei&szlig;ler: "Handbook on 
-    Computer Vision and  Applications", volume 3, Acadamic Press, 1999. 
-    If you don't have the book,  you may read a 
-    <a href="documents/GenericProg2D.ps">draft of this article</a>. A shorter 
+    VIGRA's design is documented in the chapter <em>"Reusable Software in
+    Computer Vision"</em> by
+    <a href="http://kogs-www.informatik.uni-hamburg.de/~koethe/">Ullrich K&ouml;the</a>,
+    in: B. J&auml;hne, H. Hau&szlig;ecker, P. Gei&szlig;ler: "Handbook on
+    Computer Vision and  Applications", volume 3, Acadamic Press, 1999.
+    If you don't have the book,  you may read a
+    <a href="documents/GenericProg2D.ps">draft of this article</a>. A shorter
     article <em>"<a href="http://kogs-www.informatik.uni-hamburg.de/~koethe/papers/GenericProg2DC++Report.ps.gz">STL Style Generic Programming with Images</a>"</em>
-    describing some of the 
+    describing some of the
     ideas has appeared in the January 2000 issue of
     <a href="http://www.creport.com/">C++ Report Magazine</a>. The most comprehensive source of information is
-    U. K&ouml;the's PhD thesis <em>"<a href="http://kogs-www.informatik.uni-hamburg.de/~koethe/papers/index.html#PhD>Generische Programmierung f&uuml;r die Bildverarbeitung</a>"</em>. 
+    U. K&ouml;the's PhD thesis <em>"<a href="http://kogs-www.informatik.uni-hamburg.de/~koethe/papers/index.html#PhD>Generische Programmierung f&uuml;r die Bildverarbeitung</a>"</em>.
     However, this is written in German.
         
-    VIGRA is subject to this <a href="LICENSE">LICENSE</a>. 
+    VIGRA is subject to this <a href="LICENSE">LICENSE</a>.
     
     
     \section Documentation Documentation
     
-    The documentation can be found in \p @docdir@, the start file is 
+    The documentation can be found in \p @docdir@, the start file is
     \p @docdir@/index.html (this file).
     
     
@@ -113,19 +113,19 @@
     <DD>
         <DL>
         <DT>
-            <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif"> 
+            <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif">
             \ref AlgebraicConcepts
             <DD> <em>Requirements for types that implement arithmetic operations</em>
         <DT>
-            <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif"> 
+            <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif">
             \ref ImageIterators
             <DD> <em>Requirements for 2D iterators</em>
         <DT>
-            <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif"> 
+            <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif">
             \ref DataAccessors
             <DD> <em>Requirements for data accessors</em>
         <DT>
-            <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif"> 
+            <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif">
             \ref CrackEdgeImage
             <DD>
         </DL>
@@ -141,19 +141,19 @@
     <DD>
         <DL>
         <DT>
-            <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif"> 
+            <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif">
             \ref vigra::RGBValue
             <DD>
         <DT>
-            <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif"> 
+            <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif">
             \ref RGBValueTraits
             <DD>
         <DT>
-            <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif"> 
+            <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif">
             \ref RGBValueOperators
             <DD>
         <DT>
-            <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif"> 
+            <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif">
             \ref RGBValueAccessors
             <DD>
         </DL>
@@ -164,15 +164,15 @@
     <DD>
         <DL>
         <DT>
-            <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif"> 
+            <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif">
             \ref vigra::TinyVector
             <DD>
         <DT>
-            <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif"> 
+            <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif">
             \ref TinyVectorTraits
             <DD>
         <DT>
-            <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif"> 
+            <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif">
             \ref TinyVectorOperators
             <DD>
         </DL>
@@ -183,19 +183,19 @@
     <DD>
         <DL>
         <DT>
-            <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif"> 
+            <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif">
             \ref vigra::FFTWComplex
             <DD>
         <DT>
-            <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif"> 
+            <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif">
             \ref FFTWComplexTraits
             <DD>
         <DT>
-            <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif"> 
+            <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif">
             \ref FFTWComplexOperators
             <DD>
         <DT>
-            <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif"> 
+            <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif">
             \ref FFTWComplexAccessors
             <DD>
         </DL>
@@ -206,31 +206,31 @@
 
     <DL>
     <DT>
-        <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif"> 
+        <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif">
         \ref vigra::BasicImage
         <DD> <em>Fundamental class template for images </em>
     <DT>
-        <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif"> 
+        <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif">
         \ref StandardImageTypes
         <DD> <em>The most common instanciations of \ref vigra::BasicImage</em>
     <DT>
-        <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif"> 
+        <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif">
         \ref ImageContainers
         <DD> <em>Classes to manage multiple images (ImageArray..)</em>
     <DT>
-        <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif"> 
+        <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif">
         \ref ImageIterators
         <DD> <em>Basic image iterator implementations </em>
     <DT>
-        <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif"> 
+        <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif">
         \ref ImageIteratorAdapters
         <DD> <em>Iterate over rows, columns, and other image subsets </em>
     <DT>
-        <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif"> 
+        <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif">
         \ref DataAccessors
         <DD> <em>Basic templates to encapsulate access to the data of an iterator</em>
     <DT>
-        <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif"> 
+        <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif">
         \ref ArgumentObjectFactories
         <DD> <em>Factory functions to create argument objects which simplify long argument lists </em>
     </DL>
@@ -242,11 +242,11 @@
     
     <DL>
     <DT>
-        <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif"> 
+        <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif">
         \ref VigraImpex
         <DD> <em>VIGRA's highlevel image import/export interface</em>
     <DT>
-        <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif"> 
+        <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif">
         \ref TIFFImpex
         <DD> <em>image import/export interface if you want to call libtiff functions directly</em>
     </DL>
@@ -256,20 +256,20 @@
 
     <b>If you already have an image data type in your system:</b>
 
-    Then I recommend using VIGRA's algorithms directly on top of your data type. 
-    To do this, you have to provide image iterators and accessors. In many cases, 
-    the standard implementations \ref vigra::ImageIterator and 
-    \ref vigra::StandardAccessor coming with VIGRA will be applicable. Otherwise, 
-    you have to write your own versions which isn't very difficult (look at the code 
-    of the above implementations for guidance). 
+    Then I recommend using VIGRA's algorithms directly on top of your data type.
+    To do this, you have to provide image iterators and accessors. In many cases,
+    the standard implementations \ref vigra::ImageIterator and
+    \ref vigra::StandardAccessor coming with VIGRA will be applicable. Otherwise,
+    you have to write your own versions which isn't very difficult (look at the code
+    of the above implementations for guidance).
 
-    Alternatively, you may use the Image Data Structures provided within VIGRA 
+    Alternatively, you may use the Image Data Structures provided within VIGRA
     and convert your data type into one of them. Take a look at \ref tiffToScalarImage() and
     \ref createScalarTiffImage() to see how this might be done.
 
     <b>If you don't have an image data type in your system:</b>
 
-    Use the Image Data Structures provided within VIGRA and use one of the import/export facilities above.    
+    Use the Image Data Structures provided within VIGRA and use one of the import/export facilities above.
 
 */
 
@@ -277,33 +277,33 @@
 
     <DL>
     <DT>
-        <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif"> 
+        <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif">
         \ref PointOperators
         <DD><em>algorithms and functors for image arithmetic, inspection, transformations etc.</em>
     <DT>
-        <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif"> 
+        <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif">
         \ref FunctorExpressions
         <DD><em>Expression templates for automated functor creation</em>
     <DT>
-        <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif"> 
+        <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif">
         \ref GeometricTransformations
         <DD><em>image resize and interpolation</em>
     <DT>
-        <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif"> 
+        <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif">
         \ref Convolution
         <DD> <em>1D and 2D filters, including separable and recursive convolution, and non-linear diffusion</em>
     <DT>
-        <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif"> 
+        <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif">
         \ref FourierTransform
         <DD> <em>forward and backward FFT, FFT plan generation, and related
                  functionality</em>
     <DT>
-        <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif"> 
+        <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif">
         \ref GaborFilter
         <DD> <em>Gabor filter generation and related
                  functionality</em>
     <DT>
-        <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif"> 
+        <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif">
         \ref Morphology
         <DD> <em>erosion, dilation, and median with disc structuring functions</em>
     </DL>
@@ -313,40 +313,40 @@
 
     <DL>
     <DT>
-        <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif"> 
+        <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif">
         \ref InspectAlgo and \ref InspectFunctor
         <DD> <em>Statistical analysis of images and regions</em>
     <DT>
-        <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif"> 
+        <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif">
         \ref vigra::Threshold
         <DD><em>Good old thresholding</em>
     <DT>
-        <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif"> 
+        <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif">
         \ref Labeling
-        <DD><em>Connected componetns labeling using 4 or 8 connectivity </em>
+        <DD><em>Connected components labeling using 4 or 8 connectivity </em>
     <DT>
-        <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif"> 
+        <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif">
         \ref LocalMinMax
         <DD><em>Including extremal plateaus larger than 1 pixel</em>
     <DT>
-        <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif"> 
+        <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif">
         \ref DistanceTransform
         <DD><em>Distance transform using Euclidean, Manhattan, or chessboard metrics </em>
     <DT>
-        <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif"> 
+        <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif">
         \ref EdgeDetection
         <DD> <em>Edge detectors based on first and second derivatives</em>
     <DT>
-        <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif"> 
+        <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif">
         \ref CornerDetection
         <DD> <em>Measure the 'cornerness' at each pixel </em>
     <DT>
-        <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif"> 
+        <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif">
         \ref SymmetryDetection
         <DD> <em>Measure the local symmetry at each pixel </em>
     <DT>
-        <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif"> 
-        \ref SeededRegionGrowing 
+        <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif">
+        \ref SeededRegionGrowing
         <DD> <em>Region segmentation and voronoi tesselation</em>
     </DL>
 */
@@ -362,14 +362,14 @@ of \ref AlgebraicField and \ref DivisionAlgebra.
 <h3>Algebraic Ring</h3>
 
 <ul>
-    <li>A model of Algebraic Ring implements <tt>Assignable</TT>, <tt>Default Constructible</TT>, 
-        <tt>Equality Comparable</TT> and <tt>Strict Weakly Comparable</TT> 
-        as defined in the C++ standard (cf. the 
+    <li>A model of Algebraic Ring implements <tt>Assignable</TT>, <tt>Default Constructible</TT>,
+        <tt>Equality Comparable</TT> and <tt>Strict Weakly Comparable</TT>
+        as defined in the C++ standard (cf. the
         <a href="WWW_STL_DOCU">Standard Template Library documentation</a>).
         
     <li>A model of Algebraic Ring implements addition, subtraction and unary negation. The associated
     \link NumericTraits NumericTraits \endlink define a 'zero' element, the type of the
-    result of addition and subtraction, and a type conversion function. 
+    result of addition and subtraction, and a type conversion function.
     Addition must be commutative.
     
     \code
@@ -391,7 +391,7 @@ of \ref AlgebraicField and \ref DivisionAlgebra.
     assert(a - b == a + (-b));
     \endcode
 
-    <li>If mixed-type addition and subtraction are supported, 
+    <li>If mixed-type addition and subtraction are supported,
     \link PromoteTraits PromoteTraits \endlink define the result type:
         
     \code
@@ -405,7 +405,7 @@ of \ref AlgebraicField and \ref DivisionAlgebra.
     
     <li>A model of Algebraic Ring implements multiplication. The associated
     \link NumericTraits NumericTraits \endlink define a 'one' element, the type of the
-    result of multiplication, and a type conversion function. 
+    result of multiplication, and a type conversion function.
     
     \code
     ModelOfAlgebraicRing a, b;
@@ -422,7 +422,7 @@ of \ref AlgebraicField and \ref DivisionAlgebra.
     \endcode
 </ul>
 
-\anchor AlgebraicField 
+\anchor AlgebraicField
 <h3>Algebraic Field</h3>
 
 <ul>
@@ -444,19 +444,19 @@ of \ref AlgebraicField and \ref DivisionAlgebra.
 </ul>
 
 
-\anchor LinearSpace 
+\anchor LinearSpace
 
 <h3>Linear Space</h3>
 
 <ul>
-    <li>A model of Linear Space implements <tt>Assignable</TT>, <tt>Default Constructible</TT> 
-        and <tt>Equality Comparable</TT> 
-        as defined in the C++ standard (cf. the 
+    <li>A model of Linear Space implements <tt>Assignable</TT>, <tt>Default Constructible</TT>
+        and <tt>Equality Comparable</TT>
+        as defined in the C++ standard (cf. the
         <a href="WWW_STL_DOCU">Standard Template Library documentation</a>).
         
     <li>A model of Algebraic Ring implements addition, subtraction and unary negation. The associated
     \link NumericTraits NumericTraits \endlink define a 'zero' element, the type of the
-    result of addition and subtraction, and a type conversion function. 
+    result of addition and subtraction, and a type conversion function.
     Addition must be commutative. (This part of the requirements is identical to
     \ref AlgebraicRing above.)
     
@@ -479,7 +479,7 @@ of \ref AlgebraicField and \ref DivisionAlgebra.
     assert(a - b == a + (-b));
     \endcode
 
-    <li>If mixed-type addition and subtraction are supported, 
+    <li>If mixed-type addition and subtraction are supported,
     \link PromoteTraits PromoteTraits \endlink define the result type:
         
     \code
@@ -491,11 +491,11 @@ of \ref AlgebraicField and \ref DivisionAlgebra.
     c = a + b;
     \endcode
     
-    <li>A model of Algebraic Ring implements multiplication and division with 'double'. 
-      (Note that the outer product could be defined with an arbitrary model of 
+    <li>A model of Algebraic Ring implements multiplication and division with 'double'.
+      (Note that the outer product could be defined with an arbitrary model of
       \ref AlgebraicField. For simplicity, VIGRA restricts this to only 'double'.)
       The associated \link NumericTraits NumericTraits \endlink define the type of the
-      results, and a type conversion function. 
+      results, and a type conversion function.
     
     \code
     ModelOfAlgebraicRing a;
@@ -515,7 +515,7 @@ of \ref AlgebraicField and \ref DivisionAlgebra.
     \endcode
 </ul>
 
-\anchor LinearAlgebra 
+\anchor LinearAlgebra
 <h3>Linear Algebra</h3>
 
 <ul>
@@ -524,7 +524,7 @@ of \ref AlgebraicField and \ref DivisionAlgebra.
        
 </ul>
 
-\anchor DivisionAlgebra 
+\anchor DivisionAlgebra
 <h3>Division Algebra</h3>
 
 <ul>
