@@ -48,7 +48,7 @@ namespace vigra
     Refer to the documentation of <tt>std::vector</tt> for a detailed 
     description of <tt>ArrayVector</tt> functionality.
 
-    <b>\#include</b> "<a href="splines_8hxx-source.html">vigra/array_vector.hxx</a>"<br>
+    <b>\#include</b> "<a href="array_vector_8hxx-source.html">vigra/array_vector.hxx</a>"<br>
     Namespace: vigra
 */
 template <class T, class Alloc = std::allocator<T> >

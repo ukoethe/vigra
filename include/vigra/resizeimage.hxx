@@ -61,7 +61,7 @@ namespace vigra {
     \ref resamplingConvolveImage() to create a differentiable interpolant
     of an image. 
 
-    <b>\#include</b> "<a href="gaussians_8hxx-source.html">vigra/resizeimage.hxx</a>"<br>
+    <b>\#include</b> "<a href="resizeimage_8hxx-source.html">vigra/resizeimage.hxx</a>"<br>
     Namespace: vigra
 */
 template <class T>
