@@ -99,6 +99,49 @@ struct ConvolutionTest
             acc.set(k, i);
         }
     }
+
+    void simpleSharpeningTest(){
+ 	Image dest_lenna(lenna);
+	simpleSharpening(srcImageRange(lenna), destImage(dest_lenna), 0.8);
+
+	Image dest_correct;
+        ImageImportInfo info_correct("lenna_simple_sharpening_orig.xv");
+        dest_correct.resize(info_correct.width(), info_correct.height());
+        importImage(info_correct, destImage(dest_correct));
+
+	Image::iterator i_dest = dest_lenna.begin();
+	Image::iterator end_dest = dest_lenna.end();
+	Image::Accessor acc_dest = dest_lenna.accessor();
+	Image::iterator i_dest_correct = dest_correct.begin();
+	Image::Accessor acc_dest_correct = dest_correct.accessor();
+
+	for (; i_dest != end_dest; i_dest++, i_dest_correct++ ){
+	    should(acc_dest(i_dest) == acc_dest_correct(i_dest_correct));
+	}
+
+    }
+
+    void gaussianSharpeningTest(){
+ 	Image dest_lenna(lenna);
+	gaussianSharpening(srcImageRange(lenna), destImage(dest_lenna), 3., 0.7);
+
+	Image dest_correct;
+        ImageImportInfo info_correct("lenna_gaussian_sharpening_orig.xv");
+        dest_correct.resize(info_correct.width(), info_correct.height());
+        importImage(info_correct, destImage(dest_correct));
+
+	Image::iterator i_dest = dest_lenna.begin();
+	Image::iterator end_dest = dest_lenna.end();
+	Image::Accessor acc_dest = dest_lenna.accessor();
+	Image::iterator i_dest_correct = dest_correct.begin();
+	Image::Accessor acc_dest_correct = dest_correct.accessor();
+
+	for (; i_dest != end_dest; i_dest++, i_dest_correct++ ){
+	    should(acc_dest(i_dest) == acc_dest_correct(i_dest_correct));
+	}
+
+    }
+
     void stdConvolutionTestOnConstImage()
     {        
         Image tmp_clip(constimg);
@@ -1473,6 +1516,8 @@ struct ConvolutionTestSuite
     ConvolutionTestSuite()
     : vigra::test_suite("ConvolutionTestSuite")
     {
+	add( testCase( &ConvolutionTest::simpleSharpeningTest)); 
+	add( testCase( &ConvolutionTest::gaussianSharpeningTest)); 
 	add( testCase( &ConvolutionTest::stdConvolutionTestOnConstImage));
 	add( testCase( &ConvolutionTest::stdConvolutionTestWithAvoid));
 	add( testCase( &ConvolutionTest::stdConvolutionTestWithClip));
