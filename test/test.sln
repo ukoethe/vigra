@@ -1,0 +1,69 @@
+Microsoft Visual Studio Solution File, Format Version 7.00
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "convolution", "convolution\convolution.vcproj", "{DF27C171-3209-4A26-9E45-4A60DDB7C408}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "error", "error\error.vcproj", "{09EC74B8-969C-4BDC-ABBC-CC3526EF65DE}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "image", "image\image.vcproj", "{CBBA1213-D17F-4626-9205-4F01109021F4}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "imgproc", "imgproc\imgproc.vcproj", "{8CBD8C9A-281F-4138-9AD6-DA43E687B8B4}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "impex", "impex\impex.vcproj", "{89438040-2675-4051-B8F8-9B17926982CE}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "morphology", "morphology\morphology.vcproj", "{82238335-B5DA-433B-950C-257AFFC2916C}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "simpleanalysis", "simpleanalysis\simpleanalysis.vcproj", "{00F39EC9-F0F8-494F-9E10-DC885E0EC5CA}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "colorspaces", "colorspaces\colorspaces.vcproj", "{3F020900-EF27-4445-AF48-E8444A01D33A}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "pixeltypes", "pixeltypes\pixeltypes.vcproj", "{213371EE-EAB1-4879-9D23-EC4499C22F8D}"
+EndProject
+Global
+	GlobalSection(SolutionConfiguration) = preSolution
+		ConfigName.0 = Debug
+		ConfigName.1 = Release
+	EndGlobalSection
+	GlobalSection(ProjectDependencies) = postSolution
+	EndGlobalSection
+	GlobalSection(ProjectConfiguration) = postSolution
+		{DF27C171-3209-4A26-9E45-4A60DDB7C408}.Debug.ActiveCfg = Debug|Win32
+		{DF27C171-3209-4A26-9E45-4A60DDB7C408}.Debug.Build.0 = Debug|Win32
+		{DF27C171-3209-4A26-9E45-4A60DDB7C408}.Release.ActiveCfg = Release|Win32
+		{DF27C171-3209-4A26-9E45-4A60DDB7C408}.Release.Build.0 = Release|Win32
+		{09EC74B8-969C-4BDC-ABBC-CC3526EF65DE}.Debug.ActiveCfg = Debug|Win32
+		{09EC74B8-969C-4BDC-ABBC-CC3526EF65DE}.Debug.Build.0 = Debug|Win32
+		{09EC74B8-969C-4BDC-ABBC-CC3526EF65DE}.Release.ActiveCfg = Release|Win32
+		{09EC74B8-969C-4BDC-ABBC-CC3526EF65DE}.Release.Build.0 = Release|Win32
+		{CBBA1213-D17F-4626-9205-4F01109021F4}.Debug.ActiveCfg = Debug|Win32
+		{CBBA1213-D17F-4626-9205-4F01109021F4}.Debug.Build.0 = Debug|Win32
+		{CBBA1213-D17F-4626-9205-4F01109021F4}.Release.ActiveCfg = Release|Win32
+		{CBBA1213-D17F-4626-9205-4F01109021F4}.Release.Build.0 = Release|Win32
+		{8CBD8C9A-281F-4138-9AD6-DA43E687B8B4}.Debug.ActiveCfg = Debug|Win32
+		{8CBD8C9A-281F-4138-9AD6-DA43E687B8B4}.Debug.Build.0 = Debug|Win32
+		{8CBD8C9A-281F-4138-9AD6-DA43E687B8B4}.Release.ActiveCfg = Release|Win32
+		{8CBD8C9A-281F-4138-9AD6-DA43E687B8B4}.Release.Build.0 = Release|Win32
+		{89438040-2675-4051-B8F8-9B17926982CE}.Debug.ActiveCfg = Debug|Win32
+		{89438040-2675-4051-B8F8-9B17926982CE}.Debug.Build.0 = Debug|Win32
+		{89438040-2675-4051-B8F8-9B17926982CE}.Release.ActiveCfg = Release|Win32
+		{89438040-2675-4051-B8F8-9B17926982CE}.Release.Build.0 = Release|Win32
+		{82238335-B5DA-433B-950C-257AFFC2916C}.Debug.ActiveCfg = Debug|Win32
+		{82238335-B5DA-433B-950C-257AFFC2916C}.Debug.Build.0 = Debug|Win32
+		{82238335-B5DA-433B-950C-257AFFC2916C}.Release.ActiveCfg = Release|Win32
+		{82238335-B5DA-433B-950C-257AFFC2916C}.Release.Build.0 = Release|Win32
+		{00F39EC9-F0F8-494F-9E10-DC885E0EC5CA}.Debug.ActiveCfg = Debug|Win32
+		{00F39EC9-F0F8-494F-9E10-DC885E0EC5CA}.Debug.Build.0 = Debug|Win32
+		{00F39EC9-F0F8-494F-9E10-DC885E0EC5CA}.Release.ActiveCfg = Release|Win32
+		{00F39EC9-F0F8-494F-9E10-DC885E0EC5CA}.Release.Build.0 = Release|Win32
+		{3F020900-EF27-4445-AF48-E8444A01D33A}.Debug.ActiveCfg = Debug|Win32
+		{3F020900-EF27-4445-AF48-E8444A01D33A}.Debug.Build.0 = Debug|Win32
+		{3F020900-EF27-4445-AF48-E8444A01D33A}.Release.ActiveCfg = Release|Win32
+		{3F020900-EF27-4445-AF48-E8444A01D33A}.Release.Build.0 = Release|Win32
+		{213371EE-EAB1-4879-9D23-EC4499C22F8D}.Debug.ActiveCfg = Debug|Win32
+		{213371EE-EAB1-4879-9D23-EC4499C22F8D}.Debug.Build.0 = Debug|Win32
+		{213371EE-EAB1-4879-9D23-EC4499C22F8D}.Release.ActiveCfg = Release|Win32
+		{213371EE-EAB1-4879-9D23-EC4499C22F8D}.Release.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+	EndGlobalSection
+	GlobalSection(ExtensibilityAddIns) = postSolution
+	EndGlobalSection
+EndGlobal
