@@ -907,6 +907,26 @@ struct RegionGrowingTest
         }
     }
     
+    void voronoiWithBorderTest()
+    {
+        Image res(img);
+        Image::value_type reference[] = {
+            1, 1, 1, 1, 1, 1, 1, 
+            1, 1, 1, 1, 1, 1, -1, 
+            1, 1, 1, 1, 1, -1, 2, 
+            1, 1, 1, 1, -1, 2, 2, 
+            1, 1, 1, -1, 2, 2, 2, 
+            1, 1, -1, 2, 2, 2, 2, 
+            1, -1, 2, 2, 2, 2, 2
+        };
+        
+        vigra::ArrayOfRegionStatistics<DirectCostFunctor> cost(2);
+        seededRegionGrowing(srcImageRange(img), srcImage(seeds), 
+                            destImage(res), cost, KeepContours);
+                            
+        shouldEqualSequence(res.begin(), res.end(), reference);
+    }
+    
     Image img, seeds;
 };
 
@@ -1130,6 +1150,7 @@ struct SimpleAnalysisTestSuite
         add( testCase( &LocalMinMaxTest::extendedLocalMinimumTest));
         add( testCase( &LocalMinMaxTest::extendedLocalMaximumTest));
         add( testCase( &RegionGrowingTest::voronoiTest));
+        add( testCase( &RegionGrowingTest::voronoiWithBorderTest));
         add( testCase( &InterestOperatorTest::cornerResponseFunctionTest));
         add( testCase( &InterestOperatorTest::foerstnerCornerTest));
         add( testCase( &InterestOperatorTest::rohrCornerTest));
