@@ -229,9 +229,9 @@ struct ImageFunctionsTest
 
         for(k=0; i != img.end(); ++i, ++k)
         {
-            if(k != 4) 
+            if(k != 4)
                 should(acc(i) == 42.0);
-            else       
+            else
                 should(acc(i) == 5.5);
         }
 
@@ -285,8 +285,8 @@ struct ImageFunctionsTest
 
         mask = 0;
         mask(1,1) = 1;
-        
-        inspectImageIf(srcIterRange(vigra::Diff2D(0,0), img.size()), 
+
+        inspectImageIf(srcIterRange(vigra::Diff2D(0,0), img.size()),
                        maskImage(mask), rect);
 
         should(rect.upperLeft.x == 1);
@@ -295,8 +295,8 @@ struct ImageFunctionsTest
         should(rect.lowerRight.y == 2);
 
         mask(1,0) = 1;
-        
-        inspectImageIf(srcIterRange(vigra::Diff2D(0,0), img.size()), 
+
+        inspectImageIf(srcIterRange(vigra::Diff2D(0,0), img.size()),
                        maskImage(mask), rect);
 
         should(rect.upperLeft.x == 1);
@@ -305,8 +305,8 @@ struct ImageFunctionsTest
         should(rect.lowerRight.y == 2);
 
         mask(0,1) = 1;
-        
-        inspectImageIf(srcIterRange(vigra::Diff2D(0,0), img.size()), 
+
+        inspectImageIf(srcIterRange(vigra::Diff2D(0,0), img.size()),
                        maskImage(mask), rect);
 
         should(rect.upperLeft.x == 0);
@@ -315,8 +315,8 @@ struct ImageFunctionsTest
         should(rect.lowerRight.y == 2);
 
         mask(1,2) = 1;
-        
-        inspectImageIf(srcIterRange(vigra::Diff2D(0,0), img.size()), 
+
+        inspectImageIf(srcIterRange(vigra::Diff2D(0,0), img.size()),
                        maskImage(mask), rect);
 
         should(rect.upperLeft.x == 0);
@@ -325,8 +325,8 @@ struct ImageFunctionsTest
         should(rect.lowerRight.y == 3);
 
         mask(2,1) = 1;
-        
-        inspectImageIf(srcIterRange(vigra::Diff2D(0,0), img.size()), 
+
+        inspectImageIf(srcIterRange(vigra::Diff2D(0,0), img.size()),
                        maskImage(mask), rect);
 
         should(rect.upperLeft.x == 0);
@@ -336,7 +336,7 @@ struct ImageFunctionsTest
 
         vigra::FindBoundingRectangle rect1;
         rect1(vigra::Diff2D(4,4));
-        
+
         rect(rect1);
 
         should(rect.upperLeft.x == 0);
@@ -366,8 +366,8 @@ struct ImageFunctionsTest
         vigra::ArrayOfRegionStatistics<vigra::FindBoundingRectangle> stats1(1);
         labels.init(0);
         labels(1,1) = 1;
-        
-        inspectTwoImages(srcIterRange(vigra::Diff2D(0,0), img.size()), 
+
+        inspectTwoImages(srcIterRange(vigra::Diff2D(0,0), img.size()),
                          srcImage(labels), stats1);
 
 
@@ -426,7 +426,7 @@ struct ImageFunctionsTest
         {
             should(acc(i) == 5.5);
         }
-        
+
     }
 
     void linearIntensityTransformTest()
@@ -444,6 +444,24 @@ struct ImageFunctionsTest
         for(; i != img.end(); ++i, ++i1)
         {
             should(2.0*(acc(i) - 1.1) == acc(i1));
+        }
+
+    }
+
+    void scalarIntensityTransformTest()
+    {
+        Image img1(3,3);
+
+        transformImage(srcImageRange(img), destImage(img1),
+					   vigra::linearIntensityTransform<Image::PixelType>(3.3));
+
+        Image::ScanOrderIterator i = img.begin();
+        Image::ScanOrderIterator i1 = img1.begin();
+        Image::Accessor acc = img.accessor();
+
+        for(; i != img.end(); ++i, ++i1)
+        {
+            should(3.3*acc(i) == acc(i1));
         }
 
     }
@@ -513,28 +531,28 @@ struct ImageFunctionsTest
         {
             should(fabs(*i - *i1) < 1.0e-10);
         }
-        
+
         vigra::BrightnessContrastFunctor<unsigned char> charf(10.0, 1.0);
-         
+
         for(int k=1; k < 255; ++k)
         {
             should(k < charf(k));
         }
         should(0 == charf(0));
         should(255 == charf(255));
-        
+
         vigra::BrightnessContrastFunctor<vigra::RGBValue<float> > rgbf(2.0, 1.0,
          vigra::RGBValue<float>(0.0), vigra::RGBValue<float>(255.0));
-         
+
         should(col.red() < rgbf(col).red());
         should(col.green() < rgbf(col).green());
         should(col.blue() < rgbf(col).blue());
     }
-    
+
     void gradientFunctionTest()
     {
         RGBImage in(3,3);
-        
+
         for(int y=0; y<3; ++y)
         {
             for(int x=0; x<3; ++x)
@@ -542,13 +560,13 @@ struct ImageFunctionsTest
                 in(x,y) = vigra::RGBValue<float>(float(x+y));
             }
         }
-        
+
         Image res(3,3);
-        
+
         gradientBasedTransform(
-          srcImageRange(in, vigra::RedAccessor<vigra::RGBValue<float> >()), 
+          srcImageRange(in, vigra::RedAccessor<vigra::RGBValue<float> >()),
           destImage(res), vigra::MagnitudeFunctor<float>());
-        
+
         for(int y=0; y<3; ++y)
         {
             for(int x=0; x<3; ++x)
@@ -556,11 +574,11 @@ struct ImageFunctionsTest
                 should(fabs(res(x,y) - std::sqrt(2.0)) < 1e-6);
             }
         }
-        
+
         gradientBasedTransform(
-          srcImageRange(in), 
+          srcImageRange(in),
           destImage(res), vigra::RGBGradientMagnitudeFunctor<float>());
-        
+
         for(int y=0; y<3; ++y)
         {
             for(int x=0; x<3; ++x)
@@ -596,7 +614,7 @@ struct ImageFunctionsTest
 
         std::plus<Image::value_type> add;
 
-        combineTwoImagesIf(srcImageRange(img), srcImage(img), 
+        combineTwoImagesIf(srcImageRange(img), srcImage(img),
                            maskImage(mask), destImage(img1), add);
 
 
@@ -783,11 +801,11 @@ struct ResizeImageSplineTest
         ImageImportInfo ginfo("lenna128.xv");
         img.resize(ginfo.width(), ginfo.height());
         importImage(ginfo, destImage(img));
-        
+
         ImageImportInfo cinfo("lenna128rgb.xv");
         rgb.resize(cinfo.width(), cinfo.height());
         importImage(cinfo, destImage(rgb));
-        
+
     }
 
     void scalarExpand()
@@ -822,14 +840,14 @@ struct ResizeImageSplineTest
         Image imgred(viff->row_size,viff->col_size);
         importViffImage(viff, destImage(imgred));
         freeViffImage(viff);
-        
+
         Image img1(imgred.width(), imgred.height());
 
         resizeImageSplineInterpolation(srcImageRange(img), destImageRange(img1));
 
         Image::ScanOrderIterator i1 = img1.begin();
         Image::ScanOrderIterator ired = imgred.begin();
-        Image::Accessor acc = img1.accessor(); 
+        Image::Accessor acc = img1.accessor();
 
         for(; i1 != img1.end(); ++i1, ++ired)
         {
@@ -893,8 +911,8 @@ struct ResizeImageSplineTest
     RGBImage rgb;
 };
 
-        
-        
+
+
 struct ImageFunctionsTestSuite
 : public vigra::test_suite
 {
@@ -919,6 +937,7 @@ struct ImageFunctionsTestSuite
         add( testCase( &ImageFunctionsTest::arrayOfRegionStatisticsIfTest));
         add( testCase( &ImageFunctionsTest::writeArrayOfRegionStatisticsTest));
         add( testCase( &ImageFunctionsTest::linearIntensityTransformTest));
+        add( testCase( &ImageFunctionsTest::scalarIntensityTransformTest));
         add( testCase( &ImageFunctionsTest::linearIntensityTransformIfTest));
         add( testCase( &ImageFunctionsTest::thresholdTest));
         add( testCase( &ImageFunctionsTest::brightnessContrastTest));
