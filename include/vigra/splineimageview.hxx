@@ -310,7 +310,6 @@ VALUETYPE SplineImageView<VALUETYPE>::dyy(double x, double y) const
     InternalValue a4 = 2.0 * W1_[3][2] + v * 6.0 * W1_[3][3];
     return NumericTraits<VALUETYPE>::fromRealPromote(a1 + u * (a2 + u * (a3 + u * a4)));
 }
-#endif // if 0
 
 template <class VALUETYPE>
 class CubicSplineImageView
@@ -405,133 +404,7 @@ class CubicSplineImageView
     CubicBSplineKernel k_;
     mutable double x_, y_, u_, v_, kx_[4], ky_[4];
     mutable int ix_[4], iy_[4];
-};
-
-template <class SrcIterator, class SrcAccessor,
-          class DestIterator, class DestAccessor>
-void recursiveFilterLine(SrcIterator is, SrcIterator isend, SrcAccessor as,
-                         DestIterator id, DestAccessor ad, double b1, double b2)
-{
-    int w = isend - is;
-    SrcIterator istart = is;
-    
-    int x;
-    
-    typedef typename
-        NumericTraits<typename SrcAccessor::value_type>::RealPromote TempType;
-    typedef NumericTraits<typename DestAccessor::value_type> DestTraits;
-    
-    // speichert den Ergebnis der linkseitigen Filterung.
-    std::vector<TempType> vline(w+1);
-    typename std::vector<TempType>::iterator line = vline.begin();
-    
-    double norm  = 1.0 - b1 - b2;
-    double norm1 = (1.0 - b1 - b2) / (1.0 + b1 + b2);
-    double norm2 = norm * norm;
-    
-
-    // init left side of filter
-    int kernelw = std::min(w-1, std::max(8, (int)(1.0 / norm + 0.5)));  
-    is += (kernelw - 2);
-    line[kernelw] = as(is);
-    line[kernelw-1] = as(is);
-    for(x = kernelw - 2; x > 0; --x, --is)
-    {
-        line[x] = as(is) + b1 * line[x+1] + b2 * line[x+2];
-    }
-    line[0] = as(is) + b1 * line[1] + b2 * line[2];
-    ++is;
-    line[1] = as(is) + b1 * line[0] + b2 * line[1];
-    ++is;
-    for(x=2; x < w; ++x, ++is)
-    {
-        line[x] = as(is) + b1 * line[x-1] + b2 * line[x-2];
-    }
-    line[w] = line[w-1];
-
-    line[w-1] = norm1 * (line[w-1] + b1 * line[w-2] + b2 * line[w-3]);
-    line[w-2] = norm1 * (line[w-2] + b1 * line[w] + b2 * line[w-2]);
-    id += w-1;
-    ad.set(line[w-1], id);
-    --id;
-    ad.set(line[w-2], id);
-    --id;
-    for(x=w-3; x>=0; --x, --id, --is)
-    {    
-        line[x] = norm2 * line[x] + b1 * line[x+1] + b2 * line[x+2];
-        ad.set(line[x], id);
-    }
-}
-            
-template <class SrcImageIterator, class SrcAccessor,
-          class DestImageIterator, class DestAccessor>
-void recursiveFilterX(SrcImageIterator supperleft, 
-                       SrcImageIterator slowerright, SrcAccessor as,
-                       DestImageIterator dupperleft, DestAccessor ad, 
-                       double b1, double b2)
-{
-    int w = slowerright.x - supperleft.x;
-    int h = slowerright.y - supperleft.y;
-    
-    int y;
-    
-    for(y=0; y<h; ++y, ++supperleft.y, ++dupperleft.y)
-    {
-        typename SrcImageIterator::row_iterator rs = supperleft.rowIterator();
-        typename DestImageIterator::row_iterator rd = dupperleft.rowIterator();
-
-        recursiveFilterLine(rs, rs+w, as, 
-                             rd, ad, 
-                             b1, b2);
-    }
-}
-
-template <class SrcImageIterator, class SrcAccessor,
-          class DestImageIterator, class DestAccessor>
-inline void recursiveFilterX(
-            triple<SrcImageIterator, SrcImageIterator, SrcAccessor> src,
-            pair<DestImageIterator, DestAccessor> dest, 
-                       double b1, double b2)
-{
-    recursiveFilterX(src.first, src.second, src.third,
-                      dest.first, dest.second, b1, b2);
-}
-            
-template <class SrcImageIterator, class SrcAccessor,
-          class DestImageIterator, class DestAccessor>
-void recursiveFilterY(SrcImageIterator supperleft, 
-                       SrcImageIterator slowerright, SrcAccessor as,
-                       DestImageIterator dupperleft, DestAccessor ad, 
-                       double b1, double b2)
-{
-    int w = slowerright.x - supperleft.x;
-    int h = slowerright.y - supperleft.y;
-    
-    int x;
-    
-    for(x=0; x<w; ++x, ++supperleft.x, ++dupperleft.x)
-    {
-        typename SrcImageIterator::column_iterator cs = supperleft.columnIterator();
-        typename DestImageIterator::column_iterator cd = dupperleft.columnIterator();
-
-        recursiveFilterLine(cs, cs+h, as, 
-                            cd, ad, 
-                            b1, b2);
-    }
-}
-
-template <class SrcImageIterator, class SrcAccessor,
-          class DestImageIterator, class DestAccessor>
-inline void recursiveFilterY(
-            triple<SrcImageIterator, SrcImageIterator, SrcAccessor> src,
-            pair<DestImageIterator, DestAccessor> dest, 
-                       double b1, double b2)
-{
-    recursiveFilterY(src.first, src.second, src.third,
-                      dest.first, dest.second, b1, b2);
-}
-
-            
+};            
 
 
 template <class VALUETYPE>
@@ -1039,6 +912,7 @@ VALUETYPE QuinticSplineImageView<VALUETYPE>::g2xy(double x, double y) const
 {
     return 2.0*(dx(x,y) * dxxy(x,y) + dy(x,y) * dxyy(x,y) + dxy(x,y) * (dxx(x,y) + dyy(x,y)));
 }
+#endif // if 0
 
 /********************************************************/
 /*                                                      */
@@ -1213,9 +1087,9 @@ class SplineImageView
 template <int ORDER, class VALUETYPE>
 void SplineImageView<ORDER, VALUETYPE>::init()
 {
-    double const * b = Spline::prefilterCoefficients();
+    ArrayVector<double> const & b = k_.prefilterCoefficients();
     
-    for(unsigned int i=0; i<kcenter_; ++i)
+    for(unsigned int i=0; i<b.size() && b[i] != 0.0; ++i)
     {
         recursiveFilterX(srcImageRange(image_), destImage(image_), b[i], BORDER_TREATMENT_REFLECT);
         recursiveFilterY(srcImageRange(image_), destImage(image_), b[i], BORDER_TREATMENT_REFLECT);
