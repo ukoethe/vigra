@@ -18,8 +18,8 @@
 /*  WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE. */
 /*                                                                      */
 /************************************************************************/
- 
- 
+
+
 #ifndef VIGRA_ITERATORTRAITS_HXX
 #define VIGRA_ITERATORTRAITS_HXX
 
@@ -36,8 +36,8 @@ namespace vigra {
     The IteratorTraits class contains the following fields:
 
     \code
-    template <class T> 
-    struct IteratorTraits 
+    template <class T>
+    struct IteratorTraits
     {
         typedef T                                     Iterator;
         typedef Iterator                              iterator;
@@ -53,13 +53,13 @@ namespace vigra {
         typedef StandardAccessor<value_type>          default_accessor;
     };
     \endcode
-    
+
     By (partially) specializing this template for an iterator class
-    the defaults given above can be changed as approiate. For example, iterators
-    for rgb images are associated with <TT>RGBAccessor<value_type></TT> 
+    the defaults given above can be changed as appropriate. For example, iterators
+    for rgb images are associated with <TT>RGBAccessor<value_type></TT>
     instead of <TT>StandardAccessor<value_type></TT>. To get the accessor
     associated with a given iterator, use code like this:
-    
+
     \code
     template <class Iterator>
     void foo(Iterator i)
@@ -69,17 +69,17 @@ namespace vigra {
         ...
     }
     \endcode
-    
-    This technique is, for example, used by the 
+
+    This technique is, for example, used by the
     \ref IteratorBasedArgumentObjectFactories. The possibility to retrieve the default accessor by means of a traits
     class is especially important since this information is not
     contained in the iterator directly.
-    
+
     <b>\#include</b> "<a href="iteratortraits_8hxx-source.html">vigra/iteratortraits.hxx</a>"
     Namespace: vigra
 */
-template <class T> 
-struct IteratorTraits 
+template <class T>
+struct IteratorTraits
 {
     typedef T                                          Iterator;
     typedef Iterator                                   iterator;
@@ -91,13 +91,13 @@ struct IteratorTraits
     typedef typename iterator::difference_type         difference_type;
     typedef typename iterator::row_iterator            row_iterator;
     typedef typename iterator::column_iterator         column_iterator;
-    typedef typename 
+    typedef typename
         AccessorTraits<value_type>::default_accessor   DefaultAccessor;
     typedef DefaultAccessor                            default_accessor;
 };
 
-template <class T> 
-struct IteratorTraitsBase 
+template <class T>
+struct IteratorTraitsBase
 {
     typedef T                                     Iterator;
     typedef Iterator                              iterator;
@@ -114,16 +114,16 @@ struct IteratorTraitsBase
 /***********************************************************/
 
 /** \page ArgumentObjectFactories Argument Object Factories
-    
+
     Factory functions to create argument objects which simplify long argument lists.
 
     <DL>
     <DT>
-        <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif"> 
+        <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif">
         \ref ImageBasedArgumentObjectFactories
         <DD>
     <DT>
-        <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif"> 
+        <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif">
         \ref IteratorBasedArgumentObjectFactories
         <DD>
     </DL>
@@ -131,96 +131,96 @@ struct IteratorTraitsBase
     Long argument lists provide for greater flexibility of functions,
     but they are also tedious and error prone, when we don't need
     the flexibility. Thus, we define argument objects which
-    automatically provide reasonable defaults for those arguments that we 
-    didn't specify explicitly. 
-    
+    automatically provide reasonable defaults for those arguments that we
+    didn't specify explicitly.
+
     The argument objects are created via a number of factory functions.
     Since these functions have descriptive names, they also serve
     to improve readability: the name of each factory tells te purpose of its
-    argument object. 
-    
-    Consider the following example. Without argument objects we had to 
+    argument object.
+
+    Consider the following example. Without argument objects we had to
     write something like this (cf. \ref copyImageIf()):
-    
+
     \code
     vigra::BImage img1, img2, img3;
-    
+
     // fill img1 and img2 ...
-    
+
     vigra::copyImageIf(img1.upperLeft(), img1.lowerRight(), img1.accessor(),
                 img2.upperLeft(), img2.accessor(),
                 img3.upperLeft(), img3.accessor());
     \endcode
-    
+
     Using the argument object factories, this becomes much shorter and
     more readable:
-    
+
     \code
     vigra::copyImageIf(srcImageRange(img1),
                 maskImage(img2),
                 destImage(img3));
     \endcode
-    
-    The names of the factories clearly tell which image is source, mask, 
-    and destination. In addition, the suffix <TT>Range</TT> must be used 
+
+    The names of the factories clearly tell which image is source, mask,
+    and destination. In addition, the suffix <TT>Range</TT> must be used
     for those argument objects that need to specify the lower right
     corner of the region of interest. Typically, this is only the first
-    source argument, but sometimes the first destiniation argument must 
+    source argument, but sometimes the first destiniation argument must
     also contain a range.
-    
-    The factory functions come in two flavours: Iterator based and 
+
+    The factory functions come in two flavours: Iterator based and
     image based factories. Above we have seen the image based variant.
     The iterator based variant would look like this:
-    
+
     \code
     vigra::copyImageIf(srcIterRange(img1.upperLeft(), img1.lowerRight()),
                 maskIter(img2.upperLeft()),
                 destIter(img3.upperLeft()));
     \endcode
-    
-    These factory functions contain the word <TT>Iter</TT> instead of the word 
-    <TT>Image</TT>,  They would normally be used if we couldn't access the 
+
+    These factory functions contain the word <TT>Iter</TT> instead of the word
+    <TT>Image</TT>,  They would normally be used if we couldn't access the
     images (for example, within a function which got passed iterators)
-    or if we didn't want to operate on the entire image. The default 
+    or if we didn't want to operate on the entire image. The default
     accessor is obtained via \ref vigra::IteratorTraits.
-    
+
     All factory functions also allow to specify accessors explicitly. This
-    is useful if we can't use the default accessor. This variant looks 
+    is useful if we can't use the default accessor. This variant looks
     like this:
-    
+
     \code
     vigra::copyImageIf(srcImageRange(img1),
                 maskImage(img2, MaskPredicateAccessor()),
-                destImage(img3));    
+                destImage(img3));
     \endcode
-    
+
     or
-    
+
     \code
     vigra::copyImageIf(srcIterRange(img1.upperLeft(), img1.lowerRight()),
                 maskIter(img2.upperLeft(), MaskPredicateAccessor()),
                 destIter(img3.upperLeft()));
     \endcode
-    
+
     All versions can be mixed freely within one explession.
-    Technically, the argument objects are simply defined as 
-    pairs and triples of iterators and accessor so that all algorithms 
-    should declare a call interface version based on pairs and triples 
+    Technically, the argument objects are simply defined as
+    pairs and triples of iterators and accessor so that all algorithms
+    should declare a call interface version based on pairs and triples
     (see for example \ref copyImageIf()).
 
   \section ImageBasedArgumentObjectFactories Image Based Argument Object Factories
-        
+
     <b>Include:</b> automatically included with the image classes<br>
     Namespace: vigra
-    
-    These factories can be used to create argument objects when we 
+
+    These factories can be used to create argument objects when we
     are given instances or subclasses of \ref vigra::BasicImage (see
     \ref StandardImageTypes for instances defined per default).
-    These factory functions access <TT>img.upperLeft()</TT>, 
+    These factory functions access <TT>img.upperLeft()</TT>,
     <TT>img.lowerRight()</TT>, and <TT>img.accessor()</TT> to obtain the iterators
-    and accessor for the given image (unless the accessor is 
+    and accessor for the given image (unless the accessor is
     given explicitly). The following factory functions are provided:
-    
+
     <table>
     <tr><td>
         \htmlonly
@@ -232,100 +232,100 @@ struct IteratorTraitsBase
         \endhtmlonly
     </td></tr>
     <tr><td>
-        
+
     <TT>srcImageRange(img)</TT>
     </td><td>
         create argument object containing upper left, lower right, and
         default accessor of source image
-        
+
     </td></tr>
     <tr><td>
-        
+
     <TT>srcImageRange(img, SomeAccessor())</TT>
     </td><td>
         create argument object containing upper left, lower right
         of source image, and given accessor
-        
+
     </td></tr>
     <tr><td>
-        
+
     <TT>srcImage(img)</TT>
     </td><td>
         create argument object containing upper left, and
         default accessor of source image
-        
+
     </td></tr>
     <tr><td>
-        
+
     <TT>srcImage(img, SomeAccessor())</TT>
     </td><td>
         create argument object containing upper left
         of source image, and given accessor
-        
+
     </td></tr>
     <tr><td>
-    
+
     <TT>maskImage(img)</TT>
     </td><td>
         create argument object containing upper left, and
         default accessor of mask image
-        
+
     </td></tr>
     <tr><td>
-        
+
     <TT>maskImage(img, SomeAccessor())</TT>
     </td><td>
         create argument object containing upper left
         of mask image, and given accessor
-        
+
     </td></tr>
     <tr><td>
-    
+
     <TT>destImageRange(img)</TT>
     </td><td>
         create argument object containing upper left, lower right, and
         default accessor of destination image
-        
+
     </td></tr>
     <tr><td>
-        
+
     <TT>destImageRange(img, SomeAccessor())</TT>
     </td><td>
         create argument object containing upper left, lower right
         of destination image, and given accessor
-        
+
     </td></tr>
     <tr><td>
-        
+
     <TT>destImage(img)</TT>
     </td><td>
         create argument object containing upper left, and
         default accessor of destination image
-        
+
     </td></tr>
     <tr><td>
-        
+
     <TT>destImage(img, SomeAccessor())</TT>
     </td><td>
         create argument object containing upper left
         of destination image, and given accessor
-        
+
     </td></tr>
     </table>
 
 
   \section IteratorBasedArgumentObjectFactories Iterator Based Argument Object Factories
-        
+
     <b>\#include</b> "<a href="iteratortraits_8hxx-source.html">vigra/iteratortraits.hxx</a>"
     Namespace: vigra
-    
-    These factories can be used to create argument objects when we 
+
+    These factories can be used to create argument objects when we
     are given \ref ImageIterators.
     These factory functions use \ref vigra::IteratorTraits to
-    get the default accessor for the given iterator unless the 
-    accessor is given explicitly. The following factory functions 
+    get the default accessor for the given iterator unless the
+    accessor is given explicitly. The following factory functions
     are provided:
-    
+
     <table>
     <tr><td>
         \htmlonly
@@ -337,84 +337,84 @@ struct IteratorTraitsBase
         \endhtmlonly
     </td></tr>
     <tr><td>
-        
+
     <TT>srcIterRange(i1, i2)</TT>
     </td><td>
         create argument object containing the given iterators and
         corresponding default accessor (for source image)
-        
+
     </td></tr>
     <tr><td>
-        
+
     <TT>srcIterRange(i1, i2, SomeAccessor())</TT>
     </td><td>
         create argument object containing given iterators and
         accessor (for source image)
-        
+
     </td></tr>
     <tr><td>
-        
+
     <TT>srcIter(i1)</TT>
     </td><td>
         create argument object containing the given iterator and
         corresponding default accessor (for source image)
-        
+
     </td></tr>
     <tr><td>
-        
+
     <TT>srcIter(i1, SomeAccessor())</TT>
     </td><td>
         create argument object containing given iterator and
         accessor (for source image)
-        
+
     </td></tr>
     <tr><td>
-    
+
     <TT>maskIter(i1)</TT>
     </td><td>
         create argument object containing the given iterator and
         corresponding default accessor (for mask image)
-        
+
     </td></tr>
     <tr><td>
-        
+
     <TT>maskIter(i1, SomeAccessor())</TT>
     </td><td>
         create argument object containing given iterator and
         accessor (for mask image)
-        
+
     </td></tr>
     <tr><td>
-    
+
     <TT>destIterRange(i1, i2)</TT>
     </td><td>
         create argument object containing the given iterators and
         corresponding default accessor (for destination image)
-        
+
     </td></tr>
     <tr><td>
-        
+
     <TT>destIterRange(i1, i2, SomeAccessor())</TT>
     </td><td>
         create argument object containing given iterators and
         accessor (for destination image)
-        
+
     </td></tr>
     <tr><td>
-        
+
     <TT>destIter(i1)</TT>
     </td><td>
         create argument object containing the given iterator and
         corresponding default accessor (for destination image)
-        
+
     </td></tr>
     <tr><td>
-        
+
     <TT>destIter(i1, SomeAccessor())</TT>
     </td><td>
         create argument object containing given iterator and
         accessor (for destination image)
-        
+
     </td></tr>
     </table>
 */
@@ -468,9 +468,9 @@ template <class Iterator>
 inline triple<Iterator, Iterator, typename IteratorTraits<Iterator>::DefaultAccessor>
 srcIterRange(Iterator const & upperleft, Iterator const & lowerright)
 {
-    return triple<Iterator, Iterator, 
+    return triple<Iterator, Iterator,
                   typename IteratorTraits<Iterator>::DefaultAccessor>(
-                  upperleft, lowerright, 
+                  upperleft, lowerright,
                   IteratorTraits<Iterator>::DefaultAccessor());
 }
 
@@ -496,9 +496,9 @@ template <class Iterator>
 inline triple<Iterator, Iterator, typename IteratorTraits<Iterator>::DefaultAccessor>
 destIterRange(Iterator const & upperleft, Iterator const & lowerright)
 {
-    return triple<Iterator, Iterator, 
+    return triple<Iterator, Iterator,
                   typename IteratorTraits<Iterator>::DefaultAccessor>(
-                  upperleft, lowerright, 
+                  upperleft, lowerright,
                   IteratorTraits<Iterator>::DefaultAccessor());
 }
 
