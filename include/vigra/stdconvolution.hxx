@@ -734,11 +734,11 @@ convolveImageWithMask(SrcIterator src_ul, SrcIterator src_lr, SrcAccessor src_ac
     KSumType norm = ak(ki);
     int xx, yy;
     KernelIterator yk  = ki + klr;
-    for(yy=0; yy<hk; ++yy, --yk.y)
+    for(yy=0; yy<kernel_height; ++yy, --yk.y)
     {
         KernelIterator xk  = yk;
         
-        for(xx=0; xx<wk; ++xx, --xk.x)
+        for(xx=0; xx<kernel_width; ++xx, --xk.x)
         {
             norm += ak(xk);
         }

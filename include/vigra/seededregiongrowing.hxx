@@ -467,9 +467,9 @@ seededRegionGrowing(SrcImageIterator srcul,
                     DestImageIterator destul, DestAccessor ad,
                     RegionStatisticsArray & stats)
 {
-    seededRegionGrowing(img1.first, img1.second, img1.third,
-                        img3.first, img3.second,
-                        img4.first, img4.second,
+    seededRegionGrowing(srcul, srclr, as,
+                        seedsul, aseeds,
+                        destul, ad,
                         stats, CompleteGrow);
 }
 

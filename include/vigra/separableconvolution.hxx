@@ -1608,7 +1608,7 @@ void Kernel1D<ARITHTYPE>::initAveraging(int radius,
     kernel_.erase(kernel_.begin(), kernel_.end());
     kernel_.reserve(radius*2+1);
     
-    for(i=0; i<=radius*2+1; ++i)
+    for(int i=0; i<=radius*2+1; ++i)
     {
         kernel_.push_back(scale * norm);
     }
