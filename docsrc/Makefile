@@ -9,6 +9,7 @@ all:: doc
 
 doc::
 	@if [ ! -d $(DOCDIR) ]; then mkdir $(DOCDIR); fi
+	@rm -f $(DOCDIR)/*.html
 	cat Doxyfile.in | \
           sed -e "s/\(PROJECT_NUMBER *= \)/\1 $(VIGRA_VERSION)/" \
               -e "s@\(HTML_OUTPUT *= \).*@\1 $(DOCDIR)@" > Doxyfile
