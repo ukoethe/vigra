@@ -27,7 +27,6 @@
 #include <cstdlib>  // abs(int)
 #include "vigra/config.hxx"
 #include "vigra/numerictraits.hxx"
-#include "vigra/accessor.hxx"
 
 namespace vigra {
 
@@ -70,7 +69,7 @@ class TinyVector
         */
     typedef value_type const * const_iterator;
 
-        /** Construct from another sequence 
+        /** Construct from another sequence (must have length SIZE!)
         */
     template <class Iterator>   
     TinyVector(Iterator i, Iterator end)
@@ -87,13 +86,10 @@ class TinyVector
             *p = initial;
     }
     
-        /** Default constructor (sets all components to 0)  
+        /** Default constructor  
         */    
     TinyVector()
-    {
-        for(iterator p = begin(); p != end(); ++p)
-            *p = NumericTraits<value_type>::zero();
-    }
+    {}
 
 #if !defined(TEMPLATE_COPY_CONSTRUCTOR_BUG)
         
@@ -203,7 +199,7 @@ class TinyVector
         */
     int size() const { return SIZE; }
     
-  private:
+  protected:
     value_type data_[SIZE];
 };
 
