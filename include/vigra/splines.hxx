@@ -36,8 +36,10 @@ namespace vigra {
     <b>\#include</b> "<a href="splines_8hxx-source.html">vigra/splines.hxx</a>"<br>
     Namespace: vigra
 */
+#ifndef NO_PARTIAL_TEMPLATE_SPECIALIZATION
+
 template <int ORDER, class T = double>
-class BSpline
+class BSplineBase
 {
   public:
   
@@ -51,7 +53,7 @@ class BSpline
     result_type operator()(argument_type x) const
     {
         T n12 = (ORDER + 1.0) / 2.0;
-        return ((n12 + x) * s1_(x + 0.5) + (n21 - x) * s1_(x - 0.5)) / ORDER;
+        return ((n12 + x) * s1_(x + 0.5) + (n12 - x) * s1_(x - 0.5)) / ORDER;
     }
 
     result_type operator()(first_argument_type x, second_argument_type derivative_order) const
@@ -74,8 +76,13 @@ class BSpline
         { return (ORDER + 1) * 0.5; }
 
   private:
-    BSpline<ORDER-1, T> s1_;  
+    BSplineBase<ORDER-1, T> s1_;  
 };
+
+template <int ORDER, class T = double>
+class BSpline
+: public BSplineBase<ORDER, T>
+{};
 
 /********************************************************/
 /*                                                      */
@@ -84,7 +91,7 @@ class BSpline
 /********************************************************/
 
 template <class T>
-class BSpline<0, T>
+class BSplineBase<0, T>
 {
   public:
   
@@ -591,6 +598,8 @@ T BSpline<5, T>::operator()(T x, unsigned int derivative_order) const
 }
 
 typedef BSpline<5, double> QuinticBSplineKernel;
+
+#endif // NO_PARTIAL_TEMPLATE_SPECIALIZATION
 
 /********************************************************/
 /*                                                      */
