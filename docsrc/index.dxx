@@ -244,19 +244,11 @@
     <DT>
         <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif"> 
         \ref VigraImpex
-        <DD>
-    <DT>
-        <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif"> 
-        \ref LUGImpex
-        <DD>
-    <DT>
-        <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif"> 
-        \ref VIFFImpex
-        <DD>
+        <DD> <em>VIGRA's highlevel image import/export interface</em>
     <DT>
         <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif"> 
         \ref TIFFImpex
-        <DD>
+        <DD> <em>image import/export interface if you want to call libtiff functions directly</em>
     </DL>
     
     \anchor _details
