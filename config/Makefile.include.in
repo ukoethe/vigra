@@ -40,6 +40,8 @@ LINKCXXLIB = $(LINKCXX) -rpath $(libdir)
 LIBINSTALL = $(LIBTOOL) --mode=install @INSTALL@
 INSTALL = @INSTALL@
 
+DEVELOPMENT_VERSION = yes
+
 %.o: %.c
 	$(CC) $(CFLAGS) $(CPPFLAGS) -c $*.c
 
