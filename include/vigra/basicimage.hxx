@@ -277,7 +277,7 @@ class ConstBasicImageIterator: public BasicImageIteratorBase<PIXELTYPE, ITERATOR
 {
   public:
 
-    typedef PIXELTYPE PixelType;
+    typedef PIXELTYPE const PixelType;
     
     inline ConstBasicImageIterator(ITERATOR line)
     : BasicImageIteratorBase<PIXELTYPE, ITERATOR>(line)
@@ -335,27 +335,27 @@ class ConstBasicImageIterator: public BasicImageIteratorBase<PIXELTYPE, ITERATOR
         return ret;
     }
 
-    inline PixelType const & operator*() const
+    inline PixelType & operator*() const
     {
         return this->current();
     }
     
-    inline PixelType const * operator->() const
+    inline PixelType * operator->() const
     {
         return &(this->current)();
     }
     
-    inline PixelType const & operator[](Diff2D const & d) const
+    inline PixelType & operator[](Diff2D const & d) const
     {
         return this->current(d.x, d.y);
     }
     
-    inline PixelType const * operator[](int const & dy) const
+    inline PixelType * operator[](int const & dy) const
     {
         return this->y[dy] + this->x;
     }
     
-    inline PixelType const & operator()(int const & dx, int const & dy) const
+    inline PixelType & operator()(int const & dx, int const & dy) const
     {
         return this->current(dx, dy);
     }
