@@ -41,7 +41,7 @@ namespace vigra {
 
 //@Include: basicimage.hxx 
 
-/** @name Standard Image Classes
+/** @heading Standard Image Classes
 
     @memo Important instantiations of \Ref{BasicImage} template
 */
@@ -214,7 +214,7 @@ struct IteratorTraits<ConstBasicImageIterator<T, T **> >
 
 /***********************************************************/
 
-/** @name Argument Object Factories
+/** @heading Argument Object Factories
 
     Long argument list provide for greater flexibility of functions,
     but they are also tedious and error prone, when we don't need
@@ -299,7 +299,7 @@ struct IteratorTraits<ConstBasicImageIterator<T, T **> >
     @memo Factory functions to create argument objects which simplify long argument lists
 */
 //@{
-    /** @name Image Based Argument Object Factories
+    /** @heading Image Based Argument Object Factories
         
     These factories can be used to create argument objects when we 
     are given instances or subclasses of \Ref{BasicImage} (see
@@ -376,7 +376,7 @@ struct IteratorTraits<ConstBasicImageIterator<T, T **> >
     
     \end{tabular}
     */
-    /** @name Iterator Based Argument Object Factories
+    /** @heading Iterator Based Argument Object Factories
         
     These factories can be used to create argument objects when we 
     are given \Ref{Image Iterators}.

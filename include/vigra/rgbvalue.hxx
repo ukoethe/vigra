@@ -30,9 +30,9 @@
 
 namespace vigra {
 
-/** RGBValue and related classes and functions 
-    @name RGB Values 
- */
+/** @heading RGB Values 
+    @memo RGBValue and related classes and functions  
+*/
 //@{
 
 /********************************************************/
@@ -284,7 +284,7 @@ class RGBValue
 /*                                                      */
 /********************************************************/
 
-/** @name Basic Comparison Functions for RGBValue
+/** @heading Basic Comparison Functions for RGBValue
 
     Include-File:
     \URL[vigra/rgbvalue.hxx]{../include/vigra/rgbvalue.hxx}\\
@@ -323,7 +323,7 @@ operator!=(RGBValue<V1> const & l, RGBValue<V2> const & r)
 /*                                                      */
 /********************************************************/
 
-/** @name Numeric and Promote Traits of RGBValue
+/** @heading Numeric and Promote Traits of RGBValue
     The numeric and promote traits for RGBValues follow 
     the general specifications for \Ref{Numeric and Promotion Traits}. 
     They are implemented in terms of the traits of the basic types by 
@@ -581,13 +581,13 @@ rgb_promtraits2(float, int);
 /*                                                      */
 /********************************************************/
 
-/** These functions fulfill the requirements of a Linear Algebra.
-    @name Basic Arithmetic Functions for RGBValue
-
+/** @heading Basic Arithmetic Functions for RGBValue
+    
     Include-File:
     \URL[vigra/rgbvalue.hxx]{../include/vigra/rgbvalue.hxx}\\
     Namespace: vigra
-    
+
+    @memo These functions fulfill the requirements of a Linear Algebra    
  */
 //@{
     /// componentwise add-assignment
@@ -779,7 +779,7 @@ rint(RGBValue<V> const & r)
 /*                                                      */
 /********************************************************/
 
-/** @name Accessors for RGBValue */
+/** @heading Accessors for RGBValue */
 //@{
     /** Encapsulate access to rgb values.
 

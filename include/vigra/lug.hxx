@@ -68,7 +68,7 @@ byte *fill_bw_pallete(byte * buffer)
   return buffer;
 }
 
-/** @name LUG file import and export
+/** @heading LUG file import and export
     LUG is a simple gateway for many common image
     data formats, including GIF, TIFF, JPEG and PostScript. The source code for LUG
     (Libraria de Utilidades Graficas - Graphics Utilities Library) is
@@ -88,7 +88,7 @@ byte *fill_bw_pallete(byte * buffer)
 /*                                                      */
 /********************************************************/
 
-/** @name read/write/delete LUG images
+/** @heading read/write/delete LUG images
     These functions are convenience functions to simplify LUG's usage 
     in the context of VIGRA. You can
     always use the original LUG functions for the same or related purposes 
@@ -216,7 +216,7 @@ isagrayscaled(LugImage *);
 
 //@}
 
-/** @name Convert LugImages 
+/** @heading Convert LugImages 
     @memo to/from any image supporting ImageIterators
 */
 //@{

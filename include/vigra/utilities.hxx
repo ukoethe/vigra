@@ -46,8 +46,8 @@ struct VigraFalseType
 /*                                                      */
 /********************************************************/
 
-/** Basic helper functionality needed throughout.
-    @name Utilities
+/** @heading Utilities
+    @memo Basic helper functionality needed throughout
 */
 //@{
 
@@ -400,7 +400,7 @@ struct tuple5 {
     : first(a), second(b), third(c), fourth(d), fifth(e) {}
 };
 
-/** @name Tuple Types
+/** @heading Tuple Types
 
     VIGRA defines tuple types #vigra::triple#, #vigra::tuple4#, #vigra::tuple5#. 
     In addition, #pair# is imported into namespace vigra from the C++ standard 
@@ -442,7 +442,7 @@ struct tuple5 {
     @memo pair, triple, tuple4, tuple5
 */
 
-/** @name Dist2D
+/** @heading Dist2D
 
     This class is deprecated - use \Ref{Diff2D} instead.
 */

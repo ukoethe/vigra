@@ -30,7 +30,7 @@
 
 namespace vigra {
 
-/** @name Two-dimensional convolution functions
+/** @heading Two-dimensional convolution functions
     
     These generic convolution functions implement
     the standard 2D convolution operation for images that fit 

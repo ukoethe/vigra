@@ -134,7 +134,7 @@ public:
     };
 };
 
-/** @name Seeded Region Growing
+/** @heading Seeded Region Growing
     @memo region segmentation and voronoi tesselation
 */
 //@{ 

@@ -258,7 +258,7 @@ internalDistanceTransform(SrcImageIterator src_upperleft,
 /*                                                      */
 /********************************************************/
 
-/** @name Distance Transform
+/** @heading Distance Transform
     @memo using Euclidean, Manhattan, or chessboard metrics
 */
 //@{

@@ -50,7 +50,7 @@
 * @memo   Meta-information about arithmetic types
 */
 //@{
-/**@name template<> struct NumericTraits<ArithmeticType>
+/**@heading template<> struct NumericTraits<ArithmeticType>
 
     This traits class is used derive important properties of
     an arithmetic type. Consider the following algorithm:
@@ -219,7 +219,7 @@
 * @memo Unary traits for promotion, conversion, creation of arithmetic objects
 */
 
-/**@name template<> struct PromoteTraits<ArithmeticType1, ArithmeticType2>
+/**@heading template<> struct PromoteTraits<ArithmeticType1, ArithmeticType2>
 
     This traits class is used to determine the appropriate result type
     of arithmetic expressions which depend of two arguments. Consider

@@ -30,7 +30,7 @@
 
 namespace vigra {
 
-/** @name Functions to Inspect Images
+/** @heading Functions to Inspect Images
     @memo apply read-only functor to every pixel
 */
 //@{
@@ -478,7 +478,7 @@ inspectTwoImagesIf(triple<ImageIterator1, ImageIterator1, Accessor1> img1,
 
 //@}
 
-/** @name Functors To Inspect Images
+/** @heading Functors To Inspect Images
     @memo functors which report image statistics
 */
 //@{

@@ -30,7 +30,7 @@
 
 namespace vigra {
 
-/** @name Local Minima and Maxima
+/** @heading Local Minima and Maxima
 
     @memo Including extremal plateaus larger than 1 pixel
 */

@@ -26,7 +26,7 @@
 
 namespace vigra {
 
-/** @name Data Accessors
+/** @heading Data Accessors
 
     Data accessors are used to allow for flexible access to the data
     an interator points to. When we access the data directly, we

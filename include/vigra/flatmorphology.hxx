@@ -30,7 +30,7 @@
 namespace vigra {
 
 /** erosion, dilation, and median with disc structuring functions
-    @name Basic Morphologic Operations
+    @heading Basic Morphologic Operations
 */
 //@{
 

@@ -361,7 +361,7 @@ extern "C" {
 
 typedef xvimage ViffImage;
 
-/** @name read/write/create/delete VIFF images 
+/** @heading read/write/create/delete VIFF images 
     See the \URL[VIFF format decription]{documents/viff.ps} for details.
     @memo
 */

@@ -29,7 +29,7 @@
 
 namespace vigra { 
 
-/** @name Image Iterators  
+/** @heading Image Iterators  
 
     @memo Basic image iterator implementations 
 */
@@ -123,7 +123,7 @@ class ImageIteratorBase
 	void operator-=(int dx) {current_ -= dx; }
 		
 	//@}
-	/** @name Comparision of X Coordinates */
+	/** @name Comparison of X Coordinates */
 	//@{
 		/** usage: # iterator.x == iterator1.x #
 		    @memo
@@ -220,7 +220,7 @@ class ImageIteratorBase
 
 	//@}
 	
-	/** @name Comparision of Y Coordinates */
+	/** @name Comparison of Y Coordinates */
 	//@{
 		/** usage: # iterator.y == iterator1.y #
 		    @memo
@@ -1031,7 +1031,7 @@ struct IteratorTraits<Diff2D >
 };
 
 
-/** @name CoordinateIterator 
+/** @heading CoordinateIterator 
 
     This used to be a separate class, 
     but has now become an alias for \Ref{Diff2D}. This is possible because

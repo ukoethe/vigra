@@ -33,7 +33,7 @@
 
 namespace vigra {
 
-/** @name Edge Detection
+/** @heading Edge Detection
     @memo zero-crossing based edge detectors and related post-processing
 */
 //@{ 

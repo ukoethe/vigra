@@ -37,7 +37,7 @@ namespace vigra {
 /*                                                      */
 /********************************************************/
 
-/** @name Recursive convolution functions
+/** @heading Recursive convolution functions
     These functions implement the exponential filter
     and its first and second derivatives as a recursive
     operation. This is very fast, and the speed does not depend on the 

@@ -381,7 +381,7 @@ void internalConvolveLineAvoid(SrcIterator is, SrcIterator iend, SrcAccessor sa,
 /*                                                      */
 /********************************************************/
 
-/** @name One-dimensional and separable convolution functions
+/** @heading One-dimensional and separable convolution functions
     
     These generic convolution functions implement
     the standard convolution operation for a wide range of images and

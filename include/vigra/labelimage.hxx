@@ -30,7 +30,7 @@
 
 namespace vigra {
 
-/** @name Connected Components Labeling
+/** @heading Connected Components Labeling
     @memo using 4 or 8 connectivity
 */
 //@{

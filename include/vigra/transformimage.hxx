@@ -28,7 +28,7 @@
 
 namespace vigra {
 
-/** @name Functions to Transform Images
+/** @heading Functions to Transform Images
     @memo apply functor to calculate a pixelwise transformation of one image
 */
 //@{
@@ -270,7 +270,7 @@ transformImageIf(triple<SrcImageIterator, SrcImageIterator, SrcAccessor> src,
 
 //@}
 
-/** @name Functors to Transform Images
+/** @heading Functors to Transform Images
 
     Note that the unary functors of the STL can also be used.
     

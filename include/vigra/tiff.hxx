@@ -29,7 +29,7 @@
 
 namespace vigra {
 
-/** @name TIFF related functions
+/** @heading TIFF related functions
     TIFF (Tagged Image File Format) is a very versatile image format - 
     one can store different pixel types (byte, integer, float, double) and
     color models (black and white, RGB, mapped RGB, other color systems). 
@@ -41,7 +41,7 @@ namespace vigra {
 */
 //@{
 
-/** @name Convert TIFF images
+/** @heading Convert TIFF images
     @memo TIFF images files can store byte, int, float, double pixel types
 */
 //@{

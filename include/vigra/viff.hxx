@@ -27,7 +27,7 @@
 #include "vigra/numerictraits.hxx"
 #include "vigra/rgbvalue.hxx"
 
-/** @name VIFF related functions
+/** @heading VIFF related functions
     The VIFF image format was originally defined by the KHOROS public domain 
     image processing environment. VIFF images are very versatile - we can store
     many different pixel types (byte, integer, float, double, complex etc.) and
@@ -49,7 +49,7 @@ extern "C" {
 
 namespace vigra {
 
-/** @name Convert VIFF images
+/** @heading Convert VIFF images
     @memo VIFF images files can store byte, int, float, double etc. pixel types
 */
 //@{

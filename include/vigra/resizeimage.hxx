@@ -32,7 +32,7 @@
 
 namespace vigra {
 
-/** @name Functions to Resize Images
+/** @heading Functions to Resize Images
     @memo zoom up and down by repeating pixels, or using linear or spline interpolation
 */
 //@{

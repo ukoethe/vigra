@@ -25,8 +25,9 @@
 
 namespace vigra {
 
-/** different line iterators
-    @name Standard Image Iterator Adapters */
+/** @heading Standard Image Iterator Adapters
+    @memo different line iterators
+     */
 //@{
 
 /********************************************************/

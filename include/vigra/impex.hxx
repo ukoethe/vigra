@@ -49,7 +49,7 @@ struct ImageFileTypeInfo
 
 std::string impexListFormats();
 
-/** @name VIGRA's Image Import/Export Facilities
+/** @heading VIGRA's Image Import/Export Facilities
     @memo supports GIF, TIFF, JPEG, BMP, PBM, PGM, PNM, PPM, SunRaster, KHOROS-VIFF formats
 **/
 //@{

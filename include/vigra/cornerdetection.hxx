@@ -51,7 +51,7 @@ struct InternalCornerResponseFunctor
     }
 };
 
-/** @name Corner Detection
+/** @heading Corner Detection
     @memo measure the 'cornerness' at each pixel
 */
 //@{ 

@@ -23,7 +23,7 @@
 #ifndef VIGRA_CONVOLUTION_HXX
 #define VIGRA_CONVOLUTION_HXX
 
-/** @name Functions to Convolve Images and Signals 
+/** @heading Functions to Convolve Images and Signals 
 
     Include-File:
     \URL[vigra/convolution.hxx]{../include/vigra/convolution.hxx}\\
@@ -40,7 +40,7 @@
 #include "vigra/separableconvolution.hxx"
 #include "vigra/recursiveconvolution.hxx"
 
-/** @name Kernel Argument Object Factories
+/** @heading Kernel Argument Object Factories
 
     These factory functions allow to create argument objects for 1D
     and 2D convolution kernel analogously to 
@@ -49,7 +49,7 @@
     @memo Factory functions to create argument objects to simplify passing kernels
 */
 //@{
-    /** @name kernel1d()
+    /** @heading kernel1d()
         
 	These factories can be used to create argument objects when we 
 	are given instances or subclasses of \Ref{Kernel1D}
@@ -91,7 +91,7 @@
 	
 	@memo Argument Object Factories for \Ref{Kernel1D}
     */
-    /** @name kernel2d()
+    /** @heading kernel2d()
         
 	These factories can be used to create argument objects when we 
 	are given instances or subclasses of \Ref{Kernel2D}

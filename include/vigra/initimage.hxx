@@ -27,7 +27,7 @@
 
 namespace vigra {
 
-/** @name Functions to Initialize Images
+/** @heading Functions to Initialize Images
     @memo init images or image borders
 */
 //@{
