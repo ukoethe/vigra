@@ -1141,6 +1141,80 @@ resizeImageSplineInterpolation(triple<SrcIterator, SrcIterator, SrcAccessor> src
 }
 #endif
 
+/*****************************************************************/
+/*                                                               */
+/*              resizeImageCoscotInterpolation                   */
+/*                                                               */
+/*****************************************************************/
+
+template <class T>
+class CoscotKernel
+{
+  public:
+  
+    typedef T            value_type;  
+    typedef T            argument_type;  
+    typedef T            result_type; 
+
+    CoscotKernel(unsigned int m = 3, double h = 0.5)
+    : m_(m),
+      h_(h)
+    {}
+    
+    result_type operator()(argument_type x) const
+    {
+        return x == 0.0 ? 
+                    1.0
+                  : abs(x) < m_ ?
+                        VIGRA_CSTD::sin(M_PI*x) / VIGRA_CSTD::tan(M_PI * x / 2.0 / m_) *
+                             (h_ + (1.0 - h_) * VIGRA_CSTD::cos(M_PI * x / m_)) / 2.0 / m_
+                      : 0.0;
+    }
+
+    value_type operator[](value_type x) const
+        { return operator()(x); }
+    
+    double radius() const
+        { return m_; }
+        
+    unsigned int derivativeOrder() const
+        { return 0; }
+
+    ArrayVector<double> const & prefilterCoefficients() const
+    { 
+        static ArrayVector<double> b(1, 0.0);
+        return b;
+    }
+    
+  protected:
+    
+    unsigned int m_;
+    double h_;
+};
+
+template <class SrcIterator, class SrcAccessor,
+          class DestIterator, class DestAccessor>
+void
+resizeImageCoscotInterpolation(SrcIterator src_iter, SrcIterator src_iter_end, SrcAccessor src_acc,
+                      DestIterator dest_iter, DestIterator dest_iter_end, DestAccessor dest_acc)
+{
+    resizeImageSplineInterpolation(src_iter, src_iter_end, src_acc, dest_iter, dest_iter_end, dest_acc,
+                                   CoscotKernel<double>());
+}
+
+template <class SrcIterator, class SrcAccessor,
+          class DestIterator, class DestAccessor>
+inline
+void
+resizeImageCoscotInterpolation(triple<SrcIterator, SrcIterator, SrcAccessor> src,
+                      triple<DestIterator, DestIterator, DestAccessor> dest)
+{
+    resizeImageCoscotInterpolation(src.first, src.second, src.third,
+                                   dest.first, dest.second, dest.third);
+}
+
+
+
 
 //@}
 
