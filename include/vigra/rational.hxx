@@ -661,6 +661,47 @@ inline Rational<IntType> abs(const Rational<IntType>& r)
     return Rational<IntType>(-r.numerator(), r.denominator());
 }
 
+template <typename IntType>
+Rational<IntType> 
+pow(const Rational<IntType>& r, int e)
+{
+    int ae = e < 0 ? -e : e;
+    IntType nold = r.numerator(), dold = r.denominator(),
+            nnew = 1, dnew = 1;
+    for(; ae != 0; ae >>= 1, nold *= nold, dold *= dold)
+    {
+        if(ae % 2 != 0)
+        {
+            nnew *= nold;
+            dnew *= dold;
+        }
+    }
+    return e < 0 ?
+               Rational<IntType>(dnew, nnew)
+             : Rational<IntType>(nnew, dnew);
+}
+
+template <typename IntType>
+Rational<IntType> floor(const Rational<IntType>& r)
+{
+    return r.denominator() == 1 ?
+               r
+             : r.numerator() < 0 ?
+                   Rational<IntType>(r.numerator() / r.denominator() - 1)
+                 : Rational<IntType>(r.numerator() / r.denominator());
+}
+
+template <typename IntType>
+Rational<IntType> ceil(const Rational<IntType>& r)
+{
+    return r.denominator() == 1 ?
+               r
+             : r.numerator() < 0 ?
+                   Rational<IntType>(r.numerator() / r.denominator())
+                 : Rational<IntType>(r.numerator() / r.denominator() + 1);
+}
+
+
 } // namespace vigra
 
 #endif  // VIGRA_RATIONAL_HPP
