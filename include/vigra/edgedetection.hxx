@@ -47,7 +47,7 @@ namespace vigra {
 /*                                                      */
 /********************************************************/
 
-/** Detect and mark edges in an image.
+/** Detect and mark edges in an image using the Shen/Castan zero-crossing detector.
     This operator applies an exponential filter to the source image 
     at the given #scale# and subtracts the result from the original image. 
     Zero crossings are detected in the resulting difference image. Whenever the
@@ -314,7 +314,7 @@ void differenceOfExponentialEdgeImage(
 /*                                                      */
 /********************************************************/
 
-/** Detect and mark edges in an cell grid image.
+/** Detect and mark edges in an cell grid image using the Shen/Castan zero-crossing detector.
     This operator applies an exponential filter to the source image 
     at the given #scale# and subtracts the result from the original image. 
     Zero crossings are detected in the reulting difference image. Whenever the
@@ -1114,23 +1114,56 @@ void beautifyCellGridImage(
 }
 
 
-/* orientation will be given like this:
-
-     /_ 
-     \ \
-       |
-   +------------> x
-   |
-   |
-   |
-   |
- Y V
+/** Helper class that stores edgel attributes.
 */
-struct Edgel
+class Edgel
 {
+  public:
+        /** The edgel's sub-pixel x coordinate.
+            @memo
+        */    
     float x; 
+
+        /** The edgel's sub-pixel y coordinate.
+            @memo
+        */    
     float y;
+
+        /** The edgel's strength (magnitude of the gradient vector).
+            @memo
+        */    
     float strength;
+    
+        /**
+        The edgel's orientation. This is the angle 
+        between the x-axis and the edge, so that the bright side of the 
+        edge is on the right. The angle is measured
+        counter-clockwise in radians like this:
+
+
+        \begin{verbatim}
+
+  edgel axis
+      \  (bright side)
+ (dark \
+ side)  \ /__ 
+         \\  \ orientation angle
+          \  |
+           +------------> x-axis
+           |
+           |
+           |
+           |
+    y-axis V
+        \end{verbatim}
+
+        So, for example a vertical edge with its dark side on the left
+        has orientation PI/2, and a horizontal edge with dark side on top
+        has orientation 0. Obviously, the edge's orientation changes
+        by PI if the contrast is reversed.
+
+        @memo
+        */
     float orientation;
 };
 
@@ -1252,17 +1285,17 @@ void internalCannyFindEdgels(BasicImage<PixelType> const & dx,
 /********************************************************/
 
 /** Simple implementation of Canny's edge detector.
-    This operator first calls calculates the gradient vector for each
-    pixel of the image using a first derivative of a Gaussian at the 
+    This operator first calculates the gradient vector for each
+    pixel of the image using first derivatives of a Gaussian at the 
     given scale. Then a very simple non-maxima supression is performed: 
     for each 3x3 neighborhood, it is determined whether the center pixel has 
     larger gradient magnitude than its two neighbors in gradient direction
     (where the direction is rounded into octands). If this is the case,
     a new \Ref{Edgel} is appended to the given vector of #edgels#. The subpixel
-    edgel position is determined as the location of the maximum of a parabola 
-    which interpolates the three neighboring gradient magnitude values 
-    along the gradient direction. These values, along with the gradient magnitude
-    and direction, are written in the newly created edgel.
+    edgel position is determined by fitting a parabola 
+    to the three gradient magnitude values 
+    mentioned above. The sub-pixel location of the parabola's tip 
+    and the gradient magnitude and direction are written in the newly created edgel.
     
     {\bf Declarations:}
     
@@ -1367,10 +1400,10 @@ cannyEdgelList(triple<SrcIterator, SrcIterator, SrcAccessor> src,
 
 /** Detect and mark edges in an image using Canny's algorithm.
     This operator first calls \Ref{cannyEdgelList} to generate an 
-    edgel list for the given image. Than it scan this list and selects edgels
+    edgel list for the given image. Than it scans this list and selects edgels
     whose strength is above the given #gradient_threshold#. For each of these 
-    edgels, the edgel location is rounded to the nearest pixel, and that
-    pixl is marked with the given #edge_marker#.
+    edgels, the edgel's location is rounded to the nearest pixel, and that
+    pixel marked with the given #edge_marker#.
     
     {\bf Declarations:}
     
@@ -1379,7 +1412,7 @@ cannyEdgelList(triple<SrcIterator, SrcIterator, SrcAccessor> src,
     namespace vigra {
         template <class SrcIterator, class SrcAccessor,
                   class DestIterator, class DestAccessor, 
-                  class SrcValue, class DestValue>
+                  class DestValue>
         void cannyEdgeImage(
                    SrcIterator sul, SrcIterator slr, SrcAccessor sa,
                    DestIterator dul, DestAccessor da,
@@ -1392,7 +1425,7 @@ cannyEdgelList(triple<SrcIterator, SrcIterator, SrcAccessor> src,
     namespace vigra {
         template <class SrcIterator, class SrcAccessor,
                   class DestIterator, class DestAccessor, 
-                  class SrcValue, class DestValue>
+                  class DestValue>
         inline void cannyEdgeImage(
                    triple<SrcIterator, SrcIterator, SrcAccessor> src,
                    pair<DestIterator, DestAccessor> dest,
@@ -1420,7 +1453,7 @@ cannyEdgelList(triple<SrcIterator, SrcIterator, SrcAccessor> src,
 
     {\bf Required Interface:}
     
-    see also: \Ref{cannyEdgleList}.
+    see also: \Ref{cannyEdgelList}.
     
     \begin{verbatim}
     DestImageIterator dest_upperleft;
@@ -1439,7 +1472,7 @@ cannyEdgelList(triple<SrcIterator, SrcIterator, SrcAccessor> src,
 */
 template <class SrcIterator, class SrcAccessor,
           class DestIterator, class DestAccessor, 
-          class SrcValue, class DestValue>
+          class DestValue>
 void cannyEdgeImage(
            SrcIterator sul, SrcIterator slr, SrcAccessor sa,
            DestIterator dul, DestAccessor da,
@@ -1462,11 +1495,11 @@ void cannyEdgeImage(
 
 template <class SrcIterator, class SrcAccessor,
           class DestIterator, class DestAccessor, 
-          class SrcValue, class DestValue>
+          class DestValue>
 inline void cannyEdgeImage(
            triple<SrcIterator, SrcIterator, SrcAccessor> src,
            pair<DestIterator, DestAccessor> dest,
-           double scale, float gradient_threshold, DestValue edge_marker)
+           double scale, double gradient_threshold, DestValue edge_marker)
 {
     cannyEdgeImage(src.first, src.second, src.third,
                    dest.first, dest.second,
