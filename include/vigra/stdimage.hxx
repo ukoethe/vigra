@@ -23,6 +23,7 @@
 #ifndef VIGRA_STDIMAGE_HXX
 #define VIGRA_STDIMAGE_HXX
 
+#include "vigra/tuple.hxx"
 #include "vigra/basicimage.hxx"
 #include "vigra/iteratortraits.hxx"
 #include "vigra/accessor.hxx"
@@ -609,28 +610,28 @@ struct IteratorTraits<ConstBasicImageIterator<T, T **> >
 
 template <class Iterator, class Accessor>
 inline triple<Iterator, Iterator, Accessor>
-srcIterRange(Iterator upperleft, Iterator lowerright, Accessor a)
+srcIterRange(Iterator const & upperleft, Iterator const & lowerright, Accessor a)
 {
     return triple<Iterator, Iterator, Accessor>(upperleft, lowerright, a);
 }
 
 template <class Iterator, class Accessor>
 inline pair<Iterator, Accessor>
-srcIter(Iterator upperleft, Accessor a)
+srcIter(Iterator const & upperleft, Accessor a)
 {
     return pair<Iterator, Accessor>(upperleft, a);
 }
 
 template <class Iterator, class Accessor>
 inline pair<Iterator, Accessor>
-maskIter(Iterator upperleft, Accessor a)
+maskIter(Iterator const & upperleft, Accessor a)
 {
     return pair<Iterator, Accessor>(upperleft, a);
 }
 
 template <class Iterator, class Accessor>
 inline pair<Iterator, Accessor>
-destIter(Iterator upperleft, Accessor a)
+destIter(Iterator const & upperleft, Accessor a)
 {
     return pair<Iterator, Accessor>(upperleft, a);
 }
@@ -638,7 +639,7 @@ destIter(Iterator upperleft, Accessor a)
 
 template <class Iterator, class Accessor>
 inline triple<Iterator, Iterator, Accessor>
-destIterRange(Iterator upperleft, Iterator lowerright, Accessor a)
+destIterRange(Iterator const & upperleft, Iterator const & lowerright, Accessor a)
 {
     return triple<Iterator, Iterator, Accessor>(upperleft, lowerright, a);
 }
@@ -647,7 +648,7 @@ destIterRange(Iterator upperleft, Iterator lowerright, Accessor a)
 
 template <class Iterator>
 inline pair<Iterator, typename IteratorTraits<Iterator>::DefaultAccessor>
-srcIter(Iterator upperleft)
+srcIter(Iterator const & upperleft)
 {
     return pair<Iterator, typename IteratorTraits<Iterator>::DefaultAccessor>(
                   upperleft,
@@ -656,7 +657,7 @@ srcIter(Iterator upperleft)
 
 template <class Iterator>
 inline triple<Iterator, Iterator, typename IteratorTraits<Iterator>::DefaultAccessor>
-srcIterRange(Iterator upperleft, Iterator lowerright)
+srcIterRange(Iterator const & upperleft, Iterator const & lowerright)
 {
     return triple<Iterator, Iterator, 
                   typename IteratorTraits<Iterator>::DefaultAccessor>(
@@ -666,7 +667,7 @@ srcIterRange(Iterator upperleft, Iterator lowerright)
 
 template <class Iterator>
 inline pair<Iterator, typename IteratorTraits<Iterator>::DefaultAccessor>
-maskIter(Iterator upperleft)
+maskIter(Iterator const & upperleft)
 {
     return pair<Iterator, typename IteratorTraits<Iterator>::DefaultAccessor>(
                   upperleft,
@@ -675,7 +676,7 @@ maskIter(Iterator upperleft)
 
 template <class Iterator>
 inline pair<Iterator, typename IteratorTraits<Iterator>::DefaultAccessor>
-destIter(Iterator upperleft)
+destIter(Iterator const & upperleft)
 {
     return pair<Iterator, typename IteratorTraits<Iterator>::DefaultAccessor>(
                   upperleft,
@@ -684,7 +685,7 @@ destIter(Iterator upperleft)
 
 template <class Iterator>
 inline triple<Iterator, Iterator, typename IteratorTraits<Iterator>::DefaultAccessor>
-destIterRange(Iterator upperleft, Iterator lowerright)
+destIterRange(Iterator const & upperleft, Iterator const & lowerright)
 {
     return triple<Iterator, Iterator, 
                   typename IteratorTraits<Iterator>::DefaultAccessor>(
