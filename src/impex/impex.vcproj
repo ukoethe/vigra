@@ -98,82 +98,37 @@
 	</Configurations>
 	<Files>
 		<File
-			RelativePath=".\block_read.c">
+			RelativePath="bmp.cxx">
 		</File>
 		<File
-			RelativePath=".\bmp.c">
+			RelativePath="byteorder.cxx">
 		</File>
 		<File
-			RelativePath=".\colors.c">
+			RelativePath="codecmanager.cxx">
 		</File>
 		<File
-			RelativePath=".\cr_image.c">
+			RelativePath="gif.cxx">
 		</File>
 		<File
-			RelativePath=".\error.c">
+			RelativePath="imageinfo.cxx">
 		</File>
 		<File
-			RelativePath=".\freeimage.c">
+			RelativePath="jpeg.cxx">
 		</File>
 		<File
-			RelativePath=".\fullpath.c">
+			RelativePath="png.cxx">
 		</File>
 		<File
-			RelativePath=".\gif.c">
+			RelativePath="pnm.cxx">
 		</File>
 		<File
-			RelativePath=".\image.c">
+			RelativePath="sun.cxx">
 		</File>
 		<File
-			RelativePath=".\imagesize.c">
+			RelativePath="tiff.cxx">
 		</File>
 		<File
-			RelativePath=".\impex.cxx">
-		</File>
-		<File
-			RelativePath=".\jpeg.c">
-		</File>
-		<File
-			RelativePath=".\machorder.c">
-		</File>
-		<File
-			RelativePath=".\machtype.c">
-		</File>
-		<File
-			RelativePath=".\nt.c">
-		</File>
-		<File
-			RelativePath=".\order.c">
-		</File>
-		<File
-			RelativePath=".\pnm.c">
-		</File>
-		<File
-			RelativePath=".\quantize.c">
-		</File>
-		<File
-			RelativePath=".\readheader.c">
-		</File>
-		<File
-			RelativePath=".\readimage.c">
-		</File>
-		<File
-			RelativePath=".\sun.c">
-		</File>
-		<File
-			RelativePath=".\tiff.cxx">
-		</File>
-		<File
-			RelativePath=".\utility.c">
-		</File>
-		<File
-			RelativePath=".\utils.c">
-		</File>
-		<File
-			RelativePath=".\viff.c">
-		</File>
-		<File
-			RelativePath=".\writeimage.c">
+			RelativePath="viff.cxx">
 		</File>
 	</Files>
 	<Globals>
