@@ -26,6 +26,7 @@
 #include <vector>
 #include "vigra/utilities.hxx"
 #include "vigra/stdimage.hxx"
+#include "vigra/initimage.hxx"
 #include "vigra/labelimage.hxx"
 
 namespace vigra {
