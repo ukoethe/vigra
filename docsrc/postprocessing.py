@@ -30,7 +30,26 @@ ruler = re.compile(r'<hr>')
 docu = re.compile(r' *<h2> (Documentation |Inheritance:)</h2>')
 public = re.compile(r'<DT><h3>Public')
 arrow = re.compile(r'<IMG BORDER=0 SRC=icon1.gif></A>')
+bullet = re.compile(r'<IMG BORDER=0 SRC=icon[12].gif>')
+bullet2 = re.compile(r'<IMG SRC=icon2.gif>')
 
+headingTableReplacement = r'<table cellpadding=5 bgcolor="#e0d090">\n<tr>\n\1\n' \
+               r'</font></th>\n' \
+               r'<th align=right ><a href="index.html"><IMG border=0 SRC="documents/vigra.gif"></a>' \
+               r'</th></tr>\n</table>\n'
+headingArrowReplacement = r'<th align=right valign=top>\n' \
+               r'<A HREF ="#DOC.DOCU" >' \
+               r'<IMG BORDER=0 SRC="documents/pfeilGross.gif"></A>\n' \
+               r'</th>\n<th width=100%><font size="+2">'
+docuReplacement = r'<table  bgcolor="#e0d090" width=100% cellpadding=5>\n<tr>\n' \
+                  r'<th align=left ><font size=+2> \1 </font></th>\n' \
+                  r'<tr>\n</table>'
+publicReplacement = r'</DL></DL>\n' \
+                    r'<table  bgcolor="#e0d090" width=100% cellpadding=5>\n<tr>\n' \
+                    r'<th align=left ><font size=+2> Members </font></th>\n' \
+                    r'<tr>\n</table>\n' \
+                    r'<DL><DL>\n<DT><h3>Public'
+                    
 def findHeading(text):
     result = heading.search(text, 1)
     if result == None: 
@@ -40,16 +59,8 @@ def findHeading(text):
 
 def convertHeading(text):
     # create a table for the heading (with down arrow at left and VIGRA logo at right)
-    text = heading.sub(
-                  r'<table cellpadding=5 bgcolor="#e0d090">\n<tr>\n\1\n' +
-                  r'</font></th>\n' +
-                  r'<th align=right ><a href="index.html"><IMG border=0 SRC="documents/vigra3.gif"></a>' +
-                  r'</th></tr>\n</table>\n', text)
-    text = headingArrow.sub(
-                  r'<th align=right valign=top>\n' + 
-                  r'<br><A HREF ="#DOC.DOCU" >' +
-                  r'<IMG BORDER=0 width=30 height=20 SRC="documents/next_down3.gif"></A>\n' +
-                  r'</th>\n<th width=100%><font size="+2">', text)
+    text = heading.sub(headingTableReplacement, text)
+    text = headingArrow.sub(headingArrowReplacement, text)
     
     # simplify heading
     if headingTypedef.search(text): 
@@ -63,6 +74,32 @@ def convertHeading(text):
     text = headingFunctionArguments.sub(r'(...)\1</font>', text) # remove function arguments
     return text
 
+def fixDocBaselinkSection(text):
+    matchPos = re.match(r'<H3>Inherited from <A HREF=".*?"', text).regs
+    end = matchPos[0][1]
+    link = re.sub(r'<H3>Inherited from <A HREF="(.*?)"', r'\1', text[0:end], re.S)
+    text = re.sub(r'<A HREF="(#DOC.*?)">', r'<A HREF="' + link + r'\1">', text)
+    return text
+
+def fixDocBaselinkBug(text):
+    res = re.search(r'<H3>Inherited from <A HREF=.*?(?=<H3>Inherited from <A HREF=|<A NAME="DOC.DOCU">)', text, re.S)
+    if res != None:
+        newSections = []
+        newText = ''
+        lastEnd = 0
+        start = 0
+        end = 0
+        for matchPos in res.regs:
+            start = matchPos[0]
+            end = matchPos[1]
+            newText = newText + text[lastEnd:start]
+            section = text[start:end]
+            newSection = fixDocBaselinkSection(section)
+            newText = newText + newSection
+            lastEnd = end
+        text = newText + text[lastEnd:]
+    return text
+
 def convertBody(text):
     text = body.sub(r'<body  bgcolor="#f8f0e0" link="#0040b0" vlink="#a00040">', text, 1)
     text = callOperator.sub(r'operator()', text)
@@ -74,19 +111,33 @@ def convertBody(text):
     text = footer.sub(r'', text, 1)
     text = stlLink.sub(r'http://www.sgi.com/Technology/STL', text)
     text = ruler.sub(r'<br>', text)
-    text = docu.sub(r'<table  bgcolor="#e0d090" width=100% cellpadding=5>\n<tr>\n' +
-                    r'<th align=left ><font size=+2> \1 </font></th>\n' +
-                    r'<tr>\n</table>', text)
-    text = public.sub(r'</DL></DL>\n' +
-                  r'<table  bgcolor="#e0d090" width=100% cellpadding=5>\n<tr>\n' +
-                  r'<th align=left ><font size=+2> Members </font></th>\n' +
-                  r'<tr>\n</table>\n' +
-                  r'<DL><DL>\n<DT><h3>Public', text, 1)
-    text = arrow.sub(r'<IMG BORDER=0 SRC="documents/next_down3.gif" width=15 height=15></A>', text)
+    text = docu.sub(docuReplacement, text)
+    text = public.sub(publicReplacement, text, 1)
+    text = arrow.sub(r'<IMG BORDER=0 SRC="documents/pfeil.gif"></A>', text)
+    text = bullet.sub(r'<IMG BORDER=0 SRC="documents/bullet.gif">', text)
+    text = bullet2.sub('', text)
+    text = fixDocBaselinkBug(text)
     return text
-
+    
 def convertAIndex(text):
-    return re.sub(r'<H2>Variables</H2>', r'<H2>typedefs</H2>', text)
+    text = re.sub(r'<H2>Variables</H2>', r'<H2>typedefs</H2>', text)
+    text = re.sub(r'<H1>Table of contents</H1>', 
+                   r'<table  bgcolor="#e0d090" width=100% cellpadding=5>\n<tr>\n' \
+                   r'<th align=left width=100%><font size=+3>Table of Contents</font></th>\n' \
+                   r'<th align=right ><a href="index.html"><IMG border=0 SRC="documents/vigra.gif"></a>' \
+                   r'<tr>\n</table>',
+                   text)
+    text = re.sub(r'<H2>(.*?)</H2>', docuReplacement, text)
+    return text
+  
+def convertHIER(text):
+    text = re.sub(r'<H1>(.*?)</H1>', 
+                   r'<table  bgcolor="#e0d090" width=100% cellpadding=5>\n<tr>\n' \
+                   r'<th align=left width=100%><font size=+3>\1</font></th>\n' \
+                   r'<th align=right ><a href="index.html"><IMG border=0 SRC="documents/vigra.gif"></a>' \
+                   r'<tr>\n</table>',
+                   text)
+    return text
   
 def convertIndex(text, version):
     return re.sub(r'VERSION_VERSION_VERSION', version, text)
@@ -97,22 +148,25 @@ def processFile(fileName):
     text = f.read()
     f.close()
     
-    headingText = findHeading(text)
-    newHeadingText = convertHeading(headingText)
-    text = heading.sub(newHeadingText, text)
     text = convertBody(text)
-    if fileName == str(sys.argv[1]) + '/aindex.html':
-        text = convertAIndex(text)
     if fileName == str(sys.argv[1]) + '/index.html':
         text = convertIndex(text, str(sys.argv[2]))
-    
+        
+    if fileName == str(sys.argv[1]) + '/aindex.html':
+        text = convertAIndex(text)
+    elif fileName == str(sys.argv[1]) + '/HIER.html':
+        text = convertHIER(text)
+    else:
+        headingText = findHeading(text)
+        newHeadingText = convertHeading(headingText)
+        text = heading.sub(newHeadingText, text)    
     f = open(fileName, 'w+')
     f.write(text)
     f.close()
     
 
 files = glob.glob(str(sys.argv[1]) + '/*.html')
-#files = glob.glob('ImageIterator.html')
+#files = glob.glob(str(sys.argv[1]) + '/ImageIterator.html')
 
 for file in files:
     processFile(file)
