@@ -24,6 +24,7 @@
 #define VIGRA_COLORCONVERSIONS_HXX
 
 #include <cmath>
+#include "vigra/mathutil.hxx"
 #include "vigra/rgbvalue.hxx"
 
 /** \page ColorConversions  Color Space Conversions
