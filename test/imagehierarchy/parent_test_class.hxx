@@ -1,7 +1,7 @@
 #ifndef PARENT_TEST_CLASS_HXX
 #define PARENT_TEST_CLASS_HXX
 
-#if 0
+#if __GNUC__
 #   define __STL_BEGIN_RELOPS_NAMESPACE namespace std { namespace rel_ops {
 #   define __STL_END_RELOPS_NAMESPACE }}
 #   define __STD_RELOPS std::rel_ops
@@ -229,13 +229,13 @@ public:
         should(image1->height() == 3);
         should(image1->width() == 2);
         should(image1->size() == vigra::Diff2D(2,3));
-        should(image1->end() == find_if(image1->begin(), image1->end(), bind2nd(Pixels_not_equal_to<value_type>(), child_data[0])));    
+		should(image1->end() == std::find_if(image1->begin(), image1->end(), std::bind2nd(Pixels_not_equal_to<value_type>(), child_data[0])));    
         
         std::auto_ptr<Image> image2(Policy::factory(0, 0, child_data[1]));
         should(image2->height() == 0);
         should(image2->width() == 0);
         should(image2->size() == vigra::Diff2D(0,0));
-        should(image2->end() == find_if(image2->begin(), image2->end(), bind2nd(Pixels_not_equal_to<value_type>(), child_data[1])));    
+        should(image2->end() == std::find_if(image2->begin(), image2->end(), std::bind2nd(Pixels_not_equal_to<value_type>(), child_data[1])));    
     }
     
     /** Testet den Copy Konstruktor ( Image(Image img) ).
@@ -278,13 +278,13 @@ public:
     void testInit()
     {
         image1_->init(data[6]);
-        should(image1_->end() == find_if(image1_->begin(), image1_->end(), bind2nd(Pixels_not_equal_to<value_type>(), data[6])));
+        should(image1_->end() == std::find_if(image1_->begin(), image1_->end(), std::bind2nd(Pixels_not_equal_to<value_type>(), data[6])));
         image1_->init(data[7]);
-        should(image1_->end() == find_if(image1_->begin(), image1_->end(), bind2nd(Pixels_not_equal_to<value_type>(), data[7])));
-        should(image1_->end() != find_if(image1_->begin(), image1_->end(), bind2nd(Pixels_not_equal_to<value_type>(), data[6])));
+        should(image1_->end() == std::find_if(image1_->begin(), image1_->end(), std::bind2nd(Pixels_not_equal_to<value_type>(), data[7])));
+        should(image1_->end() != std::find_if(image1_->begin(), image1_->end(), std::bind2nd(Pixels_not_equal_to<value_type>(), data[6])));
         
         image0_->init(data[8]);
-        should(image0_->end() == find_if(image0_->begin(), image0_->end(), bind2nd(Pixels_not_equal_to<value_type>(), data[8])));
+        should(image0_->end() == std::find_if(image0_->begin(), image0_->end(), std::bind2nd(Pixels_not_equal_to<value_type>(), data[8])));
     }
     
     void testWidth()
@@ -412,7 +412,7 @@ public:
         should(image1_->upperLeft()[Diff2D(2,3)] == (*image1_)[Diff2D(2,3)]);
 
         (*image1_->upperLeft()) = data[3];
-        should((*image1_->upperLeft()) == static_cast<typename Policy::PixelType>(data[3]));
+		should((*image1_->upperLeft()) == static_cast<typename Policy::PixelType>(data[3]));
     }
 
     void testLowerRight()
@@ -497,7 +497,7 @@ public:
     */
     void testAllAccessAndSetMethods()
     {
-        scanOrderIter1_ = image1_->begin();
+		scanOrderIter1_ = image1_->begin();
         traverserIter1_ = image1_->upperLeft();
         rowIter1_ = traverserIter1_.rowIterator();
         
@@ -587,7 +587,7 @@ public:
             traverserIter1_.x++;
             columnIter1_ = traverserIter1_.columnIterator();
         }         
-    } 
+	} 
        
 };// end of class ImageTest
 

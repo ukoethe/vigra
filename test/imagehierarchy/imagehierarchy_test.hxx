@@ -22,13 +22,13 @@ public:
         should(image1->height() == 4);
         should(image1->width() == 3);
         should(image1->size() == vigra::Diff2D(3,4));
-        should(image1->end() == find_if(image1->begin(), image1->end(), bind2nd(Pixels_not_equal_to<value_type>(), child_data[0])));    
+		should(image1->end() == std::find_if(image1->begin(), image1->end(), std::bind2nd(Pixels_not_equal_to<value_type>(), child_data[0])));    
         
         std::auto_ptr<Image> image2(Policy::factory(new typename ChildImage::InnerImage(0, 0, child_data[1])));
         should(image2->height() == 0);
         should(image2->width() == 0);
         should(image2->size() == vigra::Diff2D(0,0));
-        should(image2->end() == find_if(image2->begin(), image2->end(), bind2nd(Pixels_not_equal_to<value_type>(), child_data[1])));    
+        should(image2->end() == std::find_if(image2->begin(), image2->end(), std::bind2nd(Pixels_not_equal_to<value_type>(), child_data[1])));    
     }
     
     /** testet die clone() Methode der Klasse aus imagehierarchy
@@ -47,11 +47,11 @@ public:
         */
         image1->init(data[5]); 
         should((*image1_->begin()) != static_cast<typename Image::PixelType> (data[5]));
-        should(image1->end() == find_if(image1->begin(), image1->end(), bind2nd(Pixels_not_equal_to<value_type>(), data[5])));
+        should(image1->end() == std::find_if(image1->begin(), image1->end(), std::bind2nd(Pixels_not_equal_to<value_type>(), data[5])));
         
         image1_->init(data[6]);
-        should(image1->end() == find_if(image1->begin(), image1->end(), bind2nd(Pixels_not_equal_to<value_type>(), data[5])));
-        should(image1_->end() == find_if(image1_->begin(), image1_->end(), bind2nd(Pixels_not_equal_to<value_type>(), data[6])));
+        should(image1->end() == std::find_if(image1->begin(), image1->end(), std::bind2nd(Pixels_not_equal_to<value_type>(), data[5])));
+        should(image1_->end() == std::find_if(image1_->begin(), image1_->end(), std::bind2nd(Pixels_not_equal_to<value_type>(), data[6])));
         
         std::auto_ptr<typename Image::CloneType> image0(image0_->clone());
         should(equal(*image0, *image0_));
@@ -84,12 +84,12 @@ public:
         /* Aenderung mit der init-Funktion
         */
         image1->init(data[7]);
-        should(image1->end() == find_if(image1->begin(), image1->end(), bind2nd(Pixels_not_equal_to<value_type>(), data[7])));
-        should(image1_->end() == find_if(image1_->begin(), image1_->end(), bind2nd(Pixels_not_equal_to<value_type>(), data[7])));
+        should(image1->end() == std::find_if(image1->begin(), image1->end(), std::bind2nd(Pixels_not_equal_to<value_type>(), data[7])));
+        should(image1_->end() == std::find_if(image1_->begin(), image1_->end(), std::bind2nd(Pixels_not_equal_to<value_type>(), data[7])));
         
         image1->init(data[8]);
-        should(image1->end() == find_if(image1->begin(), image1->end(), bind2nd(Pixels_not_equal_to<value_type>(), data[8])));
-        should(image1_->end() == find_if(image1_->begin(), image1_->end(), bind2nd(Pixels_not_equal_to<value_type>(), data[8])));
+        should(image1->end() == std::find_if(image1->begin(), image1->end(), std::bind2nd(Pixels_not_equal_to<value_type>(), data[8])));
+        should(image1_->end() == std::find_if(image1_->begin(), image1_->end(), std::bind2nd(Pixels_not_equal_to<value_type>(), data[8])));
         
         /* Eine shallowCopy zeigt auf die selben Daten des kopierten Objektes
         */
@@ -98,9 +98,9 @@ public:
         should(&(*image1Copy) != &(*image1_));
         
         image1Copy->init(data[9]);
-        should(image1Copy->end() == find_if(image1Copy->begin(), image1Copy->end(), bind2nd(Pixels_not_equal_to<value_type>(), data[9])));
-        should(image1_->end() == find_if(image1_->begin(), image1_->end(), bind2nd(Pixels_not_equal_to<value_type>(), data[9])));
-        should(image1->end() == find_if(image1->begin(), image1->end(), bind2nd(Pixels_not_equal_to<value_type>(), data[9])));
+        should(image1Copy->end() == std::find_if(image1Copy->begin(), image1Copy->end(), std::bind2nd(Pixels_not_equal_to<value_type>(), data[9])));
+        should(image1_->end() == std::find_if(image1_->begin(), image1_->end(), std::bind2nd(Pixels_not_equal_to<value_type>(), data[9])));
+        should(image1->end() == std::find_if(image1->begin(), image1->end(), std::bind2nd(Pixels_not_equal_to<value_type>(), data[9])));
         
         std::auto_ptr<Image> image0(image0_->shallowCopy());
         should(equal(*image0, *image0_));
@@ -213,9 +213,9 @@ public:
         */
         image1_->init(data[7]);
         
-        should(image1_->end() == find_if(image1_->begin(), image1_->end(), bind2nd(Pixels_not_equal_to<value_type>(), data[7])));
+        should(image1_->end() == std::find_if(image1_->begin(), image1_->end(), std::bind2nd(Pixels_not_equal_to<value_type>(), data[7])));
                     
-        for(int x = 0; x < image1_->width(); x++)
+		for(int x = 0; x < image1_->width(); x++)
             for(int y = 0; y < image1_->height(); y++)
                 should((*image1_)(x,y) == static_cast<typename Policy::PixelType>(data[7]));
 
@@ -236,7 +236,7 @@ public:
         typename Image::Accessor acc;
         acc = image1_new->accessor();
         scanOrderIter1_ = image1_new->begin();
-        for(int i = 0; i < data.size(); i++)
+        for(unsigned int i = 0; i < data.size(); i++)
             {   
                 acc.set(data[i], scanOrderIter1_);
                 ++scanOrderIter1_; 
@@ -293,7 +293,6 @@ public:
         should((*image1_new_copy)(image1_new_copy->width() - 1, image1_new_copy->height() - 1) == (*image1_new)(1,3));
         should(image1_new_copy->lowerRight()[Diff2D(0,0)] == (*image1_new)(image1_new->width() - 1,image1_new->height() - 1));
         should(equalIteratorRun(image1_new_copy->upperLeft(), image1_new_copy->lowerRight(), image1_new_copy->begin()));
-        
      }//end of testSetRoi()
      
      /** testet die Methode resetROI(), die die gesetzte ROI wieder aufhebt

@@ -1,3 +1,5 @@
+#ifdef __GNUC__
+
 #   define __STL_BEGIN_RELOPS_NAMESPACE namespace std { namespace rel_ops {
 #   define __STL_END_RELOPS_NAMESPACE }}
 #   define __STD_RELOPS std::rel_ops
@@ -7,6 +9,7 @@
 #   undef __STL_BEGIN_RELOPS_NAMESPACE 
 #   undef __STL_END_RELOPS_NAMESPACE 
 #   undef __STD_RELOPS
+#endif
 
 #include <unittest.h>
 #include "one_band_image_policy.hxx"

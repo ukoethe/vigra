@@ -36,12 +36,25 @@ class ConstVectorProxy
     ConstVectorProxy(value_type const & f)
     : data_(const_cast<value_type *>(&f)), size_(1)
     {}
-    
+
+#ifndef NO_PARTIAL_TEMPLATE_SPECIALIZATION                                      ////AEND_1////////
     template <int N>
     ConstVectorProxy(TinyVector<value_type, N> const & v)
     : data_(const_cast<TinyVector<value_type, N> &>(v).begin()), size_(N)
     {}
-    
+#else   
+    ConstVectorProxy(TinyVector<value_type, 2> const & v)
+    : data_(const_cast<TinyVector<value_type, 2> &>(v).begin()), size_(2)
+    {}
+
+    ConstVectorProxy(TinyVector<value_type, 3> const & v)
+    : data_(const_cast<TinyVector<value_type, 3> &>(v).begin()), size_(3)
+    {}
+
+    ConstVectorProxy(TinyVector<value_type, 4> const & v)
+    : data_(const_cast<TinyVector<value_type, 4> &>(v).begin()), size_(4)
+    {}
+#endif                                                            //////AEND_1//////////////
     void reset(ConstVectorProxy const & v)
     {
         data_ = v.data_;
@@ -54,12 +67,33 @@ class ConstVectorProxy
         size_ = 1;
     }
     
+    
+#ifndef NO_PARTIAL_TEMPLATE_SPECIALIZATION                                  /////////////AEND_2//////////
     template <int N>
     void reset(TinyVector<value_type, N> const & v)
     {
         data_ = const_cast<TinyVector<value_type, N> &>(v).begin();
         size_ = N;
     }
+#else
+    void reset(TinyVector<value_type, 2> const & v)
+    {
+        data_ = const_cast<TinyVector<value_type, 2> &>(v).begin();
+        size_ = 2;
+    }
+    
+    void reset(TinyVector<value_type, 3> const & v)
+    {
+        data_ = const_cast<TinyVector<value_type, 3> &>(v).begin();
+        size_ = 3;
+    }
+    
+    void reset(TinyVector<value_type, 4> const & v)
+    {
+        data_ = const_cast<TinyVector<value_type, 4> &>(v).begin();
+        size_ = 4;
+    }
+#endif                                                                      /////////////AEND_2//////////
     
     void resize(int new_size)
         { size_ = new_size; }
@@ -82,13 +116,14 @@ class ConstVectorProxy
     int size() const
         { return size_; }
         
-    operator value_type() const
+	operator value_type() const
     {
         vigra_precondition(size_ == 1, 
             "ConstVectorProxy::operator value_type(): vector must have size 1.");
         return *data_;
     }
     
+#ifndef NO_PARTIAL_TEMPLATE_SPECIALIZATION                          ///////////AEND_3///////////
     template <int N>
     operator TinyVector<value_type, N>() const
     {
@@ -98,7 +133,33 @@ class ConstVectorProxy
         res.init(begin(), end());
         return res;
     }
-    
+#else
+    operator TinyVector<value_type, 2>() const
+    {
+        vigra_precondition(size_ == 2, 
+            "ConstVectorProxy::operator TinyVector(): size mismatch.");
+        TinyVector<value_type, 2> res;
+        res.init(begin(), end());
+        return res;
+    }
+    operator TinyVector<value_type, 3>() const
+    {
+        vigra_precondition(size_ == 3, 
+            "ConstVectorProxy::operator TinyVector(): size mismatch.");
+        TinyVector<value_type, 3> res;
+        res.init(begin(), end());
+        return res;
+    }
+    operator TinyVector<value_type, 4>() const
+    {
+        vigra_precondition(size_ == 4, 
+            "ConstVectorProxy::operator TinyVector(): size mismatch.");
+        TinyVector<value_type, 4> res;
+        res.init(begin(), end());
+        return res;
+    }
+#endif                                                             ///////////AEND_3///////////
+   
     operator RGBValue<value_type>() const
     {
         vigra_precondition(size_ == 3, 
@@ -157,10 +218,64 @@ class VectorProxy
     : ConstVectorProxy(f)
     {}
     
+#ifndef NO_PARTIAL_TEMPLATE_SPECIALIZATION                                      ////AEND_1////////
     template <int N>
     VectorProxy(TinyVector<value_type, N> const & v)
     : ConstVectorProxy(v)
     {}
+#else   
+    VectorProxy(TinyVector<value_type, 2> const & v)
+    : ConstVectorProxy(v)
+    {}
+
+    VectorProxy(TinyVector<value_type, 3> const & v)
+    : ConstVectorProxy(v)
+    {}
+
+    VectorProxy(TinyVector<value_type, 4> const & v)
+    : ConstVectorProxy(v)
+    {}
+#endif                                                                          //////AEND_1//////////////
+
+#ifndef NO_PARTIAL_TEMPLATE_SPECIALIZATION                            /////////AEND_4////////////
+    template <int N>
+    VectorProxy & operator=(TinyVector<value_type, N> const & v)
+    {
+        vigra_precondition(size_ == N,
+           "VectorProxy::operator=(): size mismatch.");
+        for(int i=0; i<N; ++i)
+            data_[i] = v[i];
+        return *this;
+    }
+#else
+    VectorProxy & operator=(TinyVector<value_type, 2> const & v)
+    {
+        vigra_precondition(size_ == 2,
+           "VectorProxy::operator=(): size mismatch.");
+        for(int i=0; i<2; ++i)
+            data_[i] = v[i];
+        return *this;
+    }
+    
+    VectorProxy & operator=(TinyVector<value_type, 3> const & v)
+    {
+        vigra_precondition(size_ == 3,
+           "VectorProxy::operator=(): size mismatch.");
+        for(int i=0; i<3; ++i)
+            data_[i] = v[i];
+        return *this;
+    }
+    
+    VectorProxy & operator=(TinyVector<value_type, 4> const & v)
+    {
+        vigra_precondition(size_ == 4,
+           "VectorProxy::operator=(): size mismatch.");
+        for(int i=0; i<4; ++i)
+            data_[i] = v[i];
+        return *this;
+    }
+    
+#endif                                                              /////////AEND_4////////////
     
     VectorProxy & operator=(VectorProxy const & v)
     {
@@ -979,8 +1094,8 @@ class FixedBandsImage
     typedef value_type const *                                      const_pointer;
     typedef typename IMAGE::Iterator                                traverser;
     typedef typename IMAGE::Iterator                                Iterator;           //2D Iterator !!! Soll deprecated werden, wurde in traverser umbenannt
-    typedef typename IMAGE::ConstIterator                           const_traverser;    
-    typedef typename IMAGE::ConstIterator                           ConstIterator;      //2D ConstIterator !!! Soll deprecated werden, wurde in const_traverser umbenannt
+    typedef typename InnerImage::ConstIterator                           const_traverser;    
+    typedef typename InnerImage::ConstIterator                           ConstIterator;      //2D ConstIterator !!! Soll deprecated werden, wurde in const_traverser umbenannt
     typedef IteratorAdaptor<ScanOrderIteratorPolicy<Iterator> >     ScanOrderIterator;
     typedef ScanOrderIterator                                       iterator;           //1D Iterator entspricht den ScanOrderIterator
     typedef IteratorAdaptor<ScanOrderIteratorPolicy<ConstIterator> > ConstScanOrderIterator;
@@ -989,8 +1104,13 @@ class FixedBandsImage
     typedef Diff2D                                                  size_type;
     typedef ACCESSOR                                                Accessor;
     typedef ACCESSOR                                                ConstAccessor;
-    typedef FixedBandsImage                                         CloneType;
     
+#ifndef NO_COVARIANT_RETURN_TYPES                                              ///////////////AEND_6///////////
+    typedef FixedBandsImage CloneType;
+#else
+    typedef VariableBandsImage CloneType;
+#endif                                                                      ///////////////AEND_6///////////   
+
     friend class SelectBandImage;
     /**  DefaultKonstruktor
     */
@@ -1156,8 +1276,11 @@ class FixedRGBImage : public FixedBandsImage<IMAGE, VectorAccessor<TinyVector<Gr
     typedef Diff2D                                                          size_type;
     typedef typename IMAGE::Accessor                                        Accessor;
     typedef typename IMAGE::ConstAccessor                                   ConstAccessor;
-    typedef FixedRGBImage                                                   CloneType;
-    
+#ifndef NO_COVARIANT_RETURN_TYPES                                               ///////////////AEND_7////////////
+    typedef FixedRGBImage CloneType;
+#else
+    typedef typename BaseType::CloneType CloneType;
+#endif                                                                       ///////////////AEND_7//////////// 
     friend class SelectBandImage;
     
     FixedRGBImage()
@@ -1335,12 +1458,13 @@ class ConstSelectBandIterator
     
     row_iterator rowIterator() const
     {
-        return row_iterator(typename row_iterator::BaseType(get(), bands_));
+        return (row_iterator(typename row_iterator::BaseType(get(), bands_)));
     }
     
     column_iterator columnIterator() const
     {
-        return column_iterator(typename column_iterator::BaseType(get(), width_*bands_));
+        typedef typename column_iterator::BaseType BaseType;
+		return column_iterator(BaseType(get(), width_*bands_));
     }
 };
 
@@ -1411,14 +1535,14 @@ class SelectBandIterator
     
     row_iterator rowIterator() const
     {
-        return row_iterator(typename 
-            row_iterator::BaseType(const_cast<pointer>(get()), bands_));
+        return (row_iterator(typename 
+            row_iterator::BaseType(const_cast<pointer>(get()), bands_)));
     }
     
     column_iterator columnIterator() const
     {
-        return column_iterator(typename 
-            column_iterator::BaseType(const_cast<pointer>(get()), width_*bands_));
+        return (column_iterator(typename 
+            column_iterator::BaseType(const_cast<pointer>(get()), width_*bands_)));
     }
 };
 
@@ -1446,8 +1570,9 @@ class SingleBandImage
     typedef Diff2D                                              size_type;
     typedef StandardAccessor<PixelType>                         Accessor;
     typedef StandardConstAccessor<ConstPixelType>               ConstAccessor;    
-    typedef SingleBandImage                                     CloneType;
-    
+#ifndef NO_COVARIANT_RETURN_TYPES                                                                         ////////AEND_8///////
+    typedef SingleBandImage CloneType;
+#endif                                                                                                  ////////AEND_8///////   
     virtual ~SingleBandImage()                            
         {}
     
@@ -1561,7 +1686,9 @@ class GrayImage
     typedef Diff2D                                                      size_type;
     typedef InnerImage::Accessor                                        Accessor;               // Accessor aus dem BasicImage<float>
     typedef InnerImage::ConstAccessor                                   ConstAccessor;          // ConstAccessor aus dem BasicImage<float>    
-    typedef GrayImage                                                   CloneType;
+#ifndef NO_COVARIANT_RETURN_TYPES                                                                   //////AEND_9////////
+    typedef GrayImage CloneType;
+#endif                                                                                            //////AEND_9//////// 
     
     GrayImage()
     : image_(new InnerImage(0,0))                              
@@ -1715,8 +1842,12 @@ class SelectBandImage
     };
     
   public:
-  
+#ifndef NO_COVARIANT_RETURN_TYPES                                           //////AEND_10//////
     typedef GrayImage CloneType;
+    typedef SelectBandImage ShallowCopyType;
+#else                                                                       //////AEND_10//////
+    typedef CloneType ShallowCopyType;
+#endif    
   
     template <class IMAGE>                              
     SelectBandImage(IMAGE const & s, int band)
@@ -1799,6 +1930,8 @@ class SelectBandImage
 };
     
 /****************************************************************/
+
+#if 0 // this didn't work with MSVC
 
 #define defineArgumentFactories(Image) \
 template <class Accessor> \
@@ -1884,6 +2017,170 @@ defineArgumentFactories(GrayImage)
 defineArgumentFactories(RGBImage)
 defineArgumentFactories(SelectBandImage)
 defineArgumentFactories(SingleBandImage)
+
+#endif
+////////////////////////////////////////ab hier bis Markierung soll eine Anpassung an den Kompiler sein
+#define defineArgumentFactories(Image) \
+template <class Accessor> \
+inline triple<Image::ConstIterator, Image::ConstIterator, Accessor> \
+srcImageRange(Image const & img, Accessor a) \
+{ \
+    return triple<Image::ConstIterator, Image::ConstIterator, Accessor>( \
+            img.upperLeft(), img.lowerRight(), a); \
+} \
+  \
+template <class Accessor> \
+inline pair<Image::ConstIterator, Accessor> \
+srcImage(Image const & img, Accessor a) \
+{ \
+    return pair<Image::ConstIterator, Accessor>( \
+            img.upperLeft(), a); \
+} \
+ \
+template <class Accessor> \
+inline triple<Image::Iterator, Image::Iterator, Accessor> \
+destImageRange(Image & img, Accessor a) \
+{ \
+    return triple<Image::Iterator, Image::Iterator, Accessor>( \
+            img.upperLeft(), img.lowerRight(), a); \
+} \
+ \
+template <class Accessor> \
+inline pair<Image::Iterator, Accessor> \
+destImage(Image & img, Accessor a) \
+{ \
+    return pair<Image::Iterator, Accessor>( \
+            img.upperLeft(), a); \
+} \
+ \
+template <class Accessor> \
+inline pair<Image::ConstIterator, Accessor> \
+maskImage(Image const & img, Accessor a) \
+{ \
+    return pair<Image::ConstIterator, Accessor>( \
+            img.upperLeft(), a); \
+} \
+ \
+inline triple<Image::ConstIterator, Image::ConstIterator, Image::ConstAccessor> \
+srcImageRange(Image const & img) \
+{ \
+    return triple<Image::ConstIterator, Image::ConstIterator, Image::ConstAccessor>( \
+            img.upperLeft(), img.lowerRight(), img.accessor()); \
+} \
+ \
+inline pair<Image::ConstIterator, Image::ConstAccessor> \
+srcImage(Image const & img) \
+{ \
+    return pair<Image::ConstIterator, Image::ConstAccessor>( \
+            img.upperLeft(), img.accessor()); \
+} \
+ \
+inline triple<Image::Iterator, Image::Iterator, Image::Accessor> \
+destImageRange(Image & img) \
+{ \
+    return triple<Image::Iterator, Image::Iterator, Image::Accessor>( \
+            img.upperLeft(), img.lowerRight(), img.accessor()); \
+} \
+ \
+inline pair<Image::Iterator, Image::Accessor> \
+destImage(Image & img) \
+{ \
+    return pair<Image::Iterator, Image::Accessor>( \
+            img.upperLeft(), img.accessor()); \
+} \
+ \
+inline pair<Image::ConstIterator, Image::ConstAccessor> \
+maskImage(Image const & img) \
+{ \
+    return pair<Image::ConstIterator, Image::ConstAccessor>( \
+            img.upperLeft(), img.accessor()); \
+}
+
+#define defineArgumentFactories2(Image, BaseImage) \
+template <class Accessor> \
+inline triple<BaseImage::ConstIterator, BaseImage::ConstIterator, Accessor> \
+srcImageRange(Image const & img, Accessor a) \
+{ \
+    return triple<BaseImage::ConstIterator, BaseImage::ConstIterator, Accessor>( \
+            img.upperLeft(), img.lowerRight(), a); \
+} \
+  \
+template <class Accessor> \
+inline pair<BaseImage::ConstIterator, Accessor> \
+srcImage(Image const & img, Accessor a) \
+{ \
+    return pair<BaseImage::ConstIterator, Accessor>( \
+            img.upperLeft(), a); \
+} \
+ \
+template <class Accessor> \
+inline triple<BaseImage::Iterator, BaseImage::Iterator, Accessor> \
+destImageRange(Image & img, Accessor a) \
+{ \
+    return triple<BaseImage::Iterator, BaseImage::Iterator, Accessor>( \
+            img.upperLeft(), img.lowerRight(), a); \
+} \
+ \
+template <class Accessor> \
+inline pair<BaseImage::Iterator, Accessor> \
+destImage(Image & img, Accessor a) \
+{ \
+    return pair<BaseImage::Iterator, Accessor>( \
+            img.upperLeft(), a); \
+} \
+ \
+template <class Accessor> \
+inline pair<BaseImage::ConstIterator, Accessor> \
+maskImage(Image const & img, Accessor a) \
+{ \
+    return pair<BaseImage::ConstIterator, Accessor>( \
+            img.upperLeft(), a); \
+} \
+ \
+inline triple<BaseImage::ConstIterator, BaseImage::ConstIterator, Image::ConstAccessor> \
+srcImageRange(Image const & img) \
+{ \
+    return triple<BaseImage::ConstIterator, BaseImage::ConstIterator, Image::ConstAccessor>( \
+            img.upperLeft(), img.lowerRight(), img.accessor()); \
+} \
+ \
+inline pair<BaseImage::ConstIterator, Image::ConstAccessor> \
+srcImage(Image const & img) \
+{ \
+    return pair<BaseImage::ConstIterator, Image::ConstAccessor>( \
+            img.upperLeft(), img.accessor()); \
+} \
+ \
+inline triple<BaseImage::Iterator, BaseImage::Iterator, Image::Accessor> \
+destImageRange(Image & img) \
+{ \
+    return triple<BaseImage::Iterator, BaseImage::Iterator, Image::Accessor>( \
+            img.upperLeft(), img.lowerRight(), img.accessor()); \
+} \
+ \
+inline pair<BaseImage::Iterator, Image::Accessor> \
+destImage(Image & img) \
+{ \
+    return pair<BaseImage::Iterator, Image::Accessor>( \
+            img.upperLeft(), img.accessor()); \
+} \
+ \
+inline pair<BaseImage::ConstIterator, Image::ConstAccessor> \
+maskImage(Image const & img) \
+{ \
+    return pair<BaseImage::ConstIterator, Image::ConstAccessor>( \
+            img.upperLeft(), img.accessor()); \
+}
+
+defineArgumentFactories(VariableBandsImage)
+defineArgumentFactories2(Vector2Image, FVector2Image)
+//defineArgumentFactories2(Vector3Image, FVector3Image)
+defineArgumentFactories2(Vector4Image, FVector4Image)
+defineArgumentFactories(GrayImage)
+defineArgumentFactories(RGBImage)
+defineArgumentFactories(SelectBandImage)
+defineArgumentFactories(SingleBandImage)
+////////////////////////////////////////
 
 template<>
 struct IteratorTraits<VariableBandsIterator >
