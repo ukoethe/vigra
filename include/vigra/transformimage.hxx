@@ -816,7 +816,7 @@ class BrightnessContrastFunctor
             increase brightness and contrast, < 1 will decrease them, and == 1 means
             no change.
         */
-    BrightnessContrastFunctor(double brightness, double contrast,
+    BrightnessContrastFunctor(promote_type brightness, promote_type contrast,
                               argument_type const & min, argument_type const & max)
     : b_(1.0/brightness),
       c_(1.0/contrast),
@@ -840,7 +840,7 @@ class BrightnessContrastFunctor
     }
 
   private:
-    double b_, c_;
+    promote_type b_, c_;
     argument_type min_;
     promote_type diff_, zero_, one_;
 };
@@ -848,16 +848,17 @@ class BrightnessContrastFunctor
 template <>
 class BrightnessContrastFunctor<unsigned char>
 {
-    unsigned char lut[256];
+    typedef NumericTraits<unsigned char>::RealPromote promote_type;
+     unsigned char lut[256];
 
  public:
 
     typedef unsigned char value_type;
 
-    BrightnessContrastFunctor(double brightness, double contrast,
+    BrightnessContrastFunctor(promote_type brightness, promote_type contrast,
                               value_type const & min = 0, value_type const & max = 255)
     {
-        BrightnessContrastFunctor<double> f(brightness, contrast, min, max);
+        BrightnessContrastFunctor<promote_type> f(brightness, contrast, min, max);
 
         for(int i = min; i <= max; ++i)
         {
@@ -877,13 +878,15 @@ class BrightnessContrastFunctor<unsigned char>
 template <class ComponentType>
 class BrightnessContrastFunctor<RGBValue<ComponentType> >
 {
+    typedef typename
+        NumericTraits<ComponentType>::RealPromote promote_type;
     BrightnessContrastFunctor<ComponentType> red, green, blue;
 
  public:
 
     typedef RGBValue<ComponentType> value_type;
 
-    BrightnessContrastFunctor(double brightness, double contrast,
+    BrightnessContrastFunctor(promote_type brightness, promote_type contrast,
                               value_type const & min, value_type const & max)
     : red(brightness, contrast, min.red(), max.red()),
       green(brightness, contrast, min.green(), max.green()),
@@ -902,13 +905,14 @@ class BrightnessContrastFunctor<RGBValue<ComponentType> >
 template <>
 class BrightnessContrastFunctor<RGBValue<int> >
 {
+    typedef NumericTraits<int>::RealPromote promote_type;
     BrightnessContrastFunctor<int> red, green, blue;
 
  public:
 
     typedef RGBValue<int> value_type;
 
-    BrightnessContrastFunctor(double brightness, double contrast,
+    BrightnessContrastFunctor(promote_type brightness, promote_type contrast,
                               value_type const & min, value_type const & max)
     : red(brightness, contrast, min.red(), max.red()),
       green(brightness, contrast, min.green(), max.green()),
@@ -925,13 +929,14 @@ class BrightnessContrastFunctor<RGBValue<int> >
 template <>
 class BrightnessContrastFunctor<RGBValue<float> >
 {
+    typedef NumericTraits<float>::RealPromote promote_type;
     BrightnessContrastFunctor<float> red, green, blue;
 
  public:
 
     typedef RGBValue<float> value_type;
 
-    BrightnessContrastFunctor(double brightness, double contrast,
+    BrightnessContrastFunctor(promote_type brightness, promote_type contrast,
                               value_type const & min, value_type const & max)
     : red(brightness, contrast, min.red(), max.red()),
       green(brightness, contrast, min.green(), max.green()),
@@ -950,13 +955,14 @@ class BrightnessContrastFunctor<RGBValue<float> >
 template <>
 class BrightnessContrastFunctor<RGBValue<unsigned char> >
 {
+    typedef NumericTraits<unsigned char>::RealPromote promote_type;
     BrightnessContrastFunctor<unsigned char> red, green, blue;
 
  public:
 
     typedef RGBValue<unsigned char> value_type;
 
-    BrightnessContrastFunctor(double brightness, double contrast,
+    BrightnessContrastFunctor(promote_type brightness, promote_type contrast,
        value_type const & min = value_type(0,0,0),
        value_type const & max = value_type(255, 255, 255))
     : red(brightness, contrast, min.red(), max.red()),
