@@ -354,6 +354,8 @@ operator!=(TinyVector<V1, 4> const & l, TinyVector<V2, 4> const & r)
     return l[0] != r[0] || l[1] != r[1] || l[2] != r[2] || l[3] != r[3];
 }
 
+#ifndef NO_PARTIAL_TEMPLATE_SPECIALIZATION
+
     /// component-wise not equal
 template <class V1, class V2, int SIZE>
 inline bool 
@@ -367,6 +369,8 @@ operator!=(TinyVector<V1, SIZE> const & l, TinyVector<V2, SIZE> const & r)
             return true;
     return false;
 }
+
+#endif // NO_PARTIAL_TEMPLATE_SPECIALIZATION
 
 //@}
 
