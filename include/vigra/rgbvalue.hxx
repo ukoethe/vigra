@@ -810,7 +810,7 @@ class RGBAccessor
 
         /** Get value of the red component
         @memo
-    */
+        */
     template <class RGBIterator>
     component_type red(RGBIterator & rgb) const
     {
@@ -819,7 +819,7 @@ class RGBAccessor
     
         /** Set value of the red component
         @memo
-    */
+        */
     template <class RGBIterator>
     void setRed(component_type const & v, RGBIterator & rgb) const
     {
@@ -828,7 +828,7 @@ class RGBAccessor
     
         /** Get value of the red component at a distance
         @memo
-    */
+        */
     template <class RGBIterator, class DISTANCE>
     component_type red(RGBIterator & rgb, DISTANCE const & dist) const
     {
@@ -837,7 +837,7 @@ class RGBAccessor
     
         /** Set value of the red component at a distance
         @memo
-    */
+        */
     template <class RGBIterator, class DISTANCE>
     void setRed(component_type const & v, RGBIterator & rgb, DISTANCE const & dist) const
     {
@@ -846,7 +846,7 @@ class RGBAccessor
        
         /** Get value of the green component
         @memo
-    */
+        */
     template <class RGBIterator>
     component_type green(RGBIterator & rgb) const
     {
@@ -855,7 +855,7 @@ class RGBAccessor
     
         /** Set value of the green component
         @memo
-    */
+        */
     template <class RGBIterator>
     void setGreen(component_type const & v, RGBIterator & rgb) const
     {
@@ -864,7 +864,7 @@ class RGBAccessor
     
         /** Get value of the green component at a distance
         @memo
-    */
+        */
     template <class RGBIterator, class DISTANCE>
     component_type green(RGBIterator & rgb, DISTANCE const & d) const
     {
@@ -873,7 +873,7 @@ class RGBAccessor
     
         /** Set value of the green component at a distance
         @memo
-    */
+        */
     template <class RGBIterator, class DISTANCE>
     void setGreen(component_type const & v, RGBIterator & rgb, DISTANCE const & d) const
     {
@@ -882,7 +882,7 @@ class RGBAccessor
     
         /** Get value of the blue component
         @memo
-    */
+        */
     template <class RGBIterator>
     component_type blue(RGBIterator & rgb) const
     {
@@ -891,7 +891,7 @@ class RGBAccessor
     
         /** Set value of the blue component
         @memo
-    */
+        */
     template <class RGBIterator>
     void setBlue(component_type const & v, RGBIterator & rgb) const
     {
@@ -900,7 +900,7 @@ class RGBAccessor
     
         /** Get value of the blue component at a distance
         @memo
-    */
+        */
     template <class RGBIterator, class DISTANCE>
     component_type blue(RGBIterator & rgb, DISTANCE const & d) const
     {
@@ -909,7 +909,7 @@ class RGBAccessor
     
         /** Set value of the blue component at a distance
         @memo
-    */
+        */
     template <class RGBIterator, class DISTANCE>
     void setBlue(component_type const & v, RGBIterator & rgb, DISTANCE const & d) const
     {
@@ -939,14 +939,15 @@ class RedAccessor
 
         /** Get value of the red component
         @memo
-    */
+        */
     template <class ITERATOR>
     value_type operator()(ITERATOR & i) const { 
-                return (*i).red(); }
+        return (*i).red(); 
+    }
 
         /** Get value of the red component at a distance
         @memo
-    */
+        */
     template <class ITERATOR, class DISTANCE>
     value_type operator()(ITERATOR & i, DISTANCE const & d) const 
     { 
@@ -955,15 +956,16 @@ class RedAccessor
     
         /** Set value of the red component
         @memo
-    */
+        */
     template <class ITERATOR>
     void set(value_type const & v, ITERATOR & i) const { 
-                 (*i).setRed(v); }
+        (*i).setRed(v); 
+    }
     
 
         /** Set value of the red component at a distance
         @memo
-    */
+        */
     template <class ITERATOR, class DISTANCE>
     void set(value_type const & v, ITERATOR & i, DISTANCE const & d) const 
     { 
@@ -991,14 +993,15 @@ class GreenAccessor
 
         /** Get value of the green component
         @memo
-    */
+        */
     template <class ITERATOR>
     value_type operator()(ITERATOR & i) const { 
-                return (*i).green(); }
+        return (*i).green(); 
+    }
 
         /** Get value of the green component at a distance
         @memo
-    */
+        */
     template <class ITERATOR, class DISTANCE>
     value_type operator()(ITERATOR & i, DISTANCE const & d) const 
     { 
@@ -1007,19 +1010,20 @@ class GreenAccessor
     
         /** Set value of the green component
         @memo
-    */
+        */
     template <class ITERATOR>
     void set(value_type v, ITERATOR & i) const { 
-                 (*i).setGreen(v); }
+        (*i).setGreen(v); 
+    }
     
 
         /** Set value of the green component at a distance
         @memo
-    */
+        */
     template <class ITERATOR, class DISTANCE>
     void set(value_type v, ITERATOR & i, DISTANCE const & d) const 
     { 
-        return i[d].setGreen(v); 
+        i[d].setGreen(v); 
     }
 };
 
@@ -1043,14 +1047,15 @@ class BlueAccessor
 
         /** Get value of the blue component
         @memo
-    */
+        */
     template <class ITERATOR>
     value_type operator()(ITERATOR & i) const { 
-                return (*i).blue(); }
+        return (*i).blue(); 
+    }
 
         /** Get value of the blue component at a distance
         @memo
-    */
+        */
     template <class ITERATOR, class DISTANCE>
     value_type operator()(ITERATOR & i, DISTANCE const & d) const 
     { 
@@ -1059,19 +1064,20 @@ class BlueAccessor
     
         /** Set value of the blue component
         @memo
-    */
+        */
     template <class ITERATOR>
     void set(value_type v, ITERATOR & i) const { 
-                 (*i).setBlue(v); }
+        (*i).setBlue(v); 
+    }
     
 
         /** Set value of the blue component at a distance
         @memo
-    */
+        */
     template <class ITERATOR, class DISTANCE>
     void set(value_type v, ITERATOR & i, DISTANCE const & d) const 
     { 
-        return i[d].setBlue(v); 
+        i[d].setBlue(v); 
     }
 };
 
@@ -1095,14 +1101,14 @@ class RGBToGrayAccessor
 
         /** Get value of the luminance
         @memo
-    */
+        */
     template <class ITERATOR>
     value_type operator()(ITERATOR & i) const { 
                 return (*i).luminance(); }
 
         /** Get value of the luminance at a distance
         @memo
-    */
+        */
     template <class ITERATOR, class DISTANCE>
     value_type operator()(ITERATOR & i, DISTANCE const & d) const 
     { 

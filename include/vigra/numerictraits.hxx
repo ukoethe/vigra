@@ -24,9 +24,7 @@
 #define VIGRA_NUMERICTRAITS_HXX
 
 #include <limits.h>
-#ifdef _MSC_VER
-#  include <float.h>
-#endif
+#include <cfloat>
 #include <vigra/utilities.hxx>
 
 /********************************************************/
