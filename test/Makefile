@@ -1,3 +1,5 @@
+include ../config/Makefile.include
+
 QUICKSUBDIRS =  \
         syntax \
         error \
@@ -21,13 +23,13 @@ SUBDIRS = $(QUICKSUBDIRS) \
         impex 
 
 all:
-	@rm -f testSuccess $(TOPTESTDIR)/testSuccess ; \
+	@rm -f testSuccess $(vigra_testdir)/testSuccess ; \
          for i in $(SUBDIRS); do \
 	        cd $$i; \
 	        make || exit 1; \
 	        cd ..; \
 	 done ; \
-	 touch testSuccess $(TOPTESTDIR)/testSuccess
+	 touch testSuccess $(vigra_testdir)/testSuccess
 
 quick:
 	@for i in $(QUICKSUBDIRS); do \
@@ -44,11 +46,6 @@ vc:
 	        cd ..; \
 	 done ; \
 	 touch testSuccess
-
-edit:
-	@for i in $(SUBDIRS); do \
-	        nc $$i/makefile.in; \
-	 done
 
 clean:
 	rm -f *.opt testSuccess	
