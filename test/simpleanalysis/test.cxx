@@ -602,8 +602,6 @@ struct DistanceTransformTest
     
     void distanceTransformL1Test()
     {
-        double epsilon = 0.000001;
-        
         Image res(img);
         
         distanceTransform(srcImageRange(img), destImage(res), 0.0, 1);
@@ -621,14 +619,13 @@ struct DistanceTransformTest
                 double dist2 = std::abs(5.0 - x) + std::abs(5.0 - y);
                 double desired = (dist1 < dist2) ? dist1 : dist2;
                 
-                should(std::abs(dist - desired) < epsilon);
+                shouldEqualTolerance(dist, desired, 1e-14);
             }
         }
     }
     
     void distanceTransformL2Test()
     {
-        double epsilon = 0.000001;
         
         Image res(img);
         
@@ -649,14 +646,13 @@ struct DistanceTransformTest
                                          (5.0 - y)*(5.0 - y));
                 double desired = (dist1 < dist2) ? dist1 : dist2;
                 
-                should(std::abs(dist - desired) < epsilon);
+                shouldEqualTolerance(dist, desired, 1e-7);
             }
         }
     }
     
     void distanceTransformLInfTest()
     {
-        double epsilon = 0.000001;
         
         Image res(img);
         
@@ -677,7 +673,7 @@ struct DistanceTransformTest
                                       std::abs(5.0 - y) : std::abs(5.0 - x);
                 double desired = (dist1 < dist2) ? dist1 : dist2;
                 
-                should(std::abs(dist - desired) < epsilon);
+                shouldEqualTolerance(dist, desired, 1e-14);
             }
         }
     }
@@ -885,9 +881,6 @@ struct RegionGrowingTest
     
     void voronoiTest()
     {
-        
-        double epsilon = 0.000001;
-        
         Image res(img);
         
         vigra::ArrayOfRegionStatistics<DirectCostFunctor> cost(2);
@@ -909,7 +902,7 @@ struct RegionGrowingTest
                                          (5.0 - y)*(5.0 - y));
                 double desired = (dist1 <= dist2) ? 1 : 2;
                 
-                should(std::abs(dist - desired) < epsilon);
+                shouldEqualTolerance(dist, desired, 1e-14);
             }
         }
     }

@@ -227,8 +227,6 @@ struct ConvolutionTest
     {
         Image sepgrad(lenna.size());
         importImage(vigra::ImageImportInfo("lenna128sepgrad.tif"), destImage(sepgrad));
-
-        double epsilon = 0.00001;
         
         vigra::Kernel1D<double> gauss;
         gauss.initGaussian(1.0);
@@ -256,7 +254,8 @@ struct ConvolutionTest
         for(; i1 != i1end; ++i1, ++i2, ++i)
         {
             double grad = sqrt(acc(i1)*acc(i1)+acc(i2)*acc(i2));
-            should(std::abs(grad - acc(i)) < epsilon);
+
+            shouldEqualTolerance(grad, acc(i), 1e-7);
         }
     }
     
@@ -264,8 +263,7 @@ struct ConvolutionTest
     {
         Image sepgrad(lenna.size());
         importImage(vigra::ImageImportInfo("lenna128sepgrad.tif"), destImage(sepgrad));
-
-        double epsilon = 0.00001;
+        
         
         Image tmpx(lenna.size());
         Image tmpy(lenna.size());
@@ -281,7 +279,7 @@ struct ConvolutionTest
         for(; i1 != i1end; ++i1, ++i2, ++i)
         {
             double grad = sqrt(acc(i1)*acc(i1)+acc(i2)*acc(i2));
-            should(std::abs(grad - acc(i)) < epsilon);
+            shouldEqualTolerance(grad, acc(i), 1e-7);
         }
     }
     
@@ -310,12 +308,12 @@ struct ConvolutionTest
         Image::ScanOrderIterator r3 = refxy.begin();
         Image::Accessor acc = constimg.accessor();
         
-        double epsilon = 0.00001;
+        
         for(; i1 != i1end; ++i1, ++i2, ++i3, ++r1, ++r2, ++r3)
         {
-            should(std::abs(acc(i1) - acc(r1)) < epsilon);
-            should(std::abs(acc(i2) - acc(r2)) < epsilon);
-            should(std::abs(acc(i3) - acc(r3)) < epsilon);
+                shouldEqualTolerance(acc(i1), acc(r1), 1e-7);
+                shouldEqualTolerance(acc(i2), acc(r2), 1e-7);
+                shouldEqualTolerance(acc(i3), acc(r3), 1e-7);
         }
     }
     
@@ -344,12 +342,11 @@ struct ConvolutionTest
         Image::ScanOrderIterator r3 = refxy.begin();
         Image::Accessor acc = constimg.accessor();
 
-        double epsilon = 0.001;
         for(; i1 != i1end; ++i1, ++i2, ++i3, ++r1, ++r2, ++r3)
         {
-            should(std::abs(acc(i1) - acc(r1)) < epsilon);
-            should(std::abs(acc(i2) - acc(r2)) < epsilon);
-            should(std::abs(acc(i3) - acc(r3)) < epsilon);
+                shouldEqualTolerance(acc(i1), acc(r1), 1e-7);
+                shouldEqualTolerance(acc(i2), acc(r2), 1e-7);
+                shouldEqualTolerance(acc(i3), acc(r3), 1e-7);
         }
     }
     
@@ -379,7 +376,6 @@ struct ConvolutionTest
     
     void stdVersusSeparableConvolutionTest()
     {
-        double epsilon = 0.00001;
         
         vigra::Kernel1D<double> gauss1;
         gauss1.initGaussian(2.0);
@@ -410,7 +406,7 @@ struct ConvolutionTest
             Image::Iterator x2 = y2;
             for(; x1.x != end.x; ++x1.x, ++x2.x)
             {
-                should(std::abs(acc(x1) - acc(x2)) < epsilon);
+                shouldEqualTolerance(acc(x1), acc(x2), 1e-7);
             }
         }
     }
@@ -444,7 +440,6 @@ struct ConvolutionTest
         importViffImage(viff, destImage(recgrad));
         freeViffImage(viff);
 
-        double epsilon = 0.00001;
         
         Image tmp1(lenna);
         tmp1 = 0.0;
@@ -467,13 +462,12 @@ struct ConvolutionTest
         {
             double grad = sqrt(acc(i1)*acc(i1)+acc(i2)*acc(i2));
             
-            should(std::abs(grad - acc(i)) < epsilon);
+            shouldEqualTolerance(grad, acc(i), 1e-7);
         }
     }
     
     void recursiveSecondDerivativeTest()
     {
-        double epsilon = 0.0001;
         double b = exp(-1.0);
         double factor = (1.0 - b) * (1.0 - b) / b;
         
@@ -495,14 +489,13 @@ struct ConvolutionTest
         for(; i1 != i1end; ++i1, ++i2, ++i3)
         {
             double diff = factor * (acc(i2) - acc(i1));
-            should(std::abs(diff - acc(i3)) < epsilon);
+            shouldEqualTolerance(diff, acc(i3), 1e-7);
         }
     }
     
     void nonlinearDiffusionTest()
     {
-        double epsilon = 0.00001;
-        
+         
         Image res(lenna.size());
 
         nonlinearDiffusion(srcImageRange(lenna), destImage(res),
@@ -517,7 +510,7 @@ struct ConvolutionTest
         
         for(; i1 != i1end; ++i1, ++i2)
         {
-            should(std::abs(*i1 - *i2) < epsilon);
+            shouldEqualTolerance((*i1), (*i2), 1e-7);
         }
     }
     

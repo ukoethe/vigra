@@ -694,66 +694,64 @@ struct ImageFunctionsTest
     void resizeLinearInterpolationTest()
     {
         Image img1(5,5);
-        double epsilon = 0.00000001;
-
         resizeImageLinearInterpolation(srcImageRange(img), destImageRange(img1));
 
         Image::ScanOrderIterator i1 = img1.begin();
         Image::Accessor acc = img.accessor();
 
-        should(std::abs(acc(i1) - 1.1) < epsilon);
+        shouldEqualTolerance(acc(i1), 1.1, 1e-14);
         ++i1;
-        should(std::abs(acc(i1) - 1.65) < epsilon);
+        shouldEqualTolerance(acc(i1), 1.65, 1e-14);
         ++i1;
-        should(std::abs(acc(i1) - 2.2) < epsilon);
+        shouldEqualTolerance(acc(i1), 2.2, 1e-14);
         ++i1;
-        should(std::abs(acc(i1) - 2.75) < epsilon);
+        shouldEqualTolerance(acc(i1), 2.75, 1e-14);
         ++i1;
-        should(std::abs(acc(i1) - 3.3) < epsilon);
-        ++i1;
-
-        should(std::abs(acc(i1) - 2.75) < epsilon);
-        ++i1;
-        should(std::abs(acc(i1) - 3.3) < epsilon);
-        ++i1;
-        should(std::abs(acc(i1) - 3.85) < epsilon);
-        ++i1;
-        should(std::abs(acc(i1) - 4.4) < epsilon);
-        ++i1;
-        should(std::abs(acc(i1) - 4.95) < epsilon);
+        shouldEqualTolerance(acc(i1), 3.3, 1e-14);
         ++i1;
 
-        should(std::abs(acc(i1) - 4.4) < epsilon);
+        shouldEqualTolerance(acc(i1), 2.75, 1e-14);
         ++i1;
-        should(std::abs(acc(i1) - 4.95) < epsilon);
+        shouldEqualTolerance(acc(i1), 3.3, 1e-14);
         ++i1;
-        should(std::abs(acc(i1) - 5.5) < epsilon);
+        shouldEqualTolerance(acc(i1), 3.85, 1e-14);
         ++i1;
-        should(std::abs(acc(i1) - 6.05) < epsilon);
+        shouldEqualTolerance(acc(i1), 4.4, 1e-14);
         ++i1;
-        should(std::abs(acc(i1) - 6.6) < epsilon);
-        ++i1;
-
-        should(std::abs(acc(i1) - 6.05) < epsilon);
-        ++i1;
-        should(std::abs(acc(i1) - 6.6) < epsilon);
-        ++i1;
-        should(std::abs(acc(i1) - 7.15) < epsilon);
-        ++i1;
-        should(std::abs(acc(i1) - 7.7) < epsilon);
-        ++i1;
-        should(std::abs(acc(i1) - 8.25) < epsilon);
+        shouldEqualTolerance(acc(i1), 4.95, 1e-14);
         ++i1;
 
-        should(std::abs(acc(i1) - 7.7) < epsilon);
+        shouldEqualTolerance(acc(i1), 4.4, 1e-14);
         ++i1;
-        should(std::abs(acc(i1) - 8.25) < epsilon);
+        shouldEqualTolerance(acc(i1), 4.95, 1e-14);
         ++i1;
-        should(std::abs(acc(i1) - 8.8) < epsilon);
+        shouldEqualTolerance(acc(i1), 5.5, 1e-14);
         ++i1;
-        should(std::abs(acc(i1) - 9.35) < epsilon);
+        shouldEqualTolerance(acc(i1), 6.05, 1e-14);
         ++i1;
-        should(std::abs(acc(i1) - 9.9) < epsilon);
+        shouldEqualTolerance(acc(i1), 6.6, 1e-14);
+        ++i1;
+
+        shouldEqualTolerance(acc(i1), 6.05, 1e-14);
+        ++i1;
+        shouldEqualTolerance(acc(i1), 6.6, 1e-14);
+        ++i1;
+        shouldEqualTolerance(acc(i1), 7.15, 1e-14);
+        ++i1;
+        shouldEqualTolerance(acc(i1), 7.7, 1e-14);
+        ++i1;
+        shouldEqualTolerance(acc(i1), 8.25, 1e-14);
+        ++i1;
+
+        shouldEqualTolerance(acc(i1), 7.7, 1e-14);
+        ++i1;
+        shouldEqualTolerance(acc(i1), 8.25, 1e-14);
+        ++i1;
+        shouldEqualTolerance(acc(i1), 8.8, 1e-14);
+        ++i1;
+        shouldEqualTolerance(acc(i1), 9.35, 1e-14);
+        ++i1;
+        shouldEqualTolerance(acc(i1), 9.9, 1e-14);
 
         Image img2(3,3);
         img2 = 0;
@@ -803,8 +801,6 @@ struct ResizeImageSplineTest
         freeViffImage(viff);
 
         Image img1(imgex.width(), imgex.height());
-        double epsilon = 0.0001;
-
         resizeImageSplineInterpolation(srcImageRange(img), destImageRange(img1));
 
         Image::ScanOrderIterator i1 = img1.begin();
@@ -813,7 +809,7 @@ struct ResizeImageSplineTest
 
         for(; i1 != img1.end(); ++i1, ++iex)
         {
-            should(std::abs(acc(i1) - acc(iex)) < epsilon);
+            shouldEqualTolerance(acc(i1), acc(iex), 1e-4);
         }
     }
 
@@ -828,7 +824,6 @@ struct ResizeImageSplineTest
         freeViffImage(viff);
         
         Image img1(imgred.width(), imgred.height());
-        double epsilon = 0.0001;
 
         resizeImageSplineInterpolation(srcImageRange(img), destImageRange(img1));
 
@@ -838,7 +833,7 @@ struct ResizeImageSplineTest
 
         for(; i1 != img1.end(); ++i1, ++ired)
         {
-            should(std::abs(acc(i1) - acc(ired)) < epsilon);
+            shouldEqualTolerance(acc(i1), acc(ired), 1e-4);
         }
     }
 
@@ -853,7 +848,6 @@ struct ResizeImageSplineTest
         freeViffImage(viff);
 
         RGBImage img1(rgbex.width(), rgbex.height());
-        double epsilon = 0.0001;
 
         resizeImageSplineInterpolation(srcImageRange(rgb), destImageRange(img1));
 
@@ -863,9 +857,9 @@ struct ResizeImageSplineTest
 
         for(; i1 != img1.end(); ++i1, ++iex)
         {   
-            should(std::abs(acc.red(i1) - acc.red(iex)) < epsilon);
-            should(std::abs(acc.green(i1) - acc.green(iex)) < epsilon);
-            should(std::abs(acc.blue(i1) - acc.blue(iex)) < epsilon);
+            shouldEqualTolerance(acc.red(i1), acc.red(iex), 1e-4);
+            shouldEqualTolerance(acc.green(i1), acc.green(iex), 1e-4);
+            shouldEqualTolerance(acc.blue(i1), acc.blue(iex), 1e-4);
         }
     }
 
@@ -880,7 +874,6 @@ struct ResizeImageSplineTest
         freeViffImage(viff);
 
         RGBImage img1(rgbred.width(), rgbred.height());
-        double epsilon = 0.0001;
 
         resizeImageSplineInterpolation(srcImageRange(rgb), destImageRange(img1));
 
@@ -890,9 +883,9 @@ struct ResizeImageSplineTest
 
         for(; i1 != img1.end(); ++i1, ++ired)
         {
-            should(std::abs(acc.red(i1) - acc.red(ired)) < epsilon);
-            should(std::abs(acc.green(i1) - acc.green(ired)) < epsilon);
-            should(std::abs(acc.blue(i1) - acc.blue(ired)) < epsilon);
+            shouldEqualTolerance(acc.red(i1), acc.red(ired), 1e-4);
+            shouldEqualTolerance(acc.green(i1), acc.green(ired), 1e-4);
+            shouldEqualTolerance(acc.blue(i1), acc.blue(ired), 1e-4);
         }
     }
 
