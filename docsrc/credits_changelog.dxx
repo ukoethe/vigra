@@ -14,13 +14,43 @@
       <li> Hans Meine 
       (<a href="mailto:hans_meine@gmx.net">hans_meine@gmx.net</a>)
       contributed interface code for the FFTW Fourier transform library,
-      the ImageArray class and the Gabor filter code.
+      the ImageArray class and the Gabor filter code. He also
+      collaborated in the implementation of many other modules.
 
+      <li> Gunnar Kedenburg 
+      (<a href="mailto:gunnar@haquebright.de">gunnar@haquebright.de</a>)
+      completely rewrote the image import/export library.
 
+      <li> Yevgen Reznichenko
+      (<a href="mailto:rezniche@kogs.informatik.uni-hamburg.de">rezniche@kogs.informatik.uni-hamburg.de</a>)
+      added \ref recursiveFilterX() and \ref recursiveFilterY().
+
+      <li> Numerous people reported bugs and made suggestions.
 </UL>
 
 Many thanks to all!
 <p>
+
+<b> Changes from Version 1.1.6 to 1.1.7</b>
+
+<UL>
+
+      <li> Complete redesign of the image import/export library. 
+      
+      <li> Added support for PNG image format.
+           
+      <li> Added cygwin support to the build system.
+           
+      <li> Added \link PixelNeighborhood pixel neighborhood utilities \endlink 
+           and \ref vigra::NeighborhoodCirculator.
+      
+      <li> added \ref vigra::CrackContourCirculator
+      
+      <li> added \ref recursiveFilterX() and \ref recursiveFilterY() that
+           support negative filter coefficients and all
+           \link BorderTreatmentMode BorderTreatmenModes \endlink
+           
+</UL>
 
 <b> Changes from Version 1.1.5 to 1.1.6</b>
 
