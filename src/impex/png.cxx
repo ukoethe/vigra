@@ -139,7 +139,7 @@ namespace vigra {
         const unsigned int sig_size = 8;
         png_byte sig[sig_size];
         std::fread( sig, sig_size, 1, file.get() );
-        const bool no_png = png_sig_cmp( sig, 0, sig_size );
+        const int no_png = png_sig_cmp( sig, 0, sig_size );
         vigra_precondition( !no_png, "given file is not a png file.");
 
         // create png read struct with user defined handlers
@@ -262,14 +262,14 @@ namespace vigra {
         cbands.resize(size);
 
         // prepare the row pointers
-        png_bytep row_pointers[height];
+        void_vector<png_bytep> row_pointers(height);
         for ( unsigned int i = 0; i < height; ++i )
             row_pointers[i] = cbands.data() + row_stride * i;
 
         // read the whole image
         if (setjmp(png->jmpbuf))
             vigra_postcondition( false, png_error_message.insert(0, "error in png_read_image(): ").c_str() );
-        png_read_image( png, row_pointers );
+        png_read_image( png, row_pointers.begin() );
     }
 
     void PngDecoder::init( const std::string & filename )
@@ -450,7 +450,7 @@ namespace vigra {
     {
         // prepare row pointers
         png_uint_32 row_stride = ( bit_depth >> 3 ) * width * components;
-        png_byte * row_pointers[height];
+        void_vector<png_byte *>  row_pointers(height);
         typedef void_vector<png_byte> vector_type;
         vector_type & cbands = static_cast< vector_type & >(bands);
         png_byte * mover = cbands.data();
@@ -461,7 +461,7 @@ namespace vigra {
         // write the whole image
         if (setjmp(png->jmpbuf))
             vigra_postcondition( false, png_error_message.insert(0, "error in png_write_image(): ").c_str() );
-        png_write_image( png, row_pointers );
+        png_write_image( png, row_pointers.begin() );
         if (setjmp(png->jmpbuf))
             vigra_postcondition( false, png_error_message.insert(0, "error in png_write_end(): ").c_str() );
         png_write_end(png, info);
