@@ -131,12 +131,6 @@ namespace vigra {
 
         // methods
 
-        unsigned char get_val( unsigned int i )
-        {
-            return ( header.depth == 1 ) ?
-                bands[ i / 8 ] & ( 1 << ( 7 - ( i % 8 ) ) ) : bands[i];
-        }
-
         void read_scanline();
 
         // ctor
@@ -150,116 +144,142 @@ namespace vigra {
 #else
         : stream( filename.c_str() ), 
 #endif
-          bo("big endian"), 
-          maps(0), 
-          bands(0),
-          recode(false)
+          bo ("big endian"), 
+          maps (0), 
+          bands (0),
+          recode (false)
     {
-        if(!stream.good())
+        if (!stream.good ())
         {
-            std::string msg("Unable to open file '");
+            std::string msg ("Unable to open file '");
             msg += filename;
             msg += "'.";
-            vigra_precondition(0, msg.c_str());
+            vigra_precondition (0, msg.c_str ());
         }
         
         // read the magic number, adjust byte order if necessary
         SunHeader::field_type magic;
-        read_field( stream, bo, magic );
-        if ( magic == RAS_MAGIC_REVERSE ) {
+        read_field (stream, bo, magic);
+        if (magic == RAS_MAGIC_REVERSE)
             bo.set("little endian");
-        } else {
-            vigra_precondition( magic == RAS_MAGIC,
-                                "the stored magic number is invalid" );
-        }
+        else
+            vigra_precondition
+                (magic == RAS_MAGIC, "the stored magic number is invalid");
 
         // read the header
-        header.from_stream( stream, bo );
+        header.from_stream (stream, bo);
 
         // byte encoded files are not supported
-        vigra_precondition( header.type != RT_ENCODED,
-                            "ras byte encoding is not supported" );
+        vigra_precondition (header.type != RT_ENCODED,
+                            "ras byte encoding is not supported");
 
         // calculate the row stride and adjust the bands vector
         // row stride is rounded up to the next multiple of 16 bits
-        row_stride = ( 2 * header.width * ( header.depth / 8 ) + 1 ) / 2;
-        bands.resize(row_stride);
+        row_stride = (2*header.width*(header.depth/8)+1)/2;
+        bands.resize (row_stride);
 
         // read the color map, if there is one
-        if ( header.maptype != RMT_NONE && header.maplength != 0 ) {
-
-            // read the maps
-            maps.resize(header.maplength);
-            read_array( stream, bo, maps.data(), header.maplength );
-
-            // map to gray or rgb
-            recode = true;
+        if (header.maptype != RMT_NONE) {
+            vigra_precondition
+                (header.maplength != 0,
+                 "mapping requested, but color maps have zero length");
+            maps.resize (header.maplength);
+            read_array (stream, bo, maps.data (), header.maplength);
         }
 
-        // regenerate header.length, if needed
-        if ( header.length == 0 )
+        // compute the header length, if it is not set.
+        if (header.length == 0)
             header.length = header.height * row_stride;
 
-        // figure out the number of components
-        switch (header.depth) {
-        case 1:
-            components = 1;
-            // expand bi-level images to byte images
+        // find out if recoding is necessary.
+        if (header.maptype != RMT_NONE || header.depth == 1)
             recode = true;
-            break;
-        case 8:
-            components = 1;
-            break;
-        case 24:
+        else
+            recode = false;
+
+        // find out the number of components.
+        if (header.depth == 24 || header.maptype == RMT_EQUAL_RGB)
             components = 3;
-            break;
-        default:
-            vigra_precondition( false, "number of bands is unsupported" );
-        }
+        else
+            components = 1;
+
+        // sanity check on the depth
+        vigra_precondition
+            (header.depth == 1 || header.depth == 8 || header.depth == 24,
+             "unsupported color depth");
     }
 
     void SunDecoderImpl::read_scanline()
     {
         // read the scanline
-        read_array( stream, bo, bands.data(), row_stride );
+        read_array (stream, bo, bands.data (), row_stride);
 
         // recode if necessary
         if (recode) {
-            void_vector< unsigned char > recode_bands;
-            if ( header.depth == 1 ) {
-                // expand to unsigned char
-                recode_bands.resize(header.width);
-                for ( unsigned int i = 0; i < header.width; ++i )
-                    recode_bands[i] = get_val(i);
-            } else if ( header.maptype == RMT_EQUAL_RGB ) {
-                recode_bands.resize( header.maptype == RMT_EQUAL_RGB ?
-                                     3 * header.width : header.width );
-                const unsigned int mapstride = header.maplength / 3;
-                for ( unsigned int i = 0; i < header.width; ++i ) {
-                    recode_bands[ 3 * i ] = maps[get_val(i)];
-                    recode_bands[ 3 * i + 1 ]
-                        = maps[ mapstride + get_val(i) ];
-                    recode_bands[ 3 * i + 2 ]
-                        = maps[ 2 * mapstride + get_val(i) ];
+
+            void_vector <unsigned char> recode_bands;
+
+            if (header.depth == 1) {
+
+                // expand to unsigned char.
+                recode_bands.resize (header.width);
+                for (unsigned int i = 0; i < header.width; ++i) {
+
+                    // there are eight pixels in each byte.
+                    const unsigned char b = bands [i/8];
+                    recode_bands [i] = b >> i%8 & 0x01;
                 }
-            } else if ( header.maptype == RMT_RAW ) {
-                recode_bands.resize(bands.size());
-                for ( unsigned int i = 0; i < header.width; ++i )
-                    recode_bands[i] = maps[get_val(i)];
+
+                // commit.
+                swap_void_vector (recode_bands, bands);
             }
-            swap_void_vector( recode_bands, bands );
+
+            // color map the scanline.
+            if (header.maptype == RMT_EQUAL_RGB) {
+
+                // map from unsigned char to rgb
+                recode_bands.resize (3*header.width);
+                const unsigned int mapstride = header.maplength/3;
+                unsigned char *recode_mover = recode_bands.data ();
+                for (unsigned int i = 0; i < header.width; ++i) {
+                    // find out the pointer to the red color
+                    unsigned char *map_mover = maps.data () + bands [i];
+                    // red
+                    *recode_mover++ = *map_mover;
+                    map_mover += mapstride;
+                    // green
+                    *recode_mover++ = *map_mover;
+                    map_mover += mapstride;
+                    // blue
+                    *recode_mover++ = *map_mover;
+                }
+                
+            } else if (header.maptype == RMT_RAW) {
+
+                // map from unsigned char to unsigned char
+                recode_bands.resize (header.width);
+                for (unsigned int i = 0; i < header.width; ++i)
+                    recode_bands [i] = maps [bands [i]];
+            }
+
+            // commit.
+            swap_void_vector (recode_bands, bands);
         }
 
-        // bgr -> rgb
-        if ( header.type == RT_STANDARD && components == 3 ) {
-            // rgb -> bgr
-            void_vector< unsigned char > recode_bands(bands.size());
-            for ( unsigned int i = 0; i < header.width; ++i ) {
-                recode_bands[ 3 * i ] = bands[ 3 * i + 2 ];
-                recode_bands[ 3 * i + 1 ] = bands[ 3 * i + 1 ];
-                recode_bands[ 3 * i + 2 ] = bands[ 3 * i ];
+        // swap the color components of a BGR image to RGB.
+        // i really don't know the exact condition for this.
+        if (header.type == RT_STANDARD && header.maptype != RMT_EQUAL_RGB
+            && components == 3) {
+
+            void_vector <unsigned char> recode_bands (3*header.width);
+            for (unsigned int i = 0; i < header.width; ++i) {
+                recode_bands [3*i]   = bands [3*i+2];
+                recode_bands [3*i+1] = bands [3*i+1];
+                recode_bands [3*i+2] = bands [3*i];
             }
-            swap_void_vector( recode_bands, bands );
+
+            // commit.
+            swap_void_vector (recode_bands, bands);
         }
     }
 

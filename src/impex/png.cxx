@@ -189,25 +189,14 @@ namespace vigra {
             vigra_postcondition( false, png_error_message.insert(0, "error in png_get_IHDR(): ").c_str() );
         png_get_IHDR( png, info, &width, &height, &bit_depth, &color_type,
                       &interlace_method, &compression_method, &filter_method );
-
-        // find out the number of components
-        switch (color_type) {
-        case PNG_COLOR_TYPE_GRAY:
-            components = 1;
-            break;
-        case PNG_COLOR_TYPE_RGB:
-            components = 3;
-            break;
-        default:
-            vigra_fail( "internal error: illegal color type." );
-        }
-
+        
         // transform palette to rgb
         if ( color_type == PNG_COLOR_TYPE_PALETTE) {
             if (setjmp(png->jmpbuf))
                 vigra_postcondition( false, png_error_message.insert(0, "error in png_palette_to_rgb(): ").c_str() );
             png_set_palette_to_rgb(png);
             color_type = PNG_COLOR_TYPE_RGB;
+            bit_depth = 8;
         }
 
         // expand gray values to at least one byte size
@@ -224,6 +213,18 @@ namespace vigra {
                 vigra_postcondition( false, png_error_message.insert(0, "error in png_set_strip_alpha(): ").c_str() );
             png_set_strip_alpha(png);
             color_type ^= PNG_COLOR_MASK_ALPHA;
+        }
+
+        // find out the number of components
+        switch (color_type) {
+        case PNG_COLOR_TYPE_GRAY:
+            components = 1;
+            break;
+        case PNG_COLOR_TYPE_RGB:
+            components = 3;
+            break;
+        default:
+            vigra_fail( "internal error: illegal color type." );
         }
 
 #if 0

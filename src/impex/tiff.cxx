@@ -155,11 +155,7 @@ namespace vigra {
 
     TIFFDecoderImpl::TIFFDecoderImpl( const std::string & filename )
     {
-#ifdef _MSC_VER
-        tiff = TIFFOpen( filename.c_str(), "rb" );
-#else
         tiff = TIFFOpen( filename.c_str(), "r" );
-#endif
         if ( !tiff ) {
             std::string msg("Unable to open file '");
             msg += filename;
@@ -452,11 +448,7 @@ namespace vigra {
         TIFFEncoderImpl( const std::string & filename )
             : tiffcomp(COMPRESSION_NONE), finalized(false)
         {
-#ifdef _MSC_VER
-            tiff = TIFFOpen( filename.c_str(), "wb" );
-#else
             tiff = TIFFOpen( filename.c_str(), "w" );
-#endif
             if (!tiff)
             {
                 std::string msg("Unable to open file '");
