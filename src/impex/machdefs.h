@@ -259,7 +259,7 @@ static MachineDefs machine_defs[] =
 
                /* unknown type */
 #if !defined(LocalDef)
-#define LocalDef	machine_defs[UNKNOWN]
+#define LocalDef	machine_defs[UNKNOWN_DEF]
 #endif
 
 
