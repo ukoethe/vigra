@@ -58,7 +58,7 @@
     \anchor _details
     <CENTER>
     \section Main VIGRA - Vision with Generic Algorithms
-    Version VERSION_VERSION_VERSION
+    Version @MAJOR_VERSION@.@MINOR_VERSION@.@MICRO_VERSION@
     by <a href="http://kogs-www.informatik.uni-hamburg.de/~koethe/">Ullrich K&ouml;the</a>
     </CENTER>
     
@@ -92,13 +92,13 @@
     U. K&ouml;the's PhD thesis <em>"<a href="http://kogs-www.informatik.uni-hamburg.de/~koethe/papers/index.html#PhD>Generische Programmierung f&uuml;r die Bildverarbeitung</a>"</em>. 
     However, this is written in German.
         
-    VIGRA is subject to this <a href="../LICENSE">LICENSE</a>. 
+    VIGRA is subject to this <a href="LICENSE">LICENSE</a>. 
     
     
     \section Documentation Documentation
     
-    The documentation can be found in \p $VIGRA_PATH/doc/, the start file is 
-    \p $VIGRA_PATH/doc/index.html (this file).
+    The documentation can be found in \p @datadir@/doc/vigra/, the start file is 
+    \p @datadir@/doc/vigra/index.html (this file).
     
     
     
