@@ -334,9 +334,16 @@ class Diff2D
 
         /** Calculate length of difference vector.
         */
+    int squaredMagnitude() const
+    {
+        return x*x + y*y;
+    }
+
+        /** Calculate length of difference vector.
+        */
     double magnitude() const
     {
-        return VIGRA_CSTD::sqrt((double)(x*x + y*y));
+        return VIGRA_CSTD::sqrt((double)squaredMagnitude());
     }
 
         /** Equality.
