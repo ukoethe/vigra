@@ -258,10 +258,17 @@ class RGB2RGBPrimeFunctor
         */
     typedef typename NumericTraits<To>::RealPromote component_type;
     
+        /** Default constructor.
+            The maximum value for each RGB componentdefaults to 255
+        */
+    RGB2RGBPrimeFunctor()
+    : max_(255.0)
+    {}
+    
         /** constructor
             \arg max - the maximum value for each RGB component
         */
-    RGB2RGBPrimeFunctor(component_type max = 255.0)
+    RGB2RGBPrimeFunctor(component_type max)
     : max_(max)
     {}
     
@@ -288,7 +295,15 @@ class RGB2RGBPrimeFunctor<unsigned char, unsigned char>
   
     typedef RGBValue<unsigned char> value_type;
     
-    RGB2RGBPrimeFunctor(double max = 255.0)
+    RGB2RGBPrimeFunctor()
+    {
+        for(int i=0; i<256; ++i)
+        {
+            lut_[i] = NumericTraits<unsigned char>::fromRealPromote(detail::gammaCorrection(i, 0.45, 255.0));
+        }
+    }
+    
+    RGB2RGBPrimeFunctor(double max)
     {
         for(int i=0; i<256; ++i)
         {
@@ -340,10 +355,17 @@ class RGBPrime2RGBFunctor
         */
     typedef typename NumericTraits<To>::RealPromote component_type;
     
+        /** Default constructor.
+            The maximum value for each RGB component defaults to 255.
+        */
+    RGBPrime2RGBFunctor()
+    : max_(255.0), gamma_(1.0/0.45)
+    {}
+    
         /** constructor
             \arg max - the maximum value for each RGB component
         */
-    RGBPrime2RGBFunctor(component_type max = 255.0)
+    RGBPrime2RGBFunctor(component_type max)
     : max_(max), gamma_(1.0/0.45)
     {}
     
@@ -371,7 +393,15 @@ class RGBPrime2RGBFunctor<unsigned char, unsigned char>
   
     typedef RGBValue<unsigned char> value_type;
     
-    RGBPrime2RGBFunctor(double max = 255.0)
+    RGBPrime2RGBFunctor()
+    {
+        for(int i=0; i<256; ++i)
+        {
+            lut_[i] = NumericTraits<unsigned char>::fromRealPromote(detail::gammaCorrection(i, 1.0/0.45, 255.0));
+        }
+    }
+    
+    RGBPrime2RGBFunctor(double max)
     {
         for(int i=0; i<256; ++i)
         {
@@ -426,10 +456,17 @@ class RGB2XYZFunctor
         */
     typedef TinyVector<component_type, 3> value_type;
     
+        /** default constructor.
+            The maximum value for each RGB component defaults to 255.
+        */
+    RGB2XYZFunctor()
+    : max_(255.0)
+    {}
+    
         /** constructor
             \arg max - the maximum value for each RGB component
         */
-    RGB2XYZFunctor(component_type max = 255.0)
+    RGB2XYZFunctor(component_type max)
     : max_(max)
     {}
     
@@ -486,10 +523,17 @@ class RGBPrime2XYZFunctor
         */
     typedef TinyVector<component_type, 3> value_type;
     
+        /** default constructor
+            The maximum value for each RGB component defaults to 255.
+        */
+    RGBPrime2XYZFunctor()
+    : max_(255.0), gamma_(1.0/ 0.45)
+    {}
+    
         /** constructor
             \arg max - the maximum value for each RGB component
         */
-    RGBPrime2XYZFunctor(component_type max = 255.0)
+    RGBPrime2XYZFunctor(component_type max)
     : max_(max), gamma_(1.0/ 0.45)
     {}
     
@@ -551,10 +595,17 @@ class XYZ2RGBFunctor
         */
     typedef RGBValue<T> value_type;
     
+        /** default constructor.
+            The maximum value for each RGB component defaults to 255.
+        */
+    XYZ2RGBFunctor()
+    : max_(255.0)
+    {}
+    
         /** constructor
             \arg max - the maximum value for each RGB component
         */
-    XYZ2RGBFunctor(component_type max = 255.0)
+    XYZ2RGBFunctor(component_type max)
     : max_(max)
     {}
     
@@ -610,10 +661,17 @@ class XYZ2RGBPrimeFunctor
         */
     typedef RGBValue<T> value_type;
     
+        /** default constructor.
+            The maximum value for each RGB component defaults to 255.
+        */
+    XYZ2RGBPrimeFunctor()
+    : max_(255.0), gamma_(0.45)
+    {}
+    
         /** constructor
             \arg max - the maximum value for each RGB component
         */
-    XYZ2RGBPrimeFunctor(component_type max = 255.0)
+    XYZ2RGBPrimeFunctor(component_type max)
     : max_(max), gamma_(0.45)
     {}
     
@@ -947,10 +1005,17 @@ class RGB2LuvFunctor
         */
     typedef typename XYZ2LuvFunctor<component_type>::result_type value_type;
     
+        /** default constructor.
+            The maximum value for each RGB component defaults to 255.
+        */
+    RGB2LuvFunctor()
+    : rgb2xyz(255.0)
+    {}
+    
         /** constructor
             \arg max - the maximum value for each RGB component
         */
-    RGB2LuvFunctor(component_type max = 255.0)
+    RGB2LuvFunctor(component_type max)
     : rgb2xyz(max)
     {}
     
@@ -1016,10 +1081,17 @@ class RGB2LabFunctor
         */
     typedef typename XYZ2LabFunctor<component_type>::result_type value_type;
     
+        /** default constructor.
+            The maximum value for each RGB component defaults to 255.
+        */
+    RGB2LabFunctor()
+    : rgb2xyz(255.0)
+    {}
+    
         /** constructor
             \arg max - the maximum value for each RGB component
         */
-    RGB2LabFunctor(component_type max = 255.0)
+    RGB2LabFunctor(component_type max)
     : rgb2xyz(max)
     {}
     
@@ -1065,7 +1137,11 @@ class Luv2RGBFunctor
         */
     typedef typename XYZ2RGBFunctor<T>::result_type value_type;
     
-    Luv2RGBFunctor(component_type max = 255.0)
+    Luv2RGBFunctor()
+    : xyz2rgb(255.0)
+    {}
+    
+    Luv2RGBFunctor(component_type max)
     : xyz2rgb(max)
     {}
     
@@ -1109,10 +1185,17 @@ class Lab2RGBFunctor
         */
     typedef typename XYZ2RGBFunctor<T>::result_type value_type;
     
+        /** default constructor.
+            The maximum value for each RGB component defaults to 255.
+        */
+    Lab2RGBFunctor()
+    : xyz2rgb(255.0)
+    {}
+    
         /** constructor
             \arg max - the maximum value for each RGB component
         */
-    Lab2RGBFunctor(component_type max = 255.0)
+    Lab2RGBFunctor(component_type max)
     : xyz2rgb(max)
     {}
     
@@ -1168,10 +1251,17 @@ class RGBPrime2LuvFunctor
         */
     typedef typename XYZ2LuvFunctor<component_type>::result_type value_type;
     
+        /** default constructor.
+            The maximum value for each RGB component defaults to 255.
+        */
+    RGBPrime2LuvFunctor()
+    : rgb2xyz(255.0)
+    {}
+    
         /** constructor
             \arg max - the maximum value for each RGB component
         */
-    RGBPrime2LuvFunctor(component_type max = 255.0)
+    RGBPrime2LuvFunctor(component_type max)
     : rgb2xyz(max)
     {}
     
@@ -1230,10 +1320,17 @@ class RGBPrime2LabFunctor
         */
     typedef typename XYZ2LabFunctor<component_type>::result_type value_type;
     
+        /** default constructor.
+            The maximum value for each RGB component defaults to 255.
+        */
+    RGBPrime2LabFunctor()
+    : rgb2xyz(255.0)
+    {}
+    
         /** constructor
             \arg max - the maximum value for each RGB component
         */
-    RGBPrime2LabFunctor(component_type max = 255.0)
+    RGBPrime2LabFunctor(component_type max)
     : rgb2xyz(max)
     {}
     
@@ -1280,10 +1377,17 @@ class Luv2RGBPrimeFunctor
         */
     typedef typename XYZ2RGBFunctor<T>::result_type value_type;
     
+        /** default constructor.
+            The maximum value for each RGB component defaults to 255.
+        */
+    Luv2RGBPrimeFunctor()
+    : xyz2rgb(255.0)
+    {}
+    
         /** constructor
             \arg max - the maximum value for each RGB component
         */
-    Luv2RGBPrimeFunctor(component_type max = 255.0)
+    Luv2RGBPrimeFunctor(component_type max)
     : xyz2rgb(max)
     {}
     
@@ -1327,10 +1431,17 @@ class Lab2RGBPrimeFunctor
         */
     typedef typename XYZ2RGBFunctor<T>::result_type value_type;
     
+        /** default constructor.
+            The maximum value for each RGB component defaults to 255.
+        */
+    Lab2RGBPrimeFunctor()
+    : xyz2rgb(255.0)
+    {}
+    
         /** constructor
             \arg max - the maximum value for each RGB component
         */
-    Lab2RGBPrimeFunctor(component_type max = 255.0)
+    Lab2RGBPrimeFunctor(component_type max)
     : xyz2rgb(max)
     {}
     
@@ -1399,10 +1510,17 @@ class RGBPrime2YPrimePbPrFunctor
         */
     typedef TinyVector<component_type, 3> value_type;
     
+        /** default constructor.
+            The maximum value for each RGB component defaults to 255.
+        */
+    RGBPrime2YPrimePbPrFunctor()
+    : max_(255.0)
+    {}
+    
         /** constructor
             \arg max - the maximum value for each RGB component
         */
-    RGBPrime2YPrimePbPrFunctor(component_type max = 255.0)
+    RGBPrime2YPrimePbPrFunctor(component_type max)
     : max_(max)
     {}
     
@@ -1455,10 +1573,17 @@ class YPrimePbPr2RGBPrimeFunctor
         */
     typedef RGBValue<T> value_type;
     
+        /** default constructor.
+            The maximum value for each RGB component defaults to 255.
+        */
+    YPrimePbPr2RGBPrimeFunctor()
+    : max_(255.0)
+    {}
+    
         /** constructor
             \arg max - the maximum value for each RGB component
         */
-    YPrimePbPr2RGBPrimeFunctor(component_type max = 255.0)
+    YPrimePbPr2RGBPrimeFunctor(component_type max)
     : max_(max)
     {}
     
@@ -1531,10 +1656,17 @@ class RGBPrime2YPrimeIQFunctor
         */
     typedef TinyVector<component_type, 3> value_type;
     
+        /** default constructor.
+            The maximum value for each RGB component defaults to 255.
+        */
+    RGBPrime2YPrimeIQFunctor()
+    : max_(255.0)
+    {}
+    
         /** constructor
             \arg max - the maximum value for each RGB component
         */
-    RGBPrime2YPrimeIQFunctor(component_type max = 255.0)
+    RGBPrime2YPrimeIQFunctor(component_type max)
     : max_(max)
     {}
     
@@ -1587,10 +1719,17 @@ class YPrimeIQ2RGBPrimeFunctor
         */
     typedef RGBValue<T> value_type;
     
+        /** default constructor.
+            The maximum value for each RGB component defaults to 255.
+        */
+    YPrimeIQ2RGBPrimeFunctor()
+    : max_(255.0)
+    {}
+    
         /** constructor
             \arg max - the maximum value for each RGB component
         */
-    YPrimeIQ2RGBPrimeFunctor(component_type max = 255.0)
+    YPrimeIQ2RGBPrimeFunctor(component_type max)
     : max_(max)
     {}
     
@@ -1663,10 +1802,17 @@ class RGBPrime2YPrimeUVFunctor
         */
     typedef TinyVector<component_type, 3> value_type;
     
+        /** default constructor.
+            The maximum value for each RGB component defaults to 255.
+        */
+    RGBPrime2YPrimeUVFunctor()
+    : max_(255.0)
+    {}
+    
         /** constructor
             \arg max - the maximum value for each RGB component
         */
-    RGBPrime2YPrimeUVFunctor(component_type max = 255.0)
+    RGBPrime2YPrimeUVFunctor(component_type max)
     : max_(max)
     {}
     
@@ -1719,10 +1865,17 @@ class YPrimeUV2RGBPrimeFunctor
         */
     typedef RGBValue<T> value_type;
     
+        /** default constructor.
+            The maximum value for each RGB component defaults to 255.
+        */
+    YPrimeUV2RGBPrimeFunctor()
+    : max_(255.0)
+    {}
+    
         /** constructor
             \arg max - the maximum value for each RGB component
         */
-    YPrimeUV2RGBPrimeFunctor(component_type max = 255.0)
+    YPrimeUV2RGBPrimeFunctor(component_type max)
     : max_(max)
     {}
     
@@ -1785,10 +1938,17 @@ class RGBPrime2YPrimeCbCrFunctor
         */
     typedef TinyVector<component_type, 3> value_type;
     
+        /** default constructor.
+            The maximum value for each RGB component defaults to 255.
+        */
+    RGBPrime2YPrimeCbCrFunctor()
+    : max_(255.0)
+    {}
+    
         /** constructor
             \arg max - the maximum value for each RGB component
         */
-    RGBPrime2YPrimeCbCrFunctor(component_type max = 255.0)
+    RGBPrime2YPrimeCbCrFunctor(component_type max)
     : max_(max)
     {}
     
@@ -1841,10 +2001,17 @@ class YPrimeCbCr2RGBPrimeFunctor
         */
     typedef RGBValue<T> value_type;
     
+        /** default constructor.
+            The maximum value for each RGB component defaults to 255.
+        */
+    YPrimeCbCr2RGBPrimeFunctor()
+    : max_(255.0)
+    {}
+    
         /** constructor
             \arg max - the maximum value for each RGB component
         */
-    YPrimeCbCr2RGBPrimeFunctor(component_type max = 255.0)
+    YPrimeCbCr2RGBPrimeFunctor(component_type max)
     : max_(max)
     {}
     
