@@ -865,15 +865,35 @@ class Kernel1D
   public:
         /** the kernel's value type
         */
-    typedef ARITHTYPE value_type;
+    typedef typename std::vector<ARITHTYPE>::value_type value_type;
+    
+        /** the kernel's reference type
+        */
+    typedef typename std::vector<ARITHTYPE>::reference reference;
+    
+        /** the kernel's const reference type
+        */
+    typedef typename std::vector<ARITHTYPE>::const_reference const_reference;
+    
+        /** deprecated -- use Kernel1D::iterator
+        */
+    typedef typename std::vector<ARITHTYPE>::iterator Iterator;
     
         /** 1D random access iterator over the kernel's values
         */
-    typedef typename std::vector<value_type>::iterator Iterator;
+    typedef typename std::vector<ARITHTYPE>::iterator iterator;
+    
+        /** const 1D random access iterator over the kernel's values
+        */
+    typedef typename std::vector<ARITHTYPE>::const_iterator const_iterator;
     
         /** the kernel's accessor
         */
-    typedef StandardAccessor<value_type> Accessor;
+    typedef StandardAccessor<ARITHTYPE> Accessor;
+    
+        /** the kernel's const accessor
+        */
+    typedef StandardConstAccessor<ARITHTYPE> ConstAccessor;
     
     struct InitProxy
     {
@@ -1173,7 +1193,12 @@ class Kernel1D
             center()[left()] ... center()[right()] are valid kernel positions 
             \endcode
         */
-    Iterator center() 
+    iterator center() 
+    {
+        return kernel_.begin() - left();
+    }
+    
+    const_iterator center() const
     {
         return kernel_.begin() - left();
     }
@@ -1186,7 +1211,12 @@ class Kernel1D
             left() <= location <= right() 
             \endcode
         */
-    value_type operator[](int location) 
+    reference operator[](int location) 
+    {
+        return kernel_[location - left()];
+    }
+    
+    const_reference operator[](int location) const
     {
         return kernel_[location - left()];
     }
@@ -1255,10 +1285,13 @@ class Kernel1D
         normalize(one());
     }
     
+        /** get a const accessor
+        */
+    ConstAccessor accessor() const { return ConstAccessor(); }   
+    
         /** get an accessor
         */
-    Accessor accessor() const { return Accessor(); }
-    
+    Accessor accessor() { return Accessor(); }
     
   private:
     std::vector<value_type> kernel_;
@@ -1589,13 +1622,13 @@ kernel1d(KernelIterator ik, KernelAccessor ka,
 
 template <class T>
 inline
-tuple5<typename Kernel1D<T>::Iterator, typename Kernel1D<T>::Accessor, 
+tuple5<typename Kernel1D<T>::const_iterator, typename Kernel1D<T>::ConstAccessor, 
        int, int, BorderTreatmentMode>
-kernel1d(Kernel1D<T> & k)
+kernel1d(Kernel1D<T> const & k)
 
 {
     return 
-        tuple5<typename Kernel1D<T>::Iterator, typename Kernel1D<T>::Accessor, 
+        tuple5<typename Kernel1D<T>::const_iterator, typename Kernel1D<T>::ConstAccessor, 
                int, int, BorderTreatmentMode>(
                                      k.center(), 
                                      k.accessor(), 
@@ -1605,13 +1638,13 @@ kernel1d(Kernel1D<T> & k)
 
 template <class T>
 inline
-tuple5<typename Kernel1D<T>::Iterator, typename Kernel1D<T>::Accessor, 
+tuple5<typename Kernel1D<T>::const_iterator, typename Kernel1D<T>::ConstAccessor, 
        int, int, BorderTreatmentMode>
-kernel1d(Kernel1D<T> & k, BorderTreatmentMode border)
+kernel1d(Kernel1D<T> const & k, BorderTreatmentMode border)
 
 {
     return 
-        tuple5<typename Kernel1D<T>::Iterator, typename Kernel1D<T>::Accessor, 
+        tuple5<typename Kernel1D<T>::const_iterator, typename Kernel1D<T>::ConstAccessor, 
                int, int, BorderTreatmentMode>(
                                      k.center(), 
                                      k.accessor(), 
