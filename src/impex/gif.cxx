@@ -33,11 +33,12 @@
 namespace vigra {
 
 namespace {
+
     int read_data_block(std::ifstream & stream, void_vector<unsigned char> & data)
     {
         unsigned char count;
         
-        stream.get(count);
+        count = stream.get();
         if(!stream.good())
             return -1;
         if(count == 0)
@@ -317,7 +318,7 @@ namespace {
         unsigned char c, flag;
         for ( ; ; )
         {
-            stream.get(c);
+            c = stream.get();
             if(!stream.good() || c == ';')
                 return false;
             if(c == '!')
@@ -483,7 +484,7 @@ namespace {
         /*
         Initialize GIF data stream decoder.
         */
-        stream.get(data_size);
+        data_size = stream.get();
         clear=1 << data_size;
         end_of_information=clear+1;
         available=clear+2;
