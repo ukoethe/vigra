@@ -50,6 +50,7 @@ namespace vigra
         std::vector<std::string> compressionTypes;
         std::vector<std::vector<char> > magicStrings;
         std::vector<std::string> fileExtensions;
+        std::vector<int> bandNumbers;
     };
 
     // Decoder and Encoder are pure virtual types that define a common
@@ -122,6 +123,8 @@ namespace vigra
     std::vector<std::string> queryCodecPixelTypes( const std::string & );
 
     bool isPixelTypeSupported( const std::string &, const std::string & );
+
+    bool isBandNumberSupported( const std::string &, int bands );
 }
 
 #endif // VIGRA_CODEC_HXX
