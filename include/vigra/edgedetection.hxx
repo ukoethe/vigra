@@ -23,12 +23,14 @@
 #ifndef VIGRA_EDGEDETECTION_HXX
 #define VIGRA_EDGEDETECTION_HXX
 
+#include <vector>
+#include <cmath>     // sqrt(), abs()
 #include "vigra/utilities.hxx"
 #include "vigra/numerictraits.hxx"
 #include "vigra/stdimage.hxx"
 #include "vigra/stdimagefunctions.hxx"
-#include "vigra/inspectimage.hxx"
 #include "vigra/recursiveconvolution.hxx"
+#include "vigra/separableconvolution.hxx"
 #include "vigra/labelimage.hxx"
 
 namespace vigra {
@@ -1111,6 +1113,211 @@ void beautifyCellGridImage(
 }
 
 //@}
+
+
+/* orientation will be given like this:
+
+     /_ 
+     \ \
+       |
+   +------------> x
+   |
+   |
+   |
+   |
+ Y V
+*/
+struct Edgel
+{
+    float x, y, strength, orientation;
+};
+
+template <class PixelType>
+void internalCannyFindEdgels(BasicImage<PixelType> const & dx,
+                             BasicImage<PixelType> const & dy,
+                             BasicImage<PixelType> const & magnitude,
+                             std::vector<Edgel> & edgels)
+{
+    PixelType zero = NumericTraits<PixelType>::zero();
+    double tan22_5 = M_SQRT2 - 1.0;
+    
+    for(int y=1; y<dx.height()-1; ++y)
+    {
+        for(int x=1; x<dx.width()-1; ++x)
+        {
+            bool maximum_found = false;
+            Edgel edgel;
+            
+            PixelType gradx = dx(x,y);
+            PixelType grady = dy(x,y);
+            
+            // find out quadrant
+            if(abs(grady) < tan22_5*abs(gradx))
+            {
+                // north-south edge
+                PixelType m1 = magnitude(x-1, y);
+                PixelType m2 = magnitude(x, y);
+                PixelType m3 = magnitude(x+1, y);
+                
+                if(m1 < m2 && m3 <= m2)
+                {
+                    edgel.y = y;
+                
+                    // local maximum => quadratic interpolation of sub-pixel location
+                    PixelType del = (m1 - m3) / 2.0;
+                    del /= (m1 + m3 - 2.0*m2);
+                    edgel.x = x + del;
+                    edgel.strength = m2;
+                    
+                    maximum_found = true;                    
+                }
+            }
+            else if(abs(gradx) < tan22_5*abs(grady))
+            {
+                // west-east edge
+                PixelType m1 = magnitude(x, y-1);
+                PixelType m2 = magnitude(x, y);
+                PixelType m3 = magnitude(x, y+1);
+                
+                if(m1 < m2 && m3 <= m2)
+                {
+                    edgel.x = x;
+                
+                    // local maximum => quadratic interpolation of sub-pixel location
+                    PixelType del = (m1 - m3) / 2.0;
+                    del /= (m1 + m3 - 2.0*m2);
+                    edgel.y = y + del;
+                    edgel.strength = m2;
+                    
+                    maximum_found = true;                    
+                }
+            }
+            else if(gradx*grady < zero)
+            {
+                // north-west-south-east edge
+                PixelType m1 = magnitude(x+1, y-1);
+                PixelType m2 = magnitude(x, y);
+                PixelType m3 = magnitude(x-1, y+1);
+                
+                if(m1 < m2 && m3 <= m2)
+                {
+                    // local maximum => quadratic interpolation of sub-pixel location
+                    PixelType del = (m1 - m3) / 2.0;
+                    del /= (m1 + m3 - 2.0*m2);
+                    edgel.x = x - del;
+                    edgel.y = y + del;
+                    edgel.strength = m2;
+                    
+                    maximum_found = true;                    
+                }
+            }
+            else
+            {
+                // north-east-south-west edge
+                PixelType m1 = magnitude(x-1, y-1);
+                PixelType m2 = magnitude(x, y);
+                PixelType m3 = magnitude(x+1, y+1);
+                
+                if(m1 < m2 && m3 <= m2)
+                {
+                    // local maximum => quadratic interpolation of sub-pixel location
+                    PixelType del = (m1 - m3) / 2.0;
+                    del /= (m1 + m3 - 2.0*m2);
+                    edgel.x = x + del;
+                    edgel.y = y + del;
+                    edgel.strength = m2;
+                    
+                    maximum_found = true;                    
+                }
+            }
+            
+            if(maximum_found)
+            {
+                double orientation = atan2(-grady, gradx) - M_PI / 2.0;
+                if(orientation < 0.0)
+                    orientation += 2.0*M_PI;
+                edgel.orientation = orientation;
+                edgels.push_back(edgel);
+            }
+        }
+    }
+}
+
+template <class SrcIterator, class SrcAccessor>
+void cannyEdgelList(SrcIterator ul, SrcIterator lr, SrcAccessor src,
+                        std::vector<Edgel> & edgels, double scale)
+{
+    int w = lr.x - ul.x;
+    int h = lr.y - ul.y;
+    
+    // calculate image gradients
+    typedef typename 
+        NumericTraits<typename SrcAccessor::value_type>::RealPromote
+        TmpType;
+        
+    BasicImage<TmpType> tmp(w,h), dx(w,h), dy(w,h);
+    
+    Kernel1D<double> smooth, grad;
+    
+    smooth.initGaussian(scale);
+    grad.initGaussianDerivative(scale, 1);
+    
+    separableConvolveX(srcIterRange(ul, lr, src), destImage(tmp), kernel1d(grad));
+    separableConvolveY(srcImageRange(tmp), destImage(dx), kernel1d(smooth));
+    
+    separableConvolveY(srcIterRange(ul, lr, src), destImage(tmp), kernel1d(grad));
+    separableConvolveX(srcImageRange(tmp), destImage(dy), kernel1d(smooth));
+    
+    combineTwoImages(srcImageRange(dx), srcImage(dy), destImage(tmp),
+                     MagnitudeFunctor<TmpType>());
+    
+    // find edgels
+    internalCannyFindEdgels(dx, dy, tmp, edgels);
+}
+
+template <class SrcIterator, class SrcAccessor>
+inline void 
+cannyEdgelList(triple<SrcIterator, SrcIterator, SrcAccessor> src,
+               std::vector<Edgel> & edgels, double scale)
+{
+    cannyEdgelList(src.first, src.second, src.third, edgels, scale);
+}
+
+template <class SrcIterator, class SrcAccessor,
+          class DestIterator, class DestAccessor, 
+          class SrcValue, class DestValue>
+void cannyEdgeImage(
+           SrcIterator sul, SrcIterator slr, SrcAccessor sa,
+           DestIterator dul, DestAccessor da,
+           double scale, SrcValue gradient_threshold, DestValue edge_marker)
+{
+    std::vector<Edgel> edgels;
+    
+    cannyEdgelList(sul, slr, sa, edgels, scale);
+    
+    for(int i=0; i<edgels.size(); ++i)
+    {
+        if(gradient_threshold < edgels[i].strength)
+        {
+            Diff2D pix((int)(edgels[i].x + 0.5), (int)(edgels[i].y + 0.5));
+            
+            da.set(edge_marker, dul, pix);
+        }
+    }
+}
+
+template <class SrcIterator, class SrcAccessor,
+          class DestIterator, class DestAccessor, 
+          class SrcValue, class DestValue>
+inline void cannyEdgeImage(
+           triple<SrcIterator, SrcIterator, SrcAccessor> src,
+           pair<DestIterator, DestAccessor> dest,
+           double scale, SrcValue gradient_threshold, DestValue edge_marker)
+{
+    cannyEdgeImage(src.first, src.second, src.third,
+                   dest.first, dest.second,
+                   scale, gradient_threshold, edge_marker);
+}
 
 } // namespace vigra
 
