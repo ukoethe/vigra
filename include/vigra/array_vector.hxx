@@ -58,7 +58,10 @@ public:
     ArrayVector( this_type const & rhs );
 
     template <class InputIterator>
-    ArrayVector(InputIterator i, InputIterator end, Alloc const & alloc = Alloc());
+    ArrayVector(InputIterator i, InputIterator end);
+
+    template <class InputIterator>
+    ArrayVector(InputIterator i, InputIterator end, Alloc const & alloc);
 
     this_type & operator=( this_type const & rhs );
 
@@ -228,6 +231,17 @@ ArrayVector<T, Alloc>::ArrayVector( this_type const & rhs )
 {
     if(size_ > 0)
         std::uninitialized_copy(rhs.data_, rhs.data_+size_, data_);
+}
+
+template <class T, class Alloc>
+template <class InputIterator>
+ArrayVector<T, Alloc>::ArrayVector(InputIterator i, InputIterator end)
+: alloc_(),
+  size_(std::distance(i, end)),
+  capacity_(size_),
+  data_(reserve_raw(size_))
+{
+    std::uninitialized_copy(i, end, data_);
 }
 
 template <class T, class Alloc>
