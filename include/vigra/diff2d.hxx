@@ -44,7 +44,7 @@ class Diff2DConstRowIteratorPolicy
     typedef Diff const *                    pointer;
     typedef std::random_access_iterator_tag iterator_category;
 
-    static void initialize(BaseType & d) {}
+    static void initialize(BaseType &) {}
 
     static reference dereference(BaseType const & d)
         { return d; }
