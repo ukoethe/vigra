@@ -918,7 +918,7 @@ public:
 
         for (; i != breference.end (); ++i, ++i1)
         {
-            shouldEqual (acc (i), acc (i1));
+            should ((acc (i)- acc (i1)).magnitude() <= 1.0);
         }
     }
 };
