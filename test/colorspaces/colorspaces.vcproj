@@ -104,7 +104,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				IgnoreImportLibrary="TRUE"
-				AdditionalDependencies="vigraimpex.lib libtiff.lib libjpeg.lib"
+				AdditionalDependencies="vigraimpex.lib libtiff.lib libjpeg.lib libpng13.lib"
 				OutputFile="colorspaces.exe"
 				LinkIncremental="1"
 				AdditionalLibraryDirectories="C:\Users\Koethe\lib\msvc.net"

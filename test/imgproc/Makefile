@@ -2,6 +2,12 @@ test: test.o
 	$(CXX) -o test test.o $(IMPEX_LIB)
 	./test || { rm ./test ; exit 1; }
 
+vc: imgproc.exe
+	./imgproc.exe || { rm ./imgproc.exe ; exit 1; }
+
+imgproc.exe:
+	devenv "..\test.sln" /build Release /project imgproc
+
 ifneq "$(MAKECMDGOALS)" "clean"
 include test.d
 endif

@@ -10,6 +10,10 @@ test: test.o ../../current/src/impex/.libs/libvigraimpex.a
 	$(CXX) -o test test.o ../../current/src/impex/.libs/libvigraimpex.a $(IMPEX_DEPLIBS)
 	./test || { rm ./test ; exit 1; }
 
+vc: impex.exe
+	devenv "..\test.sln" /build Release /project impex
+	./impex.exe || { rm ./impex.exe ; exit 1; }
+
 ifneq "$(MAKECMDGOALS)" "clean"
 include test.d
 endif

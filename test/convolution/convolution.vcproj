@@ -99,7 +99,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalOptions="/MACHINE:I386"
-				AdditionalDependencies="vigraimpex.lib libtiff.lib libjpeg.lib"
+				AdditionalDependencies="vigraimpex.lib libtiff.lib libjpeg.lib libpng13.lib"
 				OutputFile="convolution.exe"
 				LinkIncremental="1"
 				SuppressStartupBanner="TRUE"

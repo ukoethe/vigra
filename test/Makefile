@@ -15,23 +15,32 @@ SUBDIRS = $(QUICKSUBDIRS) \
         multiarray \
         impex 
 
-all::
+all:
 	@rm -f testSuccess ; \
-	 for i in $(SUBDIRS); do \
+         for i in $(SUBDIRS); do \
 	        cd $$i; \
 	        make || exit 1; \
 	        cd ..; \
 	 done ; \
 	 touch testSuccess
 
-quick::
+quick:
 	@for i in $(QUICKSUBDIRS); do \
 	        cd $$i; \
 	        make || exit 1; \
 	        cd ..; \
 	 done
 
-clean::
+vc:
+	@rm -f testSuccess ; \
+	 for i in $(SUBDIRS); do \
+	        cd $$i; \
+	        make vc || exit 1; \
+	        cd ..; \
+	 done ; \
+	 touch testSuccess
+
+clean:
 	rm -f *.ncb *.opt testSuccess	
 	@for i in $(SUBDIRS); do \
 	        cd $$i; \
