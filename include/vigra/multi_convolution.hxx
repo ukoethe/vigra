@@ -77,13 +77,13 @@ namespace detail
 
     /********************************************************/
     /*                                                      */
-    /*        internalSeparableConvolveMultiarray           */
+    /*        internalSeparableConvolveMultiArray           */
     /*                                                      */
     /********************************************************/
 
     template <class S, class D, typename KernelIterator>
     inline
-    void internalSeparableConvolveMultiarrayTmp( S source, D dest,
+    void internalSeparableConvolveMultiArrayTmp( S source, D dest,
 						 KernelIterator kit )
     {
       typedef typename S::first_type SMIT;
@@ -151,7 +151,7 @@ namespace detail
 
 /********************************************************/
 /*                                                      */
-/*             separableConvolveMultiarray              */
+/*             separableConvolveMultiArray              */
 /*                                                      */
 /********************************************************/
 
@@ -183,9 +183,9 @@ namespace detail
 */
 template <class S, class D, class KernelIterator>
 inline
-void separableConvolveMultiarray( S source, D dest, KernelIterator kit )
+void separableConvolveMultiArray( S source, D dest, KernelIterator kit )
 {
-    vigra::detail::internalSeparableConvolveMultiarrayTmp( source, dest, kit );
+    vigra::detail::internalSeparableConvolveMultiArrayTmp( source, dest, kit );
 }
 
 
@@ -199,7 +199,7 @@ void separableConvolveMultiarray( S source, D dest, KernelIterator kit )
    */
 template <class S, class D, class A>
 inline
-void separableConvolveMultiarray( S source, D dest,
+void separableConvolveMultiArray( S source, D dest,
 				    const vigra::Kernel1D<A> &kernel )
 {
     typedef typename S::first_type SF;
@@ -209,7 +209,7 @@ void separableConvolveMultiarray( S source, D dest,
     for( int i = 0; i < N; ++i )
       kernelList[i] = kernel;
   
-    vigra::internalSeparableConvolveMultiarray( source, dest,
+    vigra::internalSeparableConvolveMultiArray( source, dest,
 						kernelList.begin() );
 }
 
@@ -226,7 +226,7 @@ void separableConvolveMultiarray( S source, D dest,
    */
 template <class S, class D, class A>
 inline
-void separableConvolveMultiarray( S source, D dest,
+void separableConvolveMultiArray( S source, D dest,
 				    unsigned int dim,
 				    const vigra::Kernel1D<A> &kernel )
 {
@@ -242,7 +242,7 @@ void separableConvolveMultiarray( S source, D dest,
     
     std::vector<vigra::Kernel1D<A> > kernels( N );
     kernels[dim] = kernel;
-    vigra::separableConvolveMultiarray( source, dest,
+    vigra::separableConvolveMultiArray( source, dest,
 					kernels.begin() );
 
 #else
@@ -282,10 +282,10 @@ void separableConvolveMultiarray( S source, D dest,
       and size.
 
       An anisotropic smoothing can be realized using the
-      separableConvolveMultiarray() function given a set of the
+      separableConvolveMultiArray() function given a set of the
       respective filter kernels as a parameter.
 
-      \see separableConvolveMultiarray()
+      \see separableConvolveMultiArray()
 */
 template <class S, class D>
 inline
@@ -302,7 +302,7 @@ void gaussianSmoothing( S source, D dest, double sigma )
     for( unsigned int i = 0; i < N; ++i )
       kernels[i].initGaussian( sigma );
 
-    vigra::separableConvolveMultiarray( source, dest, kernels.begin() );
+    vigra::separableConvolveMultiArray( source, dest, kernels.begin() );
 }
 
 
@@ -319,7 +319,7 @@ void gaussianSmoothing( S source, D dest, double sigma )
     In order to apply this function to anisotropic data, one should
     consider first applying an anisotropic smoothing before calling
     this function. Another option is calling
-    separableConvolveMultiarray() several times with appropriate
+    separableConvolveMultiArray() several times with appropriate
     derivative filters.
 
     The production of vector-valued output eases the operation on
@@ -332,7 +332,7 @@ void gaussianSmoothing( S source, D dest, double sigma )
     can be used. However, at least a VectorComponentAccessor must be
     applicable to the destination element data type.
 
-    \see separableConvolveMultiarray()
+    \see separableConvolveMultiArray()
 */
 template <typename S, typename D>
 inline
@@ -359,7 +359,7 @@ void symmetricGradient( S source, D dest )
     
     //-- compute gradient components
     for( int d = 0; d < N; ++d ) {
-      separableConvolveMultiarray( source,
+      separableConvolveMultiArray( source,
 				   std::pair<DestType, VAccessor>( dest.first, VAccessor(d) ),
 				   d, filter );
     }
