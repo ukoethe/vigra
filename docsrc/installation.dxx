@@ -6,14 +6,14 @@
     
     <ul>
     <li> <a href="http://gcc.gnu.org/">GNU g++ 2.95.3 and newer</a> 
-    <li> Microsoft Visual C++ 7.1 (C++.net 2003)
+    <li> Microsoft Visual C++ 7.1 (aka C++.net 2003)
     </ul>
 
     VIGRA is known NOT to work with the following compilers:
 
     <ul>
     <li> GNU g++ 2.9.2 and earlier
-    <li> support for Microsoft Visual C++ 6.0 has alrgely been dropped, but some of 
+    <li> support for Microsoft Visual C++ 6.0 has largely been dropped, but some of 
          VIGRA should still work with this compiler
     </ul>
 
@@ -93,6 +93,8 @@
     <li> build the workspace (that is, the library <TT>vigraimpex.lib</TT> and the \ref Examples)
 
     <li> the \ref Examples can now be invoked from the command line (DOS prompt).
+
+    <li> if you include "<b>windows.h</b>": there are some name clashes -- include "vigra/windows.h" instead.
     </ul>
 
     
