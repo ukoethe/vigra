@@ -653,6 +653,43 @@ class CubicBSplineKernel
         }
     }
 
+    double dx(double x) const
+    {
+        double ax = fabs(x);
+        if (ax < 1.0)
+        {
+            return  x*(1.5*ax - 2.0);
+        }
+        else if (ax >= 2.0)
+        {
+            return 0.0;
+        }
+        else
+        {
+            double t = 2.0 - ax;
+            return x < 0.0
+                ?  t*t/2.0
+                : -t*t/2.0;
+        }
+    }
+
+    double dxx(double x) const
+    {
+        x = fabs(x);
+        if (x < 1.0)
+        {
+            return  3.0*x - 2.0;
+        }
+        else if (x >= 2.0)
+        {
+            return 0.0;
+        }
+        else
+        {
+            return 2.0 - x;
+        }
+    }
+
     int radius() const
         {return 2;}
 };
