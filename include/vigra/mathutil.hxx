@@ -271,6 +271,55 @@ norm(T const & t)
     return VIGRA_CSTD::sqrt(static_cast<typename NormTraits<T>::NormType>(squaredNorm(t)));
 }
 
+namespace detail {
+
+// both f1 and f2 are unsigned here
+template<class FPT>
+inline
+FPT safeFloatDivision( FPT f1, FPT f2 )
+{
+    return  f2 < NumericTraits<FPT>::one() && f1 > f2 * NumericTraits<FPT>::max()
+                ? NumericTraits<FPT>::max() 
+                : (f2 > NumericTraits<FPT>::one() && f1 < f2 * NumericTraits<FPT>::smallestPositive()) || 
+                   f1 == NumericTraits<FPT>::zero()
+                     ? NumericTraits<FPT>::zero() 
+                     : f1/f2;
+}
+
+} // namespace detail
+    
+    /*! Tolerance based floating-point equality.
+
+        Check whether two floating point numbers are equal within the given tolerance.
+        This is useful because floating point numbers that should be equal in theory are
+        rarely exactly equal in practice. If the tolerance \a epsilon is not given,
+        2.0 the machine epsilon is used.
+
+        <b>\#include</b> "<a href="mathutil_8hxx-source.html">vigra/mathutil.hxx</a>"<br>
+        Namespace: vigra
+    */
+template <class T1, class T2>
+bool closeAtTolerance(T1 l, T2 r, typename PromoteTraits<T1, T2>::Promote epsilon)
+{
+    typedef typename PromoteTraits<T1, T2>::Promote T;
+    if(l == 0.0 && r != 0.0)
+        return VIGRA_CSTD::fabs(r) <= epsilon;
+    if(l != 0.0 && r == 0.0)
+        return VIGRA_CSTD::fabs(r) <= epsilon;
+    T diff = VIGRA_CSTD::fabs( l - r );
+    T d1   = detail::safeFloatDivision<T>( diff, VIGRA_CSTD::fabs( r ) );
+    T d2   = detail::safeFloatDivision<T>( diff, VIGRA_CSTD::fabs( l ) );
+
+    return (d1 <= epsilon && d2 <= epsilon);
+}
+
+template <class T1, class T2>
+bool closeAtTolerance(T1 l, T2 r)
+{
+    typedef typename PromoteTraits<T1, T2>::Promote T;
+    return closeAtTolerance(l, r, 2.0 * NumericTraits<T>::epsilon());
+}
+
 //@}
 
 } // namespace vigra
