@@ -247,11 +247,12 @@ namespace vigra {
                                      &photometric ) )
             vigra_fail( "TIFFDecoderImpl::init(): Photometric tag is not set."
                         " A suitable default was not found." );
-
+        
         // check photometric preconditions
         if ( samples_per_pixel == 1 )
             vigra_precondition( photometric == PHOTOMETRIC_MINISWHITE ||
-                                photometric == PHOTOMETRIC_MINISBLACK,
+                                photometric == PHOTOMETRIC_MINISBLACK ||
+                                photometric == PHOTOMETRIC_PALETTE,
                                 "TIFFDecoderImpl::init():"
                                 " Photometric tag does not fit the number of"
                                 " samples per pixel." );
