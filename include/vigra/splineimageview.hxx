@@ -113,7 +113,7 @@ class SplineImageView
 template <class VALUETYPE>
 void SplineImageView<VALUETYPE>::init()
 {
-    int x, y;
+    unsigned int x, y;
     typename InternalImage::Accessor a = v_.accessor();
     ArrayVector<double> R1(w_ > h_ ? w_ : h_);
     ArrayVector<InternalValue> R2(w_ > h_ ? w_ : h_);
@@ -310,6 +310,390 @@ VALUETYPE SplineImageView<VALUETYPE>::dyy(double x, double y) const
 }
 
 template <class VALUETYPE>
+class CubicSplineImageView
+{
+    typedef typename NumericTraits<VALUETYPE>::RealPromote InternalValue;
+    typedef BasicImage<InternalValue> InternalImage;
+    typedef typename InternalImage::traverser InternalTraverser;
+    typedef typename InternalTraverser::row_iterator InternalRowIterator;
+    typedef typename InternalTraverser::column_iterator InternalColumnIterator;
+  
+  public:
+  
+    typedef VALUETYPE value_type;
+    typedef Size2D size_type;
+    typedef TinyVector<double, 2> difference_type;
+    
+    template <class SrcIterator, class SrcAccessor>
+    CubicSplineImageView(SrcIterator is, SrcIterator iend, SrcAccessor sa, double scale)
+    : w_(iend.x - is.x), h_(iend.y - is.y), w1_(w_-1), h1_(h_-1),
+      image_(w_, h_),
+      x_(-1.0), y_(-1.0),
+      u_(-1.0), v_(-1.0)
+    {
+        copyImage(srcIterRange(is, iend, sa), destImage(image_));
+        init(scale);
+    }
+    
+    template <class SrcIterator, class SrcAccessor>
+    CubicSplineImageView(triple<SrcIterator, SrcIterator, SrcAccessor> s, double scale)
+    : w_(s.second.x - s.first.x), h_(s.second.y - s.first.y), w1_(w_-1), h1_(h_-1),
+      image_(w_, h_),
+      x_(-1.0), y_(-1.0),
+      u_(-1.0), v_(-1.0)
+    {
+        copyImage(srcIterRange(s.first, s.second, s.third), destImage(image_));
+        init(scale);
+    }
+    
+    value_type operator()(double x, double y) const;
+    value_type dx(double x, double y) const;
+    value_type dy(double x, double y) const;
+    value_type dxx(double x, double y) const;
+    value_type dxy(double x, double y) const;
+    value_type dyy(double x, double y) const;
+    value_type g2(double x, double y) const;
+    value_type g2x(double x, double y) const;
+    value_type g2y(double x, double y) const;
+    
+    value_type operator()(difference_type const & d) const
+        { return operator()(d[0], d[1]); }
+    value_type dx(difference_type const & d) const
+        { return dx(d[0], d[1]); }
+    value_type dy(difference_type const & d) const
+        { return dy(d[0], d[1]); }
+    value_type dxx(difference_type const & d) const
+        { return dxx(d[0], d[1]); }
+    value_type dxy(difference_type const & d) const
+        { return dxy(d[0], d[1]); }
+    value_type dyy(difference_type const & d) const
+        { return dyy(d[0], d[1]); }
+    value_type g2(difference_type const & d) const
+        { return g2(d[0], d[1]); }
+    value_type g2x(difference_type const & d) const
+        { return g2x(d[0], d[1]); }
+    value_type g2y(difference_type const & d) const
+        { return g2y(d[0], d[1]); }
+    
+    unsigned int width() const
+        { return w_; }
+    unsigned int height() const
+        { return h_; }
+    size_type size() const
+        { return size_type(w_, h_); }
+        
+    InternalImage const & image() const
+    {
+        return image_;
+    }
+        
+  protected:
+  
+    void init(double scale);
+    void calculateIndices(double x, double y) const;
+    void coefficients0(double t, double * const & c) const;
+    void coefficients1(double t, double * const & c) const;
+    void coefficients2(double t, double * const & c) const;
+    value_type convolve() const;
+  
+    unsigned int w_, h_;
+    int w1_, h1_;
+    InternalImage image_;
+    CubicBSplineKernel k_;
+    mutable double x_, y_, u_, v_, kx_[4], ky_[4];
+    mutable int ix_[4], iy_[4];
+};
+
+template <class SrcIterator, class SrcAccessor,
+          class DestIterator, class DestAccessor>
+void recursiveFilterLine(SrcIterator is, SrcIterator isend, SrcAccessor as,
+                         DestIterator id, DestAccessor ad, double b1, double b2)
+{
+    int w = isend - is;
+    SrcIterator istart = is;
+    
+    int x;
+    
+    typedef typename
+        NumericTraits<typename SrcAccessor::value_type>::RealPromote TempType;
+    typedef NumericTraits<typename DestAccessor::value_type> DestTraits;
+    
+    // speichert den Ergebnis der linkseitigen Filterung.
+    std::vector<TempType> vline(w+1);
+    typename std::vector<TempType>::iterator line = vline.begin();
+    
+    double norm  = 1.0 - b1 - b2;
+    double norm1 = (1.0 - b1 - b2) / (1.0 + b1 + b2);
+    double norm2 = norm * norm;
+    
+
+    // init left side of filter
+    int kernelw = std::min(w-1, std::max(8, (int)(1.0 / norm + 0.5)));  
+    is += (kernelw - 2);
+    line[kernelw] = as(is);
+    line[kernelw-1] = as(is);
+    for(x = kernelw - 2; x > 0; --x, --is)
+    {
+        line[x] = as(is) + b1 * line[x+1] + b2 * line[x+2];
+    }
+    line[0] = as(is) + b1 * line[1] + b2 * line[2];
+    ++is;
+    line[1] = as(is) + b1 * line[0] + b2 * line[1];
+    ++is;
+    for(x=2; x < w; ++x, ++is)
+    {
+        line[x] = as(is) + b1 * line[x-1] + b2 * line[x-2];
+    }
+    line[w] = line[w-1];
+
+    line[w-1] = norm1 * (line[w-1] + b1 * line[w-2] + b2 * line[w-3]);
+    line[w-2] = norm1 * (line[w-2] + b1 * line[w] + b2 * line[w-2]);
+    id += w-1;
+    ad.set(line[w-1], id);
+    --id;
+    ad.set(line[w-2], id);
+    --id;
+    for(x=w-3; x>=0; --x, --id, --is)
+    {    
+        line[x] = norm2 * line[x] + b1 * line[x+1] + b2 * line[x+2];
+        ad.set(line[x], id);
+    }
+}
+            
+template <class SrcImageIterator, class SrcAccessor,
+          class DestImageIterator, class DestAccessor>
+void recursiveFilterX(SrcImageIterator supperleft, 
+                       SrcImageIterator slowerright, SrcAccessor as,
+                       DestImageIterator dupperleft, DestAccessor ad, 
+                       double b1, double b2)
+{
+    int w = slowerright.x - supperleft.x;
+    int h = slowerright.y - supperleft.y;
+    
+    int y;
+    
+    for(y=0; y<h; ++y, ++supperleft.y, ++dupperleft.y)
+    {
+        typename SrcImageIterator::row_iterator rs = supperleft.rowIterator();
+        typename DestImageIterator::row_iterator rd = dupperleft.rowIterator();
+
+        recursiveFilterLine(rs, rs+w, as, 
+                             rd, ad, 
+                             b1, b2);
+    }
+}
+
+template <class SrcImageIterator, class SrcAccessor,
+          class DestImageIterator, class DestAccessor>
+inline void recursiveFilterX(
+            triple<SrcImageIterator, SrcImageIterator, SrcAccessor> src,
+            pair<DestImageIterator, DestAccessor> dest, 
+                       double b1, double b2)
+{
+    recursiveFilterX(src.first, src.second, src.third,
+                      dest.first, dest.second, b1, b2);
+}
+            
+template <class SrcImageIterator, class SrcAccessor,
+          class DestImageIterator, class DestAccessor>
+void recursiveFilterY(SrcImageIterator supperleft, 
+                       SrcImageIterator slowerright, SrcAccessor as,
+                       DestImageIterator dupperleft, DestAccessor ad, 
+                       double b1, double b2)
+{
+    int w = slowerright.x - supperleft.x;
+    int h = slowerright.y - supperleft.y;
+    
+    int x;
+    
+    for(x=0; x<w; ++x, ++supperleft.x, ++dupperleft.x)
+    {
+        typename SrcImageIterator::column_iterator cs = supperleft.columnIterator();
+        typename DestImageIterator::column_iterator cd = dupperleft.columnIterator();
+
+        recursiveFilterLine(cs, cs+h, as, 
+                            cd, ad, 
+                            b1, b2);
+    }
+}
+
+template <class SrcImageIterator, class SrcAccessor,
+          class DestImageIterator, class DestAccessor>
+inline void recursiveFilterY(
+            triple<SrcImageIterator, SrcImageIterator, SrcAccessor> src,
+            pair<DestImageIterator, DestAccessor> dest, 
+                       double b1, double b2)
+{
+    recursiveFilterY(src.first, src.second, src.third,
+                      dest.first, dest.second, b1, b2);
+}
+
+            
+
+
+template <class VALUETYPE>
+void CubicSplineImageView<VALUETYPE>::init(double scale)
+{
+    if(scale < 0.0)
+        return;   // skip prefiltering
+    if(scale == 0.0)
+    {
+        double z = VIGRA_CSTD::sqrt(3.0) - 2.0;
+        recursiveFilterX(srcImageRange(image_), destImage(image_), z, BORDER_TREATMENT_REFLECT);
+        recursiveFilterY(srcImageRange(image_), destImage(image_), z, BORDER_TREATMENT_REFLECT);
+    }
+    else
+    {
+        double l = scale * scale * scale * scale / 2.0;
+        double l1 = VIGRA_CSTD::sqrt(3.0 + 144.0 * l);
+        double c = (-3.0 - l1 + VIGRA_CSTD::sqrt(12.0 + 6.0 * l1)) / 12.0;
+        double z2 = -c * c / l;
+        double z1 = 1.0 - z2 + c / l;
+        recursiveFilterX(srcImageRange(image_), destImage(image_), z1, z2);
+        recursiveFilterY(srcImageRange(image_), destImage(image_), z1, z2);
+    }
+}
+
+template <class VALUETYPE>
+void 
+CubicSplineImageView<VALUETYPE>::calculateIndices(double x, double y) const
+{
+    vigra_precondition(x >= 0.0 && y >= 0.0 && x <= w_ - 1 && y <= h_ - 1,
+         "CubicSplineImageView<VALUETYPE>::calculateIndices(): index out of bounds.");
+
+    if(x == x_ && y == y_)
+        return;   // still in cache
+    x_ = x;
+    y_ = y;
+    ix_[1] = (int)x_;
+    iy_[1] = (int)y_;
+    u_ = x_ - ix_[1];
+    v_ = y_ - iy_[1];
+    
+    ix_[0] = VIGRA_CSTD::abs(ix_[1] - 1);
+    ix_[2] = w1_ - VIGRA_CSTD::abs(w1_ - ix_[1] - 1);
+    ix_[3] = w1_ - VIGRA_CSTD::abs(w1_ - ix_[1] - 2);
+    iy_[0] = VIGRA_CSTD::abs(iy_[1] - 1);
+    iy_[2] = h1_ - VIGRA_CSTD::abs(h1_ - iy_[1] - 1);
+    iy_[3] = h1_ - VIGRA_CSTD::abs(h1_ - iy_[1] - 2);
+}
+
+template <class VALUETYPE>
+void CubicSplineImageView<VALUETYPE>::coefficients0(double t, double * const & c) const
+{
+    t += 1.0;
+    for(int i = 0; i<4; ++i)
+        c[i] = k_[t-i];
+}
+
+template <class VALUETYPE>
+void CubicSplineImageView<VALUETYPE>::coefficients1(double t, double * const & c) const
+{
+    t += 1.0;
+    for(int i = 0; i<4; ++i)
+        c[i] = k_.dx(t-i);
+}
+
+template <class VALUETYPE>
+void CubicSplineImageView<VALUETYPE>::coefficients2(double t, double * const & c) const
+
+{
+    t += 1.0;
+    for(int i = 0; i<4; ++i)
+        c[i] = k_.dxx(t-i);
+}
+
+template <class VALUETYPE>
+VALUETYPE 
+CubicSplineImageView<VALUETYPE>::convolve() const
+{
+    InternalValue sum, a;
+    sum = NumericTraits<InternalValue>::zero();
+    for(int j=0; j<4; ++j)
+    {
+        a = kx_[0] * image_(ix_[0], iy_[j]);
+        for(int i=1; i<4; ++i)
+        {
+            a += kx_[i] * image_(ix_[i], iy_[j]);
+        }
+        sum += ky_[j]*a;
+    }
+    return NumericTraits<VALUETYPE>::fromRealPromote(sum);
+}
+
+template <class VALUETYPE>
+VALUETYPE CubicSplineImageView<VALUETYPE>::operator()(double x, double y) const
+{
+    calculateIndices(x, y);
+    coefficients0(u_, kx_);
+    coefficients0(v_, ky_);
+    return convolve();
+}
+
+template <class VALUETYPE>
+VALUETYPE CubicSplineImageView<VALUETYPE>::dx(double x, double y) const
+{
+    calculateIndices(x, y);
+    coefficients1(u_, kx_);
+    coefficients0(v_, ky_);
+    return convolve();
+}
+
+template <class VALUETYPE>
+VALUETYPE CubicSplineImageView<VALUETYPE>::dy(double x, double y) const
+{
+    calculateIndices(x, y);
+    coefficients0(u_, kx_);
+    coefficients1(v_, ky_);
+    return convolve();
+}
+
+template <class VALUETYPE>
+VALUETYPE CubicSplineImageView<VALUETYPE>::dxx(double x, double y) const
+{
+    calculateIndices(x, y);
+    coefficients2(u_, kx_);
+    coefficients0(v_, ky_);
+    return convolve();
+}
+
+template <class VALUETYPE>
+VALUETYPE CubicSplineImageView<VALUETYPE>::dxy(double x, double y) const
+{
+    calculateIndices(x, y);
+    coefficients1(u_, kx_);
+    coefficients1(v_, ky_);
+    return convolve();
+}
+
+template <class VALUETYPE>
+VALUETYPE CubicSplineImageView<VALUETYPE>::dyy(double x, double y) const
+{
+    calculateIndices(x, y);
+    coefficients0(u_, kx_);
+    coefficients2(v_, ky_);
+    return convolve();
+}
+
+template <class VALUETYPE>
+VALUETYPE CubicSplineImageView<VALUETYPE>::g2(double x, double y) const
+{
+    return sq(dx(x,y)) + sq(dy(x,y));
+}
+
+template <class VALUETYPE>
+VALUETYPE CubicSplineImageView<VALUETYPE>::g2x(double x, double y) const
+{
+    return 2.0*(dx(x,y) * dxx(x,y) + dy(x,y) * dxy(x,y));
+}
+
+template <class VALUETYPE>
+VALUETYPE CubicSplineImageView<VALUETYPE>::g2y(double x, double y) const
+{
+    return 2.0*(dx(x,y) * dxy(x,y) + dy(x,y) * dyy(x,y));
+}
+
+template <class VALUETYPE>
 class QuinticSplineImageView
 {
     typedef typename NumericTraits<VALUETYPE>::RealPromote InternalValue;
@@ -325,25 +709,27 @@ class QuinticSplineImageView
     typedef TinyVector<double, 2> difference_type;
     
     template <class SrcIterator, class SrcAccessor>
-    QuinticSplineImageView(SrcIterator is, SrcIterator iend, SrcAccessor sa)
+    QuinticSplineImageView(SrcIterator is, SrcIterator iend, SrcAccessor sa, bool skipPrefiltering = false)
     : w_(iend.x - is.x), h_(iend.y - is.y), w1_(w_-1), h1_(h_-1),
       image_(w_, h_),
       x_(-1.0), y_(-1.0),
       u_(-1.0), v_(-1.0)
     {
         copyImage(srcIterRange(is, iend, sa), destImage(image_));
-        init();
+        if(!skipPrefiltering)
+            init();
     }
     
     template <class SrcIterator, class SrcAccessor>
-    QuinticSplineImageView(triple<SrcIterator, SrcIterator, SrcAccessor> s)
+    QuinticSplineImageView(triple<SrcIterator, SrcIterator, SrcAccessor> s, bool skipPrefiltering = false)
     : w_(s.second.x - s.first.x), h_(s.second.y - s.first.y), w1_(w_-1), h1_(h_-1),
       image_(w_, h_),
       x_(-1.0), y_(-1.0),
       u_(-1.0), v_(-1.0)
     {
         copyImage(srcIterRange(s.first, s.second, s.third), destImage(image_));
-        init();
+        if(!skipPrefiltering)
+            init();
     }
     
     value_type operator()(double x, double y) const;
