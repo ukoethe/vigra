@@ -159,6 +159,73 @@ struct MultiIteratorChooser <UnstridedArrayTag>
     };
 };
 
+template <class DestIterator, class Shape, class T, int N>
+void
+initMultiArrayData(DestIterator d, Shape const & shape, T const & init, MetaInt<N>)
+{    
+    DestIterator dend = d + shape[N];
+    for(; d != dend; ++d)
+    {
+        initMultiArrayData(d.begin(), shape, init, MetaInt<N-1>());
+    }
+}
+
+template <class DestIterator, class Shape, class T>
+void
+initMultiArrayData(DestIterator d, Shape const & shape, T const & init, MetaInt<0>)
+{    
+    DestIterator dend = d + shape[0];
+    for(; d != dend; ++d)
+    {
+        *d = init;
+    }
+}
+
+template <class SrcIterator, class Shape, class DestIterator, int N>
+void
+copyMultiArrayData(SrcIterator s, Shape const & shape, DestIterator d, MetaInt<N>)
+{    
+    SrcIterator send = s + shape[N];
+    for(; s != send; ++s, ++d)
+    {
+        copyMultiArrayData(s.begin(), shape, d.begin(), MetaInt<N-1>());
+    }
+}
+
+template <class SrcIterator, class Shape, class DestIterator>
+void
+copyMultiArrayData(SrcIterator s, Shape const & shape, DestIterator d, MetaInt<0>)
+{    
+    SrcIterator send = s + shape[0];
+    for(; s != send; ++s, ++d)
+    {
+        *d = *s;
+    }
+}
+
+template <class SrcIterator, class Shape, class T, class ALLOC, int N>
+void
+uninitializedCopyMultiArrayData(SrcIterator s, Shape const & shape, T * & d, ALLOC & a, MetaInt<N>)
+{    
+    SrcIterator send = s + shape[N];
+    for(; s != send; ++s)
+    {
+        uninitializedCopyMultiArrayData(s.begin(), shape, d, a, MetaInt<N-1>());
+    }
+}
+
+template <class SrcIterator, class Shape, class T, class ALLOC>
+void
+uninitializedCopyMultiArrayData(SrcIterator s, Shape const & shape, T * & d, ALLOC & a, MetaInt<0>)
+{    
+    SrcIterator send = s + shape[0];
+    for(; s != send; ++s, ++d)
+    {
+        a.construct(d, *s);
+    }
+}
+
+
 } // namespace detail
 
 /********************************************************/
@@ -279,27 +346,6 @@ protected:
          */
     pointer m_ptr;
 
-private:
-
-        /** traverse an array element-by-element by using a difference_type
-         *  object as access coordinates.
-         */
-    bool inc_navigator (difference_type &nav)
-    {
-        // essentially, this is nothing more than incrementing a number
-        // in radix representation up to a certain limit, the shape.
-        int carry = 1;
-        for (unsigned int d = 0; d < actual_dimension; ++d) {
-            if (nav [d] + carry < m_shape [d]) {
-                nav [d] += carry;
-                return true;
-            } else {
-                nav [d] = 0;
-            }
-        }
-        return false;
-    }
-
 public:
 
         /** default constructor: create an empty image of size 0.
@@ -404,7 +450,12 @@ public:
         return m_ptr [m_stride[0]*x + m_stride[1]*y + m_stride[2]*z + m_stride[3]*u + m_stride[4]*v];
     }
 
-        /** Copy the data of the right-hand array.
+        /** Init with a constant.
+         */
+    template <class U>
+    void init(const U & init);
+
+        /** Copy the data of the right-hand array (array shapes must match).
          */
     template <class U, class CN>
     void copy(const MultiArrayView <N, U, CN>& rhs);
@@ -586,7 +637,7 @@ public:
 template <unsigned int N, class T, class C>
 MultiArrayView <N, T, C>::MultiArrayView (const difference_type &shape,
                                           pointer ptr)
-    : m_shape (shape), m_stride (defaultStride (shape)), m_ptr (ptr)
+    : m_shape (shape), m_stride (detail::defaultStride <MultiArrayView<N,T>::actual_dimension> (shape)), m_ptr (ptr)
 {}
 
 template <unsigned int N, class T, class C>
@@ -596,17 +647,23 @@ MultiArrayView <N, T, C>::MultiArrayView
 {}
 
 template <unsigned int N, class T, class C>
+template <class U>
+void 
+MultiArrayView <N, T, C>::init(const U & init)
+{
+    detail::initMultiArrayData(traverser_begin(), shape(), init, MetaInt<actual_dimension-1>());
+}
+
+template <unsigned int N, class T, class C>
 template <class U, class CN>
 void 
 MultiArrayView <N, T, C>::copy(const MultiArrayView <N, U, CN>& rhs)
 {
+    if(this == &rhs)
+        return;
     vigra_precondition (shape () == rhs.shape (),
         "MultiArrayView::copy(): shape mismatch.");
-    difference_type nav;
-    if (shape () != nav)
-        (*this) [nav] = rhs [nav];
-    while (inc_navigator (nav))
-        (*this) [nav] = rhs [nav];
+    detail::copyMultiArrayData(rhs.traverser_begin(), shape(), traverser_begin(), MetaInt<actual_dimension-1>());
 }
 
 template <unsigned int N, class T, class C>
@@ -859,7 +916,14 @@ protected:
         /** allocate memory for s pixels, write its address into the given
             pointer and initialize the linearized pixels to the values of init.
         */
-    void allocate (pointer &ptr, std::size_t s, const_pointer init);
+    template <class U>
+    void allocate (pointer &ptr, std::size_t s, U const * init);
+
+        /** allocate memory, write its address into the given
+            pointer and initialize it by copying the data from the given MultiArrayView.
+        */
+    template <class U, class C>
+    void allocate (pointer &ptr, MultiArrayView<N, U, C> const & init);
 
         /** deallocate the memory (of length s) starting at the given address.
          */
@@ -901,10 +965,22 @@ public:
                 allocator_type const & alloc = allocator_type());
 
         /** assignment.<br>
-            <em>Note:</em> this operation invalidates all dependent objects
-            (array views and iterators)
+            If the size of \a rhs is the same as the left-hand side arrays's old size, only 
+            the data are copied. Otherwise, new storage is allocated, which invalidates all 
+            objects (array views, iterators) depending on the lhs array.
          */
-    MultiArray &operator= (const MultiArray &rhs);
+    MultiArray &operator= (const MultiArray &rhs)
+    {
+        return this->operator=(static_cast<view_type const &>(rhs));
+    }
+
+        /** assignment from arbitrary MultiArrayView.<br>
+            If the size of \a rhs is the same as the left-hand side arrays's old size, only 
+            the data are copied. Otherwise, new storage is allocated, which invalidates all 
+            objects (array views, iterators) depending on the lhs array.
+         */
+    template <class U, class C>
+    MultiArray &operator= (const MultiArrayView<N, U, C> &rhs);
 
         /** destructor
          */
@@ -926,6 +1002,13 @@ public:
             (array views and iterators)
          */
     void reshape (const difference_type &shape, const_reference init);
+
+        /** Swap the contents with another MultiArray. This is fast,
+            because no data are copied, but only pointers and shapes swapped.
+            <em>Note:</em> this operation invalidates all dependent objects
+            (array views and iterators)
+         */
+    void swap (MultiArray & other);
 
         /** sequential iterator pointing to the first array element.
          */
@@ -953,6 +1036,13 @@ public:
     const_iterator end () const
     {
         return this->data() + this->elementCount();
+    }
+
+        /** get the allocator.
+         */
+    allocator_type const & allocator () const
+    {
+        return m_alloc;
     }
 };
 
@@ -1027,8 +1117,7 @@ MultiArray <N, T, A>::MultiArray (const MultiArrayView<N, U, C> &rhs,
                              detail::defaultStride <MultiArrayView<N,T>::actual_dimension> (rhs.shape()), 0),
     m_alloc (alloc)
 {
-    allocate (this->m_ptr, this->elementCount (), NumericTraits<T>::zero ());  // double initialization !!!
-    this->copy(rhs);
+    allocate (this->m_ptr, rhs); 
 }
 
 template <unsigned int N, class T, class A>
@@ -1038,18 +1127,23 @@ MultiArray <N, T, A>::~MultiArray ()
 }
 
 template <unsigned int N, class T, class A>
+template <class U, class C>
 MultiArray <N, T, A> &
-MultiArray <N, T, A>::operator= (const MultiArray &rhs)
+MultiArray <N, T, A>::operator= (const MultiArrayView<N, U, C> &rhs)
 {
     if (this == &rhs)
         return *this;
-    pointer new_ptr;
-    allocate (new_ptr, rhs.elementCount (), rhs.data ());
-    deallocate (this->m_ptr, this->elementCount ());
-    m_alloc = rhs.m_alloc;
-    this->m_shape = rhs.m_shape;
-    this->m_stride = rhs.m_stride;
-    this->m_ptr = new_ptr;
+    if (this->shape() == rhs.shape())
+        this->copy(rhs);
+    else
+    {
+        pointer new_ptr;
+        allocate (new_ptr, rhs);
+        deallocate (this->m_ptr, this->elementCount ());
+        this->m_shape = rhs.shape();
+        this->m_stride = rhs.stride();
+        this->m_ptr = new_ptr;
+    }
     return *this;
 }
 
@@ -1068,6 +1162,18 @@ void MultiArray <N, T, A>::reshape (const difference_type & new_shape,
     this->m_ptr = new_ptr;
     this->m_shape = new_shape;
     this->m_stride = new_stride;
+}
+
+
+template <unsigned int N, class T, class A>
+void MultiArray <N, T, A>::swap (MultiArray <N, T, A> & other)
+{
+    if (this == &other)
+        return;
+    std::swap(this->m_shape,  other.m_shape);
+    std::swap(this->m_stride, other.m_stride);
+    std::swap(this->m_ptr,    other.m_ptr);
+    std::swap(this->m_alloc,  other.m_alloc);
 }
 
 template <unsigned int N, class T, class A>
@@ -1089,8 +1195,9 @@ void MultiArray <N, T, A>::allocate (pointer & ptr, std::size_t s,
 }
 
 template <unsigned int N, class T, class A>
+template <class U>
 void MultiArray <N, T, A>::allocate (pointer & ptr, std::size_t s,
-                                     const_pointer init)
+                                     U const * init)
 {
     ptr = m_alloc.allocate (s);
     std::size_t i;
@@ -1101,6 +1208,25 @@ void MultiArray <N, T, A>::allocate (pointer & ptr, std::size_t s,
     catch (...) {
         for (std::size_t j = 0; j < i; ++j)
             m_alloc.destroy (ptr + j);
+        m_alloc.deallocate (ptr, s);
+        throw;
+    }
+}
+
+template <unsigned int N, class T, class A>
+template <class U, class C>
+void MultiArray <N, T, A>::allocate (pointer & ptr, MultiArrayView<N, U, C> const & init)
+{
+    std::size_t s = init.elementCount();
+    ptr = m_alloc.allocate (s);
+    pointer p = ptr;
+    try {
+        detail::uninitializedCopyMultiArrayData(init.traverser_begin(), init.shape(), 
+                                                p, m_alloc, MetaInt<actual_dimension-1>());
+    }
+    catch (...) {
+        for (pointer pp = ptr; pp < p; ++pp)
+            m_alloc.destroy (pp);
         m_alloc.deallocate (ptr, s);
         throw;
     }
