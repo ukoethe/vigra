@@ -1,6 +1,7 @@
 #include <iostream>
 #include "unittest.hxx"
 #include "vigra/stdimage.hxx"
+#include "vigra/basicimageview.hxx"
 #include "vigra/imageiterator.hxx"
 #include "vigra/impex.hxx"
 #include "vigra/imagecontainer.hxx"
@@ -11,18 +12,66 @@
 using vigra::Diff2D;
 using namespace vigra;
 
+unsigned char * testData(unsigned char)
+{
+    static unsigned char data[] = {1,2,3,4,5,6,7,8,9};
+    return data;
+}
+
+double * testData(double)
+{
+    static double data[] = {1.1,2.2,3.3,4.4,5.5,6.6,7.7,8.8,9.9};
+    return data;
+}
+
+RGBValue<unsigned char> * testData(RGBValue<unsigned char>)
+{
+    typedef RGBValue<unsigned char> BRGB;
+    static BRGB data[] = {
+        BRGB(1,1,1),
+        BRGB(2,2,2),
+        BRGB(3,3,3),
+        BRGB(4,4,4),
+        BRGB(5,5,5),
+        BRGB(6,6,6),
+        BRGB(7,7,7),
+        BRGB(8,8,8),
+        BRGB(9,9,9)
+    };
+    return data;
+}
+
+RGBValue<float> * testData(RGBValue<float>)
+{
+    typedef vigra::RGBValue<float> FRGB;
+    static FRGB data[] = {
+        FRGB(1.1, 1.1, 1.1),
+        FRGB(2.2, 2.2, 2.2),
+        FRGB(3.3, 3.3, 3.3),
+        FRGB(4.4, 4.4, 4.4),
+        FRGB(5.5, 5.5, 5.5),
+        FRGB(6.6, 6.6, 6.6),
+        FRGB(7.7, 7.7, 7.7),
+        FRGB(8.8, 8.8, 8.8),
+        FRGB(9.9, 9.9, 9.9)
+    };
+    return data;
+}
+
 template <class IMAGE>
 struct ImageTest
 {
     typedef IMAGE Image;
-    static typename Image::value_type data[];
+    typedef typename Image::value_type value_type;
+    value_type internalMemory[9];
+    value_type * data;
 
-    ImageTest()
-    : img(3,3)
+    ImageTest(IMAGE const & image)
+    : img(image), data(testData(value_type()))
     {
         typename Image::Accessor acc = img.accessor();
         typename Image::iterator i = img.begin();
-
+        
         acc.set(data[0], i);
         ++i;
         acc.set(data[1], i);
@@ -146,7 +195,7 @@ struct ImageTest
         should(c3 == end);
     }
 
-    void testBasicImageIterator()
+    void testIterator()
     {
         typename Image::Iterator ul = img.upperLeft();
         typename Image::Iterator lr = img.lowerRight();
@@ -162,15 +211,16 @@ struct ImageTest
         should(acc(i, 4) == data[4]);
     }
 
-    void testImageIterator()
+    void testIndex()
     {
-        vigra::ImageIterator<typename Image::value_type> ul(img.begin(), img.width());
-        vigra::ImageIterator<typename Image::value_type> lr = ul + img.size();
-        scanImage(ul, lr);
-        scanRows(ul.rowIterator(), (ul+Diff2D(0,1)).rowIterator(),
-                 (ul+Diff2D(0,2)).rowIterator(), img.width());
-        scanColumns(ul.columnIterator(), (ul+Diff2D(1,0)).columnIterator(),
-                 (ul+Diff2D(2,0)).columnIterator(), img.height());
+        for (int y=0; y<img.height(); ++y)
+        {
+            for(int x=0; x<img.width(); ++x)
+            {
+                shouldEqual(data[y*img.width()+x], img[Diff2D(x,y)]);
+                shouldEqual(data[y*img.width()+x], img(x,y));
+            }
+        }
     }
 
     void copyImage()
@@ -206,40 +256,55 @@ struct ImageTest
     Image img;
 };
 
-typedef ImageTest<vigra::BImage> BImageTest;
+template <class IMAGE>
+struct BasicImageTest
+: public ImageTest<IMAGE>
+{
+    BasicImageTest()
+    : ImageTest<IMAGE>(IMAGE(Diff2D(3,3)))
+    {}
 
-unsigned char BImageTest::data[] = {1,2,3,4,5,6,7,8,9};
+    // next lines needed due to gcc 2.95 bug
+    void testIterator()
+    {
+        ImageTest<IMAGE>::testIterator();
+    }
 
-typedef ImageTest<vigra::DImage> DImageTest;
+    void testIndex()
+    {
+        ImageTest<IMAGE>::testIndex();
+    }
 
-double DImageTest::data[] = {1.1,2.2,3.3,4.4,5.5,6.6,7.7,8.8,9.9};
-
-typedef ImageTest<vigra::BRGBImage> BRGBImageTest;
-typedef vigra::RGBValue<unsigned char> BRGB;
-BRGB BRGBImageTest::data[] = {
-    BRGB(1,1,1),
-    BRGB(2,2,2),
-    BRGB(3,3,3),
-    BRGB(4,4,4),
-    BRGB(5,5,5),
-    BRGB(6,6,6),
-    BRGB(7,7,7),
-    BRGB(8,8,8),
-    BRGB(9,9,9)
+    void copyImage()
+    {
+        ImageTest<IMAGE>::copyImage();
+    }
 };
 
-typedef ImageTest<vigra::FRGBImage> FRGBImageTest;
-typedef vigra::RGBValue<float> FRGB;
-FRGB FRGBImageTest::data[] = {
-    FRGB(1.1, 1.1, 1.1),
-    FRGB(2.2, 2.2, 2.2),
-    FRGB(3.3, 3.3, 3.3),
-    FRGB(4.4, 4.4, 4.4),
-    FRGB(5.5, 5.5, 5.5),
-    FRGB(6.6, 6.6, 6.6),
-    FRGB(7.7, 7.7, 7.7),
-    FRGB(8.8, 8.8, 8.8),
-    FRGB(9.9, 9.9, 9.9)
+template <class IMAGE>
+struct BasicImageViewTest
+: public ImageTest<IMAGE>
+{
+    
+    BasicImageViewTest()
+    : ImageTest<IMAGE>(IMAGE(internalMemory, Diff2D(3,3)))
+    {}
+
+    // next lines needed due to gcc 2.95 bug
+    void testIterator()
+    {
+        ImageTest<IMAGE>::testIterator();
+    }
+
+    void testIndex()
+    {
+        ImageTest<IMAGE>::testIndex();
+    }
+
+    void copyImage()
+    {
+        ImageTest<IMAGE>::copyImage();
+    }
 };
 
 
@@ -249,18 +314,30 @@ struct ImageTestSuite
     ImageTestSuite()
     : vigra::test_suite("ImageTestSuite")
     {
-        add( testCase( &BImageTest::testBasicImageIterator));
-        add( testCase( &BImageTest::testImageIterator));
-        add( testCase( &BImageTest::copyImage));
-        add( testCase( &DImageTest::testBasicImageIterator));
-        add( testCase( &DImageTest::testImageIterator));
-        add( testCase( &DImageTest::copyImage));
-        add( testCase( &BRGBImageTest::testBasicImageIterator));
-        add( testCase( &BRGBImageTest::testImageIterator));
-        add( testCase( &BRGBImageTest::copyImage));
-        add( testCase( &FRGBImageTest::testBasicImageIterator));
-        add( testCase( &FRGBImageTest::testImageIterator));
-        add( testCase( &FRGBImageTest::copyImage));
+        add( testCase( &BasicImageTest<BasicImage<unsigned char> >::testIterator));
+        add( testCase( &BasicImageTest<BasicImage<unsigned char> >::testIndex));
+        add( testCase( &BasicImageTest<BasicImage<unsigned char> >::copyImage));
+        add( testCase( &BasicImageTest<BasicImage<double> >::testIterator));
+        add( testCase( &BasicImageTest<BasicImage<double> >::testIndex));
+        add( testCase( &BasicImageTest<BasicImage<double> >::copyImage));
+        add( testCase( &BasicImageTest<BasicImage<RGBValue<unsigned char> > >::testIterator));
+        add( testCase( &BasicImageTest<BasicImage<RGBValue<unsigned char> > >::testIndex));
+        add( testCase( &BasicImageTest<BasicImage<RGBValue<unsigned char> > >::copyImage));
+        add( testCase( &BasicImageTest<BasicImage<RGBValue<float> > >::testIterator));
+        add( testCase( &BasicImageTest<BasicImage<RGBValue<float> > >::testIndex));
+        add( testCase( &BasicImageTest<BasicImage<RGBValue<float> > >::copyImage));
+        add( testCase( &BasicImageViewTest<BasicImageView<unsigned char> >::testIterator));
+        add( testCase( &BasicImageViewTest<BasicImageView<unsigned char> >::testIndex));
+        add( testCase( &BasicImageViewTest<BasicImageView<unsigned char> >::copyImage));
+        add( testCase( &BasicImageViewTest<BasicImageView<double> >::testIterator));
+        add( testCase( &BasicImageViewTest<BasicImageView<double> >::testIndex));
+        add( testCase( &BasicImageViewTest<BasicImageView<double> >::copyImage));
+        add( testCase( &BasicImageViewTest<BasicImageView<RGBValue<unsigned char> > >::testIterator));
+        add( testCase( &BasicImageViewTest<BasicImageView<RGBValue<unsigned char> > >::testIndex));
+        add( testCase( &BasicImageViewTest<BasicImageView<RGBValue<unsigned char> > >::copyImage));
+        add( testCase( &BasicImageViewTest<BasicImageView<RGBValue<float> > >::testIterator));
+        add( testCase( &BasicImageViewTest<BasicImageView<RGBValue<float> > >::testIndex));
+        add( testCase( &BasicImageViewTest<BasicImageView<RGBValue<float> > >::copyImage));
     }
 };
 
