@@ -145,12 +145,15 @@ int labelImage(SrcIterator upperlefts,
     int h = lowerrights.y - upperlefts.y;
     int x,y,i;
     
-    static const Diff2D left(-1,0);
-    static const Diff2D top(0,-1);
-    static const Diff2D topright(1,-1);
-    static const Diff2D topleft(-1,-1);
-    static const Diff2D neighbor[] = {left, topleft, top, topright};
-    int inc = eight_neighbors ? 1 : 2;
+    static const Diff2D neighbor[] = {
+        Diff2D(-1,0),  // left
+        Diff2D(-1,-1), // topleft
+        Diff2D(0,-1),  // top
+        Diff2D(1,-1)   // topright
+    };
+    
+    static const int left = 0, topleft = 1, top = 2, topright = 3;
+    int step = eight_neighbors ? 1 : 2;
     
     SrcIterator ys(upperlefts);
     SrcIterator xs(ys);
@@ -168,52 +171,86 @@ int labelImage(SrcIterator upperlefts,
     // pass 1: scan image from upper left to lower right
     // to find connected components
     
+    // Each component will be represented by a tree of pixels.
+    // Each pixel contains the scan order address of its parent in the tree.
+    // In order for pass 2 to work correctly, the parent must always
+    // have a smaller scan order address than the child.
+    // Therefore, we can merge trees only at their roots, because
+    // the root of the combined tree must have the smallest 
+    // scan order address among all the tree's pixels/ nodes.
+    // The root of each tree is distinguished by pointing to itself 
+    // (it contains its own scan order address). This condition is 
+    // enforced whenever a new region is found or two regions are merged
+
+    
     for(y = 0; y != h; ++y, ++ys.y, ++yt.y)
     {
         xs = ys;
 	xt = yt;
         
-        int endNeighbor = (y == 0) ? 1 : 4;
+        int endNeighbor = (y == 0) ? left : (eight_neighbors ? topright : top);
 	
-	// regular processing
 	for(x = 0; x != w; ++x, ++xs.x, ++xt.x)
 	{
-            int beginNeighbor = (x == 0) ? 2 : 0;
-            if(x == w-1 && y != 0) --endNeighbor;
+            int beginNeighbor = (x == 0) ? top : left;
+            if(x == w-1 && endNeighbor == topright) endNeighbor = top;
             
-            for(i=beginNeighbor; i<endNeighbor; i+=inc)
+            for(i=beginNeighbor; i<=endNeighbor; i+=step)
             {
                 if(equal(sa(xs), sa(xs, neighbor[i])))
                 {
-                    int popagateLabel = xt[neighbor[i]];
-                    
-                    for(int j=i+2; j<endNeighbor; j+=inc)
+                    int neighborLabel = xt[neighbor[i]];
+
+                    for(int j=i+2; j<=endNeighbor; j+=step)
                     {
                         if(equal(sa(xs), sa(xs, neighbor[j])))
                         {
-                            int equalLabel = xt[neighbor[j]];
-                            if(equalLabel < popagateLabel)
+                            int neighborLabel1 = xt[neighbor[j]];
+                            
+                            if(neighborLabel != neighborLabel1)
                             {
-                                label[popagateLabel] = equalLabel;
-                                popagateLabel = equalLabel;
-                            }
-                            else if(popagateLabel < equalLabel)
-                            {
-                                label[equalLabel] = popagateLabel;
+                                // find roots of the region trees
+                                while(neighborLabel != label[neighborLabel])
+                                {
+                                    neighborLabel = label[neighborLabel];
+                                }
+                                while(neighborLabel1 != label[neighborLabel1])
+                                {
+                                    neighborLabel1 = label[neighborLabel1];
+                                }
+
+                                // merge the trees
+                                if(neighborLabel1 < neighborLabel)
+                                {
+                                    label[neighborLabel] = neighborLabel1;
+                                    neighborLabel = neighborLabel1;
+                                }
+                                else if(neighborLabel < neighborLabel1)
+                                {
+                                    label[neighborLabel1] = neighborLabel;
+                                }
                             }
                             break;
                         }
                     }
-                    *xt = popagateLabel;
+                    *xt = neighborLabel;
                     break;
                 }
             
             }
-            if(i >= endNeighbor) *xt = x + y*w;  // new region
+            if(i > endNeighbor) 
+            {
+                // new region
+                // The initial label of a new region equals the 
+                // scan order address of it's first pixel.
+                // This is essential for correct operation of the algorithm.
+                *xt = x + y*w;  
+            }
         }
     }
 		    
-    // pass 2: assign contiguous labels to the regions
+    // pass 2: assign one label to each region (tree)
+    // so that labels for a consecutive sequence 1, 2, ...
     DestIterator yd(upperleftd);
 
     int count = 0;
@@ -225,13 +262,13 @@ int labelImage(SrcIterator upperlefts,
 	{
             if(label[i] == i)
             {
-	        label[i] = count++;
+	        label[i] = ++count;
             }
             else
             {
 	        label[i] = label[label[i]];
             }
-	    da.set(label[i]+1, xd);
+	    da.set(label[i], xd);
 	}
     }
     return count;
@@ -399,13 +436,15 @@ int labelImageWithBackground(SrcIterator upperlefts,
     int h = lowerrights.y - upperlefts.y;
     int x,y,i;
     
-    static const Diff2D left(-1,0);
-    static const Diff2D top(0,-1);
-    static const Diff2D topright(1,-1);
-    static const Diff2D topleft(-1,-1);
-    static const Diff2D neighbor[] = {left, topleft, top, topright};
-    int inc = eight_neighbors ? 1 : 2;
+    static const Diff2D neighbor[] = {
+        Diff2D(-1,0),  // left
+        Diff2D(-1,-1), // topleft
+        Diff2D(0,-1),  // top
+        Diff2D(1,-1)   // topright
+    };
     
+    static const int left = 0, topleft = 1, top = 2, topright = 3;
+    int step = eight_neighbors ? 1 : 2;    
     
     SrcIterator ys(upperlefts);
     SrcIterator xs(ys);
@@ -424,49 +463,70 @@ int labelImageWithBackground(SrcIterator upperlefts,
         xs = ys;
 	xt = yt;
         
-        int endNeighbor = (y == 0) ? 1 : 4;
+        int endNeighbor = (y == 0) ? left : (eight_neighbors ? topright : top);
 	
-	// regular processing
 	for(x = 0; x != w; ++x, ++xs.x, ++xt.x)
 	{
-            int beginNeighbor = (x == 0) ? 2 : 0;
-            if(x == w-1 && y != 0) --endNeighbor;
-            
             if(equal(sa(xs), background_value))
             {
                 *xt = -1;
             }
             else
             {
-                for(i=beginNeighbor; i<endNeighbor; i+=inc)
+                int beginNeighbor = (x == 0) ? top : left;
+                if(x == w-1 && endNeighbor == topright) endNeighbor = top;
+
+                for(i=beginNeighbor; i<=endNeighbor; i+=step)
                 {
                     if(equal(sa(xs), sa(xs, neighbor[i])))
                     {
-                        int popagateLabel = xt[neighbor[i]];
+                        int neighborLabel = xt[neighbor[i]];
 
-                        for(int j=i+2; j<endNeighbor; j+=inc)
+                        for(int j=i+2; j<=endNeighbor; j+=step)
                         {
                             if(equal(sa(xs), sa(xs, neighbor[j])))
                             {
-                                int equalLabel = xt[neighbor[j]];
-                                if(equalLabel < popagateLabel)
+                                int neighborLabel1 = xt[neighbor[j]];
+
+                                if(neighborLabel != neighborLabel1)
                                 {
-                                    label[popagateLabel] = equalLabel;
-                                    popagateLabel = equalLabel;
-                                }
-                                else if(popagateLabel < equalLabel)
-                                {
-                                    label[equalLabel] = popagateLabel;
+                                    // find roots of the region trees
+                                    while(neighborLabel != label[neighborLabel])
+                                    {
+                                        neighborLabel = label[neighborLabel];
+                                    }
+                                    while(neighborLabel1 != label[neighborLabel1])
+                                    {
+                                        neighborLabel1 = label[neighborLabel1];
+                                    }
+
+                                    // merge the trees
+                                    if(neighborLabel1 < neighborLabel)
+                                    {
+                                        label[neighborLabel] = neighborLabel1;
+                                        neighborLabel = neighborLabel1;
+                                    }
+                                    else if(neighborLabel < neighborLabel1)
+                                    {
+                                        label[neighborLabel1] = neighborLabel;
+                                    }
                                 }
                                 break;
                             }
                         }
-                        *xt = popagateLabel;
+                        *xt = neighborLabel;
                         break;
                     }
 
                 }
-                if(i >= endNeighbor) *xt = x + y*w;  // new region
+                if(i > endNeighbor) 
+                {
+                    // new region
+                    // The initial label of a new region equals the 
+                    // scan order address of it's first pixel.
+                    // This is essential for correct operation of the algorithm.
+                    *xt = x + y*w;  
+                }
             }
         }
     }
