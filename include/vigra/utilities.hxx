@@ -36,6 +36,10 @@
     <DL>
     <DT>
     <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif">
+     \ref vigra::ArrayVector
+     <DD><em>replacement for std::vector</em>
+    <DT>
+    <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif">
      \ref RangesAndPoints
      <DD><em>2-dimensioanl positions, extents, amd rectangles</em>
     <DT>
