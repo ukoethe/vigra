@@ -140,8 +140,11 @@ def generateFunctionIndex():
     f = open(path + "/functionindex.html", 'w+')
     f.write(text)
     f.close()
-    
-    
+
+functionSignature = re.compile(r'<table cellpadding="0" cellspacing="0" border="0">\s*'+\
+                    r'<tr>\s*<td nowrap valign="top"><b>\s*([^\(]+)\('+\
+                    r'[^\)]*(\)<code>\s*\[inline\]</code>|\))\s*</b></td>\s*</tr>\s*</table>', re.M)
+
 def processFile(fileName):
     print fileName
     f = open(fileName)
@@ -153,6 +156,8 @@ def processFile(fileName):
         text = convertPage(text)
     else:
         text = convertSource(text)
+    if re.search(r'.*/group__.*html', fileName):
+        text = functionSignature.sub(r'<br><b>&nbsp;\1 (...\2</b><br>&nbsp;', text)
     if re.search(r'.*/index.html', fileName):
         text = re.sub(r'<h3 align="center">\d+\.\d+\.\d+</h3> ', '', text)
     f = open(fileName, 'w+')
