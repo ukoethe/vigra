@@ -258,9 +258,9 @@ public:
 
     void testGIF ()
     {
-        exportImage (srcImageRange (img), vigra::ImageExportInfo ("res.gif"));
+        exportImage (srcImageRange (img), vigra::ImageExportInfo ("resrgb.gif"));
 
-        vigra::ImageImportInfo info ("res.gif");
+        vigra::ImageImportInfo info ("resrgb.gif");
 
         should (info.width () == img.width ());
         should (info.height () == img.height ());
@@ -541,11 +541,14 @@ public:
         Image::ScanOrderIterator i = img.begin ();
         Image::ScanOrderIterator i1 = res.begin ();
         Image::Accessor acc = img.accessor ();
+        
+        shouldEqualSequence(i, img.end(), i1);
 
-        for (; i != img.end (); ++i, ++i1)
+ /*       for (; i != img.end (); ++i, ++i1)
             {
-                should (acc (i) == acc (i1));
+                shouldEqual(acc (i), acc (i1));
             }
+ */
     }
 
     void testBMP ()
@@ -696,7 +699,7 @@ public:
         Image::Accessor acc = img.accessor ();
 
         for (; i != img.end (); ++i, ++i1)
-            should (acc (i) == acc (i1));
+            shouldEqual (acc (i), acc (i1));
     }
 
     void testBMP ()

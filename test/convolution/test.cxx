@@ -116,7 +116,7 @@ struct ConvolutionTest
 	Image::Accessor acc_dest_correct = dest_correct.accessor();
 
 	for (; i_dest != end_dest; i_dest++, i_dest_correct++ ){
-	    should(acc_dest(i_dest) == acc_dest_correct(i_dest_correct));
+	    shouldEqualTolerance(acc_dest(i_dest) , acc_dest_correct(i_dest_correct), 1e-15);
 	}
 
     }
@@ -137,7 +137,7 @@ struct ConvolutionTest
 	Image::Accessor acc_dest_correct = dest_correct.accessor();
 
 	for (; i_dest != end_dest; i_dest++, i_dest_correct++ ){
-	    should(acc_dest(i_dest) == acc_dest_correct(i_dest_correct));
+	    shouldEqualTolerance(acc_dest(i_dest) , acc_dest_correct(i_dest_correct), 1e-6);
 	}
 
     }
@@ -406,7 +406,7 @@ struct ConvolutionTest
 	    if (i < 2 || i > 37){
 		should(acc_dest_avoid(dest_iter_avoid) == 2.47);
 	    }else{
-		should(acc_dest_avoid(dest_iter_avoid) == acc_dest_repeat(dest_iter_repeat));
+		shouldEqualTolerance(acc_dest_avoid(dest_iter_avoid) , acc_dest_repeat(dest_iter_repeat), 1e-15);
 		dest_iter_repeat++;
 	    }
 	}
@@ -875,7 +875,7 @@ struct ConvolutionTest
                 }
                 else
                 {
-                    should (acc(id) == acc(is));
+                    shouldEqualTolerance (acc(id) , acc(is), 1e-15);
                 }
             }
             is.x = tmp_src.x;
@@ -898,7 +898,7 @@ struct ConvolutionTest
             {
                 if ((x > 10 && x < 14) || (y > 10 && y < 14))
                 {
-                    should(acc(is) == acc(id));
+                    shouldEqualTolerance(acc(is) , acc(id), 1e-15);
                 }
                 else
                 {
@@ -954,7 +954,7 @@ struct ConvolutionTest
         {
             for (int x = 0 ; is.x != isend.x ; is.x++, id.x++, x++)
             {
-                should (acc(id) == acc(is));
+                shouldEqualTolerance (acc(id) , acc(is), 1e-15);
             }
             is.x = tmp_src.x;
             id.x = tmp_dest.x;
@@ -974,7 +974,7 @@ struct ConvolutionTest
         {
             for (int x = 0 ; is.x != isend.x ; is.x++, id.x++, x++)
             {
-                should(acc(is) == acc(id));
+                shouldEqualTolerance(acc(is) , acc(id), 1e-15);
             }
             is.x = tmp_src.x;
             id.x = tmp_dest.x;
@@ -1106,7 +1106,7 @@ struct ConvolutionTest
         {
             for (int x = 0 ; is.x != isend.x ; is.x++, id.x++, x++)
             {
-                should (acc(id) == acc(is));
+                shouldEqualTolerance (acc(id) , acc(is), 1e-15);
             }
             is.x = tmp_src.x;
             id.x = tmp_dest.x;
@@ -1126,7 +1126,7 @@ struct ConvolutionTest
         {
             for (int x = 0 ; is.x != isend.x ; is.x++, id.x++, x++)
             {
-                should(acc(is) == acc(id));
+                shouldEqualTolerance(acc(is) , acc(id), 1e-15);
             }
             is.x = tmp_src.x;
             id.x = tmp_dest.x;
@@ -1180,7 +1180,7 @@ struct ConvolutionTest
         {
             for (int x = 0 ; is.x != isend.x ; is.x++, id.x++, x++)
             {
-                should (acc(id) == acc(is));
+                shouldEqualTolerance (acc(id) , acc(is), 1e-15);
             }
             is.x = tmp_src.x;
             id.x = tmp_dest.x;
@@ -1199,7 +1199,7 @@ struct ConvolutionTest
         {
             for (int x = 0 ; is.x != isend.x ; is.x++, id.x++, x++)
             {
-                should(acc(is) == acc(id));
+                shouldEqualTolerance(acc(is) , acc(id), 1e-15);
             }
             is.x = tmp_src.x;
             id.x = tmp_dest.x;

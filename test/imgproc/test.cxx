@@ -443,7 +443,7 @@ struct ImageFunctionsTest
 
         for(; i != img.end(); ++i, ++i1)
         {
-            should(2.0*(acc(i) - 1.1) == acc(i1));
+            shouldEqual(2.0*(acc(i) - 1.1), acc(i1));
         }
 
     }
@@ -461,7 +461,7 @@ struct ImageFunctionsTest
 
         for(; i != img.end(); ++i, ++i1)
         {
-            should(3.3*acc(i) == acc(i1));
+            shouldEqual(3.3*acc(i), acc(i1));
         }
 
     }
@@ -488,7 +488,7 @@ struct ImageFunctionsTest
 
         for(; i1 != i1end; ++i, ++i1)
         {
-            should(2.0*(acc(i) - 1.1) == acc(i1));
+            shouldEqual(2.0*(acc(i) - 1.1), acc(i1));
         }
 
     }

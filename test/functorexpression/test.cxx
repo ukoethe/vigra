@@ -115,22 +115,22 @@ struct FunctorExpressionTest
     
     void testUnary()
     {
-        should(exec(sqrt(Arg1()), 7) == sqrt(7.0)); 
-        should(exec(exp(Arg1()), 4) == exp(4.0)); 
-        should(exec(log(Arg1()), 4) == log(4.0)); 
-        should(exec(log10(Arg1()), 4) == log10(4.0)); 
-        should(exec(sin(Arg1()), 4) == sin(4.0)); 
-        should(exec(asin(Arg1()), 0.5) == asin(0.5)); 
-        should(exec(cos(Arg1()), 4) == cos(4.0)); 
-        should(exec(acos(Arg1()), 0.5) == acos(0.5)); 
-        should(exec(tan(Arg1()), 4) == tan(4.0)); 
-        should(exec(atan(Arg1()), 0.5) == atan(0.5)); 
-        should(exec(abs(Arg1()), -0.5) == 0.5); 
-        should(exec(floor(Arg1()), -0.5) == -1.0); 
-        should(exec(ceil(Arg1()), 0.5) == 1.0); 
-        should(exec(-Arg1(), -0.5) == 0.5); 
-        should(exec(!Arg1(), true) == false); 
-        should(exec(~Arg1(), 0xff) == (int)0xffffff00); 
+        shouldEqual(exec(sqrt(Arg1()), 7.0) , sqrt(7.0)); 
+        shouldEqual(exec(exp(Arg1()), 4.0) , exp(4.0)); 
+        shouldEqual(exec(log(Arg1()), 4.0) , log(4.0)); 
+        shouldEqual(exec(log10(Arg1()), 4.0) , log10(4.0)); 
+        shouldEqual(exec(sin(Arg1()), 4.0) , sin(4.0)); 
+        shouldEqual(exec(asin(Arg1()), 0.5) , asin(0.5)); 
+        shouldEqual(exec(cos(Arg1()), 4.0) , cos(4.0)); 
+        shouldEqual(exec(acos(Arg1()), 0.5) , acos(0.5)); 
+        shouldEqual(exec(tan(Arg1()), 4.0) , tan(4.0)); 
+        shouldEqual(exec(atan(Arg1()), 0.5) , atan(0.5)); 
+        shouldEqual(exec(abs(Arg1()), -0.5) , 0.5); 
+        shouldEqual(exec(floor(Arg1()), -0.5) , -1.0); 
+        shouldEqual(exec(ceil(Arg1()), 0.5) , 1.0); 
+        shouldEqual(exec(-Arg1(), -0.5) , 0.5); 
+        shouldEqual(exec(!Arg1(), true) , false); 
+        shouldEqual(exec(~Arg1(), 0xff) , (int)0xffffff00); 
     }
     
     void testBinary()
@@ -150,9 +150,9 @@ struct FunctorExpressionTest
         should(exec(Arg1() & Arg2(), 0xff, 0xf) == 0xf); 
         should(exec(Arg1() | Arg2(), 0xff, 0xf) == 0xff); 
         should(exec(Arg1() ^ Arg2(), 0xff, 0xf) == 0xf0); 
-        should(exec(pow(Arg1(), Arg2()), 2, 3) == pow(2.0, 3.0)); 
-        should(exec(atan2(Arg1(), Arg2()), 2, 3) == atan2(2.0, 3.0)); 
-        should(exec(fmod(Arg1(), Arg2()), 2, 3) == fmod(2.0, 3.0)); 
+        should(exec(pow(Arg1(), Arg2()), 2.0, 3) == pow(2.0, 3.0)); 
+        should(exec(atan2(Arg1(), Arg2()), 2.0, 3.0) == atan2(2.0, 3.0)); 
+        should(exec(fmod(Arg1(), Arg2()), 2.0, 3.0) == fmod(2.0, 3.0)); 
         should(exec(min(Arg1(), Arg2()), 2, 3.5) == 2.0); 
         should(exec(max(Arg1(), Arg2()), 2, 3.5) == 3.5); 
     }

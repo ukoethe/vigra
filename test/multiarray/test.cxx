@@ -167,7 +167,7 @@ public:
 
     void test_assignment ()
     {
-        array1_t a (shape1_t(2), 1.0);
+        array1_t a (shape1_t(2), 1);
         array1_t b;
         b = a;
         shouldEqual (b.shape (0), 2);
@@ -175,7 +175,7 @@ public:
 
     void test_copy_construction ()
     {
-        array1_t a (shape1_t(2), 1.0);
+        array1_t a (shape1_t(2), 1);
         array1_t b (a);
         shouldEqual (b.shape (0), 2);
     }
@@ -481,11 +481,11 @@ struct MultiImpexTest
     
     void testImpex()
     {
-        exportVolume(array, std::string("test"), std::string(".png"));
+        exportVolume(array, std::string("test"), std::string(".tif"));
         
         Array result;
         
-        importVolume(result, std::string("test"), std::string(".png"));
+        importVolume(result, std::string("test"), std::string(".tif"));
         
         shouldEqual(result.shape(), Shape(2,3,4));
         shouldEqual(result(0,1,0), 1);

@@ -330,8 +330,8 @@ struct StridedImageIteratorTest
         shouldEqual(Diff2D(ws, hs), lr - ul);
         
         StridedImageIterator<T> x = ul;
-        StridedImageIterator<T>::row_iterator r = ul.rowIterator();
-        StridedImageIterator<T>::row_iterator rend = r + ws;
+        typename StridedImageIterator<T>::row_iterator r = ul.rowIterator();
+        typename StridedImageIterator<T>::row_iterator rend = r + ws;
         shouldEqual(data_[0], *x);
         shouldEqual(data_[0], *r);
         should(x.x < lr.x);
@@ -453,7 +453,7 @@ struct ImageContainerTests
 		Diff2D testsize(50, 50);
 		ImageArray<FImage> ia(6, testsize);
 
-		for (int i=0; i<ia.size(); i++)
+		for (unsigned int i=0; i<ia.size(); i++)
 			shouldEqual(ia[i].size(), testsize);
 
 		ImageArray<FImage> ia2(ia.begin(), ia.end());
