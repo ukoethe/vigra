@@ -24,7 +24,7 @@
 #define VIGRA_COMBINEIMAGES_HXX
 
 #include "vigra/utilities.hxx"
-#include "vigra/iteratortraits.hxx"
+#include "vigra/numerictraits.hxx"
 #include <cmath>
 
 namespace vigra {
