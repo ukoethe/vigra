@@ -1,6 +1,6 @@
                  DOC = doxygen
 	    DOCLATEX = doc++ -u -o $(DOCDIR)/latex/vigra.tex -t 
-	      DOCDIR = ../doc
+	      DOCDIR = ../doc/vigra
 		 
 FILES = \
 	index.dxx 
