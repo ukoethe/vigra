@@ -126,10 +126,9 @@ void createGaborFilter(DestImageIterator destUpperLeft,
     destUpperLeft.y -= h;
 
     // clear out DC value and remove it from the squared sum
-    DestImageIterator dcIt = destUpperLeft + Diff2D(dcX, dcY);
-    da.set( 0.0, dcIt );
-    double dcValue = VIGRA_CSTD::exp(-0.5*(centerFrequency*centerFrequency / radialSigma2));
+    double dcValue = da(destUpperLeft);
     squaredSum -= dcValue * dcValue;
+    da.set( 0.0, destUpperLeft );
 
     // normalize energy to one
     double factor = VIGRA_CSTD::sqrt(squaredSum);
