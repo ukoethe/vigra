@@ -219,10 +219,15 @@ struct RationalTest
     {
         shouldEqual(vigra::gcd(24, 18), 6);
         shouldEqual(vigra::lcm(6, 4), 12);
+        shouldEqual(vigra::gcd(18, 24), 6);
+        shouldEqual(vigra::lcm(4, 6), 12);
     }
     
     void testOperators()
     {
+        shouldEqual(R(3,4), R(3,4));
+        shouldEqual(-R(3,4), R(-3,4));
+
         shouldEqual(R(3,4) + R(12,6), R(11,4));
         shouldEqual(R(3,4) - R(12,6), R(-5,4));
         shouldEqual(R(3,4) * R(12,6), R(3,2));
@@ -255,9 +260,26 @@ struct RationalTest
         should(2 > R(3,4));
         should(2 < R(19,4));
         should(2 >= R(3,4));
-        should(2 <= R(19,4));
+        should(2 <= R(19,4));        
     }
 
+    void testConversion()
+    {
+        shouldEqual(vigra::rational_cast<R>(R(3,2)), R(3,2));
+        shouldEqual(vigra::rational_cast<int>(R(3,2)), 1);
+        shouldEqual(vigra::rational_cast<double>(R(3,2)), 1.5);
+        shouldEqual(vigra::rational_cast<double>(1.5), 1.5);
+
+        shouldEqual(R(3.5, 1e-4), R(7,2));
+        shouldEqual(R(-3.5, 1e-4), R(-7,2));
+        shouldEqual(R(0.123, 1e-4), R(123,1000));
+        shouldEqual(R(-0.123, 1e-4), R(-123,1000));
+        shouldEqual(R(0.123456, 1e-4), R(1235,10000));
+        shouldEqual(R(0.123432, 1e-4), R(1234,10000));
+        shouldEqual(R(-0.123456, 1e-4), R(-1235,10000));
+        shouldEqual(R(-0.123432, 1e-4), R(-1234,10000));
+    }
+    
     void testFunctions()
     {
         shouldEqual(pow(R(1,2),2), R(1,4));
@@ -266,6 +288,16 @@ struct RationalTest
         shouldEqual(pow(R(-2),-2), R(1,4));
         shouldEqual(pow(R(-1,2),3), R(-1,8));
         shouldEqual(pow(R(-2),-3), R(-1,8));
+        shouldEqual(pow(R(0),3), R(0));
+        shouldEqual(pow(R(0),0), R(0));
+        should(pow(R(0),-3).is_pinf());
+        
+        should(pow(R(1,0, false), 1).is_pinf());
+        should(pow(R(-1,0, false), 1).is_ninf());
+        shouldEqual(pow(R(1,0, false), -1), R(0));
+        shouldEqual(pow(R(-1,0, false), -1), R(0));
+        try { pow(R(1,0, false), 0); failTest("No exception thrown"); } catch(vigra::bad_rational &) {}
+        try { pow(R(-1,0, false), 0); failTest("No exception thrown"); } catch(vigra::bad_rational &) {}
         
         shouldEqual(floor(R(2)), R(2));
         shouldEqual(floor(R(3,2)), R(1));
@@ -274,6 +306,8 @@ struct RationalTest
         shouldEqual(floor(R(1,-2)), R(-1));
         shouldEqual(floor(R(-3,2)), R(-2));
         shouldEqual(floor(R(-2)), R(-2));
+        shouldEqual(floor(R(1,0,false)), R(1,0,false));
+        shouldEqual(floor(R(-1,0,false)), R(-1,0,false));
 
         shouldEqual(ceil(R(2)), R(2));
         shouldEqual(ceil(R(3,2)), R(2));
@@ -282,6 +316,128 @@ struct RationalTest
         shouldEqual(ceil(R(1,-2)), R(0));
         shouldEqual(ceil(R(-3,2)), R(-1));
         shouldEqual(ceil(R(-2)), R(-2));
+        shouldEqual(ceil(R(1,0,false)), R(1,0,false));
+        shouldEqual(ceil(R(-1,0,false)), R(-1,0,false));
+    }
+    
+    void testInf()
+    {
+        R inf(1,0,false);
+        R ninf(-1,0,false);
+        
+        should(inf.is_inf());
+        should(inf.is_pinf());
+        should(!inf.is_ninf());
+        should(ninf.is_inf());
+        should(ninf.is_ninf());
+        should(!ninf.is_pinf());
+        
+        should((inf + R(1)).is_pinf());
+        should((inf + R(0)).is_pinf());
+        should((inf + R(-1)).is_pinf());
+        should((ninf + R(1)).is_ninf());
+        should((ninf + R(0)).is_ninf());
+        should((ninf + R(-1)).is_ninf());
+        should((inf + 1).is_pinf());
+        should((inf + 0).is_pinf());
+        should((inf + (-1)).is_pinf());
+        should((ninf + 1).is_ninf());
+        should((ninf + 0).is_ninf());
+        should((ninf + (-1)).is_ninf());
+        should((inf + inf).is_pinf());
+        should((ninf + ninf).is_ninf());
+
+        should((inf - R(1)).is_pinf());
+        should((inf - R(0)).is_pinf());
+        should((inf - R(-1)).is_pinf());
+        should((ninf - R(1)).is_ninf());
+        should((ninf - R(0)).is_ninf());
+        should((ninf - R(-1)).is_ninf());
+        should((inf - 1).is_pinf());
+        should((inf - 0).is_pinf());
+        should((inf - (-1)).is_pinf());
+        should((ninf - 1).is_ninf());
+        should((ninf - 0).is_ninf());
+        should((ninf - (-1)).is_ninf());
+        should((inf - ninf).is_pinf());
+        should((ninf - inf).is_ninf());
+
+        should((inf * R(1)).is_pinf());
+        should((inf * R(-1)).is_ninf());
+        should((ninf * R(1)).is_ninf());
+        should((ninf * R(-1)).is_pinf());
+        should((inf * 1).is_pinf());
+        should((inf * (-1)).is_ninf());
+        should((ninf * 1).is_ninf());
+        should((ninf * (-1)).is_pinf());
+        should((inf * inf).is_pinf());
+        should((inf * ninf).is_ninf());
+        should((ninf * inf).is_ninf());
+        should((ninf * ninf).is_pinf());
+
+        should((inf / R(1)).is_pinf());
+        should((inf / R(-1)).is_ninf());
+        should((ninf / R(1)).is_ninf());
+        should((ninf / R(-1)).is_pinf());
+        shouldEqual(R(1) / inf, R(0));
+        shouldEqual(R(-1) / inf, R(0));
+        shouldEqual(R(1) / ninf, R(0));
+        shouldEqual(R(-1) / ninf, R(0));
+        should((inf / 1).is_pinf());
+        should((inf / (-1)).is_ninf());
+        should((ninf / 1).is_ninf());
+        should((ninf / (-1)).is_pinf());
+        shouldEqual(1 / inf, R(0));
+        shouldEqual((-1) / inf, R(0));
+        shouldEqual(1 / ninf, R(0));
+        shouldEqual((-1) / ninf, R(0));
+
+        should(inf == inf);
+        should(ninf == ninf);
+        should(inf != ninf);
+        should(ninf != inf);
+        should(inf > ninf);
+        should(ninf < inf);
+        should(!(inf < ninf));
+        should(!(ninf > inf));
+        
+        should(inf != 0);
+        should(ninf != 0);
+        should(inf > 0);
+        should(inf >= 0);
+        should(ninf < 0);
+        should(ninf <= 0);
+        should(!(0 < ninf));
+        should(!(0 > inf));
+        should(!(0 <= ninf));
+        should(!(0 >= inf));
+
+        should(inf != R(1));
+        should(ninf != R(1));
+        should(inf > R(1));
+        should(inf >= R(1));
+        should(ninf < R(1));
+        should(ninf <= R(1));
+        should(!(R(1) < ninf));
+        should(!(R(1) > inf));
+        should(!(R(1) <= ninf));
+        should(!(R(1) >= inf));
+
+        try { inf + ninf; failTest("No exception thrown"); } catch(vigra::bad_rational &) {}
+        try { ninf + inf; failTest("No exception thrown"); } catch(vigra::bad_rational &) {}
+        try { inf - inf; failTest("No exception thrown"); } catch(vigra::bad_rational &) {}
+        try { ninf - ninf; failTest("No exception thrown"); } catch(vigra::bad_rational &) {}
+        try { inf * R(0); failTest("No exception thrown"); } catch(vigra::bad_rational &) {}
+        try { ninf * R(0); failTest("No exception thrown"); } catch(vigra::bad_rational &) {}
+        try { R(0) * inf; failTest("No exception thrown"); } catch(vigra::bad_rational &) {}
+        try { R(0) * ninf; failTest("No exception thrown"); } catch(vigra::bad_rational &) {}
+        try { inf * 0; failTest("No exception thrown"); } catch(vigra::bad_rational &) {}
+        try { ninf * 0; failTest("No exception thrown"); } catch(vigra::bad_rational &) {}
+        try { 0 * inf; failTest("No exception thrown"); } catch(vigra::bad_rational &) {}
+        try { 0 * ninf; failTest("No exception thrown"); } catch(vigra::bad_rational &) {}
+        try { inf / inf; failTest("No exception thrown"); } catch(vigra::bad_rational &) {}
+        try { inf / ninf; failTest("No exception thrown"); } catch(vigra::bad_rational &) {}
+        try { ninf / inf; failTest("No exception thrown"); } catch(vigra::bad_rational &) {}
     }
 };
 
@@ -323,6 +479,7 @@ struct MathTestSuite
         add( testCase(&FunctionsTest::testGaussians));
         add( testCase(&RationalTest::testGcdLcm));
         add( testCase(&RationalTest::testOperators));
+        add( testCase(&RationalTest::testConversion));
         add( testCase(&RationalTest::testFunctions));
     }
 };
