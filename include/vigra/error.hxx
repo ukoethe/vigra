@@ -210,11 +210,11 @@ void throw_runtime_error(char const * message, char const * file, int line)
     throw std::runtime_error(buf); 
 }
 
-#define vigra_precondition(PREDICATE, MESSAGE) vigra::throw_precondition_error(PREDICATE, MESSAGE, __FILE__, __LINE__)
+#define vigra_precondition(PREDICATE, MESSAGE) vigra::throw_precondition_error((PREDICATE), MESSAGE, __FILE__, __LINE__)
 
-#define vigra_postcondition(PREDICATE, MESSAGE) vigra::throw_postcondition_error(PREDICATE, MESSAGE, __FILE__, __LINE__)
+#define vigra_postcondition(PREDICATE, MESSAGE) vigra::throw_postcondition_error((PREDICATE), MESSAGE, __FILE__, __LINE__)
 
-#define vigra_invariant(PREDICATE, MESSAGE) vigra::throw_invariant_error(PREDICATE, MESSAGE, __FILE__, __LINE__)
+#define vigra_invariant(PREDICATE, MESSAGE) vigra::throw_invariant_error((PREDICATE), MESSAGE, __FILE__, __LINE__)
             
 #define vigra_fail(MESSAGE) vigra::throw_runtime_error(MESSAGE, __FILE__, __LINE__)
 
@@ -241,11 +241,11 @@ void throw_postcondition_error(bool predicate, char const * message)
 	   throw vigra::PostconditionViolation(message); 
 }
 
-#define vigra_precondition(PREDICATE, MESSAGE) vigra::throw_precondition_error(PREDICATE, MESSAGE)
+#define vigra_precondition(PREDICATE, MESSAGE) vigra::throw_precondition_error((PREDICATE), MESSAGE)
 
-#define vigra_postcondition(PREDICATE, MESSAGE) vigra::throw_postcondition_error(PREDICATE, MESSAGE)
+#define vigra_postcondition(PREDICATE, MESSAGE) vigra::throw_postcondition_error((PREDICATE), MESSAGE)
 
-#define vigra_invariant(PREDICATE, MESSAGE) vigra::throw_invariant_error(PREDICATE, MESSAGE)
+#define vigra_invariant(PREDICATE, MESSAGE) vigra::throw_invariant_error((PREDICATE), MESSAGE)
             
 #define vigra_fail(MESSAGE) throw std::runtime_error(MESSAGE)
 
