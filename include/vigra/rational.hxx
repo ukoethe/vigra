@@ -576,7 +576,7 @@ Rational<IntType>& Rational<IntType>::operator*= (const Rational<IntType>& r)
     {
         if(num == zero)
             throw bad_rational(); 
-        num *= r.sign();
+        num = r.num * sign();
         den = zero;
         return *this;
     }
@@ -611,6 +611,7 @@ Rational<IntType>& Rational<IntType>::operator/= (const Rational<IntType>& r)
     {
         if(num == zero)
             throw bad_rational(); 
+        num = IntType(sign());  // normalized inf!
         den = zero;
         return *this;
     }
@@ -660,14 +661,18 @@ Rational<IntType>::operator*= (param_type i)
         return *this;
     IntType zero(0);
     if(i == zero)
+    {
         if(den == zero)
+        {
             throw bad_rational();
+        }
         else
         {
             num = zero;
             den = IntType(1);
             return *this;
         }
+    }
     
     IntType g = gcd(i, den);
     den /= g;
@@ -685,6 +690,9 @@ Rational<IntType>::operator/= (param_type i)
     IntType zero(0);
     if(i == zero)
     {
+        if(num == zero)
+            throw bad_rational();
+        num = IntType(sign()); // normalized inf!
         den = zero;
         return *this;
     }
@@ -727,17 +735,29 @@ bool Rational<IntType>::operator< (const Rational<IntType>& r) const
     // Avoid repeated construction
     IntType zero(0);
     
-    // If the two values have different signs, we don't need to do the
-    // expensive calculations below. We take advantage here of the fact
-    // that the denominator is always positive.
-    if (num < zero && r.num >= zero) // -ve < +ve
-        return true;
+    // Handle the easy cases. Take advantage of the fact
+    // that the denominator is never negative.
     if(den == zero)
+        if(r.den == zero)
+            // -inf < inf, !(-inf < -inf), !(inf < -inf), !(inf < inf)
+            return num < r.num; 
+        else
+            // -inf < -1, -inf < 0, -inf < 1
+            // !(inf < -1), !(inf < 0), !(inf < 1)
+            return num < zero; 
+    if(r.den == zero)
+        // -1 < inf, 0 < inf, 1 < inf
+        // !(-1 < -inf), !(0 < -inf), !(1 < -inf)
+        return r.num > zero;
+    // !(1 < -1), !(1 < 0), !(0 < -1), !(0 < 0)
+    if(num >= zero && r.num <= zero) 
         return false;
-    if (num >= zero && r.num <= zero) // +ve or zero is not < -ve or zero
-        return false;
-
-    // Avoid overflow
+    // -1 < 0, -1 < 1, 0 < 1 (note: !(0 < 0) was already handled!)
+    if(num <= zero && r.num >= zero)
+        return true;   
+    
+    // both numbers have the same sign (and are neither zero or +-infinity)
+    // => calculate result, avoid overflow
     IntType gcd1 = gcd<IntType>(num, r.num);
     IntType gcd2 = gcd<IntType>(r.den, den);
     return (num/gcd1) * (r.den/gcd2) < (den/gcd2) * (r.num/gcd1);
@@ -749,15 +769,18 @@ bool Rational<IntType>::operator< (param_type i) const
     // Avoid repeated construction
     IntType zero(0);
 
-    // If the two values have different signs, we don't need to do the
-    // expensive calculations below. We take advantage here of the fact
-    // that the denominator is always positive.
-    if (num < zero && i >= zero) // -ve < +ve
-        return true;
+    // Handle the easy cases. Take advantage of the fact
+    // that the denominator is never negative.
     if(den == zero)
+        // -inf < -1, -inf < 0, -inf < 1
+        // !(inf < -1), !(inf < 0), !(inf < 1)
+        return num < zero; 
+    // !(1 < -1), !(1 < 0), !(0 < -1), !(0 < 0)
+    if(num >= zero && i <= zero) 
         return false;
-    if (num >= zero && i <= zero) // +ve or zero is not < -ve or zero
-        return false;
+    // -1 < 0, -1 < 1, 0 < 1 (note: !(0 < 0) was already handled!)
+    if(num <= zero && i >= zero)
+        return true;   
 
     // Now, use the fact that n/d truncates towards zero as long as n and d
     // are both positive.
@@ -783,12 +806,8 @@ bool Rational<IntType>::operator> (param_type i) const
 template <typename IntType>
 inline bool Rational<IntType>::operator== (const Rational<IntType>& r) const
 {
-    if(den == r.den)
-        if(den == IntType(0))
-            return sign() == r.sign();
-        else
-            return num == r.num;
-    return false;
+    return den == r.den && num == r.num; // works since numbers are normalized, even
+                                         // if they represent +-infinity
 }
 
 template <typename IntType>
@@ -805,11 +824,16 @@ void Rational<IntType>::normalize()
     IntType zero(0);
 
     if (den == zero)
+    {
         if(num == zero)
             throw bad_rational();
+        if(num < zero)
+            num = IntType(-1);
         else
-            return;
-
+            num = IntType(1);
+        return;
+    }
+        
     // Handle the case of zero separately, to avoid division by zero
     if (num == zero) {
         den = IntType(1);
