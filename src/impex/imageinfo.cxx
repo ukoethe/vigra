@@ -342,6 +342,13 @@ std::auto_ptr<Encoder> encoder( const ImageExportInfo & info )
 
     std::string pixel_type = info.getPixelType();
     if ( pixel_type != "" ) {
+        if(!isPixelTypeSupported( enc->getFileType(), pixel_type ))
+        {
+            std::string msg("exportImage(): file type ");
+            msg += enc->getFileType() + " does not support requested pixel type " 
+                                      + pixel_type + ".";
+            vigra_precondition(false, msg.c_str()); 
+        }
         enc->setPixelType(pixel_type);
     }
 
