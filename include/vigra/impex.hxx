@@ -700,7 +700,7 @@ void internalScalarExportImage(
 
         for(; sx.x != slr.x; ++sx.x, ++dx.x)
         {
-            *dx = BImage::value_type(scale * (sget(sx) + offset));
+            *dx = NumericTraits<BImage::value_type>::fromRealPromote(scale * (sget(sx) + offset));
         }
     }
 
@@ -817,7 +817,7 @@ void internalRGBExportImage(
 
         for(; sx.x != slr.x; ++sx.x, ++dx.x)
         {
-            *dx = BRGBImage::value_type(scale * (sget(sx) + offset));
+            *dx = NumericTraits<BRGBImage::value_type>::fromRealPromote(scale * (sget(sx) + offset));
         }
     }
 
