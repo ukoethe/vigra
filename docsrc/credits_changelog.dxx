@@ -14,12 +14,33 @@
 
 </UL>
 
-<b> Changes from Version 1.1.3 to 1.2.0</b>
+<b> Changes from Version 1.1.3 to 1.1.4</b>
 
 <UL>
 
       <li> Added \ref FourierTransform "Fourier transform" support, 
            and \ref vigra::FFTWComplex "FFTWComplex" complex number type.
+
+      <li> Added \ref vigra::IteratorAdaptor remplate for quick and
+           easy generation of iterator adaptors.
+
+      <li> Used  \ref vigra::IteratorAdaptor to implement improved
+           row and column iterators for images.
+
+      <li> Added \ref rowIterator() and columnIterator() functions
+           returning optimized iterator adapters to all 2D iterators 
+           (e.g. vigra::ImageIterator). Changed algorithms to make use 
+           of these new members.
+           
+      <li> Added rounding and clipping to accessor functions when
+           floating point values are converted to intergral numbers.
+           
+      <li> Added STL-compatible typedefs to all iterators and vigra::BasicImage.
+           
+      <li> Major performance tuning. Many algorithms now actually perform
+           as fast as their inflexible C counterparts. Thanks to
+           <a href="mailto:viola@merl.com">Paul Viola</a> for doing benchmarks.
+           
 </UL>
 
 <b> Changes from Version 1.1.2 to 1.1.3</b>
