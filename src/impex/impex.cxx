@@ -74,6 +74,11 @@ std::string impexListFormats()
     return res;
 }
 
+bool isImage(char const * filename)
+{
+    return ImageImportInfo::findFileTypeFromMagicString(filename) != 0;
+}
+
 ImageImportInfo::ImageImportInfo(char const * filename)
 : filename_(filename),
   filetype_(0),
