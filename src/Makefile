@@ -2,8 +2,12 @@ SUBDIRS = \
         impex \
         examples
 
-all::
+all:: libs examples
+
+libs::
 	cd impex; $(MAKE)
+
+examples::
 	cd examples; $(MAKE)
 
 clean::

@@ -1,8 +1,13 @@
 SUBDIRS = \
         src 
 
-all::
-	cd src; $(MAKE)
+all:: libs examples
+
+libs::
+	cd src; $(MAKE) libs
+	
+examples::
+	cd src; $(MAKE) examples
 
 doc::
 	cd docsrc; $(MAKE) VIGRA_VERSION=$(VIGRA_VERSION)
