@@ -288,8 +288,9 @@ struct RationalTest
         shouldEqual(pow(R(-2),-2), R(1,4));
         shouldEqual(pow(R(-1,2),3), R(-1,8));
         shouldEqual(pow(R(-2),-3), R(-1,8));
+        shouldEqual(pow(R(3),0), R(1));
         shouldEqual(pow(R(0),3), R(0));
-        shouldEqual(pow(R(0),0), R(0));
+        shouldEqual(pow(R(0),0), R(1));
         should(pow(R(0),-3).is_pinf());
         
         should(pow(R(1,0, false), 1).is_pinf());
