@@ -50,7 +50,8 @@
     > make examples
     \endcode
     
-    Besides <tt>/your/bin/install/path/lib/libvigraimpex.a</tt>, this also installs
+    Besides <tt>/your/bin/install/path/lib/libvigraimpex.a</tt> and the 
+    html-documentation, this also installs
     a programm <tt>/your/bin/install/path/bin/vigra-config</tt>. This programm supports
     the compilation of software which depends on VIGRA by returning the neccessary 
     compiler and linker settings. For example,
