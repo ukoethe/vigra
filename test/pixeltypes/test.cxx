@@ -200,7 +200,8 @@ struct TinyVectorTest
     void testAccessor()
     {
         vigra::VectorAccessor<FV> v;
-        FV  pf[] = {fv3, fv1};
+        FV  pfa[] = {fv3, fv1};
+        FV * pf = pfa;
         
         should(v.size(pf) == 3);
         should(v.size(pf, 1) == 3);
@@ -239,7 +240,8 @@ struct RGBValueTest
         vigra::BlueAccessor<FV> blue;
         vigra::RGBToGrayAccessor<FV> gray;
         
-        FV pf[] = { FV(0.0), FV(1.0)};
+        FV pfa[] = { FV(0.0), FV(1.0)};
+        FV * pf = pfa;
         
         should(rgb(pf) == vigra::NumericTraits<FV>::zero());
         should(red(pf) == 0.0);
