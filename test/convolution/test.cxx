@@ -4,8 +4,26 @@
 #include "vigra/stdimage.hxx"
 #include "vigra/convolution.hxx"
 #include "vigra/impex.hxx"
+#include "vigra/combineimages.hxx"
 
 using namespace vigra;
+
+vigra::DImage getSymmetricImage(){
+    vigra::DImage src(40, 1);
+
+    vigra::DImage::Accessor acc_src = src.accessor();
+    vigra::DImage::iterator iter_src = src.begin();
+
+    int i = 0;
+    for ( ; i < 20 ; i++, iter_src++){
+      acc_src.set(i + 0.25, iter_src);
+    }
+    i--;
+    for ( ; i >= 0 ; i--, iter_src++){
+      acc_src.set(i + 0.25, iter_src);
+    }
+    return src;
+}
 
 struct ConvolutionTest
 {
@@ -408,6 +426,563 @@ struct ConvolutionTest
         }
     }
     
+    void recursiveFilterTestWithAvoid()
+    {
+        Image src_const(25, 25);
+        Image dest(src_const);
+        src_const.init(42.1);
+        dest.init(1.12);
+
+        recursiveFilterX(srcImageRange(src_const), destImage(dest), VIGRA_CSTD::exp(-1.0), BORDER_TREATMENT_AVOID);
+
+        Image::Iterator is = src_const.upperLeft();
+        Image::Iterator tmp_src = src_const.upperLeft();
+        Image::Iterator isend = src_const.lowerRight();
+        Image::Iterator id = dest.upperLeft();
+        Image::Iterator tmp_dest = dest.upperLeft();
+        Image::Accessor acc = src_const.accessor();
+
+        for(int y = 0; is.y != isend.y; is.y++, id.y++, y++)
+        {
+            for (int x = 0 ; is.x != isend.x ; is.x++, id.x++, x++)
+            {
+                if (x < 11 || x > 13)
+                {
+                    should (acc(id) == 1.12);
+                }
+                else
+                {
+                    should (acc(id) == acc(is));
+                }
+            }
+            is.x = tmp_src.x;
+            id.x = tmp_dest.x;
+        }
+
+        recursiveFilterY(srcImageRange(src_const), destImage(dest), 
+                         VIGRA_CSTD::exp(-1.0), BORDER_TREATMENT_AVOID);
+
+        is = src_const.upperLeft();
+        tmp_src = src_const.upperLeft();
+        isend = src_const.lowerRight();
+        id = dest.upperLeft();
+        tmp_dest = dest.upperLeft();
+        acc = src_const.accessor();
+
+        for(int y = 0; is.y != isend.y; is.y++, id.y++, y++)
+        {
+            for (int x = 0 ; is.x != isend.x ; is.x++, id.x++, x++)
+            {
+                if ((x > 10 && x < 14) || (y > 10 && y < 14))
+                {
+                    should(acc(is) == acc(id));
+                }
+                else
+                {
+                    should(acc(id) == 1.12);
+                }
+            }
+            is.x = tmp_src.x;
+            id.x = tmp_dest.x;
+        }
+
+        // Hier wird an einem symmetrischen Bild /\ getestet 
+        // ob die korrekten Daten eingehalten wurden.
+
+        Image src(getSymmetricImage());
+        dest = src;
+        recursiveFilterX(srcImageRange(src), destImage(dest), 
+               VIGRA_CSTD::exp(-1.0), BORDER_TREATMENT_AVOID);
+        Image::value_type correct_data[40] = 
+            {0.25, 1.25, 2.25, 3.25, 4.25, 5.25, 6.25, 7.25, 8.25, 9.25, 
+             10.25, 11.249812, 12.249472, 13.248558, 14.246079, 15.239341, 
+             16.221025, 17.171238, 18.035903, 18.668023, 
+             18.668023, 18.035903, 17.171238, 16.221025, 15.239341, 
+             14.246079, 13.248558, 12.249472, 11.249812, 10.25, 9.25, 
+             8.25, 7.25, 6.25, 5.25, 4.25, 3.25, 2.25, 1.25, 0.25};
+
+        Image::iterator dest_iter = dest.begin();
+
+        for (int i = 0 ; i < 40; i++)
+        {
+            shouldEqualTolerance (correct_data[i], dest_iter[i], 1e-7);
+        }
+
+    }// end of recursiveFilterTestWithAvoid
+
+    void recursiveFilterTestWithReflect()
+    {
+        Image src_const(25, 25);
+        Image dest(src_const);
+        src_const.init(42.1);
+        dest.init(1.12);
+
+        recursiveFilterX(srcImageRange(src_const), destImage(dest), 
+                     VIGRA_CSTD::exp(-1.0), BORDER_TREATMENT_REFLECT);
+
+        Image::Iterator is = src_const.upperLeft();
+        Image::Iterator tmp_src = src_const.upperLeft();
+        Image::Iterator isend = src_const.lowerRight();
+        Image::Iterator id = dest.upperLeft();
+        Image::Iterator tmp_dest = dest.upperLeft();
+        Image::Accessor acc = src_const.accessor();
+
+        for(int y = 0; is.y != isend.y; is.y++, id.y++, y++)
+        {
+            for (int x = 0 ; is.x != isend.x ; is.x++, id.x++, x++)
+            {
+                should (acc(id) == acc(is));
+            }
+            is.x = tmp_src.x;
+            id.x = tmp_dest.x;
+        }
+
+        recursiveFilterY(srcImageRange(dest), destImage(dest), 
+                   VIGRA_CSTD::exp(-1.0), BORDER_TREATMENT_REFLECT);
+
+        is = src_const.upperLeft();
+        tmp_src = src_const.upperLeft();
+        isend = src_const.lowerRight();
+        id = dest.upperLeft();
+        tmp_dest = dest.upperLeft();
+        acc = src_const.accessor();
+
+        for(int y = 0; is.y != isend.y; is.y++, id.y++, y++)
+        {
+            for (int x = 0 ; is.x != isend.x ; is.x++, id.x++, x++)
+            {
+                should(acc(is) == acc(id));
+            }
+            is.x = tmp_src.x;
+            id.x = tmp_dest.x;
+        }
+
+        // Hier wird an einem symmetrischen Bild /\ (Groesse 40x1)  getestet 
+        // ob die korrekten Daten eingehalten wurden.
+
+        Image src(getSymmetricImage());
+        dest = src;
+        recursiveFilterX(srcImageRange(src), destImage(dest), 
+                VIGRA_CSTD::exp(-1.0), BORDER_TREATMENT_REFLECT);
+        Image::value_type correct_data[40] = 
+           {1.100911, 1.5630327, 2.3651583, 3.2923643, 4.2655848, 
+           5.2557329, 6.2521079, 7.2507724, 8.2502757, 9.2500786, 
+           10.249967, 11.249819, 12.249475, 13.248559, 14.246079, 
+           15.239341, 16.221025, 17.171238, 18.035903, 18.668023, 
+           18.668023, 18.035903, 17.171238, 16.221025, 15.239341, 
+           14.246079, 13.248559, 12.249475, 11.249819, 10.249967, 
+           9.2500786, 8.2502757, 7.2507724, 6.2521079, 5.2557329, 
+           4.2655848, 3.2923643, 2.3651583, 1.5630327, 1.100911};
+
+        Image::iterator dest_iter = dest.begin();
+        for (int i = 0 ; i < 40; i++)
+        {
+            shouldEqualTolerance (correct_data[i], dest_iter[i], 1e-7);
+        }
+    }// end of recursiveFilterTestWithReflect
+
+
+    void recursiveFilterTestWithClipOnConstImage()
+    {
+        Image src_const(25, 25);
+        Image dest(src_const);
+        src_const.init(42.1);
+        dest.init(1.12);
+        recursiveFilterX(srcImageRange(src_const), destImage(dest), 
+                           VIGRA_CSTD::exp(-1.0), BORDER_TREATMENT_CLIP);
+
+        Image::Iterator is = src_const.upperLeft();
+        Image::Iterator tmp_src = src_const.upperLeft();
+        Image::Iterator isend = src_const.lowerRight();
+        Image::Iterator id = dest.upperLeft();
+        Image::Iterator tmp_dest = dest.upperLeft();
+        Image::Accessor acc = src_const.accessor();
+
+        for(int y = 0; is.y != isend.y; is.y++, id.y++, y++)
+        {
+            for (int x = 0 ; is.x != isend.x ; is.x++, id.x++, x++)
+            {
+                shouldEqualTolerance (acc(id), acc(is), 0.000001);
+            }
+            is.x = tmp_src.x;
+            id.x = tmp_dest.x;
+        }
+
+        recursiveFilterY(srcImageRange(src_const), destImage(dest), 
+                VIGRA_CSTD::exp(-1.0), BORDER_TREATMENT_CLIP);
+
+        is = src_const.upperLeft();
+        tmp_src = src_const.upperLeft();
+        isend = src_const.lowerRight();
+        id = dest.upperLeft();
+        tmp_dest = dest.upperLeft();
+        acc = src_const.accessor();
+
+        for(int y = 0; is.y != isend.y; is.y++, id.y++, y++)
+        {
+            for (int x = 0 ; is.x != isend.x ; is.x++, id.x++, x++)
+            {
+                shouldEqualTolerance (acc(id), acc(is), 0.000001);
+            }
+            is.x = tmp_src.x;
+            id.x = tmp_dest.x;
+        }
+    }// end of recursiveFilterTestWithClipOnConstImage()
+
+    void recursiveFilterTestWithClipOnNonConstImage(){
+        Image src(40, 1);
+        Image dest(src);
+        Image::value_type correct_data[40] = 
+            {0.831977, 1.53351, 2.3853, 3.31218, 4.27763, 5.26195, 
+            6.25506, 7.25211, 8.25086, 9.25035, 10.2501, 11.2501, 
+            12.25, 13.25, 14.25, 15.25, 16.25, 17.25, 18.25, 19.25, 
+            20.25, 21.25, 22.25, 23.25, 24.25, 25.25, 26.25, 27.25, 
+            28.2499, 29.2499, 30.2496, 31.2491, 32.2479, 33.2449, 
+            34.2381, 35.2224, 36.1878, 37.1147, 37.9665, 38.668};
+
+        Image::Accessor acc_src = src.accessor();
+        Image::iterator iter_src = src.begin();
+
+        for (int i = 0 ; i < 40 ; i++, iter_src++)
+        {
+            acc_src.set(i + 0.25, iter_src);
+        }
+
+        recursiveFilterX(srcImageRange(src), destImage(dest), 
+                VIGRA_CSTD::exp(-1.0), BORDER_TREATMENT_CLIP);
+
+        Image::iterator idest = dest.begin();
+        Image::iterator idest_end = dest.end();
+        Image::Accessor dest_acc = dest.accessor();
+
+        for(int i = 0; idest != idest_end; idest++, i++)
+        {
+            shouldEqualTolerance (dest_acc(idest), correct_data[i], 0.00001);
+        }
+
+    }// end of recursiveFilterTestWithClipOnNonConstImage
+
+    void recursiveFilterTestWithWrap()
+    {
+        Image src_const(25, 25);
+        Image dest(src_const);
+        src_const.init(42.1);
+        dest.init(1.12);
+
+        recursiveFilterX(srcImageRange(src_const), destImage(dest), 
+                VIGRA_CSTD::exp(-1.0), BORDER_TREATMENT_WRAP);
+
+        Image::Iterator is = src_const.upperLeft();
+        Image::Iterator tmp_src = src_const.upperLeft();
+        Image::Iterator isend = src_const.lowerRight();
+        Image::Iterator id = dest.upperLeft();
+        Image::Iterator tmp_dest = dest.upperLeft();
+        Image::Accessor acc = src_const.accessor();
+
+        for(int y = 0; is.y != isend.y; is.y++, id.y++, y++)
+        {
+            for (int x = 0 ; is.x != isend.x ; is.x++, id.x++, x++)
+            {
+                should (acc(id) == acc(is));
+            }
+            is.x = tmp_src.x;
+            id.x = tmp_dest.x;
+        }
+
+        recursiveFilterY(srcImageRange(src_const), destImage(dest), 
+                    VIGRA_CSTD::exp(-1.0), BORDER_TREATMENT_WRAP);
+
+        is = src_const.upperLeft();
+        tmp_src = src_const.upperLeft();
+        isend = src_const.lowerRight();
+        id = dest.upperLeft();
+        tmp_dest = dest.upperLeft();
+        acc = src_const.accessor();
+
+        for(int y = 0; is.y != isend.y; is.y++, id.y++, y++)
+        {
+            for (int x = 0 ; is.x != isend.x ; is.x++, id.x++, x++)
+            {
+                should(acc(is) == acc(id));
+            }
+            is.x = tmp_src.x;
+            id.x = tmp_dest.x;
+        }
+
+
+        // Hier wird an einem symmetrischen Bild /\ (Groesse 40x1)  getestet 
+        // ob die korrekten Daten eingehalten wurden.
+
+        Image src(getSymmetricImage());
+        dest = src;
+        recursiveFilterX(srcImageRange(src), destImage(dest), 
+                    VIGRA_CSTD::exp(-1.0), BORDER_TREATMENT_WRAP);
+        Image::value_type correct_data[40] = 
+            {1.100911, 1.5630327, 2.3651583, 3.2923643, 4.2655848, 
+            5.2557329, 6.2521079, 7.2507724, 8.2502757, 9.2500786, 
+            10.249967, 11.249819, 12.249475, 13.248559, 14.246079, 
+            15.239341, 16.221025, 17.171238, 18.035903, 18.668023, 
+            18.668023, 18.035903, 17.171238, 16.221025, 15.239341, 
+            14.246079, 13.248559, 12.249475, 11.249819, 10.249967, 
+            9.2500786, 8.2502757, 7.2507724, 6.2521079, 5.2557329, 
+            4.2655848, 3.2923643, 2.3651583, 1.5630327, 1.100911};
+
+        Image::iterator dest_iter = dest.begin();
+
+        for (int i = 0 ; i < 40; i++)
+        {
+            shouldEqualTolerance (correct_data[i], dest_iter[i], 1e-7);
+        }
+
+    }// end of recursiveFilterTestWithWrap
+
+    void recursiveFilterTestWithRepeat()
+    {
+        Image src_const(25, 25);
+        Image dest(src_const);
+        src_const.init(42.1);
+        dest.init(1.12);
+
+        recursiveFilterX(srcImageRange(src_const), destImage(dest), 
+                    VIGRA_CSTD::exp(-1.0), BORDER_TREATMENT_REPEAT);
+
+        Image::Iterator is = src_const.upperLeft();
+        Image::Iterator tmp_src = src_const.upperLeft();
+        Image::Iterator isend = src_const.lowerRight();
+        Image::Iterator id = dest.upperLeft();
+        Image::Iterator tmp_dest = dest.upperLeft();
+        Image::Accessor acc = src_const.accessor();
+
+        for(int y = 0; is.y != isend.y; is.y++, id.y++, y++)
+        {
+            for (int x = 0 ; is.x != isend.x ; is.x++, id.x++, x++)
+            {
+                should (acc(id) == acc(is));
+            }
+            is.x = tmp_src.x;
+            id.x = tmp_dest.x;
+        }
+        recursiveFilterY(srcImageRange(src_const), destImage(dest), 
+                VIGRA_CSTD::exp(-1.0), BORDER_TREATMENT_REPEAT);
+
+        is = src_const.upperLeft();
+        tmp_src = src_const.upperLeft();
+        isend = src_const.lowerRight();
+        id = dest.upperLeft();
+        tmp_dest = dest.upperLeft();
+        acc = src_const.accessor();
+
+        for(int y = 0; is.y != isend.y; is.y++, id.y++, y++)
+        {
+            for (int x = 0 ; is.x != isend.x ; is.x++, id.x++, x++)
+            {
+                should(acc(is) == acc(id));
+            }
+            is.x = tmp_src.x;
+            id.x = tmp_dest.x;
+        }
+
+        // Hier wird an einem symmetrischen Bild /\ (Groesse 40x1)  getestet 
+        // ob die korrekten Daten eingehalten wurden.
+
+        Image src(getSymmetricImage());
+        dest = src;
+        recursiveFilterX(srcImageRange(src), destImage(dest), 
+                VIGRA_CSTD::exp(-1.0), BORDER_TREATMENT_REPEAT);
+        Image::value_type correct_data[40] = 
+            {0.67545906, 1.4065176, 2.3075796, 3.2711823, 4.2577924, 
+            5.2528662, 6.2510533, 7.2503844, 8.250133, 9.2500261, 
+            10.249947, 11.249812, 12.249472, 13.248558, 14.246079, 
+            15.239341, 16.221025, 17.171238, 18.035903, 18.668023, 
+            18.668023, 18.035903, 17.171238, 16.221025, 15.239341, 
+            14.246079, 13.248558, 12.249472, 11.249812, 10.249947, 
+            9.2500261, 8.250133, 7.2503844, 6.2510533, 5.2528662, 
+            4.2577924, 3.2711823, 2.3075796, 1.4065176, 0.67545906};
+
+        Image::iterator dest_iter = dest.begin();
+
+        for (int i = 0 ; i < 40; i++)
+        {
+            shouldEqualTolerance (correct_data[i], dest_iter[i], 1e-7);
+        }
+
+    }// end of recursiveFilterTestWithRepeat
+
+    void recursiveFilterTestFromWrapWithReflect()
+    {
+
+        Image src_wrap(79, 1);
+        Image src_reflect(40, 1);
+        Image dest_wrap(src_wrap);
+        Image dest_reflect(src_reflect);
+
+        Image::Accessor acc_src_wrap = src_wrap.accessor();
+        Image::iterator iter_src_wrap = src_wrap.begin();
+        Image::Accessor acc_src_reflect = src_reflect.accessor();
+        Image::iterator iter_src_reflect = src_reflect.begin();
+
+        for (int i = 0 ; i < 40 ; i++, iter_src_wrap++, iter_src_reflect++)
+        {
+            acc_src_wrap.set(i + 0.25, iter_src_wrap);
+            acc_src_reflect.set(i + 0.25, iter_src_reflect);
+        }
+        for (int j = 38 ; j >= 0 ; j--, iter_src_wrap++)
+        {
+            acc_src_wrap.set( j + 0.25, iter_src_wrap);
+        }
+
+        recursiveFilterX(srcImageRange(src_wrap), destImage(dest_wrap), 
+                VIGRA_CSTD::exp(-1.0), BORDER_TREATMENT_WRAP);
+
+        recursiveFilterX(srcImageRange(src_reflect), destImage(dest_reflect), 
+                VIGRA_CSTD::exp(-1.0), BORDER_TREATMENT_REFLECT);
+
+        Image::iterator iter_dest_wrap = dest_wrap.begin();
+        Image::Accessor acc_dest_wrap = dest_wrap.accessor();
+        Image::iterator iter_dest_reflect = dest_reflect.begin();
+        Image::iterator end_dest_reflect = dest_reflect.end();
+        Image::Accessor acc_dest_reflect = dest_reflect.accessor();
+
+        while(iter_dest_reflect != end_dest_reflect)
+        {
+            shouldEqualTolerance(acc_dest_wrap(iter_dest_wrap), 
+                           acc_dest_reflect(iter_dest_reflect), 1e-6);
+            iter_dest_wrap++;
+            iter_dest_reflect++;
+        }
+    }
+
+    void recursiveFilterTestFromRepeatWithAvoid()
+    {
+        Image src_avoid(40, 1);
+        src_avoid.init(11.47);
+        Image src_repeat(18, 1);
+
+        Image dest_repeat(src_repeat);
+        Image dest_avoid(src_avoid);
+
+        Image::Accessor acc_src_avoid = src_avoid.accessor();
+        Image::iterator iter_src_avoid = src_avoid.begin();
+        Image::Accessor acc_src_repeat = src_repeat.accessor();
+        Image::iterator iter_src_repeat = src_repeat.begin();
+
+        int i = 0;
+        for ( ; i < 20 ; i++, iter_src_avoid++)
+        {
+            if(i > 10)
+            {
+                acc_src_repeat.set(i + 0.47, iter_src_repeat);
+                acc_src_avoid.set(i + 0.47, iter_src_avoid);
+                iter_src_repeat++;
+            }
+        }
+        i--;
+
+        for ( ; i >= 0 ; i--, iter_src_avoid++)
+        {
+            if(i > 10)
+            {
+                acc_src_repeat.set(i + 0.47, iter_src_repeat);
+                acc_src_avoid.set(i + 0.47, iter_src_avoid);
+                iter_src_repeat++;
+            }
+        }
+
+        recursiveFilterX(srcImageRange(src_repeat), destImage(dest_repeat), VIGRA_CSTD::exp(-1.0), BORDER_TREATMENT_REPEAT);
+        recursiveFilterX(srcImageRange(src_avoid), destImage(dest_avoid), VIGRA_CSTD::exp(-1.0), BORDER_TREATMENT_AVOID);
+
+        Image::Accessor acc_dest_repeat = dest_repeat.accessor();
+        Image::iterator dest_iter_repeat = dest_repeat.begin();
+
+        Image::Accessor acc_dest_avoid = dest_avoid.accessor();
+        Image::iterator dest_iter_avoid = dest_avoid.begin();
+
+        for (int i = 0 ; i < 39 ; i++, dest_iter_avoid++)
+        {
+            if (i < 11 || i > 28)
+            {
+                should(acc_dest_avoid(dest_iter_avoid) == 11.47);
+            }
+            else
+            {
+                should(acc_dest_avoid(dest_iter_avoid) == acc_dest_repeat(dest_iter_repeat));
+                dest_iter_repeat++;
+            }
+        }
+    }
+
+    /**
+   * Es wird die Positionierung der einzelnen 
+   * Punkte relativ zueinander getestet.
+   */
+    void recursiveFilterTestOfAllTreatmentsRelatively()
+    {
+        Image src(40, 1);
+
+        Image::Accessor acc_src = src.accessor();
+        Image::iterator iter_src = src.begin();
+
+        int i = 0;
+        for ( ; i < 20 ; i++, iter_src++)
+        {
+            acc_src.set(i + 0.25, iter_src);
+        }
+        i--;
+        for ( ; i >= 0 ; i--, iter_src++)
+        {
+            acc_src.set(i + 0.25, iter_src);
+        }
+
+        Image dest_avoid(src);
+        Image dest_repeat(src);
+        Image dest_reflect(src);
+        Image dest_wrap(src);
+        Image dest_clip(src);
+
+        recursiveFilterX(srcImageRange(src), destImage(dest_avoid), 
+                VIGRA_CSTD::exp(-1.0), BORDER_TREATMENT_AVOID);
+        recursiveFilterX(srcImageRange(src), destImage(dest_repeat), 
+                VIGRA_CSTD::exp(-1.0), BORDER_TREATMENT_REPEAT);
+        recursiveFilterX(srcImageRange(src), destImage(dest_reflect), 
+                VIGRA_CSTD::exp(-1.0), BORDER_TREATMENT_REFLECT);
+        recursiveFilterX(srcImageRange(src), destImage(dest_wrap), 
+                VIGRA_CSTD::exp(-1.0), BORDER_TREATMENT_WRAP);
+        recursiveFilterX(srcImageRange(src), destImage(dest_clip), 
+                VIGRA_CSTD::exp(-1.0), BORDER_TREATMENT_CLIP);
+
+        iter_src = src.begin();
+        Image::iterator iter_dest_avoid = dest_avoid.begin();
+        Image::iterator iter_dest_repeat = dest_repeat.begin();
+        Image::iterator iter_dest_reflect = dest_reflect.begin();
+        Image::iterator iter_dest_wrap = dest_wrap.begin();
+        Image::iterator iter_dest_clip = dest_clip.begin();
+
+        for (int x = 0 ;  x < 40 ; x++)
+        {
+            if(x > 9 && x < 30 )
+            {
+                shouldEqualTolerance(iter_dest_avoid[x], iter_dest_repeat[x], 1e-5);
+                shouldEqualTolerance(iter_dest_avoid[x], iter_dest_reflect[x], 1e-5);
+                shouldEqualTolerance(iter_dest_avoid[x], iter_dest_wrap[x], 1e-5);
+                shouldEqualTolerance(iter_dest_avoid[x], iter_dest_clip[x], 1e-5);
+            }
+            else
+            {
+                should(iter_dest_avoid[x] == iter_src[x]);
+                should(iter_dest_repeat[x] < iter_dest_reflect[x]);
+                should(iter_dest_repeat[x] < iter_dest_clip[x]);
+                if (x < 2 || x > 37)
+                {
+                    should(iter_dest_clip[x] < iter_dest_reflect[x]);
+                }
+                else
+                {
+                    should(iter_dest_clip[x] > iter_dest_reflect[x]);
+                }
+            }
+        }
+    }
+    
     void recursiveSmoothTest()
     {
         Image tmp1(constimg);
@@ -529,6 +1104,15 @@ struct ConvolutionTestSuite
         add( testCase( &ConvolutionTest::structureTensorTest));
         add( testCase( &ConvolutionTest::stdConvolutionTest));
         add( testCase( &ConvolutionTest::stdVersusSeparableConvolutionTest));
+        add( testCase( &ConvolutionTest::recursiveFilterTestWithAvoid));
+        add( testCase( &ConvolutionTest::recursiveFilterTestWithClipOnConstImage));
+        add( testCase( &ConvolutionTest::recursiveFilterTestWithClipOnNonConstImage));
+        add( testCase( &ConvolutionTest::recursiveFilterTestWithReflect));
+        add( testCase( &ConvolutionTest::recursiveFilterTestWithWrap));
+        add( testCase( &ConvolutionTest::recursiveFilterTestWithRepeat));
+        add( testCase( &ConvolutionTest::recursiveFilterTestFromWrapWithReflect));
+        add( testCase( &ConvolutionTest::recursiveFilterTestFromRepeatWithAvoid));
+        add( testCase( &ConvolutionTest::recursiveFilterTestOfAllTreatmentsRelatively));
         add( testCase( &ConvolutionTest::recursiveSmoothTest));
         add( testCase( &ConvolutionTest::recursiveGradientTest));
         add( testCase( &ConvolutionTest::recursiveSecondDerivativeTest));
