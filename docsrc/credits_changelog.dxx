@@ -14,6 +14,14 @@
 
 </UL>
 
+<b> Changes from Version 1.1.3 to 1.2.0</b>
+
+<UL>
+
+      <li> Added \ref FourierTransform "Fourier transform" support, 
+           and \ref vigra::FFTWComplex "FFTWComplex" complex number type.
+</UL>
+
 <b> Changes from Version 1.1.2 to 1.1.3</b>
 
 <UL>
@@ -40,9 +48,9 @@
      
       <li> Added \ref ColorConversions.
      
-      <li> Added \ref VectorComponentAccessor.
+      <li> Added \ref vigra::VectorComponentAccessor.
      
-      <li> Extended \ref FindMinmax to work with RGB images.
+      <li> Extended \ref vigra::FindMinMax to work with RGB images.
       
       <li> Minor improvements and bug fixes.
 </UL>

@@ -144,6 +144,29 @@
             \ref TinyVectorOperators
             <DD>
         </DL>
+        <p>
+    <DT>
+    <b>Complex Numbers</b>
+    <p>
+    <DD>
+        <DL>
+        <DT>
+            <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif"> 
+            \ref vigra::FFTWComplex
+            <DD>
+        <DT>
+            <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif"> 
+            \ref FFTWComplexTraits
+            <DD>
+        <DT>
+            <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif"> 
+            \ref FFTWComplexOperators
+            <DD>
+        <DT>
+            <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif"> 
+            \ref FFTWComplexAccessors
+            <DD>
+        </DL>
     </DL>
 */
 
@@ -241,6 +264,11 @@
         <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif"> 
         \ref Convolution
         <DD> <em>1D and 2D filters, including separable and recursive convolution, and non-linear diffusion</em>
+    <DT>
+        <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif"> 
+        \ref FourierTransform
+        <DD> <em>forward and backward FFT, FFT plan generation, and related
+                 functionality</em>
     <DT>
         <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif"> 
         \ref Morphology
