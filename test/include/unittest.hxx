@@ -154,21 +154,30 @@ inline bool unexpected_error(int i)
 
 #ifdef _MSC_VER
 
+inline long handle_signal_here(long code)
+{
+    switch (code)
+    {
+        case EXCEPTION_ACCESS_VIOLATION:
+        case EXCEPTION_INT_DIVIDE_BY_ZERO:
+            return EXCEPTION_EXECUTE_HANDLER;
+        default:
+            return EXCEPTION_CONTINUE_SEARCH;
+    }
+}
+
 template< class Generator >  // Generator is function object returning int
 int catch_signals( Generator function_object, detail::errstream & err, int timeout )
 {
     int result = 0;
+    int code;
     __try
     {
         result = function_object();
-#if 0
-        result = catch_exceptions(function_object, err, timeout);
-#endif
     }
-    __except (true)
+    __except (handle_signal_here(code = GetExceptionCode()))
     {
-        unsigned long exc = GetExceptionCode();
-        switch (exc)
+        switch (code)
         {
             case EXCEPTION_ACCESS_VIOLATION:
                 report_exception(err, "operating system exception:", "memory access violation");
@@ -302,9 +311,6 @@ int catch_exceptions( Generator function_object, detail::errstream & err, int ti
 
     try
     {
-#if 0
-      result = function_object();
-#endif
         result = detail::catch_signals(function_object, err, timeout);
     }
 
