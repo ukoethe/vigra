@@ -103,12 +103,12 @@ class FFTWComplex
         /** Access components as if number were a vector.
         */
     value_type & operator[](int i)
-        { return (i == 0) ? re : im; }
+        { return (&re)[i]; }
 
         /** Read components as if number were a vector.
         */
     value_type const & operator[](int i) const
-        { return (i == 0) ? re : im; }
+        { return (&re)[i]; }
 
         /** Length of complex number (always 2).
         */
@@ -301,52 +301,45 @@ inline FFTWComplex &operator /=(FFTWComplex &a, const double &b) {
 }
 
     /// addition
-inline FFTWComplex operator +(const FFTWComplex &a, const FFTWComplex &b) {
-    FFTWComplex result(a);
-    result += b;
-    return result;
+inline FFTWComplex operator +(FFTWComplex a, const FFTWComplex &b) {
+    a += b;
+    return a;
 }
 
     /// subtraction
-inline FFTWComplex operator -(const FFTWComplex &a, const FFTWComplex &b) {
-    FFTWComplex result(a);
-    result -= b;
-    return result;
+inline FFTWComplex operator -(FFTWComplex a, const FFTWComplex &b) {
+    a -= b;
+    return a;
 }
 
     /// multiplication
-inline FFTWComplex operator *(const FFTWComplex &a, const FFTWComplex &b) {
-    FFTWComplex result(a);
-    result *= b;
-    return result;
+inline FFTWComplex operator *(FFTWComplex a, const FFTWComplex &b) {
+    a *= b;
+    return a;
 }
 
     /// right multiplication with scalar double
-inline FFTWComplex operator *(const FFTWComplex &a, const double &b) {
-    FFTWComplex result(a);
-    result *= b;
-    return result;
+inline FFTWComplex operator *(FFTWComplex a, const double &b) {
+    a *= b;
+    return a;
 }
 
     /// left multiplication with scalar double
-inline FFTWComplex operator *(const double &a, const FFTWComplex &b) {
-    FFTWComplex result(b);
-    result *= a;
-    return result;
+inline FFTWComplex operator *(const double &a, FFTWComplex b) {
+    b *= a;
+    return b;
 }
 
     /// division
-inline FFTWComplex operator /(const FFTWComplex &a, const FFTWComplex &b) {
-    FFTWComplex result(a);
-    result /= b;
-    return result;
+inline FFTWComplex operator /(FFTWComplex a, const FFTWComplex &b) {
+    a /= b;
+    return a;
 }
 
     /// right division with scalar double
-inline FFTWComplex operator /(const FFTWComplex &a, const double &b) {
-    FFTWComplex result(a);
-    result /= b;
-    return result;
+inline FFTWComplex operator /(FFTWComplex a, const double &b) {
+    a /= b;
+    return a;
 }
 
 #ifdef CMATH_NOT_IN_STD
@@ -463,8 +456,8 @@ class FFTWRealAccessor
     }
 
         /// Read real part at offset from iterator position.
-    template <class ITERATOR, class DISTANCE>
-    value_type operator()(ITERATOR & i, DISTANCE const & d) const {
+    template <class ITERATOR, class DIFFERENCE>
+    value_type operator()(ITERATOR & i, DIFFERENCE d) const {
         return c_re(i[d]);
     }
 
@@ -475,8 +468,8 @@ class FFTWRealAccessor
     }
 
         /// Write real part at offset from iterator position.
-    template <class ITERATOR, class DISTANCE>
-    void set(value_type const & v, ITERATOR & i, DISTANCE const & d) const {
+    template <class ITERATOR, class DIFFERENCE>
+    void set(value_type const & v, ITERATOR & i, DIFFERENCE d) const {
         c_re(i[d])= v;
     }
 };
@@ -499,8 +492,8 @@ class FFTWImaginaryAccessor
     }
 
         /// Read imaginary part at offset from iterator position.
-    template <class ITERATOR, class DISTANCE>
-    value_type operator()(ITERATOR & i, DISTANCE const & d) const {
+    template <class ITERATOR, class DIFFERENCE>
+    value_type operator()(ITERATOR & i, DIFFERENCE d) const {
         return c_im(i[d]);
     }
 
@@ -511,8 +504,8 @@ class FFTWImaginaryAccessor
     }
 
         /// Write imaginary part at offset from iterator position.
-    template <class ITERATOR, class DISTANCE>
-    void set(value_type const & v, ITERATOR & i, DISTANCE const & d) const {
+    template <class ITERATOR, class DIFFERENCE>
+    void set(value_type const & v, ITERATOR & i, DIFFERENCE d) const {
         c_im(i[d])= v;
     }
 };
@@ -541,8 +534,8 @@ class FFTWWriteRealAccessor: public FFTWRealAccessor
         /** Write real number at offset from iterator position. Set imaginary part
             to 0.
         */
-    template <class ITERATOR, class DISTANCE>
-    void set(value_type const & v, ITERATOR & i, DISTANCE const & d) const {
+    template <class ITERATOR, class DIFFERENCE>
+    void set(value_type const & v, ITERATOR & i, DIFFERENCE d) const {
         c_re(i[d])= v;
         c_im(i[d])= 0;
     }
@@ -566,8 +559,8 @@ class FFTWMagnitudeAccessor
     }
 
         /// Read magnitude at offset from iterator position.
-    template <class ITERATOR, class DISTANCE>
-    value_type operator()(ITERATOR & i, DISTANCE const & d) const {
+    template <class ITERATOR, class DIFFERENCE>
+    value_type operator()(ITERATOR & i, DIFFERENCE d) const {
         return (i[d]).magnitude();
     }
 };
@@ -590,8 +583,8 @@ class FFTWPhaseAccessor
     }
 
         /// Read phase at offset from iterator position.
-    template <class ITERATOR, class DISTANCE>
-    value_type operator()(ITERATOR & i, DISTANCE const & d) const {
+    template <class ITERATOR, class DIFFERENCE>
+    value_type operator()(ITERATOR & i, DIFFERENCE d) const {
         return (i[d]).phase();
     }
 };
