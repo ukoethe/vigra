@@ -1,7 +1,9 @@
 #include <iostream>
+#include <algorithm>
 #include "unittest.hxx"
 #include "vigra/polynomial.hxx"
 #include "vigra/array_vector.hxx"
+#include "vigra/splines.hxx"
 #include "vigra/gaussians.hxx"
 
 static double coefficients[][12] = 
@@ -98,28 +100,86 @@ struct HighOrderPolynomialTest
     }
 };
 
+template <int ORDER>
+struct SplineTest
+{
+    typedef vigra::BSpline<ORDER, double> BS;
+    typedef vigra::BSplineBase<ORDER, double> BSB;
+    BS spline;
+    BSB splineBase;
+    
+    void testValues()
+    {
+        double r = spline.radius();
+        shouldEqual(r, splineBase.radius());
+        
+        for(int d = 0; d <= ORDER+1; ++d)
+        {
+            for(double x = -r-0.5; x <= r+0.5; x += 0.5)
+                shouldEqualTolerance(spline(x, d), splineBase(x, d), 1e-15);
+        }
+    }
+    
+    void testPrefilterCoefficients()
+    {
+        int n = ORDER / 2;
+        double const * ps = BS::prefilterCoefficients();
+        double const * psb = BSB::prefilterCoefficients();
+        
+        if(n == 0)
+        {
+            shouldEqual(ps[0], 0.0);
+            shouldEqual(psb[0], 0.0);
+        }
+        else
+        {
+            double * psb1 = const_cast<double *>(psb);
+            std::sort(psb1, psb1 + n);
+            for(int i = 0; i < n; ++i)
+                shouldEqualTolerance(ps[i], psb[i], 1e-14);
+        }
+    }
+    
+    void testWeightMatrix()
+    {
+        int n = ORDER + 1;
+        typename BS::WeightMatrix & ws = BS::weights();
+        typename BSB::WeightMatrix & wsb = BSB::weights();
+        
+        for(int d = 0; d < n; ++d)
+            for(int i = 0; i < n; ++i)
+                shouldEqualTolerance(ws[d][i], wsb[d][i], 1e-14);
+    }
+};
+
 struct FunctionsTest
 {
-    // ??? add spline tests here !
-    
     void testGaussians()
     {
         vigra::Gaussian<double> g,
                           g1(2.0, 1),
                           g2(1.0, 2),
-                          g3(2.0, 3);
+                          g3(2.0, 3),
+                          g4(2.0, 4),
+                          g5(2.0, 5);
         
         double epsilon = 1e-15;
+        shouldEqual(g.derivativeOrder(), 0);
+        shouldEqual(g.sigma(), 1.0);
         shouldEqualTolerance(g(0.0), 0.3989422804014327, epsilon);
         shouldEqualTolerance(g(0.5), 0.35206532676429952, epsilon);
         shouldEqualTolerance(g(1.0), 0.24197072451914337, epsilon);
         shouldEqualTolerance(g(-1.0), 0.24197072451914337, epsilon);
         
+        shouldEqual(g1.derivativeOrder(), 1);
+        shouldEqual(g1.sigma(), 2.0);
         shouldEqualTolerance(g1(0.0), 0, epsilon);
         shouldEqualTolerance(g1(0.5), -0.024166757300178077, epsilon);
         shouldEqualTolerance(g1(1.0), -0.044008165845537441, epsilon);
         shouldEqualTolerance(g1(-1.0), 0.044008165845537441, epsilon);
         
+        shouldEqual(g2.derivativeOrder(), 2);
+        shouldEqual(g2.sigma(), 1.0);
         shouldEqualTolerance(g2(0.0), -0.3989422804014327, epsilon);
         shouldEqualTolerance(g2(0.5), -0.26404899507322466, epsilon);
         shouldEqualTolerance(g2(1.0), 0, epsilon);
@@ -127,12 +187,25 @@ struct FunctionsTest
         shouldEqualTolerance(g2(1.5), 0.16189699458236467, epsilon);
         shouldEqualTolerance(g2(-1.5), 0.16189699458236467, epsilon);
 
+        shouldEqual(g3.derivativeOrder(), 3);
+        shouldEqual(g3.sigma(), 2.0);
         shouldEqualTolerance(g3(0.0), 0, epsilon);
         shouldEqualTolerance(g3(0.5), 0.017747462392318277, epsilon);
         shouldEqualTolerance(g3(1.0), 0.030255614018806987, epsilon);
         shouldEqualTolerance(g3(-1.0), -0.030255614018806987, epsilon);
         shouldEqualTolerance(g3(2.0*VIGRA_CSTD::sqrt(3.0)), 0, epsilon);
         shouldEqualTolerance(g3(-2.0*VIGRA_CSTD::sqrt(3.0)), 0, epsilon);
+    
+        shouldEqualTolerance(g4(0.0), 0.037400838787634318, epsilon);
+        shouldEqualTolerance(g4(1.0), 0.017190689783413062, epsilon);
+        shouldEqualTolerance(g4(-1.0), 0.017190689783413062, epsilon);
+        shouldEqualTolerance(g4(1.483927568605452), 0, epsilon);
+        shouldEqualTolerance(g4(4.668828436677955), 0, epsilon);
+        shouldEqualTolerance(g5(0.0), 0, epsilon);
+        shouldEqualTolerance(g5(1.0), -0.034553286464660257, epsilon);
+        shouldEqualTolerance(g5(-1.0), 0.034553286464660257, epsilon);
+        shouldEqualTolerance(g5(2.711252359948531), 0, epsilon);
+        shouldEqualTolerance(g5(5.713940027745611), 0, epsilon);
     }
 };
 
@@ -157,6 +230,21 @@ struct MathTestSuite
         add( testCase((&PolynomialTest<1, P2>::testPolynomial)));
         add( testCase((&PolynomialTest<2, P2>::testPolynomial)));
         add( testCase(&HighOrderPolynomialTest::testPolynomial));
+        add( testCase(&SplineTest<0>::testValues));
+        add( testCase(&SplineTest<1>::testValues));
+        add( testCase(&SplineTest<2>::testValues));
+        add( testCase(&SplineTest<3>::testValues));
+        add( testCase(&SplineTest<5>::testValues));
+        add( testCase(&SplineTest<0>::testPrefilterCoefficients));
+        add( testCase(&SplineTest<1>::testPrefilterCoefficients));
+        add( testCase(&SplineTest<2>::testPrefilterCoefficients));
+        add( testCase(&SplineTest<3>::testPrefilterCoefficients));
+        add( testCase(&SplineTest<5>::testPrefilterCoefficients));
+        add( testCase(&SplineTest<0>::testWeightMatrix));
+        add( testCase(&SplineTest<1>::testWeightMatrix));
+        add( testCase(&SplineTest<2>::testWeightMatrix));
+        add( testCase(&SplineTest<3>::testWeightMatrix));
+        add( testCase(&SplineTest<5>::testWeightMatrix));
         add( testCase(&FunctionsTest::testGaussians));
     }
 };
