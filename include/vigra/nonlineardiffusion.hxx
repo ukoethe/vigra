@@ -303,12 +303,12 @@ void nonlinearDiffusion(SrcIterator sul, SrcIterator slr, SrcAccessor as,
     
     BasicImage<WeightType> weights(w,h);
     
-    BasicImage<TmpType>::Iterator s1 = smooth1.upperLeft(),
+    typename BasicImage<TmpType>::Iterator s1 = smooth1.upperLeft(),
                                   s2 = smooth2.upperLeft();
-    BasicImage<TmpType>::Accessor a = smooth1.accessor();
+    typename BasicImage<TmpType>::Accessor a = smooth1.accessor();
     
-    BasicImage<WeightType>::Iterator wi = weights.upperLeft();
-    BasicImage<WeightType>::Accessor wa = weights.accessor();
+    typename BasicImage<WeightType>::Iterator wi = weights.upperLeft();
+    typename BasicImage<WeightType>::Accessor wa = weights.accessor();
 
     gradientBasedTransform(sul, slr, as, wi, wa, weight);
 
@@ -559,12 +559,12 @@ void nonlinearDiffusionExplicit(SrcIterator sul, SrcIterator slr, SrcAccessor as
     
     BasicImage<WeightType> weights(w,h);
     
-    BasicImage<TmpType>::Iterator s1 = smooth1.upperLeft(),
+    typename BasicImage<TmpType>::Iterator s1 = smooth1.upperLeft(),
                                   s2 = smooth2.upperLeft();
-    BasicImage<TmpType>::Accessor a = smooth1.accessor();
+    typename BasicImage<TmpType>::Accessor a = smooth1.accessor();
     
-    BasicImage<WeightType>::Iterator wi = weights.upperLeft();
-    BasicImage<WeightType>::Accessor wa = weights.accessor();
+    typename BasicImage<WeightType>::Iterator wi = weights.upperLeft();
+    typename BasicImage<WeightType>::Accessor wa = weights.accessor();
 
     gradientBasedTransform(sul, slr, as, wi, wa, weight);
 

@@ -725,7 +725,7 @@ void differenceOfExponentialCrackEdgeImage(
 template <class Iterator, class Accessor, class Value>
 void removeShortEdges(
                Iterator sul, Iterator slr, Accessor sa,
-           int min_edge_length, Value non_edge_marker)
+           unsigned int min_edge_length, Value non_edge_marker)
 {
     int w = slr.x - sul.x;
     int h = slr.y - sul.y;
@@ -766,7 +766,7 @@ template <class Iterator, class Accessor, class Value>
 inline 
 void removeShortEdges(
            triple<Iterator, Iterator, Accessor> src,
-       int min_edge_length, Value non_edge_marker)
+       unsigned int min_edge_length, Value non_edge_marker)
 {
     removeShortEdges(src.first, src.second, src.third,
                      min_edge_length, non_edge_marker);
@@ -1478,7 +1478,7 @@ void cannyEdgeImage(
     
     cannyEdgelList(sul, slr, sa, edgels, scale);
     
-    for(int i=0; i<edgels.size(); ++i)
+    for(unsigned int i=0; i<edgels.size(); ++i)
     {
         if(gradient_threshold < edgels[i].strength)
         {

@@ -619,23 +619,59 @@ dot(TinyVector<V1, SIZE> const & r1, TinyVector<V2, SIZE> const & r2)
     return sum;
 }
 
+using std::ceil;
+
+    /** Apply ceil() function to each vector component.
+    */
+template <class T, int SIZE>
+inline
+TinyVector<T, SIZE>
+ceil(TinyVector<T, SIZE> const & v)
+{
+    TinyVector<T, SIZE> res;
+    typename TinyVector<T, SIZE>::iterator d = res.begin();
+    typename TinyVector<T, SIZE>::const_iterator s = v.begin();
+    for(; d != res.end(); ++d, ++s)
+        *d = ceil(*s);
+    return res;
+};
+
+using std::floor;
+
+    /** Apply floor() function to each vector component.
+    */
+template <class T, int SIZE>
+inline
+TinyVector<T, SIZE>
+floor(TinyVector<T, SIZE> const & v)
+{
+    TinyVector<T, SIZE> res;
+    typename TinyVector<T, SIZE>::iterator d = res.begin();
+    typename TinyVector<T, SIZE>::const_iterator s = v.begin();
+    for(; d != res.end(); ++d, ++s)
+        *d = floor(*s);
+    return res;
+};
+
+#ifndef __STRICT_ANSI__
+
 using std::rint;
 
-    /// Round a floating point vector to the nearest integer vector
-template <class V, int SIZE>
+    /// Round a floating point vector pixel to the nearest integers.
+template <class T, int SIZE>
 inline
-TinyVector<int, SIZE>
-rint(TinyVector<V, SIZE> const & r)
+TinyVector<T, SIZE>
+rint(TinyVector<T, SIZE> const & v)
 {
-    TinyVector<int, SIZE> res;
-    typename TinyVector<int, SIZE>::iterator d = res.begin();
-    typename TinyVector<V, SIZE>::const_iterator s = r.begin();
+    TinyVector<T, SIZE> res;
+    typename TinyVector<T, SIZE>::iterator d = res.begin();
+    typename TinyVector<T, SIZE>::const_iterator s = v.begin();
     for(; d != res.end(); ++d, ++s)
-       *d = static_cast<int>(rint(*s));
+        *d = rint(*s);
     return res;
-}
+};
 
-
+#endif // __STRICT_ANSI__
 //@}
 
 

@@ -920,9 +920,9 @@ class Kernel1D
 	*/
     Kernel1D()
     : kernel_(),
-      border_treatment_(BORDER_TREATMENT_CLIP),
       left_(0),
       right_(0),
+      border_treatment_(BORDER_TREATMENT_CLIP),
       norm_(one())
     {
         kernel_.push_back(norm_);
@@ -931,11 +931,11 @@ class Kernel1D
         /** Copy constructor.
 	*/
     Kernel1D(Kernel1D const & k)
-    : left_(k.left_),
+    : kernel_(k.kernel_),
+      left_(k.left_),
       right_(k.right_),
       border_treatment_(k.border_treatment_),
-      norm_(k.norm_),
-      kernel_(k.kernel_)
+      norm_(k.norm_)
     {}
     
         /** Copy assignment.
@@ -972,7 +972,7 @@ class Kernel1D
     InitProxy operator=(value_type const & v)
     {
 	int size = right_ - left_ + 1;
-	for(int i=0; i<kernel_.size(); ++i) kernel_[i] = v;
+	for(unsigned int i=0; i<kernel_.size(); ++i) kernel_[i] = v;
 	norm_ = (double)size*v;
 	
 	return InitProxy(kernel_.begin(), size, norm_);

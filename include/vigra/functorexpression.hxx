@@ -1026,7 +1026,9 @@ makeFunctorUnaryFunction(atan);
 makeFunctorUnaryFunction(abs);
 makeFunctorUnaryFunction(floor);
 makeFunctorUnaryFunction(ceil);
+#ifndef __STRICT_ANSI__
 makeFunctorUnaryFunction(rint);
+#endif
 
 #undef makeFunctorUnaryFunction
 

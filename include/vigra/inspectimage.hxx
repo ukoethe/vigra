@@ -669,8 +669,8 @@ class FindAverage
         return sum / (double)count;
     }
     
-    value_type sum;
     unsigned int count;
+    value_type sum;
     
 }; 
 

@@ -85,17 +85,20 @@ class StandardAccessor
         return i[dist]; 
     }
     
-        /** write the current data item
+        /** Write the current data item. The type <TT>V</TT> of the passed
+            in <TT>value</TT> is automatically converted to <TT>VALUETYPE</TT>.
         */
-    template <class ITERATOR>
-    void set(VALUETYPE const & v, ITERATOR & i) const { *i = v; }
+    template <class V, class ITERATOR>
+    void set(V const & value, ITERATOR & i) const { *i = static_cast<VALUETYPE>(value); }
     
-        /** write the data item at a distance (can be 1D or 2D or higher distance)
+        /** Write the data item at a distance (can be 1D or 2D or higher distance).
+            The type <TT>V</TT> of the passed
+            in <TT>value</TT> is automatically converted to <TT>VALUETYPE</TT>.
         */
-    template <class ITERATOR, class DISTANCE>
-    void set(VALUETYPE const & v, ITERATOR & i, DISTANCE const & dist) const 
+    template <class V, class ITERATOR, class DISTANCE>
+    void set(V const & value, ITERATOR & i, DISTANCE const & dist) const 
     { 
-        i[dist]= v; 
+        i[dist]= static_cast<VALUETYPE>(value); 
     }
 };
 
@@ -120,17 +123,20 @@ class StandardValueAccessor
         return i[dist]; 
     }
     
-        /* write the current data item
+        /** Write the current data item. The type <TT>V</TT> of the passed
+            in <TT>value</TT> is automatically converted to <TT>VALUETYPE</TT>.
         */
-    template <class ITERATOR>
-    void set(VALUETYPE const & v, ITERATOR & i) const { *i = v; }
+    template <class V, class ITERATOR>
+    void set(V const & value, ITERATOR & i) const { *i = static_cast<VALUETYPE>(value); }
     
-        /* write the data item at a distance (can be 1D or 2D or higher distance)
+        /** Write the data item at a distance (can be 1D or 2D or higher distance).
+            The type <TT>V</TT> of the passed
+            in <TT>value</TT> is automatically converted to <TT>VALUETYPE</TT>.
         */
-    template <class ITERATOR, class DISTANCE>
-    void set(VALUETYPE const & v, ITERATOR & i, DISTANCE const & dist) const 
+    template <class V, class ITERATOR, class DISTANCE>
+    void set(V const & value, ITERATOR & i, DISTANCE const & dist) const 
     { 
-        i[dist]= v; 
+        i[dist]= static_cast<VALUETYPE>(value); 
     }
 };
 
@@ -366,45 +372,47 @@ class VectorAccessor
 : public SequenceAccessor<VECTOR>
 {
   public:
-    /** the vector's value_type
-    */
+        /** the vector's value_type
+        */
     typedef typename VECTOR::value_type component_type;
 
-    /** read the component data at given vector index
-        at given iterator position 
-    */
+        /** Read the component data at given vector index
+            at given iterator position 
+        */
     template <class ITERATOR>
     component_type getComponent(ITERATOR & i, int idx) const 
     { 
         return (*i)[idx]; 
     }
     
-    /** set the component data at given vector index
-        at given iterator position 
-    */
-    template <class ITERATOR>
-    void setComponent(component_type v, ITERATOR & i, int idx) const
+        /** Set the component data at given vector index
+            at given iterator position. The type <TT>V</TT> of the passed
+            in <TT>value</TT> is automatically converted to <TT>component_type</TT>.
+        */
+    template <class V, class ITERATOR>
+    void setComponent(V const & value, ITERATOR & i, int idx) const
     { 
-        (*i)[idx] = v; 
+        (*i)[idx] = static_cast<component_type>(value); 
     }
     
-    /** read the component data at given vector index
-        at a distance of given iterator position
-    */
+        /** Read the component data at given vector index
+            at a distance of given iterator position
+        */
     template <class ITERATOR, class DISTANCE>
     component_type getComponent(ITERATOR & i, DISTANCE const & dist, int idx) const
     { 
         return i[dist][idx]; 
     }
     
-    /** set the component data at given vector index
-        at a distance of given iterator position
+    /** Set the component data at given vector index
+        at a distance of given iterator position. The type <TT>V</TT> of the passed
+        in <TT>value</TT> is automatically converted to <TT>component_type</TT>.
     */
-    template <class ITERATOR, class DISTANCE>
+    template <class V, class ITERATOR, class DISTANCE>
     void 
-    setComponent(component_type v, ITERATOR & i, DISTANCE const & dist, int idx) const 
+    setComponent(V const & value, ITERATOR & i, DISTANCE const & dist, int idx) const 
     { 
-        i[dist][idx] = v; 
+        i[dist][idx] = static_cast<component_type>(value); 
     }
 };
 

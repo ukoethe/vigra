@@ -229,7 +229,6 @@ resizeImageInternalSplineInterpolation(SrcIterator is, SrcIterator iend, SrcAcce
     typename BasicImage<TMPTYPE>::Accessor ta;
     
     SrcIterator in = is;
-    DestIterator io = id;
     
     TMPITER idx = dx.upperLeft();
     TMPITER idy = dy.upperLeft();
@@ -280,9 +279,8 @@ resizeImageInternalSplineInterpolation(SrcIterator is, SrcIterator iend, SrcAcce
     double du = (double)(w-1) / (wnew-1);
     double dv = (double)(h-1) / (hnew-1);
     double ov = 0.0;
-    double ou,v,u;
     int oy = 0;
-    int ox,xx,yy;
+    int yy = oy;
     
     DestIterator xxd = id, yyd = id;
 
@@ -292,14 +290,17 @@ resizeImageInternalSplineInterpolation(SrcIterator is, SrcIterator iend, SrcAcce
     {
         if(y < h-2 && ov >= 1.0) continue;
         int y1 = y+1;
-        ou = 0.0;
-        ox = 0;
+        double v = ov;
+        double ou = 0.0;
+        int ox = 0;
+        int xx = ox;
         
         SrcIterator xs = in;
         for(x=0; x<w-1; ++x, ++xs.x, ou -= 1.0)
         {
             if(x < w-2 && ou >= 1.0) continue;
             int x1 = x+1;
+            double u = ou;
             
             DestIterator xd = id + Diff2D(ox,oy);
             W[0][0] = sa(xs);
@@ -524,7 +525,6 @@ resizeImageSplineInterpolation(SrcIterator is, SrcIterator iend, SrcAccessor sa,
     
         BasicImage<TMPTYPE> t(w,h);
         TMPITER it = t.upperLeft();
-        SrcIterator in = is;
     
         if(wnew < w)
         {

@@ -180,9 +180,9 @@ class Diff2D
     double magnitude() const
     {
 #ifndef CMATH_NOT_IN_STD
-        return std::sqrt(x*x + y*y);
+        return std::sqrt((double)(x*x + y*y));
 #else
-        return sqrt(x*x + y*y);
+        return sqrt((double)(x*x + y*y));
 #endif
     }
     

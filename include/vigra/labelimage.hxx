@@ -155,7 +155,7 @@ int labelImage(SrcIterator upperlefts,
         Diff2D(1,-1)   // topright
     };
     
-    static const int left = 0, topleft = 1, top = 2, topright = 3;
+    static const int left = 0, /* unused:  topleft = 1, */ top = 2, topright = 3;
     int step = eight_neighbors ? 1 : 2;
     
     SrcIterator ys(upperlefts);
@@ -451,7 +451,7 @@ int labelImageWithBackground(SrcIterator upperlefts,
         Diff2D(1,-1)   // topright
     };
     
-    static const int left = 0, topleft = 1, top = 2, topright = 3;
+    static const int left = 0, /* unused:  topleft = 1,*/ top = 2, topright = 3;
     int step = eight_neighbors ? 1 : 2;    
     
     SrcIterator ys(upperlefts);
