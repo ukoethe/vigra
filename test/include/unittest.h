@@ -67,7 +67,7 @@
         } \
     } 
 
-#define fail(message) shouldMsg(false, message)
+#define failTest(message) shouldMsg(false, message)
 
 struct UnitTestFailed 
 {
