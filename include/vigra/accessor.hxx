@@ -204,6 +204,69 @@ class StandardConstValueAccessor
 
 /********************************************************/
 /*                                                      */
+/*                 VectorComponentAccessor              */
+/*                                                      */
+/********************************************************/
+
+/** \brief Accessor for one component of a vector.
+
+    Usage:
+
+    <b>\#include</b> "<a href="accessor_8hxx-source.html">vigra/accessor.hxx</a>"
+    
+    Namespace: vigra
+    
+*/
+template <class VECTORTYPE>
+class VectorComponentAccessor
+{
+    int index_;
+  public:
+        /** the value_type
+        */
+    typedef typename VECTORTYPE::value_type value_type;
+    
+        /** determine the component to be accessed
+        */
+    VectorComponentAccessor(int index)
+    : index_(index)
+    {}
+    
+        /** read the current data item
+        */
+    template <class ITERATOR>
+    value_type const & operator()(ITERATOR & i) const { return (*i)[index_]; }
+    
+        /** read the data item at a distance (can be 1D or 2D or higher distance)
+        */
+    template <class ITERATOR, class DISTANCE>
+    value_type const & operator()(ITERATOR & i, DISTANCE const & dist) const
+    { 
+        return i[dist][index_]; 
+    }
+    
+        /** Write the current data item. The type <TT>V</TT> of the passed
+            in <TT>value</TT> is automatically converted to <TT>VALUETYPE</TT>.
+        */
+    template <class V, class ITERATOR>
+    void set(V const & value, ITERATOR & i) const 
+    { 
+        (*i)[index_] = static_cast<value_type>(value); 
+    }
+    
+        /** Write the data item at a distance (can be 1D or 2D or higher distance).
+            The type <TT>V</TT> of the passed
+            in <TT>value</TT> is automatically converted to <TT>VALUETYPE</TT>.
+        */
+    template <class V, class ITERATOR, class DISTANCE>
+    void set(V const & value, ITERATOR & i, DISTANCE const & dist) const 
+    { 
+        i[dist][index_]= static_cast<value_type>(value); 
+    }
+};
+
+/********************************************************/
+/*                                                      */
 /*                    SequenceAccessor                  */
 /*                                                      */
 /********************************************************/
