@@ -3,7 +3,7 @@
 #include "vigra/tinyvector.hxx"
 #include "vigra/rgbvalue.hxx"
 
-static float di[] = {1, 2, 3 };
+static float di[] = {1, 2, 4 };
 static float df[] = {1.2, 2.4, 3.6 };
 
 template <class BVector, class IVector, class FVector>
@@ -22,7 +22,7 @@ struct TinyVectorTest
     {
         std::cerr << "(";
         for(int i=0; i<v.size(); ++i)
-            std::cerr << v[i] << ", ";
+            std::cerr << (float)v[i] << ", ";
         std::cerr << ")\n";
     }
     
@@ -125,7 +125,7 @@ struct TinyVectorTest
         IV ivm3 = -iv3;
         FV fvm3 = -fv3;
         
-        int mi[] = { -1, -2, -3};
+        int mi[] = { -1, -2, -4};
         float mf[] = { -1.2, -2.4, -3.6 };
         
         should(equalIter(ivm3.begin(), ivm3.end(), mi));
@@ -183,8 +183,8 @@ struct TinyVectorTest
         
         bvp = bv3 / 2.0;
         fvp = bv3 / 2.0;
-        int ip[] = {0, 1, 1};
-        float fp[] = {0.5, 1.0, 1.5};
+        int ip[] = {1, 1, 2};
+        float fp[] = {0.5, 1.0, 2.0};
         should(equalIter(bvp.begin(), bvp.end(), ip));
         should(equalIter(fvp.begin(), fvp.end(), fp));
         fvp = fv3 / 2.0;
