@@ -37,11 +37,11 @@ RSC=rc.exe
 # PROP BASE Target_Dir ""
 # PROP Use_MFC 0
 # PROP Use_Debug_Libraries 0
-# PROP Output_Dir "Release"
-# PROP Intermediate_Dir "Release"
+# PROP Output_Dir "Release6.0"
+# PROP Intermediate_Dir "Release6.0"
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /YX /FD /c
-# ADD CPP /nologo /W3 /GX /O2 /I "..\..\include" /I "..\..\..\jpeginclude" /I "..\..\..\tiffinclude" /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "HasJPEG" /D "HasTIFF" /YX /FD /c
+# ADD CPP /nologo /MD /W3 /GX /O2 /I "..\..\include" /I "..\..\..\jpeg-6b" /I "..\..\..\tiff-v3.5.7\libtiff" /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "HasJPEG" /D "HasTIFF" /YX /FD /c
 # ADD BASE RSC /l 0x407
 # ADD RSC /l 0x407
 BSC32=bscmake.exe
@@ -49,7 +49,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LIB32=link.exe -lib
 # ADD BASE LIB32 /nologo
-# ADD LIB32 /nologo /out:"..\..\lib\windows\vigraimpex.lib"
+# ADD LIB32 /nologo /out:"Release6.0\vigraimpex.lib"
 
 !ELSEIF  "$(CFG)" == "impex - Win32 Debug"
 
