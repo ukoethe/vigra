@@ -21,7 +21,7 @@
 
     VIGRA should work with any standard conforming C++ compiler
 
-    <b> Unix:</b>
+    <h3> Unix:</h3>
     
     <ul>
     <li> uncompress and unpack the source distribution
@@ -49,9 +49,23 @@
     > make install
     > make examples
     \endcode
-    </ul>
     
-    <b> Windows:</b>
+    Besides <tt>/your/bin/install/path/lib/libvigraimpex.a</tt>, this also installs
+    a programm <tt>/your/bin/install/path/bin/vigra-config</tt>. This programm supports
+    the compilation of software which depends on VIGRA by returning the neccessary 
+    compiler and linker settings. For example,
+    
+    \code
+    > vigra-config --cppflags
+    -I/your/install/path/include -I/path/to/libfftw/include
+    \endcode
+    
+    Call <tt>vigra-config --help</tt> for a complete list of options. You may also look
+    at <tt><vigra_path>/src/examples/Makefile</tt> for a usage example.
+    
+    </ul>
+
+    <h3> Windows:</h3>
     
     <ul>
     <li> uncompress and unpack the source distribution
@@ -68,7 +82,7 @@
     
     <li> build the solution(that is, the library <TT>vigraimpex.lib</TT> and the \ref Examples)
 
-    <li> the \ref Examples can now be invoked from the command line.
+    <li> the \ref Examples can now be invoked from the command line (DOS prompt).
     </ul>
 
     
