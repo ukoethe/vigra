@@ -1,6 +1,6 @@
 /************************************************************************/
 /*                                                                      */
-/*               Copyright 2002 by Gunnar Kedenburg                     */
+/*               Copyright 2002-2004 by Gunnar Kedenburg                */
 /*       Cognitive Systems Group, University of Hamburg, Germany        */
 /*                                                                      */
 /*    This file is part of the VIGRA computer vision library.           */
@@ -160,7 +160,7 @@ void BmpInfoHeader::from_stream( std::ifstream & stream, byteorder & bo )
     read_field( stream, bo, width );
     vigra_precondition( width > 0, "width must be > 0" );
     read_field( stream, bo, height );
-    vigra_precondition( width > 0, "height must be > 0" );
+    vigra_precondition( height > 0, "height must be > 0" );
     read_field( stream, bo, planes );
     vigra_precondition( planes == 1, "planes must be 1" );
     read_field( stream, bo, bit_count );
@@ -747,13 +747,12 @@ void BmpDecoderImpl::read_rgb_data ()
     // citing Kevin D. Quitt's mail to wotsit.org:
     // In RGB encoding (no compression), when using 8 bits per pixel, lines
     // must start on a long-word boundary (i.e., low two bits zero).
-    const unsigned int bytes_per_line = 4*(info_header.width*24+31)/32;
-    const unsigned int pad_size = bytes_per_line - 3*info_header.width;
+    const unsigned int pad_size = (line_size % 4) ? 4 - (line_size % 4) : 0;
 
     // setup the base pointer at one line after the end
     unsigned char * base = pixels.data() + image_size;
-    unsigned char * mover = base;
-        
+    unsigned char * mover;
+
     // read scanlines from bottom to top
     for ( int y = info_header.height - 1; y >= 0; --y ) {
 
@@ -994,8 +993,7 @@ void BmpEncoderImpl::write_rgb_data()
 {
     const unsigned int line_size = 3 * info_header.width;
     const unsigned int image_size = info_header.height * line_size;
-    const unsigned int bytes_per_line = 4*(info_header.width*24+31)/32;
-    const unsigned int pad_size = bytes_per_line - 3*info_header.width;
+    const unsigned int pad_size = (line_size % 4) ? 4 - (line_size % 4) : 0;
 
     unsigned char * base = pixels.data() + image_size;
     unsigned char * mover = base;
@@ -1018,7 +1016,7 @@ void BmpEncoderImpl::write_rgb_data()
 
         // pad
         for ( unsigned int p = 0; p < pad_size; ++p )
-            stream.put(0);
+	    stream.put(0);
     }
 }
 
