@@ -31,6 +31,7 @@
 #include <vigra/numerictraits.hxx>
 #include <vigra/navigator.hxx>
 #include <vigra/metaprogramming.hxx>
+#include <vigra/multi_pointoperators.hxx>
 
 
 namespace vigra
