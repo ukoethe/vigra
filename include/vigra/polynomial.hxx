@@ -705,11 +705,13 @@ std::complex<T> complexDiv(std::complex<T> const & a, std::complex<T> const & b)
 }
 
 template <class T>
-std::complex<T> deleteImaginaryBelowEpsilon(std::complex<T> const & x, double eps)
+std::complex<T> deleteBelowEpsilon(std::complex<T> const & x, double eps)
 {
-    return std::abs(x.imag()) <= 2.0*eps*std::abs(x.real()) ?
-              std::complex<T>(x.real())
-           :  x;
+    return std::abs(x.imag()) <= 2.0*eps*std::abs(x.real()) 
+                ? std::complex<T>(x.real())
+                : std::abs(x.real()) <= 2.0*eps*std::abs(x.imag()) 
+                    ? std::complex<T>(NumericTraits<T>::zero(), x.imag())
+                    :  x;
 }
 
 template <class POLYNOMIAL>
@@ -824,6 +826,17 @@ int laguerre1Root(POLYNOMIAL const & p, Complex & x, unsigned int multiplicity)
         0;
 }
 
+struct PolynomialRootCompare
+{
+    template <class T>
+    bool operator()(T const & l, T const & r)
+    {
+        return l.real() == r.real()
+                     ? l.imag() < r.imag()
+                     : l.real() < r.real();
+    }
+};
+
 } // namespace detail 
 
 /** \addtogroup Polynomials Polynomials and root determination
@@ -845,10 +858,10 @@ int laguerre1Root(POLYNOMIAL const & p, Complex & x, unsigned int multiplicity)
     improved version of Laguerre's algorithm. The improvements are as follows:
     
     <ul>
-    <li>It uses an clever initial guess for the iteration, according to a proposal by Tien Chen</li>
+    <li>It uses a clever initial guess for the iteration, according to a proposal by Tien Chen</li>
     <li>It estimates each root's multiplicity, again according to Tien Chen, and reduces multiplicity
         by switching to the polynomial's derivative (which has the same root, with multiplicity
-        reduces by one), as proposed by C. Bond.</li>
+        reduced by one), as proposed by C. Bond.</li>
     </ul>
     
     The algorithm has been successfully used for polynomials up to order 80.
@@ -883,6 +896,8 @@ int laguerre1Root(POLYNOMIAL const & p, Complex & x, unsigned int multiplicity)
     ArrayVector<std::complex<double> > roots;
     polynomialRoots(poly, roots);
     \endcode
+
+    \see polynomialRootsEigenvalueMethod()
 */
 template <class POLYNOMIAL, class VECTOR>
 bool polynomialRoots(POLYNOMIAL const & poriginal, VECTOR & roots, bool polishRoots)
@@ -926,7 +941,7 @@ bool polynomialRoots(POLYNOMIAL const & poriginal, VECTOR & roots, bool polishRo
             // zero return indicates failure to converge
             if(polishRoots && !detail::laguerre1Root(poriginal, x, multiplicity))
                 return false;
-            x = detail::deleteImaginaryBelowEpsilon(x, eps);
+            x = detail::deleteBelowEpsilon(x, eps);
             roots.push_back(x);
             p.deflate(x);
             // determine the next starting guess
@@ -971,19 +986,20 @@ bool polynomialRoots(POLYNOMIAL const & poriginal, VECTOR & roots, bool polishRo
         x = detail::complexDiv(q, a);
         if(polishRoots)
             detail::laguerre1Root(poriginal, x, 1);
-        roots.push_back(detail::deleteImaginaryBelowEpsilon(x, eps));
+        roots.push_back(detail::deleteBelowEpsilon(x, eps));
         x = detail::complexDiv(c, q);
         if(polishRoots)
             detail::laguerre1Root(poriginal, x, 1);
-        roots.push_back(detail::deleteImaginaryBelowEpsilon(x, eps));
+        roots.push_back(detail::deleteBelowEpsilon(x, eps));
     }
     else if(p.order() == 1)
     {
         x = detail::complexDiv(-p[0], p[1]);
         if(polishRoots)
             detail::laguerre1Root(poriginal, x, 1);
-        roots.push_back(detail::deleteImaginaryBelowEpsilon(x, eps));
+        roots.push_back(detail::deleteBelowEpsilon(x, eps));
     }
+    std::sort(roots.begin(), roots.end(), detail::PolynomialRootCompare());
     return true;
 }
 
@@ -1026,6 +1042,8 @@ polynomialRoots(POLYNOMIAL const & poriginal, VECTOR & roots)
     ArrayVector<double> roots;
     polynomialRealRoots(poly, roots);
     \endcode
+
+    \see polynomialRealRootsEigenvalueMethod()
 */
 template <class POLYNOMIAL, class VECTOR>
 bool polynomialRealRoots(POLYNOMIAL const & p, VECTOR & roots, bool polishRoots)
