@@ -1,4 +1,5 @@
 lib
+bin
 aclocal.m4
 config.log
 config.cache
