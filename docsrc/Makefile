@@ -1,4 +1,6 @@
-include ../config/Makefile.include
+ifndef docdir
+    include ../config/Makefile.include
+endif
 
          DOC = doxygen
     DOCLATEX = doc++ -u -o $(DOCDIR)/latex/vigra.tex -t
