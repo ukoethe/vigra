@@ -448,14 +448,14 @@ The following iterator traits must be defined for an image iterator:
     for a discussion of the concepts behind ImageIterators.
 
 */
-template <class IMAGEITERATOR, 
+template <class IMAGEITERATOR,
           class PIXELTYPE, class REFERENCE, class POINTER>
 class ImageIteratorBase
 {
   public:
-    typedef ImageIteratorBase<IMAGEITERATOR, 
+    typedef ImageIteratorBase<IMAGEITERATOR,
                  PIXELTYPE, REFERENCE, POINTER> self_type;
-  
+
         /** The underlying image's pixel type.
         */
     typedef PIXELTYPE value_type;
@@ -659,8 +659,8 @@ class ImageIteratorBase
           offset_(rhs.offset_)
         {}
 
-        int offset_;
         int width_;
+        int offset_;
     };
 
     /** @name Comparison of Iterators */
@@ -825,12 +825,12 @@ class ImageIteratorBase
         typedef typename column_iterator::BaseType Iter;
         return column_iterator(Iter(current(), y.width_));
     }
-    
+
   private:
-  
+
     pointer current() const
         { return x.current_ + y.offset_; }
-  
+
     pointer current(int dx, int dy) const
         { return x.current_ + dx + y.offset_ + y.width_ * dy; }
 };
@@ -857,13 +857,13 @@ class ImageIteratorBase
 */
 template <class PIXELTYPE>
 class ImageIterator
-: public ImageIteratorBase<ImageIterator<PIXELTYPE>, 
+: public ImageIteratorBase<ImageIterator<PIXELTYPE>,
                            PIXELTYPE, PIXELTYPE &, PIXELTYPE *>
 {
   public:
-    typedef ImageIteratorBase<ImageIterator<PIXELTYPE>, 
+    typedef ImageIteratorBase<ImageIterator<PIXELTYPE>,
                               PIXELTYPE, PIXELTYPE &, PIXELTYPE *> Base;
-                              
+
     typedef typename Base::pointer         pointer;
     typedef typename Base::difference_type difference_type;
 
@@ -901,13 +901,13 @@ class ImageIterator
 */
 template <class PIXELTYPE>
 class ConstImageIterator
-: public ImageIteratorBase<ConstImageIterator<PIXELTYPE>, 
+: public ImageIteratorBase<ConstImageIterator<PIXELTYPE>,
                            PIXELTYPE, PIXELTYPE const &, PIXELTYPE const *>
 {
   public:
-    typedef ImageIteratorBase<ConstImageIterator<PIXELTYPE>, 
+    typedef ImageIteratorBase<ConstImageIterator<PIXELTYPE>,
                         PIXELTYPE, PIXELTYPE const &, PIXELTYPE const *> Base;
-    
+
     typedef typename Base::pointer         pointer;
     typedef typename Base::difference_type difference_type;
 
@@ -1020,28 +1020,28 @@ template <class VALUETYPE, int SIZE>
 class TinyVector;
 
 #define VIGRA_PIXELTYPE TinyVector<float, 2>
-VIGRA_DEFINE_ITERATORTRAITS(ImageIterator, VIGRA_PIXELTYPE, VectorAccessor) 
-VIGRA_DEFINE_ITERATORTRAITS(ConstImageIterator, VIGRA_PIXELTYPE, VectorAccessor) 
-#undef VIGRA_PIXELTYPE 
+VIGRA_DEFINE_ITERATORTRAITS(ImageIterator, VIGRA_PIXELTYPE, VectorAccessor)
+VIGRA_DEFINE_ITERATORTRAITS(ConstImageIterator, VIGRA_PIXELTYPE, VectorAccessor)
+#undef VIGRA_PIXELTYPE
 #define VIGRA_PIXELTYPE TinyVector<float, 3>
-VIGRA_DEFINE_ITERATORTRAITS(ImageIterator, VIGRA_PIXELTYPE, VectorAccessor) 
-VIGRA_DEFINE_ITERATORTRAITS(ConstImageIterator, VIGRA_PIXELTYPE, VectorAccessor) 
+VIGRA_DEFINE_ITERATORTRAITS(ImageIterator, VIGRA_PIXELTYPE, VectorAccessor)
+VIGRA_DEFINE_ITERATORTRAITS(ConstImageIterator, VIGRA_PIXELTYPE, VectorAccessor)
 #undef VIGRA_PIXELTYPE
 #define VIGRA_PIXELTYPE TinyVector<float, 4>
-VIGRA_DEFINE_ITERATORTRAITS(ImageIterator, VIGRA_PIXELTYPE, VectorAccessor) 
-VIGRA_DEFINE_ITERATORTRAITS(ConstImageIterator, VIGRA_PIXELTYPE, VectorAccessor) 
+VIGRA_DEFINE_ITERATORTRAITS(ImageIterator, VIGRA_PIXELTYPE, VectorAccessor)
+VIGRA_DEFINE_ITERATORTRAITS(ConstImageIterator, VIGRA_PIXELTYPE, VectorAccessor)
 #undef VIGRA_PIXELTYPE
 #define VIGRA_PIXELTYPE TinyVector<double, 2>
-VIGRA_DEFINE_ITERATORTRAITS(ImageIterator, VIGRA_PIXELTYPE, VectorAccessor) 
-VIGRA_DEFINE_ITERATORTRAITS(ConstImageIterator, VIGRA_PIXELTYPE, VectorAccessor) 
+VIGRA_DEFINE_ITERATORTRAITS(ImageIterator, VIGRA_PIXELTYPE, VectorAccessor)
+VIGRA_DEFINE_ITERATORTRAITS(ConstImageIterator, VIGRA_PIXELTYPE, VectorAccessor)
 #undef VIGRA_PIXELTYPE
 #define VIGRA_PIXELTYPE TinyVector<double, 3>
-VIGRA_DEFINE_ITERATORTRAITS(ImageIterator, VIGRA_PIXELTYPE, VectorAccessor) 
-VIGRA_DEFINE_ITERATORTRAITS(ConstImageIterator, VIGRA_PIXELTYPE, VectorAccessor) 
+VIGRA_DEFINE_ITERATORTRAITS(ImageIterator, VIGRA_PIXELTYPE, VectorAccessor)
+VIGRA_DEFINE_ITERATORTRAITS(ConstImageIterator, VIGRA_PIXELTYPE, VectorAccessor)
 #undef VIGRA_PIXELTYPE
 #define VIGRA_PIXELTYPE TinyVector<double, 4>
-VIGRA_DEFINE_ITERATORTRAITS(ImageIterator, VIGRA_PIXELTYPE, VectorAccessor) 
-VIGRA_DEFINE_ITERATORTRAITS(ConstImageIterator, VIGRA_PIXELTYPE, VectorAccessor) 
+VIGRA_DEFINE_ITERATORTRAITS(ImageIterator, VIGRA_PIXELTYPE, VectorAccessor)
+VIGRA_DEFINE_ITERATORTRAITS(ConstImageIterator, VIGRA_PIXELTYPE, VectorAccessor)
 #undef VIGRA_PIXELTYPE
 
 #undef VIGRA_DEFINE_ITERATORTRAITS
