@@ -23,6 +23,7 @@
 #include <iostream>
 #include "vigra/stdimage.hxx"
 #include "vigra/impex.hxx"
+#include "vigra/tiff.hxx"
 
 using namespace vigra; // MSVC doesn't support Koenig lookup
 
