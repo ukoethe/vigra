@@ -28,6 +28,7 @@
 #include "vigra/numerictraits.hxx"
 #include "vigra/stdimage.hxx"
 #include "vigra/recursiveconvolution.hxx"
+#include "vigra/splines.hxx"
 
 namespace vigra {
 
@@ -441,36 +442,6 @@ resizeImageLinearInterpolation(triple<SrcIterator, SrcIterator, SrcAccessor> src
                                    dest.first, dest.second, dest.third);
 }
 
-/********************************************************/
-/*                                                      */
-/*              CubicFIRInterpolationKernel             */
-/*                                                      */
-/********************************************************/
-
-class CubicFIRInterpolationKernel
-{
-public:
-    double operator[] (double x) const
-    {
-        x = fabs(x);
-        if (x <= 1.0)
-        {
-            return 1.0 + x * x * (-2.5 + 1.5 * x);
-        }
-        else if (x >= 2.0)
-        {
-            return 0.0;
-        }
-        else
-        {
-            return 2.0 + x * (-4.0 + x * (2.5 -0.5 * x));
-        }
-    }
-
-    int radius() const
-        {return 2;}
-};
-
 /***************************************************************/
 /*                                                             */
 /*               resizeLineCubicFIRInterpolation               */
@@ -491,7 +462,7 @@ void resizeLineCubicFIRInterpolation(SrcIterator src_iter, SrcIterator src_iter_
     int dest_width = dest_iter_end - dest_iter;
     double dx =  (double)(src_width - 1) / (dest_width - 1);
 
-    CubicFIRInterpolationKernel kernel;
+    CatmullRomSpline<double> kernel;
 
     dest_acc.set(src_acc(src_iter), dest_iter);
     dest_iter++;
@@ -626,185 +597,6 @@ resizeImageCubicFIRInterpolation(triple<SrcIterator, SrcIterator, SrcAccessor> s
     resizeImageCubicFIRInterpolation(src.first, src.second, src.third,
                                      dest.first, dest.second, dest.third);
 }
-
-/********************************************************/
-/*                                                      */
-/*                  CubicBSplineKernel                  */
-/*                                                      */
-/********************************************************/
-class CubicBSplineKernel
-{
-  public:
-    double operator[] (double x) const
-    {
-        x = VIGRA_CSTD::fabs(x);
-        if(x < 1.0)
-        {
-            return 2.0/3.0 + x*x*(-1.0 + 0.5*x);
-        }
-        else if(x < 2.0)
-        {
-            x = 2.0 - x;
-            return x*x*x/6.0;
-        }
-        else
-            return 0.0;
-    }
-
-    double dx(double x) const
-    {
-        double s = x < 0.0 ?
-                      -1.0 :
-                       1.0;
-        x = VIGRA_CSTD::fabs(x);
-        if(x < 1.0)
-        {
-            return s*x*(-2.0 + 1.5*x);
-        }
-        else if(x < 2.0)
-        {
-            x = 2.0 - x;
-            return -0.5*s*x*x;
-        }
-        else
-            return 0.0;
-    }
-
-    double dxx(double x) const
-    {
-        x = VIGRA_CSTD::fabs(x);
-        if(x < 1.0)
-        {
-            return 3.0*x - 2.0;
-        }
-        else if(x < 2.0)
-        {
-            return 2.0 - x;
-        }
-        else
-            return 0.0;
-    }
-
-    int radius() const
-        {return 2;}
-};
-
-/********************************************************/
-/*                                                      */
-/*                 QuinticBSplineKernel                 */
-/*                                                      */
-/********************************************************/
-class QuinticBSplineKernel
-{
-  public:
-    double operator[] (double x) const
-    {
-        x = VIGRA_CSTD::fabs(x);
-        if(x <= 1.0)
-        {
-            return 0.55 + x*x*(-0.5 + x*x*(0.25 - x/12.0));
-        }
-        else if(x < 2.0)
-        {
-            return 17.0/40.0 + x*(0.625 + x*(-1.75 + x*(1.25 + x*(-0.375 + x/24.0))));
-        }
-        else if(x < 3.0)
-        {
-            x = 3.0 - x;
-            return x*x*x*x*x / 120.0;
-        }
-        else
-            return 0.0;
-    }
-
-    double dx(double x) const
-    {
-        double s = x < 0.0 ?
-                      -1.0 :
-                       1.0;
-        x = VIGRA_CSTD::fabs(x);
-        if(x <= 1.0)
-        {
-            return s*x*(-1.0 + x*x*(1.0 - 5.0/12.0*x));
-        }
-        else if(x < 2.0)
-        {
-            return s*(0.625 + x*(-3.5 + x*(3.75 + x*(-1.5 + 5.0/24.0*x))));
-        }
-        else if(x < 3.0)
-        {
-            x = 3.0 - x;
-            return s*x*x*x*x / -24.0;
-        }
-        else
-            return 0.0;
-    }
-
-    double dxx(double x) const
-    {
-        x = VIGRA_CSTD::fabs(x);
-        if(x <= 1.0)
-        {
-            return -1.0 + x*x*(3.0 -5.0/3.0*x);
-        }
-        else if(x < 2.0)
-        {
-            return -3.5 + x*(7.5 + x*(-4.5 + 5.0/6.0*x));
-        }
-        else if(x < 3.0)
-        {
-            x = 3.0 - x;
-            return x*x*x / 6.0;
-        }
-        else
-            return 0.0;
-    }
-
-    double dx3(double x) const
-    {
-        double s = x < 0.0 ?
-                      -1.0 :
-                       1.0;
-        x = VIGRA_CSTD::fabs(x);
-        if(x <= 1.0)
-        {
-            return s*x*(6.0 - 5.0*x);
-        }
-        else if(x < 2.0)
-        {
-            return s*(7.5 + x*(-9.0 + 2.5*x));
-        }
-        else if(x < 3.0)
-        {
-            x = 3.0 - x;
-            return -0.5*s*x*x;
-        }
-        else
-            return 0.0;
-    }
-
-    double dx4(double x) const
-    {
-        x = VIGRA_CSTD::fabs(x);
-        if(x <= 1.0)
-        {
-            return 6.0 - 10.0*x;
-        }
-        else if(x < 2.0)
-        {
-            return -9.0 + 5.0*x;
-        }
-        else if(x < 3.0)
-        {
-            return 3.0 - x;
-        }
-        else
-            return 0.0;
-    }
-
-    int radius() const
-        {return 3;}
-};
 
 /******************************************************************/
 /*                                                                */
