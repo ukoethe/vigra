@@ -47,7 +47,9 @@ public:
     typedef Alloc        allocator_type;
 
 public:
-    explicit ArrayVector(Alloc const & alloc = Alloc());
+    ArrayVector();
+
+    explicit ArrayVector(Alloc const & alloc);
 
     explicit ArrayVector( size_type size, Alloc const & alloc = Alloc());
 
@@ -169,14 +171,22 @@ public:
 
   private:
 
-    static void deallocate(pointer data, size_type size);
+    void deallocate(pointer data, size_type size);
 
-    static pointer reserve_raw(size_type capacity);
+    pointer reserve_raw(size_type capacity);
 
     Alloc alloc_;
     size_type size_, capacity_;
     pointer data_;
 };
+
+template <class T, class Alloc>
+ArrayVector<T, Alloc>::ArrayVector()
+: alloc_(Alloc()),
+  size_(0),
+  capacity_(5),
+  data_(reserve_raw(5))
+{}
 
 template <class T, class Alloc>
 ArrayVector<T, Alloc>::ArrayVector(Alloc const & alloc)
