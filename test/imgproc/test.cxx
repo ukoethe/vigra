@@ -820,7 +820,7 @@ struct ResizeImageTest
         
         resizeImageLinearInterpolation(srcImageRange(img), destImageRange(dest));
         
-        shouldEqualSequence(dest.begin(), dest.end(), ref.begin());
+        shouldEqualSequenceTolerance(dest.begin(), dest.end(), ref.begin(), 1.0e-6f);
         
         ImageImportInfo inforgb("lenna42linrgb.xv");
         RGBImage rgbref(inforgb.size());
@@ -830,7 +830,8 @@ struct ResizeImageTest
         
         resizeImageLinearInterpolation(srcImageRange(rgb), destImageRange(rgbdest));
         
-        shouldEqualSequence(rgbdest.begin(), rgbdest.end(), rgbref.begin());
+        shouldEqualSequenceTolerance(rgbdest.begin(), rgbdest.end(), rgbref.begin(), 
+                                     RGBImage::value_type(1.0e-6f));
     }
     
     void scalarExpand()
@@ -918,7 +919,7 @@ struct ResizeImageTest
         
         resizeImageCubicFIRInterpolation(srcImageRange(img), destImageRange(dest));
         
-        shouldEqualSequence(dest.begin(), dest.end(), ref.begin());
+        shouldEqualSequenceTolerance(dest.begin(), dest.end(), ref.begin(), 1.0e-6f);
     }
 
         

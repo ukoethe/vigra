@@ -169,7 +169,7 @@ struct TinyVectorTest
                 dot(iv3, bv3)), iv3.magnitude(), 0.0);
         shouldEqualTolerance(VIGRA_CSTD::sqrt(
                 (typename NumericTraits<typename FV::value_type>::RealPromote)
-                dot(fv3, fv3)), fv3.magnitude(), 0.0);
+                dot(fv3, fv3)), fv3.magnitude(), 0.0f);
 
         BV bv = bv3;
         bv[2] = 200;
