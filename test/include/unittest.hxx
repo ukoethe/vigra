@@ -400,7 +400,7 @@ should_impl(bool predicate, const char * message, const char * file, int line)
 */
 
 
-template<typename FPT>
+template<class FPT>
 inline 
 FPT fpt_abs( FPT arg ) 
 {
@@ -411,8 +411,7 @@ FPT fpt_abs( FPT arg )
 /***********************************************************************/
 
 // both f1 and f2 are unsigned here
-template<typename FPT>
-
+template<class FPT>
 inline 
 FPT safe_fpt_division( FPT f1, FPT f2 )
 {
@@ -439,7 +438,7 @@ FPT safe_fpt_division( FPT f1, FPT f2 )
 
 /***********************************************************************/
 
-template<typename FPT>
+template<class FPT>
 class close_at_tolerance {
 public:
     explicit    close_at_tolerance( FPT tolerance, bool strong_test = true ) 

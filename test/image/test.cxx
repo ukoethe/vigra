@@ -479,7 +479,7 @@ struct CompareFunctor
 	CompareFunctor(): sumDifference_(0) {}
 
 	void operator()(const float &a, const float &b)
-		{ sumDifference_+= abs(a-b); }
+    { sumDifference_+=  VIGRA_CSTD::abs(a-b); }
 
     double operator()()
 		{ return sumDifference_; }

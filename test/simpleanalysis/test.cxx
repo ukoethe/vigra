@@ -640,9 +640,9 @@ struct DistanceTransformTest
             for(x=0; x<7; ++x)
             {
                 double dist = acc(i, vigra::Diff2D(x,y));
-                double dist1 = std::sqrt((2.0 - x)*(2.0 - x) +
+                double dist1 = VIGRA_CSTD::sqrt((2.0 - x)*(2.0 - x) +
                                          (2.0 - y)*(2.0 - y));
-                double dist2 = std::sqrt((5.0 - x)*(5.0 - x) +
+                double dist2 = VIGRA_CSTD::sqrt((5.0 - x)*(5.0 - x) +
                                          (5.0 - y)*(5.0 - y));
                 double desired = (dist1 < dist2) ? dist1 : dist2;
                 
@@ -896,9 +896,9 @@ struct RegionGrowingTest
             for(x=0; x<7; ++x)
             {
                 double dist = acc(i, vigra::Diff2D(x,y));
-                double dist1 = std::sqrt((2.0 - x)*(2.0 - x) +
+                double dist1 = VIGRA_CSTD::sqrt((2.0 - x)*(2.0 - x) +
                                          (2.0 - y)*(2.0 - y));
-                double dist2 = std::sqrt((5.0 - x)*(5.0 - x) +
+                double dist2 = VIGRA_CSTD::sqrt((5.0 - x)*(5.0 - x) +
                                          (5.0 - y)*(5.0 - y));
                 double desired = (dist1 <= dist2) ? 1 : 2;
                 

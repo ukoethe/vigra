@@ -159,7 +159,8 @@ radialSymmetryTransform(SrcIterator sul, SrcIterator slr, SrcAccessor as,
     
     TmpIterator gxi = gx.upperLeft();
     TmpIterator gyi = gy.upperLeft();
-    for(int y=0; y<h; ++y, ++gxi.y, ++gyi.y)
+    int y;
+    for(y=0; y<h; ++y, ++gxi.y, ++gyi.y)
     {
         typename TmpIterator::row_iterator gxr = gxi.rowIterator();
         typename TmpIterator::row_iterator gyr = gyi.rowIterator();
@@ -198,7 +199,7 @@ radialSymmetryTransform(SrcIterator sul, SrcIterator slr, SrcAccessor as,
     int maxOrientation = 0;
     TmpType maxMagnitude = NumericTraits<TmpType>::zero();
 
-    for(int y=0; y<h; ++y)
+    for(y=0; y<h; ++y)
     {
         for(int x = 0; x<w; ++x)
         {
@@ -214,7 +215,7 @@ radialSymmetryTransform(SrcIterator sul, SrcIterator slr, SrcAccessor as,
         }
     }
     
-    for(int y=0; y<h; ++y)
+    for(y=0; y<h; ++y)
     {
         for(int x = 0; x<w; ++x)
         {

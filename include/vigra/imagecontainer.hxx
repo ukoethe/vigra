@@ -48,7 +48,9 @@ public:
     typedef typename std::vector<ImageType>::const_reverse_iterator const_reverse_iterator;
     typedef typename std::vector<ImageType>::reference reference;
     typedef typename std::vector<ImageType>::const_reference const_reference;
+#if !defined(_MSC_VER) || _MSC_VER >= 1300
     typedef typename std::vector<ImageType>::pointer pointer;
+#endif
     typedef typename std::vector<ImageType>::difference_type difference_type;
     typedef typename std::vector<ImageType>::size_type size_type;
 

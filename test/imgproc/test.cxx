@@ -552,8 +552,9 @@ struct ImageFunctionsTest
     void gradientFunctionTest()
     {
         RGBImage in(3,3);
+        int y;
 
-        for(int y=0; y<3; ++y)
+        for(y=0; y<3; ++y)
         {
             for(int x=0; x<3; ++x)
             {
@@ -567,11 +568,11 @@ struct ImageFunctionsTest
           srcImageRange(in, vigra::RedAccessor<vigra::RGBValue<float> >()),
           destImage(res), vigra::MagnitudeFunctor<float>());
 
-        for(int y=0; y<3; ++y)
+        for(y=0; y<3; ++y)
         {
             for(int x=0; x<3; ++x)
             {
-                should(fabs(res(x,y) - std::sqrt(2.0)) < 1e-6);
+                should(fabs(res(x,y) - VIGRA_CSTD::sqrt(2.0)) < 1e-6);
             }
         }
 
@@ -579,11 +580,11 @@ struct ImageFunctionsTest
           srcImageRange(in),
           destImage(res), vigra::RGBGradientMagnitudeFunctor<float>());
 
-        for(int y=0; y<3; ++y)
+        for(y=0; y<3; ++y)
         {
             for(int x=0; x<3; ++x)
             {
-                should(fabs(res(x,y) - std::sqrt(6.0)) < 1e-6);
+                should(fabs(res(x,y) - VIGRA_CSTD::sqrt(6.0)) < 1e-6);
             }
         }
     }
