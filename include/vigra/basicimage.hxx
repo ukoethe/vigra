@@ -335,7 +335,7 @@ class ConstBasicImageIterator: public BasicImageIteratorBase<PIXELTYPE, ITERATOR
         return ret;
     }
 
-    inline PixelType operator*() const
+    inline PixelType const & operator*() const
     {
         return this->current();
     }
