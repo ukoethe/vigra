@@ -139,6 +139,7 @@ namespace vigra {
                 delete[] stripbuffer;
             }
         }
+
         if ( tiff != 0 )
             TIFFClose(tiff);
     }
@@ -509,8 +510,15 @@ namespace vigra {
                 // write next strip
                 stripindex = 0;
 
-                TIFFWriteEncodedStrip( tiff, strip++, stripbuffer[0],
+                int success = TIFFWriteEncodedStrip( tiff, strip++, stripbuffer[0],
                                        TIFFVStripSize( tiff, rows ) );
+                if(success == -1 && tiffcomp == COMPRESSION_LZW)
+                {
+                    throw Encoder::TIFFNoLZWException(); // retry without compression
+                }
+                
+                vigra_postcondition(success != -1,
+                        "exportImage(): Unable to write TIFF data.");
             }
         }
     };
