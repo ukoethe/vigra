@@ -62,7 +62,7 @@ typedef double fftw_real;
 class FFTWComplex
 {
     fftw_complex data_;
-    
+
   public:
         /** The complex' component type, as defined in '<TT>fftw3.h</TT>'
         */
@@ -154,14 +154,14 @@ class FFTWComplex
         data_[1] = o[1];
         return *this;
     }
-    
-    reference re() 
+
+    reference re()
         { return data_[0]; }
 
     const_reference re() const
         { return data_[0]; }
 
-    reference im() 
+    reference im()
         { return data_[1]; }
 
     const_reference im() const
@@ -201,16 +201,16 @@ class FFTWComplex
         */
     int size() const
         { return 2; }
-        
+
     iterator begin()
         { return data_; }
-        
+
     iterator end()
         { return data_ + 2; }
-        
+
     const_iterator begin() const
         { return data_; }
-        
+
     const_iterator end() const
         { return data_ + 2; }
 };
@@ -437,10 +437,10 @@ inline FFTWComplex conj(const FFTWComplex &a)
     /** Float (<tt>fftw_real</tt>) image.
         The type <tt>fftw_real</tt> (either <tt>float</tt> or <tt>double</tt>)
         is defined during compilation of fftw and imported into VIGRA
-        from <tt>fftw3.h</tt>. FFTWRealImage uses \ref vigra::BasicImageIterator 
-        and \ref vigra::StandardAccessor and 
+        from <tt>fftw3.h</tt>. FFTWRealImage uses \ref vigra::BasicImageIterator
+        and \ref vigra::StandardAccessor and
         their const counterparts to access the data.
-        
+
         <b>\#include</b> "<a href="fftw3_8hxx-source.html">vigra/fftw3.hxx</a>"<br>
         Namespace: vigra
     */
@@ -508,7 +508,7 @@ typedef BasicImage<FFTWComplex> FFTWComplexImage;
 /** \addtogroup DataAccessors
 */
 //@{
-/** \defgroup FFTWComplexAccessors Accessors for FFTWComplex 
+/** \defgroup FFTWComplexAccessors Accessors for FFTWComplex
 
     Encapsulate access to pixels of type FFTWComplex
 */
@@ -1097,12 +1097,12 @@ void applyFourierFilterImpl(
 {
     int w = srcLowerRight.x - srcUpperLeft.x;
     int h = srcLowerRight.y - srcUpperLeft.y;
-    
+
     FFTWComplexImage complexResultImg(srcLowerRight - srcUpperLeft);
 
     // FFT from srcImage to complexResultImg
     fftw_plan forwardPlan=
-        fftw_plan_dft_2d(h, w, (fftw_complex *)&(*srcUpperLeft), 
+        fftw_plan_dft_2d(h, w, (fftw_complex *)&(*srcUpperLeft),
                                (fftw_complex *)complexResultImg.begin(),
                                FFTW_FORWARD, FFTW_ESTIMATE );
     fftw_execute(forwardPlan);
@@ -1148,6 +1148,7 @@ void applyFourierFilterImplNormalization(FFTWComplexImage const &srcImage,
     }
 }
 
+inline
 void applyFourierFilterImplNormalization(FFTWComplexImage const & srcImage,
         FFTWComplexImage::traverser destUpperLeft,
         FFTWComplexImage::Accessor da,
@@ -1333,14 +1334,14 @@ void applyFourierFilterFamilyImpl(
     FFTWComplexImage result(w, h);
 
     fftw_plan forwardPlan=
-        fftw_plan_dft_2d(h, w, (fftw_complex *)&(*srcUpperLeft), 
+        fftw_plan_dft_2d(h, w, (fftw_complex *)&(*srcUpperLeft),
                                (fftw_complex *)freqImage.begin(),
                                FFTW_FORWARD, FFTW_ESTIMATE );
     fftw_execute(forwardPlan);
     fftw_destroy_plan(forwardPlan);
 
     fftw_plan backwardPlan=
-        fftw_plan_dft_2d(h, w, (fftw_complex *)result.begin(), 
+        fftw_plan_dft_2d(h, w, (fftw_complex *)result.begin(),
                                (fftw_complex *)result.begin(),
                                FFTW_BACKWARD, FFTW_ESTIMATE );
     typedef typename
@@ -1368,7 +1369,7 @@ void applyFourierFilterFamilyImpl(
 
 template <class SrcTraverser, class SrcAccessor,
           class DestTraverser, class DestAccessor>
-inline void 
+inline void
 realFourierTransformXEvenYEven(triple<SrcTraverser, SrcTraverser, SrcAccessor> src,
                                pair<DestTraverser, DestAccessor> dest, fftw_real norm)
 {
@@ -1378,19 +1379,19 @@ realFourierTransformXEvenYEven(triple<SrcTraverser, SrcTraverser, SrcAccessor> s
 
 template <class SrcTraverser, class SrcAccessor,
           class DestTraverser, class DestAccessor>
-inline void 
+inline void
 realFourierTransformXEvenYEven(SrcTraverser sul, SrcTraverser slr, SrcAccessor src,
                                DestTraverser dul, DestAccessor dest, fftw_real norm)
 {
-    realFourierTransformWorkImageImpl(sul, slr, src, dul, dest, 
+    realFourierTransformWorkImageImpl(sul, slr, src, dul, dest,
                                       norm, FFTW_REDFT00, FFTW_REDFT00);
 }
 
 template <class DestTraverser, class DestAccessor>
-inline void 
+inline void
 realFourierTransformXEvenYEven(
-         FFTWRealImage::const_traverser sul, 
-         FFTWRealImage::const_traverser slr, 
+         FFTWRealImage::const_traverser sul,
+         FFTWRealImage::const_traverser slr,
          FFTWRealImage::Accessor src,
          DestTraverser dul, DestAccessor dest, fftw_real norm)
 {
@@ -1398,10 +1399,10 @@ realFourierTransformXEvenYEven(
 
     // test for right memory layout (fftw expects a width*height fftw_real array)
     if (&(*(sul + Diff2D(w, 0))) == &(*(sul + Diff2D(0, 1))))
-        realFourierTransformImpl(sul, slr, dul, dest, 
+        realFourierTransformImpl(sul, slr, dul, dest,
                                  norm, FFTW_REDFT00, FFTW_REDFT00);
     else
-        realFourierTransformWorkImageImpl(sul, slr, src, dul, dest, 
+        realFourierTransformWorkImageImpl(sul, slr, src, dul, dest,
                                  norm, FFTW_REDFT00, FFTW_REDFT00);
 }
 
@@ -1409,7 +1410,7 @@ realFourierTransformXEvenYEven(
 
 template <class SrcTraverser, class SrcAccessor,
           class DestTraverser, class DestAccessor>
-inline void 
+inline void
 realFourierTransformXOddYEven(triple<SrcTraverser, SrcTraverser, SrcAccessor> src,
                                pair<DestTraverser, DestAccessor> dest, fftw_real norm)
 {
@@ -1419,19 +1420,19 @@ realFourierTransformXOddYEven(triple<SrcTraverser, SrcTraverser, SrcAccessor> sr
 
 template <class SrcTraverser, class SrcAccessor,
           class DestTraverser, class DestAccessor>
-inline void 
+inline void
 realFourierTransformXOddYEven(SrcTraverser sul, SrcTraverser slr, SrcAccessor src,
                                DestTraverser dul, DestAccessor dest, fftw_real norm)
 {
-    realFourierTransformWorkImageImpl(sul, slr, src, dul, dest, 
+    realFourierTransformWorkImageImpl(sul, slr, src, dul, dest,
                                       norm, FFTW_RODFT00, FFTW_REDFT00);
 }
 
 template <class DestTraverser, class DestAccessor>
-inline void 
+inline void
 realFourierTransformXOddYEven(
-         FFTWRealImage::const_traverser sul, 
-         FFTWRealImage::const_traverser slr, 
+         FFTWRealImage::const_traverser sul,
+         FFTWRealImage::const_traverser slr,
          FFTWRealImage::Accessor src,
          DestTraverser dul, DestAccessor dest, fftw_real norm)
 {
@@ -1439,10 +1440,10 @@ realFourierTransformXOddYEven(
 
     // test for right memory layout (fftw expects a width*height fftw_real array)
     if (&(*(sul + Diff2D(w, 0))) == &(*(sul + Diff2D(0, 1))))
-        realFourierTransformImpl(sul, slr, dul, dest, 
+        realFourierTransformImpl(sul, slr, dul, dest,
                                  norm, FFTW_RODFT00, FFTW_REDFT00);
     else
-        realFourierTransformWorkImageImpl(sul, slr, src, dul, dest, 
+        realFourierTransformWorkImageImpl(sul, slr, src, dul, dest,
                                  norm, FFTW_RODFT00, FFTW_REDFT00);
 }
 
@@ -1450,7 +1451,7 @@ realFourierTransformXOddYEven(
 
 template <class SrcTraverser, class SrcAccessor,
           class DestTraverser, class DestAccessor>
-inline void 
+inline void
 realFourierTransformXEvenYOdd(triple<SrcTraverser, SrcTraverser, SrcAccessor> src,
                                pair<DestTraverser, DestAccessor> dest, fftw_real norm)
 {
@@ -1460,19 +1461,19 @@ realFourierTransformXEvenYOdd(triple<SrcTraverser, SrcTraverser, SrcAccessor> sr
 
 template <class SrcTraverser, class SrcAccessor,
           class DestTraverser, class DestAccessor>
-inline void 
+inline void
 realFourierTransformXEvenYOdd(SrcTraverser sul, SrcTraverser slr, SrcAccessor src,
                                DestTraverser dul, DestAccessor dest, fftw_real norm)
 {
-    realFourierTransformWorkImageImpl(sul, slr, src, dul, dest, 
+    realFourierTransformWorkImageImpl(sul, slr, src, dul, dest,
                                       norm, FFTW_REDFT00, FFTW_RODFT00);
 }
 
 template <class DestTraverser, class DestAccessor>
-inline void 
+inline void
 realFourierTransformXEvenYOdd(
-         FFTWRealImage::const_traverser sul, 
-         FFTWRealImage::const_traverser slr, 
+         FFTWRealImage::const_traverser sul,
+         FFTWRealImage::const_traverser slr,
          FFTWRealImage::Accessor src,
          DestTraverser dul, DestAccessor dest, fftw_real norm)
 {
@@ -1480,10 +1481,10 @@ realFourierTransformXEvenYOdd(
 
     // test for right memory layout (fftw expects a width*height fftw_real array)
     if (&(*(sul + Diff2D(w, 0))) == &(*(sul + Diff2D(0, 1))))
-        realFourierTransformImpl(sul, slr, dul, dest, 
+        realFourierTransformImpl(sul, slr, dul, dest,
                                  norm, FFTW_REDFT00, FFTW_RODFT00);
     else
-        realFourierTransformWorkImageImpl(sul, slr, src, dul, dest, 
+        realFourierTransformWorkImageImpl(sul, slr, src, dul, dest,
                                  norm, FFTW_REDFT00, FFTW_RODFT00);
 }
 
@@ -1491,7 +1492,7 @@ realFourierTransformXEvenYOdd(
 
 template <class SrcTraverser, class SrcAccessor,
           class DestTraverser, class DestAccessor>
-inline void 
+inline void
 realFourierTransformXOddYOdd(triple<SrcTraverser, SrcTraverser, SrcAccessor> src,
                                pair<DestTraverser, DestAccessor> dest, fftw_real norm)
 {
@@ -1501,19 +1502,19 @@ realFourierTransformXOddYOdd(triple<SrcTraverser, SrcTraverser, SrcAccessor> src
 
 template <class SrcTraverser, class SrcAccessor,
           class DestTraverser, class DestAccessor>
-inline void 
+inline void
 realFourierTransformXOddYOdd(SrcTraverser sul, SrcTraverser slr, SrcAccessor src,
                                DestTraverser dul, DestAccessor dest, fftw_real norm)
 {
-    realFourierTransformWorkImageImpl(sul, slr, src, dul, dest, 
+    realFourierTransformWorkImageImpl(sul, slr, src, dul, dest,
                                       norm, FFTW_RODFT00, FFTW_RODFT00);
 }
 
 template <class DestTraverser, class DestAccessor>
-inline void 
+inline void
 realFourierTransformXOddYOdd(
-         FFTWRealImage::const_traverser sul, 
-         FFTWRealImage::const_traverser slr, 
+         FFTWRealImage::const_traverser sul,
+         FFTWRealImage::const_traverser slr,
          FFTWRealImage::Accessor src,
          DestTraverser dul, DestAccessor dest, fftw_real norm)
 {
@@ -1521,10 +1522,10 @@ realFourierTransformXOddYOdd(
 
     // test for right memory layout (fftw expects a width*height fftw_real array)
     if (&(*(sul + Diff2D(w, 0))) == &(*(sul + Diff2D(0, 1))))
-        realFourierTransformImpl(sul, slr, dul, dest, 
+        realFourierTransformImpl(sul, slr, dul, dest,
                                  norm, FFTW_RODFT00, FFTW_RODFT00);
     else
-        realFourierTransformWorkImageImpl(sul, slr, src, dul, dest, 
+        realFourierTransformWorkImageImpl(sul, slr, src, dul, dest,
                                  norm, FFTW_RODFT00, FFTW_RODFT00);
 }
 
@@ -1532,9 +1533,9 @@ realFourierTransformXOddYOdd(
 
 template <class SrcTraverser, class SrcAccessor,
           class DestTraverser, class DestAccessor>
-void 
+void
 realFourierTransformWorkImageImpl(SrcTraverser sul, SrcTraverser slr, SrcAccessor src,
-                                  DestTraverser dul, DestAccessor dest, 
+                                  DestTraverser dul, DestAccessor dest,
                                   fftw_real norm, fftw_r2r_kind kindx, fftw_r2r_kind kindy)
 {
     FFTWRealImage workImage(slr - sul);
@@ -1546,11 +1547,11 @@ realFourierTransformWorkImageImpl(SrcTraverser sul, SrcTraverser slr, SrcAccesso
 
 
 template <class DestTraverser, class DestAccessor>
-void 
+void
 realFourierTransformImpl(
-         FFTWRealImage::const_traverser sul, 
-         FFTWRealImage::const_traverser slr, 
-         DestTraverser dul, DestAccessor dest, 
+         FFTWRealImage::const_traverser sul,
+         FFTWRealImage::const_traverser slr,
+         DestTraverser dul, DestAccessor dest,
          fftw_real norm, fftw_r2r_kind kindx, fftw_r2r_kind kindy)
 {
     int w = slr.x - sul.x;
@@ -1560,9 +1561,9 @@ realFourierTransformImpl(
     fftw_plan plan = fftw_plan_r2r_2d(h, w, 
                          (fftw_real *)&(*sul), (fftw_real *)res.begin(),
                          kindy, kindx, FFTW_ESTIMATE);
-    fftw_execute(plan);    
+    fftw_execute(plan);
     fftw_destroy_plan(plan);
-    
+
     if(norm != 1.0)
         transformImage(srcImageRange(res), destIter(dul, dest),
                        std::bind1st(std::multiplies<fftw_real>(), 1.0 / norm));

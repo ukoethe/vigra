@@ -182,16 +182,16 @@ class FFTWComplex
         */
     int size() const
         { return 2; }
-        
+
     iterator begin()
         { return &re; }
-        
+
     iterator end()
         { return &re + 2; }
-        
+
     const_iterator begin() const
         { return &re; }
-        
+
     const_iterator end() const
         { return &re + 2; }
 };
@@ -457,10 +457,10 @@ inline FFTWComplex conj(const FFTWComplex &a)
     /** Float (<tt>fftw_real</tt>) image.
         The type <tt>fftw_real</tt> (either <tt>float</tt> or <tt>double</tt>)
         is defined during compilation of fftw and imported into VIGRA
-        from <tt>fftw.h</tt>. FFTWRealImage uses \ref vigra::BasicImageIterator 
-        and \ref vigra::StandardAccessor and 
+        from <tt>fftw.h</tt>. FFTWRealImage uses \ref vigra::BasicImageIterator
+        and \ref vigra::StandardAccessor and
         their const counterparts to access the data.
-        
+
         <b>\#include</b> "<a href="fftw_8hxx-source.html">vigra/fftw.hxx</a>"<br>
         Namespace: vigra
     */
@@ -528,7 +528,7 @@ typedef BasicImage<FFTWComplex> FFTWComplexImage;
 /** \addtogroup DataAccessors
 */
 //@{
-/** \defgroup FFTWComplexAccessors Accessors for FFTWComplex 
+/** \defgroup FFTWComplexAccessors Accessors for FFTWComplex
 
     Encapsulate access to pixels of type FFTWComplex
 */
@@ -1241,6 +1241,7 @@ void applyFourierFilterImplNormalization(FFTWComplexImage const &srcImage,
     }
 }
 
+inline
 void applyFourierFilterImplNormalization(FFTWComplexImage const & srcImage,
         FFTWComplexImage::traverser destUpperLeft,
         FFTWComplexImage::Accessor da,
