@@ -20,9 +20,9 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="&quot;C:\Users\Koethe\src\tiff-v3.5.7\libtiff&quot;;&quot;C:\Users\Koethe\src\jpeg-6b&quot;;..\..\include"
-				PreprocessorDefinitions="WIN32,_DEBUG,_WINDOWS,HasTIFF,HasJPEG"
-				RuntimeLibrary="2"
+				AdditionalIncludeDirectories="&quot;C:\Users\Koethe\src\libpng-1.2.5&quot;;&quot;C:\Programme\zlib-1.1.3&quot;;&quot;C:\Users\Koethe\src\tiff-v3.5.7\libtiff&quot;;&quot;C:\Users\Koethe\src\jpeg-6b&quot;;C:\Users\Koethe\src\vigra\current\include"
+				PreprocessorDefinitions="WIN32,_DEBUG,_WINDOWS,HasTIFF,HasJPEG,HasPNG"
+				RuntimeLibrary="3"
 				UsePrecompiledHeader="2"
 				PrecompiledHeaderFile=".\Debug/impex.pch"
 				AssemblerListingLocation=".\Debug/"
@@ -68,7 +68,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				InlineFunctionExpansion="1"
-				AdditionalIncludeDirectories="&quot;C:\Users\Koethe\src\libpng-1.2.5&quot;;&quot;C:\Users\Koethe\src\tiff-v3.5.7\libtiff&quot;;&quot;C:\Users\Koethe\src\jpeg-6b&quot;;C:\Users\Koethe\src\vigra\current\include"
+				AdditionalIncludeDirectories="&quot;C:\Users\Koethe\src\libpng-1.2.5&quot;;&quot;C:\Programme\zlib-1.1.3&quot;;&quot;C:\Users\Koethe\src\tiff-v3.5.7\libtiff&quot;;&quot;C:\Users\Koethe\src\jpeg-6b&quot;;C:\Users\Koethe\src\vigra\current\include"
 				PreprocessorDefinitions="WIN32,NDEBUG,_WINDOWS,HasJPEG,HasTIFF,HasPNG"
 				StringPooling="TRUE"
 				RuntimeLibrary="2"
