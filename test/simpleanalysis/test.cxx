@@ -1,7 +1,7 @@
 #include <iostream>
 #include <functional>
 #include <cmath>
-#include "unittest.h"
+#include "unittest.hxx"
 #include "vigra/stdimage.hxx"
 #include "vigra/labelimage.hxx"
 #include "vigra/edgedetection.hxx"

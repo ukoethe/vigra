@@ -1,6 +1,6 @@
 #include <algorithm>
 #include <iostream>
-#include "unittest.h"
+#include "unittest.hxx"
 #include "vigra/colorconversions.hxx"
 
 using namespace vigra;

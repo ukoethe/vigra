@@ -1,7 +1,7 @@
 include $(VIGRA_PATH)/config/Makefile.include
 
-		   CXXFLAGS = -O -I../include
-	                LIB = -lm
+CXXFLAGS = -O -I../include -I/software/fftw-2.1.3/include -I/home/rezniche/vigra/boost_test
+LIB = -lm 
 		 
 test:: test.o
 	$(CXX) $(CXXFLAGS) $(CXXINC) -o test test.o $(LIB)

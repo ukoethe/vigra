@@ -2,7 +2,7 @@
 #define VARIABLE_BANDS_IMAGE_POLICY_HXX
 
 #include "NewImHier.hxx"
-#include <unittest.h>
+#include <unittest.hxx>
 
 /**An das template wird eine Policy-Klasse der Bilder der Imagehierarchie uebergeben
 *  die moeglichen sind: ImagePolicy<GrayImage>, RGBImagePolicy<RGBImage>,

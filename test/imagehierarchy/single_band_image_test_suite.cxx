@@ -3,7 +3,7 @@
 #include "single_band_image_policy.hxx" 
 #include "one_band_image_policy.hxx" 
 #include "single_band_image_test.hxx"
-#include <unittest.h> 
+#include <unittest.hxx> 
 
 /** Vorsicht !!! in select_image_test.hxx gibt's SingleBandImageTestSuite. Den Unterschied beachten!!!
 */

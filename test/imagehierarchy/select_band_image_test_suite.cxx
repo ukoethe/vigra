@@ -7,7 +7,7 @@
 // #include "vector_4_image_policy.hxx" 
 #include "rgb_images_policy.hxx" 
 // #include "select_image_test.hxx" 
-#include <unittest.h> 
+#include <unittest.hxx> 
 
 /* Vorsicht !!! in select_image_test.hxx gibt's SelectBandImageTestSuite. Den Unterschied beachten!!!
 */

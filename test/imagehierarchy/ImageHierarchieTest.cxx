@@ -1,5 +1,5 @@
 #include <iostream>
-#include <unittest.h>
+#include <unittest.hxx>
 #include <functional>
 #include <algorithm>
 #include "vigra/imagehierarchie.hxx"

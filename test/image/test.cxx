@@ -1,5 +1,5 @@
 #include <iostream>
-#include "unittest.h"
+#include "unittest.hxx"
 #include "vigra/stdimage.hxx"
 #include "vigra/imageiterator.hxx"
 #include "vigra/viff.hxx"

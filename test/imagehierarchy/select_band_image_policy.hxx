@@ -2,7 +2,7 @@
 #define SELECT_BAND_IMAGE_POLICY_HXX
 
 #include "NewImHier.hxx"
-#include <unittest.h>
+#include <unittest.hxx>
 
 template <class MULTI_BAND_IMAGE_POLICY, int TO_SELECT_BAND>
 class SelectBandImagePolicy

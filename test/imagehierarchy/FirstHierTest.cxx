@@ -1,7 +1,7 @@
 #include "g++_relops_workaround.hxx"
 
 #include <iostream>
-#include <unittest.h>
+#include <unittest.hxx>
 #include "policy.hxx"
 #include "NewImHier.hxx"
 

@@ -1,6 +1,6 @@
 #include "g++_relops_workaround.hxx"
 
-#include <unittest.h>
+#include <unittest.hxx>
 #include "one_band_image_policy.hxx"
 #include "vector_2_image_policy.hxx"
 #include "vector_3_image_policy.hxx"

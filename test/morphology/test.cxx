@@ -1,5 +1,5 @@
 #include <iostream>
-#include "unittest.h"
+#include "unittest.hxx"
 #include "vigra/stdimage.hxx"
 #include "vigra/flatmorphology.hxx"
 

@@ -1,5 +1,5 @@
 #include <iostream>
-#include "unittest.h"
+#include "unittest.hxx"
 
 #include "vigra/accessor.hxx"
 #include "vigra/tinyvector.hxx"

@@ -2,7 +2,7 @@
 #define VECTOR_2_IMAGE_POLICY_HXX
 
 #include "test_policy_parent.hxx"
-#include <unittest.h>
+#include <unittest.hxx>
 
 template<class Vector2ImageP>                                           // bei dem template handelt es sich um Vector2Image, der einer der folgenden Varianten einnehmen kann: FVector2Image, DVector2Image, Vector2Image
 class Vector2ImagePolicy

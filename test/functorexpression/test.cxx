@@ -1,6 +1,6 @@
 #include <iostream>
 #include <algorithm>
-#include "unittest.h"
+#include "unittest.hxx"
 #include "vigra/functorexpression.hxx"
 #include "vigra/rgbvalue.hxx"
 

@@ -2,7 +2,7 @@
 #define VECTOR_3_IMAGE_POLICY_HXX
 
 #include "test_policy_parent.hxx"
-#include <unittest.h>
+#include <unittest.hxx>
 
 template<class Vector3ImageP>                                           // bei dem template handelt es sich um Vector3Image, der einer der folgenden Varianten einnehmen kann: FVector3Image, DVector3Image, Vector3Image
 class Vector3ImagePolicy

@@ -1,7 +1,7 @@
 #ifndef PARENT_TEST_CLASS_HXX
 #define PARENT_TEST_CLASS_HXX
 
-#include <unittest.h>
+#include <unittest.hxx>
 
 using vigra::Diff2D;
 // 

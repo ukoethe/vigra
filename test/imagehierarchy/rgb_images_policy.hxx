@@ -2,7 +2,7 @@
 #define RGB__IMAGES_POLICY_HXX
 
 #include "test_policy_parent.hxx"
-#include <unittest.h>
+#include <unittest.hxx>
 
 // bei dem template handelt es sich um ein RGBImage
 template<class ImageP>                                                  

@@ -3,7 +3,7 @@
 #include "vigra/stdimage.hxx"
 #include "vigra/viff.hxx"
 #include "vigra/impex.hxx"
-#include "unittest.h"
+#include "unittest.hxx"
 
 using namespace vigra;
 

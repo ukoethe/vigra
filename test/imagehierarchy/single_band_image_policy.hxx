@@ -2,7 +2,7 @@
 #define SINGLE_BAND_IMAGE_POLICY_HXX
 
 #include "NewImHier.hxx"
-#include <unittest.h>
+#include <unittest.hxx>
 
 template<class IMAGEPOLICY>                                 // Bei der IMAGEPOLICY handelt es sich bis jetzt nur um GrayImage, spaeter soll SelectBandImage folgen
 class SingleBandImagePolicy
