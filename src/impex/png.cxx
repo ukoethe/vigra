@@ -145,7 +145,7 @@ namespace vigra {
         // create png read struct with user defined handlers
         png = png_create_read_struct( PNG_LIBPNG_VER_STRING, NULL,
                                       &PngError, &PngWarning );
-        vigra_postcondition( png, "could not create the read struct." );
+        vigra_postcondition( png != 0, "could not create the read struct." );
 
         // create info struct
         if (setjmp(png->jmpbuf)) {
@@ -153,7 +153,7 @@ namespace vigra {
             vigra_postcondition( false, png_error_message.insert(0, "error in png_create_info_struct(): ").c_str() );
         }
         info = png_create_info_struct(png);
-        vigra_postcondition( info, "could not create the info struct." );
+        vigra_postcondition( info != 0, "could not create the info struct." );
 
         // init png i/o
         if (setjmp(png->jmpbuf)) {
@@ -399,7 +399,7 @@ namespace vigra {
         // create png struct with user defined handlers
         png = png_create_write_struct( PNG_LIBPNG_VER_STRING, NULL, 
                                        &PngError, &PngWarning );
-        vigra_postcondition( png, "could not create the write struct." );
+        vigra_postcondition( png != 0, "could not create the write struct." );
 
         // create info struct
         if (setjmp(png->jmpbuf)) {

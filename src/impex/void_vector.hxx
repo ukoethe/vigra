@@ -26,6 +26,7 @@
 
 #include <algorithm>
 #include <cstring>
+#include "vigra/config.hxx"
 
 namespace vigra
 {
@@ -67,7 +68,7 @@ namespace vigra
             : m_size(rhs.m_size), m_capacity(rhs.m_capacity)
         {
             m_data = ::operator new(rhs.m_capacity);
-            std::memcpy( m_data, rhs.m_data, m_size );
+            VIGRA_CSTD::memcpy( m_data, rhs.m_data, m_size );
         }
     
         ~void_vector_base()
@@ -83,7 +84,7 @@ namespace vigra
             m_capacity = rhs.m_capacity;
             m_size = rhs.m_size;
             m_data = ::operator new(m_capacity);
-            std::memcpy( m_data, rhs.m_data, m_size );
+            VIGRA_CSTD::memcpy( m_data, rhs.m_data, m_size );
             return *this;
         }
     
@@ -92,7 +93,7 @@ namespace vigra
             size_type new_size = m_size + rhs.m_size;
             if ( m_capacity < new_size )
                 reserve( m_capacity + rhs.m_capacity );
-            std::memcpy( static_cast< unsigned char * >
+            VIGRA_CSTD::memcpy( static_cast< unsigned char * >
                          (m_data) + m_size, rhs.m_data, rhs.m_size );
             m_size = new_size;
         }
@@ -106,7 +107,7 @@ namespace vigra
         {
             if ( new_capacity <= m_capacity ) return;
             void * new_data = ::operator new(new_capacity);
-            std::memcpy( new_data, m_data, m_size );
+            VIGRA_CSTD::memcpy( new_data, m_data, m_size );
             ::operator delete(m_data);
             m_data = new_data;
             m_capacity = new_capacity;

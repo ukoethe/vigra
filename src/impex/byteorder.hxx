@@ -64,9 +64,10 @@ namespace vigra
             const unsigned int n = sizeof(T);
             unsigned char t[n];
             unsigned char * c = reinterpret_cast< unsigned char * >(&x);
-            for( unsigned int i = 0; i < n; ++i )
+            unsigned int i;
+            for( i = 0; i < n; ++i )
                 t[i] = c[ n - 1 - i ];
-            for( unsigned int i = 0; i < n; ++i )
+            for( i = 0; i < n; ++i )
                 c[i] = t[i];
         }
 
@@ -84,63 +85,51 @@ namespace vigra
         const std::string & get_host_byteorder() const;
 
         template< class T >
-        void convert_to_host( T & x ) const;
+        void convert_to_host( T & x ) const
+        {
+            if (!native)
+                reversebytes(x);
+        }
+
+        template< class T >
+        void convert_to_host( T * x, unsigned int num ) const
+        {
+            if (!native)
+                for( unsigned int i = 0; i < num; ++i )
+                    reversebytes(x[i]);
+        }
+
+        template< class T >
+        void convert_from_host( T & x ) const
+        {
+            if (!native)
+                reversebytes(x);
+        }
+
+        template< class T >
+        void convert_from_host( T * x, unsigned int num ) const
+        {
+            if (!native)
+                for( unsigned int i = 0; i < num; ++i )
+                    reversebytes(x[i]);
+        }
 
         void convert_to_host( char & x ) const {}
         void convert_to_host( signed char & x ) const {}
         void convert_to_host( unsigned char & x ) const {}
 
-        template< class T >
-        void convert_to_host( T * x, unsigned int num ) const;
-
         void convert_to_host( char * x , unsigned int) const {}
         void convert_to_host( signed char * x, unsigned int) const {}
         void convert_to_host( unsigned char * x, unsigned int) const {}
-
-        template< class T >
-        void convert_from_host( T & x ) const;
 
         void convert_from_host( char & x ) const {}
         void convert_from_host( signed char & x ) const {}
         void convert_from_host( unsigned char & x ) const {}
 
-        template< class T >
-        void convert_from_host( T * x, unsigned int num ) const;
-
         void convert_from_host( char * x , unsigned int) const {}
         void convert_from_host( signed char * x, unsigned int) const {}
         void convert_from_host( unsigned char * x, unsigned int) const {}
     };
-
-    template< class T >
-    void byteorder::convert_to_host( T & x ) const
-    {
-        if (!native)
-            reversebytes(x);
-    }
-
-    template< class T >
-    void byteorder::convert_to_host( T * x, unsigned int num ) const
-    {
-        if (!native)
-            for( unsigned int i = 0; i < num; ++i )
-                reversebytes(x[i]);
-    }
-
-    template< class T >
-    void byteorder::convert_from_host( T & x ) const
-    {
-        if (!native)
-            reversebytes(x);
-    }
-
-    template< class T >
-    void byteorder::convert_from_host( T * x, unsigned int num ) const
-    {
-        if (!native)
-            for( unsigned int i = 0; i < num; ++i )
-                reversebytes(x[i]);
-    }
 
     template< class T >
     void read_field( std::ifstream & stream, const byteorder & bo, T & x )

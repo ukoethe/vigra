@@ -37,7 +37,7 @@ namespace vigra
         auto_file( const char * name, const char * mode )
         : m_file(0)
         {
-            m_file = std::fopen( name, mode );
+            m_file = VIGRA_CSTD::fopen( name, mode );
             if(!m_file)
             {
                 std::string msg("Unable to open file '");
@@ -50,7 +50,7 @@ namespace vigra
         ~auto_file()
         {
             if(m_file)
-                std::fclose(m_file);
+                VIGRA_CSTD::fclose(m_file);
         }
 
         FILE * get()

@@ -81,9 +81,9 @@ void findImageSequence(const std::string &name_base,
         for(int i=0; i<split; ++i)
         {
             if(name_base[i] == '/')
-                path.push_back('\\');
+                path += '\\';
             else 
-                path.push_back(name_base[i]);
+                path += name_base[i];
         }
         base.append(name_base, split+1, name_base.size() - split - 1);
     }
@@ -184,6 +184,26 @@ void findImageSequence(const std::string &name_base,
 #endif // _WIN32
 
 // build a string from a sequence.
+#if _MSC_VER < 1300
+template <class iterator>
+std::string stringify (const iterator &start, const iterator &end)
+{
+    return stringifyImpl(start, end, *start);
+}
+
+template <class iterator, class Value>
+std::string stringifyImpl (const iterator &start, const iterator &end, Value const &)
+{
+    std::ostringstream out;
+    // do not place a space character after the last sequence element.
+    std::copy (start, end - 1,
+               std::ostream_iterator <Value> (out, " "));
+    out << *(end-1);
+    return out.str ();
+}
+
+#else
+
 template <class iterator>
 std::string stringify (const iterator &start, const iterator &end)
 {
@@ -195,6 +215,8 @@ std::string stringify (const iterator &start, const iterator &end)
     out << *(end-1);
     return out.str ();
 }
+
+#endif // _MSC_VER < 1300
 
 void validate_filetype( std::string filetype )
 {

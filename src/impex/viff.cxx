@@ -442,7 +442,8 @@ namespace vigra {
         }
 
         // pad, then zero out the comments
-        for( unsigned int i = 0; i < 515; ++i )
+        unsigned int i;
+        for(i = 0; i < 515; ++i )
             stream.put(0);
 
         // image size
@@ -450,7 +451,7 @@ namespace vigra {
         write_field( stream, bo, col_size );
 
         // zero out five fields
-        for( unsigned int i = 0; i < 20; ++i )
+        for( i = 0; i < 20; ++i )
             stream.put(0);
 
         // using implicit locations
@@ -472,7 +473,7 @@ namespace vigra {
         write_field( stream, bo, scratch = VFF_MAPTYP_NONE );
 
         // zero out five fields
-        for( unsigned int i = 0; i < 20; ++i )
+        for( i = 0; i < 20; ++i )
             stream.put(0);
 
         // colorspace
@@ -483,7 +484,7 @@ namespace vigra {
         int offset = 1024 - stream.tellp();
         vigra_precondition( offset >= 0,
                             "machine is incapable to read viff" );
-        for( int i = 0; i < offset; ++i )
+        for( int j = 0; j < offset; ++j )
             stream.put(0);
     }
 

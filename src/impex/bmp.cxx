@@ -428,7 +428,7 @@ void BmpDecoderImpl::read_rle4_data ()
     unsigned char * mover = base;
 
     // set the image's background color to black.
-    std::memset (pixels.data (), 0, image_size);
+    VIGRA_CSTD::memset (pixels.data (), 0, image_size);
 
     // read the rle codes one by one.
     unsigned char c1, c2;
@@ -482,7 +482,7 @@ void BmpDecoderImpl::read_rle4_data ()
                         
                     unsigned int dx = stream.get ();
                     unsigned int dy = stream.get ();
-                    unsigned int nx = x + dx;
+                    int nx = x + dx;
 
                     // x movement.
                     if (nx > info_header.width) {
@@ -515,7 +515,8 @@ void BmpDecoderImpl::read_rle4_data ()
 
                     // paint the the higher-order nibble.
                     const unsigned char *map_base_h = map.data () + 3*nh;
-                    for (unsigned int j = 0; j < ncomp; ++j)
+                    unsigned int j;
+                    for (j = 0; j < ncomp; ++j)
                         mover [j] = map_base_h [j];
                     mover += ncomp;
                     if (++k >= c2)
@@ -523,7 +524,7 @@ void BmpDecoderImpl::read_rle4_data ()
 
                     // paint the lower-order nibble.
                     const unsigned char *map_base_l = map.data () + 3*nl;
-                    for (unsigned int j = 0; j < ncomp; ++j)
+                    for (j = 0; j < ncomp; ++j)
                         mover [j] = map_base_l [j];
                     mover += ncomp;
                     if (++k >= c2)
@@ -544,12 +545,13 @@ void BmpDecoderImpl::read_rle4_data ()
                 const unsigned char nl = (c2 & 0x0f);
                 // paint the higher-order nibble.
                 const unsigned char *map_base_h = map.data () + 3*nh;
-                for (unsigned int j = 0; j < ncomp; ++j)
+                unsigned int j;
+                for (j = 0; j < ncomp; ++j)
                     mover [j] = map_base_h [j];
                 mover += ncomp;
                 // paint the lower-order nibble.
                 const unsigned char *map_base_l = map.data () + 3*nl;
-                for (unsigned int j = 0; j < ncomp; ++j)
+                for (j = 0; j < ncomp; ++j)
                     mover [j] = map_base_l [j];
                 mover += ncomp;
             }
@@ -623,7 +625,7 @@ void BmpDecoderImpl::read_rle8_data ()
     unsigned char * mover = base;
 
     // set the image's background color to black.
-    std::memset (pixels.data (), 0, image_size);
+    VIGRA_CSTD::memset (pixels.data (), 0, image_size);
 
     // read the rle codes one by one.
     unsigned char c1, c2;
@@ -677,7 +679,7 @@ void BmpDecoderImpl::read_rle8_data ()
                         
                     unsigned int dx = stream.get ();
                     unsigned int dy = stream.get ();
-                    unsigned int nx = x + dx;
+                    int nx = x + dx;
 
                     // x movement.
                     if (nx > info_header.width) {

@@ -74,7 +74,7 @@ namespace vigra
             extensionMap[*iter] = desc.fileType;
 
         // fill magic vector
-        for( std::size_t i = 0; i < desc.magicStrings.size(); ++i )
+        for( VIGRA_CSTD::size_t i = 0; i < desc.magicStrings.size(); ++i )
             magicStrings.push_back( std::pair<std::vector<char>, std::string>
                                     ( desc.magicStrings[i],desc.fileType ) );
         // fill factory map
