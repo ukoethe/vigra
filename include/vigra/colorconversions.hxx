@@ -267,7 +267,7 @@ class RGB2RGBPrimeFunctor
     
         /** apply the transformation
         */
-    result_type operator()(argument_type const & rgb)
+    result_type operator()(argument_type const & rgb) const
     {
         return RGBValue<To>(
             NumericTraits<To>::fromRealPromote(detail::gammaCorrection(rgb[0], 0.45, max_)),
@@ -296,7 +296,7 @@ class RGB2RGBPrimeFunctor<unsigned char, unsigned char>
         }
     }
     
-    RGBValue<unsigned char> operator()(TinyVector<unsigned char, 3> const & rgb)
+    RGBValue<unsigned char> operator()(TinyVector<unsigned char, 3> const & rgb) const
     {
         return RGBValue<unsigned char>(lut_[rgb[0]], lut_[rgb[1]], lut_[rgb[2]]);
     }
@@ -349,7 +349,7 @@ class RGBPrime2RGBFunctor
     
         /** apply the transformation
         */
-    result_type operator()(argument_type const & rgb)
+    result_type operator()(argument_type const & rgb) const
     {
         return RGBValue<To>(
             NumericTraits<To>::fromRealPromote(detail::gammaCorrection(rgb[0], gamma_, max_)),
@@ -379,7 +379,7 @@ class RGBPrime2RGBFunctor<unsigned char, unsigned char>
         }
     }
     
-    RGBValue<unsigned char> operator()(TinyVector<unsigned char, 3> const & rgb)
+    RGBValue<unsigned char> operator()(TinyVector<unsigned char, 3> const & rgb) const
     {
         return RGBValue<unsigned char>(lut_[rgb[0]], lut_[rgb[1]], lut_[rgb[2]]);
     }
@@ -435,7 +435,7 @@ class RGB2XYZFunctor
     
         /** apply the transformation
         */
-    result_type operator()(argument_type const & rgb)
+    result_type operator()(argument_type const & rgb) const
     {
         component_type red = rgb[0] / max_;
         component_type green = rgb[1] / max_;
@@ -495,7 +495,7 @@ class RGBPrime2XYZFunctor
     
         /** apply the transformation
         */
-    result_type operator()(argument_type const & rgb)
+    result_type operator()(argument_type const & rgb) const
     {
         component_type red = detail::gammaCorrection(rgb[0]/max_, gamma_);
         component_type green = detail::gammaCorrection(rgb[1]/max_, gamma_);
@@ -561,7 +561,7 @@ class XYZ2RGBFunctor
         /** apply the transformation
         */
     template <class V>
-    value_type operator()(TinyVector<V, 3> const & xyz)
+    value_type operator()(TinyVector<V, 3> const & xyz) const
     {
         component_type red =    3.2404813432*xyz[0] - 1.5371515163*xyz[1] - 0.4985363262*xyz[2];
         component_type green = -0.9692549500*xyz[0] + 1.8759900015*xyz[1] + 0.0415559266*xyz[2];
@@ -620,7 +620,7 @@ class XYZ2RGBPrimeFunctor
         /** apply the transformation
         */
     template <class V>
-    value_type operator()(TinyVector<V, 3> const & xyz)
+    value_type operator()(TinyVector<V, 3> const & xyz) const
     {
         component_type red =    3.2404813432*xyz[0] - 1.5371515163*xyz[1] - 0.4985363262*xyz[2];
         component_type green = -0.9692549500*xyz[0] + 1.8759900015*xyz[1] + 0.0415559266*xyz[2];
@@ -683,7 +683,7 @@ class XYZ2LuvFunctor
     : gamma_(1.0/3.0)
     {}
     
-    result_type operator()(TinyVector<T, 3> const & xyz)
+    result_type operator()(TinyVector<T, 3> const & xyz) const
     {
         result_type result;
         if(xyz[1] == NumericTraits<T>::zero())
@@ -745,7 +745,7 @@ class Luv2XYZFunctor
     
         /** apply the transformation
         */
-    result_type operator()(TinyVector<T, 3> const & luv)
+    result_type operator()(TinyVector<T, 3> const & luv) const
     {
         result_type result;
         if(luv[0] == NumericTraits<T>::zero())
@@ -822,7 +822,7 @@ class XYZ2LabFunctor
     
         /** apply the transformation
         */
-    result_type operator()(TinyVector<T, 3> const & xyz)
+    result_type operator()(TinyVector<T, 3> const & xyz) const
     {
         component_type xgamma = std::pow(xyz[0] / 0.950456, gamma_);
         component_type ygamma = std::pow(xyz[1], gamma_);
@@ -877,7 +877,7 @@ class Lab2XYZFunctor
     
         /** apply the transformation
         */
-    result_type operator()(TinyVector<T, 3> const & lab)
+    result_type operator()(TinyVector<T, 3> const & lab) const
     {
         component_type Y = lab[0] < 8.0 ?
                               lab[0] / 903.3 :
@@ -956,7 +956,7 @@ class RGB2LuvFunctor
     
         /** apply the transformation
         */
-    result_type operator()(TinyVector<T, 3> const & rgb)
+    result_type operator()(TinyVector<T, 3> const & rgb) const
     {
         return xyz2luv(rgb2xyz(rgb));
     }
@@ -1025,7 +1025,7 @@ class RGB2LabFunctor
     
         /** apply the transformation
         */
-    result_type operator()(TinyVector<T, 3> const & rgb)
+    result_type operator()(TinyVector<T, 3> const & rgb) const
     {
         return xyz2lab(rgb2xyz(rgb));
     }
@@ -1072,7 +1072,7 @@ class Luv2RGBFunctor
         /** apply the transformation
         */
     template <class V>
-    result_type operator()(TinyVector<V, 3> const & luv)
+    result_type operator()(TinyVector<V, 3> const & luv) const
     {
         return xyz2rgb(luv2xyz(luv));
     }
@@ -1119,7 +1119,7 @@ class Lab2RGBFunctor
         /** apply the transformation
         */
     template <class V>
-    result_type operator()(TinyVector<V, 3> const & lab)
+    result_type operator()(TinyVector<V, 3> const & lab) const
     {
         return xyz2rgb(lab2xyz(lab));
     }
@@ -1177,7 +1177,7 @@ class RGBPrime2LuvFunctor
     
         /** apply the transformation
         */
-    result_type operator()(TinyVector<T, 3> const & rgb)
+    result_type operator()(TinyVector<T, 3> const & rgb) const
     {
         return xyz2luv(rgb2xyz(rgb));
     }
@@ -1239,7 +1239,7 @@ class RGBPrime2LabFunctor
     
         /** apply the transformation
         */
-    result_type operator()(TinyVector<T, 3> const & rgb)
+    result_type operator()(TinyVector<T, 3> const & rgb) const
     {
         return xyz2lab(rgb2xyz(rgb));
     }
@@ -1290,7 +1290,7 @@ class Luv2RGBPrimeFunctor
         /** apply the transformation
         */
     template <class V>
-    result_type operator()(TinyVector<V, 3> const & luv)
+    result_type operator()(TinyVector<V, 3> const & luv) const
     {
         return xyz2rgb(luv2xyz(luv));
     }
@@ -1337,7 +1337,7 @@ class Lab2RGBPrimeFunctor
         /** apply the transformation
         */
     template <class V>
-    result_type operator()(TinyVector<V, 3> const & lab)
+    result_type operator()(TinyVector<V, 3> const & lab) const
     {
         return xyz2rgb(lab2xyz(lab));
     }
@@ -1408,7 +1408,7 @@ class RGBPrime2YPrimePbPrFunctor
     
         /** apply the transformation
         */
-    result_type operator()(TinyVector<T, 3> const & rgb)
+    result_type operator()(TinyVector<T, 3> const & rgb) const
     {
         component_type red = rgb[0] / max_;
         component_type green = rgb[1] / max_;
@@ -1465,7 +1465,7 @@ class YPrimePbPr2RGBPrimeFunctor
         /** apply the transformation
         */
     template <class V>
-    result_type operator()(TinyVector<V, 3> const & ypbpr)
+    result_type operator()(TinyVector<V, 3> const & ypbpr) const
     {
         component_type nred =   ypbpr[0] + 1.402*ypbpr[2];
         component_type ngreen = ypbpr[0] - 0.3441362862*ypbpr[1] - 0.7141362862*ypbpr[2];
@@ -1540,7 +1540,7 @@ class RGBPrime2YPrimeIQFunctor
     
         /** apply the transformation
         */
-    result_type operator()(TinyVector<T, 3> const & rgb)
+    result_type operator()(TinyVector<T, 3> const & rgb) const
     {
         component_type red = rgb[0] / max_;
         component_type green = rgb[1] / max_;
@@ -1597,7 +1597,7 @@ class YPrimeIQ2RGBPrimeFunctor
         /** apply the transformation
         */
     template <class V>
-    result_type operator()(TinyVector<V, 3> const & yiq)
+    result_type operator()(TinyVector<V, 3> const & yiq) const
     {
         component_type nred =   yiq[0] + 0.9548892043*yiq[1] + 0.6221039350*yiq[2];
         component_type ngreen = yiq[0] - 0.2713547827*yiq[1] - 0.6475120259*yiq[2];
@@ -1672,7 +1672,7 @@ class RGBPrime2YPrimeUVFunctor
     
         /** apply the transformation
         */
-    result_type operator()(TinyVector<T, 3> const & rgb)
+    result_type operator()(TinyVector<T, 3> const & rgb) const
     {
         component_type red = rgb[0] / max_;
         component_type green = rgb[1] / max_;
@@ -1729,7 +1729,7 @@ class YPrimeUV2RGBPrimeFunctor
         /** apply the transformation
         */
     template <class V>
-    result_type operator()(TinyVector<V, 3> const & yuv)
+    result_type operator()(TinyVector<V, 3> const & yuv) const
     {
         component_type nred =   yuv[0] + 1.140*yuv[2];
         component_type ngreen = yuv[0] - 0.3946517044*yuv[1] - 0.580681431*yuv[2];
@@ -1794,7 +1794,7 @@ class RGBPrime2YPrimeCbCrFunctor
     
         /** apply the transformation
         */
-    result_type operator()(TinyVector<T, 3> const & rgb)
+    result_type operator()(TinyVector<T, 3> const & rgb) const
     {
         component_type red = rgb[0] / max_;
         component_type green = rgb[1] / max_;
@@ -1851,7 +1851,7 @@ class YPrimeCbCr2RGBPrimeFunctor
         /** apply the transformation
         */
     template <class V>
-    result_type operator()(TinyVector<V, 3> const & ycbcr)
+    result_type operator()(TinyVector<V, 3> const & ycbcr) const
     {
         component_type y = ycbcr[0] - 16.0;
         component_type cb = ycbcr[1] - 128.0;
