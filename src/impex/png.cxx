@@ -27,6 +27,7 @@
 #include "void_vector.hxx"
 #include "auto_file.hxx"
 #include "png.hxx"
+#include "byteorder.hxx"
 #include "error.hxx"
 
 extern "C"
@@ -196,6 +197,13 @@ namespace vigra {
             vigra_postcondition( false, png_error_message.insert(0, "error in png_get_IHDR(): ").c_str() );
         png_get_IHDR( png, info, &width, &height, &bit_depth, &color_type,
                       &interlace_method, &compression_method, &filter_method );
+        
+        // check whether byteorder must be swapped (png files are big-endian)
+        byteorder bo;
+        if(bit_depth == 16 && bo.get_host_byteorder() == "little endian")
+        {
+            png_set_swap(png);
+        }
         
         // transform palette to rgb
         if ( color_type == PNG_COLOR_TYPE_PALETTE) {
@@ -475,6 +483,14 @@ namespace vigra {
             row_pointers[i] = mover;
             mover += row_stride;
         }
+        
+        // check whether byteorder must be swapped (png files must be big-endian)
+        byteorder bo;
+        if(bit_depth == 16 && bo.get_host_byteorder() == "little endian")
+        {
+            png_set_swap(png);
+        }
+        
         // write the whole image
         if (setjmp(png->jmpbuf))
             vigra_postcondition( false, png_error_message.insert(0, "error in png_write_image(): ").c_str() );
