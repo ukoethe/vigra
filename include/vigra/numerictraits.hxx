@@ -1289,7 +1289,7 @@ template<>
 struct PromoteTraits<int, float>
 {
     typedef float Promote;
-    static Promote toPromote(int v) { return v; }
+    static Promote toPromote(int v) { return static_cast<Promote>(v); }
     static Promote toPromote(float v) { return v; }
 };
 
@@ -1376,7 +1376,7 @@ template<>
 struct PromoteTraits<unsigned int, float>
 {
     typedef float Promote;
-    static Promote toPromote(unsigned int v) { return v; }
+    static Promote toPromote(unsigned int v) { return static_cast<Promote>(v); }
     static Promote toPromote(float v) { return v; }
 };
 
@@ -1463,7 +1463,7 @@ template<>
 struct PromoteTraits<long, float>
 {
     typedef float Promote;
-    static Promote toPromote(long v) { return v; }
+    static Promote toPromote(long v) { return static_cast<Promote>(v); }
     static Promote toPromote(float v) { return v; }
 };
 
@@ -1550,7 +1550,7 @@ template<>
 struct PromoteTraits<unsigned long, float>
 {
     typedef float Promote;
-    static Promote toPromote(unsigned long v) { return v; }
+    static Promote toPromote(unsigned long v) { return static_cast<Promote>(v); }
     static Promote toPromote(float v) { return v; }
 };
 
@@ -1607,7 +1607,7 @@ struct PromoteTraits<float, int>
 {
     typedef float Promote;
     static Promote toPromote(float v) { return v; }
-    static Promote toPromote(int v) { return v; }
+    static Promote toPromote(int v) { return static_cast<Promote>(v); }
 };
 
 template<>
@@ -1615,7 +1615,7 @@ struct PromoteTraits<float, unsigned int>
 {
     typedef float Promote;
     static Promote toPromote(float v) { return v; }
-    static Promote toPromote(unsigned int v) { return v; }
+    static Promote toPromote(unsigned int v) { return static_cast<Promote>(v); }
 };
 
 template<>
@@ -1623,7 +1623,7 @@ struct PromoteTraits<float, long>
 {
     typedef float Promote;
     static Promote toPromote(float v) { return v; }
-    static Promote toPromote(long v) { return v; }
+    static Promote toPromote(long v) { return static_cast<Promote>(v); }
 };
 
 template<>
@@ -1631,7 +1631,7 @@ struct PromoteTraits<float, unsigned long>
 {
     typedef float Promote;
     static Promote toPromote(float v) { return v; }
-    static Promote toPromote(unsigned long v) { return v; }
+    static Promote toPromote(unsigned long v) { return static_cast<Promote>(v); }
 };
 
 template<>
