@@ -122,7 +122,10 @@
     
     SrcAccessor::value_type u = src_accessor(src_upperleft);
     
-    u == u
+    u == u                  // first form
+    
+    EqualityFunctor equal;      // second form
+    equal(u, u)                 // second form
     
     int i;
     dest_accessor.set(i, dest_upperleft);
@@ -146,6 +149,8 @@ int labelImage(SrcIterator upperlefts,
     static const Diff2D top(0,-1);
     static const Diff2D topright(1,-1);
     static const Diff2D topleft(-1,-1);
+    static const Diff2D neighbor[] = {left, topleft, top, topright};
+    int inc = eight_neighbors ? 1 : 2;
     
     SrcIterator ys(upperlefts);
     SrcIterator xs(ys);
@@ -162,154 +167,50 @@ int labelImage(SrcIterator upperlefts,
 
     // pass 1: scan image from upper left to lower right
     // to find connected components
-    *xt = 0;
-
-    // special treatment for first row
-    for(x = 1, ++xs.x, ++xt.x; x != w; ++x, ++xs.x, ++xt.x)
-    {
-	// check if same region
-	if(equal(sa(xs), sa(xs, left)))
-	{
-	    // same region as left pixel -> propagate label
-	    *xt = xt[left];
-	}
-	else
-	{
-	    // new region
-	    *xt = x;
-	}
-    }
-
-    // regular processing
-    for(y = 1, ++ys.y, ++yt.y; y != h; ++y, ++ys.y, ++yt.y)
+    
+    for(y = 0; y != h; ++y, ++ys.y, ++yt.y)
     {
         xs = ys;
 	xt = yt;
-	
-	// special treatment for first pixel of each row
-	if(equal(sa(xs), sa(xs, top)))
-	{
-	    // same region as top pixel -> propagate label
-	    *xt = xt[top];
-	}
-	else if(eight_neighbors && (x != w-1) && 
-                equal(sa(xs), sa(xs,topright)))
-	{
-	    // same region as upper right pixel
-	    *xt = xt[topright];
-	}
-	else
-	{
-	    // new region
-	    *xt = y*w;
-	}
+        
+        int endNeighbor = (y == 0) ? 1 : 4;
 	
 	// regular processing
-	for(x = 1, ++xs.x, ++xt.x; x != w; ++x, ++xs.x, ++xt.x)
+	for(x = 0; x != w; ++x, ++xs.x, ++xt.x)
 	{
-	    // check if same region
-	    if(equal(sa(xs), sa(xs, left)))
-	    {
-		// same region as left pixel
-		int left_lab = xt[left];
-                
-		if(equal(sa(xs), sa(xs, top)))
-		{
-		    // also same region as top pixel
-		    int top_lab = xt[top];
+            int beginNeighbor = (x == 0) ? 2 : 0;
+            if(x == w-1 && y != 0) --endNeighbor;
+            
+            for(i=beginNeighbor; i<endNeighbor; i+=inc)
+            {
+                if(equal(sa(xs), sa(xs, neighbor[i])))
+                {
+                    int popagateLabel = xt[neighbor[i]];
                     
-                    if(top_lab == left_lab)
+                    for(int j=i+2; j<endNeighbor; j+=inc)
                     {
-                        *xt = top_lab;
+                        if(equal(sa(xs), sa(xs, neighbor[j])))
+                        {
+                            int equalLabel = xt[neighbor[j]];
+                            if(equalLabel < popagateLabel)
+                            {
+                                label[popagateLabel] = equalLabel;
+                                popagateLabel = equalLabel;
+                            }
+                            else if(popagateLabel < equalLabel)
+                            {
+                                label[equalLabel] = popagateLabel;
+                            }
+                            break;
+                        }
                     }
-                    else if(top_lab < left_lab)
-                    {
-                        label[left_lab] = top_lab;
-                        *xt = top_lab;
-                    }
-                    else // top_lab > left_lab
-                    {
-                        label[top_lab] = left_lab;
-                        *xt = left_lab;
-                    }
-		}
-		else if(eight_neighbors && (x != w-1) && 
-                       equal(sa(xs), sa(xs, topright)))
-		{
-		    // also same region as upper right pixel
-		    int top_lab = xt[topright];
-                    
-                    if(top_lab == left_lab)
-                    {
-                        *xt = top_lab;
-                    }
-                    else if(top_lab < left_lab)
-                    {
-                        label[left_lab] = top_lab;
-                        *xt = top_lab;
-                    }
-                    else // top_lab > left_lab
-                    {
-                        label[top_lab] = left_lab;
-                        *xt = left_lab;
-                    }
-		}
-		else
-		{
-		    // propagate label
-		    *xt = left_lab;
-		}
-	    }
-	    else if(equal(sa(xs), sa(xs, top)))
-	    {
-		// same region as top pixel
-		// propagate label
-		*xt = xt[top];
-	    }
-	    else if(eight_neighbors && equal(sa(xs), sa(xs, topleft)))
-	    {
-		// same region as upper left pixel
-		int left_lab = xt[topleft];
-                
-		if((x != w-1) && equal(sa(xs), sa(xs, topright)))
-		{
-		    // also same region as upper right pixel
-		    int top_lab = xt[topright];
-                    
-                    if(top_lab == left_lab)
-                    {
-                        *xt = top_lab;
-                    }
-                    else if(top_lab < left_lab)
-                    {
-                        label[left_lab] = top_lab;
-                        *xt = top_lab;
-                    }
-                    else // top_lab > left_lab
-                    {
-                        label[top_lab] = left_lab;
-                        *xt = left_lab;
-                    }
-		}
-		else
-		{
-		    // propagate label
-		    *xt = left_lab;
-		}
-	    }
-	    else if(eight_neighbors && (x != w-1) && 
-                    equal(sa(xs), sa(xs, topright)))
-	    {
-		// same region as top right pixel
-		// propagate label
-		*xt = xt[topright];
-	    }
-	    else
-	    {
-		// new region
-		*xt = y*w+x;
-	    }
-	}
+                    *xt = popagateLabel;
+                    break;
+                }
+            
+            }
+            if(i >= endNeighbor) *xt = x + y*w;  // new region
+        }
     }
 		    
     // pass 2: assign contiguous labels to the regions
@@ -472,8 +373,12 @@ int labelImage(triple<SrcIterator, SrcIterator, SrcAccessor> src,
     SrcAccessor::value_type u = src_accessor(src_upperleft);
     ValueType background_value;
     
-    u == u
-    u == background_value
+    u == u                  // first form
+    u == background_value   // first form
+    
+    EqualityFunctor equal;      // second form
+    equal(u, u)                 // second form
+    equal(u, background_value)  // second form
     
     int i;
     dest_accessor.set(i, dest_upperleft);
@@ -498,6 +403,9 @@ int labelImageWithBackground(SrcIterator upperlefts,
     static const Diff2D top(0,-1);
     static const Diff2D topright(1,-1);
     static const Diff2D topleft(-1,-1);
+    static const Diff2D neighbor[] = {left, topleft, top, topright};
+    int inc = eight_neighbors ? 1 : 2;
+    
     
     SrcIterator ys(upperlefts);
     SrcIterator xs(ys);
@@ -511,177 +419,58 @@ int labelImageWithBackground(SrcIterator upperlefts,
     // pass 1: scan image from upper left to lower right
     // find connected components
     
-    // special treatment for first pixel: always new region
-    if(equal(sa(ys), background_value))
-    {
-	*yt = -1;
-    }
-    else
-    {
-    	*yt = 0;
-    }
-    
-    // special treatment for first row
-    for(x = 1, ++xs.x, ++xt.x; x != w; ++x, ++xs.x, ++xt.x)
-    {
-	if(equal(sa(xs), background_value))
-	{
-	    *xt = -1;
-	}
-	else if(equal(sa(xs), sa(xs, left)))
-	{
-	    // same region as left pixel -> propagate label
-	    *xt = xt[left];
-	}
-	else
-	{
-	    // new region
-	    *xt = x;
-	}
-    }
-
-    // regular processing
-    for(y = 1, ++ys.y, ++yt.y; y != h; ++y, ++ys.y, ++yt.y)
+    for(y = 0; y != h; ++y, ++ys.y, ++yt.y)
     {
         xs = ys;
 	xt = yt;
-	
-	// special treatment for first pixel of each row
-	if(equal(sa(xs), background_value))
-	{
-	    *xt = -1;
-	}
-	else
-	{
-	    if(equal(sa(xs), sa(xs,top)))
-	    {
-		// same region as top pixel -> propagate label
-		*xt = xt[top];
-	    }
-	    else if(eight_neighbors && (x != w-1) && 
-                    equal(sa(xs), sa(xs, topright)))
-	    {
-		// same region as upper right pixel
-		*xt = xt[topright];
-	    }
-	    else
-	    {
-		// new region
-		*xt = y*w;
-	    }
-	}
+        
+        int endNeighbor = (y == 0) ? 1 : 4;
 	
 	// regular processing
-	for(x = 1, ++xs.x, ++xt.x; x != w; ++x, ++xs.x, ++xt.x)
+	for(x = 0; x != w; ++x, ++xs.x, ++xt.x)
 	{
-	    if(equal(sa(xs), background_value))
-	    {
-		*xt = -1;
-	    }
-	    else if(equal(sa(xs), sa(xs, left)))
-	    {
-		// same region as left pixel
-		int left_lab = xt[left];
-		if(equal(sa(xs), sa(xs, top)))
-		{
-		    // also same region as top pixel
-		    int top_lab = xt[top];
+            int beginNeighbor = (x == 0) ? 2 : 0;
+            if(x == w-1 && y != 0) --endNeighbor;
+            
+            if(equal(sa(xs), background_value))
+            {
+                *xt = -1;
+            }
+            else
+            {
+                for(i=beginNeighbor; i<endNeighbor; i+=inc)
+                {
+                    if(equal(sa(xs), sa(xs, neighbor[i])))
+                    {
+                        int popagateLabel = xt[neighbor[i]];
 
-                    if(top_lab == left_lab)
-                    {
-                        *xt = top_lab;
+                        for(int j=i+2; j<endNeighbor; j+=inc)
+                        {
+                            if(equal(sa(xs), sa(xs, neighbor[j])))
+                            {
+                                int equalLabel = xt[neighbor[j]];
+                                if(equalLabel < popagateLabel)
+                                {
+                                    label[popagateLabel] = equalLabel;
+                                    popagateLabel = equalLabel;
+                                }
+                                else if(popagateLabel < equalLabel)
+                                {
+                                    label[equalLabel] = popagateLabel;
+                                }
+                                break;
+                            }
+                        }
+                        *xt = popagateLabel;
+                        break;
                     }
-                    else if(top_lab < left_lab)
-                    {
-                        label[left_lab] = top_lab;
-                        *xt = top_lab;
-                    }
-                    else // top_lab > left_lab
-                    {
-                        label[top_lab] = left_lab;
-                        *xt = left_lab;
-                    }
-		}
-		else if(eight_neighbors && (x != w-1) && 
-                        equal(sa(xs), sa(xs, topright)))
-		{
-		    // also same region as upper right pixel
-		    int top_lab = xt[topright];
-		    // propagate top label
 
-                    if(top_lab == left_lab)
-                    {
-                        *xt = top_lab;
-                    }
-                    else if(top_lab < left_lab)
-                    {
-                        label[left_lab] = top_lab;
-                        *xt = top_lab;
-                    }
-                    else // top_lab > left_lab
-                    {
-                        label[top_lab] = left_lab;
-                        *xt = left_lab;
-                    }
-		}
-		else
-		{
-		    // propagate label
-		    *xt = left_lab;
-		}
-	    }
-	    else if(equal(sa(xs), sa(xs, top)))
-	    {
-		// same region as top pixel
-		// propagate label
-		*xt = xt[top];
-	    }
-	    else if(eight_neighbors && 
-                    equal(sa(xs), sa(xs, topleft)))
-	    {
-		// same region as upper left pixel
-		int left_lab = xt[topleft];
-		if((x != w-1) && equal(sa(xs), sa(xs, topright)))
-		{
-		    // also same region as upper right pixel
-		    int top_lab = xt[topright];
-
-                    if(top_lab == left_lab)
-                    {
-                        *xt = top_lab;
-                    }
-                    else if(top_lab < left_lab)
-                    {
-                        label[left_lab] = top_lab;
-                        *xt = top_lab;
-                    }
-                    else // top_lab > left_lab
-                    {
-                        label[top_lab] = left_lab;
-                        *xt = left_lab;
-                    }
-		}
-		else
-		{
-		    // propagate label
-		    *xt = left_lab;
-		}
-	    }
-	    else if(eight_neighbors && (x != w-1) && 
-                    equal(sa(xs), sa(xs, topright)))
-	    {
-		// same region as top right pixel
-		// propagate label
-		*xt = xt[topright];
-	    }
-	    else
-	    {
-		// new region
-		*xt = x+y*w;
-	    }
-	}
+                }
+                if(i >= endNeighbor) *xt = x + y*w;  // new region
+            }
+        }
     }
-    
+
     // pass 2: assign contiguous labels to the regions
     DestIterator yd(upperleftd);
 
@@ -708,7 +497,6 @@ int labelImageWithBackground(SrcIterator upperlefts,
     
     return count;
 }
-
 template <class SrcIterator, class SrcAccessor,
           class DestIterator, class DestAccessor,
 	  class ValueType, class EqualityFunctor>
