@@ -1,25 +1,22 @@
-include $(VIGRA_PATH)/config/Makefile.include
+CXXFLAGS = -O -I../include `vigra-config --cxxflags`
 
+test: test.o
+	$(CXX) $(CXXFLAGS) -o test test.o
+	./test || { rm ./test ; exit 1; }
 
-CXXFLAGS =  -O -I../include
-LIB = 
-		 
-test:: test.o
-	$(CXX) $(CXXFLAGS) $(CXXINC) -o test test.o 
-	./test || { rm ./test; exit 1; }
-	
-clean::
-	rm -f *.o *.d *.bak test
+clean:
+	rm -f *.o test core *.d
+	rm -rf Debug ii_files *.plg *.ilk
+
+%.o: %.cxx
+	$(CXX) $(CXXFLAGS) -c $*.cxx
 
 %.d: %.cxx
-	dependHeader.csh "$(CXXFLAGS)" "$(CXXINC)" $*.cxx
+	@echo updating header dependencies for $*.cxx
+	@rm -f $*.d
+	@(echo "$*.d \c" ; $(CXX) -M $(CXXFLAGS) -c $*.cxx) > $*.d \
+        || { rm -f $*.d; exit 1; }
 
-%.h:
-	@rm -f *.d
-
-%.hxx:
-	@rm -f *.d
-	
 ifneq "$(MAKECMDGOALS)" "clean"
 include test.d
 endif

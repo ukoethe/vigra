@@ -1,9 +1,4 @@
-
-CXXFLAGS = -O -I../../current/include \
- -I ../include \
- -I /software/boost-1.25.0/include
- 
-LDFLAGS = 
+CXXFLAGS = -O -I../include `vigra-config --cxxflags` -I/software/boost-1.25.0/include
 
 #OBJ = one_band_basic_image_test_suite.o 
 #OBJ = gray_image_test_suite.o 
@@ -34,6 +29,10 @@ rgb_basic_image_test_suite.o \
 select_band_image_test_suite.o \
 single_band_image_test_suite.o
 
+test: $(OBJ)
+	$(CXX) $(CXXFLAGS) -o test $(OBJ) `vigra-config --libs`
+	./test || { rm ./test ; exit 1; }
+
 # Fuer Tests von IRGBImage, FRGBImage, DRGBImage, BRGBImage den Kommentar loeschen.
 #MAKROS = -DRGB_IMAGE 
 
@@ -61,18 +60,15 @@ single_band_image_test_suite.o
 # Fuer Tests von FixedRGBImage den Kommentar loeschen.
 #MAKROS = -DFIXED_RGB_IMAGE -DIMAGEHIERARCHY
 
-%.d: %.cxx
-	rm -f $*.d
-	(echo "$*.d \c"; g++ -M $(CXXFLAGS) -c $*.cxx ) > $*.d
-
-
 %.o: %.cxx
-	g++ $(MAKROS) $(CXXFLAGS) -c $*.cxx
-	
-FirstHierTest: $(OBJ)
-	g++ -o testImage $(OBJ) $(LDFLAGS) -lvigraimpex -ltiff -ljpeg -lm
-	testImage	
+	$(CXX) $(CXXFLAGS) -c $*.cxx
+
+%.d: %.cxx
+	@echo updating header dependencies for $*.cxx
+	@rm -f $*.d
+	@(echo "$*.d \c" ; $(CXX) -M $(CXXFLAGS) -c $*.cxx) > $*.d \
+        || { rm -f $*.d; exit 1; }
 
 ifneq "$(MAKECMDGOALS)" "clean"
-include $(patsubst %.o, %.d, $(OBJ)) # Inkludiert ein anderes Makefile in diesem Fall waere es FirstHierTest.d, der aus %.o durch Substittution mit %.d entsteht, und %.o soll man in OBJ suchen 
+include $(patsubst %.o, %.d, $(OBJ))
 endif

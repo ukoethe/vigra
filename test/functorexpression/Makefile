@@ -1,25 +1,21 @@
-include $(VIGRA_PATH)/config/Makefile.include
+CXXFLAGS = -O -I../include `vigra-config --cxxflags`
 
-CXXFLAGS = -O -I../include -I/software/fftw-2.1.3/include -I/home/rezniche/vigra/boost_test
-LIB = -lm 
-		 
-test:: test.o
-	$(CXX) $(CXXFLAGS) $(CXXINC) -o test test.o $(LIB)
-	./test || { rm ./test; exit 1; }
+test: test.o
+	$(CXX) $(CXXFLAGS) -o test test.o
+	./test || { rm ./test ; exit 1; }
 
-clean::
-	rm -f *.o test core res.xv *.plg *ilk *.d
-	rm -rf Debug ii_files
-	
+clean:
+	rm -f *.o test core *.d
+	rm -rf Debug ii_files *.plg *.ilk
+
+%.o: %.cxx
+	$(CXX) $(CXXFLAGS) -c $*.cxx
 
 %.d: %.cxx
-	dependHeader.csh "$(CXXFLAGS)" "$(CXXINC)" $*.cxx 
-
-%.h:
-	@rm -f *.d
-
-%.hxx:
-	@rm -f *.d
+	@echo updating header dependencies for $*.cxx
+	@rm -f $*.d
+	@(echo "$*.d \c" ; $(CXX) -M $(CXXFLAGS) -c $*.cxx) > $*.d \
+        || { rm -f $*.d; exit 1; }
 
 ifneq "$(MAKECMDGOALS)" "clean"
 include test.d
