@@ -79,12 +79,10 @@
     vigra::detail::equal_impl(left, right, #left " == " #right, __FILE__, __LINE__)
 
 
-////////////////////////////////// umbenannt !!!! /////////////////////////////////////
-
-//#define shouldEqualEps(left, right, eps) \
-//    vigra::detail::eps_equal_impl(left, right, eps, #left " == " #right, __FILE__, __LINE__)
-
-//////////////////////////////////////////////////////////////////////////////////////
+/* !!!! umbenannt !!!!
+ * #define shouldEqualEps(left, right, eps) \
+ * vigra::detail::eps_equal_impl(left, right, eps, #left " == " #right, __FILE__, __LINE__)
+*/
 
 #define shouldEqualTolerance(left, right, eps) \
     vigra::detail::tolerance_equal_impl(left, right, eps, #left " == " #right, __FILE__, __LINE__)
@@ -442,11 +440,13 @@ template<typename FPT>
 class close_at_tolerance {
 public:
     explicit    close_at_tolerance( FPT tolerance, bool strong_test = true ) 
-    : m_tolerance( tolerance ), m_strong_test( strong_test ) {}
+        : m_strong_test( strong_test ),
+          m_tolerance( tolerance ) {}
 
     explicit    close_at_tolerance( int number_of_rounding_errors, bool strong_test = true ) 
-    : m_tolerance( vigra::NumericTraits<FPT>::epsilon() * number_of_rounding_errors / 2.0 ), 
-      m_strong_test( strong_test ) {}
+        : m_strong_test( strong_test ),
+          m_tolerance( vigra::NumericTraits<FPT>::epsilon() * number_of_rounding_errors / 2.0 ) {}
+      
 
     bool        operator()( FPT left, FPT right ) const
     {
