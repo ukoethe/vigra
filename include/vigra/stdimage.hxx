@@ -206,6 +206,28 @@ struct IteratorTraits<ConstBasicImageIterator<RGBValue<float>, RGBValue<float> *
     */
 typedef BasicImage<RGBValue<float> > FRGBImage;
 
+template<>
+struct IteratorTraits<BasicImageIterator<RGBValue<double>, RGBValue<double> **> >
+{
+    typedef RGBAccessor<RGBValue<double> > DefaultAccessor;
+};  
+
+template<>
+struct IteratorTraits<ConstBasicImageIterator<RGBValue<double>, RGBValue<double> ** > >
+{
+    typedef RGBAccessor<RGBValue<double> > DefaultAccessor;
+};  
+
+    /** Double-precision floating-point (3x double) RGB image.
+        The pixel type is \ref vigra::RGBValue "RGBValue<double>".
+        It uses \ref vigra::BasicImageIterator and \ref vigra::RGBAccessor and 
+        their const counterparts to access the data.
+        
+        <b>\#include</b> "<a href="stdimage_8hxx-source.html">vigra/stdimage.hxx</a>"<br>
+        Namespace: vigra
+    */
+typedef BasicImage<RGBValue<double> > DRGBImage;
+
 #define vigra_tinyvectoriteratortraits(T, SIZE) \
 template<> \
 struct IteratorTraits<BasicImageIterator<TinyVector<T, SIZE>, TinyVector<T, SIZE> **> > \
