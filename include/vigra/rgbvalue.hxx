@@ -215,7 +215,11 @@ class RGBValue
     */
     typename NumericTraits<VALUETYPE>::RealPromote
     magnitude() const { 
+#ifndef CMATH_NOT_IN_STD
          return std::sqrt(red()*red() + green()*green() + blue()*blue());
+#else
+         return sqrt(red()*red() + green()*green() + blue()*blue());
+#endif
     }
     
         /** Calculate squared magnitude.
@@ -651,15 +655,17 @@ operator/=(RGBValue<V> & l, double r)
     return l;
 }
 
-#ifndef _MSC_VER
+#ifndef CMATH_NOT_IN_STD
 using std::abs;
+#else
+using ::abs;
 #endif
 
     /// component-wise absolute value
 template <class T>
 inline
 RGBValue<T> abs(RGBValue<T> const & v) { 
-    return RGBValue<T>(std::abs(v.red()), std::abs(v.green()),  std::abs(v.blue()));
+    return RGBValue<T>(abs(v.red()), abs(v.green()),  abs(v.blue()));
 }
 
 
@@ -764,9 +770,7 @@ dot(RGBValue<V1> const & r1, RGBValue<V2> const & r2)
     return r1.red()*r2.red() + r1.green()*r2.green() + r1.blue()*r2.blue();
 }
 
-#ifndef _MSC_VER
 using std::rint;
-#endif
 
     /// Round a floating point RGB pixel to the nearest integers 
 template <class V>
@@ -774,9 +778,9 @@ inline
 RGBValue<int>
 rint(RGBValue<V> const & r)
 {
-    return RGBValue<int>(std::rint(r.red()), 
-                         std::rint(r.green()),
-                         std::rint(r.blue()));
+    return RGBValue<int>(rint(r.red()), 
+                         rint(r.green()),
+                         rint(r.blue()));
 };
 
 

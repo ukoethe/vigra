@@ -144,7 +144,11 @@ discRankOrderFilter(SrcIterator upperleft1,
     for(i=1; i<=radius; ++i)
     {
 	double r = (double) i - 0.5;
+#ifndef CMATH_NOT_IN_STD
 	struct_function[i] = (int)(std::sqrt(r2 - r*r) + 0.5);
+#else
+	struct_function[i] = (int)(sqrt(r2 - r*r) + 0.5);
+#endif
     }
 
     int w = lowerright1.x - upperleft1.x;
@@ -676,7 +680,11 @@ discRankOrderFilterWithMask(SrcIterator upperleft1,
     for(i=1; i<=radius; ++i)
     {
 	double r = (double) i - 0.5;
+#ifndef CMATH_NOT_IN_STD
 	struct_function[i] = (int)(std::sqrt(r2 - r*r) + 0.5);
+#else
+	struct_function[i] = (int)(sqrt(r2 - r*r) + 0.5);
+#endif
     }
 
     int w = lowerright1.x - upperleft1.x;

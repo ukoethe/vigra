@@ -25,8 +25,6 @@
 
 #include <stdexcept>
 
-namespace vigra {
-
 ///////////////////////////////////////////////////////////
 //                                                       //
 //                   VisualC++ 5.0                       //
@@ -44,6 +42,33 @@ namespace vigra {
     #define NO_PARTIAL_TEMPLATE_SPECIALIZATION
     #define NO_STL_MEMBER_TEMPLATES
     #define NO_INLINE_STATIC_CONST_DEFINITION
+    #define CMATH_NOT_IN_STD
+    #define M_PI 3.14159265358979323846
+    #define M_SQRT2 1.41421356237309504880
+    
+    namespace std {
+    
+        inline double rint(const double & v)
+        {
+            return floor(v+0.5);
+        }
+        
+	template<class T>
+	const T& min(const T& x, const T& y)
+	{
+		return (y < x) 
+			? y
+			: x;
+	}
+
+	template<class T>
+	const T& max(const T& x, const T& y)
+	{
+		return (x < y) 
+			? y
+			: x;
+	}
+    }
 #endif // _MSC_VER
 
 ///////////////////////////////////////////////////////////
@@ -71,7 +96,10 @@ namespace vigra {
     #endif
     #if (_COMPILER_VERSION  == 720) || (_COMPILER_VERSION  == 721)
         #define SPECIAL_STDEXCEPTION_DEFINITION_NEEDED
-        typedef std::exception StdException; // must be above next #define !!
+
+        namespace vigra {
+            typedef std::exception StdException; // must be above next #define !!
+        }
         #define std
         #define NO_NAMESPACE_STD
     #endif // _COMPILER_VERSION
@@ -91,6 +119,8 @@ namespace vigra {
 #ifdef NO_EXPLICIT
     #define explicit
 #endif
+
+namespace vigra {
 
 #ifndef SPECIAL_STDEXCEPTION_DEFINITION_NEEDED
      typedef std::exception StdException;

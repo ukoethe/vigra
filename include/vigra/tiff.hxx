@@ -232,7 +232,7 @@ template <class ImageIterator, class Accessor>
 void
 tiffToScalarImage(TiffImage * tiff, ImageIterator iter, Accessor a)
 {
-    vigra_precondition(tiff, 
+    vigra_precondition(tiff != 0, 
              "tiffToScalarImage(TiffImage *, ScalarImageIterator): " 
              "NULL pointer to input data.");
     
@@ -592,7 +592,7 @@ template <class RGBImageIterator, class RGBAccessor>
 void
 tiffToRGBImage(TiffImage * tiff, RGBImageIterator iter, RGBAccessor a)
 {
-    vigra_precondition(tiff,
+    vigra_precondition(tiff != 0,
               "tiffToRGBImage(TiffImage *, RGBImageIterator): " 
           "NULL pointer to input data.");
     
@@ -619,8 +619,6 @@ tiffToRGBImage(TiffImage * tiff, RGBImageIterator iter, RGBAccessor a)
         
     RGBImageIterator yd(iter);
     
-    int offset, scale, max, min;
-
     switch (photometric)
     {
       case PHOTOMETRIC_PALETTE:
@@ -1014,6 +1012,9 @@ tiffToRGBImage(TiffImage * tiff, pair<ImageIterator, VectorComponentAccessor> de
     tiffToRGBImage(tiff, dest.first, dest.second);
 }
 
+template <class T>
+struct CreateTiffImage;
+
 /********************************************************/
 /*                                                      */
 /*                     createTiffImage                  */
@@ -1080,10 +1081,8 @@ inline void
 createTiffImage(ImageIterator upperleft, ImageIterator lowerright, 
                       Accessor a, TiffImage * tiff)
 {
-    typedef typename 
-           NumericTraits<typename Accessor::value_type>::isScalar 
-           isScalar;
-    createTiffImage(upperleft, lowerright, a, tiff, isScalar());
+    CreateTiffImage<typename Accessor::value_type>::
+        exec(upperleft, lowerright, a, tiff);
 }
 
 template <class ImageIterator, class Accessor>
@@ -1091,22 +1090,6 @@ inline void
 createTiffImage(triple<ImageIterator, ImageIterator, Accessor> src, TiffImage * tiff)
 {
     createTiffImage(src.first, src.second, src.third, tiff);
-}
-
-template <class ImageIterator, class Accessor>
-inline void
-createTiffImage(ImageIterator upperleft, ImageIterator lowerright, 
-                      Accessor a, TiffImage * tiff, VigraFalseType)
-{
-    createRGBTiffImage(upperleft, lowerright, a, tiff, a(upperleft));
-}
-
-template <class ImageIterator, class Accessor>
-inline void
-createTiffImage(ImageIterator upperleft, ImageIterator lowerright, 
-                      Accessor a, TiffImage * tiff, VigraTrueType)
-{
-    createScalarTiffImage(upperleft, lowerright, a, tiff, a(upperleft));
 }
 
 /********************************************************/
@@ -1174,7 +1157,8 @@ inline void
 createScalarTiffImage(ImageIterator upperleft, ImageIterator lowerright, 
                       Accessor a, TiffImage * tiff)
 {
-    createScalarTiffImage(upperleft, lowerright, a, tiff, a(upperleft));
+    CreateTiffImage<typename Accessor::value_type>::
+        exec(upperleft, lowerright, a, tiff);
 }
 
 template <class ImageIterator, class Accessor>
@@ -1186,8 +1170,8 @@ createScalarTiffImage(triple<ImageIterator, ImageIterator, Accessor> src, TiffIm
 
 template <class ImageIterator, class Accessor>
 void
-createScalarTiffImage(ImageIterator upperleft, ImageIterator lowerright, 
-                                 Accessor a, TiffImage * tiff, unsigned char)
+createBScalarTiffImage(ImageIterator upperleft, ImageIterator lowerright, 
+                                 Accessor a, TiffImage * tiff)
 {
     int w = lowerright.x - upperleft.x;
     int h = lowerright.y - upperleft.y;
@@ -1229,8 +1213,8 @@ createScalarTiffImage(ImageIterator upperleft, ImageIterator lowerright,
 
 template <class ImageIterator, class Accessor>
 void
-createScalarTiffImage(ImageIterator upperleft, ImageIterator lowerright, 
-                                 Accessor a, TiffImage * tiff, short)
+createShortScalarTiffImage(ImageIterator upperleft, ImageIterator lowerright, 
+                                 Accessor a, TiffImage * tiff)
 {
     int w = lowerright.x - upperleft.x;
     int h = lowerright.y - upperleft.y;
@@ -1272,8 +1256,8 @@ createScalarTiffImage(ImageIterator upperleft, ImageIterator lowerright,
 
 template <class ImageIterator, class Accessor>
 void
-createScalarTiffImage(ImageIterator upperleft, ImageIterator lowerright, 
-                                 Accessor a, TiffImage * tiff, int)
+createIScalarTiffImage(ImageIterator upperleft, ImageIterator lowerright, 
+                                 Accessor a, TiffImage * tiff)
 {
     int w = lowerright.x - upperleft.x;
     int h = lowerright.y - upperleft.y;
@@ -1315,8 +1299,8 @@ createScalarTiffImage(ImageIterator upperleft, ImageIterator lowerright,
 
 template <class ImageIterator, class Accessor>
 void
-createScalarTiffImage(ImageIterator upperleft, ImageIterator lowerright, 
-                                 Accessor a, TiffImage * tiff, float)
+createFScalarTiffImage(ImageIterator upperleft, ImageIterator lowerright, 
+                                 Accessor a, TiffImage * tiff)
 {
     int w = lowerright.x - upperleft.x;
     int h = lowerright.y - upperleft.y;
@@ -1358,8 +1342,8 @@ createScalarTiffImage(ImageIterator upperleft, ImageIterator lowerright,
 
 template <class ImageIterator, class Accessor>
 void
-createScalarTiffImage(ImageIterator upperleft, ImageIterator lowerright, 
-                                 Accessor a, TiffImage * tiff, double)
+createDScalarTiffImage(ImageIterator upperleft, ImageIterator lowerright, 
+                                 Accessor a, TiffImage * tiff)
 {
     int w = lowerright.x - upperleft.x;
     int h = lowerright.y - upperleft.y;
@@ -1398,6 +1382,66 @@ createScalarTiffImage(ImageIterator upperleft, ImageIterator lowerright,
     }
     delete[] buf;
 }
+
+template <>
+struct CreateTiffImage<unsigned char>
+{
+    template <class ImageIterator, class Accessor>
+    static void
+    exec(ImageIterator upperleft, ImageIterator lowerright, 
+                      Accessor a, TiffImage * tiff)
+    {
+        createBScalarTiffImage(upperleft, lowerright, a, tiff);
+    }
+};
+
+template <>
+struct CreateTiffImage<short>
+{
+    template <class ImageIterator, class Accessor>
+    static void
+    exec(ImageIterator upperleft, ImageIterator lowerright, 
+                      Accessor a, TiffImage * tiff)
+    {
+        createShortScalarTiffImage(upperleft, lowerright, a, tiff);
+    }
+};
+
+template <>
+struct CreateTiffImage<int>
+{
+    template <class ImageIterator, class Accessor>
+    static void
+    exec(ImageIterator upperleft, ImageIterator lowerright, 
+                      Accessor a, TiffImage * tiff)
+    {
+        createIScalarTiffImage(upperleft, lowerright, a, tiff);
+    }
+};
+
+template <>
+struct CreateTiffImage<float>
+{
+    template <class ImageIterator, class Accessor>
+    static void
+    exec(ImageIterator upperleft, ImageIterator lowerright, 
+                      Accessor a, TiffImage * tiff)
+    {
+        createFScalarTiffImage(upperleft, lowerright, a, tiff);
+    }
+};
+
+template <>
+struct CreateTiffImage<double>
+{
+    template <class ImageIterator, class Accessor>
+    static void
+    exec(ImageIterator upperleft, ImageIterator lowerright, 
+                      Accessor a, TiffImage * tiff)
+    {
+        createDScalarTiffImage(upperleft, lowerright, a, tiff);
+    }
+};
 
 /********************************************************/
 /*                                                      */
@@ -1468,7 +1512,8 @@ inline void
 createRGBTiffImage(RGBImageIterator upperleft, RGBImageIterator lowerright,
                    RGBAccessor a, TiffImage * tiff)
 {
-    createRGBTiffImage(upperleft, lowerright, a, tiff, a(upperleft));
+    CreateTiffImage<typename RGBAccessor::value_type>::
+        exec(upperleft, lowerright, a, tiff);
 }
 
 template <class RGBImageIterator, class RGBAccessor>
@@ -1480,8 +1525,8 @@ createRGBTiffImage(triple<RGBImageIterator, RGBImageIterator, RGBAccessor> src, 
 
 template <class RGBImageIterator, class RGBAccessor>
 void
-createRGBTiffImage(RGBImageIterator upperleft, RGBImageIterator lowerright, 
-                                   RGBAccessor a, TiffImage * tiff, RGBValue<unsigned char>)
+createBRGBTiffImage(RGBImageIterator upperleft, RGBImageIterator lowerright, 
+                                   RGBAccessor a, TiffImage * tiff)
 {
     int w = lowerright.x - upperleft.x;
     int h = lowerright.y - upperleft.y;
@@ -1528,8 +1573,8 @@ createRGBTiffImage(RGBImageIterator upperleft, RGBImageIterator lowerright,
 
 template <class RGBImageIterator, class RGBAccessor>
 void
-createRGBTiffImage(RGBImageIterator upperleft, RGBImageIterator lowerright, 
-                                   RGBAccessor a, TiffImage * tiff, RGBValue<short>)
+createShortRGBTiffImage(RGBImageIterator upperleft, RGBImageIterator lowerright, 
+                                   RGBAccessor a, TiffImage * tiff)
 {
     int w = lowerright.x - upperleft.x;
     int h = lowerright.y - upperleft.y;
@@ -1576,8 +1621,8 @@ createRGBTiffImage(RGBImageIterator upperleft, RGBImageIterator lowerright,
 
 template <class RGBImageIterator, class RGBAccessor>
 void
-createRGBTiffImage(RGBImageIterator upperleft, RGBImageIterator lowerright, 
-                                   RGBAccessor a, TiffImage * tiff, RGBValue<int>)
+createIRGBTiffImage(RGBImageIterator upperleft, RGBImageIterator lowerright, 
+                                   RGBAccessor a, TiffImage * tiff)
 {
     int w = lowerright.x - upperleft.x;
     int h = lowerright.y - upperleft.y;
@@ -1624,8 +1669,8 @@ createRGBTiffImage(RGBImageIterator upperleft, RGBImageIterator lowerright,
 
 template <class RGBImageIterator, class RGBAccessor>
 void
-createRGBTiffImage(RGBImageIterator upperleft, RGBImageIterator lowerright, 
-                                   RGBAccessor a, TiffImage * tiff, RGBValue<float>)
+createFRGBTiffImage(RGBImageIterator upperleft, RGBImageIterator lowerright, 
+                                   RGBAccessor a, TiffImage * tiff)
 {
     int w = lowerright.x - upperleft.x;
     int h = lowerright.y - upperleft.y;
@@ -1672,8 +1717,8 @@ createRGBTiffImage(RGBImageIterator upperleft, RGBImageIterator lowerright,
 
 template <class RGBImageIterator, class RGBAccessor>
 void
-createRGBTiffImage(RGBImageIterator upperleft, RGBImageIterator lowerright, 
-                                   RGBAccessor a, TiffImage * tiff, RGBValue<double>)
+createDRGBTiffImage(RGBImageIterator upperleft, RGBImageIterator lowerright, 
+                                   RGBAccessor a, TiffImage * tiff)
 {
     int w = lowerright.x - upperleft.x;
     int h = lowerright.y - upperleft.y;
@@ -1717,6 +1762,67 @@ createRGBTiffImage(RGBImageIterator upperleft, RGBImageIterator lowerright,
     }
     delete[] buf;
 }
+
+template <>
+struct CreateTiffImage<RGBValue<unsigned char> >
+{
+    template <class ImageIterator, class Accessor>
+    static void
+    exec(ImageIterator upperleft, ImageIterator lowerright, 
+                      Accessor a, TiffImage * tiff)
+    {
+        createBRGBTiffImage(upperleft, lowerright, a, tiff);
+    }
+};
+
+template <>
+struct CreateTiffImage<RGBValue<short> >
+{
+    template <class ImageIterator, class Accessor>
+    static void
+    exec(ImageIterator upperleft, ImageIterator lowerright, 
+                      Accessor a, TiffImage * tiff)
+    {
+        createShortRGBTiffImage(upperleft, lowerright, a, tiff);
+    }
+};
+
+template <>
+struct CreateTiffImage<RGBValue<int> >
+{
+    template <class ImageIterator, class Accessor>
+    static void
+    exec(ImageIterator upperleft, ImageIterator lowerright, 
+                      Accessor a, TiffImage * tiff)
+    {
+        createIRGBTiffImage(upperleft, lowerright, a, tiff);
+    }
+};
+
+template <>
+struct CreateTiffImage<RGBValue<float> >
+{
+    template <class ImageIterator, class Accessor>
+    static void
+    exec(ImageIterator upperleft, ImageIterator lowerright, 
+                      Accessor a, TiffImage * tiff)
+    {
+        createFRGBTiffImage(upperleft, lowerright, a, tiff);
+    }
+};
+
+template <>
+struct CreateTiffImage<RGBValue<double> >
+{
+    template <class ImageIterator, class Accessor>
+    static void
+    exec(ImageIterator upperleft, ImageIterator lowerright, 
+                      Accessor a, TiffImage * tiff)
+    {
+        createDRGBTiffImage(upperleft, lowerright, a, tiff);
+    }
+};
+
 
 //@}
 

@@ -28,6 +28,9 @@
     Include-File:
     \URL[vigra/functorexpression.hxx]{../include/vigra/functorexpression.hxx}\\
     Namespace: vigra::functor
+    
+    {\bf Note:} This functionality is not available under Microsoft Visual C++, 
+    because support for partial template specialization is required.
 
     {\bf Motivation}
     

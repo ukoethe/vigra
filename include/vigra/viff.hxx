@@ -216,7 +216,7 @@ template <class ImageIterator, class Accessor>
 void
 viffToScalarImage(ViffImage * viff, ImageIterator iter, Accessor a)
 {
-    vigra_precondition(viff, 
+    vigra_precondition(viff != 0, 
              "viffToScalarImage(ViffImage *, ScalarImageIterator): " 
              "NULL pointer to input data.");
     
@@ -424,7 +424,7 @@ template <class ImageIterator, class VectorComponentAccessor>
 void
 viffToMultibandImage(ViffImage * viff, ImageIterator iter, VectorComponentAccessor a)
 {
-    vigra_precondition(viff,
+    vigra_precondition(viff != 0,
               "viffToMultibandImage(ViffImage *, VectorImageIterator): " 
           "NULL pointer to input data.");
     
@@ -659,7 +659,7 @@ template <class RGBImageIterator, class RGBAccessor>
 void
 viffToRGBImage(ViffImage * viff, RGBImageIterator iter, RGBAccessor a)
 {
-    vigra_precondition(viff,
+    vigra_precondition(viff != 0,
               "viffToRGBImage(ViffImage *, RGBImageIterator): " 
           "NULL pointer to input data.");
     
@@ -851,6 +851,9 @@ viffToRGBImage(ViffImage * viff, pair<RGBImageIterator, RGBAccessor> dest)
     viffToRGBImage(viff, dest.first, dest.second);
 }
 
+template <class T>
+struct CreateViffImage;
+
 /********************************************************/
 /*                                                      */
 /*                     createViffImage                  */
@@ -919,10 +922,8 @@ inline ViffImage *
 createViffImage(ImageIterator upperleft, ImageIterator lowerright, 
                       Accessor a)
 {
-    typedef typename 
-           NumericTraits<typename Accessor::value_type>::isScalar 
-           isScalar;
-    return createViffImage(upperleft, lowerright, a, isScalar());
+    return CreateViffImage<typename Accessor::value_type>::
+        exec(upperleft, lowerright, a);
 }
 
 template <class ImageIterator, class Accessor>
@@ -930,22 +931,6 @@ inline ViffImage *
 createViffImage(triple<ImageIterator, ImageIterator, Accessor> src)
 {
     return createViffImage(src.first, src.second, src.third);
-}
-
-template <class ImageIterator, class Accessor>
-inline ViffImage *
-createViffImage(ImageIterator upperleft, ImageIterator lowerright, 
-                      Accessor a, VigraFalseType)
-{
-    return createRGBViffImage(upperleft, lowerright, a, a(upperleft));
-}
-
-template <class ImageIterator, class Accessor>
-inline ViffImage *
-createViffImage(ImageIterator upperleft, ImageIterator lowerright, 
-                      Accessor a, VigraTrueType)
-{
-    return createScalarViffImage(upperleft, lowerright, a, a(upperleft));
 }
 
 /********************************************************/
@@ -1014,7 +999,8 @@ inline ViffImage *
 createScalarViffImage(ImageIterator upperleft, ImageIterator lowerright, 
                       Accessor a)
 {
-    return createScalarViffImage(upperleft, lowerright, a, a(upperleft));
+    return CreateViffImage<typename Accessor::value_type>::
+        exec(upperleft, lowerright, a);
 }
 
 template <class ImageIterator, class Accessor>
@@ -1026,8 +1012,8 @@ createScalarViffImage(triple<ImageIterator, ImageIterator, Accessor> src)
 
 template <class ImageIterator, class Accessor>
 ViffImage *
-createScalarViffImage(ImageIterator upperleft, ImageIterator lowerright, 
-                                 Accessor a, unsigned char)
+createBScalarViffImage(ImageIterator upperleft, ImageIterator lowerright, 
+                                 Accessor a)
 {
     int w = lowerright.x - upperleft.x;
     int h = lowerright.y - upperleft.y;
@@ -1052,8 +1038,8 @@ createScalarViffImage(ImageIterator upperleft, ImageIterator lowerright,
 
 template <class ImageIterator, class Accessor>
 ViffImage *
-createScalarViffImage(ImageIterator upperleft, ImageIterator lowerright, 
-                                   Accessor a, short)
+createShortScalarViffImage(ImageIterator upperleft, ImageIterator lowerright, 
+                                   Accessor a)
 {
     int w = lowerright.x - upperleft.x;
     int h = lowerright.y - upperleft.y;
@@ -1078,8 +1064,8 @@ createScalarViffImage(ImageIterator upperleft, ImageIterator lowerright,
 
 template <class ImageIterator, class Accessor>
 ViffImage *
-createScalarViffImage(ImageIterator upperleft, ImageIterator lowerright, 
-                                   Accessor a, int)
+createIScalarViffImage(ImageIterator upperleft, ImageIterator lowerright, 
+                                   Accessor a)
 {
     int w = lowerright.x - upperleft.x;
     int h = lowerright.y - upperleft.y;
@@ -1104,8 +1090,8 @@ createScalarViffImage(ImageIterator upperleft, ImageIterator lowerright,
 
 template <class ImageIterator, class Accessor>
 ViffImage *
-createScalarViffImage(ImageIterator upperleft, ImageIterator lowerright, 
-                                   Accessor a, float)
+createFScalarViffImage(ImageIterator upperleft, ImageIterator lowerright, 
+                                   Accessor a)
 {
     int w = lowerright.x - upperleft.x;
     int h = lowerright.y - upperleft.y;
@@ -1129,8 +1115,8 @@ createScalarViffImage(ImageIterator upperleft, ImageIterator lowerright,
 
 template <class ImageIterator, class Accessor>
 ViffImage *
-createScalarViffImage(ImageIterator upperleft, ImageIterator lowerright, 
-                                   Accessor a, double)
+createDScalarViffImage(ImageIterator upperleft, ImageIterator lowerright, 
+                                   Accessor a)
 {
     int w = lowerright.x - upperleft.x;
     int h = lowerright.y - upperleft.y;
@@ -1152,6 +1138,66 @@ createScalarViffImage(ImageIterator upperleft, ImageIterator lowerright,
     
     return viff;
 }
+
+template <>
+struct CreateViffImage<unsigned char>
+{
+    template <class ImageIterator, class Accessor>
+    static ViffImage *
+    exec(ImageIterator upperleft, ImageIterator lowerright, 
+                      Accessor a)
+    {
+        return createBScalarViffImage(upperleft, lowerright, a);
+    }
+};
+
+template <>
+struct CreateViffImage<short>
+{
+    template <class ImageIterator, class Accessor>
+    static ViffImage *
+    exec(ImageIterator upperleft, ImageIterator lowerright, 
+                      Accessor a)
+    {
+        return createShortScalarViffImage(upperleft, lowerright, a);
+    }
+};
+
+template <>
+struct CreateViffImage<int>
+{
+    template <class ImageIterator, class Accessor>
+    static ViffImage *
+    exec(ImageIterator upperleft, ImageIterator lowerright, 
+                      Accessor a)
+    {
+        return createIScalarViffImage(upperleft, lowerright, a);
+    }
+};
+
+template <>
+struct CreateViffImage<float>
+{
+    template <class ImageIterator, class Accessor>
+    static ViffImage *
+    exec(ImageIterator upperleft, ImageIterator lowerright, 
+                      Accessor a)
+    {
+        return createFScalarViffImage(upperleft, lowerright, a);
+    }
+};
+
+template <>
+struct CreateViffImage<double>
+{
+    template <class ImageIterator, class Accessor>
+    static ViffImage *
+    exec(ImageIterator upperleft, ImageIterator lowerright, 
+                      Accessor a)
+    {
+        return createDScalarViffImage(upperleft, lowerright, a);
+    }
+};
 
 /********************************************************/
 /*                                                      */
@@ -1223,7 +1269,9 @@ inline ViffImage *
 createRGBViffImage(RGBImageIterator upperleft, RGBImageIterator lowerright,
                    RGBAccessor a)
 {
-    return createRGBViffImage(upperleft, lowerright, a, a(upperleft));
+    return CreateViffImage<typename RGBAccessor::value_type>::
+        exec(upperleft, lowerright, a);
+//    return createRGBViffImage(upperleft, lowerright, a, a(upperleft));
 }
 
 template <class RGBImageIterator, class RGBAccessor>
@@ -1235,8 +1283,8 @@ createRGBViffImage(triple<RGBImageIterator, RGBImageIterator, RGBAccessor> src)
 
 template <class RGBImageIterator, class RGBAccessor>
 ViffImage *
-createRGBViffImage(RGBImageIterator upperleft, RGBImageIterator lowerright, 
-                                   RGBAccessor a, RGBValue<unsigned char>)
+createBRGBViffImage(RGBImageIterator upperleft, RGBImageIterator lowerright, 
+                                   RGBAccessor a)
 {
     int w = lowerright.x - upperleft.x;
     int h = lowerright.y - upperleft.y;
@@ -1267,8 +1315,8 @@ createRGBViffImage(RGBImageIterator upperleft, RGBImageIterator lowerright,
 
 template <class RGBImageIterator, class RGBAccessor>
 ViffImage *
-createRGBViffImage(RGBImageIterator upperleft, RGBImageIterator lowerright, 
-                                       RGBAccessor a, RGBValue<int>)
+createIRGBViffImage(RGBImageIterator upperleft, RGBImageIterator lowerright, 
+                                       RGBAccessor a)
 {
     int w = lowerright.x - upperleft.x;
     int h = lowerright.y - upperleft.y;
@@ -1299,8 +1347,8 @@ createRGBViffImage(RGBImageIterator upperleft, RGBImageIterator lowerright,
 
 template <class RGBImageIterator, class RGBAccessor>
 ViffImage *
-createRGBViffImage(RGBImageIterator upperleft, RGBImageIterator lowerright, 
-                                   RGBAccessor a, RGBValue<float>)
+createFRGBViffImage(RGBImageIterator upperleft, RGBImageIterator lowerright, 
+                                   RGBAccessor a)
 {
     int w = lowerright.x - upperleft.x;
     int h = lowerright.y - upperleft.y;
@@ -1328,6 +1376,42 @@ createRGBViffImage(RGBImageIterator upperleft, RGBImageIterator lowerright,
     
     return viff;
 }
+
+template <>
+struct CreateViffImage<RGBValue<unsigned char> >
+{
+    template <class ImageIterator, class Accessor>
+    static ViffImage *
+    exec(ImageIterator upperleft, ImageIterator lowerright, 
+                      Accessor a)
+    {
+        return createBRGBViffImage(upperleft, lowerright, a);
+    }
+};
+
+template <>
+struct CreateViffImage<RGBValue<int> >
+{
+    template <class ImageIterator, class Accessor>
+    static ViffImage *
+    exec(ImageIterator upperleft, ImageIterator lowerright, 
+                      Accessor a)
+    {
+        return createIRGBViffImage(upperleft, lowerright, a);
+    }
+};
+
+template <>
+struct CreateViffImage<RGBValue<float> >
+{
+    template <class ImageIterator, class Accessor>
+    static ViffImage *
+    exec(ImageIterator upperleft, ImageIterator lowerright, 
+                      Accessor a)
+    {
+        return createFRGBViffImage(upperleft, lowerright, a);
+    }
+};
 
 //@}
 

@@ -10,11 +10,9 @@ CXXLIBDIR = -L$$VIGRA_PATH/lib/$$VIGRA_PLATFORM
 
 .cxx.o:
 	$(CXX) $(CXXFLAGS) $(CXXINC) -c $*.cxx
-	touch $*.o
 
 .c.o:
 	$(CC) $(CCFLAGS) $(CCINC) -c $*.c
-	touch $*.o
 
 .cxx.d:
 	@echo $*.o: $*.d > $*.d

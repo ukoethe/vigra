@@ -928,7 +928,11 @@ class Kernel2D
 	for(i=0; i<= radius; ++i)
 	{
 	    double r = (double) i - 0.5;
+#ifndef CMATH_NOT_IN_STD
 	    int w = (int)(std::sqrt(r2 - r*r) + 0.5);
+#else
+	    int w = (int)(sqrt(r2 - r*r) + 0.5);
+#endif
 	    for(int j=-w; j<=w; ++j)
 	    {
 	        k(j, i) = NumericTraits<value_type>::one();

@@ -27,6 +27,10 @@
     \URL[invert_explicitly.cxx]{../src/examples/invert_explicitly.cxx} \\
     Usage: #invert_explicitly infile outfile#
     
+    \item Resize an image using \Ref{resizeImageSplineInterpolation}:
+    \URL[resize.cxx]{../src/examples/resize.cxx} \\
+    Usage: #resize infile outfile#
+    
     \item Smooth an image using \Ref{Recursive convolution functions}:
     \URL[smooth.cxx]{../src/examples/smooth.cxx} \\
     Usage: #smooth infile outfile#

@@ -282,9 +282,11 @@ template <class SrcValueType>
 class LinearIntensityTransform
 {
    public:
-        /* a real type convertible from SrcValueType
+        /* the functors value type
             @memo
         */
+    typedef SrcValueType value_type;
+    
     typedef typename 
             NumericTraits<SrcValueType>::RealPromote SrcPromote;
     
@@ -298,9 +300,10 @@ class LinearIntensityTransform
         /* calculate transform
             @memo
         */
-    SrcPromote operator()(SrcValueType s) const
+    value_type operator()(value_type const & s) const
     {
-        return (scale_ * (s + offset_));
+        return NumericTraits<SrcValueType>::
+                fromRealPromote(scale_ * (SrcPromote(s) + offset_));
     }
     
   private:

@@ -26,6 +26,8 @@
 #include "vigra/impex.hxx"
 #include <string.h>
 
+using namespace vigra; // MSVC doesn't support Koenig lookup
+
 
 int main(int argc, char ** argv)
 {

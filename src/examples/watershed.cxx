@@ -28,6 +28,8 @@
 #include "vigra/seededregiongrowing.hxx"
 #include "vigra/impex.hxx"
 
+using namespace vigra; // MSVC doesn't support Koenig lookup
+
 // define a functor that calsulates the squared magnitude of the gradient
 // given the x- and y- components of the gradient
 struct GradientSquaredMagnitudeFunctor

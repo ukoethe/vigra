@@ -1324,7 +1324,11 @@ void Kernel1D<ARITHTYPE>::initGaussian(double std_dev,
     int i;
     for(i=1; i<=radius; ++i)
     {
+#ifndef CMATH_NOT_IN_STD
         x[i] = std::exp(-(double)i*i/sigma2);
+#else
+        x[i] = exp(-(double)i*i/sigma2);
+#endif
 	x[-i] = x[i];
 	sum += x[i] + x[i];
     }
@@ -1381,7 +1385,11 @@ Kernel1D<ARITHTYPE>::initGaussianDerivative(double std_dev,
 	for(i=1; i<=radius; ++i)
 	{
 	    double xc = (double) i;
+#ifndef CMATH_NOT_IN_STD
 	    x[i] = xc * std::exp(-xc*xc/sigma2);
+#else
+	    x[i] = xc * exp(-xc*xc/sigma2);
+#endif
 	    x[-i] = -x[i];
 	    sum += 2.0 * xc * x[i];
 	}
@@ -1420,7 +1428,11 @@ Kernel1D<ARITHTYPE>::initGaussianDerivative(double std_dev,
 	for(i=-radius; i<=radius; ++i)
 	{
 	    double xc = (double) i;
+#ifndef CMATH_NOT_IN_STD
 	    x0[i] = std::exp(-xc*xc/sigma2);
+#else
+	    x0[i] = exp(-xc*xc/sigma2);
+#endif
 	    x1[i] = -2.0 * xc / sigma2 * x0[i];
 	}
 	
@@ -1456,11 +1468,19 @@ Kernel1D<ARITHTYPE>::initGaussianDerivative(double std_dev,
 	for(i=-radius; i<=radius; ++i)
 	{
 	    x[-i] = x2[i];
+#ifndef CMATH_NOT_IN_STD
 	    sum += std::pow((double)i, (double)order) / fac * x2[i];
+#else
+	    sum += pow((double)i, (double)order) / fac * x2[i];
+#endif
 	}
 	
 	// normalize
+#ifndef CMATH_NOT_IN_STD
 	value_type scale = (1.0 / std::abs(sum)) * norm;
+#else
+	value_type scale = (1.0 / abs(sum)) * norm;
+#endif
 	
 	kernel_.erase(kernel_.begin(), kernel_.end());
 	kernel_.reserve(radius*2+1);

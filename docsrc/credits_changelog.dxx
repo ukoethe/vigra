@@ -14,11 +14,25 @@
 
 \end{itemize}
 
+{\bf Changes from Version 1.1.1 to 1.1.2}
+
+\begin{itemize}
+
+      \item Made VIGRA compile under MS Visual C++ 6.0.
+      
+      \item Added \Ref{BrightnessContrastFunctor}.
+      
+      \item Added \URL[resize ]{Examples.html} example.
+      
+      \item Minor corrections and bug fixes.
+      
+\end{itemize}
+
 {\bf Changes from Version 1.1.0 to 1.1.1}
 
 \begin{itemize}
 
-      \item Fixed bug with PNM export code.
+      \item Fixed bug with PNM import code.
       
       \item added Canny edge detection algorithm (code adapted from 
       C implementation by \URL[Sven Utcke]{mailto:utcke@informatik.uni-hamburg.de})

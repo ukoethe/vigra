@@ -57,7 +57,11 @@ struct InternalDistanceTransformL2NormFunctor
 {
     float operator()(float dx, float dy) const
     {
+#ifndef CMATH_NOT_IN_STD
         return std::sqrt(dx*dx + dy*dy);
+#else
+        return sqrt(dx*dx + dy*dy);
+#endif
     }
 };
 

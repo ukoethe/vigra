@@ -28,6 +28,8 @@
 #include "vigra/seededregiongrowing.hxx"
 #include "vigra/impex.hxx"
 
+using namespace vigra; // MSVC doesn't support Koenig lookup
+
 int main(int argc, char ** argv)
 {
     try

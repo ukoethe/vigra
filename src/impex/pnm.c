@@ -168,8 +168,7 @@ static unsigned int PNMInteger(VigraImpexImage *image,const unsigned int base)
 
 
   unsigned int
-    value,
-    status;
+    value;
 
   /*
     Skip any leading whitespace.
@@ -821,7 +820,7 @@ unsigned int vigraImpexWritePNMImage(VigraImpexImageInfo *image_info,VigraImpexI
 
   int
     j,
-    y,temp;
+    y;
 
   register int
     i,
