@@ -447,13 +447,16 @@ struct IteratorTraits<Diff2D >
     
 };
 
+}
 
 inline
-std::ostream & operator<<(std::ostream & o, Diff2D const & d)
+std::ostream & operator<<(std::ostream & o, vigra::Diff2D const & d)
 {
     o << '(' << d.x << ", " << d.y << ')';
     return o;
 }
+
+namespace vigra {
 
 template <class DIFF, class Accessor>
 inline triple<Diff2D, Diff2D, Accessor>
