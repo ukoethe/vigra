@@ -976,6 +976,100 @@ struct CornerDetectionTest
         }
     }
     
+    void foerstnerCornerTest()
+    {
+        Image tmp(img);
+        Image res(img);
+        res = 0.0;
+        
+        foerstnerCornerDetector(srcImageRange(img), destImage(tmp), 1.0);
+        localMaxima(srcImageRange(tmp), destImage(res), 1.0);
+        
+        static const double desired[] = {
+                   0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+                   0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+                   0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0,
+                   0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+                   0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+                   0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+                   0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0,
+                   0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+                   0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
+                                         
+        const double * i1 = desired;
+        const double * i1end = i1 + 49;
+        Image::ScanOrderIterator i2 = res.begin();
+        Image::Accessor acc = res.accessor();
+        
+        for(; i1 != i1end; ++i1, ++i2)
+        {
+            should(*i1 == acc(i2));
+        }
+    }
+    
+    void rohrCornerTest()
+    {
+        Image tmp(img);
+        Image res(img);
+        res = 0.0;
+        
+        rohrCornerDetector(srcImageRange(img), destImage(tmp), 1.0);
+        localMaxima(srcImageRange(tmp), destImage(res), 1.0);
+        
+        static const double desired[] = {
+                   0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+                   0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+                   0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0,
+                   0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+                   0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+                   0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+                   0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0,
+                   0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+                   0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
+                                         
+        const double * i1 = desired;
+        const double * i1end = i1 + 49;
+        Image::ScanOrderIterator i2 = res.begin();
+        Image::Accessor acc = res.accessor();
+        
+        for(; i1 != i1end; ++i1, ++i2)
+        {
+            should(*i1 == acc(i2));
+        }
+    }
+    
+     
+    void beaudetCornerTest()
+    {
+        Image tmp(img);
+        Image res(img);
+        res = 0.0;
+        
+        beaudetCornerDetector(srcImageRange(img), destImage(tmp), 1.0);
+        localMaxima(srcImageRange(tmp), destImage(res), 1.0);
+        
+        static const double desired[] = {
+                   0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+                   0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+                   0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+                   0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+                   0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0,
+                   0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+                   0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+                   0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+                   0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
+                                         
+        const double * i1 = desired;
+        const double * i1end = i1 + 49;
+        Image::ScanOrderIterator i2 = res.begin();
+        Image::Accessor acc = res.accessor();
+        
+        for(; i1 != i1end; ++i1, ++i2)
+        {
+            should(*i1 == acc(i2));
+        }
+    }
+   
     Image img;
 };
 
@@ -1011,6 +1105,9 @@ struct SimpleAnalysisTestSuite
         add( testCase( &LocalMinMaxTest::extendedLocalMaximumTest));
         add( testCase( &RegionGrowingTest::voronoiTest));
         add( testCase( &CornerDetectionTest::cornerResponseFunctionTest));
+        add( testCase( &CornerDetectionTest::foerstnerCornerTest));
+        add( testCase( &CornerDetectionTest::rohrCornerTest));
+        add( testCase( &CornerDetectionTest::beaudetCornerTest));
     }
 };
 
