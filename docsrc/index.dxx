@@ -16,7 +16,7 @@
     <DT>
         <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif">
         \ref MathFunctionality
-        <DD><em>Number types, mathematical constants and functions etc.</em>
+        <DD><em>Number types, mathematical constants and functions, linear algebra etc.</em>
     <DT>
         <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif">
         \ref PixelTypes
@@ -176,7 +176,7 @@
             <DD> <em>the matrix class</em>
         <DT>
             <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif">
-            \ref LinearAlgebraFunctions
+            \ref LinearAlgebraFunctions "Linear Algebra"
             <DD><em>matrix algebra, solution of linear systems, eigenvalue calculation etc.</em>
     </DL>
 
