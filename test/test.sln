@@ -17,6 +17,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "colorspaces", "colorspaces\
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "pixeltypes", "pixeltypes\pixeltypes.vcproj", "{213371EE-EAB1-4879-9D23-EC4499C22F8D}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "imagehierarchy", "imagehierarchy\imagehierarchy.vcproj", "{03F6A35C-E906-4616-B0B2-EF5A72A2FA09}"
+EndProject
 Global
 	GlobalSection(SolutionConfiguration) = preSolution
 		ConfigName.0 = Debug
@@ -61,6 +63,10 @@ Global
 		{213371EE-EAB1-4879-9D23-EC4499C22F8D}.Debug.Build.0 = Debug|Win32
 		{213371EE-EAB1-4879-9D23-EC4499C22F8D}.Release.ActiveCfg = Release|Win32
 		{213371EE-EAB1-4879-9D23-EC4499C22F8D}.Release.Build.0 = Release|Win32
+		{03F6A35C-E906-4616-B0B2-EF5A72A2FA09}.Debug.ActiveCfg = Debug|Win32
+		{03F6A35C-E906-4616-B0B2-EF5A72A2FA09}.Debug.Build.0 = Debug|Win32
+		{03F6A35C-E906-4616-B0B2-EF5A72A2FA09}.Release.ActiveCfg = Release|Win32
+		{03F6A35C-E906-4616-B0B2-EF5A72A2FA09}.Release.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 	EndGlobalSection
