@@ -1113,9 +1113,20 @@ public:
                 
             MultiIterator<3, int> i3 = ...;
                 
-            i3.dim<2>()++;  // increment outer dimension
-            i3.dim<0>()++;  // increment inner dimension
+            i3.template dim<2>()++;  // increment outer dimension
+            i3.template dim<0>()++;  // increment inner dimension
             \endcode
+            
+            For convenience, the same functionality is also available
+            as <tt>dim0()</tt>, <tt>dim1()</tt> etc. up to <tt>dim4()</tt>:
+            
+            \code
+                
+            MultiIterator<3, int> i3 = ...;
+                
+            i3.dim2()++;  // increment outer dimension
+            i3.dim0()++;  // increment inner dimension
+            \endcode            
         */
     template <unsigned int K>
     MultiIterator<K+1, T, REFERENCE, POINTER> &
@@ -1123,6 +1134,17 @@ public:
     {
         return *this;
     }
+
+    MultiIterator<1, T, REFERENCE, POINTER> &
+    dim0() { return *this; }
+    MultiIterator<2, T, REFERENCE, POINTER> &
+    dim1() { return *this; }
+    MultiIterator<3, T, REFERENCE, POINTER> &
+    dim2() { return *this; }
+    MultiIterator<4, T, REFERENCE, POINTER> &
+    dim3() { return *this; }
+    MultiIterator<5, T, REFERENCE, POINTER> &
+    dim4() { return *this; }
 };
 
 /********************************************************/
@@ -1824,8 +1846,19 @@ public:
             
             StridedMultiIterator<3, int> i3 = ...;
                 
-            i3.dim<2>()++;  // increment outer dimension
-            i3.dim<0>()++;  // increment inner dimension
+            i3.template dim<2>()++;  // increment outer dimension
+            i3.template dim<0>()++;  // increment inner dimension
+            \endcode
+            
+            For convenience, the same functionality is also available
+            as <tt>dim0()</tt>, <tt>dim1()</tt> etc. up to <tt>dim4()</tt>:
+            
+            \code
+                
+            StridedMultiIterator<3, int> i3 = ...;
+                
+            i3.dim2()++;  // increment outer dimension
+            i3.dim0()++;  // increment inner dimension
             \endcode
         */
     template <unsigned int K>
@@ -1834,6 +1867,17 @@ public:
     {
         return *this;
     }
+
+    StridedMultiIterator<1, T, REFERENCE, POINTER> &
+    dim0() { return *this; }
+    StridedMultiIterator<2, T, REFERENCE, POINTER> &
+    dim1() { return *this; }
+    StridedMultiIterator<3, T, REFERENCE, POINTER> &
+    dim2() { return *this; }
+    StridedMultiIterator<4, T, REFERENCE, POINTER> &
+    dim3() { return *this; }
+    StridedMultiIterator<5, T, REFERENCE, POINTER> &
+    dim4() { return *this; }
 };
 
 
