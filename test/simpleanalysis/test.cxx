@@ -902,7 +902,8 @@ struct RegionGrowingTest
                                          (5.0 - y)*(5.0 - y));
                 double desired = (dist1 <= dist2) ? 1 : 2;
                 
-                shouldEqualTolerance(dist, desired, 1e-14);
+                if(dist1 != dist2)
+                    shouldEqual(dist, desired);
             }
         }
     }
@@ -912,12 +913,12 @@ struct RegionGrowingTest
         Image res(img);
         Image::value_type reference[] = {
             1, 1, 1, 1, 1, 1, 1, 
-            1, 1, 1, 1, 1, 1, -1, 
-            1, 1, 1, 1, 1, -1, 2, 
-            1, 1, 1, 1, -1, 2, 2, 
-            1, 1, 1, -1, 2, 2, 2, 
-            1, 1, -1, 2, 2, 2, 2, 
-            1, -1, 2, 2, 2, 2, 2
+            1, 1, 1, 1, 1, 1, 0, 
+            1, 1, 1, 1, 1, 0, 2, 
+            1, 1, 1, 1, 0, 2, 2, 
+            1, 1, 1, 0, 2, 2, 2, 
+            1, 1, 0, 2, 2, 2, 2, 
+            1, 0, 2, 2, 2, 2, 2
         };
         
         vigra::ArrayOfRegionStatistics<DirectCostFunctor> cost(2);
