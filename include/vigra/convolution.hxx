@@ -23,6 +23,13 @@
 #ifndef VIGRA_CONVOLUTION_HXX
 #define VIGRA_CONVOLUTION_HXX
 
+#include <functional>
+#include "vigra/stdconvolution.hxx"
+#include "vigra/separableconvolution.hxx"
+#include "vigra/recursiveconvolution.hxx"
+#include "vigra/nonlineardiffusion.hxx"
+#include "vigra/combineimages.hxx"
+
 /** \page Convolution Functions to Convolve Images and Signals 
 
     1D and 2D filters, including separable and recursive convolution, and non-linear diffusion
@@ -69,11 +76,6 @@
         <DD> <em>Factory functions to create argument objects to simplify passing kernels</em>
     </DL>
 */
-
-#include "vigra/stdconvolution.hxx"
-#include "vigra/separableconvolution.hxx"
-#include "vigra/recursiveconvolution.hxx"
-#include "vigra/nonlineardiffusion.hxx"
 
 /** \page KernelArgumentObjectFactories Kernel Argument Object Factories
 
