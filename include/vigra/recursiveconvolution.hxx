@@ -133,6 +133,7 @@ void recursiveSmoothLine(SrcIterator is, SrcIterator isend, SrcAccessor as,
     typedef typename
         NumericTraits<typename SrcAccessor::value_type>::RealPromote 
     TempType;
+    typedef NumericTraits<typename DestAccessor::value_type> DestTraits;
     
     std::vector<TempType> vline(w);
     typename std::vector<TempType>::iterator line = vline.begin();
@@ -160,7 +161,7 @@ void recursiveSmoothLine(SrcIterator is, SrcIterator isend, SrcAccessor as,
         --id;
         
         old = b * old;
-        ad.set(norm * (line[x] + old), id);
+        ad.set(DestTraits::fromRealPromote(norm * (line[x] + old)), id);
 
         old = as(is) + old;
     }
@@ -254,6 +255,7 @@ void recursiveFirstDerivativeLine(SrcIterator is, SrcIterator isend, SrcAccessor
     typedef typename
         NumericTraits<typename SrcAccessor::value_type>::RealPromote 
     TempType;
+    typedef NumericTraits<typename DestAccessor::value_type> DestTraits;
 
     std::vector<TempType> vline(w);
     typename std::vector<TempType>::iterator line = vline.begin();
@@ -282,7 +284,7 @@ void recursiveFirstDerivativeLine(SrcIterator is, SrcIterator isend, SrcAccessor
 
         old = as(is) + b * old;
 
-        ad.set(norm * (line[x] + old), id);
+        ad.set(DestTraits::fromRealPromote(norm * (line[x] + old)), id);
     }
 }
             
@@ -374,6 +376,7 @@ void recursiveSecondDerivativeLine(SrcIterator is, SrcIterator isend, SrcAccesso
     typedef typename
         NumericTraits<typename SrcAccessor::value_type>::RealPromote 
     TempType;
+    typedef NumericTraits<typename DestAccessor::value_type> DestTraits;
     
     std::vector<TempType> vline(w);
     typename std::vector<TempType>::iterator line = vline.begin();
@@ -401,7 +404,7 @@ void recursiveSecondDerivativeLine(SrcIterator is, SrcIterator isend, SrcAccesso
         --is;
         --id;
 
-        ad.set(norm * (line[x] + old + a * as(is)), id);
+        ad.set(DestTraits::fromRealPromote(norm * (line[x] + old + a * as(is))), id);
 
         old = as(is) + b * old;
     }

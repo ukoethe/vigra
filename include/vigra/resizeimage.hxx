@@ -212,6 +212,8 @@ resizeImageInternalSplineInterpolation(SRCITERATOR is, SRCITERATOR iend, SRCACCE
     typedef typename SRCACCESSOR::value_type SRCVT;
     typedef typename NumericTraits<SRCVT>::RealPromote TMPTYPE;
     typedef typename BasicImage<TMPTYPE>::Iterator TMPITER;
+    typedef 
+        NumericTraits<typename DESTACCESSOR::value_type> DestTraits;
 
     BasicImage<TMPTYPE> dx(w,h);
     BasicImage<TMPTYPE> dy(w,h);
@@ -354,12 +356,12 @@ resizeImageInternalSplineInterpolation(SRCITERATOR is, SRCITERATOR iend, SRCACCE
                 xxd = yyd;
                 for(u=ou, xx=ox; u<1.0; u+=du, ++xxd.x, ++xx)
                 {
-                    da.set(a1 + u * (a2 + u * (a3 + u * a4)), xxd);
+                    da.set(DestTraits::fromRealPromote(a1 + u * (a2 + u * (a3 + u * a4))), xxd);
                 }
 
                 if(xx == wnew-1)
                 {
-                    da.set(a1 + a2 + a3 + a4, xxd);
+                    da.set(DestTraits::fromRealPromote(a1 + a2 + a3 + a4), xxd);
                 }
             }
             
@@ -373,12 +375,12 @@ resizeImageInternalSplineInterpolation(SRCITERATOR is, SRCITERATOR iend, SRCACCE
                 DESTITERATOR xxd = yyd;
                 for(u=ou, xx=ox; u<1.0; u+=du, ++xxd.x, ++xx)
                 {
-                    da.set(a1 + u * (a2 + u * (a3 + u * a4)), xxd);
+                    da.set(DestTraits::fromRealPromote(a1 + u * (a2 + u * (a3 + u * a4))), xxd);
                 }
                 
                 if(xx == wnew-1)
                 {
-                    da.set(a1 + a2 + a3 + a4, xxd);
+                    da.set(DestTraits::fromRealPromote(a1 + a2 + a3 + a4), xxd);
                 }
             }
             
@@ -577,13 +579,13 @@ resizeLineLinearInterpolation(SRCITERATOR i1, SRCITERATOR iend, SRCACCESSOR as,
     if((wold <= 1) || (wnew <= 1)) return; // oder error ? 
     
     typedef 
-      NumericTraits<typename DESTACCESSOR::value_type> NTRAITS;
+        NumericTraits<typename DESTACCESSOR::value_type> DestTraits;
 
-    ad.set(NTRAITS::fromRealPromote(as(i1)), id);
+    ad.set(DestTraits::fromRealPromote(as(i1)), id);
     ++id;
     
     --iend, --idend;
-    ad.set(NTRAITS::fromRealPromote(as(iend)), idend);
+    ad.set(DestTraits::fromRealPromote(as(iend)), idend);
     
     double dx = (double)(wold - 1) / (wnew - 1);
     double x = dx;
@@ -598,7 +600,7 @@ resizeLineLinearInterpolation(SRCITERATOR i1, SRCITERATOR iend, SRCACCESSOR as,
         }
         double x1 = 1.0 - x;
 
-        ad.set(NTRAITS::fromRealPromote(x1 * as(i1) + x * as(i1, 1)), id);
+        ad.set(DestTraits::fromRealPromote(x1 * as(i1) + x * as(i1, 1)), id);
     }
 }
 

@@ -23,6 +23,7 @@
 #define VIGRA_ACCESSOR_HXX
 
 #include "vigra/utilities.hxx"
+#include "vigra/numerictraits.hxx"
 
 namespace vigra {
 
@@ -68,31 +69,33 @@ class StandardAccessor
         @memo
     */
     typedef VALUETYPE value_type;
+    typedef typename NumericTraits<VALUETYPE>::Promote Promote;
+    typedef typename NumericTraits<VALUETYPE>::RealPromote RealPromote;
     
-    /** read the current data item
-        @memo
-    */
+        /** read the current data item
+            @memo
+        */
     template <class ITERATOR>
     VALUETYPE const & operator()(ITERATOR & i) const { return *i; }
     
-    /** read the data item at a distance (can be 1D or 2D or higher distance)
-        @memo
-    */
+        /** read the data item at a distance (can be 1D or 2D or higher distance)
+            @memo
+        */
     template <class ITERATOR, class DISTANCE>
     VALUETYPE const & operator()(ITERATOR & i, DISTANCE const & dist) const
     { 
         return i[dist]; 
     }
     
-    /** write the current data item
-        @memo
-    */
+        /** write the current data item
+            @memo
+        */
     template <class ITERATOR>
     void set(VALUETYPE const & v, ITERATOR & i) const { *i = v; }
     
-    /** write the data item at a distance (can be 1D or 2D or higher distance)
-        @memo
-    */
+        /** write the data item at a distance (can be 1D or 2D or higher distance)
+            @memo
+        */
     template <class ITERATOR, class DISTANCE>
     void set(VALUETYPE const & v, ITERATOR & i, DISTANCE const & dist) const 
     { 

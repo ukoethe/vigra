@@ -181,6 +181,8 @@ void convolveImage(SrcIterator sul, SrcIterator slr, SrcAccessor as,
         NumericTraits<typename SrcAccessor::value_type>::RealPromote SumType;
     typedef typename 
         NumericTraits<typename KernelAccessor::value_type>::RealPromote KSumType;
+    typedef 
+        NumericTraits<typename DestAccessor::value_type> DestTraits;
     
     // calculate width and height of the image
     int w = slr.x - sul.x;  
@@ -256,7 +258,7 @@ void convolveImage(SrcIterator sul, SrcIterator slr, SrcAccessor as,
 		
 		sum -= as(xs);
 		// store average in destination pixel
-		ad.set(sum, xd);
+		ad.set(DestTraits::fromRealPromote(sum), xd);
             }
 	    else
 	    {
@@ -286,7 +288,7 @@ void convolveImage(SrcIterator sul, SrcIterator slr, SrcAccessor as,
 		ksum -= ak(ki);
 		
 		// store average in destination pixel
-		ad.set((norm / ksum) * sum, xd);
+		ad.set(DestTraits::fromRealPromote((norm / ksum) * sum), xd);
 	    }
 	}
     }    
@@ -470,6 +472,8 @@ convolveImageWithMask(SrcIterator sul, SrcIterator slr, SrcAccessor as,
         NumericTraits<typename SrcAccessor::value_type>::RealPromote SumType;
     typedef typename 
         NumericTraits<typename KernelAccessor::value_type>::RealPromote KSumType;
+    typedef 
+        NumericTraits<typename DestAccessor::value_type> DestTraits;
     
     // calculate width and height of the image
     int w = slr.x - sul.x;  
@@ -559,7 +563,7 @@ convolveImageWithMask(SrcIterator sul, SrcIterator slr, SrcAccessor as,
 	    if(!first && 
 	        ksum != NumericTraits<KSumType>::zero()) 
 	    {
-	        ad.set((norm / ksum) * sum, xd);
+	        ad.set(DestTraits::fromRealPromote((norm / ksum) * sum), xd);
 	    }
 	}
     }    
