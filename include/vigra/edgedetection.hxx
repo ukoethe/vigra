@@ -1164,15 +1164,23 @@ class Edgel
 
         */
     float orientation;
+    
+    Edgel()
+    : x(0.0f), y(0.0f), strength(0.0f), orientation(0.0f)
+    {}
+    
+    Edgel(float ix, float iy, float is, float io)
+    : x(ix), y(iy), strength(is), orientation(io)
+    {}
 };
 
-template <class Image>
-void internalCannyFindEdgels(Image const & dx,
-                             Image const & dy,
-                             Image const & magnitude,
+template <class Image1, class Image2>
+void internalCannyFindEdgels(Image1 const & dx,
+                             Image1 const & dy,
+                             Image2 const & magnitude,
                              std::vector<Edgel> & edgels)
 {
-    typedef typename Image::PixelType PixelType;
+    typedef typename Image1::value_type PixelType;
     
     PixelType zero = NumericTraits<PixelType>::zero();
     double tan22_5 = M_SQRT2 - 1.0;
@@ -1269,7 +1277,7 @@ void internalCannyFindEdgels(Image const & dx,
             
             if(maximum_found)
             {
-                double orientation = atan2(-grady, gradx) - M_PI * 1.5;
+                double orientation = VIGRA_CSTD::atan2(-grady, gradx) - M_PI * 1.5;
                 if(orientation < 0.0)
                     orientation += 2.0*M_PI;
                 edgel.orientation = orientation;
