@@ -32,11 +32,11 @@
 #include <string.h>
 #include "vigra/imageinfo.hxx"
 #include "codecmanager.hxx"
-#ifndef _WIN32
-#  include <libgen.h>
-#  include <dirent.h>
+
+#if defined(_WIN32)
+#  include <io.h>
 #else
-#  include <windows.h>
+#  include <dirent.h>
 #endif
 
 namespace vigra
@@ -105,8 +105,6 @@ void findImageSequence(const std::string &name_base,
     }
 
     FindClose(hList);
-//    vigra_precondition(errno == 0,
-//          "importVolume(): I/O error while searching for images.");
           
     std::sort(result.begin(), result.end(), detail::NumberCompare());
     numbers.swap(result);
@@ -119,15 +117,22 @@ void findImageSequence(const std::string &name_base,
                        std::vector<std::string> & numbers)
 {
     // find out how many images we have
-    char * name, * path, * base;
-    name = strdup(name_base.c_str());
-    base = basename(name);
-    path = dirname(name);
+    std::string base, path;
+    int split = name_base.rfind('/');
+    if(split == -1)
+    {
+        path = ".";
+        base = name_base;
+    }
+    else
+    {
+        path.append(name_base, 0, split);
+        base.append(name_base, split+1, name_base.size() - split - 1);
+    }
     
-    DIR * dir = opendir(path);
+    DIR * dir = opendir(path.c_str());
     if(!dir)
     {
-        free(name);
         std::string message("importVolume(): Unable to open directory '");
         message = message + path + "'.";
         vigra_fail(message.c_str());
@@ -137,7 +142,7 @@ void findImageSequence(const std::string &name_base,
     dirent * dp;
     errno = 0;
     char numbuf[21], extbuf[1024];
-    std::string pattern = std::string(base) + "%20[0-9]%1023s";  
+    std::string pattern = base + "%20[0-9]%1023s";  
     while ((dp = readdir(dir)) != NULL) 
     {
         if(sscanf(dp->d_name, pattern.c_str(), numbuf, extbuf) == 2)
@@ -148,7 +153,6 @@ void findImageSequence(const std::string &name_base,
     }
 
     closedir(dir);
-    free(name);
     
     vigra_precondition(errno == 0,
           "importVolume(): I/O error while searching for images.");
