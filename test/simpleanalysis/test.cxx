@@ -147,6 +147,37 @@ struct LabelingTest
         }
     }
     
+    void labelingFourTest4()
+    {
+        static const int data[] = {
+            1,1,1,1,1,1,1,1,1,2,
+            2,1,1,1,1,1,1,2,1,2,
+            2,1,1,1,1,2,1,2,1,2,
+            2,1,1,2,1,2,1,2,1,2,
+            2,1,2,2,2,2,2,2,2,2,
+            2,2,2,3,3,3,3,3,3,3
+            
+        };
+        
+        int w=10;
+        int h=6;
+        Image img(w,h), res(w,h);
+        
+        std::copy(data, data+w*h, img.begin());
+        
+        should(3 == labelImage(srcImageRange(img), destImage(res), false));
+        
+        Image::ScanOrderIterator i = res.begin();
+        Image::ScanOrderIterator iend = res.end();
+        Image::ScanOrderIterator id = img.begin();
+        Image::Accessor acc = res.accessor();
+        
+        for(int c=0; i != iend; ++i, ++id, ++c)
+        {
+            should(acc(i) == acc(id));
+        }
+    }
+    
     void labelingToCellGridTest()
     {
         Image tmp(img1);
@@ -901,6 +932,7 @@ struct SimpleAnalysisTestSuite
         add( testCase( &LabelingTest::labelingFourTest1));
         add( testCase( &LabelingTest::labelingFourTest2));
         add( testCase( &LabelingTest::labelingFourTest3));
+        add( testCase( &LabelingTest::labelingFourTest4));
         add( testCase( &LabelingTest::labelingToCellGridTest));
         add( testCase( &LabelingTest::labelingEightTest1));
         add( testCase( &LabelingTest::labelingEightTest2));
