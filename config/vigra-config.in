@@ -37,16 +37,16 @@ while test $# -gt 0; do
     --target|--platform)
       echo @target@
       ;;
-    --cxxflags)
+    --cxxincludes|--cxxflags)
       echo '@CXXINCLUDES@' \
         | sed "s,\$[({]prefix[})],@prefix@,"
       ;;
-    --impex_lib|--libs)
+    --impex_lib|--impex-lib|--libs)
       echo '@IMPEX_LIB@' \
         | sed "s,\$[({]exec_prefix[})],@exec_prefix@," \
         | sed "s,\$[({]prefix[})],@prefix@,"
       ;;
-    --fftw_lib)
+    --fftw_lib|--fftw-lib)
       if test -z '@FFTW_LIB@'; then
         echo "VIGRA was configured without fftw switches, libpath unknown!" 1>&2
       else
