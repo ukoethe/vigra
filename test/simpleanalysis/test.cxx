@@ -14,7 +14,7 @@ struct LabelingTest
     typedef DImage Image;
 
     LabelingTest()
-    : img1(5,5), img2(5,5)
+    : img1(5,5), img2(5,5), img3(9,5), img4(11,11)
     {
         static const double in1[] = { 0.0, 0.0, 0.0, 0.0, 0.0,
                                       0.0, 1.0, 1.0, 1.0, 0.0,
@@ -46,9 +46,49 @@ struct LabelingTest
         {
             acc.set(*p, i);
         }
+        
+        static const int in3[] = { 
+            0, 1, 0, 1, 0, 1, 0, 1, 0,
+            0, 1, 0, 1, 0, 1, 0, 0, 0,
+            0, 1, 0, 1, 0, 0, 0, 1, 0,
+            0, 1, 0, 0, 0, 1, 1, 1, 0,
+            0, 0, 0, 1, 1, 1, 0, 0, 0
+        };
+        
+        i = img3.begin();
+        end = img3.end();
+        const int * p1 = in3;
+        
+        for(; i != end; ++i, ++p1)
+        {
+            acc.set(*p1, i);
+        }
+
+        static const int spiral[] = { 
+            1,1,1,1,1,1,1,1,1,1,1,
+            1,2,2,2,2,2,2,2,2,2,1,
+            1,2,1,1,1,1,1,1,1,2,1,
+            1,2,1,2,2,2,2,2,1,2,1,
+            1,2,1,2,1,1,1,2,1,2,1,
+            1,2,1,2,1,2,1,2,1,2,1,
+            1,2,1,2,1,2,2,2,1,2,1,
+            1,2,1,2,1,1,1,1,1,2,1,
+            1,2,1,2,2,2,2,2,2,2,1,
+            1,2,1,1,1,1,1,1,1,1,1,
+            1,2,2,2,2,2,2,2,2,2,2
+        };
+        
+        i = img4.begin();
+        end = img4.end();
+        p1 = spiral;
+        
+        for(; i != end; ++i, ++p1)
+        {
+            acc.set(*p1, i);
+        }
     }
     
-    void labelingFourTest()
+    void labelingFourTest1()
     {
         Image res(img1);
         
@@ -62,6 +102,48 @@ struct LabelingTest
         for(; i1 != i1end; ++i1, ++i2)
         {
             should(acc(i1) == acc(i2) - 1.0);
+        }
+    }
+    
+    void labelingFourTest2()
+    {
+        Image res(img3);
+        
+        should(6 == labelImage(srcImageRange(img3), destImage(res), false));
+        
+        static const int target[] = { 
+            1, 2, 1, 3, 1, 4, 1, 5, 1,
+            1, 2, 1, 3, 1, 4, 1, 1, 1,
+            1, 2, 1, 3, 1, 1, 1, 6, 1,
+            1, 2, 1, 1, 1, 6, 6, 6, 1,
+            1, 1, 1, 6, 6, 6, 1, 1, 1
+        };
+        
+        Image::ScanOrderIterator i = res.begin();
+        Image::ScanOrderIterator iend = res.end();
+        const int * p = target;
+        Image::Accessor acc = res.accessor();
+        
+        for(; i != iend; ++i, ++p)
+        {
+            should(acc(i) == *p);
+        }
+    }
+    
+    void labelingFourTest3()
+    {
+        Image res(img4.size());
+        
+        should(2 == labelImage(srcImageRange(img4), destImage(res), false));
+        
+        Image::ScanOrderIterator i = res.begin();
+        Image::ScanOrderIterator iend = res.end();
+        Image::ScanOrderIterator id = img4.begin();
+        Image::Accessor acc = res.accessor();
+        
+        for(; i != iend; ++i, ++id)
+        {
+            should(acc(i) == acc(id));
         }
     }
     
@@ -113,7 +195,7 @@ struct LabelingTest
         }
     }
     
-    void labelingFourWithBackgroundTest()
+    void labelingFourWithBackgroundTest1()
     {
         Image res(img1);
         res = 0.0;
@@ -130,6 +212,25 @@ struct LabelingTest
         for(; i1 != i1end; ++i1, ++i2)
         {
             should(acc(i1) == acc(i2));
+        }
+    }
+    
+    void labelingFourWithBackgroundTest2()
+    {
+        Image res(img4);
+        
+        should(1 == labelImageWithBackground(srcImageRange(img4), 
+                                            destImage(res), 
+                                            false, 2.0));
+        
+        Image::ScanOrderIterator i = res.begin();
+        Image::ScanOrderIterator iend = res.end();
+        Image::ScanOrderIterator id = img4.begin();
+        Image::Accessor acc = res.accessor();
+        
+        for(; i != iend; ++i, ++id)
+        {
+            should(acc(i) == acc(id));
         }
     }
     
@@ -152,7 +253,7 @@ struct LabelingTest
         }
     }
     
-    Image img1, img2;
+    Image img1, img2, img3, img4;
 };
     
 struct EdgeDetectionTest
@@ -766,10 +867,13 @@ struct SimpleAnalysisTestSuite
     SimpleAnalysisTestSuite()
     : TestSuite("SimpleAnalysisTestSuite")
     {
-        add( testCase( &LabelingTest::labelingFourTest));
+        add( testCase( &LabelingTest::labelingFourTest1));
+        add( testCase( &LabelingTest::labelingFourTest2));
+        add( testCase( &LabelingTest::labelingFourTest3));
         add( testCase( &LabelingTest::labelingToCellGridTest));
         add( testCase( &LabelingTest::labelingEightTest));
-        add( testCase( &LabelingTest::labelingFourWithBackgroundTest));
+        add( testCase( &LabelingTest::labelingFourWithBackgroundTest1));
+        add( testCase( &LabelingTest::labelingFourWithBackgroundTest2));
         add( testCase( &LabelingTest::labelingEightWithBackgroundTest));
         add( testCase( &EdgeDetectionTest::edgeDetectionTest));
         add( testCase( &EdgeDetectionTest::edgeToCellGridTest));
