@@ -47,7 +47,7 @@ namespace detail
 
 template <class SrcIterator, class SrcShape, class SrcAccessor, 
           class DestIterator, class DestAccessor, class KernelIterator>
-inline void 
+void 
 internalSeparableConvolveMultiArrayTmp( 
                       SrcIterator si, SrcShape const & shape, SrcAccessor src, 
                       DestIterator di, DestAccessor dest, KernelIterator kit)
@@ -70,9 +70,10 @@ internalSeparableConvolveMultiArrayTmp(
         {
              // first copy source to temp for maximum cache efficiency
              copyLine( snav.begin(), snav.end(), src,
-                       tmp.begin(), StandardValueAccessor<TmpType>() );
+                       tmp.begin(), typename AccessorTraits<TmpType>::default_accessor() );
 
-             convolveLine( srcIterRange(tmp.begin(), tmp.end(), StandardConstValueAccessor<TmpType>()),
+             convolveLine( srcIterRange(tmp.begin(), tmp.end(), 
+                                        typename AccessorTraits<TmpType>::default_const_accessor()),
                            destIter( dnav.begin(), dest ),
                            kernel1d( *kit ) );
         }
@@ -90,9 +91,10 @@ internalSeparableConvolveMultiArrayTmp(
         {
              // first copy source to temp for maximum cache efficiency
              copyLine( dnav.begin(), dnav.end(), dest,
-                       tmp.begin(), StandardValueAccessor<TmpType>() );
+                       tmp.begin(), typename AccessorTraits<TmpType>::default_accessor() );
 
-             convolveLine( srcIterRange(tmp.begin(), tmp.end(), StandardConstValueAccessor<TmpType>()),
+             convolveLine( srcIterRange(tmp.begin(), tmp.end(), 
+                                        typename AccessorTraits<TmpType>::default_const_accessor()),
                            destIter( dnav.begin(), dest ),
                            kernel1d( *kit ) );
         }
@@ -137,7 +139,7 @@ internalSeparableConvolveMultiArrayTmp(
 */
 template <class SrcIterator, class SrcShape, class SrcAccessor, 
           class DestIterator, class DestAccessor, class KernelIterator>
-inline void 
+void 
 separableConvolveMultiArray( SrcIterator s, SrcShape const & shape, SrcAccessor src, 
                              DestIterator d, DestAccessor dest, KernelIterator kit )
 {
@@ -216,7 +218,7 @@ separableConvolveMultiArray(triple<SrcIterator, SrcShape, SrcAccessor> const & s
    */
 template <class SrcIterator, class SrcShape, class SrcAccessor, 
           class DestIterator, class DestAccessor, class T>
-inline void 
+void 
 separableConvolveMultiArray( SrcIterator s, SrcShape const & shape, SrcAccessor src, 
                              DestIterator d, DestAccessor dest, 
                              unsigned int dim, vigra::Kernel1D<T> const & kernel )
@@ -239,9 +241,9 @@ separableConvolveMultiArray( SrcIterator s, SrcShape const & shape, SrcAccessor 
     {
          // first copy source to temp for maximum cache efficiency
          copyLine( snav.begin(), snav.end(), src,
-		   tmp.begin(), StandardValueAccessor<TmpType>() );
+		   tmp.begin(), typename AccessorTraits<TmpType>::default_accessor() );
 
-         convolveLine( srcIterRange( tmp.begin(), tmp.end(), StandardConstValueAccessor<TmpType>()),
+         convolveLine( srcIterRange( tmp.begin(), tmp.end(), typename AccessorTraits<TmpType>::default_const_accessor()),
                        destIter( dnav.begin(), dest ),
                        kernel1d( kernel ) );
     }
