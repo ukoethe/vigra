@@ -13,7 +13,8 @@
 
       <li> Hans Meine 
       (<a href="mailto:hans_meine@gmx.net">hans_meine@gmx.net</a>)
-      contributed interface code for the FFTW Fourier transform library.
+      contributed interface code for the FFTW Fourier transform library,
+      the ImageArray class and the Gabor filter code.
 
 
 </UL>
@@ -23,6 +24,12 @@
 <UL>
 
       <li> Added more corner detectors (see \ref CornerDetection).
+           
+      <li> Added local symmetry detector (see \ref SymmetryDetection).
+           
+      <li> Added \ref vigra#ImageArray.
+           
+      <li> Added Gabor filter code (see \ref GaborFilter).
            
       <li> Extended \link FunctorExpressions functor expression library \endlink.
            
