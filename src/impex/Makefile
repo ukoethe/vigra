@@ -19,7 +19,7 @@ OBJS = \
 all: $(TARGET)
 
 $(TARGET): $(OBJS)
-	$(LINKCXXLIB) -version-info $(MAJOR_VERSION):$(MINOR_VERSION)$(MICRO_VERSION):0 -o $(TARGET) $(OBJS)
+	$(LINKCXXLIB) -version-info 2:$(MAJOR_VERSION)$(MINOR_VERSION)$(MICRO_VERSION):0 -o $(TARGET) $(OBJS)
 
 install: all
 	$(INSTALL) -d $(libdir)
