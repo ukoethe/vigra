@@ -642,7 +642,7 @@ BasicImage<PIXELTYPE>::operator=(const BasicImage<PIXELTYPE> & rhs)
 
 template <class PIXELTYPE>
 BasicImage<PIXELTYPE> &  
-BasicImage<PIXELTYPE>::operator=(PIXELTYPE pixel)
+BasicImage<PIXELTYPE>::operator=(value_type pixel)
 {
     ScanOrderIterator i = begin();
     ScanOrderIterator iend = end();
@@ -654,7 +654,7 @@ BasicImage<PIXELTYPE>::operator=(PIXELTYPE pixel)
 
 template <class PIXELTYPE>
 BasicImage<PIXELTYPE> &  
-BasicImage<PIXELTYPE>::init(PIXELTYPE const & pixel)
+BasicImage<PIXELTYPE>::init(value_type const & pixel)
 {
     ScanOrderIterator i = begin();
     ScanOrderIterator iend = end();
@@ -666,7 +666,7 @@ BasicImage<PIXELTYPE>::init(PIXELTYPE const & pixel)
 
 template <class PIXELTYPE>
 void  
-BasicImage<PIXELTYPE>::resize(int width, int height, PIXELTYPE const & d)
+BasicImage<PIXELTYPE>::resize(int width, int height, value_type const & d)
 {
     vigra_precondition((width >= 0) && (height >= 0),
          "BasicImage::resize(int width, int height, value_type const &): "
@@ -693,7 +693,7 @@ BasicImage<PIXELTYPE>::resize(int width, int height, PIXELTYPE const & d)
 
 template <class PIXELTYPE>
 void  
-BasicImage<PIXELTYPE>::resizeCopy(const BasicImage<PIXELTYPE> & rhs)
+BasicImage<PIXELTYPE>::resizeCopy(const BasicImage & rhs)
 {
     value_type * newdata = 0;
     value_type ** newlines = 0;
@@ -732,7 +732,7 @@ BasicImage<PIXELTYPE>::deallocate()
 
 template <class PIXELTYPE>
 PIXELTYPE **   
-BasicImage<PIXELTYPE>::initLineStartArray(PIXELTYPE * data, int width, int height)
+BasicImage<PIXELTYPE>::initLineStartArray(value_type * data, int width, int height)
 {
     value_type ** lines = new PIXELTYPE*[height];
     for(int y=0; y<height; ++y)
