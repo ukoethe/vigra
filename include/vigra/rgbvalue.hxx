@@ -23,7 +23,8 @@
 #ifndef VIGRA_RGBVALUE_HXX
 #define VIGRA_RGBVALUE_HXX
 
-#include <cmath>
+#include <cmath>    // abs(double), rint(double)
+#include <cstdlib>  // abs(int)
 #include "vigra/config.hxx"
 #include "vigra/numerictraits.hxx"
 #include "vigra/accessor.hxx"
@@ -650,6 +651,8 @@ operator/=(RGBValue<V> & l, double r)
     return l;
 }
 
+using std::abs;
+
     /// component-wise absolute value
 template <class T>
 inline
@@ -758,6 +761,8 @@ dot(RGBValue<V1> const & r1, RGBValue<V2> const & r2)
 {
     return r1.red()*r2.red() + r1.green()*r2.green() + r1.blue()*r2.blue();
 }
+
+using std::rint;
 
     /// Round a floating point RGB pixel to the nearest integers 
 template <class V>
