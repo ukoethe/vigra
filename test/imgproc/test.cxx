@@ -4,6 +4,7 @@
 #include "unittest.hxx"
 #include "vigra/stdimage.hxx"
 #include "vigra/stdimagefunctions.hxx"
+#include "vigra/splineimageview.hxx"
 #include "vigra/impex.hxx"
 
 using namespace vigra;
@@ -884,6 +885,27 @@ struct ResizeImageTest
                                      RGBImage::value_type(1.0e-6f));
     }
     
+    void scalarSplineImageView()
+    {
+        ImageImportInfo info("lenna288.xv");
+
+        Image reference(info.width(), info.height());
+        importImage(info, destImage(reference));
+
+        SplineImageView<double> view(srcImageRange(img));
+        
+        for(int y=0; y<reference.height(); ++y)
+        {
+            for(int x=0; x<reference.width(); ++x)
+            {
+                double dx = (double)x / (reference.width() - 1) * (img.width() - 1);
+                double dy = (double)y / (reference.height() - 1) * (img.height() - 1);
+                shouldEqualTolerance(view(dx, dy), reference(x, y), 1e-4);
+            }
+        }
+        
+    }
+
     void scalarExpand()
     {
         ImageImportInfo info("lenna288.xv");
@@ -1121,6 +1143,7 @@ struct ImageFunctionsTestSuite
         add( testCase( &ImageFunctionsTest::resizeNoInterpolationTest));
         add( testCase( &ImageFunctionsTest::resizeLinearInterpolationTest));
         add( testCase( &ResizeImageTest::resizeLinearInterpolationReduceTest));
+        add( testCase( &ResizeImageTest::scalarSplineImageView));
         add( testCase( &ResizeImageTest::scalarExpand));
         add( testCase( &ResizeImageTest::scalarReduce));
         add( testCase( &ResizeImageTest::rgbExpand));
