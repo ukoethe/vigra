@@ -786,18 +786,19 @@ struct ImageFunctionsTest
         }
     }
 
+
     Image img;
     vigra::BImage mask;
     RGBImage rgb;
     RGBImage::value_type col;
 };
 
-struct ResizeImageSplineTest
+struct ResizeImageTest
 {
     typedef vigra::FImage Image;
     typedef vigra::FRGBImage RGBImage;
 
-    ResizeImageSplineTest()
+    ResizeImageTest()
     {
         ImageImportInfo ginfo("lenna128.xv");
         img.resize(ginfo.width(), ginfo.height());
@@ -809,6 +810,29 @@ struct ResizeImageSplineTest
 
     }
 
+    void resizeLinearInterpolationReduceTest()
+    {        
+        ImageImportInfo inforef("lenna42lin.xv");
+        Image ref(inforef.size());
+        importImage(inforef, destImage(ref));
+
+        Image dest(inforef.size());
+        
+        resizeImageLinearInterpolation(srcImageRange(img), destImageRange(dest));
+        
+        shouldEqualSequence(dest.begin(), dest.end(), ref.begin());
+        
+        ImageImportInfo inforgb("lenna42linrgb.xv");
+        RGBImage rgbref(inforgb.size());
+        importImage(inforgb, destImage(rgbref));
+
+        RGBImage rgbdest(inforgb.size());
+        
+        resizeImageLinearInterpolation(srcImageRange(rgb), destImageRange(rgbdest));
+        
+        shouldEqualSequence(rgbdest.begin(), rgbdest.end(), rgbref.begin());
+    }
+    
     void scalarExpand()
     {
         ImageImportInfo info("lenna288.xv");
@@ -819,14 +843,7 @@ struct ResizeImageSplineTest
         Image img1(imgex.width(), imgex.height());
         resizeImageSplineInterpolation(srcImageRange(img), destImageRange(img1));
 
-        Image::ScanOrderIterator i1 = img1.begin();
-        Image::ScanOrderIterator iex = imgex.begin();
-        Image::Accessor acc = img1.accessor();
-
-        for(; i1 != img1.end(); ++i1, ++iex)
-        {
-            shouldEqualTolerance(acc(i1), acc(iex), 1e-4f);
-        }
+        shouldEqualSequenceTolerance(img1.begin(), img1.end(), imgex.begin(), 1e-4f);
     }
 
     void scalarReduce()
@@ -840,15 +857,8 @@ struct ResizeImageSplineTest
 
         resizeImageSplineInterpolation(srcImageRange(img), destImageRange(img1));
 
-        Image::ScanOrderIterator i1 = img1.begin();
-        Image::ScanOrderIterator ired = imgred.begin();
-        Image::Accessor acc = img1.accessor();
-
-        for(; i1 != img1.end(); ++i1, ++ired)
-        {
-            shouldEqualTolerance(acc(i1), acc(ired), 1e-4f);
-        }
-    }
+        shouldEqualSequenceTolerance(img1.begin(), img1.end(), imgred.begin(), 1e-4f);
+   }
 
     void rgbExpand()
     {
@@ -885,21 +895,144 @@ struct ResizeImageSplineTest
         resizeImageSplineInterpolation(srcImageRange(rgb), destImageRange(img1));
 
         RGBImage::ScanOrderIterator i1 = img1.begin();
-        RGBImage::ScanOrderIterator ired = rgbred.begin();
+        RGBImage::ScanOrderIterator iref = rgbred.begin();
         RGBImage::Accessor acc = img1.accessor();
 
-        for(; i1 != img1.end(); ++i1, ++ired)
+        for(; i1 != img1.end(); ++i1, ++iref)
         {
-            shouldEqualTolerance(acc.red(i1), acc.red(ired), 1e-4f);
-            shouldEqualTolerance(acc.green(i1), acc.green(ired), 1e-4f);
-            shouldEqualTolerance(acc.blue(i1), acc.blue(ired), 1e-4f);
+            shouldEqualTolerance(acc.red(i1), acc.red(iref), 1e-4f);
+            shouldEqualTolerance(acc.green(i1), acc.green(iref), 1e-4f);
+            shouldEqualTolerance(acc.blue(i1), acc.blue(iref), 1e-4f);
         }
+    }
+
+    /*Vergroesserungstest
+    */
+    void testCubicFIRInterpolationExtensionWithLena()
+    {
+        ImageImportInfo inforef("lenna367FIR.xv");
+        Image ref(inforef.size());
+        importImage(inforef, destImage(ref));
+
+        Image dest(inforef.size());
+        
+        resizeImageCubicFIRInterpolation(srcImageRange(img), destImageRange(dest));
+        
+        shouldEqualSequence(dest.begin(), dest.end(), ref.begin());
+    }
+
+        
+    /*Verkleinerungstest
+    */
+    void testCubicFIRInterpolationReductionWithLena()
+    {        
+        ImageImportInfo inforef("lenna42FIR.xv");
+        Image ref(inforef.size());
+        importImage(inforef, destImage(ref));
+
+        Image dest(inforef.size());
+        
+        resizeImageCubicFIRInterpolation(srcImageRange(img), destImageRange(dest));
+
+        shouldEqualSequenceTolerance(dest.begin(), dest.end(), ref.begin(), 1e-4f);
+        
+        ImageImportInfo inforgb("lennargb42FIR.xv");
+        RGBImage rgbref(inforgb.size());
+        importImage(inforgb, destImage(rgbref));
+
+        RGBImage rgbdest(inforgb.size());
+        
+        resizeImageCubicFIRInterpolation(srcImageRange(rgb), destImageRange(rgbdest));
+        
+        RGBImage::ScanOrderIterator i1 = rgbdest.begin();
+        RGBImage::ScanOrderIterator iref = rgbref.begin();
+        RGBImage::Accessor acc = rgbdest.accessor();
+
+        for(; i1 != rgbdest.end(); ++i1, ++iref)
+        {
+            shouldEqualTolerance(acc.red(i1), acc.red(iref), 1e-4f);
+            shouldEqualTolerance(acc.green(i1), acc.green(iref), 1e-4f);
+            shouldEqualTolerance(acc.blue(i1), acc.blue(iref), 1e-4f);
+        }
+    }
+    
+    void testCubicIIRInterpolationExtensionWithLena()
+    {
+        ImageImportInfo inforef("lenna367IIR.xv");
+        Image ref(inforef.size());
+        importImage(inforef, destImage(ref));
+
+        Image dest(inforef.size());
+        
+        resizeImageCubicIIRInterpolation(srcImageRange(img), destImageRange(dest));
+
+        shouldEqualSequenceTolerance(dest.begin(), dest.end(), ref.begin(), 1e-4f);
+    }
+    
+    /*Verkleinerungstest
+    */
+    void testCubicIIRInterpolationReductionWithLena()
+    {        
+        ImageImportInfo inforef("lenna42IIR.xv");
+        Image ref(inforef.size());
+        importImage(inforef, destImage(ref));
+
+        Image dest(inforef.size());
+        
+        resizeImageCubicIIRInterpolation(srcImageRange(img), destImageRange(dest));
+
+        shouldEqualSequenceTolerance(dest.begin(), dest.end(), ref.begin(), 1e-4f);
+
+        ImageImportInfo inforgb("lennargb42IIR.xv");
+        RGBImage rgbref(inforgb.size());
+        importImage(inforgb, destImage(rgbref));
+
+        RGBImage rgbdest(inforgb.size());
+        
+        resizeImageCubicIIRInterpolation(srcImageRange(rgb), destImageRange(rgbdest));
+
+        RGBImage::ScanOrderIterator i1 = rgbdest.begin();
+        RGBImage::ScanOrderIterator iref = rgbref.begin();
+        RGBImage::Accessor acc = rgbdest.accessor();
+
+        for(; i1 != rgbdest.end(); ++i1, ++iref)
+        {
+            shouldEqualTolerance(acc.red(i1), acc.red(iref), 1e-4f);
+            shouldEqualTolerance(acc.green(i1), acc.green(iref), 1e-4f);
+            shouldEqualTolerance(acc.blue(i1), acc.blue(iref), 1e-4f);
+        }
+    }
+    
+    void testCubicFIRInterpolationExtensionHandControled()
+    {
+        vigra::DImage src(6, 7), dest(10, 10, 145.346);
+
+        for(int i = 0; i<src.width()*src.height(); i++)
+        {
+          src.begin()[i] = 0.25 + i;
+        }
+
+        static double refdata[100] = 
+        {           0.25,/**/    0.695816186557,   1.36111111111,       1.91666666667,      2.47222222222,    3.02777777778,    3.58333333333,      4.13888888889,      4.80418381344,/***/       5.25,/**/ 
+           3.80555555556,        4.25137174211,    4.91666666667,       5.47222222222,      6.02777777778,    6.58333333333,    7.13888888889,      7.69444444444,      8.359739369,              8.80555555556,
+                    8.25,        8.69581618656,    9.36111111111,       9.91666666667,      10.4722222222,    11.0277777778,    11.5833333333,      12.1388888889,      12.8041838134,            13.25,
+                   12.25,/**/    12.6958161866,    13.3611111111,/***/  13.9166666667,      14.4722222222,    15.0277777778,    15.5833333333,      16.1388888889,      16.8041838134,            17.25,/**/
+                   16.25,/***/   16.6958161866,    17.3611111111,       17.9166666667,/***/ 18.4722222222,    19.0277777778,    19.5833333333,      20.1388888889,      20.8041838134,            21.25,
+                   20.25,        20.6958161866,    21.3611111111,       21.9166666667,      22.4722222222,    23.0277777778,    23.5833333333,      24.1388888889,      24.8041838134,            25.25,/***/
+                   24.25,/**/    24.6958161866,    25.3611111111,       25.9166666667,      26.4722222222,    27.0277777778,    27.5833333333,      28.1388888889,      28.8041838134,            29.25,/**/
+                   28.25,        28.6958161866,    29.3611111111,       29.9166666667,      30.4722222222,    31.0277777778,    31.5833333333,/***/ 32.1388888889,      32.8041838134,            33.25,
+           32.6944444444,        33.140260631,     33.8055555556,       34.3611111111,      34.9166666667,    35.4722222222,    36.0277777778,      36.5833333333,/***/ 37.2486282579,            37.6944444444,
+                   36.25,/**/    36.6958161866,    37.3611111111,/***/  37.9166666667,      38.4722222222,    39.0277777778,    39.5833333333,      40.1388888889,      40.8041838134,            41.25/**/
+        };
+
+        resizeImageCubicFIRInterpolation(srcImageRange(src), destImageRange(dest));
+
+        shouldEqualSequenceTolerance(dest.begin(), dest.end(), refdata, 1e-11);
     }
 
     Image img;
     RGBImage rgb;
 };
-
 
 
 struct ImageFunctionsTestSuite
@@ -935,10 +1068,16 @@ struct ImageFunctionsTestSuite
         add( testCase( &ImageFunctionsTest::additionIfTest));
         add( testCase( &ImageFunctionsTest::resizeNoInterpolationTest));
         add( testCase( &ImageFunctionsTest::resizeLinearInterpolationTest));
-        add( testCase( &ResizeImageSplineTest::scalarExpand));
-        add( testCase( &ResizeImageSplineTest::scalarReduce));
-        add( testCase( &ResizeImageSplineTest::rgbExpand));
-        add( testCase( &ResizeImageSplineTest::rgbReduce));
+        add( testCase( &ResizeImageTest::resizeLinearInterpolationReduceTest));
+        add( testCase( &ResizeImageTest::scalarExpand));
+        add( testCase( &ResizeImageTest::scalarReduce));
+        add( testCase( &ResizeImageTest::rgbExpand));
+        add( testCase( &ResizeImageTest::rgbReduce));
+        add( testCase( &ResizeImageTest::testCubicFIRInterpolationExtensionWithLena));
+        add( testCase( &ResizeImageTest::testCubicFIRInterpolationReductionWithLena));
+        add( testCase( &ResizeImageTest::testCubicIIRInterpolationExtensionWithLena));
+        add( testCase( &ResizeImageTest::testCubicIIRInterpolationReductionWithLena));
+        add( testCase( &ResizeImageTest::testCubicFIRInterpolationExtensionHandControled));
     }
 };
 
