@@ -4,6 +4,8 @@
 #include "vigra/imageiterator.hxx"
 #include "vigra/viff.hxx"
 #include "vigra/impex.hxx"
+#include "vigra/imagecontainer.hxx"
+#include "vigra/inspectimage.hxx"
 
 using vigra::Diff2D;
 using namespace vigra;
@@ -149,24 +151,24 @@ struct ImageTest
         typename Image::Iterator lr = img.lowerRight();
 
         scanImage(ul, lr);
-        scanRows(ul.rowIterator(), (ul+Diff2D(0,1)).rowIterator(), 
+        scanRows(ul.rowIterator(), (ul+Diff2D(0,1)).rowIterator(),
                  (ul+Diff2D(0,2)).rowIterator(), img.width());
-        scanColumns(ul.columnIterator(), (ul+Diff2D(1,0)).columnIterator(), 
+        scanColumns(ul.columnIterator(), (ul+Diff2D(1,0)).columnIterator(),
                  (ul+Diff2D(2,0)).columnIterator(), img.height());
 
         typename Image::Accessor acc = img.accessor();
         typename Image::ScanOrderIterator i = img.begin();
         should(acc(i, 4) == data[4]);
     }
-    
+
     void testImageIterator()
     {
         vigra::ImageIterator<typename Image::value_type> ul(img.begin(), img.width());
         vigra::ImageIterator<typename Image::value_type> lr = ul + img.size();
         scanImage(ul, lr);
-        scanRows(ul.rowIterator(), (ul+Diff2D(0,1)).rowIterator(), 
+        scanRows(ul.rowIterator(), (ul+Diff2D(0,1)).rowIterator(),
                  (ul+Diff2D(0,2)).rowIterator(), img.width());
-        scanColumns(ul.columnIterator(), (ul+Diff2D(1,0)).columnIterator(), 
+        scanColumns(ul.columnIterator(), (ul+Diff2D(1,0)).columnIterator(),
                  (ul+Diff2D(2,0)).columnIterator(), img.height());
     }
 
@@ -183,7 +185,7 @@ struct ImageTest
         {
             should(acc(i) == acc(i1));
         }
-        
+
         img.init(0);
         for(; i != img.end(); ++i)
         {
@@ -370,20 +372,20 @@ struct BRGBImageImpexTest
     void storeLoadGifImage()
     {
         vigra::ImageImportInfo info("lenna.gif");
-                
+
         should(info.isColor());
 
         Image img1(info.width(), info.height());
-                
+
         importImage(info, destImage(img1));
-               
+
         exportImage(srcImageRange(img1), vigra::ImageExportInfo("test.ras"));
 
         ViffImage * viff = readViffImage("lenna.xv");
         should(viff != 0);
-                
+
         vigra::ImageImportInfo info1("test.ras");
-                
+
         should(info1.isColor());
         should(info1.width() == (int)viff->row_size);
         should(info1.height() == (int)viff->col_size);
@@ -470,6 +472,83 @@ struct ImageTestSuite
     }
 };
 
+struct CompareFunctor
+{
+	double sumDifference_;
+
+	CompareFunctor(): sumDifference_(0) {}
+
+	void operator()(const float &a, const float &b)
+		{ sumDifference_+= abs(a-b); }
+
+    double operator()()
+		{ return sumDifference_; }
+};
+
+// for shouldEqual:
+class std::ostream & operator <<(std::ostream &s, Diff2D size)
+{
+	s << "Diff2D(" << size.x << ", " << size.y << ")";
+}
+
+struct ImageContainerTests
+{
+	ImageImportInfo info;
+	int w, h;
+	FImage lennaImage;
+
+	ImageContainerTests()
+		: info("../../images/lenna.xv"),
+		  w(info.width()), h(info.height()),
+		  lennaImage(w, h)
+	{
+		importImage(info, destImage(lennaImage));
+	}
+
+	void initArrayWithImageTest()
+	{
+		ImageArray<FImage> threeLennas(3, lennaImage);
+		CompareFunctor cmp;
+		inspectTwoImages(srcImageRange(threeLennas[0]), srcImage(threeLennas[2]), cmp);
+		shouldEqual(cmp(), 0.0);
+
+		Diff2D newsize(50, 50);
+		threeLennas.resizeImages(newsize);
+		for (ImageArray<FImage>::iterator it= threeLennas.begin();
+			 it!= threeLennas.end(); it++)
+			shouldEqual((*it).size(), newsize);
+	}
+
+	void initArrayWithSizeTest()
+	{
+		Diff2D testsize(50, 50);
+		ImageArray<FImage> ia(6, testsize);
+
+		for (int i=0; i<ia.size(); i++)
+			shouldEqual(ia[i].size(), testsize);
+
+		ImageArray<FImage> ia2(ia.begin(), ia.end());
+		shouldEqual(ia2.imageSize(), testsize);
+
+		ia2.erase(ia2.begin()+1);
+		shouldEqual(ia2.size(), ia.size()-1);
+
+		ia.clear();
+		shouldEqual(ia.size(), 0);
+	}
+};
+
+struct ImageContainerTestSuite
+: public vigra::test_suite
+{
+    ImageContainerTestSuite()
+    : vigra::test_suite("ImageContainerTestSuite")
+    {
+        add( testCase( &ImageContainerTests::initArrayWithImageTest ) );
+        add( testCase( &ImageContainerTests::initArrayWithSizeTest ) );
+    }
+};
+
 int main()
 {
     ImageTestSuite test;
@@ -477,6 +556,12 @@ int main()
     int failed = test.run();
 
     std::cout << test.report() << std::endl;
+
+	ImageContainerTestSuite containerTest;
+	
+	failed = failed || containerTest.run();
+
+	std::cout << containerTest.report() << std::endl;
 
     return (failed != 0);
 }
