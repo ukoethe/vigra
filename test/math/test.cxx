@@ -1,3 +1,8 @@
+#if defined(__GNUC__) && __GNUC__ == 2 && __GNUC_MINOR__ == 95
+// deactivate broken std::relops
+#  define __SGI_STL_INTERNAL_RELOPS
+#endif  // __GNUC__
+
 #include <typeinfo>
 #include <iostream>
 #include <algorithm>
