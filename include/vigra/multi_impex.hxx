@@ -56,8 +56,9 @@ void findImageSequence(const std::string &name_base,
     <tt>name_base</tt> may contain a path. All slice files with the same name base and 
     extension are considered part of the same volume. Slice numbers must be non-negative,
     but can otherwise start anywhere and need not be successive. Slices will be read 
-    in ascending order. All slices must have the same size. The <tt>volume</tt> 
-    will be reshaped to match the count and size of the slices found. 
+    in ascending numerical (not lexicographic) order. All slices must have the 
+    same size. The <tt>volume</tt> will be reshaped to match the count and 
+    size of the slices found. 
 
     <b>\#include</b>
     "<a href="multi_impex_8hxx-source.html">vigra/multi_impex.hxx</a>"
