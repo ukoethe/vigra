@@ -13,7 +13,9 @@ fi
 
 AC_CONFIG_AUX_DIR(config)
 
-# Set version
+dnl-------------------------------------------------------------------
+dnl                   vigra/interactive version
+dnl-------------------------------------------------------------------
 MAJOR_VERSION=1
 MINOR_VERSION=1
 MICRO_VERSION=5
@@ -24,9 +26,9 @@ AC_SUBST(MAJOR_VERSION)dnl
 AC_SUBST(MINOR_VERSION)dnl
 AC_SUBST(MICRO_VERSION)dnl
 
-AC_ARG_WITH( cc, AC_HELP_STRING([--with-cc], [your C compiler (default=gcc)]), CC=$with_cc, [if test "x$CC" = "x" ; then CC=gcc ; fi])
-AC_ARG_WITH( cxx, AC_HELP_STRING([--with-cxx], [your C++ compiler (default=g++)]), CXX=$with_cxx, [if test "x$CXX" = "x" ; then CXX=g++ ; fi])
-
+dnl-------------------------------------------------------------------
+dnl              compiler and platform configuration
+dnl-------------------------------------------------------------------
 AC_CANONICAL_SYSTEM
 
 AC_CYGWIN
@@ -34,15 +36,17 @@ AC_MINGW32
 
 CFLAGS=-O
 CXXFLAGS=-O
-LIBCPPFLAGS=
-VIGRA_INCLUDES='-I$(prefix)/include'
-CPPFLAGS="$VIGRA_INCLUDES $CPPFLAGS"
+
+AC_ARG_WITH( cc, AC_HELP_STRING([--with-cc], [your C compiler (default=gcc)]), CC=$with_cc, [if test "x$CC" = "x" ; then CC=gcc ; fi])
+AC_ARG_WITH( cxx, AC_HELP_STRING([--with-cxx], [your C++ compiler (default=g++)]), CXX=$with_cxx, [if test "x$CXX" = "x" ; then CXX=g++ ; fi])
 
 AC_PROG_CC
 AC_PROG_CXX
-AM_PROG_LD
-AC_SUBST(LD)
+AC_PROG_LD
 VIGRA_PROG_INSTALL
+
+LIBCPPFLAGS=
+VIGRA_INCLUDES='-I$(prefix)/include'
 
 dnl-------------------------------------------------------------------
 dnl                     libtool configuration
@@ -52,10 +56,11 @@ AC_ENABLE_STATIC(no)
 AC_LIBTOOL_SETUP dnl tell autoconf about libtools prerequisites
 AC_PROG_LIBTOOL
 AC_LIBTOOL_CXX
-LIBTOOL=`echo $LIBTOOL | sed 's,$(top_builddir),'$vigra_interactive_builddir,`
+LIBTOOL=`echo $LIBTOOL | sed 's,$(top_builddir),'$vigra_builddir,`
 
-#########################################################
-
+dnl-------------------------------------------------------------------
+dnl           tiff, jpeg and fftw package configurations
+dnl-------------------------------------------------------------------
 VIGRA_FIND_PACKAGE(tiff, tiff, tiff.h, [support import/export of tiff images [default=no]])
 if test $with_tiff = "yes";
 then
@@ -80,8 +85,11 @@ then
     CPPFLAGS="$FFTW_INCLUDES $CPPFLAGS"
 fi
 
-#########################################################
+dnl-------------------------------------------------------------------
+dnl                        finish & output
+dnl-------------------------------------------------------------------
 
+CPPFLAGS="$VIGRA_INCLUDES ${CPPFLAGS}"
 IMPEX_LIB="-L$libdir -lvigraimpex -lm $IMPEX_DEPLIBS"
 LIBS="$LIBS $IMPEX_LIB"
 
