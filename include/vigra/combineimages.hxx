@@ -25,6 +25,8 @@
 
 #include "vigra/utilities.hxx"
 
+namespace vigra {
+
 /** @name Functions to Combine Images
 
     Note that the binary functors of the STL may also be used.
@@ -49,45 +51,50 @@
     
     pass arguments explicitly:
     \begin{verbatim}
-    template <class SrcImageIterator1, class SrcAccessor1,
-          class SrcImageIterator2, class SrcAccessor2,
-          class DestImageIterator, class DestAccessor,
-          class Functor>
-    void
-    combineTwoImages(SrcImageIterator1 src1_upperleft, 
-             SrcImageIterator1 src1_lowerright, SrcAccessor1 sa1,
-             SrcImageIterator2 src2_upperleft, SrcAccessor2 sa2,
-             DestImageIterator dest_upperleft, DestAccessor da,
-             Functor f)
+    namespace vigra {
+        template <class SrcImageIterator1, class SrcAccessor1,
+              class SrcImageIterator2, class SrcAccessor2,
+              class DestImageIterator, class DestAccessor,
+              class Functor>
+        void
+        combineTwoImages(SrcImageIterator1 src1_upperleft, 
+                 SrcImageIterator1 src1_lowerright, SrcAccessor1 sa1,
+                 SrcImageIterator2 src2_upperleft, SrcAccessor2 sa2,
+                 DestImageIterator dest_upperleft, DestAccessor da,
+                 Functor f)
+    }
     \end{verbatim}
     
     
     use argument objects in conjuction with \Ref{Argument Object Factories}:
     \begin{verbatim}
-    template <class SrcImageIterator1, class SrcAccessor1,
-          class SrcImageIterator2, class SrcAccessor2,
-          class DestImageIterator, class DestAccessor,
-          class Functor>
-    void
-    combineTwoImages(triple<SrcImageIterator1, SrcImageIterator1, SrcAccessor1> src1,
-             pair<SrcImageIterator2, SrcAccessor2> src2,
-             pair<DestImageIterator, DestAccessor> dest,
-             Functor f)
+    namespace vigra {
+        template <class SrcImageIterator1, class SrcAccessor1,
+              class SrcImageIterator2, class SrcAccessor2,
+              class DestImageIterator, class DestAccessor,
+              class Functor>
+        void
+        combineTwoImages(triple<SrcImageIterator1, SrcImageIterator1, SrcAccessor1> src1,
+                 pair<SrcImageIterator2, SrcAccessor2> src2,
+                 pair<DestImageIterator, DestAccessor> dest,
+                 Functor f)
+    }
     \end{verbatim}
     
     {\bf Usage:}
     
         Include-File:
-        \URL[vigra/combineimages.hxx]{../include/vigra/combineimages.hxx}
+        \URL[vigra/combineimages.hxx]{../include/vigra/combineimages.hxx}\\
+        Namespace: vigra
     
     \begin{verbatim}
-    #include <function.h>     // for plus
+    #include <functional>     // for plus
 
-    combineTwoImages(
+    vigra::combineTwoImages(
                 srcIterRange(src1.upperLeft(), src1.lowerRight()), 
                 srcIter(src2.upperLeft()), 
                 destIter(dest.upperLeft()),  
-            plus<SrcValueType>());
+                std::plus<SrcValueType>());
     
     \end{verbatim}
     
@@ -180,50 +187,55 @@ combineTwoImages(triple<SrcImageIterator1, SrcImageIterator1, SrcAccessor1> src1
     
     pass arguments explicitly:
     \begin{verbatim}
-    template <class SrcImageIterator1, class SrcAccessor1,
-          class SrcImageIterator2, class SrcAccessor2,
-          class MaskImageIterator, class MaskAccessor,
-          class DestImageIterator, clas DestAccessor,
-          class Functor>
-    void
-    combineTwoImagesIf(SrcImageIterator1 src1_upperleft, 
-               SrcImageIterator1 src1_lowerright, SrcAccessor1 sa1,
-               SrcImageIterator2 src2_upperleft, SrcAccessor2 sa2,
-               MaskImageIterator mask_upperleft, MaskAccessor ma,
-               DestImageIterator dest_upperleft, DestAccessor da,
-               Functor f)
+    namespace vigra {
+        template <class SrcImageIterator1, class SrcAccessor1,
+              class SrcImageIterator2, class SrcAccessor2,
+              class MaskImageIterator, class MaskAccessor,
+              class DestImageIterator, clas DestAccessor,
+              class Functor>
+        void
+        combineTwoImagesIf(SrcImageIterator1 src1_upperleft, 
+                   SrcImageIterator1 src1_lowerright, SrcAccessor1 sa1,
+                   SrcImageIterator2 src2_upperleft, SrcAccessor2 sa2,
+                   MaskImageIterator mask_upperleft, MaskAccessor ma,
+                   DestImageIterator dest_upperleft, DestAccessor da,
+                   Functor f)
+    }
     \end{verbatim}
     
     
     use argument objects in conjuction with \Ref{Argument Object Factories}:
     \begin{verbatim}
-    template <class SrcImageIterator1, class SrcAccessor1,
-          class SrcImageIterator2, class SrcAccessor2,
-          class MaskImageIterator, class MaskAccessor,
-          class DestImageIterator, clas DestAccessor,
-          class Functor>
-    void
-    combineTwoImagesIf(triple<SrcImageIterator1, SrcImageIterator1, SrcAccessor1> src1,
-               pair<SrcImageIterator2, SrcAccessor2> src2,
-               pair<MaskImageIterator, MaskAccessor> mask,
-               pair<DestImageIterator, DestAccessor> dest,
-               Functor f)
+    namespace vigra {
+        template <class SrcImageIterator1, class SrcAccessor1,
+              class SrcImageIterator2, class SrcAccessor2,
+              class MaskImageIterator, class MaskAccessor,
+              class DestImageIterator, clas DestAccessor,
+              class Functor>
+        void
+        combineTwoImagesIf(triple<SrcImageIterator1, SrcImageIterator1, SrcAccessor1> src1,
+                   pair<SrcImageIterator2, SrcAccessor2> src2,
+                   pair<MaskImageIterator, MaskAccessor> mask,
+                   pair<DestImageIterator, DestAccessor> dest,
+                   Functor f)
+    }
     \end{verbatim}
     
     {\bf Usage:}
     
         Include-File:
-        \URL[vigra/combineimages.hxx]{../include/vigra/combineimages.hxx}
+        \URL[vigra/combineimages.hxx]{../include/vigra/combineimages.hxx}\\
+        Namespace: vigra
     
     \begin{verbatim}
-    #include <function.h>     // for plus
+    #include <functional>     // for plus
 
-    combineTwoImagesIf(
+    vigra::combineTwoImagesIf(
                 srcIterRange(src1.upperLeft(), src1.lowerRight()), 
                 srcIter(src2.upperLeft()), 
                 maskIter(mask.upperLeft()), 
                 destIter(dest.upperLeft()),
-            plus<SrcValueType>());
+                std::plus<SrcValueType>());
     
     \end{verbatim}
 
@@ -321,50 +333,53 @@ combineTwoImagesIf(triple<SrcImageIterator1, SrcImageIterator1, SrcAccessor1> sr
     
     pass arguments explicitly:
     \begin{verbatim}
-    template <class SrcImageIterator1, class SrcAccessor1,
-          class SrcImageIterator2, class SrcAccessor2,
-          class SrcImageIterator3, class SrcAccessor3,
-          class DestImageIterator, class DestAccessor,
-          class Functor>
-    void
-    combineThreeImages(SrcImageIterator1 src1_upperleft, 
-               SrcImageIterator1 src1_lowerright, SrcAccessor1 sa1,
-               SrcImageIterator2 src2_upperleft, SrcAccessor2 sa2,
-               SrcImageIterator3 src2_upperleft, SrcAccessor3 sa3,
-               DestImageIterator dest_upperleft, DestAccessor da,
-               Functor f)
+    namespace vigra {
+        template <class SrcImageIterator1, class SrcAccessor1,
+              class SrcImageIterator2, class SrcAccessor2,
+              class SrcImageIterator3, class SrcAccessor3,
+              class DestImageIterator, class DestAccessor,
+              class Functor>
+        void
+        combineThreeImages(SrcImageIterator1 src1_upperleft, 
+                   SrcImageIterator1 src1_lowerright, SrcAccessor1 sa1,
+                   SrcImageIterator2 src2_upperleft, SrcAccessor2 sa2,
+                   SrcImageIterator3 src2_upperleft, SrcAccessor3 sa3,
+                   DestImageIterator dest_upperleft, DestAccessor da,
+                   Functor f)
+    }
     \end{verbatim}
     
     
     use argument objects in conjuction with \Ref{Argument Object Factories}:
     \begin{verbatim}
-    template <class SrcImageIterator1, class SrcAccessor1,
-          class SrcImageIterator2, class SrcAccessor2,
-          class SrcImageIterator3, class SrcAccessor3,
-          class DestImageIterator, class DestAccessor,
-          class Functor>
-    void
-    combineThreeImages(triple<SrcImageIterator1, SrcImageIterator1, SrcAccessor1> src1,
-             pair<SrcImageIterator2, SrcAccessor2> src2,
-             pair<SrcImageIterator3, SrcAccessor3> src3,
-             pair<DestImageIterator, DestAccessor> dest,
-             Functor f)
+    namespace vigra {
+        template <class SrcImageIterator1, class SrcAccessor1,
+              class SrcImageIterator2, class SrcAccessor2,
+              class SrcImageIterator3, class SrcAccessor3,
+              class DestImageIterator, class DestAccessor,
+              class Functor>
+        void
+        combineThreeImages(triple<SrcImageIterator1, SrcImageIterator1, SrcAccessor1> src1,
+                 pair<SrcImageIterator2, SrcAccessor2> src2,
+                 pair<SrcImageIterator3, SrcAccessor3> src3,
+                 pair<DestImageIterator, DestAccessor> dest,
+                 Functor f)
+    }
     \end{verbatim}
     
     {\bf Usage:}
     
         Include-File:
-        \URL[vigra/combineimages.hxx]{../include/vigra/combineimages.hxx}
+        \URL[vigra/combineimages.hxx]{../include/vigra/combineimages.hxx}\\
+        Namespace: vigra
     
     \begin{verbatim}
-    #include <function.h>     // for plus
-
-    combineThreeImages(
+    vigra::combineThreeImages(
                 srcIterRange(src1.upperLeft(), src1.lowerRight()), 
                 srcIter(src2.upperLeft()), 
                 srcIter(src3.upperLeft()), 
                 destIter(dest.upperLeft()),  
-            AThreeArgumentFunctor());
+                SomeThreeArgumentFunctor());
     
     \end{verbatim}
 
@@ -449,5 +464,7 @@ combineThreeImages(triple<SrcImageIterator1, SrcImageIterator1, SrcAccessor1> sr
 
     
 //@}
+
+} // namespace vigra
 
 #endif // VIGRA_COMBINEIMAGES_HXX

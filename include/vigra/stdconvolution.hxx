@@ -23,10 +23,12 @@
 #ifndef VIGRA_STDCONVOLUTION_HXX
 #define VIGRA_STDCONVOLUTION_HXX
 
-#include <math.h>
+#include <cmath>
 #include "vigra/stdimage.hxx"
 #include "vigra/bordertreatment.hxx"
 #include "vigra/separableconvolution.hxx"
+
+namespace vigra {
 
 /** @name Two-dimensional convolution functions
     
@@ -61,47 +63,52 @@
     
     pass arguments explicitly:
     \begin{verbatim}
-    template <class SrcIterator, class SrcAccessor, 
-	      class DestIterator, class DestAccessor,
-	      class KernelIterator, class KernelAccessor>
-    void convolveImage(SrcIterator sul, SrcIterator slr, SrcAccessor as,
-		       DestIterator dul, DestAccessor ad,
-		       KernelIterator ki, KernelAccessor ak, 
-		       Diff2D kul, Diff2D klr, BorderTreatmentMode border)
+    namespace vigra {
+        template <class SrcIterator, class SrcAccessor, 
+	          class DestIterator, class DestAccessor,
+	          class KernelIterator, class KernelAccessor>
+        void convolveImage(SrcIterator sul, SrcIterator slr, SrcAccessor as,
+		           DestIterator dul, DestAccessor ad,
+		           KernelIterator ki, KernelAccessor ak, 
+		           Diff2D kul, Diff2D klr, BorderTreatmentMode border)
+    }
     \end{verbatim}
     
     
     use argument objects in conjuction with \Ref{Argument Object Factories}:
     \begin{verbatim}
-    template <class SrcIterator, class SrcAccessor, 
-	      class DestIterator, class DestAccessor,
-	      class KernelIterator, class KernelAccessor>
-    void convolveImage(
-       triple<SrcIterator, SrcIterator, SrcAccessor> src,
-       pair<DestIterator, DestAccessor> dest,
-       tuple5<KernelIterator, KernelAccessor, Diff2D, Diff2D, 
-                                         BorderTreatmentMode> kernel)
+    namespace vigra {
+        template <class SrcIterator, class SrcAccessor, 
+	          class DestIterator, class DestAccessor,
+	          class KernelIterator, class KernelAccessor>
+        void convolveImage(
+           triple<SrcIterator, SrcIterator, SrcAccessor> src,
+           pair<DestIterator, DestAccessor> dest,
+           tuple5<KernelIterator, KernelAccessor, Diff2D, Diff2D, 
+                                             BorderTreatmentMode> kernel)
+    }
     \end{verbatim}
     
     {\bf Usage:}
     
     Include-File:
-    \URL[vigra/stdconvolution.hxx]{../include/vigra/stdconvolution.hxx}
+    \URL[vigra/stdconvolution.hxx]{../include/vigra/stdconvolution.hxx}\\
+    Namespace: vigra
     
     
     \begin{verbatim}
-    FImage src(w,h), dest(w,h);    
+    vigra::FImage src(w,h), dest(w,h);    
     ...
     
     // define horizontal Sobel filter
-    Kernel2D<float> sobel;
+    vigra::Kernel2D<float> sobel;
     
     sobel.initExplicitly(Diff2D(-1,-1), Diff2D(1,1)) =  // upper left and lower right
                          0.125, 0.0, -0.125,
 			 0.25,  0.0, -0.25,
 			 0.125, 0.0, -0.125;
         
-    convolveImage(srcImageRange(src), destImage(dest), kernel2d(sobel));	     
+    vigra::convolveImage(srcImageRange(src), destImage(dest), kernel2d(sobel));	     
     \end{verbatim}
 
     {\bf Required Interface:}
@@ -334,54 +341,59 @@ void convolveImage(
     
     pass arguments explicitly:
     \begin{verbatim}
-    template <class SrcIterator, class SrcAccessor, 
-	      class MaskIterator, class MaskAccessor,
-	      class DestIterator, class DestAccessor,
-	      class KernelIterator, class KernelAccessor>
-    void 
-    convolveImageWithMask(SrcIterator sul, SrcIterator slr, SrcAccessor as,
-			  MaskIterator mul, MaskAccessor am,
-			  DestIterator dul, DestAccessor ad,
-			  KernelIterator ki, KernelAccessor ak, 
-			  Diff2D kul, Diff2D klr, BorderTreatmentMode border)
+    namespace vigra {
+        template <class SrcIterator, class SrcAccessor, 
+	          class MaskIterator, class MaskAccessor,
+	          class DestIterator, class DestAccessor,
+	          class KernelIterator, class KernelAccessor>
+        void 
+        convolveImageWithMask(SrcIterator sul, SrcIterator slr, SrcAccessor as,
+			      MaskIterator mul, MaskAccessor am,
+			      DestIterator dul, DestAccessor ad,
+			      KernelIterator ki, KernelAccessor ak, 
+			      Diff2D kul, Diff2D klr, BorderTreatmentMode border)
+    }
     \end{verbatim}
     
     
     use argument objects in conjuction with \Ref{Argument Object Factories}:
     \begin{verbatim}
-    template <class SrcIterator, class SrcAccessor, 
-	      class MaskIterator, class MaskAccessor,
-	      class DestIterator, class DestAccessor,
-	      class KernelIterator, class KernelAccessor>
-    inline
-    void convolveImageWithMask(
-       triple<SrcIterator, SrcIterator, SrcAccessor> src,
-       pair<MaskIterator, MaskAccessor> mask,
-       pair<DestIterator, DestAccessor> dest,
-       tuple5<KernelIterator, KernelAccessor, Diff2D, Diff2D, 
-    	                                  BorderTreatmentMode> kernel)
+    namespace vigra {
+        template <class SrcIterator, class SrcAccessor, 
+	          class MaskIterator, class MaskAccessor,
+	          class DestIterator, class DestAccessor,
+	          class KernelIterator, class KernelAccessor>
+        inline
+        void convolveImageWithMask(
+           triple<SrcIterator, SrcIterator, SrcAccessor> src,
+           pair<MaskIterator, MaskAccessor> mask,
+           pair<DestIterator, DestAccessor> dest,
+           tuple5<KernelIterator, KernelAccessor, Diff2D, Diff2D, 
+    	                                      BorderTreatmentMode> kernel)
+    }
     \end{verbatim}
     
     {\bf Usage:}
     
     Include-File:
-    \URL[vigra/stdconvolution.hxx]{../include/vigra/stdconvolution.hxx}
+    \URL[vigra/stdconvolution.hxx]{../include/vigra/stdconvolution.hxx}\\
+    Namespace: vigra
     
     
     \begin{verbatim}
-    FImage src(w,h), dest(w,h); 
-    CImage mask(w,h);   
+    vigra::FImage src(w,h), dest(w,h); 
+    vigra::CImage mask(w,h);   
     ...
     
     // define 3x3 binomial filter
-    Kernel2D<float> binom;
+    vigra::Kernel2D<float> binom;
     
     binom.initExplicitly(Diff2D(-1,-1), Diff2D(1,1)) =   // upper left and lower right
                          0.0625, 0.125, 0.0625,
 			 0.125,  0.25,  0.125,
 			 0.0625, 0.125, 0.0625;
         
-    convolveImage(srcImageRange(src), maskImage(mask), destImage(dest), kernel2d(binom));	     
+    vigra::convolveImage(srcImageRange(src), maskImage(mask), destImage(dest), kernel2d(binom));	     
     \end{verbatim}
 
     {\bf Required Interface:}
@@ -603,21 +615,22 @@ void convolveImageWithMask(
     {\bf Usage:}
     
     Include-File:
-    \URL[vigra/stdconvolution.hxx]{../include/vigra/stdconvolution.hxx}
+    \URL[vigra/stdconvolution.hxx]{../include/vigra/stdconvolution.hxx}\\
+    Namespace: vigra
     
     \begin{verbatim}
-    FImage src(w,h), dest(w,h);    
+    vigra::FImage src(w,h), dest(w,h);    
     ...
     
     // define horizontal Sobel filter
-    Kernel2D<float> sobel;
+    vigra::Kernel2D<float> sobel;
     
     sobel.initExplicitly(Diff2D(-1,-1), Diff2D(1,1)) =  // upper left and lower right
                          0.125, 0.0, -0.125,
 			 0.25,  0.0, -0.25,
 			 0.125, 0.0, -0.125;
         
-    convolveImage(srcImageRange(src), destImage(dest), kernel2d(sobel));	     
+    vigra::convolveImage(srcImageRange(src), destImage(dest), kernel2d(sobel));	     
     \end{verbatim}
 
     {\bf Required Interface:}
@@ -737,7 +750,7 @@ class Kernel2D
 	    can be used like this:
 	    
 	    \begin{verbatim}
-	    Kernel2D<float> binom;
+	    vigra::Kernel2D<float> binom;
 	    
 	    binom.initExplicitly(Diff2D(-1,-1), Diff2D(1,1)) =  
 				 0.0625, 0.125, 0.0625,
@@ -774,7 +787,7 @@ class Kernel2D
 	    The kernel's value_type must be a linear algebra.
 	    
 	    \begin{verbatim}
-	    Kernel2D<...>::value_type v;
+	    vigra::Kernel2D<...>::value_type v;
 	    v = v * v;
 	    \end{verbatim}
 	*/
@@ -815,7 +828,7 @@ class Kernel2D
 	    The kernel's value_type must be a linear algebra.
 	    
 	    \begin{verbatim}
-	    Kernel2D<...>::value_type v;
+	    vigra::Kernel2D<...>::value_type v;
 	    v = v * v;
 	    v += v;
 	    \end{verbatim}
@@ -877,7 +890,7 @@ class Kernel2D
 	    {\bf Required Interface:}
 	    
 	    \begin{verbatim}
-	    value_type v = NumericTraits<value_type>::one(); 
+	    value_type v = vigra::NumericTraits<value_type>::one(); 
 
 	    double d; 
 	    v = d * v; 
@@ -911,7 +924,7 @@ class Kernel2D
 	for(i=0; i<= radius; ++i)
 	{
 	    double r = (double) i - 0.5;
-	    int w = (int)(sqrt(r2 - r*r) + 0.5);
+	    int w = (int)(std::sqrt(r2 - r*r) + 0.5);
 	    for(int j=-w; j<=w; ++j)
 	    {
 	        k(j, i) = NumericTraits<value_type>::one();
@@ -938,7 +951,7 @@ class Kernel2D
 		
 	    \begin{verbatim}
 	    // define horizontal Sobel filter
-	    Kernel2D<float> sobel;
+	    vigra::Kernel2D<float> sobel;
 	    
 	    sobel.initExplicitly(Diff2D(-1,-1), Diff2D(1,1)) = 
 				 0.125, 0.0, -0.125,
@@ -951,7 +964,7 @@ class Kernel2D
 	    just one initializer. This creates an averaging filter with the given constant:
 	    
 	    \begin{verbatim}
-	    Kernel2D<float> average3x3;
+	    vigra::Kernel2D<float> average3x3;
 	    
 	    average3x3.initExplicitly(Diff2D(-1,-1), Diff2D(1,1)) = 1.0/9.0;
 	    \end{verbatim}
@@ -1028,8 +1041,8 @@ class Kernel2D
 	    {\bf Required Interface:}
 	    
 	    \begin{verbatim}
-	    value_type v = NumericTraits<value_type>::one(); // if norm is not 
-	                                                     // given explicitly
+	    value_type v = vigra::NumericTraits<value_type>::one(); // if norm is not 
+	                                                            // given explicitly
 							     
 	    v += v; 
 	    v = v * v; 
@@ -1148,5 +1161,6 @@ kernel2d(Kernel2D<T> & k, BorderTreatmentMode border)
 }
 
 
+} // namespace vigra
 
 #endif // VIGRA_STDCONVOLUTION_HXX

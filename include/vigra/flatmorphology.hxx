@@ -23,9 +23,11 @@
 #ifndef VIGRA_FLATMORPHOLOGY_HXX
 #define VIGRA_FLATMORPHOLOGY_HXX
 
-#include <math.h>
+#include <cmath>
 #include <vector>
 #include "vigra/utilities.hxx"
+
+namespace vigra {
 
 /** erosion, dilation, and median with disc structuring functions
     @name Basic Morphologic Operations
@@ -49,36 +51,41 @@
     
     pass arguments explicitely:
     \begin{verbatim}
-    template <class SrcIterator, class SrcAccessor,
-	      class DestIterator, class DestAccessor>
-    void
-    discRankOrderFilter(SrcIterator upperleft1, 
-			SrcIterator lowerright1, SrcAccessor sa,
-			DestIterator upperleft2, DestAccessor da,
-			int radius, float rank)
+    namespace vigra {
+        template <class SrcIterator, class SrcAccessor,
+	          class DestIterator, class DestAccessor>
+        void
+        discRankOrderFilter(SrcIterator upperleft1, 
+			    SrcIterator lowerright1, SrcAccessor sa,
+			    DestIterator upperleft2, DestAccessor da,
+			    int radius, float rank)
+    }
     \end{verbatim}
     
     
     use argument objects in conjuction with \Ref{Argument Object Factories}:
     \begin{verbatim}
-    template <class SrcIterator, class SrcAccessor,
-	      class DestIterator, class DestAccessor>
-    void
-    discRankOrderFilter(triple<SrcIterator, SrcIterator, SrcAccessor> src,
-			pair<DestIterator, DestAccessor> dest,
-			int radius, float rank)
+    namespace vigra {
+        template <class SrcIterator, class SrcAccessor,
+	          class DestIterator, class DestAccessor>
+        void
+        discRankOrderFilter(triple<SrcIterator, SrcIterator, SrcAccessor> src,
+			    pair<DestIterator, DestAccessor> dest,
+			    int radius, float rank)
+    }
     \end{verbatim}
     
     {\bf Usage:}
     
         Include-File:
-        \URL[vigra/flatmorphology.hxx]{../include/vigra/flatmorphology.hxx}
+        \URL[vigra/flatmorphology.hxx]{../include/vigra/flatmorphology.hxx}\\
+    Namespace: vigra
     
     \begin{verbatim}
-    CImage src, dest;
+    vigra::CImage src, dest;
     
     // do median filtering
-    discRankOrderFilter(srcImageRange(src), destImage(dest), 10, 0.5);
+    vigra::discRankOrderFilter(srcImageRange(src), destImage(dest), 10, 0.5);
     \end{verbatim}
 
     {\bf Required Interface:}
@@ -137,7 +144,7 @@ discRankOrderFilter(SrcIterator upperleft1,
     for(i=1; i<=radius; ++i)
     {
 	double r = (double) i - 0.5;
-	struct_function[i] = (int)(sqrt(r2 - r*r) + 0.5);
+	struct_function[i] = (int)(std::sqrt(r2 - r*r) + 0.5);
     }
 
     int w = lowerright1.x - upperleft1.x;
@@ -352,24 +359,28 @@ discRankOrderFilter(triple<SrcIterator, SrcIterator, SrcAccessor> src,
     
     pass arguments explicitely:
     \begin{verbatim}
-    template <class SrcIterator, class SrcAccessor,
-	      class DestIterator, class DestAccessor>
-    inline void 
-    discErosion(SrcIterator upperleft1, 
-		SrcIterator lowerright1, SrcAccessor sa,
-		DestIterator upperleft2, DestAccessor da,
-		int radius)
+    namespace vigra {
+        template <class SrcIterator, class SrcAccessor,
+	          class DestIterator, class DestAccessor>
+        inline void 
+        discErosion(SrcIterator upperleft1, 
+		    SrcIterator lowerright1, SrcAccessor sa,
+		    DestIterator upperleft2, DestAccessor da,
+		    int radius)
+    }
     \end{verbatim}
     
     
     use argument objects in conjuction with \Ref{Argument Object Factories}:
     \begin{verbatim}
-    template <class SrcIterator, class SrcAccessor,
-	      class DestIterator, class DestAccessor>
-    void
-    discErosion(triple<SrcIterator, SrcIterator, SrcAccessor> src,
-		pair<DestIterator, DestAccessor> dest,
-		int radius)
+    namespace vigra {
+        template <class SrcIterator, class SrcAccessor,
+	          class DestIterator, class DestAccessor>
+        void
+        discErosion(triple<SrcIterator, SrcIterator, SrcAccessor> src,
+		    pair<DestIterator, DestAccessor> dest,
+		    int radius)
+    }
     \end{verbatim}
 
     @memo
@@ -416,24 +427,28 @@ discErosion(triple<SrcIterator, SrcIterator, SrcAccessor> src,
     
     pass arguments explicitely:
     \begin{verbatim}
-    template <class SrcIterator, class SrcAccessor,
-	      class DestIterator, class DestAccessor>
-    inline void 
-    discDilation(SrcIterator upperleft1, 
-		SrcIterator lowerright1, SrcAccessor sa,
-		DestIterator upperleft2, DestAccessor da,
-		int radius)
+    namespace vigra {
+        template <class SrcIterator, class SrcAccessor,
+	          class DestIterator, class DestAccessor>
+        inline void 
+        discDilation(SrcIterator upperleft1, 
+		    SrcIterator lowerright1, SrcAccessor sa,
+		    DestIterator upperleft2, DestAccessor da,
+		    int radius)
+    }
     \end{verbatim}
     
     
     use argument objects in conjuction with \Ref{Argument Object Factories}:
     \begin{verbatim}
-    template <class SrcIterator, class SrcAccessor,
-	      class DestIterator, class DestAccessor>
-    void
-    discDilation(triple<SrcIterator, SrcIterator, SrcAccessor> src,
-		pair<DestIterator, DestAccessor> dest,
-		int radius)
+    namespace vigra {
+        template <class SrcIterator, class SrcAccessor,
+	          class DestIterator, class DestAccessor>
+        void
+        discDilation(triple<SrcIterator, SrcIterator, SrcAccessor> src,
+		    pair<DestIterator, DestAccessor> dest,
+		    int radius)
+    }
     \end{verbatim}
 
     @memo
@@ -480,24 +495,28 @@ discDilation(triple<SrcIterator, SrcIterator, SrcAccessor> src,
     
     pass arguments explicitely:
     \begin{verbatim}
-    template <class SrcIterator, class SrcAccessor,
-	      class DestIterator, class DestAccessor>
-    inline void 
-    discMedian(SrcIterator upperleft1, 
-		SrcIterator lowerright1, SrcAccessor sa,
-		DestIterator upperleft2, DestAccessor da,
-		int radius)
+    namespace vigra {
+        template <class SrcIterator, class SrcAccessor,
+	          class DestIterator, class DestAccessor>
+        inline void 
+        discMedian(SrcIterator upperleft1, 
+		    SrcIterator lowerright1, SrcAccessor sa,
+		    DestIterator upperleft2, DestAccessor da,
+		    int radius)
+    }
     \end{verbatim}
     
     
     use argument objects in conjuction with \Ref{Argument Object Factories}:
     \begin{verbatim}
-    template <class SrcIterator, class SrcAccessor,
-	      class DestIterator, class DestAccessor>
-    void
-    discMedian(triple<SrcIterator, SrcIterator, SrcAccessor> src,
-		pair<DestIterator, DestAccessor> dest,
-		int radius)
+    namespace vigra {
+        template <class SrcIterator, class SrcAccessor,
+	          class DestIterator, class DestAccessor>
+        void
+        discMedian(triple<SrcIterator, SrcIterator, SrcAccessor> src,
+		    pair<DestIterator, DestAccessor> dest,
+		    int radius)
+    }
     \end{verbatim}
 
     @memo
@@ -553,41 +572,46 @@ discMedian(triple<SrcIterator, SrcIterator, SrcAccessor> src,
     
     pass arguments explicitely:
     \begin{verbatim}
-    template <class SrcIterator, class SrcAccessor,
-	      class MaskIterator, class MaskAccessor,
-	      class DestIterator, class DestAccessor>
-    void
-    discRankOrderFilterWithMask(SrcIterator upperleft1, 
-				SrcIterator lowerright1, SrcAccessor sa,
-				MaskIterator upperleftm, MaskAccessor mask,
-				DestIterator upperleft2, DestAccessor da,
-				int radius, float rank)
+    namespace vigra {
+        template <class SrcIterator, class SrcAccessor,
+	          class MaskIterator, class MaskAccessor,
+	          class DestIterator, class DestAccessor>
+        void
+        discRankOrderFilterWithMask(SrcIterator upperleft1, 
+				    SrcIterator lowerright1, SrcAccessor sa,
+				    MaskIterator upperleftm, MaskAccessor mask,
+				    DestIterator upperleft2, DestAccessor da,
+				    int radius, float rank)
+    }
     \end{verbatim}
     
     
     group arguments (use in conjuction with factory functions \Ref{srcRange}(),
     \Ref{mask}(), and \Ref{dest}()):
     \begin{verbatim}
-    template <class SrcIterator, class SrcAccessor,
-	      class MaskIterator, class MaskAccessor,
-	      class DestIterator, class DestAccessor>
-    void
-    discRankOrderFilterWithMask(triple<SrcIterator, SrcIterator, SrcAccessor> src,
-				pair<MaskIterator, MaskAccessor> mask,
-				pair<DestIterator, DestAccessor> dest,
-				int radius, float rank)
+    namespace vigra {
+        template <class SrcIterator, class SrcAccessor,
+	          class MaskIterator, class MaskAccessor,
+	          class DestIterator, class DestAccessor>
+        void
+        discRankOrderFilterWithMask(triple<SrcIterator, SrcIterator, SrcAccessor> src,
+				    pair<MaskIterator, MaskAccessor> mask,
+				    pair<DestIterator, DestAccessor> dest,
+				    int radius, float rank)
+    }
     \end{verbatim}
     
     {\bf Usage:}
     
         Include-File:
-        \URL[vigra/flatmorphology.hxx]{../include/vigra/flatmorphology.hxx}
+        \URL[vigra/flatmorphology.hxx]{../include/vigra/flatmorphology.hxx}\\
+    Namespace: vigra
     
     \begin{verbatim}
-    CImage src, dest, mask;
+    vigra::CImage src, dest, mask;
     
     // do median filtering
-    discRankOrderFilterWithMask(srcImageRange(src), 
+    vigra::discRankOrderFilterWithMask(srcImageRange(src), 
                                 maskImage(mask), destImage(dest), 10, 0.5);
     \end{verbatim}
 
@@ -652,7 +676,7 @@ discRankOrderFilterWithMask(SrcIterator upperleft1,
     for(i=1; i<=radius; ++i)
     {
 	double r = (double) i - 0.5;
-	struct_function[i] = (int)(sqrt(r2 - r*r) + 0.5);
+	struct_function[i] = (int)(std::sqrt(r2 - r*r) + 0.5);
     }
 
     int w = lowerright1.x - upperleft1.x;
@@ -910,29 +934,33 @@ discRankOrderFilterWithMask(triple<SrcIterator, SrcIterator, SrcAccessor> src,
     
     pass arguments explicitely:
     \begin{verbatim}
-    template <class SrcIterator, class SrcAccessor,
-	      class MaskIterator, class MaskAccessor,
-	      class DestIterator, class DestAccessor>
-    inline void 
-    discErosionWithMask(SrcIterator upperleft1, 
-			SrcIterator lowerright1, SrcAccessor sa,
-			MaskIterator upperleftm, MaskAccessor mask,
-			DestIterator upperleft2, DestAccessor da,
-			int radius)
+    namespace vigra {
+        template <class SrcIterator, class SrcAccessor,
+	          class MaskIterator, class MaskAccessor,
+	          class DestIterator, class DestAccessor>
+        inline void 
+        discErosionWithMask(SrcIterator upperleft1, 
+			    SrcIterator lowerright1, SrcAccessor sa,
+			    MaskIterator upperleftm, MaskAccessor mask,
+			    DestIterator upperleft2, DestAccessor da,
+			    int radius)
+    }
     \end{verbatim}
     
     
     group arguments (use in conjuction with factory functions \Ref{srcRange}(),
     \Ref{mask}(), and \Ref{dest}()):
     \begin{verbatim}
-    template <class SrcIterator, class SrcAccessor,
-	      class MaskIterator, class MaskAccessor,
-	      class DestIterator, class DestAccessor>
-    inline void 
-    discErosionWithMask(triple<SrcIterator, SrcIterator, SrcAccessor> src,
-			pair<MaskIterator, MaskAccessor> mask,
-			pair<DestIterator, DestAccessor> dest,
-			int radius)
+    namespace vigra {
+        template <class SrcIterator, class SrcAccessor,
+	          class MaskIterator, class MaskAccessor,
+	          class DestIterator, class DestAccessor>
+        inline void 
+        discErosionWithMask(triple<SrcIterator, SrcIterator, SrcAccessor> src,
+			    pair<MaskIterator, MaskAccessor> mask,
+			    pair<DestIterator, DestAccessor> dest,
+			    int radius)
+    }
     \end{verbatim}
 
     @memo
@@ -987,29 +1015,33 @@ discErosionWithMask(triple<SrcIterator, SrcIterator, SrcAccessor> src,
     
     pass arguments explicitely:
     \begin{verbatim}
-    template <class SrcIterator, class SrcAccessor,
-	      class MaskIterator, class MaskAccessor,
-	      class DestIterator, class DestAccessor>
-    inline void 
-    discDilationWithMask(SrcIterator upperleft1, 
-			SrcIterator lowerright1, SrcAccessor sa,
-			MaskIterator upperleftm, MaskAccessor mask,
-			DestIterator upperleft2, DestAccessor da,
-			int radius)
+    namespace vigra {
+        template <class SrcIterator, class SrcAccessor,
+	          class MaskIterator, class MaskAccessor,
+	          class DestIterator, class DestAccessor>
+        inline void 
+        discDilationWithMask(SrcIterator upperleft1, 
+			    SrcIterator lowerright1, SrcAccessor sa,
+			    MaskIterator upperleftm, MaskAccessor mask,
+			    DestIterator upperleft2, DestAccessor da,
+			    int radius)
+    }
     \end{verbatim}
     
     
     group arguments (use in conjuction with factory functions \Ref{srcRange}(),
     \Ref{mask}(), and \Ref{dest}()):
     \begin{verbatim}
-    template <class SrcIterator, class SrcAccessor,
-	      class MaskIterator, class MaskAccessor,
-	      class DestIterator, class DestAccessor>
-    inline void 
-    discDilationWithMask(triple<SrcIterator, SrcIterator, SrcAccessor> src,
-			pair<MaskIterator, MaskAccessor> mask,
-			pair<DestIterator, DestAccessor> dest,
-			int radius)
+    namespace vigra {
+        template <class SrcIterator, class SrcAccessor,
+	          class MaskIterator, class MaskAccessor,
+	          class DestIterator, class DestAccessor>
+        inline void 
+        discDilationWithMask(triple<SrcIterator, SrcIterator, SrcAccessor> src,
+			    pair<MaskIterator, MaskAccessor> mask,
+			    pair<DestIterator, DestAccessor> dest,
+			    int radius)
+    }
     \end{verbatim}
 
     @memo
@@ -1064,29 +1096,33 @@ discDilationWithMask(triple<SrcIterator, SrcIterator, SrcAccessor> src,
     
     pass arguments explicitely:
     \begin{verbatim}
-    template <class SrcIterator, class SrcAccessor,
-	      class MaskIterator, class MaskAccessor,
-	      class DestIterator, class DestAccessor>
-    inline void 
-    discMedianWithMask(SrcIterator upperleft1, 
-			SrcIterator lowerright1, SrcAccessor sa,
-			MaskIterator upperleftm, MaskAccessor mask,
-			DestIterator upperleft2, DestAccessor da,
-			int radius)
+    namespace vigra {
+        template <class SrcIterator, class SrcAccessor,
+	          class MaskIterator, class MaskAccessor,
+	          class DestIterator, class DestAccessor>
+        inline void 
+        discMedianWithMask(SrcIterator upperleft1, 
+			    SrcIterator lowerright1, SrcAccessor sa,
+			    MaskIterator upperleftm, MaskAccessor mask,
+			    DestIterator upperleft2, DestAccessor da,
+			    int radius)
+    }
     \end{verbatim}
     
     
     group arguments (use in conjuction with factory functions \Ref{srcRange}(),
     \Ref{mask}(), and \Ref{dest}()):
     \begin{verbatim}
-    template <class SrcIterator, class SrcAccessor,
-	      class MaskIterator, class MaskAccessor,
-	      class DestIterator, class DestAccessor>
-    inline void 
-    discMedianWithMask(triple<SrcIterator, SrcIterator, SrcAccessor> src,
-			pair<MaskIterator, MaskAccessor> mask,
-			pair<DestIterator, DestAccessor> dest,
-			int radius)
+    namespace vigra {
+        template <class SrcIterator, class SrcAccessor,
+	          class MaskIterator, class MaskAccessor,
+	          class DestIterator, class DestAccessor>
+        inline void 
+        discMedianWithMask(triple<SrcIterator, SrcIterator, SrcAccessor> src,
+			    pair<MaskIterator, MaskAccessor> mask,
+			    pair<DestIterator, DestAccessor> dest,
+			    int radius)
+    }
     \end{verbatim}
 
     @memo
@@ -1127,5 +1163,7 @@ discMedianWithMask(triple<SrcIterator, SrcIterator, SrcAccessor> src,
 }
 
 //@}
+
+} // namespace vigra
 
 #endif // VIGRA_FLATMORPHOLOGY_HXX

@@ -25,6 +25,8 @@
 
 #include <vigra/accessor.hxx>
 
+namespace vigra {
+
 template <class T> 
 struct IteratorTraits 
 {
@@ -53,5 +55,6 @@ Accessor accessorAdapter(Iterator, Accessor a)
     return a;
 }
 
+} // namespace vigra
 
 #endif // VIGRA_ITERATORTRAITS_HXX

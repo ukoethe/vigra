@@ -23,6 +23,8 @@
 #ifndef VIGRA_IMAGEITERATORADAPTER_HXX
 #define VIGRA_IMAGEITERATORADAPTER_HXX
 
+namespace vigra {
+
 /** different line iterators
     @name Standard Image Iterator Adapters */
 //@{
@@ -42,6 +44,8 @@
     
     Include-File:
     \URL[vigra/imageiteratoradapter.hxx]{../include/vigra/imageiteratoradapter.hxx}
+    
+    Namespace: vigra
     
 */
 template <class IMAGE_ITERATOR>
@@ -242,6 +246,8 @@ class ColumnIterator : private IMAGE_ITERATOR
     Include-File:
     \URL[vigra/imageiteratoradapter.hxx]{../include/vigra/imageiteratoradapter.hxx}
     
+    Namespace: vigra
+    
 */
 template <class IMAGE_ITERATOR>
 class RowIterator : private IMAGE_ITERATOR
@@ -441,6 +447,8 @@ class RowIterator : private IMAGE_ITERATOR
     Include-File:
     \URL[vigra/imageiteratoradapter.hxx]{../include/vigra/imageiteratoradapter.hxx}
     
+    Namespace: vigra
+    
 */
 template <class IMAGE_ITERATOR>
 class LineIterator : private IMAGE_ITERATOR
@@ -558,5 +566,7 @@ class LineIterator : private IMAGE_ITERATOR
 };
 
 //@}
+
+} // namespace vigra
 
 #endif // VIGRA_IMAGEITERATORADAPTER_HXX

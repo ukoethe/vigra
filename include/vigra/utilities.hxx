@@ -23,11 +23,13 @@
 #ifndef VIGRA_BASICS_HXX
 #define VIGRA_BASICS_HXX
 
-#include <math.h>     // for sqrt()
+#include <cmath>     // for sqrt()
 #include <utility>    // for pair
 
 #include "vigra/config.hxx"
 #include "vigra/error.hxx"
+
+namespace vigra {
 
 struct VigraTrueType 
 {
@@ -61,7 +63,7 @@ struct VigraFalseType
     of images. For example, Diff2D may be used as an index for #operator[]#:
     
     \begin{verbatim}
-    Diff2D location(...);
+    vigra::Diff2D location(...);
     
     value = image[location];    
     \end{verbatim}
@@ -71,7 +73,7 @@ struct VigraFalseType
     
     \begin{verbatim}
     // accessor(iterator, dx, dy); is not allowed
-    value = accessor(iterator, Diff2D(dx, dy));
+    value = accessor(iterator, vigra::Diff2D(dx, dy));
     \end{verbatim}
     
     
@@ -170,7 +172,7 @@ class Diff2D
 	*/
     double magnitude() const
     {
-        return sqrt(x*x + y*y);
+        return std::sqrt(x*x + y*y);
     }
     
         /** Equality.
@@ -330,9 +332,7 @@ class Dist2D
 /*                                                      */
 /********************************************************/
 
-#if !defined(NO_NAMESPACE_STD)
 using std::pair;
-#endif
 
 /********************************************************/
 /*                                                      */
@@ -402,9 +402,9 @@ struct tuple5 {
 
 /** @name Tuple Types
 
-    VIGRA defines tuple types #triple#, #tuple4#, #tuple5#. In addition,
-    #pair# is imported from the C++ standard library. All these types are 
-    defined similarly:
+    VIGRA defines tuple types #vigra::triple#, #vigra::tuple4#, #vigra::tuple5#. 
+    In addition, #pair# is imported into namespace vigra from the C++ standard 
+    library. All these types are defined similarly:
     
     \begin{itemize}
     
@@ -448,5 +448,7 @@ struct tuple5 {
 */
 
 //@}
+
+} // namespace vigra
 
 #endif // VIGRA_BASICS_HXX

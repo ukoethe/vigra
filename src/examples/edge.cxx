@@ -31,18 +31,18 @@ int main(int argc, char ** argv)
     if(argc != 3)
     {
         std::cout << "Usage: " << argv[0] << " infile outfile" << std::endl;
-        std::cout << "(supported fomats: " << vigraImpexListFormats() << ")" << std::endl;
+        std::cout << "(supported formats: " << vigra::impexListFormats() << ")" << std::endl;
         
         return 1;
     }
     
     try
     {
-        ImageImportInfo info(argv[1]);
+        vigra::ImageImportInfo info(argv[1]);
         
         precondition(info.isGrayscale(), "Sorry, cannot operate on color images");
         
-        BImage in(info.width(), info.height());
+        vigra::BImage in(info.width(), info.height());
 
         importImage(info, destImage(in));
 
@@ -57,7 +57,7 @@ int main(int argc, char ** argv)
         std::cin >> threshold;
     
         // create output image of appropriate size
-        BImage out(info.width(), info.height());
+        vigra::BImage out(info.width(), info.height());
         
         // paint output image white
         out = 255;
@@ -67,9 +67,9 @@ int main(int argc, char ** argv)
         differenceOfExponentialEdgeImage(srcImageRange(in), destImage(out),
                        scale, threshold, 0);
 
-        exportImage(srcImageRange(out), ImageExportInfo(argv[2]));
+        exportImage(srcImageRange(out), vigra::ImageExportInfo(argv[2]));
     }
-    catch (VigraStdException & e)
+    catch (vigra::StdException & e)
     {
         std::cout << e.what() << std::endl;
         return 1;

@@ -136,7 +136,7 @@ typedef enum
 
 typedef enum
 {
-  VigraImpexGammaPreview,
+  VigraImpexGammaPreview
 } VigraImpexPreviewType;
 
 typedef enum

@@ -25,6 +25,8 @@
 
 #include "vigra/utilities.hxx"
 
+namespace vigra {
+
 /** @name Functions to Copy Images
     @memo copy image or ROI
 */
@@ -44,31 +46,36 @@
     
     pass arguments explicitly:
     \begin{verbatim}
-    template <class SrcImageIterator, class SrcAccessor,
-          class DestImageIterator, class DestAccessor>
-    void
-    copyImage(SrcImageIterator src_upperleft, 
-          SrcImageIterator src_lowerright, SrcAccessor sa,
-          DestImageIterator dest_upperleft, DestAccessor da)
+    namespace vigra {
+        template <class SrcImageIterator, class SrcAccessor,
+              class DestImageIterator, class DestAccessor>
+        void
+        copyImage(SrcImageIterator src_upperleft, 
+              SrcImageIterator src_lowerright, SrcAccessor sa,
+              DestImageIterator dest_upperleft, DestAccessor da)
+    }
     \end{verbatim}
     
     
     use argument objects in conjuction with \Ref{Argument Object Factories}:
     \begin{verbatim}
-    template <class SrcImageIterator, class SrcAccessor,
-          class DestImageIterator, class DestAccessor>
-    void
-    copyImage(triple<SrcImageIterator, SrcImageIterator, SrcAccessor> src,
-          pair<DestImageIterator, DestAccessor> dest)
+    namespace vigra {
+        template <class SrcImageIterator, class SrcAccessor,
+              class DestImageIterator, class DestAccessor>
+        void
+        copyImage(triple<SrcImageIterator, SrcImageIterator, SrcAccessor> src,
+              pair<DestImageIterator, DestAccessor> dest)
+    }
     \end{verbatim}
     
     {\bf Usage:}
     
         Include-File:
-        \URL[vigra/copyimage.hxx]{../include/vigra/copyimage.hxx}
+        \URL[vigra/copyimage.hxx]{../include/vigra/copyimage.hxx}\\
+        Namespace: vigra
     
     \begin{verbatim}
-    copyImage(srcImageRange(src), destImage(dest));
+    vigra::copyImage(srcImageRange(src), destImage(dest));
     
     \end{verbatim}
 
@@ -137,35 +144,40 @@ copyImage(triple<SrcImageIterator, SrcImageIterator, SrcAccessor> src,
     
     pass arguments explicitly:
     \begin{verbatim}
-    template <class SrcImageIterator, class SrcAccessor,
-          class MaskImageIterator, class MaskAccessor,
-          class DestImageIterator, clas DestAccessor>
-    void
-    copyImageIf(SrcImageIterator src_upperleft, 
-        SrcImageIterator src_lowerright, SrcAccessor sa,
-        MaskImageIterator mask_upperleft, MaskAccessor ma,
-        DestImageIterator dest_upperleft, DestAccessor da)
+    namespace vigra {
+        template <class SrcImageIterator, class SrcAccessor,
+              class MaskImageIterator, class MaskAccessor,
+              class DestImageIterator, clas DestAccessor>
+        void
+        copyImageIf(SrcImageIterator src_upperleft, 
+            SrcImageIterator src_lowerright, SrcAccessor sa,
+            MaskImageIterator mask_upperleft, MaskAccessor ma,
+            DestImageIterator dest_upperleft, DestAccessor da)
+    }
     \end{verbatim}
     
     
     use argument objects in conjuction with \Ref{Argument Object Factories}:
     \begin{verbatim}
-    template <class SrcImageIterator, class SrcAccessor,
-          class MaskImageIterator, class MaskAccessor,
-          class DestImageIterator, clas DestAccessor>
-    void
-    copyImageIf(triple<SrcImageIterator, SrcImageIterator, SrcAccessor> src,
-        pair<MaskImageIterator, MaskAccessor> mask,
-        pair<DestImageIterator, DestAccessor> dest)
+    namespace vigra {
+        template <class SrcImageIterator, class SrcAccessor,
+              class MaskImageIterator, class MaskAccessor,
+              class DestImageIterator, clas DestAccessor>
+        void
+        copyImageIf(triple<SrcImageIterator, SrcImageIterator, SrcAccessor> src,
+            pair<MaskImageIterator, MaskAccessor> mask,
+            pair<DestImageIterator, DestAccessor> dest)
+    }
     \end{verbatim}
     
     {\bf Usage:}
     
         Include-File:
-        \URL[vigra/copyimage.hxx]{../include/vigra/copyimage.hxx}
+        \URL[vigra/copyimage.hxx]{../include/vigra/copyimage.hxx}\\
+        Namespace: vigra
     
     \begin{verbatim}
-    copyImageIf(srcImageRange(src), maskImage(mask), destImage(dest));
+    vigra::copyImageIf(srcImageRange(src), maskImage(mask), destImage(dest));
 
     \end{verbatim}
 
@@ -230,5 +242,7 @@ copyImageIf(triple<SrcImageIterator, SrcImageIterator, SrcAccessor> src,
 }
 
 //@}
+
+} // namespace vigra
 
 #endif // VIGRA_COPYIMAGE_HXX

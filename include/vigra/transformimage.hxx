@@ -26,6 +26,8 @@
 #include "vigra/utilities.hxx"
 #include "vigra/numerictraits.hxx"
 
+namespace vigra {
+
 /** @name Functions to Transform Images
     @memo apply functor to calculate a pixelwise transformation of one image
 */
@@ -46,39 +48,43 @@
     
     pass arguments explicitly:
     \begin{verbatim}
-    template <class SrcImageIterator, class SrcAccessor,
-          class DestImageIterator, class DestAccessor, class Functor>
-    void
-    transformImage(SrcImageIterator src_upperleft, 
-           SrcImageIterator src_lowerright, SrcAccessor sa,
-           DestImageIterator dest_upperleft, DestAccessor da,
-           Functor f)
+    namespace vigra {
+        template <class SrcImageIterator, class SrcAccessor,
+              class DestImageIterator, class DestAccessor, class Functor>
+        void
+        transformImage(SrcImageIterator src_upperleft, 
+               SrcImageIterator src_lowerright, SrcAccessor sa,
+               DestImageIterator dest_upperleft, DestAccessor da,
+               Functor f)
+    }
     \end{verbatim}
     
     
     use argument objects in conjuction with \Ref{Argument Object Factories}:
     \begin{verbatim}
-    template <class SrcImageIterator, class SrcAccessor,
-          class DestImageIterator, class DestAccessor, class Functor>
-    void
-    transformImage(triple<SrcImageIterator, SrcImageIterator, SrcAccessor> src,
-           pair<DestImageIterator, DestAccessor> dest,
-           Functor f)
+    namespace vigra {
+        template <class SrcImageIterator, class SrcAccessor,
+              class DestImageIterator, class DestAccessor, class Functor>
+        void
+        transformImage(triple<SrcImageIterator, SrcImageIterator, SrcAccessor> src,
+               pair<DestImageIterator, DestAccessor> dest,
+               Functor f)
+    }
     \end{verbatim}
     
     {\bf Usage:}
     
         Include-File:
-        \URL[vigra/transformimage.hxx]{../include/vigra/transformimage.hxx}
+        \URL[vigra/transformimage.hxx]{../include/vigra/transformimage.hxx}\\
+        Namespace: vigra
     
     \begin{verbatim}
     
     #include <math.h>         // for sqrt()
-    #include <function.h>     // for ptr_fun()
     
-    transformImage(srcImageRange(src), 
-                   destImage(dest), 
-           ptr_fun(sqrt) );
+    vigra::transformImage(srcImageRange(src), 
+                          destImage(dest), 
+                          &::sqrt );
     
     \end{verbatim}
 
@@ -152,45 +158,49 @@ transformImage(triple<SrcImageIterator, SrcImageIterator, SrcAccessor> src,
     
     pass arguments explicitly:
     \begin{verbatim}
-    template <class SrcImageIterator, class SrcAccessor,
-          class MaskImageIterator, class MaskAccessor,
-          class DestImageIterator, clas DestAccessor,
-          class Functor>
-    void
-    transformImageIf(SrcImageIterator src_upperleft, 
-        SrcImageIterator src_lowerright, SrcAccessor sa,
-        MaskImageIterator mask_upperleft, MaskAccessor ma,
-        DestImageIterator dest_upperleft, DestAccessor da,
-        Functor f)
+    namespace vigra {
+        template <class SrcImageIterator, class SrcAccessor,
+              class MaskImageIterator, class MaskAccessor,
+              class DestImageIterator, clas DestAccessor,
+              class Functor>
+        void
+        transformImageIf(SrcImageIterator src_upperleft, 
+            SrcImageIterator src_lowerright, SrcAccessor sa,
+            MaskImageIterator mask_upperleft, MaskAccessor ma,
+            DestImageIterator dest_upperleft, DestAccessor da,
+            Functor f)
+    }
     \end{verbatim}
     
     
     use argument objects in conjuction with \Ref{Argument Object Factories}:
     \begin{verbatim}
-    template <class SrcImageIterator, class SrcAccessor,
-          class MaskImageIterator, class MaskAccessor,
-          class DestImageIterator, clas DestAccessor,
-          class Functor>
-    void
-    transformImageIf(triple<SrcImageIterator, SrcImageIterator, SrcAccessor> src,
-             pair<MaskImageIterator, MaskAccessor> mask,
-             pair<DestImageIterator, DestAccessor> dest,
-             Functor f)
+    namespace vigra {
+        template <class SrcImageIterator, class SrcAccessor,
+              class MaskImageIterator, class MaskAccessor,
+              class DestImageIterator, clas DestAccessor,
+              class Functor>
+        void
+        transformImageIf(triple<SrcImageIterator, SrcImageIterator, SrcAccessor> src,
+                 pair<MaskImageIterator, MaskAccessor> mask,
+                 pair<DestImageIterator, DestAccessor> dest,
+                 Functor f)
+    }
     \end{verbatim}
     
     {\bf Usage:}
     
         Include-File:
-        \URL[vigra/transformimage.hxx]{../include/vigra/transformimage.hxx}
+        \URL[vigra/transformimage.hxx]{../include/vigra/transformimage.hxx}\\
+        Namespace: vigra
     
     \begin{verbatim}
     #include <math.h>         // for sqrt()
-    #include <function.h>     // for ptr_fun()
     
-    transformImageIf(srcImageRange(src), 
-                     maskImage(mask), 
-                     destImage(dest), 
-             ptr_fun(sqrt) );
+    vigra::transformImageIf(srcImageRange(src), 
+                            maskImage(mask), 
+                            destImage(dest), 
+                            &::sqrt );
 
     \end{verbatim}
 
@@ -313,28 +323,33 @@ class LinearIntensityTransform
     
     {\bf Declaration:}
     
-    template <class SrcValueType>
-    LinearIntensityTransform<SrcValueType>
-    linearIntensityTransform(double scale, SrcValueType offset)
+    \begin{verbatim}
+    namespace vigra {
+        template <class SrcValueType>
+        LinearIntensityTransform<SrcValueType>
+        linearIntensityTransform(double scale, SrcValueType offset)
+    }
+    \end{verbatim}
     
     {\bf Usage:}
     
         Include-File:
-        \URL[vigra/transformimage.hxx]{../include/vigra/transformimage.hxx}
+        \URL[vigra/transformimage.hxx]{../include/vigra/transformimage.hxx}\\
+        Namespace: vigra
     
     \begin{verbatim}
-    IImage src(width, height);
-    BImage dest(width, height);
+    vigra::IImage src(width, height);
+    vigra::BImage dest(width, height);
     ...
-    FindMinMax<IImage::PixelType> minmax;   // functor to find range
+    vigra::FindMinMax<IImage::PixelType> minmax;   // functor to find range
     
-    inspectImage(srcImageRange(src), minmax); // find original range
+    vigra::inspectImage(srcImageRange(src), minmax); // find original range
     
     // transform to range 0...255
-    transformImage(srcImageRange(src), destImage(dest),
-                   linearIntensityTransform(
-                       255.0 / (minmax.max - minmax.min), // scaling
-                       - minmax.min));                    // offset
+    vigra::transformImage(srcImageRange(src), destImage(dest),
+                          linearIntensityTransform(
+                            255.0 / (minmax.max - minmax.min), // scaling
+                          - minmax.min));                    // offset
      
     \end{verbatim}
 
@@ -368,14 +383,16 @@ linearIntensityTransform(double scale, SrcValueType offset)
     {\bf Usage:}
     
         Include-File:
-        \URL[vigra/transformimage.hxx]{../include/vigra/transformimage.hxx}
+        \URL[vigra/transformimage.hxx]{../include/vigra/transformimage.hxx}\\
+        Namespace: vigra
     
     \begin{verbatim}
-    BImage src(width, height), dest(width, height);
+    vigra::BImage src(width, height), dest(width, height);
     ...
-    transformImage(src.upperLeft(), src.lowerRight(), src.accessor(),
-                   dest.upperLeft(), dest.accessor(),
-     Threshold<BImage::PixelType, BImage::PixelType>(10, 100, 0, 255));
+    vigra::transformImage(src.upperLeft(), src.lowerRight(), src.accessor(),
+       dest.upperLeft(), dest.accessor(),
+       vigra::Threshold<
+          vigra::BImage::PixelType, vigra::BImage::PixelType>(10, 100, 0, 255));
     
     \end{verbatim}
 
@@ -419,5 +436,7 @@ class Threshold
 };
 
 //@}
+
+} // namespace vigra
 
 #endif // VIGRA_TRANSFORMIMAGE_HXX

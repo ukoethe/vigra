@@ -26,7 +26,9 @@
 #include <stdio.h>
 #include "vigra/config.hxx"
           
-class ContractViolation : public VigraStdException
+namespace vigra {
+
+class ContractViolation : public StdException
 {
   public:
     ContractViolation(char const * message)
@@ -87,13 +89,13 @@ class InvariantViolation : public ContractViolation
 
 
 #define precondition(PREDICATE, MESSAGE) \
-        if(PREDICATE); else throw PreconditionViolation(MESSAGE, __FILE__, __LINE__)
+        if(PREDICATE); else throw ::vigra::PreconditionViolation(MESSAGE, __FILE__, __LINE__)
 
 #define postcondition(PREDICATE, MESSAGE) \
-        if(PREDICATE); else throw PostconditionViolation(MESSAGE, __FILE__, __LINE__)
+        if(PREDICATE); else throw ::vigra::PostconditionViolation(MESSAGE, __FILE__, __LINE__)
 
 #define invariant(PREDICATE, MESSAGE) \
-        if(PREDICATE); else throw InvariantViolation(MESSAGE, __FILE__, __LINE__)
+        if(PREDICATE); else throw ::vigra::InvariantViolation(MESSAGE, __FILE__, __LINE__)
             
 #define fail(MESSAGE) \
         { \
@@ -101,5 +103,7 @@ class InvariantViolation : public ContractViolation
             sprintf(buf, "%.900s (" __FILE__ ":%d)", (MESSAGE), __LINE__); \
             throw std::runtime_error(buf); \
         } 
+
+} // namespace vigra
 
 #endif // VIGRA_ERROR_HXX

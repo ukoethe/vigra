@@ -496,11 +496,11 @@ createmultibandimage(int height, int width, int type, int number_of_bands);
 
 #else /* ! __cplusplus */
 
-struct xvimage * readimage(/* char * filename*/);
+struct xvimage * readViffImage(/* char * filename*/);
 
-void freeimage(/* struct xvimage * img */);
+void freeViffImage(/* struct xvimage * img */);
 
-int writeimage(/* char * filename, struct xvimage * img */);
+int writeViffImage(/* char * filename, struct xvimage * img */);
 
 struct xvimage * createimage(/* int height, int width, int type,
                                  int number_of_images, int number_of_bands,

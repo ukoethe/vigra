@@ -28,6 +28,8 @@
 #include "vigra/utilities.hxx"
 #include "vigra/numerictraits.hxx"
 
+namespace vigra {
+
 /** @name Functions to Inspect Images
     @memo apply read-only functor to every pixel
 */
@@ -49,33 +51,37 @@
     
     pass arguments explicitly:
     \begin{verbatim}
-    template <class ImageIterator, class Accessor, class Functor>
-    void
-    inspectImage(ImageIterator upperleft, ImageIterator lowerright,
-                 Accessor a, Functor & f)
+    namespace vigra {
+        template <class ImageIterator, class Accessor, class Functor>
+        void
+        inspectImage(ImageIterator upperleft, ImageIterator lowerright,
+                     Accessor a, Functor & f)
+    }
     \end{verbatim}
-    
-    
+        
     use argument objects in conjuction with \Ref{Argument Object Factories}:
     \begin{verbatim}
-    template <class ImageIterator, class Accessor, class Functor>
-    void
-    inspectImage(triple<ImageIterator, ImageIterator, Accessor> img,
-         Functor & f)
+    namespace vigra {
+        template <class ImageIterator, class Accessor, class Functor>
+        void
+        inspectImage(triple<ImageIterator, ImageIterator, Accessor> img,
+             Functor & f)
+    }
     \end{verbatim}
     
     {\bf Usage:}
     
         Include-File:
-        \URL[vigra/inspectimage.hxx]{../include/vigra/inspectimage.hxx}
+        \URL[vigra/inspectimage.hxx]{../include/vigra/inspectimage.hxx}\\
+        Namespace: vigra
     
     \begin{verbatim}
-    BImage::Iterator upperleft = img.upperLeft();
-    
     // init functor
-    FindMinMax<BImage::PixelType> minmax();   
+    vigra::BImage img;
     
-    inspectImage(srcImageRange(img), minmax);
+    vigra::FindMinMax<vigra::BImage::PixelType> minmax();   
+    
+    vigra::inspectImage(srcImageRange(img), minmax);
     
     cout << "Min: " << minmax.min << " Max: " << minmax.max;
 
@@ -139,40 +145,44 @@ inspectImage(triple<ImageIterator, ImageIterator, Accessor> img,
     
     pass arguments explicitly:
     \begin{verbatim}
-    template <class ImageIterator, class Accessor,
-              class MaskImageIterator, class MaskAccessor, class Functor>
-    void
-    inspectImageIf(ImageIterator upperleft, ImageIterator lowerright, 
-           MaskImageIterator mask_upperleft, MaskAccessor ma,
-           Functor & f)
+    namespace vigra {
+        template <class ImageIterator, class Accessor,
+                  class MaskImageIterator, class MaskAccessor, class Functor>
+        void
+        inspectImageIf(ImageIterator upperleft, ImageIterator lowerright, 
+               MaskImageIterator mask_upperleft, MaskAccessor ma,
+               Functor & f)
+    }
     \end{verbatim}
     
     
     use argument objects in conjuction with \Ref{Argument Object Factories}:
     \begin{verbatim}
-    template <class ImageIterator, class Accessor,
-          class MaskImageIterator, class MaskAccessor, class Functor>
-    void
-    inspectImageIf(triple<ImageIterator, ImageIterator, Accessor> img,
-           pair<MaskImageIterator, MaskAccessor> mask,
-           Functor & f)
+    namespace vigra {
+        template <class ImageIterator, class Accessor,
+              class MaskImageIterator, class MaskAccessor, class Functor>
+        void
+        inspectImageIf(triple<ImageIterator, ImageIterator, Accessor> img,
+               pair<MaskImageIterator, MaskAccessor> mask,
+               Functor & f)
+    }
     \end{verbatim}
     
     {\bf Usage:}
     
         Include-File:
-        \URL[vigra/inspectimage.hxx]{../include/vigra/inspectimage.hxx}
+        \URL[vigra/inspectimage.hxx]{../include/vigra/inspectimage.hxx}\\
+        Namespace: vigra
     
     \begin{verbatim}
-    BImage img(100, 100);
-    BImage mask(100, 100);
-    BImage::Iterator upperleft = img.upperLeft();
+    vigra::BImage img(100, 100);
+    vigra::BImage mask(100, 100);
     
     // init functor
-    FindMinMax<BImage::PixelType> minmax();    
+    vigra::FindMinMax<vigra::BImage::PixelType> minmax();    
     
-    inspectImageIf(srcImageRange(img), 
-                   maskImage(mask), minmax);
+    vigra::inspectImageIf(srcImageRange(img), 
+                          maskImage(mask), minmax);
     
     cout << "Min: " << minmax.min << " Max: " << minmax.max;
 
@@ -246,40 +256,45 @@ inspectImageIf(triple<ImageIterator, ImageIterator, Accessor> img,
     
     pass arguments explicitly:
     \begin{verbatim}
-    template <class ImageIterator1, class Accessor1,
-          class ImageIterator2, class Accessor2, 
-          class Functor>
-    void
-    inspectTwoImages(ImageIterator1 upperleft1, ImageIterator1 lowerright1, Accessor1 a1, 
-             ImageIterator2 upperleft2, Accessor2 a2,
-             Functor & f)
+    namespace vigra {
+        template <class ImageIterator1, class Accessor1,
+              class ImageIterator2, class Accessor2, 
+              class Functor>
+        void
+        inspectTwoImages(ImageIterator1 upperleft1, ImageIterator1 lowerright1, Accessor1 a1, 
+                 ImageIterator2 upperleft2, Accessor2 a2,
+                 Functor & f)
+    }
     \end{verbatim}
     
     
     use argument objects in conjuction with \Ref{Argument Object Factories}:
     \begin{verbatim}
-    template <class ImageIterator1, class Accessor1,
-          class ImageIterator2, class Accessor2, 
-          class Functor>
-    void
-    inspectTwoImages(triple<ImageIterator1, ImageIterator1, Accessor1> img1,
-                     pair<ImageIterator2, Accessor2> img2,
-             Functor & f)
+    namespace vigra {
+        template <class ImageIterator1, class Accessor1,
+              class ImageIterator2, class Accessor2, 
+              class Functor>
+        void
+        inspectTwoImages(triple<ImageIterator1, ImageIterator1, Accessor1> img1,
+                         pair<ImageIterator2, Accessor2> img2,
+                 Functor & f)
+    }
     \end{verbatim}
     
     {\bf Usage:}
     
         Include-File:
-        \URL[vigra/inspectimage.hxx]{../include/vigra/inspectimage.hxx}
+        \URL[vigra/inspectimage.hxx]{../include/vigra/inspectimage.hxx}\\
+        Namespace: vigra
     
     \begin{verbatim}
-    BImage image1;
-    BImage image2;
+    vigra::BImage image1;
+    vigra::BImage image2;
     
     SomeStatisticsFunctor stats(...);     // init functor
     
-    inspectTwoImages(srcImageRange(image1), srcImage(image2),
-                     region_stats);
+    vigra::inspectTwoImages(srcImageRange(image1), srcImage(image2),
+                            region_stats);
     
     
     \end{verbatim}
@@ -353,45 +368,50 @@ inspectTwoImages(triple<ImageIterator1, ImageIterator1, Accessor1> img1,
     
     pass arguments explicitly:
     \begin{verbatim}
-    template <class ImageIterator1, class Accessor1,
-              class ImageIterator2, class Accessor2, 
-              class MaskImageIterator, class MaskAccessor, 
-          class Functor>
-    void
-    inspectTwoImagesIf(ImageIterator1 upperleft1, ImageIterator1 lowerright1, Accessor1 a1, 
-                     ImageIterator2 upperleft2, Accessor2 a2,
-                     MaskImageIterator mupperleft, MaskAccessor mask,
-             Functor & f)
+    namespace vigra {
+        template <class ImageIterator1, class Accessor1,
+                  class ImageIterator2, class Accessor2, 
+                  class MaskImageIterator, class MaskAccessor, 
+                  class Functor>
+        void
+        inspectTwoImagesIf(ImageIterator1 upperleft1, ImageIterator1 lowerright1, Accessor1 a1, 
+                         ImageIterator2 upperleft2, Accessor2 a2,
+                         MaskImageIterator mupperleft, MaskAccessor mask,
+                         Functor & f)
+    }
     \end{verbatim}
     
     
     use argument objects in conjuction with \Ref{Argument Object Factories}:
     \begin{verbatim}
-    template <class ImageIterator1, class Accessor1,
-          class ImageIterator2, class Accessor2, 
-              class MaskImageIterator, class MaskAccessor, 
-          class Functor>
-    void
-    inspectTwoImagesIf(triple<ImageIterator1, ImageIterator1, Accessor1> img1,
-             pair<ImageIterator2, Accessor2> img2,
-             pair<MaskImageIterator, MaskAccessor> mimg,
-             Functor & f)
+    namespace vigra {
+        template <class ImageIterator1, class Accessor1,
+                  class ImageIterator2, class Accessor2, 
+                  class MaskImageIterator, class MaskAccessor, 
+                  class Functor>
+        void
+        inspectTwoImagesIf(triple<ImageIterator1, ImageIterator1, Accessor1> img1,
+                 pair<ImageIterator2, Accessor2> img2,
+                 pair<MaskImageIterator, MaskAccessor> mimg,
+                 Functor & f)
+    }
     \end{verbatim}
     
     {\bf Usage:}
     
         Include-File:
-        \URL[vigra/inspectimage.hxx]{../include/vigra/inspectimage.hxx}
+        \URL[vigra/inspectimage.hxx]{../include/vigra/inspectimage.hxx}\\
+        Namespace: vigra
     
     \begin{verbatim}
-    BImage image1;
-    BImage image2;
-    BImage maskimage;
+    vigra::BImage image1;
+    vigra::BImage image2;
+    vigra::BImage maskimage;
     
     SomeStatisticsFunctor stats(...);     // init functor
     
-    inspectTwoImagesIf(srcImageRange(image1), srcImage(image2),
-                       srcImage(maskimage), region_stats);
+    vigra::inspectTwoImagesIf(srcImageRange(image1), srcImage(image2),
+                              srcImage(maskimage), region_stats);
     
     \end{verbatim}
 
@@ -478,14 +498,15 @@ inspectTwoImagesIf(triple<ImageIterator1, ImageIterator1, Accessor1> img1,
     {\bf Usage:}
     
         Include-File:
-        \URL[vigra/inspectimage.hxx]{../include/vigra/inspectimage.hxx}
+        \URL[vigra/inspectimage.hxx]{../include/vigra/inspectimage.hxx}\\
+        Namespace: vigra
     
     \begin{verbatim}
-    BImage::Iterator img;
+    vigra::BImage img;
     
-    FindMinMax<BImage::PixelType> minmax;   // init functor
+    vigra::FindMinMax<BImage::PixelType> minmax;   // init functor
     
-    inspectImage(srcImageRange(img), minmax);
+    vigra::inspectImage(srcImageRange(img), minmax);
     
     cout << "Min: " << minmax.min << " Max: " << minmax.max;
     
@@ -589,14 +610,15 @@ class FindMinMax
     {\bf Usage:}
     
         Include-File:
-        \URL[vigra/inspectimage.hxx]{../include/vigra/inspectimage.hxx}
+        \URL[vigra/inspectimage.hxx]{../include/vigra/inspectimage.hxx}\\
+        Namespace: vigra
     
     \begin{verbatim}
-    BImage::Iterator img;
+    vigra::BImage img;
     
-    FindAverage<BImage::PixelType> average;   // init functor
+    vigra::FindAverage<vigra::BImage::PixelType> average;   // init functor
     
-    inspectImage(srcImageRange(img), average);
+    vigra::inspectImage(srcImageRange(img), average);
     
     cout << "Average: " << average();
     
@@ -682,14 +704,15 @@ class FindAverage
     {\bf Usage:}
     
     Include-File:
-    \URL[vigra/inspectimage.hxx]{../include/vigra/inspectimage.hxx}
+    \URL[vigra/inspectimage.hxx]{../include/vigra/inspectimage.hxx}\\
+        Namespace: vigra
 
     \begin{verbatim}
-    BImage img, mask;
+    vigra::BImage img, mask;
     
-    FindROISize<BImage::PixelType> roisize;   // init functor
+    vigra::FindROISize<vigra::BImage::PixelType> roisize;   // init functor
     
-    inspectImageIf(srcImageRange(img), srcImage(mask), roisize);
+    vigra::inspectImageIf(srcImageRange(img), srcImage(mask), roisize);
     
     cout << "Size of ROI: " << roisize.count;
     
@@ -768,19 +791,20 @@ class FindROISize
     {\bf Usage:}
     
     Include-File:
-    \URL[vigra/inspectimage.hxx]{../include/vigra/inspectimage.hxx}
+    \URL[vigra/inspectimage.hxx]{../include/vigra/inspectimage.hxx}\\
+        Namespace: vigra
 
     \begin{verbatim}
-    BImage img, mask;
+    vigra::BImage img, mask;
     ...
     
-    FindBoundingRectangle roiRect;   // init functor
+    vigra::FindBoundingRectangle roiRect;   // init functor
     
     // Diff2D is used as the iterator for the source image. This
     // simulates an image where each pixel value equals that pixel's 
     // coordinates. Tha image 'mask' determines the ROI.
-    inspectImageIf(srcIterRange(Diff2D(0,0), img.size()), 
-                   srcImage(mask), roiRect);
+    vigra::inspectImageIf(srcIterRange(Diff2D(0,0), img.size()), 
+                          srcImage(mask), roiRect);
     
     cout << "Upper left of ROI: " << 
         roiRect.upperLeft.x << ", " << roiRect.upperLeft.y << endl;
@@ -790,8 +814,9 @@ class FindROISize
     \end{verbatim}
 
 */
-struct FindBoundingRectangle
+class FindBoundingRectangle
 {
+  public:
         /** the functor's value type
             @memo
         */
@@ -872,19 +897,20 @@ struct FindBoundingRectangle
     {\bf Usage:}
     
     Include-File:
-    \URL[vigra/inspectimage.hxx]{../include/vigra/inspectimage.hxx}
+    \URL[vigra/inspectimage.hxx]{../include/vigra/inspectimage.hxx}\\
+        Namespace: vigra
 
     \begin{verbatim}
-    BImage img;
+    vigra::BImage img;
     
-    ArrayOfRegionStatistics<LastValueFunctor<unsigned char> > lut(255);
+    vigra::ArrayOfRegionStatistics<LastValueFunctor<unsigned char> > lut(255);
     
     for(int i=0; i<256; ++i)
     {
         lut[i] = ...; // init look-up table
     }
     
-    transformImage(srcImageRange(img), destImage(img), lut);
+    vigra::transformImage(srcImageRange(img), destImage(img), lut);
     
     \end{verbatim}
 
@@ -941,19 +967,20 @@ class LastValueFunctor
     {\bf Usage:}
     
     Include-File:
-    \URL[vigra/inspectimage.hxx]{../include/vigra/inspectimage.hxx}
+    \URL[vigra/inspectimage.hxx]{../include/vigra/inspectimage.hxx}\\
+        Namespace: vigra
 
     \begin{verbatim}
-    BImage img;
-    IImage labels;
+    vigra::BImage img;
+    vigra::IImage labels;
     int max_label;
     ...
     
     // init functor as an array of 'max_label' FindMinMax-Functors
-    ArrayOfRegionStatistics<FindMinMax<BImage::PixelType> > 
+    vigra::ArrayOfRegionStatistics<vigra::FindMinMax<vigra::BImage::PixelType> > 
                                                          minmax(max_label);   
         
-    inspectTwoImages(srcImageRange(img), srcImage(labels), minmax);
+    vigra::inspectTwoImages(srcImageRange(img), srcImage(labels), minmax);
     
     for(int i=0; i<= max_label; ++i)
     {
@@ -962,13 +989,13 @@ class LastValueFunctor
     }
     
     // init functor as an array of 'max_label' FindAverage-Functors
-    ArrayOfRegionStatistics<FindAverage<BImage::PixelType> > 
+    vigra::ArrayOfRegionStatistics<vigra::FindAverage<vigra::BImage::PixelType> > 
                                                          average(max_label);   
         
-    inspectTwoImages(srcImageRange(img), srcImage(labels), average);
+    vigra::inspectTwoImages(srcImageRange(img), srcImage(labels), average);
     
     // write back the average of each region into the original image
-    transformImage(srcImageRange(labels), destImage(img), average);
+    vigra::transformImage(srcImageRange(labels), destImage(img), average);
     
     \end{verbatim}
     
@@ -1075,5 +1102,6 @@ class ArrayOfRegionStatistics
 //@}
 
 
+} // namespace vigra
 
 #endif // VIGRA_INSPECTIMAGE_HXX

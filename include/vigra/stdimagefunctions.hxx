@@ -26,7 +26,10 @@
 /** @name Basic Image Functions And Functors 
 
     Include-File:
-    \URL[vigra/stdimagefunctions.hxx]{../include/vigra/stdimagefunctions.hxx}
+    \URL[vigra/stdimagefunctions.hxx]{../include/vigra/stdimagefunctions.hxx}\\
+        Namespace: vigra
+        
+    see also: \URL[Automatic Functor Creation]{FunctorCreation.html}
 
     @memo Init, inspect, copy, transform, combine, and resize images
 */
@@ -38,10 +41,6 @@
 //@Include: transformimage.hxx 
 //@Include: combineimages.hxx 
 //@Include: resizeimage.hxx
-
-/** @name \URL[Functor Factories]{documents/FunctorFactory.ps}
-    @memo automate functor creation
-*/
 
 #include "vigra/initimage.hxx"
 #include "vigra/inspectimage.hxx"

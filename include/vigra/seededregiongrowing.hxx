@@ -30,6 +30,8 @@
 #include <vigra/stdimage.hxx>
 #include <vigra/stdimagefunctions.hxx>
 
+namespace vigra {
+
 template <class COST>
 class InternalSeedRgPixel
 {
@@ -218,40 +220,45 @@ public:
     
     pass arguments explicitly:
     \begin{verbatim}
-    template <class SrcImageIterator, class SrcAccessor, 
-              class SeedImageIterator, class SeedAccessor,
-              class DestImageIterator, class DestAccessor,
-	      class RegionStatisticsFunctor>
-    void seededRegionGrowing(SrcImageIterator srcul, 
-                             SrcImageIterator srclr, SrcAccessor as, 
-                             SeedImageIterator seedsul, SeedAccessor aseeds,
-			     DestImageIterator destul, DestAccessor ad,
-		             RegionStatisticsFunctor & stats);
+    namespace vigra {
+        template <class SrcImageIterator, class SrcAccessor, 
+                  class SeedImageIterator, class SeedAccessor,
+                  class DestImageIterator, class DestAccessor,
+	          class RegionStatisticsFunctor>
+        void seededRegionGrowing(SrcImageIterator srcul, 
+                                 SrcImageIterator srclr, SrcAccessor as, 
+                                 SeedImageIterator seedsul, SeedAccessor aseeds,
+			         DestImageIterator destul, DestAccessor ad,
+		                 RegionStatisticsFunctor & stats);
+    }
     \end{verbatim}
     
     use argument objects in conjuction with \Ref{Argument Object Factories}:
     \begin{verbatim}
-    template <class SrcImageIterator, class SrcAccessor, 
-              class SeedImageIterator, class SeedAccessor,
-              class DestImageIterator, class DestAccessor,
-	      class RegionStatisticsFunctor>
-    inline void
-    seededRegionGrowing(triple<SrcImageIterator, SrcImageIterator, SrcAccessor> img1,
-		       pair<SeedImageIterator, SeedAccessor> img3,
-		       pair<DestImageIterator, DestAccessor> img4,
-		       RegionStatisticsFunctor & stats);
+    namespace vigra {
+        template <class SrcImageIterator, class SrcAccessor, 
+                  class SeedImageIterator, class SeedAccessor,
+                  class DestImageIterator, class DestAccessor,
+	          class RegionStatisticsFunctor>
+        inline void
+        seededRegionGrowing(triple<SrcImageIterator, SrcImageIterator, SrcAccessor> img1,
+		           pair<SeedImageIterator, SeedAccessor> img3,
+		           pair<DestImageIterator, DestAccessor> img4,
+		           RegionStatisticsFunctor & stats);
+    }
     \end{verbatim}
     
     {\bf Usage:}
     
-        Include-File:
-        \URL[vigra/seededregiongrowing.hxx]{../include/vigra/seededregiongrowing.hxx}
+    Include-File:
+    \URL[vigra/seededregiongrowing.hxx]{../include/vigra/seededregiongrowing.hxx}\\
+    Namespace: vigra
     
     Example: implementation of the voronoi tesselation
     
     \begin{verbatim}
-    BImage points(w,h);
-    FImage dist(x,y);
+    vigra::BImage points(w,h);
+    vigra::FImage dist(x,y);
     
     // empty edge image
     points = 0;
@@ -264,15 +271,15 @@ public:
            points(w * rand() / RAND_MAX , h * rand() / RAND_MAX) = i;
     
     // calculate Euclidean distance transform
-    distanceTransform(srcImageRange(points), destImage(dist), 2);
+    vigra::distanceTransform(srcImageRange(points), destImage(dist), 2);
     
     // init statistics functor
-    ArrayOfRegionStatistics<SeedRgDirectValueFunctor<float> > 
+    vigra::ArrayOfRegionStatistics<vigra::SeedRgDirectValueFunctor<float> > 
                                               stats(max_region_label);
     
     // find voronoi region of each point 
-    seededRegionGrowing(srcImageRange(dist), srcImage(points), 
-                        destImage(points), stats);
+   vigra:: seededRegionGrowing(srcImageRange(dist), srcImage(points), 
+                               destImage(points), stats);
     \end{verbatim}
 
     {\bf Required Interface:}
@@ -440,7 +447,8 @@ seededRegionGrowing(triple<SrcImageIterator, SrcImageIterator, SrcAccessor> img1
     be merged with.
 
     Include-File:
-    \URL[vigra/seededregiongrowing.hxx]{../include/vigra/seededregiongrowing.hxx}
+    \URL[vigra/seededregiongrowing.hxx]{../include/vigra/seededregiongrowing.hxx}\\
+    Namespace: vigra
     
     
      {\bf Required Interface:}
@@ -469,6 +477,8 @@ class SeedRgDirectValueFunctor
 };
 
 //@}
+
+} // namespace vigra
 
 #endif // VIGRA_SEEDEDREGIONGROWING_HXX
  

@@ -27,12 +27,13 @@
 #include "vigra/accessor.hxx"
 #include "vigra/iteratortraits.hxx"
 
+namespace vigra { 
 
-/** Basic image iterator implementations 
-    @name Image Iterators  
+/** @name Image Iterators  
+
+    @memo Basic image iterator implementations 
 */
 //@{
-
 /********************************************************/
 /*                                                      */
 /*                      ImageIteratorBase               */
@@ -47,12 +48,14 @@
     Include-File:
     \URL[vigra/imageiterator.hxx]{../include/vigra/imageiterator.hxx}
     
+    Namespace: vigra
+    
     The usage examples assume that you constructed two iterators like
     this:
 
     \begin{verbatim}
-    ImageIteratorBase<SomePixelType> iterator(base, width);
-    ImageIteratorBase<SomePixelType> iterator1(base, width);
+    vigra::ImageIteratorBase<SomePixelType> iterator(base, width);
+    vigra::ImageIteratorBase<SomePixelType> iterator1(base, width);
     \end{verbatim}
     
     See the paper: U. Koethe: 
@@ -427,8 +430,8 @@ class ImageIteratorBase
     this:
     
     \begin{verbatim}
-    ImageIteratorBase<SomePixelType> iterator(base, width);
-    ImageIteratorBase<SomePixelType> iterator1(base, width);
+    vigra::ImageIteratorBase<SomePixelType> iterator(base, width);
+    vigra::ImageIteratorBase<SomePixelType> iterator1(base, width);
     \end{verbatim}
     
     See the paper: U. Koethe: 
@@ -437,6 +440,8 @@ class ImageIteratorBase
 
     Include-File:
     \URL[vigra/imageiterator.hxx]{../include/vigra/imageiterator.hxx}
+    
+    Namespace: vigra
     
 */    
 template <class PIXELTYPE>
@@ -645,11 +650,15 @@ class ImageIterator: public ImageIteratorBase<PIXELTYPE>
     The usage examples assume that you constructed two iterators like
     this:
     
-    #      ConstImageIterator<SomePixelType> iterator(base, width)  #
-    #      ConstImageIterator<SomePixelType> iterator1(base, width) #
+    \begin{verbatim}
+    vigra::ConstImageIterator<SomePixelType> iterator(base, width) 
+    vigra::ConstImageIterator<SomePixelType> iterator1(base, width)
+    \end{verbatim}
 
     Include-File:
     \URL[vigra/imageiterator.hxx]{../include/vigra/imageiterator.hxx}
+    
+    Namespace: vigra
     
 */
 template <class PIXELTYPE>
@@ -839,6 +848,8 @@ struct IteratorTraits<ConstImageIterator<T> >
     Include-File:
     \URL[vigra/imageiterator.hxx]{../include/vigra/imageiterator.hxx}
     
+    Namespace: vigra
+    
 */
 template <class PIXELTYPE>
 class ConstValueIterator
@@ -1011,196 +1022,6 @@ struct IteratorTraits<ConstValueIterator<T> >
 
 #endif
 
-
-#if 0
-/********************************************************/
-/*                                                      */
-/*                 CoordinateIterator                   */
-/*                                                      */
-/********************************************************/
-
-/* This iterator returns the its current coordinate instead of a 
-    value. It behaves like an image where each pixel contains this
-    coordinate. This can, for example, be usd to initialize an image with
-    a function that depends on the coordinates. Suupose we want to 
-    init a chessboard image with squares of 1 pixel by 1 pixel.
-    This is realized by the following functor:
-    
-    \begin{verbatim}
-    struct ChessBoard
-    {
-        int operator()(Diff2D const & d) const
-	{
-	    return (d.x + d.y) & 1;
-	}
-    };
-    \end{verbatim}
-    
-    Using this functor and the #CoordinateIterator#, we can apply the 
-    \Ref{transformImage}() algorithm to do the initialization:
-    
-    \begin{verbatim}
-    BImage img(w,h);
-    
-    transformImage(CoordinateIterator(), CoordinateIterator() + Diff2D(w,h),
-                   StandardConstAccessor<Diff2D>(),
-		   destImage(img), ChessBoard());
-    \end{verbatim}
-    
-    Include-File:
-    \URL[vigra/imageiterator.hxx]{../include/vigra/imageiterator.hxx}
-    
-*/
-class CoordinateIterator
-{
-  public:
-        /* the iterator's PixelType
-	    @memo
-	*/
-    typedef Diff2D PixelType;
-    
-	/* Let operations act in X direction
-	*/
-    typedef int MoveX;
-
-	/* Let operations act in Y direction
-	*/
-    typedef int MoveY;
-    
-        /* Default Constructor. Init iterator at position (0,0)
-	    @memo
-	*/
-    CoordinateIterator()
-    : x(0), y(0)
-    {}
-    
-        /* Construct at given position.
-	    @memo
-	*/
-    CoordinateIterator(int ax, int ay)
-    : x(ax), y(ay)
-    {}
-    
-        /* Copy Constructor.
-	    @memo
-	*/
-    CoordinateIterator(CoordinateIterator const & v)
-    : x(v.x), y(v.y)
-    {}
-    
-        /* Copy Assigment.
-	    @memo
-	*/
-    CoordinateIterator & operator=(CoordinateIterator const & v)
-    {
-        if(this != &v)
-	{
-	    x = v.x;
-	    y = v.y;
-	}
-	return *this;
-    }
-    
-        /* Move iterator by specified distance.
-	    @memo
-	*/
-    CoordinateIterator & operator+=(Diff2D const & d)
-    {
-        x += d.x;
-	y += d.y;
-        return *this;
-    }
-    
-        /* Move iterator by specified distance.
-	    @memo
-	*/
-    CoordinateIterator & operator-=(Diff2D const & d)
-    {
-        x -= d.x;
-	y -= d.y;
-        return *this;
-    }
-
-        /* Create iterator at specified distance.
-	    @memo
-	*/
-    CoordinateIterator operator+(Diff2D const & d) const
-    {
-        CoordinateIterator ret(*this);
-	ret += d;
-	return ret;
-    }
-    
-        /* Create iterator at specified distance.
-	    @memo
-	*/
-    CoordinateIterator operator-(Diff2D const & d) const
-    {
-        CoordinateIterator ret(*this);
-	ret -= d;
-	return ret;
-    }
-    
-        /* Compute distance between two iterators
-	    @memo
-	*/
-    Diff2D operator-(CoordinateIterator const & r) const
-    {
-        return Diff2D(x - r.x, y - r.y);
-    }
-    
-        /* Equality.
-	    @memo
-	*/
-    bool operator==(CoordinateIterator const & r) const
-    {
-        return (x == r.x) && (y == r.y);
-    }
-    
-        /* Inequality.
-	    @memo
-	*/
-    bool operator!=(CoordinateIterator const & r) const
-    {
-        return (x != r.x) || (y != r.y);
-    }
-    
-        /* Read current coordinate.
-	    @memo
-	*/
-    PixelType operator*() const
-    {
-        return PixelType(x,y);
-    }
-    
-        /* Read coordinate at a distance.
-	    @memo
-	*/
-    PixelType operator()(int const & dx, int const & dy) const
-    {
-        return PixelType(x + dx, y + dy);
-    }
-
-        /* Read coordinate at a distance.
-	    @memo
-	*/
-    PixelType operator[](Diff2D const & d) const
-    {
-        return PixelType(x + d.x, y + d.y);
-    }
-    
-    int x;
-    int y;
-};
-
-
-template <> 
-struct IteratorTraits<CoordinateIterator > 
-{
-    typedef StandardConstValueAccessor<Diff2D> DefaultAccessor;
-};
-#endif /* #if 0 */
-
 typedef Diff2D CoordinateIterator;
 
 template <> 
@@ -1253,12 +1074,12 @@ struct IteratorTraits<Diff2D >
     Using this functor, we find the center of mass like so:
     
     \begin{verbatim}
-    BImage img(w,h);
+    vigra::BImage img(w,h);
     ... // mark a region in the image with '1', background with '0'
     
     CenterOfMassFunctor center;
     
-    inspectImageIf(
+    vigra::inspectImageIf(
         srcIterRange(Diff2D(), Diff2D() + img.size()),
         srcImage(img),
         center);
@@ -1270,10 +1091,13 @@ struct IteratorTraits<Diff2D >
     Include-File:
     \URL[vigra/imageiterator.hxx]{../include/vigra/imageiterator.hxx}
     
+    Namespace: vigra
+    
     @memo Simulate an image where each pixel contains its coordinate
 */
+
 //@}
 
-
+} // namespace vigra
 
 #endif // VIGRA_IMAGEITERATOR_HXX

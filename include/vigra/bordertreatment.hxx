@@ -23,6 +23,8 @@
 #ifndef VIGRA_BORDERTREATMENT_HXX
 #define VIGRA_BORDERTREATMENT_HXX
 
+namespace vigra {
+
 /********************************************************/
 /*                                                      */
 /*                      BorderTreatmentMode             */
@@ -35,7 +37,8 @@
     the image.
     
     Include-File:
-    \URL[vigra/bordertreatment.hxx]{../include/vigra/bordertreatment.hxx}
+    \URL[vigra/bordertreatment.hxx]{../include/vigra/bordertreatment.hxx}\\
+    Namespace: vigra
 */   
 enum BorderTreatmentMode 
 {
@@ -66,5 +69,7 @@ enum BorderTreatmentMode
       */
    BORDER_TREATMENT_WRAP
 };
+
+} // namespace vigra
 
 #endif // VIGRA_BORDERTREATMENT_HXX

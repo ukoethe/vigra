@@ -18,6 +18,13 @@
 
 \begin{itemize}
 
+      \item Put everything in namespace "vigra".
+      
+      \item Renamed \\
+            VigraStdException => StdException.\\
+            vigraImpexListFormats() => impexListFormats()
+      
+      
       \item Added expression templates for automated \URL[automated functor creation]{FunctorCreation.html}.
 
       \item Added support for input/output of the PNM image file format
@@ -33,6 +40,9 @@
             \URL[CoordinateIterator]{CoordinateIterator.html}.
             
       \item Changed the documentation layout.
+      
+      \item Improved \Ref{labelImage}() according to ideas of Prof. 
+            Vladimir Kovalevsky.
       
       \item Several minor changes and bug fixes.
 

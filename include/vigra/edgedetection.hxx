@@ -31,6 +31,8 @@
 #include "vigra/recursiveconvolution.hxx"
 #include "vigra/labelimage.hxx"
 
+namespace vigra {
+
 /** @name Edge Detection
     @memo zero-crossing based edge detectors and related post-processing
 */
@@ -75,45 +77,50 @@
     
     pass arguments explicitly:
     \begin{verbatim}
-    template <class SrcIterator, class SrcAccessor,
-          class DestIterator, class DestAccessor,
-          class GradValue,
-          class DestValue = DestAccessor::value_type>
-    void differenceOfExponentialEdgeImage(
-           SrcIterator sul, SrcIterator slr, SrcAccessor sa,
-           DestIterator dul, DestAccessor da,
-           double scale, GradValue gradient_threshold, 
-           DestValue edge_marker = NumericTraits<DestValue>::one())
+    namespace vigra {
+        template <class SrcIterator, class SrcAccessor,
+              class DestIterator, class DestAccessor,
+              class GradValue,
+              class DestValue = DestAccessor::value_type>
+        void differenceOfExponentialEdgeImage(
+               SrcIterator sul, SrcIterator slr, SrcAccessor sa,
+               DestIterator dul, DestAccessor da,
+               double scale, GradValue gradient_threshold, 
+               DestValue edge_marker = NumericTraits<DestValue>::one())
+    }
     \end{verbatim}
     
     use argument objects in conjuction with \Ref{Argument Object Factories}:
     \begin{verbatim}
-    template <class SrcIterator, class SrcAccessor,
-          class DestIterator, class DestAccessor, 
-          class GradValue,
-          class DestValue = DestAccessor::value_type>
-    inline 
-    void differenceOfExponentialEdgeImage(
-           triple<SrcIterator, SrcIterator, SrcAccessor> src,
-           pair<DestIterator, DestAccessor> dest,
-           double scale, GradValue gradient_threshold,
-           DestValue edge_marker = NumericTraits<DestValue>::one())
+    namespace vigra {
+        template <class SrcIterator, class SrcAccessor,
+              class DestIterator, class DestAccessor, 
+              class GradValue,
+              class DestValue = DestAccessor::value_type>
+        inline 
+        void differenceOfExponentialEdgeImage(
+               triple<SrcIterator, SrcIterator, SrcAccessor> src,
+               pair<DestIterator, DestAccessor> dest,
+               double scale, GradValue gradient_threshold,
+               DestValue edge_marker = NumericTraits<DestValue>::one())
+    }
     \end{verbatim}
     
     {\bf Usage:}
     
         Include-File:
-        \URL[vigra/edgedetection.hxx]{../include/vigra/edgedetection.hxx}
+        \URL[vigra/edgedetection.hxx]{../include/vigra/edgedetection.hxx}\\
+    Namespace: vigra
     
     \begin{verbatim}
-    BImage src(w,h), edges(w,h);
+    vigra::BImage src(w,h), edges(w,h);
     
     // empty edge image
     edges = 0;
     ...
     
     // find edges at scale 0.8 with gradient larger than 4.0, mark with 1 
-    differenceOfExponentialEdgeImage(srcImageRange(src), destImage(edges), 
+    vigra::differenceOfExponentialEdgeImage(srcImageRange(src), destImage(edges), 
                                      0.8, 4.0, 1);
     \end{verbatim}
 
@@ -348,45 +355,50 @@ sign of difference image     insert zero- and one-cells     resulting edge point
     
     pass arguments explicitly:
     \begin{verbatim}
-    template <class SrcIterator, class SrcAccessor,
-          class DestIterator, class DestAccessor,
-          class GradValue,
-          class DestValue = DestAccessor::value_type>
-    void differenceOfExponentialCellGridImage(
-           SrcIterator sul, SrcIterator slr, SrcAccessor sa,
-           DestIterator dul, DestAccessor da,
-           double scale, GradValue gradient_threshold, 
-           DestValue edge_marker = NumericTraits<DestValue>::one())
+    namespace vigra {
+        template <class SrcIterator, class SrcAccessor,
+              class DestIterator, class DestAccessor,
+              class GradValue,
+              class DestValue = DestAccessor::value_type>
+        void differenceOfExponentialCellGridImage(
+               SrcIterator sul, SrcIterator slr, SrcAccessor sa,
+               DestIterator dul, DestAccessor da,
+               double scale, GradValue gradient_threshold, 
+               DestValue edge_marker = NumericTraits<DestValue>::one())
+    }
     \end{verbatim}
     
     use argument objects in conjuction with \Ref{Argument Object Factories}:
     \begin{verbatim}
-    template <class SrcIterator, class SrcAccessor,
-          class DestIterator, class DestAccessor, 
-          class GradValue,
-          class DestValue = DestAccessor::value_type>
-    inline 
-    void differenceOfExponentialCellGridImage(
-           triple<SrcIterator, SrcIterator, SrcAccessor> src,
-           pair<DestIterator, DestAccessor> dest,
-           double scale, GradValue gradient_threshold,
-           DestValue edge_marker = NumericTraits<DestValue>::one())
+    namespace vigra {
+        template <class SrcIterator, class SrcAccessor,
+              class DestIterator, class DestAccessor, 
+              class GradValue,
+              class DestValue = DestAccessor::value_type>
+        inline 
+        void differenceOfExponentialCellGridImage(
+               triple<SrcIterator, SrcIterator, SrcAccessor> src,
+               pair<DestIterator, DestAccessor> dest,
+               double scale, GradValue gradient_threshold,
+               DestValue edge_marker = NumericTraits<DestValue>::one())
+    }
     \end{verbatim}
     
     {\bf Usage:}
     
         Include-File:
-        \URL[vigra/edgedetection.hxx]{../include/vigra/edgedetection.hxx}
+        \URL[vigra/edgedetection.hxx]{../include/vigra/edgedetection.hxx}\\
+    Namespace: vigra
     
     \begin{verbatim}
-    BImage src(w,h), edges(2*w-1,2*h-1);
+    vigra::BImage src(w,h), edges(2*w-1,2*h-1);
     
     // empty edge image
     edges = 0;
     ...
     
     // find edges at scale 0.8 with gradient larger than 4.0, mark with 1 
-    differenceOfExponentialCellGridImage(srcImageRange(src), destImage(edges), 
+    vigra::differenceOfExponentialCellGridImage(srcImageRange(src), destImage(edges), 
                                      0.8, 4.0, 1);
     \end{verbatim}
 
@@ -650,39 +662,44 @@ void differenceOfExponentialCellGridImage(
     
     pass arguments explicitly:
     \begin{verbatim}
-    template <class Iterator, class Accessor, class SrcValue>
-    void removeShortEdges(
-           Iterator sul, Iterator slr, Accessor sa,
-           int min_edge_length, SrcValue non_edge_marker)
+    namespace vigra {
+        template <class Iterator, class Accessor, class SrcValue>
+        void removeShortEdges(
+               Iterator sul, Iterator slr, Accessor sa,
+               int min_edge_length, SrcValue non_edge_marker)
+    }
     \end{verbatim}
     
     use argument objects in conjuction with \Ref{Argument Object Factories}:
     \begin{verbatim}
-    template <class Iterator, class Accessor, class SrcValue>
-    inline 
-    void removeShortEdges(
-           triple<Iterator, Iterator, Accessor> src,
-           int min_edge_length, SrcValue non_edge_marker)
+    namespace vigra {
+        template <class Iterator, class Accessor, class SrcValue>
+        inline 
+        void removeShortEdges(
+               triple<Iterator, Iterator, Accessor> src,
+               int min_edge_length, SrcValue non_edge_marker)
+    }
     \end{verbatim}
     
     {\bf Usage:}
     
         Include-File:
-        \URL[vigra/edgedetection.hxx]{../include/vigra/edgedetection.hxx}
+        \URL[vigra/edgedetection.hxx]{../include/vigra/edgedetection.hxx}\\
+    Namespace: vigra
     
     \begin{verbatim}
-    BImage src(w,h), edges(w,h);
+    vigra::BImage src(w,h), edges(w,h);
     
     // empty edge image
     edges = 0;
     ...
     
     // find edges at scale 0.8 with gradient larger than 4.0, mark with 1 
-    differenceOfExponentialEdgeImage(srcImageRange(src), destImage(edges), 
+    vigra::differenceOfExponentialEdgeImage(srcImageRange(src), destImage(edges), 
                                      0.8, 4.0, 1);
                     
     // zero edges shorter than 10 pixels
-    removeShortEdges(srcImageRange(edges), 10, 0);
+    vigra::removeShortEdges(srcImageRange(edges), 10, 0);
     \end{verbatim}
 
     {\bf Required Interface:}
@@ -777,42 +794,47 @@ void removeShortEdges(
     
     pass arguments explicitly:
     \begin{verbatim}
-    template <class SrcIterator, class SrcAccessor, class SrcValue>
-    void closeGapsInCellGridImage(
-           SrcIterator sul, SrcIterator slr, SrcAccessor sa, 
-           SrcValue edge_marker)
+    namespace vigra {
+        template <class SrcIterator, class SrcAccessor, class SrcValue>
+        void closeGapsInCellGridImage(
+               SrcIterator sul, SrcIterator slr, SrcAccessor sa, 
+               SrcValue edge_marker)
+    }
     \end{verbatim}
     
     use argument objects in conjuction with \Ref{Argument Object Factories}:
     \begin{verbatim}
-    template <class SrcIterator, class SrcAccessor, class SrcValue>
-    inline
-    void closeGapsInCellGridImage(
-           triple<SrcIterator, SrcIterator, SrcAccessor> src,
-           SrcValue edge_marker)
+    namespace vigra {
+        template <class SrcIterator, class SrcAccessor, class SrcValue>
+        inline
+        void closeGapsInCellGridImage(
+               triple<SrcIterator, SrcIterator, SrcAccessor> src,
+               SrcValue edge_marker)
+    }
     \end{verbatim}
     
     {\bf Usage:}
     
         Include-File:
-        \URL[vigra/edgedetection.hxx]{../include/vigra/edgedetection.hxx}
+        \URL[vigra/edgedetection.hxx]{../include/vigra/edgedetection.hxx}\\
+    Namespace: vigra
     
     \begin{verbatim}
-    BImage src(w,h), edges(2*w-1, 2*h-1);
+    vigra::BImage src(w,h), edges(2*w-1, 2*h-1);
     
     // empty edge image
     edges = 0;
     ...
     
     // find edges at scale 0.8 with gradient larger than 4.0, mark with 1 
-    differenceOfExponentialCellGridImage(srcImageRange(src), destImage(edges), 
+    vigra::differenceOfExponentialCellGridImage(srcImageRange(src), destImage(edges), 
                                          0.8, 4.0, 1);
                     
     // close gaps, mark with 1
-    closeGapsInCellGridImage(srcImageRange(edges), 1);
+    vigra::closeGapsInCellGridImage(srcImageRange(edges), 1);
                     
     // zero edges shorter than 20 pixels
-    removeShortEdges(srcImageRange(edges), 10, 0);
+    vigra::removeShortEdges(srcImageRange(edges), 10, 0);
     \end{verbatim}
 
     {\bf Required Interface:}
@@ -984,39 +1006,44 @@ void closeGapsInCellGridImage(
     
     pass arguments explicitly:
     \begin{verbatim}
-    template <class SrcIterator, class SrcAccessor, class SrcValue>
-    void beautifyCellGridImage(
-           SrcIterator sul, SrcIterator slr, SrcAccessor sa, 
-           SrcValue edge_marker, SrcValue background_marker)
+    namespace vigra {
+        template <class SrcIterator, class SrcAccessor, class SrcValue>
+        void beautifyCellGridImage(
+               SrcIterator sul, SrcIterator slr, SrcAccessor sa, 
+               SrcValue edge_marker, SrcValue background_marker)
+    }
     \end{verbatim}
     
     use argument objects in conjuction with \Ref{Argument Object Factories}:
     \begin{verbatim}
-    template <class SrcIterator, class SrcAccessor, class SrcValue>
-    inline
-    void beautifyCellGridImage(
-               triple<SrcIterator, SrcIterator, SrcAccessor> src,
-           SrcValue edge_marker, SrcValue background_marker)
+    namespace vigra {
+        template <class SrcIterator, class SrcAccessor, class SrcValue>
+        inline
+        void beautifyCellGridImage(
+                   triple<SrcIterator, SrcIterator, SrcAccessor> src,
+               SrcValue edge_marker, SrcValue background_marker)
+    }
     \end{verbatim}
     
     {\bf Usage:}
     
         Include-File:
-        \URL[vigra/edgedetection.hxx]{../include/vigra/edgedetection.hxx}
+        \URL[vigra/edgedetection.hxx]{../include/vigra/edgedetection.hxx}\\
+    Namespace: vigra
     
     \begin{verbatim}
-    BImage src(w,h), edges(2*w-1, 2*h-1);
+    vigra::BImage src(w,h), edges(2*w-1, 2*h-1);
     
     // empty edge image
     edges = 0;
     ...
     
     // find edges at scale 0.8 with gradient larger than 4.0, mark with 1 
-    differenceOfExponentialCellGridImage(srcImageRange(src), destImage(edges), 
+    vigra::differenceOfExponentialCellGridImage(srcImageRange(src), destImage(edges), 
                                          0.8, 4.0, 1);
                     
     // beautify edge image for visualization
-    beautifyCellGridImage(srcImageRange(edges), 1, 0);
+    vigra::beautifyCellGridImage(srcImageRange(edges), 1, 0);
     
     // show to the user
     window.open(edges);
@@ -1084,5 +1111,7 @@ void beautifyCellGridImage(
 }
 
 //@}
+
+} // namespace vigra
 
 #endif // VIGRA_EDGEDETECTION_HXX

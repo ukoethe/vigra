@@ -29,6 +29,8 @@
 #include <vigra/stdimagefunctions.hxx>
 #include <vigra/convolution.hxx>
 
+namespace vigra {
+
 template <class SrcType, class DestType>
 struct InternalCornerResponseFunctor
 {
@@ -109,52 +111,58 @@ struct InternalCornerResponseFunctor
     
     pass arguments explicitly:
     \begin{verbatim}
-    template <class SrcIterator, class SrcAccessor,
-	      class DestIterator, class DestAccessor>
-    void
-    cornerResponseFunction(SrcIterator sul, SrcIterator slr, SrcAccessor as,
-			   DestIterator dul, DestAccessor ad,
-			   double scale)
+    namespace vigra {
+        template <class SrcIterator, class SrcAccessor,
+	          class DestIterator, class DestAccessor>
+        void
+        cornerResponseFunction(SrcIterator sul, SrcIterator slr, SrcAccessor as,
+			       DestIterator dul, DestAccessor ad,
+			       double scale)
+    }
     \end{verbatim}
     
     use argument objects in conjuction with \Ref{Argument Object Factories}:
     \begin{verbatim}
-    template <class SrcIterator, class SrcAccessor,
-	      class DestIterator, class DestAccessor>
-    inline 
-    void cornerResponseFunction(
-	       triple<SrcIterator, SrcIterator, SrcAccessor> src,
-	       pair<DestIterator, DestAccessor> dest,
-	       double scale)
+    namespace vigra {
+        template <class SrcIterator, class SrcAccessor,
+	          class DestIterator, class DestAccessor>
+        inline 
+        void cornerResponseFunction(
+	           triple<SrcIterator, SrcIterator, SrcAccessor> src,
+	           pair<DestIterator, DestAccessor> dest,
+	           double scale)
+    }
     \end{verbatim}
     
     {\bf Usage:}
     
         Include-File:
-        \URL[vigra/cornerdetection.hxx]{../include/vigra/cornerdetection.hxx}
+        \URL[vigra/cornerdetection.hxx]{../include/vigra/cornerdetection.hxx}\\
+    Namespace: vigra
     
     \begin{verbatim}
-    BImage src(w,h), corners(w,h);
-    FImage corner_response(w,h);
+    vigra::BImage src(w,h), corners(w,h);
+    vigra::FImage corner_response(w,h);
     
     // empty corner image
     corners = 0;
     ...
     
     // find corner response at scale 1.0
-    cornerResponseFunction(srcImageRange(src), destImage(corner_response), 
+    vigra::cornerResponseFunction(srcImageRange(src), destImage(corner_response), 
                            1.0);
     
     // find local maxima of corner response, mark with 1
-    localMaxima(srcImageRange(corner_response), destImage(corners));
+    vigra::localMaxima(srcImageRange(corner_response), destImage(corners));
     
     // threshold corner response to keep only strong corners (above 400.0)
     transformImage(srcImageRange(corner_response), destImage(corner_response),
-                   Threshold<double, double>(400.0, MAX_DOUBLE, 0.0, 1.0)); 
+          vigra::Threshold<double, double>(
+               400.0, std::numeric_limits<double>::max(), 0.0, 1.0)); 
 
     // combine thresholding and local maxima
-    combineTwoImages(srcImageRange(corners), srcImage(corner_response),
-                     destImage(corners), multiplies<float>());
+    vigra::combineTwoImages(srcImageRange(corners), srcImage(corner_response),
+                     destImage(corners), std::multiplies<float>());
     \end{verbatim}
 
     {\bf Required Interface:}
@@ -247,5 +255,7 @@ void cornerResponseFunction(
 }
 
 //@}
+
+} // namespace vigra
 
 #endif // VIGRA_CORNERDETECTION_HXX

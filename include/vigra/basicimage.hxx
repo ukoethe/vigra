@@ -28,6 +28,7 @@
 #include <memory>
 #include "vigra/utilities.hxx"
 
+namespace vigra {
 
 /********************************************************/
 /*                                                      */
@@ -371,6 +372,8 @@ template <class T> struct IteratorTraits;
 /** Basic building block for images.
 
     Include-File: \URL[vigra/basicimage.hxx]{../include/vigra/basicimage.hxx}
+    
+    Namespace: vigra
 */    
 template <class PIXELTYPE>
 class BasicImage
@@ -825,5 +828,6 @@ class BasicImage
     int width_, height_;
 };
 
+} // namespace vigra
 
 #endif // VIGRA_BASICIMAGE_HXX

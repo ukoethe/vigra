@@ -30,7 +30,7 @@ int main(int argc, char ** argv)
     if(argc != 3)
     {
         std::cout << "Usage: " << argv[0] << " infile outfile" << std::endl;
-        std::cout << "(supported fomats: " << vigraImpexListFormats() << ")" << std::endl;
+        std::cout << "(supported formats: " << vigra::impexListFormats() << ")" << std::endl;
         
         return 1;
     }
@@ -39,34 +39,34 @@ int main(int argc, char ** argv)
     {
         // read image given as first argument
         // file type is determined automatically
-        ImageImportInfo info(argv[1]);
+        vigra::ImageImportInfo info(argv[1]);
         
         if(info.isGrayscale())
         {
             // create a gray scale image of appropriate size
-            BImage in(info.width(), info.height());
+            vigra::BImage in(info.width(), info.height());
             
             // import the image just read
             importImage(info, destImage(in));
             
             // write the image to the file given as second argument
             // the file type will be determined from the file name's extension
-            exportImage(srcImageRange(in), ImageExportInfo(argv[2]));
+            exportImage(srcImageRange(in), vigra::ImageExportInfo(argv[2]));
         }
         else
         {
             // create a RGB image of appropriate size
-            BRGBImage in(info.width(), info.height());
+            vigra::BRGBImage in(info.width(), info.height());
             
             // import the image just read
             importImage(info, destImage(in));
             
             // write the image to the file given as second argument
             // the file type will be determined from the file name's extension
-            exportImage(srcImageRange(in), ImageExportInfo(argv[2]));
+            exportImage(srcImageRange(in), vigra::ImageExportInfo(argv[2]));
         }
     }
-    catch (VigraStdException & e)
+    catch (vigra::StdException & e)
     {
         // catch any errors that might have occured and pront their reason
         std::cout << e.what() << std::endl;

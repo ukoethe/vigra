@@ -30,6 +30,8 @@
 #include "vigra/imageiteratoradapter.hxx"
 #include "vigra/recursiveconvolution.hxx"
 
+namespace vigra {
+
 /** @name Functions to Resize Images
     @memo zoom up and down by repeating pixels, or using linear or spline interpolation
 */
@@ -415,32 +417,37 @@ resizeImageInternalSplineInterpolation(SRCITERATOR is, SRCITERATOR iend, SRCACCE
     
     pass arguments explicitly:
     \begin{verbatim}
-    template <class SrcImageIterator, class SrcAccessor,
-          class DestImageIterator, class DestAccessor>
-    void 
-    resizeImageSplineInterpolation(
-          SrcImageIterator is, SrcImageIterator iend, SrcAccessor sa,
-      DestImageIterator id, DestImageIterator idend, DestAccessor da)
+    namespace vigra {
+        template <class SrcImageIterator, class SrcAccessor,
+              class DestImageIterator, class DestAccessor>
+        void 
+        resizeImageSplineInterpolation(
+              SrcImageIterator is, SrcImageIterator iend, SrcAccessor sa,
+          DestImageIterator id, DestImageIterator idend, DestAccessor da)
+    }
     \end{verbatim}
     
     
     use argument objects in conjuction with \Ref{Argument Object Factories}:
     \begin{verbatim}
-    template <class SrcImageIterator, class SrcAccessor,
-          class DestImageIterator, class DestAccessor>
-    void 
-    resizeImageSplineInterpolation(
-          triple<SrcImageIterator, SrcImageIterator, SrcAccessor> src,
-      triple<DestImageIterator, DestImageIterator, DestAccessor> dest)
+    namespace vigra {
+        template <class SrcImageIterator, class SrcAccessor,
+              class DestImageIterator, class DestAccessor>
+        void 
+        resizeImageSplineInterpolation(
+              triple<SrcImageIterator, SrcImageIterator, SrcAccessor> src,
+          triple<DestImageIterator, DestImageIterator, DestAccessor> dest)
+    }
     \end{verbatim}
     
     {\bf Usage:}
     
         Include-File:
-        \URL[vigra/resizeimage.hxx]{../include/vigra/resizeimage.hxx}
+        \URL[vigra/resizeimage.hxx]{../include/vigra/resizeimage.hxx}\\
+        Namespace: vigra
     
     \begin{verbatim}
-    resizeImageSplineInterpolation(
+    vigra::resizeImageSplineInterpolation(
                src.upperLeft(), src.lowerRight(), src.accessor(), 
                dest.upperLeft(), dest.lowerRight(), dest.accessor());
     
@@ -619,32 +626,37 @@ resizeLineLinearInterpolation(SRCITERATOR i1, SRCITERATOR iend, SRCACCESSOR as,
     
     pass arguments explicitly:
     \begin{verbatim}
-    template <class SrcImageIterator, class SrcAccessor,
-          class DestImageIterator, class DestAccessor>
-    void 
-    resizeImageLinearInterpolation(
-          SrcImageIterator is, SrcImageIterator iend, SrcAccessor sa,
-      DestImageIterator id, DestImageIterator idend, DestAccessor da)
+    namespace vigra {
+        template <class SrcImageIterator, class SrcAccessor,
+              class DestImageIterator, class DestAccessor>
+        void 
+        resizeImageLinearInterpolation(
+              SrcImageIterator is, SrcImageIterator iend, SrcAccessor sa,
+          DestImageIterator id, DestImageIterator idend, DestAccessor da)
+    }
     \end{verbatim}
     
     
     use argument objects in conjuction with \Ref{Argument Object Factories}:
     \begin{verbatim}
-    template <class SrcImageIterator, class SrcAccessor,
-          class DestImageIterator, class DestAccessor>
-    void 
-    resizeImageLinearInterpolation(
-          triple<SrcImageIterator, SrcImageIterator, SrcAccessor> src,
-      triple<DestImageIterator, DestImageIterator, DestAccessor> dest)
+    namespace vigra {
+        template <class SrcImageIterator, class SrcAccessor,
+              class DestImageIterator, class DestAccessor>
+        void 
+        resizeImageLinearInterpolation(
+              triple<SrcImageIterator, SrcImageIterator, SrcAccessor> src,
+          triple<DestImageIterator, DestImageIterator, DestAccessor> dest)
+    }
     \end{verbatim}
     
     {\bf Usage:}
     
         Include-File:
-        \URL[vigra/resizeimage.hxx]{../include/vigra/resizeimage.hxx}
+        \URL[vigra/resizeimage.hxx]{../include/vigra/resizeimage.hxx}\\
+        Namespace: vigra
     
     \begin{verbatim}
-    resizeImageLinearInterpolation(
+    vigra::resizeImageLinearInterpolation(
                src.upperLeft(), src.lowerRight(), src.accessor(), 
                dest.upperLeft(), dest.lowerRight(), dest.accessor());
     
@@ -831,32 +843,37 @@ resizeLineNoInterpolation(SRCITERATOR i1, SRCITERATOR iend, SRCACCESSOR as,
     
     pass arguments explicitly:
     \begin{verbatim}
-    template <class SrcImageIterator, class SrcAccessor,
-          class DestImageIterator, class DestAccessor>
-    void 
-    resizeImageNoInterpolation(
-          SrcImageIterator is, SrcImageIterator iend, SrcAccessor sa,
-      DestImageIterator id, DestImageIterator idend, DestAccessor da)
+    namespace vigra {
+        template <class SrcImageIterator, class SrcAccessor,
+              class DestImageIterator, class DestAccessor>
+        void 
+        resizeImageNoInterpolation(
+              SrcImageIterator is, SrcImageIterator iend, SrcAccessor sa,
+          DestImageIterator id, DestImageIterator idend, DestAccessor da)
+    }
     \end{verbatim}
     
     
     use argument objects in conjuction with \Ref{Argument Object Factories}:
     \begin{verbatim}
-    template <class SrcImageIterator, class SrcAccessor,
-          class DestImageIterator, class DestAccessor>
-    void 
-    resizeImageNoInterpolation(
-          triple<SrcImageIterator, SrcImageIterator, SrcAccessor> src,
-      triple<DestImageIterator, DestImageIterator, DestAccessor> dest)
+    namespace vigra {
+        template <class SrcImageIterator, class SrcAccessor,
+              class DestImageIterator, class DestAccessor>
+        void 
+        resizeImageNoInterpolation(
+              triple<SrcImageIterator, SrcImageIterator, SrcAccessor> src,
+          triple<DestImageIterator, DestImageIterator, DestAccessor> dest)
+    }
     \end{verbatim}
     
     {\bf Usage:}
     
         Include-File:
-        \URL[vigra/resizeimage.hxx]{../include/vigra/resizeimage.hxx}
+        \URL[vigra/resizeimage.hxx]{../include/vigra/resizeimage.hxx}\\
+        Namespace: vigra
     
     \begin{verbatim}
-    resizeImageNoInterpolation(
+    vigra::resizeImageNoInterpolation(
                src.upperLeft(), src.lowerRight(), src.accessor(), 
                dest.upperLeft(), dest.lowerRight(), dest.accessor());
     
@@ -946,5 +963,7 @@ resizeImageNoInterpolation(triple<SRCITERATOR, SRCITERATOR, SRCACCESSOR> src,
 }
 
 //@}
+
+} // namespace vigra
 
 #endif // VIGRA_RESIZEIMAGE_HXX

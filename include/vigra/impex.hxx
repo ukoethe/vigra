@@ -29,6 +29,8 @@
 #include "vigra/viff.hxx"
 #include "vigra/tiff.hxx"
 
+namespace vigra {
+
 typedef unsigned int 
    (*ImageExportFunctionPointer)(VigraImpexImageInfo *image_info,VigraImpexImage *image);
 
@@ -45,7 +47,7 @@ struct ImageFileTypeInfo
     
 };
 
-std::string vigraImpexListFormats();
+std::string impexListFormats();
 
 /** @name VIGRA's Image Import/Export Facilities
     @memo supports GIF, TIFF, JPEG, BMP, PBM, PGM, PNM, PPM, SunRaster, KHOROS-VIFF formats
@@ -57,6 +59,23 @@ std::string vigraImpexListFormats();
 /*                   ImageExportInfo                    */
 /*                                                      */
 /********************************************************/
+
+/** List the image formats VIGRA can read and write.
+    This is useful for creating error messages if VIGRA encounters an 
+    image format it doesn't recognize.
+    
+    {\bf Usage:}
+    
+    Include-File:
+    \URL[vigra/impex.hxx]{../include/vigra/impex.hxx}\\
+    Namespace: vigra
+    
+    \begin{verbatim}
+    std::cout << "supported formats: " << vigra::impexListFormats() << std::endl;
+    \end{verbatim}
+   
+**/
+std::string impexListFormats();
 
 /** Argument object for the function \Ref{exportImage} (see there for usage
     example). This object must
@@ -472,42 +491,46 @@ void internalImportScalarImage(VigraImpexImage const * image,
     
     pass arguments explicitly:
     \begin{verbatim}
-    template <class ImageIterator, class Accessor>
-    void
-    importImage(ImageImportInfo const & image, ImageIterator iter, Accessor a)
+    namespace vigra {
+        template <class ImageIterator, class Accessor>
+        void
+        importImage(ImageImportInfo const & image, ImageIterator iter, Accessor a)
+    }
     \end{verbatim}
-    
-    
+        
     use argument objects in conjuction with \Ref{Argument Object Factories}:
     \begin{verbatim}
-    template <class ImageIterator, class Accessor>
-    inline void
-    importImage(ImageImportInfo const & image, pair<ImageIterator, Accessor> dest)
+    namespace vigra {
+        template <class ImageIterator, class Accessor>
+        inline void
+        importImage(ImageImportInfo const & image, pair<ImageIterator, Accessor> dest)
+    }
     \end{verbatim}
     
     {\bf Usage:}
     
-        Include-File:
-        \URL[vigra/impex.hxx]{../include/vigra/impex.hxx}
+    Include-File:
+    \URL[vigra/impex.hxx]{../include/vigra/impex.hxx}\\
+    Namespace: vigra
     
     \begin{verbatim}
     
-    ImageImportInfo info("myimage.gif");
+    vigra::ImageImportInfo info("myimage.gif");
     
     if(info.isGrayscale())
     {
         // create byte image of appropriate size
-        BImage in(info.width(), info.height()); 
+        vigra::BImage in(info.width(), info.height()); 
         
-        importImage(info, destImage(in)); // read the image
+        vigra::importImage(info, destImage(in)); // read the image
         ...
     }
     else
     {
         // create byte RGB image of appropriate size
-        BRGBImage in(info.width(), info.height()); 
+        vigra::BRGBImage in(info.width(), info.height()); 
         
-        importImage(info, destImage(in)); // read the image
+        vigra::importImage(info, destImage(in)); // read the image
         ...
     }
     
@@ -860,33 +883,38 @@ void internalExportImage(SrcIterator sul, SrcIterator slr, SrcAccessor sget,
     
     pass arguments explicitly:
     \begin{verbatim}
-    template <class SrcIterator, class SrcAccessor>
-    void exportImage(SrcIterator sul, SrcIterator slr, SrcAccessor sget,
-                     ImageExportInfo const & info)
+    namespace vigra {
+        template <class SrcIterator, class SrcAccessor>
+        void exportImage(SrcIterator sul, SrcIterator slr, SrcAccessor sget,
+                         ImageExportInfo const & info)
+    }
     \end{verbatim}
     
     
     use argument objects in conjuction with \Ref{Argument Object Factories}:
     \begin{verbatim}
-    template <class SrcIterator, class SrcAccessor>
-    void exportImage(SrcIterator sul, SrcIterator slr, SrcAccessor sget,
-                     ImageExportInfo const & info)
+    namespace vigra {
+        template <class SrcIterator, class SrcAccessor>
+        void exportImage(SrcIterator sul, SrcIterator slr, SrcAccessor sget,
+                         ImageExportInfo const & info)
+    }
     \end{verbatim}
     
     {\bf Usage:}
     
         Include-File:
-        \URL[vigra/impex.hxx]{../include/vigra/impex.hxx}
+        \URL[vigra/impex.hxx]{../include/vigra/impex.hxx}\\
+    Namespace: vigra
     
     \begin{verbatim}
     
     
-    BRGBImage out(w, h); 
+    vigra::BRGBImage out(w, h); 
     ...
         
     // write as JPEG image, using compression quality 80
-    exportImage(srcImageRange(out), 
-                ImageExportInfo("myimage.jpg").setCompression("80")); 
+    vigra::exportImage(srcImageRange(out), 
+                      vigra::ImageExportInfo("myimage.jpg").setCompression("80")); 
     
     \end{verbatim}
 
@@ -968,5 +996,6 @@ void exportImage(triple<SrcIterator, SrcIterator, SrcAccessor> src,
 
 //@}
 
+} // namespace vigra
 
 #endif /* VIGRA_IMPEX_HXX */

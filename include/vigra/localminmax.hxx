@@ -28,6 +28,8 @@
 #include "vigra/stdimage.hxx"
 #include "vigra/labelimage.hxx"
 
+namespace vigra {
+
 /** @name Local Minima and Maxima
 
     @memo Including extremal plateaus larger than 1 pixel
@@ -53,38 +55,43 @@
     
     pass arguments explicitly:
     \begin{verbatim}
-    template <class SrcIterator, class SrcAccessor, 
-	      class DestIterator, class DestAccessor, 
-	      class DestValue = DestAccessor::value_type>
-    void 
-    localMinima(SrcIterator sul, SrcIterator slr, SrcAccessor sa,
-		DestIterator dul, DestAccessor da, 
-		DestValue marker = NumericTraits<DestValue>::one())
+    namespace vigra {
+        template <class SrcIterator, class SrcAccessor, 
+	          class DestIterator, class DestAccessor, 
+	          class DestValue = DestAccessor::value_type>
+        void 
+        localMinima(SrcIterator sul, SrcIterator slr, SrcAccessor sa,
+		    DestIterator dul, DestAccessor da, 
+		    DestValue marker = NumericTraits<DestValue>::one())
+    }
     \end{verbatim}
     
     use argument objects in conjuction with \Ref{Argument Object Factories}:
     \begin{verbatim}
-    template <class SrcIterator, class SrcAccessor, 
-	      class DestIterator, class DestAccessor, 
-	      class DestValue = DestAccessor::value_type>
-    void 
-    localMinima(triple<SrcIterator, SrcIterator, SrcAccessor> src,
-		pair<DestIterator, DestAccessor> dest,
-		DestValue marker = NumericTraits<DestValue>::one())
+    namespace vigra {
+        template <class SrcIterator, class SrcAccessor, 
+	          class DestIterator, class DestAccessor, 
+	          class DestValue = DestAccessor::value_type>
+        void 
+        localMinima(triple<SrcIterator, SrcIterator, SrcAccessor> src,
+		    pair<DestIterator, DestAccessor> dest,
+		    DestValue marker = NumericTraits<DestValue>::one())
+    }
     \end{verbatim}
     
     {\bf Usage:}
     
         Include-File:
-        \URL[vigra/localminmax.hxx]{../include/vigra/localminmax.hxx}
+        \URL[vigra/localminmax.hxx]{../include/vigra/localminmax.hxx}\\
+    Namespace: vigra
     
     \begin{verbatim}
-    BImage src(w,h), minima(w,h);
+    vigra::BImage src(w,h), minima(w,h);
     
     // init destiniation image
     minima = 0;
     
-    localMinima(srcImageRange(src), destImage(minima));
+    vigra::localMinima(srcImageRange(src), destImage(minima));
     \end{verbatim}
 
     {\bf Required Interface:}
@@ -192,38 +199,43 @@ localMinima(triple<SrcIterator, SrcIterator, SrcAccessor> src,
     
     pass arguments explicitly:
     \begin{verbatim}
-    template <class SrcIterator, class SrcAccessor, 
-	      class DestIterator, class DestAccessor, 
-	      class DestValue = DestAccessor::value_type>
-    void 
-    localMaxima(SrcIterator sul, SrcIterator slr, SrcAccessor sa,
-		DestIterator dul, DestAccessor da, 
-		DestValue marker = NumericTraits<DestValue>::one())
+    namespace vigra {
+        template <class SrcIterator, class SrcAccessor, 
+	          class DestIterator, class DestAccessor, 
+	          class DestValue = DestAccessor::value_type>
+        void 
+        localMaxima(SrcIterator sul, SrcIterator slr, SrcAccessor sa,
+		    DestIterator dul, DestAccessor da, 
+		    DestValue marker = NumericTraits<DestValue>::one())
+    }
     \end{verbatim}
     
     use argument objects in conjuction with \Ref{Argument Object Factories}:
     \begin{verbatim}
-    template <class SrcIterator, class SrcAccessor, 
-	      class DestIterator, class DestAccessor, 
-	      class DestValue = DestAccessor::value_type>
-    void 
-    localMaxima(triple<SrcIterator, SrcIterator, SrcAccessor> src,
-		pair<DestIterator, DestAccessor> dest,
-		DestValue marker = NumericTraits<DestValue>::one())
+    namespace vigra {
+        template <class SrcIterator, class SrcAccessor, 
+	          class DestIterator, class DestAccessor, 
+	          class DestValue = DestAccessor::value_type>
+        void 
+        localMaxima(triple<SrcIterator, SrcIterator, SrcAccessor> src,
+		    pair<DestIterator, DestAccessor> dest,
+		    DestValue marker = NumericTraits<DestValue>::one())
+    }
     \end{verbatim}
     
     {\bf Usage:}
     
         Include-File:
-        \URL[vigra/localminmax.hxx]{../include/vigra/localminmax.hxx}
+        \URL[vigra/localminmax.hxx]{../include/vigra/localminmax.hxx}\\
+    Namespace: vigra
     
     \begin{verbatim}
-    BImage src(w,h), maxima(w,h);
+    vigra::BImage src(w,h), maxima(w,h);
     
     // init destiniation image
     maxima = 0;
     
-    localMaxima(srcImageRange(src), destImage(maxima));
+    vigra::localMaxima(srcImageRange(src), destImage(maxima));
     \end{verbatim}
 
     {\bf Required Interface:}
@@ -334,38 +346,43 @@ localMaxima(triple<SrcIterator, SrcIterator, SrcAccessor> src,
     
     pass arguments explicitly:
     \begin{verbatim}
-    template <class SrcIterator, class SrcAccessor, 
-	      class DestIterator, class DestAccessor, 
-	      class DestValue = DestAccessor::value_type>
-    void 
-    extendedLocalMinima(SrcIterator sul, SrcIterator slr, SrcAccessor sa,
-		        DestIterator dul, DestAccessor da, 
-		        DestValue marker = NumericTraits<DestValue>::one())
+    namespace vigra {
+        template <class SrcIterator, class SrcAccessor, 
+	          class DestIterator, class DestAccessor, 
+	          class DestValue = DestAccessor::value_type>
+        void 
+        extendedLocalMinima(SrcIterator sul, SrcIterator slr, SrcAccessor sa,
+		            DestIterator dul, DestAccessor da, 
+		            DestValue marker = NumericTraits<DestValue>::one())
+    }
     \end{verbatim}
     
     use argument objects in conjuction with \Ref{Argument Object Factories}:
     \begin{verbatim}
-    template <class SrcIterator, class SrcAccessor, 
-	      class DestIterator, class DestAccessor, 
-	      class DestValue = DestAccessor::value_type>
-    void 
-    extendedLocalMinima(triple<SrcIterator, SrcIterator, SrcAccessor> src,
-		        pair<DestIterator, DestAccessor> dest,
-		        DestValue marker = NumericTraits<DestValue>::one())
+    namespace vigra {
+        template <class SrcIterator, class SrcAccessor, 
+	          class DestIterator, class DestAccessor, 
+	          class DestValue = DestAccessor::value_type>
+        void 
+        extendedLocalMinima(triple<SrcIterator, SrcIterator, SrcAccessor> src,
+		            pair<DestIterator, DestAccessor> dest,
+		            DestValue marker = NumericTraits<DestValue>::one())
+    }
     \end{verbatim}
     
     {\bf Usage:}
     
         Include-File:
-        \URL[vigra/localminmax.hxx]{../include/vigra/localminmax.hxx}
+        \URL[vigra/localminmax.hxx]{../include/vigra/localminmax.hxx}\\
+    Namespace: vigra
     
     \begin{verbatim}
-    BImage src(w,h), minima(w,h);
+    vigra::BImage src(w,h), minima(w,h);
     
     // init destiniation image
     minima = 0;
     
-    extendedLocalMinima(srcImageRange(src), destImage(minima));
+    vigra::extendedLocalMinima(srcImageRange(src), destImage(minima));
     \end{verbatim}
 
     {\bf Required Interface:}
@@ -567,38 +584,43 @@ extendedLocalMinima(triple<SrcIterator, SrcIterator, SrcAccessor> src,
     
     pass arguments explicitly:
     \begin{verbatim}
-    template <class SrcIterator, class SrcAccessor, 
-	      class DestIterator, class DestAccessor, 
-	      class DestValue = DestAccessor::value_type>
-    void 
-    extendedLocalMaxima(SrcIterator sul, SrcIterator slr, SrcAccessor sa,
-		        DestIterator dul, DestAccessor da, 
-		        DestValue marker = NumericTraits<DestValue>::one())
+    namespace vigra {
+        template <class SrcIterator, class SrcAccessor, 
+	          class DestIterator, class DestAccessor, 
+	          class DestValue = DestAccessor::value_type>
+        void 
+        extendedLocalMaxima(SrcIterator sul, SrcIterator slr, SrcAccessor sa,
+		            DestIterator dul, DestAccessor da, 
+		            DestValue marker = NumericTraits<DestValue>::one())
+    }
     \end{verbatim}
     
     use argument objects in conjuction with \Ref{Argument Object Factories}:
     \begin{verbatim}
-    template <class SrcIterator, class SrcAccessor, 
-	      class DestIterator, class DestAccessor, 
-	      class DestValue = DestAccessor::value_type>
-    void 
-    extendedLocalMaxima(triple<SrcIterator, SrcIterator, SrcAccessor> src,
-		        pair<DestIterator, DestAccessor> dest,
-		        DestValue marker = NumericTraits<DestValue>::one())
+    namespace vigra {
+        template <class SrcIterator, class SrcAccessor, 
+	          class DestIterator, class DestAccessor, 
+	          class DestValue = DestAccessor::value_type>
+        void 
+        extendedLocalMaxima(triple<SrcIterator, SrcIterator, SrcAccessor> src,
+		            pair<DestIterator, DestAccessor> dest,
+		            DestValue marker = NumericTraits<DestValue>::one())
+    }
     \end{verbatim}
     
     {\bf Usage:}
     
         Include-File:
-        \URL[vigra/localminmax.hxx]{../include/vigra/localminmax.hxx}
+        \URL[vigra/localminmax.hxx]{../include/vigra/localminmax.hxx}\\
+    Namespace: vigra
     
     \begin{verbatim}
-    BImage src(w,h), maxima(w,h);
+    vigra::BImage src(w,h), maxima(w,h);
     
     // init destiniation image
     maxima = 0;
     
-    extendedLocalMaxima(srcImageRange(src), destImage(maxima));
+    vigra::extendedLocalMaxima(srcImageRange(src), destImage(maxima));
     \end{verbatim}
 
     {\bf Required Interface:}
@@ -777,5 +799,7 @@ extendedLocalMaxima(triple<SrcIterator, SrcIterator, SrcAccessor> src,
 }
 
 //@}
+
+} // namespace vigra
 
 #endif // VIGRA_LOCALMINMAX_HXX

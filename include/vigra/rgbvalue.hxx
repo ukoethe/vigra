@@ -23,10 +23,12 @@
 #ifndef VIGRA_RGBVALUE_HXX
 #define VIGRA_RGBVALUE_HXX
 
-#include <math.h>
+#include <cmath>
 #include "vigra/config.hxx"
 #include "vigra/numerictraits.hxx"
 #include "vigra/accessor.hxx"
+
+namespace vigra {
 
 /** RGBValue and related classes and functions 
     @name RGB Values 
@@ -43,7 +45,7 @@
     This class contains three values (of the specified type) that represent 
     red, green, and blue color channels. There are three possibilities
     to access these values: accessor functions (\Ref{red}(), \Ref{green}(),
-    \Ref{blue}()), index operator (\Ref{operator[]}(dx), where 0 is red,
+    \Ref{blue}()), index operator (operator[](dx), where 0 is red,
     1 is green and 2 is blue) and iterator (STL-compatible random access
     iterator that references the three colors in turn). The latter two
     methods, together with the necessary embedded typedefs, ensure
@@ -61,7 +63,8 @@
     component, or to the luminance value.
     
     Include-File:
-    \URL[vigra/rgbvalue.hxx]{../include/vigra/rgbvalue.hxx}
+    \URL[vigra/rgbvalue.hxx]{../include/vigra/rgbvalue.hxx}\\
+    Namespace: vigra
 */
 template <class VALUETYPE>
 class RGBValue
@@ -211,7 +214,7 @@ class RGBValue
     */
     typename NumericTraits<VALUETYPE>::RealPromote
     magnitude() const { 
-         return sqrt(red()*red() + green()*green() + blue()*blue());
+         return std::sqrt(red()*red() + green()*green() + blue()*blue());
     }
     
         /** Calculate squared magnitude.
@@ -284,7 +287,8 @@ class RGBValue
 /** @name Basic Comparison Functions for RGBValue
 
     Include-File:
-    \URL[vigra/rgbvalue.hxx]{../include/vigra/rgbvalue.hxx}
+    \URL[vigra/rgbvalue.hxx]{../include/vigra/rgbvalue.hxx}\\
+    Namespace: vigra
     
  */
 //@{
@@ -347,7 +351,8 @@ operator!=(RGBValue<V1> const & l, RGBValue<V2> const & r)
     \end{verbatim}
 
     Include-File:
-    \URL[vigra/rgbvalue.hxx]{../include/vigra/rgbvalue.hxx}
+    \URL[vigra/rgbvalue.hxx]{../include/vigra/rgbvalue.hxx}\\
+    Namespace: vigra
     
 */
 //@{
@@ -580,7 +585,8 @@ rgb_promtraits2(float, int);
     @name Basic Arithmetic Functions for RGBValue
 
     Include-File:
-    \URL[vigra/rgbvalue.hxx]{../include/vigra/rgbvalue.hxx}
+    \URL[vigra/rgbvalue.hxx]{../include/vigra/rgbvalue.hxx}\\
+    Namespace: vigra
     
  */
 //@{
@@ -648,7 +654,7 @@ operator/=(RGBValue<V> & l, double r)
 template <class T>
 inline
 RGBValue<T> abs(RGBValue<T> const & v) { 
-    return RGBValue<T>(abs(v.red()), abs(v.green()),  abs(v.blue()));
+    return RGBValue<T>(std::abs(v.red()), std::abs(v.green()),  std::abs(v.blue()));
 }
 
 
@@ -759,9 +765,9 @@ inline
 RGBValue<int>
 rint(RGBValue<V> const & r)
 {
-    return RGBValue<int>(rint(r.red()), 
-                         rint(r.green()),
-                         rint(r.blue()));
+    return RGBValue<int>(std::rint(r.red()), 
+                         std::rint(r.green()),
+                         std::rint(r.blue()));
 };
 
 
@@ -778,7 +784,8 @@ rint(RGBValue<V> const & r)
     /** Encapsulate access to rgb values.
 
     Include-File:
-    \URL[vigra/rgbvalue.hxx]{../include/vigra/rgbvalue.hxx}
+    \URL[vigra/rgbvalue.hxx]{../include/vigra/rgbvalue.hxx}\\
+    Namespace: vigra
     */
 template <class RGBVALUE>
 class RGBAccessor 
@@ -908,7 +915,8 @@ class RGBAccessor
     /** Encapsulate access to red band of an rgb value.
 
     Include-File:
-    \URL[vigra/rgbvalue.hxx]{../include/vigra/rgbvalue.hxx}
+    \URL[vigra/rgbvalue.hxx]{../include/vigra/rgbvalue.hxx}\\
+    Namespace: vigra
     */
 template <class RGBVALUE>
 class RedAccessor
@@ -959,7 +967,8 @@ class RedAccessor
     /** Encapsulate access to green band of an rgb value.
 
     Include-File:
-    \URL[vigra/rgbvalue.hxx]{../include/vigra/rgbvalue.hxx}
+    \URL[vigra/rgbvalue.hxx]{../include/vigra/rgbvalue.hxx}\\
+    Namespace: vigra
     */
 template <class RGBVALUE>
 class GreenAccessor
@@ -1010,7 +1019,8 @@ class GreenAccessor
     /** Encapsulate access to blue band of an rgb value.
 
     Include-File:
-    \URL[vigra/rgbvalue.hxx]{../include/vigra/rgbvalue.hxx}
+    \URL[vigra/rgbvalue.hxx]{../include/vigra/rgbvalue.hxx}\\
+    Namespace: vigra
     */
 template <class RGBVALUE>
 class BlueAccessor
@@ -1061,7 +1071,8 @@ class BlueAccessor
     /** Encapsulate access to luminance of an rgb value.
 
     Include-File:
-    \URL[vigra/rgbvalue.hxx]{../include/vigra/rgbvalue.hxx}
+    \URL[vigra/rgbvalue.hxx]{../include/vigra/rgbvalue.hxx}\\
+    Namespace: vigra
     */
 template <class RGBVALUE>
 class RGBToGrayAccessor
@@ -1092,5 +1103,6 @@ class RGBToGrayAccessor
 //@}
 
 
+} // namespace vigra
 
 #endif // VIGRA_RGBVALUE_HXX

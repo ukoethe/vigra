@@ -31,14 +31,14 @@ int main(int argc, char ** argv)
     if(argc != 3)
     {
         std::cout << "Usage: " << argv[0] << " infile outfile" << std::endl;
-        std::cout << "(supported fomats: " << vigraImpexListFormats() << ")" << std::endl;
+        std::cout << "(supported formats: " << vigra::impexListFormats() << ")" << std::endl;
         
         return 1;
     }
     
     try
     {
-        ImageImportInfo info(argv[1]);
+        vigra::ImageImportInfo info(argv[1]);
         
         // define upper left and lower right corners of a 
         // subimage (region of interest)
@@ -49,40 +49,40 @@ int main(int argc, char ** argv)
             
         if(info.isGrayscale())
         {
-            BImage in(info.width(), info.height());
+            vigra::BImage in(info.width(), info.height());
             
             importImage(info, destImage(in));
             
             // create output image of appropriate size
-            BImage out(sub_x1 - sub_x0, sub_y1 - sub_y0);
+            vigra::BImage out(sub_x1 - sub_x0, sub_y1 - sub_y0);
             
             // copy region of interest by moving the input 
             // iterators to the appropriate positions
-            copyImage(srcIterRange(in.upperLeft() + Diff2D(sub_x0, sub_y0),
-                                   in.upperLeft() + Diff2D(sub_x1, sub_y1)),
+            copyImage(srcIterRange(in.upperLeft() + vigra::Diff2D(sub_x0, sub_y0),
+                                   in.upperLeft() + vigra::Diff2D(sub_x1, sub_y1)),
                       destImage(out));
             
-            exportImage(srcImageRange(out), ImageExportInfo(argv[2]));
+            exportImage(srcImageRange(out), vigra::ImageExportInfo(argv[2]));
         }
         else
         {
-            BRGBImage in(info.width(), info.height());
+            vigra::BRGBImage in(info.width(), info.height());
             
             importImage(info, destImage(in));
             
             // create output image of appropriate size
-            BRGBImage out(sub_x1 - sub_x0, sub_y1 - sub_y0);
+            vigra::BRGBImage out(sub_x1 - sub_x0, sub_y1 - sub_y0);
             
             // copy region of interest by moving the input 
             // iterators to the appropriate positions
-            copyImage(srcIterRange(in.upperLeft() + Diff2D(sub_x0, sub_y0),
-                                   in.upperLeft() + Diff2D(sub_x1, sub_y1)),
+            copyImage(srcIterRange(in.upperLeft() + vigra::Diff2D(sub_x0, sub_y0),
+                                   in.upperLeft() + vigra::Diff2D(sub_x1, sub_y1)),
                       destImage(out));
             
-            exportImage(srcImageRange(out), ImageExportInfo(argv[2]));
+            exportImage(srcImageRange(out), vigra::ImageExportInfo(argv[2]));
         }
     }
-    catch (VigraStdException & e)
+    catch (vigra::StdException & e)
     {
         std::cout << e.what() << std::endl;
         return 1;

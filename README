@@ -20,115 +20,27 @@ VIGRA Computer Vision Library, Version VERSION_VERSION_VERSION
     WARRANTIES OF MERCHANTIBILITY AND FITNESS FOR A PARTICULAR PURPOSE. 
 
 
-What is VIGRA
--------------
+Installation
+------------
 
-VIGRA is a computer vision library that puts its main emphasize on flexible algorithms, because algorithms represent the principle know-how of this field. The library was consequently built using generic programming as introduced by Stepanov and Musser and exemplified in the C++ Standard Template Library. By writing a few adapters (image iterators and accessors) you can use VIGRA's algorithms on top of your data structures, within your environment. Alternatively, you can also use the data structures provided within VIGRA, which can be easily adapted to a wide range of applications. VIGRA's flexibility comes almost for free: Since the design uses compile-time polymorphism (templates), performance of the compiled program approaches that of a traditional, hand tuned, inflexible, solution.
-
-
-Download
---------
-
-VIGRA VERSION_VERSION_VERSION can be downloaded at 
-http://kogs-www.informatik.uni-hamburg.de/~koethe/vigra/vigraVERSION_VERSION_VERSION.tar.gz
+Installation instructions can be found in the file 
+$VIGRA_PATH/doc/installation.html
 
 Documentation
 -------------
 
 The documentation can be found in $VIGRA_PATH/doc/, the start file is $VIGRA_PATH/doc/index.html.
     
-
-Installation
-------------
-
-VIGRA is known to work with the follwoing compilers:
-
-* SGI C++ 7.2 and 7.3 (CC -n32)
-* GNU g++ 2.95 (formerly EGCS 1.1)
-* Microsoft Visual C++ 5.0, patchlevel 3
-
-VIGRA is known NOT to work with the following compilers:
-
-* GNU g++ 2.8.x or earlier (compiles, but generates incorrect code)
-* SUN C++ 4.2 (Sun's old compiler, a new version is available but has not been 
-  tried yet)
-
-VIGRA should work with any standard conforming C++ compiler
-
-Unix:
------
-
-* uncompress and unpack the source distribution
-* set the following environment variables:
-
-     * tell the system where the VIGRA sources reside 
-
-       > setenv VIGRA_PATH [some path]/vigraVERSION_VERSION_VERSION
-
-
-     * specify which compiler and makefile will be used 
-       (currently supported values: 
-           "GCC" for GNU g++ 2.95.1 (and newer) and egcs 1.1, 
-           "IRIXCC7.2.0" for SGI C++ 7.2.0, 
-           "IRIXCC7.2.1" for SGI C++ 7.2.1, 
-           "IRIXCC" for SGI C++ 7.3,
-           "COMPILER" for any compiler not in this list)
-
-       > setenv VIGRA_COMPILER GCC      
-
-        To add support for a new compiler, edit the file 
-        $VIGRA_PATH/config/COMPILER.mak in order to tell VIGRA how your 
-        compiler is invoked. In this case, you'll have to specify 
-        "setenv VIGRA_COMPILER COMPILER". If your compiler does not conform to
-        the C++ standard, you may also need to add compiler specific settings
-        in the file $VIGRA_PATH/include/vigra/config.hxx
-
-    * specify the subdirectory where binaries go (for example, libraries 
-      will be installed at $VIGRA_PATH/lib/$VIGRA_PLATFORM)
-      
-      > setenv VIGRA_PLATFORM Solaris  
-      
-      This variable can be empty.
-      
-* specify if and where JPEG and TIFF libraries are installed:
-
-    * edit $VIGRA_PATH/src/impex/Makefile:
-       EITHER update the paths to the include files for libjpeg and 
-              libtiff on your system
-       OR     comment out the lines HAS_JPEG and HAS_TIFF.
-    
-    * edit the LIB macro in $VIGRA_PATH/src/examples/Makefile:
-       EITHER add the paths to the library files libjpeg.a and libtiff.a 
-              on your system 
-       OR     remove -ljpeg and -ltiff 
-    
-* build the libraries and examples:
-
-       > cd $VIGRA_PATH
-       > make
-
-
-Windows:
+Download
 --------
 
-* uncompress and unpack the source distribution
-* go into the directory [some path]/vigra/src
-* set "impex" as active project
-    
-    * specify if and where JPEG and TIFF libraries are installed: 
-        
-        open the dialog Project:Settings:C++:Preprocessor and EITHER update 
-        the paths to the include files for jpeg.lib and tiff.lib on your 
-        system 
-        OR remove the defines HasJPEG and HasTIFF.
-    
-    * likewise, enter the path to jpeg.lib and tiff.lib in the dialog
-      Project:Settings:Link or remove these libraries from the library list 
-      (do this for all projects at once)
-    
-    * build the project "impex" (that is, the library "vigraimpex.lib")
-    
-* build the other projects containing example programs. (These programs can be 
-  invoked from the command line.)
+VIGRA VERSION_VERSION_VERSION can be downloaded at 
+http://kogs-www.informatik.uni-hamburg.de/~koethe/vigra/vigraVERSION_VERSION_VERSION.tar.gz
+
+What is VIGRA
+-------------
+
+VIGRA is a computer vision library that puts its main emphasize on flexible algorithms, because algorithms represent the principle know-how of this field. The library was consequently built using generic programming as introduced by Stepanov and Musser and exemplified in the C++ Standard Template Library. By writing a few adapters (image iterators and accessors) you can use VIGRA's algorithms on top of your data structures, within your environment. Alternatively, you can also use the data structures provided within VIGRA, which can be easily adapted to a wide range of applications. VIGRA's flexibility comes almost for free: Since the design uses compile-time polymorphism (templates), performance of the compiled program approaches that of a traditional, hand tuned, inflexible, solution.
+
 
 

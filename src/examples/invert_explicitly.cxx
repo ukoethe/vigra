@@ -31,44 +31,44 @@ int main(int argc, char ** argv)
     if(argc != 3)
     {
         std::cout << "Usage: " << argv[0] << " infile outfile" << std::endl;
-        std::cout << "(supported fomats: " << vigraImpexListFormats() << ")" << std::endl;
+        std::cout << "(supported formats: " << vigra::impexListFormats() << ")" << std::endl;
         
         return 1;
     }
     
     try
     {
-        ImageImportInfo info(argv[1]);
+        vigra::ImageImportInfo info(argv[1]);
         
         if(info.isGrayscale())
         {
-            BImage in(info.width(), info.height());
-            BImage out(info.width(), info.height());
+            vigra::BImage in(info.width(), info.height());
+            vigra::BImage out(info.width(), info.height());
            
             importImage(info, destImage(in));
             
             // create image iterator that points to upper left corner 
             // of source image
-            BImage::Iterator sy = in.upperLeft();
+            vigra::BImage::Iterator sy = in.upperLeft();
             
             // create image iterator that points past the lower right corner of
             // source image (similarly to the past-the-end iterator in the STL)
-            BImage::Iterator send = in.lowerRight();
+            vigra::BImage::Iterator send = in.lowerRight();
             
             // create image iterator that points to upper left corner 
             // of destination image
-            BImage::Iterator dy = out.upperLeft();
+            vigra::BImage::Iterator dy = out.upperLeft();
             
             // iterate down the first column of the images
             for(; sy.y != send.y; ++sy.y, ++dy.y)
             {
                 // create image iterator that points to the first 
                 // pixel of the current row of the source image
-                BImage::Iterator sx = sy;
+                vigra::BImage::Iterator sx = sy;
 
                 // create image iterator that points to the first 
                 // pixel of the current row of the destination image
-                BImage::Iterator dx = dy;
+                vigra::BImage::Iterator dx = dy;
                 
                 // iterate across current row
                 for(; sx.x != send.x; ++sx.x, ++dx.x)
@@ -78,39 +78,39 @@ int main(int argc, char ** argv)
                 }
             }
             
-            exportImage(srcImageRange(out), ImageExportInfo(argv[2]));
+            exportImage(srcImageRange(out), vigra::ImageExportInfo(argv[2]));
         }
         else
         {
-            BRGBImage in(info.width(), info.height());
-            BRGBImage out(info.width(), info.height());
+            vigra::BRGBImage in(info.width(), info.height());
+            vigra::BRGBImage out(info.width(), info.height());
            
             importImage(info, destImage(in));
             
-            RGBValue<int> offset(255, 255, 255);
+            vigra::RGBValue<int> offset(255, 255, 255);
             
             // create image iterator that points to upper left corner 
             // of source image
-            BRGBImage::Iterator sy = in.upperLeft();
+            vigra::BRGBImage::Iterator sy = in.upperLeft();
             
             // create image iterator that points past the lower right corner of
             // source image (similarly to the past-the-end iterator in the STL)
-            BRGBImage::Iterator send = in.lowerRight();
+            vigra::BRGBImage::Iterator send = in.lowerRight();
             
             // create image iterator that points to upper left corner 
             // of destination image
-            BRGBImage::Iterator dy = out.upperLeft();
+            vigra::BRGBImage::Iterator dy = out.upperLeft();
             
             // iterate down the first column of the images
             for(; sy.y != send.y; ++sy.y, ++dy.y)
             {
                 // create image iterator that points to the first 
                 // pixel of the current row of the source image
-                BRGBImage::Iterator sx = sy;
+                vigra::BRGBImage::Iterator sx = sy;
 
                 // create image iterator that points to the first 
                 // pixel of the current row of the destination image
-                BRGBImage::Iterator dx = dy;
+                vigra::BRGBImage::Iterator dx = dy;
                 
                 // iterate across current row
                 for(; sx.x != send.x; ++sx.x, ++dx.x)
@@ -120,10 +120,10 @@ int main(int argc, char ** argv)
                 }
             }
             
-            exportImage(srcImageRange(out), ImageExportInfo(argv[2]));
+            exportImage(srcImageRange(out), vigra::ImageExportInfo(argv[2]));
         }
     }
-    catch (VigraStdException & e)
+    catch (vigra::StdException & e)
     {
         std::cout << e.what() << std::endl;
         return 1;

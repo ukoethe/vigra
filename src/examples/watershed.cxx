@@ -21,7 +21,6 @@
  
 
 #include <iostream>
-#include <math.h>
 #include "vigra/stdimage.hxx"
 #include "vigra/stdimagefunctions.hxx"
 #include "vigra/localminmax.hxx"
@@ -38,7 +37,7 @@ struct GradientSquaredMagnitudeFunctor
         return g1 * g1 + g2 * g2;
     }
     
-    float operator()(RGBValue<float> const & rg1, RGBValue<float> const & rg2) const 
+    float operator()(vigra::RGBValue<float> const & rg1, vigra::RGBValue<float> const & rg2) const 
     {
         float g1 = rg1.squaredMagnitude();
         float g2 = rg2.squaredMagnitude();
@@ -51,15 +50,15 @@ struct GradientSquaredMagnitudeFunctor
 template <class InImage, class OutImage>
 void watershedSegmentation(InImage & in, OutImage & out, double scale)
 {
-    typedef typename NumericTraits<typename InImage::value_type>::RealPromote
+    typedef typename vigra::NumericTraits<typename InImage::value_type>::RealPromote
         TmpType;
 
     int w = in.width();
     int h = in.height();
             
-    BasicImage<TmpType> gradientx(w, h);
-    BasicImage<TmpType> gradienty(w, h);
-    FImage gradientmag(w, h);
+    vigra::BasicImage<TmpType> gradientx(w, h);
+    vigra::BasicImage<TmpType> gradienty(w, h);
+    vigra::FImage gradientmag(w, h);
 
     // calculate the x- and y-components of the image gradient at given scale
     recursiveFirstDerivativeX(srcImageRange(in), destImage(gradientx), scale);
@@ -72,7 +71,7 @@ void watershedSegmentation(InImage & in, OutImage & out, double scale)
     combineTwoImages(srcImageRange(gradientx), srcImage(gradienty), 
                      destImage(gradientmag), GradientSquaredMagnitudeFunctor());
 
-    IImage labels(w, h);
+    vigra::IImage labels(w, h);
     labels = 0;
 
     // find the local minima of the gradient magnitude
@@ -85,7 +84,7 @@ void watershedSegmentation(InImage & in, OutImage & out, double scale)
                                  false, 0);
 
     // create a statistics functor for region growing
-    ArrayOfRegionStatistics<SeedRgDirectValueFunctor<float> > 
+    vigra::ArrayOfRegionStatistics<vigra::SeedRgDirectValueFunctor<float> > 
                                           gradstat(max_region_label);
 
     // perform region growing, starting from the minima of the gradient magnitude;
@@ -96,7 +95,7 @@ void watershedSegmentation(InImage & in, OutImage & out, double scale)
 
     // initialize a functor to determin the average gray-value or color
     // for each region (catchment basin) just found
-    ArrayOfRegionStatistics<FindAverage<TmpType> > 
+    vigra::ArrayOfRegionStatistics<vigra::FindAverage<TmpType> > 
                                           averages(max_region_label);
 
     // calculate the averages
@@ -108,7 +107,7 @@ void watershedSegmentation(InImage & in, OutImage & out, double scale)
     
     // mark the watershaed (region boundaries) black
     regionImageToEdgeImage(srcImageRange(labels), destImage(out), 
-                           NumericTraits<typename OutImage::value_type>::zero());
+                           vigra::NumericTraits<typename OutImage::value_type>::zero());
 
 }
 
@@ -118,14 +117,14 @@ int main(int argc, char ** argv)
     if(argc != 3)
     {
         std::cout << "Usage: " << argv[0] << " infile outfile" << std::endl;
-        std::cout << "(supported fomats: " << vigraImpexListFormats() << ")" << std::endl;
+        std::cout << "(supported formats: " << vigra::impexListFormats() << ")" << std::endl;
         
         return 1;
     }
     
     try
     {
-        ImageImportInfo info(argv[1]);
+        vigra::ImageImportInfo info(argv[1]);
         
         // input width of gradient filter 
         double scale = 1.0;
@@ -137,10 +136,10 @@ int main(int argc, char ** argv)
             int w = info.width();
             int h = info.height();
             
-            BImage in(w, h);
+            vigra::BImage in(w, h);
             importImage(info, destImage(in));
             
-            BImage out(w, h);
+            vigra::BImage out(w, h);
 
             // perform watershed segmentation on gray image
             // note that the watershed algorithm usually results in an 
@@ -149,7 +148,7 @@ int main(int argc, char ** argv)
             watershedSegmentation(in, out, scale);
            
             std::cout << "Writing " << argv[2] << std::endl;
-            exportImage(srcImageRange(out), ImageExportInfo(argv[2]));
+            exportImage(srcImageRange(out), vigra::ImageExportInfo(argv[2]));
            
         }
         else
@@ -157,10 +156,10 @@ int main(int argc, char ** argv)
             int w = info.width();
             int h = info.height();
             
-            BRGBImage in(w, h);
+            vigra::BRGBImage in(w, h);
             importImage(info, destImage(in));
             
-            BRGBImage out(w, h);
+            vigra::BRGBImage out(w, h);
 
 
             // perform watershed segmentation on color image
@@ -170,11 +169,11 @@ int main(int argc, char ** argv)
             watershedSegmentation(in, out, scale);
            
             std::cout << "Writing " << argv[2] << std::endl;
-            exportImage(srcImageRange(out), ImageExportInfo(argv[2]));
+            exportImage(srcImageRange(out), vigra::ImageExportInfo(argv[2]));
            
         }
     }
-    catch (VigraStdException & e)
+    catch (vigra::StdException & e)
     {
         std::cout << e.what() << std::endl;
         return 1;

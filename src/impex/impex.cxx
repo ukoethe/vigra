@@ -30,6 +30,8 @@
 #include "jpeg.h"
 #include "pnm.h"
 
+namespace vigra {
+
 static ImageFileTypeInfo imageFileTypeInfo[] = 
 {
     {"GIF", ".gif", "GIF8", 4, &vigraImpexWriteGIFImage, &vigraImpexReadGIFImage}, 
@@ -55,7 +57,7 @@ static ImageFileTypeInfo imageFileTypeInfo[] =
     {0, 0, 0, 0, 0, 0}
 };
 
-std::string vigraImpexListFormats()
+std::string impexListFormats()
 {
     std::string res;
     
@@ -372,3 +374,4 @@ ImageExportFunctionPointer ImageExportInfo::exportFunction() const
     return filetype_->exportFunction;
 }
 
+} // namespace vigra

@@ -23,12 +23,14 @@
 #ifndef VIGRA_SEPARABLECONVOLUTION_HXX
 #define VIGRA_SEPARABLECONVOLUTION_HXX
 
-#include <math.h>
+#include <cmath>
 #include <vector>
 #include "vigra/utilities.hxx"
 #include "vigra/numerictraits.hxx"
 #include "vigra/imageiteratoradapter.hxx"
 #include "vigra/bordertreatment.hxx"
+
+namespace vigra {
 
 /********************************************************/
 /*                                                      */
@@ -410,25 +412,29 @@ void internalConvolveLineAvoid(SrcIterator is, SrcIterator iend, SrcAccessor sa,
     
     pass arguments explicitly:
     \begin{verbatim}
-    template <class SrcIterator, class SrcAccessor,
-	      class DestIterator, class DestAccessor, 
-	      class KernelIterator, class KernelAccessor>
-    void convolveLine(SrcIterator is, SrcIterator isend, SrcAccessor sa,
-		      DestIterator id, DestAccessor da,
-		      KernelIterator ik, KernelAccessor ka,
-		      int kleft, int kright, BorderTreatmentMode border)
+    namespace vigra {
+        template <class SrcIterator, class SrcAccessor,
+	          class DestIterator, class DestAccessor, 
+	          class KernelIterator, class KernelAccessor>
+        void convolveLine(SrcIterator is, SrcIterator isend, SrcAccessor sa,
+		          DestIterator id, DestAccessor da,
+		          KernelIterator ik, KernelAccessor ka,
+		          int kleft, int kright, BorderTreatmentMode border)
+    }
     \end{verbatim}
     
     
     use argument objects in conjuction with \Ref{Argument Object Factories}:
     \begin{verbatim}
-    template <class SrcIterator, class SrcAccessor,
-	      class DestIterator, class DestAccessor, 
-	      class KernelIterator, class KernelAccessor>
-    void convolveLine(triple<SrcIterator, SrcIterator, SrcAccessor> src,
-		      pair<DestIterator, DestAccessor> dest,
-		      tuple5<KernelIterator, KernelAccessor,
-			     int, int, BorderTreatmentMode> kernel)
+    namespace vigra {
+        template <class SrcIterator, class SrcAccessor,
+	          class DestIterator, class DestAccessor, 
+	          class KernelIterator, class KernelAccessor>
+        void convolveLine(triple<SrcIterator, SrcIterator, SrcAccessor> src,
+		          pair<DestIterator, DestAccessor> dest,
+		          tuple5<KernelIterator, KernelAccessor,
+			         int, int, BorderTreatmentMode> kernel)
+    }
     \end{verbatim}
     
     {\bf Usage:}
@@ -445,11 +451,11 @@ void internalConvolveLineAvoid(SrcIterator is, SrcIterator iend, SrcAccessor sa,
     static float kernel[] = 
            { 1.0/16.0, 4.0/16.0, 6.0/16.0, 4.0/16.0, 1.0/16.0};
 	   
-    typedef StandardAccessor<float> FAccessor;
-    typedef StandardAccessor<float> KernelAccessor;
+    typedef vigra::StandardAccessor<float> FAccessor;
+    typedef vigra::StandardAccessor<float> KernelAccessor;
     
     
-    convolveLine(src.begin(), src.end(), FAccessor(), dest.begin(), FAccessor(),
+    vigra::convolveLine(src.begin(), src.end(), FAccessor(), dest.begin(), FAccessor(),
 	     kernel+2, KernelAccessor(), -2, 2, BORDER_TREATMENT_REFLECT);
     //       ^^^^^^^^  this is the center of the kernel	     
     
@@ -595,26 +601,30 @@ void convolveLine(triple<SrcIterator, SrcIterator, SrcAccessor> src,
     
     pass arguments explicitly:
     \begin{verbatim}
-    template <class SrcImageIterator, class SrcAccessor,
-	      class DestImageIterator, class DestAccessor, 
-	      class KernelIterator, class KernelAccessor>
-    void separableConvolveX(SrcImageIterator supperleft, 
-			    SrcImageIterator slowerright, SrcAccessor sa,
-			    DestImageIterator dupperleft, DestAccessor da,
-			    KernelIterator ik, KernelAccessor ka,
-			    int kleft, int kright, BorderTreatmentMode border)
+    namespace vigra {
+        template <class SrcImageIterator, class SrcAccessor,
+	          class DestImageIterator, class DestAccessor, 
+	          class KernelIterator, class KernelAccessor>
+        void separableConvolveX(SrcImageIterator supperleft, 
+			        SrcImageIterator slowerright, SrcAccessor sa,
+			        DestImageIterator dupperleft, DestAccessor da,
+			        KernelIterator ik, KernelAccessor ka,
+			        int kleft, int kright, BorderTreatmentMode border)
+    }
     \end{verbatim}
     
     
     use argument objects in conjuction with \Ref{Argument Object Factories}:
     \begin{verbatim}
-    template <class SrcImageIterator, class SrcAccessor,
-	      class DestImageIterator, class DestAccessor, 
-	      class KernelIterator, class KernelAccessor>
-    void separableConvolveX(triple<SrcImageIterator, SrcImageIterator, SrcAccessor> src,
-		            pair<DestImageIterator, DestAccessor> dest,
-		            tuple5<KernelIterator, KernelAccessor,
-			                 int, int, BorderTreatmentMode> kernel)
+    namespace vigra {
+        template <class SrcImageIterator, class SrcAccessor,
+	          class DestImageIterator, class DestAccessor, 
+	          class KernelIterator, class KernelAccessor>
+        void separableConvolveX(triple<SrcImageIterator, SrcImageIterator, SrcAccessor> src,
+		                pair<DestImageIterator, DestAccessor> dest,
+		                tuple5<KernelIterator, KernelAccessor,
+			                     int, int, BorderTreatmentMode> kernel)
+    }
     \end{verbatim}
     
     {\bf Usage:}
@@ -624,14 +634,14 @@ void convolveLine(triple<SrcIterator, SrcIterator, SrcAccessor> src,
     
     
     \begin{verbatim}
-    FImage src(w,h), dest(w,h);    
+    vigra::FImage src(w,h), dest(w,h);    
     ...
     
     // define Gaussian kernel with std. deviation 3.0
-    Kernel1D<double> kernel;
+    vigra::Kernel1D<double> kernel;
     kernel.initGaussian(3.0);
     
-    separableConvolveX(srcImageRange(src), destImage(dest), kernel1d(kernel));
+    vigra::separableConvolveX(srcImageRange(src), destImage(dest), kernel1d(kernel));
     
     \end{verbatim}
 
@@ -703,26 +713,30 @@ separableConvolveX(triple<SrcIterator, SrcIterator, SrcAccessor> src,
     
     pass arguments explicitly:
     \begin{verbatim}
-    template <class SrcImageIterator, class SrcAccessor,
-	      class DestImageIterator, class DestAccessor, 
-	      class KernelIterator, class KernelAccessor>
-    void separableConvolveY(SrcImageIterator supperleft, 
-			    SrcImageIterator slowerright, SrcAccessor sa,
-			    DestImageIterator dupperleft, DestAccessor da,
-			    KernelIterator ik, KernelAccessor ka,
-			    int kleft, int kright, BorderTreatmentMode border)
+    namespace vigra {
+        template <class SrcImageIterator, class SrcAccessor,
+	          class DestImageIterator, class DestAccessor, 
+	          class KernelIterator, class KernelAccessor>
+        void separableConvolveY(SrcImageIterator supperleft, 
+			        SrcImageIterator slowerright, SrcAccessor sa,
+			        DestImageIterator dupperleft, DestAccessor da,
+			        KernelIterator ik, KernelAccessor ka,
+			        int kleft, int kright, BorderTreatmentMode border)
+    }
     \end{verbatim}
     
     
     use argument objects in conjuction with \Ref{Argument Object Factories}:
     \begin{verbatim}
-    template <class SrcImageIterator, class SrcAccessor,
-	      class DestImageIterator, class DestAccessor, 
-	      class KernelIterator, class KernelAccessor>
-    void separableConvolveY(triple<SrcImageIterator, SrcImageIterator, SrcAccessor> src,
-		            pair<DestImageIterator, DestAccessor> dest,
-		            tuple5<KernelIterator, KernelAccessor,
-			                 int, int, BorderTreatmentMode> kernel)
+    namespace vigra {
+        template <class SrcImageIterator, class SrcAccessor,
+	          class DestImageIterator, class DestAccessor, 
+	          class KernelIterator, class KernelAccessor>
+        void separableConvolveY(triple<SrcImageIterator, SrcImageIterator, SrcAccessor> src,
+		                pair<DestImageIterator, DestAccessor> dest,
+		                tuple5<KernelIterator, KernelAccessor,
+			                     int, int, BorderTreatmentMode> kernel)
+    }
     \end{verbatim}
     
     {\bf Usage:}
@@ -732,14 +746,14 @@ separableConvolveX(triple<SrcIterator, SrcIterator, SrcAccessor> src,
     
     
     \begin{verbatim}
-    FImage src(w,h), dest(w,h);    
+    vigra::FImage src(w,h), dest(w,h);    
     ...
     
     // define Gaussian kernel with std. deviation 3.0
-    Kernel1D kernel;
+    vigra::Kernel1D kernel;
     kernel.initGaussian(3.0);
     
-    separableConvolveY(srcImageRange(src), destImage(dest), kernel1d(kernel));
+    vigra::separableConvolveY(srcImageRange(src), destImage(dest), kernel1d(kernel));
     
     \end{verbatim}
 
@@ -826,21 +840,21 @@ separableConvolveY(triple<SrcIterator, SrcIterator, SrcAccessor> src,
     \URL[vigra/stdconvolution.hxx]{../include/vigra/stdconvolution.hxx}
     
     \begin{verbatim}
-    FImage src(w,h), dest(w,h);    
+    vigra::FImage src(w,h), dest(w,h);    
     ...
     
     // define Gaussian kernel with std. deviation 3.0
-    Kernel1D kernel;
+    vigra::Kernel1D kernel;
     kernel.initGaussian(3.0);
     
-    separableConvolveX(srcImageRange(src), destImage(dest), kernel1d(kernel));
+    vigra::separableConvolveX(srcImageRange(src), destImage(dest), kernel1d(kernel));
     \end{verbatim}
 
     {\bf Required Interface:}
     
     \begin{verbatim}
-    value_type v = NumericTraits<value_type>::one(); // if norm is not
-                                                      // given explicitly
+    value_type v = vigra::NumericTraits<value_type>::one(); // if norm is not
+                                                            // given explicitly
     double d;
     
     v = d * v; 
@@ -955,7 +969,7 @@ class Kernel1D
 	    can be used like this:
 	    
 	    \begin{verbatim}
-	    Kernel2D<float> roberts_gradient_x;
+	    vigra::Kernel2D<float> roberts_gradient_x;
 	    
 	    roberts_gradient_x.initExplicitly(0, 1) = 1.0, -1.0;
 	    \end{verbatim}
@@ -1129,7 +1143,7 @@ class Kernel1D
 		
 	    \begin{verbatim}
 	    // define horizontal Roberts filter
-	    Kernel1D<float> roberts_gradient_x;
+	    vigra::Kernel1D<float> roberts_gradient_x;
 	    
 	    roberts_gradient_x.initExplicitly(0, 1) = 1.0, -1.0;
 	    \end{verbatim}
@@ -1139,7 +1153,7 @@ class Kernel1D
 	    just one initializer. This creates an averaging filter with the given constant:
 	    
 	    \begin{verbatim}
-	    Kernel1D<float> average5x1;
+	    vigra::Kernel1D<float> average5x1;
 	    
 	    average5x1.initExplicitly(-2, 2) = 1.0/5.0;
 	    \end{verbatim}
@@ -1310,7 +1324,7 @@ void Kernel1D<ARITHTYPE>::initGaussian(double std_dev,
     int i;
     for(i=1; i<=radius; ++i)
     {
-        x[i] = exp(-(double)i*i/sigma2);
+        x[i] = std::exp(-(double)i*i/sigma2);
 	x[-i] = x[i];
 	sum += x[i] + x[i];
     }
@@ -1367,7 +1381,7 @@ Kernel1D<ARITHTYPE>::initGaussianDerivative(double std_dev,
 	for(i=1; i<=radius; ++i)
 	{
 	    double xc = (double) i;
-	    x[i] = xc * exp(-xc*xc/sigma2);
+	    x[i] = xc * std::exp(-xc*xc/sigma2);
 	    x[-i] = -x[i];
 	    sum += 2.0 * xc * x[i];
 	}
@@ -1406,7 +1420,7 @@ Kernel1D<ARITHTYPE>::initGaussianDerivative(double std_dev,
 	for(i=-radius; i<=radius; ++i)
 	{
 	    double xc = (double) i;
-	    x0[i] = exp(-xc*xc/sigma2);
+	    x0[i] = std::exp(-xc*xc/sigma2);
 	    x1[i] = -2.0 * xc / sigma2 * x0[i];
 	}
 	
@@ -1442,11 +1456,11 @@ Kernel1D<ARITHTYPE>::initGaussianDerivative(double std_dev,
 	for(i=-radius; i<=radius; ++i)
 	{
 	    x[-i] = x2[i];
-	    sum += pow((double)i, (double)order) / fac * x2[i];
+	    sum += std::pow((double)i, (double)order) / fac * x2[i];
 	}
 	
 	// normalize
-	value_type scale = (1.0 / fabs(sum)) * norm;
+	value_type scale = (1.0 / std::abs(sum)) * norm;
 	
 	kernel_.erase(kernel_.begin(), kernel_.end());
 	kernel_.reserve(radius*2+1);
@@ -1615,5 +1629,6 @@ kernel1d(Kernel1D<T> & k, BorderTreatmentMode border)
 }
 
 
+} // namespace vigra
 
 #endif // VIGRA_SEPARABLECONVOLUTION_HXX

@@ -23,11 +23,13 @@
 #ifndef VIGRA_RECURSIVECONVOLUTION_HXX
 #define VIGRA_RECURSIVECONVOLUTION_HXX
 
-#include <math.h>
+#include <cmath>
 #include <vector>
 #include "vigra/utilities.hxx"
 #include "vigra/numerictraits.hxx"
 #include "vigra/imageiteratoradapter.hxx"
+
+namespace vigra {
 
 /********************************************************/
 /*                                                      */
@@ -62,26 +64,29 @@
     {\bf Declaration:}
     
     \begin{verbatim}
-    template <class SrcIterator, class SrcAccessor,
-          class DestIterator, class DestAccessor>
-    void recursiveSmoothLine(SrcIterator is, SrcIterator isend, SrcAccessor as,
-                 DestIterator id, DestAccessor ad, double scale)
+    namespace vigra {
+        template <class SrcIterator, class SrcAccessor,
+              class DestIterator, class DestAccessor>
+        void recursiveSmoothLine(SrcIterator is, SrcIterator isend, SrcAccessor as,
+                     DestIterator id, DestAccessor ad, double scale)
+    }
     \end{verbatim}
     
     {\bf Usage:}
     
     Include-File:
-    \URL[vigra/recursiveconvolution.hxx]{../include/vigra/recursiveconvolution.hxx}
+    \URL[vigra/recursiveconvolution.hxx]{../include/vigra/recursiveconvolution.hxx}\\
+    Namespace: vigra
     
     
     \begin{verbatim}
     vector<float> src, dest;    
     ...
     
-    DefaultAccessor<vector<float>::iterator, float> FAccessor;
+    vigra::DefaultAccessor<vector<float>::iterator, float> FAccessor;
     
     
-    recursiveSmoothLine(src.begin(), src.end(), FAccessor(), 
+    vigra::recursiveSmoothLine(src.begin(), src.end(), FAccessor(), 
                         dest.begin(), FAccessor(), 3.0);
     \end{verbatim}
 
@@ -132,7 +137,7 @@ void recursiveSmoothLine(SrcIterator is, SrcIterator isend, SrcAccessor as,
     std::vector<TempType> vline(w);
     typename std::vector<TempType>::iterator line = vline.begin();
     
-    double b = exp(-1.0/scale);
+    double b = std::exp(-1.0/scale);
     double norm = (1.0 - b) / (1.0 + b);
     TempType old = (1.0 / (1.0 - b)) * as(is);
 
@@ -179,26 +184,29 @@ void recursiveSmoothLine(SrcIterator is, SrcIterator isend, SrcAccessor as,
     {\bf Declaration:}
     
     \begin{verbatim}
-    template <class SrcIterator, class SrcAccessor,
-          class DestIterator, class DestAccessor>
-    void recursiveFirstDerivativeLine(SrcIterator is, SrcIterator isend, SrcAccessor as,
-                 DestIterator id, DestAccessor ad, double scale)
+    namespace vigra {
+        template <class SrcIterator, class SrcAccessor,
+              class DestIterator, class DestAccessor>
+        void recursiveFirstDerivativeLine(SrcIterator is, SrcIterator isend, SrcAccessor as,
+                     DestIterator id, DestAccessor ad, double scale)
+    }
     \end{verbatim}
     
     {\bf Usage:}
     
     Include-File:
-    \URL[vigra/recursiveconvolution.hxx]{../include/vigra/recursiveconvolution.hxx}
+    \URL[vigra/recursiveconvolution.hxx]{../include/vigra/recursiveconvolution.hxx}\\
+    Namespace: vigra
     
     
     \begin{verbatim}
     vector<float> src, dest;    
     ...
     
-    DefaultAccessor<vector<float>::iterator, float> FAccessor;
+    vigra::DefaultAccessor<vector<float>::iterator, float> FAccessor;
     
     
-    recursiveFirstDerivativeLine(src.begin(), src.end(), FAccessor(), 
+    vigra::recursiveFirstDerivativeLine(src.begin(), src.end(), FAccessor(), 
                         dest.begin(), FAccessor(), 3.0);
     \end{verbatim}
 
@@ -250,7 +258,7 @@ void recursiveFirstDerivativeLine(SrcIterator is, SrcIterator isend, SrcAccessor
     std::vector<TempType> vline(w);
     typename std::vector<TempType>::iterator line = vline.begin();
     
-    double b = exp(-1.0/scale);
+    double b = std::exp(-1.0/scale);
     double norm = (1.0 - b) * (1.0 - b) / 2.0 / b;
     TempType old = (1.0 / (1.0 - b)) * as(is);
 
@@ -296,26 +304,29 @@ void recursiveFirstDerivativeLine(SrcIterator is, SrcIterator isend, SrcAccessor
     {\bf Declaration:}
     
     \begin{verbatim}
-    template <class SrcIterator, class SrcAccessor,
-          class DestIterator, class DestAccessor>
-    void recursiveSecondDerivativeLine(SrcIterator is, SrcIterator isend, SrcAccessor as,
-                 DestIterator id, DestAccessor ad, double scale)
+    namespace vigra {
+        template <class SrcIterator, class SrcAccessor,
+              class DestIterator, class DestAccessor>
+        void recursiveSecondDerivativeLine(SrcIterator is, SrcIterator isend, SrcAccessor as,
+                     DestIterator id, DestAccessor ad, double scale)
+    }
     \end{verbatim}
     
     {\bf Usage:}
     
     Include-File:
-    \URL[vigra/recursiveconvolution.hxx]{../include/vigra/recursiveconvolution.hxx}
+    \URL[vigra/recursiveconvolution.hxx]{../include/vigra/recursiveconvolution.hxx}\\
+    Namespace: vigra
     
     
     \begin{verbatim}
     vector<float> src, dest;    
     ...
     
-    DefaultAccessor<vector<float>::iterator, float> FAccessor;
+    vigra::DefaultAccessor<vector<float>::iterator, float> FAccessor;
     
     
-    recursiveSecondDerivativeLine(src.begin(), src.end(), FAccessor(), 
+    vigra::recursiveSecondDerivativeLine(src.begin(), src.end(), FAccessor(), 
                         dest.begin(), FAccessor(), 3.0);
     \end{verbatim}
 
@@ -367,7 +378,7 @@ void recursiveSecondDerivativeLine(SrcIterator is, SrcIterator isend, SrcAccesso
     std::vector<TempType> vline(w);
     typename std::vector<TempType>::iterator line = vline.begin();
         
-    double b = exp(-1.0/scale);
+    double b = std::exp(-1.0/scale);
     double a = -2.0 / (1.0 - b);
     double norm = (1.0 - b) * (1.0 - b) * (1.0 - b) / (1.0 + b);
     TempType old = (1.0 / (1.0 - b)) * as(is);
@@ -411,35 +422,40 @@ void recursiveSecondDerivativeLine(SrcIterator is, SrcIterator isend, SrcAccesso
     
     pass arguments explicitly:
     \begin{verbatim}
-    template <class SrcImageIterator, class SrcAccessor,
-          class DestImageIterator, class DestAccessor>
-    void recursiveSmoothX(SrcImageIterator supperleft, 
-              SrcImageIterator slowerright, SrcAccessor as,
-              DestImageIterator dupperleft, DestAccessor ad, 
-              double scale)
+    namespace vigra {
+        template <class SrcImageIterator, class SrcAccessor,
+              class DestImageIterator, class DestAccessor>
+        void recursiveSmoothX(SrcImageIterator supperleft, 
+                  SrcImageIterator slowerright, SrcAccessor as,
+                  DestImageIterator dupperleft, DestAccessor ad, 
+                  double scale)
+    }
     \end{verbatim}
     
     
     use argument objects in conjuction with \Ref{Argument Object Factories}:
     \begin{verbatim}
-    template <class SrcImageIterator, class SrcAccessor,
-          class DestImageIterator, class DestAccessor>
-    void recursiveSmoothX(
-        triple<SrcImageIterator, SrcImageIterator, SrcAccessor> src,
-        pair<DestImageIterator, DestAccessor> dest, 
-        double scale)
+    namespace vigra {
+        template <class SrcImageIterator, class SrcAccessor,
+              class DestImageIterator, class DestAccessor>
+        void recursiveSmoothX(
+            triple<SrcImageIterator, SrcImageIterator, SrcAccessor> src,
+            pair<DestImageIterator, DestAccessor> dest, 
+            double scale)
+    }
     \end{verbatim}
     
     {\bf Usage:}
     
     Include-File:
-    \URL[vigra/recursiveconvolution.hxx]{../include/vigra/recursiveconvolution.hxx}
+    \URL[vigra/recursiveconvolution.hxx]{../include/vigra/recursiveconvolution.hxx}\\
+    Namespace: vigra
     
     \begin{verbatim}
-    FImage src(w,h), dest(w,h);    
+    vigra::FImage src(w,h), dest(w,h);    
     ...
     
-    recursiveSmoothX(srcImageRange(src), destImage(dest), 3.0);
+    vigra::recursiveSmoothX(srcImageRange(src), destImage(dest), 3.0);
     
     \end{verbatim}
 
@@ -494,35 +510,40 @@ inline void recursiveSmoothX(
     
     pass arguments explicitly:
     \begin{verbatim}
-    template <class SrcImageIterator, class SrcAccessor,
-          class DestImageIterator, class DestAccessor>
-    void recursiveSmoothY(SrcImageIterator supperleft, 
-              SrcImageIterator slowerright, SrcAccessor as,
-              DestImageIterator dupperleft, DestAccessor ad, 
-              double scale)
+    namespace vigra {
+        template <class SrcImageIterator, class SrcAccessor,
+              class DestImageIterator, class DestAccessor>
+        void recursiveSmoothY(SrcImageIterator supperleft, 
+                  SrcImageIterator slowerright, SrcAccessor as,
+                  DestImageIterator dupperleft, DestAccessor ad, 
+                  double scale)
+    }
     \end{verbatim}
     
     
     use argument objects in conjuction with \Ref{Argument Object Factories}:
     \begin{verbatim}
-    template <class SrcImageIterator, class SrcAccessor,
-          class DestImageIterator, class DestAccessor>
-    void recursiveSmoothY(
-        triple<SrcImageIterator, SrcImageIterator, SrcAccessor> src,
-        pair<DestImageIterator, DestAccessor> dest, 
-        double scale)
+    namespace vigra {
+        template <class SrcImageIterator, class SrcAccessor,
+              class DestImageIterator, class DestAccessor>
+        void recursiveSmoothY(
+            triple<SrcImageIterator, SrcImageIterator, SrcAccessor> src,
+            pair<DestImageIterator, DestAccessor> dest, 
+            double scale)
+    }
     \end{verbatim}
     
     {\bf Usage:}
     
     Include-File:
-    \URL[vigra/recursiveconvolution.hxx]{../include/vigra/recursiveconvolution.hxx}
+    \URL[vigra/recursiveconvolution.hxx]{../include/vigra/recursiveconvolution.hxx}\\
+    Namespace: vigra
     
     \begin{verbatim}
-    FImage src(w,h), dest(w,h);    
+    vigra::FImage src(w,h), dest(w,h);    
     ...
     
-    recursiveSmoothY(srcImageRange(src), destImage(dest), 3.0);
+    vigra::recursiveSmoothY(srcImageRange(src), destImage(dest), 3.0);
     
     \end{verbatim}
 
@@ -577,35 +598,40 @@ inline void recursiveSmoothY(
     
     pass arguments explicitly:
     \begin{verbatim}
-    template <class SrcImageIterator, class SrcAccessor,
-          class DestImageIterator, class DestAccessor>
-    void recursiveFirstDerivativeX(SrcImageIterator supperleft, 
-              SrcImageIterator slowerright, SrcAccessor as,
-              DestImageIterator dupperleft, DestAccessor ad, 
-              double scale)
+    namespace vigra {
+        template <class SrcImageIterator, class SrcAccessor,
+              class DestImageIterator, class DestAccessor>
+        void recursiveFirstDerivativeX(SrcImageIterator supperleft, 
+                  SrcImageIterator slowerright, SrcAccessor as,
+                  DestImageIterator dupperleft, DestAccessor ad, 
+                  double scale)
+    }
     \end{verbatim}
     
     
     use argument objects in conjuction with \Ref{Argument Object Factories}:
     \begin{verbatim}
-    template <class SrcImageIterator, class SrcAccessor,
-          class DestImageIterator, class DestAccessor>
-    void recursiveFirstDerivativeX(
-        triple<SrcImageIterator, SrcImageIterator, SrcAccessor> src,
-        pair<DestImageIterator, DestAccessor> dest, 
-        double scale)
+    namespace vigra {
+        template <class SrcImageIterator, class SrcAccessor,
+              class DestImageIterator, class DestAccessor>
+        void recursiveFirstDerivativeX(
+            triple<SrcImageIterator, SrcImageIterator, SrcAccessor> src,
+            pair<DestImageIterator, DestAccessor> dest, 
+            double scale)
+    }
     \end{verbatim}
     
     {\bf Usage:}
     
     Include-File:
-    \URL[vigra/recursiveconvolution.hxx]{../include/vigra/recursiveconvolution.hxx}
+    \URL[vigra/recursiveconvolution.hxx]{../include/vigra/recursiveconvolution.hxx}\\
+    Namespace: vigra
     
     \begin{verbatim}
-    FImage src(w,h), dest(w,h);    
+    vigra::FImage src(w,h), dest(w,h);    
     ...
     
-    recursiveFirstDerivativeX(srcImageRange(src), destImage(dest), 3.0);
+    vigra::recursiveFirstDerivativeX(srcImageRange(src), destImage(dest), 3.0);
     
     \end{verbatim}
 
@@ -660,35 +686,40 @@ inline void recursiveFirstDerivativeX(
     
     pass arguments explicitly:
     \begin{verbatim}
-    template <class SrcImageIterator, class SrcAccessor,
-          class DestImageIterator, class DestAccessor>
-    void recursiveFirstDerivativeY(SrcImageIterator supperleft, 
-              SrcImageIterator slowerright, SrcAccessor as,
-              DestImageIterator dupperleft, DestAccessor ad, 
-              double scale)
+    namespace vigra {
+        template <class SrcImageIterator, class SrcAccessor,
+              class DestImageIterator, class DestAccessor>
+        void recursiveFirstDerivativeY(SrcImageIterator supperleft, 
+                  SrcImageIterator slowerright, SrcAccessor as,
+                  DestImageIterator dupperleft, DestAccessor ad, 
+                  double scale)
+    }
     \end{verbatim}
     
     
     use argument objects in conjuction with \Ref{Argument Object Factories}:
     \begin{verbatim}
-    template <class SrcImageIterator, class SrcAccessor,
-          class DestImageIterator, class DestAccessor>
-    void recursiveFirstDerivativeY(
-        triple<SrcImageIterator, SrcImageIterator, SrcAccessor> src,
-        pair<DestImageIterator, DestAccessor> dest, 
-        double scale)
+    namespace vigra {
+        template <class SrcImageIterator, class SrcAccessor,
+              class DestImageIterator, class DestAccessor>
+        void recursiveFirstDerivativeY(
+            triple<SrcImageIterator, SrcImageIterator, SrcAccessor> src,
+            pair<DestImageIterator, DestAccessor> dest, 
+            double scale)
+    }
     \end{verbatim}
     
     {\bf Usage:}
     
     Include-File:
-    \URL[vigra/recursiveconvolution.hxx]{../include/vigra/recursiveconvolution.hxx}
+    \URL[vigra/recursiveconvolution.hxx]{../include/vigra/recursiveconvolution.hxx}\\
+    Namespace: vigra
     
     \begin{verbatim}
-    FImage src(w,h), dest(w,h);    
+    vigra::FImage src(w,h), dest(w,h);    
     ...
     
-    recursiveFirstDerivativeY(srcImageRange(src), destImage(dest), 3.0);
+    vigra::recursiveFirstDerivativeY(srcImageRange(src), destImage(dest), 3.0);
     
     \end{verbatim}
 
@@ -743,35 +774,40 @@ inline void recursiveFirstDerivativeY(
     
     pass arguments explicitly:
     \begin{verbatim}
-    template <class SrcImageIterator, class SrcAccessor,
-          class DestImageIterator, class DestAccessor>
-    void recursiveSecondDerivativeX(SrcImageIterator supperleft, 
-              SrcImageIterator slowerright, SrcAccessor as,
-              DestImageIterator dupperleft, DestAccessor ad, 
-              double scale)
+    namespace vigra {
+        template <class SrcImageIterator, class SrcAccessor,
+              class DestImageIterator, class DestAccessor>
+        void recursiveSecondDerivativeX(SrcImageIterator supperleft, 
+                  SrcImageIterator slowerright, SrcAccessor as,
+                  DestImageIterator dupperleft, DestAccessor ad, 
+                  double scale)
+    }
     \end{verbatim}
     
     
     use argument objects in conjuction with \Ref{Argument Object Factories}:
     \begin{verbatim}
-    template <class SrcImageIterator, class SrcAccessor,
-          class DestImageIterator, class DestAccessor>
-    void recursiveSecondDerivativeX(
-        triple<SrcImageIterator, SrcImageIterator, SrcAccessor> src,
-        pair<DestImageIterator, DestAccessor> dest, 
-        double scale)
+    namespace vigra {
+        template <class SrcImageIterator, class SrcAccessor,
+              class DestImageIterator, class DestAccessor>
+        void recursiveSecondDerivativeX(
+            triple<SrcImageIterator, SrcImageIterator, SrcAccessor> src,
+            pair<DestImageIterator, DestAccessor> dest, 
+            double scale)
+    }
     \end{verbatim}
     
     {\bf Usage:}
     
     Include-File:
-    \URL[vigra/recursiveconvolution.hxx]{../include/vigra/recursiveconvolution.hxx}
+    \URL[vigra/recursiveconvolution.hxx]{../include/vigra/recursiveconvolution.hxx}\\
+    Namespace: vigra
     
     \begin{verbatim}
-    FImage src(w,h), dest(w,h);    
+    vigra::FImage src(w,h), dest(w,h);    
     ...
     
-    recursiveSecondDerivativeX(srcImageRange(src), destImage(dest), 3.0);
+    vigra::recursiveSecondDerivativeX(srcImageRange(src), destImage(dest), 3.0);
     
     \end{verbatim}
 
@@ -826,35 +862,40 @@ inline void recursiveSecondDerivativeX(
     
     pass arguments explicitly:
     \begin{verbatim}
-    template <class SrcImageIterator, class SrcAccessor,
-          class DestImageIterator, class DestAccessor>
-    void recursiveSecondDerivativeY(SrcImageIterator supperleft, 
-              SrcImageIterator slowerright, SrcAccessor as,
-              DestImageIterator dupperleft, DestAccessor ad, 
-              double scale)
+    namespace vigra {
+        template <class SrcImageIterator, class SrcAccessor,
+              class DestImageIterator, class DestAccessor>
+        void recursiveSecondDerivativeY(SrcImageIterator supperleft, 
+                  SrcImageIterator slowerright, SrcAccessor as,
+                  DestImageIterator dupperleft, DestAccessor ad, 
+                  double scale)
+    }
     \end{verbatim}
     
     
     use argument objects in conjuction with \Ref{Argument Object Factories}:
     \begin{verbatim}
-    template <class SrcImageIterator, class SrcAccessor,
-          class DestImageIterator, class DestAccessor>
-    void recursiveSecondDerivativeY(
-        triple<SrcImageIterator, SrcImageIterator, SrcAccessor> src,
-        pair<DestImageIterator, DestAccessor> dest, 
-        double scale)
+    namespace vigra {
+        template <class SrcImageIterator, class SrcAccessor,
+              class DestImageIterator, class DestAccessor>
+        void recursiveSecondDerivativeY(
+            triple<SrcImageIterator, SrcImageIterator, SrcAccessor> src,
+            pair<DestImageIterator, DestAccessor> dest, 
+            double scale)
+    }
     \end{verbatim}
     
     {\bf Usage:}
     
     Include-File:
-    \URL[vigra/recursiveconvolution.hxx]{../include/vigra/recursiveconvolution.hxx}
+    \URL[vigra/recursiveconvolution.hxx]{../include/vigra/recursiveconvolution.hxx}\\
+    Namespace: vigra
     
     \begin{verbatim}
-    FImage src(w,h), dest(w,h);    
+    vigra::FImage src(w,h), dest(w,h);    
     ...
     
-    recursiveSecondDerivativeY(srcImageRange(src), destImage(dest), 3.0);
+    vigra::recursiveSecondDerivativeY(srcImageRange(src), destImage(dest), 3.0);
     
     \end{verbatim}
 
@@ -895,5 +936,7 @@ inline void recursiveSecondDerivativeY(
 }
             
 //@}
+
+} // namespace vigra
 
 #endif // VIGRA_RECURSIVECONVOLUTION_HXX

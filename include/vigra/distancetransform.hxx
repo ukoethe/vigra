@@ -23,8 +23,10 @@
 #ifndef VIGRA_DISTANCETRANSFORM_HXX
 #define VIGRA_DISTANCETRANSFORM_HXX
 
-#include <math.h>
+#include <cmath>
 #include "vigra/stdimage.hxx"
+
+namespace vigra {
 
 /*
  * functors to determine the distance norm 
@@ -55,7 +57,7 @@ struct InternalDistanceTransformL2NormFunctor
 {
     float operator()(float dx, float dy) const
     {
-        return sqrt(dx*dx + dy*dy);
+        return std::sqrt(dx*dx + dy*dy);
     }
 };
 
@@ -286,50 +288,55 @@ internalDistanceTransform(SrcImageIterator src_upperleft,
     
     pass arguments explicitly:
     \begin{verbatim}
-    template <class SrcImageIterator, class SrcAccessor,
-                       class DestImageIterator, class DestAccessor,
-                       class ValueType>
-    void distanceTransform(SrcImageIterator src_upperleft, 
-                    SrcImageIterator src_lowerright, SrcAccessor sa,
-                    DestImageIterator dest_upperleft, DestAccessor da,
-                    ValueType background, int norm)
+    namespace vigra {
+        template <class SrcImageIterator, class SrcAccessor,
+                           class DestImageIterator, class DestAccessor,
+                           class ValueType>
+        void distanceTransform(SrcImageIterator src_upperleft, 
+                        SrcImageIterator src_lowerright, SrcAccessor sa,
+                        DestImageIterator dest_upperleft, DestAccessor da,
+                        ValueType background, int norm)
+    }
     \end{verbatim}
     
     
     use argument objects in conjuction with \Ref{Argument Object Factories}:
     \begin{verbatim}
-    template <class SrcImageIterator, class SrcAccessor,
-                       class DestImageIterator, class DestAccessor,
-                       class ValueType>
-    void distanceTransform(
-        triple<SrcImageIterator, SrcImageIterator, SrcAccessor> src,
-        pair<DestImageIterator, DestAccessor> dest,
-        ValueType background, int norm)
+    namespace vigra {
+        template <class SrcImageIterator, class SrcAccessor,
+                           class DestImageIterator, class DestAccessor,
+                           class ValueType>
+        void distanceTransform(
+            triple<SrcImageIterator, SrcImageIterator, SrcAccessor> src,
+            pair<DestImageIterator, DestAccessor> dest,
+            ValueType background, int norm)
+    }
     \end{verbatim}
     
     {\bf Usage:}
     
     Include-File:
-    \URL[vigra/distancetransform.hxx]{../include/vigra/distancetransform.hxx}
+    \URL[vigra/distancetransform.hxx]{../include/vigra/distancetransform.hxx}\\
+    Namespace: vigra
     
     
     \begin{verbatim}
     
-    BImage src(w,h), edges(w,h);
-    FImage distance(w, h);
+    vigra::BImage src(w,h), edges(w,h);
+    vigra::FImage distance(w, h);
 
     // empty edge image
     edges = 0;
     ...
 
     // detect edges in src image (edges will be marked 1, background 0)
-    differenceOfExponentialEdgeImage(srcImageRange(src), destImage(edges), 
+    vigra::differenceOfExponentialEdgeImage(srcImageRange(src), destImage(edges), 
                                      0.8, 4.0);
      
     // find distance of all pixels from nearest edge
-    distanceTransform(srcImageRange(edges), destImage(distance),
-                      0,                   2);
-    //                ^ background label   ^ norm (Euclidean)
+    vigra::distanceTransform(srcImageRange(edges), destImage(distance),
+                             0,                   2);
+    //                       ^ background label   ^ norm (Euclidean)
     \end{verbatim}
 
     {\bf Required Interface:}
@@ -397,6 +404,8 @@ distanceTransform(
 }
 
 //@}
+
+} // namespace vigra
 
 #endif // VIGRA_DISTANCETRANSFORM_HXX
 

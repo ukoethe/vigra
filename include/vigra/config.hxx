@@ -25,6 +25,8 @@
 
 #include <stdexcept>
 
+namespace vigra {
+
 ///////////////////////////////////////////////////////////
 //                                                       //
 //                   VisualC++ 5.0                       //
@@ -68,7 +70,7 @@
     #endif
     #if (_COMPILER_VERSION  == 720) || (_COMPILER_VERSION  == 721)
         #define SPECIAL_STDEXCEPTION_DEFINITION_NEEDED
-        typedef std::exception VigraStdException; // must be above next #define !!
+        typedef std::exception StdException; // must be above next #define !!
         #define std
         #define NO_NAMESPACE_STD
     #endif // _COMPILER_VERSION
@@ -90,7 +92,9 @@
 #endif
 
 #ifndef SPECIAL_STDEXCEPTION_DEFINITION_NEEDED
-     typedef std::exception VigraStdException;
+     typedef std::exception StdException;
 #endif
+
+} // namespace vigra
 
 #endif // VIGRA_CONFIG_HXX

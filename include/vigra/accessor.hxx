@@ -24,6 +24,8 @@
 
 #include "vigra/utilities.hxx"
 
+namespace vigra {
+
 /** @name Data Accessors
 
     Data accessors are used to allow for flexible access to the data
@@ -54,6 +56,8 @@
 
     Include-File:
     \URL[vigra/accessor.hxx]{../include/vigra/accessor.hxx}
+    
+    Namespace: vigra
     
 */
 template <class VALUETYPE>
@@ -154,6 +158,8 @@ class StandardValueAccessor
     Include-File:
     \URL[vigra/accessor.hxx]{../include/vigra/accessor.hxx}
     
+    Namespace: vigra
+    
 */
 template <class VALUETYPE>
 class StandardConstAccessor
@@ -214,13 +220,22 @@ class StandardConstValueAccessor
     Include-File:
     \URL[vigra/accessor.hxx]{../include/vigra/accessor.hxx}
     
+    Namespace: vigra
+    
     \begin{verbatim}
-    Iterator iter;
-    SequenceAccessor<Iterator, Iterator::PixelType> a;
-    for(SequenceAccessor<Iterator, Iterator::PixelType>::iterator i = a.begin(iter); 
-        i != a.end(iter); ++i) 
+    typedef std::list<std::list<int> > ListOfLists;
+    
+    ListOfLists ll;
+    ...
+    
+    typedef vigra::SequenceAccessor<ListOfLists::value_type> ListOfListsAccessor;
+    ListOfListsAccessor a;
+    for(ListOfLists::iterator li = ll.begin(); li != ll.end(); ++li) 
     {
-    *i = 10;
+        for(ListOfListsAccessor::iterator i = a.begin(li); i != a.end(li); ++i) 
+        {
+            *i = 10;
+        }
     }
     \end{verbatim}
 */
@@ -303,6 +318,8 @@ class SequenceAccessor
     
     Include-File:
     \URL[vigra/accessor.hxx]{../include/vigra/accessor.hxx}
+    
+    Namespace: vigra
         
     The accessor has two modes of operation:
     
@@ -311,20 +328,38 @@ class SequenceAccessor
     functions:
     
     \begin{verbatim}
-    Iterator iter;
-    VectorAccessor<Iterator, Iterator::PixelType> a;
-    for(VectorAccessor<Iterator, Iterator::PixelType>::iterator i = a.begin(iter); 
-        i != a.end(iter); ++i) 
+    typedef std::list<std::vector<int> > ListOfVectors;
+    
+    ListOfVectors ll;
+    ...
+    
+    typedef vigra::SequenceAccessor<ListOfVectors::value_type> ListOfVectorsAccessor;
+    ListOfVectorsAccessor a;
+    for(ListOfVectors::iterator li = ll.begin(); li != ll.end(); ++li) 
     {
-    *i = 10;
+        for(ListOfVectorsAccessor::iterator i = a.begin(li); i != a.end(li); ++i) 
+        {
+            *i = 10;
+        }
     }
     \end{verbatim}
     \item Access the vector's components via an index (internally calls 
     the vector's #operator[]# ):
     \begin{verbatim}
-    Iterator iter;
-    VectorAccessor<Iterator, Iterator::PixelType> a;
-    for(int i=0; i < a.size(iter); ++i) a.setComponent(i, iter) = 10;
+    typedef std::list<std::vector<int> > ListOfVectors;
+    
+    ListOfVectors ll;
+    ...
+    
+    typedef vigra::SequenceAccessor<ListOfVectors::value_type> ListOfVectorsAccessor;
+    ListOfVectorsAccessor a;
+    for(ListOfVectors::iterator li = ll.begin(); li != ll.end(); ++li) 
+    {
+        for(int i = 0; i != a.size(li); ++i) 
+        {
+            a.setComponent(10, li, i);
+        }
+    }
     \end{verbatim}
     \end{enumerate}
     
@@ -412,6 +447,8 @@ class VectorAccessor
     
     Include-File:
     \URL[vigra/accessor.hxx]{../include/vigra/accessor.hxx}
+    
+    Namespace: vigra
     
     {\bf Required Interface:}
     
@@ -518,40 +555,74 @@ class BilinearInterpolatingAccessor
 /*                                                      */
 /********************************************************/
 
-/** Standard Constant Accessor.
-    This accessor is normally used with all \Ref{ConstImageIterator}s. It
-    simply encapsulates a call to the iterator's #operator*()# in its
-    read function (as a const accessor, it does not have a write
-    function).
+/** Access two images simultaneously.
+    This accessor is used when two images need to be treated as one
+    because an algorithm accepts only one image. For example, 
+    \Ref{seededRegionGrowing}() uses only one image two calculate
+    the cost for aggregating each pixel into a region. Somtimes, we
+    need more information to calcuate this cost, for example gray value
+    and local gradient magnitude. These values can be stored in two images,
+    which appear as only one when we pass a #MultiImageAccessor2# to
+    the lagorithms. Of course, the cost functor must accept a #pair# 
+    of values for this to work. Instead of an actual image iterator, we
+    pass a \URL[CoordinateIterator]{CoordinateIterator.html} which 
+    selects the right pixels form both images.
     
+    {\bf Usage:}
+
     Include-File:
     \URL[vigra/accessor.hxx]{../include/vigra/accessor.hxx}
     
+    Namespace: vigra
+    
+    \begin{verbatim}
+    using namespace vigra;
+    
+    FImage gray_values(w,h), gradient_magnitude(w,h);
+    IImage seeds(w,h), labels(w,h);
+    
+    seededRegionGrowing(
+        srcIterRange(CoordinateIterator(), CoordinateIterator(w,h),
+           MultiImageAccessor2<FImage::iterator, FImage::Accessor,
+                               FImage::iterator, FImage::Accessor>
+                              (gray_values.upperLeft(), gray_values.accessor(),
+                               gradient_magnitude.upperLeft(), gradient_magnitude.accessor())), 
+        srcImage(seeds), 
+        destImage(labels), 
+        SomeCostFunctor());       
+    \end{verbatim}   
 */
 
 template <class Iter1, class Acc1, class Iter2, class Acc2>
 class MultiImageAccessor2
 {
   public:
+        /** The accessors value_type: construct a pair that contains
+            the corresponding image values.
+            @memo
+        */
     typedef pair<typename Acc1::value_type, typename Acc2::value_type>
             value_type;
     
+        /** Construct from two image iterators and associated accessors.
+            @memo
+        */
     MultiImageAccessor2(Iter1 i1, Acc1 a1, Iter2 i2, Acc2 a2)
     : i1_(i1), a1_(a1), i2_(i2), a2_(a2)
     {}
 
-    /** read the current data item
-        @memo
-    */
+        /** read the current data item
+            @memo
+        */
     template <class DISTANCE>
     value_type operator()(DISTANCE const & d) const
     { 
         return std::make_pair(a1_(i1_, d), a2_(i2_, i.x, i.y)); 
     }
     
-    /** read the data item at a distance
-        @memo
-    */
+        /** read the data item at a distance
+            @memo
+        */
     template <class DISTANCE1, class DISTANCE2>
     value_type operator()(DISTANCE1 const & d1, DISTANCE2 d2) const
     { 
@@ -566,6 +637,8 @@ class MultiImageAccessor2
     Acc2 a2_;
 };
 
-//@}   
+//@}
+
+} // namespace vigra
 
 #endif // VIGRA_ACCESSOR_HXX

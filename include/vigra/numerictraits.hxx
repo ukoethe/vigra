@@ -78,17 +78,17 @@
     \begin{verbatim}
     // calculate the sum of any sequence
     template <class Iterator, class Accessor>
-    NumericTraits<typename Accessor::value_type>::Promote
+    typename vigra::NumericTraits<typename Accessor::value_type>::Promote
     sumSequence(Iterator begin, Iterator end, Accessor a)
     {
-        // an abbraviation
-        typedef NumericTraits<typename Accessor::value_type>  SrcTraits;
+        // an abbreviation
+        typedef vigra::NumericTraits<typename Accessor::value_type>  SrcTraits;
         
         // find out result type
         typedef typename SrcTraits::Promote ResultType;
       
         // init result to zero
-        ResultType result = NumericTraits<ResultType>::zero();
+        ResultType result = vigra::NumericTraits<ResultType>::zero();
     
         for(; begin != end; ++begin)
         {  
@@ -214,6 +214,8 @@
     NumericTraits for the built-in types are defined in Include-File: 
     \URL[numerictraits.hxx]{../include/numerictraits.hxx}
     
+    Namespace: vigra
+    
 * @memo Unary traits for promotion, conversion, creation of arithmetic objects
 */
 
@@ -238,11 +240,11 @@
     
     \begin{verbatim}
     template <class T1, class T2>
-    PromoteTraits<T1, T2>::Promote
+    typename vigra::PromoteTraits<T1, T2>::Promote
     min(T1 t1, T2 t2)
     {
-        return (t1 < t2) ? PromoteTraits<T1, T2>::toPromote(t1) : 
-                       PromoteTraits<T1, T2>::toPromote(t2);
+        return (t1 < t2) ? vigra::PromoteTraits<T1, T2>::toPromote(t1) : 
+                           vigra::PromoteTraits<T1, T2>::toPromote(t2);
     }    
     \end{verbatim}
     
@@ -272,9 +274,13 @@
     PromoteTraits for the built-in types are defined in Include-File: 
     \URL[numerictraits.hxx]{../include/numerictraits.hxx}
     
+    Namespace: vigra
+    
 * @memo   Binary traits for promotion of arithmetic objects
 */
 //@}
+
+namespace vigra {
 
 struct Error_NumericTraits_not_specialized_for_this_case { };
 
@@ -1593,6 +1599,8 @@ struct PromoteTraits<long double, long double>
 };
 
 
+
+} // namespace vigra
 
 #endif // VIGRA_NUMERICTRAITS_HXX
 

@@ -25,6 +25,8 @@
 
 #include "vigra/utilities.hxx"
 
+namespace vigra {
+
 /** @name Functions to Initialize Images
     @memo init images or image borders
 */
@@ -44,31 +46,35 @@
     
     pass arguments explicitly:
     \begin{verbatim}
-    template <class ImageIterator, class Accessor, class VALUETYPE>
-    void
-    initImage(ImageIterator upperleft, ImageIterator lowerright, 
-          Accessor a, VALUETYPE v)
-
+    namespace vigra {
+        template <class ImageIterator, class Accessor, class VALUETYPE>
+        void
+        initImage(ImageIterator upperleft, ImageIterator lowerright, 
+              Accessor a, VALUETYPE v)
+    }
     \end{verbatim}
 
     use argument objects in conjuction with \Ref{Argument Object Factories}:
     \begin{verbatim}
-    template <class ImageIterator, class Accessor, class VALUETYPE>
-    void
-    initImage(triple<ImageIterator, ImageIterator, Accessor> img, VALUETYPE v)
+    namespace vigra {
+        template <class ImageIterator, class Accessor, class VALUETYPE>
+        void
+        initImage(triple<ImageIterator, ImageIterator, Accessor> img, VALUETYPE v)
+    }
     \end{verbatim}
     
     {\bf Usage:}
     
         Include-File:
-        \URL[vigra/initimage.hxx]{../include/vigra/initimage.hxx}
+        \URL[vigra/initimage.hxx]{../include/vigra/initimage.hxx}\\
+        Namespace: vigra
     
     \begin{verbatim}
-    BImage img(100, 100);
+    vigra::BImage img(100, 100);
     
     // zero the image
-    initImage(destImageRange(img),
-              NumericTraits<BImage::PixelType>::zero());
+    vigra::initImage(destImageRange(img),
+                     vigra::NumericTraits<vigra::BImage::PixelType>::zero());
     \end{verbatim}
 
     {\bf Required Interface:}
@@ -124,40 +130,44 @@ initImage(triple<ImageIterator, ImageIterator, Accessor> img, VALUETYPE v)
     
     pass arguments explicitly:
     \begin{verbatim}
-    template <class ImageIterator, class Accessor, 
-          class MaskImageIterator, class MaskAccessor,
-          class VALUETYPE>
-    void
-    initImageIf(ImageIterator upperleft, ImageIterator lowerright, Accessor a,
-          MaskImageIterator mask_upperleft, MaskAccessor ma,
-          VALUETYPE v)
-    \end{verbatim}
-    
+    namespace vigra {
+        template <class ImageIterator, class Accessor, 
+              class MaskImageIterator, class MaskAccessor,
+              class VALUETYPE>
+        void
+        initImageIf(ImageIterator upperleft, ImageIterator lowerright, Accessor a,
+              MaskImageIterator mask_upperleft, MaskAccessor ma,
+              VALUETYPE v)
+    }
+    \end{verbatim}    
     
     use argument objects in conjuction with \Ref{Argument Object Factories}:
     \begin{verbatim}
-    template <class ImageIterator, class Accessor, 
-          class MaskImageIterator, class MaskAccessor,
-          class VALUETYPE>
-    void
-    initImageIf(triple<ImageIterator, ImageIterator, Accessor> img, 
-        pair<MaskImageIterator, MaskAccessor> mask,
-        VALUETYPE v)
+    namespace vigra {
+        template <class ImageIterator, class Accessor, 
+              class MaskImageIterator, class MaskAccessor,
+              class VALUETYPE>
+        void
+        initImageIf(triple<ImageIterator, ImageIterator, Accessor> img, 
+            pair<MaskImageIterator, MaskAccessor> mask,
+            VALUETYPE v)
+    }
     \end{verbatim}
     
     {\bf Usage:}
     
         Include-File:
-        \URL[vigra/initimage.hxx]{../include/vigra/initimage.hxx}
+        \URL[vigra/initimage.hxx]{../include/vigra/initimage.hxx}\\
+        Namespace: vigra
     
     \begin{verbatim}
-    BImage img(100, 100);
-    BImage mask(100, 100);
+    vigra::BImage img(100, 100);
+    vigra::BImage mask(100, 100);
     
     // zero the ROI
-    initImageIf(destImageRange(img), 
+    vigra::initImageIf(destImageRange(img), 
                 maskImage(mask),
-                NumericTraits<BImage::PixelType>::zero());
+                vigra::NumericTraits<vigra::BImage::PixelType>::zero());
     \end{verbatim}
 
     {\bf Required Interface:}
@@ -224,31 +234,36 @@ initImageIf(triple<ImageIterator, ImageIterator, Accessor> img,
     
     pass arguments explicitly:
     \begin{verbatim}
-    template <class ImageIterator, class Accessor, class VALUETYPE>
-    void
-    initImageBorder(ImageIterator upperleft, ImageIterator lowerright, 
-            Accessor a,  int border_width, VALUETYPE v)
+    namespace vigra {
+        template <class ImageIterator, class Accessor, class VALUETYPE>
+        void
+        initImageBorder(ImageIterator upperleft, ImageIterator lowerright, 
+                Accessor a,  int border_width, VALUETYPE v)
+    }
     \end{verbatim}
 
     use argument objects in conjuction with \Ref{Argument Object Factories}:
     \begin{verbatim}
-    template <class ImageIterator, class Accessor, class VALUETYPE>
-    void
-    initImageBorder(triple<ImageIterator, ImageIterator, Accessor> img, 
-            int border_width, VALUETYPE v)
+    namespace vigra {
+        template <class ImageIterator, class Accessor, class VALUETYPE>
+        void
+        initImageBorder(triple<ImageIterator, ImageIterator, Accessor> img, 
+                int border_width, VALUETYPE v)
+    }
     \end{verbatim}
     
     {\bf Usage:}
     
         Include-File:
-        \URL[vigra/initimage.hxx]{../include/vigra/initimage.hxx}
+        \URL[vigra/initimage.hxx]{../include/vigra/initimage.hxx}\\
+        Namespace: vigra
     
     \begin{verbatim}
-    BImage img(100, 100);
+    vigra::BImage img(100, 100);
     
     // zero a border of 5 pixel
-    initImageBorder(destImageRange(img),
-                    5, NumericTraits<BImage::PixelType>::zero());
+    vigra::initImageBorder(destImageRange(img),
+                    5, vigra::NumericTraits<vigra::BImage::PixelType>::zero());
     \end{verbatim}
 
     {\bf Required Interface:}
@@ -293,5 +308,6 @@ initImageBorder(triple<ImageIterator, ImageIterator, Accessor> img,
 //@}
 
 
+} // namespace vigra
 
 #endif // VIGRA_INITIMAGE_HXX

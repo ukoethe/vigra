@@ -31,7 +31,7 @@ int main(int argc, char ** argv)
     if(argc != 3)
     {
         std::cout << "Usage: " << argv[0] << " infile outfile" << std::endl;
-        std::cout << "(supported fomats: " << vigraImpexListFormats() << ")" << std::endl;
+        std::cout << "(supported formats: " << vigra::impexListFormats() << ")" << std::endl;
         
         return 1;
     }
@@ -43,12 +43,12 @@ int main(int argc, char ** argv)
     
     try
     {
-        ImageImportInfo info(argv[1]);
+        vigra::ImageImportInfo info(argv[1]);
         
         if(info.isGrayscale())
         {
-            BImage in(info.width(), info.height());
-            BImage out(info.width(), info.height());
+            vigra::BImage in(info.width(), info.height());
+            vigra::BImage out(info.width(), info.height());
            
             importImage(info, destImage(in));
             
@@ -56,12 +56,12 @@ int main(int argc, char ** argv)
             recursiveSmoothX(srcImageRange(in), destImage(out), scale);
             recursiveSmoothY(srcImageRange(out), destImage(out), scale);
             
-            exportImage(srcImageRange(out), ImageExportInfo(argv[2]));
+            exportImage(srcImageRange(out), vigra::ImageExportInfo(argv[2]));
         }
         else
         {
-            BRGBImage in(info.width(), info.height());
-            BRGBImage out(info.width(), info.height());
+            vigra::BRGBImage in(info.width(), info.height());
+            vigra::BRGBImage out(info.width(), info.height());
            
             importImage(info, destImage(in));
             
@@ -69,10 +69,10 @@ int main(int argc, char ** argv)
             recursiveSmoothX(srcImageRange(in), destImage(out), scale);
             recursiveSmoothY(srcImageRange(out), destImage(out), scale);
             
-            exportImage(srcImageRange(out), ImageExportInfo(argv[2]));
+            exportImage(srcImageRange(out), vigra::ImageExportInfo(argv[2]));
         }
     }
-    catch (VigraStdException & e)
+    catch (vigra::StdException & e)
     {
         std::cout << e.what() << std::endl;
         return 1;

@@ -28,18 +28,21 @@
 #include "vigra/accessor.hxx"
 #include "vigra/rgbvalue.hxx"
 
-/** @name Image Data Structures
+namespace vigra { 
+
+/** @name Image Data Structures and Iterators
 
     Include-File:
     \URL[vigra/stdimage.hxx]{../include/vigra/stdimage.hxx}
     
-    @memo Images, image iterators, amd supporting types and functions
+    @memo Images, image iterators, and supporting types and functions
 */
 //@{
 
 //@Include: basicimage.hxx 
 
 /** @name Standard Image Classes
+
     @memo Important instantiations of \Ref{BasicImage} template
 */
 //@{
@@ -57,7 +60,9 @@ struct IteratorTraits<ConstBasicImageIterator<unsigned char, unsigned char **> >
 
     /** Byte (8-bit unsigned) image.
         It uses \Ref{BasicImageIterator} and \Ref{StandardAccessor} and 
-    their const counterparts to access the data.
+        their const counterparts to access the data.
+        
+        Namespace: vigra
     */
 typedef BasicImage<unsigned char> BImage;
 
@@ -75,7 +80,9 @@ struct IteratorTraits<ConstBasicImageIterator<int, int **> >
 
     /** Integer (32-bit signed) image.
         It uses \Ref{BasicImageIterator} and \Ref{StandardAccessor} and 
-    their const counterparts to access the data.
+        their const counterparts to access the data.
+        
+        Namespace: vigra
     */
 typedef BasicImage<int> IImage;
 
@@ -93,7 +100,9 @@ struct IteratorTraits<ConstBasicImageIterator<float, float **> >
 
     /** Float (float) image.
         It uses \Ref{BasicImageIterator} and \Ref{StandardAccessor} and 
-    their const counterparts to access the data.
+        their const counterparts to access the data.
+        
+        Namespace: vigra
     */
 typedef BasicImage<float> FImage;
 
@@ -130,7 +139,9 @@ struct IteratorTraits<ConstBasicImageIterator<RGBValue<unsigned char>, RGBValue<
     /** Byte (3x 8-bit unsigned) RGB image.
         The pixel type is \Ref{RGBValue}<unsigned char>.
         It uses \Ref{BasicImageIterator} and \Ref{RGBAccessor} and 
-    their const counterparts to access the data.
+        their const counterparts to access the data.
+        
+        Namespace: vigra
     */
 typedef BasicImage<RGBValue<unsigned char> > BRGBImage;
 
@@ -149,7 +160,9 @@ struct IteratorTraits<ConstBasicImageIterator<RGBValue<int>, RGBValue<int> ** > 
     /** Integer (3x 32-bit signed) RGB image.
         The pixel type is \Ref{RGBValue}<int>.
         It uses \Ref{BasicImageIterator} and \Ref{RGBAccessor} and 
-    their const counterparts to access the data.
+        their const counterparts to access the data.
+        
+        Namespace: vigra
     */
 typedef BasicImage<RGBValue<int> > IRGBImage;
 
@@ -168,7 +181,9 @@ struct IteratorTraits<ConstBasicImageIterator<RGBValue<float>, RGBValue<float> *
     /** Floating-point (3x float) RGB image.
         The pixel type is \Ref{RGBValue}<float>.
         It uses \Ref{BasicImageIterator} and \Ref{RGBAccessor} and 
-    their const counterparts to access the data.
+        their const counterparts to access the data.
+        
+        Namespace: vigra
     */
 typedef BasicImage<RGBValue<float> > FRGBImage;
 
@@ -188,11 +203,11 @@ struct IteratorTraits<ConstBasicImageIterator<T, T **> >
 };
 
 #endif
-
-
+    
 //@}
 
-//@Include: imageiterator.hxx imageiteratoradapter.hxx
+//@Include: imageiterator.hxx 
+//@Include: imageiteratoradapter.hxx
 //@Include: accessor.hxx
 //@Include: rgbvalue.hxx 
 
@@ -216,22 +231,22 @@ struct IteratorTraits<ConstBasicImageIterator<T, T **> >
     write something like this (cf. \Ref{copyImageIf}):
     
     \begin{verbatim}
-    CImage img1, img2, img3;
+    vigra::CImage img1, img2, img3;
     
     // fill img1 and img2 ...
     
-    copyImageIf(img1.upperLeft(), img1.lowerRight(), img1.accessor(),
+    vigra::copyImageIf(img1.upperLeft(), img1.lowerRight(), img1.accessor(),
                 img2.upperLeft(), img2.accessor(),
-        img3.upperLeft(), img3.accessor());
+                img3.upperLeft(), img3.accessor());
     \end{verbatim}
     
     Using the argument object factories, this becomes much shorter and
     more readable:
     
     \begin{verbatim}
-    copyImageIf(srcImageRange(img1),
+    vigra::copyImageIf(srcImageRange(img1),
                 maskImage(img2),
-        destImage(img3));
+                destImage(img3));
     \end{verbatim}
     
     The names of the factories clearly tell which image is source, mask, 
@@ -246,9 +261,9 @@ struct IteratorTraits<ConstBasicImageIterator<T, T **> >
     The iterator based variant would look like this:
     
     \begin{verbatim}
-    copyImageIf(srcIterRange(img1.upperLeft(), img1.lowerRight()),
+    vigra::copyImageIf(srcIterRange(img1.upperLeft(), img1.lowerRight()),
                 maskIter(img2.upperLeft()),
-        destIter(img3.upperLeft()));
+                destIter(img3.upperLeft()));
     \end{verbatim}
     
     These factory functions contain the word #Iter# instead of the word 
@@ -262,17 +277,17 @@ struct IteratorTraits<ConstBasicImageIterator<T, T **> >
     like this:
     
     \begin{verbatim}
-    copyImageIf(srcImageRange(img1),
+    vigra::copyImageIf(srcImageRange(img1),
                 maskImage(img2, MaskPredicateAccessor()),
-        destImage(img3));    
+                destImage(img3));    
     \end{verbatim}
     
     or
     
     \begin{verbatim}
-    copyImageIf(srcIterRange(img1.upperLeft(), img1.lowerRight()),
+    vigra::copyImageIf(srcIterRange(img1.upperLeft(), img1.lowerRight()),
                 maskIter(img2.upperLeft(), MaskPredicateAccessor()),
-        destIter(img3.upperLeft()));
+                destIter(img3.upperLeft()));
     \end{verbatim}
     
     All versions can be mixed freely within one explession.
@@ -295,7 +310,7 @@ struct IteratorTraits<ConstBasicImageIterator<T, T **> >
     given explicitly). The following factory functions are provided:
     
     \begin{tabular}{ll}
-    #BasicImage<SomeType> img;# & 
+    #vigra::BasicImage<SomeType> img;# & 
     
         \\
         
@@ -371,7 +386,7 @@ struct IteratorTraits<ConstBasicImageIterator<T, T **> >
     are provided:
     
     \begin{tabular}{ll}
-    #BasicImage<SomeType>::Iterator i1, i2;# & 
+    #vigra::BasicImage<SomeType>::Iterator i1, i2;# & 
     
         \\
         
@@ -632,7 +647,8 @@ destIterRange(Iterator upperleft, Iterator lowerright)
               IteratorTraits<Iterator>::DefaultAccessor());
 }
 
-
 //@}
+
+} // namespace vigra
 
 #endif // VIGRA_STDIMAGE_HXX

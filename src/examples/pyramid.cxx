@@ -43,11 +43,11 @@ void reduceToNextLevel(Image & in, Image & out)
     out.resize(newwidth, newheight);
     
     // define a Gaussian kernel (size 5x1)
-    Kernel1D<double> filter;
+    vigra::Kernel1D<double> filter;
     filter.initExplicitly(-2, 2) = 0.05, 0.25, 0.4, 0.25, 0.05;
     
-    BasicImage<typename Image::value_type> tmpimage1(width, height);
-    BasicImage<typename Image::value_type> tmpimage2(width, height);
+    vigra::BasicImage<typename Image::value_type> tmpimage1(width, height);
+    vigra::BasicImage<typename Image::value_type> tmpimage2(width, height);
     
     // smooth (band limit) input image
     separableConvolveX(srcImageRange(in),
@@ -65,18 +65,18 @@ int main(int argc, char ** argv)
     if(argc != 3)
     {
         std::cout << "Usage: " << argv[0] << " infile outfile" << std::endl;
-        std::cout << "(supported fomats: " << vigraImpexListFormats() << ")" << std::endl;
+        std::cout << "(supported formats: " << vigra::impexListFormats() << ")" << std::endl;
         
         return 1;
     }
     
     try
     {
-        ImageImportInfo info(argv[1]);
+        vigra::ImageImportInfo info(argv[1]);
         
         if(info.isGrayscale())
         {
-            BImage levels[4];
+            vigra::BImage levels[4];
         
             levels[0].resize(info.width(), info.height());
            
@@ -89,11 +89,11 @@ int main(int argc, char ** argv)
 
             }
             
-            exportImage(srcImageRange(levels[3]), ImageExportInfo(argv[2]));
+            exportImage(srcImageRange(levels[3]), vigra::ImageExportInfo(argv[2]));
         }
         else
         {
-            BRGBImage levels[4];
+            vigra::BRGBImage levels[4];
         
             levels[0].resize(info.width(), info.height());
            
@@ -105,10 +105,10 @@ int main(int argc, char ** argv)
                 reduceToNextLevel(levels[i-1], levels[i]);
             }
             
-            exportImage(srcImageRange(levels[3]), ImageExportInfo(argv[2]));
+            exportImage(srcImageRange(levels[3]), vigra::ImageExportInfo(argv[2]));
         }
     }
-    catch (VigraStdException & e)
+    catch (vigra::StdException & e)
     {
         std::cout << e.what() << std::endl;
         return 1;

@@ -47,6 +47,8 @@ extern "C" {
 
 }
 
+namespace vigra {
+
 /** @name Convert VIFF images
     @memo VIFF images files can store byte, int, float, double etc. pixel types
 */
@@ -67,31 +69,36 @@ extern "C" {
     
     pass arguments explicitly:
     \begin{verbatim}
-    template <class ImageIterator, class Accessor>
-    void
-    importViffImage(ViffImage * viff, ImageIterator iter, Accessor a)
+    namespace vigra {
+        template <class ImageIterator, class Accessor>
+        void
+        importViffImage(ViffImage * viff, ImageIterator iter, Accessor a)
+    }
     \end{verbatim}
 
     use argument objects in conjuction with \Ref{Argument Object Factories}:
     \begin{verbatim}
-    template <class ImageIterator, class Accessor>
-    void
-    importViffImage(ViffImage * viff, pair<ImageIterator, Accessor> dest)
+    namespace vigra {
+        template <class ImageIterator, class Accessor>
+        void
+        importViffImage(ViffImage * viff, pair<ImageIterator, Accessor> dest)
+    }
     \end{verbatim}
     
     {\bf Usage:}
 
     Include-File:
-    \URL[vigra/viff.hxx]{../include/vigra/viff.hxx}
+    \URL[vigra/viff.hxx]{../include/vigra/viff.hxx}\\
+    Namespace: vigra
     
     \begin{verbatim}
-    ViffImage * viff = readimage("scalarimage.xv");
+    ViffImage * viff = readViffImage("scalarimage.xv");
     
-    BImage img(viff->row_size, viff->col_size);
+    vigra::BImage img(viff->row_size, viff->col_size);
     
-    importViffImage(viff, destImage(img));
+    vigra::importViffImage(viff, destImage(img));
     
-    freeimage(viff);
+    freeViffImage(viff);
     \end{verbatim}
     
     {\bf Required Interface:}
@@ -148,31 +155,36 @@ importViffImage(ViffImage * viff, ImageIterator iter, Accessor a, VigraFalseType
     
     pass arguments explicitly:
     \begin{verbatim}
-    template <class ImageIterator, class Accessor>
-    void
-    viffToScalarImage(ViffImage * viff, ImageIterator iter, Accessor a)
+    namespace vigra {
+        template <class ImageIterator, class Accessor>
+        void
+        viffToScalarImage(ViffImage * viff, ImageIterator iter, Accessor a)
+    }
     \end{verbatim}
 
     use argument objects in conjuction with \Ref{Argument Object Factories}:
     \begin{verbatim}
-    template <class ImageIterator, class Accessor>
-    void
-    viffToScalarImage(ViffImage * viff, pair<ImageIterator, Accessor> dest)
+    namespace vigra {
+        template <class ImageIterator, class Accessor>
+        void
+        viffToScalarImage(ViffImage * viff, pair<ImageIterator, Accessor> dest)
+    }
     \end{verbatim}
     
     {\bf Usage:}
 
     Include-File:
-    \URL[vigra/viff.hxx]{../include/vigra/viff.hxx}
+    \URL[vigra/viff.hxx]{../include/vigra/viff.hxx}\\
+    Namespace: vigra
     
     \begin{verbatim}
-    ViffImage * viff = readimage("scalarimage.xv");
+    ViffImage * viff = readViffImage("scalarimage.xv");
     
-    BImage img(viff->row_size, viff->col_size);
+    vigra::BImage img(viff->row_size, viff->col_size);
     
-    viffToScalarImage(viff, destImage(img));
+    vigra::viffToScalarImage(viff, destImage(img));
     
-    freeimage(viff);
+    freeViffImage(viff);
     \end{verbatim}
     
     {\bf Required Interface:}
@@ -343,25 +355,32 @@ viffToScalarImage(ViffImage * viff, pair<ImageIterator, Accessor> dest)
     
     pass arguments explicitly:
     \begin{verbatim}
-    template <class ImageIterator, class VectorComponentAccessor>
-    void
-    viffToMultibandImage(ViffImage * viff, ImageIterator iter, VectorComponentAccessor a)
+    namespace vigra {
+        template <class ImageIterator, class VectorComponentAccessor>
+        void
+        viffToMultibandImage(ViffImage * viff, ImageIterator iter, VectorComponentAccessor a)
+    }
     \end{verbatim}
 
     use argument objects in conjuction with \Ref{Argument Object Factories}:
     \begin{verbatim}
-    template <class ImageIterator, class VectorComponentAccessor>
-    void
-    viffToMultibandImage(ViffImage * viff, pair<ImageIterator, VectorComponentAccessor> dest)
+    namespace vigra {
+        template <class ImageIterator, class VectorComponentAccessor>
+        void
+        viffToMultibandImage(ViffImage * viff, pair<ImageIterator, VectorComponentAccessor> dest)
+    }
     \end{verbatim}
 
     {\bf Usage:}
 
     Include-File:
-    \URL[vigra/viff.hxx]{../include/vigra/viff.hxx}
+    \URL[vigra/viff.hxx]{../include/vigra/viff.hxx}\\
+    Namespace: vigra
     
     \begin{verbatim}
-    ViffImage * viff = readimage("rgbimage.xv");
+    using namespace vigra;
+    
+    ViffImage * viff = readViffImage("rgbimage.xv");
     
     BRGBImage img(viff->row_size, viff->col_size);
     
@@ -369,7 +388,7 @@ viffToScalarImage(ViffImage * viff, pair<ImageIterator, Accessor> dest)
         destIter(img.upperLeft(), 
          VectorComponentAccessor<BRGBImage::Iterator, BRGBImage::PixelType>());
     
-    freeimage(viff);
+    freeViffImage(viff);
     \end{verbatim}
     
     {\bf Required Interface:}
@@ -569,31 +588,36 @@ viffToMultibandImage(ViffImage * viff, pair<ImageIterator, VectorComponentAccess
     
     pass arguments explicitly:
     \begin{verbatim}
-    template <class RGBImageIterator, class RGBAccessor>
-    void
-    viffToRGBImage(ViffImage * viff, RGBImageIterator iter, RGBAccessor a)
+    namespace vigra {
+        template <class RGBImageIterator, class RGBAccessor>
+        void
+        viffToRGBImage(ViffImage * viff, RGBImageIterator iter, RGBAccessor a)
+    }
     \end{verbatim}
 
     use argument objects in conjuction with \Ref{Argument Object Factories}:
     \begin{verbatim}
-    template <class RGBImageIterator, class RGBAccessor>
-    void
-    viffToRGBImage(ViffImage * viff, pair<RGBImageIterator, RGBAccessor> dest)
+    namespace vigra {
+        template <class RGBImageIterator, class RGBAccessor>
+        void
+        viffToRGBImage(ViffImage * viff, pair<RGBImageIterator, RGBAccessor> dest)
+    }
     \end{verbatim}
 
     {\bf Usage:}
 
     Include-File:
-    \URL[vigra/viff.hxx]{../include/vigra/viff.hxx}
+    \URL[vigra/viff.hxx]{../include/vigra/viff.hxx}\\
+    Namespace: vigra
     
     \begin{verbatim}
-    ViffImage * viff = readimage("rgbimage.xv");
+    ViffImage * viff = readViffImage("rgbimage.xv");
     
-    BRGBImage img(viff->row_size, viff->col_size);
+    vigra::BRGBImage img(viff->row_size, viff->col_size);
     
-    viffToRGBImage(viff, destImage(img));
+    vigra::viffToRGBImage(viff, destImage(img));
     
-    freeimage(viff);
+    freeViffImage(viff);
     \end{verbatim}
     
     {\bf Required Interface:}
@@ -844,34 +868,39 @@ viffToRGBImage(ViffImage * viff, pair<RGBImageIterator, RGBAccessor> dest)
     
     pass arguments explicitly:
     \begin{verbatim}
-    template <class ImageIterator, class Accessor>
-    inline ViffImage *
-    createViffImage(ImageIterator upperleft, ImageIterator lowerright, 
-                    Accessor a)
+    namespace vigra {
+        template <class ImageIterator, class Accessor>
+        inline ViffImage *
+        createViffImage(ImageIterator upperleft, ImageIterator lowerright, 
+                        Accessor a)
+    }
     \end{verbatim}
 
     use argument objects in conjuction with \Ref{Argument Object Factories}:
     \begin{verbatim}
-    template <class ImageIterator, class Accessor>
-    inline ViffImage *
-    createViffImage(triple<ImageIterator, ImageIterator, Accessor> src)
+    namespace vigra {
+        template <class ImageIterator, class Accessor>
+        inline ViffImage *
+        createViffImage(triple<ImageIterator, ImageIterator, Accessor> src)
+    }
     \end{verbatim}
 
     {\bf Usage:}
 
     Include-File:
-    \URL[vigra/viff.hxx]{../include/vigra/viff.hxx}
+    \URL[vigra/viff.hxx]{../include/vigra/viff.hxx}\\
+    Namespace: vigra
     
     \begin{verbatim}
-    BImage img(width, height);
+    vigra::BImage img(width, height);
     
     ...
     
-    ViffImage * viff = createViffImage(srcImageRange(img));
+    ViffImage * viff = vigra::createViffImage(srcImageRange(img));
     
-    writeimage("output.xv", viff);
+    writeViffImage("output.xv", viff);
     
-    freeimage(viff);
+    freeViffImage(viff);
     \end{verbatim}
     
     {\bf Required Interface:}
@@ -934,34 +963,39 @@ createViffImage(ImageIterator upperleft, ImageIterator lowerright,
     
     pass arguments explicitly:
     \begin{verbatim}
-    template <class ImageIterator, class Accessor>
-    inline ViffImage *
-    createScalarViffImage(ImageIterator upperleft, ImageIterator lowerright, 
-              Accessor a)
+    namespace vigra {
+        template <class ImageIterator, class Accessor>
+        inline ViffImage *
+        createScalarViffImage(ImageIterator upperleft, ImageIterator lowerright, 
+                  Accessor a)
+    }
     \end{verbatim}
 
     use argument objects in conjuction with \Ref{Argument Object Factories}:
     \begin{verbatim}
-    template <class ImageIterator, class Accessor>
-    inline ViffImage *
-    createScalarViffImage(triple<ImageIterator, ImageIterator, Accessor> src)
+    namespace vigra {
+        template <class ImageIterator, class Accessor>
+        inline ViffImage *
+        createScalarViffImage(triple<ImageIterator, ImageIterator, Accessor> src)
+    }
     \end{verbatim}
 
     {\bf Usage:}
 
     Include-File:
-    \URL[vigra/viff.hxx]{../include/vigra/viff.hxx}
+    \URL[vigra/viff.hxx]{../include/vigra/viff.hxx}\\
+    Namespace: vigra
     
     \begin{verbatim}
-    BImage img(width, height);
+    vigra::BImage img(width, height);
     
     ...
     
-    ViffImage * viff = createScalarViffImage(srcImageRange(img));
+    ViffImage * viff = vigra::createScalarViffImage(srcImageRange(img));
     
-    writeimage("output.xv", viff);
+    writeViffImage("output.xv", viff);
     
-    freeimage(viff);
+    freeViffImage(viff);
     \end{verbatim}
     
     {\bf Required Interface:}
@@ -1136,34 +1170,39 @@ createScalarViffImage(ImageIterator upperleft, ImageIterator lowerright,
     
     pass arguments explicitly:
     \begin{verbatim}
-    template <class RGBImageIterator, class RGBAccessor>
-    inline ViffImage *
-    createRGBViffImage(RGBImageIterator upperleft, RGBImageIterator lowerright,
-               RGBAccessor a)
+    namespace vigra {
+        template <class RGBImageIterator, class RGBAccessor>
+        inline ViffImage *
+        createRGBViffImage(RGBImageIterator upperleft, RGBImageIterator lowerright,
+                   RGBAccessor a)
+    }
     \end{verbatim}
 
     use argument objects in conjuction with \Ref{Argument Object Factories}:
     \begin{verbatim}
-    template <class RGBImageIterator, class RGBAccessor>
-    inline ViffImage *
-    createRGBViffImage(triple<RGBImageIterator, RGBImageIterator, RGBAccessor> src)
+    namespace vigra {
+        template <class RGBImageIterator, class RGBAccessor>
+        inline ViffImage *
+        createRGBViffImage(triple<RGBImageIterator, RGBImageIterator, RGBAccessor> src)
+    }
     \end{verbatim}
 
     {\bf Usage:}
 
     Include-File:
-    \URL[vigra/viff.hxx]{../include/vigra/viff.hxx}
+    \URL[vigra/viff.hxx]{../include/vigra/viff.hxx}\\
+    Namespace: vigra
     
     \begin{verbatim}
-    BRGBImage img(width, height);
+    vigra::BRGBImage img(width, height);
     
     ...
     
-    ViffImage * viff = createRGBViffImage(srcImageRange(img));
+    ViffImage * viff = vigra::createRGBViffImage(srcImageRange(img));
     
-    writeimage("output.xv", viff);
+    writeViffImage("output.xv", viff);
     
-    freeimage(viff);
+    freeViffImage(viff);
     \end{verbatim}
     
     {\bf Required Interface:}
@@ -1293,5 +1332,7 @@ createRGBViffImage(RGBImageIterator upperleft, RGBImageIterator lowerright,
 //@}
 
 //@}
+
+} // namespace vigra
 
 #endif // VIGRA_VIFF_HXX

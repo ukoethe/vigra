@@ -22,14 +22,12 @@
 #ifndef VIGRA_FUNCTOREXPRESSION_HXX 
 #define VIGRA_FUNCTOREXPRESSION_HXX 
 
-#include <vigra/numerictraits.hxx>
-
-#if !defined(NO_PARTIAL_TEMPLATE_SPECIALIZATION)
 
 /** @name Functor Creation      
 
     Include-File:
-    \URL[vigra/functorexpression.hxx]{../include/vigra/functorexpression.hxx}
+    \URL[vigra/functorexpression.hxx]{../include/vigra/functorexpression.hxx}\\
+    Namespaces: vigra and vigra::functor
 
     {\bf Motivation}
     
@@ -40,10 +38,10 @@
     to #transformImage()#:
     
     \begin{verbatim}
-    FImage src(w,h), dest(w,h);
+    vigra::FImage src(w,h), dest(w,h);
     ... // fill src
     
-    transformImage(srcImageRange(src), destImage(dest), &exp);    
+    vigra::transformImage(srcImageRange(src), destImage(dest), &exp);    
     \end{verbatim}
     
     However, this only works for simple operations. If we wanted to 
@@ -71,7 +69,7 @@
     
     \begin{verbatim}
     double beta =  ...;
-    transformImage(srcImageRange(src), destImage(dest), 
+    vigra::transformImage(srcImageRange(src), destImage(dest), 
                    Exponential(beta));    
     \end{verbatim}
     
@@ -101,7 +99,7 @@
     \begin{verbatim}
     float beta = ...;
     
-    transformImage(srcImageRange(src), destImage(dest), 
+    vigra::transformImage(srcImageRange(src), destImage(dest), 
                    std::compose1(std::ptr_fun(exp),
                                  std::bind1st(std::multiplies<float>(), -beta)));
     \end{verbatim}
@@ -130,6 +128,8 @@
     like this:
     
     \begin{verbatim}
+    using namespace vigra;
+    
     float beta = ...;
     
     transformImage(srcImageRange(src), destImage(dest), 
@@ -172,6 +172,8 @@
     of the gradient vector, you may write:
     
     \begin{verbatim}
+    using namespace vigra;
+    
     FImage gradient_x(w,h), gradient_y(w,h), magnitude(w,h);
     ... // calculate gradient_x and gradient_y
     
@@ -184,6 +186,8 @@
     you want to apply #my_complicated_function()# to the sum of two images:
     
     \begin{verbatim}
+    using namespace vigra;
+    
     FImage src1(w,h), src2(w,h), dest(w,h);
     
     double my_complicated_function(double);
@@ -200,6 +204,8 @@
     #ifThenElse()# can be used, for example, to threshold an image:
     
     \begin{verbatim}
+    using namespace vigra;
+    
     FImage src(w,h), thresholded(w,h);
     ...// fill src
     
@@ -217,6 +223,8 @@
     value of the image is calculated like this:
     
     \begin{verbatim}
+    using namespace vigra;
+    
     FImage src(w,h);
     ...// fill src
     
@@ -233,6 +241,8 @@
     of an image region:
     
     \begin{verbatim}
+    using namespace vigra;
+    
     IImage label_image(w,h);
     ...// mark regions by labels in label_image
     
@@ -252,6 +262,8 @@
     simultaneously find the size and the average gray value of a region:
     
     \begin{verbatim}
+    using namespace vigra;
+    
     FImage src(w,h);
     IImage label_image(w,h);
     ...// segment src and mark regions in label_image
@@ -280,6 +292,8 @@
     address in scan order:
     
     \begin{verbatim}
+    using namespace vigra;
+    
     IImage img(w,h);
     
     int count = -1;
@@ -291,13 +305,21 @@
               ));
     \end{verbatim}
     
+    Further information about how this mechanism works can be found in
+    \URL[this paper]{documents/FunctorFactory.ps} (sorry, slightly out of date).
+    
     @memo Expression templates to automate functor creation. 
 */
-//@{
-// empty documentation to make doc++ happy
-/**
-*/
-//@}
+
+#include <cmath>
+#include <vigra/numerictraits.hxx>
+
+#if !defined(NO_PARTIAL_TEMPLATE_SPECIALIZATION)
+
+
+namespace vigra {
+
+namespace functor {
 
 /************************************************************/
 /*                                                          */
@@ -913,6 +935,7 @@ ifThenElse(UnaryFunctor<EXPR1> const & e1,
 /************************************************************/
 
 #define makeFunctorUnaryFunction(function) \
+    using std::function; \
     template <class EXPR> \
     struct Functor_##function; \
     \
@@ -1077,6 +1100,7 @@ makeFunctorUnaryOperator(bitNegate, ~);
 /************************************************************/
 
 #define makeFunctorBinaryFunction(function) \
+    using std::function; \
     template <class EXPR1, class EXPR2> \
     struct Functor_##function; \
     \
@@ -1665,6 +1689,12 @@ operator,(UnaryAnalyser<EXPR1> const & e1,
 }
 
 #endif /* NO_PARTIAL_TEMPLATE_SPECIALIZATION */
+
+} // namespace functor
+
+using namespace functor;
+
+} // namespace vigra
 
 #endif /* VIGRA_FUNCTOREXPRESSION_HXX  */
 

@@ -36,7 +36,7 @@ int main(int argc, char ** argv)
         int size = 512;
         
         // create input image
-        FImage in(size, size);
+        vigra::FImage in(size, size);
         
         // paint it black
         in = 0;
@@ -52,7 +52,7 @@ int main(int argc, char ** argv)
         }
         
         // create output image and paint it white
-        IImage out(size, size);
+        vigra::IImage out(size, size);
         out = 255;
         
         // in the output image, paint the points black which were 
@@ -60,16 +60,16 @@ int main(int argc, char ** argv)
         initImageIf(destImageRange(out), maskImage(in), 0);
         
         // create image to hold the distance transform
-        FImage distances(size, size);
+        vigra::FImage distances(size, size);
         
         // calculate Euclidean distance transform
         distanceTransform(srcImageRange(in), destImage(distances), 0, 2);
         
-        exportImage(srcImageRange(distances), ImageExportInfo("distances.gif"));
+        exportImage(srcImageRange(distances), vigra::ImageExportInfo("distances.gif"));
         std::cout << "Wrote distance transform (distances.gif)" << std::endl;
         
         // initialize statistics functor for region growing
-        ArrayOfRegionStatistics<SeedRgDirectValueFunctor<float> > 
+        vigra::ArrayOfRegionStatistics<vigra::SeedRgDirectValueFunctor<float> > 
             statistics(number_of_points);
 
         // perform region growing, starting at the points marked in the input
@@ -81,10 +81,10 @@ int main(int argc, char ** argv)
         // in the output image, mark the borders of the voronoi regions black 
         regionImageToEdgeImage(srcImageRange(in), destImage(out), 0);
 
-        exportImage(srcImageRange(out), ImageExportInfo("voronoi.gif"));
+        exportImage(srcImageRange(out), vigra::ImageExportInfo("voronoi.gif"));
         std::cout << "Wrote voronoi diagram (voronoi.gif)" << std::endl;
     }
-    catch (VigraStdException & e)
+    catch (vigra::StdException & e)
     {
         std::cout << e.what() << std::endl;
         return 1;

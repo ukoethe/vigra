@@ -9,12 +9,15 @@ if len(sys.argv) != 3:
 # compile the regex patterns needed for heading modification
 heading = re.compile(r'<H2>(.*?)</H2>', re.M)
 headingArrow = re.compile(r'<A HREF ="#DOC.DOCU" > <IMG BORDER=0 SRC=down.gif></A>')
+headingNamespace = re.compile(r'\s(namespace\s+vigra|namespace)\s+')
+headingInline = re.compile(r'\sinline\s+')
 headingTypedef = re.compile(r'typedef')
 headingTemplateClass = re.compile(r'&gt; *class')
+headingLongTemplate = re.compile(r'(template\s&lt;.*?&gt;)(.*?\s*</font>)', re.M)
 headingInheritance = re.compile(r': *(?:private\s*|public\s*).*(\s*)</font>')
 headingTemplateSpecialization = re.compile(r'template\s*?&lt;\s*?&gt;')
 headingTemplateParameters = re.compile(r'&lt;.*?&gt;')
-headingFunctionArguments = re.compile(r'\(.*?\)(\s*)</font>')
+headingFunctionArguments = re.compile(r'\(.+?\)(\s*)</font>')
 
 # compile the regex patterns needed in the body of the document
 body = re.compile(r'<body>', re.I)
@@ -76,6 +79,8 @@ def convertHeading(text):
     # create a table for the heading (with down arrow at left and VIGRA logo at right)
     text = heading.sub(headingTableReplacement, text)
     text = headingArrow.sub(headingArrowReplacement, text)
+    text = headingNamespace.sub(' ', text) # don't put namespace keyword in headings
+    text = headingInline.sub(' ', text) # don't put inline keyword in headings
     
     # simplify heading
     if headingTypedef.search(text): 
@@ -84,6 +89,11 @@ def convertHeading(text):
         return text   # don't simplify explicitly specialized templates
     if headingTemplateClass.search(text):
         text = headingInheritance.sub(r'\1</font>', text)   # remove inheritance
+        isTemplate = headingLongTemplate.search(text, 1)
+        if isTemplate != None:
+          if (isTemplate.regs[0][1] - isTemplate.regs[0][0]) > 80:
+            #insert a page break for long templates
+            text = headingLongTemplate.sub(r'\1<br>\2', text)
         return text                                         # don't further simplify classes
     text = headingTemplateParameters.sub(r'&lt;...&gt', text)  # remove template parameters
     text = headingFunctionArguments.sub(r'(...)\1</font>', text) # remove function arguments

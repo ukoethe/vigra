@@ -26,7 +26,8 @@
 /** @name Functions to Convolve Images and Signals 
 
     Include-File:
-    \URL[vigra/convolution.hxx]{../include/vigra/convolution.hxx}
+    \URL[vigra/convolution.hxx]{../include/vigra/convolution.hxx}\\
+    Namespace: vigra
     
     @memo including standard and separable convolution, and recursive filters.
 */
@@ -59,7 +60,7 @@
 	information. The following factory functions are provided:
 	
 	\begin{tabular}{ll}
-	#Kernel1D<SomeType> kernel;# & 
+	#vigra::Kernel1D<SomeType> kernel;# & 
 	
 	    \\
 	    
@@ -69,7 +70,7 @@
 	    
 	    \\
 	    
-	#kernel1d(kernel, BORDER_TREATMENT_CLIP)# &
+	#kernel1d(kernel, vigra::BORDER_TREATMENT_CLIP)# &
 	    create argument object from information provided by 
 	    kernel, but use given border treatment mode
 	    
@@ -77,7 +78,7 @@
 	    
 	#kernel1d(kerneliterator, kernelaccessor,#
 	#                kernelleft, kernelright,#
-	#                BORDER_TREATMENT_CLIP)# &
+	#                vigra::BORDER_TREATMENT_CLIP)# &
 	    create argument object from explicitly given iterator
 	    (pointing to the center of th kernel), accessor,
 	    left and right boundaries, and border treatment mode
@@ -101,7 +102,7 @@
 	information. The following factory functions are provided:
 	
 	\begin{tabular}{ll}
-	#Kernel2D<SomeType> kernel;# & 
+	#vigra::Kernel2D<SomeType> kernel;# & 
 	
 	    \\
 	    
@@ -111,7 +112,7 @@
 	    
 	    \\
 	    
-	#kernel2d(kernel, BORDER_TREATMENT_CLIP)# &
+	#kernel2d(kernel, vigra::BORDER_TREATMENT_CLIP)# &
 	    create argument object from information provided by 
 	    kernel, but use given border treatment mode
 	    
@@ -119,7 +120,7 @@
 	    
 	#kernel2d(kerneliterator, kernelaccessor,#
 	#                upperleft, lowerright,#
-	#                BORDER_TREATMENT_CLIP)# &
+	#                vigra::BORDER_TREATMENT_CLIP)# &
 	    create argument object from explicitly given iterator
 	    (pointing to the center of th kernel), accessor,
 	    upper left and lower right corners, and border treatment mode
