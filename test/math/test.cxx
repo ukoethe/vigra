@@ -1,3 +1,4 @@
+#include <typeinfo>
 #include <iostream>
 #include <algorithm>
 #include "unittest.hxx"
@@ -325,8 +326,8 @@ struct RationalTest
     
     void testInf()
     {
-        R inf(1,0,false);
-        R ninf(-1,0,false);
+        R inf(2,0);
+        R ninf(-2,0);
         
         should(inf.is_inf());
         should(inf.is_pinf());
@@ -334,6 +335,8 @@ struct RationalTest
         should(ninf.is_inf());
         should(ninf.is_ninf());
         should(!ninf.is_pinf());
+        shouldEqual(inf.numerator(), 1);
+        shouldEqual(ninf.numerator(), -1);
         
         should((inf + R(1)).is_pinf());
         should((inf + R(0)).is_pinf());
@@ -349,6 +352,8 @@ struct RationalTest
         should((ninf + (-1)).is_ninf());
         should((inf + inf).is_pinf());
         should((ninf + ninf).is_ninf());
+        shouldEqual((inf + R(3)).numerator(), 1);
+        shouldEqual((ninf + R(3)).numerator(), -1);
 
         should((inf - R(1)).is_pinf());
         should((inf - R(0)).is_pinf());
@@ -364,6 +369,8 @@ struct RationalTest
         should((ninf - (-1)).is_ninf());
         should((inf - ninf).is_pinf());
         should((ninf - inf).is_ninf());
+        shouldEqual((inf - R(3)).numerator(), 1);
+        shouldEqual((ninf - R(3)).numerator(), -1);
 
         should((inf * R(1)).is_pinf());
         should((inf * R(-1)).is_ninf());
@@ -377,26 +384,54 @@ struct RationalTest
         should((inf * ninf).is_ninf());
         should((ninf * inf).is_ninf());
         should((ninf * ninf).is_pinf());
+        shouldEqual((inf * R(3)).numerator(), 1);
+        shouldEqual((ninf * R(3)).numerator(), -1);
+        shouldEqual((inf * R(-3)).numerator(), -1);
+        shouldEqual((ninf * R(-3)).numerator(), 1);
 
         should((inf / R(1)).is_pinf());
+        should((inf / R(0)).is_pinf());
         should((inf / R(-1)).is_ninf());
         should((ninf / R(1)).is_ninf());
+        should((ninf / R(0)).is_ninf());
         should((ninf / R(-1)).is_pinf());
         shouldEqual(R(1) / inf, R(0));
         shouldEqual(R(-1) / inf, R(0));
         shouldEqual(R(1) / ninf, R(0));
         shouldEqual(R(-1) / ninf, R(0));
         should((inf / 1).is_pinf());
+        should((inf / 0).is_pinf());
         should((inf / (-1)).is_ninf());
         should((ninf / 1).is_ninf());
+        should((ninf / 0).is_ninf());
         should((ninf / (-1)).is_pinf());
-        shouldEqual(1 / inf, R(0));
-        shouldEqual((-1) / inf, R(0));
-        shouldEqual(1 / ninf, R(0));
-        shouldEqual((-1) / ninf, R(0));
+        
+        shouldEqual(2 / inf, R(0));
+        shouldEqual((-2) / inf, R(0));
+        shouldEqual(2 / ninf, R(0));
+        shouldEqual((-2) / ninf, R(0));
+        shouldEqual((2 / inf).denominator(), 1);
+        shouldEqual(((-2) / inf).denominator(), 1);
+        shouldEqual((2 / ninf).denominator(), 1);
+        shouldEqual(((-2) / ninf).denominator(), 1);
+        
+        shouldEqual((inf / R(3)).numerator(), 1);
+        shouldEqual((ninf / R(3)).numerator(), -1);
+        shouldEqual((inf / R(-3)).numerator(), -1);
+        shouldEqual((ninf / R(-3)).numerator(), 1);
 
         should(inf == inf);
+        should(!(inf != inf));
+        should(!(inf < inf));
+        should(inf <= inf);
+        should(!(inf > inf));
+        should(inf >= inf);
         should(ninf == ninf);
+        should(!(ninf != ninf));
+        should(!(ninf < ninf));
+        should(ninf <= ninf);
+        should(!(ninf > ninf));
+        should(ninf >= ninf);
         should(inf != ninf);
         should(ninf != inf);
         should(inf > ninf);
@@ -441,6 +476,9 @@ struct RationalTest
         try { inf / inf; failTest("No exception thrown"); } catch(vigra::bad_rational &) {}
         try { inf / ninf; failTest("No exception thrown"); } catch(vigra::bad_rational &) {}
         try { ninf / inf; failTest("No exception thrown"); } catch(vigra::bad_rational &) {}
+        try { R(0) / R(0); failTest("No exception thrown"); } catch(vigra::bad_rational &) {}
+        try { R(0) / 0; failTest("No exception thrown"); } catch(vigra::bad_rational &) {}
+        try { 0 / R(0); failTest("No exception thrown"); } catch(vigra::bad_rational &) {}
     }
 };
 
