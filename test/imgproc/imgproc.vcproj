@@ -20,7 +20,7 @@
 			CharacterSet="2">
 			<Tool
 				Name="VCCLCompilerTool"
-				InlineFunctionExpansion="1"
+				InlineFunctionExpansion="0"
 				AdditionalIncludeDirectories="C:\Users\Koethe\src\vigra\current\include;C:\Users\Koethe\src\vigra\test\include"
 				PreprocessorDefinitions="WIN32,NDEBUG,_CONSOLE"
 				StringPooling="TRUE"
@@ -37,7 +37,8 @@
 			<Tool
 				Name="VCCustomBuildTool"
 				Description="Running tests"
-				CommandLine="imgproc.exe"
+				CommandLine="imgproc.exe
+"
 				Outputs="dummy"/>
 			<Tool
 				Name="VCLinkerTool"
