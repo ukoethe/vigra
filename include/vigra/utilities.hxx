@@ -40,7 +40,7 @@ struct VigraFalseType
 
 /********************************************************/
 /*                                                      */
-/*                      Dist2D                          */
+/*                      Diff2D                          */
 /*                                                      */
 /********************************************************/
 
@@ -49,98 +49,46 @@ struct VigraFalseType
 */
 //@{
 
-/** Two dimensional distance type.
-
+/** Two dimensional difference vector.
+    
+    This class acts primarily as a difference vector for specifying 
+    pixel coordinates and region sizes. In addition, Diff2D fulfills 
+    the requirements of an \Ref{ImageIterator}, so that it can be used to
+    simulate an image whose pixels' values equal their coordinates. This
+    secondary usage is explained on page \Ref{CoordinateIterator}.
+    
+    Standard usage as a difference vector is mainly needed in the context
+    of images. For example, Diff2D may be used as an index for #operator[]#:
+    
+    \begin{verbatim}
+    Diff2D location(...);
+    
+    value = image[location];    
+    \end{verbatim}
+    
+    This is especially important in connection with accessors, where the
+    offset variant of #operator()# takes only one offset object:
+    
+    \begin{verbatim}
+    // accessor(iterator, dx, dy); is not allowed
+    value = accessor(iterator, Diff2D(dx, dy));
+    \end{verbatim}
+    
+    
+    Diff2D is also returned by #image.size()#, so that we can create 
+    new images by calculating their size using Diff2D's arithmetic 
+    functions:
+    
+    \begin{verbatim}
+    // create an image that is 10 pixels smaller in each direction
+    Image new_image(old_image.size() - Diff2D(10,10));  
+    \end{verbatim} 
+    
     Include-File: \URL[vigra/utilities.hxx]{../include/vigra/utilities.hxx}
 */
-class Dist2D
-{
-  public:
-  /** @name Construction and Assignment */
-  //@{
-    /** init to specified width and height.
-        @memo
-    */
-    Dist2D(int the_width, int the_height)
-    : width(the_width),
-      height(the_height)
-    {}
-    
-    /** copy constructor
-        @memo
-    */
-    Dist2D(Dist2D const & s)
-    : width(s.width),
-      height(s.height)
-    {}
-    
-    /** copy assignment
-        @memo
-    */
-    Dist2D & operator=(Dist2D const & s)
-    {
-        if(this != &s)
-        {
-            width = s.width;
-            height = s.height;
-        }
-        return *this;
-    }
-    
-    /** add-assign
-        @memo
-    */
-    Dist2D & operator+=(Dist2D const & s)
-    {
-        width += s.width;
-        height += s.height;
-    
-        return *this;
-    }
-    
-    /** binary addition
-        @memo
-    */
-    Dist2D  operator+(Dist2D const & s) const
-    {
-        Dist2D ret(*this);
-        ret += s;
-    
-        return ret;
-    }
-  //@}
-    
-  /** @name Data members */
-  //@{
-    /** width of a range
-        @memo
-    */
-    int width;
-    /** height of a range
-        @memo
-    */
-    int height;
-  //@}
-};
-
 class Diff2D
 {
   public:
-  public:
-        /** the iterator's PixelType
-	    @memo
-	*/
-    typedef Diff2D value_type;
-    typedef Diff2D PixelType;
-    
-	/** Let operations act in X direction
-	*/
-    typedef int MoveX;
-
-	/** Let operations act in Y direction
-	*/
-    typedef int MoveY;
-    
     /** @name Construction and Assignment */
     //@{
         /** Default Constructor. Init iterator at position (0,0)
@@ -177,23 +125,23 @@ class Diff2D
 	return *this;
     }
     
-        /** Move iterator by specified distance.
+        /** Increase coordinate by specified offset.
 	    @memo
 	*/
-    Diff2D & operator+=(Diff2D const & d)
+    Diff2D & operator+=(Diff2D const & offset)
     {
-        x += d.x;
-	y += d.y;
+        x += offset.x;
+	y += offset.y;
         return *this;
     }
     
-        /** Move iterator by specified distance.
+        /** Decrease coordinate by specified vector.
 	    @memo
 	*/
-    Diff2D & operator-=(Diff2D const & d)
+    Diff2D & operator-=(Diff2D const & offset)
     {
-        x -= d.x;
-	y -= d.y;
+        x -= offset.x;
+	y -= offset.y;
         return *this;
     }
     //@}
@@ -204,20 +152,20 @@ class Diff2D
         /** Create vector by adding specified offset.
 	    @memo
 	*/
-    Diff2D operator+(Diff2D const & r) const
+    Diff2D operator+(Diff2D const & offset) const
     {
-        return Diff2D(x + r.x, y + r.y);
+        return Diff2D(x + offset.x, y + offset.y);
     }
     
         /** Create vector by subtracting specified offset.
 	    @memo
 	*/
-    Diff2D operator-(Diff2D const & r) const
+    Diff2D operator-(Diff2D const & offset) const
     {
-        return Diff2D(x - r.x, y - r.y);
+        return Diff2D(x - offset.x, y - offset.y);
     }
     
-        /** Create vector by subtracting specified offset.
+        /** Calculate length of difference vector.
 	    @memo
 	*/
     double magnitude() const
@@ -241,10 +189,37 @@ class Diff2D
         return (x != r.x) || (y != r.y);
     }
     
+    //@}
+  
+    /** @name Data members. */
+    //@{
+    
+        /** Used for both access to the current x-coordinate {\em and}
+            to specify that an iterator navigation command is to be
+            applied in x-direction. \\
+            usage:  # x = diff2d.x # (use Diff2D::x as component of difference vector) \\
+            or #&nbsp; ++diff.x &nbsp;# (use Diff2D as iterator, move right)
+            @memo
+	*/
+    int x;
+        /** Used for both access to the current y-coordinate {\em and}
+            to specify that an iterator navigation command is to be
+            applied in y-direction. \\
+            usage:  # y = diff2d.y # (use Diff2D::y as component of difference vector) \\
+            or #&nbsp; ++diff.y &nbsp;# (use Diff2D as iterator, move down)
+            @memo
+	*/
+    int y;
+    
+    //@}
+    
+    /** @name Functionality for use as ImageIterator. */
+    //@{
+  
         /** Access current coordinate.
 	    @memo
 	*/
-    Diff2D & operator*() 
+    Diff2D & operator*()
     {
         return *this;
     }
@@ -257,7 +232,7 @@ class Diff2D
         return *this;
     }
     
-        /** Read coordinate at a distance.
+        /** Read coordinate at an offset.
 	    @memo
 	*/
     Diff2D operator()(int const & dx, int const & dy) const
@@ -265,23 +240,89 @@ class Diff2D
         return Diff2D(x + dx, y + dy);
     }
 
-        /** Read coordinate at a distance.
+        /** Read coordinate at an offset.
 	    @memo
 	*/
-    Diff2D operator[](Diff2D const & d) const
+    Diff2D operator[](Diff2D const & offset) const
     {
-        return Diff2D(x + d.x, y + d.y);
+        return Diff2D(x + offset.x, y + offset.y);
     }
-    //@}
-  
-    /** @name Specify coordinate direction for navigation commands */
+
+    /** @name an ImageIterator's required embedded types
+    */
     //@{
-        /// refer to x coordinate
-    int x;
-        /// refer to y coordinate
-    int y;
+        /** the iterator's value type
+	    @memo
+	*/
+    typedef Diff2D value_type;
+    typedef Diff2D PixelType;
+        /** type of the x-navigator
+	    @memo
+	*/
+    typedef int MoveX;
+        /** type of the y-navigator
+	    @memo
+	*/
+    typedef int MoveY;
+    
+    //@}
+    
     //@}
 };
+
+/********************************************************/
+/*                                                      */
+/*                      Dist2D                          */
+/*                                                      */
+/********************************************************/
+
+class Dist2D
+{
+  public:
+    Dist2D(int the_width, int the_height)
+    : width(the_width),
+      height(the_height)
+    {}
+    
+    Dist2D(Dist2D const & s)
+    : width(s.width),
+      height(s.height)
+    {}
+    
+    Dist2D & operator=(Dist2D const & s)
+    {
+        if(this != &s)
+        {
+            width = s.width;
+            height = s.height;
+        }
+        return *this;
+    }
+    
+    Dist2D & operator+=(Dist2D const & s)
+    {
+        width += s.width;
+        height += s.height;
+    
+        return *this;
+    }
+    
+    Dist2D  operator+(Dist2D const & s) const
+    {
+        Dist2D ret(*this);
+        ret += s;
+    
+        return ret;
+    }
+    
+    operator Diff2D() 
+        { return Diff2D(width, height); }
+        
+    int width;
+    int height;
+ };
+
+
 
 /********************************************************/
 /*                                                      */
@@ -401,6 +442,10 @@ struct tuple5 {
     @memo pair, triple, tuple4, tuple5
 */
 
+/** @name Dist2D
+
+    This class is deprecated - use \Ref{Diff2D} instead.
+*/
 
 //@}
 

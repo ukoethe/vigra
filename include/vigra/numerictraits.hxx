@@ -60,8 +60,8 @@
     int sumBytes(unsigned char * begin, unsigned char * end)
     {
         int result = 0;
-    for(; begin != end; ++begin)  result += *begin;
-    return result;
+        for(; begin != end; ++begin)  result += *begin;
+        return result;
     }
     \end{verbatim} 
     
@@ -82,21 +82,21 @@
     sumSequence(Iterator begin, Iterator end, Accessor a)
     {
         // an abbraviation
-    typedef NumericTraits<typename Accessor::value_type>  SrcTraits;
+        typedef NumericTraits<typename Accessor::value_type>  SrcTraits;
         
-    // find out result type
-    typedef typename SrcTraits::Promote ResultType;
+        // find out result type
+        typedef typename SrcTraits::Promote ResultType;
       
-    // init result to zero
-    ResultType result = NumericTraits<ResultType>::zero();
+        // init result to zero
+        ResultType result = NumericTraits<ResultType>::zero();
     
-    for(; begin != end; ++begin)
-    {  
-        // cast current item to ResultType and add
-        result += SrcTraits::toPromote(a(begin));
-    }
+        for(; begin != end; ++begin)
+        {  
+            // cast current item to ResultType and add
+            result += SrcTraits::toPromote(a(begin));
+        }
         
-    return result;
+        return result;
     }
     \end{verbatim}
     

@@ -27,22 +27,20 @@
 #include "vigra/rgbvalue.hxx"
 #include "vigra/tiff.h"
 
-/** @name VIFF related functions
-    The VIFF image format was originally defined by the KHOROS public domain 
-    image processing environment. VIFF images are very versatile - we can store
-    many different pixel types (byte, integer, float, double, complex etc.) and
-    arbitrary many spectral channels (also called 'image bands'). In particular,
-    an image with one channel is a gray scale image, 3 channels or 1 channel 
-    plus color map represent RGB images. See the KHOROS documentation at 
-    \URL[http://www.khoral.com/]{http://www.khoral.com/} for details.
+/** @name TIFF related functions
+    TIFF (Tagged Image File Format) is a very versatile image format - 
+    one can store different pixel types (byte, integer, float, double) and
+    color models (black and white, RGB, mapped RGB, other color systems). 
+    See the TIFF documentation at 
+    \URL[http://www.libtiff.org/]{http://www.libtiff.org/} for details.
     
-    @memo VIFF conversion and file export/import
+    @memo TIFF conversion and file export/import
      
 */
 //@{
 
-/** @name Convert VIFF images
-    @memo VIFF images files can store byte, int, float, double etc. pixel types
+/** @name Convert TIFF images
+    @memo TIFF images files can store byte, int, float, double pixel types
 */
 //@{
 /********************************************************/
@@ -79,9 +77,12 @@
     \URL[vigra/tiff.hxx]{../include/vigra/tiff.hxx}
     
     \begin{verbatim}
-    TiffImage * tiff = readimage("scalarimage.xv");
+    uint32 w, h;
+    TiffImage * tiff = TIFFOpen("tiffimage.tiff", "r");
+    TIFFGetField(tiff, TIFFTAG_IMAGEWIDTH, &w);
+    TIFFGetField(tiff, TIFFTAG_IMAGELENGTH, &h);
     
-    BImage img(tiff->row_size, tiff->col_size);
+    BImage img(w,h);
     
     importTiffImage(tiff, destImage(img));
     
@@ -160,9 +161,20 @@ importTiffImage(TiffImage * tiff, ImageIterator iter, Accessor a, VigraFalseType
     \URL[vigra/tiff.hxx]{../include/vigra/tiff.hxx}
     
     \begin{verbatim}
-    TiffImage * tiff = readimage("scalarimage.xv");
+    uint32 w, h;
+    uint16 photometric
+    TiffImage * tiff = TIFFOpen("tiffimage.tiff", "r");
+    TIFFGetField(tiff, TIFFTAG_IMAGEWIDTH, &w);
+    TIFFGetField(tiff, TIFFTAG_IMAGELENGTH, &h);
+    TIFFGetField(tiff_, TIFFTAG_PHOTOMETRIC, &photometric);
+        
+    if(photometric != PHOTOMETRIC_MINISWHITE &&
+       photometric != PHOTOMETRIC_MINISBLACK)
+    {
+        // not a scalar image - handle error
+    }
     
-    BImage img(tiff->row_size, tiff->col_size);
+    BImage img(w,h);
     
     tiffToScalarImage(tiff, destImage(img));
     
@@ -182,14 +194,26 @@ importTiffImage(TiffImage * tiff, ImageIterator iter, Accessor a, VigraFalseType
     
     {\bf Preconditions:}
     
+    ImageIterator must refer to a large enough image.
+    
     \begin{verbatim}
-    tiff->num_data_bands == 1
-    tiff->data_storage_type != VFF_TYP_COMPLEX
-    tiff->data_storage_type != VFF_TYP_DCOMPLEX
-    tiff->data_storage_type != VFF_TYP_BIT
-    tiff->map_scheme == VFF_MS_NONE
-    tiff->location_type == VFF_LOC_IMPLICIT
-    tiff->data_encode_scheme == VFF_DES_RAW      // no compression
+    uint16 sampleFormat, samplesPerPixel, bitsPerSample, photometric;
+           
+    TIFFGetField(tiff, TIFFTAG_SAMPLEFORMAT, &sampleFormat);
+    TIFFGetField(tiff, TIFFTAG_SAMPLESPERPIXEL, &samplesPerPixel);
+    TIFFGetField(tiff, TIFFTAG_BITSPERSAMPLE, &bitsPerSample);
+    TIFFGetField(tiff, TIFFTAG_PHOTOMETRIC, &photometric);
+
+    sampleFormat != SAMPLEFORMAT_VOID
+    samplesPerPixel == 1
+    photometric == PHOTOMETRIC_MINISWHITE ||
+       photometric == PHOTOMETRIC_MINISBLACK
+    bitsPerSample == 1 || 
+       bitsPerSample == 8 || 
+       bitsPerSample == 16 || 
+       bitsPerSample == 32 || 
+       bitsPerSample == 64
+    
     \end{verbatim}
     
     @memo
@@ -464,10 +488,8 @@ tiffToScalarImage(TiffImage * tiff, pair<ImageIterator, Accessor> dest)
 /*                                                      */
 /********************************************************/
 
-/** Convert RGB (3-band or color-mapped) or single-band TiffImage 
+/** Convert RGB (3-band or color-mapped) TiffImage 
     to RGB image.
-    If the source is a single band image, the result is a RGB image
-    with all gray.
     This function uses \Ref{RGBAccessor} to write the data.
     A RGBImageIterator is an iterator which is associated with a
     RGBAccessor.
@@ -494,9 +516,20 @@ tiffToScalarImage(TiffImage * tiff, pair<ImageIterator, Accessor> dest)
     \URL[vigra/tiff.hxx]{../include/vigra/tiff.hxx}
     
     \begin{verbatim}
-    TiffImage * tiff = readimage("rgbimage.xv");
+    uint32 w, h;
+    uint16 photometric
+    TiffImage * tiff = TIFFOpen("tiffimage.tiff", "r");
+    TIFFGetField(tiff, TIFFTAG_IMAGEWIDTH, &w);
+    TIFFGetField(tiff, TIFFTAG_IMAGELENGTH, &h);
+    TIFFGetField(tiff_, TIFFTAG_PHOTOMETRIC, &photometric);
+        
+    if(photometric != PHOTOMETRIC_RGB &&
+       photometric != PHOTOMETRIC_PALETTE)
+    {
+        // not an RGB image - handle error
+    }
     
-    BRGBImage img(tiff->row_size, tiff->col_size);
+    BRGBImage img(w, h);
     
     tiffToRGBImage(tiff, destImage(img));
     
@@ -518,22 +551,25 @@ tiffToScalarImage(TiffImage * tiff, pair<ImageIterator, Accessor> dest)
     
     {\bf Preconditions:}
     
-    \begin{verbatim}
-    tiff->data_storage_type != VFF_TYP_COMPLEX
-    tiff->data_storage_type != VFF_TYP_DCOMPLEX
-    tiff->data_storage_type != VFF_TYP_BIT
-    tiff->location_type == VFF_LOC_IMPLICIT
-    tiff->data_encode_scheme == VFF_DES_RAW
+    ImageIterator must refer to a large enough image.
     
-    ((tiff->map_scheme == VFF_MS_NONE) && 
-                         ((tiff->num_data_bands == 1) ||
-              (tiff->num_data_bands == 3)))
-    ||
-    ((tiff->map_scheme == VFF_MS_ONEPERBAND)         &&
-                         (tiff->num_data_bands == 1) && 
-             (tiff->map_row_size == 3)   &&
-             (tiff->data_storage_type == VFF_TYP_1_BYTE) &&
-                     (tiff->map_storage_type == VFF_MAPTYP_1_BYTE))
+    \begin{verbatim}
+    uint16 sampleFormat, samplesPerPixel, bitsPerSample, photometric;
+           
+    TIFFGetField(tiff, TIFFTAG_SAMPLEFORMAT, &sampleFormat);
+    TIFFGetField(tiff, TIFFTAG_SAMPLESPERPIXEL, &samplesPerPixel);
+    TIFFGetField(tiff, TIFFTAG_BITSPERSAMPLE, &bitsPerSample);
+    TIFFGetField(tiff, TIFFTAG_PHOTOMETRIC, &photometric);
+
+    sampleFormat != SAMPLEFORMAT_VOID
+    samplesPerPixel == 3 // unlass photometric == PHOTOMETRIC_PALETTE
+    photometric == PHOTOMETRIC_RGB ||
+       photometric == PHOTOMETRIC_PALETTE
+    bitsPerSample == 1 || 
+       bitsPerSample == 8 || 
+       bitsPerSample == 16 || 
+       bitsPerSample == 32 || 
+       bitsPerSample == 64
     \end{verbatim}
     
     @memo
@@ -972,9 +1008,8 @@ tiffToRGBImage(TiffImage * tiff, pair<ImageIterator, VectorComponentAccessor> de
 
 /** Create a TiffImage from the given iterator range.
     Type and size of the TiffImage are determined by the input image. 
-    Currently, the function can create scalar images of type 
-    unsigned char, short, int, float, and double, and RGB images
-    of type unsigned char, int, and float.
+    Currently, the function can create scalar images and RGB images of type 
+    unsigned char, short, int, float, and double.
     This function uses accessors to read the data.
     
     {\bf Declarations:}
@@ -1004,11 +1039,11 @@ tiffToRGBImage(TiffImage * tiff, pair<ImageIterator, VectorComponentAccessor> de
     
     ...
     
-    TiffImage * tiff = createTiffImage(srcImageRange(img));
-    
-    writeimage("output.xv", tiff);
-    
-    freeimage(tiff);
+    TiffImage * tiff = TIFFOpen(("tiffimage.tiff", "w");
+
+    createTiffImage(srcImageRange(img), tiff);
+
+    TIFFClose(tiff);   // implicitly writes the image to the disk
     \end{verbatim}
     
     {\bf Required Interface:}
@@ -1094,11 +1129,11 @@ createTiffImage(ImageIterator upperleft, ImageIterator lowerright,
     
     ...
     
-    TiffImage * tiff = createScalarTiffImage(srcImageRange(img));
-    
-    writeimage("output.xv", tiff);
-    
-    freeimage(tiff);
+    TiffImage * tiff = TIFFOpen(("tiffimage.tiff", "w");
+
+    createScalarTiffImage(srcImageRange(img), tiff);
+
+    TIFFClose(tiff);   // implicitly writes the image to the disk
     \end{verbatim}
     
     {\bf Required Interface:}
@@ -1350,7 +1385,7 @@ createScalarTiffImage(ImageIterator upperleft, ImageIterator lowerright,
 
 /** Create a 3-band TiffImage from the given RGB image.
     Type and size of the TiffImage are determined by the input image 
-    (may be one of unsigned char, int, or float).
+    (may be one of unsigned char, int, float, or double).
     This function uses \Ref{RGBAccessor} to read the data. A
     RGBImageIterator is an iterator that is associated with a
     RGBAccessor.
@@ -1382,11 +1417,11 @@ createScalarTiffImage(ImageIterator upperleft, ImageIterator lowerright,
     
     ...
     
-    TiffImage * tiff = createRGBTiffImage(srcImageRange(img));
-    
-    writeimage("output.xv", tiff);
-    
-    freeimage(tiff);
+    TiffImage * tiff = TIFFOpen(("tiffimage.tiff", "w");
+
+    createRGBTiffImage(srcImageRange(img), tiff);
+
+    TIFFClose(tiff);   // implicitly writes the image to the disk
     \end{verbatim}
     
     {\bf Required Interface:}

@@ -26,6 +26,279 @@
 
 #if !defined(NO_PARTIAL_TEMPLATE_SPECIALIZATION)
 
+/** @name Functor Creation      
+
+    Include-File:
+    \URL[vigra/functorexpression.hxx]{../include/vigra/functorexpression.hxx}
+
+    {\bf Motivation}
+    
+    Many generic algorithms are made more flexible by means of functors
+    which define part of the algorithms' behavior according to the
+    needs of a specific situation. For example, we can apply an exponential
+    to each pixel by passing a pointer to the #exp# function 
+    to #transformImage()#:
+    
+    \begin{verbatim}
+    FImage src(w,h), dest(w,h);
+    ... // fill src
+    
+    transformImage(srcImageRange(src), destImage(dest), &exp);    
+    \end{verbatim}
+    
+    However, this only works for simple operations. If we wanted to 
+    apply the exponential to a scaled pixel value (i.e. we want to execute
+    #exp(-beta*v)#), we first need to implement a new functor:
+    
+    \begin{verbatim}
+    struct Exponential
+    {
+        Exponential(double b)
+        : beta(b)
+        {}
+        
+        template <class PixelType>
+        PixelType operator()(PixelType const& v) const
+        {
+            return exp(-beta*v);
+        }
+        
+        double beta;
+    };
+    \end{verbatim}
+    
+    This functor would be used like this:
+    
+    \begin{verbatim}
+    double beta =  ...;
+    transformImage(srcImageRange(src), destImage(dest), 
+                   Exponential(beta));    
+    \end{verbatim}
+    
+    However, this approach has some disadvantages:
+    
+    \begin{itemize}
+    
+    \item Writing a functor is more work then simply programm the loop
+          directly, i.e. non-generically. Programmers will tend to
+          avoid generic constructs, if they require so much writing. 
+    \item Often, functors are only needed for a single expression. 
+          It is not desirable to get into the trouble of introducing 
+          and documenting a new class if that class is used only once.
+    \item Functors cannot be implemented directly at the point of use.
+          Thus, to find out exactly what a functor is doing, one needs
+          to look somewhere else. This complicates use and maintainance
+          ot generic code.
+    
+    \end{itemize}
+    
+    Therefore, it is necessary to provide a means to generate functors on 
+    the fly where they are needed. The C++ standard library contains so called
+    "functor combinators" that allow to construct complicated functors from 
+    simpler ones. The above problem "apply #exp(-beta*v)# to every pixel"
+    would be solved like this:
+    
+    \begin{verbatim}
+    float beta = ...;
+    
+    transformImage(srcImageRange(src), destImage(dest), 
+                   std::compose1(std::ptr_fun(exp),
+                                 std::bind1st(std::multiplies<float>(), -beta)));
+    \end{verbatim}
+ 
+    I won't go into details on how this works. Suffice it to say that
+    this technique requires a functional programming style that is unfamiliar
+    to many programmers, and thus leads to code that is difficult to 
+    understand. Moreover, this technique has some limitations that prevent 
+    certain expressions from being implementable this way. Therefore, VIGRA
+    provides a better and simpler means to create functors on the fly.
+    
+    {\bf Automatic Functor Creation}
+    
+    Automatic functor creation in VIGRA is based on a technique called
+    \URL[Expression Templates]{http://extreme.indiana.edu/~tveldhui/papers/Expression-Templates/exprtmpl.html}.
+    This means that C++ operators are
+    overloaded so that they don't execute the specified operation directly, 
+    but instead produce a functor which will later calculate the result.
+    This technique has the big advantage that the familiar operator notation
+    can be used, while all the flexibility of generic programming is preserved.
+    Unfortunately, it requires partial template specialization, so these capabilities
+    are not available on compilers that dont support this C++ feature
+    (in particular, on Microsoft Visual C++).
+    
+    The above problem "apply #exp(-beta*v)# to every pixel" will be solved
+    like this:
+    
+    \begin{verbatim}
+    float beta = ...;
+    
+    transformImage(srcImageRange(src), destImage(dest), 
+                   exp(Param(-beta)*Arg1()));
+    \end{verbatim}
+    
+    Here, four expression templates have been used to create the desired
+    functor:
+    
+    \begin{description}
+    
+    \item[#Param(-beta):#] creates a functor that represents a 
+         constant (#-beta# in this case)
+         
+    \item[#Arg1():#] represents the first argument of the expression (i.e.
+         the pixels of image #src# in the example). Likewise, #Arg2()# and
+         #Arg3()# are defined to represent more arguments. These are needed
+         for algorithms that have multiple input images, such as
+         \Ref{combineTwoImages}() and \Ref{combineThreeImages}().
+         
+    \item[* (multiplication):] creates a functor that returns the product of
+         its arguments. Likewise, the other C++ operators (i.e. 
+         #+, -, *, /, %, ==, !=, <, <=, >, >=, &&, ||, &, |, ^, !, ~#) 
+         are overloaded.
+    
+    \item[#exp():#] creates a functor that takes the exponential of its 
+        argument. Likewise, the other algebraic functions
+        (i.e. #sqrt, exp, log, log10, sin, asin, cos, acos, tan, 
+        atan, abs, floor, ceil, rint, pow, atan2, fmod, min, max#) 
+        are overloaded.
+.
+    
+    \end{description}
+    
+    We will explain additional capabilities of the functor creation mechanism 
+    by means of examples.
+    
+    The same argument can be used several times in the expression. 
+    For example, to calculate the gradient magnitude from the components
+    of the gradient vector, you may write:
+    
+    \begin{verbatim}
+    FImage gradient_x(w,h), gradient_y(w,h), magnitude(w,h);
+    ... // calculate gradient_x and gradient_y
+    
+    combineTwoImages(srcImageRange(gradient_x), srcImage(gradient_y),
+                     destImage(magnitude),
+                     sqrt(Arg1()*Arg1() + Arg2()*Arg2()));
+    \end{verbatim}
+    
+    It is also possible to build other functions into functor expressions. Suppose 
+    you want to apply #my_complicated_function()# to the sum of two images:
+    
+    \begin{verbatim}
+    FImage src1(w,h), src2(w,h), dest(w,h);
+    
+    double my_complicated_function(double);
+    
+    combineTwoImages(srcImageRange(src1), srcImage(src2), destImage(dest),
+                     applyFct(&my_complicated_function, Arg1()+Arg2()));    
+    \end{verbatim}
+    
+    [Note that the arguments of the wrapped function are passed as additional
+    arguments to #applyFct()#]
+    
+    You can implement conditional expression by means of the #ifThenElse()# 
+    functor. It corresponds to the "? :" operator that cannot be overloaded.
+    #ifThenElse()# can be used, for example, to threshold an image:
+    
+    \begin{verbatim}
+    FImage src(w,h), thresholded(w,h);
+    ...// fill src
+    
+    float threshold = ...;
+    
+    transformImage(srcImageRange(src), destImage(thresholded),
+                   ifThenElse(Arg1() < Param(threshold),
+                              Param(0.0),    // yes branch
+                              Param(1.0))    // no  branch
+                  );
+    \end{verbatim}
+
+    You can use the #Var()# functor to assign values to a variable 
+    (#=, +=, -=, *=, /=#&nbsp; are suported). For example, the average gray
+    value of the image is calculated like this:
+    
+    \begin{verbatim}
+    FImage src(w,h);
+    ...// fill src
+    
+    double sum = 0.0;
+    
+    inspectImage(srcImageRange(src), Var(sum) += Arg1());
+    
+    std::cout << "Average: " << (sum / (w*h)) << std::endl;
+    \end{verbatim}
+    
+    For use in \Ref{inspectImage}() and its relatives, there is a second
+    conditional functor #ifThen()# that emulates the #if()# statement
+    and does not return a value. Using #ifThen()#, we can calculate the size
+    of an image region:
+    
+    \begin{verbatim}
+    IImage label_image(w,h);
+    ...// mark regions by labels in label_image
+    
+    int region_label = ...; // the region we want to inspect
+    int size = 0;
+    
+    inspectImage(srcImageRange(label_image),
+                 ifThen(Arg1() == Param(region_label),
+                        Var(size) += Param(1)));
+                        
+    std::cout << "Size of region " << region_label << ": " << size << std::endl;
+    \end{verbatim}
+    
+    Often, we want to execute several commands in one functor. This can be done
+    by means of the overloaded #operator,()# ("operator comma"). Expressions
+    seperated by a comma will be executed in succession. We can thus 
+    simultaneously find the size and the average gray value of a region:
+    
+    \begin{verbatim}
+    FImage src(w,h);
+    IImage label_image(w,h);
+    ...// segment src and mark regions in label_image
+    
+    int region_label = ...; // the region we want to inspect
+    int size = 0;
+    double sum = 0.0;
+    
+    inspectTwoImages(srcImageRange(src), srcImage(label_image),
+                     ifThen(Arg2() == Param(region_label),
+                     (
+                        Var(size) += Param(1), // the comma operator is invoked
+                        Var(sum) += Arg1()
+                     )));
+
+    std::cout << "Region " << region_label << ": size = " << size << 
+                                              ", average = " << sum / size << std::endl;
+    \end{verbatim}
+    
+    [Note that the list of comma-separated expressions must be enclosed in parentheses.]
+    
+    A comma separated list of expressions can also be applied in the context of
+    \Ref{transformImage}() and its cousins. Here, a general rule of C++ applies: The 
+    return value of a comma expression is the value of its last subexpression.
+    For example, we can initialize an image so that each pixel contains its 
+    address in scan order:
+    
+    \begin{verbatim}
+    IImage img(w,h);
+    
+    int count = -1;
+    
+    initImage(destImageRange(img),
+              (
+                  Var(count) += 1,  
+                  Var(count)     // this is the result of the comma expression
+              ));
+    \end{verbatim}
+    
+    @memo Expression templates to automate functor creation. 
+*/
+//@{
+// empty documentation to make doc++ happy
+/**
+*/
+//@}
+
 /************************************************************/
 /*                                                          */
 /*                 unary functor base template              */
@@ -118,19 +391,19 @@ struct UnaryFunctor<ArgumentFunctor1>
     {}
     
     template <class T1>
-    T1 operator()(T1 const & v1) const
+    T1 const & operator()(T1 const & v1) const
     {
         return v1;
     }
     
     template <class T1, class T2>
-    T1 operator()(T1 const & v1, T2 const &) const
+    T1 const & operator()(T1 const & v1, T2 const &) const
     {
         return v1;
     }
     
     template <class T1, class T2, class T3>
-    T1 operator()(T1 const & v1, T2 const &, T3 const &) const
+    T1 const & operator()(T1 const & v1, T2 const &, T3 const &) const
     {
         return v1;
     }
@@ -171,13 +444,13 @@ struct UnaryFunctor<ArgumentFunctor2>
     {}
     
     template <class T1, class T2>
-    T2 operator()(T1 const &, T2 const & v2) const
+    T2 const & operator()(T1 const &, T2 const & v2) const
     {
         return v2;
     }
     
     template <class T1, class T2, class T3>
-    T2 operator()(T1 const &, T2 const & v2, T3 const &) const
+    T2 const & operator()(T1 const &, T2 const & v2, T3 const &) const
     {
         return v2;
     }
@@ -212,7 +485,7 @@ struct UnaryFunctor<ArgumentFunctor3>
     {}
     
     template <class T1, class T2, class T3>
-    T3 operator()(T1 const &, T2 const &, T3 const & v3) const
+    T3 const & operator()(T1 const &, T2 const &, T3 const & v3) const
     {
         return v3;
     }
@@ -246,19 +519,19 @@ struct ParameterFunctor
     {}
     
     template <class U1>
-    T operator()(U1 const &) const
+    T const & operator()(U1 const &) const
     {
         return value_;
     }
     
     template <class U1, class U2>
-    T operator()(U1 const &, U2 const &) const
+    T const & operator()(U1 const &, U2 const &) const
     {
         return value_;
     }
     
     template <class U1, class U2, class U3>
-    T operator()(U1 const &, U2 const &, U3 const &) const
+    T const & operator()(U1 const &, U2 const &, U3 const &) const
     {
         return value_;
     }
@@ -353,21 +626,21 @@ struct UnaryFunctor<VarFunctor<T> >;
         {} \
          \
         template <class T1>  \
-        void operator()(T1 const & v1) const \
+        V & operator()(T1 const & v1) const \
         { \
-            const_cast<V &>(value_) op expr_(v1); \
+            return const_cast<V &>(value_) op expr_(v1); \
         } \
          \
         template <class T1, class T2>  \
-        void operator()(T1 const & v1, T2 const & v2) const \
+        V & operator()(T1 const & v1, T2 const & v2) const \
         { \
-            const_cast<V &>(value_) op expr_(v1, v2); \
+            return const_cast<V &>(value_) op expr_(v1, v2); \
         } \
          \
         template <class T1, class T2, class T3>  \
-        void operator()(T1 const & v1, T2 const & v2, T3 const & v3) const \
+        V & operator()(T1 const & v1, T2 const & v2, T3 const & v3) const \
         { \
-            const_cast<V &>(value_) op expr_(v1, v2, v3); \
+            return const_cast<V &>(value_) op expr_(v1, v2, v3); \
         } \
          \
       private: \
@@ -437,19 +710,19 @@ struct UnaryFunctor<VarFunctor<T> >
     }
     
     template <class U1>
-    T operator()(U1 const &) const
+    T const & operator()(U1 const &) const
     {
         return value_;
     }
     
     template <class U1, class U2>
-    T operator()(U1 const &, U2 const &) const
+    T const & operator()(U1 const &, U2 const &) const
     {
         return value_;
     }
     
     template <class U1, class U2, class U3>
-    T operator()(U1 const &, U2 const &, U3 const &) const
+    T const & operator()(U1 const &, U2 const &, U3 const &) const
     {
         return value_;
     }
@@ -1054,6 +1327,7 @@ makeFunctorBinaryOperator(add, +);
 makeFunctorBinaryOperator(subtract, -);
 makeFunctorBinaryOperator(multiply, *);
 makeFunctorBinaryOperator(divide, /);
+makeFunctorBinaryOperator(modulo, %);
 makeFunctorBinaryOperator(bitAnd, &);
 makeFunctorBinaryOperator(bitOr, |);
 makeFunctorBinaryOperator(bitXor, ^);
@@ -1393,3 +1667,4 @@ operator,(UnaryAnalyser<EXPR1> const & e1,
 #endif /* NO_PARTIAL_TEMPLATE_SPECIALIZATION */
 
 #endif /* VIGRA_FUNCTOREXPRESSION_HXX  */
+

@@ -272,22 +272,22 @@ template <class SrcValueType>
 class LinearIntensityTransform
 {
    public:
-    /** a real type convertible from SrcValueType
-        @memo
-    */
+        /* a real type convertible from SrcValueType
+            @memo
+        */
     typedef typename 
             NumericTraits<SrcValueType>::RealPromote SrcPromote;
     
-    /** init scale and offset
-        @memo
-    */
+        /* init scale and offset
+            @memo
+        */
     LinearIntensityTransform(double scale, SrcPromote offset)
     : scale_(scale), offset_(offset)
     {}
     
-    /** calculate transform
-        @memo
-    */
+        /* calculate transform
+            @memo
+        */
     SrcPromote operator()(SrcValueType s) const
     {
         return (scale_ * (s + offset_));
@@ -305,7 +305,7 @@ class LinearIntensityTransform
 /*                                                      */
 /********************************************************/
 
-/** Factory function for a functor that applies a linear transform to the 
+/** Factory function for a functor that linearly transforms the 
     source pixel values. The functor applies the transform 
     '#destvalue = scale * (srcvalue + offset)#' to every pixel.
     This can, for example, be used to transform images into the visible 
@@ -342,7 +342,7 @@ class LinearIntensityTransform
     
     The source value type must be a model of \Ref{LinearSpace}.
     
-    @memo apply a linear transform to the source pixel values 
+    @memo Apply a linear transform to the source pixel values 
     
 */
 template <class SrcValueType>

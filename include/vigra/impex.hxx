@@ -48,7 +48,7 @@ struct ImageFileTypeInfo
 std::string vigraImpexListFormats();
 
 /** @name VIGRA's Image Import/Export Facilities
-    @memo supports GIF, TIFF, JPEG, BMP, SunRaster, KHOROS-VIFF formats
+    @memo supports GIF, TIFF, JPEG, BMP, PBM, PGM, PNM, PPM, SunRaster, KHOROS-VIFF formats
 **/
 //@{
 
@@ -70,8 +70,9 @@ class ImageExportInfo
         /** Construct ImageExportInfo object.
             The image will be stored under the given filename.
             The file type will be guessed from the extension unless overridden
-            by \Ref{setFileType}. Recognized extensions: .gif .jpg .jpeg
-            .bmp .ras .tif .tiff .xv. JPEG and TIFF are only available when
+            by \Ref{setFileType}. Recognized extensions: '.bmp', '.gif', '.jpeg', 
+            '.jpg', '.p7', '.pbm', '.pgm', '.pnm', '.ppm',
+            '.ras', '.tif', '.tiff', '.xv'. JPEG and TIFF are only available when
             libjpeg and libtiff are installed. 
 
             @memo 
@@ -79,16 +80,33 @@ class ImageExportInfo
     ImageExportInfo(char const * filename);
     
         /** Store image as given file type. This will override any type guessed
-            from the file name's extension. Recognized types: "GIF", "JPEG",
-            "BMP" (Windows bitmap), "SUN" (SUN raster format), "TIFF", 
-            "VIFF" (KHOROS format). JPEG and TIFF are only available when
-            libjpeg and libtiff are installed.
+            from the file name's extension. Recognized file types: 
             
-            With the exception of VIFF, all file types store 1 byte (gray scale
-            and mapped RGB) or 3 bytes (RGB) per pixel. VIFF is able to store
-            long integers (4 bytes) and real values (float and double) without
-            conversion. So you will need to use VIFF if you need to store
-            images with high accuracy.
+            \begin{description}
+            \item["BMP"] Microsoft Windows bitmap image file.
+            \item["GIF"] CompuServe graphics interchange format; 8-bit color.
+            \item["JPEG"] Joint Photographic Experts Group JFIF format; compressed 24-bit color. (only available if libjpeg is installed)
+            \item["PBM"]  Portable bitmap format (black and white).
+            \item["PGM"]  Portable graymap format (gray scale).
+            \item["PNM"]  Portable anymap.
+            \item["PPM"] Portable pixmap format (color).
+            \item["SUN"]  SUN Rasterfile.
+            \item["TIFF"] Tagged Image File Format. (only vailable if libtiff is installed.)
+            \item["VIFF"] Khoros Visualization image file.
+            \end{description}
+            
+            With the exception of TIFF and VIFF, all file types store 1 byte (gray scale
+            and mapped RGB) or 3 bytes (RGB) per pixel. 
+            
+            TIFF and VIFF are aditionally able to store
+            short and long integers (2 or 4 bytes) and real values (32 bit float and 64 bit 
+            double) without conversion. So you will need to use TIFF or VIFF if you need to store
+            images with high accuracy (the appropriate type to write is automatically derived 
+            from the image type to be exported). However, many other programs using TIFF 
+            (e.g. ImageMagick) have not implemented support for those pixel types. 
+            So don't be surprised if the generated TIFF is not readable in some cases. 
+            If this happens, convert the image to 'unsigned char' or 'RGBValue<unsigned char>'
+            prior to exporting.
 
             @memo 
         **/
@@ -97,7 +115,8 @@ class ImageExportInfo
         /** Set compression type. This will be ignored if the given compression
             is not supported by the specified file type. Recognized strings:
             "LZW", "RunLength", "1" ... "100". A number is interpreted 
-            as the compression quality for JPEG compression.
+            as the compression quality for JPEG compression. JPEG compression is supported
+            by the JPEG and TIFF formats.
 
             @memo 
         **/
@@ -146,10 +165,20 @@ class ImageImportInfo
         /** Construct ImageImportInfo object.
             The image with the given filename is read into memory.
             The file type will be determined by the first few bytes of the
-            file (magic number). Recognized file types: "GIF", "JPEG",
-            "BMP" (Windows bitmap), "SUN" (SUN raster format), "TIFF", 
-            "VIFF" (KHOROS format).  JPEG and TIFF are only available when
-            libjpeg and libtiff are installed. 
+            file (magic number). Recognized file types:  
+            
+            \begin{description}
+            \item["BMP"] Microsoft Windows bitmap image file.
+            \item["GIF"] CompuServe graphics interchange format; 8-bit color.
+            \item["JPEG"] Joint Photographic Experts Group JFIF format; compressed 24-bit color. (only available if libjpeg is installed)
+            \item["PBM"]  Portable bitmap format (black and white).
+            \item["PGM"]  Portable graymap format (gray scale).
+            \item["PNM"]  Portable anymap.
+            \item["PPM"] Portable pixmap format (color).
+            \item["SUN"]  SUN Rasterfile.
+            \item["TIFF"] Tagged Image File Format. (only vailable if libtiff is installed.)
+            \item["VIFF"] Khoros Visualization image file.
+            \end{description}
 
             @memo 
         **/
@@ -160,24 +189,26 @@ class ImageImportInfo
     void loadImage(char const * filename);
     void deleteInternalImages();
     
-        /** Returns true if the image has type KHOROS VIFF image.
-
+        /** Returns true if the image is a KHOROS VIFF image.
             @memo 
         **/
     bool isViff() const 
     { 
         return viff_ != 0; 
     }
+        /** Returns true if the image is a TIFF image.
+            @memo 
+        **/
     bool isTiff() const 
     { 
         return tiff_ != 0; 
     }
+    
     char const * fileName() const { return filename_.c_str(); }
     
     bool fileIsLoaded() const { return viff_|| tiff_ || impex_ ; }
 
         /** Get width of the image.
-
             @memo 
         **/
     int width() const
@@ -185,8 +216,8 @@ class ImageImportInfo
         precondition(fileIsLoaded(), "ImageImportInfo::width(): No image loaded");
         return width_;
     }
+    
         /** Get height of the image.
-
             @memo 
         **/
     int height() const
@@ -194,24 +225,24 @@ class ImageImportInfo
         precondition(fileIsLoaded(), "ImageImportInfo::height(): No image loaded");
         return height_;
     }
-        /** Get size of the image.
 
+        /** Get size of the image.
             @memo 
         **/
     Diff2D size() const
     {
         return Diff2D(width(), height());
     }
+    
         /** Returns true if the image is gray scale.
-
             @memo 
         **/
     bool isGrayscale() const
     {
         return colorSpace() == GRAY;
     }
+    
         /** Returns true if the image is colored (RGB).
-
             @memo 
         **/
     bool isColor() const
@@ -219,21 +250,42 @@ class ImageImportInfo
         return colorSpace() == RGB;
     }
     
+        /** Query the color space of the image. Possible values are:
+            \begin{description}
+            
+            \item["ImageImportInfo::GRAY"] grayscale image
+            \item["ImageImportInfo::RGB"] RGB image
+            \item["ImageImportInfo::UNDEF"] unsupported color space
+            
+            \end{description}
+            @memo 
+        **/
     ColorSpace colorSpace() const 
     {
         precondition(fileIsLoaded(), "ImageImportInfo::colorSpace(): No image loaded");
         return colorspace_; 
     }
     
+        /** Query the pixel type of the image. Possible values are:
+            \begin{description}
+            
+            \item["ImageImportInfo::UINT8"] 8-bit unsigned integer (unsigned char)
+            \item["ImageImportInfo::UINT16"] 16-bit signed integer (short)
+            \item["ImageImportInfo::UINT32"] 32-bit signed integer (long)
+            \item["ImageImportInfo::FLOAT"] 32-bit floating point (float)
+            \item["ImageImportInfo::DOUBLE"] 64-bit floating point (double)
+            
+            \end{description}
+            @memo 
+        **/    
     PixelType pixelType() const 
     { 
         precondition(fileIsLoaded(), "ImageImportInfo::pixelType(): No image loaded");
         return pixelType_; 
     }
     
-        /** Returns true if the image 1 byte per pixel (gray) or
+        /** Returns true if the image has 1 byte per pixel (gray) or
             3 bytes per pixel (RGB).
-
             @memo 
         **/
     bool isByte() const
@@ -466,11 +518,20 @@ void internalImportScalarImage(VigraImpexImage const * image,
     \begin{itemize}
     
     \item the image file must be readable 
-    \item the file type must be one of "GIF", "JPEG",
-            "BMP" (Windows bitmap), "SUN" (SUN raster format), "TIFF", 
-            "VIFF" (KHOROS format).  JPEG and TIFF are only available when
-            libjpeg and libtiff are installed. 
+    \item the file type must be one of  
     
+        \begin{description}
+        \item["BMP"] Microsoft Windows bitmap image file.
+        \item["GIF"] CompuServe graphics interchange format; 8-bit color.
+        \item["JPEG"] Joint Photographic Experts Group JFIF format; compressed 24-bit color. (only available if libjpeg is installed)
+        \item["PBM"]  Portable bitmap format (black and white).
+        \item["PGM"]  Portable graymap format (gray scale).
+        \item["PNM"]  Portable anymap.
+        \item["PPM"] Portable pixmap format (color).
+        \item["SUN"]  SUN Rasterfile.
+        \item["TIFF"] Tagged Image File Format. (only vailable if libtiff is installed.)
+        \item["VIFF"] Khoros Visualization image file.
+        \end{description}    
     \end{itemize}
 **/
 template <class ImageIterator, class Accessor>
@@ -834,10 +895,20 @@ void internalExportImage(SrcIterator sul, SrcIterator slr, SrcAccessor sget,
     \begin{itemize}
     
     \item the image file must be writable 
-    \item the file type must be one of "GIF", "JPEG",
-            "BMP" (Windows bitmap), "SUN" (SUN raster format), "TIFF", 
-            "VIFF" (KHOROS format).  JPEG and TIFF are only available when
-            libjpeg and libtiff are installed. 
+    \item the file type must be one of 
+    
+        \begin{description}
+        \item["BMP"] Microsoft Windows bitmap image file.
+        \item["GIF"] CompuServe graphics interchange format; 8-bit color.
+        \item["JPEG"] Joint Photographic Experts Group JFIF format; compressed 24-bit color. (only available if libjpeg is installed)
+        \item["PBM"]  Portable bitmap format (black and white).
+        \item["PGM"]  Portable graymap format (gray scale).
+        \item["PNM"]  Portable anymap.
+        \item["PPM"] Portable pixmap format (color).
+        \item["SUN"]  SUN Rasterfile.
+        \item["TIFF"] Tagged Image File Format. (only vailable if libtiff is installed.)
+        \item["VIFF"] Khoros Visualization image file.
+        \end{description}
     
     \end{itemize}
 **/

@@ -49,11 +49,15 @@
     
     The usage examples assume that you constructed two iterators like
     this:
+
+    \begin{verbatim}
+    ImageIteratorBase<SomePixelType> iterator(base, width);
+    ImageIteratorBase<SomePixelType> iterator1(base, width);
+    \end{verbatim}
     
-    #      ImageIteratorBase<SomePixelType> iterator(base, width)  #
-    #      ImageIteratorBase<SomePixelType> iterator1(base, width) #
-    
-    See the paper: U. Koethe: Reusable Algorithms in Image Processing
+    See the paper: U. Koethe: 
+    \URL[Reusable Algorithms in Image Processing]{documents/GenericProg2D.ps} 
+    for a discussion of the concepts behind ImageIterators.
     
 */
 template <class PIXELTYPE>
@@ -422,9 +426,14 @@ class ImageIteratorBase
     The usage examples assume that you constructed two iterators like
     this:
     
-    #      ImageIterator<SomePixelType> iterator(base, width)  #
-    #      ImageIterator<SomePixelType> iterator1(base, width) #
+    \begin{verbatim}
+    ImageIteratorBase<SomePixelType> iterator(base, width);
+    ImageIteratorBase<SomePixelType> iterator1(base, width);
+    \end{verbatim}
     
+    See the paper: U. Koethe: 
+    \URL[Reusable Algorithms in Image Processing]{documents/GenericProg2D.ps} 
+    for a discussion of the concepts behind ImageIterators.
 
     Include-File:
     \URL[vigra/imageiterator.hxx]{../include/vigra/imageiterator.hxx}
@@ -1002,13 +1011,15 @@ struct IteratorTraits<ConstValueIterator<T> >
 
 #endif
 
+
+#if 0
 /********************************************************/
 /*                                                      */
 /*                 CoordinateIterator                   */
 /*                                                      */
 /********************************************************/
 
-/** This iterator returns the its current coordinate instead of a 
+/* This iterator returns the its current coordinate instead of a 
     value. It behaves like an image where each pixel contains this
     coordinate. This can, for example, be usd to initialize an image with
     a function that depends on the coordinates. Suupose we want to 
@@ -1043,43 +1054,41 @@ struct IteratorTraits<ConstValueIterator<T> >
 class CoordinateIterator
 {
   public:
-        /** the iterator's PixelType
+        /* the iterator's PixelType
 	    @memo
 	*/
     typedef Diff2D PixelType;
     
-	/** Let operations act in X direction
+	/* Let operations act in X direction
 	*/
     typedef int MoveX;
 
-	/** Let operations act in Y direction
+	/* Let operations act in Y direction
 	*/
     typedef int MoveY;
     
-    /** @name Construction and Assignment */
-    //@{
-        /** Default Constructor. Init iterator at position (0,0)
+        /* Default Constructor. Init iterator at position (0,0)
 	    @memo
 	*/
     CoordinateIterator()
     : x(0), y(0)
     {}
     
-        /** Construct at given position.
+        /* Construct at given position.
 	    @memo
 	*/
     CoordinateIterator(int ax, int ay)
     : x(ax), y(ay)
     {}
     
-        /** Copy Constructor.
+        /* Copy Constructor.
 	    @memo
 	*/
     CoordinateIterator(CoordinateIterator const & v)
     : x(v.x), y(v.y)
     {}
     
-        /** Copy Assigment.
+        /* Copy Assigment.
 	    @memo
 	*/
     CoordinateIterator & operator=(CoordinateIterator const & v)
@@ -1092,7 +1101,7 @@ class CoordinateIterator
 	return *this;
     }
     
-        /** Move iterator by specified distance.
+        /* Move iterator by specified distance.
 	    @memo
 	*/
     CoordinateIterator & operator+=(Diff2D const & d)
@@ -1102,7 +1111,7 @@ class CoordinateIterator
         return *this;
     }
     
-        /** Move iterator by specified distance.
+        /* Move iterator by specified distance.
 	    @memo
 	*/
     CoordinateIterator & operator-=(Diff2D const & d)
@@ -1111,12 +1120,8 @@ class CoordinateIterator
 	y -= d.y;
         return *this;
     }
-    //@}
-    
-    /** @name Methods */
-    //@{
 
-        /** Create iterator at specified distance.
+        /* Create iterator at specified distance.
 	    @memo
 	*/
     CoordinateIterator operator+(Diff2D const & d) const
@@ -1126,7 +1131,7 @@ class CoordinateIterator
 	return ret;
     }
     
-        /** Create iterator at specified distance.
+        /* Create iterator at specified distance.
 	    @memo
 	*/
     CoordinateIterator operator-(Diff2D const & d) const
@@ -1136,7 +1141,7 @@ class CoordinateIterator
 	return ret;
     }
     
-        /** Compute distance between two iterators
+        /* Compute distance between two iterators
 	    @memo
 	*/
     Diff2D operator-(CoordinateIterator const & r) const
@@ -1144,7 +1149,7 @@ class CoordinateIterator
         return Diff2D(x - r.x, y - r.y);
     }
     
-        /** Equality.
+        /* Equality.
 	    @memo
 	*/
     bool operator==(CoordinateIterator const & r) const
@@ -1152,7 +1157,7 @@ class CoordinateIterator
         return (x == r.x) && (y == r.y);
     }
     
-        /** Inequality.
+        /* Inequality.
 	    @memo
 	*/
     bool operator!=(CoordinateIterator const & r) const
@@ -1160,7 +1165,7 @@ class CoordinateIterator
         return (x != r.x) || (y != r.y);
     }
     
-        /** Read current coordinate.
+        /* Read current coordinate.
 	    @memo
 	*/
     PixelType operator*() const
@@ -1168,7 +1173,7 @@ class CoordinateIterator
         return PixelType(x,y);
     }
     
-        /** Read coordinate at a distance.
+        /* Read coordinate at a distance.
 	    @memo
 	*/
     PixelType operator()(int const & dx, int const & dy) const
@@ -1176,22 +1181,16 @@ class CoordinateIterator
         return PixelType(x + dx, y + dy);
     }
 
-        /** Read coordinate at a distance.
+        /* Read coordinate at a distance.
 	    @memo
 	*/
     PixelType operator[](Diff2D const & d) const
     {
         return PixelType(x + d.x, y + d.y);
     }
-    //@}
-  
-    /** @name Specify coordinate direction for navigation commands */
-    //@{
-        /// refer to x coordinate
+    
     int x;
-        /// refer to y coordinate
     int y;
-    //@}
 };
 
 
@@ -1200,6 +1199,9 @@ struct IteratorTraits<CoordinateIterator >
 {
     typedef StandardConstValueAccessor<Diff2D> DefaultAccessor;
 };
+#endif /* #if 0 */
+
+typedef Diff2D CoordinateIterator;
 
 template <> 
 struct IteratorTraits<Diff2D > 
@@ -1207,6 +1209,69 @@ struct IteratorTraits<Diff2D >
     typedef StandardConstValueAccessor<Diff2D> DefaultAccessor;
 };
 
+
+/** @name CoordinateIterator 
+
+    This used to be a separate class, 
+    but has now become an alias for \Ref{Diff2D}. This is possible because
+    Diff2D now provides all the necessary functionality. 
+    
+    CoordinateIterator behaves like a read-only \Ref{ImageIterator} for 
+    an image in which each pixel contains its coordinate. This is useful for
+    algorithms that need access to the current pixel's location.
+    For example, you can use CoordinateIterator/Diff2D to 
+    find the center of mass of an image region. To implement this,
+    we first need a functor for center-of-mass calculations:
+
+    \begin{verbatim}
+    
+    struct CenterOfMassFunctor
+    {
+        CenterOfMassFunctor()
+        : x(0.0), y(0.0), size(0)
+        {}
+        
+        void operator()(Diff2d const& diff)
+        {
+            ++size;
+            x += diff.x;
+            y += diff.y;
+        }
+        
+        float xCenter() const
+        {   return x / size; }
+        
+        float yCenter() const
+        {   return y / size; }       
+        
+        float x;
+        float y;
+        int size;
+    };
+    \end{verbatim}
+    
+    Using this functor, we find the center of mass like so:
+    
+    \begin{verbatim}
+    BImage img(w,h);
+    ... // mark a region in the image with '1', background with '0'
+    
+    CenterOfMassFunctor center;
+    
+    inspectImageIf(
+        srcIterRange(Diff2D(), Diff2D() + img.size()),
+        srcImage(img),
+        center);
+        
+    std::cout << "Center of mass: " << center.xCenter() << 
+                                ", " << center.yCenter() << std::endl;
+    \end{verbatim}    
+    
+    Include-File:
+    \URL[vigra/imageiterator.hxx]{../include/vigra/imageiterator.hxx}
+    
+    @memo Simulate an image where each pixel contains its coordinate
+*/
 //@}
 
 
