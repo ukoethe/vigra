@@ -23,7 +23,7 @@
 #define VIGRA_DIFF2D_HXX
 
 #include <cmath> // for sqrt()
-#include <iosfwd>
+#include <iostream>  //  ??? <iosfwd> doesn't work on MSVC
 #include "vigra/config.hxx"
 #include "vigra/iteratortags.hxx"
 #include "vigra/iteratortraits.hxx"
