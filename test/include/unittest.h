@@ -1,56 +1,310 @@
-/**************************************************************/
-/*                                                            */
-/*                    Copyright U. Koethe                     */
-/*    Fraunhoferinstitut fuer Graphische Datenverarbeitung    */
-/*                     Rostock, Germany                       */
-/*               Wed Jun 24 15:11:45 MET 1998                 */
-/*                                                            */
-/**************************************************************/
+/**********************************************************************/
+/*                                                                    */
+/* a simple unit test framework, similar to Kent Beck's JUnit         */
+/*                                                                    */
+/*              (C) Copyright Ullrich Koethe 2001                     */
+/* Permission to copy, use, modify, sell and distribute this software */
+/* is granted provided this copyright notice appears in all copies.   */
+/* This software is provided "as is" without express or implied       */
+/* warranty, and with no claim as to its suitability for any purpose. */
+/*                                                                    */
+/**********************************************************************/
  
-#ifndef UNITTEST_HXX
-#define UNITTEST_HXX
+#ifndef VIGRA_UNIT_TEST_HPP
+#define VIGRA_UNIT_TEST_HPP
 
-#include <stdio.h>
-#include <list>
+#include <vector>
 #include <string>
+#include <new>                // for bad_alloc
+#include <typeinfo>           // for bad_cast, bad_typeid
+#include <exception>          // for exception, bad_exception
 #include <stdexcept>
+#include <strstream>
 
 #ifdef _MSC_VER
 
 #include <wtypes.h>
 #include <winbase.h>
 #include <excpt.h>
-#define snprintf _snprintf
 
 #elif defined(__unix)
 
+#include <unistd.h>
 #include <signal.h>
 #include <setjmp.h>
 
 #else
 
-#define CANT_CATCH_SIGNALS
+#define VIGRA_CANT_CATCH_SIGNALS
 
 #endif
 
-#define testCase(function)  createTestCase(function, #function "()")
-#define testSuite(testsuite)  ( new testsuite )
+#define VIGRA_TEST_CASE(function)  vigra::create_test_case(function, #function "()")
 
-#define checkpoint(message) \
-    checkpointImpl(message, __FILE__, __LINE__)
+#define testCase VIGRA_TEST_CASE
 
-#define should(predicate) \
-    shouldImpl((predicate), #predicate, __FILE__, __LINE__)
+#define VIGRA_TEST_SUITE(testsuite)  ( new testsuite )
 
-#define shouldMsg(predicate, message) \
-    shouldImpl((predicate), message, __FILE__, __LINE__)
+#define VIGRA_CHECKPOINT(message) \
+    vigra::detail::checkpoint_impl(message, __FILE__, __LINE__)
+
+#define VIGRA_ASSERT(predicate) \
+    vigra::detail::should_impl((predicate), #predicate, __FILE__, __LINE__)
+
+#define should VIGRA_ASSERT
+
+#define VIGRA_ASSERT_MESSAGE(predicate, message) \
+    vigra::detail::should_impl((predicate), message, __FILE__, __LINE__)
     
-#define failTest(message) \
-    shouldImpl(false, message, __FILE__, __LINE__)
+#define shouldMsg VIGRA_ASSERT_MESSAGE
 
-struct UnitTestFailed 
+#define VIGRA_ERROR(message) \
+    vigra::detail::should_impl(false, message, __FILE__, __LINE__)
+
+#define failTest VIGRA_ERROR
+
+namespace vigra {
+
+class test_suite;
+
+namespace detail {
+
+struct errstream
+: public std::ostream
 {
-    UnitTestFailed(char * message)
+    std::strstream buf;
+    char const * str() { buf << char(); return buf.str(); }
+    errstream & operator<<(const char * c) { buf << c; return *this; }
+    errstream & operator<<(int i) { buf << i; return *this; }
+    errstream & operator<<(std::string const & s) { buf << s; return *this; }
+    errstream & operator<<(std::ostream & (&o)(std::ostream &)) { buf << o; return *this; }
+};
+
+inline std::string & exception_checkpoint()
+{
+    static std::string test_checkpoint_;
+    return test_checkpoint_;
+}
+
+//  A separate reporting function was requested during formal review.
+void report_exception( std::ostream & os, 
+                       const char * name, const char * info )
+{ 
+    os << "Unexpected " << name << " " << info << std::endl; 
+    if(exception_checkpoint().size() > 0)
+    {
+        os << "Last checkpoint: " << exception_checkpoint().c_str() << std::endl;
+    }
+}
+
+enum { 
+    unexpected_exception = -1, 
+    os_exception = -2, 
+    memory_access_violation = -3
+};
+
+#ifndef VIGRA_CANT_CATCH_SIGNALS
+
+#ifdef _MSC_VER
+
+template< class Generator >  // Generator is function object returning int
+int catch_signals( Generator function_object, std::ostream & err, int timeout )
+{
+    int result = 0;
+    __try 
+    {
+        result = function_object();
+    }
+    __except (true) 
+    {
+        switch (GetExceptionCode())
+        {
+            case EXCEPTION_ACCESS_VIOLATION:
+                report_exception(err, "operating system exception:", "memory access violation");
+                result = memory_access_violation;
+                break;
+            case EXCEPTION_INT_DIVIDE_BY_ZERO:
+                report_exception(err, "operating system exception:", "integer divide by zero");
+                result = os_exception;
+                break;
+            default:
+                report_exception(err, "operating system exception:", "unrecognized exception or signal");
+                result = os_exception;
+        }
+    }
+    return result;
+
+}
+
+
+#elif defined(__unix)
+
+inline jmp_buf & unit_test_jump_buffer()
+{
+    static jmp_buf unit_test_jump_buffer_;
+    return unit_test_jump_buffer_;
+}
+
+static void unit_test_signal_handler(int sig)
+{
+    longjmp(unit_test_jump_buffer(), sig);
+}
+
+template< class Generator >  // Generator is function object returning int
+int catch_signals( Generator function_object, std::ostream & err, int timeout)
+{
+    volatile int sigtype;
+    int result;
+
+    sigset(SIGFPE, &unit_test_signal_handler); 
+    sigset(SIGTRAP, &unit_test_signal_handler); 
+    sigset(SIGSEGV, &unit_test_signal_handler); 
+    sigset(SIGBUS, &unit_test_signal_handler); 
+    if(timeout)
+    {
+        sigset(SIGALRM, &unit_test_signal_handler); 
+        alarm(timeout);
+    }
+
+    sigtype = setjmp(unit_test_jump_buffer());
+    if(sigtype == 0)
+    {
+       result = function_object();
+    }
+    else
+    {
+        switch(sigtype)
+        {
+            case SIGALRM:
+                report_exception(err, "signal:", "SIGALRM (timeout while executing function)");
+                result = os_exception;
+                break;
+            case SIGTRAP:
+                report_exception(err, "signal:", "SIGTRAP (perhaps integer divide by zero)");
+                result = os_exception;
+                break;
+            case SIGFPE:
+                report_exception(err, "signal:", "SIGFPE (arithmetic exception)");
+                result = os_exception;
+                break;
+            case SIGSEGV:
+            case SIGBUS:
+                report_exception(err, "signal:", "memory access violation");
+                result = memory_access_violation;
+                break;
+            default:
+                report_exception(err, "signal:", "unrecognized signal");
+                result = os_exception;
+        }
+    }
+    if(timeout)
+    {
+        alarm(0);
+        sigrelse(SIGALRM); 
+    }
+    sigrelse(SIGFPE); 
+    sigrelse(SIGTRAP); 
+    sigrelse(SIGSEGV); 
+    sigrelse(SIGBUS); 
+
+    return result;
+}
+
+#endif  /* _MSC_VER || __unix */
+
+#else  /* VIGRA_CANT_CATCH_SIGNALS */
+
+template< class Generator >  // Generator is function object returning int
+int catch_signals( Generator function_object, std::ostream & err )
+{
+     return function_object();
+}
+
+#endif /* VIGRA_CANT_CATCH_SIGNALS */
+
+} // namespace detail
+
+template< class Generator >  // Generator is function object returning int
+int catch_exceptions( Generator function_object, std::ostream & err, int timeout )
+{
+    int result = detail::unexpected_exception;
+
+    try
+    {
+      result = detail::catch_signals(function_object, err, timeout);
+    }
+
+    //  As a result of hard experience with strangely interleaved output
+    //  under some compilers, there is a lot of use of endl in the code below
+    //  where a simple '\n' might appear to do.
+
+    //  The rules for catch & arguments are a bit different from function 
+    //  arguments (ISO 15.3 paragraphs 18 & 19). Apparently const isn't
+    //  required, but it doesn't hurt and some programmers ask for it.
+
+    catch ( const char * ex )
+      { detail::report_exception( err, "string exception: ", ex ); }
+    catch ( const std::string & ex )
+      { detail::report_exception( err, "string exception: ", ex.c_str() ); }
+
+    //  std:: exceptions
+    catch ( const std::bad_alloc & ex )
+      { detail::report_exception( err, "exception: std::bad_alloc:", ex.what() ); }
+
+# if !defined(__BORLANDC__) || __BORLANDC__ > 0x0551
+    catch ( const std::bad_cast & ex )
+      { detail::report_exception( err, "exception: std::bad_cast:", ex.what() ); }
+    catch ( const std::bad_typeid & ex )
+      { detail::report_exception( err, "exception: std::bad_typeid:", ex.what() ); }
+# else
+    catch ( const std::bad_cast & ex )
+      { detail::report_exception( err, "exception: std::bad_cast", "" ); }
+    catch ( const std::bad_typeid & ex )
+      { detail::report_exception( err, "exception: std::bad_typeid", "" ); }
+# endif
+
+    catch ( const std::bad_exception & ex )
+      { detail::report_exception( err, "exception: std::bad_exception:", ex.what() ); }
+    catch ( const std::domain_error & ex )
+      { detail::report_exception( err, "exception: std::domain_error:", ex.what() ); }
+    catch ( const std::invalid_argument & ex )
+      { detail::report_exception( err, "exception: std::invalid_argument:", ex.what() ); }
+    catch ( const std::length_error & ex )
+      { detail::report_exception( err, "exception: std::length_error:", ex.what() ); }
+    catch ( const std::out_of_range & ex )
+      { detail::report_exception( err, "exception: std::out_of_range:", ex.what() ); }
+    catch ( const std::range_error & ex )
+      { detail::report_exception( err, "exception: std::range_error:", ex.what() ); }
+    catch ( const std::overflow_error & ex )
+      { detail::report_exception( err, "exception: std::overflow_error:", ex.what() ); }
+    catch ( const std::underflow_error & ex )
+      { detail::report_exception( err, "exception: std::underflow_error:", ex.what() ); }
+    catch ( const std::logic_error & ex )
+      { detail::report_exception( err, "exception: std::logic_error:", ex.what() ); }
+    catch ( const std::runtime_error & ex )
+      { detail::report_exception( err, "exception: std::runtime_error:", ex.what() ); }
+   catch ( const std::exception & ex )
+      { detail::report_exception( err, "exception: std::exception:", ex.what() ); }
+
+    catch ( ... )
+      { detail::report_exception( err, "unknown exception", "" ); }
+
+    return result;
+} // catch_exceptions
+
+template< class Generator >  // Generator is function object returning int
+inline
+int catch_exceptions( Generator function_object, std::ostream & err)
+{
+    return catch_exceptions(function_object, err, 0);
+}
+
+namespace detail {
+  
+struct unit_test_failed 
+: public std::exception
+{
+    unit_test_failed(char const * message)
     : what_(message)
     {}
     
@@ -62,520 +316,361 @@ struct UnitTestFailed
     std::string what_;
 };
 
-inline std::string & testCheckpoint()
+inline void 
+checkpoint_impl(const char * message, const char * file, int line)
 {
-    static std::string testCheckpoint_;
-    return testCheckpoint_;
+    detail::errstream buf;
+    buf << message << " (" << file <<":" << line << ")";
+    exception_checkpoint() = buf.str();
 }
 
 inline void 
-checkpointImpl(const char * message, const char * file, int line)
+should_impl(bool predicate, const char * message, const char * file, int line)
 {
-    char buf[1000]; 
-    snprintf(buf, 1000, "\"%s\" (%s:%d)", message, file, line); 
-    testCheckpoint() = buf;
-}
-
-inline void 
-shouldImpl(bool predicate, const char * message, const char * file, int line)
-{
-    checkpointImpl(message, file, line);
+    checkpoint_impl(message, file, line);
     if(!predicate)
     { 
-        char buf[1000]; 
-        snprintf(buf, 1000, "\"%s\" (%s:%d)", message, file, line); 
-        throw UnitTestFailed(buf); 
+        detail::errstream buf;
+        buf << message << " (" << file <<":" << line << ")";
+        throw unit_test_failed(buf.str()); 
     } 
 }
 
-class TestCase
+class test_case
 {
   public:
 
-    TestCase(char const * name = "Unnamed")
-    : name_(name)
+    test_case(char const * name = "Unnamed")
+    : name_(name), timeout(0)
     {}
 
-    virtual ~TestCase() {}
+    virtual ~test_case() {}
     
     virtual int run() = 0;
-    virtual void init() {}
-    virtual void destroy() {}
-    virtual bool hasCheckpoint() const 
+    virtual int init() { return 0; }
+    virtual int destroy() { return 0; }
+    virtual void do_init() {}
+    virtual void do_run() {}
+    virtual void do_destroy() {}
+    virtual bool has_checkpoint() const 
     {
-        return testCheckpoint().size() > 0;
+        return exception_checkpoint().size() > 0;
     }
     
-    virtual std::string getCheckpointMessage() const 
+    virtual std::string get_checkpoint_message() const 
     {
-        return testCheckpoint();
+        return exception_checkpoint();
     }
 
     virtual char const * name() { return name_.c_str(); } 
-    virtual void setName(char const * name) { name_ = name; }
+    virtual void set_name(char const * name) { name_ = name; }
     virtual int size() const { return 1; }
-    virtual std::string report() { return std::string(""); }
 
     std::string name_;
-    
+    std::string report_;
+    int timeout;
 };
 
-class TestSuite;
 
-static int doRun(TestSuite *, TestCase *);
+} // namespace detail
 
-class TestSuite
-: public TestCase
+class test_suite
+: public detail::test_case
 {
   public:
-    TestSuite(char const * name = "TopLevel")
-    : TestCase(name),
+    test_suite(char const * name = "TopLevel")
+    : detail::test_case(name),
       size_(0)
     {}
     
-    virtual ~TestSuite()
+    virtual ~test_suite()
     {
-        std::list<TestCase *>::iterator i = testcases_.begin();
-        for(; i != testcases_.end(); ++i) delete (*i);        
+        for(int i=0; i != testcases_.size(); ++i) 
+            delete testcases_[i];        
     }
     
-    virtual void add(TestCase * t)
+    virtual void add(detail::test_case * t, int timeout = 0)
     {
+        t->timeout = timeout;
         testcases_.push_back(t);
         size_ += t->size();
     }
-   
+    
     virtual int run()
     {
         int failed = 0;
+        report_ = std::string("Entering test suite ") + name() + "\n";
         
-        std::list<TestCase *>::iterator i = testcases_.begin();
-        for(; i != testcases_.end(); ++i) 
+        for(int i=0; i != testcases_.size(); ++i) 
         {
-            failed += doRun(this, *i);
-            report_ += (*i)->report();
+            int result = testcases_[i]->init();
+            if(!result)
+                result = testcases_[i]->run();
+            if(!result)
+                result = testcases_[i]->destroy();
+                
+            report_ += testcases_[i]->report_;
+                
+            if(result == detail::memory_access_violation)
+//                return result;   // abort immediately?
+                failed++;
+            else if(result < 0)
+                failed++;
+            else 
+                failed += result;
         }
         
-        char buf[100];
         if(failed) 
         {
-            sprintf(buf, "%d of %d", failed, size());
-            report_ += std::string("\n") + buf +
-                       " tests failed in TestSuite " + name() + "\n";
+            detail::errstream buf;
+            buf << "\n" << failed << " of " << size() << 
+                " tests failed in test suite " << name() << std::endl;
+            report_ += buf.str();
         }
         else 
         {
-            sprintf(buf, "%d", size());
-            report_ += std::string("\nAll (") + buf +
-                       ") tests passed in TestSuite " + name() + "\n";
+            detail::errstream buf;
+            buf << "All (" << size() <<
+               ") tests passed in test suite " << name() << std::endl;
+            report_ += buf.str();
         }
+        
+        report_ += std::string("Leaving test suite ") + name() + "\n";
 
         return failed;
-    }
-    
-    virtual void handleError(const char * where, TestCase * t)
-    {
-        try
-        {
-            throw;
-        }
-        catch(UnitTestFailed & e)
-        {
-            report_ += std::string("\nFailure in ") + where + t->name() + 
-                         " - assertion failed: " + e.what() + "\n";
-        }
-        catch(std::exception & e)
-        {
-            report_ += std::string("\nFailure in ") + where + t->name() + 
-                         " - unexpected exception: " + e.what() + "\n";
-
-            if(t->hasCheckpoint())
-            {
-                report_ += "Last checkpoint: " + 
-                                t->getCheckpointMessage() + "\n";
-            }
-        }
-    }
-    
-    virtual int tryInit(TestCase * t)
-    {
-        try
-        {
-            t->init();
-        }
-        catch(...)
-        {
-            handleError("initialization of ", t);
-            return 1;
-        }
-
-        return 0;
-    }
-    
-    virtual int tryRun(TestCase * t)
-    {
-        int res = 0;
-        
-        try
-        {
-            res = t->run();
-        }
-        catch(...)
-        {
-            handleError("", t);
-            return 1;
-        }
-
-        return res;
-    }
-    
-    virtual int tryDestroy(TestCase * t)
-    {
-        try
-        {
-            t->destroy();
-        }
-        catch(...)
-        {
-            handleError("destruction of ", t);
-            return 1;
-        }
-
-        return 0;
     }
     
     virtual int size() const { return size_; }
     virtual std::string report() { return report_; }
   
-    std::list<TestCase *> testcases_;
+    std::vector<detail::test_case *> testcases_;
     int size_;
-    std::string report_;
 };
 
-static void handleUnrecognizedException(const char * where, TestSuite * ts, TestCase * tc)
+namespace detail {
+
+struct test_case_init_functor
 {
-    ts->report_ += std::string("\nFailure in ") + where + tc->name() + 
-                               " - unrecognized exception\n";
-
-    if(tc->hasCheckpoint())
-    {
-        ts->report_ += "Last checkpoint: " + 
-                        tc->getCheckpointMessage() + "\n";
-    }
-}
-
-#ifndef CANT_CATCH_SIGNALS
-
-#ifdef _MSC_VER
-
-static void handleSignal(const char * where, TestSuite * ts, TestCase * tc)
-{
-    ts->report_ += std::string("\nFailure in ") + where + tc->name();
-
-    switch (GetExceptionCode())
-    {
-        case EXCEPTION_ACCESS_VIOLATION:
-            ts->report_ += " - memory access violation\n";
-            break;
-        case EXCEPTION_INT_DIVIDE_BY_ZERO:
-            ts->report_ += " - integer divide by zero\n";
-            break;
-        default:
-            ts->report_ += " - unrecognized exception or signal\n";
-    }
-
-    if(tc->hasCheckpoint())
-    {
-        ts->report_ += "Last checkpoint: " + 
-                        tc->getCheckpointMessage() + "\n";
-    }
-}
-   
-static int doRun(TestSuite * ts, TestCase * tc)
-{
-    int current_failed = 0;
+    detail::errstream & buf_;
+    test_case * test_case_;
     
-    __try 
-    {
-        current_failed += ts->tryInit(tc);
-    }
-    __except (true) 
-    {
-        handleSignal("initialization of ", ts, tc);
-        current_failed++;
-    }
-   
-    __try 
-    {
-        if(current_failed == 0) current_failed += ts->tryRun(tc);
-    }
-    __except (true) 
-    {
-        handleSignal("", ts, tc);
-        current_failed++;
-    }
+    test_case_init_functor(detail::errstream & b, test_case * tc)
+    : buf_(b), test_case_(tc)
+    {}
     
-    __try 
+    int operator()()
     {
-        if(current_failed == 0) current_failed += ts->tryDestroy(tc);
-    }
-    __except (true) 
-    {
-        handleSignal("destruction of ", ts, tc);
-        current_failed++;
-    }
-
-    return current_failed;
-}
-
-#elif defined(__unix)
-
-inline jmp_buf & unitTestJumpBuffer()
-{
-    static jmp_buf unitTestJumpBuffer_;
-    return unitTestJumpBuffer_;
-}
-
-static void unitTestSignalHandler(int sig, int code, struct sigcontext * c)
-{
-    longjmp(unitTestJumpBuffer(), sig);
-}
-
-static void handleSignal(int sigtype, const char * where, TestSuite * ts, TestCase * tc)
-{
-    ts->report_ += std::string("\nFailure in ") + where + tc->name();
-
-    switch(sigtype)
-    {
-        case SIGTRAP:
-            ts->report_ += " - SIGTRAP (perhaps integer divide by zero)\n";
-            break;
-        case SIGFPE:
-            ts->report_ += " - SIGFPE (arithmetic exception)\n";
-            break;
-        case SIGSEGV:
-        case SIGBUS:
-            ts->report_ += " - memory access violation\n";
-            break;
-        default:
-            ts->report_ += " - unrecognized signal\n";
-    }
-
-    if(tc->hasCheckpoint())
-    {
-        ts->report_ += "Last checkpoint: " + 
-                        tc->getCheckpointMessage() + "\n";
-    }
-}
-   
-static int doRun(TestSuite * ts, TestCase * tc)
-{
-    int current_failed = 0;
-    int sigtype;
-
-
-    sigset(SIGFPE, (SIG_PF)&unitTestSignalHandler); 
-    sigset(SIGTRAP, (SIG_PF)&unitTestSignalHandler); 
-    sigset(SIGSEGV, (SIG_PF)&unitTestSignalHandler); 
-    sigset(SIGBUS, (SIG_PF)&unitTestSignalHandler); 
-
-    try 
-    {
-        sigtype = setjmp(unitTestJumpBuffer());
-        if(sigtype == 0)
+        try
         {
-           current_failed += ts->tryInit(tc);
+            test_case_->do_init();
+            return 0;
         }
-        else
+        catch(unit_test_failed & e)
         {
-            handleSignal(sigtype, "initialization of ", ts, tc);
-            ++current_failed;
+            buf_ << "Assertion failed: " << e.what() << std::endl;
+            return 1;
         }
     }
-    catch(...) 
-    {
-        handleUnrecognizedException("initialization of ", ts, tc);
-        ++current_failed;
-    }
-    
-    if(current_failed) return current_failed;
-   
-    try 
-    {
-        sigtype = setjmp(unitTestJumpBuffer());
-        if(sigtype == 0)
-        {
-           current_failed += ts->tryRun(tc);
-        }
-        else
-        {
-            handleSignal(sigtype, "", ts, tc);
-            ++current_failed;
-        }
-    }
-    catch(...) 
-    {
-        handleUnrecognizedException("", ts, tc);
-        ++current_failed;
-    }
-    
-    if(current_failed) return current_failed;
-   
-    try 
-    {
-        sigtype = setjmp(unitTestJumpBuffer());
-        if(sigtype == 0)
-        {
-           current_failed += ts->tryDestroy(tc);
-        }
-        else
-        {
-            handleSignal(sigtype, "destruction of ", ts, tc);
-            ++current_failed;
-        }
-    }
-    catch(...) 
-    {
-        handleUnrecognizedException("destruction of ", ts, tc);
-        ++current_failed;
-    }
+};
 
-    return current_failed;
-}
-
-#endif  /* _MSC_VER || __unix */
-
-#else  /* CANT_CATCH_SIGNALS */
-
-static int doRun(TestSuite * ts, TestCase * tc)
+struct test_case_run_functor
 {
-    int current_failed = 0;
-
-    try 
-    {
-        current_failed += ts->tryInit(tc);
-    }
-    catch(...) 
-    {
-        handleUnrecognizedException("initialization of ", ts, tc);
-        ++current_failed;
-    }
+    detail::errstream & buf_;
+    test_case * test_case_;
     
-    if(current_failed) return current_failed;
-   
-    try 
-    {
-        current_failed += ts->tryRun(tc);
-    }
-    catch(...) 
-    {
-        handleUnrecognizedException("", ts, tc);
-        ++current_failed;
-    }
+    test_case_run_functor(detail::errstream & b, test_case * tc)
+    : buf_(b), test_case_(tc)
+    {}
     
-    if(current_failed) return current_failed;
-   
-    try 
+    int operator()()
     {
-        current_failed += ts->tryDestroy(tc);
+        try
+        {
+            test_case_->do_run();
+            return 0;
+        }
+        catch(unit_test_failed & e)
+        {
+            buf_ << "Assertion failed: " << e.what() << std::endl;
+            return 1;
+        }
     }
-    catch(...) 
+};
+
+struct test_case_destroy_functor
+{
+    detail::errstream & buf_;
+    test_case *  test_case_;
+    
+    test_case_destroy_functor(detail::errstream & b, test_case * tc)
+    : buf_(b), test_case_(tc)
+    {}
+    
+    int operator()()
     {
-        handleUnrecognizedException("destruction of ", ts, tc);
-        ++current_failed;
+        try
+        {
+            test_case_->do_destroy();
+            return 0;
+        }
+        catch(unit_test_failed & e)
+        {
+            buf_ << "Assertion failed: " << e.what() << std::endl;
+            return 1;
+        }
     }
-
-    return current_failed;
-}
-
-#endif /* CANT_CATCH_SIGNALS */
+};
 
 template <class TESTCASE>
-class ClassTestCase
-: public TestCase
+class class_test_case
+: public test_case
 {
   public:
     
-    ClassTestCase(void (TESTCASE::*fct)(), char const * name)
-    : TestCase(name),
+    class_test_case(void (TESTCASE::*fct)(), char const * name)
+    : test_case(name),
       fct_(fct),
       testcase_(0)
     {}
     
-    virtual ~ClassTestCase()
+    virtual ~class_test_case()
     {
         delete testcase_;
     }
     
-    virtual void init()
+    virtual void do_init()
     {
+        testcase_ = new TESTCASE;
+    }
+    
+    virtual int init()
+    {
+        exception_checkpoint() = "";
+        report_ = "";
+        int failed = 0;
+        
+        detail::errstream buf;
+        buf << "\nFailure in initialization of " << name() << std::endl;
         if(testcase_ != 0)
         {
-            shouldMsg(0, "Attempt to run test case which failed "
-                         "to clean up after previous run.");
+            buf << "Test case failed to clean up after previous run.\n";
+            failed = 1;
+        }   
+        else
+        {
+            failed = catch_exceptions(
+                detail::test_case_init_functor(buf, this), buf, timeout);
         }
         
-        testCheckpoint() = "";
-        testcase_ = new TESTCASE;
+        if(failed)
+        {
+            report_ += buf.str();
+        }
+
+        return failed;
+    }
+    
+    virtual void do_run()
+    {
+        if(testcase_ != 0) 
+            (testcase_->*fct_)();
     }
     
     virtual int run()
     {
-        testCheckpoint() = "";
-        if(testcase_ != 0) (testcase_->*fct_)();
+        detail::errstream buf;
+        buf << "\nFailure in " << name() << std::endl;
         
-        return 0;
+        int failed = catch_exceptions(
+            detail::test_case_run_functor(buf, this), buf, timeout);
+        if(failed)
+        {
+            report_ += buf.str();
+        }
+        
+        return failed;
     }
     
-    virtual void destroy()
+    virtual void do_destroy()
     {
-        testCheckpoint() = "";
-        TESTCASE * toDelete = testcase_;
+        delete testcase_;
         testcase_ = 0;
-        delete toDelete; 
+    }
+    
+    virtual int destroy()
+    {
+        detail::errstream buf;
+        buf << "\nFailure in destruction of " << std::endl;
+        
+        int failed = catch_exceptions(
+            detail::test_case_destroy_functor(buf, this), buf, timeout);
+        if(failed)
+        {
+            report_ += buf.str();
+        }
+        
+        return failed;
     }
     
     void (TESTCASE::*fct_)();
     TESTCASE * testcase_;
 };
     
-class FunctionTestCase
-: public TestCase
+class function_test_case
+: public test_case
 {
   public:
     
-    FunctionTestCase(void (*fct)(), char const * name)
-    : TestCase(name),
+    function_test_case(void (*fct)(), char const * name)
+    : test_case(name),
       fct_(fct)
     {}
     
+    virtual void do_run()
+    {
+        (*fct_)();
+    }
+    
     virtual int run()
     {
-        testCheckpoint() = "";
-        (*fct_)();
+        report_ = "";
+        exception_checkpoint() = "";
         
-        return 0;
+        detail::errstream buf;
+        buf << "\nFailure in " << name() << std::endl;
+        
+        int failed = catch_exceptions(
+            detail::test_case_run_functor(buf, this), buf, timeout);
+        if(failed)
+        {
+            report_ += buf.str();
+        }
+
+        return failed;
     }
     
     void (*fct_)();
 };
     
+} // namespace detail
+
 template <class TESTCASE>
 inline 
-TestCase * 
-createTestCase(void (TESTCASE::*fct)(), char const * name)
+detail::test_case * 
+create_test_case(void (TESTCASE::*fct)(), char const * name)
 {
     if(*name == '&') ++name;
-    return new ClassTestCase<TESTCASE>(fct, name);
+    return new detail::class_test_case<TESTCASE>(fct, name);
 };
 
 inline 
-TestCase * 
-createTestCase(void (*fct)(), char const * name)
+detail::test_case * 
+create_test_case(void (*fct)(), char const * name)
 {
     if(*name == '&') ++name;
-    return new FunctionTestCase(fct, name);
+    return new detail::function_test_case(fct, name);
 };
 
+} // namespace vigra
 
-#endif /* UNITTEST_HXX */
+#endif /* VIGRA_UNIT_TEST_HPP */
