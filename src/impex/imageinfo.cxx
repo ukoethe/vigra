@@ -235,9 +235,9 @@ namespace vigra
         return m_num_bands;
     }
 
-    Diff2D ImageImportInfo::size() const
+    Size2D ImageImportInfo::size() const
     {
-        return Diff2D( m_width, m_height );
+        return Size2D( m_width, m_height );
     }
 
     bool ImageImportInfo::isGrayscale() const
