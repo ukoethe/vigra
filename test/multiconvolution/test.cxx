@@ -37,7 +37,7 @@ struct MultiArrayPointoperatorsTest
         
         should(res.shape() == Size3(5,4,3));
 
-        initMultiarray(destMultiArrayRange(res), 1.1);
+        initMultiArray(destMultiArrayRange(res), 1.1);
         
         int x,y,z;
         for(z=0; z<img.shape(2); ++z)
@@ -50,9 +50,9 @@ struct MultiArrayPointoperatorsTest
     {
         Image3D res(img.shape());
         
-        initMultiarray(destMultiArrayRange(res), 0.0);
+        initMultiArray(destMultiArrayRange(res), 0.0);
         
-        copyMultiarray(srcMultiArrayRange(img), destMultiArray(res));
+        copyMultiArray(srcMultiArrayRange(img), destMultiArray(res));
         
         int x,y,z;
         for(z=0; z<img.shape(2); ++z)
@@ -65,9 +65,9 @@ struct MultiArrayPointoperatorsTest
     {
         Image3D res(img.shape());
         
-        initMultiarray(destMultiArrayRange(res), 0.0);
+        initMultiArray(destMultiArrayRange(res), 0.0);
         
-        transformMultiarray(srcMultiArrayRange(img), destMultiArray(res),
+        transformMultiArray(srcMultiArrayRange(img), destMultiArray(res),
                             Arg1() + Arg1());
         
         int x,y,z;
@@ -81,9 +81,9 @@ struct MultiArrayPointoperatorsTest
     {
         Image3D res(img.shape());
         
-        initMultiarray(destMultiArrayRange(res), 0.0);
+        initMultiArray(destMultiArrayRange(res), 0.0);
         
-        combineTwoMultiarrays(srcMultiArrayRange(img), srcMultiArray(img), 
+        combineTwoMultiArrays(srcMultiArrayRange(img), srcMultiArray(img), 
                               destMultiArray(res),
                               Arg1() + Arg2());
         
@@ -98,9 +98,9 @@ struct MultiArrayPointoperatorsTest
     {
         Image3D res(img.shape());
         
-        initMultiarray(destMultiArrayRange(res), 0.0);
+        initMultiArray(destMultiArrayRange(res), 0.0);
         
-        combineThreeMultiarrays(srcMultiArrayRange(img), 
+        combineThreeMultiArrays(srcMultiArrayRange(img), 
                                 srcMultiArray(img), srcMultiArray(img), 
                                 destMultiArray(res),
                                 Arg1() + Arg2() + Arg3());
@@ -175,11 +175,11 @@ struct MultiArraySeparableConvolutionTest
       kernels[d].initGaussianDerivative( ksize, 1 );
 #endif
 
-      separableConvolveMultiarray( srcMultiArrayRange(src),
+      separableConvolveMultiArray( srcMultiArrayRange(src),
 				   destMultiArray(dn),
 				   kernels.begin() );
 
-      separableConvolveMultiarray( srcMultiArrayRange(src),
+      separableConvolveMultiArray( srcMultiArrayRange(src),
 				   destMultiArray(d1),
 				   d,
 				   kernels[d] );
@@ -209,7 +209,7 @@ struct MultiArraySeparableConvolutionTest
     int z;
 
     //-- x
-    separableConvolveMultiarray( srcMultiArrayRange(src),
+    separableConvolveMultiArray( srcMultiArrayRange(src),
 				 destMultiArray(dst1),
 				 0, kernx );
 
@@ -228,7 +228,7 @@ struct MultiArraySeparableConvolutionTest
 
 
     //-- y
-    separableConvolveMultiarray( srcMultiArrayRange(src),
+    separableConvolveMultiArray( srcMultiArrayRange(src),
 				 destMultiArray(dst1),
 				 1, kerny );
 
@@ -271,14 +271,14 @@ struct MultiArraySeparableConvolutionTest
 			    kernels[0], kernels[1] );
     }
 
-    separableConvolveMultiarray( srcMultiArrayRange(src),
+    separableConvolveMultiArray( srcMultiArrayRange(src),
 				 destMultiArray(dn),
 				 kernels.begin() );
 
     shouldEqualSequence( dn.begin(), dn.end(),
 			 d2.begin() );
     
-    std::cerr << std::endl;
+//    std::cerr << std::endl;
   }
 
   Size3 size;
