@@ -90,7 +90,7 @@ inline std::string & exception_checkpoint()
 }
 
 //  A separate reporting function was requested during formal review.
-void report_exception( detail::errstream & os, 
+inline void report_exception( detail::errstream & os, 
                        const char * name, const char * info )
 { 
     os << "Unexpected " << name << " " << info << std::endl; 
