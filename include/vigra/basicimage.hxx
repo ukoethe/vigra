@@ -98,102 +98,75 @@ class LineBasedColumnIteratorPolicy
     <b>\#include</b> "<a href="basicimage_8hxx-source.html">vigra/basicimage.hxx</a>"
     Namespace: vigra
 */
-template <class PIXELTYPE, class REFERENCE, class POINTER>
-class BasicImageIterator
+template <class IMAGEITERATOR, class PIXELTYPE, 
+          class REFERENCE, class POINTER, class LINESTARTITERATOR>
+class BasicImageIteratorBase
 {
-  public:
-
-    typedef BasicImageIterator<PIXELTYPE, PIXELTYPE &, PIXELTYPE *> iterator;
-    typedef 
-        BasicImageIterator<PIXELTYPE, PIXELTYPE const &, PIXELTYPE const *> 
-        const_iterator;
-    
-    typedef POINTER *            LineStartIterator;
-    
-    typedef PIXELTYPE            PixelType;
+  public:    
+    typedef ImageIteratorBase<IMAGEITERATOR, 
+                 PIXELTYPE, REFERENCE, POINTER> self_type;
+  
+    typedef LINESTARTITERATOR    LineStartIterator;
     typedef PIXELTYPE            value_type;
+    typedef PIXELTYPE            PixelType;
     typedef REFERENCE            reference;
     typedef REFERENCE            index_reference;
     typedef POINTER              pointer;
-
     typedef Diff2D               difference_type;
     typedef image_traverser_tag  iterator_category;
-
     typedef POINTER              row_iterator;
-    typedef IteratorAdaptor<LineBasedColumnIteratorPolicy<BasicImageIterator> >
+    typedef IteratorAdaptor<LineBasedColumnIteratorPolicy<IMAGEITERATOR> >
                                  column_iterator;
 
     typedef int                  MoveX;
-    typedef LineStartIterator    MoveY;
+    typedef LINESTARTITERATOR    MoveY;
 
     MoveX x;
     MoveY y;
 
-    BasicImageIterator(iterator const & i)
-    : x(i.x),
-      y(const_cast<LineStartIterator>(i.y))
-    {}
-
-    explicit BasicImageIterator(LineStartIterator line)
-    : x(0),
-      y(line)
-    {}
-
-    BasicImageIterator()
-    : x(0),
-      y(0)
-    {}
-
-    BasicImageIterator & operator=(iterator const & o)
-    {
-        x = o.x;
-        y = const_cast<LineStartIterator>(o.y);
-        return *this;
-    }
-
-    BasicImageIterator & operator+=(difference_type const & s)
+    IMAGEITERATOR & operator+=(difference_type const & s)
     {
         x += s.x;
         y += s.y;
-        return *this;
+        return static_cast<IMAGEITERATOR &>(*this);
     }
 
-    BasicImageIterator & operator-=(difference_type const & s)
+    IMAGEITERATOR & operator-=(difference_type const & s)
     {
         x -= s.x;
         y -= s.y;
-        return *this;
+        return static_cast<IMAGEITERATOR &>(*this);
     }
 
-    BasicImageIterator operator+(difference_type const & s) const
+    IMAGEITERATOR operator+(difference_type const & s) const
     {
-        BasicImageIterator ret(*this);
+        IMAGEITERATOR ret(static_cast<IMAGEITERATOR const &>(*this));
 
         ret += s;
 
         return ret;
     }
 
-    BasicImageIterator operator-(difference_type const & s) const
+    IMAGEITERATOR operator-(difference_type const & s) const
     {
-        BasicImageIterator ret(*this);
+        IMAGEITERATOR ret(static_cast<IMAGEITERATOR const &>(*this));
 
         ret -= s;
 
         return ret;
     }
 
-    difference_type operator-(BasicImageIterator const & rhs) const
+    difference_type operator-(BasicImageIteratorBase const & rhs) const
     {
         return difference_type(x - rhs.x, y - rhs.y);
     }
 
-    bool operator==(BasicImageIterator const & rhs) const
+    bool operator==(BasicImageIteratorBase const & rhs) const
     {
         return (x == rhs.x) && (y == rhs.y);
     }
 
-    bool operator!=(BasicImageIterator const & rhs) const
+    bool operator!=(BasicImageIteratorBase const & rhs) const
     {
         return (x != rhs.x) || (y != rhs.y);
     }
@@ -231,6 +204,92 @@ class BasicImageIterator
         typedef typename column_iterator::BaseType Iter;
         return column_iterator(Iter(y, x));
     }
+
+  protected:
+    BasicImageIteratorBase(LINESTARTITERATOR const & line)
+    : x(0),
+      y(line)
+    {}
+
+    BasicImageIteratorBase()
+    : x(0),
+      y(0)
+    {}
+};
+
+/********************************************************/
+/*                                                      */
+/*                    BasicImageIterator                */
+/*                                                      */
+/********************************************************/
+
+/** Implementation of the standard image iterator for \ref vigra::BasicImage.
+    See \ref vigra::ImageIterator for documentation.
+
+    <b>\#include</b> "<a href="basicimage_8hxx-source.html">vigra/basicimage.hxx</a>"    
+    Namespace: vigra
+*/    
+template <class PIXELTYPE, class ITERATOR>
+class BasicImageIterator
+: public BasicImageIteratorBase<BasicImageIterator<PIXELTYPE, ITERATOR>, 
+                            PIXELTYPE, PIXELTYPE &, PIXELTYPE *, ITERATOR>
+{
+  public:
+
+    typedef BasicImageIteratorBase<BasicImageIterator, PIXELTYPE, 
+                                PIXELTYPE &, PIXELTYPE *, ITERATOR> Base;
+                                
+    
+    BasicImageIterator(ITERATOR line)
+    : Base(line)
+    {}
+    
+    BasicImageIterator()
+    : Base()
+    {}  
+};
+
+/********************************************************/
+/*                                                      */
+/*                ConstBasicImageIterator               */
+/*                                                      */
+/********************************************************/
+
+/** Implementation of the standard const image iterator for \ref vigra::BasicImage.
+    See \ref vigra::ConstImageIterator for documentation.
+
+    <b>\#include</b> "<a href="basicimage_8hxx-source.html">vigra/basicimage.hxx</a>"    
+    Namespace: vigra
+*/    
+template <class PIXELTYPE, class ITERATOR>
+class ConstBasicImageIterator
+: public BasicImageIteratorBase<ConstBasicImageIterator<PIXELTYPE, ITERATOR>, 
+                    PIXELTYPE, PIXELTYPE const &, PIXELTYPE const *, ITERATOR>
+{
+  public:
+
+    typedef BasicImageIteratorBase<ConstBasicImageIterator, 
+              PIXELTYPE, PIXELTYPE const &, PIXELTYPE const *, ITERATOR> Base;
+                                
+    
+    ConstBasicImageIterator(ITERATOR line)
+    : Base(line)
+    {}
+    
+    ConstBasicImageIterator(Base const & rhs)
+    : Base(rhs)
+    {}
+    
+    ConstBasicImageIterator()
+    : Base()
+    {}  
+
+    ConstBasicImageIterator & operator=(Base const & o)
+    {
+        Base::operator=(o);
+        return *this;
+    }
+    
 };
 
 template <class T> struct IteratorTraits;
@@ -301,22 +360,22 @@ class BasicImage
 
         /** the BasicImage's 2D random access iterator ('traverser')
         */
-    typedef BasicImageIterator<PIXELTYPE, PIXELTYPE &, PIXELTYPE *> traverser;
+    typedef BasicImageIterator<PIXELTYPE, PIXELTYPE **> traverser;
 
         /** deprecated, use <TT>traverser</TT> instead
         */
-    typedef BasicImageIterator<PIXELTYPE, PIXELTYPE &, PIXELTYPE *> Iterator;
+    typedef BasicImageIterator<PIXELTYPE, PIXELTYPE **> Iterator;
 
         /** the BasicImage's 2D random access const iterator ('const traverser')
         */
     typedef 
-        BasicImageIterator<PIXELTYPE, PIXELTYPE const &, PIXELTYPE const *> 
+        ConstBasicImageIterator<PIXELTYPE, PIXELTYPE **> 
         const_traverser;
 
         /** deprecated, use <TT>const_traverser</TT> instead
         */
     typedef 
-        BasicImageIterator<PIXELTYPE, PIXELTYPE const &, PIXELTYPE const *>
+        ConstBasicImageIterator<PIXELTYPE, PIXELTYPE **>
         ConstIterator;
 
         /** the BasicImage's difference type (argument type of image[diff])
@@ -552,7 +611,7 @@ class BasicImage
         */
     const_traverser upperLeft() const
     {
-        return const_traverser(const_cast<const_pointer *>(lines_));
+        return const_traverser(const_cast<PIXELTYPE **>(lines_));
     }
 
         /** init 2D random access const iterator poining to
