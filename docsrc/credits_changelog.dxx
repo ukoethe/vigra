@@ -1,0 +1,43 @@
+/** 
+@name Credits and Changelog
+
+{\bf Credits}
+\begin{itemize}
+
+      \item \URL[Ullrich K&ouml;the]{http://kogs-www.informatik.uni-hamburg.de/~koethe/}
+             originated and wrote the library.
+
+      \item Mikhail Amchislavsky 
+      (\URL[mamchisl@ucdavis.edu]{mailto:mamchisl@ucdavis.edu})
+      contributed the code to read and write PNM files. Many thanks!
+
+
+\end{itemize}
+
+{\bf Changes from Version 1.0 to 1.1}
+
+\begin{itemize}
+
+      \item Added expression templates for automated \URL[automated functor creation]{FunctorCreation.html}.
+
+      \item Added support for input/output of the PNM image file format
+       (contributed by  
+        \URL[Mikhail Amchislavsky]{mailto:mamchisl@ucdavis.edu}).
+
+      \item Improved support for the \URL[TIFF image format]{TIFFrelatedfunctions.html}.
+            VIGRA can now read and create TIFF with various pixel types 
+            (unsigned byte, short and long int, float, double).
+            
+      \item Renamed Dist2D into \Ref{Diff2D}, since it represents a difference vector 
+            rather than a distance. Extended Diff2D so that it can also act as a 
+            \URL[CoordinateIterator]{CoordinateIterator.html}.
+            
+      \item Changed the documentation layout.
+      
+      \item Several minor changes and bug fixes.
+
+
+\end{itemize}
+
+@memo Who contributed what?    
+*/

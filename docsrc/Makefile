@@ -12,10 +12,6 @@ doc::
 	@makefooter.csh $(VIGRA_VERSION)
 	$(DOC) $(FILES)
 	python postprocessing.py $(DOCDIR) $(VIGRA_VERSION)
-	@rm -f ../installation.html
-	@cat installation.html | \
-         sed 's/VERSION_VERSION_VERSION/$(VIGRA_VERSION)/g' > \
-         ../installation.html
 	
 latex::
 	$(DOCLATEX)  $(FILES)
