@@ -102,7 +102,7 @@ public:
           images_(numImages, image)
     {
     }
-
+    
         /** range constructor: Construct an array containing copies of
             the images in [begin, end). Those images must all have the
             same size, see \ref imageSize(). (STL-Sequence interface)
@@ -113,6 +113,8 @@ public:
           images_(begin, end)
     {
     }
+
+    virtual ~ImageArray() {}
 
         /** Operator for a vector-like access to the contained images
             (STL-Vector interface)
