@@ -158,9 +158,21 @@ struct TinyVectorTest
 
         shouldEqualTolerance(fv3.squaredMagnitude(), (1.2f*1.2f + 2.4f*2.4f + 3.6f*3.6f), 1e-7f);
 
-        should(dot(bv3, bv3) == bv3.squaredMagnitude());
-        should(dot(iv3, bv3) == iv3.squaredMagnitude());
+        shouldEqual(dot(bv3, bv3), bv3.squaredMagnitude());
+        shouldEqual(dot(iv3, bv3), iv3.squaredMagnitude());
         shouldEqual(dot(fv3, fv3), fv3.squaredMagnitude());
+
+        shouldEqual(squaredNorm(bv3), bv3.squaredMagnitude());
+        shouldEqual(squaredNorm(iv3), iv3.squaredMagnitude());
+        shouldEqual(squaredNorm(fv3), fv3.squaredMagnitude());
+
+        shouldEqual(norm(bv3), bv3.magnitude());
+        shouldEqual(norm(iv3), iv3.magnitude());
+        shouldEqual(norm(fv3), fv3.magnitude());
+
+        TinyVector<IV, 3> ivv(iv3, iv3, iv3);
+        shouldEqual(squaredNorm(ivv), 3*squaredNorm(iv3));
+        shouldEqual(norm(ivv), std::sqrt(3.0*squaredNorm(iv3)));
 
         shouldEqualTolerance(VIGRA_CSTD::sqrt(
                 (typename NumericTraits<typename BV::value_type>::RealPromote)
