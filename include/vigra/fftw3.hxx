@@ -1414,6 +1414,7 @@ void applyFourierFilterFamily(
                                      filters, results);
     else
     {
+        int h = srcLowerRight.y - srcUpperLeft.y;
         FFTWComplexImage workImage(w, h);
         copyImage(srcIterRange(srcUpperLeft, srcLowerRight, sa),
                   destImage(workImage));
