@@ -25,6 +25,7 @@
 
 #include "vigra/utilities.hxx"
 #include "vigra/iteratortraits.hxx"
+#include "vigra/functortraits.hxx"
 
 namespace vigra {
 
@@ -42,33 +43,73 @@ namespace vigra {
 
 template <class DestIterator, class DestAccessor, class VALUETYPE>
 void
-initLine(DestIterator d, DestIterator dend, DestAccessor dest,
-         VALUETYPE v)
+initLineImpl(DestIterator d, DestIterator dend, DestAccessor dest,
+             VALUETYPE v, VigraFalseType)
 {
     for(; d != dend; ++d)
         dest.set(v, d);
+}
+
+template <class DestIterator, class DestAccessor, class FUNCTOR>
+void
+initLineImpl(DestIterator d, DestIterator dend, DestAccessor dest,
+             FUNCTOR const & f, VigraTrueType)
+{
+    for(; d != dend; ++d)
+        dest.set(f(), d);
+}
+
+template <class DestIterator, class DestAccessor, class VALUETYPE>
+inline void
+initLine(DestIterator d, DestIterator dend, DestAccessor dest,
+         VALUETYPE v)
+{
+    initLineImpl(d, dend, dest, v, typename FunctorTraits<VALUETYPE>::isInitializer());
+}
+
+template <class DestIterator, class DestAccessor, class FUNCTOR>
+inline void
+initLineFunctor(DestIterator d, DestIterator dend, DestAccessor dest,
+         FUNCTOR f)
+{
+    initLineImpl(d, dend, dest, f, VigraTrueType());
 }
 
 template <class DestIterator, class DestAccessor, 
           class MaskIterator, class MaskAccessor, 
           class VALUETYPE>
 void
-initLineIf(DestIterator d, DestIterator dend, DestAccessor dest,
-           MaskIterator m, MaskAccessor mask,
-           VALUETYPE v)
+initLineIfImpl(DestIterator d, DestIterator dend, DestAccessor dest,
+               MaskIterator m, MaskAccessor mask,
+               VALUETYPE v, VigraFalseType)
 {
     for(; d != dend; ++d, ++m)
         if(mask(m))
             dest.set(v, d);
 }
 
-template <class DestIterator, class DestAccessor, class FUNCTOR>
+template <class DestIterator, class DestAccessor, 
+          class MaskIterator, class MaskAccessor, 
+          class FUNCTOR>
 void
-initLineFunctor(DestIterator d, DestIterator dend, DestAccessor dest,
-         FUNCTOR f)
+initLineIfImpl(DestIterator d, DestIterator dend, DestAccessor dest,
+               MaskIterator m, MaskAccessor mask,
+               FUNCTOR const & f, VigraTrueType)
 {
-    for(; d != dend; ++d)
-        dest.set(f(), d);
+    for(; d != dend; ++d, ++m)
+        if(mask(m))
+            dest.set(f(), d);
+}
+
+template <class DestIterator, class DestAccessor, 
+          class MaskIterator, class MaskAccessor, 
+          class VALUETYPE>
+inline void
+initLineIf(DestIterator d, DestIterator dend, DestAccessor dest,
+           MaskIterator m, MaskAccessor mask,
+           VALUETYPE v)
+{
+    initLineIfImpl(d, dend, dest, m, mask, v, typename FunctorTraits<VALUETYPE>::isInitializer());
 }
 
 template <class DestIterator, class DestAccessor, 
@@ -76,12 +117,10 @@ template <class DestIterator, class DestAccessor,
           class FUNCTOR>
 void
 initLineFunctorIf(DestIterator d, DestIterator dend, DestAccessor dest,
-           MaskIterator m, MaskAccessor mask,
-           FUNCTOR f)
+                  MaskIterator m, MaskAccessor mask,
+                  FUNCTOR f)
 {
-    for(; d != dend; ++d, ++m)
-        if(mask(m))
-            dest.set(f(), d);
+    initLineIfImpl(d, dend, dest, m, mask, f, VigraTrueType());
 }
 
 /********************************************************/

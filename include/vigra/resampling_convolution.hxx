@@ -26,6 +26,7 @@
 #include "vigra/stdimage.hxx"
 #include "vigra/array_vector.hxx"
 #include "vigra/rational.hxx"
+#include "vigra/functortraits.hxx"
 
 namespace vigra {
 
@@ -64,6 +65,14 @@ struct MapTargetToSourceCoordinate
 };
 
 } // namespace resampling_detail
+
+template <>
+class FunctorTraits<resampling_detail::MapTargetToSourceCoordinate>
+: public FunctorTraitsBase<resampling_detail::MapTargetToSourceCoordinate>
+{
+  public:
+    typedef VigraTrueType isUnaryFunctor;
+};
 
 template <class SrcIter, class SrcAcc,
           class DestIter, class DestAcc,

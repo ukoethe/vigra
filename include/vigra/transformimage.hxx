@@ -27,6 +27,7 @@
 #include "vigra/numerictraits.hxx"
 #include "vigra/iteratortraits.hxx"
 #include "vigra/rgbvalue.hxx"
+#include "vigra/functortraits.hxx"
 
 namespace vigra {
 
@@ -528,6 +529,13 @@ class LinearIntensityTransform
     argument_promote offset_;
 };
 
+template <class DestValueType, class Multiplier>
+class FunctorTraits<LinearIntensityTransform<DestValueType, Multiplier> >
+: public FunctorTraitsBase<LinearIntensityTransform<DestValueType, Multiplier> >
+{
+  public:
+    typedef VigraTrueType isUnaryFunctor;
+};
 
 template <class DestValueType, class Multiplier = double>
 class ScalarIntensityTransform
@@ -568,6 +576,14 @@ class ScalarIntensityTransform
     scalar_multiplier_type scale_;
 };
 
+template <class DestValueType, class Multiplier>
+class FunctorTraits<ScalarIntensityTransform<DestValueType, Multiplier> >
+: public FunctorTraitsBase<ScalarIntensityTransform<DestValueType, Multiplier> >
+{
+  public:
+    typedef VigraTrueType isUnaryFunctor;
+};
+
 /********************************************************/
 /*                                                      */
 /*              linearIntensityTransform                */
@@ -587,6 +603,10 @@ class ScalarIntensityTransform
     factor, however you have to make the template parameter (pixel
     type) explicit then.
 
+    <b> Traits defined:</b>
+    
+    <tt>FunctorTraits::isUnaryFunctor</tt> is true (<tt>VigraTrueType<tt>)
+    
     <b> Declaration:</b>
 
     \code
@@ -763,6 +783,10 @@ linearRangeMapping(
     [lower, heigher]) the destination pixel is set to 'yesresult',
     otherwise to 'noresult'.
 
+    <b> Traits defined:</b>
+    
+    <tt>FunctorTraits::isUnaryFunctor</tt> is true (<tt>VigraTrueType<tt>)
+    
     <b> Usage:</b>
 
         <b>\#include</b> "<a href="transformimage_8hxx-source.html">vigra/transformimage.hxx</a>"<br>
@@ -824,6 +848,14 @@ class Threshold
     result_type yesresult_, noresult_;
 };
 
+template <class SrcValueType, class DestValueType>
+class FunctorTraits<Threshold<SrcValueType, DestValueType> >
+: public FunctorTraitsBase<Threshold<SrcValueType, DestValueType> >
+{
+  public:
+    typedef VigraTrueType isUnaryFunctor;
+};
+
 /********************************************************/
 /*                                                      */
 /*                BrightnessContrastFunctor             */
@@ -861,6 +893,10 @@ class Threshold
     If the <TT>PixelType</TT> is <TT>unsigned char</TT>, a look-up-table is used
     for faster computation.
 
+    <b> Traits defined:</b>
+    
+    <tt>FunctorTraits::isUnaryFunctor</tt> is true (<tt>VigraTrueType<tt>)
+    
     <b> Usage:</b>
 
         <b>\#include</b> "<a href="transformimage_8hxx-source.html">vigra/transformimage.hxx</a>"<br>
@@ -1053,6 +1089,14 @@ class BrightnessContrastFunctor<RGBValue<float> >
     }
 };
 
+template <class PixelType>
+class FunctorTraits<BrightnessContrastFunctor<PixelType> >
+: public FunctorTraitsBase<BrightnessContrastFunctor<PixelType> >
+{
+  public:
+    typedef VigraTrueType isUnaryFunctor;
+};
+
 #endif // NO_PARTIAL_TEMPLATE_SPECIALIZATION
 
 template <>
@@ -1098,7 +1142,10 @@ class BrightnessContrastFunctor<RGBValue<unsigned char> >
     At least, the vector type is required to have a function
     '<em>result</em><TT> = dot(v,v)</TT>'.
     
-
+    <b> Traits defined:</b>
+    
+    <tt>FunctorTraits::isUnaryFunctor</tt> is true (<tt>VigraTrueType<tt>)
+    
     <b> Usage:</b>
 
         <b>\#include</b> "<a href="transformimage_8hxx-source.html">vigra/transformimage.hxx</a>"<br>
@@ -1136,6 +1183,13 @@ public:
   }
 };    //-- class VectorNormFunctor
 
+template <class ValueType>
+class FunctorTraits<VectorNormFunctor<ValueType> >
+: public FunctorTraitsBase<VectorNormFunctor<ValueType> >
+{
+  public:
+    typedef VigraTrueType isUnaryFunctor;
+};
 
 /** \brief A functor for computing the squared vector norm
 
@@ -1148,6 +1202,10 @@ public:
 
     For an example of its usage see VectorNormFunctor
 
+    <b> Traits defined:</b>
+    
+    <tt>FunctorTraits::isUnaryFunctor</tt> is true (<tt>VigraTrueType<tt>)
+    
     \see TinVector, dot()
 */
 template <class ValueType>
@@ -1169,6 +1227,14 @@ public:
     return dot(a,a);
   }
 };    //-- class VectorNormSqFunctor
+
+template <class ValueType>
+class FunctorTraits<VectorNormSqFunctor<ValueType> >
+: public FunctorTraitsBase<VectorNormSqFunctor<ValueType> >
+{
+  public:
+    typedef VigraTrueType isUnaryFunctor;
+};
 
 //@}
 

@@ -26,6 +26,7 @@
 #include "vigra/stdimage.hxx"
 #include "vigra/stdimagefunctions.hxx"
 #include "vigra/imageiteratoradapter.hxx"
+#include "vigra/functortraits.hxx"
 
 namespace vigra {
 
@@ -683,6 +684,15 @@ class DiffusivityFunctor
     result_type one_;
     result_type zero_;
 };
+
+template <class ValueType>
+class FunctorTraits<DiffusivityFunctor<ValueType> >
+: public FunctorTraitsBase<DiffusivityFunctor<ValueType> >
+{
+  public:
+    typedef VigraTrueType isBinaryFunctor;
+};
+
 
 //@}
 

@@ -319,6 +319,7 @@
 
 #include <cmath>
 #include <vigra/numerictraits.hxx>
+#include <vigra/functortraits.hxx>
 
 
 namespace vigra {
@@ -1950,6 +1951,29 @@ operator,(UnaryAnalyser<EXPR1> const & e1,
 }
 
 } // namespace functor
+
+template <class T>
+class FunctorTraits<functor::UnaryFunctor<T> >
+: public FunctorTraitsBase<functor::UnaryFunctor<T> >
+{
+  public:
+    typedef VigraTrueType isInitializer;
+    typedef VigraTrueType isUnaryFunctor;
+    typedef VigraTrueType isBinaryFunctor;
+    typedef VigraTrueType isTernaryFunctor;
+};
+
+template <class T>
+class FunctorTraits<functor::UnaryAnalyser<T> >
+: public FunctorTraitsBase<functor::UnaryAnalyser<T> >
+{
+  public:
+    typedef VigraTrueType isUnaryAnalyser;
+    typedef VigraTrueType isBinaryAnalyser;
+    typedef VigraTrueType isTernaryAnalyser;
+};
+
+
 
 } // namespace vigra
 
