@@ -1164,12 +1164,14 @@ class Edgel
     float orientation;
 };
 
-template <class PixelType>
-void internalCannyFindEdgels(BasicImage<PixelType> const & dx,
-                             BasicImage<PixelType> const & dy,
-                             BasicImage<PixelType> const & magnitude,
+template <class Image>
+void internalCannyFindEdgels(Image const & dx,
+                             Image const & dy,
+                             Image const & magnitude,
                              std::vector<Edgel> & edgels)
 {
+    typedef typename Image::PixelType PixelType;
+    
     PixelType zero = NumericTraits<PixelType>::zero();
     double tan22_5 = M_SQRT2 - 1.0;
     
