@@ -6,6 +6,10 @@
 
 using namespace vigra::functor;
 
+template <class EXPR>
+typename ResultTraits0<UnaryFunctor<EXPR> >::Res 
+exec(UnaryFunctor<EXPR> f) { return f(); } 
+
 template <class EXPR, class T1>
 typename ResultTraits1<UnaryFunctor<EXPR>, T1>::Res 
 exec(UnaryFunctor<EXPR> f, T1 const & a1) { return f(a1); } 
@@ -172,6 +176,9 @@ struct FunctorExpressionTest
         
         should(exec((Var(v1) = Arg3(), Arg2()), true, 2.5, 3.5) == 2.5);
         should(v1 == 3.5);
+        
+        double count = 0.0;
+        should(exec((Var(count) += Param(1), Var(count))) == 1.0);
     }
     
     void testApply()
