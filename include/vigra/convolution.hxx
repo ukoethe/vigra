@@ -48,8 +48,8 @@
         <DD><em>Convolution filters for arbitrary dimensional arrays (MultiArray etc.)</em>
     <DT>
         <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif">
-        \ref BorderTreatmentMode
-        <DD><em>Choose between different border treatment modes </em>
+        \ref ResamplingConvolutionFilters
+        <DD><em>Resampling convolution filters</em>
     <DT>
         <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif">
         \ref StandardConvolution
@@ -57,7 +57,7 @@
     <DT>
         <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif">
         \ref vigra::Kernel2D
-        <DD><em>Generic 2-dimensional convolution kernel </em>
+        <DD><em>Generic 2-dimensional discrete convolution kernel </em>
     <DT>
         <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif">
         \ref SeparableConvolution
@@ -65,15 +65,19 @@
     <DT>
         <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif">
         \ref vigra::Kernel1D
-        <DD> <em>Generic 1-dimensional convolution kernel </em>
+        <DD> <em>Generic 1-dimensional discrete convolution kernel </em>
     <DT>
         <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif">
         \ref RecursiveConvolution
-        <DD> <em>Recursive implementation of the exponential filter and its derivatives </em>
+        <DD> <em>Recursive filters (1st and 2nd order)</em>
     <DT>
         <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif">
         \ref NonLinearDiffusion
         <DD> <em>Edge-preserving smoothing </em>
+    <DT>
+        <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif">
+        \ref BorderTreatmentMode
+        <DD><em>Choose between different border treatment modes </em>
     <DT>
         <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif">
         \ref KernelArgumentObjectFactories
