@@ -1050,12 +1050,101 @@ nonsymmetricEigensystem(MultiArrayView<2, T, C1> const & a,
     return true;
 }
 
+    /** Compute the roots of a polynomial using the eigenvalue method.
+     
+        \a poly is a real polynomial (compatible to \ref vigra::PolynomialView), 
+        and \a roots a complex valued vector (compatible to <tt>std::vector</tt>
+        with a <tt>value_type</tt> compatible to the type <tt>POLYNOMIAL::Complex</tt>) to which
+        the roots are appended. The function calls \ref nonsymmetricEigensystem() with the standard
+        companion matrix yielding the roots as eigenvalues. It returns <tt>false</tt> if 
+        it fails to converge.
+
+        <b>\#include</b> "<a href="eigensystem_8hxx-source.html">vigra/eigensystem.hxx</a>" or<br>
+        <b>\#include</b> "<a href="linear__algebra_8hxx-source.html">vigra/linear_algebra.hxx</a>"<br>
+        Namespaces: vigra and vigra::linalg
+
+        \see polynomialRoots(), vigra::Polynomial
+     */
+template <class POLYNOMIAL, class VECTOR>
+bool polynomialRootsEigenvalueMethod(POLYNOMIAL const & poly, VECTOR & roots, bool polishRoots)
+{
+    typedef typename POLYNOMIAL::value_type T;
+    typedef typename POLYNOMIAL::Real    Real;
+    typedef typename POLYNOMIAL::Complex Complex;
+    typedef Matrix<T> TMatrix;
+    typedef Matrix<Complex> ComplexMatrix;
+
+    int const degree = poly.order();
+    double const eps = poly.epsilon();
+    
+    TMatrix inMatrix(degree, degree);
+    for(int i = 0; i < degree; ++i)
+        inMatrix(0, i) = -poly[degree - i - 1] / poly[degree];
+    for(int i = 0; i < degree - 1; ++i)
+        inMatrix(i + 1, i) = NumericTraits<T>::one();
+    ComplexMatrix ew(degree, 1);
+    TMatrix ev(degree, degree);
+    bool success = nonsymmetricEigensystem(inMatrix, ew, ev);
+    if(!success)
+        return false;
+    for(int i = 0; i < degree; ++i)
+    {
+        if(polishRoots)
+            vigra::detail::laguerre1Root(poly, ew(i,0), 1);
+        roots.push_back(vigra::detail::deleteBelowEpsilon(ew(i,0), eps));
+    }
+    std::sort(roots.begin(), roots.end(), vigra::detail::PolynomialRootCompare());
+    return true;
+}   
+
+template <class POLYNOMIAL, class VECTOR>
+bool polynomialRootsEigenvalueMethod(POLYNOMIAL const & poly, VECTOR & roots)
+{
+    return polynomialRootsEigenvalueMethod(poly, roots, true);
+}   
+
+    /** Compute the real roots of a real polynomial using the eigenvalue method.
+     
+        \a poly is a real polynomial (compatible to \ref vigra::PolynomialView), 
+        and \a roots a real valued vector (compatible to <tt>std::vector</tt>
+        with a <tt>value_type</tt> compatible to the type <tt>POLYNOMIAL::Real</tt>) to which
+        the roots are appended. The function calls \ref polynomialRootsEigenvalueMethod() and
+        throws away all complex roots. It returns <tt>false</tt> if it fails to converge.
+
+        <b>\#include</b> "<a href="eigensystem_8hxx-source.html">vigra/eigensystem.hxx</a>" or<br>
+        <b>\#include</b> "<a href="linear__algebra_8hxx-source.html">vigra/linear_algebra.hxx</a>"<br>
+        Namespaces: vigra and vigra::linalg
+
+        \see polynomialRealRoots(), vigra::Polynomial
+     */
+template <class POLYNOMIAL, class VECTOR>
+bool polynomialRealRootsEigenvalueMethod(POLYNOMIAL const & p, VECTOR & roots, bool polishRoots)
+{
+    typedef typename NumericTraits<typename VECTOR::value_type>::ComplexPromote Complex;
+    ArrayVector<Complex> croots;
+    if(!polynomialRootsEigenvalueMethod(p, croots))
+        return false;
+    for(unsigned int i = 0; i < croots.size(); ++i)
+        if(croots[i].imag() == 0.0)
+            roots.push_back(croots[i].real());
+    return true;
+}
+
+template <class POLYNOMIAL, class VECTOR>
+bool polynomialRealRootsEigenvalueMethod(POLYNOMIAL const & p, VECTOR & roots)
+{
+    return polynomialRealRootsEigenvalueMethod(p, roots, true);
+}
+
+
 //@}
 
 } // namespace linalg
 
 using linalg::symmetricEigensystem;
 using linalg::nonsymmetricEigensystem;
+using linalg::polynomialRootsEigenvalueMethod;
+using linalg::polynomialRealRootsEigenvalueMethod;
 
 } // namespace vigra
 
