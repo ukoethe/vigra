@@ -82,6 +82,11 @@
     <a href="http://www.libtiff.org/">tiff.lib</a> on <a href="http://www.fftw.org/">fftw.lib</a> on your 
     system - <em> or</em> - remove the <TT>HasJPEG</TT> and <TT>HasTIFF</TT> preprocessor flags.
     
+    <li> MSVC 6.0 doesn't provide <TT>std::min()</TT> and <TT>std::max()</TT>. 
+         If you don't already have your own implementation you must activate
+         the VIGRA implementation of these functions by defining the 
+         preprocessor macro <TT>VIGRA_NO_STD_MINMAX</TT> in the project settings.
+
     <li> build the workspace (that is, the library <TT>vigraimpex.lib</TT> and the \ref Examples)
 
     <li> the \ref Examples can now be invoked from the command line (DOS prompt).
