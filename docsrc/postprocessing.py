@@ -65,7 +65,7 @@ linkReplacement = r'<p align=right>\n[ <a href="http://kogs-www.informatik.uni-h
                   r' <a href="aindex.html">Alphabetic Index</a> |\n'\
                   r' <a href="HIER.html">Class Hierarchy</a> ]\n</p>'
 bodyReplacement = r'<body  bgcolor="#f8f0e0" link="#0040b0" vlink="#a00040">\n'\
-                  r'<basefont face="Helvetica,Arial" size=3>\n' + linkReplacement
+                  r'<basefont face="Helvetica,Arial,sans-serif" size=3>\n' + linkReplacement
 
 def findHeading(text):
     result = heading.search(text, 1)
