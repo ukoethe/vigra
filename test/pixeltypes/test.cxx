@@ -61,7 +61,7 @@ struct TinyVectorTest
     }
 
     TinyVectorTest()
-    : bv0(0), bv1(1), bv3(),
+    : bv0((unsigned char)0), bv1((unsigned char)1), bv3(),
       iv0(0), iv1(1), iv3(),
       fv0(0.0), fv1(1.0), fv3()
     {
