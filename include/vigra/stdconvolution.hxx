@@ -951,19 +951,20 @@ public:
             unchanged.
         */
     Kernel2D()
-        : kernel_(1, 1, Kernel2D<ARITHTYPE>::one()),
+        : kernel_(1, 1, one()),
           left_(0, 0),
           right_(0, 0),
+	  norm_(one()),
           border_treatment_(BORDER_TREATMENT_CLIP)
     {}
 
         /** Copy constructor.
          */
     Kernel2D(Kernel2D const & k)
-        : left_(k.left_),
+        : kernel_(k.kernel_),
+          left_(k.left_),
           right_(k.right_),
           norm_(k.norm_),
-          kernel_(k.kernel_),
           border_treatment_(k.border_treatment_)
     {}
 
@@ -973,15 +974,16 @@ public:
     {
         if(this != &k)
         {
+	    kernel_ = k.kernel_;
             left_ = k.left_;
             right_ = k.right_;
             norm_ = k.norm_;
-            kernel_ = k.kernel_;
+	    border_treatment_ = k.border_treatment_;
         }
         return *this;
     }
 
-        /** Initialisation.
+        /** Initialization.
             This initializes the kernel with the given constant. The norm becomes
             v*width()*height().
 
