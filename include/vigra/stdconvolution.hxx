@@ -33,15 +33,15 @@ namespace vigra {
 
 template <class SrcIterator, class SrcAccessor,
           class DestIterator, class DestAccessor,
-          class KernelIterator, class KernelAccessor>
+          class KernelIterator, class KernelAccessor,
+          class KSumType>
 void internalPixelEvaluationByClip(int x, int y, int w, int h, SrcIterator xs,
                                    SrcAccessor src_acc, DestIterator xd, DestAccessor dest_acc,
-                                   KernelIterator ki, Diff2D kul, Diff2D klr, KernelAccessor ak)
+                                   KernelIterator ki, Diff2D kul, Diff2D klr, KernelAccessor ak,
+                                   KSumType norm)
 {
     typedef typename
         NumericTraits<typename SrcAccessor::value_type>::RealPromote SumType;
-    typedef typename
-        NumericTraits<typename KernelAccessor::value_type>::RealPromote KSumType;
     typedef
         NumericTraits<typename DestAccessor::value_type> DestTraits;
 
@@ -49,23 +49,8 @@ void internalPixelEvaluationByClip(int x, int y, int w, int h, SrcIterator xs,
     int kernel_width = klr.x - kul.x + 1;
     int kernel_height = klr.y - kul.y + 1;
 
-    KSumType norm = NumericTraits<KSumType>::zero();
     SumType sum = NumericTraits<SumType>::zero();
     int xx, yy;
-
-    //klr (kernel_lowerright) ist Diff2D !!!
-    KernelIterator yk  = ki + klr;
-
-    //Die Summe der Punkte im Kernel wird ermittelt (= norm)
-    for(yy=0; yy<kernel_height; ++yy, --yk.y)
-    {
-        KernelIterator xk  = yk;
-        for(xx=0; xx<kernel_width; ++xx, --xk.x)
-        {
-            norm += ak(xk);
-        }
-    }
-
     int x0, y0, x1, y1;
 
     y0 = (y<klr.y) ?  -y : -klr.y;
@@ -75,7 +60,7 @@ void internalPixelEvaluationByClip(int x, int y, int w, int h, SrcIterator xs,
     x1 = (w-x-1<-kul.x) ? w-x-1 : -kul.x;
 
     SrcIterator yys = xs + Diff2D(x0, y0);
-    yk  = ki - Diff2D(x0, y0);
+    KernelIterator yk  = ki - Diff2D(x0, y0);
 
     KSumType ksum = NumericTraits<KSumType>::zero();
     kernel_width = x1 - x0 + 1;
@@ -516,7 +501,26 @@ void convolveImage(SrcIterator src_ul, SrcIterator src_lr, SrcAccessor src_acc,
                 if (border == BORDER_TREATMENT_CLIP)
                 {
 
-                    internalPixelEvaluationByClip(x, y, w, h, xs, src_acc, xd, dest_acc, ki, kul, klr, ak);
+                    typedef typename
+                        NumericTraits<typename KernelAccessor::value_type>::RealPromote KSumType;
+                    KSumType norm = NumericTraits<KSumType>::zero();
+
+                    int kernel_width = klr.x - kul.x + 1;
+                    int kernel_height = klr.y - kul.y + 1;
+                    int xx, yy;
+                    KernelIterator yk  = ki + klr;
+
+                    //Die Summe der Punkte im Kernel wird ermittelt (= norm)
+                    for(yy=0; yy<kernel_height; ++yy, --yk.y)
+                    {
+                        KernelIterator xk  = yk;
+                        for(xx=0; xx<kernel_width; ++xx, --xk.x)
+                        {
+                            norm += ak(xk);
+                        }
+                    }
+
+                    internalPixelEvaluationByClip(x, y, w, h, xs, src_acc, xd, dest_acc, ki, kul, klr, ak, norm);
 
                 }
                 else
