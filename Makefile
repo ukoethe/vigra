@@ -1,29 +1,37 @@
+ifneq "$(MAKECMDGOALS)" "autoconf"
 include config/Makefile.include
+endif
 
 all::
 	@cd src ; $(MAKE) all ; cd ..
 
-install::
+install:: install-exec install-includes install-docs
+
+install-exec:
 	@cd src ; $(MAKE) install ; cd ..
-	if test $(includedir) != "$(builddir)/include" ; then \
+	$(INSTALL) -d $(bindir)
+	$(INSTALL) --mode=755 $(vigra_builddir)/vigra-config $(bindir)
+
+install-includes:
+	if test $(includedir) != "$(abs_top_builddir)/include" ; then \
             $(INSTALL) -d $(includedir)/vigra ; \
-            $(INSTALL) --mode=644 $(builddir)/include/vigra/*.hxx $(includedir)/vigra ; \
-            $(INSTALL) --mode=644 $(builddir)/include/vigra/*.h $(includedir)/vigra ; \
+            $(INSTALL) --mode=644 $(abs_top_builddir)/include/vigra/*.hxx $(includedir)/vigra ; \
+            $(INSTALL) --mode=644 $(abs_top_builddir)/include/vigra/*.h $(includedir)/vigra ; \
     fi
-	if test $(prefix) != $(builddir) ; then \
+
+install-docs:
+	if test $(prefix) != $(abs_top_builddir) ; then \
         $(INSTALL) -d $(prefix)/doc/documents ; \
             $(INSTALL) --mode=644 \
-                 $(builddir)/doc/*.html \
-                 $(builddir)/doc/classvigra*.gif $(builddir)/doc/form*.gif \
-                 $(builddir)/doc/doxygen.gif $(builddir)/doc/doxygen.css \
+                 $(abs_top_builddir)/doc/*.html \
+                 $(abs_top_builddir)/doc/classvigra*.gif $(abs_top_builddir)/doc/form*.gif \
+                 $(abs_top_builddir)/doc/doxygen.gif $(abs_top_builddir)/doc/doxygen.css \
                $(prefix)/doc ; \
             $(INSTALL) --mode=644 \
-                 $(builddir)/doc/documents/*.ps \
-                 $(builddir)/doc/documents/*.gif \
+                 $(abs_top_builddir)/doc/documents/*.ps \
+                 $(abs_top_builddir)/doc/documents/*.gif \
                $(prefix)/doc/documents ; \
     fi
-	$(INSTALL) -d $(bindir)
-	$(INSTALL) --mode=755 $(builddir)/vigra-config $(bindir)
 
 examples::
 	@cd src ; $(MAKE) examples ; cd ..
@@ -37,5 +45,14 @@ docclean::
 clean::
 	@cd src ; $(MAKE) clean ; cd ..
 
-maintainer-clean:
-	rm -f aclocal.m4 config.log config.cache config.status configure libtool
+distclean: clean
+	rm -f config.log config.cache config.status config/vigra-config config/Makefile.include
+
+maintainer-clean: distclean
+	rm -f aclocal.m4 configure libtool
+
+autoconf:
+	cd config && \
+	aclocal --acdir=. && \
+	autoconf && mv configure ..
+#	autoconf --output=../configure
