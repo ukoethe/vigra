@@ -74,10 +74,8 @@ struct errstream
 {
     std::strstream buf;
     char const * str() { buf << char(); return buf.str(); }
-    errstream & operator<<(const char * c) { buf << c; return *this; }
-    errstream & operator<<(int i) { buf << i; return *this; }
-    errstream & operator<<(std::string const & s) { buf << s; return *this; }
-    errstream & operator<<(std::ostream & (&o)(std::ostream &)) { buf << o; return *this; }
+    template <class T>
+    errstream & operator<<(T t) { buf << t; return *this; }
 };
 
 inline std::string & exception_checkpoint()
@@ -100,8 +98,15 @@ void report_exception( std::ostream & os,
 enum { 
     unexpected_exception = -1, 
     os_exception = -2, 
-    memory_access_violation = -3
+    memory_access_violation = -3,
+    destructor_failure = -4
 };
+
+inline bool critical_error(int i)
+{ return i <= memory_access_violation; }
+
+inline bool unexpected_error(int i)
+{ return i < 0; }
 
 #ifndef VIGRA_CANT_CATCH_SIGNALS
 
@@ -347,23 +352,11 @@ class test_case
     virtual ~test_case() {}
     
     virtual int run() = 0;
-    virtual int init() { return 0; }
-    virtual int destroy() { return 0; }
     virtual void do_init() {}
     virtual void do_run() {}
     virtual void do_destroy() {}
-    virtual bool has_checkpoint() const 
-    {
-        return exception_checkpoint().size() > 0;
-    }
-    
-    virtual std::string get_checkpoint_message() const 
-    {
-        return exception_checkpoint();
-    }
 
     virtual char const * name() { return name_.c_str(); } 
-    virtual void set_name(char const * name) { name_ = name; }
     virtual int size() const { return 1; }
 
     std::string name_;
@@ -403,18 +396,15 @@ class test_suite
         
         for(int i=0; i != testcases_.size(); ++i) 
         {
-            int result = testcases_[i]->init();
-            if(!result)
-                result = testcases_[i]->run();
-            if(!result)
-                result = testcases_[i]->destroy();
-                
+            int result = testcases_[i]->run();
             report_ += testcases_[i]->report_;
-                
-            if(result == detail::memory_access_violation)
-//                return result;   // abort immediately?
-                failed++;
-            else if(result < 0)
+            
+            if(detail::critical_error(result))
+            {
+                report_ += std::string("\nFatal error - aborting test suite ") + name() + ".\n";
+                return result;
+            }
+            else if(detail::unexpected_error(result))
                 failed++;
             else 
                 failed += result;
@@ -543,7 +533,7 @@ class class_test_case
         testcase_ = new TESTCASE;
     }
     
-    virtual int init()
+    int init()
     {
         exception_checkpoint() = "";
         report_ = "";
@@ -578,17 +568,27 @@ class class_test_case
     
     virtual int run()
     {
+        int failed = init();
+        
+        if(failed)
+            return failed;
+        
         detail::errstream buf;
         buf << "\nFailure in " << name() << std::endl;
         
-        int failed = catch_exceptions(
+        failed = catch_exceptions(
             detail::test_case_run_functor(buf, this), buf, timeout);
         if(failed)
-        {
             report_ += buf.str();
-        }
         
-        return failed;
+        if(critical_error(failed))
+            return failed;
+            
+        int destruction_failed = destroy();
+        
+        return destruction_failed ? 
+                destruction_failed : 
+                failed;
     }
     
     virtual void do_destroy()
@@ -597,7 +597,7 @@ class class_test_case
         testcase_ = 0;
     }
     
-    virtual int destroy()
+    int destroy()
     {
         detail::errstream buf;
         buf << "\nFailure in destruction of " << std::endl;
@@ -607,9 +607,12 @@ class class_test_case
         if(failed)
         {
             report_ += buf.str();
+            return destructor_failure;
         }
-        
-        return failed;
+        else
+        {
+            return 0;
+        }
     }
     
     void (TESTCASE::*fct_)();
