@@ -19,7 +19,8 @@
 #include <typeinfo>           // for bad_cast, bad_typeid
 #include <exception>          // for exception, bad_exception
 #include <stdexcept>
-#if __GNUC__ >= 3
+
+#if __GNUC__ >= 3  // why does this not work with MSVC 7.1 ???
 #include <sstream>
 #define VIGRA_SSTREAM std::basic_stringstream<char>
 #define VIGRA_SSTREAM_STR(s) s.str().c_str()
@@ -28,6 +29,7 @@
 #define VIGRA_SSTREAM std::strstream
 #define VIGRA_SSTREAM_STR(s) ((s << char()), s.str())
 #endif
+
 #include <iostream>
 #include <limits.h>
 #include <cfloat>
@@ -1026,5 +1028,25 @@ create_test_case(detail::test_functor<FCT> const & fct, char const * name)
 }
 
 } // namespace vigra
+
+
+// provide more convenient output functions, used like:
+// std::cerr << 1, 2, 3, 4, "\n";
+template <class E, class T, class V>
+inline
+std::basic_ostream<E,T> & operator,(std::basic_ostream<E,T> & o, V const & t)
+{
+    return (o << ' ' << t);
+}
+
+template <class E, class T>
+inline
+std::basic_ostream<E,T> & operator,(std::basic_ostream<E,T> & o, 
+              std::basic_ostream<E,T> & (*t)(std::basic_ostream<E,T> &))
+{
+    return (o << t);
+}
+
+
 
 #endif /* VIGRA_UNIT_TEST_HPP */
