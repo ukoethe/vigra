@@ -385,19 +385,22 @@ public:
         shouldEqual (st.shape (2), 8);
         
         // test hierarchical navigation
-        strided_array_t::traverser i3_f = st.traverser_begin ();
-        strided_array_t::traverser i3_l = st.traverser_end ();
+        typedef strided_array_t::traverser Traverser3;
+        Traverser3 i3_f = st.traverser_begin ();
+        Traverser3 i3_l = st.traverser_end ();
 
         unsigned int countx = 0, county = 0, countz = 0;
 
         // iterate over the third dimension
         for (; i3_f != i3_l; ++i3_f) {
-            strided_array_t::traverser::next_type i2_f = i3_f.begin ();
-            strided_array_t::traverser::next_type i2_l = i3_f.end ();
+            typedef Traverser3::next_type Traverser2;
+            Traverser2 i2_f = i3_f.begin ();
+            Traverser2 i2_l = i3_f.end ();
             // iterate over the second dimension
             for (; i2_f != i2_l; ++i2_f) {
-                strided_array_t::traverser::next_type::next_type i1_f = i2_f.begin ();
-                strided_array_t::traverser::next_type::next_type i1_l = i2_f.end ();
+                typedef Traverser2::next_type Traverser1;
+                Traverser1 i1_f = i2_f.begin ();
+                Traverser1 i1_l = i2_f.end ();
                 // iterate over the first dimension
                 for (; i1_f != i1_l; ++i1_f)
                     ++countx;
@@ -409,7 +412,7 @@ public:
         shouldEqual (countx, 336);
         shouldEqual (county, 56);
         shouldEqual (countz, 8);
-        
+  
         // test direct navigation
         strided_array_t::traverser i = st.traverser_begin();        
         shouldEqual(&*i, &st[shape3_t(0,0,0)]);
@@ -462,10 +465,12 @@ struct MultiImpexTest
 
         for (; i3 != array.traverser_end(); ++i3, ++value) 
         {
-            Traverser::next_type i2 = i3.begin ();
+            typedef Traverser::next_type Traverser2;
+            Traverser2 i2 = i3.begin ();
             for (; i2 != i3.end(); ++i2) 
             {
-                Traverser::next_type::next_type i1 = i2.begin ();
+                typedef Traverser2::next_type Traverser1;
+                Traverser1 i1 = i2.begin ();
                 for (; i1 != i2.end(); ++i1)
                 {
                     *i1 = value;
