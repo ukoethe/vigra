@@ -701,6 +701,14 @@ void Rational<IntType>::normalize()
         // etc.
     };
 
+    template<class T>
+    struct NormTraits<Rational<T> >
+    {
+        typedef Rational<T>                           Type;
+        typedef typename NumericTraits<Type>::Promote SquaredNormType;
+        typedef Type                                  NormType;
+    };
+
     template <class T1, class T2>
     struct PromoteTraits<Rational<T1>, Rational<T2> >
     {
@@ -742,6 +750,14 @@ struct NumericTraits<Rational<T> >
     static Type fromRealPromote(RealPromote const & v)
         { return Type(NumericTraits<T>::fromRealPromote(v.numerator()),
                       NumericTraits<T>::fromRealPromote(v.denominator()), false); }
+};
+
+template<class T>
+struct NormTraits<Rational<T> >
+{
+    typedef Rational<T>                           Type;
+    typedef typename NumericTraits<Type>::Promote SquaredNormType;
+    typedef Type                                  NormType;
 };
 
 template <class T>
@@ -1139,6 +1155,22 @@ abs(const Rational<IntType>& r)
         return r;
 
     return Rational<IntType>(-r.numerator(), r.denominator(), false);
+}
+
+    /// norm (same as <tt>abs(r)</tt>)
+template <typename IntType>
+inline Rational<IntType>
+norm(const Rational<IntType>& r)
+{
+    return abs(r);
+}
+
+    /// squared norm
+template <typename IntType>
+inline typename NormTraits<Rational<IntType> >::SquaredNormType
+squaredNorm(const Rational<IntType>& r)
+{
+    return typename NormTraits<Rational<IntType> >::SquaredNormType(sq(r.numerator()), sq(r.denominator()), false);
 }
 
     /** integer powers

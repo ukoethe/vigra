@@ -159,6 +159,12 @@ struct MultiIteratorChooser <UnstridedArrayTag>
     };
 };
 
+/********************************************************/
+/*                                                      */
+/*                   helper functions                   */
+/*                                                      */
+/********************************************************/
+
 template <class DestIterator, class Shape, class T, int N>
 void
 initMultiArrayData(DestIterator d, Shape const & shape, T const & init, MetaInt<N>)
@@ -222,6 +228,28 @@ uninitializedCopyMultiArrayData(SrcIterator s, Shape const & shape, T * & d, ALL
     for(; s != send; ++s, ++d)
     {
         a.construct(d, *s);
+    }
+}
+
+template <class SrcIterator, class Shape, class T, int N>
+void
+squaredNormOfMultiArray(SrcIterator s, Shape const & shape, T & result, MetaInt<N>)
+{    
+    SrcIterator send = s + shape[N];
+    for(; s != send; ++s)
+    {
+        squaredNormOfMultiArray(s.begin(), shape, result, MetaInt<N-1>());
+    }
+}
+
+template <class SrcIterator, class Shape, class T>
+void
+squaredNormOfMultiArray(SrcIterator s, Shape const & shape, T & result, MetaInt<0>)
+{    
+    SrcIterator send = s + shape[0];
+    for(; s != send; ++s)
+    {
+        result += *s * *s;
     }
 }
 
@@ -330,6 +358,14 @@ public:
         /** the matrix type associated with this array.
          */
     typedef MultiArray <N, T> matrix_type;
+
+        /** the squared norm type (return type of array.squaredNorm()).
+         */
+    typedef typename NormTraits<T>::SquaredNormType SquaredNormType;
+
+        /** the norm type (return type of array.norm()).
+         */
+    typedef typename NumericTraits<SquaredNormType>::RealPromote NormType;
 
 protected:
 
@@ -581,6 +617,22 @@ public:
         return m_stride [n];
     }
 
+        /** return the squared norm of the array (sum of squares of the array elements).
+         */
+    SquaredNormType squaredNorm() const
+    {
+        SquaredNormType res = NumericTraits<SquaredNormType>::zero();  
+        detail::squaredNormOfMultiArray(traverser_begin(), shape(), res, MetaInt<actual_dimension-1>());
+        return res;
+    }
+
+        /** return the norm of the array (equals <tt>sqrt(array.squaredNorm())</tt>).
+         */
+    NormType norm() const
+    {
+        return VIGRA_CSTD::sqrt(static_cast<NormType>(this->squaredNorm()));
+    }
+
         /** return the pointer to the image data
          */
     pointer data () const
@@ -809,6 +861,34 @@ MultiArrayView <N, T, C>::bindAt (int n, int d) const
 
 /********************************************************/
 /*                                                      */
+/*                          norm                        */
+/*                                                      */
+/********************************************************/
+
+template <unsigned int N, class T, class C>
+struct NormTraits<MultiArrayView <N, T, C> >
+{
+    typedef MultiArrayView <N, T, C> Type;
+    typedef typename Type::SquaredNormType SquaredNormType;
+    typedef typename Type::NormType NormType;
+};
+
+template <unsigned int N, class T, class C>
+inline typename MultiArrayView <N, T, C>::SquaredNormType
+squaredNorm(MultiArrayView <N, T, C> const & a)
+{
+    return a.squaredNorm();
+}
+
+template <unsigned int N, class T, class C>
+inline typename MultiArrayView <N, T, C>::NormType
+norm(MultiArrayView <N, T, C> const & a)
+{
+    return a.norm();
+}
+
+/********************************************************/
+/*                                                      */
 /*                       MultiArray                     */
 /*                                                      */
 /********************************************************/
@@ -902,6 +982,14 @@ public:
         /** sequential (random access) const iterator type
          */
     typedef T * const_iterator;
+
+        /** the squared norm type (return type of squaredNorm(array)).
+         */
+    typedef typename view_type::SquaredNormType SquaredNormType;
+
+        /** the norm type (return type of norm(array)).
+         */
+    typedef typename view_type::NormType NormType;
 
 protected:
 
@@ -1244,6 +1332,19 @@ void MultiArray <N, T, A>::deallocate (pointer & ptr, std::size_t s)
     ptr = 0;
 }
 
+/********************************************************/
+/*                                                      */
+/*                       NormTraits                     */
+/*                                                      */
+/********************************************************/
+
+template <unsigned int N, class T, class A>
+struct NormTraits<MultiArray <N, T, A> >
+{
+    typedef MultiArray <N, T, A> Type;
+    typedef typename Type::SquaredNormType SquaredNormType;
+    typedef typename Type::NormType NormType;
+};
 
 /********************************************************/
 /*                                                      */

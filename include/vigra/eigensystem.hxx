@@ -516,7 +516,7 @@ bool hessenbergQrDecomposition(MultiArrayView<2, T, C1> & H, MultiArrayView<2, T
                                      : -52.0);
     T exshift = 0.0;
     T p=0,q=0,r=0,s=0,z=0,t,w,x,y;
-    T norm = vigra::linalg::norm(H);
+    T norm = vigra::norm(H);
 
     // Outer loop over eigenvalue index
     int iter = 0;

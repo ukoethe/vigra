@@ -29,7 +29,7 @@
 #include "vigra/config.hxx"
 #include "vigra/error.hxx"
 #include "vigra/numerictraits.hxx"
-#include "vigra/error.hxx"
+#include "vigra/mathutil.hxx"
 
 namespace vigra {
 
@@ -107,6 +107,16 @@ struct ExecLoop
             res += left[i] * right[i];
         return res;
     }
+
+    template <class T>
+    static typename NormTraits<T>::SquaredNormType
+    squaredNorm(T const * d)
+    {
+        typename NormTraits<T>::SquaredNormType  res = vigra::squaredNorm(*d);
+        for(int i=1; i<LEVEL; ++i)
+            res += vigra::squaredNorm(d[i]);
+        return res;
+    }
 };
 
 template <int LEVEL>
@@ -142,6 +152,28 @@ struct UnrollDot<1>
     dot(T1 const * left, T2 const * right)
     {
         return *left * *right;
+    }
+};
+
+template <int LEVEL>
+struct UnrollSquaredNorm
+{
+    template <class T>
+    static typename NormTraits<T>::SquaredNormType
+    squaredNorm(T const * d)
+    {
+        return vigra::squaredNorm(*d) + UnrollSquaredNorm<LEVEL-1>::squaredNorm(d+1);
+    }
+};
+
+template <>
+struct UnrollSquaredNorm<1>
+{
+    template <class T>
+    static typename NormTraits<T>::SquaredNormType
+    squaredNorm(T const * d)
+    {
+        return vigra::squaredNorm(*d);
     }
 };
 
@@ -207,6 +239,13 @@ struct UnrollLoop
     dot(T1 const * left, T2 const * right)
     {
         return UnrollDot<LEVEL>::dot(left, right);
+    }
+
+    template <class T>
+    static typename NormTraits<T>::SquaredNormType
+    squaredNorm(T const * d)
+    {
+        return UnrollSquaredNorm<LEVEL>::squaredNorm(d);
     }
 };
 
@@ -359,6 +398,14 @@ class TinyVectorBase
         */
     typedef double scalar_multiplier;
 
+        /** the vector's squared norm type
+        */
+    typedef typename NormTraits<VALUETYPE>::SquaredNormType SquaredNormType;
+
+        /** the vector's norm type
+        */
+    typedef typename NumericTraits<SquaredNormType>::RealPromote NormType;
+
         /** the vector's size
         */
     enum { static_size = SIZE };
@@ -418,19 +465,16 @@ class TinyVectorBase
 
         /** Calculate magnitude.
         */
-    typename NumericTraits<VALUETYPE>::RealPromote
-    magnitude() const
+    NormType magnitude() const
     {
-         return VIGRA_CSTD::sqrt(
-               (typename NumericTraits<VALUETYPE>::RealPromote)squaredMagnitude());
+         return VIGRA_CSTD::sqrt(static_cast<NormType>(squaredMagnitude()));
     }
 
         /** Calculate squared magnitude.
         */
-    typename NumericTraits<VALUETYPE>::Promote
-    squaredMagnitude() const
+    SquaredNormType squaredMagnitude() const
     {
-        return Loop::dot(data_);
+        return Loop::squaredNorm(data_);
     }
 
         /** Access component by index.
@@ -527,6 +571,8 @@ class TinyVector
     typedef typename BaseType::size_type size_type;
     typedef typename BaseType::difference_type difference_type;
     typedef typename BaseType::scalar_multiplier scalar_multiplier;
+    typedef typename BaseType::SquaredNormType SquaredNormType;
+    typedef typename BaseType::NormType NormType;
 
         /** Construction with constant value
         */
@@ -665,6 +711,8 @@ class TinyVectorView
     typedef typename BaseType::size_type size_type;
     typedef typename BaseType::difference_type difference_type;
     typedef typename BaseType::scalar_multiplier scalar_multiplier;
+    typedef typename BaseType::SquaredNormType SquaredNormType;
+    typedef typename BaseType::NormType NormType;
 
         /** Default constructor
             (pointer to wrapped data is NULL).
@@ -809,6 +857,14 @@ operator!=(TinyVectorBase<V1, SIZE, D1, D2> const & l,
         // etc.
     };
 
+    template <class T, int SIZE>
+    struct NormTraits<TinyVector<T, SIZE> >
+    {
+        typedef TinyVector<T, SIZE> Type;
+        typedef typename Type::SquaredNormType    SquaredNormType;
+        typedef typename Type::NormType           NormType;
+    };
+
     template <class T1, class T2, SIZE>
     struct PromoteTraits<TinyVector<T1, SIZE>, TinyVector<T2, SIZE> >
     {
@@ -899,6 +955,22 @@ struct NumericTraits<TinyVectorView<T, SIZE> >
     typedef VigraFalseType isScalar;
     typedef VigraFalseType isOrdered;
     typedef VigraFalseType isComplex;
+};
+
+template <class T, int SIZE>
+struct NormTraits<TinyVector<T, SIZE> >
+{
+    typedef TinyVector<T, SIZE> Type;
+    typedef typename Type::SquaredNormType    SquaredNormType;
+    typedef typename Type::NormType           NormType;
+};
+
+template <class T, int SIZE>
+struct NormTraits<TinyVectorView<T, SIZE> >
+{
+    typedef TinyVector<T, SIZE> Type;
+    typedef typename Type::SquaredNormType    SquaredNormType;
+    typedef typename Type::NormType           NormType;
 };
 
 template <class T1, class T2, int SIZE>
@@ -998,6 +1070,13 @@ struct NumericTraits<TinyVector<T, SIZE> >\
             *d = NumericTraits<T>::fromRealPromote(*s);\
         return res;\
     }\
+}; \
+template<>\
+struct NormTraits<TinyVector<T, SIZE> >\
+{\
+    typedef TinyVector<T, SIZE> Type;\
+    typedef Type::SquaredNormType           SquaredNormType; \
+    typedef Type::NormType NormType; \
 };
 
 #define TINYVECTOR_PROMTRAITS1(type1, SIZE) \
@@ -1190,6 +1269,15 @@ dot(TinyVectorBase<V1, SIZE, D1, D2> const & l,
     return ltype::dot(l.begin(), r.begin());
 }
 
+
+    /// squared norm
+template <class V1, int SIZE, class D1, class D2>
+inline
+typename TinyVectorBase<V1, SIZE, D1, D2>::SquaredNormType
+squaredNorm(TinyVectorBase<V1, SIZE, D1, D2> const & t)
+{
+    return t.squaredMagnitude();
+}
 //@}
 
 

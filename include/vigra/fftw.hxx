@@ -58,13 +58,21 @@ class FFTWComplex
         */
     typedef fftw_real const & const_reference;
 
-        /** const reference type (result of operator[] const)
+        /** iterator type (result of begin() )
         */
     typedef fftw_real * iterator;
 
-        /** const reference type (result of operator[] const)
+        /** const iterator type (result of begin() const)
         */
     typedef fftw_real const * const_iterator;
+
+        /** The norm type (result of magnitde())
+        */
+    typedef fftw_real NormType;
+
+        /** The squared norm type (result of squaredMagnitde())
+        */
+    typedef fftw_real SquaredNormType;
 
         /** Construct from real and imaginary part.
             Default: 0.
@@ -140,12 +148,12 @@ class FFTWComplex
 
         /** Squared magnitude x*conj(x)
         */
-    value_type squaredMagnitude() const
+    SquaredNormType squaredMagnitude() const
         { return c_re(*this)*c_re(*this)+c_im(*this)*c_im(*this); }
 
         /** Magnitude (length of radius vector).
         */
-    value_type magnitude() const
+    NormType magnitude() const
         { return VIGRA_CSTD::sqrt(squaredMagnitude()); }
 
         /** Phase angle.
@@ -197,6 +205,7 @@ struct NumericTraits<fftw_complex>
     typedef fftw_complex RealPromote;
     typedef fftw_complex ComplexPromote;
     typedef fftw_real    ValueType;
+
     typedef VigraFalseType isIntegral;
     typedef VigraFalseType isScalar;
     typedef VigraFalseType isOrdered;
@@ -220,12 +229,30 @@ struct NumericTraits<FFTWComplex>
     typedef FFTWComplex Promote;
     typedef FFTWComplex RealPromote;
     typedef FFTWComplex ComplexPromote;
-    typedef fftw_real    ValueType;
+    typedef fftw_real   ValueType;
+
     typedef VigraFalseType isIntegral;
     typedef VigraFalseType isScalar;
     typedef VigraFalseType isOrdered;
     typedef VigraTrueType  isComplex;
 };
+
+template<>
+struct NormTraits<fftw_complex>
+{
+    typedef fftw_complex Type;
+    typedef fftw_real    SquaredNormType;
+    typedef fftw_real    NormType;
+};
+
+template<>
+struct NormTraits<FFTWComplex>
+{
+    typedef FFTWComplex Type;
+    typedef fftw_real   SquaredNormType;
+    typedef fftw_real   NormType;
+};
+
 
 template <>
 struct PromoteTraits<fftw_complex, fftw_complex>
@@ -366,7 +393,15 @@ inline FFTWComplex conj(const FFTWComplex &a)
     return FFTWComplex(a.re, -a.im);
 }
 
+inline FFTWComplex::NormType norm(const FFTWComplex &a)
+{
+    return a.magnitude();
+}
 
+inline FFTWComplex::SquaredNormType squaredNorm(const FFTWComplex &a)
+{
+    return a.squaredMagnitude();
+}
 
 /********************************************************/
 /*                                                      */

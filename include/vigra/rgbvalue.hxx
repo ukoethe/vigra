@@ -77,6 +77,12 @@ class RGBValue
         /** STL-compatible definition of const iterator
         */
     typedef typename TinyVector<VALUETYPE, 3>::const_iterator const_iterator;
+        /** squared norm type (result of squaredManitude())
+        */
+    typedef typename TinyVector<VALUETYPE, 3>::SquaredNormType SquaredNormType;
+        /** norm type (result of magnitude())
+        */
+    typedef typename TinyVector<VALUETYPE, 3>::NormType NormType;
 
         /** Construct from explicit color values
         */
@@ -186,16 +192,14 @@ class RGBValue
 
         /** Calculate magnitude.
         */
-    typename NumericTraits<VALUETYPE>::RealPromote
-    magnitude() const {
+    NormType magnitude() const {
          return VIGRA_CSTD::sqrt(
             (typename NumericTraits<VALUETYPE>::RealPromote)squaredMagnitude());
     }
 
         /** Calculate squared magnitude.
         */
-    typename NumericTraits<VALUETYPE>::Promote
-    squaredMagnitude() const {
+    SquaredNormType squaredMagnitude() const {
          return red()*red() + green()*green() + blue()*blue();
     }
 
@@ -296,6 +300,14 @@ operator!=(RGBValue<V1> const & l, RGBValue<V2> const & r)
         // etc.
     };
 
+    template <class T>
+    struct NormTraits<RGBValue<T> >
+    {
+        typedef RGBValue<T> Type;
+        typedef typename Type::SquaredNormType    SquaredNormType;
+        typedef typename Type::NormType           NormType;
+    };
+
     template <class T1, class T2>
     struct PromoteTraits<RGBValue<T1>, RGBValue<T2> >
     {
@@ -350,6 +362,14 @@ struct NumericTraits<RGBValue<T> >
                            NumericTraits<T>::fromRealPromote(v.green()),
                            NumericTraits<T>::fromRealPromote(v.blue()));
     }
+};
+
+template <class T>
+struct NormTraits<RGBValue<T> >
+{
+    typedef RGBValue<T> Type;
+    typedef typename Type::SquaredNormType    SquaredNormType;
+    typedef typename Type::NormType           NormType;
 };
 
 template <class T1, class T2>
@@ -419,6 +439,13 @@ struct NumericTraits<RGBValue<T> >\
             *d = NumericTraits<T>::fromRealPromote(*s);\
         return res;\
     }\
+}; \
+template<>\
+struct NormTraits<RGBValue<T> >\
+{\
+    typedef RGBValue<T> Type;\
+    typedef Type::SquaredNormType           SquaredNormType; \
+    typedef Type::NormType NormType; \
 };
 
 #define RGBVALUE_PROMTRAITS1(type1) \

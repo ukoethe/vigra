@@ -28,6 +28,7 @@
 #include <iomanip>
 #include "vigra/multi_array.hxx"
 #include "vigra/mathutil.hxx"
+#include "vigra/numerictraits.hxx"
 
 
 namespace vigra
@@ -37,10 +38,10 @@ namespace linalg
 {
 
 template <class T, class C>
-inline std::size_t rowCount(const MultiArrayView<2, T, C> &x);
+inline unsigned int rowCount(const MultiArrayView<2, T, C> &x);
 
 template <class T, class C>
-inline std::size_t columnCount(const MultiArrayView<2, T, C> &x);
+inline unsigned int columnCount(const MultiArrayView<2, T, C> &x);
 
 template <class T, class C>
 MultiArrayView <2, T, C>
@@ -49,9 +50,6 @@ rowVector(MultiArrayView <2, T, C> const & m, int d);
 template <class T, class C>
 MultiArrayView <2, T, C>
 columnVector(MultiArrayView<2, T, C> const & m, int d);
-
-template <class T, class C>
-T squaredNorm(const MultiArrayView<2, T, C> &a);
 
 template <class T, class ALLOC>
 class TemporaryMatrix;
@@ -106,6 +104,8 @@ class Matrix
     typedef typename BaseType::const_reference      const_reference;
     typedef typename BaseType::difference_type      difference_type;
     typedef ALLOC                                   allocator_type;
+    typedef typename BaseType::SquaredNormType      SquaredNormType;
+    typedef typename BaseType::NormType             NormType;
     
         /** default constructor
          */
@@ -133,7 +133,7 @@ class Matrix
             <tt>(rows, columns)</tt> which
             is the opposite of the usual VIGRA convention.
          */
-    Matrix(std::size_t rows, std::size_t columns,
+    Matrix(unsigned int rows, unsigned int columns,
                     ALLOC const & alloc = allocator_type())
     : BaseType(difference_type(rows, columns), alloc)
     {}
@@ -153,7 +153,7 @@ class Matrix
             <tt>(rows, columns)</tt> which
             is the opposite of the usual VIGRA convention.
          */
-    Matrix(std::size_t rows, std::size_t columns, const_reference init,
+    Matrix(unsigned int rows, unsigned int columns, const_reference init,
            allocator_type const & alloc = allocator_type())
     : BaseType(difference_type(rows, columns), init, alloc)
     {}
@@ -180,7 +180,7 @@ class Matrix
             the axes is <tt>(rows, columns)</tt> which
             is the opposite of the usual VIGRA convention.
          */
-    Matrix(std::size_t rows, std::size_t columns, const_pointer init,
+    Matrix(unsigned int rows, unsigned int columns, const_pointer init,
            allocator_type const & alloc = allocator_type())
     : BaseType(difference_type(rows, columns), alloc)
     {
@@ -255,35 +255,35 @@ class Matrix
     
         /** Create a matrix view that represents the row vector of row \a d.
          */
-    view_type rowVector(std::size_t d) const
+    view_type rowVector(unsigned int d) const
     {
         return vigra::linalg::rowVector(*this, d);
     }
     
         /** Create a matrix view that represents the column vector of column \a d.
          */
-    view_type columnVector(std::size_t d) const
+    view_type columnVector(unsigned int d) const
     {
         return vigra::linalg::columnVector(*this, d);
     }
     
         /** number of rows (height) of the matrix.
         */
-    std::size_t rowCount() const
+    unsigned int rowCount() const
     {
         return this->m_shape[0];
     }
     
         /** number of columns (width) of the matrix.
         */
-    std::size_t columnCount() const
+    unsigned int columnCount() const
     {
         return this->m_shape[1];
     }
     
         /** number of elements (width*height) of the matrix.
         */
-    std::size_t elementCount() const
+    unsigned int elementCount() const
     {
         return rowCount()*columnCount();
     }
@@ -302,27 +302,27 @@ class Matrix
             Note that the order of the argument is the opposite of the usual 
             VIGRA convention due to column-major matrix order.
         */
-    value_type & operator()(std::size_t row, std::size_t column);
+    value_type & operator()(unsigned int row, unsigned int column);
 
         /** read access to matrix element <tt>(row, column)</tt>.
             Note that the order of the argument is the opposite of the usual 
             VIGRA convention due to column-major matrix order.
         */
-    value_type operator()(std::size_t row, std::size_t column) const;
+    value_type operator()(unsigned int row, unsigned int column) const;
 #endif
 
         /** squared Frobenius norm. Sum of squares of the matrix elements.
         */
-    value_type squaredNorm() const
+    SquaredNormType squaredNorm() const
     {
-        return vigra::linalg::squaredNorm(*this);
+        return BaseType::squaredNorm();
     }
     
         /** Frobenius norm. Root of sum of squares of the matrix elements.
         */
-    value_type norm() const
+    NormType norm() const
     {
-        return VIGRA_CSTD::sqrt(squaredNorm());
+        return BaseType::norm();
     }
     
         /** transpose matrix in-place (precondition: matrix must be square)
@@ -435,11 +435,11 @@ class TemporaryMatrix
     typedef typename BaseType::difference_type      difference_type;
     typedef ALLOC                                   allocator_type;
 
-    TemporaryMatrix(std::size_t rows, std::size_t columns)
+    TemporaryMatrix(unsigned int rows, unsigned int columns)
     : BaseType(rows, columns, ALLOC())
     {}
 
-    TemporaryMatrix(std::size_t rows, std::size_t columns, const_reference init)
+    TemporaryMatrix(unsigned int rows, unsigned int columns, const_reference init)
     : BaseType(rows, columns, init, ALLOC())
     {}
 
@@ -490,7 +490,6 @@ class TemporaryMatrix
     TemporaryMatrix &operator=(const TemporaryMatrix &rhs); // not implemented
 };
 
-
 /** \addtogroup LinearAlgebraFunctions Matrix functions
  */
 //@{
@@ -502,7 +501,7 @@ class TemporaryMatrix
         Namespaces: vigra and vigra::linalg
      */ 
 template <class T, class C>
-inline std::size_t rowCount(const MultiArrayView<2, T, C> &x)
+inline unsigned int rowCount(const MultiArrayView<2, T, C> &x)
 {
     return x.shape(0);
 }
@@ -514,7 +513,7 @@ inline std::size_t rowCount(const MultiArrayView<2, T, C> &x)
         Namespaces: vigra and vigra::linalg
      */ 
 template <class T, class C>
-inline std::size_t columnCount(const MultiArrayView<2, T, C> &x)
+inline unsigned int columnCount(const MultiArrayView<2, T, C> &x)
 {
     return x.shape(1);
 }
@@ -568,55 +567,29 @@ isSymmetric(MultiArrayView<2, T, C> const & m)
     return true;
 }
 
+#ifdef DOXYGEN // documentation only -- function is already defined in vigra/multi_array.hxx
 
     /** calculate the squared Frobenius norm of a matrix. 
         Equal to the sum of squares of the matrix elements.
     
-    <b>\#include</b> "<a href="matrix_8hxx-source.html">vigra/matrix.hxx</a>" or<br>
-    <b>\#include</b> "<a href="linear__algebra_8hxx-source.html">vigra/linear_algebra.hxx</a>"<br>
-        Namespaces: vigra and vigra::linalg
+    <b>\#include</b> "<a href="matrix_8hxx-source.html">vigra/matrix.hxx</a>"
+        Namespace: vigra
      */ 
-template <class T, class C>
-T squaredNorm(const MultiArrayView<2, T, C> &a)
-{
-    const unsigned int rows = rowCount(a);
-    const unsigned int cols = columnCount(a);
-    T ret = NumericTraits<T>::zero();
-    for(unsigned int j = 0; j < cols; ++j)
-        for(unsigned int i = 0; i < rows; ++i)
-            ret += sq(a(i, j));
-    return ret;
-}
+template <class T, class ALLOC>
+typename Matrix<T, ALLLOC>::SquaredNormType
+squaredNorm(const Matrix<T, ALLLOC> &a);
 
-    /** calculate the squared norm of a vector. 
-        Equal to the sum of squares of the vector elements.
+    /** calculate the squared Frobenius norm of a matrix. 
+        Equal to the sum of squares of the matrix elements.
     
-    <b>\#include</b> "<a href="matrix_8hxx-source.html">vigra/matrix.hxx</a>" or<br>
-    <b>\#include</b> "<a href="linear__algebra_8hxx-source.html">vigra/linear_algebra.hxx</a>"<br>
-        Namespaces: vigra and vigra::linalg
+    <b>\#include</b> "<a href="matrix_8hxx-source.html">vigra/matrix.hxx</a>"
+        Namespace: vigra
      */ 
-template <class T, class C>
-T squaredNorm(const MultiArrayView<1, T, C> &a)
-{
-    const unsigned int size = a.elementCount();
-    T ret = NumericTraits<T>::zero();
-    for(unsigned int i = 0; i < size; ++i)
-        ret += sq(a(i));
-    return ret;
-}
+template <class T, class ALLOC>
+typename Matrix<T, ALLLOC>::NormType
+norm(const Matrix<T, ALLLOC> &a);
 
-    /** calculate the Frobenius norm of a matrix or vector. 
-        Equal to the square root of sum of squares of the matrix elements.
-    
-    <b>\#include</b> "<a href="matrix_8hxx-source.html">vigra/matrix.hxx</a>" or<br>
-    <b>\#include</b> "<a href="linear__algebra_8hxx-source.html">vigra/linear_algebra.hxx</a>"<br>
-        Namespaces: vigra and vigra::linalg
-     */ 
-template <unsigned int N, class T, class C>
-T norm(const MultiArrayView<N, T, C> &a)
-{
-    return VIGRA_CSTD::sqrt(squaredNorm(a));
-}
+#endif // DOXYGEN
 
     /** initialize the given square matrix as an identity matrix.
     
@@ -1276,8 +1249,6 @@ operator/(const TemporaryMatrix<T> &a, T b)
 using linalg::Matrix;
 using linalg::identityMatrix;
 using linalg::diagonalMatrix;
-using linalg::squaredNorm;
-using linalg::norm;
 using linalg::transpose;
 using linalg::dot;
 using linalg::outer;
@@ -1286,6 +1257,28 @@ using linalg::columnCount;
 using linalg::rowVector;
 using linalg::columnVector;
 using linalg::isSymmetric;
+
+/********************************************************/
+/*                                                      */
+/*                       NormTraits                     */
+/*                                                      */
+/********************************************************/
+
+template <class T, class ALLOC>
+struct NormTraits<linalg::Matrix<T, ALLOC> >
+{
+    typedef linalg::Matrix<T, ALLOC> Type;
+    typedef typename Type::SquaredNormType SquaredNormType;
+    typedef typename Type::NormType NormType;
+};
+
+template <class T, class ALLOC>
+struct NormTraits<linalg::TemporaryMatrix<T, ALLOC> >
+{
+    typedef linalg::TemporaryMatrix<T, ALLOC> Type;
+    typedef typename Type::SquaredNormType SquaredNormType;
+    typedef typename Type::NormType NormType;
+};
 
 } // namespace vigra
 

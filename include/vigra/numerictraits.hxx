@@ -48,6 +48,9 @@
     <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif"> 
     \ref PromoteTraits
     <DD><em>Binary traits for promotion of arithmetic objects</em>
+    <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif"> 
+    \ref NormTraits
+    <DD><em>Unary traits for the calculation of the norm and squared norm of arithmetic objects</em>
     </DL>
     
     These traits classes contain information that is used by generic
@@ -357,6 +360,49 @@
     Namespace: vigra
 */
 
+/** \page NormTraits template<> struct NormTraits<ArithmeticType>
+
+    Unary traits for the calculation of the norm and squared norm of arithmetic objects.
+    
+    <b>\#include</b> 
+    "<a href="numerictraits_8hxx-source.html">vigra/numerictraits.hxx</a>"
+
+    This traits class is used to determine appropriate result types
+    for the functions norm() and squaredNorm(). These functions are always 
+    declared like this (where <tt>ArithmeticType</tt> is a type thats supports a norm):
+    
+    \code
+    NormTraits<ArithmeticType>::NormType        norm(ArithmeticType const & t);
+    NormTraits<ArithmeticType>::SquaredNormType squaredNorm(ArithmeticType const & t);
+    \endcode
+    
+    The following members are defined in <b> <TT>NormTraits<ArithmeticType></TT></b>:
+    
+    <table>
+    <tr><td>
+    <b> <TT>typedef ArithmeticType Type;</TT></b>
+    </td><td>
+            the type itself
+    </td></tr>
+    <tr><td>
+    <b> <TT>typedef ... SquaredNormType;</TT></b>
+    </td><td>
+            result of <tt>squaredNorm(ArithmeticType)</tt>
+    </td></tr>
+    <tr><td>
+    <b> <TT>typedef ... NormType;</TT></b>
+    </td><td>
+            result of <tt>norm(ArithmeticType)</tt><br>
+            Usually equal to <tt>NumericTraits&lt;SquaredNormType&gt;::RealPromote
+    </td></tr>
+    </table>
+    
+    NormTraits for the built-in types are defined in <b>\#include</b> 
+    "<a href="numerictraits_8hxx-source.html">vigra/numerictraits.hxx</a>"
+    
+    Namespace: vigra
+*/
+
 namespace vigra {
 
 struct Error_NumericTraits_not_specialized_for_this_case { };
@@ -551,7 +597,6 @@ struct NumericTraits<short unsigned int>
     typedef double RealPromote;
     typedef std::complex<RealPromote> ComplexPromote;
     typedef Type ValueType;
-
 
     typedef VigraTrueType isIntegral;
     typedef VigraTrueType isScalar;
@@ -858,11 +903,59 @@ struct NumericTraits<std::complex<T> >
 
 #endif // NO_PARTIAL_TEMPLATE_SPECIALIZATION
 
+/********************************************************/
+/*                                                      */
+/*                       NormTraits                     */
+/*                                                      */
+/********************************************************/
 
+struct Error_NormTraits_not_specialized_for_this_case { };
+
+template<class A>
+struct NormTraits
+{
+    typedef Error_NormTraits_not_specialized_for_this_case Type;
+    typedef Error_NormTraits_not_specialized_for_this_case SquaredNormType;
+    typedef Error_NormTraits_not_specialized_for_this_case NormType;
+};
+
+#define VIGRA_DEFINE_NORM_TRAITS(T) \
+    template <> struct NormTraits<T> { \
+        typedef T Type; \
+        typedef NumericTraits<T>::Promote SquaredNormType; \
+        typedef T NormType; \
+    };
+
+VIGRA_DEFINE_NORM_TRAITS(bool)
+VIGRA_DEFINE_NORM_TRAITS(signed char)
+VIGRA_DEFINE_NORM_TRAITS(unsigned char)
+VIGRA_DEFINE_NORM_TRAITS(short)
+VIGRA_DEFINE_NORM_TRAITS(unsigned short)
+VIGRA_DEFINE_NORM_TRAITS(int)
+VIGRA_DEFINE_NORM_TRAITS(unsigned int)
+VIGRA_DEFINE_NORM_TRAITS(long)
+VIGRA_DEFINE_NORM_TRAITS(unsigned long)
+VIGRA_DEFINE_NORM_TRAITS(float)
+VIGRA_DEFINE_NORM_TRAITS(double)
+VIGRA_DEFINE_NORM_TRAITS(long double)
+
+#undef VIGRA_DEFINE_NORM_TRAITS
+
+#ifndef NO_PARTIAL_TEMPLATE_SPECIALIZATION
+
+template<class T>
+struct NormTraits<std::complex<T> >
+{
+    typedef std::complex<T>                                      Type;
+    typedef typename NormTraits<T>::SquaredNormType              SquaredNormType;
+    typedef typename NumericTraits<SquaredNormType>::RealPromote NormType;
+};
+
+#endif // NO_PARTIAL_TEMPLATE_SPECIALIZATION
 
 /********************************************************/
 /*                                                      */
-/*                      PromoteTraits                  */
+/*                      PromoteTraits                   */
 /*                                                      */
 /********************************************************/
 
@@ -1883,9 +1976,11 @@ struct RequiresExplicitCast {
             { return NumericTraits<type>::fromRealPromote(v); } \
         static type cast(double v) \
             { return NumericTraits<type>::fromRealPromote(v); } \
+        static type cast(type v) \
+            { return v; } \
         template <class U> \
         static type cast(U v) \
-            { return v; } \
+            { return static_cast<type>(v); } \
  \
     };
 #else
