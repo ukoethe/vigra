@@ -49,6 +49,15 @@ Many thanks to all!
       <li> added \ref recursiveFilterX() and \ref recursiveFilterY() that
            support negative filter coefficients and all
            \link BorderTreatmentMode BorderTreatmenModes \endlink
+      
+      <li> changed \ref gaussianSmoothing() to use BORDER_TREATMENT_REFLECT
+      
+      <li> added \ref vigra::Size2D, \ref vigra::Point2D, \ref vigra::Rect2D
+      
+      <li> split "utilities.hxx" into "diff2d.hxx", 
+          "interpolating_accessor.hxx", "iteratortags.hxx", "mathutil.hxx", 
+          "metaprogramming.hxx", "tuple.hxx". "utilities.hxx" now includes 
+          these other files.
            
 </UL>
 
