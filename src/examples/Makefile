@@ -54,6 +54,9 @@ profile:  profile.o
 pyramid:  pyramid.o
 	$(CXX) -o pyramid pyramid.o $(IMPEX_LIB)
 
+boundarytensor:  boundarytensor.o
+	$(CXX) -o boundarytensor boundarytensor.o $(IMPEX_LIB)
+
 edge:  edge.o
 	$(CXX) -o edge edge.o $(IMPEX_LIB)
 
