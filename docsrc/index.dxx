@@ -210,7 +210,11 @@
         \ref vigra::BasicImage
         <DD> <em>Fundamental class template for images </em>
     <DT>
-        <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif">
+        <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif"> 
+        \ref vigra::BasicImageView
+        <DD> <em>Class template for images that use external memory</em>
+    <DT>
+        <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif"> 
         \ref StandardImageTypes
         <DD> <em>The most common instanciations of \ref vigra::BasicImage</em>
     <DT>
