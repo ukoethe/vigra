@@ -303,13 +303,26 @@ class ConstBasicImageIterator: public BasicImageIteratorBase<PIXELTYPE, ITERATOR
     : BasicImageIteratorBase<PIXELTYPE, ITERATOR>(rhs)
     {}  
     
+    inline ConstBasicImageIterator(const BasicImageIteratorBase<PIXELTYPE, ITERATOR> & rhs)
+    : BasicImageIteratorBase<PIXELTYPE, ITERATOR>(rhs)
+    {}  
+    
     inline ConstBasicImageIterator & operator=(const ConstBasicImageIterator & rhs)
     {
-    if(this != &rhs)
-    {
-        BasicImageIteratorBase<PIXELTYPE, ITERATOR>::operator=(rhs);
+        if(this != &rhs)
+        {
+            BasicImageIteratorBase<PIXELTYPE, ITERATOR>::operator=(rhs);
+        }
+        return *this;
     }
-    return *this;
+
+    inline ConstBasicImageIterator & operator=(const BasicImageIteratorBase<PIXELTYPE, ITERATOR> & rhs)
+    {
+        if(this != &rhs)
+        {
+            BasicImageIteratorBase<PIXELTYPE, ITERATOR>::operator=(rhs);
+        }
+        return *this;
     }
 
     inline ConstBasicImageIterator & operator+=(Diff2D const & s)
