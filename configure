@@ -1215,9 +1215,9 @@ ac_config_sub="$SHELL $ac_aux_dir/config.sub"
 ac_configure="$SHELL $ac_aux_dir/configure" # This should be Cygnus configure.
 
 
-MAJOR_VERSION=cvs
-MINOR_VERSION=
-MICRO_VERSION=
+MAJOR_VERSION=1
+MINOR_VERSION=2
+MICRO_VERSION=1
 
 echo "configuring VIGRA $MAJOR_VERSION.$MINOR_VERSION.$MICRO_VERSION"
 
@@ -4760,7 +4760,7 @@ echo "$as_me: WARNING: Configuring without fftw support" >&2;}
 if test $with_fftw = "yes";
 then
     FFTW_LIB="$with_fftwlib -lfftw"
-    RFFTW_LIB="-L$with_fftwlib -lrfftw -lfftw"
+    RFFTW_LIB="$with_fftwlib -lrfftw -lfftw"
     FFTW_INCLUDES="$fftw_cppflags"
     CPPFLAGS="$FFTW_INCLUDES $CPPFLAGS"
 fi
