@@ -3448,7 +3448,7 @@ if test $with_tiff = "yes";
 then
     TIFF_LIB="-L$with_tifflib -ltiff"
     IMPEX_DEPLIBS="$IMPEX_DEPLIBS $TIFF_LIB"
-    LIBCPPFLAGS="$LIBCXXFLAGS -DHasTIFF -I$with_tiffinc"
+    LIBCPPFLAGS="$LIBCPPFLAGS -DHasTIFF -I$with_tiffinc"
 fi
 
 
@@ -3639,7 +3639,7 @@ if test $with_jpeg = "yes";
 then
     JPEG_LIB="-L$with_jpeglib -ljpeg"
     IMPEX_DEPLIBS="$IMPEX_DEPLIBS $JPEG_LIB"
-    LIBCPPFLAGS="$LIBCXXFLAGS -DHasJPEG -I$with_jpeginc"
+    LIBCPPFLAGS="$LIBCPPFLAGS -DHasJPEG -I$with_jpeginc"
 fi
 
 
