@@ -1013,7 +1013,12 @@ class Kernel1D
     
         /** 
             Init as a sampled Gaussian function. The radius of the kernel is 
-            always 3*std_dev. 'norm' denotes the sum of all bins of the kernel.
+            always 3*std_dev. '<tt>norm</tt>' denotes the sum of all bins of the kernel
+            (i.e. the kernel is corrected for the normalization error introduced
+             by windowing the Gaussian to a finite interval). However,
+            if <tt>norm</tt> is 0.0, the kernel is normalized to 1 by the analytic 
+            expression for the Gaussian, and <b>no</b> correction for the windowing 
+            error is performed.
             
             Precondition:  
             \code
@@ -1065,13 +1070,20 @@ class Kernel1D
     }
     
         /** 
-            Init as a Gaussian derivative of order 'order'. 
-            The radius of the kernel is always 3*std_dev.
-            'norm' denotes the norm of the kernel as given by
+            Init as a Gaussian derivative of order '<tt>order</tt>'. 
+            The radius of the kernel is always <tt>3*std_dev + 0.5*order</tt>.
+            '<tt>norm</tt>' denotes the norm of the kernel so that the
+            following condition is fulfilled:
               
             \f[ \sum_{i=left()}^{right()} 
                          \frac{(-i)^{order}kernel[i]}{order!} = norm
             \f]
+            
+            Thus, the kernel will be corrected for the error introduced
+            by windowing the Gaussian to a finite interval. However, 
+            if <tt>norm</tt> is 0.0, the kernel is normalized to 1 by the analytic 
+            expression for the Gaussian derivative, and <b>no</b> correction for the 
+            windowing error is performed.
             
             Preconditions:  
             \code
@@ -1081,8 +1093,8 @@ class Kernel1D
             
             Postconditions: 
             \code
-            1. left()  == -(int)(3.0*std_dev + 0.5)
-            2. right() ==  (int)(3.0*std_dev + 0.5)
+            1. left()  == -(int)(3.0*std_dev + 0.5*order + 0.5)
+            2. right() ==  (int)(3.0*std_dev + 0.5*order + 0.5)
             3. borderTreatment() == BORDER_TREATMENT_REPEAT
             4. norm() == norm
             \endcode
@@ -1285,7 +1297,7 @@ class Kernel1D
             for the given </tt>derivativeOrder</tt>.
         */
     void
-    normalize(value_type norm, unsigned int derivativeOrder = 0);
+    normalize(value_type norm, unsigned int derivativeOrder = 0, double offset = 0.0);
     
         /** normalize kernel to norm 1.
         */
@@ -1312,7 +1324,8 @@ class Kernel1D
 
 template <class ARITHTYPE>
 void Kernel1D<ARITHTYPE>::normalize(value_type norm, 
-                          unsigned int derivativeOrder) 
+                          unsigned int derivativeOrder,
+                          double offset) 
 {
     typedef typename NumericTraits<value_type>::RealPromote TmpType;    
     
@@ -1332,7 +1345,7 @@ void Kernel1D<ARITHTYPE>::normalize(value_type norm,
         unsigned int faculty = 1;
         for(unsigned int i = 2; i <= derivativeOrder; ++i)
             faculty *= i;
-        for(ARITHTYPE x = left(); x <= right(); ++x, ++k)  
+        for(double x = left() + offset; x <= right(); ++x, ++k)  
         {
             sum += *k * VIGRA_CSTD::pow(-x, int(derivativeOrder)) / faculty;
         }
@@ -1366,7 +1379,7 @@ void Kernel1D<ARITHTYPE>::initGaussian(double std_dev,
         Gaussian<ARITHTYPE> gauss(std_dev);
         
         // first calculate required kernel sizes
-        int radius = (int)(gauss.radius() + 0.5);
+        int radius = (int)(3.0 * std_dev + 0.5);
         if(radius == 0)
             radius = 1;
 
@@ -1389,7 +1402,10 @@ void Kernel1D<ARITHTYPE>::initGaussian(double std_dev,
         right_ = 0;
     }
     
-    normalize(norm);
+    if(norm != 0.0)
+        normalize(norm);
+    else
+        norm_ = 1.0;
 
     // best border treatment for Gaussians is BORDER_TREATMENT_CLIP
     border_treatment_ = BORDER_TREATMENT_CLIP;  
@@ -1489,7 +1505,9 @@ Kernel1D<ARITHTYPE>::initGaussianDerivative(double std_dev,
     Gaussian<ARITHTYPE> gauss(std_dev, order);
     
     // first calculate required kernel sizes
-    int radius = (int)(gauss.radius() + 0.5);
+    int radius = (int)(3.0 * std_dev + 0.5 * order + 0.5);
+    if(radius == 0)
+        radius = 1;
    
     // allocate the kernels
     kernel_.clear();
@@ -1505,15 +1523,23 @@ Kernel1D<ARITHTYPE>::initGaussianDerivative(double std_dev,
     }
     dc /= (2.0*radius + 1.0);
                 
-    // remove DC
-    for(unsigned int i=0; i < kernel_.size(); ++i)
+    // remove DC, but only if kernel correction is permitted by a non-zero
+    // value for norm
+    if(norm != 0.0)
     {
-        kernel_[i] -= dc;
+        for(unsigned int i=0; i < kernel_.size(); ++i)
+        {
+            kernel_[i] -= dc;
+        }
     }
     
     left_ = -radius;
     right_ = radius;
-    normalize(norm, order);
+
+    if(norm != 0.0)
+        normalize(norm, order);
+    else
+        norm_ = 1.0;
 
     // best border treatment for Gaussian derivatives is 
     // BORDER_TREATMENT_REPEAT
