@@ -51,6 +51,16 @@
 //@Include: ../include/vigra/error.hxx 
 //@Include: ../include/vigra/numerictraits.hxx 
 
+/** @name Pixel Types
+    @memo Non-scalar pixel types, e.g. RGB values and fixed size vectors
+*/
+//@{
+
+//@Include: ../include/vigra/tinyvector.hxx 
+//@Include: ../include/vigra/rgbvalue.hxx 
+
+//@}
+
 //@Include: ../include/vigra/stdimage.hxx 
 
 /** @name Import and Export
