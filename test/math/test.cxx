@@ -37,17 +37,17 @@ typedef std::complex<double> C;
 static C reference[][12] = 
 {
     { C(1e-12), C(2.0), C(2.0), C(2.0), C(6.0, -4.0), C(6.0, 4.0) },
-    { C(1e-11), C(6.0), C(5.0), C(4.0), C(7.0), C(3.0), C(8.0), C(2.0), C(1.0)  },
-    { C(1e-12), C(1.0), C(-1e10), C(1e10) },
-    { C(1e-12), C(1.0), C(-1e-10), C(1e-10) },
-    { C(1e-5), C(0.2), C(0.2), C(0.2), C(0.3), C(0.3), 
-               C(0.1), C(0.1), C(0.1), C(0.4), C(0.1) },
-    { C(1e-12), C(0.47331479192572767, 0.89542786425410759), C(0.47331479192572767, -0.89542786425410759), 
-                C(-0.56839260551055271, 0.4046562986541693), C(-391.74516023901123), 
-                C(-0.56839260551055271, -0.4046562986541693) },
-    { C(1e-12), C(1e6), C(1.0), C(1e-6) },
-    { C(1e-12), C(0.0, 1.0), C(0.0, 1.0), C(0.0, -1.0), C(0.0, -2.0), 
-                C(0.0, 2.0), C(0.0, -1.0), C(0.0, 3.0), C(0.0, -3.0) }
+    { C(1e-11), C(1.0), C(2.0), C(3.0), C(4.0), C(5.0), C(6.0), C(7.0), C(8.0) },
+    { C(1e-12), C(-1e10), C(1.0), C(1e10) },
+    { C(1e-12), C(-1e-10), C(1e-10), C(1.0) },
+    { C(1e-5), C(0.1), C(0.1), C(0.1), C(0.1), C(0.2), C(0.2), C(0.2), 
+               C(0.3), C(0.3), C(0.4) },
+    { C(1e-12), C(-391.74516023901123),
+                C(-0.56839260551055271, -0.4046562986541693), C(-0.56839260551055271, 0.4046562986541693), 
+                C(0.47331479192572767, -0.89542786425410759), C(0.47331479192572767, 0.89542786425410759) },
+    { C(1e-12), C(1e-6), C(1.0), C(1e6) },
+    { C(1e-12), C(0.0, -3.0), C(0.0, -2.0), C(0.0, -1.0), C(0.0, -1.0), 
+                C(0.0, 1.0), C(0.0, 1.0), C(0.0, 2.0), C(0.0, 3.0) }
 };
 
 #if 0
@@ -73,6 +73,24 @@ struct PolynomialTest
         vigra::ArrayVector<std::complex<double> > roots;
         
         should(polynomialRoots(p, roots));
+        shouldEqual(roots.size(), order);
+        for(unsigned int i = 0; i<roots.size(); ++i)
+        {
+            shouldEqualTolerance(roots[i].real(), reference[N][i+1].real(), epsilon);
+            shouldEqualTolerance(roots[i].imag(), reference[N][i+1].imag(), epsilon);
+        }
+    }
+
+    void testPolynomialEigenvalueMethod()
+    {
+        double epsilon = 1e-7;
+        unsigned int order = (unsigned int)(coefficients[N][0] + 0.5);
+        POLYNOMIAL p(coefficients[N]+1, order);
+        p.setEpsilon(epsilon);
+
+        vigra::ArrayVector<std::complex<double> > roots;
+        
+        should(polynomialRootsEigenvalueMethod(p, roots));
         shouldEqual(roots.size(), order);
         for(unsigned int i = 0; i<roots.size(); ++i)
         {
@@ -107,8 +125,35 @@ struct HighOrderPolynomialTest
         vigra::ArrayVector<double> rroots;
         should(polynomialRealRoots(p, rroots));
         shouldEqual(rroots.size(), 2);
-        shouldEqualTolerance(rroots[0], 1.0, epsilon);
-        shouldEqualTolerance(rroots[1], -1.0, epsilon);
+        shouldEqualTolerance(rroots[0], -1.0, epsilon);
+        shouldEqualTolerance(rroots[1], 1.0, epsilon);
+    }
+
+    void testPolynomialEigenvalueMethod()
+    {
+        unsigned int order = 80;
+        double epsilon = 1e-12;
+        vigra::ArrayVector<double> coeffs(order+1, 0.0);
+        coeffs[0] = -1.0;
+        coeffs[order] = 1.0;
+        vigra::Polynomial<double> p(coeffs.begin(), order);
+        
+        vigra::ArrayVector<std::complex<double> > roots;
+        
+        should(vigra::polynomialRootsEigenvalueMethod(p, roots));        
+        shouldEqual(roots.size(), order);
+        for(unsigned int i = 0; i<roots.size(); ++i)
+        {
+            shouldEqualTolerance(std::abs(roots[i]), 1.0, epsilon);
+            C r = p(roots[i]);
+            shouldEqualTolerance(r.real(), 0.0, epsilon);
+            shouldEqualTolerance(r.imag(), 0.0, epsilon);
+        }
+        vigra::ArrayVector<double> rroots;
+        should(polynomialRealRootsEigenvalueMethod(p, rroots));
+        shouldEqual(rroots.size(), 2);
+        shouldEqualTolerance(rroots[0], -1.0, epsilon);
+        shouldEqualTolerance(rroots[1], 1.0, epsilon);
     }
 };
 
@@ -955,6 +1000,7 @@ struct MathTestSuite
     {
         typedef vigra::Polynomial<double> P1;
         typedef vigra::StaticPolynomial<10, double> P2;
+
         add( testCase((&PolynomialTest<0, P1>::testPolynomial)));
         add( testCase((&PolynomialTest<1, P1>::testPolynomial)));
         add( testCase((&PolynomialTest<2, P1>::testPolynomial)));
@@ -963,10 +1009,20 @@ struct MathTestSuite
         add( testCase((&PolynomialTest<5, P1>::testPolynomial)));
         add( testCase((&PolynomialTest<6, P1>::testPolynomial)));
         add( testCase((&PolynomialTest<7, P1>::testPolynomial)));
+
+        // test only some polynomials, as the eigenvalue method is less robust
+        add( testCase((&PolynomialTest<1, P1>::testPolynomialEigenvalueMethod)));
+        add( testCase((&PolynomialTest<5, P1>::testPolynomialEigenvalueMethod)));
+        add( testCase((&PolynomialTest<6, P1>::testPolynomialEigenvalueMethod)));
+        add( testCase((&PolynomialTest<7, P1>::testPolynomialEigenvalueMethod)));
+
         add( testCase((&PolynomialTest<0, P2>::testPolynomial)));
         add( testCase((&PolynomialTest<1, P2>::testPolynomial)));
         add( testCase((&PolynomialTest<2, P2>::testPolynomial)));
+
         add( testCase(&HighOrderPolynomialTest::testPolynomial));
+        add( testCase(&HighOrderPolynomialTest::testPolynomialEigenvalueMethod));
+
         add( testCase(&SplineTest<0>::testValues));
         add( testCase(&SplineTest<1>::testValues));
         add( testCase(&SplineTest<2>::testValues));
@@ -982,18 +1038,22 @@ struct MathTestSuite
         add( testCase(&SplineTest<2>::testWeightMatrix));
         add( testCase(&SplineTest<3>::testWeightMatrix));
         add( testCase(&SplineTest<5>::testWeightMatrix));
+
         add( testCase(&FunctionsTest::testGaussians));
+
         add( testCase(&RationalTest::testGcdLcm));
         add( testCase(&RationalTest::testOperators));
         add( testCase(&RationalTest::testConversion));
         add( testCase(&RationalTest::testFunctions));
         add( testCase(&RationalTest::testInf));
+
         add( testCase(&LinalgTest::testMatrix));
         add( testCase(&LinalgTest::testQR));
         add( testCase(&LinalgTest::testLinearSolve));
         add( testCase(&LinalgTest::testInverse));
         add( testCase(&LinalgTest::testSymmetricEigensystem));
         add( testCase(&LinalgTest::testNonsymmetricEigensystem));
+
         add( testCase(&FixedPointTest::testConstruction));
         add( testCase(&FixedPointTest::testComparison));
         add( testCase(&FixedPointTest::testArithmetic));
