@@ -67,11 +67,26 @@ class FFTWComplex
         im = iim;
     }
     
+        /** Copy constructor.
+        */
+    FFTWComplex(FFTWComplex const & o)
+    : fftw_complex(o)
+    {}
+    
         /** Construct from plain <TT>fftw_complex</TT>.
         */
     FFTWComplex(fftw_complex const & o)
     : fftw_complex(o)
     {}
+    
+        /** Assignment.
+        */
+    FFTWComplex& operator=(FFTWComplex const & o)
+    {
+        re = o.re;
+        im = o.im;
+        return *this;
+    }
     
         /** Unary negation.
         */
@@ -373,50 +388,39 @@ inline FFTWComplex conj(const FFTWComplex &a)
 */
 //@{
 
-#ifndef NO_PARTIAL_TEMPLATE_SPECIALIZATION
-
 template<>
 struct IteratorTraits<BasicImageIterator<FFTWComplex, FFTWComplex **> >
 {
-    typedef BasicImageIterator<FFTWComplex, FFTWComplex **> Iterator;
-    typedef StandardAccessor<FFTWComplex > DefaultAccessor; \
-    typedef RowIterator<Iterator> RowIterator; \
-    static RowIterator make_row_iterator(Iterator const & i) \
-        { return RowIterator(i); } \
+    typedef BasicImageIterator<FFTWComplex, FFTWComplex **>  Iterator;
+    typedef Iterator                             iterator;
+    typedef iterator::iterator_category          iterator_category;
+    typedef iterator::value_type                 value_type;
+    typedef iterator::reference                  reference;
+    typedef iterator::index_reference            index_reference;
+    typedef iterator::pointer                    pointer;
+    typedef iterator::difference_type            difference_type;
+    typedef iterator::row_iterator               row_iterator;
+    typedef iterator::column_iterator            column_iterator;
+    typedef StandardAccessor<FFTWComplex>        default_accessor; 
+    typedef StandardAccessor<FFTWComplex>        DefaultAccessor; 
 };  
 
 template<>
 struct IteratorTraits<ConstBasicImageIterator<FFTWComplex, FFTWComplex **> >
 {
-    typedef ConstBasicImageIterator<FFTWComplex, FFTWComplex **> Iterator;
-    typedef StandardConstAccessor<FFTWComplex > DefaultAccessor; \
-    typedef ConstRowIterator<Iterator> RowIterator; \
-    static RowIterator make_row_iterator(Iterator const & i) \
-        { return RowIterator(i); } \
+    typedef ConstBasicImageIterator<FFTWComplex, FFTWComplex **>    Iterator;
+    typedef Iterator                             iterator;
+    typedef iterator::iterator_category          iterator_category;
+    typedef iterator::value_type                 value_type;
+    typedef iterator::reference                  reference;
+    typedef iterator::index_reference            index_reference;
+    typedef iterator::pointer                    pointer;
+    typedef iterator::difference_type            difference_type;
+    typedef iterator::row_iterator               row_iterator;
+    typedef iterator::column_iterator            column_iterator;
+    typedef StandardConstAccessor<FFTWComplex>   default_accessor; 
+    typedef StandardConstAccessor<FFTWComplex>   DefaultAccessor; 
 };  
-#else
-
-template<>
-struct IteratorTraits<BasicImageIterator<FFTWComplex, FFTWComplex **> >
-{
-    typedef BasicImageIterator<FFTWComplex, FFTWComplex **> Iterator;
-    typedef StandardAccessor<FFTWComplex > DefaultAccessor; \
-    typedef BasicImageRowIterator<Iterator> RowIterator; \
-    static RowIterator make_row_iterator(Iterator const & i) \
-        { return RowIterator(i); } \
-};  
-
-template<>
-struct IteratorTraits<ConstBasicImageIterator<FFTWComplex, FFTWComplex **> >
-{
-    typedef ConstBasicImageIterator<FFTWComplex, FFTWComplex **> Iterator;
-    typedef StandardConstAccessor<FFTWComplex > DefaultAccessor; \
-    typedef ConstBasicImageRowIterator<Iterator> RowIterator; \
-    static RowIterator make_row_iterator(Iterator const & i) \
-        { return RowIterator(i); } \
-};
-  
-#endif
 
     /** Complex (FFTWComplex) image.
         It uses \ref vigra::BasicImageIterator and \ref vigra::StandardAccessor and 
