@@ -23,6 +23,7 @@
 #define VIGRA_MATHUTIL_HXX
 
 #include <cmath>
+#include <cstdlib>
 #include "vigra/config.hxx"
 #include "vigra/numerictraits.hxx"
 
@@ -30,7 +31,7 @@
 
     <TT>M_PI, M_SQRT2</TT>
 
-    <b>\#include</b> "<a href="utilities_8hxx-source.html">vigra/mathutil.hxx</a>"
+    <b>\#include</b> "<a href="mathutil_8hxx-source.html">vigra/mathutil.hxx</a>"
 
     Since <TT>M_PI</TT> and <TT>M_SQRT2</TT> are not officially standardized,
     we provide definitions here for those compilers that don't support them.
@@ -74,7 +75,7 @@ namespace vigra {
     
     according to the formula given in Press et al. "Numerical Recipes".
 
-    <b>\#include</b> "<a href="utilities_8hxx-source.html">vigra/mathutil.hxx</a>"<br>
+    <b>\#include</b> "<a href="mathutil_8hxx-source.html">vigra/mathutil.hxx</a>"<br>
     Namespace: vigra
 */
 template <class T>
@@ -97,11 +98,13 @@ using VIGRA_CSTD::erf;
 
 #endif
 
+using std::abs;  // import abs(real) and abs(int)
+
 /*! The square function.
 
     sq(x) is needed so often that it makes sense to define it as a function.
 
-    <b>\#include</b> "<a href="utilities_8hxx-source.html">vigra/mathutil.hxx</a>"<br>
+    <b>\#include</b> "<a href="mathutil_8hxx-source.html">vigra/mathutil.hxx</a>"<br>
     Namespace: vigra
 */
 template <class T>
