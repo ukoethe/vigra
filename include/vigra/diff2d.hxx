@@ -439,9 +439,9 @@ struct IteratorTraits<Diff2D >
     
 };
 
-template <class Accessor>
+template <class DIFF, class Accessor>
 inline triple<Diff2D, Diff2D, Accessor>
-srcIterRange(Diff2D const & upperleft, Diff2D const & lowerright, Accessor a)
+srcIterRange(Diff2D const & upperleft, DIFF const & lowerright, Accessor a)
 {
     return triple<Diff2D, Diff2D, Accessor>(upperleft, lowerright, a);
 }
@@ -468,9 +468,9 @@ destIter(Diff2D const & upperleft, Accessor a)
 }
 
 
-template <class Accessor>
+template <class DIFF, class Accessor>
 inline triple<Diff2D, Diff2D, Accessor>
-destIterRange(Diff2D const & upperleft, Diff2D const & lowerright, Accessor a)
+destIterRange(Diff2D const & upperleft, DIFF const & lowerright, Accessor a)
 {
     return triple<Diff2D, Diff2D, Accessor>(upperleft, lowerright, a);
 }
@@ -483,8 +483,9 @@ srcIter(Diff2D const & upperleft)
               IteratorTraits<Diff2D>::DefaultAccessor());
 }
 
+template <class DIFF>
 inline triple<Diff2D, Diff2D, IteratorTraits<Diff2D>::DefaultAccessor>
-srcIterRange(Diff2D const & upperleft, Diff2D const & lowerright)
+srcIterRange(Diff2D const & upperleft, DIFF const & lowerright)
 {
     return triple<Diff2D, Diff2D, 
                   IteratorTraits<Diff2D>::DefaultAccessor>(
@@ -508,8 +509,9 @@ destIter(Diff2D const & upperleft)
                   IteratorTraits<Diff2D>::DefaultAccessor());
 }
 
+template <class DIFF>
 inline triple<Diff2D, Diff2D, IteratorTraits<Diff2D>::DefaultAccessor>
-destIterRange(Diff2D const & upperleft, Diff2D const & lowerright)
+destIterRange(Diff2D const & upperleft, DIFF const & lowerright)
 {
     return triple<Diff2D, Diff2D, 
                   IteratorTraits<Diff2D>::DefaultAccessor>(
