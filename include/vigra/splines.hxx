@@ -75,13 +75,13 @@ class BSplineBase
     unsigned int derivativeOrder() const
         { return s1_.derivativeOrder(); }
 
-    static double const * prefilterCoefficients()
+    ArrayVector<double> const & prefilterCoefficients() const
     { 
-        static double const * const b = calculatePrefilterCoefficients();
+        static ArrayVector<double> const & b = calculatePrefilterCoefficients();
         return b;
     }
     
-    static double const * calculatePrefilterCoefficients();
+    static ArrayVector<double> const & calculatePrefilterCoefficients();
     
     typedef T WeightMatrix[ORDER+1][ORDER+1];
     static WeightMatrix & weights()
@@ -115,12 +115,10 @@ BSplineBase<ORDER, T>::exec(first_argument_type x, second_argument_type derivati
 }
 
 template <int ORDER, class T>
-double const * BSplineBase<ORDER, T>::calculatePrefilterCoefficients()
+ArrayVector<double> const & BSplineBase<ORDER, T>::calculatePrefilterCoefficients()
 { 
-    static double b[ORDER / 2 == 0 ? 1 : ORDER / 2];
-    if(ORDER <= 1)
-        b[0] = 0.0;
-    else
+    static ArrayVector<double> b(ORDER / 2 == 0 ? 1 : ORDER / 2, 0.0);
+    if(ORDER > 1)
     {
         static const int r = ORDER / 2;
         StaticPolynomial<2*r, double> p(2*r);
@@ -206,9 +204,9 @@ class BSplineBase<0, T>
     unsigned int derivativeOrder() const
         { return derivativeOrder_; }
 
-    static double const * prefilterCoefficients()
+    ArrayVector<double> const & prefilterCoefficients() const
     { 
-        static double b[] = {0.0};
+        static ArrayVector<double> b(1, 0.0);
         return b;
     }
     
@@ -274,9 +272,9 @@ class BSpline<1, T>
     unsigned int derivativeOrder() const
         { return derivativeOrder_; }
 
-    static double const * prefilterCoefficients()
+    ArrayVector<double> const & prefilterCoefficients() const
     { 
-        static double b[] = {0.0};
+        static ArrayVector<double> b(1, 0.0);
         return b;
     }
     
@@ -361,9 +359,9 @@ class BSpline<2, T>
     unsigned int derivativeOrder() const
         { return derivativeOrder_; }
 
-    static double const * prefilterCoefficients()
+    ArrayVector<double> const & prefilterCoefficients() const
     { 
-        static double b[] = {2.0*M_SQRT2 - 3.0};
+        static ArrayVector<double> b(1, 2.0*M_SQRT2 - 3.0);
         return b;
     }
     
@@ -472,9 +470,9 @@ class BSpline<3, T>
     unsigned int derivativeOrder() const
         { return derivativeOrder_; }
 
-    static double const * prefilterCoefficients()
+    ArrayVector<double> const & prefilterCoefficients() const
     { 
-        static double b[] = {VIGRA_CSTD::sqrt(3.0) - 2.0};
+        static ArrayVector<double> b(1, VIGRA_CSTD::sqrt(3.0) - 2.0);
         return b;
     }
     
@@ -609,9 +607,17 @@ class BSpline<5, T>
     unsigned int derivativeOrder() const
         { return derivativeOrder_; }
 
-    static double const * prefilterCoefficients()
+    ArrayVector<double> const & prefilterCoefficients() const
     { 
-        static double b[] = {-0.43057534709997114, -0.043096288203264652};
+        static ArrayVector<double> const & b = initPrefilterCoefficients();
+        return b;
+    }
+    
+    static ArrayVector<double> const & initPrefilterCoefficients()
+    { 
+        static ArrayVector<double> b(2);
+        b[0] = -0.43057534709997114;
+        b[1] = -0.043096288203264652;
         return b;
     }
     
@@ -788,9 +794,12 @@ public:
     int radius() const
         {return 2;}
         
-    static double const * prefilterCoefficients()
+    unsigned int derivativeOrder() const
+        { return 0; }
+
+    ArrayVector<double> const & prefilterCoefficients() const
     { 
-        static double b[] = {0.0};
+        static ArrayVector<double> b(1, 0.0);
         return b;
     }
 };
