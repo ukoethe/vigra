@@ -26,29 +26,11 @@ class ByteImageExportImportTest
         freeViffImage(viff);
     }
     
+    void testFile(const char * filename);
+    
     void testGIF()
     {
-        exportImage(srcImageRange(img), vigra::ImageExportInfo("res.gif"));
-        
-        vigra::ImageImportInfo info("res.gif");
-        
-        should(info.width() == img.width());
-        should(info.height() == img.height());
-        should(info.isGrayscale());
-        should(info.pixelType() == vigra::ImageImportInfo::UINT8);
-        
-        Image res(info.width(), info.height());
-        
-        importImage(info, destImage(res));
-        
-	Image::ScanOrderIterator i = img.begin();
-	Image::ScanOrderIterator i1 = res.begin();
-	Image::Accessor acc = img.accessor();
-
-	for(; i != img.end(); ++i, ++i1)
-	{
-            should(acc(i) == acc(i1));
-	}
+        testFile("res.gif");
     }
 
     void testEmptyGIF()
@@ -135,77 +117,27 @@ class ByteImageExportImportTest
     
     void testBMP()
     {
-        exportImage(srcImageRange(img), vigra::ImageExportInfo("res.bmp"));
-        
-        vigra::ImageImportInfo info("res.bmp");
-        
-        should(info.width() == img.width());
-        should(info.height() == img.height());
-        should(info.isGrayscale());
-        should(info.pixelType() == vigra::ImageImportInfo::UINT8);
-        
-        Image res(info.width(), info.height());
-        
-        importImage(info, destImage(res));
-        
-	Image::ScanOrderIterator i = img.begin();
-	Image::ScanOrderIterator i1 = res.begin();
-	Image::Accessor acc = img.accessor();
-
-	for(; i != img.end(); ++i, ++i1)
-	{
-            should(acc(i) == acc(i1));
-	}
+        testFile("res.bmp");
+    }
+    
+    void testPGM()
+    {
+        testFile("res.pgm");
+    }
+    
+    void testPNM()
+    {
+        testFile("res.pnm");
     }
     
     void testSUN()
     {
-        exportImage(srcImageRange(img), vigra::ImageExportInfo("res.ras"));
-        
-        vigra::ImageImportInfo info("res.ras");
-        
-        should(info.width() == img.width());
-        should(info.height() == img.height());
-        should(info.isGrayscale());
-        should(info.pixelType() == vigra::ImageImportInfo::UINT8);
-        
-        Image res(info.width(), info.height());
-        
-        importImage(info, destImage(res));
-        
-	Image::ScanOrderIterator i = img.begin();
-	Image::ScanOrderIterator i1 = res.begin();
-	Image::Accessor acc = img.accessor();
-
-	for(; i != img.end(); ++i, ++i1)
-	{
-            should(acc(i) == acc(i1));
-	}
+        testFile("res.ras");
     }
     
     void testVIFF1()
     {
-        exportImage(srcImageRange(img), vigra::ImageExportInfo("res.xv"));
-        
-        vigra::ImageImportInfo info("res.xv");
-        
-        should(info.width() == img.width());
-        should(info.height() == img.height());
-        should(info.isGrayscale());
-        should(info.pixelType() == vigra::ImageImportInfo::UINT8);
-        
-        Image res(info.width(), info.height());
-        
-        importImage(info, destImage(res));
-        
-	Image::ScanOrderIterator i = img.begin();
-	Image::ScanOrderIterator i1 = res.begin();
-	Image::Accessor acc = img.accessor();
-
-	for(; i != img.end(); ++i, ++i1)
-	{
-            should(acc(i) == acc(i1));
-	}
+        testFile("res.xv");
     }
     
     void testVIFF2()
@@ -237,6 +169,32 @@ class ByteImageExportImportTest
     Image img;
 };
 
+void ByteImageExportImportTest::testFile(const char * filename)
+{
+    exportImage(srcImageRange(img), vigra::ImageExportInfo(filename));
+
+    vigra::ImageImportInfo info(filename);
+
+    should(info.width() == img.width());
+    should(info.height() == img.height());
+    should(info.isGrayscale());
+    should(info.pixelType() == vigra::ImageImportInfo::UINT8);
+
+    Image res(info.width(), info.height());
+
+    importImage(info, destImage(res));
+
+    Image::ScanOrderIterator i = img.begin();
+    Image::ScanOrderIterator i1 = res.begin();
+    Image::Accessor acc = img.accessor();
+
+    for(; i != img.end(); ++i, ++i1)
+    {
+        should(acc(i) == acc(i1));
+    }
+}    
+
+
 class ByteRGBImageExportImportTest
 {
     typedef vigra::BRGBImage Image;
@@ -257,29 +215,11 @@ class ByteRGBImageExportImportTest
         freeViffImage(viff);
     }
     
+    void testFile(const char * fileName);
+    
     void testGIF()
     {
-        exportImage(srcImageRange(img), vigra::ImageExportInfo("res.gif"));
-        
-        vigra::ImageImportInfo info("res.gif");
-        
-        should(info.width() == img.width());
-        should(info.height() == img.height());
-        should(info.isColor());
-        should(info.pixelType() == vigra::ImageImportInfo::UINT8);
-        
-        Image res(info.width(), info.height());
-        
-        importImage(info, destImage(res));
-        
-	Image::ScanOrderIterator i = img.begin();
-	Image::ScanOrderIterator i1 = res.begin();
-	Image::Accessor acc = img.accessor();
-
-	for(; i != img.end(); ++i, ++i1)
-	{
-            should(acc(i) == acc(i1));
-	}
+        testFile("res.gif");
     }
     
     void testJPEG()
@@ -338,77 +278,27 @@ class ByteRGBImageExportImportTest
     
     void testBMP()
     {
-        exportImage(srcImageRange(img), vigra::ImageExportInfo("res.bmp"));
-        
-        vigra::ImageImportInfo info("res.bmp");
-        
-        should(info.width() == img.width());
-        should(info.height() == img.height());
-        should(info.isColor());
-        should(info.pixelType() == vigra::ImageImportInfo::UINT8);
-        
-        Image res(info.width(), info.height());
-        
-        importImage(info, destImage(res));
-        
-	Image::ScanOrderIterator i = img.begin();
-	Image::ScanOrderIterator i1 = res.begin();
-	Image::Accessor acc = img.accessor();
-
-	for(; i != img.end(); ++i, ++i1)
-	{
-            should(acc(i) == acc(i1));
-	}
+        testFile("res.bmp");
+    }
+    
+    void testPPM()
+    {
+        testFile("res.ppm");
+    }
+    
+    void testPNM()
+    {
+        testFile("res.pnm");
     }
     
     void testSUN()
     {
-        exportImage(srcImageRange(img), vigra::ImageExportInfo("res.ras"));
-        
-        vigra::ImageImportInfo info("res.ras");
-        
-        should(info.width() == img.width());
-        should(info.height() == img.height());
-        should(info.isColor());
-        should(info.pixelType() == vigra::ImageImportInfo::UINT8);
-        
-        Image res(info.width(), info.height());
-        
-        importImage(info, destImage(res));
-        
-	Image::ScanOrderIterator i = img.begin();
-	Image::ScanOrderIterator i1 = res.begin();
-	Image::Accessor acc = img.accessor();
-
-	for(; i != img.end(); ++i, ++i1)
-	{
-            should(acc(i) == acc(i1));
-	}
+        testFile("res.ras");
     }
     
     void testVIFF1()
     {
-        exportImage(srcImageRange(img), vigra::ImageExportInfo("res.xv"));
-        
-        vigra::ImageImportInfo info("res.xv");
-        
-        should(info.width() == img.width());
-        should(info.height() == img.height());
-        should(info.isColor());
-        should(info.pixelType() == vigra::ImageImportInfo::UINT8);
-        
-        Image res(info.width(), info.height());
-        
-        importImage(info, destImage(res));
-        
-	Image::ScanOrderIterator i = img.begin();
-	Image::ScanOrderIterator i1 = res.begin();
-	Image::Accessor acc = img.accessor();
-
-	for(; i != img.end(); ++i, ++i1)
-	{
-            should(acc(i) == acc(i1));
-	}
+        testFile("res.xv");
     }
     
     void testVIFF2()
@@ -440,6 +330,31 @@ class ByteRGBImageExportImportTest
     Image img;
 };
 
+void ByteRGBImageExportImportTest::testFile(const char * fileName)
+{
+    exportImage(srcImageRange(img), vigra::ImageExportInfo(fileName));
+
+    vigra::ImageImportInfo info(fileName);
+
+    should(info.width() == img.width());
+    should(info.height() == img.height());
+    should(info.isColor());
+    should(info.pixelType() == vigra::ImageImportInfo::UINT8);
+
+    Image res(info.width(), info.height());
+
+    importImage(info, destImage(res));
+
+    Image::ScanOrderIterator i = img.begin();
+    Image::ScanOrderIterator i1 = res.begin();
+    Image::Accessor acc = img.accessor();
+
+    for(; i != img.end(); ++i, ++i1)
+    {
+        should(acc(i) == acc(i1));
+    }
+}
+    
 class FloatImageExportImportTest
 {
     typedef vigra::FImage Image;
@@ -1016,6 +931,8 @@ class ImageImportExportTestSuite
         add( testCase(&ByteImageExportImportTest::testJPEG));
         add( testCase(&ByteImageExportImportTest::testTIFF));
         add( testCase(&ByteImageExportImportTest::testBMP));
+        add( testCase(&ByteImageExportImportTest::testPGM));
+        add( testCase(&ByteImageExportImportTest::testPNM));
         add( testCase(&ByteImageExportImportTest::testSUN));
         add( testCase(&ByteImageExportImportTest::testVIFF1));
         add( testCase(&ByteImageExportImportTest::testVIFF2));
@@ -1024,6 +941,8 @@ class ImageImportExportTestSuite
         add( testCase(&ByteRGBImageExportImportTest::testJPEG));
         add( testCase(&ByteRGBImageExportImportTest::testTIFF));
         add( testCase(&ByteRGBImageExportImportTest::testBMP));
+        add( testCase(&ByteRGBImageExportImportTest::testPPM));
+        add( testCase(&ByteRGBImageExportImportTest::testPNM));
         add( testCase(&ByteRGBImageExportImportTest::testSUN));
         add( testCase(&ByteRGBImageExportImportTest::testVIFF1));
         add( testCase(&ByteRGBImageExportImportTest::testVIFF2));
