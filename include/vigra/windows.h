@@ -25,9 +25,16 @@
 // prevent the global namespace to become polluted with 
 // badly named Windows macros
 
-#define NOMINMAX
-#include <windows.h>
-#undef NOMINMAX
-#undef DIFFERENCE
+#ifndef NOMINMAX
+# define NOMINMAX
+# include <windows.h>
+# undef NOMINMAX
+#else
+# include <windows.h>
+#endif
+
+#ifdef DIFFERENCE
+# undef DIFFERENCE
+#endif
 
 #endif /* VIGRA_WINDOWS_H */
