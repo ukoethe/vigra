@@ -261,11 +261,7 @@ class TinyVector
     typename NumericTraits<VALUETYPE>::RealPromote
     magnitude() const 
     {
-#ifndef CMATH_NOT_IN_STD
-         return std::sqrt(squaredMagnitude());
-#else
-         return sqrt(squaredMagnitude());
-#endif
+         return VIGRA_CSTD::sqrt(squaredMagnitude());
     }
     
         /** Calculate squared magnitude.
@@ -621,6 +617,8 @@ operator+=(TinyVector<V1, 4> & l, TinyVector<V2, 4> const & r)
     return l;
 }
 
+#ifndef NO_PARTIAL_TEMPLATE_SPECIALIZATION
+
     /// componentwise add-assignment
 template <class V1, class V2, int SIZE>
 inline
@@ -634,6 +632,8 @@ operator+=(TinyVector<V1, SIZE> & l, TinyVector<V2, SIZE> const & r)
         *i1 += *i2;
     return l;
 }
+
+#endif // NO_PARTIAL_TEMPLATE_SPECIALIZATION
 
 template <class V1, class V2>
 inline
@@ -668,6 +668,8 @@ operator-=(TinyVector<V1, 4> & l, TinyVector<V2, 4> const & r)
     return l;
 }
 
+#ifndef NO_PARTIAL_TEMPLATE_SPECIALIZATION
+
     /// componentwise subtract-assignment
 template <class V1, class V2, int SIZE>
 inline
@@ -681,6 +683,8 @@ operator-=(TinyVector<V1, SIZE> & l, TinyVector<V2, SIZE> const & r)
         *i1 -= *i2;
     return l;
 }
+
+#endif // NO_PARTIAL_TEMPLATE_SPECIALIZATION
 
 template <class V1, class V2>
 inline
@@ -715,6 +719,8 @@ operator*=(TinyVector<V1, 4> & l, TinyVector<V2, 4> const & r)
     return l;
 }
 
+#ifndef NO_PARTIAL_TEMPLATE_SPECIALIZATION
+
     /// componentwise multiply-assignment
 template <class V1, class V2, int SIZE>
 inline
@@ -728,6 +734,8 @@ operator*=(TinyVector<V1, SIZE> & l, TinyVector<V2, SIZE> const & r)
         *i1 *= *i2;
     return l;
 }
+
+#endif NO_PARTIAL_TEMPLATE_SPECIALIZATION
 
 template <class V1>
 inline
@@ -821,11 +829,7 @@ operator/=(TinyVector<V, SIZE> & l, double r)
     return l;
 }
 
-#ifndef CMATH_NOT_IN_STD
-using std::abs;
-#else
-using ::abs;
-#endif
+using VIGRA_CSTD::abs;
 
 template <class V1>
 inline
@@ -863,6 +867,8 @@ TinyVector<T, SIZE> abs(TinyVector<T, SIZE> const & v) {
         *d = abs(*s);
     return res;
 }
+
+#ifndef NO_PARTIAL_TEMPLATE_SPECIALIZATION
 
     /// component-wise addition
 template <class V1, class V2, int SIZE>
@@ -903,6 +909,7 @@ operator*(TinyVector<V1, SIZE> const & r1, TinyVector<V2, SIZE> const & r2)
     return res;
 }
 
+#endif // NO_PARTIAL_TEMPLATE_SPECIALIZATION
 
     /// component-wise left scalar multiplication
 template <class V, int SIZE>

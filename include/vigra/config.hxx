@@ -43,7 +43,9 @@
     #define NO_STL_MEMBER_TEMPLATES
     #define NO_INLINE_STATIC_CONST_DEFINITION
     #define CMATH_NOT_IN_STD
+    #define NO_COVARIANT_RETURN_TYPES
     
+    #ifdef VIGRA_NO_STD_MINMAX  // activate if necessary
     namespace std {
     
 	template<class T>
@@ -62,6 +64,8 @@
 			: x;
 	}
     }
+
+    #endif // VIGRA_NO_STD_MINMAX
 #endif // _MSC_VER
 
 ///////////////////////////////////////////////////////////

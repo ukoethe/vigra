@@ -37,12 +37,12 @@ class LineBasedColumnIteratorPolicy
   public:
     typedef IMAGEITERATOR                             ImageIterator;
     typedef typename IMAGEITERATOR::LineStartIterator LineStartIterator;
-    typedef typename ImageIterator::value_type        value_type;
-    typedef typename ImageIterator::difference_type::MoveY            
+    typedef typename IMAGEITERATOR::value_type        value_type;
+    typedef typename IMAGEITERATOR::difference_type::MoveY            
                                                       difference_type;
-    typedef typename ImageIterator::reference         reference;
-    typedef typename ImageIterator::index_reference   index_reference;
-    typedef typename ImageIterator::pointer           pointer;
+    typedef typename IMAGEITERATOR::reference         reference;
+    typedef typename IMAGEITERATOR::index_reference   index_reference;
+    typedef typename IMAGEITERATOR::pointer           pointer;
     typedef std::random_access_iterator_tag           iterator_category;
     
     
