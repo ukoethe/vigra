@@ -183,13 +183,26 @@ If you want to apply an algorithm requiring an image to a <tt>MultiArrayView</tt
 if appropriate shape, you can create a \ref vigra::BasicImageView 
 that acts as a wrapper with the necessary interface -- see
 \ref MultiArrayToImage.
+
+The template parameter are as follows
+\code
+    N: the array dimension
+    
+    T: the type of the array elements
+    
+    C: a tag determining whether the array's inner dimension is strided
+       or not. An array is unstrided if the array elements occupy consecutive
+       memory location, strided if there is an offset in between (e.g.
+       when a view is created that skips every other array element).
+       The compiler can generate faster code for unstrided arrays.
+       Possible values: UnstridedArrayTag (default), StridedArrayTag        
+\endcode
     
 <b>\#include</b>
 "<a href="multi_array_8hxx-source.html">vigra/multi_array.hxx</a>"
 
 Namespace: vigra
 */
-
 template <unsigned int N, class T, class C>
 class MultiArrayView
 {
@@ -856,14 +869,25 @@ MultiArrayView <N, T, C>::bindColumn (int d) const
 /** \brief Main <TT>MultiArray</TT> class containing the memory
     management.
 
-    This class inherits the interface of MultiArrayView, and implements
-    the memory ownership.
-    MultiArray's are always unstrided, striding them creates a MultiArrayView.
+This class inherits the interface of MultiArrayView, and implements
+the memory ownership.
+MultiArray's are always unstrided, striding them creates a MultiArrayView.
 
-    <b>\#include</b>
-    "<a href="multi_array_8hxx-source.html">vigra/multi_array.hxx</a>"
 
-    Namespace: vigra
+The template parameters are as follows
+\code
+    N: the array dimension
+    
+    T: the type of the array elements
+    
+    A: the allocator used for internal storage management 
+       (default: std::allocator<T>)  
+\endcode
+
+<b>\#include</b>
+"<a href="multi_array_8hxx-source.html">vigra/multi_array.hxx</a>"
+
+Namespace: vigra
 */
 template <unsigned int N, class T, class A /* default already declared above */>
 class MultiArray : public MultiArrayView <N, T>
