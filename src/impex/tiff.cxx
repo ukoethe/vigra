@@ -545,12 +545,10 @@ namespace vigra {
         TIFFSetField( tiff, TIFFTAG_BITSPERSAMPLE, bits_per_sample );
 
         // set photometric
-        if ( samples_per_pixel == 1 )
-            TIFFSetField( tiff, TIFFTAG_PHOTOMETRIC, PHOTOMETRIC_MINISBLACK );
-        else if ( samples_per_pixel == 3 )
+        if ( samples_per_pixel == 3 )
             TIFFSetField( tiff, TIFFTAG_PHOTOMETRIC, PHOTOMETRIC_RGB );
         else 
-            TIFFSetField( tiff, TIFFTAG_PHOTOMETRIC, 10 /* undefined */ );
+            TIFFSetField( tiff, TIFFTAG_PHOTOMETRIC, PHOTOMETRIC_MINISBLACK );
 
         // alloc memory
         stripbuffer = new tdata_t[1];
