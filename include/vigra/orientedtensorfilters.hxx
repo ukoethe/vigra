@@ -29,9 +29,87 @@
 
 namespace vigra {
 
-// TODO: border treatment
-//       normalization
+/** \addtogroup TensorImaging Tensor Image Processing
+*/
+//@{
 
+/********************************************************/
+/*                                                      */
+/*                     hourGlassFilter                  */
+/*                                                      */
+/********************************************************/
+
+/** \brief Anisotropic tensor smoothing with the hourglass filter.
+
+    This function implements anisotropic tensor smoothing by an
+    hourglass-shaped filters as described in
+    
+    U. Köthe: <a href="http://kogs-www.informatik.uni-hamburg.de/~koethe/papers/abstracts/structureTensor.html">
+    <i>"Edge and Junction Detection with an Improved Structure Tensor"</i></a>, 
+     in: Proc. of 25th DAGM Symposium, Magdeburg 2003, Lecture Notes in Computer Science 2781, 
+     pp. 25-32, Heidelberg: Springer, 2003
+     
+    It is closely related to the structure tensor (see 
+    \link CommonConvolutionFilters#structureTensor structureTensor\endlink()), but
+    replaces the linear tensor smoothing with a smoothing along edges only. 
+    Smoothing accross edges is largely suppressed. This means that the
+    image structure is preserved much better because nearby features
+    such as parallel edges are not blended into each other. 
+    
+    The hourglass filter is typically applied to a gradient tensor, i.e. the 
+    Euclidean product of the gradient with itself, which can be obtained by a
+    gradient operator followed with \ref vectorToTensor(), see example below. 
+    The hourglass shape of the filter can be interpreted as indicating the likely 
+    continuations of a local edge element. The parameter <tt>sigma</tt> determines
+    the radius of the hourglass (i.e. how far the influence of the edge element 
+    reaches), and <tt>rho</tt> controls its opening angle (i.e. how narrow the 
+    edge orientation os followed). Recommended values are <tt>sigma = 1.4</tt>
+    (or, more generally, two to three times the scale of the gradient operator
+    used in the first step), and <tt>rho = 0.4</tt> which corresponds to an 
+    opening angle of 22.5 degrees to either side of the edge.
+    
+    <b> Declarations:</b>
+
+    pass arguments explicitly:
+    \code
+    namespace vigra {
+        template <class SrcIterator, class SrcAccessor,
+                  class DestIterator, class DestAccessor>
+        void hourGlassFilter(SrcIterator sul, SrcIterator slr, SrcAccessor src,
+                             DestIterator dul, DestAccessor dest,
+                             double sigma, double rho);
+    }
+    \endcode
+
+
+    use argument objects in conjunction with \ref ArgumentObjectFactories:
+    \code
+    namespace vigra {
+        template <class SrcIterator, class SrcAccessor,
+                  class DestIterator, class DestAccessor>
+        inline
+        void hourGlassFilter(triple<SrcIterator, SrcIterator, SrcAccessor> s,
+                             pair<DestIterator, DestAccessor> d,
+                             double sigma, double rho);
+    }
+    \endcode
+
+    <b> Usage:</b>
+
+    <b>\#include</b> "<a href="orientedtensorfilters_8hxx-source.html">vigra/orientedtensorfilters.hxx</a>"
+
+    \code
+    FImage img(w,h);
+    FVector2Image gradient(w,h);
+    FVector3Image tensor(w,h), smoothedTensor(w,h);
+    
+    gaussianGradient(srcImageRange(img), destImage(gradient), 1.0);
+    vectorToTensor(srcImageRange(gradient), destImage(tensor));
+    hourGlassFilter(srcImageRange(tensor), destImage(smoothedTensor), 2.0, 0.4);
+    \endcode
+    
+    \see vectorToTensor()
+*/
 template <class SrcIterator, class SrcAccessor,
           class DestIterator, class DestAccessor>
 void hourGlassFilter(SrcIterator sul, SrcIterator slr, SrcAccessor src,
@@ -45,6 +123,7 @@ void hourGlassFilter(SrcIterator sul, SrcIterator slr, SrcAccessor src,
     vigra_precondition(dest.size(dul) == 3,
                        "hourGlassFilter(): output image must have 3 bands.");
 
+    // TODO: normalization
 
     int w = slr.x - sul.x;
     int h = slr.y - sul.y;
@@ -104,6 +183,12 @@ void hourGlassFilter(triple<SrcIterator, SrcIterator, SrcAccessor> s,
 {
     hourGlassFilter(s.first, s.second, s.third, d.first, d.second, sigma, rho);
 }
+
+/********************************************************/
+/*                                                      */
+/*                    ellipticGaussian                  */
+/*                                                      */
+/********************************************************/
 
 template <class SrcIterator, class SrcAccessor,
           class DestIterator, class DestAccessor>
@@ -174,6 +259,12 @@ void ellipticGaussian(triple<SrcIterator, SrcIterator, SrcAccessor> s,
 {
     ellipticGaussian(s.first, s.second, s.third, d.first, d.second, sigmax, sigmin);
 }
+
+/********************************************************/
+/*                                                      */
+/*         kernels for orientedTrigonometricFilter      */
+/*                                                      */
+/********************************************************/
 
 class FoerstnerKernelBase
 {
@@ -394,6 +485,12 @@ class Cos6Kernel
     }
 };
 
+/********************************************************/
+/*                                                      */
+/*              orientedTrigonometricFilter             */
+/*                                                      */
+/********************************************************/
+
 template <class SrcIterator, class SrcAccessor,
           class DestIterator, class DestAccessor,
           class Kernel>
@@ -456,6 +553,8 @@ void orientedTrigonometricFilter(triple<SrcIterator, SrcIterator, SrcAccessor> s
 {
     orientedTrigonometricFilter(s.first, s.second, s.third, d.first, d.second, kernel);
 }
+
+//@}
 
 } // namespace vigra
 
