@@ -115,16 +115,16 @@ transformLineIf(SrcIterator s,
 
     <b> Usage:</b>
 
-        <b>\#include</b> "<a href="transformimage_8hxx-source.html">vigra/transformimage.hxx</a>"<br>
-        Namespace: vigra
+    <b>\#include</b> "<a href="transformimage_8hxx-source.html">vigra/transformimage.hxx</a>"<br>
+    Namespace: vigra
 
     \code
 
-    #include <math.h>         // for sqrt()
+    #include <cmath>         // for sqrt()
 
     vigra::transformImage(srcImageRange(src),
                           destImage(dest),
-                          &::sqrt );
+                          &std::sqrt );
 
     \endcode
 
