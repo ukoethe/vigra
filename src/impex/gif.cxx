@@ -44,7 +44,7 @@ namespace {
         if(count == 0)
             return 0;
         data.resize(count);
-        stream.read( data.begin(), count);
+        stream.read( reinterpret_cast< char * >(data.begin()), count);
         if(!stream.good())
             return -1;
         return count;
@@ -401,7 +401,7 @@ namespace {
         
         // read the magic number
         std::string magic(6, (std::string::value_type)0);
-        read_array( stream, bo, magic.begin(), 6 );
+        read_array( stream, bo, reinterpret_cast< char * >(magic.begin()), 6 );
         vigra_precondition( magic == "GIF87a" || magic == "GIF89a",
                             "the stored magic number is invalid" );
 
@@ -842,7 +842,7 @@ namespace {
             if (byte_count >= 254) \
               { \
                 stream.put(byte_count); \
-                stream.write(packet.begin(),byte_count); \
+                stream.write(reinterpret_cast< char * >(packet.begin()),byte_count); \
                 byte_count=0; \
               } \
             datum>>=8; \
@@ -956,7 +956,7 @@ namespace {
             if (byte_count >= 254)
             {
                 stream.put(byte_count);
-                stream.write(packet.begin(),byte_count);
+                stream.write(reinterpret_cast< char * >(packet.begin()),byte_count);
                 byte_count=0;
             }
         }
@@ -966,7 +966,7 @@ namespace {
         if (byte_count > 0)
         {
                 stream.put(byte_count);
-                stream.write(packet.begin(),byte_count);
+                stream.write(reinterpret_cast< char * >(packet.begin()),byte_count);
         }
     }
     
