@@ -340,7 +340,7 @@ void seededRegionGrowing(SrcImageIterator srcul,
     IImage::Iterator ir = regions.upperLeft() + Diff2D(1,1);
     IImage::Iterator iry, irx;
 
-    initImageBorder(srcImageRange(regions), 1, -1);
+    initImageBorder(destImageRange(regions), 1, -1);
     copyImage(seedsul, seedsul+Diff2D(w,h), aseeds, ir, regions.accessor());
 
     // allocate and init memory for the results
