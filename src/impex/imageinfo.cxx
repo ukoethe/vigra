@@ -19,6 +19,7 @@
 /*                                                                      */
 /************************************************************************/
 
+#include <iostream>
 #include <algorithm>
 #include <iterator>
 #include <string>
@@ -34,7 +35,7 @@
 #include "codecmanager.hxx"
 
 #if defined(_WIN32)
-#  include <io.h>
+#  include <windows.h>
 #else
 #  include <dirent.h>
 #endif
@@ -67,12 +68,32 @@ void findImageSequence(const std::string &name_base,
     HANDLE          hList;
     TCHAR           szDir[MAX_PATH+1];
     WIN32_FIND_DATA FileData;
+    
+    std::string base, path;
+    int split = name_base.rfind('/');
+    if(split == -1)
+    {
+        path = ".";
+        base = name_base;
+    }
+    else
+    {
+        for(int i=0; i<split; ++i)
+        {
+            if(name_base[i] == '/')
+                path.push_back('\\');
+            else 
+                path.push_back(name_base[i]);
+        }
+        base.append(name_base, split+1, name_base.size() - split - 1);
+    }
+    
     std::vector<std::string> result;
     char numbuf[21], extbuf[1024];
-    std::string pattern = name_base + "%20[0-9]%1023s";  
+    std::string pattern = base + "%20[0-9]%1023s";  
 
     // Get the proper directory path
-    sprintf(szDir, "%s*%s", name_base.c_str(), name_ext.c_str());
+    sprintf(szDir, "%s\\%s*%s", path.c_str(), base.c_str(), name_ext.c_str());
 
     // Get the first file
     hList = FindFirstFile(szDir, &FileData);
@@ -88,7 +109,6 @@ void findImageSequence(const std::string &name_base,
         fFinished = FALSE;
         while (!fFinished)
         {
-            printf("%s\n", FileData.cFileName);
             if(sscanf(FileData.cFileName, pattern.c_str(), numbuf, extbuf) == 2)
             {
                 if(strcmp(name_ext.c_str(), extbuf) == 0)
