@@ -79,7 +79,7 @@ class Gaussian
         { return order_; }
     
     double radius(double sigmaMultiple = 3.0) const
-        { return sigmaMultiple * sigma_ + 0.5 * derivativeOrder(); }
+        { return VIGRA_CSTD::ceil(sigmaMultiple * sigma_ + 0.5 * derivativeOrder()); }
 
   private:
     void calculateHermitePolynomial();    
