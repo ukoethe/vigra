@@ -205,14 +205,14 @@ namespace vigra {
 namespace detail
 {
 
-double gammaCorrection(double value, double gamma)
+inline double gammaCorrection(double value, double gamma)
 {
     return (value < 0.0) ? 
             -VIGRA_CSTD::pow(-value, gamma) :
             VIGRA_CSTD::pow(value, gamma);
 }
 
-double gammaCorrection(double value, double gamma, double norm)
+inline double gammaCorrection(double value, double gamma, double norm)
 {
     return (value < 0.0) ? 
             -norm*VIGRA_CSTD::pow(-value/norm, gamma) :
@@ -238,7 +238,7 @@ double gammaCorrection(double value, double gamma, double norm)
     in the constructor. If both source and target colors components are stored 
     as <tt>unsigned char</tt>, a look-up-table will be used to speed up the transformation.
 */
-template <class From, class To>
+template <class From, class To = From>
 class RGB2RGBPrimeFunctor
 {
   public:
@@ -275,7 +275,8 @@ class RGB2RGBPrimeFunctor
     
         /** apply the transformation
         */
-    result_type operator()(argument_type const & rgb) const
+    template <class V>
+    result_type operator()(V const & rgb) const
     {
         return RGBValue<To>(
             NumericTraits<To>::fromRealPromote(detail::gammaCorrection(rgb[0], 0.45, max_)),
@@ -312,7 +313,8 @@ class RGB2RGBPrimeFunctor<unsigned char, unsigned char>
         }
     }
     
-    RGBValue<unsigned char> operator()(TinyVector<unsigned char, 3> const & rgb) const
+    template <class V>
+    RGBValue<unsigned char> operator()(V const & rgb) const
     {
         return RGBValue<unsigned char>(lut_[rgb[0]], lut_[rgb[1]], lut_[rgb[2]]);
     }
@@ -335,7 +337,7 @@ class RGB2RGBPrimeFunctor<unsigned char, unsigned char>
     in the constructor. If both source and target colors components are stored 
     as <tt>unsigned char</tt>, a look-up-table will be used to speed up the transformation.
 */
-template <class From, class To>
+template <class From, class To = From>
 class RGBPrime2RGBFunctor
 {
   public:
@@ -410,7 +412,8 @@ class RGBPrime2RGBFunctor<unsigned char, unsigned char>
         }
     }
     
-    RGBValue<unsigned char> operator()(TinyVector<unsigned char, 3> const & rgb) const
+    template <class V>
+    RGBValue<unsigned char> operator()(V const & rgb) const
     {
         return RGBValue<unsigned char>(lut_[rgb[0]], lut_[rgb[1]], lut_[rgb[2]]);
     }
@@ -583,7 +586,7 @@ class XYZ2RGBFunctor
     
   public:
         /** the functor's argument type. (Actually, the argument type
-            is more general: <TT>TinyVector<V, 3></TT> with arbitrary
+            is more general: <TT>V</TT> with arbitrary
             <TT>V</TT>. But this cannot be expressed in a typedef.)
         */
     typedef TinyVector<T, 3> argument_type;
@@ -613,7 +616,7 @@ class XYZ2RGBFunctor
         /** apply the transformation
         */
     template <class V>
-    value_type operator()(TinyVector<V, 3> const & xyz) const
+    result_type operator()(V const & xyz) const
     {
         component_type red =    3.2404813432*xyz[0] - 1.5371515163*xyz[1] - 0.4985363262*xyz[2];
         component_type green = -0.9692549500*xyz[0] + 1.8759900015*xyz[1] + 0.0415559266*xyz[2];
@@ -649,8 +652,8 @@ class XYZ2RGBPrimeFunctor
   
   public:
         /** the functor's argument type. (actually, the argument type
-            is more general: <TT>TinyVector<V, 3></TT> with arbitrary
-            <TT>V</TT>. But this cannot be expressed in a typedef.)
+            can be any vector type with the same interface. 
+            But this cannot be expressed in a typedef.)
         */
     typedef TinyVector<T, 3> argument_type;
   
@@ -679,7 +682,7 @@ class XYZ2RGBPrimeFunctor
         /** apply the transformation
         */
     template <class V>
-    value_type operator()(TinyVector<V, 3> const & xyz) const
+    result_type operator()(V const & xyz) const
     {
         component_type red =    3.2404813432*xyz[0] - 1.5371515163*xyz[1] - 0.4985363262*xyz[2];
         component_type green = -0.9692549500*xyz[0] + 1.8759900015*xyz[1] + 0.0415559266*xyz[2];
@@ -742,7 +745,8 @@ class XYZ2LuvFunctor
     : gamma_(1.0/3.0)
     {}
     
-    result_type operator()(TinyVector<T, 3> const & xyz) const
+    template <class V>
+    result_type operator()(V const & xyz) const
     {
         result_type result;
         if(xyz[1] == NumericTraits<T>::zero())
@@ -755,7 +759,7 @@ class XYZ2LuvFunctor
         {
             component_type L = xyz[1] < 0.008856 ?
                                   903.3 * xyz[1] :
-                                  116.0 * VIGRA_CSTD::pow(xyz[1], gamma_) - 16.0;
+                                  116.0 * VIGRA_CSTD::pow((double)xyz[1], gamma_) - 16.0;
             component_type denom = xyz[0] + 15.0*xyz[1] + 3.0*xyz[2];
             component_type uprime = 4.0 * xyz[0] / denom;
             component_type vprime = 9.0 * xyz[1] / denom;
@@ -767,7 +771,7 @@ class XYZ2LuvFunctor
     }
 
   private:
-    component_type gamma_;
+    double gamma_;
 };
 
 /** \brief Convert perceptual uniform CIE L*u*v* into standardized tri-stimulus XYZ.
@@ -804,7 +808,8 @@ class Luv2XYZFunctor
     
         /** apply the transformation
         */
-    result_type operator()(TinyVector<T, 3> const & luv) const
+    template <class V>
+    result_type operator()(V const & luv) const
     {
         result_type result;
         if(luv[0] == NumericTraits<T>::zero())
@@ -828,7 +833,7 @@ class Luv2XYZFunctor
     }
 
   private:
-    component_type gamma_;
+    double gamma_;
 };
 
 /** \brief Convert standardized tri-stimulus XYZ into perceptual uniform CIE L*a*b*.
@@ -881,10 +886,11 @@ class XYZ2LabFunctor
     
         /** apply the transformation
         */
-    result_type operator()(TinyVector<T, 3> const & xyz) const
+    template <class V>
+    result_type operator()(V const & xyz) const
     {
         component_type xgamma = VIGRA_CSTD::pow(xyz[0] / 0.950456, gamma_);
-        component_type ygamma = VIGRA_CSTD::pow(xyz[1], gamma_);
+        component_type ygamma = VIGRA_CSTD::pow((double)xyz[1], gamma_);
         component_type zgamma = VIGRA_CSTD::pow(xyz[2] / 1.088754, gamma_);
         component_type L = xyz[1] < 0.008856 ?
                               903.3 * xyz[1] :
@@ -897,7 +903,7 @@ class XYZ2LabFunctor
     }
 
   private:
-    component_type gamma_;
+    double gamma_;
 };
 
 /** \brief Convert perceptual uniform CIE L*a*b* into standardized tri-stimulus XYZ.
@@ -936,12 +942,13 @@ class Lab2XYZFunctor
     
         /** apply the transformation
         */
-    result_type operator()(TinyVector<T, 3> const & lab) const
+    template <class V>
+    result_type operator()(V const & lab) const
     {
         component_type Y = lab[0] < 8.0 ?
                               lab[0] / 903.3 :
                               VIGRA_CSTD::pow((lab[0] + 16.0) / 116.0, gamma_);
-        component_type ygamma = VIGRA_CSTD::pow(Y, 1.0 / gamma_);
+        component_type ygamma = VIGRA_CSTD::pow((double)Y, 1.0 / gamma_);
         component_type X = VIGRA_CSTD::pow(lab[1] / 500.0 + ygamma, gamma_) * 0.950456;
         component_type Z = VIGRA_CSTD::pow(-lab[2] / 200.0 + ygamma, gamma_) * 1.088754;
         result_type result;
@@ -952,7 +959,7 @@ class Lab2XYZFunctor
     }
 
   private:
-    component_type gamma_;
+    double gamma_;
 };
 
 
@@ -1022,7 +1029,8 @@ class RGB2LuvFunctor
     
         /** apply the transformation
         */
-    result_type operator()(TinyVector<T, 3> const & rgb) const
+    template <class V>
+    result_type operator()(V const & rgb) const
     {
         return xyz2luv(rgb2xyz(rgb));
     }
@@ -1098,7 +1106,8 @@ class RGB2LabFunctor
     
         /** apply the transformation
         */
-    result_type operator()(TinyVector<T, 3> const & rgb) const
+    template <class V>
+    result_type operator()(V const & rgb) const
     {
         return xyz2lab(rgb2xyz(rgb));
     }
@@ -1125,8 +1134,8 @@ class Luv2RGBFunctor
     
   public:
         /** the functor's argument type. (Actually, the argument type
-            is more general: <TT>TinyVector<V, 3></TT> with arbitrary
-            <TT>V</TT>. But this cannot be expressed in a typedef.)
+            can be any vector type with the same interface. 
+            But this cannot be expressed in a typedef.)
         */
     typedef TinyVector<T, 3> argument_type;
   
@@ -1149,7 +1158,7 @@ class Luv2RGBFunctor
         /** apply the transformation
         */
     template <class V>
-    result_type operator()(TinyVector<V, 3> const & luv) const
+    result_type operator()(V const & luv) const
     {
         return xyz2rgb(luv2xyz(luv));
     }
@@ -1173,8 +1182,8 @@ class Lab2RGBFunctor
   public:
   
         /** the functor's argument type. (Actually, the argument type
-            is more general: <TT>TinyVector<V, 3></TT> with arbitrary
-            <TT>V</TT>. But this cannot be expressed in a typedef.)
+            can be any vector type with the same interface. 
+            But this cannot be expressed in a typedef.)
         */
     typedef TinyVector<T, 3> argument_type;
   
@@ -1203,7 +1212,7 @@ class Lab2RGBFunctor
         /** apply the transformation
         */
     template <class V>
-    result_type operator()(TinyVector<V, 3> const & lab) const
+    result_type operator()(V const & lab) const
     {
         return xyz2rgb(lab2xyz(lab));
     }
@@ -1268,7 +1277,8 @@ class RGBPrime2LuvFunctor
     
         /** apply the transformation
         */
-    result_type operator()(TinyVector<T, 3> const & rgb) const
+    template <class V>
+    result_type operator()(V const & rgb) const
     {
         return xyz2luv(rgb2xyz(rgb));
     }
@@ -1337,7 +1347,8 @@ class RGBPrime2LabFunctor
     
         /** apply the transformation
         */
-    result_type operator()(TinyVector<T, 3> const & rgb) const
+    template <class V>
+    result_type operator()(V const & rgb) const
     {
         return xyz2lab(rgb2xyz(rgb));
     }
@@ -1365,8 +1376,8 @@ class Luv2RGBPrimeFunctor
   public:
   
         /** the functor's argument type. (Actually, the argument type
-            is more general: <TT>TinyVector<V, 3></TT> with arbitrary
-            <TT>V</TT>. But this cannot be expressed in a typedef.)
+            can be any vector type with the same interface. 
+            But this cannot be expressed in a typedef.)
         */
     typedef TinyVector<T, 3> argument_type;
   
@@ -1395,7 +1406,7 @@ class Luv2RGBPrimeFunctor
         /** apply the transformation
         */
     template <class V>
-    result_type operator()(TinyVector<V, 3> const & luv) const
+    result_type operator()(V const & luv) const
     {
         return xyz2rgb(luv2xyz(luv));
     }
@@ -1419,8 +1430,8 @@ class Lab2RGBPrimeFunctor
   public:
   
         /** the functor's argument type. (Actually, the argument type
-            is more general: <TT>TinyVector<V, 3></TT> with arbitrary
-            <TT>V</TT>. But this cannot be expressed in a typedef.)
+            can be any vector type with the same interface. 
+            But this cannot be expressed in a typedef.)
         */
     typedef TinyVector<T, 3> argument_type;
   
@@ -1449,7 +1460,7 @@ class Lab2RGBPrimeFunctor
         /** apply the transformation
         */
     template <class V>
-    result_type operator()(TinyVector<V, 3> const & lab) const
+    result_type operator()(V const & lab) const
     {
         return xyz2rgb(lab2xyz(lab));
     }
@@ -1527,7 +1538,8 @@ class RGBPrime2YPrimePbPrFunctor
     
         /** apply the transformation
         */
-    result_type operator()(TinyVector<T, 3> const & rgb) const
+    template <class V>
+    result_type operator()(V const & rgb) const
     {
         component_type red = rgb[0] / max_;
         component_type green = rgb[1] / max_;
@@ -1561,8 +1573,8 @@ class YPrimePbPr2RGBPrimeFunctor
   public:
   
         /** the functor's argument type. (Actually, the argument type
-            is more general: <TT>TinyVector<V, 3></TT> with arbitrary
-            <TT>V</TT>. But this cannot be expressed in a typedef.)
+            can be any vector type with the same interface. 
+            But this cannot be expressed in a typedef.)
         */
     typedef TinyVector<T, 3> argument_type;
   
@@ -1591,7 +1603,7 @@ class YPrimePbPr2RGBPrimeFunctor
         /** apply the transformation
         */
     template <class V>
-    result_type operator()(TinyVector<V, 3> const & ypbpr) const
+    result_type operator()(V const & ypbpr) const
     {
         component_type nred =   ypbpr[0] + 1.402*ypbpr[2];
         component_type ngreen = ypbpr[0] - 0.3441362862*ypbpr[1] - 0.7141362862*ypbpr[2];
@@ -1673,7 +1685,8 @@ class RGBPrime2YPrimeIQFunctor
     
         /** apply the transformation
         */
-    result_type operator()(TinyVector<T, 3> const & rgb) const
+    template <class V>
+    result_type operator()(V const & rgb) const
     {
         component_type red = rgb[0] / max_;
         component_type green = rgb[1] / max_;
@@ -1707,8 +1720,8 @@ class YPrimeIQ2RGBPrimeFunctor
   public:
   
         /** the functor's argument type. (Actually, the argument type
-            is more general: <TT>TinyVector<V, 3></TT> with arbitrary
-            <TT>V</TT>. But this cannot be expressed in a typedef.)
+            can be any vector type with the same interface. 
+            But this cannot be expressed in a typedef.)
         */
     typedef TinyVector<T, 3> argument_type;
   
@@ -1737,7 +1750,7 @@ class YPrimeIQ2RGBPrimeFunctor
         /** apply the transformation
         */
     template <class V>
-    result_type operator()(TinyVector<V, 3> const & yiq) const
+    result_type operator()(V const & yiq) const
     {
         component_type nred =   yiq[0] + 0.9548892043*yiq[1] + 0.6221039350*yiq[2];
         component_type ngreen = yiq[0] - 0.2713547827*yiq[1] - 0.6475120259*yiq[2];
@@ -1819,7 +1832,8 @@ class RGBPrime2YPrimeUVFunctor
     
         /** apply the transformation
         */
-    result_type operator()(TinyVector<T, 3> const & rgb) const
+    template <class V>
+    result_type operator()(V const & rgb) const
     {
         component_type red = rgb[0] / max_;
         component_type green = rgb[1] / max_;
@@ -1853,8 +1867,8 @@ class YPrimeUV2RGBPrimeFunctor
   public:
   
         /** the functor's argument type. (Actually, the argument type
-            is more general: <TT>TinyVector<V, 3></TT> with arbitrary
-            <TT>V</TT>. But this cannot be expressed in a typedef.)
+            can be any vector type with the same interface. 
+            But this cannot be expressed in a typedef.)
         */
     typedef TinyVector<T, 3> argument_type;
   
@@ -1883,7 +1897,7 @@ class YPrimeUV2RGBPrimeFunctor
         /** apply the transformation
         */
     template <class V>
-    result_type operator()(TinyVector<V, 3> const & yuv) const
+    result_type operator()(V const & yuv) const
     {
         component_type nred =   yuv[0] + 1.140*yuv[2];
         component_type ngreen = yuv[0] - 0.3946517044*yuv[1] - 0.580681431*yuv[2];
@@ -1955,7 +1969,8 @@ class RGBPrime2YPrimeCbCrFunctor
     
         /** apply the transformation
         */
-    result_type operator()(TinyVector<T, 3> const & rgb) const
+    template <class V>
+    result_type operator()(V const & rgb) const
     {
         component_type red = rgb[0] / max_;
         component_type green = rgb[1] / max_;
@@ -1989,8 +2004,8 @@ class YPrimeCbCr2RGBPrimeFunctor
   public:
   
         /** the functor's argument type. (Actually, the argument type
-            is more general: <TT>TinyVector<V, 3></TT> with arbitrary
-            <TT>V</TT>. But this cannot be expressed in a typedef.)
+            can be any vector type with the same interface. 
+            But this cannot be expressed in a typedef.)
         */
     typedef TinyVector<T, 3> argument_type;
   
@@ -2019,7 +2034,7 @@ class YPrimeCbCr2RGBPrimeFunctor
         /** apply the transformation
         */
     template <class V>
-    result_type operator()(TinyVector<V, 3> const & ycbcr) const
+    result_type operator()(V const & ycbcr) const
     {
         component_type y = ycbcr[0] - 16.0;
         component_type cb = ycbcr[1] - 128.0;
@@ -2147,8 +2162,10 @@ polar2Lab(double color, double brightness, double saturation)
     return result;
 }
 
-inline TinyVector<float, 3>
-polar2Lab(TinyVector<float, 3> const & polar)
+
+template <class V>
+TinyVector<float, 3>
+polar2Lab(V const & polar)
 {
     return polar2Lab(polar[0], polar[1], polar[2]);
 }
@@ -2169,8 +2186,9 @@ polar2Lab(TinyVector<float, 3> const & polar)
     This realizes the inverse of the transformation described in 
     \link PolarColors#polar2Lab polar2Lab\endlink().
 */
-inline TinyVector<float, 3>
-lab2Polar(TinyVector<float, 3> const & lab)
+template <class V>
+TinyVector<float, 3>
+lab2Polar(V const & lab)
 {
     TinyVector<float, 3> result;
     result[1] = lab[0]/100.0;
@@ -2228,8 +2246,9 @@ polar2Luv(double color, double brightness, double saturation)
     return result;
 }
 
-inline TinyVector<float, 3>
-polar2Luv(TinyVector<float, 3> const & polar)
+template <class V>
+TinyVector<float, 3>
+polar2Luv(V const & polar)
 {
     return polar2Luv(polar[0], polar[1], polar[2]);
 }
@@ -2250,8 +2269,9 @@ polar2Luv(TinyVector<float, 3> const & polar)
     This realizes the inverse of the transformation described in 
     \link PolarColors#polar2Luv polar2Luv\endlink().
 */
-inline TinyVector<float, 3>
-luv2Polar(TinyVector<float, 3> const & luv)
+template <class V>
+TinyVector<float, 3>
+luv2Polar(V const & luv)
 {
     TinyVector<float, 3> result;
     result[1] = luv[0]/100.0;
@@ -2309,8 +2329,9 @@ polar2YPrimePbPr(double color, double brightness, double saturation)
     return result;
 }
 
-inline TinyVector<float, 3>
-polar2YPrimePbPr(TinyVector<float, 3> const & polar)
+template <class V>
+TinyVector<float, 3>
+polar2YPrimePbPr(V const & polar)
 {
     return polar2YPrimePbPr(polar[0], polar[1], polar[2]);
 }
@@ -2331,8 +2352,9 @@ polar2YPrimePbPr(TinyVector<float, 3> const & polar)
     This realizes the inverse of the transformation described in 
     \link PolarColors#polar2YPrimePbPr polar2YPrimePbPr\endlink().
 */
-inline TinyVector<float, 3>
-yPrimePbPr2Polar(TinyVector<float, 3> const & ypbpr)
+template <class V>
+TinyVector<float, 3>
+yPrimePbPr2Polar(V const & ypbpr)
 {
     TinyVector<float, 3> result;
     result[1] = ypbpr[0];
@@ -2390,8 +2412,9 @@ polar2YPrimeCbCr(double color, double brightness, double saturation)
     return result;
 }
 
-inline TinyVector<float, 3>
-polar2YPrimeCbCr(TinyVector<float, 3> const & polar)
+template <class V>
+TinyVector<float, 3>
+polar2YPrimeCbCr(V const & polar)
 {
     return polar2YPrimeCbCr(polar[0], polar[1], polar[2]);
 }
@@ -2412,8 +2435,9 @@ polar2YPrimeCbCr(TinyVector<float, 3> const & polar)
     This realizes the inverse of the transformation described in 
     \link PolarColors#polar2YPrimeCbCr polar2YPrimeCbCr\endlink().
 */
-inline TinyVector<float, 3>
-yPrimeCbCr2Polar(TinyVector<float, 3> const & ycbcr)
+template <class V>
+TinyVector<float, 3>
+yPrimeCbCr2Polar(V const & ycbcr)
 {
     TinyVector<float, 3> result;
     result[1] = (ycbcr[0]-16.0)/219.0;
@@ -2473,8 +2497,9 @@ polar2YPrimeIQ(double color, double brightness, double saturation)
     return result;
 }
 
-inline TinyVector<float, 3>
-polar2YPrimeIQ(TinyVector<float, 3> const & polar)
+template <class V>
+TinyVector<float, 3>
+polar2YPrimeIQ(V const & polar)
 {
     return polar2YPrimeIQ(polar[0], polar[1], polar[2]);
 }
@@ -2495,8 +2520,9 @@ polar2YPrimeIQ(TinyVector<float, 3> const & polar)
     This realizes the inverse of the transformation described in 
     \link PolarColors#polar2YPrimeIQ polar2YPrimeIQ\endlink().
 */
-inline TinyVector<float, 3>
-yPrimeIQ2Polar(TinyVector<float, 3> const & yiq)
+template <class V>
+TinyVector<float, 3>
+yPrimeIQ2Polar(V const & yiq)
 {
     TinyVector<float, 3> result;
     result[1] = yiq[0];
@@ -2554,8 +2580,9 @@ polar2YPrimeUV(double color, double brightness, double saturation)
     return result;
 }
 
-inline TinyVector<float, 3>
-polar2YPrimeUV(TinyVector<float, 3> const & polar)
+template <class V>
+TinyVector<float, 3>
+polar2YPrimeUV(V const & polar)
 {
     return polar2YPrimeUV(polar[0], polar[1], polar[2]);
 }
@@ -2576,8 +2603,9 @@ polar2YPrimeUV(TinyVector<float, 3> const & polar)
     This realizes the inverse of the transformation described in 
     \link PolarColors#polar2YPrimeUV polar2YPrimeUV\endlink().
 */
-inline TinyVector<float, 3>
-yPrimeUV2Polar(TinyVector<float, 3> const & yuv)
+template <class V>
+TinyVector<float, 3>
+yPrimeUV2Polar(V const & yuv)
 {
     TinyVector<float, 3> result;
     result[1] = yuv[0];
