@@ -865,7 +865,8 @@ struct RegionGrowingTest
     
     struct DirectCostFunctor
     {
-        typedef double value_type;
+        typedef double argument_type;
+        typedef double result_type;
         typedef double cost_type;
 
         void operator()(double const &) {}
