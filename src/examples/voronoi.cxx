@@ -46,8 +46,8 @@ int main(int argc, char ** argv)
         for(int i=1; i<=number_of_points; ++i)
         {
             // mark a number of points 
-            int x = (float)rand() / RAND_MAX * size;
-            int y = (float)rand() / RAND_MAX * size;
+            int x = (int)((float)rand() / RAND_MAX * size);
+            int y = (int)((float)rand() / RAND_MAX * size);
             
             // label each point with a unique number
             in(x,y) = i;
