@@ -152,8 +152,9 @@ class ImageExportInfo
         other programs using TIFF (e.g. ImageMagick) have not
         implemented support for those pixel types.  So don't be
         surprised if the generated TIFF is not readable in some
-        cases.  If this happens, convert the image to 'unsigned
-        char' or 'RGBValue\<unsigned char\>' prior to exporting.
+        cases.  If this happens, export the image as 'unsigned
+        char' or 'RGBValue\<unsigned char\>' by calling
+        \ref ImageExportInfo::setPixelType().
     **/
     ImageExportInfo & setFileType( const char * );
     const char * getFileType() const;
@@ -163,12 +164,15 @@ class ImageExportInfo
         Recognized strings: "" (no compression), "LZW",
         "RunLength", "1" ... "100". A number is interpreted as the
         compression quality for JPEG compression. JPEG compression is
-        supported by the JPEG and TIFF formats.
+        supported by the JPEG and TIFF formats. "LZW" is only available
+        if libtiff was installed with LZW enabled. By default, libtiff comes
+        with LZW disabled due to Unisys patent enforcement. In this case,
+        VIGRA stores the image uncompressed.
     **/
     ImageExportInfo & setCompression( const char * );
     const char * getCompression() const;
 
-    /** Set the pixel type of the image. Possible values are:
+    /** Set the pixel type of the image file. Possible values are:
         <DL>
         <DT>"UINT8"<DD> 8-bit unsigned integer (unsigned char)
         <DT>"INT16"<DD> 16-bit signed integer (short)
@@ -176,6 +180,16 @@ class ImageExportInfo
         <DT>"FLOAT"<DD> 32-bit floating point (float)
         <DT>"DOUBLE"<DD> 64-bit floating point (double)
         </DL>
+        
+        <b>Usage:</b>
+        FImage img(w,h);
+        
+        // by default, float images are exported with pixeltype float
+        // when the target format support this type, i.e. is TIFF or VIFF.
+        exportImage(srcImageRange(img), ImageExportInfo("asFloat.tif"));
+        
+        // if this is not desired, force a different pixeltype
+        exportImage(srcImageRange(img), ImageExportInfo("asByte.tif").setPixelType("UINT8"));
     **/
     ImageExportInfo & setPixelType( const char * );
 
