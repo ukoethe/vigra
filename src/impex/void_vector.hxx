@@ -34,7 +34,7 @@ namespace vigra
     // (because the payload is not typed)
     class void_vector_base
     {
-        friend void swap_void_vector( void_vector_base &, void_vector_base & );
+        friend void swap_void_vector( void_vector_base & left, void_vector_base & right);
 
         typedef void_vector_base this_type;
 
@@ -52,8 +52,15 @@ namespace vigra
         void_vector_base( size_type size )
             : m_data(0), m_size(size), m_capacity(size)
         {
-            if (size)
-                m_data = ::operator new(size);
+            if (m_capacity)
+                m_data = ::operator new(m_capacity);
+        }
+    
+        void_vector_base( size_type size , size_t capacity)
+            : m_data(0), m_size(size), m_capacity(capacity)
+        {
+            if (m_capacity)
+                m_data = ::operator new(m_capacity);
         }
     
         void_vector_base( this_type const & rhs )
@@ -150,7 +157,7 @@ namespace vigra
     
     public:
         void_vector()
-            : void_vector_base( 20 * sizeof(value_type) )
+            : void_vector_base( 0, 20 * sizeof(value_type) )
         {}
 
         void_vector( size_type size )
@@ -197,7 +204,7 @@ namespace vigra
     
         void push_back( value_type const & t )
         {
-            if ( size() == capacity() ) resize();
+            if ( size() == capacity() ) reserve();
             data()[m_size++] = t;
         }
     
