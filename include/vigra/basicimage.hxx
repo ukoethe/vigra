@@ -27,7 +27,6 @@
 #include <new>
 #include <memory>
 #include "vigra/utilities.hxx"
-#include "vigra/imageiterator.hxx"
 
 namespace vigra {
 
@@ -103,8 +102,8 @@ template <class IMAGEITERATOR, class PIXELTYPE,
 class BasicImageIteratorBase
 {
   public:
-    typedef ImageIteratorBase<IMAGEITERATOR,
-                 PIXELTYPE, REFERENCE, POINTER> self_type;
+    typedef BasicImageIteratorBase<IMAGEITERATOR,
+            PIXELTYPE, REFERENCE, POINTER, LINESTARTITERATOR> self_type;
 
     typedef LINESTARTITERATOR    LineStartIterator;
     typedef PIXELTYPE            value_type;
@@ -806,306 +805,117 @@ BasicImage<PIXELTYPE>::initLineStartArray(value_type * data, int width, int heig
     return lines;
 }
 
-
 /********************************************************/
 /*                                                      */
-/*                     BasicImageView                   */
+/*              argument object factories               */
 /*                                                      */
 /********************************************************/
 
-/** \brief BasicImage using foreign memory.
-
-    <b>\#include</b> "<a href="basicimage_8hxx-source.html">vigra/basicimage.hxx</a>"
-
-    Namespace: vigra
-*/
-template <class PIXELTYPE>
-class BasicImageView
+template <class PixelType, class Accessor>
+inline triple<typename BasicImage<PixelType>::const_traverser, 
+              typename BasicImage<PixelType>::const_traverser, Accessor>
+srcImageRange(BasicImage<PixelType> const & img, Accessor a)
 {
-  public:
+    return triple<typename BasicImage<PixelType>::const_traverser, 
+                  typename BasicImage<PixelType>::const_traverser, 
+          Accessor>(img.upperLeft(),
+                    img.lowerRight(),
+                    a);
+}
 
-        /** the BasicImageView's pixel type
-        */
-    typedef PIXELTYPE value_type;
+template <class PixelType, class Accessor>
+inline pair<typename BasicImage<PixelType>::const_traverser, Accessor>
+srcImage(BasicImage<PixelType> const & img, Accessor a)
+{
+    return pair<typename BasicImage<PixelType>::const_traverser, 
+                Accessor>(img.upperLeft(), a);
+}
 
-        /** the BasicImageView's pixel type
-        */
-    typedef PIXELTYPE PixelType;
+template <class PixelType, class Accessor>
+inline triple<typename BasicImage<PixelType>::traverser, 
+              typename BasicImage<PixelType>::traverser, Accessor>
+destImageRange(BasicImage<PixelType> & img, Accessor a)
+{
+    return triple<typename BasicImage<PixelType>::traverser, 
+                  typename BasicImage<PixelType>::traverser, 
+          Accessor>(img.upperLeft(),
+                    img.lowerRight(),
+                    a);
+}
 
-        /** the BasicImageView's reference type (i.e. the
-            return type of image[diff] and image(dx,dy))
-        */
-    typedef PIXELTYPE &       reference;
+template <class PixelType, class Accessor>
+inline pair<typename BasicImage<PixelType>::traverser, Accessor>
+destImage(BasicImage<PixelType> & img, Accessor a)
+{
+    return pair<typename BasicImage<PixelType>::traverser, 
+                Accessor>(img.upperLeft(), a);
+}
 
-        /** the BasicImageView's const reference type (i.e. the
-            return type of image[diff] and image(dx,dy) when image is const)
-        */
-    typedef PIXELTYPE const & const_reference;
+template <class PixelType, class Accessor>
+inline pair<typename BasicImage<PixelType>::const_traverser, Accessor>
+maskImage(BasicImage<PixelType> const & img, Accessor a)
+{
+    return pair<typename BasicImage<PixelType>::const_traverser, 
+                Accessor>(img.upperLeft(), a);
+}
 
-        /** the BasicImageView's pointer type
-        */
-    typedef PIXELTYPE *       pointer;
+/****************************************************************/
 
-        /** the BasicImageView's const pointer type
-        */
-    typedef PIXELTYPE const * const_pointer;
+template <class PixelType>
+inline triple<typename BasicImage<PixelType>::const_traverser, 
+              typename BasicImage<PixelType>::const_traverser, 
+              typename BasicImage<PixelType>::ConstAccessor>
+srcImageRange(BasicImage<PixelType> const & img)
+{
+    return triple<typename BasicImage<PixelType>::const_traverser, 
+                  typename BasicImage<PixelType>::const_traverser, 
+                  typename BasicImage<PixelType>::ConstAccessor>(img.upperLeft(),
+                                                                 img.lowerRight(),
+                                                                 img.accessor());
+}
 
-        /** the BasicImageView's 1D random access iterator
-            (note: lower case 'iterator' is a STL compatible 1D random
-             access iterator, don't confuse with capitalized Iterator)
-        */
-    typedef PIXELTYPE * iterator;
+template <class PixelType>
+inline pair< typename BasicImage<PixelType>::const_traverser, 
+             typename BasicImage<PixelType>::ConstAccessor>
+srcImage(BasicImage<PixelType> const & img)
+{
+    return pair<typename BasicImage<PixelType>::const_traverser, 
+                typename BasicImage<PixelType>::ConstAccessor>(img.upperLeft(), 
+                                                               img.accessor());
+}
 
-        /** deprecated, use <TT>iterator</TT> instead
-        */
-    typedef PIXELTYPE * ScanOrderIterator;
+template <class PixelType>
+inline triple< typename BasicImage<PixelType>::traverser, 
+               typename BasicImage<PixelType>::traverser, 
+               typename BasicImage<PixelType>::Accessor>
+destImageRange(BasicImage<PixelType> & img)
+{
+    return triple<typename BasicImage<PixelType>::traverser, 
+                  typename BasicImage<PixelType>::traverser, 
+                  typename BasicImage<PixelType>::Accessor>(img.upperLeft(),
+                                                            img.lowerRight(),
+                                                            img.accessor());
+}
 
-        /** the BasicImageView's 1D random access const iterator
-            (note: lower case 'const_iterator' is a STL compatible 1D
-            random access const iterator)
-        */
-    typedef PIXELTYPE const * const_iterator;
+template <class PixelType>
+inline pair< typename BasicImage<PixelType>::traverser, 
+             typename BasicImage<PixelType>::Accessor>
+destImage(BasicImage<PixelType> & img)
+{
+    return pair<typename BasicImage<PixelType>::traverser, 
+                typename BasicImage<PixelType>::Accessor>(img.upperLeft(), 
+                                                          img.accessor());
+}
 
-        /** deprecated, use <TT>const_iterator</TT> instead
-        */
-    typedef PIXELTYPE const * ConstScanOrderIterator;
-
-        /** the BasicImageView's 2D random access iterator ('traverser')
-        */
-    typedef ImageIterator<value_type> traverser;
-
-        /** deprecated, use <TT>traverser</TT> instead
-        */
-    typedef ImageIterator<value_type> Iterator;
-
-        /** the BasicImageView's 2D random access const iterator ('const traverser')
-        */
-    typedef ConstImageIterator<value_type> const_traverser;
-
-        /** deprecated, use <TT>const_traverser</TT> instead
-        */
-    typedef ConstImageIterator<value_type> ConstIterator;
-
-        /** the BasicImageView's difference type (argument type of image[diff])
-        */
-    typedef Diff2D difference_type;
-
-         /** the BasicImageView's size type (result type of image.size())
-        */
-    typedef Size2D size_type;
-
-       /** the BasicImageView's default accessor
-        */
-    typedef typename
-          IteratorTraits<traverser>::DefaultAccessor Accessor;
-
-        /** the BasicImageView's default const accessor
-        */
-    typedef typename
-          IteratorTraits<const_traverser>::DefaultAccessor ConstAccessor;
-
-    struct Allocator
-    {
-        static value_type * allocate(int n) {
-                  return (value_type *)::operator new(n*sizeof(value_type)); }
-        static void deallocate(value_type * p) {
-                 ::operator delete(p); }
-    };
-
-        /** construct image of size 0x0
-        */
-    BasicImageView()
-    : data_(0),
-      width_(0),
-      height_(0)
-    {}
-
-        /** construct view of size w x h
-        */
-    BasicImageView(const_pointer data, int w, int h)
-    : data_(const_cast<pointer>(data)),
-      width_(w),
-      height_(h)
-    {}
-
-        /** construct view of size size.x x size.y
-        */
-    BasicImageView(const_pointer data, difference_type const & size)
-    : data_(const_cast<pointer>(data)),
-      width_(d.x),
-      height_(d.y)
-    {}
-
-        /** set Image with const value
-        */
-    BasicImageView & init(value_type const & pixel)
-    {
-        ScanOrderIterator i = begin();
-        ScanOrderIterator iend = end();
-
-        for(; i != iend; ++i) *i = pixel;
-
-        return *this;
-    }
-
-        /** width of Image
-        */
-    int width() const
-    {
-        return width_;
-    }
-
-        /** height of Image
-        */
-    int height() const
-    {
-        return height_;
-    }
-
-        /** size of Image
-        */
-    size_type size() const
-    {
-        return size_type(width(), height());
-    }
-
-        /** test whether a given coordinate is inside the image
-        */
-    bool isInside(difference_type const & d) const
-    {
-        return d.x >= 0 && d.y >= 0 &&
-               d.x < width() && d.y < height();
-    }
-
-        /** access pixel at given location. <br>
-	    usage: <TT> value_type value = image[Diff2D(1,2)] </TT>
-        */
-    reference operator[](difference_type const & d)
-    {
-        return data_[d.y*width() + d.x];
-    }
-
-        /** read pixel at given location. <br>
-	    usage: <TT> value_type value = image[Diff2D(1,2)] </TT>
-        */
-    const_reference operator[](difference_type const & d) const
-    {
-        return data_[d.y*width() + d.x];
-    }
-
-        /** access pixel at given location. <br>
-	    usage: <TT> value_type value = image(1,2) </TT>
-        */
-    reference operator()(int dx, int dy)
-    {
-        return data_[dy*width() + dx];
-    }
-
-        /** read pixel at given location. <br>
-	    usage: <TT> value_type value = image(1,2) </TT>
-        */
-    const_reference operator()(int dx, int dy) const
-    {
-        return data_[dy*width() + dx];
-    }
-
-        /** access pixel at given location.
-	        Note that the 'x' index is the trailing index. <br>
-	    usage: <TT> value_type value = image[2][1] </TT>
-        */
-    pointer operator[](int dy)
-    {
-        return data_ + dy*width();
-    }
-
-        /** read pixel at given location.
-	        Note that the 'x' index is the trailing index. <br>
-	    usage: <TT> value_type value = image[2][1] </TT>
-        */
-    const_pointer operator[](int dy) const
-    {
-        return data_ + dy*width();
-    }
-
-        /** init 2D random access iterator poining to upper left pixel
-        */
-    traverser upperLeft()
-    {
-        return traverser(data_, width());
-    }
-
-        /** init 2D random access iterator poining to
-         pixel(width, height), i.e. one pixel right and below lower right
-         corner of the image as is common in C/C++.
-        */
-    traverser lowerRight()
-    {
-        return upperLeft() + size();
-    }
-
-        /** init 2D random access const iterator poining to upper left pixel
-        */
-    const_traverser upperLeft() const
-    {
-        return const_traverser(data_, width());
-    }
-
-        /** init 2D random access const iterator poining to
-         pixel(width, height), i.e. one pixel right and below lower right
-         corner of the image as is common in C/C++.
-        */
-    const_traverser lowerRight() const
-    {
-        return upperLeft() + size();
-    }
-
-        /** init 1D random access iterator pointing to first pixel
-        */
-    iterator begin()
-    {
-        return data_;
-    }
-
-        /** init 1D random access iterator pointing past the end
-        */
-    iterator end()
-    {
-        return data_ + width() * height();
-    }
-
-        /** init 1D random access const iterator pointing to first pixel
-        */
-    const_iterator begin() const
-    {
-        return data_;
-    }
-
-        /** init 1D random access const iterator pointing past the end
-        */
-    const_iterator end() const
-    {
-        return data_ + width() * height();
-    }
-
-        /** return default accessor
-        */
-    Accessor accessor()
-    {
-        return Accessor();
-    }
-
-        /** return default const accessor
-        */
-    ConstAccessor accessor() const
-    {
-        return ConstAccessor();
-    }
-
-  private:
-
-    pointer data_;
-    int width_, height_;
-};
+template <class PixelType>
+inline pair< typename BasicImage<PixelType>::const_traverser, 
+             typename BasicImage<PixelType>::ConstAccessor>
+maskImage(BasicImage<PixelType> const & img)
+{
+    return pair<typename BasicImage<PixelType>::const_traverser, 
+                typename BasicImage<PixelType>::ConstAccessor>(img.upperLeft(), 
+                                                               img.accessor());
+}
 
 } // namespace vigra
 
