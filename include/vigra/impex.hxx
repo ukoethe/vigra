@@ -828,7 +828,7 @@ namespace detail {
         detail::ExportImageImpl<is_integral, sizeof(SrcValueType)>::exec( sul, slr, sget, enc.get(), is_scalar );
         enc->close();
     }
-
+    
 /********************************************************/
 /*                                                      */
 /*                     exportImage                      */
@@ -918,7 +918,16 @@ namespace detail {
                       const ImageExportInfo & info )
     {
         typedef typename NumericTraits<typename SrcAccessor::value_type>::isScalar is_scalar;
-        exportImage( sul, slr, sget, info, is_scalar() );
+        
+        try
+        {
+            exportImage( sul, slr, sget, info, is_scalar() );
+        }
+        catch(Encoder::TIFFNoLZWException &)
+        {
+            const_cast<ImageExportInfo &>(info).setCompression("");
+            exportImage( sul, slr, sget, info, is_scalar() );
+        }
     }
 
     template < class SrcIterator, class SrcAccessor >
