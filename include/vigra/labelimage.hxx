@@ -61,11 +61,11 @@ namespace vigra {
     \code
     namespace vigra {
         template <class SrcIterator, class SrcAccessor,
-	          class DestIterator, class DestAccessor>
+                  class DestIterator, class DestAccessor>
         int labelImage(SrcIterator upperlefts, 
-		       SrcIterator lowerrights, SrcAccessor sa,
-		       DestIterator upperleftd, DestAccessor da,
-		       bool eight_neighbors);
+                       SrcIterator lowerrights, SrcAccessor sa,
+                       DestIterator upperleftd, DestAccessor da,
+                       bool eight_neighbors);
 
         template <class SrcIterator, class SrcAccessor,
                   class DestIterator, class DestAccessor,
@@ -73,7 +73,7 @@ namespace vigra {
         int labelImage(SrcIterator upperlefts, 
                        SrcIterator lowerrights, SrcAccessor sa,
                        DestIterator upperleftd, DestAccessor da,
-	               bool eight_neighbors, EqualityFunctor equal);
+                       bool eight_neighbors, EqualityFunctor equal);
     }
     \endcode
                    
@@ -81,17 +81,17 @@ namespace vigra {
     \code
     namespace vigra {
         template <class SrcIterator, class SrcAccessor,
-	          class DestIterator, class DestAccessor>
+                  class DestIterator, class DestAccessor>
         int labelImage(triple<SrcIterator, SrcIterator, SrcAccessor> src,
-		       pair<DestIterator, DestAccessor> dest,
-		       bool eight_neighbors);
+                       pair<DestIterator, DestAccessor> dest,
+                       bool eight_neighbors);
 
         template <class SrcIterator, class SrcAccessor,
                   class DestIterator, class DestAccessor,
                   class EqualityFunctor>
         int labelImage(triple<SrcIterator, SrcIterator, SrcAccessor> src,
                        pair<DestIterator, DestAccessor> dest,
-	               bool eight_neighbors, EqualityFunctor equal)
+                       bool eight_neighbors, EqualityFunctor equal)
     }
     \endcode
     
@@ -109,7 +109,7 @@ namespace vigra {
     // threshold at 128
     vigra::transformImage(srcImageRange(src), destImage(src),
        vigra::Threshold<vigra::BImage::PixelType, vigra::BImage::PixelType>(
-		                                    128, 256, 0, 255));
+                                                    128, 256, 0, 255));
     
     // find 4-connected regions 
     vigra::labelImage(srcImageRange(src), destImage(labels), false);
@@ -142,7 +142,7 @@ template <class SrcIterator, class SrcAccessor,
 int labelImage(SrcIterator upperlefts, 
                SrcIterator lowerrights, SrcAccessor sa,
                DestIterator upperleftd, DestAccessor da,
-	       bool eight_neighbors, EqualityFunctor equal)
+               bool eight_neighbors, EqualityFunctor equal)
 {
     int w = lowerrights.x - upperlefts.x;
     int h = lowerrights.y - upperlefts.y;
@@ -189,12 +189,12 @@ int labelImage(SrcIterator upperlefts,
     for(y = 0; y != h; ++y, ++ys.y, ++yt.y)
     {
         xs = ys;
-	xt = yt;
+        xt = yt;
         
         int endNeighbor = (y == 0) ? left : (eight_neighbors ? topright : top);
-	
-	for(x = 0; x != w; ++x, ++xs.x, ++xt.x)
-	{
+        
+        for(x = 0; x != w; ++x, ++xs.x, ++xt.x)
+        {
             int beginNeighbor = (x == 0) ? top : left;
             if(x == w-1 && endNeighbor == topright) endNeighbor = top;
             
@@ -251,7 +251,7 @@ int labelImage(SrcIterator upperlefts,
             }
         }
     }
-		    
+                    
     // pass 2: assign one label to each region (tree)
     // so that labels for a consecutive sequence 1, 2, ...
     DestIterator yd(upperleftd);
@@ -260,19 +260,19 @@ int labelImage(SrcIterator upperlefts,
     i = 0;
     for(y=0; y != h; ++y, ++yd.y)
     {
-	DestIterator xd(yd);
-	for(x = 0; x != w; ++x, ++xd.x, ++i)
-	{
+        DestIterator xd(yd);
+        for(x = 0; x != w; ++x, ++xd.x, ++i)
+        {
             if(label[i] == i)
             {
-	        label[i] = ++count;
+                label[i] = ++count;
             }
             else
             {
-	        label[i] = label[label[i]];
+                label[i] = label[label[i]];
             }
-	    da.set(label[i], xd);
-	}
+            da.set(label[i], xd);
+        }
     }
     return count;
 }
@@ -283,7 +283,7 @@ template <class SrcIterator, class SrcAccessor,
 inline 
 int labelImage(triple<SrcIterator, SrcIterator, SrcAccessor> src,
                pair<DestIterator, DestAccessor> dest,
-	       bool eight_neighbors, EqualityFunctor equal)
+               bool eight_neighbors, EqualityFunctor equal)
 {
     return labelImage(src.first, src.second, src.third,
                       dest.first, dest.second, eight_neighbors, equal);
@@ -295,7 +295,7 @@ inline
 int labelImage(SrcIterator upperlefts, 
                SrcIterator lowerrights, SrcAccessor sa,
                DestIterator upperleftd, DestAccessor da,
-	       bool eight_neighbors)
+               bool eight_neighbors)
 {
     return labelImage(upperlefts, lowerrights, sa,
                  upperleftd, da, eight_neighbors, 
@@ -307,7 +307,7 @@ template <class SrcIterator, class SrcAccessor,
 inline 
 int labelImage(triple<SrcIterator, SrcIterator, SrcAccessor> src,
                pair<DestIterator, DestAccessor> dest,
-	       bool eight_neighbors)
+               bool eight_neighbors)
 {
     return labelImage(src.first, src.second, src.third,
                  dest.first, dest.second, eight_neighbors, 
@@ -344,22 +344,22 @@ int labelImage(triple<SrcIterator, SrcIterator, SrcAccessor> src,
     \code
     namespace vigra {
         template <class SrcIterator, class SrcAccessor,
-	          class DestIterator, class DestAccessor,
-	          class ValueType>
-        int labelImageWithBackground(SrcIterator upperlefts, 
-		       SrcIterator lowerrights, SrcAccessor sa,
-		       DestIterator upperleftd, DestAccessor da,
-		       bool eight_neighbors,
-		       ValueType background_value );
-
-        template <class SrcIterator, class SrcAccessor,
                   class DestIterator, class DestAccessor,
-	          class ValueType, class EqualityFunctor>
+                  class ValueType>
         int labelImageWithBackground(SrcIterator upperlefts, 
                        SrcIterator lowerrights, SrcAccessor sa,
                        DestIterator upperleftd, DestAccessor da,
-	               bool eight_neighbors,
-	               ValueType background_value, EqualityFunctor equal);
+                       bool eight_neighbors,
+                       ValueType background_value );
+
+        template <class SrcIterator, class SrcAccessor,
+                  class DestIterator, class DestAccessor,
+                  class ValueType, class EqualityFunctor>
+        int labelImageWithBackground(SrcIterator upperlefts, 
+                       SrcIterator lowerrights, SrcAccessor sa,
+                       DestIterator upperleftd, DestAccessor da,
+                       bool eight_neighbors,
+                       ValueType background_value, EqualityFunctor equal);
     }
     \endcode
     
@@ -367,22 +367,22 @@ int labelImage(triple<SrcIterator, SrcIterator, SrcAccessor> src,
     \code
     namespace vigra {
         template <class SrcIterator, class SrcAccessor,
-	          class DestIterator, class DestAccessor,
-	          class ValueType>
-        inline
-        int labelImageWithBackground(triple<SrcIterator, SrcIterator, SrcAccessor> src,
-				     pair<DestIterator, DestAccessor> dest,
-				     bool eight_neighbors,
-				     ValueType background_value);
-
-        template <class SrcIterator, class SrcAccessor,
                   class DestIterator, class DestAccessor,
-	          class ValueType, class EqualityFunctor>
+                  class ValueType>
         inline
         int labelImageWithBackground(triple<SrcIterator, SrcIterator, SrcAccessor> src,
                                      pair<DestIterator, DestAccessor> dest,
-	                             bool eight_neighbors,
-			             ValueType background_value, EqualityFunctor equal);
+                                     bool eight_neighbors,
+                                     ValueType background_value);
+
+        template <class SrcIterator, class SrcAccessor,
+                  class DestIterator, class DestAccessor,
+                  class ValueType, class EqualityFunctor>
+        inline
+        int labelImageWithBackground(triple<SrcIterator, SrcIterator, SrcAccessor> src,
+                                     pair<DestIterator, DestAccessor> dest,
+                                     bool eight_neighbors,
+                                     ValueType background_value, EqualityFunctor equal);
     }
     \endcode
     
@@ -400,7 +400,7 @@ int labelImage(triple<SrcIterator, SrcIterator, SrcAccessor> src,
     // threshold at 128
     vigra::transformImage(srcImageRange(src), destImage(src),
         vigra::Threshold<vigra::BImage::PixelType, vigra::BImage::PixelType>(
-		                                    128, 256, 0, 255));
+                                                    128, 256, 0, 255));
     
     // find 4-connected regions of foreground (= white pixels) only
     vigra::labelImageWithBackground(srcImageRange(src), destImage(labels), 
@@ -433,12 +433,12 @@ int labelImage(triple<SrcIterator, SrcIterator, SrcAccessor> src,
 */
 template <class SrcIterator, class SrcAccessor,
           class DestIterator, class DestAccessor,
-	  class ValueType, class EqualityFunctor>
+          class ValueType, class EqualityFunctor>
 int labelImageWithBackground(SrcIterator upperlefts, 
                SrcIterator lowerrights, SrcAccessor sa,
                DestIterator upperleftd, DestAccessor da,
-	       bool eight_neighbors,
-	       ValueType background_value, EqualityFunctor equal)
+               bool eight_neighbors,
+               ValueType background_value, EqualityFunctor equal)
 {
     int w = lowerrights.x - upperlefts.x;
     int h = lowerrights.y - upperlefts.y;
@@ -469,12 +469,12 @@ int labelImageWithBackground(SrcIterator upperlefts,
     for(y = 0; y != h; ++y, ++ys.y, ++yt.y)
     {
         xs = ys;
-	xt = yt;
+        xt = yt;
         
         int endNeighbor = (y == 0) ? left : (eight_neighbors ? topright : top);
-	
-	for(x = 0; x != w; ++x, ++xs.x, ++xt.x)
-	{
+        
+        for(x = 0; x != w; ++x, ++xs.x, ++xt.x)
+        {
             if(equal(sa(xs), background_value))
             {
                 *xt = -1;
@@ -546,67 +546,67 @@ int labelImageWithBackground(SrcIterator upperlefts,
     i = 0;
     for(y=0; y != h; ++y, ++yd.y)
     {
-	DestIterator xd(yd);
-	for(x = 0; x != w; ++x, ++xd.x, ++i)
-	{
+        DestIterator xd(yd);
+        for(x = 0; x != w; ++x, ++xd.x, ++i)
+        {
             if(label[i] == -1) continue;
             
             if(label[i] == i)
             {
-	        label[i] = count++;
+                label[i] = count++;
             }
             else
             {
-	        label[i] = label[label[i]];
+                label[i] = label[label[i]];
             }
-	    da.set(label[i]+1, xd);
-	}
+            da.set(label[i]+1, xd);
+        }
     }
     
     return count;
 }
 template <class SrcIterator, class SrcAccessor,
           class DestIterator, class DestAccessor,
-	  class ValueType, class EqualityFunctor>
+          class ValueType, class EqualityFunctor>
 inline
 int labelImageWithBackground(triple<SrcIterator, SrcIterator, SrcAccessor> src,
                              pair<DestIterator, DestAccessor> dest,
-	                     bool eight_neighbors,
-			     ValueType background_value, EqualityFunctor equal)
+                             bool eight_neighbors,
+                             ValueType background_value, EqualityFunctor equal)
 {
     return labelImageWithBackground(src.first, src.second, src.third,
                                     dest.first, dest.second, 
-				    eight_neighbors, background_value, equal);
+                                    eight_neighbors, background_value, equal);
 }
 
 template <class SrcIterator, class SrcAccessor,
           class DestIterator, class DestAccessor,
-	  class ValueType>
+          class ValueType>
 inline
 int labelImageWithBackground(triple<SrcIterator, SrcIterator, SrcAccessor> src,
                              pair<DestIterator, DestAccessor> dest,
-	                     bool eight_neighbors,
-			     ValueType background_value)
+                             bool eight_neighbors,
+                             ValueType background_value)
 {
     return labelImageWithBackground(src.first, src.second, src.third,
                             dest.first, dest.second, 
-			    eight_neighbors, background_value,
+                            eight_neighbors, background_value,
                             std::equal_to<typename SrcAccessor::value_type>());
 }
 
 template <class SrcIterator, class SrcAccessor,
           class DestIterator, class DestAccessor,
-	  class ValueType>
+          class ValueType>
 inline
 int labelImageWithBackground(SrcIterator upperlefts, 
                SrcIterator lowerrights, SrcAccessor sa,
                DestIterator upperleftd, DestAccessor da,
-	       bool eight_neighbors,
-	       ValueType background_value)
+               bool eight_neighbors,
+               ValueType background_value)
 {
     return labelImageWithBackground(upperlefts, lowerrights, sa,
                             upperleftd, da, 
-			    eight_neighbors, background_value,
+                            eight_neighbors, background_value,
                             std::equal_to<typename SrcAccessor::value_type>());
 }
 
@@ -626,11 +626,11 @@ int labelImageWithBackground(SrcIterator upperlefts,
     \code
        original image     insert zero- and one-cells 
     
-					 a 0 c c c          
-	  a c c                          a 0 0 0 c          
-	  a a c               =>         a a a 0 c          
-	  a a a                          a a a 0 0          
-					 a a a a a          
+                                         a 0 c c c          
+          a c c                          a 0 0 0 c          
+          a a c               =>         a a a 0 c          
+          a a a                          a a a 0 0          
+                                         a a a a a          
     \endcode
     
     The algorithm assumes that the original labeled image contains 
@@ -647,11 +647,11 @@ int labelImageWithBackground(SrcIterator upperlefts,
     \code
     namespace vigra {
         template <class SrcIterator, class SrcAccessor,
-	          class DestIterator, class DestAccessor, class DestValue>
+                  class DestIterator, class DestAccessor, class DestValue>
         void regionImageToCrackEdgeImage(
-		       SrcIterator sul, SrcIterator slr, SrcAccessor sa,
-		       DestIterator dul, DestAccessor da,
-		       DestValue edge_marker)
+                       SrcIterator sul, SrcIterator slr, SrcAccessor sa,
+                       DestIterator dul, DestAccessor da,
+                       DestValue edge_marker)
     }
     \endcode
     
@@ -659,12 +659,12 @@ int labelImageWithBackground(SrcIterator upperlefts,
     \code
     namespace vigra {
         template <class SrcIterator, class SrcAccessor,
-	          class DestIterator, class DestAccessor, class DestValue>
+                  class DestIterator, class DestAccessor, class DestValue>
         inline 
         void regionImageToCrackEdgeImage(
-	           triple<SrcIterator, SrcIterator, SrcAccessor> src,
-	           pair<DestIterator, DestAccessor> dest,
-	           DestValue edge_marker)
+                   triple<SrcIterator, SrcIterator, SrcAccessor> src,
+                   pair<DestIterator, DestAccessor> dest,
+                   DestValue edge_marker)
     }
     \endcode
     
@@ -681,7 +681,7 @@ int labelImageWithBackground(SrcIterator upperlefts,
     // threshold at 128
     vigra::transformImage(srcImageRange(src), destImage(src),
        vigra::Threshold<vigra::BImage::PixelType, vigra::BImage::PixelType>(
-		                                    128, 256, 0, 255));
+                                                    128, 256, 0, 255));
     
     // find 4-connected regions 
     vigra::labelImage(srcImageRange(src), destImage(labels), false);
@@ -719,8 +719,8 @@ template <class SrcIterator, class SrcAccessor,
           class DestIterator, class DestAccessor, class DestValue>
 void regionImageToCrackEdgeImage(
                SrcIterator sul, SrcIterator slr, SrcAccessor sa,
-	       DestIterator dul, DestAccessor da,
-	       DestValue edge_marker)
+               DestIterator dul, DestAccessor da,
+               DestValue edge_marker)
 {
     int w = slr.x - sul.x;
     int h = slr.y - sul.y;
@@ -737,42 +737,42 @@ void regionImageToCrackEdgeImage(
     
     for(y=0; y<h-1; ++y, ++iy.y, dy.y+=2)
     {
-	SrcIterator ix = iy;
-	DestIterator dx = dy;
-	
-	for(x=0; x<w-1; ++x, ++ix.x, dx.x+=2)
-	{
-	    da.set(sa(ix), dx);
-	    da.set(sa(ix), dx, bottomright);
-	    
-	    if(sa(ix, right) != sa(ix))
-	    {
-	        da.set(edge_marker, dx, right);
-	    }
-	    else
-	    {
-	        da.set(sa(ix), dx, right);
-	    }
-	    if(sa(ix, bottom) != sa(ix))
-	    {
-	        da.set(edge_marker, dx, bottom);
-	    }
-	    else
-	    {
-	        da.set(sa(ix), dx, bottom);
-	    }
-	    
-	}
-	
-	da.set(sa(ix), dx);
-	if(sa(ix, bottom) != sa(ix))
-	{
-	    da.set(edge_marker, dx, bottom);
-	}
-	else
-	{
-	    da.set(sa(ix), dx, bottom);
-	}
+        SrcIterator ix = iy;
+        DestIterator dx = dy;
+        
+        for(x=0; x<w-1; ++x, ++ix.x, dx.x+=2)
+        {
+            da.set(sa(ix), dx);
+            da.set(sa(ix), dx, bottomright);
+            
+            if(sa(ix, right) != sa(ix))
+            {
+                da.set(edge_marker, dx, right);
+            }
+            else
+            {
+                da.set(sa(ix), dx, right);
+            }
+            if(sa(ix, bottom) != sa(ix))
+            {
+                da.set(edge_marker, dx, bottom);
+            }
+            else
+            {
+                da.set(sa(ix), dx, bottom);
+            }
+            
+        }
+        
+        da.set(sa(ix), dx);
+        if(sa(ix, bottom) != sa(ix))
+        {
+            da.set(edge_marker, dx, bottom);
+        }
+        else
+        {
+            da.set(sa(ix), dx, bottom);
+        }
     }
     
     SrcIterator ix = iy;
@@ -780,15 +780,15 @@ void regionImageToCrackEdgeImage(
 
     for(x=0; x<w-1; ++x, ++ix.x, dx.x+=2)
     {
-	da.set(sa(ix), dx);
-	if(sa(ix, right) != sa(ix))
-	{
-	    da.set(edge_marker, dx, right);
-	}
-	else
-	{
-	    da.set(sa(ix), dx, right);
-	}
+        da.set(sa(ix), dx);
+        if(sa(ix, right) != sa(ix))
+        {
+            da.set(edge_marker, dx, right);
+        }
+        else
+        {
+            da.set(sa(ix), dx, right);
+        }
     }
     da.set(sa(ix), dx);
 
@@ -797,20 +797,20 @@ void regionImageToCrackEdgeImage(
     // find missing 0-cells 
     for(y=0; y<h-1; ++y, dy.y+=2)
     {
-	DestIterator dx = dy;
-	
-	for(x=0; x<w-1; ++x, dx.x+=2)
-	{
-	    static const Diff2D dist[] = {right, top, left, bottom };
-	    
-	    int i;
-	    for(i=0; i<4; ++i)
-	    {
-		if(da(dx, dist[i]) == edge_marker) break;
-	    }
-	    
-	    if(i < 4) da.set(edge_marker, dx);
-	}
+        DestIterator dx = dy;
+        
+        for(x=0; x<w-1; ++x, dx.x+=2)
+        {
+            static const Diff2D dist[] = {right, top, left, bottom };
+            
+            int i;
+            for(i=0; i<4; ++i)
+            {
+                if(da(dx, dist[i]) == edge_marker) break;
+            }
+            
+            if(i < 4) da.set(edge_marker, dx);
+        }
     }
 }
 
@@ -819,12 +819,12 @@ template <class SrcIterator, class SrcAccessor,
 inline 
 void regionImageToCrackEdgeImage(
            triple<SrcIterator, SrcIterator, SrcAccessor> src,
-	   pair<DestIterator, DestAccessor> dest,
-	   DestValue edge_marker)
+           pair<DestIterator, DestAccessor> dest,
+           DestValue edge_marker)
 {
     regionImageToCrackEdgeImage(src.first, src.second, src.third,
                                         dest.first, dest.second,
-					edge_marker);
+                                        edge_marker);
 }
 
 /********************************************************/
@@ -842,9 +842,9 @@ void regionImageToCrackEdgeImage(
        original image                     edges 
                                  (assuming edge_marker == 1)
     
-	  a c c                            1 1 *          
-	  a a c               =>           * 1 1          
-	  a a a                            * * *          
+          a c c                            1 1 *          
+          a a c               =>           * 1 1          
+          a a a                            * * *          
     \endcode
     
     The non-edge pixels of the destination image will not be touched.
@@ -860,8 +860,8 @@ void regionImageToCrackEdgeImage(
                   class DestIterator, class DestAccessor, class DestValue>
         void regionImageToEdgeImage(
                        SrcIterator sul, SrcIterator slr, SrcAccessor sa,
-	               DestIterator dul, DestAccessor da,
-	               DestValue edge_marker)
+                       DestIterator dul, DestAccessor da,
+                       DestValue edge_marker)
     }
     \endcode
     
@@ -869,12 +869,12 @@ void regionImageToCrackEdgeImage(
     \code
     namespace vigra {
         template <class SrcIterator, class SrcAccessor,
-	          class DestIterator, class DestAccessor, class DestValue>
+                  class DestIterator, class DestAccessor, class DestValue>
         inline 
         void regionImageToEdgeImage(
-	           triple<SrcIterator, SrcIterator, SrcAccessor> src,
-	           pair<DestIterator, DestAccessor> dest,
-	           DestValue edge_marker)
+                   triple<SrcIterator, SrcIterator, SrcAccessor> src,
+                   pair<DestIterator, DestAccessor> dest,
+                   DestValue edge_marker)
     }
     \endcode
     
@@ -892,7 +892,7 @@ void regionImageToCrackEdgeImage(
     // threshold at 128
     vigra::transformImage(srcImageRange(src), destImage(src),
       vigra::Threshold<vigra::BImage::PixelType, vigra::BImage::PixelType>(
-		                                    128, 256, 0, 255));
+                                                    128, 256, 0, 255));
     
     // find 4-connected regions 
     vigra::labelImage(srcImageRange(src), destImage(labels), false);
@@ -923,8 +923,8 @@ template <class SrcIterator, class SrcAccessor,
           class DestIterator, class DestAccessor, class DestValue>
 void regionImageToEdgeImage(
                SrcIterator sul, SrcIterator slr, SrcAccessor sa,
-	       DestIterator dul, DestAccessor da,
-	       DestValue edge_marker)
+               DestIterator dul, DestAccessor da,
+               DestValue edge_marker)
 {
     int w = slr.x - sul.x;
     int h = slr.y - sul.y;
@@ -941,25 +941,25 @@ void regionImageToEdgeImage(
     
     for(y=0; y<h-1; ++y, ++iy.y, ++dy.y)
     {
-	SrcIterator ix = iy;
-	DestIterator dx = dy;
-	
-	for(x=0; x<w-1; ++x, ++ix.x, ++dx.x)
-	{
-	    if(sa(ix, right) != sa(ix))
-	    {
-	        da.set(edge_marker, dx);
-	    }
-	    if(sa(ix, bottom) != sa(ix))
-	    {
-	        da.set(edge_marker, dx);
-	    }
-	}
-	
-	if(sa(ix, bottom) != sa(ix))
-	{
-	    da.set(edge_marker, dx);
-	}
+        SrcIterator ix = iy;
+        DestIterator dx = dy;
+        
+        for(x=0; x<w-1; ++x, ++ix.x, ++dx.x)
+        {
+            if(sa(ix, right) != sa(ix))
+            {
+                da.set(edge_marker, dx);
+            }
+            if(sa(ix, bottom) != sa(ix))
+            {
+                da.set(edge_marker, dx);
+            }
+        }
+        
+        if(sa(ix, bottom) != sa(ix))
+        {
+            da.set(edge_marker, dx);
+        }
     }
     
     SrcIterator ix = iy;
@@ -967,10 +967,10 @@ void regionImageToEdgeImage(
 
     for(x=0; x<w-1; ++x, ++ix.x, ++dx.x)
     {
-	if(sa(ix, right) != sa(ix))
-	{
-	    da.set(edge_marker, dx);
-	}
+        if(sa(ix, right) != sa(ix))
+        {
+            da.set(edge_marker, dx);
+        }
     }
 }
 
@@ -979,12 +979,12 @@ template <class SrcIterator, class SrcAccessor,
 inline 
 void regionImageToEdgeImage(
            triple<SrcIterator, SrcIterator, SrcAccessor> src,
-	   pair<DestIterator, DestAccessor> dest,
-	   DestValue edge_marker)
+           pair<DestIterator, DestAccessor> dest,
+           DestValue edge_marker)
 {
     regionImageToEdgeImage(src.first, src.second, src.third,
                                         dest.first, dest.second,
-					edge_marker);
+                                        edge_marker);
 }
 
 //@}
