@@ -630,18 +630,18 @@ gaussianSmoothing(triple<SrcIterator, SrcIterator, SrcAccessor> src,
                   class DestIteratorX, class DestAccessorX,
                   class DestIteratorY, class DestAccessorY>
         void gaussianGradient(SrcIterator supperleft,
-                                SrcIterator slowerright, SrcAccessor sa,
-                                DestIteratorX dupperleftx, DestAccessorX dax,
-                                DestIteratorY dupperlefty, DestAccessorY day,
-                                double scale);
+                              SrcIterator slowerright, SrcAccessor sa,
+                              DestIteratorX dupperleftx, DestAccessorX dax,
+                              DestIteratorY dupperlefty, DestAccessorY day,
+                              double scale);
 
         // write x and y component of the gradient into a vector-valued image
         template <class SrcIterator, class SrcAccessor,
-                class DestIterator, class DestAccessor>
+                 class DestIterator, class DestAccessor>
         void gaussianGradient(SrcIterator supperleft,
-                                SrcIterator slowerright, SrcAccessor src,
-                                DestIterator dupperleft, DestAccessor dest,
-                                double scale);
+                              SrcIterator slowerright, SrcAccessor src,
+                              DestIterator dupperleft, DestAccessor dest,
+                              double scale);
     }
     \endcode
 
@@ -653,7 +653,7 @@ gaussianSmoothing(triple<SrcIterator, SrcIterator, SrcAccessor> src,
         template <class SrcIterator, class SrcAccessor,
                   class DestIteratorX, class DestAccessorX,
                   class DestIteratorY, class DestAccessorY>
-        inline void
+        void
         gaussianGradient(triple<SrcIterator, SrcIterator, SrcAccessor> src,
                          pair<DestIteratorX, DestAccessorX> destx,
                          pair<DestIteratorY, DestAccessorY> desty,
@@ -661,8 +661,8 @@ gaussianSmoothing(triple<SrcIterator, SrcIterator, SrcAccessor> src,
 
         // write x and y component of the gradient into a vector-valued image
         template <class SrcIterator, class SrcAccessor,
-                class DestIterator, class DestAccessor>
-        inline void
+                 class DestIterator, class DestAccessor>
+        void
         gaussianGradient(triple<SrcIterator, SrcIterator, SrcAccessor> src,
                          pair<DestIterator, DestAccessor> dest,
                          double scale);
