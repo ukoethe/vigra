@@ -23,6 +23,7 @@
 #include <iostream>
 #include "vigra/stdimage.hxx"
 #include "vigra/convolution.hxx"
+#include "vigra/nonlineardiffusion.hxx"
 #include "vigra/impex.hxx"
 
 using namespace vigra; // MSVC doesn't support Koenig lookup
@@ -38,10 +39,22 @@ int main(int argc, char ** argv)
         return 1;
     }
     
+    // Type of smoothing: 
+    int type;
+    std::cout << "Type of smoothing (1 = Gauss, 2 = Exponential, 3 = nolinear) ? ";
+    std::cin >> type;
+    
     // input width of smoothing filter 
     double scale;
     std::cout << "Amount of smoothing (operator scale) ? ";
     std::cin >> scale;
+    
+    double edge_threshold;
+    if(type == 3)
+    {
+        std::cout << "Edge threshold ? ";
+        std::cin >> edge_threshold;
+    }
     
     try
     {
@@ -54,9 +67,33 @@ int main(int argc, char ** argv)
            
             importImage(info, destImage(in));
             
-            // apply recursive filter (exponential filter) to gray image
-            recursiveSmoothX(srcImageRange(in), destImage(out), scale);
-            recursiveSmoothY(srcImageRange(out), destImage(out), scale);
+            switch(type)
+            {
+              case 2:
+              {
+                // apply recursive filter (exponential filter) to gray image
+                recursiveSmoothX(srcImageRange(in), destImage(out), scale);
+                recursiveSmoothY(srcImageRange(out), destImage(out), scale);
+                break;
+              }
+              case 3:
+              {
+                // apply nonlinear diffusion to gray image
+                nonlinearDiffusion(srcImageRange(in), destImage(out),
+                   vigra::DiffusivityFunctor<float>(edge_threshold), scale);
+                break;
+              }
+              default:
+              {
+                vigra::FImage tmp(info.width(), info.height());
+
+                // apply Gaussian filter to gray image
+                vigra::Kernel1D<double> gauss;
+                gauss.initGaussian(scale);
+                separableConvolveX(srcImageRange(in), destImage(tmp), kernel1d(gauss));
+                separableConvolveY(srcImageRange(tmp), destImage(out), kernel1d(gauss));
+              }
+            }
             
             exportImage(srcImageRange(out), vigra::ImageExportInfo(argv[2]));
         }
@@ -67,9 +104,33 @@ int main(int argc, char ** argv)
            
             importImage(info, destImage(in));
             
-            // apply recursive filter (exponential filter) to color image
-            recursiveSmoothX(srcImageRange(in), destImage(out), scale);
-            recursiveSmoothY(srcImageRange(out), destImage(out), scale);
+            switch(type)
+            {
+              case 2:
+              {
+                // apply recursive filter (exponential filter) to color image
+                recursiveSmoothX(srcImageRange(in), destImage(out), scale);
+                recursiveSmoothY(srcImageRange(out), destImage(out), scale);
+                break;
+              }
+              case 3:
+              {
+                // apply nonlinear diffusion to color image
+                nonlinearDiffusion(srcImageRange(in), destImage(out),
+                   vigra::DiffusivityFunctor<float>(edge_threshold), scale);
+                break;
+              }
+              default:
+              {
+                vigra::FRGBImage tmp(info.width(), info.height());
+
+                // apply Gaussian filter to color image
+                vigra::Kernel1D<double> gauss;
+                gauss.initGaussian(scale);
+                separableConvolveX(srcImageRange(in), destImage(tmp), kernel1d(gauss));
+                separableConvolveY(srcImageRange(tmp), destImage(out), kernel1d(gauss));
+              }
+            }
             
             exportImage(srcImageRange(out), vigra::ImageExportInfo(argv[2]));
         }
