@@ -65,7 +65,7 @@ struct ArrayVectorTest
         Vector varray[] = { vector_, vector_, vector_ };
         Vector  * v = varray;
         Vector const * cv = varray;
-        int k, j;
+        int k;
         
         VectorComponentAccessor<Vector> vca(0);
         for(k = 0; k<2; ++k, vca.setIndex(k))
