@@ -496,7 +496,11 @@ class MagnitudeFunctor
         */
     value_type operator()(value_type const & v1, value_type const & v2) const
     {
+#ifndef CMATH_NOT_IN_STD
         return std::sqrt(v1*v1 + v2*v2);
+#else
+        return sqrt(v1*v1 + v2*v2);
+#endif
     }
 };
 
@@ -533,9 +537,15 @@ class RGBGradientMagnitudeFunctor
     ValueType 
     operator()(RGBValue<ValueType> const & gx, RGBValue<ValueType> const & gy) const
     {
+#ifndef CMATH_NOT_IN_STD
+        return std::sqrt(gx.red()*gx.red() + gx.green()*gx.green() +
+                    gx.blue()*gx.blue() + gy.red()*gy.red() + 
+                    gy.green()*gy.green() + gy.blue()*gy.blue());
+#else
         return sqrt(gx.red()*gx.red() + gx.green()*gx.green() +
                     gx.blue()*gx.blue() + gy.red()*gy.red() + 
                     gy.green()*gy.green() + gy.blue()*gy.blue());
+#endif
     }
 };
 
