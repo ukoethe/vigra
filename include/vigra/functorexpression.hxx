@@ -451,6 +451,7 @@ struct ResultTraits3<UnaryFunctor<ArgumentFunctor1>, T1, T2, T3>
 
 /************************************************************/
 
+inline
 UnaryFunctor<ArgumentFunctor1> 
 Arg1()
 {
@@ -492,6 +493,7 @@ struct ResultTraits3<UnaryFunctor<ArgumentFunctor2>, T1, T2, T3>
 
 /************************************************************/
 
+inline
 UnaryFunctor<ArgumentFunctor2> 
 Arg2()
 {
@@ -521,6 +523,7 @@ struct ResultTraits3<UnaryFunctor<ArgumentFunctor3>, T1, T2, T3>
 
 /************************************************************/
 
+inline
 UnaryFunctor<ArgumentFunctor3> 
 Arg3()
 {
