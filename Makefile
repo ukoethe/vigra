@@ -59,6 +59,13 @@ maintainer-clean: distclean docclean
 autoconf:
 	cd config && \
 	aclocal --acdir=. && \
-	autoconf --output=../configure
+	autoconf && mv configure ..
+
+libtoolize:
+	@echo "*** SET $LTPARAMS TO EXTRA PARAMS (LIKE --force) IF YOU WISH ***"
+	@libtool --version
+	@test -h configure.in || ln -s config/configure.in
+	@libtoolize -c $(LTPARAMS)
+	@test -h configure.in && rm configure.in
 
 .PHONY: autoconf all clean distclean doc docclean examples install install-docs install-exec install-includes install-headers
