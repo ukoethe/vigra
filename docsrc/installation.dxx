@@ -74,8 +74,8 @@
     
     \item edit the LIB macro in #$VIGRA_PATH/src/examples/Makefile#: \\
     {\em either} add the 
-    paths to the library files \URL[libjpeg.a]{http://www.ijg.org/} and 
-    \URL[libtiff.a]{http://www.libtiff.org/} on your 
+    paths to the library files libjpeg.a (or libjpeg.so) and 
+    libtiff.a (or libtiff.so) on your 
     system \\
     {\em or} remove -ljpeg and -ltiff.
     
