@@ -1,5 +1,3 @@
-LINENO=1  # ??? should be set automatically
-
 # redefine _AC_INIT_DEFAULTS in order to add 'ac_default_docdir=...'
 # --------------------------------------------------------------
 # Values which defaults can be set from `configure.ac'.
