@@ -487,18 +487,25 @@ public:
     : Diff2D(v)
     {}
 
-        /** Query the width
+        /** Query the width.
          */
     int width() const
     {
         return x;
     }
 
-        /** Query the height
+        /** Query the height.
          */
     int height() const
     {
         return y;
+    }
+
+        /** Returns width()*height(), the area of a rectangle of this size.
+         */
+    int area() const
+    {
+        return width()*height();
     }
 
         /** Copy Assigment.
