@@ -708,7 +708,7 @@ class MultiIteratorBase <2>
         typedef MultiIterator <1, T, REFERENCE, POINTER> next_type;
         typedef StridedMultiIterator <1, T, REFERENCE, POINTER> iterator;
         typedef TinyVector<difference_type, 2> multi_difference_type;
-        typedef multi_dimensional_traverser_tag iterator_category;
+        typedef std::random_access_iterator_tag iterator_category;
 
         const difference_type *m_stride;
         const difference_type *m_shape;
@@ -914,6 +914,11 @@ class MultiIteratorBase <1>
             return *m_ptr;
         }
 
+        pointer get () const
+        {
+            return m_ptr;
+        }
+
         pointer operator->() const
         {
             return &(operator*());
@@ -1033,7 +1038,7 @@ public:
 
         /** the iterator tag (image traverser)
         */
-    typedef multi_dimensional_traverser_tag iterator_category;
+    typedef typename base_type::iterator_category iterator_category;
             
     /* use default copy constructor and assignment operator */
 
@@ -1546,7 +1551,7 @@ class StridedMultiIteratorBase <1>
         typedef TinyVector<difference_type, 1> multi_difference_type;
         typedef void next_type;
         typedef StridedMultiIterator <1, T, REFERENCE, POINTER> iterator;
-        typedef multi_dimensional_traverser_tag iterator_category;
+        typedef std::random_access_iterator_tag iterator_category;
         
         pointer m_ptr;
         difference_type m_stride;
@@ -1566,6 +1571,11 @@ class StridedMultiIteratorBase <1>
         reference operator* () const
         {
             return *m_ptr;
+        }
+
+        pointer get () const
+        {
+            return m_ptr;
         }
 
         pointer operator-> () const
@@ -1734,7 +1744,7 @@ public:
 
         /** the iterator tag (image traverser)
         */
-    typedef multi_dimensional_traverser_tag iterator_category;
+    typedef typename base_type::iterator_category iterator_category;
             
     /* use default copy constructor and assignment operator */
 
@@ -1746,7 +1756,7 @@ public:
         /** construct from pointer, strides (offset of a sample to the
             next) for every dimension, and the shape.
         */
-    StridedMultiIterator (T *ptr,
+    StridedMultiIterator (pointer ptr,
                           const difference_type *stride,
                           const difference_type *shape)
         : base_type (ptr, stride, shape)
