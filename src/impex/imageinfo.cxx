@@ -60,6 +60,11 @@ namespace vigra
         return stringify( ft.begin(), ft.end() );
     }
 
+    bool isImage(char const * filename)
+    {
+        return CodecManager::manager().getFileTypeByMagicString(filename) != "";
+    }
+    
     // class ImageExportInfo
 
     ImageExportInfo::ImageExportInfo( const char * filename )
