@@ -23,10 +23,82 @@
 #ifndef VIGRA_ERROR_HXX
 #define VIGRA_ERROR_HXX
 
+/** @name Error Reporting
+
+    VIGRA defines the following exception classes:
+    
+    \begin{verbatim}
+    namespace vigra {
+        class ContractViolation : public std::exception;
+        class PreconditionViolation : public ContractViolation;
+        class PostconditionViolation : public ContractViolation;
+        class InvariantViolation : public ContractViolation;
+    }
+    \end{verbatim}
+    
+    The following associated macros throw the corresponding exception if 
+    their PREDICATE evaluates to '#false#':
+    
+    \begin{verbatim}
+    vigra_precondition(PREDICATE, MESSAGE);
+    vigra_postcondition(PREDICATE, MESSAGE);
+    vigra_invariant(PREDICATE, MESSAGE);
+    \end{verbatim}
+    
+    The MESSAGE is passed to the exception and can be retrieved via
+    the overloaded member function '#exception.what()#'. If the compiler
+    flag '#NDEBUD#' is {\em not} defined, the file name and line number of 
+    the error are automatically included in the message.
+    
+    The following macro
+    
+    \begin{verbatim}
+    vigra_fail(MESSAGE);
+    \end{verbatim}
+    
+    unconditionally throws a '#std::runtime_error#' constructed from the message 
+    (along with file name and line number, if NDEBUG is not set).
+    
+    {\bf Usage:}
+    
+    Include-File:
+    \URL[vigra/error.hxx]{../include/vigra/error.hxx}\\
+    Namespace: vigra (except for the macros, of course)
+    
+    \begin{verbatim}
+    int main(int argc, char ** argv)
+    {
+        try
+        {
+            const char* input_file_name = argv[1];
+
+            // read input image
+            vigra::ImageImportInfo info(input_file_name);
+
+            // fail if input image is not grayscale
+            vigra_precondition(info.isGrayscale(), "Input image must be grayscale");
+
+            ...// process image
+        }
+        catch (std::exception & e)
+        {
+            std::cerr << e.what() << std::endl; // print message
+            return 1;
+        }
+
+        return 0;
+    }
+    \end{verbatim}
+    
+*    @memo Exceptions and assertions provided by VIGRA
+*/
+/**
+*/
 #include <stdio.h>
 #include "vigra/config.hxx"
           
 namespace vigra {
+
 
 class ContractViolation : public StdException
 {
@@ -37,15 +109,15 @@ class ContractViolation : public StdException
     }
     
     ContractViolation()
-    {}
+    {
+        what_[0] = 0;
+    }
     
     ContractViolation(ContractViolation const & o)
     {
         sprintf(what_, "%.1099s", o.what_);
     }
 
-//    virtual ~ContractViolation() {}
-   
     virtual const char * what() const throw()
     {
         return what_;
@@ -57,52 +129,80 @@ class ContractViolation : public StdException
 class PreconditionViolation : public ContractViolation
 {
   public:
-//    virtual ~PreconditionViolation() {}
-   
     PreconditionViolation(char const * message, const char * file, int line)
     {
         sprintf( what_, "\nPrecondition Violation!\n%.900s\n(%.150s:%d)\n", message, file, line);
+    }
+    
+    PreconditionViolation(char const * message)
+    {
+        sprintf( what_, "\nPrecondition Violation!\n%.900s\n", message);
     }
 };
 
 class PostconditionViolation : public ContractViolation
 {
   public:
-//    virtual ~PostconditionViolation() {}
-   
     PostconditionViolation(char const * message, const char * file, int line)
     {
         sprintf( what_, "\nPostcondition Violation!\n%.900s\n(%.150s:%d)\n", message, file, line);
+    }
+    
+    PostconditionViolation(char const * message)
+    {
+        sprintf( what_, "\nPostcondition Violation!\n%.900s\n", message);
     }
 };
 
 class InvariantViolation : public ContractViolation
 {
   public:
-//    virtual ~InvariantViolation() {}
-   
     InvariantViolation(char const * message, const char * file, int line)
     {
         sprintf( what_, "\nInvariant Violation!\n%.900s\n(%.150s:%d)\n", message, file, line);
     }
+    
+    InvariantViolation(char const * message)
+    {
+        sprintf( what_, "\nInvariant Violation!\n%.900s\n", message);
+    }
 };
 
+#ifndef NDEBUG
 
-#define precondition(PREDICATE, MESSAGE) \
+#define vigra_precondition(PREDICATE, MESSAGE) \
         if(PREDICATE); else throw ::vigra::PreconditionViolation(MESSAGE, __FILE__, __LINE__)
 
-#define postcondition(PREDICATE, MESSAGE) \
+#define vigra_postcondition(PREDICATE, MESSAGE) \
         if(PREDICATE); else throw ::vigra::PostconditionViolation(MESSAGE, __FILE__, __LINE__)
 
-#define invariant(PREDICATE, MESSAGE) \
+#define vigra_invariant(PREDICATE, MESSAGE) \
         if(PREDICATE); else throw ::vigra::InvariantViolation(MESSAGE, __FILE__, __LINE__)
             
-#define fail(MESSAGE) \
+#define vigra_fail(MESSAGE) \
         { \
             char buf[1000]; \
             sprintf(buf, "%.900s (" __FILE__ ":%d)", (MESSAGE), __LINE__); \
             throw std::runtime_error(buf); \
         } 
+
+#else // NDEBUG
+
+#define vigra_precondition(PREDICATE, MESSAGE) \
+        if(PREDICATE); else throw ::vigra::PreconditionViolation(MESSAGE)
+
+#define vigra_postcondition(PREDICATE, MESSAGE) \
+        if(PREDICATE); else throw ::vigra::PostconditionViolation(MESSAGE)
+
+#define vigra_invariant(PREDICATE, MESSAGE) \
+        if(PREDICATE); else throw ::vigra::InvariantViolation(MESSAGE)
+            
+#define vigra_fail(MESSAGE) \
+        { \
+            throw std::runtime_error(MESSAGE); \
+        } 
+
+#endif // NDEBUG
 
 } // namespace vigra
 

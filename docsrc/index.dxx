@@ -44,7 +44,9 @@
 */
 //@{
 
-//@Include: ../include/vigra/utilities.hxx ../include/vigra/numerictraits.hxx 
+//@Include: ../include/vigra/utilities.hxx 
+//@Include: ../include/vigra/error.hxx 
+//@Include: ../include/vigra/numerictraits.hxx 
 
 //@Include: ../include/vigra/stdimage.hxx 
 

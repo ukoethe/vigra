@@ -127,7 +127,7 @@ void recursiveSmoothLine(SrcIterator is, SrcIterator isend, SrcAccessor as,
     
     int x;
     
-    precondition(scale > 0,
+    vigra_precondition(scale > 0,
                  "recursiveSmoothLine(): scale must be > 0.\n");
 
     typedef typename
@@ -244,7 +244,7 @@ template <class SrcIterator, class SrcAccessor,
 void recursiveFirstDerivativeLine(SrcIterator is, SrcIterator isend, SrcAccessor as,
                          DestIterator id, DestAccessor ad, double scale)
 {
-    precondition(scale > 0,
+    vigra_precondition(scale > 0,
                  "recursiveFirstDerivativeLine(): scale must be > 0.\n");
 
     int w = isend -is;
@@ -364,7 +364,7 @@ template <class SrcIterator, class SrcAccessor,
 void recursiveSecondDerivativeLine(SrcIterator is, SrcIterator isend, SrcAccessor as,
                          DestIterator id, DestAccessor ad, double scale)
 {
-    precondition(scale > 0,
+    vigra_precondition(scale > 0,
                  "recursiveSecondDerivativeLine(): scale must be > 0.\n");
 
     int w = isend -is;
@@ -416,7 +416,7 @@ void recursiveSecondDerivativeLine(SrcIterator is, SrcIterator isend, SrcAccesso
 /** Performs 1 dimensional recursive smoothing in x direction by 
     calling \Ref{recursiveSmoothLine}() for every row of the
     image. See \Ref{recursiveSmoothLine}() for more information about 
-    required interfaces and preconditions.
+    required interfaces and vigra_preconditions.
     
     {\bf Declarations:}
     
@@ -504,7 +504,7 @@ inline void recursiveSmoothX(
 /** Performs 1 dimensional recursive smoothing in y direction by 
     calling \Ref{recursiveSmoothLine}() for every column of the
     image. See \Ref{recursiveSmoothLine}() for more information about 
-    required interfaces and preconditions.
+    required interfaces and vigra_preconditions.
     
     {\bf Declarations:}
     
@@ -592,7 +592,7 @@ inline void recursiveSmoothY(
 /** Recursively calculates the 1 dimensional first derivative in x 
     direction by calling \Ref{recursiveFirstDerivativeLine}() for every 
     row of the image. See \Ref{recursiveFirstDerivativeLine}() for more 
-    information about required interfaces and preconditions.
+    information about required interfaces and vigra_preconditions.
     
     {\bf Declarations:}
     
@@ -680,7 +680,7 @@ inline void recursiveFirstDerivativeX(
 /** Recursively calculates the 1 dimensional first derivative in y 
     direction by calling \Ref{recursiveFirstDerivativeLine}() for every 
     column of the image. See \Ref{recursiveFirstDerivativeLine}() for more 
-    information about required interfaces and preconditions.
+    information about required interfaces and vigra_preconditions.
     
     {\bf Declarations:}
     
@@ -768,7 +768,7 @@ inline void recursiveFirstDerivativeY(
 /** Recursively calculates the 1 dimensional second derivative in x 
     direction by calling \Ref{recursiveSecondDerivativeLine}() for every 
     row of the image. See \Ref{recursiveSecondDerivativeLine}() for more 
-    information about required interfaces and preconditions.
+    information about required interfaces and vigra_preconditions.
     
     {\bf Declarations:}
     
@@ -856,7 +856,7 @@ inline void recursiveSecondDerivativeX(
 /** Recursively calculates the 1 dimensional second derivative in y 
     direction by calling \Ref{recursiveSecondDerivativeLine}() for every 
     column of the image. See \Ref{recursiveSecondDerivativeLine}() for more 
-    information about required interfaces and preconditions.
+    information about required interfaces and vigra_preconditions.
     
     {\bf Declarations:}
     

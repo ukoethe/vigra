@@ -25,7 +25,7 @@
             vigraImpexListFormats() => impexListFormats()
       
       
-      \item Added expression templates for automated \URL[automated functor creation]{FunctorCreation.html}.
+      \item Added expression templates for \URL[automated functor creation]{FunctorCreation.html}.
 
       \item Added support for input/output of the PNM image file format
        (contributed by  

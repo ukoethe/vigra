@@ -9,7 +9,7 @@ if len(sys.argv) != 3:
 # compile the regex patterns needed for heading modification
 heading = re.compile(r'<H2>(.*?)</H2>', re.M)
 headingArrow = re.compile(r'<A HREF ="#DOC.DOCU" > <IMG BORDER=0 SRC=down.gif></A>')
-headingNamespace = re.compile(r'\s(namespace\s+vigra|namespace)\s+')
+headingNamespace = re.compile(r'\snamespace\s+')
 headingInline = re.compile(r'\sinline\s+')
 headingTypedef = re.compile(r'typedef')
 headingTemplateClass = re.compile(r'&gt; *class')

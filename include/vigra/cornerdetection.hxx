@@ -192,7 +192,7 @@ cornerResponseFunction(SrcIterator sul, SrcIterator slr, SrcAccessor as,
                        DestIterator dul, DestAccessor ad,
 		       double scale)
 {
-    precondition(scale > 0.0,
+    vigra_precondition(scale > 0.0,
                  "cornerResponseFunction(): Scale must be > 0");
 		 
     int w = slr.x - sul.x;

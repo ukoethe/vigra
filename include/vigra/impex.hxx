@@ -232,7 +232,7 @@ class ImageImportInfo
         **/
     int width() const
     {
-        precondition(fileIsLoaded(), "ImageImportInfo::width(): No image loaded");
+        vigra_precondition(fileIsLoaded(), "ImageImportInfo::width(): No image loaded");
         return width_;
     }
     
@@ -241,7 +241,7 @@ class ImageImportInfo
         **/
     int height() const
     {
-        precondition(fileIsLoaded(), "ImageImportInfo::height(): No image loaded");
+        vigra_precondition(fileIsLoaded(), "ImageImportInfo::height(): No image loaded");
         return height_;
     }
 
@@ -281,7 +281,7 @@ class ImageImportInfo
         **/
     ColorSpace colorSpace() const 
     {
-        precondition(fileIsLoaded(), "ImageImportInfo::colorSpace(): No image loaded");
+        vigra_precondition(fileIsLoaded(), "ImageImportInfo::colorSpace(): No image loaded");
         return colorspace_; 
     }
     
@@ -299,7 +299,7 @@ class ImageImportInfo
         **/    
     PixelType pixelType() const 
     { 
-        precondition(fileIsLoaded(), "ImageImportInfo::pixelType(): No image loaded");
+        vigra_precondition(fileIsLoaded(), "ImageImportInfo::pixelType(): No image loaded");
         return pixelType_; 
     }
     
@@ -337,7 +337,7 @@ template <class ImageIterator, class Accessor>
 void internalImportRGBImage(VigraImpexImage const * image, 
                       ImageIterator dul, Accessor ad)
 {
-    precondition(image != 0,
+    vigra_precondition(image != 0,
                  "importImage(): Null pointer to image data");
     
     int w = image->columns;
@@ -400,7 +400,7 @@ void internalImportRGBImage(VigraImpexImage const * image,
       }
       
       default:
-        precondition(0, "importImage(): Unknown image class.");
+        vigra_precondition(0, "importImage(): Unknown image class.");
     }
 }
 
@@ -408,7 +408,7 @@ template <class ImageIterator, class Accessor>
 void internalImportScalarImage(VigraImpexImage const * image, 
                                ImageIterator dul, Accessor ad)
 {
-    precondition(image != 0,
+    vigra_precondition(image != 0,
                  "importImage(): Null pointer to image data");
     
     int w = image->columns;
@@ -467,7 +467,7 @@ void internalImportScalarImage(VigraImpexImage const * image,
       }
       
       default:
-        precondition(0, "importImage(): Unknown image class.");
+        vigra_precondition(0, "importImage(): Unknown image class.");
     }
 }
 
@@ -614,7 +614,7 @@ void internalScalarExportImage(
     
     image = vigraImpexAllocateImage(&image_info);  
     
-    postcondition(image != 0, "exportImage(): Unable to allocate memory");
+    vigra_postcondition(image != 0, "exportImage(): Unable to allocate memory");
     
     int w = slr.x - sul.x;
     int h = slr.y - sul.y;
@@ -630,7 +630,7 @@ void internalScalarExportImage(
     {
         vigraImpexDestroyImage(image);
         vigraImpexDestroyImageInfo(&image_info);
-        postcondition(0, "exportImage(): Unable to allocate memory");
+        vigra_postcondition(0, "exportImage(): Unable to allocate memory");
     }
     
     VigraImpexRunlengthPacket * p = image->pixels;
@@ -649,7 +649,7 @@ void internalScalarExportImage(
     }
       
     ImageExportFunctionPointer exportFunction = info.exportFunction();
-    precondition(exportFunction != 0, 
+    vigra_precondition(exportFunction != 0, 
                  "exportImage(): Unknown file type");
     
     int status = (*exportFunction)(&image_info, image);
@@ -658,7 +658,7 @@ void internalScalarExportImage(
     vigraImpexDestroyImageInfo(&image_info);
     
     if(status == 0)
-        postcondition(0, "exportImage(): write failed");
+        vigra_postcondition(0, "exportImage(): write vigra_failed");
 }
 
 template <class SrcIterator, class SrcAccessor>
@@ -725,7 +725,7 @@ void internalRGBExportImage(
     
     image = vigraImpexAllocateImage(&image_info);  
     
-    postcondition(image != 0, "exportImage(): Unable to allocate memory");
+    vigra_postcondition(image != 0, "exportImage(): Unable to allocate memory");
     
     int w = slr.x - sul.x;
     int h = slr.y - sul.y;
@@ -741,7 +741,7 @@ void internalRGBExportImage(
     {
         vigraImpexDestroyImage(image);
         vigraImpexDestroyImageInfo(&image_info);
-        postcondition(0, "exportImage(): Unable to allocate memory");
+        vigra_postcondition(0, "exportImage(): Unable to allocate memory");
     }
     
     VigraImpexRunlengthPacket * p = image->pixels;
@@ -760,7 +760,7 @@ void internalRGBExportImage(
     }
       
     ImageExportFunctionPointer exportFunction = info.exportFunction();
-    precondition(exportFunction != 0, 
+    vigra_precondition(exportFunction != 0, 
                  "exportImage(): Unknown file type");
     
     int status = (*exportFunction)(&image_info, image);
@@ -769,7 +769,7 @@ void internalRGBExportImage(
     vigraImpexDestroyImageInfo(&image_info);
     
     if(status == 0)
-        postcondition(0, "exportImage(): write failed");
+        vigra_postcondition(0, "exportImage(): write vigra_failed");
 }
 
 template <class SrcIterator, class SrcAccessor>
@@ -952,12 +952,12 @@ void exportImage(SrcIterator sul, SrcIterator slr, SrcAccessor sget,
         freeViffImage(viff);
             
         if(status == 0)
-            postcondition(0, "exportImage(): write failed");
+            vigra_postcondition(0, "exportImage(): write vigra_failed");
     }
     else if(info.isTiff())
     {
         TiffImage * tiff = TIFFOpen((char *)info.fileName(), "w");
-        postcondition(tiff != 0, 
+        vigra_postcondition(tiff != 0, 
                "exportImage(): Unable to open image");
         
         switch(info.compression_)

@@ -164,15 +164,15 @@ void convolveImage(SrcIterator sul, SrcIterator slr, SrcAccessor as,
 		   KernelIterator ki, KernelAccessor ak, 
 		   Diff2D kul, Diff2D klr, BorderTreatmentMode border)
 {
-    precondition((border == BORDER_TREATMENT_CLIP  ||
+    vigra_precondition((border == BORDER_TREATMENT_CLIP  ||
 		  border == BORDER_TREATMENT_AVOID),
 		  "convolveImage(): "
 		  "Border treatment must be BORDER_TREATMENT_CLIP or BORDER_TREATMENT_AVOID.");
 
-    precondition(kul.x <= 0 && kul.y <= 0,
+    vigra_precondition(kul.x <= 0 && kul.y <= 0,
 		 "convolveImage(): coordinates of "
                  "kernel's upper left must be <= 0.");
-    precondition(klr.x >= 0 && klr.y >= 0,
+    vigra_precondition(klr.x >= 0 && klr.y >= 0,
 		 "convolveImage(): coordinates of "
                  "kernel's lower right must be >= 0.");
 
@@ -188,7 +188,7 @@ void convolveImage(SrcIterator sul, SrcIterator slr, SrcAccessor as,
     int wk = klr.x - kul.x + 1;  
     int hk = klr.y - kul.y + 1;  
     
-    precondition(w >= wk && h >= hk,
+    vigra_precondition(w >= wk && h >= hk,
 		 "convolveImage(): kernel larger than image.");
 
     int x,y;
@@ -455,14 +455,14 @@ convolveImageWithMask(SrcIterator sul, SrcIterator slr, SrcAccessor as,
 	   	      KernelIterator ki, KernelAccessor ak, 
 		      Diff2D kul, Diff2D klr, BorderTreatmentMode border)
 {
-    precondition((border == BORDER_TREATMENT_CLIP  ||
+    vigra_precondition((border == BORDER_TREATMENT_CLIP  ||
 		  border == BORDER_TREATMENT_AVOID),
 		  "convolveImageWithMask(): "
 		  "Border treatment must be BORDER_TREATMENT_CLIP or BORDER_TREATMENT_AVOID.");
 
-    precondition(kul.x <= 0 && kul.y <= 0,
+    vigra_precondition(kul.x <= 0 && kul.y <= 0,
 		 "convolveImageWithMask(): left borders must be <= 0.");
-    precondition(klr.x >= 0 && klr.y >= 0,
+    vigra_precondition(klr.x >= 0 && klr.y >= 0,
 		 "convolveImageWithMask(): right borders must be >= 0.");
 
     // use traits to determine SumType as to prevent possible overflow
@@ -675,7 +675,7 @@ class Kernel2D
 	
 	~InitProxy()
 	{
-	    precondition(count_ == 1 || count_ == sum_,
+	    vigra_precondition(count_ == 1 || count_ == sum_,
 	          "Kernel2D::initExplicitly(): "
 		  "Too few init values.");
 	}
@@ -685,7 +685,7 @@ class Kernel2D
 	    if(count_ == sum_)  norm_ = *iter_;
 	    
 	    --count_;
-	    precondition(count_ > 0,
+	    vigra_precondition(count_ > 0,
 	          "Kernel2D::initExplicitly(): "
 		  "Too many init values.");
 		  
@@ -846,9 +846,9 @@ class Kernel2D
     void initSeparable(KernelIterator kxcenter, int xleft, int xright,
                        KernelIterator kycenter, int yleft, int yright)
     {
-   	precondition(xleft <= 0 && yleft <= 0,
+   	vigra_precondition(xleft <= 0 && yleft <= 0,
 		     "Kernel2D::initSeparable(): left borders must be <= 0.");
-	precondition(xright >= 0 && yright >= 0,
+	vigra_precondition(xright >= 0 && yright >= 0,
 		     "Kernel2D::initSeparable(): right borders must be >= 0.");
     
         left_ = Diff2D(xleft, yleft);
@@ -904,7 +904,7 @@ class Kernel2D
 	*/
     void initDisk(int radius)
     {
-   	precondition(radius > 0,
+   	vigra_precondition(radius > 0,
 		     "Kernel2D::initDisk(): radius must be > 0.");
     
         left_ = Diff2D(-radius, -radius);
@@ -984,9 +984,9 @@ class Kernel2D
 	*/
     Kernel2D & initExplicitly(Diff2D upperleft, Diff2D lowerright)
     {
-   	precondition(upperleft.x <= 0 && upperleft.y <= 0,
+   	vigra_precondition(upperleft.x <= 0 && upperleft.y <= 0,
 		     "Kernel2D::initExplicitly(): left borders must be <= 0.");
-	precondition(lowerright.x >= 0 && lowerright.y >= 0,
+	vigra_precondition(lowerright.x >= 0 && lowerright.y >= 0,
 		     "Kernel2D::initExplicitly(): right borders must be >= 0.");
     
         left_ = upperleft;
@@ -1092,7 +1092,7 @@ class Kernel2D
 	*/
     void setBorderTreatment( BorderTreatmentMode new_mode)
     { 
-	precondition((new_mode == BORDER_TREATMENT_CLIP  ||
+	vigra_precondition((new_mode == BORDER_TREATMENT_CLIP  ||
 	              new_mode == BORDER_TREATMENT_AVOID),
 		      "Kernel2D::setBorderTreatment(): "
 		      "Border treatment must be BORDER_TREATMENT_CLIP or BORDER_TREATMENT_AVOID.");

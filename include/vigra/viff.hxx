@@ -216,35 +216,35 @@ template <class ImageIterator, class Accessor>
 void
 viffToScalarImage(ViffImage * viff, ImageIterator iter, Accessor a)
 {
-    precondition(viff, 
+    vigra_precondition(viff, 
              "viffToScalarImage(ViffImage *, ScalarImageIterator): " 
              "NULL pointer to input data.");
     
-    precondition(viff->num_data_bands == 1,
+    vigra_precondition(viff->num_data_bands == 1,
              "viffToScalarImage(ViffImage *, ScalarImageIterator): " 
              "Image is multiband - not scalar.");
     
-    precondition(viff->data_storage_type != VFF_TYP_COMPLEX,
+    vigra_precondition(viff->data_storage_type != VFF_TYP_COMPLEX,
              "viffToScalarImage(ViffImage *, ScalarImageIterator): " 
              "Image is VFF_TYP_COMPLEX - not scalar.");
     
-    precondition(viff->data_storage_type != VFF_TYP_DCOMPLEX,
+    vigra_precondition(viff->data_storage_type != VFF_TYP_DCOMPLEX,
              "viffToScalarImage(ViffImage *, ScalarImageIterator): " 
              "Image is VFF_TYP_DCOMPLEX - not scalar.");
     
-    precondition(viff->data_storage_type != VFF_TYP_BIT, 
+    vigra_precondition(viff->data_storage_type != VFF_TYP_BIT, 
              "viffToScalarImage(ViffImage *, ScalarImageIterator): " 
              "Unable to convert VFF_TYP_BIT.");
     
-    precondition(viff->map_scheme == VFF_MS_NONE,
+    vigra_precondition(viff->map_scheme == VFF_MS_NONE,
              "viffToScalarImage(ViffImage *, ScalarImageIterator): " 
              "Can only convert images without map (VFF_MS_NONE).");
     
-    precondition(viff->location_type == VFF_LOC_IMPLICIT,
+    vigra_precondition(viff->location_type == VFF_LOC_IMPLICIT,
              "viffToScalarImage(ViffImage *, ScalarImageIterator): " 
              "Can only convert images with implicit location (VFF_LOC_IMPLICIT).");
 
-    precondition(viff->data_encode_scheme == VFF_DES_RAW,
+    vigra_precondition(viff->data_encode_scheme == VFF_DES_RAW,
              "viffToScalarImage(ViffImage *, ScalarImageIterator): " 
              "Can only convert uncompressed images (VFF_DES_RAW).");
 
@@ -328,7 +328,7 @@ viffToScalarImage(ViffImage * viff, ImageIterator iter, Accessor a)
       default:
       {
         // should not happen
-        precondition(0, 
+        vigra_precondition(0, 
           "viffToScalarImage(ViffImage *, ScalarImageIterator): " 
           "Unknown data storage type.");
       }
@@ -424,31 +424,31 @@ template <class ImageIterator, class VectorComponentAccessor>
 void
 viffToMultibandImage(ViffImage * viff, ImageIterator iter, VectorComponentAccessor a)
 {
-    precondition(viff,
+    vigra_precondition(viff,
               "viffToMultibandImage(ViffImage *, VectorImageIterator): " 
           "NULL pointer to input data.");
     
-    precondition(viff->data_storage_type != VFF_TYP_COMPLEX,
+    vigra_precondition(viff->data_storage_type != VFF_TYP_COMPLEX,
              "viffToMultibandImage(ViffImage *, VectorImageIterator): " 
              "Image is VFF_TYP_COMPLEX - not multiband.");
     
-    precondition(viff->data_storage_type != VFF_TYP_DCOMPLEX,
+    vigra_precondition(viff->data_storage_type != VFF_TYP_DCOMPLEX,
              "viffToMultibandImage(ViffImage *, VectorImageIterator): " 
              "Image is VFF_TYP_DCOMPLEX - not multiband.");
     
-    precondition(viff->data_storage_type != VFF_TYP_BIT,
+    vigra_precondition(viff->data_storage_type != VFF_TYP_BIT,
              "viffToMultibandImage(ViffImage *, VectorImageIterator): " 
              "Unable to convert VFF_TYP_BIT.");
     
-    precondition(viff->map_scheme == VFF_MS_NONE,
+    vigra_precondition(viff->map_scheme == VFF_MS_NONE,
              "viffToMultibandImage(ViffImage *, VectorImageIterator): " 
              "Can only convert images without map (VFF_MS_NONE).");
     
-    precondition(viff->location_type == VFF_LOC_IMPLICIT,
+    vigra_precondition(viff->location_type == VFF_LOC_IMPLICIT,
              "viffToMultibandImage(ViffImage *, VectorImageIterator): " 
              "Can only convert images with implicit location (VFF_LOC_IMPLICIT).");
 
-    precondition(viff->data_encode_scheme == VFF_DES_RAW,
+    vigra_precondition(viff->data_encode_scheme == VFF_DES_RAW,
              "viffToMultibandImage(ViffImage *, VectorImageIterator): " 
              "Can only convert uncompressed images (VFF_DES_RAW).");
 
@@ -556,7 +556,7 @@ viffToMultibandImage(ViffImage * viff, ImageIterator iter, VectorComponentAccess
       default:
       {
         // should not happen
-        precondition(0,
+        vigra_precondition(0,
           "viffToMultibandImage(ViffImage *, VectorImageIterator): " 
           "Unknown data storage type.");
       }
@@ -659,27 +659,27 @@ template <class RGBImageIterator, class RGBAccessor>
 void
 viffToRGBImage(ViffImage * viff, RGBImageIterator iter, RGBAccessor a)
 {
-    precondition(viff,
+    vigra_precondition(viff,
               "viffToRGBImage(ViffImage *, RGBImageIterator): " 
           "NULL pointer to input data.");
     
-    precondition(viff->data_storage_type != VFF_TYP_COMPLEX,
+    vigra_precondition(viff->data_storage_type != VFF_TYP_COMPLEX,
              "viffToRGBImage(ViffImage *, RGBImageIterator): " 
              "Image is VFF_TYP_COMPLEX - not RGB.");
     
-    precondition(viff->data_storage_type != VFF_TYP_DCOMPLEX,
+    vigra_precondition(viff->data_storage_type != VFF_TYP_DCOMPLEX,
              "viffToRGBImage(ViffImage *, RGBImageIterator): " 
              "Image is VFF_TYP_DCOMPLEX - not RGB.");
     
-    precondition(viff->data_storage_type != VFF_TYP_BIT,
+    vigra_precondition(viff->data_storage_type != VFF_TYP_BIT,
              "viffToRGBImage(ViffImage *, RGBImageIterator): " 
              "Unable to convert VFF_TYP_BIT.");
     
-    precondition(viff->location_type == VFF_LOC_IMPLICIT,
+    vigra_precondition(viff->location_type == VFF_LOC_IMPLICIT,
              "viffToRGBImage(ViffImage *, RGBImageIterator): " 
              "Can only convert images with implicit location (VFF_LOC_IMPLICIT).");
 
-    precondition(viff->data_encode_scheme == VFF_DES_RAW,
+    vigra_precondition(viff->data_encode_scheme == VFF_DES_RAW,
              "viffToRGBImage(ViffImage *, RGBImageIterator): " 
              "Can only convert uncompressed images (VFF_DES_RAW).");
 
@@ -698,7 +698,7 @@ viffToRGBImage(ViffImage * viff, RGBImageIterator iter, RGBAccessor a)
             bandoffset = 0;
         }
         else 
-          precondition(0,
+          vigra_precondition(0,
                  "viffToRGBImage(ViffImage *, RGBImageIterator): " 
              "Wrong number of data bands (must be 3 or 1).");
 
@@ -799,7 +799,7 @@ viffToRGBImage(ViffImage * viff, RGBImageIterator iter, RGBAccessor a)
           default:
           {
             // should not happen
-            precondition(0,
+            vigra_precondition(0,
                   "viffToScalarImage(ViffImage *, ScalarImageIterator): " 
               "Unknown data storage type.");
           }
@@ -807,11 +807,11 @@ viffToRGBImage(ViffImage * viff, RGBImageIterator iter, RGBAccessor a)
     }
     else if(viff->map_scheme == VFF_MS_ONEPERBAND)
     {
-        precondition((viff->num_data_bands == 1) && (viff->map_row_size == 3),
+        vigra_precondition((viff->num_data_bands == 1) && (viff->map_row_size == 3),
                  "viffToRGBImage(ViffImage *, RGBImageIterator): " 
              "Mapped image must have 1 data band and 3 map columns.");
              
-        precondition((viff->data_storage_type == VFF_TYP_1_BYTE) &&
+        vigra_precondition((viff->data_storage_type == VFF_TYP_1_BYTE) &&
                      (viff->map_storage_type == VFF_MAPTYP_1_BYTE),
                  "viffToRGBImage(ViffImage *, RGBImageIterator): " 
              "Can only convert mapped images with VFF_TYP_1_BYTE"
@@ -839,7 +839,7 @@ viffToRGBImage(ViffImage * viff, RGBImageIterator iter, RGBAccessor a)
         }
     }
     else       
-      precondition(0,
+      vigra_precondition(0,
              "viffToRGBImage(ViffImage *, RGBImageIterator): " 
              "Unable to convert this kind of map.");
 }
@@ -1033,7 +1033,7 @@ createScalarViffImage(ImageIterator upperleft, ImageIterator lowerright,
     int h = lowerright.y - upperleft.y;
     
     ViffImage * viff = createsimpleimage(h, w, VFF_TYP_1_BYTE);
-    postcondition(viff != 0, "createScalarViffImage(): Unable to allocate memory");
+    vigra_postcondition(viff != 0, "createScalarViffImage(): Unable to allocate memory");
     
     unsigned char * ps = (unsigned char *)viff->imagedata;
 
@@ -1059,7 +1059,7 @@ createScalarViffImage(ImageIterator upperleft, ImageIterator lowerright,
     int h = lowerright.y - upperleft.y;
     
     ViffImage * viff = createsimpleimage(h, w, VFF_TYP_2_BYTE);
-    postcondition(viff != 0, "createScalarViffImage(): Unable to allocate memory");
+    vigra_postcondition(viff != 0, "createScalarViffImage(): Unable to allocate memory");
     
     short * ps = (short *)viff->imagedata;
 
@@ -1085,7 +1085,7 @@ createScalarViffImage(ImageIterator upperleft, ImageIterator lowerright,
     int h = lowerright.y - upperleft.y;
     
     ViffImage * viff = createsimpleimage(h, w, VFF_TYP_4_BYTE);
-    postcondition(viff != 0, "createScalarViffImage(): Unable to allocate memory");
+    vigra_postcondition(viff != 0, "createScalarViffImage(): Unable to allocate memory");
     
     int * ps = (int *)viff->imagedata;
 
@@ -1136,7 +1136,7 @@ createScalarViffImage(ImageIterator upperleft, ImageIterator lowerright,
     int h = lowerright.y - upperleft.y;
     
     ViffImage * viff = createsimpleimage(h, w, VFF_TYP_DOUBLE);
-    postcondition(viff != 0, "createScalarViffImage(): Unable to allocate memory");
+    vigra_postcondition(viff != 0, "createScalarViffImage(): Unable to allocate memory");
         
     double * ps = (double *)viff->imagedata;
 
@@ -1242,7 +1242,7 @@ createRGBViffImage(RGBImageIterator upperleft, RGBImageIterator lowerright,
     int h = lowerright.y - upperleft.y;
     
     ViffImage * viff = createmultibandimage(h, w, VFF_TYP_1_BYTE, 3);
-    postcondition(viff != 0, "createRGBViffImage(): Unable to allocate memory");
+    vigra_postcondition(viff != 0, "createRGBViffImage(): Unable to allocate memory");
     
     viff->color_space_model = VFF_CM_genericRGB;
     
@@ -1274,7 +1274,7 @@ createRGBViffImage(RGBImageIterator upperleft, RGBImageIterator lowerright,
     int h = lowerright.y - upperleft.y;
     
     ViffImage * viff = createmultibandimage(h, w, VFF_TYP_4_BYTE, 3);
-    postcondition(viff != 0, "createRGBViffImage(): Unable to allocate memory");
+    vigra_postcondition(viff != 0, "createRGBViffImage(): Unable to allocate memory");
 
     viff->color_space_model = VFF_CM_genericRGB;
     
@@ -1306,7 +1306,7 @@ createRGBViffImage(RGBImageIterator upperleft, RGBImageIterator lowerright,
     int h = lowerright.y - upperleft.y;
     
     ViffImage * viff = createmultibandimage(h, w, VFF_TYP_FLOAT, 3);
-    postcondition(viff != 0, "createRGBViffImage(): Unable to allocate memory");
+    vigra_postcondition(viff != 0, "createRGBViffImage(): Unable to allocate memory");
     
     viff->color_space_model = VFF_CM_genericRGB;
     

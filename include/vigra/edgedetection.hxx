@@ -162,10 +162,10 @@ void differenceOfExponentialEdgeImage(
            DestIterator dul, DestAccessor da,
            double scale, SrcValue gradient_threshold, DestValue edge_marker)
 {
-    precondition(scale > 0,
+    vigra_precondition(scale > 0,
                  "differenceOfExponentialEdgeImage(): scale > 0 required.");
          
-    precondition(gradient_threshold > 0,
+    vigra_precondition(gradient_threshold > 0,
                  "differenceOfExponentialEdgeImage(): "
          "gradient_threshold > 0 required.");
          
@@ -446,10 +446,10 @@ void differenceOfExponentialCellGridImage(
            double scale, double gradient_threshold, 
            DestValue edge_marker)
 {
-    precondition(scale > 0,
+    vigra_precondition(scale > 0,
                  "differenceOfExponentialCellGridImage(): scale > 0 required.");
          
-    precondition(gradient_threshold > 0,
+    vigra_precondition(gradient_threshold > 0,
                  "differenceOfExponentialCellGridImage(): "
          "gradient_threshold > 0 required.");
          

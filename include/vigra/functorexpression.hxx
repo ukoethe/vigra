@@ -27,7 +27,7 @@
 
     Include-File:
     \URL[vigra/functorexpression.hxx]{../include/vigra/functorexpression.hxx}\\
-    Namespaces: vigra and vigra::functor
+    Namespace: vigra::functor
 
     {\bf Motivation}
     
@@ -128,7 +128,7 @@
     like this:
     
     \begin{verbatim}
-    using namespace vigra;
+    using namespace vigra::functor;
     
     float beta = ...;
     
@@ -172,9 +172,9 @@
     of the gradient vector, you may write:
     
     \begin{verbatim}
-    using namespace vigra;
+    using namespace vigra::functor;
     
-    FImage gradient_x(w,h), gradient_y(w,h), magnitude(w,h);
+    vigra::FImage gradient_x(w,h), gradient_y(w,h), magnitude(w,h);
     ... // calculate gradient_x and gradient_y
     
     combineTwoImages(srcImageRange(gradient_x), srcImage(gradient_y),
@@ -186,9 +186,9 @@
     you want to apply #my_complicated_function()# to the sum of two images:
     
     \begin{verbatim}
-    using namespace vigra;
+    using namespace vigra::functor;
     
-    FImage src1(w,h), src2(w,h), dest(w,h);
+    vigra::FImage src1(w,h), src2(w,h), dest(w,h);
     
     double my_complicated_function(double);
     
@@ -204,9 +204,9 @@
     #ifThenElse()# can be used, for example, to threshold an image:
     
     \begin{verbatim}
-    using namespace vigra;
+    using namespace vigra::functor;
     
-    FImage src(w,h), thresholded(w,h);
+    vigra::FImage src(w,h), thresholded(w,h);
     ...// fill src
     
     float threshold = ...;
@@ -223,9 +223,9 @@
     value of the image is calculated like this:
     
     \begin{verbatim}
-    using namespace vigra;
+    using namespace vigra::functor;
     
-    FImage src(w,h);
+    vigra::FImage src(w,h);
     ...// fill src
     
     double sum = 0.0;
@@ -241,9 +241,9 @@
     of an image region:
     
     \begin{verbatim}
-    using namespace vigra;
+    using namespace vigra::functor;
     
-    IImage label_image(w,h);
+    vigra::IImage label_image(w,h);
     ...// mark regions by labels in label_image
     
     int region_label = ...; // the region we want to inspect
@@ -262,10 +262,10 @@
     simultaneously find the size and the average gray value of a region:
     
     \begin{verbatim}
-    using namespace vigra;
+    using namespace vigra::functor;
     
-    FImage src(w,h);
-    IImage label_image(w,h);
+    vigra::FImage src(w,h);
+    vigra::IImage label_image(w,h);
     ...// segment src and mark regions in label_image
     
     int region_label = ...; // the region we want to inspect
@@ -292,9 +292,9 @@
     address in scan order:
     
     \begin{verbatim}
-    using namespace vigra;
+    using namespace vigra::functor;
     
-    IImage img(w,h);
+    vigra::IImage img(w,h);
     
     int count = -1;
     
@@ -1691,8 +1691,6 @@ operator,(UnaryAnalyser<EXPR1> const & e1,
 #endif /* NO_PARTIAL_TEMPLATE_SPECIALIZATION */
 
 } // namespace functor
-
-using namespace functor;
 
 } // namespace vigra
 

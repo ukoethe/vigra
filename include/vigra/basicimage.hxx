@@ -453,7 +453,7 @@ class BasicImage
       height_(0),
       data_(0)
     {
-        precondition((width >= 0) && (height >= 0),
+        vigra_precondition((width >= 0) && (height >= 0),
              "BasicImage::BasicImage(int width, int height): "
              "width and height must be >= 0.\n");
         
@@ -468,7 +468,7 @@ class BasicImage
       height_(0),
       data_(0)
     {
-        precondition((size.x >= 0) && (size.y >= 0),
+        vigra_precondition((size.x >= 0) && (size.y >= 0),
              "BasicImage::BasicImage(Diff2D size): "
              "size.x and size.y must be >= 0.\n");
         
@@ -485,7 +485,7 @@ class BasicImage
       height_(0),
       data_(0)
     {
-        precondition((width >= 0) && (height >= 0),
+        vigra_precondition((width >= 0) && (height >= 0),
              "BasicImage::BasicImage(int width, int height, PixelType): "
              "width and height must be >= 0.\n");
         
@@ -573,7 +573,7 @@ class BasicImage
         */
     void resize(int width, int height, PixelType d)
     {
-        precondition((width >= 0) && (height >= 0),
+        vigra_precondition((width >= 0) && (height >= 0),
              "BasicImage::resize(int width, int height, PixelType): "
              "width and height must be >= 0.\n");
         

@@ -249,6 +249,8 @@ class Diff2D
     {
         return Diff2D(x + offset.x, y + offset.y);
     }
+    
+    //@}
 
     /** @name an ImageIterator's required embedded types
     */
@@ -266,8 +268,6 @@ class Diff2D
 	    @memo
 	*/
     typedef int MoveY;
-    
-    //@}
     
     //@}
 };

@@ -40,7 +40,7 @@ int main(int argc, char ** argv)
     {
         vigra::ImageImportInfo info(argv[1]);
         
-        precondition(info.isGrayscale(), "Sorry, cannot operate on color images");
+        vigra_precondition(info.isGrayscale(), "Sorry, cannot operate on color images");
         
         vigra::BImage in(info.width(), info.height());
 

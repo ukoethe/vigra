@@ -503,10 +503,10 @@ resizeImageSplineInterpolation(SRCITERATOR is, SRCITERATOR iend, SRCACCESSOR sa,
     int wnew = idend.x - id.x;
     int hnew = idend.y - id.y;
     
-    precondition((w > 3) && (h > 3),
+    vigra_precondition((w > 3) && (h > 3),
                  "resizeImageSplineInterpolation(): "
          "Source image to small.\n");
-    precondition((wnew > 1) && (hnew > 1),
+    vigra_precondition((wnew > 1) && (hnew > 1),
                  "resizeImageSplineInterpolation(): "
          "Destination image to small.\n");
     
@@ -708,10 +708,10 @@ resizeImageLinearInterpolation(SRCITERATOR is, SRCITERATOR iend, SRCACCESSOR sa,
     int wnew = idend.x - id.x;
     int hnew = idend.y - id.y;
     
-    precondition((w > 1) && (h > 1),
+    vigra_precondition((w > 1) && (h > 1),
                  "resizeImageLinearInterpolation(): "
          "Source image to small.\n");
-    precondition((wnew > 1) && (hnew > 1),
+    vigra_precondition((wnew > 1) && (hnew > 1),
                  "resizeImageLinearInterpolation(): "
          "Destination image to small.\n");
         
@@ -915,10 +915,10 @@ resizeImageNoInterpolation(SRCITERATOR is, SRCITERATOR iend, SRCACCESSOR sa,
     int wnew = idend.x - id.x;
     int hnew = idend.y - id.y;
     
-    precondition((w > 1) && (h > 1),
+    vigra_precondition((w > 1) && (h > 1),
                  "resizeImageNoInterpolation(): "
          "Source image to small.\n");
-    precondition((wnew > 1) && (hnew > 1),
+    vigra_precondition((wnew > 1) && (hnew > 1),
                  "resizeImageNoInterpolation(): "
          "Destination image to small.\n");
         

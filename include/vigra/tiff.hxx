@@ -232,7 +232,7 @@ template <class ImageIterator, class Accessor>
 void
 tiffToScalarImage(TiffImage * tiff, ImageIterator iter, Accessor a)
 {
-    precondition(tiff, 
+    vigra_precondition(tiff, 
              "tiffToScalarImage(TiffImage *, ScalarImageIterator): " 
              "NULL pointer to input data.");
     
@@ -248,16 +248,16 @@ tiffToScalarImage(TiffImage * tiff, ImageIterator iter, Accessor a)
     TIFFGetField(tiff, TIFFTAG_IMAGEWIDTH, &w);
     TIFFGetField(tiff, TIFFTAG_IMAGELENGTH, &h);
     
-    precondition(photometric == PHOTOMETRIC_MINISWHITE ||
+    vigra_precondition(photometric == PHOTOMETRIC_MINISWHITE ||
                  photometric == PHOTOMETRIC_MINISBLACK, 
              "tiffToScalarImage(TiffImage *, ScalarImageIterator): " 
              "Image isn't grayscale.");
     
-    precondition(samplesPerPixel == 1, 
+    vigra_precondition(samplesPerPixel == 1, 
              "tiffToScalarImage(TiffImage *, ScalarImageIterator): " 
              "Image is multiband, not scalar.");
     
-    precondition(sampleFormat != SAMPLEFORMAT_VOID,
+    vigra_precondition(sampleFormat != SAMPLEFORMAT_VOID,
              "tiffToScalarImage(TiffImage *, ScalarImageIterator): " 
              "undefined pixeltype (SAMPLEFORMAT_VOID).");
 
@@ -353,7 +353,7 @@ tiffToScalarImage(TiffImage * tiff, ImageIterator iter, Accessor a)
                 break;
               }
               default:
-                fail("tiffToScalarImage(TiffImage *, ScalarImageIterator): "
+                vigra_fail("tiffToScalarImage(TiffImage *, ScalarImageIterator): "
                      "unsupported number of bits per pixel");
             }
             break;
@@ -426,7 +426,7 @@ tiffToScalarImage(TiffImage * tiff, ImageIterator iter, Accessor a)
                 break;
               }
               default:
-                fail("tiffToScalarImage(TiffImage *, ScalarImageIterator): "
+                vigra_fail("tiffToScalarImage(TiffImage *, ScalarImageIterator): "
                      "unsupported number of bits per pixel");
             }
             break;
@@ -464,7 +464,7 @@ tiffToScalarImage(TiffImage * tiff, ImageIterator iter, Accessor a)
                 break;
               }
               default:
-                fail("tiffToScalarImage(TiffImage *, ScalarImageIterator): "
+                vigra_fail("tiffToScalarImage(TiffImage *, ScalarImageIterator): "
                      "unsupported number of bits per pixel");
             }
             break;
@@ -472,7 +472,7 @@ tiffToScalarImage(TiffImage * tiff, ImageIterator iter, Accessor a)
           default:
           {
             // should never happen
-            fail("tiffToScalarImage(TiffImage *, ScalarImageIterator): " 
+            vigra_fail("tiffToScalarImage(TiffImage *, ScalarImageIterator): " 
                  "internal error.");
           }
         }
@@ -592,7 +592,7 @@ template <class RGBImageIterator, class RGBAccessor>
 void
 tiffToRGBImage(TiffImage * tiff, RGBImageIterator iter, RGBAccessor a)
 {
-    precondition(tiff,
+    vigra_precondition(tiff,
               "tiffToRGBImage(TiffImage *, RGBImageIterator): " 
           "NULL pointer to input data.");
     
@@ -608,12 +608,12 @@ tiffToRGBImage(TiffImage * tiff, RGBImageIterator iter, RGBAccessor a)
     TIFFGetField(tiff, TIFFTAG_IMAGEWIDTH, &w);
     TIFFGetField(tiff, TIFFTAG_IMAGELENGTH, &h);
     
-    precondition(photometric == PHOTOMETRIC_RGB ||
+    vigra_precondition(photometric == PHOTOMETRIC_RGB ||
                  photometric == PHOTOMETRIC_PALETTE, 
              "tiffToRGBImage(TiffImage *, RGBImageIterator): " 
              "Image isn't RGB.");
     
-    precondition(sampleFormat != SAMPLEFORMAT_VOID,
+    vigra_precondition(sampleFormat != SAMPLEFORMAT_VOID,
              "tiffToRGBImage(TiffImage *, RGBImageIterator): " 
              "undefined pixeltype (SAMPLEFORMAT_VOID).");
         
@@ -630,7 +630,7 @@ tiffToRGBImage(TiffImage * tiff, RGBImageIterator iter, RGBAccessor a)
         {
             if (!TIFFReadRGBAImage(tiff, w, h, raster, 0)) 
             {
-                fail(
+                vigra_fail(
                   "tiffToRGBImage(TiffImage *, RGBImageIterator): " 
                   "unable to read image data.");
             }
@@ -657,7 +657,7 @@ tiffToRGBImage(TiffImage * tiff, RGBImageIterator iter, RGBAccessor a)
       }
       case PHOTOMETRIC_RGB:
       {
-        precondition(samplesPerPixel == 3,
+        vigra_precondition(samplesPerPixel == 3,
                  "tiffToRGBImage(TiffImage *, RGBImageIterator): " 
                  "number of samples per pixel must be 3.");
         
@@ -780,7 +780,7 @@ tiffToRGBImage(TiffImage * tiff, RGBImageIterator iter, RGBAccessor a)
                   }
                   default:
                   {
-                    fail("tiffToRGBImage(TiffImage *, RGBImageIterator): "
+                    vigra_fail("tiffToRGBImage(TiffImage *, RGBImageIterator): "
                          "unsupported number of bits per pixel");
                   }
                 }
@@ -893,7 +893,7 @@ tiffToRGBImage(TiffImage * tiff, RGBImageIterator iter, RGBAccessor a)
                     break;
                   }
                   default:
-                    fail("tiffToRGBImage(TiffImage *, RGBImageIterator): "
+                    vigra_fail("tiffToRGBImage(TiffImage *, RGBImageIterator): "
                          "unsupported number of bits per pixel");
                 }
                 break;
@@ -971,7 +971,7 @@ tiffToRGBImage(TiffImage * tiff, RGBImageIterator iter, RGBAccessor a)
                     break;
                   }
                   default:
-                    fail("tiffToRGBImage(TiffImage *, RGBImageIterator): "
+                    vigra_fail("tiffToRGBImage(TiffImage *, RGBImageIterator): "
                          "unsupported number of bits per pixel");
                 }
                 break;
@@ -979,7 +979,7 @@ tiffToRGBImage(TiffImage * tiff, RGBImageIterator iter, RGBAccessor a)
               default:
               {
                 // should never happen
-                fail("tiffToRGBImage(TiffImage *, RGBImageIterator): " 
+                vigra_fail("tiffToRGBImage(TiffImage *, RGBImageIterator): " 
                      "internal error.");
               }
           }
@@ -1000,7 +1000,7 @@ tiffToRGBImage(TiffImage * tiff, RGBImageIterator iter, RGBAccessor a)
       default:
       {
         // should never happen
-        fail(
+        vigra_fail(
           "tiffToRGBImage(TiffImage *, RGBImageIterator): " 
           "internal error.");
       }

@@ -124,11 +124,11 @@ discRankOrderFilter(SrcIterator upperleft1,
                     DestIterator upperleft2, DestAccessor da,
 		    int radius, float rank)
 {
-    precondition((rank >= 0.0) && (rank <= 1.0),
+    vigra_precondition((rank >= 0.0) && (rank <= 1.0),
             "discRankOrderFilter(): Rank must be between 0 and 1"
 	    " (inclusive).");
     
-    precondition(radius >= 0,
+    vigra_precondition(radius >= 0,
             "discRankOrderFilter(): Radius must be >= 0.");
     
     int i, x, y, xmax, ymax, xx, yy;
@@ -393,7 +393,7 @@ discErosion(SrcIterator upperleft1,
             DestIterator upperleft2, DestAccessor da,
 	    int radius)
 {
-    precondition(radius >= 0, "discErosion(): Radius must be >= 0.");
+    vigra_precondition(radius >= 0, "discErosion(): Radius must be >= 0.");
     
     discRankOrderFilter(upperleft1, lowerright1, sa, 
                         upperleft2, da, radius, 0.0);
@@ -406,7 +406,7 @@ discErosion(triple<SrcIterator, SrcIterator, SrcAccessor> src,
             pair<DestIterator, DestAccessor> dest,
             int radius)
 {
-    precondition(radius >= 0, "discErosion(): Radius must be >= 0.");
+    vigra_precondition(radius >= 0, "discErosion(): Radius must be >= 0.");
     
     discRankOrderFilter(src.first, src.second, src.third,
                         dest.first, dest.second,
@@ -461,7 +461,7 @@ discDilation(SrcIterator upperleft1,
             DestIterator upperleft2, DestAccessor da,
 	    int radius)
 {
-    precondition(radius >= 0, "discDilation(): Radius must be >= 0.");
+    vigra_precondition(radius >= 0, "discDilation(): Radius must be >= 0.");
     
     discRankOrderFilter(upperleft1, lowerright1, sa, 
                         upperleft2, da, radius, 1.0);
@@ -474,7 +474,7 @@ discDilation(triple<SrcIterator, SrcIterator, SrcAccessor> src,
             pair<DestIterator, DestAccessor> dest,
             int radius)
 {
-    precondition(radius >= 0, "discDilation(): Radius must be >= 0.");
+    vigra_precondition(radius >= 0, "discDilation(): Radius must be >= 0.");
     
     discRankOrderFilter(src.first, src.second, src.third,
                         dest.first, dest.second,
@@ -529,7 +529,7 @@ discMedian(SrcIterator upperleft1,
             DestIterator upperleft2, DestAccessor da,
 	    int radius)
 {
-    precondition(radius >= 0, "discMedian(): Radius must be >= 0.");
+    vigra_precondition(radius >= 0, "discMedian(): Radius must be >= 0.");
     
     discRankOrderFilter(upperleft1, lowerright1, sa, 
                         upperleft2, da, radius, 0.5);
@@ -542,7 +542,7 @@ discMedian(triple<SrcIterator, SrcIterator, SrcAccessor> src,
             pair<DestIterator, DestAccessor> dest,
             int radius)
 {
-    precondition(radius >= 0, "discMedian(): Radius must be >= 0.");
+    vigra_precondition(radius >= 0, "discMedian(): Radius must be >= 0.");
     
     discRankOrderFilter(src.first, src.second, src.third,
                         dest.first, dest.second,
@@ -657,11 +657,11 @@ discRankOrderFilterWithMask(SrcIterator upperleft1,
 			    DestIterator upperleft2, DestAccessor da,
 			    int radius, float rank)
 {
-    precondition((rank >= 0.0) && (rank <= 1.0),
+    vigra_precondition((rank >= 0.0) && (rank <= 1.0),
                  "discRankOrderFilter(): Rank must be between 0 and 1"
 		 " (inclusive).");
     
-    precondition(radius >= 0, "discRankOrderFilter(): Radius must be >= 0.");
+    vigra_precondition(radius >= 0, "discRankOrderFilter(): Radius must be >= 0.");
     
     int i, x, y, xmax, ymax, xx, yy;
     int rankpos, winsize, leftsum;
@@ -975,7 +975,7 @@ discErosionWithMask(SrcIterator upperleft1,
 		    DestIterator upperleft2, DestAccessor da,
 		    int radius)
 {
-    precondition(radius >= 0, "discErosionWithMask(): Radius must be >= 0.");
+    vigra_precondition(radius >= 0, "discErosionWithMask(): Radius must be >= 0.");
     
     discRankOrderFilterWithMask(upperleft1, lowerright1, sa, 
                                 upperleftm, mask,
@@ -992,7 +992,7 @@ discErosionWithMask(triple<SrcIterator, SrcIterator, SrcAccessor> src,
 		    pair<DestIterator, DestAccessor> dest,
 		    int radius)
 {
-    precondition(radius >= 0, "discErosionWithMask(): Radius must be >= 0.");
+    vigra_precondition(radius >= 0, "discErosionWithMask(): Radius must be >= 0.");
     
     discRankOrderFilterWithMask(src.first, src.second, src.third,
                         mask.first, mask.second,
@@ -1056,7 +1056,7 @@ discDilationWithMask(SrcIterator upperleft1,
 		    DestIterator upperleft2, DestAccessor da,
 		    int radius)
 {
-    precondition(radius >= 0, "discDilationWithMask(): Radius must be >= 0.");
+    vigra_precondition(radius >= 0, "discDilationWithMask(): Radius must be >= 0.");
     
     discRankOrderFilterWithMask(upperleft1, lowerright1, sa, 
                                 upperleftm, mask,
@@ -1073,7 +1073,7 @@ discDilationWithMask(triple<SrcIterator, SrcIterator, SrcAccessor> src,
 		    pair<DestIterator, DestAccessor> dest,
 		    int radius)
 {
-    precondition(radius >= 0, "discDilationWithMask(): Radius must be >= 0.");
+    vigra_precondition(radius >= 0, "discDilationWithMask(): Radius must be >= 0.");
     
     discRankOrderFilterWithMask(src.first, src.second, src.third,
                         mask.first, mask.second,
@@ -1137,7 +1137,7 @@ discMedianWithMask(SrcIterator upperleft1,
 		    DestIterator upperleft2, DestAccessor da,
 		    int radius)
 {
-    precondition(radius >= 0, "discMedianWithMask(): Radius must be >= 0.");
+    vigra_precondition(radius >= 0, "discMedianWithMask(): Radius must be >= 0.");
     
     discRankOrderFilterWithMask(upperleft1, lowerright1, sa, 
                                 upperleftm, mask,
@@ -1154,7 +1154,7 @@ discMedianWithMask(triple<SrcIterator, SrcIterator, SrcAccessor> src,
 		    pair<DestIterator, DestAccessor> dest,
 		    int radius)
 {
-    precondition(radius >= 0, "discMedianWithMask(): Radius must be >= 0.");
+    vigra_precondition(radius >= 0, "discMedianWithMask(): Radius must be >= 0.");
     
     discRankOrderFilterWithMask(src.first, src.second, src.third,
                         mask.first, mask.second,

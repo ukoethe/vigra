@@ -370,11 +370,11 @@ lugToScalarImage(LugImage * img, ImageIterator iter, Accessor a)
     int w = img->xsize;
     int h = img->ysize;
 
-    precondition(img,
+    vigra_precondition(img,
 		"lugToScalarImage(): " 
 	      	"NULL pointer to input data.");
    
-    precondition(isagrayscaled(img),
+    vigra_precondition(isagrayscaled(img),
 		"lugToScalarImage(): " 
 	      	"Source image is not scalar.");
 
@@ -460,7 +460,7 @@ template <class ImageIterator, class Accessor>
 void
 lugToRGBImage(LugImage * img, ImageIterator upperleft, Accessor a)
 {
-    precondition(img,
+    vigra_precondition(img,
 	    "lugToRGBImage(LugImage *, RGBImageIterator): " 
 	    "NULL pointer to input data.");
 
@@ -472,7 +472,7 @@ lugToRGBImage(LugImage * img, ImageIterator upperleft, Accessor a)
     if(img->depth > 8)
     {
 	// real multiband image
-	precondition( (img->r && img->g && img->b),
+	vigra_precondition( (img->r && img->g && img->b),
 		"lugToRGBImage(): " 
 		"NULL pointer to pixel data.");
 
@@ -495,7 +495,7 @@ lugToRGBImage(LugImage * img, ImageIterator upperleft, Accessor a)
     else
     {
 	// scalar data with color map
-	precondition(img->r,
+	vigra_precondition(img->r,
 		"lugToRGBImage(): " 
 		"NULL pointer to pixel data.");
 	// data only in r-buffer

@@ -517,13 +517,13 @@ void convolveLine(SrcIterator is, SrcIterator iend, SrcAccessor sa,
 {
     typedef typename KernelAccessor::value_type KernelValue;
     
-    precondition(kleft <= 0,
+    vigra_precondition(kleft <= 0,
                  "convolveLine(): kleft must be <= 0.\n");
-    precondition(kright >= 0,
+    vigra_precondition(kright >= 0,
                  "convolveLine(): kright must be >= 0.\n");
     
     int w = iend - is;
-    precondition(w >= kright - kleft + 1,
+    vigra_precondition(w >= kright - kleft + 1,
                  "convolveLine(): kernel longer than line\n");
     
     switch(border)
@@ -556,7 +556,7 @@ void convolveLine(SrcIterator is, SrcIterator iend, SrcAccessor sa,
 	KernelIterator iik = ik + kleft;
 	for(int i=kleft; i<=kright; ++i, ++iik) norm += ka(iik);
 	
-	precondition(norm != NumericTraits<KT>::zero(),
+	vigra_precondition(norm != NumericTraits<KT>::zero(),
 	             "convolveLine(): Norm of kernel must be != 0"
 		     " in mode BORDER_TREATMENT_CLIP.\n");
 		     
@@ -565,7 +565,7 @@ void convolveLine(SrcIterator is, SrcIterator iend, SrcAccessor sa,
       }
       default:
       {
-	precondition(0,
+	vigra_precondition(0,
 	             "convolveLine(): Unknown border treatment mode.\n");
       }        
     }
@@ -595,7 +595,7 @@ void convolveLine(triple<SrcIterator, SrcIterator, SrcAccessor> src,
 /** Performs a 1 dimensional convolution in x direction by 
     calling \Ref{convolveLine}() for every row of the
     image. See \Ref{convolveLine}() for more information about required interfaces
-    and preconditions.
+    and vigra_preconditions.
     
     {\bf Declarations:}
     
@@ -658,15 +658,15 @@ void separableConvolveX(SrcIterator supperleft,
 {
     typedef typename KernelAccessor::value_type KernelValue;
     
-    precondition(kleft <= 0,
+    vigra_precondition(kleft <= 0,
                  "separableConvolveX(): kleft must be <= 0.\n");
-    precondition(kright >= 0,
+    vigra_precondition(kright >= 0,
                  "separableConvolveX(): kright must be >= 0.\n");
     
     int w = slowerright.x - supperleft.x;
     int h = slowerright.y - supperleft.y;
     
-    precondition(w >= kright - kleft + 1,
+    vigra_precondition(w >= kright - kleft + 1,
                  "separableConvolveX(): kernel longer than line\n");
     
     int y;
@@ -707,7 +707,7 @@ separableConvolveX(triple<SrcIterator, SrcIterator, SrcAccessor> src,
 /** Performs a 1 dimensional convolution in y direction by 
     calling \Ref{convolveLine}() for every column of the
     image. See \Ref{convolveLine}() for more information about required interfaces
-    and preconditions.
+    and vigra_preconditions.
     
     {\bf Declarations:}
     
@@ -770,15 +770,15 @@ void separableConvolveY(SrcIterator supperleft,
 {
     typedef typename KernelAccessor::value_type KernelValue;
     
-    precondition(kleft <= 0,
+    vigra_precondition(kleft <= 0,
                  "separableConvolveY(): kleft must be <= 0.\n");
-    precondition(kright >= 0,
+    vigra_precondition(kright >= 0,
                  "separableConvolveY(): kright must be >= 0.\n");
     
     int w = slowerright.x - supperleft.x;
     int h = slowerright.y - supperleft.y;
     
-    precondition(h >= kright - kleft + 1,
+    vigra_precondition(h >= kright - kleft + 1,
                  "separableConvolveY(): kernel longer than line\n");
     
     int x;
@@ -890,7 +890,7 @@ class Kernel1D
 	
 	~InitProxy()
 	{
-	    precondition(count_ == 1 || count_ == sum_,
+	    vigra_precondition(count_ == 1 || count_ == sum_,
 	          "Kernel1D::initExplicitly(): "
 		  "Too few init values.");
 	}
@@ -902,7 +902,7 @@ class Kernel1D
 	    norm_ += v;
 	    
 	    --count_;
-	    precondition(count_ > 0,
+	    vigra_precondition(count_ > 0,
 	          "Kernel1D::initExplicitly(): "
 		  "Too many init values.");
 		  
@@ -1173,9 +1173,9 @@ class Kernel1D
 	*/
     Kernel1D & initExplicitly(int left, int right)
     {
-   	precondition(left <= 0,
+   	vigra_precondition(left <= 0,
 		     "Kernel1D::initExplicitly(): left border must be <= 0.");
-   	precondition(right >= 0,
+   	vigra_precondition(right >= 0,
 		     "Kernel1D::initExplicitly(): right border must be <= 0.");
     
 	right_ = right;
@@ -1263,7 +1263,7 @@ class Kernel1D
 	    sum += *i;
 	}
 	
-	precondition(sum != NumericTraits<value_type>::zero(),
+	vigra_precondition(sum != NumericTraits<value_type>::zero(),
 	             "Kernel1D<ARITHTYPE>::normalize(): "
 		     "Cannot normalize a kernel with sum = 0");
 	
@@ -1305,7 +1305,7 @@ template <class ARITHTYPE>
 void Kernel1D<ARITHTYPE>::initGaussian(double std_dev, 
                                        Kernel1D<ARITHTYPE>::value_type norm)
 {
-    precondition(std_dev >= 0.0,
+    vigra_precondition(std_dev >= 0.0,
               "Kernel1D::initGaussian(): Standard deviation must be >= 0.");
 	      
     // first calculate required kernel sizes
@@ -1355,10 +1355,10 @@ Kernel1D<ARITHTYPE>::initGaussianDerivative(double std_dev,
                     int order,
 		    Kernel1D<ARITHTYPE>::value_type norm)
 {
-    precondition(order > 0,
+    vigra_precondition(order > 0,
               "Kernel1D::initGaussianDerivative(): Order must be > 0.");
 	      
-    precondition(std_dev >= 0.0,
+    vigra_precondition(std_dev >= 0.0,
               "Kernel1D::initGaussianDerivative(): "
 	      "Standard deviation must be >= 0.");
 	      
@@ -1487,7 +1487,7 @@ void
 Kernel1D<ARITHTYPE>::initBinomial(int radius, 
                            Kernel1D<ARITHTYPE>::value_type norm)
 {
-    precondition(radius > 0,
+    vigra_precondition(radius > 0,
               "Kernel1D::initBinomial(): Radius must be > 0.");
 	      
     // allocate the kernel
@@ -1532,7 +1532,7 @@ template <class ARITHTYPE>
 void Kernel1D<ARITHTYPE>::initAveraging(int radius, 
                                        Kernel1D<ARITHTYPE>::value_type norm)
 {
-    precondition(radius > 0,
+    vigra_precondition(radius > 0,
               "Kernel1D::initAveraging(): Radius must be > 0.");
 	      
     // calculate scaling

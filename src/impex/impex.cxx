@@ -118,7 +118,7 @@ void ImageImportInfo::loadImage(char const * filename)
     if(strcmp(filetype_->typeTag, "VIFF") == 0)
     {
         viff_ = readViffImage((char *)filename);
-        postcondition(viff_ != 0, 
+        vigra_postcondition(viff_ != 0, 
                "ImageImportInfo::loadImage(): Unable to read image");
                
         if(viff_->num_data_bands == 3 || viff_->map_scheme == VFF_MS_ONEPERBAND)
@@ -139,13 +139,13 @@ void ImageImportInfo::loadImage(char const * filename)
             case VFF_TYP_FLOAT:  pixelType_ = FLOAT;  break;
             case VFF_TYP_DOUBLE: pixelType_ = DOUBLE; break;
             default:
-                fail("ImageImportInfo::loadImage(): unsupported pixel type.");
+                vigra_fail("ImageImportInfo::loadImage(): unsupported pixel type.");
         }
     }
     else if(strcmp(filetype_->typeTag, "TIFF") == 0)
     {
         tiff_ = TIFFOpen((char *)filename, "r");
-        postcondition(tiff_ != 0, 
+        vigra_postcondition(tiff_ != 0, 
                "ImageImportInfo::loadImage(): Unable to open image");
                
         uint16 sampleFormat = 1, bitsPerSample, photometric;
@@ -167,7 +167,7 @@ void ImageImportInfo::loadImage(char const * filename)
                 colorspace_ = RGB;
                 break;
             default:
-                fail("ImageImportInfo::loadImage(): unsupported color model.");
+                vigra_fail("ImageImportInfo::loadImage(): unsupported color model.");
         }
         width_ = w;
         height_ = h;
@@ -181,7 +181,7 @@ void ImageImportInfo::loadImage(char const * filename)
                     case 16: pixelType_ = INT16;  break;
                     case 32: pixelType_ = INT32;  break;
                     default:
-                        fail("ImageImportInfo::loadImage(): unsupported pixel type.");
+                        vigra_fail("ImageImportInfo::loadImage(): unsupported pixel type.");
                 }
                 break;
             case SAMPLEFORMAT_IEEEFP:
@@ -190,11 +190,11 @@ void ImageImportInfo::loadImage(char const * filename)
                     case 8*sizeof(float):  pixelType_ = FLOAT;  break;
                     case 8*sizeof(double): pixelType_ = DOUBLE; break;
                     default:
-                        fail("ImageImportInfo::loadImage(): unsupported pixel type.");
+                        vigra_fail("ImageImportInfo::loadImage(): unsupported pixel type.");
                 }
                 break;
             default:
-                fail("ImageImportInfo::loadImage(): unsupported pixel type.");
+                vigra_fail("ImageImportInfo::loadImage(): unsupported pixel type.");
         }
     }
     else
@@ -209,7 +209,7 @@ void ImageImportInfo::loadImage(char const * filename)
         
         vigraImpexDestroyImageInfo(&image_info);
         
-        postcondition(impex_ != 0, 
+        vigra_postcondition(impex_ != 0, 
                "ImageImportInfo::loadImage(): Unable to read image");
                
         if(vigraImpexIsGrayImage(impex_))
@@ -238,7 +238,7 @@ void ImageImportInfo::findFileTypeFromMagicString(char const * filename)
     {
         file = fopen(filename, "r");
     }
-    postcondition(file != 0, 
+    vigra_postcondition(file != 0, 
       "ImageImportInfo::findFileTypeFromMagicString(): Unable to open file");
     
     const int bufsize = 10;
@@ -261,7 +261,7 @@ void ImageImportInfo::findFileTypeFromMagicString(char const * filename)
         if(strncmp(magic_string, 
                    f->fileMagicString, f->lengthOfMagicString) == 0) break;
     }
-    postcondition(f->typeTag != 0, 
+    vigra_postcondition(f->typeTag != 0, 
       "ImageImportInfo::findFileTypeFromMagicString(): Unknown file type");
       
     filetype_ = f;
@@ -283,7 +283,7 @@ ImageExportInfo & ImageExportInfo::setFileType(char const * filetype)
     {
         if(strcmp(f->typeTag, filetype) == 0) break;
     }
-    precondition(f->typeTag != 0, 
+    vigra_precondition(f->typeTag != 0, 
            "ImageExportInfo::setFileType(): Unknown file type");
            
     filetype_ = f;
@@ -315,7 +315,7 @@ ImageExportInfo & ImageExportInfo::setCompression(char const * compression)
     }
     else
     {
-        precondition(0, 
+        vigra_precondition(0, 
           "ImageExportInfo::setCompression(): Unknown compression type");
     }
     
@@ -356,7 +356,7 @@ void ImageExportInfo::initImageInfo(VigraImpexImageInfo & image_info) const
 {
     vigraImpexGetImageInfo(&image_info);
 
-    precondition(filetype_ != 0, "ImageExportInfo::initImageInfo(): No filetype specified");
+    vigra_precondition(filetype_ != 0, "ImageExportInfo::initImageInfo(): No filetype specified");
     
     strcpy(image_info.filename, filename_.c_str());
     strcpy(image_info.magick, filetype_->typeTag);
