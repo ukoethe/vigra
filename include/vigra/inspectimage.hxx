@@ -185,6 +185,31 @@ inspectImage(triple<ImageIterator, ImageIterator, Accessor> img,
     inspectImage(img.first, img.second, img.third, f);
 }
 
+namespace functor
+{
+    template <class T> class UnaryAnalyser;
+}
+
+template <class ImageIterator, class Accessor, class Functor>
+inline 
+void
+inspectImage(ImageIterator upperleft, ImageIterator lowerright,
+         Accessor a, functor::UnaryAnalyser<Functor> const & f)
+{
+    inspectImage(upperleft, lowerright, a, 
+                 const_cast<functor::UnaryAnalyser<Functor> &>(f));
+}
+
+template <class ImageIterator, class Accessor, class Functor>
+inline
+void
+inspectImage(triple<ImageIterator, ImageIterator, Accessor> img,
+         functor::UnaryAnalyser<Functor> const & f)
+{
+    inspectImage(img.first, img.second, img.third, 
+                 const_cast<functor::UnaryAnalyser<Functor> &>(f));
+}
+
 /********************************************************/
 /*                                                      */
 /*                      inspectImageIf                  */
