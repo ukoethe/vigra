@@ -840,12 +840,19 @@ int laguerre1Root(POLYNOMIAL const & p, Complex & x, unsigned int multiplicity)
         0;
 }
 
+template <class Real>
 struct PolynomialRootCompare
 {
+    Real epsilon;
+
+    PolynomialRootCompare(Real eps)
+    : epsilon(eps)
+    {}
+    
     template <class T>
     bool operator()(T const & l, T const & r)
     {
-        return l.real() == r.real()
+        return closeAtTolerance(l.real(), r.real(), epsilon)
                      ? l.imag() < r.imag()
                      : l.real() < r.real();
     }
@@ -927,7 +934,6 @@ bool polynomialRoots(POLYNOMIAL const & poriginal, VECTOR & roots, bool polishRo
     p.minimizeOrder();
     if(p.order() == 0)
         return true;
-    p.balance();
 
     Complex x = detail::laguerreStartingGuess(p);
     
@@ -937,51 +943,43 @@ bool polynomialRoots(POLYNOMIAL const & poriginal, VECTOR & roots, bool polishRo
     // handle the high order cases
     while(p.order() > 2)
     {
-        if(std::abs(p[0]) < eps)
+        p.balance();
+        
+        // find root estimate using Laguerre's method on deflated polynomial p;
+        // zero return indicates failure to converge
+        multiplicity = detail::laguerre1Root(p, x, multiplicity);
+    
+        if(multiplicity == 0)
+            return false;
+        // polish root on original polynomial poriginal;
+        // zero return indicates failure to converge
+        if(polishRoots && !detail::laguerre1Root(poriginal, x, multiplicity))
+            return false;
+        x = detail::deleteBelowEpsilon(x, eps);
+        roots.push_back(x);
+        p.deflate(x);
+        // determine the next starting guess
+        if(multiplicity > 1)
         {
-            // the simple case: missing constant coefficient => zero root
-            roots.push_back(Complex(0.0));
-            p.deflate(0.0);
-            x = detail::laguerreStartingGuess(p);
+            // probably multiple root => keep current root as starting guess
+            --multiplicity;
+            triedConjugate = false;
         }
         else
         {
-            // find root estimate using Laguerre's method on deflated polynomial p;
-            // zero return indicates failure to converge
-            multiplicity = detail::laguerre1Root(p, x, multiplicity);
-        
-            if(multiplicity == 0)
-                return false;
-            // polish root on original polynomial poriginal;
-            // zero return indicates failure to converge
-            if(polishRoots && !detail::laguerre1Root(poriginal, x, multiplicity))
-                return false;
-            x = detail::deleteBelowEpsilon(x, eps);
-            roots.push_back(x);
-            p.deflate(x);
-            // determine the next starting guess
-            if(multiplicity > 1)
+            // need a new starting guess
+            if(x.imag() != 0.0 && !triedConjugate)
             {
-                // probably multiple root => keep current root as starting guess
-                --multiplicity;
-                triedConjugate = false;
+                // if the root is complex and we don't already have 
+                // the conjugate root => try the conjugate as starting guess
+                triedConjugate = true;
+                x = conj(x);
             }
             else
             {
-                // need a new starting guess
-                if(x.imag() != 0.0 && !triedConjugate)
-                {
-                    // if the root is complex and we don't already have 
-                    // the conjugate root => try the conjugate as starting guess
-                    triedConjugate = true;
-                    x = conj(x);
-                }
-                else
-                {
-                    // otherwise generate new starting guess
-                    triedConjugate = false;
-                    x = detail::laguerreStartingGuess(p);
-                }
+                // otherwise generate new starting guess
+                triedConjugate = false;
+                x = detail::laguerreStartingGuess(p);
             }
         }
     }
@@ -1014,7 +1012,7 @@ bool polynomialRoots(POLYNOMIAL const & poriginal, VECTOR & roots, bool polishRo
             detail::laguerre1Root(poriginal, x, 1);
         roots.push_back(detail::deleteBelowEpsilon(x, eps));
     }
-    std::sort(roots.begin(), roots.end(), detail::PolynomialRootCompare());
+    std::sort(roots.begin(), roots.end(), detail::PolynomialRootCompare<Real>(eps));
     return true;
 }
 
