@@ -29,7 +29,7 @@
 #include "vigra/numerictraits.hxx"
 #include "vigra/imageiteratoradapter.hxx"
 #include "vigra/bordertreatment.hxx"
-#include "vigra/separableconvolution.hxx"
+#include "vigra/convolution.hxx"
 
 namespace vigra {
 
@@ -310,7 +310,7 @@ void evenPolarFilters(SrcIterator supperleft, SrcIterator slowerright, SrcAccess
 
     <b> Usage:</b>
 
-    <b>\#include</b> "<a href="convolution_8hxx-source.html">vigra/convolution.hxx</a>"
+    <b>\#include</b> "<a href="convolution_8hxx-source.html">vigra/polarfilters_spatial.hxx</a>"
 
 
     \code
@@ -393,6 +393,7 @@ void polarFilters2(triple<SrcIterator, SrcIterator, SrcAccessor> src,
                  even.first, even.second, odd.first, odd.second, scale);
 }
 
+// use only first and second order filters
 template <class SrcIterator, class SrcAccessor,
           class DestIteratorEven, class DestAccessorEven,
           class DestIteratorOdd, class DestAccessorOdd>
