@@ -18,8 +18,8 @@
 /*  WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE. */
 /*                                                                      */
 /************************************************************************/
- 
- 
+
+
 #ifndef VIGRA_TINYVECTOR_HXX
 #define VIGRA_TINYVECTOR_HXX
 
@@ -119,23 +119,23 @@ void tinyCopy2(T1 * t1, T2 const * t2, SizeType<SIZE>)
 
 /** \brief Class for fixed size vectors.
 
-    This class contains an array of size SIZE of the specified VALUETYPE. 
+    This class contains an array of size SIZE of the specified VALUETYPE.
     The interface conforms with STL vector, except that there are no functions
-    that change the size of a TinyVector. 
-    
+    that change the size of a TinyVector.
+
     \ref TinyVectorOperators "Arithmetic operations"
-    on TinyVectors are defined as component-wise applications of these 
-    operations. Addition and subtraction of two TinyVectors 
+    on TinyVectors are defined as component-wise applications of these
+    operations. Addition and subtraction of two TinyVectors
     (+=, -=, +, -, unary -), multiplication and division of an
-    TinyVector with a double, and NumericTraits/PromoteTraits are defined, 
-    so that TinyVector fulfills the requirements of \ref LinearAlgebra. 
-    
-    VIGRA algorithms typically use \ref vigra::VectorAccessor to access 
+    TinyVector with a double, and NumericTraits/PromoteTraits are defined,
+    so that TinyVector fulfills the requirements of \ref LinearAlgebra.
+
+    VIGRA algorithms typically use \ref vigra::VectorAccessor to access
     TinyVectors as a whole, or specific components of them.
-    
+
     <b>\#include</b> "<a href="tinyvector_8hxx-source.html">vigra/tinyvector.hxx</a>"<br>
     Namespace: vigra
-    
+
     <b>Note:</b> TinyVector does not work properly on Microsoft Visual C++
     (in particular, it's unable to compile some templates for
      arithmetic operators).
@@ -153,38 +153,38 @@ class TinyVector
         /** STL-compatible definition of const iterator
         */
     typedef value_type const * const_iterator;
-    
-        /** Construction with constant value 
-        */    
+
+        /** Construction with constant value
+        */
     explicit TinyVector(value_type const & initial)
     {
         for(iterator p = begin(), pend = end(); p != pend; ++p)
             *p = initial;
     }
-    
+
         /** Construction with explicit values.
-            Call only if SIZE == 2 
-        */    
+            Call only if SIZE == 2
+        */
     TinyVector(value_type const & i1, value_type const & i2)
     {
         data_[0] = i1;
         data_[1] = i2;
     }
-    
+
         /** Construction with explicit values.
-            Call only if SIZE == 3 
-        */    
+            Call only if SIZE == 3
+        */
     TinyVector(value_type const & i1, value_type const & i2, value_type const & i3)
     {
         data_[0] = i1;
         data_[1] = i2;
         data_[2] = i3;
     }
-    
+
         /** Construction with explicit values.
-            Call only if SIZE == 4 
-        */    
-    TinyVector(value_type const & i1, value_type const & i2, 
+            Call only if SIZE == 4
+        */
+    TinyVector(value_type const & i1, value_type const & i2,
                value_type const & i3, value_type const & i4)
     {
         data_[0] = i1;
@@ -192,9 +192,9 @@ class TinyVector
         data_[2] = i3;
         data_[3] = i4;
     }
-    
-       /** Default constructor  
-        */    
+
+       /** Default constructor
+        */
     TinyVector()
     {
         value_type zero = NumericTraits<value_type>::zero();
@@ -203,7 +203,7 @@ class TinyVector
     }
 
 #if !defined(TEMPLATE_COPY_CONSTRUCTOR_BUG)
-        
+
     TinyVector(TinyVector const & r)
     {
         detail::tinyCopy1(data_, r.data_, detail::SizeType<SIZE>());
@@ -217,18 +217,18 @@ class TinyVector
 
 #endif // TEMPLATE_COPY_CONSTRUCTOR_BUG
 
-    
+
         /** Copy constructor.
             */
-    template <class U>   
+    template <class U>
     TinyVector(TinyVector<U, SIZE> const & r)
     {
 		detail::tinyCopy2(data_, &r[0], detail::SizeType<SIZE>());
     }
 
         /** Copy assignment.
-        */    
-    template <class U>   
+        */
+    template <class U>
     TinyVector & operator=(TinyVector<U, SIZE> const & r)
     {
         detail::tinyCopy2(data_, &r[0], detail::SizeType<SIZE>());
@@ -237,13 +237,13 @@ class TinyVector
 
         /** Initialize from another sequence (must have length SIZE!)
         */
-    template <class Iterator>   
+    template <class Iterator>
     void init(Iterator i, Iterator end)
     {
         for(iterator p = data_; i != end; ++i, ++p)
             *p = detail::RequiresExplicitCast<value_type>::cast(*i);
     }
-    
+
         /** Unary negation (construct TinyVector with negative values)
         */
     TinyVector operator-() const
@@ -255,54 +255,54 @@ class TinyVector
             *d = -(*s);
         return r;
     }
-    
+
         /** Calculate magnitude.
         */
     typename NumericTraits<VALUETYPE>::RealPromote
-    magnitude() const 
+    magnitude() const
     {
          return VIGRA_CSTD::sqrt(squaredMagnitude());
     }
-    
+
         /** Calculate squared magnitude.
         */
     typename NumericTraits<VALUETYPE>::Promote
-    squaredMagnitude() const 
-    { 
+    squaredMagnitude() const
+    {
         const_iterator i = begin();
         typename NumericTraits<VALUETYPE>::Promote sum = *i * *i;
         for(++i; i < end(); ++i)
           sum += *i * *i;
         return sum;
     }
-    
+
         /** Access component by index.
         */
     value_type & operator[](int i) { return data_[i]; }
-    
+
         /** Get component by index.
         */
     value_type const & operator[](int i) const { return data_[i]; }
-    
+
         /** Get random access iterator to begin of vector.
         */
     iterator begin() { return data_; }
         /** Get random access iterator past-the-end of vector.
         */
     iterator end() { return data_ + SIZE; }
-    
+
         /** Get const random access iterator to begin of vector.
         */
     const_iterator begin() const { return data_; }
-    
+
         /** Get const random access iterator past-the-end of vector.
         */
     const_iterator end() const { return data_ + SIZE; }
-    
+
         /** Size of TinyVector vector always equals the template parameter SIZE.
         */
     int size() const { return SIZE; }
-    
+
   protected:
     value_type data_[SIZE];
 };
@@ -316,18 +316,18 @@ class TinyVector
 /** \addtogroup TinyVectorOperators Functions for TinyVector
 
     \brief <b>\#include</b> "<a href="tinyvector_8hxx-source.html">vigra/tinyvector.hxx</a>
-    
+
     These functions fulfill the requirements of a Linear Space (vector space).
     Return types are determined according to \ref TinyVectorTraits.
 
     Namespace: vigra
     <p>
-    
+
  */
 //@{
     /// component-wise equal
 template <class V1, class V2, int SIZE>
-inline bool 
+inline bool
 operator==(TinyVector<V1, SIZE> const & l, TinyVector<V2, SIZE> const & r)
 {
     return !(l != r);
@@ -336,21 +336,21 @@ operator==(TinyVector<V1, SIZE> const & l, TinyVector<V2, SIZE> const & r)
 #ifdef NO_PARTIAL_TEMPLATE_SPCIALIZATION
 
 template <class V1, class V2>
-inline bool 
+inline bool
 operator!=(TinyVector<V1, 2> const & l, TinyVector<V2, 2> const & r)
 {
     return l[0] != r[0] || l[1] != r[1];
 }
 
 template <class V1, class V2>
-inline bool 
+inline bool
 operator!=(TinyVector<V1, 3> const & l, TinyVector<V2, 3> const & r)
 {
     return l[0] != r[0] || l[1] != r[1] || l[2] != r[2];
 }
 
 template <class V1, class V2>
-inline bool 
+inline bool
 operator!=(TinyVector<V1, 4> const & l, TinyVector<V2, 4> const & r)
 {
     return l[0] != r[0] || l[1] != r[1] || l[2] != r[2] || l[3] != r[3];
@@ -360,10 +360,9 @@ operator!=(TinyVector<V1, 4> const & l, TinyVector<V2, 4> const & r)
 
     /// component-wise not equal
 template <class V1, class V2, int SIZE>
-inline bool 
+inline bool
 operator!=(TinyVector<V1, SIZE> const & l, TinyVector<V2, SIZE> const & r)
 {
-    typedef typename TinyVector<V1, SIZE>::const_iterator CI;
     typename TinyVector<V1, SIZE>::const_iterator i1 = l.begin();
     typename TinyVector<V1, SIZE>::const_iterator i1end = l.end();
     typename TinyVector<V2, SIZE>::const_iterator i2 = r.begin();
@@ -382,13 +381,13 @@ operator!=(TinyVector<V1, SIZE> const & l, TinyVector<V2, SIZE> const & r)
 /********************************************************/
 
 /** \page TinyVectorTraits Numeric and Promote Traits of TinyVector
-    The numeric and promote traits for TinyVectors follow 
-    the general specifications for \ref NumericPromotionTraits. 
-    They are implemented in terms of the traits of the basic types by 
+    The numeric and promote traits for TinyVectors follow
+    the general specifications for \ref NumericPromotionTraits.
+    They are implemented in terms of the traits of the basic types by
     partial template specialization:
-    
+
     \code
-    
+
     template <class T, int SIZE>
     struct NumericTraits<TinyVector<T, SIZE> >
     {
@@ -400,22 +399,22 @@ operator!=(TinyVector<V1, SIZE> const & l, TinyVector<V2, SIZE> const & r)
 
         // etc.
     };
-    
+
     template <class T1, class T2, SIZE>
-    struct PromoteTraits<TinyVector<T1, SIZE>, TinyVector<T2, SIZE> > 
-    { 
+    struct PromoteTraits<TinyVector<T1, SIZE>, TinyVector<T2, SIZE> >
+    {
         typedef TinyVector<typename PromoteTraits<T1, T2>::Promote, SIZE> Promote;
     };
     \endcode
 
     <b>\#include</b> "<a href="tinyvector_8hxx-source.html">vigra/tinyvector.hxx</a>"<br>
     Namespace: vigra
-    
+
     On compilers that don't support pertial template specialization (e.g.
-    MS VisualC++), the traits classes are explicitly specialized for 
-    <TT>TinyVector<VALUETYPE, SIZE></TT> with 
+    MS VisualC++), the traits classes are explicitly specialized for
+    <TT>TinyVector<VALUETYPE, SIZE></TT> with
     <TT>VALUETYPE = unsigned char | int | float | double</TT> and <TT>SIZE = 2 | 3 | 4</TT>.
-    
+
 */
 
 #if !defined(NO_PARTIAL_TEMPLATE_SPECIALIZATION)
@@ -430,26 +429,26 @@ struct NumericTraits<TinyVector<T, SIZE> >
     typedef typename NumericTraits<T>::isIntegral isIntegral;
     typedef VigraFalseType isScalar;
     typedef VigraFalseType isOrdered;
-    
-    static TinyVector<T, SIZE> zero() { 
-        return TinyVector<T, SIZE>(NumericTraits<T>::zero()); 
+
+    static TinyVector<T, SIZE> zero() {
+        return TinyVector<T, SIZE>(NumericTraits<T>::zero());
     }
-    static TinyVector<T, SIZE> one() { 
-        return TinyVector<T, SIZE>(NumericTraits<T>::one()); 
+    static TinyVector<T, SIZE> one() {
+        return TinyVector<T, SIZE>(NumericTraits<T>::one());
     }
-    static TinyVector<T, SIZE> nonZero() { 
-        return TinyVector<T, SIZE>(NumericTraits<T>::nonZero()); 
+    static TinyVector<T, SIZE> nonZero() {
+        return TinyVector<T, SIZE>(NumericTraits<T>::nonZero());
     }
-    
-    static Promote toPromote(TinyVector<T, SIZE> const & v) { 
-        return Promote(v); 
+
+    static Promote toPromote(TinyVector<T, SIZE> const & v) {
+        return Promote(v);
     }
-    static RealPromote toRealPromote(TinyVector<T, SIZE> const & v) { 
-        return RealPromote(v); 
+    static RealPromote toRealPromote(TinyVector<T, SIZE> const & v) {
+        return RealPromote(v);
     }
     static TinyVector<T, SIZE> fromPromote(Promote const & v) {
         TinyVector<T, SIZE> res;
-        TinyVector<T, SIZE>::iterator d = res.begin(), dend = res.end();
+        typename TinyVector<T, SIZE>::iterator d = res.begin(), dend = res.end();
         typename Promote::const_iterator s = v.begin();
         for(; d != dend; ++d, ++s)
             *d = NumericTraits<T>::fromPromote(*s);
@@ -457,7 +456,7 @@ struct NumericTraits<TinyVector<T, SIZE> >
     }
     static TinyVector<T, SIZE> fromRealPromote(RealPromote const & v) {
         TinyVector<T, SIZE> res;
-        TinyVector<T, SIZE>::iterator d = res.begin(), dend = res.end();
+        typename TinyVector<T, SIZE>::iterator d = res.begin(), dend = res.end();
         typename RealPromote::const_iterator s = v.begin();
         for(; d != dend; ++d, ++s)
             *d = NumericTraits<T>::fromRealPromote(*s);
@@ -626,12 +625,12 @@ TINYVECTOR_TRAITS(4)
         l[2] op r[2]; \
         l[3] op r[3]; \
         return l; \
-    } 
+    }
 
     /// componentwise add-assignment
 template <class V1, class V2, int SIZE>
 inline
-TinyVector<V1, SIZE> & 
+TinyVector<V1, SIZE> &
 operator+=(TinyVector<V1, SIZE> & l, TinyVector<V2, SIZE> const & r)
 {
     typename TinyVector<V1, SIZE>::iterator i1 = l.begin();
@@ -647,7 +646,7 @@ vigra_operator_unroll_loop(+=)
     /// componentwise subtract-assignment
 template <class V1, class V2, int SIZE>
 inline
-TinyVector<V1, SIZE> & 
+TinyVector<V1, SIZE> &
 operator-=(TinyVector<V1, SIZE> & l, TinyVector<V2, SIZE> const & r)
 {
     typename TinyVector<V1, SIZE>::iterator i1 = l.begin();
@@ -663,7 +662,7 @@ vigra_operator_unroll_loop(-=)
     /// componentwise multiply-assignment
 template <class V1, class V2, int SIZE>
 inline
-TinyVector<V1, SIZE> & 
+TinyVector<V1, SIZE> &
 operator*=(TinyVector<V1, SIZE> & l, TinyVector<V2, SIZE> const & r)
 {
     typename TinyVector<V1, SIZE>::iterator i1 = l.begin();
@@ -710,14 +709,14 @@ vigra_operator_unroll_loop(*=)
         l[2] op r; \
         l[3] op r; \
         return l; \
-    } 
+    }
 
 vigra_operator_unroll_loop_double(*=)
 
     /// componentwise scalar multiply-assignment
 template <class V, int SIZE>
 inline
-TinyVector<V, SIZE> & 
+TinyVector<V, SIZE> &
 operator*=(TinyVector<V, SIZE> & l, double r)
 {
     typename TinyVector<V, SIZE>::iterator i = l.begin();
@@ -729,10 +728,10 @@ operator*=(TinyVector<V, SIZE> & l, double r)
 
 vigra_operator_unroll_loop_double(/=)
 
-    /// componentwise scalar divide-assignment 
+    /// componentwise scalar divide-assignment
 template <class V, int SIZE>
 inline
-TinyVector<V, SIZE> & 
+TinyVector<V, SIZE> &
 operator/=(TinyVector<V, SIZE> & l, double r)
 {
     typename TinyVector<V, SIZE>::iterator i = l.begin();
@@ -746,79 +745,79 @@ operator/=(TinyVector<V, SIZE> & l, double r)
 
     /// component-wise addition
 template <class V1, class V2, int SIZE>
-inline 
+inline
 typename PromoteTraits<TinyVector<V1, SIZE>, TinyVector<V2, SIZE> >::Promote
 operator+(TinyVector<V1, SIZE> const & r1, TinyVector<V2, SIZE> const & r2)
 {
     typename PromoteTraits<TinyVector<V1, SIZE>, TinyVector<V2 , SIZE> >::Promote res(r1);
-    
+
     res += r2;
-    
+
     return res;
 }
 
     /// component-wise subtraction
 template <class V1, class V2, int SIZE>
-inline 
+inline
 typename PromoteTraits<TinyVector<V1, SIZE>, TinyVector<V2, SIZE> >::Promote
 operator-(TinyVector<V1, SIZE> const & r1, TinyVector<V2, SIZE> const & r2)
 {
     typename PromoteTraits<TinyVector<V1, SIZE>, TinyVector<V2 , SIZE> >::Promote res(r1);
-    
+
     res -= r2;
-    
+
     return res;
 }
 
     /// component-wise multiplication
 template <class V1, class V2, int SIZE>
-inline 
+inline
 typename PromoteTraits<TinyVector<V1, SIZE>, TinyVector<V2, SIZE> >::Promote
 operator*(TinyVector<V1, SIZE> const & r1, TinyVector<V2, SIZE> const & r2)
 {
     typename PromoteTraits<TinyVector<V1, SIZE>, TinyVector<V2 , SIZE> >::Promote res(r1);
-    
+
     res *= r2;
-    
+
     return res;
 }
 
     /// component-wise left scalar multiplication
 template <class V, int SIZE>
-inline 
+inline
 typename NumericTraits<TinyVector<V, SIZE> >::RealPromote
 operator*(double v, TinyVector<V, SIZE> const & r)
 {
     typename NumericTraits<TinyVector<V, SIZE> >::RealPromote res(r);
-    
+
     res *= v;
-    
+
     return res;
 }
 
     /// component-wise right scalar multiplication
 template <class V, int SIZE>
-inline 
+inline
 typename NumericTraits<TinyVector<V, SIZE> >::RealPromote
 operator*(TinyVector<V, SIZE> const & r, double v)
 {
     typename NumericTraits<TinyVector<V, SIZE> >::RealPromote res(r);
-    
+
     res *= v;
-    
+
     return res;
 }
 
     /// component-wise scalar division
 template <class V, int SIZE>
-inline 
+inline
 typename NumericTraits<TinyVector<V, SIZE> >::RealPromote
 operator/(TinyVector<V, SIZE> const & r, double v)
 {
     typename NumericTraits<TinyVector<V, SIZE> >::RealPromote res(r);
-    
+
     res /= v;
-    
+
     return res;
 }
 
@@ -826,7 +825,7 @@ using VIGRA_CSTD::abs;
 
 template <class V1>
 inline
-TinyVector<V1, 2>  
+TinyVector<V1, 2>
 abs(TinyVector<V1, 2> const & v)
 {
     return TinyVector<V1, 2>(abs(v[0]), abs(v[1]));
@@ -834,7 +833,7 @@ abs(TinyVector<V1, 2> const & v)
 
 template <class V1>
 inline
-TinyVector<V1, 3> 
+TinyVector<V1, 3>
 abs(TinyVector<V1, 3> const & v)
 {
     return TinyVector<V1, 3>(abs(v[0]), abs(v[1]), abs(v[2]));
@@ -842,7 +841,7 @@ abs(TinyVector<V1, 3> const & v)
 
 template <class V1>
 inline
-TinyVector<V1, 4> 
+TinyVector<V1, 4>
 abs(TinyVector<V1, 4> const & v)
 {
     return TinyVector<V1, 4>(abs(v[0]), abs(v[1]), abs(v[2]), abs(v[3]));
@@ -851,7 +850,7 @@ abs(TinyVector<V1, 4> const & v)
     /// component-wise absolute value
 template <class T, int SIZE>
 inline
-TinyVector<T, SIZE> abs(TinyVector<T, SIZE> const & v) { 
+TinyVector<T, SIZE> abs(TinyVector<T, SIZE> const & v) {
     TinyVector<T, SIZE> res;
     typename TinyVector<T, SIZE>::iterator d = res.begin();
     typename TinyVector<T, SIZE>::iterator dend = res.end();
@@ -900,7 +899,7 @@ dot(TinyVector<V1, 4> const & l, TinyVector<V2, 4> const & r)
 
     /// dot product
 template <class V1, class V2, int SIZE>
-inline 
+inline
 typename PromoteTraits<V1, V2>::Promote
 dot(TinyVector<V1, SIZE> const & r1, TinyVector<V2, SIZE> const & r2)
 {
@@ -917,7 +916,7 @@ using VIGRA_CSTD::ceil;
 
 template <class V1>
 inline
-TinyVector<V1, 2>  
+TinyVector<V1, 2>
 ceil(TinyVector<V1, 2> const & v)
 {
     return TinyVector<V1, 2>(ceil(v[0]), ceil(v[1]));
@@ -925,7 +924,7 @@ ceil(TinyVector<V1, 2> const & v)
 
 template <class V1>
 inline
-TinyVector<V1, 3> 
+TinyVector<V1, 3>
 ceil(TinyVector<V1, 3> const & v)
 {
     return TinyVector<V1, 3>(ceil(v[0]), ceil(v[1]), ceil(v[2]));
@@ -933,7 +932,7 @@ ceil(TinyVector<V1, 3> const & v)
 
 template <class V1>
 inline
-TinyVector<V1, 4> 
+TinyVector<V1, 4>
 ceil(TinyVector<V1, 4> const & v)
 {
     return TinyVector<V1, 4>(ceil(v[0]), ceil(v[1]), ceil(v[2]), ceil(v[3]));
@@ -959,7 +958,7 @@ using VIGRA_CSTD::floor;
 
 template <class V1>
 inline
-TinyVector<V1, 2>  
+TinyVector<V1, 2>
 floor(TinyVector<V1, 2> const & v)
 {
     return TinyVector<V1, 2>(floor(v[0]), floor(v[1]));
@@ -967,7 +966,7 @@ floor(TinyVector<V1, 2> const & v)
 
 template <class V1>
 inline
-TinyVector<V1, 3> 
+TinyVector<V1, 3>
 floor(TinyVector<V1, 3> const & v)
 {
     return TinyVector<V1, 3>(floor(v[0]), floor(v[1]), floor(v[2]));
@@ -975,7 +974,7 @@ floor(TinyVector<V1, 3> const & v)
 
 template <class V1>
 inline
-TinyVector<V1, 4> 
+TinyVector<V1, 4>
 floor(TinyVector<V1, 4> const & v)
 {
     return TinyVector<V1, 4>(floor(v[0]), floor(v[1]), floor(v[2]), floor(v[3]));
