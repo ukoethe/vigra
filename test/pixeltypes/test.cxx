@@ -161,9 +161,15 @@ struct TinyVectorTest
         should(dot(iv3, bv3) == iv3.squaredMagnitude());
         should(dot(fv3, fv3) == fv3.squaredMagnitude());
         
-        should(sqrt(dot(bv3, bv3)) == bv3.magnitude());
-        should(sqrt(dot(iv3, bv3)) == iv3.magnitude());
-        should(sqrt(dot(fv3, fv3)) == fv3.magnitude());
+        shouldEqualTolerance(VIGRA_CSTD::sqrt(
+                (NumericTraits<typename BV::value_type>::RealPromote)
+                dot(bv3, bv3)), bv3.magnitude(), 0.0);
+        shouldEqualTolerance(VIGRA_CSTD::sqrt(
+                (NumericTraits<typename IV::value_type>::RealPromote)
+                dot(iv3, bv3)), iv3.magnitude(), 0.0);
+        shouldEqualTolerance(VIGRA_CSTD::sqrt(
+                (NumericTraits<typename FV::value_type>::RealPromote)
+                dot(fv3, fv3)), fv3.magnitude(), 0.0);
         
         BV bv = bv3;
         bv[2] = 200;
