@@ -265,6 +265,51 @@ namespace vigra
         return codecManager().queryCodecPixelTypes(codecname);
     }
 
+    
+    // return true if downcasting is required, false otherwise
+    bool negotiatePixelType( std::string const & codecname,
+                 std::string const & srcPixeltype, std::string & destPixeltype )
+    {
+        std::vector<std::string> ptypes
+            = codecManager().queryCodecPixelTypes(codecname);
+        
+        std::vector<std::string>::iterator pend;
+        if(destPixeltype != "")
+        {
+            pend = std::find(ptypes.begin(), ptypes.end(), destPixeltype);
+            if(pend == ptypes.end())
+            {
+                std::string msg("exportImage(): file type ");
+                msg += codecname + " does not support requested pixel type " 
+                                          + destPixeltype + ".";
+                vigra_precondition(false, msg.c_str()); 
+            }
+            ++pend;
+        }
+        else
+        {
+            pend = ptypes.end();
+        }
+        
+        std::vector<std::string>::const_iterator result
+                                   = std::find( ptypes.begin(), pend, srcPixeltype );
+        
+        if( result == pend)
+        {
+            if(destPixeltype == "")
+                destPixeltype = "UINT8";
+            // must always downcast
+            return true;
+        }
+        else
+        {
+            if(destPixeltype == "")
+                destPixeltype = srcPixeltype;
+            // don't downcast
+            return false;
+        }
+    }
+
     bool isPixelTypeSupported( const std::string & codecname,
                                const std::string & pixeltype )
     {
