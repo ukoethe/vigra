@@ -24,6 +24,7 @@
 #define VIGRA_INSPECTIMAGE_HXX
 
 #include <vector>
+#include <algorithm>
 #include "vigra/utilities.hxx"
 #include "vigra/numerictraits.hxx"
 
@@ -525,7 +526,7 @@ class FindMinMax
         if(count)
         {
             if(v < min) min = v;
-            if((this->max) < v) max = v;
+            if(max < v) max = v;
         }
         else
         {
@@ -750,6 +751,113 @@ class FindROISize
     unsigned int count;
     
 }; 
+
+/********************************************************/
+/*                                                      */
+/*                FindBoundingRectangle                 */
+/*                                                      */
+/********************************************************/
+
+/** Calculate the bounding rectangle of an ROI in an image. 
+    As always in VIGRA, #roiRect.lowerRight# is {\em just outside the rectangle}.
+    That is, the last pixel actually in the rectangle is #roiRect.lowerRight - Diff2D(1,1)#.
+    This Functor is often used in conjunction with
+    \Ref{ArrayOfRegionStatistics} to find the bounding rectangles 
+    of all regions in a labeled image.
+    
+    {\bf Usage:}
+    
+    Include-File:
+    \URL[vigra/inspectimage.hxx]{../include/vigra/inspectimage.hxx}
+
+    \begin{verbatim}
+    BImage img, mask;
+    ...
+    
+    FindBoundingRectangle roiRect;   // init functor
+    
+    // Diff2D is used as the iterator for the source image. This
+    // simulates an image where each pixel value equals that pixel's 
+    // coordinates. Tha image 'mask' determines the ROI.
+    inspectImageIf(srcIterRange(Diff2D(0,0), img.size()), 
+                   srcImage(mask), roiRect);
+    
+    cout << "Upper left of ROI: " << 
+        roiRect.upperLeft.x << ", " << roiRect.upperLeft.y << endl;
+    cout << "Lower right of ROI: " << 
+        roiRect.lowerRight.x << ", " << roiRect.lowerRight.y << endl;
+    
+    \end{verbatim}
+
+*/
+struct FindBoundingRectangle
+{
+        /** the functor's value type
+            @memo
+        */
+    typedef Diff2D value_type;
+    
+        /** Upper left of the region as seen so far
+            @memo
+        */
+    Diff2D upperLeft;
+        /** Lower right of the region as seen so far
+            @memo
+        */
+    Diff2D lowerRight;
+    
+        /** are the functors contents valid ?
+            @memo
+        */
+    bool valid;
+    
+        /** init rectangle to invalid values
+        @memo
+        */
+    FindBoundingRectangle()
+    : valid(false)
+    {}
+    
+        /** update rectangle by including the coordinate coord
+            @memo
+        */
+    void operator()(Diff2D const & coord) 
+    {
+        if(!valid)
+        {
+            upperLeft = coord;
+            lowerRight = coord + Diff2D(1,1);
+            valid = true;
+        }
+        else
+        {
+            upperLeft.x = std::min(upperLeft.x, coord.x);
+            upperLeft.y = std::min(upperLeft.y, coord.y);
+            lowerRight.x = std::max(lowerRight.x, coord.x + 1);
+            lowerRight.y = std::max(lowerRight.y, coord.y + 1);
+        }
+    }
+    
+        /** update rectangle by merging it with another rectangle
+            @memo
+        */
+    void operator()(FindBoundingRectangle const & otherRegion) 
+    {
+        if(!valid)
+        {
+            upperLeft = otherRegion.upperLeft;
+            lowerRight = otherRegion.lowerRight;
+            valid = otherRegion.valid;
+        }
+        else if(otherRegion.valid)
+        {
+            upperLeft.x = std::min(upperLeft.x, otherRegion.upperLeft.x);
+            upperLeft.y = std::min(upperLeft.y, otherRegion.upperLeft.y);
+            lowerRight.x = std::max(lowerRight.x, otherRegion.lowerRight.x);
+            lowerRight.y = std::max(lowerRight.y, otherRegion.lowerRight.y);
+        }
+    }
+};
 
 /********************************************************/
 /*                                                      */

@@ -357,11 +357,13 @@ operator!=(RGBValue<V1> const & l, RGBValue<V2> const & r)
 template <class T>
 struct NumericTraits<RGBValue<T> >
 {
+    typedef RGBValue<T> Type;
     typedef RGBValue<typename NumericTraits<T>::Promote> Promote;
     typedef RGBValue<typename NumericTraits<T>::RealPromote> RealPromote;
 
     typedef typename NumericTraits<T>::isIntegral isIntegral;
     typedef VigraFalseType isScalar;
+    typedef VigraFalseType isOrdered;
     
     static RGBValue<T> zero() { 
         return RGBValue<T>(NumericTraits<T>::zero(),
@@ -420,10 +422,12 @@ struct PromoteTraits<double, RGBValue<T> >
 template<>
 struct NumericTraits<RGBValue<unsigned char> >
 {
+    typedef RGBValue<unsigned char> Type;
     typedef RGBValue<int> Promote;
     typedef RGBValue<float> RealPromote;
     typedef VigraTrueType isIntegral;
     typedef VigraFalseType isScalar;
+    typedef VigraFalseType isOrdered;
     
     static RGBValue<unsigned char> zero() { 
         return RGBValue<unsigned char>(0, 0, 0); 
@@ -460,10 +464,12 @@ struct NumericTraits<RGBValue<unsigned char> >
 template<>
 struct NumericTraits<RGBValue<int> >
 {
+    typedef RGBValue<int> Type;
     typedef RGBValue<int> Promote;
     typedef RGBValue<float> RealPromote;
     typedef VigraTrueType isIntegral;
     typedef VigraFalseType isScalar;
+    typedef VigraFalseType isOrdered;
     
     static RGBValue<int> zero() { 
         return RGBValue<int>(0, 0, 0); 
@@ -496,10 +502,12 @@ struct NumericTraits<RGBValue<int> >
 template<>
 struct NumericTraits<RGBValue<float> >
 {
+    typedef RGBValue<float> Type;
     typedef RGBValue<float> Promote;
     typedef RGBValue<float> RealPromote;
     typedef VigraFalseType isIntegral;
     typedef VigraFalseType isScalar;
+    typedef VigraFalseType isOrdered;
     
     static RGBValue<float> zero() { 
         return RGBValue<float>(0.0, 0.0, 0.0); 
