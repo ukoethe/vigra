@@ -12,6 +12,7 @@ QUICKSUBDIRS =  \
 
 SUBDIRS = $(QUICKSUBDIRS) \
         image \
+        multiarray \
         impex 
 
 all::
