@@ -986,12 +986,20 @@ class LastValueFunctor
 template <class RegionStatistics>
 class ArrayOfRegionStatistics
 {
+    typedef std::vector<RegionStatistics> RegionArray;
+
   public:
          ///
     typedef typename RegionStatistics::value_type value_type;
          ///
-    typedef typename std::vector<RegionStatistics>::iterator iterator;
+    typedef typename RegionArray::iterator iterator;
 
+    /** init array of RegionStatistics with default size 0.
+        @memo
+    */
+    ArrayOfRegionStatistics()
+    {}
+    
     /** init array of RegionStatistics with index domain
         0...max_region_label.
         @memo
@@ -1000,6 +1008,15 @@ class ArrayOfRegionStatistics
     : regions(max_region_label+1)
     {}
     
+    /** resize array to new index domain 0...max_region_label.
+        All bin are re-initialized.
+        @memo
+    */
+    void resize(int max_region_label)
+    {
+        RegionArray newRegions(max_region_label+1);
+        regions.swap(newRegions);
+    }
     
     /** update regions statistics for region 'label'
         @memo
@@ -1028,7 +1045,12 @@ class ArrayOfRegionStatistics
     /** access the statistics for a region via its label
         @memo
     */
-    value_type operator()(int label) { return regions[label](); }
+    value_type operator()(int label) const { return regions[label](); }
+    
+    /** read the statistics functor for a region via its label
+        @memo
+    */
+    RegionStatistics const & operator[](int label) const { return regions[label]; }
     
     /** access the statistics functor for a region via its label
         @memo
