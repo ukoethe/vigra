@@ -75,6 +75,8 @@
 #pragma warning( disable : 4244 )
 #endif
 
+#include <stdio.h>
+
 
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
