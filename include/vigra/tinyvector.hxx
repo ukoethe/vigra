@@ -25,6 +25,7 @@
 
 #include <cmath>    // abs(double)
 #include <cstdlib>  // abs(int)
+#include <iosfwd>   // ostream
 #include "vigra/config.hxx"
 #include "vigra/numerictraits.hxx"
 
@@ -307,6 +308,28 @@ class TinyVector
   protected:
     value_type data_[SIZE];
 };
+
+/********************************************************/
+/*                                                      */
+/*                     TinyVector Output                */
+/*                                                      */
+/********************************************************/
+
+/** \addtogroup TinyVectorOperators 
+ */
+//@{
+    /// stream output
+template <class V1, int SIZE>
+std::ostream &
+operator<<(std::ostream & out, TinyVector<V1, SIZE> const & l)
+{
+    out << "(";
+    int i;
+    for(i=0; i<SIZE-1; ++i)
+        out << l[i] << ", ";
+    out << l[i] << ")";
+    return out;
+}
 
 /********************************************************/
 /*                                                      */
