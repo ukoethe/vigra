@@ -88,8 +88,8 @@ void importVolume (MultiArray <3, T, Allocator> & volume,
         // reshape the array according to size of first image
         if(i == 0)
         {
-            volume.reshape(typename 
-              MultiArray <3, T>::difference_type(info.width(), info.height(), numbers.size()));
+            typedef typename MultiArray <3, T>::difference_type Size;
+            volume.reshape(Size(info.width(), info.height(), numbers.size()));
         }
 
         // generate a basic image view to the current layer
