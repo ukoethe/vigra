@@ -127,8 +127,17 @@ void recursiveSmoothLine(SrcIterator is, SrcIterator isend, SrcAccessor as,
     
     int x;
     
-    vigra_precondition(scale > 0,
-                 "recursiveSmoothLine(): scale must be > 0.\n");
+    vigra_precondition(scale >= 0,
+                 "recursiveSmoothLine(): scale must be >= 0.\n");
+                 
+    if(scale == 0.0)
+    {
+        for(; is != isend; ++is, ++id)
+        {
+            ad.set(as(is), id);
+        }
+        return;
+    }
 
     typedef typename
         NumericTraits<typename SrcAccessor::value_type>::RealPromote 

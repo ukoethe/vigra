@@ -1279,36 +1279,44 @@ void Kernel1D<ARITHTYPE>::initGaussian(double std_dev,
     // first calculate required kernel sizes
     int radius = (int)(3.0*std_dev + 0.5);
     
-    // allocate the kernels
-    std::vector<double> kernel(radius*2+1);
-    
-    double sigma2 = 2.0*std_dev*std_dev;    // square of x variance
-    
-    // fill the the x kernel
-    std::vector<double>::iterator x = kernel.begin() + radius;
-    
-    // fill in the Gaussian
-    double sum = *x = 1.0;
-    int i;
-    for(i=1; i<=radius; ++i)
+    if(std_dev > 0.0)
     {
+        // allocate the kernels
+        std::vector<double> kernel(radius*2+1);
+    
+        double sigma2 = 2.0*std_dev*std_dev;    // square of x variance
+
+        // fill the the x kernel
+        std::vector<double>::iterator x = kernel.begin() + radius;
+
+        // fill in the Gaussian
+        double sum = *x = 1.0;
+        int i;
+        for(i=1; i<=radius; ++i)
+        {
 #ifndef CMATH_NOT_IN_STD
-        x[i] = std::exp(-(double)i*i/sigma2);
+            x[i] = std::exp(-(double)i*i/sigma2);
 #else
-        x[i] = exp(-(double)i*i/sigma2);
+            x[i] = exp(-(double)i*i/sigma2);
 #endif
-	x[-i] = x[i];
-	sum += x[i] + x[i];
+	    x[-i] = x[i];
+	    sum += x[i] + x[i];
+        }
+        // normalize
+        value_type scale = (1.0 / sum) * norm;
+
+        kernel_.erase(kernel_.begin(), kernel_.end());
+        kernel_.reserve(radius*2+1);
+
+        for(i=0; i<=radius*2; ++i)
+        {
+	    kernel_.push_back(kernel[i] * scale);
+        }
     }
-    // normalize
-    value_type scale = (1.0 / sum) * norm;
-    
-    kernel_.erase(kernel_.begin(), kernel_.end());
-    kernel_.reserve(radius*2+1);
-    
-    for(i=0; i<=radius*2; ++i)
+    else
     {
-	kernel_.push_back(kernel[i] * scale);
+        kernel_.erase(kernel_.begin(), kernel_.end());
+        kernel_.push_back(norm);
     }
     
     left_ = -radius;
@@ -1327,12 +1335,18 @@ Kernel1D<ARITHTYPE>::initGaussianDerivative(double std_dev,
                     int order,
 		    Kernel1D<ARITHTYPE>::value_type norm)
 {
-    vigra_precondition(order > 0,
-              "Kernel1D::initGaussianDerivative(): Order must be > 0.");
+    vigra_precondition(order >= 0,
+              "Kernel1D::initGaussianDerivative(): Order must be >= 0.");
 	      
     vigra_precondition(std_dev >= 0.0,
               "Kernel1D::initGaussianDerivative(): "
 	      "Standard deviation must be >= 0.");
+              
+    if(order == 0)
+    {
+        initGaussian(std_dev, norm);
+        return;
+    }
 	      
     // first calculate required kernel sizes
     int radius = (int)(3.0*std_dev + 0.5);
