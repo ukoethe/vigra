@@ -544,8 +544,8 @@ resizeImageCubicFIRInterpolation(SrcIterator src_iter, SrcIterator src_iter_end,
 
     int width_new = dest_iter_end.x - dest_iter.x;
     int height_new = dest_iter_end.y - dest_iter.y;
-    double dx =  (double)(width_old - 1) / (width_new - 1);
-    double dy =  (double)(height_old - 1) / (height_new - 1);
+    //    double dx =  (double)(width_old - 1) / (width_new - 1);
+    //    double dy =  (double)(height_old - 1) / (height_new - 1);
     double const scale = 2.0;
 
     vigra_precondition((width_old > 1) && (height_old > 1),
@@ -741,8 +741,8 @@ resizeImageCubicIIRInterpolation(SrcIterator src_iter, SrcIterator src_iter_end,
 
     int width_new = dest_iter_end.x - dest_iter.x;
     int height_new = dest_iter_end.y - dest_iter.y;
-    double dx =  (double)(width_old - 1) / (width_new - 1);
-    double dy =  (double)(height_old - 1) / (height_new - 1);
+    //    double dx =  (double)(width_old - 1) / (width_new - 1);
+    //    double dy =  (double)(height_old - 1) / (height_new - 1);
     double const scale = 2.0;
 
     vigra_precondition((width_old > 1) && (height_old > 1),
