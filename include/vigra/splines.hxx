@@ -33,48 +33,112 @@ namespace vigra {
 /** \addtogroup MathFunctions Mathematical Functions
 */
 //@{
-/*! 
+/*! B-Splines of arbitrary order and interpolating Catmull/Rom splines.
 
     <b>\#include</b> "<a href="splines_8hxx-source.html">vigra/splines.hxx</a>"<br>
     Namespace: vigra
 */
 #ifndef NO_PARTIAL_TEMPLATE_SPECIALIZATION
 
+/** Basic interface of the spline functors.
+
+    Implements the spline functions defined by the recursion
+    
+    \f[ B_0(x) = \left{ \begin{array}{ll}
+                                  1 & -\frac{1}{2} \leq x < \frac{1}{2} \\
+                                  0 & \text{otherwise}
+                        \end{array}\right.
+    \f]
+    
+    and 
+    
+    \f[ B_n(x) = B_0(x) * B_{n-1}(x)
+    \f]
+    
+    where * denotes convolution, and <i>n</i> is the spline order given by the 
+    template parameter <tt>ORDER</tt>. These spline classes can be used as 
+    unary and binary functors, as kernels for \ref resamplingConvolveImage(),
+    and as arguments for \ref vigra::SplineImageView. Note that the spline order
+    is given as a template argument.
+
+    <b>\#include</b> "<a href="splines_8hxx-source.html">vigra/splines.hxx</a>"<br>
+    Namespace: vigra
+*/
 template <int ORDER, class T = double>
 class BSplineBase
 {
   public:
   
+        /** the value type if used as a kernel in \ref resamplingConvolveImage().
+        */
     typedef T            value_type;  
+        /** the functor's unary argument type
+        */
     typedef T            argument_type;  
+        /** the functor's first binary argument type
+        */
     typedef T            first_argument_type;  
+        /** the functor's second binary argument type
+        */
     typedef unsigned int second_argument_type;  
+        /** the functor's result type (unary and binary)
+        */
     typedef T            result_type; 
+        /** the spline order
+        */
     enum               { order = ORDER };
 
-    BSplineBase(unsigned int derivativeOrder = 0)
+        /** Create functor for gevine derivative of the spline. The spline's order
+            is specified spline by the template argument <TT>ORDER</tt>. 
+        */
+    explicit BSplineBase(unsigned int derivativeOrder = 0)
     : s1_(derivativeOrder)
     {}
     
+        /** Unary function call.
+            Returns the value of the spline with the derivative order given in the 
+            constructor. Note that only derivatives up to <tt>ORDER-1</tt> are
+            continous, and derivatives above <tt>ORDER+1</tt> are zero.
+        */
     result_type operator()(argument_type x) const
     {
         return exec(x, derivativeOrder());
     }
 
+        /** Binary function call.
+            The given derivative order is added to the derivative order
+            specified in the constructor. Note that only derivatives up to <tt>ORDER-1</tt> are
+            continous, and derivatives above <tt>ORDER+1</tt> are zero.
+        */
     result_type operator()(first_argument_type x, second_argument_type derivative_order) const
     {
          return exec(x, derivativeOrder() + derivative_order);
     }
 
+        /** Index operator. Same as unary function call.
+        */
     value_type operator[](value_type x) const
         { return operator()(x); }
     
+        /** Get the required filter radius for a discrete approximation of the 
+            spline. Always equal to <tt>(ORDER + 1) / 2.0</tt>.
+        */
     double radius() const
         { return (ORDER + 1) * 0.5; }
         
+        /** Get the derivative order of the Gaussian.
+        */
     unsigned int derivativeOrder() const
         { return s1_.derivativeOrder(); }
 
+        /** Get the prefilter coefficients required for interpolation.
+            To interpolate with a B-spline, \ref resamplingConvolveImage()
+            can be used. However, the image to be interpolated must be 
+            pre-filtered using \ref recursiveFilterImage() with the filter
+            coefficients given by this function. The length of the array
+            corresponds to the number of times \ref recursiveFilterImage()
+            has to be applied (zero length means no prefiltering necessary).
+        */
     ArrayVector<double> const & prefilterCoefficients() const
     { 
         static ArrayVector<double> const & b = calculatePrefilterCoefficients();
@@ -84,6 +148,12 @@ class BSplineBase
     static ArrayVector<double> const & calculatePrefilterCoefficients();
     
     typedef T WeightMatrix[ORDER+1][ORDER+1];
+
+        /** Get the coefficients to transform spline coefficients into
+            the coefficients of the corresponding polynomial.
+            Currently internally used in SplineImageView; needs more
+            documentation ???
+        */
     static WeightMatrix & weights()
     {
         static WeightMatrix & b = calculateWeightMatrix();
@@ -117,7 +187,7 @@ BSplineBase<ORDER, T>::exec(first_argument_type x, second_argument_type derivati
 template <int ORDER, class T>
 ArrayVector<double> const & BSplineBase<ORDER, T>::calculatePrefilterCoefficients()
 { 
-    static ArrayVector<double> b(ORDER / 2 == 0 ? 1 : ORDER / 2, 0.0);
+    static ArrayVector<double> b;
     if(ORDER > 1)
     {
         static const int r = ORDER / 2;
@@ -127,10 +197,9 @@ ArrayVector<double> const & BSplineBase<ORDER, T>::calculatePrefilterCoefficient
             p[i] = spline(T(i-r));
         ArrayVector<double> roots;
         polynomialRealRoots(p, roots);
-        int k = 0;
         for(unsigned int i = 0; i < roots.size(); ++i)
-            if(std::abs(roots[i]) < 1.0)
-                b[k++] = roots[i];
+            if(VIGRA_CSTD::fabs(roots[i]) < 1.0)
+                b.push_back(roots[i]);
     }
     return b;
 }
@@ -153,12 +222,25 @@ BSplineBase<ORDER, T>::calculateWeightMatrix()
     return b;
 }
 
+/********************************************************/
+/*                                                      */
+/*                     BSpline<N, T>                    */
+/*                                                      */
+/********************************************************/
+
+/** Spline functors for arbitrary orders.
+
+    Provides the interface of \ref vigra::BSplineBase with a more convenient 
+    name.
+*/
 template <int ORDER, class T = double>
 class BSpline
 : public BSplineBase<ORDER, T>
 {
   public:
-    BSpline(unsigned int derivativeOrder = 0)
+        /** Constructor forwarded to the base class constructor.. 
+        */
+    explicit BSpline(unsigned int derivativeOrder = 0)
     : BSplineBase<ORDER, T>(derivativeOrder)
     {}
 };
@@ -181,7 +263,7 @@ class BSplineBase<0, T>
     typedef T            result_type; 
     enum               { order = 0 };
 
-    BSplineBase(unsigned int derivativeOrder = 0)
+    explicit BSplineBase(unsigned int derivativeOrder = 0)
     : derivativeOrder_(derivativeOrder)
     {}
     
@@ -206,7 +288,7 @@ class BSplineBase<0, T>
 
     ArrayVector<double> const & prefilterCoefficients() const
     { 
-        static ArrayVector<double> b(1, 0.0);
+        static ArrayVector<double> b;
         return b;
     }
     
@@ -249,7 +331,7 @@ class BSpline<1, T>
     typedef T            result_type; 
     enum               { order = 1 };
 
-    BSpline(unsigned int derivativeOrder = 0)
+    explicit BSpline(unsigned int derivativeOrder = 0)
     : derivativeOrder_(derivativeOrder)
     {}
     
@@ -274,7 +356,7 @@ class BSpline<1, T>
 
     ArrayVector<double> const & prefilterCoefficients() const
     { 
-        static ArrayVector<double> b(1, 0.0);
+        static ArrayVector<double> b;
         return b;
     }
     
@@ -336,7 +418,7 @@ class BSpline<2, T>
     typedef T            result_type; 
     enum               { order = 2 };
 
-    BSpline(unsigned int derivativeOrder = 0)
+    explicit BSpline(unsigned int derivativeOrder = 0)
     : derivativeOrder_(derivativeOrder)
     {}
     
@@ -441,7 +523,7 @@ class BSpline<3, T>
     typedef T            result_type; 
     enum               { order = 3 };
 
-    BSpline(unsigned int derivativeOrder = 0)
+    explicit BSpline(unsigned int derivativeOrder = 0)
     : derivativeOrder_(derivativeOrder)
     {}
     
@@ -572,7 +654,7 @@ class BSpline<5, T>
     typedef T            result_type; 
     enum               { order = 5 };
 
-    BSpline(unsigned int derivativeOrder = 0)
+    explicit BSpline(unsigned int derivativeOrder = 0)
     : derivativeOrder_(derivativeOrder)
     {}
     
@@ -777,29 +859,69 @@ typedef BSpline<5, double> QuinticBSplineKernel;
 /*                                                      */
 /********************************************************/
 
+/** Interpolating 3-rd order splines.
+
+    Implements the Catmull/Rom cardinal function
+    
+    \f[ f(x) = \left{ \begin{array}{ll}
+                                  \frac{3}{2}x^3 - \frac{5}{2}x^2 + 1 & |x| \leg 1 \\
+                                  -\frac{1}{2}x^3 + \frac{5}{2}x^2 -4x + 2 & |x| \leg 2 \\
+                                  0 & \text{otherwise}
+                        \end{array}\right.
+    \f]
+    
+    It can be used as a functor, and as a kernel for 
+    \ref resamplingConvolveImage() to create a differentiable interpolant
+    of an image. However, it should be noted that a twice differentiable 
+    interpolant can be created with only slightly more effort by recursive
+    prefiltering followed by convolution with a 3rd order B-spline.
+
+    <b>\#include</b> "<a href="splines_8hxx-source.html">vigra/splines.hxx</a>"<br>
+    Namespace: vigra
+*/
 template <class T = double>
 class CatmullRomSpline
 {
 public:
+        /** the kernel's value type
+        */
     typedef T value_type;
+        /** the unary functor's argument type
+        */
     typedef T argument_type;
+        /** the unary functor's result type
+        */
     typedef T result_type;
+        /** the splines polynomial order
+        */
     enum { order = 3 };
 
+        /** function (functor) call
+        */
     result_type operator()(argument_type x) const;
     
+        /** index operator -- same as operator()
+        */
     T operator[] (T x) const
         { return operator()(x); }
 
+        /** Radius of the function's support.
+            Needed for  \ref resamplingConvolveImage(), always 2.
+        */
     int radius() const
         {return 2;}
         
+        /** Derivative order of the function: always 0.
+        */
     unsigned int derivativeOrder() const
         { return 0; }
 
+        /** Prefilter coefficients for compatibility with \ref vigra::BSpline.
+            (array has zero length, since prefiltering is not necessary).
+        */
     ArrayVector<double> const & prefilterCoefficients() const
     { 
-        static ArrayVector<double> b(1, 0.0);
+        static ArrayVector<double> b;
         return b;
     }
 };

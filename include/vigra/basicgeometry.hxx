@@ -29,6 +29,77 @@
 
 namespace vigra {
 
+/** \addtogroup GeometricTransformations Geometric Transformations
+*/
+//@{
+
+/********************************************************/
+/*                                                      */
+/*                      rotateImage                     */
+/*                                                      */
+/********************************************************/
+
+/** \brief Rotate image by a multiple of 90 degrees.
+
+    This algorithm just copies the pixels in the appropriate new order. It expects the 
+    destination image to have the correct shape for the desired rotation.
+    
+    <b> Declarations:</b>
+    
+    pass arguments explicitly:
+    \code
+    namespace vigra {
+        template <class SrcIterator, class SrcAccessor,
+                  class DestIterator, class DestAccessor>
+        void 
+        rotateImage(SrcIterator is, SrcIterator end, SrcAccessor as,
+                    DestIterator id, DestAccessor ad, int rotation);
+    }
+    \endcode
+    
+    use argument objects in conjuction with \ref ArgumentObjectFactories:
+    \code
+    namespace vigra {
+        template <class SrcImageIterator, class SrcAccessor,
+              class DestImageIterator, class DestAccessor>
+        inline void 
+        rotateImage(triple<SrcImageIterator, SrcImageIterator, SrcAccessor> src,
+                    pair<DestImageIterator, DestAccessor> dest, int rotation);
+    }
+    \endcode
+    
+    <b> Usage:</b>
+    
+        <b>\#include</b> "<a href="basicgeometry_8hxx-source.html">vigra/basicgeometry.hxx</a>"<br>
+        Namespace: vigra
+    
+    \code
+    Image dest(src.height(), src.width()); // note that width and height are exchanged
+    
+    vigra::rotateImage(srcImageRange(src), destImage(dest), 90);
+    
+    \endcode
+
+    <b> Required Interface:</b>
+    
+    \code
+    SrcImageIterator src_upperleft, src_lowerright;
+    DestImageIterator dest_upperleft;
+    
+    SrcAccessor src_accessor;
+    
+    dest_accessor.set(src_accessor(src_upperleft), dest_upperleft);
+
+    \endcode
+    
+    <b> Preconditions:</b>
+    
+    \code
+    src_lowerright.x - src_upperleft.x > 1
+    src_lowerright.y - src_upperleft.y > 1
+    \endcode
+    
+*/
 template <class SrcIterator, class SrcAccessor, 
           class DestIterator, class DestAccessor>
 void rotateImage(SrcIterator is, SrcIterator end, SrcAccessor as,
@@ -107,13 +178,79 @@ rotateImage(triple<SrcImageIterator, SrcImageIterator, SrcAccessor> src,
     rotateImage(src.first, src.second, src.third, dest.first, dest.second, rotation);
 }
 
-/*
-*  Flip turns the image upside down.
-*  Flop reverses the image.
-*/
+/********************************************************/
+/*                                                      */
+/*                     reflectImage                     */
+/*                                                      */
+/********************************************************/
 
 enum Reflect{horizontal = 1, vertical = 2};
 
+/** \brief Reflect image horizontally or vertically.
+
+    The reflection direction refers to the reflection axis, i.e.
+    horizontal reflection turns the image upside down, vertical reflection
+    changes left for right. The directions are selected by the enum values
+    <tt>vigra::horizontal</tt> and <tt>vigra::vertical</tt>. The two directions 
+    can also be "or"ed together to perform both reflections simultaneously 
+    (see example below) -- this is the same as a 180 degree rotation. 
+    
+    <b> Declarations:</b>
+    
+    pass arguments explicitly:
+    \code
+    namespace vigra {
+        template <class SrcIterator, class SrcAccessor,
+                  class DestIterator, class DestAccessor>
+        void 
+        reflectImage(SrcIterator is, SrcIterator end, SrcAccessor as,
+                     DestIterator id, DestAccessor ad, Reflect axis);
+    }
+    \endcode
+    
+    use argument objects in conjuction with \ref ArgumentObjectFactories:
+    \code
+    namespace vigra {
+        template <class SrcImageIterator, class SrcAccessor,
+              class DestImageIterator, class DestAccessor>
+        inline void 
+        reflectImage(triple<SrcImageIterator, SrcImageIterator, SrcAccessor> src,
+                     pair<DestImageIterator, DestAccessor> dest, Reflect axis);
+    }
+    \endcode
+    
+    <b> Usage:</b>
+    
+        <b>\#include</b> "<a href="basicgeometry_8hxx-source.html">vigra/basicgeometry.hxx</a>"<br>
+        Namespace: vigra
+    
+    \code
+    Image dest(src.width(), src.height());
+    
+    vigra::reflectImage(srcImageRange(src), destImage(dest), vigra::horizontal | vigra::vertical);
+    
+    \endcode
+
+    <b> Required Interface:</b>
+    
+    \code
+    SrcImageIterator src_upperleft, src_lowerright;
+    DestImageIterator dest_upperleft;
+    
+    SrcAccessor src_accessor;
+    
+    dest_accessor.set(src_accessor(src_upperleft), dest_upperleft);
+
+    \endcode
+    
+    <b> Preconditions:</b>
+    
+    \code
+    src_lowerright.x - src_upperleft.x > 1
+    src_lowerright.y - src_upperleft.y > 1
+    \endcode
+    
+*/
 template <class SrcIterator, class SrcAccessor, 
           class DestIterator, class DestAccessor>
 void reflectImage(SrcIterator is, SrcIterator end, SrcAccessor as,
@@ -181,8 +318,80 @@ reflectImage(triple<SrcImageIterator, SrcImageIterator, SrcAccessor> src,
     reflectImage(src.first, src.second, src.third, dest.first, dest.second, reflect);
 }
 
+/********************************************************/
+/*                                                      */
+/*                    transposeImage                   */
+/*                                                      */
+/********************************************************/
+
 enum Transpose{major = 1, minor = 2};
 
+/** \brief Transpose an image over the major or minor diagonal.
+
+    The transposition direction refers to the axis, i.e.
+    major transposition turns the upper right corner into the lower left one, 
+    whereas minor transposition changes the upper left corner into the lower right one. 
+    The directions are selected by the enum values
+    <tt>vigra::major</tt> and <tt>vigra::minor</tt>. The two directions 
+    can also be "or"ed together to perform both reflections simultaneously 
+    (see example below) -- this is the same as a 180 degree rotation.
+    
+    <b> Declarations:</b>
+    
+    pass arguments explicitly:
+    \code
+    namespace vigra {
+        template <class SrcIterator, class SrcAccessor,
+                  class DestIterator, class DestAccessor>
+        void 
+        transposeImage(SrcIterator is, SrcIterator end, SrcAccessor as,
+                       DestIterator id, DestAccessor ad, Transpose axis);
+    }
+    \endcode
+    
+    use argument objects in conjuction with \ref ArgumentObjectFactories:
+    \code
+    namespace vigra {
+        template <class SrcImageIterator, class SrcAccessor,
+              class DestImageIterator, class DestAccessor>
+        inline void 
+        transposeImage(triple<SrcImageIterator, SrcImageIterator, SrcAccessor> src,
+                       pair<DestImageIterator, DestAccessor> dest, Transpose axis);
+    }
+    \endcode
+    
+    <b> Usage:</b>
+    
+        <b>\#include</b> "<a href="basicgeometry_8hxx-source.html">vigra/basicgeometry.hxx</a>"<br>
+        Namespace: vigra
+    
+    \code
+    Image dest(src.width(), src.height());
+    
+    vigra::transposeImage(srcImageRange(src), destImage(dest), vigra::major | vigra::minor);
+    
+    \endcode
+
+    <b> Required Interface:</b>
+    
+    \code
+    SrcImageIterator src_upperleft, src_lowerright;
+    DestImageIterator dest_upperleft;
+    
+    SrcAccessor src_accessor;
+    
+    dest_accessor.set(src_accessor(src_upperleft), dest_upperleft);
+
+    \endcode
+    
+    <b> Preconditions:</b>
+    
+    \code
+    src_lowerright.x - src_upperleft.x > 1
+    src_lowerright.y - src_upperleft.y > 1
+    \endcode
+    
+*/
 template <class SrcIterator, class SrcAccessor, 
           class DestIterator, class DestAccessor>
 void transposeImage(SrcIterator is, SrcIterator end, SrcAccessor as,
@@ -258,8 +467,7 @@ transposeImage(triple<SrcImageIterator, SrcImageIterator, SrcAccessor> src,
 /*                                                      */
 /********************************************************/
 
-
-/**
+/*
 * Vergroessert eine Linie um einen Faktor. 
 * Ist z.B. der Faktor = 4 so werden in der
 * neuen Linie(Destination) jedes Pixel genau 4 mal 
@@ -328,13 +536,6 @@ void resampleLine(SrcIterator src_iter, SrcIterator src_iter_end, SrcAccessor sr
     }
 }
 
-
-/********************************************************/
-/*                                                      */
-/*                     resampleImage                    */
-/*                                                      */
-/********************************************************/
-
 inline int sizeForResamplingFactor(int oldsize, double factor)
 {
     return (factor < 1.0)
@@ -342,15 +543,29 @@ inline int sizeForResamplingFactor(int oldsize, double factor)
         : (int)(oldsize * factor);
 }
 
+
+/********************************************************/
+/*                                                      */
+/*                     resampleImage                    */
+/*                                                      */
+/********************************************************/
+
 /** \brief Resample image by a given factor.
 
-    This algorithm is very fast and does not require any arithmetic on the pixel types.
-    
-    The range must of the input image (resp. regions)
-    must be given and it must have a size of at
+    This algorithm is very fast and does not require any arithmetic on the pixel types.    
+    The input image must have a size of at
     least 2x2. Destiniation pixels are directly copied from the appropriate
-    source pixels. 
-    The function uses accessors. 
+    source pixels. The size of the result image is the product of <tt>factor</tt>
+    and the original size, where we round up if <tt>factor &lt; 1.0</tt> and down otherwise.
+    This size calculation is the main difference to the convention used in the similar 
+    function \ref resizeImageNoInterpolation():
+    there, the result size is calculated as <tt>n*(old_width-1)+1</tt> and 
+    <tt>n*(old_height-1)+1</tt>. This is because \ref resizeImageNoInterpolation() 
+    does not replicate the last pixel in every row/column in order to make it compatible
+    with the other functions of the <tt>resizeImage...</tt> family.
+    
+    It should also be noted that resampleImage() is implemented so that an enlargement followed
+    by the corresponding shrinking reproduces the original image. The function uses accessors. 
     
     <b> Declarations:</b>
     
@@ -364,7 +579,6 @@ inline int sizeForResamplingFactor(int oldsize, double factor)
                       DestIterator id, DestAccessor ad, double factor);
     }
     \endcode
-    
     
     use argument objects in conjuction with \ref ArgumentObjectFactories:
     \code
@@ -383,6 +597,9 @@ inline int sizeForResamplingFactor(int oldsize, double factor)
         Namespace: vigra
     
     \code
+    double factor = 2.0;
+    Image dest((int)(factor*src.width()), (int)(factor*src.height()));
+    
     vigra::resampleImage(srcImageRange(src), destImage(dest), factor);
     
     \endcode
@@ -467,6 +684,7 @@ resampleImage(triple<SrcImageIterator, SrcImageIterator, SrcAccessor> src,
     resampleImage(src.first, src.second, src.third, dest.first, dest.second, factor);
 }
 
+//@}
 
 } // namespace vigra
 

@@ -1,6 +1,6 @@
 /************************************************************************/
 /*                                                                      */
-/*               Copyright 2002-2003 by Ullrich Koethe                  */
+/*               Copyright 2002-2004 by Ullrich Koethe                  */
 /*       Cognitive Systems Group, University of Hamburg, Germany        */
 /*                                                                      */
 /*    This file is part of the VIGRA computer vision library.           */
@@ -29,6 +29,28 @@
 namespace vigra
 {
 
+/** Replacement for <tt>std::vector</tt>.
+    
+    This template implements the same functionality as <tt>std::vector</tt>.
+    However, it gives two usful guarantees, that <tt>std::vector</tt> fails 
+    to provide:
+    
+    <ul>
+    <li>The memory is always allocated as one contigous piece</li>
+    <li>The iterator is always a <TT>T *</TT> </li>
+    </ul>
+    
+    This means that memory managed by <tt>ArrayVector</tt> can be passed
+    to algorithms that expect raw memory. This is especially important
+    when lagacy or C code has to be called, but it is also useful for certain
+    optimizations.
+    
+    Refer to the documentation of <tt>std::vector</tt> for a detailed 
+    description of <tt>ArrayVector</tt> functionality.
+
+    <b>\#include</b> "<a href="splines_8hxx-source.html">vigra/array_vector.hxx</a>"<br>
+    Namespace: vigra
+*/
 template <class T, class Alloc = std::allocator<T> >
 class ArrayVector
 {

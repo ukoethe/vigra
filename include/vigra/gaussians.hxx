@@ -32,7 +32,10 @@ namespace vigra {
 /** \addtogroup MathFunctions Mathematical Functions
 */
 //@{
-/*! 
+/*! The Gaussian function and its derivatives.
+
+    Implemented as a unary functor. Since it supports the <tt>radius()</tt> function
+    it can also be used as a kernel in \ref resamplingConvolveImage().
 
     <b>\#include</b> "<a href="gaussians_8hxx-source.html">vigra/gaussians.hxx</a>"<br>
     Namespace: vigra
@@ -42,10 +45,28 @@ class Gaussian
 {
   public:
   
+        /** the value type if used as a kernel in \ref resamplingConvolveImage().
+        */
     typedef T            value_type;  
+        /** the functor's argument type
+        */
     typedef T            argument_type;  
+        /** the functor's result type
+        */
     typedef T            result_type; 
     
+        /** Create functor for the given standard deviation <tt>sigma</tt> and 
+            derivative order <i>n</i>. The functor then realizes the function
+             
+            \f[ f_{\sigma,n}(x)=\frac{\partial^n}{\partial x^n}
+                 \frac{1}{\sqrt{2\pi}\sigma}e^{-\frac{x^2}{2\sigma^2}}
+            \f]
+             
+            Precondition:
+            \code
+            sigma > 0.0
+            \endcode
+        */
     explicit Gaussian(T sigma = 1.0, unsigned int derivativeOrder = 0)
     : sigma_(sigma),
       sigma2_(-0.5 / sigma / sigma),
@@ -70,16 +91,28 @@ class Gaussian
         calculateHermitePolynomial();
     }
 
+        /** Function (functor) call.
+        */
     result_type operator()(argument_type x) const;
 
+        /** Get the standard deviation of the Gaussian.
+        */
     value_type sigma() const
         { return sigma_; }
     
+        /** Get the derivative order of the Gaussian.
+        */
     unsigned int derivativeOrder() const
         { return order_; }
     
+        /** Get the required filter radius for a discrete approximation of the Gaussian.
+            The radius is given as a multiple of the Gaussian's standard deviation 
+            (default: <tt>sigma * (3 + 1/2 * derivativeOrder()</tt> -- the second term
+            accounts for the fact that the derivatives of the Gaussian become wider 
+            with increasing order). The result is rounded to the next higher integer.
+        */
     double radius(double sigmaMultiple = 3.0) const
-        { return VIGRA_CSTD::ceil(sigmaMultiple * sigma_ + 0.5 * derivativeOrder()); }
+        { return VIGRA_CSTD::ceil(sigma_ * (sigmaMultiple + 0.5 * derivativeOrder())); }
 
   private:
     void calculateHermitePolynomial();    
