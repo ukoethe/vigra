@@ -141,7 +141,7 @@ inspectTwoLinesIf(SrcIterator1 s1,
     // init functor
     vigra::BImage img;
 
-    vigra::FindMinMax<vigra::BImage::PixelType> minmax();
+    vigra::FindMinMax<vigra::BImage::PixelType> minmax;
 
     vigra::inspectImage(srcImageRange(img), minmax);
 
@@ -999,13 +999,13 @@ class FindBoundingRectangle
             lowerRight.y = std::max(lowerRight.y, otherRegion.lowerRight.y);
         }
     }
-    
-        /** Get size of current rectangle. 
+
+        /** Get size of current rectangle.
         */
     Size2D size() const
     {
         return lowerRight - upperLeft;
-    }    
+    }
 
         /** Get current rectangle. <TT>result_type::first</TT> is the upper
             left corner of the rectangle, <TT>result_type::second</TT>
