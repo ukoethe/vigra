@@ -216,6 +216,15 @@ class RGBValue
         */
     template <class V>
     void setBlue(V value) { data_[2] = detail::RequiresExplicitCast<value_type>::cast(value); }
+
+
+    template <class V>
+    void setRGB(V r, V g, V b) 
+    { 
+        data_[0] = detail::RequiresExplicitCast<value_type>::cast(r); 
+        data_[1] = detail::RequiresExplicitCast<value_type>::cast(g); 
+        data_[2] = detail::RequiresExplicitCast<value_type>::cast(b); 
+    }
 };
 
 /********************************************************/
@@ -695,6 +704,13 @@ class RGBAccessor
         return (*rgb).red();
     }
 
+    template <class V, class RGBIterator>
+    void setRGB(V r, V g, V b, RGBIterator const & rgb) const
+    {
+        (*rgb).setRGB( r, g, b );
+    }
+
+    
         /** Set value of the red component. The type <TT>V</TT> of the passed
             in <TT>value</TT> is automatically converted to <TT>component_type</TT>.
         */
