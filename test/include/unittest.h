@@ -20,12 +20,23 @@
 #include <exception>          // for exception, bad_exception
 #include <stdexcept>
 #include <strstream>
+#include <cmath>
 
 #ifdef _MSC_VER
 
 #include <wtypes.h>
 #include <winbase.h>
 #include <excpt.h>
+
+#ifdef min
+#undef min
+#endif
+#ifdef max
+#undef max
+#endif
+#ifdef DIFFERENCE
+#undef DIFFERENCE
+#endif
 
 #elif defined(__unix)
 
@@ -93,10 +104,10 @@ inline std::string & exception_checkpoint()
 inline void report_exception( detail::errstream & os, 
                        const char * name, const char * info )
 { 
-    os << "Unexpected " << name << " " << info << std::endl; 
+    os << "Unexpected " << name << " " << info << "\n"; 
     if(exception_checkpoint().size() > 0)
     {
-        os << "Last checkpoint: " << exception_checkpoint().c_str() << std::endl;
+        os << "Last checkpoint: " << exception_checkpoint().c_str() << "\n";
     }
 }
 
@@ -351,7 +362,7 @@ eps_equal_impl(double left, double right, double epsilon, const char * message, 
 {
     detail::errstream buf;
     buf << message << " [" << left << " != " << right << "]";
-    should_impl(fabs(left - right) < epsilon, buf.str(), file, line); 
+	should_impl(std::fabs(left - right) < epsilon, buf.str(), file, line); 
 }
 
 template <class Left, class Right>
@@ -448,14 +459,14 @@ class test_suite
         {
             detail::errstream buf;
             buf << "\n" << failed << " of " << size() << 
-                " tests failed in test suite " << name() << std::endl;
+                " tests failed in test suite " << name() << "\n";
             report_ += buf.str();
         }
         else 
         {
             detail::errstream buf;
             buf << "All (" << size() <<
-               ") tests passed in test suite " << name() << std::endl;
+               ") tests passed in test suite " << name() << "\n";
             report_ += buf.str();
         }
         
@@ -491,7 +502,7 @@ struct test_case_init_functor
         }
         catch(unit_test_failed & e)
         {
-            buf_ << "Assertion failed: " << e.what() << std::endl;
+            buf_ << "Assertion failed: " << e.what() << "\n";
             return 1;
         }
     }
@@ -515,7 +526,7 @@ struct test_case_run_functor
         }
         catch(unit_test_failed & e)
         {
-            buf_ << "Assertion failed: " << e.what() << std::endl;
+            buf_ << "Assertion failed: " << e.what() << "\n";
             return 1;
         }
     }
@@ -539,7 +550,7 @@ struct test_case_destroy_functor
         }
         catch(unit_test_failed & e)
         {
-            buf_ << "Assertion failed: " << e.what() << std::endl;
+            buf_ << "Assertion failed: " << e.what() << "\n";
             return 1;
         }
     }
@@ -574,7 +585,7 @@ class class_test_case
         int failed = 0;
         
         detail::errstream buf;
-        buf << "\nFailure in initialization of " << name() << std::endl;
+        buf << "\nFailure in initialization of " << name() << "\n";
         if(testcase_ != 0)
         {
             buf << "Test case failed to clean up after previous run.\n";
@@ -608,7 +619,7 @@ class class_test_case
             return failed;
         
         detail::errstream buf;
-        buf << "\nFailure in " << name() << std::endl;
+        buf << "\nFailure in " << name() << "\n";
         
         failed = catch_exceptions(
             detail::test_case_run_functor(buf, this), buf, timeout);
@@ -634,7 +645,7 @@ class class_test_case
     int destroy()
     {
         detail::errstream buf;
-        buf << "\nFailure in destruction of " << std::endl;
+        buf << "\nFailure in destruction of " << "\n";
         
         int failed = catch_exceptions(
             detail::test_case_destroy_functor(buf, this), buf, timeout);
@@ -674,7 +685,7 @@ class function_test_case
         exception_checkpoint() = "";
         
         detail::errstream buf;
-        buf << "\nFailure in " << name() << std::endl;
+        buf << "\nFailure in " << name() << "\n";
         
         int failed = catch_exceptions(
             detail::test_case_run_functor(buf, this), buf, timeout);
