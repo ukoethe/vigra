@@ -33,30 +33,30 @@ namespace vigra {
 /** \brief A navigator that provides acces to the 1D subranges of an 
     n-dimensional range given by a \ref vigra::MultiIterator and an nD shape.
 
-Normally, the innermost loop of an iteration extends over the innermost
-dimension of a given array. Sometimes, however, it is necessary to have
-some other dimension in the inner loop. For example, instead of iterating over 
-the rows, the inner loop should extend over the columns. The class MultiArrayNavigator
-encapsulates the necessary functionality. Given an arbitrary dimensional 
-array (represented by a vigra::MultiIterator/shape pair), and the desired
-inner loop dimension <TT>d</TT>, it moves the encapsulated iterator to all possible
-starting points of 1D subsets along the given dimension (e.g. all columns). By calling 
-<TT>begin()</TT> and <TT>end()</TT>, one can then obtain an STL-compatible 1-dimensional 
-iterator for the current subset.
+    Normally, the innermost loop of an iteration extends over the innermost
+    dimension of a given array. Sometimes, however, it is necessary to have
+    some other dimension in the inner loop. For example, instead of iterating over 
+    the rows, the inner loop should extend over the columns. The class MultiArrayNavigator
+    encapsulates the necessary functionality. Given an arbitrary dimensional 
+    array (represented by a vigra::MultiIterator/shape pair), and the desired
+    inner loop dimension <TT>d</TT>, it moves the encapsulated iterator to all possible
+    starting points of 1D subsets along the given dimension (e.g. all columns). By calling 
+    <TT>begin()</TT> and <TT>end()</TT>, one can then obtain an STL-compatible 1-dimensional 
+    iterator for the current subset.
 
-The template parameters specify the embedded iterator type and its dimension.
+    The template parameters specify the embedded iterator type and its dimension.
 
-<b>Usage:</b>
+    <b>Usage:</b>
 
-<b>\#include</b> "<a href="navigator_8hxx-source.html">vigra/navigator.hxx</a>"
+    <b>\#include</b> "<a href="navigator_8hxx-source.html">vigra/navigator.hxx</a>"
 
-Namespace: vigra
+    Namespace: vigra
 
-\code
+    \code
     typedef vigra::MultiArray<3, int>  Array;
-    
-    Array a(Array::difference_type(X, Y, Z));
-    
+
+    Array a(Array::size_type(X, Y, Z));
+
     typedef vigra::MultiArrayNavigator<Array::traverser, 3> Navigator;
 
     for(int d=0; d<3; ++d)
@@ -75,10 +75,11 @@ Namespace: vigra
                 // do something
         }
     }
-\endcode
+    \endcode
 */
 template <class MULTI_ITERATOR, unsigned int N>
-class MultiArrayNavigator : public MultiArrayNavigator<MULTI_ITERATOR, N-1>
+class MultiArrayNavigator 
+: public MultiArrayNavigator<MULTI_ITERATOR, N-1>
 {
     typedef MultiArrayNavigator<MULTI_ITERATOR, N-1> base_type;
 
@@ -172,7 +173,7 @@ class MultiArrayNavigator<MULTI_ITERATOR, 1>
         if(inner_dimension != level)
             end_.template dim<level>() += shape[level];
     }
-    
+
     void operator++()
     {
         ++i_.template dim<level>();
