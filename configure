@@ -800,7 +800,7 @@ Optional Features:
   --disable-FEATURE       do not include FEATURE (same as --enable-FEATURE=no)
   --enable-FEATURE[=ARG]  include FEATURE [ARG=yes]
   --enable-shared=PKGS  build shared libraries default=yes
-  --enable-static=PKGS  build static libraries default=no
+  --enable-static=PKGS  build static libraries default=yes
   --enable-fast-install=PKGS  optimize for fast installation default=yes
   --disable-libtool-lock  avoid locking (might break parallel builds)
 
@@ -2677,7 +2677,7 @@ no) enable_static=no ;;
   ;;
 esac
 else
-  enable_static=no
+  enable_static=yes
 fi;
 # Check whether --enable-fast-install or --disable-fast-install was given.
 if test "${enable_fast_install+set}" = set; then
@@ -3385,13 +3385,13 @@ echo "${ECHO_T}$with_tifflib" >&6
 echo $ECHO_N "checking for tiff.h ... $ECHO_C" >&6
         dirs=""
         if test "$with_tiffinc" != ""; then
-            dirs=$with_tiffinc
+            dirs="$with_tiffinc"
         elif test "$with_tiff" != "yes"; then
-            dirs=$with_tiff
+            dirs="$with_tiff"
         else
             dirs="/usr/local/include /usr/local/gnu/include /usr/local/tiff /opt/include /opt/gnu/include /opt/tiff /usr/include"
         fi
-        found=""
+		        found=""
         for i in $dirs; do
             if test -d $i; then
                 found="$found "`find $i -name tiff.h -print 2> /dev/null`
@@ -3576,13 +3576,13 @@ echo "${ECHO_T}$with_jpeglib" >&6
 echo $ECHO_N "checking for jpeglib.h ... $ECHO_C" >&6
         dirs=""
         if test "$with_jpeginc" != ""; then
-            dirs=$with_jpeginc
+            dirs="$with_jpeginc"
         elif test "$with_jpeg" != "yes"; then
-            dirs=$with_jpeg
+            dirs="$with_jpeg"
         else
             dirs="/usr/local/include /usr/local/gnu/include /usr/local/jpeg /opt/include /opt/gnu/include /opt/jpeg /usr/include"
         fi
-        found=""
+		        found=""
         for i in $dirs; do
             if test -d $i; then
                 found="$found "`find $i -name jpeglib.h -print 2> /dev/null`
@@ -3767,13 +3767,13 @@ echo "${ECHO_T}$with_fftwlib" >&6
 echo $ECHO_N "checking for fftw.h ... $ECHO_C" >&6
         dirs=""
         if test "$with_fftwinc" != ""; then
-            dirs=$with_fftwinc
+            dirs="$with_fftwinc"
         elif test "$with_fftw" != "yes"; then
-            dirs=$with_fftw
+            dirs="$with_fftw"
         else
             dirs="/usr/local/include /usr/local/gnu/include /usr/local/fftw /opt/include /opt/gnu/include /opt/fftw /usr/include"
         fi
-        found=""
+		        found=""
         for i in $dirs; do
             if test -d $i; then
                 found="$found "`find $i -name fftw.h -print 2> /dev/null`
