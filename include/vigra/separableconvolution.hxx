@@ -23,6 +23,7 @@
 #ifndef VIGRA_SEPARABLECONVOLUTION_HXX
 #define VIGRA_SEPARABLECONVOLUTION_HXX
 
+#include <iostream>
 #include <cmath>
 #include <vector>
 #include "vigra/utilities.hxx"
@@ -40,70 +41,70 @@ namespace vigra {
 
 template <class SrcIterator, class SrcAccessor,
           class DestIterator, class DestAccessor, 
-	  class KernelIterator, class KernelAccessor>
+          class KernelIterator, class KernelAccessor>
 void internalConvolveLineWrap(SrcIterator is, SrcIterator iend, SrcAccessor sa,
                               DestIterator id, DestAccessor da,
-			      KernelIterator kernel, KernelAccessor ka,
-			      int kleft, int kright)
+                              KernelIterator kernel, KernelAccessor ka,
+                              int kleft, int kright)
 {
     int w = iend - is;
     
     typedef typename NumericTraits<typename 
-	              SrcAccessor::value_type>::RealPromote SumType;
+                      SrcAccessor::value_type>::RealPromote SumType;
     
     SrcIterator ibegin = is;
     
     for(int x=0; x<w; ++x, ++is, ++id)
     {
-	KernelIterator ik = kernel + kright;
-	SumType sum = NumericTraits<SumType>::zero();    
+        KernelIterator ik = kernel + kright;
+        SumType sum = NumericTraits<SumType>::zero();    
 
-	if(x < kright)
-	{
-	    int x0 = x - kright;
-	    SrcIterator iss = iend + x0;
-	    
-	    for(; x0; ++x0, --ik, ++iss)
-	    {
-		sum += ka(ik) * sa(iss);
-	    }
-	
-	    iss = ibegin;
-	    SrcIterator isend = is + (1 - kleft);
-	    for(; iss != isend ; --ik, ++iss)
-	    {
-		sum += ka(ik) * sa(iss);
-	    }
-	}
-	else if(w-x <= -kleft)
-	{
-	    SrcIterator iss = is + (-kright);
-	    SrcIterator isend = iend;
-	    for(; iss != isend ; --ik, ++iss)
-	    {
-		sum += ka(ik) * sa(iss);
-	    }
-	    
-	    int x0 = -kleft - w + x + 1;
-	    iss = ibegin;
-	    
-	    for(; x0; --x0, --ik, ++iss)
-	    {
-		sum += ka(ik) * sa(iss);
-	    }
-	}
-	else
-	{
-	    SrcIterator iss = is - kright;
-	    SrcIterator isend = is + (1 - kleft);
-	    for(; iss != isend ; --ik, ++iss)
-	    {
-		sum += ka(ik) * sa(iss);
-	    }
-	}
-	
-	da.set(NumericTraits<typename 
-	              DestAccessor::value_type>::fromRealPromote(sum), id);
+        if(x < kright)
+        {
+            int x0 = x - kright;
+            SrcIterator iss = iend + x0;
+            
+            for(; x0; ++x0, --ik, ++iss)
+            {
+                sum += ka(ik) * sa(iss);
+            }
+        
+            iss = ibegin;
+            SrcIterator isend = is + (1 - kleft);
+            for(; iss != isend ; --ik, ++iss)
+            {
+                sum += ka(ik) * sa(iss);
+            }
+        }
+        else if(w-x <= -kleft)
+        {
+            SrcIterator iss = is + (-kright);
+            SrcIterator isend = iend;
+            for(; iss != isend ; --ik, ++iss)
+            {
+                sum += ka(ik) * sa(iss);
+            }
+            
+            int x0 = -kleft - w + x + 1;
+            iss = ibegin;
+            
+            for(; x0; --x0, --ik, ++iss)
+            {
+                sum += ka(ik) * sa(iss);
+            }
+        }
+        else
+        {
+            SrcIterator iss = is - kright;
+            SrcIterator isend = is + (1 - kleft);
+            for(; iss != isend ; --ik, ++iss)
+            {
+                sum += ka(ik) * sa(iss);
+            }
+        }
+        
+        da.set(NumericTraits<typename 
+                      DestAccessor::value_type>::fromRealPromote(sum), id);
     }
 }
 
@@ -115,76 +116,76 @@ void internalConvolveLineWrap(SrcIterator is, SrcIterator iend, SrcAccessor sa,
 
 template <class SrcIterator, class SrcAccessor,
           class DestIterator, class DestAccessor, 
-	  class KernelIterator, class KernelAccessor, 
-	  class Norm>
+          class KernelIterator, class KernelAccessor, 
+          class Norm>
 void internalConvolveLineClip(SrcIterator is, SrcIterator iend, SrcAccessor sa,
                               DestIterator id, DestAccessor da,
-			      KernelIterator kernel, KernelAccessor ka,
-			      int kleft, int kright, Norm norm)
+                              KernelIterator kernel, KernelAccessor ka,
+                              int kleft, int kright, Norm norm)
 {
     int w = iend - is;
     
     typedef typename NumericTraits<typename 
-	              SrcAccessor::value_type>::RealPromote SumType;
+                      SrcAccessor::value_type>::RealPromote SumType;
     
     SrcIterator ibegin = is;
     
     for(int x=0; x<w; ++x, ++is, ++id)
     {
-	KernelIterator ik = kernel + kright;
-	SumType sum = NumericTraits<SumType>::zero();    
+        KernelIterator ik = kernel + kright;
+        SumType sum = NumericTraits<SumType>::zero();    
 
-	if(x < kright)
-	{
-	    int x0 = x - kright;
-	    Norm clipped = NumericTraits<Norm>::zero(); 
+        if(x < kright)
+        {
+            int x0 = x - kright;
+            Norm clipped = NumericTraits<Norm>::zero(); 
 
-	    for(; x0; ++x0, --ik)
-	    {
-		clipped += ka(ik);
-	    }
-	
-	    SrcIterator iss = ibegin;
-	    SrcIterator isend = is + (1 - kleft);
-	    for(; iss != isend ; --ik, ++iss)
-	    {
-		sum += ka(ik) * sa(iss);
-	    }
-	    
-	    sum = norm / (norm - clipped) * sum;
-	}
-	else if(w-x <= -kleft)
-	{
-	    SrcIterator iss = is + (-kright);
-	    SrcIterator isend = iend;
-	    for(; iss != isend ; --ik, ++iss)
-	    {
-		sum += ka(ik) * sa(iss);
-	    }
-	    
-	    Norm clipped = NumericTraits<Norm>::zero(); 
+            for(; x0; ++x0, --ik)
+            {
+                clipped += ka(ik);
+            }
+        
+            SrcIterator iss = ibegin;
+            SrcIterator isend = is + (1 - kleft);
+            for(; iss != isend ; --ik, ++iss)
+            {
+                sum += ka(ik) * sa(iss);
+            }
+            
+            sum = norm / (norm - clipped) * sum;
+        }
+        else if(w-x <= -kleft)
+        {
+            SrcIterator iss = is + (-kright);
+            SrcIterator isend = iend;
+            for(; iss != isend ; --ik, ++iss)
+            {
+                sum += ka(ik) * sa(iss);
+            }
+            
+            Norm clipped = NumericTraits<Norm>::zero(); 
 
-	    int x0 = -kleft - w + x + 1;
-	    
-	    for(; x0; --x0, --ik)
-	    {
-		clipped += ka(ik);
-	    }
-	    
-	    sum = norm / (norm - clipped) * sum;
-	}
-	else
-	{
-	    SrcIterator iss = is + (-kright);
-	    SrcIterator isend = is + (1 - kleft);
-	    for(; iss != isend ; --ik, ++iss)
-	    {
-		sum += ka(ik) * sa(iss);
-	    }
-	}
-	
-	da.set(NumericTraits<typename 
-	              DestAccessor::value_type>::fromRealPromote(sum), id);
+            int x0 = -kleft - w + x + 1;
+            
+            for(; x0; --x0, --ik)
+            {
+                clipped += ka(ik);
+            }
+            
+            sum = norm / (norm - clipped) * sum;
+        }
+        else
+        {
+            SrcIterator iss = is + (-kright);
+            SrcIterator isend = is + (1 - kleft);
+            for(; iss != isend ; --ik, ++iss)
+            {
+                sum += ka(ik) * sa(iss);
+            }
+        }
+        
+        da.set(NumericTraits<typename 
+                      DestAccessor::value_type>::fromRealPromote(sum), id);
     }
 }
 
@@ -196,69 +197,69 @@ void internalConvolveLineClip(SrcIterator is, SrcIterator iend, SrcAccessor sa,
 
 template <class SrcIterator, class SrcAccessor,
           class DestIterator, class DestAccessor, 
-	  class KernelIterator, class KernelAccessor>
+          class KernelIterator, class KernelAccessor>
 void internalConvolveLineReflect(SrcIterator is, SrcIterator iend, SrcAccessor sa,
                               DestIterator id, DestAccessor da,
-			      KernelIterator kernel, KernelAccessor ka,
-			      int kleft, int kright)
+                              KernelIterator kernel, KernelAccessor ka,
+                              int kleft, int kright)
 {
     int w = iend - is;
     
     typedef typename NumericTraits<typename 
-	              SrcAccessor::value_type>::RealPromote SumType;
+                      SrcAccessor::value_type>::RealPromote SumType;
     
     SrcIterator ibegin = is;
     
     for(int x=0; x<w; ++x, ++is, ++id)
     {
-	KernelIterator ik = kernel + kright;
-	SumType sum = NumericTraits<SumType>::zero();    
+        KernelIterator ik = kernel + kright;
+        SumType sum = NumericTraits<SumType>::zero();    
 
-	if(x < kright)
-	{
-	    int x0 = x - kright;
-	    SrcIterator iss = ibegin - x0;
-	    
-	    for(; x0; ++x0, --ik, --iss)
-	    {
-		sum += ka(ik) * sa(iss);
-	    }
-	
-	    SrcIterator isend = is + (1 - kleft);
-	    for(; iss != isend ; --ik, ++iss)
-	    {
-		sum += ka(ik) * sa(iss);
-	    }
-	}
-	else if(w-x <= -kleft)
-	{
-	    SrcIterator iss = is + (-kright);
-	    SrcIterator isend = iend;
-	    for(; iss != isend ; --ik, ++iss)
-	    {
-		sum += ka(ik) * sa(iss);
-	    }
-	    
-	    int x0 = -kleft - w + x + 1;
-	    iss = iend - 2;
-	    
-	    for(; x0; --x0, --ik, --iss)
-	    {
-		sum += ka(ik) * sa(iss);
-	    }
-	}
-	else
-	{
-	    SrcIterator iss = is + (-kright);
-	    SrcIterator isend = is + (1 - kleft);
-	    for(; iss != isend ; --ik, ++iss)
-	    {
-		sum += ka(ik) * sa(iss);
-	    }
-	}
-	
-	da.set(NumericTraits<typename 
-	              DestAccessor::value_type>::fromRealPromote(sum), id);
+        if(x < kright)
+        {
+            int x0 = x - kright;
+            SrcIterator iss = ibegin - x0;
+            
+            for(; x0; ++x0, --ik, --iss)
+            {
+                sum += ka(ik) * sa(iss);
+            }
+        
+            SrcIterator isend = is + (1 - kleft);
+            for(; iss != isend ; --ik, ++iss)
+            {
+                sum += ka(ik) * sa(iss);
+            }
+        }
+        else if(w-x <= -kleft)
+        {
+            SrcIterator iss = is + (-kright);
+            SrcIterator isend = iend;
+            for(; iss != isend ; --ik, ++iss)
+            {
+                sum += ka(ik) * sa(iss);
+            }
+            
+            int x0 = -kleft - w + x + 1;
+            iss = iend - 2;
+            
+            for(; x0; --x0, --ik, --iss)
+            {
+                sum += ka(ik) * sa(iss);
+            }
+        }
+        else
+        {
+            SrcIterator iss = is + (-kright);
+            SrcIterator isend = is + (1 - kleft);
+            for(; iss != isend ; --ik, ++iss)
+            {
+                sum += ka(ik) * sa(iss);
+            }
+        }
+        
+        da.set(NumericTraits<typename 
+                      DestAccessor::value_type>::fromRealPromote(sum), id);
     }
 }
 
@@ -270,69 +271,69 @@ void internalConvolveLineReflect(SrcIterator is, SrcIterator iend, SrcAccessor s
 
 template <class SrcIterator, class SrcAccessor,
           class DestIterator, class DestAccessor, 
-	  class KernelIterator, class KernelAccessor>
+          class KernelIterator, class KernelAccessor>
 void internalConvolveLineRepeat(SrcIterator is, SrcIterator iend, SrcAccessor sa,
                               DestIterator id, DestAccessor da,
-			      KernelIterator kernel, KernelAccessor ka,
-			      int kleft, int kright)
+                              KernelIterator kernel, KernelAccessor ka,
+                              int kleft, int kright)
 {
     int w = iend - is;
     
     typedef typename NumericTraits<typename 
-	              SrcAccessor::value_type>::RealPromote SumType;
+                      SrcAccessor::value_type>::RealPromote SumType;
     
     SrcIterator ibegin = is;
     
     for(int x=0; x<w; ++x, ++is, ++id)
     {
-	KernelIterator ik = kernel + kright;
-	SumType sum = NumericTraits<SumType>::zero();    
+        KernelIterator ik = kernel + kright;
+        SumType sum = NumericTraits<SumType>::zero();    
 
-	if(x < kright)
-	{
-	    int x0 = x - kright;
-	    SrcIterator iss = ibegin;
-	    
-	    for(; x0; ++x0, --ik)
-	    {
-		sum += ka(ik) * sa(iss);
-	    }
-	
-	    SrcIterator isend = is + (1 - kleft);
-	    for(; iss != isend ; --ik, ++iss)
-	    {
-		sum += ka(ik) * sa(iss);
-	    }
-	}
-	else if(w-x <= -kleft)
-	{
-	    SrcIterator iss = is + (-kright);
-	    SrcIterator isend = iend;
-	    for(; iss != isend ; --ik, ++iss)
-	    {
-		sum += ka(ik) * sa(iss);
-	    }
-	    
-	    int x0 = -kleft - w + x + 1;
-	    iss = iend - 1;
-	    
-	    for(; x0; --x0, --ik)
-	    {
-		sum += ka(ik) * sa(iss);
-	    }
-	}
-	else
-	{
-	    SrcIterator iss = is + (-kright);
-	    SrcIterator isend = is + (1 - kleft);
-	    for(; iss != isend ; --ik, ++iss)
-	    {
-		sum += ka(ik) * sa(iss);
-	    }
-	}
-	
-	da.set(NumericTraits<typename 
-	              DestAccessor::value_type>::fromRealPromote(sum), id);
+        if(x < kright)
+        {
+            int x0 = x - kright;
+            SrcIterator iss = ibegin;
+            
+            for(; x0; ++x0, --ik)
+            {
+                sum += ka(ik) * sa(iss);
+            }
+        
+            SrcIterator isend = is + (1 - kleft);
+            for(; iss != isend ; --ik, ++iss)
+            {
+                sum += ka(ik) * sa(iss);
+            }
+        }
+        else if(w-x <= -kleft)
+        {
+            SrcIterator iss = is + (-kright);
+            SrcIterator isend = iend;
+            for(; iss != isend ; --ik, ++iss)
+            {
+                sum += ka(ik) * sa(iss);
+            }
+            
+            int x0 = -kleft - w + x + 1;
+            iss = iend - 1;
+            
+            for(; x0; --x0, --ik)
+            {
+                sum += ka(ik) * sa(iss);
+            }
+        }
+        else
+        {
+            SrcIterator iss = is + (-kright);
+            SrcIterator isend = is + (1 - kleft);
+            for(; iss != isend ; --ik, ++iss)
+            {
+                sum += ka(ik) * sa(iss);
+            }
+        }
+        
+        da.set(NumericTraits<typename 
+                      DestAccessor::value_type>::fromRealPromote(sum), id);
     }
 }
 
@@ -344,34 +345,34 @@ void internalConvolveLineRepeat(SrcIterator is, SrcIterator iend, SrcAccessor sa
 
 template <class SrcIterator, class SrcAccessor,
           class DestIterator, class DestAccessor, 
-	  class KernelIterator, class KernelAccessor>
+          class KernelIterator, class KernelAccessor>
 void internalConvolveLineAvoid(SrcIterator is, SrcIterator iend, SrcAccessor sa,
                               DestIterator id, DestAccessor da,
-			      KernelIterator kernel, KernelAccessor ka,
-			      int kleft, int kright)
+                              KernelIterator kernel, KernelAccessor ka,
+                              int kleft, int kright)
 {
     int w = iend - is;
     
     typedef typename NumericTraits<typename 
-	              SrcAccessor::value_type>::RealPromote SumType;
+                      SrcAccessor::value_type>::RealPromote SumType;
     
     is += kright;
     id += kright;
     
     for(int x=kright; x<w+kleft; ++x, ++is, ++id)
     {
-	KernelIterator ik = kernel + kright;
-	SumType sum = NumericTraits<SumType>::zero();    
+        KernelIterator ik = kernel + kright;
+        SumType sum = NumericTraits<SumType>::zero();    
 
-	SrcIterator iss = is + (-kright);
-	SrcIterator isend = is + (1 - kleft);
-	for(; iss != isend ; --ik, ++iss)
-	{
-	    sum += ka(ik) * sa(iss);
-	}
-	
-	da.set(NumericTraits<typename 
-	              DestAccessor::value_type>::fromRealPromote(sum), id);
+        SrcIterator iss = is + (-kright);
+        SrcIterator isend = is + (1 - kleft);
+        for(; iss != isend ; --ik, ++iss)
+        {
+            sum += ka(ik) * sa(iss);
+        }
+        
+        da.set(NumericTraits<typename 
+                      DestAccessor::value_type>::fromRealPromote(sum), id);
     }
 }
 
@@ -416,12 +417,12 @@ void internalConvolveLineAvoid(SrcIterator is, SrcIterator iend, SrcAccessor sa,
     \code
     namespace vigra {
         template <class SrcIterator, class SrcAccessor,
-	          class DestIterator, class DestAccessor, 
-	          class KernelIterator, class KernelAccessor>
+                  class DestIterator, class DestAccessor, 
+                  class KernelIterator, class KernelAccessor>
         void convolveLine(SrcIterator is, SrcIterator isend, SrcAccessor sa,
-		          DestIterator id, DestAccessor da,
-		          KernelIterator ik, KernelAccessor ka,
-		          int kleft, int kright, BorderTreatmentMode border)
+                          DestIterator id, DestAccessor da,
+                          KernelIterator ik, KernelAccessor ka,
+                          int kleft, int kright, BorderTreatmentMode border)
     }
     \endcode
     
@@ -430,12 +431,12 @@ void internalConvolveLineAvoid(SrcIterator is, SrcIterator iend, SrcAccessor sa,
     \code
     namespace vigra {
         template <class SrcIterator, class SrcAccessor,
-	          class DestIterator, class DestAccessor, 
-	          class KernelIterator, class KernelAccessor>
+                  class DestIterator, class DestAccessor, 
+                  class KernelIterator, class KernelAccessor>
         void convolveLine(triple<SrcIterator, SrcIterator, SrcAccessor> src,
-		          pair<DestIterator, DestAccessor> dest,
-		          tuple5<KernelIterator, KernelAccessor,
-			         int, int, BorderTreatmentMode> kernel)
+                          pair<DestIterator, DestAccessor> dest,
+                          tuple5<KernelIterator, KernelAccessor,
+                                 int, int, BorderTreatmentMode> kernel)
     }
     \endcode
     
@@ -451,14 +452,14 @@ void internalConvolveLineAvoid(SrcIterator is, SrcIterator iend, SrcAccessor sa,
     // define binomial filter of size 5
     static float kernel[] = 
            { 1.0/16.0, 4.0/16.0, 6.0/16.0, 4.0/16.0, 1.0/16.0};
-	   
+           
     typedef vigra::StandardAccessor<float> FAccessor;
     typedef vigra::StandardAccessor<float> KernelAccessor;
     
     
     vigra::convolveLine(src.begin(), src.end(), FAccessor(), dest.begin(), FAccessor(),
-	     kernel+2, KernelAccessor(), -2, 2, BORDER_TREATMENT_REFLECT);
-    //       ^^^^^^^^  this is the center of the kernel	     
+             kernel+2, KernelAccessor(), -2, 2, BORDER_TREATMENT_REFLECT);
+    //       ^^^^^^^^  this is the center of the kernel      
     
     \endcode
 
@@ -509,11 +510,11 @@ void internalConvolveLineAvoid(SrcIterator is, SrcIterator iend, SrcAccessor sa,
 */
 template <class SrcIterator, class SrcAccessor,
           class DestIterator, class DestAccessor, 
-	  class KernelIterator, class KernelAccessor>
+          class KernelIterator, class KernelAccessor>
 void convolveLine(SrcIterator is, SrcIterator iend, SrcAccessor sa,
                   DestIterator id, DestAccessor da,
-	          KernelIterator ik, KernelAccessor ka,
-		  int kleft, int kright, BorderTreatmentMode border)
+                  KernelIterator ik, KernelAccessor ka,
+                  int kleft, int kright, BorderTreatmentMode border)
 {
     typedef typename KernelAccessor::value_type KernelValue;
     
@@ -531,59 +532,59 @@ void convolveLine(SrcIterator is, SrcIterator iend, SrcAccessor sa,
       case BORDER_TREATMENT_WRAP:
       {
         internalConvolveLineWrap(is, iend, sa, id, da, ik, ka, kleft, kright);
-	break;
+        break;
       }
       case BORDER_TREATMENT_AVOID:
       {
         internalConvolveLineAvoid(is, iend, sa, id, da, ik, ka, kleft, kright);
-	break;
+        break;
       }
       case BORDER_TREATMENT_REFLECT:
       {
         internalConvolveLineReflect(is, iend, sa, id, da, ik, ka, kleft, kright);
-	break;
+        break;
       }
       case BORDER_TREATMENT_REPEAT:
       {
         internalConvolveLineRepeat(is, iend, sa, id, da, ik, ka, kleft, kright);
-	break;
+        break;
       }
       case BORDER_TREATMENT_CLIP:
       {
         // find norm of kernel
-	typedef typename KernelAccessor::value_type KT;
-	KT norm = NumericTraits<KT>::zero();
-	KernelIterator iik = ik + kleft;
-	for(int i=kleft; i<=kright; ++i, ++iik) norm += ka(iik);
-	
-	vigra_precondition(norm != NumericTraits<KT>::zero(),
-	             "convolveLine(): Norm of kernel must be != 0"
-		     " in mode BORDER_TREATMENT_CLIP.\n");
-		     
+        typedef typename KernelAccessor::value_type KT;
+        KT norm = NumericTraits<KT>::zero();
+        KernelIterator iik = ik + kleft;
+        for(int i=kleft; i<=kright; ++i, ++iik) norm += ka(iik);
+        
+        vigra_precondition(norm != NumericTraits<KT>::zero(),
+                     "convolveLine(): Norm of kernel must be != 0"
+                     " in mode BORDER_TREATMENT_CLIP.\n");
+                     
         internalConvolveLineClip(is, iend, sa, id, da, ik, ka, kleft, kright, norm);
-	break;
+        break;
       }
       default:
       {
-	vigra_precondition(0,
-	             "convolveLine(): Unknown border treatment mode.\n");
+        vigra_precondition(0,
+                     "convolveLine(): Unknown border treatment mode.\n");
       }        
     }
 }
 
 template <class SrcIterator, class SrcAccessor,
           class DestIterator, class DestAccessor, 
-	  class KernelIterator, class KernelAccessor>
+          class KernelIterator, class KernelAccessor>
 inline 
 void convolveLine(triple<SrcIterator, SrcIterator, SrcAccessor> src,
                   pair<DestIterator, DestAccessor> dest,
-	          tuple5<KernelIterator, KernelAccessor,
-		         int, int, BorderTreatmentMode> kernel)
+                  tuple5<KernelIterator, KernelAccessor,
+                         int, int, BorderTreatmentMode> kernel)
 {
     convolveLine(src.first, src.second, src.third,
                  dest.first, dest.second,
-		 kernel.first, kernel.second, 
-		 kernel.third, kernel.fourth, kernel.fifth);
+                 kernel.first, kernel.second, 
+                 kernel.third, kernel.fourth, kernel.fifth);
 }
 
 /********************************************************/
@@ -604,13 +605,13 @@ void convolveLine(triple<SrcIterator, SrcIterator, SrcAccessor> src,
     \code
     namespace vigra {
         template <class SrcImageIterator, class SrcAccessor,
-	          class DestImageIterator, class DestAccessor, 
-	          class KernelIterator, class KernelAccessor>
+                  class DestImageIterator, class DestAccessor, 
+                  class KernelIterator, class KernelAccessor>
         void separableConvolveX(SrcImageIterator supperleft, 
-			        SrcImageIterator slowerright, SrcAccessor sa,
-			        DestImageIterator dupperleft, DestAccessor da,
-			        KernelIterator ik, KernelAccessor ka,
-			        int kleft, int kright, BorderTreatmentMode border)
+                                SrcImageIterator slowerright, SrcAccessor sa,
+                                DestImageIterator dupperleft, DestAccessor da,
+                                KernelIterator ik, KernelAccessor ka,
+                                int kleft, int kright, BorderTreatmentMode border)
     }
     \endcode
     
@@ -619,12 +620,12 @@ void convolveLine(triple<SrcIterator, SrcIterator, SrcAccessor> src,
     \code
     namespace vigra {
         template <class SrcImageIterator, class SrcAccessor,
-	          class DestImageIterator, class DestAccessor, 
-	          class KernelIterator, class KernelAccessor>
+                  class DestImageIterator, class DestAccessor, 
+                  class KernelIterator, class KernelAccessor>
         void separableConvolveX(triple<SrcImageIterator, SrcImageIterator, SrcAccessor> src,
-		                pair<DestImageIterator, DestAccessor> dest,
-		                tuple5<KernelIterator, KernelAccessor,
-			                     int, int, BorderTreatmentMode> kernel)
+                                pair<DestImageIterator, DestAccessor> dest,
+                                tuple5<KernelIterator, KernelAccessor,
+                                             int, int, BorderTreatmentMode> kernel)
     }
     \endcode
     
@@ -648,12 +649,12 @@ void convolveLine(triple<SrcIterator, SrcIterator, SrcAccessor> src,
 */
 template <class SrcIterator, class SrcAccessor,
           class DestIterator, class DestAccessor, 
-	  class KernelIterator, class KernelAccessor>
+          class KernelIterator, class KernelAccessor>
 void separableConvolveX(SrcIterator supperleft, 
                         SrcIterator slowerright, SrcAccessor sa,
                         DestIterator dupperleft, DestAccessor da,
-	                KernelIterator ik, KernelAccessor ka,
-		        int kleft, int kright, BorderTreatmentMode border)
+                        KernelIterator ik, KernelAccessor ka,
+                        int kleft, int kright, BorderTreatmentMode border)
 {
     typedef typename KernelAccessor::value_type KernelValue;
     
@@ -672,27 +673,27 @@ void separableConvolveX(SrcIterator supperleft,
     
     for(y=0; y<h; ++y, ++supperleft.y, ++dupperleft.y)
     {
-	typename SrcIterator::row_iterator rs = supperleft.rowIterator();
-	typename DestIterator::row_iterator rd = dupperleft.rowIterator(); 
-	
-	convolveLine(rs, rs+w, sa, rd, da, 
-	             ik, ka, kleft, kright, border);
+        typename SrcIterator::row_iterator rs = supperleft.rowIterator();
+        typename DestIterator::row_iterator rd = dupperleft.rowIterator(); 
+        
+        convolveLine(rs, rs+w, sa, rd, da, 
+                     ik, ka, kleft, kright, border);
     }
 }
 
 template <class SrcIterator, class SrcAccessor,
           class DestIterator, class DestAccessor, 
-	  class KernelIterator, class KernelAccessor>
+          class KernelIterator, class KernelAccessor>
 inline void 
 separableConvolveX(triple<SrcIterator, SrcIterator, SrcAccessor> src,
                   pair<DestIterator, DestAccessor> dest,
-	          tuple5<KernelIterator, KernelAccessor,
-		         int, int, BorderTreatmentMode> kernel)
+                  tuple5<KernelIterator, KernelAccessor,
+                         int, int, BorderTreatmentMode> kernel)
 {
     separableConvolveX(src.first, src.second, src.third,
                  dest.first, dest.second,
-		 kernel.first, kernel.second, 
-		 kernel.third, kernel.fourth, kernel.fifth);
+                 kernel.first, kernel.second, 
+                 kernel.third, kernel.fourth, kernel.fifth);
 }
 
 
@@ -715,13 +716,13 @@ separableConvolveX(triple<SrcIterator, SrcIterator, SrcAccessor> src,
     \code
     namespace vigra {
         template <class SrcImageIterator, class SrcAccessor,
-	          class DestImageIterator, class DestAccessor, 
-	          class KernelIterator, class KernelAccessor>
+                  class DestImageIterator, class DestAccessor, 
+                  class KernelIterator, class KernelAccessor>
         void separableConvolveY(SrcImageIterator supperleft, 
-			        SrcImageIterator slowerright, SrcAccessor sa,
-			        DestImageIterator dupperleft, DestAccessor da,
-			        KernelIterator ik, KernelAccessor ka,
-			        int kleft, int kright, BorderTreatmentMode border)
+                                SrcImageIterator slowerright, SrcAccessor sa,
+                                DestImageIterator dupperleft, DestAccessor da,
+                                KernelIterator ik, KernelAccessor ka,
+                                int kleft, int kright, BorderTreatmentMode border)
     }
     \endcode
     
@@ -730,12 +731,12 @@ separableConvolveX(triple<SrcIterator, SrcIterator, SrcAccessor> src,
     \code
     namespace vigra {
         template <class SrcImageIterator, class SrcAccessor,
-	          class DestImageIterator, class DestAccessor, 
-	          class KernelIterator, class KernelAccessor>
+                  class DestImageIterator, class DestAccessor, 
+                  class KernelIterator, class KernelAccessor>
         void separableConvolveY(triple<SrcImageIterator, SrcImageIterator, SrcAccessor> src,
-		                pair<DestImageIterator, DestAccessor> dest,
-		                tuple5<KernelIterator, KernelAccessor,
-			                     int, int, BorderTreatmentMode> kernel)
+                                pair<DestImageIterator, DestAccessor> dest,
+                                tuple5<KernelIterator, KernelAccessor,
+                                             int, int, BorderTreatmentMode> kernel)
     }
     \endcode
     
@@ -759,12 +760,12 @@ separableConvolveX(triple<SrcIterator, SrcIterator, SrcAccessor> src,
 */
 template <class SrcIterator, class SrcAccessor,
           class DestIterator, class DestAccessor, 
-	  class KernelIterator, class KernelAccessor>
+          class KernelIterator, class KernelAccessor>
 void separableConvolveY(SrcIterator supperleft, 
                         SrcIterator slowerright, SrcAccessor sa,
                         DestIterator dupperleft, DestAccessor da,
-	                KernelIterator ik, KernelAccessor ka,
-		        int kleft, int kright, BorderTreatmentMode border)
+                        KernelIterator ik, KernelAccessor ka,
+                        int kleft, int kright, BorderTreatmentMode border)
 {
     typedef typename KernelAccessor::value_type KernelValue;
     
@@ -783,27 +784,27 @@ void separableConvolveY(SrcIterator supperleft,
     
     for(x=0; x<w; ++x, ++supperleft.x, ++dupperleft.x)
     {
-	typename SrcIterator::column_iterator cs = supperleft.columnIterator();
-	typename DestIterator::column_iterator cd = dupperleft.columnIterator(); 
-	
-	convolveLine(cs, cs+h, sa, cd, da, 
-	             ik, ka, kleft, kright, border);
+        typename SrcIterator::column_iterator cs = supperleft.columnIterator();
+        typename DestIterator::column_iterator cd = dupperleft.columnIterator(); 
+        
+        convolveLine(cs, cs+h, sa, cd, da, 
+                     ik, ka, kleft, kright, border);
     }
 }
 
 template <class SrcIterator, class SrcAccessor,
           class DestIterator, class DestAccessor, 
-	  class KernelIterator, class KernelAccessor>
+          class KernelIterator, class KernelAccessor>
 inline void 
 separableConvolveY(triple<SrcIterator, SrcIterator, SrcAccessor> src,
                   pair<DestIterator, DestAccessor> dest,
-	          tuple5<KernelIterator, KernelAccessor,
-		         int, int, BorderTreatmentMode> kernel)
+                  tuple5<KernelIterator, KernelAccessor,
+                         int, int, BorderTreatmentMode> kernel)
 {
     separableConvolveY(src.first, src.second, src.third,
                  dest.first, dest.second,
-		 kernel.first, kernel.second, 
-		 kernel.third, kernel.fourth, kernel.fifth);
+                 kernel.first, kernel.second, 
+                 kernel.third, kernel.fourth, kernel.fifth);
 }
 
 //@}
@@ -864,60 +865,60 @@ class Kernel1D
 {
   public:
         /** the kernel's value type
-	*/
+        */
     typedef ARITHTYPE value_type;
     
         /** 1D random access iterator over the kernel's values
-	*/
+        */
     typedef typename std::vector<value_type>::iterator Iterator;
     
         /** the kernel's accessor
-	*/
+        */
     typedef StandardAccessor<value_type> Accessor;
     
     struct InitProxy
     {
         InitProxy(Iterator i, int count, value_type & norm)
-	: iter_(i), base_(i),
-	  count_(count), sum_(count),
-	  norm_(norm)
-	{}
-	
-	~InitProxy()
-	{
-	    vigra_precondition(count_ == 1 || count_ == sum_,
-	          "Kernel1D::initExplicitly(): "
-		  "Too few init values.");
-	}
-	
-	InitProxy & operator,(value_type const & v)
-	{
-	    if(sum_ == count_) norm_ = *iter_;
-	    
-	    norm_ += v;
-	    
-	    --count_;
-	    vigra_precondition(count_ > 0,
-	          "Kernel1D::initExplicitly(): "
-		  "Too many init values.");
-		  
-	    ++iter_;
-	    *iter_ = v;
-	    
-	    return *this;
-	}
-	
-	Iterator iter_, base_;
-	int count_, sum_;
-	value_type & norm_;
+        : iter_(i), base_(i),
+          count_(count), sum_(count),
+          norm_(norm)
+        {}
+        
+        ~InitProxy()
+        {
+            vigra_precondition(count_ == 1 || count_ == sum_,
+                  "Kernel1D::initExplicitly(): "
+                  "Too few init values.");
+        }
+        
+        InitProxy & operator,(value_type const & v)
+        {
+            if(sum_ == count_) norm_ = *iter_;
+            
+            norm_ += v;
+            
+            --count_;
+            vigra_precondition(count_ > 0,
+                  "Kernel1D::initExplicitly(): "
+                  "Too many init values.");
+                  
+            ++iter_;
+            *iter_ = v;
+            
+            return *this;
+        }
+        
+        Iterator iter_, base_;
+        int count_, sum_;
+        value_type & norm_;
     };
     
     static value_type one() { return NumericTraits<value_type>::one(); }
     
         /** Default constructor.
-	    Creates a kernel of size 1 which would copy the signal
-	    unchanged.
-	*/
+            Creates a kernel of size 1 which would copy the signal
+            unchanged.
+        */
     Kernel1D()
     : kernel_(),
       left_(0),
@@ -929,7 +930,7 @@ class Kernel1D
     }
     
         /** Copy constructor.
-	*/
+        */
     Kernel1D(Kernel1D const & k)
     : kernel_(k.kernel_),
       left_(k.left_),
@@ -939,67 +940,67 @@ class Kernel1D
     {}
     
         /** Copy assignment.
-	*/
+        */
     Kernel1D & operator=(Kernel1D const & k)
     {
         if(this != &k)
-	{
-	    left_ = k.left_;
-	    right_ = k.right_;
-	    border_treatment_ = k.border_treatment_;
-	    norm_ = k.norm_;
-	    kernel_ = k.kernel_;
-	}
-	return *this;
+        {
+            left_ = k.left_;
+            right_ = k.right_;
+            border_treatment_ = k.border_treatment_;
+            norm_ = k.norm_;
+            kernel_ = k.kernel_;
+        }
+        return *this;
     }
     
         /** Initialisation. 
-	    This initializes the kernel with the given constant. The norm becomes
-	    v*size().
-	    
-	    Instead of a single value an initializer list of length size() 
-	    can be used like this:
-	    
-	    \code
-	    vigra::Kernel2D<float> roberts_gradient_x;
-	    
-	    roberts_gradient_x.initExplicitly(0, 1) = 1.0, -1.0;
-	    \endcode
-	    
-	    In this case, the norm will be set to the sum of the init values. 
-	    An initializer list of wrong length will result in a run-time error.
-	*/
+            This initializes the kernel with the given constant. The norm becomes
+            v*size().
+            
+            Instead of a single value an initializer list of length size() 
+            can be used like this:
+            
+            \code
+            vigra::Kernel2D<float> roberts_gradient_x;
+            
+            roberts_gradient_x.initExplicitly(0, 1) = 1.0, -1.0;
+            \endcode
+            
+            In this case, the norm will be set to the sum of the init values. 
+            An initializer list of wrong length will result in a run-time error.
+        */
     InitProxy operator=(value_type const & v)
     {
-	int size = right_ - left_ + 1;
-	for(unsigned int i=0; i<kernel_.size(); ++i) kernel_[i] = v;
-	norm_ = (double)size*v;
-	
-	return InitProxy(kernel_.begin(), size, norm_);
+        int size = right_ - left_ + 1;
+        for(unsigned int i=0; i<kernel_.size(); ++i) kernel_[i] = v;
+        norm_ = (double)size*v;
+        
+        return InitProxy(kernel_.begin(), size, norm_);
     }
     
         /** Destructor.
-	*/
+        */
     ~Kernel1D() 
     {}
     
         /** 
-	    Init as a Gaussian function. The radius of the kernel is 
-	    always 3*std_dev. 'norm' denotes the sum of all bins of the kernel.
-	    
-	    Precondition:  
-	    \code
-	    std_dev >= 0.0
-	    \endcode
-	    
-	    Postconditions: 
-	    \code
-	    1. left()  == -(int)(3.0*std_dev + 0.5)
-	    2. right() ==  (int)(3.0*std_dev + 0.5)
-	    3. borderTreatment() == BORDER_TREATMENT_CLIP
-	    4. norm() == norm
-	    \endcode
-	*/
+            Init as a Gaussian function. The radius of the kernel is 
+            always 3*std_dev. 'norm' denotes the sum of all bins of the kernel.
+            
+            Precondition:  
+            \code
+            std_dev >= 0.0
+            \endcode
+            
+            Postconditions: 
+            \code
+            1. left()  == -(int)(3.0*std_dev + 0.5)
+            2. right() ==  (int)(3.0*std_dev + 0.5)
+            3. borderTreatment() == BORDER_TREATMENT_CLIP
+            4. norm() == norm
+            \endcode
+        */
     void initGaussian(double std_dev, value_type norm);
     
         /** Init as a Gaussian function with norm 1. 
@@ -1011,28 +1012,28 @@ class Kernel1D
     
     
         /** 
-	    Init as a Gaussian derivative of order 'order'. 
-	    The radius of the kernel is always 3*std_dev.
-	    'norm' denotes the norm of the kernel as given by
-	      
-	    \f[ \sum_{i=left()}^{right()} 
-	                 \frac{(-i)^{order}kernel[i]}{order!} = norm
-	    \f]
-	    
-	    Preconditions:  
-	    \code
-	    1. std_dev >= 0.0
-	    2. order   >= 1
-	    \endcode
-	    
-	    Postconditions: 
-	    \code
-	    1. left()  == -(int)(3.0*std_dev + 0.5)
-	    2. right() ==  (int)(3.0*std_dev + 0.5)
-	    3. borderTreatment() == BORDER_TREATMENT_REPEAT
-	    4. norm() == norm
-	    \endcode
-	*/
+            Init as a Gaussian derivative of order 'order'. 
+            The radius of the kernel is always 3*std_dev.
+            'norm' denotes the norm of the kernel as given by
+              
+            \f[ \sum_{i=left()}^{right()} 
+                         \frac{(-i)^{order}kernel[i]}{order!} = norm
+            \f]
+            
+            Preconditions:  
+            \code
+            1. std_dev >= 0.0
+            2. order   >= 1
+            \endcode
+            
+            Postconditions: 
+            \code
+            1. left()  == -(int)(3.0*std_dev + 0.5)
+            2. right() ==  (int)(3.0*std_dev + 0.5)
+            3. borderTreatment() == BORDER_TREATMENT_REPEAT
+            4. norm() == norm
+            \endcode
+        */
     void initGaussianDerivative(double std_dev, int order, value_type norm);
     
         /** Init as a Gaussian derivative with norm 1. 
@@ -1043,22 +1044,22 @@ class Kernel1D
     }
     
         /** 
-	    Init as a Binomial filter. 'norm' denotes the sum of all bins 
-	    of the kernel.
-	    
-	    Precondition:  
-	    \code
-	    radius   >= 0
-	    \endcode
-	    
-	    Postconditions: 
-	    \code
-	    1. left()  == -radius
-	    2. right() ==  radius
-	    3. borderTreatment() == BORDER_TREATMENT_REFLECT
-	    4. norm() == norm
-	    \endcode
-	*/
+            Init as a Binomial filter. 'norm' denotes the sum of all bins 
+            of the kernel.
+            
+            Precondition:  
+            \code
+            radius   >= 0
+            \endcode
+            
+            Postconditions: 
+            \code
+            1. left()  == -radius
+            2. right() ==  radius
+            3. borderTreatment() == BORDER_TREATMENT_REFLECT
+            4. norm() == norm
+            \endcode
+        */
     void initBinomial(int radius, value_type norm);
     
         /** Init as a Binomial filter with norm 1. 
@@ -1069,22 +1070,22 @@ class Kernel1D
     }
     
         /** 
-	    Init as an Averaging filter. 'norm' denotes the sum of all bins 
-	    of the kernel. The window size is (2*radius+1) * (2*radius+1)
-	    
-	    Precondition:  
-	    \code
-	    radius   >= 0
-	    \endcode
-	    
-	    Postconditions: 
-	    \code
-	    1. left()  == -radius
-	    2. right() ==  radius
-	    3. borderTreatment() == BORDER_TREATMENT_CLIP
-	    4. norm() == norm
-	    \endcode
-	*/
+            Init as an Averaging filter. 'norm' denotes the sum of all bins 
+            of the kernel. The window size is (2*radius+1) * (2*radius+1)
+            
+            Precondition:  
+            \code
+            radius   >= 0
+            \endcode
+            
+            Postconditions: 
+            \code
+            1. left()  == -radius
+            2. right() ==  radius
+            3. borderTreatment() == BORDER_TREATMENT_CLIP
+            4. norm() == norm
+            \endcode
+        */
     void initAveraging(int radius, value_type norm);
     
         /** Init as a Averaging filter with norm 1. 
@@ -1095,17 +1096,17 @@ class Kernel1D
     }
     
         /** 
-	    Init as a symmetric gradient filter of the form
-	   <TT>[ 0.5 * norm, 0.0 * norm, -0.5 * norm]</TT>
-	    
-	    Postconditions: 
-	    \code
-	    1. left()  == -1
-	    2. right() ==  1
-	    3. borderTreatment() == BORDER_TREATMENT_REPEAT
-	    4. norm() == norm
-	    \endcode
-	*/
+            Init as a symmetric gradient filter of the form
+           <TT>[ 0.5 * norm, 0.0 * norm, -0.5 * norm]</TT>
+            
+            Postconditions: 
+            \code
+            1. left()  == -1
+            2. right() ==  1
+            3. borderTreatment() == BORDER_TREATMENT_REPEAT
+            4. norm() == norm
+            \endcode
+        */
     void 
     initSymmetricGradient(value_type norm );
     
@@ -1117,138 +1118,138 @@ class Kernel1D
     }
     
         /** Init the kernel by an explicit initializer list.
-	    The left and right boundaries of the kernel must be passed.
-	    A comma-separated initializer list is given after the assignment 
-	    operator. This function is used like this:
-		
-	    \code
-	    // define horizontal Roberts filter
-	    vigra::Kernel1D<float> roberts_gradient_x;
-	    
-	    roberts_gradient_x.initExplicitly(0, 1) = 1.0, -1.0;
-	    \endcode
-	    
-	    The norm is set to the sum of the initialzer values. If the wrong number of 
-	    values is given, a run-time error results. It is, however, possible to give 
-	    just one initializer. This creates an averaging filter with the given constant:
-	    
-	    \code
-	    vigra::Kernel1D<float> average5x1;
-	    
-	    average5x1.initExplicitly(-2, 2) = 1.0/5.0;
-	    \endcode
-	    
-	    Here, the norm is set to value*size().
-		
-	    <b> Preconditions:</b>
-	    
-	    \code
-	    
-	    1. left <= 0
-	    2. right >= 0
-	    3. the number of values in the initializer list 
-	       is 1 or equals the size of the kernel.
-	    \endcode
-	*/
+            The left and right boundaries of the kernel must be passed.
+            A comma-separated initializer list is given after the assignment 
+            operator. This function is used like this:
+                
+            \code
+            // define horizontal Roberts filter
+            vigra::Kernel1D<float> roberts_gradient_x;
+            
+            roberts_gradient_x.initExplicitly(0, 1) = 1.0, -1.0;
+            \endcode
+            
+            The norm is set to the sum of the initialzer values. If the wrong number of 
+            values is given, a run-time error results. It is, however, possible to give 
+            just one initializer. This creates an averaging filter with the given constant:
+            
+            \code
+            vigra::Kernel1D<float> average5x1;
+            
+            average5x1.initExplicitly(-2, 2) = 1.0/5.0;
+            \endcode
+            
+            Here, the norm is set to value*size().
+                
+            <b> Preconditions:</b>
+            
+            \code
+            
+            1. left <= 0
+            2. right >= 0
+            3. the number of values in the initializer list 
+               is 1 or equals the size of the kernel.
+            \endcode
+        */
     Kernel1D & initExplicitly(int left, int right)
     {
-   	vigra_precondition(left <= 0,
-		     "Kernel1D::initExplicitly(): left border must be <= 0.");
-   	vigra_precondition(right >= 0,
-		     "Kernel1D::initExplicitly(): right border must be <= 0.");
+        vigra_precondition(left <= 0,
+                     "Kernel1D::initExplicitly(): left border must be <= 0.");
+        vigra_precondition(right >= 0,
+                     "Kernel1D::initExplicitly(): right border must be <= 0.");
     
-	right_ = right;
-	left_ = left;
-	
-	kernel_.resize(right - left + 1);
-	
-	return *this;
+        right_ = right;
+        left_ = left;
+        
+        kernel_.resize(right - left + 1);
+        
+        return *this;
     }
     
         /** Get iterator to center of kernel 
-	    
-	    Postconditions: 
-	    \code
-	    
-	    center()[left()] ... center()[right()] are valid kernel positions 
-	    \endcode
-	*/
+            
+            Postconditions: 
+            \code
+            
+            center()[left()] ... center()[right()] are valid kernel positions 
+            \endcode
+        */
     Iterator center() 
     {
         return kernel_.begin() - left();
     }
     
         /** Access kernel value at specified location. 
-	    
-	    Preconditions: 
-	    \code
-	    
-	    left() <= location <= right() 
-	    \endcode
-	*/
+            
+            Preconditions: 
+            \code
+            
+            left() <= location <= right() 
+            \endcode
+        */
     value_type operator[](int location) 
     {
         return kernel_[location - left()];
     }
     
         /** left border of kernel (inclusive), always <= 0
-	*/
+        */
     int left() const { return left_; }
     
         /** right border of kernel (inclusive), always >= 0
-	*/
+        */
     int right() const { return right_; }
     
         /** size of kernel (right() - left() + 1)
-	*/
+        */
     int size() const { return right_ - left_ + 1; }
     
         /** current border treatment mode
-	*/
+        */
     BorderTreatmentMode borderTreatment() const 
     { return border_treatment_; }
     
         /** Set border treatment mode. 
-	*/
+        */
     void setBorderTreatment( BorderTreatmentMode new_mode)
     { border_treatment_ = new_mode; }
     
         /** norm of kernel
-	*/
+        */
     value_type norm() const { return norm_; }
     
         /** set a new norm and normalize kernel
-	*/
+        */
     void
     normalize(value_type norm) 
     { 
-	// normalize
-	Iterator i = kernel_.begin();
-	Iterator iend = kernel_.end();
-	typename NumericTraits<value_type>::RealPromote sum = *i;
-	++i;
-	
-	for(; i!= iend; ++i)  
-	{
-	    sum += *i;
-	}
-	
-	vigra_precondition(sum != NumericTraits<value_type>::zero(),
-	             "Kernel1D<ARITHTYPE>::normalize(): "
-		     "Cannot normalize a kernel with sum = 0");
-	
-	sum = norm / sum;
-	i = kernel_.begin();
-	for(; i != iend; ++i)  
-	{
-	    *i = *i * sum;
-	}        
+        // normalize
+        Iterator i = kernel_.begin();
+        Iterator iend = kernel_.end();
+        typename NumericTraits<value_type>::RealPromote sum = *i;
+        ++i;
+        
+        for(; i!= iend; ++i)  
+        {
+            sum += *i;
+        }
+        
+        vigra_precondition(sum != NumericTraits<value_type>::zero(),
+                     "Kernel1D<ARITHTYPE>::normalize(): "
+                     "Cannot normalize a kernel with sum = 0");
+        
+        sum = norm / sum;
+        i = kernel_.begin();
+        for(; i != iend; ++i)  
+        {
+            *i = *i * sum;
+        }        
 
-	norm_ = norm;
+        norm_ = norm;
     }
     
         /** normalize kernel to norm 1.
-	*/
+        */
     void
     normalize() 
     { 
@@ -1256,7 +1257,7 @@ class Kernel1D
     }
     
         /** get an accessor
-	*/
+        */
     Accessor accessor() const { return Accessor(); }
     
     
@@ -1275,7 +1276,7 @@ void Kernel1D<ARITHTYPE>::initGaussian(double std_dev,
 {
     vigra_precondition(std_dev >= 0.0,
               "Kernel1D::initGaussian(): Standard deviation must be >= 0.");
-	      
+              
     // first calculate required kernel sizes
     int radius = (int)(3.0*std_dev + 0.5);
     
@@ -1294,13 +1295,9 @@ void Kernel1D<ARITHTYPE>::initGaussian(double std_dev,
         int i;
         for(i=1; i<=radius; ++i)
         {
-#ifndef CMATH_NOT_IN_STD
-            x[i] = std::exp(-(double)i*i/sigma2);
-#else
-            x[i] = exp(-(double)i*i/sigma2);
-#endif
-	    x[-i] = x[i];
-	    sum += x[i] + x[i];
+            x[i] = VIGRA_CSTD::exp(-(double)i*i/sigma2);
+            x[-i] = x[i];
+            sum += x[i] + x[i];
         }
         // normalize
         value_type scale = (1.0 / sum) * norm;
@@ -1310,7 +1307,7 @@ void Kernel1D<ARITHTYPE>::initGaussian(double std_dev,
 
         for(i=0; i<=radius*2; ++i)
         {
-	    kernel_.push_back(kernel[i] * scale);
+            kernel_.push_back(kernel[i] * scale);
         }
     }
     else
@@ -1333,24 +1330,24 @@ template <class ARITHTYPE>
 void 
 Kernel1D<ARITHTYPE>::initGaussianDerivative(double std_dev, 
                     int order,
-		    Kernel1D<ARITHTYPE>::value_type norm)
+                    Kernel1D<ARITHTYPE>::value_type norm)
 {
     vigra_precondition(order >= 0,
               "Kernel1D::initGaussianDerivative(): Order must be >= 0.");
-	      
+              
     vigra_precondition(std_dev >= 0.0,
               "Kernel1D::initGaussianDerivative(): "
-	      "Standard deviation must be >= 0.");
+              "Standard deviation must be >= 0.");
               
     if(order == 0)
     {
         initGaussian(std_dev, norm);
         return;
     }
-	      
+              
     // first calculate required kernel sizes
-    int radius = (int)(3.0*std_dev + 0.5);
-    
+     int radius = (int)((3.0+0.5*order)*std_dev + 0.5);
+   
     // allocate the kernels
     std::vector<double> kernel(radius*2+1);
     
@@ -1361,121 +1358,118 @@ Kernel1D<ARITHTYPE>::initGaussianDerivative(double std_dev,
     
     if(order == 1)
     {
-	// fill in the first derivative and calculate sum for normalization
-	double sum = *x = 0.0;
-	int i;
-	for(i=1; i<=radius; ++i)
-	{
-	    double xc = (double) i;
-#ifndef CMATH_NOT_IN_STD
-	    x[i] = xc * std::exp(-xc*xc/sigma2);
-#else
-	    x[i] = xc * exp(-xc*xc/sigma2);
-#endif
-	    x[-i] = -x[i];
-	    sum += 2.0 * xc * x[i];
-	}
-	
-	// normalize
-	value_type scale = (1.0 / sum) * norm;
-	
-	kernel_.erase(kernel_.begin(), kernel_.end());
-	kernel_.reserve(radius*2+1);
-	
-	for(i=0; i<=radius*2+1; ++i)
-	{
-	    kernel_.push_back(kernel[i] * scale);
-	}
+        // fill in the first derivative and calculate sum for normalization
+        double sum = *x = 0.0;
+        int i;
+        for(i=1; i<=radius; ++i)
+        {
+            double xc = (double) i;
+            x[i] = -xc * VIGRA_CSTD::exp(-xc*xc/sigma2);
+            x[-i] = -x[i];
+            sum += -2.0 * xc * x[i];
+        }
+        
+        // normalize
+        value_type scale = (1.0 / sum) * norm;
+        
+        kernel_.erase(kernel_.begin(), kernel_.end());
+        kernel_.reserve(radius*2+1);
+        
+        for(i=0; i<=radius*2+1; ++i)
+        {
+            kernel_.push_back(kernel[i] * scale);
+        }
     }
     else
     {
         // calculate derivative recursively according to
-	//            -x*x/t
-	//    f(x) = e
-	//
-	//     (n+1)                    (n)           (n-1)
-	//    f     (x) = -2/t * [ x * f   (x) + n * f     (x) ]
-	//
-	//
-	int w = 2*radius+1;
-	std::vector<double> buf(3*w);
-	
-	std::vector<double>::iterator x0 = buf.begin() + radius;
-	std::vector<double>::iterator x1 = x0 + w;
-	std::vector<double>::iterator x2 = x1 + w;
-	std::vector<double>::iterator xt;
-	
-	// fill x0 with Gaussian and x1 with first derivative
-	int i;
-	for(i=-radius; i<=radius; ++i)
-	{
-	    double xc = (double) i;
-#ifndef CMATH_NOT_IN_STD
-	    x0[i] = std::exp(-xc*xc/sigma2);
-#else
-	    x0[i] = exp(-xc*xc/sigma2);
-#endif
-	    x1[i] = -2.0 * xc / sigma2 * x0[i];
-	}
-	
-	// now iterate until desired derivative is reached
-	int current;
-	for(current = 2; current <= order; ++current)
+        //            -x*x/t
+        //    f(x) = e
+        //
+        //     (n+1)                    (n)           (n-1)
+        //    f     (x) = -2/t * [ x * f   (x) + n * f     (x) ]
+        //
+        //
+        int w = 2*radius+1;
+        std::vector<double> buf(3*w);
+        
+        std::vector<double>::iterator x0 = buf.begin() + radius;
+        std::vector<double>::iterator x1 = x0 + w;
+        std::vector<double>::iterator x2 = x1 + w;
+        std::vector<double>::iterator xt;
+        
+        // fill x0 with Gaussian and x1 with first derivative
+        int i;
+        for(i=-radius; i<=radius; ++i)
         {
-	    if(current != 2)
-	    {
-	        // rotate
-	        xt = x0;
-		x0 = x1;
-		x1 = x2;
-		x2 = xt;
-	    }
-	    for(i=-radius; i<=radius; ++i)
-	    {
-		double xc = (double) i;
-		x2[i] = -2.0 / sigma2 * (xc*x1[i] + x0[i]*(current-1));
-	    }
-	}
-	
-	// find faculty of order
-	double fac = 1.0;
-	for(current=order; current>1; --current)
-	{
-	    fac *= (double)current;
-	}
-	
-	// fill the results in the kernel, thereby reflecting at origin
-	// also calculate sum for normalization
-	double sum = 0.0;
-	for(i=-radius; i<=radius; ++i)
-	{
-	    x[-i] = x2[i];
-#ifndef CMATH_NOT_IN_STD
-	    sum += std::pow((double)i, (double)order) / fac * x2[i];
-#else
-	    sum += pow((double)i, (double)order) / fac * x2[i];
-#endif
-	}
-	
-	// normalize
-#ifndef CMATH_NOT_IN_STD
-	value_type scale = (1.0 / std::abs(sum)) * norm;
-#else
-	value_type scale = (1.0 / abs(sum)) * norm;
-#endif
-	
-	kernel_.erase(kernel_.begin(), kernel_.end());
-	kernel_.reserve(radius*2+1);
-	
-	for(i=radius*2; i>=0; --i)
-	{
-	    kernel_.push_back(kernel[i] * scale);
-	}
+            double xc = (double) i;
+            x0[i] = VIGRA_CSTD::exp(-xc*xc/sigma2);
+            x1[i] = -2.0 * xc / sigma2 * x0[i];
+        }
+        
+        // now iterate until desired derivative is reached
+        int current;
+        for(current = 2; current <= order; ++current)
+        {
+            if(current != 2)
+            {
+                // rotate
+                xt = x0;
+                x0 = x1;
+                x1 = x2;
+                x2 = xt;
+            }
+            for(i=-radius; i<=radius; ++i)
+            {
+                double xc = (double) i;
+                x2[i] = -2.0 / sigma2 * (xc*x1[i] + x0[i]*(current-1));
+            }
+        }
+        
+        // find faculty of order
+        double fac = 1.0;
+        for(current=order; current>1; --current)
+        {
+            fac *= (double)current;
+        }
+        
+        double dc = 0.0;
+        // calculate the DC component that was introduced
+        // by truncation of the Geussian
+        for(i=-radius; i<=radius; ++i)
+        {
+            dc += x2[i];
+        }
+        dc /= (2.0*radius + 1.0);
+        
+        // fill the results in the kernel, and
+        // calculate sum for normalization
+        double sum = 0.0;
+        for(i=-radius; i<=radius; ++i)
+        {
+            x[i] = x2[i] - dc;
+            sum += VIGRA_CSTD::pow(-(double)i, (double)order) / fac * x[i];
+        }
+        
+        // normalize
+        value_type scale = (1.0 / sum) * norm;
+        
+        kernel_.erase(kernel_.begin(), kernel_.end());
+        kernel_.reserve(radius*2+1);
+        
+        for(i=0; i<radius*2+1; ++i)
+        {
+            kernel_.push_back(kernel[i] * scale);
+        }
     }
         
     left_ = -radius;
     right_ = radius;
     norm_ = norm;
+
+    for (int i=0; i<2*radius+1;++i)
+        std::cerr << kernel_[i] << ' ';
+    std::cerr << std::endl;
 
     // best border treatment for Gaussian derivatives is 
     // BORDER_TREATMENT_REPEAT
@@ -1491,7 +1485,7 @@ Kernel1D<ARITHTYPE>::initBinomial(int radius,
 {
     vigra_precondition(radius > 0,
               "Kernel1D::initBinomial(): Radius must be > 0.");
-	      
+              
     // allocate the kernel
     std::vector<double> kernel(radius*2+1);
     
@@ -1505,10 +1499,10 @@ Kernel1D<ARITHTYPE>::initBinomial(int radius,
     for(j=radius-1; j>=-radius; --j)
     {
         for(i=j; i<radius; ++i)
-	{
-	    x[i] = (x[i] + x[i+1]) / 2.0;
-	}
-	x[radius] /= 2.0;
+        {
+            x[i] = (x[i] + x[i+1]) / 2.0;
+        }
+        x[radius] /= 2.0;
     }
     
     // normalize
@@ -1527,7 +1521,7 @@ Kernel1D<ARITHTYPE>::initBinomial(int radius,
     // best border treatment for Binomial is BORDER_TREATMENT_REFLECT
     border_treatment_ = BORDER_TREATMENT_REFLECT;  
 }
-	       
+               
 /***********************************************************************/
 
 template <class ARITHTYPE>
@@ -1536,7 +1530,7 @@ void Kernel1D<ARITHTYPE>::initAveraging(int radius,
 {
     vigra_precondition(radius > 0,
               "Kernel1D::initAveraging(): Radius must be > 0.");
-	      
+              
     // calculate scaling
     double scale = 1.0 / (radius * 2 + 1);
     
@@ -1606,12 +1600,12 @@ kernel1d(Kernel1D<T> & k)
 
 {
     return 
-	tuple5<typename Kernel1D<T>::Iterator, typename Kernel1D<T>::Accessor, 
-	       int, int, BorderTreatmentMode>(
+        tuple5<typename Kernel1D<T>::Iterator, typename Kernel1D<T>::Accessor, 
+               int, int, BorderTreatmentMode>(
                                      k.center(), 
-				     k.accessor(), 
-				     k.left(), k.right(), 
-				     k.borderTreatment());
+                                     k.accessor(), 
+                                     k.left(), k.right(), 
+                                     k.borderTreatment());
 }
 
 template <class T>
@@ -1622,12 +1616,12 @@ kernel1d(Kernel1D<T> & k, BorderTreatmentMode border)
 
 {
     return 
-	tuple5<typename Kernel1D<T>::Iterator, typename Kernel1D<T>::Accessor, 
-	       int, int, BorderTreatmentMode>(
+        tuple5<typename Kernel1D<T>::Iterator, typename Kernel1D<T>::Accessor, 
+               int, int, BorderTreatmentMode>(
                                      k.center(), 
-				     k.accessor(), 
-				     k.left(), k.right(), 
-				     border);
+                                     k.accessor(), 
+                                     k.left(), k.right(), 
+                                     border);
 }
 
 
