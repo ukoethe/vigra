@@ -23,7 +23,7 @@
 #include <stdexcept>
 #include "error.hxx"
 #include "byteorder.hxx"
-#include "void_vector.hxx"
+#include "vigra/void_vector.hxx"
 #include "sun.hxx"
 
 // magic number

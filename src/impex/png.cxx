@@ -23,7 +23,7 @@
 
 #include <stdexcept>
 #include <iostream>
-#include "void_vector.hxx"
+#include "vigra/void_vector.hxx"
 #include "auto_file.hxx"
 #include "png.hxx"
 #include "error.hxx"

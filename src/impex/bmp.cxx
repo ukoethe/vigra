@@ -22,7 +22,7 @@
 #include <iostream>
 #include <fstream>
 #include "error.hxx"
-#include "void_vector.hxx"
+#include "vigra/void_vector.hxx"
 #include "byteorder.hxx"
 #include "bmp.hxx"
 

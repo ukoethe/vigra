@@ -23,7 +23,7 @@
 #include <fstream>
 #include "error.hxx"
 #include "byteorder.hxx"
-#include "void_vector.hxx"
+#include "vigra/void_vector.hxx"
 #include "viff.hxx"
 
 // VIFF definitions from the specification
