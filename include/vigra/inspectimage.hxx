@@ -617,6 +617,13 @@ class FindMinMax
     : count(0)
     {}
 
+        /** (re-)init functor (clear min, max)
+        */
+    void reset()
+    {
+        count = 0;
+    }
+
         /** update min and max
         */
     void operator()(argument_type const & v)
@@ -739,6 +746,14 @@ class FindAverage
     : count(0), sum(NumericTraits<result_type>::zero())
     {}
 
+        /** (re-)init average
+        */
+    void reset()
+    {
+        count = 0;
+        sum = NumericTraits<result_type>::zero();
+    }
+
         /** update average
         */
     void operator()(argument_type const & v)
@@ -825,6 +840,13 @@ class FindROISize
     FindROISize()
     : count(0)
     {}
+
+        /** (re-)init ROI size with 0
+        */
+    void reset()
+    {
+        count = 0;
+    }
 
         /** update counter
         */
@@ -932,6 +954,13 @@ class FindBoundingRectangle
     FindBoundingRectangle()
     : valid(false)
     {}
+
+        /** (re-)init functor to find other bounds
+        */
+    void reset()
+    {
+        valid = false;
+    }
 
         /** update rectangle by including the coordinate coord
         */
