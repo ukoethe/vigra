@@ -173,7 +173,7 @@ void recursiveFilterLine(SrcIterator is, SrcIterator isend, SrcAccessor as,
         NumericTraits<typename SrcAccessor::value_type>::RealPromote TempType;
     typedef NumericTraits<typename DestAccessor::value_type> DestTraits;
     
-    // speichert den Ergebnis der linkseitigen Filterung.
+    // store result of causal filtering
     std::vector<TempType> vline(w);
     typename std::vector<TempType>::iterator line = vline.begin();
     
@@ -195,10 +195,10 @@ void recursiveFilterLine(SrcIterator is, SrcIterator isend, SrcAccessor as,
     }
     else if(border == BORDER_TREATMENT_WRAP)
     {
-        is = isend - (kernelw + 1); 
+        is = isend - kernelw; 
         old = (1.0 / (1.0 - b)) * as(is);
-	for(x = 0; x < kernelw; ++x, ++is)
-	    old = as(is) + b * old;
+        for(x = 0; x < kernelw; ++x, ++is)
+            old = as(is) + b * old;
     }
     else if(border == BORDER_TREATMENT_CLIP)
     {
@@ -224,17 +224,11 @@ void recursiveFilterLine(SrcIterator is, SrcIterator isend, SrcAccessor as,
     else if(border == BORDER_TREATMENT_REFLECT)
     {
         old = line[w-2];
-/*
-        is = isend - (kernelw + 1);
-        old = (1.0 / (1.0 - b)) * as(is); 
-        for(x = 0; x < kernelw; ++x, ++is)
-	   old = as(is) + b * old;
-*/
     }
     else if(border == BORDER_TREATMENT_WRAP)
     {
-      is = istart + (kernelw);
-      old = (1.0 / (1.0 - b)) * as(is);; 
+      is = istart + kernelw - 1;
+      old = (1.0 / (1.0 - b)) * as(is);
       for(x = 0; x < kernelw; ++x, --is)
           old = as(is) + b * old;
     }
@@ -247,9 +241,9 @@ void recursiveFilterLine(SrcIterator is, SrcIterator isend, SrcAccessor as,
     id += w - 1;
     if(border == BORDER_TREATMENT_CLIP)
     {    
-      //Korrekturfaktoren f’r b
+       // correction factors for b
         double bright = b;
-        double bleft = VIGRA_CSTD::pow(b, w);// b^w
+        double bleft = VIGRA_CSTD::pow(b, w);
 
         for(x=w-1; x>=0; --x, --is, --id)
         {    
