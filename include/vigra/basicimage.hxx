@@ -26,6 +26,7 @@
 
 #include <new>
 #include <memory>
+#include <algorithm>
 #include "vigra/utilities.hxx"
 
 namespace vigra {
@@ -518,6 +519,10 @@ class BasicImage
         */
     void resizeCopy(const BasicImage & rhs);
 
+        /** swap the internal data with the rhs image in constant time
+        */
+    void swap( BasicImage<PIXELTYPE>& rhs );
+
         /** width of Image
         */
     int width() const
@@ -601,6 +606,8 @@ class BasicImage
         */
     traverser upperLeft()
     {
+        vigra_precondition(data_ != 0,
+          "basicImage::upperLeft(): image must have non-zero size.");
         return traverser(lines_);
     }
 
@@ -610,6 +617,8 @@ class BasicImage
         */
     traverser lowerRight()
     {
+        vigra_precondition(data_ != 0,
+          "basicImage::lowerRight(): image must have non-zero size.");
         return upperLeft() + size();
     }
 
@@ -617,6 +626,8 @@ class BasicImage
         */
     const_traverser upperLeft() const
     {
+        vigra_precondition(data_ != 0,
+          "basicImage::upperLeft(): image must have non-zero size.");
         return const_traverser(const_cast<PIXELTYPE **>(lines_));
     }
 
@@ -626,6 +637,8 @@ class BasicImage
         */
     const_traverser lowerRight() const
     {
+        vigra_precondition(data_ != 0,
+          "basicImage::lowerRight(): image must have non-zero size.");
         return upperLeft() + size();
     }
 
@@ -633,6 +646,8 @@ class BasicImage
         */
     iterator begin()
     {
+        vigra_precondition(data_ != 0,
+          "basicImage::begin(): image must have non-zero size.");
         return data_;
     }
 
@@ -640,6 +655,8 @@ class BasicImage
         */
     iterator end()
     {
+        vigra_precondition(data_ != 0,
+          "basicImage::end(): image must have non-zero size.");
         return data_ + width() * height();
     }
 
@@ -647,6 +664,8 @@ class BasicImage
         */
     const_iterator begin() const
     {
+        vigra_precondition(data_ != 0,
+          "basicImage::begin(): image must have non-zero size.");
         return data_;
     }
 
@@ -654,6 +673,8 @@ class BasicImage
         */
     const_iterator end() const
     {
+        vigra_precondition(data_ != 0,
+          "basicImage::end(): image must have non-zero size.");
         return data_ + width() * height();
     }
 
@@ -777,6 +798,19 @@ BasicImage<PIXELTYPE>::resizeCopy(const BasicImage & rhs)
     lines_ = newlines;
     width_ = rhs.width();
     height_ = rhs.height();
+}
+
+template <class PIXELTYPE>
+void
+BasicImage<PIXELTYPE>::swap( BasicImage<PIXELTYPE>& rhs )
+{
+  if (&rhs!=this)
+  {
+    std::swap( data_, rhs.data_ );
+    std::swap( lines_, rhs.lines_ );
+    std::swap( width_, rhs.width_ );
+    std::swap( height_, rhs.height_ );
+  }
 }
 
 template <class PIXELTYPE>
