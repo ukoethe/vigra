@@ -261,7 +261,7 @@ PACKAGE_BUGREPORT=
 
 ac_unique_file="include/vigra/config.hxx"
 ac_default_prefix=`pwd`
-ac_default_docdir='$(prefix)/doc/vigra'
+ac_default_docdir='${prefix}/doc/vigra'
 
 # Initialize some variables set by options.
 ac_init_help=
@@ -4710,3 +4710,21 @@ if test "$no_create" != yes; then
 fi
 
 chmod +x config/vigra-config
+
+echopath()
+{
+    echo "$1" \
+    | sed "s,\$[({]exec_prefix[})],$exec_prefix," \
+    | sed "s,\$[({]prefix[})],$prefix,"
+}
+
+echo "configure finished."
+echo ""
+echo "TIFF support enabled (--with-tiff): $with_tiff"
+echo "JPEG support enabled (--with-jpeg): $with_jpeg"
+echo "FFTW support enabled (--with-fftw): $with_fftw"
+echo ""
+echopath "The vigraimpex library    will be installed in $libdir."
+echopath "The 'vigra-config' script will be installed in $bindir."
+echopath "The include files         will be installed in $includedir."
+echopath "The documentation         will be installed in $docdir."
