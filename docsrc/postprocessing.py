@@ -35,7 +35,7 @@ bullet2 = re.compile(r'<IMG SRC=icon2.gif>')
 links = re.compile(r'<I><A HREF="aindex.html"> alphabetic index.*?<br>')
 anchor = re.compile(r'(<A NAME=.*?>)\n(<A NAME =.*?>)\n<DT><br>(<IMG.*?>)(.*)\n', re.I)
 docanchor = re.compile(r'(<A NAME="DOC.DOCU">\n<br>)', re.I)
-href = re.compile(r'<a href=([^"].*?)>', re.I)
+href = re.compile(r'<a href=\s*?([^"].*?)>', re.I)
 
 # images
 vigraLogo = r'<IMG border=0 ALT="VIGRA" SRC="documents/vigra.gif">'
@@ -58,12 +58,12 @@ publicReplacement = tableHeader + r'\n<tr>\n' \
                     r'<td align=right>(click on <IMG ALT="+" SRC="documents/pfeil.gif"> to get details)\n</td>\n' \
                     r'</tr>\n</table>\n' \
                     r'<DL>\n<DT><B><BR>Public'
-linkReplacement = r'[ <a href="http://kogs-www.informatik.uni-hamburg.de/~koethe/vigra/">VIGRA Homepage</a> |\n' \
+linkReplacement = r'<p align=right>\n[ <a href="http://kogs-www.informatik.uni-hamburg.de/~koethe/vigra/">VIGRA Homepage</a> |\n' \
                   r' <a href="index.html">Documentation</a> |\n'\
                   r' <a href="aindex.html">Alphabetic Index</a> |\n'\
                   r' <a href="HIER.html">Class Hierarchy</a> ]\n</p>'
 bodyReplacement = r'<body  bgcolor="#f8f0e0" link="#0040b0" vlink="#a00040">\n'\
-                  r'<basefont face="Helvetica,Arial" size=3>\n<p align=right>\n' + linkReplacement
+                  r'<basefont face="Helvetica,Arial" size=3>\n' + linkReplacement
 
 def findHeading(text):
     result = heading.search(text, 1)
@@ -139,22 +139,31 @@ def convertBody(text):
     return text
     
 def convertAIndex(text):
-    text = re.sub(r'<H2>Variables</H2>', r'<H2>typedefs</H2>', text)
+    text = re.sub(r'<A HREF.*?>(<A HREF.*?</A>)</A>', r'\1', text)
+    text = re.sub(r'<A HREF="#installation">', r'<A HREF="index.html#installation">', text)
+    text = re.sub(r'<UL>\s.?</UL>', r'', text)
+    text = re.sub(r'<H2>Variables</H2>', r'<H2>Typedefs</H2>', text)
+    text = re.sub(r'<H2>Functions, Macros</H2>', r'<H2>Functions</H2>', text)
+    text = re.sub(r'<H2>Enums, Unions, Structs</H2>', r'<H2>Enums</H2>', text)
     text = re.sub(r'<H1>Table of contents</H1>', 
                    tableHeader + r'\n<tr>\n' \
-                   r'<th align=left><font size="+2">Table of Contents</font></th>\n' \
+                   r'<th align=left><font size="+3">Table of Contents</font></th>\n' \
                    r'<th align=right ><a href="index.html">' + vigraLogo + \
-                   r'</a><tr>\n</table>',
+                   r'</a>\n</tr>\n</table>' \
+                   r'<p align=right>\n[ <A href="#Classes">Classes</A> | ' \
+                   r'<A href="#Functions">Functions</A> | ' \
+                   r'<A href="#Typedefs">Typedefs</A> | ' \
+                   r'<A href="#Enums">Enums</A> ]\n</p>\n',
                    text)
-    text = re.sub(r'<H2>(.*?)</H2>', docuReplacement, text)
+    text = re.sub(r'<H2>(.*?)</H2>', r'<A NAME="\1"><br></A>\n' + docuReplacement, text)
     return text
   
 def convertHIER(text):
     text = re.sub(r'<H1>(.*?)</H1>', 
                    tableHeader + r'\n<tr>\n' \
-                   r'<th align=left><font size="+2">\1</font></th>\n' \
+                   r'<th align=left><font size="+3">\1</font></th>\n' \
                    r'<th align=right ><a href="index.html">' + vigraLogo + \
-                   r'</a><tr>\n</table>',
+                   r'</a>\n</tr>\n</table>',
                    text)
     return text
   
