@@ -174,18 +174,10 @@ class PolynomialView
     void deflateConjugatePair(Complex const & v);
     
         /** Adjust the polynomial's order if the highest coefficients are near zero.
-            The order is reduced as long as the ratio between the absolute values
-            of the leading coefficient and the biggest coefficient is below the given
-            \a epsilon.
+            The order is reduced as long as the absolute value does not exceed 
+            the given \a epsilon.
         */
-    void minimizeOrder(double epsilon);    
-    
-        /** Adjust the polynomial's order if the highest coefficients are near zero.
-            The order is reduced as long as the ratio between the absolute values
-            of the leading coefficient and the biggest coefficient is below this->epsilon().
-        */
-    void minimizeOrder()
-        { minimizeOrder(epsilon_); }
+    void minimizeOrder(double epsilon = 0.0);    
     
         /** Normalize the polynomial, i.e. dived by the highest coefficient.
         */
@@ -388,10 +380,7 @@ template <class T>
 void 
 PolynomialView<T>::minimizeOrder(double epsilon)
 {
-    Real m = std::abs(coeffs_[0]);
-    for(unsigned int k = 1; k <= order_; ++k)
-        m = std::max(m, std::abs(coeffs_[k]));
-    while(std::abs(coeffs_[order_]) / m < epsilon && order_ > 0)
+    while(std::abs(coeffs_[order_]) <= epsilon && order_ > 0)
             --order_;
 }
 
