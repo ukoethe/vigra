@@ -1093,7 +1093,7 @@ bool polynomialRootsEigenvalueMethod(POLYNOMIAL const & poly, VECTOR & roots, bo
             vigra::detail::laguerre1Root(poly, ew(i,0), 1);
         roots.push_back(vigra::detail::deleteBelowEpsilon(ew(i,0), eps));
     }
-    std::sort(roots.begin(), roots.end(), vigra::detail::PolynomialRootCompare());
+    std::sort(roots.begin(), roots.end(), vigra::detail::PolynomialRootCompare<Real>(eps));
     return true;
 }   
 
