@@ -60,6 +60,7 @@ void transpose(const MultiArrayView<2, T, C1> &v, MultiArrayView<2, T, C2> &r);
 template <class T, class C>
 bool isSymmetric(const MultiArrayView<2, T, C> &v);
 
+enum RawArrayMemoryLayout { RowMajor, ColumnMajor };
 
 /********************************************************/
 /*                                                      */
@@ -118,7 +119,7 @@ class Matrix
     : BaseType(alloc)
     {}
 
-        /** construct with given shape and init with all 
+        /** construct with given shape and init all 
             elements with zero. Note that the order of the axes is
             <tt>difference_type(rows, columns)</tt> which
             is the opposite of the usual VIGRA convention.
@@ -128,7 +129,7 @@ class Matrix
     : BaseType(shape, alloc)
     {}
 
-        /** construct with given shape and init with all 
+        /** construct with given shape and init all 
             elements with zero. Note that the order of the axes is
             <tt>(rows, columns)</tt> which
             is the opposite of the usual VIGRA convention.
@@ -138,7 +139,7 @@ class Matrix
     : BaseType(difference_type(rows, columns), alloc)
     {}
 
-        /** construct with given shape and init with all 
+        /** construct with given shape and init all 
             elements with the constant \a init. Note that the order of the axes is
             <tt>difference_type(rows, columns)</tt> which
             is the opposite of the usual VIGRA convention.
@@ -148,7 +149,7 @@ class Matrix
     : BaseType(shape, init, alloc)
     {}
 
-        /** construct with given shape and init with all 
+        /** construct with given shape and init all 
             elements with the constant \a init. Note that the order of the axes is
             <tt>(rows, columns)</tt> which
             is the opposite of the usual VIGRA convention.
@@ -159,33 +160,47 @@ class Matrix
     {}
 
         /** construct with given shape and copy data from C-style array \a init.
-            Data in this array are expected to be given in column-major
-            order (the C standard order) and will automatically be
-            converted to the required column-major format. Note that the order of the axes is
-            <tt>difference_type(rows, columns)</tt> which
+            Unless \a layout is <tt>ColumnMajor</tt>, the elements in this array 
+            are assumed to be given in row-major order (the C standard order) and 
+            will automatically be converted to the required column-major format. 
+            Note that the order of the axes is <tt>difference_type(rows, columns)</tt> which
             is the opposite of the usual VIGRA convention.
          */
-    Matrix(const difference_type &shape, const_pointer init,
+    Matrix(const difference_type &shape, const_pointer init, RawArrayMemoryLayout layout = RowMajor,
            allocator_type const & alloc = allocator_type())
-    : BaseType(shape, alloc)
+    : BaseType(shape, alloc) // FIXME: this function initializes the memory twice
     {
-        difference_type trans(shape[1], shape[0]);
-        linalg::transpose(MultiArrayView<2, T>(trans, const_cast<pointer>(init)), *this);
+        if(layout == RowMajor)
+        {
+            difference_type trans(shape[1], shape[0]);
+            linalg::transpose(MultiArrayView<2, T>(trans, const_cast<pointer>(init)), *this);
+        }
+        else
+        {
+            std::copy(init, init + elementCount(), this->data());
+        }
     }
 
         /** construct with given shape and copy data from C-style array \a init.
-            Data in this array are expected to be given in column-major
-            order (the C standard order) and will automatically be
-            converted to the required column-major format. Note that the order of 
-            the axes is <tt>(rows, columns)</tt> which
+            Unless \a layout is <tt>ColumnMajor</tt>, the elements in this array 
+            are assumed to be given in row-major order (the C standard order) and 
+            will automatically be converted to the required column-major format. 
+            Note that the order of the axes is <tt>(rows, columns)</tt> which
             is the opposite of the usual VIGRA convention.
          */
-    Matrix(unsigned int rows, unsigned int columns, const_pointer init,
+    Matrix(unsigned int rows, unsigned int columns, const_pointer init, RawArrayMemoryLayout layout = RowMajor,
            allocator_type const & alloc = allocator_type())
-    : BaseType(difference_type(rows, columns), alloc)
+    : BaseType(difference_type(rows, columns), alloc) // FIXME: this function initializes the memory twice
     {
-        difference_type trans(columns, rows);
-        linalg::transpose(MultiArrayView<2, T>(trans, const_cast<pointer>(init)), *this);
+        if(layout == RowMajor)
+        {
+            difference_type trans(columns, rows);
+            linalg::transpose(MultiArrayView<2, T>(trans, const_cast<pointer>(init)), *this);
+        }
+        else
+        {
+            std::copy(init, init + elementCount(), this->data());
+        }
     }
 
         /** copy constructor. Allocates new memory and 
@@ -1143,6 +1158,48 @@ operator*(T a, const TemporaryMatrix<T> &b)
     return const_cast<TemporaryMatrix<T> &>(b) *= b;
 }
 
+    /** multiply matrix \a a with TinyVector \a b.
+        \a a must be of size <tt>N x N</tt>. Vector \a b and the result 
+        vector are interpreted as column vectors.
+    
+    <b>\#include</b> "<a href="matrix_8hxx-source.html">vigra/matrix.hxx</a>" or<br>
+    <b>\#include</b> "<a href="linear__algebra_8hxx-source.html">vigra/linear_algebra.hxx</a>"<br>
+        Namespace: vigra::linalg
+     */ 
+template <class T, class A, int N, class DATA, class DERIVED>
+TinyVector<T, N> 
+operator*(const Matrix<T, A> &a, const TinyVectorBase<T, N, DATA, DERIVED> &b)
+{
+    vigra_precondition(N == rowCount(a) && N == columnCount(a),
+         "operator*(Matrix, TinyVector): Shape mismatch.");
+
+    TinyVector<T, N> res(TinyVectorView<T, N>(&a(0,0)) * b[0]);
+    for(unsigned int i = 1; i < N; ++i)
+        res += TinyVectorView<T, N>(&a(0,i)) * b[i];
+    return res;
+}
+
+    /** multiply TinyVector \a a with matrix \a b.
+        \a b must be of size <tt>N x N</tt>. Vector \a a and the result 
+        vector are interpreted as row vectors.
+    
+    <b>\#include</b> "<a href="matrix_8hxx-source.html">vigra/matrix.hxx</a>" or<br>
+    <b>\#include</b> "<a href="linear__algebra_8hxx-source.html">vigra/linear_algebra.hxx</a>"<br>
+        Namespace: vigra::linalg
+     */ 
+template <class T, int N, class DATA, class DERIVED, class A>
+TinyVector<T, N> 
+operator*(const TinyVectorBase<T, N, DATA, DERIVED> &a, const Matrix<T, A> &b)
+{
+    vigra_precondition(N == rowCount(b) && N == columnCount(b),
+         "operator*(TinyVector, Matrix): Shape mismatch.");
+
+    TinyVector<T, N> res;
+    for(unsigned int i = 0; i < N; ++i)
+        res[i] = dot(a, TinyVectorView<T, N>(&b(0,i)));
+    return res;
+}
+
     /** perform matrix multiplication of matrices \a a and \a b.
         \a a and \a b must have matching shapes.
         The result is returned as a temporary matrix. 
@@ -1246,6 +1303,8 @@ operator/(const TemporaryMatrix<T> &a, T b)
 
 } // namespace linalg
 
+using linalg::RowMajor;
+using linalg::ColumnMajor;
 using linalg::Matrix;
 using linalg::identityMatrix;
 using linalg::diagonalMatrix;
