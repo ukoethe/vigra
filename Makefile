@@ -1,4 +1,4 @@
-ifeq '$(findstring $(MAKECMDGOALS), "clean docclean distclean autoconf docsrc")' '' 
+ifneq "$(MAKECMDGOALS)" "autoconf" 
 include config/Makefile.include
 endif
 
