@@ -15,6 +15,7 @@
 #include "vigra/splines.hxx"
 #include "vigra/gaussians.hxx"
 #include "vigra/rational.hxx"
+#include "vigra/fixedpoint.hxx"
 #include "vigra/linear_algebra.hxx"
 
 static double coefficients[][12] = 
@@ -241,7 +242,11 @@ struct RationalTest
         shouldEqual(R(3,4) - R(12,6), R(-5,4));
         shouldEqual(R(3,4) * R(12,6), R(3,2));
         shouldEqual(R(3,4) / R(12,6), R(3,8));
+
         shouldEqual(abs(R(-3,4)), R(3,4));
+        shouldEqual(norm(R(-3,4)), R(3,4));
+        shouldEqual(squaredNorm(R(-3,4)), R(9,16));
+
         should(R(3,4) == R(9,12));
         should(R(3,4) != R(12,6));
         should(R(3,4) < R(12,6));
@@ -487,6 +492,128 @@ struct RationalTest
         try { R(0) / R(0); failTest("No exception thrown"); } catch(vigra::bad_rational &) {}
         try { R(0) / 0; failTest("No exception thrown"); } catch(vigra::bad_rational &) {}
         try { 0 / R(0); failTest("No exception thrown"); } catch(vigra::bad_rational &) {}
+    }
+};
+
+struct FixedPointTest
+{
+    void testConstruction()
+    {
+        shouldEqual(vigra::fixedPoint(3).value, 3);
+        shouldEqual(vigra::fixedPoint(-3).value, -3);
+        shouldEqual(-vigra::fixedPoint(3).value, -3);
+
+        shouldEqual((vigra::FixedPoint<3,4>(3).value), 3 << 4);
+        shouldEqual((vigra::FixedPoint<3,4>(-3).value), -3 << 4);
+        shouldEqual((-vigra::FixedPoint<3,4>(3).value), -3 << 4);
+
+        shouldEqual((vigra::FixedPoint<3,4>(3.5).value), 56);
+        shouldEqual((vigra::FixedPoint<3,4>(-3.5).value), -56);
+        shouldEqual((-vigra::FixedPoint<3,4>(3.5).value), -56);
+
+        try { vigra::FixedPoint<1, 8>(2); failTest("No exception thrown"); } catch(vigra::PreconditionViolation &) {}
+        try { vigra::FixedPoint<1, 8>(3.75); failTest("No exception thrown"); } catch(vigra::PreconditionViolation &) {}
+
+        vigra::FixedPoint<2, 8> v(3.75);
+        shouldEqual((vigra::FixedPoint<2, 8>(v).value), 15 << 6);
+        shouldEqual((vigra::FixedPoint<3, 10>(v).value), 15 << 8);
+        shouldEqual((vigra::FixedPoint<2, 2>(v).value), 15);
+        shouldEqual((vigra::FixedPoint<2, 0>(v).value), 4);
+
+        shouldEqual((vigra::FixedPoint<2, 8>(-v).value), -15 << 6);
+        shouldEqual((vigra::FixedPoint<3, 10>(-v).value), -15 << 8);
+        shouldEqual((vigra::FixedPoint<2, 2>(-v).value), -15);
+        shouldEqual((vigra::FixedPoint<2, 0>(-v).value), -4);
+
+        should(floor(v) == 3);
+        should(ceil(v) == 4);
+        should(round(v) == 4);
+        should(abs(v) == v);
+        should(floor(-v) == -4);
+        should(ceil(-v) == -3);
+        should(round(-v) == -4);
+        should(abs(-v) == v);
+
+        vigra::FixedPoint<3, 10> v1;
+        shouldEqual((v1 = v).value, 15 << 8);
+        shouldEqual((v1 = -v).value, -15 << 8);
+
+        vigra::FixedPoint<2, 0> v2;
+        shouldEqual((v2 = v).value, 4);
+        shouldEqual((v2 = -v).value, -4);
+    }
+
+    void testComparison()
+    {
+        vigra::FixedPoint<3, 8> v1(3.75), v2(4);
+        vigra::FixedPoint<2, 2> v3(3.75);
+        should(v1 == v1);
+        should(v1 == v3);
+        should(!(v1 != v1));
+        should(!(v1 != v3));
+        should(v1 <= v1);
+        should(v1 <= v3);
+        should(!(v1 < v1));
+        should(!(v1 < v3));
+        should(v1 >= v1);
+        should(v1 >= v3);
+        should(!(v1 > v1));
+        should(!(v1 > v3));
+
+        should(v2 != v1);
+        should(v2 != v3);
+        should(!(v2 == v1));
+        should(!(v2 == v3));
+        should(!(v2 <= v1));
+        should(!(v2 <= v3));
+        should(!(v2 < v1));
+        should(!(v2 < v3));
+        should(v2 >= v1);
+        should(v2 >= v3);
+        should(v2 > v1);
+        should(v2 > v3);
+    }
+
+    void testArithmetic()
+    {
+        vigra::FixedPoint<1, 16> t1(0.75), t2(0.25);
+        signed char v1 = 1, v2 = 2, v4 = 4, v8 = 8;
+
+        shouldEqual((t1 * vigra::fixedPoint(v1)).value, 3 << 14);
+        shouldEqual((t2 * vigra::fixedPoint(v1)).value, 1 << 14);
+        shouldEqual((-t1 * vigra::fixedPoint(v1)).value, -3 << 14);
+        shouldEqual((-t2 * vigra::fixedPoint(v1)).value, -1 << 14);
+        shouldEqual((t1 * -vigra::fixedPoint(v1)).value, -3 << 14);
+        shouldEqual((t2 * -vigra::fixedPoint(v1)).value, -1 << 14);
+
+        shouldEqual((vigra::FixedPoint<8, 2>(t1 * vigra::fixedPoint(v1))).value, 3);
+        shouldEqual((vigra::FixedPoint<8, 2>(t2 * vigra::fixedPoint(v1))).value, 1);
+        shouldEqual((vigra::FixedPoint<8, 2>(-t1 * vigra::fixedPoint(v1))).value, -3);
+        shouldEqual((vigra::FixedPoint<8, 2>(-t2 * vigra::fixedPoint(v1))).value, -1);
+
+        shouldEqual(floor(t1 * vigra::fixedPoint(v1) + t2 * vigra::fixedPoint(v2)), 1);
+        shouldEqual(ceil(t1 * vigra::fixedPoint(v1) + t2 * vigra::fixedPoint(v2)), 2);
+        shouldEqual(round(t1 * vigra::fixedPoint(v1) + t2 * vigra::fixedPoint(v2)), 1);
+        shouldEqual(floor(t1 * vigra::fixedPoint(v4) + t2 * vigra::fixedPoint(v8)), 5);
+        shouldEqual(ceil(t1 * vigra::fixedPoint(v4) + t2 * vigra::fixedPoint(v8)), 5);
+        shouldEqual(round(t1 * vigra::fixedPoint(v4) + t2 * vigra::fixedPoint(v8)), 5);
+
+        shouldEqual(floor(t1 * -vigra::fixedPoint(v1) - t2 * vigra::fixedPoint(v2)), -2);
+        shouldEqual(ceil(t1 * -vigra::fixedPoint(v1) - t2 * vigra::fixedPoint(v2)), -1);
+        shouldEqual(round(t1 * -vigra::fixedPoint(v1) - t2 * vigra::fixedPoint(v2)), -1);
+        shouldEqual(floor(t1 * -vigra::fixedPoint(v4) - t2 * vigra::fixedPoint(v8)), -5);
+        shouldEqual(ceil(t1 * -vigra::fixedPoint(v4) - t2 * vigra::fixedPoint(v8)), -5);
+        shouldEqual(round(t1 * -vigra::fixedPoint(v4) - t2 * vigra::fixedPoint(v8)), -5);
+
+        double d1 = 1.0 / 3.0, d2 = 1.0 / 7.0;
+        vigra::FixedPoint<1, 24> r1(d1), r2(d2);
+        vigra::FixedPoint<2, 24> r3;
+        add(r1, r2, r3);
+        shouldEqual(r3.value, (vigra::FixedPoint<2, 24>(d1 + d2)).value);
+        sub(r1, r2, r3);
+        shouldEqual(r3.value, (vigra::FixedPoint<2, 24>(d1 - d2)).value);
+        mul(r1, r2, r3);
+        shouldEqual(r3.value >> 2, (vigra::FixedPoint<2, 24>(d1 * d2)).value >> 2);
     }
 };
 
@@ -833,6 +960,9 @@ struct MathTestSuite
         add( testCase(&LinalgTest::testInverse));
         add( testCase(&LinalgTest::testSymmetricEigensystem));
         add( testCase(&LinalgTest::testNonsymmetricEigensystem));
+        add( testCase(&FixedPointTest::testConstruction));
+        add( testCase(&FixedPointTest::testComparison));
+        add( testCase(&FixedPointTest::testArithmetic));
     }
 };
 
