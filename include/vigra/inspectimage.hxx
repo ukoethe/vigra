@@ -373,7 +373,7 @@ inspectImageIf(triple<ImageIterator, ImageIterator, Accessor> img,
     SomeStatisticsFunctor stats(...);     // init functor
 
     vigra::inspectTwoImages(srcImageRange(image1), srcImage(image2),
-                            region_stats);
+                            stats);
 
 
     \endcode
