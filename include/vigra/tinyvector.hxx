@@ -359,6 +359,10 @@ class TinyVectorBase
         */
     typedef double scalar_multiplier;
 
+        /** the vector's size
+        */
+    enum { static_size = SIZE };
+
         /** Initialize from another sequence (must have length SIZE!)
         */
     template <class Iterator>
