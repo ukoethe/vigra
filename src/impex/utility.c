@@ -1442,7 +1442,7 @@ Export void TemporaryFilename(char *filename)
   if (directory == (char *) NULL)
     directory=TemporaryDirectory;
   (void) sprintf(filename,TemporaryTemplate,directory);
-  (void) mktemp(filename);
+  (void) mkstemp(filename);
 #else
   (void) vigraImpexNTTemporaryFilename(filename);
 #endif
