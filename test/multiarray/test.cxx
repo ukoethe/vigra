@@ -2,6 +2,7 @@
 #include "vigra/multi_array.hxx"
 #include "vigra/multi_impex.hxx"
 #include "vigra/basicimageview.hxx"
+#include "vigra/navigator.hxx"
 
 using namespace vigra;
 
@@ -448,6 +449,48 @@ public:
     }
 };
 
+class MultiArrayNavigatorTest
+{
+public:
+
+    typedef unsigned int scalar_type;
+    typedef MultiArray <3, scalar_type> array3_type;
+    typedef MultiArrayView <3, scalar_type> array3_view_type;
+    typedef array3_type::difference_type difference3_type;
+    
+    difference3_type shape3;
+    array3_type array3;
+
+    MultiArrayNavigatorTest ()
+        : shape3 (4, 3, 2), array3 (shape3)
+    {
+        // initialize the array to the test data
+        for (unsigned int i = 0; i < 24; ++i)
+            array3.data () [i] = i;
+    }
+
+    // bindInner tests
+    void testNavigator ()
+    {
+        int expected[][24] = {{0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23},
+                            {0, 4, 8, 1, 5, 9, 2, 6, 10, 3, 7, 11, 12, 16, 20, 13, 17, 21, 14, 18, 22, 15, 19, 23},
+                            {0, 12, 1, 13, 2, 14, 3, 15, 4, 16, 5, 17, 6, 18, 7, 19, 8, 20, 9, 21, 10, 22, 11, 23}};
+        typedef MultiArrayNavigator<array3_type::traverser, 3> Navigator;
+        for(int d=0; d<3; ++d)
+        {
+            Navigator nav(array3.traverser_begin(), array3.shape(), d);
+            int k = 0;
+            for(; nav.hasMore(); ++nav)
+            {
+                Navigator::iterator i = nav.begin(), end = nav.end();
+                for(; i != end; ++i, ++k)
+                    shouldEqual(*i, expected[d][k]);
+            }
+        }
+    }
+    
+};
+
 struct MultiImpexTest
 {
     typedef MultiArray<3, unsigned char> Array;
@@ -801,6 +844,7 @@ struct MultiArrayDataTestSuite
         add( testCase( &MultiArrayDataTest::test_bindAt ) );
         add( testCase( &MultiArrayDataTest::test_bind ) );
         add( testCase( &MultiArrayDataTest::test_bind0 ) );
+        add( testCase( &MultiArrayNavigatorTest::testNavigator ) );
     }
 };
 
