@@ -163,7 +163,7 @@
     <DT><b><TT>exp():</TT></b><DD> creates a functor that takes the exponential of its 
         argument. Likewise, the other algebraic functions
         (i.e. <TT>sqrt, exp, log, log10, sin, asin, cos, acos, tan, 
-        atan, abs, floor, ceil, rint, pow, atan2, fmod, min, max</TT>) 
+        atan, abs, floor, ceil, pow, atan2, fmod, min, max</TT>) 
         are overloaded.
 .
     
@@ -1026,9 +1026,6 @@ makeFunctorUnaryFunction(atan);
 makeFunctorUnaryFunction(abs);
 makeFunctorUnaryFunction(floor);
 makeFunctorUnaryFunction(ceil);
-#ifndef __STRICT_ANSI__
-makeFunctorUnaryFunction(rint);
-#endif
 
 #undef makeFunctorUnaryFunction
 

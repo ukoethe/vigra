@@ -23,7 +23,7 @@
 #ifndef VIGRA_TINYVECTOR_HXX
 #define VIGRA_TINYVECTOR_HXX
 
-#include <cmath>    // abs(double), rint(double)
+#include <cmath>    // abs(double)
 #include <cstdlib>  // abs(int)
 #include "vigra/config.hxx"
 #include "vigra/numerictraits.hxx"
@@ -653,25 +653,6 @@ floor(TinyVector<T, SIZE> const & v)
     return res;
 };
 
-#ifndef __STRICT_ANSI__
-
-using std::rint;
-
-    /// Round a floating point vector pixel to the nearest integers.
-template <class T, int SIZE>
-inline
-TinyVector<T, SIZE>
-rint(TinyVector<T, SIZE> const & v)
-{
-    TinyVector<T, SIZE> res;
-    typename TinyVector<T, SIZE>::iterator d = res.begin();
-    typename TinyVector<T, SIZE>::const_iterator s = v.begin();
-    for(; d != res.end(); ++d, ++s)
-        *d = rint(*s);
-    return res;
-};
-
-#endif // __STRICT_ANSI__
 //@}
 
 

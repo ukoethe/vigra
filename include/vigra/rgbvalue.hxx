@@ -23,7 +23,7 @@
 #ifndef VIGRA_RGBVALUE_HXX
 #define VIGRA_RGBVALUE_HXX
 
-#include <cmath>    // abs(double), rint(double)
+#include <cmath>    // abs(double)
 #include <cstdlib>  // abs(int)
 #include "vigra/config.hxx"
 #include "vigra/numerictraits.hxx"
@@ -756,22 +756,6 @@ floor(RGBValue<V> const & r)
                        floor(r.blue()));
 };
 
-#ifndef __STRICT_ANSI__
-
-using std::rint;
-
-    /// Round a floating point RGB pixel to the nearest integers.
-template <class V>
-inline
-RGBValue<V>
-rint(RGBValue<V> const & r)
-{
-    return RGBValue<V>(rint(r.red()), 
-                       rint(r.green()),
-                       rint(r.blue()));
-};
-
-#endif // __STRICT_ANSI__
 //@}
 
 /********************************************************/
