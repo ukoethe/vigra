@@ -1,6 +1,9 @@
 #include <algorithm>
+#include <iostream>
 #include "unittest.h"
 #include "vigra/colorconversions.hxx"
+
+using namespace vigra;
 
 struct ColorConversionsTest
 {

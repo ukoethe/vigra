@@ -1,7 +1,11 @@
+#include <iostream>
 #include "unittest.h"
+
 #include "vigra/accessor.hxx"
 #include "vigra/tinyvector.hxx"
 #include "vigra/rgbvalue.hxx"
+
+using namespace vigra;
 
 static float di[] = {1, 2, 4 };
 static float df[] = {1.2, 2.4, 3.6 };
@@ -150,7 +154,8 @@ struct TinyVectorTest
         should(bv1.squaredMagnitude() == 3);
         should(iv1.squaredMagnitude() == 3);
         should(fv1.squaredMagnitude() == 3.0);
-        should(fv3.squaredMagnitude() ==(1.2f*1.2f + 2.4f*2.4f + 3.6f*3.6f));
+        float epsilon = 0.000001;
+        should(std::abs(fv3.squaredMagnitude() - (1.2f*1.2f + 2.4f*2.4f + 3.6f*3.6f)) < epsilon);
         
         should(dot(bv3, bv3) == bv3.squaredMagnitude());
         should(dot(iv3, bv3) == iv3.squaredMagnitude());
