@@ -27,6 +27,7 @@
 #include <new>
 #include <memory>
 #include "vigra/utilities.hxx"
+#include "vigra/imageiterator.hxx"
 
 namespace vigra {
 
@@ -923,6 +924,308 @@ class BasicImage
 
     PIXELTYPE * data_;
     PIXELTYPE ** lines_;
+    int width_, height_;
+};
+
+/********************************************************/
+/*                                                      */
+/*                     BasicImageView                   */
+/*                                                      */
+/********************************************************/
+
+/** \brief Fundamental class template for images .
+
+    <b>\#include</b> "<a href="basicimage_8hxx-source.html">vigra/basicimage.hxx</a>"
+
+    Namespace: vigra
+*/
+template <class PIXELTYPE>
+class BasicImageView
+{
+  public:
+
+        /** the BasicImageView's pixel type
+        */
+    typedef PIXELTYPE value_type;
+
+        /** the BasicImageView's pixel type
+        */
+    typedef PIXELTYPE PixelType;
+
+        /** the BasicImageView's reference type (i.e. the
+            return type of image[diff] and image(dx,dy))
+        */
+    typedef PIXELTYPE &       reference;
+
+        /** the BasicImageView's const reference type (i.e. the
+            return type of image[diff] and image(dx,dy) when image is const)
+        */
+    typedef PIXELTYPE const & const_reference;
+
+        /** the BasicImageView's pointer type
+        */
+    typedef PIXELTYPE *       pointer;
+
+        /** the BasicImageView's const pointer type
+        */
+    typedef PIXELTYPE const * const_pointer;
+
+        /** the BasicImageView's 1D random access iterator
+            (note: lower case 'iterator' is a STL compatible 1D random
+             access iterator, don't confuse with capitalized Iterator)
+        */
+    typedef PIXELTYPE * iterator;
+
+        /** the BasicImageView's 1D random access iterator
+        */
+   typedef PIXELTYPE * ScanOrderIterator;
+
+        /** the BasicImageView's 1D random access const iterator
+            (note: lower case 'const_iterator' is a STL compatible 1D
+            random access const iterator)
+        */
+    typedef PIXELTYPE const * const_iterator;
+
+        /** the BasicImageView's 1D random access const iterator
+        */
+    typedef PIXELTYPE const * ConstScanOrderIterator;
+
+        /** the BasicImageView's 2D random access iterator ('traverser')
+        */
+    typedef ImageIterator<PixelType> traverser;
+
+        /** the BasicImageView's 2D random access iterator
+            (note: capitalized 'Iterator' is a 2D image iterator,
+             don't confuse with lower case iterator)
+        */
+    typedef ImageIterator<PixelType> Iterator;
+
+        /** the BasicImageView's 2D random access const iterator ('const traverser')
+        */
+    typedef ConstImageIterator<PixelType> const_traverser;
+
+        /** the BasicImageView's 2D random access const iterator
+        */
+    typedef ConstImageIterator<PixelType> ConstIterator;
+
+        /** the BasicImageView's difference type (argument type of image[diff])
+        */
+    typedef Diff2D difference_type;
+
+         /** the BasicImageView's size type (result type of image.size())
+        */
+    typedef Diff2D size_type;
+
+       /** the BasicImageView's default accessor
+        */
+    typedef typename
+          IteratorTraits<Iterator>::DefaultAccessor Accessor;
+
+        /** the BasicImageView's default const accessor
+        */
+    typedef typename
+          IteratorTraits<ConstIterator>::DefaultAccessor ConstAccessor;
+
+    struct Allocator
+    {
+        static PixelType * allocate(int n) {
+                  return (PixelType *)::operator new(n*sizeof(PixelType)); }
+        static void deallocate(PixelType * p) {
+                 ::operator delete(p); }
+    };
+
+        /** construct image of size 0x0
+        */
+    BasicImageView()
+    : data_(0),
+      width_(0),
+      height_(0)
+    {}
+
+        /** construct view of size w x h
+        */
+    BasicImageView(const_pointer data, int w, int h)
+    : data_(const_cast<pointer>(data)),
+      width_(w),
+      height_(h)
+    {}
+
+        /** construct view of size size.x x size.y
+        */
+    BasicImageView(const_pointer data, difference_type const & size)
+    : data_(const_cast<pointer>(data)),
+      width_(d.x),
+      height_(d.y)
+    {}
+
+        /** set Image with const value
+        */
+    BasicImageView & init(PixelType const & pixel)
+    {
+        ScanOrderIterator i = begin();
+        ScanOrderIterator iend = end();
+
+        for(; i != iend; ++i) *i = pixel;
+
+        return *this;
+    }
+
+        /** width of Image
+        */
+    int width() const
+    {
+        return width_;
+    }
+
+        /** height of Image
+        */
+    int height() const
+    {
+        return height_;
+    }
+
+        /** size of Image
+        */
+    Diff2D size() const
+    {
+        return Diff2D(width(), height());
+    }
+
+        /** test whether a given coordinate is inside the image
+        */
+    bool isInside(Diff2D const & d) const
+    {
+        return d.x >= 0 && d.y >= 0 &&
+               d.x < width() && d.y < height();
+    }
+
+        /** access pixel at given location. <br>
+	    usage: <TT> PixelType value = image[Diff2D(1,2)] </TT>
+        */
+    PixelType & operator[](Diff2D const & d)
+    {
+        return data_[d.y*width() + d.x];
+    }
+
+        /** read pixel at given location. <br>
+	    usage: <TT> PixelType value = image[Diff2D(1,2)] </TT>
+        */
+    PixelType const & operator[](Diff2D const & d) const
+    {
+        return data_[d.y*width() + d.x];
+    }
+
+        /** access pixel at given location. <br>
+	    usage: <TT> PixelType value = image(1,2) </TT>
+        */
+    PixelType & operator()(int dx, int dy)
+    {
+        return data_[dy*width() + dx];
+    }
+
+        /** read pixel at given location. <br>
+	    usage: <TT> PixelType value = image(1,2) </TT>
+        */
+    PixelType const & operator()(int dx, int dy) const
+    {
+        return data_[dy*width() + dx];
+    }
+
+        /** access pixel at given location.
+	        Note that the 'x' index is the trailing index. <br>
+	    usage: <TT> PixelType value = image[2][1] </TT>
+        */
+    PixelType * operator[](int dy)
+    {
+        return data_ + dy*width();
+    }
+
+        /** read pixel at given location.
+	        Note that the 'x' index is the trailing index. <br>
+	    usage: <TT> PixelType value = image[2][1] </TT>
+        */
+    PixelType const * operator[](int dy) const
+    {
+        return data_ + dy*width();
+    }
+
+        /** init 2D random access iterator poining to upper left pixel
+        */
+    Iterator upperLeft()
+    {
+        return Iterator(data_, width());
+    }
+
+        /** init 2D random access iterator poining to
+         pixel(width, height), i.e. one pixel right and below lower right
+         corner of the image as is common in C/C++.
+        */
+    Iterator lowerRight()
+    {
+        return upperLeft() + size();
+    }
+
+        /** init 2D random access const iterator poining to upper left pixel
+        */
+    ConstIterator upperLeft() const
+    {
+        return ConstIterator(data_, width());
+    }
+
+        /** init 2D random access const iterator poining to
+         pixel(width, height), i.e. one pixel right and below lower right
+         corner of the image as is common in C/C++.
+        */
+    ConstIterator lowerRight() const
+    {
+        return upperLeft() + size();
+    }
+
+        /** init 1D random access iterator pointing to first pixel
+        */
+    ScanOrderIterator begin()
+    {
+        return data_;
+    }
+
+        /** init 1D random access iterator pointing past the end
+        */
+    ScanOrderIterator end()
+    {
+        return data_ + width() * height();
+    }
+
+        /** init 1D random access const iterator pointing to first pixel
+        */
+    ConstScanOrderIterator begin() const
+    {
+        return data_;
+    }
+
+        /** init 1D random access const iterator pointing past the end
+        */
+    ConstScanOrderIterator end() const
+    {
+        return data_ + width() * height();
+    }
+
+        /** return default accessor
+        */
+    Accessor accessor()
+    {
+        return Accessor();
+    }
+
+        /** return default const accessor
+        */
+    ConstAccessor accessor() const
+    {
+        return ConstAccessor();
+    }
+
+  private:
+
+    pointer data_;
     int width_, height_;
 };
 
