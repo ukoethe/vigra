@@ -1,6 +1,6 @@
 /************************************************************************/
 /*                                                                      */
-/*               Copyright 1998-2003 by Ullrich Koethe                  */
+/*               Copyright 1998-2004 by Ullrich Koethe                  */
 /*       Cognitive Systems Group, University of Hamburg, Germany        */
 /*                                                                      */
 /*    This file is part of the VIGRA computer vision library.           */
@@ -22,12 +22,14 @@
 #ifndef VIGRA_SPLINEIMAGEVIEW_HXX
 #define VIGRA_SPLINEIMAGEVIEW_HXX
 
-#include <cmath>
-#include "vigra/resizeimage.hxx"
+#include "vigra/mathutil.hxx"
+#include "vigra/recursiveconvolution.hxx"
+#include "vigra/splines.hxx"
 #include "vigra/array_vector.hxx"
 
 namespace vigra {
 
+#if 0
 template <class VALUETYPE>
 class SplineImageView
 {
@@ -308,6 +310,7 @@ VALUETYPE SplineImageView<VALUETYPE>::dyy(double x, double y) const
     InternalValue a4 = 2.0 * W1_[3][2] + v * 6.0 * W1_[3][3];
     return NumericTraits<VALUETYPE>::fromRealPromote(a1 + u * (a2 + u * (a3 + u * a4)));
 }
+#endif // if 0
 
 template <class VALUETYPE>
 class CubicSplineImageView
@@ -570,12 +573,12 @@ CubicSplineImageView<VALUETYPE>::calculateIndices(double x, double y) const
     u_ = x_ - ix_[1];
     v_ = y_ - iy_[1];
     
-    ix_[0] = VIGRA_CSTD::abs(ix_[1] - 1);
-    ix_[2] = w1_ - VIGRA_CSTD::abs(w1_ - ix_[1] - 1);
-    ix_[3] = w1_ - VIGRA_CSTD::abs(w1_ - ix_[1] - 2);
-    iy_[0] = VIGRA_CSTD::abs(iy_[1] - 1);
-    iy_[2] = h1_ - VIGRA_CSTD::abs(h1_ - iy_[1] - 1);
-    iy_[3] = h1_ - VIGRA_CSTD::abs(h1_ - iy_[1] - 2);
+    ix_[0] = vigra::abs(ix_[1] - 1);
+    ix_[2] = w1_ - vigra::abs(w1_ - ix_[1] - 1);
+    ix_[3] = w1_ - vigra::abs(w1_ - ix_[1] - 2);
+    iy_[0] = vigra::abs(iy_[1] - 1);
+    iy_[2] = h1_ - vigra::abs(h1_ - iy_[1] - 1);
+    iy_[3] = h1_ - vigra::abs(h1_ - iy_[1] - 2);
 }
 
 template <class VALUETYPE>
@@ -840,16 +843,16 @@ QuinticSplineImageView<VALUETYPE>::calculateIndices(double x, double y) const
     u_ = x_ - ix_[2];
     v_ = y_ - iy_[2];
     
-    ix_[0] = VIGRA_CSTD::abs(ix_[2] - 2);
-    ix_[1] = VIGRA_CSTD::abs(ix_[2] - 1);
-    ix_[3] = w1_ - VIGRA_CSTD::abs(w1_ - ix_[2] - 1);
-    ix_[4] = w1_ - VIGRA_CSTD::abs(w1_ - ix_[2] - 2);
-    ix_[5] = w1_ - VIGRA_CSTD::abs(w1_ - ix_[2] - 3);
-    iy_[0] = VIGRA_CSTD::abs(iy_[2] - 2);
-    iy_[1] = VIGRA_CSTD::abs(iy_[2] - 1);
-    iy_[3] = h1_ - VIGRA_CSTD::abs(h1_ - iy_[2] - 1);
-    iy_[4] = h1_ - VIGRA_CSTD::abs(h1_ - iy_[2] - 2);
-    iy_[5] = h1_ - VIGRA_CSTD::abs(h1_ - iy_[2] - 3);
+    ix_[0] = vigra::abs(ix_[2] - 2);
+    ix_[1] = vigra::abs(ix_[2] - 1);
+    ix_[3] = w1_ - vigra::abs(w1_ - ix_[2] - 1);
+    ix_[4] = w1_ - vigra::abs(w1_ - ix_[2] - 2);
+    ix_[5] = w1_ - vigra::abs(w1_ - ix_[2] - 3);
+    iy_[0] = vigra::abs(iy_[2] - 2);
+    iy_[1] = vigra::abs(iy_[2] - 1);
+    iy_[3] = h1_ - vigra::abs(h1_ - iy_[2] - 1);
+    iy_[4] = h1_ - vigra::abs(h1_ - iy_[2] - 2);
+    iy_[5] = h1_ - vigra::abs(h1_ - iy_[2] - 3);
 }
 
 template <class VALUETYPE>
@@ -1033,6 +1036,373 @@ VALUETYPE QuinticSplineImageView<VALUETYPE>::g2yy(double x, double y) const
 
 template <class VALUETYPE>
 VALUETYPE QuinticSplineImageView<VALUETYPE>::g2xy(double x, double y) const
+{
+    return 2.0*(dx(x,y) * dxxy(x,y) + dy(x,y) * dxyy(x,y) + dxy(x,y) * (dxx(x,y) + dyy(x,y)));
+}
+
+/********************************************************/
+/*                                                      */
+/*                    SplineImageView                   */
+/*                                                      */
+/********************************************************/
+
+template <int ORDER, class VALUETYPE>
+class SplineImageView
+{
+    typedef typename NumericTraits<VALUETYPE>::RealPromote InternalValue;
+    typedef BasicImage<InternalValue> InternalImage;
+    typedef typename InternalImage::traverser InternalTraverser;
+    typedef typename InternalTraverser::row_iterator InternalRowIterator;
+    typedef typename InternalTraverser::column_iterator InternalColumnIterator;
+    typedef BSpline<ORDER, double> Spline;
+    
+    enum { ksize_ = ORDER + 1, kcenter_ = ORDER / 2 };
+    
+  public:
+  
+    typedef VALUETYPE value_type;
+    typedef Size2D size_type;
+    typedef TinyVector<double, 2> difference_type;
+    enum { order = ORDER };
+    
+    template <class SrcIterator, class SrcAccessor>
+    SplineImageView(SrcIterator is, SrcIterator iend, SrcAccessor sa, bool skipPrefiltering = false)
+    : w_(iend.x - is.x), h_(iend.y - is.y), w1_(w_-1), h1_(h_-1),
+      x0_(kcenter_), x1_(w_ - kcenter_ - 2), y0_(kcenter_), y1_(h_ - kcenter_ - 2),
+      image_(w_, h_),
+      x_(-1.0), y_(-1.0),
+      u_(-1.0), v_(-1.0)
+    {
+        copyImage(srcIterRange(is, iend, sa), destImage(image_));
+        if(!skipPrefiltering)
+            init();
+    }
+    
+    template <class SrcIterator, class SrcAccessor>
+    SplineImageView(triple<SrcIterator, SrcIterator, SrcAccessor> s, bool skipPrefiltering = false)
+    : w_(s.second.x - s.first.x), h_(s.second.y - s.first.y), w1_(w_-1), h1_(h_-1),
+      x0_(kcenter_), x1_(w_ - kcenter_ - 2), y0_(kcenter_), y1_(h_ - kcenter_ - 2),
+      image_(w_, h_),
+      x_(-1.0), y_(-1.0),
+      u_(-1.0), v_(-1.0)
+    {
+        copyImage(srcIterRange(s.first, s.second, s.third), destImage(image_));
+        if(!skipPrefiltering)
+            init();
+    }
+    
+    value_type operator()(double x, double y) const;
+    value_type operator()(double x, unsigned int dx, double y, unsigned int dy) const;
+    value_type dx(double x, double y) const
+        { return operator()(x, 1, y, 0); }
+    value_type dy(double x, double y) const
+        { return operator()(x, 0, y, 1); }
+    value_type dxx(double x, double y) const
+        { return operator()(x, 2, y, 0); }
+    value_type dxy(double x, double y) const
+        { return operator()(x, 1, y, 1); }
+    value_type dyy(double x, double y) const
+        { return operator()(x, 0, y, 2); }
+    value_type dx3(double x, double y) const
+        { return operator()(x, 3, y, 0); }
+    value_type dy3(double x, double y) const
+        { return operator()(x, 0, y, 3); }
+    value_type dxxy(double x, double y) const
+        { return operator()(x, 2, y, 1); }
+    value_type dxyy(double x, double y) const
+        { return operator()(x, 1, y, 2); }
+    
+    value_type operator()(difference_type const & d) const
+        { return operator()(d[0], d[1]); }
+    value_type dx(difference_type const & d) const
+        { return dx(d[0], d[1]); }
+    value_type dy(difference_type const & d) const
+        { return dy(d[0], d[1]); }
+    value_type dxx(difference_type const & d) const
+        { return dxx(d[0], d[1]); }
+    value_type dxy(difference_type const & d) const
+        { return dxy(d[0], d[1]); }
+    value_type dyy(difference_type const & d) const
+        { return dyy(d[0], d[1]); }
+    value_type dx3(difference_type const & d) const
+        { return dx3(d[0], d[1]); }
+    value_type dy3(difference_type const & d) const
+        { return dy3(d[0], d[1]); }
+    value_type dxxy(difference_type const & d) const
+        { return dxxy(d[0], d[1]); }
+    value_type dxyy(difference_type const & d) const
+        { return dxyy(d[0], d[1]); }
+
+    value_type g2(double x, double y) const;
+    value_type g2x(double x, double y) const;
+    value_type g2y(double x, double y) const;
+    value_type g2xx(double x, double y) const;
+    value_type g2xy(double x, double y) const;
+    value_type g2yy(double x, double y) const;
+    value_type g2(difference_type const & d) const
+        { return g2(d[0], d[1]); }
+    value_type g2x(difference_type const & d) const
+        { return g2x(d[0], d[1]); }
+    value_type g2y(difference_type const & d) const
+        { return g2y(d[0], d[1]); }
+    value_type g2xx(difference_type const & d) const
+        { return g2xx(d[0], d[1]); }
+    value_type g2xy(difference_type const & d) const
+        { return g2xy(d[0], d[1]); }
+    value_type g2yy(difference_type const & d) const
+        { return g2yy(d[0], d[1]); }
+    
+    unsigned int width() const
+        { return w_; }
+    unsigned int height() const
+        { return h_; }
+    size_type size() const
+        { return size_type(w_, h_); }
+        
+    InternalImage const & image() const
+    {
+        return image_;
+    }
+    
+    template <class Array>
+    void coefficientArray(double x, double y, Array & res) const;
+        
+  protected:
+  
+    void init();
+    void calculateIndices(double x, double y) const;
+    void coefficients(double t, double * const & c) const;
+    void derivCoefficients(double t, unsigned int d, double * const & c) const;
+    value_type convolve() const;
+  
+    unsigned int w_, h_;
+    int w1_, h1_;
+    double x0_, x1_, y0_, y1_;
+    InternalImage image_;
+    Spline k_;
+    mutable double x_, y_, u_, v_, kx_[ksize_], ky_[ksize_];
+    mutable int ix_[ksize_], iy_[ksize_];
+};
+
+template <int ORDER, class VALUETYPE>
+void SplineImageView<ORDER, VALUETYPE>::init()
+{
+    double * b = Spline::prefilterCoefficients();
+    
+    for(unsigned int i=0; i<kcenter_; ++i)
+    {
+        recursiveFilterX(srcImageRange(image_), destImage(image_), b[i], BORDER_TREATMENT_REFLECT);
+        recursiveFilterY(srcImageRange(image_), destImage(image_), b[i], BORDER_TREATMENT_REFLECT);
+    }
+}
+
+namespace detail
+{
+
+template <int i>
+struct SplineImageViewUnrollLoop1
+{
+    template <class Array>
+    static void exec(int c0, Array c)
+    {
+        SplineImageViewUnrollLoop1<i-1>::exec(c0, c);
+        c[i] = c0 + i;
+    }
+};
+
+template <>
+struct SplineImageViewUnrollLoop1<0>
+{
+    template <class Array>
+    static void exec(int c0, Array c)
+    {
+        c[0] = c0;
+    }
+};
+
+template <int i>
+struct SplineImageViewUnrollLoop2
+{
+    template <class Array1, class Image, class Array2>
+    static typename Image::value_type
+    exec(Array1 k, Image const & img, Array2 x, int y)
+    {
+        return k[i] * img(x[i], y) + SplineImageViewUnrollLoop2<i-1>::exec(k, img, x, y);
+    }
+};
+
+template <>
+struct SplineImageViewUnrollLoop2<0>
+{
+    template <class Array1, class Image, class Array2>
+    static typename Image::value_type
+    exec(Array1 k, Image const & img, Array2 x, int y)
+    {
+        return k[0] * img(x[0], y);
+    }
+};
+
+} // namespace detail
+
+template <int ORDER, class VALUETYPE>
+void 
+SplineImageView<ORDER, VALUETYPE>::calculateIndices(double x, double y) const
+{
+    if(x == x_ && y == y_)
+        return;   // still in cache
+    
+    if(x > x0_ && x < x1_ && y > y0_ && y < y1_)
+    {
+        detail::SplineImageViewUnrollLoop1<ORDER>::exec(
+                                (ORDER % 2) ? (x - kcenter_) : (x + 0.5 - kcenter_), ix_);
+        detail::SplineImageViewUnrollLoop1<ORDER>::exec(
+                                (ORDER % 2) ? (y - kcenter_) : (y + 0.5 - kcenter_), iy_);
+    }
+    else
+    {
+        vigra_precondition(x >= 0.0 && y >= 0.0 && x <= w1_ && y <= h1_,
+             "SplineImageView<ORDER, VALUETYPE>::calculateIndices(): index out of bounds.");
+
+        ix_[kcenter_] = (ORDER % 2) ?
+                             (int)x :
+                             (int)(x + 0.5);
+        iy_[kcenter_] = (ORDER % 2) ?
+                             (int)y :
+                             (int)(y + 0.5);
+        
+        for(int i=0; i<kcenter_; ++i)
+        {
+            ix_[i] = vigra::abs(ix_[kcenter_] - (kcenter_ - i));
+            iy_[i] = vigra::abs(iy_[kcenter_] - (kcenter_ - i));
+        }
+        for(int i=kcenter_+1; i<ksize_; ++i)
+        {
+            ix_[i] = w1_ - vigra::abs(w1_ - ix_[kcenter_] - (i - kcenter_));
+            iy_[i] = h1_ - vigra::abs(h1_ - iy_[kcenter_] - (i - kcenter_));
+        }
+    }
+    x_ = x;
+    y_ = y;
+    u_ = x - ix_[kcenter_];
+    v_ = y - iy_[kcenter_];
+}
+
+template <int ORDER, class VALUETYPE>
+void SplineImageView<ORDER, VALUETYPE>::coefficients(double t, double * const & c) const
+{
+    t += kcenter_;
+    for(int i = 0; i<ksize_; ++i)
+        c[i] = k_(t-i);
+}
+
+template <int ORDER, class VALUETYPE>
+void SplineImageView<ORDER, VALUETYPE>::derivCoefficients(double t, 
+                                               unsigned int d, double * const & c) const
+{
+    t += kcenter_;
+    for(int i = 0; i<ksize_; ++i)
+        c[i] = k_(t-i, d);
+}
+
+
+template <int ORDER, class VALUETYPE>
+VALUETYPE SplineImageView<ORDER, VALUETYPE>::convolve() const
+{
+    InternalValue sum;
+    sum = ky_[0]*detail::SplineImageViewUnrollLoop2<ORDER>::exec(kx_, image_, ix_, iy_[0]);
+    
+    for(int j=1; j<ksize_; ++j)
+    {
+        sum += ky_[j]*detail::SplineImageViewUnrollLoop2<ORDER>::exec(kx_, image_, ix_, iy_[j]);
+    }
+    return NumericTraits<VALUETYPE>::fromRealPromote(sum);
+}
+
+template <int ORDER, class VALUETYPE>
+template <class Array>
+void 
+SplineImageView<ORDER, VALUETYPE>::coefficientArray(double x, double y, Array & res) const
+{
+    Spline::WeightMatrix & weights = Spline::weights();
+    InternalValue tmp[ksize_][ksize_]; 
+    
+    calculateIndices(x, y);
+    for(int j=0; j<ksize_; ++j)
+    {
+        for(int i=0; i<ksize_; ++i)
+        {
+            tmp[i][j] = 0.0;
+            for(int k=0; k<ksize_; ++k)
+            {
+                tmp[i][j] += weights[i][k]*image_(ix_[k], iy_[j]);
+            }
+       }       
+    }
+    res.resize(ksize_, ksize_);
+    for(int j=0; j<ksize_; ++j)
+    {
+        for(int i=0; i<ksize_; ++i)
+        {
+            res(i,j) = 0.0;
+            for(int k=0; k<ksize_; ++k)
+            {
+                res(i,j) += weights[j][k]*tmp[i][k];
+            }
+        }       
+    }
+}
+
+template <int ORDER, class VALUETYPE>
+VALUETYPE SplineImageView<ORDER, VALUETYPE>::operator()(double x, double y) const
+{
+    calculateIndices(x, y);
+    coefficients(u_, kx_);
+    coefficients(v_, ky_);
+    return convolve();
+}
+
+template <int ORDER, class VALUETYPE>
+VALUETYPE SplineImageView<ORDER, VALUETYPE>::operator()(double x, unsigned int dx,
+                                                 double y, unsigned int dy) const
+{
+    calculateIndices(x, y);
+    derivCoefficients(u_, dx, kx_);
+    derivCoefficients(v_, dy, ky_);
+    return convolve();
+}
+
+template <int ORDER, class VALUETYPE>
+VALUETYPE SplineImageView<ORDER, VALUETYPE>::g2(double x, double y) const
+{
+    return sq(dx(x,y)) + sq(dy(x,y));
+}
+
+template <int ORDER, class VALUETYPE>
+VALUETYPE SplineImageView<ORDER, VALUETYPE>::g2x(double x, double y) const
+{
+    return 2.0*(dx(x,y) * dxx(x,y) + dy(x,y) * dxy(x,y));
+}
+
+template <int ORDER, class VALUETYPE>
+VALUETYPE SplineImageView<ORDER, VALUETYPE>::g2y(double x, double y) const
+{
+    return 2.0*(dx(x,y) * dxy(x,y) + dy(x,y) * dyy(x,y));
+}
+
+template <int ORDER, class VALUETYPE>
+VALUETYPE SplineImageView<ORDER, VALUETYPE>::g2xx(double x, double y) const
+{
+    return 2.0*(sq(dxx(x,y)) + dx(x,y) * dx3(x,y) + sq(dxy(x,y)) + dy(x,y) * dxxy(x,y));
+}
+
+template <int ORDER, class VALUETYPE>
+VALUETYPE SplineImageView<ORDER, VALUETYPE>::g2yy(double x, double y) const
+{
+    return 2.0*(sq(dxy(x,y)) + dx(x,y) * dxyy(x,y) + sq(dyy(x,y)) + dy(x,y) * dy3(x,y));
+}
+
+template <int ORDER, class VALUETYPE>
+VALUETYPE SplineImageView<ORDER, VALUETYPE>::g2xy(double x, double y) const
 {
     return 2.0*(dx(x,y) * dxxy(x,y) + dy(x,y) * dxyy(x,y) + dxy(x,y) * (dxx(x,y) + dyy(x,y)));
 }
