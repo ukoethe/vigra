@@ -777,6 +777,152 @@ public:
     }
 };
 
+class Vector4ExportImportTest
+{
+  public:
+  
+    typedef vigra::FVector4Image Image;
+    typedef vigra::BasicImage<TinyVector<unsigned char, 4> > BImage;
+    Image img, reread;
+    BImage breread, breference;
+
+public:
+
+    Vector4ExportImportTest ()
+    : img(2,3),
+      reread(2,3),
+      breread(2,3),
+      breference(2,3)
+    {
+        double scale = 255.0 / 11.0;
+        double offset = 5.5;
+        for(int y = 0; y<3; ++y)
+        {
+            for(int x=0; x<2; ++x)
+            {
+                img(x,y)[0] = 2*y+x + 0.5;
+                img(x,y)[1] = -img(x,y)[0];
+                img(x,y)[2] = 0.0;
+                img(x,y)[3] = 0.5;
+                for(int b=0; b<4; ++b)
+                {
+                    breference(x,y)[b] = 
+                        NumericTraits<unsigned char>::fromRealPromote(scale*(img(x,y)[b]+offset));
+                }
+            }
+        }
+    }
+
+    void failingTest (char const * filename)
+    {
+        try 
+        {
+            exportImage( srcImageRange(img), vigra::ImageExportInfo( filename ) );
+            failTest( "Failed to throw exception." );
+        }
+        catch( vigra::PreconditionViolation & e ) 
+        {
+            std::string expected = "\nPrecondition violation!\n";
+            expected += "exportImage(): file format does not support requested number of bands (color channels)";
+            const bool rc = std::strncmp( expected.c_str(), e.what(), expected.length() ) == 0;
+            should(rc);
+        }
+    }
+
+    void testJPEG ()
+    {
+        failingTest("res.jpg");
+    }
+
+    void testGIF ()
+    {
+        failingTest("res.gif");
+    }
+
+    void testBMP ()
+    {
+        failingTest("res.bmp");
+    }
+
+    void testPNM ()
+    {
+        failingTest("res.pnm");
+    }
+
+    void testSUN ()
+    {
+        failingTest("res.ras");
+    }
+
+    void testVIFF ()
+    {
+        exportImage (srcImageRange (img),
+                     vigra::ImageExportInfo ("res.xv"));
+
+        vigra::ImageImportInfo info ("res.xv");
+
+        should (info.width () == img.width ());
+        should (info.height () == img.height ());
+        should (info.numBands () == 4);
+        should (info.getPixelType () == std::string ("FLOAT"));
+
+        importImage (info, destImage (reread));
+
+        Image::ScanOrderIterator i = img.begin ();
+        Image::ScanOrderIterator i1 = reread.begin ();
+        Image::Accessor acc = img.accessor ();
+
+        for (; i != img.end (); ++i, ++i1)
+            shouldEqual (acc (i), acc (i1));
+    }
+
+    void testTIFF ()
+    {
+        exportImage (srcImageRange (img),
+                     vigra::ImageExportInfo ("res.tif"));
+
+        vigra::ImageImportInfo info ("res.tif");
+
+        should (info.width () == img.width ());
+        should (info.height () == img.height ());
+        should (info.numBands () == 4);
+        should (info.getPixelType () == std::string ("FLOAT"));
+
+        importImage (info, destImage (reread));
+
+        Image::ScanOrderIterator i = img.begin ();
+        Image::ScanOrderIterator i1 = reread.begin ();
+        Image::Accessor acc = img.accessor ();
+
+        for (; i != img.end (); ++i, ++i1)
+            shouldEqual (acc (i), acc (i1));
+    }
+
+    void testPNG ()
+    {
+        exportImage (srcImageRange (img),
+                     vigra::ImageExportInfo ("res.png"));
+
+        vigra::ImageImportInfo info ("res.png");
+
+        should (info.width () == img.width ());
+        should (info.height () == img.height ());
+        should (info.numBands () == 4);
+        should (info.getPixelType () == std::string ("UINT8"));
+
+        importImage (info, destImage (breread));
+
+        BImage::ScanOrderIterator i = breference.begin ();
+        BImage::ScanOrderIterator i1 = breread.begin ();
+        BImage::Accessor acc = breference.accessor ();
+
+        for (; i != breference.end (); ++i, ++i1)
+        {
+            shouldEqual (acc (i), acc (i1));
+        }
+    }
+};
+
 
 class ImageExportImportFailureTest
 {
@@ -972,6 +1118,16 @@ struct ImageImportExportTestSuite : public vigra::test_suite
         add(testCase(&FloatRGBImageExportImportTest::testBMP));
         add(testCase(&FloatRGBImageExportImportTest::testSUN));
         add(testCase(&FloatRGBImageExportImportTest::testVIFF));
+
+        // 4-band images
+        add(testCase(&Vector4ExportImportTest::testJPEG));
+        add(testCase(&Vector4ExportImportTest::testGIF));
+        add(testCase(&Vector4ExportImportTest::testBMP));
+        add(testCase(&Vector4ExportImportTest::testPNM));
+        add(testCase(&Vector4ExportImportTest::testSUN));
+        add(testCase(&Vector4ExportImportTest::testVIFF));
+        add(testCase(&Vector4ExportImportTest::testTIFF));
+        add(testCase(&Vector4ExportImportTest::testPNG));
 
         // failure tests
         add(testCase(&ImageExportImportFailureTest::testGIFExport));
