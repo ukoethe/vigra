@@ -90,7 +90,8 @@ dnl-------------------------------------------------------------------
 dnl                        finish & output
 dnl-------------------------------------------------------------------
 
-CPPFLAGS="$VIGRA_INCLUDES ${CPPFLAGS}"
+CPPFLAGS="-I$vigra_srcdir/include ${CPPFLAGS}"
+POSTINSTALLCPPFLAGS="$VIGRA_INCLUDES ${CPPFLAGS}"
 IMPEX_LIB="-L$libdir -lvigraimpex -lm $IMPEX_DEPLIBS"
 LIBS="$LIBS $IMPEX_LIB"
 
@@ -105,6 +106,7 @@ AC_SUBST(FFTW_INCLUDES)
 AC_SUBST(IMPEX_LIB)
 AC_SUBST(IMPEX_DEPLIBS)
 AC_SUBST(VIGRA_INCLUDES)
+AC_SUBST(POSTINSTALLCPPFLAGS)
 
 AC_SUBST(LIBCPPFLAGS)
 

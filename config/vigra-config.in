@@ -50,7 +50,7 @@ while test $# -gt 0; do
       echo @target@
       ;;
     --cppflags|--cxxincludes|--cxxflags|--cincludes|--cflags)
-      echopath '@CPPFLAGS@'
+      echopath '@POSTINSTALLCPPFLAGS@'
       ;;
     --impex_lib|--impex-lib|--libs)
       echopath '@IMPEX_LIB@'
