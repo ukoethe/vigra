@@ -18,6 +18,7 @@ struct MultiArrayPointoperatorsTest
 
     typedef float PixelType;
     typedef MultiArray<3,PixelType> Image3D;
+    typedef MultiArrayView<3,PixelType> View3D;
     typedef Image3D::difference_type Size3;
 
     Image3D img;
@@ -61,6 +62,40 @@ struct MultiArrayPointoperatorsTest
                     shouldEqual(res(x,y,z), img(x,y,z));
     }
 
+    void testCopyOuterExpansion()
+    {
+        Image3D res(img.shape());
+        
+        initMultiArray(destMultiArrayRange(res), 0.0);
+        
+        View3D view = img.subarray(Size3(0,0,0), Size3(5,1,1));
+        
+        copyMultiArray(srcMultiArrayRange(view), destMultiArrayRange(res));
+        
+        int x,y,z;
+        for(z=0; z<img.shape(2); ++z)
+            for(y=0; y<img.shape(1); ++y)
+                for(x=0; x<img.shape(0); ++x)
+                    shouldEqual(res(x,y,z), img(x,0,0));
+    }
+
+    void testCopyInnerExpansion()
+    {
+        Image3D res(img.shape());
+        
+        initMultiArray(destMultiArrayRange(res), 0.0);
+        
+        View3D view = img.subarray(Size3(0,0,0), Size3(1,1,3));
+        
+        copyMultiArray(srcMultiArrayRange(view), destMultiArrayRange(res));
+        
+        int x,y,z;
+        for(z=0; z<img.shape(2); ++z)
+            for(y=0; y<img.shape(1); ++y)
+                for(x=0; x<img.shape(0); ++x)
+                    shouldEqual(res(x,y,z), img(0,0,z));
+    }
+
     void testTransform()
     {
         Image3D res(img.shape());
@@ -75,6 +110,82 @@ struct MultiArrayPointoperatorsTest
             for(y=0; y<img.shape(1); ++y)
                 for(x=0; x<img.shape(0); ++x)
                     shouldEqual(res(x,y,z), 2.0*img(x,y,z));
+    }
+
+    void testTransformOuterExpand()
+    {
+        Image3D res(img.shape());
+        
+        initMultiArray(destMultiArrayRange(res), 0.0);
+        
+        View3D view = img.subarray(Size3(0,0,0), Size3(5,1,1));
+        
+        transformMultiArray(srcMultiArrayRange(view), destMultiArrayRange(res),
+                            Arg1() + Arg1());
+        
+        int x,y,z;
+        for(z=0; z<img.shape(2); ++z)
+            for(y=0; y<img.shape(1); ++y)
+                for(x=0; x<img.shape(0); ++x)
+                    shouldEqual(res(x,y,z), 2.0*img(x,0,0));
+    }
+
+    void testTransformInnerExpand()
+    {
+        Image3D res(img.shape());
+        
+        initMultiArray(destMultiArrayRange(res), 0.0);
+        
+        View3D view = img.subarray(Size3(0,0,0), Size3(1,1,3));
+        
+        transformMultiArray(srcMultiArrayRange(view), destMultiArrayRange(res),
+                            Arg1() + Arg1());
+        
+        int x,y,z;
+        for(z=0; z<img.shape(2); ++z)
+            for(y=0; y<img.shape(1); ++y)
+                for(x=0; x<img.shape(0); ++x)
+                    shouldEqual(res(x,y,z), 2.0*img(0,0,z));
+    }
+
+    void testTransformOuterReduce()
+    {
+        Image3D res(Size3(5,1,1));
+        
+        initMultiArray(destMultiArrayRange(res), 0.0);
+        
+        transformMultiArray(srcMultiArrayRange(img), destMultiArrayRange(res),
+                            reduceFunctor(Arg1() + Arg2(), 0.0));
+        
+        int x,y,z;
+        for(x=0; x<img.shape(0); ++x)
+        {
+            double sum = 0.0;
+            for(y=0; y<img.shape(1); ++y)
+                for(z=0; z<img.shape(2); ++z)
+                    sum += img(x,y,z);
+            shouldEqual(res(x,0,0), sum);
+        }
+    }
+
+    void testTransformInnerReduce()
+    {
+        Image3D res(Size3(1,1,3));
+        
+        initMultiArray(destMultiArrayRange(res), 0.0);
+        
+        transformMultiArray(srcMultiArrayRange(img), destMultiArrayRange(res),
+                            reduceFunctor(Arg1() + Arg2(), 0.0));
+        
+        int x,y,z;
+        for(z=0; z<img.shape(2); ++z)
+        {
+            double sum = 0.0;
+            for(y=0; y<img.shape(1); ++y)
+                for(x=0; x<img.shape(0); ++x)
+                    sum += img(x,y,z);
+            shouldEqual(res(0,0,z), sum);
+        }
     }
 
     void testCombine2()
@@ -92,6 +203,114 @@ struct MultiArrayPointoperatorsTest
             for(y=0; y<img.shape(1); ++y)
                 for(x=0; x<img.shape(0); ++x)
                     shouldEqual(res(x,y,z), 2.0*img(x,y,z));
+    }
+
+    void testCombine2OuterExpand()
+    {
+        Image3D res(img.shape());
+        
+        initMultiArray(destMultiArrayRange(res), 0.0);
+        
+        View3D view = img.subarray(Size3(0,0,0), Size3(5,1,1));
+        combineTwoMultiArrays(srcMultiArrayRange(view), srcMultiArrayRange(img), 
+                              destMultiArrayRange(res),
+                              Arg1() + Param(2.0)*Arg2());       
+        int x,y,z;
+        for(z=0; z<img.shape(2); ++z)
+            for(y=0; y<img.shape(1); ++y)
+                for(x=0; x<img.shape(0); ++x)
+                    shouldEqual(res(x,y,z), 2.0*img(x,y,z) + img(x,0,0));
+
+        combineTwoMultiArrays(srcMultiArrayRange(img), srcMultiArrayRange(view), 
+                              destMultiArrayRange(res),
+                              Arg1() + Param(2.0)*Arg2());       
+        for(z=0; z<img.shape(2); ++z)
+            for(y=0; y<img.shape(1); ++y)
+                for(x=0; x<img.shape(0); ++x)
+                    shouldEqual(res(x,y,z), img(x,y,z) + 2.0*img(x,0,0));
+
+        combineTwoMultiArrays(srcMultiArrayRange(view), srcMultiArrayRange(view), 
+                              destMultiArrayRange(res),
+                              Arg1() + Param(2.0)*Arg2());       
+        for(z=0; z<img.shape(2); ++z)
+            for(y=0; y<img.shape(1); ++y)
+                for(x=0; x<img.shape(0); ++x)
+                    shouldEqual(res(x,y,z), 3.0*img(x,0,0));
+    }
+
+    void testCombine2InnerExpand()
+    {
+        Image3D res(img.shape());
+        
+        initMultiArray(destMultiArrayRange(res), 0.0);
+        
+        View3D view = img.subarray(Size3(0,0,0), Size3(1,1,3));
+        combineTwoMultiArrays(srcMultiArrayRange(view), srcMultiArrayRange(img), 
+                              destMultiArrayRange(res),
+                              Arg1() + Param(2.0)*Arg2());       
+        int x,y,z;
+        for(z=0; z<img.shape(2); ++z)
+            for(y=0; y<img.shape(1); ++y)
+                for(x=0; x<img.shape(0); ++x)
+                    shouldEqual(res(x,y,z), 2.0*img(x,y,z) + img(0,0,z));
+
+        combineTwoMultiArrays(srcMultiArrayRange(img), srcMultiArrayRange(view), 
+                              destMultiArrayRange(res),
+                              Arg1() + Param(2.0)*Arg2());       
+        for(z=0; z<img.shape(2); ++z)
+            for(y=0; y<img.shape(1); ++y)
+                for(x=0; x<img.shape(0); ++x)
+                    shouldEqual(res(x,y,z), img(x,y,z) + 2.0*img(0,0,z));
+
+        combineTwoMultiArrays(srcMultiArrayRange(view), srcMultiArrayRange(view), 
+                              destMultiArrayRange(res),
+                              Arg1() + Param(2.0)*Arg2());       
+        for(z=0; z<img.shape(2); ++z)
+            for(y=0; y<img.shape(1); ++y)
+                for(x=0; x<img.shape(0); ++x)
+                    shouldEqual(res(x,y,z), 3.0*img(0,0,z));
+    }
+
+    void testCombine2OuterReduce()
+    {
+        Image3D res(Size3(5,1,1));
+        
+        initMultiArray(destMultiArrayRange(res), 0.0);
+        
+        combineTwoMultiArrays(srcMultiArrayRange(img), srcMultiArrayRange(img), 
+                              destMultiArrayRange(res),
+                              reduceFunctor(Arg1() + Arg2() + Arg3(), 0.0));
+        
+        int x,y,z;
+        for(x=0; x<img.shape(0); ++x)
+        {
+            double sum = 0.0;
+            for(y=0; y<img.shape(1); ++y)
+                for(z=0; z<img.shape(2); ++z)
+                    sum += img(x,y,z);
+            shouldEqual(res(x,0,0), 2.0*sum);
+        }
+    }
+
+    void testCombine2InnerReduce()
+    {
+        Image3D res(Size3(1,1,3));
+        
+        initMultiArray(destMultiArrayRange(res), 0.0);
+        
+        combineTwoMultiArrays(srcMultiArrayRange(img), srcMultiArrayRange(img), 
+                              destMultiArrayRange(res),
+                              reduceFunctor(Arg1() + Arg2() + Arg3(), 0.0));
+        
+        int x,y,z;
+        for(z=0; z<img.shape(2); ++z)
+        {
+            double sum = 0.0;
+            for(y=0; y<img.shape(1); ++y)
+                for(x=0; x<img.shape(0); ++x)
+                    sum += img(x,y,z);
+            shouldEqual(res(0,0,z), 2.0*sum);
+        }
     }
 
     void testCombine3()
@@ -457,19 +676,37 @@ struct MultiArraySeparableConvolutionTest
 
 //--------------------------------------------------------
 
+struct MultiArrayPointOperatorsTestSuite
+: public vigra::test_suite
+{
+  MultiArrayPointOperatorsTestSuite()
+    : vigra::test_suite("MultiArrayPointOperatorsTestSuite")
+    {
+        // add( testCase( &MultiArrayTest::test_default_ctor ) );
+        add( testCase( &MultiArrayPointoperatorsTest::testInit ) );
+        add( testCase( &MultiArrayPointoperatorsTest::testCopy ) );
+        add( testCase( &MultiArrayPointoperatorsTest::testCopyOuterExpansion ) );
+        add( testCase( &MultiArrayPointoperatorsTest::testCopyInnerExpansion ) );
+        add( testCase( &MultiArrayPointoperatorsTest::testTransform ) );
+        add( testCase( &MultiArrayPointoperatorsTest::testTransformOuterExpand ) );
+        add( testCase( &MultiArrayPointoperatorsTest::testTransformInnerExpand ) );
+        add( testCase( &MultiArrayPointoperatorsTest::testTransformOuterReduce ) );
+        add( testCase( &MultiArrayPointoperatorsTest::testTransformInnerReduce ) );
+        add( testCase( &MultiArrayPointoperatorsTest::testCombine2 ) );
+        add( testCase( &MultiArrayPointoperatorsTest::testCombine2OuterExpand ) );
+        add( testCase( &MultiArrayPointoperatorsTest::testCombine2InnerExpand ) );
+        add( testCase( &MultiArrayPointoperatorsTest::testCombine2OuterReduce ) );
+        add( testCase( &MultiArrayPointoperatorsTest::testCombine2InnerReduce ) );
+        add( testCase( &MultiArrayPointoperatorsTest::testCombine3 ) );
+    }
+}; // struct MultiArrayPointOperatorsTestSuite
+
 struct MultiArraySeparableConvolutionTestSuite
 : public vigra::test_suite
 {
   MultiArraySeparableConvolutionTestSuite()
     : vigra::test_suite("MultiArraySeparableConvolutionTestSuite")
     {
-        // add( testCase( &MultiArrayTest::test_default_ctor ) );
-        add( testCase( &MultiArrayPointoperatorsTest::testInit ) );
-        add( testCase( &MultiArrayPointoperatorsTest::testCopy ) );
-        add( testCase( &MultiArrayPointoperatorsTest::testTransform ) );
-        add( testCase( &MultiArrayPointoperatorsTest::testCombine2 ) );
-        add( testCase( &MultiArrayPointoperatorsTest::testCombine3 ) );
-        
         add( testCase( &MultiArraySeparableConvolutionTest::test_Valid1 ) );
         add( testCase( &MultiArraySeparableConvolutionTest::test_Valid2 ) );
         add( testCase( &MultiArraySeparableConvolutionTest::test_Valid3 ) );
@@ -484,9 +721,13 @@ struct MultiArraySeparableConvolutionTestSuite
 
 int main()
 {
-  // run the multi-array separable convolutiontestsuite
+  // run the multi-array point operator test suite
+  MultiArrayPointOperatorsTestSuite test0;
+  int failed = test0.run();
+  std::cout << test0.report() << std::endl;
+  // run the multi-array separable convolution test suite
   MultiArraySeparableConvolutionTestSuite test1;
-  int failed = test1.run();
+  failed += test1.run();
   std::cout << test1.report() << std::endl;
   return (failed != 0);
 }
