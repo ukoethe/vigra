@@ -437,6 +437,7 @@ struct IteratorTraits<Diff2D >
     typedef iterator::column_iterator            column_iterator;
     typedef StandardConstValueAccessor<Diff2D>   DefaultAccessor;
     typedef StandardConstValueAccessor<Diff2D>   default_accessor;
+    typedef VigraTrueType                        hasConstantStrides;
 
 };
 

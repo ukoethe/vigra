@@ -51,6 +51,8 @@ namespace vigra {
         typedef typename iterator::column_iterator    column_iterator;
         typedef StandardAccessor<value_type>          DefaultAccessor;
         typedef StandardAccessor<value_type>          default_accessor;
+
+        typedef VigraTrueType/VigraFalseType          hasConstantStrides;
     };
     \endcode
 
@@ -74,6 +76,16 @@ namespace vigra {
     \ref IteratorBasedArgumentObjectFactories. The possibility to retrieve the default accessor by means of a traits
     class is especially important since this information is not
     contained in the iterator directly.
+    
+    The member <tt>hasConstantStrides</tt> is useful for certain 
+    optimizations: it helps to decide whether we can replace iterator
+    operations such as <tt>iter++</tt> ot <tt>iter =+ n</tt> with
+    corresponding pointer operations (which may be faster), where
+    the pointer is obtained as the address of iterator's pointee 
+    (the object the iterator currently  refers to). 
+    This flag would be tt>VigraFalseType</tt> for a
+    <tt>std::list&lt;int&gt;::iterator</tt>, but is <tt>VigraTrueType</tt> 
+    for most VIGRA iterators.
 
     <b>\#include</b> "<a href="iteratortraits_8hxx-source.html">vigra/iteratortraits.hxx</a>"
     Namespace: vigra
@@ -94,6 +106,9 @@ struct IteratorTraits
     typedef typename
         AccessorTraits<value_type>::default_accessor   DefaultAccessor;
     typedef DefaultAccessor                            default_accessor;
+
+    // default: disable the constant strides optimization
+    typedef VigraFalseType                             hasConstantStrides;
 };
 
 template <class T>

@@ -417,6 +417,11 @@ The following iterator traits must be defined for an image iterator:
     <td><tt>IteratorTraits&lt;ImageIterator&gt;::default_accessor</tt></td>
     <td>the default accessor to be used with the iterator</td>
 </tr>
+<tr>
+    <td><tt>IteratorTraits&lt;ImageIterator&gt;::hasConstantStrides</tt></td>
+    <td>whether the iterator uses constant strides on the underlying memory
+        (always <tt>VigraTrueType</tt> for <tt>ImageIterator</tt>s).</td>
+</tr>
 </table>
 </p>
 */
@@ -1150,6 +1155,7 @@ struct IteratorTraits<ImageIterator<T> >
 {
     typedef typename AccessorTraits<T>::default_accessor  DefaultAccessor;
     typedef DefaultAccessor                               default_accessor;
+    typedef VigraTrueType                                 hasConstantStrides;
 };
 
 template <class T>
@@ -1158,6 +1164,7 @@ struct IteratorTraits<ConstImageIterator<T> >
 {
     typedef typename AccessorTraits<T>::default_const_accessor  DefaultAccessor;
     typedef DefaultAccessor                               default_accessor;
+    typedef VigraTrueType                                 hasConstantStrides;
 };
 
 template <class T>
@@ -1166,6 +1173,7 @@ struct IteratorTraits<StridedImageIterator<T> >
 {
     typedef typename AccessorTraits<T>::default_accessor  DefaultAccessor;
     typedef DefaultAccessor                               default_accessor;
+    typedef VigraTrueType                                 hasConstantStrides;
 };
 
 template <class T>
@@ -1174,6 +1182,7 @@ struct IteratorTraits<ConstStridedImageIterator<T> >
 {
     typedef typename AccessorTraits<T>::default_const_accessor  DefaultAccessor;
     typedef DefaultAccessor                               default_accessor;
+    typedef VigraTrueType                                 hasConstantStrides;
 };
 
 #else // NO_PARTIAL_TEMPLATE_SPECIALIZATION
@@ -1185,6 +1194,7 @@ struct IteratorTraits<ConstStridedImageIterator<T> >
     { \
         typedef typename AccessorTraits<VALUETYPE >::default_accessor  DefaultAccessor; \
         typedef DefaultAccessor                               default_accessor; \
+        typedef VigraTrueType                                 hasConstantStrides; \
     }; \
     \
     template <>  \
@@ -1193,6 +1203,7 @@ struct IteratorTraits<ConstStridedImageIterator<T> >
     { \
         typedef typename AccessorTraits<VALUETYPE >::default_const_accessor  DefaultAccessor; \
         typedef DefaultAccessor                               default_accessor; \
+        typedef VigraTrueType                                 hasConstantStrides; \
     }; \
     template <>  \
     struct IteratorTraits<StridedImageIterator<VALUETYPE > > \
@@ -1200,6 +1211,7 @@ struct IteratorTraits<ConstStridedImageIterator<T> >
     { \
         typedef typename AccessorTraits<VALUETYPE >::default_accessor  DefaultAccessor; \
         typedef DefaultAccessor                               default_accessor; \
+        typedef VigraTrueType                                 hasConstantStrides; \
     }; \
     \
     template <>  \
@@ -1208,6 +1220,7 @@ struct IteratorTraits<ConstStridedImageIterator<T> >
     { \
         typedef typename AccessorTraits<VALUETYPE >::default_const_accessor  DefaultAccessor; \
         typedef DefaultAccessor                               default_accessor; \
+        typedef VigraTrueType                                 hasConstantStrides; \
     };
 
 VIGRA_DEFINE_ITERATORTRAITS(RGBValue<unsigned char>)
@@ -1539,6 +1552,7 @@ struct IteratorTraits<ConstValueIterator<T> >
     typedef typename iterator::column_iterator     column_iterator;
     typedef StandardConstAccessor<T>               DefaultAccessor;
     typedef StandardConstAccessor<T>               default_accessor;
+    typedef VigraTrueType                                 hasConstantStrides;
 };
 
 #endif

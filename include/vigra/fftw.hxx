@@ -435,6 +435,7 @@ struct IteratorTraits<
     typedef iterator::column_iterator            column_iterator;
     typedef VectorAccessor<FFTWComplex>          default_accessor;
     typedef VectorAccessor<FFTWComplex>          DefaultAccessor;
+    typedef VigraTrueType                        hasConstantStrides;
 };
 
 template<>
@@ -453,6 +454,7 @@ struct IteratorTraits<
     typedef iterator::column_iterator            column_iterator;
     typedef VectorAccessor<FFTWComplex>          default_accessor;
     typedef VectorAccessor<FFTWComplex>          DefaultAccessor;
+    typedef VigraTrueType                        hasConstantStrides;
 };
 
 /* documentation: see fftw3.hxx
