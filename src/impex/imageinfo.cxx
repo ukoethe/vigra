@@ -38,7 +38,7 @@ namespace vigra
         // do not place a space character after the last sequence element.
         std::copy (start, end - 1,
                    std::ostream_iterator <value_type> (out, " "));
-        out << *last;
+        out << *(end-1);
         return out.str ();
     }
 
