@@ -150,24 +150,24 @@ Rational<IntType> ceil(const Rational<IntType>& r);
     user-defined (e.g. infinite precision) ones. Note, however,
     that overflow in either the numerator or denominator is not
     detected during calculations -- the standard behavior of the integer type
-    (e.g. wrap around) applies. 
-    
-    The class can represent and handle positive and negative infinity 
+    (e.g. wrap around) applies.
+
+    The class can represent and handle positive and negative infinity
     resulting from division by zero. Indeterminate expressions such as 0/0
-    are signaled by a <tt>bad_rational</tt> exception which is derived from 
+    are signaled by a <tt>bad_rational</tt> exception which is derived from
     <tt>std::domain_error</tt>.
-    
-    <tt>Rational</tt> implements the required interface of an 
-    \ref AlgebraicField and the required \ref RationalTraits "numeric and 
+
+    <tt>Rational</tt> implements the required interface of an
+    \ref AlgebraicField and the required \ref RationalTraits "numeric and
     promotion traits". All arithmetic and comparison operators, as well
     as some algebraic functions are supported .
-    
+
     <b>See also:</b>
     <ul>
     <li> \ref RationalTraits
     <li> \ref RationalOperations
     </ul>
-    
+
 
     <b>\#include</b> "<a href="mathutil_8hxx-source.html">vigra/rational.hxx</a>"<br>
     Namespace: vigra
@@ -188,11 +188,11 @@ public:
 
         /** Default constructor: creates zero (<tt>0/1</tt>)
         */
-    Rational() 
-    : num(0), 
-      den(1) 
+    Rational()
+    : num(0),
+      den(1)
     {}
-    
+
         /** Copy constructor
         */
     template <class U>
@@ -200,43 +200,43 @@ public:
     : num(r.numerator()),
       den(r.denominator())
     {}
-    
+
         /** Integer constructor: creates <tt>n/1</tt>
         */
-    Rational(param_type n) 
-    : num(n), 
-      den(IntType(1)) 
+    Rational(param_type n)
+    : num(n),
+      den(IntType(1))
     {}
-    
+
         /** Ratio constructor: creates <tt>n/d</tt>.
-        
+
             The ratio will be normalized unless <tt>doNormalize = false</tt>.
-            Since the internal representation is assumed to be normalized, 
+            Since the internal representation is assumed to be normalized,
             <tt>doNormalize = false</tt> must only be used as an optimization
             if <tt>n</tt> and <tt>d</tt> are known to be already normalized
             (i.e. have 1 as their greatest common divisor).
         */
-    Rational(param_type n, param_type d, bool doNormalize = true) 
-    : num(n), 
-      den(d) 
-    { 
+    Rational(param_type n, param_type d, bool doNormalize = true)
+    : num(n),
+      den(d)
+    {
         if(doNormalize)
             normalize();
     }
-    
+
         /** Construct as an approximation of a real number.
-        
+
             The maximal allowed relative error is given by <tt>epsilon</tt>.
         */
-    explicit Rational(double v, double epsilon = 1e-4) 
+    explicit Rational(double v, double epsilon = 1e-4)
     : num(IntType(v < 0.0 ?
-                      IntType(1.0/epsilon)*v - 0.5
-                    : IntType(1.0/epsilon)*v + 0.5)), 
-      den(IntType(1.0/epsilon)) 
+                    v/epsilon - 0.5
+                  : v/epsilon + 0.5)),
+      den(IntType(1.0/epsilon + 0.5))
     {
         normalize();
     }
-    
+
     // Default copy constructor and assignment are fine
 
         /** Assignment from <tt>IntType</tt>.
@@ -250,66 +250,66 @@ public:
         /** Access numerator.
         */
     param_type numerator() const { return num; }
-    
+
         /** Access denominator.
         */
     param_type denominator() const { return den; }
 
         /** Add-assignment from <tt>Rational</tt>
-        
+
             <tt>throws bad_rational</tt> if indeterminate expression.
         */
-    Rational& operator+= (const Rational& r); 
+    Rational& operator+= (const Rational& r);
 
         /** Subtract-assignment from <tt>Rational</tt>
-        
+
             <tt>throws bad_rational</tt> if indeterminate expression.
         */
     Rational& operator-= (const Rational& r);
 
         /** Multiply-assignment from <tt>Rational</tt>
-        
+
             <tt>throws bad_rational</tt> if indeterminate expression.
         */
     Rational& operator*= (const Rational& r);
 
         /** Divide-assignment from <tt>Rational</tt>
-        
+
             <tt>throws bad_rational</tt> if indeterminate expression.
         */
     Rational& operator/= (const Rational& r);
 
         /** Add-assignment from <tt>IntType</tt>
-        
+
             <tt>throws bad_rational</tt> if indeterminate expression.
         */
-    Rational& operator+= (param_type i); 
+    Rational& operator+= (param_type i);
 
         /** Subtract-assignment from <tt>IntType</tt>
-        
+
             <tt>throws bad_rational</tt> if indeterminate expression.
         */
     Rational& operator-= (param_type i);
 
         /** Multiply-assignment from <tt>IntType</tt>
-        
+
             <tt>throws bad_rational</tt> if indeterminate expression.
         */
     Rational& operator*= (param_type i);
 
         /** Divide-assignment from <tt>IntType</tt>
-        
+
             <tt>throws bad_rational</tt> if indeterminate expression.
         */
     Rational& operator/= (param_type i);
-    
+
         /** Pre-increment.
         */
     Rational& operator++();
         /** Pre-decrement.
         */
     Rational& operator--();
-    
+
         /** Post-increment.
         */
     Rational operator++(int) { Rational res(*this); operator++(); return res; }
@@ -344,9 +344,9 @@ public:
         IntType zero(0);
         return den == zero && num != zero;
     }
-    
+
         /** Check the sign.
-        
+
             Gives 1 if the number is positive, -1 if negative, and 0 otherwise.
         */
     int sign() const
@@ -370,7 +370,7 @@ private:
 
 // Assign in place
 template <typename IntType>
-inline Rational<IntType>& 
+inline Rational<IntType>&
 Rational<IntType>::assign(param_type n, param_type d, bool doNormalize)
 {
     num = n;
@@ -385,12 +385,12 @@ template <typename IntType>
 Rational<IntType>& Rational<IntType>::operator+= (const Rational<IntType>& r)
 {
     IntType zero(0);
-    
+
     // handle the Inf and NaN cases
     if(den == zero)
     {
         if(r.den == zero && sign()*r.sign() < 0)
-            throw bad_rational(); 
+            throw bad_rational();
         return *this;
     }
     if(r.den == zero)
@@ -398,7 +398,7 @@ Rational<IntType>& Rational<IntType>::operator+= (const Rational<IntType>& r)
         assign(r.num, zero, false); // Inf or -Inf
         return *this;
     }
-    
+
     // This calculation avoids overflow, and minimises the number of expensive
     // calculations. Thanks to Nickolay Mladenov for this algorithm.
     //
@@ -435,12 +435,12 @@ template <typename IntType>
 Rational<IntType>& Rational<IntType>::operator-= (const Rational<IntType>& r)
 {
     IntType zero(0);
-    
+
     // handle the Inf and NaN cases
     if(den == zero)
     {
         if(r.den == zero && sign()*r.sign() > 0)
-            throw bad_rational(); 
+            throw bad_rational();
         return *this;
     }
     if(r.den == zero)
@@ -469,24 +469,24 @@ template <typename IntType>
 Rational<IntType>& Rational<IntType>::operator*= (const Rational<IntType>& r)
 {
     IntType zero(0);
-    
+
     // handle the Inf and NaN cases
     if(den == zero)
     {
         if(r.num == zero)
-            throw bad_rational(); 
+            throw bad_rational();
         num *= r.sign();
         return *this;
     }
     if(r.den == zero)
     {
         if(num == zero)
-            throw bad_rational(); 
+            throw bad_rational();
         num = r.num * sign();
         den = zero;
         return *this;
     }
-    
+
     // Protect against self-modification
     IntType r_num = r.num;
     IntType r_den = r.den;
@@ -503,12 +503,12 @@ template <typename IntType>
 Rational<IntType>& Rational<IntType>::operator/= (const Rational<IntType>& r)
 {
     IntType zero(0);
-    
+
     // handle the Inf and NaN cases
     if(den == zero)
     {
         if(r.den == zero)
-            throw bad_rational(); 
+            throw bad_rational();
         if(r.num != zero)
             num *= r.sign();
         return *this;
@@ -516,7 +516,7 @@ Rational<IntType>& Rational<IntType>::operator/= (const Rational<IntType>& r)
     if(r.num == zero)
     {
         if(num == zero)
-            throw bad_rational(); 
+            throw bad_rational();
         num = IntType(sign());  // normalized inf!
         den = zero;
         return *this;
@@ -579,7 +579,7 @@ Rational<IntType>::operator*= (param_type i)
             return *this;
         }
     }
-    
+
     IntType g = gcd(i, den);
     den /= g;
     num *= i / g;
@@ -602,7 +602,7 @@ Rational<IntType>::operator/= (param_type i)
         den = zero;
         return *this;
     }
-    
+
     IntType g = gcd(i, num);
     if(i < zero)
     {
@@ -651,7 +651,7 @@ void Rational<IntType>::normalize()
             num = IntType(1);
         return;
     }
-        
+
     // Handle the case of zero separately, to avoid division by zero
     if (num == zero) {
         den = IntType(1);
@@ -724,20 +724,20 @@ struct NumericTraits<Rational<T> >
     typedef VigraTrueType isScalar;
     typedef VigraTrueType isOrdered;
     typedef VigraFalseType isComplex;
-    
+
     static Type zero() { return Type(0); }
     static Type one() { return Type(1); }
     static Type nonZero() { return one(); }
 
-    static Promote toPromote(Type const & v) 
+    static Promote toPromote(Type const & v)
         { return Promote(v.numerator(), v.denominator(), false); }
     static RealPromote toRealPromote(Type const & v)
         { return RealPromote(v.numerator(), v.denominator(), false); }
-    static Type fromPromote(Promote const & v) 
-        { return Type(NumericTraits<T>::fromPromote(v.numerator()), 
+    static Type fromPromote(Promote const & v)
+        { return Type(NumericTraits<T>::fromPromote(v.numerator()),
                       NumericTraits<T>::fromPromote(v.denominator()), false); }
-    static Type fromRealPromote(RealPromote const & v) 
-        { return Type(NumericTraits<T>::fromRealPromote(v.numerator()), 
+    static Type fromRealPromote(RealPromote const & v)
+        { return Type(NumericTraits<T>::fromRealPromote(v.numerator()),
                       NumericTraits<T>::fromRealPromote(v.denominator()), false); }
 };
 
@@ -842,7 +842,7 @@ inline Rational<IntType> operator/(Rational<IntType> l, Rational<IntType> const 
 
     /// addition of right-hand <tt>IntType</tt> argument
 template <typename IntType>
-inline Rational<IntType> 
+inline Rational<IntType>
 operator+(Rational<IntType> l, typename Rational<IntType>::param_type r)
 {
     return l += r;
@@ -850,7 +850,7 @@ operator+(Rational<IntType> l, typename Rational<IntType>::param_type r)
 
     /// subtraction of right-hand <tt>IntType</tt> argument
 template <typename IntType>
-inline Rational<IntType> 
+inline Rational<IntType>
 operator-(Rational<IntType> l, typename Rational<IntType>::param_type r)
 {
     return l -= r;
@@ -858,7 +858,7 @@ operator-(Rational<IntType> l, typename Rational<IntType>::param_type r)
 
     /// multiplication with right-hand <tt>IntType</tt> argument
 template <typename IntType>
-inline Rational<IntType> 
+inline Rational<IntType>
 operator*(Rational<IntType> l, typename Rational<IntType>::param_type r)
 {
     return l *= r;
@@ -866,7 +866,7 @@ operator*(Rational<IntType> l, typename Rational<IntType>::param_type r)
 
     /// division by right-hand <tt>IntType</tt> argument
 template <typename IntType>
-inline Rational<IntType> 
+inline Rational<IntType>
 operator/(Rational<IntType> l, typename Rational<IntType>::param_type r)
 {
     return l /= r;
@@ -874,7 +874,7 @@ operator/(Rational<IntType> l, typename Rational<IntType>::param_type r)
 
     /// addition of left-hand <tt>IntType</tt> argument
 template <typename IntType>
-inline Rational<IntType> 
+inline Rational<IntType>
 operator+(typename Rational<IntType>::param_type l, Rational<IntType> r)
 {
     return r += l;
@@ -882,7 +882,7 @@ operator+(typename Rational<IntType>::param_type l, Rational<IntType> r)
 
     /// subtraction from left-hand <tt>IntType</tt> argument
 template <typename IntType>
-inline Rational<IntType> 
+inline Rational<IntType>
 operator-(typename Rational<IntType>::param_type l, Rational<IntType> const & r)
 {
     return (-r) += l;
@@ -890,7 +890,7 @@ operator-(typename Rational<IntType>::param_type l, Rational<IntType> const & r)
 
     /// multiplication with left-hand <tt>IntType</tt> argument
 template <typename IntType>
-inline Rational<IntType> 
+inline Rational<IntType>
 operator*(typename Rational<IntType>::param_type l, Rational<IntType> r)
 {
     return r *= l;
@@ -898,7 +898,7 @@ operator*(typename Rational<IntType>::param_type l, Rational<IntType> r)
 
     /// division of left-hand <tt>IntType</tt> argument
 template <typename IntType>
-inline Rational<IntType> 
+inline Rational<IntType>
 operator/(typename Rational<IntType>::param_type l, Rational<IntType> const & r)
 {
     if(r.numerator() < IntType(0))
@@ -916,17 +916,17 @@ operator/(typename Rational<IntType>::param_type l, Rational<IntType> const & r)
 
     /// equality
 template <typename IntType1, typename IntType2>
-inline bool 
+inline bool
 operator== (const Rational<IntType1> & l, const Rational<IntType2>& r)
 {
-    return l.denominator() == r.denominator() && 
+    return l.denominator() == r.denominator() &&
            l.numerator() == r.numerator(); // works since numbers are normalized, even
                                            // if they represent +-infinity
 }
 
     /// equality with right-hand <tt>IntType2</tt> argument
 template <typename IntType1, typename IntType2>
-inline bool 
+inline bool
 operator== (const Rational<IntType1> & l, IntType2 const & i)
 {
     return ((l.denominator() == IntType1(1)) && (l.numerator() == i));
@@ -934,7 +934,7 @@ operator== (const Rational<IntType1> & l, IntType2 const & i)
 
     /// equality with left-hand <tt>IntType1</tt> argument
 template <typename IntType1, typename IntType2>
-inline bool 
+inline bool
 operator==(IntType1 const & l, Rational<IntType2> const & r)
 {
     return r == l;
@@ -942,17 +942,17 @@ operator==(IntType1 const & l, Rational<IntType2> const & r)
 
     /// inequality
 template <typename IntType1, typename IntType2>
-inline bool 
+inline bool
 operator!=(Rational<IntType1> const & l, Rational<IntType2> const & r)
 {
-    return l.denominator() != r.denominator() || 
+    return l.denominator() != r.denominator() ||
            l.numerator() != r.numerator(); // works since numbers are normalized, even
                                            // if they represent +-infinity
 }
 
     /// inequality with right-hand <tt>IntType2</tt> argument
 template <typename IntType1, typename IntType2>
-inline bool 
+inline bool
 operator!= (const Rational<IntType1> & l, IntType2 const & i)
 {
     return ((l.denominator() != IntType1(1)) || (l.numerator() != i));
@@ -960,7 +960,7 @@ operator!= (const Rational<IntType1> & l, IntType2 const & i)
 
     /// inequality with left-hand <tt>IntType1</tt> argument
 template <typename IntType1, typename IntType2>
-inline bool 
+inline bool
 operator!=(IntType1 const & l, Rational<IntType2> const & r)
 {
     return r != l;
@@ -968,45 +968,45 @@ operator!=(IntType1 const & l, Rational<IntType2> const & r)
 
     /// less-than
 template <typename IntType1, typename IntType2>
-bool 
+bool
 operator< (const Rational<IntType1> & l, const Rational<IntType2>& r)
 {
     // Avoid repeated construction
     typedef typename PromoteTraits<IntType1, IntType2>::Promote IntType;
     IntType zero(0);
-    
+
     // Handle the easy cases. Take advantage of the fact
     // that the denominator is never negative.
     if(l.denominator() == zero)
         if(r.denominator() == zero)
             // -inf < inf, !(-inf < -inf), !(inf < -inf), !(inf < inf)
-            return l.numerator() < r.numerator(); 
+            return l.numerator() < r.numerator();
         else
             // -inf < -1, -inf < 0, -inf < 1
             // !(inf < -1), !(inf < 0), !(inf < 1)
-            return l.numerator() < zero; 
+            return l.numerator() < zero;
     if(r.denominator() == zero)
         // -1 < inf, 0 < inf, 1 < inf
         // !(-1 < -inf), !(0 < -inf), !(1 < -inf)
         return r.numerator() > zero;
     // !(1 < -1), !(1 < 0), !(0 < -1), !(0 < 0)
-    if(l.numerator() >= zero && r.numerator() <= zero) 
+    if(l.numerator() >= zero && r.numerator() <= zero)
         return false;
     // -1 < 0, -1 < 1, 0 < 1 (note: !(0 < 0) was already handled!)
     if(l.numerator() <= zero && r.numerator() >= zero)
-        return true;   
-    
+        return true;
+
     // both numbers have the same sign (and are neither zero or +-infinity)
     // => calculate result, avoid overflow
     IntType gcd1 = gcd<IntType>(l.numerator(), r.numerator());
     IntType gcd2 = gcd<IntType>(r.denominator(), l.denominator());
-    return (l.numerator()/gcd1) * (r.denominator()/gcd2) < 
+    return (l.numerator()/gcd1) * (r.denominator()/gcd2) <
            (l.denominator()/gcd2) * (r.numerator()/gcd1);
 }
 
     /// less-than with right-hand <tt>IntType2</tt> argument
 template <typename IntType1, typename IntType2>
-bool 
+bool
 operator< (const Rational<IntType1> & l, IntType2 const & i)
 {
     // Avoid repeated construction
@@ -1018,13 +1018,13 @@ operator< (const Rational<IntType1> & l, IntType2 const & i)
     if(l.denominator() == zero)
         // -inf < -1, -inf < 0, -inf < 1
         // !(inf < -1), !(inf < 0), !(inf < 1)
-        return l.numerator() < zero; 
+        return l.numerator() < zero;
     // !(1 < -1), !(1 < 0), !(0 < -1), !(0 < 0)
-    if(l.numerator() >= zero && i <= zero) 
+    if(l.numerator() >= zero && i <= zero)
         return false;
     // -1 < 0, -1 < 1, 0 < 1 (note: !(0 < 0) was already handled!)
     if(l.numerator() <= zero && i >= zero)
-        return true;   
+        return true;
 
     // Now, use the fact that n/d truncates towards zero as long as n and d
     // are both positive.
@@ -1038,7 +1038,7 @@ operator< (const Rational<IntType1> & l, IntType2 const & i)
 
     /// less-than with left-hand <tt>IntType1</tt> argument
 template <typename IntType1, typename IntType2>
-inline bool 
+inline bool
 operator<(IntType1 const & l, Rational<IntType2> const & r)
 {
     return r > l;
@@ -1046,7 +1046,7 @@ operator<(IntType1 const & l, Rational<IntType2> const & r)
 
     /// greater-than
 template <typename IntType1, typename IntType2>
-inline bool 
+inline bool
 operator>(Rational<IntType1> const & l, Rational<IntType2> const & r)
 {
     return r < l;
@@ -1054,7 +1054,7 @@ operator>(Rational<IntType1> const & l, Rational<IntType2> const & r)
 
     /// greater-than with right-hand <tt>IntType2</tt> argument
 template <typename IntType1, typename IntType2>
-bool 
+bool
 operator> (const Rational<IntType1> & l, IntType2 const & i)
 {
     // Trap equality first
@@ -1067,7 +1067,7 @@ operator> (const Rational<IntType1> & l, IntType2 const & i)
 
     /// greater-than with left-hand <tt>IntType1</tt> argument
 template <typename IntType1, typename IntType2>
-inline bool 
+inline bool
 operator>(IntType1 const & l, Rational<IntType2> const & r)
 {
     return r < l;
@@ -1075,7 +1075,7 @@ operator>(IntType1 const & l, Rational<IntType2> const & r)
 
     /// less-equal
 template <typename IntType1, typename IntType2>
-inline bool 
+inline bool
 operator<=(Rational<IntType1> const & l, Rational<IntType2> const & r)
 {
     return !(r < l);
@@ -1083,7 +1083,7 @@ operator<=(Rational<IntType1> const & l, Rational<IntType2> const & r)
 
     /// less-equal with right-hand <tt>IntType2</tt> argument
 template <typename IntType1, typename IntType2>
-inline bool 
+inline bool
 operator<=(Rational<IntType1> const & l, IntType2 const & r)
 {
     return !(l > r);
@@ -1091,7 +1091,7 @@ operator<=(Rational<IntType1> const & l, IntType2 const & r)
 
     /// less-equal with left-hand <tt>IntType1</tt> argument
 template <typename IntType1, typename IntType2>
-inline bool 
+inline bool
 operator<=(IntType1 const & l, Rational<IntType2> const & r)
 {
     return r >= l;
@@ -1099,7 +1099,7 @@ operator<=(IntType1 const & l, Rational<IntType2> const & r)
 
     /// greater-equal
 template <typename IntType1, typename IntType2>
-inline bool 
+inline bool
 operator>=(Rational<IntType1> const & l, Rational<IntType2> const & r)
 {
     return !(l < r);
@@ -1107,7 +1107,7 @@ operator>=(Rational<IntType1> const & l, Rational<IntType2> const & r)
 
     /// greater-equal with right-hand <tt>IntType2</tt> argument
 template <typename IntType1, typename IntType2>
-inline bool 
+inline bool
 operator>=(Rational<IntType1> const & l, IntType2 const & r)
 {
     return !(l < r);
@@ -1115,7 +1115,7 @@ operator>=(Rational<IntType1> const & l, IntType2 const & r)
 
     /// greater-equal with left-hand <tt>IntType1</tt> argument
 template <typename IntType1, typename IntType2>
-inline bool 
+inline bool
 operator>=(IntType1 const & l, Rational<IntType2> const & r)
 {
     return r <= l;
@@ -1129,7 +1129,7 @@ operator>=(IntType1 const & l, Rational<IntType2> const & r)
 
     /// absolute value
 template <typename IntType>
-inline Rational<IntType> 
+inline Rational<IntType>
 abs(const Rational<IntType>& r)
 {
     if (r.numerator() >= IntType(0))
@@ -1139,11 +1139,11 @@ abs(const Rational<IntType>& r)
 }
 
     /** integer powers
-        
+
         <tt>throws bad_rational</tt> if indeterminate expression.
     */
 template <typename IntType>
-Rational<IntType> 
+Rational<IntType>
 pow(const Rational<IntType>& r, int e)
 {
     IntType zero(0);
@@ -1168,7 +1168,7 @@ pow(const Rational<IntType>& r, int e)
             return r;
         ae = e;
     }
-    
+
     IntType nold = r.numerator(), dold = r.denominator(),
             nnew = IntType(1), dnew = IntType(1);
     for(; ae != 0; ae >>= 1, nold *= nold, dold *= dold)
@@ -1192,7 +1192,7 @@ pow(const Rational<IntType>& r, int e)
 
     /// largest integer not larger than <tt>r</tt>
 template <typename IntType>
-Rational<IntType> 
+Rational<IntType>
 floor(const Rational<IntType>& r)
 {
     IntType zero(0), one(1);
@@ -1205,7 +1205,7 @@ floor(const Rational<IntType>& r)
 
     /// smallest integer not smaller than <tt>r</tt>
 template <typename IntType>
-Rational<IntType> 
+Rational<IntType>
 ceil(const Rational<IntType>& r)
 {
     IntType zero(0), one(1);
@@ -1218,11 +1218,11 @@ ceil(const Rational<IntType>& r)
 
 
     /** Type conversion
-        
+
         Executes <tt>static_cast<T>(numerator()) / denominator()</tt>.
-        
+
         <b>Usage:</b>
-      
+
         \code
         Rational<int> r;
         int i;
