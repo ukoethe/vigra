@@ -645,121 +645,13 @@ destIterRange(Iterator upperleft, Iterator lowerright, Accessor a)
 
 /****************************************************************/
 
-template <class PixelType, class Accessor>
-inline triple<typename BasicImage<PixelType>::const_traverser, 
-              typename BasicImage<PixelType>::const_traverser, Accessor>
-srcImageRange(BasicImage<PixelType> const & img, Accessor a)
-{
-    return triple<typename BasicImage<PixelType>::const_traverser, 
-                  typename BasicImage<PixelType>::const_traverser, 
-          Accessor>(img.upperLeft(),
-                    img.lowerRight(),
-                a);
-}
-
-template <class PixelType, class Accessor>
-inline pair<typename BasicImage<PixelType>::const_traverser, Accessor>
-srcImage(BasicImage<PixelType> const & img, Accessor a)
-{
-    return pair<typename BasicImage<PixelType>::const_traverser, 
-                Accessor>(img.upperLeft(), a);
-}
-
-template <class PixelType, class Accessor>
-inline triple<typename BasicImage<PixelType>::traverser, 
-              typename BasicImage<PixelType>::traverser, Accessor>
-destImageRange(BasicImage<PixelType> & img, Accessor a)
-{
-    return triple<typename BasicImage<PixelType>::traverser, 
-                  typename BasicImage<PixelType>::traverser, 
-          Accessor>(img.upperLeft(),
-                    img.lowerRight(),
-                a);
-}
-
-template <class PixelType, class Accessor>
-inline pair<typename BasicImage<PixelType>::traverser, Accessor>
-destImage(BasicImage<PixelType> & img, Accessor a)
-{
-    return pair<typename BasicImage<PixelType>::traverser, 
-                Accessor>(img.upperLeft(), a);
-}
-
-template <class PixelType, class Accessor>
-inline pair<typename BasicImage<PixelType>::const_traverser, Accessor>
-maskImage(BasicImage<PixelType> const & img, Accessor a)
-{
-    return pair<typename BasicImage<PixelType>::const_traverser, 
-                Accessor>(img.upperLeft(), a);
-}
-
-/****************************************************************/
-
-template <class PixelType>
-inline triple<typename BasicImage<PixelType>::const_traverser, 
-              typename BasicImage<PixelType>::const_traverser, 
-          typename BasicImage<PixelType>::ConstAccessor>
-srcImageRange(BasicImage<PixelType> const & img)
-{
-    return triple<typename BasicImage<PixelType>::const_traverser, 
-                  typename BasicImage<PixelType>::const_traverser, 
-          typename BasicImage<PixelType>::ConstAccessor>(img.upperLeft(),
-                                        img.lowerRight(),
-                        img.accessor());
-}
-
-template <class PixelType>
-inline pair< typename BasicImage<PixelType>::const_traverser, 
-             typename BasicImage<PixelType>::ConstAccessor>
-srcImage(BasicImage<PixelType> const & img)
-{
-    return pair<typename BasicImage<PixelType>::const_traverser, 
-                typename BasicImage<PixelType>::ConstAccessor>(img.upperLeft(), 
-                                         img.accessor());
-}
-
-template <class PixelType>
-inline triple< typename BasicImage<PixelType>::traverser, 
-               typename BasicImage<PixelType>::traverser, 
-           typename BasicImage<PixelType>::Accessor>
-destImageRange(BasicImage<PixelType> & img)
-{
-    return triple<typename BasicImage<PixelType>::traverser, 
-                  typename BasicImage<PixelType>::traverser, 
-          typename BasicImage<PixelType>::Accessor>(img.upperLeft(),
-                                        img.lowerRight(),
-                        img.accessor());
-}
-
-template <class PixelType>
-inline pair< typename BasicImage<PixelType>::traverser, 
-             typename BasicImage<PixelType>::Accessor>
-destImage(BasicImage<PixelType> & img)
-{
-    return pair<typename BasicImage<PixelType>::traverser, 
-                typename BasicImage<PixelType>::Accessor>(img.upperLeft(), 
-                                         img.accessor());
-}
-
-template <class PixelType>
-inline pair< typename BasicImage<PixelType>::const_traverser, 
-             typename BasicImage<PixelType>::ConstAccessor>
-maskImage(BasicImage<PixelType> const & img)
-{
-    return pair<typename BasicImage<PixelType>::const_traverser, 
-                typename BasicImage<PixelType>::ConstAccessor>(img.upperLeft(), 
-                                         img.accessor());
-}
-
-/****************************************************************/
-
 template <class Iterator>
 inline pair<Iterator, typename IteratorTraits<Iterator>::DefaultAccessor>
 srcIter(Iterator upperleft)
 {
     return pair<Iterator, typename IteratorTraits<Iterator>::DefaultAccessor>(
                   upperleft,
-              IteratorTraits<Iterator>::DefaultAccessor());
+                  IteratorTraits<Iterator>::DefaultAccessor());
 }
 
 template <class Iterator>
@@ -769,7 +661,7 @@ srcIterRange(Iterator upperleft, Iterator lowerright)
     return triple<Iterator, Iterator, 
                   typename IteratorTraits<Iterator>::DefaultAccessor>(
                   upperleft, lowerright, 
-              IteratorTraits<Iterator>::DefaultAccessor());
+                  IteratorTraits<Iterator>::DefaultAccessor());
 }
 
 template <class Iterator>
@@ -778,7 +670,7 @@ maskIter(Iterator upperleft)
 {
     return pair<Iterator, typename IteratorTraits<Iterator>::DefaultAccessor>(
                   upperleft,
-              IteratorTraits<Iterator>::DefaultAccessor());
+                  IteratorTraits<Iterator>::DefaultAccessor());
 }
 
 template <class Iterator>
@@ -787,7 +679,7 @@ destIter(Iterator upperleft)
 {
     return pair<Iterator, typename IteratorTraits<Iterator>::DefaultAccessor>(
                   upperleft,
-              IteratorTraits<Iterator>::DefaultAccessor());
+                  IteratorTraits<Iterator>::DefaultAccessor());
 }
 
 template <class Iterator>
@@ -797,7 +689,7 @@ destIterRange(Iterator upperleft, Iterator lowerright)
     return triple<Iterator, Iterator, 
                   typename IteratorTraits<Iterator>::DefaultAccessor>(
                   upperleft, lowerright, 
-              IteratorTraits<Iterator>::DefaultAccessor());
+                  IteratorTraits<Iterator>::DefaultAccessor());
 }
 
 } // namespace vigra
