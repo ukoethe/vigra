@@ -159,7 +159,7 @@ struct BeaudetCornerFunctor
     vigra::FImage corner_response(w,h);
     
     // empty corner image
-    corners = 0;
+    corners.init(0.0);
     ...
     
     // find corner response at scale 1.0
@@ -317,7 +317,7 @@ void cornerResponseFunction(
     vigra::FImage foerstner_corner_strength(w,h);
     
     // empty corner image
-    corners = 0;
+    corners.init(0.0);
     ...
     
     // find corner response at scale 1.0
@@ -462,7 +462,7 @@ void foerstnerCornerDetector(
     vigra::FImage rohr_corner_strength(w,h);
     
     // empty corner image
-    corners = 0;
+    corners.init(0.0);
     ...
     
     // find corner response at scale 1.0
@@ -598,7 +598,7 @@ void rohrCornerDetector(
     vigra::FImage beaudet_corner_strength(w,h);
     
     // empty corner image
-    corners = 0;
+    corners.init(0.0);
     ...
     
     // find corner response at scale 1.0
