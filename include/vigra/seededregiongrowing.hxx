@@ -1,6 +1,6 @@
 /************************************************************************/
 /*                                                                      */
-/*               Copyright 1998-2002 by Ullrich Koethe                  */
+/*         Copyright 1998-2003 by Ullrich Koethe, Hans Meine            */
 /*       Cognitive Systems Group, University of Hamburg, Germany        */
 /*                                                                      */
 /*    This file is part of the VIGRA computer vision library.           */
@@ -35,7 +35,7 @@ template <class COST>
 class InternalSeedRgPixel
 {
 public:
-    Diff2D location_, nearest_;
+    Point2D location_, nearest_;
     COST cost_;
     int count_;
     int label_;
@@ -45,7 +45,7 @@ public:
     : location_(0,0), nearest_(0,0), cost_(0), count_(0), label_(0)
     {}
 
-    InternalSeedRgPixel(Diff2D const & location, Diff2D const & nearest,
+    InternalSeedRgPixel(Point2D const & location, Point2D const & nearest,
                         COST const & cost, int const & count, int const & label)
     : location_(location), nearest_(nearest),
       cost_(cost), count_(count), label_(label)
@@ -55,7 +55,7 @@ public:
         dist_ = dx * dx + dy * dy;
     }
 
-    void set(Diff2D const & location, Diff2D const & nearest,
+    void set(Point2D const & location, Point2D const & nearest,
                         COST const & cost, int const & count, int const & label)
     {
         location_ = location;
@@ -110,7 +110,7 @@ public:
         }
         
         InternalSeedRgPixel *
-        create(Diff2D const & location, Diff2D const & nearest,
+        create(Point2D const & location, Point2D const & nearest,
                COST const & cost, int const & count, int const & label)
         {
             if(!freelist_.empty())
@@ -359,7 +359,7 @@ void seededRegionGrowing(SrcImageIterator srcul,
     static const Diff2D dist[] = { Diff2D(-1,0), Diff2D(0,-1),
                                    Diff2D(1,0),  Diff2D(0,1) };
 
-    Diff2D pos(0,0);
+    Point2D pos(0,0);
     for(isy=srcul, iry=ir, pos.y=0; pos.y<h;
         ++pos.y, ++isy.y, ++iry.y)
     {
@@ -391,8 +391,8 @@ void seededRegionGrowing(SrcImageIterator srcul,
         Pixel * pixel = pheap.top();
         pheap.pop();
 
-        Diff2D pos = pixel->location_;
-        Diff2D nearest = pixel->nearest_;
+        Point2D pos = pixel->location_;
+        Point2D nearest = pixel->nearest_;
         int lab = pixel->label_;
         
         allocator.dismiss(pixel);
@@ -400,7 +400,8 @@ void seededRegionGrowing(SrcImageIterator srcul,
         irx = ir + pos;
         isx = srcul + pos;
 
-        if(*irx > 0) continue;
+        if(*irx) // already labelled region / watershed?
+            continue;
 
         if(srgType == KeepContours)
         {
