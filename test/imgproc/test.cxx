@@ -286,7 +286,7 @@ struct ImageFunctionsTest
         mask = 0;
         mask(1,1) = 1;
 
-        inspectImageIf(srcIterRange(vigra::Diff2D(0,0), img.size()),
+        inspectImageIf(srcIterRange<Diff2D>(vigra::Diff2D(0,0), img.size()),
                        maskImage(mask), rect);
 
         should(rect.upperLeft.x == 1);
@@ -296,7 +296,7 @@ struct ImageFunctionsTest
 
         mask(1,0) = 1;
 
-        inspectImageIf(srcIterRange(vigra::Diff2D(0,0), img.size()),
+        inspectImageIf(srcIterRange<Diff2D>(vigra::Diff2D(0,0), img.size()),
                        maskImage(mask), rect);
 
         should(rect.upperLeft.x == 1);
@@ -306,7 +306,7 @@ struct ImageFunctionsTest
 
         mask(0,1) = 1;
 
-        inspectImageIf(srcIterRange(vigra::Diff2D(0,0), img.size()),
+        inspectImageIf(srcIterRange<Diff2D>(vigra::Diff2D(0,0), img.size()),
                        maskImage(mask), rect);
 
         should(rect.upperLeft.x == 0);
@@ -316,7 +316,7 @@ struct ImageFunctionsTest
 
         mask(1,2) = 1;
 
-        inspectImageIf(srcIterRange(vigra::Diff2D(0,0), img.size()),
+        inspectImageIf(srcIterRange<Diff2D>(vigra::Diff2D(0,0), img.size()),
                        maskImage(mask), rect);
 
         should(rect.upperLeft.x == 0);
@@ -326,7 +326,7 @@ struct ImageFunctionsTest
 
         mask(2,1) = 1;
 
-        inspectImageIf(srcIterRange(vigra::Diff2D(0,0), img.size()),
+        inspectImageIf(srcIterRange<Diff2D>(vigra::Diff2D(0,0), img.size()),
                        maskImage(mask), rect);
 
         should(rect.upperLeft.x == 0);
@@ -367,7 +367,7 @@ struct ImageFunctionsTest
         labels.init(0);
         labels(1,1) = 1;
 
-        inspectTwoImages(srcIterRange(vigra::Diff2D(0,0), img.size()),
+        inspectTwoImages(srcIterRange<Diff2D>(vigra::Diff2D(0,0), img.size()),
                          srcImage(labels), stats1);
 
 
