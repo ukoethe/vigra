@@ -100,7 +100,7 @@ VIGRA_FIND_PACKAGE(fftw, fftw, fftw.h, [support fast Fourier transforms])
 if test $with_fftw = "yes";
 then
     FFTW_LIB="$with_fftwlib -lfftw"
-    RFFTW_LIB="-L$with_fftwlib -lrfftw -lfftw"
+    RFFTW_LIB="$with_fftwlib -lrfftw -lfftw"
     FFTW_INCLUDES="$fftw_cppflags"
     CPPFLAGS="$FFTW_INCLUDES $CPPFLAGS"
 fi
