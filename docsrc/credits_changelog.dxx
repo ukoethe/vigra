@@ -35,6 +35,10 @@
       <li> Renamed CellGridImage into CrackEdgeImage in \ref EdgeDetection.
       
       <li> Added \ref vigra::TinyVector and made vigra::RGBValue derive from it.
+      
+      <li> Added typedefs for TinyVector images.
+<     
+      <li> Added \ref ColorConversions.
 </UL>
 
 <b> Changes from Version 1.1.1 to 1.1.2</b>
