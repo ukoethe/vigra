@@ -43,16 +43,9 @@
     #define NO_STL_MEMBER_TEMPLATES
     #define NO_INLINE_STATIC_CONST_DEFINITION
     #define CMATH_NOT_IN_STD
-    #define M_PI 3.14159265358979323846
-    #define M_SQRT2 1.41421356237309504880
     
     namespace std {
     
-        inline double rint(const double & v)
-        {
-            return floor(v+0.5);
-        }
-        
 	template<class T>
 	const T& min(const T& x, const T& y)
 	{
