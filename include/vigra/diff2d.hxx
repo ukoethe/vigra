@@ -23,6 +23,7 @@
 #define VIGRA_DIFF2D_HXX
 
 #include <cmath> // for sqrt()
+#include <iosfwd> 
 #include "vigra/config.hxx"
 #include "vigra/iteratortags.hxx"
 #include "vigra/iteratortraits.hxx"
@@ -402,6 +403,13 @@ class Diff2D
         return Diff2D(x + offset.x, y + offset.y);
     }
 
+        /** Read vector components.
+        */
+    int operator[](int index) const
+    {
+        return (&x)[index];
+    }
+
         /** Access current coordinate.
         */
     pointer operator->() const
@@ -438,6 +446,14 @@ struct IteratorTraits<Diff2D >
     typedef StandardConstValueAccessor<Diff2D>   default_accessor;
     
 };
+
+
+inline
+std::ostream & operator<<(std::ostream & o, Diff2D const & d)
+{
+    o << '(' << d.x << ", " << d.y << ')';
+    return o;
+}
 
 template <class DIFF, class Accessor>
 inline triple<Diff2D, Diff2D, Accessor>
