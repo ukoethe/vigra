@@ -473,9 +473,9 @@ typedef BasicImage<fftw_real> FFTWRealImage;
 
 template<>
 struct IteratorTraits<
-        BasicImageIterator<FFTWComplex, FFTWComplex &, FFTWComplex *> >
+        BasicImageIterator<FFTWComplex, FFTWComplex **> >
 {
-    typedef BasicImageIterator<FFTWComplex, FFTWComplex &, FFTWComplex *>  Iterator;
+    typedef BasicImageIterator<FFTWComplex, FFTWComplex **>  Iterator;
     typedef Iterator                             iterator;
     typedef iterator::iterator_category          iterator_category;
     typedef iterator::value_type                 value_type;
@@ -485,15 +485,15 @@ struct IteratorTraits<
     typedef iterator::difference_type            difference_type;
     typedef iterator::row_iterator               row_iterator;
     typedef iterator::column_iterator            column_iterator;
-    typedef VectorAccessor<FFTWComplex>        default_accessor;
-    typedef VectorAccessor<FFTWComplex>        DefaultAccessor;
+    typedef VectorAccessor<FFTWComplex>          default_accessor;
+    typedef VectorAccessor<FFTWComplex>          DefaultAccessor;
 };
 
 template<>
 struct IteratorTraits<
-        BasicImageIterator<FFTWComplex, FFTWComplex const &, FFTWComplex const *> >
+        ConstBasicImageIterator<FFTWComplex, FFTWComplex **> >
 {
-    typedef BasicImageIterator<FFTWComplex, FFTWComplex const &, FFTWComplex const *>    Iterator;
+    typedef ConstBasicImageIterator<FFTWComplex, FFTWComplex **>    Iterator;
     typedef Iterator                             iterator;
     typedef iterator::iterator_category          iterator_category;
     typedef iterator::value_type                 value_type;
@@ -503,8 +503,8 @@ struct IteratorTraits<
     typedef iterator::difference_type            difference_type;
     typedef iterator::row_iterator               row_iterator;
     typedef iterator::column_iterator            column_iterator;
-    typedef VectorAccessor<FFTWComplex>   default_accessor;
-    typedef VectorAccessor<FFTWComplex>   DefaultAccessor;
+    typedef VectorAccessor<FFTWComplex>          default_accessor;
+    typedef VectorAccessor<FFTWComplex>          DefaultAccessor;
 };
 
     /** Complex (FFTWComplex) image.
@@ -1078,9 +1078,9 @@ template <class FilterImageIterator, class FilterAccessor,
           class DestImageIterator, class DestAccessor>
 inline
 void applyFourierFilter(
-    BasicImageIterator<FFTWComplex, FFTWComplex const &, FFTWComplex const *> srcUpperLeft,
-    BasicImageIterator<FFTWComplex, FFTWComplex const &, FFTWComplex const *> srcLowerRight,
-    VectorAccessor<FFTWComplex> sa,
+    FFTWComplexImage::const_traverser srcUpperLeft,
+    FFTWComplexImage::const_traverser srcLowerRight,
+    FFTWComplexImage::ConstAccessor sa,
     FilterImageIterator filterUpperLeft, FilterAccessor fa,
     DestImageIterator destUpperLeft, DestAccessor da)
 {
@@ -1107,9 +1107,9 @@ void applyFourierFilter(
 template <class FilterImageIterator, class FilterAccessor,
           class DestImageIterator, class DestAccessor>
 void applyFourierFilterImpl(
-    BasicImageIterator<FFTWComplex, FFTWComplex const &, FFTWComplex const *> srcUpperLeft,
-    BasicImageIterator<FFTWComplex, FFTWComplex const &, FFTWComplex const *> srcLowerRight,
-    VectorAccessor<FFTWComplex> sa,
+    FFTWComplexImage::const_traverser srcUpperLeft,
+    FFTWComplexImage::const_traverser srcLowerRight,
+    FFTWComplexImage::ConstAccessor sa,
     FilterImageIterator filterUpperLeft, FilterAccessor fa,
     DestImageIterator destUpperLeft, DestAccessor da)
 {
@@ -1174,9 +1174,9 @@ template <class FilterImageIterator, class FilterAccessor,
           class DestImageIterator, class DestAccessor>
 inline
 void applyFourierFilter(
-    BasicImageIterator<FFTWComplex, FFTWComplex const &, FFTWComplex const *> srcUpperLeft,
-    BasicImageIterator<FFTWComplex, FFTWComplex const &, FFTWComplex const *> srcLowerRight,
-    VectorAccessor<FFTWComplex> sa,
+    FFTWComplexImage::const_traverser srcUpperLeft,
+    FFTWComplexImage::const_traverser srcLowerRight,
+    FFTWComplexImage::ConstAccessor sa,
     FilterImageIterator filterUpperLeft, FilterAccessor fa,
     DestImageIterator destUpperLeft, DestAccessor da,
     const fftwnd_plan &forwardPlan, const fftwnd_plan &backwardPlan)
@@ -1190,9 +1190,9 @@ void applyFourierFilter(
 template <class FilterImageIterator, class FilterAccessor,
           class DestImageIterator, class DestAccessor>
 void applyFourierFilterImpl(
-    BasicImageIterator<FFTWComplex, FFTWComplex const &, FFTWComplex const *> srcUpperLeft,
-    BasicImageIterator<FFTWComplex, FFTWComplex const &, FFTWComplex const *> srcLowerRight,
-    VectorAccessor<FFTWComplex> sa,
+    FFTWComplexImage::const_traverser srcUpperLeft,
+    FFTWComplexImage::const_traverser srcLowerRight,
+    FFTWComplexImage::ConstAccessor sa,
     FilterImageIterator filterUpperLeft, FilterAccessor fa,
     DestImageIterator destUpperLeft, DestAccessor da,
     const fftwnd_plan &forwardPlan, const fftwnd_plan &backwardPlan)
@@ -1239,8 +1239,8 @@ void applyFourierFilterImplNormalization(FFTWComplexImage const &srcImage,
 }
 
 void applyFourierFilterImplNormalization(FFTWComplexImage const & srcImage,
-        BasicImageIterator<FFTWComplex, FFTWComplex &, FFTWComplex *> destUpperLeft,
-        StandardAccessor<FFTWComplex> da,
+        FFTWComplexImage::traverser destUpperLeft,
+        FFTWComplexImage::Accessor da,
         VigraFalseType)
 {
     transformImage(srcImageRange(srcImage), destIter(destUpperLeft, da),
@@ -1375,9 +1375,9 @@ void applyFourierFilterFamily(SrcImageIterator srcUpperLeft,
 template <class FilterType, class DestImage>
 inline
 void applyFourierFilterFamily(
-    BasicImageIterator<FFTWComplex, FFTWComplex const &, FFTWComplex const *> srcUpperLeft,
-    BasicImageIterator<FFTWComplex, FFTWComplex const &, FFTWComplex const *> srcLowerRight,
-    VectorAccessor<FFTWComplex> sa,
+    FFTWComplexImage::const_traverser srcUpperLeft,
+    FFTWComplexImage::const_traverser srcLowerRight,
+    FFTWComplexImage::ConstAccessor sa,
     const ImageArray<FilterType> &filters,
     ImageArray<DestImage> &results)
 {
@@ -1387,9 +1387,9 @@ void applyFourierFilterFamily(
 
 template <class FilterType, class DestImage>
 void applyFourierFilterFamilyImpl(
-    BasicImageIterator<FFTWComplex, FFTWComplex const &, FFTWComplex const *> srcUpperLeft,
-    BasicImageIterator<FFTWComplex, FFTWComplex const &, FFTWComplex const *> srcLowerRight,
-    VectorAccessor<FFTWComplex> sa,
+    FFTWComplexImage::const_traverser srcUpperLeft,
+    FFTWComplexImage::const_traverser srcLowerRight,
+    FFTWComplexImage::ConstAccessor sa,
     const ImageArray<FilterType> &filters,
     ImageArray<DestImage> &results)
 {
@@ -1447,9 +1447,9 @@ void applyFourierFilterFamily(SrcImageIterator srcUpperLeft,
 template <class FilterType, class DestImage>
 inline
 void applyFourierFilterFamily(
-    BasicImageIterator<FFTWComplex, FFTWComplex const &, FFTWComplex const *> srcUpperLeft,
-    BasicImageIterator<FFTWComplex, FFTWComplex const &, FFTWComplex const *> srcLowerRight,
-    VectorAccessor<FFTWComplex> sa,
+    FFTWComplexImage::const_traverser srcUpperLeft,
+    FFTWComplexImage::const_traverser srcLowerRight,
+    FFTWComplexImage::ConstAccessor sa,
     const ImageArray<FilterType> &filters,
     ImageArray<DestImage> &results,
     const fftwnd_plan &forwardPlan, const fftwnd_plan &backwardPlan)
@@ -1476,9 +1476,9 @@ void applyFourierFilterFamily(
 
 template <class FilterType, class DestImage>
 void applyFourierFilterFamilyImpl(
-    BasicImageIterator<FFTWComplex, FFTWComplex const &, FFTWComplex const *> srcUpperLeft,
-    BasicImageIterator<FFTWComplex, FFTWComplex const &, FFTWComplex const *> srcLowerRight,
-    VectorAccessor<FFTWComplex> sa,
+    FFTWComplexImage::const_traverser srcUpperLeft,
+    FFTWComplexImage::const_traverser srcLowerRight,
+    FFTWComplexImage::ConstAccessor sa,
     const ImageArray<FilterType> &filters,
     ImageArray<DestImage> &results,
     const fftwnd_plan &forwardPlan, const fftwnd_plan &backwardPlan)
