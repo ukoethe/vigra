@@ -28,6 +28,7 @@
 #include "vigra/utilities.hxx"
 #include "vigra/numerictraits.hxx"
 #include "vigra/iteratortraits.hxx"
+#include "vigra/functortraits.hxx"
 #include "vigra/rgbvalue.hxx"
 
 namespace vigra {
@@ -564,10 +565,14 @@ inspectTwoImagesIf(triple<ImageIterator1, ImageIterator1, Accessor1> img1,
 /** \brief Find the minimum and maximum pixel value in an image or ROI.
 
     In addition the size of the ROI is calculated.
-    This Functor can also be used in conjunction with
+    These functors can also be used in conjunction with
     \ref ArrayOfRegionStatistics to find the extremes of all regions in
     a labeled image.
-
+    
+    <b> Traits defined:</b>
+    
+    <tt>FunctorTraits::isUnaryAnalyser</tt> is true (<tt>VigraTrueType<tt>)
+    
     <b> Usage:</b>
 
         <b>\#include</b> "<a href="inspectimage_8hxx-source.html">vigra/inspectimage.hxx</a>"<br>
@@ -684,6 +689,14 @@ class FindMinMax
 
 };
 
+template <class VALUETYPE>
+class FunctorTraits<FindMinMax<VALUETYPE> >
+: public FunctorTraitsBase<FindMinMax<VALUETYPE> >
+{
+  public:
+    typedef VigraTrueType isUnaryAnalyser;
+};
+
 /********************************************************/
 /*                                                      */
 /*                    FindAverage                       */
@@ -697,6 +710,11 @@ class FindMinMax
     \ref ArrayOfRegionStatistics to find the average of all regions in
     a labeled image.
 
+    <b> Traits defined:</b>
+    
+    <tt>FunctorTraits::isUnaryAnalyser</tt> and <tt>FunctorTraits::isInitializer</tt>
+    are true (<tt>VigraTrueType<tt>)
+    
     <b> Usage:</b>
 
         <b>\#include</b> "<a href="inspectimage_8hxx-source.html">vigra/inspectimage.hxx</a>"<br>
@@ -789,6 +807,15 @@ class FindAverage
 
 };
 
+template <class VALUETYPE>
+class FunctorTraits<FindAverage<VALUETYPE> >
+: public FunctorTraitsBase<FindAverage<VALUETYPE> >
+{
+  public:
+    typedef VigraTrueType isInitializer;
+    typedef VigraTrueType isUnaryAnalyser;
+};
+
 /********************************************************/
 /*                                                      */
 /*                    FindROISize                       */
@@ -801,6 +828,11 @@ class FindAverage
     \ref ArrayOfRegionStatistics to find the sizes of all regions in
     a labeled image.
 
+    <b> Traits defined:</b>
+    
+    <tt>FunctorTraits::isUnaryAnalyser</tt> and <tt>FunctorTraits::isInitializer</tt>
+    are true (<tt>VigraTrueType<tt>)
+    
     <b> Usage:</b>
 
     <b>\#include</b> "<a href="inspectimage_8hxx-source.html">vigra/inspectimage.hxx</a>"<br>
@@ -882,6 +914,15 @@ class FindROISize
 
 };
 
+template <class VALUETYPE>
+class FunctorTraits<FindROISize<VALUETYPE> >
+: public FunctorTraitsBase<FindROISize<VALUETYPE> >
+{
+  public:
+    typedef VigraTrueType isInitializer;
+    typedef VigraTrueType isUnaryAnalyser;
+};
+
 /********************************************************/
 /*                                                      */
 /*                FindBoundingRectangle                 */
@@ -896,6 +937,11 @@ class FindROISize
     \ref ArrayOfRegionStatistics to find the bounding rectangles
     of all regions in a labeled image.
 
+    <b> Traits defined:</b>
+    
+    <tt>FunctorTraits::isUnaryAnalyser</tt> and <tt>FunctorTraits::isInitializer</tt>
+    are true (<tt>VigraTrueType<tt>)
+    
     <b> Usage:</b>
 
     <b>\#include</b> "<a href="inspectimage_8hxx-source.html">vigra/inspectimage.hxx</a>"<br>
@@ -1017,6 +1063,15 @@ class FindBoundingRectangle
     }
 };
 
+template <>
+class FunctorTraits<FindBoundingRectangle>
+: public FunctorTraitsBase<FindBoundingRectangle>
+{
+  public:
+    typedef VigraTrueType isInitializer;
+    typedef VigraTrueType isUnaryAnalyser;
+};
+
 /********************************************************/
 /*                                                      */
 /*                 LastValueFunctor                     */
@@ -1028,6 +1083,11 @@ class FindBoundingRectangle
     This Functor is best used in conjunction with
     \ref ArrayOfRegionStatistics to realize a look-up table.
 
+    <b> Traits defined:</b>
+    
+    <tt>FunctorTraits::isUnaryAnalyser</tt> and <tt>FunctorTraits::isInitializer</tt>
+    are true (<tt>VigraTrueType<tt>)
+    
     <b> Usage:</b>
 
     <b>\#include</b> "<a href="inspectimage_8hxx-source.html">vigra/inspectimage.hxx</a>"<br>
@@ -1074,6 +1134,10 @@ class LastValueFunctor
         */
     void operator=(argument_type const & v) { value = v; }
 
+        /** reset to initiaö value
+        */
+    void reset() { value = VALUETYPE(); }
+
         /** replace value
         */
     void operator()(argument_type const & v) { value = v; }
@@ -1088,6 +1152,154 @@ class LastValueFunctor
 
 };
 
+template <class VALUETYPE>
+class FunctorTraits<LastValueFunctor<VALUETYPE> >
+: public FunctorTraitsBase<LastValueFunctor<VALUETYPE> >
+{
+  public:
+    typedef VigraTrueType isInitializer;
+    typedef VigraTrueType isUnaryAnalyser;
+};
+
+/********************************************************/
+/*                                                      */
+/*                     ReduceFunctor                    */
+/*                                                      */
+/********************************************************/
+
+/** \brief Apply a functor to reduce the dimensionality of an array.
+
+    This functor can be used to emulate the <tt>reduce</tt> standard function of
+    functional programming using <tt>std::for_each()</tt> or <tt>inspectImage()</tt>
+    and similar functions. This functor is initialized with a functor encoding
+    the expression to be applied, and an accumulator storing the current state
+    of the reduction. For each element of the array, the embedded functor is called
+    with the accumulator and the current element(s) of the array. The result
+    of the reduction is available by calling <tt>reduceFunctor()</tt>. 
+
+    <b> Traits defined:</b>
+    
+    <tt>FunctorTraits::isUnaryAnalyser</tt>, <tt>FunctorTraits::isBinaryAnalyser</tt> 
+    and <tt>FunctorTraits::isInitializer</tt>
+    are true (<tt>VigraTrueType<tt>)
+    
+    <b> Usage:</b>
+
+    <b>\#include</b> "<a href="inspectimage_8hxx-source.html">vigra/inspectimage.hxx</a>"<br>
+        Namespace: vigra
+
+    \code
+    vigra::BImage img;
+    ... // fill the image
+
+    // create a functor to sum the elements of the image
+    vigra::ReduceFunctor<std::plus<int>, int> sumElements(std::plus<int>, 0);
+    
+    vigra::inspectImage(srcImageRange(img), sumElements);
+
+    cout << "The sum of the elements " << sumElements() << endl;
+
+    \endcode
+
+    <b> Required Interface:</b>
+
+    \code
+    FUNCTOR f;
+    VALUETYPE accumulator, current1, current2;
+    
+    f(accumulator, current1); // for inspectImage()
+    f(accumulator, current1, current2); // for inspectTwoImages()
+    \endcode
+*/
+template <class FUNCTOR, class VALUETYPE>
+class ReduceFunctor
+{
+    FUNCTOR f_;
+    VALUETYPE start_, accumulator_;
+   public:
+
+        /** the functor's argument type
+            when used as a unary inspector.
+            (This is not strictly correct since the argument type
+            is actuall a template parameter.)
+        */
+    typedef VALUETYPE argument_type;
+
+        /** the functor's first argument type
+            when used as a binary inspector.
+            (This is not strictly correct since the argument type
+            is actuall a template parameter.)
+        */
+    typedef VALUETYPE first_argument_type;
+
+        /** the functor's second argument type
+            when used as a binary inspector.
+            (This is not strictly correct since the argument type
+            is actuall a template parameter.)
+        */
+    typedef VALUETYPE second_argument_type;
+
+        /** the functor's result type
+        */
+    typedef VALUETYPE result_type;
+
+        /** create with the given functor and initial value \a initial
+            for the accumulator.
+        */
+    ReduceFunctor(FUNCTOR const & f, VALUETYPE const & initial)
+    : f_(f),
+      start_(initial),
+      accumulator_(initial)
+    {}
+    
+        /** Reset accumulator to the initial value.
+        */
+    void reset()
+      { accumulator_ = start_; }
+
+        /** Use binary functor to connect given value with the accumulator.
+            The accumulator is used as the first argument, the value \a v
+            as the second.
+        */
+    template <class T>
+    void operator()(T const & v) 
+    { 
+        accumulator_ = f_(accumulator_, v); 
+    }
+
+        /** Use ternary functor to connect given values with accumulator.
+            The accumulator is used as the first argument, the values \a v1
+            ans \a v2 as the second and third.
+        */
+    template <class T1, class T2>
+    void operator()(T1 const & v1, T2 const & v2) 
+    { 
+        accumulator_ = f_(accumulator_, v1, v2); 
+    }
+
+        /** return current value
+        */
+    result_type const & operator()() const 
+      { return accumulator_; }
+};
+
+template <class FUNCTOR, class VALUETYPE>
+ReduceFunctor<FUNCTOR, VALUETYPE>
+reduceFunctor(FUNCTOR const & f, VALUETYPE const & initial)
+{
+    return ReduceFunctor<FUNCTOR, VALUETYPE>(f, initial);
+}
+
+template <class FUNCTOR, class VALUETYPE>
+class FunctorTraits<ReduceFunctor<FUNCTOR, VALUETYPE> >
+: public FunctorTraitsBase<ReduceFunctor<FUNCTOR, VALUETYPE> >
+{
+  public:
+    typedef VigraTrueType isInitializer;
+    typedef VigraTrueType isUnaryAnalyser;
+    typedef VigraTrueType isBinaryAnalyser;
+};
+
 /********************************************************/
 /*                                                      */
 /*              ArrayOfRegionStatistics                 */
@@ -1100,6 +1312,11 @@ class LastValueFunctor
     for each label, and selects the one to be updated according to the
     pixel's label.
 
+    <b> Traits defined:</b>
+    
+    <tt>FunctorTraits::isBinaryAnalyser</tt> and <tt>FunctorTraits::isUnaryFunctor</tt>
+    are true (<tt>VigraTrueType<tt>)
+    
     <b> Usage:</b>
 
     <b>\#include</b> "<a href="inspectimage_8hxx-source.html">vigra/inspectimage.hxx</a>"<br>
@@ -1285,9 +1502,16 @@ class ArrayOfRegionStatistics
     std::vector<RegionStatistics> regions;
 };
 
+template <class RegionStatistics, class LabelType>
+class FunctorTraits<ArrayOfRegionStatistics<RegionStatistics, LabelType> >
+: public FunctorTraitsBase<ArrayOfRegionStatistics<RegionStatistics, LabelType> >
+{
+  public:
+    typedef VigraTrueType isUnaryFunctor;
+    typedef VigraTrueType isBinaryAnalyser;
+};
 
 //@}
-
 
 } // namespace vigra
 
