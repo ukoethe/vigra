@@ -178,6 +178,10 @@
             <DD>
         <DT>
             <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif">
+            \ref vigra::TinyVectorView
+            <DD>
+        <DT>
+            <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif">
             \ref TinyVectorTraits
             <DD>
         <DT>
