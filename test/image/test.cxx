@@ -223,6 +223,13 @@ struct ImageTest
         }
     }
 
+    void testConstructor()
+    {
+        Image img1(img.width(), img.height(), data);
+        
+        shouldEqualSequence(img.begin(), img.end(), img1.begin());
+    }
+
     void copyImage()
     {
         typedef typename Image::value_type Value;
@@ -273,6 +280,11 @@ struct BasicImageTest
     void testIndex()
     {
         ImageTest<IMAGE>::testIndex();
+    }
+
+    void testConstructor()
+    {
+        ImageTest<IMAGE>::testConstructor();
     }
 
     void copyImage()
@@ -395,18 +407,22 @@ struct ImageTestSuite
     {
         add( testCase( &BasicImageTest<BasicImage<unsigned char> >::testIterator));
         add( testCase( &BasicImageTest<BasicImage<unsigned char> >::testIndex));
+        add( testCase( &BasicImageTest<BasicImage<unsigned char> >::testConstructor));
         add( testCase( &BasicImageTest<BasicImage<unsigned char> >::copyImage));
         add( testCase( &BasicImageTest<BasicImage<unsigned char> >::swapImage));
         add( testCase( &BasicImageTest<BasicImage<double> >::testIterator));
         add( testCase( &BasicImageTest<BasicImage<double> >::testIndex));
+        add( testCase( &BasicImageTest<BasicImage<double> >::testConstructor));
         add( testCase( &BasicImageTest<BasicImage<double> >::copyImage));
         add( testCase( &BasicImageTest<BasicImage<double> >::swapImage));
         add( testCase( &BasicImageTest<BasicImage<RGBValue<unsigned char> > >::testIterator));
         add( testCase( &BasicImageTest<BasicImage<RGBValue<unsigned char> > >::testIndex));
+        add( testCase( &BasicImageTest<BasicImage<RGBValue<unsigned char> > >::testConstructor));
         add( testCase( &BasicImageTest<BasicImage<RGBValue<unsigned char> > >::copyImage));
         add( testCase( &BasicImageTest<BasicImage<RGBValue<unsigned char> > >::swapImage));
         add( testCase( &BasicImageTest<BasicImage<RGBValue<float> > >::testIterator));
         add( testCase( &BasicImageTest<BasicImage<RGBValue<float> > >::testIndex));
+        add( testCase( &BasicImageTest<BasicImage<RGBValue<float> > >::testConstructor));
         add( testCase( &BasicImageTest<BasicImage<RGBValue<float> > >::copyImage));
         add( testCase( &BasicImageTest<BasicImage<RGBValue<float> > >::swapImage));
         add( testCase( &BasicImageViewTest<BasicImageView<unsigned char> >::testIterator));
