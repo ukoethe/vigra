@@ -244,7 +244,7 @@ static MachineDefs machine_defs[] =
 #endif
 
                /* This works for the Intel 386/486*/
-#if defined(i386) && !defined(LocalDef)
+#if (defined(i386) || defined(__i386)) && !defined(LocalDef)
 #define LocalDef	machine_defs[I386_DEF]
 #endif
                /* This works for the Motorola 88000 */

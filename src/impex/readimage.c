@@ -24,6 +24,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <unistd.h>
 #include <string.h>
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -37,7 +38,6 @@
 
 #include "vigra/viff.h"
 #include "vdefines.h"
-#include "vencode.h"
 
 struct xvimage *readViffImage(filename)
 char *filename;

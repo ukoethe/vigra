@@ -470,8 +470,8 @@ struct BRGBImageTest
         vigra::ImageImportInfo info1("test.ras");
                 
         should(info1.isColor());
-        should(info1.width() == viff->row_size);
-        should(info1.height() == viff->col_size);
+        should(info1.width() == (int)viff->row_size);
+        should(info1.height() == (int)viff->col_size);
         should(info1.width() == info.width());
         should(info1.height() == info.height());
 

@@ -128,7 +128,7 @@ struct FunctorExpressionTest
         should(exec(rint(Arg1()), 1.6) == 2.0); 
         should(exec(-Arg1(), -0.5) == 0.5); 
         should(exec(!Arg1(), true) == false); 
-        should(exec(~Arg1(), 0xff) == 0xffffff00); 
+        should(exec(~Arg1(), 0xff) == (int)0xffffff00); 
     }
     
     void testBinary()

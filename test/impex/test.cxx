@@ -148,8 +148,8 @@ class ByteImageExportImportTest
         ViffImage * viff = readViffImage("res.foo");
         
         should(viff != 0);
-        should(viff->row_size == img.width());
-        should(viff->col_size == img.height());
+        should((int)viff->row_size == img.width());
+        should((int)viff->col_size == img.height());
         
         Image res(viff->row_size, viff->col_size);
         
@@ -309,8 +309,8 @@ class ByteRGBImageExportImportTest
         ViffImage * viff = readViffImage("res.foo");
         
         should(viff != 0);
-        should(viff->row_size == img.width());
-        should(viff->col_size == img.height());
+        should((int)viff->row_size == img.width());
+        should((int)viff->col_size == img.height());
         
         Image res(viff->row_size, viff->col_size);
         

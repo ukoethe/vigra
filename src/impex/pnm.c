@@ -210,7 +210,7 @@ static unsigned int PNMInteger(VigraImpexImage *image,const unsigned int base)
                 length<<=1;
                 length+=MaxTextExtent;
               
-               //ReallocateMemory((void **)&comment,length+strlen(P7Comment)+1);
+               /*MIKHAIL ReallocateMemory((void **)&comment,length+strlen(P7Comment)+1); */
                                 
                 comment=(char *) malloc(length+strlen(P7Comment)+1);
 
@@ -232,11 +232,11 @@ static unsigned int PNMInteger(VigraImpexImage *image,const unsigned int base)
         if (strcmp(q,P7Comment) == 0)
           *q='\0';
         
-		//(void) SetImageAttribute(image,"Comment",comment);
+		/*MIKHAIL (void) SetImageAttribute(image,"Comment",comment); */
         
         continue;
       }
-  } while (!isdigit((char)c));
+  } while (!isdigit(c));
   if (base == 2)
     return((char)c-'0');
   /*
@@ -254,7 +254,7 @@ static unsigned int PNMInteger(VigraImpexImage *image,const unsigned int base)
     if (c == EOF)
       return(0);
   }
-  while (isdigit((char)c));
+  while (isdigit(c));
   return(value);
 }
 
@@ -319,14 +319,14 @@ VigraImpexImage *vigraImpexReadPNMImage( VigraImpexImageInfo *image_info)
   /*
         Determine if this is a PNM file.
   */  
-  // consider reading into image->magick
+  /*MIKHAIL  consider reading into image->magick */
   status=vigraImpexReadData((char *)magick,1,1,image->file);
   status=vigraImpexReadData((char *)&format,1,1,image->file);                 
   magick[1]=format;  
   strcpy(image->magick,(char *)magick);
   do
   {
-//      Verify PNM identifier.
+/*MIKHAIL       Verify PNM identifier. */
     /*
     */
         if ((status == False) || (strncmp((char *)magick,"P",1) != 0))
@@ -342,7 +342,7 @@ VigraImpexImage *vigraImpexReadPNMImage( VigraImpexImageInfo *image_info)
       Initialize image structure.
           format=ReadByte(image);
     */
-		//(char *)		
+		/*MIKHAIL (char *)		 */
     if (format=='7')
       (void) PNMInteger(image,10);
 
@@ -355,16 +355,16 @@ VigraImpexImage *vigraImpexReadPNMImage( VigraImpexImageInfo *image_info)
     else
       max_value=PNMInteger(image,10);
 	
-	//image->depth=max_value < 256 ? 8 : 16;		//QuantumDepth;
-	//#define DownScale(quantum)  (((unsigned int) (quantum)) >> 8)
-	//#define HexColorFormat "#%04x%04x%04x"
-	//#define MaxRGB  65535L
-	//#define MaxRunlength  65535L
-	//#define Opaque  65535L
-	//#define QuantumDepth  16
-	//#define UpScale(quantum)  (((unsigned int) (quantum))*257)
-	//#define XDownScale(color)  ((unsigned int) (color))
-	//#define XUpScale(color)  ((unsigned int) (color))
+	/*MIKHAIL image->depth=max_value < 256 ? 8 : 16;		//QuantumDepth; */
+	/*MIKHAIL #define DownScale(quantum)  (((unsigned int) (quantum)) >> 8) */
+	/*MIKHAIL #define HexColorFormat "#%04x%04x%04x" */
+	/*MIKHAIL #define MaxRGB  65535L */
+	/*MIKHAIL #define MaxRunlength  65535L */
+	/*MIKHAIL #define Opaque  65535L */
+	/*MIKHAIL #define QuantumDepth  16 */
+	/*MIKHAIL #define UpScale(quantum)  (((unsigned int) (quantum))*257) */
+	/*MIKHAIL #define XDownScale(color)  ((unsigned int) (color)) */
+	/*MIKHAIL #define XUpScale(color)  ((unsigned int) (color)) */
 
 	/*if (maxvalue<256)
 		image->depth=8;		
@@ -403,9 +403,9 @@ VigraImpexImage *vigraImpexReadPNMImage( VigraImpexImageInfo *image_info)
         /*
           Create colormap.
         */
-//        if (!AllocateImageColormap(image,image->colors))
-//          ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
-//            image);
+/*MIKHAIL         if (!AllocateImageColormap(image,image->colors)) */
+/*MIKHAIL           ThrowReaderException(ResourceLimitWarning,"Memory allocation failed", */
+/*MIKHAIL             image); */
                 
         image->colormap=(VigraImpexColorPacket *)
 	          malloc(image->colors*sizeof(VigraImpexColorPacket));
@@ -477,24 +477,24 @@ VigraImpexImage *vigraImpexReadPNMImage( VigraImpexImageInfo *image_info)
           Convert PBM image to pixel packets.
         */
 		image->colors=2;
-		q=image->pixels;//+(y*image->columns);             
+		q=image->pixels;/*MIKHAIL +(y*image->columns);              */
         for (y=0; y < (int) image->rows; y++)
         {                           
 		  
           for (x=0; x < (int) image->columns; x++)
           {
-			//byte|=0x01;
-            //q->index=!PNMInteger(image,2);
+			/*MIKHAIL byte|=0x01; */
+            /*MIKHAIL q->index=!PNMInteger(image,2); */
 			q->index=(!PNMInteger(image,2)) ? 0x01:0x00;
 			q->length=0x00;
 			q++;			
-            //q++;
+            /*MIKHAIL q++; */
           }
-//          if (!SyncImagePixels(image))
-//            break;
-//          if (image->previous == (Image *) NULL)
-//            if (QuantumTick(y,image->rows))
-//              ProgressMonitor(LoadImageText,y,image->rows);
+/*MIKHAIL           if (!SyncImagePixels(image)) */
+/*MIKHAIL             break; */
+/*MIKHAIL           if (image->previous == (Image *) NULL) */
+/*MIKHAIL             if (QuantumTick(y,image->rows)) */
+/*MIKHAIL               ProgressMonitor(LoadImageText,y,image->rows); */
         }
 		break;
       }
@@ -503,7 +503,7 @@ VigraImpexImage *vigraImpexReadPNMImage( VigraImpexImageInfo *image_info)
         /*
           Convert PGM image to pixel packets.
         */
-		q=image->pixels;//+(y*image->columns);             
+		q=image->pixels;/*MIKHAIL +(y*image->columns);              */
         for (y=0; y < (int) image->rows; y++)
         {          
           for (x=0; x < (int) image->columns; x++)
@@ -512,11 +512,11 @@ VigraImpexImage *vigraImpexReadPNMImage( VigraImpexImageInfo *image_info)
             q->length=0;
             q++;
           }
-//          if (!SyncImagePixels(image))
-//            break;
-//          if (image->previous == (VigraImpexImage *) NULL)
-//            if (QuantumTick(y,image->rows))
-//              ProgressMonitor(LoadImageText,y,image->rows);
+/*MIKHAIL           if (!SyncImagePixels(image)) */
+/*MIKHAIL             break; */
+/*MIKHAIL           if (image->previous == (VigraImpexImage *) NULL) */
+/*MIKHAIL             if (QuantumTick(y,image->rows)) */
+/*MIKHAIL               ProgressMonitor(LoadImageText,y,image->rows); */
         }
         break;
       }
@@ -545,11 +545,11 @@ VigraImpexImage *vigraImpexReadPNMImage( VigraImpexImageInfo *image_info)
 			q->length=0;
             q++;
           }
-//          if (!SyncImagePixels(image))
-//            break;
-//        if (image->previous == (Image *) NULL)
-//          if (QuantumTick(y,image->rows))
-//            ProgressMonitor(LoadImageText,y,image->rows);
+/*MIKHAIL           if (!SyncImagePixels(image)) */
+/*MIKHAIL             break; */
+/*MIKHAIL         if (image->previous == (Image *) NULL) */
+/*MIKHAIL           if (QuantumTick(y,image->rows)) */
+/*MIKHAIL             ProgressMonitor(LoadImageText,y,image->rows); */
         }
         break;
       }
@@ -566,7 +566,7 @@ VigraImpexImage *vigraImpexReadPNMImage( VigraImpexImageInfo *image_info)
         bit=0;
         byte=0;
 
-        q=image->pixels;//+(y*image->columns);
+        q=image->pixels;/*MIKHAIL +(y*image->columns); */
         for (y=0; y < (int) image->rows; y++)
         {
           for (x=0; x < (int) image->columns; x++)
@@ -584,11 +584,11 @@ VigraImpexImage *vigraImpexReadPNMImage( VigraImpexImageInfo *image_info)
               bit=0;
             byte<<=1;
           }
-//          if (!SyncImagePixels(image))
-//            break;
-//          if (image->previous == (Image *) NULL)
-//            if (QuantumTick(y,image->rows))
-//              ProgressMonitor(LoadImageText,y,image->rows);
+/*MIKHAIL           if (!SyncImagePixels(image)) */
+/*MIKHAIL             break; */
+/*MIKHAIL           if (image->previous == (Image *) NULL) */
+/*MIKHAIL             if (QuantumTick(y,image->rows)) */
+/*MIKHAIL               ProgressMonitor(LoadImageText,y,image->rows); */
         }
         break;
       }
@@ -609,7 +609,7 @@ VigraImpexImage *vigraImpexReadPNMImage( VigraImpexImageInfo *image_info)
         for (y=0; y < (int) image->rows; y++)
         {			
 		  vigraImpexReadData((char *)pixels,1,packets*image->columns,image->file);  
-		  //status=ReadBlob(image,packets*image->columns,pixels);
+		  /*MIKHAIL status=ReadBlob(image,packets*image->columns,pixels); */
           if (status == False)
 			{
 			    fprintf(stderr, "vigraImpexReadPNMImage(): Unable to read image.\n");
@@ -641,11 +641,11 @@ VigraImpexImage *vigraImpexReadPNMImage( VigraImpexImageInfo *image_info)
             q->length=0;
             q++;
           }
-//          if (!SyncImagePixels(image))
-//            break;
-//          if (image->previous == (VigraImpexImage *) NULL)
-//            if (QuantumTick(y,image->rows))
-//              ProgressMonitor(LoadImageText,y,image->rows);
+/*MIKHAIL           if (!SyncImagePixels(image)) */
+/*MIKHAIL             break; */
+/*MIKHAIL           if (image->previous == (VigraImpexImage *) NULL) */
+/*MIKHAIL             if (QuantumTick(y,image->rows)) */
+/*MIKHAIL               ProgressMonitor(LoadImageText,y,image->rows); */
         }        
         break;
       }
@@ -666,8 +666,8 @@ VigraImpexImage *vigraImpexReadPNMImage( VigraImpexImageInfo *image_info)
         {
           
 		  vigraImpexReadData((char *)pixels,1,packets*image->columns,image->file);  
-		  // is it really packets?
-		  //status=ReadBlob(image,packets*image->columns,pixels);
+		  /*MIKHAIL  is it really packets? */
+		  /*MIKHAIL status=ReadBlob(image,packets*image->columns,pixels); */
           if (status == False)
 			{
 			    fprintf(stderr, "vigraImpexReadPNMImage(): Unable to read image.\n");
@@ -680,7 +680,7 @@ VigraImpexImage *vigraImpexReadPNMImage( VigraImpexImageInfo *image_info)
           {
             if (image->depth <= 8)
               {
-				// is this RGB  ???
+				/*MIKHAIL  is this RGB  ??? */
 				
 				blue=(*p++);				
 				red=(*p++);
@@ -707,14 +707,14 @@ VigraImpexImage *vigraImpexReadPNMImage( VigraImpexImageInfo *image_info)
 			q->length=0;
             q++;
           }
-//          if (!SyncImagePixels(image))
-//            break;
-//          if (image->previous == (Image *) NULL)
-//            if (QuantumTick(y,image->rows))
-//              ProgressMonitor(LoadImageText,y,image->rows);
+/*MIKHAIL           if (!SyncImagePixels(image)) */
+/*MIKHAIL             break; */
+/*MIKHAIL           if (image->previous == (Image *) NULL) */
+/*MIKHAIL             if (QuantumTick(y,image->rows)) */
+/*MIKHAIL               ProgressMonitor(LoadImageText,y,image->rows); */
         }        
-//        handler=SetMonitorHandler((MonitorHandler) NULL);
-//        (void) SetMonitorHandler(handler);
+/*MIKHAIL         handler=SetMonitorHandler((MonitorHandler) NULL); */
+/*MIKHAIL         (void) SetMonitorHandler(handler); */
         break;
       }
       default:
@@ -728,13 +728,13 @@ VigraImpexImage *vigraImpexReadPNMImage( VigraImpexImageInfo *image_info)
     if (scale != (Quantum *) NULL)
 
 		
-//PUT THIS IN LATER
-//    if (EOFBlob(image))
-//			{
-//			    fprintf(stderr, "vigraImpexReadPNMImage():not enough pixels.\n");
-//				vigraImpexDestroyImage(image);
-//				return 0;
-//			}			
+/*MIKHAIL PUT THIS IN LATER */
+/*MIKHAIL     if (EOFBlob(image)) */
+/*MIKHAIL 			{ */
+/*MIKHAIL 			    fprintf(stderr, "vigraImpexReadPNMImage():not enough pixels.\n"); */
+/*MIKHAIL 				vigraImpexDestroyImage(image); */
+/*MIKHAIL 				return 0; */
+/*MIKHAIL 			}			 */
     /*
       Proceed to next image.
     */
@@ -748,13 +748,13 @@ VigraImpexImage *vigraImpexReadPNMImage( VigraImpexImageInfo *image_info)
           Skip to end of line.
         */
 		status=vigraImpexReadData((char *)&format,1,1,image->file);  
-		//status=ReadBlob(image,1,&format);
+		/*MIKHAIL status=ReadBlob(image,1,&format); */
         if (status == False)
           break;
       } while (format != '\n' || format != EOF);
 	
 	  status=vigraImpexReadData((char *) &format,1,1,image->file);  		  
-	  //status=ReadBlob(image,1,(char *) &format);
+	  /*MIKHAIL status=ReadBlob(image,1,(char *) &format); */
     if ((status == True) && (format == 'P'))
       {
         /*
@@ -767,7 +767,7 @@ VigraImpexImage *vigraImpexReadPNMImage( VigraImpexImageInfo *image_info)
             return((VigraImpexImage *) NULL);
           }
         image=image->next;
-//        ProgressMonitor(LoadImagesText,TellBlob(image),image->filesize);
+/*MIKHAIL         ProgressMonitor(LoadImagesText,TellBlob(image),image->filesize); */
       }
   } while ((status == True) && (format == 'P'));
   while (image->previous != (VigraImpexImage *) NULL)
@@ -810,7 +810,7 @@ VigraImpexImage *vigraImpexReadPNMImage( VigraImpexImageInfo *image_info)
 %
 %
 */
-//static unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
+/*MIKHAIL static unsigned int WritePNMImage(const ImageInfo *image_info,Image *image) */
 
 unsigned int vigraImpexWritePNMImage(VigraImpexImageInfo *image_info,VigraImpexImage *image)
 {
@@ -853,7 +853,7 @@ unsigned int vigraImpexWritePNMImage(VigraImpexImageInfo *image_info,VigraImpexI
     */	 
     (void) vigraImpexIsPseudoClass(image);
     
-	//if (LocaleCompare(image_info->magick,"PPM") == 0)
+	/*MIKHAIL if (LocaleCompare(image_info->magick,"PPM") == 0) */
 	if (strcmp(image_info->magick,"PPM") == 0 )
 		image->c_class=VigraImpexDirectClass;
 	      
@@ -899,7 +899,7 @@ unsigned int vigraImpexWritePNMImage(VigraImpexImageInfo *image_info,VigraImpexI
         if ((image_info->compression == VigraImpexNoCompression) || (image->depth > 8))
           format='3';
         
-		//if ((LocaleCompare(magick,"PPM") != 0) && IsGrayImage(image))
+		/*MIKHAIL if ((LocaleCompare(magick,"PPM") != 0) && IsGrayImage(image)) */
 		if ((strcmp(image_info->magick,"PPM") == 0) && vigraImpexIsGrayImage(image))
         
           {
@@ -919,19 +919,22 @@ unsigned int vigraImpexWritePNMImage(VigraImpexImageInfo *image_info,VigraImpexI
                 }
           }
 		if (strcmp(image_info->magick,"PBM") == 0  && vigraImpexIsGrayImage(image))
+                {
 			if ((image_info->compression == VigraImpexNoCompression) || (image->depth > 8))
 				format='1';
 			else
 				format='4';
-		if (strcmp(image_info->magick,"PGM") == 0  && vigraImpexIsGrayImage(image))
-			if ((image_info->compression == VigraImpexNoCompression) || (image->depth > 8))
+		}
+                if (strcmp(image_info->magick,"PGM") == 0  && vigraImpexIsGrayImage(image))
+		{
+                	if ((image_info->compression == VigraImpexNoCompression) || (image->depth > 8))
 				format='2';
 			else
 				format='5';
-
+                }
 
       }
-    //if (LocaleCompare(magick,"P7") == 0)
+    /*MIKHAIL if (LocaleCompare(magick,"P7") == 0) */
 	if (strcmp(image_info->magick,"P7") == 0)
       {
         format='7';
@@ -939,11 +942,11 @@ unsigned int vigraImpexWritePNMImage(VigraImpexImageInfo *image_info,VigraImpexI
       }
     else
       FormatString(buffer,"P%c\n",format);
-    //(void) WriteBlob(image,strlen(buffer),buffer);
+    /*MIKHAIL (void) WriteBlob(image,strlen(buffer),buffer); */
 	(void) fwrite(buffer,1,strlen(buffer),image->file);
     
-	//GetImageAttribute(image,"Label");
-	//attribute=image->label;
+	/*MIKHAIL GetImageAttribute(image,"Label"); */
+	/*MIKHAIL attribute=image->label; */
 			
     if (image->label != (char *) NULL)
       {
@@ -953,30 +956,30 @@ unsigned int vigraImpexWritePNMImage(VigraImpexImageInfo *image_info,VigraImpexI
         /*
           Write comments to file.
         */
-        //(void) WriteByte(image,'#');
+        /*MIKHAIL (void) WriteByte(image,'#'); */
 		(void) fputc('#',image->file);
-        //for (p=attribute->value; *p != '\0'; p++)
+        /*MIKHAIL for (p=attribute->value; *p != '\0'; p++) */
 		for (p=image->label; *p != '\0'; p++)
         {
-          //(void) WriteByte(image,*p);
+          /*MIKHAIL (void) WriteByte(image,*p); */
 		(void) fputc(*p,image->file);
           if ((*p == '\n') && (*(p+1) != '\0'))
-            //(void) WriteByte(image,'#');
+            /*MIKHAIL (void) WriteByte(image,'#'); */
 			(void) fputc('#',image->file);
         }
-        //(void) WriteByte(image,'\n');
+        /*MIKHAIL (void) WriteByte(image,'\n'); */
 		(void) fputc('\n',image->file); \
       }
     if (format != '7')
       {
         FormatString(buffer,"%u %u\n",image->columns,image->rows);
-        //(void) WriteBlob(image,strlen(buffer),buffer);
+        /*MIKHAIL (void) WriteBlob(image,strlen(buffer),buffer); */
 		(void) fwrite(buffer,1,strlen(buffer),image->file);
       }
     /*
       Convert runlength encoded to PNM raster pixels.
     */
-//	(void) vigraImpexUncondenseImage(image);
+/*MIKHAIL 	(void) vigraImpexUncondenseImage(image); */
 
 	switch (format)
     {
@@ -993,39 +996,39 @@ unsigned int vigraImpexWritePNMImage(VigraImpexImageInfo *image_info,VigraImpexI
 			polarity=
 				Intensity(image->colormap[0]) > Intensity(image->colormap[1]);
         i=0;
-		//p=GetImagePixels(image,0,y,image->columns,1);
+		/*MIKHAIL p=GetImagePixels(image,0,y,image->columns,1); */
 		p=image->pixels;
         if (p == (VigraImpexRunlengthPacket *) NULL)
             break;
-         //indexes=GetIndexes(image);
-	    //q=image->pixels+(y*image->columns);		 		            
+         /*MIKHAIL indexes=GetIndexes(image); */
+	    /*MIKHAIL q=image->pixels+(y*image->columns);		 		             */
         for (y=0; y < (int) image->packets; y++)
         {
 		  for (x=0; x <= (int) p->length; x++)
           {
             
-            //oid) WriteBlob(image,strlen(buffer),buffer);
-			//FormatString(buffer,"%d ",(int) (p->index == polarity));
+            /*MIKHAIL oid) WriteBlob(image,strlen(buffer),buffer); */
+			/*MIKHAIL FormatString(buffer,"%d ",(int) (p->index == polarity)); */
 			
 			  (void) fputc(((p->index==polarity) ? '1' : '0'),image->file);
 			  (void) fputc(' ',image->file);
-			//(void) fwrite(p->index,1,strlen(buffer),image->file)
+			/*MIKHAIL (void) fwrite(p->index,1,strlen(buffer),image->file) */
 
-	        //FormatString(buffer,"%lu\n",DownScale(MaxRGB));
-		    //(void) WriteBlob(image,strlen(buffer),buffer);
-			//(void) fwrite(buffer,1,strlen(buffer),image->file);
+	        /*MIKHAIL FormatString(buffer,"%lu\n",DownScale(MaxRGB)); */
+		    /*MIKHAIL (void) WriteBlob(image,strlen(buffer),buffer); */
+			/*MIKHAIL (void) fwrite(buffer,1,strlen(buffer),image->file); */
 
             i++;
             if (i == 36)
               {
-				//(void) WriteByte(image,'\n');
+				/*MIKHAIL (void) WriteByte(image,'\n'); */
 			    (void) fputc(13,image->file);
                 i=0;
               }
           }
-//          if (image->previous == (VigraImpexImage *) NULL)
-//            if (QuantumTick(y,image->rows))
-//              ProgressMonitor(SaveImageText,y,image->rows);
+/*MIKHAIL           if (image->previous == (VigraImpexImage *) NULL) */
+/*MIKHAIL             if (QuantumTick(y,image->rows)) */
+/*MIKHAIL               ProgressMonitor(SaveImageText,y,image->rows); */
 		  p++;
         }
         break;
@@ -1039,7 +1042,7 @@ unsigned int vigraImpexWritePNMImage(VigraImpexImageInfo *image_info,VigraImpexI
 
 		
 		
-		//(void) WriteBlob(image,2,"BM");
+		/*MIKHAIL (void) WriteBlob(image,2,"BM"); */
 
         /*(void) fwrite("BM",1,2,image->file);
 		  (void) WriteBlob(image,strlen(buffer),buffer);
@@ -1048,32 +1051,32 @@ unsigned int vigraImpexWritePNMImage(VigraImpexImageInfo *image_info,VigraImpexI
 
 
         i=0;		
-		p=image->pixels;//;+(y*image->columns);
+		p=image->pixels;/*MIKHAIL ;+(y*image->columns); */
         if (p == (VigraImpexRunlengthPacket *) NULL)
             break;
         for (y=0; y < (int) image->packets; y++)
         {
-        //	p=GetImagePixels(image,0,y,image->columns,1);
+        /*MIKHAIL 	p=GetImagePixels(image,0,y,image->columns,1); */
 		  p->index=Intensity(*p);
 		  FormatString(buffer,"%d ",p->index);            
           for (x=0; x <= (int) p->length; x++)
           {          
-			//(void) WriteBlob(image,strlen(buffer),buffer);			  
+			/*MIKHAIL (void) WriteBlob(image,strlen(buffer),buffer);			   */
 			(void) fwrite(buffer,1,strlen(buffer),image->file);
 
             i++;
             if (i == 12)
               {
-                //(void) WriteByte(image,'\n');
+                /*MIKHAIL (void) WriteByte(image,'\n'); */
 				(void) fputc('\n',image->file); \
                 i=0;
               }
 		  
 		  }
 		  p++; 
-//          if (image->previous == (Image *) NULL)
-//            if (QuantumTick(y,image->rows))
-//              ProgressMonitor(SaveImageText,y,image->rows);
+/*MIKHAIL           if (image->previous == (Image *) NULL) */
+/*MIKHAIL             if (QuantumTick(y,image->rows)) */
+/*MIKHAIL               ProgressMonitor(SaveImageText,y,image->rows); */
         }
         break;
       }
@@ -1084,24 +1087,24 @@ unsigned int vigraImpexWritePNMImage(VigraImpexImageInfo *image_info,VigraImpexI
         */
         FormatString(buffer,"%ld\n",MaxRGB);
         (void) fwrite(buffer,1,strlen(buffer),image->file);
-		//(void) WriteBlob(image,strlen(buffer),buffer);
+		/*MIKHAIL (void) WriteBlob(image,strlen(buffer),buffer); */
         i=0;
 		p=image->pixels;
 		for (y=0; y < (int) image->packets; y++)
 		{
-          //p=GetImagePixels(image,0,y,image->columns,1);			
-          //indexes=GetIndexes(image);
+          /*MIKHAIL p=GetImagePixels(image,0,y,image->columns,1);			 */
+          /*MIKHAIL indexes=GetIndexes(image); */
 		  if (p == (VigraImpexRunlengthPacket *) NULL)
 			    break;
           FormatString(buffer,"%d %d %d ",p->red,p->green,p->blue);
 		  for (x=0; x <= (int) p->length; x++)
           {            
-            //(void) WriteBlob(image,strlen(buffer),buffer);
+            /*MIKHAIL (void) WriteBlob(image,strlen(buffer),buffer); */
 			(void) fwrite(buffer,1,strlen(buffer),image->file);
             i++;
             if (i == 4)
               {
-                //(void) WriteByte(image,'\n');
+                /*MIKHAIL (void) WriteByte(image,'\n'); */
 				(void) fputc('\n',image->file);
                 i=0;
               }
@@ -1131,11 +1134,11 @@ unsigned int vigraImpexWritePNMImage(VigraImpexImageInfo *image_info,VigraImpexI
 
 		for (y=0; y < (int) image->packets; y++)
 		{
-          //p=GetImagePixels(image,0,y,image->columns,1);			
-          //indexes=GetIndexes(image);
+          /*MIKHAIL p=GetImagePixels(image,0,y,image->columns,1);			 */
+          /*MIKHAIL indexes=GetIndexes(image); */
           for (x=0; x <= (int) p->length; x++)
           {
-//			p++;
+/*MIKHAIL 			p++; */
 			  
 			byte<<=1;			  
             if (p->index == polarity)			
@@ -1143,7 +1146,7 @@ unsigned int vigraImpexWritePNMImage(VigraImpexImageInfo *image_info,VigraImpexI
             bit++;
             if (bit == 8)
             {
-				//(void) WriteByte(image,byte);
+				/*MIKHAIL (void) WriteByte(image,byte); */
                 (void) fputc(byte,image->file);											
                 bit=0;
                 byte=0;
@@ -1151,12 +1154,12 @@ unsigned int vigraImpexWritePNMImage(VigraImpexImageInfo *image_info,VigraImpexI
             
           }
 		  p++;
-          //if (bit != 0)
-            //(void) WriteByte(image,byte << (8-bit));
-			//(void) fputc(byte << (8-bit) ,image->file);
-//          if (image->previous == (Image *) NULL)
-//            if (QuantumTick(y,image->rows))
-//              ProgressMonitor(SaveImageText,y,image->rows);
+          /*MIKHAIL if (bit != 0) */
+            /*MIKHAIL (void) WriteByte(image,byte << (8-bit)); */
+			/*MIKHAIL (void) fputc(byte << (8-bit) ,image->file); */
+/*MIKHAIL           if (image->previous == (Image *) NULL) */
+/*MIKHAIL             if (QuantumTick(y,image->rows)) */
+/*MIKHAIL               ProgressMonitor(SaveImageText,y,image->rows); */
         }
         break;
       }
@@ -1166,9 +1169,9 @@ unsigned int vigraImpexWritePNMImage(VigraImpexImageInfo *image_info,VigraImpexI
           Convert image to a PGM image.
         */
         FormatString(buffer,"%lu\n",MaxRGB);
-        //(void) WriteBlob(image,strlen(buffer),buffer);
-		//p=GetImagePixels(image,0,y,image->columns,1);	
-		//(void) WriteByte(image,index);
+        /*MIKHAIL (void) WriteBlob(image,strlen(buffer),buffer); */
+		/*MIKHAIL p=GetImagePixels(image,0,y,image->columns,1);	 */
+		/*MIKHAIL (void) WriteByte(image,index); */
 		(void) fwrite(buffer,1,strlen(buffer),image->file);
         p=image->pixels;        
 		if (p == (VigraImpexRunlengthPacket *) NULL)
@@ -1181,9 +1184,9 @@ unsigned int vigraImpexWritePNMImage(VigraImpexImageInfo *image_info,VigraImpexI
 			(void) fputc(p->index,image->file);
           }
 		   p++;
-//          if (image->previous == (Image *) NULL)
-//            if (QuantumTick(y,image->rows))
-//              ProgressMonitor(SaveImageText,y,image->rows);
+/*MIKHAIL           if (image->previous == (Image *) NULL) */
+/*MIKHAIL             if (QuantumTick(y,image->rows)) */
+/*MIKHAIL               ProgressMonitor(SaveImageText,y,image->rows); */
         }
         break;
       }
@@ -1211,9 +1214,9 @@ unsigned int vigraImpexWritePNMImage(VigraImpexImageInfo *image_info,VigraImpexI
           Convert image to a PNM image.
         */
         FormatString(buffer,"%lu\n",MaxRGB);
-        //(void) WriteBlob(image,strlen(buffer),buffer);
+        /*MIKHAIL (void) WriteBlob(image,strlen(buffer),buffer); */
 		(void) fwrite(buffer,1,strlen(buffer),image->file);
-		//p=GetImagePixels(image,0,y,image->columns,1);
+		/*MIKHAIL p=GetImagePixels(image,0,y,image->columns,1); */
 		p=image->pixels;
 		q=pixels;		
         for (y=0; y < (int) image->packets; y++)
@@ -1229,16 +1232,16 @@ unsigned int vigraImpexWritePNMImage(VigraImpexImageInfo *image_info,VigraImpexI
 									
 			}
             p++;                 
-		  //(void) WriteBlob(image,q-pixels,(char *) pixels);		  
+		  /*MIKHAIL (void) WriteBlob(image,q-pixels,(char *) pixels);		   */
 		   
             
-          //if (image->previous == (VigraImpexImage *) NULL)
-//            if (QuantumTick(y,image->rows))
-              //ProgressMonitor(SaveImageText,y,image->rows);
+          /*MIKHAIL if (image->previous == (VigraImpexImage *) NULL) */
+/*MIKHAIL             if (QuantumTick(y,image->rows)) */
+              /*MIKHAIL ProgressMonitor(SaveImageText,y,image->rows); */
         }
-        //FreeMemory((void **) &pixels);
+        /*MIKHAIL FreeMemory((void **) &pixels); */
 		(void) fwrite((char *)pixels,1,image->rows*image->columns*3,image->file);
-		//		free(pixels);								
+		/*MIKHAIL 		free(pixels);								 */
         break;
       }
       case '7':
@@ -1322,16 +1325,16 @@ unsigned int vigraImpexWritePNMImage(VigraImpexImageInfo *image_info,VigraImpexI
           Convert image to a P7 image.
         */
         (void) strcpy(buffer,"#END_OF_COMMENTS\n");
-        //(void) WriteBlob(image,strlen(buffer),buffer);
+        /*MIKHAIL (void) WriteBlob(image,strlen(buffer),buffer); */
 		(void) fwrite(buffer,1,strlen(buffer),image->file);
         FormatString(buffer,"%u %u 255\n",image->columns,image->rows);
-        //(void) WriteBlob(image,strlen(buffer),buffer);
+        /*MIKHAIL (void) WriteBlob(image,strlen(buffer),buffer); */
 		(void) fwrite(buffer,1,strlen(buffer),image->file);
         i=0;
         j=0;
         for (y=0; y < (int) image->rows; y++)
         {
-          //p=GetImagePixels(image,0,y,image->columns,1);
+          /*MIKHAIL p=GetImagePixels(image,0,y,image->columns,1); */
 			p=image->pixels+(y*image->columns);
           if (p == (VigraImpexRunlengthPacket *) NULL)
             break;
@@ -1345,7 +1348,7 @@ unsigned int vigraImpexWritePNMImage(VigraImpexImageInfo *image_info,VigraImpexI
               pixel=((red_map[i][j][p->red] & 0xe0) |
                 ((green_map[i][j][p->green] & 0xe0) >> 3) |
                 ((blue_map[i][j][p->blue] & 0xc0) >> 6));
-            //(void) WriteByte(image,pixel);
+            /*MIKHAIL (void) WriteByte(image,pixel); */
 			(void) fputc(pixel,image->file);
             p++;
             j++;
@@ -1355,8 +1358,8 @@ unsigned int vigraImpexWritePNMImage(VigraImpexImageInfo *image_info,VigraImpexI
           i++;
           if (i == 2)
             i=0;
-//          if (QuantumTick(y,image->rows))
-//            ProgressMonitor(SaveImageText,y,image->rows);
+/*MIKHAIL           if (QuantumTick(y,image->rows)) */
+/*MIKHAIL             ProgressMonitor(SaveImageText,y,image->rows); */
         }
         /*
           Free allocated memory.
@@ -1367,9 +1370,9 @@ unsigned int vigraImpexWritePNMImage(VigraImpexImageInfo *image_info,VigraImpexI
 			free(green_map[i][j]);
 			free(blue_map[i][j]);
 			free(red_map[i][j]);
-//            FreeMemory((void **) &green_map[i][j]);
-  ///          FreeMemory((void **) &blue_map[i][j]);
-     //       FreeMemory((void **) &red_map[i][j]);
+/*MIKHAIL             FreeMemory((void **) &green_map[i][j]); */
+  /*MIKHAIL /          FreeMemory((void **) &blue_map[i][j]); */
+     /*MIKHAIL        FreeMemory((void **) &red_map[i][j]); */
           }
         break;
       }
@@ -1377,7 +1380,7 @@ unsigned int vigraImpexWritePNMImage(VigraImpexImageInfo *image_info,VigraImpexI
     if (image->next == (VigraImpexImage *) NULL)
       break;
     image=image->next;
-    //ProgressMonitor(SaveImagesText,scene++,GetNumberScenes(image));
+    /*MIKHAIL ProgressMonitor(SaveImagesText,scene++,GetNumberScenes(image)); */
   } while (image_info->adjoin);
   if (image_info->adjoin)
     while (image->previous != (VigraImpexImage *) NULL)

@@ -57,6 +57,7 @@ static char *compr_cmd[] =
          "gencomp"};                      /* DES_GENERIC */
 #endif
 
+#if 0 /* decompression disabled */
 #ifndef	_uncompr_cmd_
 #define _uncompr_cmd_
 static char *uncompr_cmd[] =
@@ -68,6 +69,7 @@ static char *uncompr_cmd[] =
          "unadpcm",                       /* DES_ADPCM */
          "ungencomp"};                    /* DES_GENERIC */
 #endif
+#endif  /* decompression disabled */
 
 /*
   In case you're wondering why This_should_never_happen, you'll

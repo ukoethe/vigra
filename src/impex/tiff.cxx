@@ -93,17 +93,17 @@ Export	tsize_t TIFFScanlineSize(TiffImage*)
   vigra_fail( "TIFF library is not available");
   return 0;
 }
-Export	int TIFFReadScanline(TiffImage*, tdata_t, uint32, tsample_t = 0)
+Export	int TIFFReadScanline(TiffImage*, tdata_t, uint32, tsample_t)
 {
   vigra_fail( "TIFF library is not available");
   return 0;
 }
-Export	int TIFFWriteScanline(TiffImage*, tdata_t, uint32, tsample_t = 0)
+Export	int TIFFWriteScanline(TiffImage*, tdata_t, uint32, tsample_t)
 {
   vigra_fail( "TIFF library is not available");
   return 0;
 }
-Export	int TIFFReadRGBAImage(TiffImage*, uint32, uint32, uint32*, int = 0)
+Export	int TIFFReadRGBAImage(TiffImage*, uint32, uint32, uint32*, int)
 {
   vigra_fail( "TIFF library is not available");
   return 0;

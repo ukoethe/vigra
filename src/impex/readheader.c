@@ -22,10 +22,8 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <fcntl.h>
-/* #include <unistd.h> */
 #include "vigra/viff.h"
 #include "vdefines.h"
-#include "vencode.h"
 
 #define BYTE_FIELD_SIZE 520
 #define OTHER_FIELD_CNT 25 

@@ -1323,27 +1323,29 @@ Export VigraImpexImage *vigraImpexReadGIFImage(VigraImpexImageInfo *image_info)
         break;
       }
     if (image_info->subrange != 0)
-      if (image->scene < image_info->subimage)
-        {
-          VigraImpexImage
-            subimage;
+      {
+          if (image->scene < image_info->subimage)
+            {
+              VigraImpexImage
+                subimage;
 
-          /*
-            Destroy image.
-          */
-          subimage=(*image);
-          image->file=(FILE *) NULL;
-          vigraImpexDestroyImage(image);
-          image=vigraImpexAllocateImage(image_info);
-          if (image == (VigraImpexImage *) NULL)
-            return((VigraImpexImage *) NULL);
-          image->file=subimage.file;
-          image->scene=subimage.scene+1;
-          image_count=0;
-        }
-      else
-        if (image->scene >= (image_info->subimage+image_info->subrange-1))
-          break;
+              /*
+                Destroy image.
+              */
+              subimage=(*image);
+              image->file=(FILE *) NULL;
+              vigraImpexDestroyImage(image);
+              image=vigraImpexAllocateImage(image_info);
+              if (image == (VigraImpexImage *) NULL)
+                return((VigraImpexImage *) NULL);
+              image->file=subimage.file;
+              image->scene=subimage.scene+1;
+              image_count=0;
+            }
+          else
+            if (image->scene >= (image_info->subimage+image_info->subrange-1))
+              break;
+      }
   }
   if (global_colormap != (unsigned char *) NULL)
     free((char *) global_colormap);

@@ -7,6 +7,7 @@
 /************************************************************************/
 
 #include <sys/types.h>
+#include <unistd.h>
 
 #ifdef _MSC_VER
 #    include <io.h>

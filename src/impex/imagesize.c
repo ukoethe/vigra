@@ -62,7 +62,7 @@ int	*dsize,*dcount,*msize,*mcount,*lsize,*lcount;
     /* 
     ** Compute number of MAP data objects 
     */
-    switch(image->map_scheme)
+    switch((int)image->map_scheme)
       {
         case VFF_MS_NONE:
           mapcount = 0;
@@ -78,7 +78,7 @@ int	*dsize,*dcount,*msize,*mcount,*lsize,*lcount;
           break;
         default:
           (void)fprintf(stderr,"\nimagesize: Unknown mapping scheme:");
-          (void)fprintf(stderr," %d\n",image->map_scheme);
+          (void)fprintf(stderr," %d\n",(int)image->map_scheme);
           return(0);
           /* break; */
       }

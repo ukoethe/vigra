@@ -446,7 +446,7 @@ struct EdgeDetectionTest
         differenceOfExponentialCrackEdgeImage(srcImageRange(img1), 
                                                 destImage(res), 
                                                 0.7, 0.1, 1.0);
-        removeShortEdges(srcImageRange(res), 9, 0.0);
+        removeShortEdges(destImageRange(res), 9, 0.0);
         
         static const double desired[] = {
             0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
@@ -480,7 +480,7 @@ struct EdgeDetectionTest
         differenceOfExponentialCrackEdgeImage(srcImageRange(img1), 
                                                 destImage(res), 
                                                 0.7, 0.1, 1.0);
-        beautifyCrackEdgeImage(srcImageRange(res), 1.0, 0.0);
+        beautifyCrackEdgeImage(destImageRange(res), 1.0, 0.0);
         
         static const double desired[] = {
             0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
@@ -506,7 +506,7 @@ struct EdgeDetectionTest
     
     void closeGapsInCrackEdgeTest()
     {
-        closeGapsInCrackEdgeImage(srcImageRange(img2), 1.0);
+        closeGapsInCrackEdgeImage(destImageRange(img2), 1.0);
         
         static const double desired[] = {
             0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,

@@ -18,6 +18,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <unistd.h>
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <fcntl.h>
@@ -40,7 +41,7 @@ char * vfullpath();
 #define OTHER_FIELD_CNT 25
 #define VIFF_HEADER_SIZE 1024
 
-writeViffImage(filename,imageptr)
+int writeViffImage(filename,imageptr)
 struct xvimage *imageptr;
 char *filename;
   {
@@ -243,7 +244,7 @@ char *filename;
     /* 
      * Write to normal file descriptor 
      */
-    switch(imageptr->data_encode_scheme){
+    switch((int)imageptr->data_encode_scheme){
        case VFF_DES_RAW:
             n = write(file,imageptr->maps,mapsize);
 	    if(n != mapsize){
@@ -269,7 +270,7 @@ char *filename;
        default:
             fprintf(stderr,
                "writeimage: Unknown encoding scheme: %d maps not written!\n",
-               imageptr->data_encode_scheme);
+               (int)imageptr->data_encode_scheme);
             close(file);
             return(0);
             /* break; */
@@ -279,7 +280,7 @@ char *filename;
      * Write the location data 
      */
 
-    switch(imageptr->data_encode_scheme){
+    switch((int)imageptr->data_encode_scheme){
        case VFF_DES_RAW: 
             n = write(file,(char *)imageptr->location,locsize);
             if(n != locsize){
@@ -305,7 +306,7 @@ char *filename;
        default:
             fprintf(stderr,
             "writeimage: Unknown encoding scheme: %d locations not written!\n",
-            imageptr->data_encode_scheme);
+            (int)imageptr->data_encode_scheme);
             close(file);
             return(0);
             /* break; */
@@ -315,7 +316,7 @@ char *filename;
      * write image data 
      */
 
-    switch(imageptr->data_encode_scheme){
+    switch((int)imageptr->data_encode_scheme){
        case VFF_DES_RAW:
             n = write(file,imageptr->imagedata,imgsize);
             if(n != imgsize){

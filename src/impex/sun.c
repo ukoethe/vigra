@@ -263,7 +263,7 @@ VigraImpexImage *vigraImpexReadSUNImage(VigraImpexImageInfo *image_info)
         vigraImpexCloseImage(image);
         return(image);
       }
-    switch (sun_header.maptype)
+    switch ((int)sun_header.maptype)
     {
       case RMT_NONE:
       {

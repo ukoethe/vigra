@@ -325,7 +325,7 @@ Export VigraImpexImage *vigraImpexReadVIFFImage(VigraImpexImageInfo *image_info)
     if (viff_header.number_of_images != 1)
       PrematureExit(CorruptImageWarning,
         "Number of images is not supported",image);
-    switch (viff_header.map_scheme)
+    switch ((int)viff_header.map_scheme)
     {
       case VFF_MS_NONE:
       {
@@ -414,7 +414,7 @@ Export VigraImpexImage *vigraImpexReadVIFFImage(VigraImpexImageInfo *image_info)
       PrematureExit(ResourceLimitWarning,"Memory allocation failed",image);
     (void) vigraImpexReadData((char *) viff_pixels,bytes_per_pixel,(unsigned int) packets,
       image->file);
-    switch (viff_header.data_storage_type)
+    switch ((int)viff_header.data_storage_type)
     {
       int
         max_value,

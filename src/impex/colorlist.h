@@ -827,7 +827,9 @@ static XColorlist
     { "grey98", 250, 250, 250 },
     { "grey99", 252, 252, 252 },
     { (char *) NULL, 0, 0, 0 }
-  },
+  }
+#if 0 /* unused */  
+  ,
   XPMColorlist[] =
   {
     { "AliceBlue", 240, 248, 255 },
@@ -1065,4 +1067,6 @@ static XColorlist
     { "Gray98", 250, 250, 250 },
     { "Gray99", 252, 252, 252 },
     { (char *) NULL, 0, 0, 0 }
-};
+  }
+#endif /* unused */
+;

@@ -90,7 +90,7 @@ long getmachorder(mtype)
   long int mtype;
 {
 
- switch(mtype){
+ switch((int)mtype){
     case VFF_DEP_CRAYORDER:
     case VFF_DEP_IEEEORDER: return(VFF_DEP_BIGENDIAN);
     case VFF_DEP_NSORDER:    
@@ -131,7 +131,7 @@ unsigned long getmachsize(mtype,dtype)
    unsigned long mtype,dtype;
 {
    unsigned long tmp = (mtype==VFF_DEP_CRAYORDER) + 1;
-   switch(dtype){
+   switch((int)dtype){
       case VFF_TYP_BIT     : return((unsigned long)0);
       case VFF_TYP_1_BYTE  : return((unsigned long)1);
       case VFF_TYP_2_BYTE  : if(mtype==VFF_DEP_CRAYORDER)

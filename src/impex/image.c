@@ -676,15 +676,19 @@ Export void vigraImpexDestroyImage(VigraImpexImage *image)
         Unlink from linked list.
       */
       if (image->previous != (VigraImpexImage *) NULL)
+      {
         if (image->next != (VigraImpexImage *) NULL)
           image->previous->next=image->next;
         else
           image->previous->next=(VigraImpexImage *) NULL;
+      }
       if (image->next != (VigraImpexImage *) NULL)
+      {
         if (image->previous != (VigraImpexImage *) NULL)
           image->next->previous=image->previous;
         else
           image->next->previous=(VigraImpexImage *) NULL;
+      }
     }
   /*
     Deallocate the image structure.

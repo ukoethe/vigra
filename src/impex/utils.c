@@ -9,6 +9,7 @@
 
 #include <stdlib.h>
 #include <stdio.h>
+#include <unistd.h>
 #include <string.h>
 #include <ctype.h>
 
@@ -66,14 +67,14 @@ char	*string;
 	 *  Delete any white space from the head and tail of the
 	 *  string.
 	 */
-	while (isspace(*string) && *string != '\0')
+	while (isspace((int)*string) && *string != '\0')
 	   string++;
 
 	if (VStrlen(string) == 0)
 	   return(NULL);
 
 	temp = string + VStrlen(string) -1;
-	while (isspace(*temp))
+	while (isspace((int)*temp))
 	   *temp-- = '\0';
 
 	return(string);
