@@ -1,6 +1,7 @@
 #include <iostream>
 #include <algorithm>
 #include "unittest.hxx"
+#include "vigra/mathutil.hxx"
 #include "vigra/polynomial.hxx"
 #include "vigra/array_vector.hxx"
 #include "vigra/splines.hxx"
@@ -212,6 +213,8 @@ struct FunctionsTest
 
 struct RationalTest
 {
+    typedef vigra::Rational<int> R;
+
     void testGcdLcm()
     {
         shouldEqual(vigra::gcd(24, 18), 6);
@@ -220,7 +223,6 @@ struct RationalTest
     
     void testOperators()
     {
-        typedef vigra::Rational<int> R;
         shouldEqual(R(3,4) + R(12,6), R(11,4));
         shouldEqual(R(3,4) - R(12,6), R(-5,4));
         shouldEqual(R(3,4) * R(12,6), R(3,2));
@@ -254,6 +256,32 @@ struct RationalTest
         should(2 < R(19,4));
         should(2 >= R(3,4));
         should(2 <= R(19,4));
+    }
+
+    void testFunctions()
+    {
+        shouldEqual(pow(R(1,2),2), R(1,4));
+        shouldEqual(pow(R(2),-2), R(1,4));
+        shouldEqual(pow(R(-1,2),2), R(1,4));
+        shouldEqual(pow(R(-2),-2), R(1,4));
+        shouldEqual(pow(R(-1,2),3), R(-1,8));
+        shouldEqual(pow(R(-2),-3), R(-1,8));
+        
+        shouldEqual(floor(R(2)), R(2));
+        shouldEqual(floor(R(3,2)), R(1));
+        shouldEqual(floor(R(1,2)), R(0));
+        shouldEqual(floor(R(-1,2)), R(-1));
+        shouldEqual(floor(R(1,-2)), R(-1));
+        shouldEqual(floor(R(-3,2)), R(-2));
+        shouldEqual(floor(R(-2)), R(-2));
+
+        shouldEqual(ceil(R(2)), R(2));
+        shouldEqual(ceil(R(3,2)), R(2));
+        shouldEqual(ceil(R(1,2)), R(1));
+        shouldEqual(ceil(R(-1,2)), R(0));
+        shouldEqual(ceil(R(1,-2)), R(0));
+        shouldEqual(ceil(R(-3,2)), R(-1));
+        shouldEqual(ceil(R(-2)), R(-2));
     }
 };
 
@@ -295,6 +323,7 @@ struct MathTestSuite
         add( testCase(&FunctionsTest::testGaussians));
         add( testCase(&RationalTest::testGcdLcm));
         add( testCase(&RationalTest::testOperators));
+        add( testCase(&RationalTest::testFunctions));
     }
 };
 
