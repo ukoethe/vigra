@@ -1444,7 +1444,7 @@ void applyFourierFilterFamilyImpl(ConstBasicImageIterator<FFTWComplex, FFTWCompl
         isScalarResult;
 
     // convolve with filters in freq. domain
-    for (int i= 0;  i < filters.size(); i++)
+    for (unsigned int i= 0;  i < filters.size(); i++)
     {
         combineTwoImages(srcImageRange(freqImage), srcImage(filters[i]),
                          destImage(result), std::multiplies<FFTWComplex>());

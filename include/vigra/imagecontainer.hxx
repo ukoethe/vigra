@@ -58,7 +58,7 @@ public:
         : imageSize_(imageSize),
           images_(numImages)
     {
-        for(int i=0; i<numImages; i++)
+        for(unsigned int i=0; i<numImages; i++)
             images_[i].resize(imageSize);
     }
 
@@ -266,7 +266,7 @@ public:
         {
             size_type oldSize= size();
             images_.resize(newSize);
-            for (int i= oldSize; i<newSize; i++)
+            for (size_type i= oldSize; i<newSize; i++)
                 images_[i].resize(imageSize());
         }
     }
@@ -372,7 +372,7 @@ public:
     {
         if (newSize!=imageSize())
         {
-            for(int i=0; i<size(); i++)
+            for(unsigned int i=0; i<size(); i++)
                 images_[i].resize(newSize);
             imageSize_= newSize;
         }

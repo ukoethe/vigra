@@ -79,14 +79,8 @@
     vigra::detail::equal_impl(left, right, #left " == " #right, __FILE__, __LINE__)
 
 
-/* !!!! umbenannt !!!!
- * #define shouldEqualEps(left, right, eps) \
- * vigra::detail::eps_equal_impl(left, right, eps, #left " == " #right, __FILE__, __LINE__)
-*/
-
 #define shouldEqualTolerance(left, right, eps) \
     vigra::detail::tolerance_equal_impl(left, right, eps, #left " == " #right, __FILE__, __LINE__)
-
 
 
 #define VIGRA_ERROR(message) \
@@ -149,10 +143,14 @@ int catch_signals( Generator function_object, detail::errstream & err, int timeo
     __try 
     {
         result = function_object();
+#if 0
+        result = catch_exceptions(function_object, err, timeout);
+#endif
     }
     __except (true) 
     {
-        switch (GetExceptionCode())
+        unsigned long exc = GetExceptionCode();
+        switch (exc)
         {
             case EXCEPTION_ACCESS_VIOLATION:
                 report_exception(err, "operating system exception:", "memory access violation");
@@ -286,7 +284,10 @@ int catch_exceptions( Generator function_object, detail::errstream & err, int ti
 
     try
     {
-      result = detail::catch_signals(function_object, err, timeout);
+#if 0
+      result = function_object();
+#endif
+        result = detail::catch_signals(function_object, err, timeout);
     }
 
     //  As a result of hard experience with strangely interleaved output
@@ -297,6 +298,8 @@ int catch_exceptions( Generator function_object, detail::errstream & err, int ti
     //  arguments (ISO 15.3 paragraphs 18 & 19). Apparently const isn't
     //  required, but it doesn't hurt and some programmers ask for it.
 
+    catch ( vigra::ContractViolation & ex )
+      { detail::report_exception( err, "Contract exception: ", ex.what() ); }
     catch ( const char * ex )
       { detail::report_exception( err, "string exception: ", ex ); }
     catch ( const std::string & ex )
@@ -342,7 +345,7 @@ int catch_exceptions( Generator function_object, detail::errstream & err, int ti
       { detail::report_exception( err, "exception: std::exception:", ex.what() ); }
 
     catch ( ... )
-      { detail::report_exception( err, "unknown exception", "" ); }
+      { throw;detail::report_exception( err, "unknown exception", "" ); }
 
     return result;
 } // catch_exceptions

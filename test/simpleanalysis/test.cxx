@@ -540,7 +540,7 @@ struct EdgeDetectionTest
         std::vector<vigra::Edgel> edgels;
         cannyEdgelList(srcImageRange(imgCanny), edgels, 1.0);
         int count = 0;
-        for(int i=0; i<edgels.size(); ++i)
+        for(unsigned int i=0; i<edgels.size(); ++i)
         {
             if (edgels[i].strength < 1.0e-10)
                 continue;  // ignore edgels that result from round off error during convolution
