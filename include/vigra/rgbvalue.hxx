@@ -1001,6 +1001,40 @@ class RGBToGrayAccessor
 };
 
 
+/********************************************************/
+/*                                                      */
+/*                  GrayToRGBAccessor                   */
+/*                                                      */
+/********************************************************/
+
+    /** Create an RGB view for a grayscale image by making all three channels
+        equal.
+
+    <b>\#include</b> "<a href="rgbvalue_8hxx-source.html">vigra/rgbvalue.hxx</a>"<br>
+    Namespace: vigra
+    */
+template <class VALUETYPE>
+class GrayToRGBAccessor
+{
+   public:
+     typedef typename vigra::RGBValue<VALUETYPE> value_type;
+
+         /** Get RGB value for the given pixel.
+         */
+     template <class ITERATOR>
+     value_type operator()(ITERATOR const & i) const {
+                 return value_type(*i,*i,*i); }
+
+         /** Get RGB value at an offset
+         */
+     template <class ITERATOR, class DIFFERENCE>
+     value_type operator()(ITERATOR const & i, DIFFERENCE d) const
+     {
+         return value_type(i[d],i[d],i[d]);
+     }
+};
+
+
 //@}
 //@}
 
