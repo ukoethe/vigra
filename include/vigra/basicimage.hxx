@@ -593,27 +593,31 @@ class BasicImage
     BasicImage & init(value_type const & pixel);
 
         /** reset image to specified size (dimensions must not be negative)
-        (old data are destroyed)
+            (old data are kept if new size matches old size)
         */
     void resize(int width, int height)
     {
-        resize(width, height, value_type());
+        if(width != width_ || height != height_)
+            resize(width, height, value_type());
     }
 
         /** reset image to specified size (dimensions must not be negative)
-        (old data are destroyed)
+            (old data are kept if new size matches old size)
         */
     void resize(difference_type const & size)
     {
-        resize(size.x, size.y, value_type());
+        if(size.x != width_ || size.y != height_)
+        {
+            resize(size.x, size.y, value_type());
+        }
     }
 
         /** reset image to specified size and initialize it with
             given data (use this if value_type doesn't have a default
-            constructor, dimensions must not be negative, old data are destroyed)
+            constructor, dimensions must not be negative, 
+            old data are kept if new size matches old size)
         */
     void resize(int width, int height, value_type const & d);
-
 
         /** resize image to size of other image and copy it's data
         */
@@ -707,7 +711,7 @@ class BasicImage
     traverser upperLeft()
     {
         vigra_precondition(data_ != 0,
-          "basicImage::upperLeft(): image must have non-zero size.");
+          "BasicImage::upperLeft(): image must have non-zero size.");
         return traverser(lines_);
     }
 
@@ -718,7 +722,7 @@ class BasicImage
     traverser lowerRight()
     {
         vigra_precondition(data_ != 0,
-          "basicImage::lowerRight(): image must have non-zero size.");
+          "BasicImage::lowerRight(): image must have non-zero size.");
         return upperLeft() + size();
     }
 
@@ -727,7 +731,7 @@ class BasicImage
     const_traverser upperLeft() const
     {
         vigra_precondition(data_ != 0,
-          "basicImage::upperLeft(): image must have non-zero size.");
+          "BasicImage::upperLeft(): image must have non-zero size.");
         return const_traverser(const_cast<PIXELTYPE **>(lines_));
     }
 
@@ -738,7 +742,7 @@ class BasicImage
     const_traverser lowerRight() const
     {
         vigra_precondition(data_ != 0,
-          "basicImage::lowerRight(): image must have non-zero size.");
+          "BasicImage::lowerRight(): image must have non-zero size.");
         return upperLeft() + size();
     }
 
@@ -747,7 +751,7 @@ class BasicImage
     iterator begin()
     {
         vigra_precondition(data_ != 0,
-          "basicImage::begin(): image must have non-zero size.");
+          "BasicImage::begin(): image must have non-zero size.");
         return data_;
     }
 
@@ -756,7 +760,7 @@ class BasicImage
     iterator end()
     {
         vigra_precondition(data_ != 0,
-          "basicImage::end(): image must have non-zero size.");
+          "BasicImage::end(): image must have non-zero size.");
         return data_ + width() * height();
     }
 
@@ -765,7 +769,7 @@ class BasicImage
     const_iterator begin() const
     {
         vigra_precondition(data_ != 0,
-          "basicImage::begin(): image must have non-zero size.");
+          "BasicImage::begin(): image must have non-zero size.");
         return data_;
     }
 
@@ -774,7 +778,7 @@ class BasicImage
     const_iterator end() const
     {
         vigra_precondition(data_ != 0,
-          "basicImage::end(): image must have non-zero size.");
+          "BasicImage::end(): image must have non-zero size.");
         return data_ + width() * height();
     }
 
@@ -858,22 +862,41 @@ BasicImage<PIXELTYPE>::resize(int width, int height, value_type const & d)
          "BasicImage::resize(int width, int height, value_type const &): "
          "width and height must be >= 0.\n");
 
-    value_type * newdata = 0;
-    value_type ** newlines = 0;
-    if(width*height > 0)
+    if (width_ != width || height_ != height)  // change size?
     {
-        newdata = Allocator::allocate(width*height);
-
-        std::uninitialized_fill_n(newdata, width*height, d);
-
-        newlines = initLineStartArray(newdata, width, height);
+        value_type * newdata = 0;
+        value_type ** newlines = 0;
+        if(width*height > 0)
+        {
+            if (width*height != width_*height_) // different sizes, must reallocate
+            {
+                newdata = Allocator::allocate(width*height);
+                std::uninitialized_fill_n(newdata, width*height, d);
+                newlines = initLineStartArray(newdata, width, height);
+                deallocate();
+            }
+            else // need only to reshape
+            {
+                newdata = data_;
+                std::fill_n(newdata, width*height, d);
+                newlines = initLineStartArray(newdata, width, height);
+                delete[] lines_;
+            }
+        }
+        else
+        {
+            deallocate();
+        }
+        
+        data_ = newdata;
+        lines_ = newlines;
+        width_ = width;
+        height_ = height;
     }
-
-    deallocate();
-    data_ = newdata;
-    lines_ = newlines;
-    width_ = width;
-    height_ = height;
+    else if(width*height > 0) // keep size, re-init data
+    {
+        std::fill_n(data_, width*height, d);
+    }
 }
 
 
@@ -881,23 +904,41 @@ template <class PIXELTYPE>
 void
 BasicImage<PIXELTYPE>::resizeCopy(const BasicImage & rhs)
 {
-    value_type * newdata = 0;
-    value_type ** newlines = 0;
-    if(rhs.width()*rhs.height() > 0)
+    if (width_ != rhs.width() || height_ != rhs.height())  // change size?
     {
-        newdata = Allocator::allocate(rhs.width()*rhs.height());
-
-        std::uninitialized_copy(rhs.begin(), rhs.end(), newdata);
-
-        newlines =
-           initLineStartArray(newdata, rhs.width(), rhs.height());
+        value_type * newdata = 0;
+        value_type ** newlines = 0;
+        if(rhs.width()*rhs.height() > 0)
+        {
+            if (rhs.width()*rhs.height() != width_*height_) // different sizes, must reallocate
+            {
+                newdata = Allocator::allocate(rhs.width()*rhs.height());
+                std::uninitialized_copy(rhs.begin(), rhs.end(), newdata);
+                newlines = initLineStartArray(newdata, rhs.width(), rhs.height());
+                deallocate();
+            }
+            else // need only to reshape
+            {
+                newdata = data_;
+                std::copy(rhs.begin(), rhs.end(), newdata);
+                newlines = initLineStartArray(newdata, rhs.width(), rhs.height());
+                delete[] lines_;
+            }
+        }
+        else
+        {
+            deallocate();
+        }
+        
+        data_ = newdata;
+        lines_ = newlines;
+        width_ = rhs.width();
+        height_ = rhs.height();
     }
-
-    deallocate();
-    data_ = newdata;
-    lines_ = newlines;
-    width_ = rhs.width();
-    height_ = rhs.height();
+    else if(rhs.width()*rhs.height() > 0) // keep size, copy data
+    {
+        std::copy(rhs.begin(), rhs.end(), data_);
+    }
 }
 
 template <class PIXELTYPE>
