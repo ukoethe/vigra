@@ -404,9 +404,12 @@ void foerstnerCornerDetector(
 /** \brief Find corners in an image (3).
 
     This algorithm implements yet another structure tensor-based corner detector, 
-    according to [K. Rohr: <em> "Untersuchung von grauwertabh&auml;ngigen 
+    according to [K. Rohr: <em>"Untersuchung von grauwertabh&auml;ngigen 
     Transformationen zur Ermittlung der optischen Flusses in Bildfolgen"</em>, 
-    Diploma thesis, Inst. f&uuml;r Nachrichtensysteme, Univ. Karlsruhe, 1987]. 
+    Diploma thesis, Inst. f&uuml;r Nachrichtensysteme, Univ. Karlsruhe, 1987, see also
+    K. Rohr: <em>"Modelling and Identification of Characteristic Intensity Variations"</em>,
+    Image and Vision Computing 10:2 (1992) 66-76 and K. Rohr: <em>"Localization Properties of 
+    Direct Corner Detectors"</em>, J. of Mathematical Imaging and Vision 4:2 (1994) 139-150]. 
     
     The algorithm first determines the structure tensor at each pixel by calling
     \link CommonConvolutionFilters#structureTensor structureTensor\endlink(). 
