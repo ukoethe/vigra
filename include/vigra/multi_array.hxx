@@ -841,6 +841,7 @@ class MultiArray : public MultiArrayView <N, T>
 {
 
 public:
+    using MultiArrayView <N, T>::actual_dimension;
 
         /** the allocator type used to allocate the memory
          */
@@ -852,7 +853,7 @@ public:
 
         /** the matrix type associated with this array.
          */
-    typedef MultiArray <N, T> matrix_type;
+    typedef MultiArray <N, T, A> matrix_type;
 
         /** the array's value type
          */
