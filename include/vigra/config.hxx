@@ -43,6 +43,7 @@ namespace vigra {
     #define TEMPLATE_COPY_CONSTRUCTOR_BUG
     #define NO_PARTIAL_TEMPLATE_SPECIALIZATION
     #define NO_STL_MEMBER_TEMPLATES
+    #define NO_INLINE_STATIC_CONST_DEFINITION
 #endif // _MSC_VER
 
 ///////////////////////////////////////////////////////////

@@ -651,7 +651,9 @@ operator/=(RGBValue<V> & l, double r)
     return l;
 }
 
+#ifndef _MSC_VER
 using std::abs;
+#endif
 
     /// component-wise absolute value
 template <class T>
@@ -762,7 +764,9 @@ dot(RGBValue<V1> const & r1, RGBValue<V2> const & r2)
     return r1.red()*r2.red() + r1.green()*r2.green() + r1.blue()*r2.blue();
 }
 
+#ifndef _MSC_VER
 using std::rint;
+#endif
 
     /// Round a floating point RGB pixel to the nearest integers 
 template <class V>

@@ -33,11 +33,19 @@ namespace vigra {
 
 struct VigraTrueType 
 {
+#ifdef NO_INLINE_STATIC_CONST_DEFINITION
+    enum { asBool = true };
+#else
     static const bool asBool = true;
+#endif
 };
 struct VigraFalseType
 {
+#ifdef NO_INLINE_STATIC_CONST_DEFINITION
+    enum { asBool = false };
+#else
     static const bool asBool = false;
+#endif
 };
 
 /********************************************************/

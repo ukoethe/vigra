@@ -311,8 +311,12 @@ struct NumericTraits<bool>
     static bool min() { return false; }
     static bool max() { return true; }
     
+#ifdef NO_INLINE_STATIC_CONST_DEFINITION
+    enum { minConst = false , maxConst = true };
+#else
     static const bool minConst = false;
     static const bool maxConst = true;
+#endif
     
     static Promote toPromote(bool v) { return v ? 1 : 0; }
     static RealPromote toRealPromote(bool v) { return v ? 1.0 : 0.0; }
@@ -341,8 +345,12 @@ struct NumericTraits<signed char>
     static signed char min() { return SCHAR_MIN; }
     static signed char max() { return SCHAR_MAX; }
     
+#ifdef NO_INLINE_STATIC_CONST_DEFINITION
+    enum { minConst = SCHAR_MIN, maxConst = SCHAR_MIN };
+#else
     static const signed char minConst = SCHAR_MIN;
     static const signed char maxConst = SCHAR_MIN;
+#endif
     
     static Promote toPromote(signed char v) { return v; }
     static RealPromote toRealPromote(signed char v) { return v; }
@@ -371,8 +379,12 @@ struct NumericTraits<unsigned char>
     static unsigned char min() { return 0; }
     static unsigned char max() { return UCHAR_MAX; }
     
+#ifdef NO_INLINE_STATIC_CONST_DEFINITION
+    enum { minConst = 0, maxConst = UCHAR_MAX };
+#else
     static const unsigned char minConst = 0;
     static const unsigned char maxConst = UCHAR_MAX;
+#endif
     
     static Promote toPromote(unsigned char v) { return v; }
     static RealPromote toRealPromote(unsigned char v) { return v; }
@@ -400,8 +412,12 @@ struct NumericTraits<short int>
     static short int min() { return SHRT_MIN; }
     static short int max() { return SHRT_MAX; }
     
+#ifdef NO_INLINE_STATIC_CONST_DEFINITION
+    enum { minConst = SHRT_MIN, maxConst = SHRT_MAX };
+#else
     static const short int minConst = SHRT_MIN;
     static const short int maxConst = SHRT_MAX;
+#endif
     
     static Promote toPromote(short int v) { return v; }
     static RealPromote toRealPromote(short int v) { return v; }
@@ -433,8 +449,12 @@ struct NumericTraits<short unsigned int>
     static short unsigned int min() { return 0; }
     static short unsigned int max() { return USHRT_MAX; }
     
+#ifdef NO_INLINE_STATIC_CONST_DEFINITION
+    enum { minConst = 0, maxConst = USHRT_MAX };
+#else
     static const short unsigned int minConst = 0;
     static const short unsigned int maxConst = USHRT_MAX;
+#endif
 
     static Promote toPromote(short unsigned int v) { return v; }
     static RealPromote toRealPromote(short unsigned int v) { return v; }
@@ -463,8 +483,12 @@ struct NumericTraits<int>
     static int min() { return INT_MIN; }
     static int max() { return INT_MAX; }
     
+#ifdef NO_INLINE_STATIC_CONST_DEFINITION
+    enum { minConst = INT_MIN, maxConst = INT_MAX };
+#else
     static const int minConst = INT_MIN;
     static const int maxConst = INT_MAX;
+#endif
 
     static Promote toPromote(int v) { return v; }
     static RealPromote toRealPromote(int v) { return v; }
@@ -492,8 +516,12 @@ struct NumericTraits<unsigned int>
     static unsigned int min() { return 0; }
     static unsigned int max() { return UINT_MAX; }
     
+#ifdef NO_INLINE_STATIC_CONST_DEFINITION
+    enum { minConst = 0, maxConst = UINT_MAX };
+#else
     static const unsigned int minConst = 0;
     static const unsigned int maxConst = UINT_MAX;
+#endif
 
     static Promote toPromote(unsigned int v) { return v; }
     static RealPromote toRealPromote(unsigned int v) { return v; }
@@ -521,8 +549,12 @@ struct NumericTraits<long>
     static long min() { return LONG_MIN; }
     static long max() { return LONG_MAX; }
     
+#ifdef NO_INLINE_STATIC_CONST_DEFINITION
+    enum { minConst = LONG_MIN, maxConst = LONG_MAX };
+#else
     static const long minConst = LONG_MIN;
     static const long maxConst = LONG_MAX;
+#endif
 
     static Promote toPromote(long v) { return v; }
     static RealPromote toRealPromote(long v) { return v; }
@@ -550,8 +582,12 @@ struct NumericTraits<unsigned long>
     static unsigned long min() { return 0; }
     static unsigned long max() { return ULONG_MAX; }
     
+#ifdef NO_INLINE_STATIC_CONST_DEFINITION
+    enum { minConst = 0, maxConst = ULONG_MAX };
+#else
     static const unsigned long minConst = 0;
     static const unsigned long maxConst = ULONG_MAX;
+#endif
 
     static Promote toPromote(unsigned long v) { return v; }
     static RealPromote toRealPromote(unsigned long v) { return v; }
