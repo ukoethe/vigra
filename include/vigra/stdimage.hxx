@@ -30,7 +30,7 @@
 
 namespace vigra { 
 
-/** \defgroup StandardImageTypes Standard Image Types
+/** \addtogroup StandardImageTypes Standard Image Types
 
     \brief The most common instantiations of the \ref vigra::BasicImage template
 */
