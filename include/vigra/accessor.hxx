@@ -22,6 +22,7 @@
 #ifndef VIGRA_ACCESSOR_HXX
 #define VIGRA_ACCESSOR_HXX
 
+#include "vigra/metaprogramming.hxx"
 #include "vigra/numerictraits.hxx"
 #include "vigra/tuple.hxx"
 
@@ -501,6 +502,13 @@ class VectorComponentValueAccessor
     { 
         i[diff][index_]= detail::RequiresExplicitCast<value_type>::cast(value); 
     }
+    
+        /** Reset the index to the given number.
+        */
+    void setIndex(int i)
+    {
+        index_ = i;
+    }
 };
 
 /********************************************************/
@@ -627,55 +635,63 @@ class SequenceAccessor
 : public StandardAccessor<SEQUENCE>
 {
   public:
-    /** the sequence's value_type
-    */
+        /** the sequence's value_type
+        */
     typedef typename SEQUENCE::value_type component_type;
 
-    /** the sequence's iterator type
-    */
+#ifndef NO_PARTIAL_TEMPLATE_SPECIALIZATION
+    typedef typename
+            If<typename TypeTraits<SEQUENCE>::isConst,
+               typename SEQUENCE::const_iterator,
+               typename SEQUENCE::iterator>::type 
+            iterator;
+#else
+        /** the sequence's iterator type
+        */
     typedef typename SEQUENCE::iterator iterator;
+#endif
 
-    /** get begin iterator for sequence at given iterator position
-    */
+        /** get begin iterator for sequence at given iterator position
+        */
     template <class ITERATOR>
     iterator begin(ITERATOR const & i) const
     {
         return (*i).begin();
     }
 
-    /** get end iterator for sequence at given iterator position
-    */
+        /** get end iterator for sequence at given iterator position
+        */
     template <class ITERATOR>
     iterator end(ITERATOR const & i)  const
     {
          return (*i).end();
     }
 
-    /** get begin iterator for sequence at an offset
-        of given iterator position
-    */
+        /** get begin iterator for sequence at an offset
+            of given iterator position
+        */
     template <class ITERATOR, class DIFFERENCE>
     iterator begin(ITERATOR const & i, DIFFERENCE const & diff)  const
     {
         return i[diff].begin();
     }
 
-    /** get end iterator for sequence at a 2D difference vector
-        of given iterator position
-    */
+        /** get end iterator for sequence at a 2D difference vector
+            of given iterator position
+        */
     template <class ITERATOR, class DIFFERENCE>
     iterator end(ITERATOR const & i, DIFFERENCE const & diff)  const
     {
         return i[diff].end();
     }
 
-    /** get size of sequence at given iterator position
-    */
+        /** get size of sequence at given iterator position
+        */
     template <class ITERATOR>
     unsigned int size(ITERATOR const & i) const { return (*i).size(); }
 
-    /** get size of sequence at 2D difference vector of given iterator position
-    */
+        /** get size of sequence at 2D difference vector of given iterator position
+        */
     template <class ITERATOR, class DIFFERENCE>
     unsigned int size(ITERATOR const & i, DIFFERENCE const & diff) const
     { return i[diff].size(); }
