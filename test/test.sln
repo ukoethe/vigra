@@ -51,6 +51,18 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "functorexpression", "functo
 	ProjectSection(ProjectDependencies) = postProject
 	EndProjectSection
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "fourier_fftw3", "fourier_fftw3\fourier_fftw3.vcproj", "{F50BA3E6-22F6-42B4-8E0E-15FB88B4E8F7}"
+	ProjectSection(ProjectDependencies) = postProject
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "math", "math\math.vcproj", "{F51C470C-FED1-4482-85CD-38D50BA0D425}"
+	ProjectSection(ProjectDependencies) = postProject
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "multiconvolution", "multiconvolution\multiconvolution.vcproj", "{3545E46C-E9CC-4C7F-8922-3C2857D63A92}"
+	ProjectSection(ProjectDependencies) = postProject
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfiguration) = preSolution
 		Debug = Debug
@@ -108,6 +120,18 @@ Global
 		{213371EE-EAB1-4879-9D23-EC4499C22F8D}.Debug.Build.0 = Debug|Win32
 		{213371EE-EAB1-4879-9D23-EC4499C22F8D}.Release.ActiveCfg = Release|Win32
 		{213371EE-EAB1-4879-9D23-EC4499C22F8D}.Release.Build.0 = Release|Win32
+		{F50BA3E6-22F6-42B4-8E0E-15FB88B4E8F7}.Debug.ActiveCfg = Debug|Win32
+		{F50BA3E6-22F6-42B4-8E0E-15FB88B4E8F7}.Debug.Build.0 = Debug|Win32
+		{F50BA3E6-22F6-42B4-8E0E-15FB88B4E8F7}.Release.ActiveCfg = Release|Win32
+		{F50BA3E6-22F6-42B4-8E0E-15FB88B4E8F7}.Release.Build.0 = Release|Win32
+		{F51C470C-FED1-4482-85CD-38D50BA0D425}.Debug.ActiveCfg = Debug|Win32
+		{F51C470C-FED1-4482-85CD-38D50BA0D425}.Debug.Build.0 = Debug|Win32
+		{F51C470C-FED1-4482-85CD-38D50BA0D425}.Release.ActiveCfg = Release|Win32
+		{F51C470C-FED1-4482-85CD-38D50BA0D425}.Release.Build.0 = Release|Win32
+		{3545E46C-E9CC-4C7F-8922-3C2857D63A92}.Debug.ActiveCfg = Debug|Win32
+		{3545E46C-E9CC-4C7F-8922-3C2857D63A92}.Debug.Build.0 = Debug|Win32
+		{3545E46C-E9CC-4C7F-8922-3C2857D63A92}.Release.ActiveCfg = Release|Win32
+		{3545E46C-E9CC-4C7F-8922-3C2857D63A92}.Release.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 	EndGlobalSection
