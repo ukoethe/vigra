@@ -1,6 +1,6 @@
 /************************************************************************/
 /*                                                                      */
-/*               Copyright 1998-2000 by Ullrich Koethe                  */
+/*               Copyright 1998-2001 by Ullrich Koethe                  */
 /*       Cognitive Systems Group, University of Hamburg, Germany        */
 /*                                                                      */
 /*    This file is part of the VIGRA computer vision library.           */
@@ -67,7 +67,7 @@ struct VigraFalseType
       <DT>
     <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif"> 
      \ref MathConstants
-     <DD><em>M_PI, _M_SQRT2</em>
+     <DD><em>M_PI, M_SQRT2</em>
     </DL>
 */
 
