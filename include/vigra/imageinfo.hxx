@@ -160,7 +160,7 @@ class ImageExportInfo
 
     /** Set compression type.
     
-        Recognized strings: "LZW",
+        Recognized strings: "" (no compression), "LZW",
         "RunLength", "1" ... "100". A number is interpreted as the
         compression quality for JPEG compression. JPEG compression is
         supported by the JPEG and TIFF formats.
