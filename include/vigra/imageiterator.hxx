@@ -1213,6 +1213,77 @@ struct IteratorTraits<ConstImageIterator<T> >
 
 #endif
 
+#define VIGRA_DEFINE_ITERATORTRAITS(ITERATOR, VALUETYPE, ACCESSOR) \
+    template<> \
+    struct IteratorTraits<ITERATOR<VALUETYPE> > \
+    { \
+        typedef ITERATOR<VALUETYPE>    Iterator; \
+        typedef Iterator                             iterator; \
+        typedef iterator::iterator_category          iterator_category; \
+        typedef iterator::value_type                 value_type; \
+        typedef iterator::reference                  reference; \
+        typedef iterator::index_reference            index_reference; \
+        typedef iterator::pointer                    pointer; \
+        typedef iterator::difference_type            difference_type; \
+        typedef iterator::row_iterator               row_iterator; \
+        typedef iterator::column_iterator            column_iterator; \
+        typedef ACCESSOR<VALUETYPE >                 default_accessor; \
+        typedef ACCESSOR<VALUETYPE >                 DefaultAccessor; \
+    };
+
+VIGRA_DEFINE_ITERATORTRAITS(ImageIterator, unsigned char, StandardValueAccessor)
+VIGRA_DEFINE_ITERATORTRAITS(ConstImageIterator, unsigned char, StandardConstValueAccessor)
+VIGRA_DEFINE_ITERATORTRAITS(ImageIterator, short, StandardValueAccessor)
+VIGRA_DEFINE_ITERATORTRAITS(ConstImageIterator, short, StandardConstValueAccessor)
+VIGRA_DEFINE_ITERATORTRAITS(ImageIterator, int, StandardValueAccessor)
+VIGRA_DEFINE_ITERATORTRAITS(ConstImageIterator, int, StandardConstValueAccessor)
+VIGRA_DEFINE_ITERATORTRAITS(ImageIterator, float, StandardValueAccessor)
+VIGRA_DEFINE_ITERATORTRAITS(ConstImageIterator, float, StandardConstValueAccessor)
+VIGRA_DEFINE_ITERATORTRAITS(ImageIterator, double, StandardValueAccessor)
+VIGRA_DEFINE_ITERATORTRAITS(ConstImageIterator, double, StandardConstValueAccessor)
+
+template <class T> class RGBValue;
+template <class T> class RGBAccessor;
+
+VIGRA_DEFINE_ITERATORTRAITS(ImageIterator, RGBValue<unsigned char>, RGBAccessor)
+VIGRA_DEFINE_ITERATORTRAITS(ConstImageIterator, RGBValue<unsigned char>, RGBAccessor)
+VIGRA_DEFINE_ITERATORTRAITS(ImageIterator, RGBValue<int>, RGBAccessor)
+VIGRA_DEFINE_ITERATORTRAITS(ConstImageIterator, RGBValue<int>, RGBAccessor)
+VIGRA_DEFINE_ITERATORTRAITS(ImageIterator, RGBValue<float>, RGBAccessor)
+VIGRA_DEFINE_ITERATORTRAITS(ConstImageIterator, RGBValue<float>, RGBAccessor)
+VIGRA_DEFINE_ITERATORTRAITS(ImageIterator, RGBValue<double>, RGBAccessor)
+VIGRA_DEFINE_ITERATORTRAITS(ConstImageIterator, RGBValue<double>, RGBAccessor)
+
+template <class VALUETYPE, int SIZE>
+class TinyVector;
+
+#define VIGRA_PIXELTYPE TinyVector<float, 2>
+VIGRA_DEFINE_ITERATORTRAITS(ImageIterator, VIGRA_PIXELTYPE, VectorAccessor) 
+VIGRA_DEFINE_ITERATORTRAITS(ConstImageIterator, VIGRA_PIXELTYPE, VectorAccessor) 
+#undef VIGRA_PIXELTYPE 
+#define VIGRA_PIXELTYPE TinyVector<float, 3>
+VIGRA_DEFINE_ITERATORTRAITS(ImageIterator, VIGRA_PIXELTYPE, VectorAccessor) 
+VIGRA_DEFINE_ITERATORTRAITS(ConstImageIterator, VIGRA_PIXELTYPE, VectorAccessor) 
+#undef VIGRA_PIXELTYPE
+#define VIGRA_PIXELTYPE TinyVector<float, 4>
+VIGRA_DEFINE_ITERATORTRAITS(ImageIterator, VIGRA_PIXELTYPE, VectorAccessor) 
+VIGRA_DEFINE_ITERATORTRAITS(ConstImageIterator, VIGRA_PIXELTYPE, VectorAccessor) 
+#undef VIGRA_PIXELTYPE
+#define VIGRA_PIXELTYPE TinyVector<double, 2>
+VIGRA_DEFINE_ITERATORTRAITS(ImageIterator, VIGRA_PIXELTYPE, VectorAccessor) 
+VIGRA_DEFINE_ITERATORTRAITS(ConstImageIterator, VIGRA_PIXELTYPE, VectorAccessor) 
+#undef VIGRA_PIXELTYPE
+#define VIGRA_PIXELTYPE TinyVector<double, 3>
+VIGRA_DEFINE_ITERATORTRAITS(ImageIterator, VIGRA_PIXELTYPE, VectorAccessor) 
+VIGRA_DEFINE_ITERATORTRAITS(ConstImageIterator, VIGRA_PIXELTYPE, VectorAccessor) 
+#undef VIGRA_PIXELTYPE
+#define VIGRA_PIXELTYPE TinyVector<double, 4>
+VIGRA_DEFINE_ITERATORTRAITS(ImageIterator, VIGRA_PIXELTYPE, VectorAccessor) 
+VIGRA_DEFINE_ITERATORTRAITS(ConstImageIterator, VIGRA_PIXELTYPE, VectorAccessor) 
+#undef VIGRA_PIXELTYPE
+
+#undef VIGRA_DEFINE_ITERATORTRAITS
+
 template <class PIXELTYPE>
 class ConstValueIteratorPolicy
 {
