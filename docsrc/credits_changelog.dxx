@@ -25,6 +25,13 @@
       
       <li> Improved documentation.
       
+      <li> Minor changes to the code to quiet compiler warnings if compiling with
+           "<TT>g++ -Wall -pedantic</TT>".
+           
+      <li> Dropped support for rint() as this was not portable enough.
+      
+      <li> In error.hxx: replaced snprintf() with sprintf() for portability.
+      
       <li> Renamed CellGridImage into CrackEdgeImage in \ref EdgeDetection.
       
       <li> Added \ref vigra::TinyVector.
