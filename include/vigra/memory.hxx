@@ -27,7 +27,7 @@
 namespace vigra { namespace detail {
 
 template <class T>
-void destroy_n(T * p, int n, VigraTrueType /* isPOD */)
+void destroy_n(T * /* p */, int /* n */, VigraTrueType /* isPOD */)
 {
 }
 
