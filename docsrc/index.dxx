@@ -12,7 +12,7 @@
     The library was consequently built
     using {\em generic programming} as introduced by Stepanov
     and Musser  and exemplified in the C++ 
-    \URL[Standard Template Library]{WWW_STL_DOCU/}.
+    \URL[Standard Template Library]{WWW_STL_DOCU}.
     By writing a few adapters (image iterators and accessors) 
     you can use VIGRA's algorithms on top of 
     {\em your} data structures, within {\em your} environment. Alternatively,
