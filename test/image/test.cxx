@@ -279,6 +279,21 @@ struct BasicImageTest
     {
         ImageTest<IMAGE>::copyImage();
     }
+
+    void swapImage()
+    {
+        IMAGE other(1,1);
+        other(0,0) = data[2];
+        
+        img.swap(other);
+        
+        shouldEqual(img.width(), 1);
+        shouldEqual(img.height(), 1);
+        shouldEqual(img(0,0), data[2]);
+        shouldEqual(other.width(), 3);
+        shouldEqual(other.height(), 3);
+        shouldEqual(other(2,2), data[8]);
+    }
 };
 
 template <class IMAGE>
@@ -381,15 +396,19 @@ struct ImageTestSuite
         add( testCase( &BasicImageTest<BasicImage<unsigned char> >::testIterator));
         add( testCase( &BasicImageTest<BasicImage<unsigned char> >::testIndex));
         add( testCase( &BasicImageTest<BasicImage<unsigned char> >::copyImage));
+        add( testCase( &BasicImageTest<BasicImage<unsigned char> >::swapImage));
         add( testCase( &BasicImageTest<BasicImage<double> >::testIterator));
         add( testCase( &BasicImageTest<BasicImage<double> >::testIndex));
         add( testCase( &BasicImageTest<BasicImage<double> >::copyImage));
+        add( testCase( &BasicImageTest<BasicImage<double> >::swapImage));
         add( testCase( &BasicImageTest<BasicImage<RGBValue<unsigned char> > >::testIterator));
         add( testCase( &BasicImageTest<BasicImage<RGBValue<unsigned char> > >::testIndex));
         add( testCase( &BasicImageTest<BasicImage<RGBValue<unsigned char> > >::copyImage));
+        add( testCase( &BasicImageTest<BasicImage<RGBValue<unsigned char> > >::swapImage));
         add( testCase( &BasicImageTest<BasicImage<RGBValue<float> > >::testIterator));
         add( testCase( &BasicImageTest<BasicImage<RGBValue<float> > >::testIndex));
         add( testCase( &BasicImageTest<BasicImage<RGBValue<float> > >::copyImage));
+        add( testCase( &BasicImageTest<BasicImage<RGBValue<float> > >::swapImage));
         add( testCase( &BasicImageViewTest<BasicImageView<unsigned char> >::testIterator));
         add( testCase( &BasicImageViewTest<BasicImageView<unsigned char> >::testIndex));
         add( testCase( &BasicImageViewTest<BasicImageView<unsigned char> >::copyImage));
