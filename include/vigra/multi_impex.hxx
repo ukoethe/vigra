@@ -128,7 +128,7 @@ void exportVolume (MultiArrayView <3, T, Tag> const & volume,
 {
     
     const unsigned int depth = volume.shape (2);
-    int numlen = static_cast <int> (std::ceil (std::log10 (depth)));
+    int numlen = static_cast <int> (std::ceil (std::log10 ((double)depth)));
     for (unsigned int i = 0; i < depth; ++i) 
     {
 
