@@ -26,14 +26,18 @@
 #include <vector>
 #include <iterator>
 #include <sys/types.h>
-#include <libgen.h>
-#include <dirent.h>
 #include <errno.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include "vigra/imageinfo.hxx"
 #include "codecmanager.hxx"
+#ifndef _WIN32
+#  include <libgen.h>
+#  include <dirent.h>
+#else
+#  include <windows.h>
+#endif
 
 namespace vigra
 {
@@ -53,6 +57,63 @@ struct NumberCompare
 
 
 // find filenames matching the pattern "<path>/base[0-9]+ext"
+#ifdef _WIN32
+void findImageSequence(const std::string &name_base,
+                       const std::string &name_ext,
+                       std::vector<std::string> & numbers)
+{
+    // find out how many images we have
+    BOOL            fFinished;
+    HANDLE          hList;
+    TCHAR           szDir[MAX_PATH+1];
+    WIN32_FIND_DATA FileData;
+    std::vector<std::string> result;
+    char numbuf[21], extbuf[1024];
+    std::string pattern = name_base + "%20[0-9]%1023s";  
+
+    // Get the proper directory path
+    sprintf(szDir, "%s*%s", name_base.c_str(), name_ext.c_str());
+
+    // Get the first file
+    hList = FindFirstFile(szDir, &FileData);
+    if (hList == INVALID_HANDLE_VALUE)
+    { 
+        std::string message("importVolume(): No files matching '");
+        message = message + szDir + "'.";
+        vigra_fail(message.c_str());
+    }
+    else
+    {
+        // Traverse through the directory structure
+        fFinished = FALSE;
+        while (!fFinished)
+        {
+            printf("%s\n", FileData.cFileName);
+            if(sscanf(FileData.cFileName, pattern.c_str(), numbuf, extbuf) == 2)
+            {
+                if(strcmp(name_ext.c_str(), extbuf) == 0)
+                    result.push_back(std::string(numbuf));
+            }
+            if (!FindNextFile(hList, &FileData))
+            {
+                if (GetLastError() == ERROR_NO_MORE_FILES)
+                {
+                    fFinished = TRUE;
+                }
+            }
+        }
+    }
+
+    FindClose(hList);
+//    vigra_precondition(errno == 0,
+//          "importVolume(): I/O error while searching for images.");
+          
+    std::sort(result.begin(), result.end(), detail::NumberCompare());
+    numbers.swap(result);
+}
+
+#else // _WIN32
+
 void findImageSequence(const std::string &name_base,
                        const std::string &name_ext,
                        std::vector<std::string> & numbers)
@@ -96,7 +157,7 @@ void findImageSequence(const std::string &name_base,
     numbers.swap(result);
 }
 
-
+#endif // _WIN32
 
 // build a string from a sequence.
 template <class iterator>
