@@ -18,9 +18,9 @@ AC_CONFIG_AUX_DIR(config)
 dnl-------------------------------------------------------------------
 dnl                   vigra/interactive version
 dnl-------------------------------------------------------------------
-MAJOR_VERSION=cvs
-MINOR_VERSION=
-MICRO_VERSION=
+MAJOR_VERSION=1
+MINOR_VERSION=2
+MICRO_VERSION=0
 
 echo "configuring VIGRA $MAJOR_VERSION.$MINOR_VERSION.$MICRO_VERSION"
 
