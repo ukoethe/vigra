@@ -8,6 +8,7 @@ QUICKSUBDIRS =  \
         morphology \
         fourier \
         math \
+        tensorimaging \
         simpleanalysis
 
 
