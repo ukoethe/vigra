@@ -52,7 +52,7 @@ dnl-------------------------------------------------------------------
 dnl                     libtool configuration
 dnl-------------------------------------------------------------------
 AC_ENABLE_SHARED(yes)
-AC_ENABLE_STATIC(no)
+AC_ENABLE_STATIC(yes)
 AC_LIBTOOL_SETUP dnl tell autoconf about libtools prerequisites
 AC_PROG_LIBTOOL
 AC_LIBTOOL_CXX
