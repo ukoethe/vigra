@@ -1,0 +1,62 @@
+/** @name Examples
+    
+    Click on the hyperlinks to view the commented source code for the demos.
+    Most examples can be applied to both gray-scale and RGB images. 
+    See \URL[Installation]{index.html#installation} for instructions on how these
+    programms can be compiled. For convenience, the directory contains the test images 
+    \URL[lenna_gray.gif]{../src/examples/lenna_gray.gif} and 
+    \URL[lenna_color.gif]{../src/examples/lenna_color.gif}.
+    
+    \begin{itemize}
+    
+    \item Convert an image file into another file type:
+    \URL[convert.cxx]{../src/examples/convert.cxx} \\
+    Usage: #convert infile outfile#
+    
+    \item Read an image file and write out a subimage:
+    \URL[subimage.cxx]{../src/examples/subimage.cxx} \\
+    Usage: #subimage infile outfile#
+    
+    \item Invert an image file (create a negative) using the function 
+    \Ref{transformImage}:
+    \URL[invert.cxx]{../src/examples/invert.cxx} \\
+    Usage: #invert infile outfile#
+    
+    \item Invert an image file (create a negative) by coding the loop
+    explicitly:
+    \URL[invert_explicitly.cxx]{../src/examples/invert_explicitly.cxx} \\
+    Usage: #invert_explicitly infile outfile#
+    
+    \item Smooth an image using \Ref{Recursive convolution functions}:
+    \URL[smooth.cxx]{../src/examples/smooth.cxx} \\
+    Usage: #smooth infile outfile#
+    
+    \item Find the gray value profile along the image diagonal 
+    by means of a \Ref{LineIterator}:
+    \URL[profile.cxx]{../src/examples/profile.cxx} \\
+    Usage: #profile infile#, generates #profile.gif#
+
+    \item Reduce image size by mean of a Gaussian pyramid:
+    \URL[pyramid.cxx]{../src/examples/pyramid.cxx} \\
+    Usage: #pyramid infile outfile#
+    
+    \item Find edges by means of a 
+    \URL[difference of exponential edge detector]{differenceOfExponentialEdgeImage.html}:
+    \URL[edge.cxx]{../src/examples/edge.cxx} \\
+    Usage: #edge infile outfile#
+    
+    \item Segment image by means of the watershed algorithm, using 
+    \Ref{seededRegionGrowing}:
+    \URL[watershed.cxx]{../src/examples/watershed.cxx} \\
+    Usage: #watershed infile outfile#
+    
+    \item Generate a Voronoi diagram, using \Ref{distanceTransform} and
+    \Ref{seededRegionGrowing}:
+    \URL[voronoi.cxx]{../src/examples/voronoi.cxx} \\
+    Usage: #voronoi#, generates: #distances.gif# (Euclidean distance transform) and #voronoi.gif#
+    (Voronoi diagram)
+    
+    \end{itemize}
+    
+    @memo Demonstration programs for VIGRA's usage
+*/

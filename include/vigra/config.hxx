@@ -1,0 +1,96 @@
+/************************************************************************/
+/*                                                                      */
+/*               Copyright 1998-2000 by Ullrich Koethe                  */
+/*       Cognitive Systems Group, University of Hamburg, Germany        */
+/*                                                                      */
+/*    This file is part of the VIGRA computer vision library.           */
+/*    You may use, modify, and distribute this software according       */
+/*    to the terms stated in the LICENSE file included in               */
+/*    the VIGRA distribution.                                           */
+/*                                                                      */
+/*    The VIGRA Website is                                              */
+/*        http://kogs-www.informatik.uni-hamburg.de/~koethe/vigra/      */
+/*    Please direct questions, bug reports, and contributions to        */
+/*        koethe@informatik.uni-hamburg.de                              */
+/*                                                                      */
+/*  THIS SOFTWARE IS PROVIDED AS IS AND WITHOUT ANY EXPRESS OR          */
+/*  IMPLIED WARRANTIES, INCLUDING, WITHOUT LIMITATION, THE IMPLIED      */
+/*  WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE. */
+/*                                                                      */
+/************************************************************************/
+ 
+ 
+#ifndef VIGRA_CONFIG_HXX 
+#define VIGRA_CONFIG_HXX
+
+#include <stdexcept>
+
+///////////////////////////////////////////////////////////
+//                                                       //
+//                   VisualC++ 5.0                       //
+//                                                       //
+///////////////////////////////////////////////////////////
+
+#ifdef _MSC_VER
+    #if(_MSC_VER < 1100)    // before VisualC++ 5.0
+        #error "Need VisualC++ 5.0, Service Pack 2, or later"
+    #endif // _MSC_VER < 1100
+    
+    #pragma warning( disable : 4786 4250 4244 4305)
+    #define NO_TYPENAME         // no 'typename' keyword
+    #define TEMPLATE_COPY_CONSTRUCTOR_BUG
+    #define NO_PARTIAL_TEMPLATE_SPECIALIZATION
+    #define NO_STL_MEMBER_TEMPLATES
+#endif // _MSC_VER
+
+///////////////////////////////////////////////////////////
+//                                                       //
+//                        egcs 1.1                       //
+//                                                       //
+///////////////////////////////////////////////////////////
+
+#if defined(__GNUC__) 
+    #if  __GNUC__ < 2 || ((__GNUC__ == 2) && (__GNUC_MINOR__ <= 8))
+        #error "Need at least egcs 1.1 or g++ 2.95"
+    #endif 
+    #define HAS_HASH_CONTAINERS
+#endif  // __GNUC__
+
+///////////////////////////////////////////////////////////
+//                                                       //
+//                      SGI C++ 7.2                      //
+//                                                       //
+///////////////////////////////////////////////////////////
+
+#if defined(__sgi) && !defined(__GNUC__) 
+    #if _COMPILER_VERSION < 720
+        #error "Need SGI C++ 7.2 or later"
+    #endif
+    #if (_COMPILER_VERSION  == 720) || (_COMPILER_VERSION  == 721)
+        #define SPECIAL_STDEXCEPTION_DEFINITION_NEEDED
+        typedef std::exception VigraStdException; // must be above next #define !!
+        #define std
+        #define NO_NAMESPACE_STD
+    #endif // _COMPILER_VERSION
+    #define HAS_HASH_CONTAINERS
+#endif // __sgi
+
+///////////////////////////////////////////////////////////
+//                                                       //
+//                        general                        //
+//                                                       //
+///////////////////////////////////////////////////////////
+
+#ifdef NO_TYPENAME
+    #define typename
+#endif
+
+#ifdef NO_EXPLICIT
+    #define explicit
+#endif
+
+#ifndef SPECIAL_STDEXCEPTION_DEFINITION_NEEDED
+     typedef std::exception VigraStdException;
+#endif
+
+#endif // VIGRA_CONFIG_HXX

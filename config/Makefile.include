@@ -1,0 +1,30 @@
+include $(VIGRA_PATH)/config/$(VIGRA_COMPILER).mak
+
+CXXINC = -I$$VIGRA_PATH/include 
+CCINC = -I$$VIGRA_PATH/include 
+LIBDIR =   $$VIGRA_PATH/lib/$$VIGRA_PLATFORM
+CCLIBDIR = -L$$VIGRA_PATH/lib/$$VIGRA_PLATFORM
+CXXLIBDIR = -L$$VIGRA_PATH/lib/$$VIGRA_PLATFORM
+
+.SUFFIXES: .cxx .d
+
+.cxx.o:
+	$(CXX) $(CXXFLAGS) $(CXXINC) -c $*.cxx
+	touch $*.o
+
+.c.o:
+	$(CC) $(CCFLAGS) $(CCINC) -c $*.c
+	touch $*.o
+
+.cxx.d:
+	@echo $*.o: $*.d > $*.d
+	makedepend -- $(CXXFLAGS) $(CXXINC) -- -a -Y -f$*.d \
+           -o.d $*.cxx 2>/dev/null
+	@rm $*.d.bak
+        
+.c.d:
+	@echo $*.o: $*.d > $*.d
+	makedepend -- $(CCFLAGS) $(CCINC) -- -a -Y -f$*.d \
+           -o.d $*.c 2>/dev/null
+	@rm $*.d.bak
+        
