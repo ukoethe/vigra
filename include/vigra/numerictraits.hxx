@@ -845,11 +845,11 @@ struct NumericTraits<std::complex<T> >
     typedef VigraFalseType isOrdered;
     typedef VigraTrueType isComplex;
     
-    static double zero() { return Type(0.0); }
-    static double one() { return Type(1.0); }
-    static double nonZero() { return one(); }
-    static double epsilon() { return Type(NumericTraits<T>::epsilon()); }
-    static double smallestPositive() { return Type(NumericTraits<T>::smallestPositive()); }
+    static Type zero() { return Type(0.0); }
+    static Type one() { return Type(1.0); }
+    static Type nonZero() { return one(); }
+    static Type epsilon() { return Type(NumericTraits<T>::epsilon()); }
+    static Type smallestPositive() { return Type(NumericTraits<T>::smallestPositive()); }
 
     static Promote toPromote(Type const & v) { return v; }
     static Type fromPromote(Promote const & v) { return v; }
