@@ -56,7 +56,7 @@ AC_ENABLE_STATIC(yes)
 AC_LIBTOOL_SETUP dnl tell autoconf about libtools prerequisites
 AC_PROG_LIBTOOL
 AC_LIBTOOL_CXX
-LIBTOOL=`echo $LIBTOOL | sed 's,$(top_builddir),'$vigra_builddir,`
+LIBTOOL=`echo $LIBTOOL | sed 's,$(top_builddir),$(vigra_builddir),'`
 
 dnl-------------------------------------------------------------------
 dnl           tiff, jpeg and fftw package configurations
