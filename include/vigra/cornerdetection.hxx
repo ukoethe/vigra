@@ -31,23 +31,42 @@
 
 namespace vigra {
 
-template <class SrcType, class DestType>
-struct InternalCornerResponseFunctor
+template <class SrcType>
+struct CornerResponseFunctor
 {
-    DestType operator()(SrcType const & a1, 
-                        SrcType const & a2, SrcType const & a3) const
+    typedef typename NumericTraits<SrcType>::RealPromote argument_type;
+    typedef argument_type result_type;
+    
+    result_type operator()(argument_type a1, 
+                        argument_type a2, argument_type a3) const
     {
 	return (a1*a2 - a3*a3) - 0.04 * (a1 + a2) * (a1 + a2);
     }
+};
 
-    SrcType operator()(SrcType const & a1, SrcType const & a2) const
+template <class SrcType>
+struct FoerstnerCornerFunctor
+{
+    typedef typename NumericTraits<SrcType>::RealPromote argument_type;
+    typedef argument_type result_type;
+    
+    result_type operator()(argument_type a1, 
+                           argument_type a2, argument_type a3) const
     {
-	return (a1*a2);
+	return (a1*a2 - a3*a3) / (a1 + a2);
     }
+};
 
-    SrcType operator()(SrcType const & a) const
+template <class SrcType>
+struct RohrCornerFunctor
+{
+    typedef typename NumericTraits<SrcType>::RealPromote argument_type;
+    typedef argument_type result_type;
+    
+    result_type operator()(argument_type a1, 
+                        argument_type a2, argument_type a3) const
     {
-	return (a*a);
+	return (a1*a2 - a3*a3);
     }
 };
 
@@ -56,57 +75,84 @@ struct InternalCornerResponseFunctor
 */
 //@{ 
                                     
+template <class SrcIterator, class SrcAccessor,
+          class DestIterator, class DestAccessor,
+          class CornerFunctor>
+void
+structureTensorBasedCornerDetection(SrcIterator sul, SrcIterator slr, SrcAccessor as,
+                       DestIterator dul, DestAccessor ad,
+		       CornerFunctor cf, double scale)
+{
+    vigra_precondition(scale > 0.0,
+                 "structureTensorBasedCornerDetection(): Scale must be > 0");
+		 
+    int w = slr.x - sul.x;
+    int h = slr.y - sul.y;
+    
+    if(w <= 0 || h <= 0) return;
+    
+    typedef typename 
+        NumericTraits<typename SrcAccessor::value_type>::RealPromote TmpType;
+	
+    typedef BasicImage<TmpType> TmpImage;
+    
+    TmpImage gx(w,h);
+    TmpImage gy(w,h);
+    TmpImage gxy(w,h);
+
+    structureTensor(srcIterRange(sul, slr, as), 
+                    destImage(gx), destImage(gxy), destImage(gy), 
+                    scale, scale);
+                    
+    combineThreeImages(srcImageRange(gx), srcImage(gy), srcImage(gxy), 
+                       destIter(dul, ad), cf );
+}
+
+template <class SrcIterator, class SrcAccessor,
+          class DestIterator, class DestAccessor,
+          class CornerFunctor>
+inline 
+void structureTensorBasedCornerDetection(
+           triple<SrcIterator, SrcIterator, SrcAccessor> src,
+	   pair<DestIterator, DestAccessor> dest,
+	   CornerFunctor cf, double scale)
+{
+    structureTensorBasedCornerDetection(src.first, src.second, src.third,
+                            dest.first, dest.second,
+			    cf, scale);
+}
+
 /********************************************************/
 /*                                                      */
 /*                 cornerResponseFunction               */
 /*                                                      */
 /********************************************************/
 
-/** \brief Find corners in an image.
+/** \brief Find corners in an image (1).
 
     This algorithm implements the so called 'corner response function'
     to measure the 'cornerness' of each pixel in the image, according to
     [C.G. Harris and M.J. Stevens: <em> "A Combined Corner and Edge Detector"</em>,
-    Proc. of 4th Alvey Vision Conference, 1988]. We have found this to be a
+    Proc. of 4th Alvey Vision Conference, 1988]. Several studies have found this to be a
     very robust corner detector, although it moves the corners somewhat into one
     region, depending on the scale.
     
-    The algorithm proceeds as follows: At the given <TT>scale</TT>, it calculates the 
-    structure tensor (which is the smoothed matrix of gradient products) at each 
-    pixel like this:
-    
-    \f[ 
-        \left( 
-	\begin{array}{cc}
-	G^s * (g_x^s g_x^s) & G^s * (g_x^s g_y^s) \\
-	G^s * (g_x^s g_y^s) & G^s * (g_y^s g_y^s) \\
-	\end{array} 
-        \right) = 
-        \left( 
-	\begin{array}{cc}
-	A & C \\
-	C & B \\
-	\end{array} 
-        \right)
-    \f]
-    
-    where <math>G<sup>s</sup> *</math> denotes convolution with a Gaussian filter at 
-    scale s, <math>g<sub>x</sub><sup>s</sup></math> and 
-    <math>g<sub>y</sub><sup>s</sup></math> are first Gaussian 
-    derivatives in x and y directions at scale s, and products mean pixelwise
-    multiplication. Then the corner response is calculated pixelwise as 
+    The algorithm first determines the structure tensor at each pixel by calling
+    \link CommonConvolutionFilters#structureTensor structureTensor\endlink(). 
+    Then the entries of the structure tensor are combined as 
     
     \f[
-        CornerResponse = A B - C^2 - 0.04 (A + B)^2
+        \mbox{\rm CornerResponse} = \mbox{\rm det(StructureTensor)} - 0.04 \mbox{\rm tr(StructureTensor)}^2
+        = A B - C^2 - 0.04 (A + B)^2
     \f]
     
     The local maxima of the corner response denote the corners in the gray level 
-    function.
+    image.
     
-    The source value type must be an linaer algebra, i.e. addition, subtraction, and
+    The source value type must be a linaer algebra, i.e. addition, subtraction, and
     multiplication with itself, multiplication with doubles and 
     \ref NumericTraits "NumericTraits" must 
-    be defined. (Sorry, only the built-in types are currently supported.)
+    be defined. 
     
     <b> Declarations:</b>
     
@@ -205,40 +251,17 @@ cornerResponseFunction(SrcIterator sul, SrcIterator slr, SrcAccessor as,
 	
     typedef BasicImage<TmpType> TmpImage;
     
-    TmpImage tmp(w,h);
     TmpImage gx(w,h);
     TmpImage gy(w,h);
     TmpImage gxy(w,h);
-    
-    Kernel1D<double> smooth, grad;
-    smooth.initGaussian(scale);
-    grad.initGaussianDerivative(scale, 1);
-    
-    separableConvolveX(srcIterRange(sul, slr, as), destImage(tmp), kernel1d(grad));
-    separableConvolveY(srcImageRange(tmp), destImage(gx), kernel1d(smooth));
-    
-    separableConvolveY(srcIterRange(sul, slr, as), destImage(tmp), kernel1d(grad));
-    separableConvolveX(srcImageRange(tmp), destImage(gy), kernel1d(smooth));
-    
-    InternalCornerResponseFunctor<TmpType, 
-                typename DestAccessor::value_type > CRF;
 
-    combineTwoImages(srcImageRange(gx), srcImage(gy), destImage(gxy), CRF);
-		  
-    transformImage(srcImageRange(gx), destImage(gx), CRF);
-    transformImage(srcImageRange(gy), destImage(gy), CRF);
-    
-    separableConvolveX(srcImageRange(gx), destImage(tmp), kernel1d(smooth));
-    separableConvolveY(srcImageRange(tmp), destImage(gx), kernel1d(smooth));
-
-    separableConvolveX(srcImageRange(gy), destImage(tmp), kernel1d(smooth));
-    separableConvolveY(srcImageRange(tmp), destImage(gy), kernel1d(smooth));
-
-    separableConvolveX(srcImageRange(gxy), destImage(tmp), kernel1d(smooth));
-    separableConvolveY(srcImageRange(tmp), destImage(gxy), kernel1d(smooth));
-
+    structureTensor(srcIterRange(sul, slr, as), 
+                    destImage(gx), destImage(gxy), destImage(gy), 
+                    scale, scale);
+    CornerResponseFunctor<typename SrcAccessor::value_type > cf;
+                    
     combineThreeImages(srcImageRange(gx), srcImage(gy), srcImage(gxy), 
-                       destIter(dul, ad), CRF );
+                       destIter(dul, ad), cf );
 }
 
 template <class SrcIterator, class SrcAccessor,
@@ -253,6 +276,301 @@ void cornerResponseFunction(
                             dest.first, dest.second,
 			    scale);
 }
+
+/********************************************************/
+/*                                                      */
+/*               foerstnerCornerDetector                */
+/*                                                      */
+/********************************************************/
+
+/** \brief Find corners in an image (2).
+
+    This algorithm implements the so called 'Foerstner Corner Detector'
+    to measure the 'cornerness' of each pixel in the image, according to
+    [W. F&ouml;rstner: <em> "A feature based correspondence algorithms for image
+    matching"</em>, Intl. Arch. Photogrammetry and Remote Sensing, vol. 24, pp 160-166, 
+    1986]. It is also known as the "Plessey Detector" by Harris. However, it should not 
+    be confused with the
+    "\link CornerDetection#cornerResponseFunction Corner Repsonse Function\endlink ",
+    another detector invented by Harris.
+    
+    The algorithm first determines the structure tensor at each pixel by calling
+    \link CommonConvolutionFilters#structureTensor structureTensor\endlink(). 
+    Then the entries of the structure tensor are combined as 
+    
+    \f[
+        \mbox{\rm FoerstnerCornerStrength} = \frac{\mbox{\rm det(StructureTensor)}}{\mbox{\rm tr(StructureTensor)}} = 
+        \frac{A B - C^2}{A + B}
+    \f]
+    
+    The local maxima of the corner strength denote the corners in the gray level 
+    image. Its performance is similar to the 
+    \link CornerDetection#cornerResponseFunction cornerResponseFunction\endlink().
+    
+    The source value type must be a division algebra, i.e. addition, subtraction,
+    multiplication, and division with itself, multiplication with doubles and 
+    \ref NumericTraits "NumericTraits" must 
+    be defined.
+    
+    <b> Declarations:</b>
+    
+    pass arguments explicitly:
+    \code
+    namespace vigra {
+        template <class SrcIterator, class SrcAccessor,
+	          class DestIterator, class DestAccessor>
+        void
+        foerstnerCornerDetector(SrcIterator sul, SrcIterator slr, SrcAccessor as,
+			       DestIterator dul, DestAccessor ad,
+			       double scale)
+    }
+    \endcode
+    
+    use argument objects in conjuction with \ref ArgumentObjectFactories:
+    \code
+    namespace vigra {
+        template <class SrcIterator, class SrcAccessor,
+	          class DestIterator, class DestAccessor>
+        inline 
+        void foerstnerCornerDetector(
+	           triple<SrcIterator, SrcIterator, SrcAccessor> src,
+	           pair<DestIterator, DestAccessor> dest,
+	           double scale)
+    }
+    \endcode
+    
+    <b> Usage:</b>
+    
+        <b>\#include</b> "<a href="cornerdetection_8hxx-source.html">vigra/cornerdetection.hxx</a>"<br>
+    Namespace: vigra
+    
+    \code
+    vigra::BImage src(w,h), corners(w,h);
+    vigra::FImage foerstner_corner_strength(w,h);
+    
+    // empty corner image
+    corners = 0;
+    ...
+    
+    // find corner response at scale 1.0
+    vigra::foerstnerCornerDetector(srcImageRange(src), destImage(foerstner_corner_strength), 
+                                   1.0);
+    
+    // find local maxima of corner response, mark with 1
+    vigra::localMaxima(srcImageRange(foerstner_corner_strength), destImage(corners));
+    \endcode
+
+    <b> Required Interface:</b>
+    
+    \code
+    SrcImageIterator src_upperleft, src_lowerright;
+    DestImageIterator dest_upperleft;
+    
+    SrcAccessor src_accessor;
+    DestAccessor dest_accessor;
+    
+    SrcAccessor::value_type u = src_accessor(src_upperleft);
+    double d;
+    
+    u = u + u
+    u = u - u
+    u = u * u
+    u = u / u
+    u = d * u
+    
+    dest_accessor.set(u, dest_upperleft);
+    \endcode
+*/
+template <class SrcIterator, class SrcAccessor,
+          class DestIterator, class DestAccessor>
+void
+foerstnerCornerDetector(SrcIterator sul, SrcIterator slr, SrcAccessor as,
+                       DestIterator dul, DestAccessor ad,
+		       double scale)
+{
+    vigra_precondition(scale > 0.0,
+                 "foerstnerCornerDetector(): Scale must be > 0");
+		 
+    int w = slr.x - sul.x;
+    int h = slr.y - sul.y;
+    
+    if(w <= 0 || h <= 0) return;
+    
+    typedef typename 
+        NumericTraits<typename SrcAccessor::value_type>::RealPromote TmpType;
+	
+    typedef BasicImage<TmpType> TmpImage;
+    
+    TmpImage gx(w,h);
+    TmpImage gy(w,h);
+    TmpImage gxy(w,h);
+
+    structureTensor(srcIterRange(sul, slr, as), 
+                    destImage(gx), destImage(gxy), destImage(gy), 
+                    scale, scale);
+    FoerstnerCornerFunctor<typename SrcAccessor::value_type > cf;
+                    
+    combineThreeImages(srcImageRange(gx), srcImage(gy), srcImage(gxy), 
+                       destIter(dul, ad), cf );
+}
+
+template <class SrcIterator, class SrcAccessor,
+          class DestIterator, class DestAccessor>
+inline 
+void foerstnerCornerDetector(
+           triple<SrcIterator, SrcIterator, SrcAccessor> src,
+	   pair<DestIterator, DestAccessor> dest,
+	   double scale)
+{
+    foerstnerCornerDetector(src.first, src.second, src.third,
+                            dest.first, dest.second,
+			    scale);
+}
+
+/********************************************************/
+/*                                                      */
+/*                   rohrCornerDetector                 */
+/*                                                      */
+/********************************************************/
+
+/** \brief Find corners in an image (3).
+
+    This algorithm implements yet another structure tensor-based corner detector, 
+    according to [K. Rohr: <em> "Untersuchung von grauwertabh&auml;ngigen 
+    Transformationen zur Ermittlung der optischen Flusses in Bildfolgen"</em>, 
+    Diploma thesis, Inst. f&uuml;r Nachrichtensysteme, Univ. Karlsruhe, 1987]. 
+    
+    The algorithm first determines the structure tensor at each pixel by calling
+    \link CommonConvolutionFilters#structureTensor structureTensor\endlink(). 
+    Then the entries of the structure tensor are combined as 
+    
+    \f[
+        \mbox{\rm RohrCornerStrength} = \mbox{\rm det(StructureTensor)} = A B - C^2
+    \f]
+    
+    The local maxima of the corner strength denote the corners in the gray level 
+    image. Its performance is similar to the 
+    \link CornerDetection#cornerResponseFunction cornerResponseFunction\endlink().
+    
+    The source value type must be a linear algebra, i.e. addition, subtraction, and
+    multiplication with itself, multiplication with doubles and 
+    \ref NumericTraits "NumericTraits" must 
+    be defined.
+    
+    <b> Declarations:</b>
+    
+    pass arguments explicitly:
+    \code
+    namespace vigra {
+        template <class SrcIterator, class SrcAccessor,
+	          class DestIterator, class DestAccessor>
+        void
+        rohrCornerDetector(SrcIterator sul, SrcIterator slr, SrcAccessor as,
+			   DestIterator dul, DestAccessor ad,
+			   double scale)
+    }
+    \endcode
+    
+    use argument objects in conjuction with \ref ArgumentObjectFactories:
+    \code
+    namespace vigra {
+        template <class SrcIterator, class SrcAccessor,
+	          class DestIterator, class DestAccessor>
+        inline 
+        void rohrCornerDetector(
+	           triple<SrcIterator, SrcIterator, SrcAccessor> src,
+	           pair<DestIterator, DestAccessor> dest,
+	           double scale)
+    }
+    \endcode
+    
+    <b> Usage:</b>
+    
+        <b>\#include</b> "<a href="cornerdetection_8hxx-source.html">vigra/cornerdetection.hxx</a>"<br>
+    Namespace: vigra
+    
+    \code
+    vigra::BImage src(w,h), corners(w,h);
+    vigra::FImage rohr_corner_strength(w,h);
+    
+    // empty corner image
+    corners = 0;
+    ...
+    
+    // find corner response at scale 1.0
+    vigra::rohrCornerDetector(srcImageRange(src), destImage(rohr_corner_strength), 
+                              1.0);
+    
+    // find local maxima of corner response, mark with 1
+    vigra::localMaxima(srcImageRange(rohr_corner_strength), destImage(corners));
+    \endcode
+
+    <b> Required Interface:</b>
+    
+    \code
+    SrcImageIterator src_upperleft, src_lowerright;
+    DestImageIterator dest_upperleft;
+    
+    SrcAccessor src_accessor;
+    DestAccessor dest_accessor;
+    
+    SrcAccessor::value_type u = src_accessor(src_upperleft);
+    double d;
+    
+    u = u + u
+    u = u - u
+    u = u * u
+    u = d * u
+    
+    dest_accessor.set(u, dest_upperleft);
+    \endcode
+*/
+template <class SrcIterator, class SrcAccessor,
+          class DestIterator, class DestAccessor>
+void
+rohrCornerDetector(SrcIterator sul, SrcIterator slr, SrcAccessor as,
+                       DestIterator dul, DestAccessor ad,
+		       double scale)
+{
+    vigra_precondition(scale > 0.0,
+                 "rohrCornerDetector(): Scale must be > 0");
+		 
+    int w = slr.x - sul.x;
+    int h = slr.y - sul.y;
+    
+    if(w <= 0 || h <= 0) return;
+    
+    typedef typename 
+        NumericTraits<typename SrcAccessor::value_type>::RealPromote TmpType;
+	
+    typedef BasicImage<TmpType> TmpImage;
+    
+    TmpImage gx(w,h);
+    TmpImage gy(w,h);
+    TmpImage gxy(w,h);
+
+    structureTensor(srcIterRange(sul, slr, as), 
+                    destImage(gx), destImage(gxy), destImage(gy), 
+                    scale, scale);
+    RohrCornerFunctor<typename SrcAccessor::value_type > cf;
+                    
+    combineThreeImages(srcImageRange(gx), srcImage(gy), srcImage(gxy), 
+                       destIter(dul, ad), cf );
+}
+
+template <class SrcIterator, class SrcAccessor,
+          class DestIterator, class DestAccessor>
+inline 
+void rohrCornerDetector(
+           triple<SrcIterator, SrcIterator, SrcAccessor> src,
+	   pair<DestIterator, DestAccessor> dest,
+	   double scale)
+{
+    rohrCornerDetector(src.first, src.second, src.third,
+                            dest.first, dest.second,
+			    scale);
+}
+
 
 //@}
 
