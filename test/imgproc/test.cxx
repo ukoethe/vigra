@@ -969,7 +969,7 @@ struct ResizeImageTest
 
         Image dest(inforef.size());
         
-        resizeImageCubicFIRInterpolation(srcImageRange(img), destImageRange(dest));
+        resizeImageCatmullRomInterpolation(srcImageRange(img), destImageRange(dest));
         
         shouldEqualSequenceTolerance(dest.begin(), dest.end(), ref.begin(), 1.0e-6f);
     }
@@ -985,7 +985,7 @@ struct ResizeImageTest
 
         Image dest(inforef.size());
         
-        resizeImageCubicFIRInterpolation(srcImageRange(img), destImageRange(dest));
+        resizeImageCatmullRomInterpolation(srcImageRange(img), destImageRange(dest));
 
         shouldEqualSequenceTolerance(dest.begin(), dest.end(), ref.begin(), 1e-4f);
         
@@ -995,7 +995,7 @@ struct ResizeImageTest
 
         RGBImage rgbdest(inforgb.size());
         
-        resizeImageCubicFIRInterpolation(srcImageRange(rgb), destImageRange(rgbdest));
+        resizeImageCatmullRomInterpolation(srcImageRange(rgb), destImageRange(rgbdest));
         
         RGBImage::ScanOrderIterator i1 = rgbdest.begin();
         RGBImage::ScanOrderIterator iref = rgbref.begin();
@@ -1017,7 +1017,7 @@ struct ResizeImageTest
 
         Image dest(inforef.size());
         
-        resizeImageCubicIIRInterpolation(srcImageRange(img), destImageRange(dest));
+        resizeImageSplineInterpolation(srcImageRange(img), destImageRange(dest));
 
         shouldEqualSequenceTolerance(dest.begin(), dest.end(), ref.begin(), 1e-4f);
     }
@@ -1032,7 +1032,7 @@ struct ResizeImageTest
 
         Image dest(inforef.size());
         
-        resizeImageCubicIIRInterpolation(srcImageRange(img), destImageRange(dest));
+        resizeImageSplineInterpolation(srcImageRange(img), destImageRange(dest));
 
         shouldEqualSequenceTolerance(dest.begin(), dest.end(), ref.begin(), 1e-4f);
 
@@ -1042,7 +1042,7 @@ struct ResizeImageTest
 
         RGBImage rgbdest(inforgb.size());
         
-        resizeImageCubicIIRInterpolation(srcImageRange(rgb), destImageRange(rgbdest));
+        resizeImageSplineInterpolation(srcImageRange(rgb), destImageRange(rgbdest));
 
         RGBImage::ScanOrderIterator i1 = rgbdest.begin();
         RGBImage::ScanOrderIterator iref = rgbref.begin();
@@ -1078,7 +1078,7 @@ struct ResizeImageTest
                    36.25,/**/    36.6958161866,    37.3611111111,/***/  37.9166666667,      38.4722222222,    39.0277777778,    39.5833333333,      40.1388888889,      40.8041838134,            41.25/**/
         };
 
-        resizeImageCubicFIRInterpolation(srcImageRange(src), destImageRange(dest));
+        resizeImageCatmullRomInterpolation(srcImageRange(src), destImageRange(dest));
 
         shouldEqualSequenceTolerance(dest.begin(), dest.end(), refdata, 1e-11);
     }
@@ -1126,6 +1126,24 @@ struct SplineImageViewTest
             shouldEqualTolerance(view(d1, d1, 0, 1), spline(d, 1)*spline(d), epsilon);
             shouldEqualTolerance(view(d1, d1, 1, 1), spline(d, 1)*spline(d, 1), epsilon);
         }
+    }
+
+    void testCoefficientArray()
+    {
+        double x = 5.3, y = 7.9;
+        double dx = (N % 2) ? x - VIGRA_CSTD::floor(x) : x - VIGRA_CSTD::floor(x + 0.5), 
+               dy = (N % 2) ? y - VIGRA_CSTD::floor(y) : y - VIGRA_CSTD::floor(y + 0.5);
+        
+        Image coefficients;
+        SplineImageView<N, double> view(srcImageRange(img));
+        view.coefficientArray(x, y, coefficients);
+        
+        double f_x_y = 0.0;
+        for(int ny = 0; ny < N + 1; ++ny)
+            for(int nx = 0; nx < N + 1; ++nx)
+                f_x_y += VIGRA_CSTD::pow(dx, nx) * VIGRA_CSTD::pow(dy, ny) * coefficients(nx, ny);
+                
+        shouldEqualTolerance(f_x_y, view(x, y), 1e-12);
     }
 
     void testImageResize()
@@ -1186,6 +1204,7 @@ struct ImageFunctionsTestSuite
         add( testCase( &ImageFunctionsTest::additionIfTest));
         add( testCase( &ImageFunctionsTest::resizeNoInterpolationTest));
         add( testCase( &ImageFunctionsTest::resizeLinearInterpolationTest));
+
         add( testCase( &ResizeImageTest::resizeLinearInterpolationReduceTest));
         add( testCase( &ResizeImageTest::scalarExpand));
         add( testCase( &ResizeImageTest::scalarReduce));
@@ -1196,11 +1215,15 @@ struct ImageFunctionsTestSuite
         add( testCase( &ResizeImageTest::testCubicIIRInterpolationExtensionWithLena));
         add( testCase( &ResizeImageTest::testCubicIIRInterpolationReductionWithLena));
         add( testCase( &ResizeImageTest::testCubicFIRInterpolationExtensionHandControled));
+
         add( testCase( &SplineImageViewTest<2>::testPSF));
+        add( testCase( &SplineImageViewTest<2>::testCoefficientArray));
         add( testCase( &SplineImageViewTest<2>::testImageResize));
         add( testCase( &SplineImageViewTest<3>::testPSF));
+        add( testCase( &SplineImageViewTest<3>::testCoefficientArray));
         add( testCase( &SplineImageViewTest<3>::testImageResize));
         add( testCase( &SplineImageViewTest<5>::testPSF));
+        add( testCase( &SplineImageViewTest<5>::testCoefficientArray));
         add( testCase( &SplineImageViewTest<5>::testImageResize));
     }
 };
