@@ -6,8 +6,8 @@
     Most examples can be applied to both gray-scale and RGB images. 
     See <a href="Installation.html">Installation</a> for instructions on how these
     programms can be compiled. For convenience, the directory contains the test images 
-    <a href="../../src/examples/lenna_gray.gif">lenna_gray.gif</a> and 
-    <a href="../../src/examples/lenna_color.gif">lenna_color.gif</a>.
+    <a href="lenna_gray.gif">lenna_gray.gif</a> and 
+    <a href="lenna_color.gif">lenna_color.gif</a>.
     
     <ul>
     

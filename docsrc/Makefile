@@ -16,6 +16,7 @@ doc::
 	$(DOC)
 	python post.py $(DOCDIR) $(VIGRA_VERSION)
 	cp $(DOCDIR)/index.html $(DOCDIR)/index.html.in
+	cp ../src/examples/lenna*.gif $(DOCDIR)
 
 latex::
 	$(DOCLATEX) $(FILES)
