@@ -58,7 +58,7 @@
     \anchor _details
     <CENTER>
     \section Main VIGRA - Vision with Generic Algorithms
-    Version @MAJOR_VERSION@.@MINOR_VERSION@.@MICRO_VERSION@
+    Version VERSION_VERSION_VERSION
     by <a href="http://kogs-www.informatik.uni-hamburg.de/~koethe/">Ullrich K&ouml;the</a>
     </CENTER>
     
