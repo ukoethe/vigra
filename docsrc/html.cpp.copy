@@ -964,11 +964,11 @@ void writeDoc(FILE *f,Entry *entry)
 	char *type=(entry->htype);
 	printRefLabel(f,entry ) ;
 	fprintf( f, "<DT>");
-	fprintf( f, "<br><IMG BORDER=0 SRC=icon2.gif><TT><B> %s %s",
+	fprintf( f, "<br><IMG BORDER=0 SRC=icon2.gif><B> %s %s",
 		 type,
 		 (char *)(entry->hname));
 	fprintf( f, "%s", args);	
-	fprintf( f, "</B></TT>\n");
+	fprintf( f, "</B>\n");
 
 	if (entry->doc.length()>0)
 	    fprintf( f, "<DD>%s\n",(char *)(entry->hdoc));
