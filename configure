@@ -799,8 +799,8 @@ if test -n "$ac_init_help"; then
 Optional Features:
   --disable-FEATURE       do not include FEATURE (same as --enable-FEATURE=no)
   --enable-FEATURE[=ARG]  include FEATURE [ARG=yes]
-  --enable-shared=PKGS  build shared libraries default=no
-  --enable-static=PKGS  build static libraries default=yes
+  --enable-shared=PKGS  build shared libraries default=yes
+  --enable-static=PKGS  build static libraries default=no
   --enable-fast-install=PKGS  optimize for fast installation default=yes
   --disable-libtool-lock  avoid locking (might break parallel builds)
 
@@ -810,30 +810,30 @@ Optional Packages:
   --with-cc               your C compiler (default=gcc)
   --with-cxx              your C++ compiler (default=g++)
   --with-gnu-ld           assume the C compiler uses GNU ld default=no
-  --with-tiff=dir : support import/export of tiff images default=no.
-                    if dir='yes': tiff package files will be searched for in
-                       some standard directories.
-                    if dir is a directory: tiff package files will be searched for
-                       below dir using 'find'.
-                    alternatively, you can specify:
+  --with-tiff=dir         support import/export of tiff images (default=no)
+      if dir='yes': tiff package files will be searched for in
+         some standard directories.
+      if dir is a directory: tiff package files will be searched for
+         below dir using 'find'.
+      alternatively, you can specify:
     --with-tifflib=dir : the tiff package's lib directory
     --with-tiffinc=dir : the tiff package's include directory
 
-  --with-jpeg=dir : support import/export of jpeg images default=no.
-                    if dir='yes': jpeg package files will be searched for in
-                       some standard directories.
-                    if dir is a directory: jpeg package files will be searched for
-                       below dir using 'find'.
-                    alternatively, you can specify:
+  --with-jpeg=dir         support import/export of jpeg images (default=no)
+      if dir='yes': jpeg package files will be searched for in
+         some standard directories.
+      if dir is a directory: jpeg package files will be searched for
+         below dir using 'find'.
+      alternatively, you can specify:
     --with-jpeglib=dir : the jpeg package's lib directory
     --with-jpeginc=dir : the jpeg package's include directory
 
-  --with-fftw=dir : support fast Fourier transforms default=no.
-                    if dir='yes': fftw package files will be searched for in
-                       some standard directories.
-                    if dir is a directory: fftw package files will be searched for
-                       below dir using 'find'.
-                    alternatively, you can specify:
+  --with-fftw=dir         support fast Fourier transforms (default=no)
+      if dir='yes': fftw package files will be searched for in
+         some standard directories.
+      if dir is a directory: fftw package files will be searched for
+         below dir using 'find'.
+      alternatively, you can specify:
     --with-fftwlib=dir : the fftw package's lib directory
     --with-fftwinc=dir : the fftw package's include directory
 
@@ -1235,30 +1235,12 @@ ac_config_sub="$SHELL $ac_aux_dir/config.sub"
 ac_configure="$SHELL $ac_aux_dir/configure" # This should be Cygnus configure.
 
 
-# Set version
 MAJOR_VERSION=1
 MINOR_VERSION=1
 MICRO_VERSION=5
 
 echo "configuring VIGRA $MAJOR_VERSION.$MINOR_VERSION.$MICRO_VERSION"
 
-
-
-# Check whether --with-cc or --without-cc was given.
-if test "${with_cc+set}" = set; then
-  withval="$with_cc"
-  CC=$with_cc
-else
-  if test "x$CC" = "x" ; then CC=gcc ; fi
-fi;
-
-# Check whether --with-cxx or --without-cxx was given.
-if test "${with_cxx+set}" = set; then
-  withval="$with_cxx"
-  CXX=$with_cxx
-else
-  if test "x$CXX" = "x" ; then CXX=g++ ; fi
-fi;
 
 # Make sure we can run config.sub.
 $ac_config_sub sun4 >/dev/null 2>&1 ||
@@ -1356,11 +1338,23 @@ esac
 
 CFLAGS=-O
 CXXFLAGS=-O
-LIBCFLAGS=
-LIBCXXFLAGS=
-VIGRA_INCLUDES='-I$(prefix)/include'
-CINCLUDES="$VIGRA_INCLUDES"
-CXXINCLUDES="$VIGRA_INCLUDES"
+
+
+# Check whether --with-cc or --without-cc was given.
+if test "${with_cc+set}" = set; then
+  withval="$with_cc"
+  CC=$with_cc
+else
+  if test "x$CC" = "x" ; then CC=gcc ; fi
+fi;
+
+# Check whether --with-cxx or --without-cxx was given.
+if test "${with_cxx+set}" = set; then
+  withval="$with_cxx"
+  CXX=$with_cxx
+else
+  if test "x$CXX" = "x" ; then CXX=g++ ; fi
+fi;
 
 ac_ext=c
 ac_cpp='$CPP $CPPFLAGS'
@@ -2538,7 +2532,6 @@ echo "${ECHO_T}$ac_cv_prog_gnu_ld" >&6
 
 
 
-
         test -n "$INSTALL" && vigra_save_INSTALL_given=$INSTALL
   # Find a good install program.  We prefer a C program (faster),
 # so one script is as good as another.  But avoid the broken or
@@ -2639,7 +2632,9 @@ echo "${ECHO_T}$ac_res" >&6
   fi
 
 
-# Configure libtool
+LIBCPPFLAGS=
+VIGRA_INCLUDES='-I$(prefix)/include'
+
 # Check whether --enable-shared or --disable-shared was given.
 if test "${enable_shared+set}" = set; then
   enableval="$enable_shared"
@@ -2660,7 +2655,7 @@ no) enable_shared=no ;;
   ;;
 esac
 else
-  enable_shared=no
+  enable_shared=yes
 fi;
 # Check whether --enable-static or --disable-static was given.
 if test "${enable_static+set}" = set; then
@@ -2682,7 +2677,7 @@ no) enable_static=no ;;
   ;;
 esac
 else
-  enable_static=yes
+  enable_static=no
 fi;
 # Check whether --enable-fast-install or --disable-fast-install was given.
 if test "${enable_fast_install+set}" = set; then
@@ -2863,7 +2858,7 @@ test x"$silent" = xyes && libtool_flags="$libtool_flags --silent"
 case "$lt_target" in
 *-*-irix6*)
   # Find out which ABI we are using.
-  echo '#line 2866 "configure"' > conftest.$ac_ext
+  echo '#line 2861 "configure"' > conftest.$ac_ext
   if { (eval echo "$as_me:$LINENO: \"$ac_compile\"") >&5
   (eval $ac_compile) 2>&5
   ac_status=$?
@@ -3260,8 +3255,7 @@ CFLAGS="$lt_save_CFLAGS"
 exec 5>>./config.log
 
 
-
-#########################################################
+LIBTOOL=`echo $LIBTOOL | sed 's,$(top_builddir),'$vigra_builddir,`
 
 
 
@@ -3304,7 +3298,6 @@ fi;
     else
       libpre="lib"
     fi
-
 
     if test ${with_tiff:-""} = "" -a ${with_tifflib:-""} = "" -a ${with_tiffinc:-""} = ""; then
         with_tiff="no"
@@ -3452,8 +3445,7 @@ if test $with_tiff = "yes";
 then
     TIFF_LIB="-L$with_tifflib -ltiff"
     IMPEX_DEPLIBS="$IMPEX_DEPLIBS $TIFF_LIB"
-    LIBCFLAGS="$LIBCFLAGS -DHasTIFF -I$with_tiffinc"
-    LIBCXXFLAGS="$LIBCXXFLAGS -DHasTIFF -I$with_tiffinc"
+    LIBCPPFLAGS="$LIBCXXFLAGS -DHasTIFF -I$with_tiffinc"
 fi
 
 
@@ -3497,7 +3489,6 @@ fi;
     else
       libpre="lib"
     fi
-
 
     if test ${with_jpeg:-""} = "" -a ${with_jpeglib:-""} = "" -a ${with_jpeginc:-""} = ""; then
         with_jpeg="no"
@@ -3645,8 +3636,7 @@ if test $with_jpeg = "yes";
 then
     JPEG_LIB="-L$with_jpeglib -ljpeg"
     IMPEX_DEPLIBS="$IMPEX_DEPLIBS $JPEG_LIB"
-    LIBCFLAGS="$LIBCFLAGS -DHasJPEG -I$with_jpeginc"
-    LIBCXXFLAGS="$LIBCXXFLAGS -DHasJPEG -I$with_jpeginc"
+    LIBCPPFLAGS="$LIBCXXFLAGS -DHasJPEG -I$with_jpeginc"
 fi
 
 
@@ -3690,7 +3680,6 @@ fi;
     else
       libpre="lib"
     fi
-
 
     if test ${with_fftw:-""} = "" -a ${with_fftwlib:-""} = "" -a ${with_fftwinc:-""} = ""; then
         with_fftw="no"
@@ -3838,16 +3827,13 @@ if test $with_fftw = "yes";
 then
     FFTW_LIB="-L$with_fftwlib -lfftw"
     FFTW_INCLUDES="-I$with_fftwinc"
-    CXXINCLUDES="$CXXINCLUDES $FFTW_INCLUDES"
+    CPPFLAGS="$FFTW_INCLUDES $CPPFLAGS"
 fi
 
-#########################################################
 
+CPPFLAGS="$VIGRA_INCLUDES ${CPPFLAGS}"
 IMPEX_LIB="-L$libdir -lvigraimpex -lm $IMPEX_DEPLIBS"
 LIBS="$LIBS $IMPEX_LIB"
-
-
-
 
 
 
@@ -4467,7 +4453,6 @@ s,@OBJEXT@,$OBJEXT,;t t
 s,@CXX@,$CXX,;t t
 s,@CXXFLAGS@,$CXXFLAGS,;t t
 s,@ac_ct_CXX@,$ac_ct_CXX,;t t
-s,@LD@,$LD,;t t
 s,@INSTALL_PROGRAM@,$INSTALL_PROGRAM,;t t
 s,@INSTALL_SCRIPT@,$INSTALL_SCRIPT,;t t
 s,@INSTALL_DATA@,$INSTALL_DATA,;t t
@@ -4485,10 +4470,7 @@ s,@FFTW_INCLUDES@,$FFTW_INCLUDES,;t t
 s,@IMPEX_LIB@,$IMPEX_LIB,;t t
 s,@IMPEX_DEPLIBS@,$IMPEX_DEPLIBS,;t t
 s,@VIGRA_INCLUDES@,$VIGRA_INCLUDES,;t t
-s,@CINCLUDES@,$CINCLUDES,;t t
-s,@CXXINCLUDES@,$CXXINCLUDES,;t t
-s,@LIBCFLAGS@,$LIBCFLAGS,;t t
-s,@LIBCXXFLAGS@,$LIBCXXFLAGS,;t t
+s,@LIBCPPFLAGS@,$LIBCPPFLAGS,;t t
 CEOF
 
 _ACEOF
