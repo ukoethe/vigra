@@ -26,6 +26,7 @@
 #include "vigra/recursiveconvolution.hxx"
 #include "vigra/splines.hxx"
 #include "vigra/array_vector.hxx"
+#include "vigra/basicimage.hxx"
 
 namespace vigra {
 
