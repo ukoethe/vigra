@@ -20,6 +20,7 @@ install-includes:
         fi
 
 install-docs:
+	$(INSTALL) -d $(docdir)
 	$(INSTALL) --mode=644 LICENSE $(docdir)
 	if test $(prefix) != $(vigra_builddir) ; then \
           $(INSTALL) -d $(docdir)/documents ; \
