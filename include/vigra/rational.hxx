@@ -1,5 +1,8 @@
 /************************************************************************/
 /*                                                                      */
+/*               Copyright 1998-2004 by Ullrich Koethe                  */
+/*       Cognitive Systems Group, University of Hamburg, Germany        */
+/*                                                                      */
 /*    This file is part of the VIGRA computer vision library.           */
 /*    It was adapted from the file boost/rational.hpp of the            */
 /*    boost library.                                                    */
