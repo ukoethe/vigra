@@ -46,7 +46,8 @@ void internalConvolveLineWrap(SrcIterator is, SrcIterator iend, SrcAccessor sa,
                               KernelIterator kernel, KernelAccessor ka,
                               int kleft, int kright)
 {
-    int w = iend - is;
+  //    int w = iend - is;
+    int w = std::distance( is, iend );
     
     typedef typename NumericTraits<typename 
                       SrcAccessor::value_type>::RealPromote SumType;
@@ -122,7 +123,8 @@ void internalConvolveLineClip(SrcIterator is, SrcIterator iend, SrcAccessor sa,
                               KernelIterator kernel, KernelAccessor ka,
                               int kleft, int kright, Norm norm)
 {
-    int w = iend - is;
+  //    int w = iend - is;
+    int w = std::distance( is, iend );
     
     typedef typename NumericTraits<typename 
                       SrcAccessor::value_type>::RealPromote SumType;
@@ -202,7 +204,8 @@ void internalConvolveLineReflect(SrcIterator is, SrcIterator iend, SrcAccessor s
                               KernelIterator kernel, KernelAccessor ka,
                               int kleft, int kright)
 {
-    int w = iend - is;
+  //    int w = iend - is;
+    int w = std::distance( is, iend );
     
     typedef typename NumericTraits<typename 
                       SrcAccessor::value_type>::RealPromote SumType;
@@ -276,7 +279,8 @@ void internalConvolveLineRepeat(SrcIterator is, SrcIterator iend, SrcAccessor sa
                               KernelIterator kernel, KernelAccessor ka,
                               int kleft, int kright)
 {
-    int w = iend - is;
+  //    int w = iend - is;
+    int w = std::distance( is, iend );
     
     typedef typename NumericTraits<typename 
                       SrcAccessor::value_type>::RealPromote SumType;
@@ -350,7 +354,8 @@ void internalConvolveLineAvoid(SrcIterator is, SrcIterator iend, SrcAccessor sa,
                               KernelIterator kernel, KernelAccessor ka,
                               int kleft, int kright)
 {
-    int w = iend - is;
+  //    int w = iend - is;
+    int w = std::distance( is, iend );
     
     typedef typename NumericTraits<typename 
                       SrcAccessor::value_type>::RealPromote SumType;
@@ -522,7 +527,9 @@ void convolveLine(SrcIterator is, SrcIterator iend, SrcAccessor sa,
     vigra_precondition(kright >= 0,
                  "convolveLine(): kright must be >= 0.\n");
     
-    int w = iend - is;
+    //    int w = iend - is;
+    int w = std::distance( is, iend );
+
     vigra_precondition(w >= kright - kleft + 1,
                  "convolveLine(): kernel longer than line\n");
     
