@@ -194,8 +194,11 @@ def processFile(fileName):
       r'<table cellpadding="0" cellspacing="0" border="0">.*?</table>)', re.S)
     text = functionHeading.sub(r'\1<br>\2</br>', text)
     
-    functionSignature = re.compile(r'(<td class="md"[^>]*>)([^<]*)</td>')
+    functionSignature = re.compile(r'(<td class="md"[^>]*>)'+\
+       r'([^<]*| <a[^<]*</a>[^<]*)</td>')
     text = functionSignature.sub(r'\1<b>\2</b></td>', text)
+    functionSignature = re.compile(r'(<td class="md"[^>]*>)([^<]*)</table>')
+    text = functionSignature.sub(r'\1<b>\2</b></td></table>', text)
     
     if re.search(r'.*/index.html', fileName):
         text = re.sub(r'<h3 align="center">\d+\.\d+\.\d+</h3>', '', text)
