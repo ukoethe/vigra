@@ -8,7 +8,6 @@
 #include "vigra/transformimage.hxx"
 #include "vigra/combineimages.hxx"
 #include "vigra/utilities.hxx"
-#include "vigra/fftw.hxx"
 
 #include <functional>
 #include <vector>
