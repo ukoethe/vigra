@@ -1,3 +1,5 @@
+LINENO=1  # ??? should be set automatically
+
 # redefine _AC_INIT_DEFAULTS in order to add 'ac_default_docdir=...'
 # --------------------------------------------------------------
 # Values which defaults can be set from `configure.ac'.
@@ -398,7 +400,7 @@ do
   -with-* | --with-*)
     ac_package=`expr "x$ac_option" : 'x-*with-\([[^=]]*\)'`
     # Reject names that are not valid shell variable names.
-    expr "x$ac_package" : "[.*[^-_$as_cr_alnum]]" >/dev/null &&
+    expr "x$ac_package" : "([.*[^-_$as_cr_alnum]])" >/dev/null &&
       AC_MSG_ERROR([invalid package name: $ac_package])
     ac_package=`echo $ac_package| sed 's/-/_/g'`
     case $ac_option in
@@ -410,7 +412,7 @@ do
   -without-* | --without-*)
     ac_package=`expr "x$ac_option" : 'x-*without-\(.*\)'`
     # Reject names that are not valid shell variable names.
-    expr "x$ac_package" : "[.*[^-_$as_cr_alnum]]" >/dev/null &&
+    expr "x$ac_package" : "([.*[^-_$as_cr_alnum]])" >/dev/null &&
       AC_MSG_ERROR([invalid package name: $ac_package])
     ac_package=`echo $ac_package | sed 's/-/_/g'`
     eval "with_$ac_package=no" ;;
@@ -595,7 +597,7 @@ AC_DEFUN([VIGRA_FIND_LIBRARY],
         found=""
         for i in $dirs; do
             if test -d $i; then
-                found="$found `$findprog $i -name "${libpre}[$2].$solibext" -print 2> /dev/null; $findprog $i -name "${libpre}[$2].$libext" -print 2> /dev/null`"
+                found="$found `$findprog $i -follow -name "${libpre}[$2].$solibext" -print 2> /dev/null; $findprog $i -follow -name "${libpre}[$2].$libext" -print 2> /dev/null`"
             fi
         done
 
@@ -664,7 +666,7 @@ AC_DEFUN([VIGRA_FIND_INCLUDE],
             found=""
             for i in $dirs; do
                 if test -d $i; then
-                    found="$found `$findprog $i -name patsubst([$2], .*/, ) -print 2> /dev/null`"
+                    found="$found `$findprog $i -follow -name patsubst([$2], .*/, ) -print 2> /dev/null`"
                 fi
             done
 
