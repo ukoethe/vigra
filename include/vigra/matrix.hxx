@@ -1173,7 +1173,7 @@ operator*(const Matrix<T, A> &a, const TinyVectorBase<T, N, DATA, DERIVED> &b)
     vigra_precondition(N == rowCount(a) && N == columnCount(a),
          "operator*(Matrix, TinyVector): Shape mismatch.");
 
-    TinyVector<T, N> res(TinyVectorView<T, N>(&a(0,0)) * b[0]);
+    TinyVector<T, N> res = TinyVectorView<T, N>(&a(0,0)) * b[0];
     for(unsigned int i = 1; i < N; ++i)
         res += TinyVectorView<T, N>(&a(0,i)) * b[i];
     return res;
