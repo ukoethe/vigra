@@ -52,9 +52,6 @@ namespace vigra
       typename Kernel1D<A>::ConstAccessor,
       int, int, BorderTreatmentMode> kernel = vigra::kernel1d( * kernels.front() );
 
-    std::cout << "conv-length: " <<
-      src.traverser_end() -src.traverser_begin()  <<std::endl;
-
 
     vigra::convolveLine( src.traverser_begin(), src.traverser_end(),
 			 StandardConstAccessor<T>(),
@@ -87,15 +84,10 @@ namespace vigra
     typedef typename std::list<const vigra::Kernel1D<A> *>::iterator KIterator;
 
     KIterator kit = kernels.begin();
-    KIterator kat;
 
     for( int d = 0; d < dimensions; ++d, ++kit ) {
-
-      kat = kit;
-      ++kat;
       const Kernel1D<A> *ktmp = (*kit);
       kit = kernels.erase( kit );
-//      kit = kat;
 
       const int dsize = src->shape( d );      
       for( int i = 0; i < dsize; ++i ) {
@@ -148,7 +140,8 @@ namespace vigra
   vigra_precondition( kernels.size() >= N, "The kernels vector must have a length of"
 		      " at least the data dimensionality" );
 
-  const size_t tsize = *std::max_element( source.shape().begin(), source.shape().end() );
+  const size_t tsize = *std::max_element( source.shape().begin(),
+					  source.shape().end() );
   std::vector<T> tmp( tsize );
 
   std::list<const vigra::Kernel1D<A> *> kernelList;
@@ -169,7 +162,8 @@ namespace vigra
 				    MultiArrayView<N,T,C> &dest,
 				    const vigra::Kernel1D<A> &kernel )
 {
-  const size_t tsize = *std::max_element( source.shape().begin(), source.shape().end() );
+  const size_t tsize = *std::max_element( source.shape().begin(),
+					  source.shape().end() );
   std::vector<T> tmp( tsize );
   
   std::list<const vigra::Kernel1D<A> *> kernelList;
