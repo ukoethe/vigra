@@ -161,6 +161,11 @@ class StandardAccessor
     void set(V const & value, ITERATOR const & i) const
     { *i = detail::RequiresExplicitCast<VALUETYPE>::cast(value); }
 
+        /* This overload is needed to make the accessor work with a std::back_inserter */
+    template <class V, class ITERATOR>
+    void set(V const & value, ITERATOR & i) const
+    { *i = detail::RequiresExplicitCast<VALUETYPE>::cast(value); }
+
         /** Write the data item at an offset (can be 1D or 2D or higher order difference)..
             The type <TT>V</TT> of the passed
             in <TT>value</TT> is automatically converted to <TT>VALUETYPE</TT>.
@@ -222,6 +227,11 @@ class StandardValueAccessor
         */
     template <class V, class ITERATOR>
     void set(V value, ITERATOR const & i) const
+        { *i = detail::RequiresExplicitCast<VALUETYPE>::cast(value); }
+
+        /* This overload is needed to make the accessor work with a std::back_inserter */
+    template <class V, class ITERATOR>
+    void set(V value, ITERATOR & i) const
         { *i = detail::RequiresExplicitCast<VALUETYPE>::cast(value); }
 
         /** Write the data item at an offset (can be 1D or 2D or higher order difference)..
