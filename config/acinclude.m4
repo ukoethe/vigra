@@ -1,11 +1,9 @@
-# redefine _AC_INIT_DEFAULTS in order to add 'ac_default_docdir'
+# redefine _AC_INIT_DEFAULTS in order to add 'ac_default_docdir=...'
 # --------------------------------------------------------------
 # Values which defaults can be set from `configure.ac'.
 # `/bin/machine' is used in `glibcbug'.  The others are used in config.*
 m4_define([_AC_INIT_DEFAULTS],
 [m4_divert_push([DEFAULTS])dnl
-
-AS_SHELL_SANITIZE
 
 # Name of the host.
 # hostname on some systems (SVR3.2, Linux) returns a bogus exit status,
@@ -18,7 +16,8 @@ exec AS_MESSAGE_FD>&1
 # Initializations.
 #
 ac_default_prefix=/usr/local
-ac_default_docdir='${prefix}/share/doc'
+ac_default_docdir='${prefix}/doc/vigra'
+ac_config_libobj_dir=.
 cross_compiling=no
 subdirs=
 MFLAGS=
@@ -33,19 +32,21 @@ AC_SUBST([PATH_SEPARATOR])dnl
 
 # Identity of this package.
 AC_SUBST([PACKAGE_NAME],
-         [m4_ifdef([AC_PACKAGE_NAME],      ['AC_PACKAGE_NAME'])])dnl
+	 [m4_ifdef([AC_PACKAGE_NAME],      ['AC_PACKAGE_NAME'])])dnl
 AC_SUBST([PACKAGE_TARNAME],
-         [m4_ifdef([AC_PACKAGE_TARNAME],   ['AC_PACKAGE_TARNAME'])])dnl
+	 [m4_ifdef([AC_PACKAGE_TARNAME],   ['AC_PACKAGE_TARNAME'])])dnl
 AC_SUBST([PACKAGE_VERSION],
-         [m4_ifdef([AC_PACKAGE_VERSION],   ['AC_PACKAGE_VERSION'])])dnl
+	 [m4_ifdef([AC_PACKAGE_VERSION],   ['AC_PACKAGE_VERSION'])])dnl
 AC_SUBST([PACKAGE_STRING],
-         [m4_ifdef([AC_PACKAGE_STRING],    ['AC_PACKAGE_STRING'])])dnl
+	 [m4_ifdef([AC_PACKAGE_STRING],    ['AC_PACKAGE_STRING'])])dnl
 AC_SUBST([PACKAGE_BUGREPORT],
-         [m4_ifdef([AC_PACKAGE_BUGREPORT], ['AC_PACKAGE_BUGREPORT'])])dnl
+	 [m4_ifdef([AC_PACKAGE_BUGREPORT], ['AC_PACKAGE_BUGREPORT'])])dnl
 
 m4_divert_pop([DEFAULTS])dnl
+m4_wrap([m4_divert_text([DEFAULTS],
+[ac_subst_vars='m4_ifdef([_AC_SUBST_VARS],  [m4_defn([_AC_SUBST_VARS])])'
+ac_subst_files='m4_ifdef([_AC_SUBST_FILES], [m4_defn([_AC_SUBST_FILES])])'])])dnl
 ])# _AC_INIT_DEFAULTS
-
 
 #########################################################
 
@@ -555,7 +556,7 @@ AC_DEFUN([VIGRA_FIND_LIBRARY],
     if test "$with_[$1]lib" = "" -a "$with_[$1]" = "yes"; then
         ac_save_LIBS="$LIBS"
         LIBS="$LIBS -l$2"
-        AC_LINK_IFELSE(
+        AC_TRY_LINK([],
 [int main() {}
 ],
             lib_found="in default path",
@@ -594,7 +595,7 @@ AC_DEFUN([VIGRA_FIND_LIBRARY],
         found=""
         for i in $dirs; do
             if test -d $i; then
-                found="$found "`$findprog $i -name "${libpre}[$2].$solibext" -print 2> /dev/null; $findprog $i -name "${libpre}[$2].$libext" -print 2> /dev/null`
+                found="$found `$findprog $i -name "${libpre}[$2].$solibext" -print 2> /dev/null; $findprog $i -name "${libpre}[$2].$libext" -print 2> /dev/null`"
             fi
         done
 
@@ -637,14 +638,14 @@ AC_DEFUN([VIGRA_FIND_INCLUDE],
         # check whether the include is in the path by default (e.g. /usr/include)
         include_found=""
         if test "$with_[$1]inc" = "" -a "$with_[$1]" = "yes"; then
-            AC_COMPILE_IFELSE(
+            AC_TRY_COMPILE(
 [#include <stdio.h>  /* necessary because jpeglib.h fails to include it */
 #include <$2>
-],
+], [],
                 include_found="in default path",
                 include_found="")
         fi
-            
+
         # if not found by default, try searching for it
         if test "$include_found" = ""; then
             dirs=""
@@ -663,7 +664,7 @@ AC_DEFUN([VIGRA_FIND_INCLUDE],
             found=""
             for i in $dirs; do
                 if test -d $i; then
-                    found="$found "`$findprog $i -name patsubst([$2], .*/, ) -print 2> /dev/null`
+                    found="$found `$findprog $i -name patsubst([$2], .*/, ) -print 2> /dev/null`"
                 fi
             done
 
@@ -674,7 +675,7 @@ AC_DEFUN([VIGRA_FIND_INCLUDE],
             fi
             include_found=$regExResult
         fi
-        
+
         # report the search result and set result variables
         if test "$include_found" = ""; then
             with_[$1]inc=""
@@ -713,9 +714,9 @@ AC_DEFUN([VIGRA_FIND_PACKAGE],
   --with-$1lib=dir
   --with-$1inc=dir
       $4. default: --with-$1
-      if --with-$1 or --with-$1=yes is given: $1 package files will be 
+      if --with-$1 or --with-$1=yes is given: $1 package files will be
          searched for in some standard directories (the default).
-      if --with-$1=dir is given, and dir is a directory: $1 package files 
+      if --with-$1=dir is given, and dir is a directory: $1 package files
          will be searched for below 'dir' using 'find'.
       if --with-$1=no or --without-$1 is given: $1 package will
          not be used.
@@ -733,7 +734,7 @@ AC_DEFUN([VIGRA_FIND_PACKAGE],
 
         VIGRA_FIND_INCLUDE($1, $3)
         VIGRA_FIND_LIBRARY($1, $2)
-        
+
         if test "$lib_found" = ""; then
             with_[$1]="no"
             AC_MSG_WARN(  Configuring without [$1] support)
