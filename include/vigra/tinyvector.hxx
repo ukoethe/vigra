@@ -4,6 +4,7 @@
 /*       Cognitive Systems Group, University of Hamburg, Germany        */
 /*                                                                      */
 /*    This file is part of the VIGRA computer vision library.           */
+/*    ( Version 1.1.4, Nov 23 2001 )                                    */
 /*    You may use, modify, and distribute this software according       */
 /*    to the terms stated in the LICENSE file included in               */
 /*    the VIGRA distribution.                                           */
@@ -35,21 +36,7 @@ namespace detail {
 template <int SIZE>
 struct SizeType {};
 
-template <int SIZE, class T1>
-inline
-void tinyCopy1(T1 * t1, T1 const * t2, SizeType<SIZE>)
-{
-    for(T1 * end = t1 + SIZE; t1 < end; ++t1, ++t2)
-        *t1 = *t2;
-}
-
-template <int SIZE, class T1, class T2>
-inline
-void tinyCopy2(T1 * t1, T2 const * t2, SizeType<SIZE>)
-{
-    for(T1 * end = t1 + SIZE; t1 < end; ++t1, ++t2)
-        *t1 = detail::RequiresExplicitCast<T1>::cast(*t2);
-}
+#ifndef NO_PARTIAL_TEMPLATE_SPECIALIZATION
 
 template <class T1>
 inline
@@ -105,6 +92,24 @@ void tinyCopy2(T1 * t1, T2 const * t2, SizeType<4>)
     t1[3] = detail::RequiresExplicitCast<T1>::cast(t2[3]);
 }
 
+#endif // NO_PARTIAL_TEMPLATE_SPECIALIZATION
+
+template <int SIZE, class T1>
+inline
+void tinyCopy1(T1 * t1, T1 const * t2, SizeType<SIZE>)
+{
+    for(T1 * end = t1 + SIZE; t1 < end; ++t1, ++t2)
+        *t1 = *t2;
+}
+
+template <int SIZE, class T1, class T2>
+inline
+void tinyCopy2(T1 * t1, T2 const * t2, SizeType<SIZE>)
+{
+    for(T1 * end = t1 + SIZE; t1 < end; ++t1, ++t2)
+        *t1 = detail::RequiresExplicitCast<T1>::cast(*t2);
+}
+
 } // namespace detail
 
 /********************************************************/
@@ -131,6 +136,9 @@ void tinyCopy2(T1 * t1, T2 const * t2, SizeType<4>)
     
     <b>\#include</b> "<a href="tinyvector_8hxx-source.html">vigra/tinyvector.hxx</a>"<br>
     Namespace: vigra
+    
+    <b>Note:</b> TinyVector does not work properly on Microsoft Visual C++
+    (in particular, it's unable to compile the arithmetic operators).
 **/
 template <class VALUETYPE, int SIZE>
 class TinyVector
@@ -198,12 +206,12 @@ class TinyVector
         
     TinyVector(TinyVector const & r)
     {
-        tinyCopy1(data_, r.data_, detail::SizeType<SIZE>());
+        detail::tinyCopy1(data_, r.data_, detail::SizeType<SIZE>());
     }
 
     TinyVector & operator=(TinyVector const & r)
     {
-        tinyCopy1(data_, r.data_, detail::SizeType<SIZE>());
+        detail::tinyCopy1(data_, r.data_, detail::SizeType<SIZE>());
         return *this;
     }
 
@@ -215,7 +223,7 @@ class TinyVector
     template <class U>   
     TinyVector(TinyVector<U, SIZE> const & r)
     {
-        tinyCopy2(data_, &r[0], detail::SizeType<SIZE>());
+		detail::tinyCopy2(data_, &r[0], detail::SizeType<SIZE>());
     }
 
         /** Copy assignment.
@@ -223,7 +231,7 @@ class TinyVector
     template <class U>   
     TinyVector & operator=(TinyVector<U, SIZE> const & r)
     {
-        tinyCopy2(data_, &r[0], detail::SizeType<SIZE>());
+        detail::tinyCopy2(data_, &r[0], detail::SizeType<SIZE>());
         return *this;
     }
 
@@ -325,20 +333,6 @@ operator==(TinyVector<V1, SIZE> const & l, TinyVector<V2, SIZE> const & r)
     return !(l != r);
 }
 
-    /// component-wise not equal
-template <class V1, class V2, int SIZE>
-inline bool 
-operator!=(TinyVector<V1, SIZE> const & l, TinyVector<V2, SIZE> const & r)
-{
-    typename TinyVector<V1, SIZE>::const_iterator i1 = l.begin();
-    typename TinyVector<V1, SIZE>::const_iterator i1end = l.end();
-    typename TinyVector<V2, SIZE>::const_iterator i2 = r.begin();
-    for(; i1 != i1end; ++i1, ++i2)
-        if(*i1 != *i2)
-            return true;
-    return false;
-}
-
 template <class V1, class V2>
 inline bool 
 operator!=(TinyVector<V1, 2> const & l, TinyVector<V2, 2> const & r)
@@ -360,6 +354,19 @@ operator!=(TinyVector<V1, 4> const & l, TinyVector<V2, 4> const & r)
     return l[0] != r[0] || l[1] != r[1] || l[2] != r[2] || l[3] != r[3];
 }
 
+    /// component-wise not equal
+template <class V1, class V2, int SIZE>
+inline bool 
+operator!=(TinyVector<V1, SIZE> const & l, TinyVector<V2, SIZE> const & r)
+{
+    typename TinyVector<V1, SIZE>::const_iterator i1 = l.begin();
+    typename TinyVector<V1, SIZE>::const_iterator i1end = l.end();
+    typename TinyVector<V2, SIZE>::const_iterator i2 = r.begin();
+    for(; i1 != i1end; ++i1, ++i2)
+        if(*i1 != *i2)
+            return true;
+    return false;
+}
 
 //@}
 
@@ -581,20 +588,6 @@ TINYVECTOR_TRAITS(4)
 /** \addtogroup TinyVectorOperators
  */
 //@{
-    /// componentwise add-assignment
-template <class V1, class V2, int SIZE>
-inline
-TinyVector<V1, SIZE> & 
-operator+=(TinyVector<V1, SIZE> & l, TinyVector<V2, SIZE> const & r)
-{
-    typename TinyVector<V1, SIZE>::iterator i1 = l.begin();
-    typename TinyVector<V1, SIZE>::iterator i1end = l.end();
-    typename TinyVector<V2, SIZE>::const_iterator i2 = r.begin();
-    for(; i1 != i1end; ++i1, ++i2)
-        *i1 += *i2;
-    return l;
-}
-
 template <class V1, class V2>
 inline
 TinyVector<V1, 2> & 
@@ -628,17 +621,17 @@ operator+=(TinyVector<V1, 4> & l, TinyVector<V2, 4> const & r)
     return l;
 }
 
-    /// componentwise subtract-assignment
+    /// componentwise add-assignment
 template <class V1, class V2, int SIZE>
 inline
 TinyVector<V1, SIZE> & 
-operator-=(TinyVector<V1, SIZE> & l, TinyVector<V2, SIZE> const & r)
+operator+=(TinyVector<V1, SIZE> & l, TinyVector<V2, SIZE> const & r)
 {
     typename TinyVector<V1, SIZE>::iterator i1 = l.begin();
     typename TinyVector<V1, SIZE>::iterator i1end = l.end();
     typename TinyVector<V2, SIZE>::const_iterator i2 = r.begin();
     for(; i1 != i1end; ++i1, ++i2)
-        *i1 -= *i2;
+        *i1 += *i2;
     return l;
 }
 
@@ -675,17 +668,17 @@ operator-=(TinyVector<V1, 4> & l, TinyVector<V2, 4> const & r)
     return l;
 }
 
-    /// componentwise multiply-assignment
+    /// componentwise subtract-assignment
 template <class V1, class V2, int SIZE>
 inline
 TinyVector<V1, SIZE> & 
-operator*=(TinyVector<V1, SIZE> & l, TinyVector<V2, SIZE> const & r)
+operator-=(TinyVector<V1, SIZE> & l, TinyVector<V2, SIZE> const & r)
 {
     typename TinyVector<V1, SIZE>::iterator i1 = l.begin();
     typename TinyVector<V1, SIZE>::iterator i1end = l.end();
     typename TinyVector<V2, SIZE>::const_iterator i2 = r.begin();
     for(; i1 != i1end; ++i1, ++i2)
-        *i1 *= *i2;
+        *i1 -= *i2;
     return l;
 }
 
@@ -722,16 +715,17 @@ operator*=(TinyVector<V1, 4> & l, TinyVector<V2, 4> const & r)
     return l;
 }
 
-    /// componentwise scalar multiply-assignment
-template <class V, int SIZE>
+    /// componentwise multiply-assignment
+template <class V1, class V2, int SIZE>
 inline
-TinyVector<V, SIZE> & 
-operator*=(TinyVector<V, SIZE> & l, double r)
+TinyVector<V1, SIZE> & 
+operator*=(TinyVector<V1, SIZE> & l, TinyVector<V2, SIZE> const & r)
 {
-    typename TinyVector<V, SIZE>::iterator i = l.begin();
-    typename TinyVector<V, SIZE>::iterator iend = l.end();
-    for(; i != iend; ++i)
-        *i *= r;
+    typename TinyVector<V1, SIZE>::iterator i1 = l.begin();
+    typename TinyVector<V1, SIZE>::iterator i1end = l.end();
+    typename TinyVector<V2, SIZE>::const_iterator i2 = r.begin();
+    for(; i1 != i1end; ++i1, ++i2)
+        *i1 *= *i2;
     return l;
 }
 
@@ -768,16 +762,16 @@ operator*=(TinyVector<V1, 4> & l, double r)
     return l;
 }
 
-    /// componentwise scalar divide-assignment 
+    /// componentwise scalar multiply-assignment
 template <class V, int SIZE>
 inline
 TinyVector<V, SIZE> & 
-operator/=(TinyVector<V, SIZE> & l, double r)
+operator*=(TinyVector<V, SIZE> & l, double r)
 {
     typename TinyVector<V, SIZE>::iterator i = l.begin();
     typename TinyVector<V, SIZE>::iterator iend = l.end();
     for(; i != iend; ++i)
-        *i /= r;
+        *i *= r;
     return l;
 }
 
@@ -814,24 +808,24 @@ operator/=(TinyVector<V1, 4> & l, double r)
     return l;
 }
 
+    /// componentwise scalar divide-assignment 
+template <class V, int SIZE>
+inline
+TinyVector<V, SIZE> & 
+operator/=(TinyVector<V, SIZE> & l, double r)
+{
+    typename TinyVector<V, SIZE>::iterator i = l.begin();
+    typename TinyVector<V, SIZE>::iterator iend = l.end();
+    for(; i != iend; ++i)
+        *i /= r;
+    return l;
+}
+
 #ifndef CMATH_NOT_IN_STD
 using std::abs;
 #else
 using ::abs;
 #endif
-
-    /// component-wise absolute value
-template <class T, int SIZE>
-inline
-TinyVector<T, SIZE> abs(TinyVector<T, SIZE> const & v) { 
-    TinyVector<T, SIZE> res;
-    typename TinyVector<T, SIZE>::iterator d = res.begin();
-    typename TinyVector<T, SIZE>::iterator dend = res.end();
-    typename TinyVector<T, SIZE>::const_iterator s = v.begin();
-    for(; d != dend; ++d, ++s)
-        *d = abs(*s);
-    return res;
-}
 
 template <class V1>
 inline
@@ -857,6 +851,18 @@ abs(TinyVector<V1, 4> const & v)
     return TinyVector<V1, 4>(abs(v[0]), abs(v[1]), abs(v[2]), abs(v[3]));
 }
 
+    /// component-wise absolute value
+template <class T, int SIZE>
+inline
+TinyVector<T, SIZE> abs(TinyVector<T, SIZE> const & v) { 
+    TinyVector<T, SIZE> res;
+    typename TinyVector<T, SIZE>::iterator d = res.begin();
+    typename TinyVector<T, SIZE>::iterator dend = res.end();
+    typename TinyVector<T, SIZE>::const_iterator s = v.begin();
+    for(; d != dend; ++d, ++s)
+        *d = abs(*s);
+    return res;
+}
 
     /// component-wise addition
 template <class V1, class V2, int SIZE>
@@ -937,21 +943,6 @@ operator/(TinyVector<V, SIZE> const & r, double v)
     return res;
 }
 
-    /// dot product
-template <class V1, class V2, int SIZE>
-inline 
-typename PromoteTraits<V1, V2>::Promote
-dot(TinyVector<V1, SIZE> const & r1, TinyVector<V2, SIZE> const & r2)
-{
-    typename TinyVector<V1, SIZE>::const_iterator i1 = r1.begin();
-    typename TinyVector<V1, SIZE>::const_iterator i1end = r1.end();
-    typename TinyVector<V2, SIZE>::const_iterator i2 = r2.begin();
-    typename PromoteTraits<V1, V2>::Promote sum = *i1 * *i2;
-    for(++i1, ++i2; i1 < i1end; ++i1, ++i2)
-        sum += *i1 * *i2;
-    return sum;
-}
-
 template <class V1, class V2>
 inline
 typename PromoteTraits<V1, V2>::Promote
@@ -985,27 +976,26 @@ dot(TinyVector<V1, 4> const & l, TinyVector<V2, 4> const & r)
     return sum;
 }
 
+    /// dot product
+template <class V1, class V2, int SIZE>
+inline 
+typename PromoteTraits<V1, V2>::Promote
+dot(TinyVector<V1, SIZE> const & r1, TinyVector<V2, SIZE> const & r2)
+{
+    typename TinyVector<V1, SIZE>::const_iterator i1 = r1.begin();
+    typename TinyVector<V1, SIZE>::const_iterator i1end = r1.end();
+    typename TinyVector<V2, SIZE>::const_iterator i2 = r2.begin();
+    typename PromoteTraits<V1, V2>::Promote sum = *i1 * *i2;
+    for(++i1, ++i2; i1 < i1end; ++i1, ++i2)
+        sum += *i1 * *i2;
+    return sum;
+}
+
 #ifdef CMATH_NOT_IN_STD
     using ::ceil;
 #else
     using std::ceil;
 #endif
-
-    /** Apply ceil() function to each vector component.
-    */
-template <class T, int SIZE>
-inline
-TinyVector<T, SIZE>
-ceil(TinyVector<T, SIZE> const & v)
-{
-    TinyVector<T, SIZE> res;
-    typename TinyVector<T, SIZE>::iterator d = res.begin();
-    typename TinyVector<T, SIZE>::iterator dend = res.end();
-    typename TinyVector<T, SIZE>::const_iterator s = v.begin();
-    for(; d != dend; ++d, ++s)
-        *d = ceil(*s);
-    return res;
-};
 
 template <class V1>
 inline
@@ -1031,28 +1021,27 @@ ceil(TinyVector<V1, 4> const & v)
     return TinyVector<V1, 4>(ceil(v[0]), ceil(v[1]), ceil(v[2]), ceil(v[3]));
 }
 
-
-#ifdef CMATH_NOT_IN_STD
-    using ::floor;
-#else
-    using std::floor;
-#endif
-
-    /** Apply floor() function to each vector component.
+    /** Apply ceil() function to each vector component.
     */
 template <class T, int SIZE>
 inline
 TinyVector<T, SIZE>
-floor(TinyVector<T, SIZE> const & v)
+ceil(TinyVector<T, SIZE> const & v)
 {
     TinyVector<T, SIZE> res;
     typename TinyVector<T, SIZE>::iterator d = res.begin();
     typename TinyVector<T, SIZE>::iterator dend = res.end();
     typename TinyVector<T, SIZE>::const_iterator s = v.begin();
     for(; d != dend; ++d, ++s)
-        *d = floor(*s);
+        *d = ceil(*s);
     return res;
 };
+
+#ifdef CMATH_NOT_IN_STD
+    using ::floor;
+#else
+    using std::floor;
+#endif
 
 template <class V1>
 inline
@@ -1077,6 +1066,22 @@ floor(TinyVector<V1, 4> const & v)
 {
     return TinyVector<V1, 4>(floor(v[0]), floor(v[1]), floor(v[2]), floor(v[3]));
 }
+
+    /** Apply floor() function to each vector component.
+    */
+template <class T, int SIZE>
+inline
+TinyVector<T, SIZE>
+floor(TinyVector<T, SIZE> const & v)
+{
+    TinyVector<T, SIZE> res;
+    typename TinyVector<T, SIZE>::iterator d = res.begin();
+    typename TinyVector<T, SIZE>::iterator dend = res.end();
+    typename TinyVector<T, SIZE>::const_iterator s = v.begin();
+    for(; d != dend; ++d, ++s)
+        *d = floor(*s);
+    return res;
+};
 
 //@}
 
