@@ -876,7 +876,7 @@ TinyVector<T, SIZE> abs(TinyVector<T, SIZE> const & v) {
     return res;
 }
 
-//#ifndef NO_PARTIAL_TEMPLATE_SPECIALIZATION
+#ifndef NO_PARTIAL_TEMPLATE_SPECIALIZATION
 
     /// component-wise addition
 template <class V1, class V2, int SIZE>
@@ -917,7 +917,7 @@ operator*(TinyVector<V1, SIZE> const & r1, TinyVector<V2, SIZE> const & r2)
     return res;
 }
 
-//#endif // NO_PARTIAL_TEMPLATE_SPECIALIZATION
+#endif // NO_PARTIAL_TEMPLATE_SPECIALIZATION
 
     /// component-wise left scalar multiplication
 template <class V, int SIZE>
