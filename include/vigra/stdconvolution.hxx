@@ -890,11 +890,19 @@ public:
 
         /** 2D random access iterator over the kernel's values
          */
-    typedef typename BasicImage<value_type>::Iterator Iterator;
+    typedef typename BasicImage<value_type>::traverser Iterator;
+
+        /** const 2D random access iterator over the kernel's values
+         */
+    typedef typename BasicImage<value_type>::const_traverser ConstIterator;
 
         /** the kernel's accessor
          */
     typedef typename BasicImage<value_type>::Accessor Accessor;
+
+        /** the kernel's const accessor
+         */
+    typedef typename BasicImage<value_type>::ConstAccessor ConstAccessor;
 
     struct InitProxy
     {
@@ -1248,6 +1256,10 @@ public:
          */
     Iterator center() { return kernel_.upperLeft() - left_; }
 
+        /** ImageIterator that points to the center of the kernel (coordinate (0,0)).
+         */
+    ConstIterator center() const { return kernel_.upperLeft() - left_; }
+
         /** Access kernel entry at given position.
          */
     value_type & operator()(int x, int y)
@@ -1264,7 +1276,11 @@ public:
 
         /** The kernels default accessor.
          */
-    Accessor accessor() const { return Accessor(); }
+    Accessor accessor() { return Accessor(); }
+
+        /** The kernels default const accessor.
+         */
+    ConstAccessor accessor() const { return ConstAccessor(); }
 
         /** Normalize the kernel to the given value. (The norm is the sum of all kernel
             elements.) The kernel's value_type must be a division algebra or
@@ -1367,14 +1383,16 @@ kernel2d(KernelIterator ik, KernelAccessor ak, Diff2D kul, Diff2D klr,
 
 template <class T>
 inline
-tuple5<typename Kernel2D<T>::Iterator, typename Kernel2D<T>::Accessor,
+tuple5<typename Kernel2D<T>::ConstIterator, 
+       typename Kernel2D<T>::ConstAccessor,
        Diff2D, Diff2D, BorderTreatmentMode>
-kernel2d(Kernel2D<T> & k)
+kernel2d(Kernel2D<T> const & k)
 
 {
     return
-        tuple5<typename Kernel2D<T>::Iterator, typename Kernel2D<T>::Accessor,
-        Diff2D, Diff2D, BorderTreatmentMode>(
+        tuple5<typename Kernel2D<T>::ConstIterator, 
+               typename Kernel2D<T>::ConstAccessor,
+               Diff2D, Diff2D, BorderTreatmentMode>(
             k.center(),
             k.accessor(),
             k.upperLeft(), k.lowerRight(),
@@ -1383,14 +1401,16 @@ kernel2d(Kernel2D<T> & k)
 
 template <class T>
 inline
-tuple5<typename Kernel2D<T>::Iterator, typename Kernel2D<T>::Accessor,
+tuple5<typename Kernel2D<T>::ConstIterator, 
+       typename Kernel2D<T>::ConstAccessor,
        Diff2D, Diff2D, BorderTreatmentMode>
-kernel2d(Kernel2D<T> & k, BorderTreatmentMode border)
+kernel2d(Kernel2D<T> const & k, BorderTreatmentMode border)
 
 {
     return
-        tuple5<typename Kernel2D<T>::Iterator, typename Kernel2D<T>::Accessor,
-        Diff2D, Diff2D, BorderTreatmentMode>(
+        tuple5<typename Kernel2D<T>::ConstIterator, 
+               typename Kernel2D<T>::ConstAccessor,
+               Diff2D, Diff2D, BorderTreatmentMode>(
             k.center(),
             k.accessor(),
             k.upperLeft(), k.lowerRight(),
