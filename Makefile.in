@@ -21,7 +21,7 @@ install-headers: install-includes
 
 install-docs:
 	$(INSTALL) -d $(docdir)
-	$(INSTALL) --mode=644 LICENSE $(docdir)
+	$(INSTALL) --mode=644 $(vigra_srcdir)/LICENSE $(docdir)
 	if test "$(docdir)" != "$(vigra_srcdir)/doc/vigra" ; then \
           $(INSTALL) --mode=644 \
             $(vigra_srcdir)/doc/vigra/*.html \
@@ -38,6 +38,9 @@ install-docs:
 examples::
 	@cd src ; $(MAKE) examples ; cd ..
 
+test::
+	@cd test ; $(MAKE) ; cd ..
+
 doc::
 	cd docsrc; $(MAKE) VIGRA_VERSION=$(VIGRA_VERSION)
 
@@ -46,7 +49,9 @@ docclean::
 
 clean::
 	@cd src ; $(MAKE) clean ; cd ..
+	@cd test ; $(MAKE) clean ; cd ..
 	rm -f a.exe a.out
+
 
 distclean: clean
 	rm -f config/vigra-config config/Makefile.include

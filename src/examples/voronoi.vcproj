@@ -98,11 +98,11 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalOptions="/MACHINE:I386"
-				AdditionalDependencies="libtiff.lib libjpeg.lib libpng13.lib"
+				AdditionalDependencies="libtiff.lib libjpeg.lib libpng.lib zlib.lib"
 				OutputFile="voronoi.exe"
 				LinkIncremental="1"
 				SuppressStartupBanner="TRUE"
-				AdditionalLibraryDirectories="C:\Users\Koethe\lib\msvc.net"
+				AdditionalLibraryDirectories="C:\lib"
 				ProgramDatabaseFile=".\Release/voronoi.pdb"
 				SubSystem="1"/>
 			<Tool

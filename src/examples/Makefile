@@ -1,3 +1,72 @@
+curdir=$(vigra_srcdir)/src/examples
+
+include ../../config/Makefile.include
+
+CXXFLAGS  = -O -I$(vigra_srcdir)/include
+LDFLAGS = -L../impex/.libs -lvigraimpex $(IMPEX_DEPLIBS)
+
+# after installation, the above settings can also be found
+# by means of the 'vigra-config' utility program, e.g.
+#
+# CXXFLAGS  = -O `vigra-config --cppflags`
+# LDFLAGS = `vigra-config --libs`
+#
+# note that 'vigra-config' must be in the $PATH for this to work
+
+TARGETS = \
+    convert \
+    subimage \
+    invert \
+    invert_explicitly \
+    resize \
+    smooth \
+    profile \
+    pyramid \
+    edge \
+    watershed \
+    voronoi
+
+all: $(TARGETS)
+
+convert:  convert.o
+	$(CXX) -o convert convert.o $(LDFLAGS)
+
+distance:  distance.o
+	$(CXX) -o distance distance.o $(LDFLAGS)
+
+subimage:  subimage.o
+	$(CXX) -o subimage subimage.o $(LDFLAGS)
+
+invert:  invert.o
+	$(CXX) -o invert invert.o $(LDFLAGS)
+
+invert_explicitly:  invert_explicitly.o
+	$(CXX) -o invert_explicitly invert_explicitly.o $(LDFLAGS)
+
+resize:  resize.o
+	$(CXX) -o resize resize.o $(LDFLAGS)
+
+smooth:  smooth.o
+	$(CXX) -o smooth smooth.o $(LDFLAGS)
+
+profile:  profile.o
+	$(CXX) -o profile profile.o $(LDFLAGS)
+
+pyramid:  pyramid.o
+	$(CXX) -o pyramid pyramid.o $(LDFLAGS)
+
+boundarytensor:  boundarytensor.o
+	$(CXX) -o boundarytensor boundarytensor.o $(LDFLAGS)
+
+edge:  edge.o
+	$(CXX) -o edge edge.o $(LDFLAGS)
+
+watershed:  watershed.o
+	$(CXX) -o watershed watershed.o $(LDFLAGS)
+
+voronoi:  voronoi.o
+	$(CXX) -o voronoi voronoi.o $(LDFLAGS)
+
 clean:
 	rm -f *.o $(TARGETS) *.exe core *.plg *ilk *.lib *.pdb *.exp \
            res.gif voronoi.gif distances.gif profile.gif
