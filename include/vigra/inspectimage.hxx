@@ -30,7 +30,7 @@
 
 namespace vigra {
 
-/** @heading Functions to Inspect Images
+/** @heading Algorithms to Inspect Images
     @memo apply read-only functor to every pixel
 */
 //@{

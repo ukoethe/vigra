@@ -27,7 +27,7 @@
 
 namespace vigra {
 
-/** @heading Functions to Combine Images
+/** @heading Algorithms to Combine Images
 
     Note that the binary functors of the STL may be used with these functions.
 

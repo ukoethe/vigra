@@ -27,7 +27,7 @@
 
 namespace vigra {
 
-/** @heading Functions to Copy Images
+/** @heading Algorithms to Copy Images
     @memo copy image or ROI
 */
 //@{

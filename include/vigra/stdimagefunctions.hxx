@@ -23,7 +23,7 @@
 #ifndef VIGRA_STDIMAGEFUNCTIONS_HXX
 #define VIGRA_STDIMAGEFUNCTIONS_HXX
 
-/** @heading Basic Image Functions And Functors 
+/** @heading Basic Image Algorithms And Functors 
 
     Include-File:
     \URL[vigra/stdimagefunctions.hxx]{../include/vigra/stdimagefunctions.hxx}\\
