@@ -1,11 +1,11 @@
 SUBDIRS = \
-        src 
+        src
 
 all:: libs examples
 
 libs::
 	cd src; $(MAKE) libs
-	
+
 examples::
 	cd src; $(MAKE) examples
 
@@ -14,11 +14,9 @@ doc::
 
 clean::
 	cd src; $(MAKE) -i clean
-      
+
 docclean::
 	cd docsrc; $(MAKE) -i clean
 
 realclean:: clean
 	rm -rf lib/*
-
-	
