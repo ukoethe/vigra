@@ -281,9 +281,9 @@ template <class SrcIterator, class SrcAccessor,
           class DestIterator, class DestAccessor,
           class EqualityFunctor>
 inline
-int labelImage(triple<SrcIterator, SrcIterator, SrcAccessor> src,
-               pair<DestIterator, DestAccessor> dest,
-               bool eight_neighbors, EqualityFunctor equal)
+unsigned int labelImage(triple<SrcIterator, SrcIterator, SrcAccessor> src,
+                        pair<DestIterator, DestAccessor> dest,
+                        bool eight_neighbors, EqualityFunctor equal)
 {
     return labelImage(src.first, src.second, src.third,
                       dest.first, dest.second, eight_neighbors, equal);
@@ -292,10 +292,10 @@ int labelImage(triple<SrcIterator, SrcIterator, SrcAccessor> src,
 template <class SrcIterator, class SrcAccessor,
           class DestIterator, class DestAccessor>
 inline
-int labelImage(SrcIterator upperlefts,
-               SrcIterator lowerrights, SrcAccessor sa,
-               DestIterator upperleftd, DestAccessor da,
-               bool eight_neighbors)
+unsigned int labelImage(SrcIterator upperlefts,
+                        SrcIterator lowerrights, SrcAccessor sa,
+                        DestIterator upperleftd, DestAccessor da,
+                        bool eight_neighbors)
 {
     return labelImage(upperlefts, lowerrights, sa,
                  upperleftd, da, eight_neighbors,
@@ -305,9 +305,9 @@ int labelImage(SrcIterator upperlefts,
 template <class SrcIterator, class SrcAccessor,
           class DestIterator, class DestAccessor>
 inline
-int labelImage(triple<SrcIterator, SrcIterator, SrcAccessor> src,
-               pair<DestIterator, DestAccessor> dest,
-               bool eight_neighbors)
+unsigned int labelImage(triple<SrcIterator, SrcIterator, SrcAccessor> src,
+                        pair<DestIterator, DestAccessor> dest,
+                        bool eight_neighbors)
 {
     return labelImage(src.first, src.second, src.third,
                  dest.first, dest.second, eight_neighbors,
@@ -434,11 +434,12 @@ int labelImage(triple<SrcIterator, SrcIterator, SrcAccessor> src,
 template <class SrcIterator, class SrcAccessor,
           class DestIterator, class DestAccessor,
           class ValueType, class EqualityFunctor>
-int labelImageWithBackground(SrcIterator upperlefts,
-               SrcIterator lowerrights, SrcAccessor sa,
-               DestIterator upperleftd, DestAccessor da,
-               bool eight_neighbors,
-               ValueType background_value, EqualityFunctor equal)
+unsigned int labelImageWithBackground(
+    SrcIterator upperlefts,
+    SrcIterator lowerrights, SrcAccessor sa,
+    DestIterator upperleftd, DestAccessor da,
+    bool eight_neighbors,
+    ValueType background_value, EqualityFunctor equal)
 {
     int w = lowerrights.x - upperlefts.x;
     int h = lowerrights.y - upperlefts.y;
@@ -569,10 +570,11 @@ template <class SrcIterator, class SrcAccessor,
           class DestIterator, class DestAccessor,
           class ValueType, class EqualityFunctor>
 inline
-int labelImageWithBackground(triple<SrcIterator, SrcIterator, SrcAccessor> src,
-                             pair<DestIterator, DestAccessor> dest,
-                             bool eight_neighbors,
-                             ValueType background_value, EqualityFunctor equal)
+unsigned int labelImageWithBackground(
+    triple<SrcIterator, SrcIterator, SrcAccessor> src,
+    pair<DestIterator, DestAccessor> dest,
+    bool eight_neighbors,
+    ValueType background_value, EqualityFunctor equal)
 {
     return labelImageWithBackground(src.first, src.second, src.third,
                                     dest.first, dest.second,
@@ -583,10 +585,11 @@ template <class SrcIterator, class SrcAccessor,
           class DestIterator, class DestAccessor,
           class ValueType>
 inline
-int labelImageWithBackground(triple<SrcIterator, SrcIterator, SrcAccessor> src,
-                             pair<DestIterator, DestAccessor> dest,
-                             bool eight_neighbors,
-                             ValueType background_value)
+unsigned int labelImageWithBackground(
+    triple<SrcIterator, SrcIterator, SrcAccessor> src,
+    pair<DestIterator, DestAccessor> dest,
+    bool eight_neighbors,
+    ValueType background_value)
 {
     return labelImageWithBackground(src.first, src.second, src.third,
                             dest.first, dest.second,
@@ -598,11 +601,12 @@ template <class SrcIterator, class SrcAccessor,
           class DestIterator, class DestAccessor,
           class ValueType>
 inline
-int labelImageWithBackground(SrcIterator upperlefts,
-               SrcIterator lowerrights, SrcAccessor sa,
-               DestIterator upperleftd, DestAccessor da,
-               bool eight_neighbors,
-               ValueType background_value)
+unsigned int labelImageWithBackground(
+    SrcIterator upperlefts,
+    SrcIterator lowerrights, SrcAccessor sa,
+    DestIterator upperleftd, DestAccessor da,
+    bool eight_neighbors,
+    ValueType background_value)
 {
     return labelImageWithBackground(upperlefts, lowerrights, sa,
                             upperleftd, da,
