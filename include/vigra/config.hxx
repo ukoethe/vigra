@@ -35,37 +35,41 @@
     #if(_MSC_VER < 1100)    // before VisualC++ 5.0
         #error "Need VisualC++ 5.0, Service Pack 2, or later"
     #endif // _MSC_VER < 1100
-    
-    #pragma warning( disable : 4786 4250 4244 4305)
-    #define NO_TYPENAME         // no 'typename' keyword
-    #define TEMPLATE_COPY_CONSTRUCTOR_BUG
+
+	#pragma warning( disable : 4786 4250 4244 4305)
+
+	#if (_MSC_VER < 1300)
+		#define NO_TYPENAME         // no 'typename' keyword
+		#define TEMPLATE_COPY_CONSTRUCTOR_BUG
+		#define NO_STL_MEMBER_TEMPLATES
+		#define NO_INLINE_STATIC_CONST_DEFINITION
+		#define CMATH_NOT_IN_STD
+		#define NO_COVARIANT_RETURN_TYPES
+	    
+		#ifdef VIGRA_NO_STD_MINMAX  // activate if necessary
+		namespace std {
+	    
+		template<class T>
+		const T& min(const T& x, const T& y)
+		{
+			return (y < x) 
+				? y
+				: x;
+		}
+
+		template<class T>
+		const T& max(const T& x, const T& y)
+		{
+			return (x < y) 
+				? y
+				: x;
+		}
+		}
+		#endif // VIGRA_NO_STD_MINMAX
+	#endif // (_MSC_VER < 1300)
+
     #define NO_PARTIAL_TEMPLATE_SPECIALIZATION
-    #define NO_STL_MEMBER_TEMPLATES
-    #define NO_INLINE_STATIC_CONST_DEFINITION
-    #define CMATH_NOT_IN_STD
-    #define NO_COVARIANT_RETURN_TYPES
-    
-    #ifdef VIGRA_NO_STD_MINMAX  // activate if necessary
-    namespace std {
-    
-	template<class T>
-	const T& min(const T& x, const T& y)
-	{
-		return (y < x) 
-			? y
-			: x;
-	}
 
-	template<class T>
-	const T& max(const T& x, const T& y)
-	{
-		return (x < y) 
-			? y
-			: x;
-	}
-    }
-
-    #endif // VIGRA_NO_STD_MINMAX
 #endif // _MSC_VER
 
 ///////////////////////////////////////////////////////////

@@ -628,9 +628,8 @@ class ImageIterator: public ImageIteratorBase<PIXELTYPE>
         
     column_iterator columnIterator() const
     { 
-        return 
-           column_iterator(typename 
-           column_iterator::BaseType(const_cast<pointer>(&current()), width()));
+        typedef typename column_iterator::BaseType Iter;
+        return column_iterator(Iter(const_cast<pointer>(&current()), width()));
     }
     
 };
@@ -841,8 +840,8 @@ class ConstImageIterator: public ImageIteratorBase<PIXELTYPE>
         
     column_iterator columnIterator() const
     { 
-        return 
-           column_iterator(typename column_iterator::BaseType(&current(), width()));
+        typedef typename column_iterator::BaseType Iter;
+        return column_iterator(Iter(&current(), width()));
     }
     
 };

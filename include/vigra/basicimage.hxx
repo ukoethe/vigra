@@ -314,8 +314,8 @@ class BasicImageIterator
     
     column_iterator columnIterator() const
     { 
-        return 
-           column_iterator(typename column_iterator::BaseType(line(), x));
+        typedef typename column_iterator::BaseType Iter;
+		return column_iterator(Iter(line(), x));
     }
 };
 
@@ -447,8 +447,8 @@ class ConstBasicImageIterator: public BasicImageIteratorBase<PIXELTYPE, ITERATOR
     
     column_iterator columnIterator() const
     { 
-        return 
-           column_iterator(typename column_iterator::BaseType(line(), x));
+        typedef typename column_iterator::BaseType Iter;
+		return column_iterator(Iter(line(), x));
     }
 };
 

@@ -40,12 +40,12 @@ struct RequiresExplicitCast {
 #define VIGRA_SPECIALIZED_CAST(type) \
     template <> \
     struct RequiresExplicitCast<type> { \
-        static type cast(float const & v) \
+        static type cast(float v) \
             { return NumericTraits<type>::fromRealPromote(v); } \
-        static type cast(double const & v) \
+        static type cast(double v) \
             { return NumericTraits<type>::fromRealPromote(v); } \
         template <class U> \
-        static U cast(U v) \
+        static type cast(U v) \
             { return v; } \
  \
     };
