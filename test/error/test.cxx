@@ -10,7 +10,7 @@ struct ErrorTest
 		
 		try
 		{
-			precondition(0, "Intentional error");
+			vigra_precondition(0, "Intentional error");
 		}
 		catch(vigra::ContractViolation & c)
 		{
@@ -27,7 +27,7 @@ struct ErrorTest
 		
 		try
 		{
-			postcondition(0, "Intentional error");
+			vigra_postcondition(0, "Intentional error");
 		}
 		catch(vigra::ContractViolation & c)
 		{
@@ -44,7 +44,7 @@ struct ErrorTest
 		
 		try
 		{
-			invariant(0, "Intentional error");
+			vigra_invariant(0, "Intentional error");
 		}
 		catch(vigra::ContractViolation & c)
 		{
