@@ -37,8 +37,14 @@
       <li> Added \ref vigra::TinyVector and made vigra::RGBValue derive from it.
       
       <li> Added typedefs for TinyVector images.
-<     
+     
       <li> Added \ref ColorConversions.
+     
+      <li> Added \ref VectorComponentAccessor.
+     
+      <li> Extended \ref FindMinmax to work with RGB images.
+      
+      <li> Minor improvements and bug fixes.
 </UL>
 
 <b> Changes from Version 1.1.1 to 1.1.2</b>
