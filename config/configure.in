@@ -102,6 +102,7 @@ dnl-------------------------------------------------------------------
 
 POSTINSTALLCPPFLAGS="$VIGRA_INCLUDES ${CPPFLAGS}"
 CPPFLAGS="-I$vigra_srcdir/include ${CPPFLAGS}"
+LIBCPPFLAGS="$CPPFLAGS $LIBCPPFLAGS"
 IMPEX_LIB="-L$libdir -lvigraimpex -lm $IMPEX_DEPLIBS"
 LIBS="$LIBS $IMPEX_LIB"
 

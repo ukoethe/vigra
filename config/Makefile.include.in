@@ -50,10 +50,10 @@ DEVELOPMENT_VERSION = yes
 	$(CXX) $(CXXFLAGS) $(CPPFLAGS) -c $*.cxx
 
 %.lo: %.c
-	$(LIBCC) $(CFLAGS) $(CPPFLAGS) $(LIBCPPFLAGS) -c $*.c
+	$(LIBCC) $(CFLAGS) $(LIBCPPFLAGS) -c $*.c
 
 %.lo: %.cxx
-	$(LIBCXX) $(CXXFLAGS) $(CPPFLAGS) $(LIBCPPFLAGS) -c $*.cxx
+	$(LIBCXX) $(CXXFLAGS) $(LIBCPPFLAGS) -c $*.cxx
 
 %.d: %.c
 	@echo updating header dependencies for $*.c
