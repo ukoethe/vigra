@@ -44,8 +44,8 @@ int main(int argc, char ** argv)
         vigra::ImageImportInfo info(argv[1]);
         
         double sizefactor;
-        cerr << "Resize factor ? ";
-        cin >> sizefactor;
+        std::cerr << "Resize factor ? ";
+        std::cin >> sizefactor;
         
         // calculate new image size
         int nw = (int)(sizefactor*info.width()-0.5);
