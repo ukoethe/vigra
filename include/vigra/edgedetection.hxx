@@ -322,7 +322,7 @@ void differenceOfExponentialEdgeImage(
     Zero crossings are detected in the resulting difference image. Whenever the
     gradient at a zero crossing is greater than the given <TT>gradient_threshold</TT>,
     an edge point is marked (using <TT>edge_marker</TT>) in the destination image 
-    <i>between</i>} the corresponding original pixels. Topologically, this means we 
+    <i>between</i> the corresponding original pixels. Topologically, this means we 
     must insert additional pixels between the original ones to represent the
     boundaries between the pixels (the so called zero- and one-cells, with the original
     pixels being two-cells). Within VIGRA, such an image is called \ref CrackEdgeImage.
