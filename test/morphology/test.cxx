@@ -216,10 +216,10 @@ struct FlatMorphologyTest
 
         
 struct MorphologyTestSuite
-: public TestSuite
+: public vigra::test_suite
 {
     MorphologyTestSuite()
-    : TestSuite("MorphologyTestSuite")
+    : vigra::test_suite("MorphologyTestSuite")
     {
         add( testCase( &FlatMorphologyTest::erosionTest));
         add( testCase( &FlatMorphologyTest::erosionWithMaskTest));

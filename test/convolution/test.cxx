@@ -414,10 +414,10 @@ struct ConvolutionTest
 };
 
 struct ConvolutionTestSuite
-: public TestSuite
+: public vigra::test_suite
 {
     ConvolutionTestSuite()
-    : TestSuite("ConvolutionTestSuite")
+    : vigra::test_suite("ConvolutionTestSuite")
     {
         add( testCase( &ConvolutionTest::separableConvolutionTest));
         add( testCase( &ConvolutionTest::separableDerivativeRepeatTest));

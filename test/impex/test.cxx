@@ -920,11 +920,11 @@ class ImageExportImportFailureTest
 };
 
 class ImageImportExportTestSuite
-: public TestSuite
+: public vigra::test_suite
 {
   public:
     ImageImportExportTestSuite()
-    : TestSuite("ImageImportExportTestSuite")
+    : vigra::test_suite("ImageImportExportTestSuite")
     {
         add( testCase(&ByteImageExportImportTest::testGIF));
         add( testCase(&ByteImageExportImportTest::testEmptyGIF));

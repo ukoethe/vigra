@@ -363,10 +363,10 @@ struct FunctorRGBExpressionTest
 };
 
 struct FunctorTestSuite
-: public TestSuite
+: public vigra::test_suite
 {
     FunctorTestSuite()
-    : TestSuite("FunctorTestSuite")
+    : vigra::test_suite("FunctorTestSuite")
     {
         add( testCase(&FunctorExpressionTest::testArg1));
         add( testCase(&FunctorExpressionTest::testArg2));

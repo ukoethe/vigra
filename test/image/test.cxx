@@ -615,10 +615,10 @@ struct FRGBImageTest
 };
 
 struct ImageTestSuite
-: public TestSuite
+: public vigra::test_suite
 {
     ImageTestSuite()
-    : TestSuite("ImageTestSuite")
+    : vigra::test_suite("ImageTestSuite")
     {
         add( testCase( &BImageTest::scanImage));
         add( testCase( &BImageTest::copyImage));

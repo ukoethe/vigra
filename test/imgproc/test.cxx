@@ -892,10 +892,10 @@ struct ResizeImageSplineTest
         
         
 struct ImageFunctionsTestSuite
-: public TestSuite
+: public vigra::test_suite
 {
     ImageFunctionsTestSuite()
-    : TestSuite("ImageFunctionsTestSuite")
+    : vigra::test_suite("ImageFunctionsTestSuite")
     {
         add( testCase( &ImageFunctionsTest::copyImageTest));
         add( testCase( &ImageFunctionsTest::copyImageIfTest));

@@ -4,68 +4,59 @@
 
 struct ErrorTest
 {
-	void testPrecondition()
-	{
-		bool caughtIt = false;
-		
-		try
-		{
-			vigra_precondition(0, "Intentional error");
-		}
-		catch(vigra::ContractViolation & c)
-		{
-			caughtIt = true;
-			std::cout << "Testing error reporting: " << c.what() << std::endl;
-		}
+    void testPrecondition()
+    {
+        try
+        {
+            vigra_precondition(0, "Intentional error");
+            failTest("no exception thrown");
+        }
+        catch(vigra::ContractViolation & c)
+        {
+            std::string expected("\nPrecondition violation!\nIntentional error");
+            should(0 == expected.compare(c.what(), 0, expected.size()));
+        }
+    }
 
-		should(caughtIt == true);
-	}
+    void testPostcondition()
+    {
+        try
+        {
+            vigra_postcondition(0, "Intentional error");
+            failTest("no exception thrown");
+        }
+        catch(vigra::ContractViolation & c)
+        {
+            std::string expected("\nPostcondition violation!\nIntentional error");
+            should(0 == expected.compare(c.what(), 0, expected.size()));
+        }
+    }
 
-	void testPostcondition()
-	{
-		bool caughtIt = false;
-		
-		try
-		{
-			vigra_postcondition(0, "Intentional error");
-		}
-		catch(vigra::ContractViolation & c)
-		{
-			caughtIt = true;
-			std::cout << "Testing error reporting: " << c.what() << std::endl;
-		}
-
-		should(caughtIt == true);
-	}
-
-	void testInvariant()
-	{
-		bool caughtIt = false;
-		
-		try
-		{
-			vigra_invariant(0, "Intentional error");
-		}
-		catch(vigra::ContractViolation & c)
-		{
-			caughtIt = true;
-			std::cout << "Testing error reporting: " << c.what() << std::endl;
-		}
-
-		should(caughtIt == true);
-	}
+    void testInvariant()
+    {
+        try
+        {
+            vigra_invariant(0, "Intentional error");
+            failTest("no exception thrown");
+        }
+        catch(vigra::ContractViolation & c)
+        {
+            std::string expected("\nInvariant violation!\nIntentional error");
+            should(0 == expected.compare(c.what(), 0, expected.size()));
+        }
+    }
 };
 
 struct ErrorTestSuite
-: public TestSuite
+: public vigra::test_suite
 {
     ErrorTestSuite()
-	: TestSuite("")
-	{
-		add( testCase(&ErrorTest::testPrecondition));
-		add( testCase(&ErrorTest::testPostcondition));
-		add( testCase(&ErrorTest::testInvariant));
-	}
+    : vigra::test_suite("ErrorTest")
+    {
+        add( testCase(&ErrorTest::testPrecondition));
+        add( testCase(&ErrorTest::testPostcondition));
+        add( testCase(&ErrorTest::testInvariant));
+    }
 };
 
 int main()

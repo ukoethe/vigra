@@ -970,10 +970,10 @@ struct CornerDetectionTest
 };
 
 struct SimpleAnalysisTestSuite
-: public TestSuite
+: public vigra::test_suite
 {
     SimpleAnalysisTestSuite()
-    : TestSuite("SimpleAnalysisTestSuite")
+    : vigra::test_suite("SimpleAnalysisTestSuite")
     {
         add( testCase( &LabelingTest::labelingFourTest1));
         add( testCase( &LabelingTest::labelingFourTest2));
