@@ -48,7 +48,7 @@ Many thanks to all!
       <li> Added \ref vigra::ReduceFunctor.
       
       <li> Added reduce and expand modes to the 
-           \link MultiPointoperator multi-dimensional point operators\endlink.
+           \link MultiPointoperators multi-dimensional point operators\endlink.
       
       <li> Bug fixes in the code and documentation.
            
