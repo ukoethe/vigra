@@ -1,0 +1,9 @@
+ifneq "$(MAKECMDGOALS)" "clean"
+include ../../config/Makefile.include
+endif
+
+CPPFLAGS += -I$(vigra_testdir)/include
+
+clean::
+	rm -f *.o test$(EXEEXT) core *.d $(EXTRA_CLEAN_TARGET)
+	rm -rf Debug ii_files *.plg *.ilk

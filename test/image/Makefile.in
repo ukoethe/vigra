@@ -1,0 +1,22 @@
+curdir=$(vigra_testdir)/image
+
+TESTIMAGES = lenna.xv
+
+test: test.o $(TESTIMAGES) $(PREINSTALL_IMPEX_LIB)
+	$(CXX) -o test test.o $(PREINSTALL_IMPEX_LIB) $(IMPEX_DEPLIBS)
+	./test || { rm ./test$(EXEEXT) ; exit 1; }
+
+image.exe: test.d
+	devenv "..\test.sln" /build Release /project image
+	./image.exe || { rm ./image.exe ; exit 1; }
+
+$(TESTIMAGES):
+	ln -s $(curdir)/$@ .
+
+EXTRA_CLEAN_TARGET=test.gif test.xv test.ras
+
+include ../Makefile.include
+
+ifneq "$(MAKECMDGOALS)" "clean"
+include test.d
+endif

@@ -1,0 +1,15 @@
+curdir=$(vigra_testdir)/pixeltypes
+
+test: test.o
+	$(CXX) -o test test.o
+	./test || { rm ./test$(EXEEXT) ; exit 1; }
+
+pixeltypes.exe: test.d
+	devenv "..\test.sln" /build Release /project pixeltypes
+	./pixeltypes.exe || { rm ./pixeltypes.exe ; exit 1; }
+
+ifneq "$(MAKECMDGOALS)" "clean"
+include test.d
+endif
+
+include ../Makefile.include

@@ -1,0 +1,23 @@
+curdir=$(vigra_testdir)/fourier
+
+TESTIMAGES = ghouse.gif filter.tif gaborresult.tif
+
+all: test
+
+include ../Makefile.include
+
+test: test.o $(TESTIMAGES) $(PREINSTALL_IMPEX_LIB)
+	$(CXX) -o test test.o $(PREINSTALL_IMPEX_LIB) $(IMPEX_DEPLIBS) $(FFTW_LIB)
+	./test || { rm ./test$(EXEEXT) ; exit 1; }
+
+fourier.exe: test.d
+	devenv "..\test.sln" /build Release /project fourier
+	./fourier.exe || { rm ./fourier.exe ; exit 1; }
+
+$(TESTIMAGES):
+	ln -s $(curdir)/$@ .
+
+ifneq "$(MAKECMDGOALS)" "clean"
+include test.d
+endif
+
