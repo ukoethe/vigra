@@ -466,6 +466,15 @@ class DirectionSelector<UnstridedArrayTag>
         bool operator<(type const & rhs) const
          { return current_ < rhs.current_; }
 
+        bool operator<=(type const & rhs) const
+         { return current_ <= rhs.current_; }
+
+        bool operator>(type const & rhs) const
+         { return current_ > rhs.current_; }
+
+        bool operator>=(type const & rhs) const
+         { return current_ >= rhs.current_; }
+
         int operator-(type const & rhs) const
          { return current_ - rhs.current_; }
 
@@ -520,6 +529,15 @@ class DirectionSelector<StridedArrayTag>
 
         bool operator<(type const & rhs) const
          { return (current_ < rhs.current_); }
+
+        bool operator<=(type const & rhs) const
+         { return (current_ <= rhs.current_); }
+
+        bool operator>(type const & rhs) const
+         { return (current_ > rhs.current_); }
+
+        bool operator>=(type const & rhs) const
+         { return (current_ >= rhs.current_); }
 
         int operator-(type const & rhs) const
          { return (current_ - rhs.current_) / stride_; }
