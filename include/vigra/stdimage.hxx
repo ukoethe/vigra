@@ -46,7 +46,7 @@ namespace vigra {
         typedef iterator::column_iterator            column_iterator; \
         typedef ACCESSOR<VALUETYPE >                 default_accessor; \
         typedef ACCESSOR<VALUETYPE >                 DefaultAccessor; \
-    };   
+    };
 
 /** \addtogroup StandardImageTypes Standard Image Types
 
