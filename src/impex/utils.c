@@ -9,11 +9,11 @@
 
 #include <stdlib.h>
 #include <stdio.h>
-#include <unistd.h>
 #include <string.h>
 #include <ctype.h>
 
 #ifndef _MSC_VER
+#    include <unistd.h>
 #    include <pwd.h>
 #endif
 

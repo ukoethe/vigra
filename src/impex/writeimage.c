@@ -18,7 +18,6 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <unistd.h>
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <fcntl.h>
@@ -26,6 +25,7 @@
 #ifdef _MSC_VER
 #    include <io.h>
 #else
+#    include <unistd.h>
 #    include <sys/uio.h>
 #endif
 

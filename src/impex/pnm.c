@@ -59,9 +59,9 @@
 #include <stdarg.h>
 #include <stdlib.h>
 #if defined(_MSC_VER)
-#include <direct.h>
+#    include <direct.h>
 #else
-#include <unistd.h>
+#    include <unistd.h>
 #endif
 #include <ctype.h>
 #include <string.h>
