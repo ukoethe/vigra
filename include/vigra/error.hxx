@@ -56,9 +56,15 @@
     The MESSAGE is passed to the exception and can be retrieved via
     the overloaded member function '<TT>exception.what()</TT>'. If the compiler
     flag '<TT>NDEBUG</TT>' is <em>not</em> defined, the file name and line number of 
-    the error are automatically included in the message.
+    the error are automatically included in the message. The macro
     
-    The following macro
+    \code
+    vigra_assert(PREDICATE, MESSAGE);
+    \endcode
+    
+    is identical to <tt>vigra_precondition()</tt> except that it is completely removed
+    when '<TT>NDEBUG</TT>' is defined. This is useful for test that are only needed during 
+    debugging, such as array index bound checking. The following macro
     
     \code
     vigra_fail(MESSAGE);
@@ -224,6 +230,8 @@ void throw_runtime_error(std::string message, char const * file, int line)
 
 #define vigra_precondition(PREDICATE, MESSAGE) vigra::throw_precondition_error((PREDICATE), MESSAGE, __FILE__, __LINE__)
 
+#define vigra_assert(PREDICATE, MESSAGE) vigra_precondition(PREDICATE, MESSAGE)
+
 #define vigra_postcondition(PREDICATE, MESSAGE) vigra::throw_postcondition_error((PREDICATE), MESSAGE, __FILE__, __LINE__)
 
 #define vigra_invariant(PREDICATE, MESSAGE) vigra::throw_invariant_error((PREDICATE), MESSAGE, __FILE__, __LINE__)
@@ -275,6 +283,8 @@ void throw_postcondition_error(bool predicate, std::string message)
 }
 
 #define vigra_precondition(PREDICATE, MESSAGE) vigra::throw_precondition_error((PREDICATE), MESSAGE)
+
+#define vigra_assert(PREDICATE, MESSAGE)
 
 #define vigra_postcondition(PREDICATE, MESSAGE) vigra::throw_postcondition_error((PREDICATE), MESSAGE)
 
