@@ -951,17 +951,24 @@ public:
          */
     MultiArray ();
 
+        /** construct with given allocator
+         */
+    MultiArray (allocator_type const & alloc);
+
         /** construct with given shape
          */
-    MultiArray (const difference_type &shape);
+    explicit MultiArray (const difference_type &shape, 
+                         allocator_type const & alloc = allocator_type());
 
         /** construct from shape with an initial value
          */
-    MultiArray (const difference_type &shape, const_reference init);
+    MultiArray (const difference_type &shape, const_reference init, 
+                         allocator_type const & alloc = allocator_type());
 
         /** construct from shape and copy values from the given array
          */
-    MultiArray (const difference_type &shape, const_pointer init);
+    MultiArray (const difference_type &shape, const_pointer init, 
+                         allocator_type const & alloc = allocator_type());
 
         /** copy constructor
          */
@@ -1029,8 +1036,16 @@ MultiArray <N, T, A>::MultiArray ()
 {}
 
 template <unsigned int N, class T, class A>
-MultiArray <N, T, A>::MultiArray (const difference_type &shape)
-    : MultiArrayView <N, T> (shape, detail::defaultStride <actual_dimension> (shape), 0)
+MultiArray <N, T, A>::MultiArray (allocator_type const & alloc)
+    : MultiArrayView <N, T> (difference_type (0), difference_type (0), 0),
+      m_alloc(alloc)
+{}
+
+template <unsigned int N, class T, class A>
+MultiArray <N, T, A>::MultiArray (const difference_type &shape, 
+                                  allocator_type const & alloc)
+    : MultiArrayView <N, T> (shape, detail::defaultStride <actual_dimension> (shape), 0),
+      m_alloc(alloc)
 {
     if (N == 0)
     {
@@ -1042,8 +1057,10 @@ MultiArray <N, T, A>::MultiArray (const difference_type &shape)
 
 template <unsigned int N, class T, class A>
 MultiArray <N, T, A>::MultiArray (const difference_type &shape,
-                                  const_reference init)
-    : MultiArrayView <N, T> (shape, detail::defaultStride <actual_dimension> (shape), 0)
+                                  const_reference init, 
+                                  allocator_type const & alloc)
+    : MultiArrayView <N, T> (shape, detail::defaultStride <actual_dimension> (shape), 0),
+      m_alloc(alloc)
 {
     if (N == 0)
     {
@@ -1055,8 +1072,10 @@ MultiArray <N, T, A>::MultiArray (const difference_type &shape,
 
 template <unsigned int N, class T, class A>
 MultiArray <N, T, A>::MultiArray (const difference_type &shape,
-                                  const_pointer init)
-    : MultiArrayView <N, T> (shape, detail::defaultStride <actual_dimension> (shape), 0)
+                                  const_pointer init, 
+                                  allocator_type const & alloc)
+    : MultiArrayView <N, T> (shape, detail::defaultStride <actual_dimension> (shape), 0),
+      m_alloc(alloc)
 {
     if (N == 0)
     {

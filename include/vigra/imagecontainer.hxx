@@ -19,8 +19,8 @@
 /*                                                                      */
 /************************************************************************/
  
-#ifndef IMAGECONTAINER_HXX
-#define IMAGECONTAINER_HXX
+#ifndef VIGRA_IMAGECONTAINER_HXX_
+#define VIGRA_IMAGECONTAINER_HXX_
 
 #include "vigra/utilities.hxx"
 #include <vector>
@@ -50,36 +50,39 @@ namespace vigra {
 
     Namespace: vigra
 */
-template <class ImageType>
+template <class ImageType, 
+      class Alloc = typename ImageType::allocator_type::template rebind<ImageType>::other >
 class ImageArray
 {
     Size2D imageSize_;
 
 protected:
-    std::vector<ImageType> images_;
+    typedef std::vector<ImageType, Alloc> ImageVector;
+    ImageVector images_;
 
 public:
         /** the type of the contained values/images
          */
     typedef ImageType    value_type;
 
-    typedef typename std::vector<ImageType>::iterator iterator;
-    typedef typename std::vector<ImageType>::const_iterator const_iterator;
-    typedef typename std::vector<ImageType>::reverse_iterator reverse_iterator;
-    typedef typename std::vector<ImageType>::const_reverse_iterator const_reverse_iterator;
-    typedef typename std::vector<ImageType>::reference reference;
-    typedef typename std::vector<ImageType>::const_reference const_reference;
+    typedef typename ImageVector::iterator iterator;
+    typedef typename ImageVector::const_iterator const_iterator;
+    typedef typename ImageVector::reverse_iterator reverse_iterator;
+    typedef typename ImageVector::const_reverse_iterator const_reverse_iterator;
+    typedef typename ImageVector::reference reference;
+    typedef typename ImageVector::const_reference const_reference;
 #if !defined(_MSC_VER) || _MSC_VER >= 1300
-    typedef typename std::vector<ImageType>::pointer pointer;
+    typedef typename ImageVector::pointer pointer;
 #endif
-    typedef typename std::vector<ImageType>::difference_type difference_type;
-    typedef typename std::vector<ImageType>::size_type size_type;
+    typedef typename ImageVector::difference_type difference_type;
+    typedef typename ImageVector::size_type size_type;
 
         /** init an array of numImages equal-sized images
          */
-    ImageArray(unsigned int numImages, const Diff2D &imageSize)
+    ImageArray(unsigned int numImages, const Diff2D &imageSize, 
+               Alloc const & alloc = Alloc())
         : imageSize_(imageSize),
-          images_(numImages)
+          images_(numImages, ImageType(), alloc)
     {
         for(unsigned int i=0; i<numImages; i++)
             images_[i].resize(imageSize);
@@ -88,8 +91,8 @@ public:
         /** Init an array of numImages equal-sized images, the size
             depends on ImageType's default constructor.
          */
-    ImageArray(unsigned int numImages= 0)
-        : images_(numImages)
+    ImageArray(unsigned int numImages= 0, Alloc const & alloc = Alloc())
+        : images_(numImages, alloc)
     {
         imageSize_= empty()? Size2D(0, 0) : front().size();
     }
@@ -97,9 +100,9 @@ public:
         /** fill constructor: Init an array with numImages copies of
             the given image. (STL-Sequence interface)
          */
-    ImageArray(unsigned int numImages, const ImageType &image)
+    ImageArray(unsigned int numImages, const ImageType &image, Alloc const & alloc = Alloc())
         : imageSize_(image.size()),
-          images_(numImages, image)
+          images_(numImages, image, alloc)
     {
     }
     
@@ -108,9 +111,9 @@ public:
             same size, see \ref imageSize(). (STL-Sequence interface)
          */
     template<class InputIterator>
-    ImageArray(InputIterator begin, InputIterator end)
+    ImageArray(InputIterator begin, InputIterator end, Alloc const & alloc = Alloc())
         : imageSize_(begin!=end? (*begin).size() : Size2D(0,0)),
-          images_(begin, end)
+          images_(begin, end, alloc)
     {
     }
 
@@ -420,4 +423,4 @@ public:
 
 } // namespace vigra
 
-#endif // IMAGECONTAINER_HXX
+#endif // VIGRA_IMAGECONTAINER_HXX_

@@ -29,10 +29,10 @@
 namespace vigra
 {
 
-template <class T>
+template <class T, class Alloc = std::allocator<T> >
 class ArrayVector
 {
-    typedef ArrayVector<T> this_type;
+    typedef ArrayVector<T, Alloc> this_type;
 
 public:
     typedef T value_type;
@@ -44,18 +44,19 @@ public:
     typedef value_type const * const_iterator;
     typedef unsigned int size_type;
     typedef int          difference_type;
+    typedef Alloc        allocator_type;
 
 public:
-    ArrayVector();
+    explicit ArrayVector(Alloc const & alloc = Alloc());
 
-    ArrayVector( size_type size);
+    explicit ArrayVector( size_type size, Alloc const & alloc = Alloc());
 
-    ArrayVector( size_type size, value_type const & initial);
+    ArrayVector( size_type size, value_type const & initial, Alloc const & alloc = Alloc());
 
     ArrayVector( this_type const & rhs );
 
     template <class InputIterator>
-    ArrayVector(InputIterator i, InputIterator end);
+    ArrayVector(InputIterator i, InputIterator end, Alloc const & alloc = Alloc());
 
     this_type & operator=( this_type const & rhs );
 
@@ -172,20 +173,23 @@ public:
 
     static pointer reserve_raw(size_type capacity);
 
+    Alloc alloc_;
     size_type size_, capacity_;
     pointer data_;
 };
 
-template <class T>
-ArrayVector<T>::ArrayVector()
-: size_(0),
+template <class T, class Alloc>
+ArrayVector<T, Alloc>::ArrayVector(Alloc const & alloc)
+: alloc_(alloc),
+  size_(0),
   capacity_(5),
   data_(reserve_raw(5))
 {}
 
-template <class T>
-ArrayVector<T>::ArrayVector( size_type size)
-: size_(size),
+template <class T, class Alloc>
+ArrayVector<T, Alloc>::ArrayVector( size_type size, Alloc const & alloc)
+: alloc_(alloc),
+  size_(size),
   capacity_(size),
   data_(reserve_raw(size))
 {
@@ -193,9 +197,11 @@ ArrayVector<T>::ArrayVector( size_type size)
         std::uninitialized_fill(data_, data_+size_, value_type());
 }
 
-template <class T>
-ArrayVector<T>::ArrayVector( size_type size, value_type const & initial)
-: size_(size),
+template <class T, class Alloc>
+ArrayVector<T, Alloc>::ArrayVector( size_type size, 
+                         value_type const & initial, Alloc const & alloc)
+: alloc_(alloc),
+  size_(size),
   capacity_(size),
   data_(reserve_raw(size))
 {
@@ -203,9 +209,10 @@ ArrayVector<T>::ArrayVector( size_type size, value_type const & initial)
         std::uninitialized_fill(data_, data_+size_, initial);
 }
 
-template <class T>
-ArrayVector<T>::ArrayVector( this_type const & rhs )
-: size_(rhs.size_),
+template <class T, class Alloc>
+ArrayVector<T, Alloc>::ArrayVector( this_type const & rhs )
+: alloc_(rhs.alloc_),
+  size_(rhs.size_),
   capacity_(rhs.capacity_),
   data_(reserve_raw(rhs.capacity_))
 {
@@ -213,10 +220,11 @@ ArrayVector<T>::ArrayVector( this_type const & rhs )
         std::uninitialized_copy(rhs.data_, rhs.data_+size_, data_);
 }
 
-template <class T>
+template <class T, class Alloc>
 template <class InputIterator>
-ArrayVector<T>::ArrayVector(InputIterator i, InputIterator end)
-: size_(std::distance(i, end)),
+ArrayVector<T, Alloc>::ArrayVector(InputIterator i, InputIterator end, Alloc const & alloc)
+: alloc_(alloc),
+  size_(std::distance(i, end)),
   capacity_(size_),
   data_(reserve_raw(size_))
 {
@@ -224,8 +232,8 @@ ArrayVector<T>::ArrayVector(InputIterator i, InputIterator end)
 }
 
 
-template <class T>
-ArrayVector<T> & ArrayVector<T>::operator=( this_type const & rhs )
+template <class T, class Alloc>
+ArrayVector<T, Alloc> & ArrayVector<T, Alloc>::operator=( this_type const & rhs )
 {
     if(this == &rhs)
         return *this;
@@ -234,37 +242,37 @@ ArrayVector<T> & ArrayVector<T>::operator=( this_type const & rhs )
     return *this;
 }
 
-template <class T>
-ArrayVector<T>::~ArrayVector()
+template <class T, class Alloc>
+ArrayVector<T, Alloc>::~ArrayVector()
 {
     deallocate(data_, size_);
 }
 
-template <class T>
-void ArrayVector<T>::pop_back()
+template <class T, class Alloc>
+void ArrayVector<T, Alloc>::pop_back()
 {
     --size_;
-    detail::destroy(data_ + size_);
+    alloc_.destroy(data_ + size_);
 }
 
-template <class T>
-void ArrayVector<T>::push_back( value_type const & t )
+template <class T, class Alloc>
+void ArrayVector<T, Alloc>::push_back( value_type const & t )
 {
     reserve();
-    new (static_cast<void*>(data_ + size_)) T(t);
+    alloc_.contruct(data_ + size_, t);
     ++size_;
 }
 
-template <class T>
-void ArrayVector<T>::clear()
+template <class T, class Alloc>
+void ArrayVector<T, Alloc>::clear()
 {
     detail::destroy_n(data_, size_);
     size_ = 0;
 }
 
-template <class T>
-typename ArrayVector<T>::iterator
-ArrayVector<T>::insert(iterator p, value_type const & v)
+template <class T, class Alloc>
+typename ArrayVector<T, Alloc>::iterator
+ArrayVector<T, Alloc>::insert(iterator p, value_type const & v)
 {
     difference_type pos = p - begin();
     if(p == end())
@@ -282,9 +290,9 @@ ArrayVector<T>::insert(iterator p, value_type const & v)
     return p;
 }
 
-template <class T>
-typename ArrayVector<T>::iterator
-ArrayVector<T>::insert(iterator p, size_type n, value_type const & v)
+template <class T, class Alloc>
+typename ArrayVector<T, Alloc>::iterator
+ArrayVector<T, Alloc>::insert(iterator p, size_type n, value_type const & v)
 {
     difference_type pos = p - begin();
     size_type new_size = size() + n;
@@ -316,10 +324,10 @@ ArrayVector<T>::insert(iterator p, size_type n, value_type const & v)
     return begin() + pos;
 }
 
-template <class T>
+template <class T, class Alloc>
 template <class InputIterator>
-typename ArrayVector<T>::iterator
-ArrayVector<T>::insert(iterator p, InputIterator i, InputIterator iend)
+typename ArrayVector<T, Alloc>::iterator
+ArrayVector<T, Alloc>::insert(iterator p, InputIterator i, InputIterator iend)
 {
     difference_type n = iend - i;
     difference_type pos = p - begin();
@@ -352,18 +360,18 @@ ArrayVector<T>::insert(iterator p, InputIterator i, InputIterator iend)
     return begin() + pos;
 }
 
-template <class T>
-typename ArrayVector<T>::iterator
-ArrayVector<T>::erase(iterator p)
+template <class T, class Alloc>
+typename ArrayVector<T, Alloc>::iterator
+ArrayVector<T, Alloc>::erase(iterator p)
 {
     std::copy(p+1, end(), p);
     pop_back();
     return p;
 }
 
-template <class T>
-typename ArrayVector<T>::iterator
-ArrayVector<T>::erase(iterator p, iterator q)
+template <class T, class Alloc>
+typename ArrayVector<T, Alloc>::iterator
+ArrayVector<T, Alloc>::erase(iterator p, iterator q)
 {
     std::copy(q, end(), p);
     size_type eraseCount = q - p;
@@ -372,8 +380,8 @@ ArrayVector<T>::erase(iterator p, iterator q)
     return p;
 }
 
-template <class T>
-void ArrayVector<T>::reserve( size_type new_capacity )
+template <class T, class Alloc>
+void ArrayVector<T, Alloc>::reserve( size_type new_capacity )
 {
     if(new_capacity <= capacity_)
         return;
@@ -385,15 +393,15 @@ void ArrayVector<T>::reserve( size_type new_capacity )
     capacity_ = new_capacity;
 }
 
-template <class T>
-void ArrayVector<T>::reserve()
+template <class T, class Alloc>
+void ArrayVector<T, Alloc>::reserve()
 {
     if(size_ == capacity_)
         reserve(2*capacity_);
 }
 
-template <class T>
-void ArrayVector<T>::resize( size_type new_size, value_type const & initial)
+template <class T, class Alloc>
+void ArrayVector<T, Alloc>::resize( size_type new_size, value_type const & initial)
 {
     if(new_size < size_)
         erase(begin() + new_size, end());
@@ -403,31 +411,33 @@ void ArrayVector<T>::resize( size_type new_size, value_type const & initial)
     }
 }
 
-template <class T>
-void ArrayVector<T>::swap(this_type & rhs)
+template <class T, class Alloc>
+void ArrayVector<T, Alloc>::swap(this_type & rhs)
 {
     std::swap(size_, rhs.size_);
     std::swap(capacity_, rhs.capacity_);
     std::swap(data_, rhs.data_);
 }
 
-template <class T>
-void ArrayVector<T>::deallocate(pointer data, size_type size)
+template <class T, class Alloc>
+void ArrayVector<T, Alloc>::deallocate(pointer data, size_type size)
 {
     if(data)
     {
         detail::destroy_n(data, size);
-        ::operator delete(data);
+        alloc_.deallocate(data, size);
     }
 }
 
-template <class T>
-typename ArrayVector<T>::pointer
-ArrayVector<T>::reserve_raw(size_type capacity)
+template <class T, class Alloc>
+typename ArrayVector<T, Alloc>::pointer
+ArrayVector<T, Alloc>::reserve_raw(size_type capacity)
 {
     pointer data = 0;
     if(capacity)
-        data = static_cast<pointer>(::operator new(capacity*sizeof(value_type)));
+    {
+        data = alloc_.allocate(capacity);
+    }
     return data;
 }
 

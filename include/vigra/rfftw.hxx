@@ -22,6 +22,7 @@
 #ifndef VIGRA_RFFTW_HXX
 #define VIGRA_RFFTW_HXX
 
+#include "vigra/array_vector.hxx"
 #include "vigra/fftw.hxx"
 #include <rfftw.h>
 

@@ -250,10 +250,12 @@ inline double angularGaborSigma(int directionCount, double centerFrequency)
 
     Namespace: vigra
 */
-template <class ImageType>
-class GaborFilterFamily : public ImageArray<ImageType>
+template <class ImageType, 
+      class Alloc = typename ImageType::allocator_type::template rebind<ImageType>::other >
+class GaborFilterFamily 
+: public ImageArray<ImageType, Alloc>
 {
-    typedef ImageArray<ImageType> ParentClass;
+    typedef ImageArray<ImageType, Alloc> ParentClass;
     int scaleCount_, directionCount_;
     double maxCenterFrequency_;
 
@@ -286,8 +288,9 @@ public:
         */
     GaborFilterFamily(const Diff2D & size,
                       int directionCount = stdDirectionCount, int scaleCount = stdScaleCount,
-                      double maxCenterFrequency = 3.0/8.0)
-        : ParentClass(directionCount*scaleCount, size),
+                      double maxCenterFrequency = 3.0/8.0,
+                      Alloc const & alloc = Alloc())
+        : ParentClass(directionCount*scaleCount, size, alloc),
           scaleCount_(scaleCount),
           directionCount_(directionCount),
           maxCenterFrequency_(maxCenterFrequency)
@@ -301,8 +304,10 @@ public:
          */
     GaborFilterFamily(int width= stdFilterSize, int height= -1,
                       int directionCount = stdDirectionCount, int scaleCount = stdScaleCount,
-                      double maxCenterFrequency = 3.0/8.0)
-        : ParentClass(directionCount*scaleCount, Size2D(width, height > 0 ? height : width)),
+                      double maxCenterFrequency = 3.0/8.0,
+                      Alloc const & alloc = Alloc())
+        : ParentClass(directionCount*scaleCount, 
+                      Size2D(width, height > 0 ? height : width), alloc),
           scaleCount_(scaleCount),
           directionCount_(directionCount),
           maxCenterFrequency_(maxCenterFrequency)
