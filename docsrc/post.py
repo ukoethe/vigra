@@ -152,9 +152,9 @@ def findExplicitDeclarations(text):
     decl = {}
     t = text
     while len(t):
-        m = re.search(r'Declarations?:[^\(]*?\s*([a-zA-Z_][a-zA-Z_0-9]*) *\(', t)
+        m = re.search(r'Declarations?:[^\(]*?(\s*<a class="code"[^>]*>|\s*)([a-zA-Z_][a-zA-Z_0-9]*)(</a>| *)\(', t)
         if not m: break
-        decl[m.groups()[0]] = 1
+        decl[m.groups()[1]] = 1
         t = t[m.end():]
     t = ""
     for i in decl.keys():
@@ -180,10 +180,23 @@ def processFile(fileName):
         text = typedefField.sub(r'<br><b>&nbsp;\1</b><br>&nbsp;', text)
         declPattern = findExplicitDeclarations(text)
         if declPattern:
-            text = re.sub(r'(<td nowrap align=right valign=top>template&lt;).*?(&gt;.*?)'+declPattern+r'(.*?</tr>)', r'\1...\2\3\4', text)
+            # replace the signature in the header with (...) if the signature
+            # is given explicitly later
+            text = re.sub(r'(<td nowrap align=right valign=top>template&lt;).*?(&gt;.*?)'+declPattern+\
+                          r'(.*?</tr>)', r'\1...\2\3\4', text)
             functionSignature = re.compile(r'<table cellpadding="0" cellspacing="0" border="0">\s*'+\
-                    r'<tr>\s*<td class="md".*?>(.*?)'+declPattern+r' *</td>.*?</table>', re.S)
+                    r'<tr>\s*<td class="md"[^>]*>([^<]*?)'+declPattern+r' *</td>.*?</table>', re.S)
             text = functionSignature.sub(r'<br><b>&nbsp;\1\2 (...)</b><br>&nbsp;', text)
+
+    # make function signatures bold if they haven't been processed yet
+    functionHeading = \
+      re.compile(r'(<td class="md" bgcolor="#f0e0c0">)(\s*'+\
+      r'<table cellpadding="0" cellspacing="0" border="0">.*?</table>)', re.S)
+    text = functionHeading.sub(r'\1<br>\2</br>', text)
+    
+    functionSignature = re.compile(r'(<td class="md"[^>]*>)([^<]*)</td>')
+    text = functionSignature.sub(r'\1<b>\2</b></td>', text)
+    
     if re.search(r'.*/index.html', fileName):
         text = re.sub(r'<h3 align="center">\d+\.\d+\.\d+</h3>', '', text)
     if re.search(r'.*/namespacevigra.html', fileName):
