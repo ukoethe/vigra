@@ -20,6 +20,7 @@ install-includes:
         fi
 
 install-docs:
+	$(INSTALL) --mode=644 LICENSE $(docdir)
 	if test $(prefix) != $(vigra_builddir) ; then \
           $(INSTALL) -d $(docdir)/documents ; \
           $(INSTALL) --mode=644 \
@@ -27,7 +28,6 @@ install-docs:
             $(vigra_builddir)/doc/classvigra*.gif $(vigra_builddir)/doc/form*.gif \
             $(vigra_builddir)/doc/doxygen.gif $(vigra_builddir)/doc/doxygen.css \
             $(docdir) ; \
-          $(INSTALL) --mode=644 LICENSE $(docdir) ; \
           $(INSTALL) --mode=644 \
             $(vigra_builddir)/doc/documents/*.ps \
             $(vigra_builddir)/doc/documents/*.gif \
