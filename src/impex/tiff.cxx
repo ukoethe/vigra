@@ -4,6 +4,7 @@
 /*       Cognitive Systems Group, University of Hamburg, Germany        */
 /*                                                                      */
 /*    This file is part of the VIGRA computer vision library.           */
+/*    ( Version 1.1.0, Dec 05 2000 )                                    */
 /*    You may use, modify, and distribute this software according       */
 /*    to the terms stated in the LICENSE file included in               */
 /*    the VIGRA distribution.                                           */
@@ -56,54 +57,55 @@
 
 #include "vigra/error.hxx"
 #include "vigra/tiff.h"
+#include "vigra/impex.h"
 
 Export VigraImpexImage *vigraImpexReadTIFFImage( VigraImpexImageInfo *image_info)
 {
-  fail( "TIFF library is not available");
+  vigra_fail( "TIFF library is not available");
   return 0;
 }
 Export unsigned int vigraImpexWriteTIFFImage( VigraImpexImageInfo *image_info,VigraImpexImage *image)
 {
-  fail( "TIFF library is not available");
+  vigra_fail( "TIFF library is not available");
   return 0;
 }
 Export	void TIFFClose(TiffImage*)
 {
-  fail( "TIFF library is not available");
+  vigra_fail( "TIFF library is not available");
 }
 Export	TiffImage* TIFFOpen(const char*, const char*)
 {
-  fail( "TIFF library is not available");
+  vigra_fail( "TIFF library is not available");
   return 0;
 }
 Export	int TIFFGetField(TiffImage*, ttag_t, ...)
 {
-  fail( "TIFF library is not available");
+  vigra_fail( "TIFF library is not available");
   return 0;
 }
 Export	int TIFFSetField(TiffImage*, ttag_t, ...)
 {
-  fail( "TIFF library is not available");
+  vigra_fail( "TIFF library is not available");
   return 0;
 }
 Export	tsize_t TIFFScanlineSize(TiffImage*)
 {
-  fail( "TIFF library is not available");
+  vigra_fail( "TIFF library is not available");
   return 0;
 }
 Export	int TIFFReadScanline(TiffImage*, tdata_t, uint32, tsample_t = 0)
 {
-  fail( "TIFF library is not available");
+  vigra_fail( "TIFF library is not available");
   return 0;
 }
 Export	int TIFFWriteScanline(TiffImage*, tdata_t, uint32, tsample_t = 0)
 {
-  fail( "TIFF library is not available");
+  vigra_fail( "TIFF library is not available");
   return 0;
 }
 Export	int TIFFReadRGBAImage(TiffImage*, uint32, uint32, uint32*, int = 0)
 {
-  fail( "TIFF library is not available");
+  vigra_fail( "TIFF library is not available");
   return 0;
 }
 #endif
