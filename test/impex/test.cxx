@@ -34,6 +34,12 @@ public:
         shouldEqual(extensions, "bmp gif jpeg jpg pbm pgm png pnm ppm ras tif tiff xv");
     }
 
+    void testIsImage()
+    {
+        should(isImage("lenna.xv"));
+        should(!isImage("test.cxx"));
+    }
+
     void testFile (const char *filename);
 
     void testGIF ()
@@ -919,8 +925,11 @@ struct ImageImportExportTestSuite : public vigra::test_suite
     ImageImportExportTestSuite()
         : vigra::test_suite("ImageImportExportTestSuite")
     {
-        // grayscale byte images
+        // general tests
         add(testCase(&ByteImageExportImportTest::testListFormatsExtensions));
+        add(testCase(&ByteImageExportImportTest::testIsImage));
+        
+        // grayscale byte images
         add(testCase(&ByteImageExportImportTest::testGIF));
         add(testCase(&ByteImageExportImportTest::testJPEG));
         add(testCase(&ByteImageExportImportTest::testTIFF));
