@@ -81,12 +81,49 @@ class FFTWComplex
     : fftw_complex(o)
     {}
 
+        /** Copy constructor.
+        */
+    template <class T>
+    FFTWComplex(TinyVector<T, 2> const & o)
+    {
+        re = o[0];
+        im = o[1];
+    }
+
         /** Assignment.
         */
     FFTWComplex& operator=(FFTWComplex const & o)
     {
         re = o.re;
         im = o.im;
+        return *this;
+    }
+    
+        /** Assignment.
+        */
+    FFTWComplex& operator=(fftw_complex const & o)
+    {
+        re = o.re;
+        im = o.im;
+        return *this;
+    }
+
+        /** Assignment.
+        */
+    FFTWComplex& operator=(fftw_real const & o)
+    {
+        re = o;
+        im = 0.0;
+        return *this;
+    }
+
+        /** Assignment.
+        */
+    template <class T>
+    FFTWComplex& operator=(TinyVector<T, 2> const & o)
+    {
+        re = o[0];
+        im = o[1];
         return *this;
     }
 
@@ -372,6 +409,8 @@ inline FFTWComplex conj(const FFTWComplex &a)
 }
 
 //@}
+
+typedef BasicImage<fftw_real> FFTWRealImage;
 
 
 /********************************************************/
@@ -718,6 +757,9 @@ class FFTWPhaseAccessor
 
     vigra::FFTWComplexImage rearrangedFourier(width, height);
     moveDCToCenter(srcImageRange(fourier), destImage(rearrangedFourier));
+                                 
+    //delete the plan
+    fftwnd_destroy_plan(forwardPlan);
     \endcode
 */
 template <class SrcImageIterator, class SrcAccessor,
@@ -1022,6 +1064,9 @@ void applyFourierFilterImpl(ConstBasicImageIterator<FFTWComplex, FFTWComplex **>
                            filterUpperLeft, fa,
                            destUpperLeft, da,
                            forwardPlan, backwardPlan);
+                                 
+    fftwnd_destroy_plan(forwardPlan);
+    fftwnd_destroy_plan(backwardPlan);
 }
 
 // applyFourierFilter versions with fftwnd_plans:
@@ -1294,6 +1339,9 @@ void applyFourierFilterFamilyImpl(ConstBasicImageIterator<FFTWComplex, FFTWCompl
     applyFourierFilterFamilyImpl(srcUpperLeft, srcLowerRight, sa,
                                  filters, results,
                                  forwardPlan, backwardPlan);
+                                 
+    fftwnd_destroy_plan(forwardPlan);
+    fftwnd_destroy_plan(backwardPlan);
 }
 
 // applyFourierFilterFamily versions with fftwnd_plans:
