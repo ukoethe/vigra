@@ -1049,7 +1049,7 @@ void closeGapsInCrackEdgeImage(
                                          0.8, 4.0, 1);
                     
     // beautify edge image for visualization
-    vigra::beautifyCrackEdgeImage(srcImageRange(edges), 1, 0);
+    vigra::beautifyCrackEdgeImage(destImageRange(edges), 1, 0);
     
     // show to the user
     window.open(edges);
