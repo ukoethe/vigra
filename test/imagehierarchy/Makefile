@@ -1,7 +1,7 @@
 CXXFLAGS = -O -I../include `vigra-config --cxxflags` -I/software/boost-1.25.0/include
 
-#OBJ = one_band_basic_image_test_suite.o 
-#OBJ = gray_image_test_suite.o 
+#OBJ = one_band_basic_image_test_suite.o
+#OBJ = gray_image_test_suite.o
 #OBJ = select_band_image_test_suite.o
 #OBJ = variable_bands_image_test_suite.o
 #OBJ = rgb_basic_image_test_suite.o
@@ -30,17 +30,17 @@ select_band_image_test_suite.o \
 single_band_image_test_suite.o
 
 test: $(OBJ)
-	$(CXX) $(CXXFLAGS) -o test $(OBJ) `vigra-config --libs`
+	$(CXX) -o test $(OBJ) $(VIGRAIMPEX_LIB)
 	./test || { rm ./test ; exit 1; }
 
 # Fuer Tests von IRGBImage, FRGBImage, DRGBImage, BRGBImage den Kommentar loeschen.
-#MAKROS = -DRGB_IMAGE 
+#MAKROS = -DRGB_IMAGE
 
 # Fuer Tests von FImage, DImage, SImage, BImage, IImage den Kommentar loeschen.
-#MAKROS = -DnRGB_IMAGE 
+#MAKROS = -DnRGB_IMAGE
 
 # Fuer Tests von FVector2Image, FVector3Image, FVector4Image, DVector2Image, DVector3Image, DVector4Image den Kommentar loeschen.
-#MAKROS = -DVImage 
+#MAKROS = -DVImage
 
 # Fuer Tests von VariableBandsImage den Kommentar loeschen.
 #MAKROS = -DVARIABLE_BANDS_IMAGE -DIMAGEHIERARCHY
@@ -60,15 +60,8 @@ test: $(OBJ)
 # Fuer Tests von FixedRGBImage den Kommentar loeschen.
 #MAKROS = -DFIXED_RGB_IMAGE -DIMAGEHIERARCHY
 
-%.o: %.cxx
-	$(CXX) $(CXXFLAGS) -c $*.cxx
-
-%.d: %.cxx
-	@echo updating header dependencies for $*.cxx
-	@rm -f $*.d
-	@(echo "$*.d \c" ; $(CXX) -M $(CXXFLAGS) -c $*.cxx) > $*.d \
-        || { rm -f $*.d; exit 1; }
-
 ifneq "$(MAKECMDGOALS)" "clean"
 include $(patsubst %.o, %.d, $(OBJ))
 endif
+
+include ../Makefile.include
