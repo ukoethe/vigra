@@ -548,6 +548,8 @@ namespace vigra {
         stripbuffer = new tdata_t[1];
         stripbuffer[0] = 0;
         stripbuffer[0] = _TIFFmalloc( TIFFStripSize(tiff) );
+        
+        finalized = true;
     }
 
     void TIFFEncoder::init( const std::string & filename )
