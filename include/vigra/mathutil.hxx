@@ -118,6 +118,65 @@ typename NumericTraits<T>::Promote sq(T t)
     return t*t;
 }
 
+#ifdef VIGRA_NO_HYPOT
+/*! Compute the Euclidean distance.
+
+    The  hypot()  function  returns  the  sqrt(a*a  +  b*b).
+    It is implemented in a way that minimizes round-off error.
+
+    <b>\#include</b> "<a href="mathutil_8hxx-source.html">vigra/mathutil.hxx</a>"<br>
+    Namespace: vigra
+*/
+template <class T>
+T hypot(T a, T b) 
+{ 
+    T absa = abs(a), absb = abs(b);
+    if (absa > absb) 
+        return absa * VIGRA_CSTD::sqrt(1.0 + sq(absb/absa)); 
+    else 
+        return absb == NumericTraits<T>::zero()
+                   ? NumericTraits<T>::zero()
+                   : absb * VIGRA_CSTD::sqrt(1.0 + sq(absa/absb)); 
+}
+
+#else
+
+using ::hypot;
+
+#endif
+
+/*! The sign function.
+
+    Returns 1, 0, or -1 depending on the signm of \a t.
+
+    <b>\#include</b> "<a href="mathutil_8hxx-source.html">vigra/mathutil.hxx</a>"<br>
+    Namespace: vigra
+*/
+template <class T>
+T sign(T t) 
+{ 
+    return t > NumericTraits<T>::zero()
+               ? NumericTraits<T>::one()
+               : t < NumericTraits<T>::zero()
+                    ? -NumericTraits<T>::one()
+                    : NumericTraits<T>::zero();
+}
+
+/*! The binary sign function.
+
+    Transfers the sign of \a t2 to \a t1.
+
+    <b>\#include</b> "<a href="mathutil_8hxx-source.html">vigra/mathutil.hxx</a>"<br>
+    Namespace: vigra
+*/
+template <class T1, class T2>
+T1 sign(T1 t1, T2 t2) 
+{ 
+    return t2 >= NumericTraits<T2>::zero()
+               ? abs(t1)
+               : -abs(t1);
+}
+
 //@}
 
 } // namespace vigra
