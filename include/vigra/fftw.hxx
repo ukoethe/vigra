@@ -982,9 +982,24 @@ void applyFourierFilter(ConstBasicImageIterator<FFTWComplex, FFTWComplex **> src
                         FilterImageIterator filterUpperLeft, FilterAccessor fa,
                         DestImageIterator destUpperLeft, DestAccessor da)
 {
-    applyFourierFilterImpl(srcUpperLeft, srcLowerRight, sa,
-                           filterUpperLeft, fa,
-                           destUpperLeft, da);
+    int w= srcLowerRight.x - srcUpperLeft.x;
+
+    // test for right memory layout (fftw expects a 2*width*height floats array)
+    if (&(*(srcUpperLeft + Diff2D(w, 0))) == &(*(srcUpperLeft + Diff2D(0, 1))))
+        applyFourierFilterImpl(srcUpperLeft, srcLowerRight, sa,
+                               filterUpperLeft, fa,
+                               destUpperLeft, da);
+    else
+    {
+        FFTWComplexImage workImage(w, h);
+        copyImage(srcIterRange(srcUpperLeft, srcLowerRight, sa),
+                  destImage(workImage));
+
+        FFTWComplexImage const & cworkImage = workImage;
+        applyFourierFilterImpl(cworkImage.upperLeft(), cworkImage.lowerRight(), cworkImage.accessor(),
+                               filterUpperLeft, fa,
+                               destUpperLeft, da);
+    }
 }
 
 template <class FilterImageIterator, class FilterAccessor,
@@ -1219,21 +1234,23 @@ void applyFourierFilterImplNormalization(FFTWComplexImage &resultImage,
 */
 
 // applyFourierFilterFamily versions without fftwnd_plans:
-template <class SrcImageIterator, class SrcAccessor, class FilterType>
+template <class SrcImageIterator, class SrcAccessor,
+          class FilterType, class DestImage>
 inline
 void applyFourierFilterFamily(triple<SrcImageIterator, SrcImageIterator, SrcAccessor> src,
                               const ImageArray<FilterType> &filters,
-                              ImageArray<FFTWComplexImage> &results)
+                              ImageArray<DestImage> &results)
 {
     applyFourierFilterFamily(src.first, src.second, src.third,
                              filters, results);
 }
 
-template <class SrcImageIterator, class SrcAccessor, class FilterType>
+template <class SrcImageIterator, class SrcAccessor,
+          class FilterType, class DestImage>
 void applyFourierFilterFamily(SrcImageIterator srcUpperLeft,
                               SrcImageIterator srcLowerRight, SrcAccessor sa,
                               const ImageArray<FilterType> &filters,
-                              ImageArray<FFTWComplexImage> &results)
+                              ImageArray<DestImage> &results)
 {
     int w= srcLowerRight.x - srcUpperLeft.x;
     int h= srcLowerRight.y - srcUpperLeft.y;
@@ -1247,24 +1264,24 @@ void applyFourierFilterFamily(SrcImageIterator srcUpperLeft,
                                  filters, results);
 }
 
-template <class FilterType>
+template <class FilterType, class DestImage>
 inline
 void applyFourierFilterFamily(ConstBasicImageIterator<FFTWComplex, FFTWComplex **> srcUpperLeft,
                               ConstBasicImageIterator<FFTWComplex, FFTWComplex **> srcLowerRight,
                               StandardConstAccessor<FFTWComplex> sa,
                               const ImageArray<FilterType> &filters,
-                              ImageArray<FFTWComplexImage> &results)
+                              ImageArray<DestImage> &results)
 {
     applyFourierFilterFamilyImpl(srcUpperLeft, srcLowerRight, sa,
                                  filters, results);
 }
 
-template <class FilterType>
+template <class FilterType, class DestImage>
 void applyFourierFilterFamilyImpl(ConstBasicImageIterator<FFTWComplex, FFTWComplex **> srcUpperLeft,
                                   ConstBasicImageIterator<FFTWComplex, FFTWComplex **> srcLowerRight,
                                   StandardConstAccessor<FFTWComplex> sa,
                                   const ImageArray<FilterType> &filters,
-                                  ImageArray<FFTWComplexImage> &results)
+                                  ImageArray<DestImage> &results)
 {
     int w= srcLowerRight.x - srcUpperLeft.x;
     int h= srcLowerRight.y - srcUpperLeft.y;
@@ -1280,11 +1297,12 @@ void applyFourierFilterFamilyImpl(ConstBasicImageIterator<FFTWComplex, FFTWCompl
 }
 
 // applyFourierFilterFamily versions with fftwnd_plans:
-template <class SrcImageIterator, class SrcAccessor, class FilterType>
+template <class SrcImageIterator, class SrcAccessor,
+          class FilterType, class DestImage>
 inline
 void applyFourierFilterFamily(triple<SrcImageIterator, SrcImageIterator, SrcAccessor> src,
                               const ImageArray<FilterType> &filters,
-                              ImageArray<FFTWComplexImage> &results,
+                              ImageArray<DestImage> &results,
                               const fftwnd_plan &forwardPlan, const fftwnd_plan &backwardPlan)
 {
     applyFourierFilterFamily(src.first, src.second, src.third,
@@ -1292,11 +1310,12 @@ void applyFourierFilterFamily(triple<SrcImageIterator, SrcImageIterator, SrcAcce
                                  forwardPlan, backwardPlan);
 }
 
-template <class SrcImageIterator, class SrcAccessor, class FilterType>
+template <class SrcImageIterator, class SrcAccessor,
+          class FilterType, class DestImage>
 void applyFourierFilterFamily(SrcImageIterator srcUpperLeft,
                               SrcImageIterator srcLowerRight, SrcAccessor sa,
                               const ImageArray<FilterType> &filters,
-                              ImageArray<FFTWComplexImage> &results,
+                              ImageArray<DestImage> &results,
                               const fftwnd_plan &forwardPlan, const fftwnd_plan &backwardPlan)
 {
     int w= srcLowerRight.x - srcUpperLeft.x;
@@ -1312,26 +1331,41 @@ void applyFourierFilterFamily(SrcImageIterator srcUpperLeft,
                                  forwardPlan, backwardPlan);
 }
 
-template <class FilterType>
+template <class FilterType, class DestImage>
 inline
 void applyFourierFilterFamily(ConstBasicImageIterator<FFTWComplex, FFTWComplex **> srcUpperLeft,
                               ConstBasicImageIterator<FFTWComplex, FFTWComplex **> srcLowerRight,
                               StandardConstAccessor<FFTWComplex> sa,
                               const ImageArray<FilterType> &filters,
-                              ImageArray<FFTWComplexImage> &results,
+                              ImageArray<DestImage> &results,
                               const fftwnd_plan &forwardPlan, const fftwnd_plan &backwardPlan)
 {
-    applyFourierFilterFamilyImpl(srcUpperLeft, srcLowerRight, sa,
-                                 filters, results,
-                                 forwardPlan, backwardPlan);
+    int w= srcLowerRight.x - srcUpperLeft.x;
+
+    // test for right memory layout (fftw expects a 2*width*height floats array)
+    if (&(*(srcUpperLeft + Diff2D(w, 0))) == &(*(srcUpperLeft + Diff2D(0, 1))))
+        applyFourierFilterFamilyImpl(srcUpperLeft, srcLowerRight, sa,
+                                     filters, results,
+                                     forwardPlan, backwardPlan);
+    else
+    {
+        FFTWComplexImage workImage(w, h);
+        copyImage(srcIterRange(srcUpperLeft, srcLowerRight, sa),
+                  destImage(workImage));
+
+        FFTWComplexImage const & cworkImage = workImage;
+        applyFourierFilterFamilyImpl(cworkImage.upperLeft(), cworkImage.lowerRight(), cworkImage.accessor(),
+                                     filters, results,
+                                     forwardPlan, backwardPlan);
+    }
 }
 
-template <class FilterType>
+template <class FilterType, class DestImage>
 void applyFourierFilterFamilyImpl(ConstBasicImageIterator<FFTWComplex, FFTWComplex **> srcUpperLeft,
                                   ConstBasicImageIterator<FFTWComplex, FFTWComplex **> srcLowerRight,
                                   StandardConstAccessor<FFTWComplex> sa,
                                   const ImageArray<FilterType> &filters,
-                                  ImageArray<FFTWComplexImage> &results,
+                                  ImageArray<DestImage> &results,
                                   const fftwnd_plan &forwardPlan, const fftwnd_plan &backwardPlan)
 {
     // make sure the filter images have the right dimensions
@@ -1347,21 +1381,27 @@ void applyFourierFilterFamilyImpl(ConstBasicImageIterator<FFTWComplex, FFTWCompl
     int h= srcLowerRight.y - srcUpperLeft.y;
 
     FFTWComplexImage freqImage(w, h);
+    FFTWComplexImage result(w, h);
 
     fftwnd_one(forwardPlan, const_cast<FFTWComplex *>(&(*srcUpperLeft)), freqImage.begin());
+
+    typedef typename
+        NumericTraits<typename DestImage::Accessor::value_type>::isScalar
+        isScalarResult;
 
     // convolve with filters in freq. domain
     for (int i= 0;  i < filters.size(); i++)
     {
         combineTwoImages(srcImageRange(freqImage), srcImage(filters[i]),
-                         destImage(results[i]), std::multiplies<FFTWComplex>());
+                         destImage(result), std::multiplies<FFTWComplex>());
 
         // FFT back into spatial domain (inplace in destImage)
-        fftwnd_one(backwardPlan, results[i].begin(), 0);
+        fftwnd_one(backwardPlan, result.begin(), 0);
 
-        // normalization (after FFTs)
-        transformImage(srcImageRange(results[i]), destImage(results[i]),
-                       linearIntensityTransform<FFTWComplex>(1.0/(w * h)));
+        // normalization (after FFTs), maybe stripping imaginary part
+        applyFourierFilterImplNormalization(result,
+                                            results[i].upperLeft(), results[i].accessor(),
+                                            isScalarResult());
     }
 }
 
