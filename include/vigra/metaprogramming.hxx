@@ -18,7 +18,7 @@
 /*  WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE. */
 /*                                                                      */
 /************************************************************************/
- 
+
 #ifndef VIGRA_METAPROGRAMMING_HXX
 #define VIGRA_METAPROGRAMMING_HXX
 
@@ -69,6 +69,56 @@ struct StridedArrayTag {};
 Namespace: vigra
 */
 struct UnstridedArrayTag {};
+
+template<class T>
+class TypeTraits
+{
+  public:
+    typedef VigraFalseType isPOD;
+    typedef VigraFalseType isBuiltinType;
+};
+
+#ifndef NO_PARTIAL_TEMPLATE_SPECIALIZATION
+template<class T> 
+class TypeTraits<T *>
+{
+  public:
+    typedef VigraTrueType isPOD;
+    typedef VigraTrueType isBuiltinType;
+};
+
+template<class T> 
+class TypeTraits<T const *>
+{
+  public:
+    typedef VigraTrueType isPOD;
+    typedef VigraTrueType isBuiltinType;
+};
+#endif
+
+#define VIGRA_TYPE_TRAITS(type) \
+template<> \
+class TypeTraits<type> \
+{ \
+  public: \
+    typedef VigraTrueType isPOD; \
+    typedef VigraTrueType isBuiltinType; \
+};
+
+VIGRA_TYPE_TRAITS(char)
+VIGRA_TYPE_TRAITS(signed char)
+VIGRA_TYPE_TRAITS(unsigned char)
+VIGRA_TYPE_TRAITS(short)
+VIGRA_TYPE_TRAITS(unsigned short)
+VIGRA_TYPE_TRAITS(int)
+VIGRA_TYPE_TRAITS(unsigned int)
+VIGRA_TYPE_TRAITS(long)
+VIGRA_TYPE_TRAITS(unsigned long)
+VIGRA_TYPE_TRAITS(float)
+VIGRA_TYPE_TRAITS(double)
+VIGRA_TYPE_TRAITS(long double)
+
+#undef VIGRA_TYPE_TRAITS
 
 //@}
 

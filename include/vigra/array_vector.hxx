@@ -1,6 +1,6 @@
 /************************************************************************/
 /*                                                                      */
-/*               Copyright 200-2003 by Ullrich Koethe                   */
+/*               Copyright 2002-2003 by Ullrich Koethe                  */
 /*       Cognitive Systems Group, University of Hamburg, Germany        */
 /*                                                                      */
 /*    This file is part of the VIGRA computer vision library.           */
@@ -24,6 +24,7 @@
 
 #include <memory>
 #include <algorithm>
+#include <vigra/memory.hxx>
 
 namespace vigra
 {
@@ -55,7 +56,7 @@ public:
 
     template <class InputIterator>
     ArrayVector(InputIterator i, InputIterator end);
- 
+
     this_type & operator=( this_type const & rhs );
 
     ~ArrayVector();
@@ -109,7 +110,7 @@ public:
     {
         return data_[size_-1];
     }
-    
+
     reference operator[]( size_type i )
     {
         return data()[i];
@@ -119,35 +120,35 @@ public:
     {
         return data()[i];
     }
-    
+
     void pop_back();
 
     void push_back( value_type const & t );
-    
+
     iterator insert(iterator p, value_type const & v);
-    
+
     iterator insert(iterator p, size_type n, value_type const & v);
-    
+
     template <class InputIterator>
     iterator insert(iterator p, InputIterator i, InputIterator iend);
-    
+
     iterator erase(iterator p);
-    
+
     iterator erase(iterator p, iterator q);
 
     void clear();
-    
+
     void reserve( size_type new_capacity );
-    
+
     void reserve();
-    
+
     void resize( size_type new_size, value_type const & initial );
-    
+
     void resize( size_type new_size )
     {
         resize(new_size, value_type());
     }
-    
+
     bool empty() const
     {
         return size_ == 0;
@@ -162,15 +163,15 @@ public:
     {
         return capacity_;
     }
-    
+
     void swap(this_type & rhs);
-    
+
   private:
-  
+
     static void deallocate(pointer data, size_type size);
-  
+
     static pointer reserve_raw(size_type capacity);
-  
+
     size_type size_, capacity_;
     pointer data_;
 };
@@ -243,26 +244,26 @@ template <class T>
 void ArrayVector<T>::pop_back()
 {
     --size_;
-    std::destroy(data_ + size_);
+    detail::destroy(data_ + size_);
 }
 
 template <class T>
 void ArrayVector<T>::push_back( value_type const & t )
 {
     reserve();
-    std::construct(data_ + size_, t);
+    new (static_cast<void*>(data_ + size_)) T(t);
     ++size_;
 }
-    
+
 template <class T>
 void ArrayVector<T>::clear()
 {
-    std::destroy(data_, data_ + size_);
+    detail::destroy_n(data_, size_);
     size_ = 0;
 }
 
 template <class T>
-typename ArrayVector<T>::iterator 
+typename ArrayVector<T>::iterator
 ArrayVector<T>::insert(iterator p, value_type const & v)
 {
     difference_type pos = p - begin();
@@ -282,7 +283,7 @@ ArrayVector<T>::insert(iterator p, value_type const & v)
 }
 
 template <class T>
-typename ArrayVector<T>::iterator 
+typename ArrayVector<T>::iterator
 ArrayVector<T>::insert(iterator p, size_type n, value_type const & v)
 {
     difference_type pos = p - begin();
@@ -317,7 +318,7 @@ ArrayVector<T>::insert(iterator p, size_type n, value_type const & v)
 
 template <class T>
 template <class InputIterator>
-typename ArrayVector<T>::iterator 
+typename ArrayVector<T>::iterator
 ArrayVector<T>::insert(iterator p, InputIterator i, InputIterator iend)
 {
     difference_type n = iend - i;
@@ -352,24 +353,24 @@ ArrayVector<T>::insert(iterator p, InputIterator i, InputIterator iend)
 }
 
 template <class T>
-typename ArrayVector<T>::iterator 
+typename ArrayVector<T>::iterator
 ArrayVector<T>::erase(iterator p)
 {
     std::copy(p+1, end(), p);
     pop_back();
     return p;
-} 
+}
 
 template <class T>
-typename ArrayVector<T>::iterator 
+typename ArrayVector<T>::iterator
 ArrayVector<T>::erase(iterator p, iterator q)
 {
     std::copy(q, end(), p);
     size_type eraseCount = q - p;
-    std::destroy(end() - eraseCount, end());
+    detail::destroy_n(end() - eraseCount, eraseCount);
     size_ -= eraseCount;
     return p;
-} 
+}
 
 template <class T>
 void ArrayVector<T>::reserve( size_type new_capacity )
@@ -415,13 +416,13 @@ void ArrayVector<T>::deallocate(pointer data, size_type size)
 {
     if(data)
     {
-        std::destroy(data, data+size);
+        detail::destroy_n(data, size);
         ::operator delete(data);
     }
 }
 
 template <class T>
-typename ArrayVector<T>::pointer 
+typename ArrayVector<T>::pointer
 ArrayVector<T>::reserve_raw(size_type capacity)
 {
     pointer data = 0;
@@ -429,7 +430,6 @@ ArrayVector<T>::reserve_raw(size_type capacity)
         data = static_cast<pointer>(::operator new(capacity*sizeof(value_type)));
     return data;
 }
-
 
 } // namespace vigra
 
