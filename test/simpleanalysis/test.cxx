@@ -324,7 +324,7 @@ struct EdgeDetectionTest
     typedef vigra::DImage Image;
 
     EdgeDetectionTest()
-    : img1(5,5), img2(9,11)
+    : img1(5,5), img2(9,11), imgCanny(40, 40)
     {
         static const double in1[] = { 0.0, 0.0, 0.0, 0.0, 0.0,
                                       0.0, 1.0, 1.0, 1.0, 0.0,
@@ -362,6 +362,19 @@ struct EdgeDetectionTest
         for(; i != end; ++i, ++p)
         {
             acc.set(*p, i);
+        }
+        
+        for(int y=0; y<40; ++y)
+        {
+            for(int x=0; x<40; ++x)
+            {
+                if(x==y)
+                    imgCanny(x,y) = 1.0;
+                else if(x > y) 
+                    imgCanny(x,y) = 2.0;
+                else
+                    imgCanny(x,y) = 0.0;
+            }
         }
     }
     
@@ -519,7 +532,39 @@ struct EdgeDetectionTest
         }
     }
     
-    Image img1, img2;
+    void cannyEdgelListTest()
+    {
+        std::vector<vigra::Edgel> edgels;
+        cannyEdgelList(srcImageRange(imgCanny), edgels, 1.0);
+        should(edgels.size() == 75);
+        
+        for(int i=0; i<75; ++i)
+        {
+            should(edgels[i].x == edgels[i].y);
+            should(fabs(edgels[i].orientation-M_PI*0.75) < 0.1);
+        }   
+    }
+    
+    void cannyEdgeImageTest()
+    {
+        vigra::BImage result(40, 40);
+        result = 0;
+        
+        cannyEdgeImage(srcImageRange(imgCanny), destImage(result), 1.0, 0.1, 1);
+        
+        for(int y=1; y<39; ++y)
+        {
+            for(int x=1; x<39; ++x)
+            {
+                if(x == y)
+                    should(result(x,y) == 1);
+                else
+                    should(result(x,y) == 0);
+            }
+        }   
+    }
+    
+    Image img1, img2, imgCanny;
 };
     
 struct DistanceTransformTest
@@ -945,6 +990,8 @@ struct SimpleAnalysisTestSuite
         add( testCase( &EdgeDetectionTest::removeShortEdgesTest));
         add( testCase( &EdgeDetectionTest::beautifyCellGridTest));
         add( testCase( &EdgeDetectionTest::closeGapsInCellGridTest));
+        add( testCase( &EdgeDetectionTest::cannyEdgelListTest));
+        add( testCase( &EdgeDetectionTest::cannyEdgeImageTest));
         add( testCase( &DistanceTransformTest::distanceTransformL1Test));
         add( testCase( &DistanceTransformTest::distanceTransformL2Test));
         add( testCase( &DistanceTransformTest::distanceTransformLInfTest));
