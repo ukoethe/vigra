@@ -153,10 +153,10 @@ struct FFTWComplexTest
         vigra::FFTWComplexImage out(w, h);
 
         fftw_plan  forwardPlan=
-            fftw_plan_dft_2d(w, h, (fftw_complex *)in.begin(), (fftw_complex *)out.begin(), 
+            fftw_plan_dft_2d(h, w, (fftw_complex *)in.begin(), (fftw_complex *)out.begin(), 
                              FFTW_FORWARD, FFTW_ESTIMATE );
         fftw_plan  backwardPlan=
-            fftw_plan_dft_2d(w, h, (fftw_complex *)out.begin(), (fftw_complex *)out.begin(), 
+            fftw_plan_dft_2d(h, w, (fftw_complex *)out.begin(), (fftw_complex *)out.begin(), 
                              FFTW_BACKWARD, FFTW_ESTIMATE);
 
         fftw_execute(forwardPlan);
