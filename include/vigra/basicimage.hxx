@@ -211,6 +211,11 @@ class BasicImageIteratorBase
       y(line)
     {}
 
+    BasicImageIteratorBase(int ix, LINESTARTITERATOR const & line)
+    : x(ix),
+      y(line)
+    {}
+
     BasicImageIteratorBase()
     : x(0),
       y(0)
@@ -276,17 +281,19 @@ class ConstBasicImageIterator
     : Base(line)
     {}
     
-    ConstBasicImageIterator(Base const & rhs)
-    : Base(rhs)
+    ConstBasicImageIterator(BasicImageIterator<PIXELTYPE, ITERATOR> const & rhs)
+    : Base(rhs.x, rhs.y)
     {}
     
     ConstBasicImageIterator()
     : Base()
     {}  
 
-    ConstBasicImageIterator & operator=(Base const & o)
+    ConstBasicImageIterator & 
+    operator=(BasicImageIterator<PIXELTYPE, ITERATOR> const & rhs)
     {
-        Base::operator=(o);
+        x = rhs.x;
+        y = rhs.y;
         return *this;
     }
     

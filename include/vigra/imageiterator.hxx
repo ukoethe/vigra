@@ -920,8 +920,8 @@ class ConstImageIterator
     : Base(base, offset)
     {}
 
-    ConstImageIterator(Base const & o)
-    : Base(o)
+    ConstImageIterator(ImageIterator<PIXELTYPE> const & o)
+    : Base(o.x, o.y)
     {}
 
         /** Default constructor */
@@ -929,9 +929,10 @@ class ConstImageIterator
     : Base()
     {}
 
-    ConstImageIterator & operator=(Base const & o)
+    ConstImageIterator & operator=(ImageIterator<PIXELTYPE> const & o)
     {
-        Base::operator=(o);
+        x = o.x;
+        y = o.y;
         return *this;
     }
 };
