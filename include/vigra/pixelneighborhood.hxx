@@ -29,9 +29,9 @@ namespace vigra {
 /** \addtogroup PixelNeighborhood Utilities to manage pixel neighborhoods
 
     4- and 8-neighborhood definitions and circulators.
-    
+
     <b>\#include</b> "<a href="pixelneighborhood_8hxx-source.html">vigra/pixelneighborhood.hxx</a>"<br>
-    
+
     <b>See also:</b> \ref vigra::NeighborhoodCirculator
  */
 //@{
@@ -51,25 +51,25 @@ namespace FourNeighborhood
     This helper class allows the transformation between Freeman chain codes
     (East = 0, North = 1 etc.) and the corresponding Diff2D instances
     and back.
-    
+
     You can either use the chain codes by explicit qualification:
-    
+
     \code
     // the following three lines are equivalent
     FourNeighborhood::NeighborCode::Direction d = FourNeighborhood::NeighborCode::East;
     FourNeighborCode::Direction d = FourNeighborCode::East;
     FourNeighborhood::Direction d = FourNeighborhood::East;
     \endcode
-    
+
     or you can fix 4-neighborhood by importing the entire namespace in
     your function:
-    
+
     \code
     using namespace FourNeighborhood;
-    
+
     Direction d = East;
     \endcode
-    
+
     If you want to pass 4-neighborhood codes as a template parameter, use
     the class FourNeighborhood::NeighborCode.
 
@@ -91,7 +91,7 @@ class NeighborCode
         South,         ///< &nbsp;
         DirectionCount ///< &nbsp;
     };
-    
+
         /** Transform direction code into corresponding Diff2D offset.
             (note: there is no bounds checking on the code you pass.)
         */
@@ -123,7 +123,7 @@ class NeighborCode
 
         return d[fromCode][toCode];
     }
-    
+
         /** Equivalent to relativeDiff(static_cast<Direction>(fromCode), static_cast<Direction>(toCode)).
             (note: there is no bounds checking on the code you pass.)
         */
@@ -163,14 +163,14 @@ class NeighborCode
             }
             case -1:
             {
-                return (diff.y == 0) ? 
-                            West : 
+                return (diff.y == 0) ?
+                            West :
                             Error;
             }
             case  1:
             {
-                return (diff.y == 0) ? 
-                            East : 
+                return (diff.y == 0) ?
+                            East :
                             Error;
             }
         }
@@ -181,7 +181,7 @@ class NeighborCode
             Useful if you want to abstract the differences between 4- and 8-neighborhood.
             Always <tt>false</tt> for 4-neighborhood.
         */
-    static bool isDiagonal(Direction code) { return false; }
+    static bool isDiagonal(Direction) { return false; }
 
     static Diff2D const & right()        { return diff(East); }    /**<  Offset to the right neighbor */
     static Diff2D const & top()          { return diff(North); }   /**<  Offset to the top neighbor */
@@ -224,25 +224,25 @@ namespace EightNeighborhood
     This helper class allows the transformation between Freeman chain codes
     (East = 0, NorthEast = 1 etc.) and the corresponding Diff2D instances
     and back.
-    
+
     You can either use the chain codes by explicit qualification:
-    
+
     \code
     // the following three lines are equivalent
     EightNeighborhood::NeighborCode::Direction d = EightNeighborhood::NeighborCode::East;
     EightNeighborCode::Direction d               = EightNeighborCode::East;
     EightNeighborhood::Direction d               = EightNeighborhood::East;
     \endcode
-    
+
     or you can fix 8-neighborhood by importing the entire namespace in
     your function:
-    
+
     \code
     using namespace EightNeighborhood;
-    
+
     Direction d = East;
     \endcode
-    
+
     If you want to pass 8-neighborhood codes as a template parameter, use
     the class EightNeighborhood::NeighborCode.
 
@@ -441,21 +441,21 @@ typedef EightNeighborhood::NeighborCode EightNeighborCode;
 /** \brief Circulator that walks around a given location.
 
     The template parameter defines the kind of neighborhood used, e.g.
-    
+
     \code
     NeighborOffsetCirculator<EightNeighborCode> eight_circulator;
     NeighborOffsetCirculator<FourNeighborCode>  four_circulator;
     \endcode
-    
+
     Since this circulator doesn't now about the pixels in any particular image,
-    you usually doesn't use it directly but rather as a base class or helper for 
+    you usually doesn't use it directly but rather as a base class or helper for
     neighborhood circulators refering to a particular image (e.g. NeighborhoodCirculator)
 
     <b>\#include</b> "<a href="pixelneighborhood_8hxx-source.html">vigra/pixelneighborhood.hxx</a>"<br>
     Namespace: vigra
 */
 template<class NEIGHBORCODE>
-class NeighborOffsetCirculator 
+class NeighborOffsetCirculator
 : public NEIGHBORCODE
 {
 public:
@@ -561,7 +561,7 @@ public:
     }
 
         /** Move to the direction that is 'right' relative to the current direction.
-            This is equivalent to <tt>four_circulator--</tt> and 
+            This is equivalent to <tt>four_circulator--</tt> and
             <tt>eight_circulator -= 2</tt> respectively.
         */
     NeighborOffsetCirculator & turnRight()
@@ -571,7 +571,7 @@ public:
     }
 
         /** Move to the direction that is 'left' relative to the current direction.
-            This is equivalent to <tt>four_circulator++</tt> and 
+            This is equivalent to <tt>four_circulator++</tt> and
             <tt>eight_circulator += 2</tt> respectively.
         */
     NeighborOffsetCirculator & turnLeft()
@@ -581,7 +581,7 @@ public:
     }
 
         /** Move to the opposite direction of the current direction.
-            This is equivalent to <tt>four_circulator += 2</tt> and 
+            This is equivalent to <tt>four_circulator += 2</tt> and
             <tt>eight_circulator += 4</tt> respectively.
         */
     NeighborOffsetCirculator & turnRound()
@@ -721,12 +721,12 @@ typedef NeighborOffsetCirculator<FourNeighborCode> FourNeighborOffsetCirculator;
 
     The template parameters define the kind of neighborhood used and the underlying
     image, e.g.
-    
+
     \code
     NeighborhoodCirculator<BImage::traverser, EightNeighborCode> eight_circulator(image.upperLeft()+Diff2D(2,2));
     NeighborhoodCirculator<BImage::traverser, FourNeighborCode>  four_circulator(image.upperLeft()+Diff2D(2,2));
     \endcode
-    
+
     The access functions return the value of the current neighbor pixel. Use <tt>center()</tt> to
     access the center pixel of the neighborhood. The center can be changed by calling
     <tt>moveCenterToNeighbor()</tt> or <tt>swapCenterNeighbor()</tt>.
@@ -845,7 +845,7 @@ public:
     }
 
         /** Move to the direction that is 'right' relative to the current direction.
-            This is equivalent to <tt>four_circulator--</tt> and 
+            This is equivalent to <tt>four_circulator--</tt> and
             <tt>eight_circulator -= 2</tt> respectively.
         */
     NeighborhoodCirculator & turnRight()
@@ -858,7 +858,7 @@ public:
     }
 
         /** Move to the direction that is 'left' relative to the current direction.
-            This is equivalent to <tt>four_circulator++</tt> and 
+            This is equivalent to <tt>four_circulator++</tt> and
             <tt>eight_circulator += 2</tt> respectively.
         */
     NeighborhoodCirculator & turnLeft()
@@ -871,7 +871,7 @@ public:
     }
 
         /** Move to the opposite direction of the current direction.
-            This is equivalent to <tt>four_circulator += 2</tt> and 
+            This is equivalent to <tt>four_circulator += 2</tt> and
             <tt>eight_circulator += 4</tt> respectively.
         */
     NeighborhoodCirculator & turnRound()
