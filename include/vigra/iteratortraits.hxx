@@ -124,6 +124,10 @@ struct IteratorTraitsBase
         <DD>
     <DT>
         <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif">
+        \ref MultiArrayBasedArgumentObjectFactories
+        <DD>
+    <DT>
+        <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif">
         \ref IteratorBasedArgumentObjectFactories
         <DD>
     </DL>
@@ -309,6 +313,101 @@ struct IteratorTraitsBase
     </td><td>
         create argument object containing upper left
         of destination image, and given accessor
+
+    </td></tr>
+    </table>
+
+
+  \section MultiArrayBasedArgumentObjectFactories MultiArrayView Based Argument Object Factories
+
+    <b>Include:</b> automatically included with 
+       "<a href="multi_array_8hxx-source.html">vigra/multi_array.hxx</a>"<br>
+    Namespace: vigra
+
+    These factories can be used to create argument objects when we
+    are given instances or subclasses of \ref vigra::MultiArrayView.
+    These factory functions access <TT>array.traverser_begin()</TT>,
+    <TT>array.traverser_end()</TT> to obtain the iterators. If no accessor is
+    given, they use the <tt>AccessorTraits<T></tt> to determine the default 
+    accessor associated with the array's value type <tt>T</tt>.
+    The following factory functions are provided:
+
+    <table>
+    <tr><td>
+        \htmlonly
+        <th bgcolor="#f0e0c0" colspan=2 align=left>
+        \endhtmlonly
+        <TT>\ref vigra::MultiArrayView "vigra::MultiArrayView<N, SomeType>" array;</TT>
+        \htmlonly
+        </th>
+        \endhtmlonly
+    </td></tr>
+    <tr><td>
+
+    <TT>srcMultiArrayRange(img)</TT>
+    </td><td>
+        create argument object containing \ref vigra::MultiArrayIterator's 
+        marking the begin and end of the array, and the default const accessor for
+        <tt>SomeType</tt>
+
+    </td></tr>
+    <tr><td>
+
+    <TT>srcMultiArrayRange(img, SomeAccessor())</TT>
+    </td><td>
+        create argument object containing \ref vigra::MultiArrayIterator's 
+        marking the begin and end of the array, and the given accessor
+
+    </td></tr>
+    <tr><td>
+
+    <TT>srcMultiArray(img)</TT>
+    </td><td>
+        create argument object containing \ref vigra::MultiArrayIterator's 
+        marking the begin of the array, and the default const accessor for
+        <tt>SomeType</tt>
+
+    </td></tr>
+    <tr><td>
+
+    <TT>srcMultiArray(img, SomeAccessor())</TT>
+    </td><td>
+        create argument object containing \ref vigra::MultiArrayIterator's 
+        marking the begin of the array and the given accessor
+
+    </td></tr>
+    <tr><td>
+
+    <TT>destMultiArrayRange(img)</TT>
+    </td><td>
+        create argument object containing \ref vigra::MultiArrayIterator's 
+        marking the begin and end of the array, and the default accessor for
+        <tt>SomeType</tt>
+
+    </td></tr>
+    <tr><td>
+
+    <TT>destMultiArrayRange(img, SomeAccessor())</TT>
+    </td><td>
+        create argument object containing \ref vigra::MultiArrayIterator's 
+        marking the begin and end of the array, and the given accessor
+
+    </td></tr>
+    <tr><td>
+
+    <TT>destMultiArray(img)</TT>
+    </td><td>
+        create argument object containing \ref vigra::MultiArrayIterator's 
+        marking the begin of the array, and the default accessor for
+        <tt>SomeType</tt>
+
+    </td></tr>
+    <tr><td>
+
+    <TT>destMultiArray(img, SomeAccessor())</TT>
+    </td><td>
+        create argument object containing \ref vigra::MultiArrayIterator's 
+        marking the begin of the array, and the given accessor
 
     </td></tr>
     </table>
