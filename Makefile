@@ -1,4 +1,4 @@
-ifneq "$(MAKECMDGOALS)" "autoconf" 
+ifneq "$(MAKECMDGOALS)" "autoconf"
 include config/Makefile.include
 endif
 
@@ -16,7 +16,6 @@ install-includes:
 	if test "$(includedir)" != "$(vigra_builddir)/include" ; then \
           $(INSTALL) -d $(includedir)/vigra ; \
           $(INSTALL) --mode=644 $(vigra_builddir)/include/vigra/*.hxx $(includedir)/vigra ; \
-          $(INSTALL) --mode=644 $(vigra_builddir)/include/vigra/*.h $(includedir)/vigra ; \
         fi
 
 install-docs:
