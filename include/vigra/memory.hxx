@@ -47,6 +47,9 @@ void destroy_n(T * p, int n)
 
 /********************************************************************/
 
+// g++ 2.95 has std::destroy() in the STL
+#if !defined(__GNUC__) ||  __GNUC__ >= 3
+
 template <class T>
 void destroy(T * p, VigraTrueType /* isPOD */)
 {
@@ -63,6 +66,18 @@ void destroy(T * p)
 {
     destroy(p, typename TypeTraits<T>::isPOD());
 }
+
+#else
+
+} } // namespace vigra::detail
+
+#include <memory>
+
+namespace vigra { namespace detail {
+
+using std::destroy;
+
+#endif
 
 } } // namespace vigra::detail
 
