@@ -7,6 +7,7 @@
 #include "vigra/stdimage.hxx"
 #include "vigra/impex.hxx"
 #include "vigra/tensorutilities.hxx"
+#include "vigra/orientedtensorfilters.hxx"
 #include "vigra/boundarytensor.hxx"
 
 using namespace vigra;
@@ -116,12 +117,13 @@ struct TensorUtilityTest
     
 
 
-struct BoundaryTensorTest
+struct EdgeJunctionTensorTest
 {
     typedef vigra::DImage Image;
-    typedef vigra::DVector3Image VImage;
+    typedef vigra::DVector2Image V2Image;
+    typedef vigra::DVector3Image V3Image;
 
-    BoundaryTensorTest()
+    EdgeJunctionTensorTest()
     : img1(17, 17)
     {
         img1.init(0.0);
@@ -141,13 +143,13 @@ struct BoundaryTensorTest
 
     void boundaryTensorTest0()
     {
-        VImage res(img1.size()), ref(img1.size());
+        V3Image res(img1.size()), ref(img1.size());
         ImageImportInfo iref("boundaryTensor.xv");
         importImage(iref, destImage(ref));
         
         boundaryTensor(srcImageRange(img1), destImage(res), 2.0);
         
-        for(VImage::iterator i = res.begin(), j = ref.begin(); i < res.end(); ++i, ++j)
+        for(V3Image::iterator i = res.begin(), j = ref.begin(); i < res.end(); ++i, ++j)
         {
             shouldEqualTolerance(i->magnitude(), j->magnitude(), 1e-12);
         }
@@ -155,7 +157,7 @@ struct BoundaryTensorTest
 
     void boundaryTensorTest1()
     {
-        VImage bt(img2.size());
+        V3Image bt(img2.size());
         Image res(img2.size()), ref(img2.size());
         ImageImportInfo iref("l2_boundary1.xv");
         importImage(iref, destImage(ref));
@@ -168,7 +170,7 @@ struct BoundaryTensorTest
 
     void boundaryTensorTest2()
     {
-        VImage bt(img2.size());
+        V3Image bt(img2.size());
         Image res(img2.size()), ref(img2.size());
         ImageImportInfo iref("l2_boundary.xv");
         importImage(iref, destImage(ref));
@@ -184,11 +186,11 @@ struct BoundaryTensorTest
         // does not produce the correct result
         Image res(img2.size());
         {
-            VImage bt(img2.size()), bt2(img2.size());
+            V3Image bt(img2.size()), bt2(img2.size());
 
             boundaryTensor3(srcImageRange(img2), destImage(bt), destImage(bt2), 1.0);
             combineTwoImages(srcImageRange(bt), srcImage(bt2), destImage(bt2), 
-                         std::plus<VImage::value_type>());
+                         std::plus<V3Image::value_type>());
             tensorTrace(srcImageRange(bt2), destImage(res));
         }
         Image ref(img2.size());
@@ -198,6 +200,22 @@ struct BoundaryTensorTest
         shouldEqualSequenceTolerance(res.begin(), res.end(), ref.begin(), 1e-12);
     }
     
+    void hourglassTest()
+    {
+        V2Image gradient(img2.size());
+        V3Image tensor(img2.size()), smoothedTensor(img2.size());
+        Image res(img2.size()), ref(img2.size());
+        ImageImportInfo iref("l2_hourglass.xv");
+        importImage(iref, destImage(ref));
+
+        gaussianGradient(srcImageRange(img2), destImage(gradient), 0.7);
+        vectorToTensor(srcImageRange(gradient), destImage(tensor));
+        hourGlassFilter(srcImageRange(tensor), destImage(smoothedTensor), 2.8, 0.4);
+        tensorTrace(srcImageRange(smoothedTensor), destImage(res));
+  
+        shouldEqualSequenceTolerance(res.begin(), res.end(), ref.begin(), 1e-12);
+    }
+
     Image img1, img2;
 };
 
@@ -212,15 +230,16 @@ struct TensorTestSuite
         add( testCase( &TensorUtilityTest::tensorTraceTest));
         add( testCase( &TensorUtilityTest::tensorToEdgeCornerTest));
 
-        add( testCase( &BoundaryTensorTest::rieszTransform00Test));
-        add( testCase( &BoundaryTensorTest::rieszTransform10Test));
-        add( testCase( &BoundaryTensorTest::rieszTransform01Test));
-        add( testCase( &BoundaryTensorTest::rieszTransform20Test));
-        add( testCase( &BoundaryTensorTest::rieszTransform11Test));
-        add( testCase( &BoundaryTensorTest::rieszTransform02Test));
-        add( testCase( &BoundaryTensorTest::boundaryTensorTest0));
-        add( testCase( &BoundaryTensorTest::boundaryTensorTest1));
-        add( testCase( &BoundaryTensorTest::boundaryTensorTest2));
+        add( testCase( &EdgeJunctionTensorTest::rieszTransform00Test));
+        add( testCase( &EdgeJunctionTensorTest::rieszTransform10Test));
+        add( testCase( &EdgeJunctionTensorTest::rieszTransform01Test));
+        add( testCase( &EdgeJunctionTensorTest::rieszTransform20Test));
+        add( testCase( &EdgeJunctionTensorTest::rieszTransform11Test));
+        add( testCase( &EdgeJunctionTensorTest::rieszTransform02Test));
+        add( testCase( &EdgeJunctionTensorTest::boundaryTensorTest0));
+        add( testCase( &EdgeJunctionTensorTest::boundaryTensorTest1));
+        add( testCase( &EdgeJunctionTensorTest::boundaryTensorTest2));
+        add( testCase( &EdgeJunctionTensorTest::hourglassTest));
     }
 };
 
