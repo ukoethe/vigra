@@ -51,7 +51,7 @@ namespace detail
     Namespace: vigra::detail
 */
 template <unsigned int N>
-TinyVector <int, N> defaultStride (const TinyVector <int, N> &shape)
+TinyVector <int, N> defaultStride(const TinyVector <int, N> &shape)
 {
     TinyVector <int, N> ret;
     ret [0] = 1;
@@ -175,29 +175,30 @@ class MultiArray;
 
 /** \brief Base class for, and view to, \ref vigra::MultiArray.
 
-This class implements the interface of both MultiArray and MultiArrayView.
-By default, MultiArrayViews are tagged as unstrided. I necessary, strided arrays are
-constructed automatically by calls to a variant of the bind...() function.
+This class implements the interface of both MultiArray and
+MultiArrayView.  By default, MultiArrayViews are tagged as
+unstrided. If necessary, strided arrays are constructed automatically
+by calls to a variant of the bind...() function.
 
-If you want to apply an algorithm requiring an image to a <tt>MultiArrayView</tt>
-if appropriate shape, you can create a \ref vigra::BasicImageView 
-that acts as a wrapper with the necessary interface -- see
-\ref MultiArrayToImage.
+If you want to apply an algorithm requiring an image to a
+<tt>MultiArrayView</tt> of appropriate (2-dimensional) shape, you can
+create a \ref vigra::BasicImageView that acts as a wrapper with the
+necessary interface -- see \ref MultiArrayToImage.
 
 The template parameter are as follows
 \code
     N: the array dimension
-    
+
     T: the type of the array elements
-    
+
     C: a tag determining whether the array's inner dimension is strided
        or not. An array is unstrided if the array elements occupy consecutive
        memory location, strided if there is an offset in between (e.g.
        when a view is created that skips every other array element).
        The compiler can generate faster code for unstrided arrays.
-       Possible values: UnstridedArrayTag (default), StridedArrayTag        
+       Possible values: UnstridedArrayTag (default), StridedArrayTag
 \endcode
-    
+
 <b>\#include</b>
 "<a href="multi_array_8hxx-source.html">vigra/multi_array.hxx</a>"
 
@@ -209,7 +210,7 @@ class MultiArrayView
 public:
 
         /** the array's actual dimensionality.
-            This ensures that MultiArrayView can also be used for 
+            This ensures that MultiArrayView can also be used for
             scalars (that is, when <tt>N == 0</tt>). Calculated as:<br>
             \code
             actual_dimension = (N==0) ? 1 : N
@@ -419,26 +420,26 @@ public:
     }
 #endif /* #if 0 */
 
-    
+
 #ifndef NO_OUT_OF_LINE_MEMBER_TEMPLATES
         /** bind the M outmost dimensions to certain indices.
             this reduces the dimensionality of the image to
-            min { 1, N-M }
+            max { 1, N-M }
         */
     template <unsigned int M>
     MultiArrayView <N-M, T, C> bindOuter (const TinyVector <int, M> &d) const;
 
         /** bind the M innermost dimensions to certain indices.
             this reduces the dimensionality of the image to
-            min { 1, N-M }
+            max { 1, N-M }
         */
     template <unsigned int M>
     MultiArrayView <N-M, T, StridedArrayTag>
     bindInner (const TinyVector <int, M> &d) const;
-    
+
         /** bind dimension M to index d.
             this reduces the dimensionality of the image to
-            min { 1, N-1 }
+            max { 1, N-1 }
          */
     template <unsigned int M>
     MultiArrayView <N-1, T, typename detail::MaybeStrided <M>::type >
@@ -449,7 +450,7 @@ public:
     {
         return bindOuterImpl(*this, d);
     }
- 
+
     template <unsigned int M>
     MultiArrayView <N-M, T, StridedArrayTag>
     bindInner (const TinyVector <int, M> &d) const
@@ -467,33 +468,33 @@ public:
 
         /** bind the outmost dimension to a certain index.
             this reduces the dimensionality of the image to
-            min { 1, N-1 }
+            max { 1, N-1 }
         */
     MultiArrayView <N-1, T, C> bindOuter (int d) const;
-    
+
         /** bind the innermost dimension to a certain index.
             this reduces the dimensionality of the image to
-            min { 1, N-1 }
+            max { 1, N-1 }
         */
     MultiArrayView <N-1, T, StridedArrayTag> bindInner (int d) const;
 
         /** bind dimension m to index d.
             this reduces the dimensionality of the image to
-            min { 1, N-1 }
+            max { 1, N-1 }
          */
     MultiArrayView <N-1, T, StridedArrayTag>
     bindAt (int m, int d) const;
 
         /** bind dimension m to index d.
             this reduces the dimensionality of the image to
-            min { 1, N-1 }
+            max { 1, N-1 }
          */
     MultiArrayView <N-1, T, StridedArrayTag>
     bindRow (int d) const;
 
         /** bind dimension m to index d.
             this reduces the dimensionality of the image to
-            min { 1, N-1 }
+            max { 1, N-1 }
          */
     MultiArrayView <N-1, T, C>
     bindColumn (int d) const;
@@ -877,11 +878,11 @@ MultiArray's are always unstrided, striding them creates a MultiArrayView.
 The template parameters are as follows
 \code
     N: the array dimension
-    
+
     T: the type of the array elements
-    
-    A: the allocator used for internal storage management 
-       (default: std::allocator<T>)  
+
+    A: the allocator used for internal storage management
+       (default: std::allocator<T>)
 \endcode
 
 <b>\#include</b>
@@ -938,13 +939,13 @@ public:
         /** traverser type
          */
     typedef typename detail::MultiIteratorChooser <
-        UnstridedArrayTag>::template Traverser <N, T, T &, T *>::type 
+        UnstridedArrayTag>::template Traverser <N, T, T &, T *>::type
     traverser;
 
         /** traverser type to const data
          */
     typedef typename detail::MultiIteratorChooser <
-        UnstridedArrayTag>::template Traverser <N, T, T const &, T const *>::type 
+        UnstridedArrayTag>::template Traverser <N, T, T const &, T const *>::type
     const_traverser;
 
         /** sequential (random access) iterator type
@@ -987,23 +988,23 @@ public:
 
         /** construct with given shape
          */
-    explicit MultiArray (const difference_type &shape, 
+    explicit MultiArray (const difference_type &shape,
                          allocator_type const & alloc = allocator_type());
 
         /** construct from shape with an initial value
          */
-    MultiArray (const difference_type &shape, const_reference init, 
+    MultiArray (const difference_type &shape, const_reference init,
                          allocator_type const & alloc = allocator_type());
 
         /** construct from shape and copy values from the given array
          */
-    MultiArray (const difference_type &shape, const_pointer init, 
+    MultiArray (const difference_type &shape, const_pointer init,
                          allocator_type const & alloc = allocator_type());
 
         /** copy constructor
          */
     MultiArray (const MultiArray &rhs);
- 
+
         /** assignment.<br>
             <em>Note:</em> this operation invalidates all dependent objects
             (array views and iterators)
@@ -1024,7 +1025,7 @@ public:
         reshape (shape, NumericTraits <T>::zero ());
     }
 
-        /** change the shape, allocate new memory and initialize it 
+        /** change the shape, allocate new memory and initialize it
             with the given value.<br>
             <em>Note:</em> this operation invalidates all dependent objects
             (array views and iterators)
@@ -1047,7 +1048,7 @@ public:
 
         /** sequential const iterator pointing to the first array element.
          */
-    const_iterator begin () const 
+    const_iterator begin () const
     {
         return this->data();
     }
@@ -1072,7 +1073,7 @@ MultiArray <N, T, A>::MultiArray (allocator_type const & alloc)
 {}
 
 template <unsigned int N, class T, class A>
-MultiArray <N, T, A>::MultiArray (const difference_type &shape, 
+MultiArray <N, T, A>::MultiArray (const difference_type &shape,
                                   allocator_type const & alloc)
     : MultiArrayView <N, T> (shape, detail::defaultStride <MultiArrayView<N,T>::actual_dimension> (shape), 0),
       m_alloc(alloc)
@@ -1087,7 +1088,7 @@ MultiArray <N, T, A>::MultiArray (const difference_type &shape,
 
 template <unsigned int N, class T, class A>
 MultiArray <N, T, A>::MultiArray (const difference_type &shape,
-                                  const_reference init, 
+                                  const_reference init,
                                   allocator_type const & alloc)
     : MultiArrayView <N, T> (shape, detail::defaultStride <MultiArrayView<N,T>::actual_dimension> (shape), 0),
       m_alloc(alloc)
@@ -1102,7 +1103,7 @@ MultiArray <N, T, A>::MultiArray (const difference_type &shape,
 
 template <unsigned int N, class T, class A>
 MultiArray <N, T, A>::MultiArray (const difference_type &shape,
-                                  const_pointer init, 
+                                  const_pointer init,
                                   allocator_type const & alloc)
     : MultiArrayView <N, T> (shape, detail::defaultStride <MultiArrayView<N,T>::actual_dimension> (shape), 0),
       m_alloc(alloc)
@@ -1320,13 +1321,13 @@ destMultiArray( MultiArrayView<N,T,C> & array, Accessor a )
 /*                                                      */
 /********************************************************/
 
-/** \addtogroup MultiArrayToImage Wrap a \ref vigra::MultiArrayView in 
+/** \addtogroup MultiArrayToImage Wrap a \ref vigra::MultiArrayView in
                                   a \ref vigra::BasicImageView
 */
 //@{
-/** Create a \ref vigra::BasicImageView from an unstrided 2-dimensional 
+/** Create a \ref vigra::BasicImageView from an unstrided 2-dimensional
     \ref vigra::MultiArrayView.
-    
+
     The \ref vigra::BasicImageView will have the same <tt>value_type </tt>
     as the original \ref vigra::MultiArrayView.
 */
@@ -1338,10 +1339,10 @@ makeBasicImageView (MultiArrayView <2, T, UnstridedArrayTag> const &array)
                                array.shape (1));
 }
 
-/** Create a \ref vigra::BasicImageView from a 3-dimensional 
+/** Create a \ref vigra::BasicImageView from a 3-dimensional
     \ref vigra::MultiArray.
-    
-    This wrapper flattens the two innermost dimensions of the array 
+
+    This wrapper flattens the two innermost dimensions of the array
     into single rows of the resulting image.
     The \ref vigra::BasicImageView will have the same <tt>value_type </tt>
     as the original \ref vigra::MultiArray.
@@ -1350,15 +1351,15 @@ template <class T>
 BasicImageView <T>
 makeBasicImageView (MultiArray <3, T> const &array)
 {
-    return BasicImageView <T> (array.data (), 
+    return BasicImageView <T> (array.data (),
                                array.shape (0)*array.shape (1), array.shape (2));
 }
 
-/** Create a \ref vigra::BasicImageView from a 3-dimensional 
+/** Create a \ref vigra::BasicImageView from a 3-dimensional
     \ref vigra::MultiArray.
-    
-    This wrapper only works if <tt>T</tt> is a scalar type and the 
-    array's innermost dimension has size 3. It then re-interprets 
+
+    This wrapper only works if <tt>T</tt> is a scalar type and the
+    array's innermost dimension has size 3. It then re-interprets
     the data array as a 2-dimensional array with value_type
     <tt>RGBValue&lt; T &gt;</tt>.
 */
@@ -1369,7 +1370,7 @@ makeRGBImageView (MultiArray<3, T> const &array)
     vigra_precondition (
         array.shape (0) == 3, "makeRGBImageView(): array.shape(0) must be 3.");
     return BasicImageView <RGBValue<T> > (
-        reinterpret_cast <RGBValue <T> *> (array.data ()), 
+        reinterpret_cast <RGBValue <T> *> (array.data ()),
         array.shape (1), array.shape (2));
 }
 
