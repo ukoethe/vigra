@@ -849,7 +849,7 @@ create_test_case(void (TESTCASE::*fct)(), char const * name)
 {
     if(*name == '&') ++name;
     return new detail::class_test_case<TESTCASE>(fct, name);
-};
+}
 
 inline 
 detail::test_case * 
@@ -857,7 +857,7 @@ create_test_case(void (*fct)(), char const * name)
 {
     if(*name == '&') ++name;
     return new detail::function_test_case(fct, name);
-};
+}
 
 } // namespace vigra
 
