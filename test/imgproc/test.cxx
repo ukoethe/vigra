@@ -227,8 +227,10 @@ struct ImageFunctionsTest
 
         for(k=0; i != img.end(); ++i, ++k)
         {
-            if(k != 4) should(acc(i) == 42.0)
-            else       should(acc(i) == 5.5);
+            if(k != 4) 
+                should(acc(i) == 42.0);
+            else       
+                should(acc(i) == 5.5);
         }
 
     }

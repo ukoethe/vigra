@@ -172,7 +172,7 @@ struct FunctorExpressionTest
         should(v2 == 2);
         should(v3 == true);
         
-        should(exec((Var(v1) = Arg3(), Arg2()), true, 2.5, 3.5) == 2.5)
+        should(exec((Var(v1) = Arg3(), Arg2()), true, 2.5, 3.5) == 2.5);
         should(v1 == 3.5);
     }
     
@@ -334,7 +334,7 @@ struct FunctorRGBExpressionTest
         should(v0 == v1);
         should(v3_0 == v1_5);
         
-        should(exec((Var(v0) = Arg2(), Arg3()), true, v2, v2_5) == v2_5)
+        should(exec((Var(v0) = Arg2(), Arg3()), true, v2, v2_5) == v2_5);
         should(v0 == v2);
     }
     
