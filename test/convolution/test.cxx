@@ -218,6 +218,7 @@ struct ConvolutionTest
     {
         vigra::Kernel1D<double> gauss;
         gauss.initGaussian(1.0);
+        gauss.setBorderTreatment(BORDER_TREATMENT_REFLECT);
 
         Image tmp1(lenna.size());
         Image tmp2(lenna.size());

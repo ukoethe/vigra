@@ -211,7 +211,8 @@ namespace vigra {
     This function is a shorthand for the concatenation of a call to
     \link SeparableConvolution#separableConvolveX separableConvolveX\endlink()
     and \link SeparableConvolution#separableConvolveY separableConvolveY\endlink() with a
-    Gaussian kernel of the given scale.
+    Gaussian kernel of the given scale. The function uses 
+    <TT>BORDER_TREATMENT_REFLECT</TT>.
 
     <b> Declarations:</b>
 
@@ -269,6 +270,7 @@ void gaussianSmoothing(SrcIterator supperleft,
 
     Kernel1D<double> smooth;
     smooth.initGaussian(scale);
+    smooth.setBorderTreatment(BORDER_TREATMENT_REFLECT);
 
     separableConvolveX(srcIterRange(supperleft, slowerright, sa),
                        destImage(tmp), kernel1d(smooth));
