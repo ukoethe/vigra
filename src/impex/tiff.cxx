@@ -277,7 +277,7 @@ namespace vigra {
         // get bits per pixel
         if ( !TIFFGetField( tiff, TIFFTAG_BITSPERSAMPLE, &bits_per_sample ) )
         {
-            std::cerr << "Warning: no TIFFTAG_BITSPERSAMPLE, using 8 bit per sample.\n";
+            std::cerr << "Warning: no TIFFTAG_BITSPERSAMPLE, using 8 bits per sample.\n";
             bits_per_sample = 8;
         }
         // get pixeltype
@@ -293,7 +293,7 @@ namespace vigra {
 
                 if ( pixeltype == "undefined" ) {
 
-                    // use bytes as the default pixeltype
+                    // guess pixeltype
                     switch(bits_per_sample)
                     {
                         case 8:
@@ -303,9 +303,12 @@ namespace vigra {
                             pixeltype = "INT16";
                             break;
                         case 32:
-                            pixeltype = "INT32";
+                            pixeltype = "INT32"; // prefer int over float
                             break;
-                    }
+                        case 64:
+                            pixeltype =  "DOUBLE";
+                            break;
+                    }       
                     std::cerr << "Warning: no TIFFTAG_SAMPLEFORMAT or TIFFTAG_DATATYPE, "
                                  "guessing pixeltype '" << pixeltype << "'.\n";
                 }
