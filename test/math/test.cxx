@@ -6,6 +6,8 @@
 #include <typeinfo>
 #include <iostream>
 #include <algorithm>
+#include <sstream>
+#include <cstdlib>
 #include "unittest.hxx"
 #include "vigra/mathutil.hxx"
 #include "vigra/polynomial.hxx"
@@ -13,6 +15,7 @@
 #include "vigra/splines.hxx"
 #include "vigra/gaussians.hxx"
 #include "vigra/rational.hxx"
+#include "vigra/linear_algebra.hxx"
 
 static double coefficients[][12] = 
 {
@@ -487,6 +490,269 @@ struct RationalTest
     }
 };
 
+struct LinalgTest
+{
+    typedef vigra::Matrix<double> Matrix;
+    
+    unsigned int size, iterations;
+    
+    LinalgTest()
+    : size(50),
+      iterations(5)
+    {
+        std::srand (0xdeadbeef);
+    }
+
+    static double random_double ()
+    {
+        double ret = 2.0 * static_cast <double> (std::rand ()) / RAND_MAX - 1.0;
+        return ret;
+    }
+
+    static Matrix random_matrix(unsigned int rows, unsigned int cols)
+    {
+        Matrix ret (rows, cols);
+        for (unsigned int i = 0; i < rows; ++i)
+            for (unsigned int j = 0; j < cols; ++j)
+                ret (i, j) = random_double ();
+        return ret;
+    }
+
+    static Matrix random_symmetric_matrix(unsigned int rows)
+    {
+        Matrix ret (rows, rows);
+        for (unsigned int i = 0; i < rows; ++i)
+            for (unsigned int j = i; j < rows; ++j)
+                ret (j, i) = ret (i, j) = random_double ();
+        return ret;
+    }
+    
+    void testMatrix()
+    {
+        double data[] = {1.0, 5.0, 
+                         3.0, 2.0, 
+                         4.0, 7.0};
+        double tref[] = {1.0, 3.0, 4.0, 
+                         5.0, 2.0, 7.0};
+        double tref2[] = {1.0, 3.0, 
+                          5.0, 2.0};
+        double idref[] = {1.0, 0.0, 0.0, 
+                          0.0, 1.0, 0.0, 
+                          0.0, 0.0, 1.0};
+        std::string sref(" 1.0000  5.0000 \n 3.0000  2.0000 \n 4.0000  7.0000 \n");
+        unsigned int r = 3, c = 2;
+
+        Matrix a(r, c, data);
+        shouldEqual(a.rowCount(), r);
+        shouldEqual(a.columnCount(), c);
+        shouldEqual(a.elementCount(), r*c);
+        shouldEqual(a.squaredNorm(), 104.0);       
+        shouldEqual(a.norm(), std::sqrt(104.0));       
+        shouldEqual(rowCount(a), r);
+        shouldEqual(columnCount(a), c);
+        shouldEqual(squaredNorm(a), 104.0);       
+        shouldEqual(norm(a), std::sqrt(104.0));       
+
+        std::stringstream s;
+        s << a;
+        shouldEqual(s.str(), sref);
+        
+        for(unsigned int i=0, k=0; i<r; ++i)
+        {
+            Matrix::view_type ar = a.rowVector(i);
+            shouldEqual(rowCount(ar), 1);
+            shouldEqual(columnCount(ar), c);
+            Matrix::view_type ar1 = rowVector(a, i);
+            shouldEqual(rowCount(ar1), 1);
+            shouldEqual(columnCount(ar1), c);
+            for(unsigned int j=0; j<c; ++j, ++k)
+            {
+                shouldEqual(a(i,j), data[k]);
+                shouldEqual(ar(0, j), data[k]);
+                shouldEqual(ar1(0, j), data[k]);
+            }
+        }
+        
+        Matrix b = a;
+        shouldEqual(b.rowCount(), r);
+        shouldEqual(b.columnCount(), c);
+        for(unsigned int i=0, k=0; i<r; ++i)
+            for(unsigned int j=0; j<c; ++j, ++k)
+                shouldEqual(b(i,j), data[k]);
+        b = a;
+        for(unsigned int i=0, k=0; i<r; ++i)
+            for(unsigned int j=0; j<c; ++j, ++k)
+                shouldEqual(b(i,j), data[k]);
+        
+        b = 4.0 * a;      
+        for(unsigned int i=0, k=0; i<r; ++i)
+            for(unsigned int j=0; j<c; ++j, ++k)
+                shouldEqual(b(i,j), 4.0*data[k]);
+
+        b = a * 3.0;      
+        for(unsigned int i=0, k=0; i<r; ++i)
+            for(unsigned int j=0; j<c; ++j, ++k)
+                shouldEqual(b(i,j), 3.0*data[k]);
+
+        b = a / 5.0;      
+        for(unsigned int i=0, k=0; i<r; ++i)
+            for(unsigned int j=0; j<c; ++j, ++k)
+                shouldEqual(b(i,j), data[k] / 5.0);
+
+        b = a + a;      
+        for(unsigned int i=0, k=0; i<r; ++i)
+            for(unsigned int j=0; j<c; ++j, ++k)
+                shouldEqual(b(i,j), 2.0 * data[k]);
+
+        b = a - a;      
+        for(unsigned int i=0; i<r; ++i)
+            for(unsigned int j=0; j<c; ++j)
+                shouldEqual(b(i,j), 0.0);
+
+        b = -a;      
+        for(unsigned int i=0, k=0; i<r; ++i)
+            for(unsigned int j=0; j<c; ++j, ++k)
+                shouldEqual(b(i,j), -data[k]);
+
+        Matrix at = transpose(a);
+        shouldEqual(at.rowCount(), c);
+        shouldEqual(at.columnCount(), r);
+        for(unsigned int i=0, k=0; i<c; ++i)
+        {
+            Matrix::view_type ac = a.columnVector(i);
+            shouldEqual(rowCount(ac), r);
+            shouldEqual(columnCount(ac), 1);
+            Matrix::view_type ac1 = columnVector(a, i);
+            shouldEqual(rowCount(ac1), r);
+            shouldEqual(columnCount(ac1), 1);
+            for(unsigned int j=0; j<r; ++j, ++k)
+            {
+                shouldEqual(at(i,j), tref[k]);
+                shouldEqual(ac(j,0), tref[k]);
+                shouldEqual(ac1(j,0), tref[k]);
+            }
+        }
+        
+        Matrix a2(c, c, data);
+        a2.transpose();
+        for(unsigned int i=0, k=0; i<c; ++i)
+            for(unsigned int j=0; j<c; ++j, ++k)
+                shouldEqual(a2(i,j), tref2[k]);
+        
+        Matrix id = vigra::identityMatrix<double>(r);
+        shouldEqual(id.rowCount(), r);
+        shouldEqual(id.columnCount(), r);
+        for(unsigned int i=0, k=0; i<r; ++i)
+            for(unsigned int j=0; j<r; ++j, ++k)
+                shouldEqual(id(i,j), idref[k]);
+
+        Matrix d = diagonalMatrix(Matrix(r, 1, data));
+        shouldEqual(d.rowCount(), r);
+        shouldEqual(d.columnCount(), r);
+        for(unsigned int i=0, k=0; i<r; ++i)
+            for(unsigned int j=0; j<r; ++j, ++k)
+                shouldEqual(d(i,j), idref[k]*data[i]);
+        
+        Matrix e(r*c, 1, data);
+        shouldEqual(dot(transpose(e), e), e.squaredNorm());
+               
+        Matrix f(1, r*c - 1, tref);
+        Matrix g = outer(e, f);
+        shouldEqual(g.rowCount(), e.rowCount());
+        shouldEqual(g.columnCount(), f.columnCount());
+        for(unsigned int i=0; i<g.rowCount(); ++i)
+            for(unsigned int j=0; j<g.columnCount(); ++j)
+                shouldEqual(g(i,j), data[i]*tref[j]);
+        
+        Matrix h = transpose(a) * a;
+        shouldEqual(h.rowCount(), c);
+        shouldEqual(h.columnCount(), c);
+        for(unsigned int i=0; i<c; ++i)
+            for(unsigned int j=0; j<c; ++j)
+                shouldEqual(h(i,j), dot(rowVector(at, i), columnVector(a, j)));
+    }
+    
+    void testQR()
+    {
+        double epsilon = 1e-10;
+        Matrix idref = vigra::identityMatrix<double>(size);
+        
+        for(unsigned int i = 0; i < iterations; ++i)
+        {
+            Matrix a = random_matrix (size, size);
+            Matrix r(size, size);
+            Matrix q(size, size);
+            qrDecomposition (a, q, r);
+            Matrix id = transpose(q) * q;
+            shouldEqualSequenceTolerance(id.data(), id.data()+size*size, idref.data(), epsilon);
+            Matrix qr = q * r;
+            shouldEqualSequenceTolerance(qr.data(), qr.data()+size*size, a.data(), epsilon);
+        }
+    }
+
+    void testLinearSolve()
+    {
+        double epsilon = 1e-10;
+        
+        for(unsigned int i = 0; i < iterations; ++i)
+        {
+            Matrix a = random_matrix (size, size);
+            Matrix b = random_matrix (size, 1);
+            Matrix x(size, 1);
+            should(linearSolve (a, b, x));
+            Matrix ax = a * x;
+            shouldEqualSequenceTolerance(ax.data(), ax.data()+size, b.data(), epsilon);
+        }
+    }
+
+    void testInverse()
+    {
+        double epsilon = 1e-10;
+        Matrix idref = vigra::identityMatrix<double>(size);
+        
+        for(unsigned int i = 0; i < iterations; ++i)
+        {
+            Matrix a = random_matrix (size, size);
+            Matrix id = a * inverse(a);
+            shouldEqualSequenceTolerance(id.data(), id.data()+size*size, idref.data(), epsilon);
+            id = inverse(a) * a;
+            shouldEqualSequenceTolerance(id.data(), id.data()+size*size, idref.data(), epsilon);
+        }
+        
+        double data[] = { 1.0, 0.0, 0.0, 0.0 };
+        Matrix singular(2, 2, data);
+        try {
+            inverse(singular);
+            failTest("inverse(singular) didn't throw an exception.");
+        }
+        catch(vigra::PreconditionViolation & c)
+        {
+            std::string expected("\nPrecondition violation!\ninverse(): matrix is not invertible.");
+            std::string message(c.what());
+            should(0 == expected.compare(message.substr(0,expected.size())));
+        }
+    }
+
+    void testEigenSystem()
+    {
+        double epsilon = 1e-8;
+        Matrix idref = vigra::identityMatrix<double>(size);
+        
+        for(unsigned int i = 0; i < iterations; ++i)
+        {
+            Matrix a = random_symmetric_matrix (size);
+            Matrix ew(size, 1);
+            Matrix ev(size, size);
+            should(eigenSystem(a, ew, ev));
+            Matrix id = ev * transpose(ev);
+            shouldEqualSequenceTolerance(id.data(), id.data()+size*size, idref.data(), epsilon);
+            Matrix ae = ev * diagonalMatrix(ew) * transpose(ev);
+            shouldEqualSequenceTolerance(ae.data(), ae.data()+size*size, a.data(), epsilon);
+        }
+    }
+};    
+
+
 struct MathTestSuite
 : public vigra::test_suite
 {
@@ -528,6 +794,11 @@ struct MathTestSuite
         add( testCase(&RationalTest::testConversion));
         add( testCase(&RationalTest::testFunctions));
         add( testCase(&RationalTest::testInf));
+        add( testCase(&LinalgTest::testMatrix));
+        add( testCase(&LinalgTest::testQR));
+        add( testCase(&LinalgTest::testLinearSolve));
+        add( testCase(&LinalgTest::testInverse));
+        add( testCase(&LinalgTest::testEigenSystem));
     }
 };
 
