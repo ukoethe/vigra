@@ -43,7 +43,7 @@ namespace detail {
     {  \
         for(int i=0; i<LEVEL; ++i)  \
             (left[i]) OPER (right[i]);  \
-    } 
+    }
 
 #define VIGRA_EXEC_LOOP_SCALAR(NAME, OPER) \
     template <class T1, class T2>  \
@@ -51,21 +51,21 @@ namespace detail {
     {  \
         for(int i=0; i<LEVEL; ++i)  \
             (left[i]) OPER (right);  \
-    } 
+    }
 
-template <int LEVEL> 
+template <int LEVEL>
 struct ExecLoop
 {
-    template <class T1, class T2> 
-    static void assignCast(T1 * left, T2 const * right) 
-    { 
-        for(int i=0; i<LEVEL; ++i) 
-            left[i] = detail::RequiresExplicitCast<T1>::cast(right[i]); 
-    } 
-    
-    VIGRA_EXEC_LOOP(assign, =) 
-    VIGRA_EXEC_LOOP(add, +=) 
-    VIGRA_EXEC_LOOP(sub, -=) 
+    template <class T1, class T2>
+    static void assignCast(T1 * left, T2 const * right)
+    {
+        for(int i=0; i<LEVEL; ++i)
+            left[i] = detail::RequiresExplicitCast<T1>::cast(right[i]);
+    }
+
+    VIGRA_EXEC_LOOP(assign, =)
+    VIGRA_EXEC_LOOP(add, +=)
+    VIGRA_EXEC_LOOP(sub, -=)
     VIGRA_EXEC_LOOP(mul, *=)
     VIGRA_EXEC_LOOP(neg, = -)
     VIGRA_EXEC_LOOP(abs, = vigra::abs)
@@ -77,82 +77,82 @@ struct ExecLoop
     VIGRA_EXEC_LOOP_SCALAR(mulScalar, *=)
     VIGRA_EXEC_LOOP_SCALAR(divScalar, /=)
 
-    template <class T1, class T2> 
-    static bool notEqual(T1 const * left, T2 const * right) 
-    { 
-        for(int i=0; i<LEVEL; ++i) 
+    template <class T1, class T2>
+    static bool notEqual(T1 const * left, T2 const * right)
+    {
+        for(int i=0; i<LEVEL; ++i)
             if(left[i] != right[i])
-                return true; 
+                return true;
         return false;
     }
 
-    template <class T> 
-    static typename NumericTraits<T>::Promote 
-    dot(T const * d) 
-    { 
+    template <class T>
+    static typename NumericTraits<T>::Promote
+    dot(T const * d)
+    {
         typename NumericTraits<T>::Promote  res(*d * *d);
-        for(int i=1; i<LEVEL; ++i) 
-            res += d[i] * d[i]; 
+        for(int i=1; i<LEVEL; ++i)
+            res += d[i] * d[i];
         return res;
     }
 
-    template <class T1, class T2> 
-    static typename PromoteTraits<T1, T2>::Promote 
-    dot(T1 const * left, T2 const * right) 
-    { 
+    template <class T1, class T2>
+    static typename PromoteTraits<T1, T2>::Promote
+    dot(T1 const * left, T2 const * right)
+    {
         typename PromoteTraits<T1, T2>::Promote res(*left * *right);
-        for(int i=1; i<LEVEL; ++i) 
-            res += left[i] * right[i]; 
+        for(int i=1; i<LEVEL; ++i)
+            res += left[i] * right[i];
         return res;
     }
-}; 
+};
 
-template <int LEVEL> 
+template <int LEVEL>
 struct UnrollDot
 {
-    template <class T> 
-    static typename NumericTraits<T>::Promote 
-    dot(T const * d) 
-    { 
+    template <class T>
+    static typename NumericTraits<T>::Promote
+    dot(T const * d)
+    {
         return *d * *d + UnrollDot<LEVEL-1>::dot(d+1);
     }
 
-    template <class T1, class T2> 
-    static typename PromoteTraits<T1, T2>::Promote 
-    dot(T1 const * left, T2 const * right) 
-    { 
+    template <class T1, class T2>
+    static typename PromoteTraits<T1, T2>::Promote
+    dot(T1 const * left, T2 const * right)
+    {
         return *left * *right + UnrollDot<LEVEL-1>::dot(left+1, right+1);
     }
-}; 
+};
 
-template <> 
+template <>
 struct UnrollDot<1>
 {
-    template <class T> 
-    static typename NumericTraits<T>::Promote 
-    dot(T const * d) 
-    { 
+    template <class T>
+    static typename NumericTraits<T>::Promote
+    dot(T const * d)
+    {
         return *d * *d ;
     }
 
-    template <class T1, class T2> 
-    static typename PromoteTraits<T1, T2>::Promote 
-    dot(T1 const * left, T2 const * right) 
-    { 
+    template <class T1, class T2>
+    static typename PromoteTraits<T1, T2>::Promote
+    dot(T1 const * left, T2 const * right)
+    {
         return *left * *right;
     }
-}; 
+};
 
 #undef VIGRA_EXEC_LOOP
 #undef VIGRA_EXEC_LOOP_SCALAR
- 
+
 #define VIGRA_UNROLL_LOOP(NAME, OPER) \
     template <class T1, class T2>  \
     static void NAME(T1 * left, T2 const * right)  \
     {  \
         (*left) OPER (*right);  \
         UnrollLoop<LEVEL-1>::NAME(left+1, right+1); \
-    } 
+    }
 
 #define VIGRA_UNROLL_LOOP_SCALAR(NAME, OPER) \
     template <class T1, class T2>  \
@@ -160,22 +160,22 @@ struct UnrollDot<1>
     {  \
         (*left) OPER (right);  \
         UnrollLoop<LEVEL-1>::NAME(left+1, right); \
-    } 
+    }
 
 
-template <int LEVEL> 
+template <int LEVEL>
 struct UnrollLoop
 {
-    template <class T1, class T2> 
-    static void assignCast(T1 * left, T2 const * right) 
-    { 
+    template <class T1, class T2>
+    static void assignCast(T1 * left, T2 const * right)
+    {
         *left = detail::RequiresExplicitCast<T1>::cast(*right);
         UnrollLoop<LEVEL-1>::assignCast(left+1, right+1);
-    } 
-    
-    VIGRA_UNROLL_LOOP(assign, =) 
-    VIGRA_UNROLL_LOOP(add, +=) 
-    VIGRA_UNROLL_LOOP(sub, -=) 
+    }
+
+    VIGRA_UNROLL_LOOP(assign, =)
+    VIGRA_UNROLL_LOOP(add, +=)
+    VIGRA_UNROLL_LOOP(sub, -=)
     VIGRA_UNROLL_LOOP(mul, *=)
     VIGRA_UNROLL_LOOP(neg, = -)
     VIGRA_UNROLL_LOOP(abs, = vigra::abs)
@@ -187,64 +187,64 @@ struct UnrollLoop
     VIGRA_UNROLL_LOOP_SCALAR(mulScalar, *=)
     VIGRA_UNROLL_LOOP_SCALAR(divScalar, /=)
 
-    template <class T1, class T2> 
-    static bool notEqual(T1 const * left, T2 const * right) 
-    { 
+    template <class T1, class T2>
+    static bool notEqual(T1 const * left, T2 const * right)
+    {
         return (*left != *right) || UnrollLoop<LEVEL - 1>::notEqual(left+1, right+1);
     }
 
-    template <class T> 
-    static typename NumericTraits<T>::Promote 
-    dot(T const * d) 
-    { 
+    template <class T>
+    static typename NumericTraits<T>::Promote
+    dot(T const * d)
+    {
         return UnrollDot<LEVEL>::dot(d);
     }
 
-    template <class T1, class T2> 
-    static typename PromoteTraits<T1, T2>::Promote 
-    dot(T1 const * left, T2 const * right) 
-    { 
+    template <class T1, class T2>
+    static typename PromoteTraits<T1, T2>::Promote
+    dot(T1 const * left, T2 const * right)
+    {
         return UnrollDot<LEVEL>::dot(left, right);
     }
-}; 
+};
 
 #undef VIGRA_UNROLL_LOOP
 #undef VIGRA_UNROLL_LOOP_SCALAR
- 
+
 template <>
 struct UnrollLoop<0>
 {
-    template <class T1, class T2> 
+    template <class T1, class T2>
     static void assignCast(T1, T2) {}
-    template <class T1, class T2> 
+    template <class T1, class T2>
     static void assign(T1, T2) {}
-    template <class T1, class T2> 
+    template <class T1, class T2>
     static void assignScalar(T1, T2) {}
-    template <class T1, class T2> 
+    template <class T1, class T2>
     static void add(T1, T2) {}
-    template <class T1, class T2> 
+    template <class T1, class T2>
     static void sub(T1, T2) {}
-    template <class T1, class T2> 
+    template <class T1, class T2>
     static void mul(T1, T2) {}
-    template <class T1, class T2> 
+    template <class T1, class T2>
     static void mulScalar(T1, T2) {}
-    template <class T1, class T2> 
+    template <class T1, class T2>
     static void div(T1, T2) {}
-    template <class T1, class T2> 
+    template <class T1, class T2>
     static void divScalar(T1, T2) {}
-    template <class T1, class T2> 
+    template <class T1, class T2>
     static void fromPromote(T1, T2) {}
-    template <class T1, class T2> 
+    template <class T1, class T2>
     static void fromRealPromote(T1, T2) {}
-    template <class T1, class T2> 
+    template <class T1, class T2>
     static void neg(T1, T2) {}
-    template <class T1, class T2> 
+    template <class T1, class T2>
     static void abs(T1, T2) {}
-    template <class T1, class T2> 
+    template <class T1, class T2>
     static void floor(T1, T2) {}
-    template <class T1, class T2> 
+    template <class T1, class T2>
     static void ceil(T1, T2) {}
-    template <class T1, class T2> 
+    template <class T1, class T2>
     static bool notEqual(T1, T2) { return false; }
 };
 
@@ -320,42 +320,42 @@ template <class VALUETYPE, int SIZE, class DATA, class DERIVED>
 class TinyVectorBase
 {
     typedef typename detail::LoopType<SIZE>::type Loop;
-            
+
     friend class TinyVector<VALUETYPE, SIZE>;
     friend class TinyVectorView<VALUETYPE, SIZE>;
-    
+
     TinyVectorBase()
     {}
-    
+
     TinyVectorBase(TinyVectorBase const &); // do not use
-    
+
     TinyVectorBase & operator=(TinyVectorBase const & other); // do not use
 
   public:
         /** STL-compatible definition of valuetype
         */
     typedef VALUETYPE value_type;
-    
+
         /** reference (return of operator[]).
         */
     typedef VALUETYPE & reference;
-    
+
         /** const reference (return of operator[] const).
         */
     typedef VALUETYPE const & const_reference;
-    
+
         /** pointer (return of operator->).
         */
     typedef VALUETYPE * pointer;
-    
+
         /** const pointer (return of operator-> const).
         */
     typedef VALUETYPE const * const_pointer;
-    
+
         /** STL-compatible definition of iterator
         */
     typedef value_type * iterator;
-    
+
         /** STL-compatible definition of const iterator
         */
     typedef value_type const * const_iterator;
@@ -363,11 +363,11 @@ class TinyVectorBase
         /** STL-compatible definition of size_type
         */
     typedef unsigned int size_type;
-    
+
         /** STL-compatible definition of difference_type
         */
     typedef int difference_type;
-    
+
         /** the scalar type for the outer product
         */
     typedef double scalar_multiplier;
@@ -381,7 +381,7 @@ class TinyVectorBase
             "TinyVector::init(): Sequence has wrong size.");
         Loop::assignCast(data_, i);
     }
-    
+
         /** Component-wise add-assignment
         */
     template <class T1, class D1, class D2>
@@ -479,9 +479,9 @@ class TinyVector
 {
     typedef TinyVectorBase<T, SIZE, T[SIZE], TinyVector<T, SIZE> > BaseType;
     typedef typename BaseType::Loop Loop;
-    
+
   public:
-            
+
     typedef typename BaseType::value_type value_type;
     typedef typename BaseType::reference reference;
     typedef typename BaseType::const_reference const_reference;
@@ -492,10 +492,11 @@ class TinyVector
     typedef typename BaseType::size_type size_type;
     typedef typename BaseType::difference_type difference_type;
     typedef typename BaseType::scalar_multiplier scalar_multiplier;
-    
+
         /** Construction with constant value
         */
     explicit TinyVector(value_type const & initial)
+    : BaseType()
     {
         Loop::assignScalar(begin(), initial);
     }
@@ -504,6 +505,7 @@ class TinyVector
             Call only if SIZE == 2
         */
     TinyVector(value_type const & i1, value_type const & i2)
+    : BaseType()
     {
         data_[0] = i1;
         data_[1] = i2;
@@ -513,6 +515,7 @@ class TinyVector
             Call only if SIZE == 3
         */
     TinyVector(value_type const & i1, value_type const & i2, value_type const & i3)
+    : BaseType()
     {
         data_[0] = i1;
         data_[1] = i2;
@@ -524,6 +527,7 @@ class TinyVector
         */
     TinyVector(value_type const & i1, value_type const & i2,
                value_type const & i3, value_type const & i4)
+    : BaseType()
     {
         data_[0] = i1;
         data_[1] = i2;
@@ -534,6 +538,7 @@ class TinyVector
        /** Default constructor (initializes all components with zero)
         */
     TinyVector()
+    : BaseType()
     {
         Loop::assignScalar(data_, NumericTraits<value_type>::zero());
     }
@@ -541,6 +546,7 @@ class TinyVector
 #if !defined(TEMPLATE_COPY_CONSTRUCTOR_BUG)
 
     TinyVector(TinyVector const & r)
+    : BaseType()
     {
         Loop::assign(data_, r.data_);
     }
@@ -558,6 +564,7 @@ class TinyVector
         */
     template <class U, class DATA, class DERIVED>
     TinyVector(TinyVectorBase<U, SIZE, DATA, DERIVED> const & r)
+    : BaseType()
     {
 		Loop::assignCast(data_, r.begin());
     }
@@ -572,6 +579,7 @@ class TinyVector
     }
 
     explicit TinyVector(detail::DontInit)
+    : BaseType()
     {}
 };
 
@@ -581,9 +589,9 @@ class TinyVectorView
 {
     typedef TinyVectorBase<T, SIZE, T *, TinyVectorView<T, SIZE> > BaseType;
     typedef typename BaseType::Loop Loop;
-    
+
   public:
-            
+
     typedef typename BaseType::value_type value_type;
     typedef typename BaseType::reference reference;
     typedef typename BaseType::const_reference const_reference;
@@ -596,32 +604,36 @@ class TinyVectorView
     typedef typename BaseType::scalar_multiplier scalar_multiplier;
 
     TinyVectorView()
+    : BaseType()
     {
-        data_ = 0;     
+        data_ = 0;
     }
 
     TinyVectorView(const_pointer data)
+    : BaseType()
     {
-        data_ = const_cast<pointer>(data);     
+        data_ = const_cast<pointer>(data);
     }
 
     TinyVectorView(TinyVectorView const & other)
+    : BaseType()
     {
         data_ = const_cast<pointer>(other.data_);
     }
-    
+
     template <class U, class DATA, class DERIVED>
     TinyVectorView(TinyVectorBase<U, SIZE, DATA, DERIVED> const & other)
+    : BaseType()
     {
         data_ = const_cast<pointer>(other.data_);
     }
-    
+
     TinyVectorView & operator=(TinyVectorView const & r)
     {
         Loop::assign(data_, r.begin());
         return *this;
     }
-    
+
     template <class U, class DATA, class DERIVED>
     TinyVectorView & operator=(TinyVectorBase<U, SIZE, DATA, DERIVED> const & r)
     {
@@ -678,7 +690,7 @@ namespace vigra {
     /// component-wise equal
 template <class V1, int SIZE, class D1, class D2, class V2, class D3, class D4>
 inline bool
-operator==(TinyVectorBase<V1, SIZE, D1, D2> const & l, 
+operator==(TinyVectorBase<V1, SIZE, D1, D2> const & l,
            TinyVectorBase<V2, SIZE, D3, D4> const & r)
 {
     return !(l != r);
@@ -687,7 +699,7 @@ operator==(TinyVectorBase<V1, SIZE, D1, D2> const & l,
     /// component-wise not equal
 template <class V1, int SIZE, class D1, class D2, class V2, class D3, class D4>
 inline bool
-operator!=(TinyVectorBase<V1, SIZE, D1, D2> const & l, 
+operator!=(TinyVectorBase<V1, SIZE, D1, D2> const & l,
            TinyVectorBase<V2, SIZE, D3, D4> const & r)
 {
     return detail::LoopType<SIZE>::type::notEqual(l.begin(), r.begin());
@@ -762,20 +774,20 @@ struct NumericTraits<TinyVector<T, SIZE> >
     }
 
     template <class D1, class D2>
-    static Promote toPromote(TinyVectorBase<T, SIZE, D1, D2> const & v) 
+    static Promote toPromote(TinyVectorBase<T, SIZE, D1, D2> const & v)
     {
         return Promote(v);
     }
 
     template <class D1, class D2>
-    static RealPromote toRealPromote(TinyVectorBase<T, SIZE, D1, D2> const & v) 
+    static RealPromote toRealPromote(TinyVectorBase<T, SIZE, D1, D2> const & v)
     {
         return RealPromote(v);
     }
 
     template <class D1, class D2>
-    static TinyVector<T, SIZE> 
-    fromPromote(TinyVectorBase<typename NumericTraits<T>::Promote, SIZE, D1, D2> const & v) 
+    static TinyVector<T, SIZE>
+    fromPromote(TinyVectorBase<typename NumericTraits<T>::Promote, SIZE, D1, D2> const & v)
     {
         TinyVector<T, SIZE> res(detail::dontInit());
         detail::LoopType<SIZE>::type::fromPromote(res.begin(), v.begin());
@@ -783,8 +795,8 @@ struct NumericTraits<TinyVector<T, SIZE> >
     }
 
     template <class D1, class D2>
-    static TinyVector<T, SIZE> 
-    fromRealPromote(TinyVectorBase<typename NumericTraits<T>::RealPromote, SIZE, D1, D2> const & v) 
+    static TinyVector<T, SIZE>
+    fromRealPromote(TinyVectorBase<typename NumericTraits<T>::RealPromote, SIZE, D1, D2> const & v)
     {
         TinyVector<T, SIZE> res(detail::dontInit());
         detail::LoopType<SIZE>::type::fromRealPromote(res.begin(), v.begin());
@@ -969,7 +981,7 @@ TINYVECTOR_TRAITS(4)
 template <class V1, int SIZE, class D1, class D2, class V2, class D3, class D4>
 inline
 typename PromoteTraits<TinyVector<V1, SIZE>, TinyVector<V2, SIZE> >::Promote
-operator+(TinyVectorBase<V1, SIZE, D1, D2> const & l, 
+operator+(TinyVectorBase<V1, SIZE, D1, D2> const & l,
           TinyVectorBase<V2, SIZE, D3, D4> const & r)
 {
     typename PromoteTraits<TinyVector<V1, SIZE>, TinyVector<V2 , SIZE> >::Promote res(l);
@@ -981,7 +993,7 @@ operator+(TinyVectorBase<V1, SIZE, D1, D2> const & l,
 template <class V1, int SIZE, class D1, class D2, class V2, class D3, class D4>
 inline
 typename PromoteTraits<TinyVector<V1, SIZE>, TinyVector<V2, SIZE> >::Promote
-operator-(TinyVectorBase<V1, SIZE, D1, D2> const & l, 
+operator-(TinyVectorBase<V1, SIZE, D1, D2> const & l,
           TinyVectorBase<V2, SIZE, D3, D4> const & r)
 {
     typename PromoteTraits<TinyVector<V1, SIZE>, TinyVector<V2 , SIZE> >::Promote res(l);
@@ -993,7 +1005,7 @@ operator-(TinyVectorBase<V1, SIZE, D1, D2> const & l,
 template <class V1, int SIZE, class D1, class D2, class V2, class D3, class D4>
 inline
 typename PromoteTraits<TinyVector<V1, SIZE>, TinyVector<V2, SIZE> >::Promote
-operator*(TinyVectorBase<V1, SIZE, D1, D2> const & l, 
+operator*(TinyVectorBase<V1, SIZE, D1, D2> const & l,
           TinyVectorBase<V2, SIZE, D3, D4> const & r)
 {
     typename PromoteTraits<TinyVector<V1, SIZE>, TinyVector<V2 , SIZE> >::Promote res(l);
@@ -1033,7 +1045,7 @@ operator/(TinyVectorBase<V, SIZE, D1, D2> const & l, double v)
     */
 template <class V, int SIZE, class D1, class D2>
 inline
-TinyVector<V, SIZE> 
+TinyVector<V, SIZE>
 operator-(TinyVectorBase<V, SIZE, D1, D2> const & v)
 {
     TinyVector<V, SIZE> res(detail::dontInit());
@@ -1080,7 +1092,7 @@ floor(TinyVectorBase<V, SIZE, D1, D2> const & v)
 template <class V1, int SIZE, class D1, class D2, class V2, class D3, class D4>
 inline
 typename PromoteTraits<V1, V2>::Promote
-dot(TinyVectorBase<V1, SIZE, D1, D2> const & l, 
+dot(TinyVectorBase<V1, SIZE, D1, D2> const & l,
     TinyVectorBase<V2, SIZE, D3, D4> const & r)
 {
     return detail::LoopType<SIZE>::type::dot(l.begin(), r.begin());
