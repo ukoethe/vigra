@@ -632,6 +632,7 @@ struct NumericTraits<float>
     static float zero() { return 0.0; }
     static float one() { return 1.0; }
     static float nonZero() { return 1.0; }
+    static float epsilon() { return FLT_EPSILON; }
     static float min() { return -FLT_MAX; }
     static float max() { return FLT_MAX; }
     
@@ -654,6 +655,7 @@ struct NumericTraits<double>
     static double zero() { return 0.0; }
     static double one() { return 1.0; }
     static double nonZero() { return 1.0; }
+    static double epsilon() { return DBL_EPSILON; }
     static double min() { return -DBL_MAX; }
     static double max() { return DBL_MAX; }
 
@@ -676,6 +678,9 @@ struct NumericTraits<long double>
     static long double zero() { return 0.0; }
     static long double one() { return 1.0; }
     static long double nonZero() { return 1.0; }
+    static long double epsilon() { return LDBL_EPSILON; }
+    static long double min() { return -LDBL_MAX; }
+    static long double max() { return LDBL_MAX; }
 
     static Promote toPromote(long double v) { return v; }
     static RealPromote toRealPromote(long double v) { return v; }
