@@ -275,5 +275,4 @@ norm(T const & t)
 
 } // namespace vigra
 
-
 #endif /* VIGRA_MATHUTIL_HXX */
