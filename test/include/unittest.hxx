@@ -78,10 +78,14 @@
 #define shouldEqual(left, right) \
     vigra::detail::equal_impl(left, right, #left " == " #right, __FILE__, __LINE__)
 
-
 #define shouldEqualTolerance(left, right, eps) \
     vigra::detail::tolerance_equal_impl(left, right, eps, #left " == " #right, __FILE__, __LINE__)
 
+#define shouldEqualSequence(begin1, end1, begin2) \
+    vigra::detail::sequence_equal_impl(begin1, end1, begin2, __FILE__, __LINE__)
+
+#define shouldEqualSequenceTolerance(begin1, end1, begin2, eps) \
+    vigra::detail::sequence_equal_tolerance_impl(begin1, end1, begin2, eps, __FILE__, __LINE__)
 
 #define VIGRA_ERROR(message) \
     vigra::detail::should_impl(false, message, __FILE__, __LINE__)
@@ -394,6 +398,22 @@ should_impl(bool predicate, const char * message, const char * file, int line)
     } 
 }
 
+template <class Iter1, class Iter2>
+void 
+sequence_equal_impl(Iter1 i1, Iter1 end1, Iter2 i2, const char * file, int line)
+{
+    for(int counter = 0; i1 != end1; ++i1, ++i2, ++counter)
+    {
+        if(*i1 != *i2)
+        {
+            detail::errstream buf;
+            buf << "Sequence items differ at index " << counter <<
+                   " ["<< *i1 << " != " << *i2 << "]";
+            should_impl(false, buf.str(), file, line); 
+        }
+    }
+}
+
 /******************Floating point comparison********************************/
 /**
 * See Knuth "The art of computer programming" (Vol II, Ch.4.2) 
@@ -503,6 +523,18 @@ tolerance_equal_impl(float left, float right, float epsilon, const char * messag
     bool compare = fcomparator ( left , right );
     should_impl(compare, buf.str(), file, line); 
      
+}
+
+template <class Iter1, class Iter2, class T>
+void 
+sequence_equal_tolerance_impl(Iter1 i1, Iter1 end1, Iter2 i2, T epsilon, const char * file, int line)
+{
+    for(int counter = 0; i1 != end1; ++i1, ++i2, ++counter)
+    {
+        detail::errstream buf;
+        buf << "Sequence items differ at index " << counter;
+        tolerance_equal_impl(*i1, *i2, epsilon, buf.str(), file, line); 
+    }
 }
 
 template <class Left, class Right>
@@ -839,6 +871,53 @@ class function_test_case
     
     void (*fct_)();
 };
+
+template <class FCT>
+struct test_functor
+{
+    virtual ~test_functor() {}
+    virtual void operator()() = 0;
+    
+    FCT clone() const 
+        { return FCT(static_cast<FCT const &>(*this)); }
+};
+    
+template <class FCT>
+class functor_test_case
+: public test_case
+{
+  public:
+    
+    functor_test_case(FCT const & fct, char const * name)
+    : test_case(name),
+      fct_(fct)
+    {}
+    
+    virtual void do_run()
+    {
+        fct_();
+    }
+    
+    virtual int run()
+    {
+        report_ = "";
+        exception_checkpoint() = "";
+        
+        detail::errstream buf;
+        buf << "\nFailure in " << name() << "\n";
+        
+        int failed = catch_exceptions(
+            detail::test_case_run_functor(buf, this), buf, timeout);
+        if(failed)
+        {
+            report_ += buf.str();
+        }
+
+        return failed;
+    }
+    
+    FCT fct_;
+};
     
 } // namespace detail
 
@@ -857,6 +936,15 @@ create_test_case(void (*fct)(), char const * name)
 {
     if(*name == '&') ++name;
     return new detail::function_test_case(fct, name);
+}
+
+template <class FCT>
+inline 
+detail::test_case * 
+create_test_case(detail::test_functor<FCT> const & fct, char const * name)
+{
+    if(*name == '&') ++name;
+    return new detail::functor_test_case<FCT>(fct.clone(), name);
 }
 
 } // namespace vigra
