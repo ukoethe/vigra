@@ -217,7 +217,7 @@ class StandardAccessor
         /** read the data item at an offset (can be 1D or 2D or higher order difference).
         */
     template <class ITERATOR, class DIFFERENCE>
-    VALUETYPE const & operator()(ITERATOR const & i, DIFFERENCE diff) const
+    VALUETYPE const & operator()(ITERATOR const & i, DIFFERENCE const & diff) const
     { 
         return i[diff]; 
     }
@@ -236,7 +236,7 @@ class StandardAccessor
             In case of a conversion floating point -> intergral this includes rounding and clipping.
         */
     template <class V, class ITERATOR, class DIFFERENCE>
-    void set(V const & value, ITERATOR const & i, DIFFERENCE diff) const 
+    void set(V const & value, ITERATOR const & i, DIFFERENCE const & diff) const 
     { 
         i[diff]= detail::RequiresExplicitCast<VALUETYPE>::cast(value); 
     }
@@ -281,7 +281,7 @@ class StandardValueAccessor
             In case of a conversion floating point -> intergral this includes rounding and clipping.
         */
     template <class ITERATOR, class DIFFERENCE>
-    VALUETYPE operator()(ITERATOR const & i, DIFFERENCE diff) const
+    VALUETYPE operator()(ITERATOR const & i, DIFFERENCE const & diff) const
     { 
         return detail::RequiresExplicitCast<VALUETYPE>::cast(i[diff]); 
     }
@@ -299,7 +299,7 @@ class StandardValueAccessor
             In case of a conversion floating point -> intergral this includes rounding and clipping.
         */
     template <class V, class ITERATOR, class DIFFERENCE>
-    void set(V value, ITERATOR const & i, DIFFERENCE diff) const 
+    void set(V value, ITERATOR const & i, DIFFERENCE const & diff) const 
     { 
         i[diff]= detail::RequiresExplicitCast<VALUETYPE>::cast(value); 
     }
@@ -340,7 +340,7 @@ class StandardConstAccessor
         /** read the data item at an offset (can be 1D or 2D or higher order difference).
         */
     template <class ITERATOR, class DIFFERENCE>
-    VALUETYPE const & operator()(ITERATOR const & i, DIFFERENCE diff) const
+    VALUETYPE const & operator()(ITERATOR const & i, DIFFERENCE const & diff) const
     { 
         return i[diff]; 
     }
@@ -383,7 +383,7 @@ class StandardConstValueAccessor
             In case of a conversion floating point -> intergral this includes rounding and clipping.
         */
     template <class ITERATOR, class DIFFERENCE>
-    VALUETYPE operator()(ITERATOR const & i, DIFFERENCE diff) const
+    VALUETYPE operator()(ITERATOR const & i, DIFFERENCE const & diff) const
     { 
         return detail::RequiresExplicitCast<VALUETYPE>::cast(i[diff]); 
     }
@@ -445,7 +445,7 @@ class VectorComponentAccessor
         /** read the data item at an offset (can be 1D or 2D or higher order difference).
         */
     template <class ITERATOR, class DIFFERENCE>
-    value_type const & operator()(ITERATOR const & i, DIFFERENCE diff) const
+    value_type const & operator()(ITERATOR const & i, DIFFERENCE const & diff) const
     { 
         return i[diff][index_]; 
     }
@@ -466,7 +466,7 @@ class VectorComponentAccessor
             In case of a conversion floating point -> intergral this includes rounding and clipping.
         */
     template <class V, class ITERATOR, class DIFFERENCE>
-    void set(V const & value, ITERATOR const & i, DIFFERENCE diff) const 
+    void set(V const & value, ITERATOR const & i, DIFFERENCE const & diff) const 
     { 
         i[diff][index_]= detail::RequiresExplicitCast<value_type>::cast(value); 
     }
@@ -528,7 +528,7 @@ class VectorComponentValueAccessor
             In case of a conversion floating point -> intergral this includes rounding and clipping.
         */
     template <class ITERATOR, class DIFFERENCE>
-    value_type operator()(ITERATOR const & i, DIFFERENCE diff) const
+    value_type operator()(ITERATOR const & i, DIFFERENCE const & diff) const
     { 
         return detail::RequiresExplicitCast<value_type>::cast(i[diff][index_]); 
     }
@@ -549,7 +549,7 @@ class VectorComponentValueAccessor
             In case of a conversion floating point -> intergral this includes rounding and clipping.
         */
     template <class V, class ITERATOR, class DIFFERENCE>
-    void set(V value, ITERATOR const & i, DIFFERENCE diff) const 
+    void set(V value, ITERATOR const & i, DIFFERENCE const & diff) const 
     { 
         i[diff][index_]= detail::RequiresExplicitCast<value_type>::cast(value); 
     }
@@ -621,7 +621,7 @@ class SequenceAccessor
         of given iterator position
     */
     template <class ITERATOR, class DIFFERENCE>
-    iterator begin(ITERATOR const & i, DIFFERENCE diff)  const
+    iterator begin(ITERATOR const & i, DIFFERENCE const & diff)  const
     { 
         return i[diff].begin(); 
     }
@@ -630,7 +630,7 @@ class SequenceAccessor
         of given iterator position
     */
     template <class ITERATOR, class DIFFERENCE>
-    iterator end(ITERATOR const & i, DIFFERENCE diff)  const
+    iterator end(ITERATOR const & i, DIFFERENCE const & diff)  const
     { 
         return i[diff].end(); 
     }
@@ -643,7 +643,7 @@ class SequenceAccessor
     /** get size of sequence at 2D difference vector of given iterator position
     */
     template <class ITERATOR, class DIFFERENCE>
-    int size(ITERATOR const & i, DIFFERENCE diff) const
+    int size(ITERATOR const & i, DIFFERENCE const & diff) const
     { return i[diff].size(); }
 };
 
@@ -752,7 +752,7 @@ class VectorAccessor
             at an offset of given iterator position
         */
     template <class ITERATOR, class DIFFERENCE>
-    component_type const & getComponent(ITERATOR const & i, DIFFERENCE diff, int idx) const
+    component_type const & getComponent(ITERATOR const & i, DIFFERENCE const & diff, int idx) const
     { 
         return i[diff][idx]; 
     }
@@ -764,7 +764,7 @@ class VectorAccessor
     */
     template <class V, class ITERATOR, class DIFFERENCE>
     void 
-    setComponent(V const & value, ITERATOR const & i, DIFFERENCE diff, int idx) const 
+    setComponent(V const & value, ITERATOR const & i, DIFFERENCE const & diff, int idx) const 
     { 
         i[diff][idx] = detail::RequiresExplicitCast<component_type>::cast(value); 
     }
@@ -824,8 +824,8 @@ class BilinearInterpolatingAccessor
     template <class ITERATOR>
     value_type operator()(ITERATOR const & i, float x, float y) const 
     { 
-        int ix = x;
-        int iy = y;
+        int ix = int(x);
+        int iy = int(y);
         float dx = x - ix;
         float dy = y - iy;
         
@@ -840,23 +840,26 @@ class BilinearInterpolatingAccessor
             }
             else
             {
-                ret = (1.0 - dy) * a_(i, Diff2D(ix, iy)) +
-                  dy * a_(i, Diff2D(ix, iy + 1));
+                ret = detail::RequiresExplicitCast<value_type>::cast(
+                  (1.0 - dy) * a_(i, Diff2D(ix, iy)) +
+                  dy * a_(i, Diff2D(ix, iy + 1)));
             }
         }
         else
         {
             if(dy == 0.0)
             {
-                ret = (1.0 - dx) * a_(i, Diff2D(ix, iy)) + 
-                  dx * a_(i, Diff2D(ix + 1, iy));
+                ret = detail::RequiresExplicitCast<value_type>::cast(
+                  (1.0 - dx) * a_(i, Diff2D(ix, iy)) + 
+                  dx * a_(i, Diff2D(ix + 1, iy)));
             }
             else
             {
-                ret = (1.0 - dx) * (1.0 - dy) * a_(i, Diff2D(ix, iy)) +
+                ret = detail::RequiresExplicitCast<value_type>::cast(
+                  (1.0 - dx) * (1.0 - dy) * a_(i, Diff2D(ix, iy)) +
                   dx * (1.0 - dy) * a_(i, Diff2D(ix + 1, iy)) +
                   (1.0 - dx) * dy * a_(i, Diff2D(ix, iy + 1)) +
-                  dx * dy * a_(i, Diff2D(ix + 1, iy + 1));
+                  dx * dy * a_(i, Diff2D(ix + 1, iy + 1)));
             }
         }
             
@@ -870,14 +873,15 @@ class BilinearInterpolatingAccessor
     template <class ITERATOR>
     value_type unchecked(ITERATOR const & i, float x, float y) const 
     { 
-    int ix = x;
-        int iy = y;
+        int ix = int(x);
+        int iy = int(y);
         float dx = x - ix;
         float dy = y - iy;
-        return (1.0 - dx) * (1.0 - dy) * a_(i, Diff2D(ix, iy)) +
+        return detail::RequiresExplicitCast<value_type>::cast(
+               (1.0 - dx) * (1.0 - dy) * a_(i, Diff2D(ix, iy)) +
                dx * (1.0 - dy) * a_(i, Diff2D(ix + 1, iy)) +
                (1.0 - dx) * dy * a_(i, Diff2D(ix, iy + 1)) +
-               dx * dy * a_(i, Diff2D(ix + 1, iy + 1));
+               dx * dy * a_(i, Diff2D(ix + 1, iy + 1)));
     }
     
   private:
@@ -946,7 +950,7 @@ class MultiImageAccessor2
         /** read the current data item
         */
     template <class DIFFERENCE>
-    value_type operator()(DIFFERENCE d) const
+    value_type operator()(DIFFERENCE const & d) const
     { 
         return std::make_pair(a1_(i1_, d), a2_(i2_, i.x, i.y)); 
     }
@@ -954,7 +958,7 @@ class MultiImageAccessor2
         /** read the data item at an offset
         */
     template <class DIFFERENCE1, class DIFFERENCE2>
-    value_type operator()(DIFFERENCE1 d1, DIFFERENCE2 d2) const
+    value_type operator()(DIFFERENCE1 const & d1, DIFFERENCE2 const & d2) const
     { 
         d2 += d1;
         return std::make_pair(a1_(i1_, d2), a2_(i2_, d2)); 
