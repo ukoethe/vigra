@@ -137,7 +137,7 @@ class Diff2DConstColumnIteratorPolicy
     secondary usage is explained on page \ref CoordinateIterator.
 
     Standard usage as a difference vector is mainly needed in the context
-    of images. For example, Diff2D may be used as an index for <TT>operator[]<TT>:
+    of images. For example, Diff2D may be used as an index for <TT>operator[]</TT>:
 
     \code
     vigra::Diff2D location(...);
@@ -146,7 +146,7 @@ class Diff2DConstColumnIteratorPolicy
     \endcode
 
     This is especially important in connection with accessors, where the
-    offset variant of <TT>operator()<TT> takes only one offset object:
+    offset variant of <TT>operator()</TT> takes only one offset object:
 
     \code
     // accessor(iterator, dx, dy); is not allowed
@@ -154,7 +154,7 @@ class Diff2DConstColumnIteratorPolicy
     \endcode
 
 
-    Diff2D is also returned by <TT>image.size()<TT>, so that we can create
+    Diff2D is also returned by <TT>image.size()</TT>, so that we can create
     new images by calculating their size using Diff2D's arithmetic
     functions:
 

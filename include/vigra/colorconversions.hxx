@@ -2344,8 +2344,7 @@ yPrimePbPr2Polar(TinyVector<float, 3> const & ypbpr)
     return result;
 }
 
-/** \fn TinyVector<float, 3> polar2YPrimeCbCr(double color, double brightness, double saturation)
-    \brief Init Y'CbCr color triple from polar representation.
+/** \brief Init Y'CbCr color triple from polar representation.
 
     <b>\#include</b> "<a href="colorconversions_8hxx-source.html">vigra/colorconversions.hxx</a>"<br>
     Namespace: vigra

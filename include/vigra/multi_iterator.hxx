@@ -35,7 +35,7 @@ template <unsigned int N, class T,
 
 /** \page MultiIteratorPage  Multi-dimensional Array Iterators
 
-    \brief General iterators for arrays of arbitrary dimension.
+    General iterators for arrays of arbitrary dimension.
 
 
 <p>
@@ -60,7 +60,7 @@ template <unsigned int N, class T,
 </p>
 
 <p>
-    The Multidimensional Iterator concept allos navigation on arrays
+    The Multidimensional Iterator concept allows navigation on arrays
     of arbitrary dimension. It provides two modes of iteration: 
     <em>direct traveral</em>, and <em>hierarchical traversal</em>.
     In general, hierarchical traversal will be faster, while only 
@@ -215,11 +215,11 @@ template <unsigned int N, class T,
 </td></tr>
 <tr>
     <td><tt>i += diff</tt></td><td><tt>MultiIterator &</tt></td>
-    <td>add offset to current position</tt></td>
+    <td>add offset to current position</td>
 </tr>
 <tr>
     <td><tt>i -= diff</tt></td><td><tt>MultiIterator &</tt></td>
-    <td>subtract offset from current position</tt></td>
+    <td>subtract offset from current position</td>
 </tr>
 <tr>
     <td><tt>i + diff</tt></td><td><tt>MultiIterator</tt></td>
@@ -298,7 +298,7 @@ but iterator performance will suffer significantly, as is experienced with
     \htmlonly
     <td colspan=2>
     \endhtmlonly
-    <tt>MultiIterator::next_type</td><td>type of the next iterator
+    <tt>MultiIterator::next_type</tt></td><td>type of the next iterator
        (referring to the next lower dimension) in the hierarchy</td>
 </tr>
 <tr><td>

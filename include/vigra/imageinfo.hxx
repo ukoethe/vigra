@@ -153,7 +153,7 @@ class ImageExportInfo
         implemented support for those pixel types.  So don't be
         surprised if the generated TIFF is not readable in some
         cases.  If this happens, convert the image to 'unsigned
-        char' or 'RGBValue<unsigned char>' prior to exporting.
+        char' or 'RGBValue\<unsigned char\>' prior to exporting.
     **/
     ImageExportInfo & setFileType( const char * );
     const char * getFileType() const;

@@ -165,7 +165,6 @@
         (i.e. <TT>sqrt, exp, log, log10, sin, asin, cos, acos, tan, 
         atan, abs, floor, ceil, pow, atan2, fmod, min, max</TT>) 
         are overloaded.
-.
     
     </DL>
     

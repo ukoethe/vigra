@@ -101,7 +101,7 @@
 */
     
 /** \example smooth.cxx
-    <li> Smooth an image using \ref RecursiveConvolution functions:
+    Smooth an image using \ref RecursiveConvolution functions:
     <a href="smooth_8cxx-example.html">smooth.cxx</a> <br>
     Usage: <TT>smooth infile outfile</TT>
 */
@@ -135,7 +135,7 @@
 */
     
 /** \example voronoi.cxx
-    <li> Generate a Voronoi diagram, using \ref distanceTransform and
+    Generate a Voronoi diagram, using \ref distanceTransform and
     \ref seededRegionGrowing()<br>
     Usage: <TT>voronoi</TT>, generates: <TT>distances.gif</TT> (Euclidean distance transform) and <TT>voronoi.gif</TT> (Voronoi diagram)
 */

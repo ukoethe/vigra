@@ -298,7 +298,6 @@
         <DD> <em>image import/export interface if you want to call libtiff functions directly</em>
     </DL>
     
-    \anchor _details
     There are two fundamentally different approaches to interfacing between VIGRA and the rest of the world.
 
     <b>If you already have an image data type in your system:</b>

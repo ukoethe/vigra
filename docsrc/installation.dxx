@@ -62,7 +62,7 @@
     \endcode
     
     Call <tt>vigra-config --help</tt> for a complete list of options. You may also look
-    at <tt><vigra_path>/src/examples/Makefile</tt> for a usage example.
+    at <tt>&lt;vigra_path&gt;/src/examples/Makefile</tt> for a usage example.
     
     </ul>
 

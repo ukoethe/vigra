@@ -1141,7 +1141,7 @@ resizeImageInternalSplineInterpolation(SrcIterator is, SrcIterator iend, SrcAcce
 
     The function uses the bi-cubic, non-separable spline algorithm described in
     [Hoschek/Lasser:
-    {\it "Grundlagen der geometrischen Datenverarbeitung"}, Teubner, 1992] to obtain
+    <i>"Grundlagen der geometrischen Datenverarbeitung"</i>, Teubner, 1992] to obtain
     optimal interpolation quality.
 
     The range of both the input and output images (resp. regions)

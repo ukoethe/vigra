@@ -189,14 +189,14 @@ class StridedIteratorPolicy
     \htmlonly
     <td colspan=2>
     \endhtmlonly
-    <tt>ImageIterator::MoveX</td><td>type of the horizontal navigator</td>
+    <tt>ImageIterator::MoveX</tt></td><td>type of the horizontal navigator</td>
 </tr>
 <tr>
     <td>
     \htmlonly
     <td colspan=2>
     \endhtmlonly
-    <tt>ImageIterator::MoveY</td><td>type of the vertical navigator</td>
+    <tt>ImageIterator::MoveY</tt></td><td>type of the vertical navigator</td>
 </tr>
 <tr><td>
     \htmlonly

@@ -331,7 +331,7 @@ class BasicImage
     typedef PIXELTYPE &       reference;
 
         /** the BasicImage's const reference type (i.e. the
-            return type of <TT>image[diff] and <TT>image(dx,dy) </TT>
+            return type of <TT>image[diff]</TT> and <TT>image(dx,dy)</TT>
             when <TT>image</TT> is const)
         */
     typedef PIXELTYPE const & const_reference;

@@ -555,9 +555,9 @@ void convolveImage(
     Only pixel under the ROI are used in the calculations. Whenever a part of the
     kernel lies outside the ROI, the kernel is renormalized to its original
     norm (analogous to the CLIP \ref BorderTreatmentMode). An convolution result is
-    calculated whenever at the current kernel position {\it at least one pixel of the
-    kernel is within the ROI}. I.e., pixels not under the ROI may nevertheless
-    be assigned a value if they are {\it near} the ROI. Thus, this algorithm is also
+    calculated whenever at the current kernel position <i>at least one pixel of the
+    kernel is within the ROI</i>. I.e., pixels not under the ROI may nevertheless
+    be assigned a value if they are <i>near</i> the ROI. Thus, this algorithm is also
     useful as an interpolator. To get rid of the results outside the ROI mask, a
     subsequent \ref copyImageIf() must be performed.
 
