@@ -485,7 +485,7 @@ template <class DestValueType, class Multiplier = double>
 class LinearIntensityTransform
 {
   public:
-        /* the functors argument type (actually, since 
+        /* the functors argument type (actually, since
            <tt>operator()</tt> is a template, much more types are possible)
         */
     typedef DestValueType argument_type;
@@ -533,7 +533,7 @@ template <class DestValueType, class Multiplier = double>
 class ScalarIntensityTransform
 {
   public:
-        /* the functors argument type (actually, since 
+        /* the functors argument type (actually, since
            <tt>operator()</tt> is a template, much more types are possible)
         */
     typedef DestValueType argument_type;
@@ -585,7 +585,7 @@ class ScalarIntensityTransform
     If you leave out the second parameter / offset, you will get an
     optimized version of the functor which only scales by the given
     factor, however you have to make the template parameter (pixel
-    type) explicit.
+    type) explicit then.
 
     <b> Declaration:</b>
 
@@ -663,8 +663,8 @@ linearIntensityTransform(Multiplier scale)
     '<TT>destvalue = scale * (srcvalue + offset)</TT>' to every pixel,
     where <tt>scale = (dest_max - dest_min) / (src_max - src_min)</tt>
     and <tt>offset = dest_min / scale - src_min</tt>. As a result,
-    the pixel values <tt>src_max</tt>, <tt>src_min</tt> in the source image 
-    are mapped onto <tt>dest_max</tt>, <tt>dest_min</tt> respectively. 
+    the pixel values <tt>src_max</tt>, <tt>src_min</tt> in the source image
+    are mapped onto <tt>dest_max</tt>, <tt>dest_min</tt> respectively.
     This works for scalar as well as vector pixel types.
 
     <b> Declaration:</b>
@@ -673,7 +673,7 @@ linearIntensityTransform(Multiplier scale)
     namespace vigra {
         template <class SrcValueType, class DestValueType>
         LinearIntensityTransform<DestValueType, typename NumericTraits<DestValueType>::RealPromote>
-        linearRangeMapping(SrcValueType src_min, SrcValueType src_max, 
+        linearRangeMapping(SrcValueType src_min, SrcValueType src_max,
                            DestValueType dest_min, DestValueType dest_max );
     }
     \endcode
@@ -706,33 +706,33 @@ linearIntensityTransform(Multiplier scale)
 */
 template <class SrcValueType, class DestValueType>
 LinearIntensityTransform<DestValueType, typename NumericTraits<DestValueType>::RealPromote>
-linearRangeMapping(SrcValueType src_min, SrcValueType src_max, 
+linearRangeMapping(SrcValueType src_min, SrcValueType src_max,
                    DestValueType dest_min, DestValueType dest_max )
 {
     return linearRangeMapping(src_min, src_max, dest_min, dest_max,
             typename NumericTraits<DestValueType>::isScalar());
-} 
+}
 
 template <class SrcValueType, class DestValueType>
 LinearIntensityTransform<DestValueType, typename NumericTraits<DestValueType>::RealPromote>
 linearRangeMapping(
-    SrcValueType src_min, SrcValueType src_max, 
+    SrcValueType src_min, SrcValueType src_max,
     DestValueType dest_min, DestValueType dest_max,
     VigraTrueType /* isScalar */ )
 {
     typedef typename NumericTraits<DestValueType>::RealPromote Multiplier;
     Multiplier diff = src_max - src_min;
     Multiplier scale = diff == NumericTraits<Multiplier>::zero()
-                     ? NumericTraits<Multiplier>::one() 
+                     ? NumericTraits<Multiplier>::one()
                      : (dest_max - dest_min) / diff;
     return LinearIntensityTransform<DestValueType, Multiplier>(
                                    scale, dest_min / scale - src_min );
-} 
+}
 
 template <class SrcValueType, class DestValueType>
 LinearIntensityTransform<DestValueType, typename NumericTraits<DestValueType>::RealPromote>
 linearRangeMapping(
-    SrcValueType src_min, SrcValueType src_max, 
+    SrcValueType src_min, SrcValueType src_max,
     DestValueType dest_min, DestValueType dest_max,
     VigraFalseType /* isScalar */ )
 {
@@ -740,15 +740,15 @@ linearRangeMapping(
     typedef typename Multiplier::value_type MComponent;
     Multiplier scale(dest_max), offset(dest_max);
     for(unsigned int i=0; i<src_min.size(); ++i)
-    { 
+    {
         MComponent diff = src_max[i] - src_min[i];
         scale[i] = diff == NumericTraits<MComponent>::zero()
-                     ? NumericTraits<MComponent>::one() 
+                     ? NumericTraits<MComponent>::one()
                      : (dest_max[i] - dest_min[i]) / diff;
         offset[i] = dest_min[i] / scale[i] - src_min[i];
     }
     return LinearIntensityTransform<DestValueType, Multiplier>(scale, offset);
-} 
+}
 
 /********************************************************/
 /*                                                      */
