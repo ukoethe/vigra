@@ -590,7 +590,7 @@ class MultiIteratorBase
             */
         difference_type operator- (type const & d) const
         {
-            return (d.m_ptr - m_ptr) / m_stride[level];
+            return (m_ptr - d.m_ptr) / m_stride[level];
         }
 
         /* operators *, ->, ==, !=, < inherited */
@@ -777,7 +777,7 @@ class MultiIteratorBase <2>
         
         difference_type operator- (type const & d) const
         {
-            return (d.m_ptr - m_ptr) / m_stride[level];
+            return (m_ptr - d.m_ptr) / m_stride[level];
         }
 
         reference operator[] (difference_type n) const
@@ -936,7 +936,7 @@ class MultiIteratorBase <1>
         
         difference_type operator- (type const & d) const
         {
-            return (d.m_ptr - m_ptr);
+            return (m_ptr - d.m_ptr);
         }
 
         bool operator!= (const type &rhs) const
@@ -1303,7 +1303,7 @@ class StridedMultiIteratorBase
             */
         difference_type operator- (type const & d) const
         {
-            return (d.m_ptr - m_ptr) / m_stride[level];
+            return (m_ptr - d.m_ptr) / m_stride[level];
         }
 
         /* operators *, ->, ==, !=, < inherited */
@@ -1493,7 +1493,7 @@ class StridedMultiIteratorBase <2>
         
         difference_type operator- (type const & d) const
         {
-            return (d.m_ptr - m_ptr) / m_stride[level];
+            return (m_ptr - d.m_ptr) / m_stride[level];
         }
 
         reference operator[] (multi_difference_type const & d) const
@@ -1638,7 +1638,7 @@ class StridedMultiIteratorBase <1>
         
         difference_type operator- (type const & d) const
         {
-            return (d.m_ptr - m_ptr) / m_stride;
+            return (m_ptr - d.m_ptr) / m_stride;
         }
 
         reference operator[] (difference_type n) const
