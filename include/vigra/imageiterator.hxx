@@ -943,7 +943,7 @@ template <class T>
 struct IteratorTraits<ImageIterator<T> >
 {
     typedef ImageIterator<T>                     Iterator;
-    typedef Iterator                             iterator;
+    typedef ImageIterator<T>                     iterator;
     typedef typename iterator::iterator_category iterator_category;
     typedef typename iterator::value_type        value_type;
     typedef typename iterator::reference         reference;
@@ -960,7 +960,7 @@ template <class T>
 struct IteratorTraits<ConstImageIterator<T> >
 {
     typedef ConstImageIterator<T>                Iterator;
-    typedef Iterator                             iterator;
+    typedef ConstImageIterator<T>                iterator;
     typedef typename iterator::iterator_category iterator_category;
     typedef typename iterator::value_type        value_type;
     typedef typename iterator::reference         reference;
@@ -977,20 +977,20 @@ struct IteratorTraits<ConstImageIterator<T> >
 
 #define VIGRA_DEFINE_ITERATORTRAITS(ITERATOR, VALUETYPE, ACCESSOR) \
     template<> \
-    struct IteratorTraits<ITERATOR<VALUETYPE> > \
+    struct IteratorTraits<ITERATOR<VALUETYPE > > \
     { \
-        typedef ITERATOR<VALUETYPE>    Iterator; \
-        typedef Iterator                             iterator; \
-        typedef iterator::iterator_category          iterator_category; \
-        typedef iterator::value_type                 value_type; \
-        typedef iterator::reference                  reference; \
-        typedef iterator::index_reference            index_reference; \
-        typedef iterator::pointer                    pointer; \
-        typedef iterator::difference_type            difference_type; \
-        typedef iterator::row_iterator               row_iterator; \
-        typedef iterator::column_iterator            column_iterator; \
-        typedef ACCESSOR<VALUETYPE >                 default_accessor; \
-        typedef ACCESSOR<VALUETYPE >                 DefaultAccessor; \
+        typedef ITERATOR<VALUETYPE >                  Iterator; \
+        typedef ITERATOR<VALUETYPE >                  iterator; \
+        typedef iterator::iterator_category           iterator_category; \
+        typedef iterator::value_type                  value_type; \
+        typedef iterator::reference                   reference; \
+        typedef iterator::index_reference             index_reference; \
+        typedef iterator::pointer                     pointer; \
+        typedef iterator::difference_type             difference_type; \
+        typedef iterator::row_iterator                row_iterator; \
+        typedef iterator::column_iterator             column_iterator; \
+        typedef ACCESSOR<VALUETYPE >                  default_accessor; \
+        typedef ACCESSOR<VALUETYPE >                  DefaultAccessor; \
     };
 
 VIGRA_DEFINE_ITERATORTRAITS(ImageIterator, unsigned char, StandardValueAccessor)
