@@ -25,6 +25,7 @@
 
 #include <limits.h>
 #include <cfloat>
+#include <complex>
 #include "vigra/metaprogramming.hxx"
 
 /********************************************************/
@@ -702,7 +703,7 @@ struct Error_PromoteTraits_not_specialized_for_this_case { };
 template<class A, class B>
 struct PromoteTraits
 {
-        typedef Error_PromoteTraits_not_specialized_for_this_case Promote;
+    typedef Error_PromoteTraits_not_specialized_for_this_case Promote;
 };
 
 template<>
@@ -1661,6 +1662,41 @@ struct PromoteTraits<long double, long double>
     typedef long double Promote;
     static Promote toPromote(long double v) { return v; }
 };
+
+#ifndef NO_PARTIAL_TEMPLATE_SPECIALIZATION
+
+template <class T>
+struct PromoteTraits<std::complex<T>, std::complex<T> >
+{
+    typedef std::complex<typename PromoteTraits<T, T>::Promote> Promote;
+    static Promote toPromote(std::complex<T> const & v) { return v; }
+};
+
+template <class T1, class T2>
+struct PromoteTraits<std::complex<T1>, std::complex<T2> >
+{
+    typedef std::complex<typename PromoteTraits<T1, T2>::Promote> Promote;
+    static Promote toPromote(std::complex<T1> const & v) { return v; }
+    static Promote toPromote(std::complex<T2> const & v) { return v; }
+};
+
+template <class T1, class T2>
+struct PromoteTraits<std::complex<T1>, T2 >
+{
+    typedef std::complex<typename PromoteTraits<T1, T2>::Promote> Promote;
+    static Promote toPromote(std::complex<T1> const & v) { return v; }
+    static Promote toPromote(T2 const & v) { return Promote(v); }
+};
+
+template <class T1, class T2>
+struct PromoteTraits<T1, std::complex<T2> >
+{
+    typedef std::complex<typename PromoteTraits<T1, T2>::Promote> Promote;
+    static Promote toPromote(T1 const & v) { return Promote(v); }
+    static Promote toPromote(std::complex<T2> const & v) { return v; }
+};
+
+#endif
 
 namespace detail {
 
