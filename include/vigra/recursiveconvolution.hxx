@@ -492,11 +492,11 @@ void recursiveSmoothX(SrcImageIterator supperleft,
     
     for(y=0; y<h; ++y, ++supperleft.y, ++dupperleft.y)
     {
-        ConstRowIterator<SrcImageIterator> rs(supperleft);
-        RowIterator<DestImageIterator> rd(dupperleft);
+        typename SrcImageIterator::row_iterator rs = supperleft.rowIterator();
+        typename DestImageIterator::row_iterator rd = dupperleft.rowIterator();
 
-        recursiveSmoothLine(rs, rs+w, accessorAdapter(rs, as), 
-                            rd, accessorAdapter(rd, ad), 
+        recursiveSmoothLine(rs, rs+w, as, 
+                            rd, ad, 
                     scale);
     }
 }
@@ -579,11 +579,11 @@ void recursiveSmoothY(SrcImageIterator supperleft,
     
     for(x=0; x<w; ++x, ++supperleft.x, ++dupperleft.x)
     {
-        ConstColumnIterator<SrcImageIterator> cs(supperleft);
-        ColumnIterator<DestImageIterator> cd(dupperleft);
+        typename SrcImageIterator::column_iterator cs = supperleft.columnIterator();
+        typename DestImageIterator::column_iterator cd = dupperleft.columnIterator();
 
-        recursiveSmoothLine(cs, cs+h, accessorAdapter(cs, as), 
-                            cd, accessorAdapter(cd, ad), 
+        recursiveSmoothLine(cs, cs+h, as, 
+                            cd, ad, 
                     scale);
     }
 }
@@ -667,11 +667,11 @@ void recursiveFirstDerivativeX(SrcImageIterator supperleft,
     
     for(y=0; y<h; ++y, ++supperleft.y, ++dupperleft.y)
     {
-        ConstRowIterator<SrcImageIterator> rs(supperleft);
-        RowIterator<DestImageIterator> rd(dupperleft);
+        typename SrcImageIterator::row_iterator rs = supperleft.rowIterator();
+        typename DestImageIterator::row_iterator rd = dupperleft.rowIterator();
 
-        recursiveFirstDerivativeLine(rs, rs+w, accessorAdapter(rs, as), 
-                                     rd, accessorAdapter(rd, ad), 
+        recursiveFirstDerivativeLine(rs, rs+w, as, 
+                                     rd, ad, 
                          scale);
     }
 }
@@ -755,11 +755,11 @@ void recursiveFirstDerivativeY(SrcImageIterator supperleft,
     
     for(x=0; x<w; ++x, ++supperleft.x, ++dupperleft.x)
     {
-        ConstColumnIterator<SrcImageIterator> cs(supperleft);
-        ColumnIterator<DestImageIterator> cd(dupperleft);
+        typename SrcImageIterator::column_iterator cs = supperleft.columnIterator();
+        typename DestImageIterator::column_iterator cd = dupperleft.columnIterator();
 
-        recursiveFirstDerivativeLine(cs, cs+h, accessorAdapter(cs, as), 
-                                     cd, accessorAdapter(cd, ad), 
+        recursiveFirstDerivativeLine(cs, cs+h, as, 
+                                     cd, ad, 
                                      scale);
     }
 }
@@ -843,11 +843,11 @@ void recursiveSecondDerivativeX(SrcImageIterator supperleft,
     
     for(y=0; y<h; ++y, ++supperleft.y, ++dupperleft.y)
     {
-        ConstRowIterator<SrcImageIterator> rs(supperleft);
-        RowIterator<DestImageIterator> rd(dupperleft);
+        typename SrcImageIterator::row_iterator rs = supperleft.rowIterator();
+        typename DestImageIterator::row_iterator rd = dupperleft.rowIterator();
 
-        recursiveSecondDerivativeLine(rs, rs+w, accessorAdapter(rs, as), 
-                                      rd, accessorAdapter(rd, ad), 
+        recursiveSecondDerivativeLine(rs, rs+w, as, 
+                                      rd, ad, 
                                       scale);
     }
 }
@@ -931,11 +931,11 @@ void recursiveSecondDerivativeY(SrcImageIterator supperleft,
     
     for(x=0; x<w; ++x, ++supperleft.x, ++dupperleft.x)
     {
-        ConstColumnIterator<SrcImageIterator> cs(supperleft);
-        ColumnIterator<DestImageIterator> cd(dupperleft);
+        typename SrcImageIterator::column_iterator cs = supperleft.columnIterator();
+        typename DestImageIterator::column_iterator cd = dupperleft.columnIterator();
 
-        recursiveSecondDerivativeLine(cs, cs+h, accessorAdapter(cs, as), 
-                                      cd, accessorAdapter(cd, ad), 
+        recursiveSecondDerivativeLine(cs, cs+h, as, 
+                                      cd, ad, 
                                       scale);
     }
 }

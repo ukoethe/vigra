@@ -35,6 +35,37 @@ namespace vigra {
 
 /********************************************************/
 /*                                                      */
+/*                       copyLine                       */
+/*                                                      */
+/********************************************************/
+
+template <class SrcIterator, class SrcAccessor,
+          class DestIterator, class DestAccessor>
+void
+copyLine(SrcIterator s, 
+         SrcIterator send, SrcAccessor src,
+         DestIterator d, DestAccessor dest)
+{
+    for(; s != send; ++s, ++d)
+        dest.set(src(s), d);
+}
+
+template <class SrcIterator, class SrcAccessor,
+          class MaskIterator, class MaskAccessor, 
+          class DestIterator, class DestAccessor>
+void
+copyLineIf(SrcIterator s, 
+           SrcIterator send, SrcAccessor src,
+           MaskIterator m, MaskAccessor mask,
+           DestIterator d, DestAccessor dest)
+{
+    for(; s != send; ++s, ++d, ++m)
+        if(mask(m))
+            dest.set(src(s), d);
+}
+
+/********************************************************/
+/*                                                      */
 /*                        copyImage                     */
 /*                                                      */
 /********************************************************/
@@ -85,8 +116,8 @@ namespace vigra {
     \code
     SrcImageIterator src_upperleft, src_lowerright;
     DestImageIterator      dest_upperleft;
-    IteratorTraits<SrcImageIterator>::RowIterator sx(src_upperleft);
-    IteratorTraits<DestImageIterator>::RowIterator dx(dest_upperleft);
+    SrcImageIterator::row_iterator sx = src_upperleft.rowIterator();
+    DestImageIterator::row_iterator dx = dest_upperleft.rowIterator();
     
     SrcAccessor src_accessor;
     DestAccessor dest_accessor;
@@ -107,14 +138,9 @@ copyImage(SrcImageIterator src_upperleft,
     
     for(; src_upperleft.y<src_lowerright.y; ++src_upperleft.y, ++dest_upperleft.y)
     {
-        typename IteratorTraits<SrcImageIterator>::RowIterator six(src_upperleft);
-        typename IteratorTraits<SrcImageIterator>::RowIterator sixend = six + w;
-        typename IteratorTraits<DestImageIterator>::RowIterator dix(dest_upperleft);
-
-        for(; six < sixend; ++six, ++dix)
-        {
-            da.set(sa(six), dix);
-        }
+        copyLine(src_upperleft.rowIterator(), 
+                 src_upperleft.rowIterator() + w, sa, 
+                 dest_upperleft.rowIterator(), da);
     }
 }
     
@@ -188,9 +214,9 @@ copyImage(triple<SrcImageIterator, SrcImageIterator, SrcAccessor> src,
     SrcImageIterator src_upperleft, src_lowerright;
     DestImageIterator dest_upperleft;
     MaskImageIterator mask_upperleft;
-    IteratorTraits<SrcImageIterator>::RowIterator sx(src_upperleft);
-    IteratorTraits<MaskImageIterator>::RowIterator mx(mask_upperleft);
-    IteratorTraits<DestImageIterator>::RowIterator dx(dest_upperleft);
+    SrcImageIterator::row_iterator sx = src_upperleft.rowIterator();
+    MaskImageIterator::row_iterator mx = mask_upperleft.rowIterator();
+    DestImageIterator::row_iterator dx = dest_upperleft.rowIterator();
     
     SrcAccessor src_accessor;
     DestAccessor dest_accessor;
@@ -217,16 +243,10 @@ copyImageIf(SrcImageIterator src_upperleft,
     for(; src_upperleft.y<src_lowerright.y; 
              ++src_upperleft.y, ++mask_upperleft.y, ++dest_upperleft.y)
     {
-        typename IteratorTraits<SrcImageIterator>::RowIterator six(src_upperleft);
-        typename IteratorTraits<SrcImageIterator>::RowIterator sixend = six + w;
-        typename IteratorTraits<MaskImageIterator>::RowIterator mx(mask_upperleft);
-        typename IteratorTraits<DestImageIterator>::RowIterator dix(dest_upperleft);
-
-        for(; six < sixend; ++six, ++mx, ++dix)
-        {
-            if(ma(mx)) 
-                da.set(sa(six), dix);
-        }
+        copyLineIf(src_upperleft.rowIterator(), 
+                   src_upperleft.rowIterator() + w, sa, 
+                   mask_upperleft.rowIterator(), ma, 
+                   dest_upperleft.rowIterator(), da);
     }
 }
 

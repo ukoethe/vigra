@@ -103,9 +103,9 @@ void internalNonlinearDiffusionAOSStep(
     // x-direction
     for(y=0; y<h; ++y, ++ys.y, ++yd.y, ++yw.y)
     {
-        ConstRowIterator<SrcIterator> xs(ys);
-        ConstRowIterator<WeightIterator> xw(yw);
-        RowIterator<DestIterator> xd(yd);
+        typename SrcIterator::row_iterator xs = ys.rowIterator();
+        typename WeightIterator::row_iterator xw = yw.rowIterator();
+        typename DestIterator::row_iterator xd = yd.rowIterator();
 
         // fill 3-diag matrix
         
@@ -138,9 +138,9 @@ void internalNonlinearDiffusionAOSStep(
     
     for(x=0; x<w; ++x, ++ys.x, ++yd.x, ++yw.x)
     {
-        ConstColumnIterator<SrcIterator> xs(ys);
-        ConstColumnIterator<WeightIterator> xw(yw);
-        ColumnIterator<DestIterator> xd(yd);
+        typename SrcIterator::column_iterator xs = ys.columnIterator();
+        typename WeightIterator::column_iterator xw = yw.columnIterator();
+        typename DestIterator::column_iterator xd = yd.columnIterator();
 
         // fill 3-diag matrix
         

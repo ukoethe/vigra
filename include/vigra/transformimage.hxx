@@ -38,6 +38,40 @@ namespace vigra {
 
 /********************************************************/
 /*                                                      */
+/*                      transformLine                   */
+/*                                                      */
+/********************************************************/
+
+template <class SrcIterator, class SrcAccessor,
+          class DestIterator, class DestAccessor, class Functor>
+void
+transformLine(SrcIterator s, 
+              SrcIterator send, SrcAccessor src,
+              DestIterator d, DestAccessor dest,
+              Functor const & f)
+{
+    for(; s != send; ++s, ++d)
+        dest.set(f(src(s)), d);
+}
+
+template <class SrcIterator, class SrcAccessor,
+          class MaskIterator, class MaskAccessor, 
+          class DestIterator, class DestAccessor, 
+          class Functor>
+void
+transformLineIf(SrcIterator s, 
+                SrcIterator send, SrcAccessor src,
+                MaskIterator m, MaskAccessor mask,
+                DestIterator d, DestAccessor dest,
+                Functor const & f)
+{
+    for(; s != send; ++s, ++d, ++m)
+        if(mask(m))
+            dest.set(f(src(s)), d);
+}
+
+/********************************************************/
+/*                                                      */
 /*                      transformImage                  */
 /*                                                      */
 /********************************************************/
@@ -99,8 +133,8 @@ namespace vigra {
     \code
     SrcImageIterator src_upperleft, src_lowerright;
     DestImageIterator      dest_upperleft;
-    IteratorTraits<SrcImageIterator>::RowIterator sx(src_upperleft);
-    IteratorTraits<DestImageIterator>::RowIterator dx(dest_upperleft);
+    SrcImageIterator::row_iterator sx = src_upperleft.rowIterator();
+    DestImageIterator::row_iterator dx = dest_upperleft.rowIterator();
     
     SrcAccessor src_accessor;
     DestAccessor dest_accessor;
@@ -124,14 +158,9 @@ transformImage(SrcImageIterator src_upperleft,
     
     for(; src_upperleft.y < src_lowerright.y; ++src_upperleft.y, ++dest_upperleft.y)
     {
-        typename IteratorTraits<SrcImageIterator>::RowIterator six(src_upperleft);
-        typename IteratorTraits<SrcImageIterator>::RowIterator send = six + w;
-        typename IteratorTraits<DestImageIterator>::RowIterator dix(dest_upperleft);
-
-        for(; six != send; ++six, ++dix)
-        {
-            da.set(f(sa(six)), dix);
-        }
+        transformLine(src_upperleft.rowIterator(), 
+                      src_upperleft.rowIterator() + w, sa, 
+                      dest_upperleft.rowIterator(), da, f);
     }
 }
     
@@ -220,9 +249,9 @@ transformImage(triple<SrcImageIterator, SrcImageIterator, SrcAccessor> src,
     SrcImageIterator src_upperleft, src_lowerright;
     DestImageIterator  dest_upperleft;
     MaskImageIterator mask_upperleft;
-    IteratorTraits<SrcImageIterator>::RowIterator sx(src_upperleft);
-    IteratorTraits<MaskImageIterator>::RowIterator mx(mask_upperleft);
-    IteratorTraits<DestImageIterator>::RowIterator dx(dest_upperleft);
+    SrcImageIterator::row_iterator sx = src_upperleft.rowIterator();
+    MaskImageIterator::row_iterator mx = mask_upperleft.rowIterator();
+    DestImageIterator::row_iterator dx = dest_upperleft.rowIterator();
     
     SrcAccessor src_accessor;
     DestAccessor dest_accessor;
@@ -251,16 +280,10 @@ transformImageIf(SrcImageIterator src_upperleft,
     for(; src_upperleft.y < src_lowerright.y; 
              ++src_upperleft.y, ++mask_upperleft.y, ++dest_upperleft.y)
     {
-        typename IteratorTraits<SrcImageIterator>::RowIterator six(src_upperleft);
-        typename IteratorTraits<SrcImageIterator>::RowIterator send = six + w;
-        typename IteratorTraits<MaskImageIterator>::RowIterator mx(mask_upperleft);
-        typename IteratorTraits<DestImageIterator>::RowIterator dix(dest_upperleft);
-
-        for(; six != send; ++six, ++mx, ++dix)
-        {
-            if(ma(mx)) 
-                da.set(f(sa(six)), dix);
-        }
+        transformLineIf(src_upperleft.rowIterator(), 
+                        src_upperleft.rowIterator() + w, sa, 
+                        mask_upperleft.rowIterator(), ma,
+                        dest_upperleft.rowIterator(), da, f);
     }
 }
 

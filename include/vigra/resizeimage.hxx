@@ -247,9 +247,9 @@ resizeImageInternalSplineInterpolation(SrcIterator is, SrcIterator iend, SrcAcce
     // calculate x derivatives
     for(y=0; y<h; ++y, ++in.y, ++idx.y)
     {
-        ConstRowIterator<SrcIterator> sr = in;
-        RowIterator<TMPITER> dr = idx;
-        resizeImageInternalSplineGradient(sr, sr+w, accessorAdapter(sr, sa),
+        typename SrcIterator::row_iterator sr = in.rowIterator();
+        typename TMPITER::row_iterator dr = idx.rowIterator();
+        resizeImageInternalSplineGradient(sr, sr+w, sa,
                                           it, r, dr);
     }
     
@@ -258,9 +258,9 @@ resizeImageInternalSplineInterpolation(SrcIterator is, SrcIterator iend, SrcAcce
     // calculate y derivatives
     for(x=0; x<w; ++x, ++in.x, ++idy.x)
     {
-        ConstColumnIterator<SrcIterator> sc = in;
-        ColumnIterator<TMPITER> dc = idy;
-        resizeImageInternalSplineGradient(sc, sc+h, accessorAdapter(sc, sa),  
+        typename SrcIterator::column_iterator sc = in.columnIterator();
+        typename TMPITER::column_iterator dc = idy.columnIterator();
+        resizeImageInternalSplineGradient(sc, sc+h, sa,  
                                           it, r, dc);
     }
         
@@ -270,9 +270,9 @@ resizeImageInternalSplineInterpolation(SrcIterator is, SrcIterator iend, SrcAcce
     // calculate mixed derivatives
     for(y=0; y<h; ++y, ++idy.y, ++idxy.y)
     {
-        RowIterator<TMPITER> sr = idy;
-        RowIterator<TMPITER> dr = idxy;
-        resizeImageInternalSplineGradient(sr, sr+w, accessorAdapter(sr, ta), 
+        typename TMPITER::row_iterator sr = idy.rowIterator();
+        typename TMPITER::row_iterator dr = idxy.rowIterator();
+        resizeImageInternalSplineGradient(sr, sr+w, ta, 
                                           it, r, dr);
     }
     
@@ -722,6 +722,8 @@ resizeImageLinearInterpolation(SrcIterator is, SrcIterator iend, SrcAccessor sa,
     
     typedef typename SrcAccessor::value_type SRCVT;
     typedef typename NumericTraits<SRCVT>::RealPromote TMPTYPE;
+    typedef BasicImage<TMPTYPE> TmpImage;
+    typedef typename TmpImage::traverser TmpImageIterator;
     
     BasicImage<TMPTYPE> tmp(w, hnew);
     std::vector<TMPTYPE> coeffs((h > w) ? h : w);
@@ -730,26 +732,25 @@ resizeImageLinearInterpolation(SrcIterator is, SrcIterator iend, SrcAccessor sa,
     int x,y;
     
     typename BasicImage<TMPTYPE>::Iterator yt = tmp.upperLeft();
-    RowIterator<typename BasicImage<TMPTYPE>::Iterator> 
-                                           lt(line.upperLeft());
+    typename TmpImageIterator::row_iterator lt = line.upperLeft().rowIterator();
     
     for(x=0; x<w; ++x, ++is.x, ++yt.x)
     {
-        ConstColumnIterator<SrcIterator> c1(is);
-        ColumnIterator<typename BasicImage<TMPTYPE>::Iterator> ct(yt);
+        typename SrcIterator::column_iterator c1 = is.columnIterator();
+        typename TmpImageIterator::column_iterator ct = yt.columnIterator();
     
         if(hnew < h)
         {
-            resizeBandLimitLine(c1, c1 + h, accessorAdapter(c1, sa), coeffs, 
-                 lt, accessorAdapter(lt, line.accessor()), (double)h/hnew/scale);
+            resizeBandLimitLine(c1, c1 + h, sa, coeffs, 
+                 lt, line.accessor(), (double)h/hnew/scale);
 
-            resizeLineLinearInterpolation(lt, lt + h, accessorAdapter(lt, line.accessor()), 
-                                          ct, ct + hnew, accessorAdapter(ct, tmp.accessor()));
+            resizeLineLinearInterpolation(lt, lt + h, line.accessor(), 
+                                          ct, ct + hnew, tmp.accessor());
         }
         else
         {
-            resizeLineLinearInterpolation(c1, c1 + h, accessorAdapter(c1, sa), 
-                                          ct, ct + hnew, accessorAdapter(ct, tmp.accessor()));
+            resizeLineLinearInterpolation(c1, c1 + h, sa, 
+                                          ct, ct + hnew, tmp.accessor());
         }
     }
     
@@ -757,21 +758,21 @@ resizeImageLinearInterpolation(SrcIterator is, SrcIterator iend, SrcAccessor sa,
     
     for(y=0; y < hnew; ++y, ++yt.y, ++id.y)
     {
-        RowIterator<DestIterator> rd(id);
-        RowIterator<typename BasicImage<TMPTYPE>::Iterator> rt(yt);
+        typename DestIterator::row_iterator rd = id.rowIterator();
+        typename TmpImageIterator::row_iterator rt = yt.rowIterator();
     
         if(wnew < w)
         {
-            resizeBandLimitLine(rt, rt + w, accessorAdapter(rt, tmp.accessor()), coeffs,
-                              lt, accessorAdapter(lt, line.accessor()), (double)w/wnew/scale);
+            resizeBandLimitLine(rt, rt + w, tmp.accessor(), coeffs,
+                              lt, line.accessor(), (double)w/wnew/scale);
 
-            resizeLineLinearInterpolation(lt, lt + w, accessorAdapter(lt, line.accessor()), 
-                                          rd, rd + wnew, accessorAdapter(rd, da));
+            resizeLineLinearInterpolation(lt, lt + w, line.accessor(), 
+                                          rd, rd + wnew, da);
         }
         else
         {
-            resizeLineLinearInterpolation(rt, rt + w, accessorAdapter(rt, tmp.accessor()),  
-                                          rd, rd + wnew, accessorAdapter(rd, da));
+            resizeLineLinearInterpolation(rt, rt + w, tmp.accessor(),  
+                                          rd, rd + wnew, da);
         }
     }
 }
@@ -925,6 +926,8 @@ resizeImageNoInterpolation(SrcIterator is, SrcIterator iend, SrcAccessor sa,
          "Destination image to small.\n");
         
     typedef typename SrcAccessor::value_type SRCVT;
+    typedef BasicImage<SRCVT> TmpImage;
+    typedef typename TmpImage::traverser TmpImageIterator;
 
     BasicImage<SRCVT> tmp(w, hnew);
     
@@ -934,22 +937,22 @@ resizeImageNoInterpolation(SrcIterator is, SrcIterator iend, SrcAccessor sa,
 
     for(x=0; x<w; ++x, ++is.x, ++yt.x)
     {
-        ConstColumnIterator<SrcIterator> c1(is);
-        ColumnIterator<typename BasicImage<SRCVT>::Iterator> ct(yt);
+        typename SrcIterator::column_iterator c1 = is.columnIterator();
+        typename TmpImageIterator::column_iterator ct = yt.columnIterator();
     
-    resizeLineNoInterpolation(c1, c1 + h, accessorAdapter(c1, sa), 
-                              ct, ct + hnew, accessorAdapter(ct, tmp.accessor()));
+    resizeLineNoInterpolation(c1, c1 + h, sa, 
+                              ct, ct + hnew, tmp.accessor());
     }
     
     yt = tmp.upperLeft();
     
     for(y=0; y < hnew; ++y, ++yt.y, ++id.y)
     {
-        RowIterator<DestIterator> rd(id);
-        RowIterator<typename BasicImage<SRCVT>::Iterator> rt(yt);
+        typename DestIterator::row_iterator rd = id.rowIterator();
+        typename TmpImageIterator::row_iterator rt = yt.rowIterator();
     
-    resizeLineNoInterpolation(rt, rt + w, accessorAdapter(rt, tmp.accessor()),  
-                  rd, rd + wnew, accessorAdapter(rd, da));
+    resizeLineNoInterpolation(rt, rt + w, tmp.accessor(),  
+                  rd, rd + wnew, da);
     }
 }
 

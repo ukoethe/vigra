@@ -38,6 +38,59 @@ namespace vigra {
 
 /********************************************************/
 /*                                                      */
+/*                    combine...Lines                   */
+/*                                                      */
+/********************************************************/
+
+template <class SrcIterator1, class SrcAccessor1,
+          class SrcIterator2, class SrcAccessor2,
+          class DestIterator, class DestAccessor, class Functor>
+void
+combineTwoLines(SrcIterator1 s1, 
+                SrcIterator1 s1end, SrcAccessor1 src1,
+                SrcIterator2 s2, SrcAccessor2 src2,
+                DestIterator d, DestAccessor dest,
+                Functor const & f)
+{
+    for(; s1 != s1end; ++s1, ++s2, ++d)
+        dest.set(f(src1(s1), src2(s2)), d);
+}
+
+template <class SrcIterator1, class SrcAccessor1,
+          class SrcIterator2, class SrcAccessor2,
+          class MaskIterator, class MaskAccessor, 
+          class DestIterator, class DestAccessor, class Functor>
+void
+combineTwoLinesIf(SrcIterator1 s1, 
+                  SrcIterator1 s1end, SrcAccessor1 src1,
+                  SrcIterator2 s2, SrcAccessor2 src2,
+                  MaskIterator m, MaskAccessor mask,
+                  DestIterator d, DestAccessor dest,
+                  Functor const & f)
+{
+    for(; s1 != s1end; ++s1, ++s2, ++m, ++d)
+        if(mask(m))
+            dest.set(f(src1(s1), src2(s2)), d);
+}
+
+template <class SrcIterator1, class SrcAccessor1,
+          class SrcIterator2, class SrcAccessor2,
+          class SrcIterator3, class SrcAccessor3,
+          class DestIterator, class DestAccessor, class Functor>
+void
+combineThreeLines(SrcIterator1 s1, 
+                  SrcIterator1 s1end, SrcAccessor1 src1,
+                  SrcIterator2 s2, SrcAccessor2 src2,
+                  SrcIterator3 s3, SrcAccessor3 src3,
+                  DestIterator d, DestAccessor dest,
+                  Functor const & f)
+{
+    for(; s1 != s1end; ++s1, ++s2, ++s3, ++d)
+        dest.set(f(src1(s1), src2(s2), src3(s3)), d);
+}
+
+/********************************************************/
+/*                                                      */
 /*                    combineTwoImages                  */
 /*                                                      */
 /********************************************************/
@@ -112,9 +165,9 @@ namespace vigra {
     SrcImageIterator1 src1_upperleft, src1_lowerright;
     SrcImageIterator2 src2_upperleft;
     DestImageIterator dest_upperleft;
-    IteratorTraits<SrcImageIterator1>::RowIterator sx1(src1_upperleft);
-    IteratorTraits<SrcImageIterator2>::RowIterator sx2(src2_upperleft);
-    IteratorTraits<DestImageIterator>::RowIterator dx(dest_upperleft);
+    SrcImageIterator1::row_iterator sx1 = src1_upperleft.rowIterator();
+    SrcImageIterator2::row_iterator sx2 = src2_upperleft.rowIterator();
+    DestImageIterator::row_iterator dx = dest_upperleft.rowIterator();
     
     SrcAccessor1 src1_accessor;
     SrcAccessor2 src2_accessor;
@@ -146,15 +199,10 @@ combineTwoImages(SrcImageIterator1 src1_upperleft,
     for(; src1_upperleft.y < src1_lowerright.y; 
             ++src1_upperleft.y, ++src2_upperleft.y, ++dest_upperleft.y)
     {
-        typename IteratorTraits<SrcImageIterator1>::RowIterator ix1(src1_upperleft);
-        typename IteratorTraits<SrcImageIterator1>::RowIterator ix1end = ix1 + w;
-        typename IteratorTraits<SrcImageIterator2>::RowIterator ix2(src2_upperleft);
-        typename IteratorTraits<DestImageIterator>::RowIterator dix(dest_upperleft);
-
-        for(; ix1 != ix1end; ++ix1, ++ix2, ++dix)
-        {
-            da.set(f(sa1(ix1), sa2(ix2)), dix);
-        }
+        combineTwoLines(src1_upperleft.rowIterator(), 
+                        src1_upperleft.rowIterator() + w, sa1, 
+                        src2_upperleft.rowIterator(), sa2, 
+                        dest_upperleft.rowIterator(), da, f);
     }
 }
     
@@ -258,10 +306,10 @@ combineTwoImages(triple<SrcImageIterator1, SrcImageIterator1, SrcAccessor1> src1
     SrcImageIterator2 src2_upperleft;
     MaskImageIterator mask_upperleft;
     DestImageIterator dest_upperleft;
-    IteratorTraits<SrcImageIterator1>::RowIterator sx1(src1_upperleft);
-    IteratorTraits<SrcImageIterator2>::RowIterator sx2(src2_upperleft);
-    IteratorTraits<MaskImageIterator>::RowIterator mx(mask_upperleft);
-    IteratorTraits<DestImageIterator>::RowIterator dx(dest_upperleft);
+    SrcImageIterator1::row_iterator sx1 = src1_upperleft.rowIterator();
+    SrcImageIterator2::row_iterator sx2 = src2_upperleft.rowIterator();
+    MaskImageIterator::row_iterator mx = mask_upperleft.rowIterator();
+    DestImageIterator::row_iterator dx = dest_upperleft.rowIterator();
     
     
     SrcAccessor1 src1_accessor;
@@ -298,17 +346,11 @@ combineTwoImagesIf(SrcImageIterator1 src1_upperleft,
           ++src1_upperleft.y, ++src2_upperleft.y, 
           ++dest_upperleft.y, ++mask_upperleft.y)
     {
-        typename IteratorTraits<SrcImageIterator1>::RowIterator ix1(src1_upperleft);
-        typename IteratorTraits<SrcImageIterator1>::RowIterator ix1end = ix1 + w;
-        typename IteratorTraits<SrcImageIterator2>::RowIterator ix2(src2_upperleft);
-        typename IteratorTraits<MaskImageIterator>::RowIterator mix(mask_upperleft);
-        typename IteratorTraits<DestImageIterator>::RowIterator dix(dest_upperleft);
-
-        for(; ix1 != ix1end; ++ix1, ++ix2, ++dix, ++mix)
-        {
-            if(ma(mix)) 
-                da.set(f(sa1(ix1), sa2(ix2)), dix);
-        }
+        combineTwoLinesIf(src1_upperleft.rowIterator(), 
+                          src1_upperleft.rowIterator() + w, sa1, 
+                          src2_upperleft.rowIterator(), sa2, 
+                          mask_upperleft.rowIterator(), ma, 
+                          dest_upperleft.rowIterator(), da, f);
     }
 }
     
@@ -404,10 +446,10 @@ combineTwoImagesIf(triple<SrcImageIterator1, SrcImageIterator1, SrcAccessor1> sr
     SrcImageIterator2 src2_upperleft;
     SrcImageIterator3 src3_upperleft;
     DestImageIterator dest_upperleft;
-    IteratorTraits<SrcImageIterator1>::RowIterator sx1(src1_upperleft);
-    IteratorTraits<SrcImageIterator2>::RowIterator sx2(src2_upperleft);
-    IteratorTraits<SrcImageIterator3>::RowIterator sx3(src3_upperleft);
-    IteratorTraits<DestImageIterator>::RowIterator dx(dest_upperleft);
+    SrcImageIterator1::row_iterator sx1 = src1_upperleft.rowIterator();
+    SrcImageIterator2::row_iterator sx2 = src2_upperleft.rowIterator();
+    SrcImageIterator3::row_iterator sx3 = src3_upperleft.rowIterator();
+    DestImageIterator::row_iterator dx = dest_upperleft.rowIterator();
     
     SrcAccessor1 src1_accessor;
     SrcAccessor2 src2_accessor;
@@ -445,16 +487,11 @@ combineThreeImages(SrcImageIterator1 src1_upperleft,
         ++src1_upperleft.y, ++src2_upperleft.y, ++src3_upperleft.y, 
         ++dest_upperleft.y)
     {
-        typename IteratorTraits<SrcImageIterator1>::RowIterator ix1(src1_upperleft);
-        typename IteratorTraits<SrcImageIterator1>::RowIterator ix1end = ix1 + w;
-        typename IteratorTraits<SrcImageIterator2>::RowIterator ix2(src2_upperleft);
-        typename IteratorTraits<SrcImageIterator3>::RowIterator ix3(src3_upperleft);
-        typename IteratorTraits<DestImageIterator>::RowIterator dix(dest_upperleft);
-
-        for(; ix1 != ix1end; ++ix1, ++ix2, ++ix3, ++dix)
-        {
-            da.set(f(sa1(ix1), sa2(ix2), sa3(ix3)), dix);
-        }
+        combineThreeLines(src1_upperleft.rowIterator(), 
+                          src1_upperleft.rowIterator() + w, sa1, 
+                          src2_upperleft.rowIterator(), sa2, 
+                          src3_upperleft.rowIterator(), sa3, 
+                          dest_upperleft.rowIterator(), da, f);
     }
 }
     

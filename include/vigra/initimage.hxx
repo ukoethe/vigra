@@ -36,6 +36,34 @@ namespace vigra {
 
 /********************************************************/
 /*                                                      */
+/*                       initLine                       */
+/*                                                      */
+/********************************************************/
+
+template <class DestIterator, class DestAccessor, class VALUETYPE>
+void
+initLine(DestIterator d, DestIterator dend, DestAccessor dest,
+         VALUETYPE v)
+{
+    for(; d != dend; ++d)
+        dest.set(v, d);
+}
+
+template <class DestIterator, class DestAccessor, 
+          class MaskIterator, class MaskAccessor, 
+          class VALUETYPE>
+void
+initLineIf(DestIterator d, DestIterator dend, DestAccessor dest,
+           MaskIterator m, MaskAccessor mask,
+           VALUETYPE v)
+{
+    for(; d != dend; ++d, ++m)
+        if(mask(m))
+            dest.set(v, d);
+}
+
+/********************************************************/
+/*                                                      */
 /*                        initImage                     */
 /*                                                      */
 /********************************************************/
@@ -83,7 +111,7 @@ namespace vigra {
     
     \code
     ImageIterator upperleft, lowerright;
-    IteratorTraits<ImageIterator>::RowIterator ix(upperleft);
+    ImageIterator::row_iterator ix = upperleft.rowIterator();
     
     Accessor accessor;
     VALUETYPE v;
@@ -101,13 +129,8 @@ initImage(ImageIterator upperleft, ImageIterator lowerright,
     
     for(; upperleft.y < lowerright.y; ++upperleft.y)
     {
-        typename IteratorTraits<ImageIterator>::RowIterator ix(upperleft);
-        typename IteratorTraits<ImageIterator>::RowIterator ixend = ix + w;
-    
-        for(; ix != ixend; ++ix)
-        {
-            a.set(v, ix);
-        }
+        initLine(upperleft.rowIterator(), 
+                 upperleft.rowIterator() + w, a, v);
     }
 }
     
@@ -178,8 +201,8 @@ initImage(triple<ImageIterator, ImageIterator, Accessor> img, VALUETYPE v)
     \code
     ImageIterator upperleft, lowerright;
     MaskImageIterator mask_upperleft;
-    IteratorTraits<ImageIterator>::RowIterator ix(upperleft);
-    teratorTraits<MaskImageIterator>::RowIterator mx(mask_upperleft);
+    ImageIterator::row_iterator ix = upperleft.rowIterator();
+    MaskImageIterator::row_iterator mx = mask_upperleft.rowIterator();
     
     Accessor accessor;
     MaskAccessor mask_accessor;
@@ -201,15 +224,9 @@ initImageIf(ImageIterator upperleft, ImageIterator lowerright, Accessor a,
         
     for(; upperleft.y < lowerright.y; ++upperleft.y, ++mask_upperleft.y)
     {
-        typename IteratorTraits<ImageIterator>::RowIterator ix(upperleft);
-        typename IteratorTraits<ImageIterator>::RowIterator ixend = ix + w;
-        typename IteratorTraits<MaskImageIterator>::RowIterator mx(mask_upperleft);
-    
-        for(; ix < ixend; ++ix, ++mx)
-        {
-            if(ma(mx)) 
-                a.set(v, ix);
-        }
+        initLineIf(upperleft.rowIterator(), 
+                   upperleft.rowIterator() + w, a, 
+                   mask_upperleft.rowIterator(), ma, v);
     }
 }
     

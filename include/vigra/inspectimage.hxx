@@ -40,6 +40,65 @@ namespace vigra {
 
 /********************************************************/
 /*                                                      */
+/*                      inspectLine                     */
+/*                                                      */
+/********************************************************/
+
+template <class SrcIterator, class SrcAccessor, class Functor>
+void
+inspectLine(SrcIterator s, 
+            SrcIterator send, SrcAccessor src,
+            Functor & f)
+{
+    for(; s != send; ++s)
+        f(src(s));
+}
+
+template <class SrcIterator, class SrcAccessor,
+          class MaskIterator, class MaskAccessor, 
+          class Functor>
+void
+inspectLineIf(SrcIterator s, 
+              SrcIterator send, SrcAccessor src,
+              MaskIterator m, MaskAccessor mask,
+              Functor & f)
+{
+    for(; s != send; ++s, ++m)
+        if(mask(m))
+            f(src(s));
+}
+
+template <class SrcIterator1, class SrcAccessor1,
+          class SrcIterator2, class SrcAccessor2, 
+          class Functor>
+void
+inspectTwoLines(SrcIterator1 s1, 
+                SrcIterator1 s1end, SrcAccessor1 src1,
+                SrcIterator2 s2, SrcAccessor2 src2,
+                Functor & f)
+{
+    for(; s1 != s1end; ++s1, ++s2)
+        f(src1(s1), src2(s2));
+}
+
+template <class SrcIterator1, class SrcAccessor1,
+          class SrcIterator2, class SrcAccessor2, 
+          class MaskIterator, class MaskAccessor, 
+          class Functor>
+void
+inspectTwoLinesIf(SrcIterator1 s1, 
+                  SrcIterator1 s1end, SrcAccessor1 src1,
+                  SrcIterator2 s2, SrcAccessor2 src2,
+                  MaskIterator m, MaskAccessor mask,
+                  Functor & f)
+{
+    for(; s1 != s1end; ++s1, ++s2, ++m)
+        if(mask(m))
+            f(src1(s1), src2(s2));
+}
+
+/********************************************************/
+/*                                                      */
 /*                        inspectImage                  */
 /*                                                      */
 /********************************************************/
@@ -94,7 +153,7 @@ namespace vigra {
     
     \code
     ConstImageIterator upperleft, lowerright;
-    IteratorTraits<ConstImageIterator>::RowIterator ix(upperleft);
+    ConstImageIterator::row_iterator ix = upperleft.rowIterator();
     
     Accessor accessor;
     Functor functor;
@@ -112,13 +171,8 @@ inspectImage(ImageIterator upperleft, ImageIterator lowerright,
     
     for(; upperleft.y<lowerright.y; ++upperleft.y)
     {
-        typename IteratorTraits<ImageIterator>::RowIterator ix(upperleft);
-        typename IteratorTraits<ImageIterator>::RowIterator ixend = ix + w;
-    
-        for(; ix < ixend; ++ix)
-        {
-            f(a(ix));
-        }
+        inspectLine(upperleft.rowIterator(), 
+                    upperleft.rowIterator() + w, a, f);
     }
 }
     
@@ -197,8 +251,8 @@ inspectImage(triple<ImageIterator, ImageIterator, Accessor> img,
     \code
     ConstImageIterator upperleft, lowerright;
     MaskImageIterator mask_upperleft;
-    IteratorTraits<ConstImageIterator>::RowIterator ix(upperleft);
-    IteratorTraits<MaskImageIterator>::RowIterator mx(mask_upperleft);
+    ConstImageIterator::row_iterator ix = upperleft.rowIterator();
+    MaskImageIterator::row_iterator mx = mask_upperleft.rowIterator();
     
     Accessor accessor;
     MaskAccessor mask_accessor;
@@ -221,15 +275,9 @@ inspectImageIf(ImageIterator upperleft,
             
     for(; upperleft.y<lowerright.y; ++upperleft.y, ++mask_upperleft.y)
     {
-        typename IteratorTraits<ImageIterator>::RowIterator ix(upperleft);
-        typename IteratorTraits<ImageIterator>::RowIterator ixend = ix + w;
-        typename IteratorTraits<MaskImageIterator>::RowIterator mx(mask_upperleft);
-    
-        for(; ix < ixend; ++ix, ++mx)
-        {
-            if(ma(mx)) 
-                f(a(ix));
-        }
+        inspectLineIf(upperleft.rowIterator(), 
+                      upperleft.rowIterator() + w, a, 
+                      mask_upperleft.rowIterator(), ma, f);
     }
 }
 
@@ -310,8 +358,8 @@ inspectImageIf(triple<ImageIterator, ImageIterator, Accessor> img,
     \code
     ImageIterator1 upperleft1, lowerright1;
     ImageIterator2 upperleft2;
-    IteratorTraits<ImageIterator1>::RowIterator ix1(upperleft1);
-    IteratorTraits<ImageIterator2>::RowIterator ix2(upperleft2);
+    ImageIterator1::row_iterator ix1 = upperleft1.rowIterator();
+    ImageIterator2::row_iterator ix2 = upperleft2.rowIterator();
     
     Accessor1 accessor1;
     Accessor2 accessor2;
@@ -333,14 +381,9 @@ inspectTwoImages(ImageIterator1 upperleft1, ImageIterator1 lowerright1, Accessor
     
     for(; upperleft1.y<lowerright1.y; ++upperleft1.y, ++upperleft2.y)
     {
-        typename IteratorTraits<ImageIterator1>::RowIterator ix1(upperleft1);
-        typename IteratorTraits<ImageIterator1>::RowIterator ix1end = ix1 + w;
-        typename IteratorTraits<ImageIterator2>::RowIterator ix2(upperleft2);
-    
-        for(; ix1 < ix1end; ++ix1, ++ix2)
-        {
-            f(a1(ix1), a2(ix2));
-        }
+        inspectTwoLines(upperleft1.rowIterator(), 
+                        upperleft1.rowIterator() + w, a1, 
+                        upperleft2.rowIterator(), a2, f);
     }
 }
 
@@ -428,9 +471,9 @@ inspectTwoImages(triple<ImageIterator1, ImageIterator1, Accessor1> img1,
     ImageIterator1 upperleft1, lowerright1;
     ImageIterator2 upperleft2;
     MaskImageIterator upperleftm;
-    IteratorTraits<ImageIterator1>::RowIterator ix1(upperleft1);
-    IteratorTraits<ImageIterator2>::RowIterator ix2(upperleft2);
-    IteratorTraits<MaskImageIterator>::RowIterator mx(mupperleft);
+    ImageIterator1::row_iterator ix1 = upperleft1.rowIterator();
+    ImageIterator2::row_iterator ix2 = upperleft2.rowIterator();
+    MaskImageIterator::row_iterator mx = mupperleft.rowIterator();
     
     Accessor1 accessor1;
     Accessor2 accessor2;
@@ -456,16 +499,10 @@ inspectTwoImagesIf(ImageIterator1 upperleft1, ImageIterator1 lowerright1, Access
     
     for(; upperleft1.y<lowerright1.y; ++upperleft1.y, ++upperleft2.y, ++mupperleft.y)
     {
-        typename IteratorTraits<ImageIterator1>::RowIterator ix1(upperleft1);
-        typename IteratorTraits<ImageIterator1>::RowIterator ix1end = ix1 + w;
-        typename IteratorTraits<ImageIterator2>::RowIterator ix2(upperleft2);
-        typename IteratorTraits<MaskImageIterator>::RowIterator ixm(mupperleft);
-    
-        for(; ix1 < ix1end; ++ix1, ++ix2, ++ixm)
-        {
-            if(mask(ixm)) 
-                f(a1(ix1), a2(ix2));
-        }
+        inspectTwoLinesIf(upperleft1.rowIterator(), 
+                          upperleft1.rowIterator() + w, a1, 
+                          upperleft2.rowIterator(), a2, 
+                          mupperleft.rowIterator(), mask, f);
     }
 }
 
