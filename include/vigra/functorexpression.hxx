@@ -985,11 +985,11 @@ struct IfThenElseFunctor
     {
         typename 
             ResultTraits0<IfThenElseFunctor>::Res 
-            r2(expr2_(v1));
+            r2(expr2_());
         typename 
             ResultTraits0<IfThenElseFunctor>::Res 
-            r3(expr3_(v1));
-        return expr1_(v1) ? r2 : r3;
+            r3(expr3_());
+        return expr1_() ? r2 : r3;
     }
 
     template <class T> 

@@ -406,7 +406,7 @@ ArrayVector<T, Alloc>::insert(iterator p, InputIterator i, InputIterator iend)
         std::uninitialized_copy(begin(), p, new_data);
         std::uninitialized_copy(i, iend, new_data + pos);
         std::uninitialized_copy(p, end(), new_data + pos + n);
-        std::deallocate(data_, size_);
+        deallocate(data_, size_);
         capacity_ = new_size;
         data_ = new_data;
     }

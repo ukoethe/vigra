@@ -378,7 +378,7 @@ template <class T>
 void 
 PolynomialView<T>::minimizeOrder()
 {
-    while(std::abs(coeffs_[order_]) < epsilon_)
+    while(std::abs(coeffs_[order_]) < epsilon_ && order_ > 0)
             --order_;
 }
 
