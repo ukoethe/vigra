@@ -670,6 +670,9 @@ struct LinalgTest
         for(unsigned int i=0; i<c; ++i)
             for(unsigned int j=0; j<c; ++j)
                 shouldEqual(h(i,j), dot(rowVector(at, i), columnVector(a, j)));
+
+        should(isSymmetric(random_symmetric_matrix(10)));
+        should(!isSymmetric(random_matrix(10, 10)));
     }
     
     void testQR()
@@ -733,7 +736,7 @@ struct LinalgTest
         }
     }
 
-    void testEigenSystem()
+    void testSymmetricEigensystem()
     {
         double epsilon = 1e-8;
         Matrix idref = vigra::identityMatrix<double>(size);
@@ -747,6 +750,36 @@ struct LinalgTest
             Matrix id = ev * transpose(ev);
             shouldEqualSequenceTolerance(id.data(), id.data()+size*size, idref.data(), epsilon);
             Matrix ae = ev * diagonalMatrix(ew) * transpose(ev);
+            shouldEqualSequenceTolerance(ae.data(), ae.data()+size*size, a.data(), epsilon);
+        }
+    }
+
+    void testNonsymmetricEigensystem()
+    {
+        double epsilon = 1e-8;
+        Matrix idref = vigra::identityMatrix<double>(size);
+        
+        for(unsigned int i = 0; i < iterations; ++i)
+        {
+            Matrix a = random_matrix (size, size);
+            vigra::Matrix<std::complex<double> > ew(size, 1);
+            Matrix ev(size, size);
+            should(nonsymmetricEigensystem(a, ew, ev));
+
+            Matrix ewm(size, size);
+            for(unsigned int k = 0; k < size; k++) 
+            {
+                ewm(k, k) = ew(k, 0).real();
+                if(ew(k, 0).imag() > 0.0) 
+                {
+                    ewm(k, k+1) = ew(k, 0).imag();
+                } 
+                else if(ew(k, 0).imag() < 0.0) 
+                {
+                    ewm(k, k-1) = ew(k, 0).imag();
+                }
+            }
+            Matrix ae = ev * ewm * inverse(ev);
             shouldEqualSequenceTolerance(ae.data(), ae.data()+size*size, a.data(), epsilon);
         }
     }
@@ -798,7 +831,8 @@ struct MathTestSuite
         add( testCase(&LinalgTest::testQR));
         add( testCase(&LinalgTest::testLinearSolve));
         add( testCase(&LinalgTest::testInverse));
-        add( testCase(&LinalgTest::testEigenSystem));
+        add( testCase(&LinalgTest::testSymmetricEigensystem));
+        add( testCase(&LinalgTest::testNonsymmetricEigensystem));
     }
 };
 
