@@ -20,10 +20,18 @@ Options:
     [--target]     output platform this vigra version was configured for
     [--impex-lib]  output flags for linking libvigraimpex
     [--fftw-lib]   output flags for linking libfftw$fftwstatus
+    [--rfftw-lib]  output flags for linking librfftw and libfftw$fftwstatus
     [--cppflags]   output include flags for vigra$fftwflags
    ([--libs]       synonym for --impex-lib)
 EOF
     exit $1
+}
+
+echopath()
+{
+    echo "$1" \
+    | sed "s,\$[({]exec_prefix[})],@exec_prefix@," \
+    | sed "s,\$[({]prefix[})],@prefix@,"
 }
 
 if test $# -eq 0; then
@@ -42,21 +50,23 @@ while test $# -gt 0; do
       echo @target@
       ;;
     --cppflags|--cxxincludes|--cxxflags|--cincludes|--cflags)
-      echo '@CPPFLAGS@' \
-        | sed "s,\$[({]prefix[})],@prefix@,"
+      echopath '@CPPFLAGS@'
       ;;
     --impex_lib|--impex-lib|--libs)
-      echo '@IMPEX_LIB@' \
-        | sed "s,\$[({]exec_prefix[})],@exec_prefix@," \
-        | sed "s,\$[({]prefix[})],@prefix@,"
+      echopath '@IMPEX_LIB@'
       ;;
     --fftw_lib|--fftw-lib)
       if test -z '@FFTW_LIB@'; then
         echo "VIGRA was configured without fftw switches, libpath unknown!" 1>&2
       else
-        echo '@FFTW_LIB@' \
-          | sed "s,\$[({]exec_prefix[})],@exec_prefix@," \
-          | sed "s,\$[({]prefix[})],@prefix@,"
+        echopath '@FFTW_LIB@'
+      fi
+      ;;
+    --rfftw_lib|--rfftw-lib)
+      if test -z '@RFFTW_LIB@'; then
+        echo "VIGRA was configured without fftw switches, libpath unknown!" 1>&2
+      else
+        echopath '@RFFTW_LIB@'
       fi
       ;;
     --help|-h|-?)

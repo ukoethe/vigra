@@ -81,6 +81,7 @@ VIGRA_FIND_PACKAGE(fftw, fftw, fftw.h, [support fast Fourier transforms (default
 if test $with_fftw = "yes";
 then
     FFTW_LIB="-L$with_fftwlib -lfftw"
+    RFFTW_LIB="-L$with_fftwlib -lrfftw -lfftw"
     FFTW_INCLUDES="-I$with_fftwinc"
     CPPFLAGS="$FFTW_INCLUDES $CPPFLAGS"
 fi
@@ -99,6 +100,7 @@ AC_SUBST(vigra_builddir)
 AC_SUBST(TIFF_LIB)
 AC_SUBST(JPEG_LIB)
 AC_SUBST(FFTW_LIB)
+AC_SUBST(RFFTW_LIB)
 AC_SUBST(FFTW_INCLUDES)
 AC_SUBST(IMPEX_LIB)
 AC_SUBST(IMPEX_DEPLIBS)

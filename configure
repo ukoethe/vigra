@@ -3826,6 +3826,7 @@ echo "$as_me: WARNING: Configuring without fftw support" >&2;}
 if test $with_fftw = "yes";
 then
     FFTW_LIB="-L$with_fftwlib -lfftw"
+    RFFTW_LIB="-L$with_fftwlib -lrfftw -lfftw"
     FFTW_INCLUDES="-I$with_fftwinc"
     CPPFLAGS="$FFTW_INCLUDES $CPPFLAGS"
 fi
@@ -3834,6 +3835,7 @@ fi
 CPPFLAGS="$VIGRA_INCLUDES ${CPPFLAGS}"
 IMPEX_LIB="-L$libdir -lvigraimpex -lm $IMPEX_DEPLIBS"
 LIBS="$LIBS $IMPEX_LIB"
+
 
 
 
@@ -4466,6 +4468,7 @@ s,@vigra_builddir@,$vigra_builddir,;t t
 s,@TIFF_LIB@,$TIFF_LIB,;t t
 s,@JPEG_LIB@,$JPEG_LIB,;t t
 s,@FFTW_LIB@,$FFTW_LIB,;t t
+s,@RFFTW_LIB@,$RFFTW_LIB,;t t
 s,@FFTW_INCLUDES@,$FFTW_INCLUDES,;t t
 s,@IMPEX_LIB@,$IMPEX_LIB,;t t
 s,@IMPEX_DEPLIBS@,$IMPEX_DEPLIBS,;t t
