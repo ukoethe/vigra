@@ -132,11 +132,22 @@ void Gaussian<T>::calculateHermitePolynomial()
     }
     else if(order_ == 1)
     {
-        hermitePolynomial_[0] = 2.0 * sigma2_;
+        hermitePolynomial_[0] = -1.0 / sigma_ / sigma_;
     }
     else
     {
-        T s2 = 2.0 * sigma2_;
+        // calculate Hermite polynomial for requested derivative 
+        // recursively according to
+        //     (0)
+        //    h   (x) = 1
+        //
+        //     (1)
+        //    h   (x) = -x / s^2
+        //
+        //     (n+1)                        (n)           (n-1)
+        //    h     (x) = -1 / s^2 * [ x * h   (x) + n * h     (x) ]
+        //
+        T s2 = -1.0 / sigma_ / sigma_;
         ArrayVector<T> hn(3*order_+3, 0.0);
         typename ArrayVector<T>::iterator hn0 = hn.begin(),
                                           hn1 = hn0 + order_+1,
@@ -154,6 +165,7 @@ void Gaussian<T>::calculateHermitePolynomial()
             hn1 = hn0;
             hn0 = ht;
         }
+        // keep only non-zero coefficients of the polynomial
         for(unsigned int i = 0; i < hermitePolynomial_.size(); ++i)
             hermitePolynomial_[i] = order_ % 2 == 0 ?
                                          hn1[2*i]
