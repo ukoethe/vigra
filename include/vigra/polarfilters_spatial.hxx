@@ -393,6 +393,104 @@ void polarFilters2(triple<SrcIterator, SrcIterator, SrcAccessor> src,
                  even.first, even.second, odd.first, odd.second, scale);
 }
 
+template <class SrcIterator, class SrcAccessor,
+          class DestIteratorEven, class DestAccessorEven,
+          class DestIteratorOdd, class DestAccessorOdd>
+void polarFilters1(SrcIterator supperleft, SrcIterator slowerright, SrcAccessor sa,
+                  DestIteratorEven dupperleft_even, DestAccessorEven even,
+                  DestIteratorOdd dupperleft_odd, DestAccessorOdd odd,
+                  double scale)
+{
+    vigra_precondition(even.size(dupperleft_even) == 3,
+                       "polarFilters2(): image for even output must have 3 bands.");
+    vigra_precondition(odd.size(dupperleft_odd) == 3,
+                       "polarFilters2(): image for odd output must have 3 bands.");
+
+    int w = slowerright.x - supperleft.x;
+    int h = slowerright.y - supperleft.y;
+    
+    typedef typename 
+       NumericTraits<typename SrcAccessor::value_type>::RealPromote TmpType;
+    typedef BasicImage<TinyVector<TmpType, 4> > TmpImage;    
+    typedef typename TmpImage::traverser TmpTraverser;
+    TmpImage t(w, h);
+    TmpTraverser tul(t.upperLeft());
+    TmpTraverser tlr(t.lowerRight());
+ 
+    detail::KernelArray k2;
+    detail::initGaussianPolarFilters2(scale, k2);
+    
+    // calculate filter responses for even filters  
+    VectorElementAccessor<typename TmpImage::Accessor> tmpBand(0, t.accessor());
+    convolveImage(srcIterRange(supperleft, slowerright, sa),
+                  destImage(t, tmpBand), k2[2], k2[0]);
+    tmpBand.setIndex(1);
+    convolveImage(srcIterRange(supperleft, slowerright, sa),
+                  destImage(t, tmpBand), k2[0], k2[2]);
+
+    // create even tensor from filter responses  
+    for(; tul.y != tlr.y; ++tul.y, ++dupperleft_even.y)
+    {
+        typename TmpTraverser::row_iterator tr = tul.rowIterator();
+        typename TmpTraverser::row_iterator trend = tr + w;
+        typename DestIteratorEven::row_iterator e = dupperleft_even.rowIterator();
+        for(; tr != trend; ++tr, ++e)
+        {
+            even.setComponent(0.5*sq((*tr)[0]-(*tr)[1]), e, 0);
+            even.setComponent(0, e, 1);
+            even.setComponent(0.5*sq((*tr)[0]-(*tr)[1]), e, 2);
+        }      
+    }
+   
+    detail::KernelArray k1;
+    detail::initGaussianPolarFilters1(scale, k1);
+    
+    // calculate filter responses for odd filters  
+    tmpBand.setIndex(0);
+    convolveImage(srcIterRange(supperleft, slowerright, sa),
+                  destImage(t, tmpBand), k1[3], k1[0]);
+    tmpBand.setIndex(1);
+    convolveImage(srcIterRange(supperleft, slowerright, sa),
+                  destImage(t, tmpBand), k1[2], k1[1]);
+    tmpBand.setIndex(2);
+    convolveImage(srcIterRange(supperleft, slowerright, sa),
+                  destImage(t, tmpBand), k1[1], k1[2]);
+    tmpBand.setIndex(3);
+    convolveImage(srcIterRange(supperleft, slowerright, sa),
+                  destImage(t, tmpBand), k1[0], k1[3]);
+                  
+    // create odd tensor from filter responses  
+    tul = t.upperLeft();
+    for(; tul.y != tlr.y; ++tul.y, ++dupperleft_odd.y)
+    {
+        typename TmpTraverser::row_iterator tr = tul.rowIterator();
+        typename TmpTraverser::row_iterator trend = tr + w;
+        typename DestIteratorOdd::row_iterator o = dupperleft_odd.rowIterator();
+        for(; tr != trend; ++tr, ++o)
+        {
+            TmpType d0 = (*tr)[0] + (*tr)[2];
+            TmpType d1 = -(*tr)[1] - (*tr)[3];
+            
+            odd.setComponent(sq(d0), o, 0);
+            odd.setComponent(d0 * d1, o, 1);
+            odd.setComponent(sq(d1), o, 2);
+        }      
+    }
+}
+
+template <class SrcIterator, class SrcAccessor,
+          class DestIteratorEven, class DestAccessorEven,
+          class DestIteratorOdd, class DestAccessorOdd>
+inline 
+void polarFilters1(triple<SrcIterator, SrcIterator, SrcAccessor> src,
+                  pair<DestIteratorEven, DestAccessorEven> even,
+                  pair<DestIteratorOdd, DestAccessorOdd> odd,
+                  double scale)
+{
+    polarFilters1(src.first, src.second, src.third,
+                 even.first, even.second, odd.first, odd.second, scale);
+}
+
 /** \brief Calculate polar 3-jet filter results for an image.
 
     These functions operates similarly to polarFilters2(), but they 
