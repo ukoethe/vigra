@@ -36,6 +36,18 @@
 Many thanks to all!
 <p>
 
+<b> Changes from Version 1.3.1 to 1.3.2</b>
+
+<UL>      
+      <li> Added \ref vigra::linalg::Matrix "Matrix class".
+      
+      <li> Added \ref LinearAlgebraFunctions "Matrix algrebra,
+           solution of linear systems, eigenvalue computation".
+      
+      <li> Bug fixes in the code and documentation.
+           
+</UL>
+
 <b> Changes from Version 1.3.0 to 1.3.1</b>
 
 <UL>      
