@@ -54,12 +54,6 @@
     \ref differenceOfExponentialEdgeImage():
     <a href="edge_8cxx-example.html">edge.cxx</a> <br>
     Usage: <TT>edge infile outfile</TT>
-    
-    <li> Measure boundary and corner strengths with the 
-    \ref boundaryTensor():
-    <a href="boundarytensor_8cxx-example.html">boundarytensor.cxx</a> <br>
-    Usage: <TT>boundarytensor infile</TT>, creates <tt>boundarystrength.tif</tt> and <tt>cornerstrength.tif</tt>
-    
     <li> Segment image by means of the watershed algorithm, using 
     \ref seededRegionGrowing():
     <a href="watershed_8cxx-example.html">watershed.cxx</a> <br>
@@ -70,6 +64,11 @@
     <a href="voronoi_8cxx-example.html">voronoi.cxx</a> <br>
     Usage: <TT>voronoi</TT>, generates: <TT>distances.gif</TT> (Euclidean distance transform) and <TT>voronoi.gif</TT>
     (Voronoi diagram)
+        
+    <li> Measure boundary and corner strengths with the 
+    \ref boundaryTensor():
+    <a href="boundarytensor_8cxx-example.html">boundarytensor.cxx</a> <br>
+    Usage: <TT>boundarytensor infile</TT>, creates <tt>boundarystrength.tif</tt> and <tt>cornerstrength.tif</tt>
     
     </ul>
 */
@@ -144,3 +143,11 @@
     \ref seededRegionGrowing()<br>
     Usage: <TT>voronoi</TT>, generates: <TT>distances.gif</TT> (Euclidean distance transform) and <TT>voronoi.gif</TT> (Voronoi diagram)
 */
+
+/** \example boundarytensor.cxx        
+    Measure boundary and corner strengths with the 
+    \ref boundaryTensor():
+    <a href="boundarytensor_8cxx-example.html">boundarytensor.cxx</a> <br>
+    Usage: <TT>boundarytensor infile</TT>, creates <tt>boundarystrength.tif</tt> and <tt>cornerstrength.tif</tt>
+*/
+
