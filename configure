@@ -19376,6 +19376,334 @@ fi;
     if test ${with_fftw:-""} != "no"; then
 
 
+    if test "fftw3.h" != ""; then
+        echo "$as_me:$LINENO: checking for fftw3.h " >&5
+echo $ECHO_N "checking for fftw3.h ... $ECHO_C" >&6
+
+        # check whether the include is in the path by default (e.g. /usr/include)
+        include_found=""
+        if test "$with_fftwinc" = "" -a "$with_fftw" = "yes"; then
+            cat >conftest.$ac_ext <<_ACEOF
+#line $LINENO "configure"
+/* confdefs.h.  */
+_ACEOF
+cat confdefs.h >>conftest.$ac_ext
+cat >>conftest.$ac_ext <<_ACEOF
+/* end confdefs.h.  */
+#include <stdio.h>  /* necessary because jpeglib.h fails to include it */
+#include <fftw3.h>
+
+int
+main ()
+{
+
+  ;
+  return 0;
+}
+_ACEOF
+rm -f conftest.$ac_objext
+if { (eval echo "$as_me:$LINENO: \"$ac_compile\"") >&5
+  (eval $ac_compile) 2>&5
+  ac_status=$?
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); } &&
+         { ac_try='test -s conftest.$ac_objext'
+  { (eval echo "$as_me:$LINENO: \"$ac_try\"") >&5
+  (eval $ac_try) 2>&5
+  ac_status=$?
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); }; }; then
+  include_found="in default path"
+else
+  echo "$as_me: failed program was:" >&5
+sed 's/^/| /' conftest.$ac_ext >&5
+
+include_found=""
+fi
+rm -f conftest.$ac_objext conftest.$ac_ext
+        fi
+
+        # if not found by default, try searching for it
+        if test "$include_found" = ""; then
+            dirs=""
+            if test "$with_fftwinc" != ""; then
+                dirs="$with_fftwinc"
+            elif test "$with_fftw" != "yes"; then
+                dirs="$with_fftw"
+            else
+                dirs="/usr/local/include /usr/local/gnu/include /usr/local/fftw /opt/include /opt/gnu/include /opt/fftw /usr/include"
+            fi
+
+            # use find for searching
+
+    if test "$findprog" = ""; then
+        if test "$CYGWIN" = "yes"; then
+          findprog="/usr/bin/find"
+        else
+          findprog="find"
+        fi
+    fi
+
+
+            # first, look for the given header file without directory components..
+            found=""
+            for i in $dirs; do
+                if test -d $i; then
+                    found="$found `$findprog $i -follow -name fftw3.h -print 2> /dev/null`"
+                fi
+            done
+
+            # now, check each found file for relative path prefix.
+
+    regExResult=""
+    if test "$found" != ""; then
+        for i in $found; do
+            regExResult=`expr "$i" : "\(.*include\)/fftw3\.h"`
+            if test "$regExResult" != ""; then
+                break
+            fi
+        done
+    fi
+
+            if test "$regExResult" = ""; then
+
+    regExResult=""
+    if test "$found" != ""; then
+        for i in $found; do
+            regExResult=`expr "$i" : "\(.*\)/fftw3\.h"`
+            if test "$regExResult" != ""; then
+                break
+            fi
+        done
+    fi
+
+            fi
+            include_found=$regExResult
+        fi
+
+        # report the search result and set result variables
+        if test "$include_found" = ""; then
+            with_fftwinc=""
+            echo "$as_me:$LINENO: result: not found in $dirs" >&5
+echo "${ECHO_T}not found in $dirs" >&6
+        else
+            echo "$as_me:$LINENO: result: $include_found" >&5
+echo "${ECHO_T}$include_found" >&6
+            if test "$include_found" != "/usr/include" -a \
+                    "$include_found" != "in default path"; then
+                with_fftwinc="$include_found"
+                fftw_cppflags="-I$include_found"
+            else
+                with_fftwinc=""
+                fftw_cppflags=""
+            fi
+        fi
+    else
+        with_fftwinc=""
+        fftw_cppflags=""
+    fi
+
+
+    echo "$as_me:$LINENO: checking for libfftw3 " >&5
+echo $ECHO_N "checking for libfftw3 ... $ECHO_C" >&6
+
+    # check whether the include is in the path by default (e.g. /usr/include)
+    lib_found=""
+    if test "$with_fftwlib" = "" -a "$with_fftw" = "yes"; then
+        ac_save_LIBS="$LIBS"
+        LIBS="$LIBS -lfftw3"
+        cat >conftest.$ac_ext <<_ACEOF
+#line $LINENO "configure"
+/* confdefs.h.  */
+_ACEOF
+cat confdefs.h >>conftest.$ac_ext
+cat >>conftest.$ac_ext <<_ACEOF
+/* end confdefs.h.  */
+
+int
+main ()
+{
+int main() {}
+
+  ;
+  return 0;
+}
+_ACEOF
+rm -f conftest.$ac_objext conftest$ac_exeext
+if { (eval echo "$as_me:$LINENO: \"$ac_link\"") >&5
+  (eval $ac_link) 2>&5
+  ac_status=$?
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); } &&
+         { ac_try='test -s conftest$ac_exeext'
+  { (eval echo "$as_me:$LINENO: \"$ac_try\"") >&5
+  (eval $ac_try) 2>&5
+  ac_status=$?
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); }; }; then
+  lib_found="in default path"
+else
+  echo "$as_me: failed program was:" >&5
+sed 's/^/| /' conftest.$ac_ext >&5
+
+lib_found=""
+fi
+rm -f conftest.$ac_objext conftest$ac_exeext conftest.$ac_ext
+        LIBS=$ac_save_LIBS
+    fi
+
+    # if not found by default, try searching for it
+    if test "$lib_found" = ""; then
+        if test "$libext" = ""; then
+            libext="a"
+        fi
+
+        if test "$solibext" = ""; then
+            if test "$CYGWIN" = "yes"; then
+              solibext="dll.a"
+            else
+              solibext="so"
+            fi
+        fi
+
+        if test "$libpre" = ""; then
+            libpre="lib"
+        fi
+
+
+    if test "$findprog" = ""; then
+        if test "$CYGWIN" = "yes"; then
+          findprog="/usr/bin/find"
+        else
+          findprog="find"
+        fi
+    fi
+
+
+        dirs=""
+        if test "$with_fftwlib" != ""; then
+            dirs=$with_fftwlib
+        elif test "$with_fftw" != "yes"; then
+            dirs=$with_fftw
+        else
+            dirs="/usr/local/lib /usr/local/gnu/lib /usr/local/fftw /opt/lib /opt/gnu/lib /opt/fftw /usr/lib"
+        fi
+        found=""
+        for i in $dirs; do
+            if test -d $i; then
+                found="$found `$findprog $i -follow -name "${libpre}fftw3.$solibext" -print 2> /dev/null; $findprog $i -follow -name "${libpre}fftw3.$libext" -print 2> /dev/null`"
+            fi
+        done
+
+
+    regExResult=""
+    if test "$found" != ""; then
+        for i in $found; do
+            regExResult=`expr "$i" : "\(.*lib\)/${libpre}fftw3\.$solibext"`
+            if test "$regExResult" != ""; then
+                break
+            fi
+        done
+    fi
+
+        if test "$regExResult" = ""; then
+
+    regExResult=""
+    if test "$found" != ""; then
+        for i in $found; do
+            regExResult=`expr "$i" : "\(.*lib\)/${libpre}fftw3\.$libext"`
+            if test "$regExResult" != ""; then
+                break
+            fi
+        done
+    fi
+
+        fi
+        if test "$regExResult" = ""; then
+
+    regExResult=""
+    if test "$found" != ""; then
+        for i in $found; do
+            regExResult=`expr "$i" : "\(.*\)/${libpre}fftw3\.$solibext"`
+            if test "$regExResult" != ""; then
+                break
+            fi
+        done
+    fi
+
+        fi
+        if test "$regExResult" = ""; then
+
+    regExResult=""
+    if test "$found" != ""; then
+        for i in $found; do
+            regExResult=`expr "$i" : "\(.*\)/${libpre}fftw3\.$libext"`
+            if test "$regExResult" != ""; then
+                break
+            fi
+        done
+    fi
+
+        fi
+        lib_found=$regExResult
+    fi
+    if test "$lib_found" = ""; then
+        with_fftwlib=""
+        echo "$as_me:$LINENO: result: not found in $dirs" >&5
+echo "${ECHO_T}not found in $dirs" >&6
+    else
+        echo "$as_me:$LINENO: result: $lib_found" >&5
+echo "${ECHO_T}$lib_found" >&6
+        if test "$lib_found" != "/usr/lib" -a \
+                "$lib_found" != "in default path"; then
+            with_fftwlib="-L$lib_found"
+        else
+            with_fftwlib=""
+        fi
+    fi
+
+
+        if test "$lib_found" = ""; then
+            with_fftw="no"
+            { echo "$as_me:$LINENO: WARNING: Configuring without fftw support" >&5
+echo "$as_me: WARNING: Configuring without fftw support" >&2;}
+        else
+            with_fftw="yes"
+        fi
+    fi
+
+
+if test $with_fftw != "yes";
+then
+
+
+# Check whether --with-fftw or --without-fftw was given.
+if test "${with_fftw+set}" = set; then
+  withval="$with_fftw"
+
+fi;
+
+# Check whether --with-fftwlib or --without-fftwlib was given.
+if test "${with_fftwlib+set}" = set; then
+  withval="$with_fftwlib"
+
+fi;
+
+# Check whether --with-fftwinc or --without-fftwinc was given.
+if test "${with_fftwinc+set}" = set; then
+  withval="$with_fftwinc"
+
+fi;
+
+
+    # default is "yes"
+    if test ${with_fftw:-""} = "" -a ${with_fftwlib:-""} = "" -a ${with_fftwinc:-""} = ""; then
+        with_fftw="yes"
+    fi
+
+    if test ${with_fftw:-""} != "no"; then
+
+
     if test "fftw.h" != ""; then
         echo "$as_me:$LINENO: checking for fftw.h " >&5
 echo $ECHO_N "checking for fftw.h ... $ECHO_C" >&6
@@ -19673,6 +20001,7 @@ echo "$as_me: WARNING: Configuring without fftw support" >&2;}
     fi
 
 
+fi
 if test $with_fftw = "yes";
 then
     FFTW_LIB="$with_fftwlib -lfftw"
