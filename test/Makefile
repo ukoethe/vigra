@@ -13,6 +13,7 @@ QUICKSUBDIRS =  \
 SUBDIRS = $(QUICKSUBDIRS) \
         image \
         multiarray \
+        multiconvolution \
         impex 
 
 all:
