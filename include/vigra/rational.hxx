@@ -866,7 +866,13 @@ pow(const Rational<IntType>& r, int e)
 {
     IntType zero(0);
     int ae;
-    if(e < 0)
+    if(e == 0)
+    {
+        if(r.denominator() == zero)
+                throw bad_rational();
+        return Rational<IntType>(IntType(1));
+    }
+    else if(e < 0)
     {
         if(r.numerator() == zero)
             return Rational<IntType>(IntType(1), zero, false);
@@ -876,12 +882,7 @@ pow(const Rational<IntType>& r, int e)
     }
     else
     {
-        if(r.denominator() == zero)
-            if(e == 0)
-                throw bad_rational();
-            else
-                return r;
-        if(r.numerator() == zero)
+        if(r.denominator() == zero || r.numerator() == zero)
             return r;
         ae = e;
     }
