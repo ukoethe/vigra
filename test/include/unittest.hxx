@@ -23,12 +23,7 @@
 #include <iostream>
 #include <cmath>
 #include "vigra/config.hxx"
-//#include "vigra/nummerictraits.hxx"
-
-
-#include <boost/limits.hpp>
-#include <boost/test/detail/class_properties.hpp>
-
+#include "vigra/numerictraits.hxx"
 
 #ifdef _MSC_VER
 
@@ -406,9 +401,9 @@ FPT safe_fpt_division( FPT f1, FPT f2 )
         *   Ausweg: evl. eine extra Behandlung der F = 0 ???
         */
         
-    return  ((f2 < 1) && (f1 > (f2 * std::numeric_limits<FPT>::max()))) ? 
-            std::numeric_limits<FPT>::max() :
-            (((f2 > 1) && (f1 < (f2 * std::numeric_limits<FPT>::min())) || (f1 == 0)) ? 0 : f1/f2 );
+    return  ((f2 < 1) && (f1 > (f2 * vigra::NumericTraits<FPT>::max()))) ? 
+            vigra::NumericTraits<FPT>::max() :
+            (((f2 > 1) && (f1 < (f2 * vigra::NumericTraits<FPT>::smallestPositive())) || (f1 == 0)) ? 0 : f1/f2 );
             
             
         /*  Die Multiplikation mit max in 1.ten Bedingung und mit min in der 2.ten ist eine Absicherung gegen
@@ -457,7 +452,7 @@ public:
     : m_tolerance( tolerance ), m_strong_or_weak( strong_or_weak ) {}
 
     explicit    close_at_tolerance( int number_of_rounding_errors, bool strong_or_weak = true ) 
-    : m_tolerance( std::numeric_limits<FPT>::epsilon() * number_of_rounding_errors/2 ), 
+    : m_tolerance( vigra::NumericTraits<FPT>::epsilon() * number_of_rounding_errors / 2.0 ), 
       m_strong_or_weak( strong_or_weak ) {}
 
     bool        operator()( FPT left, FPT right ) const
@@ -508,7 +503,6 @@ tolerance_equal_impl(double left, double right, double epsilon, const char * mes
     
     close_at_tolerance<double> fcomparator( epsilon , false);
     bool compare = fcomparator ( left , right );
-    cout << "left = " << left << ", right = " << right << " and left == right is " << compare << endl << endl;
     should_impl(compare, buf.str(), file, line); 
      
 }
