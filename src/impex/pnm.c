@@ -72,7 +72,8 @@
 #include <sys/stat.h>
 #include "vigra/impex.h"
 #include "pnm.h"
-#include "utility.h"
+#include "utility.h" 
+
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -175,11 +176,8 @@ static unsigned int PNMInteger(VigraImpexImage *image,const unsigned int base)
   */
   do
   {
-        //c=ReadByte(image);
+    c=fgetc(image->file);
 
-	
-    vigraImpexReadData((char *)&c,1,1,image->file);  	
-		
     if (c == EOF )
       return(0);
     if (c == '#')
@@ -224,9 +222,7 @@ static unsigned int PNMInteger(VigraImpexImage *image,const unsigned int base)
               }
 
 
-            //c=ReadByte(image);            
-		vigraImpexReadData((char *)&c,1,1,image->file);   	
-
+            c=fgetc(image->file);            
 
             *p=c;
             *(p+1)='\0';
@@ -254,11 +250,9 @@ static unsigned int PNMInteger(VigraImpexImage *image,const unsigned int base)
     value*=10;
     value+=(char)c-'0';
             
-     //c=ReadByte(image);
-    status=vigraImpexReadData((char *)&c,1,1,image->file);    
+    c=fgetc(image->file);
         
-        
-        if (c == EOF)
+    if (c == EOF)
       return(0);
   }
   while (isdigit((char)c));
@@ -307,7 +301,6 @@ VigraImpexImage *vigraImpexReadPNMImage( VigraImpexImageInfo *image_info)
     packets,
     status;
 
-
   /*
     Open image file.
   */  
@@ -320,7 +313,7 @@ VigraImpexImage *vigraImpexReadPNMImage( VigraImpexImageInfo *image_info)
      
   if (image->file==(FILE *)NULL)
   {
-          fprintf(stderr,"vigraImpexReadPNMImage():Unable to opne file %s \n", image->filename);
+          fprintf(stderr,"vigraImpexReadPNMImage(): Unable to open file %s \n", image->filename);
           vigraImpexDestroyImage(image);
           return 0;
   }
@@ -580,8 +573,7 @@ VigraImpexImage *vigraImpexReadPNMImage( VigraImpexImageInfo *image_info)
           for (x=0; x < (int) image->columns; x++)
           {				  
             if (bit == 0)
-				vigraImpexReadData((char *)&byte,1,1,image->file);
-				//byte=ReadByte(image);
+			byte=fgetc(image->file);
 			if (byte==0)
 				q->index=1;
 			else

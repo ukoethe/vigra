@@ -35,21 +35,21 @@ namespace vigra {
 
 static ImageFileTypeInfo imageFileTypeInfo[] =
 {
+    {"BMP", ".bmp", "BM", 2, &vigraImpexWriteBMPImage, &vigraImpexReadBMPImage},
     {"GIF", ".gif", "GIF8", 4, &vigraImpexWriteGIFImage, &vigraImpexReadGIFImage},
 #ifdef HasJPEG
     {"JPEG", ".jpg", "\377\330\377", 3, &vigraImpexWriteJPEGImage, &vigraImpexReadJPEGImage},
     {"JPEG", ".jpeg", "\377\330\377", 3, &vigraImpexWriteJPEGImage, &vigraImpexReadJPEGImage},
 #endif
-    {"BMP", ".bmp", "BM", 2, &vigraImpexWriteBMPImage, &vigraImpexReadBMPImage},
-    {"SUN", ".ras", "\131\246\152\225", 4, &vigraImpexWriteSUNImage, &vigraImpexReadSUNImage},
     {"PBM", ".pbm", "P1", 2, &vigraImpexWritePNMImage, &vigraImpexReadPNMImage},
-    {"PGM", ".pgm", "P2", 2, &vigraImpexWritePNMImage, &vigraImpexReadPNMImage},
-    {"PPM", ".ppm", "P3", 2, &vigraImpexWritePNMImage, &vigraImpexReadPNMImage},
     {"PBM", ".pbm", "P4", 2, &vigraImpexWritePNMImage, &vigraImpexReadPNMImage}, 	
+    {"PGM", ".pgm", "P2", 2, &vigraImpexWritePNMImage, &vigraImpexReadPNMImage},
     {"PGM", ".pgm", "P5", 2, &vigraImpexWritePNMImage, &vigraImpexReadPNMImage}, 	
+    {"PPM", ".ppm", "P3", 2, &vigraImpexWritePNMImage, &vigraImpexReadPNMImage},
     {"PPM", ".ppm", "P6", 2, &vigraImpexWritePNMImage, &vigraImpexReadPNMImage},
     {"P7",  ".p7", "P7", 2,   &vigraImpexWritePNMImage, &vigraImpexReadPNMImage}, 	
     {"PNM", ".pnm", "P8", 2, &vigraImpexWritePNMImage, &vigraImpexReadPNMImage}, 	
+    {"SUN", ".ras", "\131\246\152\225", 4, &vigraImpexWriteSUNImage, &vigraImpexReadSUNImage},
 #ifdef HasTIFF
     {"TIFF", ".tif", "\115\115\000\052", 4, 0, 0},
     {"TIFF", ".tiff", "\111\111\052\000", 4, 0, 0},
