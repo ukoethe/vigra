@@ -262,7 +262,7 @@ class TinyVector
     magnitude() const
     {
          return VIGRA_CSTD::sqrt(
-               (NumericTraits<VALUETYPE>::RealPromote)squaredMagnitude());
+               (typename NumericTraits<VALUETYPE>::RealPromote)squaredMagnitude());
     }
 
         /** Calculate squared magnitude.
