@@ -304,20 +304,6 @@ class Diff2D
         return *this;
     }
 
-       /** Create vector by adding specified offset.
-        */
-    Diff2D operator+(Diff2D const & offset) const
-    {
-        return Diff2D(x + offset.x, y + offset.y);
-    }
-
-        /** Create vector by subtracting specified offset.
-        */
-    Diff2D operator-(Diff2D const & offset) const
-    {
-        return Diff2D(x - offset.x, y - offset.y);
-    }
-
        /** Create vector by scaling by factor.
         */
     Diff2D operator*(int factor) const
@@ -627,20 +613,6 @@ public:
     {
         return static_cast<Size2D &>(Diff2D::operator-=(offset));
     }
-
-       /** Create size by adding specified offset.
-        */
-    Size2D operator+(Diff2D const & offset) const
-    {
-        return Size2D(x + offset.x, y + offset.y);
-    }
-
-        /** Create size by subtracting specified offset.
-        */
-    Size2D operator-(Diff2D const & offset) const
-    {
-        return Size2D(x - offset.x, y - offset.y);
-    }
 };
 
 } // namespace vigra
@@ -762,20 +734,6 @@ public:
         return static_cast<Point2D &>(Diff2D::operator-=(offset));
     }
 
-       /** Create point by adding specified offset.
-        */
-    Point2D operator+(Diff2D const & offset) const
-    {
-        return Point2D(x + offset.x, y + offset.y);
-    }
-
-        /** Calculate size of rect between two points.
-        */
-    Size2D operator-(Diff2D const & offset) const
-    {
-        return Size2D(x - offset.x, y - offset.y);
-    }
-
         /** Access current point coordinate.
         */
     reference operator*() const
@@ -805,7 +763,56 @@ public:
     }
 };
 
-/** Add size to point
+/** Create vector by subtracting specified offset.
+ */
+inline Diff2D operator-(Diff2D const &a, Diff2D const &b)
+{
+    return Diff2D(a.x - b.x, a.y - b.y);
+}
+
+/** Create size by subtracting specified offset.
+ */
+inline Size2D operator-(Size2D const & s, Diff2D const &offset)
+{
+    return Size2D(s.x - offset.x, s.y - offset.y);
+}
+
+/** Calculate size of rect between two points.
+ */
+inline Point2D operator-(Point2D const & s, Diff2D const & offset)
+{
+    return Point2D(s.x - offset.x, s.y - offset.y);
+}
+
+/** The difference of two points is a size
+ */
+inline Size2D operator-(Point2D const & s, Point2D const & p)
+{
+    return Size2D(s.x - p.x, s.y - p.y);
+}
+
+/** Create vector by adding specified offset.
+ */
+inline Diff2D operator+(Diff2D const &a, Diff2D const &b)
+{
+    return Diff2D(a.x + b.x, a.y + b.y);
+}
+
+/** Create size by adding specified offset.
+ */
+inline Size2D operator+(Size2D const &a, Diff2D const &b)
+{
+    return Size2D(a.x + b.x, a.y + b.y);
+}
+
+/** Create point by adding specified offset.
+ */
+inline Point2D operator+(Point2D const &a, Diff2D const &b)
+{
+    return Point2D(a.x + b.x, a.y + b.y);
+}
+
+/** Add size and point
  */
 inline Point2D operator+(Size2D const & s, Point2D const & p)
 {
@@ -878,7 +885,7 @@ public:
 
         /** Construct a rectangle of given size at position (0,0)
          */
-    Rect2D(Size2D const &size)
+    explicit Rect2D(Size2D const &size)
     : lowerRight_(Point2D(size))
     {}
 
