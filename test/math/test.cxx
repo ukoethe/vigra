@@ -481,6 +481,7 @@ struct MathTestSuite
         add( testCase(&RationalTest::testOperators));
         add( testCase(&RationalTest::testConversion));
         add( testCase(&RationalTest::testFunctions));
+        add( testCase(&RationalTest::testInf));
     }
 };
 
