@@ -217,6 +217,20 @@ struct IfBool<false, TRUECASE, FALSECASE>
     typedef FALSECASE type;
 };
 
+template <class L, class R>
+struct IsSameType
+{
+    typedef VigraFalseType result;
+    static const bool boolResult = false;
+};
+
+template <class T>
+struct IsSameType<T, T>
+{
+    typedef VigraTrueType result;
+    static const bool boolResult = true;
+};
+
 template <class DERIVED, class BASE>
 struct IsDerivedFrom
 {
