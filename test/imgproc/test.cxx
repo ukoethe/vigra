@@ -283,7 +283,8 @@ struct ImageFunctionsTest
 
     void reduceFunctorTest()
     {
-        ReduceFunctor<std::plus<double>, double> f(std::plus<double>(), 0.0);
+        std::plus<double> p;
+        ReduceFunctor<std::plus<double>, double> f(p, 0.0);
         
         inspectImage(srcImageRange(img), f);
 
