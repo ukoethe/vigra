@@ -34,6 +34,7 @@ class ByteImageExportImportTest
         should(info.width() == img.width());
         should(info.height() == img.height());
         should(info.isGrayscale());
+        should(info.pixelType() == ImageImportInfo::UINT8);
         
         Image res(info.width(), info.height());
         
@@ -62,6 +63,7 @@ class ByteImageExportImportTest
         should(info.width() == img.width());
         should(info.height() == img.height());
         should(info.isGrayscale());
+        should(info.pixelType() == ImageImportInfo::UINT8);
         
         Image res(info.width(), info.height());
         
@@ -86,6 +88,7 @@ class ByteImageExportImportTest
         should(info.width() == img.width());
         should(info.height() == img.height());
         should(info.isGrayscale());
+        should(info.pixelType() == ImageImportInfo::UINT8);
         
         Image res(info.width(), info.height());
         
@@ -113,6 +116,7 @@ class ByteImageExportImportTest
         should(info.width() == img.width());
         should(info.height() == img.height());
         should(info.isGrayscale());
+        should(info.pixelType() == ImageImportInfo::UINT8);
         
         Image res(info.width(), info.height());
         
@@ -137,6 +141,7 @@ class ByteImageExportImportTest
         should(info.width() == img.width());
         should(info.height() == img.height());
         should(info.isGrayscale());
+        should(info.pixelType() == ImageImportInfo::UINT8);
         
         Image res(info.width(), info.height());
         
@@ -161,6 +166,7 @@ class ByteImageExportImportTest
         should(info.width() == img.width());
         should(info.height() == img.height());
         should(info.isGrayscale());
+        should(info.pixelType() == ImageImportInfo::UINT8);
         
         Image res(info.width(), info.height());
         
@@ -185,6 +191,7 @@ class ByteImageExportImportTest
         should(info.width() == img.width());
         should(info.height() == img.height());
         should(info.isGrayscale());
+        should(info.pixelType() == ImageImportInfo::UINT8);
         
         Image res(info.width(), info.height());
         
@@ -258,6 +265,7 @@ class ByteRGBImageExportImportTest
         should(info.width() == img.width());
         should(info.height() == img.height());
         should(info.isColor());
+        should(info.pixelType() == ImageImportInfo::UINT8);
         
         Image res(info.width(), info.height());
         
@@ -283,6 +291,7 @@ class ByteRGBImageExportImportTest
         should(info.width() == img.width());
         should(info.height() == img.height());
         should(info.isColor());
+        should(info.pixelType() == ImageImportInfo::UINT8);
         
         Image res(info.width(), info.height());
         
@@ -310,6 +319,7 @@ class ByteRGBImageExportImportTest
         should(info.width() == img.width());
         should(info.height() == img.height());
         should(info.isColor());
+        should(info.pixelType() == ImageImportInfo::UINT8);
         
         Image res(info.width(), info.height());
         
@@ -334,6 +344,7 @@ class ByteRGBImageExportImportTest
         should(info.width() == img.width());
         should(info.height() == img.height());
         should(info.isColor());
+        should(info.pixelType() == ImageImportInfo::UINT8);
         
         Image res(info.width(), info.height());
         
@@ -358,6 +369,7 @@ class ByteRGBImageExportImportTest
         should(info.width() == img.width());
         should(info.height() == img.height());
         should(info.isColor());
+        should(info.pixelType() == ImageImportInfo::UINT8);
         
         Image res(info.width(), info.height());
         
@@ -382,6 +394,7 @@ class ByteRGBImageExportImportTest
         should(info.width() == img.width());
         should(info.height() == img.height());
         should(info.isColor());
+        should(info.pixelType() == ImageImportInfo::UINT8);
         
         Image res(info.width(), info.height());
         
@@ -465,6 +478,7 @@ class FloatImageExportImportTest
         should(info.width() == img.width());
         should(info.height() == img.height());
         should(info.isGrayscale());
+        should(info.pixelType() == ImageImportInfo::UINT8);
         
         Image res(info.width(), info.height());
         
@@ -490,6 +504,7 @@ class FloatImageExportImportTest
         should(info.width() == reread.width());
         should(info.height() == reread.height());
         should(info.isGrayscale());
+        should(info.pixelType() == ImageImportInfo::UINT8);
         
         Image res(info.width(), info.height());
         
@@ -510,23 +525,24 @@ class FloatImageExportImportTest
     void testTIFF()
     {
         exportImage(srcImageRange(img), 
-                    ImageExportInfo("res.tif").setCompression("RunLength"));
+                    ImageExportInfo("res.tif").setCompression("LZW"));
         
         ImageImportInfo info("res.tif");
         
         should(info.width() == img.width());
         should(info.height() == img.height());
         should(info.isGrayscale());
+        should(info.pixelType() == ImageImportInfo::FLOAT);
         
         Image res(info.width(), info.height());
         
         importImage(info, destImage(res));
         
-	Image::ScanOrderIterator i = reread.begin();
+	Image::ScanOrderIterator i = img.begin();
 	Image::ScanOrderIterator i1 = res.begin();
-	Image::Accessor acc = reread.accessor();
+	Image::Accessor acc = img.accessor();
 
-	for(; i != reread.end(); ++i, ++i1)
+	for(; i != img.end(); ++i, ++i1)
 	{
             should(acc(i) == acc(i1));
 	}
@@ -541,6 +557,7 @@ class FloatImageExportImportTest
         should(info.width() == img.width());
         should(info.height() == img.height());
         should(info.isGrayscale());
+        should(info.pixelType() == ImageImportInfo::UINT8);
         
         Image res(info.width(), info.height());
         
@@ -565,6 +582,7 @@ class FloatImageExportImportTest
         should(info.width() == img.width());
         should(info.height() == img.height());
         should(info.isGrayscale());
+        should(info.pixelType() == ImageImportInfo::UINT8);
         
         Image res(info.width(), info.height());
         
@@ -589,6 +607,7 @@ class FloatImageExportImportTest
         should(info.width() == img.width());
         should(info.height() == img.height());
         should(info.isGrayscale());
+        should(info.pixelType() == ImageImportInfo::FLOAT);
         
         Image res(info.width(), info.height());
         
@@ -646,6 +665,7 @@ class FloatRGBImageExportImportTest
         should(info.width() == img.width());
         should(info.height() == img.height());
         should(info.isColor());
+        should(info.pixelType() == ImageImportInfo::UINT8);
         
         Image res(info.width(), info.height());
         
@@ -671,6 +691,7 @@ class FloatRGBImageExportImportTest
         should(info.width() == reread.width());
         should(info.height() == reread.height());
         should(info.isColor());
+        should(info.pixelType() == ImageImportInfo::UINT8);
         
         Image res(info.width(), info.height());
         
@@ -691,23 +712,24 @@ class FloatRGBImageExportImportTest
     void testTIFF()
     {
         exportImage(srcImageRange(img), 
-                    ImageExportInfo("res.tif").setCompression("RunLength"));
+                    ImageExportInfo("res.tif").setCompression("LZW"));
         
         ImageImportInfo info("res.tif");
         
         should(info.width() == img.width());
         should(info.height() == img.height());
         should(info.isColor());
+        should(info.pixelType() == ImageImportInfo::FLOAT);
         
         Image res(info.width(), info.height());
         
         importImage(info, destImage(res));
         
-	Image::ScanOrderIterator i = reread.begin();
+	Image::ScanOrderIterator i = img.begin();
 	Image::ScanOrderIterator i1 = res.begin();
-	Image::Accessor acc = reread.accessor();
+	Image::Accessor acc = img.accessor();
 
-	for(; i != reread.end(); ++i, ++i1)
+	for(; i != img.end(); ++i, ++i1)
 	{
             should(acc(i) == acc(i1));
 	}
@@ -722,6 +744,7 @@ class FloatRGBImageExportImportTest
         should(info.width() == img.width());
         should(info.height() == img.height());
         should(info.isColor());
+        should(info.pixelType() == ImageImportInfo::UINT8);
         
         Image res(info.width(), info.height());
         
@@ -746,6 +769,7 @@ class FloatRGBImageExportImportTest
         should(info.width() == img.width());
         should(info.height() == img.height());
         should(info.isColor());
+        should(info.pixelType() == ImageImportInfo::UINT8);
         
         Image res(info.width(), info.height());
         
@@ -770,6 +794,7 @@ class FloatRGBImageExportImportTest
         should(info.width() == img.width());
         should(info.height() == img.height());
         should(info.isColor());
+        should(info.pixelType() == ImageImportInfo::FLOAT);
         
         Image res(info.width(), info.height());
         
