@@ -18,7 +18,7 @@ LIBCFLAGS := @LIBCFLAGS@
 CINCLUDES := @CINCLUDES@
 
 CXX = @CXX@
-CXXFLAGS := @CXXFLAGS@ 
+CXXFLAGS := @CXXFLAGS@
 LIBCXXFLAGS := @LIBCXXFLAGS@
 CXXINCLUDES := @CXXINCLUDES@
 
@@ -57,11 +57,11 @@ INSTALL = @INSTALL@
 %.d: %.c
 	@echo updating header dependencies for $*.c
 	@rm -f $*.d
-	@(echo "$*.d \c" ; $(CC) -M $(CFLAGS) $(CINCLUDES) -c $*.c) > $*.d \
+	@(echo -e "$*.d \c" ; $(CC) -M $(CFLAGS) $(CINCLUDES) -c $*.c) > $*.d \
         || { rm -f $*.d; exit 1; }
 
 %.d: %.cxx
 	@echo updating header dependencies for $*.cxx
 	@rm -f $*.d
-	@(echo "$*.d \c" ; $(CXX) -M $(CXXFLAGS) $(CXXINCLUDES) -c $*.cxx) > $*.d \
+	@(echo -e "$*.d \c" ; $(CXX) -M $(CXXFLAGS) $(CXXINCLUDES) -c $*.cxx) > $*.d \
         || { rm -f $*.d; exit 1; }
