@@ -1,11 +1,23 @@
-/**************************************************************/
-/*                                                            */
-/*                    Copyright U. Koethe                     */
-/*    Fraunhoferinstitut fuer Graphische Datenverarbeitung    */
-/*                     Rostock, Germany                       */
-/*               Tue Dec 01 16:39:01 MET 1998                 */
-/*                                                            */
-/**************************************************************/
+/************************************************************************/
+/*                                                                      */
+/*               Copyright 1998-2001 by Ullrich Koethe                  */
+/*       Cognitive Systems Group, University of Hamburg, Germany        */
+/*                                                                      */
+/*    This file is part of the VIGRA computer vision library.           */
+/*    You may use, modify, and distribute this software according       */
+/*    to the terms stated in the LICENSE file included in               */
+/*    the VIGRA distribution.                                           */
+/*                                                                      */
+/*    The VIGRA Website is                                              */
+/*        http://kogs-www.informatik.uni-hamburg.de/~koethe/vigra/      */
+/*    Please direct questions, bug reports, and contributions to        */
+/*        koethe@informatik.uni-hamburg.de                              */
+/*                                                                      */
+/*  THIS SOFTWARE IS PROVIDED AS IS AND WITHOUT ANY EXPRESS OR          */
+/*  IMPLIED WARRANTIES, INCLUDING, WITHOUT LIMITATION, THE IMPLIED      */
+/*  WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE. */
+/*                                                                      */
+/************************************************************************/
 
 #ifndef VIGRA_NONLINEARDIFFUSION_HXX
 #define VIGRA_NONLINEARDIFFUSION_HXX
@@ -91,8 +103,8 @@ void internalNonlinearDiffusionAOSStep(
     // x-direction
     for(y=0; y<h; ++y, ++ys.y, ++yd.y, ++yw.y)
     {
-        RowIterator<SrcIterator> xs(ys);
-        RowIterator<WeightIterator> xw(yw);
+        ConstRowIterator<SrcIterator> xs(ys);
+        ConstRowIterator<WeightIterator> xw(yw);
         RowIterator<DestIterator> xd(yd);
 
         // fill 3-diag matrix
@@ -126,8 +138,8 @@ void internalNonlinearDiffusionAOSStep(
     
     for(x=0; x<w; ++x, ++ys.x, ++yd.x, ++yw.x)
     {
-        ColumnIterator<SrcIterator> xs(ys);
-        ColumnIterator<WeightIterator> xw(yw);
+        ConstColumnIterator<SrcIterator> xs(ys);
+        ConstColumnIterator<WeightIterator> xw(yw);
         ColumnIterator<DestIterator> xd(yd);
 
         // fill 3-diag matrix

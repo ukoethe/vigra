@@ -247,7 +247,7 @@ resizeImageInternalSplineInterpolation(SrcIterator is, SrcIterator iend, SrcAcce
     // calculate x derivatives
     for(y=0; y<h; ++y, ++in.y, ++idx.y)
     {
-        RowIterator<SrcIterator> sr = in;
+        ConstRowIterator<SrcIterator> sr = in;
         RowIterator<TMPITER> dr = idx;
         resizeImageInternalSplineGradient(sr, sr+w, accessorAdapter(sr, sa),
                                           it, r, dr);
@@ -258,7 +258,7 @@ resizeImageInternalSplineInterpolation(SrcIterator is, SrcIterator iend, SrcAcce
     // calculate y derivatives
     for(x=0; x<w; ++x, ++in.x, ++idy.x)
     {
-        ColumnIterator<SrcIterator> sc = in;
+        ConstColumnIterator<SrcIterator> sc = in;
         ColumnIterator<TMPITER> dc = idy;
         resizeImageInternalSplineGradient(sc, sc+h, accessorAdapter(sc, sa),  
                                           it, r, dc);
@@ -735,7 +735,7 @@ resizeImageLinearInterpolation(SrcIterator is, SrcIterator iend, SrcAccessor sa,
     
     for(x=0; x<w; ++x, ++is.x, ++yt.x)
     {
-        ColumnIterator<SrcIterator> c1(is);
+        ConstColumnIterator<SrcIterator> c1(is);
         ColumnIterator<typename BasicImage<TMPTYPE>::Iterator> ct(yt);
     
         if(hnew < h)
@@ -934,7 +934,7 @@ resizeImageNoInterpolation(SrcIterator is, SrcIterator iend, SrcAccessor sa,
 
     for(x=0; x<w; ++x, ++is.x, ++yt.x)
     {
-        ColumnIterator<SrcIterator> c1(is);
+        ConstColumnIterator<SrcIterator> c1(is);
         ColumnIterator<typename BasicImage<SRCVT>::Iterator> ct(yt);
     
     resizeLineNoInterpolation(c1, c1 + h, accessorAdapter(c1, sa), 

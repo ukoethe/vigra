@@ -672,7 +672,7 @@ void separableConvolveX(SrcIterator supperleft,
     
     for(y=0; y<h; ++y, ++supperleft.y, ++dupperleft.y)
     {
-	RowIterator<SrcIterator> rs(supperleft);
+	ConstRowIterator<SrcIterator> rs(supperleft);
 	RowIterator<DestIterator> rd(dupperleft); 
 	
 	convolveLine(rs, rs+w, accessorAdapter(rs, sa), rd, accessorAdapter(rd, da), 
@@ -783,7 +783,7 @@ void separableConvolveY(SrcIterator supperleft,
     
     for(x=0; x<w; ++x, ++supperleft.x, ++dupperleft.x)
     {
-	ColumnIterator<SrcIterator> cs(supperleft);
+	ConstColumnIterator<SrcIterator> cs(supperleft);
 	ColumnIterator<DestIterator> cd(dupperleft); 
 	
 	convolveLine(cs, cs+h, accessorAdapter(cs, sa), cd, accessorAdapter(cd, da), 
