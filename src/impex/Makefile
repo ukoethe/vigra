@@ -43,7 +43,9 @@ clean:
 	rm -f *.plg	
 	rm -rf Debug Release ii_files .libs
 
-ifeq "$(DEVELOPMENT_VERSION)" "yes"
+ifeq  "$(DEVELOPMENT_VERSION)" "yes"
+ifneq "$(MAKECMDGOALS)" "clean"
   # update and include header dependencies
   include $(patsubst %.lo, %.ld, $(OBJS))
+endif
 endif
