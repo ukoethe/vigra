@@ -97,9 +97,9 @@ class BSpline<0, T>
 
     result_type operator()(argument_type x) const
     {
-         return VIGRA_CSTD::fabs(x) <= 0.5 
-                       ? 1.0
-                       : 0.0;
+         return x < 0.5 && -0.5 <= x ?
+                  1.0
+                : 0.0;
     }
 
     result_type operator()(first_argument_type x, second_argument_type derivative_order) const
@@ -112,6 +112,19 @@ class BSpline<0, T>
     
     double radius() const
         { return 0.5; }
+        
+    static double * prefilterCoefficients()
+    { 
+        static double b[] = {0.0};
+        return b;
+    }
+    
+    typedef T WeightMatrix[1][1];
+    static WeightMatrix & weights()
+    {
+        static T b[1][1] = {{ 1.0}};
+        return b;
+    }
 };
 
 /********************************************************/
@@ -135,9 +148,9 @@ class BSpline<1, T>
     result_type operator()(argument_type x) const
     {
          x = VIGRA_CSTD::fabs(x);
-         return x < 1.0 
-                       ? 1.0 - x
-                       : 0.0;
+         return x < 1.0 ? 
+                  1.0 - x
+                : 0.0;
     }
 
     result_type operator()(first_argument_type x, second_argument_type derivative_order) const;
@@ -147,6 +160,19 @@ class BSpline<1, T>
     
     double radius() const
         { return 1.0; }
+        
+    static double * prefilterCoefficients()
+    { 
+        static double b[] = {0.0};
+        return b;
+    }
+    
+    typedef T WeightMatrix[2][2];
+    static WeightMatrix & weights()
+    {
+        static T b[2][2] = {{ 1.0, 0.0}, {-1.0, 1.0}};
+        return b;
+    }
 };
 
 template <class T>
@@ -157,13 +183,13 @@ T BSpline<1, T>::operator()(T x, unsigned int derivative_order) const
         case 0:
             return operator()(x);
         case 1:
-            return x >= 0.0 ?
-                     x <  1.0 ?
-                         -1.0 :
-                          0.0 :
-                     x > -1.0 ?
-                          1.0 :
-                          0.0;
+            return x < 0.0 ?
+                     -1.0 <= x ?
+                          1.0 
+                     : 0.0 
+                   : x < 1.0 ?
+                       -1.0 
+                     : 0.0;
         default:
             return 0.0;
     }
@@ -196,6 +222,21 @@ class BSpline<2, T>
     
     double radius() const
         { return 1.5; }
+        
+    static double * prefilterCoefficients()
+    { 
+        static double b[] = {2.0*M_SQRT2 - 3.0};
+        return b;
+    }
+    
+    typedef T WeightMatrix[3][3];
+    static WeightMatrix & weights()
+    {
+        static T b[3][3] = {{ 0.125, 0.75, 0.125}, 
+                            {-0.5, 0.0, 0.5},
+                            { 0.5, -1.0, 0.5}};
+        return b;
+    }
 };
 
 template <class T>
@@ -203,10 +244,10 @@ T BSpline<2, T>::operator()(T x) const
 {
      x = VIGRA_CSTD::fabs(x);
      return x < 0.5 ?
-                0.75 - x*x :
-                x < 1.5 ?
-                    0.5 * sq(1.5 - x) :
-                    0.0;
+              0.75 - x*x 
+            : x < 1.5 ?
+                0.5 * sq(1.5 - x) 
+              : 0.0;
 }
 
 template <class T>
@@ -219,23 +260,23 @@ T BSpline<2, T>::operator()(T x, unsigned int derivative_order) const
         case 1:
             return x >= -0.5 ?
                      x <= 0.5 ?
-                         -2.0 * x :
-                          x < 1.5 ?
-                             x - 1.5 :
-                             0.0
-                     x > -1.5 ?
-                         x + 1.5 : 
-                         0.0;
+                       -2.0 * x 
+                     : x < 1.5 ?
+                         x - 1.5 
+                       : 0.0 
+                   : x > -1.5 ?
+                       x + 1.5 
+                     : 0.0;
         case 2:
             return x >= -0.5 ?
-                     x <= 0.5 ?
-                         -2.0 :
-                          x < 1.5 ?
-                             1.0 :
-                             0.0
-                     x > -1.5 ?
-                         1.0 : 
-                         0.0;
+                     x < 0.5 ?
+                         -2.0 
+                     : x < 1.5 ?
+                         1.0 
+                       : 0.0 
+                   : x >= -1.5 ?
+                       1.0 
+                     : 0.0;
         default:
             return 0.0;
     }
@@ -274,6 +315,22 @@ class BSpline<3, T>
     
     double radius() const
         { return 2.0; }
+        
+    static double * prefilterCoefficients()
+    { 
+        static double b[] = {VIGRA_CSTD::sqrt(3.0) - 2.0};
+        return b;
+    }
+    
+    typedef T WeightMatrix[4][4];
+    static WeightMatrix & weights()
+    {
+        static T b[4][4] = {{ 1.0 / 6.0, 2.0 / 3.0, 1.0 / 6.0, 0.0}, 
+                            {-0.5, 0.0, 0.5, 0.0},
+                            { 0.5, -1.0, 0.5, 0.0},
+                            {-1.0 / 6.0, 0.5, -0.5, 1.0 / 6.0}};
+        return b;
+    }
 };
 
 template <class T>
@@ -303,35 +360,37 @@ T BSpline<3, T>::operator()(T x, unsigned int derivative_order) const
         case 1:
         {
             double s = x < 0.0 ?
-                          -1.0 :
-                           1.0;
+                         -1.0 
+                       :  1.0;
             x = VIGRA_CSTD::fabs(x);
             return x < 1.0 ?
-                     s*x*(-2.0 + 1.5*x) :
-                     x < 2.0 ?
-                       -0.5*s*sq(2.0 - x) :
-                        0.0;
+                     s*x*(-2.0 + 1.5*x) 
+                   : x < 2.0 ?
+                       -0.5*s*sq(2.0 - x)
+                     : 0.0;
         }
         case 2:
         {
             x = VIGRA_CSTD::fabs(x);
             return x < 1.0 ?
-                     3.0*x - 2.0 :
-                     x < 2.0 ?
-                       2.0 - x :
-                       0.0:
+                     3.0*x - 2.0 
+                   : x < 2.0 ?
+                       2.0 - x 
+                     : 0.0;
         }
         case 3:
         {
-            double s = x < 0.0 ?
-                          -1.0 :
-                           1.0;
-            x = VIGRA_CSTD::fabs(x);
-            return x < 1.0 ?
-                       3.0*s :
-                       x < 2.0 ?
-                         -s :
-                         0.0; 
+            return x < 0.0 ?
+                     x < -1.0 ?
+                       x < -2.0 ?
+                         0.0 
+                       : 1.0 
+                     : -3.0 
+                   : x < 1.0 ?
+                       3.0 
+                     : x < 2.0 ?
+                         -1.0 
+                       : 0.0;
         }
         default:
             return 0.0;
@@ -379,6 +438,24 @@ class BSpline<5, T>
     
     double radius() const
         { return 3.0; }
+        
+    static double * prefilterCoefficients()
+    { 
+        static double b[] = {-0.43057534709997114, -0.043096288203264652};
+        return b;
+    }
+    
+    typedef T WeightMatrix[6][6];
+    static WeightMatrix & weights()
+    {
+        static T b[6][6] = {{ 1.0/120.0, 13.0/60.0, 11.0/20.0, 13.0/60.0, 1.0/120.0}, 
+                            {-1.0/24.0, -5.0/12.0, 0.0, 5.0/12.0, 1.0/24.0},
+                            { 1.0/12.0, 1.0/6.0, -0.5, 1.0/6.0, 1.0/12.0},
+                            {-1.0/12.0, 1.0/6.0, 0.0, -1.0/6.0, 1.0/12.0},
+                            { 1.0/24.0, -1.0/6,0, 0.25, -1.0/6.0, 1.0/24.0},
+                            {-1.0/120.0, 1.0/24.0, -1.0/12.0, 1.0/12.0, -1.0/24.0, 1.0/120.0}};
+        return b;
+    }
 };
 
 template <class T>
@@ -492,17 +569,21 @@ T BSpline<5, T>::operator()(T x, unsigned int derivative_order) const
         }
         case 5:
         {
-            double s = x < 0.0 ?
-                          -1.0 :
-                           1.0;
-            x = VIGRA_CSTD::fabs(x);
-            return x < 1.0 ?
-                       -10.0*s :
-                        x < 2.0 ?
-                          5.0*s :
-                          x < 3.0 ?
-                            -s :
-                            0.0; 
+            return x < 0.0 ?
+                     x < -2.0 ?
+                       x < -3.0 ?
+                         0.0 
+                       : 1.0 
+                     : x < -1.0 ?
+                         -5.0    
+                       : 10.0 
+                   : x < 2.0 ?
+                       x < 1.0 ?
+                         -10.0 
+                       : 5.0 
+                     : x < 3.0 ?
+                         -1.0 
+                       : 0.0; 
         }
         default:
             return 0.0;
@@ -524,6 +605,7 @@ public:
     typedef T value_type;
     typedef T argument_type;
     typedef T result_type;
+    enum { order = 3 };
 
     result_type operator()(argument_type x) const;
     
@@ -532,6 +614,12 @@ public:
 
     int radius() const
         {return 2;}
+        
+    static double * prefilterCoefficients()
+    { 
+        static double b[] = {0.0};
+        return b;
+    }
 };
 
 
