@@ -8,7 +8,7 @@
     <li> SGI C++ 7.2 and 7.3 (CC -n32)
     <li> <a href="http://gcc.gnu.org/">GNU g++ 2.95.1 and newer</a> 
           (formerly EGCS 1.1)
-    <li> Microsoft Visual C++ 5.0, patchlevel 3
+    <li> Microsoft Visual C++.net
     </ul>
 
     VIGRA is known NOT to work with the following compilers:
@@ -25,67 +25,29 @@
     
     <ul>
     <li> uncompress and unpack the source distribution
-    <li> set the following environment variables:
+    <li> run <tt>configure</tt>:
     
-    <ul>
-    <li> tell the system where the VIGRA sources reside 
     \code
-    > setenv VIGRA_PATH [some path]/vigraVERSION_VERSION_VERSION
+    > cd <vigra_path>       
+    > ./configure --prefix=/your/install/path --exec-prefix=/your/bin/install/path  \
+                  --with-cc=gcc --with-cxx=g++ \
+                  --with-jpeg=/path/to/libjpeg/installation \
+                  --with-tiff=/path/to/libtiff/installation \
+                  --with-fftw=/path/to/libfftw/installation
     \endcode    
-    <li> specify which compiler and makefile will be used 
-    (currently supported values:     
-    <ul>
-         <li> "GCC" for <a href="http://gcc.gnu.org/">GNU g++</a> (2.95.1 and 
-         newer) and EGCS 1.1, 
-         <li> "IRIXCC7.2.0" for SGI C++ 7.2.0, 
-         <li> "IRIXCC7.2.1" for SGI C++ 7.2.1,
-         <li> "IRIXCC" for SGI C++ 7.3,
-         <li> "COMPILER" for any compiler not in this list)
-    </ul>
-    \code
-    > setenv VIGRA_COMPILER GCC       
-    \endcode    
-    To add support for a new compiler, edit the file 
-    <TT>$VIGRA_PATH/config/COMPILER.mak</TT> in order to tell VIGRA how your 
-    compiler is invoked. In this case, you'll have to specify 
-    <TT>setenv VIGRA_COMPILER COMPILER</TT>. If your compiler does not conform to
-    the C++ standard, you may also need to add compiler specific settings
-    in the file <TT>$VIGRA_PATH/include/vigra/config.hxx</TT>.
-
-    <li> specify the subdirectory where binaries go (for example, libraries 
-     will be installed at
-     <TT>$VIGRA_PATH/lib/$VIGRA_PLATFORM</TT>)
-    \code
-    > setenv VIGRA_PLATFORM Solaris       
-    \endcode
-     This variable can be empty.
     
-    </ul>
-    
-    <li> specify if and where JPEG and TIFF libraries are installed: <br>
-    
-    <ul>
-    <li> edit <TT>$VIGRA_PATH/src/impex/Makefile</TT>: <br>
-     <em> either</em> update the 
-     paths to the include files for <a href="http://www.ijg.org/">libjpeg</a> and 
-    <a href="http://www.libtiff.org/">libtiff</a> on your 
-    system <br>
-    <em> or</em> comment out the lines <TT>HAS_JPEG</TT> and <TT>HAS_TIFF</TT>.
-    
-    <li> edit the LIB macro in <TT>$VIGRA_PATH/src/examples/Makefile</TT>: <br>
-    <em> either</em> add the 
-    paths to the library files libjpeg.a (or libjpeg.so) and 
-    libtiff.a (or libtiff.so) on your 
-    system <br>
-    <em> or</em> remove -ljpeg and -ltiff.
-    
-    </ul>
+    Of course, the flags given to <tt>configure</tt> may vary for your build. 
+    In particular, if you drop <tt>--with-jpeg</tt>, <tt>--with-tiff</tt>, or
+    <tt>--with-fftw</tt>, VIGRA will be build without support for these libraries.
+    Invoke <tt>configure --help</tt> for a complete list of options, default settings
+    and explanations. 
     
     <li> build the library and the \ref Examples:
     
     \code
-    > cd $VIGRA_PATH
     > make
+    > make install
+    > make examples
     \endcode
     </ul>
     
@@ -93,27 +55,20 @@
     
     <ul>
     <li> uncompress and unpack the source distribution
+
     <li> go into the directory <TT>[some path]/vigra/src/</TT>
-    <li> load the workspace <TT>vigra.dsw</TT> into VisualC++
-    <li> set <TT>impex</TT> as active project and
+
+    <li> load the solution <TT>vigra.sln</TT> into Visual Studio.net
+
+    <li> specify in the project settings if and where JPEG, TIFF, and FFTW libraries are installed: <br>
+    <em> either</em> update the paths to the
+    include and library files for <a href="http://www.ijg.org/">jpeg.lib</a>,  
+    <a href="http://www.libtiff.org/">tiff.lib</a> on <a href="http://www.fftw.org/">fftw.lib</a> on your 
+    system - <em> or</em> - remove the <TT>HasJPEG</TT> and <TT>HasTIFF</TT> preprocessor flags.
     
-    <ul>
-    <li> specify if and where JPEG and TIFF libraries are installed: <br>
-    open the dialog Project:Settings:C++:Preprocessor and <em> either</em> update 
-    the paths to the
-    include files for <a href="http://www.ijg.org/">jpeg.lib</a> and 
-    <a href="http://www.libtiff.org/">tiff.lib</a> on your 
-    system - <em> or</em> - remove the defines <TT>HasJPEG</TT> and <TT>HasTIFF</TT>.
-    
-    <li> likewise, enter the path to jpeg.lib and tiff.lib in the dialog
-    Project:Settings:Link or remove these libraries from the library list (do this for 
-    all projects at once)
-    
-    <li> build the project <TT>impex</TT> (that is, the library <TT>vigraimpex.lib</TT>)
-    
-    </ul>
-    <li> build the other projects containing the \ref Examples (These programs can be 
-    invoked from the command line.)
+    <li> build the solution(that is, the library <TT>vigraimpex.lib</TT> and the \ref Examples)
+
+    <li> the \ref Examples can now be invoked from the command line.
     </ul>
 
     
