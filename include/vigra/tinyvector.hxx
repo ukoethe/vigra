@@ -547,24 +547,23 @@ class TinyVector
         Loop::assignScalar(data_, NumericTraits<value_type>::zero());
     }
 
-#if !defined(TEMPLATE_COPY_CONSTRUCTOR_BUG)
-
+        /** Copy constructor.
+        */
     TinyVector(TinyVector const & r)
     : BaseType()
     {
         Loop::assign(data_, r.data_);
     }
 
+        /** Copy assignment.
+        */
     TinyVector & operator=(TinyVector const & r)
     {
         Loop::assign(data_, r.data_);
         return *this;
     }
 
-#endif // TEMPLATE_COPY_CONSTRUCTOR_BUG
-
-
-        /** Copy constructor.
+        /** Copy with type conversion.
         */
     template <class U, class DATA, class DERIVED>
     TinyVector(TinyVectorBase<U, SIZE, DATA, DERIVED> const & r)
@@ -573,7 +572,7 @@ class TinyVector
 		Loop::assignCast(data_, r.begin());
     }
 
-        /** Copy assignment.
+        /** Copy assignment with type conversion.
         */
     template <class U, class DATA, class DERIVED>
     TinyVector & operator=(TinyVectorBase<U, SIZE, DATA, DERIVED> const & r)
@@ -628,37 +627,50 @@ class TinyVectorView
     typedef typename BaseType::difference_type difference_type;
     typedef typename BaseType::scalar_multiplier scalar_multiplier;
 
+        /** Default constructor 
+            (pointer to wrapped data is NULL).
+        */
     TinyVectorView()
     : BaseType()
     {
         data_ = 0;
     }
 
+        /** Construct view for given data array
+        */
     TinyVectorView(const_pointer data)
     : BaseType()
     {
         data_ = const_cast<pointer>(data);
     }
 
+        /** Copy constructor (shallow copy).
+        */
     TinyVectorView(TinyVectorView const & other)
     : BaseType()
     {
         data_ = const_cast<pointer>(other.data_);
     }
 
-    template <class U, class DATA, class DERIVED>
-    TinyVectorView(TinyVectorBase<U, SIZE, DATA, DERIVED> const & other)
+        /** Construct view from other TinyVector.
+        */
+    template <class DATA, class DERIVED>
+    TinyVectorView(TinyVectorBase<T, SIZE, DATA, DERIVED> const & other)
     : BaseType()
     {
         data_ = const_cast<pointer>(other.data_);
     }
 
-    TinyVectorView & operator=(TinyVectorView const & r)
+        /** Copy the data (not the pointer) of the rhs.
+        */
+   TinyVectorView & operator=(TinyVectorView const & r)
     {
         Loop::assign(data_, r.begin());
         return *this;
     }
 
+        /** Copy the data of the rhs with cast.
+        */
     template <class U, class DATA, class DERIVED>
     TinyVectorView & operator=(TinyVectorBase<U, SIZE, DATA, DERIVED> const & r)
     {
