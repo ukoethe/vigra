@@ -269,6 +269,8 @@ struct RationalTest
         shouldEqual(vigra::rational_cast<int>(R(3,2)), 1);
         shouldEqual(vigra::rational_cast<double>(R(3,2)), 1.5);
         shouldEqual(vigra::rational_cast<double>(1.5), 1.5);
+        
+        shouldEqual(R(vigra::Rational<short>((short)-2, (short)-4)), R(1,2));
 
         shouldEqual(R(3.5, 1e-4), R(7,2));
         shouldEqual(R(-3.5, 1e-4), R(-7,2));
