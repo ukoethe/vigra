@@ -152,7 +152,7 @@ void
 transformImage(SrcImageIterator src_upperleft,
                SrcImageIterator src_lowerright, SrcAccessor sa,
                DestImageIterator dest_upperleft, DestAccessor da,
-           Functor const & f)
+               Functor const & f)
 {
     int w = src_lowerright.x - src_upperleft.x;
 
@@ -169,8 +169,8 @@ template <class SrcImageIterator, class SrcAccessor,
 inline
 void
 transformImage(triple<SrcImageIterator, SrcImageIterator, SrcAccessor> src,
-           pair<DestImageIterator, DestAccessor> dest,
-           Functor const & f)
+               pair<DestImageIterator, DestAccessor> dest,
+               Functor const & f)
 {
     transformImage(src.first, src.second, src.third,
                    dest.first, dest.second, f);
@@ -270,10 +270,10 @@ template <class SrcImageIterator, class SrcAccessor,
           class Functor>
 void
 transformImageIf(SrcImageIterator src_upperleft,
-            SrcImageIterator src_lowerright, SrcAccessor sa,
-            MaskImageIterator mask_upperleft, MaskAccessor ma,
-            DestImageIterator dest_upperleft, DestAccessor da,
-            Functor const & f)
+                 SrcImageIterator src_lowerright, SrcAccessor sa,
+                 MaskImageIterator mask_upperleft, MaskAccessor ma,
+                 DestImageIterator dest_upperleft, DestAccessor da,
+                 Functor const & f)
 {
     int w = src_lowerright.x - src_upperleft.x;
 
@@ -294,13 +294,13 @@ template <class SrcImageIterator, class SrcAccessor,
 inline
 void
 transformImageIf(triple<SrcImageIterator, SrcImageIterator, SrcAccessor> src,
-             pair<MaskImageIterator, MaskAccessor> mask,
-             pair<DestImageIterator, DestAccessor> dest,
-             Functor const & f)
+                 pair<MaskImageIterator, MaskAccessor> mask,
+                 pair<DestImageIterator, DestAccessor> dest,
+                 Functor const & f)
 {
     transformImageIf(src.first, src.second, src.third,
                      mask.first, mask.second,
-             dest.first, dest.second, f);
+                     dest.first, dest.second, f);
 }
 
 /********************************************************/
@@ -311,13 +311,13 @@ transformImageIf(triple<SrcImageIterator, SrcImageIterator, SrcAccessor> src,
 
 /** \brief Calculate a function of the image gradient.
 
-    The gradient and the function
-    represented by <TT>Functor f</TT> are calculated in one go: for each location, the
-    symmetric difference in x- and y-directions (asymmetric difference at the
-    image borders) are passed to the given functor, and the result is written
-    the destination image. Functors to be used with this function
-    include \ref MagnitudeFunctor and
-    \ref RGBGradientMagnitudeFunctor.
+    The gradient and the function represented by <TT>Functor f</TT>
+    are calculated in one go: for each location, the symmetric
+    difference in x- and y-directions (asymmetric difference at the
+    image borders) are passed to the given functor, and the result is
+    written the destination image. Functors to be used with this
+    function include \ref MagnitudeFunctor and \ref
+    RGBGradientMagnitudeFunctor.
 
     <b> Declarations:</b>
 
@@ -384,7 +384,7 @@ template <class SrcImageIterator, class SrcAccessor,
           class DestImageIterator, class DestAccessor, class Functor>
 void
 gradientBasedTransform(SrcImageIterator srcul, SrcImageIterator srclr, SrcAccessor sa,
-              DestImageIterator destul, DestAccessor da, Functor const & grad)
+                       DestImageIterator destul, DestAccessor da, Functor const & grad)
 {
     int w = srclr.x - srcul.x;
     int h = srclr.y - srcul.y;
@@ -467,10 +467,10 @@ template <class SrcImageIterator, class SrcAccessor,
 inline
 void
 gradientBasedTransform(triple<SrcImageIterator, SrcImageIterator, SrcAccessor> src,
-               pair<DestImageIterator, DestAccessor> dest, Functor const & grad)
+                       pair<DestImageIterator, DestAccessor> dest, Functor const & grad)
 {
     gradientBasedTransform(src.first, src.second, src.third,
-                  dest.first, dest.second, grad);
+                           dest.first, dest.second, grad);
 }
 
 /** @} */
@@ -484,7 +484,7 @@ gradientBasedTransform(triple<SrcImageIterator, SrcImageIterator, SrcAccessor> s
 template <class SrcValueType>
 class LinearIntensityTransform
 {
-   public:
+  public:
         /* the functors argument type
         */
     typedef SrcValueType argument_type;
@@ -497,13 +497,13 @@ class LinearIntensityTransform
         */
     typedef SrcValueType value_type;
 
-        /** type of the offset (used in internal culculations to prevent
-            overflow).
+        /* type of the offset (used in internal calculations to prevent
+            overflows).
         */
     typedef typename
             NumericTraits<SrcValueType>::Promote argument_promote;
 
-        /** type of the scale factor
+        /* type of the scale factor
         */
     typedef double scalar_multiplier_type;
 
@@ -517,7 +517,7 @@ class LinearIntensityTransform
         */
     result_type operator()(argument_type const & s) const
     {
-        return NumericTraits<SrcValueType>::
+        return NumericTraits<result_type>::
                 fromRealPromote(scale_ * (s + offset_));
     }
 
@@ -531,7 +531,7 @@ class LinearIntensityTransform
 template <class SrcValueType>
 class ScalarIntensityTransform
 {
-   public:
+  public:
         /* the functors argument type
         */
     typedef SrcValueType argument_type;
@@ -544,7 +544,7 @@ class ScalarIntensityTransform
         */
     typedef SrcValueType value_type;
 
-        /** type of the scale factor
+        /* type of the scale factor
         */
     typedef double scalar_multiplier_type;
 
@@ -558,7 +558,7 @@ class ScalarIntensityTransform
         */
     result_type operator()(argument_type const & s) const
     {
-        return NumericTraits<SrcValueType>::
+        return NumericTraits<result_type>::
                 fromRealPromote(scale_ * s);
     }
 
