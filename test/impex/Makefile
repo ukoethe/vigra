@@ -1,27 +1,25 @@
 curdir=.
-ifneq "$(MAKECMDGOALS)" "clean"
-include ../../current/build.cygwin.gcc3.4/config/Makefile.include
-endif
 
-CPPFLAGS += -I../include
+TESTIMAGES = lenna.xv  lenna_gifref.xv  lennafloat.xv  lennafloatrgb.xv  lennargb.xv
 
-#EXTRACXXFLAGS =  -DNEWIMPEX
-#EXTRACXXINCLUDES =  -I../../experiments/newimpex/include
-CXXDEBUG = -g # or -O
+all: test
 
-#LIBS = -L../../experiments/newimpex/src/impex  -L/software/libpng-1.2.1/SunOS-5.8/lib -lpng $(VIGRAIMPEX_LIB)
+include ../Makefile.include
 
-test: test.o $(vigra_builddir)/src/impex/.libs/libvigraimpex.a
+CXXDEBUG := -O # or -g
+
+test: test.o $(vigra_builddir)/src/impex/.libs/libvigraimpex.a $(TESTIMAGES)
 	$(CXX) -o test test.o $(vigra_builddir)/src/impex/.libs/libvigraimpex.a $(IMPEX_DEPLIBS)
-	./test || { rm ./test ; exit 1; }
+	./test $(curdir) || { rm ./test ; exit 1; }
 
 impex.exe: test.d
 	devenv "..\test.sln" /build Release /project impex
 	./impex.exe || { rm ./impex.exe ; exit 1; }
 
-clean::
-	rm -f *.o test core *.d $(EXTRA_CLEAN_TARGET)
-	rm -rf Debug ii_files *.plg *.ilk
+$(TESTIMAGES):
+	ln -s $(curdir)/$@ .
+
+EXTRA_CLEAN_TARGET = res.* resrgb.*
 
 ifneq "$(MAKECMDGOALS)" "clean"
 include test.d

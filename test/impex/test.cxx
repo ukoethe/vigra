@@ -36,7 +36,7 @@ public:
     void testIsImage()
     {
         should(isImage("lenna.xv"));
-        should(!isImage("test.cxx"));
+        should(!isImage("Makefile"));
     }
 
     void testFile (const char *filename);

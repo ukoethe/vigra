@@ -446,7 +446,7 @@ struct ImageContainerTests
 	FImage lennaImage;
 
 	ImageContainerTests()
-		: info("../../images/lenna.xv"),
+		: info("lenna.xv"),
 		  w(info.width()), h(info.height()),
 		  lennaImage(w, h)
 	{

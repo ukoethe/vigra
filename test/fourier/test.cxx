@@ -280,7 +280,7 @@ struct GaborTests
 	FImage image;
 
 	GaborTests()
-		: info("../../images/ghouse.gif"),
+		: info("ghouse.gif"),
 		  w(info.width()), h(info.height()),
 		  image(w, h)
 	{

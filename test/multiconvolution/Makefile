@@ -14,8 +14,8 @@ multiconvolution.exe: test.d
 	devenv "..\test.sln" /build Release /project multiconvolution
 	./multiconvolution.exe || { rm ./multiconvolution.exe ; exit 1; }
 
+include ../Makefile.include
+
 ifneq "$(MAKECMDGOALS)" "clean"
 include test.d
 endif
-
-include ../Makefile.include

@@ -4,9 +4,9 @@ test: test.o
 	$(CXX) -o test test.o ||  { rm ./test.cxx ; exit 1; }
 	./test || { rm ./test ; exit 1; }
 
-error.exe: test.d
-	devenv "..\test.sln" /build Release /project error
-	./error.exe || { rm ./error.exe ; exit 1; }
+syntax.exe: test.d
+	devenv "..\test.sln" /build Release /project syntax
+	./syntax.exe || { rm ./syntax.exe ; exit 1; }
 
 ifneq "$(MAKECMDGOALS)" "clean"
 include test.d
@@ -14,9 +14,11 @@ endif
 
 include ../Makefile.include
 
+EXTRA_CLEAN_TARGET = test.cxx
+
 CPPFLAGS := $(LIBCPPFLAGS)
 
-HEADERS=$(shell ls ../../current/include/vigra/*.hxx)
+HEADERS=$(shell ls $(vigra_srcdir)/include/vigra/*.hxx)
 
 test.cxx: $(HEADERS)
 	@echo creating test.cxx

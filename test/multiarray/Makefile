@@ -9,10 +9,10 @@ multiarray.exe: test.d
 	devenv "..\test.sln" /build Release /project multiarray
 	./multiarray.exe || { rm ./multiarray.exe ; exit 1; }
 
-ifneq "$(MAKECMDGOALS)" "clean"
-include test.d
-endif
-
 EXTRA_CLEAN_TARGET=test?.png impex/test?.png
 
 include ../Makefile.include
+
+ifneq "$(MAKECMDGOALS)" "clean"
+include test.d
+endif

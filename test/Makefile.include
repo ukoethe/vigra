@@ -1,8 +1,10 @@
+TOPTESTDIR=..
+
 ifneq "$(MAKECMDGOALS)" "clean"
-include ../../current/build.cygwin.gcc3.4/config/Makefile.include
+include $(TOPTESTDIR)/../current/$(BUILDDIR)/config/Makefile.include
 endif
 
-CPPFLAGS += -I../include
+CPPFLAGS += -I$(TOPTESTDIR)/include
 
 clean::
 	rm -f *.o test core *.d $(EXTRA_CLEAN_TARGET)
