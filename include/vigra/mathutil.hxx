@@ -288,12 +288,12 @@ FPT safeFloatDivision( FPT f1, FPT f2 )
 
 } // namespace detail
     
-    /*! Tolerance based floating-point equality.
+    /*! Tolerance based floating-point comparison.
 
         Check whether two floating point numbers are equal within the given tolerance.
         This is useful because floating point numbers that should be equal in theory are
         rarely exactly equal in practice. If the tolerance \a epsilon is not given,
-        2.0 the machine epsilon is used.
+        twice the machine epsilon is used.
 
         <b>\#include</b> "<a href="mathutil_8hxx-source.html">vigra/mathutil.hxx</a>"<br>
         Namespace: vigra
