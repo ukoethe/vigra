@@ -126,8 +126,8 @@ struct SplineTest
     void testPrefilterCoefficients()
     {
         int n = ORDER / 2;
-        double const * ps = BS::prefilterCoefficients();
-        double const * psb = BSB::prefilterCoefficients();
+        vigra::ArrayVector<double> const & ps = spline.prefilterCoefficients();
+        vigra::ArrayVector<double> const & psb = splineBase.prefilterCoefficients();
         
         if(n == 0)
         {
@@ -136,8 +136,8 @@ struct SplineTest
         }
         else
         {
-            double * psb1 = const_cast<double *>(psb);
-            std::sort(psb1, psb1 + n);
+            vigra::ArrayVector<double> & psb1 = const_cast<vigra::ArrayVector<double> &>(psb);
+            std::sort(psb1.begin(), psb1.end());
             for(int i = 0; i < n; ++i)
                 shouldEqualTolerance(ps[i], psb[i], 1e-14);
         }
