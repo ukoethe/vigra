@@ -52,6 +52,9 @@ namespace vigra
         std::vector<std::string>
         queryCodecPixelTypes( const std::string & codecName ) const;
 
+        std::vector<int>
+        queryCodecBandNumbers( const std::string & codecName ) const;
+
         // find out which file types are supported
         std::vector<std::string> supportedFileTypes();
 

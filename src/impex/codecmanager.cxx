@@ -93,6 +93,18 @@ namespace vigra
         return result->second->getCodecDesc().pixelTypes;
     }
 
+    // find out which pixel types a given codec supports
+    std::vector<int>
+    CodecManager::queryCodecBandNumbers( const std::string & filetype ) const
+    {
+        std::map< std::string, CodecFactory * >::const_iterator result
+            = factoryMap.find( filetype );
+        vigra_precondition( result != factoryMap.end(),
+        "the codec that was queried for its pixeltype does not exist" );
+
+        return result->second->getCodecDesc().bandNumbers;
+    }
+
     // find out if a given file type is supported
     bool CodecManager::fileTypeSupported( const std::string & fileType )
     {
@@ -260,6 +272,18 @@ namespace vigra
         std::vector<std::string>::const_iterator result
             = std::find( ptypes.begin(), ptypes.end(), pixeltype );
         return ( result != ptypes.end() );
+    }
+
+    bool isBandNumberSupported( const std::string & codecname,
+                                int bands )
+    {
+        std::vector<int> bandNumbers
+            = codecManager().queryCodecBandNumbers(codecname);
+        if(bandNumbers[0] == 0)
+            return true; // any band number supported
+        std::vector<int>::const_iterator result
+            = std::find( bandNumbers.begin(), bandNumbers.end(), bands );
+        return ( result != bandNumbers.end() );
     }
 
 } // namespace vigra
