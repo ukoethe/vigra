@@ -86,7 +86,7 @@ class BSplineBase
     typedef T            result_type; 
         /** the spline order
         */
-    enum               { order = ORDER };
+    enum StaticOrder { order = ORDER };
 
         /** Create functor for gevine derivative of the spline. The spline's order
             is specified spline by the template argument <TT>ORDER</tt>. 
@@ -231,7 +231,7 @@ BSplineBase<ORDER, T>::calculateWeightMatrix()
 /** Spline functors for arbitrary orders.
 
     Provides the interface of \ref vigra::BSplineBase with a more convenient 
-    name.
+    name -- see there for more documentation.
 */
 template <int ORDER, class T = double>
 class BSpline
@@ -261,7 +261,7 @@ class BSplineBase<0, T>
     typedef T            first_argument_type;  
     typedef unsigned int second_argument_type;  
     typedef T            result_type; 
-    enum               { order = 0 };
+    enum StaticOrder { order = 0 };
 
     explicit BSplineBase(unsigned int derivativeOrder = 0)
     : derivativeOrder_(derivativeOrder)
@@ -329,7 +329,7 @@ class BSpline<1, T>
     typedef T            first_argument_type;  
     typedef unsigned int second_argument_type;  
     typedef T            result_type; 
-    enum               { order = 1 };
+    enum  StaticOrder { order = 1 };
 
     explicit BSpline(unsigned int derivativeOrder = 0)
     : derivativeOrder_(derivativeOrder)
@@ -416,7 +416,7 @@ class BSpline<2, T>
     typedef T            first_argument_type;  
     typedef unsigned int second_argument_type;  
     typedef T            result_type; 
-    enum               { order = 2 };
+    enum StaticOrder { order = 2 };
 
     explicit BSpline(unsigned int derivativeOrder = 0)
     : derivativeOrder_(derivativeOrder)
@@ -522,7 +522,7 @@ class BSpline<3, T>
     typedef T            first_argument_type;  
     typedef unsigned int second_argument_type;  
     typedef T            result_type; 
-    enum               { order = 3 };
+    enum StaticOrder { order = 3 };
 
     explicit BSpline(unsigned int derivativeOrder = 0)
     : derivativeOrder_(derivativeOrder)
@@ -654,7 +654,7 @@ class BSpline<5, T>
     typedef T            first_argument_type;  
     typedef unsigned int second_argument_type;  
     typedef T            result_type; 
-    enum               { order = 5 };
+    enum StaticOrder { order = 5 };
 
     explicit BSpline(unsigned int derivativeOrder = 0)
     : derivativeOrder_(derivativeOrder)
@@ -897,7 +897,7 @@ public:
     typedef T result_type;
         /** the splines polynomial order
         */
-    enum { order = 3 };
+    enum StaticOrder { order = 3 };
 
         /** function (functor) call
         */
