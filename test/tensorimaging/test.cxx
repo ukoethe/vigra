@@ -9,6 +9,7 @@
 #include "vigra/tensorutilities.hxx"
 #include "vigra/orientedtensorfilters.hxx"
 #include "vigra/boundarytensor.hxx"
+#include "vigra/gradient_energy_tensor.hxx"
 
 using namespace vigra;
 
@@ -216,6 +217,22 @@ struct EdgeJunctionTensorTest
         shouldEqualSequenceTolerance(res.begin(), res.end(), ref.begin(), 1e-12);
     }
 
+    void energyTensorTest()
+    {
+        V3Image get(img2.size());
+        Image res(img2.size()), ref(img2.size());
+        ImageImportInfo iref("l2_get.xv");
+        importImage(iref, destImage(ref));
+
+        Kernel1D<double> smooth, grad;
+        smooth.initGaussian(1.0);
+        grad.initGaussianDerivative(1.0, 1);
+        gradientEnergyTensor(srcImageRange(img2), destImage(get), grad, smooth);
+        tensorTrace(srcImageRange(get), destImage(res));
+
+        shouldEqualSequenceTolerance(res.begin(), res.end(), ref.begin(), 1e-12);
+    }
+
     Image img1, img2;
 };
 
@@ -240,6 +257,7 @@ struct TensorTestSuite
         add( testCase( &EdgeJunctionTensorTest::boundaryTensorTest1));
         add( testCase( &EdgeJunctionTensorTest::boundaryTensorTest2));
         add( testCase( &EdgeJunctionTensorTest::hourglassTest));
+        add( testCase( &EdgeJunctionTensorTest::energyTensorTest));
     }
 };
 
