@@ -44,11 +44,13 @@
     
     On a LINUX system, it is often possible to run configure without any options.
 
+    You can also create a dedicated build directory, e.g. to facilitate parallel installations on multiple platforms. You must cd into this directopry and run configure with the appropriate relative or absolute path.. 
     
-    <li> build the library and the \ref Examples:
+    <li> build the library, execute the tests, and compile the \ref Examples:
     
     \code
     > make
+    > make test
     > make install
     > make examples
     \endcode
@@ -95,6 +97,8 @@
     <li> the \ref Examples can now be invoked from the command line (DOS prompt).
 
     <li> if you include "<b>windows.h</b>": there are some name clashes -- include "vigra/windows.h" instead.
+
+    <li> The VIGRA test suite can be similarly compiled and executed by loading the solution <TT>[some path]/vigra/test/test.sln</TT>.
     </ul>
 
     
