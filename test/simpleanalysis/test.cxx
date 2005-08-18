@@ -682,6 +682,21 @@ struct DistanceTransformTest
     Image img;
 };
 
+template <class T>
+struct EqualWithToleranceFunctor
+{
+    EqualWithToleranceFunctor(T tolerance = 2.0 * NumericTraits<T>::epsilon())
+    : t(tolerance)
+    {}
+    
+    bool operator()(T l, T r) const
+    {
+        return abs(l-r) <= t;
+    }
+    
+    T t;
+};
+
 struct LocalMinMaxTest
 {
     typedef vigra::DImage Image;
@@ -826,6 +841,39 @@ struct LocalMinMaxTest
             should(*i1 == acc(i2));
         }
    }
+
+    void plateauWithHolesTest()
+    {
+        static const double in[] = {
+            0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+            0.0, 0.0, 0.5, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+            0.0, 0.0, 1.0, 1.0, 1.0, 1.0, 0.0, 0.0, 0.0,
+            0.0, 1.0, 2.0, 3.0, 2.0, 2.0, 1.0, 0.0, 0.0,
+            0.0, 1.0, 3.0, 4.0, 4.1, 3.0, 1.0, 0.0, 0.0,
+            0.0, 1.0, 2.0, 2.0, 3.0, 2.0, 1.0, 0.0, 0.0,
+            0.0, 0.0, 1.0, 1.0, 1.0, 1.0, 0.0, 0.0, 0.0,
+            0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0,
+            0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
+
+        std::copy(in, in+81, img.begin());
+        Image res(img.size(), 0.0);
+
+        extendedLocalMaxima(srcImageRange(img), destImage(res), 1.0,
+                            EqualWithToleranceFunctor<Image::value_type>(0.2));
+        
+        static const double desired[] = {
+            0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+            0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+            0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+            0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+            0.0, 0.0, 0.0, 1.0, 1.0, 0.0, 0.0, 0.0, 0.0,
+            0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+            0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+            0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0,
+            0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
+
+        shouldEqualSequence(res.begin(), res.end(), desired);
+    }
 
     Image img;
 };
@@ -1150,6 +1198,7 @@ struct SimpleAnalysisTestSuite
         add( testCase( &LocalMinMaxTest::localMaximumTest));
         add( testCase( &LocalMinMaxTest::extendedLocalMinimumTest));
         add( testCase( &LocalMinMaxTest::extendedLocalMaximumTest));
+        add( testCase( &LocalMinMaxTest::plateauWithHolesTest));
         add( testCase( &RegionGrowingTest::voronoiTest));
         add( testCase( &RegionGrowingTest::voronoiWithBorderTest));
         add( testCase( &InterestOperatorTest::cornerResponseFunctionTest));
