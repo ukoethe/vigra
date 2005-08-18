@@ -530,7 +530,7 @@ namespace vigra {
         VIGRA_IMPEX_FINALIZED(pimpl->finalized);
         pimpl->finalized = true;
 
-        if ( pimpl->pixeltype == "UINT32" )
+        if ( pimpl->pixeltype == "INT32" )
           pimpl->raw = false;
 
         // write magic number
@@ -738,6 +738,12 @@ namespace vigra {
                 void_vector<int16_t> & cbands
                     = static_cast< void_vector<int16_t> & >(pimpl->bands);
                 for( int16_t * iter = cbands.begin();
+                     iter < cbands.end(); ++iter )
+                    if ( *iter > maxval ) maxval = *iter;
+            } else if ( pimpl->pixeltype == "INT32" ) {
+                void_vector<int32_t> & cbands
+                    = static_cast< void_vector<int32_t> & >(pimpl->bands);
+                for( int32_t * iter = cbands.begin();
                      iter < cbands.end(); ++iter )
                     if ( *iter > maxval ) maxval = *iter;
             }
