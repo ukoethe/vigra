@@ -230,7 +230,7 @@ struct EdgeJunctionTensorTest
         gradientEnergyTensor(srcImageRange(img2), destImage(get), grad, smooth);
         tensorTrace(srcImageRange(get), destImage(res));
 
-        shouldEqualSequenceTolerance(res.begin(), res.end(), ref.begin(), 1e-12);
+        shouldEqualSequenceTolerance(res.begin(), res.end(), ref.begin(), 1e-10);
     }
 
     Image img1, img2;
