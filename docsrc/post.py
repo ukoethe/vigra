@@ -172,19 +172,19 @@ functionHeading = re.compile(r'(<td class="md" bgcolor="#f0e0c0">)(\s*'+\
             r'<table cellpadding="0" cellspacing="0" border="0">.*?</table>)', re.S)
 
 def processFile(fileName):
-    print fileName
+    print fileName          # log message
     f = open(fileName)
     text = f.read()
     f.close()
     
-    text = convertHeader(text)
+    text = convertHeader(text)   # page header processing
     if not re.search(r'.*source.html', fileName):
-        text = convertPage(text)
+        text = convertPage(text)   # normal page processing
     else:
-        text = convertSource(text)
+        text = convertSource(text) # source code page processing
     if re.search(r'.*/group__.*html', fileName):
         text = typedefField.sub(r'<br><b>&nbsp;\1</b><br>&nbsp;', text)
-        declPattern = findExplicitDeclarations(text)
+        declPattern = findExplicitDeclarations(text)  # is the declaration hardcoded in the docu?
         if declPattern:
             # replace the signature in the header with (...) if the signature
             # is given explicitly later
@@ -211,7 +211,7 @@ def processFile(fileName):
     f.close()
     
 
-files = glob.glob(path + '/*.html')
+files = glob.glob(path + '/*.html')  # use absolute path to files
 #files = glob.glob(str(sys.argv[1]) + '/ImageIterator.html')
 #files = glob.glob('../doc/*.html')
 
