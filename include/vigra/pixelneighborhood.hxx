@@ -204,6 +204,11 @@ static const Direction West           = NeighborCode::West;           /**<  Expo
 static const Direction South          = NeighborCode::South;          /**<  Export NeighborCode::South to namespace FourNeighborhood */
 static const Direction DirectionCount = NeighborCode::DirectionCount; /**<  Export NeighborCode::DirectionCount to namespace FourNeighborhood */
 
+inline Diff2D const & east()       { return NeighborCode::diff(East); }    /**<  Offset to the east neighbor */
+inline Diff2D const & north()      { return NeighborCode::diff(North); }   /**<  Offset to the north neighbor */
+inline Diff2D const & west()       { return NeighborCode::diff(West); }    /**<  Offset to the west neighbor */
+inline Diff2D const & south()      { return NeighborCode::diff(South); }   /**<  Offset to the south neighbor */
+
 } // namespace FourNeighborhood
 
     /** Export \ref vigra::FourNeighborhood::NeighborCode into the scope of namespace vigra.
@@ -425,6 +430,15 @@ static const Direction SouthWest      = NeighborCode::SouthWest;   /**<  Export 
 static const Direction South          = NeighborCode::South;       /**<  Export NeighborCode::South to namespace EightNeighborhood */
 static const Direction SouthEast      = NeighborCode::SouthEast;   /**<  Export NeighborCode::SouthEast to namespace EightNeighborhood */
 static const Direction DirectionCount = NeighborCode::DirectionCount;   /**<  Export NeighborCode::DirectionCount to namespace EightNeighborhood */
+
+inline Diff2D const & east()       { return NeighborCode::diff(East); }        /**<  Offset to the east neighbor */
+inline Diff2D const & northEast()  { return NeighborCode::diff(NorthEast); }   /**<  Offset to the northEast neighbor */
+inline Diff2D const & north()      { return NeighborCode::diff(North); }       /**<  Offset to the north neighbor */
+inline Diff2D const & northWest()  { return NeighborCode::diff(NorthWest); }   /**<  Offset to the northWest neighbor */
+inline Diff2D const & west()       { return NeighborCode::diff(West); }        /**<  Offset to the west neighbor */
+inline Diff2D const & southWest()  { return NeighborCode::diff(SouthWest); }   /**<  Offset to the southWest neighbor */
+inline Diff2D const & south()      { return NeighborCode::diff(South); }       /**<  Offset to the south neighbor */
+inline Diff2D const & southEast()  { return NeighborCode::diff(SouthEast); }   /**<  Offset to the southEast neighbor */
 
 } // namespace EightNeighborhood
 
