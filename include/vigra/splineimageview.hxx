@@ -27,6 +27,7 @@
 #include "vigra/splines.hxx"
 #include "vigra/array_vector.hxx"
 #include "vigra/basicimage.hxx"
+#include "vigra/copyimage.hxx"
 
 namespace vigra {
 
