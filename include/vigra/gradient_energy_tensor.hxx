@@ -1,6 +1,6 @@
 /************************************************************************/
 /*                                                                      */
-/*               Copyright 1998-2004 by Ullrich Koethe                  */
+/*               Copyright 2004-2005 by Ullrich Koethe                  */
 /*       Cognitive Systems Group, University of Hamburg, Germany        */
 /*                                                                      */
 /*    This file is part of the VIGRA computer vision library.           */
@@ -91,7 +91,7 @@ namespace vigra {
 
     <b> Usage:</b>
 
-    <b>\#include</b> "<a href="gradient_energy_tensor_8hxx-source.html">vigra/gradient_energy_tensor.hxx</a>"
+    <b>\#include</b> "<a href="gradient__energy__tensor_8hxx-source.html">vigra/gradient_energy_tensor.hxx</a>"
 
     \code
     FImage img(w,h);
