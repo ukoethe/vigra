@@ -1,4 +1,6 @@
+ifneq "$(MAKECMDGOALS)" "clean"
 include ../config/Makefile.include
+endif
 
 QUICKSUBDIRS =  \
         syntax \
