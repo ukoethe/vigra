@@ -28,6 +28,7 @@
 #include "vigra/array_vector.hxx"
 #include "vigra/basicimage.hxx"
 #include "vigra/copyimage.hxx"
+#include "vigra/tinyvector.hxx"
 
 namespace vigra {
 
