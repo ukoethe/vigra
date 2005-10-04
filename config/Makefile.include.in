@@ -76,11 +76,11 @@ DEVELOPMENT_VERSION = yes
 %.ld: $(curdir)/%.c
 	@echo updating header dependencies for $*.c
 	@rm -f $*.ld
-	@(echo "$*.ld $*.lo \\" ; $(CC) -M $(CFLAGS) $(LIBCPPFLAGS) -c "$(curdir)/$*.c ") > $*.ld \
+	@(echo "$*.ld $*.lo \\" ; $(CC) -M $(CFLAGS) $(LIBCPPFLAGS) -c "$(curdir)/$*.c") > $*.ld \
         || { rm -f $*.ld; exit 1; }
 
 %.ld: $(curdir)/%.cxx
 	@echo updating header dependencies for $*.cxx
 	@rm -f $*.ld
-	@(echo "$*.ld $*.lo \\" ; $(CXX) -M $(CXXFLAGS) $(LIBCPPFLAGS) -c $(curdir)/$*.cxx ) > $*.ld \
+	@(echo "$*.ld $*.lo \\" ; $(CXX) -M $(CXXFLAGS) $(LIBCPPFLAGS) -c "$(curdir)/$*.cxx" ) > $*.ld \
         || { rm -f $*.ld; exit 1; }
