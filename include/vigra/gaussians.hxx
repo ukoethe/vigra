@@ -26,6 +26,7 @@
 #include "vigra/config.hxx"
 #include "vigra/mathutil.hxx"
 #include "vigra/array_vector.hxx"
+#include "vigra/error.hxx"
 
 namespace vigra {
 
@@ -48,24 +49,24 @@ template <class T = double>
 class Gaussian
 {
   public:
-  
+
         /** the value type if used as a kernel in \ref resamplingConvolveImage().
         */
-    typedef T            value_type;  
+    typedef T            value_type;
         /** the functor's argument type
         */
-    typedef T            argument_type;  
+    typedef T            argument_type;
         /** the functor's result type
         */
-    typedef T            result_type; 
-    
-        /** Create functor for the given standard deviation <tt>sigma</tt> and 
+    typedef T            result_type;
+
+        /** Create functor for the given standard deviation <tt>sigma</tt> and
             derivative order <i>n</i>. The functor then realizes the function
-             
+
             \f[ f_{\sigma,n}(x)=\frac{\partial^n}{\partial x^n}
                  \frac{1}{\sqrt{2\pi}\sigma}e^{-\frac{x^2}{2\sigma^2}}
             \f]
-             
+
             Precondition:
             \code
             sigma > 0.0
@@ -103,32 +104,32 @@ class Gaussian
         */
     value_type sigma() const
         { return sigma_; }
-    
+
         /** Get the derivative order of the Gaussian.
         */
     unsigned int derivativeOrder() const
         { return order_; }
-    
+
         /** Get the required filter radius for a discrete approximation of the Gaussian.
-            The radius is given as a multiple of the Gaussian's standard deviation 
+            The radius is given as a multiple of the Gaussian's standard deviation
             (default: <tt>sigma * (3 + 1/2 * derivativeOrder()</tt> -- the second term
-            accounts for the fact that the derivatives of the Gaussian become wider 
+            accounts for the fact that the derivatives of the Gaussian become wider
             with increasing order). The result is rounded to the next higher integer.
         */
     double radius(double sigmaMultiple = 3.0) const
         { return VIGRA_CSTD::ceil(sigma_ * (sigmaMultiple + 0.5 * derivativeOrder())); }
 
   private:
-    void calculateHermitePolynomial();    
+    void calculateHermitePolynomial();
     T horner(T x) const;
-    
+
     T sigma_, sigma2_, norm_;
     unsigned int order_;
     ArrayVector<T> hermitePolynomial_;
 };
 
 template <class T>
-typename Gaussian<T>::result_type 
+typename Gaussian<T>::result_type
 Gaussian<T>::operator()(argument_type x) const
 {
     T x2 = x * x;
@@ -159,7 +160,7 @@ T Gaussian<T>::horner(T x) const
         res = x * res + hermitePolynomial_[i];
     return res;
 }
-    
+
 template <class T>
 void Gaussian<T>::calculateHermitePolynomial()
 {
@@ -173,7 +174,7 @@ void Gaussian<T>::calculateHermitePolynomial()
     }
     else
     {
-        // calculate Hermite polynomial for requested derivative 
+        // calculate Hermite polynomial for requested derivative
         // recursively according to
         //     (0)
         //    h   (x) = 1
