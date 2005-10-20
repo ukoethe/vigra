@@ -251,9 +251,9 @@ unsigned int labelImage(SrcIterator upperlefts,
             }
         }
     }
-
+    
     // pass 2: assign one label to each region (tree)
-    // so that labels for a consecutive sequence 1, 2, ...
+    // so that labels form a consecutive sequence 1, 2, ...
     DestIterator yd(upperleftd);
 
     unsigned int count = 0;
