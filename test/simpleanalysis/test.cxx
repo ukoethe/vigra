@@ -95,8 +95,9 @@ struct LabelingTest
     void labelingFourTest1()
     {
         Image res(img1);
-
-        should(2 == labelImage(srcImageRange(img1), destImage(res), false));
+        int count = labelImage(srcImageRange(img1), destImage(res), false);
+        
+        should(2 == count);
 
         Image::ScanOrderIterator i1 = img1.begin();
         Image::ScanOrderIterator i1end = img1.end();
@@ -112,8 +113,9 @@ struct LabelingTest
     void labelingFourTest2()
     {
         Image res(img3);
+        int count = labelImage(srcImageRange(img3), destImage(res), false);
 
-        should(6 == labelImage(srcImageRange(img3), destImage(res), false));
+        should(6 == count);
 
         static const int target[] = {
             1, 2, 1, 3, 1, 4, 1, 5, 1,
