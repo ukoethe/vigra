@@ -26,6 +26,34 @@
 
 namespace vigra {
 
+enum AtImageBorder
+{
+    Outside           = -1,
+    NoBorder          = 0,
+    RightBorder       = 1,
+    LeftBorder        = 2,
+    TopBorder         = 4,
+    BottomBorder      = 8,
+    TopRightBorder    = TopBorder    | RightBorder,
+    TopLeftBorder     = TopBorder    | LeftBorder,
+    BottomLeftBorder  = BottomBorder | LeftBorder,
+    BottomRightBorder = BottomBorder | RightBorder
+};
+
+inline AtImageBorder isAtImageBorder(int x, int y, int w, int h)
+{
+    return static_cast<AtImageBorder>((x == 0 
+                                         ? LeftBorder
+                                         : x == w-1
+                                             ? RightBorder
+                                             : NoBorder) |
+                                       (y == 0 
+                                         ? TopBorder
+                                         : y == h-1
+                                             ? BottomBorder
+                                             : NoBorder));
+}
+
 /** \addtogroup PixelNeighborhood Utilities to manage pixel neighborhoods
 
     4- and 8-neighborhood definitions and circulators.
@@ -84,14 +112,41 @@ class NeighborCode
             DirectionCount may be used for portable loop termination conditions.
         */
     enum Direction {
-        Error = -1,    ///< &nbsp;
-        East = 0,      ///< &nbsp;
-        North,         ///< &nbsp;
-        West,          ///< &nbsp;
-        South,         ///< &nbsp;
-        DirectionCount ///< &nbsp;
+        Error = -1,     ///< &nbsp;
+        East = 0,       ///< &nbsp;
+        North,          ///< &nbsp;
+        West,           ///< &nbsp;
+        South,          ///< &nbsp;
+        DirectionCount, ///< &nbsp;
+        CausalFirst = North,
+        CausalLast  = West
     };
-
+    
+    
+    static unsigned int nearBorderDirectionCount(AtImageBorder b)
+    {
+        static unsigned int c[] = { 4, 3, 3, 0, 3, 2, 2, 0, 3, 2, 2};
+        return c[b];
+    }
+    
+    static Direction nearBorderDirections(AtImageBorder b, int i)
+    {
+        static Direction c[11][4] = {
+                { East, North, West, South},
+                { North, West, South, Error},
+                { East, North, South, Error},
+                { Error, Error, Error, Error},
+                { East, West, South, Error},
+                { West, South, Error, Error},
+                { East, South, Error, Error},
+                { Error, Error, Error, Error},
+                { East, North, West, Error},
+                { North, West, Error, Error},
+                { East, North, Error, Error}
+             };
+        return c[b][i];
+    }
+    
         /** Transform direction code into corresponding Diff2D offset.
             (note: there is no bounds checking on the code you pass.)
         */
@@ -271,9 +326,35 @@ class NeighborCode
         SouthWest,      ///< &nbsp;
         South,          ///< &nbsp;
         SouthEast,      ///< &nbsp;
-        DirectionCount  ///< &nbsp;
+        DirectionCount, ///< &nbsp;
+        CausalFirst = NorthEast,
+        CausalLast  = West
     };
 
+    static unsigned int nearBorderDirectionCount(AtImageBorder b)
+    {
+        static unsigned int c[] = { 8, 5, 5, 0, 5, 3, 3, 0, 5, 3, 3};
+        return c[b];
+    }
+    
+    static Direction nearBorderDirections(AtImageBorder b, int i)
+    {
+        static Direction c[11][8] = {
+                { East, NorthEast, North, NorthWest, West, SouthWest, South, SouthEast},
+                { North, NorthWest, West, SouthWest, South, Error, Error, Error},
+                { East, NorthEast, North, South, SouthEast, Error, Error, Error},
+                { Error, Error, Error, Error, Error, Error, Error, Error},
+                { East, West, SouthWest, South, SouthEast, Error, Error, Error},
+                { West, SouthWest, South, Error, Error, Error, Error, Error},
+                { East, South, SouthEast, Error, Error, Error, Error, Error},
+                { Error, Error, Error, Error, Error, Error, Error, Error},
+                { East, NorthEast, North, NorthWest, West, Error, Error, Error},
+                { North, NorthWest, West, Error, Error, Error, Error, Error},
+                { East, NorthEast, North, Error, Error, Error, Error, Error}
+             };
+        return c[b][i];
+    }
+    
         /** Transform direction code into corresponding Diff2D offset.
             (note: there is no bounds checking on the code you pass.)
         */
@@ -600,7 +681,7 @@ public:
         */
     NeighborOffsetCirculator & turnRound()
     {
-        direction_ = static_cast<Direction>((direction_ + NEIGHBORCODE::West) % NEIGHBORCODE::DirectionCount);
+        direction_ = opposite();
         return *this;
     }
 
@@ -697,6 +778,13 @@ public:
     Direction direction() const
     {
         return direction_;
+    }
+
+        /** Get opposite of current direction.
+        */
+    Direction opposite() const
+    {
+        return static_cast<Direction>((direction_ + NEIGHBORCODE::West) % NEIGHBORCODE::DirectionCount); ;
     }
 
         /** Get direction code at offset of current direction.
@@ -998,6 +1086,183 @@ public:
 
 private:
     NEIGHBOROFFSETCIRCULATOR neighborCode_;
+};
+
+template <class IMAGEITERATOR, class NEIGHBORCODE>
+class RestrictedNeighborhoodCirculator 
+: private NeighborhoodCirculator<IMAGEITERATOR, NEIGHBORCODE>
+{
+    typedef NeighborhoodCirculator<IMAGEITERATOR, NEIGHBORCODE> BaseType;
+
+public:
+        /** type of the underlying image iterator
+        */
+    typedef IMAGEITERATOR base_type;
+
+        /** type of the used neighbor code
+        */
+    typedef NEIGHBORCODE NeighborCode;
+
+        /** the circulator's value type
+        */
+    typedef typename BaseType::value_type value_type;
+
+        /** type of the direction code
+        */
+    typedef typename BaseType::Direction Direction;
+
+        /** the circulator's reference type (return type of <TT>*circ</TT>)
+        */
+    typedef typename BaseType::reference reference;
+
+        /** the circulator's index reference type (return type of <TT>circ[n]</TT>)
+        */
+    typedef typename BaseType::index_reference index_reference;
+
+        /** the circulator's pointer type (return type of <TT>operator-></TT>)
+        */
+    typedef typename BaseType::pointer pointer;
+
+        /** the circulator's difference type (argument type of <TT>circ[diff]</TT>)
+        */
+    typedef typename BaseType::difference_type difference_type;
+
+        /** the circulator tag (random_access_circulator_tag)
+        */
+    typedef typename BaseType::iterator_category iterator_category;
+
+        /** Construct circulator with given <tt>center</tt> pixel, pointing to the neighbor
+            at the given direction <tt>d</tt>.
+        */
+    RestrictedNeighborhoodCirculator(IMAGEITERATOR const & center = IMAGEITERATOR(),
+                                     AtImageBorder atBorder = NoBorder)
+        : BaseType(center, NEIGHBORCODE::nearBorderDirections(atBorder, 0)),
+          whichBorder_(atBorder),
+          count_(NEIGHBORCODE::nearBorderDirectionCount(atBorder)),
+          current_(0)
+    {}
+
+        /** pre-increment */
+    RestrictedNeighborhoodCirculator & operator++()
+    {
+        return operator+=(1);
+    }
+
+        /** pre-decrement */
+    RestrictedNeighborhoodCirculator operator++(int)
+    {
+        RestrictedNeighborhoodCirculator ret(*this);
+        operator++();
+        return ret;
+    }
+
+        /** post-increment */
+    RestrictedNeighborhoodCirculator & operator--()
+    {
+        return operator+=(-1);
+    }
+
+        /** post-decrement */
+    RestrictedNeighborhoodCirculator operator--(int)
+    {
+        RestrictedNeighborhoodCirculator ret(*this);
+        operator--();
+        return ret;
+    }
+
+        /** add-assignment */
+    RestrictedNeighborhoodCirculator & operator+=(difference_type d)
+    {
+        current_ = static_cast<Direction>((current_ + count_ + d) % count_);
+        BaseType::turnTo(NEIGHBORCODE::nearBorderDirections(whichBorder_, current_));
+        return *this;
+    }
+
+        /** subtract-assignment */
+    RestrictedNeighborhoodCirculator & operator-=(difference_type d)
+    {
+        return operator+=(-d);
+    }
+
+        /** addition */
+    RestrictedNeighborhoodCirculator operator+(difference_type d) const
+    {
+        RestrictedNeighborhoodCirculator result(*this);
+        result+= d;
+        return result;
+    }
+
+        /** subtraction */
+    RestrictedNeighborhoodCirculator operator-(difference_type d) const
+    {
+        RestrictedNeighborhoodCirculator result(*this);
+        result-= d;
+        return result;
+    }
+
+        /** equality */
+    bool operator==(RestrictedNeighborhoodCirculator const & rhs) const
+    {
+        return current_ == rhs.current_;
+    }
+
+        /** inequality */
+    bool operator!=(RestrictedNeighborhoodCirculator const & rhs) const
+    {
+        return current_ != rhs.current_;
+    }
+
+        /** subtraction */
+    difference_type operator-(RestrictedNeighborhoodCirculator const & rhs) const
+    {
+        return (current_ - rhs.current_) % count_;
+    }
+
+        /** dereference */
+    reference operator*() const
+    {
+        return BaseType::operator*();
+    }
+
+        /** member access */
+    pointer operator->() const
+    {
+        return BaseType::operator->();
+    }
+
+        /** Get the base iterator for the current neighbor. */
+    base_type const & base() const
+    {
+        return BaseType::base();
+    }
+
+        /** Get the base iterator for the center of the circulator. */
+    base_type center() const
+    {
+        return BaseType::center();
+    }
+
+        /** Get the current direction. */
+    Direction direction() const
+    {
+        return BaseType::direction();
+    }
+
+        /** Get the difference vector (Diff2D) from the center to the current neighbor. */
+    Diff2D const & diff() const
+    {
+        return BaseType::diff();
+    }
+
+        /** Is the current neighbor a diagonal neighbor? */
+    bool isDiagonal() const
+    {
+        return BaseType::isDiagonal();
+    }
+
+private:
+     AtImageBorder whichBorder_;
+     signed char count_, current_;
 };
 
 //@}
