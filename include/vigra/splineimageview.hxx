@@ -435,7 +435,7 @@ class SplineImageView
     double x0_, x1_, y0_, y1_;
     InternalImage image_;
     Spline k_;
-    mutable double x_, y_, xmul_, ymul_, u_, v_, kx_[ksize_], ky_[ksize_];
+    mutable double x_, y_, u_, v_, kx_[ksize_], ky_[ksize_];
     mutable int ix_[ksize_], iy_[ksize_];
 };
 
@@ -513,7 +513,8 @@ SplineImageView<ORDER, VALUETYPE>::calculateIndices(double x, double y) const
         detail::SplineImageViewUnrollLoop1<ORDER>::exec(
                                 (ORDER % 2) ? int(y - kcenter_) : int(y + 0.5 - kcenter_), iy_);
 
-        xmul_ = ymul_ = 1.0;
+        u_ = x - ix_[kcenter_];
+        v_ = y - iy_[kcenter_];
     }
     else
     {
@@ -544,13 +545,11 @@ SplineImageView<ORDER, VALUETYPE>::calculateIndices(double x, double y) const
             for(int i = 0; i < ksize_; ++i)
                 iy_[i] = vigra::abs(yCenter - (kcenter_ - i));
         }
-        xmul_ = (isInsideX(x) ? 1.0 : -1.0);
-        ymul_ = (isInsideY(y) ? 1.0 : -1.0);
+        u_ = x - xCenter;
+        v_ = y - yCenter;
     }
     x_ = x;
     y_ = y;
-    u_ = x - ix_[kcenter_];
-    v_ = y - iy_[kcenter_];
 }
 
 template <int ORDER, class VALUETYPE>
@@ -634,8 +633,7 @@ VALUETYPE SplineImageView<ORDER, VALUETYPE>::operator()(double x, double y,
     calculateIndices(x, y);
     derivCoefficients(u_, dx, kx_);
     derivCoefficients(v_, dy, ky_);
-    VALUETYPE mul = (dx % 2 ? xmul_ : 1.0) * (dy % 2 ? ymul_ : 1.0);
-    return mul * convolve();
+    return convolve();
 }
 
 template <int ORDER, class VALUETYPE>
