@@ -435,7 +435,7 @@ class SplineImageView
     double x0_, x1_, y0_, y1_;
     InternalImage image_;
     Spline k_;
-    mutable double x_, y_, u_, v_, kx_[ksize_], ky_[ksize_];
+    mutable double x_, y_, xmul_, ymul_, u_, v_, kx_[ksize_], ky_[ksize_];
     mutable int ix_[ksize_], iy_[ksize_];
 };
 
@@ -512,29 +512,40 @@ SplineImageView<ORDER, VALUETYPE>::calculateIndices(double x, double y) const
                                 (ORDER % 2) ? int(x - kcenter_) : int(x + 0.5 - kcenter_), ix_);
         detail::SplineImageViewUnrollLoop1<ORDER>::exec(
                                 (ORDER % 2) ? int(y - kcenter_) : int(y + 0.5 - kcenter_), iy_);
+
+        xmul_ = ymul_ = 1.0;
     }
     else
     {
-        vigra_precondition(isInside(x, y),
-             "SplineImageView<ORDER, VALUETYPE>::calculateIndices(): index out of bounds.");
-
-        ix_[kcenter_] = (ORDER % 2) ?
-                             (int)x :
-                             (int)(x + 0.5);
-        iy_[kcenter_] = (ORDER % 2) ?
-                             (int)y :
-                             (int)(y + 0.5);
+        int xCenter = (ORDER % 2) ?
+                      (int)VIGRA_CSTD::floor(x) :
+                      (int)VIGRA_CSTD::floor(x + 0.5);
+        int yCenter = (ORDER % 2) ?
+                      (int)VIGRA_CSTD::floor(y) :
+                      (int)VIGRA_CSTD::floor(y + 0.5);
         
-        for(int i=0; i<kcenter_; ++i)
+        if(x >= x1_)
         {
-            ix_[i] = vigra::abs(ix_[kcenter_] - (kcenter_ - i));
-            iy_[i] = vigra::abs(iy_[kcenter_] - (kcenter_ - i));
+            for(int i = 0; i < ksize_; ++i)
+                ix_[i] = w1_ - vigra::abs(w1_ - xCenter - (i - kcenter_));
         }
-        for(int i=kcenter_+1; i<ksize_; ++i)
+        else
         {
-            ix_[i] = w1_ - vigra::abs(w1_ - ix_[kcenter_] - (i - kcenter_));
-            iy_[i] = h1_ - vigra::abs(h1_ - iy_[kcenter_] - (i - kcenter_));
+            for(int i = 0; i < ksize_; ++i)
+                ix_[i] = vigra::abs(xCenter - (kcenter_ - i));
         }
+        if(y >= y1_)
+        {
+            for(int i = 0; i < ksize_; ++i)
+                iy_[i] = h1_ - vigra::abs(h1_ - yCenter - (i - kcenter_));
+        }
+        else
+        {
+            for(int i = 0; i < ksize_; ++i)
+                iy_[i] = vigra::abs(yCenter - (kcenter_ - i));
+        }
+        xmul_ = (isInsideX(x) ? 1.0 : -1.0);
+        ymul_ = (isInsideY(y) ? 1.0 : -1.0);
     }
     x_ = x;
     y_ = y;
@@ -623,7 +634,8 @@ VALUETYPE SplineImageView<ORDER, VALUETYPE>::operator()(double x, double y,
     calculateIndices(x, y);
     derivCoefficients(u_, dx, kx_);
     derivCoefficients(v_, dy, ky_);
-    return convolve();
+    VALUETYPE mul = (dx % 2 ? xmul_ : 1.0) * (dy % 2 ? ymul_ : 1.0);
+    return mul * convolve();
 }
 
 template <int ORDER, class VALUETYPE>
