@@ -36,6 +36,22 @@
 Many thanks to all!
 <p>
 
+<b> Changes from Version 1.3.3 to 1.4.0</b>
+
+<UL>      
+      <li> Added \ref watersheds().
+      
+      <li> Added selection of neighborhood to \ref localMinima() and \ref localMaxima().
+      
+      <li> Added \ref vigra::RestrictedNeighborhoodCirculator.
+      
+      <li> Extended \ref vigra::SplineImageView to support access outside the image
+           border according to reflective boundary conditions.
+      
+      <li> Bug fixes in the code and documentation.
+           
+</UL>
+
 <b> Changes from Version 1.3.2 to 1.3.3</b>
 
 <UL>      
