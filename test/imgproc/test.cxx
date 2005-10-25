@@ -1188,33 +1188,35 @@ struct SplineImageViewTest
         BSplineBase<N> spline;
 
         double epsilon = 1.0e-10;
-        shouldEqualTolerance(view(-1.42,1.42),      view(1.42,1.42), epsilon);
-        shouldEqualTolerance(view(-1.42,1.42,1,0), -view(1.42,1.42), epsilon);
-        shouldEqualTolerance(view(-1.42,1.42,0,1), -view(1.42,1.42), epsilon);
-        shouldEqualTolerance(view(-1.42,1.42,1,1),  view(1.42,1.42), epsilon);
+        double cx = center-0.42;
+        double cy = center-0.23;
+        shouldEqualTolerance(view(-cx,cy),      view(cx,cy), epsilon);
+        shouldEqualTolerance(view(-cx,cy,1,0), -view(cx,cy,1,0), epsilon);
+        shouldEqualTolerance(view(-cx,cy,0,1),  view(cx,cy,0,1), epsilon);
+        shouldEqualTolerance(view(-cx,cy,1,1), -view(cx,cy,1,1), epsilon);
 
-        shouldEqualTolerance(view(1.42,-1.42),      view(1.42,1.42), epsilon);
-        shouldEqualTolerance(view(1.42,-1.42,1,0), -view(1.42,1.42), epsilon);
-        shouldEqualTolerance(view(1.42,-1.42,0,1), -view(1.42,1.42), epsilon);
-        shouldEqualTolerance(view(1.42,-1.42,1,1),  view(1.42,1.42), epsilon);
+        shouldEqualTolerance(view(cx,-cy),      view(cx,cy), epsilon);
+        shouldEqualTolerance(view(cx,-cy,1,0),  view(cx,cy,1,0), epsilon);
+        shouldEqualTolerance(view(cx,-cy,0,1), -view(cx,cy,0,1), epsilon);
+        shouldEqualTolerance(view(cx,-cy,1,1), -view(cx,cy,1,1), epsilon);
 
-        shouldEqualTolerance( view(view.width() + 0.23,1.42),
-                              view(view.width() - 2.23,1.42), epsilon);
-        shouldEqualTolerance( view(view.width() + 0.23,1.42,1,0),
-                             -view(view.width() - 2.23,1.42), epsilon);
-        shouldEqualTolerance( view(view.width() + 0.23,1.42,0,1),
-                             -view(view.width() - 2.23,1.42), epsilon);
-        shouldEqualTolerance( view(view.width() + 0.23,1.42,1,1),
-                              view(view.width() - 2.23,1.42), epsilon);
+        shouldEqualTolerance( view(view.width() + cx,cy),
+                              view(view.width() - 2.0 - cx,cy), epsilon);
+        shouldEqualTolerance( view(view.width() + cx,cy,1,0),
+                             -view(view.width() - 2.0 - cx,cy,1,0), epsilon);
+        shouldEqualTolerance( view(view.width() + cx,cy,0,1),
+                              view(view.width() - 2.0 - cx,cy,0,1), epsilon);
+        shouldEqualTolerance( view(view.width() + cx,cy,1,1),
+                             -view(view.width() - 2.0 - cx,cy,1,1), epsilon);
 
-        shouldEqualTolerance( view(4.55, view.height() + 0.23),
-                              view(4.55, view.height() - 2.23), epsilon);
-        shouldEqualTolerance( view(4.55, view.height() + 0.23,1,0),
-                             -view(4.55, view.height() - 2.23), epsilon);
-        shouldEqualTolerance( view(4.55, view.height() + 0.23,0,1),
-                             -view(4.55, view.height() - 2.23), epsilon);
-        shouldEqualTolerance( view(4.55, view.height() + 0.23,1,1),
-                              view(4.55, view.height() - 2.23), epsilon);
+        shouldEqualTolerance( view(cx, view.height() + cy),
+                              view(cx, view.height() - 2.0 - cy), epsilon);
+        shouldEqualTolerance( view(cx, view.height() + cy,1,0),
+                              view(cx, view.height() - 2.0 - cy,1,0), epsilon);
+        shouldEqualTolerance( view(cx, view.height() + cy,0,1),
+                             -view(cx, view.height() - 2.0 - cy,0,1), epsilon);
+        shouldEqualTolerance( view(cx, view.height() + cy,1,1),
+                             -view(cx, view.height() - 2.0 - cy,1,1), epsilon);
     }
 };
 
