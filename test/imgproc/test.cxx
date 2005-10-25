@@ -285,7 +285,7 @@ struct ImageFunctionsTest
     {
         std::plus<double> p;
         ReduceFunctor<std::plus<double>, double> f(p, 0.0);
-        
+
         inspectImage(srcImageRange(img), f);
 
         shouldEqual(f(), 49.5);
@@ -1177,6 +1177,45 @@ struct SplineImageViewTest
             }
         }
     }
+
+    void testOutside()
+    {
+        int center = 10;
+        Image img(2*center+1, 2*center+1);
+        img.init(0.0);
+        img(center, center) = 1.0;
+        SplineImageView<N, double> view(srcImageRange(img), true);
+        BSplineBase<N> spline;
+
+        double epsilon = 1.0e-10;
+        shouldEqualTolerance(view(-1.42,1.42),      view(1.42,1.42), epsilon);
+        shouldEqualTolerance(view(-1.42,1.42,1,0), -view(1.42,1.42), epsilon);
+        shouldEqualTolerance(view(-1.42,1.42,0,1), -view(1.42,1.42), epsilon);
+        shouldEqualTolerance(view(-1.42,1.42,1,1),  view(1.42,1.42), epsilon);
+
+        shouldEqualTolerance(view(1.42,-1.42),      view(1.42,1.42), epsilon);
+        shouldEqualTolerance(view(1.42,-1.42,1,0), -view(1.42,1.42), epsilon);
+        shouldEqualTolerance(view(1.42,-1.42,0,1), -view(1.42,1.42), epsilon);
+        shouldEqualTolerance(view(1.42,-1.42,1,1),  view(1.42,1.42), epsilon);
+
+        shouldEqualTolerance( view(view.width() + 0.23,1.42),
+                              view(view.width() - 2.23,1.42), epsilon);
+        shouldEqualTolerance( view(view.width() + 0.23,1.42,1,0),
+                             -view(view.width() - 2.23,1.42), epsilon);
+        shouldEqualTolerance( view(view.width() + 0.23,1.42,0,1),
+                             -view(view.width() - 2.23,1.42), epsilon);
+        shouldEqualTolerance( view(view.width() + 0.23,1.42,1,1),
+                              view(view.width() - 2.23,1.42), epsilon);
+
+        shouldEqualTolerance( view(4.55, view.height() + 0.23),
+                              view(4.55, view.height() - 2.23), epsilon);
+        shouldEqualTolerance( view(4.55, view.height() + 0.23,1,0),
+                             -view(4.55, view.height() - 2.23), epsilon);
+        shouldEqualTolerance( view(4.55, view.height() + 0.23,0,1),
+                             -view(4.55, view.height() - 2.23), epsilon);
+        shouldEqualTolerance( view(4.55, view.height() + 0.23,1,1),
+                              view(4.55, view.height() - 2.23), epsilon);
+    }
 };
 
 
@@ -1229,12 +1268,15 @@ struct ImageFunctionsTestSuite
         add( testCase( &SplineImageViewTest<2>::testPSF));
         add( testCase( &SplineImageViewTest<2>::testCoefficientArray));
         add( testCase( &SplineImageViewTest<2>::testImageResize));
+        add( testCase( &SplineImageViewTest<2>::testOutside));
         add( testCase( &SplineImageViewTest<3>::testPSF));
         add( testCase( &SplineImageViewTest<3>::testCoefficientArray));
         add( testCase( &SplineImageViewTest<3>::testImageResize));
+        add( testCase( &SplineImageViewTest<3>::testOutside));
         add( testCase( &SplineImageViewTest<5>::testPSF));
         add( testCase( &SplineImageViewTest<5>::testCoefficientArray));
         add( testCase( &SplineImageViewTest<5>::testImageResize));
+        add( testCase( &SplineImageViewTest<5>::testOutside));
     }
 };
 
