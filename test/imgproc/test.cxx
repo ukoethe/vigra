@@ -1217,6 +1217,13 @@ struct SplineImageViewTest
                              -view(cx, view.height() - 2.0 - cy,0,1), epsilon);
         shouldEqualTolerance( view(cx, view.height() + cy,1,1),
                              -view(cx, view.height() - 2.0 - cy,1,1), epsilon);
+                             
+        try
+        {
+            view(2*view.width(), 0);
+            failTest("Out-of-range coordinate failed to throw exception");
+        }
+        catch(vigra::PreconditionViolation) {}
     }
 };
 
