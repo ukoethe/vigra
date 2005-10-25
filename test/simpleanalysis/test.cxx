@@ -10,6 +10,7 @@
 #include "vigra/seededregiongrowing.hxx"
 #include "vigra/cornerdetection.hxx"
 #include "vigra/symmetry.hxx"
+#include "vigra/watersheds.hxx"
 
 using namespace vigra;
 
@@ -707,11 +708,11 @@ struct LocalMinMaxTest
     : img(9,9)
     {
         static const double in[] = {
-            0.0,  0.1,  0.1,  0.3,  0.5,  0.0,  0.0,  0.0, 0.0,
-            0.0, -0.1,  0.1,  0.0,  1.0,  0.0,  0.0,  0.0, 0.0,
+            0.0,  0.1,  0.1,  0.3,  0.5,  0.3,  0.0,  0.0, 0.0,
+            0.0, -0.1,  0.1,  0.0,  1.0,  0.0,  0.3,  0.0, 0.0,
             0.0,  0.5,  2.0,  0.0,  2.0,  2.0,  2.0,  0.0, 0.0,
             0.0,  0.0,  1.0,  1.5,  1.0,  1.0,  0.0,  0.0, 0.0,
-            0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0, 0.0,
+            0.0,  0.1,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0, 0.0,
             0.0,  0.0,  0.0,  0.0, -1.0, -1.5, -1.0,  0.0, 0.0,
             0.0,  0.0, -2.0, -2.0, -2.0,  0.0, -2.0, -0.5, 0.0,
             0.0,  0.0,  0.0,  0.0, -1.0,  0.0, -0.1,  0.1, 0.0,
@@ -731,7 +732,7 @@ struct LocalMinMaxTest
     void localMinimumTest()
     {
         Image res(img);
-        res = 0;
+        res.init(0);
 
         localMinima(srcImageRange(img), destImage(res), 1.0);
 
@@ -746,21 +747,34 @@ struct LocalMinMaxTest
             0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
             0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
 
-        const double * i1 = desired;
-        const double * i1end = i1 + 81;
-        Image::ScanOrderIterator i2 = res.begin();
-        Image::Accessor acc = res.accessor();
+        shouldEqualSequence(res.begin(), res.end(), desired);
+    }
 
-        for(; i1 != i1end; ++i1, ++i2)
-        {
-            should(*i1 == acc(i2));
-        }
+    void localMinimum4Test()
+    {
+        Image res(img);
+        res.init(0);
+
+        localMinima(srcImageRange(img), destImage(res), 1.0, FourNeighborCode());
+
+        static const double desired[] = {
+            0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+            0.0, 1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0,
+            0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+            0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+            0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+            0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0,
+            0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0,
+            0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+            0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
+
+        shouldEqualSequence(res.begin(), res.end(), desired);
     }
 
     void localMaximumTest()
     {
         Image res(img);
-        res = 0;
+        res.init(0);
 
         localMaxima(srcImageRange(img), destImage(res), 1.0);
 
@@ -775,21 +789,34 @@ struct LocalMinMaxTest
             0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0,
             0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
 
-        const double * i1 = desired;
-        const double * i1end = i1 + 81;
-        Image::ScanOrderIterator i2 = res.begin();
-        Image::Accessor acc = res.accessor();
+        shouldEqualSequence(res.begin(), res.end(), desired);
+    }
 
-        for(; i1 != i1end; ++i1, ++i2)
-        {
-            should(*i1 == acc(i2));
-        }
+    void localMaximum4Test()
+    {
+        Image res(img);
+        res.init(0);
+
+        localMaxima(srcImageRange(img), destImage(res), 1.0, FourNeighborCode());
+
+        static const double desired[] = {
+            0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+            0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+            0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+            0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+            0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+            0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+            0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+            0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0,
+            0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
+
+        shouldEqualSequence(res.begin(), res.end(), desired);
     }
 
     void extendedLocalMinimumTest()
     {
         Image res(img);
-        res = 0;
+        res.init(0);
 
         extendedLocalMinima(srcImageRange(img), destImage(res), 1.0);
 
@@ -804,21 +831,34 @@ struct LocalMinMaxTest
             0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
             0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
 
-        const double * i1 = desired;
-        const double * i1end = i1 + 81;
-        Image::ScanOrderIterator i2 = res.begin();
-        Image::Accessor acc = res.accessor();
+        shouldEqualSequence(res.begin(), res.end(), desired);
+    }
 
-        for(; i1 != i1end; ++i1, ++i2)
-        {
-            should(*i1 == acc(i2));
-        }
+    void extendedLocalMinimum4Test()
+    {
+        Image res(img);
+        res.init(0);
+
+        extendedLocalMinima(srcImageRange(img), destImage(res), 1.0, FourNeighborCode());
+
+        static const double desired[] = {
+            0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+            0.0, 1.0, 0.0, 1.0, 0.0, 1.0, 0.0, 0.0, 0.0,
+            0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+            0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+            0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+            0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0,
+            0.0, 0.0, 1.0, 1.0, 1.0, 0.0, 1.0, 0.0, 0.0,
+            0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+            0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
+
+        shouldEqualSequence(res.begin(), res.end(), desired);
     }
 
     void extendedLocalMaximumTest()
     {
         Image res(img);
-        res = 0;
+        res.init(0);
 
         extendedLocalMaxima(srcImageRange(img), destImage(res), 1.0);
 
@@ -833,15 +873,28 @@ struct LocalMinMaxTest
             0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 1.0, 0.0,
             0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
 
-        const double * i1 = desired;
-        const double * i1end = i1 + 81;
-        Image::ScanOrderIterator i2 = res.begin();
-        Image::Accessor acc = res.accessor();
+        shouldEqualSequence(res.begin(), res.end(), desired);
+   }
 
-        for(; i1 != i1end; ++i1, ++i2)
-        {
-            should(*i1 == acc(i2));
-        }
+    void extendedLocalMaximum4Test()
+    {
+        Image res(img);
+        res.init(0);
+
+        extendedLocalMaxima(srcImageRange(img), destImage(res), 1.0, FourNeighborCode());
+
+        static const double desired[] = {
+            0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+            0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+            0.0, 0.0, 1.0, 0.0, 1.0, 1.0, 1.0, 0.0, 0.0,
+            0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+            0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+            0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+            0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0,
+            0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 1.0, 0.0,
+            0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
+
+        shouldEqualSequence(res.begin(), res.end(), desired);
    }
 
     void plateauWithHolesTest()
@@ -861,6 +914,7 @@ struct LocalMinMaxTest
         Image res(img.size(), 0.0);
 
         extendedLocalMaxima(srcImageRange(img), destImage(res), 1.0,
+                            EightNeighborCode(),
                             EqualWithToleranceFunctor<Image::value_type>(0.2));
         
         static const double desired[] = {
@@ -873,6 +927,105 @@ struct LocalMinMaxTest
             0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
             0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0,
             0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
+
+        shouldEqualSequence(res.begin(), res.end(), desired);
+    }
+
+    Image img;
+};
+
+struct WatershedsTest
+{
+    typedef vigra::DImage Image;
+
+    WatershedsTest()
+    : img(9,9)
+    {
+        static const double in[] = {
+            0.0,  0.1,  0.1,  0.3,  0.5,  0.3,  0.0,  0.0, 0.0,
+            0.0, -0.1,  0.1,  0.0,  1.0,  0.0,  0.3,  0.0, 0.0,
+            0.0,  0.5,  2.0,  0.0,  2.0,  2.0,  2.0,  0.0, 0.0,
+            0.0,  0.0,  1.0,  1.5,  1.0,  1.0,  3.0,  4.0, 0.0,
+            0.3,  0.1,  1.5,  0.0,  0.0,  0.0,  0.0,  3.0, 3.0,
+            0.0,  0.0,  0.0,  0.0, -1.0, -1.5, -1.0,  0.0, 0.0,
+            0.0,  0.0, -2.0, -2.0, -2.0,  0.0, -2.1, -0.5, 0.0,
+            0.0,  0.0,  0.0,  0.0, -1.0,  0.0, -0.1,  0.1, 0.0,
+            0.0,  0.0,  0.0,  0.0, -0.5, -0.3, -0.1, -0.1, 0.0};
+
+        Image::ScanOrderIterator i = img.begin();
+        Image::ScanOrderIterator end = img.end();
+        Image::Accessor acc = img.accessor();
+        const double * p = in;
+
+        for(; i != end; ++i, ++p)
+        {
+            acc.set(*p, i);
+        }
+    }
+
+    void watershedsTest()
+    {
+        Image res(img);
+        res.init(0);
+
+        static const double desired[] = {
+            1.0,  1.0,  1.0,  2.0,  3.0,  3.0,  3.0,  3.0,  4.0,
+            1.0,  1.0,  1.0,  2.0,  2.0,  3.0,  3.0,  3.0,  4.0,
+            1.0,  1.0,  1.0,  2.0,  2.0,  3.0,  3.0,  3.0,  4.0,
+            1.0,  1.0,  1.0,  5.0,  6.0,  6.0,  6.0,  3.0,  4.0,
+            7.0,  5.0,  5.0,  5.0,  6.0,  6.0,  6.0,  6.0,  6.0,
+            7.0,  5.0,  5.0,  5.0,  5.0,  6.0,  6.0,  6.0,  6.0,
+            7.0,  5.0,  5.0,  5.0,  5.0,  6.0,  6.0,  6.0,  6.0,
+            7.0,  5.0,  5.0,  5.0,  5.0,  6.0,  6.0,  6.0,  6.0,
+            7.0,  7.0,  7.0,  5.0,  5.0,  5.0,  5.0,  5.0,  5.0};
+
+        int count = watersheds(srcImageRange(img), destImage(res));
+
+#if 0
+        std::cerr << count << "\n";
+        for(int y=0;y<9;++y)
+        {
+            for(int x=0;x<9;++x)
+                std::cerr << res(x,y) << "     ";
+            std::cerr << "\n";
+        }
+#endif /* #if 0 */
+
+        
+        should(7 == count);
+
+        shouldEqualSequence(res.begin(), res.end(), desired);
+    }
+
+    void watersheds4Test()
+    {
+        Image res(img);
+        res.init(0);
+
+        static const double desired[] = {
+            1.0,  1.0,  1.0,  2.0,  2.0,  3.0,  4.0,  4.0,  5.0,
+            1.0,  1.0,  1.0,  2.0,  2.0,  3.0,  3.0,  4.0,  5.0,
+            6.0,  1.0,  2.0,  2.0,  2.0,  3.0,  4.0,  4.0,  5.0,
+            6.0,  6.0,  6.0,  7.0,  7.0,  8.0,  9.0,  4.0,  5.0,
+           10.0,  7.0,  7.0,  7.0,  7.0,  8.0,  9.0,  9.0,  9.0,
+           10.0,  7.0,  7.0,  7.0,  7.0,  8.0,  9.0,  9.0,  9.0,
+           10.0,  7.0,  7.0,  7.0,  7.0,  9.0,  9.0,  9.0,  9.0,
+           10.0, 10.0,  7.0,  7.0,  7.0,  7.0,  9.0,  9.0,  7.0,
+           10.0, 10.0, 10.0,  7.0,  7.0,  7.0,  7.0,  7.0,  7.0};
+
+        int count = watersheds(srcImageRange(img), destImage(res), FourNeighborCode());
+
+#if 0
+        std::cerr << count << "\n";
+        for(int y=0;y<9;++y)
+        {
+            for(int x=0;x<9;++x)
+                std::cerr << res(x,y) << "     ";
+            std::cerr << "\n";
+        }
+#endif /* #if 0 */
+
+        should(10 == count);
 
         shouldEqualSequence(res.begin(), res.end(), desired);
     }
@@ -1197,10 +1350,16 @@ struct SimpleAnalysisTestSuite
         add( testCase( &DistanceTransformTest::distanceTransformL2Test));
         add( testCase( &DistanceTransformTest::distanceTransformLInfTest));
         add( testCase( &LocalMinMaxTest::localMinimumTest));
+        add( testCase( &LocalMinMaxTest::localMinimum4Test));
         add( testCase( &LocalMinMaxTest::localMaximumTest));
+        add( testCase( &LocalMinMaxTest::localMaximum4Test));
         add( testCase( &LocalMinMaxTest::extendedLocalMinimumTest));
+        add( testCase( &LocalMinMaxTest::extendedLocalMinimum4Test));
         add( testCase( &LocalMinMaxTest::extendedLocalMaximumTest));
+        add( testCase( &LocalMinMaxTest::extendedLocalMaximum4Test));
         add( testCase( &LocalMinMaxTest::plateauWithHolesTest));
+        add( testCase( &WatershedsTest::watershedsTest));
+        add( testCase( &WatershedsTest::watersheds4Test));
         add( testCase( &RegionGrowingTest::voronoiTest));
         add( testCase( &RegionGrowingTest::voronoiWithBorderTest));
         add( testCase( &InterestOperatorTest::cornerResponseFunctionTest));
