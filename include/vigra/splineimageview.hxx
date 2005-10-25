@@ -126,10 +126,16 @@ class SplineImageView
     }
     
         /** Access interpolated function at real-valued coordinate <tt>(x, y)</tt>.
+            If <tt>(x, y)</tt> is near the image border or outside the image, the value
+            is calculated with reflective boundary conditions. An exception is thrown if the 
+            coordinate is outside the first reflection. 
         */
     value_type operator()(double x, double y) const;
     
         /** Access derivative of order <tt>(dx, dy)</tt> at real-valued coordinate <tt>(x, y)</tt>.
+            If <tt>(x, y)</tt> is near the image border or outside the image, the value
+            is calculated with reflective boundary conditions. An exception is thrown if the 
+            coordinate is outside the first reflection. 
         */
     value_type operator()(double x, double y, unsigned int dx, unsigned int dy) const;
     
@@ -518,6 +524,9 @@ SplineImageView<ORDER, VALUETYPE>::calculateIndices(double x, double y) const
     }
     else
     {
+        vigra_precondition(x < w1_ + x1_ && x > -x1_ && y < h1_ + y1_ && y > -y1_,
+                    "SplineImageView::calculateIndices(): coordinates out of range.");
+        
         int xCenter = (ORDER % 2) ?
                       (int)VIGRA_CSTD::floor(x) :
                       (int)VIGRA_CSTD::floor(x + 0.5);
