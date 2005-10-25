@@ -148,7 +148,7 @@ struct UnlabelWatersheds
 enum SRGType { KeepContours, CompleteGrow, SRGWatershedLabel = -1 };
 
 /** \addtogroup SeededRegionGrowing Seeded Region Growing
-    Region segmentation and voronoi tesselation
+    Region growing, watersheds, and voronoi tesselation
 */
 //@{
 
