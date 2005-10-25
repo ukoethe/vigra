@@ -1,6 +1,6 @@
 /************************************************************************/
 /*                                                                      */
-/*          Copyright 1998-2002 by Hans Meine, Ullrich Koethe           */
+/*          Copyright 1998-2005 by Hans Meine, Ullrich Koethe           */
 /*       Cognitive Systems Group, University of Hamburg, Germany        */
 /*                                                                      */
 /*    This file is part of the VIGRA computer vision library.           */
@@ -26,34 +26,6 @@
 
 namespace vigra {
 
-enum AtImageBorder
-{
-    Outside           = -1,
-    NoBorder          = 0,
-    RightBorder       = 1,
-    LeftBorder        = 2,
-    TopBorder         = 4,
-    BottomBorder      = 8,
-    TopRightBorder    = TopBorder    | RightBorder,
-    TopLeftBorder     = TopBorder    | LeftBorder,
-    BottomLeftBorder  = BottomBorder | LeftBorder,
-    BottomRightBorder = BottomBorder | RightBorder
-};
-
-inline AtImageBorder isAtImageBorder(int x, int y, int w, int h)
-{
-    return static_cast<AtImageBorder>((x == 0 
-                                         ? LeftBorder
-                                         : x == w-1
-                                             ? RightBorder
-                                             : NoBorder) |
-                                       (y == 0 
-                                         ? TopBorder
-                                         : y == h-1
-                                             ? BottomBorder
-                                             : NoBorder));
-}
-
 /** \addtogroup PixelNeighborhood Utilities to manage pixel neighborhoods
 
     4- and 8-neighborhood definitions and circulators.
@@ -63,6 +35,57 @@ inline AtImageBorder isAtImageBorder(int x, int y, int w, int h)
     <b>See also:</b> \ref vigra::NeighborhoodCirculator
  */
 //@{
+
+/********************************************************/
+/*                                                      */
+/*                      AtImageBorder                   */
+/*                                                      */
+/********************************************************/
+
+/** \brief Encode whether a point is near the image border.
+
+    This enum is used with \ref isAtImageBorder() and 
+    \ref vigra::RestrictedNeighborhoodCirculator.
+
+    <b>\#include</b> "<a href="pixelneighborhood_8hxx-source.html">vigra/pixelneighborhood.hxx</a>"<br>
+    Namespace: vigra
+*/
+enum AtImageBorder
+{
+    NotAtBorder       = 0,     ///< &nbsp;
+    RightBorder       = 1,     ///< &nbsp;
+    LeftBorder        = 2,     ///< &nbsp;
+    TopBorder         = 4,     ///< &nbsp;
+    BottomBorder      = 8,     ///< &nbsp;
+    TopRightBorder    = TopBorder    | RightBorder,    ///< &nbsp;
+    TopLeftBorder     = TopBorder    | LeftBorder,     ///< &nbsp;
+    BottomLeftBorder  = BottomBorder | LeftBorder,     ///< &nbsp;
+    BottomRightBorder = BottomBorder | RightBorder     ///< &nbsp;
+};
+
+/** \brief Find out whether a point is at the image border.
+
+    This function checks if \a x == 0 or \a x == \a width - 1 and 
+    \a y == 0 or \a y == \a height - 1 and returns the appropriate value
+    of \ref vigra::AtImageBorder, or zero when the point is not at te image border.
+    The behavior of the function is undefined if (x,y) is not inside the image.
+
+    <b>\#include</b> "<a href="pixelneighborhood_8hxx-source.html">vigra/pixelneighborhood.hxx</a>"<br>
+    Namespace: vigra
+*/
+inline AtImageBorder isAtImageBorder(int x, int y, int width, int height)
+{
+    return static_cast<AtImageBorder>((x == 0 
+                                         ? LeftBorder
+                                         : x == width-1
+                                             ? RightBorder
+                                             : NotAtBorder) |
+                                       (y == 0 
+                                         ? TopBorder
+                                         : y == height-1
+                                             ? BottomBorder
+                                             : NotAtBorder));
+}
 
 /********************************************************/
 /*                                                      */
@@ -107,9 +130,13 @@ namespace FourNeighborhood
 class NeighborCode
 {
   public:
-        /** Freeman direction codes for 4-neighborhood.
-            East = 0, North = 1 etc.
-            DirectionCount may be used for portable loop termination conditions.
+        /** Freeman direction codes for the 4-neighborhood.
+            <tt>East = 0</tt>, <tt>North = 1</tt> etc.
+            <tt>DirectionCount</tt> may be used for portable loop termination conditions.
+            <tt>CausalFirst</tt> and <tt>CausalLast</tt> are the first and last (inclusive)
+            neighbors in the causal neighborhood, i.e. in the set of neighbors that have 
+            already been visited when the image is traversed in scan order.
+            <tt>AntiCausalFirst</tt> and <tt>AntiCausalLast</tt> are the opposite.
         */
     enum Direction {
         Error = -1,     ///< &nbsp;
@@ -118,18 +145,33 @@ class NeighborCode
         West,           ///< &nbsp;
         South,          ///< &nbsp;
         DirectionCount, ///< &nbsp;
-        CausalFirst = North,
-        CausalLast  = West
+        CausalFirst = North,     ///< &nbsp;
+        CausalLast  = West,      ///< &nbsp;
+        AntiCausalFirst = South, ///< &nbsp;
+        AntiCausalLast  = East   ///< &nbsp;
     };
-    
-    
+        
+    static unsigned int directionBit(Direction d) 
+    {
+        static unsigned int b[] = {1 << (East + 1), 
+                                   1 << (North + 1), 
+                                   1 << (West + 1), 
+                                   1 << (South + 1)};
+        return b[d];
+    };
+        
+        /** The number of valid neighbors if the current center is at the image border.
+        */
     static unsigned int nearBorderDirectionCount(AtImageBorder b)
     {
         static unsigned int c[] = { 4, 3, 3, 0, 3, 2, 2, 0, 3, 2, 2};
         return c[b];
     }
     
-    static Direction nearBorderDirections(AtImageBorder b, int i)
+        /** The valid direction codes when the center is at the image border.
+            \a index must be in the range <tt>0...nearBorderDirectionCount(b)-1</tt>.
+        */
+    static Direction nearBorderDirections(AtImageBorder b, int index)
     {
         static Direction c[11][4] = {
                 { East, North, West, South},
@@ -144,7 +186,7 @@ class NeighborCode
                 { North, West, Error, Error},
                 { East, North, Error, Error}
              };
-        return c[b][i];
+        return c[b][index];
     }
     
         /** Transform direction code into corresponding Diff2D offset.
@@ -313,8 +355,12 @@ class NeighborCode
 {
   public:
         /** Freeman direction codes for the 8-neighborhood.
-            East = 0, NorthEast = 1 etc.
-            DirectionCount may be used for portable loop termination conditions.
+            <tt>East = 0</tt>, <tt>North = 1</tt> etc.
+            <tt>DirectionCount</tt> may be used for portable loop termination conditions.
+            <tt>CausalFirst</tt> and <tt>CausalLast</tt> are the first and last (inclusive)
+            neighbors in the causal neighborhood, i.e. in the set of neighbors that have 
+            already been visited when the image is traversed in scan order.
+            <tt>AntiCausalFirst</tt> and <tt>AntiCausalLast</tt> are the opposite.
         */
     enum Direction {
         Error = -1,     ///< &nbsp;
@@ -327,17 +373,37 @@ class NeighborCode
         South,          ///< &nbsp;
         SouthEast,      ///< &nbsp;
         DirectionCount, ///< &nbsp;
-        CausalFirst = NorthEast,
-        CausalLast  = West
+        CausalFirst = NorthEast,     ///< &nbsp;
+        CausalLast  = West,          ///< &nbsp;
+        AntiCausalFirst = SouthWest, ///< &nbsp;
+        AntiCausalLast  = East       ///< &nbsp;
     };
 
+    static unsigned int directionBit(Direction d) 
+    {
+        static unsigned int b[] = {1 << (East + 1), 
+                                   1 << (NorthEast + 1), 
+                                   1 << (North + 1), 
+                                   1 << (NorthWest + 1), 
+                                   1 << (West + 1), 
+                                   1 << (SouthWest + 1), 
+                                   1 << (South + 1), 
+                                   1 << (SouthEast + 1)};
+        return b[d];
+    };
+        
+        /** The number of valid neighbors if the current center is at the image border.
+        */
     static unsigned int nearBorderDirectionCount(AtImageBorder b)
     {
         static unsigned int c[] = { 8, 5, 5, 0, 5, 3, 3, 0, 5, 3, 3};
         return c[b];
     }
     
-    static Direction nearBorderDirections(AtImageBorder b, int i)
+        /** The valid direction codes when the center is at the image border.
+            \a index must be in the range <tt>0...nearBorderDirectionCount(b)-1</tt>.
+        */
+    static Direction nearBorderDirections(AtImageBorder b, int index)
     {
         static Direction c[11][8] = {
                 { East, NorthEast, North, NorthWest, West, SouthWest, South, SouthEast},
@@ -352,7 +418,7 @@ class NeighborCode
                 { North, NorthWest, West, Error, Error, Error, Error, Error},
                 { East, NorthEast, North, Error, Error, Error, Error, Error}
              };
-        return c[b][i];
+        return c[b][index];
     }
     
         /** Transform direction code into corresponding Diff2D offset.
@@ -780,11 +846,25 @@ public:
         return direction_;
     }
 
+        /** Get current direction bit.
+        */
+    unsigned int directionBit() const
+    {
+        return NEIGHBORCODE::directionBit(direction_);
+    }
+
         /** Get opposite of current direction.
         */
     Direction opposite() const
     {
-        return static_cast<Direction>((direction_ + NEIGHBORCODE::West) % NEIGHBORCODE::DirectionCount); ;
+        return static_cast<Direction>((direction_ + NEIGHBORCODE::West) % NEIGHBORCODE::DirectionCount);
+    }
+
+        /** Get opposite bit of current direction.
+        */
+    unsigned int oppositeDirectionBit() const
+    {
+        return NEIGHBORCODE::directionBit(opposite());
     }
 
         /** Get direction code at offset of current direction.
@@ -822,19 +902,42 @@ typedef NeighborOffsetCirculator<FourNeighborCode> FourNeighborOffsetCirculator;
 /** \brief Circulator that walks around a given location in a given image.
 
     The template parameters define the kind of neighborhood used and the underlying
-    image, e.g.
+    image. The access functions return the value of the current neighbor pixel. 
+    Use <tt>center()</tt> to access the center pixel of the neighborhood. 
+    The center can be changed by calling <tt>moveCenterToNeighbor()</tt> 
+    or <tt>swapCenterNeighbor()</tt>. Note that this circulator cannot
+    when the center is at the image border. You must then use 
+    \ref vigra::RestrictedNeighborhoodCirculator
 
-    \code
-    NeighborhoodCirculator<BImage::traverser, EightNeighborCode> eight_circulator(image.upperLeft()+Diff2D(2,2));
-    NeighborhoodCirculator<BImage::traverser, FourNeighborCode>  four_circulator(image.upperLeft()+Diff2D(2,2));
-    \endcode
-
-    The access functions return the value of the current neighbor pixel. Use <tt>center()</tt> to
-    access the center pixel of the neighborhood. The center can be changed by calling
-    <tt>moveCenterToNeighbor()</tt> or <tt>swapCenterNeighbor()</tt>.
-
+    <b>Usage:</b><br>
+    
     <b>\#include</b> "<a href="pixelneighborhood_8hxx-source.html">vigra/pixelneighborhood.hxx</a>"<br>
     Namespace: vigra
+    
+    \code
+    BImage::traverser upperleft(...), lowerright(...);
+    
+    int width  = lowerright.x - upperleft.x;
+    int height = lowerright.y - upperleft.y;
+    
+    ++upperleft.y; // avoide image border
+    for(int y=1; y<height-1; ++y, ++upperleft.y)
+    {
+        BImage::traverser ix = upperleft + Diff2D(1,0);
+        for(int x=1; x<width-1; ++x, ++ix.x)
+        {
+            // use FourNeighborCode instead of EightNeighborCode for 4-neighborhood
+            NeighborhoodCirculator<BImage::traverser, EightNeighborCode> 
+                           circulator(ix),
+                           end(circulator);
+            do 
+            { 
+                ... // do something with the circulator
+            }
+            while(++circulator != end);
+        }
+    }
+    \endcode
 */
 template <class IMAGEITERATOR, class NEIGHBORCODE>
 class NeighborhoodCirculator : private IMAGEITERATOR
@@ -1072,6 +1175,12 @@ public:
         return neighborCode_.direction();
     }
 
+        /** Get the current direction bit. */
+    unsigned int directionBit() const
+    {
+        return neighborCode_.directionBit();
+    }
+
         /** Get the difference vector (Diff2D) from the center to the current neighbor. */
     Diff2D const & diff() const
     {
@@ -1088,6 +1197,54 @@ private:
     NEIGHBOROFFSETCIRCULATOR neighborCode_;
 };
 
+/********************************************************/
+/*                                                      */
+/*            RestrictedNeighborhoodCirculator          */
+/*                                                      */
+/********************************************************/
+
+/** \brief Circulator that walks around a given location in a given image,
+           unsing a restricted neighborhood.
+
+    This circulator behaves essentially like \ref vigra::NeighborhoodCirculator,
+    but can also be used near the image border, where some of the neighbor points
+    would be outside the image und must not be accessed. 
+    The template parameters define the kind of neighborhood used (four or eight)
+    and the underlying image, whereas the required neighbirhood restriction is 
+    given by the last constructur argument. This below for typical usage.
+
+    The access functions return the value of the current neighbor pixel. Use <tt>center()</tt> to
+    access the center pixel of the neighborhood.
+
+    <b>Usage:</b><br>
+    
+    <b>\#include</b> "<a href="pixelneighborhood_8hxx-source.html">vigra/pixelneighborhood.hxx</a>"<br>
+    Namespace: vigra
+    
+    \code
+    BImage::traverser upperleft(...), lowerright(...);
+    
+    int width  = lowerright.x - upperleft.x;
+    int height = lowerright.y - upperleft.y;
+    
+    for(int y=0; y<height; ++y, ++upperleft.y)
+    {
+        BImage::traverser ix = upperleft;
+        for(int x=0; x<width; ++x, ++ix.x)
+        {
+            // use FourNeighborCode instead of EightNeighborCode for 4-neighborhood
+            RestrictedNeighborhoodCirculator<BImage::traverser, EightNeighborCode> 
+                           circulator(ix, isAtImageBorder(x, y, width, height)),
+                           end(circulator);
+            do 
+            { 
+                ... // do something with the circulator
+            }
+            while(++circulator != end); // out-of-range pixels will be automatically skipped
+        }
+    }
+    \endcode
+*/
 template <class IMAGEITERATOR, class NEIGHBORCODE>
 class RestrictedNeighborhoodCirculator 
 : private NeighborhoodCirculator<IMAGEITERATOR, NEIGHBORCODE>
@@ -1131,11 +1288,11 @@ public:
         */
     typedef typename BaseType::iterator_category iterator_category;
 
-        /** Construct circulator with given <tt>center</tt> pixel, pointing to the neighbor
-            at the given direction <tt>d</tt>.
+        /** Construct circulator with given <tt>center</tt> pixel, using the restricted
+            neighborhood given by \a atBorder.
         */
     RestrictedNeighborhoodCirculator(IMAGEITERATOR const & center = IMAGEITERATOR(),
-                                     AtImageBorder atBorder = NoBorder)
+                                     AtImageBorder atBorder = NotAtBorder)
         : BaseType(center, NEIGHBORCODE::nearBorderDirections(atBorder, 0)),
           whichBorder_(atBorder),
           count_(NEIGHBORCODE::nearBorderDirectionCount(atBorder)),
@@ -1246,6 +1403,12 @@ public:
     Direction direction() const
     {
         return BaseType::direction();
+    }
+
+        /** Get the current direction bit. */
+    unsigned int directionBit() const
+    {
+        return BaseType::directionBit();
     }
 
         /** Get the difference vector (Diff2D) from the center to the current neighbor. */
