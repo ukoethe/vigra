@@ -388,7 +388,7 @@ class SplineImageView
     template <class Array>
     void coefficientArray(double x, double y, Array & res) const;
     
-        /** Check if x is in the valid range.
+        /** Check if x is in the original image range.
             Equivalent to <tt>0 &lt;= x &lt;= width()-1</tt>.
         */
     bool isInsideX(double x) const
@@ -396,7 +396,7 @@ class SplineImageView
         return x >= 0.0 && x <= width()-1.0;
     }
         
-        /** Check if y is in the valid range.
+        /** Check if y is in the original image range.
             Equivalent to <tt>0 &lt;= y &lt;= height()-1</tt>.
         */
     bool isInsideY(double y) const
@@ -404,12 +404,22 @@ class SplineImageView
         return y >= 0.0 && y <= height()-1.0;
     }
         
-        /** Check if x and y are in the valid range.
+        /** Check if x and y are in the original image range.
             Equivalent to <tt>0 &lt;= x &lt;= width()-1</tt> and <tt>0 &lt;= y &lt;= height()-1</tt>.
         */
     bool isInside(double x, double y) const
     {
         return isInsideX(x) && isInsideY(y);
+    }
+    
+        /** Check if x and y are in the valid range. Points outside the original image range are computed
+            by reflcective boundary conditions, but only within the first reflection.
+            Equivalent to <tt>-width() + ORDER/2 + 2 &lt; x &lt; 2*width() - ORDER/2 - 2</tt> and 
+            <tt>-height() + ORDER/2 + 2 &lt; y &lt; 2*height() - ORDER/2 - 2</tt>.
+        */
+    bool isValid(double x, double y) const
+    {
+        return x < w1_ + x1_ && x > -x1_ && y < h1_ + y1_ && y > -y1_;
     }
     
         /** Check whether the points <tt>(x0, y0)</tt> and <tt>(x1, y1)</tt> are in
@@ -524,7 +534,7 @@ SplineImageView<ORDER, VALUETYPE>::calculateIndices(double x, double y) const
     }
     else
     {
-        vigra_precondition(x < w1_ + x1_ && x > -x1_ && y < h1_ + y1_ && y > -y1_,
+        vigra_precondition(isValid(x,y),
                     "SplineImageView::calculateIndices(): coordinates out of range.");
         
         int xCenter = (ORDER % 2) ?
