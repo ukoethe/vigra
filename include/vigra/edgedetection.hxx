@@ -24,6 +24,7 @@
 #define VIGRA_EDGEDETECTION_HXX
 
 #include <vector>
+#include <queue>
 #include <cmath>     // sqrt(), abs()
 #include "vigra/utilities.hxx"
 #include "vigra/numerictraits.hxx"
@@ -32,6 +33,7 @@
 #include "vigra/recursiveconvolution.hxx"
 #include "vigra/separableconvolution.hxx"
 #include "vigra/labelimage.hxx"
+#include "vigra/mathutil.hxx"
 
 
 namespace vigra {
@@ -1411,7 +1413,7 @@ cannyEdgelList(triple<SrcIterator, SrcIterator, SrcAccessor> src,
 /** \brief Detect and mark edges in an edge image using Canny's algorithm.
 
     This operator first calls \ref cannyEdgelList() to generate an 
-    edgel list for the given image. Than it scans this list and selects edgels
+    edgel list for the given image. Then it scans this list and selects edgels
     whose strength is above the given <TT>gradient_threshold</TT>. For each of these 
     edgels, the edgel's location is rounded to the nearest pixel, and that
     pixel marked with the given <TT>edge_marker</TT>.
@@ -1514,6 +1516,261 @@ inline void cannyEdgeImage(
     cannyEdgeImage(src.first, src.second, src.third,
                    dest.first, dest.second,
                    scale, gradient_threshold, edge_marker);
+}
+
+/********************************************************/
+
+namespace detail {
+
+template <class DestIterator>
+int neighborhoodConfiguration(DestIterator dul)
+{
+    int v = 0;
+    NeighborhoodCirculator<DestIterator, EightNeighborCode> c(dul, EightNeighborCode::SouthEast);
+    for(int i=0; i<8; ++i, --c)
+    {
+        v = (v << 1) | ((*c != 0) ? 1 : 0);
+    }
+    
+    return v;
+}
+
+template <class GradValue>
+struct SimplePoint
+{
+    Diff2D point;
+    GradValue grad;
+    
+    SimplePoint(Diff2D const & p, GradValue g)
+    : point(p), grad(g)
+    {}
+    
+    bool operator<(SimplePoint const & o) const
+    {
+        return grad < o.grad; 
+    }
+};
+
+} // namespace detail
+
+/********************************************************/
+/*                                                      */
+/*              cannyEdgeImageWithThinning              */
+/*                                                      */
+/********************************************************/
+
+/** \brief Detect and mark edges in an edge image using Canny's algorithm.
+
+    This operator first calls \ref cannyEdgeImage() to generate an 
+    edge image. The resulting edge pixels are then sibjected to topological thinning
+    so that the remaining edge pixels can be linked into edgel chains with a provable,
+    non-heuristic algorithm. Optionally, the outermost pixels are marked as edge pixels
+    as well when <tt>addBorder</tt> is true.
+    
+    <b> Declarations:</b>
+    
+    pass arguments explicitly:
+    \code
+    namespace vigra {
+        template <class SrcIterator, class SrcAccessor,
+                  class DestIterator, class DestAccessor, 
+                  class GradValue, class DestValue>
+        void cannyEdgeImageWithThinning(
+                   SrcIterator sul, SrcIterator slr, SrcAccessor sa,
+                   DestIterator dul, DestAccessor da,
+                   double scale, GradValue gradient_threshold, 
+                   DestValue edge_marker, bool addBorder = true);
+    }
+    \endcode
+    
+    use argument objects in conjunction with \ref ArgumentObjectFactories:
+    \code
+    namespace vigra {
+        template <class SrcIterator, class SrcAccessor,
+                  class DestIterator, class DestAccessor, 
+                  class GradValue, class DestValue>
+        void cannyEdgeImageWithThinning(
+                   triple<SrcIterator, SrcIterator, SrcAccessor> src,
+                   pair<DestIterator, DestAccessor> dest,
+                   double scale, GradValue gradient_threshold, 
+                   DestValue edge_marker, bool addBorder = true);
+    }
+    \endcode
+    
+    <b> Usage:</b>
+    
+    <b>\#include</b> "<a href="edgedetection_8hxx-source.html">vigra/edgedetection.hxx</a>"<br>
+    Namespace: vigra
+    
+    \code
+    vigra::BImage src(w,h), edges(w,h);
+    
+    // empty edge image
+    edges = 0;
+    ...
+    
+    // find edges at scale 0.8 with gradient larger than 4.0, mark with 1, annd add border
+    vigra::cannyEdgeImageWithThinning(srcImageRange(src), destImage(edges), 
+                                     0.8, 4.0, 1, true);
+    \endcode
+
+    <b> Required Interface:</b>
+    
+    see also: \ref cannyEdgelList().
+    
+    \code
+    DestImageIterator dest_upperleft;
+    DestAccessor dest_accessor;
+    DestValue edge_marker;
+    
+    dest_accessor.set(edge_marker, dest_upperleft, vigra::Diff2D(1,1));
+    \endcode
+    
+    <b> Preconditions:</b>
+    
+    \code
+    scale > 0
+    gradient_threshold > 0
+    \endcode
+*/
+template <class SrcIterator, class SrcAccessor,
+          class DestIterator, class DestAccessor, 
+          class GradValue, class DestValue>
+void cannyEdgeImageWithThinning(
+           SrcIterator sul, SrcIterator slr, SrcAccessor sa,
+           DestIterator dul, DestAccessor da,
+           double scale, GradValue gradient_threshold, 
+           DestValue edge_marker, bool addBorder)
+{
+    int w = slr.x - sul.x;
+    int h = slr.y - sul.y;
+    
+    BImage edgeImage(w, h, BImage::value_type(0));
+    BImage::traverser eul = edgeImage.upperLeft();
+    BImage::Accessor ea = edgeImage.accessor();
+    if(addBorder)
+        initImageBorder(destImageRange(edgeImage), 1, 1);
+    cannyEdgeImage(sul, slr, sa, eul, ea, 
+                   scale, gradient_threshold, 1);
+    
+    static bool isSimplePoint[256] = {
+        0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 
+        0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 
+        1, 1, 1, 0, 0, 0, 1, 1, 1, 1, 0, 1, 0, 1, 0, 1, 0, 1, 
+        0, 0, 0, 0, 0, 1, 0, 1, 1, 1, 0, 1, 1, 0, 1, 0, 1, 1, 
+        0, 1, 1, 0, 1, 0, 0, 1, 0, 1, 0, 1, 0, 1, 0, 0, 0, 0, 
+        0, 1, 0, 1, 1, 1, 0, 1, 1, 0, 1, 0, 1, 1, 0, 1, 1, 0, 
+        1, 0, 0, 0, 0, 1, 0, 1, 0, 1, 0, 0, 0, 0, 0, 1, 0, 1, 
+        0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
+        0, 1, 0, 1, 0, 0, 0, 0, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 
+        0, 1, 0, 0, 0, 0, 0, 1, 0, 1, 1, 1, 0, 1, 1, 0, 1, 0, 
+        1, 1, 0, 1, 1, 0, 1, 0, 1, 1, 0, 1, 0, 1, 0, 1, 0, 0, 
+        0, 0, 0, 1, 0, 1, 1, 1, 0, 1, 1, 0, 1, 0, 1, 1, 0, 1, 
+        1, 0, 1, 0 };
+        
+    eul += Diff2D(1,1);
+    sul += Diff2D(1,1);
+    int w2 = w-2;
+    int h2 = h-2;
+    
+    typedef detail::SimplePoint<GradValue> SP;
+    std::priority_queue<SP, std::vector<SP> >  pqueue;
+    
+    Diff2D p(0,0);
+    for(; p.y < h2; ++p.y)
+    {
+        for(p.x = 0; p.x < w2; ++p.x)
+        {
+            BImage::traverser e = eul + p;
+            if(*e == 0)
+                continue;
+            int v = detail::neighborhoodConfiguration(e);
+            if(isSimplePoint[v])
+            {
+                pqueue.push(SP(p, norm(sa(sul+p))));
+                *e = 2; // remember that it is already in queue
+            }
+        }
+    }
+    
+    static const Diff2D dist[] = { Diff2D(-1,0), Diff2D(0,-1),
+                                   Diff2D(1,0),  Diff2D(0,1) };
+
+    while(pqueue.size())
+    {
+        p = pqueue.top().point;
+        pqueue.pop();
+        
+        BImage::traverser e = eul + p;
+        int v = detail::neighborhoodConfiguration(e);
+        if(!isSimplePoint[v])
+            continue; // point may no longer be simple because its neighbors changed
+            
+        *e = 0; // delete simple point
+        
+        for(int i=0; i<4; ++i)
+        {
+            Diff2D pneu = p + dist[i];
+            if(pneu.x == -1 || pneu.y == -1 || pneu.x == w2 || pneu.y == h2)
+                continue; // do not remove points at the border
+                
+            BImage::traverser eneu = eul + pneu;
+            if(*eneu == 1) // point is boundary and not yet in the queue
+            {
+                int v = detail::neighborhoodConfiguration(eneu);
+                if(isSimplePoint[v])
+                {
+                    pqueue.push(SP(pneu, norm(sa(sul+pneu))));
+                    *eneu = 2; // remember that it is already in queue
+                }
+            }
+        }
+    }
+    
+    initImageIf(destIterRange(dul, dul+Diff2D(w,h), da),
+                maskImage(edgeImage), edge_marker);
+}
+
+template <class SrcIterator, class SrcAccessor,
+          class DestIterator, class DestAccessor, 
+          class GradValue, class DestValue>
+inline void cannyEdgeImageWithThinning(
+           triple<SrcIterator, SrcIterator, SrcAccessor> src,
+           pair<DestIterator, DestAccessor> dest,
+           double scale, GradValue gradient_threshold, 
+           DestValue edge_marker, bool addBorder)
+{
+    cannyEdgeImageWithThinning(src.first, src.second, src.third,
+                               dest.first, dest.second,
+                               scale, gradient_threshold, edge_marker, addBorder);
+}
+
+template <class SrcIterator, class SrcAccessor,
+          class DestIterator, class DestAccessor, 
+          class GradValue, class DestValue>
+inline void cannyEdgeImageWithThinning(
+           SrcIterator sul, SrcIterator slr, SrcAccessor sa,
+           DestIterator dul, DestAccessor da,
+           double scale, GradValue gradient_threshold, DestValue edge_marker)
+{
+    cannyEdgeImageWithThinning(sul, slr, sa,
+                               dul, da,
+                               scale, gradient_threshold, edge_marker, true);
+}
+
+template <class SrcIterator, class SrcAccessor,
+          class DestIterator, class DestAccessor, 
+          class GradValue, class DestValue>
+inline void cannyEdgeImageWithThinning(
+           triple<SrcIterator, SrcIterator, SrcAccessor> src,
+           pair<DestIterator, DestAccessor> dest,
+           double scale, GradValue gradient_threshold, DestValue edge_marker)
+{
+    cannyEdgeImageWithThinning(src.first, src.second, src.third,
+                               dest.first, dest.second,
+                               scale, gradient_threshold, edge_marker, true);
 }
 
 //@}
