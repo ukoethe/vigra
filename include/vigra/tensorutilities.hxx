@@ -238,7 +238,14 @@ void tensorEigenRepresentation(SrcIterator sul, SrcIterator slr, SrcAccessor src
             
             dest.setComponent(0.5 * (d1 + d4), d, 0); // large EV
             dest.setComponent(0.5 * (d1 - d4), d, 1); // small EV
-            dest.setComponent(0.5 * VIGRA_CSTD::atan2(d3, d2), d, 2); // orientation
+            if(d2==0.0 && d3==0.0)
+            {
+                dest.setComponent(0, d, 2); // orientation
+            }
+            else
+            {
+                dest.setComponent(0.5 * VIGRA_CSTD::atan2(d3, d2), d, 2); // orientation
+            }
         }
     }
 }
@@ -418,7 +425,14 @@ void tensorToEdgeCorner(SrcIterator sul, SrcIterator slr, SrcAccessor src,
             TmpType d4 = VIGRA_CSTD::sqrt(sq(d2) + sq(d3));
             
             edge.setComponent(d4, e, 0); // edgeness = difference of EVs
-            edge.setComponent(0.5 * VIGRA_CSTD::atan2(d3, d2), e, 1); // orientation
+            if(d2 == 0.0 && d3 == 0.0)
+            {
+                edge.setComponent(0.0, e, 1); // orientation
+            }
+            else
+            {
+                edge.setComponent(0.5 * VIGRA_CSTD::atan2(d3, d2), e, 1); // orientation
+            }
             corner.set(d1 - d4, c); // cornerness = 2 * small EV
         }
     }

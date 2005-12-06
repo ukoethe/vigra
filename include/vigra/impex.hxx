@@ -35,6 +35,7 @@
 #pragma warning (disable: 4267)
 #endif
 
+#include "vigra/sized_int.hxx"
 #include "vigra/stdimage.hxx"
 #include "vigra/tinyvector.hxx"
 #include "vigra/imageinfo.hxx"
@@ -175,11 +176,11 @@ namespace vigra
         std::string pixeltype = dec->getPixelType();
 
         if ( pixeltype == "UINT8" )
-            read_bands( dec.get(), iter, a, (unsigned char)0 );
+            read_bands( dec.get(), iter, a, (UInt8)0 );
         else if ( pixeltype == "INT16" )
-            read_bands( dec.get(), iter, a, short() );
+            read_bands( dec.get(), iter, a, Int16() );
         else if ( pixeltype == "INT32" )
-            read_bands( dec.get(), iter, a, int() );
+            read_bands( dec.get(), iter, a, Int32() );
         else if ( pixeltype == "FLOAT" )
             read_bands( dec.get(), iter, a, float() );
         else if ( pixeltype == "DOUBLE" )
@@ -219,11 +220,11 @@ namespace vigra
         std::string pixeltype = dec->getPixelType();
 
         if ( pixeltype == "UINT8" )
-            read_band( dec.get(), iter, a, (unsigned char)0 );
+            read_band( dec.get(), iter, a, (UInt8)0 );
         else if ( pixeltype == "INT16" )
-            read_band( dec.get(), iter, a, short() );
+            read_band( dec.get(), iter, a, Int16() );
         else if ( pixeltype == "INT32" )
-            read_band( dec.get(), iter, a, int() );
+            read_band( dec.get(), iter, a, Int32() );
         else if ( pixeltype == "FLOAT" )
             read_band( dec.get(), iter, a, float() );
         else if ( pixeltype == "DOUBLE" )
@@ -666,11 +667,11 @@ namespace detail {
                         TypeAsString<SrcValueType>::result(), pixeltype);
         enc->setPixelType(pixeltype);
         if(pixeltype == "UINT8")
-            detail::exportVectorImage( sul, slr, sget, enc.get(), downcast, (unsigned char)0);
+            detail::exportVectorImage( sul, slr, sget, enc.get(), downcast, (UInt8)0);
         else if(pixeltype == "INT16")
-            detail::exportVectorImage( sul, slr, sget, enc.get(), downcast, short());
+            detail::exportVectorImage( sul, slr, sget, enc.get(), downcast, Int16());
         else if(pixeltype == "INT32")
-            detail::exportVectorImage( sul, slr, sget, enc.get(), downcast, int());
+            detail::exportVectorImage( sul, slr, sget, enc.get(), downcast, Int32());
         else if(pixeltype == "FLOAT")
             detail::exportVectorImage( sul, slr, sget, enc.get(), downcast, float());
         else if(pixeltype == "DOUBLE")
@@ -689,11 +690,11 @@ namespace detail {
                            TypeAsString<SrcValueType>::result(), pixeltype);
         enc->setPixelType(pixeltype);
         if(pixeltype == "UINT8")
-            detail::exportScalarImage( sul, slr, sget, enc.get(), downcast, (unsigned char)0);
+            detail::exportScalarImage( sul, slr, sget, enc.get(), downcast, (UInt8)0);
         else if(pixeltype == "INT16")
-            detail::exportScalarImage( sul, slr, sget, enc.get(), downcast, short());
+            detail::exportScalarImage( sul, slr, sget, enc.get(), downcast, Int16());
         else if(pixeltype == "INT32")
-            detail::exportScalarImage( sul, slr, sget, enc.get(), downcast, int());
+            detail::exportScalarImage( sul, slr, sget, enc.get(), downcast, Int32());
         else if(pixeltype == "FLOAT")
             detail::exportScalarImage( sul, slr, sget, enc.get(), downcast, float());
         else if(pixeltype == "DOUBLE")

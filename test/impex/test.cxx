@@ -814,7 +814,7 @@ class Vector4ExportImportTest
   public:
   
     typedef vigra::FVector4Image Image;
-    typedef vigra::BasicImage<TinyVector<unsigned char, 4> > BImage;
+    typedef vigra::BasicImage<TinyVector<UInt8, 4> > BImage;
     Image img, reread;
     BImage breread, breference;
 
@@ -839,7 +839,7 @@ public:
                 for(int b=0; b<4; ++b)
                 {
                     breference(x,y)[b] = 
-                        NumericTraits<unsigned char>::fromRealPromote(scale*(img(x,y)[b]+offset));
+                        NumericTraits<UInt8>::fromRealPromote(scale*(img(x,y)[b]+offset));
                 }
             }
         }
@@ -1189,5 +1189,6 @@ int main ()
     ImageImportExportTestSuite test;
     const int failed = test.run();
     std::cout << test.report() << std::endl;
+    
     return failed != 0;
 }

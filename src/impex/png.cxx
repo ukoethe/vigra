@@ -24,6 +24,7 @@
 #include <stdexcept>
 #include <iostream>
 #include "vigra/config.hxx"
+#include "vigra/sized_int.hxx"
 #include "void_vector.hxx"
 #include "auto_file.hxx"
 #include "png.hxx"
@@ -282,7 +283,7 @@ namespace vigra {
         const unsigned int row_stride = size / height;
 
         // prepare the bands vector
-        typedef void_vector< unsigned char > vector_type;
+        typedef void_vector< UInt8 > vector_type;
         vector_type & cbands = static_cast< vector_type & >(bands);
         cbands.resize(size);
 
@@ -353,14 +354,14 @@ namespace vigra {
         switch (pimpl->bit_depth) {
         case 8:
             {
-                typedef void_vector< unsigned char > bands_type;
+                typedef void_vector< UInt8 > bands_type;
                 const bands_type & bands
                     = static_cast< const bands_type & >(pimpl->bands);
                 return bands.data() + index;
             }
         case 16:
             {
-                typedef void_vector<short> bands_type;
+                typedef void_vector<Int16> bands_type;
                 const bands_type & bands
                     = static_cast< const bands_type & >(pimpl->bands);
                 return bands.data() + index;
@@ -578,14 +579,14 @@ namespace vigra {
         switch (pimpl->bit_depth) {
         case 8:
             {
-                typedef void_vector< unsigned char > bands_type;
+                typedef void_vector< UInt8 > bands_type;
                 bands_type & bands
                     = static_cast< bands_type & >(pimpl->bands);
                 return bands.data() + index;
             }
         case 16:
             {
-                typedef void_vector<short> bands_type;
+                typedef void_vector<Int16> bands_type;
                 bands_type & bands
                     = static_cast< bands_type & >(pimpl->bands);
                 return bands.data() + index;

@@ -1,6 +1,7 @@
 #include <algorithm>
 #include <stdexcept>
 #include "byteorder.hxx"
+#include "vigra/sized_int.hxx"
 
 namespace vigra
 {
@@ -10,9 +11,8 @@ namespace vigra
     {
         // byteorder check: if the first byte is the least significant,
         // we have little endian byteorder.
-        unsigned int testint = 0x01;
-        unsigned char * testchar
-            = reinterpret_cast< unsigned char * >(&testint);
+        UIntBiggest testint = 0x01;
+        UInt8 * testchar = reinterpret_cast< UInt8 * >(&testint);
         if ( testchar[0] == 0x01 )
             m_string = "little endian";
         else

@@ -22,6 +22,7 @@
 #include <fstream>
 #include <stdexcept>
 #include "vigra/config.hxx"
+#include "vigra/sized_int.hxx"
 #include "error.hxx"
 #include "byteorder.hxx"
 #include "void_vector.hxx"
@@ -89,7 +90,7 @@ namespace vigra {
 
     struct SunHeader
     {
-        typedef unsigned long field_type;
+        typedef UInt32 field_type;
 
         // attributes
 
@@ -130,8 +131,8 @@ namespace vigra {
         SunHeader header;
         std::ifstream stream;
         byteorder bo;
-        void_vector< unsigned char > maps, bands;
-        unsigned int components, row_stride;
+        void_vector< UInt8 > maps, bands;
+        UInt32 components, row_stride;
         bool recode;
 
         // methods
@@ -222,16 +223,16 @@ namespace vigra {
         // recode if necessary
         if (recode) {
 
-            void_vector <unsigned char> recode_bands;
+            void_vector <UInt8> recode_bands;
 
             if (header.depth == 1) {
 
-                // expand to unsigned char.
+                // expand to UInt8.
                 recode_bands.resize (header.width);
                 for (unsigned int i = 0; i < header.width; ++i) {
 
                     // there are eight pixels in each byte.
-                    const unsigned char b = bands [i/8];
+                    const UInt8 b = bands [i/8];
                     recode_bands [i] = b >> i%8 & 0x01;
                 }
 
@@ -242,13 +243,13 @@ namespace vigra {
             // color map the scanline.
             if (header.maptype == RMT_EQUAL_RGB) {
 
-                // map from unsigned char to rgb
+                // map from UInt8 to rgb
                 recode_bands.resize (3*header.width);
                 const unsigned int mapstride = header.maplength/3;
-                unsigned char *recode_mover = recode_bands.data ();
+                UInt8 *recode_mover = recode_bands.data ();
                 for (unsigned int i = 0; i < header.width; ++i) {
                     // find out the pointer to the red color
-                    unsigned char *map_mover = maps.data () + bands [i];
+                    UInt8 *map_mover = maps.data () + bands [i];
                     // red
                     *recode_mover++ = *map_mover;
                     map_mover += mapstride;
@@ -261,7 +262,7 @@ namespace vigra {
                 
             } else if (header.maptype == RMT_RAW) {
 
-                // map from unsigned char to unsigned char
+                // map from UInt8 to UInt8
                 recode_bands.resize (header.width);
                 for (unsigned int i = 0; i < header.width; ++i)
                     recode_bands [i] = maps [bands [i]];
@@ -276,7 +277,7 @@ namespace vigra {
         if (header.type == RT_STANDARD && header.maptype != RMT_EQUAL_RGB
             && components == 3) {
 
-            void_vector <unsigned char> recode_bands (3*header.width);
+            void_vector <UInt8> recode_bands (3*header.width);
             for (unsigned int i = 0; i < header.width; ++i) {
                 recode_bands [3*i]   = bands [3*i+2];
                 recode_bands [3*i+1] = bands [3*i+1];
@@ -348,8 +349,8 @@ namespace vigra {
         SunHeader header;
         std::ofstream stream;
         byteorder bo;
-        void_vector< unsigned char > bands;
-        unsigned int components, row_stride;
+        void_vector< UInt8 > bands;
+        UInt32 components, row_stride;
         bool finalized;
 
         // methods
@@ -418,7 +419,7 @@ namespace vigra {
     {
         if ( components == 3 ) {
             // rgb -> bgr
-            void_vector< unsigned char > recode_bands(bands.size());
+            void_vector< UInt8 > recode_bands(bands.size());
             for ( unsigned int i = 0; i < header.width; ++i ) {
                 recode_bands[ 3 * i ] = bands[ 3 * i + 2 ];
                 recode_bands[ 3 * i + 1 ] = bands[ 3 * i + 1 ];

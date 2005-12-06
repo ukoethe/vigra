@@ -51,9 +51,9 @@ namespace detail
     Namespace: vigra::detail
 */
 template <unsigned int N>
-TinyVector <int, N> defaultStride(const TinyVector <int, N> &shape)
+TinyVector <ptrdiff_t, N> defaultStride(const TinyVector <ptrdiff_t, N> &shape)
 {
-    TinyVector <int, N> ret;
+    TinyVector <ptrdiff_t, N> ret;
     ret [0] = 1;
     for (unsigned int i = 1; i < N; ++i)
         ret [i] = ret [i-1] * shape [i-1];
@@ -339,7 +339,7 @@ public:
 
         /** difference type (used for offsetting)
          */
-    typedef TinyVector <int, actual_dimension> difference_type;
+    typedef TinyVector <ptrdiff_t, actual_dimension> difference_type;
 
         /** traverser (MultiIterator) type
          */
@@ -501,7 +501,7 @@ public:
             max { 1, N-M }
         */
     template <unsigned int M>
-    MultiArrayView <N-M, T, C> bindOuter (const TinyVector <int, M> &d) const;
+    MultiArrayView <N-M, T, C> bindOuter (const TinyVector <ptrdiff_t, M> &d) const;
 
         /** bind the M innermost dimensions to certain indices.
             this reduces the dimensionality of the image to
@@ -509,7 +509,7 @@ public:
         */
     template <unsigned int M>
     MultiArrayView <N-M, T, StridedArrayTag>
-    bindInner (const TinyVector <int, M> &d) const;
+    bindInner (const TinyVector <ptrdiff_t, M> &d) const;
 
         /** bind dimension M to index d.
             this reduces the dimensionality of the image to
@@ -721,13 +721,13 @@ MultiArrayView <N, T, C>::copy(const MultiArrayView <N, U, CN>& rhs)
 template <unsigned int N, class T, class C>
 template <unsigned int M>
 MultiArrayView <N-M, T, C>
-MultiArrayView <N, T, C>::bindOuter (const TinyVector <int, M> &d) const
+MultiArrayView <N, T, C>::bindOuter (const TinyVector <ptrdiff_t, M> &d) const
 {
-    TinyVector <int, M> stride;
+    TinyVector <ptrdiff_t, M> stride;
     stride.init (m_stride.begin () + N-M, m_stride.end ());
     pointer ptr = m_ptr + dot (d, stride);
     static const int NNew = (N-M == 0) ? 1 : N-M;
-    TinyVector <int, NNew> inner_shape, inner_stride;
+    TinyVector <ptrdiff_t, NNew> inner_shape, inner_stride;
     if (N-M == 0)
     {
         inner_shape [0] = 1;
@@ -744,13 +744,13 @@ MultiArrayView <N, T, C>::bindOuter (const TinyVector <int, M> &d) const
 template <unsigned int N, class T, class C>
 template <unsigned int M>
 MultiArrayView <N - M, T, StridedArrayTag>
-MultiArrayView <N, T, C>::bindInner (const TinyVector <int, M> &d) const
+MultiArrayView <N, T, C>::bindInner (const TinyVector <ptrdiff_t, M> &d) const
 {
-    TinyVector <int, M> stride;
+    TinyVector <ptrdiff_t, M> stride;
     stride.init (m_stride.begin (), m_stride.end () - N + M);
     pointer ptr = m_ptr + dot (d, stride);
     static const int NNew = (N-M == 0) ? 1 : N-M;
-    TinyVector <int, NNew> outer_shape, outer_stride;
+    TinyVector <ptrdiff_t, NNew> outer_shape, outer_stride;
     if (N-M == 0)
     {
         outer_shape [0] = 1;
@@ -771,7 +771,7 @@ MultiArrayView <N-1, T, typename detail::MaybeStrided <M>::type >
 MultiArrayView <N, T, C>::bind (int d) const
 {
     static const int NNew = (N-1 == 0) ? 1 : N-1;
-    TinyVector <int, NNew> shape, stride;
+    TinyVector <ptrdiff_t, NNew> shape, stride;
     // the remaining dimensions are 0..n-1,n+1..N-1
     if (N-1 == 0)
     {
@@ -796,7 +796,7 @@ MultiArrayView <N - 1, T, C>
 MultiArrayView <N, T, C>::bindOuter (int d) const
 {
     static const int NNew = (N-1 == 0) ? 1 : N-1;
-    TinyVector <int, NNew> inner_shape, inner_stride;
+    TinyVector <ptrdiff_t, NNew> inner_shape, inner_stride;
     if (N-1 == 0)
     {
         inner_shape [0] = 1;
@@ -816,7 +816,7 @@ MultiArrayView <N - 1, T, StridedArrayTag>
 MultiArrayView <N, T, C>::bindInner (int d) const
 {
     static const int NNew = (N-1 == 0) ? 1 : N-1;
-    TinyVector <int, NNew> outer_shape, outer_stride;
+    TinyVector <ptrdiff_t, NNew> outer_shape, outer_stride;
     if (N-1 == 0)
     {
         outer_shape [0] = 1;
@@ -839,7 +839,7 @@ MultiArrayView <N, T, C>::bindAt (int n, int d) const
         n < static_cast <int> (N),
         "MultiArrayView <N, T, C>::bindAt(): dimension out of range.");
     static const int NNew = (N-1 == 0) ? 1 : N-1;
-    TinyVector <int, NNew> shape, stride;
+    TinyVector <ptrdiff_t, NNew> shape, stride;
     // the remaining dimensions are 0..n-1,n+1..N-1
     if (N-1 == 0)
     {

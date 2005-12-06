@@ -27,6 +27,7 @@
 #include <string>
 #include <fstream>
 #include <algorithm>
+#include "vigra/sized_int.hxx"
 
 namespace vigra
 {
@@ -62,8 +63,8 @@ namespace vigra
         void reversebytes( T & x ) const
         {
             const unsigned int n = sizeof(T);
-            unsigned char t[n];
-            unsigned char * c = reinterpret_cast< unsigned char * >(&x);
+            UInt8 t[n];
+            UInt8 * c = reinterpret_cast< UInt8 * >(&x);
             unsigned int i;
             for( i = 0; i < n; ++i )
                 t[i] = c[ n - 1 - i ];
@@ -115,20 +116,20 @@ namespace vigra
         }
 
         void convert_to_host( char & x ) const {}
-        void convert_to_host( signed char & x ) const {}
-        void convert_to_host( unsigned char & x ) const {}
+        void convert_to_host( Int8 & x ) const {}
+        void convert_to_host( UInt8 & x ) const {}
 
         void convert_to_host( char * x , unsigned int) const {}
-        void convert_to_host( signed char * x, unsigned int) const {}
-        void convert_to_host( unsigned char * x, unsigned int) const {}
+        void convert_to_host( Int8 * x, unsigned int) const {}
+        void convert_to_host( UInt8 * x, unsigned int) const {}
 
         void convert_from_host( char & x ) const {}
-        void convert_from_host( signed char & x ) const {}
-        void convert_from_host( unsigned char & x ) const {}
+        void convert_from_host( Int8 & x ) const {}
+        void convert_from_host( UInt8 & x ) const {}
 
         void convert_from_host( char * x , unsigned int) const {}
-        void convert_from_host( signed char * x, unsigned int) const {}
-        void convert_from_host( unsigned char * x, unsigned int) const {}
+        void convert_from_host( Int8 * x, unsigned int) const {}
+        void convert_from_host( UInt8 * x, unsigned int) const {}
     };
 
     template< class T >

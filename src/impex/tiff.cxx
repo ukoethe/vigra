@@ -21,6 +21,7 @@
 
 #ifdef HasTIFF
 
+#include "vigra/sized_int.hxx"
 #include "error.hxx"
 #include "tiff.hxx"
 #include <iostream>
@@ -121,7 +122,8 @@ namespace vigra {
         stripbuffer = 0;
         strip = 0;
         stripindex = 0;
-    }
+        planarconfig = PLANARCONFIG_CONTIG;
+   }
 
     TIFFCodecImpl::~TIFFCodecImpl()
     {
@@ -353,18 +355,18 @@ namespace vigra {
     TIFFDecoderImpl::currentScanlineOfBand( unsigned int band ) const
     {
         if ( bits_per_sample == 1 ) {
-            unsigned char * const buf
-                = static_cast< unsigned char * >(stripbuffer[0]);
+            UInt8 * const buf
+                = static_cast< UInt8 * >(stripbuffer[0]);
             // XXX probably wrong
             return buf + ( stripindex * width ) / 8;
         } else {
             if ( planarconfig == PLANARCONFIG_SEPARATE ) {
-                unsigned char * const buf
-                    = static_cast< unsigned char * >(stripbuffer[band]);
+                UInt8 * const buf
+                    = static_cast< UInt8 * >(stripbuffer[band]);
                 return buf + ( stripindex * width ) * ( bits_per_sample / 8 );
             } else {
-                unsigned char * const buf
-                    = static_cast< unsigned char * >(stripbuffer[0]);
+                UInt8 * const buf
+                    = static_cast< UInt8 * >(stripbuffer[0]);
                 return buf + ( band + stripindex * width * samples_per_pixel )
                     * ( bits_per_sample / 8 );
             }
@@ -393,7 +395,7 @@ namespace vigra {
             if ( samples_per_pixel == 1 && pixeltype == "UINT8" &&
                  photometric == PHOTOMETRIC_MINISWHITE ) {
 
-                unsigned char * buf = static_cast< unsigned char * >
+                UInt8 * buf = static_cast< UInt8 * >
                     (stripbuffer[0]);
                 const unsigned int n = TIFFStripSize(tiff);
 
@@ -500,7 +502,7 @@ namespace vigra {
         void * currentScanlineOfBand( unsigned int band ) const
         {
             const unsigned int atomicbytes = bits_per_sample >> 3;
-            unsigned char * buf = ( unsigned char * ) stripbuffer[0];
+            UInt8 * buf = ( UInt8 * ) stripbuffer[0];
             return buf + atomicbytes *
                 ( width * samples_per_pixel * stripindex + band );
         }

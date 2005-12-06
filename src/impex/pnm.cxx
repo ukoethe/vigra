@@ -23,6 +23,7 @@
 #include <iostream>
 #include <fstream>
 #include "vigra/config.hxx"
+#include "vigra/sized_int.hxx"
 #include "error.hxx"
 #include "void_vector.hxx"
 #include "pnm.hxx"
@@ -30,9 +31,6 @@
 
 namespace vigra {
 
-    typedef short int16_t;
-    typedef int   int32_t;
-    
     CodecDesc PnmCodecFactory::getCodecDesc() const
     {
         CodecDesc desc;
@@ -154,7 +152,7 @@ namespace vigra {
     void PnmDecoderImpl::read_bilevel_ascii_scanline()
     {
         // cast the bands to the correct type
-        typedef void_vector< unsigned char > vector_type;
+        typedef void_vector< UInt8 > vector_type;
         vector_type & cbands = static_cast< vector_type & >(bands);
 
         // read and store
@@ -169,7 +167,7 @@ namespace vigra {
         // XXX implement this also for other pixel types than unsigned char
 
         // cast the bands to the correct type
-        typedef void_vector< unsigned char > vector_type;
+        typedef void_vector< UInt8 > vector_type;
         vector_type & cbands = static_cast< vector_type & >(bands);
 
         // read and store
@@ -184,11 +182,11 @@ namespace vigra {
     void PnmDecoderImpl::read_bilevel_raw_scanline()
     {
         // cast the bands to the correct type
-        typedef void_vector< unsigned char > vector_type;
+        typedef void_vector< UInt8 > vector_type;
         vector_type & cbands = static_cast< vector_type & >(bands);
 
         // read and store
-        unsigned char buf = 0;
+        UInt8 buf = 0;
         const unsigned int size = width / 8;  // XXX wrong assumption
         for( unsigned int i = 0; i < size; ++i ) {
             stream.read( reinterpret_cast< char * >(&buf), 1 );
@@ -202,7 +200,7 @@ namespace vigra {
         // XXX implement this also for other pixel types than unsigned char
 
         // cast the bands to the correct type
-        typedef void_vector< unsigned char > vector_type;
+        typedef void_vector< UInt8 > vector_type;
         vector_type & cbands = reinterpret_cast< vector_type & >(bands);
 
         // read and store
@@ -382,17 +380,17 @@ namespace vigra {
     const void * PnmDecoder::currentScanlineOfBand( unsigned int band ) const
     {
         if ( pimpl->pixeltype == "UINT8" ) {
-            typedef void_vector< unsigned char > bands_type;
+            typedef void_vector< UInt8 > bands_type;
             const bands_type & bands
                 = static_cast< const bands_type & >(pimpl->bands);
             return bands.data() + band;
         } else if ( pimpl->pixeltype == "INT16" ) {
-            typedef void_vector<int16_t> bands_type;
+            typedef void_vector<Int16> bands_type;
             const bands_type & bands
                 = static_cast< const bands_type & >(pimpl->bands);
             return bands.data() + band;
         } else if ( pimpl->pixeltype == "INT32" ) {
-            typedef void_vector<int32_t> bands_type;
+            typedef void_vector<Int32> bands_type;
             const bands_type & bands
                 = static_cast< const bands_type & >(pimpl->bands);
             return bands.data() + band;
@@ -572,17 +570,17 @@ namespace vigra {
     {
         const unsigned int row_stride = pimpl->width * pimpl->components;
         if ( pimpl->pixeltype == "UINT8" ) {
-            typedef void_vector< unsigned char > bands_type;
+            typedef void_vector< UInt8 > bands_type;
             bands_type & bands
                 = static_cast< bands_type & >(pimpl->bands);
             return bands.data() + pimpl->scanline * row_stride + band;
         } else if ( pimpl->pixeltype == "INT16" ) {
-            typedef void_vector<int16_t> bands_type;
+            typedef void_vector<Int16> bands_type;
             bands_type & bands
                 = static_cast< bands_type & >(pimpl->bands);
             return bands.data() + pimpl->scanline * row_stride + band;
         } else if ( pimpl->pixeltype == "INT32" ) {
-            typedef void_vector<int32_t> bands_type;
+            typedef void_vector<Int32> bands_type;
             bands_type & bands
                 = static_cast< bands_type & >(pimpl->bands);
             return bands.data() + pimpl->scanline * row_stride + band;
@@ -594,11 +592,11 @@ namespace vigra {
     void PnmEncoderImpl::write_bilevel_ascii()
     {
         // cast the bands to the correct type
-        typedef void_vector< unsigned char > vector_type;
+        typedef void_vector< UInt8 > vector_type;
         vector_type & cbands = static_cast< vector_type & >(bands);
 
         // write and store
-        unsigned char * iter = cbands.data();
+        UInt8 * iter = cbands.data();
         for( unsigned int i = 0; i < height; ++i ) {
             for ( unsigned int j = 0; j < width; ++j ) {
                 for ( unsigned int k = 0; k < components; ++k ) {
@@ -616,9 +614,9 @@ namespace vigra {
     {
         if ( pixeltype == "UINT8" ) {
 
-          typedef void_vector< unsigned char > vector_type;
+          typedef void_vector< UInt8 > vector_type;
           vector_type & cbands = static_cast< vector_type & >(bands);
-          unsigned char * iter = cbands.data();
+          UInt8 * iter = cbands.data();
           for( unsigned int i = 0; i < height; ++i ) {
             for ( unsigned int j = 0; j < width; ++j ) {
               for ( unsigned int k = 0; k < components; ++k ) {
@@ -633,9 +631,9 @@ namespace vigra {
 
         } else if ( pixeltype == "INT16" ) {
 
-          typedef void_vector<int16_t> vector_type;
+          typedef void_vector<Int16> vector_type;
           vector_type & cbands = static_cast< vector_type & >(bands);
-          int16_t * iter = cbands.data();
+          Int16 * iter = cbands.data();
           for( unsigned int i = 0; i < height; ++i ) {
             for ( unsigned int j = 0; j < width; ++j ) {
               for ( unsigned int k = 0; k < components; ++k ) {
@@ -650,9 +648,9 @@ namespace vigra {
 
         } else if ( pixeltype == "INT32" ) {
 
-          typedef void_vector<int32_t> vector_type;
+          typedef void_vector<Int32> vector_type;
           vector_type & cbands = static_cast< vector_type & >(bands);
-          int32_t * iter = cbands.data();
+          Int32 * iter = cbands.data();
           for( unsigned int i = 0; i < height; ++i ) {
             for ( unsigned int j = 0; j < width; ++j ) {
               for ( unsigned int k = 0; k < components; ++k ) {
@@ -668,7 +666,7 @@ namespace vigra {
         }
 
         // cast the bands to the correct type
-        typedef void_vector< unsigned char > vector_type;
+        typedef void_vector< UInt8 > vector_type;
         vector_type & cbands = static_cast< vector_type & >(bands);
 
         // write and store
@@ -682,7 +680,7 @@ namespace vigra {
     void PnmEncoderImpl::write_bilevel_raw()
     {
         // cast the bands to the correct type
-        typedef void_vector< unsigned char > vector_type;
+        typedef void_vector< UInt8 > vector_type;
         //vector_type & cbands = static_cast< vector_type & >(bands);
 
         // XXX
@@ -693,7 +691,7 @@ namespace vigra {
         if ( pixeltype == "UINT8" ) {
 
             // cast the bands to the correct type
-            typedef void_vector< unsigned char > vector_type;
+            typedef void_vector< UInt8 > vector_type;
             vector_type & cbands = static_cast< vector_type & >(bands);
 
             // write and store
@@ -703,7 +701,7 @@ namespace vigra {
         } else if ( pixeltype == "INT16" ) {
 
             // cast the bands to the correct type
-            typedef void_vector<int16_t> vector_type;
+            typedef void_vector<Int16> vector_type;
             vector_type & cbands = static_cast< vector_type & >(bands);
 
             // write and store
@@ -728,22 +726,22 @@ namespace vigra {
             // find out maxval and print it into the stream
             int maxval = 0;
             if ( pimpl->pixeltype == "UINT8" ) {
-                void_vector< unsigned char > & cbands
-                    = static_cast< void_vector< unsigned char > & >
+                void_vector< UInt8 > & cbands
+                    = static_cast< void_vector< UInt8 > & >
                     (pimpl->bands);
-                for( unsigned char * iter = cbands.begin();
+                for( UInt8 * iter = cbands.begin();
                      iter < cbands.end(); ++iter )
                     if ( *iter > maxval ) maxval = *iter;
             } else if ( pimpl->pixeltype == "INT16" ) {
-                void_vector<int16_t> & cbands
-                    = static_cast< void_vector<int16_t> & >(pimpl->bands);
-                for( int16_t * iter = cbands.begin();
+                void_vector<Int16> & cbands
+                    = static_cast< void_vector<Int16> & >(pimpl->bands);
+                for( Int16 * iter = cbands.begin();
                      iter < cbands.end(); ++iter )
                     if ( *iter > maxval ) maxval = *iter;
             } else if ( pimpl->pixeltype == "INT32" ) {
-                void_vector<int32_t> & cbands
-                    = static_cast< void_vector<int32_t> & >(pimpl->bands);
-                for( int32_t * iter = cbands.begin();
+                void_vector<Int32> & cbands
+                    = static_cast< void_vector<Int32> & >(pimpl->bands);
+                for( Int32 * iter = cbands.begin();
                      iter < cbands.end(); ++iter )
                     if ( *iter > maxval ) maxval = *iter;
             }

@@ -59,8 +59,15 @@ struct TensorUtilityTest
                 shouldEqual(res(x,y)[0]+res(x,y)[1], img3(x,y)[0] + img3(x,y)[2]);
                 shouldEqual(res(x,y)[0]*res(x,y)[1], 
                             img3(x,y)[0]*img3(x,y)[2]-sq(img3(x,y)[1]));
-                shouldEqualTolerance(res(x,y)[2], 
+                if(x == 0 && y == 0)
+                {
+                    shouldEqual(res(x,y)[2], 0.0);
+                }
+                else
+                {
+                    shouldEqualTolerance(res(x,y)[2], 
                                     VIGRA_CSTD::atan2((double)-y, (double)x), 1e-12);
+                }
             }
         }
     }

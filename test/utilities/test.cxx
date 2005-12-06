@@ -4,6 +4,7 @@
 #include "vigra/accessor.hxx"
 #include "vigra/array_vector.hxx"
 #include "vigra/copyimage.hxx"
+#include "vigra/sized_int.hxx"
 
 using namespace vigra;
 
@@ -180,20 +181,36 @@ struct ArrayVectorTest
     }
 };
 
-struct ArrayVectorTestSuite
+struct SizedIntTest
+{
+    void testSizedInt()
+    {
+        shouldEqual(sizeof(Int8), 1);
+        shouldEqual(sizeof(Int16), 2);
+        shouldEqual(sizeof(Int32), 4);
+        shouldEqual(sizeof(UInt8), 1);
+        shouldEqual(sizeof(UInt16), 2);
+        shouldEqual(sizeof(UInt32), 4);
+        should(sizeof(IntBiggest) >= 4);
+        should(sizeof(UIntBiggest) >= 4);
+    }
+};
+
+struct UtilitiesTestSuite
 : public vigra::test_suite
 {
-    ArrayVectorTestSuite()
-    : vigra::test_suite("ArrayVectorTestSuite")
+    UtilitiesTestSuite()
+    : vigra::test_suite("UtilitiesTestSuite")
     {
         add( testCase( &ArrayVectorTest::testAccessor));
         add( testCase( &ArrayVectorTest::testBackInsertion));
+        add( testCase( &SizedIntTest::testSizedInt));
     }
 };
 
 int main()
 {
-    ArrayVectorTestSuite test;
+    UtilitiesTestSuite test;
 
     int failed = test.run();
 

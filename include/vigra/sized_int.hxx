@@ -55,6 +55,26 @@ struct SelectIntegerType<SIZE, VigraFalseType>
     typedef VigraFalseType type;
 };
 
+template<class LIST>
+struct SelectBiggestIntegerType
+{
+    enum { cursize = LIST::size, 
+           nextsize = SelectBiggestIntegerType<typename LIST::next>::size,
+           size = (cursize < nextsize) ? nextsize : cursize };
+    typedef typename 
+       IfBool<(cursize < nextsize), 
+           typename SelectBiggestIntegerType<typename LIST::next>::type,
+           typename LIST::type>::type
+       type;
+};
+
+template<>
+struct SelectBiggestIntegerType<VigraFalseType>
+{
+    enum { size = 0 };
+    typedef VigraFalseType type;
+};
+
 typedef IntTypeList<signed char, 
         IntTypeList<signed short,
         IntTypeList<signed int,
@@ -77,6 +97,9 @@ typedef detail::SelectIntegerType<16, detail::UnsignedIntTypes>::type UInt16;
 typedef detail::SelectIntegerType<32, detail::UnsignedIntTypes>::type UInt32;
 typedef detail::SelectIntegerType<64, detail::UnsignedIntTypes>::type UInt64;
 
+typedef detail::SelectBiggestIntegerType<detail::SignedIntTypes>::type   IntBiggest;
+typedef detail::SelectBiggestIntegerType<detail::UnsignedIntTypes>::type UIntBiggest;
+
 #else // NO_PARTIAL_TEMPLATE_SPECIALIZATION
 
 typedef signed char    Int8;
@@ -87,6 +110,9 @@ typedef unsigned char  UInt8;
 typedef unsigned short UInt16;
 typedef unsigned int   UInt32;
 typedef VigraFalseType UInt64;
+
+typedef Int32  IntBiggest;
+typedef UInt32 UIntBiggest;
 
 #endif // NO_PARTIAL_TEMPLATE_SPECIALIZATION
 

@@ -22,6 +22,8 @@
 #ifndef VIGRA_METAPROGRAMMING_HXX
 #define VIGRA_METAPROGRAMMING_HXX
 
+#include "config.hxx"
+
 namespace vigra {
 
 template <int N>
