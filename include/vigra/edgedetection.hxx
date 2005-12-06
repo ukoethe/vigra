@@ -34,6 +34,7 @@
 #include "vigra/separableconvolution.hxx"
 #include "vigra/labelimage.hxx"
 #include "vigra/mathutil.hxx"
+#include "vigra/pixelneighborhood.hxx"
 
 
 namespace vigra {
