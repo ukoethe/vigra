@@ -11,6 +11,7 @@
 #include "vigra/cornerdetection.hxx"
 #include "vigra/symmetry.hxx"
 #include "vigra/watersheds.hxx"
+#include "vigra/impex.hxx"
 
 using namespace vigra;
 
@@ -560,6 +561,25 @@ struct EdgeDetectionTest
         result = 0;
 
         cannyEdgeImage(srcImageRange(imgCanny), destImage(result), 1.0, 0.1, 1);
+
+        for(int y=1; y<39; ++y)
+        {
+            for(int x=1; x<39; ++x)
+            {
+                if(x == y)
+                    should(result(x,y) == 1);
+                else
+                    should(result(x,y) == 0);
+            }
+        }
+    }
+
+    void cannyEdgeImageWithThinningTest()
+    {
+        vigra::BImage result(40, 40);
+        result = 0;
+
+        cannyEdgeImageWithThinning(srcImageRange(imgCanny), destImage(result), 1.0, 0.1, 1);
 
         for(int y=1; y<39; ++y)
         {
@@ -1346,6 +1366,7 @@ struct SimpleAnalysisTestSuite
         add( testCase( &EdgeDetectionTest::closeGapsInCrackEdgeTest));
         add( testCase( &EdgeDetectionTest::cannyEdgelListTest));
         add( testCase( &EdgeDetectionTest::cannyEdgeImageTest));
+        add( testCase( &EdgeDetectionTest::cannyEdgeImageWithThinningTest));
         add( testCase( &DistanceTransformTest::distanceTransformL1Test));
         add( testCase( &DistanceTransformTest::distanceTransformL2Test));
         add( testCase( &DistanceTransformTest::distanceTransformLInfTest));
