@@ -3,6 +3,7 @@
 #include "unittest.hxx"
 #include "vigra/functorexpression.hxx"
 #include "vigra/rgbvalue.hxx"
+#include "vigra/sized_int.hxx"
 
 using namespace vigra::functor;
 
@@ -115,22 +116,22 @@ struct FunctorExpressionTest
     
     void testUnary()
     {
-        shouldEqual(exec(sqrt(Arg1()), 7.0) , sqrt(7.0)); 
-        shouldEqual(exec(exp(Arg1()), 4.0) , exp(4.0)); 
-        shouldEqual(exec(log(Arg1()), 4.0) , log(4.0)); 
-        shouldEqual(exec(log10(Arg1()), 4.0) , log10(4.0)); 
-        shouldEqual(exec(sin(Arg1()), 4.0) , sin(4.0)); 
-        shouldEqual(exec(asin(Arg1()), 0.5) , asin(0.5)); 
-        shouldEqual(exec(cos(Arg1()), 4.0) , cos(4.0)); 
-        shouldEqual(exec(acos(Arg1()), 0.5) , acos(0.5)); 
-        shouldEqual(exec(tan(Arg1()), 4.0) , tan(4.0)); 
-        shouldEqual(exec(atan(Arg1()), 0.5) , atan(0.5)); 
+        shouldEqual(exec(sqrt(Arg1()), 7.0) , VIGRA_CSTD::sqrt(7.0)); 
+        shouldEqual(exec(exp(Arg1()), 4.0) , VIGRA_CSTD::exp(4.0)); 
+        shouldEqual(exec(log(Arg1()), 4.0) , VIGRA_CSTD::log(4.0)); 
+        shouldEqual(exec(log10(Arg1()), 4.0) , VIGRA_CSTD::log10(4.0)); 
+        shouldEqual(exec(sin(Arg1()), 4.0) , VIGRA_CSTD::sin(4.0)); 
+        shouldEqual(exec(asin(Arg1()), 0.5) , VIGRA_CSTD::asin(0.5)); 
+        shouldEqual(exec(cos(Arg1()), 4.0) , VIGRA_CSTD::cos(4.0)); 
+        shouldEqual(exec(acos(Arg1()), 0.5) , VIGRA_CSTD::acos(0.5)); 
+        shouldEqual(exec(tan(Arg1()), 4.0) , VIGRA_CSTD::tan(4.0)); 
+        shouldEqual(exec(atan(Arg1()), 0.5) , VIGRA_CSTD::atan(0.5)); 
         shouldEqual(exec(abs(Arg1()), -0.5) , 0.5); 
         shouldEqual(exec(floor(Arg1()), -0.5) , -1.0); 
         shouldEqual(exec(ceil(Arg1()), 0.5) , 1.0); 
         shouldEqual(exec(-Arg1(), -0.5) , 0.5); 
         shouldEqual(exec(!Arg1(), true) , false); 
-        shouldEqual(exec(~Arg1(), 0xff) , (int)0xffffff00); 
+        shouldEqual(exec(~Arg1(),(vigra::UInt32)0xff) , (vigra::UInt32)0xffffff00); 
     }
     
     void testBinary()
@@ -150,9 +151,9 @@ struct FunctorExpressionTest
         should(exec(Arg1() & Arg2(), 0xff, 0xf) == 0xf); 
         should(exec(Arg1() | Arg2(), 0xff, 0xf) == 0xff); 
         should(exec(Arg1() ^ Arg2(), 0xff, 0xf) == 0xf0); 
-        should(exec(pow(Arg1(), Arg2()), 2.0, 3) == pow(2.0, 3.0)); 
-        should(exec(atan2(Arg1(), Arg2()), 2.0, 3.0) == atan2(2.0, 3.0)); 
-        should(exec(fmod(Arg1(), Arg2()), 2.0, 3.0) == fmod(2.0, 3.0)); 
+        should(exec(pow(Arg1(), Arg2()), 2.0, 3) == VIGRA_CSTD::pow(2.0, 3.0)); 
+        should(exec(atan2(Arg1(), Arg2()), 2.0, 3.0) == VIGRA_CSTD::atan2(2.0, 3.0)); 
+        should(exec(fmod(Arg1(), Arg2()), 2.0, 3.0) == VIGRA_CSTD::fmod(2.0, 3.0)); 
         should(exec(min(Arg1(), Arg2()), 2, 3.5) == 2.0); 
         should(exec(max(Arg1(), Arg2()), 2, 3.5) == 3.5); 
     }
@@ -183,8 +184,8 @@ struct FunctorExpressionTest
     
     void testApply()
     {
-        should(exec(applyFct((double (*)(double))&sqrt, Arg1()), 4.0) == 2.0); 
-        should(exec(applyFct((double (*)(double, double))&pow, 
+        should(exec(applyFct((double (*)(double))&VIGRA_CSTD::sqrt, Arg1()), 4.0) == 2.0); 
+        should(exec(applyFct((double (*)(double, double))&VIGRA_CSTD::pow, 
                              Arg1(), Arg2()), 4.0, 2) == 16.0); 
     }
     
