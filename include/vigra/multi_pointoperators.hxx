@@ -605,7 +605,7 @@ transformMultiArrayImpl(SrcIterator s, SrcShape const & sshape, SrcAccessor src,
     
     vigra::transformMultiArray(srcMultiArrayRange(src),
                                destMultiArray(dest),
-                               &std::sqrt );
+                               (float(*)(float))&std::sqrt );
 
     \endcode
 
@@ -627,7 +627,7 @@ transformMultiArrayImpl(SrcIterator s, SrcShape const & sshape, SrcAccessor src,
     
     vigra::transformMultiArray(srcMultiArrayRange(src),
                                destMultiArrayRange(dest),
-                               &std::sqrt );
+                               (float(*)(float))&std::sqrt );
 
     \endcode
 
