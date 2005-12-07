@@ -125,7 +125,7 @@ transformLineIf(SrcIterator s,
 
     vigra::transformImage(srcImageRange(src),
                           destImage(dest),
-                          &std::sqrt );
+                          (double(*)(double))&std::sqrt );
 
     \endcode
 
