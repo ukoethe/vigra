@@ -729,25 +729,29 @@ struct UnaryFunctor<VarFunctor<T> >;
          \
         V & operator()() const \
         { \
-            return const_cast<V &>(value_) op expr_(); \
+            const_cast<V &>(value_) op expr_(); \
+            return const_cast<V &>(value_); \
         } \
          \
         template <class T1>  \
         V & operator()(T1 const & v1) const \
         { \
-            return const_cast<V &>(value_) op expr_(v1); \
+            const_cast<V &>(value_) op expr_(v1); \
+            return const_cast<V &>(value_); \
         } \
          \
         template <class T1, class T2>  \
         V & operator()(T1 const & v1, T2 const & v2) const \
         { \
-            return const_cast<V &>(value_) op expr_(v1, v2); \
+            const_cast<V &>(value_) op expr_(v1, v2); \
+            return const_cast<V &>(value_); \
         } \
          \
         template <class T1, class T2, class T3>  \
         V & operator()(T1 const & v1, T2 const & v2, T3 const & v3) const \
         { \
-            return const_cast<V &>(value_) op expr_(v1, v2, v3); \
+            const_cast<V &>(value_) op expr_(v1, v2, v3); \
+            return const_cast<V &>(value_); \
         } \
          \
       private: \
