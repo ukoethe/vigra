@@ -369,8 +369,10 @@ public:
 
 protected:
 
+    static const typename difference_type::value_type diff_zero = 0;
+
         /** the shape of the image pointed to is stored here.
-	 */
+	    */
     difference_type m_shape;
 
         /** the strides (offset of a sample to the next) for every dimension
@@ -387,7 +389,7 @@ public:
         /** default constructor: create an empty image of size 0.
          */
     MultiArrayView ()
-        : m_shape (0), m_stride (0), m_ptr (0)
+        : m_shape (diff_zero), m_stride (diff_zero), m_ptr (0)
     {}
 
 
@@ -993,6 +995,8 @@ public:
 
 protected:
 
+    static const typename difference_type::value_type diff_zero = 0;
+
         /** the allocator used to allocate the memory
          */
     allocator_type m_alloc;
@@ -1137,12 +1141,14 @@ public:
 
 template <unsigned int N, class T, class A>
 MultiArray <N, T, A>::MultiArray ()
-    : MultiArrayView <N, T> (difference_type (0), difference_type (0), 0)
+    : MultiArrayView <N, T> (difference_type (diff_zero), 
+                             difference_type (diff_zero), 0)
 {}
 
 template <unsigned int N, class T, class A>
 MultiArray <N, T, A>::MultiArray (allocator_type const & alloc)
-    : MultiArrayView <N, T> (difference_type (0), difference_type (0), 0),
+    : MultiArrayView <N, T> (difference_type (diff_zero), 
+                             difference_type (diff_zero), 0),
       m_alloc(alloc)
 {}
 
