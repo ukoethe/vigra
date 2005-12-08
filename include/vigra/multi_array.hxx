@@ -333,13 +333,13 @@ public:
          */
     typedef const value_type *const_pointer;
 
-        /** size type
-         */
-    typedef TinyVector <int, actual_dimension> size_type;
-
         /** difference type (used for offsetting)
          */
     typedef TinyVector <ptrdiff_t, actual_dimension> difference_type;
+
+        /** size type
+         */
+    typedef difference_type size_type;
 
         /** traverser (MultiIterator) type
          */
