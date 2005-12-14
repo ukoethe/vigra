@@ -407,6 +407,7 @@
 namespace vigra {
 
 struct Error_NumericTraits_not_specialized_for_this_case { };
+struct Error_NumericTraits_char_is_not_a_numeric_type__use_signed_char_or_unsigned_char { };
 
 template<class A>
 struct NumericTraits
@@ -421,6 +422,21 @@ struct NumericTraits
     typedef Error_NumericTraits_not_specialized_for_this_case isIntegral;
     typedef Error_NumericTraits_not_specialized_for_this_case isOrdered;
     typedef Error_NumericTraits_not_specialized_for_this_case isComplex;
+};
+
+template<>
+struct NumericTraits<char>
+{
+    typedef Error_NumericTraits_char_is_not_a_numeric_type__use_signed_char_or_unsigned_char Type;
+    typedef Error_NumericTraits_char_is_not_a_numeric_type__use_signed_char_or_unsigned_char Promote;
+    typedef Error_NumericTraits_char_is_not_a_numeric_type__use_signed_char_or_unsigned_char RealPromote;
+    typedef Error_NumericTraits_char_is_not_a_numeric_type__use_signed_char_or_unsigned_char ComplexPromote;
+    typedef Error_NumericTraits_char_is_not_a_numeric_type__use_signed_char_or_unsigned_char ValueType;
+
+    typedef Error_NumericTraits_char_is_not_a_numeric_type__use_signed_char_or_unsigned_char isScalar;
+    typedef Error_NumericTraits_char_is_not_a_numeric_type__use_signed_char_or_unsigned_char isIntegral;
+    typedef Error_NumericTraits_char_is_not_a_numeric_type__use_signed_char_or_unsigned_char isOrdered;
+    typedef Error_NumericTraits_char_is_not_a_numeric_type__use_signed_char_or_unsigned_char isComplex;
 };
 
 #ifndef NO_BOOL
