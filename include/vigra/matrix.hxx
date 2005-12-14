@@ -953,6 +953,59 @@ T dot(const MultiArrayView<1, T, C1> &x, const MultiArrayView<1, T, C2> &y)
     return ret;
 }
 
+    /** calculate the cross product of two vectors of length 3. 
+        The result is written into \a r.
+     
+    <b>\#include</b> "<a href="matrix_8hxx-source.html">vigra/matrix.hxx</a>" or<br>
+    <b>\#include</b> "<a href="linear__algebra_8hxx-source.html">vigra/linear_algebra.hxx</a>"<br>
+        Namespaces: vigra and vigra::linalg
+     */ 
+template <class T, class C1, class C2, class C3>
+void cross(const MultiArrayView<1, T, C1> &x, const MultiArrayView<1, T, C2> &y,
+           MultiArrayView<1, T, C3> &r)
+{
+    vigra_precondition(3 == x.elementCount() && 3 == y.elementCount() && 3 == r.elementCount(),
+       "cross(): vectors must have length 3.");
+    r(0) = x(1)*y(2) - x(2)*y(1);
+    r(1) = x(2)*y(0) - x(0)*y(2);
+    r(2) = x(0)*y(1) - x(1)*y(0);
+}
+
+    /** calculate the cross product of two matrices representing vectors. 
+        That is, \a x, \a y, and \a r must have a single column of length 3. The result
+        is written into \a r.
+     
+    <b>\#include</b> "<a href="matrix_8hxx-source.html">vigra/matrix.hxx</a>" or<br>
+    <b>\#include</b> "<a href="linear__algebra_8hxx-source.html">vigra/linear_algebra.hxx</a>"<br>
+        Namespaces: vigra and vigra::linalg
+     */ 
+template <class T, class C1, class C2, class C3>
+void cross(const MultiArrayView<2, T, C1> &x, const MultiArrayView<2, T, C2> &y,
+           MultiArrayView<2, T, C3> &r)
+{
+    vigra_precondition(3 == rowCount(x) && 3 == rowCount(y) && 3 == rowCount(r) ,
+       "cross(): vectors must have length 3.");
+    r(0,0) = x(1,0)*y(2,0) - x(2,0)*y(1,0);
+    r(1,0) = x(2,0)*y(0,0) - x(0,0)*y(2,0);
+    r(2,0) = x(0,0)*y(1,0) - x(1,0)*y(0,0);
+}
+
+    /** calculate the cross product of two matrices representing vectors. 
+        That is, \a x, and \a y must have a single column of length 3. The result
+        is returned as a temporary matrix.
+    
+    <b>\#include</b> "<a href="matrix_8hxx-source.html">vigra/matrix.hxx</a>" or<br>
+    <b>\#include</b> "<a href="linear__algebra_8hxx-source.html">vigra/linear_algebra.hxx</a>"<br>
+        Namespaces: vigra and vigra::linalg
+     */ 
+template <class T, class C1, class C2>
+TemporaryMatrix<T> 
+cross(const MultiArrayView<2, T, C1> &x, const MultiArrayView<2, T, C2> &y)
+{
+    TemporaryMatrix<T> ret(3, 1);
+    cross(x, y, ret);
+    return ret;
+}
     /** calculate the outer product of two matrices representing vectors. 
         That is, matrix \a x must have a single column, and matrix \a y must 
         have a single row, and the other dimensions must match. The result
@@ -1310,6 +1363,7 @@ using linalg::identityMatrix;
 using linalg::diagonalMatrix;
 using linalg::transpose;
 using linalg::dot;
+using linalg::cross;
 using linalg::outer;
 using linalg::rowCount;
 using linalg::columnCount;

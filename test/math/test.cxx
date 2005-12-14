@@ -889,6 +889,14 @@ struct LinalgTest
         
         Matrix e(r*c, 1, data);
         shouldEqual(dot(transpose(e), e), e.squaredNorm());
+        
+        double dc1[] = {1.0, 1.0, 1.0},
+               dc2[] = {1.2, 2.4, 3.6};
+        Matrix c1(3,1, dc1), c2(3,1, dc2);
+        Matrix cr = cross(c1, c2);
+        shouldEqualTolerance(cr(0,0), 1.2, 1e-12);
+        shouldEqualTolerance(cr(1,0), -2.4, 1e-12);
+        shouldEqualTolerance(cr(2,0), 1.2, 1e-12);        
                
         Matrix f(1, r*c - 1, tref);
         Matrix g = outer(e, f);
