@@ -1270,6 +1270,20 @@ floor(TinyVectorBase<V, SIZE, D1, D2> const & v)
     return res;
 }
 
+    /// cross product
+template <class V1, class D1, class D2, class V2, class D3, class D4>
+inline
+TinyVector<typename PromoteTraits<V1, V2>::Promote, 3>
+cross(TinyVectorBase<V1, 3, D1, D2> const & r1,
+      TinyVectorBase<V2, 3, D3, D4> const & r2)
+{
+    typedef TinyVector<typename PromoteTraits<V1, V2>::Promote, 3>
+            Res;
+    return  Res(r1[1]*r2[2] - r1[2]*r2[1],
+                r1[2]*r2[0] - r1[0]*r2[2],
+                r1[0]*r2[1] - r1[1]*r2[0]);
+}
+
     /// dot product
 template <class V1, int SIZE, class D1, class D2, class V2, class D3, class D4>
 inline

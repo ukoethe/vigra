@@ -158,6 +158,15 @@ struct TinyVectorTest
 
         shouldEqualTolerance(fv3.squaredMagnitude(), (1.2f*1.2f + 2.4f*2.4f + 3.6f*3.6f), 1e-7f);
 
+        shouldEqual(cross(bv3, bv3), IV(0));
+        shouldEqual(cross(iv3, bv3), IV(0));
+        shouldEqual(cross(fv3, fv3), FV(0.0));
+
+        FV cr = cross(fv1, fv3);
+        shouldEqualTolerance(cr[0], 1.2, 1e-6f);
+        shouldEqualTolerance(cr[1], -2.4, 1e-6f);
+        shouldEqualTolerance(cr[2], 1.2, 1e-6f);
+
         shouldEqual(dot(bv3, bv3), bv3.squaredMagnitude());
         shouldEqual(dot(iv3, bv3), iv3.squaredMagnitude());
         shouldEqual(dot(fv3, fv3), fv3.squaredMagnitude());
