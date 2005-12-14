@@ -30,7 +30,7 @@ public:
         for (unsigned int i = 0; i < 1000; ++i)
             array3.data () [i] = i;
     }
-
+    
     // bindInner tests
     void test_bindInner ()
     {
@@ -179,6 +179,15 @@ public:
         array1_t a (shape1_t(2), 1);
         array1_t b (a);
         shouldEqual (b.shape (0), 2);
+    }
+
+    void testShape()
+    {
+        shouldEqual(a3.shape(0), 2);
+        shouldEqual(a3.shape(1), 3);
+        shouldEqual(a3.shape(2), 5);
+        should(a3.isInside(shape3_t(1,2,3)));
+        should(!a3.isInside(shape3_t(1,23,3)));
     }
 
     void test_iter ()
@@ -330,7 +339,7 @@ public:
             fa = a3.bindInner <3> (shape3_t(1,1,1));
 
         shouldEqual (fa.shape (0), 1);
-        shouldEqual (fa[shape1_t(0)], 1.0);
+        shouldEqual (fa[shape1_t(shape1_t::value_type(0))], 1.0);
     }
 
     void test_bindAt ()
@@ -833,6 +842,7 @@ struct MultiArrayTestSuite
         add( testCase( &MultiArrayTest::test_second_ctor ) );
         add( testCase( &MultiArrayTest::test_assignment ) );
         add( testCase( &MultiArrayTest::test_copy_construction ) );
+        add( testCase( &MultiArrayTest::testShape ) );
         add( testCase( &MultiArrayTest::test_iter ) );
         add( testCase( &MultiArrayTest::test_const_iter ) );
         add( testCase( &MultiArrayTest::test_bindOuter ) );
