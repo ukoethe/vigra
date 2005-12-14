@@ -619,6 +619,16 @@ public:
         return m_stride [n];
     }
 
+        /** check whether the given point is in the array range.
+         */
+    bool isInside (difference_type const & p) const
+    {
+        for(int d=0; d<actual_dimension; ++d)
+            if(p[d] < 0 || p[d] >= shape(d))
+                return false;
+        return true;
+    }
+
         /** return the squared norm of the array (sum of squares of the array elements).
          */
     SquaredNormType squaredNorm() const
