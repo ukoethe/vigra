@@ -4,18 +4,33 @@
 /*       Cognitive Systems Group, University of Hamburg, Germany        */
 /*                                                                      */
 /*    This file is part of the VIGRA computer vision library.           */
-/*    You may use, modify, and distribute this software according       */
-/*    to the terms stated in the LICENSE file included in               */
-/*    the VIGRA distribution.                                           */
-/*                                                                      */
 /*    The VIGRA Website is                                              */
 /*        http://kogs-www.informatik.uni-hamburg.de/~koethe/vigra/      */
 /*    Please direct questions, bug reports, and contributions to        */
-/*        koethe@informatik.uni-hamburg.de                              */
+/*        koethe@informatik.uni-hamburg.de          or                  */
+/*        vigra@kogs1.informatik.uni-hamburg.de                         */
 /*                                                                      */
-/*  THIS SOFTWARE IS PROVIDED AS IS AND WITHOUT ANY EXPRESS OR          */
-/*  IMPLIED WARRANTIES, INCLUDING, WITHOUT LIMITATION, THE IMPLIED      */
-/*  WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE. */
+/*    Permission is hereby granted, free of charge, to any person       */
+/*    obtaining a copy of this software and associated documentation    */
+/*    files (the "Software"), to deal in the Software without           */
+/*    restriction, including without limitation the rights to use,      */
+/*    copy, modify, merge, publish, distribute, sublicense, and/or      */
+/*    sell copies of the Software, and to permit persons to whom the    */
+/*    Software is furnished to do so, subject to the following          */
+/*    conditions:                                                       */
+/*                                                                      */
+/*    The above copyright notice and this permission notice shall be    */
+/*    included in all copies or substantial portions of the             */
+/*    Software.                                                         */
+/*                                                                      */
+/*    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND    */
+/*    EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES   */
+/*    OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND          */
+/*    NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT       */
+/*    HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,      */
+/*    WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING      */
+/*    FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR     */
+/*    OTHER DEALINGS IN THE SOFTWARE.                                   */                
 /*                                                                      */
 /************************************************************************/
  
@@ -24,12 +39,12 @@
 #define VIGRA_SEPARABLECONVOLUTION_HXX
 
 #include <cmath>
-#include <vector>
 #include "vigra/utilities.hxx"
 #include "vigra/numerictraits.hxx"
 #include "vigra/imageiteratoradapter.hxx"
 #include "vigra/bordertreatment.hxx"
 #include "vigra/gaussians.hxx"
+#include "vigra/array_vector.hxx"
 
 namespace vigra {
 
@@ -873,27 +888,27 @@ class Kernel1D
   public:
         /** the kernel's value type
         */
-    typedef typename std::vector<ARITHTYPE>::value_type value_type;
+    typedef typename ArrayVector<ARITHTYPE>::value_type value_type;
     
         /** the kernel's reference type
         */
-    typedef typename std::vector<ARITHTYPE>::reference reference;
+    typedef typename ArrayVector<ARITHTYPE>::reference reference;
     
         /** the kernel's const reference type
         */
-    typedef typename std::vector<ARITHTYPE>::const_reference const_reference;
+    typedef typename ArrayVector<ARITHTYPE>::const_reference const_reference;
     
         /** deprecated -- use Kernel1D::iterator
         */
-    typedef typename std::vector<ARITHTYPE>::iterator Iterator;
+    typedef typename ArrayVector<ARITHTYPE>::iterator Iterator;
     
         /** 1D random access iterator over the kernel's values
         */
-    typedef typename std::vector<ARITHTYPE>::iterator iterator;
+    typedef typename ArrayVector<ARITHTYPE>::iterator iterator;
     
         /** const 1D random access iterator over the kernel's values
         */
-    typedef typename std::vector<ARITHTYPE>::const_iterator const_iterator;
+    typedef typename ArrayVector<ARITHTYPE>::const_iterator const_iterator;
     
         /** the kernel's accessor
         */
@@ -1317,7 +1332,7 @@ class Kernel1D
     Accessor accessor() { return Accessor(); }
     
   private:
-    std::vector<value_type> kernel_;
+    ArrayVector<value_type> kernel_;
     int left_, right_;
     BorderTreatmentMode border_treatment_;
     value_type norm_;
@@ -1432,7 +1447,7 @@ void Kernel1D<ARITHTYPE>::initDiscreteGaussian(double std_dev,
 
         // allocate the working array
         int maxIndex = (int)(2.0 * (radius + 5.0 * VIGRA_CSTD::sqrt((double)radius)) + 0.5);
-        std::vector<double> warray(maxIndex+1);
+        ArrayVector<double> warray(maxIndex+1);
         warray[maxIndex] = 0.0;
         warray[maxIndex-1] = 1.0;
         
@@ -1558,13 +1573,13 @@ Kernel1D<ARITHTYPE>::initBinomial(int radius,
               "Kernel1D::initBinomial(): Radius must be > 0.");
               
     // allocate the kernel
-    std::vector<double> kernel(radius*2+1);
+    ArrayVector<double> kernel(radius*2+1);
     
     int i,j;
     for(i=0; i<radius*2+1; ++i) kernel[i] = 0;
     
     // fill kernel
-    std::vector<double>::iterator x = kernel.begin() + radius;
+    ArrayVector<double>::iterator x = kernel.begin() + radius;
     x[radius] = 1.0;
     
     for(j=radius-1; j>=-radius; --j)
