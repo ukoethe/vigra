@@ -99,10 +99,11 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalOptions="/MACHINE:I386"
+				AdditionalDependencies="vigraimpex.lib libtiff.lib libjpeg.lib libpng.lib zlib.lib"
 				OutputFile="simpleanalysis.exe"
 				LinkIncremental="1"
 				SuppressStartupBanner="TRUE"
-				AdditionalLibraryDirectories=""
+				AdditionalLibraryDirectories="C:\lib"
 				ProgramDatabaseFile=".\Release/simpleanalysis.pdb"
 				SubSystem="1"/>
 			<Tool
