@@ -30,7 +30,7 @@
 /*    HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,      */
 /*    WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING      */
 /*    FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR     */
-/*    OTHER DEALINGS IN THE SOFTWARE.                                   */                
+/*    OTHER DEALINGS IN THE SOFTWARE.                                   */
 /*                                                                      */
 /************************************************************************/
 
@@ -59,50 +59,50 @@ namespace vigra {
 
     Implements the Coscot interpolation function proposed by Maria Magnusson Seger
     (maria@isy.liu.se) in the context of tomographic reconstruction. It provides a fast
-    transition between the pass- and stop-bands and minimal ripple outside the transition 
+    transition between the pass- and stop-bands and minimal ripple outside the transition
     region. Both properties are important for this application and can be tuned by the parameters
     <i>m</i> and </i>h</i> (with defaults 3 and 0.5). The function is defined by
-    
+
     \f[ f_{m,h}(x) = \left\{ \begin{array}{ll}
                                    \frac{1}{2m}\sin(\pi x)\cot(\pi x / (2 m))(h + (1-h)\cos(\pi x/m)) & |x| \leq m \\
                                   0 & \mbox{otherwise}
                         \end{array}\right.
     \f]
-    
-    It can be used as a functor, and as a kernel for 
+
+    It can be used as a functor, and as a kernel for
     \ref resamplingConvolveImage() to create a differentiable interpolant
-    of an image. 
+    of an image.
 
     <b>\#include</b> "<a href="resizeimage_8hxx-source.html">vigra/resizeimage.hxx</a>"<br>
     Namespace: vigra
-    
+
     \ingroup MathFunctions
 */
 template <class T>
 class CoscotFunction
 {
   public:
-  
+
         /** the kernel's value type
         */
-    typedef T            value_type;  
+    typedef T            value_type;
         /** the unary functor's argument type
         */
-    typedef T            argument_type;  
+    typedef T            argument_type;
         /** the splines polynomial order
         */
-    typedef T            result_type; 
+    typedef T            result_type;
 
     CoscotFunction(unsigned int m = 3, double h = 0.5)
     : m_(m),
       h_(h)
     {}
-    
+
         /** function (functor) call
         */
     result_type operator()(argument_type x) const
     {
-        return x == 0.0 ? 
+        return x == 0.0 ?
                     1.0
                   : abs(x) < m_ ?
                         VIGRA_CSTD::sin(M_PI*x) / VIGRA_CSTD::tan(M_PI * x / 2.0 / m_) *
@@ -114,13 +114,13 @@ class CoscotFunction
         */
     value_type operator[](value_type x) const
         { return operator()(x); }
-    
+
         /** Radius of the function's support.
             Needed for  \ref resamplingConvolveImage(), equals m.
         */
     double radius() const
         { return m_; }
-        
+
         /** Derivative order of the function: always 0.
         */
     unsigned int derivativeOrder() const
@@ -130,13 +130,13 @@ class CoscotFunction
             (array has zero length, since prefiltering is not necessary).
         */
     ArrayVector<double> const & prefilterCoefficients() const
-    { 
+    {
         static ArrayVector<double> b;
         return b;
     }
-    
+
   protected:
-    
+
     unsigned int m_;
     double h_;
 };
@@ -145,7 +145,7 @@ class CoscotFunction
     Zoom up and down by repeating pixels, or using various interpolation schemes.
 
     See also: \ref resamplingConvolveImage(), \ref resampleImage()
-    
+
     <b>\#include</b> "<a href="stdimagefunctions_8hxx-source.html">vigra/stdimagefunctions.hxx</a>"<br>
     <b>or</b><br>
     <b>\#include</b> "<a href="resizeimage_8hxx-source.html">vigra/resizeimage.hxx</a>"<br>
@@ -199,13 +199,14 @@ resizeLineNoInterpolation(SrcIterator i1, SrcIterator iend, SrcAccessor as,
 
 /** \brief Resize image by repeating the nearest pixel values.
 
-    This algorithm is very fast and does not require any arithmetic on the pixel types.
+    This algorithm is very fast and does not require any arithmetic on
+    the pixel types.
 
-    The range must of both the input and output images (resp. regions)
-    must be given. Both images must have a size of at
-    least 2x2. The scaling factors are then calculated
-    accordingly. Destiniation pixels are directly copied from the appropriate
-    source pixels.
+    The range of both the input and output images (resp. regions) must
+    be given. Both images must have a size of at least 2x2 pixels. The
+    scaling factors are then calculated accordingly. Destination
+    pixels are directly copied from the appropriate source pixels.
+
     The function uses accessors.
 
     <b> Declarations:</b>
@@ -289,17 +290,14 @@ resizeImageNoInterpolation(SrcIterator is, SrcIterator iend, SrcAccessor sa,
                  "resizeImageNoInterpolation(): "
                  "Destination image to small.\n");
 
-    typedef typename SrcAccessor::value_type SRCVT;
-    typedef BasicImage<SRCVT> TmpImage;
+    typedef BasicImage<typename SrcAccessor::value_type> TmpImage;
     typedef typename TmpImage::traverser TmpImageIterator;
 
-    BasicImage<SRCVT> tmp(w, hnew);
+    TmpImage tmp(w, hnew);
 
-    int x,y;
+    TmpImageIterator yt = tmp.upperLeft();
 
-    typename BasicImage<SRCVT>::Iterator yt = tmp.upperLeft();
-
-    for(x=0; x<w; ++x, ++is.x, ++yt.x)
+    for(int x=0; x<w; ++x, ++is.x, ++yt.x)
     {
         typename SrcIterator::column_iterator c1 = is.columnIterator();
         typename TmpImageIterator::column_iterator ct = yt.columnIterator();
@@ -309,7 +307,7 @@ resizeImageNoInterpolation(SrcIterator is, SrcIterator iend, SrcAccessor sa,
 
     yt = tmp.upperLeft();
 
-    for(y=0; y < hnew; ++y, ++yt.y, ++id.y)
+    for(int y=0; y < hnew; ++y, ++yt.y, ++id.y)
     {
         typename DestIterator::row_iterator rd = id.rowIterator();
         typename TmpImageIterator::row_iterator rt = yt.rowIterator();
@@ -562,20 +560,20 @@ resizeImageLinearInterpolation(triple<SrcIterator, SrcIterator, SrcAccessor> src
 /** \brief Resize image using B-spline interpolation.
 
     The function implements separable spline interpolation algorithm described in
-    
+
     M. Unser, A. Aldroubi, M. Eden, <i>"B-Spline Signal Processing"</i>
     IEEE Transactions on Signal Processing, vol. 41, no. 2, pp. 821-833 (part I),
-    pp. 834-848 (part II), 1993. 
-    
-    to obtain optimal interpolation quality and speed. You may pass the funcion 
-    a spline of arbitrary order (e.g. <TT>BSpline&lt;ORDER, double&gt;</tt> or 
+    pp. 834-848 (part II), 1993.
+
+    to obtain optimal interpolation quality and speed. You may pass the funcion
+    a spline of arbitrary order (e.g. <TT>BSpline&lt;ORDER, double&gt;</tt> or
     <TT>CatmullRomSpline&lt;double&gt;</tt>). The default is a third order spline
     which gives a twice continuously differentiable interpolant.
-    The implementation ensures that image values are interpolated rather 
-    than smoothed by first calling a recursive (sharpening) prefilter as 
-    described in the above paper. Then the actual interpolation is done 
+    The implementation ensures that image values are interpolated rather
+    than smoothed by first calling a recursive (sharpening) prefilter as
+    described in the above paper. Then the actual interpolation is done
     using \ref resamplingConvolveLine().
-    
+
     The range of both the input and output images (resp. regions)
     must be given. The input image must have a size of at
     least 4x4, the destination of at least 2x2. The scaling factors are then calculated
@@ -698,9 +696,9 @@ resizeImageSplineInterpolation(
     resampling_detail::MapTargetToSourceCoordinate ymapCoordinate(yratio, offset);
     int xperiod = lcm(xratio.numerator(), xratio.denominator());
     int yperiod = lcm(yratio.numerator(), yratio.denominator());
-    
+
     double const scale = 2.0;
-    
+
     typedef typename SrcAccessor::value_type SRCVT;
     typedef typename NumericTraits<SRCVT>::RealPromote TMPTYPE;
     typedef BasicImage<TMPTYPE> TmpImage;
@@ -713,8 +711,8 @@ resizeImageSplineInterpolation(
     ArrayVector<double> const & prefilterCoeffs = spline.prefilterCoefficients();
 
     int x,y;
-    
-    ArrayVector<Kernel1D<double> > kernels(yperiod);    
+
+    ArrayVector<Kernel1D<double> > kernels(yperiod);
     createResamplingKernels(spline, ymapCoordinate, kernels);
 
     typename BasicImage<TMPTYPE>::Iterator y_tmp = tmp.upperLeft();
@@ -746,12 +744,12 @@ resizeImageSplineInterpolation(
         else
         {
             recursiveFilterLine(c_src, c_src + height_old, src_acc,
-                                line_tmp, line.accessor(), 
+                                line_tmp, line.accessor(),
                                 prefilterCoeffs[0], BORDER_TREATMENT_REFLECT);
             for(unsigned int b = 1; b < prefilterCoeffs.size(); ++b)
             {
-                recursiveFilterLine(line_tmp, line_tmp + height_old, line.accessor(), 
-                                    line_tmp, line.accessor(), 
+                recursiveFilterLine(line_tmp, line_tmp + height_old, line.accessor(),
+                                    line_tmp, line.accessor(),
                                     prefilterCoeffs[b], BORDER_TREATMENT_REFLECT);
             }
             if(height_new < height_old)
@@ -769,7 +767,7 @@ resizeImageSplineInterpolation(
 
     DestIterator dest = dest_iter;
 
-    kernels.resize(xperiod);    
+    kernels.resize(xperiod);
     createResamplingKernels(spline, xmapCoordinate, kernels);
 
     for(y=0; y < height_new; ++y, ++y_tmp.y, ++dest_iter.y)
@@ -797,12 +795,12 @@ resizeImageSplineInterpolation(
         else
         {
             recursiveFilterLine(r_tmp, r_tmp + width_old, tmp.accessor(),
-                                line_tmp, line.accessor(), 
+                                line_tmp, line.accessor(),
                                 prefilterCoeffs[0], BORDER_TREATMENT_REFLECT);
             for(unsigned int b = 1; b < prefilterCoeffs.size(); ++b)
             {
-                recursiveFilterLine(line_tmp, line_tmp + width_old, line.accessor(), 
-                                    line_tmp, line.accessor(), 
+                recursiveFilterLine(line_tmp, line_tmp + width_old, line.accessor(),
+                                    line_tmp, line.accessor(),
                                     prefilterCoeffs[b], BORDER_TREATMENT_REFLECT);
             }
             if(width_new < width_old)
@@ -858,11 +856,11 @@ resizeImageSplineInterpolation(triple<SrcIterator, SrcIterator, SrcAccessor> src
 
 /** \brief Resize image using the Catmull/Rom interpolation function.
 
-    The function calls like \ref resizeImageSplineInterpolation() with 
-    \ref vigra::CatmullRomSpline as an interpolation kernel. 
+    The function calls like \ref resizeImageSplineInterpolation() with
+    \ref vigra::CatmullRomSpline as an interpolation kernel.
     The interpolated function has one continuous derivative.
     (See \ref resizeImageSplineInterpolation() for more documentation)
-    
+
     <b> Declarations:</b>
 
     pass arguments explicitly:
@@ -891,7 +889,7 @@ resizeImageSplineInterpolation(triple<SrcIterator, SrcIterator, SrcAccessor> src
 
     <b>\#include</b> "<a href="resizeimage_8hxx-source.html">vigra/resizeimage.hxx</a>"<br>
     Namespace: vigra
-        
+
 */
 template <class SrcIterator, class SrcAccessor,
           class DestIterator, class DestAccessor>
@@ -923,14 +921,14 @@ resizeImageCatmullRomInterpolation(triple<SrcIterator, SrcIterator, SrcAccessor>
 
 /** \brief Resize image using the cardinal B-spline interpolation function.
 
-    The function calls like \ref resizeImageSplineInterpolation() with 
-    \ref vigra::BSpline<3, double> and prefiltering as an interpolation kernel. 
+    The function calls like \ref resizeImageSplineInterpolation() with
+    \ref vigra::BSpline<3, double> and prefiltering as an interpolation kernel.
     The interpolated function has two continuous derivatives.
     (See \ref resizeImageSplineInterpolation() for more documentation)
-    
+
     <b>\#include</b> "<a href="resizeimage_8hxx-source.html">vigra/resizeimage.hxx</a>"<br>
     Namespace: vigra
-        
+
 */
 template <class SrcIterator, class SrcAccessor,
           class DestIterator, class DestAccessor>
@@ -962,11 +960,11 @@ resizeImageCubicInterpolation(triple<SrcIterator, SrcIterator, SrcAccessor> src,
 
 /** \brief Resize image using the Coscot interpolation function.
 
-    The function calls \ref resizeImageSplineInterpolation() with 
-    \ref vigra::CoscotFunction as an interpolation kernel. 
+    The function calls \ref resizeImageSplineInterpolation() with
+    \ref vigra::CoscotFunction as an interpolation kernel.
     The interpolated function has one continuous derivative.
     (See \ref resizeImageSplineInterpolation() for more documentation)
-    
+
     <b> Declarations:</b>
 
     pass arguments explicitly:
@@ -995,7 +993,7 @@ resizeImageCubicInterpolation(triple<SrcIterator, SrcIterator, SrcAccessor> src,
 
     <b>\#include</b> "<a href="resizeimage_8hxx-source.html">vigra/resizeimage.hxx</a>"<br>
     Namespace: vigra
-        
+
 */
 template <class SrcIterator, class SrcAccessor,
           class DestIterator, class DestAccessor>
