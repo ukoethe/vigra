@@ -187,6 +187,25 @@
 
     <DL>
     <DT>
+    <b>Scalar types</b>
+    <p>
+    <DD>
+        <DL>
+        <DT>
+            <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif">
+            \ref FixedSizeInt
+            <DD>
+        <DT>
+            <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif">
+            \ref vigra::Rational
+            <DD>
+        <DT>
+            <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif">
+            \ref vigra::FixedPoint
+            <DD>
+        </DL>
+        <p>
+    <DT>
     <b>RGB colors and related functionality</b>
     <p>
     <DD>
