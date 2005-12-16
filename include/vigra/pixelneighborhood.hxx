@@ -59,7 +59,7 @@ namespace vigra {
 
 /** \brief Encode whether a point is near the image border.
 
-    This enum is used with \ref isAtImageBorder() and 
+    This enum is used with \ref isAtImageBorder() and
     \ref vigra::RestrictedNeighborhoodCirculator.
 
     <b>\#include</b> "<a href="pixelneighborhood_8hxx-source.html">vigra/pixelneighborhood.hxx</a>"<br>
@@ -80,7 +80,7 @@ enum AtImageBorder
 
 /** \brief Find out whether a point is at the image border.
 
-    This function checks if \a x == 0 or \a x == \a width - 1 and 
+    This function checks if \a x == 0 or \a x == \a width - 1 and
     \a y == 0 or \a y == \a height - 1 and returns the appropriate value
     of \ref vigra::AtImageBorder, or zero when the point is not at te image border.
     The behavior of the function is undefined if (x,y) is not inside the image.
@@ -90,12 +90,12 @@ enum AtImageBorder
 */
 inline AtImageBorder isAtImageBorder(int x, int y, int width, int height)
 {
-    return static_cast<AtImageBorder>((x == 0 
+    return static_cast<AtImageBorder>((x == 0
                                          ? LeftBorder
                                          : x == width-1
                                              ? RightBorder
                                              : NotAtBorder) |
-                                       (y == 0 
+                                       (y == 0
                                          ? TopBorder
                                          : y == height-1
                                              ? BottomBorder
@@ -149,7 +149,7 @@ class NeighborCode
             <tt>East = 0</tt>, <tt>North = 1</tt> etc.
             <tt>DirectionCount</tt> may be used for portable loop termination conditions.
             <tt>CausalFirst</tt> and <tt>CausalLast</tt> are the first and last (inclusive)
-            neighbors in the causal neighborhood, i.e. in the set of neighbors that have 
+            neighbors in the causal neighborhood, i.e. in the set of neighbors that have
             already been visited when the image is traversed in scan order.
             <tt>AntiCausalFirst</tt> and <tt>AntiCausalLast</tt> are the opposite.
         */
@@ -165,16 +165,16 @@ class NeighborCode
         AntiCausalFirst = South, ///< &nbsp;
         AntiCausalLast  = East   ///< &nbsp;
     };
-        
-    static unsigned int directionBit(Direction d) 
+
+    static unsigned int directionBit(Direction d)
     {
-        static unsigned int b[] = {1 << (East + 1), 
-                                   1 << (North + 1), 
-                                   1 << (West + 1), 
+        static unsigned int b[] = {1 << (East + 1),
+                                   1 << (North + 1),
+                                   1 << (West + 1),
                                    1 << (South + 1)};
         return b[d];
     };
-        
+
         /** The number of valid neighbors if the current center is at the image border.
         */
     static unsigned int nearBorderDirectionCount(AtImageBorder b)
@@ -182,7 +182,7 @@ class NeighborCode
         static unsigned int c[] = { 4, 3, 3, 0, 3, 2, 2, 0, 3, 2, 2};
         return c[b];
     }
-    
+
         /** The valid direction codes when the center is at the image border.
             \a index must be in the range <tt>0...nearBorderDirectionCount(b)-1</tt>.
         */
@@ -203,7 +203,7 @@ class NeighborCode
              };
         return c[b][index];
     }
-    
+
         /** Transform direction code into corresponding Diff2D offset.
             (note: there is no bounds checking on the code you pass.)
         */
@@ -373,7 +373,7 @@ class NeighborCode
             <tt>East = 0</tt>, <tt>North = 1</tt> etc.
             <tt>DirectionCount</tt> may be used for portable loop termination conditions.
             <tt>CausalFirst</tt> and <tt>CausalLast</tt> are the first and last (inclusive)
-            neighbors in the causal neighborhood, i.e. in the set of neighbors that have 
+            neighbors in the causal neighborhood, i.e. in the set of neighbors that have
             already been visited when the image is traversed in scan order.
             <tt>AntiCausalFirst</tt> and <tt>AntiCausalLast</tt> are the opposite.
         */
@@ -394,19 +394,19 @@ class NeighborCode
         AntiCausalLast  = East       ///< &nbsp;
     };
 
-    static unsigned int directionBit(Direction d) 
+    static unsigned int directionBit(Direction d)
     {
-        static unsigned int b[] = {1 << (East + 1), 
-                                   1 << (NorthEast + 1), 
-                                   1 << (North + 1), 
-                                   1 << (NorthWest + 1), 
-                                   1 << (West + 1), 
-                                   1 << (SouthWest + 1), 
-                                   1 << (South + 1), 
+        static unsigned int b[] = {1 << (East + 1),
+                                   1 << (NorthEast + 1),
+                                   1 << (North + 1),
+                                   1 << (NorthWest + 1),
+                                   1 << (West + 1),
+                                   1 << (SouthWest + 1),
+                                   1 << (South + 1),
                                    1 << (SouthEast + 1)};
         return b[d];
     };
-        
+
         /** The number of valid neighbors if the current center is at the image border.
         */
     static unsigned int nearBorderDirectionCount(AtImageBorder b)
@@ -414,7 +414,7 @@ class NeighborCode
         static unsigned int c[] = { 8, 5, 5, 0, 5, 3, 3, 0, 5, 3, 3};
         return c[b];
     }
-    
+
         /** The valid direction codes when the center is at the image border.
             \a index must be in the range <tt>0...nearBorderDirectionCount(b)-1</tt>.
         */
@@ -435,7 +435,7 @@ class NeighborCode
              };
         return c[b][index];
     }
-    
+
         /** Transform direction code into corresponding Diff2D offset.
             (note: there is no bounds checking on the code you pass.)
         */
@@ -917,39 +917,40 @@ typedef NeighborOffsetCirculator<FourNeighborCode> FourNeighborOffsetCirculator;
 /** \brief Circulator that walks around a given location in a given image.
 
     The template parameters define the kind of neighborhood used and the underlying
-    image. The access functions return the value of the current neighbor pixel. 
-    Use <tt>center()</tt> to access the center pixel of the neighborhood. 
-    The center can be changed by calling <tt>moveCenterToNeighbor()</tt> 
+    image. The access functions return the value of the current neighbor pixel.
+    Use <tt>center()</tt> to access the center pixel of the neighborhood.
+    The center can be changed by calling <tt>moveCenterToNeighbor()</tt>
     or <tt>swapCenterNeighbor()</tt>. Note that this circulator cannot
-    when the center is at the image border. You must then use 
+    when the center is at the image border. You must then use
     \ref vigra::RestrictedNeighborhoodCirculator
 
     <b>Usage:</b><br>
-    
+
     <b>\#include</b> "<a href="pixelneighborhood_8hxx-source.html">vigra/pixelneighborhood.hxx</a>"<br>
     Namespace: vigra
-    
+
     \code
     BImage::traverser upperleft(...), lowerright(...);
-    
+
     int width  = lowerright.x - upperleft.x;
     int height = lowerright.y - upperleft.y;
-    
+
     ++upperleft.y; // avoide image border
     for(int y=1; y<height-1; ++y, ++upperleft.y)
     {
         BImage::traverser ix = upperleft + Diff2D(1,0);
         for(int x=1; x<width-1; ++x, ++ix.x)
         {
-            // use FourNeighborCode instead of EightNeighborCode for 4-neighborhood
-            NeighborhoodCirculator<BImage::traverser, EightNeighborCode> 
+            // analyse all neighbors of a pixel (use FourNeighborCode
+            // instead of EightNeighborCode for 4-neighborhood):
+            NeighborhoodCirculator<BImage::traverser, EightNeighborCode>
                            circulator(ix),
                            end(circulator);
-            do 
-            { 
-                ... // do something with the circulator
+            do
+            {
+                analysisFunc(*circulator, ...); // do sth. with current neighbor
             }
-            while(++circulator != end);
+            while(++circulator != end); // compare with start/end circulator
         }
     }
     \endcode
@@ -1223,36 +1224,36 @@ private:
 
     This circulator behaves essentially like \ref vigra::NeighborhoodCirculator,
     but can also be used near the image border, where some of the neighbor points
-    would be outside the image und must not be accessed. 
+    would be outside the image und must not be accessed.
     The template parameters define the kind of neighborhood used (four or eight)
-    and the underlying image, whereas the required neighbirhood restriction is 
+    and the underlying image, whereas the required neighbirhood restriction is
     given by the last constructur argument. This below for typical usage.
 
     The access functions return the value of the current neighbor pixel. Use <tt>center()</tt> to
     access the center pixel of the neighborhood.
 
     <b>Usage:</b><br>
-    
+
     <b>\#include</b> "<a href="pixelneighborhood_8hxx-source.html">vigra/pixelneighborhood.hxx</a>"<br>
     Namespace: vigra
-    
+
     \code
     BImage::traverser upperleft(...), lowerright(...);
-    
+
     int width  = lowerright.x - upperleft.x;
     int height = lowerright.y - upperleft.y;
-    
+
     for(int y=0; y<height; ++y, ++upperleft.y)
     {
         BImage::traverser ix = upperleft;
         for(int x=0; x<width; ++x, ++ix.x)
         {
             // use FourNeighborCode instead of EightNeighborCode for 4-neighborhood
-            RestrictedNeighborhoodCirculator<BImage::traverser, EightNeighborCode> 
+            RestrictedNeighborhoodCirculator<BImage::traverser, EightNeighborCode>
                            circulator(ix, isAtImageBorder(x, y, width, height)),
                            end(circulator);
-            do 
-            { 
+            do
+            {
                 ... // do something with the circulator
             }
             while(++circulator != end); // out-of-range pixels will be automatically skipped
@@ -1261,7 +1262,7 @@ private:
     \endcode
 */
 template <class IMAGEITERATOR, class NEIGHBORCODE>
-class RestrictedNeighborhoodCirculator 
+class RestrictedNeighborhoodCirculator
 : private NeighborhoodCirculator<IMAGEITERATOR, NEIGHBORCODE>
 {
     typedef NeighborhoodCirculator<IMAGEITERATOR, NEIGHBORCODE> BaseType;
