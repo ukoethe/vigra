@@ -30,10 +30,6 @@
       (<a href="mailto:rahn@informatik.uni-hamburg.de">rahn@informatik.uni-hamburg.de</a>)
       implemented much of the \ref MultiArrayConvolutionFilters.
 
-      <li> Holger Friedrich
-      (<a href="mailto:holger.friedrich@vsi.cs.uni-frankfurt.de">holger.friedrich@vsi.cs.uni-frankfurt.de</a>)
-      sent patches for a number of bugs.
-
       <li> Numerous people reported bugs and made suggestions.
 </UL>
 
@@ -45,8 +41,8 @@ Many thanks to all!
 <UL>      
       <li> Switched to the MIT X11 License.
       
-      <li> Introduced UInt8, Int16 etc. made VIGRA compile on 64-bit compilers. 
-           Thanks to Hans Ekkehard Plesser 
+      <li> Introduced \ref FixedSizeInt (UInt8, Int16 etc.) and made VIGRA compile on 
+           64-bit compilers. Thanks to Hans Ekkehard Plesser 
            <a href="mailto:hans.ekkehard.plesser@umb.no">hans.ekkehard.plesser@umb.no</a>)
            for bug reports and other help.
       
@@ -59,7 +55,14 @@ Many thanks to all!
       <li> Extended \ref vigra::SplineImageView to support access outside the image
            border according to reflective boundary conditions.
       
-      <li> Bug fixes in the code and documentation.
+      <li> Extended \ref vigra::RGBValue to have the color channels arbitrarily ordered
+           (e.g. BGR). Thanks to Paul Furgale 
+           (<a href="mailto:umfurga1@cc.umanitoba.ca">umfurga1@cc.umanitoba.ca</a>) for the
+           suggestion and a first implementation.
+      
+      <li> Bug fixes in the code and documentation. Thanks to Holger Friedrich
+           (<a href="mailto:holger.friedrich@vsi.cs.uni-frankfurt.de">holger.friedrich@vsi.cs.uni-frankfurt.de</a>)
+           for patches.
            
 </UL>
 
