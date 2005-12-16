@@ -61,13 +61,15 @@ namespace vigra
     The crack contour is located between the inside and outside
     pixels, that is "on the crack" between the region and the background.
     Thus, the circulator moves from pixel corner to pixel corner. By definition,
-    the first corner (were the circulator was initialized) gets the
+    the first corner (where the circulator was initialized) gets the
     coordinate (0,0), and calls to <tt>*circulator</tt> return the distance
     of the current corner to the initial one.
 
-    The circulator can be used to calculate the area of the region (in pixels):
+    The circulator can be used to calculate the area of a region (in pixels):
 
     \code
+    // start with a pixel within the region, whose left neighbor is outside
+    // (see CrackContourCirculator constructor)
     ImageIterator region_anchor = ...;
     int area = 0;
 
@@ -100,6 +102,12 @@ protected:
     label_type label_;
     Point2D pos_;
 
+    CrackContourCirculator(NEIGHBORHOODCIRCULATOR const & circ)
+        : neighborCirc_(circ),
+          label_(*(circ.center())),
+          pos_(0, 0)
+    {}
+
 public:
         /** the circulator's value type
         */
@@ -131,7 +139,7 @@ public:
     CrackContourCirculator(IMAGEITERATOR const & in_the_region,
                            vigra::FourNeighborCode::Direction dir = vigra::FourNeighborCode::West)
         : neighborCirc_(in_the_region, EightNeighborCode::code(dir)),
-          label_(*(neighborCirc_.center())),
+          label_(*in_the_region),
           pos_(0, 0)
     {
         neighborCirc_.turnLeft();
