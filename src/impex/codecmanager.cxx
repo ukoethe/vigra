@@ -78,6 +78,19 @@ namespace vigra
         import( new GIFCodecFactory() );
     }
 
+    CodecManager::~CodecManager() {
+       // release previously allocated codecs
+       // (use erase ideom similar to
+       // S. Meyers' "Effective STL", Item 9)
+       for (std::map< std::string, CodecFactory * >::iterator i
+             = factoryMap.begin();
+            i != factoryMap.end();
+            /* nothing */ ) {
+         delete (*i).second;
+         factoryMap.erase(i++);
+       }
+    }
+
     // add an encoder to the stores
     void CodecManager::import( CodecFactory * cf )
     {

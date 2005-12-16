@@ -30,6 +30,10 @@
       (<a href="mailto:rahn@informatik.uni-hamburg.de">rahn@informatik.uni-hamburg.de</a>)
       implemented much of the \ref MultiArrayConvolutionFilters.
 
+      <li> Holger Friedrich
+      (<a href="mailto:holger.friedrich@vsi.cs.uni-frankfurt.de">holger.friedrich@vsi.cs.uni-frankfurt.de</a>)
+      sent patches for a number of bugs.
+
       <li> Numerous people reported bugs and made suggestions.
 </UL>
 
@@ -39,6 +43,13 @@ Many thanks to all!
 <b> Changes from Version 1.3.3 to 1.4.0</b>
 
 <UL>      
+      <li> Switched to the MIT X11 License.
+      
+      <li> Introduced UInt8, Int16 etc. made VIGRA compile on 64-bit compilers. 
+           Thanks to Hans Ekkehard Plesser 
+           <a href="mailto:hans.ekkehard.plesser@umb.no">hans.ekkehard.plesser@umb.no</a>)
+           for bug reports and other help.
+      
       <li> Added \ref watersheds().
       
       <li> Added selection of neighborhood to \ref localMinima() and \ref localMaxima().

@@ -93,6 +93,8 @@ namespace vigra
 
         // this will only be called by the singleton pattern
         CodecManager();
+        
+        ~CodecManager();
 
     }; // class CodecManager
 

@@ -170,7 +170,7 @@ internalSeparableConvolveMultiArrayTmp(
                                     DestIterator diter, DestAccessor dest,
                                     Kernel1D<T> const & kernel);
 
-        // apply each kernel from the sequence `kernels´ in turn
+        // apply each kernel from the sequence `kernels³ in turn
         template <class SrcIterator, class SrcShape, class SrcAccessor,
                   class DestIterator, class DestAccessor, class KernelIterator>
         void
@@ -191,7 +191,7 @@ internalSeparableConvolveMultiArrayTmp(
                                     pair<DestIterator, DestAccessor> const & dest,
                                     Kernel1D<T> const & kernel);
 
-        // apply each kernel from the sequence `kernels´ in turn
+        // apply each kernel from the sequence `kernels³ in turn
         template <class SrcIterator, class SrcShape, class SrcAccessor,
                   class DestIterator, class DestAccessor, class KernelIterator>
         void
@@ -436,7 +436,7 @@ convolveMultiArrayOneDimension(triple<SrcIterator, SrcShape, SrcAccessor> const 
     MultiArray<3, unsigned char> source(shape);
     MultiArray<3, float> dest(shape);
     ...
-    // perform isotropic Gaussian smoothing at scale `sigma´
+    // perform isotropic Gaussian smoothing at scale `sigma³
     gaussianSmoothMultiArray(srcMultiArrayRange(source), destMultiArray(dest), sigma);
     \endcode
 

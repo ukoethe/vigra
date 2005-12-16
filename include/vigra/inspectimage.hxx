@@ -1149,7 +1149,7 @@ class LastValueFunctor
         */
     void operator=(argument_type const & v) { value = v; }
 
-        /** reset to initiaö value
+        /** reset to initia÷ value
         */
     void reset() { value = VALUETYPE(); }
 
