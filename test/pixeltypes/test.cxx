@@ -2,7 +2,7 @@
 /*                                                                      */
 /*                 Copyright 2004 by Ullrich Koethe                     */
 /*       Cognitive Systems Group, University of Hamburg, Germany        */
-/*                                                                      */
+/*                                                                     */
 /*    This file is part of the VIGRA computer vision library.           */
 /*    The VIGRA Website is                                              */
 /*        http://kogs-www.informatik.uni-hamburg.de/~koethe/vigra/      */
@@ -30,11 +30,12 @@
 /*    HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,      */
 /*    WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING      */
 /*    FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR     */
-/*    OTHER DEALINGS IN THE SOFTWARE.                                   */                
+/*    OTHER DEALINGS IN THE SOFTWARE.                                   */
 /*                                                                      */
 /************************************************************************/
 
 #include <iostream>
+#include <sstream>
 #include "unittest.hxx"
 
 #include "vigra/accessor.hxx"
@@ -261,6 +262,14 @@ struct TinyVectorTest
         should(equalIter(fvp.begin(), fvp.end(), fp1));
     }
 
+    void testOStreamShifting()
+    {
+        std::ostringstream out;
+        out << bv3;
+        out << "Testing.." << fv3 << 42;
+        out << iv3 << std::endl;
+    }
+
     void testAccessor()
     {
         vigra::VectorAccessor<FV> v;
@@ -308,7 +317,7 @@ struct RGBValueTest
         FV pfa[] = { FV(0.0), FV(1.0), FV(2.0)};
         FV::value_type fa[] = { 0.0, 1.0, 2.0 };
         FV * pf = pfa;
-        
+
         shouldEqual(gray2rgb(fa + 1), rgb(pfa + 1));
         shouldEqual(gray2rgb(fa, 2), rgb(pfa, 2));
 
@@ -392,6 +401,14 @@ struct Point2DTest
       p55(5, 5)
     {}
 
+    void testOStreamShifting()
+    {
+        std::ostringstream out;
+        out << p11;
+        out << "Testing.." << p55 << 42 << std::endl;
+        out << '@' << Diff2D(23, 11) << 3.141592;
+    }
+
     void testOperations()
     {
         should(-p11 == Point2D(-1, -1));
@@ -407,6 +424,7 @@ struct Point2DTestSuite
     Point2DTestSuite()
     : test_suite("Point2DTestSuite")
     {
+        add(testCase(&Point2DTest::testOStreamShifting));
         add(testCase(&Point2DTest::testOperations));
     }
 };
@@ -445,6 +463,13 @@ struct Rect2DTest
 
         bigRect = rect1_1;
         should(bigRect == rect1_1);
+    }
+
+    void testOStreamShifting()
+    {
+        std::ostringstream out;
+        out << rect1_1;
+        out << "Testing.." << bigRect << 42 << std::endl;
     }
 
     void testContains()
@@ -543,6 +568,8 @@ struct Rect2DTestSuite
     : test_suite("Rect2DTestSuite")
     {
         add(testCase(&Rect2DTest::testProperties));
+        add(testCase(&Rect2DTest::testOStreamShifting));
+        add(testCase(&Rect2DTest::testContains));
         add(testCase(&Rect2DTest::testIntersection));
         add(testCase(&Rect2DTest::testUnion));
         add(testCase(&Rect2DTest::testSizes));
