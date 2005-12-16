@@ -103,17 +103,41 @@ typedef IntTypeList<unsigned char,
 
 } // namespace detail
 
+/** \addtogroup FixedSizeInt Fixed Size Integer Types
+
+    Since the C++ standard does only specifiy minimal sizes for the built-in 
+    integer types, one cannot rely on them have a specific size. But
+    pixel types with a specific size are often required in image processing,
+    especially when reading or writing binary files. The VIGRA typedefs
+    are guaranteed to have exactly the correct size. If the system
+    does not provide a suitable type, the typedef will evaluate to
+    \ref VigraFalseType.
+*/
+//@{
+
+    /// 8-bit signed int
 typedef detail::SelectIntegerType<8,  detail::SignedIntTypes>::type Int8;
+    /// 16-bit signed int
 typedef detail::SelectIntegerType<16, detail::SignedIntTypes>::type Int16;
+    /// 32-bit signed int
 typedef detail::SelectIntegerType<32, detail::SignedIntTypes>::type Int32;
+    /// 64-bit signed int
 typedef detail::SelectIntegerType<64, detail::SignedIntTypes>::type Int64;
+    /// 8-bit unsigned int
 typedef detail::SelectIntegerType<8,  detail::UnsignedIntTypes>::type UInt8;
+    /// 16-bit unsigned int
 typedef detail::SelectIntegerType<16, detail::UnsignedIntTypes>::type UInt16;
+    /// 32-bit unsigned int
 typedef detail::SelectIntegerType<32, detail::UnsignedIntTypes>::type UInt32;
+    /// 64-bit unsigned int
 typedef detail::SelectIntegerType<64, detail::UnsignedIntTypes>::type UInt64;
 
+    /// the biggest signed integer type of the system
 typedef detail::SelectBiggestIntegerType<detail::SignedIntTypes>::type   IntBiggest;
+    /// the biggest unsigned integer type of the system
 typedef detail::SelectBiggestIntegerType<detail::UnsignedIntTypes>::type UIntBiggest;
+
+//@}
 
 #else // NO_PARTIAL_TEMPLATE_SPECIALIZATION
 
