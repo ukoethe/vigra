@@ -1087,7 +1087,7 @@ struct LinalgTest
 struct MathTestSuite
 : public vigra::test_suite
 {
-r    MathTestSuite()
+    MathTestSuite()
     : vigra::test_suite("MathTest")
     {
         typedef vigra::Polynomial<double> P1;
