@@ -30,7 +30,7 @@
 /*    HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,      */
 /*    WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING      */
 /*    FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR     */
-/*    OTHER DEALINGS IN THE SOFTWARE.                                   */                
+/*    OTHER DEALINGS IN THE SOFTWARE.                                   */
 /*                                                                      */
 /************************************************************************/
 
@@ -1325,6 +1325,10 @@ class Dist2D
 
 //@}
 
+/**
+ * Output a \ref vigra::Diff2D as a tuple.
+ * Example Diff2D(-12, 13) -> "(-12, 13)"
+ */
 inline
 std::ostream & operator<<(std::ostream & o, vigra::Diff2D const & d)
 {
@@ -1332,6 +1336,10 @@ std::ostream & operator<<(std::ostream & o, vigra::Diff2D const & d)
     return o;
 }
 
+/**
+ * Output a \ref vigra::Size2D.
+ * Example Size2D(100, 200) -> "(100x200)"
+ */
 inline
 std::ostream &operator <<(std::ostream &s, vigra::Size2D const &d)
 {
@@ -1339,6 +1347,10 @@ std::ostream &operator <<(std::ostream &s, vigra::Size2D const &d)
     return s;
 }
 
+/**
+ * Output a description of a \ref vigra::Rect2D.
+ * Example Rect2D(10, 10, 30, 20) -> "[(10, 10) to (30, 20) = (20x10)]"
+ */
 inline
 std::ostream &operator <<(std::ostream &s, vigra::Rect2D const &r)
 {
