@@ -30,7 +30,7 @@
 /*    HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,      */
 /*    WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING      */
 /*    FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR     */
-/*    OTHER DEALINGS IN THE SOFTWARE.                                   */                
+/*    OTHER DEALINGS IN THE SOFTWARE.                                   */
 /*                                                                      */
 /************************************************************************/
 
@@ -54,7 +54,7 @@
 #include "vigra/fixedpoint.hxx"
 #include "vigra/linear_algebra.hxx"
 
-static double coefficients[][12] = 
+static double coefficients[][12] =
 {
     { 5.0, -416.0, 720.0, -464.0, 136.0, -18.0, 1.0 },
     { 8.0, 40320.0, -109584.0, 118124.0, -67284.0, 22449.0, -4536.0, 546.0, -36.0, 1.0},
@@ -62,7 +62,7 @@ static double coefficients[][12] =
     { 3.0, 1e-10, -1e-10, -1e10, 1e10},
     { 10.0, 2.88e-8, -1.848e-6, 0.00005204, -0.0008458, 0.008777,
            -0.06072, 0.2835, -0.882, 1.75, -2.0, 1.0},
-    { 5.0, 0.3411268890719874, 0.48265610836623374, 0.29941395284477745, 
+    { 5.0, 0.3411268890719874, 0.48265610836623374, 0.29941395284477745,
            0.13065520631476124, 0.68342489290545338, 0.0017437185812028133 },
     { 3.0, -1.0, 1000001000001.0 / 1e6, -1000001000001.0 / 1e6, 1.0},
     { 8.0, 36.0, 0.0, 85.0, 0.0, 63.0, 0.0, 15.0, 0.0, 1.0 }
@@ -70,19 +70,19 @@ static double coefficients[][12] =
 
 typedef std::complex<double> C;
 
-static C reference[][12] = 
+static C reference[][12] =
 {
     { C(1e-12), C(2.0), C(2.0), C(2.0), C(6.0, -4.0), C(6.0, 4.0) },
     { C(1e-11), C(1.0), C(2.0), C(3.0), C(4.0), C(5.0), C(6.0), C(7.0), C(8.0) },
     { C(1e-12), C(-1e10), C(1.0), C(1e10) },
     { C(1e-12), C(-1e-10), C(1e-10), C(1.0) },
-    { C(1e-5), C(0.1), C(0.1), C(0.1), C(0.1), C(0.2), C(0.2), C(0.2), 
+    { C(1e-5), C(0.1), C(0.1), C(0.1), C(0.1), C(0.2), C(0.2), C(0.2),
                C(0.3), C(0.3), C(0.4) },
     { C(1e-12), C(-391.74516023901123),
-                C(-0.56839260551055271, -0.4046562986541693), C(-0.56839260551055271, 0.4046562986541693), 
+                C(-0.56839260551055271, -0.4046562986541693), C(-0.56839260551055271, 0.4046562986541693),
                 C(0.47331479192572767, -0.89542786425410759), C(0.47331479192572767, 0.89542786425410759) },
     { C(1e-12), C(1e-6), C(1.0), C(1e6) },
-    { C(1e-12), C(0.0, -3.0), C(0.0, -2.0), C(0.0, -1.0), C(0.0, -1.0), 
+    { C(1e-12), C(0.0, -3.0), C(0.0, -2.0), C(0.0, -1.0), C(0.0, -1.0),
                 C(0.0, 1.0), C(0.0, 1.0), C(0.0, 2.0), C(0.0, 3.0) }
 };
 
@@ -105,9 +105,9 @@ struct PolynomialTest
         double epsilon = reference[N][0].real();
         unsigned int order = (unsigned int)(coefficients[N][0] + 0.5);
         POLYNOMIAL p(coefficients[N]+1, order);
-        
+
         vigra::ArrayVector<std::complex<double> > roots;
-        
+
         should(polynomialRoots(p, roots));
         shouldEqual(roots.size(), order);
         for(unsigned int i = 0; i<roots.size(); ++i)
@@ -125,7 +125,7 @@ struct PolynomialTest
         p.setEpsilon(epsilon);
 
         vigra::ArrayVector<std::complex<double> > roots;
-        
+
         should(polynomialRootsEigenvalueMethod(p, roots));
         shouldEqual(roots.size(), order);
         for(unsigned int i = 0; i<roots.size(); ++i)
@@ -146,10 +146,10 @@ struct HighOrderPolynomialTest
         coeffs[0] = -1.0;
         coeffs[order] = 1.0;
         vigra::Polynomial<double> p(coeffs.begin(), order);
-        
+
         vigra::ArrayVector<std::complex<double> > roots;
-        
-        should(vigra::polynomialRoots(p, roots));        
+
+        should(vigra::polynomialRoots(p, roots));
         shouldEqual(roots.size(), order);
         for(unsigned int i = 0; i<roots.size(); ++i)
         {
@@ -173,10 +173,10 @@ struct HighOrderPolynomialTest
         coeffs[0] = -1.0;
         coeffs[order] = 1.0;
         vigra::Polynomial<double> p(coeffs.begin(), order);
-        
+
         vigra::ArrayVector<std::complex<double> > roots;
-        
-        should(vigra::polynomialRootsEigenvalueMethod(p, roots));        
+
+        should(vigra::polynomialRootsEigenvalueMethod(p, roots));
         shouldEqual(roots.size(), order);
         for(unsigned int i = 0; i<roots.size(); ++i)
         {
@@ -200,24 +200,24 @@ struct SplineTest
     typedef vigra::BSplineBase<ORDER, double> BSB;
     BS spline;
     BSB splineBase;
-    
+
     void testValues()
     {
         double r = spline.radius();
         shouldEqual(r, splineBase.radius());
-        
+
         for(int d = 0; d <= ORDER+1; ++d)
         {
             for(double x = -r-0.5; x <= r+0.5; x += 0.5)
                 shouldEqualTolerance(spline(x, d), splineBase(x, d), 1e-15);
         }
     }
-    
+
     void testFixedPointValues()
     {
         double r = spline.radius();
         shouldEqual(r, splineBase.radius());
-        
+
         for(double x = -r-0.5; x <= r+0.5; x += 0.5)
         {
             vigra::FixedPoint<11,20> fpx20(x);
@@ -227,13 +227,13 @@ struct SplineTest
 
         }
     }
-    
+
     void testPrefilterCoefficients()
     {
         int n = ORDER / 2;
         vigra::ArrayVector<double> const & ps = spline.prefilterCoefficients();
         vigra::ArrayVector<double> const & psb = splineBase.prefilterCoefficients();
-        
+
         if(n == 0)
         {
             shouldEqual(ps.size(), 0);
@@ -247,13 +247,13 @@ struct SplineTest
                 shouldEqualTolerance(ps[i], psb[i], 1e-14);
         }
     }
-    
+
     void testWeightMatrix()
     {
         int n = ORDER + 1;
         typename BS::WeightMatrix & ws = BS::weights();
         typename BSB::WeightMatrix & wsb = BSB::weights();
-        
+
         for(int d = 0; d < n; ++d)
             for(int i = 0; i < n; ++i)
                 shouldEqualTolerance(ws[d][i], wsb[d][i], 1e-14);
@@ -270,7 +270,7 @@ struct FunctionsTest
                           g3(2.0, 3),
                           g4(2.0, 4),
                           g5(2.0, 5);
-        
+
         double epsilon = 1e-15;
         shouldEqual(g.derivativeOrder(), 0);
         shouldEqual(g.sigma(), 1.0);
@@ -278,14 +278,14 @@ struct FunctionsTest
         shouldEqualTolerance(g(0.5), 0.35206532676429952, epsilon);
         shouldEqualTolerance(g(1.0), 0.24197072451914337, epsilon);
         shouldEqualTolerance(g(-1.0), 0.24197072451914337, epsilon);
-        
+
         shouldEqual(g1.derivativeOrder(), 1);
         shouldEqual(g1.sigma(), 2.0);
         shouldEqualTolerance(g1(0.0), 0, epsilon);
         shouldEqualTolerance(g1(0.5), -0.024166757300178077, epsilon);
         shouldEqualTolerance(g1(1.0), -0.044008165845537441, epsilon);
         shouldEqualTolerance(g1(-1.0), 0.044008165845537441, epsilon);
-        
+
         shouldEqual(g2.derivativeOrder(), 2);
         shouldEqual(g2.sigma(), 1.0);
         shouldEqualTolerance(g2(0.0), -0.3989422804014327, epsilon);
@@ -303,7 +303,7 @@ struct FunctionsTest
         shouldEqualTolerance(g3(-1.0), -0.030255614018806987, epsilon);
         shouldEqualTolerance(g3(2.0*VIGRA_CSTD::sqrt(3.0)), 0, epsilon);
         shouldEqualTolerance(g3(-2.0*VIGRA_CSTD::sqrt(3.0)), 0, epsilon);
-    
+
         shouldEqualTolerance(g4(0.0), 0.037400838787634318, epsilon);
         shouldEqualTolerance(g4(1.0), 0.017190689783413062, epsilon);
         shouldEqualTolerance(g4(-1.0), 0.017190689783413062, epsilon);
@@ -346,7 +346,14 @@ struct RationalTest
         shouldEqual(vigra::gcd(18, 24), 6);
         shouldEqual(vigra::lcm(4, 6), 12);
     }
-    
+
+    void testOStreamShifting()
+    {
+        std::ostringstream out;
+        out << R(1,2);
+        out << "Testing.." << R(42,23) << 3.141592653589793238 << std::endl;
+    }
+
     void testOperators()
     {
         shouldEqual(R(3,4), R(3,4));
@@ -388,7 +395,7 @@ struct RationalTest
         should(2 > R(3,4));
         should(2 < R(19,4));
         should(2 >= R(3,4));
-        should(2 <= R(19,4));        
+        should(2 <= R(19,4));
     }
 
     void testConversion()
@@ -397,7 +404,7 @@ struct RationalTest
         shouldEqual(vigra::rational_cast<int>(R(3,2)), 1);
         shouldEqual(vigra::rational_cast<double>(R(3,2)), 1.5);
         shouldEqual(vigra::rational_cast<double>(1.5), 1.5);
-        
+
         shouldEqual(R(vigra::Rational<short>((short)-2, (short)-4)), R(1,2));
 
         shouldEqual(R(3.5, 1e-4), R(7,2));
@@ -409,7 +416,7 @@ struct RationalTest
         shouldEqual(R(-0.123456, 1e-4), R(-1235,10000));
         shouldEqual(R(-0.123432, 1e-4), R(-1234,10000));
     }
-    
+
     void testFunctions()
     {
         shouldEqual(pow(R(1,2),2), R(1,4));
@@ -422,14 +429,14 @@ struct RationalTest
         shouldEqual(pow(R(0),3), R(0));
         shouldEqual(pow(R(0),0), R(1));
         should(pow(R(0),-3).is_pinf());
-        
+
         should(pow(R(1,0, false), 1).is_pinf());
         should(pow(R(-1,0, false), 1).is_ninf());
         shouldEqual(pow(R(1,0, false), -1), R(0));
         shouldEqual(pow(R(-1,0, false), -1), R(0));
         try { pow(R(1,0, false), 0); failTest("No exception thrown"); } catch(vigra::bad_rational &) {}
         try { pow(R(-1,0, false), 0); failTest("No exception thrown"); } catch(vigra::bad_rational &) {}
-        
+
         shouldEqual(floor(R(2)), R(2));
         shouldEqual(floor(R(3,2)), R(1));
         shouldEqual(floor(R(1,2)), R(0));
@@ -450,12 +457,12 @@ struct RationalTest
         shouldEqual(ceil(R(1,0,false)), R(1,0,false));
         shouldEqual(ceil(R(-1,0,false)), R(-1,0,false));
     }
-    
+
     void testInf()
     {
         R inf(2,0);
         R ninf(-2,0);
-        
+
         should(inf.is_inf());
         should(inf.is_pinf());
         should(!inf.is_ninf());
@@ -464,7 +471,7 @@ struct RationalTest
         should(!ninf.is_pinf());
         shouldEqual(inf.numerator(), 1);
         shouldEqual(ninf.numerator(), -1);
-        
+
         should((inf + R(1)).is_pinf());
         should((inf + R(0)).is_pinf());
         should((inf + R(-1)).is_pinf());
@@ -532,7 +539,7 @@ struct RationalTest
         should((ninf / 1).is_ninf());
         should((ninf / 0).is_ninf());
         should((ninf / (-1)).is_pinf());
-        
+
         shouldEqual(2 / inf, R(0));
         shouldEqual((-2) / inf, R(0));
         shouldEqual(2 / ninf, R(0));
@@ -541,7 +548,7 @@ struct RationalTest
         shouldEqual(((-2) / inf).denominator(), 1);
         shouldEqual((2 / ninf).denominator(), 1);
         shouldEqual(((-2) / ninf).denominator(), 1);
-        
+
         shouldEqual((inf / R(3)).numerator(), 1);
         shouldEqual((ninf / R(3)).numerator(), -1);
         shouldEqual((inf / R(-3)).numerator(), -1);
@@ -565,7 +572,7 @@ struct RationalTest
         should(ninf < inf);
         should(!(inf < ninf));
         should(!(ninf > inf));
-        
+
         should(inf != 0);
         should(ninf != 0);
         should(inf > 0);
@@ -631,7 +638,7 @@ struct FixedPointTest
         shouldEqual((vigra::NumericTraits<vigra::FixedPoint<1, 8> >::one()).value, 1 << 8);
         shouldEqual((vigra::NumericTraits<vigra::FixedPoint<1, 8> >::max()).value, (1 << 9) - 1);
         shouldEqual((vigra::NumericTraits<vigra::FixedPoint<1, 8> >::min()).value, -((1 << 9) - 1));
-        
+
         vigra::FixedPoint<2, 8> v(3.75);
         shouldEqual((vigra::FixedPoint<2, 8>(v).value), 15 << 6);
         shouldEqual((vigra::FixedPoint<3, 10>(v).value), 15 << 8);
@@ -701,11 +708,11 @@ struct FixedPointTest
     {
         vigra::FixedPoint<1, 16> t1(0.75), t2(0.25);
         signed char v1 = 1, v2 = 2, v4 = 4, v8 = 8;
-        
+
         should((vigra::FixedPoint<1, 16>(t1) += t1) == (vigra::FixedPoint<1, 16>(1.5)));
         should((vigra::FixedPoint<1, 16>(t1) -= t1) == (vigra::FixedPoint<1, 16>(0.0)));
         should((vigra::FixedPoint<2, 16>(t1) *= t1) == (vigra::FixedPoint<1, 16>(9.0 / 16.0)));
-        
+
         should(--t1 == (vigra::FixedPoint<1, 16>(-0.25)));
         should(t1 == (vigra::FixedPoint<1, 16>(-0.25)));
         should(++t1 == (vigra::FixedPoint<1, 16>(0.75)));
@@ -756,14 +763,22 @@ struct FixedPointTest
 struct LinalgTest
 {
     typedef vigra::Matrix<double> Matrix;
-    
+
     unsigned int size, iterations;
-    
+
     LinalgTest()
     : size(50),
       iterations(5)
     {
         std::srand (0xdeadbeef);
+    }
+
+    void testOStreamShifting()
+    {
+        Matrix a = random_matrix (size, size);
+        std::ostringstream out;
+        out << a;
+        out << "Testing.." << a << 42 << std::endl;
     }
 
     static double random_double ()
@@ -789,18 +804,18 @@ struct LinalgTest
                 ret (j, i) = ret (i, j) = random_double ();
         return ret;
     }
-    
+
     void testMatrix()
     {
-        double data[] = {1.0, 5.0, 
-                         3.0, 2.0, 
+        double data[] = {1.0, 5.0,
+                         3.0, 2.0,
                          4.0, 7.0};
-        double tref[] = {1.0, 3.0, 4.0, 
+        double tref[] = {1.0, 3.0, 4.0,
                          5.0, 2.0, 7.0};
-        double tref2[] = {1.0, 3.0, 
+        double tref2[] = {1.0, 3.0,
                           5.0, 2.0};
-        double idref[] = {1.0, 0.0, 0.0, 
-                          0.0, 1.0, 0.0, 
+        double idref[] = {1.0, 0.0, 0.0,
+                          0.0, 1.0, 0.0,
                           0.0, 0.0, 1.0};
         std::string sref(" 1.0000  5.0000 \n 3.0000  2.0000 \n 4.0000  7.0000 \n");
         unsigned int r = 3, c = 2;
@@ -809,17 +824,17 @@ struct LinalgTest
         shouldEqual(a.rowCount(), r);
         shouldEqual(a.columnCount(), c);
         shouldEqual(a.elementCount(), r*c);
-        shouldEqual(a.squaredNorm(), 104.0);       
-        shouldEqual(a.norm(), std::sqrt(104.0));       
+        shouldEqual(a.squaredNorm(), 104.0);
+        shouldEqual(a.norm(), std::sqrt(104.0));
         shouldEqual(rowCount(a), r);
         shouldEqual(columnCount(a), c);
-        shouldEqual(squaredNorm(a), 104.0);       
-        shouldEqual(norm(a), std::sqrt(104.0));       
+        shouldEqual(squaredNorm(a), 104.0);
+        shouldEqual(norm(a), std::sqrt(104.0));
 
         std::stringstream s;
         s << a;
         shouldEqual(s.str(), sref);
-        
+
         for(unsigned int i=0, k=0; i<r; ++i)
         {
             Matrix::view_type ar = a.rowVector(i);
@@ -835,7 +850,7 @@ struct LinalgTest
                 shouldEqual(ar1(0, j), data[k]);
             }
         }
-        
+
         Matrix aa(r, c, tref, vigra::ColumnMajor);
         shouldEqual(aa.rowCount(), r);
         shouldEqual(aa.columnCount(), c);
@@ -853,33 +868,33 @@ struct LinalgTest
         for(unsigned int i=0, k=0; i<r; ++i)
             for(unsigned int j=0; j<c; ++j, ++k)
                 shouldEqual(b(i,j), data[k]);
-        
-        b = 4.0 * a;      
+
+        b = 4.0 * a;
         for(unsigned int i=0, k=0; i<r; ++i)
             for(unsigned int j=0; j<c; ++j, ++k)
                 shouldEqual(b(i,j), 4.0*data[k]);
 
-        b = a * 3.0;      
+        b = a * 3.0;
         for(unsigned int i=0, k=0; i<r; ++i)
             for(unsigned int j=0; j<c; ++j, ++k)
                 shouldEqual(b(i,j), 3.0*data[k]);
 
-        b = a / 5.0;      
+        b = a / 5.0;
         for(unsigned int i=0, k=0; i<r; ++i)
             for(unsigned int j=0; j<c; ++j, ++k)
                 shouldEqual(b(i,j), data[k] / 5.0);
 
-        b = a + a;      
+        b = a + a;
         for(unsigned int i=0, k=0; i<r; ++i)
             for(unsigned int j=0; j<c; ++j, ++k)
                 shouldEqual(b(i,j), 2.0 * data[k]);
 
-        b = a - a;      
+        b = a - a;
         for(unsigned int i=0; i<r; ++i)
             for(unsigned int j=0; j<c; ++j)
                 shouldEqual(b(i,j), 0.0);
 
-        b = -a;      
+        b = -a;
         for(unsigned int i=0, k=0; i<r; ++i)
             for(unsigned int j=0; j<c; ++j, ++k)
                 shouldEqual(b(i,j), -data[k]);
@@ -902,13 +917,13 @@ struct LinalgTest
                 shouldEqual(ac1(j,0), tref[k]);
             }
         }
-        
+
         Matrix a2(c, c, data);
         a2.transpose();
         for(unsigned int i=0, k=0; i<c; ++i)
             for(unsigned int j=0; j<c; ++j, ++k)
                 shouldEqual(a2(i,j), tref2[k]);
-        
+
         Matrix id = vigra::identityMatrix<double>(r);
         shouldEqual(id.rowCount(), r);
         shouldEqual(id.columnCount(), r);
@@ -922,18 +937,18 @@ struct LinalgTest
         for(unsigned int i=0, k=0; i<r; ++i)
             for(unsigned int j=0; j<r; ++j, ++k)
                 shouldEqual(d(i,j), idref[k]*data[i]);
-        
+
         Matrix e(r*c, 1, data);
         shouldEqual(dot(transpose(e), e), e.squaredNorm());
-        
+
         double dc1[] = {1.0, 1.0, 1.0},
                dc2[] = {1.2, 2.4, 3.6};
         Matrix c1(3,1, dc1), c2(3,1, dc2);
         Matrix cr = cross(c1, c2);
         shouldEqualTolerance(cr(0,0), 1.2, 1e-12);
         shouldEqualTolerance(cr(1,0), -2.4, 1e-12);
-        shouldEqualTolerance(cr(2,0), 1.2, 1e-12);        
-               
+        shouldEqualTolerance(cr(2,0), 1.2, 1e-12);
+
         Matrix f(1, r*c - 1, tref);
         Matrix g = outer(e, f);
         shouldEqual(g.rowCount(), e.rowCount());
@@ -941,7 +956,7 @@ struct LinalgTest
         for(unsigned int i=0; i<g.rowCount(); ++i)
             for(unsigned int j=0; j<g.columnCount(); ++j)
                 shouldEqual(g(i,j), data[i]*tref[j]);
-        
+
         Matrix h = transpose(a) * a;
         shouldEqual(h.rowCount(), c);
         shouldEqual(h.columnCount(), c);
@@ -957,12 +972,12 @@ struct LinalgTest
         shouldEqual(tm * tv, tvrref);
         shouldEqual(tv * tm, tvlref);
     }
-    
+
     void testQR()
     {
         double epsilon = 1e-10;
         Matrix idref = vigra::identityMatrix<double>(size);
-        
+
         for(unsigned int i = 0; i < iterations; ++i)
         {
             Matrix a = random_matrix (size, size);
@@ -979,7 +994,7 @@ struct LinalgTest
     void testLinearSolve()
     {
         double epsilon = 1e-10;
-        
+
         for(unsigned int i = 0; i < iterations; ++i)
         {
             Matrix a = random_matrix (size, size);
@@ -995,7 +1010,7 @@ struct LinalgTest
     {
         double epsilon = 1e-10;
         Matrix idref = vigra::identityMatrix<double>(size);
-        
+
         for(unsigned int i = 0; i < iterations; ++i)
         {
             Matrix a = random_matrix (size, size);
@@ -1004,7 +1019,7 @@ struct LinalgTest
             id = inverse(a) * a;
             shouldEqualSequenceTolerance(id.data(), id.data()+size*size, idref.data(), epsilon);
         }
-        
+
         double data[] = { 1.0, 0.0, 0.0, 0.0 };
         Matrix singular(2, 2, data);
         try {
@@ -1023,7 +1038,7 @@ struct LinalgTest
     {
         double epsilon = 1e-8;
         Matrix idref = vigra::identityMatrix<double>(size);
-        
+
         for(unsigned int i = 0; i < iterations; ++i)
         {
             Matrix a = random_symmetric_matrix (size);
@@ -1041,7 +1056,7 @@ struct LinalgTest
     {
         double epsilon = 1e-8;
         Matrix idref = vigra::identityMatrix<double>(size);
-        
+
         for(unsigned int i = 0; i < iterations; ++i)
         {
             Matrix a = random_matrix (size, size);
@@ -1050,14 +1065,14 @@ struct LinalgTest
             should(nonsymmetricEigensystem(a, ew, ev));
 
             Matrix ewm(size, size);
-            for(unsigned int k = 0; k < size; k++) 
+            for(unsigned int k = 0; k < size; k++)
             {
                 ewm(k, k) = ew(k, 0).real();
-                if(ew(k, 0).imag() > 0.0) 
+                if(ew(k, 0).imag() > 0.0)
                 {
                     ewm(k, k+1) = ew(k, 0).imag();
-                } 
-                else if(ew(k, 0).imag() < 0.0) 
+                }
+                else if(ew(k, 0).imag() < 0.0)
                 {
                     ewm(k, k-1) = ew(k, 0).imag();
                 }
@@ -1066,13 +1081,13 @@ struct LinalgTest
             shouldEqualSequenceTolerance(ae.data(), ae.data()+size*size, a.data(), epsilon);
         }
     }
-};    
+};
 
 
 struct MathTestSuite
 : public vigra::test_suite
 {
-    MathTestSuite()
+r    MathTestSuite()
     : vigra::test_suite("MathTest")
     {
         typedef vigra::Polynomial<double> P1;
@@ -1124,11 +1139,13 @@ struct MathTestSuite
         add( testCase(&FunctionsTest::closeAtToleranceTest));
 
         add( testCase(&RationalTest::testGcdLcm));
+        add( testCase(&RationalTest::testOStreamShifting));
         add( testCase(&RationalTest::testOperators));
         add( testCase(&RationalTest::testConversion));
         add( testCase(&RationalTest::testFunctions));
         add( testCase(&RationalTest::testInf));
 
+        add( testCase(&LinalgTest::testOStreamShifting));
         add( testCase(&LinalgTest::testMatrix));
         add( testCase(&LinalgTest::testQR));
         add( testCase(&LinalgTest::testLinearSolve));
