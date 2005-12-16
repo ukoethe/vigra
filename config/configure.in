@@ -49,7 +49,7 @@ dnl AC_CYGWIN seems to be part of AC_CANONICAL_SYSTEM
 dnl AC_MINGW32 seems to be part of AC_CANONICAL_SYSTEM
 
 CFLAGS="$CFLAGS -O"
-CXXFLAGS="$CFLAGS -O"
+CXXFLAGS="$CXXFLAGS -O"
 
 AC_ARG_WITH( cc, AC_HELP_STRING([--with-cc], [your C compiler (default=gcc)]), CC=$with_cc, [if test "x$CC" = "x" ; then CC=gcc ; fi])
 AC_ARG_WITH( cxx, AC_HELP_STRING([--with-cxx], [your C++ compiler (default=g++)]), CXX=$with_cxx, [if test "x$CXX" = "x" ; then CXX=g++ ; fi])
