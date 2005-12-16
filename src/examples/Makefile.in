@@ -2,7 +2,7 @@ curdir=$(vigra_srcdir)/src/examples
 
 include ../../config/Makefile.include
 
-CXXFLAGS  = -O -I$(vigra_srcdir)/include
+CPPFLAGS  = -I$(vigra_srcdir)/include
 LDFLAGS = -L../impex/.libs -lvigraimpex $(IMPEX_DEPLIBS)
 
 # after installation, the above settings can also be found
