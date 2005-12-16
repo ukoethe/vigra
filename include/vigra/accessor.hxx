@@ -947,17 +947,17 @@ VIGRA_DEFINE_ACCESSOR_TRAITS(unsigned long, StandardValueAccessor, StandardConst
 VIGRA_DEFINE_ACCESSOR_TRAITS(float, StandardValueAccessor, StandardConstValueAccessor)
 VIGRA_DEFINE_ACCESSOR_TRAITS(double, StandardValueAccessor, StandardConstValueAccessor)
 
-template <class T> class RGBValue;
+template <class T, unsigned int RED_IDX, unsigned int GREEN_IDX, unsigned int BLUE_IDX> class RGBValue;
 template <class T> class RGBAccessor;
 template <class T, int SIZE> class TinyVector;
 
 #ifndef NO_PARTIAL_TEMPLATE_SPECIALIZATION
 
-template <class T>
-struct AccessorTraits<RGBValue<T> >
+template <class T, unsigned int RED_IDX, unsigned int GREEN_IDX, unsigned int BLUE_IDX>
+struct AccessorTraits<RGBValue<T, RED_IDX, GREEN_IDX, BLUE_IDX> >
 {
-    typedef RGBAccessor<RGBValue<T> >   default_accessor;
-    typedef RGBAccessor<RGBValue<T> >   default_const_accessor;
+    typedef RGBAccessor<RGBValue<T, RED_IDX, GREEN_IDX, BLUE_IDX> >   default_accessor;
+    typedef RGBAccessor<RGBValue<T, RED_IDX, GREEN_IDX, BLUE_IDX> >   default_const_accessor;
 };
 
 template <class T, int SIZE>
