@@ -1578,7 +1578,7 @@ struct SimplePoint
 /** \brief Detect and mark edges in an edge image using Canny's algorithm.
 
     This operator first calls \ref cannyEdgeImage() to generate an 
-    edge image. The resulting edge pixels are then sibjected to topological thinning
+    edge image. The resulting edge pixels are then subjected to topological thinning
     so that the remaining edge pixels can be linked into edgel chains with a provable,
     non-heuristic algorithm. Optionally, the outermost pixels are marked as edge pixels
     as well when <tt>addBorder</tt> is true.
