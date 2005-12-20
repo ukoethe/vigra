@@ -130,6 +130,22 @@ class BasicImageView
         */
     typedef ConstImageIterator<value_type> ConstIterator;
 
+        /** the row iterator associated with the traverser
+        */
+    typedef typename traverser::row_iterator row_iterator;
+
+        /** the const row iterator associated with the const_traverser
+        */
+    typedef typename const_traverser::row_iterator const_row_iterator;
+
+        /** the column iterator associated with the traverser
+        */
+    typedef typename traverser::column_iterator column_iterator;
+
+        /** the const column iterator associated with the const_traverser
+        */
+    typedef typename const_traverser::column_iterator const_column_iterator;
+
         /** the BasicImageView's difference type (argument type of image[diff])
         */
     typedef Diff2D difference_type;
@@ -345,6 +361,71 @@ class BasicImageView
             "BasicImageView::end(): "
             "can only create scan order iterator if width() == stride().");
         return data_ + width() * height();
+    }
+
+        /** init 1D random access iterator pointing to first pixel of row \a y
+        */
+    row_iterator rowBegin(int y)
+    {
+        return data_ + stride_ * y;
+    }
+
+        /** init 1D random access iterator pointing past the end of row \a y
+        */
+    row_iterator rowEnd(int y)
+    {
+        return rowBegin(y) + width();
+    }
+
+        /** init 1D random access const iterator pointing to first pixel of row \a y
+        */
+    const_row_iterator rowBegin(int y) const
+    {
+        return data_ + stride_ * y;
+    }
+
+        /** init 1D random access const iterator pointing past the end of row \a y
+        */
+    const_row_iterator rowEnd(int y) const
+    {
+        return rowBegin(y) + width();
+    }
+
+        /** init 1D random access iterator pointing to first pixel of column \a x
+        */
+    column_iterator columnBegin(int x)
+    {
+        typedef typename column_iterator::BaseType Iter;
+        return column_iterator(Iter(data_ + x, stride_));
+    }
+
+        /** init 1D random access iterator pointing past the end of column \a x
+        */
+    column_iterator columnEnd(int x)
+    {
+        return columnBegin(x) + height();
+    }
+
+        /** init 1D random access const iterator pointing to first pixel of column \a x
+        */
+    const_column_iterator columnBegin(int x) const 
+    {
+        typedef typename const_column_iterator::BaseType Iter;
+        return const_column_iterator(Iter(data_ + x, stride_));
+    }
+
+        /** init 1D random access const iterator pointing past the end of column \a x
+        */
+    const_column_iterator columnEnd(int x) const 
+    {
+        return columnBegin(x) + height();
+    }
+
+        /** get a pointer to the internal data
+        */
+    const_pointer data() const
+    {
+        return data_;
     }
 
         /** return default accessor
