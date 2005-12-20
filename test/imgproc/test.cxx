@@ -1214,6 +1214,27 @@ struct SplineImageViewTest
         }
     }
 
+    void testImageResize0()
+    {
+        Image reference(img.width()*2-1, img.height()*2-1);
+        resizeImageNoInterpolation(srcImageRange(img), destImageRange(reference));
+
+        SplineImageView<0, double> view(srcImageRange(img));
+        
+        // check that data have not been copied
+        shouldEqual(view.image().width(), 0);
+
+        for(int y=0; y<reference.height()-1; ++y)
+        {
+            for(int x=0; x<reference.width()-1; ++x)
+            {
+                double dx = (double)x / 2.0;
+                double dy = (double)y / 2.0;
+                shouldEqualTolerance(view(dx, dy), reference(x+1, y+1), 1e-4);
+            }
+        }
+    }
+
     void testOutside()
     {
         int center = 10;
@@ -1310,6 +1331,10 @@ struct ImageFunctionsTestSuite
         add( testCase( &ResizeImageTest::testCubicInterpolationExtensionWithLena));
         add( testCase( &ResizeImageTest::testCubicInterpolationReductionWithLena));
         add( testCase( &ResizeImageTest::testCatmullRomInterpolationExtensionHandControled));
+        add( testCase( &SplineImageViewTest<0>::testPSF));
+        add( testCase( &SplineImageViewTest<0>::testCoefficientArray));
+        add( testCase( &SplineImageViewTest<0>::testImageResize0));
+        add( testCase( &SplineImageViewTest<0>::testOutside));
         add( testCase( &SplineImageViewTest<2>::testPSF));
         add( testCase( &SplineImageViewTest<2>::testCoefficientArray));
         add( testCase( &SplineImageViewTest<2>::testImageResize));
