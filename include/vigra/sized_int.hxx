@@ -42,6 +42,8 @@
 
 namespace vigra {
 
+class Int_type_not_supported_on_this_platform {};
+
 #ifndef NO_PARTIAL_TEMPLATE_SPECIALIZATION
 
 namespace detail {
@@ -65,9 +67,9 @@ struct SelectIntegerType
 };
 
 template<int SIZE>
-struct SelectIntegerType<SIZE, VigraFalseType>
+struct SelectIntegerType<SIZE, Int_type_not_supported_on_this_platform>
 {
-    typedef VigraFalseType type;
+    typedef Int_type_not_supported_on_this_platform type;
 };
 
 template<class LIST>
@@ -84,22 +86,22 @@ struct SelectBiggestIntegerType
 };
 
 template<>
-struct SelectBiggestIntegerType<VigraFalseType>
+struct SelectBiggestIntegerType<Int_type_not_supported_on_this_platform>
 {
     enum { size = 0 };
-    typedef VigraFalseType type;
+    typedef Int_type_not_supported_on_this_platform type;
 };
 
 typedef IntTypeList<signed char, 
         IntTypeList<signed short,
         IntTypeList<signed int,
         IntTypeList<signed long,
-        VigraFalseType > > > > SignedIntTypes;
+        Int_type_not_supported_on_this_platform > > > > SignedIntTypes;
 typedef IntTypeList<unsigned char, 
         IntTypeList<unsigned short,
         IntTypeList<unsigned int,
         IntTypeList<unsigned long,
-        VigraFalseType > > > > UnsignedIntTypes;
+        Int_type_not_supported_on_this_platform > > > > UnsignedIntTypes;
 
 } // namespace detail
 
@@ -111,7 +113,7 @@ typedef IntTypeList<unsigned char,
     especially when reading or writing binary files. The VIGRA typedefs
     are guaranteed to have exactly the correct size. If the system
     does not provide a suitable type, the typedef will evaluate to
-    \ref VigraFalseType.
+    <tt>Int_type_not_supported_on_this_platform</tt>.
 */
 //@{
 
@@ -144,11 +146,11 @@ typedef detail::SelectBiggestIntegerType<detail::UnsignedIntTypes>::type UIntBig
 typedef signed char    Int8;
 typedef signed short   Int16;
 typedef signed int     Int32;
-typedef VigraFalseType Int64;
+typedef Int_type_not_supported_on_this_platform Int64;
 typedef unsigned char  UInt8;
 typedef unsigned short UInt16;
 typedef unsigned int   UInt32;
-typedef VigraFalseType UInt64;
+typedef Int_type_not_supported_on_this_platform UInt64;
 
 typedef Int32  IntBiggest;
 typedef UInt32 UIntBiggest;
