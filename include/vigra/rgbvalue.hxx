@@ -73,11 +73,16 @@ struct SelectColorIndexRHS<2, R, G, B>
 
 } // namespace detail
 
+#ifndef DOXYGEN
+
 template <unsigned int R, unsigned int G, unsigned int B>
 struct RGBValue_bad_color_indices
 : staticAssert::AssertBool<(R < 3 && G < 3 && B < 3 &&
                            ((1 << R) + (1 << G) + (1 << B) == 7))>
 {};
+
+#endif /* DOXYGEN */
+
 
 /********************************************************/
 /*                                                      */
