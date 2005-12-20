@@ -326,6 +326,8 @@ template <class T>
 struct IteratorTraits<BasicImageIterator<T, T**> >
 : public IteratorTraitsBase<BasicImageIterator<T, T**> >
 {
+    typedef BasicImageIterator<T, T**>                    mutable_iterator;
+    typedef ConstBasicImageIterator<T, T**>               const_iterator;
     typedef typename AccessorTraits<T>::default_accessor  DefaultAccessor;
     typedef DefaultAccessor                               default_accessor;
     typedef VigraTrueType                                 hasConstantStrides;
@@ -335,7 +337,9 @@ template <class T>
 struct IteratorTraits<ConstBasicImageIterator<T, T**> >
 : public IteratorTraitsBase<ConstBasicImageIterator<T, T**> >
 {
-    typedef typename AccessorTraits<T>::default_const_accessor  DefaultAccessor;
+    typedef BasicImageIterator<T, T**>                    mutable_iterator;
+    typedef ConstBasicImageIterator<T, T**>               const_iterator;
+    typedef typename AccessorTraits<T>::default_const_accessor  DefaultAccessor; 
     typedef DefaultAccessor                               default_accessor;
     typedef VigraTrueType                                 hasConstantStrides;
 };
@@ -347,6 +351,8 @@ struct IteratorTraits<ConstBasicImageIterator<T, T**> >
     struct IteratorTraits<BasicImageIterator<VALUETYPE, VALUETYPE **> > \
     : public IteratorTraitsBase<BasicImageIterator<VALUETYPE, VALUETYPE **> > \
     { \
+        typedef BasicImageIterator<VALUETYPE, VALUETYPE**>             mutable_iterator; \
+        typedef ConstBasicImageIterator<VALUETYPE, VALUETYPE**>        const_iterator; \
         typedef typename AccessorTraits<VALUETYPE >::default_accessor  DefaultAccessor; \
         typedef DefaultAccessor                               default_accessor; \
         typedef VigraTrueType                                 hasConstantStrides; \
@@ -356,6 +362,8 @@ struct IteratorTraits<ConstBasicImageIterator<T, T**> >
     struct IteratorTraits<ConstBasicImageIterator<VALUETYPE, VALUETYPE **> > \
     : public IteratorTraitsBase<ConstBasicImageIterator<VALUETYPE, VALUETYPE **> > \
     { \
+        typedef BasicImageIterator<VALUETYPE, VALUETYPE**>             mutable_iterator; \
+        typedef ConstBasicImageIterator<VALUETYPE, VALUETYPE**>        const_iterator; \
         typedef typename AccessorTraits<VALUETYPE >::default_const_accessor  DefaultAccessor; \
         typedef DefaultAccessor                               default_accessor; \
         typedef VigraTrueType                                 hasConstantStrides; \
@@ -503,6 +511,22 @@ class BasicImage
     typedef
         ConstBasicImageIterator<PIXELTYPE, PIXELTYPE **>
         ConstIterator;
+
+        /** the row iterator associated with the traverser
+        */
+    typedef typename traverser::row_iterator row_iterator;
+
+        /** the const row iterator associated with the const_traverser
+        */
+    typedef typename const_traverser::row_iterator const_row_iterator;
+
+        /** the column iterator associated with the traverser
+        */
+    typedef typename traverser::column_iterator column_iterator;
+
+        /** the const column iterator associated with the const_traverser
+        */
+    typedef typename const_traverser::column_iterator const_column_iterator;
 
         /** the BasicImage's difference type (argument type of image[diff])
         */
@@ -878,6 +902,71 @@ class BasicImage
         vigra_precondition(data_ != 0,
           "BasicImage::end(): image must have non-zero size.");
         return data_ + width() * height();
+    }
+
+        /** init 1D random access iterator pointing to first pixel of row \a y
+        */
+    row_iterator rowBegin(int y)
+    {
+        return lines_[y];
+    }
+
+        /** init 1D random access iterator pointing past the end of row \a y
+        */
+    row_iterator rowEnd(int y)
+    {
+        return rowBegin(y) + width();
+    }
+
+        /** init 1D random access const iterator pointing to first pixel of row \a y
+        */
+    const_row_iterator rowBegin(int y) const
+    {
+        return lines_[y];
+    }
+
+        /** init 1D random access const iterator pointing past the end of row \a y
+        */
+    const_row_iterator rowEnd(int y) const
+    {
+        return rowBegin(y) + width();
+    }
+
+        /** init 1D random access iterator pointing to first pixel of column \a x
+        */
+    column_iterator columnBegin(int x)
+    {
+        typedef typename column_iterator::BaseType Iter;
+        return column_iterator(Iter(lines_, x));
+    }
+
+        /** init 1D random access iterator pointing past the end of column \a x
+        */
+    column_iterator columnEnd(int x)
+    {
+        return columnBegin(x) + height();
+    }
+
+        /** init 1D random access const iterator pointing to first pixel of column \a x
+        */
+    const_column_iterator columnBegin(int x) const 
+    {
+        typedef typename const_column_iterator::BaseType Iter;
+        return const_column_iterator(Iter(lines_, x));
+    }
+
+        /** init 1D random access const iterator pointing past the end of column \a x
+        */
+    const_column_iterator columnEnd(int x) const 
+    {
+        return columnBegin(x) + height();
+    }
+
+        /** get a pointer to the internal data
+        */
+    const_pointer data() const
+    {
+        return data_;
     }
 
         /** return default accessor
