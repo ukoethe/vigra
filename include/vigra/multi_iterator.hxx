@@ -1733,7 +1733,7 @@ class StridedMultiIteratorBase <1>
 /********************************************************/
 
 /** \brief A multi-dimensional hierarchical iterator to be used with 
-           \ref vigra::MultiArrayView is it is strided.
+           \ref vigra::MultiArrayView if it is strided.
 
 This class wraps the StridedMultiIteratorBase in a template of arity two.
 
