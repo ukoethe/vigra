@@ -1497,7 +1497,7 @@ void SplineImageView1Base<VALUETYPE, INTERNAL_INDEXER>::calculateIndices(double 
         x = -x;
         vigra_precondition(x <= w_ - 1.0,
                 "SplineImageView::calculateIndices(): coordinates out of range.");
-        ix = VIGRA_CSTD::ceil(x);
+        ix = (int)VIGRA_CSTD::ceil(x);
         ix1 = ix - 1;
     }
     else if(x >= w_ - 1.0)
@@ -1505,12 +1505,12 @@ void SplineImageView1Base<VALUETYPE, INTERNAL_INDEXER>::calculateIndices(double 
         x = 2.0*w_-2.0-x;
         vigra_precondition(x > 0.0,
                 "SplineImageView::calculateIndices(): coordinates out of range.");
-        ix = VIGRA_CSTD::ceil(x);
+        ix = (int)VIGRA_CSTD::ceil(x);
         ix1 = ix - 1;
     }
     else
     {
-        ix = VIGRA_CSTD::floor(x);
+        ix = (int)VIGRA_CSTD::floor(x);
         ix1 = ix + 1;
     }
     if(y < 0.0)
@@ -1518,7 +1518,7 @@ void SplineImageView1Base<VALUETYPE, INTERNAL_INDEXER>::calculateIndices(double 
         y = -y;
         vigra_precondition(y <= h_ - 1.0,
                 "SplineImageView::calculateIndices(): coordinates out of range.");
-        iy = VIGRA_CSTD::ceil(y);
+        iy = (int)VIGRA_CSTD::ceil(y);
         iy1 = iy - 1;
     }
     else if(y >= h_ - 1.0)
@@ -1526,12 +1526,12 @@ void SplineImageView1Base<VALUETYPE, INTERNAL_INDEXER>::calculateIndices(double 
         y = 2.0*h_-2.0-y;
         vigra_precondition(y > 0.0,
                 "SplineImageView::calculateIndices(): coordinates out of range.");
-        iy = VIGRA_CSTD::ceil(y);
+        iy = (int)VIGRA_CSTD::ceil(y);
         iy1 = iy - 1;
     }
     else
     {
-        iy = VIGRA_CSTD::floor(y);
+        iy = (int)VIGRA_CSTD::floor(y);
         iy1 = iy + 1;
     }
 }
