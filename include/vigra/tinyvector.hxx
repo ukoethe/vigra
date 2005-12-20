@@ -801,28 +801,6 @@ class TinyVectorView
 
 /********************************************************/
 /*                                                      */
-/*                     TinyVector Output                */
-/*                                                      */
-/********************************************************/
-
-/** \addtogroup TinyVectorOperators
- */
-//@{
-    /// stream output
-template <class V1, int SIZE, class DATA, class DERIVED>
-std::ostream &
-operator<<(std::ostream & out, vigra::TinyVectorBase<V1, SIZE, DATA, DERIVED> const & l)
-{
-    out << "(";
-    int i;
-    for(i=0; i<SIZE-1; ++i)
-        out << l[i] << ", ";
-    out << l[i] << ")";
-    return out;
-}
-
-/********************************************************/
-/*                                                      */
 /*                     TinyVector Comparison            */
 /*                                                      */
 /********************************************************/
@@ -858,6 +836,24 @@ operator!=(TinyVectorBase<V1, SIZE, D1, D2> const & l,
     return ltype::notEqual(l.begin(), r.begin());
 }
 
+/********************************************************/
+/*                                                      */
+/*                     TinyVector Output                */
+/*                                                      */
+/********************************************************/
+
+    /// stream output
+template <class V1, int SIZE, class DATA, class DERIVED>
+std::ostream &
+operator<<(std::ostream & out, TinyVectorBase<V1, SIZE, DATA, DERIVED> const & l)
+{
+    out << "(";
+    int i;
+    for(i=0; i<SIZE-1; ++i)
+        out << l[i] << ", ";
+    out << l[i] << ")";
+    return out;
+}
 //@}
 
 /********************************************************/
