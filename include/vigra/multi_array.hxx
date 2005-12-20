@@ -950,6 +950,10 @@ class MultiArray : public MultiArrayView <N, T>
 public:
     using MultiArrayView <N, T>::actual_dimension;
 
+        /** the associated MultiArrayView base class
+         */
+    typedef MultiArrayView <N, T> view_type;
+
         /** the allocator type used to allocate the memory
          */
     typedef A allocator_type;
