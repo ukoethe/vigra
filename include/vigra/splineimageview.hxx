@@ -1010,7 +1010,7 @@ class SplineImageView0
     template <class SrcIterator, class SrcAccessor>
     SplineImageView0(triple<SrcIterator, SrcIterator, SrcAccessor> s)
     : Base(s.second.x - s.first.x, s.second.y - s.first.y),
-      image_(.second - s.first)
+      image_(s.second - s.first)
     {
         copyImage(s, destImage(image_));
         this->internalIndexer_ = image_->upperLeft();
@@ -1092,11 +1092,11 @@ class SplineImageView<0, VALUETYPE>
 {
     typedef SplineImageView0<VALUETYPE> Base;
   public:
-    typedef VALUETYPE value_type;
-    typedef Size2D size_type;
-    typedef TinyVector<double, 2> difference_type;
+    typedef typename Base::value_type value_type;
+    typedef typename Base::size_type size_type;
+    typedef typename Base::difference_type difference_type;
     enum StaticOrder { order = 0 };
-    typedef Base::InternalImage InternalImage;
+    typedef typename Base::InternalImage InternalImage;
   
   protected:
     typedef typename Base::InternalTraverser InternalTraverser;
