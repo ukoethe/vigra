@@ -239,8 +239,12 @@ struct ImageTest
         scanImage(ul, lr);
         scanRows(ul.rowIterator(), (ul+Diff2D(0,1)).rowIterator(),
                  (ul+Diff2D(0,2)).rowIterator(), img.width());
+        scanRows(img.rowBegin(0), img.rowBegin(1),
+                 img.rowBegin(2), img.width());
         scanColumns(ul.columnIterator(), (ul+Diff2D(1,0)).columnIterator(),
                  (ul+Diff2D(2,0)).columnIterator(), img.height());
+        scanColumns(img.columnBegin(0), img.columnBegin(1),
+                 img.columnBegin(2), img.height());
 
         typename Image::Accessor acc = img.accessor();
         typename Image::iterator i = img.begin();
