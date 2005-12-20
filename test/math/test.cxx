@@ -663,6 +663,8 @@ struct FixedPointTest
         should(vigra::ceil(-v) == -3);
         should(round(-v) == -4);
         should(vigra::abs(-v) == v);
+        should(vigra::norm(-v) == v);
+        should(vigra::squaredNorm(-v) == v*v);
 
         vigra::FixedPoint<3, 10> v1;
         shouldEqual((v1 = v).value, 15 << 8);
