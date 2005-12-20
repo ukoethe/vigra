@@ -1437,11 +1437,9 @@ class SplineImageView1Base
         { return size_type(w_, h_); }
 
     template <class Array>
-    void coefficientArray(double x, double y, Array & res) const
-    {
-        res.resize(1, 1);
-        res(0, 0) = operator()(x,y);
-    }
+    void coefficientArray(double x, double y, Array & res) const;
+    
+    void calculateIndices(double x, double y, int & ix, int & iy, int & ix1, int & iy1) const;
 
     bool isInsideX(double x) const
     {
@@ -1476,6 +1474,67 @@ class SplineImageView1Base
     unsigned int w_, h_;
     INTERNAL_INDEXER internalIndexer_;
 };
+
+template <class VALUETYPE, class INTERNAL_INDEXER>
+template <class Array>
+void SplineImageView1Base<VALUETYPE, INTERNAL_INDEXER>::coefficientArray(double x, double y, Array & res) const
+{
+    int ix, iy, ix1, iy1;
+    calculateIndices(x, y, ix, iy, ix1, iy1);
+    res.resize(2, 2);
+    res(0,0) = internalIndexer_(ix,iy);
+    res(1,0) = internalIndexer_(ix1,iy) - internalIndexer_(ix,iy);
+    res(0,1) = internalIndexer_(ix,iy1) - internalIndexer_(ix,iy);
+    res(1,1) = internalIndexer_(ix,iy) - internalIndexer_(ix1,iy) - 
+               internalIndexer_(ix,iy1) + internalIndexer_(ix1,iy1);
+}
+
+template <class VALUETYPE, class INTERNAL_INDEXER>
+void SplineImageView1Base<VALUETYPE, INTERNAL_INDEXER>::calculateIndices(double x, double y, int & ix, int & iy, int & ix1, int & iy1) const
+{
+    if(x < 0.0)
+    {
+        x = -x;
+        vigra_precondition(x <= w_ - 1.0,
+                "SplineImageView::calculateIndices(): coordinates out of range.");
+        ix = VIGRA_CSTD::ceil(x);
+        ix1 = ix - 1;
+    }
+    else if(x >= w_ - 1.0)
+    {
+        x = 2.0*w_-2.0-x;
+        vigra_precondition(x > 0.0,
+                "SplineImageView::calculateIndices(): coordinates out of range.");
+        ix = VIGRA_CSTD::ceil(x);
+        ix1 = ix - 1;
+    }
+    else
+    {
+        ix = VIGRA_CSTD::floor(x);
+        ix1 = ix + 1;
+    }
+    if(y < 0.0)
+    {
+        y = -y;
+        vigra_precondition(y <= h_ - 1.0,
+                "SplineImageView::calculateIndices(): coordinates out of range.");
+        iy = VIGRA_CSTD::ceil(y);
+        iy1 = iy - 1;
+    }
+    else if(y >= h_ - 1.0)
+    {
+        y = 2.0*h_-2.0-y;
+        vigra_precondition(y > 0.0,
+                "SplineImageView::calculateIndices(): coordinates out of range.");
+        iy = VIGRA_CSTD::ceil(y);
+        iy1 = iy - 1;
+    }
+    else
+    {
+        iy = VIGRA_CSTD::floor(y);
+        iy1 = iy + 1;
+    }
+}
 
 template <class VALUETYPE, class INTERNAL_TRAVERSER = typename BasicImage<VALUETYPE>::const_traverser>
 class SplineImageView1
