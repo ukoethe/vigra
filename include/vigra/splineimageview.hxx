@@ -44,6 +44,8 @@
 #include "vigra/basicimage.hxx"
 #include "vigra/copyimage.hxx"
 #include "vigra/tinyvector.hxx"
+#include "vigra/fixedpoint.hxx"
+#include "vigra/multi_array.hxx"
 
 namespace vigra {
 
@@ -506,25 +508,25 @@ struct SplineImageViewUnrollLoop1<0>
     }
 };
 
-template <int i>
+template <int i, class ValueType>
 struct SplineImageViewUnrollLoop2
 {
-    template <class Array1, class Image, class Array2>
-    static typename Image::value_type
-    exec(Array1 k, Image const & img, Array2 x, int y)
+    template <class Array1, class RowIterator, class Array2>
+    static ValueType
+    exec(Array1 k, RowIterator r, Array2 x)
     {
-        return k[i] * img(x[i], y) + SplineImageViewUnrollLoop2<i-1>::exec(k, img, x, y);
+        return k[i] * r[x[i]] + SplineImageViewUnrollLoop2<i-1, ValueType>::exec(k, r, x);
     }
 };
 
-template <>
-struct SplineImageViewUnrollLoop2<0>
+template <class ValueType>
+struct SplineImageViewUnrollLoop2<0, ValueType>
 {
-    template <class Array1, class Image, class Array2>
-    static typename Image::value_type
-    exec(Array1 k, Image const & img, Array2 x, int y)
+    template <class Array1, class RowIterator, class Array2>
+    static ValueType
+    exec(Array1 k, RowIterator r, Array2 x)
     {
-        return k[0] * img(x[0], y);
+        return k[0] * r[x[0]];
     }
 };
 
@@ -603,16 +605,15 @@ void SplineImageView<ORDER, VALUETYPE>::derivCoefficients(double t,
         c[i] = k_(t-i, d);
 }
 
-
 template <int ORDER, class VALUETYPE>
 VALUETYPE SplineImageView<ORDER, VALUETYPE>::convolve() const
 {
     InternalValue sum;
-    sum = ky_[0]*detail::SplineImageViewUnrollLoop2<ORDER>::exec(kx_, image_, ix_, iy_[0]);
+    sum = ky_[0]*detail::SplineImageViewUnrollLoop2<ORDER, InternalValue>::exec(kx_, image_.rowBegin(iy_[0]), ix_);
     
     for(int j=1; j<ksize_; ++j)
     {
-        sum += ky_[j]*detail::SplineImageViewUnrollLoop2<ORDER>::exec(kx_, image_, ix_, iy_[j]);
+        sum += ky_[j]*detail::SplineImageViewUnrollLoop2<ORDER, InternalValue>::exec(kx_, image_.rowBegin(iy_[j]), ix_);
     }
     return NumericTraits<VALUETYPE>::fromRealPromote(sum);
 }
@@ -705,6 +706,440 @@ VALUETYPE SplineImageView<ORDER, VALUETYPE>::g2xy(double x, double y) const
 {
     return 2.0*(dx(x,y) * dxxy(x,y) + dy(x,y) * dxyy(x,y) + dxy(x,y) * (dxx(x,y) + dyy(x,y)));
 }
+
+/********************************************************/
+/*                                                      */
+/*                    SplineImageView0                  */
+/*                                                      */
+/********************************************************/
+template <class VALUETYPE, class INTERNAL_INDEXER>
+class SplineImageView0Base
+{
+    typedef typename INTERNAL_INDEXER::value_type InternalValue;
+  public:
+    typedef VALUETYPE value_type;
+    typedef Size2D size_type;
+    typedef TinyVector<double, 2> difference_type;
+    enum StaticOrder { order = 0 };
+  
+  public:
+
+    SplineImageView0Base(unsigned int w, unsigned int h)
+    : w_(w), h_(h)
+    {}
+
+    SplineImageView0Base(int w, int h, INTERNAL_INDEXER i)
+    : w_(w), h_(h), internalIndexer_(i)
+    {}
+
+    template <unsigned IntBits1, unsigned FractionalBits1,
+              unsigned IntBits2, unsigned FractionalBits2>
+    value_type unchecked(FixedPoint<IntBits1, FractionalBits1> x, 
+                         FixedPoint<IntBits2, FractionalBits2> y) const
+    {
+        return internalIndexer_(round(x), round(y));
+    }
+
+    template <unsigned IntBits1, unsigned FractionalBits1,
+              unsigned IntBits2, unsigned FractionalBits2>
+    value_type unchecked(FixedPoint<IntBits1, FractionalBits1> x, 
+                         FixedPoint<IntBits2, FractionalBits2> y, 
+                         unsigned int dx, unsigned int dy) const
+    {
+        if((dx != 0) || (dy != 0))
+            return NumericTraits<VALUETYPE>::zero();
+        return unchecked(x, y);
+    }
+
+    value_type unchecked(double x, double y) const
+    {
+        return internalIndexer_((int)(x + 0.5), (int)(y + 0.5));
+    }
+
+    value_type unchecked(double x, double y, unsigned int dx, unsigned int dy) const
+    {
+        if((dx != 0) || (dy != 0))
+            return NumericTraits<VALUETYPE>::zero();
+        return unchecked(x, y);
+    }
+
+    value_type operator()(double x, double y) const
+    {
+        int ix, iy;
+        if(x < 0.0)
+        {
+            ix = (int)(-x + 0.5);
+            vigra_precondition(ix <= (int)w_ - 1,
+                    "SplineImageView::operator(): coordinates out of range.");
+        }
+        else
+        {
+            ix = (int)(x + 0.5);
+            if(ix >= (int)w_)
+            {
+                ix = 2*w_-2-ix;
+                vigra_precondition(ix >= 0,
+                        "SplineImageView::operator(): coordinates out of range.");
+            }
+        }
+        if(y < 0.0)
+        {
+            iy = (int)(-y + 0.5);
+            vigra_precondition(iy <= (int)h_ - 1,
+                    "SplineImageView::operator(): coordinates out of range.");
+        }
+        else 
+        {
+            iy = (int)(y + 0.5);
+            if(iy >= (int)h_)
+            {
+                iy = 2*h_-2-iy;
+                vigra_precondition(iy >= 0,
+                        "SplineImageView::operator(): coordinates out of range.");
+            }
+        }
+        return unchecked(ix, iy);
+    }
+
+    value_type operator()(double x, double y, unsigned int dx, unsigned int dy) const
+    {
+        if((dx != 0) || (dy != 0))
+            return NumericTraits<VALUETYPE>::zero();
+        return operator()(x, y);
+    }
+
+    value_type dx(double x, double y) const
+        { return NumericTraits<VALUETYPE>::zero(); }
+
+    value_type dy(double x, double y) const
+        { return NumericTraits<VALUETYPE>::zero(); }
+
+    value_type dxx(double x, double y) const
+        { return NumericTraits<VALUETYPE>::zero(); }
+
+    value_type dxy(double x, double y) const
+        { return NumericTraits<VALUETYPE>::zero(); }
+
+    value_type dyy(double x, double y) const
+        { return NumericTraits<VALUETYPE>::zero(); }
+
+    value_type dx3(double x, double y) const
+        { return NumericTraits<VALUETYPE>::zero(); }
+
+    value_type dy3(double x, double y) const
+        { return NumericTraits<VALUETYPE>::zero(); }
+
+    value_type dxxy(double x, double y) const
+        { return NumericTraits<VALUETYPE>::zero(); }
+
+    value_type dxyy(double x, double y) const
+        { return NumericTraits<VALUETYPE>::zero(); }
+
+    value_type operator()(difference_type const & d) const
+        { return operator()(d[0], d[1]); }
+
+    value_type operator()(difference_type const & d, unsigned int dx, unsigned int dy) const
+        { return operator()(d[0], d[1], dx, dy); }
+
+    value_type dx(difference_type const & d) const
+        { return NumericTraits<VALUETYPE>::zero(); }
+
+    value_type dy(difference_type const & d) const
+        { return NumericTraits<VALUETYPE>::zero(); }
+
+    value_type dxx(difference_type const & d) const
+        { return NumericTraits<VALUETYPE>::zero(); }
+
+    value_type dxy(difference_type const & d) const
+        { return NumericTraits<VALUETYPE>::zero(); }
+
+    value_type dyy(difference_type const & d) const
+        { return NumericTraits<VALUETYPE>::zero(); }
+
+    value_type dx3(difference_type const & d) const
+        { return NumericTraits<VALUETYPE>::zero(); }
+
+    value_type dy3(difference_type const & d) const
+        { return NumericTraits<VALUETYPE>::zero(); }
+
+    value_type dxxy(difference_type const & d) const
+        { return NumericTraits<VALUETYPE>::zero(); }
+
+    value_type dxyy(difference_type const & d) const
+        { return NumericTraits<VALUETYPE>::zero(); }
+
+    value_type g2(double x, double y) const;
+
+    value_type g2x(double x, double y) const;
+
+    value_type g2y(double x, double y) const;
+
+    value_type g2xx(double x, double y) const;
+
+    value_type g2xy(double x, double y) const;
+
+    value_type g2yy(double x, double y) const;
+
+    value_type g2(difference_type const & d) const
+        { return NumericTraits<VALUETYPE>::zero(); }
+
+    value_type g2x(difference_type const & d) const
+        { return NumericTraits<VALUETYPE>::zero(); }
+
+    value_type g2y(difference_type const & d) const
+        { return NumericTraits<VALUETYPE>::zero(); }
+
+    value_type g2xx(difference_type const & d) const
+        { return NumericTraits<VALUETYPE>::zero(); }
+
+    value_type g2xy(difference_type const & d) const
+        { return NumericTraits<VALUETYPE>::zero(); }
+
+    value_type g2yy(difference_type const & d) const
+        { return NumericTraits<VALUETYPE>::zero(); }
+
+    unsigned int width() const
+        { return w_; }
+
+    unsigned int height() const
+        { return h_; }
+
+    size_type size() const
+        { return size_type(w_, h_); }
+
+    template <class Array>
+    void coefficientArray(double x, double y, Array & res) const
+    {
+        res.resize(1, 1);
+        res(0, 0) = operator()(x,y);
+    }
+
+    bool isInsideX(double x) const
+    {
+        return x >= 0.0 && x < width() - 0.5; // FIXME
+    }
+
+    bool isInsideY(double y) const
+    {
+        return y >= 0.0 && y < height() - 0.5;
+    }
+
+    bool isInside(double x, double y) const
+    {
+        return isInsideX(x) && isInsideY(y);
+    }
+
+    bool isValid(double x, double y) const
+    {
+        return x < 2*w_ && x > -w_ && y < 2*h_ && y > -h_;
+    }
+
+    bool sameFacet(double x0, double y0, double x1, double y1) const
+    {
+         x0 = VIGRA_CSTD::floor((ORDER % 2) ? x0 : x0 + 0.5);
+         y0 = VIGRA_CSTD::floor((ORDER % 2) ? y0 : y0 + 0.5);
+         x1 = VIGRA_CSTD::floor((ORDER % 2) ? x1 : x1 + 0.5);
+         y1 = VIGRA_CSTD::floor((ORDER % 2) ? y1 : y1 + 0.5);
+         return x0 == x1 && y0 == y1;
+    }
+
+  protected:
+    unsigned int w_, h_;
+    INTERNAL_INDEXER internalIndexer_;
+};
+
+template <class VALUETYPE, class INTERNAL_TRAVERSER = typename BasicImage<VALUETYPE>::const_traverser>
+class SplineImageView0
+: public SplineImageView0Base<VALUETYPE, INTERNAL_TRAVERSER>
+{
+    typedef SplineImageView0Base<VALUETYPE, INTERNAL_TRAVERSER> Base;
+  public:
+    typedef typename Base::value_type value_type;
+    typedef typename Base::size_type size_type;
+    typedef typename Base::difference_type difference_type;
+    enum StaticOrder { order = 0 };
+    typedef BasicImage<VALUETYPE> InternalImage;
+  
+  protected:
+    typedef typename IteratorTraits<INTERNAL_TRAVERSER>::mutable_iterator InternalTraverser;
+    typedef typename IteratorTraits<InternalTraverser>::DefaultAccessor InternalAccessor;
+    typedef typename IteratorTraits<INTERNAL_TRAVERSER>::const_iterator InternalConstTraverser;
+    typedef typename IteratorTraits<InternalConstTraverser>::DefaultAccessor InternalConstAccessor;
+
+  public:
+
+        /* when traverser and accessor types passed to the constructor are the same as the corresponding
+           internal types, we need not copy the image (speed up)
+        */
+    SplineImageView0(InternalTraverser is, InternalTraverser iend, InternalAccessor sa)
+    : Base(iend.x - is.x, iend.y - is.y, is)
+    {}
+
+    SplineImageView0(triple<InternalTraverser, InternalTraverser, InternalAccessor> s)
+    : Base(s.second.x - s.first.x, s.second.y - s.first.y, s.first)
+    {}
+
+    SplineImageView0(InternalConstTraverser is, InternalConstTraverser iend, InternalConstAccessor sa)
+    : Base(iend.x - is.x, iend.y - is.y, is)
+    {}
+
+    SplineImageView0(triple<InternalConstTraverser, InternalConstTraverser, InternalConstAccessor> s)
+    : Base(s.second.x - s.first.x, s.second.y - s.first.y, s.first)
+    {}
+
+    template<class T, class SU>
+    SplineImageView0(MultiArrayView<2, T, SU> const & i)
+    : Base(i.shape(0), i.shape(1)),
+      image_(i.shape(0), i.shape(1))
+    {
+        for(unsigned int y=0; y<this->height(); ++y)
+            for(unsigned int x=0; x<this->width(); ++x)
+                image_(x,y) = detail::RequiresExplicitCast<VALUETYPE>::cast(i(x,y));
+        this->internalIndexer_ = image_->upperLeft();
+    }
+
+    template <class SrcIterator, class SrcAccessor>
+    SplineImageView0(SrcIterator is, SrcIterator iend, SrcAccessor sa)
+    : Base(iend.x - is.x, iend.y - is.y),
+      image_(iend - is)
+    {
+        copyImage(srcIterRange(is, iend, sa), destImage(image_));
+        this->internalIndexer_ = image_->upperLeft();
+    }
+
+    template <class SrcIterator, class SrcAccessor>
+    SplineImageView0(triple<SrcIterator, SrcIterator, SrcAccessor> s)
+    : Base(s.second.x - s.first.x, s.second.y - s.first.y),
+      image_(.second - s.first)
+    {
+        copyImage(s, destImage(image_));
+        this->internalIndexer_ = image_->upperLeft();
+    }
+    
+    InternalImage const & image() const
+        { return image_; }
+
+  private:
+    InternalImage image_;
+};
+
+template <class VALUETYPE, class StridedOrUnstrided>
+class SplineImageView0<VALUETYPE, MultiArrayView<2, VALUETYPE, StridedOrUnstrided> >
+: public SplineImageView0Base<VALUETYPE, MultiArrayView<2, VALUETYPE, StridedOrUnstrided> >
+{
+    typedef SplineImageView0Base<VALUETYPE, MultiArrayView<2, VALUETYPE, StridedOrUnstrided> > Base;
+  public:
+    typedef typename Base::value_type value_type;
+    typedef typename Base::size_type size_type;
+    typedef typename Base::difference_type difference_type;
+    enum StaticOrder { order = 0 };
+    typedef BasicImage<VALUETYPE> InternalImage;
+
+  protected:
+    typedef MultiArrayView<2, VALUETYPE, StridedOrUnstrided> InternalIndexer;
+  
+  public:
+
+        /* when traverser and accessor types passed to the constructor are the same as the corresponding
+           internal types, we need not copy the image (speed up)
+        */
+    SplineImageView0(InternalIndexer const & i)
+    : Base(i.shape(0), i.shape(1), i)
+    {}
+
+    template<class T, class SU>
+    SplineImageView0(MultiArrayView<2, T, SU> const & i)
+    : Base(i.shape(0), i.shape(1)),
+      image_(i.shape(0), i.shape(1))
+    {
+        for(unsigned int y=0; y<this->height(); ++y)
+            for(unsigned int x=0; x<this->width(); ++x)
+                image_(x,y) = detail::RequiresExplicitCast<VALUETYPE>::cast(i(x,y));
+        this->internalIndexer_ = InternalIndexer(typename InternalIndexer::difference_type(this->width(), this->height()),
+                                                 image_.data());
+    }
+
+    template <class SrcIterator, class SrcAccessor>
+    SplineImageView0(SrcIterator is, SrcIterator iend, SrcAccessor sa)
+    : Base(iend.x - is.x, iend.y - is.y),
+      image_(iend-is)
+    {
+        copyImage(srcIterRange(is, iend, sa), destImage(image_));
+        this->internalIndexer_ = InternalIndexer(typename InternalIndexer::difference_type(this->width(), this->height()),
+                                                 image_.data());
+    }
+
+    template <class SrcIterator, class SrcAccessor>
+    SplineImageView0(triple<SrcIterator, SrcIterator, SrcAccessor> s)
+    : Base(s.second.x - s.first.x, s.second.y - s.first.y),
+      image_(s.second - s.first)
+    {
+        copyImage(s, destImage(image_));
+        this->internalIndexer_ = InternalIndexer(typename InternalIndexer::difference_type(this->width(), this->height()),
+                                                 image_.data());
+    }
+    
+    InternalImage const & image() const
+        { return image_; }
+    
+  private:
+    InternalImage image_;
+};
+
+template <class VALUETYPE>
+class SplineImageView<0, VALUETYPE>
+: public SplineImageView0<VALUETYPE>
+{
+    typedef SplineImageView0<VALUETYPE> Base;
+  public:
+    typedef VALUETYPE value_type;
+    typedef Size2D size_type;
+    typedef TinyVector<double, 2> difference_type;
+    enum StaticOrder { order = 0 };
+    typedef Base::InternalImage InternalImage;
+  
+  protected:
+    typedef typename Base::InternalTraverser InternalTraverser;
+    typedef typename Base::InternalAccessor InternalAccessor;
+    typedef typename Base::InternalConstTraverser InternalConstTraverser;
+    typedef typename Base::InternalConstAccessor InternalConstAccessor;
+
+public:
+
+        /* when traverser and accessor types passed to the constructor are the same as the corresponding
+           internal types, we need not copy the image (speed up)
+        */
+    SplineImageView(InternalTraverser is, InternalTraverser iend, InternalAccessor sa, bool /* unused */ = false)
+    : Base(is, iend, sa)
+    {}
+
+    SplineImageView(triple<InternalTraverser, InternalTraverser, InternalAccessor> s, bool /* unused */ = false)
+    : Base(s)
+    {}
+
+    SplineImageView(InternalConstTraverser is, InternalConstTraverser iend, InternalConstAccessor sa, bool /* unused */ = false)
+    : Base(is, iend, sa)
+    {}
+
+    SplineImageView(triple<InternalConstTraverser, InternalConstTraverser, InternalConstAccessor> s, bool /* unused */ = false)
+    : Base(s)
+    {}
+
+    template <class SrcIterator, class SrcAccessor>
+    SplineImageView(SrcIterator is, SrcIterator iend, SrcAccessor sa, bool /* unused */ = false)
+    : Base(is, iend, sa)
+    {
+        copyImage(srcIterRange(is, iend, sa), destImage(image_));
+    }
+
+    template <class SrcIterator, class SrcAccessor>
+    SplineImageView(triple<SrcIterator, SrcIterator, SrcAccessor> s, bool /* unused */ = false)
+    : Base(s)
+    {
+        copyImage(s, destImage(image_));
+    }
+};
+
 
 } // namespace vigra
 
