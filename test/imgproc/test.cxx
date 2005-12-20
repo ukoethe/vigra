@@ -1176,15 +1176,43 @@ struct SplineImageViewTest
 
     void testCoefficientArray()
     {
-        double x = 5.3, y = 7.9;
+        double x = 5.3, y = 7.85;
         double dx = (N % 2) ? x - VIGRA_CSTD::floor(x) : x - VIGRA_CSTD::floor(x + 0.5),
                dy = (N % 2) ? y - VIGRA_CSTD::floor(y) : y - VIGRA_CSTD::floor(y + 0.5);
 
         Image coefficients;
         SplineImageView<N, double> view(srcImageRange(img));
-        view.coefficientArray(x, y, coefficients);
+        // use the coefficients from a different point in the same facet -- should be the same!
+        view.coefficientArray(x-0.1, y-0.1, coefficients);
 
         double f_x_y = 0.0;
+        for(int ny = 0; ny < N + 1; ++ny)
+            for(int nx = 0; nx < N + 1; ++nx)
+                f_x_y += VIGRA_CSTD::pow(dx, nx) * VIGRA_CSTD::pow(dy, ny) * coefficients(nx, ny);
+
+        shouldEqualTolerance(f_x_y, view(x, y), 1e-12);
+
+        // test out-of-bounds cases
+        x = -x;
+        y += img.height();
+        dx = (N % 2) ? x - VIGRA_CSTD::floor(x) : x - VIGRA_CSTD::floor(x + 0.5);
+        dy = (N % 2) ? y - VIGRA_CSTD::floor(y) : y - VIGRA_CSTD::floor(y + 0.5);
+        view.coefficientArray(x-0.1, y-0.1, coefficients);
+
+        f_x_y = 0.0;
+        for(int ny = 0; ny < N + 1; ++ny)
+            for(int nx = 0; nx < N + 1; ++nx)
+                f_x_y += VIGRA_CSTD::pow(dx, nx) * VIGRA_CSTD::pow(dy, ny) * coefficients(nx, ny);
+
+        shouldEqualTolerance(f_x_y, view(x, y), 1e-12);
+
+        x = 5.3 + img.width();
+        y = -7.85;
+        dx = (N % 2) ? x - VIGRA_CSTD::floor(x) : x - VIGRA_CSTD::floor(x + 0.5);
+        dy = (N % 2) ? y - VIGRA_CSTD::floor(y) : y - VIGRA_CSTD::floor(y + 0.5);
+        view.coefficientArray(x-0.1, y-0.1, coefficients);
+
+        f_x_y = 0.0;
         for(int ny = 0; ny < N + 1; ++ny)
             for(int nx = 0; nx < N + 1; ++nx)
                 f_x_y += VIGRA_CSTD::pow(dx, nx) * VIGRA_CSTD::pow(dy, ny) * coefficients(nx, ny);
