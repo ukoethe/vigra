@@ -633,6 +633,8 @@ struct IteratorTraits<
 {
     typedef BasicImageIterator<FFTWComplex, FFTWComplex **>  Iterator;
     typedef Iterator                             iterator;
+    typedef BasicImageIterator<FFTWComplex, FFTWComplex **>         mutable_iterator;
+    typedef ConstBasicImageIterator<FFTWComplex, FFTWComplex **>    const_iterator;
     typedef iterator::iterator_category          iterator_category;
     typedef iterator::value_type                 value_type;
     typedef iterator::reference                  reference;
@@ -652,6 +654,8 @@ struct IteratorTraits<
 {
     typedef ConstBasicImageIterator<FFTWComplex, FFTWComplex **>    Iterator;
     typedef Iterator                             iterator;
+    typedef BasicImageIterator<FFTWComplex, FFTWComplex **>         mutable_iterator;
+    typedef ConstBasicImageIterator<FFTWComplex, FFTWComplex **>    const_iterator;
     typedef iterator::iterator_category          iterator_category;
     typedef iterator::value_type                 value_type;
     typedef iterator::reference                  reference;

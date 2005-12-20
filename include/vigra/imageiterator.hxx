@@ -1168,6 +1168,8 @@ template <class T>
 struct IteratorTraits<ImageIterator<T> >
 : public IteratorTraitsBase<ImageIterator<T> >
 {
+    typedef ImageIterator<T>                              mutable_iterator;
+    typedef ConstImageIterator<T>                         const_iterator;
     typedef typename AccessorTraits<T>::default_accessor  DefaultAccessor;
     typedef DefaultAccessor                               default_accessor;
     typedef VigraTrueType                                 hasConstantStrides;
@@ -1177,6 +1179,8 @@ template <class T>
 struct IteratorTraits<ConstImageIterator<T> >
 : public IteratorTraitsBase<ConstImageIterator<T> >
 {
+    typedef ImageIterator<T>                              mutable_iterator;
+    typedef ConstImageIterator<T>                         const_iterator;
     typedef typename AccessorTraits<T>::default_const_accessor  DefaultAccessor;
     typedef DefaultAccessor                               default_accessor;
     typedef VigraTrueType                                 hasConstantStrides;
@@ -1186,6 +1190,8 @@ template <class T>
 struct IteratorTraits<StridedImageIterator<T> >
 : public IteratorTraitsBase<StridedImageIterator<T> >
 {
+    typedef StridedImageIterator<T>                       mutable_iterator;
+    typedef ConstStridedImageIterator<T>                  const_iterator;
     typedef typename AccessorTraits<T>::default_accessor  DefaultAccessor;
     typedef DefaultAccessor                               default_accessor;
     typedef VigraTrueType                                 hasConstantStrides;
@@ -1195,6 +1201,8 @@ template <class T>
 struct IteratorTraits<ConstStridedImageIterator<T> >
 : public IteratorTraitsBase<ConstStridedImageIterator<T> >
 {
+    typedef StridedImageIterator<T>                       mutable_iterator;
+    typedef ConstStridedImageIterator<T>                  const_iterator;
     typedef typename AccessorTraits<T>::default_const_accessor  DefaultAccessor;
     typedef DefaultAccessor                               default_accessor;
     typedef VigraTrueType                                 hasConstantStrides;
@@ -1207,6 +1215,8 @@ struct IteratorTraits<ConstStridedImageIterator<T> >
     struct IteratorTraits<ImageIterator<VALUETYPE > > \
     : public IteratorTraitsBase<ImageIterator<VALUETYPE > > \
     { \
+        typedef ImageIterator<VALUETYPE>                         mutable_iterator; \
+        typedef ConstImageIterator<VALUETYPE>                    const_iterator; \
         typedef typename AccessorTraits<VALUETYPE >::default_accessor  DefaultAccessor; \
         typedef DefaultAccessor                               default_accessor; \
         typedef VigraTrueType                                 hasConstantStrides; \
@@ -1216,6 +1226,8 @@ struct IteratorTraits<ConstStridedImageIterator<T> >
     struct IteratorTraits<ConstImageIterator<VALUETYPE > > \
     : public IteratorTraitsBase<ConstImageIterator<VALUETYPE > > \
     { \
+        typedef ImageIterator<VALUETYPE>                         mutable_iterator; \
+        typedef ConstImageIterator<VALUETYPE>                    const_iterator; \
         typedef typename AccessorTraits<VALUETYPE >::default_const_accessor  DefaultAccessor; \
         typedef DefaultAccessor                               default_accessor; \
         typedef VigraTrueType                                 hasConstantStrides; \
@@ -1224,6 +1236,8 @@ struct IteratorTraits<ConstStridedImageIterator<T> >
     struct IteratorTraits<StridedImageIterator<VALUETYPE > > \
     : public IteratorTraitsBase<StridedImageIterator<VALUETYPE > > \
     { \
+        typedef StridedImageIterator<VALUETYPE>                         mutable_iterator; \
+        typedef ConstStridedImageIterator<VALUETYPE>                    const_iterator; \
         typedef typename AccessorTraits<VALUETYPE >::default_accessor  DefaultAccessor; \
         typedef DefaultAccessor                               default_accessor; \
         typedef VigraTrueType                                 hasConstantStrides; \
@@ -1233,6 +1247,8 @@ struct IteratorTraits<ConstStridedImageIterator<T> >
     struct IteratorTraits<ConstStridedImageIterator<VALUETYPE > > \
     : public IteratorTraitsBase<ConstStridedImageIterator<VALUETYPE > > \
     { \
+        typedef StridedImageIterator<VALUETYPE>                         mutable_iterator; \
+        typedef ConstStridedImageIterator<VALUETYPE>                    const_iterator; \
         typedef typename AccessorTraits<VALUETYPE >::default_const_accessor  DefaultAccessor; \
         typedef DefaultAccessor                               default_accessor; \
         typedef VigraTrueType                                 hasConstantStrides; \

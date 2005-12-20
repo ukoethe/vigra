@@ -442,6 +442,8 @@ struct IteratorTraits<Diff2D >
 {
     typedef Diff2D                               Iterator;
     typedef Iterator                             iterator;
+    typedef Iterator                             const_iterator;
+    // typedef                                   multable_iterator; undefined
     typedef iterator::iterator_category          iterator_category;
     typedef iterator::value_type                 value_type;
     typedef iterator::reference                  reference;
