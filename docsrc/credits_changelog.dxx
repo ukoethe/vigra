@@ -44,18 +44,33 @@ Many thanks to all!
       <li> Introduced \ref FixedSizeInt (UInt8, Int16 etc.) and made VIGRA compile on 
            64-bit compilers. Thanks to Hans Ekkehard Plesser 
            <a href="mailto:hans.ekkehard.plesser@umb.no">hans.ekkehard.plesser@umb.no</a>)
-           for bug reports and other help.
+           for bug reports and other help. Added corresponding typedefs UInt8Image, 
+           Int16RGBImage etc.
+      
+      <li> Added NumericTraits::isSigned. Thanks to Pablo D'Angelo 
+           <a href="mailto:pablo.dangelo@web.de">pablo.dangelo@web.de</a>)
+           for a patch.
       
       <li> Added \ref watersheds().
       
-      <li> Added selection of neighborhood to \ref localMinima() and \ref localMaxima().
+      <li> Added \ref cross() (cross product).
+      
+      <li> Added \ref cannyEdgeImageWithThinning().
+      
+      <li> Added the possibility to choose between 4- and 
+           8-neighborhood in \ref localMinima() and \ref localMaxima().
+      
+      <li> Added \ref vigra::FixedPoint.
+      
+      <li> Added \ref SquareRootTraits and sqrti().
       
       <li> Added \ref vigra::RestrictedNeighborhoodCirculator.
       
       <li> Extended \ref vigra::SplineImageView to support access outside the image
-           border according to reflective boundary conditions.
+           border according to reflective boundary conditions. Added partial
+           specializations for orders 0 and 1 to speed up computations.
       
-      <li> Extended \ref vigra::RGBValue to have the color channels arbitrarily ordered
+      <li> Extended \ref vigra::RGBValue to have arbitrarily ordered color channels
            (e.g. BGR). Thanks to Paul Furgale 
            (<a href="mailto:umfurga1@cc.umanitoba.ca">umfurga1@cc.umanitoba.ca</a>) for the
            suggestion and a first implementation.
