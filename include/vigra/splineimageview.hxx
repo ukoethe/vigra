@@ -65,6 +65,36 @@ namespace vigra {
     for image resizing, but here the functions from the <tt>resize...</tt> family are 
     more efficient. 
     
+    The <tt>SplineImageView</tt> template is explicitly specialized to make it as efficient as possible.
+    In particular, unnecessary copying of the image is avoided when the iterators passed
+    in the constructor originate from a \ref vigra::BasicImage. In addition, these specializations
+    provide function <tt>unchecked(...)</tt> that do not perform bounds checking. If the original image
+    is not a variant of \ref vigra::BasicImage, one can customize the internal representation by 
+    using <tt>SplineImageview0</tt> or <tt>SplineImageview1</tt>.
+    
+    <b>Usage:</b>
+    
+    <b>\#include</b> "<a href="splines_8hxx-source.html">vigra/splines.hxx</a>"<br>
+    Namespace: vigra
+    
+    \code
+    BImage img(w,h);
+    ... // fill img
+    
+    // construct spline view for quadratic interpolation
+    SplineImageView<2, double> spi2(img);
+    
+    double x = ..., y = ...;
+    double v2 = spi2(x, y);
+    
+    // construct spline view for linear interpolation
+    SplineImageView<1, UInt32> spi1(img);
+    
+    UInt32 v1 = spi1(x, y);    
+    
+    FixedPoint<16, 15> fx(...), fy(...);
+    UInt32 vf = spi1.unchecked(fx, fy);
+    \endcode
 */
 template <int ORDER, class VALUETYPE>
 class SplineImageView
@@ -954,6 +984,15 @@ class SplineImageView0Base
     INTERNAL_INDEXER internalIndexer_;
 };
 
+/** \brief Create an image view for nearest-neighbor interpolation.
+
+    This class behaves like \ref vigra::SplineImageView&lt;0, ...&gt;, but one can pass 
+    an additional template argument that determined the internal representation of the image.
+    If this is equal to the argument type passed in the constructor, the image is not copied.
+    By default, this works for \ref vigra::BasicImage, \ref vigra::BasicImageView,
+    \ref vigra::MultiArray&lt;2, ...&gt;, and \ref vigra::MultiArrayView&lt;2, ...&gt;.
+    
+*/
 template <class VALUETYPE, class INTERNAL_TRAVERSER = typename BasicImage<VALUETYPE>::const_traverser>
 class SplineImageView0
 : public SplineImageView0Base<VALUETYPE, INTERNAL_TRAVERSER>
@@ -1025,7 +1064,7 @@ class SplineImageView0
     InternalImage const & image() const
         { return image_; }
 
-  private:
+  protected:
     InternalImage image_;
 };
 
@@ -1088,7 +1127,7 @@ class SplineImageView0<VALUETYPE, MultiArrayView<2, VALUETYPE, StridedOrUnstride
     InternalImage const & image() const
         { return image_; }
     
-  private:
+  protected:
     InternalImage image_;
 };
 
@@ -1135,14 +1174,14 @@ public:
     SplineImageView(SrcIterator is, SrcIterator iend, SrcAccessor sa, bool /* unused */ = false)
     : Base(is, iend, sa)
     {
-        copyImage(srcIterRange(is, iend, sa), destImage(image_));
+        copyImage(srcIterRange(is, iend, sa), destImage(this->image_));
     }
 
     template <class SrcIterator, class SrcAccessor>
     SplineImageView(triple<SrcIterator, SrcIterator, SrcAccessor> s, bool /* unused */ = false)
     : Base(s)
     {
-        copyImage(s, destImage(image_));
+        copyImage(s, destImage(this->image_));
     }
 };
 
@@ -1186,17 +1225,11 @@ class SplineImageView1Base
             --iy;
         FixedPoint<0, FractionalBits2> ty = frac(y - FixedPoint<IntBits2, FractionalBits2>(iy));
         double dy = fixed_point_cast<double>(ty);
-#if 1
         return fixed_point_cast<value_type>(
                     dual_frac(ty)*(dual_frac(tx)*fixedPoint(internalIndexer_(ix,iy)) + 
                                    tx*fixedPoint(internalIndexer_(ix+1,iy))) +
                     ty *(dual_frac(tx)*fixedPoint(internalIndexer_(ix,iy+1)) + 
                                    tx*fixedPoint(internalIndexer_(ix+1,iy+1))));
-#endif
-#if 0
-        return (1.0-dy)*((1.0-dx)*internalIndexer_(ix,iy) + dx*internalIndexer_(ix+1,iy)) +
-                    dy *((1.0-dx)*internalIndexer_(ix,iy+1) + dx*internalIndexer_(ix+1,iy+1));
-#endif
     }
 
     template <unsigned IntBits1, unsigned FractionalBits1,
@@ -1220,12 +1253,14 @@ class SplineImageView1Base
               {
                 case 0:
                     return fixed_point_cast<value_type>(
-                                dual_frac(ty)*(dual_frac(tx)*internalIndexer_(ix,iy) + tx*internalIndexer_(ix+1,iy)) +
-                                ty *(dual_frac(tx)*internalIndexer_(ix,iy+1) + tx*internalIndexer_(ix+1,iy+1)));
+                                dual_frac(ty)*(dual_frac(tx)*fixedPoint(internalIndexer_(ix,iy)) + 
+                                               tx*fixedPoint(internalIndexer_(ix+1,iy))) +
+                                ty *(dual_frac(tx)*fixedPoint(internalIndexer_(ix,iy+1)) + 
+                                               tx*fixedPoint(internalIndexer_(ix+1,iy+1))));
                 case 1:
                     return fixed_point_cast<value_type>(
-                           (dual_frac(tx)*internalIndexer_(ix,iy+1) + tx*internalIndexer_(ix+1,iy+1)) -
-                           (dual_frac(tx)*internalIndexer_(ix,iy) + tx*internalIndexer_(ix+1,iy)));
+                           (dual_frac(tx)*fixedPoint(internalIndexer_(ix,iy+1)) + tx*fixedPoint(internalIndexer_(ix+1,iy+1))) -
+                           (dual_frac(tx)*fixedPoint(internalIndexer_(ix,iy)) + tx*fixedPoint(internalIndexer_(ix+1,iy))));
                 default:
                     return NumericTraits<VALUETYPE>::zero();
               }
@@ -1234,12 +1269,12 @@ class SplineImageView1Base
               {
                 case 0:
                     return fixed_point_cast<value_type>(
-                                dual_frac(ty)*(internalIndexer_(ix+1,iy) - internalIndexer_(ix,iy)) +
-                                ty *(internalIndexer_(ix+1,iy+1) - internalIndexer_(ix,iy+1)));
+                                dual_frac(ty)*(fixedPoint(internalIndexer_(ix+1,iy)) - fixedPoint(internalIndexer_(ix,iy))) +
+                                ty *(fixedPoint(internalIndexer_(ix+1,iy+1)) - fixedPoint(internalIndexer_(ix,iy+1))));
                 case 1:
-                    return fixed_point_cast<value_type>(
-                            (internalIndexer_(ix+1,iy+1) - internalIndexer_(ix,iy+1)) -
-                            (internalIndexer_(ix+1,iy) - internalIndexer_(ix,iy)));
+                    return detail::RequiresExplicitCast<value_type>::cast(
+                                (internalIndexer_(ix+1,iy+1) - internalIndexer_(ix,iy+1)) -
+                                (internalIndexer_(ix+1,iy) - internalIndexer_(ix,iy)));
                 default:
                     return NumericTraits<VALUETYPE>::zero();
               }
@@ -1258,8 +1293,9 @@ class SplineImageView1Base
         if(iy == h_ - 1)
             --iy;
         double ty = y - iy;
-        return (1.0-ty)*((1.0-tx)*internalIndexer_(ix,iy) + tx*internalIndexer_(ix+1,iy)) +
-                    ty *((1.0-tx)*internalIndexer_(ix,iy+1) + tx*internalIndexer_(ix+1,iy+1));
+        return NumericTraits<value_type>::fromRealPromote(
+                   (1.0-ty)*((1.0-tx)*internalIndexer_(ix,iy) + tx*internalIndexer_(ix+1,iy)) +
+                    ty *((1.0-tx)*internalIndexer_(ix,iy+1) + tx*internalIndexer_(ix+1,iy+1)));
     }
 
     value_type unchecked(double x, double y, unsigned int dx, unsigned int dy) const
@@ -1278,11 +1314,13 @@ class SplineImageView1Base
               switch(dy)
               {
                 case 0:
-                    return (1.0-ty)*((1.0-tx)*internalIndexer_(ix,iy) + tx*internalIndexer_(ix+1,iy)) +
-                                ty *((1.0-tx)*internalIndexer_(ix,iy+1) + tx*internalIndexer_(ix+1,iy+1));
+                    return NumericTraits<value_type>::fromRealPromote(
+                               (1.0-ty)*((1.0-tx)*internalIndexer_(ix,iy) + tx*internalIndexer_(ix+1,iy)) +
+                                ty *((1.0-tx)*internalIndexer_(ix,iy+1) + tx*internalIndexer_(ix+1,iy+1)));
                 case 1:
-                    return ((1.0-tx)*internalIndexer_(ix,iy+1) + tx*internalIndexer_(ix+1,iy+1)) -
-                           ((1.0-tx)*internalIndexer_(ix,iy) + tx*internalIndexer_(ix+1,iy));
+                    return NumericTraits<value_type>::fromRealPromote(
+                               ((1.0-tx)*internalIndexer_(ix,iy+1) + tx*internalIndexer_(ix+1,iy+1)) -
+                               ((1.0-tx)*internalIndexer_(ix,iy) + tx*internalIndexer_(ix+1,iy)));
                 default:
                     return NumericTraits<VALUETYPE>::zero();
               }
@@ -1290,11 +1328,13 @@ class SplineImageView1Base
               switch(dy)
               {
                 case 0:
-                    return (1.0-ty)*(internalIndexer_(ix+1,iy) - internalIndexer_(ix,iy)) +
-                                ty *(internalIndexer_(ix+1,iy+1) - internalIndexer_(ix,iy+1));
+                    return NumericTraits<value_type>::fromRealPromote(
+                               (1.0-ty)*(internalIndexer_(ix+1,iy) - internalIndexer_(ix,iy)) +
+                                ty *(internalIndexer_(ix+1,iy+1) - internalIndexer_(ix,iy+1)));
                 case 1:
-                    return (internalIndexer_(ix+1,iy+1) - internalIndexer_(ix,iy+1)) -
-                           (internalIndexer_(ix+1,iy) - internalIndexer_(ix,iy));
+                    return detail::RequiresExplicitCast<value_type>::cast(
+                              (internalIndexer_(ix+1,iy+1) - internalIndexer_(ix,iy+1)) -
+                              (internalIndexer_(ix+1,iy) - internalIndexer_(ix,iy)));
                 default:
                     return NumericTraits<VALUETYPE>::zero();
               }
@@ -1310,7 +1350,7 @@ class SplineImageView1Base
 
     value_type operator()(double x, double y, unsigned int dx, unsigned int dy) const
     {
-        double mul = 1.0;
+        value_type mul = NumericTraits<value_type>::one();
         if(x < 0.0)
         {
             x = -x;
@@ -1551,6 +1591,21 @@ void SplineImageView1Base<VALUETYPE, INTERNAL_INDEXER>::calculateIndices(double 
     }
 }
 
+/** \brief Create an image view for bi-linear interpolation.
+
+    This class behaves like \ref vigra::SplineImageView&lt;1, ...&gt;, but one can pass 
+    an additional template argument that determined the internal representation of the image.
+    If this is equal to the argument type passed in the constructor, the image is not copied.
+    By default, this works for \ref vigra::BasicImage, \ref vigra::BasicImageView,
+    \ref vigra::MultiArray&lt;2, ...&gt;, and \ref vigra::MultiArrayView&lt;2, ...&gt;.
+    
+    In addition to the function provided by  \ref vigra::SplineImageView, there are functions 
+    <tt>unchecked(x,y)</tt> and <tt>unchecked(x,y, xorder, yorder)</tt> which improve speed by 
+    not applying bounds checking and reflective border treatment (<tt>isInside(x, y)</tt> must 
+    be <tt>true</tt>), but otherwise behave identically to their checked counterparts.
+    In addition, <tt>x</tt> and <tt>y</tt> can have type \ref vigra::FixedPoint instead of
+    <tt>double</tt>.
+*/
 template <class VALUETYPE, class INTERNAL_TRAVERSER = typename BasicImage<VALUETYPE>::const_traverser>
 class SplineImageView1
 : public SplineImageView1Base<VALUETYPE, INTERNAL_TRAVERSER>
@@ -1622,7 +1677,7 @@ class SplineImageView1
     InternalImage const & image() const
         { return image_; }
 
-  private:
+  protected:
     InternalImage image_;
 };
 
@@ -1685,7 +1740,7 @@ class SplineImageView1<VALUETYPE, MultiArrayView<2, VALUETYPE, StridedOrUnstride
     InternalImage const & image() const
         { return image_; }
     
-  private:
+  protected:
     InternalImage image_;
 };
 
@@ -1732,14 +1787,14 @@ public:
     SplineImageView(SrcIterator is, SrcIterator iend, SrcAccessor sa, bool /* unused */ = false)
     : Base(is, iend, sa)
     {
-        copyImage(srcIterRange(is, iend, sa), destImage(image_));
+        copyImage(srcIterRange(is, iend, sa), destImage(this->image_));
     }
 
     template <class SrcIterator, class SrcAccessor>
     SplineImageView(triple<SrcIterator, SrcIterator, SrcAccessor> s, bool /* unused */ = false)
     : Base(s)
     {
-        copyImage(s, destImage(image_));
+        copyImage(s, destImage(this->image_));
     }
 };
 
