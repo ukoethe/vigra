@@ -139,19 +139,19 @@ class RGBValue
   public:
         /** STL-compatible definition of valuetype
         */
-    typedef VALUETYPE value_type;
+    typedef typename Base::value_type value_type;
         /** STL-compatible definition of iterator
         */
-    typedef typename TinyVector<VALUETYPE, 3>::iterator iterator;
+    typedef typename Base::iterator iterator;
         /** STL-compatible definition of const iterator
         */
-    typedef typename TinyVector<VALUETYPE, 3>::const_iterator const_iterator;
+    typedef typename Base::const_iterator const_iterator;
         /** squared norm type (result of squaredManitude())
         */
-    typedef typename TinyVector<VALUETYPE, 3>::SquaredNormType SquaredNormType;
+    typedef typename Base::SquaredNormType SquaredNormType;
         /** norm type (result of magnitude())
         */
-    typedef typename TinyVector<VALUETYPE, 3>::NormType NormType;
+    typedef typename Base::NormType NormType;
 
         /** Color index positions
         */
@@ -162,46 +162,48 @@ class RGBValue
       BlueIdx = BLUE_IDX
     };
 
-        // Only needed to ensure that the static assert is executed
-    ~RGBValue()
-    {
-#if !defined(__GNUC__) ||  __GNUC__ > 2
-        VIGRA_STATIC_ASSERT((RGBValue_bad_color_indices<RED_IDX, GREEN_IDX, BLUE_IDX>));
-#endif
-    }
-
         /** Construct from explicit color values.
             \a first, \a second, \a third are written in this order,
             irrespective of how the color indices are specified.
         */
     RGBValue(value_type first, value_type second, value_type third)
     : Base(first, second, third)
-    {}
+    {
+        VIGRA_STATIC_ASSERT((RGBValue_bad_color_indices<RED_IDX, GREEN_IDX, BLUE_IDX>));
+    }
 
         /** Construct gray value
         */
     RGBValue(value_type gray)
     : Base(gray, gray, gray)
-    {}
+    {
+        VIGRA_STATIC_ASSERT((RGBValue_bad_color_indices<RED_IDX, GREEN_IDX, BLUE_IDX>));
+    }
 
         /** Construct from another sequence (must have length 3!)
         */
     template <class Iterator>
     RGBValue(Iterator i, Iterator end)
     : Base(i[0], i[1], i[2])
-    {}
+    {
+        VIGRA_STATIC_ASSERT((RGBValue_bad_color_indices<RED_IDX, GREEN_IDX, BLUE_IDX>));
+    }
 
         /** Default constructor (sets all components to 0)
         */
     RGBValue()
     : Base(0, 0, 0)
-    {}
+    {
+        VIGRA_STATIC_ASSERT((RGBValue_bad_color_indices<RED_IDX, GREEN_IDX, BLUE_IDX>));
+    }
 
 #if !defined(TEMPLATE_COPY_CONSTRUCTOR_BUG)
 
     RGBValue(RGBValue const & r)
     : Base(r)
-    {}
+    {
+        VIGRA_STATIC_ASSERT((RGBValue_bad_color_indices<RED_IDX, GREEN_IDX, BLUE_IDX>));
+    }
 
     RGBValue & operator=(RGBValue const & r)
     {
@@ -211,8 +213,6 @@ class RGBValue
 
 #endif // TEMPLATE_COPY_CONSTRUCTOR_BUG
 
-
-
         /** Copy constructor.
         */
     template <class U, unsigned int R, unsigned int G, unsigned int B>
@@ -220,7 +220,9 @@ class RGBValue
     : Base(detail::RequiresExplicitCast<value_type>::cast(r[detail::SelectColorIndexRHS<IDX0, R, G, B>::res]),
            detail::RequiresExplicitCast<value_type>::cast(r[detail::SelectColorIndexRHS<IDX1, R, G, B>::res]),
            detail::RequiresExplicitCast<value_type>::cast(r[detail::SelectColorIndexRHS<IDX2, R, G, B>::res]))
-    {}
+    {
+        VIGRA_STATIC_ASSERT((RGBValue_bad_color_indices<RED_IDX, GREEN_IDX, BLUE_IDX>));
+    }
 
         /** Copy assignment.
         */
@@ -237,7 +239,9 @@ class RGBValue
         */
     RGBValue(TinyVector<value_type, 3> const & r)
     : Base(r)
-    {}
+    {
+        VIGRA_STATIC_ASSERT((RGBValue_bad_color_indices<RED_IDX, GREEN_IDX, BLUE_IDX>));
+    }
 
         /** assign TinyVector.
         */
@@ -286,14 +290,13 @@ class RGBValue
         /** Calculate magnitude.
         */
     NormType magnitude() const {
-         return VIGRA_CSTD::sqrt(
-            (typename NumericTraits<VALUETYPE>::RealPromote)squaredMagnitude());
+         return Base::magnitude();
     }
 
         /** Calculate squared magnitude.
         */
     SquaredNormType squaredMagnitude() const {
-         return red()*red() + green()*green() + blue()*blue();
+         return Base::squaredMagnitude();
     }
 
         /** Set red component. The type <TT>V</TT> of the passed
