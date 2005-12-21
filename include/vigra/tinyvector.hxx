@@ -429,7 +429,7 @@ class TinyVectorBase
 
         /** the vector's norm type
         */
-    typedef typename NumericTraits<SquaredNormType>::RealPromote NormType;
+    typedef typename SquareRootTraits<SquaredNormType>::SquareRootResult NormType;
 
         /** the vector's size
         */
@@ -492,7 +492,8 @@ class TinyVectorBase
         */
     NormType magnitude() const
     {
-         return VIGRA_CSTD::sqrt(static_cast<NormType>(squaredMagnitude()));
+         return sqrt(static_cast<typename 
+              SquareRootTraits<SquaredNormType>::SquareRootArgument>(squaredMagnitude()));
     }
 
         /** Calculate squared magnitude.
