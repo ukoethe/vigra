@@ -105,12 +105,13 @@ VIGRA_DECLARE_PACKAGE(png,  [support import/export of png images], yes)
 VIGRA_DECLARE_PACKAGE(zlib, [zlib compression library (required for libpng)], yes)
 VIGRA_DECLARE_PACKAGE(fftw, [support fast Fourier transforms (fftw3 required!)], yes)
 
-AC_ARG_WITH(python, [
---with-python:  Build the VIGRA Python bindings (default: no).
-                The python executable must be in the path or given by $PYTHON], ,[with_python="no"])
-AC_ARG_WITH(pythoninstall, [--with-pythoninstall=dir:  install the VIGRA Python modules in 'dir' instead of the 
-                           default Python module directory (requires adding 'dir' 
-                           to $PYTHONPATH)], ,)
+# AC_ARG_WITH(python, [
+# --with-python:  Build the VIGRA Python bindings (default: no).
+#                 The python executable must be in the path or given by $PYTHON], ,[with_python="no"])
+# AC_ARG_WITH(pythoninstall, [--with-pythoninstall=dir:  install the VIGRA Python modules in 'dir' instead of the 
+#                            default Python module directory (requires adding 'dir' 
+#                            to $PYTHONPATH)], ,)
+with_python="no"
 
 VIGRA_DECLARE_PACKAGE(boostpython, [boost_python glue code generator (required for VIGRA Python bindings)], [$with_python])
 AC_ARG_WITH(boostpythonname, [        --with-boostpythonname=name : the name of the boost python library (default: boost_python)], ,)
@@ -424,7 +425,7 @@ echo "TIFF   support enabled (--with-tiff): $with_tiff"
 echo "JPEG   support enabled (--with-jpeg): $with_jpeg"
 echo "PNG    support enabled (--with-png):  $with_png"
 echo "FFTW   support enabled (--with-fftw): $with_fftw"
-echo "Python support enabled (--with-python): $with_python"
+#echo "Python support enabled (--with-python): $with_python"
 echo ""
 echopath "The vigra sources are taken from $vigra_srcdir."
 echopath "The vigraimpex library    will be installed in $libdir."
