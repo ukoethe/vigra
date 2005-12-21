@@ -1,4 +1,4 @@
-AC_INIT(vigra, 1.3.2)
+AC_INIT(vigra, 1.4.0)
 
 dnl-------------------------------------------------------------------
 dnl                   vigra/interactive version
