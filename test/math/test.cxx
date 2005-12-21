@@ -222,8 +222,8 @@ struct SplineTest
         {
             vigra::FixedPoint<11,20> fpx20(x);
             vigra::FixedPoint<11,15> fpx15(x);
-            should(vigra::abs((double)spline(fpx20) - spline(x)) < 1e-6);
-            should(vigra::abs((double)spline(fpx15) - spline(x)) < 4e-5);
+            should(vigra::abs(vigra::fixed_point_cast<double>(spline(fpx20)) - spline(x)) < 1e-6);
+            should(vigra::abs(vigra::fixed_point_cast<double>(spline(fpx15)) - spline(x)) < 4e-5);
 
         }
     }
@@ -314,6 +314,14 @@ struct FunctionsTest
         shouldEqualTolerance(g5(-1.0), 0.034553286464660257, epsilon);
         shouldEqualTolerance(g5(2.711252359948531), 0, epsilon);
         shouldEqualTolerance(g5(5.713940027745611), 0, epsilon);
+    }
+    
+    void intSquareRootTest()
+    {
+        for(int i = 0; i < 1024; ++i)
+        {
+            shouldEqual(vigra::sqrti(i), (vigra::Int32)vigra::floor(vigra::sqrt((double)i)));
+        }
     }
 
     void closeAtToleranceTest()
@@ -650,7 +658,7 @@ struct FixedPointTest
         shouldEqual((vigra::FixedPoint<2, 2>(-v).value), -15);
         shouldEqual((vigra::FixedPoint<2, 0>(-v).value), -4);
 
-        shouldEqual((double)v, 3.75);
+        shouldEqual(vigra::fixed_point_cast<double>(v), 3.75);
         should((frac(v) == vigra::FixedPoint<0, 8>(0.75)));
         should((dual_frac(v) == vigra::FixedPoint<0, 8>(0.25)));
         should(vigra::floor(v) == 3);
@@ -759,6 +767,18 @@ struct FixedPointTest
         shouldEqual(r3.value, (vigra::FixedPoint<2, 24>(d1 - d2)).value);
         mul(r1, r2, r3);
         shouldEqual(r3.value >> 2, (vigra::FixedPoint<2, 24>(d1 * d2)).value >> 2);
+        
+        for(int i = 0; i < 1024; ++i)
+        {
+            vigra::FixedPoint<4,5> fv1(i, vigra::FPNoShift);
+            vigra::FixedPoint<5,4> fv2(i, vigra::FPNoShift);
+            vigra::FixedPoint<5,5> fv3(i, vigra::FPNoShift);
+            vigra::FixedPoint<6,6> fv4(i, vigra::FPNoShift);
+            shouldEqual(vigra::fixed_point_cast<double>(vigra::sqrt(fv1)), vigra::floor(vigra::sqrt((double)fv1.value)) / 8.0);
+            shouldEqual(vigra::fixed_point_cast<double>(vigra::sqrt(fv2)), vigra::floor(vigra::sqrt((double)fv2.value)) / 4.0);
+            shouldEqual(vigra::fixed_point_cast<double>(vigra::sqrt(fv3)), vigra::floor(vigra::sqrt((double)fv3.value)) / 4.0);
+            shouldEqual(vigra::fixed_point_cast<double>(vigra::sqrt(fv4)), vigra::floor(vigra::sqrt((double)fv4.value)) / 8.0);
+        }
     }
 };
 
@@ -1138,6 +1158,7 @@ struct MathTestSuite
         add( testCase(&SplineTest<5>::testWeightMatrix));
 
         add( testCase(&FunctionsTest::testGaussians));
+        add( testCase(&FunctionsTest::intSquareRootTest));
         add( testCase(&FunctionsTest::closeAtToleranceTest));
 
         add( testCase(&RationalTest::testGcdLcm));
