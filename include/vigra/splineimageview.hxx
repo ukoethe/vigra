@@ -1218,7 +1218,7 @@ class SplineImageView1Base
         int ix = floor(x);
         FixedPoint<0, FractionalBits1> tx = frac(x - FixedPoint<IntBits1, FractionalBits1>(ix));
         FixedPoint<0, FractionalBits1> dtx = dual_frac(tx);
-        if(ix == w_ - 1)
+        if(ix == (int)w_ - 1)
         {
             --ix;
             tx.value = FixedPoint<0, FractionalBits1>::ONE;
@@ -1227,7 +1227,7 @@ class SplineImageView1Base
         int iy = floor(y);
         FixedPoint<0, FractionalBits2> ty = frac(y - FixedPoint<IntBits2, FractionalBits2>(iy));
         FixedPoint<0, FractionalBits2> dty = dual_frac(ty);
-        if(iy == h_ - 1)
+        if(iy == (int)h_ - 1)
         {
             --iy;
             ty.value = FixedPoint<0, FractionalBits2>::ONE;
@@ -1249,7 +1249,7 @@ class SplineImageView1Base
         int ix = floor(x);
         FixedPoint<0, FractionalBits1> tx = frac(x - FixedPoint<IntBits1, FractionalBits1>(ix));
         FixedPoint<0, FractionalBits1> dtx = dual_frac(tx);
-        if(ix == w_ - 1)
+        if(ix == (int)w_ - 1)
         {
             --ix;
             tx.value = FixedPoint<0, FractionalBits1>::ONE;
@@ -1258,7 +1258,7 @@ class SplineImageView1Base
         int iy = floor(y);
         FixedPoint<0, FractionalBits2> ty = frac(y - FixedPoint<IntBits2, FractionalBits2>(iy));
         FixedPoint<0, FractionalBits2> dty = dual_frac(ty);
-        if(iy == h_ - 1)
+        if(iy == (int)h_ - 1)
         {
             --iy;
             ty.value = FixedPoint<0, FractionalBits2>::ONE;
@@ -1304,11 +1304,11 @@ class SplineImageView1Base
     value_type unchecked(double x, double y) const
     {
         int ix = (int)std::floor(x);
-        if(ix == w_ - 1)
+        if(ix == (int)w_ - 1)
             --ix;
         double tx = x - ix;
         int iy = (int)std::floor(y);
-        if(iy == h_ - 1)
+        if(iy == (int)h_ - 1)
             --iy;
         double ty = y - iy;
         return NumericTraits<value_type>::fromRealPromote(
@@ -1319,11 +1319,11 @@ class SplineImageView1Base
     value_type unchecked(double x, double y, unsigned int dx, unsigned int dy) const
     {
         int ix = (int)std::floor(x);
-        if(ix == w_ - 1)
+        if(ix == (int)w_ - 1)
             --ix;
         double tx = x - ix;
         int iy = (int)std::floor(y);
-        if(iy == h_ - 1)
+        if(iy == (int)h_ - 1)
             --iy;
         double ty = y - iy;
         switch(dx)
