@@ -1179,13 +1179,24 @@ class SplineImageView1Base
         int ix = floor(x);
         if(ix == w_ - 1)
             --ix;
-        FixedPoint<0, FractionalBits1> tx = frac(x - fixedPoint(ix));
+        FixedPoint<0, FractionalBits1> tx = frac(x - FixedPoint<IntBits1, FractionalBits1>(ix));
+        double dx = fixed_point_cast<double>(tx);
         int iy = floor(y);
         if(iy == h_ - 1)
             --iy;
-        FixedPoint<0, FractionalBits2> ty = frac(y - fixedPoint(iy));
-        return dual_frac(ty)*(dual_frac(tx)*internalIndexer_(ix,iy) + tx*internalIndexer_(ix+1,iy)) +
-                    ty *(dual_frac(tx)*internalIndexer_(ix,iy+1) + tx*internalIndexer_(ix+1,iy+1));
+        FixedPoint<0, FractionalBits2> ty = frac(y - FixedPoint<IntBits2, FractionalBits2>(iy));
+        double dy = fixed_point_cast<double>(ty);
+#if 1
+        return fixed_point_cast<value_type>(
+                    dual_frac(ty)*(dual_frac(tx)*fixedPoint(internalIndexer_(ix,iy)) + 
+                                   tx*fixedPoint(internalIndexer_(ix+1,iy))) +
+                    ty *(dual_frac(tx)*fixedPoint(internalIndexer_(ix,iy+1)) + 
+                                   tx*fixedPoint(internalIndexer_(ix+1,iy+1))));
+#endif
+#if 0
+        return (1.0-dy)*((1.0-dx)*internalIndexer_(ix,iy) + dx*internalIndexer_(ix+1,iy)) +
+                    dy *((1.0-dx)*internalIndexer_(ix,iy+1) + dx*internalIndexer_(ix+1,iy+1));
+#endif
     }
 
     template <unsigned IntBits1, unsigned FractionalBits1,
@@ -1197,22 +1208,24 @@ class SplineImageView1Base
         int ix = floor(x);
         if(ix == w_ - 1)
             --ix;
-        FixedPoint<0, FractionalBits1> tx = frac(x - fixedPoint(ix));
+        FixedPoint<0, FractionalBits1> tx = frac(x - FixedPoint<IntBits1, FractionalBits1>(ix));
         int iy = floor(y);
         if(iy == h_ - 1)
             --iy;
-        FixedPoint<0, FractionalBits2> ty = frac(y - fixedPoint(iy));
+        FixedPoint<0, FractionalBits2> ty = frac(y - FixedPoint<IntBits2, FractionalBits2>(iy));
         switch(dx)
         {
           case 0:
               switch(dy)
               {
                 case 0:
-                    return dual_frac(ty)*(dual_frac(tx)*internalIndexer_(ix,iy) + tx*internalIndexer_(ix+1,iy)) +
-                                ty *(dual_frac(tx)*internalIndexer_(ix,iy+1) + tx*internalIndexer_(ix+1,iy+1));
+                    return fixed_point_cast<value_type>(
+                                dual_frac(ty)*(dual_frac(tx)*internalIndexer_(ix,iy) + tx*internalIndexer_(ix+1,iy)) +
+                                ty *(dual_frac(tx)*internalIndexer_(ix,iy+1) + tx*internalIndexer_(ix+1,iy+1)));
                 case 1:
-                    return (dual_frac(tx)*internalIndexer_(ix,iy+1) + tx*internalIndexer_(ix+1,iy+1)) -
-                           (dual_frac(tx)*internalIndexer_(ix,iy) + tx*internalIndexer_(ix+1,iy));
+                    return fixed_point_cast<value_type>(
+                           (dual_frac(tx)*internalIndexer_(ix,iy+1) + tx*internalIndexer_(ix+1,iy+1)) -
+                           (dual_frac(tx)*internalIndexer_(ix,iy) + tx*internalIndexer_(ix+1,iy)));
                 default:
                     return NumericTraits<VALUETYPE>::zero();
               }
@@ -1220,11 +1233,13 @@ class SplineImageView1Base
               switch(dy)
               {
                 case 0:
-                    return dual_frac(ty)*(internalIndexer_(ix+1,iy) - internalIndexer_(ix,iy)) +
-                                ty *(internalIndexer_(ix+1,iy+1) - internalIndexer_(ix,iy+1));
+                    return fixed_point_cast<value_type>(
+                                dual_frac(ty)*(internalIndexer_(ix+1,iy) - internalIndexer_(ix,iy)) +
+                                ty *(internalIndexer_(ix+1,iy+1) - internalIndexer_(ix,iy+1)));
                 case 1:
-                    return (internalIndexer_(ix+1,iy+1) - internalIndexer_(ix,iy+1)) -
-                           (internalIndexer_(ix+1,iy) - internalIndexer_(ix,iy));
+                    return fixed_point_cast<value_type>(
+                            (internalIndexer_(ix+1,iy+1) - internalIndexer_(ix,iy+1)) -
+                            (internalIndexer_(ix+1,iy) - internalIndexer_(ix,iy)));
                 default:
                     return NumericTraits<VALUETYPE>::zero();
               }
