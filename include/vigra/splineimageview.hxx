@@ -1040,7 +1040,7 @@ class SplineImageView0
         for(unsigned int y=0; y<this->height(); ++y)
             for(unsigned int x=0; x<this->width(); ++x)
                 image_(x,y) = detail::RequiresExplicitCast<VALUETYPE>::cast(i(x,y));
-        this->internalIndexer_ = image_->upperLeft();
+        this->internalIndexer_ = image_.upperLeft();
     }
 
     template <class SrcIterator, class SrcAccessor>
@@ -1049,7 +1049,7 @@ class SplineImageView0
       image_(iend - is)
     {
         copyImage(srcIterRange(is, iend, sa), destImage(image_));
-        this->internalIndexer_ = image_->upperLeft();
+        this->internalIndexer_ = image_.upperLeft();
     }
 
     template <class SrcIterator, class SrcAccessor>
@@ -1058,7 +1058,7 @@ class SplineImageView0
       image_(s.second - s.first)
     {
         copyImage(s, destImage(image_));
-        this->internalIndexer_ = image_->upperLeft();
+        this->internalIndexer_ = image_.upperLeft();
     }
     
     InternalImage const & image() const
@@ -1216,19 +1216,27 @@ class SplineImageView1Base
                          FixedPoint<IntBits2, FractionalBits2> y) const
     {
         int ix = floor(x);
-        if(ix == w_ - 1)
-            --ix;
         FixedPoint<0, FractionalBits1> tx = frac(x - FixedPoint<IntBits1, FractionalBits1>(ix));
-        double dx = fixed_point_cast<double>(tx);
+        FixedPoint<0, FractionalBits1> dtx = dual_frac(tx);
+        if(ix == w_ - 1)
+        {
+            --ix;
+            tx.value = FixedPoint<0, FractionalBits1>::ONE;
+            dtx.value = 0;
+        }
         int iy = floor(y);
-        if(iy == h_ - 1)
-            --iy;
         FixedPoint<0, FractionalBits2> ty = frac(y - FixedPoint<IntBits2, FractionalBits2>(iy));
-        double dy = fixed_point_cast<double>(ty);
+        FixedPoint<0, FractionalBits2> dty = dual_frac(ty);
+        if(iy == h_ - 1)
+        {
+            --iy;
+            ty.value = FixedPoint<0, FractionalBits2>::ONE;
+            dty.value = 0;
+        }
         return fixed_point_cast<value_type>(
-                    dual_frac(ty)*(dual_frac(tx)*fixedPoint(internalIndexer_(ix,iy)) + 
+                    dty*(dtx*fixedPoint(internalIndexer_(ix,iy)) + 
                                    tx*fixedPoint(internalIndexer_(ix+1,iy))) +
-                    ty *(dual_frac(tx)*fixedPoint(internalIndexer_(ix,iy+1)) + 
+                    ty *(dtx*fixedPoint(internalIndexer_(ix,iy+1)) + 
                                    tx*fixedPoint(internalIndexer_(ix+1,iy+1))));
     }
 
@@ -1239,13 +1247,23 @@ class SplineImageView1Base
                          unsigned int dx, unsigned int dy) const
     {
         int ix = floor(x);
-        if(ix == w_ - 1)
-            --ix;
         FixedPoint<0, FractionalBits1> tx = frac(x - FixedPoint<IntBits1, FractionalBits1>(ix));
+        FixedPoint<0, FractionalBits1> dtx = dual_frac(tx);
+        if(ix == w_ - 1)
+        {
+            --ix;
+            tx.value = FixedPoint<0, FractionalBits1>::ONE;
+            dtx.value = 0;
+        }
         int iy = floor(y);
-        if(iy == h_ - 1)
-            --iy;
         FixedPoint<0, FractionalBits2> ty = frac(y - FixedPoint<IntBits2, FractionalBits2>(iy));
+        FixedPoint<0, FractionalBits2> dty = dual_frac(ty);
+        if(iy == h_ - 1)
+        {
+            --iy;
+            ty.value = FixedPoint<0, FractionalBits2>::ONE;
+            dty.value = 0;
+        }
         switch(dx)
         {
           case 0:
@@ -1253,14 +1271,14 @@ class SplineImageView1Base
               {
                 case 0:
                     return fixed_point_cast<value_type>(
-                                dual_frac(ty)*(dual_frac(tx)*fixedPoint(internalIndexer_(ix,iy)) + 
+                                dty*(dtx*fixedPoint(internalIndexer_(ix,iy)) + 
                                                tx*fixedPoint(internalIndexer_(ix+1,iy))) +
-                                ty *(dual_frac(tx)*fixedPoint(internalIndexer_(ix,iy+1)) + 
+                                ty *(dtx*fixedPoint(internalIndexer_(ix,iy+1)) + 
                                                tx*fixedPoint(internalIndexer_(ix+1,iy+1))));
                 case 1:
                     return fixed_point_cast<value_type>(
-                           (dual_frac(tx)*fixedPoint(internalIndexer_(ix,iy+1)) + tx*fixedPoint(internalIndexer_(ix+1,iy+1))) -
-                           (dual_frac(tx)*fixedPoint(internalIndexer_(ix,iy)) + tx*fixedPoint(internalIndexer_(ix+1,iy))));
+                           (dtx*fixedPoint(internalIndexer_(ix,iy+1)) + tx*fixedPoint(internalIndexer_(ix+1,iy+1))) -
+                           (dtx*fixedPoint(internalIndexer_(ix,iy)) + tx*fixedPoint(internalIndexer_(ix+1,iy))));
                 default:
                     return NumericTraits<VALUETYPE>::zero();
               }
@@ -1269,7 +1287,7 @@ class SplineImageView1Base
               {
                 case 0:
                     return fixed_point_cast<value_type>(
-                                dual_frac(ty)*(fixedPoint(internalIndexer_(ix+1,iy)) - fixedPoint(internalIndexer_(ix,iy))) +
+                                dty*(fixedPoint(internalIndexer_(ix+1,iy)) - fixedPoint(internalIndexer_(ix,iy))) +
                                 ty *(fixedPoint(internalIndexer_(ix+1,iy+1)) - fixedPoint(internalIndexer_(ix,iy+1))));
                 case 1:
                     return detail::RequiresExplicitCast<value_type>::cast(
@@ -1653,7 +1671,7 @@ class SplineImageView1
         for(unsigned int y=0; y<this->height(); ++y)
             for(unsigned int x=0; x<this->width(); ++x)
                 image_(x,y) = detail::RequiresExplicitCast<VALUETYPE>::cast(i(x,y));
-        this->internalIndexer_ = image_->upperLeft();
+        this->internalIndexer_ = image_.upperLeft();
     }
 
     template <class SrcIterator, class SrcAccessor>
@@ -1662,7 +1680,7 @@ class SplineImageView1
       image_(iend - is)
     {
         copyImage(srcIterRange(is, iend, sa), destImage(image_));
-        this->internalIndexer_ = image_->upperLeft();
+        this->internalIndexer_ = image_.upperLeft();
     }
 
     template <class SrcIterator, class SrcAccessor>
@@ -1671,7 +1689,7 @@ class SplineImageView1
       image_(s.second - s.first)
     {
         copyImage(s, destImage(image_));
-        this->internalIndexer_ = image_->upperLeft();
+        this->internalIndexer_ = image_.upperLeft();
     }
     
     InternalImage const & image() const
