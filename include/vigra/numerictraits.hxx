@@ -294,6 +294,14 @@
     </td></tr>
     <tr><td>
     <tr><td>
+    <b> <TT>typedef ... isSigned;</TT></b>
+    </td><td>
+        VigraTrueType if <TT>ArithmeticType</TT> is a signed type, 
+        VigraFalseType otherwise 
+    
+    </td></tr>
+    <tr><td>
+    <tr><td>
     <b> <TT>typedef ... isOrdered;</TT></b>
     </td><td>
         VigraTrueType if <TT>ArithmeticType</TT> supports operator<(), 
@@ -484,6 +492,7 @@ struct NumericTraits
 
     typedef Error_NumericTraits_not_specialized_for_this_case isScalar;
     typedef Error_NumericTraits_not_specialized_for_this_case isIntegral;
+    typedef Error_NumericTraits_not_specialized_for_this_case isSigned;
     typedef Error_NumericTraits_not_specialized_for_this_case isOrdered;
     typedef Error_NumericTraits_not_specialized_for_this_case isComplex;
 };
@@ -499,6 +508,7 @@ struct NumericTraits<char>
 
     typedef Error_NumericTraits_char_is_not_a_numeric_type__use_signed_char_or_unsigned_char isScalar;
     typedef Error_NumericTraits_char_is_not_a_numeric_type__use_signed_char_or_unsigned_char isIntegral;
+    typedef Error_NumericTraits_char_is_not_a_numeric_type__use_signed_char_or_unsigned_char isSigned;
     typedef Error_NumericTraits_char_is_not_a_numeric_type__use_signed_char_or_unsigned_char isOrdered;
     typedef Error_NumericTraits_char_is_not_a_numeric_type__use_signed_char_or_unsigned_char isComplex;
 };
@@ -515,6 +525,7 @@ struct NumericTraits<bool>
 
     typedef VigraTrueType isIntegral;
     typedef VigraTrueType isScalar;
+    typedef VigraFalseType isSigned;
     typedef VigraTrueType isOrdered;
     typedef VigraFalseType isComplex;
     
@@ -553,6 +564,7 @@ struct NumericTraits<signed char>
 
     typedef VigraTrueType isIntegral;
     typedef VigraTrueType isScalar;
+    typedef VigraTrueType isSigned;
     typedef VigraTrueType isOrdered;
     typedef VigraFalseType isComplex;
     
@@ -596,6 +608,7 @@ struct NumericTraits<unsigned char>
 
     typedef VigraTrueType isIntegral;
     typedef VigraTrueType isScalar;
+    typedef VigraFalseType isSigned;
     typedef VigraTrueType isOrdered;
     typedef VigraFalseType isComplex;
     
@@ -637,6 +650,7 @@ struct NumericTraits<short int>
 
     typedef VigraTrueType isIntegral;
     typedef VigraTrueType isScalar;
+    typedef VigraTrueType isSigned;
     typedef VigraTrueType isOrdered;
     typedef VigraFalseType isComplex;
     
@@ -681,6 +695,7 @@ struct NumericTraits<short unsigned int>
 
     typedef VigraTrueType isIntegral;
     typedef VigraTrueType isScalar;
+    typedef VigraFalseType isSigned;
     typedef VigraTrueType isOrdered;
     typedef VigraFalseType isComplex;
 
@@ -722,6 +737,7 @@ struct NumericTraits<int>
 
     typedef VigraTrueType isIntegral;
     typedef VigraTrueType isScalar;
+    typedef VigraTrueType isSigned;
     typedef VigraTrueType isOrdered;
     typedef VigraFalseType isComplex;
 
@@ -763,6 +779,7 @@ struct NumericTraits<unsigned int>
 
     typedef VigraTrueType isIntegral;
     typedef VigraTrueType isScalar;
+    typedef VigraFalseType isSigned;
     typedef VigraTrueType isOrdered;
     typedef VigraFalseType isComplex;
     
@@ -802,6 +819,7 @@ struct NumericTraits<long>
 
     typedef VigraTrueType isIntegral;
     typedef VigraTrueType isScalar;
+    typedef VigraTrueType isSigned;
     typedef VigraTrueType isOrdered;
     typedef VigraFalseType isComplex;
     
@@ -843,6 +861,7 @@ struct NumericTraits<unsigned long>
 
     typedef VigraTrueType isIntegral;
     typedef VigraTrueType isScalar;
+    typedef VigraFalseType isSigned;
     typedef VigraTrueType isOrdered;
     typedef VigraFalseType isComplex;
     
@@ -882,6 +901,7 @@ struct NumericTraits<float>
     
     typedef VigraFalseType isIntegral;
     typedef VigraTrueType isScalar;
+    typedef VigraTrueType isSigned;
     typedef VigraTrueType isOrdered;
     typedef VigraFalseType isComplex;
     
@@ -910,6 +930,7 @@ struct NumericTraits<double>
 
     typedef VigraFalseType isIntegral;
     typedef VigraTrueType isScalar;
+    typedef VigraTrueType isSigned;
     typedef VigraTrueType isOrdered;
     typedef VigraFalseType isComplex;
     
@@ -938,6 +959,7 @@ struct NumericTraits<long double>
 
     typedef VigraFalseType isIntegral;
     typedef VigraTrueType isScalar;
+    typedef VigraTrueType isSigned;
     typedef VigraTrueType isOrdered;
     typedef VigraFalseType isComplex;
     
@@ -968,6 +990,7 @@ struct NumericTraits<std::complex<T> >
 
     typedef VigraFalseType isIntegral;
     typedef VigraFalseType isScalar;
+    typedef typename NumericTraits<T>::isSigned isSigned;
     typedef VigraFalseType isOrdered;
     typedef VigraTrueType isComplex;
     

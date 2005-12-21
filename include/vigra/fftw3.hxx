@@ -363,6 +363,7 @@ struct NumericTraits<fftw_complex>
 
     typedef VigraFalseType isIntegral;
     typedef VigraFalseType isScalar;
+    typedef NumericTraits<fftw_real>::isSigned isSigned;
     typedef VigraFalseType isOrdered;
     typedef VigraTrueType  isComplex;
 
@@ -387,6 +388,7 @@ struct NumericTraits<FFTWComplex>
 
     typedef VigraFalseType isIntegral;
     typedef VigraFalseType isScalar;
+    typedef NumericTraits<fftw_real>::isSigned isSigned;
     typedef VigraFalseType isOrdered;
     typedef VigraTrueType  isComplex;
 

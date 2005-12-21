@@ -63,6 +63,23 @@ struct AssertBool<false>
     typedef int not_type;
 };
 
+template <class T>
+struct Assert;
+
+template <>
+struct Assert<VigraTrueType>
+{
+    typedef int type;
+    typedef void * not_type;
+};
+
+template <>
+struct Assert<VigraFalseType>
+{
+    typedef void * type;
+    typedef int not_type;
+};
+
 struct failure{};
 struct success {};
 inline int check( success ) { return 0; }

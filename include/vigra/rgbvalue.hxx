@@ -400,6 +400,7 @@ operator!=(RGBValue<V1, RIDX1, GIDX1, BIDX1> const & l,
 
         typedef typename NumericTraits<T>::isIntegral isIntegral;
         typedef VigraFalseType isScalar;
+        typedef typename NumericTraits<T>::isSigned isSigned;
 
         // etc.
     };
@@ -449,6 +450,7 @@ struct NumericTraits<RGBValue<T, R, G, B> >
 
     typedef typename NumericTraits<T>::isIntegral isIntegral;
     typedef VigraFalseType isScalar;
+    typedef typename NumericTraits<T>::isSigned isSigned;
     typedef VigraFalseType isOrdered;
     typedef VigraFalseType isComplex;
 
@@ -520,6 +522,7 @@ struct NumericTraits<RGBValue<T, 0, 1, 2> >\
     \
     typedef NumericTraits<T>::isIntegral isIntegral; \
     typedef VigraFalseType isScalar; \
+    typedef NumericTraits<T>::isSigned isSigned; \
     typedef VigraFalseType isOrdered; \
     typedef VigraFalseType isComplex; \
     \

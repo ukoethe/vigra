@@ -879,6 +879,7 @@ operator<<(std::ostream & out, TinyVectorBase<V1, SIZE, DATA, DERIVED> const & l
 
         typedef typename NumericTraits<T>::isIntegral isIntegral;
         typedef VigraFalseType isScalar;
+        typedef typename NumericTraits<T>::isSigned isSigned;
 
         // etc.
     };
@@ -921,6 +922,7 @@ struct NumericTraits<TinyVector<T, SIZE> >
 
     typedef typename NumericTraits<T>::isIntegral isIntegral;
     typedef VigraFalseType isScalar;
+    typedef typename NumericTraits<T>::isSigned isSigned;
     typedef VigraFalseType isOrdered;
     typedef VigraFalseType isComplex;
 
@@ -979,6 +981,7 @@ struct NumericTraits<TinyVectorView<T, SIZE> >
 
     typedef typename NumericTraits<T>::isIntegral isIntegral;
     typedef VigraFalseType isScalar;
+    typedef typename NumericTraits<T>::isSigned isSigned;
     typedef VigraFalseType isOrdered;
     typedef VigraFalseType isComplex;
 };
@@ -1061,6 +1064,7 @@ struct NumericTraits<TinyVector<T, SIZE> >\
     typedef T ValueType; \
     typedef NumericTraits<T>::isIntegral isIntegral;\
     typedef VigraFalseType isScalar;\
+    typedef NumericTraits<T>::isSigned isSigned; \
     typedef VigraFalseType isOrdered;\
     typedef VigraFalseType isComplex;\
     \

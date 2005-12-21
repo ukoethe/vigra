@@ -711,6 +711,7 @@ void Rational<IntType>::normalize()
 
         typedef typename NumericTraits<T>::isIntegral isIntegral;
         typedef VigraTrueType isScalar;
+        typedef typename NumericTraits<T>::isSigned isSigned;
         typedef VigraTrueType isOrdered;
 
         // etc.
@@ -748,6 +749,7 @@ struct NumericTraits<Rational<T> >
 
     typedef typename NumericTraits<T>::isIntegral isIntegral;
     typedef VigraTrueType isScalar;
+    typedef typename NumericTraits<T>::isSigned isSigned;
     typedef VigraTrueType isOrdered;
     typedef VigraFalseType isComplex;
 

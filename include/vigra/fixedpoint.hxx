@@ -754,6 +754,7 @@ struct NumericTraits<FixedPoint<IntBits, FracBits> >
 
     typedef VigraFalseType isIntegral;
     typedef VigraTrueType  isScalar;
+    typedef VigraTrueType  isSigned;
     typedef VigraTrueType  isOrdered;
     typedef VigraFalseType isComplex;
 
