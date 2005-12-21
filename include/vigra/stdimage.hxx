@@ -62,7 +62,23 @@ namespace vigra {
     */
 typedef BasicImage<UInt8> BImage;
 
+    /** Byte (8-bit unsigned) image.
+        It uses \ref vigra::BasicImageIterator and \ref vigra::StandardAccessor and 
+        their const counterparts to access the data.
+        
+        <b>\#include</b> "<a href="stdimage_8hxx-source.html">vigra/stdimage.hxx</a>"<br>
+        Namespace: vigra
+    */
+typedef BasicImage<UInt8> UInt8Image;
 
+    /** Signed byte (8-bit signed) image.
+        It uses \ref vigra::BasicImageIterator and \ref vigra::StandardAccessor and 
+        their const counterparts to access the data.
+        
+        <b>\#include</b> "<a href="stdimage_8hxx-source.html">vigra/stdimage.hxx</a>"<br>
+        Namespace: vigra
+    */
+typedef BasicImage<Int8> Int8Image;
 
     /** Short integer (16-bit signed) image.
         It uses \ref vigra::BasicImageIterator and \ref vigra::StandardAccessor and 
@@ -73,6 +89,23 @@ typedef BasicImage<UInt8> BImage;
     */
 typedef BasicImage<Int16> SImage;
 
+    /** Short integer (16-bit unsigned) image.
+        It uses \ref vigra::BasicImageIterator and \ref vigra::StandardAccessor and 
+        their const counterparts to access the data.
+        
+        <b>\#include</b> "<a href="stdimage_8hxx-source.html">vigra/stdimage.hxx</a>"<br>
+        Namespace: vigra
+    */
+typedef BasicImage<UInt16> UInt16Image;
+
+    /** Short integer (16-bit signed) image.
+        It uses \ref vigra::BasicImageIterator and \ref vigra::StandardAccessor and 
+        their const counterparts to access the data.
+        
+        <b>\#include</b> "<a href="stdimage_8hxx-source.html">vigra/stdimage.hxx</a>"<br>
+        Namespace: vigra
+    */
+typedef BasicImage<Int16> Int16Image;
 
     /** Integer (32-bit signed) image.
         It uses \ref vigra::BasicImageIterator and \ref vigra::StandardAccessor and 
@@ -83,6 +116,23 @@ typedef BasicImage<Int16> SImage;
     */
 typedef BasicImage<Int32> IImage;
 
+    /** Integer (32-bit unsigned) image.
+        It uses \ref vigra::BasicImageIterator and \ref vigra::StandardAccessor and 
+        their const counterparts to access the data.
+        
+        <b>\#include</b> "<a href="stdimage_8hxx-source.html">vigra/stdimage.hxx</a>"<br>
+        Namespace: vigra
+    */
+typedef BasicImage<UInt32> UInt32Image;
+
+    /** Integer (32-bit signed) image.
+        It uses \ref vigra::BasicImageIterator and \ref vigra::StandardAccessor and 
+        their const counterparts to access the data.
+        
+        <b>\#include</b> "<a href="stdimage_8hxx-source.html">vigra/stdimage.hxx</a>"<br>
+        Namespace: vigra
+    */
+typedef BasicImage<Int32> Int32Image;
 
     /** Float (float) image.
         It uses \ref vigra::BasicImageIterator and \ref vigra::StandardAccessor and 
@@ -114,6 +164,25 @@ typedef BasicImage<double> DImage;
     */
 typedef BasicImage<RGBValue<UInt8> > BRGBImage;
 
+    /** Byte (3x 8-bit unsigned) RGB image.
+        The pixel type is \ref vigra::RGBValue "vigra::RGBValue<vigra::UInt8>".
+        It uses \ref vigra::BasicImageIterator and \ref vigra::RGBAccessor and 
+        their const counterparts to access the data.
+        
+        <b>\#include</b> "<a href="stdimage_8hxx-source.html">vigra/stdimage.hxx</a>"<br>
+        Namespace: vigra
+    */
+typedef BasicImage<RGBValue<UInt8> > UInt8RGBImage;
+
+    /** Byte (3x 8-bit signed) RGB image.
+        The pixel type is \ref vigra::RGBValue "vigra::RGBValue<vigra::UInt8>".
+        It uses \ref vigra::BasicImageIterator and \ref vigra::RGBAccessor and 
+        their const counterparts to access the data.
+        
+        <b>\#include</b> "<a href="stdimage_8hxx-source.html">vigra/stdimage.hxx</a>"<br>
+        Namespace: vigra
+    */
+typedef BasicImage<RGBValue<Int8> > Int8RGBImage;
 
     /** Short (3x 16-bit signed) RGB image.
         The pixel type is \ref vigra::RGBValue "vigra::RGBValue<vigra::Int16>".
@@ -125,6 +194,25 @@ typedef BasicImage<RGBValue<UInt8> > BRGBImage;
     */
 typedef BasicImage<RGBValue<Int16> > SRGBImage;
 
+    /** Short (3x 16-bit unsigned) RGB image.
+        The pixel type is \ref vigra::RGBValue "vigra::RGBValue<vigra::Int16>".
+        It uses \ref vigra::BasicImageIterator and \ref vigra::RGBAccessor and 
+        their const counterparts to access the data.
+        
+        <b>\#include</b> "<a href="stdimage_8hxx-source.html">vigra/stdimage.hxx</a>"<br>
+        Namespace: vigra
+    */
+typedef BasicImage<RGBValue<UInt16> > UInt16RGBImage;
+
+    /** Short (3x 16-bit signed) RGB image.
+        The pixel type is \ref vigra::RGBValue "vigra::RGBValue<vigra::Int16>".
+        It uses \ref vigra::BasicImageIterator and \ref vigra::RGBAccessor and 
+        their const counterparts to access the data.
+        
+        <b>\#include</b> "<a href="stdimage_8hxx-source.html">vigra/stdimage.hxx</a>"<br>
+        Namespace: vigra
+    */
+typedef BasicImage<RGBValue<Int16> > Int16RGBImage;
 
     /** Integer (3x 32-bit signed) RGB image.
         The pixel type is \ref vigra::RGBValue "vigra::RGBValue<vigra::Int32>".
@@ -135,6 +223,26 @@ typedef BasicImage<RGBValue<Int16> > SRGBImage;
         Namespace: vigra
     */
 typedef BasicImage<RGBValue<Int32> > IRGBImage;
+
+    /** Integer (3x 32-bit unsigned) RGB image.
+        The pixel type is \ref vigra::RGBValue "vigra::RGBValue<vigra::Int32>".
+        It uses \ref vigra::BasicImageIterator and \ref vigra::RGBAccessor and 
+        their const counterparts to access the data.
+        
+        <b>\#include</b> "<a href="stdimage_8hxx-source.html">vigra/stdimage.hxx</a>"<br>
+        Namespace: vigra
+    */
+typedef BasicImage<RGBValue<UInt32> > UInt32RGBImage;
+
+    /** Integer (3x 32-bit signed) RGB image.
+        The pixel type is \ref vigra::RGBValue "vigra::RGBValue<vigra::Int32>".
+        It uses \ref vigra::BasicImageIterator and \ref vigra::RGBAccessor and 
+        their const counterparts to access the data.
+        
+        <b>\#include</b> "<a href="stdimage_8hxx-source.html">vigra/stdimage.hxx</a>"<br>
+        Namespace: vigra
+    */
+typedef BasicImage<RGBValue<Int32> > Int32RGBImage;
 
 
     /** Floating-point (3x float) RGB image.
