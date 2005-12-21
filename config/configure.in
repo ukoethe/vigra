@@ -5,8 +5,8 @@ dnl                   vigra/interactive version
 dnl-------------------------------------------------------------------
 
 MAJOR_VERSION=1
-MINOR_VERSION=3
-MICRO_VERSION=2
+MINOR_VERSION=4
+MICRO_VERSION=0
 
 echo "configuring VIGRA $MAJOR_VERSION.$MINOR_VERSION.$MICRO_VERSION"
 
