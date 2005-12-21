@@ -1248,9 +1248,11 @@ struct SplineImageViewTest
         resizeImageNoInterpolation(srcImageRange(img), destImageRange(reference));
 
         SplineImageView<0, double> view(srcImageRange(img));
+        SplineImageView<0, int> viewi(srcImageRange(img));
         
         // check that data have not been copied
         shouldEqual(view.image().width(), 0);
+        shouldEqual(viewi.image().width(), img.width());
 
         for(int y=0; y<reference.height()-1; ++y)
         {
@@ -1259,6 +1261,9 @@ struct SplineImageViewTest
                 double dx = (double)x / 2.0;
                 double dy = (double)y / 2.0;
                 shouldEqualTolerance(view(dx, dy), reference(x+1, y+1), 1e-4);
+                shouldEqualTolerance(view.unchecked(dx, dy, 0, 0), reference(x+1, y+1), 1e-4);
+                FixedPoint<10, 1> fx(dx), fy(dy);
+                shouldEqual(viewi.unchecked(fx, fy, 0, 0), viewi.unchecked(dx, dy, 0, 0));
             }
         }
     }
@@ -1269,9 +1274,11 @@ struct SplineImageViewTest
         resizeImageLinearInterpolation(srcImageRange(img), destImageRange(reference));
 
         SplineImageView<1, double> view(srcImageRange(img));
+        SplineImageView<1, short> viewi(srcImageRange(img));
         
-        // check that data have not been copied
+        // check that data have not been copied unnecessarily
         shouldEqual(view.image().width(), 0);
+        shouldEqual(viewi.image().width(), img.width());
 
         for(int y=0; y<reference.height(); ++y)
         {
@@ -1280,6 +1287,10 @@ struct SplineImageViewTest
                 double dx = (double)x / 2.0;
                 double dy = (double)y / 2.0;
                 shouldEqualTolerance(view(dx, dy), reference(x, y), 1e-4);
+                shouldEqualTolerance(view.unchecked(dx, dy, 0, 0), reference(x, y), 1e-4);
+                FixedPoint<10, 1> fx(dx), fy(dy);
+                shouldEqual(viewi.unchecked(fx, fy, 0, 0), viewi.unchecked(dx, dy, 0, 0));
+                shouldEqual(viewi.unchecked(fx, fy), viewi.unchecked(dx, dy));
             }
         }
     }
