@@ -413,24 +413,6 @@ VIGRA_FIXED_POINT_FACTORY(int, 31)
 
 #undef VIGRA_FIXED_POINT_FACTORY
 
-/********************************************************/
-/*                                                      */
-/*                 FixedPointOperations                 */
-/*                                                      */
-/********************************************************/
-
-/** \addtogroup FixedPointOperations Functions for FixedPoint
-
-    \brief     <b>\#include</b> "<a href="fixedpoint_8hxx-source.html">vigra/fixedpoint.hxx</a>"<br>
-
-    These functions fulfill the requirements of an \ref AlgebraicRing.
-
-    Namespace: vigra
-    <p>
-
- */
-//@{
-
 template <class T>
 struct FixedPointCast;
 
@@ -474,6 +456,33 @@ struct FixedPointCast<double>
     }
 };
 
+/********************************************************/
+/*                                                      */
+/*                 FixedPointOperations                 */
+/*                                                      */
+/********************************************************/
+
+/** \addtogroup FixedPointOperations Functions for FixedPoint
+
+    \brief     <b>\#include</b> "<a href="fixedpoint_8hxx-source.html">vigra/fixedpoint.hxx</a>"<br>
+
+    These functions fulfill the requirements of an \ref AlgebraicRing.
+
+    Namespace: vigra
+    <p>
+
+ */
+//@{
+
+    /** Convert a FixedPoint to a built-in type.
+        If the target is integral, the value is rounded.<br>
+        Usage:
+        \code
+        FixedPoint<16,15> fp(...);
+        
+        double d = fixed_point_cast<double>(fp);
+        \endcode
+    */
 template <class TARGET, unsigned IntBits, unsigned FracBits>
 TARGET fixed_point_cast(FixedPoint<IntBits, FracBits> v)
 {
@@ -713,12 +722,21 @@ round(FixedPoint<IntBits, FracBits> v)
 
         typedef VigraFalseType isIntegral;
         typedef VigraTrueType  isScalar;
+        typedef VigraTrueType  isSigned;
         typedef VigraTrueType  isOrdered;
         typedef VigraFalseType isComplex;
 
         ... // etc.
     };
 
+    template <unsigned IntBits, unsigned FracBits>
+    struct SquareRootTraits<FixedPoint<IntBits, FracBits> >
+    {
+        typedef FixedPoint<IntBits, FracBits>      Type;
+        typedef FixedPoint<SRIntBits, SRFracBits>  SquareRootResult;
+        typedef Type                               SquareRootArgument;
+    };
+    
     template <unsigned IntBits, unsigned FracBits>
     struct NormTraits<FixedPoint<IntBits, FracBits> >
     {
