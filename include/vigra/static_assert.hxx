@@ -97,6 +97,7 @@ assertImpl( void (*)(Predicate), typename Predicate::type );
     
 TODO: provide more assertion base classes for other (non boolean) types of tests
 */
+#if !defined(__GNUC__) || __GNUC__ > 2
 #define VIGRA_STATIC_ASSERT(Predicate) \
 enum { \
     VIGRA_PREPROCESSOR_CONCATENATE(vigra_assertion_in_line_, __LINE__) = sizeof( \
@@ -105,6 +106,9 @@ enum { \
             ) \
         ) \
 }
+#else
+#define VIGRA_STATIC_ASSERT(Predicate)
+#endif
 
 } // namespace staticAssert
 
