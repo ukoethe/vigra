@@ -49,6 +49,7 @@
 #include "vigra/numerictraits.hxx"
 #include "vigra/multi_iterator.hxx"
 #include "vigra/metaprogramming.hxx"
+#include "vigra/mathutil.hxx"
 
 namespace vigra
 {
@@ -380,7 +381,7 @@ public:
 
         /** the norm type (return type of array.norm()).
          */
-    typedef typename NumericTraits<SquaredNormType>::RealPromote NormType;
+    typedef typename SquareRootTraits<SquaredNormType>::SquareRootResult NormType;
 
 protected:
 
@@ -657,7 +658,7 @@ public:
          */
     NormType norm() const
     {
-        return VIGRA_CSTD::sqrt(static_cast<NormType>(this->squaredNorm()));
+        return sqrt(static_cast<typename SquareRootTraits<SquaredNormType>::SquareRootArgument>(this->squaredNorm()));
     }
 
         /** return the pointer to the image data
@@ -949,10 +950,6 @@ class MultiArray : public MultiArrayView <N, T>
 
 public:
     using MultiArrayView <N, T>::actual_dimension;
-
-        /** the associated MultiArrayView base class
-         */
-    typedef MultiArrayView <N, T> view_type;
 
         /** the allocator type used to allocate the memory
          */
