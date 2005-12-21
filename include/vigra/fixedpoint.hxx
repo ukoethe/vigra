@@ -61,7 +61,7 @@ public:
 
 // return type policy: 
 //     * try to allocate enough bits to represent the biggest possible result
-//     * in case of ass/subtract: if all bits of the internal int are used up, 
+//     * in case of add/subtract: if all bits of the internal int are used up, 
 //                                keep the representation
 template <unsigned IntBits1, unsigned FracBits1, unsigned IntBits2, unsigned FracBits2>
 class FixedPointTraits<FixedPoint<IntBits1, FracBits1>, FixedPoint<IntBits2, FracBits2> >
@@ -69,12 +69,31 @@ class FixedPointTraits<FixedPoint<IntBits1, FracBits1>, FixedPoint<IntBits2, Fra
     enum { MaxIntBits  = (IntBits1 < IntBits2) ? IntBits2 : IntBits1,
            MaxFracBits = (FracBits1 < FracBits2) ? FracBits2 : FracBits1,
            PlusMinusIntBits = (MaxIntBits + 1 + MaxFracBits < 32) ?
-                               MaxIntBits + 1 : MaxIntBits};
+                               MaxIntBits + 1 : MaxIntBits,
+           MultipliesFracBits = (IntBits1 + IntBits2 < 31) 
+                                    ? (FracBits1 + FracBits2) > (31 - IntBits1 - IntBits2) 
+                                            ? 31 - IntBits1 - IntBits2
+                                            : FracBits1 + FracBits2
+                                    : 0
+         };
 public:
     typedef FixedPoint<PlusMinusIntBits, MaxFracBits>               PlusType;
     typedef FixedPoint<PlusMinusIntBits, MaxFracBits>               MinusType;
-    typedef FixedPoint<IntBits1 + IntBits2, FracBits1 + FracBits2>  MultipliesType;
+    typedef FixedPoint<IntBits1 + IntBits2, MultipliesFracBits>  MultipliesType;
 //    typedef FixedPoint<IntBits1 + FracBits2, FracBits1 + IntBits2>  DividesType;
+};
+
+template <unsigned IntBits, unsigned FracBits>
+struct SquareRootTraits<FixedPoint<IntBits, FracBits> >
+{
+    enum { SRTotalBits = (IntBits + FracBits + 1) / 2,
+           SRIntBits   = (IntBits + 1) / 2,
+           SRFracBits  = SRTotalBits - SRIntBits
+         };
+public:
+    typedef FixedPoint<IntBits, FracBits>      Type;
+    typedef FixedPoint<SRIntBits, SRFracBits>  SquareRootResult;
+    typedef Type                               SquareRootArgument;
 };
 
 
@@ -210,10 +229,12 @@ public:
         INT_MASK        = MAX ^ FRACTIONAL_MASK
     };
 
-    int value;
+    Int32 value;
 
     FixedPoint()
-    {}
+    {
+        VIGRA_STATIC_ASSERT((FixedPoint_overflow_error__More_than_31_bits_requested<(IntBits + FractionalBits)>));
+    }
 
         /** Construct from an int (fractional part will become zero).
         */
@@ -238,6 +259,7 @@ public:
     explicit FixedPoint(double rhs)
     : value((int)round(rhs * ONE))
     {
+        VIGRA_STATIC_ASSERT((FixedPoint_overflow_error__More_than_31_bits_requested<(IntBits + FractionalBits)>));
         vigra_precondition(abs(rhs * ONE) <= (double)MAX,
             "FixedPoint(double rhs): Too few integer bits to convert rhs.");
     }
@@ -255,6 +277,7 @@ public:
     FixedPoint(const FixedPoint<Int2, Frac2> &other)
     : value(detail::FPAssignWithRound<(Frac2 > FractionalBits)>::template exec<Frac2 - FractionalBits>(other.value))
     {
+        VIGRA_STATIC_ASSERT((FixedPoint_overflow_error__More_than_31_bits_requested<(IntBits + FractionalBits)>));
         VIGRA_STATIC_ASSERT((FixedPoint_assignment_error__Target_object_has_too_few_integer_bits<(IntBits >= Int2)>));
     }
 
@@ -299,13 +322,6 @@ public:
         VIGRA_STATIC_ASSERT((FixedPoint_assignment_error__Target_object_has_too_few_integer_bits<(IntBits >= Int2)>));
         value = detail::FPAssignWithRound<(Frac2 > FractionalBits)>::template exec<Frac2 - FractionalBits>(other.value);
         return *this;
-    }
-
-        /** Conversion into double.
-        */
-    operator double() const
-    {
-        return (double)value / ONE;
     }
 
         /** Negation.
@@ -415,6 +431,55 @@ VIGRA_FIXED_POINT_FACTORY(int, 31)
  */
 //@{
 
+template <class T>
+struct FixedPointCast;
+
+#define VIGRA_FIXED_POINT_CAST(type) \
+template <> \
+struct FixedPointCast<type> \
+{ \
+    template <unsigned IntBits, unsigned FracBits> \
+    static type cast(FixedPoint<IntBits, FracBits> v) \
+    { \
+        return round(v); \
+    } \
+};
+
+VIGRA_FIXED_POINT_CAST(Int8);
+VIGRA_FIXED_POINT_CAST(UInt8);
+VIGRA_FIXED_POINT_CAST(Int16);
+VIGRA_FIXED_POINT_CAST(UInt16);
+VIGRA_FIXED_POINT_CAST(Int32);
+VIGRA_FIXED_POINT_CAST(UInt32);
+
+#undef VIGRA_FIXED_POINT_CAST
+
+template <>
+struct FixedPointCast<float>
+{
+    template <unsigned IntBits, unsigned FracBits>
+    static float cast(FixedPoint<IntBits, FracBits> v)
+    {
+        return (float)v.value / FixedPoint<IntBits, FracBits>::ONE;
+    }
+};
+
+template <>
+struct FixedPointCast<double>
+{
+    template <unsigned IntBits, unsigned FracBits>
+    static double cast(FixedPoint<IntBits, FracBits> v)
+    {
+        return (double)v.value / FixedPoint<IntBits, FracBits>::ONE;
+    }
+};
+
+template <class TARGET, unsigned IntBits, unsigned FracBits>
+TARGET fixed_point_cast(FixedPoint<IntBits, FracBits> v)
+{
+    return FixedPointCast<TARGET>::cast(v);
+}
+
     /// equal
 template <unsigned IntBits1, unsigned FracBits1, unsigned IntBits2, unsigned FracBits2>
 inline
@@ -519,9 +584,10 @@ inline
 typename FixedPointTraits<FixedPoint<IntBits1, FracBits1>, FixedPoint<IntBits2, FracBits2> >::MultipliesType
 operator*(FixedPoint<IntBits1, FracBits1> l, FixedPoint<IntBits2, FracBits2> r)
 {
-    return typename
-        FixedPointTraits<FixedPoint<IntBits1, FracBits1>, FixedPoint<IntBits2, FracBits2> >::
-        MultipliesType(l.value * r.value, FPNoShift);
+    typename FixedPointTraits<FixedPoint<IntBits1, FracBits1>, FixedPoint<IntBits2, FracBits2> >::
+        MultipliesType res;
+    mul(l, r, res);
+    return res;
 }
 
     /// multiplication with enforced result type.
@@ -534,6 +600,14 @@ mul(FixedPoint<IntBits1, FracBits1> l, FixedPoint<IntBits2, FracBits2> r,
     VIGRA_STATIC_ASSERT((FixedPoint_assignment_error__Target_object_has_too_few_integer_bits<(IntBits1 + IntBits2 <= IntBits3)>));
     enum { diff = FracBits1 + FracBits2 - FracBits3 };
     result.value = detail::FPMulImplementation<(diff > 0)>::template exec<diff>(l.value, r.value);
+}
+
+    /// square root.
+template <unsigned IntBits, unsigned FracBits>
+inline typename SquareRootTraits<FixedPoint<IntBits, FracBits> >::SquareRootResult
+sqrt(FixedPoint<IntBits, FracBits> v)
+{
+    return typename SquareRootTraits<FixedPoint<IntBits, FracBits> >::SquareRootResult(sqrti(v.value), FPNoShift);
 }
 
     /// absolute value.
