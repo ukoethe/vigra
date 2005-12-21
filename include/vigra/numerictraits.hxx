@@ -65,6 +65,9 @@
     \ref PromoteTraits
     <DD><em>Binary traits for promotion of arithmetic objects</em>
     <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif"> 
+    \ref SquareRootTraits
+    <DD><em>Unary traits for the calculation of the square root of arithmetic objects</em>
+    <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif"> 
     \ref NormTraits
     <DD><em>Unary traits for the calculation of the norm and squared norm of arithmetic objects</em>
     </DL>
@@ -376,6 +379,52 @@
     Namespace: vigra
 */
 
+/** \page SquareRootTraits template<> struct SquareRootTraits<ArithmeticType>
+
+    Unary traits for the calculation of the square root of arithmetic objects.
+    
+    <b>\#include</b> 
+    "<a href="numerictraits_8hxx-source.html">vigra/numerictraits.hxx</a>"
+
+    This traits class is used to determine appropriate argument and result types
+    for the function sqrt(). These traits are typically used like this:
+    
+    \code
+    ArithmeticType t = ...;
+    SquareRootTraits<ArithmeticType>::SquareRootResult r = 
+          sqrt((SquareRootTraits<ArithmeticType>::SquareRootArgument)t);
+    \endcode
+    
+    This approach avoids 'ambigouos overload errors' when taking the square root of 
+    an integer type. It also takes care of determining the proper result of the
+    sqrt() function of \ref vigra::FixedPoint and of the norm() function, when
+    it is implemented via sqrt(squaredNorm(x)).
+    The following members are defined in <b> <TT>SquareRootTraits<ArithmeticType></TT></b>:
+    
+    <table>
+    <tr><td>
+    <b> <TT>typedef ArithmeticType Type;</TT></b>
+    </td><td>
+            the type itself
+    </td></tr>
+    <tr><td>
+    <b> <TT>typedef ... SquareRootArgument;</TT></b>
+    </td><td>
+            required argument type for srqt(), i.e. <tt>sqrt((SquareRootArgument)x)</tt>
+    </td></tr>
+    <tr><td>
+    <b> <TT>typedef ... SquareRootResult;</TT></b>
+    </td><td>
+            result of <tt>sqrt((SquareRootArgument)x)</tt>
+    </td></tr>
+    </table>
+    
+    NormTraits for the built-in types are defined in <b>\#include</b> 
+    "<a href="numerictraits_8hxx-source.html">vigra/numerictraits.hxx</a>"
+    
+    Namespace: vigra
+*/
+
 /** \page NormTraits template<> struct NormTraits<ArithmeticType>
 
     Unary traits for the calculation of the norm and squared norm of arithmetic objects.
@@ -409,7 +458,7 @@
     <b> <TT>typedef ... NormType;</TT></b>
     </td><td>
             result of <tt>norm(ArithmeticType)</tt><br>
-            Usually equal to <tt>NumericTraits&lt;SquaredNormType&gt;::RealPromote
+            Usually equal to <tt>SquareRootTraits&lt;SquaredNormType&gt;::SquareRootResult
     </td></tr>
     </table>
     
@@ -937,18 +986,33 @@ struct NumericTraits<std::complex<T> >
 
 /********************************************************/
 /*                                                      */
+/*                    SquareRootTraits                  */
+/*                                                      */
+/********************************************************/
+
+template<class T>
+struct SquareRootTraits
+{
+    typedef T                                                    Type;
+    typedef typename NumericTraits<T>::RealPromote               SquareRootResult;
+    typedef typename NumericTraits<T>::RealPromote               SquareRootArgument;
+};
+
+
+/********************************************************/
+/*                                                      */
 /*                       NormTraits                     */
 /*                                                      */
 /********************************************************/
 
 struct Error_NormTraits_not_specialized_for_this_case { };
 
-template<class A>
+template<class T>
 struct NormTraits
 {
-    typedef Error_NormTraits_not_specialized_for_this_case Type;
-    typedef Error_NormTraits_not_specialized_for_this_case SquaredNormType;
-    typedef Error_NormTraits_not_specialized_for_this_case NormType;
+    typedef T                                                            Type;
+    typedef typename T::SquaredNormType                                  SquaredNormType;
+    typedef typename SquareRootTraits<SquaredNormType>::SquareRootResult NormType;
 };
 
 #define VIGRA_DEFINE_NORM_TRAITS(T) \
@@ -978,9 +1042,9 @@ VIGRA_DEFINE_NORM_TRAITS(long double)
 template<class T>
 struct NormTraits<std::complex<T> >
 {
-    typedef std::complex<T>                                      Type;
-    typedef typename NormTraits<T>::SquaredNormType              SquaredNormType;
-    typedef typename NumericTraits<SquaredNormType>::RealPromote NormType;
+    typedef std::complex<T>                                              Type;
+    typedef typename NormTraits<T>::SquaredNormType                      SquaredNormType;
+    typedef typename SquareRootTraits<SquaredNormType>::SquareRootResult NormType;
 };
 
 #endif // NO_PARTIAL_TEMPLATE_SPECIALIZATION
