@@ -1316,6 +1316,15 @@ squaredNorm(TinyVectorBase<V1, SIZE, D1, D2> const & t)
 {
     return t.squaredMagnitude();
 }
+
+    /// squared norm
+template <class V, int SIZE>
+inline
+typename TinyVector<V, SIZE>::SquaredNormType
+squaredNorm(TinyVector<V, SIZE> const & t)
+{
+    return t.squaredMagnitude();
+}
 //@}
 
 
