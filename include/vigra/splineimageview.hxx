@@ -1531,7 +1531,7 @@ class SplineImageView1Base
 
     bool isValid(double x, double y) const
     {
-        return x < 2.0*w_-2.0 && x > -w_+1.0 && y < 2.0*h_-2.0 && y > -h_+1.0;
+        return x < 2.0*w_-2.0 && x > 1.0-w_ && y < 2.0*h_-2.0 && y > 1.0-h_;
     }
 
     bool sameFacet(double x0, double y0, double x1, double y1) const
