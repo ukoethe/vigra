@@ -30,7 +30,7 @@
 /*    HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,      */
 /*    WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING      */
 /*    FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR     */
-/*    OTHER DEALINGS IN THE SOFTWARE.                                   */                
+/*    OTHER DEALINGS IN THE SOFTWARE.                                   */
 /*                                                                      */
 /************************************************************************/
 
@@ -50,13 +50,13 @@ namespace resampling_detail
 
 struct MapTargetToSourceCoordinate
 {
-    MapTargetToSourceCoordinate(Rational<int> const & samplingRatio, 
+    MapTargetToSourceCoordinate(Rational<int> const & samplingRatio,
                                 Rational<int> const & offset)
     : a(samplingRatio.denominator()*offset.denominator()),
       b(samplingRatio.numerator()*offset.numerator()),
       c(samplingRatio.numerator()*offset.denominator())
     {}
-    
+
 //        the following funcions are more efficient realizations of:
 //             rational_cast<T>(i / samplingRatio + offset);
 //        we need efficiency because this may be called in the inner loop
@@ -65,7 +65,7 @@ struct MapTargetToSourceCoordinate
     {
         return (i * a + b) / c;
     }
-    
+
     double toDouble(int i) const
     {
         return double(i * a + b) / c;
@@ -93,22 +93,22 @@ template <class SrcIter, class SrcAcc,
           class DestIter, class DestAcc,
           class KernelArray,
           class Functor>
-void 
+void
 resamplingConvolveLine(SrcIter s, SrcIter send, SrcAcc src,
                        DestIter d, DestIter dend, DestAcc dest,
                        KernelArray const & kernels,
                        Functor mapTargetToSourceCoordinate)
 {
-    typedef typename 
+    typedef typename
         NumericTraits<typename SrcAcc::value_type>::RealPromote
         TmpType;
     typedef typename KernelArray::value_type Kernel;
     typedef typename Kernel::const_iterator KernelIter;
-    
+
     int wo = send - s;
     int wn = dend - d;
     int wo2 = 2*wo - 2;
-    
+
     int i;
     typename KernelArray::const_iterator kernel = kernels.begin();
     for(i=0; i<wn; ++i, ++d, ++kernel)
@@ -116,18 +116,18 @@ resamplingConvolveLine(SrcIter s, SrcIter send, SrcAcc src,
         // use the kernels periodically
         if(kernel == kernels.end())
             kernel = kernels.begin();
-        
+
         // calculate current target point into source location
         int is = mapTargetToSourceCoordinate(i);
-        
+
         TmpType sum = NumericTraits<TmpType>::zero();
 
-        int lbound = is - kernel->right(), 
+        int lbound = is - kernel->right(),
             hbound = is - kernel->left();
-                    
+
         KernelIter k = kernel->center() + kernel->right();
         if(lbound < 0 || hbound >= wo)
-        {    
+        {
             vigra_precondition(-lbound < wo && wo2 - hbound >= 0,
                 "resamplingConvolveLine(): kernel or offset larger than image.");
             for(int m=lbound; m <= hbound; ++m, --k)
@@ -144,20 +144,20 @@ resamplingConvolveLine(SrcIter s, SrcIter send, SrcAcc src,
         {
             SrcIter ss = s + lbound;
             SrcIter ssend = s + hbound;
-            
+
             for(; ss <= ssend; ++ss, --k)
             {
                 sum += *k * src(ss);
             }
         }
-        
+
         dest.set(sum, d);
     }
 }
 
 template <class Kernel, class MapCoordinate, class KernelArray>
 void
-createResamplingKernels(Kernel const & kernel, 
+createResamplingKernels(Kernel const & kernel,
              MapCoordinate const & mapCoordinate, KernelArray & kernels)
 {
     for(unsigned int idest = 0; idest < kernels.size(); ++idest)
@@ -169,7 +169,7 @@ createResamplingKernels(Kernel const & kernel,
         int left = int(ceil(-radius - offset));
         int right = int(floor(radius - offset));
         kernels[idest].initExplicitly(left, right);
-        
+
         double x = left + offset;
         for(int i = left; i <= right; ++i, ++x)
             kernels[idest][i] = kernel(x);
@@ -182,7 +182,7 @@ createResamplingKernels(Kernel const & kernel,
     These functions implement the convolution operation when the source and target images
     have different sizes. This is realized by accessing a continous kernel at the
     appropriate non-integer positions. The technique is, for example, described in
-    D. Schumacher: <i>General Filtered Image Rescaling</i>, in: Graphics Gems III, 
+    D. Schumacher: <i>General Filtered Image Rescaling</i>, in: Graphics Gems III,
     Academic Press, 1992.
 */
 //@{
@@ -197,24 +197,24 @@ createResamplingKernels(Kernel const & kernel,
 
     This function implements a convolution operation in x-direction
     (i.e. applies a 1D filter to every row) where the width of the source
-    and destination images differ. This is typically used to avoid aliasing if 
+    and destination images differ. This is typically used to avoid aliasing if
     the image is scaled down, or to interpolate smoothly if the image is scaled up.
     The target coordinates are transformed into source coordinates by
-    
+
     \code
     xsource = (xtarget - offset) / samplingRatio
     \endcode
-    
-    The <tt>samplingRatio</tt> and <tt>offset</tt> must be given as \ref vigra::Rational 
+
+    The <tt>samplingRatio</tt> and <tt>offset</tt> must be given as \ref vigra::Rational
     in order to avoid rounding errors in this transformation. It is required that for all
     pixels of the target image, <tt>xsource</tt> remains within the range of the source
     image (i.e. <tt>0 <= xsource <= sourceWidth-1</tt>. Since <tt>xsource</tt> is
-    in general not an integer, the <tt>kernel</tt> must be a functor that can be accessed at 
+    in general not an integer, the <tt>kernel</tt> must be a functor that can be accessed at
     arbitrary (<tt>double</tt>) coordinates. It must also provide a member function <tt>radius()</tt>
     which specifies the support (non-zero interval) of the kernel. VIGRA already
     provides a number of suitable functors, e.g. \ref vigra::Gaussian, \ref vigra::BSpline
     \ref vigra::CatmullRomSpline, and \ref vigra::CoscotFunction. The function
-    \ref resizeImageSplineInterpolation() is implemented by means resamplingConvolveX() and 
+    \ref resizeImageSplineInterpolation() is implemented by means resamplingConvolveX() and
     resamplingConvolveY().
 
     <b> Declarations:</b>
@@ -225,7 +225,7 @@ createResamplingKernels(Kernel const & kernel,
         template <class SrcIter, class SrcAcc,
                   class DestIter, class DestAcc,
                   class Kernel>
-        void 
+        void
         resamplingConvolveX(SrcIter sul, SrcIter slr, SrcAcc src,
                             DestIter dul, DestIter dlr, DestAcc dest,
                             Kernel const & kernel,
@@ -240,7 +240,7 @@ createResamplingKernels(Kernel const & kernel,
         template <class SrcIter, class SrcAcc,
                   class DestIter, class DestAcc,
                   class Kernel>
-        void 
+        void
         resamplingConvolveX(triple<SrcIter, SrcIter, SrcAcc> src,
                             triple<DestIter, DestIter, DestAcc> dest,
                             Kernel const & kernel,
@@ -250,13 +250,13 @@ createResamplingKernels(Kernel const & kernel,
 
     <b> Usage:</b>
 
-    <b>\#include</b> "<a href="resampling_convolution_8hxx-source.html">vigra/resampling_convolution.hxx</a>"
+    <b>\#include</b> "<a href="resampling__convolution_8hxx-source.html">vigra/resampling_convolution.hxx</a>"
 
 
     \code
     Rational<int> ratio(2), offset(0);
 
-    FImage src(w,h), 
+    FImage src(w,h),
            dest(rational_cast<int>(ratio*w), h);
 
     float sigma = 2.0;
@@ -264,12 +264,12 @@ createResamplingKernels(Kernel const & kernel,
     ...
 
     // simpultaneously enlarge and smooth source image
-    resamplingConvolveX(srcImageRange(src), destImageRange(dest), 
+    resamplingConvolveX(srcImageRange(src), destImageRange(dest),
                         smooth, ratio, offset);
     \endcode
 
     <b> Required Interface:</b>
-    
+
     \code
     Kernel kernel;
     int kernelRadius = kernel.radius();
@@ -280,7 +280,7 @@ createResamplingKernels(Kernel const & kernel,
 template <class SrcIter, class SrcAcc,
           class DestIter, class DestAcc,
           class Kernel>
-void 
+void
 resamplingConvolveX(SrcIter sul, SrcIter slr, SrcAcc src,
                     DestIter dul, DestIter dlr, DestAcc dest,
                     Kernel const & kernel,
@@ -288,7 +288,7 @@ resamplingConvolveX(SrcIter sul, SrcIter slr, SrcAcc src,
 {
     int wold = slr.x - sul.x;
     int wnew = dlr.x - dul.x;
-    
+
     vigra_precondition(!samplingRatio.is_inf() && samplingRatio > 0,
                 "resamplingConvolveX(): sampling ratio must be > 0 and < infinity");
     vigra_precondition(!offset.is_inf(),
@@ -296,9 +296,9 @@ resamplingConvolveX(SrcIter sul, SrcIter slr, SrcAcc src,
 
     int period = lcm(samplingRatio.numerator(), samplingRatio.denominator());
     resampling_detail::MapTargetToSourceCoordinate mapCoordinate(samplingRatio, offset);
-    
+
     ArrayVector<Kernel1D<double> > kernels(period);
-    
+
     createResamplingKernels(kernel, mapCoordinate, kernels);
 
     for(; sul.y < slr.y; ++sul.y, ++dul.y)
@@ -313,7 +313,7 @@ resamplingConvolveX(SrcIter sul, SrcIter slr, SrcAcc src,
 template <class SrcIter, class SrcAcc,
           class DestIter, class DestAcc,
           class Kernel>
-inline void 
+inline void
 resamplingConvolveX(triple<SrcIter, SrcIter, SrcAcc> src,
                     triple<DestIter, DestIter, DestAcc> dest,
                     Kernel const & kernel,
@@ -334,24 +334,24 @@ resamplingConvolveX(triple<SrcIter, SrcIter, SrcAcc> src,
 
     This function implements a convolution operation in y-direction
     (i.e. applies a 1D filter to every column) where the height of the source
-    and destination images differ. This is typically used to avoid aliasing if 
+    and destination images differ. This is typically used to avoid aliasing if
     the image is scaled down, or to interpolate smoothly if the image is scaled up.
     The target coordinates are transformed into source coordinates by
-    
+
     \code
     ysource = (ytarget - offset) / samplingRatio
     \endcode
-    
-    The <tt>samplingRatio</tt> and <tt>offset</tt> must be given as \ref vigra::Rational 
+
+    The <tt>samplingRatio</tt> and <tt>offset</tt> must be given as \ref vigra::Rational
     in order to avoid rounding errors in this transformation. It is required that for all
     pixels of the target image, <tt>ysource</tt> remains within the range of the source
     image (i.e. <tt>0 <= ysource <= sourceHeight-1</tt>. Since <tt>ysource</tt> is
-    in general not an integer, the <tt>kernel</tt> must be a functor that can be accessed at 
+    in general not an integer, the <tt>kernel</tt> must be a functor that can be accessed at
     arbitrary (<tt>double</tt>) coordinates. It must also provide a member function <tt>radius()</tt>
     which specifies the support (non-zero interval) of the kernel. VIGRA already
     provides a number of suitable functors, e.g. \ref vigra::Gaussian, \ref vigra::BSpline
     \ref vigra::CatmullRomSpline, and \ref vigra::CoscotFunction. The function
-    \ref resizeImageSplineInterpolation() is implemented by means resamplingConvolveX() and 
+    \ref resizeImageSplineInterpolation() is implemented by means resamplingConvolveX() and
     resamplingConvolveY().
 
     <b> Declarations:</b>
@@ -362,7 +362,7 @@ resamplingConvolveX(triple<SrcIter, SrcIter, SrcAcc> src,
         template <class SrcIter, class SrcAcc,
                   class DestIter, class DestAcc,
                   class Kernel>
-        void 
+        void
         resamplingConvolveY(SrcIter sul, SrcIter slr, SrcAcc src,
                             DestIter dul, DestIter dlr, DestAcc dest,
                             Kernel const & kernel,
@@ -377,7 +377,7 @@ resamplingConvolveX(triple<SrcIter, SrcIter, SrcAcc> src,
         template <class SrcIter, class SrcAcc,
                   class DestIter, class DestAcc,
                   class Kernel>
-        void 
+        void
         resamplingConvolveY(triple<SrcIter, SrcIter, SrcAcc> src,
                             triple<DestIter, DestIter, DestAcc> dest,
                             Kernel const & kernel,
@@ -387,13 +387,13 @@ resamplingConvolveX(triple<SrcIter, SrcIter, SrcAcc> src,
 
     <b> Usage:</b>
 
-    <b>\#include</b> "<a href="resampling_convolution_8hxx-source.html">vigra/resampling_convolution.hxx</a>"
+    <b>\#include</b> "<a href="resampling__convolution_8hxx-source.html">vigra/resampling_convolution.hxx</a>"
 
 
     \code
     Rational<int> ratio(2), offset(0);
 
-    FImage src(w,h), 
+    FImage src(w,h),
            dest(w, rational_cast<int>(ratio*h));
 
     float sigma = 2.0;
@@ -401,12 +401,12 @@ resamplingConvolveX(triple<SrcIter, SrcIter, SrcAcc> src,
     ...
 
     // simpultaneously enlarge and smooth source image
-    resamplingConvolveY(srcImageRange(src), destImageRange(dest), 
+    resamplingConvolveY(srcImageRange(src), destImageRange(dest),
                         smooth, ratio, offset);
     \endcode
 
     <b> Required Interface:</b>
-    
+
     \code
     Kernel kernel;
     int kernelRadius = kernel.radius();
@@ -417,7 +417,7 @@ resamplingConvolveX(triple<SrcIter, SrcIter, SrcAcc> src,
 template <class SrcIter, class SrcAcc,
           class DestIter, class DestAcc,
           class Kernel>
-void 
+void
 resamplingConvolveY(SrcIter sul, SrcIter slr, SrcAcc src,
                     DestIter dul, DestIter dlr, DestAcc dest,
                     Kernel const & kernel,
@@ -425,18 +425,18 @@ resamplingConvolveY(SrcIter sul, SrcIter slr, SrcAcc src,
 {
     int hold = slr.y - sul.y;
     int hnew = dlr.y - dul.y;
-    
+
     vigra_precondition(!samplingRatio.is_inf() && samplingRatio > 0,
                 "resamplingConvolveY(): sampling ratio must be > 0 and < infinity");
     vigra_precondition(!offset.is_inf(),
                 "resamplingConvolveY(): offset must be < infinity");
 
     int period = lcm(samplingRatio.numerator(), samplingRatio.denominator());
-    
+
     resampling_detail::MapTargetToSourceCoordinate mapCoordinate(samplingRatio, offset);
-    
+
     ArrayVector<Kernel1D<double> > kernels(period);
-    
+
     createResamplingKernels(kernel, mapCoordinate, kernels);
 
     for(; sul.x < slr.x; ++sul.x, ++dul.x)
@@ -451,7 +451,7 @@ resamplingConvolveY(SrcIter sul, SrcIter slr, SrcAcc src,
 template <class SrcIter, class SrcAcc,
           class DestIter, class DestAcc,
           class Kernel>
-inline void 
+inline void
 resamplingConvolveY(triple<SrcIter, SrcIter, SrcAcc> src,
                     triple<DestIter, DestIter, DestAcc> dest,
                     Kernel const & kernel,
@@ -468,12 +468,12 @@ resamplingConvolveY(triple<SrcIter, SrcIter, SrcAcc> src,
 /*                                                      */
 /********************************************************/
 
-/** \brief Apply two separable resampling filters successively, the first in x-direction, 
+/** \brief Apply two separable resampling filters successively, the first in x-direction,
            the second in y-direction.
 
     This function is a shorthand for the concatenation of a call to
     \link ResamplingConvolutionFilters#resamplingConvolveX resamplingConvolveX\endlink()
-    and \link ResamplingConvolutionFilters#resamplingConvolveY resamplingConvolveY\endlink() 
+    and \link ResamplingConvolutionFilters#resamplingConvolveY resamplingConvolveY\endlink()
     with the given kernels. See there for detailed documentation.
 
     <b> Declarations:</b>
@@ -486,9 +486,9 @@ resamplingConvolveY(triple<SrcIter, SrcIter, SrcAcc> src,
                   class KernelX, class KernelY>
         void resamplingConvolveImage(SrcIterator sul,SrcIterator slr, SrcAccessor src,
                            DestIterator dul, DestIterator dlr, DestAccessor dest,
-                           KernelX const & kx, 
+                           KernelX const & kx,
                            Rational<int> const & samplingRatioX, Rational<int> const & offsetX,
-                           KernelY const & ky, 
+                           KernelY const & ky,
                            Rational<int> const & samplingRatioY, Rational<int> const & offsetY);
     }
     \endcode
@@ -503,22 +503,22 @@ resamplingConvolveY(triple<SrcIter, SrcIter, SrcAcc> src,
         void
         resamplingConvolveImage(triple<SrcIterator, SrcIterator, SrcAccessor> src,
                            triple<DestIterator, DestIterator, DestAccessor> dest,
-                           KernelX const & kx, 
+                           KernelX const & kx,
                            Rational<int> const & samplingRatioX, Rational<int> const & offsetX,
-                           KernelY const & ky, 
+                           KernelY const & ky,
                            Rational<int> const & samplingRatioY, Rational<int> const & offsetY);
     }
     \endcode
 
     <b> Usage:</b>
 
-    <b>\#include</b> "<a href="resampling_convolution_8hxx-source.html">vigra/resampling_convolution.hxx</a>"
+    <b>\#include</b> "<a href="resampling__convolution_8hxx-source.html">vigra/resampling_convolution.hxx</a>"
 
 
     \code
     Rational<int> xratio(2), yratio(3), offset(0);
 
-    FImage src(w,h), 
+    FImage src(w,h),
            dest(rational_cast<int>(xratio*w), rational_cast<int>(yratio*h));
 
     float sigma = 2.0;
@@ -526,7 +526,7 @@ resamplingConvolveY(triple<SrcIter, SrcIter, SrcAcc> src,
     ...
 
     // simpultaneously enlarge and smooth source image
-    resamplingConvolveImage(srcImageRange(src), destImageRange(dest), 
+    resamplingConvolveImage(srcImageRange(src), destImageRange(dest),
                             smooth, xratio, offset,
                             smooth, yratio, offset);
 
@@ -538,22 +538,22 @@ template <class SrcIterator, class SrcAccessor,
           class KernelX, class KernelY>
 void resamplingConvolveImage(SrcIterator sul,SrcIterator slr, SrcAccessor src,
                    DestIterator dul, DestIterator dlr, DestAccessor dest,
-                   KernelX const & kx, 
+                   KernelX const & kx,
                    Rational<int> const & samplingRatioX, Rational<int> const & offsetX,
-                   KernelY const & ky, 
+                   KernelY const & ky,
                    Rational<int> const & samplingRatioY, Rational<int> const & offsetY)
 {
     typedef typename
         NumericTraits<typename SrcAccessor::value_type>::RealPromote
         TmpType;
-    
+
     BasicImage<TmpType> tmp(dlr.x - dul.x, slr.y - sul.y);
 
     resamplingConvolveX(srcIterRange(sul, slr, src),
-                        destImageRange(tmp), 
+                        destImageRange(tmp),
                         kx, samplingRatioX, offsetX);
     resamplingConvolveY(srcImageRange(tmp),
-                        destIterRange(dul, dlr, dest), 
+                        destIterRange(dul, dlr, dest),
                         ky, samplingRatioY, offsetY);
 }
 
@@ -563,9 +563,9 @@ template <class SrcIterator, class SrcAccessor,
 inline void
 resamplingConvolveImage(triple<SrcIterator, SrcIterator, SrcAccessor> src,
                    triple<DestIterator, DestIterator, DestAccessor> dest,
-                   KernelX const & kx, 
+                   KernelX const & kx,
                    Rational<int> const & samplingRatioX, Rational<int> const & offsetX,
-                   KernelY const & ky, 
+                   KernelY const & ky,
                    Rational<int> const & samplingRatioY, Rational<int> const & offsetY)
 {
     resamplingConvolveImage(src.first, src.second, src.third,
@@ -574,7 +574,7 @@ resamplingConvolveImage(triple<SrcIterator, SrcIterator, SrcAccessor> src,
                             ky, samplingRatioY, offsetY);
 }
 
-} // namespace vigra 
+} // namespace vigra
 
 
 #endif /* VIGRA_RESAMPLING_CONVOLUTION_HXX */
