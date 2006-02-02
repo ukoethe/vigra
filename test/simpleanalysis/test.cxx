@@ -615,7 +615,7 @@ struct EdgeDetectionTest
         vigra::BImage result(40, 40);
         result = 0;
 
-        cannyEdgeImageWithThinning(srcImageRange(imgCanny), destImage(result), 1.0, 0.1, 1);
+        cannyEdgeImageWithThinning(srcImageRange(imgCanny), destImage(result), 1.0, 0.1, 1, false);
 
         for(int y=1; y<39; ++y)
         {
