@@ -1066,6 +1066,39 @@ outer(const MultiArrayView<2, T, C1> &x, const MultiArrayView<2, T, C2> &y)
     return ret;
 }
 
+    /** calculate the outer product of a matrix (representing a vector) with itself. 
+        The result is returned as a temporary matrix.
+    
+    <b>\#include</b> "<a href="matrix_8hxx-source.html">vigra/matrix.hxx</a>" or<br>
+    <b>\#include</b> "<a href="linear__algebra_8hxx-source.html">vigra/linear_algebra.hxx</a>"<br>
+        Namespaces: vigra and vigra::linalg
+     */ 
+template <class T, class C1>
+TemporaryMatrix<T> 
+outer(const MultiArrayView<2, T, C1> &x)
+{
+    const unsigned int rows = rowCount(x);
+    const unsigned int cols = columnCount(x);
+    vigra_precondition(rows == 1 || cols == 1,
+       "outer(): matrix does not represent a vector.");
+    const unsigned int size = std::max(rows, cols);     
+    TemporaryMatrix<T> ret(size, size);
+    
+    if(rows == 1)
+    {
+        for(unsigned int i = 0; i < size; ++i)
+            for(unsigned int j = 0; j < size; ++j)
+                ret(j, i) = x(0, j) * x(0, i);
+    }
+    else
+    {
+        for(unsigned int i = 0; i < size; ++i)
+            for(unsigned int j = 0; j < size; ++j)
+                ret(j, i) = x(j, 0) * x(i, 0);
+    }
+    return ret;
+}
+
 	/** multiply matrix \a a with scalar \a b.
         The result is written into \a r. \a a and \a r must have the same shape.
     
