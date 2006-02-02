@@ -112,7 +112,7 @@ TemporaryMatrix<T> inverse(const TemporaryMatrix<T> &v)
     /** QR decomposition.
      
         \a a contains the original matrix, results are returned in \a q and \a r, where
-        \a q is a orthogonal matrix, and \a r is an uppr triangular matrix, and
+        \a q is a orthogonal matrix, and \a r is an upper triangular matrix, and
         the following relation holds:
         
         \code
@@ -270,8 +270,9 @@ bool linearSolve(const MultiArrayView<2, T, C1> &a, const MultiArrayView<2, T, C
     
     Matrix<T> q(acols, acols), r(a);
     qrDecomposition(r, q, r);
-    if(r(acols-1, acols-1) == NumericTraits<T>::zero())
-         return false; // a didn't have full rank.
+    for(unsigned int k=0; k<acols; ++k)
+        if(r(k,k) == NumericTraits<T>::zero())
+            return false; // a didn't have full rank.
     q.transpose();
     reverseElimination(r, q * b, res);
     return true;
