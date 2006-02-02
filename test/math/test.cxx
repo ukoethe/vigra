@@ -1026,6 +1026,13 @@ struct LinalgTest
             Matrix ax = a * x;
             shouldEqualSequenceTolerance(ax.data(), ax.data()+size, b.data(), epsilon);
         }
+        
+        // test singular matrix
+        Matrix a = vigra::identityMatrix<Matrix::value_type> (size);
+        a(0,0) = 0; 
+        Matrix b = random_matrix (size, 1);
+        Matrix x(size, 1);
+        should(!linearSolve (a, b, x));
     }
 
     void testInverse()
