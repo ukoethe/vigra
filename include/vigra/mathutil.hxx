@@ -442,10 +442,10 @@ template <class T1, class T2>
 bool closeAtTolerance(T1 l, T2 r, typename PromoteTraits<T1, T2>::Promote epsilon)
 {
     typedef typename PromoteTraits<T1, T2>::Promote T;
-    if(l == 0.0 && r != 0.0)
+    if(l == 0.0)
         return VIGRA_CSTD::fabs(r) <= epsilon;
-    if(l != 0.0 && r == 0.0)
-        return VIGRA_CSTD::fabs(r) <= epsilon;
+    if(r == 0.0)
+        return VIGRA_CSTD::fabs(l) <= epsilon;
     T diff = VIGRA_CSTD::fabs( l - r );
     T d1   = detail::safeFloatDivision<T>( diff, VIGRA_CSTD::fabs( r ) );
     T d2   = detail::safeFloatDivision<T>( diff, VIGRA_CSTD::fabs( l ) );
