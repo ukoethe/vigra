@@ -500,14 +500,14 @@ void gaussianSharpening(SrcIterator src_ul, SrcIterator src_lr, SrcAccessor src_
     typedef typename NumericTraits<typename SrcAccessor::value_type>::RealPromote ValueType;
 
     BasicImage<ValueType> tmp(src_lr - src_ul);
-    typename BasicImage<ValueType>::Accessor tmp_acc(tmp.accessor());
 
-    gaussianSmoothing(src_ul, src_lr, src_acc, tmp.upperLeft(), tmp_acc, scale);
+    gaussianSmoothing(src_ul, src_lr, src_acc, tmp.upperLeft(), tmp.accessor(), scale);
 
     SrcIterator i_src = src_ul;
     DestIterator i_dest = dest_ul;
     typename BasicImage<ValueType>::traverser tmp_ul = tmp.upperLeft();
     typename BasicImage<ValueType>::traverser i_tmp = tmp_ul;
+    typename BasicImage<ValueType>::Accessor tmp_acc = tmp.accessor();
 
     for(; i_src.y != src_lr.y ; i_src.y++, i_dest.y++, i_tmp.y++ )
     {
