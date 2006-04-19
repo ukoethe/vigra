@@ -180,17 +180,6 @@ struct MultiIteratorChooser <UnstridedArrayTag>
 /*                                                      */
 /********************************************************/
 
-template <class DestIterator, class Shape, class T, int N>
-void
-initMultiArrayData(DestIterator d, Shape const & shape, T const & init, MetaInt<N>)
-{    
-    DestIterator dend = d + shape[N];
-    for(; d != dend; ++d)
-    {
-        initMultiArrayData(d.begin(), shape, init, MetaInt<N-1>());
-    }
-}
-
 template <class DestIterator, class Shape, class T>
 void
 initMultiArrayData(DestIterator d, Shape const & shape, T const & init, MetaInt<0>)
@@ -202,14 +191,14 @@ initMultiArrayData(DestIterator d, Shape const & shape, T const & init, MetaInt<
     }
 }
 
-template <class SrcIterator, class Shape, class DestIterator, int N>
+template <class DestIterator, class Shape, class T, int N>
 void
-copyMultiArrayData(SrcIterator s, Shape const & shape, DestIterator d, MetaInt<N>)
+initMultiArrayData(DestIterator d, Shape const & shape, T const & init, MetaInt<N>)
 {    
-    SrcIterator send = s + shape[N];
-    for(; s != send; ++s, ++d)
+    DestIterator dend = d + shape[N];
+    for(; d != dend; ++d)
     {
-        copyMultiArrayData(s.begin(), shape, d.begin(), MetaInt<N-1>());
+        initMultiArrayData(d.begin(), shape, init, MetaInt<N-1>());
     }
 }
 
@@ -224,14 +213,14 @@ copyMultiArrayData(SrcIterator s, Shape const & shape, DestIterator d, MetaInt<0
     }
 }
 
-template <class SrcIterator, class Shape, class T, class ALLOC, int N>
+template <class SrcIterator, class Shape, class DestIterator, int N>
 void
-uninitializedCopyMultiArrayData(SrcIterator s, Shape const & shape, T * & d, ALLOC & a, MetaInt<N>)
+copyMultiArrayData(SrcIterator s, Shape const & shape, DestIterator d, MetaInt<N>)
 {    
     SrcIterator send = s + shape[N];
-    for(; s != send; ++s)
+    for(; s != send; ++s, ++d)
     {
-        uninitializedCopyMultiArrayData(s.begin(), shape, d, a, MetaInt<N-1>());
+        copyMultiArrayData(s.begin(), shape, d.begin(), MetaInt<N-1>());
     }
 }
 
@@ -246,14 +235,14 @@ uninitializedCopyMultiArrayData(SrcIterator s, Shape const & shape, T * & d, ALL
     }
 }
 
-template <class SrcIterator, class Shape, class T, int N>
+template <class SrcIterator, class Shape, class T, class ALLOC, int N>
 void
-squaredNormOfMultiArray(SrcIterator s, Shape const & shape, T & result, MetaInt<N>)
+uninitializedCopyMultiArrayData(SrcIterator s, Shape const & shape, T * & d, ALLOC & a, MetaInt<N>)
 {    
     SrcIterator send = s + shape[N];
     for(; s != send; ++s)
     {
-        squaredNormOfMultiArray(s.begin(), shape, result, MetaInt<N-1>());
+        uninitializedCopyMultiArrayData(s.begin(), shape, d, a, MetaInt<N-1>());
     }
 }
 
@@ -265,6 +254,17 @@ squaredNormOfMultiArray(SrcIterator s, Shape const & shape, T & result, MetaInt<
     for(; s != send; ++s)
     {
         result += *s * *s;
+    }
+}
+
+template <class SrcIterator, class Shape, class T, int N>
+void
+squaredNormOfMultiArray(SrcIterator s, Shape const & shape, T & result, MetaInt<N>)
+{    
+    SrcIterator send = s + shape[N];
+    for(; s != send; ++s)
+    {
+        squaredNormOfMultiArray(s.begin(), shape, result, MetaInt<N-1>());
     }
 }
 
@@ -384,7 +384,7 @@ public:
 
 protected:
 
-    static const typename difference_type::value_type diff_zero = 0;
+    typedef typename difference_type::value_type diff_zero_t;
 
         /** the shape of the image pointed to is stored here.
 	    */
@@ -404,7 +404,7 @@ public:
         /** default constructor: create an empty image of size 0.
          */
     MultiArrayView ()
-        : m_shape (diff_zero), m_stride (diff_zero), m_ptr (0)
+        : m_shape (diff_zero_t(0)), m_stride (diff_zero_t(0)), m_ptr (0)
     {}
 
 
@@ -1020,7 +1020,7 @@ public:
 
 protected:
 
-    static const typename difference_type::value_type diff_zero = 0;
+    typedef typename difference_type::value_type diff_zero_t;
 
         /** the allocator used to allocate the memory
          */
@@ -1166,14 +1166,14 @@ public:
 
 template <unsigned int N, class T, class A>
 MultiArray <N, T, A>::MultiArray ()
-    : MultiArrayView <N, T> (difference_type (diff_zero), 
-                             difference_type (diff_zero), 0)
+    : MultiArrayView <N, T> (difference_type (diff_zero_t(0)), 
+                             difference_type (diff_zero_t(0)), 0)
 {}
 
 template <unsigned int N, class T, class A>
 MultiArray <N, T, A>::MultiArray (allocator_type const & alloc)
-    : MultiArrayView <N, T> (difference_type (diff_zero), 
-                             difference_type (diff_zero), 0),
+    : MultiArrayView <N, T> (difference_type (diff_zero_t(0)), 
+                             difference_type (diff_zero_t(0)), 0),
       m_alloc(alloc)
 {}
 
