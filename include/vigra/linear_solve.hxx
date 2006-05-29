@@ -30,7 +30,7 @@
 /*    HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,      */
 /*    WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING      */
 /*    FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR     */
-/*    OTHER DEALINGS IN THE SOFTWARE.                                   */                
+/*    OTHER DEALINGS IN THE SOFTWARE.                                   */
 /*                                                                      */
 /************************************************************************/
 
@@ -54,11 +54,11 @@ namespace linalg
         The result is written into \a r which must have the same shape.
         The inverse is calculated by means of QR decomposition. If \a v
         is not invertible, <tt>vigra::PreconditionViolation</tt> exception is thrown.
-    
-    <b>\#include</b> "<a href="linear__solve_8hxx-source.html">vigra/linear__solve.hxx</a>" or<br>
+
+    <b>\#include</b> "<a href="linear__solve_8hxx-source.html">vigra/linear_solve.hxx</a>" or<br>
     <b>\#include</b> "<a href="linear__algebra_8hxx-source.html">vigra/linear_algebra.hxx</a>"<br>
         Namespaces: vigra and vigra::linalg
-     */ 
+     */
 template <class T, class C1, class C2>
 void inverse(const MultiArrayView<2, T, C1> &v, MultiArrayView<2, T, C2> &r)
 {
@@ -68,24 +68,24 @@ void inverse(const MultiArrayView<2, T, C1> &v, MultiArrayView<2, T, C2> &r)
     vigra_precondition(linearSolve(v, identityMatrix<T>(n), r),
         "inverse(): matrix is not invertible.");
 }
- 
+
     /** create the inverse of square matrix \a v.
         The result is returned as a temporary matrix.
         The inverse is calculated by means of QR decomposition. If \a v
         is not invertible, <tt>vigra::PreconditionViolation</tt> exception is thrown.
         Usage:
-        
+
         \code
         vigra::Matrix<double> v(n, n);
         v = ...;
-        
+
         vigra::Matrix<double> m = inverse(v);
         \endcode
-    
-    <b>\#include</b> "<a href="linear__solve_8hxx-source.html">vigra/linear__solve.hxx</a>" or<br>
+
+    <b>\#include</b> "<a href="linear__solve_8hxx-source.html">vigra/linear_solve.hxx</a>" or<br>
     <b>\#include</b> "<a href="linear__algebra_8hxx-source.html">vigra/linear_algebra.hxx</a>"<br>
         Namespaces: vigra and vigra::linalg
-     */ 
+     */
 template <class T, class C>
 TemporaryMatrix<T> inverse(const MultiArrayView<2, T, C> &v)
 {
@@ -97,7 +97,7 @@ TemporaryMatrix<T> inverse(const MultiArrayView<2, T, C> &v)
         "inverse(): matrix is not invertible.");
     return ret;
 }
- 
+
 template <class T>
 TemporaryMatrix<T> inverse(const TemporaryMatrix<T> &v)
 {
@@ -110,19 +110,19 @@ TemporaryMatrix<T> inverse(const TemporaryMatrix<T> &v)
 }
 
     /** QR decomposition.
-     
+
         \a a contains the original matrix, results are returned in \a q and \a r, where
         \a q is a orthogonal matrix, and \a r is an upper triangular matrix, and
         the following relation holds:
-        
+
         \code
         assert(a == q * r);
         \endcode
-        
+
         This implementation uses householder transformations. It can be applied in-place,
         i.e. <tt>&a == &r</tt> is allowed.
-    
-    <b>\#include</b> "<a href="linear__solve_8hxx-source.html">vigra/linear__solve.hxx</a>" or<br>
+
+    <b>\#include</b> "<a href="linear__solve_8hxx-source.html">vigra/linear_solve.hxx</a>" or<br>
     <b>\#include</b> "<a href="linear__algebra_8hxx-source.html">vigra/linear_algebra.hxx</a>"<br>
         Namespaces: vigra and vigra::linalg
      */
@@ -132,7 +132,7 @@ void qrDecomposition(MultiArrayView<2, T, C1> const & a,
 {
     typedef typename MultiArrayView<2, T, C2>::difference_type MatrixShape;
     typedef typename MultiArray<1, T>::difference_type VectorShape;
-    
+
     // the orthogonal matrix q will have as many rows and columns as
     // the original matrix has columns.
     const unsigned int rows = rowCount(a);
@@ -143,7 +143,7 @@ void qrDecomposition(MultiArrayView<2, T, C1> const & a,
 
     identityMatrix(q);
     r.copy(a);   // does nothing if &r == &a
-    
+
     for(unsigned int k = 0; (k < cols) && (k < rows - 1); ++k) {
 
         const unsigned int rows_left = rows - k;
@@ -175,9 +175,9 @@ void qrDecomposition(MultiArrayView<2, T, C1> const & a,
             // add rsub*(uu')/(u'u)
             sum *= scal;
             for(unsigned int j = 0; j < rows_left; ++j)
-                rsub(j, i) -= sum * u(j); 
+                rsub(j, i) -= sum * u(j);
         }
-        
+
         MatrixShape qul(0, k);
         MultiArrayView <2, T, C3 > qsub = q.subarray(qul, q.shape());
 
@@ -186,7 +186,7 @@ void qrDecomposition(MultiArrayView<2, T, C1> const & a,
 
             // compute the inner product of the i'th row of q with u
             T sum = dot(qsub.bindInner(i), u);
-            
+
             // add q*(uu')/(u'u)
             sum *= scal;
             for(unsigned int j = 0; j < rows_left; ++j)
@@ -196,17 +196,17 @@ void qrDecomposition(MultiArrayView<2, T, C1> const & a,
 }
 
     /** Solve a linear system with right-triangular defining matrix.
-     
+
         The square matrix \a a must be a right-triangular coefficient matrix as can,
         for example, be obtained by means of QR decomposition. The column vectors
         in \a b are the right-hand sides of the equation (so, several equations
         with the same coefficients can be solved in one go). The result is returned
-        int \a x, whose columns contain the solutions for the correspoinding 
+        int \a x, whose columns contain the solutions for the correspoinding
         columns of \a b. The number of columns of \a a must equal the number of rows of
         both \a b and \a x, and the number of columns of \a b and \a x must be
         equal. This implementation can be applied in-place, i.e. <tt>&b == &x</tt> is allowed.
-    
-    <b>\#include</b> "<a href="linear__solve_8hxx-source.html">vigra/linear__solve.hxx</a>" or<br>
+
+    <b>\#include</b> "<a href="linear__solve_8hxx-source.html">vigra/linear_solve.hxx</a>" or<br>
     <b>\#include</b> "<a href="linear__algebra_8hxx-source.html">vigra/linear_algebra.hxx</a>"<br>
         Namespaces: vigra and vigra::linalg
      */
@@ -224,9 +224,9 @@ void reverseElimination(const MultiArrayView<2, T, C1> &r, const MultiArrayView<
     for(unsigned int k = 0; k < n; ++k)
     {
         x(m-1, k) = b(m-1, k) / r(m-1, m-1);
-        if(m >= 2) 
+        if(m >= 2)
         {
-            for(int i = m-2; i >= 0; --i) 
+            for(int i = m-2; i >= 0; --i)
             {
                 // compute the i'th inner product, excluding the diagonal entry.
                 T sum = NumericTraits<T>::zero();
@@ -242,18 +242,18 @@ void reverseElimination(const MultiArrayView<2, T, C1> &r, const MultiArrayView<
 }
 
     /** Solve a linear system.
-     
+
         The square matrix \a a is the coefficient matrix, and the column vectors
         in \a b are the right-hand sides of the equation (so, several equations
         with the same coefficients can be solved in one go). The result is returned
-        int \a res, whose columns contain the solutions for the correspoinding 
+        int \a res, whose columns contain the solutions for the correspoinding
         columns of \a b. The number of columns of \a a must equal the number of rows of
         both \a b and \a res, and the number of columns of \a b and \a res must be
         equal. The algorithm uses QR decomposition of \a a. The algorithm returns
-        <tt>false</tt> if \a a doesn't have full rank. This implementation  can be 
+        <tt>false</tt> if \a a doesn't have full rank. This implementation  can be
         applied in-place, i.e. <tt>&b == &res</tt> or <tt>&a == &res</tt> are allowed.
-    
-    <b>\#include</b> "<a href="linear__solve_8hxx-source.html">vigra/linear__solve.hxx</a>" or<br>
+
+    <b>\#include</b> "<a href="linear__solve_8hxx-source.html">vigra/linear_solve.hxx</a>" or<br>
     <b>\#include</b> "<a href="linear__algebra_8hxx-source.html">vigra/linear_algebra.hxx</a>"<br>
         Namespaces: vigra and vigra::linalg
      */
@@ -267,7 +267,7 @@ bool linearSolve(const MultiArrayView<2, T, C1> &a, const MultiArrayView<2, T, C
         "linearSolve(): square coefficient matrix required.");
     vigra_precondition(acols == rowCount(b) && acols == rowCount(res) && bcols == columnCount(res),
         "linearSolve(): matrix shape mismatch.");
-    
+
     Matrix<T> q(acols, acols), r(a);
     qrDecomposition(r, q, r);
     for(unsigned int k=0; k<acols; ++k)
