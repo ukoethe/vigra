@@ -519,6 +519,20 @@ public:
         return y;
     }
 
+        /** Change the width.
+         */
+    void setWidth(int w)
+    {
+        x = w;
+    }
+
+        /** Change the height.
+         */
+    void setHeight(int h)
+    {
+        y = h;
+    }
+
         /** Returns width()*height(), the area of a rectangle of this size.
          */
     int area() const
