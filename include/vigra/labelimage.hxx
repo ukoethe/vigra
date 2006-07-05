@@ -30,7 +30,7 @@
 /*    HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,      */
 /*    WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING      */
 /*    FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR     */
-/*    OTHER DEALINGS IN THE SOFTWARE.                                   */                
+/*    OTHER DEALINGS IN THE SOFTWARE.                                   */
 /*                                                                      */
 /************************************************************************/
 
@@ -266,7 +266,7 @@ unsigned int labelImage(SrcIterator upperlefts,
             }
         }
     }
-    
+
     // pass 2: assign one label to each region (tree)
     // so that labels form a consecutive sequence 1, 2, ...
     DestIterator yd(upperleftd);
@@ -637,7 +637,7 @@ unsigned int labelImageWithBackground(
 
 /** \brief Transform a labeled image into a crack edge image.
 
-    This algorithm inserts border pixels (so called "crack edges"
+    This algorithm inserts border pixels (so called "crack edges")
     between regions in a labeled image like this (<TT>a</TT> and
     <TT>c</TT> are the original labels, and <TT>0</TT> is the value of
     <TT>edge_marker</TT> and denotes the inserted edges):
