@@ -24,12 +24,16 @@ TARGETS = \
     pyramid \
     edge \
     watershed \
+    weightedWatersheds \
     voronoi
 
 all: $(TARGETS)
 
 convert:  convert.o
 	$(CXX) -o convert convert.o $(LDFLAGS)
+
+noise_normalization:  noise_normalization.o
+	$(CXX) -o noise_normalization noise_normalization.o $(LDFLAGS)
 
 distance:  distance.o
 	$(CXX) -o distance distance.o $(LDFLAGS)
@@ -63,6 +67,9 @@ edge:  edge.o
 
 watershed:  watershed.o
 	$(CXX) -o watershed watershed.o $(LDFLAGS)
+
+weightedWatersheds:  weightedWatersheds.o
+	$(CXX) -o weightedWatersheds weightedWatersheds.o $(LDFLAGS)
 
 voronoi:  voronoi.o
 	$(CXX) -o voronoi voronoi.o $(LDFLAGS)
