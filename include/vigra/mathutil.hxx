@@ -86,7 +86,7 @@ namespace vigra {
         function
         
         \f[
-            \mbox{erf}(x) = \int_0^x e^{-x^2} dx
+            \mbox{erf}(x) = \int_0^x e^{-t^2} dt
         \f]
         
         according to the formula given in Press et al. "Numerical Recipes".
@@ -305,15 +305,14 @@ inline UInt32 sqrti(UInt32 v)
         <b>\#include</b> "<a href="mathutil_8hxx-source.html">vigra/mathutil.hxx</a>"<br>
         Namespace: vigra
     */
-template <class T>
-T hypot(T a, T b) 
+inline double hypot(double a, double b) 
 { 
-    T absa = abs(a), absb = abs(b);
+    double absa = VIGRA_CSTD::fabs(a), absb = VIGRA_CSTD::fabs(b);
     if (absa > absb) 
         return absa * VIGRA_CSTD::sqrt(1.0 + sq(absb/absa)); 
     else 
-        return absb == NumericTraits<T>::zero()
-                   ? NumericTraits<T>::zero()
+        return absb == 0.0
+                   ? 0.0
                    : absb * VIGRA_CSTD::sqrt(1.0 + sq(absa/absb)); 
 }
 
@@ -323,7 +322,102 @@ using ::hypot;
 
 #endif
 
+namespace detail {
 
+template <class T>
+T ellipticRD(T x, T y, T z)
+{
+    double f = 1.0, s = 0.0, X, Y, Z, m;
+    while(true)
+    {
+        m = (x + y + 3.0*z) / 5.0;
+        X = 1.0 - x/m;
+        Y = 1.0 - y/m;
+        Z = 1.0 - z/m;
+        if(std::max(std::max(std::fabs(X), std::fabs(Y)), std::fabs(Z)) < 0.01)
+            break;
+        double l = std::sqrt(x*y) + std::sqrt(x*z) + std::sqrt(y*z);
+        s += f / (std::sqrt(z)*(z + l));
+        f /= 4.0;
+        x = (x + l)/4.0;
+        y = (y + l)/4.0;
+        z = (z + l)/4.0;
+    }
+    double a = X*Y;
+    double b = sq(Z);
+    double c = a - b;
+    double d = a - 6.0*b;
+    double e = d + 2.0*c;
+    return 3.0*s + f*(1.0+d*(-3.0/14.0+d*9.0/88.0-Z*e*4.5/26.0)
+                      +Z*(e/6.0+Z*(-c*9.0/22.0+a*Z*3.0/26.0))) / std::pow(m,1.5);
+}
+
+template <class T>
+T ellipticRF(T x, T y, T z)
+{
+    double X, Y, Z, m;
+    while(true)
+    {
+        m = (x + y + z) / 3.0;
+        X = 1.0 - x/m;
+        Y = 1.0 - y/m;
+        Z = 1.0 - z/m;
+        if(std::max(std::max(std::fabs(X), std::fabs(Y)), std::fabs(Z)) < 0.01)
+            break;
+        double l = std::sqrt(x*y) + std::sqrt(x*z) + std::sqrt(y*z);
+        x = (x + l)/4.0;
+        y = (y + l)/4.0;
+        z = (z + l)/4.0;
+    }
+    double d = X*Y - sq(Z);
+    double p = X*Y*Z;
+    return (1.0 - d/10.0 + p/14.0 + sq(d)/24.0 - d*p*3.0/44.0) / std::sqrt(m);
+}
+
+} // namespace detail
+
+    /*! The incomplete elliptic integral of the first kind.
+
+        Computes
+        
+        \f[
+            \mbox{F}(x, k) = \int_0^x \frac{1}{\sqrt{1 - k^2 \sin(t)^2}} dt
+        \f]
+        
+        according to the algorithm given in Press et al. "Numerical Recipes". The
+        complete elliptic integral of the first kind is simply <tt>ellipticIntegralF(M_PI/2, k)</TT>.
+
+        <b>\#include</b> "<a href="mathutil_8hxx-source.html">vigra/mathutil.hxx</a>"<br>
+        Namespace: vigra
+    */
+inline double ellipticIntegralF(double x, double k)
+{
+    double c2 = sq(std::cos(x));
+    double s = std::sin(x);
+    return s*detail::ellipticRF(c2, 1.0 - sq(k*s), 1.0);
+}
+
+    /*! The incomplete elliptic integral of the second kind.
+
+        Computes
+        
+        \f[
+            \mbox{E}(x, k) = \int_0^x \sqrt{1 - k^2 \sin(t)^2} dt
+        \f]
+        
+        according to the algorithm given in Press et al. "Numerical Recipes". The
+        complete elliptic integral of the second kind is simply <tt>ellipticIntegralE(M_PI/2, k)</TT>.
+
+        <b>\#include</b> "<a href="mathutil_8hxx-source.html">vigra/mathutil.hxx</a>"<br>
+        Namespace: vigra
+    */
+inline double ellipticIntegralE(double x, double k)
+{
+    double c2 = sq(std::cos(x));
+    double s = std::sin(x);
+    k = sq(k*s);
+    return s*(detail::ellipticRF(c2, 1.0-k, 1.0) - k/3.0*detail::ellipticRD(c2, 1.0-k, 1.0));
+}
 
     /*! The sign function.
 
