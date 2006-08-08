@@ -41,6 +41,7 @@
 #include <cmath>
 #include <complex>
 #include <algorithm>
+#include <iosfwd>
 #include "vigra/error.hxx"
 #include "vigra/mathutil.hxx"
 #include "vigra/numerictraits.hxx"
@@ -1096,5 +1097,18 @@ polynomialRealRoots(POLYNOMIAL const & poriginal, VECTOR & roots)
 //@}
 
 } // namespace vigra
+
+namespace std {
+
+template <class T>
+ostream & operator<<(ostream & o, vigra::PolynomialView<T> const & p)
+{
+    for(unsigned int k=0; k < p.order(); ++k)
+        o << p[k] << " ";
+    o << p[p.order()];
+    return o;
+}
+
+} // namespace std 
 
 #endif // VIGRA_POLYNOMIAL_HXX
