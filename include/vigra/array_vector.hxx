@@ -412,8 +412,8 @@ template <class InputIterator>
 typename ArrayVector<T, Alloc>::iterator
 ArrayVector<T, Alloc>::insert(iterator p, InputIterator i, InputIterator iend)
 {
-    difference_type n = iend - i;
-    difference_type pos = p - begin();
+    size_type n = iend - i;
+    size_type pos = p - begin();
     size_type new_size = size() + n;
     if(new_size >= capacity_)
     {
