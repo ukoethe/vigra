@@ -70,6 +70,7 @@ template <class T, class Alloc = std::allocator<T> >
 class ArrayVector
 {
     typedef ArrayVector<T, Alloc> this_type;
+    enum { minimumCapacity = 2 };
 
 public:
     typedef T value_type;
@@ -246,16 +247,16 @@ template <class T, class Alloc>
 ArrayVector<T, Alloc>::ArrayVector()
 : alloc_(Alloc()),
   size_(0),
-  capacity_(5),
-  data_(reserve_raw(5))
+  capacity_(minimumCapacity),
+  data_(reserve_raw(minimumCapacity))
 {}
 
 template <class T, class Alloc>
 ArrayVector<T, Alloc>::ArrayVector(Alloc const & alloc)
 : alloc_(alloc),
   size_(0),
-  capacity_(5),
-  data_(reserve_raw(5))
+  capacity_(minimumCapacity),
+  data_(reserve_raw(minimumCapacity))
 {}
 
 template <class T, class Alloc>
@@ -479,7 +480,9 @@ void ArrayVector<T, Alloc>::reserve( size_type new_capacity )
 template <class T, class Alloc>
 void ArrayVector<T, Alloc>::reserve()
 {
-    if(size_ == capacity_)
+    if(capacity_ == 0)
+        reserve(minimumCapacity);
+    else if(size_ == capacity_)
         reserve(2*capacity_);
 }
 
