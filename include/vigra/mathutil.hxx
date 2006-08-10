@@ -119,8 +119,13 @@ using VIGRA_CSTD::erf;
 using VIGRA_CSTD::pow;  
 using VIGRA_CSTD::floor;  
 using VIGRA_CSTD::ceil;  
+
+// import abs(float), abs(double), abs(long double) from <cmath>
+//    and abs(int), abs(long), abs(long long) from <cstdlib>
 using std::abs;  
 
+// define the missing variants of abs() to avoid 'ambigous overload'
+// errors in template functions
 #define VIGRA_DEFINE_UNSIGNED_ABS(T) \
     inline T abs(T t) { return t; }
 
@@ -129,36 +134,45 @@ VIGRA_DEFINE_UNSIGNED_ABS(unsigned char)
 VIGRA_DEFINE_UNSIGNED_ABS(unsigned short)
 VIGRA_DEFINE_UNSIGNED_ABS(unsigned int)
 VIGRA_DEFINE_UNSIGNED_ABS(unsigned long)
+VIGRA_DEFINE_UNSIGNED_ABS(unsigned long long)
 
 #undef VIGRA_DEFINE_UNSIGNED_ABS
 
+#define VIGRA_DEFINE_MISSING_ABS(T) \
+    inline T abs(T t) { return t < 0 ? -t : t; }
+
+VIGRA_DEFINE_MISSING_ABS(signed char)
+VIGRA_DEFINE_MISSING_ABS(signed short)
+
+#undef VIGRA_DEFINE_MISSING_ABS
+
     /*! The rounding function.
 
-        Defined for all floating point types. Rounds towards the nearest integer for both 
-        positive and negative inputs.
+        Defined for all floating point types. Rounds towards the nearest integer 
+        such that <tt>abs(round(t)) == round(abs(t))</tt> for all <tt>t</tt>.
 
         <b>\#include</b> "<a href="mathutil_8hxx-source.html">vigra/mathutil.hxx</a>"<br>
         Namespace: vigra
     */
 inline float round(float t)
 {
-    return t >= 0.0
-               ? floor(t + 0.5)
-               : ceil(t - 0.5);
+     return t >= 0.0
+                ? floor(t + 0.5)
+                : ceil(t - 0.5);
 }
 
 inline double round(double t)
 {
-    return t >= 0.0
-               ? floor(t + 0.5)
-               : ceil(t - 0.5);
+     return t >= 0.0
+                ? floor(t + 0.5)
+                : ceil(t - 0.5);
 }
 
 inline long double round(long double t)
 {
-    return t >= 0.0
-               ? floor(t + 0.5)
-               : ceil(t - 0.5);
+     return t >= 0.0
+                ? floor(t + 0.5)
+                : ceil(t - 0.5);
 }
 
     /*! The square function.
