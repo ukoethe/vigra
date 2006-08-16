@@ -42,7 +42,7 @@
 				OutputFile=".\Debug/simpleanalysis.exe"
 				LinkIncremental="2"
 				SuppressStartupBanner="TRUE"
-				AdditionalLibraryDirectories="C:\Users\Koethe\lib\msvc.net"
+				AdditionalLibraryDirectories="..\..\lib"
 				GenerateDebugInformation="TRUE"
 				ProgramDatabaseFile=".\Debug/simpleanalysis.pdb"
 				SubSystem="1"/>
@@ -103,7 +103,7 @@
 				OutputFile="simpleanalysis.exe"
 				LinkIncremental="1"
 				SuppressStartupBanner="TRUE"
-				AdditionalLibraryDirectories="C:\lib"
+				AdditionalLibraryDirectories="..\..\lib"
 				ProgramDatabaseFile=".\Release/simpleanalysis.pdb"
 				SubSystem="1"/>
 			<Tool

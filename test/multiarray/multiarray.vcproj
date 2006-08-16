@@ -44,7 +44,7 @@
 				OutputFile="multiarray.exe"
 				LinkIncremental="1"
 				SuppressStartupBanner="TRUE"
-				AdditionalLibraryDirectories="C:\lib"
+				AdditionalLibraryDirectories="..\..\lib"
 				ProgramDatabaseFile=".\Release/multiarray.pdb"
 				SubSystem="1"/>
 			<Tool
@@ -107,7 +107,7 @@
 				OutputFile=".\Debug/multiarray.exe"
 				LinkIncremental="2"
 				SuppressStartupBanner="TRUE"
-				AdditionalLibraryDirectories="C:\lib"
+				AdditionalLibraryDirectories="..\..\lib"
 				GenerateDebugInformation="TRUE"
 				ProgramDatabaseFile=".\Debug/multiarray.pdb"
 				SubSystem="1"/>

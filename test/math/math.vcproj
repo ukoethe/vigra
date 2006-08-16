@@ -43,7 +43,7 @@
 				OutputFile="math.exe"
 				LinkIncremental="1"
 				SuppressStartupBanner="TRUE"
-				AdditionalLibraryDirectories=""
+				AdditionalLibraryDirectories="..\..\lib"
 				ProgramDatabaseFile=".\Release/math.pdb"
 				SubSystem="1"/>
 			<Tool
@@ -104,7 +104,7 @@
 				OutputFile=".\Debug/math.exe"
 				LinkIncremental="2"
 				SuppressStartupBanner="TRUE"
-				AdditionalLibraryDirectories="C:\Users\Koethe\lib\msvc.net"
+				AdditionalLibraryDirectories="..\..\lib"
 				GenerateDebugInformation="TRUE"
 				ProgramDatabaseFile=".\Debug/math.pdb"
 				SubSystem="1"/>

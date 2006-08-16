@@ -42,7 +42,7 @@
 				OutputFile="morphology.exe"
 				LinkIncremental="1"
 				SuppressStartupBanner="TRUE"
-				AdditionalLibraryDirectories=""
+				AdditionalLibraryDirectories="..\..\lib"
 				ProgramDatabaseFile=".\Release/morphology.pdb"
 				SubSystem="1"/>
 			<Tool
@@ -103,7 +103,7 @@
 				OutputFile=".\Debug/morphology.exe"
 				LinkIncremental="2"
 				SuppressStartupBanner="TRUE"
-				AdditionalLibraryDirectories="C:\Users\Koethe\lib\msvc.net"
+				AdditionalLibraryDirectories="..\..\lib"
 				GenerateDebugInformation="TRUE"
 				ProgramDatabaseFile=".\Debug/morphology.pdb"
 				SubSystem="1"/>

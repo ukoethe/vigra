@@ -43,7 +43,7 @@
 				OutputFile="syntax.exe"
 				LinkIncremental="1"
 				SuppressStartupBanner="TRUE"
-				AdditionalLibraryDirectories=""
+				AdditionalLibraryDirectories="..\..\lib"
 				ProgramDatabaseFile=".\Release/syntax.pdb"
 				SubSystem="1"/>
 			<Tool
@@ -106,7 +106,7 @@
 				OutputFile=".\Debug/syntax.exe"
 				LinkIncremental="2"
 				SuppressStartupBanner="TRUE"
-				AdditionalLibraryDirectories="..\..\current\src\impex;C:\lib"
+				AdditionalLibraryDirectories="..\..\lib"
 				GenerateDebugInformation="TRUE"
 				ProgramDatabaseFile=".\Debug/syntax.pdb"
 				SubSystem="1"/>

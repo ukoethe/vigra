@@ -42,7 +42,7 @@
 				OutputFile=".\Debug/convolution.exe"
 				LinkIncremental="2"
 				SuppressStartupBanner="TRUE"
-				AdditionalLibraryDirectories="C:\lib"
+				AdditionalLibraryDirectories="..\..\lib"
 				GenerateDebugInformation="TRUE"
 				ProgramDatabaseFile=".\Debug/convolution.pdb"
 				SubSystem="1"/>
@@ -80,6 +80,7 @@
 			CharacterSet="2">
 			<Tool
 				Name="VCCLCompilerTool"
+				Optimization="2"
 				InlineFunctionExpansion="1"
 				AdditionalIncludeDirectories="..\..\include;..\include"
 				PreprocessorDefinitions="WIN32,NDEBUG,_CONSOLE"
@@ -103,7 +104,7 @@
 				OutputFile="convolution.exe"
 				LinkIncremental="1"
 				SuppressStartupBanner="TRUE"
-				AdditionalLibraryDirectories="C:\lib"
+				AdditionalLibraryDirectories="..\..\lib"
 				IgnoreDefaultLibraryNames=""
 				GenerateDebugInformation="TRUE"
 				ProgramDatabaseFile=".\Release/convolution.pdb"
@@ -114,7 +115,8 @@
 			<Tool
 				Name="VCPostBuildEventTool"
 				Description="Running tests"
-				CommandLine="..\testOrDelete convolution.exe"/>
+				CommandLine="..\testOrDelete convolution.exe"
+				ExcludedFromBuild="FALSE"/>
 			<Tool
 				Name="VCPreBuildEventTool"/>
 			<Tool

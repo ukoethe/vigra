@@ -43,7 +43,7 @@
 				OutputFile="utilities.exe"
 				LinkIncremental="1"
 				SuppressStartupBanner="TRUE"
-				AdditionalLibraryDirectories=""
+				AdditionalLibraryDirectories="..\..\lib"
 				ProgramDatabaseFile=".\Release/utilities.pdb"
 				SubSystem="1"/>
 			<Tool
@@ -104,7 +104,7 @@
 				OutputFile=".\Debug/utilities.exe"
 				LinkIncremental="2"
 				SuppressStartupBanner="TRUE"
-				AdditionalLibraryDirectories="..\..\current\src\impex;C:\lib"
+				AdditionalLibraryDirectories="..\..\lib"
 				GenerateDebugInformation="TRUE"
 				ProgramDatabaseFile=".\Debug/utilities.pdb"
 				SubSystem="1"/>

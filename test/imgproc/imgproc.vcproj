@@ -22,7 +22,7 @@
 				Name="VCCLCompilerTool"
 				InlineFunctionExpansion="0"
 				AdditionalIncludeDirectories="..\..\include;..\include"
-				PreprocessorDefinitions="WIN32,NDEBUG,_CONSOLE"
+				PreprocessorDefinitions="WIN32,_CONSOLE"
 				StringPooling="TRUE"
 				RuntimeLibrary="2"
 				EnableFunctionLevelLinking="TRUE"
@@ -43,7 +43,7 @@
 				OutputFile="imgproc.exe"
 				LinkIncremental="1"
 				SuppressStartupBanner="TRUE"
-				AdditionalLibraryDirectories="C:\lib"
+				AdditionalLibraryDirectories="..\..\lib"
 				ProgramDatabaseFile=".\Release/imgproc.pdb"
 				SubSystem="1"/>
 			<Tool
@@ -104,7 +104,7 @@
 				OutputFile=".\Debug/imgproc.exe"
 				LinkIncremental="2"
 				SuppressStartupBanner="TRUE"
-				AdditionalLibraryDirectories="C:\lib"
+				AdditionalLibraryDirectories="..\..\lib"
 				GenerateDebugInformation="TRUE"
 				ProgramDatabaseFile=".\Debug/imgproc.pdb"
 				SubSystem="1"/>

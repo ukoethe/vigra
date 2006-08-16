@@ -42,7 +42,7 @@
 				OutputFile="edge.exe"
 				LinkIncremental="1"
 				SuppressStartupBanner="TRUE"
-				AdditionalLibraryDirectories="C:\lib"
+				AdditionalLibraryDirectories="..\..\lib"
 				ProgramDatabaseFile=".\Release/edge.pdb"
 				SubSystem="1"/>
 			<Tool
@@ -97,11 +97,11 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalOptions="/MACHINE:I386"
-				AdditionalDependencies="libtiff.lib libjpeg.lib libpng13.lib"
+				AdditionalDependencies="libtiff.lib libjpeg.lib libpng.lib zlib.lib"
 				OutputFile="./edge.exe"
 				LinkIncremental="2"
 				SuppressStartupBanner="TRUE"
-				AdditionalLibraryDirectories="C:\Users\Koethe\lib\msvc.net"
+				AdditionalLibraryDirectories="..\..\lib"
 				GenerateDebugInformation="TRUE"
 				ProgramDatabaseFile="./edge.pdb"
 				SubSystem="1"/>
