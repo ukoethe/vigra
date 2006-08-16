@@ -4,3 +4,4 @@ libvigraimpex.la
 *.ld
 *.loT
 Release
+Debug
