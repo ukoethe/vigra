@@ -701,7 +701,7 @@ struct ConvolutionTest
     void separableGradientTest()
     {
         Image sepgrad(lenna.size());
-        importImage(vigra::ImageImportInfo("lenna128sepgrad.tif"), destImage(sepgrad));
+        importImage(vigra::ImageImportInfo("lenna128sepgrad.xv"), destImage(sepgrad));
         
         vigra::Kernel1D<double> gauss;
         gauss.initGaussian(1.0);
@@ -737,7 +737,7 @@ struct ConvolutionTest
     void gradientTest()
     {
         Image sepgrad(lenna.size());
-        importImage(vigra::ImageImportInfo("lenna128sepgrad.tif"), destImage(sepgrad));
+        importImage(vigra::ImageImportInfo("lenna128sepgrad.xv"), destImage(sepgrad));
         
         
         Image tmpx(lenna.size());
@@ -770,9 +770,9 @@ struct ConvolutionTest
         hessianMatrixOfGaussian(srcImageRange(lenna), 
             destImage(resxx), destImage(resxy), destImage(resyy), 1.0);
             
-        importImage(vigra::ImageImportInfo("lennahessxx.tif"), destImage(refxx));
-        importImage(vigra::ImageImportInfo("lennahessyy.tif"), destImage(refyy));
-        importImage(vigra::ImageImportInfo("lennahessxy.tif"), destImage(refxy));
+        importImage(vigra::ImageImportInfo("lennahessxx.xv"), destImage(refxx));
+        importImage(vigra::ImageImportInfo("lennahessyy.xv"), destImage(refyy));
+        importImage(vigra::ImageImportInfo("lennahessxy.xv"), destImage(refxy));
         
         Image::ScanOrderIterator i1 = resxx.begin();
         Image::ScanOrderIterator i1end = resxx.end();
@@ -804,9 +804,9 @@ struct ConvolutionTest
         structureTensor(srcImageRange(lenna), 
             destImage(resxx), destImage(resxy), destImage(resyy), 1.0, 2.0);
             
-        importImage(vigra::ImageImportInfo("lennastxx.tif"), destImage(refxx));
-        importImage(vigra::ImageImportInfo("lennastyy.tif"), destImage(refyy));
-        importImage(vigra::ImageImportInfo("lennastxy.tif"), destImage(refxy));
+        importImage(vigra::ImageImportInfo("lennastxx.xv"), destImage(refxx));
+        importImage(vigra::ImageImportInfo("lennastyy.xv"), destImage(refyy));
+        importImage(vigra::ImageImportInfo("lennastxy.xv"), destImage(refxy));
         
         Image::ScanOrderIterator i1 = resxx.begin();
         Image::ScanOrderIterator i1end = resxx.end();
@@ -1409,7 +1409,7 @@ struct ConvolutionTest
                 VIGRA_CSTD::exp(-1.0), BORDER_TREATMENT_WRAP);
         recursiveFilterX(srcImageRange(src), destImage(dest_clip), 
                 VIGRA_CSTD::exp(-1.0), BORDER_TREATMENT_CLIP);
-
+                
         iter_src = src.begin();
         Image::iterator iter_dest_avoid = dest_avoid.begin();
         Image::iterator iter_dest_repeat = dest_repeat.begin();
@@ -1530,7 +1530,7 @@ struct ConvolutionTest
                            vigra::DiffusivityFunctor<double>(4.0), 4.0);
                 
         Image comp(lenna.size());
-        importImage(vigra::ImageImportInfo("lenna128nonlinear.tif"), destImage(comp));
+        importImage(vigra::ImageImportInfo("lenna128nonlinear.xv"), destImage(comp));
 
         Image::ScanOrderIterator i1 = res.begin();
         Image::ScanOrderIterator i1end = res.end();
