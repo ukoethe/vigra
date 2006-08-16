@@ -42,7 +42,7 @@
 				OutputFile="error.exe"
 				LinkIncremental="1"
 				SuppressStartupBanner="TRUE"
-				AdditionalLibraryDirectories=""
+				AdditionalLibraryDirectories="..\..\lib"
 				ProgramDatabaseFile=".\Release/error.pdb"
 				SubSystem="1"/>
 			<Tool
@@ -103,7 +103,7 @@
 				OutputFile=".\Debug/error.exe"
 				LinkIncremental="2"
 				SuppressStartupBanner="TRUE"
-				AdditionalLibraryDirectories="C:\Users\Koethe\lib\msvc.net"
+				AdditionalLibraryDirectories="..\..\lib"
 				GenerateDebugInformation="TRUE"
 				ProgramDatabaseFile=".\Debug/error.pdb"
 				SubSystem="1"/>
