@@ -357,12 +357,12 @@ struct GaborTests
 						  angularGaborSigma(directionCount, centerFrequency),
 						  radialGaborSigma(centerFrequency));
 
-		checkImage(srcImageRange(filter), "filter.tif");
+		checkImage(srcImageRange(filter), "filter.xv");
 
 		cout << "Applying filter...\n";
 		FFTWComplexImage result(w, h);
 		applyFourierFilter(srcImageRange(image), srcImage(filter), destImage(result));
-		checkImage(srcImageRange(result, FFTWMagnitudeAccessor()), "gaborresult.tif");
+		checkImage(srcImageRange(result, FFTWMagnitudeAccessor()), "gaborresult.xv");
 
 		FImage realPart(w, h);
 		applyFourierFilter(srcImageRange(image), srcImage(filter), destImage(realPart));
@@ -391,7 +391,7 @@ struct GaborTests
 		copyImage(srcImageRange(image), destIter(bigUL));
 		applyFourierFilter(srcIterRange(bigUL, bigUL + Diff2D(w, h)),
 						   srcImage(filter), destImage(result));
-		checkImage(srcImageRange(result, FFTWMagnitudeAccessor()), "gaborresult.tif");
+		checkImage(srcImageRange(result, FFTWMagnitudeAccessor()), "gaborresult.xv");
 #if 0
 		cout << "Creating plans with measurement...\n";
 		fftwnd_plan forwardPlan=
@@ -403,7 +403,7 @@ struct GaborTests
 		applyFourierFilter(srcImageRange(image), srcImage(filter), destImage(result),
 						   forwardPlan, backwardPlan);
 
-		checkImage(srcImageRange(result, FFTWMagnitudeAccessor()), "gaborresult.tif");
+		checkImage(srcImageRange(result, FFTWMagnitudeAccessor()), "gaborresult.xv");
 #endif
 	}
 
@@ -414,7 +414,7 @@ struct GaborTests
 		ImageArray<FFTWComplexImage> results((unsigned int)filters.size(), filters.imageSize());
 		applyFourierFilterFamily(srcImageRange(image), filters, results);
 		checkImage(srcImageRange(results[filters.filterIndex(1,1)], FFTWMagnitudeAccessor()),
-				   "gaborresult.tif");
+				   "gaborresult.xv");
 
 		ImageArray<FImage> realParts((unsigned int)filters.size(), filters.imageSize());
 		applyFourierFilterFamily(srcImageRange(image), filters, realParts);

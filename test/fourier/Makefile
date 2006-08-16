@@ -1,6 +1,6 @@
 curdir=.
 
-TESTIMAGES = ghouse.gif filter.tif gaborresult.tif
+TESTIMAGES = ghouse.gif filter.xv gaborresult.xv
 
 all: test
 
