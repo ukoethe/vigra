@@ -1,6 +1,6 @@
 curdir=.
 
-TESTIMAGES = lenna128.xv lenna_simple_sharpening_orig.xv lenna_gaussian_sharpening_orig.xv lenna128sepgrad.tif lennahessxx.tif lennastxx.tif lenna128recgrad.xv lenna128nonlinear.tif resampling.xv lennahessyy.tif lennastyy.tif lennahessxy.tif lennastxy.tif
+TESTIMAGES = lenna128.xv lenna_simple_sharpening_orig.xv lenna_gaussian_sharpening_orig.xv lenna128sepgrad.xv lennahessxx.xv lennastxx.xv lenna128recgrad.xv lenna128nonlinear.xv resampling.xv lennahessyy.xv lennastyy.xv lennahessxy.xv lennastxy.xv
 
 
 test: test.o $(TESTIMAGES)
