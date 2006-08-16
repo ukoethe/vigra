@@ -10,3 +10,16 @@ pyramid
 edge
 watershed
 voronoi
+watershed.exe
+boundarytensor.exe
+convert.exe
+edge.exe
+invert.exe
+invert_explicitly.exe
+profile.exe
+pyramid.exe
+resize.exe
+smooth.exe
+subimage.exe
+voronoi.exe
+Release
