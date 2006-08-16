@@ -10,7 +10,7 @@
 AppCopyright=Ullrich Köthe
 AppName={#MyAppName}
 AppVerName=Vigra {#MyAppVersion}
-LicenseFile={#MySourcePath}\LICENSE
+LicenseFile={#MySourcePath}\LICENSE.txt
 ShowLanguageDialog=yes
 AppSupportURL={#MyAppUrl}
 AppVersion={#MyAppVersion}
@@ -20,6 +20,7 @@ Compression=lzma
 SolidCompression=true
 AppID={#MyAppName}
 OutputDir=C:\Users\koethe\src\vigra\current\WinSetup
+InfoBeforeFile={#MySourcePath}\README.txt
 
 [Files]
 Source: {#MySourcePath}\LICENSE.txt; DestDir: {app}
