@@ -70,7 +70,7 @@
 				Name="VCCLCompilerTool"
 				InlineFunctionExpansion="1"
 				AdditionalIncludeDirectories="..\..\include;..\..\include\external"
-				PreprocessorDefinitions="WIN32,NDEBUG,_WINDOWS,HasJPEG,HasTIFF,HasPNG"
+				PreprocessorDefinitions="VIGRA_STATIC_LIB;WIN32,NDEBUG,_WINDOWS,HasJPEG,HasTIFF,HasPNG"
 				StringPooling="TRUE"
 				RuntimeLibrary="2"
 				EnableFunctionLevelLinking="TRUE"

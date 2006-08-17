@@ -38,11 +38,11 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalOptions="/MACHINE:I386"
-				AdditionalDependencies="libtiff.lib libjpeg.lib libpng.lib zlib.lib"
+				AdditionalDependencies="vigraimpex.dll.lib"
 				OutputFile="edge.exe"
 				LinkIncremental="1"
 				SuppressStartupBanner="TRUE"
-				AdditionalLibraryDirectories="..\..\lib"
+				AdditionalLibraryDirectories="..\impex"
 				ProgramDatabaseFile=".\Release/edge.pdb"
 				SubSystem="1"/>
 			<Tool

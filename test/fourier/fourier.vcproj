@@ -86,10 +86,10 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="libtiff.lib libjpeg.lib libpng.lib zlib.lib fftw3.lib"
+				AdditionalDependencies="vigraimpex.dll.lib fftw3.lib"
 				OutputFile="$(OutDir)/fourier.exe"
 				LinkIncremental="1"
-				AdditionalLibraryDirectories="..\..\lib"
+				AdditionalLibraryDirectories="..\..\lib;..\..\src\impex"
 				GenerateDebugInformation="TRUE"
 				SubSystem="1"
 				OptimizeReferences="2"
