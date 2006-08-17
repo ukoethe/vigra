@@ -1,3 +1,4 @@
+set PATH=%PATH%;..\..\src\impex
 %1
 echo off
 if ERRORLEVEL 1 (
