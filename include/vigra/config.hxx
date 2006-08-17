@@ -101,6 +101,14 @@
     #endif // _MSC_VER < 1310
 
     #define VIGRA_NEED_BIN_STREAMS
+
+    #ifdef VIGRA_DLL
+        #define VIGRA_EXPORT __declspec(dllexport)
+    #elif defined(VIGRA_STATIC_LIB)
+        #define VIGRA_EXPORT
+    #else
+        #define VIGRA_EXPORT __declspec(dllimport)
+    #endif
 #endif // _MSC_VER
 
 ///////////////////////////////////////////////////////////
@@ -124,6 +132,14 @@
 
 #if defined(__MINGW32__)
     #define VIGRA_NEED_BIN_STREAMS
+
+    #ifdef VIGRA_DLL
+        #define VIGRA_EXPORT __declspec(dllexport)
+    #elif defined(VIGRA_STATIC_LIB)
+        #define VIGRA_EXPORT
+    #else
+        #define VIGRA_EXPORT __declspec(dllimport)
+    #endif
 #endif  // __MINGW32__
 
 ///////////////////////////////////////////////////////////
@@ -166,6 +182,10 @@
 
 #ifdef NO_EXPLICIT
     #define explicit
+#endif
+
+#ifndef VIGRA_EXPORT
+    #define VIGRA_EXPORT
 #endif
 
 namespace vigra {

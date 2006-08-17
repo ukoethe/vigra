@@ -40,6 +40,7 @@
 #include <memory>
 #include <string>
 #include <vector>
+#include "vigra/config.hxx"
 
 // possible pixel types:
 // "undefined", "UINT8", "INT16", "INT32", "FLOAT", "DOUBLE"
@@ -171,22 +172,22 @@ namespace vigra
     // - (in case of decoders) the file's magic string
     // - the filename extension
 
-    std::auto_ptr<Decoder>
+    VIGRA_EXPORT std::auto_ptr<Decoder>
     getDecoder( const std::string &, const std::string & = "undefined" );
 
-    std::auto_ptr<Encoder>
+    VIGRA_EXPORT std::auto_ptr<Encoder>
     getEncoder( const std::string &, const std::string & = "undefined" );
 
     // functions to query the capabilities of certain codecs
 
-    std::vector<std::string> queryCodecPixelTypes( const std::string & );
+    VIGRA_EXPORT std::vector<std::string> queryCodecPixelTypes( const std::string & );
 
-    bool negotiatePixelType( std::string const & codecname,
+    VIGRA_EXPORT bool negotiatePixelType( std::string const & codecname,
                  std::string const & srcPixeltype, std::string & destPixeltype);
 
-    bool isPixelTypeSupported( const std::string &, const std::string & );
+    VIGRA_EXPORT bool isPixelTypeSupported( const std::string &, const std::string & );
 
-    bool isBandNumberSupported( const std::string &, int bands );
+    VIGRA_EXPORT bool isBandNumberSupported( const std::string &, int bands );
 }
 
 #endif // VIGRA_CODEC_HXX

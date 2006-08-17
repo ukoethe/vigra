@@ -40,6 +40,7 @@
 
 #include <memory>
 #include <string>
+#include "vigra/config.hxx"
 #include "vigra/utilities.hxx"
 #include "vigra/codec.hxx"
 
@@ -66,7 +67,7 @@ namespace vigra
         \endcode
 
     **/
-std::string impexListFormats();
+VIGRA_EXPORT std::string impexListFormats();
 
     /** \brief List the file extension VIGRA understands.
 
@@ -83,7 +84,7 @@ std::string impexListFormats();
         \endcode
 
     **/
-std::string impexListExtensions();
+VIGRA_EXPORT std::string impexListExtensions();
 
 /** \brief Test whether a file is an image format known to VIGRA.
 
@@ -100,7 +101,7 @@ std::string impexListExtensions();
     \endcode
 
 **/
-bool isImage(char const * filename);
+VIGRA_EXPORT bool isImage(char const * filename);
 
 /********************************************************/
 /*                                                      */
@@ -115,7 +116,7 @@ bool isImage(char const * filename);
     <b>\#include</b> "<a href="imageinfo_8hxx-source.html">vigra/imageinfo.hxx</a>"<br>
     Namespace: vigra
 **/
-class ImageExportInfo
+class VIGRA_EXPORT ImageExportInfo
 {
   public:
         /** Construct ImageExportInfo object.
@@ -235,7 +236,7 @@ class ImageExportInfo
 };
 
 // return an encoder for a given ImageExportInfo object
-std::auto_ptr<Encoder> encoder( const ImageExportInfo & info );
+VIGRA_EXPORT std::auto_ptr<Encoder> encoder( const ImageExportInfo & info );
 
 
 /********************************************************/
@@ -251,7 +252,7 @@ used to read an image from disk and enquire about its properties.
 <b>\#include</b> "<a href="imageinfo_8hxx-source.html">vigra/imageinfo.hxx</a>"<br>
 Namespace: vigra
 **/
-class ImageImportInfo
+class VIGRA_EXPORT ImageImportInfo
 {
   public:
     enum PixelType { UINT8, INT16, INT32, FLOAT, DOUBLE };
@@ -351,7 +352,7 @@ class ImageImportInfo
 };
 
 // return a decoder for a given ImageImportInfo object
-std::auto_ptr<vigra::Decoder> decoder( const ImageImportInfo & info );
+VIGRA_EXPORT std::auto_ptr<vigra::Decoder> decoder( const ImageImportInfo & info );
 
 } // namespace vigra
 
