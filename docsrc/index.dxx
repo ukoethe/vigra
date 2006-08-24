@@ -59,14 +59,14 @@
         \ref CreditsChangelog
         <DD> <em>Who contributed what?</em>
     </DL>
-    
+
     \anchor _details
     <CENTER>
     \section Main VIGRA - Vision with Generic Algorithms
     Version VERSION_VERSION_VERSION
     by <a href="http://kogs-www.informatik.uni-hamburg.de/~koethe/">Ullrich K&ouml;the</a>
     </CENTER>
-    
+
     VIGRA  is a computer vision library that puts its main emphasize on
     <em>flexible algorithms</em>, because
     algorithms represent the principle know-how of this field.
@@ -82,7 +82,7 @@
     comes almost for free: Since the design uses compile-time polymorphism
     (templates), performance of the compiled program approaches that
     of a traditional, hand tuned, inflexible, solution.
-    
+
     VIGRA's design is documented in the chapter <em>"Reusable Software in
     Computer Vision"</em> by
     <a href="http://kogs-www.informatik.uni-hamburg.de/~koethe/">Ullrich K&ouml;the</a>,
@@ -96,18 +96,18 @@
     <a href="http://www.creport.com/">C++ Report Magazine</a>. The most comprehensive source of information is
     U. K&ouml;the's PhD thesis <em>"<a href="http://kogs-www.informatik.uni-hamburg.de/~koethe/papers/index.html#PhD>Generische Programmierung f&uuml;r die Bildverarbeitung</a>"</em>.
     However, this is written in German.
-        
-    VIGRA is subject to this <a href="LICENSE">LICENSE</a>.
-    
-    
+
+    VIGRA is subject to this <a href="LICENSE.txt">LICENSE</a>.
+
+
     \section Documentation Documentation
-    
+
     The documentation can be found in \p @docdir@, the start file is
     \p @docdir@/index.html (this file).<br>
     You can also subscribe to the <a href="http://kogs.informatik.uni-hamburg.de/mailman/listinfo/vigra">VIGRA Mailing List</a> to get instant information about new releases, discuss VIGRA's features and development, and ask the experts for help.
-    
-    
-    
+
+
+
 */
 
 /** \page Concepts Concepts
@@ -284,11 +284,11 @@
         \ref vigra::BasicImage
         <DD> <em>Fundamental class template for images </em>
     <DT>
-        <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif"> 
+        <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif">
         \ref vigra::BasicImageView
         <DD> <em>Class template for images that use external memory</em>
     <DT>
-        <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif"> 
+        <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif">
         \ref StandardImageTypes
         <DD> <em>The most common instanciations of \ref vigra::BasicImage</em>
     <DT>
@@ -296,7 +296,7 @@
         \ref vigra::SplineImageView
         <DD> <em>Wrap a discrete image as a continous function</em>
     <DT>
-        <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif"> 
+        <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif">
         \ref VigraImpex
         <DD> <em>Image import/export</em>
     <DT>
@@ -330,11 +330,11 @@
         \ref vigra::MultiArrayView
         <DD> <em>Interface for multi-dimensional arrays </em>
     <DT>
-        <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif"> 
+        <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif">
         \ref vigra::MultiArray
         <DD> <em>Array class that holds the actual memory</em>
     <DT>
-        <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif"> 
+        <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif">
         \ref VolumeImpex
         <DD> <em>Import/export of volume data.</em>
     <DT>
@@ -363,7 +363,7 @@
 /** \page ImportExport Image Import and Export
 
     Conversion from and to other image data types
-    
+
     <DL>
     <DT>
         <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif">
@@ -378,7 +378,7 @@
         \ref TIFFImpex
         <DD> <em>image import/export interface if you want to call libtiff functions directly</em>
     </DL>
-    
+
     There are two fundamentally different approaches to interfacing between VIGRA and the rest of the world.
 
     <b>If you already have an image data type in your system:</b>
@@ -505,18 +505,18 @@ of \ref AlgebraicField and \ref DivisionAlgebra.
         <tt>Equality Comparable</TT> and <tt>Strict Weakly Comparable</TT>
         as defined in the C++ standard (cf. the
         <a href="WWW_STL_DOCU">Standard Template Library documentation</a>).
-        
+
     <li>A model of Algebraic Ring implements addition, subtraction and unary negation. The associated
     \link NumericTraits NumericTraits \endlink define a 'zero' element, the type of the
     result of addition and subtraction, and a type conversion function.
     Addition must be commutative.
-    
+
     \code
     ModelOfAlgebraicRing a, b;
     NumericTraits<ModelOfAlgebraicRing>::Promote c;
-    
+
     ModelOfAlgebraicRing zero = NumericTraits<ModelOfAlgebraicRing>::zero();
-    
+
     b += a;
     b -= a;
     b = -a;
@@ -524,7 +524,7 @@ of \ref AlgebraicField and \ref DivisionAlgebra.
     c = a - b;
     c = a;
     a = NumericTraits<ModelOfAlgebraicRing>::fromPromote(c);
-    
+
     assert(a + zero == a);
     assert(a + b == b + a);
     assert(a - b == a + (-b));
@@ -532,31 +532,31 @@ of \ref AlgebraicField and \ref DivisionAlgebra.
 
     <li>If mixed-type addition and subtraction are supported,
     \link PromoteTraits PromoteTraits \endlink define the result type:
-        
+
     \code
     ModelOfAlgebraicRing1 a;
     ModelOfAlgebraicRing2 b;
-    
+
     PromoteTraits<ModelOfAlgebraicRing1, ModelOfAlgebraicRing2>::Promote c;
-         
+
     c = a + b;
     \endcode
-    
+
     <li>A model of Algebraic Ring implements multiplication. The associated
     \link NumericTraits NumericTraits \endlink define a 'one' element, the type of the
     result of multiplication, and a type conversion function.
-    
+
     \code
     ModelOfAlgebraicRing a, b;
     NumericTraits<ModelOfAlgebraicRing>::RealPromote c;
-    
+
     ModelOfAlgebraicRing one = NumericTraits<ModelOfAlgebraicRing>::one();
-    
+
     b *= a;
     c = a * b;
     c = a;
     a = NumericTraits<ModelOfAlgebraicRing>::fromRealPromote(c);
-    
+
     assert(a * one == a);
     \endcode
 </ul>
@@ -566,20 +566,20 @@ of \ref AlgebraicField and \ref DivisionAlgebra.
 
 <ul>
     <li>A model of Algebraic Field implements \ref AlgebraicRing as defined above.
-    
+
     <li>A model of Algebraic Field implements division. Division is undefined if
     and only if the right operand is 'zero'.
-    
+
     \code
     ModelOfAlgebraicField a, b;
     typename NumericTraits<ModelOfAlgebraicField>::RealPromote c;
-    
+
     ModelOfAlgebraicField zero = NumericTraits<ModelOfAlgebraicField>::zero();
-    
+
     if(a != zero) b /= a;
     if(a != zero) c = b / a;
     \endcode
-       
+
 </ul>
 
 
@@ -592,19 +592,19 @@ of \ref AlgebraicField and \ref DivisionAlgebra.
         and <tt>Equality Comparable</TT>
         as defined in the C++ standard (cf. the
         <a href="WWW_STL_DOCU">Standard Template Library documentation</a>).
-        
+
     <li>A model of Algebraic Ring implements addition, subtraction and unary negation. The associated
     \link NumericTraits NumericTraits \endlink define a 'zero' element, the type of the
     result of addition and subtraction, and a type conversion function.
     Addition must be commutative. (This part of the requirements is identical to
     \ref AlgebraicRing above.)
-    
+
     \code
     ModelOfAlgebraicRing a, b;
     NumericTraits<ModelOfAlgebraicRing>::Promote c;
-    
+
     ModelOfAlgebraicRing zero = NumericTraits<ModelOfAlgebraicRing>::zero();
-    
+
     b += a;
     b -= a;
     b = -a;
@@ -612,7 +612,7 @@ of \ref AlgebraicField and \ref DivisionAlgebra.
     c = a - b;
     c = a;
     a = NumericTraits<ModelOfAlgebraicRing>::fromPromote(c);
-    
+
     assert(a + zero == a);
     assert(a + b == b + a);
     assert(a - b == a + (-b));
@@ -620,35 +620,35 @@ of \ref AlgebraicField and \ref DivisionAlgebra.
 
     <li>If mixed-type addition and subtraction are supported,
     \link PromoteTraits PromoteTraits \endlink define the result type:
-        
+
     \code
     ModelOfAlgebraicRing1 a;
     ModelOfAlgebraicRing2 b;
-    
+
     PromoteTraits<ModelOfAlgebraicRing1, ModelOfAlgebraicRing2>::Promote c;
-         
+
     c = a + b;
     \endcode
-    
+
     <li>A model of Algebraic Ring implements multiplication and division with 'double'.
       (Note that the outer product could be defined with an arbitrary model of
       \ref AlgebraicField. For simplicity, VIGRA restricts this to only 'double'.)
       The associated \link NumericTraits NumericTraits \endlink define the type of the
       results, and a type conversion function.
-    
+
     \code
     ModelOfAlgebraicRing a;
     double f;
     NumericTraits<ModelOfAlgebraicRing>::RealPromote c;
-    
-    
+
+
     a *= f;
     c = a * f;
     c = f * a;
-    
+
     if(f != 0.0) a /= f;
     if(f != 0.0) c = a / f;
-    
+
     c = a;
     a = NumericTraits<ModelOfAlgebraicRing>::fromRealPromote(c);
     \endcode
@@ -660,7 +660,7 @@ of \ref AlgebraicField and \ref DivisionAlgebra.
 <ul>
     <li>A model of Linear Algebra implements \ref LinearSpace and
         \ref AlgebraicRing as defined above.
-       
+
 </ul>
 
 \anchor DivisionAlgebra
@@ -669,7 +669,7 @@ of \ref AlgebraicField and \ref DivisionAlgebra.
 <ul>
     <li>A model of Division Algebra implements \ref LinearSpace and
         \ref AlgebraicField as defined above.
-       
+
 </ul>
 
 */
