@@ -202,7 +202,7 @@ void findImageSequence(const std::string &name_base,
 #endif // _WIN32
 
 // build a string from a sequence.
-#if _MSC_VER < 1300
+#if defined(_MSC_VER) && (_MSC_VER < 1300)
 template <class iterator>
 std::string stringify (const iterator &start, const iterator &end)
 {

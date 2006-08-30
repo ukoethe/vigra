@@ -678,7 +678,7 @@ class DiffusivityFunctor
     {
         Value mag = (gx*gx + gy*gy) / weight_;
                      
-        return (mag == zero_) ? one_ : one_ - exp(-3.315 / mag / mag);
+        return (mag == zero_) ? one_ : one_ - VIGRA_CSTD::exp(-3.315 / mag / mag);
     }
     
          /** calculate diffusivity from RGB arguments
@@ -692,7 +692,7 @@ class DiffusivityFunctor
                      gy.green()*gy.green() +
                      gy.blue()*gy.blue()) / weight_;
 
-        return (mag == zero_) ? one_ : one_ - exp(-3.315 / mag / mag);
+        return (mag == zero_) ? one_ : one_ - VIGRA_CSTD::exp(-3.315 / mag / mag);
     }
     
     result_type weight_;

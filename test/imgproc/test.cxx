@@ -627,7 +627,7 @@ struct ImageFunctionsTest
 
         for(; i != img.end(); ++i, ++i1)
         {
-            should(fabs(*i - *i1) < 1.0e-10);
+            should(VIGRA_CSTD::fabs(*i - *i1) < 1.0e-10);
         }
 
         vigra::BrightnessContrastFunctor<unsigned char> charf(10.0, 1.0);
@@ -670,7 +670,7 @@ struct ImageFunctionsTest
         {
             for(int x=0; x<3; ++x)
             {
-                should(fabs(res(x,y) - VIGRA_CSTD::sqrt(2.0)) < 1e-6);
+                should(VIGRA_CSTD::fabs(res(x,y) - VIGRA_CSTD::sqrt(2.0)) < 1e-6);
             }
         }
 
@@ -682,7 +682,7 @@ struct ImageFunctionsTest
         {
             for(int x=0; x<3; ++x)
             {
-                should(fabs(res(x,y) - VIGRA_CSTD::sqrt(6.0)) < 1e-6);
+                should(VIGRA_CSTD::fabs(res(x,y) - VIGRA_CSTD::sqrt(6.0)) < 1e-6);
             }
         }
     }

@@ -225,7 +225,7 @@ int IntSquareRoot<T>::sqq_table[] = {
 template <class T>
 UInt32 IntSquareRoot<T>::exec(UInt32 x) 
 {
-    unsigned long xn;
+    UInt32 xn;
 	if (x >= 0x10000)
 	    if (x >= 0x1000000)
 	        if (x >= 0x10000000)
@@ -289,6 +289,8 @@ UInt32 IntSquareRoot<T>::exec(UInt32 x)
 using VIGRA_CSTD::sqrt;
 
     /*! Signed integer square root.
+    
+        Useful for fast fixed-point computations.
 
         <b>\#include</b> "<a href="mathutil_8hxx-source.html">vigra/mathutil.hxx</a>"<br>
         Namespace: vigra
@@ -301,6 +303,8 @@ inline Int32 sqrti(Int32 v)
 }
 
     /*! Unsigned integer square root.
+
+        Useful for fast fixed-point computations.
 
         <b>\#include</b> "<a href="mathutil_8hxx-source.html">vigra/mathutil.hxx</a>"<br>
         Namespace: vigra
@@ -348,10 +352,10 @@ T ellipticRD(T x, T y, T z)
         X = 1.0 - x/m;
         Y = 1.0 - y/m;
         Z = 1.0 - z/m;
-        if(std::max(std::max(std::fabs(X), std::fabs(Y)), std::fabs(Z)) < 0.01)
+        if(std::max(std::max(VIGRA_CSTD::fabs(X), VIGRA_CSTD::fabs(Y)), VIGRA_CSTD::fabs(Z)) < 0.01)
             break;
-        double l = std::sqrt(x*y) + std::sqrt(x*z) + std::sqrt(y*z);
-        s += f / (std::sqrt(z)*(z + l));
+        double l = VIGRA_CSTD::sqrt(x*y) + VIGRA_CSTD::sqrt(x*z) + VIGRA_CSTD::sqrt(y*z);
+        s += f / (VIGRA_CSTD::sqrt(z)*(z + l));
         f /= 4.0;
         x = (x + l)/4.0;
         y = (y + l)/4.0;
@@ -363,7 +367,7 @@ T ellipticRD(T x, T y, T z)
     double d = a - 6.0*b;
     double e = d + 2.0*c;
     return 3.0*s + f*(1.0+d*(-3.0/14.0+d*9.0/88.0-Z*e*4.5/26.0)
-                      +Z*(e/6.0+Z*(-c*9.0/22.0+a*Z*3.0/26.0))) / std::pow(m,1.5);
+                      +Z*(e/6.0+Z*(-c*9.0/22.0+a*Z*3.0/26.0))) / VIGRA_CSTD::pow(m,1.5);
 }
 
 template <class T>
@@ -376,16 +380,16 @@ T ellipticRF(T x, T y, T z)
         X = 1.0 - x/m;
         Y = 1.0 - y/m;
         Z = 1.0 - z/m;
-        if(std::max(std::max(std::fabs(X), std::fabs(Y)), std::fabs(Z)) < 0.01)
+        if(std::max(std::max(VIGRA_CSTD::fabs(X), VIGRA_CSTD::fabs(Y)), VIGRA_CSTD::fabs(Z)) < 0.01)
             break;
-        double l = std::sqrt(x*y) + std::sqrt(x*z) + std::sqrt(y*z);
+        double l = VIGRA_CSTD::sqrt(x*y) + VIGRA_CSTD::sqrt(x*z) + VIGRA_CSTD::sqrt(y*z);
         x = (x + l)/4.0;
         y = (y + l)/4.0;
         z = (z + l)/4.0;
     }
     double d = X*Y - sq(Z);
     double p = X*Y*Z;
-    return (1.0 - d/10.0 + p/14.0 + sq(d)/24.0 - d*p*3.0/44.0) / std::sqrt(m);
+    return (1.0 - d/10.0 + p/14.0 + sq(d)/24.0 - d*p*3.0/44.0) / VIGRA_CSTD::sqrt(m);
 }
 
 } // namespace detail
@@ -406,8 +410,8 @@ T ellipticRF(T x, T y, T z)
     */
 inline double ellipticIntegralF(double x, double k)
 {
-    double c2 = sq(std::cos(x));
-    double s = std::sin(x);
+    double c2 = sq(VIGRA_CSTD::cos(x));
+    double s = VIGRA_CSTD::sin(x);
     return s*detail::ellipticRF(c2, 1.0 - sq(k*s), 1.0);
 }
 
@@ -427,8 +431,8 @@ inline double ellipticIntegralF(double x, double k)
     */
 inline double ellipticIntegralE(double x, double k)
 {
-    double c2 = sq(std::cos(x));
-    double s = std::sin(x);
+    double c2 = sq(VIGRA_CSTD::cos(x));
+    double s = VIGRA_CSTD::sin(x);
     k = sq(k*s);
     return s*(detail::ellipticRF(c2, 1.0-k, 1.0) - k/3.0*detail::ellipticRD(c2, 1.0-k, 1.0));
 }

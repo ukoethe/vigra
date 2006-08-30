@@ -465,7 +465,7 @@ class Polynomial
     : BaseType(epsilon),
       polynomial_(order + 1, T())
     {
-        setCoeffs(&polynomial_[0], order);
+        this->setCoeffs(&polynomial_[0], order);
     }
     
         /** Copy constructor
@@ -474,7 +474,7 @@ class Polynomial
     : BaseType(p.epsilon()),
       polynomial_(p.begin(), p.end())
     {
-        setCoeffs(&polynomial_[0], p.order());
+        this->setCoeffs(&polynomial_[0], p.order());
     }
 
         /** Construct polynomial by copying the given coefficient sequence.
@@ -484,7 +484,7 @@ class Polynomial
     : BaseType(),
       polynomial_(i, i + order + 1)
     {
-        setCoeffs(&polynomial_[0], order);
+        this->setCoeffs(&polynomial_[0], order);
     }
     
         /** Construct polynomial by copying the given coefficient sequence.
@@ -497,7 +497,7 @@ class Polynomial
     : BaseType(epsilon),
       polynomial_(i, i + order + 1)
     {
-        setCoeffs(&polynomial_[0], order);
+        this->setCoeffs(&polynomial_[0], order);
     }
     
         /** Assigment
@@ -508,7 +508,7 @@ class Polynomial
             return *this;
         ArrayVector<T> tmp(p.begin(), p.end());
         polynomial_.swap(tmp);
-        setCoeffs(&polynomial_[0], p.order());
+        this->setCoeffs(&polynomial_[0], p.order());
         this->epsilon_ = p.epsilon_;
         return *this;
     }
@@ -600,7 +600,7 @@ class StaticPolynomial
         vigra_precondition(order <= MAXORDER,
             "StaticPolynomial(): order exceeds MAXORDER.");
         std::fill_n(polynomial_, order+1, T());
-        setCoeffs(polynomial_, order);
+        this->setCoeffs(polynomial_, order);
     }
     
         /** Copy constructor
@@ -609,7 +609,7 @@ class StaticPolynomial
     : BaseType(p.epsilon())
     {
         std::copy(p.begin(), p.end(), polynomial_);
-        setCoeffs(polynomial_, p.order());
+        this->setCoeffs(polynomial_, p.order());
     }
 
         /** Construct polynomial by copying the given coefficient sequence.
@@ -622,7 +622,7 @@ class StaticPolynomial
         vigra_precondition(order <= MAXORDER,
             "StaticPolynomial(): order exceeds MAXORDER.");
         std::copy(i, i + order + 1, polynomial_);
-        setCoeffs(polynomial_, order);
+        this->setCoeffs(polynomial_, order);
     }
     
         /** Construct polynomial by copying the given coefficient sequence.
@@ -637,7 +637,7 @@ class StaticPolynomial
         vigra_precondition(order <= MAXORDER,
             "StaticPolynomial(): order exceeds MAXORDER.");
         std::copy(i, i + order + 1, polynomial_);
-        setCoeffs(polynomial_, order);
+        this->setCoeffs(polynomial_, order);
     }
     
         /** Assigment.
@@ -647,7 +647,7 @@ class StaticPolynomial
         if(this == &p)
             return *this;
         std::copy(p.begin(), p.end(), polynomial_);
-        setCoeffs(polynomial_, p.order());
+        this->setCoeffs(polynomial_, p.order());
         this->epsilon_ = p.epsilon_;
         return *this;
     }

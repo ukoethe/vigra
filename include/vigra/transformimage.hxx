@@ -250,12 +250,12 @@ transformImage(triple<SrcImageIterator, SrcImageIterator, SrcAccessor> src,
         Namespace: vigra
 
     \code
-    #include <math.h>         // for sqrt()
+    #include <cmath>         // for sqrt()
 
     vigra::transformImageIf(srcImageRange(src),
                             maskImage(mask),
                             destImage(dest),
-                            &::sqrt );
+                            (double(*)(double))&std::sqrt );
 
     \endcode
 
@@ -985,11 +985,11 @@ class BrightnessContrastFunctor
     result_type operator()(argument_type const & v) const
     {
         promote_type v1 = (v - min_) / diff_;
-        promote_type brighter = pow(v1, b_);
+        promote_type brighter = VIGRA_CSTD::pow(v1, b_);
         promote_type v2 = 2.0 * brighter - one_;
         promote_type contrasted = (v2 < zero_) ?
-                                     -pow(-v2, c_) :
-                                      pow(v2, c_);
+                                     -VIGRA_CSTD::pow(-v2, c_) :
+                                      VIGRA_CSTD::pow(v2, c_);
         return result_type(0.5 * diff_ * (contrasted + one_) + min_);
     }
 

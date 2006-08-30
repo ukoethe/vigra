@@ -36,6 +36,7 @@
 
 #include <iostream>
 #include <cmath>
+#include <cstdlib>
 #include "vigra/stdimage.hxx"
 #include "vigra/impex.hxx"
 #include "unittest.hxx"
@@ -139,7 +140,7 @@ public:
     void testTIFF ()
     {
         vigra::ImageExportInfo exportinfo ("res.tif");
-        exportinfo.setCompression ("RunLength");
+        exportinfo.setCompression ("LZW");
         exportImage (srcImageRange (img), exportinfo);
 
         vigra::ImageImportInfo info ("res.tif");
@@ -267,14 +268,7 @@ ByteImageExportImportTest::testFile (const char *filename)
     Image::Accessor acc = img.accessor ();
 
     for (; i != img.end (); ++i, ++i1)
-        {
-            if (acc (i) != acc (i1))
-                {
-                    std::cerr << acc (i) - acc (i1) << std::endl;
-                    exit (1);
-                }
-            should (acc (i) == acc (i1));
-        }
+        should (acc (i) == acc (i1));
 }
 
 
@@ -357,7 +351,7 @@ public:
     {
         exportImage (srcImageRange (img),
                      vigra::ImageExportInfo ("res.tif").
-                     setCompression ("RunLength"));
+                     setCompression ("LZW"));
 
         vigra::ImageImportInfo info ("res.tif");
 

@@ -586,7 +586,7 @@ struct EdgeDetectionTest
                 continue;  // ignore edgels that result from round off error during convolution
             ++count;
             should(edgels[i].x == edgels[i].y);
-            should(fabs(edgels[i].orientation-M_PI*0.75) < 0.1);
+            should(VIGRA_CSTD::fabs(edgels[i].orientation-M_PI*0.75) < 0.1);
         }
         should(count == 75);
     }

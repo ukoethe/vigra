@@ -212,9 +212,12 @@ internalSeparableConvolveMultiArrayTmp(
     ...
     Kernel1D<float> gauss;
     gauss.initGaussian(sigma);
+    // create 3 Gauss kernels, one for each dimension
+    ArrayVector<Kernel1D<float> > kernels(3, gauss);
 
     // perform Gaussian smoothing on all dimensions
-    separableConvolveMultiArray(srcMultiArrayRange(source), destMultiArray(dest), gauss);
+    separableConvolveMultiArray(srcMultiArrayRange(source), destMultiArray(dest), 
+                                kernels.begin());
     \endcode
 
     \see vigra::Kernel1D, convolveLine()

@@ -235,6 +235,11 @@ namespace vigra
             return data()[i];
         }
 
+        void reserve()
+        {
+            void_vector_base::reserve();
+        }
+
         void reserve( size_type new_capacity )
         {
             void_vector_base::reserve( sizeof(value_type) * new_capacity );

@@ -1580,7 +1580,7 @@ inspectTwoMultiArrays(triple<Iterator1, Shape, Accessor1> const & s1,
     
 //@}
 
-};	//-- namespace vigra
+}	//-- namespace vigra
 
 
 #endif	//-- VIGRA_MULTI_POINTOPERATORS_H

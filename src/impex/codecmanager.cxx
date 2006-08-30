@@ -252,7 +252,7 @@ namespace vigra
             // look up the file type by the file extension
             std::string ext
                 = filename.substr( filename.find_last_of(".") + 1 );
-            std::transform( ext.begin(), ext.end(), ext.begin(), tolower );
+            std::transform( ext.begin(), ext.end(), ext.begin(), (int (*)(int))&std::tolower );
             std::map< std::string, std::string >::const_iterator search
                 = extensionMap.find(ext);
             vigra_precondition( search != extensionMap.end(),

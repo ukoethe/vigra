@@ -38,6 +38,7 @@
 
 #include <stdexcept>
 #include <iostream>
+#include <csetjmp>
 #include "vigra/config.hxx"
 #include "vigra/sized_int.hxx"
 #include "void_vector.hxx"
@@ -56,6 +57,27 @@ extern "C"
 #endif
 
 // TODO: per-scanline reading/writing
+
+namespace {
+    std::string png_error_message;
+}
+
+extern "C" {
+
+// called on fatal errors
+static void PngError( png_structp png_ptr, png_const_charp error_msg )
+{
+    png_error_message = std::string(error_msg);
+    std::longjmp( png_ptr->jmpbuf, 1 );
+}
+
+// called on non-fatal errors
+static void PngWarning( png_structp, png_const_charp warning_msg )
+{
+    std::cerr << warning_msg << std::endl;
+}
+
+} // extern "C"
 
 namespace vigra {
 
@@ -106,23 +128,6 @@ namespace vigra {
         return std::auto_ptr<Encoder>( new PngEncoder() );
     }
     
-    namespace {
-        std::string png_error_message;
-    }
-
-    // called on fatal errors
-    static void PngError( png_structp png_ptr, png_const_charp error_msg )
-    {
-        png_error_message = std::string(error_msg);
-        longjmp( png_ptr->jmpbuf, 1 );
-    }
-
-    // called on non-fatal errors
-    static void PngWarning( png_structp png_ptr, png_const_charp warning_msg )
-    {
-        std::cerr << warning_msg << std::endl;
-    }
-
     struct PngDecoderImpl
     {
         // data source

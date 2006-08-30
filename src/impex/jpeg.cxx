@@ -47,7 +47,30 @@
 extern "C"
 {
 #include <jpeglib.h>
+
+} // extern "C"
+
+namespace {
+
+struct JPEGCodecErrorManager
+{
+    jpeg_error_mgr pub;
+    std::jmp_buf buf;
+};
+
+} // namespace 
+
+extern "C"
+{
+
+static void JPEGCodecLongjumper( j_common_ptr info )
+{
+    (*info->err->output_message)(info);
+    JPEGCodecErrorManager * error = reinterpret_cast< JPEGCodecErrorManager * >(info->err);
+    std::longjmp( error->buf, 1 );
 }
+
+} // extern "C"
 
 namespace vigra
 {
@@ -98,29 +121,14 @@ namespace vigra
     class JPEGCodecImpl
     {
         // extend the jpeg_error_mgr by a jump buffer
-        struct error_mgr
-        {
-            jpeg_error_mgr pub;
-            jmp_buf buf;
-        };
 
     public:
 
         // attributes
 
-        error_mgr err;
+        JPEGCodecErrorManager err;
 
-        // methods
-
-        static void longjumper( j_common_ptr info );
     };
-
-    void JPEGCodecImpl::longjumper( j_common_ptr info )
-    {
-        (*info->err->output_message)(info);
-        error_mgr * error = reinterpret_cast< error_mgr * >(info->err);
-        longjmp( error->buf, 1 );
-    }
 
     class JPEGDecoderImplBase : public JPEGCodecImpl
     {
@@ -190,7 +198,7 @@ namespace vigra
     {
         // setup setjmp() error handling
         info.err = jpeg_std_error( ( jpeg_error_mgr * ) &err );
-        err.pub.error_exit = &longjumper;
+        err.pub.error_exit = &JPEGCodecLongjumper;
 
         // setup the data source
         if (setjmp(err.buf)) {
@@ -327,7 +335,7 @@ namespace vigra
     {
         // setup setjmp() error handling
         info.err = jpeg_std_error( ( jpeg_error_mgr * ) &err );
-        err.pub.error_exit = &longjumper;
+        err.pub.error_exit = &JPEGCodecLongjumper;
 
         // setup the data dest
         if (setjmp(err.buf)) {

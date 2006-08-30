@@ -122,7 +122,7 @@ struct ColorConversionsTest
     
     static bool checkGray(Color const & c, double epsilon = 0.001)
     {
-        return fabs(c[1]) < epsilon && fabs(c[2]) < epsilon;
+        return VIGRA_CSTD::fabs(c[1]) < epsilon && VIGRA_CSTD::fabs(c[2]) < epsilon;
     }
     
     static void printColor(Color const & c)

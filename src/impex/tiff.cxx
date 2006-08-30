@@ -535,9 +535,9 @@ namespace vigra {
 
                 int success = TIFFWriteEncodedStrip( tiff, strip++, stripbuffer[0],
                                        TIFFVStripSize( tiff, rows ) );
-                if(success == -1 && tiffcomp == COMPRESSION_LZW)
+                if(success == -1 && tiffcomp != COMPRESSION_NONE)
                 {
-                    throw Encoder::TIFFNoLZWException(); // retry without compression
+                    throw Encoder::TIFFCompressionException(); // retry without compression
                 }
                 
                 vigra_postcondition(success != -1,
@@ -553,7 +553,7 @@ namespace vigra {
         // the expected behavior is to do nothing
         if ( ( comp == "JPEG" ) && ( quality != -1 ) )
             tiffcomp = COMPRESSION_OJPEG;
-        else if ( comp == "RLE" )
+        else if ( comp == "RLE" || comp == "RunLength")
             tiffcomp = COMPRESSION_CCITTRLE;
         else if ( comp == "LZW" )
             tiffcomp = COMPRESSION_LZW;

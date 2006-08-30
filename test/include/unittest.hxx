@@ -397,7 +397,10 @@ int catch_exceptions( Generator function_object, detail::errstream & err, int ti
       { detail::report_exception( err, "exception: std::exception:", ex.what() ); }
 
     catch ( ... )
-      { throw;detail::report_exception( err, "unknown exception", "" ); }
+      { 
+        detail::report_exception( err, "unknown exception", "" );
+        throw;
+      }
 
     return result;
 } // catch_exceptions

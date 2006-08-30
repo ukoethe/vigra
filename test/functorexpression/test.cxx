@@ -36,6 +36,7 @@
 
 #include <iostream>
 #include <algorithm>
+#include <cmath>
 #include "unittest.hxx"
 #include "vigra/functorexpression.hxx"
 #include "vigra/rgbvalue.hxx"

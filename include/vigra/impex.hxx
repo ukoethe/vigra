@@ -816,7 +816,7 @@ namespace detail {
         {
             exportImage( sul, slr, sget, info, is_scalar() );
         }
-        catch(Encoder::TIFFNoLZWException &)
+        catch(Encoder::TIFFCompressionException &)
         {
             const_cast<ImageExportInfo &>(info).setCompression("");
             exportImage( sul, slr, sget, info, is_scalar() );

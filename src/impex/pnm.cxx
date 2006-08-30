@@ -145,7 +145,7 @@ namespace vigra {
 
     void PnmDecoderImpl::skip_whitespace()
     {
-        while ( isspace( stream.peek() ) )
+        while ( std::isspace( stream.peek() ) )
             stream.get();
     }
 

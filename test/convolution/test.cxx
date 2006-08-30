@@ -1496,7 +1496,7 @@ struct ConvolutionTest
     
     void recursiveSecondDerivativeTest()
     {
-        double b = exp(-1.0);
+        double b = VIGRA_CSTD::exp(-1.0);
         double factor = (1.0 - b) * (1.0 - b) / b;
         
         Image tmp1(rampimg);

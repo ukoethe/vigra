@@ -421,7 +421,7 @@ extendedLocalMinMax(SrcIterator sul, SrcIterator slr, SrcAccessor sa,
                    (Neighborhood::DirectionCount == 8), equal);
 
     // assume that a region is a extremum until the opposite is proved
-    std::vector<unsigned char> isExtremum(number_of_regions+1, 1);
+    std::vector<unsigned char> isExtremum(number_of_regions+1, (unsigned char)1);
     
     BasicImage<int>::traverser ly = labels.upperLeft();
     

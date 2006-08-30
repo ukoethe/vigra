@@ -1663,7 +1663,7 @@ void applyFourierFilterFamilyImpl(
         {
             double dx = x * M_PI / (width - 1);
             double dy = y * M_PI / (height - 1);
-            fourier(x-1, y) = fourier(x, y) * dx * exp(-(dx*dx + dy*dy) * scale*scale / 2.0);
+            fourier(x-1, y) = fourier(x, y) * dx * std::exp(-(dx*dx + dy*dy) * scale*scale / 2.0);
         }
         fourier(width-1, y) = 0.0;
     }
