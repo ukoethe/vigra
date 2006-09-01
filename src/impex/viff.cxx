@@ -435,7 +435,7 @@ namespace vigra {
         field_type scratch, null = 0;
 
         // magic number
-        stream.put((char)0xAB);
+        stream.put((unsigned char)0xAB);
             
         // file type
         stream.put(0x01);
