@@ -33,6 +33,11 @@
 /*    OTHER DEALINGS IN THE SOFTWARE.                                   */                
 /*                                                                      */
 /************************************************************************/
+/* Modifications by Pablo d'Angelo
+ * updated to vigra 1.4 by Douglas Wilkins
+ * as of 18 Febuary 2006:
+ *  - Changed INT16 -> UINT16 pixel type.
+ */
 
 #ifdef HasPNG
 
@@ -91,7 +96,7 @@ namespace vigra {
         // init pixel types
         desc.pixelTypes.resize(2);
         desc.pixelTypes[0] = "UINT8";
-        desc.pixelTypes[1] = "INT16";
+        desc.pixelTypes[1] = "UINT16";
 
         // init compression types
         desc.compressionTypes.resize(1);
@@ -355,7 +360,7 @@ namespace vigra {
         case 8:
             return "UINT8";
         case 16:
-            return "INT16";
+            return "UINT16";
         default:
             vigra_fail( "internal error: illegal pixel type." );
         }
@@ -575,7 +580,7 @@ namespace vigra {
         VIGRA_IMPEX_FINALIZED(pimpl->finalized);
         if ( pixelType == "UINT8" )
             pimpl->bit_depth = 8;
-        else if ( pixelType == "INT16" )
+        else if ( pixelType == "UINT16" )
             pimpl->bit_depth = 16;
         else
             vigra_fail( "internal error: pixeltype not supported." );

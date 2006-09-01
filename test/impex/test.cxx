@@ -487,7 +487,7 @@ class PNGInt16Test
   public:
     void testByteOrder()
     {
-        SImage i(1,1);
+        UInt16Image i(1,1);
         i(0,0) = 1;
         exportImage(srcImageRange(i), ImageExportInfo("res.png"));
         ImageImportInfo info("res.png");
@@ -495,22 +495,29 @@ class PNGInt16Test
         shouldEqual(info.height(), 1);
         shouldEqual(info.numBands(), 1);
         shouldEqual(info.isGrayscale(), true);
-        shouldEqual(std::string(info.getPixelType()), std::string("INT16"));
+        shouldEqual(std::string(info.getPixelType()), std::string("UINT16"));
         i(0,0) = 0;
         importImage(info, destImage(i));
         shouldEqual(i(0,0), 1);
 
-        BasicImage<RGBValue<short> > rgb(1,1);
-        rgb(0,0) = RGBValue<short>(1,2,3);
+        // DGSW: Note that this produces a PNG standard conformant image
+        //       but both Imagemagick 'identify' and photoshop CS2 see
+        //       the data incorrectly
+        BasicImage<RGBValue<unsigned short> > rgb(1,1);
+        // Using unsigned values 0xff01, 0xfff1, 0xfffd
+        rgb(0,0) = RGBValue<unsigned short>(65281,65521,65533);
+        // Using unsigned values 0x7f01, 0x7ff1, 0x7ffd
+        // rgb(0,0) = RGBValue<unsigned short>(32513,32753,32765);
         exportImage(srcImageRange(rgb), ImageExportInfo("res.png"));
         ImageImportInfo rgbinfo("res.png");
         shouldEqual(rgbinfo.width(), 1);
         shouldEqual(rgbinfo.height(), 1);
         shouldEqual(rgbinfo.numBands(), 3);
-        shouldEqual(std::string(rgbinfo.getPixelType()), std::string("INT16"));
+        shouldEqual(std::string(rgbinfo.getPixelType()), std::string("UINT16"));
         rgb(0,0) = RGBValue<short>(0,0,0);
         importImage(rgbinfo, destImage(rgb));
-        shouldEqual(rgb(0,0), RGBValue<short>(1,2,3));
+        shouldEqual(rgb(0,0), RGBValue<unsigned short>(65281,65521,65533));
+//        shouldEqual(rgb(0,0), RGBValue<unsigned short>(32513,32753,32765));
     }
 };
 

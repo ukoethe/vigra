@@ -30,9 +30,14 @@
 /*    HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,      */
 /*    WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING      */
 /*    FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR     */
-/*    OTHER DEALINGS IN THE SOFTWARE.                                   */                
+/*    OTHER DEALINGS IN THE SOFTWARE.                                   */
 /*                                                                      */
 /************************************************************************/
+/* Modifications by Pablo d'Angelo
+ * updated to vigra 1.4 by Douglas Wilkins
+ * as of 18 Febuary 2006:
+ *  - Added UINT16 and UINT32 pixel types.
+ */
 
 #include <iostream>
 #include <algorithm>
@@ -83,12 +88,13 @@ void findImageSequence(const std::string &name_base,
     HANDLE          hList;
     TCHAR           szDir[MAX_PATH+1];
     WIN32_FIND_DATA FileData;
-    
+
     std::string base, path;
 
 	// on Windows, both '/' and '\' are valid path separators
 	// note: std::basic_string.rfind() may return unsigned int, so exlicitely use std::max<int>()
-	int split = std::max<int>(name_base.rfind('/'), name_base.rfind('\\'));  
+	int split = std::max<int>(static_cast<int>(name_base.rfind('/')),
+                              static_cast<int>(name_base.rfind('\\')));
 	if(split == -1)
     {
         path = ".";
@@ -100,15 +106,15 @@ void findImageSequence(const std::string &name_base,
         {
             if(name_base[i] == '/')
                 path += '\\';
-            else 
+            else
                 path += name_base[i];
         }
         base.append(name_base, split+1, name_base.size() - split - 1);
     }
-    
+
     std::vector<std::string> result;
     char numbuf[21], extbuf[1024];
-    std::string pattern = base + "%20[0-9]%1023s";  
+    std::string pattern = base + "%20[0-9]%1023s";
 
     // Get the proper directory path
     sprintf(szDir, "%s\\%s*%s", path.c_str(), base.c_str(), name_ext.c_str());
@@ -116,7 +122,7 @@ void findImageSequence(const std::string &name_base,
     // Get the first file
     hList = FindFirstFile(szDir, &FileData);
     if (hList == INVALID_HANDLE_VALUE)
-    { 
+    {
         std::string message("importVolume(): No files matching '");
         message = message + szDir + "'.";
         vigra_fail(message.c_str());
@@ -143,7 +149,7 @@ void findImageSequence(const std::string &name_base,
     }
 
     FindClose(hList);
-          
+
     std::sort(result.begin(), result.end(), detail::NumberCompare());
     numbers.swap(result);
 }
@@ -167,7 +173,7 @@ void findImageSequence(const std::string &name_base,
         path.append(name_base, 0, split);
         base.append(name_base, split+1, name_base.size() - split - 1);
     }
-    
+
     DIR * dir = opendir(path.c_str());
     if(!dir)
     {
@@ -175,13 +181,13 @@ void findImageSequence(const std::string &name_base,
         message = message + path + "'.";
         vigra_fail(message.c_str());
     }
-      
+
     std::vector<std::string> result;
     dirent * dp;
     errno = 0;
     char numbuf[21], extbuf[1024];
-    std::string pattern = base + "%20[0-9]%1023s";  
-    while ((dp = readdir(dir)) != NULL) 
+    std::string pattern = base + "%20[0-9]%1023s";
+    while ((dp = readdir(dir)) != NULL)
     {
         if(sscanf(dp->d_name, pattern.c_str(), numbuf, extbuf) == 2)
         {
@@ -191,10 +197,10 @@ void findImageSequence(const std::string &name_base,
     }
 
     closedir(dir);
-   
+
     vigra_precondition(errno == 0,
           "importVolume(): I/O error while searching for images.");
-          
+
     std::sort(result.begin(), result.end(), detail::NumberCompare());
     numbers.swap(result);
 }
@@ -363,9 +369,9 @@ std::auto_ptr<Encoder> encoder( const ImageExportInfo & info )
         if(!isPixelTypeSupported( enc->getFileType(), pixel_type ))
         {
             std::string msg("exportImage(): file type ");
-            msg += enc->getFileType() + " does not support requested pixel type " 
+            msg += enc->getFileType() + " does not support requested pixel type "
                                       + pixel_type + ".";
-            vigra_precondition(false, msg.c_str()); 
+            vigra_precondition(false, msg.c_str());
         }
         enc->setPixelType(pixel_type);
     }
@@ -411,8 +417,12 @@ ImageImportInfo::PixelType ImageImportInfo::pixelType() const
      return UINT8;
    if (pixeltype == "INT16")
      return INT16;
+   if (pixeltype == "UINT16")
+     return UINT16;
    if (pixeltype == "INT32")
      return INT32;
+   if (pixeltype == "UINT32")
+     return UINT32;
    if (pixeltype == "FLOAT")
      return FLOAT;
    if (pixeltype == "DOUBLE")

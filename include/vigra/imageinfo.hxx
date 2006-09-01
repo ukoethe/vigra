@@ -31,9 +31,15 @@
 /*    HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,      */
 /*    WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING      */
 /*    FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR     */
-/*    OTHER DEALINGS IN THE SOFTWARE.                                   */                
+/*    OTHER DEALINGS IN THE SOFTWARE.                                   */
 /*                                                                      */
 /************************************************************************/
+
+/* Modifications by Pablo d'Angelo
+ * updated to vigra 1.4 by Douglas Wilkins
+ * as of 18 Febuary 2006:
+ *  - Added UINT16 and UINT32 pixel types.
+ */
 
 #ifndef VIGRA_IMAGEINFO_HXX
 #define VIGRA_IMAGEINFO_HXX
@@ -47,7 +53,7 @@
 namespace vigra
 {
 /** \addtogroup VigraImpex Image Import/Export Facilities
-    
+
     supports GIF, TIFF, JPEG, BMP, PNM (PBM, PGM, PPM), PNG, SunRaster, KHOROS-VIFF formats
 **/
 //@{
@@ -120,7 +126,7 @@ class VIGRA_EXPORT ImageExportInfo
 {
   public:
         /** Construct ImageExportInfo object.
-        
+
             The image will be stored under the given filename.
             The file type will be guessed from the extension unless overridden
             by \ref setFileType(). Recognized extensions: '.bmp', '.gif',
@@ -134,7 +140,7 @@ class VIGRA_EXPORT ImageExportInfo
     const char * getFileName() const;
 
     /** Store image as given file type.
-    
+
         This will override any type guessed
         from the file name's extension. Recognized file types:
 
@@ -155,9 +161,15 @@ class VIGRA_EXPORT ImageExportInfo
         <DT>"VIFF"<DD> Khoros Visualization image file.
         </DL>
 
-        With the exception of TIFF and VIFF, all file types store
+        With the exception of TIFF, VIFF, PNG and PNM all file types store
         1 byte (gray scale and mapped RGB) or 3 bytes (RGB) per
         pixel.
+
+        PNG can store UInt8 and UInt16 values, and supports 1 and 3 channel
+        images. One additional alpha channel is also supported.
+
+        PNM can store 1 and 3 channel images with UInt8, UInt16 and UInt32
+        values in each channel.
 
         TIFF and VIFF are aditionally able to store short and long
         integers (2 or 4 bytes) and real values (32 bit float and
@@ -176,14 +188,19 @@ class VIGRA_EXPORT ImageExportInfo
     const char * getFileType() const;
 
     /** Set compression type.
-    
+
         Recognized strings: "" (no compression), "LZW",
         "RunLength", "1" ... "100". A number is interpreted as the
         compression quality for JPEG compression. JPEG compression is
         supported by the JPEG and TIFF formats. "LZW" is only available
-        if libtiff was installed with LZW enabled. By default, libtiff comes
+        if libtiff was installed with LZW enabled. By default, libtiff came
         with LZW disabled due to Unisys patent enforcement. In this case,
         VIGRA stores the image uncompressed.
+
+            Valid Compression for TIFF files:
+              JPEG    jpeg compression, call setQuality as well!
+              RLE     runlength compression
+              LZW     lzw compression
     **/
     ImageExportInfo & setCompression( const char * );
     const char * getCompression() const;
@@ -192,18 +209,20 @@ class VIGRA_EXPORT ImageExportInfo
         <DL>
         <DT>"UINT8"<DD> 8-bit unsigned integer (unsigned char)
         <DT>"INT16"<DD> 16-bit signed integer (short)
+        <DT>"UINT16"<DD> 16-bit unsigned integer (unsigned short)
         <DT>"INT32"<DD> 32-bit signed integer (long)
+        <DT>"UINT32"<DD> 32-bit unsigned integer (unsigned long)
         <DT>"FLOAT"<DD> 32-bit floating point (float)
         <DT>"DOUBLE"<DD> 64-bit floating point (double)
         </DL>
-        
+
         <b>Usage:</b>
         FImage img(w,h);
-        
+
         // by default, float images are exported with pixeltype float
         // when the target format support this type, i.e. is TIFF or VIFF.
         exportImage(srcImageRange(img), ImageExportInfo("asFloat.tif"));
-        
+
         // if this is not desired, force a different pixeltype
         exportImage(srcImageRange(img), ImageExportInfo("asByte.tif").setPixelType("UINT8"));
     **/
@@ -255,10 +274,10 @@ Namespace: vigra
 class VIGRA_EXPORT ImageImportInfo
 {
   public:
-    enum PixelType { UINT8, INT16, INT32, FLOAT, DOUBLE };
+    enum PixelType { UINT8, INT16, UINT16, INT32, UINT32, FLOAT, DOUBLE };
 
         /** Construct ImageImportInfo object.
-        
+
             The image with the given filename is read into memory.
             The file type will be determined by the first few bytes of the
             file (magic number). Recognized file types:
@@ -281,12 +300,12 @@ class VIGRA_EXPORT ImageImportInfo
             </DL>
         **/
     ImageImportInfo( const char *  );
-    
+
     const char * getFileName() const;
-    
+
         /** Get the file type of the image associated with this
             info object.
-            
+
             See ImageImportInfo::ImageImportInfo for a list of the
             available file types.
         **/
@@ -317,12 +336,14 @@ class VIGRA_EXPORT ImageImportInfo
     bool isColor() const;
 
         /** Query the pixel type of the image.
-        
+
             Possible values are:
             <DL>
             <DT>"UINT8"<DD> 8-bit unsigned integer (unsigned char)
             <DT>"INT16"<DD> 16-bit signed integer (short)
+            <DT>"UINT16"<DD> 16-bit unsigned integer (unsigned short)
             <DT>"INT32"<DD> 32-bit signed integer (long)
+            <DT>"UINT32"<DD> 32-bit unsigned integer (unsigned long)
             <DT>"FLOAT"<DD> 32-bit floating point (float)
             <DT>"DOUBLE"<DD> 64-bit floating point (double)
             </DL>

@@ -34,6 +34,12 @@
 /*                                                                      */
 /************************************************************************/
 
+/* Modifications by Pablo d'Angelo
+ * updated to vigra 1.4 by Douglas Wilkins
+ * as of 18 Febuary 2006:
+ *  - Added UINT16 and UINT32 pixel types.
+ */
+
 #ifndef VIGRA_CODEC_HXX
 #define VIGRA_CODEC_HXX
 
@@ -43,7 +49,7 @@
 #include "vigra/config.hxx"
 
 // possible pixel types:
-// "undefined", "UINT8", "INT16", "INT32", "FLOAT", "DOUBLE"
+// "undefined", "UINT8", "UINT16", "INT16", "UINT32", "INT32", "FLOAT", "DOUBLE"
 
 // possible compression types:
 // "undefined", "RLE", "LZW", "LOSSLESS", "JPEG"
@@ -76,9 +82,21 @@ namespace vigra
     };
     
     template <>
+    struct TypeAsString<unsigned short>
+    {
+        static std::string result() { return "UINT16"; }
+    };
+    
+    template <>
     struct TypeAsString<int>
     {
         static std::string result() { return "INT32"; }
+    };
+    
+    template <>
+    struct TypeAsString<unsigned int>
+    {
+        static std::string result() { return "UINT32"; }
     };
     
     template <>

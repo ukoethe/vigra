@@ -33,6 +33,11 @@
 /*    OTHER DEALINGS IN THE SOFTWARE.                                   */                
 /*                                                                      */
 /************************************************************************/
+/* Modifications by Pablo d'Angelo
+ * updated to vigra 1.4 by Douglas Wilkins
+ * as of 18 Febuary 2006:
+ *  - Added UINT16 and UINT32 pixel types.
+ */
 
 #ifdef HasTIFF
 
@@ -40,6 +45,8 @@
 #include "error.hxx"
 #include "tiff.hxx"
 #include <iostream>
+#include <iomanip>
+#include <sstream>
 
 extern "C"
 {
@@ -57,13 +64,16 @@ namespace vigra {
         desc.fileType = "TIFF";
 
         // init pixel types
-        desc.pixelTypes.resize(6);
+        desc.pixelTypes.resize(9);
         desc.pixelTypes[0] = "BILEVEL";
         desc.pixelTypes[1] = "UINT8";
-        desc.pixelTypes[2] = "INT16";
-        desc.pixelTypes[3] = "INT32";
-        desc.pixelTypes[4] = "FLOAT";
-        desc.pixelTypes[5] = "DOUBLE";
+        desc.pixelTypes[2] = "INT8";
+        desc.pixelTypes[3] = "UINT16";
+        desc.pixelTypes[4] = "INT16";
+        desc.pixelTypes[5] = "UINT32";
+        desc.pixelTypes[6] = "INT32";
+        desc.pixelTypes[7] = "FLOAT";
+        desc.pixelTypes[8] = "DOUBLE";
 
         // init compression types
         desc.compressionTypes.resize(3);
@@ -199,10 +209,21 @@ namespace vigra {
             switch (sampleformat) {
 
             case SAMPLEFORMAT_UINT:
-            case SAMPLEFORMAT_INT:
+                // added by dangelo, support for UINT 16 & 32 bit
                 switch (bits_per_sample) {
                 case 8:
                     return "UINT8";
+                case 16:
+                    return "UINT16";
+                case 32:
+                    return "UINT32";
+                }
+                break;
+
+            case SAMPLEFORMAT_INT:
+                switch (bits_per_sample) {
+                case 8:
+                    return "INT8";
                 case 16:
                     return "INT16";
                 case 32:
@@ -228,17 +249,23 @@ namespace vigra {
         uint16 datatype;
 
         if ( TIFFGetField( tiff, TIFFTAG_DATATYPE, &datatype ) ) {
-
+            // dangelo: correct parsing of INT/UINT (given in tiff.h)
             switch (datatype) {
-            case 1:
+            case TIFF_BYTE:
                 return "UINT8";
-            case 3:
+            case TIFF_SBYTE:
+                return "INT8";
+            case TIFF_SHORT:
+                return "UINT16";
+            case TIFF_SSHORT:
                 return "INT16";
-            case 4:
+            case TIFF_LONG:
+                return "UINT32";
+            case TIFF_SLONG:
                 return "INT32";
-            case 11:
+            case TIFF_FLOAT:
                 return "FLOAT";
-            case 13:
+            case TIFF_DOUBLE:
                 return "DOUBLE";
             }
         }
@@ -310,21 +337,25 @@ namespace vigra {
                 pixeltype = get_pixeltype_by_datatype();
 
                 if ( pixeltype == "undefined" ) {
-
-                    // guess pixeltype
+                    // ERROR: no useable pixeltype found..
+                    // imagemagick can write files without it..
+                    // try to guess a suitable one here.
                     switch(bits_per_sample)
                     {
                         case 8:
                             pixeltype = "UINT8";
                             break;
                         case 16:
-                            pixeltype = "INT16";
+                            pixeltype = "UINT16";
                             break;
                         case 32:
-                            pixeltype = "INT32"; // prefer int over float
+                            pixeltype = "UINT32"; // prefer int over float
                             break;
                         case 64:
                             pixeltype =  "DOUBLE";
+                            break;
+                        default:
+                            vigra_fail( "TIFFDecoderImpl::init(): Sampleformat or Datatype tag undefined and guessing sampletype from Bits per Sample failed." );
                             break;
                     }       
                     std::cerr << "Warning: no TIFFTAG_SAMPLEFORMAT or TIFFTAG_DATATYPE, "
@@ -581,8 +612,14 @@ namespace vigra {
         } else if ( pixeltype == "INT16" ) {
             TIFFSetField( tiff, TIFFTAG_SAMPLEFORMAT, SAMPLEFORMAT_INT );
             bits_per_sample = 16;
+        } else if ( pixeltype == "UINT16" ) {
+            TIFFSetField( tiff, TIFFTAG_SAMPLEFORMAT, SAMPLEFORMAT_UINT );
+            bits_per_sample = 16;
         } else if ( pixeltype == "INT32" ) {
             TIFFSetField( tiff, TIFFTAG_SAMPLEFORMAT, SAMPLEFORMAT_INT );
+            bits_per_sample = 32;
+        } else if ( pixeltype == "UINT32" ) {
+            TIFFSetField( tiff, TIFFTAG_SAMPLEFORMAT, SAMPLEFORMAT_UINT );
             bits_per_sample = 32;
         } else if ( pixeltype == "FLOAT" ) {
             TIFFSetField( tiff, TIFFTAG_SAMPLEFORMAT, SAMPLEFORMAT_IEEEFP );
