@@ -99,9 +99,9 @@ struct BmpFileHeader
     // the magic number
     UInt16 magic;
     // size of the whole file
-    Int32 size;
+    UInt32 size;
     // offset (from this field) to the data
-    Int32 offset;
+    UInt32 offset;
 
     // ctor
 
@@ -143,23 +143,23 @@ struct BmpInfoHeader
     // attributes
 
     // size of this header in the file
-    Int32 info_size;
+    UInt32 info_size;
     // image dimensions
     Int32 width, height;
     // number of planes, always set to one
-    Int16 planes;
+    UInt16 planes;
     // bits per pixel
-    Int16 bit_count;
+    UInt16 bit_count;
     // compression type
-    Int32 compression;
+    UInt32 compression;
     // image size in bytes, may be zero for 24 bpp images
-    Int32 image_size;
+    UInt32 image_size;
     // image resolution
     Int32 x_pixels_per_meter, y_pixels_per_meter;
     // number of used colors, may be zero
-    Int32 clr_used;
+    UInt32 clr_used;
     // number of important colors, may be zero
-    Int32 clr_important;
+    UInt32 clr_important;
 
     // methods
 
@@ -169,7 +169,7 @@ struct BmpInfoHeader
 
 void BmpInfoHeader::from_stream( std::ifstream & stream, byteorder & bo )
 {
-    const int info_impl_size = 40;
+    const UInt32 info_impl_size = 40;
     read_field( stream, bo, info_size );
     vigra_precondition( info_size >= info_impl_size,
                         "info header has a wrong size" );
@@ -189,11 +189,11 @@ void BmpInfoHeader::from_stream( std::ifstream & stream, byteorder & bo )
     read_field( stream, bo, x_pixels_per_meter );
     read_field( stream, bo, y_pixels_per_meter );
     read_field( stream, bo, clr_used );
-    const int max_colors = 1 << bit_count;
-    vigra_precondition( clr_used >= 0 || clr_used <= max_colors,
+    const unsigned int max_colors = 1 << bit_count;
+    vigra_precondition( clr_used <= max_colors,
                         "used colors field invalid" );
     read_field( stream, bo, clr_important );
-    vigra_precondition( clr_important >= 0 || clr_important <= max_colors,
+    vigra_precondition( clr_important <= max_colors,
                         "important colors field invalid" );
     // skip any padding
     stream.seekg( info_size - info_impl_size, std::ios::cur );
@@ -456,8 +456,8 @@ void BmpDecoderImpl::read_rle4_data ()
     int c1, c2;
     bool painting = true;
 
-    unsigned int x = 0;
-    unsigned int y = 0;
+    int x = 0;
+    int y = 0;
 
     while (painting) {
 
@@ -653,8 +653,8 @@ void BmpDecoderImpl::read_rle8_data ()
     int c1, c2;
     bool painting = true;
 
-    unsigned int x = 0;
-    unsigned int y = 0;
+    int x = 0;
+    int y = 0;
 
     while (painting) {
 
