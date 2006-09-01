@@ -30,7 +30,7 @@
 /*    HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,      */
 /*    WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING      */
 /*    FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR     */
-/*    OTHER DEALINGS IN THE SOFTWARE.                                   */                
+/*    OTHER DEALINGS IN THE SOFTWARE.                                   */
 /*                                                                      */
 /************************************************************************/
 
@@ -220,7 +220,7 @@ struct ImageFunctionsTest
 
         for(; i != img.end(); ++i)
         {
-            should(acc(i) == col.luminance());
+            shouldEqualTolerance(acc(i), col.luminance(), 1e-14);
         }
 
     }
@@ -1249,7 +1249,7 @@ struct SplineImageViewTest
 
         SplineImageView<0, double> view(srcImageRange(img));
         SplineImageView<0, int> viewi(srcImageRange(img));
-        
+
         // check that data have not been copied
         shouldEqual(view.image().width(), 0);
         shouldEqual(viewi.image().width(), img.width());
@@ -1275,7 +1275,7 @@ struct SplineImageViewTest
 
         SplineImageView<1, double> view(srcImageRange(img));
         SplineImageView<1, short> viewi(srcImageRange(img));
-        
+
         // check that data have not been copied unnecessarily
         shouldEqual(view.image().width(), 0);
         shouldEqual(viewi.image().width(), img.width());
@@ -1334,7 +1334,7 @@ struct SplineImageViewTest
                              -view(cx, view.height() - 2.0 - cy,0,1), epsilon);
         shouldEqualTolerance( view(cx, view.height() + cy,1,1),
                              -view(cx, view.height() - 2.0 - cy,1,1), epsilon);
-                             
+
         try
         {
             view(2*view.width(), 0);
