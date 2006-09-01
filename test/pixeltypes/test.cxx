@@ -197,7 +197,7 @@ struct TinyVectorTest
 
         shouldEqual(cross(bv3, bv3), IV(0));
         shouldEqual(cross(iv3, bv3), IV(0));
-        shouldEqual(cross(fv3, fv3), FV(0.0));
+        shouldEqualTolerance(cross(fv3, fv3), FV(0.0), FV(1e-6f));
 
         FV cr = cross(fv1, fv3);
         shouldEqualTolerance(cr[0], 1.2, 1e-6f);
@@ -331,7 +331,7 @@ struct RGBValueTest
         should(red(pf, 1) == 1.0);
         should(green(pf, 1) == 1.0);
         should(blue(pf, 1) == 1.0);
-        should(gray(pf, 1) == 1.0);
+        shouldEqualTolerance(gray(pf, 1), 1.0, 1e-6);
 
         rgb.setRed(1.0, pf);
         rgb.setGreen(2.0, pf);
