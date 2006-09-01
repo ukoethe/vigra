@@ -498,6 +498,8 @@ void convolveImage(SrcIterator src_ul, SrcIterator src_lr, SrcAccessor src_acc,
                        "convolveImage(): kernel larger than image.");
 
     int x,y;
+    x = 0;
+    y = 0;
 
     KernelSumType norm = NumericTraits<KernelSumType>::zero();
     if(border == BORDER_TREATMENT_CLIP)
