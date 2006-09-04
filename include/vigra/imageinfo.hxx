@@ -134,118 +134,118 @@ class VIGRA_EXPORT ImageExportInfo
             '.tif', '.tiff', '.xv'.
             JPEG support requires libjpeg, PNG support requires libpng, and
             TIFF support requires libtiff.
-        **/
+         **/
     ImageExportInfo( const char * );
 
     const char * getFileName() const;
 
-    /** Store image as given file type.
+        /** Store image as given file type.
+            
+            This will override any type guessed
+            from the file name's extension. Recognized file types:
 
-        This will override any type guessed
-        from the file name's extension. Recognized file types:
+            <DL>
+            <DT>"BMP"<DD> Microsoft Windows bitmap image file.
+            <DT>"GIF"<DD> CompuServe graphics interchange format; 8-bit color.
+            <DT>"JPEG"<DD> Joint Photographic Experts Group JFIF format;
+            compressed 24-bit color (only available if libjpeg is installed).
+            <DT>"PNG"<DD> Portable Network Graphic
+            (only available if libpng is installed).
+            <DT>"PBM"<DD> Portable bitmap format (black and white).
+            <DT>"PGM"<DD> Portable graymap format (gray scale).
+            <DT>"PNM"<DD> Portable anymap.
+            <DT>"PPM"<DD> Portable pixmap format (color).
+            <DT>"SUN"<DD> SUN Rasterfile.
+            <DT>"TIFF"<DD> Tagged Image File Format.
+            (only available if libtiff is installed.)
+            <DT>"VIFF"<DD> Khoros Visualization image file.
+            </DL>
 
-        <DL>
-        <DT>"BMP"<DD> Microsoft Windows bitmap image file.
-        <DT>"GIF"<DD> CompuServe graphics interchange format; 8-bit color.
-        <DT>"JPEG"<DD> Joint Photographic Experts Group JFIF format;
-        compressed 24-bit color (only available if libjpeg is installed).
-        <DT>"PNG"<DD> Portable Network Graphic
-        (only available if libpng is installed).
-        <DT>"PBM"<DD> Portable bitmap format (black and white).
-        <DT>"PGM"<DD> Portable graymap format (gray scale).
-        <DT>"PNM"<DD> Portable anymap.
-        <DT>"PPM"<DD> Portable pixmap format (color).
-        <DT>"SUN"<DD> SUN Rasterfile.
-        <DT>"TIFF"<DD> Tagged Image File Format.
-        (only available if libtiff is installed.)
-        <DT>"VIFF"<DD> Khoros Visualization image file.
-        </DL>
+            With the exception of TIFF, VIFF, PNG and PNM all file types store
+            1 byte (gray scale and mapped RGB) or 3 bytes (RGB) per
+            pixel.
 
-        With the exception of TIFF, VIFF, PNG and PNM all file types store
-        1 byte (gray scale and mapped RGB) or 3 bytes (RGB) per
-        pixel.
+            PNG can store UInt8 and UInt16 values, and supports 1 and 3 channel
+            images. One additional alpha channel is also supported.
 
-        PNG can store UInt8 and UInt16 values, and supports 1 and 3 channel
-        images. One additional alpha channel is also supported.
+            PNM can store 1 and 3 channel images with UInt8, UInt16 and UInt32
+            values in each channel.
 
-        PNM can store 1 and 3 channel images with UInt8, UInt16 and UInt32
-        values in each channel.
-
-        TIFF and VIFF are aditionally able to store short and long
-        integers (2 or 4 bytes) and real values (32 bit float and
-        64 bit double) without conversion. So you will need to use
-        TIFF or VIFF if you need to store images with high
-        accuracy (the appropriate type to write is automatically
-        derived from the image type to be exported). However, many
-        other programs using TIFF (e.g. ImageMagick) have not
-        implemented support for those pixel types.  So don't be
-        surprised if the generated TIFF is not readable in some
-        cases.  If this happens, export the image as 'unsigned
-        char' or 'RGBValue\<unsigned char\>' by calling
-        \ref ImageExportInfo::setPixelType().
-    **/
+            TIFF and VIFF are aditionally able to store short and long
+            integers (2 or 4 bytes) and real values (32 bit float and
+            64 bit double) without conversion. So you will need to use
+            TIFF or VIFF if you need to store images with high
+            accuracy (the appropriate type to write is automatically
+            derived from the image type to be exported). However, many
+            other programs using TIFF (e.g. ImageMagick) have not
+            implemented support for those pixel types.  So don't be
+            surprised if the generated TIFF is not readable in some
+            cases.  If this happens, export the image as 'unsigned
+            char' or 'RGBValue\<unsigned char\>' by calling
+            \ref ImageExportInfo::setPixelType().
+         **/
     ImageExportInfo & setFileType( const char * );
     const char * getFileType() const;
 
-    /** Set compression type.
+        /** Set compression type.
 
-        Recognized strings: "" (no compression), "LZW",
-        "RunLength", "1" ... "100". A number is interpreted as the
-        compression quality for JPEG compression. JPEG compression is
-        supported by the JPEG and TIFF formats. "LZW" is only available
-        if libtiff was installed with LZW enabled. By default, libtiff came
-        with LZW disabled due to Unisys patent enforcement. In this case,
-        VIGRA stores the image uncompressed.
+            Recognized strings: "" (no compression), "LZW",
+            "RunLength", "1" ... "100". A number is interpreted as the
+            compression quality for JPEG compression. JPEG compression is
+            supported by the JPEG and TIFF formats. "LZW" is only available
+            if libtiff was installed with LZW enabled. By default, libtiff came
+            with LZW disabled due to Unisys patent enforcement. In this case,
+            VIGRA stores the image uncompressed.
 
-            Valid Compression for TIFF files:
-              JPEG    jpeg compression, call setQuality as well!
-              RLE     runlength compression
-              LZW     lzw compression
-    **/
+                Valid Compression for TIFF files:
+                  JPEG    jpeg compression, call setQuality as well!
+                  RLE     runlength compression
+                  LZW     lzw compression
+         **/
     ImageExportInfo & setCompression( const char * );
     const char * getCompression() const;
 
-    /** Set the pixel type of the image file. Possible values are:
-        <DL>
-        <DT>"UINT8"<DD> 8-bit unsigned integer (unsigned char)
-        <DT>"INT16"<DD> 16-bit signed integer (short)
-        <DT>"UINT16"<DD> 16-bit unsigned integer (unsigned short)
-        <DT>"INT32"<DD> 32-bit signed integer (long)
-        <DT>"UINT32"<DD> 32-bit unsigned integer (unsigned long)
-        <DT>"FLOAT"<DD> 32-bit floating point (float)
-        <DT>"DOUBLE"<DD> 64-bit floating point (double)
-        </DL>
+        /** Set the pixel type of the image file. Possible values are:
+            <DL>
+            <DT>"UINT8"<DD> 8-bit unsigned integer (unsigned char)
+            <DT>"INT16"<DD> 16-bit signed integer (short)
+            <DT>"UINT16"<DD> 16-bit unsigned integer (unsigned short)
+            <DT>"INT32"<DD> 32-bit signed integer (long)
+            <DT>"UINT32"<DD> 32-bit unsigned integer (unsigned long)
+            <DT>"FLOAT"<DD> 32-bit floating point (float)
+            <DT>"DOUBLE"<DD> 64-bit floating point (double)
+            </DL>
 
-        <b>Usage:</b>
-        FImage img(w,h);
+            <b>Usage:</b>
+            FImage img(w,h);
 
-        // by default, float images are exported with pixeltype float
-        // when the target format support this type, i.e. is TIFF or VIFF.
-        exportImage(srcImageRange(img), ImageExportInfo("asFloat.tif"));
+            // by default, float images are exported with pixeltype float
+            // when the target format support this type, i.e. is TIFF or VIFF.
+            exportImage(srcImageRange(img), ImageExportInfo("asFloat.tif"));
 
-        // if this is not desired, force a different pixeltype
-        exportImage(srcImageRange(img), ImageExportInfo("asByte.tif").setPixelType("UINT8"));
-    **/
+            // if this is not desired, force a different pixeltype
+            exportImage(srcImageRange(img), ImageExportInfo("asByte.tif").setPixelType("UINT8"));
+         **/
     ImageExportInfo & setPixelType( const char * );
 
-    /** Get the pixel type of the image. Possible values are:
-        <DL>
-        <DT>"UINT8"<DD> 8-bit unsigned integer (unsigned char)
-        <DT>"INT16"<DD> 16-bit signed integer (short)
-        <DT>"INT32"<DD> 32-bit signed integer (long)
-        <DT>"FLOAT"<DD> 32-bit floating point (float)
-        <DT>"DOUBLE"<DD> 64-bit floating point (double)
-        </DL>
-    **/
+        /** Get the pixel type of the image. Possible values are:
+            <DL>
+            <DT>"UINT8"<DD> 8-bit unsigned integer (unsigned char)
+            <DT>"INT16"<DD> 16-bit signed integer (short)
+            <DT>"INT32"<DD> 32-bit signed integer (long)
+            <DT>"FLOAT"<DD> 32-bit floating point (float)
+            <DT>"DOUBLE"<DD> 64-bit floating point (double)
+            </DL>
+         **/
     const char * getPixelType() const;
 
-    /** Set the image resolution in horizontal direction
-    **/
+        /** Set the image resolution in horizontal direction
+         **/
     ImageExportInfo & setXResolution( float );
     float getXResolution() const;
 
-    /** Set the image resolution in vertical direction
-    **/
+        /** Set the image resolution in vertical direction
+         **/
     ImageExportInfo & setYResolution( float );
     float getYResolution() const;
 
@@ -298,7 +298,7 @@ class VIGRA_EXPORT ImageImportInfo
             (only available if libtiff is installed.)
             <DT>"VIFF"<DD> Khoros Visualization image file.
             </DL>
-        **/
+         **/
     ImageImportInfo( const char *  );
 
     const char * getFileName() const;
@@ -308,7 +308,7 @@ class VIGRA_EXPORT ImageImportInfo
 
             See ImageImportInfo::ImageImportInfo for a list of the
             available file types.
-        **/
+         **/
     const char * getFileType() const;
 
         /** Get width of the image.
@@ -347,7 +347,7 @@ class VIGRA_EXPORT ImageImportInfo
             <DT>"FLOAT"<DD> 32-bit floating point (float)
             <DT>"DOUBLE"<DD> 64-bit floating point (double)
             </DL>
-        **/
+         **/
     const char * getPixelType() const;
 
         /// deprecated: use getPixelType()
@@ -355,7 +355,7 @@ class VIGRA_EXPORT ImageImportInfo
 
         /** Returns true if the image has 1 byte per pixel (gray) or
             3 bytes per pixel (RGB).
-        **/
+         **/
     bool isByte() const;
 
         /** Returns the image resolution in horizontal direction
