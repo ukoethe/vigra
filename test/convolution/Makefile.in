@@ -1,6 +1,6 @@
 curdir=$(vigra_testdir)/convolution
 
-TESTIMAGES = lenna128.xv lenna_simple_sharpening_orig.xv lenna_gaussian_sharpening_orig.xv lenna128sepgrad.xv lennahessxx.xv lennastxx.xv lenna128recgrad.xv lenna128nonlinear.xv resampling.xv lennahessyy.xv lennastyy.xv lennahessxy.xv lennastxy.xv lenna128.xv lenna128sepgrad.xv 
+TESTIMAGES = lenna128.xv lenna_simple_sharpening_orig.xv lenna_gaussian_sharpening_orig.xv lenna128sepgrad.xv lennahessxx.xv lennastxx.xv lenna128recgrad.xv lenna128nonlinear.xv resampling.xv lennahessyy.xv lennastyy.xv lennahessxy.xv lennastxy.xv lenna128rgb.xv lenna128rgbsepgrad.xv
 
 
 test: test.o $(TESTIMAGES) $(PREINSTALL_IMPEX_LIB)
@@ -10,7 +10,7 @@ test: test.o $(TESTIMAGES) $(PREINSTALL_IMPEX_LIB)
 convolution.exe: test.d
 	devenv "..\test.sln" /build Release /project convolution
 	./convolution.exe || { rm ./convolution.exe ; exit 1; }
-        
+
 $(TESTIMAGES):
 	ln -s $(curdir)/$@ .
 
