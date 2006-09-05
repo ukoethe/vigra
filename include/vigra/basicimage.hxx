@@ -1209,11 +1209,36 @@ srcImageRange(BasicImage<PixelType, Alloc> const & img, Accessor a)
 }
 
 template <class PixelType, class Accessor, class Alloc>
+inline triple<typename BasicImage<PixelType, Alloc>::const_traverser,
+              typename BasicImage<PixelType, Alloc>::const_traverser, Accessor>
+srcImageRange(BasicImage<PixelType, Alloc> const & img, Rect2D const & roi, Accessor a)
+{
+    vigra_precondition(roi.left() >= 0 && roi.top() >= 0 && 
+                       roi.right() <= img.width() && roi.bottom() <= img.height(), 
+                       "srcImageRange(): ROI rectangle outside image.");
+    return triple<typename BasicImage<PixelType, Alloc>::const_traverser,
+                  typename BasicImage<PixelType, Alloc>::const_traverser,
+          Accessor>(img.upperLeft() + roi.upperLeft(),
+                    img.upperLeft() + roi.lowerRight(),
+                    a);
+}
+
+template <class PixelType, class Accessor, class Alloc>
 inline pair<typename BasicImage<PixelType, Alloc>::const_traverser, Accessor>
 srcImage(BasicImage<PixelType, Alloc> const & img, Accessor a)
 {
     return pair<typename BasicImage<PixelType, Alloc>::const_traverser,
                 Accessor>(img.upperLeft(), a);
+}
+
+template <class PixelType, class Accessor, class Alloc>
+inline pair<typename BasicImage<PixelType, Alloc>::const_traverser, Accessor>
+srcImage(BasicImage<PixelType, Alloc> const & img, Point2D const & ul, Accessor a)
+{
+    vigra_precondition(img.isInside(ul), 
+                       "srcImage(): ROI rectangle outside image.");
+    return pair<typename BasicImage<PixelType, Alloc>::const_traverser,
+                Accessor>(img.upperLeft() + ul, a);
 }
 
 template <class PixelType, class Accessor, class Alloc>
@@ -1229,6 +1254,21 @@ destImageRange(BasicImage<PixelType, Alloc> & img, Accessor a)
 }
 
 template <class PixelType, class Accessor, class Alloc>
+inline triple<typename BasicImage<PixelType, Alloc>::traverser,
+              typename BasicImage<PixelType, Alloc>::traverser, Accessor>
+destImageRange(BasicImage<PixelType, Alloc> & img, Rect2D const & roi, Accessor a)
+{
+    vigra_precondition(roi.left() >= 0 && roi.top() >= 0 && 
+                       roi.right() <= img.width() && roi.bottom() <= img.height(), 
+                       "destImageRange(): ROI rectangle outside image.");
+    return triple<typename BasicImage<PixelType, Alloc>::traverser,
+                  typename BasicImage<PixelType, Alloc>::traverser,
+          Accessor>(img.upperLeft() + roi.upperLeft(),
+                    img.upperLeft() + roi.lowerRight(),
+                    a);
+}
+
+template <class PixelType, class Accessor, class Alloc>
 inline pair<typename BasicImage<PixelType, Alloc>::traverser, Accessor>
 destImage(BasicImage<PixelType, Alloc> & img, Accessor a)
 {
@@ -1237,11 +1277,31 @@ destImage(BasicImage<PixelType, Alloc> & img, Accessor a)
 }
 
 template <class PixelType, class Accessor, class Alloc>
+inline pair<typename BasicImage<PixelType, Alloc>::traverser, Accessor>
+destImage(BasicImage<PixelType, Alloc> & img, Point2D const & ul, Accessor a)
+{
+    vigra_precondition(img.isInside(ul), 
+                       "destImage(): ROI rectangle outside image.");
+    return pair<typename BasicImage<PixelType, Alloc>::traverser,
+                Accessor>(img.upperLeft() + ul, a);
+}
+
+template <class PixelType, class Accessor, class Alloc>
 inline pair<typename BasicImage<PixelType, Alloc>::const_traverser, Accessor>
 maskImage(BasicImage<PixelType, Alloc> const & img, Accessor a)
 {
     return pair<typename BasicImage<PixelType, Alloc>::const_traverser,
                 Accessor>(img.upperLeft(), a);
+}
+
+template <class PixelType, class Accessor, class Alloc>
+inline pair<typename BasicImage<PixelType, Alloc>::const_traverser, Accessor>
+maskImage(BasicImage<PixelType, Alloc> const & img, Point2D const & ul, Accessor a)
+{
+    vigra_precondition(img.isInside(ul), 
+                       "maskImage(): ROI rectangle outside image.");
+    return pair<typename BasicImage<PixelType, Alloc>::const_traverser,
+                Accessor>(img.upperLeft() + ul, a);
 }
 
 /****************************************************************/
@@ -1255,8 +1315,24 @@ srcImageRange(BasicImage<PixelType, Alloc> const & img)
     return triple<typename BasicImage<PixelType, Alloc>::const_traverser,
                   typename BasicImage<PixelType, Alloc>::const_traverser,
                   typename BasicImage<PixelType, Alloc>::ConstAccessor>(img.upperLeft(),
-                                                                 img.lowerRight(),
-                                                                 img.accessor());
+                                                                        img.lowerRight(),
+                                                                        img.accessor());
+}
+
+template <class PixelType, class Alloc>
+inline triple<typename BasicImage<PixelType, Alloc>::const_traverser,
+              typename BasicImage<PixelType, Alloc>::const_traverser,
+              typename BasicImage<PixelType, Alloc>::ConstAccessor>
+srcImageRange(BasicImage<PixelType, Alloc> const & img, Rect2D const & roi)
+{
+    vigra_precondition(roi.left() >= 0 && roi.top() >= 0 && 
+                       roi.right() <= img.width() && roi.bottom() <= img.height(), 
+                       "srcImageRange(): ROI rectangle outside image.");
+    return triple<typename BasicImage<PixelType, Alloc>::const_traverser,
+                  typename BasicImage<PixelType, Alloc>::const_traverser,
+                  typename BasicImage<PixelType, Alloc>::ConstAccessor>(img.upperLeft() + roi.upperLeft(),
+                                                                        img.upperLeft() + roi.lowerRight(),
+                                                                        img.accessor());
 }
 
 template <class PixelType, class Alloc>
@@ -1266,7 +1342,19 @@ srcImage(BasicImage<PixelType, Alloc> const & img)
 {
     return pair<typename BasicImage<PixelType, Alloc>::const_traverser,
                 typename BasicImage<PixelType, Alloc>::ConstAccessor>(img.upperLeft(),
-                                                               img.accessor());
+                                                                      img.accessor());
+}
+
+template <class PixelType, class Alloc>
+inline pair< typename BasicImage<PixelType, Alloc>::const_traverser,
+             typename BasicImage<PixelType, Alloc>::ConstAccessor>
+srcImage(BasicImage<PixelType, Alloc> const & img, Point2D const & ul)
+{
+    vigra_precondition(img.isInside(ul), 
+                       "srcImage(): ROI rectangle outside image.");
+    return pair<typename BasicImage<PixelType, Alloc>::const_traverser,
+                typename BasicImage<PixelType, Alloc>::ConstAccessor>(img.upperLeft() + ul,
+                                                                      img.accessor());
 }
 
 template <class PixelType, class Alloc>
@@ -1278,8 +1366,24 @@ destImageRange(BasicImage<PixelType, Alloc> & img)
     return triple<typename BasicImage<PixelType, Alloc>::traverser,
                   typename BasicImage<PixelType, Alloc>::traverser,
                   typename BasicImage<PixelType, Alloc>::Accessor>(img.upperLeft(),
-                                                            img.lowerRight(),
-                                                            img.accessor());
+                                                                   img.lowerRight(),
+                                                                   img.accessor());
+}
+
+template <class PixelType, class Alloc>
+inline triple< typename BasicImage<PixelType, Alloc>::traverser,
+               typename BasicImage<PixelType, Alloc>::traverser,
+               typename BasicImage<PixelType, Alloc>::Accessor>
+destImageRange(BasicImage<PixelType, Alloc> & img, Rect2D const & roi)
+{
+    vigra_precondition(roi.left() >= 0 && roi.top() >= 0 && 
+                       roi.right() <= img.width() && roi.bottom() <= img.height(), 
+                       "destImageRange(): ROI rectangle outside image.");
+    return triple<typename BasicImage<PixelType, Alloc>::traverser,
+                  typename BasicImage<PixelType, Alloc>::traverser,
+                  typename BasicImage<PixelType, Alloc>::Accessor>(img.upperLeft() + roi.upperLeft(),
+                                                                   img.upperLeft() + roi.lowerRight(),
+                                                                   img.accessor());
 }
 
 template <class PixelType, class Alloc>
@@ -1293,13 +1397,37 @@ destImage(BasicImage<PixelType, Alloc> & img)
 }
 
 template <class PixelType, class Alloc>
+inline pair< typename BasicImage<PixelType, Alloc>::traverser,
+             typename BasicImage<PixelType, Alloc>::Accessor>
+destImage(BasicImage<PixelType, Alloc> & img, Point2D const & ul)
+{
+    vigra_precondition(img.isInside(ul), 
+                       "destImage(): ROI rectangle outside image.");
+    return pair<typename BasicImage<PixelType, Alloc>::traverser,
+                typename BasicImage<PixelType, Alloc>::Accessor>(img.upperLeft() + ul,
+                                                                 img.accessor());
+}
+
+template <class PixelType, class Alloc>
 inline pair< typename BasicImage<PixelType, Alloc>::const_traverser,
              typename BasicImage<PixelType, Alloc>::ConstAccessor>
 maskImage(BasicImage<PixelType, Alloc> const & img)
 {
     return pair<typename BasicImage<PixelType, Alloc>::const_traverser,
                 typename BasicImage<PixelType, Alloc>::ConstAccessor>(img.upperLeft(),
-                                                               img.accessor());
+                                                                      img.accessor());
+}
+
+template <class PixelType, class Alloc>
+inline pair< typename BasicImage<PixelType, Alloc>::const_traverser,
+             typename BasicImage<PixelType, Alloc>::ConstAccessor>
+maskImage(BasicImage<PixelType, Alloc> const & img, Point2D const & ul)
+{
+    vigra_precondition(img.isInside(ul), 
+                       "maskImage(): ROI rectangle outside image.");
+    return pair<typename BasicImage<PixelType, Alloc>::const_traverser,
+                typename BasicImage<PixelType, Alloc>::ConstAccessor>(img.upperLeft() + ul,
+                                                                      img.accessor());
 }
 
 } // namespace vigra

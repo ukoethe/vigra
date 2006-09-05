@@ -456,14 +456,29 @@ class BasicImageView
 /********************************************************/
 
 template <class PixelType, class Accessor>
-inline triple<typename BasicImageView<PixelType>::const_traverser, 
+inline triple<typename BasicImageView<PixelType>::const_traverser,
               typename BasicImageView<PixelType>::const_traverser, Accessor>
 srcImageRange(BasicImageView<PixelType> const & img, Accessor a)
 {
-    return triple<typename BasicImageView<PixelType>::const_traverser, 
-                  typename BasicImageView<PixelType>::const_traverser, 
+    return triple<typename BasicImageView<PixelType>::const_traverser,
+                  typename BasicImageView<PixelType>::const_traverser,
           Accessor>(img.upperLeft(),
                     img.lowerRight(),
+                    a);
+}
+
+template <class PixelType, class Accessor>
+inline triple<typename BasicImageView<PixelType>::const_traverser,
+              typename BasicImageView<PixelType>::const_traverser, Accessor>
+srcImageRange(BasicImageView<PixelType> const & img, Rect2D const & roi, Accessor a)
+{
+    vigra_precondition(roi.left() >= 0 && roi.top() >= 0 && 
+                       roi.right() <= img.width() && roi.bottom() <= img.height(), 
+                       "srcImageRange(): ROI rectangle outside image.");
+    return triple<typename BasicImageView<PixelType>::const_traverser,
+                  typename BasicImageView<PixelType>::const_traverser,
+          Accessor>(img.upperLeft() + roi.upperLeft(),
+                    img.upperLeft() + roi.lowerRight(),
                     a);
 }
 
@@ -471,19 +486,44 @@ template <class PixelType, class Accessor>
 inline pair<typename BasicImageView<PixelType>::const_traverser, Accessor>
 srcImage(BasicImageView<PixelType> const & img, Accessor a)
 {
-    return pair<typename BasicImageView<PixelType>::const_traverser, 
+    return pair<typename BasicImageView<PixelType>::const_traverser,
                 Accessor>(img.upperLeft(), a);
 }
 
 template <class PixelType, class Accessor>
-inline triple<typename BasicImageView<PixelType>::traverser, 
+inline pair<typename BasicImageView<PixelType>::const_traverser, Accessor>
+srcImage(BasicImageView<PixelType> const & img, Point2D const & ul, Accessor a)
+{
+    vigra_precondition(img.isInside(ul), 
+                       "srcImage(): ROI rectangle outside image.");
+    return pair<typename BasicImageView<PixelType>::const_traverser,
+                Accessor>(img.upperLeft() + ul, a);
+}
+
+template <class PixelType, class Accessor>
+inline triple<typename BasicImageView<PixelType>::traverser,
               typename BasicImageView<PixelType>::traverser, Accessor>
 destImageRange(BasicImageView<PixelType> & img, Accessor a)
 {
-    return triple<typename BasicImageView<PixelType>::traverser, 
-                  typename BasicImageView<PixelType>::traverser, 
+    return triple<typename BasicImageView<PixelType>::traverser,
+                  typename BasicImageView<PixelType>::traverser,
           Accessor>(img.upperLeft(),
                     img.lowerRight(),
+                    a);
+}
+
+template <class PixelType, class Accessor>
+inline triple<typename BasicImageView<PixelType>::traverser,
+              typename BasicImageView<PixelType>::traverser, Accessor>
+destImageRange(BasicImageView<PixelType> & img, Rect2D const & roi, Accessor a)
+{
+    vigra_precondition(roi.left() >= 0 && roi.top() >= 0 && 
+                       roi.right() <= img.width() && roi.bottom() <= img.height(), 
+                       "destImageRange(): ROI rectangle outside image.");
+    return triple<typename BasicImageView<PixelType>::traverser,
+                  typename BasicImageView<PixelType>::traverser,
+          Accessor>(img.upperLeft() + roi.upperLeft(),
+                    img.upperLeft() + roi.lowerRight(),
                     a);
 }
 
@@ -491,74 +531,162 @@ template <class PixelType, class Accessor>
 inline pair<typename BasicImageView<PixelType>::traverser, Accessor>
 destImage(BasicImageView<PixelType> & img, Accessor a)
 {
-    return pair<typename BasicImageView<PixelType>::traverser, 
+    return pair<typename BasicImageView<PixelType>::traverser,
                 Accessor>(img.upperLeft(), a);
+}
+
+template <class PixelType, class Accessor>
+inline pair<typename BasicImageView<PixelType>::traverser, Accessor>
+destImage(BasicImageView<PixelType> & img, Point2D const & ul, Accessor a)
+{
+    vigra_precondition(img.isInside(ul), 
+                       "destImage(): ROI rectangle outside image.");
+    return pair<typename BasicImageView<PixelType>::traverser,
+                Accessor>(img.upperLeft() + ul, a);
 }
 
 template <class PixelType, class Accessor>
 inline pair<typename BasicImageView<PixelType>::const_traverser, Accessor>
 maskImage(BasicImageView<PixelType> const & img, Accessor a)
 {
-    return pair<typename BasicImageView<PixelType>::const_traverser, 
+    return pair<typename BasicImageView<PixelType>::const_traverser,
                 Accessor>(img.upperLeft(), a);
+}
+
+template <class PixelType, class Accessor>
+inline pair<typename BasicImageView<PixelType>::const_traverser, Accessor>
+maskImage(BasicImageView<PixelType> const & img, Point2D const & ul, Accessor a)
+{
+    vigra_precondition(img.isInside(ul), 
+                       "maskImage(): ROI rectangle outside image.");
+    return pair<typename BasicImageView<PixelType>::const_traverser,
+                Accessor>(img.upperLeft() + ul, a);
 }
 
 /****************************************************************/
 
 template <class PixelType>
-inline triple<typename BasicImageView<PixelType>::const_traverser, 
-              typename BasicImageView<PixelType>::const_traverser, 
+inline triple<typename BasicImageView<PixelType>::const_traverser,
+              typename BasicImageView<PixelType>::const_traverser,
               typename BasicImageView<PixelType>::ConstAccessor>
 srcImageRange(BasicImageView<PixelType> const & img)
 {
-    return triple<typename BasicImageView<PixelType>::const_traverser, 
-                  typename BasicImageView<PixelType>::const_traverser, 
+    return triple<typename BasicImageView<PixelType>::const_traverser,
+                  typename BasicImageView<PixelType>::const_traverser,
                   typename BasicImageView<PixelType>::ConstAccessor>(img.upperLeft(),
-                                                                     img.lowerRight(),
-                                                                     img.accessor());
+                                                                        img.lowerRight(),
+                                                                        img.accessor());
 }
 
 template <class PixelType>
-inline pair< typename BasicImageView<PixelType>::const_traverser, 
+inline triple<typename BasicImageView<PixelType>::const_traverser,
+              typename BasicImageView<PixelType>::const_traverser,
+              typename BasicImageView<PixelType>::ConstAccessor>
+srcImageRange(BasicImageView<PixelType> const & img, Rect2D const & roi)
+{
+    vigra_precondition(roi.left() >= 0 && roi.top() >= 0 && 
+                       roi.right() <= img.width() && roi.bottom() <= img.height(), 
+                       "srcImageRange(): ROI rectangle outside image.");
+    return triple<typename BasicImageView<PixelType>::const_traverser,
+                  typename BasicImageView<PixelType>::const_traverser,
+                  typename BasicImageView<PixelType>::ConstAccessor>(img.upperLeft() + roi.upperLeft(),
+                                                                        img.upperLeft() + roi.lowerRight(),
+                                                                        img.accessor());
+}
+
+template <class PixelType>
+inline pair< typename BasicImageView<PixelType>::const_traverser,
              typename BasicImageView<PixelType>::ConstAccessor>
 srcImage(BasicImageView<PixelType> const & img)
 {
-    return pair<typename BasicImageView<PixelType>::const_traverser, 
-                typename BasicImageView<PixelType>::ConstAccessor>(img.upperLeft(), 
-                                                                   img.accessor());
+    return pair<typename BasicImageView<PixelType>::const_traverser,
+                typename BasicImageView<PixelType>::ConstAccessor>(img.upperLeft(),
+                                                                      img.accessor());
 }
 
 template <class PixelType>
-inline triple< typename BasicImageView<PixelType>::traverser, 
-               typename BasicImageView<PixelType>::traverser, 
+inline pair< typename BasicImageView<PixelType>::const_traverser,
+             typename BasicImageView<PixelType>::ConstAccessor>
+srcImage(BasicImageView<PixelType> const & img, Point2D const & ul)
+{
+    vigra_precondition(img.isInside(ul), 
+                       "srcImage(): ROI rectangle outside image.");
+    return pair<typename BasicImageView<PixelType>::const_traverser,
+                typename BasicImageView<PixelType>::ConstAccessor>(img.upperLeft() + ul,
+                                                                      img.accessor());
+}
+
+template <class PixelType>
+inline triple< typename BasicImageView<PixelType>::traverser,
+               typename BasicImageView<PixelType>::traverser,
                typename BasicImageView<PixelType>::Accessor>
 destImageRange(BasicImageView<PixelType> & img)
 {
-    return triple<typename BasicImageView<PixelType>::traverser, 
-                  typename BasicImageView<PixelType>::traverser, 
+    return triple<typename BasicImageView<PixelType>::traverser,
+                  typename BasicImageView<PixelType>::traverser,
                   typename BasicImageView<PixelType>::Accessor>(img.upperLeft(),
-                                                                img.lowerRight(),
-                                                                img.accessor());
+                                                                   img.lowerRight(),
+                                                                   img.accessor());
 }
 
 template <class PixelType>
-inline pair< typename BasicImageView<PixelType>::traverser, 
+inline triple< typename BasicImageView<PixelType>::traverser,
+               typename BasicImageView<PixelType>::traverser,
+               typename BasicImageView<PixelType>::Accessor>
+destImageRange(BasicImageView<PixelType> & img, Rect2D const & roi)
+{
+    vigra_precondition(roi.left() >= 0 && roi.top() >= 0 && 
+                       roi.right() <= img.width() && roi.bottom() <= img.height(), 
+                       "destImageRange(): ROI rectangle outside image.");
+    return triple<typename BasicImageView<PixelType>::traverser,
+                  typename BasicImageView<PixelType>::traverser,
+                  typename BasicImageView<PixelType>::Accessor>(img.upperLeft() + roi.upperLeft(),
+                                                                   img.upperLeft() + roi.lowerRight(),
+                                                                   img.accessor());
+}
+
+template <class PixelType>
+inline pair< typename BasicImageView<PixelType>::traverser,
              typename BasicImageView<PixelType>::Accessor>
 destImage(BasicImageView<PixelType> & img)
 {
-    return pair<typename BasicImageView<PixelType>::traverser, 
-                typename BasicImageView<PixelType>::Accessor>(img.upperLeft(), 
-                                                              img.accessor());
+    return pair<typename BasicImageView<PixelType>::traverser,
+                typename BasicImageView<PixelType>::Accessor>(img.upperLeft(),
+                                                          img.accessor());
 }
 
 template <class PixelType>
-inline pair< typename BasicImageView<PixelType>::const_traverser, 
+inline pair< typename BasicImageView<PixelType>::traverser,
+             typename BasicImageView<PixelType>::Accessor>
+destImage(BasicImageView<PixelType> & img, Point2D const & ul)
+{
+    vigra_precondition(img.isInside(ul), 
+                       "destImage(): ROI rectangle outside image.");
+    return pair<typename BasicImageView<PixelType>::traverser,
+                typename BasicImageView<PixelType>::Accessor>(img.upperLeft() + ul,
+                                                                 img.accessor());
+}
+
+template <class PixelType>
+inline pair< typename BasicImageView<PixelType>::const_traverser,
              typename BasicImageView<PixelType>::ConstAccessor>
 maskImage(BasicImageView<PixelType> const & img)
 {
-    return pair<typename BasicImageView<PixelType>::const_traverser, 
-                typename BasicImageView<PixelType>::ConstAccessor>(img.upperLeft(), 
-                                                                   img.accessor());
+    return pair<typename BasicImageView<PixelType>::const_traverser,
+                typename BasicImageView<PixelType>::ConstAccessor>(img.upperLeft(),
+                                                                      img.accessor());
+}
+
+template <class PixelType>
+inline pair< typename BasicImageView<PixelType>::const_traverser,
+             typename BasicImageView<PixelType>::ConstAccessor>
+maskImage(BasicImageView<PixelType> const & img, Point2D const & ul)
+{
+    vigra_precondition(img.isInside(ul), 
+                       "maskImage(): ROI rectangle outside image.");
+    return pair<typename BasicImageView<PixelType>::const_traverser,
+                typename BasicImageView<PixelType>::ConstAccessor>(img.upperLeft() + ul,
+                                                                      img.accessor());
 }
 
 } // namespace vigra

@@ -260,8 +260,9 @@ struct IteratorTraitsBase
         \htmlonly
         <th bgcolor="#f0e0c0" colspan=2 align=left>
         \endhtmlonly
-        <TT>\ref vigra::BasicImage "vigra::BasicImage<SomeType>" img;</TT>
-        \htmlonly
+        <TT>\ref vigra::BasicImage "vigra::BasicImage<SomeType>" img;</TT> or <br>
+         <TT>\ref vigra::BasicImageView "vigra::BasicImageView<SomeType>" img;</TT>
+         \htmlonly
         </th>
         \endhtmlonly
     </td></tr>
@@ -275,9 +276,25 @@ struct IteratorTraitsBase
     </td></tr>
     <tr><td>
 
+    <TT>srcImageRange(img, Rect2D(...))</TT>
+    </td><td>
+        create argument object containing the ROI specified by <tt>\ref vigra::Rect2D</tt> and
+        default accessor of source image
+
+    </td></tr>
+    <tr><td>
+
     <TT>srcImageRange(img, SomeAccessor())</TT>
     </td><td>
         create argument object containing upper left, lower right
+        of source image, and given accessor
+
+    </td></tr>
+    <tr><td>
+
+    <TT>srcImageRange(img, Rect2D(...), SomeAccessor())</TT>
+    </td><td>
+        create argument object containing the ROI specified by <tt>\ref vigra::Rect2D</tt> and
         of source image, and given accessor
 
     </td></tr>
@@ -291,10 +308,26 @@ struct IteratorTraitsBase
     </td></tr>
     <tr><td>
 
+    <TT>srcImage(img, Point2D(...))</TT>
+    </td><td>
+        create argument object with upper left at point given by <tt>\ref vigra::Point2D</tt>, and
+        default accessor of source image
+
+    </td></tr>
+    <tr><td>
+
     <TT>srcImage(img, SomeAccessor())</TT>
     </td><td>
         create argument object containing upper left
         of source image, and given accessor
+
+    </td></tr>
+    <tr><td>
+
+    <TT>srcImage(img, Point2D(...), SomeAccessor())</TT>
+    </td><td>
+        create argument object with upper left at point given by <tt>\ref vigra::Point2D</tt> of source image,
+        and given accessor
 
     </td></tr>
     <tr><td>
@@ -305,7 +338,15 @@ struct IteratorTraitsBase
         default accessor of mask image
 
     </td></tr>
-    <tr><td>
+     <tr><td>
+
+    <TT>maskImage(img, Point2D(...))</TT>
+    </td><td>
+        create argument object with upper left at point given by <tt>\ref vigra::Point2D</tt>, and
+        default accessor of mask image
+
+    </td></tr>
+   <tr><td>
 
     <TT>maskImage(img, SomeAccessor())</TT>
     </td><td>
@@ -315,9 +356,25 @@ struct IteratorTraitsBase
     </td></tr>
     <tr><td>
 
+    <TT>maskImage(img, Point2D(...), SomeAccessor())</TT>
+    </td><td>
+        create argument object with upper left at point given by <tt>\ref vigra::Point2D</tt> of mask image,
+        and given accessor
+
+    </td></tr>
+    <tr><td>
+
     <TT>destImageRange(img)</TT>
     </td><td>
         create argument object containing upper left, lower right, and
+        default accessor of destination image
+
+    </td></tr>
+    <tr><td>
+
+    <TT>destImageRange(img, Rect2D(...))</TT>
+    </td><td>
+        create argument object containing the ROI specified by <tt>\ref vigra::Rect2D</tt> and
         default accessor of destination image
 
     </td></tr>
@@ -331,9 +388,25 @@ struct IteratorTraitsBase
     </td></tr>
     <tr><td>
 
+    <TT>destImageRange(img, Rect2D(...), SomeAccessor())</TT>
+    </td><td>
+        create argument object containing the ROI specified by <tt>\ref vigra::Rect2D</tt>
+        of destination image, and given accessor
+
+    </td></tr>
+     <tr><td>
+
     <TT>destImage(img)</TT>
     </td><td>
         create argument object containing upper left, and
+        default accessor of destination image
+
+    </td></tr>
+     <tr><td>
+
+    <TT>destImage(img, Point2D(...))</TT>
+    </td><td>
+        create argument object with upper left at point given by <tt>\ref vigra::Point2D</tt>, and
         default accessor of destination image
 
     </td></tr>
@@ -343,6 +416,14 @@ struct IteratorTraitsBase
     </td><td>
         create argument object containing upper left
         of destination image, and given accessor
+
+    </td></tr>
+    <tr><td>
+
+    <TT>destImage(img, Point2D(...), SomeAccessor())</TT>
+    </td><td>
+        create argument object with upper left at point given by <tt>\ref vigra::Point2D</tt> of destination image,
+        and given accessor
 
     </td></tr>
     </table>
