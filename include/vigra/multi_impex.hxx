@@ -43,13 +43,14 @@
 #include <sstream>
 #include <iostream>
 #include <string>
+#include "vigra/config.hxx"
 #include "vigra/basicimageview.hxx"
 #include "vigra/impex.hxx"
 #include "vigra/multi_array.hxx"
 
 namespace vigra {
 
-void findImageSequence(const std::string &name_base,
+VIGRA_EXPORT void findImageSequence(const std::string &name_base,
                        const std::string &name_ext,
                        std::vector<std::string> & numbers);
                        
