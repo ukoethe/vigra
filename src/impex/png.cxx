@@ -30,7 +30,7 @@
 /*    HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,      */
 /*    WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING      */
 /*    FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR     */
-/*    OTHER DEALINGS IN THE SOFTWARE.                                   */                
+/*    OTHER DEALINGS IN THE SOFTWARE.                                   */
 /*                                                                      */
 /************************************************************************/
 /* Modifications by Pablo d'Angelo
@@ -41,9 +41,6 @@
 
 #ifdef HasPNG
 
-#include <stdexcept>
-#include <iostream>
-#include <csetjmp>
 #include "vigra/config.hxx"
 #include "vigra/sized_int.hxx"
 #include "void_vector.hxx"
@@ -51,6 +48,9 @@
 #include "png.hxx"
 #include "byteorder.hxx"
 #include "error.hxx"
+#include <csetjmp>
+#include <stdexcept>
+#include <iostream>
 
 extern "C"
 {
@@ -119,7 +119,7 @@ namespace vigra {
         desc.bandNumbers[1] = 2;
         desc.bandNumbers[2] = 3;
         desc.bandNumbers[3] = 4;
-        
+
         return desc;
     }
 
@@ -132,7 +132,7 @@ namespace vigra {
     {
         return std::auto_ptr<Encoder>( new PngEncoder() );
     }
-    
+
     struct PngDecoderImpl
     {
         // data source
@@ -162,9 +162,9 @@ namespace vigra {
 
     PngDecoderImpl::PngDecoderImpl( const std::string & filename )
 #ifdef VIGRA_NEED_BIN_STREAMS
-        : file( filename.c_str(), "rb" ), 
+        : file( filename.c_str(), "rb" ),
 #else
-        : file( filename.c_str(), "r" ), 
+        : file( filename.c_str(), "r" ),
 #endif
           bands(0), scanline(-1)
     {
@@ -223,14 +223,14 @@ namespace vigra {
             vigra_postcondition( false, png_error_message.insert(0, "error in png_get_IHDR(): ").c_str() );
         png_get_IHDR( png, info, &width, &height, &bit_depth, &color_type,
                       &interlace_method, &compression_method, &filter_method );
-        
+
         // check whether byteorder must be swapped (png files are big-endian)
         byteorder bo;
         if(bit_depth == 16 && bo.get_host_byteorder() == "little endian")
         {
             png_set_swap(png);
         }
-        
+
         // transform palette to rgb
         if ( color_type == PNG_COLOR_TYPE_PALETTE) {
             if (setjmp(png->jmpbuf))
@@ -439,16 +439,16 @@ namespace vigra {
 
     PngEncoderImpl::PngEncoderImpl( const std::string & filename )
 #ifdef VIGRA_NEED_BIN_STREAMS
-        : file( filename.c_str(), "wb" ), 
+        : file( filename.c_str(), "wb" ),
 #else
-        : file( filename.c_str(), "w" ), 
+        : file( filename.c_str(), "w" ),
 #endif
           bands(0),
           scanline(0), finalized(false)
     {
         png_error_message = "";
         // create png struct with user defined handlers
-        png = png_create_write_struct( PNG_LIBPNG_VER_STRING, NULL, 
+        png = png_create_write_struct( PNG_LIBPNG_VER_STRING, NULL,
                                        &PngError, &PngWarning );
         vigra_postcondition( png != 0, "could not create the write struct." );
 
@@ -509,14 +509,14 @@ namespace vigra {
             row_pointers[i] = mover;
             mover += row_stride;
         }
-        
+
         // check whether byteorder must be swapped (png files must be big-endian)
         byteorder bo;
         if(bit_depth == 16 && bo.get_host_byteorder() == "little endian")
         {
             png_set_swap(png);
         }
-        
+
         // write the whole image
         if (setjmp(png->jmpbuf))
             vigra_postcondition( false, png_error_message.insert(0, "error in png_write_image(): ").c_str() );
