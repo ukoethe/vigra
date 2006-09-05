@@ -334,6 +334,7 @@
 
 #include <cmath>
 #include <vigra/numerictraits.hxx>
+#include <vigra/mathutil.hxx>
 #include <vigra/functortraits.hxx>
 
 
@@ -1080,8 +1081,8 @@ ifThenElse(UnaryFunctor<EXPR1> const & e1,
 /*                                                          */
 /************************************************************/
 
-#define MAKE_FUNCTOR_UNARY_FUNCTION(function) \
-    using std::function; \
+#define MAKE_FUNCTOR_UNARY_FUNCTION(function, namespc) \
+    using ::namespc::function; \
     template <class EXPR> \
     struct Functor_##function; \
     \
@@ -1162,19 +1163,21 @@ ifThenElse(UnaryFunctor<EXPR1> const & e1,
 
 /************************************************************/
 
-MAKE_FUNCTOR_UNARY_FUNCTION(sqrt)
-MAKE_FUNCTOR_UNARY_FUNCTION(exp)
-MAKE_FUNCTOR_UNARY_FUNCTION(log)
-MAKE_FUNCTOR_UNARY_FUNCTION(log10)
-MAKE_FUNCTOR_UNARY_FUNCTION(sin)
-MAKE_FUNCTOR_UNARY_FUNCTION(asin)
-MAKE_FUNCTOR_UNARY_FUNCTION(cos)
-MAKE_FUNCTOR_UNARY_FUNCTION(acos)
-MAKE_FUNCTOR_UNARY_FUNCTION(tan)
-MAKE_FUNCTOR_UNARY_FUNCTION(atan)
-MAKE_FUNCTOR_UNARY_FUNCTION(abs)
-MAKE_FUNCTOR_UNARY_FUNCTION(floor)
-MAKE_FUNCTOR_UNARY_FUNCTION(ceil)
+MAKE_FUNCTOR_UNARY_FUNCTION(sqrt, std)
+MAKE_FUNCTOR_UNARY_FUNCTION(exp, std)
+MAKE_FUNCTOR_UNARY_FUNCTION(log, std)
+MAKE_FUNCTOR_UNARY_FUNCTION(log10, std)
+MAKE_FUNCTOR_UNARY_FUNCTION(sin, std)
+MAKE_FUNCTOR_UNARY_FUNCTION(asin, std)
+MAKE_FUNCTOR_UNARY_FUNCTION(cos, std)
+MAKE_FUNCTOR_UNARY_FUNCTION(acos, std)
+MAKE_FUNCTOR_UNARY_FUNCTION(tan, std)
+MAKE_FUNCTOR_UNARY_FUNCTION(atan, std)
+MAKE_FUNCTOR_UNARY_FUNCTION(floor, std)
+MAKE_FUNCTOR_UNARY_FUNCTION(ceil, std)
+MAKE_FUNCTOR_UNARY_FUNCTION(abs, vigra)
+//MAKE_FUNCTOR_UNARY_FUNCTION(norm, vigra)
+//MAKE_FUNCTOR_UNARY_FUNCTION(squaredNorm, vigra)
 
 #undef MAKE_FUNCTOR_UNARY_FUNCTION
 
