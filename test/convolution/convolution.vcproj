@@ -38,11 +38,11 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalOptions="/MACHINE:I386"
-				AdditionalDependencies="libtiff.lib libjpeg.lib libpng.lib zlib.lib"
+				AdditionalDependencies="vigraimpex.dll.lib"
 				OutputFile=".\Debug/convolution.exe"
 				LinkIncremental="2"
 				SuppressStartupBanner="TRUE"
-				AdditionalLibraryDirectories="..\..\lib"
+				AdditionalLibraryDirectories="..\..\src\impex"
 				GenerateDebugInformation="TRUE"
 				ProgramDatabaseFile=".\Debug/convolution.pdb"
 				SubSystem="1"/>

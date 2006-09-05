@@ -19,7 +19,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\..\include;..\include;C:\include"
+				AdditionalIncludeDirectories="..\..\include;..\include;..\..\include\external"
 				PreprocessorDefinitions="WIN32;_DEBUG;_CONSOLE"
 				MinimalRebuild="TRUE"
 				BasicRuntimeChecks="3"
@@ -32,10 +32,10 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="libtiff.lib libjpeg.lib libpng.lib zlib.lib fftw3.lib"
+				AdditionalDependencies="vigraimpex.dll.lib fftw3.lib"
 				OutputFile="$(OutDir)/fourier.exe"
 				LinkIncremental="2"
-				AdditionalLibraryDirectories="..\..\lib"
+				AdditionalLibraryDirectories="..\..\lib;..\..\src\impex"
 				GenerateDebugInformation="TRUE"
 				ProgramDatabaseFile="$(OutDir)/fourier.pdb"
 				SubSystem="1"
@@ -72,7 +72,7 @@
 				Optimization="2"
 				InlineFunctionExpansion="1"
 				OmitFramePointers="TRUE"
-				AdditionalIncludeDirectories="..\..\include;..\include;C:\include"
+				AdditionalIncludeDirectories="..\..\include;..\include;..\..\include\external"
 				PreprocessorDefinitions="WIN32;NDEBUG;_CONSOLE"
 				StringPooling="TRUE"
 				RuntimeLibrary="2"

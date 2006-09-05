@@ -42,7 +42,7 @@
 				OutputFile="error.exe"
 				LinkIncremental="1"
 				SuppressStartupBanner="TRUE"
-				AdditionalLibraryDirectories="..\..\lib"
+				AdditionalLibraryDirectories=""
 				ProgramDatabaseFile=".\Release/error.pdb"
 				SubSystem="1"/>
 			<Tool

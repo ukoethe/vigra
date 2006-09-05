@@ -43,7 +43,7 @@
 				OutputFile="utilities.exe"
 				LinkIncremental="1"
 				SuppressStartupBanner="TRUE"
-				AdditionalLibraryDirectories="..\..\lib"
+				AdditionalLibraryDirectories=""
 				ProgramDatabaseFile=".\Release/utilities.pdb"
 				SubSystem="1"/>
 			<Tool

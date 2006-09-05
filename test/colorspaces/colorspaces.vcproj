@@ -108,7 +108,7 @@
 				IgnoreImportLibrary="TRUE"
 				OutputFile="colorspaces.exe"
 				LinkIncremental="1"
-				AdditionalLibraryDirectories="..\..\lib"
+				AdditionalLibraryDirectories=""
 				GenerateDebugInformation="TRUE"
 				SubSystem="1"
 				OptimizeReferences="2"
