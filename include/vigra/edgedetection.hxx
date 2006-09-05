@@ -1192,11 +1192,11 @@ class Edgel
     {}
 };
 
-template <class Image1, class Image2>
+template <class Image1, class Image2, class BackInsertable>
 void internalCannyFindEdgels(Image1 const & dx,
                              Image1 const & dy,
                              Image2 const & magnitude,
-                             std::vector<Edgel> & edgels)
+                             BackInsertable & edgels)
 {
     typedef typename Image1::value_type PixelType;
     
@@ -1379,9 +1379,9 @@ void internalCannyFindEdgels(Image1 const & dx,
     scale > 0
     \endcode
 */
-template <class SrcIterator, class SrcAccessor>
+template <class SrcIterator, class SrcAccessor, class BackInsertable>
 void cannyEdgelList(SrcIterator ul, SrcIterator lr, SrcAccessor src,
-                        std::vector<Edgel> & edgels, double scale)
+                        BackInsertable & edgels, double scale)
 {
     int w = lr.x - ul.x;
     int h = lr.y - ul.y;
@@ -1412,10 +1412,10 @@ void cannyEdgelList(SrcIterator ul, SrcIterator lr, SrcAccessor src,
     internalCannyFindEdgels(dx, dy, tmp, edgels);
 }
 
-template <class SrcIterator, class SrcAccessor>
+template <class SrcIterator, class SrcAccessor, class BackInsertable>
 inline void 
 cannyEdgelList(triple<SrcIterator, SrcIterator, SrcAccessor> src,
-               std::vector<Edgel> & edgels, double scale)
+               BackInsertable & edgels, double scale)
 {
     cannyEdgelList(src.first, src.second, src.third, edgels, scale);
 }
