@@ -69,12 +69,12 @@ namespace vigra {
         std::string getFileType() const;
         std::string getPixelType() const;
 
-        unsigned int getWidth() const;
-        unsigned int getHeight() const;
-        unsigned int getNumBands() const;
-        unsigned int getOffset() const;
+        size_t getWidth() const;
+        size_t getHeight() const;
+        size_t getNumBands() const;
+        size_t getOffset() const;
 
-        const void * currentScanlineOfBand( unsigned int ) const;
+        const void * currentScanlineOfBand( size_t ) const;
         void nextScanline();
     };
 
@@ -92,16 +92,16 @@ namespace vigra {
         void abort();
 
         std::string getFileType() const;
-        unsigned int getOffset() const;
+        size_t getOffset() const;
 
-        void setWidth( unsigned int );
-        void setHeight( unsigned int );
-        void setNumBands( unsigned int );
+        void setWidth( size_t );
+        void setHeight( size_t );
+        void setNumBands( size_t );
         void setCompressionType( const std::string &, int = -1 );
         void setPixelType( const std::string & );
         void finalizeSettings();
 
-        void * currentScanlineOfBand( unsigned int );
+        void * currentScanlineOfBand( size_t );
         void nextScanline();
     };
 }

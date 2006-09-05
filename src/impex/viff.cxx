@@ -188,21 +188,21 @@ namespace vigra {
 
     private:
         // size of lookup tables
-        const unsigned int m_numTableElements;
+        const size_t m_numTableElements;
 
         // number of lookup tables
-        const unsigned int m_numTables;
+        const size_t m_numTables;
 
         // number of bands in each lookup table
-        const unsigned int m_numTableBands;
+        const size_t m_numTableBands;
 
         // lookup tables
         vector_type m_tables;
 
     public:
-        colormap( const unsigned int numTableElements,
-                  const unsigned int numTables,
-                  const unsigned int numTableBands )
+        colormap( const size_t numTableElements,
+                  const size_t numTables,
+                  const size_t numTableBands )
             : m_numTableElements(numTableElements),
               m_numTables(numTables), m_numTableBands(numTableBands),
               m_tables( numTableElements * numTableBands )
@@ -211,28 +211,28 @@ namespace vigra {
                                 "numTables or numTableBands must be 1" );
         }
 
-        inline unsigned int getNumTables() const
+        inline size_t getNumTables() const
         {
             return m_numTables;
         }
 
-        inline unsigned int getNumElements() const
+        inline size_t getNumElements() const
         {
             return m_numTableElements;
         }
 
         // initialize a single table, data array must have the correct length
-        void initialize( const value_type * data, const unsigned int table )
+        void initialize( const value_type * data, const size_t table )
         {
             vigra_precondition( table < m_numTables,
                                 "table number out of range" );
-            const unsigned int stride = m_numTableBands * m_numTableElements;
+            const size_t stride = m_numTableBands * m_numTableElements;
             std::copy( data, data + stride, m_tables.data() + stride * table );
         }
 
         // map a single value
         value_type operator()( const domain_type index,
-                               const unsigned int band = 0 ) const
+                               const size_t band = 0 ) const
         {
             vigra_precondition( index < m_numTableElements,
                                 "index out of range" );
@@ -244,7 +244,7 @@ namespace vigra {
             } else {
                 // map bands with multiple, non-interleaved tables
                 vigra_precondition( band < m_numTables, "band out of range" );
-                const unsigned int stride
+                const size_t stride
                     = m_numTableBands * m_numTableElements;
                 return m_tables[ stride * band + index ];
             }
@@ -262,28 +262,28 @@ namespace vigra {
                         size_t map_bands, size_t map_width, size_t map_height )
     {
         typedef colormap< storage_type, map_storage_type > colormap_type;
-        const unsigned int num_pixels = src_width * src_height;
+        const size_t num_pixels = src_width * src_height;
 
         // build the color map
-        const unsigned int map_band_size = map_width * map_height;
+        const size_t map_band_size = map_width * map_height;
         colormap_type colormap( map_height, map_bands, map_width );
-        for ( unsigned int i = 0; i < map_bands; ++i )
+        for ( size_t i = 0; i < map_bands; ++i )
             colormap.initialize( maps.data() + map_band_size * i, i );
 
         // map each pixel
-        const unsigned int band_size = src_width * src_height;
+        const size_t band_size = src_width * src_height;
         dest_bands = map_bands * map_width;
         dest.resize( band_size * dest_bands );
         if ( map_width > 1 ) {
             // interleaved maps => there is only one band in the image
-            for( unsigned int bandnum = 0; bandnum < dest_bands; ++bandnum )
-                for( unsigned int i = 0; i < num_pixels; ++i )
+            for( size_t bandnum = 0; bandnum < dest_bands; ++bandnum )
+                for( size_t i = 0; i < num_pixels; ++i )
                     dest[ bandnum * band_size + i ]
                         = colormap( src[i], bandnum );
         } else {
             // non-interleaved bands => map can be used per band
-            for( unsigned int bandnum = 0; bandnum < dest_bands; ++bandnum )
-                for( unsigned int i = 0; i < num_pixels; ++i )
+            for( size_t bandnum = 0; bandnum < dest_bands; ++bandnum )
+                for( size_t i = 0; i < num_pixels; ++i )
                     dest[ bandnum * band_size + i ]
                         = colormap( src[ bandnum * band_size + i ], bandnum );
         }
@@ -335,9 +335,8 @@ namespace vigra {
 
     class ViffHeader
     {
-        typedef UInt32 field_type;
-
     public:
+        typedef UInt32 field_type;
 
         field_type row_size, col_size, num_data_bands, data_storage_type,
             data_encode_scheme, map_scheme, map_storage_type, map_row_size,
@@ -459,7 +458,7 @@ namespace vigra {
         }
 
         // pad, then zero out the comments
-        unsigned int i;
+        size_t i;
         for(i = 0; i < 515; ++i )
             stream.put(0);
 
@@ -507,7 +506,7 @@ namespace vigra {
 
     struct ViffDecoderImpl
     {
-        unsigned int width, height, components, map_width,
+        size_t width, height, components, map_width,
             map_height, num_maps;
         std::string pixelType;
         int current_scanline;
@@ -560,7 +559,7 @@ namespace vigra {
         num_maps = shared_map ? 1 : header.num_data_bands;
         map_width = header.map_row_size;
         map_height = header.map_col_size;
-        const unsigned int maps_size = map_width * map_height * num_maps;
+        const size_t maps_size = map_width * map_height * num_maps;
 
         if ( header.map_storage_type == VFF_MAPTYP_1_BYTE ) {
             typedef void_vector<UInt8> maps_type;
@@ -588,7 +587,7 @@ namespace vigra {
 
     void ViffDecoderImpl::read_bands( std::ifstream & stream, byteorder & bo )
     {
-        const unsigned int bands_size = width * height * components;
+        const size_t bands_size = width * height * components;
 
         if ( header.data_storage_type == VFF_TYP_1_BYTE ) {
             typedef void_vector<UInt8> bands_type;
@@ -815,17 +814,17 @@ namespace vigra {
         return "VIFF";
     }
 
-    unsigned int ViffDecoder::getWidth() const
+    size_t ViffDecoder::getWidth() const
     {
         return pimpl->width;
     }
 
-    unsigned int ViffDecoder::getHeight() const
+    size_t ViffDecoder::getHeight() const
     {
         return pimpl->height;
     }
 
-    unsigned int ViffDecoder::getNumBands() const
+    size_t ViffDecoder::getNumBands() const
     {
         return pimpl->components;
     }
@@ -835,14 +834,14 @@ namespace vigra {
         return pimpl->pixelType;
     }
 
-    unsigned int ViffDecoder::getOffset() const
+    size_t ViffDecoder::getOffset() const
     {
         return 1; // this is multiband data
     }
 
-    const void * ViffDecoder::currentScanlineOfBand( unsigned int band ) const
+    const void * ViffDecoder::currentScanlineOfBand( size_t band ) const
     {
-        const unsigned int index = pimpl->width
+        const size_t index = pimpl->width
             * ( pimpl->height * band + pimpl->current_scanline );
         if ( pimpl->pixelType == "UINT8" ) {
             typedef void_vector<UInt8> bands_type;
@@ -931,22 +930,22 @@ namespace vigra {
         return "VIFF";
     }
 
-    void ViffEncoder::setWidth( unsigned int width )
+    void ViffEncoder::setWidth( size_t width )
     {
         VIGRA_IMPEX_FINALIZED(pimpl->finalized);
-        pimpl->header.row_size = width;
+        pimpl->header.row_size = static_cast<ViffHeader::field_type>(width);
     }
 
-    void ViffEncoder::setHeight( unsigned int height )
+    void ViffEncoder::setHeight( size_t height )
     {
         VIGRA_IMPEX_FINALIZED(pimpl->finalized);
-        pimpl->header.col_size = height;
+        pimpl->header.col_size = static_cast<ViffHeader::field_type>(height);
     }
 
-    void ViffEncoder::setNumBands( unsigned int numBands )
+    void ViffEncoder::setNumBands( size_t numBands )
     {
         VIGRA_IMPEX_FINALIZED(pimpl->finalized);
-        pimpl->header.num_data_bands = numBands;
+        pimpl->header.num_data_bands = static_cast<ViffHeader::field_type>(numBands);
     }
 
     void ViffEncoder::setCompressionType( const std::string & comp,
@@ -971,7 +970,7 @@ namespace vigra {
             pimpl->header.data_storage_type = VFF_TYP_DOUBLE;
     }
 
-    unsigned int ViffEncoder::getOffset() const
+    size_t ViffEncoder::getOffset() const
     {
         return 1;
     }
@@ -980,7 +979,7 @@ namespace vigra {
     {
         pimpl->header.to_stream( pimpl->stream, pimpl->bo );
 
-        const unsigned int bands_size = pimpl->header.row_size
+        const size_t bands_size = pimpl->header.row_size
             * pimpl->header.col_size * pimpl->header.num_data_bands;
 
         if ( pimpl->header.data_storage_type == VFF_TYP_1_BYTE ) {
@@ -1009,9 +1008,9 @@ namespace vigra {
         pimpl->finalized = true;
     }
 
-    void * ViffEncoder::currentScanlineOfBand( unsigned int band )
+    void * ViffEncoder::currentScanlineOfBand( size_t band )
     {
-        const unsigned int index = pimpl->header.row_size
+        const size_t index = pimpl->header.row_size
             * ( pimpl->header.col_size * band + pimpl->current_scanline );
         if ( pimpl->pixelType == "UINT8" ) {
             typedef void_vector<UInt8> bands_type;
@@ -1047,7 +1046,7 @@ namespace vigra {
     void ViffEncoder::close()
     {
         // write bands to disk
-        const unsigned int bands_size = pimpl->header.row_size
+        const size_t bands_size = pimpl->header.row_size
             * pimpl->header.col_size * pimpl->header.num_data_bands;
 
         if ( pimpl->header.data_storage_type == VFF_TYP_1_BYTE ) {
