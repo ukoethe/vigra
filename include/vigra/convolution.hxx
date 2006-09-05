@@ -768,6 +768,83 @@ gaussianGradient(triple<SrcIterator, SrcIterator, SrcAccessor> src,
                      dest.first, dest.second, scale);
 }
 
+/** \brief Calculate the gradient magnitude by means of a 1st derivatives of
+    Gaussian filter.
+
+    This function calls gaussianGradient() and returns the pixel-wise magnitude of
+    the resulting gradient vectors. If the original image has multiple bands,
+    the squared gradient magnitude is computed for each band separately, and the
+    return value is the square root of the sum of these sqaured magnitudes.
+
+    <b> Declarations:</b>
+
+    pass arguments explicitly:
+    \code
+    namespace vigra {
+        template <class SrcIterator, class SrcAccessor,
+                  class DestIterator, class DestAccessor>
+        void gaussianGradientMagnitude(SrcIterator sul,
+                                       SrcIterator slr, SrcAccessor src,
+                                       DestIterator dupperleft, DestAccessor dest,
+                                       double scale);
+    }
+    \endcode
+
+
+    use argument objects in conjunction with \ref ArgumentObjectFactories:
+    \code
+    namespace vigra {
+        template <class SrcIterator, class SrcAccessor,
+                  class DestIterator, class DestAccessor>
+        void
+        gaussianGradientMagnitude(triple<SrcIterator, SrcIterator, SrcAccessor> src,
+                                  pair<DestIterator, DestAccessor> dest,
+                                  double scale);
+    }
+    \endcode
+
+    <b> Usage:</b>
+
+    <b>\#include</b> "<a href="convolution_8hxx-source.html">vigra/convolution.hxx</a>"
+
+
+    \code
+    vigra::FImage src(w,h), grad(w,h);
+    ...
+
+    // calculate gradient magnitude at scale = 3.0
+    vigra::gaussianGradientMagnitude(srcImageRange(src), destImage(grad), 3.0);
+
+    \endcode
+
+*/
+template <class SrcIterator, class SrcAccessor,
+          class DestIterator, class DestAccessor>
+void gaussianGradientMagnitude(SrcIterator sul,
+                               SrcIterator slr, SrcAccessor src,
+                               DestIterator dupperleft, DestAccessor dest,
+                               double scale)
+{
+    typedef typename NumericTraits<typename SrcAccessor::value_type>::RealPromote TmpType;
+    BasicImage<TmpType> gradx(slr-sul), grady(slr-sul);
+
+    gaussianGradient(srcIterRange(sul, slr, src),
+                     destImage(gradx), destImage(grady), scale);
+    combineTwoImages(srcImageRange(gradx), srcImage(grady), destIter(dupperleft, dest),
+                     MagnitudeFunctor<TmpType>());
+}
+
+template <class SrcIterator, class SrcAccessor,
+          class DestIterator, class DestAccessor>
+inline void
+gaussianGradientMagnitude(triple<SrcIterator, SrcIterator, SrcAccessor> src,
+                          pair<DestIterator, DestAccessor> dest,
+                          double scale)
+{
+    gaussianGradientMagnitude(src.first, src.second, src.third,
+                              dest.first, dest.second, scale);
+}
+
 /********************************************************/
 /*                                                      */
 /*                 laplacianOfGaussian                  */
