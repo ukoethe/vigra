@@ -1515,7 +1515,7 @@ struct NoiseNormalizationTest
 struct SlantedEdgeMTFTest
 {
     typedef vigra::DImage Image;
-    typedef vigra::ArrayVector<std::pair<double, double> > Result;
+    typedef vigra::ArrayVector<vigra::TinyVector<double, 2> > Result;
     typedef Result::value_type Pair;
     
     Image image;
@@ -1556,8 +1556,8 @@ struct SlantedEdgeMTFTest
         
         for(unsigned int k = 0; k < res.size(); ++k)
         {
-            shouldEqualTolerance(res[k].first, reference[k].first, 1e-5);
-            shouldEqualTolerance(res[k].second, reference[k].second, 1e-5);
+            shouldEqualTolerance(res[k][0], reference[k][0], 1e-5);
+            shouldEqualTolerance(res[k][1], reference[k][1], 1e-5);
         }
         
         shouldEqualTolerance(mtfFitGaussian(res), 0.5, 1e-2);
