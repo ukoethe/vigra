@@ -1132,6 +1132,159 @@ inline void moveDCToUpperLeft(
                                           dest.first, dest.second);
 }
 
+namespace detail {
+
+template <class T>
+void 
+fourierTransformImpl(FFTWComplexImage::const_traverser sul,
+                     FFTWComplexImage::const_traverser slr, FFTWComplexImage::ConstAccessor src,
+                     FFTWComplexImage::traverser dul, FFTWComplexImage::Accessor dest, T sign)
+{
+    int w = slr.x - sul.x;
+    int h = slr.y - sul.y;
+
+    FFTWComplexImage sworkImage, dworkImage;
+    
+    fftw_complex * srcPtr = (fftw_complex *)(&*sul);
+    fftw_complex * destPtr = (fftw_complex *)(&*dul);
+    
+    // test for right memory layout (fftw expects a 2*width*height floats array)
+    if (&(*(sul + Diff2D(w, 0))) != &(*(sul + Diff2D(0, 1))))
+    {
+        sworkImage.resize(w, h);
+        copyImage(srcIterRange(sul, slr, src), destImage(sworkImage));
+        srcPtr = (fftw_complex *)(&(*sworkImage.upperLeft()));
+    }
+    if (&(*(dul + Diff2D(w, 0))) != &(*(dul + Diff2D(0, 1))))
+    {
+        dworkImage.resize(w, h);
+        destPtr = (fftw_complex *)(&(*dworkImage.upperLeft()));
+    }
+
+    fftw_plan plan = fftw_plan_dft_2d(h, w, srcPtr, destPtr, sign, FFTW_ESTIMATE );
+    fftw_execute(plan);
+    fftw_destroy_plan(plan);
+    
+    if (&(*(dul + Diff2D(w, 0))) != &(*(dul + Diff2D(0, 1))))
+    {
+        copyImage(srcImageRange(dworkImage), destIter(dul, dest));
+    }
+}
+
+} // namespace detail
+
+/********************************************************/
+/*                                                      */
+/*                    fourierTrasform                   */
+/*                                                      */
+/********************************************************/
+
+/** \brief Compute forward and inverse Fourier transforms.
+
+    In the forward direction, the input image may be scalar or complex, and the output image
+    is always complex. In the inverse direction, both input and output must be complex.    
+    
+    <b> Declarations:</b>
+
+    pass arguments explicitly:
+    \code
+    namespace vigra {
+        template <class SrcImageIterator, class SrcAccessor>
+        void fourierTransform(SrcImageIterator srcUpperLeft,
+                              SrcImageIterator srcLowerRight, SrcAccessor src,
+                              FFTWComplexImage::traverser destUpperLeft, FFTWComplexImage::Accessor dest);
+
+        void 
+        fourierTransformInverse(FFTWComplexImage::const_traverser sul,
+                                FFTWComplexImage::const_traverser slr, FFTWComplexImage::ConstAccessor src,
+                                FFTWComplexImage::traverser dul, FFTWComplexImage::Accessor dest)
+    }
+    \endcode
+
+    use argument objects in conjunction with \ref ArgumentObjectFactories:
+    \code
+    namespace vigra {
+        template <class SrcImageIterator, class SrcAccessor>
+        void fourierTransform(triple<SrcImageIterator, SrcImageIterator, SrcAccessor> src,
+                              pair<FFTWComplexImage::traverser, FFTWComplexImage::Accessor> dest);
+
+        void 
+        fourierTransformInverse(triple<FFTWComplexImage::const_traverser, 
+                                       FFTWComplexImage::const_traverser, FFTWComplexImage::ConstAccessor> src,
+                                pair<FFTWComplexImage::traverser, FFTWComplexImage::Accessor> dest);
+    }
+    \endcode
+
+    <b> Usage:</b>
+
+    <b>\#include</b> "<a href="fftw3_8hxx-source.html">vigra/fftw3.hxx</a>"<br>
+    Namespace: vigra
+
+    \code
+    // compute complex Fourier transform of a real image
+    vigra::DImage src(w, h);
+    vigra::FFTWComplexImage fourier(w, h);
+    
+    fourierTransform(srcImageRange(src), destImage(fourier));
+
+    // compute inverse Fourier transform
+    // note that both source and destination image must be of type vigra::FFTWComplexImage
+    vigra::FFTWComplexImage inverseFourier(w, h);
+
+    fourierTransform(srcImageRange(fourier), destImage(inverseFourier));
+    \endcode
+*/
+inline void 
+fourierTransform(FFTWComplexImage::const_traverser sul,
+                 FFTWComplexImage::const_traverser slr, FFTWComplexImage::ConstAccessor src,
+                 FFTWComplexImage::traverser dul, FFTWComplexImage::Accessor dest)
+{
+    detail::fourierTransformImpl(sul, slr, src, dul, dest, FFTW_FORWARD);
+}
+
+template <class SrcImageIterator, class SrcAccessor>
+void fourierTransform(SrcImageIterator srcUpperLeft,
+                      SrcImageIterator srcLowerRight, SrcAccessor sa,
+                      FFTWComplexImage::traverser destUpperLeft, FFTWComplexImage::Accessor da)
+{
+    // copy real input images into a complex one...
+    int w= srcLowerRight.x - srcUpperLeft.x;
+    int h= srcLowerRight.y - srcUpperLeft.y;
+
+    FFTWComplexImage workImage(w, h);
+    copyImage(srcIterRange(srcUpperLeft, srcLowerRight, sa),
+              destImage(workImage, FFTWWriteRealAccessor()));
+
+    // ...and call the complex -> complex version of the algorithm
+    FFTWComplexImage const & cworkImage = workImage;
+    fourierTransform(cworkImage.upperLeft(), cworkImage.lowerRight(), cworkImage.accessor(),
+                     destUpperLeft, da);
+}
+
+template <class SrcImageIterator, class SrcAccessor>
+inline
+void fourierTransform(triple<SrcImageIterator, SrcImageIterator, SrcAccessor> src,
+                      pair<FFTWComplexImage::traverser, FFTWComplexImage::Accessor> dest)
+{
+    fourierTransform(src.first, src.second, src.third, dest.first, dest.second);
+}
+
+inline void 
+fourierTransformInverse(FFTWComplexImage::const_traverser sul,
+                        FFTWComplexImage::const_traverser slr, FFTWComplexImage::ConstAccessor src,
+                        FFTWComplexImage::traverser dul, FFTWComplexImage::Accessor dest)
+{
+    detail::fourierTransformImpl(sul, slr, src, dul, dest, FFTW_BACKWARD);
+}
+
+inline void 
+fourierTransformInverse(triple<FFTWComplexImage::const_traverser, 
+                               FFTWComplexImage::const_traverser, FFTWComplexImage::ConstAccessor> src,
+                        pair<FFTWComplexImage::traverser, FFTWComplexImage::Accessor> dest)
+{
+    fourierTransformInverse(src.first, src.second, src.third, dest.first, dest.second);
+}
+
 /********************************************************/
 /*                                                      */
 /*                   applyFourierFilter                 */
@@ -1142,20 +1295,16 @@ inline void moveDCToUpperLeft(
 
     After transferring the image into the frequency domain, it is
     multiplied pixel-wise with the filter and transformed back. The
-    result is always put into the given FFTWComplexImage
-    <TT>destImg</TT> which must have the right size. Finally, the
-    result will be normalized to compensate for the two FFTs.
-
-    The input and filter images can be scalar images (more precisely,
-    <TT>SrcAccessor::value_type</TT> must be scalar) or
-    FFTWComplexImages (in this case, one conversion is saved).
+    result is put into the given destination image which must have the right size. 
+    The result will be normalized to compensate for the two FFTs. 
+    
+    If the destination image is scalar, only the real part of the result image is 
+    retained. In this case, you are responsible for choosing a filter image
+    which ensures a zero imaginary part of the result (e.g. use a real, even symmetric 
+    filter image, or a purely imaginary, odd symmetric on).
 
     The DC entry of the filter must be in the upper left, which is the
     position where FFTW expects it (see \ref moveDCToUpperLeft()).
-
-    You can optionally pass two fftwnd_plans as last parameters, the
-    forward plan and the in-place backward plan. Both must have been
-    created for the right image size (see sample code).
 
     <b> Declarations:</b>
 
@@ -1163,19 +1312,12 @@ inline void moveDCToUpperLeft(
     \code
     namespace vigra {
         template <class SrcImageIterator, class SrcAccessor,
-            class FilterImageIterator, class FilterAccessor>
+                  class FilterImageIterator, class FilterAccessor,
+                  class DestImageIterator, class DestAccessor>
         void applyFourierFilter(SrcImageIterator srcUpperLeft,
                                 SrcImageIterator srcLowerRight, SrcAccessor sa,
                                 FilterImageIterator filterUpperLeft, FilterAccessor fa,
-                                FFTWComplexImage & destImg)
-
-        template <class SrcImageIterator, class SrcAccessor,
-            class FilterImageIterator, class FilterAccessor>
-        void applyFourierFilter(SrcImageIterator srcUpperLeft,
-                                SrcImageIterator srcLowerRight, SrcAccessor sa,
-                                FilterImageIterator filterUpperLeft, FilterAccessor fa,
-                                FFTWComplexImage & destImg,
-                                const fftwnd_plan & forwardPlan, const fftwnd_plan & backwardPlan)
+                                DestImageIterator destUpperLeft, DestAccessor da);
     }
     \endcode
 
@@ -1183,19 +1325,11 @@ inline void moveDCToUpperLeft(
     \code
     namespace vigra {
         template <class SrcImageIterator, class SrcAccessor,
-            class FilterImageIterator, class FilterAccessor>
-        inline
+                class FilterImageIterator, class FilterAccessor,
+                class DestImageIterator, class DestAccessor>
         void applyFourierFilter(triple<SrcImageIterator, SrcImageIterator, SrcAccessor> src,
                                 pair<FilterImageIterator, FilterAccessor> filter,
-                                FFTWComplexImage &destImg)
-
-        template <class SrcImageIterator, class SrcAccessor,
-            class FilterImageIterator, class FilterAccessor>
-        inline
-        void applyFourierFilter(triple<SrcImageIterator, SrcImageIterator, SrcAccessor> src,
-                                pair<FilterImageIterator, FilterAccessor> filter,
-                                FFTWComplexImage &destImg,
-                                const fftwnd_plan &forwardPlan, const fftwnd_plan &backwardPlan)
+                                pair<DestImageIterator, DestAccessor> dest);
     }
     \endcode
 
@@ -1229,19 +1363,6 @@ inline void moveDCToUpperLeft(
     efficient to use the FFTW functions directly with FFTW plans optimized
     for good performance.
 */
-template <class SrcImageIterator, class SrcAccessor,
-          class FilterImageIterator, class FilterAccessor,
-          class DestImageIterator, class DestAccessor>
-inline
-void applyFourierFilter(triple<SrcImageIterator, SrcImageIterator, SrcAccessor> src,
-                        pair<FilterImageIterator, FilterAccessor> filter,
-                        pair<DestImageIterator, DestAccessor> dest)
-{
-    applyFourierFilter(src.first, src.second, src.third,
-                       filter.first, filter.second,
-                       dest.first, dest.second);
-}
-
 template <class SrcImageIterator, class SrcAccessor,
           class FilterImageIterator, class FilterAccessor,
           class DestImageIterator, class DestAccessor>
@@ -1294,6 +1415,19 @@ void applyFourierFilter(
                                filterUpperLeft, fa,
                                destUpperLeft, da);
     }
+}
+
+template <class SrcImageIterator, class SrcAccessor,
+          class FilterImageIterator, class FilterAccessor,
+          class DestImageIterator, class DestAccessor>
+inline
+void applyFourierFilter(triple<SrcImageIterator, SrcImageIterator, SrcAccessor> src,
+                        pair<FilterImageIterator, FilterAccessor> filter,
+                        pair<DestImageIterator, DestAccessor> dest)
+{
+    applyFourierFilter(src.first, src.second, src.third,
+                       filter.first, filter.second,
+                       dest.first, dest.second);
 }
 
 template <class FilterImageIterator, class FilterAccessor,
