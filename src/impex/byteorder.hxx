@@ -77,10 +77,10 @@ namespace vigra
         template< class T >
         void reversebytes( T & x ) const
         {
-            const unsigned int n = sizeof(T);
+            const size_t n = sizeof(T);
             UInt8 t[n];
             UInt8 * c = reinterpret_cast< UInt8 * >(&x);
-            unsigned int i;
+            size_t i;
             for( i = 0; i < n; ++i )
                 t[i] = c[ n - 1 - i ];
             for( i = 0; i < n; ++i )
@@ -108,10 +108,10 @@ namespace vigra
         }
 
         template< class T >
-        void convert_to_host( T * x, unsigned int num ) const
+        void convert_to_host( T * x, size_t num ) const
         {
             if (!native)
-                for( unsigned int i = 0; i < num; ++i )
+                for( size_t i = 0; i < num; ++i )
                     reversebytes(x[i]);
         }
 
@@ -123,10 +123,10 @@ namespace vigra
         }
 
         template< class T >
-        void convert_from_host( T * x, unsigned int num ) const
+        void convert_from_host( T * x, size_t num ) const
         {
             if (!native)
-                for( unsigned int i = 0; i < num; ++i )
+                for( size_t i = 0; i < num; ++i )
                     reversebytes(x[i]);
         }
 
@@ -134,17 +134,17 @@ namespace vigra
         void convert_to_host( Int8 & x ) const {}
         void convert_to_host( UInt8 & x ) const {}
 
-        void convert_to_host( char * x , unsigned int) const {}
-        void convert_to_host( Int8 * x, unsigned int) const {}
-        void convert_to_host( UInt8 * x, unsigned int) const {}
+        void convert_to_host( char * x , size_t) const {}
+        void convert_to_host( Int8 * x, size_t) const {}
+        void convert_to_host( UInt8 * x, size_t) const {}
 
         void convert_from_host( char & x ) const {}
         void convert_from_host( Int8 & x ) const {}
         void convert_from_host( UInt8 & x ) const {}
 
-        void convert_from_host( char * x , unsigned int) const {}
-        void convert_from_host( Int8 * x, unsigned int) const {}
-        void convert_from_host( UInt8 * x, unsigned int) const {}
+        void convert_from_host( char * x , size_t) const {}
+        void convert_from_host( Int8 * x, size_t) const {}
+        void convert_from_host( UInt8 * x, size_t) const {}
     };
 
     template< class T >
@@ -156,9 +156,9 @@ namespace vigra
 
     template< class T >
     void read_array( std::ifstream & stream, const byteorder & bo, T * x,
-                     unsigned int num )
+                     size_t num )
     {
-        stream.read( reinterpret_cast< char * >(x), sizeof(T) * num );
+        stream.read( reinterpret_cast< char * >(x), static_cast<std::streamsize>(sizeof(T) * num) );
         bo.convert_to_host( x, num );
     }
 
@@ -171,9 +171,9 @@ namespace vigra
 
     template< class T >
     void write_array( std::ofstream & stream, const byteorder & bo,
-                      const T * x, unsigned int num )
+                      const T * x, size_t num )
     {
-        for( unsigned int i = 0; i < num; ++i )
+        for( size_t i = 0; i < num; ++i )
             write_field( stream, bo, x[i] );
     }
 
