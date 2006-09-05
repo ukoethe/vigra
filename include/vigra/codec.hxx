@@ -47,6 +47,7 @@
 #include <string>
 #include <vector>
 #include "vigra/config.hxx"
+#include "vigra/sized_int.hxx"
 
 // possible pixel types:
 // "undefined", "UINT8", "UINT16", "INT16", "UINT32", "INT32", "FLOAT", "DOUBLE"
@@ -70,39 +71,39 @@ namespace vigra
     };
     
     template <>
-    struct TypeAsString<unsigned char>
+    struct TypeAsString<Int8>
+    {
+        static std::string result() { return "INT8"; }
+    };
+    
+    template <>
+    struct TypeAsString<UInt8>
     {
         static std::string result() { return "UINT8"; }
     };
     
     template <>
-    struct TypeAsString<short>
+    struct TypeAsString<Int16>
     {
         static std::string result() { return "INT16"; }
     };
     
     template <>
-    struct TypeAsString<unsigned short>
+    struct TypeAsString<UInt16>
     {
         static std::string result() { return "UINT16"; }
     };
     
     template <>
-    struct TypeAsString<int>
+    struct TypeAsString<Int32>
     {
         static std::string result() { return "INT32"; }
     };
     
     template <>
-    struct TypeAsString<unsigned int>
+    struct TypeAsString<UInt32>
     {
         static std::string result() { return "UINT32"; }
-    };
-    
-    template <>
-    struct TypeAsString<long>
-    {
-        static std::string result() { return "INT32"; }
     };
     
     template <>
