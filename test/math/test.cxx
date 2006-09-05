@@ -324,6 +324,27 @@ struct FunctionsTest
         }
     }
 
+    void testSpecialFunctions()
+    {
+        shouldEqualTolerance(vigra::ellipticIntegralE(M_PI / 2.0, 0.0), M_PI / 2.0, 1e-14);
+        shouldEqualTolerance(vigra::ellipticIntegralF(0.3, 0.3), 0.30039919311549118, 1e-14);
+        shouldEqualTolerance(vigra::ellipticIntegralE(0.3, 0.3), 0.29960175507025716, 1e-14);
+
+        shouldEqualTolerance(vigra::erf(0.3), 0.32862675945912745, 1e-7);
+        
+        should(vigra::noncentralChi2CDFApprox(200, 0.0, 200.0) > 0.5);
+        should(vigra::noncentralChi2CDFApprox(200, 0.0, 199.0) < 0.5);
+        should(vigra::noncentralChi2CDF(200, 0.0, 200.0) > 0.5);
+        should(vigra::noncentralChi2CDF(200, 0.0, 199.0) < 0.5);
+        
+        shouldEqualTolerance(vigra::noncentralChi2CDF(2, 2.0, 2.0), 0.34574583872316456, 1e-7);
+        shouldEqualTolerance(vigra::noncentralChi2(2, 2.0, 2.0), 0.154254161276835, 1e-7);
+        shouldEqualTolerance(vigra::noncentralChi2CDF(3, 2.0, 2.0), 0.22073308707450343, 1e-7);
+        shouldEqualTolerance(vigra::noncentralChi2(3, 2.0, 2.0), 0.13846402271767755, 1e-7);
+        shouldEqualTolerance(vigra::noncentralChi2CDFApprox(2, 2.0, 2.0), 0.34574583872316456, 1e-1);
+        shouldEqualTolerance(vigra::noncentralChi2CDFApprox(3, 2.0, 2.0), 0.22073308707450343, 1e-1);
+    }
+
     void closeAtToleranceTest()
     {
         double a = 0.0, b = vigra::NumericTraits<double>::epsilon(), c = 1000.0, d = 1000.1;
@@ -1166,6 +1187,7 @@ struct MathTestSuite
 
         add( testCase(&FunctionsTest::testGaussians));
         add( testCase(&FunctionsTest::intSquareRootTest));
+        add( testCase(&FunctionsTest::testSpecialFunctions));
         add( testCase(&FunctionsTest::closeAtToleranceTest));
 
         add( testCase(&RationalTest::testGcdLcm));
