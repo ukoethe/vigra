@@ -101,6 +101,7 @@ vigra::DImage getUnsymmetricImage(){
 struct ConvolutionTest
 {
     typedef vigra::DImage Image;
+    typedef vigra::DRGBImage RGBImage;
 
     ConvolutionTest()
     : constimg(5,5), 
@@ -728,7 +729,7 @@ struct ConvolutionTest
         
         for(; i1 != i1end; ++i1, ++i2, ++i)
         {
-            double grad = sqrt(acc(i1)*acc(i1)+acc(i2)*acc(i2));
+            double grad = VIGRA_CSTD::sqrt(acc(i1)*acc(i1)+acc(i2)*acc(i2));
 
             shouldEqualTolerance(grad, acc(i), 1e-7);
         }
@@ -742,19 +743,55 @@ struct ConvolutionTest
         
         Image tmpx(lenna.size());
         Image tmpy(lenna.size());
+        Image mag(lenna.size());
 
         gaussianGradient(srcImageRange(lenna), destImage(tmpx), destImage(tmpy), 1.0);
+        gaussianGradientMagnitude(srcImageRange(lenna), destImage(mag), 1.0);
 
         Image::ScanOrderIterator i1 = tmpx.begin();
         Image::ScanOrderIterator i1end = tmpx.end();
         Image::ScanOrderIterator i2 = tmpy.begin();
+        Image::ScanOrderIterator ig = mag.begin();
         Image::ScanOrderIterator i = sepgrad.begin();
         Image::Accessor acc = constimg.accessor();
         
-        for(; i1 != i1end; ++i1, ++i2, ++i)
+        for(; i1 != i1end; ++i1, ++i2, ++ig, ++i)
         {
-            double grad = sqrt(acc(i1)*acc(i1)+acc(i2)*acc(i2));
+            double grad = VIGRA_CSTD::sqrt(acc(i1)*acc(i1)+acc(i2)*acc(i2));
             shouldEqualTolerance(grad, acc(i), 1e-7);
+            shouldEqualTolerance(acc(ig), acc(i), 1e-7);
+        }
+    }
+    
+    void gradientRGBTest()
+    {
+        RGBImage input(lenna.size());
+        importImage(vigra::ImageImportInfo("lenna128rgb.xv"), destImage(input));
+        
+        Image sepgrad(lenna.size());
+        importImage(vigra::ImageImportInfo("lenna128rgbsepgrad.xv"), destImage(sepgrad));
+        
+        
+        RGBImage tmpx(lenna.size());
+        RGBImage tmpy(lenna.size());
+        Image mag(lenna.size());
+
+        gaussianGradient(srcImageRange(input), destImage(tmpx), destImage(tmpy), 1.0);
+        gaussianGradientMagnitude(srcImageRange(input), destImage(mag), 1.0);
+        
+        RGBImage::ScanOrderIterator i1 = tmpx.begin();
+        RGBImage::ScanOrderIterator i1end = tmpx.end();
+        RGBImage::ScanOrderIterator i2 = tmpy.begin();
+        Image::ScanOrderIterator ig = mag.begin();
+        Image::ScanOrderIterator i = sepgrad.begin();
+        RGBImage::Accessor rgb = tmpx.accessor();
+        Image::Accessor acc = constimg.accessor();
+        
+        for(; i1 != i1end; ++i1, ++i2, ++ig, ++i)
+        {
+            double grad = VIGRA_CSTD::sqrt(squaredNorm(rgb(i1))+squaredNorm(rgb(i2)));
+            shouldEqualTolerance(grad, acc(i), 1e-6);
+            shouldEqualTolerance(acc(ig), acc(i), 1e-6);
         }
     }
     
@@ -1700,6 +1737,7 @@ struct ConvolutionTestSuite
         add( testCase( &ConvolutionTest::gaussianSmoothingTest));
         add( testCase( &ConvolutionTest::separableGradientTest));
         add( testCase( &ConvolutionTest::gradientTest));
+        add( testCase( &ConvolutionTest::gradientRGBTest));
         add( testCase( &ConvolutionTest::hessianTest));
         add( testCase( &ConvolutionTest::structureTensorTest));
         add( testCase( &ConvolutionTest::stdConvolutionTest));
