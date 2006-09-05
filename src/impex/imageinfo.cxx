@@ -79,7 +79,7 @@ struct NumberCompare
 
 // find filenames matching the pattern "<path>/base[0-9]+ext"
 #ifdef _WIN32
-void findImageSequence(const std::string &name_base,
+VIGRA_EXPORT void findImageSequence(const std::string &name_base,
                        const std::string &name_ext,
                        std::vector<std::string> & numbers)
 {
@@ -92,10 +92,9 @@ void findImageSequence(const std::string &name_base,
     std::string base, path;
 
 	// on Windows, both '/' and '\' are valid path separators
-	// note: std::basic_string.rfind() may return unsigned int, so exlicitely use std::max<int>()
-	int split = std::max<int>(static_cast<int>(name_base.rfind('/')),
-                              static_cast<int>(name_base.rfind('\\')));
-	if(split == -1)
+	// note: std::basic_string.rfind() may return 'unsigned int', so explicitely cast to 'int'
+	int split = std::max(static_cast<int>(name_base.rfind('/')), static_cast<int>(name_base.rfind('\\')));
+	if(split == static_cast<int>(std::string::npos))
     {
         path = ".";
         base = name_base;
