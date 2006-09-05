@@ -175,7 +175,7 @@ struct FFTWComplexTest
         should(get(i, Diff2D(1,1)) == clx1);
     }
 
-    void testForewardBackwardTrans()
+    void testForwardBackwardTrans()
     {
         const int w=256, h=256;
 
@@ -187,16 +187,9 @@ struct FFTWComplexTest
             }
 
         vigra::FFTWComplexImage out(w, h);
-
-        fftw_plan  forwardPlan=
-            fftw_plan_dft_2d(h, w, (fftw_complex *)in.begin(), (fftw_complex *)out.begin(), 
-                             FFTW_FORWARD, FFTW_ESTIMATE );
-        fftw_plan  backwardPlan=
-            fftw_plan_dft_2d(h, w, (fftw_complex *)out.begin(), (fftw_complex *)out.begin(), 
-                             FFTW_BACKWARD, FFTW_ESTIMATE);
-
-        fftw_execute(forwardPlan);
-        fftw_execute(backwardPlan);
+        
+        fourierTransform(srcImageRange(in), destImage(out));
+        fourierTransformInverse(srcImageRange(out), destImage(out));
 
         vigra::FindAverage<FFTWComplex::value_type> average;
         inspectImage(srcImageRange(out, vigra::FFTWImaginaryAccessor()), average);
@@ -217,8 +210,8 @@ struct FFTWComplexTest
                 in(x,y)[1]= rand()/(double)RAND_MAX;
             }
 
-        fftw_execute(forwardPlan);
-        fftw_execute(backwardPlan);
+        fourierTransform(srcImageRange(in), destImage(out));
+        fourierTransformInverse(srcImageRange(out), destImage(out));
 
         combineTwoImages(srcImageRange(in), srcImage(out), destImage(out),
                          Compare1((double)w*h));
@@ -227,9 +220,6 @@ struct FFTWComplexTest
         inspectImage(srcImageRange(out), caverage);
 
         shouldEqualTolerance(caverage().magnitude(), 0.0, 1e-14);
-
-        fftw_destroy_plan(forwardPlan);
-        fftw_destroy_plan(backwardPlan);
     }
 
     void testRearrangeQuadrants()
@@ -288,7 +278,7 @@ struct FFTWTestSuite
         add( testCase(&FFTWComplexTest::testComparison));
         add( testCase(&FFTWComplexTest::testArithmetic));
         add( testCase(&FFTWComplexTest::testAccessor));
-        add( testCase(&FFTWComplexTest::testForewardBackwardTrans));
+        add( testCase(&FFTWComplexTest::testForwardBackwardTrans));
         add( testCase(&FFTWComplexTest::testRearrangeQuadrants));
 
     }
