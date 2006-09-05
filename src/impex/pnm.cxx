@@ -35,6 +35,7 @@
 /************************************************************************/
 
 #include <cmath>
+#include <cctype>
 #include <iostream>
 #include <fstream>
 #include "vigra/config.hxx"
