@@ -35,6 +35,7 @@
 /************************************************************************/
 
 #include <iostream>
+#include <fstream>
 #include <functional>
 #include <cmath>
 #include "unittest.hxx"
@@ -47,6 +48,8 @@
 #include "vigra/cornerdetection.hxx"
 #include "vigra/symmetry.hxx"
 #include "vigra/watersheds.hxx"
+#include "vigra/noise_normalization.hxx"
+#include "vigra/slanted_edge_mtf.hxx"
 #include "vigra/impex.hxx"
 
 using namespace vigra;
@@ -1379,6 +1382,188 @@ struct InterestOperatorTest
     Image img;
 };
 
+struct NoiseNormalizationTest
+{
+    typedef vigra::BImage U8Image;
+    typedef vigra::DImage GrayImage;
+    typedef vigra::DRGBImage RGBImage;
+    U8Image u8image;
+    GrayImage image;
+    RGBImage rgb;
+
+    NoiseNormalizationTest()
+    {
+        vigra::ImageImportInfo info("noiseNormalizationTest.xv");
+        vigra_precondition(info.width() == 400 && info.height() == 20,
+           "NoiseNormalizationTest: input image has wrong size.");
+           
+        u8image.resize(info.size());
+        importImage(info, destImage(u8image));
+        image.resize(info.size());
+        importImage(info, destImage(image));
+        rgb.resize(info.size());
+        for(unsigned int band = 0; band < 3; ++band)
+        {
+            vigra::VectorElementAccessor<RGBImage::Accessor> dband(band, rgb.accessor());
+            importImage(info, destImage(rgb, dband));
+        }
+    }
+    
+    template <class Iterator, class Accessor>
+    void checkVariance(Iterator ul, Accessor const & a, double tolerance)
+    {
+        for(unsigned int k = 0; k < 20; ++k)
+        {
+            double sum = 0.0, sum2 = 0.0;
+            for(unsigned int y = 0; y < 20; ++y)
+            {
+                for(unsigned int x = 20*k; x < 20*(k+1); ++x)
+                {
+                    sum += a(ul, Diff2D(x, y));
+                    sum2 += sq(a(ul, Diff2D(x, y)));
+                }
+            }
+            
+            sum /= 400.0;
+            sum2 /= 400.0;
+            
+            shouldEqualTolerance(VIGRA_CSTD::sqrt(sum2 - sq(sum))-1.0, 0.0, tolerance);
+       }
+    }
+    
+    void testParametricNoiseNormalizationU8()
+    {
+        GrayImage res(image.size());
+        linearNoiseNormalization(srcImageRange(u8image), destImage(res), 1.0, 0.02);
+        checkVariance(res.upperLeft(), res.accessor(), 0.1);
+        linearNoiseNormalization(srcImageRange(u8image), destImage(res));
+        checkVariance(res.upperLeft(), res.accessor(), 0.1);
+        quadraticNoiseNormalization(srcImageRange(u8image), destImage(res), 1.0, 0.02, 0.0);
+        checkVariance(res.upperLeft(), res.accessor(), 0.1);
+        quadraticNoiseNormalization(srcImageRange(u8image), destImage(res));
+        checkVariance(res.upperLeft(), res.accessor(), 0.1);
+    }
+  
+    void testParametricNoiseNormalization()
+    {
+        GrayImage res(image.size());
+        linearNoiseNormalization(srcImageRange(image), destImage(res), 1.0, 0.02);
+        checkVariance(res.upperLeft(), res.accessor(), 0.1);
+        linearNoiseNormalization(srcImageRange(image), destImage(res));
+        checkVariance(res.upperLeft(), res.accessor(), 0.1);
+        quadraticNoiseNormalization(srcImageRange(image), destImage(res), 1.0, 0.02, 0.0);
+        checkVariance(res.upperLeft(), res.accessor(), 0.1);
+        quadraticNoiseNormalization(srcImageRange(image), destImage(res));
+        checkVariance(res.upperLeft(), res.accessor(), 0.1);
+   }
+  
+    void testParametricNoiseNormalizationRGB()
+    {
+        RGBImage res(rgb.size());
+        linearNoiseNormalization(srcImageRange(rgb), destImage(res), 1.0, 0.02);
+        for(unsigned int band = 0; band < 3; ++band)
+        {
+            vigra::VectorElementAccessor<RGBImage::Accessor> dband(band, res.accessor());
+            checkVariance(res.upperLeft(), dband, 0.1);
+        }
+        linearNoiseNormalization(srcImageRange(rgb), destImage(res));
+        for(unsigned int band = 0; band < 3; ++band)
+        {
+            vigra::VectorElementAccessor<RGBImage::Accessor> dband(band, res.accessor());
+            checkVariance(res.upperLeft(), dband, 0.1);
+        }
+        quadraticNoiseNormalization(srcImageRange(rgb), destImage(res), 1.0, 0.02, 0.0);
+        for(unsigned int band = 0; band < 3; ++band)
+        {
+            vigra::VectorElementAccessor<RGBImage::Accessor> dband(band, res.accessor());
+            checkVariance(res.upperLeft(), dband, 0.1);
+        }
+        quadraticNoiseNormalization(srcImageRange(rgb), destImage(res));
+        for(unsigned int band = 0; band < 3; ++band)
+        {
+            vigra::VectorElementAccessor<RGBImage::Accessor> dband(band, res.accessor());
+            checkVariance(res.upperLeft(), dband, 0.1);
+        }
+    }
+  
+    void testNonparametricNoiseNormalizationU8()
+    {
+        GrayImage res(image.size());        
+        nonparametricNoiseNormalization(srcImageRange(u8image), destImage(res));
+        checkVariance(res.upperLeft(), res.accessor(), 0.1);
+    }
+  
+    void testNonparametricNoiseNormalization()
+    {
+        GrayImage res(image.size());        
+        nonparametricNoiseNormalization(srcImageRange(image), destImage(res));
+        checkVariance(res.upperLeft(), res.accessor(), 0.1);
+   }
+  
+    void testNonparametricNoiseNormalizationRGB()
+    {
+        RGBImage res(rgb.size());        
+        nonparametricNoiseNormalization(srcImageRange(rgb), destImage(res));
+        for(unsigned int band = 0; band < 3; ++band)
+        {
+            vigra::VectorElementAccessor<RGBImage::Accessor> dband(band, res.accessor());
+            checkVariance(res.upperLeft(), dband, 0.1);
+        }
+    }
+};
+
+struct SlantedEdgeMTFTest
+{
+    typedef vigra::DImage Image;
+    typedef vigra::ArrayVector<std::pair<double, double> > Result;
+    typedef Result::value_type Pair;
+    
+    Image image;
+    Result reference;
+
+    SlantedEdgeMTFTest()
+    {
+        vigra::ImageImportInfo info("slantedEdgeMTF.xv");
+           
+        image.resize(info.size());
+        importImage(info, destImage(image));
+        
+        reference.push_back(Pair(0, 1));
+        reference.push_back(Pair(0.0564351, 0.961336));
+        reference.push_back(Pair(0.11287, 0.905812));
+        reference.push_back(Pair(0.169305, 0.831278));
+        reference.push_back(Pair(0.225741, 0.740566));
+        reference.push_back(Pair(0.282176, 0.641225));
+        reference.push_back(Pair(0.338611, 0.541988));
+        reference.push_back(Pair(0.395046, 0.448508));
+        reference.push_back(Pair(0.451481, 0.363593));
+        reference.push_back(Pair(0.507916, 0.287531));
+        reference.push_back(Pair(0.564351, 0.220531));
+        reference.push_back(Pair(0.620787, 0.163246));
+        reference.push_back(Pair(0.677222, 0.115963));
+        reference.push_back(Pair(0.733657, 0.0777855));
+        reference.push_back(Pair(0.790092, 0.0468734));
+        reference.push_back(Pair(0.846527, 0.0211264));
+        reference.push_back(Pair(0.902962, 0));
+    }
+    
+    void testSlantedEdgeMTF()
+    {
+        Result res;
+        slantedEdgeMTF(srcImageRange(image), res);
+        
+        shouldEqual(res.size(), reference.size());
+        
+        for(unsigned int k = 0; k < res.size(); ++k)
+        {
+            shouldEqualTolerance(res[k].first, reference[k].first, 1e-5);
+            shouldEqualTolerance(res[k].second, reference[k].second, 1e-5);
+        }
+        
+        shouldEqualTolerance(mtfFitGaussian(res), 0.5, 1e-2);
+    }
+};
+
 struct SimpleAnalysisTestSuite
 : public vigra::test_suite
 {
@@ -1424,6 +1609,13 @@ struct SimpleAnalysisTestSuite
         add( testCase( &InterestOperatorTest::rohrCornerTest));
         add( testCase( &InterestOperatorTest::beaudetCornerTest));
         add( testCase( &InterestOperatorTest::radialSymmetryTest));
+        add( testCase( &NoiseNormalizationTest::testParametricNoiseNormalization));
+        add( testCase( &NoiseNormalizationTest::testNonparametricNoiseNormalization));
+        add( testCase( &NoiseNormalizationTest::testParametricNoiseNormalizationU8));
+        add( testCase( &NoiseNormalizationTest::testNonparametricNoiseNormalizationU8));
+        add( testCase( &NoiseNormalizationTest::testParametricNoiseNormalizationRGB));
+        add( testCase( &NoiseNormalizationTest::testNonparametricNoiseNormalizationRGB));
+        add( testCase( &SlantedEdgeMTFTest::testSlantedEdgeMTF));
     }
 };
 
