@@ -47,7 +47,8 @@
 #include <memory>
 #include <string>
 #include "vigra/config.hxx"
-#include "vigra/utilities.hxx"
+#include "vigra/error.hxx"
+#include "vigra/diff2d.hxx"
 #include "vigra/codec.hxx"
 
 namespace vigra
