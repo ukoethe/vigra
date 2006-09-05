@@ -164,6 +164,8 @@ struct FunctorExpressionTest
         shouldEqual(exec(tan(Arg1()), 4.0) , VIGRA_CSTD::tan(4.0)); 
         shouldEqual(exec(atan(Arg1()), 0.5) , VIGRA_CSTD::atan(0.5)); 
         shouldEqual(exec(abs(Arg1()), -0.5) , 0.5); 
+//        shouldEqual(exec(norm(Arg1()), -0.5) , 0.5); 
+//        shouldEqual(exec(squaredNorm(Arg1()), -0.5) , 0.25); 
         shouldEqual(exec(floor(Arg1()), -0.5) , -1.0); 
         shouldEqual(exec(ceil(Arg1()), 0.5) , 1.0); 
         shouldEqual(exec(-Arg1(), -0.5) , 0.5); 
