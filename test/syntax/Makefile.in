@@ -18,18 +18,16 @@ EXTRA_CLEAN_TARGET = test.cxx
 
 CPPFLAGS := $(LIBCPPFLAGS) $(FFTW_INCLUDES)
 
-HEADERS=$(shell ls $(vigra_srcdir)/include/vigra/*.hxx)
-
-test.cxx: $(HEADERS)
+test.cxx: $(vigra_srcdir)/include/vigra
 	@echo creating test.cxx
 	@\rm -f test.cxx && touch test.cxx
-	@for i in $(HEADERS); do \
-            j=`expr $$i : ".*/\(.*\)"` ; \
-            if [ "$$j" != "fftw.hxx" -a "$$j" != "rfftw.hxx" ] ; then \
-                echo "#include <vigra/$$j>" >> test.cxx; \
+		@for headerpath in $(vigra_srcdir)/include/vigra/*.hxx; do \
+            header=`expr $$headerpath : ".*/\(.*\)"` ; \
+            if [ "$$header" != "fftw.hxx" -a "$$header" != "rfftw.hxx" ] ; then \
+                echo "#include <vigra/$$header>" >> test.cxx; \
             fi; \
         done
 	@echo "int main() {}" >> test.cxx
 
-            
-            
+
+
