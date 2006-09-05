@@ -60,7 +60,7 @@
 		</Configuration>
 		<Configuration
 			Name="Release|Win32"
-			OutputDirectory="$(SolutionDir)$(ConfigurationName)"
+			OutputDirectory="."
 			IntermediateDirectory="Release"
 			ConfigurationType="2"
 			CharacterSet="2">
