@@ -40,6 +40,8 @@
 #include <cmath>
 #include <cstdlib>
 #include "vigra/config.hxx"
+#include "vigra/error.hxx"
+#include "vigra/tuple.hxx"
 #include "vigra/sized_int.hxx"
 #include "vigra/numerictraits.hxx"
 
@@ -72,48 +74,11 @@
 
 namespace vigra {
 
-#ifndef __sun 
-
 /** \addtogroup MathFunctions Mathematical Functions
 
     Useful mathematical functions and functors.
 */
 //@{
-    /*! The error function.
-
-        If <tt>erf()</tt> is not provided in the C standard math library (as it should according to the
-        new C99 standard ?), VIGRA implements <tt>erf()</tt> as an approximation of the error 
-        function
-        
-        \f[
-            \mbox{erf}(x) = \int_0^x e^{-t^2} dt
-        \f]
-        
-        according to the formula given in Press et al. "Numerical Recipes".
-
-        <b>\#include</b> "<a href="mathutil_8hxx-source.html">vigra/mathutil.hxx</a>"<br>
-        Namespace: vigra
-    */
-template <class T>
-double erf(T x)
-{
-    double t = 1.0/(1.0+0.5*VIGRA_CSTD::fabs(x));
-    double ans = t*VIGRA_CSTD::exp(-x*x-1.26551223+t*(1.00002368+t*(0.37409196+
-                                    t*(0.09678418+t*(-0.18628806+t*(0.27886807+
-                                    t*(-1.13520398+t*(1.48851587+t*(-0.82215223+
-                                    t*0.17087277)))))))));
-    if (x >= 0.0)
-        return 1.0 - ans;
-    else
-        return ans - 1.0;
-}
-
-#else
-
-using VIGRA_CSTD::erf;
-
-#endif
-
 // import functions into namespace vigra which VIGRA is going to overload
 
 using VIGRA_CSTD::pow;  
@@ -314,7 +279,7 @@ inline UInt32 sqrti(UInt32 v)
     return detail::IntSquareRoot<UInt32>::exec(v);
 }
 
-#ifdef VIGRA_NO_HYPOT
+#ifndef VIGRA_HAS_HYPOT
     /*! Compute the Euclidean distance (length of the hypothenuse of a right-angled triangle).
 
         The  hypot()  function  returns  the  sqrt(a*a  +  b*b).
@@ -339,103 +304,6 @@ inline double hypot(double a, double b)
 using ::hypot;
 
 #endif
-
-namespace detail {
-
-template <class T>
-T ellipticRD(T x, T y, T z)
-{
-    double f = 1.0, s = 0.0, X, Y, Z, m;
-    while(true)
-    {
-        m = (x + y + 3.0*z) / 5.0;
-        X = 1.0 - x/m;
-        Y = 1.0 - y/m;
-        Z = 1.0 - z/m;
-        if(std::max(std::max(VIGRA_CSTD::fabs(X), VIGRA_CSTD::fabs(Y)), VIGRA_CSTD::fabs(Z)) < 0.01)
-            break;
-        double l = VIGRA_CSTD::sqrt(x*y) + VIGRA_CSTD::sqrt(x*z) + VIGRA_CSTD::sqrt(y*z);
-        s += f / (VIGRA_CSTD::sqrt(z)*(z + l));
-        f /= 4.0;
-        x = (x + l)/4.0;
-        y = (y + l)/4.0;
-        z = (z + l)/4.0;
-    }
-    double a = X*Y;
-    double b = sq(Z);
-    double c = a - b;
-    double d = a - 6.0*b;
-    double e = d + 2.0*c;
-    return 3.0*s + f*(1.0+d*(-3.0/14.0+d*9.0/88.0-Z*e*4.5/26.0)
-                      +Z*(e/6.0+Z*(-c*9.0/22.0+a*Z*3.0/26.0))) / VIGRA_CSTD::pow(m,1.5);
-}
-
-template <class T>
-T ellipticRF(T x, T y, T z)
-{
-    double X, Y, Z, m;
-    while(true)
-    {
-        m = (x + y + z) / 3.0;
-        X = 1.0 - x/m;
-        Y = 1.0 - y/m;
-        Z = 1.0 - z/m;
-        if(std::max(std::max(VIGRA_CSTD::fabs(X), VIGRA_CSTD::fabs(Y)), VIGRA_CSTD::fabs(Z)) < 0.01)
-            break;
-        double l = VIGRA_CSTD::sqrt(x*y) + VIGRA_CSTD::sqrt(x*z) + VIGRA_CSTD::sqrt(y*z);
-        x = (x + l)/4.0;
-        y = (y + l)/4.0;
-        z = (z + l)/4.0;
-    }
-    double d = X*Y - sq(Z);
-    double p = X*Y*Z;
-    return (1.0 - d/10.0 + p/14.0 + sq(d)/24.0 - d*p*3.0/44.0) / VIGRA_CSTD::sqrt(m);
-}
-
-} // namespace detail
-
-    /*! The incomplete elliptic integral of the first kind.
-
-        Computes
-        
-        \f[
-            \mbox{F}(x, k) = \int_0^x \frac{1}{\sqrt{1 - k^2 \sin(t)^2}} dt
-        \f]
-        
-        according to the algorithm given in Press et al. "Numerical Recipes". The
-        complete elliptic integral of the first kind is simply <tt>ellipticIntegralF(M_PI/2, k)</TT>.
-
-        <b>\#include</b> "<a href="mathutil_8hxx-source.html">vigra/mathutil.hxx</a>"<br>
-        Namespace: vigra
-    */
-inline double ellipticIntegralF(double x, double k)
-{
-    double c2 = sq(VIGRA_CSTD::cos(x));
-    double s = VIGRA_CSTD::sin(x);
-    return s*detail::ellipticRF(c2, 1.0 - sq(k*s), 1.0);
-}
-
-    /*! The incomplete elliptic integral of the second kind.
-
-        Computes
-        
-        \f[
-            \mbox{E}(x, k) = \int_0^x \sqrt{1 - k^2 \sin(t)^2} dt
-        \f]
-        
-        according to the algorithm given in Press et al. "Numerical Recipes". The
-        complete elliptic integral of the second kind is simply <tt>ellipticIntegralE(M_PI/2, k)</TT>.
-
-        <b>\#include</b> "<a href="mathutil_8hxx-source.html">vigra/mathutil.hxx</a>"<br>
-        Namespace: vigra
-    */
-inline double ellipticIntegralE(double x, double k)
-{
-    double c2 = sq(VIGRA_CSTD::cos(x));
-    double s = VIGRA_CSTD::sin(x);
-    k = sq(k*s);
-    return s*(detail::ellipticRF(c2, 1.0-k, 1.0) - k/3.0*detail::ellipticRD(c2, 1.0-k, 1.0));
-}
 
     /*! The sign function.
 
@@ -522,6 +390,339 @@ norm(T const & t)
     typedef typename NormTraits<T>::SquaredNormType SNT;
     return sqrt(static_cast<typename SquareRootTraits<SNT>::SquareRootArgument>(squaredNorm(t)));
 }
+
+namespace detail {
+
+template <class T>
+T ellipticRD(T x, T y, T z)
+{
+    double f = 1.0, s = 0.0, X, Y, Z, m;
+    while(true)
+    {
+        m = (x + y + 3.0*z) / 5.0;
+        X = 1.0 - x/m;
+        Y = 1.0 - y/m;
+        Z = 1.0 - z/m;
+        if(std::max(std::max(VIGRA_CSTD::fabs(X), VIGRA_CSTD::fabs(Y)), VIGRA_CSTD::fabs(Z)) < 0.01)
+            break;
+        double l = VIGRA_CSTD::sqrt(x*y) + VIGRA_CSTD::sqrt(x*z) + VIGRA_CSTD::sqrt(y*z);
+        s += f / (VIGRA_CSTD::sqrt(z)*(z + l));
+        f /= 4.0;
+        x = (x + l)/4.0;
+        y = (y + l)/4.0;
+        z = (z + l)/4.0;
+    }
+    double a = X*Y;
+    double b = sq(Z);
+    double c = a - b;
+    double d = a - 6.0*b;
+    double e = d + 2.0*c;
+    return 3.0*s + f*(1.0+d*(-3.0/14.0+d*9.0/88.0-Z*e*4.5/26.0)
+                      +Z*(e/6.0+Z*(-c*9.0/22.0+a*Z*3.0/26.0))) / VIGRA_CSTD::pow(m,1.5);
+}
+
+template <class T>
+T ellipticRF(T x, T y, T z)
+{
+    double X, Y, Z, m;
+    while(true)
+    {
+        m = (x + y + z) / 3.0;
+        X = 1.0 - x/m;
+        Y = 1.0 - y/m;
+        Z = 1.0 - z/m;
+        if(std::max(std::max(VIGRA_CSTD::fabs(X), VIGRA_CSTD::fabs(Y)), VIGRA_CSTD::fabs(Z)) < 0.01)
+            break;
+        double l = VIGRA_CSTD::sqrt(x*y) + VIGRA_CSTD::sqrt(x*z) + VIGRA_CSTD::sqrt(y*z);
+        x = (x + l)/4.0;
+        y = (y + l)/4.0;
+        z = (z + l)/4.0;
+    }
+    double d = X*Y - sq(Z);
+    double p = X*Y*Z;
+    return (1.0 - d/10.0 + p/14.0 + sq(d)/24.0 - d*p*3.0/44.0) / VIGRA_CSTD::sqrt(m);
+}
+
+} // namespace detail
+
+    /*! The incomplete elliptic integral of the first kind.
+
+        Computes
+        
+        \f[
+            \mbox{F}(x, k) = \int_0^x \frac{1}{\sqrt{1 - k^2 \sin(t)^2}} dt
+        \f]
+        
+        according to the algorithm given in Press et al. "Numerical Recipes". 
+
+        Note: In some libraries (e.g. Mathematica), the second parameter of the elliptic integral
+        functions must be k^2 rather than k. Check the documentation when results disagree!
+
+        <b>\#include</b> "<a href="mathutil_8hxx-source.html">vigra/mathutil.hxx</a>"<br>
+        Namespace: vigra
+    */
+inline double ellipticIntegralF(double x, double k)
+{
+    double c2 = sq(VIGRA_CSTD::cos(x));
+    double s = VIGRA_CSTD::sin(x);
+    return s*detail::ellipticRF(c2, 1.0 - sq(k*s), 1.0);
+}
+
+    /*! The incomplete elliptic integral of the second kind.
+
+        Computes
+        
+        \f[
+            \mbox{E}(x, k) = \int_0^x \sqrt{1 - k^2 \sin(t)^2} dt
+        \f]
+        
+        according to the algorithm given in Press et al. "Numerical Recipes". The
+        complete elliptic integral of the second kind is simply <tt>ellipticIntegralE(M_PI/2, k)</TT>.
+        
+        Note: In some libraries (e.g. Mathematica), the second parameter of the elliptic integral
+        functions must be k^2 rather than k. Check the documentation when results disagree!
+
+        <b>\#include</b> "<a href="mathutil_8hxx-source.html">vigra/mathutil.hxx</a>"<br>
+        Namespace: vigra
+    */
+inline double ellipticIntegralE(double x, double k)
+{
+    double c2 = sq(VIGRA_CSTD::cos(x));
+    double s = VIGRA_CSTD::sin(x);
+    k = sq(k*s);
+    return s*(detail::ellipticRF(c2, 1.0-k, 1.0) - k/3.0*detail::ellipticRD(c2, 1.0-k, 1.0));
+}
+
+#ifndef VIGRA_HAS_ERF 
+
+namespace detail {
+
+template <class T>
+double erfImpl(T x)
+{
+    double t = 1.0/(1.0+0.5*VIGRA_CSTD::fabs(x));
+    double ans = t*VIGRA_CSTD::exp(-x*x-1.26551223+t*(1.00002368+t*(0.37409196+
+                                    t*(0.09678418+t*(-0.18628806+t*(0.27886807+
+                                    t*(-1.13520398+t*(1.48851587+t*(-0.82215223+
+                                    t*0.17087277)))))))));
+    if (x >= 0.0)
+        return 1.0 - ans;
+    else
+        return ans - 1.0;
+}
+
+} // namespace detail 
+
+    /*! The error function.
+
+        If <tt>erf()</tt> is not provided in the C standard math library (as it should according to the
+        new C99 standard ?), VIGRA implements <tt>erf()</tt> as an approximation of the error 
+        function
+        
+        \f[
+            \mbox{erf}(x) = \int_0^x e^{-t^2} dt
+        \f]
+        
+        according to the formula given in Press et al. "Numerical Recipes".
+
+        <b>\#include</b> "<a href="mathutil_8hxx-source.html">vigra/mathutil.hxx</a>"<br>
+        Namespace: vigra
+    */
+inline double erf(double x)
+{
+    return detail::erfImpl(x);
+}
+
+#else
+
+using VIGRA_CSTD::erf;
+
+#endif
+
+namespace detail {
+
+template <class T>
+double noncentralChi2CDFApprox(unsigned int degreesOfFreedom, T noncentrality, T arg)
+{
+    double a = degreesOfFreedom + noncentrality;
+    double b = (a + noncentrality) / sq(a);
+    double t = (VIGRA_CSTD::pow((double)arg / a, 1.0/3.0) - (1.0 - 2.0 / 9.0 * b)) / VIGRA_CSTD::sqrt(2.0 / 9.0 * b);
+    return 0.5*(1.0 + erf(t/VIGRA_CSTD::sqrt(2.0)));
+}
+
+template <class T>
+void noncentralChi2OneIteration(T arg, T & lans, T & dans, T & pans, unsigned int & j)
+{
+    double tol = -50.0;
+    if(lans < tol)
+    {
+        lans = lans + VIGRA_CSTD::log(arg / j);
+        dans = VIGRA_CSTD::exp(lans);
+    }
+    else
+    {
+        dans = dans * arg / j;
+    }
+    pans = pans - dans;
+    j += 2;
+}
+
+template <class T>
+std::pair<double, double> noncentralChi2CDF(unsigned int degreesOfFreedom, T noncentrality, T arg, T eps)
+{
+    vigra_precondition(noncentrality >= 0.0 && arg >= 0.0 && eps > 0.0,
+        "noncentralChi2P(): parameters must be positive.");
+    if (arg == 0.0 && degreesOfFreedom > 0)
+        return std::make_pair(0.0, 0.0);
+
+    // Determine initial values
+    double b1 = 0.5 * noncentrality,
+           ao = VIGRA_CSTD::exp(-b1),
+           eps2 = eps / ao,
+           lnrtpi2 = 0.22579135264473,
+           probability, density, lans, dans, pans, sum, am, hold;
+    unsigned int maxit = 500,
+        i, m;
+    if(degreesOfFreedom % 2)
+    {
+        i = 1;
+        lans = -0.5 * (arg + VIGRA_CSTD::log(arg)) - lnrtpi2;
+        dans = VIGRA_CSTD::exp(lans);
+        pans = erf(VIGRA_CSTD::sqrt(arg/2.0));
+    }
+    else
+    {
+        i = 2;
+        lans = -0.5 * arg;
+        dans = VIGRA_CSTD::exp(lans);
+        pans = 1.0 - dans;
+    }
+    
+    // Evaluate first term
+    if(degreesOfFreedom == 0)
+    {
+        m = 1;
+        degreesOfFreedom = 2;
+        am = b1;
+        sum = 1.0 / ao - 1.0 - am;
+        density = am * dans;
+        probability = 1.0 + am * pans;
+    }
+    else
+    {
+        m = 0;
+        degreesOfFreedom = degreesOfFreedom - 1;
+        am = 1.0;
+        sum = 1.0 / ao - 1.0;
+        while(i < degreesOfFreedom)
+            detail::noncentralChi2OneIteration(arg, lans, dans, pans, i);
+        degreesOfFreedom = degreesOfFreedom + 1;
+        density = dans;
+        probability = pans;
+    }
+    // Evaluate successive terms of the expansion
+    for(++m; m<maxit; ++m)
+    {
+        am = b1 * am / m;
+        detail::noncentralChi2OneIteration(arg, lans, dans, pans, degreesOfFreedom);
+        sum = sum - am;
+        density = density + am * dans;
+        hold = am * pans;
+        probability = probability + hold;
+        if((pans * sum < eps2) && (hold < eps2))
+            break; // converged
+    }
+    if(m == maxit)
+        vigra_fail("noncentralChi2P(): no convergence.");
+    return std::make_pair(0.5 * ao * density, std::min(1.0, std::max(0.0, ao * probability)));
+}
+
+} // namespace detail
+
+    /*! Chi square distribution. 
+
+        Computes the density of a chi square distribution with \a degreesOfFreedom 
+        and tolerance \a accuracy at the given argument \a arg
+        by calling <tt>noncentralChi2(degreesOfFreedom, 0.0, arg, accuracy)</tt>.
+
+        <b>\#include</b> "<a href="mathutil_8hxx-source.html">vigra/mathutil.hxx</a>"<br>
+        Namespace: vigra
+    */
+inline double chi2(unsigned int degreesOfFreedom, double arg, double accuracy = 1e-7)
+{
+    return detail::noncentralChi2CDF(degreesOfFreedom, 0.0, arg, accuracy).first;
+}
+
+    /*! Cumulative chi square distribution. 
+
+        Computes the cumulative density of a chi square distribution with \a degreesOfFreedom 
+        and tolerance \a accuracy at the given argument \a arg, i.e. the probability that
+        a random number drawn from the distribution is below \a arg
+        by calling <tt>noncentralChi2CDF(degreesOfFreedom, 0.0, arg, accuracy)</tt>.
+
+        <b>\#include</b> "<a href="mathutil_8hxx-source.html">vigra/mathutil.hxx</a>"<br>
+        Namespace: vigra
+    */
+inline double chi2CDF(unsigned int degreesOfFreedom, double arg, double accuracy = 1e-7)
+{
+    return detail::noncentralChi2CDF(degreesOfFreedom, 0.0, arg, accuracy).second;
+}
+
+    /*! Non-central chi square distribution. 
+
+        Computes the density of a non-central chi square distribution with \a degreesOfFreedom, 
+        noncentrality parameter \a noncentrality and tolerance \a accuracy at the given argument 
+        \a arg. It uses Algorithm AS 231 from Appl. Statist. (1987) Vol.36, No.3 (code ported from 
+        http://lib.stat.cmu.edu/apstat/231). The algorithm has linear complexity in the number of
+        degrees of freedom.
+
+        <b>\#include</b> "<a href="mathutil_8hxx-source.html">vigra/mathutil.hxx</a>"<br>
+        Namespace: vigra
+    */
+inline double noncentralChi2(unsigned int degreesOfFreedom, 
+              double noncentrality, double arg, double accuracy = 1e-7)
+{
+    return detail::noncentralChi2CDF(degreesOfFreedom, noncentrality, arg, accuracy).first;
+}
+
+    /*! Cumulative non-central chi square distribution. 
+
+        Computes the cumulative density of a chi square distribution with \a degreesOfFreedom, 
+        noncentrality parameter \a noncentrality and tolerance \a accuracy at the given argument 
+        \a arg, i.e. the probability that a random number drawn from the distribution is below \a arg
+        It uses Algorithm AS 231 from Appl. Statist. (1987) Vol.36, No.3 (code ported from 
+        http://lib.stat.cmu.edu/apstat/231). The algorithm has linear complexity in the number of
+        degrees of freedom (see noncentralChi2CDFApprox() for a constant-time algorithm).
+
+        <b>\#include</b> "<a href="mathutil_8hxx-source.html">vigra/mathutil.hxx</a>"<br>
+        Namespace: vigra
+    */
+inline double noncentralChi2CDF(unsigned int degreesOfFreedom, 
+              double noncentrality, double arg, double accuracy = 1e-7)
+{
+    return detail::noncentralChi2CDF(degreesOfFreedom, noncentrality, arg, accuracy).second;
+}
+
+    /*! Cumulative non-central chi square distribution (approximate). 
+
+        Computes approximate values of the cumulative density of a chi square distribution with \a degreesOfFreedom, 
+        and noncentrality parameter \a noncentrality at the given argument 
+        \a arg, i.e. the probability that a random number drawn from the distribution is below \a arg
+        It uses the approximate transform into a normal distribution due to Wilson and Hilferty 
+        (see Abramovitz, Stegun: "Handbook of Mathematical Functions", formula 26.3.32). 
+        The algorithm's running time is independent of the inputs, i.e. is should be used
+        when noncentralChi2CDF() is too slow, and approximate values are sufficient. The accuracy is only 
+        about 0.1 for few degrees of freedom, but reaches about 0.001 above dof = 5.
+
+        <b>\#include</b> "<a href="mathutil_8hxx-source.html">vigra/mathutil.hxx</a>"<br>
+        Namespace: vigra
+    */
+inline double noncentralChi2CDFApprox(unsigned int degreesOfFreedom, double noncentrality, double arg)
+{
+    return detail::noncentralChi2CDFApprox(degreesOfFreedom, noncentrality, arg);
+}
+
+
 
 namespace detail {
 
