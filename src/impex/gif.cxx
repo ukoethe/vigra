@@ -30,7 +30,7 @@
 /*    HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,      */
 /*    WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING      */
 /*    FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR     */
-/*    OTHER DEALINGS IN THE SOFTWARE.                                   */                
+/*    OTHER DEALINGS IN THE SOFTWARE.                                   */
 /*                                                                      */
 /************************************************************************/
 
@@ -54,7 +54,7 @@ namespace {
     int read_data_block(std::ifstream & stream, void_vector<UInt8> & data)
     {
         int count;
-        
+
         count = stream.get();
         if(!stream.good())
             return -1;
@@ -66,15 +66,15 @@ namespace {
             return -1;
         return count;
     }
-    
+
     struct ColorCluster
     {
         UInt8 cmin[3], cmax[3];
         std::vector<UInt8 *> entries;
         mutable int largest_dim, largest_diff;
-        
+
         typedef UInt8 rgb[3];
-        
+
         struct ColorSorter
         {
             int dim;
@@ -88,20 +88,20 @@ namespace {
                 return l[dim] < r[dim];
             }
         };
-    
+
         ColorCluster()
         : largest_dim(-1)
         {
             reset_minmax();
         }
-        
+
         void add(UInt8 * entry)
         {
             entries.push_back(entry);
-            
+
             update_minmax(entry);
         }
-        
+
         void reset_minmax()
         {
             for(int i=0; i<3; ++i)
@@ -109,10 +109,10 @@ namespace {
                 cmin[i] = 255;
                 cmax[i] = 0;
             }
-            
+
             largest_dim = -1;
         }
-        
+
         void update_minmax(UInt8 * entry)
         {
             for(int i=0; i<3; ++i)
@@ -122,17 +122,17 @@ namespace {
                 if(cmax[i] < entry[i])
                     cmax[i] = entry[i];
             }
-            
+
             largest_dim = -1;
         }
-        
+
         void update_largest() const
         {
             if(largest_dim >= 0)
                 return;
             largest_diff = cmax[0] - cmin[0];
             largest_dim = 0;
-            
+
             for(int i=1; i<3; ++i)
             {
                 if(largest_diff < cmax[i] - cmin[i])
@@ -142,23 +142,23 @@ namespace {
                 }
             }
         }
-        
+
         bool operator<(ColorCluster const & o) const
         {
             update_largest();
             o.update_largest();
             return largest_diff < o.largest_diff;
         }
-        
+
         void split(ColorCluster & o)
         {
             update_largest();
             std::sort(entries.begin(), entries.end(), ColorSorter(largest_dim));
-            
+
             std::vector<UInt8 *> old_list;
             old_list.swap(entries);
             reset_minmax();
-            
+
             UInt32 i = 0;
             for(; i<old_list.size()/2; ++i)
             {
@@ -169,31 +169,31 @@ namespace {
                 o.add(old_list[i]);
             }
         }
-        
+
         void average(UInt8 * color) const
         {
-            int r = 0, g = 0, b = 0;
-            
-            for(UInt32 i=0; i<entries.size(); ++i)
+            UIntBiggest r = 0, g = 0, b = 0;
+
+            for(size_t i=0; i<entries.size(); ++i)
             {
                 r += entries[i][0];
                 g += entries[i][1];
                 b += entries[i][2];
             }
-            
+
             color[0] = (UInt8)(r / entries.size());
             color[1] = (UInt8)(g / entries.size());
             color[2] = (UInt8)(b / entries.size());
         }
-        
+
         size_t size() const
         {
             return entries.size();
         }
     };
-    
-    
-    void find_color_clusters(void_vector<UInt8> & data, 
+
+
+    void find_color_clusters(void_vector<UInt8> & data,
             std::vector<ColorCluster> & clusters, void_vector<UInt8> & colors)
     {
         size_t count = clusters.size();
@@ -203,7 +203,7 @@ namespace {
         {
             clusters[0].add(data.begin()+3*i);
         }
-        
+
         for(current = 1; current < count; ++current)
         {
             size_t largest_index = 0;
@@ -218,10 +218,10 @@ namespace {
                 break;
             clusters[largest_index].split(clusters[current]);
         }
-        
+
         for(i=0; i<count; ++i)
         {
-            if(clusters[i].size() == 0) 
+            if(clusters[i].size() == 0)
             {
                 colors[3*i] = colors[3*i+1] = colors[3*i+2] = 0;
             }
@@ -231,13 +231,13 @@ namespace {
             }
         }
     }
-    
-    void find_color_indices(void_vector<UInt8> & data, 
+
+    void find_color_indices(void_vector<UInt8> & data,
            std::vector<ColorCluster> & clusters, void_vector<UInt8> & indices)
     {
         size_t count = clusters.size();
         UInt8 * base = data.begin();
-        
+
         size_t i;
         for(i=0; i<count; ++i)
         {
@@ -275,11 +275,11 @@ namespace {
         // init file extensions
         desc.fileExtensions.resize(1);
         desc.fileExtensions[0] = "gif";
-        
+
         desc.bandNumbers.resize(2);
         desc.bandNumbers[0] = 1;
         desc.bandNumbers[1] = 3;
-        
+
         return desc;
     }
 
@@ -300,7 +300,7 @@ namespace {
         UInt16 width, height, maplength;
         UInt8  bits_per_pixel;
         bool  global_colormap, interlace;
-        
+
         // methods
 
         void global_from_stream( std::ifstream & stream, const byteorder & bo );
@@ -324,7 +324,7 @@ namespace {
             maplength = 3*( 1 << bits_per_pixel);
         }
     }
-    
+
     void GIFHeader::global_to_stream( std::ofstream & stream, const byteorder & bo )
     {
         write_field( stream, bo, width );
@@ -348,14 +348,14 @@ namespace {
 
                 // read and ignore extension data
                 read_field( stream, bo, c );
-                while (read_data_block(stream, extensions) > 0) /* empty */;            
+                while (read_data_block(stream, extensions) > 0) /* empty */;
             }
             if(c == ',')
                 break;
         }
-        
+
         UInt16 x,y;
-        
+
         read_field( stream, bo, x );
         read_field( stream, bo, y );
         read_field( stream, bo, width );
@@ -393,7 +393,7 @@ namespace {
         UInt8 * scanline;
 
         // methods
-        
+
         void decodeGIF();
 
         // ctor
@@ -403,12 +403,12 @@ namespace {
 
     GIFDecoderImpl::GIFDecoderImpl( const std::string & filename )
 #ifdef VIGRA_NEED_BIN_STREAMS
-        : stream( filename.c_str(), std::ios::binary ), 
+        : stream( filename.c_str(), std::ios::binary ),
 #else
-        : stream( filename.c_str() ), 
+        : stream( filename.c_str() ),
 #endif
-          bo("little endian"), 
-          maps(0), 
+          bo("little endian"),
+          maps(0),
           bands(0),
           scanline(0)
     {
@@ -419,12 +419,12 @@ namespace {
             msg += "'.";
             vigra_precondition(0, msg.c_str());
         }
-        
+
         // read the magic number
         char buf[6];
         read_array( stream, bo, buf, 6 );
         std::string magic(6, (std::string::value_type)0);
-        
+
         std::copy(buf, buf + 6, magic.begin());
         vigra_precondition( magic == "GIF87a" || magic == "GIF89a",
                             "the stored magic number is invalid" );
@@ -439,7 +439,7 @@ namespace {
             maps.resize(header.maplength);
             read_array( stream, bo, maps.data(), header.maplength );
         }
-        
+
         if(!header.local_from_stream( stream, bo ))
         {
             std::string msg("Unable to read file '");
@@ -455,7 +455,7 @@ namespace {
             maps.resize(header.maplength);
             read_array( stream, bo, maps.data(), header.maplength );
         }
-        
+
         // check if image is Gray or RGB
         int i=0;
         components = 1;
@@ -617,7 +617,7 @@ namespace {
             top_stack--;
             *p++ =(UInt16) *top_stack;
         }
-        
+
         // decode intelaced image
         if (header.interlace)
         {
@@ -668,7 +668,7 @@ namespace {
             }
         }
     }
-    
+
     void GIFDecoder::init( const std::string & filename )
     {
         pimpl = new GIFDecoderImpl( filename );
@@ -758,14 +758,14 @@ namespace {
 
     GIFEncoderImpl::GIFEncoderImpl( const std::string & filename )
 #ifdef VIGRA_NEED_BIN_STREAMS
-        : stream( filename.c_str(), std::ios::binary ), 
+        : stream( filename.c_str(), std::ios::binary ),
 #else
-        : stream( filename.c_str() ), 
+        : stream( filename.c_str() ),
 #endif
           bo("little endian"),
-          bands(0), 
-          maps(0), 
-          indices(0), 
+          bands(0),
+          maps(0),
+          indices(0),
           scanline(0),
           finalized(false)
     {
@@ -786,7 +786,7 @@ namespace {
         vigra_precondition( components == 1 || components == 3,
                             "number of bands is not supported" );
     }
-    
+
     void GIFEncoderImpl::writeHeader()
     {
         // write the header
@@ -794,12 +794,12 @@ namespace {
         writeColormap();
         header.local_to_stream( stream, bo );
     }
-    
+
     void GIFEncoderImpl::writeColormap()
     {
         write_array( stream, bo, maps.data(), header.maplength );
     }
-    
+
     void GIFEncoderImpl::writeImageData()
     {
         stream.put(header.bits_per_pixel); // code size
@@ -814,7 +814,7 @@ namespace {
         stream.put(0);   // end of raster stream
         stream.put(';'); // GIF terminator
     }
-    
+
     void GIFEncoderImpl::reduceTo256Colors()
     {
         header.bits_per_pixel = 8;
@@ -836,7 +836,7 @@ namespace {
             }
         }
     }
-    
+
     void GIFEncoderImpl::outputEncodedData(void_vector<UInt8> & indices)
     {
         #define MaxCode(number_bits)  ((1 << (number_bits))-1)
@@ -899,7 +899,7 @@ namespace {
         void_vector<Int16> hash_code(MaxHashTable);
         void_vector<Int16> hash_prefix(MaxHashTable);
         void_vector<Int16> hash_suffix(MaxHashTable);
-        
+
         Int16
           clear_code,
           end_of_information_code,
@@ -993,7 +993,7 @@ namespace {
                 stream.write(reinterpret_cast< char * >(packet.begin()),byte_count);
         }
     }
-    
+
     void GIFEncoder::init( const std::string & filename )
     {
         pimpl = new GIFEncoderImpl(filename);
@@ -1069,7 +1069,7 @@ namespace {
 
     void GIFEncoder::close()
     {
-        pimpl->reduceTo256Colors();        
+        pimpl->reduceTo256Colors();
         pimpl->writeHeader();
         pimpl->writeImageData();
     }
