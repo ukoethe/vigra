@@ -450,23 +450,23 @@ slantedEdgeMTF(triple<SrcIterator, SrcIterator, SrcAccessor> src, BackInsertable
 template <class Vector>
 double mtfFitGaussian(Vector const & mtf)
 {
-    double minVal = mtf[0].second;
+    double minVal = mtf[0][1];
     for(unsigned int k = 1; k < mtf.size(); ++k)
     {
-        if(mtf[k].second < minVal)
-            minVal = mtf[k].second;
+        if(mtf[k][1] < minVal)
+            minVal = mtf[k][1];
     }
     double x2 = 0.0,
            xy = 0.0;
     for(unsigned int k = 1; k < mtf.size(); ++k)
     {
-        if(mtf[k].second <= 0.0)
+        if(mtf[k][1] <= 0.0)
             break;
-        double x = mtf[k].first,
-               y = VIGRA_CSTD::sqrt(-VIGRA_CSTD::log(mtf[k].second)/2.0)/M_PI;
+        double x = mtf[k][0],
+               y = VIGRA_CSTD::sqrt(-VIGRA_CSTD::log(mtf[k][1])/2.0)/M_PI;
         x2 += sq(x);
         xy += x*y;
-        if(mtf[k].second == minVal)
+        if(mtf[k][1] == minVal)
             break;
     }
     return xy / x2;
