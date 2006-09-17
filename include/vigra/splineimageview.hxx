@@ -63,7 +63,7 @@ namespace vigra {
     degree <tt>ORDER-1</TT>. If the requested coordinates are near the image border, 
     reflective boundary conditions are applied. In principle, this class can also be used 
     for image resizing, but here the functions from the <tt>resize...</tt> family are 
-    more efficient. 
+    more efficient, since they exploit the regularity of the sampling grid. 
     
     The <tt>SplineImageView</tt> template is explicitly specialized to make it as efficient as possible.
     In particular, unnecessary copying of the image is avoided when the iterators passed
