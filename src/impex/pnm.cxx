@@ -30,12 +30,14 @@
 /*    HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,      */
 /*    WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING      */
 /*    FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR     */
-/*    OTHER DEALINGS IN THE SOFTWARE.                                   */                
+/*    OTHER DEALINGS IN THE SOFTWARE.                                   */
 /*                                                                      */
 /************************************************************************/
 
 #include <cmath>
 #include <cctype>
+// under Solaris, this is a macro leading to syntax errors:
+#undef isspace
 #include <iostream>
 #include <fstream>
 #include "vigra/config.hxx"
@@ -97,7 +99,7 @@ namespace vigra {
         desc.bandNumbers.resize(2);
         desc.bandNumbers[0] = 1;
         desc.bandNumbers[1] = 3;
-        
+
         return desc;
     }
 
@@ -261,7 +263,7 @@ namespace vigra {
         read_array( stream, bo, reinterpret_cast< UInt32 * >(cbands.data()),
                     width * components );
     }
-    
+
     // reads the header.
     PnmDecoderImpl::PnmDecoderImpl( const std::string & filename )
 #ifdef VIGRA_NEED_BIN_STREAMS
@@ -280,7 +282,7 @@ namespace vigra {
             msg += "'.";
             vigra_precondition(0, msg.c_str());
         }
-        
+
         // read the pnm header
         vigra_postcondition( stream.get() == 'P', "bad magic number" );
 
@@ -350,7 +352,7 @@ namespace vigra {
             maxval >>= 1;
         }
         while(maxval > 0);
-        
+
         vigra_precondition( bits >= 0, "the file's maxval field is corrupt" );
         if ( bits <= 8 )
             pixeltype = "UINT8";
@@ -394,7 +396,7 @@ namespace vigra {
                   seekOffset *= 2;
               else if ( pixeltype == "UINT32" )
                   seekOffset *= 4;
-              
+
               stream.seekg( -static_cast<streamOffset>(seekOffset), std::ios::end );
           }
         }
@@ -515,9 +517,9 @@ namespace vigra {
 
     PnmEncoderImpl::PnmEncoderImpl( const std::string & filename )
 #ifdef VIGRA_NEED_BIN_STREAMS
-        : stream( filename.c_str(), std::ios::binary ), 
+        : stream( filename.c_str(), std::ios::binary ),
 #else
-        : stream( filename.c_str() ), 
+        : stream( filename.c_str() ),
 #endif
           raw(true), bilevel(false), finalized(false), scanline(0)
     {
@@ -725,7 +727,7 @@ namespace vigra {
             }
             stream << std::endl; // separate lines with a newline
           }
-        
+
         }
 
         // cast the bands to the correct type
