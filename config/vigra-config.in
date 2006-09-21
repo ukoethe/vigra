@@ -17,12 +17,13 @@ usage()
 Usage: $0 [OPTIONS]
 Options:
     [--version]      output version ("@MAJOR_VERSION@.@MINOR_VERSION@.@MICRO_VERSION@")
-    [--target]       output platform this vigra version was configured for
+    [--target]       output platform this VIGRA library was configured for
     [--impex-lib]    output flags for linking libvigraimpex
     [--fftw-lib]     output flags for linking libfftw$fftwstatus
     [--rfftw-lib]    output flags for linking librfftw and libfftw$fftwstatus
     [--cppflags]     output include flags for vigra$fftwflags
     [--include-path] output path to VIGRA includes
+    [--docdir]       output path to VIGRA documentation
    ([--libs]         synonym for --impex-lib)
 EOF
     exit $1
@@ -72,6 +73,9 @@ while test $# -gt 0; do
       ;;
     --include_path|--include-path|--includepath)
       echopath '@VIGRA_INCPATH@'
+      ;;
+    --docdir)
+      echopath '@docdir@'
       ;;
     --help|-h|-?)
       usage 0 1>&2
