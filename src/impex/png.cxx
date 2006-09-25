@@ -48,7 +48,6 @@
 #include "png.hxx"
 #include "byteorder.hxx"
 #include "error.hxx"
-#include <csetjmp>
 #include <stdexcept>
 #include <iostream>
 
@@ -73,7 +72,7 @@ extern "C" {
 static void PngError( png_structp png_ptr, png_const_charp error_msg )
 {
     png_error_message = std::string(error_msg);
-    std::longjmp( png_ptr->jmpbuf, 1 );
+    longjmp( png_ptr->jmpbuf, 1 );
 }
 
 // called on non-fatal errors
