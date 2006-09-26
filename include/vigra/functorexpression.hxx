@@ -333,9 +333,9 @@
 #if !defined(NO_PARTIAL_TEMPLATE_SPECIALIZATION)
 
 #include <cmath>
-#include <vigra/numerictraits.hxx>
-#include <vigra/mathutil.hxx>
-#include <vigra/functortraits.hxx>
+#include "numerictraits.hxx"
+#include "mathutil.hxx"
+#include "functortraits.hxx"
 
 
 namespace vigra {

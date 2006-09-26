@@ -40,15 +40,15 @@
 
 #include <memory>
 #include <algorithm>
-#include "vigra/accessor.hxx"
-#include "vigra/tinyvector.hxx"
-#include "vigra/rgbvalue.hxx"
-#include "vigra/basicimageview.hxx"
-#include "vigra/imageiterator.hxx"
-#include "vigra/numerictraits.hxx"
-#include "vigra/multi_iterator.hxx"
-#include "vigra/metaprogramming.hxx"
-#include "vigra/mathutil.hxx"
+#include "accessor.hxx"
+#include "tinyvector.hxx"
+#include "rgbvalue.hxx"
+#include "basicimageview.hxx"
+#include "imageiterator.hxx"
+#include "numerictraits.hxx"
+#include "multi_iterator.hxx"
+#include "metaprogramming.hxx"
+#include "mathutil.hxx"
 
 namespace vigra
 {

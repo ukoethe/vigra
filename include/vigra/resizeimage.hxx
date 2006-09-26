@@ -39,13 +39,13 @@
 #define VIGRA_RESIZEIMAGE_HXX
 
 #include <vector>
-#include "vigra/utilities.hxx"
-#include "vigra/numerictraits.hxx"
-#include "vigra/stdimage.hxx"
-#include "vigra/recursiveconvolution.hxx"
-#include "vigra/separableconvolution.hxx"
-#include "vigra/resampling_convolution.hxx"
-#include "vigra/splines.hxx"
+#include "utilities.hxx"
+#include "numerictraits.hxx"
+#include "stdimage.hxx"
+#include "recursiveconvolution.hxx"
+#include "separableconvolution.hxx"
+#include "resampling_convolution.hxx"
+#include "splines.hxx"
 
 namespace vigra {
 

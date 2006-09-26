@@ -43,10 +43,10 @@
 #include <sstream>
 #include <iostream>
 #include <string>
-#include "vigra/config.hxx"
-#include "vigra/basicimageview.hxx"
-#include "vigra/impex.hxx"
-#include "vigra/multi_array.hxx"
+#include "config.hxx"
+#include "basicimageview.hxx"
+#include "impex.hxx"
+#include "multi_array.hxx"
 
 namespace vigra {
 

@@ -41,7 +41,7 @@
 #include <stdexcept>
 #include <stdio.h>
 #include <string>
-#include "vigra/config.hxx"
+#include "config.hxx"
           
 /*! \page ErrorReporting Error Reporting
     Exceptions and assertions provided by VIGRA

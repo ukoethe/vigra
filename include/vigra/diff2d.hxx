@@ -39,11 +39,11 @@
 
 #include <cmath> // for sqrt()
 #include <iosfwd>
-#include "vigra/config.hxx"
-#include "vigra/iteratortags.hxx"
-#include "vigra/iteratortraits.hxx"
-#include "vigra/iteratoradapter.hxx"
-#include "vigra/tuple.hxx"
+#include "config.hxx"
+#include "iteratortags.hxx"
+#include "iteratortraits.hxx"
+#include "iteratoradapter.hxx"
+#include "tuple.hxx"
 
 namespace vigra {
 

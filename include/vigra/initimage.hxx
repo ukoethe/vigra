@@ -38,9 +38,9 @@
 #ifndef VIGRA_INITIMAGE_HXX
 #define VIGRA_INITIMAGE_HXX
 
-#include "vigra/utilities.hxx"
-#include "vigra/iteratortraits.hxx"
-#include "vigra/functortraits.hxx"
+#include "utilities.hxx"
+#include "iteratortraits.hxx"
+#include "functortraits.hxx"
 
 namespace vigra {
 

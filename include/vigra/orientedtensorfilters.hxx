@@ -38,9 +38,9 @@
 #define VIGRA_ORIENTEDTENSORFILTERS_HXX
 
 #include <cmath>
-#include "vigra/utilities.hxx"
-#include "vigra/initimage.hxx"
-#include "vigra/stdconvolution.hxx"
+#include "utilities.hxx"
+#include "initimage.hxx"
+#include "stdconvolution.hxx"
 
 namespace vigra {
 

@@ -39,9 +39,9 @@
 #define VIGRA_COLORCONVERSIONS_HXX
 
 #include <cmath>
-#include "vigra/mathutil.hxx"
-#include "vigra/rgbvalue.hxx"
-#include "vigra/functortraits.hxx"
+#include "mathutil.hxx"
+#include "rgbvalue.hxx"
+#include "functortraits.hxx"
 
 /** \page ColorConversions  Color Space Conversions
 

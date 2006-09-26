@@ -40,8 +40,8 @@
 #define VIGRA_MULTI_ITERATOR_HXX
 
 #include <sys/types.h>
-#include "vigra/tinyvector.hxx"
-#include "vigra/iteratortags.hxx"
+#include "tinyvector.hxx"
+#include "iteratortags.hxx"
 
 namespace vigra {
 

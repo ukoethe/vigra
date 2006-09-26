@@ -37,8 +37,8 @@
 #ifndef VIGRA_BASICIMAGEVIEW_HXX
 #define VIGRA_BASICIMAGEVIEW_HXX
 
-#include "vigra/imageiterator.hxx"
-#include "vigra/initimage.hxx"
+#include "imageiterator.hxx"
+#include "initimage.hxx"
 
 namespace vigra {
 

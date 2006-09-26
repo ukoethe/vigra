@@ -40,12 +40,12 @@
 
 #include <cmath>
 #include <functional>
-#include "vigra/utilities.hxx"
-#include "vigra/array_vector.hxx"
-#include "vigra/basicimage.hxx"
-#include "vigra/combineimages.hxx"
-#include "vigra/numerictraits.hxx"
-#include "vigra/convolution.hxx"
+#include "utilities.hxx"
+#include "array_vector.hxx"
+#include "basicimage.hxx"
+#include "combineimages.hxx"
+#include "numerictraits.hxx"
+#include "convolution.hxx"
 
 namespace vigra {
 

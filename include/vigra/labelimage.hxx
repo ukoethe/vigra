@@ -40,8 +40,8 @@
 
 #include <vector>
 #include <functional>
-#include "vigra/utilities.hxx"
-#include "vigra/stdimage.hxx"
+#include "utilities.hxx"
+#include "stdimage.hxx"
 
 namespace vigra {
 

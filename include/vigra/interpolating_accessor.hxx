@@ -38,8 +38,8 @@
 #define VIGRA_INTERPOLATING_ACCESSOR_HXX
 
 
-#include "vigra/accessor.hxx"
-#include "vigra/diff2d.hxx"
+#include "accessor.hxx"
+#include "diff2d.hxx"
 
 namespace vigra {
 

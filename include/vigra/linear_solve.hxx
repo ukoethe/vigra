@@ -38,7 +38,7 @@
 #ifndef VIGRA_LINEAR_SOLVE_HXX
 #define VIGRA_LINEAR_SOLVE_HXX
 
-#include "vigra/matrix.hxx"
+#include "matrix.hxx"
 
 
 namespace vigra

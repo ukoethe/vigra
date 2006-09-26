@@ -39,11 +39,11 @@
 
 #include <cmath>
 #include <cstdlib>
-#include "vigra/config.hxx"
-#include "vigra/error.hxx"
-#include "vigra/tuple.hxx"
-#include "vigra/sized_int.hxx"
-#include "vigra/numerictraits.hxx"
+#include "config.hxx"
+#include "error.hxx"
+#include "tuple.hxx"
+#include "sized_int.hxx"
+#include "numerictraits.hxx"
 
 /*! \page MathConstants Mathematical Constants
 

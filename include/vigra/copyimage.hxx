@@ -38,7 +38,7 @@
 #ifndef VIGRA_COPYIMAGE_HXX
 #define VIGRA_COPYIMAGE_HXX
 
-#include "vigra/utilities.hxx"
+#include "utilities.hxx"
 
 namespace vigra {
 

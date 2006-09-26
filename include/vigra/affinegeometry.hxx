@@ -37,8 +37,8 @@
 #ifndef VIGRA_AFFINEGEOMETRY_HXX
 #define VIGRA_AFFINEGEOMETRY_HXX
 
-#include "vigra/mathutil.hxx"
-#include "vigra/splineimageview.hxx"
+#include "mathutil.hxx"
+#include "splineimageview.hxx"
 #include <cmath>
 
 namespace vigra {

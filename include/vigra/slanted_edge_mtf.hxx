@@ -39,19 +39,19 @@
 #define VIGRA_SLANTED_EDGE_MTF_HXX
 
 #include <algorithm>
-#include "vigra/array_vector.hxx"
-#include "vigra/basicgeometry.hxx"
-#include "vigra/edgedetection.hxx"
-#include "vigra/fftw3.hxx"
-#include "vigra/functorexpression.hxx"
-#include "vigra/linear_solve.hxx"
-#include "vigra/mathutil.hxx"
-#include "vigra/numerictraits.hxx"
-#include "vigra/separableconvolution.hxx"
-#include "vigra/static_assert.hxx"
-#include "vigra/stdimage.hxx"
-#include "vigra/transformimage.hxx"
-#include "vigra/utilities.hxx"
+#include "array_vector.hxx"
+#include "basicgeometry.hxx"
+#include "edgedetection.hxx"
+#include "fftw3.hxx"
+#include "functorexpression.hxx"
+#include "linear_solve.hxx"
+#include "mathutil.hxx"
+#include "numerictraits.hxx"
+#include "separableconvolution.hxx"
+#include "static_assert.hxx"
+#include "stdimage.hxx"
+#include "transformimage.hxx"
+#include "utilities.hxx"
 
 namespace vigra {
 

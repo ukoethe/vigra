@@ -37,8 +37,8 @@
 #ifndef VIGRA_RFFTW_HXX
 #define VIGRA_RFFTW_HXX
 
-#include "vigra/array_vector.hxx"
-#include "vigra/fftw.hxx"
+#include "array_vector.hxx"
+#include "fftw.hxx"
 #include <rfftw.h>
 
 namespace vigra {

@@ -52,10 +52,10 @@
 #include <cmath>
 #include <stdexcept>
 #include <iosfwd>
-#include "vigra/config.hxx"
-#include "vigra/mathutil.hxx"
-#include "vigra/numerictraits.hxx"
-#include "vigra/metaprogramming.hxx"
+#include "config.hxx"
+#include "mathutil.hxx"
+#include "numerictraits.hxx"
+#include "metaprogramming.hxx"
 
 namespace vigra {
 

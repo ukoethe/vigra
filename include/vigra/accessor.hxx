@@ -37,9 +37,9 @@
 #ifndef VIGRA_ACCESSOR_HXX
 #define VIGRA_ACCESSOR_HXX
 
-#include "vigra/metaprogramming.hxx"
-#include "vigra/numerictraits.hxx"
-#include "vigra/tuple.hxx"
+#include "metaprogramming.hxx"
+#include "numerictraits.hxx"
+#include "tuple.hxx"
 
 namespace vigra {
 

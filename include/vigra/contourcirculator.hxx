@@ -38,7 +38,7 @@
 #ifndef VIGRA_CONTOURCIRCULATOR_HXX
 #define VIGRA_CONTOURCIRCULATOR_HXX
 
-#include <vigra/pixelneighborhood.hxx>
+#include "pixelneighborhood.hxx"
 
 namespace vigra
 {

@@ -38,10 +38,10 @@
 #define VIGRA_GAUSSIANS_HXX
 
 #include <cmath>
-#include "vigra/config.hxx"
-#include "vigra/mathutil.hxx"
-#include "vigra/array_vector.hxx"
-#include "vigra/error.hxx"
+#include "config.hxx"
+#include "mathutil.hxx"
+#include "array_vector.hxx"
+#include "error.hxx"
 
 namespace vigra {
 

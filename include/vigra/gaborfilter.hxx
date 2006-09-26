@@ -38,13 +38,13 @@
 #ifndef VIGRA_GABORFILTER_HXX
 #define VIGRA_GABORFILTER_HXX
 
-#include "vigra/imagecontainer.hxx"
-#include "vigra/config.hxx"
-#include "vigra/stdimage.hxx"
-#include "vigra/copyimage.hxx"
-#include "vigra/transformimage.hxx"
-#include "vigra/combineimages.hxx"
-#include "vigra/utilities.hxx"
+#include "imagecontainer.hxx"
+#include "config.hxx"
+#include "stdimage.hxx"
+#include "copyimage.hxx"
+#include "transformimage.hxx"
+#include "combineimages.hxx"
+#include "utilities.hxx"
 
 #include <functional>
 #include <vector>

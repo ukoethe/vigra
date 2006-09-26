@@ -37,9 +37,9 @@
 #ifndef VIGRA_BASICGEOMETRY_HXX
 #define VIGRA_BASICGEOMETRY_HXX
 
-#include "vigra/error.hxx"
-#include "vigra/stdimage.hxx"
-#include "vigra/copyimage.hxx"
+#include "error.hxx"
+#include "stdimage.hxx"
+#include "copyimage.hxx"
 #include <cmath>
 
 namespace vigra {

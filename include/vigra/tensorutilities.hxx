@@ -38,7 +38,7 @@
 #define VIGRA_TENSORUTILITIES_HXX
 
 #include <cmath>
-#include "vigra/utilities.hxx"
+#include "utilities.hxx"
 
 namespace vigra {
 

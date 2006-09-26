@@ -39,14 +39,14 @@
 #ifndef VIGRA_MULTI_CONVOLUTION_H
 #define VIGRA_MULTI_CONVOLUTION_H
 
-#include <vigra/separableconvolution.hxx>
-#include <vigra/array_vector.hxx>
-#include <vigra/multi_array.hxx>
-#include <vigra/accessor.hxx>
-#include <vigra/numerictraits.hxx>
-#include <vigra/navigator.hxx>
-#include <vigra/metaprogramming.hxx>
-#include <vigra/multi_pointoperators.hxx>
+#include "separableconvolution.hxx"
+#include "array_vector.hxx"
+#include "multi_array.hxx"
+#include "accessor.hxx"
+#include "numerictraits.hxx"
+#include "navigator.hxx"
+#include "metaprogramming.hxx"
+#include "multi_pointoperators.hxx"
 
 
 namespace vigra

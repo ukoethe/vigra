@@ -37,7 +37,7 @@
 #ifndef VIGRA_MEMORY_HXX
 #define VIGRA_MEMORY_HXX
 
-#include <vigra/metaprogramming.hxx>
+#include "metaprogramming.hxx"
 
 namespace vigra { namespace detail {
 

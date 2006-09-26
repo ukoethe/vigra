@@ -40,11 +40,11 @@
 
 #include <vector>
 #include <algorithm>
-#include "vigra/utilities.hxx"
-#include "vigra/numerictraits.hxx"
-#include "vigra/iteratortraits.hxx"
-#include "vigra/functortraits.hxx"
-#include "vigra/rgbvalue.hxx"
+#include "utilities.hxx"
+#include "numerictraits.hxx"
+#include "iteratortraits.hxx"
+#include "functortraits.hxx"
+#include "rgbvalue.hxx"
 
 namespace vigra {
 

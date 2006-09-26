@@ -38,12 +38,12 @@
 #ifndef VIGRA_CORNERDETECTION_HXX
 #define VIGRA_CORNERDETECTION_HXX
 
-#include <vigra/utilities.hxx>
-#include <vigra/numerictraits.hxx>
-#include <vigra/stdimage.hxx>
-#include <vigra/combineimages.hxx>
-#include <vigra/convolution.hxx>
-#include <vigra/functortraits.hxx>
+#include "utilities.hxx"
+#include "numerictraits.hxx"
+#include "stdimage.hxx"
+#include "combineimages.hxx"
+#include "convolution.hxx"
+#include "functortraits.hxx"
 
 namespace vigra {
 

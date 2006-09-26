@@ -38,12 +38,12 @@
 #ifndef VIGRA_STDIMAGE_HXX
 #define VIGRA_STDIMAGE_HXX
 
-#include "vigra/sized_int.hxx"
-#include "vigra/tuple.hxx"
-#include "vigra/basicimage.hxx"
-#include "vigra/iteratortraits.hxx"
-#include "vigra/accessor.hxx"
-#include "vigra/rgbvalue.hxx"
+#include "sized_int.hxx"
+#include "tuple.hxx"
+#include "basicimage.hxx"
+#include "iteratortraits.hxx"
+#include "accessor.hxx"
+#include "rgbvalue.hxx"
 
 namespace vigra { 
 

@@ -40,11 +40,11 @@
 
 #include <cmath>    // abs(double)
 #include <cstdlib>  // abs(int)
-#include "vigra/config.hxx"
-#include "vigra/numerictraits.hxx"
-#include "vigra/accessor.hxx"
-#include "vigra/tinyvector.hxx"
-#include "vigra/static_assert.hxx"
+#include "config.hxx"
+#include "numerictraits.hxx"
+#include "accessor.hxx"
+#include "tinyvector.hxx"
+#include "static_assert.hxx"
 
 namespace vigra {
 

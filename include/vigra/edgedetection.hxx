@@ -41,15 +41,15 @@
 #include <vector>
 #include <queue>
 #include <cmath>     // sqrt(), abs()
-#include "vigra/utilities.hxx"
-#include "vigra/numerictraits.hxx"
-#include "vigra/stdimage.hxx"
-#include "vigra/stdimagefunctions.hxx"
-#include "vigra/recursiveconvolution.hxx"
-#include "vigra/separableconvolution.hxx"
-#include "vigra/labelimage.hxx"
-#include "vigra/mathutil.hxx"
-#include "vigra/pixelneighborhood.hxx"
+#include "utilities.hxx"
+#include "numerictraits.hxx"
+#include "stdimage.hxx"
+#include "stdimagefunctions.hxx"
+#include "recursiveconvolution.hxx"
+#include "separableconvolution.hxx"
+#include "labelimage.hxx"
+#include "mathutil.hxx"
+#include "pixelneighborhood.hxx"
 
 
 namespace vigra {

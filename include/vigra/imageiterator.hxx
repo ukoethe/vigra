@@ -38,10 +38,10 @@
 #ifndef VIGRA_IMAGEITERATOR_HXX
 #define VIGRA_IMAGEITERATOR_HXX
 
-#include "vigra/utilities.hxx"
-#include "vigra/accessor.hxx"
-#include "vigra/iteratortraits.hxx"
-#include "vigra/metaprogramming.hxx"
+#include "utilities.hxx"
+#include "accessor.hxx"
+#include "iteratortraits.hxx"
+#include "metaprogramming.hxx"
 
 namespace vigra {
 

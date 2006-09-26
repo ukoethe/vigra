@@ -39,12 +39,12 @@
 
 #include <cmath>
 #include <functional>
-#include "vigra/stdimage.hxx"
-#include "vigra/copyimage.hxx"
-#include "vigra/transformimage.hxx"
-#include "vigra/combineimages.hxx"
-#include "vigra/numerictraits.hxx"
-#include "vigra/imagecontainer.hxx"
+#include "stdimage.hxx"
+#include "copyimage.hxx"
+#include "transformimage.hxx"
+#include "combineimages.hxx"
+#include "numerictraits.hxx"
+#include "imagecontainer.hxx"
 #include <fftw.h>
 
 namespace vigra {

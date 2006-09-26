@@ -38,8 +38,8 @@
 #ifndef VIGRA_ITERATORTRAITS_HXX
 #define VIGRA_ITERATORTRAITS_HXX
 
-#include <vigra/accessor.hxx>
-#include <vigra/imageiteratoradapter.hxx>
+#include "accessor.hxx"
+#include "imageiteratoradapter.hxx"
 
 namespace vigra {
 

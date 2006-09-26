@@ -39,12 +39,12 @@
 #define VIGRA_SEPARABLECONVOLUTION_HXX
 
 #include <cmath>
-#include "vigra/utilities.hxx"
-#include "vigra/numerictraits.hxx"
-#include "vigra/imageiteratoradapter.hxx"
-#include "vigra/bordertreatment.hxx"
-#include "vigra/gaussians.hxx"
-#include "vigra/array_vector.hxx"
+#include "utilities.hxx"
+#include "numerictraits.hxx"
+#include "imageiteratoradapter.hxx"
+#include "bordertreatment.hxx"
+#include "gaussians.hxx"
+#include "array_vector.hxx"
 
 namespace vigra {
 

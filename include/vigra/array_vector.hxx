@@ -39,7 +39,7 @@
 
 #include <memory>
 #include <algorithm>
-#include <vigra/memory.hxx>
+#include "memory.hxx"
 
 namespace vigra
 {

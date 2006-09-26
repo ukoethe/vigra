@@ -42,10 +42,10 @@
 #include <complex>
 #include <algorithm>
 #include <iosfwd>
-#include "vigra/error.hxx"
-#include "vigra/mathutil.hxx"
-#include "vigra/numerictraits.hxx"
-#include "vigra/array_vector.hxx"
+#include "error.hxx"
+#include "mathutil.hxx"
+#include "numerictraits.hxx"
+#include "array_vector.hxx"
 
 namespace vigra {
 

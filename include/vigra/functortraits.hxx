@@ -39,7 +39,7 @@
 #define VIGRA_FUNCTORTRAITS_HXX
 
 #include <functional>
-#include <vigra/metaprogramming.hxx>
+#include "metaprogramming.hxx"
 
 namespace vigra {
 

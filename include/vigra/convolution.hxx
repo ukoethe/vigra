@@ -39,11 +39,11 @@
 #define VIGRA_CONVOLUTION_HXX
 
 #include <functional>
-#include "vigra/stdconvolution.hxx"
-#include "vigra/separableconvolution.hxx"
-#include "vigra/recursiveconvolution.hxx"
-#include "vigra/nonlineardiffusion.hxx"
-#include "vigra/combineimages.hxx"
+#include "stdconvolution.hxx"
+#include "separableconvolution.hxx"
+#include "recursiveconvolution.hxx"
+#include "nonlineardiffusion.hxx"
+#include "combineimages.hxx"
 
 /** \page Convolution Functions to Convolve Images and Signals
 

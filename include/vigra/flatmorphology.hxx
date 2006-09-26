@@ -40,7 +40,7 @@
 
 #include <cmath>
 #include <vector>
-#include "vigra/utilities.hxx"
+#include "utilities.hxx"
 
 namespace vigra {
 

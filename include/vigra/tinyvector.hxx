@@ -41,10 +41,10 @@
 #include <cmath>    // abs(double)
 #include <cstdlib>  // abs(int)
 #include <iosfwd>   // ostream
-#include "vigra/config.hxx"
-#include "vigra/error.hxx"
-#include "vigra/numerictraits.hxx"
-#include "vigra/mathutil.hxx"
+#include "config.hxx"
+#include "error.hxx"
+#include "numerictraits.hxx"
+#include "mathutil.hxx"
 
 namespace vigra {
 

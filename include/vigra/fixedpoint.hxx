@@ -37,10 +37,10 @@
 #ifndef VIGRA_FIXEDPOINT_HXX
 #define VIGRA_FIXEDPOINT_HXX
 
-#include "vigra/mathutil.hxx"
-#include "vigra/static_assert.hxx"
-#include "vigra/error.hxx"
-#include "vigra/numerictraits.hxx"
+#include "mathutil.hxx"
+#include "static_assert.hxx"
+#include "error.hxx"
+#include "numerictraits.hxx"
 
 namespace vigra {
 

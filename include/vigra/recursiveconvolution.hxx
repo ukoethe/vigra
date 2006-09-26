@@ -40,10 +40,10 @@
 
 #include <cmath>
 #include <vector>
-#include "vigra/utilities.hxx"
-#include "vigra/numerictraits.hxx"
-#include "vigra/imageiteratoradapter.hxx"
-#include "vigra/bordertreatment.hxx"
+#include "utilities.hxx"
+#include "numerictraits.hxx"
+#include "imageiteratoradapter.hxx"
+#include "bordertreatment.hxx"
 
 namespace vigra {
 

@@ -41,9 +41,9 @@
 #include <cmath>
 #include <iosfwd>
 #include <iomanip>
-#include "vigra/multi_array.hxx"
-#include "vigra/mathutil.hxx"
-#include "vigra/numerictraits.hxx"
+#include "multi_array.hxx"
+#include "mathutil.hxx"
+#include "numerictraits.hxx"
 
 
 namespace vigra

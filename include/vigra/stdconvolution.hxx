@@ -39,11 +39,11 @@
 #define VIGRA_STDCONVOLUTION_HXX
 
 #include <cmath>
-#include "vigra/stdimage.hxx"
-#include "vigra/bordertreatment.hxx"
-#include "vigra/separableconvolution.hxx"
-#include "vigra/utilities.hxx"
-#include "vigra/sized_int.hxx"
+#include "stdimage.hxx"
+#include "bordertreatment.hxx"
+#include "separableconvolution.hxx"
+#include "utilities.hxx"
+#include "sized_int.hxx"
 
 namespace vigra {
 

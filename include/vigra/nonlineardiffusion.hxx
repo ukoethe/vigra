@@ -38,10 +38,10 @@
 #define VIGRA_NONLINEARDIFFUSION_HXX
 
 #include <vector>
-#include "vigra/stdimage.hxx"
-#include "vigra/stdimagefunctions.hxx"
-#include "vigra/imageiteratoradapter.hxx"
-#include "vigra/functortraits.hxx"
+#include "stdimage.hxx"
+#include "stdimagefunctions.hxx"
+#include "imageiteratoradapter.hxx"
+#include "functortraits.hxx"
 
 namespace vigra {
 

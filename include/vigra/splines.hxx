@@ -38,11 +38,11 @@
 #define VIGRA_SPLINES_HXX
 
 #include <cmath>
-#include "vigra/config.hxx"
-#include "vigra/mathutil.hxx"
-#include "vigra/polynomial.hxx"
-#include "vigra/array_vector.hxx"
-#include "vigra/fixedpoint.hxx"
+#include "config.hxx"
+#include "mathutil.hxx"
+#include "polynomial.hxx"
+#include "array_vector.hxx"
+#include "fixedpoint.hxx"
 
 namespace vigra {
 

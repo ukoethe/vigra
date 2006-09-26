@@ -38,10 +38,10 @@
 #define VIGRA_RESAMPLING_CONVOLUTION_HXX
 
 #include <cmath>
-#include "vigra/stdimage.hxx"
-#include "vigra/array_vector.hxx"
-#include "vigra/rational.hxx"
-#include "vigra/functortraits.hxx"
+#include "stdimage.hxx"
+#include "array_vector.hxx"
+#include "rational.hxx"
+#include "functortraits.hxx"
 
 namespace vigra {
 

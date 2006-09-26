@@ -38,18 +38,18 @@
 #ifndef VIGRA_NOISE_NORMALIZATION_HXX
 #define VIGRA_NOISE_NORMALIZATION_HXX
 
-#include "vigra/utilities.hxx"
-#include "vigra/tinyvector.hxx"
-#include "vigra/stdimage.hxx"
-#include "vigra/transformimage.hxx"
-#include "vigra/combineimages.hxx"
-#include "vigra/localminmax.hxx"
-#include "vigra/functorexpression.hxx"
-#include "vigra/numerictraits.hxx"
-#include "vigra/separableconvolution.hxx"
-#include "vigra/linear_solve.hxx"
-#include "vigra/array_vector.hxx"
-#include "vigra/static_assert.hxx"
+#include "utilities.hxx"
+#include "tinyvector.hxx"
+#include "stdimage.hxx"
+#include "transformimage.hxx"
+#include "combineimages.hxx"
+#include "localminmax.hxx"
+#include "functorexpression.hxx"
+#include "numerictraits.hxx"
+#include "separableconvolution.hxx"
+#include "linear_solve.hxx"
+#include "array_vector.hxx"
+#include "static_assert.hxx"
 #include <algorithm>
 
 namespace vigra {

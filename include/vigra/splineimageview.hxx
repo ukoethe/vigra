@@ -37,15 +37,15 @@
 #ifndef VIGRA_SPLINEIMAGEVIEW_HXX
 #define VIGRA_SPLINEIMAGEVIEW_HXX
 
-#include "vigra/mathutil.hxx"
-#include "vigra/recursiveconvolution.hxx"
-#include "vigra/splines.hxx"
-#include "vigra/array_vector.hxx"
-#include "vigra/basicimage.hxx"
-#include "vigra/copyimage.hxx"
-#include "vigra/tinyvector.hxx"
-#include "vigra/fixedpoint.hxx"
-#include "vigra/multi_array.hxx"
+#include "mathutil.hxx"
+#include "recursiveconvolution.hxx"
+#include "splines.hxx"
+#include "array_vector.hxx"
+#include "basicimage.hxx"
+#include "copyimage.hxx"
+#include "tinyvector.hxx"
+#include "fixedpoint.hxx"
+#include "multi_array.hxx"
 
 namespace vigra {
 

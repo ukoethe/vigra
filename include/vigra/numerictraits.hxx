@@ -41,8 +41,8 @@
 #include <limits.h>
 #include <cfloat>
 #include <complex>
-#include "vigra/metaprogramming.hxx"
-#include "vigra/sized_int.hxx"
+#include "metaprogramming.hxx"
+#include "sized_int.hxx"
 
 /********************************************************/
 /*                                                      */

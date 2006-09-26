@@ -39,7 +39,7 @@
 #define VIGRA_DISTANCETRANSFORM_HXX
 
 #include <cmath>
-#include "vigra/stdimage.hxx"
+#include "stdimage.hxx"
 
 namespace vigra {
 

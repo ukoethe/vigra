@@ -46,8 +46,8 @@
 #include <memory>
 #include <string>
 #include <vector>
-#include "vigra/config.hxx"
-#include "vigra/sized_int.hxx"
+#include "config.hxx"
+#include "sized_int.hxx"
 
 // possible pixel types:
 // "undefined", "UINT8", "UINT16", "INT16", "UINT32", "INT32", "FLOAT", "DOUBLE"

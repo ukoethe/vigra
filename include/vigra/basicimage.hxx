@@ -39,9 +39,9 @@
 
 #include <memory>
 #include <algorithm>
-#include "vigra/utilities.hxx"
-#include "vigra/iteratortraits.hxx"
-#include "vigra/accessor.hxx"
+#include "utilities.hxx"
+#include "iteratortraits.hxx"
+#include "accessor.hxx"
 
 namespace vigra {
 

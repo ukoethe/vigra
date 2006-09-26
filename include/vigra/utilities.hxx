@@ -38,12 +38,12 @@
 #ifndef VIGRA_BASICS_HXX
 #define VIGRA_BASICS_HXX
 
-#include "vigra/config.hxx"
-#include "vigra/error.hxx"
-#include "vigra/metaprogramming.hxx"
-#include "vigra/tuple.hxx"
-#include "vigra/diff2d.hxx"
-#include "vigra/mathutil.hxx"
+#include "config.hxx"
+#include "error.hxx"
+#include "metaprogramming.hxx"
+#include "tuple.hxx"
+#include "diff2d.hxx"
+#include "mathutil.hxx"
 
 /*! \page Utilities Utilities
     Basic helper functionality needed throughout.

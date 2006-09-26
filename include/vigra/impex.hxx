@@ -55,17 +55,17 @@
 #pragma warning (disable: 4267)
 #endif
 
-#include "vigra/sized_int.hxx"
-#include "vigra/stdimage.hxx"
-#include "vigra/tinyvector.hxx"
-#include "vigra/imageinfo.hxx"
-#include "vigra/numerictraits.hxx"
-#include "vigra/codec.hxx"
-#include "vigra/accessor.hxx"
-#include "vigra/inspectimage.hxx"
-#include "vigra/transformimage.hxx"
-#include "vigra/copyimage.hxx"
-#include "vigra/multi_array.hxx"
+#include "sized_int.hxx"
+#include "stdimage.hxx"
+#include "tinyvector.hxx"
+#include "imageinfo.hxx"
+#include "numerictraits.hxx"
+#include "codec.hxx"
+#include "accessor.hxx"
+#include "inspectimage.hxx"
+#include "transformimage.hxx"
+#include "copyimage.hxx"
+#include "multi_array.hxx"
 
 // TODO
 // next refactoring: pluggable conversion algorithms

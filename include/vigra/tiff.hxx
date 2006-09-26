@@ -37,9 +37,9 @@
 #ifndef VIGRA_TIFF_HXX
 #define VIGRA_TIFF_HXX
 
-#include "vigra/utilities.hxx"
-#include "vigra/numerictraits.hxx"
-#include "vigra/rgbvalue.hxx"
+#include "utilities.hxx"
+#include "numerictraits.hxx"
+#include "rgbvalue.hxx"
 extern "C"
 {
 #include <tiff.h>

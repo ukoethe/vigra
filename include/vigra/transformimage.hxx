@@ -38,11 +38,11 @@
 #ifndef VIGRA_TRANSFORMIMAGE_HXX
 #define VIGRA_TRANSFORMIMAGE_HXX
 
-#include "vigra/utilities.hxx"
-#include "vigra/numerictraits.hxx"
-#include "vigra/iteratortraits.hxx"
-#include "vigra/rgbvalue.hxx"
-#include "vigra/functortraits.hxx"
+#include "utilities.hxx"
+#include "numerictraits.hxx"
+#include "iteratortraits.hxx"
+#include "rgbvalue.hxx"
+#include "functortraits.hxx"
 
 namespace vigra {
 

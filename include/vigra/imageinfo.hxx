@@ -46,10 +46,10 @@
 
 #include <memory>
 #include <string>
-#include "vigra/config.hxx"
-#include "vigra/error.hxx"
-#include "vigra/diff2d.hxx"
-#include "vigra/codec.hxx"
+#include "config.hxx"
+#include "error.hxx"
+#include "diff2d.hxx"
+#include "codec.hxx"
 
 namespace vigra
 {

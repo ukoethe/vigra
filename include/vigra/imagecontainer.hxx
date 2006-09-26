@@ -37,8 +37,8 @@
 #ifndef VIGRA_IMAGECONTAINER_HXX
 #define VIGRA_IMAGECONTAINER_HXX
 
-#include "vigra/utilities.hxx"
-#include "vigra/array_vector.hxx"
+#include "utilities.hxx"
+#include "array_vector.hxx"
 
 namespace vigra {
 

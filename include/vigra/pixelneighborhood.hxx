@@ -37,7 +37,7 @@
 #ifndef VIGRA_PIXELNEIGHBORHOOD_HXX
 #define VIGRA_PIXELNEIGHBORHOOD_HXX
 
-#include <vigra/utilities.hxx>
+#include "utilities.hxx"
 
 namespace vigra {
 

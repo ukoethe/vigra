@@ -38,9 +38,9 @@
 #ifndef VIGRA_COMBINEIMAGES_HXX
 #define VIGRA_COMBINEIMAGES_HXX
 
-#include "vigra/utilities.hxx"
-#include "vigra/numerictraits.hxx"
-#include "vigra/functortraits.hxx"
+#include "utilities.hxx"
+#include "numerictraits.hxx"
+#include "functortraits.hxx"
 #include <cmath>
 
 namespace vigra {

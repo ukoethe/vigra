@@ -38,9 +38,9 @@
 #define VIGRA_WATERSHEDS_HXX
 
 #include <functional>
-#include "vigra/mathutil.hxx"
-#include "vigra/stdimage.hxx"
-#include "vigra/pixelneighborhood.hxx"
+#include "mathutil.hxx"
+#include "stdimage.hxx"
+#include "pixelneighborhood.hxx"
 
 namespace vigra {
 

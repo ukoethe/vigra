@@ -38,8 +38,8 @@
 #ifndef VIGRA_LINEAR_ALGREBRA_HXX
 #define VIGRA_LINEAR_ALGREBRA_HXX
 
-#include "vigra/matrix.hxx"
-#include "vigra/linear_solve.hxx"
-#include "vigra/eigensystem.hxx"
+#include "matrix.hxx"
+#include "linear_solve.hxx"
+#include "eigensystem.hxx"
 
 #endif // VIGRA_LINEAR_ALGREBRA_HXX

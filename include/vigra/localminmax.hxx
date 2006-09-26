@@ -40,11 +40,11 @@
 
 #include <vector>
 #include <functional>
-#include "vigra/utilities.hxx"
-#include "vigra/stdimage.hxx"
-#include "vigra/initimage.hxx"
-#include "vigra/labelimage.hxx"
-#include "vigra/pixelneighborhood.hxx"
+#include "utilities.hxx"
+#include "stdimage.hxx"
+#include "initimage.hxx"
+#include "labelimage.hxx"
+#include "pixelneighborhood.hxx"
 
 namespace vigra {
 

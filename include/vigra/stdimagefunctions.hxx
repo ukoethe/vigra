@@ -85,11 +85,11 @@
     see also: \ref FunctorExpressions "Automatic Functor Creation"
 */
 
-#include "vigra/initimage.hxx"
-#include "vigra/inspectimage.hxx"
-#include "vigra/copyimage.hxx"
-#include "vigra/transformimage.hxx"
-#include "vigra/combineimages.hxx"
-#include "vigra/resizeimage.hxx"
+#include "initimage.hxx"
+#include "inspectimage.hxx"
+#include "copyimage.hxx"
+#include "transformimage.hxx"
+#include "combineimages.hxx"
+#include "resizeimage.hxx"
 
 #endif // VIGRA_STDIMAGEFUNCTIONS_HXX
