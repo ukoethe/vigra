@@ -30,37 +30,37 @@
 /*    HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,      */
 /*    WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING      */
 /*    FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR     */
-/*    OTHER DEALINGS IN THE SOFTWARE.                                   */                
+/*    OTHER DEALINGS IN THE SOFTWARE.                                   */
 /*                                                                      */
 /************************************************************************/
 
 #ifndef VIGRA_ARRAY_VECTOR_HXX
 #define VIGRA_ARRAY_VECTOR_HXX
 
+#include "memory.hxx"
 #include <memory>
 #include <algorithm>
-#include "memory.hxx"
 
 namespace vigra
 {
 
 /** Replacement for <tt>std::vector</tt>.
-    
+
     This template implements the same functionality as <tt>std::vector</tt>.
-    However, it gives two usful guarantees, that <tt>std::vector</tt> fails 
+    However, it gives two usful guarantees, that <tt>std::vector</tt> fails
     to provide:
-    
+
     <ul>
     <li>The memory is always allocated as one contigous piece</li>
     <li>The iterator is always a <TT>T *</TT> </li>
     </ul>
-    
+
     This means that memory managed by <tt>ArrayVector</tt> can be passed
     to algorithms that expect raw memory. This is especially important
     when lagacy or C code has to be called, but it is also useful for certain
     optimizations.
-    
-    Refer to the documentation of <tt>std::vector</tt> for a detailed 
+
+    Refer to the documentation of <tt>std::vector</tt> for a detailed
     description of <tt>ArrayVector</tt> functionality.
 
     <b>\#include</b> "<a href="array_vector_8hxx-source.html">vigra/array_vector.hxx</a>"<br>
@@ -148,12 +148,12 @@ public:
     }
 
     inline reverse_iterator rend()
-    {    
+    {
         return (reverse_iterator(begin()));
     }
 
     inline const_reverse_iterator rend() const
-    {    
+    {
         return (const_reverse_iterator(begin()));
     }
 
@@ -271,7 +271,7 @@ ArrayVector<T, Alloc>::ArrayVector( size_type size, Alloc const & alloc)
 }
 
 template <class T, class Alloc>
-ArrayVector<T, Alloc>::ArrayVector( size_type size, 
+ArrayVector<T, Alloc>::ArrayVector( size_type size,
                          value_type const & initial, Alloc const & alloc)
 : alloc_(alloc),
   size_(size),
