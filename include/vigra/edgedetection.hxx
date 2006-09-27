@@ -50,6 +50,7 @@
 #include "labelimage.hxx"
 #include "mathutil.hxx"
 #include "pixelneighborhood.hxx"
+#include "linear_solve.hxx"
 
 
 namespace vigra {
@@ -1193,108 +1194,42 @@ class Edgel
 };
 
 template <class Image1, class Image2, class BackInsertable>
-void internalCannyFindEdgels(Image1 const & dx,
-                             Image1 const & dy,
+void internalCannyFindEdgels(Image1 const & gx,
+                             Image1 const & gy,
                              Image2 const & magnitude,
                              BackInsertable & edgels)
 {
     typedef typename Image1::value_type PixelType;
+    double t = 0.5 / VIGRA_CSTD::sin(M_PI/8.0);
     
-    PixelType zero = NumericTraits<PixelType>::zero();
-    double tan22_5 = M_SQRT2 - 1.0;
-    
-    for(int y=1; y<dx.height()-1; ++y)
+    for(int y=1; y<gx.height()-1; ++y)
     {
-        for(int x=1; x<dx.width()-1; ++x)
+        for(int x=1; x<gx.width()-1; ++x)
         {
-            bool maximum_found = false;
-            Edgel edgel;
+            PixelType gradx = gx(x,y);
+            PixelType grady = gy(x,y);
+            double mag = magnitude(x, y);
             
-            PixelType gradx = dx(x,y);
-            PixelType grady = dy(x,y);
+            int dx = (int)VIGRA_CSTD::floor(gradx*t/mag + 0.5);
+            int dy = (int)VIGRA_CSTD::floor(grady*t/mag + 0.5);
             
-            // find out quadrant
-            if(abs(grady) < tan22_5*abs(gradx))
-            {
-                // north-south edge
-                PixelType m1 = magnitude(x-1, y);
-                PixelType m2 = magnitude(x, y);
-                PixelType m3 = magnitude(x+1, y);
+            int x1 = x - dx,
+                x2 = x + dx,
+                y1 = y - dy,
+                y2 = y + dy;
                 
-                if(m1 < m2 && m3 <= m2)
-                {
-                    edgel.y = y;
-                
-                    // local maximum => quadratic interpolation of sub-pixel location
-                    PixelType del = (m1 - m3) / 2.0;
-                    del /= (m1 + m3 - 2.0*m2);
-                    edgel.x = x + del;
-                    edgel.strength = m2;
-                    
-                    maximum_found = true;                    
-                }
-            }
-            else if(abs(gradx) < tan22_5*abs(grady))
-            {
-                // west-east edge
-                PixelType m1 = magnitude(x, y-1);
-                PixelType m2 = magnitude(x, y);
-                PixelType m3 = magnitude(x, y+1);
-                
-                if(m1 < m2 && m3 <= m2)
-                {
-                    edgel.x = x;
-                
-                    // local maximum => quadratic interpolation of sub-pixel location
-                    PixelType del = (m1 - m3) / 2.0;
-                    del /= (m1 + m3 - 2.0*m2);
-                    edgel.y = y + del;
-                    edgel.strength = m2;
-                    
-                    maximum_found = true;                    
-                }
-            }
-            else if(gradx*grady < zero)
-            {
-                // north-west-south-east edge
-                PixelType m1 = magnitude(x+1, y-1);
-                PixelType m2 = magnitude(x, y);
-                PixelType m3 = magnitude(x-1, y+1);
-                
-                if(m1 < m2 && m3 <= m2)
-                {
-                    // local maximum => quadratic interpolation of sub-pixel location
-                    PixelType del = (m1 - m3) / 2.0;
-                    del /= (m1 + m3 - 2.0*m2);
-                    edgel.x = x - del;
-                    edgel.y = y + del;
-                    edgel.strength = m2;
-                    
-                    maximum_found = true;                    
-                }
-            }
-            else
-            {
-                // north-east-south-west edge
-                PixelType m1 = magnitude(x-1, y-1);
-                PixelType m2 = magnitude(x, y);
-                PixelType m3 = magnitude(x+1, y+1);
-                
-                if(m1 < m2 && m3 <= m2)
-                {
-                    // local maximum => quadratic interpolation of sub-pixel location
-                    PixelType del = (m1 - m3) / 2.0;
-                    del /= (m1 + m3 - 2.0*m2);
-                    edgel.x = x + del;
-                    edgel.y = y + del;
-                    edgel.strength = m2;
-                    
-                    maximum_found = true;                    
-                }
-            }
+            PixelType m1 = magnitude(x1, y1);
+            PixelType m3 = magnitude(x2, y2);
             
-            if(maximum_found)
+            if(m1 < mag && m3 <= mag)
             {
+                Edgel edgel;
+        
+                // local maximum => quadratic interpolation of sub-pixel location
+                PixelType del = (m1 - m3) / 2.0 / (m1 + m3 - 2.0*mag);
+                edgel.x = x + dx*del;
+                edgel.y = y + dy*del;
+                edgel.strength = mag;
                 double orientation = VIGRA_CSTD::atan2(-grady, gradx) - M_PI * 1.5;
                 if(orientation < 0.0)
                     orientation += 2.0*M_PI;
@@ -1330,19 +1265,19 @@ void internalCannyFindEdgels(Image1 const & dx,
     pass arguments explicitly:
     \code
     namespace vigra {
-        template <class SrcIterator, class SrcAccessor>
+        template <class SrcIterator, class SrcAccessor, class BackInsertable>
         void cannyEdgelList(SrcIterator ul, SrcIterator lr, SrcAccessor src,
-                                std::vector<Edgel> & edgels, double scale);
+                            BackInsertable & edgels, double scale);
     }
     \endcode
     
     use argument objects in conjunction with \ref ArgumentObjectFactories:
     \code
     namespace vigra {
-        template <class SrcIterator, class SrcAccessor>
+        template <class SrcIterator, class SrcAccessor, class BackInsertable>
         void 
         cannyEdgelList(triple<SrcIterator, SrcIterator, SrcAccessor> src,
-                       std::vector<Edgel> & edgels, double scale);
+                       BackInsertable & edgels, double scale);
     }
     \endcode
     
@@ -1369,6 +1304,9 @@ void internalCannyFindEdgels(Image1 const & dx,
     SrcAccessor src_accessor;
     
     src_accessor(src_upperleft);
+    
+    BackInsertable edgels;
+    edgels.push_back(Edgel());
     \endcode
     
     SrcAccessor::value_type must be a type convertible to float
@@ -1419,7 +1357,6 @@ cannyEdgelList(triple<SrcIterator, SrcIterator, SrcAccessor> src,
 {
     cannyEdgelList(src.first, src.second, src.third, edgels, scale);
 }
-
 
 /********************************************************/
 /*                                                      */
@@ -2012,6 +1949,166 @@ inline void cannyEdgeImageWithThinning(
                                dest.first, dest.second,
                                scale, gradient_threshold, edge_marker, true);
 }
+
+/********************************************************/
+
+template <class Image1, class Image2, class BackInsertable>
+void internalCannyFindEdgels3x3(Image1 const & grad,
+                                Image2 const & mask,
+                                BackInsertable & edgels)
+{
+    typedef typename Image1::value_type PixelType;
+    typedef typename PixelType::value_type ValueType;
+    
+    for(int y=1; y<grad.height()-1; ++y)
+    {
+        for(int x=1; x<grad.width()-1; ++x)
+        {
+            if(!mask(x,y))
+                continue;
+                
+            ValueType gradx = grad(x,y)[0];
+            ValueType grady = grad(x,y)[1];
+            double mag = hypot(gradx, grady),
+                   c = gradx / mag,
+                   s = grady / mag;
+
+            Matrix<double> ml(3,3), mr(3,1), l(3,1), r(3,1);
+            l(0,0) = 1.0;
+            
+            for(int yy = -1; yy <= 1; ++yy)
+            {
+                for(int xx = -1; xx <= 1; ++xx)
+                {
+                    double u = c*xx + s*yy;
+                    double v = norm(grad(x+xx, y+yy));
+                    l(1,0) = u;
+                    l(2,0) = u*u;
+                    ml += outer(l);
+                    mr += v*l;
+                }
+            }
+            
+            linearSolve(ml, mr, r);
+
+            Edgel edgel;        
+        
+            // local maximum => quadratic interpolation of sub-pixel location
+            ValueType del = -r(1,0) / 2.0 / r(2,0);
+            edgel.x = x + c*del;
+            edgel.y = y + s*del;
+            edgel.strength = mag;
+            double orientation = VIGRA_CSTD::atan2(-grady, gradx) - M_PI * 1.5;
+            if(orientation < 0.0)
+                orientation += 2.0*M_PI;
+            edgel.orientation = orientation;
+            edgels.push_back(edgel);
+        }
+    }
+}
+
+
+/********************************************************/
+/*                                                      */
+/*                   cannyEdgelList3x3                  */
+/*                                                      */
+/********************************************************/
+
+/** \brief Improved implementation of Canny's edge detector.
+
+    This operator first computes pixels which are crossed by the edge using
+    cannyEdgeImageWithThinning(). The gradient magnitude in the 3x3 neighborhood of these
+    pixels are then projected onto the normal of the edge (as determined
+    by the gradient direction). The edgel's subpixel location is found by fitting a 
+    parabola through the 9 gradient values and determining the parabola's tip. 
+    A new \ref Edgel is appended to the given vector of <TT>edgels</TT>. Since the parabola
+    is fitted to 9 points rather than 3 points as in cannyEdgelList(), the accuracy is higher.
+    
+    <b> Declarations:</b>
+    
+    pass arguments explicitly:
+    \code
+    namespace vigra {
+        template <class SrcIterator, class SrcAccessor, class BackInsertable>
+        void cannyEdgelList3x3(SrcIterator ul, SrcIterator lr, SrcAccessor src,
+                               BackInsertable & edgels, double scale);
+    }
+    \endcode
+    
+    use argument objects in conjunction with \ref ArgumentObjectFactories:
+    \code
+    namespace vigra {
+        template <class SrcIterator, class SrcAccessor, class BackInsertable>
+        void 
+        cannyEdgelList3x3(triple<SrcIterator, SrcIterator, SrcAccessor> src,
+                          BackInsertable & edgels, double scale);
+    }
+    \endcode
+    
+    <b> Usage:</b>
+    
+    <b>\#include</b> "<a href="edgedetection_8hxx-source.html">vigra/edgedetection.hxx</a>"<br>
+    Namespace: vigra
+    
+    \code
+    vigra::BImage src(w,h);
+    
+    // empty edgel list
+    std::vector<vigra::Edgel> edgels;
+    ...
+    
+    // find edgels at scale 0.8  
+    vigra::cannyEdgelList3x3(srcImageRange(src), edgels, 0.8);
+    \endcode
+
+    <b> Required Interface:</b>
+    
+    \code
+    SrcImageIterator src_upperleft;
+    SrcAccessor src_accessor;
+    
+    src_accessor(src_upperleft);
+    
+    BackInsertable edgels;
+    edgels.push_back(Edgel());
+    \endcode
+    
+    SrcAccessor::value_type must be a type convertible to float
+    
+    <b> Preconditions:</b>
+    
+    \code
+    scale > 0
+    \endcode
+*/
+template <class SrcIterator, class SrcAccessor, class BackInsertable>
+void cannyEdgelList3x3(SrcIterator ul, SrcIterator lr, SrcAccessor src,
+                        BackInsertable & edgels, double scale)
+{
+    int w = lr.x - ul.x;
+    int h = lr.y - ul.y;
+
+    typedef typename NumericTraits<typename SrcAccessor::value_type>::RealPromote TmpType;
+    BasicImage<TinyVector<TmpType, 2> > grad(lr-ul);
+    gaussianGradient(srcIterRange(ul, lr, src), destImage(grad), scale);
+    
+    UInt8Image edges(lr-ul);
+    cannyEdgeImageFromGradWithThinning(srcImageRange(grad), destImage(edges), 
+                                       0.0, 1, false);    
+    
+    // find edgels
+    internalCannyFindEdgels3x3(grad, edges, edgels);
+}
+
+template <class SrcIterator, class SrcAccessor, class BackInsertable>
+inline void 
+cannyEdgelList3x3(triple<SrcIterator, SrcIterator, SrcAccessor> src,
+               BackInsertable & edgels, double scale)
+{
+    cannyEdgelList3x3(src.first, src.second, src.third, edgels, scale);
+}
+
+
 
 //@}
 
