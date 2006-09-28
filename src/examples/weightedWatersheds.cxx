@@ -48,10 +48,6 @@
 
 using namespace vigra; 
 
-#if defined(__GNUC__) && __GNUC__ < 3
-using namespace vigra::functor; 
-#endif
-
 // define a functor that calsulates the squared magnitude of the gradient
 // given the x- and y- components of the gradient
 struct GradientSquaredMagnitudeFunctor
