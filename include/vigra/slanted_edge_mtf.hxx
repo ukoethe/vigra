@@ -201,7 +201,7 @@ prepareSlantedEdgeInput(SrcIterator sul, SrcIterator slr, SrcAccessor src, DestI
 template <class Image>
 void slantedEdgeShadingCorrection(Image & i, unsigned int edgeWidth)
 {
-    using namespace vigra::functor;
+    using namespace functor;
 
     // after prepareSlantedEdgeInput(), the white region is on the left
     // find a plane that approximates the logarithm of the white ROI

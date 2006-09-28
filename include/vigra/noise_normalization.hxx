@@ -450,7 +450,7 @@ symmetricDifferenceSquaredMagnitude(
      SrcIterator sul, SrcIterator slr, SrcAccessor src,
      DestIterator dul, DestAccessor dest)
 {
-    using namespace vigra::functor;
+    using namespace functor;
     int w = slr.x - sul.x;
     int h = slr.y - sul.y;
 
@@ -566,9 +566,11 @@ void noiseVarianceClusterAveraging(Vector1 & noise, Vector2 & clusters,
 
         std::sort(i1, i2, SortNoiseByVariance());
 
-        std::size_t size = std::max<std::size_t>(1,
-                                    std::min<std::size_t>(i2 - i1,
-                                                          static_cast<std::size_t>(VIGRA_CSTD::ceil(quantile*(i2 - i1)))));
+        std::size_t size = static_cast<std::size_t>(VIGRA_CSTD::ceil(quantile*(i2 - i1)));
+        if(static_cast<std::size_t>(i2 - i1) < size)
+            size = i2 - i1;
+        if(size < 1)
+            size = 1;
         i2 = i1 + size;
 
         double mean = 0.0,
