@@ -1974,6 +1974,13 @@ operator,(UnaryAnalyser<EXPR1> const & e1,
 
 } // namespace functor
 
+#if defined(__GNUC__) &&  __GNUC__ < 3
+using functor::Arg1;
+using functor::Arg2;
+using functor::Arg3;
+using functor::Param;
+#endif
+
 template <class T>
 class FunctorTraits<functor::UnaryFunctor<T> >
 : public FunctorTraitsBase<functor::UnaryFunctor<T> >
