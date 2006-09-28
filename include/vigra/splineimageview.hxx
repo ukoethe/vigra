@@ -70,7 +70,7 @@ namespace vigra {
     in the constructor originate from a \ref vigra::BasicImage. In addition, these specializations
     provide function <tt>unchecked(...)</tt> that do not perform bounds checking. If the original image
     is not a variant of \ref vigra::BasicImage, one can customize the internal representation by 
-    using \ref vigra::SplineImageview0 or \ref vigra::SplineImageview1.
+    using \ref vigra::SplineImageView0 or \ref vigra::SplineImageView1.
     
     <b>Usage:</b>
     
