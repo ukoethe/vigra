@@ -3,7 +3,9 @@ include ../config/Makefile.include
 all::
 	@cd impex ; $(MAKE) all ; cd ..
 
-install::
+install:: impex
+
+impex::
 	@cd impex ; $(MAKE) install ; cd ..
 
 examples::

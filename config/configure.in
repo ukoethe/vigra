@@ -8,11 +8,14 @@ MAJOR_VERSION=1
 MINOR_VERSION=4
 MICRO_VERSION=0
 
+SHAREDLIB_VERSION=`echo "$MAJOR_VERSION$MINOR_VERSION$MICRO_VERSION" | sed 's/[^0-9]//g'`
+
 echo "configuring VIGRA $MAJOR_VERSION.$MINOR_VERSION.$MICRO_VERSION"
 
 AC_SUBST(MAJOR_VERSION)dnl
 AC_SUBST(MINOR_VERSION)dnl
 AC_SUBST(MICRO_VERSION)dnl
+AC_SUBST(SHAREDLIB_VERSION)dnl
 
 dnl-------------------------------------------------------------------
 dnl                   determine directories
