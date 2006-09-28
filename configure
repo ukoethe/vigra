@@ -464,7 +464,7 @@ ac_includes_default="\
 # include <unistd.h>
 #endif"
 
-ac_subst_vars='SHELL PATH_SEPARATOR PACKAGE_NAME PACKAGE_TARNAME PACKAGE_VERSION PACKAGE_STRING PACKAGE_BUGREPORT exec_prefix prefix program_transform_name bindir libdir includedir docdir build_alias host_alias target_alias DEFS ECHO_C ECHO_N ECHO_T LIBS MAJOR_VERSION MINOR_VERSION MICRO_VERSION build build_cpu build_vendor build_os host host_cpu host_vendor host_os target target_cpu target_vendor target_os CC CFLAGS LDFLAGS CPPFLAGS ac_ct_CC EXEEXT OBJEXT CXX CXXFLAGS ac_ct_CXX EGREP INSTALL_PROGRAM INSTALL_SCRIPT INSTALL_DATA LN_S ECHO AR ac_ct_AR RANLIB ac_ct_RANLIB STRIP ac_ct_STRIP CPP CXXCPP F77 FFLAGS ac_ct_F77 LIBTOOL PKGCONFIG LIBPNGCONFIG PYTHON vigra_srcdir vigra_builddir TIFF_LIB JPEG_LIB PNG_LIB FFTW_LIB FFTW_INCLUDES IMPEX_LIB IMPEX_DEPLIBS VIGRA_INCLUDES VIGRA_INCPATH POSTINSTALLCPPFLAGS BOOST_PYTHON_LIB BOOST_INCLUDES PYTHON_INSTALLDIR LIBCPPFLAGS LIBOBJS LTLIBOBJS'
+ac_subst_vars='SHELL PATH_SEPARATOR PACKAGE_NAME PACKAGE_TARNAME PACKAGE_VERSION PACKAGE_STRING PACKAGE_BUGREPORT exec_prefix prefix program_transform_name bindir libdir includedir docdir build_alias host_alias target_alias DEFS ECHO_C ECHO_N ECHO_T LIBS MAJOR_VERSION MINOR_VERSION MICRO_VERSION SHAREDLIB_VERSION build build_cpu build_vendor build_os host host_cpu host_vendor host_os target target_cpu target_vendor target_os CC CFLAGS LDFLAGS CPPFLAGS ac_ct_CC EXEEXT OBJEXT CXX CXXFLAGS ac_ct_CXX EGREP INSTALL_PROGRAM INSTALL_SCRIPT INSTALL_DATA LN_S ECHO AR ac_ct_AR RANLIB ac_ct_RANLIB STRIP ac_ct_STRIP CPP CXXCPP F77 FFLAGS ac_ct_F77 LIBTOOL PKGCONFIG LIBPNGCONFIG PYTHON vigra_srcdir vigra_builddir TIFF_LIB JPEG_LIB PNG_LIB FFTW_LIB FFTW_INCLUDES IMPEX_LIB IMPEX_DEPLIBS VIGRA_INCLUDES VIGRA_INCPATH POSTINSTALLCPPFLAGS BOOST_PYTHON_LIB BOOST_INCLUDES PYTHON_INSTALLDIR LIBCPPFLAGS LIBOBJS LTLIBOBJS'
 ac_subst_files=''
 
 # Initialize some variables set by options.
@@ -1049,12 +1049,6 @@ Optional Packages:
         --with-fftwlib=dir : the fftw package's lib directory
         --with-fftwinc=dir : the fftw package's include directory
 
---with-python:  Build the VIGRA Python bindings (default: no).
-                The python executable must be in the path or given by $PYTHON
---with-pythoninstall=dir:  install the VIGRA Python modules in 'dir' instead of the
-                           default Python module directory (requires adding 'dir'
-                           to $PYTHONPATH)
-
   --with-boostpython
   --with-boostpython=dir
   --without-boostpython
@@ -1540,6 +1534,8 @@ ac_compiler_gnu=$ac_cv_c_compiler_gnu
 MAJOR_VERSION=1
 MINOR_VERSION=4
 MICRO_VERSION=0
+
+SHAREDLIB_VERSION=`echo "$MAJOR_VERSION$MINOR_VERSION$MICRO_VERSION" | sed 's/\^0-9\//g'`
 
 echo "configuring VIGRA $MAJOR_VERSION.$MINOR_VERSION.$MICRO_VERSION"
 
@@ -3638,7 +3634,7 @@ ia64-*-hpux*)
   ;;
 *-*-irix6*)
   # Find out which ABI we are using.
-  echo '#line 3641 "configure"' > conftest.$ac_ext
+  echo '#line 3637 "configure"' > conftest.$ac_ext
   if { (eval echo "$as_me:$LINENO: \"$ac_compile\"") >&5
   (eval $ac_compile) 2>&5
   ac_status=$?
@@ -4746,7 +4742,7 @@ fi
 
 
 # Provide some information about the compiler.
-echo "$as_me:4749:" \
+echo "$as_me:4745:" \
      "checking for Fortran 77 compiler version" >&5
 ac_compiler=`set X $ac_compile; echo $2`
 { (eval echo "$as_me:$LINENO: \"$ac_compiler --version </dev/null >&5\"") >&5
@@ -5784,11 +5780,11 @@ else
    -e 's:.*FLAGS}? :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:5787: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:5783: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>conftest.err)
    ac_status=$?
    cat conftest.err >&5
-   echo "$as_me:5791: \$? = $ac_status" >&5
+   echo "$as_me:5787: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s "$ac_outfile"; then
      # The compiler can only warn and ignore the option if not recognized
      # So say no if there are warnings
@@ -6017,11 +6013,11 @@ else
    -e 's:.*FLAGS}? :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:6020: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:6016: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>conftest.err)
    ac_status=$?
    cat conftest.err >&5
-   echo "$as_me:6024: \$? = $ac_status" >&5
+   echo "$as_me:6020: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s "$ac_outfile"; then
      # The compiler can only warn and ignore the option if not recognized
      # So say no if there are warnings
@@ -6077,11 +6073,11 @@ else
    -e 's:.*FLAGS}? :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:6080: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:6076: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>out/conftest.err)
    ac_status=$?
    cat out/conftest.err >&5
-   echo "$as_me:6084: \$? = $ac_status" >&5
+   echo "$as_me:6080: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s out/conftest2.$ac_objext
    then
      # The compiler can only warn and ignore the option if not recognized
@@ -8261,7 +8257,7 @@ else
   lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
   lt_status=$lt_dlunknown
   cat > conftest.$ac_ext <<EOF
-#line 8264 "configure"
+#line 8260 "configure"
 #include "confdefs.h"
 
 #if HAVE_DLFCN_H
@@ -8359,7 +8355,7 @@ else
   lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
   lt_status=$lt_dlunknown
   cat > conftest.$ac_ext <<EOF
-#line 8362 "configure"
+#line 8358 "configure"
 #include "confdefs.h"
 
 #if HAVE_DLFCN_H
@@ -10542,11 +10538,11 @@ else
    -e 's:.*FLAGS}? :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:10545: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:10541: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>conftest.err)
    ac_status=$?
    cat conftest.err >&5
-   echo "$as_me:10549: \$? = $ac_status" >&5
+   echo "$as_me:10545: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s "$ac_outfile"; then
      # The compiler can only warn and ignore the option if not recognized
      # So say no if there are warnings
@@ -10602,11 +10598,11 @@ else
    -e 's:.*FLAGS}? :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:10605: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:10601: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>out/conftest.err)
    ac_status=$?
    cat out/conftest.err >&5
-   echo "$as_me:10609: \$? = $ac_status" >&5
+   echo "$as_me:10605: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s out/conftest2.$ac_objext
    then
      # The compiler can only warn and ignore the option if not recognized
@@ -11963,7 +11959,7 @@ else
   lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
   lt_status=$lt_dlunknown
   cat > conftest.$ac_ext <<EOF
-#line 11966 "configure"
+#line 11962 "configure"
 #include "confdefs.h"
 
 #if HAVE_DLFCN_H
@@ -12061,7 +12057,7 @@ else
   lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
   lt_status=$lt_dlunknown
   cat > conftest.$ac_ext <<EOF
-#line 12064 "configure"
+#line 12060 "configure"
 #include "confdefs.h"
 
 #if HAVE_DLFCN_H
@@ -12888,11 +12884,11 @@ else
    -e 's:.*FLAGS}? :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:12891: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:12887: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>conftest.err)
    ac_status=$?
    cat conftest.err >&5
-   echo "$as_me:12895: \$? = $ac_status" >&5
+   echo "$as_me:12891: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s "$ac_outfile"; then
      # The compiler can only warn and ignore the option if not recognized
      # So say no if there are warnings
@@ -12948,11 +12944,11 @@ else
    -e 's:.*FLAGS}? :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:12951: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:12947: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>out/conftest.err)
    ac_status=$?
    cat out/conftest.err >&5
-   echo "$as_me:12955: \$? = $ac_status" >&5
+   echo "$as_me:12951: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s out/conftest2.$ac_objext
    then
      # The compiler can only warn and ignore the option if not recognized
@@ -14986,11 +14982,11 @@ else
    -e 's:.*FLAGS}? :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:14989: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:14985: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>conftest.err)
    ac_status=$?
    cat conftest.err >&5
-   echo "$as_me:14993: \$? = $ac_status" >&5
+   echo "$as_me:14989: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s "$ac_outfile"; then
      # The compiler can only warn and ignore the option if not recognized
      # So say no if there are warnings
@@ -15219,11 +15215,11 @@ else
    -e 's:.*FLAGS}? :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:15222: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:15218: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>conftest.err)
    ac_status=$?
    cat conftest.err >&5
-   echo "$as_me:15226: \$? = $ac_status" >&5
+   echo "$as_me:15222: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s "$ac_outfile"; then
      # The compiler can only warn and ignore the option if not recognized
      # So say no if there are warnings
@@ -15279,11 +15275,11 @@ else
    -e 's:.*FLAGS}? :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:15282: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:15278: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>out/conftest.err)
    ac_status=$?
    cat out/conftest.err >&5
-   echo "$as_me:15286: \$? = $ac_status" >&5
+   echo "$as_me:15282: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s out/conftest2.$ac_objext
    then
      # The compiler can only warn and ignore the option if not recognized
@@ -17463,7 +17459,7 @@ else
   lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
   lt_status=$lt_dlunknown
   cat > conftest.$ac_ext <<EOF
-#line 17466 "configure"
+#line 17462 "configure"
 #include "confdefs.h"
 
 #if HAVE_DLFCN_H
@@ -17561,7 +17557,7 @@ else
   lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
   lt_status=$lt_dlunknown
   cat > conftest.$ac_ext <<EOF
-#line 17564 "configure"
+#line 17560 "configure"
 #include "confdefs.h"
 
 #if HAVE_DLFCN_H
@@ -18938,20 +18934,13 @@ fi;
     # $with_[fftw]lib and $with_[fftw]inc are either "" or a path
 
 
-
-# Check whether --with-python or --without-python was given.
-if test "${with_python+set}" = set; then
-  withval="$with_python"
-
-else
-  with_python="no"
-fi;
-
-# Check whether --with-pythoninstall or --without-pythoninstall was given.
-if test "${with_pythoninstall+set}" = set; then
-  withval="$with_pythoninstall"
-
-fi;
+# AC_ARG_WITH(python, [
+# --with-python:  Build the VIGRA Python bindings (default: no).
+#                 The python executable must be in the path or given by $PYTHON], ,[with_python="no"])
+# AC_ARG_WITH(pythoninstall, [--with-pythoninstall=dir:  install the VIGRA Python modules in 'dir' instead of the
+#                            default Python module directory (requires adding 'dir'
+#                            to $PYTHONPATH)], ,)
+with_python="no"
 
 
     if test "x$with_python" = "x"; then
@@ -24877,6 +24866,7 @@ s,@LIBS@,$LIBS,;t t
 s,@MAJOR_VERSION@,$MAJOR_VERSION,;t t
 s,@MINOR_VERSION@,$MINOR_VERSION,;t t
 s,@MICRO_VERSION@,$MICRO_VERSION,;t t
+s,@SHAREDLIB_VERSION@,$SHAREDLIB_VERSION,;t t
 s,@build@,$build,;t t
 s,@build_cpu@,$build_cpu,;t t
 s,@build_vendor@,$build_vendor,;t t
@@ -25221,7 +25211,7 @@ echo "TIFF   support enabled (--with-tiff): $with_tiff"
 echo "JPEG   support enabled (--with-jpeg): $with_jpeg"
 echo "PNG    support enabled (--with-png):  $with_png"
 echo "FFTW   support enabled (--with-fftw): $with_fftw"
-echo "Python support enabled (--with-python): $with_python"
+#echo "Python support enabled (--with-python): $with_python"
 echo ""
 echopath "The vigra sources are taken from $vigra_srcdir."
 echopath "The vigraimpex library    will be installed in $libdir."

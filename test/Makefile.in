@@ -3,7 +3,6 @@ include ../config/Makefile.include
 endif
 
 QUICKSUBDIRS =  \
-        syntax \
         error \
         utilities \
         pixeltypes \

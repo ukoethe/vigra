@@ -1,12 +1,12 @@
 include ../config/Makefile.include
 
-all::
-	@cd impex ; $(MAKE) all ; cd ..
+all:: impex
 
-install:: impex
+install:: 
+	@cd impex ; $(MAKE) install ; cd ..
 
 impex::
-	@cd impex ; $(MAKE) install ; cd ..
+	@cd impex ; $(MAKE) all ; cd ..
 
 examples::
 	@cd examples ; $(MAKE) CXX=$(CXX) all ; cd ..
