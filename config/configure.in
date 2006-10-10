@@ -8,7 +8,7 @@ MAJOR_VERSION=1
 MINOR_VERSION=4
 MICRO_VERSION=0
 
-SHAREDLIB_VERSION=`echo "$MAJOR_VERSION$MINOR_VERSION$MICRO_VERSION" | sed 's/[[^0-9]]//g'`
+SHAREDLIB_VERSION=`echo "$MAJOR_VERSION$MINOR_VERSION$MICRO_VERSION" | sed 's,[[^0-9]],,g'`
 
 echo "configuring VIGRA $MAJOR_VERSION.$MINOR_VERSION.$MICRO_VERSION"
 
@@ -26,8 +26,8 @@ AC_PREFIX_DEFAULT([`pwd`])
 vigra_builddir=`pwd`
 vigra_srcdir=`expr $0 : "\(.*\)/"`
 
-if test "x$vigra_srcdir" = "x" ; then 
-    vigra_srcdir=`pwd` ; 
+if test "x$vigra_srcdir" = "x" ; then
+    vigra_srcdir=`pwd` ;
 else
     cd $vigra_srcdir
     vigra_srcdir=`pwd`
@@ -78,7 +78,7 @@ dnl                    package configuration
 dnl-------------------------------------------------------------------
 
 # policy: for every package, we define 6 variables
-#     with_package, with_packagelib, with_packageinc, 
+#     with_package, with_packagelib, with_packageinc,
 #     with_package_I, with_package_L, with_package_l
 # the first 3 are used for user control in the command line
 # the last 3 will contain the results of configuration
@@ -111,8 +111,8 @@ VIGRA_DECLARE_PACKAGE(fftw, [support fast Fourier transforms (fftw3 required!)],
 # AC_ARG_WITH(python, [
 # --with-python:  Build the VIGRA Python bindings (default: no).
 #                 The python executable must be in the path or given by $PYTHON], ,[with_python="no"])
-# AC_ARG_WITH(pythoninstall, [--with-pythoninstall=dir:  install the VIGRA Python modules in 'dir' instead of the 
-#                            default Python module directory (requires adding 'dir' 
+# AC_ARG_WITH(pythoninstall, [--with-pythoninstall=dir:  install the VIGRA Python modules in 'dir' instead of the
+#                            default Python module directory (requires adding 'dir'
 #                            to $PYTHONPATH)], ,)
 with_python="no"
 
@@ -183,7 +183,7 @@ if test "$with_png" = "search"; then
         AC_LANG_RESTORE
     fi
 fi
-# search using explicitly given paths (either via the --with_png... switches 
+# search using explicitly given paths (either via the --with_png... switches
 # or LDFLAGS, CPPFLAGS or in /usr/local
 if test  "$with_png" != "no" -a "$with_png" != "yes"; then
     if test "$with_zlib" != "no"; then
@@ -315,7 +315,7 @@ if test "$with_python" = "yes"; then
                 r=`expr "$j" : "$BOOSTREGEX"`
                 rs=`expr "$j" : "lib\($with_boostpythonname\)\."`
                 if test -z "$r"; then r="$rs"; fi
-                if test -n "$r"; then 
+                if test -n "$r"; then
                     with_boostpythonname="$r"
                     with_boostpython_L="$with_python_L -L$i"
                     with_boostpython_l="-l$r $with_python_l"
@@ -334,7 +334,7 @@ if test "$with_python" = "yes"; then
             else
                 CPPFLAGS="$with_python_I"
             fi
-            
+
             # find out the boost version since it may be part of the include path
             changequote(<<, >>)dnl
             BOOST_VERSION=`expr "$with_boostpythonname" : ".*-\([^-]*\)\$"`
@@ -344,7 +344,7 @@ if test "$with_python" = "yes"; then
             else
                 BOOST_INCLUDE_POSTFIX="boost-$BOOST_VERSION"
             fi
-            
+
             VIGRA_FIND_INCLUDE(boostpython, boost/python/converter/registry.hpp, $BOOST_INCLUDE_POSTFIX )
             if test "$with_boostpython" != "no"; then
                 with_boostpython="yes"
@@ -353,7 +353,7 @@ if test "$with_python" = "yes"; then
     fi
     if test "$with_boostpython" = "yes"; then
         BOOST_PYTHON_LIB="$with_boostpython_L $with_boostpython_l"
-        BOOST_INCLUDES="$with_boostpython_I"        
+        BOOST_INCLUDES="$with_boostpython_I"
     else
         # undo the python settings
         with_python="no"
