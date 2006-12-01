@@ -56,7 +56,9 @@
 #include "config.hxx"
 #include "diff2d.hxx"
 #include "sized_int.hxx"
+#ifdef _MSC_VER
 #include "windows.h"
+#endif
 
 // possible pixel types:
 // "undefined", "UINT8", "UINT16", "INT16", "UINT32", "INT32", "FLOAT", "DOUBLE"

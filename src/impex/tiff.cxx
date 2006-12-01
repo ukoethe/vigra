@@ -53,10 +53,13 @@
  */
 
 #ifdef HasTIFF
+
+#ifdef _MSC_VER
 // NB (jbeda): tiffio.h is going to include this anyway.  Let's include
 // it now so that we can control how it comes in.  Namely, we want
 // to get our version that doesn't set the evil min/max macros.
 #include "vigra/windows.h"
+#endif
 
 #include "vigra/sized_int.hxx"
 #include "error.hxx"
