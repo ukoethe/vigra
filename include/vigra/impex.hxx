@@ -37,6 +37,12 @@
  * updated to vigra 1.4 by Douglas Wilkins
  * as of 18 Febuary 2006:
  *  - Added import/export of UINT16 and UINT32 image types.
+ * Modifications by Andrew Mihal
+ * updated to vigra 1.4 by Douglas Wilkins
+ * as of 18 Febuary 2006:
+ *  - Moved some RowIterator declarations around to avoid using default ctors
+ *    (cachedfileimages do not have default ctors for row iterators).
+ *  - Added some case-specific optimizations
  */
 
 /*!
@@ -111,9 +117,48 @@ namespace vigra
            "importImage(): number of bands (color channels) in file and destination image differ.");
 
         SrcValueType const * scanline;
-        DstRowIterator xs;
+        // MIHAL no default constructor available for cachedfileimages.
+        DstRowIterator xs = ys.rowIterator();
 
         // iterate
+		if (num_bands == 4) {
+            // Speedup for this particular case
+            unsigned int offset = dec->getOffset();
+            SrcValueType const * scanline0;
+            SrcValueType const * scanline1;
+            SrcValueType const * scanline2;
+            SrcValueType const * scanline3;
+            for( size_type y = 0; y < height; ++y, ++ys.y ) {
+                dec->nextScanline();
+                xs = ys.rowIterator();
+                scanline0 = static_cast< SrcValueType const * >
+                    (dec->currentScanlineOfBand(0));
+                scanline1 = static_cast< SrcValueType const * >
+                    (dec->currentScanlineOfBand(1));
+                scanline2 = static_cast< SrcValueType const * >
+                    (dec->currentScanlineOfBand(2));
+                scanline3 = static_cast< SrcValueType const * >
+                    (dec->currentScanlineOfBand(3));
+                for( size_type x = 0; x < width; ++x, ++xs ) {
+/*
+                    a.template setComponent<SrcValueType, DstRowIterator, 0>( *scanline0, xs );
+                    a.template setComponent<SrcValueType, DstRowIterator, 1>( *scanline1, xs );
+                    a.template setComponent<SrcValueType, DstRowIterator, 2>( *scanline2, xs );
+                    a.template setComponent<SrcValueType, DstRowIterator, 3>( *scanline3, xs );
+*/
+					a.setComponent( *scanline0, xs, 0);
+                    a.setComponent( *scanline1, xs, 1);
+                    a.setComponent( *scanline2, xs, 2);
+                    a.setComponent( *scanline3, xs, 3);
+                    scanline0 += offset;
+                    scanline1 += offset;
+                    scanline2 += offset;
+                    scanline3 += offset;
+                }
+            }
+        }
+        else {
+			// General case
         for( size_type y = 0; y < height; ++y, ++ys.y ) {
             dec->nextScanline();
             for( size_type b = 0; b < num_bands; ++b ) {
@@ -126,6 +171,7 @@ namespace vigra
                 }
             }
         }
+		}
     } // read_bands()
 
     /*!
@@ -157,7 +203,8 @@ namespace vigra
         const size_type height = dec->getHeight();
 
         SrcValueType const * scanline;
-        DstRowIterator xs;
+        // MIHAL no default constructor available for cachedfileimages.
+        DstRowIterator xs = ys.rowIterator();
 
         for( size_type y = 0; y < height; ++y, ++ys.y ) {
             dec->nextScanline();
@@ -404,11 +451,51 @@ namespace vigra
         enc->setNumBands(num_bands);
         enc->finalizeSettings();
 
-        SrcRowIterator xs;
         DstValueType * scanline;
 
         // iterate
         ImageIterator ys(ul);
+        // MIHAL no default constructor available for cachedfileimages
+        SrcRowIterator xs = ys.rowIterator();
+
+		if (num_bands == 4) {
+            // Speedup for this particular case
+            unsigned int offset = enc->getOffset();
+            DstValueType * scanline0;
+            DstValueType * scanline1;
+            DstValueType * scanline2;
+            DstValueType * scanline3;
+            for( size_type y = 0; y < height; ++y, ++ys.y ) {
+                xs = ys.rowIterator();
+                scanline0 = static_cast< DstValueType * >
+                        (enc->currentScanlineOfBand(0));
+                scanline1 = static_cast< DstValueType * >
+                        (enc->currentScanlineOfBand(1));
+                scanline2 = static_cast< DstValueType * >
+                        (enc->currentScanlineOfBand(2));
+                scanline3 = static_cast< DstValueType * >
+                        (enc->currentScanlineOfBand(3));
+                for( size_type x = 0; x < width; ++x, ++xs) {
+/*
+                    *scanline0 = a.template getComponent<SrcRowIterator, 0>( xs );
+                    *scanline1 = a.template getComponent<SrcRowIterator, 1>( xs );
+                    *scanline2 = a.template getComponent<SrcRowIterator, 2>( xs );
+                    *scanline3 = a.template getComponent<SrcRowIterator, 3>( xs );
+*/
+                    *scanline0 = detail::RequiresExplicitCast<DstValueType>::cast(a.getComponent( xs, 0));
+                    *scanline1 = detail::RequiresExplicitCast<DstValueType>::cast(a.getComponent( xs, 1));
+                    *scanline2 = detail::RequiresExplicitCast<DstValueType>::cast(a.getComponent( xs, 2));
+                    *scanline3 = detail::RequiresExplicitCast<DstValueType>::cast(a.getComponent( xs, 3));
+                    scanline0 += offset;
+                    scanline1 += offset;
+                    scanline2 += offset;
+                    scanline3 += offset;
+                }
+                enc->nextScanline();
+            }
+        }
+        else {
+			// General case
         for( size_type y = 0; y < height; ++y, ++ys.y ) {
             for( size_type b = 0; b < num_bands; ++b ) {
                 xs = ys.rowIterator();
@@ -421,6 +508,7 @@ namespace vigra
             }
             enc->nextScanline();
         }
+		}
     } // write_bands()
 
     template< class MArray, class DstValueType >
@@ -488,11 +576,12 @@ namespace vigra
         enc->setNumBands(1);
         enc->finalizeSettings();
 
-        SrcRowIterator xs;
         DstValueType * scanline;
 
         // iterate
         ImageIterator ys(ul);
+        // MIHAL no default constructor available for cachedfileimages.
+        SrcRowIterator xs = ys.rowIterator();
         size_type y;
         for(  y = 0; y < height; ++y, ++ys.y ) {
             xs = ys.rowIterator();
@@ -551,16 +640,24 @@ namespace detail {
         FindMinMax<SrcComponent> minmax;
         for(unsigned int i=0; i<sget.size(sul); ++i)
         {
-            VectorElementAccessor<SrcAccessor> band(i, sget);
+            // FIXME dangelo - This will break with vector accessors that have a "by value" interface.
+            // use VectorComponentValueAccessor instead, since it should work in both cases, even
+            // if it might be a bit slower..
+            //VectorElementAccessor<SrcAccessor> band(i, sget);
+            VectorComponentValueAccessor<typename SrcAccessor::value_type> band(i);
             inspectImage( sul, slr, band, minmax );
         }
         double scale = (double)NumericTraits<DestValue>::max() / (minmax.max - minmax.min) -
                        (double)NumericTraits<DestValue>::min() / (minmax.max - minmax.min);
-        double offset = -minmax.min + NumericTraits<DestValue>::min() / scale;
+// FIXME DGSW - Original was not correct. Is this what was intended?
+//        double offset = -minmax.min + NumericTraits<DestValue>::min() / scale;
+        double offset = (NumericTraits<DestValue>::min() / scale) - minmax.min ;
         for(unsigned int i=0; i<sget.size(sul); ++i)
         {
             BasicImageView<DestValue> subImage = makeBasicImageView(array.bindOuter(i));
-            VectorElementAccessor<SrcAccessor> band(i, sget);
+            // FIXME dangelo: use VectorComponentValueAccessor
+            //VectorElementAccessor<SrcAccessor> band(i, sget);
+            VectorComponentValueAccessor<typename SrcAccessor::value_type> band(i);
             transformImage( sul, slr, band, subImage.upperLeft(), subImage.accessor(),
                             linearIntensityTransform( scale, offset ) );
         }

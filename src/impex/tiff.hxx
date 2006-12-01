@@ -30,14 +30,26 @@
 /*    HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,      */
 /*    WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING      */
 /*    FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR     */
-/*    OTHER DEALINGS IN THE SOFTWARE.                                   */                
+/*    OTHER DEALINGS IN THE SOFTWARE.                                   */
 /*                                                                      */
 /************************************************************************/
+/* Modifications by Pablo d'Angelo
+ * updated to vigra 1.4 by Douglas Wilkins
+ * as of 18 Febuary 2006:
+ *  - Added support for obtaining extra bands beyond RGB.
+ *  - Added support for a position field that indicates the start of this
+ *    image relative to some global origin.
+ *  - Added support for x and y resolution fields.
+ * Modifications by Andrew Mihal, as of 16 October 2004
+ *  - Added include for vigra/diff2d.hxx
+ *  - Added support for ICC profiles
+ */
 
 #ifndef VIGRA_IMPEX_TIFF_HXX
 #define VIGRA_IMPEX_TIFF_HXX
 
 #include <vector>
+#include "vigra/diff2d.hxx"
 #include "vigra/codec.hxx"
 
 namespace vigra {
@@ -67,6 +79,9 @@ namespace vigra {
         unsigned int getHeight() const;
         unsigned int getNumBands() const;
 
+        unsigned int getNumExtraBands() const;
+        Diff2D getPosition() const;
+
         const void * currentScanlineOfBand( unsigned int ) const;
         void nextScanline();
 
@@ -95,12 +110,19 @@ namespace vigra {
 
         void setCompressionType( const std::string &, int = -1 );
         void setPixelType( const std::string & );
+
+        void setPosition( const vigra::Diff2D & pos );
+        void setXResolution( float xres );
+        void setYResolution( float yres );
+
         unsigned int getOffset() const;
 
         void finalizeSettings();
 
         void * currentScanlineOfBand( unsigned int );
         void nextScanline();
+
+        void setICCProfile(const ICCProfile & data);
 
         void init( const std::string & );
         void close();

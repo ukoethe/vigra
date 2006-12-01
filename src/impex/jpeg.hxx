@@ -30,7 +30,7 @@
 /*    HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,      */
 /*    WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING      */
 /*    FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR     */
-/*    OTHER DEALINGS IN THE SOFTWARE.                                   */                
+/*    OTHER DEALINGS IN THE SOFTWARE.                                   */
 /*                                                                      */
 /************************************************************************/
 
@@ -93,6 +93,8 @@ namespace vigra {
         void setWidth( unsigned int );
         void setHeight( unsigned int );
         void setNumBands( unsigned int );
+
+        void setICCProfile(const ICCProfile & data);
 
         void setCompressionType( const std::string &, int = -1 );
         void setPixelType( const std::string & );

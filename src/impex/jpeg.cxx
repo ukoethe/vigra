@@ -30,9 +30,14 @@
 /*    HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,      */
 /*    WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING      */
 /*    FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR     */
-/*    OTHER DEALINGS IN THE SOFTWARE.                                   */                
+/*    OTHER DEALINGS IN THE SOFTWARE.                                   */
 /*                                                                      */
 /************************************************************************/
+/* Modifications by Pablo d'Angelo
+ * as of 4 March 2006:
+ *  - Added support for x and y resolution fields.
+ *  - Added ICC support.
+ */
 
 #ifdef HasJPEG
 
@@ -44,9 +49,10 @@
 #include "auto_file.hxx"
 #include "jpeg.hxx"
 
-extern "C"
-{
+extern "C" {
+
 #include <jpeglib.h>
+#include "iccjpeg.h"
 
 } // extern "C"
 
@@ -58,7 +64,7 @@ struct JPEGCodecErrorManager
     std::jmp_buf buf;
 };
 
-} // namespace 
+} // namespace
 
 extern "C"
 {
@@ -104,7 +110,7 @@ namespace vigra
         desc.bandNumbers.resize(2);
         desc.bandNumbers[0] = 1;
         desc.bandNumbers[1] = 3;
-        
+
         return desc;
     }
 
@@ -178,8 +184,11 @@ namespace vigra
         void_vector<JSAMPLE> bands;
         unsigned int width, height, components, scanline;
 
-        // ctor, dtor
+        // icc profile, if available
+        UInt32 iccProfileLength;
+        const unsigned char *iccProfilePtr;
 
+        // ctor, dtor
         JPEGDecoderImpl( const std::string & filename );
         ~JPEGDecoderImpl();
 
@@ -190,11 +199,11 @@ namespace vigra
 
     JPEGDecoderImpl::JPEGDecoderImpl( const std::string & filename )
 #ifdef VIGRA_NEED_BIN_STREAMS
-        : file( filename.c_str(), "rb" ), 
+        : file( filename.c_str(), "rb" ),
 #else
-        : file( filename.c_str(), "r" ), 
+        : file( filename.c_str(), "r" ),
 #endif
-          bands(0), scanline(0)
+          bands(0), scanline(0), iccProfileLength(0), iccProfilePtr(NULL)
     {
         // setup setjmp() error handling
         info.err = jpeg_std_error( ( jpeg_error_mgr * ) &err );
@@ -205,6 +214,8 @@ namespace vigra
             vigra_fail( "error in jpeg_stdio_src()" );
         }
         jpeg_stdio_src( &info, file.get() );
+        // prepare for icc profile
+        setup_read_icc_profile(&info);
     }
 
     void JPEGDecoderImpl::init()
@@ -213,6 +224,14 @@ namespace vigra
         if (setjmp(err.buf))
             vigra_fail( "error in jpeg_read_header()" );
         jpeg_read_header( &info, TRUE );
+
+        // extract ICC profile
+        JOCTET *iccBuf;
+        UInt32 iccLen;
+        if (read_icc_profile(&info, &iccBuf, &iccLen)) {
+            iccProfileLength = iccLen;
+            iccProfilePtr = iccBuf;
+        }
 
         // start the decompression
         if (setjmp(err.buf))
@@ -233,12 +252,21 @@ namespace vigra
 
     JPEGDecoderImpl::~JPEGDecoderImpl()
     {
+        if (iccProfilePtr && iccProfileLength)
+            free((void *)iccProfilePtr);
     }
 
     void JPEGDecoder::init( const std::string & filename )
     {
         pimpl = new JPEGDecoderImpl(filename);
         pimpl->init();
+        if(pimpl->iccProfileLength)
+        {
+            Decoder::ICCProfile iccData(
+                pimpl->iccProfilePtr,
+                pimpl->iccProfilePtr + pimpl->iccProfileLength);
+            iccProfile_.swap(iccData);
+        }
     }
 
     JPEGDecoder::~JPEGDecoder()
@@ -311,6 +339,9 @@ namespace vigra
         unsigned int width, height, components, scanline;
         int quality;
 
+        // icc profile, if available
+        Encoder::ICCProfile iccProfile;
+
         // state
         bool finalized;
 
@@ -326,12 +357,11 @@ namespace vigra
 
     JPEGEncoderImpl::JPEGEncoderImpl( const std::string & filename )
 #ifdef VIGRA_NEED_BIN_STREAMS
-        : file( filename.c_str(), "wb" ), 
+        : file( filename.c_str(), "wb" ),
 #else
-        : file( filename.c_str(), "w" ), 
+        : file( filename.c_str(), "w" ),
 #endif
-          scanline(0), quality(-1),
-          finalized(false)
+          scanline(0), quality(-1), finalized(false)
     {
         // setup setjmp() error handling
         info.err = jpeg_std_error( ( jpeg_error_mgr * ) &err );
@@ -355,7 +385,7 @@ namespace vigra
         // alloc memory for a single scanline
         bands.resize( width * components );
         finalized = true;
-        
+
         // init the compression
         info.image_width = width;
         info.image_height = height;
@@ -377,7 +407,7 @@ namespace vigra
                 vigra_fail( "error in jpeg_set_quality()" );
             jpeg_set_quality( &info, quality, TRUE );
         }
-        
+
         // enhance the quality a little bit
         for ( unsigned int i = 0; i < MAX_COMPONENTS; ++i ) {
             info.comp_info[i].h_samp_factor = 1;
@@ -389,11 +419,16 @@ namespace vigra
 #ifdef ENTROPY_OPT_SUPPORTED
         info.optimize_coding = TRUE;
 #endif
+        info.dct_method = JDCT_FLOAT;
 
         // start the compression
         if (setjmp(err.buf))
             vigra_fail( "error in jpeg_start_compress()" );
         jpeg_start_compress( &info, TRUE );
+
+        if (iccProfile.size()) {
+            write_icc_profile(&info, iccProfile.begin(), iccProfile.size());
+        }
     }
 
     void JPEGEncoder::init( const std::string & filename )
@@ -449,6 +484,11 @@ namespace vigra
     unsigned int JPEGEncoder::getOffset() const
     {
         return pimpl->components;
+    }
+
+    void JPEGEncoder::setICCProfile(const ICCProfile & data)
+    {
+        pimpl->iccProfile = data;
     }
 
     void JPEGEncoder::finalizeSettings()

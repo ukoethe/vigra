@@ -30,7 +30,7 @@
 /*    HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,      */
 /*    WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING      */
 /*    FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR     */
-/*    OTHER DEALINGS IN THE SOFTWARE.                                   */                
+/*    OTHER DEALINGS IN THE SOFTWARE.                                   */
 /*                                                                      */
 /************************************************************************/
 
@@ -38,6 +38,11 @@
  * updated to vigra 1.4 by Douglas Wilkins
  * as of 18 Febuary 2006:
  *  - Added UINT16 and UINT32 pixel types.
+ *  - Added support for obtaining extra bands beyond RGB.
+ *  - Added support for a position field that indicates the start of this
+ *    image relative to some global origin.
+ *  - Added support for x and y resolution fields.
+ *  - Added support for ICC Profiles
  */
 
 #ifndef VIGRA_CODEC_HXX
@@ -46,14 +51,18 @@
 #include <memory>
 #include <string>
 #include <vector>
+
+#include "array_vector.hxx"
 #include "config.hxx"
+#include "diff2d.hxx"
 #include "sized_int.hxx"
+#include "windows.h"
 
 // possible pixel types:
 // "undefined", "UINT8", "UINT16", "INT16", "UINT32", "INT32", "FLOAT", "DOUBLE"
 
 // possible compression types:
-// "undefined", "RLE", "LZW", "LOSSLESS", "JPEG"
+// "undefined", "RLE", "LZW", "LOSSLESS", "JPEG", "DEFLATE"
 
 // possible file types:
 // "undefined", "TIFF", "VIFF", "JPEG", "PNG", "PNM", "BMP", "SUN", "XPM"
@@ -69,56 +78,56 @@ namespace vigra
     {
         static std::string result() { return "undefined"; }
     };
-    
+
     template <>
     struct TypeAsString<Int8>
     {
         static std::string result() { return "INT8"; }
     };
-    
+
     template <>
     struct TypeAsString<UInt8>
     {
         static std::string result() { return "UINT8"; }
     };
-    
+
     template <>
     struct TypeAsString<Int16>
     {
         static std::string result() { return "INT16"; }
     };
-    
+
     template <>
     struct TypeAsString<UInt16>
     {
         static std::string result() { return "UINT16"; }
     };
-    
+
     template <>
     struct TypeAsString<Int32>
     {
         static std::string result() { return "INT32"; }
     };
-    
+
     template <>
     struct TypeAsString<UInt32>
     {
         static std::string result() { return "UINT32"; }
     };
-    
+
     template <>
     struct TypeAsString<float>
     {
         static std::string result() { return "FLOAT"; }
     };
-    
+
     template <>
     struct TypeAsString<double>
     {
         static std::string result() { return "DOUBLE"; }
     };
-    
-    
+
+
     // codec description
     struct CodecDesc
     {
@@ -130,7 +139,7 @@ namespace vigra
         std::vector<int> bandNumbers;
     };
 
-    // Decoder and Encoder are pure virtual types that define a common
+    // Decoder and Encoder are virtual types that define a common
     // interface for all image file formats impex supports.
 
     struct Decoder
@@ -146,10 +155,29 @@ namespace vigra
         virtual unsigned int getWidth() const = 0;
         virtual unsigned int getHeight() const = 0;
         virtual unsigned int getNumBands() const = 0;
+        virtual unsigned int getNumExtraBands() const
+        {
+            return 0;
+        }
+
+        virtual vigra::Diff2D getPosition() const
+        {
+            return vigra::Diff2D();
+        }
+
         virtual unsigned int getOffset() const = 0;
 
         virtual const void * currentScanlineOfBand( unsigned int ) const = 0;
         virtual void nextScanline() = 0;
+
+        typedef ArrayVector<unsigned char> ICCProfile;
+
+        const ICCProfile & getICCProfile() const
+        {
+            return iccProfile_;
+        }
+
+        ICCProfile iccProfile_;
     };
 
     struct Encoder
@@ -169,9 +197,25 @@ namespace vigra
         virtual void setPixelType( const std::string & ) = 0;
         virtual void finalizeSettings() = 0;
 
+        virtual void setPosition( const vigra::Diff2D & pos )
+        {
+        }
+        virtual void setXResolution( float xres )
+        {
+        }
+        virtual void setYResolution( float yres )
+        {
+        }
+
+        typedef ArrayVector<unsigned char> ICCProfile;
+
+        virtual void setICCProfile(const ICCProfile & /* data */)
+        {
+        }
+
         virtual void * currentScanlineOfBand( unsigned int ) = 0;
         virtual void nextScanline() = 0;
-        
+
         struct TIFFCompressionException {};
     };
 
@@ -182,6 +226,7 @@ namespace vigra
         virtual CodecDesc getCodecDesc() const = 0;
         virtual std::auto_ptr<Decoder> getDecoder() const = 0;
         virtual std::auto_ptr<Encoder> getEncoder() const = 0;
+        virtual ~CodecFactory() {};
     };
 
     // factory functions to encapsulate the codec managers

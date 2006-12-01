@@ -37,6 +37,11 @@
  * updated to vigra 1.4 by Douglas Wilkins
  * as of 18 Febuary 2006:
  *  - Added UINT16 and UINT32 pixel types.
+ *  - Added support for obtaining extra bands beyond RGB.
+ *  - Added support for a position field that indicates the start of this
+ *    image relative to some global origin.
+ *  - Added support for x and y resolution fields.
+ *  - Added support for ICC profiles
  */
 
 #include <iostream>
@@ -267,8 +272,13 @@ bool isImage(char const * filename)
 // class ImageExportInfo
 
 ImageExportInfo::ImageExportInfo( const char * filename )
-    : m_filename(filename)
+    : m_filename(filename),
+      m_x_res(0), m_y_res(0)
 {}
+
+ImageExportInfo::~ImageExportInfo()
+{
+}
 
 ImageExportInfo & ImageExportInfo::setFileType( const char * filetype )
 {
@@ -330,6 +340,29 @@ ImageExportInfo & ImageExportInfo::setYResolution( float val )
     return *this;
 }
 
+ImageExportInfo & ImageExportInfo::setPosition(const vigra::Diff2D & pos)
+{
+    m_pos = pos;
+    return *this;
+}
+
+vigra::Diff2D ImageExportInfo::getPosition() const
+{
+    return m_pos;
+}
+
+const ImageExportInfo::ICCProfile & ImageExportInfo::getICCProfile() const
+{
+    return m_icc_profile;
+}
+
+ImageExportInfo & ImageExportInfo::setICCProfile(
+    const ImageExportInfo::ICCProfile &profile)
+{
+    m_icc_profile = profile;
+    return *this;
+}
+
 // return an encoder for a given ImageExportInfo object
 std::auto_ptr<Encoder> encoder( const ImageExportInfo & info )
 {
@@ -354,13 +387,15 @@ std::auto_ptr<Encoder> encoder( const ImageExportInfo & info )
         int quality = -1;
         std::istringstream compstream(comp.c_str());
         compstream >> quality;
+
+        // FIXME: dangelo: This code might lead to strange effects (setting an invalid compression mode),
+        // if other formats also support a numerical compression parameter.
         if ( quality != -1 ) {
             enc->setCompressionType( "JPEG", quality );
-            return enc;
+        } else {
+            // leave any other compression type to the codec
+            enc->setCompressionType(comp);
         }
-
-        // leave any other compression type to the codec
-        enc->setCompressionType(comp);
     }
 
     std::string pixel_type = info.getPixelType();
@@ -373,6 +408,15 @@ std::auto_ptr<Encoder> encoder( const ImageExportInfo & info )
             vigra_precondition(false, msg.c_str());
         }
         enc->setPixelType(pixel_type);
+    }
+
+    // set other properties
+    enc->setXResolution(info.getXResolution());
+    enc->setYResolution(info.getYResolution());
+    enc->setPosition(info.getPosition());
+
+    if ( info.getICCProfile().size() > 0 ) {
+        enc->setICCProfile(info.getICCProfile());
     }
 
     return enc;
@@ -390,8 +434,15 @@ ImageImportInfo::ImageImportInfo( const char * filename )
     m_width = decoder->getWidth();
     m_height = decoder->getHeight();
     m_num_bands = decoder->getNumBands();
+    m_num_extra_bands = decoder->getNumExtraBands();
+    m_pos = decoder->getPosition();
+
+    m_icc_profile = decoder->getICCProfile();
 
     decoder->abort(); // there probably is no better way than this
+}
+
+ImageImportInfo::~ImageImportInfo() {
 }
 
 const char * ImageImportInfo::getFileName() const
@@ -445,6 +496,11 @@ int ImageImportInfo::numBands() const
     return m_num_bands;
 }
 
+int ImageImportInfo::numExtraBands() const
+{
+    return m_num_extra_bands;
+}
+
 Size2D ImageImportInfo::size() const
 {
     return Size2D( m_width, m_height );
@@ -457,12 +513,17 @@ bool ImageImportInfo::isGrayscale() const
 
 bool ImageImportInfo::isColor() const
 {
-    return m_num_bands == 3;
+    return (m_num_bands - m_num_extra_bands) == 3;
 }
 
 bool ImageImportInfo::isByte() const
 {
     return m_pixeltype == "UINT8";
+}
+
+Diff2D ImageImportInfo::getPosition() const
+{
+    return m_pos;
 }
 
 float ImageImportInfo::getXResolution() const
@@ -473,6 +534,11 @@ float ImageImportInfo::getXResolution() const
 float ImageImportInfo::getYResolution() const
 {
     return m_y_res;
+}
+
+const ImageImportInfo::ICCProfile & ImageImportInfo::getICCProfile() const
+{
+    return m_icc_profile;
 }
 
 // return a decoder for a given ImageImportInfo object

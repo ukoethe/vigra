@@ -9,10 +9,13 @@ OBJS = \
     bmp.lo \
     byteorder.lo \
     codecmanager.lo \
+    hdr.lo \
     imageinfo.lo \
     jpeg.lo \
+    iccjpeg.lo \
     png.lo \
     pnm.lo \
+    rgbe.lo \
     sun.lo \
     tiff.lo \
     viff.lo \

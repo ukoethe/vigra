@@ -1,9 +1,9 @@
 /************************************************************************/
 /*                                                                      */
-/*               Copyright 2002 by Gunnar Kedenburg                     */
-/*       Cognitive Systems Group, University of Hamburg, Germany        */
+/*               Copyright 1998-2001 by Pablo d'Angelo                  */
 /*                                                                      */
 /*    This file is part of the VIGRA computer vision library.           */
+/*    ( Version 1.4.0, Dec 21 2005 )                                    */
 /*    The VIGRA Website is                                              */
 /*        http://kogs-www.informatik.uni-hamburg.de/~koethe/vigra/      */
 /*    Please direct questions, bug reports, and contributions to        */
@@ -33,100 +33,86 @@
 /*    OTHER DEALINGS IN THE SOFTWARE.                                   */
 /*                                                                      */
 /************************************************************************/
-/* Modifications by Pablo d'Angelo
- * updated to vigra 1.4 by Douglas Wilkins
- * as of 18 Febuary 2006:
- *  - Added UINT16 pixel types.
- *  - Added support for obtaining extra bands beyond RGB.
- *  - Added support for a position field that indicates the start of this
- *    image relative to some global origin.
- *  - Added support for x and y resolution fields.
- *  - Added support for ICC profiles
- */
 
-#ifndef VIGRA_IMPEX_PNG_HXX
-#define VIGRA_IMPEX_PNG_HXX
 
+#ifndef VIGRA_IMPEX_HDR_HXX
+#define VIGRA_IMPEX_HDR_HXX
+
+#include <vector>
+#include "vigra/diff2d.hxx"
 #include "vigra/codec.hxx"
-
-// PNG - Portable Network Graphics
 
 namespace vigra {
 
-    struct PngDecoderImpl;
-    struct PngEncoderImpl;
-
-    struct PngCodecFactory : public CodecFactory
+    struct HDRCodecFactory : public CodecFactory
     {
         CodecDesc getCodecDesc() const;
         std::auto_ptr<Decoder> getDecoder() const;
         std::auto_ptr<Encoder> getEncoder() const;
     };
 
-    class PngDecoder : public Decoder
+    class HDRDecoderImpl;
+    class HDREncoderImpl;
+
+    class HDRDecoder : public Decoder
     {
-        PngDecoderImpl * pimpl;
+        HDRDecoderImpl * pimpl;
 
     public:
 
-        PngDecoder() : pimpl(0) {}
+        HDRDecoder() : pimpl(0) {}
 
-        ~PngDecoder();
-
-        void init( const std::string & );
-        void close();
-        void abort();
+        ~HDRDecoder();
 
         std::string getFileType() const;
-        std::string getPixelType() const;
-
         unsigned int getWidth() const;
         unsigned int getHeight() const;
         unsigned int getNumBands() const;
-        unsigned int getNumExtraBands() const;
-	float getXResolution() const;
-	float getYResolution() const;
-        Diff2D getPosition() const;
-
-        unsigned int getOffset() const;
 
         const void * currentScanlineOfBand( unsigned int ) const;
         void nextScanline();
-    };
 
-    class PngEncoder : public Encoder
-    {
-        PngEncoderImpl * pimpl;
-
-    public:
-
-        PngEncoder() : pimpl(0) {}
-
-        ~PngEncoder();
+        std::string getPixelType() const;
+        unsigned int getOffset() const;
 
         void init( const std::string & );
         void close();
         void abort();
+    };
+
+    class HDREncoder : public Encoder
+    {
+        HDREncoderImpl * pimpl;
+
+    public:
+
+        HDREncoder() : pimpl(0) {}
+
+        ~HDREncoder();
 
         std::string getFileType() const;
-        unsigned int getOffset() const;
-
         void setWidth( unsigned int );
         void setHeight( unsigned int );
         void setNumBands( unsigned int );
+
         void setCompressionType( const std::string &, int = -1 );
         void setPixelType( const std::string & );
 
-        void setPosition( const Diff2D & pos );
+        void setPosition( const vigra::Diff2D & pos );
         void setXResolution( float xres );
         void setYResolution( float yres );
+
+        unsigned int getOffset() const;
 
         void finalizeSettings();
 
         void * currentScanlineOfBand( unsigned int );
         void nextScanline();
-        void setICCProfile(const ICCProfile & data);
+
+        void init( const std::string & );
+        void close();
+        void abort();
     };
 }
 
-#endif // VIGRA_IMPEX_PNG_HXX
+#endif // VIGRA_IMPEX_HDR_HXX

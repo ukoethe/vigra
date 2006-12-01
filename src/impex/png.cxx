@@ -37,6 +37,10 @@
  * updated to vigra 1.4 by Douglas Wilkins
  * as of 18 Febuary 2006:
  *  - Changed INT16 -> UINT16 pixel type.
+ *  - Added support for obtaining extra bands beyond RGB.
+ *  - Added support for a position field that indicates the start of this
+ *    image relative to some global origin.
+ *  - Added support for x and y resolution fields.
  */
 
 #ifdef HasPNG
@@ -146,10 +150,29 @@ namespace vigra {
 
         // image header fields
         png_uint_32 width, height, components;
+        png_uint_32 extra_components;
+        Diff2D position;
         int bit_depth, color_type;
+
+        // icc profile, if available
+        // the memory is owned by libpng
+        UInt32 iccProfileLength;
+        const unsigned char *iccProfilePtr;
 
         // scanline counter
         int scanline;
+
+        float x_resolution, y_resolution;
+
+        // number of passes needed during reading each scanline
+        int interlace_method, n_interlace_passes;
+
+        // number of channels in png (or what libpng get_channels returns)
+        int n_channels;
+
+        // size of one row
+        int rowsize;
+        void_vector<unsigned char> row_data;
 
         // ctor, dtor
         PngDecoderImpl( const std::string & filename );
@@ -157,15 +180,19 @@ namespace vigra {
 
         // methods
         void init();
+        void nextScanline();
     };
 
     PngDecoderImpl::PngDecoderImpl( const std::string & filename )
 #ifdef VIGRA_NEED_BIN_STREAMS
+        // Returns the layer
         : file( filename.c_str(), "rb" ),
 #else
         : file( filename.c_str(), "r" ),
 #endif
-          bands(0), scanline(-1)
+          bands(0), iccProfileLength(0), iccProfilePtr(0),
+          scanline(-1), x_resolution(0), y_resolution(0),
+          n_interlace_passes(0), n_channels(0)
     {
         png_error_message = "";
         // check if the file is a png file
@@ -263,19 +290,44 @@ namespace vigra {
         switch (color_type) {
         case PNG_COLOR_TYPE_GRAY:
             components = 1;
+            extra_components = 0;
             break;
         case PNG_COLOR_TYPE_GRAY_ALPHA:
             components = 2;
+            extra_components = 1;
             break;
         case PNG_COLOR_TYPE_RGB:
             components = 3;
+            extra_components = 0;
             break;
         case PNG_COLOR_TYPE_RGB_ALPHA:
             components = 4;
+            extra_components = 1;
             break;
         default:
             vigra_fail( "internal error: illegal color type." );
         }
+
+        // read resolution
+        x_resolution = png_get_x_pixels_per_meter( png, info ) / 254.0;
+        y_resolution = png_get_y_pixels_per_meter( png, info ) / 254.0;
+
+        // read offset
+        position.x = png_get_x_offset_pixels( png, info );
+        position.y = png_get_y_offset_pixels( png, info );
+
+        // read icc profile
+#if (PNG_LIBPNG_VER > 10008) && defined(PNG_READ_iCCP_SUPPORTED)
+        char * dummyName;
+        int dummyCompType;
+        char * profilePtr;
+        png_uint_32 profileLen;
+        if (info->valid & PNG_INFO_iCCP) {
+            png_get_iCCP(png, info, &dummyName, &dummyCompType, &profilePtr, &profileLen) ;
+            iccProfilePtr = (unsigned char *) profilePtr;
+            iccProfileLength = profileLen;
+        }
+#endif
 
 #if 0
         // gamma correction changes the pixels, this is unwanted.
@@ -297,35 +349,48 @@ namespace vigra {
         png_set_gamma( png, screen_gamma, image_gamma );
 #endif
 
+        // interlace handling, get number of read passes needed
+        if (setjmp(png->jmpbuf))
+            vigra_postcondition( false,png_error_message.insert(0, "error in png_set_interlace_handling(): ").c_str());
+        n_interlace_passes = png_set_interlace_handling(png);
+
         // update png library state to reflect any changes that were made
         if (setjmp(png->jmpbuf))
             vigra_postcondition( false, png_error_message.insert(0, "error in png_read_update_info(): ").c_str() );
         png_read_update_info( png, info );
 
-        const unsigned int size = width * height * components
-            * ( bit_depth >> 3 );
-        const unsigned int row_stride = size / height;
-
-        // prepare the bands vector
-        typedef void_vector< UInt8 > vector_type;
-        vector_type & cbands = static_cast< vector_type & >(bands);
-        cbands.resize(size);
-
-        // prepare the row pointers
-        void_vector<png_bytep> row_pointers(height);
-        for ( unsigned int i = 0; i < height; ++i )
-            row_pointers[i] = cbands.data() + row_stride * i;
-
-        // read the whole image
         if (setjmp(png->jmpbuf))
-            vigra_postcondition( false, png_error_message.insert(0, "error in png_read_image(): ").c_str() );
-        png_read_image( png, row_pointers.begin() );
+            vigra_postcondition( false,png_error_message.insert(0, "error in png_get_channels(): ").c_str());
+        n_channels = png_get_channels(png, info);
+
+        if (setjmp(png->jmpbuf))
+            vigra_postcondition( false,png_error_message.insert(0, "error in png_get_rowbytes(): ").c_str());
+        rowsize = png_get_rowbytes(png, info);
+
+        // allocate data buffers
+        row_data.resize(rowsize);
+    }
+
+    void PngDecoderImpl::nextScanline()
+    {
+        for (int i=0; i < n_interlace_passes; i++) {
+        if (setjmp(png->jmpbuf))
+                vigra_postcondition( false,png_error_message.insert(0, "error in png_read_row(): ").c_str());
+            png_read_row(png, row_data.begin(), NULL);
+        }
     }
 
     void PngDecoder::init( const std::string & filename )
     {
         pimpl = new PngDecoderImpl(filename);
         pimpl->init();
+        if(pimpl->iccProfileLength)
+        {
+            Decoder::ICCProfile iccData(
+                pimpl->iccProfilePtr,
+                pimpl->iccProfilePtr + pimpl->iccProfileLength);
+            iccProfile_.swap(iccData);
+        }
     }
 
     PngDecoder::~PngDecoder()
@@ -353,6 +418,26 @@ namespace vigra {
         return pimpl->components;
     }
 
+    unsigned int PngDecoder::getNumExtraBands() const
+    {
+        return pimpl->extra_components;
+    }
+
+    float PngDecoder::getXResolution() const
+    {
+        return pimpl->x_resolution;
+    }
+
+    float PngDecoder::getYResolution() const
+    {
+        return pimpl->y_resolution;
+    }
+
+    Diff2D PngDecoder::getPosition() const
+    {
+        return pimpl->position;
+    }
+
     std::string PngDecoder::getPixelType() const
     {
         switch (pimpl->bit_depth) {
@@ -373,22 +458,14 @@ namespace vigra {
 
     const void * PngDecoder::currentScanlineOfBand( unsigned int band ) const
     {
-        const unsigned int index = pimpl->width * pimpl->components
-            * pimpl->scanline + band;
         switch (pimpl->bit_depth) {
         case 8:
             {
-                typedef void_vector< UInt8 > bands_type;
-                const bands_type & bands
-                    = static_cast< const bands_type & >(pimpl->bands);
-                return bands.data() + index;
+                return pimpl->row_data.begin() + band;
             }
         case 16:
             {
-                typedef void_vector<Int16> bands_type;
-                const bands_type & bands
-                    = static_cast< const bands_type & >(pimpl->bands);
-                return bands.data() + index;
+                return pimpl->row_data.begin() + 2*band;
             }
         default:
             vigra_fail( "internal error: illegal bit depth." );
@@ -398,7 +475,7 @@ namespace vigra {
 
     void PngDecoder::nextScanline()
     {
-        ++(pimpl->scanline);
+        pimpl->nextScanline();
     }
 
     void PngDecoder::close() {}
@@ -419,13 +496,23 @@ namespace vigra {
 
         // image header fields
         png_uint_32 width, height, components;
+        png_uint_32 extra_components;
         int bit_depth, color_type;
+
+        // icc profile, if available
+        Encoder::ICCProfile iccProfile;
 
         // scanline counter
         int scanline;
 
         // state
         bool finalized;
+
+        // image layer position
+        Diff2D position;
+
+        // resolution
+        float x_resolution, y_resolution;
 
         // ctor, dtor
         PngEncoderImpl( const std::string & filename );
@@ -443,7 +530,8 @@ namespace vigra {
         : file( filename.c_str(), "w" ),
 #endif
           bands(0),
-          scanline(0), finalized(false)
+          scanline(0), finalized(false),
+          x_resolution(0), y_resolution(0)
     {
         png_error_message = "";
         // create png struct with user defined handlers
@@ -483,6 +571,30 @@ namespace vigra {
         png_set_IHDR( png, info, width, height, bit_depth, color_type,
                       PNG_INTERLACE_NONE, PNG_COMPRESSION_TYPE_DEFAULT,
                       PNG_FILTER_TYPE_DEFAULT );
+
+        // set resolution
+        if (x_resolution > 0 && y_resolution > 0) {
+            if (setjmp(png->jmpbuf))
+                vigra_postcondition( false, png_error_message.insert(0, "error in png_set_pHYs(): ").c_str() );
+            png_set_pHYs(png, info, (png_uint_32) (x_resolution * 254 + 0.5),
+                         (png_uint_32) (y_resolution * 254 + 0.5),
+                         PNG_RESOLUTION_METER);
+        }
+
+        // set offset
+        if (position.x > 0 && position.y > 0) {
+            if (setjmp(png->jmpbuf))
+                vigra_postcondition( false, png_error_message.insert(0, "error in png_set_oFFs(): ").c_str() );
+            png_set_oFFs(png, info, position.x, position.y, PNG_OFFSET_PIXEL);
+        }
+
+#if (PNG_LIBPNG_VER > 10008) && defined(PNG_WRITE_iCCP_SUPPORTED)
+        // set icc profile
+        if (iccProfile.size() > 0) {
+            png_set_iCCP(png, info, "icc", 0,
+                         (char *)iccProfile.begin(), iccProfile.size());
+        }
+#endif
 
         // write the info struct
         if (setjmp(png->jmpbuf))
@@ -574,6 +686,24 @@ namespace vigra {
         // nothing is settable => do nothing
     }
 
+    void PngEncoder::setPosition( const Diff2D & pos )
+    {
+        VIGRA_IMPEX_FINALIZED(pimpl->finalized);
+        pimpl->position = pos;
+    }
+
+    void PngEncoder::setXResolution( float xres )
+    {
+        VIGRA_IMPEX_FINALIZED(pimpl->finalized);
+        pimpl->x_resolution = xres;
+    }
+
+    void PngEncoder::setYResolution( float yres )
+    {
+        VIGRA_IMPEX_FINALIZED(pimpl->finalized);
+        pimpl->y_resolution = yres;
+    }
+
     void PngEncoder::setPixelType( const std::string & pixelType )
     {
         VIGRA_IMPEX_FINALIZED(pimpl->finalized);
@@ -588,6 +718,11 @@ namespace vigra {
     unsigned int PngEncoder::getOffset() const
     {
         return pimpl->components;
+    }
+
+    void PngEncoder::setICCProfile(const ICCProfile & data)
+    {
+        pimpl->iccProfile = data;
     }
 
     void PngEncoder::finalizeSettings()

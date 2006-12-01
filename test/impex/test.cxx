@@ -30,7 +30,7 @@
 /*    HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,      */
 /*    WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING      */
 /*    FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR     */
-/*    OTHER DEALINGS IN THE SOFTWARE.                                   */                
+/*    OTHER DEALINGS IN THE SOFTWARE.                                   */
 /*                                                                      */
 /************************************************************************/
 
@@ -66,8 +66,8 @@ public:
         const std::string formats = impexListFormats();
         const std::string extensions = impexListExtensions();
 
-        shouldEqual(formats, "BMP GIF JPEG PNG PNM SUN TIFF VIFF");
-        shouldEqual(extensions, "bmp gif jpeg jpg pbm pgm png pnm ppm ras tif tiff xv");
+        shouldEqual(formats, "BMP GIF HDR JPEG PNG PNM SUN TIFF VIFF");
+        shouldEqual(extensions, "bmp gif hdr jpeg jpg pbm pgm png pnm ppm ras tif tiff xv");
     }
 
     void testIsImage()
@@ -315,7 +315,7 @@ public:
         for (; i != ref.end (); ++i, ++i1)
                 sum += (acc (i) - acc (i1)).magnitude ();
 
-        should (sum / (info.width () * info.height ()) < 3.0);  // use rather large tolerance to make the 
+        should (sum / (info.width () * info.height ()) < 3.0);  // use rather large tolerance to make the
                                                                 // test portable
     }
 
@@ -615,7 +615,7 @@ public:
         Image::ScanOrderIterator i = img.begin ();
         Image::ScanOrderIterator i1 = res.begin ();
         Image::Accessor acc = img.accessor ();
-        
+
         shouldEqualSequence(i, img.end(), i1);
 
  /*       for (; i != img.end (); ++i, ++i1)
@@ -848,12 +848,38 @@ public:
         for (; i != img.end (); ++i, ++i1)
             should (acc (i) == acc (i1));
     }
+
+    void testHDR ()
+    {
+        vigra::ImageExportInfo exi("res.hdr");
+
+        exportImage (srcImageRange (img), exi );
+
+        vigra::ImageImportInfo info ("res.hdr");
+
+        should (info.width () == img.width ());
+        should (info.height () == img.height ());
+        should (info.isColor ());
+        should (info.getPixelType () == std::string ("FLOAT"));
+
+        Image res (info.width (), info.height ());
+
+        importImage (info, destImage (res));
+
+        Image::ScanOrderIterator i = img.begin ();
+        Image::ScanOrderIterator i1 = res.begin ();
+        Image::Accessor acc = img.accessor ();
+
+        for (; i != img.end (); ++i, ++i1)
+            shouldEqual (acc (i), acc (i1));
+    }
+
 };
 
 class Vector4ExportImportTest
 {
   public:
-  
+
     typedef vigra::FVector4Image Image;
     typedef vigra::BasicImage<TinyVector<UInt8, 4> > BImage;
     Image img, reread;
@@ -879,7 +905,7 @@ public:
                 img(x,y)[3] = 0.5;
                 for(int b=0; b<4; ++b)
                 {
-                    breference(x,y)[b] = 
+                    breference(x,y)[b] =
                         NumericTraits<UInt8>::fromRealPromote(scale*(img(x,y)[b]+offset));
                 }
             }
@@ -888,12 +914,12 @@ public:
 
     void failingTest (char const * filename)
     {
-        try 
+        try
         {
             exportImage( srcImageRange(img), vigra::ImageExportInfo( filename ) );
             failTest( "Failed to throw exception." );
         }
-        catch( vigra::PreconditionViolation & e ) 
+        catch( vigra::PreconditionViolation & e )
         {
             std::string expected = "\nPrecondition violation!\n";
             expected += "exportImage(): file format does not support requested number of bands (color channels)";
@@ -1150,7 +1176,7 @@ struct ImageImportExportTestSuite : public vigra::test_suite
         // general tests
         add(testCase(&ByteImageExportImportTest::testListFormatsExtensions));
         add(testCase(&ByteImageExportImportTest::testIsImage));
-        
+
         // grayscale byte images
         add(testCase(&ByteImageExportImportTest::testGIF));
         add(testCase(&ByteImageExportImportTest::testJPEG));
@@ -1188,13 +1214,6 @@ struct ImageImportExportTestSuite : public vigra::test_suite
         add(testCase(&FloatImageExportImportTest::testSUN));
         add(testCase(&FloatImageExportImportTest::testVIFF));
 
-        // rgb float images
-        add(testCase(&FloatRGBImageExportImportTest::testJPEG));
-        add(testCase(&FloatRGBImageExportImportTest::testTIFF));
-        add(testCase(&FloatRGBImageExportImportTest::testBMP));
-        add(testCase(&FloatRGBImageExportImportTest::testSUN));
-        add(testCase(&FloatRGBImageExportImportTest::testVIFF));
-
         // 4-band images
         add(testCase(&Vector4ExportImportTest::testJPEG));
         add(testCase(&Vector4ExportImportTest::testGIF));
@@ -1204,6 +1223,14 @@ struct ImageImportExportTestSuite : public vigra::test_suite
         add(testCase(&Vector4ExportImportTest::testVIFF));
         add(testCase(&Vector4ExportImportTest::testTIFF));
         add(testCase(&Vector4ExportImportTest::testPNG));
+
+        // rgb float images
+        add(testCase(&FloatRGBImageExportImportTest::testJPEG));
+        add(testCase(&FloatRGBImageExportImportTest::testTIFF));
+        add(testCase(&FloatRGBImageExportImportTest::testBMP));
+        add(testCase(&FloatRGBImageExportImportTest::testSUN));
+        add(testCase(&FloatRGBImageExportImportTest::testVIFF));
+        add(testCase(&FloatRGBImageExportImportTest::testHDR));
 
         // failure tests
         add(testCase(&ImageExportImportFailureTest::testGIFExport));
@@ -1230,6 +1257,6 @@ int main ()
     ImageImportExportTestSuite test;
     const int failed = test.run();
     std::cout << test.report() << std::endl;
-    
+
     return failed != 0;
 }

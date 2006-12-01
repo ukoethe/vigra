@@ -37,6 +37,10 @@
 #include <fstream>
 #include <algorithm>
 #include <cctype> // std::tolower
+#ifdef DEBUG
+#include <iostream>
+#endif
+
 #include "vigra/config.hxx"
 #include "vigra/error.hxx"
 #include "codecmanager.hxx"
@@ -50,6 +54,7 @@
 #include "pnm.hxx"
 #include "bmp.hxx"
 #include "gif.hxx"
+#include "hdr.hxx"
 
 namespace vigra
 {
@@ -76,6 +81,7 @@ namespace vigra
         import( new ViffCodecFactory() );
         import( new BmpCodecFactory() );
         import( new GIFCodecFactory() );
+        import( new HDRCodecFactory() );
     }
 
     CodecManager::~CodecManager() {

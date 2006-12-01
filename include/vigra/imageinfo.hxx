@@ -39,6 +39,11 @@
  * updated to vigra 1.4 by Douglas Wilkins
  * as of 18 Febuary 2006:
  *  - Added UINT16 and UINT32 pixel types.
+ *  - Added support for obtaining extra bands beyond RGB.
+ *  - Added support for a position field that indicates the start of this
+ *    image relative to some global origin.
+ *  - Added support for x and y resolution fields.
+ *  - Added support for ICC profiles
  */
 
 #ifndef VIGRA_IMAGEINFO_HXX
@@ -50,6 +55,7 @@
 #include "error.hxx"
 #include "diff2d.hxx"
 #include "codec.hxx"
+#include "array_vector.hxx"
 
 namespace vigra
 {
@@ -132,16 +138,17 @@ class VIGRA_EXPORT ImageExportInfo
             The file type will be guessed from the extension unless overridden
             by \ref setFileType(). Recognized extensions: '.bmp', '.gif',
             '.jpeg', '.jpg', '.p7', '.png', '.pbm', '.pgm', '.pnm', '.ppm', '.ras',
-            '.tif', '.tiff', '.xv'.
+            '.tif', '.tiff', '.xv', '.hdr'.
             JPEG support requires libjpeg, PNG support requires libpng, and
             TIFF support requires libtiff.
          **/
     ImageExportInfo( const char * );
+    ~ImageExportInfo();
 
     const char * getFileName() const;
 
         /** Store image as given file type.
-            
+
             This will override any type guessed
             from the file name's extension. Recognized file types:
 
@@ -162,7 +169,7 @@ class VIGRA_EXPORT ImageExportInfo
             <DT>"VIFF"<DD> Khoros Visualization image file.
             </DL>
 
-            With the exception of TIFF, VIFF, PNG and PNM all file types store
+            With the exception of TIFF, VIFF, PNG, and PNM all file types store
             1 byte (gray scale and mapped RGB) or 3 bytes (RGB) per
             pixel.
 
@@ -184,6 +191,9 @@ class VIGRA_EXPORT ImageExportInfo
             cases.  If this happens, export the image as 'unsigned
             char' or 'RGBValue\<unsigned char\>' by calling
             \ref ImageExportInfo::setPixelType().
+
+            Support to reading and writing ICC color profiles is
+            provided for TIFF, JPEG, and PNG images.
          **/
     ImageExportInfo & setFileType( const char * );
     const char * getFileType() const;
@@ -202,6 +212,7 @@ class VIGRA_EXPORT ImageExportInfo
                   JPEG    jpeg compression, call setQuality as well!
                   RLE     runlength compression
                   LZW     lzw compression
+                  DEFLATE deflate compression
          **/
     ImageExportInfo & setCompression( const char * );
     const char * getCompression() const;
@@ -250,9 +261,44 @@ class VIGRA_EXPORT ImageExportInfo
     ImageExportInfo & setYResolution( float );
     float getYResolution() const;
 
+        /** Set the position of the upper Left corner on a global
+            canvas.
+
+            Currently only supported by TIFF and PNG files.
+
+            The offset is encoded in the XPosition and YPosition TIFF tags.
+
+            @param position of the upper left corner in pixels
+                           must be >= 0
+         **/
+    ImageExportInfo & setPosition(const Diff2D & pos);
+
+        /** Get the position of the upper left corner on
+            a global canvas.
+         **/
+    Diff2D getPosition() const;
+
+        /**
+          ICC profiles (handled as raw data so far).
+          see getICCProfile()/setICCProfile()
+         **/
+    typedef ArrayVector<unsigned char> ICCProfile;
+
+        /** Returns a reference to the ICC profile.
+         */
+    const ICCProfile & getICCProfile() const;
+
+        /** Sets the ICC profile.
+            ICC profiles are currently supported by TIFF, PNG and JPEG images.
+            (Otherwise, the profile data is silently ignored.)
+         **/
+    ImageExportInfo & setICCProfile(const ICCProfile & profile);
+
   private:
     std::string m_filename, m_filetype, m_pixeltype, m_comp;
     float m_x_res, m_y_res;
+    Diff2D m_pos;
+    ICCProfile m_icc_profile;
 };
 
 // return an encoder for a given ImageExportInfo object
@@ -301,6 +347,7 @@ class VIGRA_EXPORT ImageImportInfo
             </DL>
          **/
     ImageImportInfo( const char *  );
+    ~ImageImportInfo();
 
     const char * getFileName() const;
 
@@ -320,9 +367,14 @@ class VIGRA_EXPORT ImageImportInfo
          **/
     int height() const;
 
-        /** Get the number bands in the image.
+        /** Get the total number of bands in the image.
          **/
     int numBands() const;
+
+        /** Get the number of extra (non color) bands in the image.
+         ** Usually these are the alpha channels.
+         **/
+    int numExtraBands() const;
 
         /** Get size of the image.
          **/
@@ -359,6 +411,10 @@ class VIGRA_EXPORT ImageImportInfo
          **/
     bool isByte() const;
 
+        /** Returns the layer offset of the current image, if there is one
+         **/
+    Diff2D getPosition() const;
+
         /** Returns the image resolution in horizontal direction
          **/
     float getXResolution() const;
@@ -367,14 +423,29 @@ class VIGRA_EXPORT ImageImportInfo
          **/
     float getYResolution() const;
 
+        /**
+          ICC profiles (handled as raw data so far).
+          see getICCProfile()/setICCProfile()
+         **/
+    typedef ArrayVector<unsigned char> ICCProfile;
+
+        /** Returns a reference to the ICC profile.
+
+           Note: The reference will become invalid when the
+           ImageImportInfo object has been destroyed.
+         **/
+    const ICCProfile & getICCProfile() const;
+
   private:
     std::string m_filename, m_filetype, m_pixeltype;
-    int m_width, m_height, m_num_bands;
+    int m_width, m_height, m_num_bands, m_num_extra_bands;
     float m_x_res, m_y_res;
+    Diff2D m_pos;
+    ICCProfile m_icc_profile;
 };
 
 // return a decoder for a given ImageImportInfo object
-VIGRA_EXPORT std::auto_ptr<vigra::Decoder> decoder( const ImageImportInfo & info );
+VIGRA_EXPORT std::auto_ptr<Decoder> decoder( const ImageImportInfo & info );
 
 } // namespace vigra
 

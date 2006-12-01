@@ -30,7 +30,7 @@
 /*    HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,      */
 /*    WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING      */
 /*    FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR     */
-/*    OTHER DEALINGS IN THE SOFTWARE.                                   */                
+/*    OTHER DEALINGS IN THE SOFTWARE.                                   */
 /*                                                                      */
 /************************************************************************/
 
@@ -78,7 +78,7 @@ CodecDesc BmpCodecFactory::getCodecDesc() const
     desc.bandNumbers.resize(2);
     desc.bandNumbers[0] = 1;
     desc.bandNumbers[1] = 3;
-        
+
     return desc;
 }
 
@@ -220,7 +220,7 @@ struct BmpDecoderImpl
 
     // data source
     std::ifstream stream;
-        
+
     // bmp headers
     BmpFileHeader file_header;
     BmpInfoHeader info_header;
@@ -283,7 +283,7 @@ BmpDecoderImpl::BmpDecoderImpl( const std::string & filename )
     grayscale = false; // default is rgb
     if (info_header.bit_count != 24)
         read_colormap ();
-        
+
     data_read = false;
 }
 
@@ -463,7 +463,7 @@ void BmpDecoderImpl::read_rle4_data ()
 
         c1 = stream.get ();
         c2 = stream.get ();
-            
+
         if (c1 == 0x00) {
 
             // escape sequences
@@ -491,7 +491,7 @@ void BmpDecoderImpl::read_rle4_data ()
                     painting = false;
                     break;
                 }
-            case 0x02: 
+            case 0x02:
                 {
                     // "delta" movement
 
@@ -501,7 +501,7 @@ void BmpDecoderImpl::read_rle4_data ()
                         x = 0;
                         ++y;
                     }
-                        
+
                     unsigned int dx = stream.get ();
                     unsigned int dy = stream.get ();
                     int nx = x + dx;
@@ -523,7 +523,7 @@ void BmpDecoderImpl::read_rle4_data ()
                     break;
                 }
             default:
-                
+
                 // absolute mode. paint the following c2 nibbles.
                 // then, eventually skip one byte to respect 16 bit boundaries.
                 int k = 0;
@@ -556,7 +556,7 @@ void BmpDecoderImpl::read_rle4_data ()
                 if (c2 % 2)
                     stream.get ();
             }
-                
+
         } else {
 
             // plain rle: repeat the next byte mapped, c1 times.
@@ -660,7 +660,7 @@ void BmpDecoderImpl::read_rle8_data ()
 
         c1 = stream.get ();
         c2 = stream.get ();
-            
+
         if (c1 == 0x00) {
 
             // escape sequences
@@ -688,7 +688,7 @@ void BmpDecoderImpl::read_rle8_data ()
                     painting = false;
                     break;
                 }
-            case 0x02: 
+            case 0x02:
                 {
                     // "delta" movement
 
@@ -698,7 +698,7 @@ void BmpDecoderImpl::read_rle8_data ()
                         x = 0;
                         ++y;
                     }
-                        
+
                     unsigned int dx = stream.get ();
                     unsigned int dy = stream.get ();
                     int nx = x + dx;
@@ -886,9 +886,9 @@ struct BmpEncoderImpl
 BmpEncoderImpl::BmpEncoderImpl( const std::string & filename )
     : bo( "little endian" ),
 #ifdef VIGRA_NEED_BIN_STREAMS
-      stream( filename.c_str(), std::ios::binary ), 
+      stream( filename.c_str(), std::ios::binary ),
 #else
-      stream( filename.c_str() ), 
+      stream( filename.c_str() ),
 #endif
       scanline(0), finalized(false)
 {
