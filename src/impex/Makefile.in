@@ -19,12 +19,12 @@ OBJS = \
     sun.lo \
     tiff.lo \
     viff.lo \
-    void_vector.lo 
+    void_vector.lo
 
 all: $(TARGET)
 
 $(TARGET): $(OBJS)
-	$(LINKCXXLIB) -version-info 2:$(SHAREDLIB_VERSION):0 -o $(TARGET) $(OBJS)
+	$(LINKCXXLIB) -version-info 2:$(SHAREDLIB_VERSION):0 -o $(TARGET) $(OBJS) $(IMPEX_DEPLIBS)
 
 install: all
 	$(INSTALL) -d $(libdir)
@@ -38,7 +38,7 @@ vigraimpex.lib: $(patsubst %.lo, %.ld, $(OBJS))  # MSVC
 
 clean:
 	rm -f *.o *.lo *.ld core a.out $(TARGET)
-	rm -f *.plg	
+	rm -f *.plg
 	rm -rf Debug Release ii_files .libs
 
 ifeq  "$(DEVELOPMENT_VERSION)" "yes"
