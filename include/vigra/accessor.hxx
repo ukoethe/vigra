@@ -48,7 +48,7 @@ namespace vigra {
     Basic templates to encapsulate access to the data of an iterator.
 
     Data accessors are used to allow for flexible access to the data
-    an interator points to. When we access the data directly, we
+    an iterator points to. When we access the data directly, we
     are bound to what <TT>operator*()</TT> returns, if this method exists at
     all. Encapsulating access in an accessor enables a better
     decoupling of data structures and algorithms.

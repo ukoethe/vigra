@@ -454,7 +454,7 @@ VIGRA_DEFINE_ITERATORTRAITS(VIGRA_PIXELTYPE)
 /** \brief Fundamental class template for images.
 
     A customized memory allocator can be specified as a templated argument
-    ans passed in the constructor.
+    and passed in the constructor.
 
     <b>\#include</b> "<a href="basicimage_8hxx-source.html">vigra/basicimage.hxx</a>"
 

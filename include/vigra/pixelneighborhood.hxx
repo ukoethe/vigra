@@ -935,7 +935,7 @@ typedef NeighborOffsetCirculator<FourNeighborCode> FourNeighborOffsetCirculator;
     int width  = lowerright.x - upperleft.x;
     int height = lowerright.y - upperleft.y;
 
-    ++upperleft.y; // avoide image border
+    ++upperleft.y; // avoid image border
     for(int y=1; y<height-1; ++y, ++upperleft.y)
     {
         BImage::traverser ix = upperleft + Diff2D(1,0);

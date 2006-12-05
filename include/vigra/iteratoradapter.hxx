@@ -46,7 +46,7 @@ namespace vigra {
 /*                                                      */
 /********************************************************/
 
-/*! \brief Quckly create 1-dimensional iterator adapters.
+/*! \brief Quickly create 1-dimensional iterator adapters.
 
     This class supports the easy creation of 1D iterator adpaters out
     of existing iterators. To use it, you must first implement a policy class
