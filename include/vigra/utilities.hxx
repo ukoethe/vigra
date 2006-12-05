@@ -30,7 +30,7 @@
 /*    HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,      */
 /*    WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING      */
 /*    FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR     */
-/*    OTHER DEALINGS IN THE SOFTWARE.                                   */                
+/*    OTHER DEALINGS IN THE SOFTWARE.                                   */
 /*                                                                      */
 /************************************************************************/
 
@@ -56,7 +56,7 @@
     <DT>
     <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif">
      \ref RangesAndPoints
-     <DD><em>2-dimensioanl positions, extents, amd rectangles</em>
+     <DD><em>2-dimensional positions, extents, and rectangles</em>
     <DT>
     <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif">
      \ref PixelNeighborhood
