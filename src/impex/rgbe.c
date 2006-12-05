@@ -62,7 +62,7 @@ static int rgbe_error(int rgbe_error_code, char *msg)
 INLINE void 
 VIGRA_float2rgbe(unsigned char rgbe[4], float red, float green, float blue)
 {
-  float v;
+  double v;
   int e;
 
   v = red;
@@ -89,7 +89,7 @@ VIGRA_rgbe2float(float *red, float *green, float *blue, unsigned char rgbe[4])
   float f;
 
   if (rgbe[3]) {   /*nonzero pixel*/
-    f = ldexp(1.0,rgbe[3]-(int)(128+8));
+    f = (float)ldexp(1.0,rgbe[3]-(int)(128+8));
     *red = rgbe[0] * f;
     *green = rgbe[1] * f;
     *blue = rgbe[2] * f;
@@ -225,7 +225,7 @@ int VIGRA_RGBE_ReadPixels(FILE *fp, float *data, int numpixels)
 }
 
 
-int VIGRA_RGBE_ReadPixels_Raw(FILE *fp, unsigned char *data, int numpixels)
+int VIGRA_RGBE_ReadPixels_Raw(FILE *fp, unsigned char *data, unsigned int numpixels)
 {
   if (fread(data, 4, numpixels, fp) < numpixels)
     return rgbe_error(rgbe_read_error,NULL);
