@@ -22,8 +22,9 @@
 
 #ifdef HasJPEG
 
-#include "iccjpeg.h"
 #include <stdlib.h>			/* define malloc() */
+#include <stdio.h>			/* define FILE */
+#include "iccjpeg.h"
 
 
 /*
