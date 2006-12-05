@@ -129,7 +129,7 @@ VIGRA_EXPORT bool isImage(char const * filename);
     <b>\#include</b> "<a href="imageinfo_8hxx-source.html">vigra/imageinfo.hxx</a>"<br>
     Namespace: vigra
 **/
-class VIGRA_EXPORT ImageExportInfo
+class ImageExportInfo
 {
   public:
         /** Construct ImageExportInfo object.
@@ -142,10 +142,10 @@ class VIGRA_EXPORT ImageExportInfo
             JPEG support requires libjpeg, PNG support requires libpng, and
             TIFF support requires libtiff.
          **/
-    ImageExportInfo( const char * );
-    ~ImageExportInfo();
+    VIGRA_EXPORT ImageExportInfo( const char * );
+    VIGRA_EXPORT ~ImageExportInfo();
 
-    const char * getFileName() const;
+    VIGRA_EXPORT const char * getFileName() const;
 
         /** Store image as given file type.
 
@@ -195,8 +195,8 @@ class VIGRA_EXPORT ImageExportInfo
             Support to reading and writing ICC color profiles is
             provided for TIFF, JPEG, and PNG images.
          **/
-    ImageExportInfo & setFileType( const char * );
-    const char * getFileType() const;
+    VIGRA_EXPORT ImageExportInfo & setFileType( const char * );
+    VIGRA_EXPORT const char * getFileType() const;
 
         /** Set compression type.
 
@@ -214,8 +214,8 @@ class VIGRA_EXPORT ImageExportInfo
                   LZW     lzw compression
                   DEFLATE deflate compression
          **/
-    ImageExportInfo & setCompression( const char * );
-    const char * getCompression() const;
+    VIGRA_EXPORT ImageExportInfo & setCompression( const char * );
+    VIGRA_EXPORT const char * getCompression() const;
 
         /** Set the pixel type of the image file. Possible values are:
             <DL>
@@ -238,7 +238,7 @@ class VIGRA_EXPORT ImageExportInfo
             // if this is not desired, force a different pixeltype
             exportImage(srcImageRange(img), ImageExportInfo("asByte.tif").setPixelType("UINT8"));
          **/
-    ImageExportInfo & setPixelType( const char * );
+    VIGRA_EXPORT ImageExportInfo & setPixelType( const char * );
 
         /** Get the pixel type of the image. Possible values are:
             <DL>
@@ -249,17 +249,17 @@ class VIGRA_EXPORT ImageExportInfo
             <DT>"DOUBLE"<DD> 64-bit floating point (double)
             </DL>
          **/
-    const char * getPixelType() const;
+    VIGRA_EXPORT const char * getPixelType() const;
 
         /** Set the image resolution in horizontal direction
          **/
-    ImageExportInfo & setXResolution( float );
-    float getXResolution() const;
+    VIGRA_EXPORT ImageExportInfo & setXResolution( float );
+    VIGRA_EXPORT float getXResolution() const;
 
         /** Set the image resolution in vertical direction
          **/
-    ImageExportInfo & setYResolution( float );
-    float getYResolution() const;
+    VIGRA_EXPORT ImageExportInfo & setYResolution( float );
+    VIGRA_EXPORT float getYResolution() const;
 
         /** Set the position of the upper Left corner on a global
             canvas.
@@ -271,12 +271,12 @@ class VIGRA_EXPORT ImageExportInfo
             @param position of the upper left corner in pixels
                            must be >= 0
          **/
-    ImageExportInfo & setPosition(const Diff2D & pos);
+    VIGRA_EXPORT ImageExportInfo & setPosition(const Diff2D & pos);
 
         /** Get the position of the upper left corner on
             a global canvas.
          **/
-    Diff2D getPosition() const;
+    VIGRA_EXPORT Diff2D getPosition() const;
 
         /**
           ICC profiles (handled as raw data so far).
@@ -286,13 +286,13 @@ class VIGRA_EXPORT ImageExportInfo
 
         /** Returns a reference to the ICC profile.
          */
-    const ICCProfile & getICCProfile() const;
+    VIGRA_EXPORT const ICCProfile & getICCProfile() const;
 
         /** Sets the ICC profile.
             ICC profiles are currently supported by TIFF, PNG and JPEG images.
             (Otherwise, the profile data is silently ignored.)
          **/
-    ImageExportInfo & setICCProfile(const ICCProfile & profile);
+    VIGRA_EXPORT ImageExportInfo & setICCProfile(const ICCProfile & profile);
 
   private:
     std::string m_filename, m_filetype, m_pixeltype, m_comp;
@@ -318,7 +318,7 @@ used to read an image from disk and enquire about its properties.
 <b>\#include</b> "<a href="imageinfo_8hxx-source.html">vigra/imageinfo.hxx</a>"<br>
 Namespace: vigra
 **/
-class VIGRA_EXPORT ImageImportInfo
+class ImageImportInfo
 {
   public:
     enum PixelType { UINT8, INT16, UINT16, INT32, UINT32, FLOAT, DOUBLE };
@@ -346,10 +346,10 @@ class VIGRA_EXPORT ImageImportInfo
             <DT>"VIFF"<DD> Khoros Visualization image file.
             </DL>
          **/
-    ImageImportInfo( const char *  );
-    ~ImageImportInfo();
+    VIGRA_EXPORT ImageImportInfo( const char *  );
+    VIGRA_EXPORT ~ImageImportInfo();
 
-    const char * getFileName() const;
+    VIGRA_EXPORT const char * getFileName() const;
 
         /** Get the file type of the image associated with this
             info object.
@@ -357,36 +357,36 @@ class VIGRA_EXPORT ImageImportInfo
             See ImageImportInfo::ImageImportInfo for a list of the
             available file types.
          **/
-    const char * getFileType() const;
+    VIGRA_EXPORT const char * getFileType() const;
 
         /** Get width of the image.
          **/
-    int width() const;
+    VIGRA_EXPORT int width() const;
 
         /** Get height of the image.
          **/
-    int height() const;
+    VIGRA_EXPORT int height() const;
 
         /** Get the total number of bands in the image.
          **/
-    int numBands() const;
+    VIGRA_EXPORT int numBands() const;
 
         /** Get the number of extra (non color) bands in the image.
          ** Usually these are the alpha channels.
          **/
-    int numExtraBands() const;
+    VIGRA_EXPORT int numExtraBands() const;
 
         /** Get size of the image.
          **/
-    Size2D size() const;
+    VIGRA_EXPORT Size2D size() const;
 
         /** Returns true if the image is gray scale.
          **/
-    bool isGrayscale() const;
+    VIGRA_EXPORT bool isGrayscale() const;
 
         /** Returns true if the image is colored (RGB).
          **/
-    bool isColor() const;
+    VIGRA_EXPORT bool isColor() const;
 
         /** Query the pixel type of the image.
 
@@ -401,27 +401,27 @@ class VIGRA_EXPORT ImageImportInfo
             <DT>"DOUBLE"<DD> 64-bit floating point (double)
             </DL>
          **/
-    const char * getPixelType() const;
+    VIGRA_EXPORT const char * getPixelType() const;
 
         /// deprecated: use getPixelType()
-    PixelType pixelType() const;
+    VIGRA_EXPORT PixelType pixelType() const;
 
         /** Returns true if the image has 1 byte per pixel (gray) or
             3 bytes per pixel (RGB).
          **/
-    bool isByte() const;
+    VIGRA_EXPORT bool isByte() const;
 
         /** Returns the layer offset of the current image, if there is one
          **/
-    Diff2D getPosition() const;
+    VIGRA_EXPORT Diff2D getPosition() const;
 
         /** Returns the image resolution in horizontal direction
          **/
-    float getXResolution() const;
+    VIGRA_EXPORT float getXResolution() const;
 
         /** Returns the image resolution in vertical direction
          **/
-    float getYResolution() const;
+    VIGRA_EXPORT float getYResolution() const;
 
         /**
           ICC profiles (handled as raw data so far).
@@ -434,7 +434,7 @@ class VIGRA_EXPORT ImageImportInfo
            Note: The reference will become invalid when the
            ImageImportInfo object has been destroyed.
          **/
-    const ICCProfile & getICCProfile() const;
+    VIGRA_EXPORT const ICCProfile & getICCProfile() const;
 
   private:
     std::string m_filename, m_filetype, m_pixeltype;
