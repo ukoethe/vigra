@@ -40,16 +40,14 @@
 // prevent the global namespace to become polluted with 
 // badly named Windows macros
 
-#ifndef NOMINMAX
+#if defined(_WIN32)
+# define VC_EXTRALEAN
 # define NOMINMAX
 # include <windows.h>
 # undef NOMINMAX
-#else
-# include <windows.h>
-#endif
-
-#ifdef DIFFERENCE
-# undef DIFFERENCE
+# ifdef DIFFERENCE
+#  undef DIFFERENCE
+# endif
 #endif
 
 #endif /* VIGRA_WINDOWS_H */
