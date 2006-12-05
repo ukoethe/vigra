@@ -492,7 +492,7 @@
 
 /** \page AlgebraicConcepts Algebraic Concepts
 
-The algebraic concepts decribe requirements for algebraic types, that is
+The algebraic concepts describe requirements for algebraic types, that is
 for types that support arithmetic operations. The built-in types are concepts
 of \ref AlgebraicField and \ref DivisionAlgebra.
 
