@@ -491,27 +491,23 @@ void convolveImage(SrcIterator src_ul, SrcIterator src_lr, SrcAccessor src_acc,
     int h = src_lr.y - src_ul.y;
 
     // calculate width and height of the kernel
-    int kernel_width = klr.x - kul.x + 1;
+    int kernel_width  = klr.x - kul.x + 1;
     int kernel_height = klr.y - kul.y + 1;
 
     vigra_precondition(w >= kernel_width && h >= kernel_height,
                        "convolveImage(): kernel larger than image.");
 
-    int x,y;
-    x = 0;
-    y = 0;
-
     KernelSumType norm = NumericTraits<KernelSumType>::zero();
     if(border == BORDER_TREATMENT_CLIP)
     {
-        // caluclate the sum of the kernel elements for renormalization
+        // calculate the sum of the kernel elements for renormalization
         KernelIterator yk  = ki + klr;
 
-        //Die Summe der Punkte im Kernel wird ermittelt (= norm)
-        for(y=0; y<kernel_height; ++y, --yk.y)
+        // determine sum within kernel (= norm)
+        for(int y = 0; y < kernel_height; ++y, --yk.y)
         {
             KernelIterator xk  = yk;
-            for(x=0; x<kernel_width; ++x, --xk.x)
+            for(int x = 0; x < kernel_width; ++x, --xk.x)
             {
                 norm += ak(xk);
             }
@@ -532,7 +528,7 @@ void convolveImage(SrcIterator src_ul, SrcIterator src_lr, SrcAccessor src_acc,
         DestIterator xd(yd);
         SrcIterator xs(ys);
 
-        for(; xs.x < send.x; ++x, ++xs.x, ++xd.x)
+        for(; xs.x < send.x; ++xs.x, ++xd.x)
         {
             // init the sum
             SumType sum = NumericTraits<SumType>::zero();
@@ -588,8 +584,8 @@ void convolveImage(SrcIterator src_ul, SrcIterator src_lr, SrcAccessor src_acc,
     yd = dest_ul;
     ys = src_ul;
 
-    // go over the entire image (but skip the already computed points in the loop)
-    for(y=0; y < h; ++y, ++ys.y, ++yd.y)
+    // work on entire image (but skip the already computed points in the loop)
+    for(int y = 0; y < h; ++y, ++ys.y, ++yd.y)
     {
         int top    = std::max(static_cast<IntBiggest>(-klr.y),
                               static_cast<IntBiggest>(src_ul.y - ys.y));
@@ -600,7 +596,7 @@ void convolveImage(SrcIterator src_ul, SrcIterator src_lr, SrcAccessor src_acc,
         DestIterator xd(yd);
         SrcIterator xs(ys);
 
-        for(x=0; x < w; ++x, ++xs.x, ++xd.x)
+        for(int x = 0; x < w; ++x, ++xs.x, ++xd.x)
         {
             // check if we are away from the border
             if(y >= klr.y && y < h+kul.y && x == klr.x)
@@ -617,8 +613,8 @@ void convolveImage(SrcIterator src_ul, SrcIterator src_lr, SrcAccessor src_acc,
             }
             else
             {
-                int left   = std::max(-klr.x, src_ul.x - xs.x);
-                int right  = std::min(-kul.x, src_lr.x - xs.x - 1);
+                int left  = std::max(-klr.x, src_ul.x - xs.x);
+                int right = std::min(-kul.x, src_lr.x - xs.x - 1);
 
                 // init the sum
                 SumType sum = NumericTraits<SumType>::zero();
