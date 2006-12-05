@@ -126,6 +126,12 @@
 			RelativePath=".\gif.cxx">
 		</File>
 		<File
+			RelativePath=".\hdr.cxx">
+		</File>
+		<File
+			RelativePath=".\iccjpeg.c">
+		</File>
+		<File
 			RelativePath=".\imageinfo.cxx">
 		</File>
 		<File
@@ -136,6 +142,9 @@
 		</File>
 		<File
 			RelativePath=".\pnm.cxx">
+		</File>
+		<File
+			RelativePath=".\rgbe.c">
 		</File>
 		<File
 			RelativePath=".\sun.cxx">
