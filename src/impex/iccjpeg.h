@@ -25,8 +25,7 @@
 #ifdef HasJPEG
 
 #include <stdio.h>		/* needed to define "FILE", "NULL" */
-#include "jpeglib.h"
-
+# include <jpeglib.h>
 
 /*
  * This routine writes the given ICC profile data into a JPEG file.
