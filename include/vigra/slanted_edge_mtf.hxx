@@ -55,9 +55,48 @@
 
 namespace vigra {
 
+/** \addtogroup SlantedEdgeMTF Camera MTF Estimation
+    Determine the magnitude transfer function (MTF) of a camera using the slanted edge method.
+*/
+//@{ 
+                                    
+/********************************************************/
+/*                                                      */
+/*                  SlantedEdgeMTFOptions               */
+/*                                                      */
+/********************************************************/
+
+/** \brief Pass options to one of the \ref slantedEdgeMTF() functions.
+
+    <tt>SlantedEdgeMTFOptions</tt>  is an argument objects that holds various optional
+    parameters used by the \ref slantedEdgeMTF() functions. If a parameter is not explicitly
+    set, a suitable default will be used. Changing the defaults is only necessary if you can't 
+    obtain good input data, but absolutely need an MTF estimate.
+    
+    <b> Usage:</b>
+    
+        <b>\#include</b> "<a href="slanted__edge__mtf_8hxx-source.html">vigra/slanted_edge_mtf.hxx</a>"<br>
+    Namespace: vigra
+    
+    \code
+    vigra::BImage src(w,h);
+    std::vector<vigra::TinyVector<double, 2> > mtf;
+    
+    ...
+    vigra::slantedEdgeMTF(srcImageRange(src), mtf,
+                          vigra::SlantedEdgeMTFOptions().mtfSmoothingScale(1.0));
+    
+    // print the frequency / attenuation pairs found
+    for(int k=0; k<result.size(); ++k)
+        std::cout << "frequency: " << mtf[k][0] << ", estimated attenuation: " << mtf[k][1] << std::endl;
+    \endcode
+*/
+
 class SlantedEdgeMTFOptions
 {
   public:
+        /** Initialize all options with default values.
+        */
     SlantedEdgeMTFOptions()
     : minimum_number_of_lines(20),
       desired_edge_width(10),
@@ -65,24 +104,49 @@ class SlantedEdgeMTFOptions
       mtf_smoothing_scale(2.0)
     {}
 
+        /** Minimum number of pixels the edge must cross.
+        
+            The longer the edge the more accurate the resulting MTF estimate. If you don't have good
+            data, but absolutely have to compute an MTF, you may force a lower value here.<br>
+            Default: 20
+        */
     SlantedEdgeMTFOptions & minimumNumberOfLines(unsigned int n)
     {
         minimum_number_of_lines = n;
         return *this;
     }
 
+        /** Desired number of pixels perpendicular to the edge.
+        
+            The larger the regions to either side of the edge, 
+            the more accurate the resulting MTF estimate. If you don't have good
+            data, but absolutely have to compute an MTF, you may force a lower value here.<br>
+            Default: 10
+        */
     SlantedEdgeMTFOptions & desiredEdgeWidth(unsigned int n)
     {
         desired_edge_width = n;
         return *this;
     }
 
+        /** Minimum acceptable number of pixels perpendicular to the edge.
+        
+            The larger the regions to either side of the edge, 
+            the more accurate the resulting MTF estimate. If you don't have good
+            data, but absolutely have to compute an MTF, you may force a lower value here.<br>
+            Default: 5
+        */
     SlantedEdgeMTFOptions & minimumEdgeWidth(unsigned int n)
     {
         minimum_edge_width = n;
         return *this;
     }
 
+        /** Amount of smoothing of the computed MTF.
+        
+            If the datais noisy, so will be the MTF. Thus, some smoothing is useful.<br>
+            Default: 2.0
+        */
     SlantedEdgeMTFOptions & mtfSmoothingScale(double scale)
     {
         vigra_precondition(scale >= 0.0,
@@ -94,6 +158,8 @@ class SlantedEdgeMTFOptions
     unsigned int minimum_number_of_lines, desired_edge_width, minimum_edge_width;
     double mtf_smoothing_scale;
 };
+
+//@}
 
 namespace detail {
 
@@ -417,6 +483,115 @@ void slantedEdgeMTFImpl(Image const & i, BackInsertable & mtf, double angle,
 
 } // namespace detail
 
+/** \addtogroup NoiseNormalization Noise Normalization
+    Estimate noise with intensity-dependent variance and transform it into additive Gaussian noise.
+*/
+//@{ 
+                                    
+/********************************************************/
+/*                                                      */
+/*                     slantedEdgeMTF                   */
+/*                                                      */
+/********************************************************/
+
+/** \brief Determine the magnitude transfer function of the camera.
+
+    This operator estimates the magnitude transfer function (MTF) of a camera by means of the 
+    slanted edge method described in:
+    
+    ISO Standard No. 12233: <i>"Photography - Electronic still picture cameras - Resolution measurements"</i>, 2000
+    
+    The input must be an image that contains a single step edge with bright pixels on one side and dark pixels on 
+    the other. However, the intensity values must be neither saturated nor zero. The algorithms computes the MTF
+    from the Fourier transform of the edge's derivative. Thus, if the actual MTF is unisotropic, the estimated 
+    MTF does actually only apply in the direction perpendicular to the edge - several edges at different 
+    orientations are required to estimate an unisotropic MTF.
+    
+    The algorithm returns a sequence of frequency / attenuation pairs. The frequency axis is normalized so that the
+    Nyquist frequency of the original image is 0.5. Since the edge's derivative is computed with subpixel accuracy,
+    the attenuation can usually be computed for frequencies significantly above the Nyquist frequency as well. The 
+    MTF estimate ends at either the first zero crossing of the MTF or at frequency 1, whichever comes earlier.
+    
+    The present implementation improves the original slanted edge algorithm according to ISO 12233 in a number of
+    ways:
+    
+    <ul>
+    <li> The edge is not required to run nearly vertically or horizontally (i.e. with a slant of approximately 5 degrees).
+         The algorithm will automatically compute the edge's actual angle and adjust estimates accordingly. 
+         However, it is still necessary for the edge to be somewhat slanted, because subpixel-accurate estimation 
+         of the derivative is impossible otherwise (i.e. the edge position perpendicular to the edge direction must 
+         differ by at least 1 pixel between the two ends of the edge). 
+         
+    <li> Our implementation uses a more accurate subpixel derivative algrithm. In addition, we first perform a shading 
+         correction in order to reduce possible derivative bias due to nonuniform illumination.
+
+    <li> If the input image is large enough (i.e. there are at least 20 pixels on either side of the edge over
+         the edge's entire length), our algorithm attempts to subtract the estimated noise power spectrum
+         from the estimated MTF.
+    </ul>
+    
+    The source value type (<TT>SrcAccessor::value_type</TT>) must be a scalar type which is convertible to <tt>double</tt>.
+    The result is written into the \a result sequence, whose <tt>value_type</tt> must be constructible 
+    from two <tt>double</tt> values. Algorithm options can be set via the \a options object 
+    (see \ref vigra::NoiseNormalizationOptions for details).
+    
+    <b> Declarations:</b>
+    
+    pass arguments explicitly:
+    \code
+    namespace vigra {
+        template <class SrcIterator, class SrcAccessor, class BackInsertable>
+        void
+        slantedEdgeMTF(SrcIterator sul, SrcIterator slr, SrcAccessor src, BackInsertable & mtf,
+                    SlantedEdgeMTFOptions const & options = SlantedEdgeMTFOptions());
+    }
+    \endcode
+    
+    use argument objects in conjunction with \ref ArgumentObjectFactories:
+    \code
+    namespace vigra {
+        template <class SrcIterator, class SrcAccessor, class BackInsertable>
+        void
+        slantedEdgeMTF(triple<SrcIterator, SrcIterator, SrcAccessor> src, BackInsertable & mtf,
+                       SlantedEdgeMTFOptions const & options = SlantedEdgeMTFOptions())
+    }
+    \endcode
+    
+    <b> Usage:</b>
+    
+        <b>\#include</b> "<a href="slanted__edge__mtf_8hxx-source.html">vigra/slanted_edge_mtf.hxx</a>"<br>
+    Namespace: vigra
+    
+    \code
+    vigra::BImage src(w,h);
+    std::vector<vigra::TinyVector<double, 2> > mtf;
+    
+    ...
+    vigra::slantedEdgeMTF(srcImageRange(src), mtf);
+    
+    // print the frequency / attenuation pairs found
+    for(int k=0; k<result.size(); ++k)
+        std::cout << "frequency: " << mtf[k][0] << ", estimated attenuation: " << mtf[k][1] << std::endl;
+    \endcode
+
+    <b> Required Interface:</b>
+    
+    \code
+    SrcIterator upperleft, lowerright;
+    SrcAccessor src;
+    
+    typedef SrcAccessor::value_type SrcType;
+    typedef NumericTraits<SrcType>::isScalar isScalar;
+    assert(isScalar::asBool == true);
+    
+    double value = src(uperleft);
+    
+    BackInsertable result;
+    typedef BackInsertable::value_type ResultType;    
+    double intensity, variance;
+    result.push_back(ResultType(intensity, variance));
+    \endcode
+*/
 template <class SrcIterator, class SrcAccessor, class BackInsertable>
 void
 slantedEdgeMTF(SrcIterator sul, SrcIterator slr, SrcAccessor src, BackInsertable & mtf,
@@ -444,8 +619,56 @@ slantedEdgeMTF(triple<SrcIterator, SrcIterator, SrcAccessor> src, BackInsertable
     slantedEdgeMTF(src.first, src.second, src.third, mtf, options);
 }
 
-} // namespace vigra
+/********************************************************/
+/*                                                      */
+/*                     mtfFitGaussian                   */
+/*                                                      */
+/********************************************************/
 
+/** \brief Fit a Gaussian function to a given MTF.
+
+    This function expects a squence of frequency / attenuation pairs as produced by \ref slantedEdgeMTF()
+    and finds the best fitting Gaussian point spread function (Gaussian functions are good approximations 
+    of the PSF of many real cameras). It returns the standard deviation (scale) of this function. The algorithm
+    computes the standard deviation by means of a linear least square on the logarithm of the MTF, i.e.
+    an algebraic fit rather than a Euclidean fit - thus, the resulting Gaussian may not be the one that 
+    intuitively fits the data optimally.
+    
+    <b> Declaration:</b>
+    
+    \code
+    namespace vigra {
+        template <class Vector>
+        double mtfFitGaussian(Vector const & mtf);
+    }
+    \endcode
+    
+    <b> Usage:</b>
+    
+        <b>\#include</b> "<a href="slanted__edge__mtf_8hxx-source.html">vigra/slanted_edge_mtf.hxx</a>"<br>
+    Namespace: vigra
+    
+    \code
+    vigra::BImage src(w,h);
+    std::vector<vigra::TinyVector<double, 2> > mtf;
+    
+    ...
+    vigra::slantedEdgeMTF(srcImageRange(src), mtf);
+    double scale = vigra::mtfFitGaussian(mtf)
+    
+    std::cout << "The camera PSF is approximately a Gaussian at scale " << scale << std::endl;
+    \endcode
+
+    <b> Required Interface:</b>
+    
+    \code
+    Vector mtf;
+    int numberOfMeasurements = mtf.size()
+    
+    double frequency = mtf[0][0];
+    double attenuation = mtf[0][1];
+    \endcode
+*/
 template <class Vector>
 double mtfFitGaussian(Vector const & mtf)
 {
@@ -470,5 +693,9 @@ double mtfFitGaussian(Vector const & mtf)
     }
     return xy / x2;
 }
+
+//@}
+
+} // namespace vigra
 
 #endif // VIGRA_SLANTED_EDGE_MTF_HXX
