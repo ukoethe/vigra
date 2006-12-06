@@ -30,11 +30,55 @@
       (<a href="mailto:rahn@informatik.uni-hamburg.de">rahn@informatik.uni-hamburg.de</a>)
       implemented much of the \ref MultiArrayConvolutionFilters.
 
+      <li> Pablo d'Angelo, Douglas Wilkins and other members of the  
+      (<a href="http://hugin.sourceforge.net">Hugin team</a>) contributed various extensions of the impex
+      library (UINT16/UINT32 support, ICC profile support, HDR file type).
+
       <li> Numerous people reported bugs and made suggestions.
 </UL>
 
 Many thanks to all!
 <p>
+
+<b> Changes from Version 1.4.0 to 1.5.0</b>
+
+<UL>      
+      <li> Added \ref NoiseNormalization
+      
+      <li> Added \ref SlantedEdgeMTF
+      
+      <li> Added \ref gaussianGradientMagnitude()
+      
+      <li> Added \ref fourierTransform() and \ref fourierTransfomInverse()
+      
+      <li> Added \ref cannyEdgelList3x3()
+      
+      <li> Added srcImage(), srcImageRange() etc. with ROI (see \ref ArgumentObjectFactories)
+      
+      <li> Improved the \ref VigraImpex (thanks to Pablo d'Angelo, Douglas Wilkins and others):
+      <ul>
+         <li> Added UINT16 and UINT32 pixel types.
+         <li> Added support for obtaining extra bands beyond RGB.
+         <li> Added support for a position field that indicates the start of this
+                image relative to some global origin  (PNG + TIFF).
+         <li> Added support for x and y resolution fields.
+         <li> Added support for ICC profiles (TIFF, PNG, and JPEG).
+         <li> Added support for deflate compression (PNG + TIFF).
+         <li> Added support for .hdr file format (high dynamic range).
+      </ul>
+      
+      <li> Improved support of 64-bit compilers. 
+      
+      <li> Added mathematical functions:  elliptic integrals (\ref ellipticIntegralF(), \ref ellipticIntegralE()),
+             chi-squared distribution (\ref chi2(), \ref chi2CDF(), \ref noncentralChi2(), \ref noncentralChi2CDF())
+      
+      <li> Dropped "vigra/" from #includes in headers (so compiler will first look in the same disrectory).
+      
+      <li> Switched to relative paths in the MSVC project files. Compile vigraimpex into a DLL.
+      
+      <li> Bug fixes in the code and documentation. 
+           
+</UL>
 
 <b> Changes from Version 1.3.3 to 1.4.0</b>
 
