@@ -441,6 +441,14 @@
         <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif">
         \ref Morphology
         <DD> <em>erosion, dilation, and median with disc structuring functions</em>
+    <DT>
+        <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif">
+        \ref NoiseNormalization
+        <DD> <em>transform intensity-dependent noise into additive Gaussian noise</em>
+    <DT>
+        <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif">
+        \ref SlantedEdgeMTF
+        <DD> <em>determine the magnitude transfer function (MTF) of a camera</em>
     </DL>
 */
 
