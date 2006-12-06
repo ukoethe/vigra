@@ -1304,7 +1304,8 @@ bool quadraticNoiseNormalization(triple<SrcIterator, SrcIterator, SrcAccessor> s
 /** \brief Noise normalization by means of a given quadratic noise model.
 
     This function works similar to \ref nonparametricNoiseNormalization() with the exception that the 
-    functional dependency of the noise variance from the intensity is given rather than estimated:
+    functional dependency of the noise variance from the intensity is given (by a quadratic function)
+    rather than estimated:
     
     \code
     variance = a0 + a1 * intensity + a2 * sq(intensity)
@@ -1386,7 +1387,7 @@ void quadraticNoiseNormalization(triple<SrcIterator, SrcIterator, SrcAccessor> s
 
     This function works in the same way as \ref nonparametricNoiseNormalization() with the exception of the 
     model for the dependency between intensity and noise variance: it assumes that this dependency is a 
-    linear function rather than a piecewise linear function. If the quadratic model is applicable, it leads
+    linear function rather than a piecewise linear function. If the linear model is applicable, it leads
     to a very simple transformation which is similar to the familiar gamma correction.
     
     <b> Declarations:</b>
@@ -1463,7 +1464,8 @@ bool linearNoiseNormalization(triple<SrcIterator, SrcIterator, SrcAccessor> src,
 /** \brief Noise normalization by means of a given linear noise model.
 
     This function works similar to \ref nonparametricNoiseNormalization() with the exception that the 
-    functional dependency of the noise variance from the intensity is given rather than estimated:
+    functional dependency of the noise variance from the intensity is given (as a linear function) 
+    rather than estimated:
     
     \code
     variance = a0 + a1 * intensity
