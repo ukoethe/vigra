@@ -540,7 +540,7 @@ void rieszTransformOfLOG(triple<SrcIterator, SrcIterator, SrcAccessor> src,
     These functions calculates a spatial domain approximation of
     the boundary tensor as described in
 
-    U. K÷the: <a href="http://kogs-www.informatik.uni-hamburg.de/~koethe/papers/abstracts/polarfilters.html">
+    U. K&ouml;the: <a href="http://kogs-www.informatik.uni-hamburg.de/~koethe/papers/abstracts/polarfilters.html">
     <i>"Integrated Edge and Junction Detection with the Boundary Tensor"</i></a>,
      in: ICCV 03, Proc. of 9th Intl. Conf. on Computer Vision, Nice 2003, vol. 1,
      pp. 424-431, Los Alamitos: IEEE Computer Society, 2003
