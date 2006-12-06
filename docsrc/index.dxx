@@ -448,7 +448,7 @@
     <DT>
         <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif">
         \ref SlantedEdgeMTF
-        <DD> <em>determine the magnitude transfer function (MTF) of a camera</em>
+        <DD> <em>determine the magnitude transfer function (MTF) of a camera using the slanted edge method</em>
     </DL>
 */
 
