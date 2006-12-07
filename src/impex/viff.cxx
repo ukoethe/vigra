@@ -434,10 +434,10 @@ namespace vigra {
         field_type scratch, null = 0;
 
         // magic number
-        stream.put((unsigned char)0xAB);
+        stream.put((std::ofstream::char_type)0xAB);
             
         // file type
-        stream.put(0x01);
+        stream.put((std::ofstream::char_type)0x01);
 
         // file format release number
         stream.put(XV_IMAGE_REL_NUM);
