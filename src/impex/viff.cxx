@@ -429,15 +429,21 @@ namespace vigra {
         stream.seekg( 1024, std::ios::beg );
     }
 
+#if  __GNUC__ == 2
+    #define VIGRA_STREAM_CHAR_TYPE char
+#else
+    #define VIGRA_STREAM_CHAR_TYPE std::ofstream::char_type
+#endif
+
     void ViffHeader::to_stream( std::ofstream & stream, byteorder & bo ) const
     {
         field_type scratch, null = 0;
 
         // magic number
-        stream.put((std::ofstream::char_type)0xAB);
+        stream.put((VIGRA_STREAM_CHAR_TYPE)0xAB);
             
         // file type
-        stream.put((std::ofstream::char_type)0x01);
+        stream.put((VIGRA_STREAM_CHAR_TYPE)0x01);
 
         // file format release number
         stream.put(XV_IMAGE_REL_NUM);
