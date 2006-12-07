@@ -38,8 +38,8 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalOptions="/MACHINE:I386"
-				AdditionalDependencies="vigraimpex.dll.lib"
-				OutputFile=".\Debug/convolution.exe"
+				AdditionalDependencies="vigraimpex_debug.dll.lib"
+				OutputFile=".\convolution_debug.exe"
 				LinkIncremental="2"
 				SuppressStartupBanner="TRUE"
 				AdditionalLibraryDirectories="..\..\src\impex"
@@ -50,7 +50,9 @@
 				Name="VCMIDLTool"
 				TypeLibraryName=".\Debug/convolution.tlb"/>
 			<Tool
-				Name="VCPostBuildEventTool"/>
+				Name="VCPostBuildEventTool"
+				Description="Running tests"
+				CommandLine="..\testOrDelete convolution_debug.exe"/>
 			<Tool
 				Name="VCPreBuildEventTool"/>
 			<Tool

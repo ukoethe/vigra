@@ -26,7 +26,7 @@
 				MinimalRebuild="TRUE"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
-				UsePrecompiledHeader="3"
+				UsePrecompiledHeader="2"
 				WarningLevel="3"
 				Detect64BitPortabilityProblems="TRUE"
 				DebugInformationFormat="4"/>
@@ -35,11 +35,11 @@
 			<Tool
 				Name="VCLinkerTool"
 				IgnoreImportLibrary="TRUE"
-				OutputFile="$(OutDir)/functorexpression.exe"
+				OutputFile="./functorexpression_debug.exe"
 				LinkIncremental="2"
-				AdditionalLibraryDirectories="..\..\lib"
+				AdditionalLibraryDirectories=""
 				GenerateDebugInformation="TRUE"
-				SubSystem="2"
+				SubSystem="1"
 				ImportLibrary="$(OutDir)/functorexpression.lib"
 				TargetMachine="1"/>
 			<Tool
@@ -55,8 +55,8 @@
 				ProxyFileName="functorexpression_p.c"/>
 			<Tool
 				Name="VCPostBuildEventTool"
-				Description="Performing registration"
-				CommandLine="&quot;$(TargetPath)&quot; /RegServer"/>
+				Description="Running tests"
+				CommandLine="..\testOrDelete functorexpression_debug.exe"/>
 			<Tool
 				Name="VCPreBuildEventTool"/>
 			<Tool

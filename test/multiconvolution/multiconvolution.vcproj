@@ -100,11 +100,11 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalOptions="/MACHINE:I386"
-				AdditionalDependencies="vigraimpex.lib libtiff.lib libjpeg.lib"
-				OutputFile=".\Debug/multiconvolution.exe"
+				AdditionalDependencies="vigraimpex_debug.dll.lib"
+				OutputFile="./multiconvolution_debug.exe"
 				LinkIncremental="2"
 				SuppressStartupBanner="TRUE"
-				AdditionalLibraryDirectories="..\..\lib"
+				AdditionalLibraryDirectories="..\..\src\impex"
 				GenerateDebugInformation="TRUE"
 				ProgramDatabaseFile=".\Debug/multiconvolution.pdb"
 				SubSystem="1"/>
@@ -112,7 +112,9 @@
 				Name="VCMIDLTool"
 				TypeLibraryName=".\Debug/multiconvolution.tlb"/>
 			<Tool
-				Name="VCPostBuildEventTool"/>
+				Name="VCPostBuildEventTool"
+				Description="Running tests"
+				CommandLine="..\testOrDelete multiconvolution_debug.exe"/>
 			<Tool
 				Name="VCPreBuildEventTool"/>
 			<Tool

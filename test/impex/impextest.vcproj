@@ -39,8 +39,8 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalOptions="/MACHINE:I386"
-				AdditionalDependencies="vigraimpex.dll.lib"
-				OutputFile=".\Debug/impex.exe"
+				AdditionalDependencies="vigraimpex_debug.dll.lib"
+				OutputFile="./impex_debug.exe"
 				LinkIncremental="2"
 				SuppressStartupBanner="TRUE"
 				AdditionalLibraryDirectories="..\..\src\impex"
@@ -51,7 +51,9 @@
 				Name="VCMIDLTool"
 				TypeLibraryName=".\Debug/impex.tlb"/>
 			<Tool
-				Name="VCPostBuildEventTool"/>
+				Name="VCPostBuildEventTool"
+				Description="Running tests"
+				CommandLine="..\testOrDelete impex_debug.exe"/>
 			<Tool
 				Name="VCPreBuildEventTool"/>
 			<Tool

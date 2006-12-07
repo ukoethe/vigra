@@ -32,10 +32,11 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="vigraimpex.dll.lib fftw3.lib"
-				OutputFile="$(OutDir)/fourier.exe"
+				AdditionalDependencies="vigraimpex_debug.dll.lib fftw3.lib"
+				OutputFile="./fourier_debug.exe"
 				LinkIncremental="2"
 				AdditionalLibraryDirectories="..\..\lib;..\..\src\impex"
+				IgnoreDefaultLibraryNames="msvcrt"
 				GenerateDebugInformation="TRUE"
 				ProgramDatabaseFile="$(OutDir)/fourier.pdb"
 				SubSystem="1"
@@ -43,7 +44,9 @@
 			<Tool
 				Name="VCMIDLTool"/>
 			<Tool
-				Name="VCPostBuildEventTool"/>
+				Name="VCPostBuildEventTool"
+				Description="Running tests"
+				CommandLine="..\testOrDelete fourier_debug.exe"/>
 			<Tool
 				Name="VCPreBuildEventTool"/>
 			<Tool

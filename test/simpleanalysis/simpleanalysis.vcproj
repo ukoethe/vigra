@@ -38,11 +38,12 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalOptions="/MACHINE:I386"
-				AdditionalDependencies="vigraimpex.lib libtiff.lib libjpeg.lib"
-				OutputFile=".\Debug/simpleanalysis.exe"
+				AdditionalDependencies="vigraimpex_debug.dll.lib fftw3.lib"
+				OutputFile="./simpleanalysis_debug.exe"
 				LinkIncremental="2"
 				SuppressStartupBanner="TRUE"
 				AdditionalLibraryDirectories="..\..\lib;..\..\src\impex"
+				IgnoreDefaultLibraryNames="msvcrt"
 				GenerateDebugInformation="TRUE"
 				ProgramDatabaseFile=".\Debug/simpleanalysis.pdb"
 				SubSystem="1"/>
@@ -50,7 +51,9 @@
 				Name="VCMIDLTool"
 				TypeLibraryName=".\Debug/simpleanalysis.tlb"/>
 			<Tool
-				Name="VCPostBuildEventTool"/>
+				Name="VCPostBuildEventTool"
+				Description="Running tests"
+				CommandLine="..\testOrDelete simpleanalysis_debug.exe"/>
 			<Tool
 				Name="VCPreBuildEventTool"/>
 			<Tool
