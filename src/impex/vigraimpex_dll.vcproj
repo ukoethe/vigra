@@ -12,19 +12,19 @@
 	<Configurations>
 		<Configuration
 			Name="Debug|Win32"
-			OutputDirectory="Debug"
+			OutputDirectory="."
 			IntermediateDirectory="Debug"
-			ConfigurationType="1"
+			ConfigurationType="2"
 			CharacterSet="2">
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
 				AdditionalIncludeDirectories="..\..\include;..\..\include\external"
-				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS"
+				PreprocessorDefinitions="VIGRA_DLL;HasJPEG;HasTIFF;HasPNG;WIN32;_DEBUG;_WINDOWS"
 				MinimalRebuild="TRUE"
 				BasicRuntimeChecks="3"
-				RuntimeLibrary="5"
-				UsePrecompiledHeader="3"
+				RuntimeLibrary="3"
+				UsePrecompiledHeader="2"
 				WarningLevel="3"
 				Detect64BitPortabilityProblems="TRUE"
 				DebugInformationFormat="4"/>
@@ -32,11 +32,15 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
-				OutputFile="$(OutDir)/vigraimpex_dll.exe"
+				AdditionalDependencies="libtiff.lib libjpeg.lib libpng.lib zlib.lib"
+				OutputFile="$(OutDir)/vigraimpex_debug.dll"
 				LinkIncremental="2"
+				AdditionalLibraryDirectories="..\..\lib"
+				IgnoreDefaultLibraryNames="msvcrt"
 				GenerateDebugInformation="TRUE"
 				ProgramDatabaseFile="$(OutDir)/vigraimpex_dll.pdb"
 				SubSystem="2"
+				ImportLibrary="$(OutDir)/vigraimpex_debug.dll.lib"
 				TargetMachine="1"/>
 			<Tool
 				Name="VCMIDLTool"/>
@@ -68,7 +72,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				AdditionalIncludeDirectories="..\..\include;..\..\include\external"
-				PreprocessorDefinitions="VIGRA_DLL;WIN32;NDEBUG;_WINDOWS,HasJPEG,HasTIFF,HasPNG"
+				PreprocessorDefinitions="VIGRA_DLL;HasJPEG;HasTIFF;HasPNG;WIN32;NDEBUG;_WINDOWS"
 				RuntimeLibrary="2"
 				UsePrecompiledHeader="2"
 				WarningLevel="3"

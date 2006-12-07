@@ -39,11 +39,11 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalOptions="/MACHINE:I386"
-				AdditionalDependencies="libtiff.lib libjpeg.lib libpng.lib zlib.lib"
+				AdditionalDependencies="vigraimpex_debug.dll.lib"
 				OutputFile="./boundarytensor.exe"
 				LinkIncremental="2"
 				SuppressStartupBanner="TRUE"
-				AdditionalLibraryDirectories="..\..\lib"
+				AdditionalLibraryDirectories="..\impex"
 				GenerateDebugInformation="TRUE"
 				ProgramDatabaseFile="./boundarytensor.pdb"
 				SubSystem="1"/>
