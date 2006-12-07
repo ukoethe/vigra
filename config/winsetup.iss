@@ -1,9 +1,9 @@
-#define MyAppName "Vigra 1.4"
-#define MyAppVersion "1.4.1a"
+#define MyAppName "Vigra 1.5"
+#define MyAppVersion "1.5.0"
 #define MyAppPublisher "Ullrich Köthe, University of Hamburg"
 #define MyAppURL "http://kogs.informatik.uni-hamburg.de/~koethe/vigra/"
-#define MySourcePath "C:\Users\koethe\src\vigra1.4.1a"
-#define MyBinPath "C:\Users\koethe\src\vigra\current"
+#define MySourcePath "C:\Users\koethe\src\vigra1.5.0"
+#define MyExternalPath "C:\Users\koethe\src\vigra\current"
 #define RequiredVCVersion "7.1"
 
 [Setup]
@@ -29,6 +29,8 @@ Source: {#MySourcePath}\include\vigra\*.hxx; DestDir: {app}\include\vigra
 Source: {#MySourcePath}\include\vigra\*.h; DestDir: {app}\include\vigra
 Source: {#MySourcePath}\src\*.cxx; DestDir: {app}\src; Flags: recursesubdirs
 Source: {#MySourcePath}\src\*.hxx; DestDir: {app}\src; Flags: recursesubdirs
+Source: {#MySourcePath}\src\*.c; DestDir: {app}\src; Flags: recursesubdirs
+Source: {#MySourcePath}\src\*.h; DestDir: {app}\src; Flags: recursesubdirs
 Source: {#MySourcePath}\src\*.vcproj; DestDir: {app}\src; Flags: recursesubdirs
 Source: {#MySourcePath}\src\*.sln; DestDir: {app}\src
 Source: {#MySourcePath}\src\examples\*.gif; DestDir: {app}\src\examples
@@ -40,26 +42,26 @@ Source: {#MySourcePath}\test\*.vcproj; DestDir: {app}\test; Flags: recursesubdir
 Source: {#MySourcePath}\test\*.sln; DestDir: {app}\test
 Source: {#MySourcePath}\test\testOrDelete.bat; DestDir: {app}\test
 Source: {#MySourcePath}\doc\vigra\*; Excludes: CVS; DestDir: {app}\doc\vigra; Flags: recursesubdirs
-Source: {#MyBinPath}\include\external\fftw3.h; DestDir: {app}\include\external
-Source: {#MyBinPath}\include\external\jconfig.h; DestDir: {app}\include\external
-Source: {#MyBinPath}\include\external\jmorecfg.h; DestDir: {app}\include\external
-Source: {#MyBinPath}\include\external\jpeglib.h; DestDir: {app}\include\external
-Source: {#MyBinPath}\include\external\png.h; DestDir: {app}\include\external
-Source: {#MyBinPath}\include\external\pngconf.h; DestDir: {app}\include\external
-Source: {#MyBinPath}\include\external\tiff.h; DestDir: {app}\include\external
-Source: {#MyBinPath}\include\external\tiffconf.h; DestDir: {app}\include\external
-Source: {#MyBinPath}\include\external\tiffio.h; DestDir: {app}\include\external
-Source: {#MyBinPath}\include\external\tiffvers.h; DestDir: {app}\include\external
-Source: {#MyBinPath}\include\external\zconf.h; DestDir: {app}\include\external
-Source: {#MyBinPath}\include\external\zlib.h; DestDir: {app}\include\external
-Source: {#MyBinPath}\lib\FFTW3.lib; DestDir: {app}\lib
-Source: {#MyBinPath}\lib\libjpeg.lib; DestDir: {app}\lib
-Source: {#MyBinPath}\lib\libpng.lib; DestDir: {app}\lib
-Source: {#MyBinPath}\lib\libtiff.lib; DestDir: {app}\lib
-Source: {#MyBinPath}\lib\zlib.lib; DestDir: {app}\lib
-Source: {#MyBinPath}\src\impex\vigraimpex.dll.lib; DestDir: {app}\lib
-Source: {#MyBinPath}\src\impex\vigraimpex.dll; DestDir: {app}\bin
-Source: {#MyBinPath}\src\examples\*.exe; DestDir: {app}\bin
+Source: {#MySourcePath}\include\external\fftw3.h; DestDir: {app}\include\external
+Source: {#MySourcePath}\include\external\jconfig.h; DestDir: {app}\include\external
+Source: {#MySourcePath}\include\external\jmorecfg.h; DestDir: {app}\include\external
+Source: {#MySourcePath}\include\external\jpeglib.h; DestDir: {app}\include\external
+Source: {#MySourcePath}\include\external\png.h; DestDir: {app}\include\external
+Source: {#MySourcePath}\include\external\pngconf.h; DestDir: {app}\include\external
+Source: {#MySourcePath}\include\external\tiff.h; DestDir: {app}\include\external
+Source: {#MySourcePath}\include\external\tiffconf.h; DestDir: {app}\include\external
+Source: {#MySourcePath}\include\external\tiffio.h; DestDir: {app}\include\external
+Source: {#MySourcePath}\include\external\tiffvers.h; DestDir: {app}\include\external
+Source: {#MySourcePath}\include\external\zconf.h; DestDir: {app}\include\external
+Source: {#MySourcePath}\include\external\zlib.h; DestDir: {app}\include\external
+Source: {#MySourcePath}\lib\FFTW3.lib; DestDir: {app}\lib
+Source: {#MySourcePath}\lib\libjpeg.lib; DestDir: {app}\lib
+Source: {#MySourcePath}\lib\libpng.lib; DestDir: {app}\lib
+Source: {#MySourcePath}\lib\libtiff.lib; DestDir: {app}\lib
+Source: {#MySourcePath}\lib\zlib.lib; DestDir: {app}\lib
+Source: {#MySourcePath}\src\impex\vigraimpex.dll.lib; DestDir: {app}\lib
+Source: {#MySourcePath}\src\impex\vigraimpex.dll; DestDir: {app}\bin
+Source: {#MySourcePath}\src\examples\*.exe; DestDir: {app}\bin
 
 [UninstallDelete]
 Type: filesandordirs; Name: {app}\src\impex\Release
@@ -68,12 +70,14 @@ Type: files; Name: {app}\src\impex\*.exp
 Type: files; Name: {app}\src\impex\*.pdb
 Type: files; Name: {app}\src\impex\*.dll
 Type: files; Name: {app}\src\impex\*.lib
+Type: files; Name: {app}\src\impex\*.ilk
 Type: dirifempty; Name: {app}\src\impex
 
 Type: filesandordirs; Name: {app}\src\examples\Release
 Type: filesandordirs; Name: {app}\src\examples\Debug
 Type: files; Name: {app}\src\examples\*.exe
 Type: files; Name: {app}\src\examples\*.pdb
+Type: files; Name: {app}\src\examples\*.ilk
 Type: dirifempty; Name: {app}\src\examples
 
 Type: files; Name: {app}\src\*.ncb
@@ -120,7 +124,8 @@ begin
 	if VCPath = '' then
 		CreateOutputMsgPage(wpWelcome, 'Visual C++ {#RequiredVCVersion} not found.', '',
 	     'Visual C++ {#RequiredVCVersion} could not be found on your computer. ' +
-	     'You won''t be able to compile any programs using {#MyAppName}.');
+	     'You may need to re-compile {#MyAppName}, because the provided binaries ' +
+	     'may be incompatible with your compiler.');
 
 	if VCUserPath <> '' then
 		WizardForm.DirEdit.Text := VCUserPath + '\{#MyAppName}'
