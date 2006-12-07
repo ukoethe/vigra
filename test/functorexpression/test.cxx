@@ -191,7 +191,7 @@ struct FunctorExpressionTest
         should(exec(Arg1() | Arg2(), 0xff, 0xf) == 0xff); 
         should(exec(Arg1() ^ Arg2(), 0xff, 0xf) == 0xf0); 
         should(exec(pow(Arg1(), Arg2()), 2.0, 3) == VIGRA_CSTD::pow(2.0, 3.0)); 
-        should(exec(atan2(Arg1(), Arg2()), 2.0, 3.0) == VIGRA_CSTD::atan2(2.0, 3.0)); 
+        shouldEqualTolerance(exec(atan2(Arg1(), Arg2()), 2.0, 3.0), VIGRA_CSTD::atan2(2.0, 3.0), 1e-16); 
         should(exec(fmod(Arg1(), Arg2()), 2.0, 3.0) == VIGRA_CSTD::fmod(2.0, 3.0)); 
         should(exec(min(Arg1(), Arg2()), 2, 3.5) == 2.0); 
         should(exec(max(Arg1(), Arg2()), 2, 3.5) == 3.5); 
