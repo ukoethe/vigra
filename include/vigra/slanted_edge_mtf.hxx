@@ -483,8 +483,8 @@ void slantedEdgeMTFImpl(Image const & i, BackInsertable & mtf, double angle,
 
 } // namespace detail
 
-/** \addtogroup NoiseNormalization Noise Normalization
-    Estimate noise with intensity-dependent variance and transform it into additive Gaussian noise.
+/** \addtogroup SlantedEdgeMTF Camera MTF Estimation
+    Determine the magnitude transfer function (MTF) of a camera using the slanted edge method.
 */
 //@{ 
                                     
