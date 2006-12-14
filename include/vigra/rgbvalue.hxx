@@ -663,7 +663,8 @@ operator-=(RGBValue<V1, RIDX1, GIDX1, BIDX1> & l,
 }
 
     /// componentwise multiply-assignment
-template <class V1, unsigned int RIDX1, unsigned int BIDX1, unsigned int GIDX1, class V2, unsigned int RIDX2, unsigned int GIDX2, unsigned int BIDX2>
+template <class V1, unsigned int RIDX1, unsigned int GIDX1, unsigned int BIDX1,
+          class V2, unsigned int RIDX2, unsigned int GIDX2, unsigned int BIDX2>
 inline
 RGBValue<V1, RIDX1, GIDX1, BIDX1> &
 operator*=(RGBValue<V1, RIDX1, GIDX1, BIDX1> & l,
