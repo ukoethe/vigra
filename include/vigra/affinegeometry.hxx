@@ -314,6 +314,9 @@ rotateImage(SplineImageView<ORDER, T> const & src,
                 dest[currentDestCoordinate] = src[currentSrcCoordinate]; // copy an interpolated value
     \endcode
     
+    The matrix represent a 2-dimensional affine transform by means of homogeneous coordinates,
+    i.e. it must be a 3x3 matrix whose last row is (0,0,1).
+    
     <b> Declarations:</b>
     
     pass arguments explicitly:
