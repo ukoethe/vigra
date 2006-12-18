@@ -1454,7 +1454,7 @@ struct GeometricTransformsTest
         
         rotateImage(sp, destImage(res), 45.0);
         
-        shouldEqualSequenceTolerance(res.begin(), res.end(), ref.begin(), 1e-14);
+        shouldEqualSequenceTolerance(res.begin(), res.end(), ref.begin(), 1e-12);
         
         TinyVector<double, 2> center((w-1.0)/2.0, (h-1.0)/2.0);
         affineWarpImage(sp, destImageRange(res), rotationMatrix2DDegrees(45.0, center));
