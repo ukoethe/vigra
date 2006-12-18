@@ -40,6 +40,16 @@
 Many thanks to all!
 <p>
 
+<b> Changes from Version 1.5.0 to 1.6.0</b>
+
+<UL>      
+      <li> Added \ref affineWarpImage() and factory functions for 
+           affine transformation matrices
+      
+      <li> Bug fixes in the code and documentation. 
+           
+</UL>
+
 <b> Changes from Version 1.4.0 to 1.5.0</b>
 
 <UL>      
@@ -65,6 +75,7 @@ Many thanks to all!
          <li> Added support for ICC profiles (TIFF, PNG, and JPEG).
          <li> Added support for deflate compression (PNG + TIFF).
          <li> Added support for .hdr file format (high dynamic range).
+
       </ul>
       
       <li> Improved support of 64-bit compilers. 
