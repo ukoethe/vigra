@@ -42,6 +42,8 @@
 #include "vigra/stdimage.hxx"
 #include "vigra/stdimagefunctions.hxx"
 #include "vigra/splineimageview.hxx"
+#include "vigra/basicgeometry.hxx"
+#include "vigra/affinegeometry.hxx"
 #include "vigra/impex.hxx"
 
 using namespace vigra;
@@ -1345,6 +1347,131 @@ struct SplineImageViewTest
     }
 };
 
+struct GeometricTransformsTest
+{
+    typedef vigra::DImage Image;
+    Image img;
+    int w, h;
+
+    GeometricTransformsTest()
+    {
+        ImageImportInfo ginfo("lenna128.xv");
+        w = ginfo.width();
+        h = ginfo.height();
+        img.resize(w, h);
+        importImage(ginfo, destImage(img));
+    }
+
+    void testSimpleGeometry()
+    {
+        Image res1(img.size()), res2(h, w);
+        
+        rotateImage(srcImageRange(img), destImage(res1), 180);
+        for(int y = 0; y < 10; ++y)
+            for(int x = 0; x < 10; ++x)
+                shouldEqual(img(x,y), res1(w-x-1, h-y-1));
+        rotateImage(srcImageRange(img), destImage(res2), 90);
+        for(int y = 0; y < 10; ++y)
+            for(int x = 0; x < 10; ++x)
+                shouldEqual(img(x,y), res2(y, w-x-1));
+        rotateImage(srcImageRange(img), destImage(res2), -90);
+        for(int y = 0; y < 10; ++y)
+            for(int x = 0; x < 10; ++x)
+                shouldEqual(img(x,y), res2(h-y-1, x));
+
+        try
+        {
+            rotateImage(srcImageRange(img), destImage(res2), 22);
+            failTest("rotateImage() failed to throw exception");
+        }
+        catch(vigra::PreconditionViolation) {}
+        
+        transposeImage(srcImageRange(img), destImage(res2), major);
+        for(int y = 0; y < 10; ++y)
+            for(int x = 0; x < 10; ++x)
+                shouldEqual(img(x,y), res2(y, x));
+        transposeImage(srcImageRange(img), destImage(res2), minor);
+        for(int y = 0; y < 10; ++y)
+            for(int x = 0; x < 10; ++x)
+                shouldEqual(img(x,y), res2(h-y-1, w-x-1));
+        
+        reflectImage(srcImageRange(img), destImage(res1), horizontal);
+        for(int y = 0; y < 10; ++y)
+            for(int x = 0; x < 10; ++x)
+                shouldEqual(img(x,y), res1(x, h-y-1));
+        reflectImage(srcImageRange(img), destImage(res1), vertical);
+        for(int y = 0; y < 10; ++y)
+            for(int x = 0; x < 10; ++x)
+                shouldEqual(img(x,y), res1(w-x-1, y));
+    }
+    
+    void testAffineMatrix()
+    {
+        typedef TinyVector<double, 2> Vector2;
+        
+        Matrix<double> point(3,1);
+        point(0,0) = 1.6;
+        point(1,0) = 2.9;
+        point(2,0) = 1.0;
+        
+        Matrix<double> t = translationMatrix2D(Vector2(2.2, 4.1));
+        Matrix<double> res = t * point;
+        shouldEqualTolerance(res(0,0), 3.8, 1e-14);
+        shouldEqualTolerance(res(1,0), 7.0, 1e-14);
+        shouldEqual(res(2,0), 1.0);
+        
+        Matrix<double> r = rotationMatrix2DDegrees(-90.0);
+        res = r * point;
+        shouldEqualTolerance(res(0,0), 2.9, 1e-14);
+        shouldEqualTolerance(res(1,0), -1.6, 1e-14);
+        shouldEqual(res(2,0), 1.0);
+        
+        r = rotationMatrix2DDegrees(-90.0, Vector2(1.6, 2.9));
+        res = r * point;
+        shouldEqualTolerance(res(0,0), 1.6, 1e-14);
+        shouldEqualTolerance(res(1,0), 2.9, 1e-14);
+        shouldEqual(res(2,0), 1.0);
+        
+        Matrix<double> s = scalingMatrix2D(2.0);
+        res = s * point;
+        shouldEqualTolerance(res(0,0), 3.2, 1e-14);
+        shouldEqualTolerance(res(1,0), 5.8, 1e-14);
+        shouldEqual(res(2,0), 1.0);
+        
+        Matrix<double> sh = shearMatrix2D(2.0, 0.5);
+        res = sh * point;
+        shouldEqualTolerance(res(0,0), 7.4, 1e-14);
+        shouldEqualTolerance(res(1,0), 3.7, 1e-14);
+        shouldEqual(res(2,0), 1.0);
+    }
+    
+    void testRotation()
+    {
+        Image res(img.size()), ref(img.size());
+        importImage(vigra::ImageImportInfo("lenna_rotate.xv"), destImage(ref));
+        
+        SplineImageView<3, double> sp(srcImageRange(img));
+        
+        rotateImage(sp, destImage(res), 45.0);
+        
+        shouldEqualSequenceTolerance(res.begin(), res.end(), ref.begin(), 1e-14);
+        
+        TinyVector<double, 2> center((w-1.0)/2.0, (h-1.0)/2.0);
+        affineWarpImage(sp, destImageRange(res), rotationMatrix2DDegrees(45.0, center));
+        shouldEqualSequenceTolerance(res.begin(), res.end(), ref.begin(), 1e-12);
+    }
+    
+    void testScaling()
+    {
+        Image res(2*w-1, 2*h-1), ref(2*w-1, 2*h-1);
+        resizeImageSplineInterpolation(srcImageRange(img), destImageRange(ref));
+                
+        SplineImageView<3, double> sp(srcImageRange(img));
+        
+        affineWarpImage(sp, destImageRange(res), scalingMatrix2D(0.5));
+        shouldEqualSequenceTolerance(res.begin(), res.end(), ref.begin(), 1e-14);
+    }
+};
 
 struct ImageFunctionsTestSuite
 : public vigra::test_suite
@@ -1412,6 +1539,11 @@ struct ImageFunctionsTestSuite
         add( testCase( &SplineImageViewTest<5>::testCoefficientArray));
         add( testCase( &SplineImageViewTest<5>::testImageResize));
         add( testCase( &SplineImageViewTest<5>::testOutside));
+
+        add( testCase( &GeometricTransformsTest::testSimpleGeometry));
+        add( testCase( &GeometricTransformsTest::testAffineMatrix));
+        add( testCase( &GeometricTransformsTest::testRotation));
+        add( testCase( &GeometricTransformsTest::testScaling));
     }
 };
 
