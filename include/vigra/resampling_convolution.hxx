@@ -42,6 +42,8 @@
 #include "array_vector.hxx"
 #include "rational.hxx"
 #include "functortraits.hxx"
+#include "functorexpression.hxx"
+#include "transformimage.hxx"
 #include "imagecontainer.hxx"
 
 namespace vigra {
@@ -870,6 +872,47 @@ void pyramidExpandBurtFilter(ImagePyramid<Image, Alloc> & pyramid, int fromLevel
     for(int i=fromLevel-1; i >= toLevel; --i)
         pyramidExpandBurtFilter(srcImageRange(pyramid[i+1]), destImageRange(pyramid[i]), strength);
 }
+
+template <class Image, class Alloc>
+inline
+void pyramidReduceBurtLaplacian(ImagePyramid<Image, Alloc> & pyramid, int fromLevel, int toLevel,
+                             double strength = 0.4)
+{
+    using namespace functor;
+    
+    pyramidReduceBurtFilter(pyramid, fromLevel, toLevel, strength);
+    for(int i=fromLevel; i < toLevel; ++i)
+    {
+        typename ImagePyramid<Image, Alloc>::value_type tmpImage(pyramid[i].size());
+        pyramidExpandBurtFilter(srcImageRange(pyramid[i+1]), destImageRange(tmpImage), strength);
+        combineTwoImages(srcImageRange(tmpImage), srcImage(pyramid[i]), destImage(pyramid[i]),
+                       Arg1() - Arg2()); 
+    }
+}
+
+
+template <class Image, class Alloc>
+inline
+void pyramidExpandBurtLaplacian(ImagePyramid<Image, Alloc> & pyramid, int fromLevel, int toLevel,
+                                double strength = 0.4)
+{
+    using namespace functor;
+    
+    vigra_precondition(fromLevel  > toLevel,
+       "pyramidExpandBurtLaplacian(): fromLevel must be larger than toLevel.");
+    vigra_precondition(pyramid.lowestLevel() <= toLevel && fromLevel <= pyramid.highestLevel(),
+       "pyramidExpandBurtLaplacian(): fromLevel and toLevel must be between the lowest and highest pyramid levels (inclusive).");
+
+    for(int i=fromLevel-1; i >= toLevel; --i)
+    {
+        typename ImagePyramid<Image, Alloc>::value_type tmpImage(pyramid[i].size());
+        pyramidExpandBurtFilter(srcImageRange(pyramid[i+1]), destImageRange(tmpImage), strength);
+        combineTwoImages(srcImageRange(tmpImage), srcImage(pyramid[i]), destImage(pyramid[i]),
+                       Arg1() - Arg2()); 
+    }
+}
+
+
 
 } // namespace vigra
 
