@@ -42,6 +42,7 @@
 #include "array_vector.hxx"
 #include "rational.hxx"
 #include "functortraits.hxx"
+#include "imagecontainer.hxx"
 
 namespace vigra {
 
@@ -572,6 +573,157 @@ resamplingConvolveImage(triple<SrcIterator, SrcIterator, SrcAccessor> src,
                             dest.first, dest.second, dest.third,
                             kx, samplingRatioX, offsetX,
                             ky, samplingRatioY, offsetY);
+}
+
+
+template <class SrcIterator, class SrcAccessor,
+          class DestIterator, class DestAccessor>
+void pyramidReduceBurtFilter(SrcIterator sul, SrcIterator slr, SrcAccessor src,
+                             DestIterator dul, DestIterator dlr, DestAccessor dest,
+                             double strength = 0.4)
+{
+    vigra_precondition(0.25 <= strength && strength <= 0.5,
+             "pyramidReduceBurtFilter(): strength must be between 0.25 and 0.5.");
+             
+    int wold = slr.x - sul.x;
+    int wnew = dlr.x - dul.x;
+    int hold = slr.y - sul.y;
+    int hnew = dlr.y - dul.y;
+    
+    Rational<int> samplingRatio(1,2), offset(0);
+    resampling_detail::MapTargetToSourceCoordinate mapCoordinate(samplingRatio, offset);
+    
+    ArrayVector<Kernel1D<double> > kernels(1);
+    kernels[0].initExplicitly(-2, 2) = 0.25 - strength / 2.0, 0.25, strength, 0.25, 0.25 - strength / 2.0;
+   
+    typedef typename
+        NumericTraits<typename SrcAccessor::value_type>::RealPromote
+        TmpType;
+    typedef BasicImage<TmpType> TmpImage;
+    typedef typename TmpImage::traverser TmpIterator;
+    
+    BasicImage<TmpType> tmp(wnew, hold);
+    
+    TmpIterator tul = tmp.upperLeft();
+
+    for(; sul.y < slr.y; ++sul.y, ++tul.y)
+    {
+        typename SrcIterator::row_iterator sr = sul.rowIterator();
+        typename TmpIterator::row_iterator tr = tul.rowIterator();
+        resamplingConvolveLine(sr, sr+wold, src, tr, tr+wnew, tmp.accessor(),
+                               kernels, mapCoordinate);
+    }
+    
+    tul  = tmp.upperLeft();
+
+    for(; dul.x < dlr.x; ++dul.x, ++tul.x)
+    {
+        typename DestIterator::column_iterator dc = dul.columnIterator();
+        typename TmpIterator::column_iterator tc = tul.columnIterator();
+        resamplingConvolveLine(tc, tc+hold, tmp.accessor(), dc, dc+hnew, dest,
+                               kernels, mapCoordinate);
+    }
+}
+
+template <class SrcIterator, class SrcAccessor,
+          class DestIterator, class DestAccessor>
+inline
+void pyramidReduceBurtFilter(triple<SrcIterator, SrcIterator, SrcAccessor> src,
+                             triple<DestIterator, DestIterator, DestAccessor> dest,
+                             double strength = 0.4)
+{
+    pyramidReduceBurtFilter(src.first, src.second, src.third, 
+                            dest.first, dest.second, dest.third, strength);
+}
+
+template <class Image, class Alloc>
+inline
+void pyramidReduceBurtFilter(ImagePyramid<Image, Alloc> & pyramid, int fromLevel, int toLevel,
+                             double strength = 0.4)
+{
+    vigra_precondition(fromLevel  < toLevel,
+       "pyramidReduceBurtFilter(): fromLevel must be smaller than toLevel.");
+    vigra_precondition(pyramid.lowestLevel() <= fromLevel && toLevel <= pyramid.highestLevel(),
+       "pyramidReduceBurtFilter(): fromLevel and toLevel must be between the lowest and highest pyramid levels (inclusive).");
+
+    for(int i=fromLevel+1; i <= toLevel; ++i)
+        pyramidReduceBurtFilter(srcImageRange(pyramid[i-1]), destImageRange(pyramid[i]), strength);
+}
+
+template <class SrcIterator, class SrcAccessor,
+          class DestIterator, class DestAccessor>
+void pyramidExpandBurtFilter(SrcIterator sul, SrcIterator slr, SrcAccessor src,
+                             DestIterator dul, DestIterator dlr, DestAccessor dest,
+                             double strength = 0.4)
+{
+    vigra_precondition(0.25 <= strength && strength <= 0.5,
+             "pyramidExpandBurtFilter(): strength must be between 0.25 and 0.5.");
+             
+    int wold = slr.x - sul.x;
+    int wnew = dlr.x - dul.x;
+    int hold = slr.y - sul.y;
+    int hnew = dlr.y - dul.y;
+    
+    Rational<int> samplingRatio(2), offset(0);
+    resampling_detail::MapTargetToSourceCoordinate mapCoordinate(samplingRatio, offset);
+    
+    ArrayVector<Kernel1D<double> > kernels(2);
+    kernels[0].initExplicitly(-1, 1) = 0.5 - strength, 2.0*strength, 0.5 - strength;
+    kernels[1].initExplicitly(-1, 0) = 0.5, 0.5;
+   
+    typedef typename
+        NumericTraits<typename SrcAccessor::value_type>::RealPromote
+        TmpType;
+    typedef BasicImage<TmpType> TmpImage;
+    typedef typename TmpImage::traverser TmpIterator;
+    
+    BasicImage<TmpType> tmp(wnew, hold);
+    
+    TmpIterator tul = tmp.upperLeft();
+
+    for(; sul.y < slr.y; ++sul.y, ++tul.y)
+    {
+        typename SrcIterator::row_iterator sr = sul.rowIterator();
+        typename TmpIterator::row_iterator tr = tul.rowIterator();
+        resamplingConvolveLine(sr, sr+wold, src, tr, tr+wnew, tmp.accessor(),
+                               kernels, mapCoordinate);
+    }
+    
+    tul  = tmp.upperLeft();
+
+    for(; dul.x < dlr.x; ++dul.x, ++tul.x)
+    {
+        typename DestIterator::column_iterator dc = dul.columnIterator();
+        typename TmpIterator::column_iterator tc = tul.columnIterator();
+        resamplingConvolveLine(tc, tc+hold, tmp.accessor(), dc, dc+hnew, dest,
+                               kernels, mapCoordinate);
+    }
+}
+
+template <class SrcIterator, class SrcAccessor,
+          class DestIterator, class DestAccessor>
+inline
+void pyramidExpandBurtFilter(triple<SrcIterator, SrcIterator, SrcAccessor> src,
+                             triple<DestIterator, DestIterator, DestAccessor> dest,
+                             double strength = 0.4)
+{
+    pyramidExpandBurtFilter(src.first, src.second, src.third, 
+                            dest.first, dest.second, dest.third, strength);
+}
+
+
+template <class Image, class Alloc>
+inline
+void pyramidExpandBurtFilter(ImagePyramid<Image, Alloc> & pyramid, int fromLevel, int toLevel,
+                             double strength = 0.4)
+{
+    vigra_precondition(fromLevel  > toLevel,
+       "pyramidExpandBurtFilter(): fromLevel must be larger than toLevel.");
+    vigra_precondition(pyramid.lowestLevel() <= toLevel && fromLevel <= pyramid.highestLevel(),
+       "pyramidExpandBurtFilter(): fromLevel and toLevel must be between the lowest and highest pyramid levels (inclusive).");
+
+    for(int i=fromLevel-1; i >= toLevel; --i)
+        pyramidExpandBurtFilter(srcImageRange(pyramid[i+1]), destImageRange(pyramid[i]), strength);
 }
 
 } // namespace vigra
