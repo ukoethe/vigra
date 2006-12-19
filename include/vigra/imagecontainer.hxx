@@ -486,7 +486,7 @@ public:
     typedef typename ImageVector::pointer pointer;
 #endif
     typedef typename ImageVector::difference_type difference_type;
-    typedef typename ImageVector::size_type size_type;
+    typedef int size_type;
 
         /** Init a pyramid between the given levels (inclusive). Allocate the given \a imageSize
                    at the pyramid level given in \a sizeAppliesToLevel and size the other levels using recursive
@@ -664,10 +664,10 @@ public:
             corresponding image in the other ImageArray. (STL-Forward
             Container interface)
          */
-    bool operator ==(const ImageArray<ImageType> &other)
+    bool operator ==(const ImagePyramid<ImageType, Alloc> &other) const
     {
         return (lowestLevel_ == other.lowestLevel_) && (highestLevel_ == other.highestLevel_) && 
-                && (images_ == other.images_);
+                (images_ == other.images_);
     }
 
         /** Empty this array. (STL-Sequence interface)
@@ -744,7 +744,7 @@ public:
         /** swap contents of this array with the contents of other
             (STL-Container interface)
          */
-    void swap(const_reference other)
+    void swap(const ImagePyramid<ImageType, Alloc> &other)
     {
         images_.swap(other.images_);
         std::swap(lowestLevel_, other.lowestLevel_);
