@@ -42,6 +42,7 @@
 #include "vigra/impex.hxx"
 #include "vigra/combineimages.hxx"
 #include "vigra/resampling_convolution.hxx"
+#include "vigra/imagecontainer.hxx"
 
 using namespace vigra;
 
@@ -1710,6 +1711,58 @@ struct ResamplingConvolutionTest
     }
 };
 
+struct ImagePyramidTest
+{
+    typedef vigra::DImage Image;
+    Image img;
+    int w, h;
+
+    ImagePyramidTest()
+    {
+        ImageImportInfo ginfo("lenna128.xv");
+        w = ginfo.width();
+        h = ginfo.height();
+        img.resize(w, h);
+        importImage(ginfo, destImage(img));
+    }
+
+    void testPyramidConstruction()
+    {
+        vigra::ImagePyramid<Image> pyramid(-2, 2, img);
+        
+        shouldEqual(pyramid[-2].size(), Size2D(509, 477));
+        shouldEqual(pyramid[-1].size(), Size2D(255, 239));
+        shouldEqual(pyramid[0].size(), Size2D(128, 120));
+        shouldEqual(pyramid[1].size(), Size2D(64, 60));
+        shouldEqual(pyramid[2].size(), Size2D(32, 30));
+    }
+
+    void testBurtReduceExpand()
+    {
+        vigra::ImagePyramid<Image> pyramid(-2, 2, img);
+        
+        pyramidExpandBurtFilter(pyramid, 0, -2);
+        pyramidReduceBurtFilter(pyramid, 0,  2);
+
+        char buf[100];
+
+        for(int i=-2; i<=2; ++i)
+        {
+            if(i==0)
+                continue;
+
+            std::sprintf(buf, "lenna_level%d.xv", i);
+            ImageImportInfo info(buf);
+            shouldEqual(info.size(), pyramid[i].size());
+            
+            Image ref(info.size());
+            importImage(info, destImage(ref));
+            shouldEqualSequenceTolerance(ref.begin(), ref.end(), pyramid[i].begin(), 1e-12);
+        }
+    }
+        
+};
+
 struct ConvolutionTestSuite
 : public vigra::test_suite
 {
@@ -1760,6 +1813,9 @@ struct ConvolutionTestSuite
         add( testCase( &ResamplingConvolutionTest::testKernelsGauss));
         add( testCase( &ResamplingConvolutionTest::testOversamplingConstant));
         add( testCase( &ResamplingConvolutionTest::testOversamplingReal));
+
+        add( testCase( &ImagePyramidTest::testPyramidConstruction));
+        add( testCase( &ImagePyramidTest::testBurtReduceExpand));
     }
 };
 
