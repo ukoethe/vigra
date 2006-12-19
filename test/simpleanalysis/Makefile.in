@@ -1,6 +1,6 @@
 curdir=$(vigra_testdir)/simpleanalysis
 
-TESTIMAGES = noiseNormalizationTest.xv slantedEdgeMTF.xv lenna138.xv
+TESTIMAGES = noiseNormalizationTest.xv slantedEdgeMTF.xv lenna128.xv
 
 all: test
 
