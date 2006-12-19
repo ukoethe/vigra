@@ -50,6 +50,8 @@
 #include "vigra/watersheds.hxx"
 #include "vigra/noise_normalization.hxx"
 #include "vigra/slanted_edge_mtf.hxx"
+#include "vigra/affinegeometry.hxx"
+#include "vigra/affine_registration.hxx"
 #include "vigra/impex.hxx"
 
 using namespace vigra;
@@ -1582,6 +1584,101 @@ struct SlantedEdgeMTFTest
     }
 };
 
+struct AffineRegistrationTest
+{
+    typedef vigra::DImage Image;
+    typedef vigra::TinyVector<double, 2> Vector2;
+    typedef vigra::ArrayVector<Vector2> PointList;
+    
+    Image image;
+
+    AffineRegistrationTest()
+    {
+        ImageImportInfo info("lenna128.xv");
+        image.resize(info.size());
+        importImage(info, destImage(image));
+    }
+    
+    void testCorrespondingPoints()
+    {
+        Matrix<double> point(3,1), res(3,1);
+        point(2,0) = 1.0;
+        
+        PointList src(3), dest(3);
+        src[0] = Vector2(1.6, 2.9);     
+        src[1] = Vector2(-1.3, -4.0);     
+        src[2] = Vector2(7.1, -0.4);     
+        dest[0] = Vector2(-2.9, 1.6);     
+        dest[1] = Vector2(12.6, -3.4);     
+        dest[2] = Vector2(-3.3, 4.2);
+        
+        for(int k=1; k<=3; ++k)
+        {     
+            Matrix<double> a = affineMatrix2DFromCorrespondingPoints(src.begin(), src.begin()+k, dest.begin());
+            for(int i=0; i<k; ++i)
+            {
+                point(0,0) = src[i][0];
+                point(1,0) = src[i][1];
+                res = a * point;
+                shouldEqualTolerance(res(0,0), dest[i][0], 1e-14);
+                shouldEqualTolerance(res(1,0), dest[i][1], 1e-14);
+                shouldEqual(res(2,0), 1.0);
+            }
+        }
+    }
+
+    void testTranslationRegistration()
+    {
+        Matrix<double> m = translationMatrix2D(Vector2(5.0, 10.0));
+        Image timg(image.size());
+        affineWarpImage(SplineImageView<2, double>(srcImageRange(image)), destImageRange(timg), m);
+        
+        Matrix<double> estimated = identityMatrix<double>(3);
+        estimateTranslation(srcImageRange(image), srcImageRange(timg), estimated,
+                            AffineMotionEstimationOptions<1>().highestPyramidLevel(3));
+        
+        for(int i=0; i<9; ++i)
+            shouldEqualTolerance(m.data()[i] - estimated.data()[i], 0.0, 1e-6);
+    }
+
+    void testSimilarityRegistration()
+    {
+        Matrix<double> m = translationMatrix2D(Vector2(5.0, 10.0)) * 
+                             rotationMatrix2DDegrees(5.0)* scalingMatrix2D(0.9);
+        Image timg(image.size());
+        affineWarpImage(SplineImageView<2, double>(srcImageRange(image)), destImageRange(timg), m);
+
+        Matrix<double> estimated = identityMatrix<double>(3);
+        estimateSimilarityTransform(srcImageRange(image), srcImageRange(timg), estimated,
+                            AffineMotionEstimationOptions<>().useLaplacianPyramid(false));
+        
+        for(int i=0; i<9; ++i)
+            shouldEqualTolerance(m.data()[i] - estimated.data()[i], 0.0, 1e-6);
+
+        estimated = identityMatrix<double>(3);
+        estimateSimilarityTransform(srcImageRange(image), 
+                            srcIterRange(timg.upperLeft(), timg.lowerRight()-Diff2D(20,20)), estimated,
+                            AffineMotionEstimationOptions<>().useLaplacianPyramid(true));
+        
+        for(int i=0; i<9; ++i)
+            shouldEqualTolerance(m.data()[i] , estimated.data()[i], 1e-2);
+    }
+
+    void testAffineRegistration()
+    {
+        Matrix<double> m = translationMatrix2D(Vector2(5.0, 10.0)) * 
+                             rotationMatrix2DDegrees(5.0)* scalingMatrix2D(1.0, 0.9);
+        Image timg(image.size());
+        affineWarpImage(SplineImageView<2, double>(srcImageRange(image)), destImageRange(timg), m);
+
+        Matrix<double> estimated = identityMatrix<double>(3);
+        estimateAffineTransform(srcImageRange(image), srcImageRange(timg), estimated);
+        
+        for(int i=0; i<9; ++i)
+            shouldEqualTolerance(m.data()[i] - estimated.data()[i], 0.0, 1e-6);
+    }
+};
+
 struct SimpleAnalysisTestSuite
 : public vigra::test_suite
 {
@@ -1635,6 +1732,10 @@ struct SimpleAnalysisTestSuite
         add( testCase( &NoiseNormalizationTest::testParametricNoiseNormalizationRGB));
         add( testCase( &NoiseNormalizationTest::testNonparametricNoiseNormalizationRGB));
         add( testCase( &SlantedEdgeMTFTest::testSlantedEdgeMTF));
+        add( testCase( &AffineRegistrationTest::testCorrespondingPoints));
+        add( testCase( &AffineRegistrationTest::testTranslationRegistration));
+        add( testCase( &AffineRegistrationTest::testSimilarityRegistration));
+        add( testCase( &AffineRegistrationTest::testAffineRegistration));
     }
 };
 
