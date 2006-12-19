@@ -76,6 +76,16 @@ struct MapTargetToSourceCoordinate
     {
         return Rational<int>(i * a + b, c);
     }
+    
+    bool isExpand2() const
+    {
+        return a == 1 && b == 0 && c == 2;
+    }
+    
+    bool isReduce2() const
+    {
+        return a == 2 && b == 0 && c == 1;
+    }
 
     int a, b, c;
 };
@@ -92,6 +102,128 @@ class FunctorTraits<resampling_detail::MapTargetToSourceCoordinate>
 
 template <class SrcIter, class SrcAcc,
           class DestIter, class DestAcc,
+          class KernelArray>
+void
+resamplingExpandLine2(SrcIter s, SrcIter send, SrcAcc src,
+                       DestIter d, DestIter dend, DestAcc dest,
+                       KernelArray const & kernels)
+{
+    typedef typename KernelArray::value_type Kernel;
+    typedef typename KernelArray::const_reference KernelRef;
+    typedef typename Kernel::const_iterator KernelIter;
+
+    typedef typename
+        PromoteTraits<typename SrcAcc::value_type, typename Kernel::value_type>::Promote
+        TmpType;
+
+    int wo = send - s;
+    int wn = dend - d;
+    int wo2 = 2*wo - 2;
+    
+    int ileft = std::max(kernels[0].right(), kernels[1].right());
+    int iright = wo + std::min(kernels[0].left(), kernels[1].left()) - 1;
+    for(int i = 0; i < wn; ++i, ++d)
+    {
+        int is = i / 2;
+        KernelRef kernel = kernels[i & 1];
+        KernelIter k = kernel.center() + kernel.right();
+        TmpType sum = NumericTraits<TmpType>::zero();        
+        if(is < ileft)
+        {
+            for(int m=is-kernel.right(); m <= is-kernel.left(); ++m, --k)
+            {
+                int mm = (m < 0) 
+                        ? -m 
+                        : m;
+                sum += *k * src(s, mm);
+            }        
+        }
+        else if(is > iright)
+        {
+            for(int m=is-kernel.right(); m <= is-kernel.left(); ++m, --k)
+            {
+                int mm =  (m >= wo) 
+                            ? wo2 - m
+                            : m;
+                sum += *k * src(s, mm);
+            }        
+        }
+        else
+        {
+            SrcIter ss = s + is - kernel.right();
+            for(int m = 0; m < kernel.size(); ++m, --k, ++ss)
+            {
+                sum += *k * src(ss);
+            }        
+        }
+        dest.set(sum, d);
+    }
+}
+
+template <class SrcIter, class SrcAcc,
+          class DestIter, class DestAcc,
+          class KernelArray>
+void
+resamplingReduceLine2(SrcIter s, SrcIter send, SrcAcc src,
+                       DestIter d, DestIter dend, DestAcc dest,
+                       KernelArray const & kernels)
+{
+    typedef typename KernelArray::value_type Kernel;
+    typedef typename KernelArray::const_reference KernelRef;
+    typedef typename Kernel::const_iterator KernelIter;
+
+    KernelRef kernel = kernels[0];
+    KernelIter kbegin = kernel.center() + kernel.right();
+
+    typedef typename
+        PromoteTraits<typename SrcAcc::value_type, typename Kernel::value_type>::Promote
+        TmpType;
+
+    int wo = send - s;
+    int wn = dend - d;
+    int wo2 = 2*wo - 2;
+    
+    int ileft = kernel.right();
+    int iright = wo + kernel.left() - 1;
+    for(int i = 0; i < wn; ++i, ++d)
+    {
+        int is = 2 * i;
+        KernelIter k = kbegin;
+        TmpType sum = NumericTraits<TmpType>::zero();        
+        if(is < ileft)
+        {
+            for(int m=is-kernel.right(); m <= is-kernel.left(); ++m, --k)
+            {
+                int mm = (m < 0) 
+                        ? -m 
+                        : m;
+                sum += *k * src(s, mm);
+            }        
+        }
+        else if(is > iright)
+        {
+            for(int m=is-kernel.right(); m <= is-kernel.left(); ++m, --k)
+            {
+                int mm =  (m >= wo) 
+                            ? wo2 - m
+                            : m;
+                sum += *k * src(s, mm);
+            }        
+        }
+        else
+        {
+            SrcIter ss = s + is - kernel.right();
+            for(int m = 0; m < kernel.size(); ++m, --k, ++ss)
+            {
+                sum += *k * src(ss);
+            }        
+        }
+        dest.set(sum, d);
+    }
+}
+
+template <class SrcIter, class SrcAcc,
+          class DestIter, class DestAcc,
           class KernelArray,
           class Functor>
 void
@@ -100,6 +232,17 @@ resamplingConvolveLine(SrcIter s, SrcIter send, SrcAcc src,
                        KernelArray const & kernels,
                        Functor mapTargetToSourceCoordinate)
 {
+    if(mapTargetToSourceCoordinate.isExpand2())
+    {
+        resamplingExpandLine2(s, send, src, d, dend, dest, kernels);
+        return;
+    }
+    if(mapTargetToSourceCoordinate.isReduce2())
+    {
+        resamplingReduceLine2(s, send, src, d, dend, dest, kernels);
+        return;
+    }
+    
     typedef typename
         NumericTraits<typename SrcAcc::value_type>::RealPromote
         TmpType;
@@ -610,6 +753,7 @@ void pyramidReduceBurtFilter(SrcIterator sul, SrcIterator slr, SrcAccessor src,
     {
         typename SrcIterator::row_iterator sr = sul.rowIterator();
         typename TmpIterator::row_iterator tr = tul.rowIterator();
+        // FIXME: replace with reduceLineBurtFilter()
         resamplingConvolveLine(sr, sr+wold, src, tr, tr+wnew, tmp.accessor(),
                                kernels, mapCoordinate);
     }
@@ -685,6 +829,7 @@ void pyramidExpandBurtFilter(SrcIterator sul, SrcIterator slr, SrcAccessor src,
     {
         typename SrcIterator::row_iterator sr = sul.rowIterator();
         typename TmpIterator::row_iterator tr = tul.rowIterator();
+        // FIXME: replace with expandLineBurtFilter()
         resamplingConvolveLine(sr, sr+wold, src, tr, tr+wnew, tmp.accessor(),
                                kernels, mapCoordinate);
     }
