@@ -1770,7 +1770,8 @@ struct ImagePyramidTest
             
             Image ref(info.size());
             importImage(info, destImage(ref));
-            shouldEqualSequenceTolerance(ref.begin(), ref.end(), laplacian[i].begin(), 1e-12);
+            for(int k=0; k<info.width()*info.height(); ++k)
+                shouldEqualTolerance(ref.data()[k]-laplacian[i].data()[k], 0.0, 1e-12);
         }
         
         shouldEqualSequenceTolerance(pyramid[3].begin(), pyramid[3].end(), laplacian[3].begin(), 1e-14);
