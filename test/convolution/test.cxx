@@ -1739,10 +1739,12 @@ struct ImagePyramidTest
 
     void testBurtReduceExpand()
     {
-        vigra::ImagePyramid<Image> pyramid(-2, 2, img);
+        vigra::ImagePyramid<Image> pyramid(-2, 3, img), laplacian(-2,3, img);
         
         pyramidExpandBurtFilter(pyramid, 0, -2);
-        pyramidReduceBurtFilter(pyramid, 0,  2);
+        pyramidReduceBurtFilter(pyramid, 0,  3);
+        
+        pyramidReduceBurtLaplacian(laplacian, 0, 3);
 
         char buf[100];
 
@@ -1758,6 +1760,26 @@ struct ImagePyramidTest
             Image ref(info.size());
             importImage(info, destImage(ref));
             shouldEqualSequenceTolerance(ref.begin(), ref.end(), pyramid[i].begin(), 1e-12);
+        }
+        
+        for(int i=0; i<=2; ++i)
+        {
+            std::sprintf(buf, "lenna_levellap%d.xv", i);
+            ImageImportInfo info(buf);
+            shouldEqual(info.size(), laplacian[i].size());
+            
+            Image ref(info.size());
+            importImage(info, destImage(ref));
+            shouldEqualSequenceTolerance(ref.begin(), ref.end(), laplacian[i].begin(), 1e-12);
+        }
+        
+        shouldEqualSequenceTolerance(pyramid[3].begin(), pyramid[3].end(), laplacian[3].begin(), 1e-14);
+        
+        pyramidExpandBurtLaplacian(laplacian, 3, -2);
+
+        for(int i=3; i>=-2; --i)
+        {
+            shouldEqualSequenceTolerance(pyramid[i].begin(), pyramid[i].end(), laplacian[i].begin(), 1e-14);
         }
     }
         
