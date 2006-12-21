@@ -150,6 +150,18 @@ struct ColorConversionsTest
         should(equalColors(transformed[count-1], RGB(25.202, 103.568, 31.8506)));
     }
     
+    void testsRGB2RGB()
+    {
+        std::transform(original, original+count, transformed, 
+                        vigra::sRGB2RGBFunctor<double, double>());
+        std::transform(transformed, transformed+count, back, 
+                        vigra::RGB2sRGBFunctor<double, double>());
+        
+        should(checkLimits(transformed, transformed+count, RGB(0.0,0.0,0.0), RGB(255.0,255.0,255.0)));
+        should(equalColors(original, original+count, back));
+        should(equalColors(transformed[count-1], RGB(26.0716, 102.504, 32.4966)));
+    }
+    
     void testRGB2XYZ()
     {
         std::transform(original, original+count, transformed, 
@@ -436,6 +448,7 @@ struct ColorConversionsTestSuite
     : vigra::test_suite("ColorConversionsTest")
     {
         add( testCase(&ColorConversionsTest::testRGBPrime2RGB));
+        add( testCase(&ColorConversionsTest::testsRGB2RGB));
         add( testCase(&ColorConversionsTest::testRGB2XYZ));
         add( testCase(&ColorConversionsTest::testRGBPrime2XYZ));
         add( testCase(&ColorConversionsTest::testRGB2Lab));

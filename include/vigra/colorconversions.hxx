@@ -45,16 +45,20 @@
 
 /** \page ColorConversions  Color Space Conversions
 
-    Convert between RGB, R'G'B', XYZ, L*a*b*, L*u*v*, Y'PbPr, Y'CbCr, Y'IQ, and Y'UV color spaces.
+    Convert between RGB, sRGB, R'G'B', XYZ, L*a*b*, L*u*v*, Y'PbPr, Y'CbCr, Y'IQ, and Y'UV color spaces.
 
     <b>\#include</b> "<a href="colorconversions_8hxx-source.html">vigra/colorconversions.hxx</a>"<br>
     Namespace: vigra
     
     <UL>
-    <LI> <b>RGB/R'G'B'</b><br>
+    <LI> <b>RGB/sRGB/R'G'B'</b><br>
         <em>linear and non-linear (gamma corrected) additive color</em>
         <p>
         <DL>
+        <DT> <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif">
+             vigra::RGB2sRGBFunctor
+        <DT> <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif">
+             vigra::sRGB2RGBFunctor
         <DT> <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif">
              vigra::RGB2RGBPrimeFunctor
         <DT> <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif">
@@ -173,7 +177,7 @@
     Euclidean distances between the transformed colors. The L*a*b* and L*u*v* were 
     designed with exactly this application in mind and thus give the best results. But these
     conversions are also the most computationally demanding. The Y'PbPr color difference
-    space (designed for the coding of digital video) is computationally much cheaper, and 
+    space (designed for coding digital video) is computationally much cheaper, and 
     almost as good. Y'CbCr represents esentially the same transformation, but the color values 
     are scaled so that they can be stored with 8 bits per channel with minimal loss of 
     information. The other transformations are of lesser interest here: XYZ is a device independent
@@ -184,27 +188,37 @@
     
     When you want to perform a color conversion, you must first know in which
     color space the data are given. Although this sounds trivial, it is
-    quite often done wrong in practice, because the distinction
-    between RGB and R'G'B' is frequently overlooked: nowadays, most images are stored in 
-    R'G'B' space, and treating them as RGB leads to wrong results. RGB and R'G'B' are 
-    related by a so called <em>gamma correction</em>:
+    quite often done wrong, because the distinction between RGB and sRGB or R'G'B' is 
+    frequently overlooked: nowadays, most images are stored in 
+    sRGB space, and treating them as RGB leads to wrong results (although the color primaries
+    are named the same). RGB and R'G'B' are related by a so called <em>gamma correction</em>:
     
     \f[
-        R' = R_{max} \left(\frac{R}{R_{max}} \right)^{0.45} \qquad
-        G' = G_{max} \left(\frac{G}{G_{max}} \right)^{0.45} \qquad
-        B' = B_{max} \left(\frac{B}{B_{max}} \right)^{0.45}
+        C' = C_{max} \left(\frac{C_{RGB}}{C_{max}} \right)^{0.45} \qquad
     \f]
     
-    (where usually \f$ R_{max} = G_{max} = B_{max} = 255 \f$). In practice, you can 
-    distinguish the two kinds of red, green, and blue by displaying the images: if they look
-    too dark, they are probably RGB, if they are OK, they are likely R'G'B'. (However,
-    this may also be misleading: Some graphics cards and display programs silently apply a 
-    gamma correction to every image, so that RGB appears correct and R'G'B' is too bright.)
+    where C represents one of the color channels R, G, and B, and \f$ C_{max} \f$ usually equals 255. 
+    The sRGB color space realizes a slight enhancement of this definition:
+    
+    \f[
+        C_{sRGB} = \begin{cases}
+        12.92 C_{RGB} & \textrm{if }\frac{C_{RGB}}{C_{max}} \le 0.00304 \\
+        C_{max}\left( 1.055 \left(\frac{C_{RGB}}{C_{max}}\right)^{1/2.4}-0.055\right) & \textrm{otherwise}
+        \end{cases}
+    \f]
+    
+    sRGB has now become a widely accepted industry standard which is used by most consumer products
+    (digital cameras, printers, and screens). In practice, you can 
+    distinguish between linear and gamma-corrected red, green, and blue by displaying the images: if they look
+    too dark, they are probably RGB, if they are OK, they are likely sRGB. (However, there are still a few older 
+    graphics cards and display programs which silently apply a gamma correction to every image, 
+    so that RGB appears correct and sRGB is too bright.)
+    
     The distinction between RGB and R'G'B' is important because some conversions start at 
     RGB (XYZ, L*a*b*, L*u*v*), while others start at R'G'B' (Y'PbPr, Y'CbCr, Y'IQ, and Y'UV). 
     The names of VIGRA's color conversion functors always make clear to which color space 
     they must be applied.
-    
+   
     In addition VIGRA provides a <em>polar coordinate interface</em>
     to several color spaces (L*a*b*, L*u*v*, Y'PbPr, Y'CbCr, Y'IQ, and Y'UV). This
     interface makes use of the fact that these color spaces are conceptually similar:
@@ -238,6 +252,23 @@ inline double gammaCorrection(double value, double gamma, double norm)
             -norm*VIGRA_CSTD::pow(-value/norm, gamma) :
             norm*VIGRA_CSTD::pow(value/norm, gamma);
 }
+
+inline double sRGBCorrection(double value, double norm)
+{
+    value /= norm;
+    return (value <= 0.00304) 
+               ? norm*12.92*value 
+               : norm*(1.055*VIGRA_CSTD::pow(value, 0.41666666666666667) - 0.055);
+}
+
+inline double inverse_sRGBCorrection(double value, double norm)
+{
+    value /= norm;
+    return (value <= 0.03928) 
+               ? norm*value / 12.92
+               : norm*VIGRA_CSTD::pow((value + 0.055)/1.055, 2.4);
+}
+
 
 } // namespace detail
 
@@ -352,6 +383,120 @@ class FunctorTraits<RGB2RGBPrimeFunctor<From, To> >
     typedef VigraTrueType isUnaryFunctor;
 };
 
+/** \brief Convert linear (raw) RGB into standardized sRGB.
+
+    <b>\#include</b> "<a href="colorconversions_8hxx-source.html">vigra/colorconversions.hxx</a>"<br>
+    Namespace: vigra
+    
+    The sRGB color space is a slight improvement over the R'G'B' space. Is is now a widely accepted 
+    industry standard which is used by most consumer products
+    (digital cameras, printers, and screens). The functor realizes the transformation
+    
+    \f[
+        C_{sRGB} = \begin{cases}
+        12.92 C_{RGB} & \textrm{if }\frac{C_{RGB}}{C_{max}} \le 0.00304 \\
+        C_{max}\left( 1.055 \left(\frac{C_{RGB}}{C_{max}}\right)^{1/2.4}-0.055\right) & \textrm{otherwise}
+        \end{cases}
+    \f]
+    
+    where C is any of the primaries R, G, and B. By default, \f$ C_{max} = 255 \f$. 
+    This default can be overridden in the constructor. If both source and target colors components are stored 
+    as <tt>unsigned char</tt>, a look-up-table will be used to speed up the transformation.
+
+    <b> Traits defined:</b>
+    
+    <tt>FunctorTraits::isUnaryFunctor</tt> is true (<tt>VigraTrueType<tt>)
+    */
+template <class From, class To = From>
+class RGB2sRGBFunctor
+{
+  public:
+  
+        /** the functor's argument type
+        */
+    typedef TinyVector<From, 3> argument_type;
+  
+        /** the functor's result type
+        */
+    typedef RGBValue<To> result_type;
+  
+        /** \deprecated use argument_type and result_type
+        */
+    typedef RGBValue<To> value_type;
+  
+        /** the result component's promote type
+        */
+    typedef typename NumericTraits<To>::RealPromote component_type;
+    
+        /** Default constructor.
+            The maximum value for each RGB component defaults to 255
+        */
+    RGB2sRGBFunctor()
+    : max_(255.0)
+    {}
+    
+        /** constructor
+            \arg max - the maximum value for each RGB component
+        */
+    RGB2sRGBFunctor(component_type max)
+    : max_(max)
+    {}
+    
+        /** apply the transformation
+        */
+    template <class V>
+    result_type operator()(V const & rgb) const
+    {
+        return RGBValue<To>(
+            NumericTraits<To>::fromRealPromote(detail::sRGBCorrection(rgb[0], max_)),
+            NumericTraits<To>::fromRealPromote(detail::sRGBCorrection(rgb[1], max_)),
+            NumericTraits<To>::fromRealPromote(detail::sRGBCorrection(rgb[2], max_)));
+    }
+    
+  private:
+    component_type max_;    
+};
+
+template <>
+class RGB2sRGBFunctor<unsigned char, unsigned char>
+{
+    unsigned char lut_[256];
+        
+  public:
+  
+    typedef RGBValue<unsigned char> value_type;
+    
+    RGB2sRGBFunctor()
+    {
+        for(int i=0; i<256; ++i)
+        {
+            lut_[i] = NumericTraits<unsigned char>::fromRealPromote(detail::sRGBCorrection(i, 255.0));
+        }
+    }
+    
+    RGB2sRGBFunctor(double max)
+    {
+        for(int i=0; i<256; ++i)
+        {
+            lut_[i] = NumericTraits<unsigned char>::fromRealPromote(detail::sRGBCorrection(i, max));
+        }
+    }
+    
+    template <class V>
+    RGBValue<unsigned char> operator()(V const & rgb) const
+    {
+        return RGBValue<unsigned char>(lut_[rgb[0]], lut_[rgb[1]], lut_[rgb[2]]);
+    }
+};
+
+template <class From, class To>
+class FunctorTraits<RGB2sRGBFunctor<From, To> >
+: public FunctorTraitsBase<RGB2sRGBFunctor<From, To> >
+{
+  public:
+    typedef VigraTrueType isUnaryFunctor;
+};
+
 /** \brief Convert non-linear (gamma corrected) R'G'B' into non-linear (raw) RGB.
 
     <b>\#include</b> "<a href="colorconversions_8hxx-source.html">vigra/colorconversions.hxx</a>"<br>
@@ -366,7 +511,7 @@ class FunctorTraits<RGB2RGBPrimeFunctor<From, To> >
     \f]
     
     By default, \f$ R_{max} = G_{max} = B_{max} = 255 \f$. This default can be overridden
-    in the constructor. If both source and target colors components are stored 
+    in the constructor. If both source and target color components are stored 
     as <tt>unsigned char</tt>, a look-up-table will be used to speed up the transformation.
 
     <b> Traits defined:</b>
@@ -458,6 +603,117 @@ class RGBPrime2RGBFunctor<unsigned char, unsigned char>
 template <class From, class To>
 class FunctorTraits<RGBPrime2RGBFunctor<From, To> >
 : public FunctorTraitsBase<RGBPrime2RGBFunctor<From, To> >
+{
+  public:
+    typedef VigraTrueType isUnaryFunctor;
+};
+
+/** \brief Convert standardized sRGB into non-linear (raw) RGB.
+
+    <b>\#include</b> "<a href="colorconversions_8hxx-source.html">vigra/colorconversions.hxx</a>"<br>
+    Namespace: vigra
+    
+    The functor realizes the transformation
+    
+    \f[
+        C_{RGB} = \begin{cases}
+        C_{sRGB} / 12.92 & \textrm{if }\frac{C_{sRGB}}{C_{max}} \le 0.03928 \\
+        C_{max}\left( \frac{C_{sRGB}/C_{max}+0.055}{1.055}\right)^{2.4} & \textrm{otherwise}
+        \end{cases}
+    \f]
+    
+    where C is one of the color channels R, G, or B, and \f$ C_{max}\f$ equals 255 by default. This default can be overridden
+    in the constructor. If both source and target color components are stored 
+    as <tt>unsigned char</tt>, a look-up-table will be used to speed up the transformation.
+
+    <b> Traits defined:</b>
+    
+    <tt>FunctorTraits::isUnaryFunctor</tt> is true (<tt>VigraTrueType<tt>)
+*/
+template <class From, class To = From>
+class sRGB2RGBFunctor
+{
+  public:
+  
+        /** the functor's argument type
+        */
+    typedef TinyVector<From, 3> argument_type;
+  
+        /** the functor's result type
+        */
+    typedef RGBValue<To> result_type;
+  
+        /** \deprecated use argument_type and result_type
+        */
+    typedef RGBValue<To> value_type;
+  
+        /** the result component's promote type
+        */
+    typedef typename NumericTraits<To>::RealPromote component_type;
+    
+        /** Default constructor.
+            The maximum value for each RGB component defaults to 255.
+        */
+    sRGB2RGBFunctor()
+    : max_(255.0)
+    {}
+    
+        /** constructor
+            \arg max - the maximum value for each RGB component
+        */
+    sRGB2RGBFunctor(component_type max)
+    : max_(max)
+    {}
+    
+        /** apply the transformation
+        */
+    result_type operator()(argument_type const & rgb) const
+    {
+        return RGBValue<To>(
+            NumericTraits<To>::fromRealPromote(detail::inverse_sRGBCorrection(rgb[0], max_)),
+            NumericTraits<To>::fromRealPromote(detail::inverse_sRGBCorrection(rgb[1], max_)),
+            NumericTraits<To>::fromRealPromote(detail::inverse_sRGBCorrection(rgb[2], max_)));
+    }
+
+  private:
+    component_type max_;
+};
+
+template <>
+class sRGB2RGBFunctor<unsigned char, unsigned char>
+{    
+    unsigned char lut_[256];
+        
+  public:
+  
+    typedef RGBValue<unsigned char> value_type;
+    
+    sRGB2RGBFunctor()
+    {
+        for(int i=0; i<256; ++i)
+        {
+            lut_[i] = NumericTraits<unsigned char>::fromRealPromote(detail::inverse_sRGBCorrection(i, 255.0));
+        }
+    }
+    
+    sRGB2RGBFunctor(double max)
+    {
+        for(int i=0; i<256; ++i)
+        {
+            lut_[i] = NumericTraits<unsigned char>::fromRealPromote(detail::inverse_sRGBCorrection(i, max));
+        }
+    }
+    
+    template <class V>
+    RGBValue<unsigned char> operator()(V const & rgb) const
+    {
+        return RGBValue<unsigned char>(lut_[rgb[0]], lut_[rgb[1]], lut_[rgb[2]]);
+    }
+};
+
+template <class From, class To>
+class FunctorTraits<sRGB2RGBFunctor<From, To> >
+: public FunctorTraitsBase<sRGB2RGBFunctor<From, To> >
 {
   public:
     typedef VigraTrueType isUnaryFunctor;
