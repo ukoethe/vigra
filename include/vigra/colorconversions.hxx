@@ -207,11 +207,11 @@
         \end{cases}
     \f]
     
-    sRGB has now become a widely accepted industry standard which is used by most consumer products
-    (digital cameras, printers, and screens). In practice, you can 
+    sRGB has now become a widely accepted international standard (IEC 61966-2.1) which is used by most 
+    consumer products (digital cameras, printers, and screens). In practice, you can 
     distinguish between linear and gamma-corrected red, green, and blue by displaying the images: if they look
     too dark, they are probably RGB, if they are OK, they are likely sRGB. (However, there are still a few older 
-    graphics cards and display programs which silently apply a gamma correction to every image, 
+    graphics cards and display programs which silently apply an additional gamma correction to every image, 
     so that RGB appears correct and sRGB is too bright.)
     
     The distinction between RGB and R'G'B' is important because some conversions start at 
@@ -389,7 +389,7 @@ class FunctorTraits<RGB2RGBPrimeFunctor<From, To> >
     Namespace: vigra
     
     The sRGB color space is a slight improvement over the R'G'B' space. Is is now a widely accepted 
-    industry standard which is used by most consumer products
+    international standard (IEC 61966-2.1) which is used by most consumer products
     (digital cameras, printers, and screens). The functor realizes the transformation
     
     \f[
@@ -399,8 +399,8 @@ class FunctorTraits<RGB2RGBPrimeFunctor<From, To> >
         \end{cases}
     \f]
     
-    where C is any of the primaries R, G, and B. By default, \f$ C_{max} = 255 \f$. 
-    This default can be overridden in the constructor. If both source and target colors components are stored 
+    where C is any of the primaries R, G, and B. By default, \f$ C_{max} = 255 \f$ (This default can be 
+    overridden in the constructor). If both source and target colors components are stored 
     as <tt>unsigned char</tt>, a look-up-table will be used to speed up the transformation.
 
     <b> Traits defined:</b>
@@ -613,7 +613,9 @@ class FunctorTraits<RGBPrime2RGBFunctor<From, To> >
     <b>\#include</b> "<a href="colorconversions_8hxx-source.html">vigra/colorconversions.hxx</a>"<br>
     Namespace: vigra
     
-    The functor realizes the transformation
+    The sRGB color space is a slight improvement over the R'G'B' space. Is is now a widely accepted 
+    international standard (IEC 61966-2.1) which is used by most consumer products
+    (digital cameras, printers, and screens). The functor realizes the transformation
     
     \f[
         C_{RGB} = \begin{cases}
@@ -622,8 +624,8 @@ class FunctorTraits<RGBPrime2RGBFunctor<From, To> >
         \end{cases}
     \f]
     
-    where C is one of the color channels R, G, or B, and \f$ C_{max}\f$ equals 255 by default. This default can be overridden
-    in the constructor. If both source and target color components are stored 
+    where C is one of the color channels R, G, or B, and \f$ C_{max}\f$ equals 255 by default (This default 
+    can be overridden in the constructor). If both source and target color components are stored 
     as <tt>unsigned char</tt>, a look-up-table will be used to speed up the transformation.
 
     <b> Traits defined:</b>
