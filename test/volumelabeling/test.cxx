@@ -3,7 +3,7 @@
 #include <cmath>
 #include "unittest.hxx"
 
-#include "labelvolume.hxx"
+#include "vigra/labelvolume.hxx"
 
 using namespace vigra;
 
