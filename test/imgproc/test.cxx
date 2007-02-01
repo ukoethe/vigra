@@ -307,7 +307,12 @@ struct ImageFunctionsTest
 
         inspectImage(srcImageRange(img), average);
 
-        should(average.count == 9);
+        should(average.count() == 9);
+        should(average() == 5.5);
+        
+        average(average); // combine
+
+        should(average.count() == 18);
         should(average() == 5.5);
     }
 
@@ -317,8 +322,49 @@ struct ImageFunctionsTest
 
         inspectImageIf(srcImageRange(img), maskImage(mask), average);
 
-        should(average.count == 7);
+        should(average.count() == 7);
         should(average() == 5.5);
+    }
+
+    void findAverageAndVarianceTest()
+    {
+        vigra::FindAverageAndVariance<Image::value_type> averageAndVariance;
+
+        inspectImage(srcImageRange(img), averageAndVariance);
+
+        should(averageAndVariance.count() == 9);
+        shouldEqualTolerance(averageAndVariance.average(), 5.5, 1e-14);
+        
+        // compute variance explicitly
+        double sumOfSquares = 0.0;
+        Image::ScanOrderIterator i = img.begin();
+        for(; i != img.end(); ++i)
+        {
+            sumOfSquares += sq(*i - averageAndVariance.average());
+        }
+        
+        shouldEqualTolerance(averageAndVariance.variance(), sumOfSquares / 9.0, 1e-14);
+        shouldEqualTolerance(averageAndVariance(), sumOfSquares / 9.0, 1e-14);
+        shouldEqualTolerance(averageAndVariance.variance(true), sumOfSquares / 8.0, 1e-14);
+
+        // check merge of functors
+        vigra::FindAverageAndVariance<Image::value_type> averageAndVariance1(averageAndVariance), averageAndVariance2;
+        
+        averageAndVariance1(5.31);
+        averageAndVariance1(-0.3);
+        averageAndVariance1(2.88);
+        averageAndVariance1(10.521);
+        
+        averageAndVariance2(5.31);
+        averageAndVariance2(-0.3);
+        averageAndVariance2(2.88);
+        averageAndVariance2(10.521);
+        averageAndVariance2(averageAndVariance);
+
+        should(averageAndVariance1.count() == 13);
+        should(averageAndVariance2.count() == 13);
+        shouldEqualTolerance(averageAndVariance1.average(), averageAndVariance2.average(), 1e-14);
+        shouldEqualTolerance(averageAndVariance1.variance(), averageAndVariance2.variance(), 1e-14);
     }
 
     void reduceFunctorTest()
@@ -470,9 +516,9 @@ struct ImageFunctionsTest
 
         inspectTwoImages(srcImageRange(img), srcImage(labels), stats);
 
-        should(stats[0].count == 2);
+        should(stats[0].count() == 2);
         should(stats[0]() == 5.5);
-        should(stats[1].count == 7);
+        should(stats[1].count() == 7);
         should(stats[1]() == 5.5);
 
         transformImage(srcImageRange(labels), destImage(img), stats);
@@ -1492,6 +1538,7 @@ struct ImageFunctionsTestSuite
         add( testCase( &ImageFunctionsTest::findMinMaxIfTest));
         add( testCase( &ImageFunctionsTest::findAverageTest));
         add( testCase( &ImageFunctionsTest::findAverageIfTest));
+        add( testCase( &ImageFunctionsTest::findAverageAndVarianceTest));
         add( testCase( &ImageFunctionsTest::reduceFunctorTest));
         add( testCase( &ImageFunctionsTest::findBoundingRectangleTest));
         add( testCase( &ImageFunctionsTest::arrayOfRegionStatisticsTest));
