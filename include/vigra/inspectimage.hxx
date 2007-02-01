@@ -750,9 +750,10 @@ class FunctorTraits<FindMinMax<VALUETYPE> >
 
     \code
     VALUETYPE v1, v2(v1);
-
-    v1 < v2;
-    v1 = v2;
+    double d;
+    
+    v1 += v2;
+    v1 / d;
     \endcode
 
 */
@@ -776,55 +777,213 @@ class FindAverage
         /** init average
         */
     FindAverage()
-    : count(0), sum(NumericTraits<result_type>::zero())
+    : sum_(NumericTraits<result_type>::zero()), count_(0)
     {}
 
         /** (re-)init average
         */
     void reset()
     {
-        count = 0;
-        sum = NumericTraits<result_type>::zero();
+        count_ = 0;
+        sum_ = NumericTraits<result_type>::zero();
     }
 
         /** update average
         */
     void operator()(argument_type const & v)
     {
-        sum += v;
-        ++count;
+        sum_ += v;
+        ++count_;
     }
 
         /** merge two statistics
         */
     void operator()(FindAverage const & v)
     {
-        sum += v.sum;
-        count += v.count;
+        sum_ += v.sum_;
+        count_ += v.count_;
+    }
+
+        /** return number of values seen so far
+        */
+    unsigned int count() const
+    {
+        return count_;
     }
 
         /** return current average
         */
     result_type average() const
     {
-        return sum / (double)count;
+        return sum_ / (double)count_;
     }
 
         /** return current average
         */
     result_type operator()() const
     {
-        return sum / (double)count;
+        return sum_ / (double)count_;
     }
 
-    unsigned int count;
-    result_type sum;
-
+    result_type sum_;
+    unsigned int count_;
 };
 
 template <class VALUETYPE>
 class FunctorTraits<FindAverage<VALUETYPE> >
 : public FunctorTraitsBase<FindAverage<VALUETYPE> >
+{
+  public:
+    typedef VigraTrueType isInitializer;
+    typedef VigraTrueType isUnaryAnalyser;
+};
+
+/********************************************************/
+/*                                                      */
+/*                    FindAverageAndVariance            */
+/*                                                      */
+/********************************************************/
+
+/** \brief  Find the average pixel value and its variance in an image or ROI.
+
+    This Functor uses West's algorithm to accumulate highly accurate values for the mean and
+    the sum of squared differences of all values seen so far (the naive incremental algorithm
+    for the computation of the sum of squares produces large round-off errors when the mean is
+    much larger than the standard deviation of the data.) This Functor can also be used in conjunction with
+    \ref ArrayOfRegionStatistics to find the average of all regions in
+    a labeled image.
+
+    <b> Traits defined:</b>
+    
+    <tt>FunctorTraits::isUnaryAnalyser</tt> and <tt>FunctorTraits::isInitializer</tt>
+    are true (<tt>VigraTrueType<tt>)
+    
+    <b> Usage:</b>
+
+        <b>\#include</b> "<a href="inspectimage_8hxx-source.html">vigra/inspectimage.hxx</a>"<br>
+        Namespace: vigra
+
+    \code
+    vigra::BImage img;
+
+    vigra::FindAverageAndVariance<vigra::BImage::PixelType> averageAndVariance;   // init functor
+
+    vigra::inspectImage(srcImageRange(img), averageAndVariance);
+
+    cout << "Average: " << averageAndVariance.average() << "\n";
+    cout << "Standard deviation: " << sqrt(averageAndVariance.variance()) << "\n";
+
+    \endcode
+
+    <b> Required Interface:</b>
+
+    \code
+    VALUETYPE v1, v2(v1);
+    double d;
+    
+    v1 += v2;
+    v1 + v2;
+    v1 - v2;
+    v1 * v2;
+    v1 / d;
+    d * v1;
+    \endcode
+
+*/
+template <class VALUETYPE>
+class FindAverageAndVariance
+{
+   public:
+
+        /** the functor's argument type
+        */
+    typedef VALUETYPE argument_type;
+
+        /** the functor's result type
+        */
+    typedef typename NumericTraits<VALUETYPE>::RealPromote result_type;
+
+        /** \deprecated use argument_type and result_type
+        */
+    typedef typename NumericTraits<VALUETYPE>::RealPromote value_type;
+
+        /** init average
+        */
+    FindAverageAndVariance()
+    : mean_(NumericTraits<result_type>::zero()),
+      sumOfSquaredDifferences_(NumericTraits<result_type>::zero()),
+      count_(0.0)
+    {}
+
+        /** (re-)init average
+        */
+    void reset()
+    {
+        count_ = 0.0;
+        mean_ = NumericTraits<result_type>::zero();
+        sumOfSquaredDifferences_ = NumericTraits<result_type>::zero();
+    }
+
+        /** update average
+        */
+    void operator()(argument_type const & v)
+    {
+        ++count_;
+        result_type t1 = v - mean_;
+        result_type t2 = t1 / count_;
+        mean_ += t2;
+        sumOfSquaredDifferences_ += (count_-1.0)*t1*t2;
+    }
+
+        /** merge two statistics
+        */
+    void operator()(FindAverageAndVariance const & v)
+    {
+        double newCount = count_ + v.count_;
+        sumOfSquaredDifferences_ += v.sumOfSquaredDifferences_ + 
+                                    count_ / newCount * v.count_ * (mean_ - v.mean_) * (mean_ - v.mean_);
+        mean_ = (count_ * mean_ + v.count_ * v.mean_) / newCount;
+        count_ += v.count_;
+    }
+
+        /** return number of values seen so far
+        */
+    unsigned int count() const
+    {
+        return (unsigned int)count_;
+    }
+
+        /** return current average
+        */
+    result_type average() const
+    {
+        return mean_;
+    }
+
+        /** return current variance.  If <tt>unbiased = true</tt>, the sum of squared differences
+                   is divided by <tt>count()-1</tt> instead of just <tt>count()</tt>.
+        */
+    result_type variance(bool unbiased = false) const
+    {
+        return unbiased 
+                  ? sumOfSquaredDifferences_ / (count_ - 1.0)
+                  : sumOfSquaredDifferences_ / count_;
+    }
+
+        /** return current variance. calls <tt>variance()</tt>.
+        */
+    result_type operator()() const
+    {
+        return variance();
+    }
+
+    result_type mean_, sumOfSquaredDifferences_;
+    double count_;
+};
+
+template <class VALUETYPE>
+class FunctorTraits<FindAverageAndVariance<VALUETYPE> >
+: public FunctorTraitsBase<FindAverageAndVariance<VALUETYPE> >
 {
   public:
     typedef VigraTrueType isInitializer;
