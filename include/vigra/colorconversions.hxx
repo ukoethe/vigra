@@ -188,8 +188,8 @@
     
     When you want to perform a color conversion, you must first know in which
     color space the data are given. Although this sounds trivial, it is
-    quite often done wrong, because the distinction between RGB and sRGB or R'G'B' is 
-    frequently overlooked: nowadays, most images are stored in 
+    quite often done wrong, because the distinction between RGB and sRGB (still images) or R'G'B' 
+    (digital video) is frequently overlooked: nowadays, most still images are stored in
     sRGB space, and treating them as RGB leads to wrong results (although the color primaries
     are named the same). RGB and R'G'B' are related by a so called <em>gamma correction</em>:
     
@@ -212,7 +212,8 @@
     distinguish between linear and gamma-corrected red, green, and blue by displaying the images: if they look
     too dark, they are probably RGB, if they are OK, they are likely sRGB. (However, there are still a few older 
     graphics cards and display programs which silently apply an additional gamma correction to every image, 
-    so that RGB appears correct and sRGB is too bright.)
+    so that RGB appears correct and sRGB is too bright.) Whether or not the data are represented
+    in the sRGB color space can also be seen in the color space tag of an image's EXIF data, if available.
     
     The distinction between RGB and R'G'B' is important because some conversions start at 
     RGB (XYZ, L*a*b*, L*u*v*), while others start at R'G'B' (Y'PbPr, Y'CbCr, Y'IQ, and Y'UV). 
