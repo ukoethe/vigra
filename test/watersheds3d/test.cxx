@@ -350,11 +350,11 @@ struct Watersheds3dTest
 };
 
 
-struct SimpleAnalysisTestSuite
+struct Watersheds3dTestSuite
 : public vigra::test_suite
 {
-    SimpleAnalysisTestSuite()
-    : vigra::test_suite("SimpleAnalysisTestSuite")
+    Watersheds3dTestSuite()
+    : vigra::test_suite("Watersheds3dTestSuite")
     {
         add( testCase( &Watersheds3dTest::testDistanceVolumesSix));
         add( testCase( &Watersheds3dTest::testDistanceVolumesTwentySix));
@@ -367,7 +367,7 @@ struct SimpleAnalysisTestSuite
 
 int main()
 {
-    SimpleAnalysisTestSuite test;
+    Watersheds3dTestSuite test;
 
     int failed = test.run();
 
