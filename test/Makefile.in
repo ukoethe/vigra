@@ -21,6 +21,9 @@ SUBDIRS = $(QUICKSUBDIRS) \
         image \
         multiarray \
         multiconvolution \
+        voxelneighborhood \
+        volumelabeling \
+        watersheds3d \
         impex 
 
 all:
