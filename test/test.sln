@@ -82,6 +82,18 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "vigraimpex_dll", "..\src\im
 	ProjectSection(ProjectDependencies) = postProject
 	EndProjectSection
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "voxelneighborhood", "voxelneighborhood\voxelneighborhood.vcproj", "{C9681857-7D05-4886-85E3-F980EC015403}"
+	ProjectSection(ProjectDependencies) = postProject
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "volumelabeling", "volumelabeling\volumelabeling.vcproj", "{69E16683-6BD9-4603-99FE-AC4F341DCD83}"
+	ProjectSection(ProjectDependencies) = postProject
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "watersheds3d", "watersheds3d\watersheds3d.vcproj", "{8D1E263F-EC78-4E19-8543-0F2249832BE1}"
+	ProjectSection(ProjectDependencies) = postProject
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfiguration) = preSolution
 		Debug = Debug
@@ -160,6 +172,18 @@ Global
 		{E7937DF7-5628-4D5F-86EE-D787083408A8}.Debug.Build.0 = Debug|Win32
 		{E7937DF7-5628-4D5F-86EE-D787083408A8}.Release.ActiveCfg = Release|Win32
 		{E7937DF7-5628-4D5F-86EE-D787083408A8}.Release.Build.0 = Release|Win32
+		{C9681857-7D05-4886-85E3-F980EC015403}.Debug.ActiveCfg = Debug|Win32
+		{C9681857-7D05-4886-85E3-F980EC015403}.Debug.Build.0 = Debug|Win32
+		{C9681857-7D05-4886-85E3-F980EC015403}.Release.ActiveCfg = Release|Win32
+		{C9681857-7D05-4886-85E3-F980EC015403}.Release.Build.0 = Release|Win32
+		{69E16683-6BD9-4603-99FE-AC4F341DCD83}.Debug.ActiveCfg = Debug|Win32
+		{69E16683-6BD9-4603-99FE-AC4F341DCD83}.Debug.Build.0 = Debug|Win32
+		{69E16683-6BD9-4603-99FE-AC4F341DCD83}.Release.ActiveCfg = Release|Win32
+		{69E16683-6BD9-4603-99FE-AC4F341DCD83}.Release.Build.0 = Release|Win32
+		{8D1E263F-EC78-4E19-8543-0F2249832BE1}.Debug.ActiveCfg = Debug|Win32
+		{8D1E263F-EC78-4E19-8543-0F2249832BE1}.Debug.Build.0 = Debug|Win32
+		{8D1E263F-EC78-4E19-8543-0F2249832BE1}.Release.ActiveCfg = Release|Win32
+		{8D1E263F-EC78-4E19-8543-0F2249832BE1}.Release.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 	EndGlobalSection
