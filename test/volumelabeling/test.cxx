@@ -1,6 +1,6 @@
 /************************************************************************/
 /*                                                                      */
-/*       Copyright 2004 by F. Heinrich, B. Seppke, Ullrich Koethe       */
+/*     Copyright 2006-2007 by F. Heinrich, B. Seppke, Ullrich Koethe    */
 /*       Cognitive Systems Group, University of Hamburg, Germany        */
 /*                                                                      */
 /*    This file is part of the VIGRA computer vision library.           */
@@ -43,12 +43,12 @@
 
 using namespace vigra;
 
-struct LabelingTest
+struct VolumeLabelingTest
 {
     typedef vigra::MultiArray<3,int> IntVolume;
     typedef vigra::MultiArray<3,double> DoubleVolume;
 
-    LabelingTest()
+    VolumeLabelingTest()
     : vol1(IntVolume::difference_type(4,4,4)),vol2(IntVolume::difference_type(4,4,4)),vol3(IntVolume::difference_type(5,5,5)),vol4(DoubleVolume::difference_type(5,5,5)),vol5(DoubleVolume::difference_type(5,5,5))
     {
         static const int in1[] = { 0, 0, 0, 0,    0, 0, 0, 0,    0, 0, 0, 0,    0, 0, 0, 0,
@@ -296,27 +296,27 @@ struct LabelingTest
 
 
 
-struct SimpleAnalysisTestSuite
+struct VolumeLabelingTestSuite
 : public vigra::test_suite
 {
-    SimpleAnalysisTestSuite()
-    : vigra::test_suite("SimpleAnalysisTestSuite")
+    VolumeLabelingTestSuite()
+    : vigra::test_suite("VolumeLabelingTestSuite")
     {
-        add( testCase( &LabelingTest::labelingSixTest1));
-        add( testCase( &LabelingTest::labelingSixTest2));
-        add( testCase( &LabelingTest::labelingSixTest3));
-        add( testCase( &LabelingTest::labelingSixTest4));
-        add( testCase( &LabelingTest::labelingSixWithBackgroundTest1));
-        add( testCase( &LabelingTest::labelingTwentySixTest1));
-        add( testCase( &LabelingTest::labelingTwentySixTest2));
-        add( testCase( &LabelingTest::labelingTwentySixTest3));
-        add( testCase( &LabelingTest::labelingTwentySixWithBackgroundTest1));
+        add( testCase( &VolumeLabelingTest::labelingSixTest1));
+        add( testCase( &VolumeLabelingTest::labelingSixTest2));
+        add( testCase( &VolumeLabelingTest::labelingSixTest3));
+        add( testCase( &VolumeLabelingTest::labelingSixTest4));
+        add( testCase( &VolumeLabelingTest::labelingSixWithBackgroundTest1));
+        add( testCase( &VolumeLabelingTest::labelingTwentySixTest1));
+        add( testCase( &VolumeLabelingTest::labelingTwentySixTest2));
+        add( testCase( &VolumeLabelingTest::labelingTwentySixTest3));
+        add( testCase( &VolumeLabelingTest::labelingTwentySixWithBackgroundTest1));
     }
 };
 
 int main()
 {
-    SimpleAnalysisTestSuite test;
+    VolumeLabelingTestSuite test;
 
     int failed = test.run();
 

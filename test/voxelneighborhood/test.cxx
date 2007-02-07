@@ -1,6 +1,6 @@
 /************************************************************************/
 /*                                                                      */
-/*       Copyright 2004 by F. Heinrich, B. Seppke, Ullrich Koethe       */
+/*     Copyright 2006-2007 by F. Heinrich, B. Seppke, Ullrich Koethe    */
 /*       Cognitive Systems Group, University of Hamburg, Germany        */
 /*                                                                      */
 /*    This file is part of the VIGRA computer vision library.           */
@@ -37,11 +37,11 @@
 #include <iostream>
 #include <functional>
 #include <cmath>
+#include <set>
 #include "unittest.hxx"
 
 #include "vigra/voxelneighborhood.hxx"
 #include "vigra/multi_array.hxx"
-#include "set"
 
 using namespace vigra;
 struct NeighborhoodTraverserTest
@@ -55,7 +55,7 @@ struct NeighborhoodTraverserTest
     SixTraverser sixTrav;
     TwentySixTraverser twentySixTrav;
 
-    static const int w=5,h=5,d=5;
+    enum { w=5,h=5,d=5 };
         
 
     NeighborhoodTraverserTest()
@@ -347,7 +347,7 @@ struct RestrictedNeighborhoodTraverserTest
     SixTraverser sixTrav;
     TwentySixTraverser twentySixTrav;
 
-    static const int w=3,h=3,d=3;
+    enum { w=3,h=3,d=3 };
         
 
     RestrictedNeighborhoodTraverserTest()
@@ -2298,11 +2298,11 @@ struct RestrictedNeighborhoodTraverserTest
     }
 };
 
-struct SimpleAnalysisTestSuite
+struct NeighborhoodTraverserTestSuite
 : public vigra::test_suite
 {
-    SimpleAnalysisTestSuite()
-    : vigra::test_suite("SimpleAnalysisTestSuite")
+    NeighborhoodTraverserTestSuite()
+    : vigra::test_suite("NeighborhoodTraverserTestSuite")
     {
         add( testCase( &NeighborhoodTraverserTest::testInit));
         add( testCase( &NeighborhoodTraverserTest::testSixTraverserForward));
@@ -2323,7 +2323,7 @@ struct SimpleAnalysisTestSuite
 
 int main()
 {
-    SimpleAnalysisTestSuite test;
+    NeighborhoodTraverserTestSuite test;
 
     int failed = test.run();
 

@@ -1,6 +1,6 @@
 /************************************************************************/
 /*                                                                      */
-/*       Copyright 2004 by F. Heinrich, B. Seppke, Ullrich Koethe       */
+/*     Copyright 2006-2007 by F. Heinrich, B. Seppke, Ullrich Koethe    */
 /*       Cognitive Systems Group, University of Hamburg, Germany        */
 /*                                                                      */
 /*    This file is part of the VIGRA computer vision library.           */
@@ -30,19 +30,19 @@
 /*    HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,      */
 /*    WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING      */
 /*    FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR     */
-/*    OTHER DEALINGS IN THE SOFTWARE.                                   */
+/*    OTHER DEALINGS IN THE SOFTWARE.                                   */                
 /*                                                                      */
 /************************************************************************/
 
 #include <iostream>
 #include <functional>
 #include <cmath>
+#include <list>
 #include "unittest.hxx"
 
 #include "vigra/watersheds3d.hxx"
 #include "vigra/multi_array.hxx"
 #include "vigra/multi_convolution.hxx"
-#include "list"
 
 #include <stdlib.h>
 #include <time.h>
@@ -55,9 +55,9 @@ struct Watersheds3dTest
     typedef vigra::MultiArray<3,double> DVolume;
     typedef vigra::TinyVector<int,3> IntVec;
 
-    static const int WIDTH    =   100, // 
-                     HEIGHT   =   100, // Volume-Dimensionen
-                     DEPTH    =   100;
+    enum { WIDTH    =   100, // 
+           HEIGHT   =   100, // Volume-Dimensionen
+           DEPTH    =   100};
 
     DVolume volume;
     IntVolume shouldVol;
