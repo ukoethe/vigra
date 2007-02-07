@@ -231,7 +231,7 @@ uninitializedCopyMultiArrayData(SrcIterator s, Shape const & shape, T * & d, ALL
     SrcIterator send = s + shape[0];
     for(; s != send; ++s, ++d)
     {
-        a.construct(d, *s);
+        a.construct(d, static_cast<T const &>(*s));
     }
 }
 
