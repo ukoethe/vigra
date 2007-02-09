@@ -54,9 +54,9 @@ struct Watersheds3dTest
     typedef vigra::MultiArray<3,double> DVolume;
     typedef vigra::TinyVector<int,3> IntVec;
 
-    static const int WIDTH    =   100, // 
-                     HEIGHT   =   100, // Volume-Dimensionen
-                     DEPTH    =   100; //
+    enum { WIDTH    =   100, // 
+           HEIGHT   =   100, // Volume-Dimensionen
+           DEPTH    =   100 }; //
 
     DVolume volume;
     IntVolume shouldVol;
