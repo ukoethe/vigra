@@ -1,6 +1,6 @@
 /************************************************************************/
 /*                                                                      */
-/*     Copyright 2006-2007 by F. Heinrich, B. Seppke, Ullrich Koethe    */
+/*       Copyright 2004 by F. Heinrich, B. Seppke, Ullrich Koethe       */
 /*       Cognitive Systems Group, University of Hamburg, Germany        */
 /*                                                                      */
 /*    This file is part of the VIGRA computer vision library.           */
@@ -30,19 +30,18 @@
 /*    HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,      */
 /*    WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING      */
 /*    FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR     */
-/*    OTHER DEALINGS IN THE SOFTWARE.                                   */                
+/*    OTHER DEALINGS IN THE SOFTWARE.                                   */
 /*                                                                      */
 /************************************************************************/
 
 #include <iostream>
 #include <functional>
 #include <cmath>
-#include <list>
 #include "unittest.hxx"
 
 #include "vigra/watersheds3d.hxx"
 #include "vigra/multi_array.hxx"
-#include "vigra/multi_convolution.hxx"
+#include "list"
 
 #include <stdlib.h>
 #include <time.h>
@@ -55,16 +54,16 @@ struct Watersheds3dTest
     typedef vigra::MultiArray<3,double> DVolume;
     typedef vigra::TinyVector<int,3> IntVec;
 
-    enum { WIDTH    =   100, // 
-           HEIGHT   =   100, // Volume-Dimensionen
-           DEPTH    =   100};
+    static const int WIDTH    =   100, // 
+                     HEIGHT   =   100, // Volume-Dimensionen
+                     DEPTH    =   100; //
 
     DVolume volume;
     IntVolume shouldVol;
     std::list<std::list<IntVec> > pointslists;
 
     Watersheds3dTest()
-    : volume(DVolume::difference_type(WIDTH,HEIGHT,DEPTH)),
+    : volume(IntVolume::difference_type(WIDTH,HEIGHT,DEPTH)),
       shouldVol(IntVolume::difference_type(WIDTH,HEIGHT,DEPTH))
     {
         std::list<IntVec> temp;
@@ -115,11 +114,11 @@ struct Watersheds3dTest
             for(int z=0; z<DEPTH; ++z)
                 for(int y=0; y<HEIGHT; ++y)
                     for(int x=0; x<WIDTH; ++x){
-                        temp = vigra::TinyVector<float,3>(x,y,z);
-                        double tempVal=10000000;
+                        temp = IntVec(x,y,z);
+                        int tempVal=10000000;
                         for(std::list<IntVec>::iterator iter=(*list_iter).begin(); iter!=(*list_iter).end(); ++iter){
-                            if((double)(temp-*iter).squaredMagnitude()<tempVal){
-                                tempVal = (double)(temp-*iter).squaredMagnitude();
+                            if((temp-*iter).squaredMagnitude()<tempVal){
+                                tempVal = (temp-*iter).squaredMagnitude();
                             }
                         }
                         volume(x,y,z)=tempVal;
@@ -141,11 +140,11 @@ struct Watersheds3dTest
             for(int z=0; z<DEPTH; ++z)
                 for(int y=0; y<HEIGHT; ++y)
                     for(int x=0; x<WIDTH; ++x){
-                        temp = vigra::TinyVector<float,3>(x,y,z);
-                        double tempVal=10000000;
+                        temp = IntVec(x,y,z);
+                        int tempVal=10000000;
                         for(std::list<IntVec>::iterator iter=(*list_iter).begin(); iter!=(*list_iter).end(); ++iter){
-                            if((double)(temp-*iter).squaredMagnitude()<tempVal){
-                                    tempVal = (double)(temp-*iter).squaredMagnitude();
+                            if((temp-*iter).squaredMagnitude()<tempVal){
+                                    tempVal = (temp-*iter).squaredMagnitude();
                             }
                         }
                         volume(x,y,z)=tempVal;
@@ -193,7 +192,7 @@ struct Watersheds3dTest
         static const int desired[] = {
             1, 1, 1, 1,  
             1, 1, 1, 1,    
-            1, 1, 2, 2, 
+            2, 2, 2, 2, 
             2, 2, 2, 2,
 
             1, 1, 1, 1, 
@@ -214,8 +213,14 @@ struct Watersheds3dTest
 
         IntVolume labelVolume(IntVolume::difference_type(4,4,4));
 
-        int max_region_label = vigra::watersheds3DTwentySix( vigra::srcMultiArrayRange(vol),
-                                                             vigra::destMultiArray(labelVolume));
+        int max_region_label = vigra::watersheds3DSix( vigra::srcMultiArrayRange(vol),
+                                                       vigra::destMultiArray(labelVolume));
+				//int c=1;
+				//for(IntVolume::iterator iter=labelVolume.begin(); iter!=labelVolume.end(); ++iter, ++c){
+				//		std::cerr << *iter << ", ";
+				//		if(c%4==0) std::cerr << std::endl;
+				//		if(c%16==0) std::cerr << std::endl;
+        //}
 
         shouldEqualSequence(labelVolume.begin(), labelVolume.end(), desired);
     }
@@ -266,24 +271,58 @@ struct Watersheds3dTest
 
     void testWatersheds3dGradient1()
     {
-        int w=11,h=11,d=11;
+        int w=4,h=4,d=8;
 
-        DVolume vol(DVolume::difference_type(w,h,d));
+        IntVolume vol(IntVolume::difference_type(w,h,d));
 
-        for(int z=0; z<d; ++z)
-            for(int y=0; y<h; ++y)
-                for(int x=0; x<w; ++x)
-                    vol(x,y,z)=(double)(z<d/2.0);
-        
-        vigra::MultiArray<3, vigra::TinyVector<float,3> > dest(IntVolume::difference_type(w,h,d));
-        vigra::gaussianGradientMultiArray(srcMultiArrayRange(vol),destMultiArray(dest),.5);
+				static const int data[] = {
+            0, 0, 0, 0, 
+            0, 0, 0, 0, 
+            0, 0, 0, 0, 
+            0, 0, 0, 0,
 
-        for(int z=0; z<d; ++z)
-            for(int y=0; y<h; ++y)
-                for(int x=0; x<w; ++x)
-                    vol(x,y,z) = norm(dest(x,y,z));
+            0, 0, 0, 0, 
+            0, 0, 0, 0, 
+            0, 0, 0, 0, 
+            0, 0, 0, 0,
 
+            4, 4, 4, 4, 
+            4, 4, 4, 4, 
+            4, 4, 4, 4, 
+            4, 4, 4, 4,
 
+            9, 9, 9, 9,  
+            9, 9, 9, 9,    
+            9, 9, 9, 9,  
+            9, 9, 9, 9,
+
+            9, 9, 9, 9,  
+            9, 9, 9, 9,    
+            9, 9, 9, 9,  
+            9, 9, 9, 9,
+
+            4, 4, 4, 4, 
+            4, 4, 4, 4, 
+            4, 4, 4, 4, 
+            4, 4, 4, 4,
+
+            0, 0, 0, 0, 
+            0, 0, 0, 0, 
+            0, 0, 0, 0, 
+            0, 0, 0, 0,
+
+            0, 0, 0, 0, 
+            0, 0, 0, 0, 
+            0, 0, 0, 0, 
+            0, 0, 0, 0
+        };
+
+        const int *i=data;
+        for(IntVolume::iterator iter=vol.begin(); iter!=vol.end(); ++iter, ++i){
+            *iter=*i;
+        }
+
+ 
         IntVolume labelVolume(IntVolume::difference_type(w,h,d));
         IntVolume labelVolume26(IntVolume::difference_type(w,h,d));
 
@@ -291,7 +330,8 @@ struct Watersheds3dTest
                                                        vigra::destMultiArray(labelVolume));
         int max_region_label26 = vigra::watersheds3DTwentySix( vigra::srcMultiArrayRange(vol),
                                                                vigra::destMultiArray(labelVolume26));
-        should(max_region_label==max_region_label26);
+
+        shouldEqual(max_region_label, max_region_label26);
 
         for(int z=0; z<d; ++z)
             for(int y=0; y<h; ++y)
@@ -309,38 +349,105 @@ struct Watersheds3dTest
 
     void testWatersheds3dGradient2()
     {
-        int w=11,h=11,d=11;
+        int w=8,h=8,d=8;
 
-        DVolume vol(DVolume::difference_type(w,h,d));
-        DVolume src(DVolume::difference_type(w,h,d));
+        IntVolume vol(IntVolume::difference_type(w,h,d));
 
-        for(int z=0; z<d; ++z){
-            for(int y=0; y<h; ++y){
-                for(int x=0; x<w; ++x){
-                    vol(x,y,z)=( ((z>=d/2.0)<<2) | ((y>=h/2.0)<<1) | ((x>=w/2.0)<<0) );
-                }
-            }
+				static const int data[] = {
+
+            0, 0, 4, 9, 9, 4, 0, 0,  
+            0, 0, 4, 9, 9, 4, 0, 0,  
+            4, 4, 4, 9, 9, 4, 4, 4,  
+            9, 9, 9,10,10, 9, 9, 9,
+            9, 9, 9,10,10, 9, 9, 9,  
+            4, 4, 4, 9, 9, 4, 4, 4,  
+            0, 0, 4, 9, 9, 4, 0, 0,  
+            0, 0, 4, 9, 9, 4, 0, 0,
+
+            0, 0, 4, 9, 9, 4, 0, 0,  
+            0, 0, 4, 9, 9, 4, 0, 0,  
+            4, 4, 4, 9, 9, 4, 4, 4,   
+            9, 9, 9,10,10, 9, 9, 9,
+            9, 9, 9,10,10, 9, 9, 9,   
+            4, 4, 4, 9, 9, 4, 4, 4,  
+            0, 0, 4, 9, 9, 4, 0, 0,  
+            0, 0, 4, 9, 9, 4, 0, 0,
+
+            4, 4, 4, 9, 9, 4, 4, 4,  
+            4, 4, 4, 9, 9, 4, 4, 4,  
+            4, 4, 4, 9, 9, 4, 4, 4,  
+            9, 9, 9,10,10, 9, 9, 9,
+            9, 9, 9,10,10, 9, 9, 9,   
+            4, 4, 4, 9, 9, 4, 4, 4,  
+            4, 4, 4, 9, 9, 4, 4, 4,  
+            4, 4, 4, 9, 9, 4, 4, 4,
+
+            9, 9, 9,10,10, 9, 9, 9,
+            9, 9, 9,10,10, 9, 9, 9,
+            9, 9, 9,10,10, 9, 9, 9,  
+           10,10,10,12,12,10,10,10,  
+           10,10,10,12,12,10,10,10, 
+            9, 9, 9,10,10, 9, 9, 9,
+            9, 9, 9,10,10, 9, 9, 9,
+            9, 9, 9,10,10, 9, 9, 9,
+
+            9, 9, 9,10,10, 9, 9, 9,
+            9, 9, 9,10,10, 9, 9, 9,
+            9, 9, 9,10,10, 9, 9, 9,  
+           10,10,10,12,12,10,10,10,  
+           10,10,10,12,12,10,10,10, 
+            9, 9, 9,10,10, 9, 9, 9,
+            9, 9, 9,10,10, 9, 9, 9,
+            9, 9, 9,10,10, 9, 9, 9,
+
+            4, 4, 4, 9, 9, 4, 4, 4,  
+            4, 4, 4, 9, 9, 4, 4, 4,  
+            4, 4, 4, 9, 9, 4, 4, 4,  
+            9, 9, 9,10,10, 9, 9, 9,
+            9, 9, 9,10,10, 9, 9, 9,   
+            4, 4, 4, 9, 9, 4, 4, 4,  
+            4, 4, 4, 9, 9, 4, 4, 4,  
+            4, 4, 4, 9, 9, 4, 4, 4,
+
+						0, 0, 4, 9, 9, 4, 0, 0,  
+            0, 0, 4, 9, 9, 4, 0, 0,  
+            4, 4, 4, 9, 9, 4, 4, 4,  
+            9, 9, 9,10,10, 9, 9, 9,
+            9, 9, 9,10,10, 9, 9, 9,   
+            4, 4, 4, 9, 9, 4, 4, 4,  
+            0, 0, 4, 9, 9, 4, 0, 0,  
+            0, 0, 4, 9, 9, 4, 0, 0,
+
+            0, 0, 4, 9, 9, 4, 0, 0,  
+            0, 0, 4, 9, 9, 4, 0, 0,  
+            4, 4, 4, 9, 9, 4, 4, 4,  
+            9, 9, 9,10,10, 9, 9, 9,
+            9, 9, 9,10,10, 9, 9, 9,   
+            4, 4, 4, 9, 9, 4, 4, 4,  
+            0, 0, 4, 9, 9, 4, 0, 0,  
+            0, 0, 4, 9, 9, 4, 0, 0
+
+        };
+
+        const int *i=data;
+        for(IntVolume::iterator iter=vol.begin(); iter!=vol.end(); ++iter, ++i){
+            *iter=*i;
         }
-        
-        vigra::MultiArray<3, vigra::TinyVector<float,3> > dest(IntVolume::difference_type(w,h,d));
-        vigra::gaussianGradientMultiArray(srcMultiArrayRange(vol),destMultiArray(dest),.5);
-
-        for(int z=0; z<d; ++z)
-            for(int y=0; y<h; ++y)
-                for(int x=0; x<w; ++x)
-                    src(x,y,z) = norm(dest(x,y,z));
-
 
         IntVolume labelVolume(IntVolume::difference_type(w,h,d));
         IntVolume labelVolume26(IntVolume::difference_type(w,h,d));
 
-        int max_region_label = vigra::watersheds3DSix( vigra::srcMultiArrayRange(src),
+        int max_region_label = vigra::watersheds3DSix( vigra::srcMultiArrayRange(vol),
                                                        vigra::destMultiArray(labelVolume));
+        int max_region_label26 = vigra::watersheds3DTwentySix( vigra::srcMultiArrayRange(vol),
+                                                               vigra::destMultiArray(labelVolume26));
+
+        shouldEqual(max_region_label, max_region_label26);
 
         for(int z=0; z<d; ++z){
             for(int y=0; y<h; ++y){
                 for(int x=0; x<w; ++x){
-                    shouldEqual( labelVolume(x,y,z)-1, (int)vol(x,y,z) );
+                    shouldEqual( labelVolume(x,y,z)-1, ( ((z>=d/2.0)<<2) | ((y>=h/2.0)<<1) |((x>=w/2.0)<<0) ) );
                 }
             }
         }
@@ -350,11 +457,11 @@ struct Watersheds3dTest
 };
 
 
-struct Watersheds3dTestSuite
+struct SimpleAnalysisTestSuite
 : public vigra::test_suite
 {
-    Watersheds3dTestSuite()
-    : vigra::test_suite("Watersheds3dTestSuite")
+    SimpleAnalysisTestSuite()
+    : vigra::test_suite("SimpleAnalysisTestSuite")
     {
         add( testCase( &Watersheds3dTest::testDistanceVolumesSix));
         add( testCase( &Watersheds3dTest::testDistanceVolumesTwentySix));
@@ -367,7 +474,7 @@ struct Watersheds3dTestSuite
 
 int main()
 {
-    Watersheds3dTestSuite test;
+    SimpleAnalysisTestSuite test;
 
     int failed = test.run();
 

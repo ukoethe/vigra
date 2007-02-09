@@ -1,36 +1,21 @@
 /************************************************************************/
 /*                                                                      */
-/*     Copyright 2006-2007 by F. Heinrich, B. Seppke, Ullrich Koethe    */
+/*     Copyright 1998-2005 by F. Heinrich, B. Seppke, Ullrich Koethe    */
 /*       Cognitive Systems Group, University of Hamburg, Germany        */
 /*                                                                      */
 /*    This file is part of the VIGRA computer vision library.           */
+/*    You may use, modify, and distribute this software according       */
+/*    to the terms stated in the LICENSE file included in               */
+/*    the VIGRA distribution.                                           */
+/*                                                                      */
 /*    The VIGRA Website is                                              */
 /*        http://kogs-www.informatik.uni-hamburg.de/~koethe/vigra/      */
 /*    Please direct questions, bug reports, and contributions to        */
-/*        koethe@informatik.uni-hamburg.de          or                  */
-/*        vigra@kogs1.informatik.uni-hamburg.de                         */
+/*        koethe@informatik.uni-hamburg.de                              */
 /*                                                                      */
-/*    Permission is hereby granted, free of charge, to any person       */
-/*    obtaining a copy of this software and associated documentation    */
-/*    files (the "Software"), to deal in the Software without           */
-/*    restriction, including without limitation the rights to use,      */
-/*    copy, modify, merge, publish, distribute, sublicense, and/or      */
-/*    sell copies of the Software, and to permit persons to whom the    */
-/*    Software is furnished to do so, subject to the following          */
-/*    conditions:                                                       */
-/*                                                                      */
-/*    The above copyright notice and this permission notice shall be    */
-/*    included in all copies or substantial portions of the             */
-/*    Software.                                                         */
-/*                                                                      */
-/*    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND    */
-/*    EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES   */
-/*    OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND          */
-/*    NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT       */
-/*    HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,      */
-/*    WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING      */
-/*    FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR     */
-/*    OTHER DEALINGS IN THE SOFTWARE.                                   */                
+/*  THIS SOFTWARE IS PROVIDED AS IS AND WITHOUT ANY EXPRESS OR          */
+/*  IMPLIED WARRANTIES, INCLUDING, WITHOUT LIMITATION, THE IMPLIED      */
+/*  WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE. */
 /*                                                                      */
 /************************************************************************/
 
@@ -78,34 +63,21 @@ int prepareWatersheds3D( SrcIterator s_Iter, SrcShape srcShape, SrcAccessor sa,
                 // to their lowest neighbor -- would this be better???
                 // typename SrcAccessor::value_type v = NumericTraits<typename SrcAccessor::value_type>::max();
                 int o = 0; // means center is minimum
-                //temp variable needed to prefer standard neigbors to diagonal ones
-                //if both exist.
-                bool plateau=true;
-                int t_o=0;
+                typename SrcAccessor::value_type my_v = v;
                 if(atBorder == NotAtBorder)
                 {
                     NeighborhoodTraverser<SrcIterator, Neighborhood3D>  c(xs), cend(c);
                     
                     do {
-                            if(sa(c) != v)
-                            {
-                                plateau=false;
-                                if(sa(c) < v)
-                                {  
-                                    v = sa(c);
-                                    if (c.isDiagonal())
-                                        t_o = c.directionBit();
-                                    else
-                                        o = c.directionBit();
-                                }
-                            }
-                            else if(plateau)
-                            {
-                                if (c.isDiagonal())
-                                    t_o = t_o | c.directionBit();
-                                else
-                                    o =  o | c.directionBit();
-                            }
+                        if(sa(c) < v)
+                        {  
+                            v = sa(c);
+                            o = c.directionBit();
+                        }
+                        else if(sa(c) == my_v && my_v == v)
+                        {
+                            o =  o | c.directionBit();
+                        }
                     }
                     while(++c != cend);
                 }
@@ -113,30 +85,18 @@ int prepareWatersheds3D( SrcIterator s_Iter, SrcShape srcShape, SrcAccessor sa,
                 {
                     RestrictedNeighborhoodTraverser<SrcIterator, Neighborhood3D>  c(xs, atBorder), cend(c);
                     do {
-                        if(sa(c) != v)
-                        {
-                            plateau=false;
-                            if(sa(c) < v)
-                            {
-                                v = sa(c);
-                                if (c.isDiagonal())
-                                    t_o = c.directionBit();
-                                else
-                                    o = c.directionBit();
-                            }
+                        if(sa(c) < v)
+                        {  
+                            v = sa(c);
+                            o = c.directionBit();
                         }
-                        else if(plateau)
+                        else if(sa(c) == my_v && my_v == v)
                         {
-                            if (c.isDiagonal())
-                                t_o = t_o | c.directionBit();
-                            else
-                                o =  o | c.directionBit();
+                            o =  o | c.directionBit();
                         }
                     }
                     while(++c != cend);
                 }
-                //prefer the standard neighbors
-                if (o==0) o=t_o;
                 if (o==0) local_min_count++; 
                 da.set(o, xd);
             }//end x-iteration
@@ -463,7 +423,7 @@ unsigned int watersheds3D( SrcIterator s_Iter, SrcShape srcShape, SrcAccessor sa
     int local_min_count= prepareWatersheds3D( s_Iter, srcShape, sa, 
                                               destMultiArray(orientationVolume).first, destMultiArray(orientationVolume).second,
                                               neighborhood3D);
-    
+ 
     return watershedLabeling3D( srcMultiArray(orientationVolume).first, srcShape, srcMultiArray(orientationVolume).second,
                                 d_Iter, da,
                                 neighborhood3D);
