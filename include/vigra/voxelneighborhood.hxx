@@ -38,10 +38,21 @@
 #define VIGRA_VOXELNEIGHBORHOOD_HXX
 
 #include "vigra/tinyvector.hxx"
+#include "vigra/pixelneighborhood.hxx"
 
 namespace vigra {
     
-    //Define Diff3D for vigraext
+/** \addtogroup VoxelNeighborhood Utilities to manage voxel neighborhoods
+
+    6- and 26-neighborhood definitions and circulators.
+
+    <b>\#include</b> "<a href="voxelneighborhood_8hxx-source.html">vigra/voxelneighborhood.hxx</a>"<br>
+
+    <b>See also:</b> \ref vigra::NeighborhoodCirculator
+ */
+//@{
+
+    /// 3-dimensional difference vector
     typedef vigra::TinyVector<int, 3> Diff3D;
    
 /********************************************************/
@@ -55,9 +66,13 @@ namespace vigra {
         //    This enum is used with \ref isAtVolumeBorder() and 
         //    \ref vigra::RestrictedNeighborhoodTraverser.
 
-        //<b>\#include</b> "<a href="pixelneighborhood_8hxx-source.html">vigra/pixelneighborhood.hxx</a>"<br>
+        //<b>\#include</b> "<a href="voxelneighborhood_8hxx-source.html">vigra/voxelneighborhood.hxx</a>"<br>
         //Namespace: vigra
 */
+
+typedef AtImageBorder AtVolumeBorder;
+
+#if 0
 enum AtVolumeBorder
 {
         NotAtBorder       = 0,     ///< &nbsp;
@@ -89,6 +104,8 @@ enum AtVolumeBorder
         BottomLeftRearBorder   = BottomBorder | LeftBorder  | RearBorder,     //42
         BottomRightRearBorder  = BottomBorder | RightBorder | RearBorder      //41
 };
+#endif /* #if 0 */
+
 
 /** \brief Find out whether a voxel is at the volume border.
 
@@ -167,6 +184,9 @@ namespace Neighborhood3DSix
 class NeighborCode3D
 {
     public:
+    
+    typedef Diff3D difference_type;
+    
     /** provides enumeration of all directions.
         DirectionCount may be used for portable loop termination conditions.
     */
@@ -184,6 +204,7 @@ class NeighborCode3D
         AntiCausalFirst = Behind,
         AntiCausalLast  = East,
 
+        InitialDirection = InFront,
         OppositeDirPrefix = 1,
         OppositeOffset = 3
     };
@@ -481,6 +502,9 @@ namespace Neighborhood3DTwentySix
 class NeighborCode3D
 {
     public:
+
+    typedef Diff3D difference_type;
+    
    /** provides enumeration of all directions.
        DirectionCount may be used for portable loop termination conditions.
      */
@@ -521,6 +545,7 @@ class NeighborCode3D
             AntiCausalFirst = BehindSouthEast,
             AntiCausalLast  = East,
 
+            InitialDirection = InFrontNorthWest,
             OppositeDirPrefix = -1,
             OppositeOffset = 25
     };
@@ -1592,6 +1617,8 @@ static const Direction DirectionCount     = NeighborCode3D::DirectionCount;     
 typedef Neighborhood3DTwentySix::NeighborCode3D NeighborCode3DTwentySix;
 
 
+#if 0
+
 
 /********************************************************/
 /*                                                      */
@@ -1625,19 +1652,23 @@ public:
 
     /** the traverser's value type
     */
-    typedef Diff3D value_type;
+    typedef typename NEIGHBORCODE3D::difference_type value_type;
 
     /** the traverser's reference type (return type of <TT>*trav</TT>)
       */
-    typedef Diff3D const & reference;
+    typedef value_type const & reference;
 
     /** the traverser's pointer type (return type of <TT>operator-></TT>)
      */
-    typedef Diff3D const * pointer;
+    typedef value_type const * pointer;
 
     /** the traverser's difference type (argument type of <TT>trav[diff]</TT>)
      */
     typedef int difference_type;
+
+        /** the circulator tag (random access iterator)
+        */
+    typedef random_access_circulator_tag iterator_category;
 
 protected:
     Direction direction_;
@@ -1714,7 +1745,7 @@ public:
      */
     NeighborOffsetTraverser & turnRound()
     {
-                direction_ = opposite();
+        direction_ = opposite();
         return *this;
     }
 
@@ -1762,16 +1793,16 @@ public:
         return &diff();
     }
 
-    /** Get Diff3D offset from center to current neighbor.
+    /** Get offset from center to current neighbor.
      */
-    Diff3D const & diff() const
+    reference diff() const
     {
         return NEIGHBORCODE3D::diff(direction_);
     }
 
     /** Get Diff3D offset to given direction.
      */
-    static Diff3D const & diff(Direction dir)
+    static reference diff(Direction dir)
     {
         return NEIGHBORCODE3D::diff(dir);
     }
@@ -1779,7 +1810,7 @@ public:
     /** Get relative distance (Diff3D) from current neighbor to neighbor
         at given offset.
      */
-    Diff3D const relativeDiff(difference_type offset) const
+    value_type relativeDiff(difference_type offset) const
     {
         Direction toDir = static_cast<Direction>((direction_ + offset) % NEIGHBORCODE3D::DirectionCount);
         if(toDir < 0)
@@ -1846,7 +1877,7 @@ public:
     {
         int result = (direction_ + offset) % NEIGHBORCODE3D::DirectionCount;
         if(result < 0)
-        result += NEIGHBORCODE3D::DirectionCount;
+            result += NEIGHBORCODE3D::DirectionCount;
         return static_cast<Direction>(result);
     }
 };//class NeighborOffsetTraverser
@@ -1879,7 +1910,12 @@ typedef NeighborOffsetTraverser<NeighborCode3DTwentySix> NeighborOffsetTraverser
 template <class VOLUMEITERATOR, class NEIGHBORCODE3D>
 class NeighborhoodTraverser : private VOLUMEITERATOR
 {
+
+#if 0
     typedef NeighborOffsetTraverser<NEIGHBORCODE3D> NEIGHBOROFFSETTRAVERSER;
+#endif /* #if 0 */
+
+    typedef NeighborOffsetCirculator<NEIGHBORCODE3D> NEIGHBOROFFSETTRAVERSER;
 
 public:
     /** type of the underlying volume iterator
@@ -2299,6 +2335,10 @@ class RestrictedNeighborhoodTraverser
     AtVolumeBorder whichBorder_;
     signed char count_, current_;
 }; //class RestrictedNeighborhoodTraverser
+#endif /* #if 0 */
+
+
+//@}
 
 } // namespace vigra
 

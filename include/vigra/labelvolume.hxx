@@ -235,8 +235,14 @@ unsigned int labelVolume(SrcIterator s_Iter, SrcShape srcShape, SrcAccessor sa,
     LabelVolume::iterator label = labelvolume.begin();
     
     // initialize the neighborhood traversers
+
+#if 0
     NeighborOffsetTraverser<Neighborhood3D> nc(Neighborhood3D::CausalFirst);
     NeighborOffsetTraverser<Neighborhood3D> nce(Neighborhood3D::CausalLast);
+#endif /* #if 0 */
+
+    NeighborOffsetCirculator<Neighborhood3D> nc(Neighborhood3D::CausalFirst);
+    NeighborOffsetCirculator<Neighborhood3D> nce(Neighborhood3D::CausalLast);
     ++nce;
     // pass 1: scan image from upper left front to lower right back
     // to find connected components
@@ -273,7 +279,12 @@ unsigned int labelVolume(SrcIterator s_Iter, SrcShape srcShape, SrcAccessor sa,
                 if(atBorder == NotAtBorder)
                 {
                     
+
+#if 0
                     nc = NeighborOffsetTraverser<Neighborhood3D>(Neighborhood3D::CausalFirst);
+#endif /* #if 0 */
+
+                    nc = NeighborOffsetCirculator<Neighborhood3D>(Neighborhood3D::CausalFirst);
                 
                     do
                     {            
@@ -304,7 +315,12 @@ unsigned int labelVolume(SrcIterator s_Iter, SrcShape srcShape, SrcAccessor sa,
                 //we are at a border - handle this!!
                 else
                 {
+
+#if 0
                     nc = NeighborOffsetTraverser<Neighborhood3D>(Neighborhood3D::nearBorderDirectionsCausal(atBorder,0));
+#endif /* #if 0 */
+
+                    nc = NeighborOffsetCirculator<Neighborhood3D>(Neighborhood3D::nearBorderDirectionsCausal(atBorder,0));
                     int j=0;
                     while(nc.direction() != Neighborhood3D::Error)
                     {
@@ -546,8 +562,14 @@ unsigned int labelVolumeWithBackground(SrcIterator s_Iter, SrcShape srcShape, Sr
     LabelVolume::iterator label = labelvolume.begin();
     
     // initialize the neighborhood traversers
+
+#if 0
     NeighborOffsetTraverser<Neighborhood3D> nc(Neighborhood3D::CausalFirst);
     NeighborOffsetTraverser<Neighborhood3D> nce(Neighborhood3D::CausalLast);
+#endif /* #if 0 */
+
+    NeighborOffsetCirculator<Neighborhood3D> nc(Neighborhood3D::CausalFirst);
+    NeighborOffsetCirculator<Neighborhood3D> nce(Neighborhood3D::CausalLast);
     ++nce;
     // pass 1: scan image from upper left front to lower right back
     // to find connected components
@@ -590,7 +612,12 @@ unsigned int labelVolumeWithBackground(SrcIterator s_Iter, SrcShape srcShape, Sr
                     if(atBorder == NotAtBorder)
                     {
                                 
+
+#if 0
                         nc = NeighborOffsetTraverser<Neighborhood3D>(Neighborhood3D::CausalFirst);
+#endif /* #if 0 */
+
+                        nc = NeighborOffsetCirculator<Neighborhood3D>(Neighborhood3D::CausalFirst);
                     
                         do
                         {            
@@ -621,7 +648,12 @@ unsigned int labelVolumeWithBackground(SrcIterator s_Iter, SrcShape srcShape, Sr
                     //we are at a border - handle this!!
                     else
                     {
+
+#if 0
                         nc = NeighborOffsetTraverser<Neighborhood3D>(Neighborhood3D::nearBorderDirectionsCausal(atBorder,0));
+#endif /* #if 0 */
+
+                        nc = NeighborOffsetCirculator<Neighborhood3D>(Neighborhood3D::nearBorderDirectionsCausal(atBorder,0));
                         int j=0;
                         while(nc.direction() != Neighborhood3D::Error)
                         {

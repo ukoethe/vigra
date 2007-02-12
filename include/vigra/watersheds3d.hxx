@@ -66,7 +66,11 @@ int prepareWatersheds3D( SrcIterator s_Iter, SrcShape srcShape, SrcAccessor sa,
                 typename SrcAccessor::value_type my_v = v;
                 if(atBorder == NotAtBorder)
                 {
+#if 0
                     NeighborhoodTraverser<SrcIterator, Neighborhood3D>  c(xs), cend(c);
+#endif /* #if 0 */
+
+                    NeighborhoodCirculator<SrcIterator, Neighborhood3D>  c(xs), cend(c);
                     
                     do {
                         if(sa(c) < v)
@@ -83,7 +87,11 @@ int prepareWatersheds3D( SrcIterator s_Iter, SrcShape srcShape, SrcAccessor sa,
                 }
                 else
                 {
+#if 0
                     RestrictedNeighborhoodTraverser<SrcIterator, Neighborhood3D>  c(xs, atBorder), cend(c);
+#endif /* #if 0 */
+
+                    RestrictedNeighborhoodCirculator<SrcIterator, Neighborhood3D>  c(xs, atBorder), cend(c);
                     do {
                         if(sa(c) < v)
                         {  
@@ -104,7 +112,6 @@ int prepareWatersheds3D( SrcIterator s_Iter, SrcShape srcShape, SrcAccessor sa,
     }//end z-iteration
     return local_min_count;
 }
-
 
 template <class SrcIterator, class SrcAccessor,class SrcShape,
           class DestIterator, class DestAccessor,
@@ -139,8 +146,14 @@ unsigned int watershedLabeling3D( SrcIterator s_Iter, SrcShape srcShape, SrcAcce
     LabelVolume::iterator label = labelvolume.begin();
     
     // initialize the neighborhood traversers
+
+#if 0
     NeighborOffsetTraverser<Neighborhood3D> nc(Neighborhood3D::CausalFirst);
     NeighborOffsetTraverser<Neighborhood3D> nce(Neighborhood3D::CausalLast);
+#endif /* #if 0 */
+
+    NeighborOffsetCirculator<Neighborhood3D> nc(Neighborhood3D::CausalFirst);
+    NeighborOffsetCirculator<Neighborhood3D> nce(Neighborhood3D::CausalLast);
     ++nce;
     // pass 1: scan image from upper left front to lower right back
     // to find connected components
@@ -176,7 +189,12 @@ unsigned int watershedLabeling3D( SrcIterator s_Iter, SrcShape srcShape, SrcAcce
                 //We are not at the border!
                 if(atBorder == NotAtBorder)
                 {
+
+#if 0
                     nc = NeighborOffsetTraverser<Neighborhood3D>(Neighborhood3D::CausalFirst);
+#endif /* #if 0 */
+
+                    nc = NeighborOffsetCirculator<Neighborhood3D>(Neighborhood3D::CausalFirst);
                 
                     do
                     {            
@@ -208,7 +226,12 @@ unsigned int watershedLabeling3D( SrcIterator s_Iter, SrcShape srcShape, SrcAcce
                 //we are at a border - handle this!!
                 else
                 {
+
+#if 0
                     nc = NeighborOffsetTraverser<Neighborhood3D>(Neighborhood3D::nearBorderDirectionsCausal(atBorder,0));
+#endif /* #if 0 */
+
+                    nc = NeighborOffsetCirculator<Neighborhood3D>(Neighborhood3D::nearBorderDirectionsCausal(atBorder,0));
                     int j=0;
                     while(nc.direction() != Neighborhood3D::Error)
                     {
@@ -333,7 +356,7 @@ unsigned int watershedLabeling3D( SrcIterator s_Iter, SrcShape srcShape, SrcAcce
     }
     \endcode
 
-        use with 3D-Six-Neighborhood:
+    use with 3D-Six-Neighborhood:
     \code
     namespace vigra {    
     
@@ -345,7 +368,7 @@ unsigned int watershedLabeling3D( SrcIterator s_Iter, SrcShape srcShape, SrcAcce
     }
     \endcode
 
-        use with 3D-TwentySix-Neighborhood:
+    use with 3D-TwentySix-Neighborhood:
     \code
     namespace vigra {    
     
@@ -391,7 +414,7 @@ unsigned int watershedLabeling3D( SrcIterator s_Iter, SrcShape srcShape, SrcAcce
 
     \code
     SrcIterator src_begin;
-        SrcShape src_shape;
+    SrcShape src_shape;
     DestIterator dest_begin;
 
     SrcAccessor src_accessor;
@@ -411,22 +434,31 @@ template <class SrcIterator, class SrcAccessor, class SrcShape,
 unsigned int watersheds3D( SrcIterator s_Iter, SrcShape srcShape, SrcAccessor sa,
                            DestIterator d_Iter, DestAccessor da, Neighborhood3D neighborhood3D)
 {
-    typedef unsigned char o_type;//only 8bits are needed for 3D-Six Neighborhood
-    
     //create temporary volume to store the DAG of directions to minima
-    if ((int)Neighborhood3D::DirectionCount>7)  //If we have 3D-TwentySix Neighborhood
-        typedef int o_type;                     //use 32bit-long int to represent directions
-                                                //TODO: That big? Optimize!!!
-    
-    vigra::MultiArray<3,o_type> orientationVolume(srcShape);
+    if ((int)Neighborhood3D::DirectionCount>7){  //If we have 3D-TwentySix Neighborhood
+        
+        vigra::MultiArray<3,int> orientationVolume(srcShape);
 
-    int local_min_count= prepareWatersheds3D( s_Iter, srcShape, sa, 
-                                              destMultiArray(orientationVolume).first, destMultiArray(orientationVolume).second,
-                                              neighborhood3D);
- 
-    return watershedLabeling3D( srcMultiArray(orientationVolume).first, srcShape, srcMultiArray(orientationVolume).second,
-                                d_Iter, da,
-                                neighborhood3D);
+        int local_min_count= prepareWatersheds3D( s_Iter, srcShape, sa, 
+                                                  destMultiArray(orientationVolume).first, destMultiArray(orientationVolume).second,
+                                                  neighborhood3D);
+     
+        return watershedLabeling3D( srcMultiArray(orientationVolume).first, srcShape, srcMultiArray(orientationVolume).second,
+                                    d_Iter, da,
+                                    neighborhood3D);
+    }
+    else{
+                
+        vigra::MultiArray<3,unsigned char> orientationVolume(srcShape);
+
+        int local_min_count= prepareWatersheds3D( s_Iter, srcShape, sa, 
+                                                  destMultiArray(orientationVolume).first, destMultiArray(orientationVolume).second,
+                                                  neighborhood3D);
+     
+        return watershedLabeling3D( srcMultiArray(orientationVolume).first, srcShape, srcMultiArray(orientationVolume).second,
+                                    d_Iter, da,
+                                    neighborhood3D);
+    }
 }
 
 template <class SrcIterator, class SrcShape, class SrcAccessor,
