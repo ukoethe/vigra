@@ -772,7 +772,7 @@ namespace vigra {
             // write and store
             byteorder bo( "big endian" );
 
-            write_array( stream, bo, reinterpret_cast< char * >(cbands.data()),
+            write_array( stream, bo, cbands.data(),
                          height * width * components );
         } else {
           vigra_postcondition( false, "internal error" );
