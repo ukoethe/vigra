@@ -138,6 +138,72 @@ struct ConvolutionTest
             acc.set(k, i);
         }
     }
+    
+    void initExplicitlyTest()
+    {
+        vigra::Kernel1D<double> k;
+        k.initExplicitly(-1,2) = 1,2,3,4;
+        
+        shouldEqual(k.left(), -1);
+        shouldEqual(k.right(), 2);
+        shouldEqual(k[-1], 1);
+        shouldEqual(k[0], 2);
+        shouldEqual(k[1], 3);
+        shouldEqual(k[2], 4);
+        
+        k.initExplicitly(-2,1) = -2;
+        shouldEqual(k.left(), -2);
+        shouldEqual(k.right(), 1);
+        shouldEqual(k[-2], -2);
+        shouldEqual(k[-1], -2);
+        shouldEqual(k[0], -2);
+        shouldEqual(k[1], -2);
+
+        try
+        {
+            k.initExplicitly(-1,1) = 1, 2;
+            failTest("no exception thrown");
+        }
+        catch(vigra::PreconditionViolation & c)
+        {
+            std::string expected("\nPrecondition violation!\nKernel1D::initExplicitly(): Wrong number of init values.");
+            std::string message(c.what());
+            should(0 == expected.compare(message.substr(0,expected.size())));
+        }
+        try
+        {
+            k.initExplicitly(-1,1) = 1, 2, 3, 4;
+            failTest("no exception thrown");
+        }
+        catch(vigra::PreconditionViolation & c)
+        {
+            std::string expected("\nPrecondition violation!\nKernel1D::initExplicitly(): Wrong number of init values.");
+            std::string message(c.what());
+            should(0 == expected.compare(message.substr(0,expected.size())));
+        }
+        try
+        {
+            k.initExplicitly(1,1) = 1, 2, 3, 4;
+            failTest("no exception thrown");
+        }
+        catch(vigra::PreconditionViolation & c)
+        {
+            std::string expected("\nPrecondition violation!\nKernel1D::initExplicitly(): left border must be <= 0.");
+            std::string message(c.what());
+            should(0 == expected.compare(message.substr(0,expected.size())));
+        }
+        try
+        {
+            k.initExplicitly(-1,-1) = 1, 2, 3, 4;
+            failTest("no exception thrown");
+        }
+        catch(vigra::PreconditionViolation & c)
+        {
+            std::string expected("\nPrecondition violation!\nKernel1D::initExplicitly(): right border must be >= 0.");
+            std::string message(c.what());
+            should(0 == expected.compare(message.substr(0,expected.size())));
+        }
+    }
 
     void simpleSharpeningTest(){
          Image dest_lenna(lenna);
@@ -700,6 +766,54 @@ struct ConvolutionTest
         }
     }
     
+    void optimalSmoothing3Test()
+    {
+        vigra::Kernel1D<double> smooth3;
+        smooth3.initOptimalSmoothing3();
+
+        Image tmp1(lenna.size());
+        Image tmp2(lenna.size());
+
+        separableConvolveX(srcImageRange(lenna), destImage(tmp1), kernel1d(smooth3));
+        separableConvolveY(srcImageRange(tmp1), destImage(tmp2), kernel1d(smooth3));
+        
+        gaussianSmoothing(srcImageRange(lenna), destImage(tmp1), 0.68);
+        
+        Image::ScanOrderIterator i1 = tmp1.begin();
+        Image::ScanOrderIterator i1end = tmp1.end();
+        Image::ScanOrderIterator i2 = tmp2.begin();
+        Image::Accessor acc = constimg.accessor();
+        
+        for(; i1 != i1end; ++i1, ++i2)
+        {
+            shouldEqualTolerance(acc(i1), acc(i2), 1e-2);
+        }
+    }
+    
+    void optimalSmoothing5Test()
+    {
+        vigra::Kernel1D<double> smooth5;
+        smooth5.initOptimalSmoothing5();
+
+        Image tmp1(lenna.size());
+        Image tmp2(lenna.size());
+
+        separableConvolveX(srcImageRange(lenna), destImage(tmp1), kernel1d(smooth5));
+        separableConvolveY(srcImageRange(tmp1), destImage(tmp2), kernel1d(smooth5));
+        
+        gaussianSmoothing(srcImageRange(lenna), destImage(tmp1), 0.867);
+        
+        Image::ScanOrderIterator i1 = tmp1.begin();
+        Image::ScanOrderIterator i1end = tmp1.end();
+        Image::ScanOrderIterator i2 = tmp2.begin();
+        Image::Accessor acc = constimg.accessor();
+        
+        for(; i1 != i1end; ++i1, ++i2)
+        {
+            shouldEqualTolerance(acc(i1), acc(i2), 1e-2);
+        }
+    }
+    
     void separableGradientTest()
     {
         Image sepgrad(lenna.size());
@@ -761,6 +875,138 @@ struct ConvolutionTest
             double grad = VIGRA_CSTD::sqrt(acc(i1)*acc(i1)+acc(i2)*acc(i2));
             shouldEqualTolerance(grad, acc(i), 1e-7);
             shouldEqualTolerance(acc(ig), acc(i), 1e-7);
+        }
+    }
+    
+    void optimalGradient3Test()
+    {
+        Image tmp(lenna.size());
+        Image tmpx(lenna.size());
+        Image tmpy(lenna.size());
+
+        vigra::Kernel1D<double> diff;
+        diff.initSymmetricDifference();
+        vigra::Kernel1D<double> smooth3;
+        smooth3.initOptimalFirstDerivativeSmoothing3();
+
+        separableConvolveX(srcImageRange(lenna), destImage(tmp), kernel1d(diff));
+        separableConvolveY(srcImageRange(tmp), destImage(tmpx), kernel1d(smooth3));
+        
+        separableConvolveX(srcImageRange(lenna), destImage(tmp), kernel1d(smooth3));
+        separableConvolveY(srcImageRange(tmp), destImage(tmpy), kernel1d(diff));
+
+        double sum = 0.0, mi = 0.0, ma = 0.0;
+
+        Image::ScanOrderIterator i1 = tmpx.begin();
+        Image::ScanOrderIterator i1end = tmpx.end();
+        Image::ScanOrderIterator i2 = tmpy.begin();
+        Image::Accessor acc = constimg.accessor();
+
+        for(; i1 != i1end; ++i1, ++i2)
+        {
+            double grad = VIGRA_CSTD::sqrt(acc(i1)*acc(i1)+acc(i2)*acc(i2));
+            sum += grad;
+            mi = std::min(mi, grad);
+            ma = std::max(ma, grad);
+        }
+        should(std::fabs(sum- 130000.0) < 1000.0);
+        shouldEqual(mi, 0.0);
+        should(std::fabs(ma - 68.0) < 1.0);
+    }
+    
+    void optimalLaplacian3Test()
+    {
+        Image tmp(lenna.size());
+        Image tmpx(lenna.size());
+        Image tmpy(lenna.size());
+
+        vigra::Kernel1D<double> diff;
+        diff.initSecondDifference3();
+        vigra::Kernel1D<double> smooth3;
+        smooth3.initOptimalSecondDerivativeSmoothing3();
+        
+        separableConvolveX(srcImageRange(lenna), destImage(tmp), kernel1d(diff));
+        separableConvolveY(srcImageRange(tmp), destImage(tmpx), kernel1d(smooth3));
+        
+        separableConvolveX(srcImageRange(lenna), destImage(tmp), kernel1d(smooth3));
+        separableConvolveY(srcImageRange(tmp), destImage(tmpy), kernel1d(diff));
+
+        double sum = 0.0, mi = 0.0, ma = 0.0;
+
+        Image::ScanOrderIterator i1 = tmpx.begin();
+        Image::ScanOrderIterator i1end = tmpx.end();
+        Image::ScanOrderIterator i2 = tmpy.begin();
+        Image::Accessor acc = constimg.accessor();
+
+        for(; i1 != i1end; ++i1, ++i2)
+        {
+            double lap = acc(i1) + acc(i2);
+            sum += lap;
+            mi = std::min(mi, lap);
+            ma = std::max(ma, lap);
+        }
+        should(std::fabs(sum) < 90.0);
+        should(std::fabs(mi + 120.0) < 1.0);
+        should(std::fabs(ma - 117.0) < 1.0);
+    }
+        
+    void optimalGradient5Test()
+    {
+        Image tmp(lenna.size());
+        Image tmpx(lenna.size());
+        Image tmpy(lenna.size());
+        Image mag(lenna.size());
+
+        vigra::Kernel1D<double> diff;
+        diff.initOptimalFirstDerivative5();
+        vigra::Kernel1D<double> smooth5;
+        smooth5.initOptimalFirstDerivativeSmoothing5();
+        
+        separableConvolveX(srcImageRange(lenna), destImage(tmp), kernel1d(diff));
+        separableConvolveY(srcImageRange(tmp), destImage(tmpx), kernel1d(smooth5));
+        
+        separableConvolveX(srcImageRange(lenna), destImage(tmp), kernel1d(smooth5));
+        separableConvolveY(srcImageRange(tmp), destImage(tmpy), kernel1d(diff));
+
+        gaussianGradientMagnitude(srcImageRange(lenna), destImage(mag), 0.906);
+
+        for(int y=1; y<lenna.height()-1; ++y)
+        {
+            for(int x=1; x<lenna.width()-1; ++x)
+            {
+                double grad = vigra::hypot(tmpx(x,y), tmpy(x,y));
+                should(std::fabs(grad-mag(x,y)) < 2.0);
+            }
+        }
+    }
+    
+    void optimalLaplacian5Test()
+    {
+        Image tmp(lenna.size());
+        Image tmpx(lenna.size());
+        Image tmpy(lenna.size());
+        Image lap(lenna.size());
+
+        vigra::Kernel1D<double> diff;
+        diff.initOptimalSecondDerivative5();
+        vigra::Kernel1D<double> smooth5;
+        smooth5.initOptimalSecondDerivativeSmoothing5();
+        
+        separableConvolveX(srcImageRange(lenna), destImage(tmp), kernel1d(diff));
+        separableConvolveY(srcImageRange(tmp), destImage(tmpx), kernel1d(smooth5));
+        
+        separableConvolveX(srcImageRange(lenna), destImage(tmp), kernel1d(smooth5));
+        separableConvolveY(srcImageRange(tmp), destImage(tmpy), kernel1d(diff));
+
+        laplacianOfGaussian(srcImageRange(lenna), destImage(lap), 0.817);
+
+        for(int y=2; y<lenna.height()-2; ++y)
+        {
+            for(int x=2; x<lenna.width()-2; ++x)
+            {
+                double l = tmpx(x,y) + tmpy(x,y);
+                should(std::fabs(l-lap(x,y)) < 4.0);
+            }
         }
     }
     
@@ -1792,6 +2038,8 @@ struct ConvolutionTestSuite
     ConvolutionTestSuite()
     : vigra::test_suite("ConvolutionTestSuite")
     {
+        add( testCase( &ConvolutionTest::initExplicitlyTest));
+
         add( testCase( &ConvolutionTest::simpleSharpeningTest)); 
         add( testCase( &ConvolutionTest::gaussianSharpeningTest)); 
         add( testCase( &ConvolutionTest::stdConvolutionTestOnConstImage));
@@ -1811,6 +2059,12 @@ struct ConvolutionTestSuite
         add( testCase( &ConvolutionTest::separableSmoothClipTest));
         add( testCase( &ConvolutionTest::separableSmoothWrapTest));
         add( testCase( &ConvolutionTest::gaussianSmoothingTest));
+        add( testCase( &ConvolutionTest::optimalSmoothing3Test));
+        add( testCase( &ConvolutionTest::optimalSmoothing5Test));
+        add( testCase( &ConvolutionTest::optimalGradient3Test));
+        add( testCase( &ConvolutionTest::optimalGradient5Test));
+        add( testCase( &ConvolutionTest::optimalLaplacian3Test));
+        add( testCase( &ConvolutionTest::optimalLaplacian5Test));
         add( testCase( &ConvolutionTest::separableGradientTest));
         add( testCase( &ConvolutionTest::gradientTest));
         add( testCase( &ConvolutionTest::gradientRGBTest));
