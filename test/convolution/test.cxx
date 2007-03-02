@@ -846,7 +846,7 @@ struct ConvolutionTest
         {
             double grad = VIGRA_CSTD::sqrt(acc(i1)*acc(i1)+acc(i2)*acc(i2));
 
-            shouldEqualTolerance(grad, acc(i), 1e-7);
+            shouldEqualTolerance(grad-acc(i), 0.0, 1e-12);
         }
     }
     
@@ -873,8 +873,8 @@ struct ConvolutionTest
         for(; i1 != i1end; ++i1, ++i2, ++ig, ++i)
         {
             double grad = VIGRA_CSTD::sqrt(acc(i1)*acc(i1)+acc(i2)*acc(i2));
-            shouldEqualTolerance(grad, acc(i), 1e-7);
-            shouldEqualTolerance(acc(ig), acc(i), 1e-7);
+            shouldEqualTolerance(grad-acc(i), 0.0, 1e-12);
+            shouldEqualTolerance(acc(ig)-acc(i), 0.0, 1e-12);
         }
     }
     
@@ -1022,6 +1022,7 @@ struct ConvolutionTest
         RGBImage tmpx(lenna.size());
         RGBImage tmpy(lenna.size());
         Image mag(lenna.size());
+        Image resmag(lenna.size());
 
         gaussianGradient(srcImageRange(input), destImage(tmpx), destImage(tmpy), 1.0);
         gaussianGradientMagnitude(srcImageRange(input), destImage(mag), 1.0);
@@ -1037,9 +1038,10 @@ struct ConvolutionTest
         for(; i1 != i1end; ++i1, ++i2, ++ig, ++i)
         {
             double grad = VIGRA_CSTD::sqrt(squaredNorm(rgb(i1))+squaredNorm(rgb(i2)));
-            shouldEqualTolerance(grad, acc(i), 1e-6);
-            shouldEqualTolerance(acc(ig), acc(i), 1e-6);
+            shouldEqualTolerance(grad-acc(i), 0.0, 1e-12);
+            shouldEqualTolerance(acc(ig)-acc(i), 0.0, 1e-12);
         }
+
    }
     
     void hessianTest()
@@ -1070,9 +1072,9 @@ struct ConvolutionTest
         
         for(; i1 != i1end; ++i1, ++i2, ++i3, ++r1, ++r2, ++r3)
         {
-            shouldEqualTolerance(acc(i1), acc(r1), 1e-7);
-            shouldEqualTolerance(acc(i2), acc(r2), 1e-7);
-            shouldEqualTolerance(acc(i3), acc(r3), 1e-7);
+            shouldEqualTolerance(acc(i1)-acc(r1), 0.0, 1e-12);
+            shouldEqualTolerance(acc(i2)-acc(r2), 0.0, 1e-12);
+            shouldEqualTolerance(acc(i3)-acc(r3), 0.0, 1e-12);
         }
     }
     
