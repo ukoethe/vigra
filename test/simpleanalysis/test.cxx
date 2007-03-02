@@ -1382,7 +1382,7 @@ struct InterestOperatorTest
                    0.0, 0.0, 0.0,  0.0, 0.0,  0.0, 0.0, 0.0, 0.0,
                    0.0, 0.0, 0.0,  0.0, 0.0,  0.0, 0.0, 0.0, 0.0,
                    0.0, 0.0, 0.0,  0.0, 1.0,  0.0, 0.0, 0.0, 0.0,
-                   0.0, 0.0, 1.0, -1.0, 0.0, -1.0, 1.0, 0.0, 0.0,
+                   0.0, 0.0, 0.0, -1.0, 0.0, -1.0, 0.0, 0.0, 0.0,
                    0.0, 0.0, 0.0,  0.0, 1.0,  0.0, 0.0, 0.0, 0.0,
                    0.0, 0.0, 0.0,  0.0, 0.0,  0.0, 0.0, 0.0, 0.0,
                    0.0, 0.0, 0.0,  0.0, 0.0,  0.0, 0.0, 0.0, 0.0,
@@ -1549,22 +1549,22 @@ struct SlantedEdgeMTFTest
         importImage(info, destImage(image));
         
         reference.push_back(Pair(0, 1));
-        reference.push_back(Pair(0.0564351, 0.961336));
-        reference.push_back(Pair(0.11287, 0.905812));
-        reference.push_back(Pair(0.169305, 0.831278));
-        reference.push_back(Pair(0.225741, 0.740566));
-        reference.push_back(Pair(0.282176, 0.641225));
-        reference.push_back(Pair(0.338611, 0.541988));
-        reference.push_back(Pair(0.395046, 0.448508));
-        reference.push_back(Pair(0.451481, 0.363593));
-        reference.push_back(Pair(0.507916, 0.287531));
-        reference.push_back(Pair(0.564351, 0.220531));
-        reference.push_back(Pair(0.620787, 0.163246));
-        reference.push_back(Pair(0.677222, 0.115963));
-        reference.push_back(Pair(0.733657, 0.0777855));
-        reference.push_back(Pair(0.790092, 0.0468734));
-        reference.push_back(Pair(0.846527, 0.0211264));
-        reference.push_back(Pair(0.902962, 0));
+        reference.push_back(Pair(0.0564351, 0.981739));
+        reference.push_back(Pair(0.11287, 0.929577));
+        reference.push_back(Pair(0.169305, 0.850509));
+        reference.push_back(Pair(0.22574, 0.754266));
+        reference.push_back(Pair(0.282175, 0.651081));
+        reference.push_back(Pair(0.33861, 0.549492));
+        reference.push_back(Pair(0.395045, 0.454718));
+        reference.push_back(Pair(0.45148, 0.368628));
+        reference.push_back(Pair(0.507915, 0.291512));
+        reference.push_back(Pair(0.564351, 0.223585));
+        reference.push_back(Pair(0.620786, 0.165506));
+        reference.push_back(Pair(0.677221, 0.117569));
+        reference.push_back(Pair(0.733656, 0.0788625));
+        reference.push_back(Pair(0.790091, 0.0475224));
+        reference.push_back(Pair(0.846526, 0.021419));
+        reference.push_back(Pair(0.902961, 0));
     }
     
     void testSlantedEdgeMTF()

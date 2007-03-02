@@ -1040,7 +1040,7 @@ struct ConvolutionTest
             shouldEqualTolerance(grad, acc(i), 1e-6);
             shouldEqualTolerance(acc(ig), acc(i), 1e-6);
         }
-    }
+   }
     
     void hessianTest()
     {
@@ -1070,9 +1070,9 @@ struct ConvolutionTest
         
         for(; i1 != i1end; ++i1, ++i2, ++i3, ++r1, ++r2, ++r3)
         {
-                shouldEqualTolerance(acc(i1), acc(r1), 1e-7);
-                shouldEqualTolerance(acc(i2), acc(r2), 1e-7);
-                shouldEqualTolerance(acc(i3), acc(r3), 1e-7);
+            shouldEqualTolerance(acc(i1), acc(r1), 1e-7);
+            shouldEqualTolerance(acc(i2), acc(r2), 1e-7);
+            shouldEqualTolerance(acc(i3), acc(r3), 1e-7);
         }
     }
     
@@ -1103,9 +1103,9 @@ struct ConvolutionTest
 
         for(; i1 != i1end; ++i1, ++i2, ++i3, ++r1, ++r2, ++r3)
         {
-                shouldEqualTolerance(acc(i1), acc(r1), 1e-7);
-                shouldEqualTolerance(acc(i2), acc(r2), 1e-7);
-                shouldEqualTolerance(acc(i3), acc(r3), 1e-7);
+            shouldEqualTolerance(acc(i1), acc(r1), 1e-7);
+            shouldEqualTolerance(acc(i2), acc(r2), 1e-7);
+            shouldEqualTolerance(acc(i3), acc(r3), 1e-7);
         }
     }
     
