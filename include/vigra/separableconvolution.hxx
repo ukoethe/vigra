@@ -1742,8 +1742,8 @@ void Kernel1D<ARITHTYPE>::initGaussian(double std_dev,
     else
         norm_ = 1.0;
 
-    // best border treatment for Gaussians is BORDER_TREATMENT_CLIP
-    border_treatment_ = BORDER_TREATMENT_CLIP;
+    // best border treatment for Gaussians is BORDER_TREATMENT_REFLECT
+    border_treatment_ = BORDER_TREATMENT_REFLECT;
 }
 
 /***********************************************************************/
@@ -1849,7 +1849,7 @@ Kernel1D<ARITHTYPE>::initGaussianDerivative(double std_dev,
     kernel_.reserve(radius*2+1);
 
     // fill the kernel and calculate the DC component
-    // introduced by truncation of the Geussian
+    // introduced by truncation of the Gaussian
     ARITHTYPE dc = 0.0;
     for(ARITHTYPE x = -radius; x <= radius; ++x)
     {
@@ -1877,8 +1877,8 @@ Kernel1D<ARITHTYPE>::initGaussianDerivative(double std_dev,
         norm_ = 1.0;
 
     // best border treatment for Gaussian derivatives is
-    // BORDER_TREATMENT_REPEAT
-    border_treatment_ = BORDER_TREATMENT_REPEAT;
+    // BORDER_TREATMENT_REFLECT
+    border_treatment_ = BORDER_TREATMENT_REFLECT;
 }
 
 /***********************************************************************/
