@@ -968,7 +968,7 @@ class Kernel1D
     : kernel_(),
       left_(0),
       right_(0),
-      border_treatment_(BORDER_TREATMENT_CLIP),
+      border_treatment_(BORDER_TREATMENT_REFLECT),
       norm_(one())
     {
         kernel_.push_back(norm_);
@@ -1047,7 +1047,7 @@ class Kernel1D
             \code
             1. left()  == -(int)(3.0*std_dev + 0.5)
             2. right() ==  (int)(3.0*std_dev + 0.5)
-            3. borderTreatment() == BORDER_TREATMENT_CLIP
+            3. borderTreatment() == BORDER_TREATMENT_REFLECT
             4. norm() == norm
             \endcode
         */
@@ -1114,7 +1114,7 @@ class Kernel1D
             \code
             1. left()  == -(int)(3.0*std_dev + 0.5*order + 0.5)
             2. right() ==  (int)(3.0*std_dev + 0.5*order + 0.5)
-            3. borderTreatment() == BORDER_TREATMENT_REPEAT
+            3. borderTreatment() == BORDER_TREATMENT_REFLECT
             4. norm() == norm
             \endcode
         */
