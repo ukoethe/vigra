@@ -262,6 +262,8 @@ struct EdgeJunctionTensorTest
 
     void energyTensorTest()
     {
+        using namespace functor;
+        
         V3Image get(img2.size());
         Image res(img2.size()), ref(img2.size());
         ImageImportInfo iref("l2_get.xv");
@@ -273,7 +275,12 @@ struct EdgeJunctionTensorTest
         gradientEnergyTensor(srcImageRange(img2), destImage(get), grad, smooth);
         tensorTrace(srcImageRange(get), destImage(res));
 
-        shouldEqualSequenceTolerance(res.begin(), res.end(), ref.begin(), 1e-10);
+        combineTwoImages(srcImageRange(res), srcImage(ref), destImage(res),
+                         Arg1() - Arg2());
+
+        Image::iterator i = res.begin(), end = res.end();        
+        for(; i != end; ++i)
+            shouldEqualTolerance(*i, 0.0, 1e-12);
     }
 
     Image img1, img2;
