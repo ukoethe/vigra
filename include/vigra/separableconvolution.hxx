@@ -932,22 +932,23 @@ class Kernel1D
         {
             vigra_precondition(count_ == 1 || count_ == sum_,
                   "Kernel1D::initExplicitly(): "
-                  "Too few init values.");
+                  "Wrong number of init values.");
         }
 
         InitProxy & operator,(value_type const & v)
         {
-            if(sum_ == count_) norm_ = *iter_;
+            if(sum_ == count_) 
+                norm_ = *iter_;
 
             norm_ += v;
 
             --count_;
-            vigra_precondition(count_ > 0,
-                  "Kernel1D::initExplicitly(): "
-                  "Too many init values.");
 
-            ++iter_;
-            *iter_ = v;
+            if(count_ > 0)
+            {
+                ++iter_;
+                *iter_ = v;
+            }
 
             return *this;
         }
@@ -1127,6 +1128,207 @@ class Kernel1D
     }
 
         /**
+            Init an optimal 3-tap smoothing filter.
+            The filter values are 
+            
+            \code
+            [0.216, 0.568, 0.216]
+            \endcode
+            
+            These values are optimal in the sense that the 3x3 filter obtained by separable application
+            of this filter is the best possible 3x3 approximation to a Gaussian filter.
+            The equivalent Gaussian has sigma = 0.680.
+ 
+            Postconditions:
+            \code
+            1. left()  == -1
+            2. right() ==  1
+            3. borderTreatment() == BORDER_TREATMENT_REFLECT
+            4. norm() == 1.0
+            \endcode
+        */
+    void initOptimalSmoothing3()
+    {
+        this->initExplicitly(-1, 1) = 0.216, 0.568, 0.216;
+        this->setBorderTreatment(BORDER_TREATMENT_REFLECT);
+    }
+
+        /**
+            Init an optimal 3-tap smoothing filter to be used in the context of first derivative computation.
+            This filter must be used in conjunction with the symmetric difference filter (see initSymmetricDifference()), 
+            such that the difference filter is applied along one dimension, and the smoothing filter along the other.
+            The filter values are 
+            
+            \code
+            [0.224365, 0.55127, 0.224365]
+            \endcode
+            
+            These values are optimal in the sense that the 3x3 filter obtained by combining 
+            this filter with the symmetric difference is the best possible 3x3 approximation to a 
+            Gaussian first derivative filter. The equivalent Gaussian has sigma = 0.675.
+ 
+            Postconditions:
+            \code
+            1. left()  == -1
+            2. right() ==  1
+            3. borderTreatment() == BORDER_TREATMENT_REFLECT
+            4. norm() == 1.0
+            \endcode
+        */
+    void initOptimalFirstDerivativeSmoothing3()
+    {
+        this->initExplicitly(-1, 1) = 0.224365, 0.55127, 0.224365;
+        this->setBorderTreatment(BORDER_TREATMENT_REFLECT);
+    }
+
+        /**
+            Init an optimal 3-tap smoothing filter to be used in the context of second derivative computation.
+            This filter must be used in conjunction with the 3-tap second difference filter (see initSecondDifference3()), 
+            such that the difference filter is applied along one dimension, and the smoothing filter along the other.
+            The filter values are 
+            
+            \code
+            [0.13, 0.74, 0.13]
+            \endcode
+            
+            These values are optimal in the sense that the 3x3 filter obtained by combining 
+            this filter with the 3-tap second difference is the best possible 3x3 approximation to a 
+            Gaussian second derivative filter. The equivalent Gaussian has sigma = 0.433.
+ 
+            Postconditions:
+            \code
+            1. left()  == -1
+            2. right() ==  1
+            3. borderTreatment() == BORDER_TREATMENT_REFLECT
+            4. norm() == 1.0
+            \endcode
+        */
+    void initOptimalSecondDerivativeSmoothing3()
+    {
+        this->initExplicitly(-1, 1) = 0.13, 0.74, 0.13;
+        this->setBorderTreatment(BORDER_TREATMENT_REFLECT);
+    }
+
+        /**
+            Init an optimal 5-tap smoothing filter.
+            The filter values are 
+            
+            \code
+            [0.03134, 0.24, 0.45732, 0.24, 0.03134]
+            \endcode
+            
+            These values are optimal in the sense that the 5x5 filter obtained by separable application
+            of this filter is the best possible 5x5 approximation to a Gaussian filter.
+            The equivalent Gaussian has sigma = 0.867.
+ 
+            Postconditions:
+            \code
+            1. left()  == -2
+            2. right() ==  2
+            3. borderTreatment() == BORDER_TREATMENT_REFLECT
+            4. norm() == 1.0
+            \endcode
+        */
+    void initOptimalSmoothing5()
+    {
+        this->initExplicitly(-2, 2) = 0.03134, 0.24, 0.45732, 0.24, 0.03134;
+        this->setBorderTreatment(BORDER_TREATMENT_REFLECT);
+    }
+
+        /**
+            Init an optimal 5-tap smoothing filter to be used in the context of first derivative computation.
+           This filter must be used in conjunction with the optimal 5-tap first derivative filter 
+           (see initOptimalFirstDerivative5()),  such that the derivative filter is applied along one dimension, 
+           and the smoothing filter along the other. The filter values are 
+            
+            \code
+            [0.04255, 0.241, 0.4329, 0.241, 0.04255]
+            \endcode
+            
+            These values are optimal in the sense that the 5x5 filter obtained by combining 
+            this filter with the optimal 5-tap first derivative is the best possible 5x5 approximation to a 
+            Gaussian first derivative filter. The equivalent Gaussian has sigma = 0.906.
+ 
+            Postconditions:
+            \code
+            1. left()  == -2
+            2. right() ==  2
+            3. borderTreatment() == BORDER_TREATMENT_REFLECT
+            4. norm() == 1.0
+            \endcode
+        */
+    void initOptimalFirstDerivativeSmoothing5()
+    {
+        this->initExplicitly(-2, 2) = 0.04255, 0.241, 0.4329, 0.241, 0.04255;
+        this->setBorderTreatment(BORDER_TREATMENT_REFLECT);
+    }
+
+        /**
+            Init an optimal 5-tap smoothing filter to be used in the context of second derivative computation.
+           This filter must be used in conjunction with the optimal 5-tap second derivative filter 
+           (see initOptimalSecondDerivative5()), such that the derivative filter is applied along one dimension, 
+           and the smoothing filter along the other. The filter values are 
+            
+            \code
+            [0.0243, 0.23556, 0.48028, 0.23556, 0.0243]
+            \endcode
+            
+            These values are optimal in the sense that the 5x5 filter obtained by combining 
+            this filter with the optimal 5-tap second derivative is the best possible 5x5 approximation to a 
+            Gaussian second derivative filter. The equivalent Gaussian has sigma = 0.817.
+ 
+            Postconditions:
+            \code
+            1. left()  == -2
+            2. right() ==  2
+            3. borderTreatment() == BORDER_TREATMENT_REFLECT
+            4. norm() == 1.0
+            \endcode
+        */
+    void initOptimalSecondDerivativeSmoothing5()
+    {
+        this->initExplicitly(-2, 2) = 0.0243, 0.23556, 0.48028, 0.23556, 0.0243;
+        this->setBorderTreatment(BORDER_TREATMENT_REFLECT);
+    }
+
+        /**
+            Init a 5-tap filter as defined by Peter Burt in the context of pyramid creation.
+            The filter values are
+            
+            \code
+            [a, 0.25, 0.5-2*a, 0.25, a]
+            \endcode
+            
+            The default <tt>a = 0.04785</tt> is optimal in the sense that it minimizes the difference
+            to a true Gaussian filter (which would have sigma = 0.975). For other values of <tt>a</tt>, the scale 
+            of the most similar Gaussian can be approximated by
+            
+            \code
+            sigma = 5.1 * a + 0.731
+            \endcode
+ 
+            Preconditions:
+            \code
+            0 <= a <= 0.125
+            \endcode
+
+            Postconditions:
+            \code
+            1. left()  == -2
+            2. right() ==  2
+            3. borderTreatment() == BORDER_TREATMENT_REFLECT
+            4. norm() == 1.0
+            \endcode
+        */
+    void initBurtFilter(double a = 0.04785)
+    {
+        vigra_precondition(a >= 0.0 && a <= 0.125,
+            "Kernel1D::initBurtFilter(): 0 <= a <= 0.125 required.");
+        this->initExplicitly(-2, 2) = a, 0.25, 0.5 - 2.0*a, 0.25, a;
+        this->setBorderTreatment(BORDER_TREATMENT_REFLECT);
+    }
+
+        /**
             Init as a Binomial filter. 'norm' denotes the sum of all bins
             of the kernel.
 
@@ -1171,7 +1373,7 @@ class Kernel1D
         */
     void initAveraging(int radius, value_type norm);
 
-        /** Init as a Averaging filter with norm 1.
+        /** Init as an Averaging filter with norm 1.
          */
     void initAveraging(int radius)
     {
@@ -1179,8 +1381,10 @@ class Kernel1D
     }
 
         /**
-            Init as a symmetric gradient filter of the form
+           Init as a symmetric gradient filter of the form
            <TT>[ 0.5 * norm, 0.0 * norm, -0.5 * norm]</TT>
+           
+           <b>Deprecated</b>. Use initSymmetricDifference() instead.
 
             Postconditions:
             \code
@@ -1191,13 +1395,123 @@ class Kernel1D
             \endcode
         */
     void
-    initSymmetricGradient(value_type norm );
+    initSymmetricGradient(value_type norm )
+    {
+        initSymmetricDifference(norm);
+        setBorderTreatment(BORDER_TREATMENT_REPEAT);
+    }
 
         /** Init as a symmetric gradient filter with norm 1.
+           
+           <b>Deprecated</b>. Use initSymmetricDifference() instead.
          */
     void initSymmetricGradient()
     {
         initSymmetricGradient(one());
+    }
+
+    void
+    initSymmetricDifference(value_type norm );
+
+        /** Init as the 3-tap symmetric difference filter
+             The filter values are
+             
+             \code
+             [0.5, 0, -0.5]
+             \endcode
+
+            Postconditions:
+            \code
+            1. left()  == -1
+            2. right() ==  1
+            3. borderTreatment() == BORDER_TREATMENT_REFLECT
+            4. norm() == 1.0
+            \endcode
+          */
+    void initSymmetricDifference()
+    {
+        initSymmetricDifference(one());
+    }
+
+        /**
+            Init the 3-tap second difference filter.
+            The filter values are
+             
+             \code
+             [1, -2, 1]
+             \endcode
+
+            Postconditions:
+            \code
+            1. left()  == -1
+            2. right() ==  1
+            3. borderTreatment() == BORDER_TREATMENT_REFLECT
+            4. norm() == 1
+            \endcode
+        */
+    void
+    initSecondDifference3()
+    {
+        this->initExplicitly(-1, 1) = 1.0, -2.0, 1.0;
+        this->setBorderTreatment(BORDER_TREATMENT_REFLECT);
+    }
+    
+        /**
+            Init an optimal 5-tap first derivative filter.
+           This filter must be used in conjunction with the corresponding 5-tap smoothing filter 
+           (see initOptimalFirstDerivativeSmoothing5()), such that the derivative filter is applied along one dimension,
+            and the smoothing filter along the other.
+            The filter values are 
+            
+            \code
+            [0.1, 0.3, 0.0, -0.3, -0.1]
+            \endcode
+            
+            These values are optimal in the sense that the 5x5 filter obtained by combining 
+            this filter with the corresponding 5-tap smoothing filter is the best possible 5x5 approximation to a 
+            Gaussian first derivative filter. The equivalent Gaussian has sigma = 0.906.
+ 
+            Postconditions:
+            \code
+            1. left()  == -2
+            2. right() ==  2
+            3. borderTreatment() == BORDER_TREATMENT_REFLECT
+            4. norm() == 1.0
+            \endcode
+        */
+    void initOptimalFirstDerivative5()
+    {
+        this->initExplicitly(-2, 2) = 0.1, 0.3, 0.0, -0.3, -0.1;
+        this->setBorderTreatment(BORDER_TREATMENT_REFLECT);
+    }
+    
+        /**
+            Init an optimal 5-tap second derivative filter.
+           This filter must be used in conjunction with the corresponding 5-tap smoothing filter 
+           (see initOptimalSecondDerivativeSmoothing5()), such that the derivative filter is applied along one dimension,
+            and the smoothing filter along the other.
+            The filter values are 
+            
+            \code
+            [0.22075, 0.117, -0.6755, 0.117, 0.22075]
+            \endcode
+            
+            These values are optimal in the sense that the 5x5 filter obtained by combining 
+            this filter with the corresponding 5-tap smoothing filter is the best possible 5x5 approximation to a 
+            Gaussian second derivative filter. The equivalent Gaussian has sigma = 0.817.
+ 
+            Postconditions:
+            \code
+            1. left()  == -2
+            2. right() ==  2
+            3. borderTreatment() == BORDER_TREATMENT_REFLECT
+            4. norm() == 1.0
+            \endcode
+        */
+    void initOptimalSecondDerivative5()
+    {
+        this->initExplicitly(-2, 2) = 0.22075, 0.117, -0.6755, 0.117, 0.22075;
+        this->setBorderTreatment(BORDER_TREATMENT_REFLECT);
     }
 
         /** Init the kernel by an explicit initializer list.
@@ -1239,7 +1553,7 @@ class Kernel1D
         vigra_precondition(left <= 0,
                      "Kernel1D::initExplicitly(): left border must be <= 0.");
         vigra_precondition(right >= 0,
-                     "Kernel1D::initExplicitly(): right border must be <= 0.");
+                     "Kernel1D::initExplicitly(): right border must be >= 0.");
 
         right_ = right;
         left_ = left;
@@ -1643,7 +1957,7 @@ void Kernel1D<ARITHTYPE>::initAveraging(int radius,
 
 template <class ARITHTYPE>
 void
-Kernel1D<ARITHTYPE>::initSymmetricGradient(value_type norm)
+Kernel1D<ARITHTYPE>::initSymmetricDifference(value_type norm)
 {
     kernel_.erase(kernel_.begin(), kernel_.end());
     kernel_.reserve(3);
@@ -1656,9 +1970,9 @@ Kernel1D<ARITHTYPE>::initSymmetricGradient(value_type norm)
     right_ = 1;
     norm_ = norm;
 
-    // best border treatment for SymmetricGradient is
-    // BORDER_TREATMENT_REPEAT
-    border_treatment_ = BORDER_TREATMENT_REPEAT;
+    // best border treatment for symmetric difference is
+    // BORDER_TREATMENT_REFLECT
+    border_treatment_ = BORDER_TREATMENT_REFLECT;
 }
 
 /**************************************************************/
