@@ -1470,6 +1470,9 @@ class Kernel1D
             These values are optimal in the sense that the 5x5 filter obtained by combining 
             this filter with the corresponding 5-tap smoothing filter is the best possible 5x5 approximation to a 
             Gaussian first derivative filter. The equivalent Gaussian has sigma = 0.906.
+            
+            If the filter is instead separably combined with itself, an almost optimal approximation of the
+            mixed second Gaussian derivative at scale sigma = 0.899 results.
  
             Postconditions:
             \code
