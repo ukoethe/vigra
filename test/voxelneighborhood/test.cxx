@@ -2305,7 +2305,7 @@ struct NeighborhoodCirculator3dTestSuite
 : public vigra::test_suite
 {
     NeighborhoodCirculator3dTestSuite()
-    : vigra::test_suite("NeighborhoodTraverserTestSuite")
+    : vigra::test_suite("NeighborhoodCirculator3dTestSuite")
     {
         add( testCase( &NeighborhoodCirculator3dTest::testInit));
         add( testCase( &NeighborhoodCirculator3dTest::testSixTraverserForward));
