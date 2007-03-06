@@ -44,7 +44,7 @@
 #include "vigra/multi_array.hxx"
 
 using namespace vigra;
-struct NeighborhoodTraverserTest
+struct NeighborhoodCirculator3dTest
 {
 
     typedef vigra::NeighborhoodCirculator<vigra::MultiIterator<3,int>, vigra::NeighborCode3DSix> SixTraverser;
@@ -60,7 +60,7 @@ struct NeighborhoodTraverserTest
     enum { w=5,h=5,d=5 };
         
 
-    NeighborhoodTraverserTest()
+    NeighborhoodCirculator3dTest()
     : vol(IntVolume::difference_type(w,h,d)),
       sixTrav(vol.traverser_begin() + vigra::Diff3D(1,1,1)),         // set sixTrav to voxel 31=(1,1,1)
       twentySixTrav(vol.traverser_begin() + vigra::Diff3D(1,1,1))    // set twentySixTrav to voxel 31=(1,1,1)
@@ -338,7 +338,7 @@ struct NeighborhoodTraverserTest
     }
 };
 
-struct RestrictedNeighborhoodTraverserTest
+struct RestrictedNeighborhoodCirculator3dTest
 {
 
     typedef vigra::RestrictedNeighborhoodCirculator<vigra::MultiIterator<3,int>, vigra::NeighborCode3DSix> SixTraverser;
@@ -353,7 +353,7 @@ struct RestrictedNeighborhoodTraverserTest
     enum { w=3,h=3,d=3 };
         
 
-    RestrictedNeighborhoodTraverserTest()
+    RestrictedNeighborhoodCirculator3dTest()
     : vol(IntVolume::difference_type(w,h,d)),
       sixTrav(vol.traverser_begin(), TopLeftFrontBorder),
       twentySixTrav(vol.traverser_begin(), TopLeftFrontBorder)
@@ -2301,26 +2301,26 @@ struct RestrictedNeighborhoodTraverserTest
     }
 };
 
-struct NeighborhoodTraverserTestSuite
+struct NeighborhoodCirculator3dTestSuite
 : public vigra::test_suite
 {
-    NeighborhoodTraverserTestSuite()
+    NeighborhoodCirculator3dTestSuite()
     : vigra::test_suite("NeighborhoodTraverserTestSuite")
     {
-        add( testCase( &NeighborhoodTraverserTest::testInit));
-        add( testCase( &NeighborhoodTraverserTest::testSixTraverserForward));
-        add( testCase( &NeighborhoodTraverserTest::testSixTraverserBackward));
-        add( testCase( &NeighborhoodTraverserTest::testTwentySixTraverserForward));
-        add( testCase( &NeighborhoodTraverserTest::testTwentySixTraverserBackward));
-        add( testCase( &NeighborhoodTraverserTest::testIsDiagonal));
-        add( testCase( &NeighborhoodTraverserTest::testEquality));
-        add( testCase( &NeighborhoodTraverserTest::testTurning));
-        add( testCase( &NeighborhoodTraverserTest::testMoving));
-        add( testCase( &NeighborhoodTraverserTest::testMiscellaneous));
+        add( testCase( &NeighborhoodCirculator3dTest::testInit));
+        add( testCase( &NeighborhoodCirculator3dTest::testSixTraverserForward));
+        add( testCase( &NeighborhoodCirculator3dTest::testSixTraverserBackward));
+        add( testCase( &NeighborhoodCirculator3dTest::testTwentySixTraverserForward));
+        add( testCase( &NeighborhoodCirculator3dTest::testTwentySixTraverserBackward));
+        add( testCase( &NeighborhoodCirculator3dTest::testIsDiagonal));
+        add( testCase( &NeighborhoodCirculator3dTest::testEquality));
+        add( testCase( &NeighborhoodCirculator3dTest::testTurning));
+        add( testCase( &NeighborhoodCirculator3dTest::testMoving));
+        add( testCase( &NeighborhoodCirculator3dTest::testMiscellaneous));
 
-        add( testCase( &RestrictedNeighborhoodTraverserTest::testInit));
-        add( testCase( &RestrictedNeighborhoodTraverserTest::testBordersSix));
-        add( testCase( &RestrictedNeighborhoodTraverserTest::testBordersTwentySix));
+        add( testCase( &RestrictedNeighborhoodCirculator3dTest::testInit));
+        add( testCase( &RestrictedNeighborhoodCirculator3dTest::testBordersSix));
+        add( testCase( &RestrictedNeighborhoodCirculator3dTest::testBordersTwentySix));
     }
 };
 
