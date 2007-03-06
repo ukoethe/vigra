@@ -97,20 +97,6 @@ enum AtImageBorder
         BottomLeftRearBorder   = BottomBorder | LeftBorder  | RearBorder,     //42
         BottomRightRearBorder  = BottomBorder | RightBorder | RearBorder      //41
 };
-#if 0
-enum AtImageBorder
-{
-    NotAtBorder       = 0,     ///< &nbsp;
-    RightBorder       = 1,     ///< &nbsp;
-    LeftBorder        = 2,     ///< &nbsp;
-    TopBorder         = 4,     ///< &nbsp;
-    BottomBorder      = 8,     ///< &nbsp;
-    TopRightBorder    = TopBorder    | RightBorder,    ///< &nbsp;
-    TopLeftBorder     = TopBorder    | LeftBorder,     ///< &nbsp;
-    BottomLeftBorder  = BottomBorder | LeftBorder,     ///< &nbsp;
-    BottomRightBorder = BottomBorder | RightBorder     ///< &nbsp;
-};
-#endif /* #if 0 */
 
 
 /** \brief Find out whether a point is at the image border.
@@ -921,11 +907,6 @@ public:
         */
     Direction opposite() const
     {
-
-#if 0
-        return static_cast<Direction>((direction_ + NEIGHBORCODE::West) % NEIGHBORCODE::DirectionCount);
-#endif /* #if 0 */
-
         return static_cast<Direction>((NEIGHBORCODE::OppositeDirPrefix*direction_ + NEIGHBORCODE::OppositeOffset) % NEIGHBORCODE::DirectionCount);
     }
 
@@ -1014,10 +995,6 @@ class NeighborhoodCirculator : private IMAGEITERATOR
 {
     typedef NeighborOffsetCirculator<NEIGHBORCODE> NEIGHBOROFFSETCIRCULATOR;
 
-#if 0
-    typedef NeighborOffsetTraverser<NEIGHBORCODE> NEIGHBOROFFSETCIRCULATOR;
-#endif /* #if 0 */
-
 
 public:
         /** type of the underlying image iterator
@@ -1043,10 +1020,6 @@ public:
         /** the circulator's index reference type (return type of <TT>circ[n]</TT>)
         */
 
-#if 0
-    typedef typename IMAGEITERATOR::index_reference index_reference;
-#endif /* #if 0 */
-
     typedef reference index_reference;
 
         /** the circulator's pointer type (return type of <TT>operator-></TT>)
@@ -1065,11 +1038,6 @@ public:
             at the given direction <tt>d</tt>.
         */
     NeighborhoodCirculator(IMAGEITERATOR const & center = IMAGEITERATOR(),
-
-#if 0
-                           Direction d = NEIGHBOROFFSETCIRCULATOR::East)
-#endif /* #if 0 */
-
                            Direction d = NEIGHBOROFFSETCIRCULATOR::InitialDirection)
         : IMAGEITERATOR(center), neighborCode_(d)
     {
