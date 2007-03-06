@@ -24,6 +24,9 @@ SUBDIRS = $(QUICKSUBDIRS) \
         voxelneighborhood \
         volumelabeling \
         watersheds3d \
+        multidistance \
+        multimorphology \
+        seededRegionGrowing3d \
         impex 
 
 all:
