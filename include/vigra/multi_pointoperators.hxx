@@ -187,6 +187,52 @@ initMultiArray(triple<Iterator, Shape, Accessor> const & s, VALUETYPE v)
 {
     initMultiArray(s.first, s.second, s.third, v);
 }
+
+/********************************************************/
+/*                                                      */
+/*                    initVolumeBorder                  */
+/*                                                      */
+/********************************************************/
+
+/** \brief Write value to the specified border voxels in the array.
+
+   This is a simple port of <TT>initImageBorder</TT> to 3d for the 
+   Seeded Region Growing algorithm
+
+*/
+template <class Iterator, class Diff_type, class Accessor, class VALUETYPE>
+inline 
+void
+initVolumeBorder(Iterator upperleft, Diff_type shape, 
+                Accessor a,  int border_width, VALUETYPE v)
+{
+    int w = shape[0]; 
+    int h = shape[1]; 
+    int d = shape[2]; 
+    
+    int hb = (border_width > h) ? h : border_width;
+    int wb = (border_width > w) ? w : border_width;
+    int db = (border_width > d) ? d : border_width;
+    
+    initMultiArray(upperleft, Diff_type(w,hb,d), a, v);
+    initMultiArray(upperleft, Diff_type(wb,h,d), a, v);
+    
+    initMultiArray(upperleft+Diff_type(0,h-hb,0), Diff_type(w,hb,d), a, v);
+    initMultiArray(upperleft+Diff_type(w-wb,0,0), Diff_type(wb,h,d), a, v);
+    
+    initMultiArray(upperleft, Diff_type(w,h,db), a, v);
+    initMultiArray(upperleft+Diff_type(0,0,d-db), Diff_type(w,h,db), a, v);
+}
+    
+template <class Iterator, class Diff_type, class Accessor, class VALUETYPE>
+inline 
+void
+initVolumeBorder(triple<Iterator, Diff_type, Accessor> img, 
+                int border_width, VALUETYPE v)
+{
+    initVolumeBorder(img.first, img.second, img.third, border_width, v);
+}
+
     
 /********************************************************/
 /*                                                      */
