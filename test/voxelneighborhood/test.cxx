@@ -2326,7 +2326,7 @@ struct NeighborhoodCirculator3dTestSuite
 
 int main()
 {
-    NeighborhoodTraverserTestSuite test;
+    NeighborhoodCirculator3dTestSuite test;
 
     int failed = test.run();
 
