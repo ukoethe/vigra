@@ -37,8 +37,8 @@
 #ifndef VIGRA_VOXELNEIGHBORHOOD_HXX
 #define VIGRA_VOXELNEIGHBORHOOD_HXX
 
-#include "vigra/tinyvector.hxx"
-#include "vigra/pixelneighborhood.hxx"
+#include "tinyvector.hxx"
+#include "pixelneighborhood.hxx"
 
 namespace vigra {
     

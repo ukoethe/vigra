@@ -38,8 +38,8 @@
 #define VIGRA_LABELVOLUME_HXX
 
 
-#include "vigra/voxelneighborhood.hxx"
-#include "vigra/multi_array.hxx"
+#include "voxelneighborhood.hxx"
+#include "multi_array.hxx"
 
 namespace vigra{
 
