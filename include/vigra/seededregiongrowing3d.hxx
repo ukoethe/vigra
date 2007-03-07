@@ -330,7 +330,7 @@ void seededRegionGrowing3d(SrcImageIterator srcul, Diff_type shape,
     MultiIterator<3,int> iry, irx, irz;
 
     //initImageBorder(destImageRange(regions), 1, SRGWatershedLabel);
-    initVolumeBorder(destMultiArrayRange(regions), 1, SRGWatershedLabel); 
+    initMultiArrayBorder(destMultiArrayRange(regions), 1, SRGWatershedLabel); 
     
     copyMultiArray(seedsul, Diff_type(w,h,d), aseeds, ir, AccessorTraits<int>::default_accessor()/* vigra::StandardValueAccessor<int>*/);
 

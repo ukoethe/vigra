@@ -1,7 +1,7 @@
 //-- -*- c++ -*-
 /************************************************************************/
 /*                                                                      */
-/*               Copyright 2003 by Ullrich Koethe                       */
+/*      Copyright 2003 by Ullrich Koethe, B. Seppke, F. Heinrich        */
 /*       Cognitive Systems Group, University of Hamburg, Germany        */
 /*                                                                      */
 /*    This file is part of the VIGRA computer vision library.           */
@@ -190,50 +190,42 @@ initMultiArray(triple<Iterator, Shape, Accessor> const & s, VALUETYPE v)
 
 /********************************************************/
 /*                                                      */
-/*                    initVolumeBorder                  */
+/*                  initMultiArrayBorder                */
 /*                                                      */
 /********************************************************/
 
-/** \brief Write value to the specified border voxels in the array.
+/** \brief Write value to the specified border values in the array.
 
-   This is a simple port of <TT>initImageBorder</TT> to 3d for the 
-   Seeded Region Growing algorithm
-
-*/
-template <class Iterator, class Diff_type, class Accessor, class VALUETYPE>
-inline 
-void
-initVolumeBorder(Iterator upperleft, Diff_type shape, 
-                Accessor a,  int border_width, VALUETYPE v)
+*/template <class Iterator, class Diff_type, class Accessor, class VALUETYPE>
+inline void initMultiArrayBorder( Iterator upperleft, Diff_type shape, 
+                                  Accessor a,  int border_width, VALUETYPE v)
 {
-    int w = shape[0]; 
-    int h = shape[1]; 
-    int d = shape[2]; 
-    
-    int hb = (border_width > h) ? h : border_width;
-    int wb = (border_width > w) ? w : border_width;
-    int db = (border_width > d) ? d : border_width;
-    
-    initMultiArray(upperleft, Diff_type(w,hb,d), a, v);
-    initMultiArray(upperleft, Diff_type(wb,h,d), a, v);
-    
-    initMultiArray(upperleft+Diff_type(0,h-hb,0), Diff_type(w,hb,d), a, v);
-    initMultiArray(upperleft+Diff_type(w-wb,0,0), Diff_type(wb,h,d), a, v);
-    
-    initMultiArray(upperleft, Diff_type(w,h,db), a, v);
-    initMultiArray(upperleft+Diff_type(0,0,d-db), Diff_type(w,h,db), a, v);
+    Diff_type border(shape);
+    for(unsigned int dim=0; dim<shape.size(); dim++){
+        border[dim] = (border_width > shape[dim]) ? shape[dim] : border_width;
+    }
+
+    for(unsigned int dim=0; dim<shape.size(); dim++){
+        Diff_type  start(shape),
+                   offset(shape);
+        start = start-shape;
+        offset[dim]=border[dim];
+
+        initMultiArray(upperleft+start, offset, a, v);
+ 
+        start[dim]=shape[dim]-border[dim];
+        initMultiArray(upperleft+start, offset, a, v);
+    }
 }
     
 template <class Iterator, class Diff_type, class Accessor, class VALUETYPE>
-inline 
-void
-initVolumeBorder(triple<Iterator, Diff_type, Accessor> img, 
-                int border_width, VALUETYPE v)
+inline void initMultiArrayBorder( triple<Iterator, Diff_type, Accessor> multiArray, 
+                                  int border_width, VALUETYPE v)
 {
-    initVolumeBorder(img.first, img.second, img.third, border_width, v);
+    initMultiArrayBorder(multiArray.first, multiArray.second, multiArray.third, border_width, v);
 }
 
-    
+
 /********************************************************/
 /*                                                      */
 /*                    copyMultiArray                    */
@@ -1626,7 +1618,7 @@ inspectTwoMultiArrays(triple<Iterator1, Shape, Accessor1> const & s1,
     
 //@}
 
-}	//-- namespace vigra
+}  //-- namespace vigra
 
 
-#endif	//-- VIGRA_MULTI_POINTOPERATORS_H
+#endif  //-- VIGRA_MULTI_POINTOPERATORS_H
