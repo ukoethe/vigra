@@ -39,7 +39,7 @@
 #include <cmath>
 #include "unittest.hxx"
 
-#include "seededregiongrowing3d.hxx"
+#include "vigra/seededregiongrowing3d.hxx"
 
 using namespace vigra;
 
