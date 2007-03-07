@@ -102,7 +102,7 @@ void distParabola(SrcIterator is, SrcIterator iend, SrcAccessor sa,
 
         // If sigma is 1 (common case) avoid float multiplication here.
         if(nosigma)
-            y_dash = (*is - _stack.back().second) - delta_y*delta_y;
+            y_dash = (int)(*is - _stack.back().second) - delta_y*delta_y;
         else
             y_dash = (int)(sigma * (*is - _stack.back().second)) - delta_y*delta_y;
         y_dash = y_dash / (delta_y + delta_y);
@@ -169,7 +169,7 @@ void distParabola(SrcIterator is, SrcIterator iend, SrcAccessor sa,
         }
   */      
         delta_y = current - (*it).first;
-        distance = delta_y * delta_y + (*it).second;
+        distance = delta_y * delta_y + (int)(*it).second;
         *id = distance;
     }
 
