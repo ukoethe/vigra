@@ -366,6 +366,98 @@ struct MultiArrayPointoperatorsTest
                 for(x=0; x<img.shape(0); ++x)
                     shouldEqual(res(x,y,z), 3.0*img(x,y,z));
     }
+    
+    void testInitMultiArrayBorder(){
+        typedef vigra::MultiArray<1,int> IntLine;
+        typedef vigra::MultiArray<2,int> IntImage;
+        typedef vigra::MultiArray<3,int> IntVolume;
+        
+        const int desired_vol[] ={  0, 0, 0, 0, 0, 0,
+                                    0, 0, 0, 0, 0, 0,
+                                    0, 0, 0, 0, 0, 0,
+                                    0, 0, 0, 0, 0, 0,
+                                    0, 0, 0, 0, 0, 0,
+                                    0, 0, 0, 0, 0, 0,
+
+                                    0, 0, 0, 0, 0, 0,
+                                    0, 0, 0, 0, 0, 0,
+                                    0, 0, 0, 0, 0, 0,
+                                    0, 0, 0, 0, 0, 0,
+                                    0, 0, 0, 0, 0, 0,
+                                    0, 0, 0, 0, 0, 0,
+
+                                    0, 0, 0, 0, 0, 0,
+                                    0, 0, 0, 0, 0, 0,
+                                    0, 0, 5, 5, 0, 0,
+                                    0, 0, 5, 5, 0, 0,
+                                    0, 0, 0, 0, 0, 0,
+                                    0, 0, 0, 0, 0, 0,
+
+                                    0, 0, 0, 0, 0, 0,
+                                    0, 0, 0, 0, 0, 0,
+                                    0, 0, 5, 5, 0, 0,
+                                    0, 0, 5, 5, 0, 0,
+                                    0, 0, 0, 0, 0, 0,
+                                    0, 0, 0, 0, 0, 0,
+
+                                    0, 0, 0, 0, 0, 0,
+                                    0, 0, 0, 0, 0, 0,
+                                    0, 0, 0, 0, 0, 0,
+                                    0, 0, 0, 0, 0, 0,
+                                    0, 0, 0, 0, 0, 0,
+                                    0, 0, 0, 0, 0, 0,
+
+                                    0, 0, 0, 0, 0, 0,
+                                    0, 0, 0, 0, 0, 0,
+                                    0, 0, 0, 0, 0, 0,
+                                    0, 0, 0, 0, 0, 0,
+                                    0, 0, 0, 0, 0, 0,
+                                    0, 0, 0, 0, 0, 0};
+
+        const int desired_img[] ={  0, 0, 0, 0, 0, 0,
+                                    0, 5, 5, 5, 5, 0,
+                                    0, 5, 5, 5, 5, 0,
+                                    0, 5, 5, 5, 5, 0,
+                                    0, 5, 5, 5, 5, 0,
+                                    0, 0, 0, 0, 0, 0};
+
+        const int desired_lin[] ={  0, 0, 0, 5, 0, 0, 0 };
+
+        const int desired_vol2[] ={  0, 0,
+                                     0, 0,
+
+                                     0, 0, 
+                                     0, 0};
+
+        IntVolume vol(IntVolume::difference_type(6,6,6));
+        
+        for(IntVolume::iterator iter=vol.begin(); iter!=vol.end(); ++iter)
+            *iter=5;
+        initMultiArrayBorder(destMultiArrayRange(vol),2,0);
+        shouldEqualSequence(vol.begin(), vol.end(), desired_vol);
+
+        IntImage img(IntImage::difference_type(6,6));
+        
+        for(IntImage::iterator iter=img.begin(); iter!=img.end(); ++iter)
+            *iter=5;
+        initMultiArrayBorder(destMultiArrayRange(img),1,0);
+        shouldEqualSequence(img.begin(), img.end(), desired_img);
+
+        IntLine lin(IntLine::difference_type(7));
+        
+        for(IntLine::iterator iter=lin.begin(); iter!=lin.end(); ++iter)
+            *iter=5;
+        initMultiArrayBorder(destMultiArrayRange(lin),3,0);
+        shouldEqualSequence(lin.begin(), lin.end(), desired_lin);
+
+        IntVolume vol2(IntVolume::difference_type(2,2,2));
+        
+        for(IntVolume::iterator iter=vol2.begin(); iter!=vol2.end(); ++iter)
+            *iter=5;
+        initMultiArrayBorder(destMultiArrayRange(vol2),9,0);
+        shouldEqualSequence(vol2.begin(), vol2.end(), desired_vol2);
+
+    }
 };
 
 struct MultiArraySeparableConvolutionTest
@@ -734,6 +826,7 @@ struct MultiArrayPointOperatorsTestSuite
         add( testCase( &MultiArrayPointoperatorsTest::testCombine2OuterReduce ) );
         add( testCase( &MultiArrayPointoperatorsTest::testCombine2InnerReduce ) );
         add( testCase( &MultiArrayPointoperatorsTest::testCombine3 ) );
+        add( testCase( &MultiArrayPointoperatorsTest::testInitMultiArrayBorder ) );
     }
 }; // struct MultiArrayPointOperatorsTestSuite
 
