@@ -118,7 +118,7 @@ struct MultiMorphologyTest
         }
     }
     
-    void erosionTest()
+    void binaryErosionTest()
     {
         IntImage res(img);
         int maxValue = NumericTraits<int>::max();
@@ -136,7 +136,7 @@ struct MultiMorphologyTest
         shouldEqualSequence(res.begin(), res.end(), desired);
     }
 
-    void erosionTest2()
+    void binaryErosionTest2()
     {
         IntImage res(img2);
         int maxValue = NumericTraits<int>::max();
@@ -154,7 +154,7 @@ struct MultiMorphologyTest
         shouldEqualSequence(res.begin(), res.end(), desired);
     }
 
-    void erosionTest1D()
+    void binaryErosionTest1D()
     {
         IntImage res(lin);
         int maxValue = NumericTraits<int>::max();
@@ -164,7 +164,7 @@ struct MultiMorphologyTest
         shouldEqualSequence(res.begin(), res.end(), desired);
     }
 
-    void erosionTest3D()
+    void binaryErosionTest3D()
     {
         IntVolume res(vol);
         int m = NumericTraits<int>::max();
@@ -203,6 +203,27 @@ struct MultiMorphologyTest
         shouldEqualSequence(res.begin(), res.end(), desired);
     }
     
+    void grayErosionTest2D()
+    {
+        IntImage res(img), cmp(img), res_cmp(img);
+        
+        //erosion on original image
+        multiGrayscaleErosion(srcMultiArrayRange(img), destMultiArray(res), 1);
+        
+        //create comparable result = result+2 for every pixel
+        for(IntImage::iterator iter=res.begin(); iter!=res.end(); ++iter, ++i){
+            *iter+=2;
+        }
+        
+        //create compare image = img+2 for every pixel
+        for(IntImage::iterator iter=cmp.begin(); iter!=cmp.end(); ++iter, ++i){
+            *iter+=2;
+        }
+        //erosion on compare image (image+2)
+        multiGrayscaleErosion(srcMultiArrayRange(img), destMultiArray(res_cmp), 1);
+        
+        shouldEqualSequence(res.begin(), res.end(), res_cmp.begin());
+    }
     
     IntImage img, img2, lin;
     IntVolume vol;
@@ -215,10 +236,11 @@ struct MorphologyTestSuite
     MorphologyTestSuite()
     : vigra::test_suite("MorphologyTestSuite")
     {
-        add( testCase( &MultiMorphologyTest::erosionTest));
-        add( testCase( &MultiMorphologyTest::erosionTest2));
-        add( testCase( &MultiMorphologyTest::erosionTest1D));
-        add( testCase( &MultiMorphologyTest::erosionTest3D));
+        add( testCase( &MultiMorphologyTest::binaryErosionTest));
+        add( testCase( &MultiMorphologyTest::binaryErosionTest2));
+        add( testCase( &MultiMorphologyTest::binaryErosionTest1D));
+        add( testCase( &MultiMorphologyTest::binaryErosionTest3D));
+        add( testCase( &MultiMorphologyTest::grayErosionTest2D));
     }
 };
 
