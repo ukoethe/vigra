@@ -374,7 +374,7 @@ multiGrayscaleErosion( SrcIterator s, SrcShape const & shape, SrcAccessor src,
     typedef typename NumericTraits<typename DestAccessor::value_type>::Promote TmpType;
     DestType MaxValue = NumericTraits<DestType>::max();
     enum { N = 1 + SrcIterator::level };
-        
+    
     // temporay array to hold the current line to enable in-place operation
     ArrayVector<TmpType> tmp( shape[0] );
         
@@ -384,7 +384,9 @@ multiGrayscaleErosion( SrcIterator s, SrcShape const & shape, SrcAccessor src,
     int MaxDim = 0; 
     for( int i=0; i<N; i++)
         if(MaxDim < shape[i]) MaxDim = shape[i];
-   
+    
+    using namespace vigra::functor;
+    
     // Allocate a new temporary array if the distances squared wouldn't fit
     if(N*MaxDim*MaxDim > MaxValue)
     {
