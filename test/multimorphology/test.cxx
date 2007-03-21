@@ -205,22 +205,23 @@ struct MultiMorphologyTest
     
     void grayErosionTest2D()
     {
-        IntImage res(img), cmp(img), res_cmp(img);
+        typedef vigra::MultiArray<2,float> FloatImage;
+        FloatImage in(img), res(img), res_cmp(img);
         
         //erosion on original image
-        multiGrayscaleErosion(srcMultiArrayRange(img), destMultiArray(res), 1);
+        multiGrayscaleErosion(srcMultiArrayRange(in), destMultiArray(res), 1);
         
         //create comparable result = result+2 for every pixel
-        for(IntImage::iterator iter=res.begin(); iter!=res.end(); ++iter){
-            *iter+=2;
+        for(FloatImage::iterator iter=res.begin(); iter!=res.end(); ++iter){
+            *iter+=2.9;
         }
         
         //create compare image = img+2 for every pixel
-        for(IntImage::iterator iter=cmp.begin(); iter!=cmp.end(); ++iter){
-            *iter+=2;
+        for(FloatImage::iterator iter=in.begin(); iter!=in.end(); ++iter){
+            *iter+=2.9;
         }
         //erosion on compare image (image+2)
-        multiGrayscaleErosion(srcMultiArrayRange(img), destMultiArray(res_cmp), 1);
+        multiGrayscaleErosion(srcMultiArrayRange(in), destMultiArray(res_cmp), 1);
         
         shouldEqualSequence(res.begin(), res.end(), res_cmp.begin());
     }
