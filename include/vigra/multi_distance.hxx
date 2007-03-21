@@ -70,7 +70,7 @@ void distParabola(SrcIterator is, SrcIterator iend, SrcAccessor sa,
                               DestIterator id, DestAccessor da, float sigma )
 {
     // We assume that the data in the input is distance squared and treat it as such
-    int w = std::distance( is, iend );
+    int w = iend - is;
     
     typedef typename NumericTraits<typename DestAccessor::value_type>::ValueType ValueType;
     typedef typename NumericTraits<typename DestAccessor::value_type>::RealPromote SumType;
@@ -83,7 +83,7 @@ void distParabola(SrcIterator is, SrcIterator iend, SrcAccessor sa,
     std::vector<influence> _stack;
 
     SrcIterator ibegin = is;
-    _stack.push_back(influence(0, *is, w));
+    _stack.push_back(influence(0, sa(is), w));
     
     ++is;
     int current = 1;
@@ -102,9 +102,9 @@ void distParabola(SrcIterator is, SrcIterator iend, SrcAccessor sa,
 
         // If sigma is 1 (common case) avoid float multiplication here.
         if(nosigma)
-            y_dash = (int)(*is - _stack.back().second) - delta_y*delta_y;
+            y_dash = (int)(sa(is) - _stack.back().second) - delta_y*delta_y;
         else
-            y_dash = (int)(sigma * (*is - _stack.back().second)) - delta_y*delta_y;
+            y_dash = (int)(sigma * (sa(is) - _stack.back().second)) - delta_y*delta_y;
         y_dash = y_dash / (delta_y + delta_y);
         y_dash += y2;
 
@@ -116,7 +116,7 @@ void distParabola(SrcIterator is, SrcIterator iend, SrcAccessor sa,
                 
                 _stack.back().third = y_dash; 
                 
-                _stack.push_back(influence(current, *is, w));
+                _stack.push_back(influence(current, sa(is), w));
             }
 
             // CASE 1 -- This parabola is never active
@@ -135,7 +135,7 @@ void distParabola(SrcIterator is, SrcIterator iend, SrcAccessor sa,
             
             if(_stack.empty())  // This row influences all previous rows.
             {
-                _stack.push_back(influence(current, *is, w));
+                _stack.push_back(influence(current, sa(is), w));
 
                 ++is;
                 ++current;
@@ -150,7 +150,7 @@ void distParabola(SrcIterator is, SrcIterator iend, SrcAccessor sa,
 
     typename std::vector<influence>::iterator it = _stack.begin();
 
-    int distance = 0;   // The distance squared
+    ValueType distance = 0;   // The distance squared
     current = 0;
     delta_y = 0;
     is = ibegin;
@@ -169,7 +169,7 @@ void distParabola(SrcIterator is, SrcIterator iend, SrcAccessor sa,
         }
   */      
         delta_y = current - (*it).first;
-        distance = delta_y * delta_y + (int)(*it).second;
+        distance = delta_y * delta_y + (*it).second;
         *id = distance;
     }
 
