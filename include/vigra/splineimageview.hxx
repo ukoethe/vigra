@@ -82,18 +82,18 @@ namespace vigra {
     ... // fill img
     
     // construct spline view for quadratic interpolation
-    SplineImageView<2, double> spi2(img);
+    SplineImageView<2, double> spi2(srcImageRange(img));
     
     double x = ..., y = ...;
     double v2 = spi2(x, y);
     
     // construct spline view for linear interpolation
-    SplineImageView<1, UInt32> spi1(img);
+    SplineImageView<1, UInt32> spi1(srcImageRange(img));
     
     UInt32 v1 = spi1(x, y);    
     
     FixedPoint<16, 15> fx(...), fy(...);
-    UInt32 vf = spi1.unchecked(fx, fy);
+    UInt32 vf = spi1.unchecked(fx, fy); // caller is sure that (fx, fy) are valid coordinates
     \endcode
 */
 template <int ORDER, class VALUETYPE>
