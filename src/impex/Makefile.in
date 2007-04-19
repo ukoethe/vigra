@@ -27,7 +27,7 @@ $(TARGET): $(OBJS)
 	$(LINKCXXLIB) -version-info 2:$(SHAREDLIB_VERSION):0 -o $(TARGET) $(OBJS) $(IMPEX_DEPLIBS)
 
 install: all
-	$(INSTALL) -d $(libdir)
+	$(INSTALL_MKDIR) $(libdir)
 	$(LIBINSTALL) $(TARGET) $(libdir)
 
 vcinstall: vigraimpex.lib

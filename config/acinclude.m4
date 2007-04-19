@@ -517,7 +517,7 @@ dnl example:
 dnl     VIGRA_FIND_PATH(CPPFLAGS, INCLUDEPATH, [-I\(.*\)])
 AC_DEFUN([VIGRA_FIND_PATH],
 [
-for VIGRA_FIND_PATH_i in $[$1];  do 
+for VIGRA_FIND_PATH_i in $[$1];  do
     VIGRA_FIND_PATH_r=`expr "$VIGRA_FIND_PATH_i" : "$3"`
     if test -n "$VIGRA_FIND_PATH_r"; then
         [$2]="$[$2] $VIGRA_FIND_PATH_r"
@@ -543,7 +543,7 @@ AC_DEFUN([VIGRA_DECLARE_PACKAGE],
   --without-$1
   --with-$1lib=dir
   --with-$1inc=dir
-      $2. 
+      $2.
       default: --with-$1=$3
       if --with-$1 or --with-$1=yes is given: $1 package files will be
          searched for by 'pkg-config' and in some standard directories (the default).
@@ -561,7 +561,7 @@ AC_DEFUN([VIGRA_DECLARE_PACKAGE],
         with_[$1]="no"
         with_[$1]lib=""
         with_[$1]inc=""
-    else 
+    else
         # here, the main flag is either "yes" or a path
         # treat "yes" in the auxilliary flags as ""
         if test "x$with_[$1]lib" = "xyes"; then
@@ -644,7 +644,7 @@ AC_DEFUN([VIGRA_FIND_LIBRARY_EXPLICIT],
     SAVELIBS="$LIBS"
     AC_LANG_SAVE
     AC_LANG_CPLUSPLUS
-         
+
     # $1 is the package, $2 the library name, $3 the path
     if test "x$3" != "x" ; then
         LDFLAGS="-L$3 $SAVELDFLAGS"
@@ -680,7 +680,7 @@ AC_DEFUN([VIGRA_FIND_INCLUDE_EXPLICIT],
     SAVECPPFLAGS="$CPPFLAGS"
     AC_LANG_SAVE
     AC_LANG_CPLUSPLUS
-           
+
     # $1 is the package, $2 the include name, $3 the path
     if test "x$3" != "x" ; then
         CPPFLAGS="-I$3 $SAVECPPFLAGS"
@@ -707,7 +707,7 @@ AC_DEFUN([VIGRA_FIND_INCLUDE_EXPLICIT],
 
 dnl VIGRA_FIND_LIBRARY(packageName, libraryName)
 dnl search for a library in a number of paths
-dnl if $with_packageName is "search" the following paths are tried 
+dnl if $with_packageName is "search" the following paths are tried
 dnl              "", all in $LIBSEARCHPATH, /usr/local/lib/packageName, /usr/local/lib
 dnl if $with_packageName is "explicit" the path in $with_packageNamelib is tried
 dnl on success, $with_packageNamelib is either "in default path" or contains the path
@@ -721,13 +721,13 @@ AC_DEFUN([VIGRA_FIND_LIBRARY],
     # if we got an explicit path, that's the only one we check
     if test "x$with_[$1]" = "xexplicit" -a "x$with_[$1]lib" != "x"; then
         VIGRA_FIND_LIBRARY_EXPLICIT($1, $2, "$with_[$1]lib")
-    else    
-        # otherwise check whether the library is found without explicit path 
+    else
+        # otherwise check whether the library is found without explicit path
         # specification (e.g. because it is in /usr/lib)
         if test "x$with_[$1]lib" = "x" ; then
             VIGRA_FIND_LIBRARY_EXPLICIT($1, $2, "")
         fi
-        # if this didn't work check whether the library path was in the 
+        # if this didn't work check whether the library path was in the
         # original $LDFLAGS or a few standard directories
         if test "x$with_[$1]lib" = "x" ; then
             for i in $LIBSEARCHPATH /usr/local/lib/[$1] /usr/local/lib; do
@@ -751,7 +751,7 @@ AC_DEFUN([VIGRA_FIND_LIBRARY],
 
 dnl VIGRA_FIND_INCLUDE(packageName, includeName, pathPostfix)
 dnl search for an include in a number of paths
-dnl if $with_packageName is "search" the following paths are tried 
+dnl if $with_packageName is "search" the following paths are tried
 dnl              "", include directories in the same directory tree as $with_packageNamelib,
 dnl              all in $LIBSEARCHPATH, /usr/local/include/packageName, /usr/local/include
 dnl if $with_packageName is "explicit" the path in $with_packageNamenc is tried
@@ -762,17 +762,17 @@ dnl     VIGRA_FIND_INCLUDE(jpeg, jpeglib.h, )
 AC_DEFUN([VIGRA_FIND_INCLUDE],
 [
     AC_MSG_CHECKING([for $2 ])
-    
+
     # first check whether we got an explicit path
     if test "x$with_[$1]" = "xexplicit" -a "x$with_[$1]inc" != "x"; then
         VIGRA_FIND_INCLUDE_EXPLICIT($1, $2, "$with_[$1]inc")
-    else    
-        # otherwise check whether the library is found without explicit path 
+    else
+        # otherwise check whether the library is found without explicit path
         # specification (e.g. because it is in /usr/lib)
         if test "x$with_[$1]inc" = "x" ; then
             VIGRA_FIND_INCLUDE_EXPLICIT($1, $2, "")
         fi
-        # if this didn't work check whether the library path is in the 
+        # if this didn't work check whether the library path is in the
         # same tree as the library path, or among the directories in the
         # original $CPPFLAGS or a few standard directories
         if test -n "$3"; then
@@ -789,7 +789,7 @@ AC_DEFUN([VIGRA_FIND_INCLUDE],
             j=`expr "$i" : "\(.*\)/"`
             i=$j
         done
-        if test "x$with_[$1]inc" = "x" ; then            
+        if test "x$with_[$1]inc" = "x" ; then
             for i in $EXTRAINCSEARCHPATH $INCSEARCHPATH /usr/local/include/[$1] /usr/local/include; do
                  VIGRA_FIND_INCLUDE_EXPLICIT($1, $2, "$i$PATHPOSTFIX")
                 if test "x$with_[$1]inc" != "x" ; then break; fi
@@ -840,10 +840,13 @@ AC_DEFUN([VIGRA_PROG_INSTALL],
   test -n "$INSTALL" && vigra_save_INSTALL_given=$INSTALL
   AC_PROG_INSTALL
 
+  INSTALL_MKDIR="$INSTALL -d"
+  AC_SUBST(INSTALL_MKDIR)
+
   if test -z "$vigra_save_INSTALL_given" ; then
     # user hasn't overwritten INSTALL, autoconf found one for us
     # now we'll test if it supports the -p flag
-    AC_MSG_CHECKING(for -p flag to install)
+    AC_MSG_CHECKING(whether $INSTALL accepts the -p flag)
     rm -f confinst.$$.* > /dev/null 2>&1
     echo "Testtest" > confinst.$$.orig
     ac_res=no
