@@ -403,7 +403,7 @@ The functions need a suitable 2D kernel to operate.
                          0.25,  0.0, -0.25,
                          0.125, 0.0, -0.125;
     sobel.setBorderTreatment(vigra::BORDER_TREATMENT_REFLECT);
-    
+
     vigra::convolveImage(srcImageRange(src), destImage(dest), kernel2d(sobel));
     \endcode
 
@@ -909,7 +909,7 @@ normalizedConvolveImage(SrcIterator src_ul, SrcIterator src_lr, SrcAccessor src_
                 typename MaskIterator::row_iterator xxm = yym.rowIterator();
                 typename KernelIterator::row_iterator xk  = yk.rowIterator();
 
-                for(xx=0; xxs < xxend; ++xxs.x, --xk.x, ++xxm.x)
+                for(xx=0; xxs < xxend; ++xxs, --xk, ++xxm)
                 {
                     if(!am(xxm)) continue;
 
