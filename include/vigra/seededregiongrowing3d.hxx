@@ -80,7 +80,6 @@ public:
         int dy = location_[1] - nearest_[1];
         int dz = location_[2] - nearest_[2];
         dist_ = dx * dx + dy * dy + dz * dz;
-        
     }
 
     void set(Diff_type const & location, Diff_type const & nearest,
@@ -595,7 +594,7 @@ seededRegionGrowing3d(triple<SrcImageIterator, Shape, SrcAccessor> img1,
     seededRegionGrowing3d(img1.first, img1.second, img1.third,
                         img3.first, img3.second,
                         img4.first, img4.second,
-                        stats, -1, srgType, CompleteGrow);
+                        stats, -1, CompleteGrow);
 }
 
 
