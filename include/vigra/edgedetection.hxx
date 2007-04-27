@@ -1991,10 +1991,12 @@ void internalCannyFindEdgels3x3(Image1 const & grad,
             
             linearSolve(ml, mr, r);
 
-            Edgel edgel;        
+            Edgel edgel;
         
             // local maximum => quadratic interpolation of sub-pixel location
-            ValueType del = -r(1,0) / 2.0 / r(2,0);
+            double del = -r(1,0) / 2.0 / r(2,0);
+            if(std::fabs(del) > 1.5)  // don't move by more than about a pixel diameter
+                del = 0.0;
             edgel.x = x + c*del;
             edgel.y = y + s*del;
             edgel.strength = mag;
