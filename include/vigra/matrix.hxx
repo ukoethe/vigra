@@ -1357,7 +1357,7 @@ void pdiv(const MultiArrayView<2, T, C1> &a, const MultiArrayView<2, T, C2> &b,
 
     for(std::size_t i = 0; i < rcols; ++i) {
         for(std::size_t j = 0; j < rrows; ++j) {
-            r(j, i) = a(j, i) * b(j, i);
+            r(j, i) = a(j, i) / b(j, i);
         }
     }
 }
