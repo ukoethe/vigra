@@ -316,8 +316,7 @@ void setRangeMapping(MultiArrayView <3, T, Tag> const & volume,
                      ImageExportInfo & info, VigraTrueType /* isScalar */)
 {
     std::string pixeltype = info.getPixelType();
-    std::auto_ptr<Encoder> enc = encoder(info);
-    bool downcast = negotiatePixelType(enc->getFileType(),
+    bool downcast = negotiatePixelType(getEncoderType(info.getFileName(), info.getFileType()),
                                        TypeAsString<T>::result(), pixeltype);
 
     if(downcast)
@@ -334,8 +333,7 @@ void setRangeMapping(MultiArrayView <3, T, Tag> const & volume,
 {
     typedef typename T::calue_type SrcComponent;
     std::string pixeltype = info.getPixelType();
-    std::auto_ptr<Encoder> enc = encoder(info);
-    bool downcast = negotiatePixelType(enc->getFileType(),
+    bool downcast = negotiatePixelType(getEncoderType(info.getFileName(), info.getFileType()),
                                        TypeAsString<SrcComponent>::result(), pixeltype);
 
     if(downcast)
@@ -379,7 +377,7 @@ void exportVolume (MultiArrayView <3, T, Tag> const & volume,
                    const std::string &name_ext)
 {
     std::string name = name_base + name_ext;
-    ImageExportInfo info(name.c_str ());
+    ImageExportInfo info(name.c_str());
     detail::setRangeMapping(volume, info, typename NumericTraits<T>::isScalar());
     
     const unsigned int depth = volume.shape (2);
@@ -393,6 +391,10 @@ void exportVolume (MultiArrayView <3, T, Tag> const & volume,
         std::string name_num;
         stream >> name_num;
         std::string name = name_base + name_num + name_ext;
+        
+        if(i == 0)
+        {
+        }
 
         // generate a basic image view to the current layer
         MultiArrayView <2, T, Tag> array_view (volume.bindOuter (i));
