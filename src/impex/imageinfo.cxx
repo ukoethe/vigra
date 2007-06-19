@@ -322,7 +322,7 @@ bool isImage(char const * filename)
 // class ImageExportInfo
 
 ImageExportInfo::ImageExportInfo( const char * filename )
-    : m_filename(filename),
+    : m_filename(filename), 
       m_x_res(0), m_y_res(0),
       fromMin_(0.0), fromMax_(0.0), toMin_(0.0), toMax_(0.0)
 {}

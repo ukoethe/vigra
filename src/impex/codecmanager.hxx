@@ -81,6 +81,11 @@ namespace vigra
         getDecoder( const std::string & fileName,
                     const std::string & fileType = "undefined" ) const;
 
+        // look up encoder type from the list
+        std::string
+        getEncoderType( const std::string & fileName,
+                    const std::string & fileType = "undefined" ) const;
+
         // look up encoder from the list, then return it
         std::auto_ptr<Encoder>
         getEncoder( const std::string & fileName,

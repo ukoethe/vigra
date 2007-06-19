@@ -122,8 +122,9 @@ namespace vigra
     {
         std::map< std::string, CodecFactory * >::const_iterator result
             = factoryMap.find( filetype );
-        vigra_precondition( result != factoryMap.end(),
-        "the codec that was queried for its pixeltype does not exist" );
+        std::string message("queryCodecPixelTypes(): codec '");
+        message += filetype + "' does not exist";
+        vigra_precondition( result != factoryMap.end(), message.c_str());
 
         return result->second->getCodecDesc().pixelTypes;
     }
@@ -248,13 +249,13 @@ namespace vigra
     }
 
     // look up encoder from the list, then return it
-    std::auto_ptr<Encoder>
-    CodecManager::getEncoder( const std::string & filename,
+    std::string
+    CodecManager::getEncoderType( const std::string & filename,
                               const std::string & fType ) const
     {
         std::string fileType = fType;
-
-        if ( fileType == "undefined" ) {
+        
+        if ( fileType == "" || fileType == "undefined" ) {
             // look up the file type by the file extension
             std::string ext
                 = filename.substr( filename.find_last_of(".") + 1 );
@@ -266,6 +267,16 @@ namespace vigra
             // at this point, we have found a valid fileType
             fileType = search->second;
         }
+        
+        return fileType;
+    }
+
+    // look up encoder from the list, then return it
+    std::auto_ptr<Encoder>
+    CodecManager::getEncoder( const std::string & filename,
+                              const std::string & fType ) const
+    {
+        std::string fileType = getEncoderType(filename, fType);
 
         // return a codec factory by the file type
         std::map< std::string, CodecFactory * >::const_iterator search
@@ -284,6 +295,13 @@ namespace vigra
     getDecoder( const std::string & filename, const std::string & filetype )
     {
         return codecManager().getDecoder( filename, filetype );
+    }
+
+    // get an encoder type
+    std::string
+    getEncoderType( const std::string & filename, const std::string & filetype )
+    {
+        return codecManager().getEncoderType( filename, filetype );
     }
 
     // get an encoder
