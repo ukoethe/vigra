@@ -241,6 +241,9 @@ namespace vigra
     VIGRA_EXPORT std::auto_ptr<Encoder>
     getEncoder( const std::string &, const std::string & = "undefined" );
 
+    VIGRA_EXPORT std::string
+    getEncoderType( const std::string &, const std::string & = "undefined" );
+
     // functions to query the capabilities of certain codecs
 
     VIGRA_EXPORT std::vector<std::string> queryCodecPixelTypes( const std::string & );
