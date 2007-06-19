@@ -68,8 +68,8 @@ class VolumeImportInfo
 
     typedef TinyVector<float, 3>       Resolution;
 
-    VIGRA_EXPORT inline VolumeImportInfo(const std::string &filename);
-    VIGRA_EXPORT inline VolumeImportInfo(const std::string &baseName, const std::string &extension);
+    VIGRA_EXPORT VolumeImportInfo(const std::string &filename);
+    VIGRA_EXPORT VolumeImportInfo(const std::string &baseName, const std::string &extension);
 
     VIGRA_EXPORT size_type size() const { return size_; }
 
