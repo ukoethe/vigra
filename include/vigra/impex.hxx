@@ -594,101 +594,114 @@ namespace vigra
 
 namespace detail {
 
-    template < class SrcIterator, class SrcAccessor,
-               class DestIterator, class DestAccessor >
-    void mapScalarImageToLowerPixelType( SrcIterator sul, SrcIterator slr, SrcAccessor sget,
-                                         DestIterator dul, DestAccessor dget )
-    {
-        typedef typename SrcAccessor::value_type SrcValue;
-        typedef typename DestAccessor::value_type DestValue;
-        typedef typename NumericTraits<SrcValue>::RealPromote PromoteValue;
-
-        FindMinMax<SrcValue> minmax;
-        inspectImage( sul, slr, sget, minmax );
-        double scale = (double)NumericTraits<DestValue>::max() / (minmax.max - minmax.min) -
-                       (double)NumericTraits<DestValue>::min() / (minmax.max - minmax.min);
-        double offset = (NumericTraits<DestValue>::min() / scale) - minmax.min ;
-        transformImage( sul, slr, sget, dul, dget,
-                        linearIntensityTransform( scale, offset ) );
-    }
-
-    // export scalar images with conversion (if necessary)
+    // export scalar images without conversion
     template < class SrcIterator, class SrcAccessor, class T >
     void exportScalarImage(SrcIterator sul, SrcIterator slr, SrcAccessor sget,
-                           Encoder * enc, bool downcast, T zero)
+                           Encoder * enc, T zero)
     {
-        if (!downcast) {
-            write_band( enc, sul, slr, sget, zero );
-        } else {
-            // convert to unsigned char in the usual way
-            BasicImage<T> image(slr-sul);
-            mapScalarImageToLowerPixelType(sul, slr, sget, image.upperLeft(), image.accessor());
-            write_band( enc, image.upperLeft(),
-                        image.lowerRight(), image.accessor(), zero );
-        }
+        write_band( enc, sul, slr, sget, zero );
     }
 
-    template < class SrcIterator, class SrcAccessor,
-               class MArray>
-    void mapVectorImageToLowerPixelType( SrcIterator sul, SrcIterator slr, SrcAccessor sget,
-                                         MArray & array )
+    // export scalar images with conversion 
+    template < class SrcIterator, class SrcAccessor, class T >
+    void exportScalarImage(SrcIterator sul, SrcIterator slr, SrcAccessor sget,
+                           Encoder * enc, 
+                           const ImageExportInfo & info, 
+                           T zero)
     {
-        typedef typename SrcAccessor::value_type SrcValue;
-        typedef typename SrcValue::value_type SrcComponent;
-        typedef typename MArray::value_type DestValue;
-
-        FindMinMax<SrcComponent> minmax;
-        for(unsigned int i=0; i<sget.size(sul); ++i)
+        double fromMin, fromMax, toMin, toMax;
+        if(info.hasForcedRangeMapping())
         {
-            // FIXME dangelo - This will break with vector accessors that have a "by value" interface.
-            // use VectorComponentValueAccessor instead, since it should work in both cases, even
-            // if it might be a bit slower..
-            //VectorElementAccessor<SrcAccessor> band(i, sget);
-            VectorComponentValueAccessor<typename SrcAccessor::value_type> band(i);
-            inspectImage( sul, slr, band, minmax );
+            fromMin = info.getFromMin();
+            fromMax = info.getFromMax();
+            toMin = info.getToMin();
+            toMax = info.getToMax();
         }
-        double scale = (double)NumericTraits<DestValue>::max() / (minmax.max - minmax.min) -
-                       (double)NumericTraits<DestValue>::min() / (minmax.max - minmax.min);
-// FIXME DGSW - Original was not correct. Is this what was intended?
-//        double offset = -minmax.min + NumericTraits<DestValue>::min() / scale;
-        double offset = (NumericTraits<DestValue>::min() / scale) - minmax.min ;
-        for(unsigned int i=0; i<sget.size(sul); ++i)
+        else
         {
-            BasicImageView<DestValue> subImage = makeBasicImageView(array.bindOuter(i));
-            // FIXME dangelo: use VectorComponentValueAccessor
-            //VectorElementAccessor<SrcAccessor> band(i, sget);
-            VectorComponentValueAccessor<typename SrcAccessor::value_type> band(i);
-            transformImage( sul, slr, band, subImage.upperLeft(), subImage.accessor(),
-                            linearIntensityTransform( scale, offset ) );
+            typedef typename SrcAccessor::value_type SrcValue;
+            FindMinMax<SrcValue> minmax;
+            inspectImage( sul, slr, sget, minmax );
+            
+            fromMin = (double)minmax.min;
+            fromMax = (double)minmax.max;
+            toMin = (double)NumericTraits<T>::min();
+            toMax = (double)NumericTraits<T>::max();
         }
+        double scale = (toMax - toMin) / (fromMax - fromMin);
+        double offset = (toMin / scale) - fromMin;
+        BasicImage<T> image(slr-sul);
+        transformImage( sul, slr, sget, image.upperLeft(), image.accessor(), 
+                        linearIntensityTransform(scale, offset));
+        write_band( enc, image.upperLeft(),
+                    image.lowerRight(), image.accessor(), zero );
     }
 
-    // export vector images with conversion (if necessary)
+    // export vector images without conversion
     template < class SrcIterator, class SrcAccessor, class T >
     void exportVectorImage(SrcIterator sul, SrcIterator slr, SrcAccessor sget,
-                           Encoder * enc, bool downcast, T zero)
+                           Encoder * enc, T zero)
     {
         int bands = sget.size(sul);
         vigra_precondition(isBandNumberSupported(enc->getFileType(), bands),
            "exportImage(): file format does not support requested number of bands (color channels)");
-        if ( !downcast )
+        write_bands( enc, sul, slr, sget, zero );
+    }
+    
+    // export vector images with conversion
+    template < class SrcIterator, class SrcAccessor, class T >
+    void exportVectorImage(SrcIterator sul, SrcIterator slr, SrcAccessor sget,
+                           Encoder * enc, 
+                           const ImageExportInfo & info, 
+                           T zero)
+    {
+        unsigned int bands = sget.size(sul);
+        vigra_precondition(isBandNumberSupported(enc->getFileType(), bands),
+           "exportImage(): file format does not support requested number of bands (color channels)");
+
+        typedef typename SrcAccessor::value_type SrcValue;
+        double fromMin, fromMax, toMin, toMax;
+        if(info.hasForcedRangeMapping())
         {
-            write_bands( enc, sul, slr, sget, zero );
+            fromMin = info.getFromMin();
+            fromMax = info.getFromMax();
+            toMin = info.getToMin();
+            toMax = info.getToMax();
         }
         else
         {
-            // convert to unsigned char in the usual way
-            int w = slr.x - sul.x;
-            int h = slr.y - sul.y;
+            typedef typename SrcValue::value_type SrcComponent;
 
-            typedef vigra::MultiArray<3, T> MArray;
-            MArray array(typename MArray::difference_type(w, h, bands));
-
-            mapVectorImageToLowerPixelType(sul, slr, sget, array);
-
-            write_bands( enc, array, zero );
+            FindMinMax<SrcComponent> minmax;
+            for(unsigned int i=0; i<bands; ++i)
+            {
+                VectorComponentValueAccessor<SrcValue> band(i);
+                inspectImage( sul, slr, band, minmax );
+            }
+            
+            fromMin = (double)minmax.min;
+            fromMax = (double)minmax.max;
+            toMin = (double)NumericTraits<T>::min();
+            toMax = (double)NumericTraits<T>::max();
         }
+        double scale = (toMax - toMin) / (fromMax - fromMin);
+        double offset = (toMin / scale) - fromMin;
+        int w = slr.x - sul.x;
+        int h = slr.y - sul.y;
+
+        typedef vigra::MultiArray<3, T> MArray;
+        MArray array(typename MArray::difference_type(w, h, bands));
+
+        for(unsigned int i=0; i<bands; ++i)
+        {
+            BasicImageView<T> subImage = makeBasicImageView(array.bindOuter(i));
+            VectorComponentValueAccessor<SrcValue> band(i);
+            transformImage( sul, slr, band, subImage.upperLeft(), subImage.accessor(),
+                            linearIntensityTransform( scale, offset ) );
+        }
+        write_bands( enc, array, zero );
     }
+
 } // namespace detail
 
 
@@ -791,20 +804,40 @@ namespace detail {
         bool downcast = negotiatePixelType(enc->getFileType(),
                         TypeAsString<SrcValueType>::result(), pixeltype);
         enc->setPixelType(pixeltype);
-        if(pixeltype == "UINT8")
-            detail::exportVectorImage( sul, slr, sget, enc.get(), downcast, (UInt8)0);
-        else if(pixeltype == "INT16")
-            detail::exportVectorImage( sul, slr, sget, enc.get(), downcast, Int16());
-        else if(pixeltype == "UINT16")
-            detail::exportVectorImage( sul, slr, sget, enc.get(), downcast, (UInt16)0);
-        else if(pixeltype == "INT32")
-            detail::exportVectorImage( sul, slr, sget, enc.get(), downcast, Int32());
-        else if(pixeltype == "UINT32")
-            detail::exportVectorImage( sul, slr, sget, enc.get(), downcast, (UInt32)0);
-        else if(pixeltype == "FLOAT")
-            detail::exportVectorImage( sul, slr, sget, enc.get(), downcast, float());
-        else if(pixeltype == "DOUBLE")
-            detail::exportVectorImage( sul, slr, sget, enc.get(), downcast, double());
+        if(downcast || info.hasForcedRangeMapping())
+        {
+            if(pixeltype == "UINT8")
+                detail::exportVectorImage( sul, slr, sget, enc.get(), info, (UInt8)0);
+            else if(pixeltype == "INT16")
+                detail::exportVectorImage( sul, slr, sget, enc.get(), info, Int16());
+            else if(pixeltype == "UINT16")
+                detail::exportVectorImage( sul, slr, sget, enc.get(), info, (UInt16)0);
+            else if(pixeltype == "INT32")
+                detail::exportVectorImage( sul, slr, sget, enc.get(), info, Int32());
+            else if(pixeltype == "UINT32")
+                detail::exportVectorImage( sul, slr, sget, enc.get(), info, (UInt32)0);
+            else if(pixeltype == "FLOAT")
+                detail::exportVectorImage( sul, slr, sget, enc.get(), info, float());
+            else if(pixeltype == "DOUBLE")
+                detail::exportVectorImage( sul, slr, sget, enc.get(), info, double());
+        }
+        else
+        {
+            if(pixeltype == "UINT8")
+                detail::exportVectorImage( sul, slr, sget, enc.get(), (UInt8)0);
+            else if(pixeltype == "INT16")
+                detail::exportVectorImage( sul, slr, sget, enc.get(), Int16());
+            else if(pixeltype == "UINT16")
+                detail::exportVectorImage( sul, slr, sget, enc.get(), (UInt16)0);
+            else if(pixeltype == "INT32")
+                detail::exportVectorImage( sul, slr, sget, enc.get(), Int32());
+            else if(pixeltype == "UINT32")
+                detail::exportVectorImage( sul, slr, sget, enc.get(), (UInt32)0);
+            else if(pixeltype == "FLOAT")
+                detail::exportVectorImage( sul, slr, sget, enc.get(), float());
+            else if(pixeltype == "DOUBLE")
+                detail::exportVectorImage( sul, slr, sget, enc.get(), double());
+        }
         enc->close();
     }
 
@@ -818,20 +851,40 @@ namespace detail {
         bool downcast = negotiatePixelType(enc->getFileType(),
                            TypeAsString<SrcValueType>::result(), pixeltype);
         enc->setPixelType(pixeltype);
-        if(pixeltype == "UINT8")
-            detail::exportScalarImage( sul, slr, sget, enc.get(), downcast, (UInt8)0);
-        else if(pixeltype == "INT16")
-            detail::exportScalarImage( sul, slr, sget, enc.get(), downcast, Int16());
-        else if(pixeltype == "UINT16")
-            detail::exportScalarImage( sul, slr, sget, enc.get(), downcast, (UInt16)0);
-        else if(pixeltype == "INT32")
-            detail::exportScalarImage( sul, slr, sget, enc.get(), downcast, Int32());
-        else if(pixeltype == "UINT32")
-            detail::exportScalarImage( sul, slr, sget, enc.get(), downcast, (UInt32)0);
-        else if(pixeltype == "FLOAT")
-            detail::exportScalarImage( sul, slr, sget, enc.get(), downcast, float());
-        else if(pixeltype == "DOUBLE")
-            detail::exportScalarImage( sul, slr, sget, enc.get(), downcast, double());
+        if(downcast || info.hasForcedRangeMapping())
+        {
+            if(pixeltype == "UINT8")
+                detail::exportScalarImage( sul, slr, sget, enc.get(), info, (UInt8)0);
+            else if(pixeltype == "INT16")
+                detail::exportScalarImage( sul, slr, sget, enc.get(), info, Int16());
+            else if(pixeltype == "UINT16")
+                detail::exportScalarImage( sul, slr, sget, enc.get(), info, (UInt16)0);
+            else if(pixeltype == "INT32")
+                detail::exportScalarImage( sul, slr, sget, enc.get(), info, Int32());
+            else if(pixeltype == "UINT32")
+                detail::exportScalarImage( sul, slr, sget, enc.get(), info, (UInt32)0);
+            else if(pixeltype == "FLOAT")
+                detail::exportScalarImage( sul, slr, sget, enc.get(), info, float());
+            else if(pixeltype == "DOUBLE")
+                detail::exportScalarImage( sul, slr, sget, enc.get(), info, double());
+        }
+        else
+        {
+            if(pixeltype == "UINT8")
+                detail::exportScalarImage( sul, slr, sget, enc.get(), (UInt8)0);
+            else if(pixeltype == "INT16")
+                detail::exportScalarImage( sul, slr, sget, enc.get(), Int16());
+            else if(pixeltype == "UINT16")
+                detail::exportScalarImage( sul, slr, sget, enc.get(), (UInt16)0);
+            else if(pixeltype == "INT32")
+                detail::exportScalarImage( sul, slr, sget, enc.get(), Int32());
+            else if(pixeltype == "UINT32")
+                detail::exportScalarImage( sul, slr, sget, enc.get(), (UInt32)0);
+            else if(pixeltype == "FLOAT")
+                detail::exportScalarImage( sul, slr, sget, enc.get(), float());
+            else if(pixeltype == "DOUBLE")
+                detail::exportScalarImage( sul, slr, sget, enc.get(), double());
+        }
         enc->close();
     }
 
