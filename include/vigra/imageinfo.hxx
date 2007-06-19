@@ -145,6 +145,16 @@ class ImageExportInfo
     VIGRA_EXPORT ImageExportInfo( const char * );
     VIGRA_EXPORT ~ImageExportInfo();
 
+        /** Set image file name.
+        
+            The file type will be guessed from the extension unless overridden
+            by \ref setFileType(). Recognized extensions: '.bmp', '.gif',
+            '.jpeg', '.jpg', '.p7', '.png', '.pbm', '.pgm', '.pnm', '.ppm', '.ras',
+            '.tif', '.tiff', '.xv', '.hdr'.
+            JPEG support requires libjpeg, PNG support requires libpng, and
+            TIFF support requires libtiff.
+         **/
+    VIGRA_EXPORT ImageExportInfo & setFileName(const char * filename);
     VIGRA_EXPORT const char * getFileName() const;
 
         /** Store image as given file type.
@@ -250,7 +260,15 @@ class ImageExportInfo
             </DL>
          **/
     VIGRA_EXPORT const char * getPixelType() const;
-
+    
+    VIGRA_EXPORT ImageExportInfo & setForcedRangeMapping(double fromMin, double fromMax,
+                                                     double toMin, double toMax);    
+    VIGRA_EXPORT bool hasForcedRangeMapping() const;
+    VIGRA_EXPORT double getFromMin() const;
+    VIGRA_EXPORT double getFromMax() const;
+    VIGRA_EXPORT double getToMin() const;
+    VIGRA_EXPORT double getToMax() const;
+    
         /** Set the image resolution in horizontal direction
          **/
     VIGRA_EXPORT ImageExportInfo & setXResolution( float );
@@ -299,6 +317,7 @@ class ImageExportInfo
     float m_x_res, m_y_res;
     Diff2D m_pos;
     ICCProfile m_icc_profile;
+    double fromMin_, fromMax_, toMin_, toMax_;
 };
 
 // return an encoder for a given ImageExportInfo object
