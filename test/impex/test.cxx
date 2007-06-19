@@ -523,11 +523,13 @@ class PNGInt16Test
 
 class FloatImageExportImportTest
 {
-    typedef vigra::FImage Image;
+    typedef vigra::DImage Image;
+    std::string rereadType;
 
 public:
 
     FloatImageExportImportTest ()
+    : rereadType("DOUBLE")
     {
         vigra::ImageImportInfo info ("lenna.xv");
 
@@ -606,7 +608,7 @@ public:
         should (info.width () == img.width ());
         should (info.height () == img.height ());
         should (info.isGrayscale ());
-        should (info.getPixelType () == std::string ("FLOAT"));
+        should (info.getPixelType () == rereadType);
 
         Image res (info.width (), info.height ());
 
@@ -617,12 +619,30 @@ public:
         Image::Accessor acc = img.accessor ();
 
         shouldEqualSequence(i, img.end(), i1);
+    }
 
- /*       for (; i != img.end (); ++i, ++i1)
-            {
-                shouldEqual(acc (i), acc (i1));
-            }
- */
+    void testTIFFForcedRange ()
+    {
+        exportImage (srcImageRange (img),
+                     vigra::ImageExportInfo ("res.tif").setForcedRangeMapping(0, 255, 1, 2));
+
+        vigra::ImageImportInfo info ("res.tif");
+
+        should (info.width () == img.width ());
+        should (info.height () == img.height ());
+        should (info.isGrayscale ());
+        should (info.getPixelType () == rereadType);
+
+        Image res (info.width (), info.height ());
+
+        importImage (info, destImage (res));
+
+        Image::ScanOrderIterator i = img.begin ();
+        Image::ScanOrderIterator i1 = res.begin ();
+        Image::Accessor acc = img.accessor ();
+
+        for (; i != img.end (); ++i, ++i1)
+            shouldEqualTolerance(acc (i) / 255.0, acc (i1) - 1.0, 1e-12);
     }
 
     void testBMP ()
@@ -682,7 +702,7 @@ public:
         should (info.width () == img.width ());
         should (info.height () == img.height ());
         should (info.isGrayscale ());
-        should (info.getPixelType () == std::string ("FLOAT"));
+        should (info.getPixelType () == rereadType);
 
         Image res (info.width (), info.height ());
 
@@ -774,6 +794,34 @@ public:
 
         for (; i != img.end (); ++i, ++i1)
             shouldEqual (acc (i), acc (i1));
+    }
+
+    void testTIFFForcedRange ()
+    {
+        exportImage (srcImageRange (img),
+                     vigra::ImageExportInfo ("res.tif").setForcedRangeMapping(0,255,1,2));
+
+        vigra::ImageImportInfo info ("res.tif");
+
+        should (info.width () == img.width ());
+        should (info.height () == img.height ());
+        should (info.isColor ());
+        should (info.getPixelType () == std::string ("FLOAT"));
+
+        Image res (info.width (), info.height ());
+
+        importImage (info, destImage (res));
+
+        Image::ScanOrderIterator i = img.begin ();
+        Image::ScanOrderIterator i1 = res.begin ();
+        Image::Accessor acc = img.accessor ();
+
+        for (; i != img.end (); ++i, ++i1)
+        {
+            shouldEqualTolerance(acc.red(i)/255.0f, acc.red(i1)-1.0f, 1e-4);
+            shouldEqualTolerance(acc.green(i)/255.0f, acc.green(i1)-1.0f, 1e-4);
+            shouldEqualTolerance(acc.blue(i)/255.0f, acc.blue(i1)-1.0f, 1e-4);
+        }
     }
 
     void testBMP ()
@@ -1210,6 +1258,7 @@ struct ImageImportExportTestSuite : public vigra::test_suite
         add(testCase(&FloatImageExportImportTest::testGIF));
         add(testCase(&FloatImageExportImportTest::testJPEG));
         add(testCase(&FloatImageExportImportTest::testTIFF));
+        add(testCase(&FloatImageExportImportTest::testTIFFForcedRange));
         add(testCase(&FloatImageExportImportTest::testBMP));
         add(testCase(&FloatImageExportImportTest::testSUN));
         add(testCase(&FloatImageExportImportTest::testVIFF));
@@ -1227,6 +1276,7 @@ struct ImageImportExportTestSuite : public vigra::test_suite
         // rgb float images
         add(testCase(&FloatRGBImageExportImportTest::testJPEG));
         add(testCase(&FloatRGBImageExportImportTest::testTIFF));
+        add(testCase(&FloatRGBImageExportImportTest::testTIFFForcedRange));
         add(testCase(&FloatRGBImageExportImportTest::testBMP));
         add(testCase(&FloatRGBImageExportImportTest::testSUN));
         add(testCase(&FloatRGBImageExportImportTest::testVIFF));
