@@ -344,7 +344,7 @@ void setRangeMapping(MultiArrayView <3, T, Tag> const & volume,
         FindMinMax<SrcComponent> minmax;
         for(unsigned int i=0; i<bands; ++i)
         {
-            VectorComponentValueAccessor<SrcValue> band(i);
+            VectorComponentValueAccessor<T> band(i);
             inspectMultiArray(srcMultiArrayRange(volume, band), minmax );
         }
         setRangeMapping(pixeltype, minmax, info);
