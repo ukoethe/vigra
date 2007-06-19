@@ -1107,15 +1107,19 @@ hessianMatrixOfGaussian(triple<SrcIterator, SrcIterator, SrcAccessor> src,
     \link SeparableConvolution#separableConvolveX separableConvolveX\endlink()
     and \link SeparableConvolution#separableConvolveY separableConvolveY\endlink() with the
     appropriate Gaussian kernels and puts the results in
-    the three destination images. The first destination image will
+    the three separate destination images (where the first one will
     contain \f$G \ast (I_x I_x)\f$, the second one \f$G \ast (I_x I_y)\f$, and the
-    third one holds \f$G \ast (I_y I_y)\f$.
+    third one holds \f$G \ast (I_y I_y)\f$), or into a single 3-band image (where the bands
+    hold the result in the same order as above). The latter form is also applicable when
+    the source image is a multi-band image (e.g. RGB). In this case, tensors are
+    first computed for each band separately, and then summed up to get a single result tensor.
 
     <b> Declarations:</b>
 
     pass arguments explicitly:
     \code
     namespace vigra {
+        // create three separate destination images
         template <class SrcIterator, class SrcAccessor,
                   class DestIteratorX, class DestAccessorX,
                   class DestIteratorXY, class DestAccessorXY,
@@ -1126,6 +1130,14 @@ hessianMatrixOfGaussian(triple<SrcIterator, SrcIterator, SrcAccessor> src,
                                 DestIteratorXY dupperleftxy, DestAccessorXY daxy,
                                 DestIteratorY dupperlefty, DestAccessorY day,
                                 double inner_scale, double outer_scale);
+
+        // create a single 3-band destination image
+        template <class SrcIterator, class SrcAccessor,
+                  class DestIterator, class DestAccessor>
+        void structureTensor(SrcIterator supperleft,
+                                SrcIterator slowerright, SrcAccessor sa,
+                                DestIterator dupperleft, DestAccessor da,
+                                double inner_scale, double outer_scale);
     }
     \endcode
 
@@ -1133,15 +1145,24 @@ hessianMatrixOfGaussian(triple<SrcIterator, SrcIterator, SrcAccessor> src,
     use argument objects in conjunction with \ref ArgumentObjectFactories:
     \code
     namespace vigra {
+        // create three separate destination images
         template <class SrcIterator, class SrcAccessor,
                   class DestIteratorX, class DestAccessorX,
                   class DestIteratorXY, class DestAccessorXY,
                   class DestIteratorY, class DestAccessorY>
-        inline void
+        void
         structureTensor(triple<SrcIterator, SrcIterator, SrcAccessor> src,
                           pair<DestIteratorX, DestAccessorX> destx,
                           pair<DestIteratorXY, DestAccessorXY> destxy,
                           pair<DestIteratorY, DestAccessorY> desty,
+                          double nner_scale, double outer_scale);
+
+        // create a single 3-band destination image
+        template <class SrcIterator, class SrcAccessor,
+                  class DestIterator, class DestAccessor>
+        void
+        structureTensor(triple<SrcIterator, SrcIterator, SrcAccessor> src,
+                          pair<DestIterator, DestAccessor> dest,
                           double nner_scale, double outer_scale);
     }
     \endcode
@@ -1153,11 +1174,15 @@ hessianMatrixOfGaussian(triple<SrcIterator, SrcIterator, SrcAccessor> src,
 
     \code
     vigra::FImage src(w,h), stxx(w,h), stxy(w,h), styy(w,h);
+    vigra::BasicImage<TinyVector<float, 3> > st(w,h);
     ...
 
     // calculate Structure Tensor at inner scale = 1.0 and outer scale = 3.0
     vigra::structureTensor(srcImageRange(src),
         destImage(stxx), destImage(stxy), destImage(styy), 1.0, 3.0);
+
+    // dto. with a single 3-band destination image
+    vigra::structureTensor(srcImageRange(src), destImage(st), 1.0, 3.0);
 
     \endcode
 
@@ -1212,6 +1237,79 @@ structureTensor(triple<SrcIterator, SrcIterator, SrcAccessor> src,
                  destxy.first, destxy.second,
                  desty.first, desty.second,
                  inner_scale, outer_scale);
+}
+
+namespace detail {
+
+template <class SrcIterator, class SrcAccessor,
+          class DestIterator, class DestAccessor>
+void structureTensor(SrcIterator supperleft,
+                     SrcIterator slowerright, SrcAccessor src,
+                     DestIterator dupperleft, DestAccessor dest,
+                     double inner_scale, double outer_scale,
+                     VigraTrueType /* isScalar */)
+{
+    typedef VectorElementAccessor<DestAccessor> DA;
+    structureTensor(supperleft, slowerright, src,
+                    dupperleft, DA(0, dest),
+                    dupperleft, DA(1, dest),
+                    dupperleft, DA(2, dest),
+                    inner_scale, outer_scale);
+}
+
+template <class SrcIterator, class SrcAccessor,
+          class DestIterator, class DestAccessor>
+void structureTensor(SrcIterator supperleft,
+                     SrcIterator slowerright, SrcAccessor src,
+                     DestIterator dupperleft, DestAccessor dest,
+                     double inner_scale, double outer_scale,
+                     VigraFalseType /* isScalar */)
+{
+    int bands = src.size(supperleft);
+    typedef VectorElementAccessor<SrcAccessor> SA;
+    
+    structureTensor(supperleft, slowerright, SA(0, src),
+                    dupperleft, dest,
+                    inner_scale, outer_scale,
+                    VigraTrueType() /* isScalar */);
+                    
+    BasicImage<typename DestAccessor::value_type> st(slowerright - supperleft);
+    for(int k=1; k < bands; ++k)
+    {
+        structureTensor(supperleft, slowerright, SA(k, src),
+                        st.upperLeft(), st.accessor(),
+                        inner_scale, outer_scale,
+                        VigraTrueType() /* isScalar */);
+        combineTwoImages(srcImageRange(st), srcIter(dupperleft, dest), destIter(dupperleft, dest),
+                         std::plus<typename DestAccessor::value_type>());
+    }
+}
+
+} // namespace detail
+
+template <class SrcIterator, class SrcAccessor,
+          class DestIterator, class DestAccessor>
+void structureTensor(SrcIterator supperleft,
+                        SrcIterator slowerright, SrcAccessor src,
+                        DestIterator dupperleft, DestAccessor dest,
+                        double inner_scale, double outer_scale)
+{
+    typedef typename 
+        NumericTraits<typename SrcAccessor::value_type>::isScalar isScalar;
+    detail::structureTensor(supperleft, slowerright, src,
+                            dupperleft, dest, inner_scale, outer_scale, isScalar());
+}
+
+template <class SrcIterator, class SrcAccessor,
+          class DestIterator, class DestAccessor>
+inline void
+structureTensor(triple<SrcIterator, SrcIterator, SrcAccessor> src,
+                  pair<DestIterator, DestAccessor> dest,
+                  double inner_scale, double outer_scale)
+{
+    structureTensor(src.first, src.second, src.third,
+                    dest.first, dest.second,
+                    inner_scale, outer_scale);
 }
 
 //@}

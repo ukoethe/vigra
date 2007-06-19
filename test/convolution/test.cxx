@@ -1086,9 +1086,14 @@ struct ConvolutionTest
         Image refxx(lenna.size());
         Image refxy(lenna.size());
         Image refyy(lenna.size());
+        
+        typedef BasicImage<TinyVector<double, 3> > VectorImage;
+        VectorImage resst(lenna.size());
 
         structureTensor(srcImageRange(lenna), 
             destImage(resxx), destImage(resxy), destImage(resyy), 1.0, 2.0);
+
+        structureTensor(srcImageRange(lenna), destImage(resst), 1.0, 2.0);
             
         importImage(vigra::ImageImportInfo("lennastxx.xv"), destImage(refxx));
         importImage(vigra::ImageImportInfo("lennastyy.xv"), destImage(refyy));
@@ -1096,18 +1101,48 @@ struct ConvolutionTest
         
         Image::ScanOrderIterator i1 = resxx.begin();
         Image::ScanOrderIterator i1end = resxx.end();
-        Image::ScanOrderIterator i2 = resyy.begin();
-        Image::ScanOrderIterator i3 = resxy.begin();
+        Image::ScanOrderIterator i2 = resxy.begin();
+        Image::ScanOrderIterator i3 = resyy.begin();
+        VectorImage::ScanOrderIterator i4 = resst.begin();
         Image::ScanOrderIterator r1 = refxx.begin();
-        Image::ScanOrderIterator r2 = refyy.begin();
-        Image::ScanOrderIterator r3 = refxy.begin();
+        Image::ScanOrderIterator r2 = refxy.begin();
+        Image::ScanOrderIterator r3 = refyy.begin();
         Image::Accessor acc = constimg.accessor();
+        VectorImage::Accessor vacc = resst.accessor();
 
-        for(; i1 != i1end; ++i1, ++i2, ++i3, ++r1, ++r2, ++r3)
+        for(; i1 != i1end; ++i1, ++i2, ++i3, ++i4, ++r1, ++r2, ++r3)
         {
             shouldEqualTolerance(acc(i1), acc(r1), 1e-7);
             shouldEqualTolerance(acc(i2), acc(r2), 1e-7);
             shouldEqualTolerance(acc(i3), acc(r3), 1e-7);
+            shouldEqualTolerance(vacc(i4)[0], acc(r1), 1e-7);
+            shouldEqualTolerance(vacc(i4)[1], acc(r2), 1e-7);
+            shouldEqualTolerance(vacc(i4)[2], acc(r3), 1e-7);
+        }
+    }
+    
+    void structureTensorRGBTest()
+    {
+        RGBImage input(lenna.size());
+        importImage(vigra::ImageImportInfo("lenna128rgb.xv"), destImage(input));
+
+        typedef BasicImage<TinyVector<double, 3> > VectorImage;
+        VectorImage resst(lenna.size()), refst(lenna.size());
+
+        structureTensor(srcImageRange(lenna), destImage(resst), 1.0, 2.0);
+        
+        importImage(vigra::ImageImportInfo("lennargbst.xv"), destImage(refst));
+        
+        VectorImage::ScanOrderIterator i1 = resst.begin();
+        VectorImage::ScanOrderIterator i1end = resst.end();
+        VectorImage::ScanOrderIterator r1 = refst.begin();
+        VectorImage::Accessor vacc = resst.accessor();
+
+        for(; i1 != i1end; ++i1, ++r1)
+        {
+            shouldEqualTolerance(vacc(i1)[0], vacc(r1)[0], 1e-7);
+            shouldEqualTolerance(vacc(i1)[1], vacc(r1)[1], 1e-7);
+            shouldEqualTolerance(vacc(i1)[2], vacc(r1)[2], 1e-7);
         }
     }
     
@@ -2072,6 +2107,7 @@ struct ConvolutionTestSuite
         add( testCase( &ConvolutionTest::gradientRGBTest));
         add( testCase( &ConvolutionTest::hessianTest));
         add( testCase( &ConvolutionTest::structureTensorTest));
+        add( testCase( &ConvolutionTest::structureTensorRGBTest));
         add( testCase( &ConvolutionTest::stdConvolutionTest));
         add( testCase( &ConvolutionTest::stdVersusSeparableConvolutionTest));
         add( testCase( &ConvolutionTest::recursiveFilterTestWithAvoid));
