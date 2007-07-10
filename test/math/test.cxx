@@ -241,8 +241,10 @@ struct SplineTest
         }
         else
         {
-            vigra::ArrayVector<double> & psb1 = const_cast<vigra::ArrayVector<double> &>(psb);
+            vigra::ArrayVector<double> & psb1 =
+                const_cast<vigra::ArrayVector<double> &>(psb);
             std::sort(psb1.begin(), psb1.end());
+
             for(int i = 0; i < n; ++i)
                 shouldEqualTolerance(ps[i], psb[i], 1e-14);
         }
@@ -1169,6 +1171,7 @@ struct MathTestSuite
         add( testCase(&SplineTest<1>::testValues));
         add( testCase(&SplineTest<2>::testValues));
         add( testCase(&SplineTest<3>::testValues));
+        add( testCase(&SplineTest<4>::testValues));
         add( testCase(&SplineTest<5>::testValues));
         add( testCase(&SplineTest<0>::testFixedPointValues));
         add( testCase(&SplineTest<1>::testFixedPointValues));
@@ -1178,11 +1181,13 @@ struct MathTestSuite
         add( testCase(&SplineTest<1>::testPrefilterCoefficients));
         add( testCase(&SplineTest<2>::testPrefilterCoefficients));
         add( testCase(&SplineTest<3>::testPrefilterCoefficients));
+        add( testCase(&SplineTest<4>::testPrefilterCoefficients));
         add( testCase(&SplineTest<5>::testPrefilterCoefficients));
         add( testCase(&SplineTest<0>::testWeightMatrix));
         add( testCase(&SplineTest<1>::testWeightMatrix));
         add( testCase(&SplineTest<2>::testWeightMatrix));
         add( testCase(&SplineTest<3>::testWeightMatrix));
+        add( testCase(&SplineTest<4>::testWeightMatrix));
         add( testCase(&SplineTest<5>::testWeightMatrix));
 
         add( testCase(&FunctionsTest::testGaussians));
