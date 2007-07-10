@@ -718,6 +718,201 @@ typedef BSpline<3, double> CubicBSplineKernel;
 
 /********************************************************/
 /*                                                      */
+/*                     BSpline<4, T>                    */
+/*                                                      */
+/********************************************************/
+
+template <class T>
+class BSpline<4, T>
+{
+  public:
+
+    typedef T            value_type;
+    typedef T            argument_type;
+    typedef T            first_argument_type;
+    typedef unsigned int second_argument_type;
+    typedef T            result_type;
+    enum StaticOrder { order = 4 };
+
+    explicit BSpline(unsigned int derivativeOrder = 0)
+    : derivativeOrder_(derivativeOrder)
+    {}
+
+    result_type operator()(argument_type x) const
+    {
+        return exec(x, derivativeOrder_);
+    }
+
+    result_type operator()(first_argument_type x, second_argument_type derivative_order) const
+    {
+         return exec(x, derivativeOrder_ + derivative_order);
+    }
+
+    result_type dx(argument_type x) const
+        { return operator()(x, 1); }
+
+    result_type dxx(argument_type x) const
+        { return operator()(x, 2); }
+
+    result_type dx3(argument_type x) const
+        { return operator()(x, 3); }
+
+    value_type operator[](value_type x) const
+        { return operator()(x); }
+
+    double radius() const
+        { return 2.5; }
+
+    unsigned int derivativeOrder() const
+        { return derivativeOrder_; }
+
+    ArrayVector<double> const & prefilterCoefficients() const
+    {
+        static ArrayVector<double> const & b = initPrefilterCoefficients();
+        return b;
+    }
+
+    static ArrayVector<double> const & initPrefilterCoefficients()
+    {
+        static ArrayVector<double> b(2);
+        // -19 + 4*sqrt(19) + 2*sqrt(2*(83 - 19*sqrt(19)))
+        b[0] = -0.361341225900220177092212841325;
+        // -19 - 4*sqrt(19) + 2*sqrt(2*(83 + 19*sqrt(19)))
+        b[1] = -0.013725429297339121360331226939;
+        return b;
+    }
+
+    typedef T WeightMatrix[5][5];
+    static WeightMatrix & weights()
+    {
+        static T b[5][5] = {{ 1.0/384.0, 19.0/96.0, 115.0/192.0, 19.0/96.0, 1.0/384.0},
+                            {-1.0/48.0, -11.0/24.0, 0.0, 11.0/24.0, 1.0/48.0},
+                            { 1.0/16.0, 1.0/4.0, -5.0/8.0, 1.0/4.0, 1.0/16.0},
+                            {-1.0/12.0, 1.0/6.0, 0.0, -1.0/6.0, 1.0/12.0},
+                            { 1.0/24.0, -1.0/6.0, 0.25, -1.0/6.0, 1.0/24.0}};
+        return b;
+    }
+
+  protected:
+    result_type exec(first_argument_type x, second_argument_type derivative_order) const;
+
+    unsigned int derivativeOrder_;
+};
+
+template <class T>
+typename BSpline<4, T>::result_type
+BSpline<4, T>::exec(first_argument_type x, second_argument_type derivative_order) const
+{
+    switch(derivative_order)
+    {
+        case 0:
+        {
+            x = VIGRA_CSTD::fabs(x);
+            if(x <= 0.5)
+            {
+                return 115.0/192.0 + x*x*(-0.625 + x*x*0.25);
+            }
+            else if(x < 1.5)
+            {
+                return (55.0/16.0 + x*(1.25 + x*(-7.5 + x*(5.0 - x)))) / 6.0;
+            }
+            else if(x < 2.5)
+            {
+                x = 2.5 - x;
+                return sq(x*x) / 24.0;
+            }
+            else
+                return 0.0;
+        }
+        case 1:
+        {
+            double s = x < 0.0 ?
+                          -1.0 :
+                           1.0;
+            x = VIGRA_CSTD::fabs(x);
+            if(x <= 0.5)
+            {
+                return s*x*(-1.25 + x*x);
+            }
+            else if(x < 1.5)
+            {
+                return s*(5.0 + x*(-60.0 + x*(60.0 - 16.0*x))) / 24.0;
+            }
+            else if(x < 2.5)
+            {
+                x = 2.5 - x;
+                return s*x*x*x / -6.0;
+            }
+            else
+                return 0.0;
+        }
+        case 2:
+        {
+            x = VIGRA_CSTD::fabs(x);
+            if(x <= 0.5)
+            {
+                return -1.25 + 3.0*x*x;
+            }
+            else if(x < 1.5)
+            {
+                return -2.5 + x*(5.0 - 2.0*x);
+            }
+            else if(x < 2.5)
+            {
+                x = 2.5 - x;
+                return x*x / 2.0;
+            }
+            else
+                return 0.0;
+        }
+        case 3:
+        {
+            double s = x < 0.0 ?
+                          -1.0 :
+                           1.0;
+            x = VIGRA_CSTD::fabs(x);
+            if(x <= 0.5)
+            {
+                return s*x*6.0;
+            }
+            else if(x < 1.5)
+            {
+                return s*(5.0 - 4.0*x);
+            }
+            else if(x < 2.5)
+            {
+                return s*(x - 2.5);
+            }
+            else
+                return 0.0;
+        }
+        case 4:
+        {
+            return x < 0.0
+                     ? x < -2.5
+                         ? 0.0
+                         : x < -1.5
+                             ? 1.0
+                             : x < -0.5
+                                 ? -4.0
+                                 : 6.0
+                     : x < 0.5 
+                         ? 6.0
+                         : x < 1.5
+                             ? -4.0
+                             : x < 2.5
+                                 ? 1.0
+                                 : 0.0;
+        }
+        default:
+            return 0.0;
+    }
+}
+
+typedef BSpline<4, double> QuarticBSplineKernel;
+
+/********************************************************/
+/*                                                      */
 /*                     BSpline<5, T>                    */
 /*                                                      */
 /********************************************************/
