@@ -1,35 +1,64 @@
 <?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="7.10"
+	Version="8,00"
 	Name="vigraimpex_dll"
 	ProjectGUID="{E7937DF7-5628-4D5F-86EE-D787083408A8}"
-	Keyword="Win32Proj">
+	Keyword="Win32Proj"
+	>
 	<Platforms>
 		<Platform
-			Name="Win32"/>
+			Name="Win32"
+		/>
 	</Platforms>
+	<ToolFiles>
+	</ToolFiles>
 	<Configurations>
 		<Configuration
 			Name="Debug|Win32"
 			OutputDirectory="."
 			IntermediateDirectory="Debug"
 			ConfigurationType="2"
-			CharacterSet="2">
+			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
+			CharacterSet="2"
+			>
+			<Tool
+				Name="VCPreBuildEventTool"
+			/>
+			<Tool
+				Name="VCCustomBuildTool"
+			/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"
+			/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"
+			/>
+			<Tool
+				Name="VCMIDLTool"
+			/>
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
 				AdditionalIncludeDirectories="..\..\include;..\..\include\external"
 				PreprocessorDefinitions="VIGRA_DLL;HasJPEG;HasTIFF;HasPNG;WIN32;_DEBUG;_WINDOWS;_CRT_SECURE_NO_DEPRECATE;_SECURE_SCL=0"
-				MinimalRebuild="TRUE"
+				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
-				UsePrecompiledHeader="2"
+				UsePrecompiledHeader="0"
 				WarningLevel="3"
-				Detect64BitPortabilityProblems="TRUE"
-				DebugInformationFormat="4"/>
+				Detect64BitPortabilityProblems="true"
+				DebugInformationFormat="4"
+			/>
 			<Tool
-				Name="VCCustomBuildTool"/>
+				Name="VCManagedResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCPreLinkEventTool"
+			/>
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="libtiff.lib libjpeg.lib libpng.lib zlib.lib"
@@ -37,130 +66,180 @@
 				LinkIncremental="2"
 				AdditionalLibraryDirectories="..\..\lib"
 				IgnoreDefaultLibraryNames="msvcrt"
-				GenerateDebugInformation="TRUE"
+				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OutDir)/vigraimpex_dll.pdb"
 				SubSystem="2"
 				ImportLibrary="$(OutDir)/vigraimpex_debug.dll.lib"
-				TargetMachine="1"/>
+				TargetMachine="1"
+			/>
 			<Tool
-				Name="VCMIDLTool"/>
+				Name="VCALinkTool"
+			/>
 			<Tool
-				Name="VCPostBuildEventTool"/>
+				Name="VCManifestTool"
+			/>
 			<Tool
-				Name="VCPreBuildEventTool"/>
+				Name="VCXDCMakeTool"
+			/>
 			<Tool
-				Name="VCPreLinkEventTool"/>
+				Name="VCBscMakeTool"
+			/>
 			<Tool
-				Name="VCResourceCompilerTool"/>
+				Name="VCFxCopTool"
+			/>
 			<Tool
-				Name="VCWebServiceProxyGeneratorTool"/>
+				Name="VCAppVerifierTool"
+			/>
 			<Tool
-				Name="VCXMLDataGeneratorTool"/>
+				Name="VCWebDeploymentTool"
+			/>
 			<Tool
-				Name="VCWebDeploymentTool"/>
-			<Tool
-				Name="VCManagedWrapperGeneratorTool"/>
-			<Tool
-				Name="VCAuxiliaryManagedWrapperGeneratorTool"/>
+				Name="VCPostBuildEventTool"
+			/>
 		</Configuration>
 		<Configuration
 			Name="Release|Win32"
 			OutputDirectory="."
 			IntermediateDirectory="Release"
 			ConfigurationType="2"
-			CharacterSet="2">
+			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
+			CharacterSet="2"
+			>
+			<Tool
+				Name="VCPreBuildEventTool"
+			/>
+			<Tool
+				Name="VCCustomBuildTool"
+			/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"
+			/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"
+			/>
+			<Tool
+				Name="VCMIDLTool"
+			/>
 			<Tool
 				Name="VCCLCompilerTool"
 				AdditionalIncludeDirectories="..\..\include;..\..\include\external"
 				PreprocessorDefinitions="VIGRA_DLL;HasJPEG;HasTIFF;HasPNG;WIN32;NDEBUG;_WINDOWS;_CRT_SECURE_NO_DEPRECATE;_SECURE_SCL=0"
 				RuntimeLibrary="2"
-				UsePrecompiledHeader="2"
+				UsePrecompiledHeader="0"
 				WarningLevel="3"
-				Detect64BitPortabilityProblems="TRUE"
-				DebugInformationFormat="3"/>
+				Detect64BitPortabilityProblems="true"
+				DebugInformationFormat="3"
+			/>
 			<Tool
-				Name="VCCustomBuildTool"/>
+				Name="VCManagedResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCPreLinkEventTool"
+			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="libtiff.lib libjpeg.lib libpng.lib zlib.lib"
+				AdditionalDependencies="libtiff_i.lib libjpeg.lib libpng.lib zlib.lib"
 				OutputFile="$(OutDir)/vigraimpex.dll"
 				LinkIncremental="1"
 				AdditionalLibraryDirectories="..\..\lib"
-				GenerateDebugInformation="TRUE"
+				GenerateDebugInformation="true"
 				SubSystem="2"
 				OptimizeReferences="2"
 				EnableCOMDATFolding="2"
 				ImportLibrary="$(OutDir)/$(TargetName).dll.lib"
-				TargetMachine="1"/>
+				TargetMachine="1"
+			/>
 			<Tool
-				Name="VCMIDLTool"/>
+				Name="VCALinkTool"
+			/>
 			<Tool
-				Name="VCPostBuildEventTool"/>
+				Name="VCManifestTool"
+			/>
 			<Tool
-				Name="VCPreBuildEventTool"/>
+				Name="VCXDCMakeTool"
+			/>
 			<Tool
-				Name="VCPreLinkEventTool"/>
+				Name="VCBscMakeTool"
+			/>
 			<Tool
-				Name="VCResourceCompilerTool"/>
+				Name="VCFxCopTool"
+			/>
 			<Tool
-				Name="VCWebServiceProxyGeneratorTool"/>
+				Name="VCAppVerifierTool"
+			/>
 			<Tool
-				Name="VCXMLDataGeneratorTool"/>
+				Name="VCWebDeploymentTool"
+			/>
 			<Tool
-				Name="VCWebDeploymentTool"/>
-			<Tool
-				Name="VCManagedWrapperGeneratorTool"/>
-			<Tool
-				Name="VCAuxiliaryManagedWrapperGeneratorTool"/>
+				Name="VCPostBuildEventTool"
+			/>
 		</Configuration>
 	</Configurations>
 	<References>
 	</References>
 	<Files>
 		<File
-			RelativePath=".\bmp.cxx">
+			RelativePath=".\bmp.cxx"
+			>
 		</File>
 		<File
-			RelativePath=".\byteorder.cxx">
+			RelativePath=".\byteorder.cxx"
+			>
 		</File>
 		<File
-			RelativePath=".\codecmanager.cxx">
+			RelativePath=".\codecmanager.cxx"
+			>
 		</File>
 		<File
-			RelativePath=".\gif.cxx">
+			RelativePath=".\gif.cxx"
+			>
 		</File>
 		<File
-			RelativePath=".\hdr.cxx">
+			RelativePath=".\hdr.cxx"
+			>
 		</File>
 		<File
-			RelativePath=".\iccjpeg.c">
+			RelativePath=".\iccjpeg.c"
+			>
 		</File>
 		<File
-			RelativePath=".\imageinfo.cxx">
+			RelativePath=".\imageinfo.cxx"
+			>
 		</File>
 		<File
-			RelativePath=".\jpeg.cxx">
+			RelativePath=".\jpeg.cxx"
+			>
 		</File>
 		<File
-			RelativePath=".\png.cxx">
+			RelativePath=".\png.cxx"
+			>
 		</File>
 		<File
-			RelativePath=".\pnm.cxx">
+			RelativePath=".\pnm.cxx"
+			>
 		</File>
 		<File
-			RelativePath=".\rgbe.c">
+			RelativePath=".\rgbe.c"
+			>
 		</File>
 		<File
-			RelativePath=".\sun.cxx">
+			RelativePath=".\sun.cxx"
+			>
 		</File>
 		<File
-			RelativePath=".\tiff.cxx">
+			RelativePath=".\tiff.cxx"
+			>
 		</File>
 		<File
-			RelativePath=".\viff.cxx">
+			RelativePath=".\viff.cxx"
+			>
 		</File>
 		<File
-			RelativePath=".\void_vector.cxx">
+			RelativePath=".\void_vector.cxx"
+			>
 		</File>
 	</Files>
 	<Globals>
