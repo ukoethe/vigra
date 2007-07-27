@@ -3,6 +3,7 @@
 	ProjectType="Visual C++"
 	Version="8,00"
 	Name="smooth"
+	ProjectGUID="{FC4FA3DD-0800-4270-A450-8FE824F65B29}"
 	>
 	<Platforms>
 		<Platform

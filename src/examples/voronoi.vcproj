@@ -3,6 +3,7 @@
 	ProjectType="Visual C++"
 	Version="8,00"
 	Name="voronoi"
+	ProjectGUID="{65E54B2C-96AD-4A27-9B3F-E45C5DB75E23}"
 	>
 	<Platforms>
 		<Platform

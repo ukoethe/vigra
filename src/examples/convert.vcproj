@@ -3,6 +3,7 @@
 	ProjectType="Visual C++"
 	Version="8,00"
 	Name="convert"
+	ProjectGUID="{7D9C26CA-8E77-41BE-B85A-0569136B0ABE}"
 	>
 	<Platforms>
 		<Platform

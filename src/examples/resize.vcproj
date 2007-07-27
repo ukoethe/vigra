@@ -3,6 +3,7 @@
 	ProjectType="Visual C++"
 	Version="8,00"
 	Name="resize"
+	ProjectGUID="{2600332B-191E-43A5-A26C-40CC4BBDCD9A}"
 	>
 	<Platforms>
 		<Platform

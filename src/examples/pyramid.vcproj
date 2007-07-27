@@ -3,6 +3,7 @@
 	ProjectType="Visual C++"
 	Version="8,00"
 	Name="pyramid"
+	ProjectGUID="{E8DD9BD4-D625-4A0C-A534-2DE4EF4FE15D}"
 	>
 	<Platforms>
 		<Platform

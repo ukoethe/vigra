@@ -3,6 +3,7 @@
 	ProjectType="Visual C++"
 	Version="8,00"
 	Name="profile"
+	ProjectGUID="{872972B5-8500-4504-A5A7-43FE24BD35FA}"
 	>
 	<Platforms>
 		<Platform

@@ -3,6 +3,7 @@
 	ProjectType="Visual C++"
 	Version="8,00"
 	Name="watershed"
+	ProjectGUID="{D8DC15A7-83E3-44E5-8F25-9155C29B3379}"
 	>
 	<Platforms>
 		<Platform

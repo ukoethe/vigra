@@ -3,6 +3,7 @@
 	ProjectType="Visual C++"
 	Version="8,00"
 	Name="subimage"
+	ProjectGUID="{69E4E6CC-5B86-42EC-8AD6-419AFA01B8FA}"
 	>
 	<Platforms>
 		<Platform

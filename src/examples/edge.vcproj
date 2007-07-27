@@ -3,6 +3,7 @@
 	ProjectType="Visual C++"
 	Version="8,00"
 	Name="edge"
+	ProjectGUID="{D87CD8F8-AB41-4AF6-A66B-95C3B0B57ED9}"
 	>
 	<Platforms>
 		<Platform

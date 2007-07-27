@@ -3,6 +3,7 @@
 	ProjectType="Visual C++"
 	Version="8,00"
 	Name="invert"
+	ProjectGUID="{339DFC63-F436-488B-B805-9C845C379DB7}"
 	>
 	<Platforms>
 		<Platform
