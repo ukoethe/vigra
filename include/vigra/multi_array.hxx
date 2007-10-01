@@ -407,7 +407,6 @@ public:
         : m_shape (diff_zero_t(0)), m_stride (diff_zero_t(0)), m_ptr (0)
     {}
 
-
         /** construct from shape and pointer
          */
     MultiArrayView (const difference_type &shape, pointer ptr);
@@ -418,6 +417,26 @@ public:
     MultiArrayView (const difference_type &shape,
                     const difference_type &stride,
                     pointer ptr);
+                    
+        /** Assignment. There are 3 cases:
+                    
+            <ul>
+            <li> When this <tt>MultiArrayView</tt> does not point to valid data 
+                 (e.g. after default construction), it becomes a copy of \a rhs.
+            <li> When the shapes of the two arrays match, the array contents are copied.
+            <li> Otherwise, a <tt>PreconditionViolation</tt> exception is thrown.
+            </ul>
+         */
+    MultiArrayView & operator=(MultiArrayView const & rhs);
+                    
+        /** reset the view to point to the same data as the rhs.
+         */
+    void reset(MultiArrayView const & rhs)
+    {
+        m_shape  = rhs.m_shape;
+        m_stride = rhs.m_stride;
+        m_ptr    = rhs.m_ptr;
+    }
 
         /** array access.
          */
@@ -724,6 +743,25 @@ MultiArrayView <N, T, C>::MultiArrayView
 (const difference_type &shape, const difference_type &stride, pointer ptr)
     : m_shape (shape), m_stride (stride), m_ptr (ptr)
 {}
+
+template <unsigned int N, class T, class C>
+MultiArrayView <N, T, C> &
+MultiArrayView <N, T, C>::operator=(MultiArrayView const & rhs)
+{
+    if(this == &rhs)
+        return *this;
+    vigra_precondition(this->shape() == rhs.shape() || m_ptr == 0,
+        "MultiArrayView::operator=(MultiArrayView const &) size mismatch.");
+    if(m_ptr == 0)
+    {
+        m_shape  = rhs.m_shape;
+        m_stride = rhs.m_stride;
+        m_ptr    = rhs.m_ptr;
+    }
+    else
+        this->copy(rhs);
+    return *this;
+}
 
 template <unsigned int N, class T, class C>
 template <class U>

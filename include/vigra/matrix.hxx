@@ -260,13 +260,18 @@ class Matrix
         return *this;
     }
 
-        /** assign a temporary matrix. This is implemented by swapping the data
+        /** assign a temporary matrix. If the shapes of the two matrices match,
+            only the data are copied (in order to not invalidate views and iterators
+            depending on this matrix). Otherwise, the memory is swapped
             between the two matrices, so that all depending objects
             (array views, iterators) ar invalidated.
          */
     Matrix & operator=(const TemporaryMatrix<T, ALLOC> &rhs)
     {
-        this->swap(const_cast<TemporaryMatrix<T, ALLOC> &>(rhs));
+        if(this->shape() == rhs.shape())
+            this->copy(rhs);
+        else
+            this->swap(const_cast<TemporaryMatrix<T, ALLOC> &>(rhs));
         return *this;
     }
 
