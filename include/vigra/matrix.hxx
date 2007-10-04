@@ -120,8 +120,6 @@ class Matrix
     typedef typename BaseType::const_reference      const_reference;
     typedef typename BaseType::difference_type      difference_type;
     typedef ALLOC                                   allocator_type;
-    typedef typename BaseType::SquaredNormType      SquaredNormType;
-    typedef typename BaseType::NormType             NormType;
 
         /** default constructor
          */
@@ -288,6 +286,34 @@ class Matrix
         return *this;
     }
 
+        /** reshape to the given shape and initialize with zero.
+         */
+    void reshape(std::size_t rows, std::size_t columns)
+    {
+        BaseType::reshape(difference_type(rows, columns));
+    }
+
+        /** reshape to the given shape and initialize with \a init.
+         */
+    void reshape(std::size_t rows, std::size_t columns, const_reference init)
+    {
+        BaseType::reshape(difference_type(rows, columns), init);
+    }
+
+        /** reshape to the given shape and initialize with zero.
+         */
+    void reshape(difference_type const & shape)
+    {
+        BaseType::reshape(shape);
+    }
+
+        /** reshape to the given shape and initialize with \a init.
+         */
+    void reshape(difference_type const & shape, const_reference init)
+    {
+        BaseType::reshape(shape, init);
+    }
+
         /** Create a matrix view that represents the row vector of row \a d.
          */
     view_type rowVector(std::size_t d) const
@@ -331,7 +357,7 @@ class Matrix
     }
 
 #ifdef DOXYGEN
-// repeat the index functions for documentation. In real code, they are inherited.
+// repeat the following functions for documentation. In real code, they are inherited.
 
         /** read/write access to matrix element <tt>(row, column)</tt>.
             Note that the order of the argument is the opposite of the usual
@@ -344,21 +370,15 @@ class Matrix
             VIGRA convention due to column-major matrix order.
         */
     value_type operator()(std::size_t row, std::size_t column) const;
-#endif
 
         /** squared Frobenius norm. Sum of squares of the matrix elements.
         */
-    SquaredNormType squaredNorm() const
-    {
-        return BaseType::squaredNorm();
-    }
+    typename NormTraits<Matrix>::SquaredNormType squaredNorm() const;
 
         /** Frobenius norm. Root of sum of squares of the matrix elements.
         */
-    NormType norm() const
-    {
-        return BaseType::norm();
-    }
+    typename NormTraits<Matrix>::NormType norm() const;
+#endif
 
         /** transpose matrix in-place (precondition: matrix must be square)
          */
@@ -373,6 +393,14 @@ class Matrix
          */
     template <class U, class C>
     Matrix & operator-=(MultiArrayView<2, U, C> const & other);
+
+        /** add \a other to each element of this matrix
+         */
+    Matrix & operator+=(T other);
+
+        /** subtraxt \a other from each element of this matrix
+         */
+    Matrix & operator-=(T other);
 
         /** scalar multiply this with \a other
          */
@@ -426,6 +454,30 @@ Matrix<T, ALLOC> & Matrix<T, ALLOC>::operator-=(MultiArrayView<2, U, C> const & 
 }
 
 template <class T, class ALLOC>
+Matrix<T, ALLOC> & Matrix<T, ALLOC>::operator+=(T other)
+{
+    const std::size_t rows = rowCount();
+    const std::size_t cols = columnCount();
+
+    for(std::size_t i = 0; i < cols; ++i)
+        for(std::size_t j = 0; j < rows; ++j)
+            (*this)(j, i) += other;
+    return *this;
+}
+
+template <class T, class ALLOC>
+Matrix<T, ALLOC> & Matrix<T, ALLOC>::operator-=(T other)
+{
+    const std::size_t rows = rowCount();
+    const std::size_t cols = columnCount();
+
+    for(std::size_t i = 0; i < cols; ++i)
+        for(std::size_t j = 0; j < rows; ++j)
+            (*this)(j, i) -= other;
+    return *this;
+}
+
+template <class T, class ALLOC>
 Matrix<T, ALLOC> & Matrix<T, ALLOC>::operator*=(T other)
 {
     const std::size_t rows = rowCount();
@@ -470,6 +522,14 @@ class TemporaryMatrix
     typedef typename BaseType::difference_type      difference_type;
     typedef ALLOC                                   allocator_type;
 
+    TemporaryMatrix(difference_type const & shape)
+    : BaseType(shape, ALLOC())
+    {}
+
+    TemporaryMatrix(difference_type const & shape, const_reference init)
+    : BaseType(shape, init, ALLOC())
+    {}
+
     TemporaryMatrix(std::size_t rows, std::size_t columns)
     : BaseType(rows, columns, ALLOC())
     {}
@@ -504,6 +564,18 @@ class TemporaryMatrix
 
     template <class U, class C>
     TemporaryMatrix & operator-=(MultiArrayView<2, U, C> const & other)
+    {
+        BaseType::operator-=(other);
+        return *this;
+    }
+
+    TemporaryMatrix & operator+=(T other)
+    {
+        BaseType::operator+=(other);
+        return *this;
+    }
+
+    TemporaryMatrix & operator-=(T other)
     {
         BaseType::operator-=(other);
         return *this;
@@ -785,6 +857,58 @@ TemporaryMatrix<T> transpose(TemporaryMatrix<T> const & v)
     }
 }
 
+    /** create new matrix by concatenating the rows of \a a and \a b.
+        The two matrices must have the same number of columns.
+        The result is returned as a temporary matrix.
+
+    <b>\#include</b> "<a href="matrix_8hxx-source.html">vigra/matrix.hxx</a>" or<br>
+    <b>\#include</b> "<a href="linear__algebra_8hxx-source.html">vigra/linear_algebra.hxx</a>"<br>
+        Namespace: vigra::linalg
+     */
+template <class T, class C1, class C2>
+inline TemporaryMatrix<T>
+joinRows(const MultiArrayView<2, T, C1> &a, const MultiArrayView<2, T, C2> &b)
+{
+    typedef typename TemporaryMatrix<T>::difference_type Shape;
+    
+    int n = columnCount(a);
+    vigra_precondition(n == columnCount(b),
+       "joinRows(): shape mismatch.");
+    
+    int ma = rowCount(a);
+    int mb = rowCount(b);
+    TemporaryMatrix<T> t(ma + mb, n, T());
+    t.subarray(Shape(0,0), Shape(ma, n)) = a;
+    t.subarray(Shape(ma,0), Shape(ma+mb, n)) = b;
+    return t;
+}
+
+    /** create new matrix by concatenating the columns of \a a and \a b.
+        The two matrices must have the same number of rows.
+        The result is returned as a temporary matrix.
+
+    <b>\#include</b> "<a href="matrix_8hxx-source.html">vigra/matrix.hxx</a>" or<br>
+    <b>\#include</b> "<a href="linear__algebra_8hxx-source.html">vigra/linear_algebra.hxx</a>"<br>
+        Namespace: vigra::linalg
+     */
+template <class T, class C1, class C2>
+inline TemporaryMatrix<T>
+joinColumns(const MultiArrayView<2, T, C1> &a, const MultiArrayView<2, T, C2> &b)
+{
+    typedef typename TemporaryMatrix<T>::difference_type Shape;
+    
+    int m = rowCount(a);
+    vigra_precondition(m == rowCount(b),
+       "joinColumns(): shape mismatch.");
+    
+    int na = columnCount(a);
+    int nb = columnCount(b);
+    TemporaryMatrix<T> t(m, na + nb, T());
+    t.subarray(Shape(0,0), Shape(m, na)) = a;
+    t.subarray(Shape(0, na), Shape(m, na + nb)) = b;
+    return t;
+}
+
     /** add matrices \a a and \a b.
         The result is written into \a r. All three matrices must have the same shape.
 
@@ -843,6 +967,48 @@ inline TemporaryMatrix<T>
 operator+(const TemporaryMatrix<T> &a, const TemporaryMatrix<T> &b)
 {
     return const_cast<TemporaryMatrix<T> &>(a) += b;
+}
+
+    /** add scalar \a b to every element of the matrix \a a.
+        The result is returned as a temporary matrix.
+
+    <b>\#include</b> "<a href="matrix_8hxx-source.html">vigra/matrix.hxx</a>" or<br>
+    <b>\#include</b> "<a href="linear__algebra_8hxx-source.html">vigra/linear_algebra.hxx</a>"<br>
+        Namespace: vigra::linalg
+     */
+template <class T, class C>
+inline TemporaryMatrix<T>
+operator+(const MultiArrayView<2, T, C> &a, T b)
+{
+    return TemporaryMatrix<T>(a) += b;
+}
+
+template <class T>
+inline TemporaryMatrix<T>
+operator+(const TemporaryMatrix<T> &a, T b)
+{
+    return const_cast<TemporaryMatrix<T> &>(a) += b;
+}
+
+    /** add scalar \a a to every element of the matrix \a b.
+        The result is returned as a temporary matrix.
+
+    <b>\#include</b> "<a href="matrix_8hxx-source.html">vigra/matrix.hxx</a>" or<br>
+    <b>\#include</b> "<a href="linear__algebra_8hxx-source.html">vigra/linear_algebra.hxx</a>"<br>
+        Namespace: vigra::linalg
+     */
+template <class T, class C>
+inline TemporaryMatrix<T>
+operator+(T a, const MultiArrayView<2, T, C> &b)
+{
+    return TemporaryMatrix<T>(b) += a;
+}
+
+template <class T>
+inline TemporaryMatrix<T>
+operator+(T a, const TemporaryMatrix<T> &b)
+{
+    return const_cast<TemporaryMatrix<T> &>(b) += a;
 }
 
     /** subtract matrix \a b from \a a.
@@ -932,6 +1098,41 @@ inline TemporaryMatrix<T>
 operator-(const TemporaryMatrix<T> &a)
 {
     return const_cast<TemporaryMatrix<T> &>(a) *= -NumericTraits<T>::one();
+}
+
+    /** subtract scalar \a b from every element of the matrix \a a.
+        The result is returned as a temporary matrix.
+
+    <b>\#include</b> "<a href="matrix_8hxx-source.html">vigra/matrix.hxx</a>" or<br>
+    <b>\#include</b> "<a href="linear__algebra_8hxx-source.html">vigra/linear_algebra.hxx</a>"<br>
+        Namespace: vigra::linalg
+     */
+template <class T, class C>
+inline TemporaryMatrix<T>
+operator-(const MultiArrayView<2, T, C> &a, T b)
+{
+    return TemporaryMatrix<T>(a) -= b;
+}
+
+template <class T>
+inline TemporaryMatrix<T>
+operator-(const TemporaryMatrix<T> &a, T b)
+{
+    return const_cast<TemporaryMatrix<T> &>(a) -= b;
+}
+
+    /** subtract every element of the matrix \a b from scalar \a a.
+        The result is returned as a temporary matrix.
+
+    <b>\#include</b> "<a href="matrix_8hxx-source.html">vigra/matrix.hxx</a>" or<br>
+    <b>\#include</b> "<a href="linear__algebra_8hxx-source.html">vigra/linear_algebra.hxx</a>"<br>
+        Namespace: vigra::linalg
+     */
+template <class T, class C>
+inline TemporaryMatrix<T>
+operator-(T a, const MultiArrayView<2, T, C> &b)
+{
+    return TemporaryMatrix<T>(b.shape(), a) -= b;
 }
 
     /** calculate the inner product of two matrices representing vectors.
@@ -1104,7 +1305,25 @@ outer(const MultiArrayView<2, T, C1> &x)
     return ret;
 }
 
-	/** multiply matrix \a a with scalar \a b.
+template <class T>
+class PointWise
+{
+  public:
+    T & t;
+    
+    PointWise(T & it)
+    : t(it)
+    {}
+};
+
+template <class T>
+PointWise<T> pointWise(T & t)
+{
+    return PointWise<T>(t);
+}
+
+
+    /** multiply matrix \a a with scalar \a b.
         The result is written into \a r. \a a and \a r must have the same shape.
 
     <b>\#include</b> "<a href="matrix_8hxx-source.html">vigra/matrix.hxx</a>" or<br>
@@ -1217,9 +1436,34 @@ template <class T, class C1, class C2>
 inline TemporaryMatrix<T>
 pmul(const MultiArrayView<2, T, C1> &a, const MultiArrayView<2, T, C2> &b)
 {
-    TemporaryMatrix<T> ret(rowCount(a), columnCount(b));
+    TemporaryMatrix<T> ret(a.shape());
     pmul(a, b, ret);
     return ret;
+}
+
+    /** multiply matrices \a a and \a b pointwise.
+        \a a and \a b must have matching shapes.
+        The result is returned as a temporary matrix.
+        
+        Usage:
+        
+        \code
+        Matrix<double> a(m,n), b(m,n);
+        
+        Matrix<double> c = a * pointWise(b);
+        // is equivalent to
+        // Matrix<double> c = pmul(a, b);
+        \endcode
+
+    <b>\#include</b> "<a href="matrix_8hxx-source.html">vigra/matrix.hxx</a>" or<br>
+    <b>\#include</b> "<a href="linear__algebra_8hxx-source.html">vigra/linear_algebra.hxx</a>"<br>
+        Namespace: vigra::linalg
+     */
+template <class T, class C, class U>
+inline TemporaryMatrix<T>
+operator*(const MultiArrayView<2, T, C> &a, PointWise<U> b)
+{
+    return pmul(a, b.t);
 }
 
     /** multiply matrix \a a with scalar \a b.
@@ -1261,7 +1505,7 @@ template <class T>
 inline TemporaryMatrix<T>
 operator*(T a, const TemporaryMatrix<T> &b)
 {
-    return const_cast<TemporaryMatrix<T> &>(b) *= b;
+    return const_cast<TemporaryMatrix<T> &>(b) *= a;
 }
 
     /** multiply matrix \a a with TinyVector \a b.
@@ -1379,9 +1623,34 @@ template <class T, class C1, class C2>
 inline TemporaryMatrix<T>
 pdiv(const MultiArrayView<2, T, C1> &a, const MultiArrayView<2, T, C2> &b)
 {
-    TemporaryMatrix<T> ret(rowCount(a), columnCount(b));
+    TemporaryMatrix<T> ret(a.shape());
     pdiv(a, b, ret);
     return ret;
+}
+
+    /** divide matrices \a a and \a b pointwise.
+        \a a and \a b must have matching shapes.
+        The result is returned as a temporary matrix.
+        
+        Usage:
+        
+        \code
+        Matrix<double> a(m,n), b(m,n);
+        
+        Matrix<double> c = a / pointWise(b);
+        // is equivalent to
+        // Matrix<double> c = pdiv(a, b);
+        \endcode
+
+    <b>\#include</b> "<a href="matrix_8hxx-source.html">vigra/matrix.hxx</a>" or<br>
+    <b>\#include</b> "<a href="linear__algebra_8hxx-source.html">vigra/linear_algebra.hxx</a>"<br>
+        Namespace: vigra::linalg
+     */
+template <class T, class C, class U>
+inline TemporaryMatrix<T>
+operator/(const MultiArrayView<2, T, C> &a, PointWise<U> b)
+{
+    return pdiv(a, b.t);
 }
 
     /** divide matrix \a a by scalar \a b.
@@ -1405,6 +1674,20 @@ operator/(const TemporaryMatrix<T> &a, T b)
     return const_cast<TemporaryMatrix<T> &>(a) /= b;
 }
 
+    /** Create a matrix whose elements are the quotients between scalar \a a and
+        matrix \a b. The result is returned as a temporary matrix.
+
+    <b>\#include</b> "<a href="matrix_8hxx-source.html">vigra/matrix.hxx</a>" or<br>
+    <b>\#include</b> "<a href="linear__algebra_8hxx-source.html">vigra/linear_algebra.hxx</a>"<br>
+        Namespace: vigra::linalg
+     */
+template <class T, class C>
+inline TemporaryMatrix<T>
+operator/(T a, const MultiArrayView<2, T, C> &b)
+{
+    return TemporaryMatrix<T>(b.shape(), a) / pointWise(b);
+}
+
 //@}
 
 } // namespace linalg
@@ -1415,6 +1698,7 @@ using linalg::Matrix;
 using linalg::identityMatrix;
 using linalg::diagonalMatrix;
 using linalg::transpose;
+using linalg::pointWise;
 using linalg::dot;
 using linalg::cross;
 using linalg::outer;
@@ -1431,19 +1715,23 @@ using linalg::isSymmetric;
 /********************************************************/
 
 template <class T, class ALLOC>
-struct NormTraits<linalg::Matrix<T, ALLOC> >
+struct NormTraits<Matrix<T, ALLOC> >
+: public NormTraits<MultiArray<2, T, ALLOC> >
 {
-    typedef linalg::Matrix<T, ALLOC> Type;
-    typedef typename Type::SquaredNormType SquaredNormType;
-    typedef typename Type::NormType NormType;
+    typedef NormTraits<MultiArray<2, T, ALLOC> > BaseType;
+    typedef Matrix<T, ALLOC>                     Type;
+    typedef typename BaseType::SquaredNormType   SquaredNormType;
+    typedef typename BaseType::NormType          NormType;
 };
 
 template <class T, class ALLOC>
 struct NormTraits<linalg::TemporaryMatrix<T, ALLOC> >
+: public NormTraits<Matrix<T, ALLOC> >
 {
-    typedef linalg::TemporaryMatrix<T, ALLOC> Type;
-    typedef typename Type::SquaredNormType SquaredNormType;
-    typedef typename Type::NormType NormType;
+    typedef NormTraits<Matrix<T, ALLOC> >        BaseType;
+    typedef linalg::TemporaryMatrix<T, ALLOC>    Type;
+    typedef typename BaseType::SquaredNormType   SquaredNormType;
+    typedef typename BaseType::NormType          NormType;
 };
 
 /** \addtogroup LinearAlgebraFunctions Matrix functions
