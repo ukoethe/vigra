@@ -148,7 +148,7 @@ void VolumeImportInfo::importImpl(MultiArray <3, T, Allocator> &volume) const
 #endif
 
         vigra_postcondition(
-            volume.size() == size(), "imported volume has wrong size");
+            volume.shape() == size(), "imported volume has wrong size");
     }
     else
     {
