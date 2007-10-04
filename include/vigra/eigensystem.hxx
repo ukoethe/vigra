@@ -1066,6 +1066,59 @@ nonsymmetricEigensystem(MultiArrayView<2, T, C1> const & a,
     return true;
 }
 
+
+    /** Compute the determinant of a square, but
+        not necessarily symmetric matrix.
+
+    <b>\#include</b> "<a href="eigensystem_8hxx-source.html">vigra/eigensystem.hxx</a>" or<br>
+    <b>\#include</b> "<a href="linear__algebra_8hxx-source.html">vigra/linear_algebra.hxx</a>"<br>
+        Namespaces: vigra and vigra::linalg
+     */
+template <class T, class C1>
+T
+determinant(MultiArrayView<2, T, C1> const & a)
+{
+    unsigned int n = columnCount(a);
+    vigra_precondition(rowCount(a) == n,
+               "determinant(): Square matrix required.");    
+
+    if(n == 1)
+        return a(0,0);
+    if(n == 2)
+        return a(0,0)*a(1,1) - a(0,1)*a(1,0);
+    if(isSymmetric(a))
+    {
+        Matrix<T> ev(a);
+        Matrix<T> de(n, 2);
+        detail::housholderTridiagonalization(ev, de);
+        if(!detail::tridiagonalMatrixEigensystem(de, ev))
+            vigra_precondition(false,
+               "determinant(): Failure in eigenvalue computation.");
+        T det = de(0,0);
+        for(unsigned int k=1; k<n; ++k)
+            det *= de(k,0);
+        return det;
+    }
+    else
+    {
+        Matrix<T> H(a), ev(a.shape());
+        Matrix<T> de(n, 2);
+        detail::nonsymmetricHessenbergReduction(H, ev);
+        if(!detail::hessenbergQrDecomposition(H, ev, de))
+             vigra_precondition(false,
+               "determinant(): Failure in eigenvalue computation.");
+
+        T re = de(0,0), im = de(0,1);
+        for(unsigned int k=1; k<n; ++k)
+        {
+            T ro = re;
+            re = re*de(k,0) - im*de(k,1);
+            im = ro*de(k,1) + im*de(k,0);
+        }
+        return re;
+    }
+}
+
     /** Compute the roots of a polynomial using the eigenvalue method.
 
         \a poly is a real polynomial (compatible to \ref vigra::PolynomialView),
@@ -1159,6 +1212,7 @@ bool polynomialRealRootsEigenvalueMethod(POLYNOMIAL const & p, VECTOR & roots)
 
 using linalg::symmetricEigensystem;
 using linalg::nonsymmetricEigensystem;
+using linalg::determinant;
 using linalg::polynomialRootsEigenvalueMethod;
 using linalg::polynomialRealRootsEigenvalueMethod;
 
