@@ -104,7 +104,7 @@ TemporaryMatrix<T> inverse(const TemporaryMatrix<T> &v)
     const unsigned int n = v.rowCount();
     vigra_precondition(n == v.columnCount(),
        "inverse(): matrix must be square.");
-    vigra_precondition(linearSolve(v, identityMatrix<T>(n), v),
+    vigra_precondition(linearSolve(v, identityMatrix<T>(n), const_cast<TemporaryMatrix<T> &>(v)),
         "inverse(): matrix is not invertible.");
     return v;
 }
@@ -137,15 +137,15 @@ void qrDecomposition(MultiArrayView<2, T, C1> const & a,
     // the original matrix has columns.
     const unsigned int rows = rowCount(a);
     const unsigned int cols = columnCount(a);
-    vigra_precondition(cols == columnCount(r) && cols == rowCount(r) &&
+    vigra_precondition(cols == columnCount(r) && rows == rowCount(r) &&
                        cols == columnCount(q) && cols == rowCount(q),
                        "qrDecomposition(): Matrix shape mismatch.");
 
     identityMatrix(q);
     r.copy(a);   // does nothing if &r == &a
 
-    for(unsigned int k = 0; (k < cols) && (k < rows - 1); ++k) {
-
+    for(unsigned int k = 0; (k < cols) && (k < rows - 1); ++k) 
+    {
         const unsigned int rows_left = rows - k;
         const unsigned int cols_left = cols - k;
 
@@ -167,8 +167,8 @@ void qrDecomposition(MultiArrayView<2, T, C1> const & a,
         const T scal = (divisor == 0) ? 0.0 : 2.0 / divisor;
 
         // apply householder elimination on rsub
-        for(unsigned int i = 0; i < cols_left; ++i) {
-
+        for(unsigned int i = 0; i < cols_left; ++i) 
+        {
             // compute the inner product of the i'th column of rsub with u
             T sum = dot(u, rsub.bindOuter(i));
 
@@ -182,8 +182,8 @@ void qrDecomposition(MultiArrayView<2, T, C1> const & a,
         MultiArrayView <2, T, C3 > qsub = q.subarray(qul, q.shape());
 
         // apply the (self-inverse) householder matrix on q
-        for(unsigned int i = 0; i < cols; ++i) {
-
+        for(unsigned int i = 0; i < cols; ++i) 
+        {
             // compute the inner product of the i'th row of q with u
             T sum = dot(qsub.bindInner(i), u);
 
