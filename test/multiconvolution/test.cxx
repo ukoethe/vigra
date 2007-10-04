@@ -479,10 +479,10 @@ struct MultiArraySeparableConvolutionTest
 
   void makeWedge( Image3D &image )
   {
-    const Size3 size = image.shape();
-    const int width = size[0];
-    const int height = size[1];
-    const int depth = size[2];
+    const Size3 shape = image.shape();
+    const int width = shape[0];
+    const int height = shape[1];
+    const int depth = shape[2];
     for( int z = 0; z < depth; ++z ) 
     {
       for( int y = 0; y < height; ++y ) 
@@ -500,10 +500,10 @@ struct MultiArraySeparableConvolutionTest
   void makeBox( Image3D &image )
   {
     const int b = 8;
-    const Size3 size = image.shape();
-    const int width = size[0];
-    const int height = size[1];
-    const int depth = size[2];
+    const Size3 shape = image.shape();
+    const int width = shape[0];
+    const int height = shape[1];
+    const int depth = shape[2];
     for( int z = 0; z < depth; ++z ) 
     {
       for( int y = 0; y < height; ++y ) 
@@ -529,11 +529,11 @@ struct MultiArraySeparableConvolutionTest
 
   void test_1DValidity( const Image3D &src, float ksize )
   {
-    Image3D d1( src.size() );
-    Image3D dn( src.size() );
-    Image3D dest3( src.size() );
+    Image3D d1( src.shape() );
+    Image3D dn( src.shape() );
+    Image3D dest3( src.shape() );
 
-    int depth = src.size()[2];
+    int depth = src.shape()[2];
 
     for( int d = 0; d < 3; ++d ) 
     {
@@ -558,10 +558,10 @@ struct MultiArraySeparableConvolutionTest
 
   void test_1DValidityB( const Image3D &src, float ksize )
   {
-    Image3D dst1( src.size() );
-    Image3D dst2( src.size() );
+    Image3D dst1( src.shape() );
+    Image3D dst2( src.shape() );
 
-    const int depth = src.size()[2];
+    const int depth = src.shape()[2];
 
     vigra::Kernel1D<float> kernx;
     vigra::Kernel1D<float> kerny;
@@ -612,10 +612,10 @@ struct MultiArraySeparableConvolutionTest
 
   void test_2DValidity( const Image3D &src, float ksize )
   {
-    Image3D d2( src.size() );
-    Image3D dn( src.size() );
+    Image3D d2( src.shape() );
+    Image3D dn( src.shape() );
 
-    int depth = src.size()[2];
+    int depth = src.shape()[2];
 
     std::vector<vigra::Kernel1D<float> > kernels( 3 );
     kernels[0].initGaussian( ksize );
@@ -645,8 +645,8 @@ struct MultiArraySeparableConvolutionTest
 
   void test_inplacenessN( const Image3D &src, float ksize )
   {
-    Image3D da( src.size() );
-    Image3D db( src.size() );
+    Image3D da( src.shape() );
+    Image3D db( src.shape() );
 
     std::vector<vigra::Kernel1D<float> > kernels( 3 );
     kernels[0].initGaussian( ksize );
@@ -672,8 +672,8 @@ struct MultiArraySeparableConvolutionTest
 
   void test_inplaceness1( const Image3D &src, float ksize, bool useDerivative )
   {
-    Image3D da( src.size() );
-    Image3D db( src.size() );
+    Image3D da( src.shape() );
+    Image3D db( src.shape() );
 
     Kernel1D<float> kernel;
     if( ! useDerivative )
@@ -709,8 +709,8 @@ struct MultiArraySeparableConvolutionTest
   {
     const double sigma = kernelSize/2;
     const int b = useGaussian ? int( 0.5 + 3*sigma ) : 1;
-    Image3D src( base.size() );
-    Image3x3 grad( src.size() );
+    Image3D src( base.shape() );
+    Image3x3 grad( src.shape() );
     makeWedge( src );
 
     if( ! useGaussian )
@@ -724,10 +724,10 @@ struct MultiArraySeparableConvolutionTest
     v[0] = 1; v[1] = 1; v[2] = 1;
     const float v2 = dot(v,v);
 
-    const Size3 size = src.shape();
-    const int width = size[0];
-    const int height = size[1];
-    const int depth = size[2];
+    const Size3 shape = src.shape();
+    const int width = shape[0];
+    const int height = shape[1];
+    const int depth = shape[2];
     for( int z = b; z < depth-b; ++z ) 
     {
       for( int y = b; y < height-b; ++y ) 
@@ -745,8 +745,8 @@ struct MultiArraySeparableConvolutionTest
   void test_gradient_magnitude( const Image3D &src )
   {
     // just a test for mere compileability
-    Image3D dst( src.size() );
-    Image3x3 grad( src.size() );
+    Image3D dst( src.shape() );
+    Image3x3 grad( src.shape() );
     symmetricGradientMultiArray( srcMultiArrayRange(src),
                                  destMultiArray(grad) );
 
@@ -757,13 +757,13 @@ struct MultiArraySeparableConvolutionTest
 
   //--------------------------------------------
 
-  const Size3 size;
+  const Size3 shape;
   Image3D srcImage;
   const float kernelSize;
 
   MultiArraySeparableConvolutionTest()
-    : size( 60, 70, 50 ),
-      srcImage( size ),
+    : shape( 60, 70, 50 ),
+      srcImage( shape ),
       kernelSize( 1.8 )
   {
     makeBox( srcImage );
