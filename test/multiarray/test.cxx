@@ -158,6 +158,69 @@ public:
         shouldEqual (array [traverser], 222);
         shouldEqual (array (1,1,1), 222);
     }
+
+    void testEquality ()
+    {
+        typedef difference3_type Shape;
+        should(array3 == array3);
+        should(array3 != array3.subarray(Shape(1,1,1), Shape(2,2,2)));
+        should(array3.subarray(Shape(0,0,0), Shape(10,1,1)) != array3.subarray(Shape(0,1,0), Shape(10,2,1)));
+        for(unsigned int k=0; k<10; ++k)
+            array3(k,0,0) += 10;
+        should(array3.subarray(Shape(0,0,0), Shape(10,1,1)) == array3.subarray(Shape(0,1,0), Shape(10,2,1)));
+    }
+    
+    void testNorm ()
+    {
+        shouldEqual(array3.squaredNorm(), 332833500);
+        shouldEqual(array3.norm(), std::sqrt(332833500.0));
+        shouldEqual(array3.squaredNorm(), squaredNorm(array3));
+        shouldEqual(array3.norm(), norm(array3));
+    }
+    
+    void testScanOrderAccess()
+    {
+        shouldEqual(array3.size(), 1000);
+        for(unsigned int k=0; k< array3.size(); ++k)
+            shouldEqual(array3[k], k);
+        MultiArrayView <2, scalar_type, StridedArrayTag>
+            array = array3.bindInner(2);
+        shouldEqual(array.size(), 100);
+        for(unsigned int k=0; k< array.size(); ++k)
+            shouldEqual(array[k], 10*k+2);
+        typedef MultiArrayView <2, scalar_type, UnstridedArrayTag>::difference_type Shape;
+        MultiArrayView <2, scalar_type, UnstridedArrayTag>
+            subarray = array3.bindOuter(2).subarray(Shape(1,0), Shape(10,9));
+        shouldEqual(subarray.size(), 81);
+        for(unsigned int k=0, l=200; k< subarray.size(); ++k, ++l)
+        {
+            if(k%9 == 0)
+                ++l;
+            shouldEqual(subarray[k], l);
+        }
+    }
+    
+    void testAssignmentAndReset()
+    {
+        typedef MultiArrayView <3, scalar_type, UnstridedArrayTag>::difference_type Shape;
+        MultiArrayView <3, scalar_type, UnstridedArrayTag> array;
+        array = array3;
+        should(array3 == array);
+        try {
+            array = array3.subarray(Shape(0,0,0), Shape(10,1,1));
+            failTest("no exception thrown");
+        }
+        catch(vigra::ContractViolation & c)
+        {
+            std::string expected("\nPrecondition violation!\nMultiArrayView::operator=(MultiArrayView const &) size mismatch");
+            std::string message(c.what());
+            should(0 == expected.compare(message.substr(0,expected.size())));
+        }
+        array.reset(array3.subarray(Shape(0,0,0), Shape(10,1,1)));
+        array = array3.subarray(Shape(0,1,0), Shape(10,2,1)); // should overwrite the data
+        for(unsigned int k=0; k<10; ++k)
+            shouldEqual(array3(k,0,0), array3(k,1,0));
+    }
 };
 
 
@@ -398,11 +461,16 @@ public:
 
     void test_reshape ()
     {
+        shouldEqual(a3(0,0), 1);
+        a3.reshape(a3.shape());
+        shouldEqual(a3(0,0), 0);
+    
         a3.reshape (shape3_t(20,30,50));
 
         shouldEqual (a3.shape (0), 20);
         shouldEqual (a3.shape (1), 30);
         shouldEqual (a3.shape (2), 50);
+        shouldEqual(a3(0,0), 0);
     }
 
     void test_subarray ()
@@ -581,7 +649,7 @@ struct MultiImpexTest
         shouldEqual(result(0,1,2), 3);
         shouldEqual(result(0,1,3), 4);
 
-		exportVolume(array, std::string("impex/test"), std::string(".png"));
+        exportVolume(array, std::string("impex/test"), std::string(".png"));
         
         importVolume(result, std::string("impex/test"), std::string(".png"));
         
@@ -788,7 +856,7 @@ struct ImageTest
         img.init(0);
         for(; i != img.end(); ++i)
         {
-			should(acc(i) == Value(0));
+            should(acc(i) == Value(0));
         }
         img(1,1) = Value(200);
         img1 = img;
@@ -906,6 +974,10 @@ struct MultiArrayDataTestSuite
         add( testCase( &MultiArrayDataTest::test_bindAt ) );
         add( testCase( &MultiArrayDataTest::test_bind ) );
         add( testCase( &MultiArrayDataTest::test_bind0 ) );
+        add( testCase( &MultiArrayDataTest::testEquality ) );
+        add( testCase( &MultiArrayDataTest::testNorm ) );
+        add( testCase( &MultiArrayDataTest::testScanOrderAccess ) );
+        add( testCase( &MultiArrayDataTest::testAssignmentAndReset ) );
         add( testCase( &MultiArrayNavigatorTest::testNavigator ) );
     }
 };
