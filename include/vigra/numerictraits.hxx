@@ -1033,9 +1033,9 @@ struct Error_NormTraits_not_specialized_for_this_case { };
 template<class T>
 struct NormTraits
 {
-    typedef T                                                            Type;
-    typedef typename T::SquaredNormType                                  SquaredNormType;
-    typedef typename SquareRootTraits<SquaredNormType>::SquareRootResult NormType;
+    typedef T                                                Type;
+    typedef Error_NormTraits_not_specialized_for_this_case   SquaredNormType;
+    typedef Error_NormTraits_not_specialized_for_this_case   NormType;
 };
 
 #define VIGRA_DEFINE_NORM_TRAITS(T) \
