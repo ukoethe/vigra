@@ -53,6 +53,7 @@
 #include "vigra/rational.hxx"
 #include "vigra/fixedpoint.hxx"
 #include "vigra/linear_algebra.hxx"
+#include "vigra/singular_value_decomposition.hxx"
 
 static double coefficients[][12] =
 {
@@ -808,6 +809,7 @@ struct FixedPointTest
 struct LinalgTest
 {
     typedef vigra::Matrix<double> Matrix;
+    typedef Matrix::difference_type Shape;
 
     unsigned int size, iterations;
 
@@ -865,16 +867,20 @@ struct LinalgTest
         std::string sref(" 1.0000  5.0000 \n 3.0000  2.0000 \n 4.0000  7.0000 \n");
         unsigned int r = 3, c = 2;
 
-        Matrix a(r, c, data);
+        Matrix a(r, c, data), zero(r, c);
         shouldEqual(a.rowCount(), r);
         shouldEqual(a.columnCount(), c);
         shouldEqual(a.elementCount(), r*c);
         shouldEqual(a.squaredNorm(), 104.0);
         shouldEqual(a.norm(), std::sqrt(104.0));
+        shouldEqual(a.squaredNorm(), squaredNorm(a));
+        shouldEqual(a.norm(), norm(a));
         shouldEqual(rowCount(a), r);
         shouldEqual(columnCount(a), c);
-        shouldEqual(squaredNorm(a), 104.0);
-        shouldEqual(norm(a), std::sqrt(104.0));
+
+        for(unsigned int i=0, k=0; i<r; ++i)
+            for(unsigned int j=0; j<c; ++j, ++k)
+                shouldEqual(zero(i,j), 0.0);
 
         std::stringstream s;
         s << a;
@@ -906,13 +912,35 @@ struct LinalgTest
         Matrix b = a;
         shouldEqual(b.rowCount(), r);
         shouldEqual(b.columnCount(), c);
-        for(unsigned int i=0, k=0; i<r; ++i)
-            for(unsigned int j=0; j<c; ++j, ++k)
-                shouldEqual(b(i,j), data[k]);
+        shouldEqualSequence(a.begin(), a.end(), b.begin());
+
+        b.init(0.0);
+        should(b == zero);
+        
+        Matrix::iterator ib = b.begin();
         b = a;
+        shouldEqual(ib, b.begin()); 
+        shouldEqualSequence(a.begin(), a.end(), b.begin());
+
+        b = 4.0 + a;
         for(unsigned int i=0, k=0; i<r; ++i)
             for(unsigned int j=0; j<c; ++j, ++k)
-                shouldEqual(b(i,j), data[k]);
+                shouldEqual(b(i,j), 4.0+data[k]);
+
+        b = a + 3.0;
+        for(unsigned int i=0, k=0; i<r; ++i)
+            for(unsigned int j=0; j<c; ++j, ++k)
+                shouldEqual(b(i,j), data[k]+3.0);
+
+        b = 4.0 - a;
+        for(unsigned int i=0, k=0; i<r; ++i)
+            for(unsigned int j=0; j<c; ++j, ++k)
+                shouldEqual(b(i,j), 4.0-data[k]);
+
+        b = a - 3.0;
+        for(unsigned int i=0, k=0; i<r; ++i)
+            for(unsigned int j=0; j<c; ++j, ++k)
+                shouldEqual(b(i,j), data[k]-3.0);
 
         b = 4.0 * a;
         for(unsigned int i=0, k=0; i<r; ++i)
@@ -922,12 +950,17 @@ struct LinalgTest
         b = a * 3.0;
         for(unsigned int i=0, k=0; i<r; ++i)
             for(unsigned int j=0; j<c; ++j, ++k)
-                shouldEqual(b(i,j), 3.0*data[k]);
+                shouldEqual(b(i,j), data[k]*3.0);
 
-        b = a / 5.0;
+        b = 4.0 / a;
         for(unsigned int i=0, k=0; i<r; ++i)
             for(unsigned int j=0; j<c; ++j, ++k)
-                shouldEqual(b(i,j), data[k] / 5.0);
+                shouldEqual(b(i,j), 4.0/data[k]);
+
+        b = a / 3.0;
+        for(unsigned int i=0, k=0; i<r; ++i)
+            for(unsigned int j=0; j<c; ++j, ++k)
+                shouldEqual(b(i,j), data[k] / 3.0);
 
         b = a + a;
         for(unsigned int i=0, k=0; i<r; ++i)
@@ -943,6 +976,16 @@ struct LinalgTest
         for(unsigned int i=0, k=0; i<r; ++i)
             for(unsigned int j=0; j<c; ++j, ++k)
                 shouldEqual(b(i,j), -data[k]);
+
+        b = a * pointWise(a);
+        for(unsigned int i=0, k=0; i<r; ++i)
+            for(unsigned int j=0; j<c; ++j, ++k)
+                shouldEqual(b(i,j), data[k] * data[k]);
+
+        b = a / pointWise(a);
+        for(unsigned int i=0; i<r; ++i)
+            for(unsigned int j=0; j<c; ++j)
+                shouldEqual(b(i,j), 1.0);
 
         Matrix at = transpose(a);
         shouldEqual(at.rowCount(), c);
@@ -1133,6 +1176,45 @@ struct LinalgTest
             shouldEqualSequenceTolerance(ae.data(), ae.data()+size*size, a.data(), epsilon);
         }
     }
+    
+    void testDeterminant()
+    {
+        double ds2[] = {1, 2, 2, 1};
+        double dns2[] = {1, 2, 3, 1};
+        Matrix ms2(Shape(2,2), ds2);
+        Matrix mns2(Shape(2,2), dns2);
+        double eps = 1e-12;
+        shouldEqualTolerance(determinant(ms2), -3.0, eps);
+        shouldEqualTolerance(determinant(mns2), -5.0, eps);
+
+        double ds3[] = {1, 2, 3, 2, 3, 1, 3, 1, 2};
+        double dns3[] = {1, 2, 3, 5, 3, 1, 3, 1, 2};
+        Matrix ms3(Shape(3,3), ds3);
+        Matrix mns3(Shape(3,3), dns3);
+        shouldEqualTolerance(determinant(ms3), -18.0, eps);
+        shouldEqualTolerance(determinant(mns3), -21.0, eps);
+    }
+    
+    void testSVD()
+    {
+        int m = 6, n = 4;
+        Matrix a(m, n);
+        for(int i1= 0; i1 < m; i1++)
+            for(int i2= 0; i2 < n; i2++)
+                a(i1, i2)= ((float)std::rand()-RAND_MAX/2.0)/10000.0;
+	    Matrix u(m, n);
+	    Matrix v(n, n);
+	    Matrix S(n, 1);
+
+	    unsigned int rank = singularValueDecomposition(a, u, S, v);
+	    shouldEqual(rank, n);
+
+        double eps = 1e-10;
+	    shouldEqualTolerance(norm(a-u*diagonalMatrix(S)*transpose(v)), 0.0, eps);
+	    shouldEqualTolerance(norm(vigra::identityMatrix<double>(4) - transpose(u)*u), 0.0, eps);
+	    shouldEqualTolerance(norm(vigra::identityMatrix<double>(4) - transpose(v)*v), 0.0, eps);
+	    shouldEqualTolerance(norm(vigra::identityMatrix<double>(4) - v*transpose(v)), 0.0, eps);
+    }
 };
 
 
@@ -1209,6 +1291,8 @@ struct MathTestSuite
         add( testCase(&LinalgTest::testInverse));
         add( testCase(&LinalgTest::testSymmetricEigensystem));
         add( testCase(&LinalgTest::testNonsymmetricEigensystem));
+        add( testCase(&LinalgTest::testDeterminant));
+        add( testCase(&LinalgTest::testSVD));
 
         add( testCase(&FixedPointTest::testConstruction));
         add( testCase(&FixedPointTest::testComparison));
