@@ -77,6 +77,52 @@ TinyVector <ptrdiff_t, N> defaultStride(const TinyVector <ptrdiff_t, N> &shape)
 
 /********************************************************/
 /*                                                      */
+/*                 ScanOrderToOffset                    */
+/*                                                      */
+/********************************************************/
+
+/* transforms an index in scan order sense to a pointer offset in a possibly 
+   strided, multi-dimensional array.
+
+    Namespace: vigra::detail
+*/
+
+template <unsigned int K>
+struct ScanOrderToOffset
+{
+    template <int N>
+    static ptrdiff_t 
+    exec(int d, const TinyVector <ptrdiff_t, N> &shape, const TinyVector <ptrdiff_t, N> & stride)
+    {
+        return stride[N-K] * (d % shape[N-K]) + 
+               ScanOrderToOffset<K-1>::exec(d / shape[N-K], shape, stride);
+    }
+};
+
+template <>
+struct ScanOrderToOffset<1u>
+{
+    template <int N>
+    static ptrdiff_t 
+    exec(int d, const TinyVector <ptrdiff_t, N> &shape, const TinyVector <ptrdiff_t, N> & stride)
+    {
+        return stride[N-1] * d;
+    }
+};
+
+template <>
+struct ScanOrderToOffset<0u>
+{
+    template <int N>
+    static ptrdiff_t 
+    exec(int d, const TinyVector <ptrdiff_t, N> &shape, const TinyVector <ptrdiff_t, N> & stride)
+    {
+        return 0;
+    }
+};
+
+/********************************************************/
+/*                                                      */
 /*                     MaybeStrided                     */
 /*                                                      */
 /********************************************************/
@@ -268,6 +314,32 @@ squaredNormOfMultiArray(SrcIterator s, Shape const & shape, T & result, MetaInt<
     }
 }
 
+template <class SrcIterator, class Shape, class DestIterator>
+bool
+equalityOfMultiArrays(SrcIterator s, Shape const & shape, DestIterator d, MetaInt<0>)
+{    
+    SrcIterator send = s + shape[0];
+    for(; s != send; ++s, ++d)
+    {
+        if(!(*s == *d))
+            return false;
+    }
+    return true;
+}
+
+template <class SrcIterator, class Shape, class DestIterator, int N>
+bool
+equalityOfMultiArrays(SrcIterator s, Shape const & shape, DestIterator d, MetaInt<N>)
+{    
+    SrcIterator send = s + shape[N];
+    for(; s != send; ++s, ++d)
+    {
+        if(!equalityOfMultiArrays(s.begin(), shape, d.begin(), MetaInt<N-1>()))
+            return false;
+    }
+    return true;
+}
+
 
 } // namespace detail
 
@@ -282,6 +354,30 @@ template <unsigned int N, class T, class C = UnstridedArrayTag>
 class MultiArrayView;
 template <unsigned int N, class T, class A = std::allocator<T> >
 class MultiArray;
+
+/********************************************************/
+/*                                                      */
+/*                       NormTraits                     */
+/*                                                      */
+/********************************************************/
+
+template <unsigned int N, class T, class C>
+struct NormTraits<MultiArrayView<N, T, C> >
+{
+    typedef MultiArrayView<N, T, C>                                      Type;
+    typedef typename NormTraits<T>::SquaredNormType SquaredNormType;
+    typedef typename SquareRootTraits<SquaredNormType>::SquareRootResult NormType;
+};
+
+template <unsigned int N, class T, class A>
+struct NormTraits<MultiArray<N, T, A> >
+: public NormTraits<MultiArrayView<N, T, UnstridedArrayTag> >
+{
+    typedef NormTraits<MultiArrayView<N, T, UnstridedArrayTag> > BaseType;
+    typedef MultiArray<N, T, A>                                  Type;
+    typedef typename BaseType::SquaredNormType                   SquaredNormType;
+    typedef typename BaseType::NormType                          NormType;
+};
 
 /** \brief Base class for, and view to, \ref vigra::MultiArray.
 
@@ -374,20 +470,12 @@ public:
          */
     typedef MultiArray <N, T> matrix_type;
 
-        /** the squared norm type (return type of array.squaredNorm()).
-         */
-    typedef typename NormTraits<T>::SquaredNormType SquaredNormType;
-
-        /** the norm type (return type of array.norm()).
-         */
-    typedef typename SquareRootTraits<SquaredNormType>::SquareRootResult NormType;
-
 protected:
 
     typedef typename difference_type::value_type diff_zero_t;
 
         /** the shape of the image pointed to is stored here.
-	    */
+        */
     difference_type m_shape;
 
         /** the strides (offset of a sample to the next) for every dimension
@@ -450,6 +538,24 @@ public:
     const_reference operator[] (const difference_type &d) const
     {
         return m_ptr [dot (d, m_stride)];
+    }
+    
+        /** array access in scan-order sense.
+            Mostly useful to support standard indexing for 1-dimensional multi-arrays,
+            but works for any N.
+         */
+    reference operator[](int d)
+    {
+        return m_ptr [detail::ScanOrderToOffset<N>::exec(d, m_shape, m_stride)];
+    }
+    
+        /** array access in scan-order sense.
+            Mostly useful to support standard indexing for 1-dimensional multi-arrays,
+            but works for any N.
+         */
+    const_reference operator[](int d) const
+    {
+        return m_ptr [detail::ScanOrderToOffset<N>::exec(d, m_shape, m_stride)];
     }
 
         /** 1D array access. Use only if N == 1.
@@ -610,14 +716,15 @@ public:
         return ret;
     }
 
-        /** return the array's size.
+        /** number of the elements in the array.
+            Same as <tt>elementCount()</tt>. Mostly useful to support the std::vector interface.
          */
-    const size_type & size () const
+    std::size_t size () const
     {
-        return m_shape;
+        return elementCount();
     }
 
-        /** return the array's shape (same as the <tt>size()</tt>).
+        /** return the array's shape.
          */
     const difference_type & shape () const
     {
@@ -653,6 +760,25 @@ public:
         return m_stride [n];
     }
 
+        /** check whether two arrays are elementwise equal.
+         */
+    template <class U, class C1>
+    bool operator==(MultiArrayView<N, U, C1> const & rhs) const
+    {
+        if(this->shape() != rhs.shape())
+            return false;
+        return detail::equalityOfMultiArrays(traverser_begin(), shape(), rhs.traverser_begin(), MetaInt<actual_dimension-1>()); 
+    }
+
+        /** check whether two arrays are not elementwise equal. 
+            Also true when the two arrays have different shapes.
+         */
+    template <class U, class C1>
+    bool operator!=(MultiArrayView<N, U, C1> const & rhs) const
+    {
+        return !operator==(rhs);
+    }
+
         /** check whether the given point is in the array range.
          */
     bool isInside (difference_type const & p) const
@@ -665,8 +791,9 @@ public:
 
         /** return the squared norm of the array (sum of squares of the array elements).
          */
-    SquaredNormType squaredNorm() const
+    typename NormTraits<MultiArrayView>::SquaredNormType squaredNorm() const
     {
+        typedef typename NormTraits<MultiArrayView>::SquaredNormType SquaredNormType;
         SquaredNormType res = NumericTraits<SquaredNormType>::zero();  
         detail::squaredNormOfMultiArray(traverser_begin(), shape(), res, MetaInt<actual_dimension-1>());
         return res;
@@ -674,8 +801,9 @@ public:
 
         /** return the norm of the array (equals <tt>sqrt(array.squaredNorm())</tt>).
          */
-    NormType norm() const
+    typename NormTraits<MultiArrayView>::NormType norm() const
     {
+        typedef typename NormTraits<MultiArrayView>::SquaredNormType SquaredNormType;
         return sqrt(static_cast<typename SquareRootTraits<SquaredNormType>::SquareRootArgument>(this->squaredNorm()));
     }
 
@@ -751,7 +879,7 @@ MultiArrayView <N, T, C>::operator=(MultiArrayView const & rhs)
     if(this == &rhs)
         return *this;
     vigra_precondition(this->shape() == rhs.shape() || m_ptr == 0,
-        "MultiArrayView::operator=(MultiArrayView const &) size mismatch.");
+        "MultiArrayView::operator=(MultiArrayView const &) size mismatch - use MultiArrayView::reset().");
     if(m_ptr == 0)
     {
         m_shape  = rhs.m_shape;
@@ -931,22 +1059,14 @@ MultiArrayView <N, T, C>::bindAt (int n, int d) const
 /********************************************************/
 
 template <unsigned int N, class T, class C>
-struct NormTraits<MultiArrayView <N, T, C> >
-{
-    typedef MultiArrayView <N, T, C> Type;
-    typedef typename Type::SquaredNormType SquaredNormType;
-    typedef typename Type::NormType NormType;
-};
-
-template <unsigned int N, class T, class C>
-inline typename MultiArrayView <N, T, C>::SquaredNormType
+inline typename NormTraits<MultiArrayView <N, T, C> >::SquaredNormType
 squaredNorm(MultiArrayView <N, T, C> const & a)
 {
     return a.squaredNorm();
 }
 
 template <unsigned int N, class T, class C>
-inline typename MultiArrayView <N, T, C>::NormType
+inline typename NormTraits<MultiArrayView <N, T, C> >::NormType
 norm(MultiArrayView <N, T, C> const & a)
 {
     return a.norm();
@@ -1047,14 +1167,6 @@ public:
         /** sequential (random access) const iterator type
          */
     typedef T * const_iterator;
-
-        /** the squared norm type (return type of squaredNorm(array)).
-         */
-    typedef typename view_type::SquaredNormType SquaredNormType;
-
-        /** the norm type (return type of norm(array)).
-         */
-    typedef typename view_type::NormType NormType;
 
 protected:
 
@@ -1290,9 +1402,13 @@ MultiArray <N, T, A> &
 MultiArray <N, T, A>::operator= (const MultiArrayView<N, U, C> &rhs)
 {
     if (this == &rhs)
+    {
         return *this;
-    if (this->shape() == rhs.shape())
+    }
+    else if (this->shape() == rhs.shape())
+    {
         this->copy(rhs);
+    }
     else
     {
         pointer new_ptr;
@@ -1307,19 +1423,27 @@ MultiArray <N, T, A>::operator= (const MultiArrayView<N, U, C> &rhs)
 
 template <unsigned int N, class T, class A>
 void MultiArray <N, T, A>::reshape (const difference_type & new_shape,
-                                    const_reference init)
+                                    const_reference initial)
 {
     if (N== 0)
+    {
         return;
-
-    difference_type new_stride = detail::defaultStride <MultiArrayView<N,T>::actual_dimension> (new_shape);
-    std::size_t new_size = new_shape [MultiArrayView<N,T>::actual_dimension-1] * new_stride [MultiArrayView<N,T>::actual_dimension-1];
-    T *new_ptr;
-    allocate (new_ptr, new_size, init);
-    deallocate (this->m_ptr, this->elementCount ());
-    this->m_ptr = new_ptr;
-    this->m_shape = new_shape;
-    this->m_stride = new_stride;
+    }    
+    else if(new_shape == this->shape())
+    {
+        this->init(initial);
+    }
+    else
+    {
+        difference_type new_stride = detail::defaultStride <MultiArrayView<N,T>::actual_dimension> (new_shape);
+        std::size_t new_size = new_shape [MultiArrayView<N,T>::actual_dimension-1] * new_stride [MultiArrayView<N,T>::actual_dimension-1];
+        T *new_ptr;
+        allocate (new_ptr, new_size, initial);
+        deallocate (this->m_ptr, this->elementCount ());
+        this->m_ptr = new_ptr;
+        this->m_shape = new_shape;
+        this->m_stride = new_stride;
+    }
 }
 
 
@@ -1403,28 +1527,14 @@ void MultiArray <N, T, A>::deallocate (pointer & ptr, std::size_t s)
 
 /********************************************************/
 /*                                                      */
-/*                       NormTraits                     */
-/*                                                      */
-/********************************************************/
-
-template <unsigned int N, class T, class A>
-struct NormTraits<MultiArray <N, T, A> >
-{
-    typedef MultiArray <N, T, A> Type;
-    typedef typename Type::SquaredNormType SquaredNormType;
-    typedef typename Type::NormType NormType;
-};
-
-/********************************************************/
-/*                                                      */
 /*              argument object factories               */
 /*                                                      */
 /********************************************************/
 
 template <unsigned int N, class T, class C>
 inline triple<typename MultiArrayView<N,T,C>::const_traverser,
-		      typename MultiArrayView<N,T,C>::difference_type,
-		      typename AccessorTraits<T>::default_const_accessor >
+              typename MultiArrayView<N,T,C>::difference_type,
+              typename AccessorTraits<T>::default_const_accessor >
 srcMultiArrayRange( MultiArrayView<N,T,C> const & array )
 {
     return triple<typename MultiArrayView<N,T,C>::const_traverser,
@@ -1437,8 +1547,8 @@ srcMultiArrayRange( MultiArrayView<N,T,C> const & array )
 
 template <unsigned int N, class T, class C, class Accessor>
 inline triple<typename MultiArrayView<N,T,C>::const_traverser,
-		      typename MultiArrayView<N,T,C>::difference_type,
-		      Accessor >
+              typename MultiArrayView<N,T,C>::difference_type,
+              Accessor >
 srcMultiArrayRange( MultiArrayView<N,T,C> const & array, Accessor a )
 {
     return triple<typename MultiArrayView<N,T,C>::const_traverser,
@@ -1451,29 +1561,29 @@ srcMultiArrayRange( MultiArrayView<N,T,C> const & array, Accessor a )
 
 template <unsigned int N, class T, class C>
 inline pair<typename MultiArrayView<N,T,C>::const_traverser,
-		    typename AccessorTraits<T>::default_const_accessor >
+            typename AccessorTraits<T>::default_const_accessor >
 srcMultiArray( MultiArrayView<N,T,C> const & array )
 {
     return pair<typename MultiArrayView<N,T,C>::const_traverser,
-		        typename AccessorTraits<T>::default_const_accessor >
+                typename AccessorTraits<T>::default_const_accessor >
       ( array.traverser_begin(),
         typename AccessorTraits<T>::default_const_accessor() );
 }
 
 template <unsigned int N, class T, class C, class Accessor>
 inline pair<typename MultiArrayView<N,T,C>::const_traverser,
-		    Accessor >
+            Accessor >
 srcMultiArray( MultiArrayView<N,T,C> const & array, Accessor a )
 {
     return pair<typename MultiArrayView<N,T,C>::const_traverser,
-		        Accessor >
+                Accessor >
       ( array.traverser_begin(), a );
 }
 
 template <unsigned int N, class T, class C>
 inline triple<typename MultiArrayView<N,T,C>::traverser,
-	          typename MultiArrayView<N,T,C>::difference_type,
-	          typename AccessorTraits<T>::default_accessor >
+              typename MultiArrayView<N,T,C>::difference_type,
+              typename AccessorTraits<T>::default_accessor >
 destMultiArrayRange( MultiArrayView<N,T,C> & array )
 {
     return triple<typename MultiArrayView<N,T,C>::traverser,
@@ -1486,8 +1596,8 @@ destMultiArrayRange( MultiArrayView<N,T,C> & array )
 
 template <unsigned int N, class T, class C, class Accessor>
 inline triple<typename MultiArrayView<N,T,C>::traverser,
-	          typename MultiArrayView<N,T,C>::difference_type,
-	          Accessor >
+              typename MultiArrayView<N,T,C>::difference_type,
+              Accessor >
 destMultiArrayRange( MultiArrayView<N,T,C> & array, Accessor a )
 {
     return triple<typename MultiArrayView<N,T,C>::traverser,
@@ -1500,7 +1610,7 @@ destMultiArrayRange( MultiArrayView<N,T,C> & array, Accessor a )
 
 template <unsigned int N, class T, class C>
 inline pair<typename MultiArrayView<N,T,C>::traverser,
-	        typename AccessorTraits<T>::default_accessor >
+            typename AccessorTraits<T>::default_accessor >
 destMultiArray( MultiArrayView<N,T,C> & array )
 {
     return pair<typename MultiArrayView<N,T,C>::traverser,
@@ -1511,7 +1621,7 @@ destMultiArray( MultiArrayView<N,T,C> & array )
 
 template <unsigned int N, class T, class C, class Accessor>
 inline pair<typename MultiArrayView<N,T,C>::traverser,
-	        Accessor >
+            Accessor >
 destMultiArray( MultiArrayView<N,T,C> & array, Accessor a )
 {
     return pair<typename MultiArrayView<N,T,C>::traverser,
