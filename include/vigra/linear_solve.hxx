@@ -269,15 +269,18 @@ bool reverseElimination(const MultiArrayView<2, T, C1> &r, const MultiArrayView<
 
     /** Solve a linear system.
 
-        The square matrix \a a is the coefficient matrix, and the column vectors
+        The \a a is the coefficient matrix, and the column vectors
         in \a b are the right-hand sides of the equation (so, several equations
-        with the same coefficients can be solved in one go). The result is returned
-        int \a res, whose columns contain the solutions for the correspoinding
+        with the same coefficients can be solved in one go). When \a s is rectangular,
+        it must have more rows than columns, and the solution is computed in the least-squares sense.
+        
+        The result is returned int \a res, whose columns contain the solutions for the corresponding
         columns of \a b. The number of columns of \a a must equal the number of rows of
         both \a b and \a res, and the number of columns of \a b and \a res must be
-        equal. The algorithm uses QR decomposition of \a a. The algorithm returns
-        <tt>false</tt> if \a a doesn't have full rank. This implementation  can be
-        applied in-place, i.e. <tt>&b == &res</tt> or <tt>&a == &res</tt> are allowed.
+        equal. The algorithm uses QR decomposition of \a a. It fails and returns
+        <tt>false</tt> if \a a doesn't have full rank. This implementation can be
+        applied in-place, i.e. <tt>&b == &res</tt> or <tt>&a == &res</tt> are allowed
+        (as long as the shapes match).
 
     <b>\#include</b> "<a href="linear__solve_8hxx-source.html">vigra/linear_solve.hxx</a>" or<br>
     <b>\#include</b> "<a href="linear__algebra_8hxx-source.html">vigra/linear_algebra.hxx</a>"<br>
@@ -289,13 +292,13 @@ bool linearSolve(const MultiArrayView<2, T, C1> &a, const MultiArrayView<2, T, C
 {
     unsigned int acols = columnCount(a);
     unsigned int bcols = columnCount(b);
-    vigra_precondition(acols == rowCount(a),
-        "linearSolve(): square coefficient matrix required.");
+    vigra_precondition(acols <= rowCount(a),
+        "linearSolve(): Coefficient matrix a must have at least as many rows as columns.");
     vigra_precondition(acols == rowCount(b) && acols == rowCount(res) && bcols == columnCount(res),
         "linearSolve(): matrix shape mismatch.");
 
-    Matrix<T> q(acols, acols), r(a);
-    qrDecomposition(r, q, r);
+    Matrix<T> q(a.shape()), r(acols, acols);
+    qrDecomposition(a, q, r);
     q.transpose();
     return reverseElimination(r, q * b, res); // false if a didn't have full rank
 }
