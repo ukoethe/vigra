@@ -113,14 +113,14 @@ TemporaryMatrix<T> inverse(const TemporaryMatrix<T> &v)
 
         \a a contains the original matrix, results are returned in \a q and \a r, where
         \a q is a orthogonal matrix, and \a r is an upper triangular matrix, and
-        the following relation holds:
+        the following relation holds (up to round-off errors):
 
         \code
         assert(a == q * r);
         \endcode
 
         This implementation uses householder transformations. It can be applied in-place,
-        i.e. <tt>&a == &r</tt> is allowed.
+        i.e. <tt>&a == &q</tt> or <tt>&a == &r</tt> are allowed.
 
     <b>\#include</b> "<a href="linear__solve_8hxx-source.html">vigra/linear_solve.hxx</a>" or<br>
     <b>\#include</b> "<a href="linear__algebra_8hxx-source.html">vigra/linear_algebra.hxx</a>"<br>
@@ -290,17 +290,15 @@ template <class T, class C1, class C2, class C3>
 bool linearSolve(const MultiArrayView<2, T, C1> &a, const MultiArrayView<2, T, C2> &b,
                  MultiArrayView<2, T, C3> & res)
 {
-    unsigned int acols = columnCount(a);
-    unsigned int bcols = columnCount(b);
-    vigra_precondition(acols <= rowCount(a),
+    vigra_precondition(columnCount(a) <= rowCount(a),
         "linearSolve(): Coefficient matrix a must have at least as many rows as columns.");
-    vigra_precondition(acols == rowCount(b) && acols == rowCount(res) && bcols == columnCount(res),
+    vigra_precondition(columnCount(a) == rowCount(res) && 
+                       rowCount(a) == rowCount(b) && columnCount(b) == columnCount(res),
         "linearSolve(): matrix shape mismatch.");
 
-    Matrix<T> q(a.shape()), r(acols, acols);
+    Matrix<T> q(a.shape()), r(columnCount(a), columnCount(a));
     qrDecomposition(a, q, r);
-    q.transpose();
-    return reverseElimination(r, q * b, res); // false if a didn't have full rank
+    return reverseElimination(r, transpose(q) * b, res); // false if a didn't have full rank
 }
 
 //@}
