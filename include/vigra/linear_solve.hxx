@@ -130,76 +130,98 @@ template <class T, class C1, class C2, class C3>
 void qrDecomposition(MultiArrayView<2, T, C1> const & a,
                      MultiArrayView<2, T, C2> &q, MultiArrayView<2, T, C3> &r)
 {
-    typedef typename MultiArrayView<2, T, C2>::difference_type MatrixShape;
-    typedef typename MultiArray<1, T>::difference_type VectorShape;
-
-    // the orthogonal matrix q will have as many rows and columns as
-    // the original matrix has columns.
-    const unsigned int rows = rowCount(a);
-    const unsigned int cols = columnCount(a);
-    vigra_precondition(cols == columnCount(r) && rows == rowCount(r) &&
-                       cols == columnCount(q) && cols == rowCount(q),
+    typedef T Real;
+    
+    const unsigned int m = rowCount(a);
+    const unsigned int n = columnCount(a);
+    vigra_precondition(m >= n &&
+                       n == columnCount(r) && n == rowCount(r) &&
+                       n == columnCount(q) && m == rowCount(q),
                        "qrDecomposition(): Matrix shape mismatch.");
 
-    identityMatrix(q);
-    r.copy(a);   // does nothing if &r == &a
+    Matrix<T> qr = a;
 
-    for(unsigned int k = 0; (k < cols) && (k < rows - 1); ++k) 
+    // Main loop.
+    for (unsigned int k = 0; k < n; ++k) 
     {
-        const unsigned int rows_left = rows - k;
-        const unsigned int cols_left = cols - k;
-
-        // create a view on the remaining part of r
-        MatrixShape rul(k, k);
-        MultiArrayView<2, T, C2> rsub = r.subarray(rul, r.shape());
-
-        // decompose the first row
-        MultiArrayView <1, T, C2 > vec = rsub.bindOuter(0);
-
-        // defining householder vector
-        VectorShape ushape(rows_left);
-        MultiArray<1, T> u(ushape);
-        for(unsigned int i = 0; i < rows_left; ++i)
-            u(i) = vec(i);
-        u(0) += norm(vec);
-
-        const T divisor = squaredNorm(u);
-        const T scal = (divisor == 0) ? 0.0 : 2.0 / divisor;
-
-        // apply householder elimination on rsub
-        for(unsigned int i = 0; i < cols_left; ++i) 
+        // Compute 2-norm of k-th column without under/overflow.
+        Real nrm = 0.0;
+        for (unsigned int i = k; i < m; ++i) 
         {
-            // compute the inner product of the i'th column of rsub with u
-            T sum = dot(u, rsub.bindOuter(i));
-
-            // add rsub*(uu')/(u'u)
-            sum *= scal;
-            for(unsigned int j = 0; j < rows_left; ++j)
-                rsub(j, i) -= sum * u(j);
+            nrm = hypot(nrm, qr(i, k));
         }
 
-        MatrixShape qul(0, k);
-        MultiArrayView <2, T, C3 > qsub = q.subarray(qul, q.shape());
-
-        // apply the (self-inverse) householder matrix on q
-        for(unsigned int i = 0; i < cols; ++i) 
+        if (nrm != 0.0) 
         {
-            // compute the inner product of the i'th row of q with u
-            T sum = dot(qsub.bindInner(i), u);
+            // Form k-th Householder vector.
+            if (qr(k, k) < 0.0) 
+            {
+                nrm = -nrm;
+            }
+            for (unsigned int i = k; i < m; ++i) 
+            {
+                qr(i, k) /= nrm;
+            }
+            qr(k, k) += 1.0;
 
-            // add q*(uu')/(u'u)
-            sum *= scal;
-            for(unsigned int j = 0; j < rows_left; ++j)
-                qsub(i, j) -= sum * u(j);
+            // Apply transformation to remaining columns.
+            for (unsigned int j = k+1; j < n; ++j) 
+            {
+                Real s = 0.0; 
+                for (unsigned int i = k; i < m; ++i) 
+                {
+                    s += qr(i,k)*qr(i,j);
+                }
+                s = -s/qr(k,k);
+                for (unsigned int i = k; i < m; ++i) 
+                {
+                    qr(i,j) += s*qr(i,k);
+                }
+            }
+        }
+        r(k,k) = -nrm;
+    }
+    for (unsigned int i = 0; i < n; ++i) 
+    {
+        for (unsigned int j = i+1; j < n; ++j) 
+        {
+            r(i,j) = qr(i,j);
+            r(j,i) = 0.0;
+        }
+    }
+    for (int k = n-1; k >= 0; --k) 
+    {
+        for (unsigned int i = 0; i < m; ++i) 
+        {
+            q(i,k) = 0.0;
+        }
+        q(k,k) = 1.0;
+        for (unsigned int j = k; j < n; ++j) 
+        {
+            if (qr(k,k) != 0.0) 
+            {
+                Real s = 0.0;
+                for (unsigned int i = k; i < m; ++i) 
+                {
+                    s += qr(i,k)*q(i,j);
+                }
+                s = -s/qr(k,k);
+                for (unsigned int i = k; i < m; ++i) 
+                {
+                    q(i,j) += s*qr(i,k);
+                }
+            }
         }
     }
 }
 
     /** Solve a linear system with right-triangular defining matrix.
 
-        The square matrix \a a must be a right-triangular coefficient matrix as can,
-        for example, be obtained by means of QR decomposition. The column vectors
-        in \a b are the right-hand sides of the equation (so, several equations
+        The square matrix \a r must be a right-triangular coefficient matrix as can,
+        for example, be obtained by means of QR decomposition. If \a r doesn't have full rank
+        the function fails and returns <tt>false</tt>, otherwise it returns <tt>true</tt>.
+        
+        The column vectors in \a b are the right-hand sides of the equation (so, several equations
         with the same coefficients can be solved in one go). The result is returned
         int \a x, whose columns contain the solutions for the correspoinding
         columns of \a b. The number of columns of \a a must equal the number of rows of
@@ -211,8 +233,8 @@ void qrDecomposition(MultiArrayView<2, T, C1> const & a,
         Namespaces: vigra and vigra::linalg
      */
 template <class T, class C1, class C2, class C3>
-void reverseElimination(const MultiArrayView<2, T, C1> &r, const MultiArrayView<2, T, C2> &b,
-                          MultiArrayView<2, T, C3> & x)
+bool reverseElimination(const MultiArrayView<2, T, C1> &r, const MultiArrayView<2, T, C2> &b,
+                        MultiArrayView<2, T, C3> & x)
 {
     unsigned int m = columnCount(r);
     unsigned int n = columnCount(b);
@@ -221,6 +243,9 @@ void reverseElimination(const MultiArrayView<2, T, C1> &r, const MultiArrayView<
     vigra_precondition(m == rowCount(b) && m == rowCount(x) && n == columnCount(x),
         "reverseElimination(): matrix shape mismatch.");
 
+    for(unsigned int k=0; k<m; ++k)
+        if(r(k,k) == NumericTraits<T>::zero())
+            return false; // r doesn't have full rank.
     for(unsigned int k = 0; k < n; ++k)
     {
         x(m-1, k) = b(m-1, k) / r(m-1, m-1);
@@ -239,6 +264,7 @@ void reverseElimination(const MultiArrayView<2, T, C1> &r, const MultiArrayView<
             }
         }
     }
+    return true;
 }
 
     /** Solve a linear system.
@@ -270,12 +296,8 @@ bool linearSolve(const MultiArrayView<2, T, C1> &a, const MultiArrayView<2, T, C
 
     Matrix<T> q(acols, acols), r(a);
     qrDecomposition(r, q, r);
-    for(unsigned int k=0; k<acols; ++k)
-        if(r(k,k) == NumericTraits<T>::zero())
-            return false; // a didn't have full rank.
     q.transpose();
-    reverseElimination(r, q * b, res);
-    return true;
+    return reverseElimination(r, q * b, res); // false if a didn't have full rank
 }
 
 //@}
