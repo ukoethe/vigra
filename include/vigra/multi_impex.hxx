@@ -331,7 +331,7 @@ template <class T, class Tag>
 void setRangeMapping(MultiArrayView <3, T, Tag> const & volume, 
                      ImageExportInfo & info, VigraFalseType /* isScalar */)
 {
-    typedef typename T::calue_type SrcComponent;
+    typedef typename T::value_type SrcComponent;
     std::string pixeltype = info.getPixelType();
     bool downcast = negotiatePixelType(getEncoderType(info.getFileName(), info.getFileType()),
                                        TypeAsString<SrcComponent>::result(), pixeltype);
