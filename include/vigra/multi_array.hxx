@@ -121,6 +121,40 @@ struct ScanOrderToOffset<0u>
     }
 };
 
+template <class C>
+struct CoordinatesToOffest
+{
+    template <int N>
+    static ptrdiff_t 
+    exec(const TinyVector <ptrdiff_t, N> & stride, int x)
+    {
+        return stride[0] * x;
+    }
+    template <int N>
+    static ptrdiff_t 
+    exec(const TinyVector <ptrdiff_t, N> & stride, int x, int y)
+    {
+        return stride[0] * x + stride[1] * y;
+    }
+};
+
+template <>
+struct CoordinatesToOffest<UnstridedArrayTag>
+{
+    template <int N>
+    static ptrdiff_t 
+    exec(const TinyVector <ptrdiff_t, N> & stride, int x)
+    {
+        return x;
+    }
+    template <int N>
+    static ptrdiff_t 
+    exec(const TinyVector <ptrdiff_t, N> & stride, int x, int y)
+    {
+        return x + stride[1] * y;
+    }
+};
+
 /********************************************************/
 /*                                                      */
 /*                     MaybeStrided                     */
@@ -577,14 +611,14 @@ public:
          */
     reference operator() (int x)
     {
-        return m_ptr [m_stride[0]*x];
+        return m_ptr [detail::CoordinatesToOffest<C>::exec(m_stride, x)];
     }
 
         /** 2D array access. Use only if N == 2.
          */
     reference operator() (int x, int y)
     {
-        return m_ptr [m_stride[0]*x + m_stride[1]*y];
+        return m_ptr [detail::CoordinatesToOffest<C>::exec(m_stride, x, y)];
     }
 
         /** 3D array access. Use only if N == 3.
@@ -612,14 +646,14 @@ public:
          */
     const_reference operator() (int x) const
     {
-        return m_ptr [m_stride[0]*x];
+        return m_ptr [detail::CoordinatesToOffest<C>::exec(m_stride, x)];
     }
 
         /** 2D const array access. Use only if N == 2.
          */
     const_reference operator() (int x, int y) const
     {
-        return m_ptr [m_stride[0]*x + m_stride[1]*y];
+        return m_ptr [detail::CoordinatesToOffest<C>::exec(m_stride, x, y)];
     }
 
         /** 3D const array access. Use only if N == 3.
