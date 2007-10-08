@@ -39,6 +39,7 @@
 #define VIGRA_LINEAR_SOLVE_HXX
 
 #include "matrix.hxx"
+#include "singular_value_decomposition.hxx"
 
 
 namespace vigra
@@ -120,14 +121,69 @@ TemporaryMatrix<T> inverse(const TemporaryMatrix<T> &v)
         return inverse(v);
 }
 
+    /** Cholesky decomposition.
+
+        \a A must be a symmetric positive definite matrix, and \a L will be a lowe
+        triangular matrix, such that (up to round-off errors):
+
+        \code
+        A == L * transpose(L);
+        \endcode
+
+        This implementation cannot be applied in-place, i.e. <tt>&L == &A</tt> is an error.
+
+    <b>\#include</b> "<a href="linear__solve_8hxx-source.html">vigra/linear_solve.hxx</a>" or<br>
+    <b>\#include</b> "<a href="linear__algebra_8hxx-source.html">vigra/linear_algebra.hxx</a>"<br>
+        Namespaces: vigra and vigra::linalg
+     */
+template <class T, class C1, class C2>
+bool choleskyDecomposition(MultiArrayView<2, T, C1> const & A,
+                           MultiArrayView<2, T, C2> &L)
+{
+    typedef T Real;
+    
+	unsigned int n = columnCount(A);
+	
+    vigra_precondition(rowCount(A) == n,
+                       "choleskyDecomposition(): Input matrix must be square.");
+    vigra_precondition(n == columnCount(L) && n == rowCount(L),
+                       "choleskyDecomposition(): Output matrix must have same shape as input matrix.");
+
+     for (unsigned int j = 0; j < n; ++j) 
+	 {
+        Real d(0.0);
+        for (unsigned int k = 0; k < j; ++k) 
+		{
+            Real s(0.0);
+            for (unsigned int i = 0; i < k; ++i) 
+			{
+               s += L(k, i)*L(j, i);
+            }
+            L(j, k) = s = (A(j, k) - s)/L(k, k);
+            d = d + s*s;
+            if(A(k, j) != A(j, k))
+                return false;  // A is not symmetric 
+         }
+         d = A(j, j) - d;
+         if(d <= 0.0)
+            return false;  // A is not positive definite
+         L(j, j) = std::sqrt(d);
+         for (unsigned int k = j+1; k < n; ++k) 
+		 {
+            L(j, k) = 0.0;
+         }
+	}
+    return true;
+}
+
     /** QR decomposition.
 
         \a a contains the original matrix, results are returned in \a q and \a r, where
-        \a q is a orthogonal matrix, and \a r is an upper triangular matrix, and
-        the following relation holds (up to round-off errors):
+        \a q is a orthogonal matrix, and \a r is an upper triangular matrix, such that 
+        (up to round-off errors):
 
         \code
-        assert(a == q * r);
+        a == q * r;
         \endcode
 
         This implementation uses householder transformations. It can be applied in-place,
@@ -226,7 +282,7 @@ void qrDecomposition(MultiArrayView<2, T, C1> const & a,
     }
 }
 
-    /** Solve a linear system with right-triangular defining matrix.
+    /** Solve a linear system with right-triangular coefficient matrix.
 
         The square matrix \a r must be a right-triangular coefficient matrix as can,
         for example, be obtained by means of QR decomposition. If \a r doesn't have full rank
@@ -254,25 +310,59 @@ bool reverseElimination(const MultiArrayView<2, T, C1> &r, const MultiArrayView<
     vigra_precondition(m == rowCount(b) && m == rowCount(x) && n == columnCount(x),
         "reverseElimination(): matrix shape mismatch.");
 
-    for(unsigned int k=0; k<m; ++k)
-        if(r(k,k) == NumericTraits<T>::zero())
-            return false; // r doesn't have full rank.
     for(unsigned int k = 0; k < n; ++k)
     {
-        x(m-1, k) = b(m-1, k) / r(m-1, m-1);
-        if(m >= 2)
+        for(int i=m-1; i>=0; --i)
         {
-            for(int i = m-2; i >= 0; --i)
-            {
-                // compute the i'th inner product, excluding the diagonal entry.
-                T sum = NumericTraits<T>::zero();
-                for(unsigned int j = i+1; j < m; ++j)
-                    sum += r(i, j) * x(j, k);
-                if(r(i, i) != NumericTraits<T>::zero())
-                    x(i, k) = (b(i, k) - sum) / r(i, i);
-                else
-                    x(i, k) = NumericTraits<T>::zero();
-            }
+            if(r(i,i) == NumericTraits<T>::zero())
+                return false;  // r doesn' have full rank
+            T sum = b(i, k);
+            for(unsigned int j=i+1; j<m; ++j)
+                 sum -= r(i, j) * x(j, k);
+            x(i, k) = sum / r(i, i);
+        }
+    }
+    return true;
+}
+
+    /** Solve a linear system with left-triangular coefficient matrix.
+
+        The square matrix \a l must be a left-triangular coefficient matrix. If \a l 
+        doesn't have full rank the function fails and returns <tt>false</tt>, 
+        otherwise it returns <tt>true</tt>.
+        
+        The column vectors in \a b are the right-hand sides of the equation (so, several equations
+        with the same coefficients can be solved in one go). The result is returned
+        int \a x, whose columns contain the solutions for the correspoinding
+        columns of \a b. The number of columns of \a a must equal the number of rows of
+        both \a b and \a x, and the number of columns of \a b and \a x must be
+        equal. This implementation can be applied in-place, i.e. <tt>&b == &x</tt> is allowed.
+
+    <b>\#include</b> "<a href="linear__solve_8hxx-source.html">vigra/linear_solve.hxx</a>" or<br>
+    <b>\#include</b> "<a href="linear__algebra_8hxx-source.html">vigra/linear_algebra.hxx</a>"<br>
+        Namespaces: vigra and vigra::linalg
+     */
+template <class T, class C1, class C2, class C3>
+bool leftReverseElimination(const MultiArrayView<2, T, C1> &l, const MultiArrayView<2, T, C2> &b,
+                            MultiArrayView<2, T, C3> & x)
+{
+    unsigned int m = columnCount(l);
+    unsigned int n = columnCount(b);
+    vigra_precondition(m == rowCount(l),
+        "leftReverseElimination(): square coefficient matrix required.");
+    vigra_precondition(m == rowCount(b) && m == rowCount(x) && n == columnCount(x),
+        "leftReverseElimination(): matrix shape mismatch.");
+
+    for(unsigned int k = 0; k < n; ++k)
+    {
+        for(unsigned int i=0; i<m; ++i)
+        {
+            if(l(i,i) == NumericTraits<T>::zero())
+                return false;  // l doesn' have full rank
+            T sum = b(i, k);
+            for(unsigned int j=0; j<i; ++j)
+                 sum -= l(i, j) * x(j, k);
+            x(i, k) = sum / l(i, i);
         }
     }
     return true;
@@ -282,16 +372,33 @@ bool reverseElimination(const MultiArrayView<2, T, C1> &r, const MultiArrayView<
 
         The \a a is the coefficient matrix, and the column vectors
         in \a b are the right-hand sides of the equation (so, several equations
-        with the same coefficients can be solved in one go). When \a s is rectangular,
-        it must have more rows than columns, and the solution is computed in the least-squares sense.
-        
-        The result is returned int \a res, whose columns contain the solutions for the corresponding
+        with the same coefficients can be solved in one go). The result is returned 
+        in \a res, whose columns contain the solutions for the corresponding
         columns of \a b. The number of columns of \a a must equal the number of rows of
         both \a b and \a res, and the number of columns of \a b and \a res must be
-        equal. The algorithm uses QR decomposition of \a a. It fails and returns
-        <tt>false</tt> if \a a doesn't have full rank. This implementation can be
-        applied in-place, i.e. <tt>&b == &res</tt> or <tt>&a == &res</tt> are allowed
-        (as long as the shapes match).
+        equal. 
+        
+        \a method must be one of the following:
+        <DL>
+        <DT>"Cholesky"<DD> Compute the solution by means of Cholesky decomposition. The 
+                           coefficient matrix \a a must by symmetric positive definite. If
+                           this is not the case, the function returns <tt>false</tt>.
+                           
+        <DT>"QR"<DD> (default) Compute the solution by means of QR decomposition.  The 
+                           coefficient matrix \a a can be square or rectangular. In the latter case,
+                           it must have more rows than columns, and the solution will be computed in the 
+                           least squares sense. If \a a doesn't have full rank, the function 
+                           returns <tt>false</tt>.
+
+        <DT>"SVD"<DD> Compute the solution by means of singular value decomposition.  The 
+                           coefficient matrix \a a can be square or rectangular. In the latter case,
+                           it must have more rows than columns, and the solution will be computed in the 
+                           least squares sense. If \a a doesn't have full rank, the function 
+                           returns <tt>false</tt>.
+        </DL>
+        
+        This function can be applied in-place, i.e. <tt>&b == &res</tt> or <tt>&a == &res</tt> are allowed
+        (provided they have the required shapes).
 
     <b>\#include</b> "<a href="linear__solve_8hxx-source.html">vigra/linear_solve.hxx</a>" or<br>
     <b>\#include</b> "<a href="linear__algebra_8hxx-source.html">vigra/linear_algebra.hxx</a>"<br>
@@ -299,7 +406,7 @@ bool reverseElimination(const MultiArrayView<2, T, C1> &r, const MultiArrayView<
      */
 template <class T, class C1, class C2, class C3>
 bool linearSolve(const MultiArrayView<2, T, C1> &a, const MultiArrayView<2, T, C2> &b,
-                 MultiArrayView<2, T, C3> & res)
+                 MultiArrayView<2, T, C3> & res, std::string method = "QR")
 {
     vigra_precondition(columnCount(a) <= rowCount(a),
         "linearSolve(): Coefficient matrix a must have at least as many rows as columns.");
@@ -307,9 +414,44 @@ bool linearSolve(const MultiArrayView<2, T, C1> &a, const MultiArrayView<2, T, C
                        rowCount(a) == rowCount(b) && columnCount(b) == columnCount(res),
         "linearSolve(): matrix shape mismatch.");
 
-    Matrix<T> q(a.shape()), r(columnCount(a), columnCount(a));
-    qrDecomposition(a, q, r);
-    return reverseElimination(r, transpose(q) * b, res); // false if a didn't have full rank
+    if(method == "Cholesky")
+    {
+        vigra_precondition(columnCount(a) == rowCount(a),
+            "linearSolve(): Cholesky method requires square coefficient matrix.");
+        Matrix<T> L(a.shape());
+        if(!choleskyDecomposition(a, L))
+            return false; // false if a wasn't symmetric positive definite
+        leftReverseElimination(L, b, res);
+        reverseElimination(transpose(L), res, res);
+    }
+    else if(method == "QR")
+    {
+        Matrix<T> q(a.shape()), r(columnCount(a), columnCount(a));
+        qrDecomposition(a, q, r);
+        if(!reverseElimination(r, transpose(q) * b, res))
+            return false; // a didn't have full rank
+    }
+    else if(method == "SVD")
+    {
+        unsigned int n = rowCount(b);
+        unsigned int m = columnCount(b);
+	    Matrix<T> u(a.shape()), s(n, 1), v(n, n);
+
+        unsigned int rank = singularValueDecomposition(a, u, s, v);
+        if(rank < n)
+            return false; // a didn't have full rank
+
+        Matrix<T> t = transpose(u)*b;
+        for(unsigned int k=0; k<n; ++k)
+            for(unsigned int l=0; l<m; ++l)
+                t(k,l) /= s(k,0);
+        res = v*t;
+    }
+    else
+    {
+        vigra_precondition(false, "linearSolve(): Unknown solution method.");
+    }
+    return true;
 }
 
 //@}
@@ -318,6 +460,7 @@ bool linearSolve(const MultiArrayView<2, T, C1> &a, const MultiArrayView<2, T, C
 
 using linalg::inverse;
 using linalg::linearSolve;
+using linalg::choleskyDecomposition;
 using linalg::qrDecomposition;
 using linalg::reverseElimination;
 
