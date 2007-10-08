@@ -57,16 +57,20 @@ namespace linalg
    an n-by-n orthogonal matrix \a V so that A = U*S*V'.
    
    To save memory, this functions stores the matrix \a S in a column vector of 
-   approprite length (A diagonal matrix can be obtained by <tt>diagonalMatrix(S)</tt>). 
+   appropriate length (a diagonal matrix can be obtained by <tt>diagonalMatrix(S)</tt>). 
    The singular values, sigma[k] = S(k, 0), are ordered so that
    sigma[0] >= sigma[1] >= ... >= sigma[n-1].
    
-   The singular value decompostion always exists, so this function will
+   The singular value decomposition always exists, so this function will
    never fail (except if the shapes of the argument matrices don't match). 
    The effective numerical rank of A is returned.
 
 	(Adapted from JAMA, a Java Matrix Library, developed by jointly 
 	by the Mathworks and NIST; see  http://math.nist.gov/javanumerics/jama).
+
+    <b>\#include</b> "<a href="singular__value__decomposition_8hxx-source.html">vigra/singular_value_decomposition.hxx</a>" or<br>
+    <b>\#include</b> "<a href="linear__algebra_8hxx-source.html">vigra/linear_algebra.hxx</a>"<br>
+        Namespaces: vigra and vigra::linalg
    */
 template <class T, class C1, class C2, class C3, class C4>
 unsigned int 
