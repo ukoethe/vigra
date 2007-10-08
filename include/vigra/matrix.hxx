@@ -378,11 +378,17 @@ class Matrix
         /** Frobenius norm. Root of sum of squares of the matrix elements.
         */
     typename NormTraits<Matrix>::NormType norm() const;
-#endif
 
-        /** transpose matrix in-place (precondition: matrix must be square)
+        /** create a transposed view of this matrix.
+            No data are copied. If you want to transpose this matrix permanently, 
+            you have to assign the transposed view:
+            
+            \code
+            a = a.transpose();
+            \endcode
          */
-    Matrix & transpose();
+    MultiArrayView<2, vluae_type, StridedArrayTag> transpose() const;
+#endif
 
         /** add \a other to this (sizes must match).
          */
@@ -410,18 +416,6 @@ class Matrix
          */
     Matrix & operator/=(T other);
 };
-
-template <class T, class ALLOC>
-Matrix<T, ALLOC> & Matrix<T, ALLOC>::transpose()
-{
-    const std::size_t cols = columnCount();
-    vigra_precondition(cols == rowCount(),
-        "Matrix::transpose(): in-place transposition requires square matrix.");
-    for(std::size_t i = 0; i < cols; ++i)
-        for(std::size_t j = i+1; j < cols; ++j)
-            std::swap((*this)(j, i), (*this)(i, j));
-    return *this;
-}
 
 template <class T, class ALLOC>
 template <class U, class C>
@@ -547,12 +541,6 @@ class TemporaryMatrix
     : BaseType()
     {
         this->swap(const_cast<TemporaryMatrix &>(rhs));
-    }
-
-    TemporaryMatrix & transpose()
-    {
-        BaseType::transpose();
-        return *this;
     }
 
     template <class U, class C>
@@ -817,8 +805,10 @@ void transpose(const MultiArrayView<2, T, C1> &v, MultiArrayView<2, T, C2> &r)
             r(j, i) = v(i, j);
 }
 
-    /** create the transpose of a matrix \a v.
-        The result is returned as a temporary matrix.
+    /** create the transpose of matrix \a v.
+        This does not copy any data, but only creates a transposed view 
+        to the original matrix. A copy is only made when the transposed view
+        is assigned to another matrix.
         Usage:
 
         \code
@@ -833,28 +823,9 @@ void transpose(const MultiArrayView<2, T, C1> &v, MultiArrayView<2, T, C2> &r)
         Namespaces: vigra and vigra::linalg
      */
 template <class T, class C>
-TemporaryMatrix<T> transpose(MultiArrayView<2, T, C> const & v)
+MultiArrayView<2, T, StridedArrayTag> transpose(MultiArrayView<2, T, C> const & v)
 {
-    TemporaryMatrix<T> ret(columnCount(v), rowCount(v));
-    transpose(v, ret);
-    return ret;
-}
-
-template <class T>
-TemporaryMatrix<T> transpose(TemporaryMatrix<T> const & v)
-{
-    const std::size_t rows = v.rowCount();
-    const std::size_t cols = v.columnCount();
-    if(rows == cols)
-    {
-        return const_cast<TemporaryMatrix<T> &>(v).transpose();
-    }
-    else
-    {
-        TemporaryMatrix<T> ret(cols, rows);
-        transpose(v, ret);
-        return ret;
-    }
+    return v.transpose();
 }
 
     /** create new matrix by concatenating the rows of \a a and \a b.
