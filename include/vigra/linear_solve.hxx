@@ -74,8 +74,10 @@ bool inverse(const MultiArrayView<2, T, C1> &v, MultiArrayView<2, T, C2> &res)
        "inverse(): shape of output matrix must be the transpose of the input matrix' shape.");
 
     Matrix<T> q(v.shape()), r(n, n);
-    qrDecomposition(v, q, r);
-    return reverseElimination(r, transpose(q), res); // false if a didn't have full rank
+    if(!qrDecomposition(v, q, r))
+        return false; // a didn't have full rank
+    reverseElimination(r, transpose(q), res); 
+    return true;
 }
 
     /** create the inverse of matrix \a v.
@@ -115,10 +117,16 @@ TemporaryMatrix<T> inverse(const TemporaryMatrix<T> &v)
     if(columnCount(v) == rowCount(v))
     {
         vigra_precondition(inverse(v, const_cast<TemporaryMatrix<T> &>(v)),
-            "inverse(): matrix is not invertible.");        
+            "inverse(): matrix is not invertible.");
+        return v;      
     }
     else
-        return inverse(v);
+    {
+        TemporaryMatrix<T> ret(columnCount(v), rowCount(v));  // transpose shape
+        vigra_precondition(inverse(v, ret),
+            "inverse(): matrix is not invertible.");
+        return ret;
+    }
 }
 
     /** Cholesky decomposition.
