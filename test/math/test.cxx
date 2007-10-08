@@ -1007,7 +1007,7 @@ struct LinalgTest
         }
 
         Matrix a2(c, c, data);
-        a2.transpose();
+        a2 = a2.transpose();
         for(unsigned int i=0, k=0; i<c; ++i)
             for(unsigned int j=0; j<c; ++j, ++k)
                 shouldEqual(a2(i,j), tref2[k]);
