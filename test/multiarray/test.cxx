@@ -177,24 +177,38 @@ public:
         array3.reshape(difference3_type(3,5,7));
         for(unsigned int k=0; k<array3.size(); ++k)
             array3[k] = k;
+
         array3_type ref(difference3_type(array3.shape(2), array3.shape(0), array3.shape(1)));
-        MultiArrayView <3, scalar_type, StridedArrayTag>
-                array = array3.permuteDimensions (difference3_type (2, 0, 1));        
         for(int k=0; k<array3.shape(0); ++k)
             for(int l=0; l<array3.shape(1); ++l)
                 for(int m=0; m<array3.shape(2); ++m)
                     ref(m,k,l) = array3(k,l,m);
+
+        MultiArrayView <3, scalar_type, StridedArrayTag>
+                array = array3.permuteDimensions (difference3_type (2, 0, 1));        
         shouldEqual(ref.shape(), array.shape());
         should(ref == array);
 
         array2_type ref2(difference2_type(array3.shape(1), array3.shape(0)));
-        MultiArrayView <2, scalar_type, StridedArrayTag>
-                array2 = array3.bindOuter(0).transpose ();
         for(int k=0; k<array3.shape(0); ++k)
             for(int l=0; l<array3.shape(1); ++l)
                 ref2(l, k) = array3(k, l, 0);
+
+        MultiArrayView <2, scalar_type, StridedArrayTag>
+                array2 = array3.bindOuter(0).transpose ();
         shouldEqual(ref2.shape(), array2.shape());
         should(ref2 == array2);
+
+        try {
+            array3.permuteDimensions (difference3_type (2, 0, 0));   
+            failTest("no exception thrown");
+        }
+        catch(vigra::ContractViolation & c)
+        {
+            std::string expected("\nPrecondition violation!\nMultiArrayView::permuteDimensions(): every dimension must occur exactly once");
+            std::string message(c.what());
+            should(0 == expected.compare(message.substr(0,expected.size())));
+        }
     }
 
     void testNorm ()
