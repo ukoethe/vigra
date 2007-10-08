@@ -50,28 +50,41 @@ namespace linalg
 /** \addtogroup LinearAlgebraFunctions Matrix functions
  */
 //@{
-    /** invert square matrix \a v.
-        The result is written into \a r which must have the same shape.
-        The inverse is calculated by means of QR decomposition. If \a v
-        is not invertible, <tt>vigra::PreconditionViolation</tt> exception is thrown.
-
+    /** invert matrix \a v.
+        If the matrix \a v is square, \a res must have the same shape and will contain the
+        inverse of \a v. If \a v is rectangular, it must have more rows than columns, and \a res
+        must have the transposed shape of \a v. The inverse is then computed in the least-squares 
+        sense, i.e. \a res will be the pseudo-inverse (Moore-Penrose inverse).
+        The function returns <tt>true</tt> upon success, and <tt>false</tt> if \a v 
+        is not invertible (has not full rank). The inverse is computed by means of QR 
+        decomposition. 
+        
     <b>\#include</b> "<a href="linear__solve_8hxx-source.html">vigra/linear_solve.hxx</a>" or<br>
     <b>\#include</b> "<a href="linear__algebra_8hxx-source.html">vigra/linear_algebra.hxx</a>"<br>
         Namespaces: vigra and vigra::linalg
      */
 template <class T, class C1, class C2>
-void inverse(const MultiArrayView<2, T, C1> &v, MultiArrayView<2, T, C2> &r)
+bool inverse(const MultiArrayView<2, T, C1> &v, MultiArrayView<2, T, C2> &res)
 {
-    const unsigned int n = rowCount(r);
-    vigra_precondition(n == columnCount(v) && n == rowCount(v) && n == columnCount(r),
-       "inverse(): matrices must be square.");
-    vigra_precondition(linearSolve(v, identityMatrix<T>(n), r),
-        "inverse(): matrix is not invertible.");
+    const unsigned int n = columnCount(v);
+    vigra_precondition(n <= rowCount(v),
+       "inverse(): input matrix must have at least as many rows as columns.");
+    vigra_precondition(n == rowCount(res) && rowCount(v) == columnCount(res),
+       "inverse(): shape of output matrix must be the transpose of the input matrix' shape.");
+
+    Matrix<T> q(v.shape()), r(n, n);
+    qrDecomposition(v, q, r);
+    return reverseElimination(r, transpose(q), res); // false if a didn't have full rank
 }
 
-    /** create the inverse of square matrix \a v.
-        The result is returned as a temporary matrix.
-        The inverse is calculated by means of QR decomposition. If \a v
+    /** create the inverse of matrix \a v.
+
+        The result is returned as a temporary matrix. If the matrix \a v is square, 
+        the result will have the same shape and containa the inverse of \a v. 
+        If \a v is rectangular, it must have more rows than columns, and the result will
+        have the transposed shape of \a v. The inverse is then computed in the least-squares 
+        sense, i.e. \a res will be the pseudo-inverse (Moore-Penrose inverse).
+        The inverse is computed by means of QR decomposition. If \a v
         is not invertible, <tt>vigra::PreconditionViolation</tt> exception is thrown.
         Usage:
 
@@ -89,11 +102,8 @@ void inverse(const MultiArrayView<2, T, C1> &v, MultiArrayView<2, T, C2> &r)
 template <class T, class C>
 TemporaryMatrix<T> inverse(const MultiArrayView<2, T, C> &v)
 {
-    const unsigned int n = rowCount(v);
-    vigra_precondition(n == columnCount(v),
-       "inverse(): matrix must be square.");
-    TemporaryMatrix<T> ret = identityMatrix<T>(n);
-    vigra_precondition(linearSolve(v, ret, ret),
+    TemporaryMatrix<T> ret(columnCount(v), rowCount(v));  // transpose shape
+    vigra_precondition(inverse(v, ret),
         "inverse(): matrix is not invertible.");
     return ret;
 }
@@ -101,12 +111,13 @@ TemporaryMatrix<T> inverse(const MultiArrayView<2, T, C> &v)
 template <class T>
 TemporaryMatrix<T> inverse(const TemporaryMatrix<T> &v)
 {
-    const unsigned int n = v.rowCount();
-    vigra_precondition(n == v.columnCount(),
-       "inverse(): matrix must be square.");
-    vigra_precondition(linearSolve(v, identityMatrix<T>(n), const_cast<TemporaryMatrix<T> &>(v)),
-        "inverse(): matrix is not invertible.");
-    return v;
+    if(columnCount(v) == rowCount(v))
+    {
+        vigra_precondition(inverse(v, const_cast<TemporaryMatrix<T> &>(v)),
+            "inverse(): matrix is not invertible.");        
+    }
+    else
+        return inverse(v);
 }
 
     /** QR decomposition.
