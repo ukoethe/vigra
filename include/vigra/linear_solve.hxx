@@ -38,6 +38,7 @@
 #ifndef VIGRA_LINEAR_SOLVE_HXX
 #define VIGRA_LINEAR_SOLVE_HXX
 
+#include <ctype.h>
 #include "matrix.hxx"
 #include "singular_value_decomposition.hxx"
 
@@ -428,7 +429,10 @@ bool linearSolve(const MultiArrayView<2, T, C1> &a, const MultiArrayView<2, T, C
                        rowCount(a) == rowCount(b) && columnCount(b) == columnCount(res),
         "linearSolve(): matrix shape mismatch.");
 
-    if(method == "Cholesky")
+    for(unsigned int k=0; k<method.size(); ++k)
+        method[k] = tolower(method[k]);
+    
+    if(method == "cholesky")
     {
         vigra_precondition(columnCount(a) == rowCount(a),
             "linearSolve(): Cholesky method requires square coefficient matrix.");
@@ -438,14 +442,14 @@ bool linearSolve(const MultiArrayView<2, T, C1> &a, const MultiArrayView<2, T, C
         leftReverseElimination(L, b, res);
         reverseElimination(transpose(L), res, res);
     }
-    else if(method == "QR")
+    else if(method == "qr")
     {
         Matrix<T> q(a.shape()), r(columnCount(a), columnCount(a));
         if(!qrDecomposition(a, q, r))
             return false; // a didn't have full rank
         reverseElimination(r, transpose(q) * b, res);
     }
-    else if(method == "SVD")
+    else if(method == "svd")
     {
         unsigned int n = rowCount(b);
         unsigned int m = columnCount(b);
