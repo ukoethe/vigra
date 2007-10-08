@@ -482,6 +482,7 @@ using linalg::linearSolve;
 using linalg::choleskyDecomposition;
 using linalg::qrDecomposition;
 using linalg::reverseElimination;
+using linalg::leftReverseElimination;
 
 } // namespace vigra
 
