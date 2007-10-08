@@ -1061,6 +1061,22 @@ struct LinalgTest
         shouldEqual(tv * tm, tvlref);
     }
 
+    void testCholesky()
+    {
+        double epsilon = 1e-10;
+        Matrix idref = vigra::identityMatrix<double>(size);
+
+        for(unsigned int i = 0; i < iterations; ++i)
+        {
+            Matrix a = random_matrix (size, size);
+            a = transpose(a) * a; // make a symmetric positive definite matrix
+            Matrix l(size, size);
+            choleskyDecomposition (a, l);
+            Matrix ch = l * transpose(l);
+            shouldEqualSequenceTolerance(ch.data(), ch.data()+size*size, a.data(), epsilon);
+        }
+    }
+
     void testQR()
     {
         double epsilon = 1e-10;
@@ -1082,14 +1098,25 @@ struct LinalgTest
     void testLinearSolve()
     {
         double epsilon = 1e-10;
+        int size = 5;
 
         for(unsigned int i = 0; i < iterations; ++i)
         {
             Matrix a = random_matrix (size, size);
             Matrix b = random_matrix (size, 1);
             Matrix x(size, 1);
-            should(linearSolve (a, b, x));
+
+            should(linearSolve (a, b, x, "QR"));
             Matrix ax = a * x;
+            shouldEqualSequenceTolerance(ax.data(), ax.data()+size, b.data(), epsilon);
+
+            should(linearSolve(a, b, x, "SVD"));
+            ax = a * x;
+            shouldEqualSequenceTolerance(ax.data(), ax.data()+size, b.data(), epsilon);
+            
+            a = transpose(a) * a; // make a symmetric positive definite matrix
+            should(linearSolve (a, b, x, "Cholesky"));
+            ax = a * x;
             shouldEqualSequenceTolerance(ax.data(), ax.data()+size, b.data(), epsilon);
         }
         
@@ -1098,7 +1125,9 @@ struct LinalgTest
         a(0,0) = 0; 
         Matrix b = random_matrix (size, 1);
         Matrix x(size, 1);
-        should(!linearSolve (a, b, x));
+        should(!linearSolve (a, b, x, "Cholesky"));
+        should(!linearSolve (a, b, x, "QR"));
+        should(!linearSolve (a, b, x, "SVD"));
     }
 
     void testInverse()
@@ -1286,6 +1315,7 @@ struct MathTestSuite
 
         add( testCase(&LinalgTest::testOStreamShifting));
         add( testCase(&LinalgTest::testMatrix));
+        add( testCase(&LinalgTest::testCholesky));
         add( testCase(&LinalgTest::testQR));
         add( testCase(&LinalgTest::testLinearSolve));
         add( testCase(&LinalgTest::testInverse));
