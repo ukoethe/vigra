@@ -186,7 +186,8 @@ bool choleskyDecomposition(MultiArrayView<2, T, C1> const & A,
         a == q * r;
         \endcode
 
-        This implementation uses householder transformations. It can be applied in-place,
+        If \a a dosn't have full rank, the function returns <tt>false</tt>. 
+        The decomposition is computed by householder transformations. It can be applied in-place,
         i.e. <tt>&a == &q</tt> or <tt>&a == &r</tt> are allowed.
 
     <b>\#include</b> "<a href="linear__solve_8hxx-source.html">vigra/linear_solve.hxx</a>" or<br>
@@ -194,7 +195,7 @@ bool choleskyDecomposition(MultiArrayView<2, T, C1> const & A,
         Namespaces: vigra and vigra::linalg
      */
 template <class T, class C1, class C2, class C3>
-void qrDecomposition(MultiArrayView<2, T, C1> const & a,
+bool qrDecomposition(MultiArrayView<2, T, C1> const & a,
                      MultiArrayView<2, T, C2> &q, MultiArrayView<2, T, C3> &r)
 {
     typedef T Real;
@@ -207,6 +208,8 @@ void qrDecomposition(MultiArrayView<2, T, C1> const & a,
                        "qrDecomposition(): Matrix shape mismatch.");
 
     Matrix<T> qr = a;
+    
+    bool fullRank = true;
 
     // Main loop.
     for (unsigned int k = 0; k < n; ++k) 
@@ -247,6 +250,8 @@ void qrDecomposition(MultiArrayView<2, T, C1> const & a,
             }
         }
         r(k,k) = -nrm;
+        if(nrm == 0.0)
+            fullRank = false;
     }
     for (unsigned int i = 0; i < n; ++i) 
     {
@@ -280,6 +285,7 @@ void qrDecomposition(MultiArrayView<2, T, C1> const & a,
             }
         }
     }
+    return fullRank;
 }
 
     /** Solve a linear system with right-triangular coefficient matrix.
@@ -427,9 +433,9 @@ bool linearSolve(const MultiArrayView<2, T, C1> &a, const MultiArrayView<2, T, C
     else if(method == "QR")
     {
         Matrix<T> q(a.shape()), r(columnCount(a), columnCount(a));
-        qrDecomposition(a, q, r);
-        if(!reverseElimination(r, transpose(q) * b, res))
+        if(!qrDecomposition(a, q, r))
             return false; // a didn't have full rank
+        reverseElimination(r, transpose(q) * b, res);
     }
     else if(method == "SVD")
     {
