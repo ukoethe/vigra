@@ -487,6 +487,9 @@ protected:
          */
     pointer m_ptr;
 
+    template <class U, class CN>
+    void copyImpl(const MultiArrayView <N, U, CN>& rhs);
+
 public:
 
         /** default constructor: create an empty image of size 0.
@@ -516,6 +519,18 @@ public:
             </ul>
          */
     MultiArrayView & operator=(MultiArrayView const & rhs);
+                    
+        /** Assignment of a differently typed MultiArrayView. Fails with 
+            <tt>PreconditionViolation</tt> exception when the shapes do not match.
+         */
+    template<class U, class C1>
+    MultiArrayView & operator=(MultiArrayView<N, U, C1> const & rhs)
+    {
+        vigra_precondition(this->shape() == rhs.shape(),
+            "MultiArrayView::operator=() size mismatch.");
+        this->copyImpl(rhs);
+        return *this;
+    }
                     
         /** reset the view to point to the same data as the rhs.
          */
@@ -635,8 +650,20 @@ public:
 
         /** Copy the data of the right-hand array (array shapes must match).
          */
+    void copy(const MultiArrayView & rhs)
+    {
+        if(this == &rhs)
+            return;
+        this->copyImpl(rhs);
+    }
+
+        /** Copy the data of the right-hand array (array shapes must match).
+         */
     template <class U, class CN>
-    void copy(const MultiArrayView <N, U, CN>& rhs);
+    void copy(const MultiArrayView <N, U, CN>& rhs)
+    {
+        this->copyImpl(rhs);
+    }
 
         /** bind the M outmost dimensions to certain indices.
             this reduces the dimensionality of the image to
@@ -704,6 +731,60 @@ public:
             shape [i] /= s [i];
         return MultiArrayView <N, T, StridedArrayTag>
             (shape, m_stride * s, m_ptr);
+    }
+
+        /** permute the dimensions of the array.
+            The function exchanges the meaning of the dimensions without copying the data. 
+            In case of 2-dimensional array, this is simply array transposition. In higher dimensions,
+            there are more posibilities.
+            
+            <b>Usage:</b><br>
+            \code
+            typedef MultiArray<2, double>::difference_type Shape;
+            MultiArray<2, double> array(10, 20);
+            
+            MultiArray<2, double, StridedArrayTag> transposed = array.permuteDimensions(Shape(1,0));
+            
+            for(unsigned int i=0; i<array.shape(0), ++i)
+                for(unsigned int j=0; j<array.shape(1); ++j)
+                    assert(array(i, j) == transposed(j, i));
+            \endcode
+        */
+    MultiArrayView <N, T, StridedArrayTag>
+    permuteDimensions (const difference_type &s) const
+    {
+        difference_type shape, stride, check(0);
+        for (unsigned int i = 0; i < actual_dimension; ++i)
+        {
+            shape[i]  = m_shape[s[i]];
+            stride[i] = m_stride[s[i]];
+            ++check[s[i]];
+        }
+        vigra_precondition(check == difference_type(1),
+           "MultiArrayView::permuteDimensions(): every dimension must occur exactly once.");
+        return MultiArrayView <N, T, StridedArrayTag>(shape, stride, m_ptr);
+    }
+
+        /** transpose a 2-dimensional array. Use only if N==2.
+            
+            <b>Usage:</b><br>
+            \code
+            typedef MultiArray<2, double>::difference_type Shape;
+            MultiArray<2, double> array(10, 20);
+            
+            MultiArray<2, double, StridedArrayTag> transposed = array.transpose();
+            
+            for(unsigned int i=0; i<array.shape(0), ++i)
+                for(unsigned int j=0; j<array.shape(1); ++j)
+                    assert(array(i, j) == transposed(j, i));
+            \endcode
+        */
+    MultiArrayView <2, T, StridedArrayTag>
+    transpose () const
+    {
+        difference_type shape(m_shape[1], m_shape[0]), 
+                        stride(m_stride[1], m_stride[0]);
+        return MultiArrayView <2, T, StridedArrayTag>(shape, stride, m_ptr);
     }
 
         /** number of the elements in the array.
@@ -887,7 +968,7 @@ MultiArrayView <N, T, C>::operator=(MultiArrayView const & rhs)
         m_ptr    = rhs.m_ptr;
     }
     else
-        this->copy(rhs);
+        this->copyImpl(rhs);
     return *this;
 }
 
@@ -902,13 +983,28 @@ MultiArrayView <N, T, C>::init(const U & init)
 template <unsigned int N, class T, class C>
 template <class U, class CN>
 void 
-MultiArrayView <N, T, C>::copy(const MultiArrayView <N, U, CN>& rhs)
+MultiArrayView <N, T, C>::copyImpl(const MultiArrayView <N, U, CN>& rhs)
 {
-    if(this == &rhs)
-        return;
     vigra_precondition (shape () == rhs.shape (),
         "MultiArrayView::copy(): shape mismatch.");
-    detail::copyMultiArrayData(rhs.traverser_begin(), shape(), traverser_begin(), MetaInt<actual_dimension-1>());
+    // check for overlap of this and rhs
+    const_pointer first_element = this->m_ptr,
+                  last_element = first_element + dot(this->m_shape - difference_type(1), this->m_stride);
+    typename MultiArrayView <N, U, CN>::const_pointer 
+           rhs_first_element = rhs.data(),
+           rhs_last_element = rhs_first_element + dot(rhs.shape() - difference_type(1), rhs.stride());
+    if(last_element < rhs_first_element || rhs_last_element < first_element)
+    {
+        // no overlap -- can copy directly
+        detail::copyMultiArrayData(rhs.traverser_begin(), shape(), traverser_begin(), MetaInt<actual_dimension-1>());
+    }
+    else
+    {
+        // overlap: we got different views to the same data -- copy to intermediate memory in order to avoid
+        // overwriting elements that are still needed on the rhs.
+        MultiArray<N, T> tmp(rhs);
+        detail::copyMultiArrayData(tmp.traverser_begin(), shape(), traverser_begin(), MetaInt<actual_dimension-1>());
+    }
 }
 
 template <unsigned int N, class T, class C>
@@ -1197,6 +1293,8 @@ protected:
          */
     void deallocate (pointer &ptr, std::size_t s);
 
+    template <class U, class C>
+    void copyOrReshape (const MultiArrayView<N, U, C> &rhs);
 public:
 
         /** default constructor
@@ -1239,7 +1337,9 @@ public:
          */
     MultiArray &operator= (const MultiArray &rhs)
     {
-        return this->operator=(static_cast<view_type const &>(rhs));
+        if (this != &rhs)
+            this->copyOrReshape(rhs);
+        return *this;
     }
 
         /** assignment from arbitrary MultiArrayView.<br>
@@ -1248,7 +1348,11 @@ public:
             objects (array views, iterators) depending on the lhs array.
          */
     template <class U, class C>
-    MultiArray &operator= (const MultiArrayView<N, U, C> &rhs);
+    MultiArray &operator= (const MultiArrayView<N, U, C> &rhs)
+    {
+        this->copyOrReshape(rhs);
+        return *this;
+    }
 
         /** destructor
          */
@@ -1398,14 +1502,10 @@ MultiArray <N, T, A>::~MultiArray ()
 
 template <unsigned int N, class T, class A>
 template <class U, class C>
-MultiArray <N, T, A> &
-MultiArray <N, T, A>::operator= (const MultiArrayView<N, U, C> &rhs)
+void
+MultiArray <N, T, A>::copyOrReshape(const MultiArrayView<N, U, C> &rhs)
 {
-    if (this == &rhs)
-    {
-        return *this;
-    }
-    else if (this->shape() == rhs.shape())
+    if (this->shape() == rhs.shape())
     {
         this->copy(rhs);
     }
@@ -1418,7 +1518,6 @@ MultiArray <N, T, A>::operator= (const MultiArrayView<N, U, C> &rhs)
         this->m_stride = rhs.stride();
         this->m_ptr = new_ptr;
     }
-    return *this;
 }
 
 template <unsigned int N, class T, class A>
