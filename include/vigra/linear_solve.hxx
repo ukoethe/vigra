@@ -39,6 +39,7 @@
 #define VIGRA_LINEAR_SOLVE_HXX
 
 #include <ctype.h>
+#include <string>
 #include "matrix.hxx"
 #include "singular_value_decomposition.hxx"
 
