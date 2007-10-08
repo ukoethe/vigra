@@ -133,7 +133,7 @@ TemporaryMatrix<T> inverse(const TemporaryMatrix<T> &v)
 
     /** Cholesky decomposition.
 
-        \a A must be a symmetric positive definite matrix, and \a L will be a lowe
+        \a A must be a symmetric positive definite matrix, and \a L will be a lower
         triangular matrix, such that (up to round-off errors):
 
         \code
