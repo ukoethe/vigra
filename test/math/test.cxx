@@ -1142,6 +1142,8 @@ struct LinalgTest
             shouldEqualSequenceTolerance(id.data(), id.data()+size*size, idref.data(), epsilon);
             id = inverse(a) * a;
             shouldEqualSequenceTolerance(id.data(), id.data()+size*size, idref.data(), epsilon);
+            id = inverse(idref * a) * a; // test inverse(const TemporaryMatrix<T> &v)
+            shouldEqualSequenceTolerance(id.data(), id.data()+size*size, idref.data(), epsilon);
         }
 
         double data[] = { 1.0, 0.0, 0.0, 0.0 };
