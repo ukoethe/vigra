@@ -135,15 +135,13 @@ TemporaryMatrix<T> inverse(const TemporaryMatrix<T> &v)
 namespace detail {
 
 template <class T, class C1>
-T
-determinantByLUDecomposition(MultiArrayView<2, T, C1> const & a)
+T determinantByLUDecomposition(MultiArrayView<2, T, C1> const & a)
 {
     unsigned int m = rowCount(a), n = columnCount(a);
     vigra_precondition(n == m,
        "determinant(): square matrix required.");
        
     Matrix<T> LU(a);
-    double permutationSign = 1.0;
     T det = 1.0;
 
     for (unsigned int j = 0; j < n; ++j) 
@@ -173,7 +171,7 @@ determinantByLUDecomposition(MultiArrayView<2, T, C1> const & a)
             Matrix<T> t = rowVector(LU, p);
             rowVector(LU, p) = rowVector(LU, j);
             rowVector(LU, j) = t;
-            permutationSign = -permutationSign;
+            det = -det;
         }
         
         det *= LU(j,j);
@@ -188,7 +186,7 @@ determinantByLUDecomposition(MultiArrayView<2, T, C1> const & a)
             }
         }
     }
-    return det * permutationSign;
+    return det;
 }
 
 } // namespace detail
@@ -200,7 +198,7 @@ determinantByLUDecomposition(MultiArrayView<2, T, C1> const & a)
         \a method must be one of the following:
         <DL>
         <DT>"Cholesky"<DD> Compute the solution by means of Cholesky decomposition. This
-                           method is faster than "LU", but requres the matrix \a a 
+                           method is faster than "LU", but requires the matrix \a a 
                            to be symmetric positive definite. If this is 
                            not the case, a <tt>ContractViolation</tt> exception is thrown.
                            
