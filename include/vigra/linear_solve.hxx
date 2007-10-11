@@ -40,6 +40,7 @@
 
 #include <ctype.h>
 #include <string>
+#include "mathutil.hxx"
 #include "matrix.hxx"
 #include "singular_value_decomposition.hxx"
 
@@ -130,6 +131,119 @@ TemporaryMatrix<T> inverse(const TemporaryMatrix<T> &v)
         return ret;
     }
 }
+
+namespace detail {
+
+template <class T, class C1>
+T
+determinantByLUDecomposition(MultiArrayView<2, T, C1> const & a)
+{
+    unsigned int m = rowCount(a), n = columnCount(a);
+    vigra_precondition(n == m,
+       "determinant(): square matrix required.");
+       
+    Matrix<T> LU(a);
+    double permutationSign = 1.0;
+    T det = 1.0;
+
+    for (unsigned int j = 0; j < n; ++j) 
+    {
+        // Apply previous transformations.
+        for (unsigned int i = 0; i < m; ++i) 
+        {
+            // Most of the time is spent in the following dot product.
+            unsigned int kmax = i < j ? i : j;
+            T s = 0.0;
+            for (unsigned int k = 0; k < kmax; ++k) 
+            {
+                s += LU(i,k)*LU(k,j);
+            }
+
+            LU(i,j) = LU(i,j) -= s;
+        }
+
+        // Find pivot and exchange if necessary.
+        unsigned int p = j;
+        for (unsigned int i = j+1; i < m; ++i) 
+            if (abs(LU(i,j)) > abs(LU(p,j))) 
+                p = i;
+
+        if (p != j) 
+        {
+            Matrix<T> t = rowVector(LU, p);
+            rowVector(LU, p) = rowVector(LU, j);
+            rowVector(LU, j) = t;
+            permutationSign = -permutationSign;
+        }
+        
+        det *= LU(j,j);
+
+        // Compute multipliers.
+
+        if ((j < m) && (LU(j,j) != 0.0)) 
+        {
+            for (unsigned int i = j+1; i < m; ++i) 
+            {
+               LU(i,j) /= LU(j,j);
+            }
+        }
+    }
+    return det * permutationSign;
+}
+
+} // namespace detail
+
+
+
+    /** Compute the determinant of a square matrix.
+
+        \a method must be one of the following:
+        <DL>
+        <DT>"Cholesky"<DD> Compute the solution by means of Cholesky decomposition. This
+                           method is faster than "LU", but requres the matrix \a a 
+                           to be symmetric positive definite. If this is 
+                           not the case, a <tt>ContractViolation</tt> exception is thrown.
+                           
+        <DT>"LU"<DD> (default) Compute the solution by means of LU decomposition.
+        </DL>
+
+    <b>\#include</b> "<a href="linear__solve_8hxx-source.html">vigra/linear_solve.hxx</a>" or<br>
+    <b>\#include</b> "<a href="linear__algebra_8hxx-source.html">vigra/linear_algebra.hxx</a>"<br>
+        Namespaces: vigra and vigra::linalg
+     */
+template <class T, class C1>
+T
+determinant(MultiArrayView<2, T, C1> const & a, std::string method = "LU")
+{
+    unsigned int n = columnCount(a);
+    vigra_precondition(rowCount(a) == n,
+               "determinant(): Square matrix required.");    
+
+    if(n == 1)
+        return a(0,0);
+    if(n == 2)
+        return a(0,0)*a(1,1) - a(0,1)*a(1,0);
+    if(method == "LU")
+    {
+        return detail::determinantByLUDecomposition(a);
+    }
+    else if(method == "Cholesky")
+    {
+        Matrix<T> L(a.shape());
+        vigra_precondition(choleskyDecomposition(a, L),
+           "determinant(): Cholesky method requires symmetric positive definite matrix.");
+        T det = L(0,0);
+        for(unsigned int k=1; k<n; ++k)
+            det *= L(k,k);
+        return sq(det);
+    }
+    else
+    {
+        vigra_precondition(false, "determinant(): Unknown solution method.");
+    }
+    return T();
+}
+
 
     /** Cholesky decomposition.
 
@@ -478,6 +592,7 @@ bool linearSolve(const MultiArrayView<2, T, C1> &a, const MultiArrayView<2, T, C
 } // namespace linalg
 
 using linalg::inverse;
+using linalg::determinant;
 using linalg::linearSolve;
 using linalg::choleskyDecomposition;
 using linalg::qrDecomposition;
