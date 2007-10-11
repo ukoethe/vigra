@@ -219,15 +219,18 @@ determinant(MultiArrayView<2, T, C1> const & a, std::string method = "LU")
     vigra_precondition(rowCount(a) == n,
                "determinant(): Square matrix required.");    
 
+    for(unsigned int k=0; k<method.size(); ++k)
+        method[k] = tolower(method[k]);
+    
     if(n == 1)
         return a(0,0);
     if(n == 2)
         return a(0,0)*a(1,1) - a(0,1)*a(1,0);
-    if(method == "LU")
+    if(method == "lu")
     {
         return detail::determinantByLUDecomposition(a);
     }
-    else if(method == "Cholesky")
+    else if(method == "cholesky")
     {
         Matrix<T> L(a.shape());
         vigra_precondition(choleskyDecomposition(a, L),
@@ -255,6 +258,8 @@ determinant(MultiArrayView<2, T, C1> const & a, std::string method = "LU")
         \endcode
 
         This implementation cannot be applied in-place, i.e. <tt>&L == &A</tt> is an error.
+        If \a A is not symmetric, a <tt>ContractViolation</tt> exception is thrown. If it
+        is not positive definite, the function returns <tt>false</tt>.
 
     <b>\#include</b> "<a href="linear__solve_8hxx-source.html">vigra/linear_solve.hxx</a>" or<br>
     <b>\#include</b> "<a href="linear__algebra_8hxx-source.html">vigra/linear_algebra.hxx</a>"<br>
@@ -285,8 +290,8 @@ bool choleskyDecomposition(MultiArrayView<2, T, C1> const & A,
             }
             L(j, k) = s = (A(j, k) - s)/L(k, k);
             d = d + s*s;
-            if(A(k, j) != A(j, k))
-                return false;  // A is not symmetric 
+            vigra_precondition(A(k, j) == A(j, k),
+                       "choleskyDecomposition(): Input matrix must be symmetric.");
          }
          d = A(j, j) - d;
          if(d <= 0.0)
