@@ -1224,6 +1224,8 @@ struct LinalgTest
         Matrix mns3(Shape(3,3), dns3);
         shouldEqualTolerance(determinant(ms3), -18.0, eps);
         shouldEqualTolerance(determinant(mns3), -21.0, eps);
+        shouldEqualTolerance(determinant(transpose(ms3)*ms3, "Cholesky"), 324.0, eps);
+        shouldEqualTolerance(determinant(transpose(mns3)*mns3, "Cholesky"), 441.0, eps);
     }
     
     void testSVD()
