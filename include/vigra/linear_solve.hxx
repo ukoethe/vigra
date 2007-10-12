@@ -149,7 +149,6 @@ T determinantByLUDecomposition(MultiArrayView<2, T, C1> const & a)
         // Apply previous transformations.
         for (unsigned int i = 0; i < m; ++i) 
         {
-            // Most of the time is spent in the following dot product.
             unsigned int kmax = i < j ? i : j;
             T s = 0.0;
             for (unsigned int k = 0; k < kmax; ++k) 
@@ -177,8 +176,7 @@ T determinantByLUDecomposition(MultiArrayView<2, T, C1> const & a)
         det *= LU(j,j);
 
         // Compute multipliers.
-
-        if ((j < m) && (LU(j,j) != 0.0)) 
+        if (LU(j,j) != 0.0)
         {
             for (unsigned int i = j+1; i < m; ++i) 
             {
@@ -210,8 +208,7 @@ T determinantByLUDecomposition(MultiArrayView<2, T, C1> const & a)
         Namespaces: vigra and vigra::linalg
      */
 template <class T, class C1>
-T
-determinant(MultiArrayView<2, T, C1> const & a, std::string method = "LU")
+T determinant(MultiArrayView<2, T, C1> const & a, std::string method = "LU")
 {
     unsigned int n = columnCount(a);
     vigra_precondition(rowCount(a) == n,
@@ -245,6 +242,45 @@ determinant(MultiArrayView<2, T, C1> const & a, std::string method = "LU")
     return T();
 }
 
+    /** Compute the logarithm of the determinant of a symmetric positive definite matrix.
+
+        This is useful to avoid multiplication of very large numbers in big matrices.
+        It is implemented by means of Cholesky decomposition.
+
+    <b>\#include</b> "<a href="linear__solve_8hxx-source.html">vigra/linear_solve.hxx</a>" or<br>
+    <b>\#include</b> "<a href="linear__algebra_8hxx-source.html">vigra/linear_algebra.hxx</a>"<br>
+        Namespaces: vigra and vigra::linalg
+     */
+template <class T, class C1>
+T logDeterminant(MultiArrayView<2, T, C1> const & a)
+{
+    unsigned int n = columnCount(a);
+    vigra_precondition(rowCount(a) == n,
+               "logDeterminant(): Square matrix required.");    
+    if(n == 1)
+    {
+        vigra_precondition(a(0,0) > 0.0,
+                   "logDeterminant(): Matrix not positive definite.");    
+        return std::log(a(0,0));
+    }
+    if(n == 2)
+    {
+        T det = a(0,0)*a(1,1) - a(0,1)*a(1,0);
+        vigra_precondition(det > 0.0,
+                   "logDeterminant(): Matrix not positive definite.");    
+        return std::log(det);
+    }
+    else
+    {
+        Matrix<T> L(a.shape());
+        vigra_precondition(choleskyDecomposition(a, L),
+                "logDeterminant(): Matrix not positive definite.");  
+        T logdet = std::log(L(0,0));
+        for(unsigned int k=1; k<n; ++k)
+            logdet += std::log(L(k,k));
+        return 2.0*logdet;
+    }
+}
 
     /** Cholesky decomposition.
 
