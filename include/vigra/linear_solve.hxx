@@ -564,6 +564,12 @@ bool leftReverseElimination(const MultiArrayView<2, T, C1> &l, const MultiArrayV
                            it must have more rows than columns, and the solution will be computed in the 
                            least squares sense. If \a a doesn't have full rank, the function 
                            returns <tt>false</tt>.
+
+        <DT>"NE"<DD> Compute the solution by means of the normal equations, i.e. by applying Cholesky
+                           decomposition to the equivalent problem <tt>A'*A*x = A'*b</tt>. This does only make sense
+                           when \a A is a ractangular matrix with more rows than columns, and the equation
+                           is to be solved in the least squares sense. If \a a doesn't have full rank, the function 
+                           returns <tt>false</tt>.
         </DL>
         
         This function can be applied in-place, i.e. <tt>&b == &res</tt> or <tt>&a == &res</tt> are allowed
@@ -574,13 +580,13 @@ bool leftReverseElimination(const MultiArrayView<2, T, C1> &l, const MultiArrayV
         Namespaces: vigra and vigra::linalg
      */
 template <class T, class C1, class C2, class C3>
-bool linearSolve(const MultiArrayView<2, T, C1> &a, const MultiArrayView<2, T, C2> &b,
+bool linearSolve(const MultiArrayView<2, T, C1> &A, const MultiArrayView<2, T, C2> &b,
                  MultiArrayView<2, T, C3> & res, std::string method = "QR")
 {
-    vigra_precondition(columnCount(a) <= rowCount(a),
-        "linearSolve(): Coefficient matrix a must have at least as many rows as columns.");
-    vigra_precondition(columnCount(a) == rowCount(res) && 
-                       rowCount(a) == rowCount(b) && columnCount(b) == columnCount(res),
+    vigra_precondition(columnCount(A) <= rowCount(A),
+        "linearSolve(): Coefficient matrix A must have at least as many rows as columns.");
+    vigra_precondition(columnCount(A) == rowCount(res) && 
+                       rowCount(A) == rowCount(b) && columnCount(b) == columnCount(res),
         "linearSolve(): matrix shape mismatch.");
 
     for(unsigned int k=0; k<method.size(); ++k)
@@ -588,30 +594,34 @@ bool linearSolve(const MultiArrayView<2, T, C1> &a, const MultiArrayView<2, T, C
     
     if(method == "cholesky")
     {
-        vigra_precondition(columnCount(a) == rowCount(a),
+        vigra_precondition(columnCount(A) == rowCount(A),
             "linearSolve(): Cholesky method requires square coefficient matrix.");
-        Matrix<T> L(a.shape());
-        if(!choleskyDecomposition(a, L))
-            return false; // false if a wasn't symmetric positive definite
+        Matrix<T> L(A.shape());
+        if(!choleskyDecomposition(A, L))
+            return false; // false if A wasn't symmetric positive definite
         leftReverseElimination(L, b, res);
         reverseElimination(transpose(L), res, res);
     }
     else if(method == "qr")
     {
-        Matrix<T> q(a.shape()), r(columnCount(a), columnCount(a));
-        if(!qrDecomposition(a, q, r))
-            return false; // a didn't have full rank
+        Matrix<T> q(A.shape()), r(columnCount(A), columnCount(A));
+        if(!qrDecomposition(A, q, r))
+            return false; // A didn't have full rank
         reverseElimination(r, transpose(q) * b, res);
+    }
+    else if(method == "ne")
+    {
+        return linearSolve(transpose(A)*A, transpose(A)*b, res, "Cholesky");
     }
     else if(method == "svd")
     {
         unsigned int n = rowCount(b);
         unsigned int m = columnCount(b);
-	    Matrix<T> u(a.shape()), s(n, 1), v(n, n);
+	    Matrix<T> u(A.shape()), s(n, 1), v(n, n);
 
-        unsigned int rank = singularValueDecomposition(a, u, s, v);
+        unsigned int rank = singularValueDecomposition(A, u, s, v);
         if(rank < n)
-            return false; // a didn't have full rank
+            return false; // A didn't have full rank
 
         Matrix<T> t = transpose(u)*b;
         for(unsigned int k=0; k<n; ++k)
