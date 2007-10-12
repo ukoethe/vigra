@@ -54,6 +54,7 @@
 #include "vigra/fixedpoint.hxx"
 #include "vigra/linear_algebra.hxx"
 #include "vigra/singular_value_decomposition.hxx"
+#include "vigra/regression.hxx"
 
 static double coefficients[][12] =
 {
@@ -1217,6 +1218,8 @@ struct LinalgTest
         double eps = 1e-12;
         shouldEqualTolerance(determinant(ms2), -3.0, eps);
         shouldEqualTolerance(determinant(mns2), -5.0, eps);
+        shouldEqualTolerance(logDeterminant(transpose(ms2)*ms2), std::log(9.0), eps);
+        shouldEqualTolerance(logDeterminant(transpose(mns2)*mns2), std::log(25.0), eps);
 
         double ds3[] = {1, 2, 3, 2, 3, 1, 3, 1, 2};
         double dns3[] = {1, 2, 3, 5, 3, 1, 3, 1, 2};
@@ -1226,6 +1229,8 @@ struct LinalgTest
         shouldEqualTolerance(determinant(mns3), -21.0, eps);
         shouldEqualTolerance(determinant(transpose(ms3)*ms3, "Cholesky"), 324.0, eps);
         shouldEqualTolerance(determinant(transpose(mns3)*mns3, "Cholesky"), 441.0, eps);
+        shouldEqualTolerance(logDeterminant(transpose(ms3)*ms3), std::log(324.0), eps);
+        shouldEqualTolerance(logDeterminant(transpose(mns3)*mns3), std::log(441.0), eps);
     }
     
     void testSVD()
