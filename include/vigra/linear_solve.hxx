@@ -275,10 +275,10 @@ T logDeterminant(MultiArrayView<2, T, C1> const & a)
         Matrix<T> L(a.shape());
         vigra_precondition(choleskyDecomposition(a, L),
                 "logDeterminant(): Matrix not positive definite.");  
-        T logdet = std::log(sq(L(0,0)));
+        T logdet = std::log(L(0,0)); 
         for(unsigned int k=1; k<n; ++k)
-            logdet += std::log(sq(L(k,k)));
-        return logdet;
+            logdet += std::log(L(k,k));  // L(k,k) is guaranteed to be positive
+        return 2.0*logdet;
     }
 }
 
