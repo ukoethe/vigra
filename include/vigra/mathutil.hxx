@@ -391,6 +391,147 @@ norm(T const & t)
     return sqrt(static_cast<typename SquareRootTraits<SNT>::SquareRootArgument>(squaredNorm(t)));
 }
 
+    /*! Find the minimum element in a sequence.
+    
+        The function returns the iterator refering to the minimum element.
+        
+        <b>Required Interface:</b>
+        
+        \code
+        Iterator is a standard forward iterator.
+        
+        bool f = *first < NumericTraits<typename std::iterator_traits<Iterator>::value_type>::max();
+        \endcode
+
+        <b>\#include</b> "<a href="mathutil_8hxx-source.html">vigra/mathutil.hxx</a>"<br>
+        Namespace: vigra
+    */
+template <class Iterator>
+Iterator argMin(Iterator first, Iterator last)
+{
+    typedef typename std::iterator_traits<Iterator>::value_type Value;
+    Value vopt = NumericTraits<Value>::max();
+    Iterator best = last;
+    for(; first != last; ++first)
+    {
+        if(*first < vopt)
+        {
+            vopt = *first;
+            best = first;
+        }
+    }
+    return best;
+}
+
+    /*! Find the maximum element in a sequence.
+    
+        The function returns the iterator refering to the maximum element.
+        
+        <b>Required Interface:</b>
+        
+        \code
+        Iterator is a standard forward iterator.
+        
+        bool f = NumericTraits<typename std::iterator_traits<Iterator>::value_type>::min() < *first;
+        \endcode
+
+        <b>\#include</b> "<a href="mathutil_8hxx-source.html">vigra/mathutil.hxx</a>"<br>
+        Namespace: vigra
+    */
+template <class Iterator>
+Iterator argMax(Iterator first, Iterator last)
+{
+    typedef typename std::iterator_traits<Iterator>::value_type Value;
+    Value vopt = NumericTraits<Value>::min();
+    Iterator best = last;
+    for(; first != last; ++first)
+    {
+        if(vopt < *first)
+        {
+            vopt = *first;
+            best = first;
+        }
+    }
+    return best;
+}
+
+    /*! Find the minimum element in a sequence conforming to a condition.
+    
+        The function returns the iterator refering to the minimum element,
+        where only elements conforming to the condition (i.e. where 
+        <tt>condition(*iterator)</tt> evaluates to <tt>true</tt>) are considered.
+        If no element conforms to the condition, or the sequence is empty,
+        the end iterator \a last is returned.
+        
+        <b>Required Interface:</b>
+        
+        \code
+        Iterator is a standard forward iterator.
+        
+        bool c = condition(*first);
+        
+        bool f = *first < NumericTraits<typename std::iterator_traits<Iterator>::value_type>::max();
+        \endcode
+
+        <b>\#include</b> "<a href="mathutil_8hxx-source.html">vigra/mathutil.hxx</a>"<br>
+        Namespace: vigra
+    */
+template <class Iterator, class UnaryFunctor>
+Iterator argMinIf(Iterator first, Iterator last, UnaryFunctor condition)
+{
+    typedef typename std::iterator_traits<Iterator>::value_type Value;
+    Value vopt = NumericTraits<Value>::max();
+    Iterator best = last;
+    for(; first != last; ++first)
+    {
+        if(condition(*first) && *first < vopt)
+        {
+            vopt = *first;
+            best = first;
+        }
+    }
+    return best;
+}
+
+    /*! Find the maximum element in a sequence conforming to a condition.
+    
+        The function returns the iterator refering to the maximum element,
+        where only elements conforming to the condition (i.e. where 
+        <tt>condition(*iterator)</tt> evaluates to <tt>true</tt>) are considered.
+        If no element conforms to the condition, or the sequence is empty,
+        the end iterator \a last is returned.
+        
+        <b>Required Interface:</b>
+        
+        \code
+        Iterator is a standard forward iterator.
+        
+        bool c = condition(*first);
+        
+        bool f = NumericTraits<typename std::iterator_traits<Iterator>::value_type>::min() < *first;
+        \endcode
+
+        <b>\#include</b> "<a href="mathutil_8hxx-source.html">vigra/mathutil.hxx</a>"<br>
+        Namespace: vigra
+    */
+template <class Iterator, class UnaryFunctor>
+Iterator argMaxIf(Iterator first, Iterator last, UnaryFunctor condition)
+{
+    typedef typename std::iterator_traits<Iterator>::value_type Value;
+    Value vopt = NumericTraits<Value>::min();
+    Iterator best = last;
+    for(; first != last; ++first)
+    {
+        if(condition(*first) && vopt < *first)
+        {
+            vopt = *first;
+            best = first;
+        }
+    }
+    return best;
+}
+
+
 namespace detail {
 
 template <class T>
