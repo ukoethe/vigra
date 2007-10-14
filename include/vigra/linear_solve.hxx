@@ -539,40 +539,39 @@ bool leftReverseElimination(const MultiArrayView<2, T, C1> &l, const MultiArrayV
 
     /** Solve a linear system.
 
-        The \a a is the coefficient matrix, and the column vectors
+        \a A is the coefficient matrix, and the column vectors
         in \a b are the right-hand sides of the equation (so, several equations
         with the same coefficients can be solved in one go). The result is returned 
         in \a res, whose columns contain the solutions for the corresponding
-        columns of \a b. The number of columns of \a a must equal the number of rows of
-        both \a b and \a res, and the number of columns of \a b and \a res must be
-        equal. 
+        columns of \a b. The number of columns of \a A must equal the number of rows of
+        both \a b and \a res, and the number of columns of \a b and \a res must match. 
         
         \a method must be one of the following:
         <DL>
         <DT>"Cholesky"<DD> Compute the solution by means of Cholesky decomposition. The 
-                           coefficient matrix \a a must by symmetric positive definite. If
+                           coefficient matrix \a A must by symmetric positive definite. If
                            this is not the case, the function returns <tt>false</tt>.
                            
         <DT>"QR"<DD> (default) Compute the solution by means of QR decomposition.  The 
-                           coefficient matrix \a a can be square or rectangular. In the latter case,
+                           coefficient matrix \a A can be square or rectangular. In the latter case,
                            it must have more rows than columns, and the solution will be computed in the 
-                           least squares sense. If \a a doesn't have full rank, the function 
+                           least squares sense. If \a A doesn't have full rank, the function 
                            returns <tt>false</tt>.
 
         <DT>"SVD"<DD> Compute the solution by means of singular value decomposition.  The 
-                           coefficient matrix \a a can be square or rectangular. In the latter case,
+                           coefficient matrix \a A can be square or rectangular. In the latter case,
                            it must have more rows than columns, and the solution will be computed in the 
-                           least squares sense. If \a a doesn't have full rank, the function 
+                           least squares sense. If \a A doesn't have full rank, the function 
                            returns <tt>false</tt>.
 
         <DT>"NE"<DD> Compute the solution by means of the normal equations, i.e. by applying Cholesky
-                           decomposition to the equivalent problem <tt>A'*A*x = A'*b</tt>. This does only make sense
-                           when \a A is a ractangular matrix with more rows than columns, and the equation
-                           is to be solved in the least squares sense. If \a a doesn't have full rank, the function 
-                           returns <tt>false</tt>.
+                           decomposition to the equivalent problem <tt>A'*A*x = A'*b</tt>. This only makes sense
+                           when the equation is to be solved in the least squares sense, i.e. when \a A is a 
+                           rectangular matrix with more rows than columns. If \a A doesn't have full column rank, 
+                           the function returns <tt>false</tt>.
         </DL>
         
-        This function can be applied in-place, i.e. <tt>&b == &res</tt> or <tt>&a == &res</tt> are allowed
+        This function can be applied in-place, i.e. <tt>&b == &res</tt> or <tt>&A == &res</tt> are allowed
         (provided they have the required shapes).
 
     <b>\#include</b> "<a href="linear__solve_8hxx-source.html">vigra/linear_solve.hxx</a>" or<br>
@@ -642,6 +641,7 @@ bool linearSolve(const MultiArrayView<2, T, C1> &A, const MultiArrayView<2, T, C
 
 using linalg::inverse;
 using linalg::determinant;
+using linalg::logDeterminant;
 using linalg::linearSolve;
 using linalg::choleskyDecomposition;
 using linalg::qrDecomposition;
