@@ -46,6 +46,7 @@
 #include <cstdlib>
 #include "unittest.hxx"
 #include "vigra/mathutil.hxx"
+#include "vigra/functorexpression.hxx"
 #include "vigra/polynomial.hxx"
 #include "vigra/array_vector.hxx"
 #include "vigra/splines.hxx"
@@ -365,6 +366,24 @@ struct FunctionsTest
         should(!closeAtTolerance(c, d));
         should(!closeAtTolerance(-a, -c));
         should(!closeAtTolerance(-c, -d));
+    }
+
+    void testArgMinMax()
+    {
+        using namespace vigra;
+        using namespace vigra::functor;
+        
+        double data[] = {1.0, 5.0,
+                         3.0, 2.0,
+                        -2.0, 4.0};
+        double *end = data + 6;
+        
+        shouldEqual(argMin(data, end), data+4);
+        shouldEqual(argMax(data, end), data+1);
+        shouldEqual(argMinIf(data, end, Arg1() > Param(0.0)), data);
+        shouldEqual(argMinIf(data, end, Arg1() > Param(5.0)), end);
+        shouldEqual(argMaxIf(data, end, Arg1() < Param(5.0)), data+5);
+        shouldEqual(argMaxIf(data, end, Arg1() < Param(-2.0)), end);
     }
 };
 
@@ -852,7 +871,7 @@ struct LinalgTest
                 ret (j, i) = ret (i, j) = random_double ();
         return ret;
     }
-
+    
     void testMatrix()
     {
         double data[] = {1.0, 5.0,
@@ -878,7 +897,7 @@ struct LinalgTest
         shouldEqual(a.norm(), norm(a));
         shouldEqual(rowCount(a), r);
         shouldEqual(columnCount(a), c);
-
+        
         for(unsigned int i=0, k=0; i<r; ++i)
             for(unsigned int j=0; j<c; ++j, ++k)
                 shouldEqual(zero(i,j), 0.0);
@@ -988,6 +1007,16 @@ struct LinalgTest
             for(unsigned int j=0; j<c; ++j)
                 shouldEqual(b(i,j), 1.0);
 
+        b = pow(a, 2);
+        for(unsigned int i=0, k=0; i<r; ++i)
+            for(unsigned int j=0; j<c; ++j, ++k)
+                shouldEqual(b(i,j), data[k] * data[k]);
+
+        b = sqrt(a);
+        for(unsigned int i=0, k=0; i<r; ++i)
+            for(unsigned int j=0; j<c; ++j, ++k)
+                shouldEqual(b(i,j), sqrt(data[k]));
+
         Matrix at = transpose(a);
         shouldEqual(at.rowCount(), c);
         shouldEqual(at.columnCount(), r);
@@ -1061,6 +1090,24 @@ struct LinalgTest
         shouldEqual(tm * tv, tvrref);
         shouldEqual(tv * tm, tvlref);
     }
+ 
+    void testArgMinMax()
+    {
+        using namespace vigra::functor;
+        
+        double data[] = {1.0, 5.0,
+                         3.0, 2.0,
+                        -2.0, 4.0};
+        unsigned int r = 3, c = 2;
+        Matrix minmax(r, c, data);
+        
+        shouldEqual(argMin(minmax), 2);
+        shouldEqual(argMax(minmax), 3);
+        shouldEqual(argMinIf(minmax, Arg1() > Param(0.0)), 0);
+        shouldEqual(argMinIf(minmax, Arg1() > Param(5.0)), -1);
+        shouldEqual(argMaxIf(minmax, Arg1() < Param(5.0)), 5);
+        shouldEqual(argMaxIf(minmax, Arg1() < Param(-2.0)), -1);
+    }
 
     void testCholesky()
     {
@@ -1112,6 +1159,10 @@ struct LinalgTest
             shouldEqualSequenceTolerance(ax.data(), ax.data()+size, b.data(), epsilon);
 
             should(linearSolve(a, b, x, "SVD"));
+            ax = a * x;
+            shouldEqualSequenceTolerance(ax.data(), ax.data()+size, b.data(), epsilon);
+            
+            should(linearSolve(a, b, x, "NE"));
             ax = a * x;
             shouldEqualSequenceTolerance(ax.data(), ax.data()+size, b.data(), epsilon);
             
@@ -1314,6 +1365,7 @@ struct MathTestSuite
         add( testCase(&FunctionsTest::intSquareRootTest));
         add( testCase(&FunctionsTest::testSpecialFunctions));
         add( testCase(&FunctionsTest::closeAtToleranceTest));
+        add( testCase(&FunctionsTest::testArgMinMax));
 
         add( testCase(&RationalTest::testGcdLcm));
         add( testCase(&RationalTest::testOStreamShifting));
@@ -1324,6 +1376,7 @@ struct MathTestSuite
 
         add( testCase(&LinalgTest::testOStreamShifting));
         add( testCase(&LinalgTest::testMatrix));
+        add( testCase(&LinalgTest::testArgMinMax));
         add( testCase(&LinalgTest::testCholesky));
         add( testCase(&LinalgTest::testQR));
         add( testCase(&LinalgTest::testLinearSolve));
