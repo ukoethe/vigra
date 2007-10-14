@@ -87,7 +87,7 @@ TinyVector <ptrdiff_t, N> defaultStride(const TinyVector <ptrdiff_t, N> &shape)
     Namespace: vigra::detail
 */
 
-template <unsigned int K>
+template <int K>
 struct ScanOrderToOffset
 {
     template <int N>
@@ -100,7 +100,7 @@ struct ScanOrderToOffset
 };
 
 template <>
-struct ScanOrderToOffset<1u>
+struct ScanOrderToOffset<1>
 {
     template <int N>
     static ptrdiff_t 
@@ -110,16 +110,51 @@ struct ScanOrderToOffset<1u>
     }
 };
 
-template <>
-struct ScanOrderToOffset<0u>
+template <int K>
+struct ScanOrderToCoordinate
 {
     template <int N>
-    static ptrdiff_t 
-    exec(int d, const TinyVector <ptrdiff_t, N> &shape, const TinyVector <ptrdiff_t, N> & stride)
+    static void 
+    exec(int d, const TinyVector <ptrdiff_t, N> &shape, TinyVector <ptrdiff_t, N> & result)
     {
-        return 0;
+        result[N-K] = (d % shape[N-K]); 
+        ScanOrderToCoordinate<K-1>::exec(d / shape[N-K], shape, result);
     }
 };
+
+template <>
+struct ScanOrderToCoordinate<1>
+{
+    template <int N>
+    static void 
+    exec(int d, const TinyVector <ptrdiff_t, N> &shape, TinyVector <ptrdiff_t, N> & result)
+    {
+        result[N-1] = d;
+    }
+};
+
+template <int K>
+struct CoordinateToScanOrder
+{
+    template <int N>
+    static int 
+    exec(const TinyVector <ptrdiff_t, N> &shape, const TinyVector <ptrdiff_t, N> & coordinate)
+    {
+        return coordinate[N-K] + shape[N-K] * CoordinateToScanOrder<K-1>::exec(shape, coordinate);
+    }
+};
+
+template <>
+struct CoordinateToScanOrder<1>
+{
+    template <int N>
+    static int 
+    exec(const TinyVector <ptrdiff_t, N> &shape, const TinyVector <ptrdiff_t, N> & coordinate)
+    {
+        return coordinate[N-1];
+    }
+};
+
 
 template <class C>
 struct CoordinatesToOffest
@@ -375,6 +410,24 @@ equalityOfMultiArrays(SrcIterator s, Shape const & shape, DestIterator d, MetaIn
 }
 
 
+template <class SrcIterator, class Shape, class DestIterator>
+void
+swapImpl(SrcIterator s, Shape const & shape, DestIterator d, MetaInt<0>)
+{    
+    SrcIterator send = s + shape[0];
+    for(; s != send; ++s, ++d)
+        std::swap(*s, *d);
+}
+
+template <class SrcIterator, class Shape, class DestIterator, int N>
+void
+swapImpl(SrcIterator s, Shape const & shape, DestIterator d, MetaInt<N>)
+{    
+    SrcIterator send = s + shape[N];
+    for(; s != send; ++s, ++d)
+        swapImpl(s.begin(), shape, d.begin(), MetaInt<N-1>());
+}
+
 } // namespace detail
 
 /********************************************************/
@@ -524,6 +577,9 @@ protected:
     template <class U, class CN>
     void copyImpl(const MultiArrayView <N, U, CN>& rhs);
 
+    template <class U, class CN>
+    void swapImpl(MultiArrayView <N, U, CN> rhs);
+
 public:
 
         /** default constructor: create an empty image of size 0.
@@ -591,20 +647,38 @@ public:
     
         /** array access in scan-order sense.
             Mostly useful to support standard indexing for 1-dimensional multi-arrays,
-            but works for any N.
+            but works for any N. Use scanOrderIndexToCoordinate() and 
+            coordinateToScanOrderIndex() for conversion between indices and coordinates.
          */
     reference operator[](int d)
     {
-        return m_ptr [detail::ScanOrderToOffset<N>::exec(d, m_shape, m_stride)];
+        return m_ptr [detail::ScanOrderToOffset<actual_dimension>::exec(d, m_shape, m_stride)];
     }
     
         /** array access in scan-order sense.
             Mostly useful to support standard indexing for 1-dimensional multi-arrays,
-            but works for any N.
+            but works for any N. Use scanOrderIndexToCoordinate() and 
+            coordinateToScanOrderIndex() for conversion between indices and coordinates.
          */
     const_reference operator[](int d) const
     {
-        return m_ptr [detail::ScanOrderToOffset<N>::exec(d, m_shape, m_stride)];
+        return m_ptr [detail::ScanOrderToOffset<actual_dimension>::exec(d, m_shape, m_stride)];
+    }
+    
+        /** convert scan-order index to coordinate.
+         */
+    difference_type scanOrderIndexToCoordinate(int d) const
+    {
+        difference_type result;
+        detail::ScanOrderToCoordinate<actual_dimension>::exec(d, m_shape, result);
+        return result;
+    }
+
+        /** convert coordinate to scan-order index.
+         */
+    int coordinateToScanOrderIndex(const difference_type &d) const
+    {
+        return detail::CoordinateToScanOrder<actual_dimension>::exec(m_shape, d);
     }
 
         /** 1D array access. Use only if N == 1.
@@ -699,6 +773,26 @@ public:
         this->copyImpl(rhs);
     }
 
+        /** swap the data between two MultiArrayView objects.
+
+            The shapes of the two array must match.
+        */
+    void swapData(MultiArrayView rhs)
+    {
+        if(this != &rhs)
+            swapImpl(rhs);
+    }
+
+        /** swap the data between two MultiArrayView objects.
+
+            The shapes of the two array must match.
+        */
+    template <class T2, class C2>
+    void swapData(MultiArrayView <N, T2, C2> rhs)
+    {
+        swapImpl(rhs);
+    }
+    
         /** bind the M outmost dimensions to certain indices.
             this reduces the dimensionality of the image to
             max { 1, N-M }
@@ -1038,6 +1132,35 @@ MultiArrayView <N, T, C>::copyImpl(const MultiArrayView <N, U, CN>& rhs)
         // overwriting elements that are still needed on the rhs.
         MultiArray<N, T> tmp(rhs);
         detail::copyMultiArrayData(tmp.traverser_begin(), shape(), traverser_begin(), MetaInt<actual_dimension-1>());
+    }
+}
+
+template <unsigned int N, class T, class C>
+template <class U, class CN>
+void 
+MultiArrayView <N, T, C>::swapImpl(MultiArrayView <N, U, CN> rhs)
+{
+    vigra_precondition (shape () == rhs.shape (),
+        "MultiArrayView::swapData(): shape mismatch.");
+
+    // check for overlap of this and rhs
+    const_pointer first_element = this->m_ptr,
+                  last_element = first_element + dot(this->m_shape - difference_type(1), this->m_stride);
+    typename MultiArrayView <N, U, CN>::const_pointer 
+           rhs_first_element = rhs.data(),
+           rhs_last_element = rhs_first_element + dot(rhs.shape() - difference_type(1), rhs.stride());
+    if(last_element < rhs_first_element || rhs_last_element < first_element)
+    {
+        // no overlap -- can swap directly
+        detail::swapImpl(traverser_begin(), shape(), rhs.traverser_begin(), MetaInt<actual_dimension-1>());
+    }
+    else
+    {
+        // overlap: we got different views to the same data -- copy to intermediate memory in order to avoid
+        // overwriting elements that are still needed.
+        MultiArray<N, T> tmp(*this);
+        copy(rhs);
+        rhs.copy(tmp);
     }
 }
 
