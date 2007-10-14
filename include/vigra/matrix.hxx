@@ -1280,15 +1280,15 @@ template <class T>
 class PointWise
 {
   public:
-    T & t;
+    T const & t;
     
-    PointWise(T & it)
+    PointWise(T const & it)
     : t(it)
     {}
 };
 
 template <class T>
-PointWise<T> pointWise(T & t)
+PointWise<T> pointWise(T const & t)
 {
     return PointWise<T>(t);
 }
@@ -1678,6 +1678,276 @@ using linalg::columnCount;
 using linalg::rowVector;
 using linalg::columnVector;
 using linalg::isSymmetric;
+
+    /*! Find the index of the minimum element in a matrix.
+    
+        The function returns the index in column-major scan-order sense,
+        i.e. according to the order used by <tt>MultiArrayView::operator[]</tt>.
+        If the matrix is actually a vector, this is just the row or columns index.
+        In case of a truely 2-dimensional matrix, the index can be converted to an 
+        index pair by calling <tt>MultiArrayView::scanOrderIndexToCoordinate()</tt>
+        
+        <b>Required Interface:</b>
+        
+        \code
+        bool f = a[0] < NumericTraits<T>::max();
+        \endcode
+
+        <b>\#include</b> "<a href="matrix_8hxx-source.html">vigra/matrix.hxx</a>"<br>
+        Namespace: vigra
+    */
+template <class T, class C>
+int argMin(MultiArrayView<2, T, C> const & a)
+{
+    T vopt = NumericTraits<T>::max();
+    int best = -1;
+    for(unsigned int k=0; k < a.size(); ++k)
+    {
+        if(a[k] < vopt)
+        {
+            vopt = a[k];
+            best = k;
+        }
+    }
+    return best;
+}
+
+    /*! Find the index of the maximum element in a matrix.
+    
+        The function returns the index in column-major scan-order sense,
+        i.e. according to the order used by <tt>MultiArrayView::operator[]</tt>.
+        If the matrix is actually a vector, this is just the row or columns index.
+        In case of a truely 2-dimensional matrix, the index can be converted to an 
+        index pair by calling <tt>MultiArrayView::scanOrderIndexToCoordinate()</tt>
+        
+        <b>Required Interface:</b>
+        
+        \code
+        bool f = NumericTraits<T>::min() < a[0];
+        \endcode
+
+        <b>\#include</b> "<a href="matrix_8hxx-source.html">vigra/matrix.hxx</a>"<br>
+        Namespace: vigra
+    */
+template <class T, class C>
+int argMax(MultiArrayView<2, T, C> const & a)
+{
+    T vopt = NumericTraits<T>::min();
+    int best = -1;
+    for(unsigned int k=0; k < a.size(); ++k)
+    {
+        if(vopt < a[k])
+        {
+            vopt = a[k];
+            best = k;
+        }
+    }
+    return best;
+}
+
+    /*! Find the index of the minimum element in a matrix subject to a condition.
+    
+        The function returns <tt>-1</tt> if no element conforms to \a condition.
+        Otherwise, the index of the maximum element is returned in column-major scan-order sense,
+        i.e. according to the order used by <tt>MultiArrayView::operator[]</tt>.
+        If the matrix is actually a vector, this is just the row or columns index.
+        In case of a truely 2-dimensional matrix, the index can be converted to an 
+        index pair by calling <tt>MultiArrayView::scanOrderIndexToCoordinate()</tt>
+        
+        <b>Required Interface:</b>
+        
+        \code
+        bool c = condition(a[0]);
+        bool f = a[0] < NumericTraits<T>::max();
+        \endcode
+
+        <b>\#include</b> "<a href="matrix_8hxx-source.html">vigra/matrix.hxx</a>"<br>
+        Namespace: vigra
+    */
+template <class T, class C, class UnaryFunctor>
+int argMinIf(MultiArrayView<2, T, C> const & a, UnaryFunctor condition)
+{
+    T vopt = NumericTraits<T>::max();
+    int best = -1;
+    for(unsigned int k=0; k < a.size(); ++k)
+    {
+        if(condition(a[k]) && a[k] < vopt)
+        {
+            vopt = a[k];
+            best = k;
+        }
+    }
+    return best;
+}
+
+    /*! Find the index of the maximum element in a matrix subject to a condition.
+    
+        The function returns <tt>-1</tt> if no element conforms to \a condition.
+        Otherwise, the index of the maximum element is returned in column-major scan-order sense,
+        i.e. according to the order used by <tt>MultiArrayView::operator[]</tt>.
+        If the matrix is actually a vector, this is just the row or columns index.
+        In case of a truely 2-dimensional matrix, the index can be converted to an 
+        index pair by calling <tt>MultiArrayView::scanOrderIndexToCoordinate()</tt>
+        
+        <b>Required Interface:</b>
+        
+        \code
+        bool c = condition(a[0]);
+        bool f = NumericTraits<T>::min() < a[0];
+        \endcode
+
+        <b>\#include</b> "<a href="matrix_8hxx-source.html">vigra/matrix.hxx</a>"<br>
+        Namespace: vigra
+    */
+template <class T, class C, class UnaryFunctor>
+int argMaxIf(MultiArrayView<2, T, C> const & a, UnaryFunctor condition)
+{
+    T vopt = NumericTraits<T>::min();
+    int best = -1;
+    for(unsigned int k=0; k < a.size(); ++k)
+    {
+        if(condition(a[k]) && vopt < a[k])
+        {
+            vopt = a[k];
+            best = k;
+        }
+    }
+    return best;
+}
+
+/** Matrix point-wise power.
+*/
+template <class T, class C>
+linalg::TemporaryMatrix<T> pow(MultiArrayView<2, T, C> const & v, T exponent)
+{
+    linalg::TemporaryMatrix<T> t(v.shape());
+    unsigned int m = rowCount(v), n = columnCount(v);
+
+    for(unsigned int i = 0; i < n; ++i)
+        for(unsigned int j = 0; j < m; ++j)
+            t(j, i) = vigra::pow(v(j, i), exponent);
+    return t;
+}
+
+template <class T>
+linalg::TemporaryMatrix<T> pow(linalg::TemporaryMatrix<T> const & v, T exponent)
+{
+    linalg::TemporaryMatrix<T> & t = const_cast<linalg::TemporaryMatrix<T> &>(v);
+    unsigned int m = rowCount(t), n = columnCount(t);
+
+    for(unsigned int i = 0; i < n; ++i)
+        for(unsigned int j = 0; j < m; ++j)
+            t(j, i) = vigra::pow(t(j, i), exponent);
+    return t;
+}
+
+template <class T, class C>
+linalg::TemporaryMatrix<T> pow(MultiArrayView<2, T, C> const & v, int exponent)
+{
+    linalg::TemporaryMatrix<T> t(v.shape());
+    unsigned int m = rowCount(v), n = columnCount(v);
+
+    for(unsigned int i = 0; i < n; ++i)
+        for(unsigned int j = 0; j < m; ++j)
+            t(j, i) = vigra::pow(v(j, i), exponent);
+    return t;
+}
+
+template <class T>
+linalg::TemporaryMatrix<T> pow(linalg::TemporaryMatrix<T> const & v, int exponent)
+{
+    linalg::TemporaryMatrix<T> & t = const_cast<linalg::TemporaryMatrix<T> &>(v);
+    unsigned int m = rowCount(t), n = columnCount(t);
+
+    for(unsigned int i = 0; i < n; ++i)
+        for(unsigned int j = 0; j < m; ++j)
+            t(j, i) = vigra::pow(t(j, i), exponent);
+    return t;
+}
+
+template <class C>
+linalg::TemporaryMatrix<int> pow(MultiArrayView<2, int, C> const & v, int exponent)
+{
+    linalg::TemporaryMatrix<int> t(v.shape());
+    unsigned int m = rowCount(v), n = columnCount(v);
+
+    for(unsigned int i = 0; i < n; ++i)
+        for(unsigned int j = 0; j < m; ++j)
+            t(j, i) = (int)vigra::pow((double)v(j, i), exponent);
+    return t;
+}
+
+inline
+linalg::TemporaryMatrix<int> pow(linalg::TemporaryMatrix<int> const & v, int exponent)
+{
+    linalg::TemporaryMatrix<int> & t = const_cast<linalg::TemporaryMatrix<int> &>(v);
+    unsigned int m = rowCount(t), n = columnCount(t);
+
+    for(unsigned int i = 0; i < n; ++i)
+        for(unsigned int j = 0; j < m; ++j)
+            t(j, i) = (int)vigra::pow((double)t(j, i), exponent);
+    return t;
+}
+
+#define VIGRA_MATRIX_UNARY_FUNCTION(FUNCTION, NAMESPACE) \
+template <class T, class C> \
+linalg::TemporaryMatrix<T> FUNCTION(MultiArrayView<2, T, C> const & v) \
+{ \
+    linalg::TemporaryMatrix<T> t(v.shape()); \
+    unsigned int m = rowCount(v), n = columnCount(v); \
+ \
+    for(unsigned int i = 0; i < n; ++i) \
+        for(unsigned int j = 0; j < m; ++j) \
+            t(j, i) = NAMESPACE::FUNCTION(v(j, i)); \
+    return t; \
+} \
+ \
+template <class T> \
+linalg::TemporaryMatrix<T> FUNCTION(linalg::TemporaryMatrix<T> const & v) \
+{ \
+    linalg::TemporaryMatrix<T> & t = const_cast<linalg::TemporaryMatrix<T> &>(v); \
+    unsigned int m = rowCount(t), n = columnCount(t); \
+ \
+    for(unsigned int i = 0; i < n; ++i) \
+        for(unsigned int j = 0; j < m; ++j) \
+            t(j, i) = NAMESPACE::FUNCTION(t(j, i)); \
+    return v; \
+}
+
+    /** Matrix point-wise sqrt. */
+VIGRA_MATRIX_UNARY_FUNCTION(sqrt, std)
+    /** Matrix point-wise exp. */
+VIGRA_MATRIX_UNARY_FUNCTION(exp, std)
+    /** Matrix point-wise log. */
+VIGRA_MATRIX_UNARY_FUNCTION(log, std)
+    /** Matrix point-wise log10. */
+VIGRA_MATRIX_UNARY_FUNCTION(log10, std)
+    /** Matrix point-wise sin. */
+VIGRA_MATRIX_UNARY_FUNCTION(sin, std)
+    /** Matrix point-wise asin. */
+VIGRA_MATRIX_UNARY_FUNCTION(asin, std)
+    /** Matrix point-wise cos. */
+VIGRA_MATRIX_UNARY_FUNCTION(cos, std)
+    /** Matrix point-wise acos. */
+VIGRA_MATRIX_UNARY_FUNCTION(acos, std)
+    /** Matrix point-wise tan. */
+VIGRA_MATRIX_UNARY_FUNCTION(tan, std)
+    /** Matrix point-wise atan. */
+VIGRA_MATRIX_UNARY_FUNCTION(atan, std)
+    /** Matrix point-wise round. */
+VIGRA_MATRIX_UNARY_FUNCTION(round, vigra)
+    /** Matrix point-wise floor. */
+VIGRA_MATRIX_UNARY_FUNCTION(floor, vigra)
+    /** Matrix point-wise ceil. */
+VIGRA_MATRIX_UNARY_FUNCTION(ceil, vigra)
+    /** Matrix point-wise abs. */
+VIGRA_MATRIX_UNARY_FUNCTION(abs, vigra)
+    /** Matrix point-wise square. */
+VIGRA_MATRIX_UNARY_FUNCTION(sq, vigra)
+    /** Matrix point-wise sign. */
+VIGRA_MATRIX_UNARY_FUNCTION(sign, vigra)
+
+#undef VIGRA_MATRIX_UNARY_FUNCTION
 
 /********************************************************/
 /*                                                      */
