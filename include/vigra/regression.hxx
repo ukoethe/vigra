@@ -40,6 +40,8 @@
 #include "matrix.hxx"
 #include "linear_solve.hxx"
 #include "singular_value_decomposition.hxx"
+#include "numerictraits.hxx"
+#include "functorexpression.hxx"
 
 
 namespace vigra
@@ -338,6 +340,89 @@ ridgeRegressionSeries(MultiArrayView<2, T, C1> const & A,
     return (rank < n);
 }
 
+template <class T, class C1, class C2, class Array1, class Array2>
+unsigned int
+leastAngleRegression(MultiArrayView<2, T, C1> const & A, MultiArrayView<2, T, C2> const &b, 
+                     Array1 & solutions, Array2 & activeSets
+                     /* LARSOptions const & options */)
+{
+    using namespace vigra::functor;
+    using namespace vigra::linalg;
+    
+    typedef typename MultiArrayView<2, T, C1>::difference_type Shape;
+    typedef typename Matrix<T>::view_type Subarray;
+    
+    const unsigned int rows = rowCount(A);
+    const unsigned int cols = columnCount(A);
+    const unsigned int maxSolutionCount = std::min(solutions.size(), std::min(rows, cols));
+    vigra_precondition(rowCount(b) == rows && columnCount(b) == 1,
+       "leastAngleRegression(): Shape mismatch between matrices A and b.");
+    vigra_precondition(maxSolutionCount <= activeSets.size(),
+       "leastAngleRegression(): Active sets array too small.");
+       
+    Matrix<T> X(A);
+    Matrix<T> mu(b.shape());
+
+    unsigned int k = 0;
+    ArrayVector<int> activeSet(cols);
+    for(k=0; k<cols; ++k)
+        activeSet[k] = k;
+        
+    T C = 0.0;
+    int best = -1,
+        activeSetSize = 0;
+    for(k=0; k < maxSolutionCount; ++k)
+    {
+        Subarray Xinactive = X.subarray(Shape(0, activeSetSize), Shape(rows, cols));
+        Matrix<T> c = transpose(Xinactive)*(b - mu);
+        if(activeSetSize == 0)
+        {
+            // find initial active column
+            if(false) // FIXME: positive LASSO restriction
+                best = argMaxIf(c, Arg1() > Param(0.0));
+            else
+                best = argMax(abs(c));
+            if(best == -1)
+                break; // no solution found
+            C = abs(c(best, 0));
+        }
+        else
+        {
+            Subarray Xactive = X.subarray(Shape(0,0), Shape(rows, activeSetSize));
+            Matrix<T> u = Xactive * solutions[k-1] - mu;
+            Matrix<T> a = transpose(Xinactive)*u;
+            Matrix<T> ac = (C - c) / pointWise(C - a);
+            if(true) // FIXME: not positive LASSO restriction
+                ac = joinColumns(ac, (C + c) / pointWise(C + a));
+            best = argMinIf(ac, Arg1() > Param(0.0));
+            if(best == -1)
+                break; // no solution found
+            T gamma = ac(best, 0);
+            mu += gamma*u;
+            
+            // adjust best: we possibly joined two ac vectors
+            best %= (cols - activeSetSize);
+            C = abs(c(best, 0));
+
+            // adjust best: we skipped the active set
+            best += activeSetSize; 
+        }
+        
+        columnVector(X, k).swapData(columnVector(X, best));
+        std::swap(activeSet[k], activeSet[best]);
+        ++activeSetSize;
+
+        Subarray Xactive = X.subarray(Shape(0,0), Shape(rows, activeSetSize));
+        solutions[k].reshape(Shape(activeSetSize, 1));
+        leastSquares(Xactive, b, solutions[k]);
+
+        activeSets[k].resize(activeSetSize);
+        std::copy(activeSet.begin(), activeSet.begin()+activeSetSize, activeSets[k].begin());
+    }
+    
+    return k;
+}
+
 //@}
 
 } // namespace linalg
@@ -347,6 +432,7 @@ using linalg::weightedLeastSquares;
 using linalg::ridgeRegression;
 using linalg::weightedRidgeRegression;
 using linalg::ridgeRegressionSeries;
+using linalg::leastAngleRegression;
 
 } // namespace vigra
 
