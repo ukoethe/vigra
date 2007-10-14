@@ -144,14 +144,24 @@ public:
     // subarray tests
     void test_subarray ()
     {
-        difference3_type offset (1,1,1);
-        difference3_type size (5,5,5);
+        typedef difference3_type Shape;
+        
+        Shape offset (1,1,1);
+        Shape size (5,5,5);
         MultiArrayView <3, scalar_type, UnstridedArrayTag>
             array = array3.subarray (offset, size);
-        shouldEqual (array [difference3_type (0,0,0)], 111);
-        shouldEqual (array [difference3_type (5,2,1)], 236);
+        shouldEqual (array [Shape (0,0,0)], 111);
+        shouldEqual (array [Shape (5,2,1)], 236);
         shouldEqual (array (0,0,0), 111);
         shouldEqual (array (5,2,1), 236);
+        
+        // test swap
+        array3.subarray(Shape(0,0,0), Shape(10,10,1)).swapData( 
+             array3.subarray(Shape(0,0,1), Shape(10,10,2)));
+        for(unsigned int k=0; k<100; ++k)
+            shouldEqual(array3[k], k+100);
+        for(unsigned int k=100; k<200; ++k)
+            shouldEqual(array3[k], k-100);
     }
         
     // stridearray tests
@@ -223,12 +233,17 @@ public:
     {
         shouldEqual(array3.size(), 1000);
         for(unsigned int k=0; k< array3.size(); ++k)
+        {
             shouldEqual(array3[k], k);
-        MultiArrayView <2, scalar_type, StridedArrayTag>
-            array = array3.bindInner(2);
+            shouldEqual(array3[array3.scanOrderIndexToCoordinate(k)], k);
+            shouldEqual(array3.coordinateToScanOrderIndex(array3.scanOrderIndexToCoordinate(k)), k);
+        }
+            
+        MultiArrayView <2, scalar_type, StridedArrayTag> array = array3.bindInner(2);
         shouldEqual(array.size(), 100);
         for(unsigned int k=0; k< array.size(); ++k)
             shouldEqual(array[k], 10*k+2);
+            
         typedef MultiArrayView <2, scalar_type, UnstridedArrayTag>::difference_type Shape;
         MultiArrayView <2, scalar_type, UnstridedArrayTag>
             subarray = array3.bindOuter(2).subarray(Shape(1,0), Shape(10,9));
