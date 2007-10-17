@@ -312,8 +312,8 @@ bool choleskyDecomposition(MultiArrayView<2, T, C1> const & A,
     vigra_precondition(n == columnCount(L) && n == rowCount(L),
                        "choleskyDecomposition(): Output matrix must have same shape as input matrix.");
 
-     for (unsigned int j = 0; j < n; ++j) 
-	 {
+    for (unsigned int j = 0; j < n; ++j) 
+    {
         Real d(0.0);
         for (unsigned int k = 0; k < j; ++k) 
 		{
@@ -326,15 +326,15 @@ bool choleskyDecomposition(MultiArrayView<2, T, C1> const & A,
             d = d + s*s;
             vigra_precondition(A(k, j) == A(j, k),
                        "choleskyDecomposition(): Input matrix must be symmetric.");
-         }
-         d = A(j, j) - d;
-         if(d <= 0.0)
+        }
+        d = A(j, j) - d;
+        if(d <= 0.0)
             return false;  // A is not positive definite
-         L(j, j) = std::sqrt(d);
-         for (unsigned int k = j+1; k < n; ++k) 
-		 {
-            L(j, k) = 0.0;
-         }
+        L(j, j) = std::sqrt(d);
+        for (unsigned int k = j+1; k < n; ++k) 
+        {
+           L(j, k) = 0.0;
+        }
 	}
     return true;
 }
@@ -450,6 +450,148 @@ bool qrDecomposition(MultiArrayView<2, T, C1> const & a,
     }
     return fullRank;
 }
+
+namespace detail {
+
+// see Golub, van Loan: Algorithm 5.1.3 (p. 216)
+template <class T>
+bool givensRotation(T a, T b, Matrix<T> & gTranspose)
+{
+    T c, s;
+    if(b == 0.0)
+    {
+        return false; // no rotation needed
+    }
+    else if(abs(a) < abs(b))
+    {
+        T t = -a/b;
+        s = 1.0 / std::sqrt(1.0 + t*t);
+        c = t*s;
+    }
+    else
+    {
+        T t = -b/a;
+        c = 1.0 / std::sqrt(1.0 + t*t);
+        s = t*c;
+    }
+    gTranspose(0,0) = gTranspose(1,1) = c;
+    gTranspose(0,1) = -s;
+    gTranspose(1,0) = s;
+    return true;
+}
+
+// see Golub, van Loan: Algorithm 5.2.2 (p. 227) and Section 12.5.2 (p. 608)
+template <class T, class C1, class C2>
+bool 
+qrLinearSolveOneStep(int i, MultiArrayView<2, T, C1> &r, MultiArrayView<2, T, C2> &qtb)
+{
+    typedef typename Matrix<T>::difference_type Shape;
+    
+    const unsigned int m = rowCount(r);
+    const unsigned int n = columnCount(r);
+    const unsigned int rhsCount = columnCount(qtb);
+    vigra_precondition(m == rowCount(qtb),
+                       "qrLinearSolveOneStep(): Matrix shape mismatch.");
+
+    Matrix<T> gT(2,2);
+    for(int k=m-1; k>i; --k)
+    {
+        if(!givensRotation(r(k-1,i), r(k,i), gT))
+            continue; // r(k,i) was already zero
+
+        r(k-1,i) = gT(0,0)*r(k-1,i) + gT(0,1)*r(k,i);
+        r(k,i) = 0.0;
+        
+        r.subarray(Shape(k-1,i+1), Shape(k+1,n)) = gT*r.subarray(Shape(k-1,i+1), Shape(k+1,n));
+        qtb.subarray(Shape(k-1,0), Shape(k+1,rhsCount)) = gT*qtb.subarray(Shape(k-1,0), Shape(k+1,rhsCount));
+    }
+    return r(i,i) != 0.0;
+}
+
+// see Golub, van Loan: Section 12.5.2 (p. 608)
+template <class T, class C1, class C2>
+void 
+qrLinearSolveCyclicShift(int i, int j, MultiArrayView<2, T, C1> &r, MultiArrayView<2, T, C2> &qtb)
+{
+    typedef typename Matrix<T>::difference_type Shape;
+    
+    const unsigned int m = rowCount(r);
+    const unsigned int n = columnCount(r);
+    const unsigned int rhsCount = columnCount(qtb);
+    vigra_precondition(m == rowCount(qtb),
+                       "qrLinearSolveCyclicShift(): Matrix shape mismatch.");
+
+    if(j == i)
+        return;
+    if(j < i)
+        std::swap(j,i);
+    Matrix<T> t = columnVector(r, i);
+    for(int k=i; k<j;++k)
+    {
+        columnVector(r, k) = columnVector(r, k+1);
+    }
+    columnVector(r, j) = t;
+    
+    Matrix<T> gT(2,2);
+    for(int k=i; k<j; ++k)
+    {
+        if(!givensRotation(r(k,k), r(k+1,k), gT))
+            continue;  // r(k+1,k) was already zero
+        
+        r(k,k) = gT(0,0)*r(k,k) + gT(0,1)*r(k+1,k);
+        r(k+1,k) = 0.0;
+        
+        r.subarray(Shape(k,k+1), Shape(k+2,n)) = gT*r.subarray(Shape(k,k+1), Shape(k+2,n));
+        qtb.subarray(Shape(k,0), Shape(k+2,rhsCount)) = gT*qtb.subarray(Shape(k,0), Shape(k+2,rhsCount));
+    }
+}
+
+// see Golub, van Loan: Section 12.5.2 (p. 608)
+template <class T, class C1, class C2>
+void 
+qrLinearSolveSwap(int i, int j, MultiArrayView<2, T, C1> &r, MultiArrayView<2, T, C2> &qtb)
+{    
+    typedef typename Matrix<T>::difference_type Shape;
+    
+    const unsigned int m = rowCount(r);
+    const unsigned int n = columnCount(r);
+    const unsigned int rhsCount = columnCount(qtb);
+    vigra_precondition(m == rowCount(qtb),
+                       "qrLinearSolveSwap(): Matrix shape mismatch.");
+
+    if(j == i)
+        return;
+    if(j < i)
+        std::swap(j,i);
+
+    columnVector(r, i).swapData(columnVector(r, j));
+    
+    Matrix<T> gT(2,2);
+    for(int k=m-1; k>i; --k)
+    {
+        if(!givensRotation(r(k-1,i), r(k,i), gT))
+            continue; // r(k,i) was already zero
+
+        r(k-1,i) = gT(0,0)*r(k-1,i) + gT(0,1)*r(k,i);
+        r(k,i) = 0.0;
+        
+        r.subarray(Shape(k-1,i+1), Shape(k+1,n)) = gT*r.subarray(Shape(k-1,i+1), Shape(k+1,n));
+        qtb.subarray(Shape(k-1,0), Shape(k+1,rhsCount)) = gT*qtb.subarray(Shape(k-1,0), Shape(k+1,rhsCount));
+    }
+    for(int k=i+1; k<j; ++k)
+    {
+        if(!givensRotation(r(k,k), r(k+1,k), gT))
+            continue;  // r(k+1,k) was already zero
+        
+        r(k,k) = gT(0,0)*r(k,k) + gT(0,1)*r(k+1,k);
+        r(k+1,k) = 0.0;
+        
+        r.subarray(Shape(k,k+1), Shape(k+2,n)) = gT*r.subarray(Shape(k,k+1), Shape(k+2,n));
+        qtb.subarray(Shape(k,0), Shape(k+2,rhsCount)) = gT*qtb.subarray(Shape(k,0), Shape(k+2,rhsCount));
+    }
+}
+
+} // namespace detail
 
     /** Solve a linear system with right-triangular coefficient matrix.
 
@@ -582,10 +724,16 @@ template <class T, class C1, class C2, class C3>
 bool linearSolve(const MultiArrayView<2, T, C1> &A, const MultiArrayView<2, T, C2> &b,
                  MultiArrayView<2, T, C3> & res, std::string method = "QR")
 {
-    vigra_precondition(columnCount(A) <= rowCount(A),
+    typedef typename Matrix<T>::difference_type Shape;
+    typedef typename Matrix<T>::view_type SubMatrix;
+    
+    const unsigned int n = columnCount(A);
+    const unsigned int m = rowCount(A);
+
+    vigra_precondition(n <= m,
         "linearSolve(): Coefficient matrix A must have at least as many rows as columns.");
-    vigra_precondition(columnCount(A) == rowCount(res) && 
-                       rowCount(A) == rowCount(b) && columnCount(b) == columnCount(res),
+    vigra_precondition(n == rowCount(res) && 
+                       m == rowCount(b) && columnCount(b) == columnCount(res),
         "linearSolve(): matrix shape mismatch.");
 
     for(unsigned int k=0; k<method.size(); ++k)
@@ -601,12 +749,24 @@ bool linearSolve(const MultiArrayView<2, T, C1> &A, const MultiArrayView<2, T, C
         leftReverseElimination(L, b, res);
         reverseElimination(transpose(L), res, res);
     }
-    else if(method == "qr")
+    else if(method == "explicitqr")
     {
         Matrix<T> q(A.shape()), r(columnCount(A), columnCount(A));
         if(!qrDecomposition(A, q, r))
             return false; // A didn't have full rank
         reverseElimination(r, transpose(q) * b, res);
+    }
+    else if(method == "qr")
+    {
+        Matrix<T> r(A), qtb(b);
+        
+        for(unsigned int k=0; k<n; ++k)
+        {
+            if(!detail::qrLinearSolveOneStep(k, r, qtb))
+                return false; // A didn't have full rank
+        }
+        return reverseElimination(r.subarray(Shape(0,0), Shape(n,n)), 
+                       qtb.subarray(Shape(0,0), Shape(n,columnCount(res))), res);
     }
     else if(method == "ne")
     {
