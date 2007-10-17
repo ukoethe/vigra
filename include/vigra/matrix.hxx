@@ -1148,12 +1148,26 @@ operator-(T a, const MultiArrayView<2, T, C> &b)
 template <class T, class C1, class C2>
 T dot(const MultiArrayView<2, T, C1> &x, const MultiArrayView<2, T, C2> &y)
 {
-    const std::size_t n = columnCount(x);
-    vigra_precondition(n == rowCount(y) && 1 == rowCount(x) && 1 == columnCount(y),
+    const std::size_t n1 = columnCount(x);
+    const std::size_t m1 = rowCount(x);
+    const std::size_t n2 = columnCount(y);
+    const std::size_t m2 = rowCount(y);
+    vigra_precondition(std::min(n1, m1) == 1 && std::min(n2, m2) == 1 && 
+                       std::max(n1, m1) == std::max(n2, m2),
        "dot(): shape mismatch.");
     T ret = NumericTraits<T>::zero();
-    for(std::size_t i = 0; i < n; ++i)
-        ret += x(0, i) * y(i, 0);
+    if(n1 == 1 && n2 == 1)
+        for(std::size_t i = 0; i < m1; ++i)
+            ret += x(i, 0) * y(i, 0);
+    else if(n1 == 1 && m2 == 1)
+        for(std::size_t i = 0; i < m1; ++i)
+            ret += x(i, 0) * y(0, i);
+    else if(m1 == 1 && n2 == 1)
+        for(std::size_t i = 0; i < n1; ++i)
+            ret += x(0, i) * y(i, 0);
+    else
+        for(std::size_t i = 0; i < n1; ++i)
+            ret += x(0, i) * y(0, i);
     return ret;
 }
 
