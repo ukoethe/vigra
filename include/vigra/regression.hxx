@@ -349,8 +349,10 @@ class LeastAngleRegressionOptions
         /** Initialize all options with default values.
         */
     LeastAngleRegressionOptions()
-    : max_solution_count(0), 
+    : bic_variance(0.0),
+      max_solution_count(0), 
       unconstrained_dimension_count(0),
+      bic_delay(5),
       lasso_modification(true), 
       enforce_positive(false),
       least_squares_solutions(true)
@@ -422,7 +424,36 @@ class LeastAngleRegressionOptions
         return *this;
     }
 
-    unsigned int max_solution_count, unconstrained_dimension_count;
+        /** Stop iterations at minimum of BIC (Bayesian Information Criterium).
+        
+            The BIC is calculated according to 
+            
+            \f[
+                \textrm{BIC}_k = \frac{|\textrm{\bf b} - \textrm{\bf A} \textrm{\bf x}_k|^2}{variance} + K_k \log N
+            \f]
+            
+            where \f$x_k\f$ is the k-th solution, \f$K_k\f$ is the number of non-zero coeffocients
+            in the k-th solution, are N is the length of b. Passing a non-positive value for
+            \a variance indicates that the BIC is not to be used. \a delay > 0 specifies the number 
+            of subsequent steps where the BIC must be larger than the current minimal BIC before
+            it is actually accepted as a minimum (in order to avoid spurious minima due to noise).
+            
+            Defaults: <br>
+            <tt>variance = 0.0</tt> meaning that BIC is not used.<br>
+            <tt>delay = 5</tt>
+        */
+    LeastAngleRegressionOptions & stopAtMinimumOfBIC(double variance, unsigned int delay = 5)
+    {
+        vigra_precondition(delay > 0,
+           "LeastAngleRegressionOptions::stopAtMinimumOfBIC(): delay must be > 0.");
+        
+        bic_variance = variance;
+        bic_delay = delay;
+        return *this;
+    }
+
+    double bic_variance;
+    unsigned int max_solution_count, unconstrained_dimension_count, bic_delay;
     bool lasso_modification, enforce_positive, least_squares_solutions;
 };
 
@@ -453,18 +484,21 @@ leastAngleRegression(MultiArrayView<2, T, C1> const & A, MultiArrayView<2, T, C2
         maxSolutionCount = solutions.size();
     else
         maxSolutionCount = std::min(solutions.size(), options.max_solution_count);
-    maxSolutionCount = std::min(maxSolutionCount, std::min(rows, cols));
     vigra_precondition(maxSolutionCount <= activeSets.size(),
        "leastAngleRegression(): Active sets array too small.");
     
-    Matrix<T> X(A), R(A), qtb(b);
+    Matrix<T> R(A), qtb(b);
 
+    // set first activeSetSize entries will hold the active set indices,
+    // the other entries are the inactive set, all order in the same way as the
+    // columns of the matrix R
+    unsigned int k;
     ArrayVector<int> activeSet(cols);
-    for(unsigned int k=0; k<cols; ++k)
+    for(k=0; k<cols; ++k)
         activeSet[k] = k;
         
     // find dimension with largest correlation
-    Matrix<T> c = transpose(X)*b;
+    Matrix<T> c = transpose(A)*b;
     int initialDimension;
     if(options.enforce_positive)
         initialDimension = argMaxIf(c, Arg1() > Param(0.0));
@@ -477,29 +511,46 @@ leastAngleRegression(MultiArrayView<2, T, C1> const & A, MultiArrayView<2, T, C2
     // prepare initial active set and search direction etc.
     int activeSetSize = 1;
     std::swap(activeSet[0], activeSet[initialDimension]);
-    columnVector(X, 0).swapData(columnVector(X, initialDimension));
     columnVector(R, 0).swapData(columnVector(R, initialDimension));
     detail::qrLinearSolveOneStep(0, R, qtb);
 
     Matrix<T> lsq_solution(cols, 1), lars_solution(cols,1), mu(b.shape()); // initially zero
     Matrix<T> next_lsq_solution(cols, 1);
     next_lsq_solution(0,0) = qtb(0,0) / R(0,0);
-    Matrix<T> searchVector = next_lsq_solution(0,0) * columnVector(X, 0);
+    Matrix<T> searchVector = next_lsq_solution(0,0) * columnVector(A, activeSet[0]);
     
-    for(unsigned int k=0; k < maxSolutionCount; ++k)
+    double minimal_bic = NumericTraits<double>::max();
+    int minimal_bic_solution = -1;
+    
+    for(k=0; k < maxSolutionCount; ++k)
     {
-        Subarray Xinactive = X.subarray(Shape(0, activeSetSize), Shape(rows, cols));
-
+        if(activeSetSize == std::min(rows, cols))
+        {
+            // cannot have more solutions than the size of the matrix A
+            // last solution is then always the LSQ solution
+            solutions[k] = next_lsq_solution.subarray(Shape(0,0), Shape(activeSetSize, 1));
+            activeSets[k].resize(activeSetSize);
+            std::copy(activeSet.begin(), activeSet.begin()+activeSetSize, activeSets[k].begin());
+            ++k;
+            break;
+        }
+        
         // find next dimension to be activated
-        Matrix<T> c = transpose(Xinactive)*(b - mu);
-        Matrix<T> a = transpose(Xinactive)*searchVector;
+        Matrix<T> c(cols - activeSetSize, 1), a(cols - activeSetSize, 1);
+        Matrix<T> bmu = b - mu;
+        for(unsigned int l = activeSetSize; l<cols; ++l)
+        {
+            // perform permutation on A explicitly, so that we need not store a permuted copy of A
+            c(l-activeSetSize, 0) = dot(columnVector(A, activeSet[l]), bmu);
+            a(l-activeSetSize, 0) = dot(columnVector(A, activeSet[l]), searchVector);
+        }
         Matrix<T> ac = (C - c) / pointWise(C - a);
         if(!options.enforce_positive)
             ac = joinVertically(ac, (C + c) / pointWise(C + a));
         
         int limitingDimension = argMinIf(ac, Arg1() > Param(0.0));
         if(limitingDimension == -1)
-            return k;  // no further solution found
+            break;  // no further solution found
         
         T gamma = ac(limitingDimension, 0);
         
@@ -515,6 +566,7 @@ leastAngleRegression(MultiArrayView<2, T, C1> const & A, MultiArrayView<2, T, C2
         Subarray next_lsq_solution_k = next_lsq_solution.subarray(Shape(0,0), Shape(activeSetSize, 1));
         if(options.lasso_modification)
         {
+            // find dimensions whose weight changes sign below gamma*searchDirection
             Matrix<T> d(Shape(activeSetSize, 1), NumericTraits<T>::max());
             for(int l=0; l<activeSetSize; ++l)
                 if(sign(lsq_solution_k(l,0))*sign(next_lsq_solution_k(l,0)) == -1.0)
@@ -532,17 +584,35 @@ leastAngleRegression(MultiArrayView<2, T, C1> const & A, MultiArrayView<2, T, C2
         Subarray lars_solution_k = lars_solution.subarray(Shape(0,0), Shape(activeSetSize, 1));
         lars_solution_k = gamma * lsq_solution_k + (1.0 - gamma) * lars_solution_k;
         
+        double residual;
         if(options.least_squares_solutions)
+        {
             solutions[k] = lsq_solution_k;
+            residual = squaredNorm(bmu - searchVector);
+        }
         else
-            solutions[k] = lars_solution_k; 
+        {
+            solutions[k] = lars_solution_k;
+            residual = squaredNorm(bmu - gamma*searchVector);
+        }
         
         activeSets[k].resize(activeSetSize);
         std::copy(activeSet.begin(), activeSet.begin()+activeSetSize, activeSets[k].begin());
+        
+        if(options.bic_variance > 0.0)
+        {
+            double bic = residual / options.bic_variance + activeSetSize*std::log(rows);
+            if(bic < minimal_bic)
+            {
+                minimal_bic = bic;
+                minimal_bic_solution = k;
+            }
+            if(k - minimal_bic_solution >= options.bic_delay)
+                break;
+        }
 
         // update the active set and its QR factorization
         std::swap(activeSet[activeSetSize], activeSet[limitingDimension]);
-        columnVector(X, activeSetSize).swapData(columnVector(X, limitingDimension));
         if(limitingDimension < activeSetSize)
         {
             std::swap(lsq_solution(activeSetSize,0), lsq_solution(limitingDimension, 0));
@@ -557,7 +627,10 @@ leastAngleRegression(MultiArrayView<2, T, C1> const & A, MultiArrayView<2, T, C2
             columnVector(R, activeSetSize).swapData(columnVector(R, limitingDimension));
             bool singular = !detail::qrLinearSolveOneStep(activeSetSize, R, qtb);
             if(singular || closeAtTolerance(qtb(activeSetSize,0) / R(activeSetSize, activeSetSize), 0.0))
-                return k+1; // no further solutions possible
+            {
+                ++k;
+                break; // no further solutions possible
+            }
             ++activeSetSize;
         }
         
@@ -566,15 +639,19 @@ leastAngleRegression(MultiArrayView<2, T, C1> const & A, MultiArrayView<2, T, C2
         Subarray qtbactive = qtb.subarray(Shape(0,0), Shape(activeSetSize, 1));
         Subarray next_lsq_solution_k1 = next_lsq_solution.subarray(Shape(0,0), Shape(activeSetSize, 1));
         reverseElimination(Ractive, qtbactive, next_lsq_solution_k1);
-
+        
         // compute new search direction
         mu += gamma*searchVector;
-
-        Subarray Xactive = X.subarray(Shape(0,0), Shape(rows, activeSetSize));
-        searchVector = Xactive * next_lsq_solution_k1 - mu;
+        
+        searchVector = -mu;
+        for(unsigned int l=0; l<activeSetSize; ++l)
+            searchVector += next_lsq_solution_k1(l,0)*columnVector(A, activeSet[l]);
     }
     
-    return maxSolutionCount;
+    if(options.bic_variance > 0.0 && minimal_bic_solution + 1 != k)
+        return minimal_bic_solution + 1;
+    else
+        return k;
 }
 
 } // namespace linalg
