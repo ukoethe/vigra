@@ -1017,6 +1017,16 @@ struct LinalgTest
             for(unsigned int j=0; j<c; ++j, ++k)
                 shouldEqual(b(i,j), sqrt(data[k]));
 
+        b = sq(a);
+        for(unsigned int i=0, k=0; i<r; ++i)
+            for(unsigned int j=0; j<c; ++j, ++k)
+                shouldEqual(b(i,j), vigra::sq(data[k]));
+
+        b = sign(a);
+        for(unsigned int i=0, k=0; i<r; ++i)
+            for(unsigned int j=0; j<c; ++j, ++k)
+                shouldEqual(b(i,j), vigra::sign(data[k]));
+
         Matrix at = transpose(a);
         shouldEqual(at.rowCount(), c);
         shouldEqual(at.columnCount(), r);
@@ -1145,8 +1155,12 @@ struct LinalgTest
 
     void testLinearSolve()
     {
+#if defined(__GNUC__) && __GNUC__ == 3
+        double epsilon = 1e-8;
+#else
         double epsilon = 1e-10;
-        int size = 5;
+#endif
+        int size = 50;
 
         for(unsigned int i = 0; i < iterations; ++i)
         {
@@ -1154,10 +1168,14 @@ struct LinalgTest
             Matrix b = random_matrix (size, 1);
             Matrix x(size, 1);
 
-            should(linearSolve (a, b, x, "QR"));
+            should(linearSolve (a, b, x, "ExplicitQR"));
             Matrix ax = a * x;
             shouldEqualSequenceTolerance(ax.data(), ax.data()+size, b.data(), epsilon);
 
+            should(linearSolve(a, b, x, "QR"));
+            ax = a * x;
+            shouldEqualSequenceTolerance(ax.data(), ax.data()+size, b.data(), epsilon);
+            
             should(linearSolve(a, b, x, "SVD"));
             ax = a * x;
             shouldEqualSequenceTolerance(ax.data(), ax.data()+size, b.data(), epsilon);
@@ -1182,6 +1200,69 @@ struct LinalgTest
         should(!linearSolve (a, b, x, "SVD"));
     }
 
+    void testIncrementalLinearSolve()
+    {
+#if defined(__GNUC__) && __GNUC__ == 3
+        double epsilon = 1e-8;
+#else
+        double epsilon = 1e-10;
+#endif
+        int size = 50;
+
+        for(unsigned int i = 0; i < iterations; ++i)
+        {
+            Matrix a = random_matrix (size, size);
+            Matrix b = random_matrix (size, 1);
+            Matrix x(size, 1);
+
+            should(linearSolve(a, b, x, "QR"));
+            
+            {
+                Matrix r(a), qtb(b), rx(x), xx(x);
+                
+                for(int k=0; k<size; ++k)
+                {
+                    should(vigra::linalg::detail::qrLinearSolveOneStep(k, r, qtb));
+                }
+                
+                for(int k=0; k<size; ++k)
+                {
+                    int i = rand() % size, j = rand() % size;
+                    if(i==j) continue;
+                    if(i > j) std::swap(i,j);
+                    
+                    vigra::linalg::detail::qrLinearSolveCyclicShift(i, j, r, qtb);
+                    double t = rx[i];
+                    for(int l=i; l<j;++l)
+                        rx[l] = rx[l+1];
+                    rx[j] = t;   
+                }
+                should(vigra::linalg::reverseElimination(r, qtb, xx));
+                
+                shouldEqualSequenceTolerance(rx.data(), rx.data()+size, xx.data(), epsilon);
+            }
+
+            {
+                Matrix r(a), qtb(b), rx(x), xx(x);
+                
+                for(int k=0; k<size; ++k)
+                {
+                    should(vigra::linalg::detail::qrLinearSolveOneStep(k, r, qtb));
+                }
+                
+                for(int k=0; k<size; ++k)
+                {
+                    int i = rand() % size, j = rand() % size;
+                    vigra::linalg::detail::qrLinearSolveSwap(i, j, r, qtb);
+                    std::swap(rx[i], rx[j]);
+                }
+                should(vigra::linalg::reverseElimination(r, qtb, xx));
+                   
+                shouldEqualSequenceTolerance(rx.data(), rx.data()+size, xx.data(), epsilon);
+            }
+        }
+    }
+    
     void testInverse()
     {
         double epsilon = 1e-10;
@@ -1380,6 +1461,7 @@ struct MathTestSuite
         add( testCase(&LinalgTest::testCholesky));
         add( testCase(&LinalgTest::testQR));
         add( testCase(&LinalgTest::testLinearSolve));
+        add( testCase(&LinalgTest::testIncrementalLinearSolve));
         add( testCase(&LinalgTest::testInverse));
         add( testCase(&LinalgTest::testSymmetricEigensystem));
         add( testCase(&LinalgTest::testNonsymmetricEigensystem));
