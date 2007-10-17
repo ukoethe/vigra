@@ -2239,6 +2239,11 @@ rowStatistics(const MultiArrayView<2, T, C1> & A,
 
 enum DataPreparationGoals { ZeroMean = 1, UnitVariance = 2, UnitNorm = 4 };
 
+DataPreparationGoals operator|(DataPreparationGoals l, DataPreparationGoals r)
+{
+    return DataPreparationGoals(int(l) | int(r));
+}
+
 namespace detail {
 
 template <class T, class C1, class C2, class C3, class C4>
@@ -2323,7 +2328,7 @@ template <class T, class C1, class C2, class C3, class C4>
 inline void
 prepareColumns(const MultiArrayView<2, T, C1> & A, 
                MultiArrayView<2, T, C2> & res, MultiArrayView<2, T, C3> & offset, MultiArrayView<2, T, C4> & scaling, 
-               DataPreparationGoals goals = DataPreparationGoals(0))
+               DataPreparationGoals goals = ZeroMean | UnitVariance)
 {
     detail::prepareDataImpl(A, res, offset, scaling, goals);
 }
@@ -2331,7 +2336,7 @@ prepareColumns(const MultiArrayView<2, T, C1> & A,
 template <class T, class C1, class C2>
 inline void
 prepareColumns(const MultiArrayView<2, T, C1> & A, MultiArrayView<2, T, C2> & res, 
-               DataPreparationGoals goals = DataPreparationGoals(0))
+               DataPreparationGoals goals = ZeroMean | UnitVariance)
 {
     Matrix<T> offset(1, columnCount(A)), scaling(1, columnCount(A));
     detail::prepareDataImpl(A, res, offset, scaling, goals);
@@ -2341,7 +2346,7 @@ template <class T, class C1, class C2, class C3, class C4>
 inline void
 prepareRows(const MultiArrayView<2, T, C1> & A, 
                MultiArrayView<2, T, C2> & res, MultiArrayView<2, T, C3> & offset, MultiArrayView<2, T, C4> & scaling, 
-               DataPreparationGoals goals = DataPreparationGoals(0))
+               DataPreparationGoals goals = ZeroMean | UnitVariance)
 {
     MultiArrayView<2, T, StridedArrayTag> tr = transpose(res), to = transpose(offset), ts = transpose(scaling);
     detail::prepareDataImpl(transpose(A), tr, to, ts, goals);
@@ -2350,7 +2355,7 @@ prepareRows(const MultiArrayView<2, T, C1> & A,
 template <class T, class C1, class C2>
 inline void
 prepareRows(const MultiArrayView<2, T, C1> & A, MultiArrayView<2, T, C2> & res, 
-               DataPreparationGoals goals = DataPreparationGoals(0))
+               DataPreparationGoals goals = ZeroMean | UnitVariance)
 {
     MultiArrayView<2, T, StridedArrayTag> tr = transpose(res);
     Matrix<T> offset(rowCount(A), 1), scaling(rowCount(A), 1);
