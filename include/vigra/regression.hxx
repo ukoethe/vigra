@@ -340,11 +340,97 @@ ridgeRegressionSeries(MultiArrayView<2, T, C1> const & A,
     return (rank < n);
 }
 
+/** \brief Pass options to leastAngleRegression().
+
+*/
+class LeastAngleRegressionOptions
+{
+  public:
+        /** Initialize all options with default values.
+        */
+    LeastAngleRegressionOptions()
+    : max_solution_count(0), 
+      unconstrained_dimension_count(0),
+      lasso_modification(true), 
+      enforce_positive(false),
+      least_squares_solutions(true)
+    {}
+
+        /** Minimum number of solutions to be computed.
+        
+            If \a n is 0 (the default), the number of solutions is determined by the length 
+            of the solution array. Otherwise, the minimum of maxSolutionCount() and that
+            length is taken.<br>
+            Default: 0 (use length of solution array)
+        */
+    LeastAngleRegressionOptions & maxSolutionCount(unsigned int n)
+    {
+        max_solution_count = n;
+        return *this;
+    }
+
+#if 0 // option currently disabled
+        /** Number of unconstrained dimensions in the feature matrix.
+        
+            The first \a n columns in the feature matrix will be considered as unconstrained,
+            i.e. they will always be in the active set, and there is no restriction on the size
+            or sign of the coirresponding solution coefficients.<br>
+            Default: 0 
+        */
+    LeastAngleRegressionOptions & unconstrainedDimensionCount(unsigned int n)
+    {
+        unconstrained_dimension_count = n;
+        return *this;
+    }
+#endif
+
+        /** Use the LASSO modification of the LARS algorithm.
+        
+            This allows features to be removed from the active set under certain conditions.<br>
+            Default: <tt>true</tt>
+        */
+    LeastAngleRegressionOptions & useLassoModification(bool select)
+    {
+        lasso_modification = select;
+        return *this;
+    }
+
+        /** Enforce all solution coefficients in the active set to be positive.
+        
+            This implies the LASSO extension. The constraint does not apply to
+            unconstrained dimensions.<br>
+            Default: <tt>false</tt>
+        */
+    LeastAngleRegressionOptions & enforcePositiveSolutions(bool select)
+    {
+        if(select)
+            lasso_modification = true;
+        enforce_positive = select;
+        return *this;
+    }
+
+        /** Compute least squares solutions.
+        
+            Use least angle regression to determine active sets, but
+            return least squares solutions for the features in each active set,
+            instead of constrained solutions.<br>
+            Default: <tt>true</tt>
+        */
+    LeastAngleRegressionOptions & leastSquaresSolutions(bool select)
+    {
+        least_squares_solutions = select;
+        return *this;
+    }
+
+    unsigned int max_solution_count, unconstrained_dimension_count;
+    bool lasso_modification, enforce_positive, least_squares_solutions;
+};
+
 template <class T, class C1, class C2, class Array1, class Array2>
 unsigned int
 leastAngleRegression(MultiArrayView<2, T, C1> const & A, MultiArrayView<2, T, C2> const &b, 
-                     Array1 & solutions, Array2 & activeSets
-                     /* LARSOptions const & options */)
+                     Array1 & solutions, Array2 & activeSets,
+                     LeastAngleRegressionOptions const & options = LeastAngleRegressionOptions())
 {
     using namespace vigra::functor;
     using namespace vigra::linalg;
@@ -352,78 +438,144 @@ leastAngleRegression(MultiArrayView<2, T, C1> const & A, MultiArrayView<2, T, C2
     typedef typename MultiArrayView<2, T, C1>::difference_type Shape;
     typedef typename Matrix<T>::view_type Subarray;
     
+    if(options.enforce_positive && !options.lasso_modification)
+        vigra_precondition(false,
+              "leastAngleRegression(): Positive solutions can only be enforced whan LASSO modification is active.");
+
     const unsigned int rows = rowCount(A);
     const unsigned int cols = columnCount(A);
-    const unsigned int maxSolutionCount = std::min(solutions.size(), std::min(rows, cols));
+
     vigra_precondition(rowCount(b) == rows && columnCount(b) == 1,
        "leastAngleRegression(): Shape mismatch between matrices A and b.");
+       
+    unsigned int maxSolutionCount;
+    if(options.max_solution_count == 0)
+        maxSolutionCount = solutions.size();
+    else
+        maxSolutionCount = std::min(solutions.size(), options.max_solution_count);
+    maxSolutionCount = std::min(maxSolutionCount, std::min(rows, cols));
     vigra_precondition(maxSolutionCount <= activeSets.size(),
        "leastAngleRegression(): Active sets array too small.");
-       
-    Matrix<T> X(A);
-    Matrix<T> mu(b.shape());
+    
+    Matrix<T> X(A), R(A), qtb(b);
 
-    unsigned int k = 0;
     ArrayVector<int> activeSet(cols);
-    for(k=0; k<cols; ++k)
+    for(unsigned int k=0; k<cols; ++k)
         activeSet[k] = k;
         
-    T C = 0.0;
-    int best = -1,
-        activeSetSize = 0;
-    for(k=0; k < maxSolutionCount; ++k)
+    // find dimension with largest correlation
+    Matrix<T> c = transpose(X)*b;
+    int initialDimension;
+    if(options.enforce_positive)
+        initialDimension = argMaxIf(c, Arg1() > Param(0.0));
+    else
+        initialDimension = argMax(abs(c));
+    if(initialDimension == -1)
+        return 0; // no solution found
+    T C = abs(c(initialDimension, 0));
+    
+    // prepare initial active set and search direction etc.
+    int activeSetSize = 1;
+    std::swap(activeSet[0], activeSet[initialDimension]);
+    columnVector(X, 0).swapData(columnVector(X, initialDimension));
+    columnVector(R, 0).swapData(columnVector(R, initialDimension));
+    detail::qrLinearSolveOneStep(0, R, qtb);
+
+    Matrix<T> lsq_solution(cols, 1), lars_solution(cols,1), mu(b.shape()); // initially zero
+    Matrix<T> next_lsq_solution(cols, 1);
+    next_lsq_solution(0,0) = qtb(0,0) / R(0,0);
+    Matrix<T> searchVector = next_lsq_solution(0,0) * columnVector(X, 0);
+    
+    for(unsigned int k=0; k < maxSolutionCount; ++k)
     {
         Subarray Xinactive = X.subarray(Shape(0, activeSetSize), Shape(rows, cols));
+
+        // find next dimension to be activated
         Matrix<T> c = transpose(Xinactive)*(b - mu);
-        if(activeSetSize == 0)
+        Matrix<T> a = transpose(Xinactive)*searchVector;
+        Matrix<T> ac = (C - c) / pointWise(C - a);
+        if(!options.enforce_positive)
+            ac = joinVertically(ac, (C + c) / pointWise(C + a));
+        
+        int limitingDimension = argMinIf(ac, Arg1() > Param(0.0));
+        if(limitingDimension == -1)
+            return k;  // no further solution found
+        
+        T gamma = ac(limitingDimension, 0);
+        
+        // adjust limitingDimension: we possibly joined two ac vectors
+        limitingDimension %= (cols - activeSetSize);
+        C = abs(c(limitingDimension, 0));
+
+        // adjust limitingDimension: we skipped the active set
+        limitingDimension += activeSetSize; 
+        
+        // check whether we have to remove a dimension from the active set
+        Subarray lsq_solution_k = lsq_solution.subarray(Shape(0,0), Shape(activeSetSize, 1));
+        Subarray next_lsq_solution_k = next_lsq_solution.subarray(Shape(0,0), Shape(activeSetSize, 1));
+        if(options.lasso_modification)
         {
-            // find initial active column
-            if(false) // FIXME: positive LASSO restriction
-                best = argMaxIf(c, Arg1() > Param(0.0));
-            else
-                best = argMax(abs(c));
-            if(best == -1)
-                break; // no solution found
-            C = abs(c(best, 0));
+            Matrix<T> d(Shape(activeSetSize, 1), NumericTraits<T>::max());
+            for(int l=0; l<activeSetSize; ++l)
+                if(sign(lsq_solution_k(l,0))*sign(next_lsq_solution_k(l,0)) == -1.0)
+                    d(l,0) = lsq_solution_k(l,0) / (lsq_solution_k(l,0) - next_lsq_solution_k(l,0));
+            int changesSign = argMinIf(d, Arg1() < Param(gamma));
+            if(changesSign >= 0)
+            {
+                limitingDimension = changesSign;
+                gamma = d(changesSign, 0);
+            }
+        }
+
+        // compute and write the current solution
+        lsq_solution_k = next_lsq_solution_k;
+        Subarray lars_solution_k = lars_solution.subarray(Shape(0,0), Shape(activeSetSize, 1));
+        lars_solution_k = gamma * lsq_solution_k + (1.0 - gamma) * lars_solution_k;
+        
+        if(options.least_squares_solutions)
+            solutions[k] = lsq_solution_k;
+        else
+            solutions[k] = lars_solution_k; 
+        
+        activeSets[k].resize(activeSetSize);
+        std::copy(activeSet.begin(), activeSet.begin()+activeSetSize, activeSets[k].begin());
+
+        // update the active set and its QR factorization
+        std::swap(activeSet[activeSetSize], activeSet[limitingDimension]);
+        columnVector(X, activeSetSize).swapData(columnVector(X, limitingDimension));
+        if(limitingDimension < activeSetSize)
+        {
+            std::swap(lsq_solution(activeSetSize,0), lsq_solution(limitingDimension, 0));
+            std::swap(lars_solution(activeSetSize,0), lars_solution(limitingDimension, 0));
+            detail::qrLinearSolveSwap(limitingDimension, activeSetSize, R, qtb);
+            --activeSetSize;
         }
         else
         {
-            Subarray Xactive = X.subarray(Shape(0,0), Shape(rows, activeSetSize));
-            Matrix<T> u = Xactive * solutions[k-1] - mu;
-            Matrix<T> a = transpose(Xinactive)*u;
-            Matrix<T> ac = (C - c) / pointWise(C - a);
-            if(true) // FIXME: not positive LASSO restriction
-                ac = joinColumns(ac, (C + c) / pointWise(C + a));
-            best = argMinIf(ac, Arg1() > Param(0.0));
-            if(best == -1)
-                break; // no solution found
-            T gamma = ac(best, 0);
-            mu += gamma*u;
-            
-            // adjust best: we possibly joined two ac vectors
-            best %= (cols - activeSetSize);
-            C = abs(c(best, 0));
-
-            // adjust best: we skipped the active set
-            best += activeSetSize; 
+            lsq_solution(activeSetSize,0) = 0.0;
+            lars_solution(activeSetSize,0) = 0.0;
+            columnVector(R, activeSetSize).swapData(columnVector(R, limitingDimension));
+            bool singular = !detail::qrLinearSolveOneStep(activeSetSize, R, qtb);
+            if(singular || closeAtTolerance(qtb(activeSetSize,0) / R(activeSetSize, activeSetSize), 0.0))
+                return k+1; // no further solutions possible
+            ++activeSetSize;
         }
         
-        columnVector(X, k).swapData(columnVector(X, best));
-        std::swap(activeSet[k], activeSet[best]);
-        ++activeSetSize;
+        // compute LSQ solution of new active set
+        Subarray Ractive = R.subarray(Shape(0,0), Shape(activeSetSize, activeSetSize));
+        Subarray qtbactive = qtb.subarray(Shape(0,0), Shape(activeSetSize, 1));
+        Subarray next_lsq_solution_k1 = next_lsq_solution.subarray(Shape(0,0), Shape(activeSetSize, 1));
+        reverseElimination(Ractive, qtbactive, next_lsq_solution_k1);
+
+        // compute new search direction
+        mu += gamma*searchVector;
 
         Subarray Xactive = X.subarray(Shape(0,0), Shape(rows, activeSetSize));
-        solutions[k].reshape(Shape(activeSetSize, 1));
-        leastSquares(Xactive, b, solutions[k]);
-
-        activeSets[k].resize(activeSetSize);
-        std::copy(activeSet.begin(), activeSet.begin()+activeSetSize, activeSets[k].begin());
+        searchVector = Xactive * next_lsq_solution_k1 - mu;
     }
     
-    return k;
+    return maxSolutionCount;
 }
-
-//@}
 
 } // namespace linalg
 
@@ -433,6 +585,7 @@ using linalg::ridgeRegression;
 using linalg::weightedRidgeRegression;
 using linalg::ridgeRegressionSeries;
 using linalg::leastAngleRegression;
+using linalg::LeastAngleRegressionOptions;
 
 } // namespace vigra
 
