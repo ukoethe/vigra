@@ -60,20 +60,16 @@ template <unsigned int N, class T,
 <DL>
 <DT>
     <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif">
-    \ref vigra::MultiIterator
+    \ref vigra::MultiArrayShape
     <DD> <em>Iterator for unstrided \ref vigra::MultiArrayView</em>
 <DT>
-    <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif"> 
-    \ref vigra::MultiIteratorBase::type
-    <DD> <em>Inner class implementing most of the functionality of \ref vigra::MultiIterator</em>
+    <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif">
+    \ref vigra::MultiIterator
+    <DD> <em>Iterator for unstrided \ref vigra::MultiArrayView</em>
 <DT>
     <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif">
     \ref vigra::StridedMultiIterator
     <DD> <em>Iterator for strided \ref vigra::MultiArrayView</em>
-<DT>
-    <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif">
-    \ref vigra::StridedMultiIteratorBase::type
-    <DD> <em>Inner class implementing most of the functionality of \ref vigra::StridedMultiIterator</em>
 </DL>
 </p>
 
@@ -436,6 +432,19 @@ but iterator performance will suffer significantly, as is experienced with
 */
 //@{
 
+    /** Traits class for the difference type of all MultiIterator, MultiArrayView, and
+        MultiArray variants.
+    */
+template <unsigned int N>
+class MultiArrayShape
+{
+  public:
+        /** The difference type of all MultiIterator, MultiArrayView, and
+            MultiArray variants.
+        */
+    typedef TinyVector<std::ptrdiff_t, N> type;
+};
+
 /********************************************************/
 /*                                                      */
 /*                      MultiIterator                   */
@@ -462,8 +471,8 @@ class MultiIterator<1, T, REFERENCE, POINTER>
     typedef const value_type &const_reference;
     typedef POINTER pointer;
     typedef const value_type *const_pointer;
-    typedef ptrdiff_t difference_type;
-    typedef TinyVector<difference_type, 1> multi_difference_type;
+    typedef typename MultiArrayShape<1>::type multi_difference_type;
+    typedef typename multi_difference_type::value_type difference_type;
     typedef StridedMultiIterator<1, T, REFERENCE, POINTER> iterator;
     typedef std::random_access_iterator_tag iterator_category;
 
@@ -664,8 +673,8 @@ class MultiIterator<2, T, REFERENCE, POINTER>
     typedef const value_type &const_reference;
     typedef POINTER pointer;
     typedef const value_type *const_pointer;
-    typedef ptrdiff_t difference_type;
-    typedef TinyVector<difference_type, 2> multi_difference_type;
+    typedef typename MultiArrayShape<2>::type multi_difference_type;
+    typedef typename multi_difference_type::value_type difference_type;
     typedef base_type next_type;
     typedef StridedMultiIterator<1, T, REFERENCE, POINTER> iterator;
     typedef multi_dimensional_traverser_tag iterator_category;
@@ -869,15 +878,15 @@ public:
          */
     typedef const value_type *const_pointer;
 
-        /** difference type (used for offsetting)
-         */
-    typedef ptrdiff_t difference_type;
-
         /** multi difference type 
             (used for offsetting along all axes simultaneously)
          */
-    typedef TinyVector<difference_type, N> multi_difference_type;
+    typedef typename MultiArrayShape<N>::type multi_difference_type;
     
+        /** difference type (used for offsetting)
+         */
+    typedef typename multi_difference_type::value_type difference_type;
+
         /** the MultiIterator for the next lower dimension.
          */
     typedef base_type next_type;
@@ -1209,8 +1218,8 @@ class StridedMultiIterator<1, T, REFERENCE, POINTER>
     typedef const value_type &const_reference;
     typedef POINTER pointer;
     typedef const value_type *const_pointer;
-    typedef ptrdiff_t difference_type;
-    typedef TinyVector<difference_type, 1> multi_difference_type;
+    typedef typename MultiArrayShape<1>::type multi_difference_type;
+    typedef typename multi_difference_type::value_type difference_type;
     typedef StridedMultiIterator<1, T, REFERENCE, POINTER> iterator;
     typedef std::random_access_iterator_tag iterator_category;
 
@@ -1414,8 +1423,8 @@ class StridedMultiIterator<2, T, REFERENCE, POINTER>
     typedef const value_type &const_reference;
     typedef POINTER pointer;
     typedef const value_type *const_pointer;
-    typedef ptrdiff_t difference_type;
-    typedef TinyVector<difference_type, 2> multi_difference_type;
+    typedef typename MultiArrayShape<2>::type multi_difference_type;
+    typedef typename multi_difference_type::value_type difference_type;
     typedef base_type next_type;
     typedef StridedMultiIterator<1, T, REFERENCE, POINTER> iterator;
     typedef multi_dimensional_traverser_tag iterator_category;
@@ -1619,14 +1628,14 @@ public:
          */
     typedef const value_type *const_pointer;
 
-        /** difference type (used for offsetting)
-         */
-    typedef ptrdiff_t difference_type;
-
         /** multi difference type 
             (used for offsetting along all axes simultaneously)
          */
-    typedef TinyVector<difference_type, N> multi_difference_type;
+    typedef typename MultiArrayShape<N>::type multi_difference_type;
+
+        /** difference type (used for offsetting)
+         */
+    typedef typename multi_difference_type::value_type difference_type;
     
         /** the StridedMultiIterator for the next lower dimension.
          */
