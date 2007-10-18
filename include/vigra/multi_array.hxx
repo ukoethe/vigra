@@ -412,7 +412,7 @@ equalityOfMultiArrays(SrcIterator s, Shape const & shape, DestIterator d, MetaIn
 
 template <class SrcIterator, class Shape, class DestIterator>
 void
-swapImpl(SrcIterator s, Shape const & shape, DestIterator d, MetaInt<0>)
+swapDataImpl(SrcIterator s, Shape const & shape, DestIterator d, MetaInt<0>)
 {    
     SrcIterator send = s + shape[0];
     for(; s != send; ++s, ++d)
@@ -421,11 +421,11 @@ swapImpl(SrcIterator s, Shape const & shape, DestIterator d, MetaInt<0>)
 
 template <class SrcIterator, class Shape, class DestIterator, int N>
 void
-swapImpl(SrcIterator s, Shape const & shape, DestIterator d, MetaInt<N>)
+swapDataImpl(SrcIterator s, Shape const & shape, DestIterator d, MetaInt<N>)
 {    
     SrcIterator send = s + shape[N];
     for(; s != send; ++s, ++d)
-        swapImpl(s.begin(), shape, d.begin(), MetaInt<N-1>());
+        swapDataImpl(s.begin(), shape, d.begin(), MetaInt<N-1>());
 }
 
 } // namespace detail
@@ -533,7 +533,7 @@ public:
 
         /** difference type (used for offsetting)
          */
-    typedef TinyVector <ptrdiff_t, actual_dimension> difference_type;
+    typedef typename MultiArrayShape<actual_dimension>::type difference_type;
 
         /** size type
          */
@@ -541,12 +541,12 @@ public:
 
         /** traverser (MultiIterator) type
          */
-    typedef typename detail::MultiIteratorChooser <
+    typedef typename vigra::detail::MultiIteratorChooser <
         C>::template Traverser <actual_dimension, T, T &, T *>::type traverser;
 
         /** const traverser (MultiIterator) type
          */
-    typedef typename detail::MultiIteratorChooser <
+    typedef typename vigra::detail::MultiIteratorChooser <
         C>::template Traverser <actual_dimension, T, T const &, T const *>::type const_traverser;
 
         /** the view type associated with this array.
@@ -578,7 +578,7 @@ protected:
     void copyImpl(const MultiArrayView <N, U, CN>& rhs);
 
     template <class U, class CN>
-    void swapImpl(MultiArrayView <N, U, CN> rhs);
+    void swapDataImpl(MultiArrayView <N, U, CN> rhs);
 
 public:
 
@@ -780,7 +780,7 @@ public:
     void swapData(MultiArrayView rhs)
     {
         if(this != &rhs)
-            swapImpl(rhs);
+            swapDataImpl(rhs);
     }
 
         /** swap the data between two MultiArrayView objects.
@@ -790,7 +790,7 @@ public:
     template <class T2, class C2>
     void swapData(MultiArrayView <N, T2, C2> rhs)
     {
-        swapImpl(rhs);
+        swapDataImpl(rhs);
     }
     
         /** bind the M outmost dimensions to certain indices.
@@ -813,7 +813,7 @@ public:
             max { 1, N-1 }
          */
     template <unsigned int M>
-    MultiArrayView <N-1, T, typename detail::MaybeStrided <M>::type >
+    MultiArrayView <N-1, T, typename vigra::detail::MaybeStrided <M>::type >
     bind (int d) const;
 
         /** bind the outmost dimension to a certain index.
@@ -1138,7 +1138,7 @@ MultiArrayView <N, T, C>::copyImpl(const MultiArrayView <N, U, CN>& rhs)
 template <unsigned int N, class T, class C>
 template <class U, class CN>
 void 
-MultiArrayView <N, T, C>::swapImpl(MultiArrayView <N, U, CN> rhs)
+MultiArrayView <N, T, C>::swapDataImpl(MultiArrayView <N, U, CN> rhs)
 {
     vigra_precondition (shape () == rhs.shape (),
         "MultiArrayView::swapData(): shape mismatch.");
@@ -1152,7 +1152,7 @@ MultiArrayView <N, T, C>::swapImpl(MultiArrayView <N, U, CN> rhs)
     if(last_element < rhs_first_element || rhs_last_element < first_element)
     {
         // no overlap -- can swap directly
-        detail::swapImpl(traverser_begin(), shape(), rhs.traverser_begin(), MetaInt<actual_dimension-1>());
+        detail::swapDataImpl(traverser_begin(), shape(), rhs.traverser_begin(), MetaInt<actual_dimension-1>());
     }
     else
     {
@@ -1403,13 +1403,13 @@ public:
 
         /** traverser type
          */
-    typedef typename detail::MultiIteratorChooser <
+    typedef typename vigra::detail::MultiIteratorChooser <
         UnstridedArrayTag>::template Traverser <N, T, T &, T *>::type
     traverser;
 
         /** traverser type to const data
          */
-    typedef typename detail::MultiIteratorChooser <
+    typedef typename vigra::detail::MultiIteratorChooser <
         UnstridedArrayTag>::template Traverser <N, T, T const &, T const *>::type
     const_traverser;
 
@@ -1663,17 +1663,11 @@ void
 MultiArray <N, T, A>::copyOrReshape(const MultiArrayView<N, U, C> &rhs)
 {
     if (this->shape() == rhs.shape())
-    {
         this->copy(rhs);
-    }
     else
     {
-        pointer new_ptr;
-        allocate (new_ptr, rhs);
-        deallocate (this->m_ptr, this->elementCount ());
-        this->m_shape = rhs.shape();
-        this->m_stride = rhs.stride();
-        this->m_ptr = new_ptr;
+        MultiArray t(rhs);
+        this->swap(t);
     }
 }
 
