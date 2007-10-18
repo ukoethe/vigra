@@ -1138,8 +1138,12 @@ operator-(T a, const MultiArrayView<2, T, C> &b)
 }
 
     /** calculate the inner product of two matrices representing vectors.
-        That is, matrix \a x must have a single row, and matrix \a y must
-        have a single column, and the other dimensions must match.
+        Typically, matrix \a x has a single row, and matrix \a y has
+        a single column, and the other dimensions match. In addition, this
+        function handles the cases when either or both of the two inputs are 
+        transposed (e.g. it can compute the dot product of two column vectors). 
+        A <tt>PreconditionViolation</tt> exception is thrown when
+        the shape conditions are violated. 
 
     <b>\#include</b> "<a href="matrix_8hxx-source.html">vigra/matrix.hxx</a>" or<br>
     <b>\#include</b> "<a href="linear__algebra_8hxx-source.html">vigra/linear_algebra.hxx</a>"<br>
@@ -1148,26 +1152,33 @@ operator-(T a, const MultiArrayView<2, T, C> &b)
 template <class T, class C1, class C2>
 T dot(const MultiArrayView<2, T, C1> &x, const MultiArrayView<2, T, C2> &y)
 {
-    const std::size_t n1 = columnCount(x);
-    const std::size_t m1 = rowCount(x);
-    const std::size_t n2 = columnCount(y);
-    const std::size_t m2 = rowCount(y);
-    vigra_precondition(std::min(n1, m1) == 1 && std::min(n2, m2) == 1 && 
-                       std::max(n1, m1) == std::max(n2, m2),
-       "dot(): shape mismatch.");
     T ret = NumericTraits<T>::zero();
-    if(n1 == 1 && n2 == 1)
-        for(std::size_t i = 0; i < m1; ++i)
-            ret += x(i, 0) * y(i, 0);
-    else if(n1 == 1 && m2 == 1)
-        for(std::size_t i = 0; i < m1; ++i)
-            ret += x(i, 0) * y(0, i);
-    else if(m1 == 1 && n2 == 1)
-        for(std::size_t i = 0; i < n1; ++i)
-            ret += x(0, i) * y(i, 0);
+    if(y.shape(1) == 1)
+    {
+        std::size_t size = y.shape(0);
+        if(x.shape(0) == 1 && x.shape(1) == size) // proper scalar product
+            for(std::size_t i = 0; i < size; ++i)
+                ret += x(0, i) * y(i, 0);
+        else if(x.shape(1) == 1 && x.shape(0) == size) // two column vectors
+            for(std::size_t i = 0; i < size; ++i)
+                ret += x(i, 0) * y(i, 0);
+        else    
+            vigra_precondition(false, "dot(): wrong matrix shapes.");
+    }
+    else if(y.shape(0) == 1)
+    {
+        std::size_t size = y.shape(1);
+        if(x.shape(0) == 1 && x.shape(1) == size) // two row vectors
+            for(std::size_t i = 0; i < size; ++i)
+                ret += x(0, i) * y(0, i);
+        else if(x.shape(1) == 1 && x.shape(0) == size) // column dot row
+            for(std::size_t i = 0; i < size; ++i)
+                ret += x(i, 0) * y(0, i);
+        else    
+            vigra_precondition(false, "dot(): wrong matrix shapes.");
+    }
     else
-        for(std::size_t i = 0; i < n1; ++i)
-            ret += x(0, i) * y(0, i);
+            vigra_precondition(false, "dot(): wrong matrix shapes.");
     return ret;
 }
 
