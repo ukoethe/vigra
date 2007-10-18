@@ -1150,9 +1150,10 @@ operator-(T a, const MultiArrayView<2, T, C> &b)
         Namespaces: vigra and vigra::linalg
      */
 template <class T, class C1, class C2>
-T dot(const MultiArrayView<2, T, C1> &x, const MultiArrayView<2, T, C2> &y)
+typename NormTraits<T>::SquaredNormType 
+dot(const MultiArrayView<2, T, C1> &x, const MultiArrayView<2, T, C2> &y)
 {
-    T ret = NumericTraits<T>::zero();
+    typename NormTraits<T>::SquaredNormType ret = NumericTraits<typename NormTraits<T>::SquaredNormType>::zero();
     if(y.shape(1) == 1)
     {
         std::size_t size = y.shape(0);
@@ -1190,12 +1191,13 @@ T dot(const MultiArrayView<2, T, C1> &x, const MultiArrayView<2, T, C2> &y)
         Namespaces: vigra and vigra::linalg
      */
 template <class T, class C1, class C2>
-T dot(const MultiArrayView<1, T, C1> &x, const MultiArrayView<1, T, C2> &y)
+typename NormTraits<T>::SquaredNormType 
+dot(const MultiArrayView<1, T, C1> &x, const MultiArrayView<1, T, C2> &y)
 {
     const std::size_t n = x.elementCount();
     vigra_precondition(n == y.elementCount(),
        "dot(): shape mismatch.");
-    T ret = NumericTraits<T>::zero();
+    typename NormTraits<T>::SquaredNormType ret = NumericTraits<typename NormTraits<T>::SquaredNormType>::zero();
     for(std::size_t i = 0; i < n; ++i)
         ret += x(i) * y(i);
     return ret;
@@ -2123,10 +2125,10 @@ namespace linalg {
 
 namespace detail {
 
-template <class T, class C1, class C2, class C3>
+template <class T1, class C1, class T2, class C2, class T3, class C3>
 void
-columnStatisticsImpl(const MultiArrayView<2, T, C1> & A, 
-                 MultiArrayView<2, T, C2> & mean, MultiArrayView<2, T, C3> & sumOfSquaredDifferences)
+columnStatisticsImpl(const MultiArrayView<2, T1, C1> & A, 
+                 MultiArrayView<2, T2, C2> & mean, MultiArrayView<2, T3, C3> & sumOfSquaredDifferences)
 {
     unsigned int m = rowCount(A);
     unsigned int n = columnCount(A);
@@ -2135,16 +2137,16 @@ columnStatisticsImpl(const MultiArrayView<2, T, C1> & A,
                        "columnStatistics(): Shape mismatch between input and output.");
 
     // West's algorithm for incremental variance computation
-    mean.init(0.0);
-    sumOfSquaredDifferences.init(0.0);
+    mean.init(NumericTraits<T2>::zero());
+    sumOfSquaredDifferences.init(NumericTraits<T3>::zero());
     
     for(unsigned int k=0; k<m; ++k)
     {
-        Matrix<T> t = rowVector(A, k) - mean;
-        T f = 1.0 / (k + 1.0);
+        Matrix<T2> t = rowVector(A, k) - mean;
+        double f  = 1.0 / (k + 1.0);
+               f1 = 1.0 - f;
         mean += f*t;
-        f = 1.0 - f;
-        sumOfSquaredDifferences += f*sq(t);
+        sumOfSquaredDifferences += f1*sq(t);
     }
 }
 
@@ -2161,41 +2163,40 @@ columnStatisticsImpl(const MultiArrayView<2, T, C1> & A,
     <b>\#include</b> "<a href="linear__algebra_8hxx-source.html">vigra/linear_algebra.hxx</a>"<br>
         Namespace: vigra
      */
-template <class T, class C1, class C2>
+template <class T1, class C1, class T2, class C2>
 void
-columnStatistics(const MultiArrayView<2, T, C1> & A, 
-                 MultiArrayView<2, T, C2> & mean)
+columnStatistics(const MultiArrayView<2, T1, C1> & A, 
+                 MultiArrayView<2, T2, C2> & mean)
 {
     unsigned int m = rowCount(A);
     unsigned int n = columnCount(A);
     vigra_precondition(1 == rowCount(mean) && n == columnCount(mean),
                        "columnStatistics(): Shape mismatch between input and output.");
 
-    // West's algorithm for incremental variance computation
-    mean.init(0.0);
+    mean.init(NumericTraits<T2>::zero());
     
     for(unsigned int k=0; k<m; ++k)
     {
-        Matrix<T> t = rowVector(A, k) - mean;
-        mean += t / (k + 1.0);
+        mean += rowVector(A, k);
     }
+    mean /= T2(m);
 }
 
-template <class T, class C1, class C2, class C3>
+template <class T1, class C1, class T2, class C2, class T3, class C3>
 void
-columnStatistics(const MultiArrayView<2, T, C1> & A, 
-                 MultiArrayView<2, T, C2> & mean, MultiArrayView<2, T, C3> & stdDev)
+columnStatistics(const MultiArrayView<2, T1, C1> & A, 
+                 MultiArrayView<2, T2, C2> & mean, MultiArrayView<2, T3, C3> & stdDev)
 {
     detail::columnStatisticsImpl(A, mean, stdDev);
     
     if(rowCount(A) > 1)
-        stdDev = sqrt(stdDev / T(rowCount(A) - 1.0));
+        stdDev = sqrt(stdDev / T3(rowCount(A) - 1.0));
 }
 
-template <class T, class C1, class C2, class C3, class C4>
+template <class T1, class C1, class T2, class C2, class T3, class C3, class T4, class C4>
 void
-columnStatistics(const MultiArrayView<2, T, C1> & A, 
-                 MultiArrayView<2, T, C2> & mean, MultiArrayView<2, T, C3> & stdDev, MultiArrayView<2, T, C4> & norm)
+columnStatistics(const MultiArrayView<2, T1, C1> & A, 
+                 MultiArrayView<2, T2, C2> & mean, MultiArrayView<2, T3, C3> & stdDev, MultiArrayView<2, T4, C4> & norm)
 {
     unsigned int m = rowCount(A);
     unsigned int n = columnCount(A);
@@ -2205,47 +2206,136 @@ columnStatistics(const MultiArrayView<2, T, C1> & A,
                        "columnStatistics(): Shape mismatch between input and output.");
 
     detail::columnStatisticsImpl(A, mean, stdDev);
-    norm = sqrt(stdDev + T(m) * sq(mean));
-    stdDev = sqrt(stdDev / T(m - 1.0));
+    norm = sqrt(stdDev + T2(m) * sq(mean));
+    stdDev = sqrt(stdDev / T3(m - 1.0));
 }
 
-template <class T, class C1, class C2>
+template <class T1, class C1, class T2, class C2>
 void
-rowStatistics(const MultiArrayView<2, T, C1> & A, 
-                 MultiArrayView<2, T, C2> & mean)
+rowStatistics(const MultiArrayView<2, T1, C1> & A, 
+                 MultiArrayView<2, T2, C2> & mean)
 {
     vigra_precondition(1 == columnCount(mean) && rowCount(A) == rowCount(mean),
                        "rowStatistics(): Shape mismatch between input and output.");
-    MultiArrayView<2, T, StridedArrayTag> tm = transpose(mean);
+    MultiArrayView<2, T2, StridedArrayTag> tm = transpose(mean);
     columnStatistics(transpose(A), tm);
 }
 
-template <class T, class C1, class C2, class C3>
+template <class T1, class C1, class T2, class C2, class T3, class C3>
 void
-rowStatistics(const MultiArrayView<2, T, C1> & A, 
-                 MultiArrayView<2, T, C2> & mean, MultiArrayView<2, T, C3> & stdDev)
+rowStatistics(const MultiArrayView<2, T1, C1> & A, 
+                 MultiArrayView<2, T2, C2> & mean, MultiArrayView<2, T3, C3> & stdDev)
 {
     vigra_precondition(1 == columnCount(mean) && rowCount(A) == rowCount(mean) &&
                        1 == columnCount(stdDev) && rowCount(A) == rowCount(stdDev),
                        "rowStatistics(): Shape mismatch between input and output.");
-    MultiArrayView<2, T, StridedArrayTag> tm = transpose(mean),
-                                          ts = transpose(stdDev);
+    MultiArrayView<2, T2, StridedArrayTag> tm = transpose(mean);
+    MultiArrayView<2, T3, StridedArrayTag> ts = transpose(stdDev);
     columnStatistics(transpose(A), tm, ts);
 }
 
-template <class T, class C1, class C2, class C3, class C4>
+template <class T1, class C1, class T2, class C2, class T3, class C3, class T4, class C4>
 void
-rowStatistics(const MultiArrayView<2, T, C1> & A, 
-                 MultiArrayView<2, T, C2> & mean, MultiArrayView<2, T, C3> & stdDev, MultiArrayView<2, T, C4> & norm)
+rowStatistics(const MultiArrayView<2, T1, C1> & A, 
+                 MultiArrayView<2, T2, C2> & mean, MultiArrayView<2, T3, C3> & stdDev, MultiArrayView<2, T4, C4> & norm)
 {
     vigra_precondition(1 == columnCount(mean) && rowCount(A) == rowCount(mean) &&
                        1 == columnCount(stdDev) && rowCount(A) == rowCount(stdDev) &&
                        1 == columnCount(norm) && rowCount(A) == rowCount(norm),
                        "rowStatistics(): Shape mismatch between input and output.");
-    MultiArrayView<2, T, StridedArrayTag> tm = transpose(mean),
-                                          ts = transpose(stdDev), 
-                                          tn = transpose(norm);
+    MultiArrayView<2, T2, StridedArrayTag> tm = transpose(mean);
+    MultiArrayView<2, T3, StridedArrayTag> ts = transpose(stdDev); 
+    MultiArrayView<2, T4, StridedArrayTag> tn = transpose(norm);
     columnStatistics(transpose(A), tm, ts, tn);
+}
+
+template <class T1, class C1, class U, class T2, class C2, class T3, class C3>
+void updateCovarianceMatrix(MultiArrayView<2, T1, C1> const & features,
+                       U & count, MultiArrayView<2, T2, C2> & mean, MultiArrayView<2, T3, C3> & covariance)
+{
+    unsigned int n = std::max(rowCount(features), columnCount(features));
+    vigra_precondition(std::min(rowCount(features), columnCount(features)) == 1,
+          "updateCovarianceMatrix(): Features must be a row or column vector.");
+    vigra_precondition(mean.shape() == features.shape(),
+          "updateCovarianceMatrix(): Shape mismatch between feature vector and mean vector.");
+    vigra_precondition(n == rowCount(covariance) && n == columnCount(covariance),
+          "updateCovarianceMatrix(): Shape mismatch between feature vector and covariance matrix.");
+    
+    // West's algorithm for incremental covariance matrix computation
+    Matrix<T2> t = features - mean;
+    ++count;
+    double f  = 1.0 / count,
+           f1 = 1.0 - f;
+    mean += f*t;
+    
+    if(rowCount(features) == 1)
+    {
+        for(unsigned int k=0; k<n; ++k)
+        {
+            covariance(k, k) += f*sq(t(0, k));
+            for(unsigned int l=k+1; l<n; ++l)
+            {
+                covariance(k, l) += f*t(0, k)*t(0, l);
+                covariance(l, k) = covariance(k, l);
+            }
+        }
+    }
+    else
+    {
+        for(unsigned int k=0; k<n; ++k)
+        {
+            covariance(k, k) += f*sq(t(k, 0));
+            for(unsigned int l=k+1; l<n; ++l)
+            {
+                covariance(k, l) += f*t(k, 0)*t(l, 0);
+                covariance(l, k) = covariance(k, l);
+            }
+        }
+    }
+}
+
+template <class T1, class C1, class T2, class C2>
+void covarianceMatrixOfColumns(MultiArrayView<2, T1, C1> const & features,
+                               MultiArrayView<2, T2, C2> & covariance)
+{
+    unsigned int m = rowCount(features), n = columnCount(features);
+    vigra_precondition(n == rowCount(covariance) && n == columnCount(covariance),
+          "covarianceMatrixOfColumns(): Shape mismatch between feature matrix and covariance matrix.");
+    unsigned int count = 0;
+    Matrix<T2> means(1, n);
+    for(unsigned int k=0; k<m; ++k)
+        updateCovarianceMatrix(rowVector(features, k), count, means, covariance);
+}
+
+template <class T, class C>
+TemporaryMatrix<T> 
+covarianceMatrixOfColumns(MultiArrayView<2, T, C> const & features)
+{
+    TemporaryMatrix<T> res(columnCount(features), columnCount(features));
+    covarianceMatrixOfColumns(features, res);
+    return res;
+}
+
+template <class T1, class C1, class T2, class C2>
+void covarianceMatrixOfRows(MultiArrayView<2, T1, C1> const & features,
+                            MultiArrayView<2, T2, C2> & covariance)
+{
+    unsigned int m = rowCount(features), n = columnCount(features);
+    vigra_precondition(m == rowCount(covariance) && m == columnCount(covariance),
+          "covarianceMatrixOfRows(): Shape mismatch between feature matrix and covariance matrix.");
+    unsigned int count = 0;
+    Matrix<T2> means(m, 1);
+    for(unsigned int k=0; k<n; ++k)
+        updateCovarianceMatrix(columnVector(features, k), count, means, covariance);
+}
+
+template <class T, class C>
+TemporaryMatrix<T> 
+covarianceMatrixOfRows(MultiArrayView<2, T, C> const & features)
+{
+    TemporaryMatrix<T> res(rowCount(features), rowCount(features));
+    covarianceMatrixOfRows(features, res);
+    return res;
 }
 
 enum DataPreparationGoals { ZeroMean = 1, UnitVariance = 2, UnitNorm = 4 };
