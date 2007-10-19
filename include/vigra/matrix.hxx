@@ -2143,7 +2143,7 @@ columnStatisticsImpl(const MultiArrayView<2, T1, C1> & A,
     for(unsigned int k=0; k<m; ++k)
     {
         Matrix<T2> t = rowVector(A, k) - mean;
-        double f  = 1.0 / (k + 1.0);
+        double f  = 1.0 / (k + 1.0),
                f1 = 1.0 - f;
         mean += f*t;
         sumOfSquaredDifferences += f1*sq(t);
