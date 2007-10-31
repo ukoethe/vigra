@@ -658,6 +658,22 @@ rowVector(MultiArrayView <2, T, C> const & m, int d)
     return m.subarray(Shape(d, 0), Shape(d+1, columnCount(m)));
 }
 
+
+    /** Create a row vector view of the matrix \a m starting at element \a first and ranging 
+        to column \a end (non-inclusive).
+
+    <b>\#include</b> "<a href="matrix_8hxx-source.html">vigra/matrix.hxx</a>" or<br>
+    <b>\#include</b> "<a href="linear__algebra_8hxx-source.html">vigra/linear_algebra.hxx</a>"<br>
+        Namespaces: vigra and vigra::linalg
+     */
+template <class T, class C>
+MultiArrayView <2, T, C>
+rowVector(MultiArrayView <2, T, C> const & m, MultiArrayShape<2>::type first, int end)
+{
+    typedef typename MultiArrayView <2, T, C>::difference_type Shape;
+    return m.subarray(first, Shape(first[0]+1, end));
+}
+
     /** Create a column vector view for column \a d of the matrix \a m
 
     <b>\#include</b> "<a href="matrix_8hxx-source.html">vigra/matrix.hxx</a>" or<br>
@@ -670,6 +686,21 @@ columnVector(MultiArrayView<2, T, C> const & m, int d)
 {
     typedef typename MultiArrayView <2, T, C>::difference_type Shape;
     return m.subarray(Shape(0, d), Shape(rowCount(m), d+1));
+}
+
+    /** Create a column vector view of the matrix \a m starting at element \a first and 
+        ranging to row \a end (non-inclusive).
+
+    <b>\#include</b> "<a href="matrix_8hxx-source.html">vigra/matrix.hxx</a>" or<br>
+    <b>\#include</b> "<a href="linear__algebra_8hxx-source.html">vigra/linear_algebra.hxx</a>"<br>
+        Namespaces: vigra and vigra::linalg
+     **/
+template <class T, class C>
+MultiArrayView <2, T, C>
+columnVector(MultiArrayView<2, T, C> const & m, MultiArrayShape<2>::type first, int end)
+{
+    typedef typename MultiArrayView <2, T, C>::difference_type Shape;
+    return m.subarray(first, Shape(end, first[1]+1));
 }
 
     /** Check whether matrix \a m is symmetric.
@@ -2340,7 +2371,7 @@ covarianceMatrixOfRows(MultiArrayView<2, T, C> const & features)
 
 enum DataPreparationGoals { ZeroMean = 1, UnitVariance = 2, UnitNorm = 4 };
 
-DataPreparationGoals operator|(DataPreparationGoals l, DataPreparationGoals r)
+inline DataPreparationGoals operator|(DataPreparationGoals l, DataPreparationGoals r)
 {
     return DataPreparationGoals(int(l) | int(r));
 }
