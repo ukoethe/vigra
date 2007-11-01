@@ -78,6 +78,7 @@ singularValueDecomposition(MultiArrayView<2, T, C1> const & A,
     MultiArrayView<2, T, C2> &U, MultiArrayView<2, T, C3> &S, MultiArrayView<2, T, C4> &V)
 {
     typedef T Real;
+    typedef MultiArrayShape<2>::type Shape;
     
     const unsigned int rows = rowCount(A);
     const unsigned int cols = columnCount(A);
