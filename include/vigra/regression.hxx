@@ -466,7 +466,6 @@ leastAngleRegression(MultiArrayView<2, T, C1> const & A, MultiArrayView<2, T, C2
     using namespace vigra::functor;
     using namespace vigra::linalg;
     
-    typedef typename MultiArrayShape<1>::type Shape1;
     typedef typename MultiArrayShape<2>::type Shape;
     typedef typename Matrix<T>::view_type Subarray;
     typedef ArrayVectorView<int> ColumnSet;
@@ -491,8 +490,8 @@ leastAngleRegression(MultiArrayView<2, T, C1> const & A, MultiArrayView<2, T, C2
     
     Matrix<T> R(A), qtb(b);
 
-    // set first activeSetSize entries will hold the active set indices,
-    // the other entries are the inactive set, all ordered in the same way as the
+    // the first activeSetSize entries will hold the active set indices,
+    // the other entries are the inactive set, all permuted in the same way as the
     // columns of the matrix R
     int k;
     ArrayVector<int> columnPermutation(cols);
@@ -514,7 +513,7 @@ leastAngleRegression(MultiArrayView<2, T, C1> const & A, MultiArrayView<2, T, C2
     int activeSetSize = 1;
     std::swap(columnPermutation[0], columnPermutation[initialDimension]);
     columnVector(R, 0).swapData(columnVector(R, initialDimension));
-    detail::qrLinearSolveOneStep(0, R, qtb);
+    detail::qrColumnHouseholderStep(0, R, qtb);
 
     Matrix<T> lsq_solution(cols, 1), lars_solution(cols,1), mu(b.shape()); // initially zero
     Matrix<T> next_lsq_solution(cols, 1);
@@ -528,13 +527,16 @@ leastAngleRegression(MultiArrayView<2, T, C1> const & A, MultiArrayView<2, T, C2
     {
         ColumnSet activeSet = columnPermutation.subarray(0, activeSetSize);
         ColumnSet inactiveSet = columnPermutation.subarray(activeSetSize, cols);
+        Subarray lsq_solution_k = lsq_solution.subarray(Shape(0,0), Shape(activeSetSize, 1));
+        Subarray next_lsq_solution_k = next_lsq_solution.subarray(Shape(0,0), Shape(activeSetSize, 1));
+        Subarray lars_solution_k = lars_solution.subarray(Shape(0,0), Shape(activeSetSize, 1));
         
         if(activeSetSize == std::min(rows, cols))
         {
             // cannot have more solutions than the size of the matrix A
             // last solution is then always the LSQ solution
             activeSets[k] = activeSet;
-            solutions[k] = next_lsq_solution.subarray(Shape(0,0), Shape(activeSetSize, 1));
+            solutions[k] = next_lsq_solution_k;
             ++k;
             break;
         }
@@ -566,8 +568,6 @@ leastAngleRegression(MultiArrayView<2, T, C1> const & A, MultiArrayView<2, T, C2
         limitingDimension += activeSetSize; 
         
         // check whether we have to remove a dimension from the active set
-        Subarray lsq_solution_k = lsq_solution.subarray(Shape(0,0), Shape(activeSetSize, 1));
-        Subarray next_lsq_solution_k = next_lsq_solution.subarray(Shape(0,0), Shape(activeSetSize, 1));
         if(options.lasso_modification)
         {
             // find dimensions whose weight changes sign below gamma*searchDirection
@@ -582,10 +582,11 @@ leastAngleRegression(MultiArrayView<2, T, C1> const & A, MultiArrayView<2, T, C2
                 gamma = d(changesSign, 0);
             }
         }
+        
+        gamma = std::min(gamma, T(1.0)); // is this ever necessary ??
 
         // compute and write the current solution
         lsq_solution_k = next_lsq_solution_k;
-        Subarray lars_solution_k = lars_solution.subarray(Shape(0,0), Shape(activeSetSize, 1));
         lars_solution_k = gamma * lsq_solution_k + (1.0 - gamma) * lars_solution_k;
         activeSets[k] = activeSet;
         
@@ -620,7 +621,7 @@ leastAngleRegression(MultiArrayView<2, T, C1> const & A, MultiArrayView<2, T, C2
         {
             std::swap(lsq_solution(activeSetSize,0), lsq_solution(limitingDimension, 0));
             std::swap(lars_solution(activeSetSize,0), lars_solution(limitingDimension, 0));
-            detail::qrLinearSolveSwap(limitingDimension, activeSetSize, R, qtb);
+            detail::upperTriangularSwapColumns(limitingDimension, activeSetSize, R, qtb);
             --activeSetSize;
         }
         else
@@ -628,7 +629,7 @@ leastAngleRegression(MultiArrayView<2, T, C1> const & A, MultiArrayView<2, T, C2
             lsq_solution(activeSetSize,0) = 0.0;
             lars_solution(activeSetSize,0) = 0.0;
             columnVector(R, activeSetSize).swapData(columnVector(R, limitingDimension));
-            bool singular = !detail::qrLinearSolveOneStep(activeSetSize, R, qtb);
+            bool singular = !detail::qrColumnHouseholderStep(activeSetSize, R, qtb);
             if(singular || closeAtTolerance(qtb(activeSetSize,0) / R(activeSetSize, activeSetSize), 0.0))
             {
                 ++k;
