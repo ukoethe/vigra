@@ -224,7 +224,18 @@ public:
     void testNorm ()
     {
         shouldEqual(array3.squaredNorm(), 332833500);
+        
         shouldEqual(array3.norm(), std::sqrt(332833500.0));
+        shouldEqual(array3.norm(0), 999.0);
+        shouldEqual(array3.norm(1), 499500.0);
+        shouldEqualTolerance(array3.norm(2, false), std::sqrt(332833500.0), 1e-14);
+        
+        difference3_type first(0,0,0), last(0,1,1);
+        shouldEqual(array3.subarray(first, last).norm(), 0.0);
+        shouldEqual(array3.subarray(first, last).norm(0), 0.0);
+        shouldEqual(array3.subarray(first, last).norm(1), 0.0);
+        shouldEqual(array3.subarray(first, last).norm(2, false), 0.0);
+
         shouldEqual(array3.squaredNorm(), squaredNorm(array3));
         shouldEqual(array3.norm(), norm(array3));
     }
@@ -272,8 +283,8 @@ public:
             std::string message(c.what());
             should(0 == expected.compare(message.substr(0,expected.size())));
         }
-        array.reset(array3.subarray(Shape(0,0,0), Shape(10,1,1)));
-        array = array3.subarray(Shape(0,1,0), Shape(10,2,1)); // should overwrite the data
+        MultiArrayView <3, scalar_type, UnstridedArrayTag> subarray = array3.subarray(Shape(0,0,0), Shape(10,1,1));
+        subarray = array3.subarray(Shape(0,1,0), Shape(10,2,1)); // should overwrite the data
         for(unsigned int k=0; k<10; ++k)
             shouldEqual(array3(k,0,0), array3(k,1,0));
     }
