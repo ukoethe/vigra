@@ -363,23 +363,77 @@ uninitializedCopyMultiArrayData(SrcIterator s, Shape const & shape, T * & d, ALL
 
 template <class SrcIterator, class Shape, class T>
 void
-squaredNormOfMultiArray(SrcIterator s, Shape const & shape, T & result, MetaInt<0>)
+normMaxOfMultiArray(SrcIterator s, Shape const & shape, T & result, MetaInt<0>)
 {    
     SrcIterator send = s + shape[0];
     for(; s != send; ++s)
     {
-        result += *s * *s;
+        T v = norm(*s);
+        if(result < v)
+            result = v;
     }
 }
 
 template <class SrcIterator, class Shape, class T, int N>
 void
-squaredNormOfMultiArray(SrcIterator s, Shape const & shape, T & result, MetaInt<N>)
+normMaxOfMultiArray(SrcIterator s, Shape const & shape, T & result, MetaInt<N>)
 {    
     SrcIterator send = s + shape[N];
     for(; s != send; ++s)
     {
-        squaredNormOfMultiArray(s.begin(), shape, result, MetaInt<N-1>());
+        normMaxOfMultiArray(s.begin(), shape, result, MetaInt<N-1>());
+    }
+}
+
+template <class T>
+struct MultiArrayL1Functor
+{
+    template <class U>
+    T operator()(U t) const
+    { return norm(t); }
+};
+
+template <class T>
+struct MultiArrayL2Functor
+{
+    template <class U>
+    T operator()(U t) const
+    { return squaredNorm(t); }
+};
+
+template <class T>
+struct MultiArrayScaledL2Functor
+{
+    T scale;
+    
+    MultiArrayScaledL2Functor(T s)
+    : scale(s)
+    {}
+    
+    template <class U>
+    T operator()(U t) const
+    { return squaredNorm(T(t) / scale); }
+};
+
+template <class SrcIterator, class Shape, class Functor, class T>
+void
+sumOverMultiArray(SrcIterator s, Shape const & shape, Functor f, T & result, MetaInt<0>)
+{    
+    SrcIterator send = s + shape[0];
+    for(; s != send; ++s)
+    {
+        result += f(*s);
+    }
+}
+
+template <class SrcIterator, class Shape, class Functor, class T, int N>
+void
+sumOverMultiArray(SrcIterator s, Shape const & shape, Functor f, T & result, MetaInt<N>)
+{    
+    SrcIterator send = s + shape[N];
+    for(; s != send; ++s)
+    {
+        sumOverMultiArray(s.begin(), shape, f, result, MetaInt<N-1>());
     }
 }
 
@@ -621,16 +675,7 @@ public:
         this->copyImpl(rhs);
         return *this;
     }
-                    
-        /** reset the view to point to the same data as the rhs.
-         */
-    void reset(MultiArrayView const & rhs)
-    {
-        m_shape  = rhs.m_shape;
-        m_stride = rhs.m_stride;
-        m_ptr    = rhs.m_ptr;
-    }
-
+ 
         /** array access.
          */
     reference operator[] (const difference_type &d)
@@ -998,23 +1043,31 @@ public:
         return true;
     }
 
-        /** return the squared norm of the array (sum of squares of the array elements).
+        /** Compute the squared Euclidean norm of the array (sum of squares of the array elements).
          */
     typename NormTraits<MultiArrayView>::SquaredNormType squaredNorm() const
     {
         typedef typename NormTraits<MultiArrayView>::SquaredNormType SquaredNormType;
         SquaredNormType res = NumericTraits<SquaredNormType>::zero();  
-        detail::squaredNormOfMultiArray(traverser_begin(), shape(), res, MetaInt<actual_dimension-1>());
+        detail::sumOverMultiArray(traverser_begin(), shape(), detail::MultiArrayL2Functor<SquaredNormType>(), 
+                                  res, MetaInt<actual_dimension-1>());
         return res;
     }
 
-        /** return the norm of the array (equals <tt>sqrt(array.squaredNorm())</tt>).
+        /** Compute various norms of the array.
+            The norm is determined by parameter \a type:
+            
+            <ul>
+            <li> type == 0: maximum norm (L-infinity): maximum of absolute values of the array elements
+            <li> type == 1: Manhattan norm (L1): sum of absolute values of the array elements
+            <li> type == 2: Euclidean norm (L2): square root of <tt>squaredNorm()</tt> when \a useSquaredNorm is <tt>true</tt>,<br>
+                 or direct algorithm that avoids underflow/overflow otherwise.
+            </ul>
+            
+            Parameter \a useSquaredNorm has no effect when \a type != 2. Defaults: compute L2 norm as square root of
+            <tt>squaredNorm()</tt>.
          */
-    typename NormTraits<MultiArrayView>::NormType norm() const
-    {
-        typedef typename NormTraits<MultiArrayView>::SquaredNormType SquaredNormType;
-        return sqrt(static_cast<typename SquareRootTraits<SquaredNormType>::SquareRootArgument>(this->squaredNorm()));
-    }
+    typename NormTraits<MultiArrayView>::NormType norm(int type = 2, bool useSquaredNorm = true) const;
 
         /** return the pointer to the image data
          */
@@ -1304,6 +1357,52 @@ MultiArrayView <N, T, C>::bindAt (int n, int d) const
     return MultiArrayView <N-1, T, StridedArrayTag>
         (shape, stride, m_ptr + d * m_stride[n]);
 }
+
+template <unsigned int N, class T, class C>
+typename NormTraits<MultiArrayView <N, T, C> >::NormType 
+MultiArrayView <N, T, C>::norm(int type, bool useSquaredNorm) const
+{
+    typedef typename NormTraits<MultiArrayView>::NormType NormType;
+    
+    switch(type)
+    {
+      case 0:
+      {
+        NormType res = NumericTraits<NormType>::zero();
+        detail::normMaxOfMultiArray(traverser_begin(), shape(), res, MetaInt<actual_dimension-1>());
+        return res;
+      }
+      case 1:
+      {
+        NormType res = NumericTraits<NormType>::zero();
+        detail::sumOverMultiArray(traverser_begin(), shape(), detail::MultiArrayL1Functor<NormType>(), 
+                                res, MetaInt<actual_dimension-1>());
+        return res;
+      }
+      case 2:
+      {
+        if(useSquaredNorm)
+        {
+            return sqrt((NormType)squaredNorm());
+        }
+        else
+        {
+            NormType normMax = NumericTraits<NormType>::zero();
+            detail::normMaxOfMultiArray(traverser_begin(), shape(), normMax, MetaInt<actual_dimension-1>());
+            if(normMax == NumericTraits<NormType>::zero())
+                return normMax;
+            NormType res  = NumericTraits<NormType>::zero();
+            detail::sumOverMultiArray(traverser_begin(), shape(), detail::MultiArrayScaledL2Functor<NormType>(normMax), 
+                                    res, MetaInt<actual_dimension-1>());
+            return sqrt(res)*normMax;
+        }
+      }
+      default:
+        vigra_precondition(false, "MultiArrayView::norm(): Unknown norm type.");
+        return NumericTraits<NormType>::zero(); // unreachable
+    }
+}
+
 
 /********************************************************/
 /*                                                      */
