@@ -64,8 +64,9 @@ namespace vigra {
         typedef typename iterator::difference_type    difference_type;
         typedef typename iterator::row_iterator       row_iterator;
         typedef typename iterator::column_iterator    column_iterator;
-        typedef StandardAccessor<value_type>          DefaultAccessor;
-        typedef StandardAccessor<value_type>          default_accessor;
+        typedef typename
+         AccessorTraits<value_type>::default_accessor DefaultAccessor;
+        typedef DefaultAccessor                       default_accessor;
 
         typedef VigraTrueType/VigraFalseType          hasConstantStrides;
     };
@@ -94,11 +95,11 @@ namespace vigra {
     
     The member <tt>hasConstantStrides</tt> is useful for certain 
     optimizations: it helps to decide whether we can replace iterator
-    operations such as <tt>iter++</tt> ot <tt>iter =+ n</tt> with
+    operations such as <tt>iter++</tt> or <tt>iter += n</tt> with
     corresponding pointer operations (which may be faster), where
     the pointer is obtained as the address of iterator's pointee 
     (the object the iterator currently  refers to). 
-    This flag would be tt>VigraFalseType</tt> for a
+    This flag would be <tt>VigraFalseType</tt> for a
     <tt>std::list&lt;int&gt;::iterator</tt>, but is <tt>VigraTrueType</tt> 
     for most VIGRA iterators.
 
