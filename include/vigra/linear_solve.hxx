@@ -339,6 +339,7 @@ incrementalMaxSingularValueApproximation(MultiArrayView<2, T, C1> const & newCol
     
     SNType vneu = squaredNorm(newColumn);
     T yv = dot(columnVector(newColumn, Shape(0,0),n), columnVector(z, Shape(0,0),n));
+    // use atan2 as it is robust against overflow/underflow
     double t = 0.5*std::atan2(2.0*yv, sq(v)-vneu),
            s = std::sin(t),
            c = std::cos(t);
@@ -351,26 +352,33 @@ incrementalMaxSingularValueApproximation(MultiArrayView<2, T, C1> const & newCol
 template <class T, class C1, class C2, class SNType>
 void
 incrementalMinSingularValueApproximation(MultiArrayView<2, T, C1> const & newColumn, 
-                                         MultiArrayView<2, T, C2> & z, SNType & v) 
+                                         MultiArrayView<2, T, C2> & z, SNType & v, double tolerance) 
 {
-    if(v == 0.0)  // FIXME: should depend on epsilon
-        return;
     typedef typename Matrix<T>::difference_type Shape;
-    unsigned int n = rowCount(newColumn) - 1;
-    
-    T gamma = newColumn(n,0);
-    if(gamma == 0.0)  // FIXME: should depend on epsilon
+
+    if(v <= tolerance)
     {
         v = 0.0;
         return;
     }
+
+    unsigned int n = rowCount(newColumn) - 1;
+    
+    T gamma = newColumn(n,0);
+    if(gamma == 0.0) 
+    {
+        v = 0.0;
+        return;
+    }
+    
     T yv = dot(columnVector(newColumn, Shape(0,0),n), columnVector(z, Shape(0,0),n));
-    double t = 0.5*std::atan2(-2.0*yv, squaredNorm(gamma / v) + squaredNorm(yv)-1.0),
+    // use atan2 as it is robust against overflow/underflow
+    double t = 0.5*std::atan2(-2.0*yv, squaredNorm(gamma / v) + squaredNorm(yv) - 1.0),
            s = std::sin(t),
            c = std::cos(t);
     columnVector(z, Shape(0,0),n) *= c;
     z(n,0) = (s - c*yv) / gamma;
-    v = std::sqrt(1.0 / (sq(c / v) + squaredNorm(z(n,0))));
+    v *= norm(gamma) / hypot(c*gamma, v*(s - c*yv));
 }
 
 // QR algorithm with optional column pivoting
@@ -467,8 +475,14 @@ qrTransformToUpperTriangular(MultiArrayView<2, T, C1> r, MultiArrayView<2, T, C2
         else
         {
             incrementalMaxSingularValueApproximation(columnVector(r, Shape(0,k),k+1), zmax, maxApproxSingularValue);
-            incrementalMinSingularValueApproximation(columnVector(r, Shape(0,k),k+1), zmin, minApproxSingularValue);
+            incrementalMinSingularValueApproximation(columnVector(r, Shape(0,k),k+1), zmin, minApproxSingularValue, tolerance);
         }
+        
+#if 0
+	    Matrix<T> u(k+1,k+1), s(k+1, 1), v(k+1,k+1);
+        singularValueDecomposition(r.subarray(Shape(0,0), Shape(k+1,k+1)), u, s, v);
+        std::cerr << "estimate, svd " << k << ": " << minApproxSingularValue << " " << s(k,0) << "\n";
+#endif
         
         if(epsilon == 0.0)
             tolerance = m*maxApproxSingularValue*NumericTraits<T>::epsilon();
@@ -586,7 +600,7 @@ qrTransformToLowerTriangular(MultiArrayView<2, T, C1> r, MultiArrayView<2, T, C2
         else
         {
             incrementalMaxSingularValueApproximation(transpose(rowVector(r, Shape(k,0),k+1)), zmax, maxApproxSingularValue);
-            incrementalMinSingularValueApproximation(transpose(rowVector(r, Shape(k,0),k+1)), zmin, minApproxSingularValue);
+            incrementalMinSingularValueApproximation(transpose(rowVector(r, Shape(k,0),k+1)), zmin, minApproxSingularValue, tolerance);
         }
 
         if(epsilon == 0.0)
