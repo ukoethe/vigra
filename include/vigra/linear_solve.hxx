@@ -328,11 +328,56 @@ upperTriangularSwapColumns(unsigned int i, unsigned int j, MultiArrayView<2, T, 
     }
 }
 
+// O(n) algorithm due to Bischof: Incremental Condition Estimation, 1990
+template <class T, class C1, class C2, class SNType>
+void
+incrementalMaxSingularValueApproximation(MultiArrayView<2, T, C1> const & newColumn, 
+                                         MultiArrayView<2, T, C2> & z, SNType & v) 
+{
+    typedef typename Matrix<T>::difference_type Shape;
+    unsigned int n = rowCount(newColumn) - 1;
+    
+    SNType vneu = squaredNorm(newColumn);
+    T yv = dot(columnVector(newColumn, Shape(0,0),n), columnVector(z, Shape(0,0),n));
+    double t = 0.5*std::atan2(2.0*yv, sq(v)-vneu),
+           s = std::sin(t),
+           c = std::cos(t);
+    v = std::sqrt(sq(c*v) + sq(s)*vneu + 2.0*s*c*yv);
+    columnVector(z, Shape(0,0),n) = c*columnVector(z, Shape(0,0),n) + s*columnVector(newColumn, Shape(0,0),n);
+    z(n,0) = s*newColumn(n,0);
+}
+
+// O(n) algorithm due to Bischof: Incremental Condition Estimation, 1990
+template <class T, class C1, class C2, class SNType>
+void
+incrementalMinSingularValueApproximation(MultiArrayView<2, T, C1> const & newColumn, 
+                                         MultiArrayView<2, T, C2> & z, SNType & v) 
+{
+    if(v == 0.0)  // FIXME: should depend on epsilon
+        return;
+    typedef typename Matrix<T>::difference_type Shape;
+    unsigned int n = rowCount(newColumn) - 1;
+    
+    T gamma = newColumn(n,0);
+    if(gamma == 0.0)  // FIXME: should depend on epsilon
+    {
+        v = 0.0;
+        return;
+    }
+    T yv = dot(columnVector(newColumn, Shape(0,0),n), columnVector(z, Shape(0,0),n));
+    double t = 0.5*std::atan2(-2.0*yv, squaredNorm(gamma / v) + squaredNorm(yv)-1.0),
+           s = std::sin(t),
+           c = std::cos(t);
+    columnVector(z, Shape(0,0),n) *= c;
+    z(n,0) = (s - c*yv) / gamma;
+    v = std::sqrt(1.0 / (sq(c / v) + squaredNorm(z(n,0))));
+}
+
 // QR algorithm with optional column pivoting
 template <class T, class C1, class C2>
 unsigned int 
 qrTransformToUpperTriangular(MultiArrayView<2, T, C1> r, MultiArrayView<2, T, C2> qtb, 
-                      ArrayVector<unsigned int> & permutation, double epsilon = 2.0*NumericTraits<T>::epsilon())
+                      ArrayVector<unsigned int> & permutation, double epsilon = 0.0)
 {
     typedef typename Matrix<T>::difference_type Shape;
     typedef typename NormTraits<MultiArrayView<2, T, C1> >::NormType NormType;
@@ -372,16 +417,29 @@ qrTransformToUpperTriangular(MultiArrayView<2, T, C1> r, MultiArrayView<2, T, C2
     
     qrColumnHouseholderStep(0, r, qtb);
     
-    double epsilon1 = 1.0 + epsilon;
     unsigned int rank = 1;
-    NormType maxDiagonal = norm(r(0,0)),
-             minDiagonal = maxDiagonal;
+    NormType maxApproxSingularValue = norm(r(0,0)),
+             minApproxSingularValue = maxApproxSingularValue;
     
-    if(minDiagonal == 0.0)
+    double tolerance = (epsilon == 0.0)
+                          ? m*maxApproxSingularValue*NumericTraits<T>::epsilon()
+                          : epsilon;
+    
+    bool simpleSingularValueApproximation = (n < 4);
+    Matrix<T> zmax, zmin;
+    if(minApproxSingularValue <= tolerance)
     {
         rank = 0;
         pivoting = false;
-    } 
+        simpleSingularValueApproximation = true;
+    }
+    if(!simpleSingularValueApproximation)
+    {
+        zmax.reshape(Shape(m,1));
+        zmin.reshape(Shape(m,1));
+        zmax(0,0) = r(0,0);
+        zmin(0,0) = 1.0 / r(0,0);
+    }
 
     for(unsigned int k=1; k<n; ++k)
     {
@@ -400,12 +458,22 @@ qrTransformToUpperTriangular(MultiArrayView<2, T, C1> r, MultiArrayView<2, T, C2
         
         qrColumnHouseholderStep(k, r, qtb);
 
-        NormType v = norm(r(k,k));        
-        maxDiagonal = std::max(v, maxDiagonal);
-        minDiagonal = std::min(v, minDiagonal);
+        if(simpleSingularValueApproximation)
+        {
+            NormType nv = norm(r(k,k));        
+            maxApproxSingularValue = std::max(nv, maxApproxSingularValue);
+            minApproxSingularValue = std::min(nv, minApproxSingularValue);
+        }
+        else
+        {
+            incrementalMaxSingularValueApproximation(columnVector(r, Shape(0,k),k+1), zmax, maxApproxSingularValue);
+            incrementalMinSingularValueApproximation(columnVector(r, Shape(0,k),k+1), zmin, minApproxSingularValue);
+        }
+        
+        if(epsilon == 0.0)
+            tolerance = m*maxApproxSingularValue*NumericTraits<T>::epsilon();
 
-        // condition derived from error minimization formula in Golub & van Loan, p. ???
-        if(minDiagonal != 0.0 && epsilon * (1.0 + maxDiagonal / minDiagonal * epsilon1) < 1.0)
+        if(minApproxSingularValue > tolerance)
             ++rank;
         else
             pivoting = false; // matrix doesn't have full rank, triangulize the rest without pivoting
@@ -417,7 +485,7 @@ qrTransformToUpperTriangular(MultiArrayView<2, T, C1> r, MultiArrayView<2, T, C2
 template <class T, class C1, class C2>
 inline bool
 qrTransformToUpperTriangular(MultiArrayView<2, T, C1> r, MultiArrayView<2, T, C2> qtb, 
-                      double epsilon = 2.0*NumericTraits<T>::epsilon())
+                      double epsilon = 0.0)
 {
     ArrayVector<unsigned int> noPivoting;
     
@@ -428,7 +496,7 @@ qrTransformToUpperTriangular(MultiArrayView<2, T, C1> r, MultiArrayView<2, T, C2
 template <class T, class C1, class C2, class C3>
 unsigned int 
 qrTransformToLowerTriangular(MultiArrayView<2, T, C1> r, MultiArrayView<2, T, C2> b, MultiArrayView<2, T, C3> householderMatrix, 
-                      double epsilon = 2.0*NumericTraits<T>::epsilon())
+                      double epsilon = 0.0)
 {
     typedef typename Matrix<T>::difference_type Shape;
     typedef typename NormTraits<MultiArrayView<2, T, C1> >::NormType NormType;
@@ -468,16 +536,29 @@ qrTransformToLowerTriangular(MultiArrayView<2, T, C1> r, MultiArrayView<2, T, C2
     
     qrRowHouseholderStep(0, r, householderMatrix);
     
-    double epsilon1 = 1.0 + epsilon;
     unsigned int rank = 1;
-    NormType maxDiagonal = norm(r(0,0)),
-             minDiagonal = maxDiagonal;
+    NormType maxApproxSingularValue = norm(r(0,0)),
+             minApproxSingularValue = maxApproxSingularValue;
     
-    if(minDiagonal == 0.0)
+    double tolerance = (epsilon == 0.0)
+                          ? n*maxApproxSingularValue*NumericTraits<T>::epsilon()
+                          : epsilon;
+    
+    bool simpleSingularValueApproximation = (n < 4);
+    Matrix<T> zmax, zmin;
+    if(minApproxSingularValue <= tolerance)
     {
         rank = 0;
         pivoting = false;
-    } 
+        simpleSingularValueApproximation = true;
+    }
+    if(!simpleSingularValueApproximation)
+    {
+        zmax.reshape(Shape(m,1));
+        zmin.reshape(Shape(m,1));
+        zmax(0,0) = r(0,0);
+        zmin(0,0) = 1.0 / r(0,0);
+    }
 
     for(unsigned int k=1; k<m; ++k)
     {
@@ -496,12 +577,22 @@ qrTransformToLowerTriangular(MultiArrayView<2, T, C1> r, MultiArrayView<2, T, C2
         
         qrColumnHouseholderStep(k, r, householderMatrix);
 
-        NormType v = norm(r(k,k));
-        maxDiagonal = std::max(v, maxDiagonal);
-        minDiagonal = std::min(v, minDiagonal);
+        if(simpleSingularValueApproximation)
+        {
+            NormType nv = norm(r(k,k));        
+            maxApproxSingularValue = std::max(nv, maxApproxSingularValue);
+            minApproxSingularValue = std::min(nv, minApproxSingularValue);
+        }
+        else
+        {
+            incrementalMaxSingularValueApproximation(transpose(rowVector(r, Shape(k,0),k+1)), zmax, maxApproxSingularValue);
+            incrementalMinSingularValueApproximation(transpose(rowVector(r, Shape(k,0),k+1)), zmin, minApproxSingularValue);
+        }
 
-        // condition derived from error minimization formula in Golub & van Loan, p. ???
-        if(minDiagonal != 0.0 && epsilon * (1.0 + maxDiagonal / minDiagonal * epsilon1) < 1.0)
+        if(epsilon == 0.0)
+            tolerance = n*maxApproxSingularValue*NumericTraits<T>::epsilon();
+
+        if(minApproxSingularValue > tolerance)
             ++rank;
         else
             pivoting = false; // matrix doesn't have full rank, triangulize the rest without pivoting
@@ -513,7 +604,7 @@ qrTransformToLowerTriangular(MultiArrayView<2, T, C1> r, MultiArrayView<2, T, C2
 template <class T, class C1, class C2>
 inline bool
 qrTransformToLowerTriangular(MultiArrayView<2, T, C1> r, MultiArrayView<2, T, C2> householder, 
-                      double epsilon = 2.0*NumericTraits<T>::epsilon())
+                      double epsilon = 0.0)
 {
     Matrix<T> noPivoting;
     
@@ -557,7 +648,7 @@ template <class T, class C1, class C2, class C3>
 unsigned int 
 linearSolveQRInplace(MultiArrayView<2, T, C1> &A, MultiArrayView<2, T, C2> &b,
                      MultiArrayView<2, T, C3> & res, 
-                     double epsilon = 2.0*NumericTraits<T>::epsilon())
+                     double epsilon = 0.0)
 {
     typedef typename Matrix<T>::difference_type Shape;
 
@@ -572,12 +663,12 @@ linearSolveQRInplace(MultiArrayView<2, T, C1> &A, MultiArrayView<2, T, C2> &b,
            "linearSolveQR(): Coefficient matrix and RHS must have the same number of rows.");
     vigra_precondition(n == rowCount(res),
            "linearSolveQR(): Mismatch between column count of coefficient matrix and row count of solution.");
-    vigra_precondition(epsilon > 0.0,
-           "linearSolveQR(): 'epsilon' must be positive.");
+    vigra_precondition(epsilon >= 0.0,
+           "linearSolveQR(): 'epsilon' must be non-negative.");
     
     if(m < n)
     {
-        // minimum norm solution
+        // minimum norm solution of under-determined system
         Matrix<T> householderMatrix(n, m);
         rank = detail::qrTransformToLowerTriangular(A, b, transpose(householderMatrix), epsilon);
         
@@ -599,6 +690,8 @@ linearSolveQRInplace(MultiArrayView<2, T, C1> &A, MultiArrayView<2, T, C2> &b,
         Matrix<T> permutedSolution(n, rhsCount);
         if(rank < n)
         {
+            // compute minimum norm solution by means of the under determined system 
+            // defined by the first 'rank' rows of the problem
             Matrix<T> householderMatrix(n, rank);
             detail::qrTransformToLowerTriangular(A.subarray(Shape(0,0), Shape(rank,n)), 
                                                  transpose(householderMatrix), epsilon);
@@ -877,7 +970,7 @@ bool choleskyDecomposition(MultiArrayView<2, T, C1> const & A,
 template <class T, class C1, class C2, class C3>
 bool qrDecomposition(MultiArrayView<2, T, C1> const & a,
                      MultiArrayView<2, T, C2> &q, MultiArrayView<2, T, C3> &r,
-                     double epsilon = 2.0*NumericTraits<T>::epsilon())
+                     double epsilon = 0.0)
 {
     const unsigned int m = rowCount(a);
     const unsigned int n = columnCount(a);
