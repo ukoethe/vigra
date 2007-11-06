@@ -399,6 +399,7 @@ qrTransformToTriangularImpl(MultiArrayView<2, T, C1> & r, MultiArrayView<2, T, C
     
     const unsigned int m = rowCount(r);
     const unsigned int n = columnCount(r);
+    const unsigned int maxRank = std::min(m, n);
     
     vigra_precondition(m >= n,
         "qrTransformToTriangularImpl(): Coefficient matrix with at least as many rows as columns required.");
@@ -461,7 +462,7 @@ qrTransformToTriangularImpl(MultiArrayView<2, T, C1> & r, MultiArrayView<2, T, C
         zmin(0,0) = 1.0 / r(0,0);
     }
 
-    for(unsigned int k=1; k<n; ++k)
+    for(unsigned int k=1; k<maxRank; ++k)
     {
         if(pivoting)
         {
@@ -519,7 +520,7 @@ qrTransformToUpperTriangular(MultiArrayView<2, T, C1> & r, MultiArrayView<2, T, 
 // QR algorithm with optional row pivoting
 template <class T, class C1, class C2, class C3>
 unsigned int 
-qrTransformToLowerTriangular(MultiArrayView<2, T, C1> r, MultiArrayView<2, T, C2> rhs, MultiArrayView<2, T, C3> householderMatrix, 
+qrTransformToLowerTriangular(MultiArrayView<2, T, C1> & r, MultiArrayView<2, T, C2> & rhs, MultiArrayView<2, T, C3> & householderMatrix, 
                       double epsilon = 0.0)
 {
     ArrayVector<unsigned int> permutation(rowCount(rhs));
@@ -584,7 +585,7 @@ void applyHouseholderColumnReflections(MultiArrayView<2, T, C1> const &A,
         T f = A(k,k)*u(0,0);
         if(f != 0.0)
         {
-            for(unsigned int l=k; l<rhsCount; ++l)
+            for(unsigned int l=0; l<rhsCount; ++l)
                 columnVector(res, Shape(k,l), n) += (dot(columnVector(res, Shape(k,l), n), u) / f) * u;
         }
     }
@@ -594,7 +595,7 @@ void applyHouseholderColumnReflections(MultiArrayView<2, T, C1> const &A,
 
 template <class T, class C1, class C2, class C3>
 unsigned int 
-linearSolveQRInplace(MultiArrayView<2, T, C1> &A, MultiArrayView<2, T, C2> &b,
+linearSolveQRReplace(MultiArrayView<2, T, C1> &A, MultiArrayView<2, T, C2> &b,
                      MultiArrayView<2, T, C3> & res, 
                      double epsilon = 0.0)
 {
@@ -616,20 +617,35 @@ linearSolveQRInplace(MultiArrayView<2, T, C1> &A, MultiArrayView<2, T, C2> &b,
     
     if(m < n)
     {
-        // minimum norm solution of under-determined system
+        // minimum norm solution of underdetermined system
         Matrix<T> householderMatrix(n, m);
         MultiArrayView<2, T, StridedArrayTag> ht = transpose(householderMatrix);
         rank = detail::qrTransformToLowerTriangular(A, b, ht, epsilon);
-        
         res.subarray(Shape(rank,0), Shape(n, rhsCount)).init(NumericTraits<T>::zero());
-        linearSolveLowerTriangular(A.subarray(Shape(0,0), Shape(rank,rank)), 
-                                   b.subarray(Shape(0,0), Shape(rank, rhsCount)), 
-                                   res.subarray(Shape(0,0), Shape(rank, rhsCount)));
+
+        if(rank < m)
+        {
+            // system is also rank-deficient => compute minimum norm least squares solution
+            Matrix<T> AA = A.subarray(Shape(0,0), Shape(m,rank)); // A is still needed for householder reflection of res
+            MultiArrayView<2, T, C2> bsub = b.subarray(Shape(0,0), Shape(m, rhsCount));
+            detail::qrTransformToUpperTriangular(AA, bsub, epsilon);
+            linearSolveUpperTriangular(AA.subarray(Shape(0,0), Shape(rank,rank)), 
+                                       b.subarray(Shape(0,0), Shape(rank,rhsCount)), 
+                                       res.subarray(Shape(0,0), Shape(rank, rhsCount)));
+        }
+        else
+        {
+            // system has full rank => compute minimum norm solution
+            linearSolveLowerTriangular(A.subarray(Shape(0,0), Shape(rank,rank)), 
+                                       b.subarray(Shape(0,0), Shape(rank, rhsCount)), 
+                                       res.subarray(Shape(0,0), Shape(rank, rhsCount)));
+        }
         detail::applyHouseholderColumnReflections(A, 
                     householderMatrix.subarray(Shape(0,0), Shape(n, rank)), res);
     }
     else
     {
+        // solution of well-determined or overdetermined system
         ArrayVector<unsigned int> permutation(n);
         for(unsigned int k=0; k<n; ++k)
             permutation[k] = k;
@@ -639,8 +655,7 @@ linearSolveQRInplace(MultiArrayView<2, T, C1> &A, MultiArrayView<2, T, C2> &b,
         Matrix<T> permutedSolution(n, rhsCount);
         if(rank < n)
         {
-            // compute minimum norm solution of the under-determined system 
-            // defined by the first 'rank' rows of the problem
+            // system is rank-deficient => compute minimum norm solution
             Matrix<T> householderMatrix(n, rank);
             MultiArrayView<2, T, StridedArrayTag> ht = transpose(householderMatrix);
             MultiArrayView<2, T, C1> Asub = A.subarray(Shape(0,0), Shape(rank,n));
@@ -652,8 +667,9 @@ linearSolveQRInplace(MultiArrayView<2, T, C1> &A, MultiArrayView<2, T, C2> &b,
         }
         else
         {
+            // system has full rank => compute exact or least squares solution
             linearSolveUpperTriangular(A.subarray(Shape(0,0), Shape(rank,rank)), 
-                                       b.subarray(Shape(0,0), Shape(rank,columnCount(res))), 
+                                       b.subarray(Shape(0,0), Shape(rank,rhsCount)), 
                                        permutedSolution);
         }
         detail::inverseRowPermutation(permutedSolution, res, permutation);
@@ -666,7 +682,7 @@ unsigned int linearSolveQR(MultiArrayView<2, T, C1> const & A, MultiArrayView<2,
                                   MultiArrayView<2, T, C3> & res)
 {
     Matrix<T> r(A), rhs(b);
-    return linearSolveQRInplace(r, rhs, res);
+    return linearSolveQRReplace(r, rhs, res);
 }
 
 /** \addtogroup LinearAlgebraFunctions Matrix functions
