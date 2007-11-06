@@ -1200,7 +1200,10 @@ struct LinalgTest
             ax = c * x;
             shouldEqualSequenceTolerance(ax.data(), ax.data()+size, b.data(), epsilon);
         }
-        
+    }
+    
+    void testUnderdetermined()
+    {   
         // test singular matrix
         Matrix a = vigra::identityMatrix<Matrix::value_type> (size);
         a(0,0) = 0; 
@@ -1209,6 +1212,58 @@ struct LinalgTest
         should(!linearSolve (a, b, x, "Cholesky"));
         should(!linearSolve (a, b, x, "QR"));
         should(!linearSolve (a, b, x, "SVD"));
+    }
+
+    void testOverdetermined()
+    {   
+        double epsilon = 1e-12;
+        
+        unsigned int n = 5;
+        unsigned int size = 1000;
+        double noiseStdDev = 0.1;
+        
+        Matrix A(size, n), xs(n,1), xq(n,1), xn(n,1), r(size, 1);
+        Matrix mean(1,1), stdDev(1, 1);
+
+        for(unsigned int iter=0; iter<iterations; ++iter)
+        {
+            Matrix weights = random_matrix (n, 1);
+            Matrix v = random_matrix (size, 1);
+            
+            // init rhs with Gaussian noise with zero mean and noiseStdDev
+            Matrix rhs = 0.5*noiseStdDev*random_matrix (size, 1);
+            for(unsigned int k=1; k<12; ++k)
+                rhs += 0.5*noiseStdDev*random_matrix (size, 1);
+
+            for(unsigned int k=0; k<size; ++k)
+            {
+                for(unsigned int l=0; l<n; ++l)
+                {
+                    A(k,l) = std::pow(v(k,0), double(l));
+                    rhs(k,0) += weights(l,0)*A(k,l);
+                }
+            }       
+            shouldEqual(linearSolve(A, rhs, xs, "SVD"), true);
+            columnStatistics(A*xs-rhs, mean, stdDev);
+            
+            shouldEqualTolerance(mean(0,0), 0, 1e-12);
+            shouldEqualTolerance(stdDev(0,0), noiseStdDev, 0.2);
+
+            shouldEqual(linearSolveQR(A, rhs, xq), n);
+            columnStatistics(A*xq-rhs, mean, stdDev);
+
+            shouldEqualTolerance(mean(0,0), 0, 1e-12);
+            shouldEqualTolerance(stdDev(0,0), noiseStdDev, 0.2);
+
+            shouldEqual(linearSolve(A, rhs, xn, "ne"), true);
+            columnStatistics(A*xn-rhs, mean, stdDev);
+            
+            shouldEqualTolerance(mean(0,0), 0, 1e-12);
+            shouldEqualTolerance(stdDev(0,0), noiseStdDev, 0.2);
+            
+            shouldEqualSequenceTolerance(xs.data(), xs.data()+n, xq.data(), epsilon);
+            shouldEqualSequenceTolerance(xs.data(), xs.data()+n, xn.data(), epsilon);
+        }
     }
 
     void testIncrementalLinearSolve()
@@ -1229,47 +1284,53 @@ struct LinalgTest
             should(linearSolve(a, b, x, "QR"));
             
             {
-                Matrix r(a), qtb(b), rx(x), xx(x);
+                Matrix r(a), qtb(b), px(size,1), xx(size,1);
+                vigra::ArrayVector<unsigned int> permutation(size);
                 
                 for(int k=0; k<size; ++k)
                 {
-                    should(vigra::linalg::detail::qrColumnHouseholderStep(k, r, qtb));
+                    // use Givens steps for a change (Householder steps like
+                    //    should(vigra::linalg::detail::qrColumnHouseholderStep(k, r, qtb));
+                    // work as well, but are already extensively tested within the QR algorithm)
+                    should(vigra::linalg::detail::qrGivensStepImpl(k, r, qtb));
+                    permutation[k] = k;
                 }
                 
-                for(int k=0; false && k<size; ++k)
+                for(int k=0; k<size; ++k)
                 {
                     int i = rand() % size, j = rand() % size;
                     if(i==j) continue;
-                    if(i > j) std::swap(i,j);
                     
-                    vigra::linalg::detail::upperTriangularCyclicShiftColumns(i, j, r, qtb);
-                    double t = rx[i];
-                    for(int l=i; l<j;++l)
-                        rx[l] = rx[l+1];
-                    rx[j] = t;   
+                    vigra::linalg::detail::upperTriangularCyclicShiftColumns(i, j, r, qtb, permutation);
                 }
-                should(vigra::linalg::linearSolveUpperTriangular(r, qtb, xx));
-                
-                shouldEqualSequenceTolerance(rx.data(), rx.data()+size, xx.data(), epsilon);
+                should(vigra::linalg::linearSolveUpperTriangular(r, qtb, px));
+                vigra::linalg::detail::inverseRowPermutation(px, xx, permutation);
+
+                shouldEqualSequenceTolerance(x.data(), x.data()+size, xx.data(), epsilon);
             }
 
             {
-                Matrix r(a), qtb(b), rx(x), xx(x);
+                Matrix r(a), qtb(b), px(size,1), xx(size,1);
+                vigra::ArrayVector<unsigned int> permutation(size);
                 
                 for(int k=0; k<size; ++k)
                 {
-                    should(vigra::linalg::detail::qrColumnHouseholderStep(k, r, qtb));
+                    // use Givens steps for a change (Householder steps like
+                    //    should(vigra::linalg::detail::qrColumnHouseholderStep(k, r, qtb));
+                    // work as well, but are already extensively tested within the QR algorithm)
+                    should(vigra::linalg::detail::qrGivensStepImpl(k, r, qtb));
+                    permutation[k] = k;
                 }
                 
                 for(int k=0; k<size; ++k)
                 {
                     int i = rand() % size, j = rand() % size;
-                    vigra::linalg::detail::upperTriangularSwapColumns(i, j, r, qtb);
-                    std::swap(rx[i], rx[j]);
+                    vigra::linalg::detail::upperTriangularSwapColumns(i, j, r, qtb, permutation);
                 }
-                should(vigra::linalg::linearSolveUpperTriangular(r, qtb, xx));
-                   
-                shouldEqualSequenceTolerance(rx.data(), rx.data()+size, xx.data(), epsilon);
+                should(vigra::linalg::linearSolveUpperTriangular(r, qtb, px));
+                vigra::linalg::detail::inverseRowPermutation(px, xx, permutation);
+   
+                shouldEqualSequenceTolerance(x.data(), x.data()+size, xx.data(), epsilon);
             }
         }
     }
@@ -1472,6 +1533,8 @@ struct MathTestSuite
         add( testCase(&LinalgTest::testCholesky));
         add( testCase(&LinalgTest::testQR));
         add( testCase(&LinalgTest::testLinearSolve));
+        add( testCase(&LinalgTest::testUnderdetermined));
+        add( testCase(&LinalgTest::testOverdetermined));
         add( testCase(&LinalgTest::testIncrementalLinearSolve));
         add( testCase(&LinalgTest::testInverse));
         add( testCase(&LinalgTest::testSymmetricEigensystem));
