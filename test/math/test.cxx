@@ -1179,12 +1179,8 @@ struct LinalgTest
             Matrix b = random_matrix (size, 1);
             Matrix x(size, 1);
 
-            should(linearSolve (a, b, x, "ExplicitQR"));
+            should(linearSolve (a, b, x, "QR"));
             Matrix ax = a * x;
-            shouldEqualSequenceTolerance(ax.data(), ax.data()+size, b.data(), epsilon);
-
-            should(linearSolve(a, b, x, "QR"));
-            ax = a * x;
             shouldEqualSequenceTolerance(ax.data(), ax.data()+size, b.data(), epsilon);
 
             should(linearSolve(a, b, x, "SVD"));
