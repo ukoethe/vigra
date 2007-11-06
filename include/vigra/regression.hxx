@@ -616,19 +616,27 @@ leastAngleRegression(MultiArrayView<2, T, C1> const & A, MultiArrayView<2, T, C2
         }
 
         // update the active set and its QR factorization
-        std::swap(columnPermutation[activeSetSize], columnPermutation[limitingDimension]);
         if(limitingDimension < activeSetSize)
         {
+            // remove column 'limitingDimension' and restore triangular from of R
+            detail::upperTriangularCyclicShiftColumns(limitingDimension, activeSetSize, R, qtb, columnPermutation);
+
+            // remove entry 'limitingDimension' from solution
             std::swap(lsq_solution(activeSetSize,0), lsq_solution(limitingDimension, 0));
             std::swap(lars_solution(activeSetSize,0), lars_solution(limitingDimension, 0));
-            detail::upperTriangularSwapColumns(limitingDimension, activeSetSize, R, qtb);
             --activeSetSize;
         }
         else
         {
-            lsq_solution(activeSetSize,0) = 0.0;
-            lars_solution(activeSetSize,0) = 0.0;
+            // add column 'limitingDimension'
+            std::swap(columnPermutation[activeSetSize], columnPermutation[limitingDimension]);
             columnVector(R, activeSetSize).swapData(columnVector(R, limitingDimension));
+
+            // zero the corresponding entry of the solution
+            lsq_solution(activeSetSize,0) = 0.0;
+            lars_solution(activeSetSize,0) = 0.0;            
+            
+            // reduce R (i.e. its newly added column) to triangular form
             bool singular = !detail::qrColumnHouseholderStep(activeSetSize, R, qtb);
             if(singular || closeAtTolerance(qtb(activeSetSize,0) / R(activeSetSize, activeSetSize), 0.0))
             {
@@ -642,7 +650,7 @@ leastAngleRegression(MultiArrayView<2, T, C1> const & A, MultiArrayView<2, T, C2
         Subarray Ractive = R.subarray(Shape(0,0), Shape(activeSetSize, activeSetSize));
         Subarray qtbactive = qtb.subarray(Shape(0,0), Shape(activeSetSize, 1));
         Subarray next_lsq_solution_k1 = next_lsq_solution.subarray(Shape(0,0), Shape(activeSetSize, 1));
-        reverseElimination(Ractive, qtbactive, next_lsq_solution_k1);
+        linearSolveUpperTriangular(Ractive, qtbactive, next_lsq_solution_k1);
         
         // compute new search direction
         mu += gamma*searchVector;
