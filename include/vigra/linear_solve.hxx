@@ -627,8 +627,7 @@ linearSolveQRReplace(MultiArrayView<2, T, C1> &A, MultiArrayView<2, T, C2> &b,
         {
             // system is also rank-deficient => compute minimum norm least squares solution
             Matrix<T> AA = A.subarray(Shape(0,0), Shape(m,rank)); // A is still needed for householder reflection of res
-            MultiArrayView<2, T, C2> bsub = b.subarray(Shape(0,0), Shape(m, rhsCount));
-            detail::qrTransformToUpperTriangular(AA, bsub, epsilon);
+            detail::qrTransformToUpperTriangular(AA, b, epsilon);
             linearSolveUpperTriangular(AA.subarray(Shape(0,0), Shape(rank,rank)), 
                                        b.subarray(Shape(0,0), Shape(rank,rhsCount)), 
                                        res.subarray(Shape(0,0), Shape(rank, rhsCount)));
@@ -1140,13 +1139,6 @@ bool linearSolve(const MultiArrayView<2, T, C1> &A, const MultiArrayView<2, T, C
         linearSolveLowerTriangular(L, b, res);
         linearSolveUpperTriangular(transpose(L), res, res);
     }
-    else if(method == "explicitqr")
-    {
-        Matrix<T> q(A.shape()), r(columnCount(A), columnCount(A));
-        if(!qrDecomposition(A, q, r))
-            return false; // A didn't have full rank
-        linearSolveUpperTriangular(r, transpose(q) * b, res);
-    }
     else if(method == "qr")
     {
         return linearSolveQR(A, b, res) == n;
@@ -1163,14 +1155,18 @@ bool linearSolve(const MultiArrayView<2, T, C1> &A, const MultiArrayView<2, T, C
 	    Matrix<T> u(A.shape()), s(n, 1), v(n, n);
 
         unsigned int rank = singularValueDecomposition(A, u, s, v);
-        if(rank < n)
-            return false; // A didn't have full rank
 
         Matrix<T> t = transpose(u)*b;
-        for(unsigned int k=0; k<n; ++k)
-            for(unsigned int l=0; l<rhsCount; ++l)
+        for(unsigned int l=0; l<rhsCount; ++l)
+        {
+            for(unsigned int k=0; k<rank; ++k)
                 t(k,l) /= s(k,0);
+            for(unsigned int k=rank; k<n; ++k)
+                t(k,l) = NumericTraits<T>::zero();
+        }
         res = v*t;
+
+        return (rank == n);
     }
     else
     {
