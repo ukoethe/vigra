@@ -1212,6 +1212,59 @@ struct LinalgTest
         should(!linearSolve (a, b, x, "Cholesky"));
         should(!linearSolve (a, b, x, "QR"));
         should(!linearSolve (a, b, x, "SVD"));
+        
+        {
+            // square, rank-deficient system (compute minimum norm solution)
+            double mdata[] = {1.0,  3.0,  7.0,
+                             -1.0,  4.0,  4.0,
+                              1.0, 10.0, 18.0};
+            double rhsdata[] = { 5.0, 2.0, 12.0};
+            double refdata[] = { 0.3850, -0.1103, 0.7066 };
+            
+            Matrix m(3,3,mdata), rhs(3,1,rhsdata), xx(3,1);
+            
+            shouldEqual(linearSolveQR(m, rhs, xx), 2);
+            shouldEqualSequenceTolerance(refdata, refdata+3, xx.data(), 1e-3);
+        }
+        {
+            // underdetermined, full-rank system (compute minimum norm solution)
+            double mdata[] = {2.0, -3.0, 1.0, -6.0,
+                              4.0,  1.0, 2.0,  9.0,
+                              3.0,  1.0, 1.0,  8.0};
+            double rhsdata[] = { -7.0, -7.0, -8.0};
+            double refdata[] = { -3.26666666666667, 3.6, 5.13333333333333, -0.86666666666667 };
+            
+            Matrix m(3,4,mdata), rhs(3,1,rhsdata), xx(4,1);
+            
+            shouldEqual(linearSolveQR(m, rhs, xx), 3);
+            shouldEqualSequenceTolerance(refdata, refdata+4, xx.data(), 1e-12);
+        }
+        {
+            // underdetermined, rank-deficient, consistent system (compute minimum norm solution)
+            double mdata[] = {1.0,  3.0, 3.0, 2.0,
+                              2.0,  6.0, 9.0, 5.0,
+                             -1.0, -3.0, 3.0, 0.0};
+            double rhsdata[] = { 1.0, 5.0, 5.0};
+            double refdata[] = { -0.211009, -0.633027, 0.963303, 0.110092 };
+            
+            Matrix m(3,4,mdata), rhs(3,1,rhsdata), xx(4,1);
+            
+            shouldEqual(linearSolveQR(m, rhs, xx), 2);
+            shouldEqualSequenceTolerance(refdata, refdata+4, xx.data(), 1e-5);
+        }
+        {
+            // underdetermined, rank-deficient, inconsistent system (compute minimum norm least squares solution)
+            double mdata[] = {2.0, 1.0,  7.0, -7.0,
+                             -3.0, 4.0, -5.0, -6.0,
+                              1.0, 1.0,  4.0, -5.0};
+            double rhsdata[] = { 2.0, 3.0, 2.0};
+            double refdata[] = { -0.0627, 0.1561, -0.0321, -0.3427 };
+            
+            Matrix m(3,4,mdata), rhs(3,1,rhsdata), xx(4,1);
+            
+            shouldEqual(linearSolveQR(m, rhs, xx), 2);
+            shouldEqualSequenceTolerance(refdata, refdata+4, xx.data(), 1e-3);
+        }
     }
 
     void testOverdetermined()
