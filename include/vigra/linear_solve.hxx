@@ -273,13 +273,25 @@ upperTriangularSwapColumns(unsigned int i, unsigned int j,
 
 // see Lawson & Hanson: Algorithm H1 (p. 57)
 template <class T, class C1, class C2, class U>
-void householderVector(MultiArrayView<2, T, C1> const & v, MultiArrayView<2, T, C2> & u, U & vnorm)
+bool householderVector(MultiArrayView<2, T, C1> const & v, MultiArrayView<2, T, C2> & u, U & vnorm)
 {
-    u = v;
-    vnorm = norm(v);
-    if(v(0,0) > 0.0)
-        vnorm = -vnorm;
-    u(0,0) -= vnorm;
+    vnorm = (v(0,0) > 0.0)
+                 ? -norm(v)
+                 :  norm(v);
+    U f = std::sqrt(vnorm*(vnorm - v(0,0)));
+    
+    if(f == NumericTraits<U>::zero())
+    {
+        u.init(NumericTraits<T>::zero());
+        return false;
+    }
+    else
+    {
+        u(0,0) = (v(0,0) - vnorm) / f;
+        for(unsigned int k=1; k<rowCount(u); ++k)
+            u(k,0) = v(k,0) / f;
+        return true;
+    }
 }
 
 // see Lawson & Hanson: Algorithm H1 (p. 57)
@@ -299,19 +311,20 @@ qrHouseholderStepImpl(unsigned int i, MultiArrayView<2, T, C1> & r,
 
     Matrix<T> u(m-i,1);
     T vnorm;
-    householderVector(columnVector(r, Shape(i,i), m), u, vnorm);
+    bool nontrivial = householderVector(columnVector(r, Shape(i,i), m), u, vnorm);
+    
+    r(i,i) = vnorm;
+    columnVector(r, Shape(i+1,i), m).init(NumericTraits<T>::zero()); 
+
     if(columnCount(householderMatrix) == n)
         columnVector(householderMatrix, Shape(i,i), m) = u;
 
-    r(i,i) = vnorm;
-    columnVector(r, Shape(i+1,i), m).init(0.0); 
-    T f = vnorm*u(0,0);
-    if(f != 0.0)
+    if(nontrivial)
     {
         for(unsigned int k=i+1; k<n; ++k)
-            columnVector(r, Shape(i,k), m) += (dot(columnVector(r, Shape(i,k), m), u) / f) * u;
+            columnVector(r, Shape(i,k), m) -= dot(columnVector(r, Shape(i,k), m), u) * u;
         for(unsigned int k=0; k<rhsCount; ++k)
-            columnVector(rhs, Shape(i,k), m) += (dot(columnVector(rhs, Shape(i,k), m), u) / f) * u;
+            columnVector(rhs, Shape(i,k), m) -= dot(columnVector(rhs, Shape(i,k), m), u) * u;
     }
     return r(i,i) != 0.0;
 }
@@ -570,9 +583,8 @@ void inverseRowPermutation(MultiArrayView<2, T, C1> &permuted, MultiArrayView<2,
             res(permutation[l], k) = permuted(l,k);
 }
 
-template <class T, class C1, class C2, class C3>
-void applyHouseholderColumnReflections(MultiArrayView<2, T, C1> const &A, 
-            MultiArrayView<2, T, C2> const &householder, MultiArrayView<2, T, C3> &res)
+template <class T, class C1, class C2>
+void applyHouseholderColumnReflections(MultiArrayView<2, T, C1> const &householder, MultiArrayView<2, T, C2> &res)
 {
     typedef typename Matrix<T>::difference_type Shape;
     unsigned int n = rowCount(householder);
@@ -581,13 +593,9 @@ void applyHouseholderColumnReflections(MultiArrayView<2, T, C1> const &A,
     
     for(int k = m-1; k >= 0; --k)
     {
-        MultiArrayView<2, T, C2> u = columnVector(householder, Shape(k,k), n);
-        T f = A(k,k)*u(0,0);
-        if(f != 0.0)
-        {
-            for(unsigned int l=0; l<rhsCount; ++l)
-                columnVector(res, Shape(k,l), n) += (dot(columnVector(res, Shape(k,l), n), u) / f) * u;
-        }
+        MultiArrayView<2, T, C1> u = columnVector(householder, Shape(k,k), n);
+        for(unsigned int l=0; l<rhsCount; ++l)
+            columnVector(res, Shape(k,l), n) -= dot(columnVector(res, Shape(k,l), n), u) * u;
     }
 }
 
@@ -626,9 +634,9 @@ linearSolveQRReplace(MultiArrayView<2, T, C1> &A, MultiArrayView<2, T, C2> &b,
         if(rank < m)
         {
             // system is also rank-deficient => compute minimum norm least squares solution
-            Matrix<T> AA = A.subarray(Shape(0,0), Shape(m,rank)); // A is still needed for householder reflection of res
-            detail::qrTransformToUpperTriangular(AA, b, epsilon);
-            linearSolveUpperTriangular(AA.subarray(Shape(0,0), Shape(rank,rank)), 
+            MultiArrayView<2, T, C1> Asub = A.subarray(Shape(0,0), Shape(m,rank));
+            detail::qrTransformToUpperTriangular(Asub, b, epsilon);
+            linearSolveUpperTriangular(A.subarray(Shape(0,0), Shape(rank,rank)), 
                                        b.subarray(Shape(0,0), Shape(rank,rhsCount)), 
                                        res.subarray(Shape(0,0), Shape(rank, rhsCount)));
         }
@@ -639,8 +647,7 @@ linearSolveQRReplace(MultiArrayView<2, T, C1> &A, MultiArrayView<2, T, C2> &b,
                                        b.subarray(Shape(0,0), Shape(rank, rhsCount)), 
                                        res.subarray(Shape(0,0), Shape(rank, rhsCount)));
         }
-        detail::applyHouseholderColumnReflections(A, 
-                    householderMatrix.subarray(Shape(0,0), Shape(n, rank)), res);
+        detail::applyHouseholderColumnReflections(householderMatrix.subarray(Shape(0,0), Shape(n, rank)), res);
     }
     else
     {
@@ -662,7 +669,7 @@ linearSolveQRReplace(MultiArrayView<2, T, C1> &A, MultiArrayView<2, T, C2> &b,
             linearSolveLowerTriangular(A.subarray(Shape(0,0), Shape(rank,rank)), 
                                        b.subarray(Shape(0,0), Shape(rank, rhsCount)), 
                                        permutedSolution.subarray(Shape(0,0), Shape(rank, rhsCount)));
-            detail::applyHouseholderColumnReflections(A, householderMatrix, permutedSolution);
+            detail::applyHouseholderColumnReflections(householderMatrix, permutedSolution);
         }
         else
         {
