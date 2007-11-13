@@ -468,7 +468,7 @@ leastAngleRegression(MultiArrayView<2, T, C1> const & A, MultiArrayView<2, T, C2
     
     typedef typename MultiArrayShape<2>::type Shape;
     typedef typename Matrix<T>::view_type Subarray;
-    typedef ArrayVectorView<int> ColumnSet;
+    typedef ArrayVectorView<unsigned int> ColumnSet;
     
     if(options.enforce_positive && !options.lasso_modification)
         vigra_precondition(false,
@@ -480,13 +480,9 @@ leastAngleRegression(MultiArrayView<2, T, C1> const & A, MultiArrayView<2, T, C2
     vigra_precondition(rowCount(b) == rows && columnCount(b) == 1,
        "leastAngleRegression(): Shape mismatch between matrices A and b.");
        
-    unsigned int maxSolutionCount;
-    if(options.max_solution_count == 0)
-        maxSolutionCount = solutions.size();
-    else
-        maxSolutionCount = std::min(solutions.size(), options.max_solution_count);
-    vigra_precondition(maxSolutionCount <= activeSets.size(),
-       "leastAngleRegression(): Active sets array too small.");
+    unsigned int maxSolutionCount = options.max_solution_count;
+    if(maxSolutionCount == 0)
+        maxSolutionCount = 10*std::min(rows, cols);
     
     Matrix<T> R(A), qtb(b);
 
@@ -494,28 +490,28 @@ leastAngleRegression(MultiArrayView<2, T, C1> const & A, MultiArrayView<2, T, C2
     // the other entries are the inactive set, all permuted in the same way as the
     // columns of the matrix R
     int k;
-    ArrayVector<int> columnPermutation(cols);
+    ArrayVector<unsigned int> columnPermutation(cols);
     for(k=0; k<cols; ++k)
         columnPermutation[k] = k;
         
     // find dimension with largest correlation
     Matrix<T> c = transpose(A)*b;
-    int initialDimension;
+    int initialColumn;
     if(options.enforce_positive)
-        initialDimension = argMaxIf(c, Arg1() > Param(0.0));
+        initialColumn = argMaxIf(c, Arg1() > Param(0.0));
     else
-        initialDimension = argMax(abs(c));
-    if(initialDimension == -1)
+        initialColumn = argMax(abs(c));
+    if(initialColumn == -1)
         return 0; // no solution found
-    T C = abs(c(initialDimension, 0));
     
     // prepare initial active set and search direction etc.
     int activeSetSize = 1;
-    std::swap(columnPermutation[0], columnPermutation[initialDimension]);
-    columnVector(R, 0).swapData(columnVector(R, initialDimension));
+    std::swap(columnPermutation[0], columnPermutation[initialColumn]);
+    columnVector(R, 0).swapData(columnVector(R, initialColumn));
     detail::qrColumnHouseholderStep(0, R, qtb);
 
-    Matrix<T> lsq_solution(cols, 1), lars_solution(cols,1), mu(b.shape()); // initially zero
+    Matrix<T> lsq_solution(cols, 1), lars_solution(cols,1), lsq_prediction(rows,1), lars_prediction(rows,1); // initially zero
+    
     Matrix<T> next_lsq_solution(cols, 1);
     next_lsq_solution(0,0) = qtb(0,0) / R(0,0);
     Matrix<T> searchVector = next_lsq_solution(0,0) * columnVector(A, columnPermutation[0]);
@@ -523,83 +519,126 @@ leastAngleRegression(MultiArrayView<2, T, C1> const & A, MultiArrayView<2, T, C2
     double minimal_bic = NumericTraits<double>::max();
     int minimal_bic_solution = -1;
     
-    for(k=0; k < maxSolutionCount; ++k)
+    ArrayVector<unsigned int> columnsToBeRemoved;
+    unsigned int currentSolutionCount = 0;
+    while(currentSolutionCount < maxSolutionCount)
     {
         ColumnSet activeSet = columnPermutation.subarray(0, activeSetSize);
         ColumnSet inactiveSet = columnPermutation.subarray(activeSetSize, cols);
-        Subarray lsq_solution_k = lsq_solution.subarray(Shape(0,0), Shape(activeSetSize, 1));
-        Subarray next_lsq_solution_k = next_lsq_solution.subarray(Shape(0,0), Shape(activeSetSize, 1));
-        Subarray lars_solution_k = lars_solution.subarray(Shape(0,0), Shape(activeSetSize, 1));
-        
-        if(activeSetSize == std::min(rows, cols))
-        {
-            // cannot have more solutions than the size of the matrix A
-            // last solution is then always the LSQ solution
-            activeSets[k] = activeSet;
-            solutions[k] = next_lsq_solution_k;
-            ++k;
-            break;
-        }
         
         // find next dimension to be activated
         Matrix<T> c(cols - activeSetSize, 1), ac(cols - activeSetSize, 1);
-        Matrix<T> bmu = b - mu;
-        for(unsigned int l = 0; l<cols-activeSetSize; ++l)
+        Matrix<T> lars_residual = b - lars_prediction;
+
+        T C = abs(dot(columnVector(A, activeSet[0]), lars_residual));
+        
+        for(unsigned int k = 0; k<cols-activeSetSize; ++k)
         {
             // perform permutation on A explicitly, so that we need not store a permuted copy of A
-            c(l, 0) = dot(columnVector(A, inactiveSet[l]), bmu);
-            T a  = dot(columnVector(A, inactiveSet[l]), searchVector),
-              am = (C - c(l, 0)) / (C - a),
-              ap = (C + c(l, 0)) / (C + a);
-            if(!options.enforce_positive && ap > 0.0 && ap < am)
-                ac(l, 0) = ap;
-            else
-                ac(l, 0) = am;
-        }
-        
-        int limitingDimension = argMinIf(ac, Arg1() > Param(0.0));
-        if(limitingDimension == -1)
-            break;  // no further solution found
-        
-        T gamma = ac(limitingDimension, 0);
-        C = abs(c(limitingDimension, 0));
+            c(k, 0) = dot(columnVector(A, inactiveSet[k]), lars_residual);
+            T a  = dot(columnVector(A, inactiveSet[k]), searchVector),
+              am = (C - c(k, 0)) / (C - a),
+              ap = (C + c(k, 0)) / (C + a);
 
-        // adjust limitingDimension: we skipped the active set
-        limitingDimension += activeSetSize; 
+            if(!options.enforce_positive && ap > 0.0 && ap < am)
+                ac(k, 0) = ap;
+            else
+                ac(k, 0) = am;
+        }
+
+        int columnToBeAdded = argMinIf(ac, Arg1() > Param(0.0));
+        if(columnToBeAdded == -1)
+            break;  // no further solution possible
         
-        // check whether we have to remove a dimension from the active set
+        T gamma = ac(columnToBeAdded, 0);
+
+        // adjust columnToBeAdded: we skipped the active set
+        columnToBeAdded += activeSetSize; 
+        
+        // check whether we have to remove columns from the active set
+        bool needToRemoveColumns = false;
         if(options.lasso_modification)
         {
             // find dimensions whose weight changes sign below gamma*searchDirection
             Matrix<T> d(Shape(activeSetSize, 1), NumericTraits<T>::max());
-            for(int l=0; l<activeSetSize; ++l)
-                if(sign(lsq_solution_k(l,0))*sign(next_lsq_solution_k(l,0)) == -1.0)
-                    d(l,0) = lsq_solution_k(l,0) / (lsq_solution_k(l,0) - next_lsq_solution_k(l,0));
+            for(int k=0; k<activeSetSize; ++k)
+                if(sign(lsq_solution(k,0))*sign(next_lsq_solution(k,0)) == -1.0)
+                    d(k,0) = lsq_solution(k,0) / (lsq_solution(k,0) - next_lsq_solution(k,0));
             int changesSign = argMinIf(d, Arg1() < Param(gamma));
             if(changesSign >= 0)
             {
-                limitingDimension = changesSign;
+                needToRemoveColumns = true;
                 gamma = d(changesSign, 0);
             }
         }
         
-        gamma = std::min(gamma, T(1.0)); // is this ever necessary ??
+//        gamma = std::min(gamma, NumericTraits<T>::one()); // is this ever necessary ??
 
-        // compute and write the current solution
-        lsq_solution_k = next_lsq_solution_k;
-        lars_solution_k = gamma * lsq_solution_k + (1.0 - gamma) * lars_solution_k;
-        activeSets[k] = activeSet;
+        // compute the current solution
+        Subarray current_lsq_solution;
+        Subarray current_lars_solution;
+        if(needToRemoveColumns)
+        {
+            lars_solution = gamma * next_lsq_solution + (1.0 - gamma) * lars_solution;
+            
+            columnsToBeRemoved.clear();
+            for(unsigned int k=0; k<activeSetSize; ++k)
+                if(lars_solution(k,0) <= 0.0)  // FIXME: use tolerance???
+                    columnsToBeRemoved.push_back(k);
+            
+            for(unsigned int k=0; k<columnsToBeRemoved.size(); ++k)
+            {
+                // remove column 'columnsToBeRemoved[k]' and restore triangular from of R
+                detail::upperTriangularSwapColumns(columnsToBeRemoved[k], activeSetSize, R, qtb, columnPermutation);
+
+                // remove entry 'columnsToBeRemoved[k]' from the LARS solution
+                std::swap(lars_solution(activeSetSize,0), lars_solution(columnsToBeRemoved[k], 0));
+                --activeSetSize;
+            }
+            
+            // remember the active subvector of the solutions
+            current_lars_solution = lars_solution.subarray(Shape(0,0), Shape(activeSetSize, 1));
+            current_lsq_solution = lsq_solution.subarray(Shape(0,0), Shape(activeSetSize, 1));
+
+            // compute the LSQ solution of the reduced active set
+            Subarray Ractive = R.subarray(Shape(0,0), Shape(activeSetSize, activeSetSize));
+            Subarray qtbactive = qtb.subarray(Shape(0,0), Shape(activeSetSize, 1));
+            linearSolveUpperTriangular(Ractive, qtbactive, current_lsq_solution);
+
+            // compute the predictions of the reduced active set
+            lsq_prediction.init(NumericTraits<T>::zero()); 
+            lars_prediction.init(NumericTraits<T>::zero()); 
+            for(int k=0; k<activeSetSize; ++k)
+            {
+               lsq_prediction += current_lsq_solution(k,0)*columnVector(A, columnPermutation[k]);
+               lars_prediction += current_lars_solution(k,0)*columnVector(A, columnPermutation[k]);
+            }
+            
+            searchVector = lsq_prediction - lars_prediction;
+        }
+        else
+        {
+            lars_solution = gamma * next_lsq_solution + (1.0 - gamma) * lars_solution;
+            current_lars_solution = lars_solution.subarray(Shape(0,0), Shape(activeSetSize, 1));
+            current_lsq_solution = next_lsq_solution.subarray(Shape(0,0), Shape(activeSetSize, 1));
+
+            lsq_prediction = lars_prediction + searchVector;
+            lars_prediction += gamma*searchVector;
+        }
+            
+        ++currentSolutionCount;
+        activeSets.push_back(typename Array2::value_type(columnPermutation.subarray(0, activeSetSize)));
         
         double residual;
         if(options.least_squares_solutions)
         {
-            solutions[k] = lsq_solution_k.subarray(Shape(0,0), Shape(activeSetSize, 1));
-            residual = squaredNorm(bmu - searchVector);
+            solutions.push_back(current_lsq_solution);
+            residual = squaredNorm(b - lsq_prediction);
         }
         else
         {
-            solutions[k] = lars_solution_k.subarray(Shape(0,0), Shape(activeSetSize, 1));
-            residual = squaredNorm(bmu - gamma*searchVector);
+            solutions.push_back(current_lars_solution);
+            residual = squaredNorm(b - lars_prediction);
         }
         
         // determine BIC and possibly stop iteration
@@ -609,61 +648,58 @@ leastAngleRegression(MultiArrayView<2, T, C1> const & A, MultiArrayView<2, T, C2
             if(bic < minimal_bic)
             {
                 minimal_bic = bic;
-                minimal_bic_solution = k;
+                minimal_bic_solution = currentSolutionCount;
             }
-            if(k - minimal_bic_solution >= options.bic_delay)
-                return minimal_bic_solution + 1;
+            if(currentSolutionCount - minimal_bic_solution >= options.bic_delay)
+                return minimal_bic_solution;
         }
 
-        // update the active set and its QR factorization
-        if(limitingDimension < activeSetSize)
+        if(needToRemoveColumns)
         {
-            // remove column 'limitingDimension' and restore triangular from of R
-            detail::upperTriangularCyclicShiftColumns(limitingDimension, activeSetSize, R, qtb, columnPermutation);
-
-            // remove entry 'limitingDimension' from solution
-            std::swap(lsq_solution(activeSetSize,0), lsq_solution(limitingDimension, 0));
-            std::swap(lars_solution(activeSetSize,0), lars_solution(limitingDimension, 0));
-            --activeSetSize;
+            searchVector = lsq_prediction - lars_prediction;
         }
         else
         {
-            // add column 'limitingDimension'
-            std::swap(columnPermutation[activeSetSize], columnPermutation[limitingDimension]);
-            columnVector(R, activeSetSize).swapData(columnVector(R, limitingDimension));
+            // add column 'columnToBeAdded'
+            std::swap(columnPermutation[activeSetSize], columnPermutation[columnToBeAdded]);
+            columnVector(R, activeSetSize).swapData(columnVector(R, columnToBeAdded));
 
-            // zero the corresponding entry of the solution
+            // zero the corresponding entry of the solutions
             lsq_solution(activeSetSize,0) = 0.0;
             lars_solution(activeSetSize,0) = 0.0;            
             
             // reduce R (i.e. its newly added column) to triangular form
             bool singular = !detail::qrColumnHouseholderStep(activeSetSize, R, qtb);
-            if(singular || closeAtTolerance(qtb(activeSetSize,0) / R(activeSetSize, activeSetSize), 0.0))
-            {
-                ++k;
+            if(singular || closeAtTolerance(qtb(activeSetSize,0) / R(activeSetSize, activeSetSize), 0.0)) // FIXME: use tolerance???
                 break; // no further solutions possible
-            }
             ++activeSetSize;
+ 
+            // compute LSQ solution of new active set
+            Subarray Ractive = R.subarray(Shape(0,0), Shape(activeSetSize, activeSetSize));
+            Subarray qtbactive = qtb.subarray(Shape(0,0), Shape(activeSetSize, 1));
+            Subarray next_lsq_solution_k = next_lsq_solution.subarray(Shape(0,0), Shape(activeSetSize, 1));
+            linearSolveUpperTriangular(Ractive, qtbactive, next_lsq_solution_k);
+            
+            if(activeSetSize == cols)
+            {
+                // if all columns are active, LARS solution and LSQ solution are identical, and no further solution is possible
+                ++currentSolutionCount;
+                activeSets.push_back(typename Array2::value_type(columnPermutation.subarray(0, activeSetSize)));
+                solutions.push_back(next_lsq_solution_k);
+                break;
+            }
+
+            // compute new search direction
+            searchVector = -lars_prediction;
+            for(unsigned int k=0; k<activeSetSize; ++k)
+                searchVector += next_lsq_solution_k(k,0)*columnVector(A, columnPermutation[k]);
         }
-        
-        // compute LSQ solution of new active set
-        Subarray Ractive = R.subarray(Shape(0,0), Shape(activeSetSize, activeSetSize));
-        Subarray qtbactive = qtb.subarray(Shape(0,0), Shape(activeSetSize, 1));
-        Subarray next_lsq_solution_k1 = next_lsq_solution.subarray(Shape(0,0), Shape(activeSetSize, 1));
-        linearSolveUpperTriangular(Ractive, qtbactive, next_lsq_solution_k1);
-        
-        // compute new search direction
-        mu += gamma*searchVector;
-        
-        searchVector = -mu;
-        for(int l=0; l<activeSetSize; ++l)
-            searchVector += next_lsq_solution_k1(l,0)*columnVector(A, columnPermutation[l]);
     }
     
-    if(options.bic_variance > 0.0 && minimal_bic_solution + 1 != k)
-        return minimal_bic_solution + 1;
+    if(options.bic_variance > 0.0 && minimal_bic_solution != currentSolutionCount)
+        return minimal_bic_solution;
     else
-        return k;
+        return currentSolutionCount;
 }
 
 } // namespace linalg
