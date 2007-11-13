@@ -387,7 +387,7 @@ ArrayVectorView <T>::copyImpl(const ArrayVectorView <U>& rhs)
     vigra_precondition (size() == rhs.size(),
         "ArrayVectorView::copy(): shape mismatch.");
     // use copy() or copy_backward() according to possible overlap of this and rhs
-    if(data_ <= rhs.data_)
+    if(data_ <= rhs.data())
     {
         std::copy(rhs.begin(), rhs.end(), begin());
     }
