@@ -1187,7 +1187,7 @@ dot(const MultiArrayView<2, T, C1> &x, const MultiArrayView<2, T, C2> &y)
     typename NormTraits<T>::SquaredNormType ret = NumericTraits<typename NormTraits<T>::SquaredNormType>::zero();
     if(y.shape(1) == 1)
     {
-        std::size_t size = y.shape(0);
+        unsigned int size = y.shape(0);
         if(x.shape(0) == 1 && x.shape(1) == size) // proper scalar product
             for(std::size_t i = 0; i < size; ++i)
                 ret += x(0, i) * y(i, 0);
@@ -1199,7 +1199,7 @@ dot(const MultiArrayView<2, T, C1> &x, const MultiArrayView<2, T, C2> &y)
     }
     else if(y.shape(0) == 1)
     {
-        std::size_t size = y.shape(1);
+        unsigned int size = y.shape(1);
         if(x.shape(0) == 1 && x.shape(1) == size) // two row vectors
             for(std::size_t i = 0; i < size; ++i)
                 ret += x(0, i) * y(0, i);
@@ -2220,8 +2220,12 @@ columnStatistics(const MultiArrayView<2, T1, C1> & A,
 {
     detail::columnStatisticsImpl(A, mean, stdDev);
     
+#if 0
     if(rowCount(A) > 1)
         stdDev = sqrt(stdDev / T3(rowCount(A) - 1.0));
+#else
+    stdDev = sqrt(stdDev / T3(rowCount(A)));
+#endif
 }
 
 template <class T1, class C1, class T2, class C2, class T3, class C3, class T4, class C4>
@@ -2238,7 +2242,11 @@ columnStatistics(const MultiArrayView<2, T1, C1> & A,
 
     detail::columnStatisticsImpl(A, mean, stdDev);
     norm = sqrt(stdDev + T2(m) * sq(mean));
+#if 0
     stdDev = sqrt(stdDev / T3(m - 1.0));
+#else
+    stdDev = sqrt(stdDev / T3(m));
+#endif
 }
 
 template <class T1, class C1, class T2, class C2>
@@ -2399,9 +2407,9 @@ prepareDataImpl(const MultiArrayView<2, T, C1> & A,
         return;
     }
     
-    bool zeroMean = goals & zeroMean;
-    bool unitVariance = goals & UnitVariance;
-    bool unitNorm = goals & UnitNorm;
+    bool zeroMean = (goals & ZeroMean) != 0;
+    bool unitVariance = (goals & UnitVariance) != 0;
+    bool unitNorm = (goals & UnitNorm) != 0;
 
     Matrix<T> mean(1, n), sumOfSquaredDifferences(1, n);
     detail::columnStatisticsImpl(A, mean, sumOfSquaredDifferences);
