@@ -482,7 +482,7 @@ qrTransformToTriangularImpl(MultiArrayView<2, T, C1> & r, MultiArrayView<2, T, C
             for(unsigned int l=k; l<n; ++l)
                 columnSquaredNorms[l] -= squaredNorm(r(k, l));
             int pivot = k + argMax(rowVector(columnSquaredNorms, Shape(0,k), n));
-            if(pivot != k)
+            if(pivot != (int)k)
             {
                 columnVector(r, k).swapData(columnVector(r, pivot));
                 std::swap(columnSquaredNorms[k], columnSquaredNorms[pivot]);
@@ -1156,8 +1156,6 @@ bool linearSolve(const MultiArrayView<2, T, C1> &A, const MultiArrayView<2, T, C
     }
     else if(method == "svd")
     {
-        unsigned int n = columnCount(A);
-        unsigned int m = rowCount(A);
         unsigned int rhsCount = columnCount(b);
 	    Matrix<T> u(A.shape()), s(n, 1), v(n, n);
 
