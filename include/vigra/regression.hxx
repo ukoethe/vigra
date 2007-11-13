@@ -613,8 +613,6 @@ leastAngleRegression(MultiArrayView<2, T, C1> const & A, MultiArrayView<2, T, C2
                lsq_prediction += current_lsq_solution(k,0)*columnVector(A, columnPermutation[k]);
                lars_prediction += current_lars_solution(k,0)*columnVector(A, columnPermutation[k]);
             }
-            
-            searchVector = lsq_prediction - lars_prediction;
         }
         else
         {
