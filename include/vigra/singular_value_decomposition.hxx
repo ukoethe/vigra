@@ -84,17 +84,17 @@ singularValueDecomposition(MultiArrayView<2, T, C1> const & A,
     const unsigned int cols = columnCount(A);
     vigra_precondition(rows >= cols,
        "singularValueDecomposition(): Input matrix A must be rectangular with rowCount >= columnCount.");
-
+    vigra_precondition(rowCount(S) == cols && columnCount(S) == 1,
+       "singularValueDecomposition(): Output S must be column vector with rowCount == columnCount(A).");
+    vigra_precondition(rowCount(U) == rows && columnCount(U) == cols,
+       "singularValueDecomposition(): Output matrix U must have the same dimensions as input matrix A.");
+    vigra_precondition(rowCount(V) == cols && columnCount(V) == cols,
+       "singularValueDecomposition(): Output matrix V must be square with n = columnCount(A).");
+    
     int m = rows;
     int n = cols;    
     int nu = n;
-    vigra_precondition(rowCount(S) == n && columnCount(S) == 1,
-       "singularValueDecomposition(): Output S must be column vector with rowCount == columnCount(A).");
-    vigra_precondition(rowCount(U) == m && columnCount(U) == n,
-       "singularValueDecomposition(): Output matrix U must have the same dimensions as input matrix A.");
-    vigra_precondition(rowCount(V) == n && columnCount(V) == n,
-       "singularValueDecomposition(): Output matrix V must be square with n = columnCount(A).");
-    
+
     U.init(0.0);
     S.init(0.0);
     V.init(0.0);
