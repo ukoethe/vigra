@@ -579,11 +579,12 @@ leastAngleRegression(MultiArrayView<2, T, C1> const & A, MultiArrayView<2, T, C2
         Subarray current_lars_solution;
         if(needToRemoveColumns)
         {
+            T tolerance = NumericTraits<T>::epsilon();  // FIXME: adjust tolerance to problem
             lars_solution = gamma * next_lsq_solution + (1.0 - gamma) * lars_solution;
             
             columnsToBeRemoved.clear();
             for(unsigned int k=0; k<activeSetSize; ++k)
-                if(lars_solution(k,0) <= 0.0)  // FIXME: use tolerance???
+                if((options.enforce_positive && lars_solution(k,0) <= tolerance) || abs(lars_solution(k,0)) <= tolerance)
                     columnsToBeRemoved.push_back(k);
             
             for(unsigned int k=0; k<columnsToBeRemoved.size(); ++k)
