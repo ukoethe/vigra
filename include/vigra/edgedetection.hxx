@@ -1209,8 +1209,8 @@ void internalCannyFindEdgels(Image1 const & gx,
             PixelType gradx = gx(x,y);
             PixelType grady = gy(x,y);
             double mag = magnitude(x, y);
-            if(!mag)
-                continue;
+            if(mag == 0.0)
+                   continue;
 
             int dx = (int)VIGRA_CSTD::floor(gradx*t/mag + 0.5);
             int dy = (int)VIGRA_CSTD::floor(grady*t/mag + 0.5);
@@ -1971,8 +1971,10 @@ void internalCannyFindEdgels3x3(Image1 const & grad,
 
             ValueType gradx = grad(x,y)[0];
             ValueType grady = grad(x,y)[1];
-            double mag = hypot(gradx, grady),
-                   c = gradx / mag,
+            double mag = hypot(gradx, grady);
+            if(mag == 0.0)
+                   continue;
+            double c = gradx / mag,
                    s = grady / mag;
 
             Matrix<double> ml(3,3), mr(3,1), l(3,1), r(3,1);
