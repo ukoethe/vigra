@@ -30,11 +30,11 @@
 /*    HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,      */
 /*    WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING      */
 /*    FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR     */
-/*    OTHER DEALINGS IN THE SOFTWARE.                                   */                
+/*    OTHER DEALINGS IN THE SOFTWARE.                                   */
 /*                                                                      */
 /************************************************************************/
- 
- 
+
+
 #ifndef VIGRA_EDGEDETECTION_HXX
 #define VIGRA_EDGEDETECTION_HXX
 
@@ -59,8 +59,8 @@ namespace vigra {
     Edge detectors based on first and second derivatives,
           and related post-processing.
 */
-//@{ 
-                                    
+//@{
+
 /********************************************************/
 /*                                                      */
 /*           differenceOfExponentialEdgeImage           */
@@ -69,36 +69,36 @@ namespace vigra {
 
 /** \brief Detect and mark edges in an edge image using the Shen/Castan zero-crossing detector.
 
-    This operator applies an exponential filter to the source image 
-    at the given <TT>scale</TT> and subtracts the result from the original image. 
+    This operator applies an exponential filter to the source image
+    at the given <TT>scale</TT> and subtracts the result from the original image.
     Zero crossings are detected in the resulting difference image. Whenever the
     gradient at a zero crossing is greater than the given <TT>gradient_threshold</TT>,
     an edge point is marked (using <TT>edge_marker</TT>) in the destination image on
-    the darker side of the zero crossing (note that zero crossings occur 
+    the darker side of the zero crossing (note that zero crossings occur
     <i>between</i> pixels). For example:
-    
+
     \code
     sign of difference image     resulting edge points (*)
-    
+
         + - -                          * * .
         + + -               =>         . * *
         + + +                          . . .
     \endcode
-    
-    Non-edge pixels (<TT>.</TT>) remain untouched in the destination image. 
-    The result can be improved by the post-processing operation \ref removeShortEdges().
-    A more accurate edge placement can be achieved with the function 
-    \ref differenceOfExponentialCrackEdgeImage(). 
 
-    The source value type 
-    (<TT>SrcAccessor::value_type</TT>) must be a linear algebra, i.e. addition, 
-    subtraction and multiplication of the type with itself, and multiplication 
-    with double and 
-    \ref NumericTraits "NumericTraits" must 
+    Non-edge pixels (<TT>.</TT>) remain untouched in the destination image.
+    The result can be improved by the post-processing operation \ref removeShortEdges().
+    A more accurate edge placement can be achieved with the function
+    \ref differenceOfExponentialCrackEdgeImage().
+
+    The source value type
+    (<TT>SrcAccessor::value_type</TT>) must be a linear algebra, i.e. addition,
+    subtraction and multiplication of the type with itself, and multiplication
+    with double and
+    \ref NumericTraits "NumericTraits" must
     be defined. In addition, this type must be less-comparable.
-    
+
     <b> Declarations:</b>
-    
+
     pass arguments explicitly:
     \code
     namespace vigra {
@@ -109,19 +109,19 @@ namespace vigra {
         void differenceOfExponentialEdgeImage(
                SrcIterator sul, SrcIterator slr, SrcAccessor sa,
                DestIterator dul, DestAccessor da,
-               double scale, GradValue gradient_threshold, 
+               double scale, GradValue gradient_threshold,
                DestValue edge_marker = NumericTraits<DestValue>::one())
     }
     \endcode
-    
+
     use argument objects in conjunction with \ref ArgumentObjectFactories:
     \code
     namespace vigra {
         template <class SrcIterator, class SrcAccessor,
-              class DestIterator, class DestAccessor, 
+              class DestIterator, class DestAccessor,
               class GradValue,
               class DestValue = DestAccessor::value_type>
-        inline 
+        inline
         void differenceOfExponentialEdgeImage(
                triple<SrcIterator, SrcIterator, SrcAccessor> src,
                pair<DestIterator, DestAccessor> dest,
@@ -129,56 +129,56 @@ namespace vigra {
                DestValue edge_marker = NumericTraits<DestValue>::one())
     }
     \endcode
-    
+
     <b> Usage:</b>
-    
+
         <b>\#include</b> "<a href="edgedetection_8hxx-source.html">vigra/edgedetection.hxx</a>"<br>
     Namespace: vigra
-    
+
     \code
     vigra::BImage src(w,h), edges(w,h);
-    
+
     // empty edge image
     edges = 0;
     ...
-    
-    // find edges at scale 0.8 with gradient larger than 4.0, mark with 1 
-    vigra::differenceOfExponentialEdgeImage(srcImageRange(src), destImage(edges), 
+
+    // find edges at scale 0.8 with gradient larger than 4.0, mark with 1
+    vigra::differenceOfExponentialEdgeImage(srcImageRange(src), destImage(edges),
                                      0.8, 4.0, 1);
     \endcode
 
     <b> Required Interface:</b>
-    
+
     \code
     SrcImageIterator src_upperleft, src_lowerright;
     DestImageIterator dest_upperleft;
-    
+
     SrcAccessor src_accessor;
     DestAccessor dest_accessor;
-    
+
     SrcAccessor::value_type u = src_accessor(src_upperleft);
     double d;
     GradValue gradient_threshold;
-    
+
     u = u + u
     u = u - u
     u = u * u
     u = d * u
     u < gradient_threshold
-    
+
     DestValue edge_marker;
     dest_accessor.set(edge_marker, dest_upperleft);
     \endcode
-    
+
     <b> Preconditions:</b>
-    
+
     \code
     scale > 0
     gradient_threshold > 0
     \endcode
 */
 template <class SrcIterator, class SrcAccessor,
-          class DestIterator, class DestAccessor, 
+          class DestIterator, class DestAccessor,
           class GradValue, class DestValue>
 void differenceOfExponentialEdgeImage(
                SrcIterator sul, SrcIterator slr, SrcAccessor sa,
@@ -187,23 +187,23 @@ void differenceOfExponentialEdgeImage(
 {
     vigra_precondition(scale > 0,
                  "differenceOfExponentialEdgeImage(): scale > 0 required.");
-         
+
     vigra_precondition(gradient_threshold > 0,
                  "differenceOfExponentialEdgeImage(): "
          "gradient_threshold > 0 required.");
-         
+
     int w = slr.x - sul.x;
     int h = slr.y - sul.y;
     int x,y;
 
-    typedef typename 
+    typedef typename
         NumericTraits<typename SrcAccessor::value_type>::RealPromote
     TMPTYPE;
     typedef BasicImage<TMPTYPE> TMPIMG;
 
     TMPIMG tmp(w,h);
     TMPIMG smooth(w,h);
-    
+
     recursiveSmoothX(srcIterRange(sul, slr, sa), destImage(tmp), scale / 2.0);
     recursiveSmoothY(srcImageRange(tmp), destImage(tmp), scale / 2.0);
 
@@ -213,12 +213,12 @@ void differenceOfExponentialEdgeImage(
     typename TMPIMG::Iterator iy = smooth.upperLeft();
     typename TMPIMG::Iterator ty = tmp.upperLeft();
     DestIterator              dy = dul;
-    
+
     static const Diff2D right(1, 0);
     static const Diff2D bottom(0, 1);
-    
-    
-    TMPTYPE thresh = (gradient_threshold * gradient_threshold) * 
+
+
+    TMPTYPE thresh = (gradient_threshold * gradient_threshold) *
                      NumericTraits<TMPTYPE>::one();
     TMPTYPE zero = NumericTraits<TMPTYPE>::zero();
 
@@ -260,11 +260,11 @@ void differenceOfExponentialEdgeImage(
             }
         }
     }
-    
+
     typename TMPIMG::Iterator ix = iy;
     typename TMPIMG::Iterator tx = ty;
     DestIterator              dx = dy;
-    
+
     for(x=0; x<w-1; ++x, ++ix.x, ++tx.x, ++dx.x)
     {
         TMPTYPE diff = *tx - *ix;
@@ -288,20 +288,20 @@ void differenceOfExponentialEdgeImage(
 template <class SrcIterator, class SrcAccessor,
           class DestIterator, class DestAccessor,
           class GradValue>
-inline 
+inline
 void differenceOfExponentialEdgeImage(
                SrcIterator sul, SrcIterator slr, SrcAccessor sa,
            DestIterator dul, DestAccessor da,
            double scale, GradValue gradient_threshold)
 {
-    differenceOfExponentialEdgeImage(sul, slr, sa, dul, da, 
+    differenceOfExponentialEdgeImage(sul, slr, sa, dul, da,
                                         scale, gradient_threshold, 1);
 }
 
 template <class SrcIterator, class SrcAccessor,
-          class DestIterator, class DestAccessor, 
+          class DestIterator, class DestAccessor,
       class GradValue, class DestValue>
-inline 
+inline
 void differenceOfExponentialEdgeImage(
            triple<SrcIterator, SrcIterator, SrcAccessor> src,
        pair<DestIterator, DestAccessor> dest,
@@ -317,7 +317,7 @@ void differenceOfExponentialEdgeImage(
 template <class SrcIterator, class SrcAccessor,
           class DestIterator, class DestAccessor,
           class GradValue>
-inline 
+inline
 void differenceOfExponentialEdgeImage(
            triple<SrcIterator, SrcIterator, SrcAccessor> src,
        pair<DestIterator, DestAccessor> dest,
@@ -336,19 +336,19 @@ void differenceOfExponentialEdgeImage(
 
 /** \brief Detect and mark edges in a crack edge image using the Shen/Castan zero-crossing detector.
 
-    This operator applies an exponential filter to the source image 
-    at the given <TT>scale</TT> and subtracts the result from the original image. 
+    This operator applies an exponential filter to the source image
+    at the given <TT>scale</TT> and subtracts the result from the original image.
     Zero crossings are detected in the resulting difference image. Whenever the
     gradient at a zero crossing is greater than the given <TT>gradient_threshold</TT>,
-    an edge point is marked (using <TT>edge_marker</TT>) in the destination image 
-    <i>between</i> the corresponding original pixels. Topologically, this means we 
+    an edge point is marked (using <TT>edge_marker</TT>) in the destination image
+    <i>between</i> the corresponding original pixels. Topologically, this means we
     must insert additional pixels between the original ones to represent the
     boundaries between the pixels (the so called zero- and one-cells, with the original
     pixels being two-cells). Within VIGRA, such an image is called \ref CrackEdgeImage.
-    To allow insertion of the zero- and one-cells, the destination image must have twice the 
-    size of the original (precisely, <TT>(2*w-1)</TT> by <TT>(2*h-1)</TT> pixels). Then the algorithm 
+    To allow insertion of the zero- and one-cells, the destination image must have twice the
+    size of the original (precisely, <TT>(2*w-1)</TT> by <TT>(2*h-1)</TT> pixels). Then the algorithm
     proceeds as follows:
-    
+
     \code
 sign of difference image     insert zero- and one-cells     resulting edge points (*)
 
@@ -358,25 +358,25 @@ sign of difference image     insert zero- and one-cells     resulting edge point
       + + +                          . . . . .                   . . . * *
                                      + . + . +                   . . . . .
     \endcode
-    
-    Thus the edge points are marked where they actually are - in between the pixels. 
-    An important property of the resulting edge image is that it conforms to the notion 
-    of well-composedness as defined by Latecki et al., i.e. connected regions and edges 
-    obtained by a subsequent \ref Labeling do not depend on 
+
+    Thus the edge points are marked where they actually are - in between the pixels.
+    An important property of the resulting edge image is that it conforms to the notion
+    of well-composedness as defined by Latecki et al., i.e. connected regions and edges
+    obtained by a subsequent \ref Labeling do not depend on
     whether 4- or 8-connectivity is used.
-    The non-edge pixels (<TT>.</TT>) in the destination image remain unchanged. 
+    The non-edge pixels (<TT>.</TT>) in the destination image remain unchanged.
     The result conformes to the requirements of a \ref CrackEdgeImage. It can be further
     improved by the post-processing operations \ref removeShortEdges() and
     \ref closeGapsInCrackEdgeImage().
-    
-    The source value type (<TT>SrcAccessor::value_type</TT>) must be a linear algebra, i.e. addition, 
-    subtraction and multiplication of the type with itself, and multiplication 
-    with double and 
-    \ref NumericTraits "NumericTraits" must 
+
+    The source value type (<TT>SrcAccessor::value_type</TT>) must be a linear algebra, i.e. addition,
+    subtraction and multiplication of the type with itself, and multiplication
+    with double and
+    \ref NumericTraits "NumericTraits" must
     be defined. In addition, this type must be less-comparable.
-    
+
     <b> Declarations:</b>
-    
+
     pass arguments explicitly:
     \code
     namespace vigra {
@@ -387,19 +387,19 @@ sign of difference image     insert zero- and one-cells     resulting edge point
         void differenceOfExponentialCrackEdgeImage(
                SrcIterator sul, SrcIterator slr, SrcAccessor sa,
                DestIterator dul, DestAccessor da,
-               double scale, GradValue gradient_threshold, 
+               double scale, GradValue gradient_threshold,
                DestValue edge_marker = NumericTraits<DestValue>::one())
     }
     \endcode
-    
+
     use argument objects in conjunction with \ref ArgumentObjectFactories:
     \code
     namespace vigra {
         template <class SrcIterator, class SrcAccessor,
-              class DestIterator, class DestAccessor, 
+              class DestIterator, class DestAccessor,
               class GradValue,
               class DestValue = DestAccessor::value_type>
-        inline 
+        inline
         void differenceOfExponentialCrackEdgeImage(
                triple<SrcIterator, SrcIterator, SrcAccessor> src,
                pair<DestIterator, DestAccessor> dest,
@@ -407,54 +407,54 @@ sign of difference image     insert zero- and one-cells     resulting edge point
                DestValue edge_marker = NumericTraits<DestValue>::one())
     }
     \endcode
-    
+
     <b> Usage:</b>
-    
+
         <b>\#include</b> "<a href="edgedetection_8hxx-source.html">vigra/edgedetection.hxx</a>"<br>
     Namespace: vigra
-    
+
     \code
     vigra::BImage src(w,h), edges(2*w-1,2*h-1);
-    
+
     // empty edge image
     edges = 0;
     ...
-    
-    // find edges at scale 0.8 with gradient larger than 4.0, mark with 1 
-    vigra::differenceOfExponentialCrackEdgeImage(srcImageRange(src), destImage(edges), 
+
+    // find edges at scale 0.8 with gradient larger than 4.0, mark with 1
+    vigra::differenceOfExponentialCrackEdgeImage(srcImageRange(src), destImage(edges),
                                      0.8, 4.0, 1);
     \endcode
 
     <b> Required Interface:</b>
-    
+
     \code
     SrcImageIterator src_upperleft, src_lowerright;
     DestImageIterator dest_upperleft;
-    
+
     SrcAccessor src_accessor;
     DestAccessor dest_accessor;
-    
+
     SrcAccessor::value_type u = src_accessor(src_upperleft);
     double d;
     GradValue gradient_threshold;
-    
+
     u = u + u
     u = u - u
     u = u * u
     u = d * u
     u < gradient_threshold
-    
+
     DestValue edge_marker;
     dest_accessor.set(edge_marker, dest_upperleft);
     \endcode
-    
+
     <b> Preconditions:</b>
-    
+
     \code
     scale > 0
     gradient_threshold > 0
     \endcode
-    
+
     The destination image must have twice the size of the source:
     \code
     w_dest = 2 * w_src - 1
@@ -467,35 +467,35 @@ template <class SrcIterator, class SrcAccessor,
 void differenceOfExponentialCrackEdgeImage(
                SrcIterator sul, SrcIterator slr, SrcAccessor sa,
            DestIterator dul, DestAccessor da,
-           double scale, GradValue gradient_threshold, 
+           double scale, GradValue gradient_threshold,
            DestValue edge_marker)
 {
     vigra_precondition(scale > 0,
                  "differenceOfExponentialCrackEdgeImage(): scale > 0 required.");
-         
+
     vigra_precondition(gradient_threshold > 0,
                  "differenceOfExponentialCrackEdgeImage(): "
          "gradient_threshold > 0 required.");
-         
+
     int w = slr.x - sul.x;
     int h = slr.y - sul.y;
     int x, y;
 
-    typedef typename 
+    typedef typename
         NumericTraits<typename SrcAccessor::value_type>::RealPromote
     TMPTYPE;
     typedef BasicImage<TMPTYPE> TMPIMG;
 
     TMPIMG tmp(w,h);
     TMPIMG smooth(w,h);
-    
+
     TMPTYPE zero = NumericTraits<TMPTYPE>::zero();
-    
+
     static const Diff2D right(1,0);
     static const Diff2D bottom(0,1);
     static const Diff2D left(-1,0);
     static const Diff2D top(0,-1);
-    
+
     recursiveSmoothX(srcIterRange(sul, slr, sa), destImage(tmp), scale / 2.0);
     recursiveSmoothY(srcImageRange(tmp), destImage(tmp), scale / 2.0);
 
@@ -505,8 +505,8 @@ void differenceOfExponentialCrackEdgeImage(
     typename TMPIMG::Iterator iy = smooth.upperLeft();
     typename TMPIMG::Iterator ty = tmp.upperLeft();
     DestIterator              dy = dul;
-    
-    TMPTYPE thresh = (gradient_threshold * gradient_threshold) * 
+
+    TMPTYPE thresh = (gradient_threshold * gradient_threshold) *
                      NumericTraits<TMPTYPE>::one();
 
     // find zero crossings above threshold
@@ -543,11 +543,11 @@ void differenceOfExponentialCrackEdgeImage(
             da.set(edge_marker, dx, bottom);
         }
     }
-    
+
     typename TMPIMG::Iterator ix = iy;
     typename TMPIMG::Iterator tx = ty;
     DestIterator              dx = dy;
-    
+
     for(x=0; x<w-1; ++x, ++ix.x, ++tx.x, dx.x+=2)
     {
         TMPTYPE diff = *tx - *ix;
@@ -563,7 +563,7 @@ void differenceOfExponentialCrackEdgeImage(
     iy = smooth.upperLeft() + Diff2D(0,1);
     ty = tmp.upperLeft() + Diff2D(0,1);
     dy = dul + Diff2D(1,2);
-    
+
     static const Diff2D topleft(-1,-1);
     static const Diff2D topright(1,-1);
     static const Diff2D bottomleft(-1,1);
@@ -583,9 +583,9 @@ void differenceOfExponentialCrackEdgeImage(
             TMPTYPE diff = *tx - *ix;
 
             if((diff * (tx[right] - ix[right]) < zero) &&
-               (((da(dx, bottomright) == edge_marker) && 
+               (((da(dx, bottomright) == edge_marker) &&
                  (da(dx, topleft) == edge_marker)) ||
-                ((da(dx, bottomleft) == edge_marker) && 
+                ((da(dx, bottomleft) == edge_marker) &&
                  (da(dx, topright) == edge_marker))))
 
             {
@@ -593,7 +593,7 @@ void differenceOfExponentialCrackEdgeImage(
             }
         }
     }
-    
+
     iy = smooth.upperLeft() + Diff2D(1,0);
     ty = tmp.upperLeft() + Diff2D(1,0);
     dy = dul + Diff2D(2,1);
@@ -612,9 +612,9 @@ void differenceOfExponentialCrackEdgeImage(
             TMPTYPE diff = *tx - *ix;
 
             if((diff * (tx[bottom] - ix[bottom]) < zero) &&
-               (((da(dx, bottomright) == edge_marker) && 
+               (((da(dx, bottomright) == edge_marker) &&
                  (da(dx, topleft) == edge_marker)) ||
-                ((da(dx, bottomleft) == edge_marker) && 
+                ((da(dx, bottomleft) == edge_marker) &&
                  (da(dx, topright) == edge_marker))))
 
             {
@@ -622,10 +622,10 @@ void differenceOfExponentialCrackEdgeImage(
             }
         }
     }
-    
+
     dy = dul + Diff2D(1,1);
 
-    // find missing 0-cells 
+    // find missing 0-cells
     for(y=0; y<h-1; ++y, dy.y+=2)
     {
         DestIterator              dx = dy;
@@ -648,7 +648,7 @@ void differenceOfExponentialCrackEdgeImage(
 template <class SrcIterator, class SrcAccessor,
           class DestIterator, class DestAccessor,
           class GradValue, class DestValue>
-inline 
+inline
 void differenceOfExponentialCrackEdgeImage(
            triple<SrcIterator, SrcIterator, SrcAccessor> src,
        pair<DestIterator, DestAccessor> dest,
@@ -669,23 +669,23 @@ void differenceOfExponentialCrackEdgeImage(
 
 /** \brief Remove short edges from an edge image.
 
-    This algorithm can be applied as a post-processing operation of 
-    \ref differenceOfExponentialEdgeImage() and \ref differenceOfExponentialCrackEdgeImage(). 
+    This algorithm can be applied as a post-processing operation of
+    \ref differenceOfExponentialEdgeImage() and \ref differenceOfExponentialCrackEdgeImage().
     It removes all edges that are shorter than <TT>min_edge_length</TT>. The corresponding
     pixels are set to the <TT>non_edge_marker</TT>. The idea behind this algorithms is
     that very short edges are probably caused by noise and don't represent interesting
     image structure. Technically, the algorithms executes a connected components labeling,
-    so the image's value type must be equality comparable. 
-    
+    so the image's value type must be equality comparable.
+
     If the source image fulfills the requirements of a \ref CrackEdgeImage,
     it will still do so after application of this algorithm.
-    
-    Note that this algorithm, unlike most other algorithms in VIGRA, operates in-place, 
+
+    Note that this algorithm, unlike most other algorithms in VIGRA, operates in-place,
     i.e. on only one image. Also, the algorithm assumes that all non-edges pixels are already
     marked with the given <TT>non_edge_marker</TT> value.
-    
+
     <b> Declarations:</b>
-    
+
     pass arguments explicitly:
     \code
     namespace vigra {
@@ -695,51 +695,51 @@ void differenceOfExponentialCrackEdgeImage(
                int min_edge_length, SrcValue non_edge_marker)
     }
     \endcode
-    
+
     use argument objects in conjunction with \ref ArgumentObjectFactories:
     \code
     namespace vigra {
         template <class Iterator, class Accessor, class SrcValue>
-        inline 
+        inline
         void removeShortEdges(
                triple<Iterator, Iterator, Accessor> src,
                int min_edge_length, SrcValue non_edge_marker)
     }
     \endcode
-    
+
     <b> Usage:</b>
-    
+
         <b>\#include</b> "<a href="edgedetection_8hxx-source.html">vigra/edgedetection.hxx</a>"<br>
     Namespace: vigra
-    
+
     \code
     vigra::BImage src(w,h), edges(w,h);
-    
+
     // empty edge image
     edges = 0;
     ...
-    
-    // find edges at scale 0.8 with gradient larger than 4.0, mark with 1 
-    vigra::differenceOfExponentialEdgeImage(srcImageRange(src), destImage(edges), 
+
+    // find edges at scale 0.8 with gradient larger than 4.0, mark with 1
+    vigra::differenceOfExponentialEdgeImage(srcImageRange(src), destImage(edges),
                                      0.8, 4.0, 1);
-                    
+
     // zero edges shorter than 10 pixels
     vigra::removeShortEdges(srcImageRange(edges), 10, 0);
     \endcode
 
     <b> Required Interface:</b>
-    
+
     \code
     SrcImageIterator src_upperleft, src_lowerright;
     DestImageIterator dest_upperleft;
-    
+
     SrcAccessor src_accessor;
     DestAccessor dest_accessor;
-    
+
     SrcAccessor::value_type u = src_accessor(src_upperleft);
 
     u == u
-    
+
     SrcValue non_edge_marker;
     src_accessor.set(non_edge_marker, src_upperleft);
     \endcode
@@ -756,18 +756,18 @@ void removeShortEdges(
     IImage labels(w, h);
     labels = 0;
 
-    int number_of_regions = 
-                labelImageWithBackground(srcIterRange(sul,slr,sa), 
+    int number_of_regions =
+                labelImageWithBackground(srcIterRange(sul,slr,sa),
                                      destImage(labels), true, non_edge_marker);
-    
-    ArrayOfRegionStatistics<FindROISize<int> > 
+
+    ArrayOfRegionStatistics<FindROISize<int> >
                                          region_stats(number_of_regions);
-    
+
     inspectTwoImages(srcImageRange(labels), srcImage(labels), region_stats);
-             
+
     IImage::Iterator ly = labels.upperLeft();
     Iterator oy = sul;
-    
+
     for(y=0; y<h; ++y, ++oy.y, ++ly.y)
     {
         Iterator ox(oy);
@@ -785,7 +785,7 @@ void removeShortEdges(
 }
 
 template <class Iterator, class Accessor, class Value>
-inline 
+inline
 void removeShortEdges(
            triple<Iterator, Iterator, Accessor> src,
        unsigned int min_edge_length, Value non_edge_marker)
@@ -802,32 +802,32 @@ void removeShortEdges(
 
 /** \brief Close one-pixel wide gaps in a cell grid edge image.
 
-    This algorithm is typically applied as a post-processing operation of 
+    This algorithm is typically applied as a post-processing operation of
     \ref differenceOfExponentialCrackEdgeImage(). The source image must fulfill
-    the requirements of a \ref CrackEdgeImage, and will still do so after 
+    the requirements of a \ref CrackEdgeImage, and will still do so after
     application of this algorithm.
 
-    It closes one pixel wide gaps in the edges resulting from this algorithm. 
-    Since these gaps are usually caused by zero crossing slightly below the gradient 
-    threshold used in edge detection, this algorithms acts like a weak hysteresis 
+    It closes one pixel wide gaps in the edges resulting from this algorithm.
+    Since these gaps are usually caused by zero crossing slightly below the gradient
+    threshold used in edge detection, this algorithms acts like a weak hysteresis
     thresholding. The newly found edge pixels are marked with the given <TT>edge_marker</TT>.
-    The image's value type must be equality comparable. 
-    
-    Note that this algorithm, unlike most other algorithms in VIGRA, operates in-place, 
+    The image's value type must be equality comparable.
+
+    Note that this algorithm, unlike most other algorithms in VIGRA, operates in-place,
     i.e. on only one image.
-    
+
     <b> Declarations:</b>
-    
+
     pass arguments explicitly:
     \code
     namespace vigra {
         template <class SrcIterator, class SrcAccessor, class SrcValue>
         void closeGapsInCrackEdgeImage(
-               SrcIterator sul, SrcIterator slr, SrcAccessor sa, 
+               SrcIterator sul, SrcIterator slr, SrcAccessor sa,
                SrcValue edge_marker)
     }
     \endcode
-    
+
     use argument objects in conjunction with \ref ArgumentObjectFactories:
     \code
     namespace vigra {
@@ -838,50 +838,50 @@ void removeShortEdges(
                SrcValue edge_marker)
     }
     \endcode
-    
+
     <b> Usage:</b>
-    
+
         <b>\#include</b> "<a href="edgedetection_8hxx-source.html">vigra/edgedetection.hxx</a>"<br>
     Namespace: vigra
-    
+
     \code
     vigra::BImage src(w,h), edges(2*w-1, 2*h-1);
-    
+
     // empty edge image
     edges = 0;
     ...
-    
-    // find edges at scale 0.8 with gradient larger than 4.0, mark with 1 
-    vigra::differenceOfExponentialCrackEdgeImage(srcImageRange(src), destImage(edges), 
+
+    // find edges at scale 0.8 with gradient larger than 4.0, mark with 1
+    vigra::differenceOfExponentialCrackEdgeImage(srcImageRange(src), destImage(edges),
                                          0.8, 4.0, 1);
-                    
+
     // close gaps, mark with 1
     vigra::closeGapsInCrackEdgeImage(srcImageRange(edges), 1);
-                    
+
     // zero edges shorter than 20 pixels
     vigra::removeShortEdges(srcImageRange(edges), 10, 0);
     \endcode
 
     <b> Required Interface:</b>
-    
+
     \code
     SrcImageIterator src_upperleft, src_lowerright;
-    
+
     SrcAccessor src_accessor;
     DestAccessor dest_accessor;
-    
+
     SrcAccessor::value_type u = src_accessor(src_upperleft);
 
     u == u
     u != u
-    
+
     SrcValue edge_marker;
     src_accessor.set(edge_marker, src_upperleft);
     \endcode
 */
 template <class SrcIterator, class SrcAccessor, class SrcValue>
 void closeGapsInCrackEdgeImage(
-               SrcIterator sul, SrcIterator slr, SrcAccessor sa, 
+               SrcIterator sul, SrcIterator slr, SrcAccessor sa,
            SrcValue edge_marker)
 {
     int w = (slr.x - sul.x) / 2;
@@ -894,21 +894,21 @@ void closeGapsInCrackEdgeImage(
     static const Diff2D bottom(0,1);
     static const Diff2D left(-1,0);
     static const Diff2D top(0,-1);
-    
-    static const Diff2D leftdist[] = { 
+
+    static const Diff2D leftdist[] = {
         Diff2D(0, 0), Diff2D(-1, 1), Diff2D(-2, 0), Diff2D(-1, -1)};
-    static const Diff2D rightdist[] = { 
+    static const Diff2D rightdist[] = {
         Diff2D(2, 0), Diff2D(1, 1), Diff2D(0, 0), Diff2D(1, -1)};
-    static const Diff2D topdist[] = { 
+    static const Diff2D topdist[] = {
         Diff2D(1, -1), Diff2D(0, 0), Diff2D(-1, -1), Diff2D(0, -2)};
-    static const Diff2D bottomdist[] = { 
+    static const Diff2D bottomdist[] = {
         Diff2D(1, 1), Diff2D(0, 2), Diff2D(-1, 1), Diff2D(0, 0)};
 
     int i;
 
     SrcIterator sy = sul + Diff2D(0,1);
     SrcIterator sx;
-    
+
     // close 1-pixel wide gaps (x-direction)
     for(y=0; y<h; ++y, sy.y+=2)
     {
@@ -927,25 +927,25 @@ void closeGapsInCrackEdgeImage(
 
             for(i=0; i<4; ++i)
             {
-                if(sa(sx, leftdist[i]) == edge_marker) 
+                if(sa(sx, leftdist[i]) == edge_marker)
                 {
                     ++count1;
                     count3 ^= 1 << i;
                 }
-                if(sa(sx, rightdist[i]) == edge_marker) 
+                if(sa(sx, rightdist[i]) == edge_marker)
                 {
                     ++count2;
                     count3 ^= 1 << i;
                 }
             }
 
-            if(count1 <= 1 || count2 <= 1 || count3 == 15) 
+            if(count1 <= 1 || count2 <= 1 || count3 == 15)
             {
                 sa.set(edge_marker, sx);
             }
         }
    }
-    
+
     sy = sul + Diff2D(1,2);
 
     // close 1-pixel wide gaps (y-direction)
@@ -1004,42 +1004,42 @@ void closeGapsInCrackEdgeImage(
 
 /** \brief Beautify crack edge image for visualization.
 
-    This algorithm is applied as a post-processing operation of 
+    This algorithm is applied as a post-processing operation of
     \ref differenceOfExponentialCrackEdgeImage(). The source image must fulfill
-    the requirements of a \ref CrackEdgeImage, but will <b> not</b> do so after 
-    application of this algorithm. In particular, the algorithm removes zero-cells 
+    the requirements of a \ref CrackEdgeImage, but will <b> not</b> do so after
+    application of this algorithm. In particular, the algorithm removes zero-cells
     marked as edges to avoid staircase effects on diagonal lines like this:
-    
+
     \code
     original edge points (*)     resulting edge points
-    
+
           . * . . .                   . * . . .
           . * * * .                   . . * . .
           . . . * .           =>      . . . * .
           . . . * *                   . . . . *
           . . . . .                   . . . . .
     \endcode
-    
-    Therfore, this algorithm should only be applied as a vizualization aid, i.e. 
-    for human inspection. The algorithm assumes that edges are marked with <TT>edge_marker</TT>, 
-    and background pixels with <TT>background_marker</TT>. The image's value type must be 
-    equality comparable. 
-    
-    Note that this algorithm, unlike most other algorithms in VIGRA, operates in-place, 
+
+    Therfore, this algorithm should only be applied as a vizualization aid, i.e.
+    for human inspection. The algorithm assumes that edges are marked with <TT>edge_marker</TT>,
+    and background pixels with <TT>background_marker</TT>. The image's value type must be
+    equality comparable.
+
+    Note that this algorithm, unlike most other algorithms in VIGRA, operates in-place,
     i.e. on only one image.
-    
+
     <b> Declarations:</b>
-    
+
     pass arguments explicitly:
     \code
     namespace vigra {
         template <class SrcIterator, class SrcAccessor, class SrcValue>
         void beautifyCrackEdgeImage(
-               SrcIterator sul, SrcIterator slr, SrcAccessor sa, 
+               SrcIterator sul, SrcIterator slr, SrcAccessor sa,
                SrcValue edge_marker, SrcValue background_marker)
     }
     \endcode
-    
+
     use argument objects in conjunction with \ref ArgumentObjectFactories:
     \code
     namespace vigra {
@@ -1050,50 +1050,50 @@ void closeGapsInCrackEdgeImage(
                SrcValue edge_marker, SrcValue background_marker)
     }
     \endcode
-    
+
     <b> Usage:</b>
-    
+
         <b>\#include</b> "<a href="edgedetection_8hxx-source.html">vigra/edgedetection.hxx</a>"<br>
     Namespace: vigra
-    
+
     \code
     vigra::BImage src(w,h), edges(2*w-1, 2*h-1);
-    
+
     // empty edge image
     edges = 0;
     ...
-    
-    // find edges at scale 0.8 with gradient larger than 4.0, mark with 1 
-    vigra::differenceOfExponentialCrackEdgeImage(srcImageRange(src), destImage(edges), 
+
+    // find edges at scale 0.8 with gradient larger than 4.0, mark with 1
+    vigra::differenceOfExponentialCrackEdgeImage(srcImageRange(src), destImage(edges),
                                          0.8, 4.0, 1);
-                    
+
     // beautify edge image for visualization
     vigra::beautifyCrackEdgeImage(destImageRange(edges), 1, 0);
-    
+
     // show to the user
     window.open(edges);
     \endcode
 
     <b> Required Interface:</b>
-    
+
     \code
     SrcImageIterator src_upperleft, src_lowerright;
-    
+
     SrcAccessor src_accessor;
     DestAccessor dest_accessor;
-    
+
     SrcAccessor::value_type u = src_accessor(src_upperleft);
 
     u == u
     u != u
-    
+
     SrcValue background_marker;
     src_accessor.set(background_marker, src_upperleft);
     \endcode
 */
 template <class SrcIterator, class SrcAccessor, class SrcValue>
 void beautifyCrackEdgeImage(
-               SrcIterator sul, SrcIterator slr, SrcAccessor sa, 
+               SrcIterator sul, SrcIterator slr, SrcAccessor sa,
            SrcValue edge_marker, SrcValue background_marker)
 {
     int w = (slr.x - sul.x) / 2;
@@ -1102,12 +1102,12 @@ void beautifyCrackEdgeImage(
 
     SrcIterator sy = sul + Diff2D(1,1);
     SrcIterator sx;
-    
+
     static const Diff2D right(1,0);
     static const Diff2D bottom(0,1);
     static const Diff2D left(-1,0);
     static const Diff2D top(0,-1);
-    
+
     //  delete 0-cells at corners
     for(y=0; y<h; ++y, sy.y+=2)
     {
@@ -1142,20 +1142,20 @@ class Edgel
 {
   public:
         /** The edgel's sub-pixel x coordinate.
-        */    
-    float x; 
+        */
+    float x;
 
         /** The edgel's sub-pixel y coordinate.
-        */    
+        */
     float y;
 
         /** The edgel's strength (magnitude of the gradient vector).
-        */    
+        */
     float strength;
-    
+
         /**
-        The edgel's orientation. This is the angle 
-        between the x-axis and the edge, so that the bright side of the 
+        The edgel's orientation. This is the angle
+        between the x-axis and the edge, so that the bright side of the
         edge is on the right. The angle is measured
         counter-clockwise in radians like this:
 
@@ -1165,7 +1165,7 @@ class Edgel
   edgel axis
       \  (bright side)
  (dark \
- side)  \ /__ 
+ side)  \ /__
          \\  \ orientation angle
           \  |
            +------------> x-axis
@@ -1183,11 +1183,11 @@ class Edgel
 
         */
     float orientation;
-    
+
     Edgel()
     : x(0.0f), y(0.0f), strength(0.0f), orientation(0.0f)
     {}
-    
+
     Edgel(float ix, float iy, float is, float io)
     : x(ix), y(iy), strength(is), orientation(io)
     {}
@@ -1201,7 +1201,7 @@ void internalCannyFindEdgels(Image1 const & gx,
 {
     typedef typename Image1::value_type PixelType;
     double t = 0.5 / VIGRA_CSTD::sin(M_PI/8.0);
-    
+
     for(int y=1; y<gx.height()-1; ++y)
     {
         for(int x=1; x<gx.width()-1; ++x)
@@ -1209,22 +1209,24 @@ void internalCannyFindEdgels(Image1 const & gx,
             PixelType gradx = gx(x,y);
             PixelType grady = gy(x,y);
             double mag = magnitude(x, y);
-            
+            if(!mag)
+                continue;
+
             int dx = (int)VIGRA_CSTD::floor(gradx*t/mag + 0.5);
             int dy = (int)VIGRA_CSTD::floor(grady*t/mag + 0.5);
-            
+
             int x1 = x - dx,
                 x2 = x + dx,
                 y1 = y - dy,
                 y2 = y + dy;
-                
+
             PixelType m1 = magnitude(x1, y1);
             PixelType m3 = magnitude(x2, y2);
-            
+
             if(m1 < mag && m3 <= mag)
             {
                 Edgel edgel;
-        
+
                 // local maximum => quadratic interpolation of sub-pixel location
                 PixelType del = (m1 - m3) / 2.0 / (m1 + m3 - 2.0*mag);
                 edgel.x = x + dx*del;
@@ -1249,19 +1251,19 @@ void internalCannyFindEdgels(Image1 const & gx,
 /** \brief Simple implementation of Canny's edge detector.
 
     This operator first calculates the gradient vector for each
-    pixel of the image using first derivatives of a Gaussian at the 
-    given scale. Then a very simple non-maxima supression is performed: 
-    for each 3x3 neighborhood, it is determined whether the center pixel has 
+    pixel of the image using first derivatives of a Gaussian at the
+    given scale. Then a very simple non-maxima supression is performed:
+    for each 3x3 neighborhood, it is determined whether the center pixel has
     larger gradient magnitude than its two neighbors in gradient direction
     (where the direction is rounded into octands). If this is the case,
     a new \ref Edgel is appended to the given vector of <TT>edgels</TT>. The subpixel
-    edgel position is determined by fitting a parabola 
-    to the three gradient magnitude values 
-    mentioned above. The sub-pixel location of the parabola's tip 
+    edgel position is determined by fitting a parabola
+    to the three gradient magnitude values
+    mentioned above. The sub-pixel location of the parabola's tip
     and the gradient magnitude and direction are written in the newly created edgel.
-    
+
     <b> Declarations:</b>
-    
+
     pass arguments explicitly:
     \code
     namespace vigra {
@@ -1270,49 +1272,49 @@ void internalCannyFindEdgels(Image1 const & gx,
                             BackInsertable & edgels, double scale);
     }
     \endcode
-    
+
     use argument objects in conjunction with \ref ArgumentObjectFactories:
     \code
     namespace vigra {
         template <class SrcIterator, class SrcAccessor, class BackInsertable>
-        void 
+        void
         cannyEdgelList(triple<SrcIterator, SrcIterator, SrcAccessor> src,
                        BackInsertable & edgels, double scale);
     }
     \endcode
-    
+
     <b> Usage:</b>
-    
+
     <b>\#include</b> "<a href="edgedetection_8hxx-source.html">vigra/edgedetection.hxx</a>"<br>
     Namespace: vigra
-    
+
     \code
     vigra::BImage src(w,h);
-    
+
     // empty edgel list
     std::vector<vigra::Edgel> edgels;
     ...
-    
-    // find edgels at scale 0.8  
+
+    // find edgels at scale 0.8
     vigra::cannyEdgelList(srcImageRange(src), edgels, 0.8);
     \endcode
 
     <b> Required Interface:</b>
-    
+
     \code
     SrcImageIterator src_upperleft;
     SrcAccessor src_accessor;
-    
+
     src_accessor(src_upperleft);
-    
+
     BackInsertable edgels;
     edgels.push_back(Edgel());
     \endcode
-    
+
     SrcAccessor::value_type must be a type convertible to float
-    
+
     <b> Preconditions:</b>
-    
+
     \code
     scale > 0
     \endcode
@@ -1323,35 +1325,35 @@ void cannyEdgelList(SrcIterator ul, SrcIterator lr, SrcAccessor src,
 {
     int w = lr.x - ul.x;
     int h = lr.y - ul.y;
-    
+
     // calculate image gradients
-    typedef typename 
+    typedef typename
         NumericTraits<typename SrcAccessor::value_type>::RealPromote
         TmpType;
-        
+
     BasicImage<TmpType> tmp(w,h), dx(w,h), dy(w,h);
-    
+
     Kernel1D<double> smooth, grad;
-    
+
     smooth.initGaussian(scale);
     grad.initGaussianDerivative(scale, 1);
-    
+
     separableConvolveX(srcIterRange(ul, lr, src), destImage(tmp), kernel1d(grad));
     separableConvolveY(srcImageRange(tmp), destImage(dx), kernel1d(smooth));
-    
+
     separableConvolveY(srcIterRange(ul, lr, src), destImage(tmp), kernel1d(grad));
     separableConvolveX(srcImageRange(tmp), destImage(dy), kernel1d(smooth));
-    
+
     combineTwoImages(srcImageRange(dx), srcImage(dy), destImage(tmp),
                      MagnitudeFunctor<TmpType>());
-    
-    
+
+
     // find edgels
     internalCannyFindEdgels(dx, dy, tmp, edgels);
 }
 
 template <class SrcIterator, class SrcAccessor, class BackInsertable>
-inline void 
+inline void
 cannyEdgelList(triple<SrcIterator, SrcIterator, SrcAccessor> src,
                BackInsertable & edgels, double scale)
 {
@@ -1366,19 +1368,19 @@ cannyEdgelList(triple<SrcIterator, SrcIterator, SrcAccessor> src,
 
 /** \brief Detect and mark edges in an edge image using Canny's algorithm.
 
-    This operator first calls \ref cannyEdgelList() to generate an 
+    This operator first calls \ref cannyEdgelList() to generate an
     edgel list for the given image. Then it scans this list and selects edgels
-    whose strength is above the given <TT>gradient_threshold</TT>. For each of these 
+    whose strength is above the given <TT>gradient_threshold</TT>. For each of these
     edgels, the edgel's location is rounded to the nearest pixel, and that
     pixel marked with the given <TT>edge_marker</TT>.
-    
+
     <b> Declarations:</b>
-    
+
     pass arguments explicitly:
     \code
     namespace vigra {
         template <class SrcIterator, class SrcAccessor,
-                  class DestIterator, class DestAccessor, 
+                  class DestIterator, class DestAccessor,
                   class GradValue, class DestValue>
         void cannyEdgeImage(
                    SrcIterator sul, SrcIterator slr, SrcAccessor sa,
@@ -1386,12 +1388,12 @@ cannyEdgelList(triple<SrcIterator, SrcIterator, SrcAccessor> src,
                    double scale, GradValue gradient_threshold, DestValue edge_marker);
     }
     \endcode
-    
+
     use argument objects in conjunction with \ref ArgumentObjectFactories:
     \code
     namespace vigra {
         template <class SrcIterator, class SrcAccessor,
-                  class DestIterator, class DestAccessor, 
+                  class DestIterator, class DestAccessor,
                   class GradValue, class DestValue>
         inline void cannyEdgeImage(
                    triple<SrcIterator, SrcIterator, SrcAccessor> src,
@@ -1399,45 +1401,45 @@ cannyEdgelList(triple<SrcIterator, SrcIterator, SrcAccessor> src,
                    double scale, GradValue gradient_threshold, DestValue edge_marker);
     }
     \endcode
-    
+
     <b> Usage:</b>
-    
+
     <b>\#include</b> "<a href="edgedetection_8hxx-source.html">vigra/edgedetection.hxx</a>"<br>
     Namespace: vigra
-    
+
     \code
     vigra::BImage src(w,h), edges(w,h);
-    
+
     // empty edge image
     edges = 0;
     ...
-    
-    // find edges at scale 0.8 with gradient larger than 4.0, mark with 1 
-    vigra::cannyEdgeImage(srcImageRange(src), destImage(edges), 
+
+    // find edges at scale 0.8 with gradient larger than 4.0, mark with 1
+    vigra::cannyEdgeImage(srcImageRange(src), destImage(edges),
                                      0.8, 4.0, 1);
     \endcode
 
     <b> Required Interface:</b>
-    
+
     see also: \ref cannyEdgelList().
-    
+
     \code
     DestImageIterator dest_upperleft;
     DestAccessor dest_accessor;
     DestValue edge_marker;
-    
+
     dest_accessor.set(edge_marker, dest_upperleft, vigra::Diff2D(1,1));
     \endcode
-    
+
     <b> Preconditions:</b>
-    
+
     \code
     scale > 0
     gradient_threshold > 0
     \endcode
 */
 template <class SrcIterator, class SrcAccessor,
-          class DestIterator, class DestAccessor, 
+          class DestIterator, class DestAccessor,
           class GradValue, class DestValue>
 void cannyEdgeImage(
            SrcIterator sul, SrcIterator slr, SrcAccessor sa,
@@ -1445,22 +1447,22 @@ void cannyEdgeImage(
            double scale, GradValue gradient_threshold, DestValue edge_marker)
 {
     std::vector<Edgel> edgels;
-    
+
     cannyEdgelList(sul, slr, sa, edgels, scale);
-    
+
     for(unsigned int i=0; i<edgels.size(); ++i)
     {
         if(gradient_threshold < edgels[i].strength)
         {
             Diff2D pix((int)(edgels[i].x + 0.5), (int)(edgels[i].y + 0.5));
-            
+
             da.set(edge_marker, dul, pix);
         }
     }
 }
 
 template <class SrcIterator, class SrcAccessor,
-          class DestIterator, class DestAccessor, 
+          class DestIterator, class DestAccessor,
           class GradValue, class DestValue>
 inline void cannyEdgeImage(
            triple<SrcIterator, SrcIterator, SrcAccessor> src,
@@ -1485,7 +1487,7 @@ int neighborhoodConfiguration(DestIterator dul)
     {
         v = (v << 1) | ((*c != 0) ? 1 : 0);
     }
-    
+
     return v;
 }
 
@@ -1494,24 +1496,24 @@ struct SimplePoint
 {
     Diff2D point;
     GradValue grad;
-    
+
     SimplePoint(Diff2D const & p, GradValue g)
     : point(p), grad(g)
     {}
-    
+
     bool operator<(SimplePoint const & o) const
     {
-        return grad < o.grad; 
+        return grad < o.grad;
     }
-    
+
     bool operator>(SimplePoint const & o) const
     {
-        return grad > o.grad; 
+        return grad > o.grad;
     }
 };
 
 template <class SrcIterator, class SrcAccessor,
-          class DestIterator, class DestAccessor, 
+          class DestIterator, class DestAccessor,
           class GradValue, class DestValue>
 void cannyEdgeImageFromGrad(
            SrcIterator sul, SrcIterator slr, SrcAccessor grad,
@@ -1520,18 +1522,18 @@ void cannyEdgeImageFromGrad(
 {
     typedef typename SrcAccessor::value_type PixelType;
     typedef typename NormTraits<PixelType>::SquaredNormType NormType;
-    
+
     NormType zero = NumericTraits<NormType>::zero();
     double tan22_5 = M_SQRT2 - 1.0;
     typename NormTraits<GradValue>::SquaredNormType g2thresh = squaredNorm(gradient_threshold);
-        
+
     int w = slr.x - sul.x;
     int h = slr.y - sul.y;
-    
+
     sul += Diff2D(1,1);
     dul += Diff2D(1,1);
     Diff2D p(0,0);
-    
+
     for(int y = 1; y < h-1; ++y, ++sul.y, ++dul.y)
     {
         SrcIterator sx = sul;
@@ -1542,7 +1544,7 @@ void cannyEdgeImageFromGrad(
             NormType g2n = squaredNorm(g);
             if(g2n < g2thresh)
                 continue;
-            
+
             NormType g2n1, g2n3;
             // find out quadrant
             if(abs(g[1]) < tan22_5*abs(g[0]))
@@ -1569,7 +1571,7 @@ void cannyEdgeImageFromGrad(
                 g2n1 = squaredNorm(grad(sx, Diff2D(-1, -1)));
                 g2n3 = squaredNorm(grad(sx, Diff2D(1, 1)));
             }
-            
+
             if(g2n1 < g2n && g2n3 <= g2n)
             {
                 da.set(edge_marker, dx);
@@ -1589,137 +1591,137 @@ void cannyEdgeImageFromGrad(
 /** \brief Detect and mark edges in an edge image using Canny's algorithm.
 
     The input pixels of this algorithms must be vectors of length 2 (see Required Interface below).
-    It first searches for all pixels whose gradient magnitude is larger 
-    than the given <tt>gradient_threshold</tt> and larger than the magnitude of its two neighbors 
-    in gradient direction (where these neighbors are determined by nearest neighbor 
-    interpolation, i.e. according to the octant where the gradient points into). 
+    It first searches for all pixels whose gradient magnitude is larger
+    than the given <tt>gradient_threshold</tt> and larger than the magnitude of its two neighbors
+    in gradient direction (where these neighbors are determined by nearest neighbor
+    interpolation, i.e. according to the octant where the gradient points into).
     The resulting edge pixel candidates are then subjected to topological thinning
     so that the remaining edge pixels can be linked into edgel chains with a provable,
     non-heuristic algorithm. Thinning is performed so that the pixels with highest gradient
     magnitude survive. Optionally, the outermost pixels are marked as edge pixels
     as well when <tt>addBorder</tt> is true. The remaining pixels will be marked in the destination
     image with the value of <tt>edge_marker</tt> (all non-edge pixels remain untouched).
-    
+
     <b> Declarations:</b>
-    
+
     pass arguments explicitly:
     \code
     namespace vigra {
         template <class SrcIterator, class SrcAccessor,
-                  class DestIterator, class DestAccessor, 
+                  class DestIterator, class DestAccessor,
                   class GradValue, class DestValue>
         void cannyEdgeImageFromGradWithThinning(
                    SrcIterator sul, SrcIterator slr, SrcAccessor sa,
                    DestIterator dul, DestAccessor da,
-                   GradValue gradient_threshold, 
+                   GradValue gradient_threshold,
                    DestValue edge_marker, bool addBorder = true);
     }
     \endcode
-    
+
     use argument objects in conjunction with \ref ArgumentObjectFactories:
     \code
     namespace vigra {
         template <class SrcIterator, class SrcAccessor,
-                  class DestIterator, class DestAccessor, 
+                  class DestIterator, class DestAccessor,
                   class GradValue, class DestValue>
         void cannyEdgeImageFromGradWithThinning(
                    triple<SrcIterator, SrcIterator, SrcAccessor> src,
                    pair<DestIterator, DestAccessor> dest,
-                   GradValue gradient_threshold, 
+                   GradValue gradient_threshold,
                    DestValue edge_marker, bool addBorder = true);
     }
     \endcode
-    
+
     <b> Usage:</b>
-    
+
     <b>\#include</b> "<a href="edgedetection_8hxx-source.html">vigra/edgedetection.hxx</a>"<br>
     Namespace: vigra
-    
+
     \code
     vigra::BImage src(w,h), edges(w,h);
-    
+
     vigra::FVector2Image grad(w,h);
     // compute the image gradient at scale 0.8
     vigra::gaussianGradient(srcImageRange(src), destImage(grad), 0.8);
-    
+
     // empty edge image
     edges = 0;
     // find edges gradient larger than 4.0, mark with 1, and add border
-    vigra::cannyEdgeImageFromGradWithThinning(srcImageRange(grad), destImage(edges), 
+    vigra::cannyEdgeImageFromGradWithThinning(srcImageRange(grad), destImage(edges),
                                               4.0, 1, true);
     \endcode
 
     <b> Required Interface:</b>
-    
+
     \code
     // the input pixel type must be a vector with two elements
     SrcImageIterator src_upperleft;
     SrcAccessor src_accessor;
     typedef SrcAccessor::value_type SrcPixel;
     typedef NormTraits<SrcPixel>::SquaredNormType SrcSquaredNormType;
-    
+
     SrcPixel g = src_accessor(src_upperleft);
     SrcPixel::value_type g0 = g[0];
     SrcSquaredNormType gn = squaredNorm(g);
-    
+
     DestImageIterator dest_upperleft;
     DestAccessor dest_accessor;
     DestValue edge_marker;
-    
+
     dest_accessor.set(edge_marker, dest_upperleft, vigra::Diff2D(1,1));
     \endcode
-    
+
     <b> Preconditions:</b>
-    
+
     \code
     gradient_threshold > 0
     \endcode
 */
 template <class SrcIterator, class SrcAccessor,
-          class DestIterator, class DestAccessor, 
+          class DestIterator, class DestAccessor,
           class GradValue, class DestValue>
 void cannyEdgeImageFromGradWithThinning(
            SrcIterator sul, SrcIterator slr, SrcAccessor sa,
            DestIterator dul, DestAccessor da,
-           GradValue gradient_threshold, 
+           GradValue gradient_threshold,
            DestValue edge_marker, bool addBorder)
 {
     int w = slr.x - sul.x;
     int h = slr.y - sul.y;
-    
+
     BImage edgeImage(w, h, BImage::value_type(0));
     BImage::traverser eul = edgeImage.upperLeft();
     BImage::Accessor ea = edgeImage.accessor();
     if(addBorder)
         initImageBorder(destImageRange(edgeImage), 1, 1);
     detail::cannyEdgeImageFromGrad(sul, slr, sa, eul, ea, gradient_threshold, 1);
-    
+
     static bool isSimplePoint[256] = {
-        0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 
-        0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 
-        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 
-        1, 1, 1, 0, 0, 0, 1, 1, 1, 1, 0, 1, 0, 1, 0, 1, 0, 1, 
-        0, 0, 0, 0, 0, 1, 0, 1, 1, 1, 0, 1, 1, 0, 1, 0, 1, 1, 
-        0, 1, 1, 0, 1, 0, 0, 1, 0, 1, 0, 1, 0, 1, 0, 0, 0, 0, 
-        0, 1, 0, 1, 1, 1, 0, 1, 1, 0, 1, 0, 1, 1, 0, 1, 1, 0, 
-        1, 0, 0, 0, 0, 1, 0, 1, 0, 1, 0, 0, 0, 0, 0, 1, 0, 1, 
-        0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 
-        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
-        0, 1, 0, 1, 0, 0, 0, 0, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 
-        0, 1, 0, 0, 0, 0, 0, 1, 0, 1, 1, 1, 0, 1, 1, 0, 1, 0, 
-        1, 1, 0, 1, 1, 0, 1, 0, 1, 1, 0, 1, 0, 1, 0, 1, 0, 0, 
-        0, 0, 0, 1, 0, 1, 1, 1, 0, 1, 1, 0, 1, 0, 1, 1, 0, 1, 
+        0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0,
+        0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1,
+        1, 1, 1, 0, 0, 0, 1, 1, 1, 1, 0, 1, 0, 1, 0, 1, 0, 1,
+        0, 0, 0, 0, 0, 1, 0, 1, 1, 1, 0, 1, 1, 0, 1, 0, 1, 1,
+        0, 1, 1, 0, 1, 0, 0, 1, 0, 1, 0, 1, 0, 1, 0, 0, 0, 0,
+        0, 1, 0, 1, 1, 1, 0, 1, 1, 0, 1, 0, 1, 1, 0, 1, 1, 0,
+        1, 0, 0, 0, 0, 1, 0, 1, 0, 1, 0, 0, 0, 0, 0, 1, 0, 1,
+        0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 1, 0, 1, 0, 0, 0, 0, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1,
+        0, 1, 0, 0, 0, 0, 0, 1, 0, 1, 1, 1, 0, 1, 1, 0, 1, 0,
+        1, 1, 0, 1, 1, 0, 1, 0, 1, 1, 0, 1, 0, 1, 0, 1, 0, 0,
+        0, 0, 0, 1, 0, 1, 1, 1, 0, 1, 1, 0, 1, 0, 1, 1, 0, 1,
         1, 0, 1, 0 };
-        
+
     eul += Diff2D(1,1);
     sul += Diff2D(1,1);
     int w2 = w-2;
     int h2 = h-2;
-    
+
     typedef detail::SimplePoint<GradValue> SP;
     // use std::greater becaus we need the smallest gradients at the top of the queue
     std::priority_queue<SP, std::vector<SP>, std::greater<SP> >  pqueue;
-    
+
     Diff2D p(0,0);
     for(; p.y < h2; ++p.y)
     {
@@ -1736,7 +1738,7 @@ void cannyEdgeImageFromGradWithThinning(
             }
         }
     }
-    
+
     static const Diff2D dist[] = { Diff2D(-1,0), Diff2D(0,-1),
                                    Diff2D(1,0),  Diff2D(0,1) };
 
@@ -1744,20 +1746,20 @@ void cannyEdgeImageFromGradWithThinning(
     {
         p = pqueue.top().point;
         pqueue.pop();
-        
+
         BImage::traverser e = eul + p;
         int v = detail::neighborhoodConfiguration(e);
         if(!isSimplePoint[v])
             continue; // point may no longer be simple because its neighbors changed
-            
+
         *e = 0; // delete simple point
-        
+
         for(int i=0; i<4; ++i)
         {
             Diff2D pneu = p + dist[i];
             if(pneu.x == -1 || pneu.y == -1 || pneu.x == w2 || pneu.y == h2)
                 continue; // do not remove points at the border
-                
+
             BImage::traverser eneu = eul + pneu;
             if(*eneu == 1) // point is boundary and not yet in the queue
             {
@@ -1770,18 +1772,18 @@ void cannyEdgeImageFromGradWithThinning(
             }
         }
     }
-    
+
     initImageIf(destIterRange(dul, dul+Diff2D(w,h), da),
                 maskImage(edgeImage), edge_marker);
 }
 
 template <class SrcIterator, class SrcAccessor,
-          class DestIterator, class DestAccessor, 
+          class DestIterator, class DestAccessor,
           class GradValue, class DestValue>
 inline void cannyEdgeImageFromGradWithThinning(
            triple<SrcIterator, SrcIterator, SrcAccessor> src,
            pair<DestIterator, DestAccessor> dest,
-           GradValue gradient_threshold, 
+           GradValue gradient_threshold,
            DestValue edge_marker, bool addBorder)
 {
     cannyEdgeImageFromGradWithThinning(src.first, src.second, src.third,
@@ -1790,7 +1792,7 @@ inline void cannyEdgeImageFromGradWithThinning(
 }
 
 template <class SrcIterator, class SrcAccessor,
-          class DestIterator, class DestAccessor, 
+          class DestIterator, class DestAccessor,
           class GradValue, class DestValue>
 inline void cannyEdgeImageFromGradWithThinning(
            SrcIterator sul, SrcIterator slr, SrcAccessor sa,
@@ -1803,7 +1805,7 @@ inline void cannyEdgeImageFromGradWithThinning(
 }
 
 template <class SrcIterator, class SrcAccessor,
-          class DestIterator, class DestAccessor, 
+          class DestIterator, class DestAccessor,
           class GradValue, class DestValue>
 inline void cannyEdgeImageFromGradWithThinning(
            triple<SrcIterator, SrcIterator, SrcAccessor> src,
@@ -1824,99 +1826,99 @@ inline void cannyEdgeImageFromGradWithThinning(
 /** \brief Detect and mark edges in an edge image using Canny's algorithm.
 
     This operator first calls \ref gaussianGradient() to compute the gradient of the input
-    image, ad then \ref cannyEdgeImageFromGradWithThinning() to generate an 
+    image, ad then \ref cannyEdgeImageFromGradWithThinning() to generate an
     edge image. See there for more detailed documentation.
-    
+
     <b> Declarations:</b>
-    
+
     pass arguments explicitly:
     \code
     namespace vigra {
         template <class SrcIterator, class SrcAccessor,
-                  class DestIterator, class DestAccessor, 
+                  class DestIterator, class DestAccessor,
                   class GradValue, class DestValue>
         void cannyEdgeImageWithThinning(
                    SrcIterator sul, SrcIterator slr, SrcAccessor sa,
                    DestIterator dul, DestAccessor da,
-                   double scale, GradValue gradient_threshold, 
+                   double scale, GradValue gradient_threshold,
                    DestValue edge_marker, bool addBorder = true);
     }
     \endcode
-    
+
     use argument objects in conjunction with \ref ArgumentObjectFactories:
     \code
     namespace vigra {
         template <class SrcIterator, class SrcAccessor,
-                  class DestIterator, class DestAccessor, 
+                  class DestIterator, class DestAccessor,
                   class GradValue, class DestValue>
         void cannyEdgeImageWithThinning(
                    triple<SrcIterator, SrcIterator, SrcAccessor> src,
                    pair<DestIterator, DestAccessor> dest,
-                   double scale, GradValue gradient_threshold, 
+                   double scale, GradValue gradient_threshold,
                    DestValue edge_marker, bool addBorder = true);
     }
     \endcode
-    
+
     <b> Usage:</b>
-    
+
     <b>\#include</b> "<a href="edgedetection_8hxx-source.html">vigra/edgedetection.hxx</a>"<br>
     Namespace: vigra
-    
+
     \code
     vigra::BImage src(w,h), edges(w,h);
-    
+
     // empty edge image
     edges = 0;
     ...
-    
+
     // find edges at scale 0.8 with gradient larger than 4.0, mark with 1, annd add border
-    vigra::cannyEdgeImageWithThinning(srcImageRange(src), destImage(edges), 
+    vigra::cannyEdgeImageWithThinning(srcImageRange(src), destImage(edges),
                                      0.8, 4.0, 1, true);
     \endcode
 
     <b> Required Interface:</b>
-    
+
     see also: \ref cannyEdgelList().
-    
+
     \code
     DestImageIterator dest_upperleft;
     DestAccessor dest_accessor;
     DestValue edge_marker;
-    
+
     dest_accessor.set(edge_marker, dest_upperleft, vigra::Diff2D(1,1));
     \endcode
-    
+
     <b> Preconditions:</b>
-    
+
     \code
     scale > 0
     gradient_threshold > 0
     \endcode
 */
 template <class SrcIterator, class SrcAccessor,
-          class DestIterator, class DestAccessor, 
+          class DestIterator, class DestAccessor,
           class GradValue, class DestValue>
 void cannyEdgeImageWithThinning(
            SrcIterator sul, SrcIterator slr, SrcAccessor sa,
            DestIterator dul, DestAccessor da,
-           double scale, GradValue gradient_threshold, 
+           double scale, GradValue gradient_threshold,
            DestValue edge_marker, bool addBorder)
 {
     // mark pixels that are higher than their neighbors in gradient direction
     typedef typename NumericTraits<typename SrcAccessor::value_type>::RealPromote TmpType;
     BasicImage<TinyVector<TmpType, 2> > grad(slr-sul);
     gaussianGradient(srcIterRange(sul, slr, sa), destImage(grad), scale);
-    cannyEdgeImageFromGradWithThinning(srcImageRange(grad), destIter(dul, da), 
+    cannyEdgeImageFromGradWithThinning(srcImageRange(grad), destIter(dul, da),
                                gradient_threshold, edge_marker, addBorder);
 }
 
 template <class SrcIterator, class SrcAccessor,
-          class DestIterator, class DestAccessor, 
+          class DestIterator, class DestAccessor,
           class GradValue, class DestValue>
 inline void cannyEdgeImageWithThinning(
            triple<SrcIterator, SrcIterator, SrcAccessor> src,
            pair<DestIterator, DestAccessor> dest,
-           double scale, GradValue gradient_threshold, 
+           double scale, GradValue gradient_threshold,
            DestValue edge_marker, bool addBorder)
 {
     cannyEdgeImageWithThinning(src.first, src.second, src.third,
@@ -1925,7 +1927,7 @@ inline void cannyEdgeImageWithThinning(
 }
 
 template <class SrcIterator, class SrcAccessor,
-          class DestIterator, class DestAccessor, 
+          class DestIterator, class DestAccessor,
           class GradValue, class DestValue>
 inline void cannyEdgeImageWithThinning(
            SrcIterator sul, SrcIterator slr, SrcAccessor sa,
@@ -1938,7 +1940,7 @@ inline void cannyEdgeImageWithThinning(
 }
 
 template <class SrcIterator, class SrcAccessor,
-          class DestIterator, class DestAccessor, 
+          class DestIterator, class DestAccessor,
           class GradValue, class DestValue>
 inline void cannyEdgeImageWithThinning(
            triple<SrcIterator, SrcIterator, SrcAccessor> src,
@@ -1959,14 +1961,14 @@ void internalCannyFindEdgels3x3(Image1 const & grad,
 {
     typedef typename Image1::value_type PixelType;
     typedef typename PixelType::value_type ValueType;
-    
+
     for(int y=1; y<grad.height()-1; ++y)
     {
         for(int x=1; x<grad.width()-1; ++x)
         {
             if(!mask(x,y))
                 continue;
-                
+
             ValueType gradx = grad(x,y)[0];
             ValueType grady = grad(x,y)[1];
             double mag = hypot(gradx, grady),
@@ -1975,7 +1977,7 @@ void internalCannyFindEdgels3x3(Image1 const & grad,
 
             Matrix<double> ml(3,3), mr(3,1), l(3,1), r(3,1);
             l(0,0) = 1.0;
-            
+
             for(int yy = -1; yy <= 1; ++yy)
             {
                 for(int xx = -1; xx <= 1; ++xx)
@@ -1988,11 +1990,11 @@ void internalCannyFindEdgels3x3(Image1 const & grad,
                     mr += v*l;
                 }
             }
-            
+
             linearSolve(ml, mr, r);
 
             Edgel edgel;
-        
+
             // local maximum => quadratic interpolation of sub-pixel location
             double del = -r(1,0) / 2.0 / r(2,0);
             if(std::fabs(del) > 1.5)  // don't move by more than about a pixel diameter
@@ -2021,13 +2023,13 @@ void internalCannyFindEdgels3x3(Image1 const & grad,
     This operator first computes pixels which are crossed by the edge using
     cannyEdgeImageWithThinning(). The gradient magnitude in the 3x3 neighborhood of these
     pixels are then projected onto the normal of the edge (as determined
-    by the gradient direction). The edgel's subpixel location is found by fitting a 
-    parabola through the 9 gradient values and determining the parabola's tip. 
+    by the gradient direction). The edgel's subpixel location is found by fitting a
+    parabola through the 9 gradient values and determining the parabola's tip.
     A new \ref Edgel is appended to the given vector of <TT>edgels</TT>. Since the parabola
     is fitted to 9 points rather than 3 points as in cannyEdgelList(), the accuracy is higher.
-    
+
     <b> Declarations:</b>
-    
+
     pass arguments explicitly:
     \code
     namespace vigra {
@@ -2036,49 +2038,49 @@ void internalCannyFindEdgels3x3(Image1 const & grad,
                                BackInsertable & edgels, double scale);
     }
     \endcode
-    
+
     use argument objects in conjunction with \ref ArgumentObjectFactories:
     \code
     namespace vigra {
         template <class SrcIterator, class SrcAccessor, class BackInsertable>
-        void 
+        void
         cannyEdgelList3x3(triple<SrcIterator, SrcIterator, SrcAccessor> src,
                           BackInsertable & edgels, double scale);
     }
     \endcode
-    
+
     <b> Usage:</b>
-    
+
     <b>\#include</b> "<a href="edgedetection_8hxx-source.html">vigra/edgedetection.hxx</a>"<br>
     Namespace: vigra
-    
+
     \code
     vigra::BImage src(w,h);
-    
+
     // empty edgel list
     std::vector<vigra::Edgel> edgels;
     ...
-    
-    // find edgels at scale 0.8  
+
+    // find edgels at scale 0.8
     vigra::cannyEdgelList3x3(srcImageRange(src), edgels, 0.8);
     \endcode
 
     <b> Required Interface:</b>
-    
+
     \code
     SrcImageIterator src_upperleft;
     SrcAccessor src_accessor;
-    
+
     src_accessor(src_upperleft);
-    
+
     BackInsertable edgels;
     edgels.push_back(Edgel());
     \endcode
-    
+
     SrcAccessor::value_type must be a type convertible to float
-    
+
     <b> Preconditions:</b>
-    
+
     \code
     scale > 0
     \endcode
@@ -2093,17 +2095,17 @@ void cannyEdgelList3x3(SrcIterator ul, SrcIterator lr, SrcAccessor src,
     typedef typename NumericTraits<typename SrcAccessor::value_type>::RealPromote TmpType;
     BasicImage<TinyVector<TmpType, 2> > grad(lr-ul);
     gaussianGradient(srcIterRange(ul, lr, src), destImage(grad), scale);
-    
+
     UInt8Image edges(lr-ul);
-    cannyEdgeImageFromGradWithThinning(srcImageRange(grad), destImage(edges), 
-                                       0.0, 1, false);    
-    
+    cannyEdgeImageFromGradWithThinning(srcImageRange(grad), destImage(edges),
+                                       0.0, 1, false);
+
     // find edgels
     internalCannyFindEdgels3x3(grad, edges, edgels);
 }
 
 template <class SrcIterator, class SrcAccessor, class BackInsertable>
-inline void 
+inline void
 cannyEdgelList3x3(triple<SrcIterator, SrcIterator, SrcAccessor> src,
                BackInsertable & edgels, double scale)
 {
@@ -2116,11 +2118,11 @@ cannyEdgelList3x3(triple<SrcIterator, SrcIterator, SrcAccessor> src,
 
 /** \page CrackEdgeImage Crack Edge Image
 
-Crack edges are marked <i>between</i> the pixels of an image. 
+Crack edges are marked <i>between</i> the pixels of an image.
 A Crack Edge Image is an image that represents these edges. In order
 to accomodate the cracks, the Crack Edge Image must be twice as large
 as the original image (precisely (2*w - 1) by (2*h - 1)). A Crack Edge Image
-can easily be derived from a binary image or from the signs of the 
+can easily be derived from a binary image or from the signs of the
 response of a Laplacean filter. Consider the following sketch, where
 <TT>+</TT> encodes the foreground, <TT>-</TT> the background, and
 <TT>*</TT> the resulting crack edges.
@@ -2136,9 +2138,9 @@ sign of difference image         insert cracks         resulting CrackEdgeImage
     \endcode
 
 Starting from the original binary image (left), we insert crack pixels
-to get to the double-sized image (center). Finally, we mark all 
-crack pixels whose non-crack neighbors have different signs as 
-crack edge points, while all other pixels (crack and non-crack) become 
+to get to the double-sized image (center). Finally, we mark all
+crack pixels whose non-crack neighbors have different signs as
+crack edge points, while all other pixels (crack and non-crack) become
 region pixels.
 
 <b>Requirements on a Crack Edge Image:</b>
@@ -2148,14 +2150,14 @@ region pixels.
     <li>Crack pixels have at least one odd coordinate.
     <li>Only crack pixels may be marked as edge points.
     <li>Crack pixels with two odd coordinates must be marked as edge points
-        whenever any of their neighboring crack pixels was marked.  
+        whenever any of their neighboring crack pixels was marked.
 </ul>
 
-The last two requirements ensure that both edges and regions are 4-connected. 
-Thus, 4-connectivity and 8-connectivity yield identical connected 
+The last two requirements ensure that both edges and regions are 4-connected.
+Thus, 4-connectivity and 8-connectivity yield identical connected
 components in a Crack Edge Image (so called <i>well-composedness</i>).
 This ensures that Crack Edge Images have nice topological properties
-(cf. L. J. Latecki: "Well-Composed Sets", Academic Press, 2000). 
+(cf. L. J. Latecki: "Well-Composed Sets", Academic Press, 2000).
 */
 
 
