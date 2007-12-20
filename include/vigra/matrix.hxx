@@ -942,6 +942,56 @@ joinHorizontally(const MultiArrayView<2, T, C1> &a, const MultiArrayView<2, T, C
     return t;
 }
 
+    /** Initialize a matrix with repeated copies of a given matrix.
+    
+        Matrix \a r will consist of \a verticalCount downward repetitions of \a v,
+        and \a horizontalCount side-by-side repetitions. When \a v has size <tt>m</tt> by <tt>n</tt>,
+        \a r must have size <tt>(m*verticalCount)</tt> by <tt>(n*horizontalCount)</tt>.
+
+    <b>\#include</b> "<a href="matrix_8hxx-source.html">vigra/matrix.hxx</a>" or<br>
+    <b>\#include</b> "<a href="linear__algebra_8hxx-source.html">vigra/linear_algebra.hxx</a>"<br>
+        Namespace: vigra::linalg
+     */
+template <class T, class C1, class C2>
+void repeatMatrix(MultiArrayView<2, T, C1> const & v, MultiArrayView<2, T, C2> &r, 
+                  unsigned int verticalCount, unsigned int horizontalCount)
+{
+    typedef typename Matrix<T>::difference_type Shape;
+
+    int m = rowCount(v), n = columnCount(v);
+    vigra_precondition(m*verticalCount == rowCount(r) && n*horizontalCount == columnCount(r),
+        "repeatMatrix(): Shape mismatch.");
+        
+    for(unsigned int l=0; l<horizontalCount; ++l)
+    {
+        for(unsigned int k=0; k<verticalCount; ++k)
+        {
+            r.subarray(Shape(k*m, l*n), Shape((k+1)*m, (l+1)*n)) = v;
+        }
+    }
+}
+
+    /** Create a new matrix by repeating a given matrix.
+    
+        The resulting matrix \a r will consist of \a verticalCount downward repetitions of \a v,
+        and \a horizontalCount side-by-side repetitions, i.e. it will be of size 
+        <tt>(m*verticalCount)</tt> by <tt>(n*horizontalCount)</tt> when \a v has size <tt>m</tt> by <tt>n</tt>.
+        The result is returned as a temporary matrix.
+
+    <b>\#include</b> "<a href="matrix_8hxx-source.html">vigra/matrix.hxx</a>" or<br>
+    <b>\#include</b> "<a href="linear__algebra_8hxx-source.html">vigra/linear_algebra.hxx</a>"<br>
+        Namespace: vigra::linalg
+     */
+template <class T, class C>
+TemporaryMatrix<T> 
+repeatMatrix(MultiArrayView<2, T, C> const & v, unsigned int verticalCount, unsigned int horizontalCount)
+{
+    int m = rowCount(v), n = columnCount(v);
+    TemporaryMatrix<T> ret(verticalCount*m, horizontalCount*n);
+    repeatMatrix(v, ret, verticalCount, horizontalCount);
+    return ret;
+}
+
     /** add matrices \a a and \a b.
         The result is written into \a r. All three matrices must have the same shape.
 
@@ -2220,12 +2270,8 @@ columnStatistics(const MultiArrayView<2, T1, C1> & A,
 {
     detail::columnStatisticsImpl(A, mean, stdDev);
     
-#if 0
     if(rowCount(A) > 1)
         stdDev = sqrt(stdDev / T3(rowCount(A) - 1.0));
-#else
-    stdDev = sqrt(stdDev / T3(rowCount(A)));
-#endif
 }
 
 template <class T1, class C1, class T2, class C2, class T3, class C3, class T4, class C4>
@@ -2242,11 +2288,7 @@ columnStatistics(const MultiArrayView<2, T1, C1> & A,
 
     detail::columnStatisticsImpl(A, mean, stdDev);
     norm = sqrt(stdDev + T2(m) * sq(mean));
-#if 0
     stdDev = sqrt(stdDev / T3(m - 1.0));
-#else
-    stdDev = sqrt(stdDev / T3(m));
-#endif
 }
 
 template <class T1, class C1, class T2, class C2>
@@ -2288,6 +2330,8 @@ rowStatistics(const MultiArrayView<2, T1, C1> & A,
     columnStatistics(transpose(A), tm, ts, tn);
 }
 
+namespace detail {
+
 template <class T1, class C1, class U, class T2, class C2, class T3, class C3>
 void updateCovarianceMatrix(MultiArrayView<2, T1, C1> const & features,
                        U & count, MultiArrayView<2, T2, C2> & mean, MultiArrayView<2, T3, C3> & covariance)
@@ -2307,31 +2351,33 @@ void updateCovarianceMatrix(MultiArrayView<2, T1, C1> const & features,
            f1 = 1.0 - f;
     mean += f*t;
     
-    if(rowCount(features) == 1)
+    if(rowCount(features) == 1) // update column covariance from current row
     {
         for(unsigned int k=0; k<n; ++k)
         {
-            covariance(k, k) += f*sq(t(0, k));
+            covariance(k, k) += f1*sq(t(0, k));
             for(unsigned int l=k+1; l<n; ++l)
             {
-                covariance(k, l) += f*t(0, k)*t(0, l);
+                covariance(k, l) += f1*t(0, k)*t(0, l);
                 covariance(l, k) = covariance(k, l);
             }
         }
     }
-    else
+    else // update row covariance from current column
     {
         for(unsigned int k=0; k<n; ++k)
         {
-            covariance(k, k) += f*sq(t(k, 0));
+            covariance(k, k) += f1*sq(t(k, 0));
             for(unsigned int l=k+1; l<n; ++l)
             {
-                covariance(k, l) += f*t(k, 0)*t(l, 0);
+                covariance(k, l) += f1*t(k, 0)*t(l, 0);
                 covariance(l, k) = covariance(k, l);
             }
         }
     }
 }
+
+} // namespace detail
 
 template <class T1, class C1, class T2, class C2>
 void covarianceMatrixOfColumns(MultiArrayView<2, T1, C1> const & features,
@@ -2342,8 +2388,10 @@ void covarianceMatrixOfColumns(MultiArrayView<2, T1, C1> const & features,
           "covarianceMatrixOfColumns(): Shape mismatch between feature matrix and covariance matrix.");
     unsigned int count = 0;
     Matrix<T2> means(1, n);
+    covariance.init(NumericTraits<T2>::zero());
     for(unsigned int k=0; k<m; ++k)
-        updateCovarianceMatrix(rowVector(features, k), count, means, covariance);
+        detail::updateCovarianceMatrix(rowVector(features, k), count, means, covariance);
+    covariance /= T2(m - 1);
 }
 
 template <class T, class C>
@@ -2364,8 +2412,10 @@ void covarianceMatrixOfRows(MultiArrayView<2, T1, C1> const & features,
           "covarianceMatrixOfRows(): Shape mismatch between feature matrix and covariance matrix.");
     unsigned int count = 0;
     Matrix<T2> means(m, 1);
+    covariance.init(NumericTraits<T2>::zero());
     for(unsigned int k=0; k<n; ++k)
-        updateCovarianceMatrix(columnVector(features, k), count, means, covariance);
+        detail::updateCovarianceMatrix(columnVector(features, k), count, means, covariance);
+    covariance /= T2(m - 1);
 }
 
 template <class T, class C>
@@ -2402,8 +2452,8 @@ prepareDataImpl(const MultiArrayView<2, T, C1> & A,
     if(!goals)
     {
         res = A;
-        offset.init(0.0);
-        scaling.init(1.0);
+        offset.init(NumericTraits<T>::zero());
+        scaling.init(NumericTraits<T>::one());
         return;
     }
     
@@ -2411,53 +2461,47 @@ prepareDataImpl(const MultiArrayView<2, T, C1> & A,
     bool unitVariance = (goals & UnitVariance) != 0;
     bool unitNorm = (goals & UnitNorm) != 0;
 
+    vigra_precondition(!(unitVariance && unitNorm),
+        "prepareDataImpl(): Unit variance and unit norm cannot be achieved at the same time.");
+
     Matrix<T> mean(1, n), sumOfSquaredDifferences(1, n);
     detail::columnStatisticsImpl(A, mean, sumOfSquaredDifferences);
     
     for(unsigned int k=0; k<n; ++k)
     {
-        T stdDev = std::sqrt(sumOfSquaredDifferences(0, k) / T(m));
-        T norm = std::sqrt(sumOfSquaredDifferences(0, k) + T(m) * sq(mean(0,k)));
-        if(zeroMean && stdDev > 0.0)
+        T stdDev = std::sqrt(sumOfSquaredDifferences(0, k) / T(m-1));
+        if(closeAtTolerance(stdDev / mean(0,k), NumericTraits<T>::zero()))
+            stdDev = NumericTraits<T>::zero();
+        if(zeroMean && stdDev > NumericTraits<T>::zero()) 
         {
             columnVector(res, k) = columnVector(A, k) - mean(0,k);
             offset(0, k) = mean(0, k);
-            mean(0, k) = 0.0;
+            mean(0, k) = NumericTraits<T>::zero();
         }
-        else
+        else 
         {
             columnVector(res, k) = columnVector(A, k);
-            if(closeAtTolerance(mean(0,k), T(0.0)))
-                mean(0,k) = 0.0;
-            offset(0, k) = mean(0, k);
+            offset(0, k) = NumericTraits<T>::zero();
         }
-        vigra_precondition(!(unitVariance && unitNorm && mean(0,k) != 0.0),
-            "prepareDataImpl(): If mean is non-zero, unit variance and unit norm cannot be achieved at the same time.");
+        
         if(unitNorm)
         {
-            if(mean(0,k) != 0.0)
-            {
-                columnVector(res, k) /= norm;
-                scaling(0, k) = 1.0 / norm;
-            }
-            else if(stdDev != 0.0)
-            {
-                columnVector(res, k) /= stdDev;
-                scaling(0, k) = 1.0 / stdDev;
-            }
-            else
-            {
-                scaling(0, k) = 1.0;
-            }
+            T norm = mean(0,k) == NumericTraits<T>::zero()
+                      ? std::sqrt(sumOfSquaredDifferences(0, k))
+                      : stdDev > NumericTraits<T>::zero()
+                           ? std::sqrt(sumOfSquaredDifferences(0, k) + T(m) * sq(mean(0,k)))
+                           : NumericTraits<T>::one();
+            columnVector(res, k) /= norm;
+            scaling(0, k) = NumericTraits<T>::one() / norm;
         }
-        else if(unitVariance && stdDev != 0.0)
+        else if(unitVariance && stdDev > NumericTraits<T>::zero())
         {
             columnVector(res, k) /= stdDev;
-            scaling(0, k) = 1.0 / stdDev;
+            scaling(0, k) = NumericTraits<T>::one() / stdDev;
         }
         else
         {
-            scaling(0, k) = 1.0;
+            scaling(0, k) = NumericTraits<T>::one();
         }
     }
 }
@@ -2510,6 +2554,9 @@ using linalg::columnStatistics;
 using linalg::prepareColumns;
 using linalg::rowStatistics;
 using linalg::prepareRows;
+using linalg::ZeroMean;
+using linalg::UnitVariance;
+using linalg::UnitNorm;
 
 }  // namespace vigra
 
