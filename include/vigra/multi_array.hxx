@@ -799,7 +799,7 @@ public:
         /** Init with a constant.
          */
     template <class U>
-    void init(const U & init);
+    MultiArrayView & init(const U & init);
 
         /** Copy the data of the right-hand array (array shapes must match).
          */
@@ -1155,10 +1155,11 @@ MultiArrayView <N, T, C>::operator=(MultiArrayView const & rhs)
 
 template <unsigned int N, class T, class C>
 template <class U>
-void 
+MultiArrayView <N, T, C> &
 MultiArrayView <N, T, C>::init(const U & init)
 {
     detail::initMultiArrayData(traverser_begin(), shape(), init, MetaInt<actual_dimension-1>());
+    return *this;
 }
 
 template <unsigned int N, class T, class C>
@@ -1614,6 +1615,14 @@ public:
          */
    ~MultiArray ();
 
+        /** init elements with a constant
+         */
+    template <class U>
+    MultiArray & init(const U & init)
+    {
+        view_type::init(init);
+        return *this;
+    }
 
         /** change the shape and allocate new memory.<br>
             <em>Note:</em> this operation invalidates all dependent objects
