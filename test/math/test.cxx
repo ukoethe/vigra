@@ -901,6 +901,11 @@ struct LinalgTest
         for(unsigned int i=0, k=0; i<r; ++i)
             for(unsigned int j=0; j<c; ++j, ++k)
                 shouldEqual(zero(i,j), 0.0);
+                
+        Matrix one = zero + Matrix(r,c).init(1.0);
+        for(unsigned int i=0, k=0; i<r; ++i)
+            for(unsigned int j=0; j<c; ++j, ++k)
+                shouldEqual(one(i,j), 1.0);
 
         std::stringstream s;
         s << a;
@@ -946,41 +951,70 @@ struct LinalgTest
         for(unsigned int i=0, k=0; i<r; ++i)
             for(unsigned int j=0; j<c; ++j, ++k)
                 shouldEqual(b(i,j), 4.0+data[k]);
-
         b = a + 3.0;
         for(unsigned int i=0, k=0; i<r; ++i)
             for(unsigned int j=0; j<c; ++j, ++k)
                 shouldEqual(b(i,j), data[k]+3.0);
+        b += 4.0;
+        for(unsigned int i=0, k=0; i<r; ++i)
+            for(unsigned int j=0; j<c; ++j, ++k)
+                shouldEqual(b(i,j), 7.0+data[k]);
+        b += a;
+        for(unsigned int i=0, k=0; i<r; ++i)
+            for(unsigned int j=0; j<c; ++j, ++k)
+                shouldEqual(b(i,j), 7.0+2.0*data[k]);
+
 
         b = 4.0 - a;
         for(unsigned int i=0, k=0; i<r; ++i)
             for(unsigned int j=0; j<c; ++j, ++k)
                 shouldEqual(b(i,j), 4.0-data[k]);
-
         b = a - 3.0;
         for(unsigned int i=0, k=0; i<r; ++i)
             for(unsigned int j=0; j<c; ++j, ++k)
                 shouldEqual(b(i,j), data[k]-3.0);
+        b -= 4.0;
+        for(unsigned int i=0, k=0; i<r; ++i)
+            for(unsigned int j=0; j<c; ++j, ++k)
+                shouldEqual(b(i,j), data[k]-7.0);
+        b -= a;
+        for(unsigned int i=0, k=0; i<r; ++i)
+            for(unsigned int j=0; j<c; ++j, ++k)
+                shouldEqual(b(i,j), -7.0);
 
         b = 4.0 * a;
         for(unsigned int i=0, k=0; i<r; ++i)
             for(unsigned int j=0; j<c; ++j, ++k)
                 shouldEqual(b(i,j), 4.0*data[k]);
-
         b = a * 3.0;
         for(unsigned int i=0, k=0; i<r; ++i)
             for(unsigned int j=0; j<c; ++j, ++k)
                 shouldEqual(b(i,j), data[k]*3.0);
+        b *= 4.0;
+        for(unsigned int i=0, k=0; i<r; ++i)
+            for(unsigned int j=0; j<c; ++j, ++k)
+                shouldEqual(b(i,j), data[k]*12.0);
+        b *= a;
+        for(unsigned int i=0, k=0; i<r; ++i)
+            for(unsigned int j=0; j<c; ++j, ++k)
+                shouldEqual(b(i,j), data[k]*data[k]*12.0);
 
         b = 4.0 / a;
         for(unsigned int i=0, k=0; i<r; ++i)
             for(unsigned int j=0; j<c; ++j, ++k)
                 shouldEqual(b(i,j), 4.0/data[k]);
-
         b = a / 3.0;
         for(unsigned int i=0, k=0; i<r; ++i)
             for(unsigned int j=0; j<c; ++j, ++k)
                 shouldEqual(b(i,j), data[k] / 3.0);
+        b /= 4.0;
+        for(unsigned int i=0, k=0; i<r; ++i)
+            for(unsigned int j=0; j<c; ++j, ++k)
+                shouldEqual(b(i,j), data[k] / 12.0);
+        b /= a;
+        for(unsigned int i=0, k=0; i<r; ++i)
+            for(unsigned int j=0; j<c; ++j, ++k)
+                shouldEqualTolerance(b(i,j), 1.0 / 12.0, 1e-12);
 
         b = a + a;
         for(unsigned int i=0, k=0; i<r; ++i)
@@ -1242,7 +1276,6 @@ struct LinalgTest
         oneRowRef.init(1.0);
         oneColRef.init(1.0);
         
-        for(unsigned int i = 0; i < iterations; ++i)
         {
             Matrix a = random_matrix (size, size);
             
@@ -1256,17 +1289,26 @@ struct LinalgTest
             Matrix ap = columnPrepared / pointWise(repeatMatrix(columnScaling, size, 1)) + repeatMatrix(columnOffset, size, 1);
             shouldEqualSequenceTolerance(a.data(), a.data()+size*size, ap.data(), epsilon);            
 
-            prepareColumns(a, columnPrepared, columnOffset, columnScaling, ZeroMean | UnitVariance);
+            prepareColumns(a, columnPrepared, columnOffset, columnScaling, UnitNorm);
             columnStatistics(columnPrepared, columnMeanPrepared, columnStdDevPrepared, columnNormPrepared);
-            shouldEqualSequenceTolerance(zeroColRef.data(), zeroColRef.data()+size, columnMeanPrepared.data(), epsilon);
+            shouldEqualSequenceTolerance(oneColRef.data(), oneColRef.data()+size, columnNormPrepared.data(), epsilon);
+            
+            ap = columnPrepared / pointWise(repeatMatrix(columnScaling, size, 1)) + repeatMatrix(columnOffset, size, 1);
+            shouldEqualSequenceTolerance(a.data(), a.data()+size*size, ap.data(), epsilon);            
+
+            prepareColumns(a, columnPrepared, columnOffset, columnScaling, UnitVariance);
+            columnStatistics(columnPrepared, columnMeanPrepared, columnStdDevPrepared, columnNormPrepared);
+            columnMeanPrepared /= columnScaling;
+            shouldEqualSequenceTolerance(columnMean.data(), columnMean.data()+size, columnMeanPrepared.data(), epsilon2);
             shouldEqualSequenceTolerance(oneColRef.data(), oneColRef.data()+size, columnStdDevPrepared.data(), epsilon);
             
             ap = columnPrepared / pointWise(repeatMatrix(columnScaling, size, 1)) + repeatMatrix(columnOffset, size, 1);
             shouldEqualSequenceTolerance(a.data(), a.data()+size*size, ap.data(), epsilon);            
 
-            prepareColumns(a, columnPrepared, columnOffset, columnScaling, UnitNorm);
+            prepareColumns(a, columnPrepared, columnOffset, columnScaling, ZeroMean | UnitVariance);
             columnStatistics(columnPrepared, columnMeanPrepared, columnStdDevPrepared, columnNormPrepared);
-            shouldEqualSequenceTolerance(oneColRef.data(), oneColRef.data()+size, columnNormPrepared.data(), epsilon);
+            shouldEqualSequenceTolerance(zeroColRef.data(), zeroColRef.data()+size, columnMeanPrepared.data(), epsilon);
+            shouldEqualSequenceTolerance(oneColRef.data(), oneColRef.data()+size, columnStdDevPrepared.data(), epsilon);
             
             ap = columnPrepared / pointWise(repeatMatrix(columnScaling, size, 1)) + repeatMatrix(columnOffset, size, 1);
             shouldEqualSequenceTolerance(a.data(), a.data()+size*size, ap.data(), epsilon);            
@@ -1289,17 +1331,26 @@ struct LinalgTest
             ap = rowPrepared / pointWise(repeatMatrix(rowScaling, 1, size)) + repeatMatrix(rowOffset, 1, size);
             shouldEqualSequenceTolerance(a.data(), a.data()+size*size, ap.data(), epsilon);            
 
-            prepareRows(a, rowPrepared, rowOffset, rowScaling, ZeroMean | UnitVariance);
+            prepareRows(a, rowPrepared, rowOffset, rowScaling, UnitNorm);
             rowStatistics(rowPrepared, rowMeanPrepared, rowStdDevPrepared, rowNormPrepared);
-            shouldEqualSequenceTolerance(zeroRowRef.data(), zeroRowRef.data()+size, rowMeanPrepared.data(), epsilon);
+            shouldEqualSequenceTolerance(oneRowRef.data(), oneRowRef.data()+size, rowNormPrepared.data(), epsilon);
+            
+            ap = rowPrepared / pointWise(repeatMatrix(rowScaling, 1, size)) + repeatMatrix(rowOffset, 1, size);
+            shouldEqualSequenceTolerance(a.data(), a.data()+size*size, ap.data(), epsilon);            
+
+            prepareRows(a, rowPrepared, rowOffset, rowScaling, UnitVariance);
+            rowStatistics(rowPrepared, rowMeanPrepared, rowStdDevPrepared, rowNormPrepared);
+            rowMeanPrepared /= rowScaling;
+            shouldEqualSequenceTolerance(rowMean.data(), rowMean.data()+size, rowMeanPrepared.data(), epsilon);
             shouldEqualSequenceTolerance(oneRowRef.data(), oneRowRef.data()+size, rowStdDevPrepared.data(), epsilon);
             
             ap = rowPrepared / pointWise(repeatMatrix(rowScaling, 1, size)) + repeatMatrix(rowOffset, 1, size);
             shouldEqualSequenceTolerance(a.data(), a.data()+size*size, ap.data(), epsilon);            
 
-            prepareRows(a, rowPrepared, rowOffset, rowScaling, UnitNorm);
+            prepareRows(a, rowPrepared, rowOffset, rowScaling, ZeroMean | UnitVariance);
             rowStatistics(rowPrepared, rowMeanPrepared, rowStdDevPrepared, rowNormPrepared);
-            shouldEqualSequenceTolerance(oneRowRef.data(), oneRowRef.data()+size, rowNormPrepared.data(), epsilon);
+            shouldEqualSequenceTolerance(zeroRowRef.data(), zeroRowRef.data()+size, rowMeanPrepared.data(), epsilon);
+            shouldEqualSequenceTolerance(oneRowRef.data(), oneRowRef.data()+size, rowStdDevPrepared.data(), epsilon);
             
             ap = rowPrepared / pointWise(repeatMatrix(rowScaling, 1, size)) + repeatMatrix(rowOffset, 1, size);
             shouldEqualSequenceTolerance(a.data(), a.data()+size*size, ap.data(), epsilon);            
@@ -1311,6 +1362,26 @@ struct LinalgTest
 
             ap = rowPrepared / pointWise(repeatMatrix(rowScaling, 1, size)) + repeatMatrix(rowOffset, 1, size);
             shouldEqualSequenceTolerance(a.data(), a.data()+size*size, ap.data(), epsilon2);            
+        }
+        
+        {
+            Matrix a(size, size, 2.0), aref(size, size, 1.0/std::sqrt((double)size));
+            
+            prepareColumns(a, columnPrepared, columnOffset, columnScaling, ZeroMean | UnitVariance);
+            shouldEqualSequence(a.data(), a.data()+size*size, columnPrepared.data());
+            
+            prepareColumns(a, columnPrepared, columnOffset, columnScaling, ZeroMean | UnitNorm);
+            shouldEqualSequenceTolerance(aref.data(), aref.data()+size*size, columnPrepared.data(), epsilon);
+            Matrix ap = columnPrepared / pointWise(repeatMatrix(columnScaling, size, 1)) + repeatMatrix(columnOffset, size, 1);
+            shouldEqualSequenceTolerance(a.data(), a.data()+size*size, ap.data(), epsilon);
+            
+            prepareRows(a, rowPrepared, rowOffset, rowScaling, ZeroMean | UnitVariance);
+            shouldEqualSequence(a.data(), a.data()+size*size, rowPrepared.data());
+            
+            prepareRows(a, rowPrepared, rowOffset, rowScaling, ZeroMean | UnitNorm);
+            shouldEqualSequenceTolerance(aref.data(), aref.data()+size*size, rowPrepared.data(), epsilon);
+            ap = rowPrepared / pointWise(repeatMatrix(rowScaling, 1, size)) + repeatMatrix(rowOffset, 1, size);
+            shouldEqualSequenceTolerance(a.data(), a.data()+size*size, ap.data(), epsilon);
         }
     }
 
