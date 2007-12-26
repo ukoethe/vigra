@@ -75,90 +75,81 @@ void transpose(const MultiArrayView<2, T, C1> &v, MultiArrayView<2, T, C2> &r);
 template <class T, class C>
 bool isSymmetric(const MultiArrayView<2, T, C> &v);
 
+#if defined(__GNUC__) && __GNUC__ == 3
 
-// implement operator+= etc. for const lhs so that it can be applied to temporary matrices
-template <class T, class C1, class U, class C2>
-MultiArrayView<2, T, C1> & 
-operator+=(MultiArrayView<2, T, C1> const & l, MultiArrayView<2, U, C2> const & other)
-{
-    MultiArrayView<2, T, C1> & left = const_cast<MultiArrayView<2, T, C1> &>(l);
-    const std::size_t rows = rowCount(left);
-    const std::size_t cols = columnCount(left);
-    vigra_precondition(rows == rowCount(other) && cols == columnCount(other),
-       "operator+=(MultiArrayView, MultiArrayView): Shape mismatch.");
+// define these operators for const LHS so that they can be applied to temporary objects
+// e.g. columnVector(matrix, 0)
 
-    for(std::size_t i = 0; i < cols; ++i)
-        for(std::size_t j = 0; j < rows; ++j)
-            left(j, i) += other(j, i);
-    return left;
+#define VIGRA_ARRAY_COMPUTED_ASSIGNMENT(op) \
+template <class T, class C1, class U, class C2> \
+MultiArrayView<2, T, C1> & \
+operator op(MultiArrayView<2, T, C1> const & l, MultiArrayView<2, U, C2> const & other) \
+{\
+    MultiArrayView<2, T, C1> & left = const_cast<MultiArrayView<2, T, C1> &>(l); \
+    const std::size_t rows = rowCount(left); \
+    const std::size_t cols = columnCount(left); \
+    vigra_precondition(rows == rowCount(other) && cols == columnCount(other), \
+       "operator" #op "(MultiArrayView, MultiArrayView): Shape mismatch."); \
+ \
+    for(std::size_t i = 0; i < cols; ++i) \
+        for(std::size_t j = 0; j < rows; ++j) \
+            left(j, i) op other(j, i); \
+    return left; \
+} \
+ \
+template <class T, class C> \
+MultiArrayView<2, T, C> &  \
+operator op(MultiArrayView<2, T, C> const & l, T other) \
+{ \
+    MultiArrayView<2, T, C> & left = const_cast<MultiArrayView<2, T, C> &>(l); \
+    const std::size_t rows = rowCount(left); \
+    const std::size_t cols = columnCount(left); \
+ \
+    for(std::size_t i = 0; i < cols; ++i) \
+        for(std::size_t j = 0; j < rows; ++j) \
+            left(j, i) op other; \
+    return left; \
 }
 
-template <class T, class C1, class U, class C2>
-MultiArrayView<2, T, C1> & operator-=(MultiArrayView<2, T, C1> const & l, MultiArrayView<2, U, C2> const & other)
-{
-    MultiArrayView<2, T, C1> & left = const_cast<MultiArrayView<2, T, C1> &>(l);
-    const std::size_t rows = rowCount(left);
-    const std::size_t cols = columnCount(left);
-    vigra_precondition(rows == rowCount(other) && cols == columnCount(other),
-       "operator-=(MultiArrayView, MultiArrayView): Shape mismatch.");
+#else
 
-    for(std::size_t i = 0; i < cols; ++i)
-        for(std::size_t j = 0; j < rows; ++j)
-            left(j, i) -= other(j, i);
-    return left;
+#define VIGRA_ARRAY_COMPUTED_ASSIGNMENT(op) \
+template <class T, class C1, class U, class C2> \
+MultiArrayView<2, T, C1> & \
+operator op(MultiArrayView<2, T, C1> & left, MultiArrayView<2, U, C2> const & other) \
+{\
+    const std::size_t rows = rowCount(left); \
+    const std::size_t cols = columnCount(left); \
+    vigra_precondition(rows == rowCount(other) && cols == columnCount(other), \
+       "operator" #op "(MultiArrayView, MultiArrayView): Shape mismatch."); \
+ \
+    for(std::size_t i = 0; i < cols; ++i) \
+        for(std::size_t j = 0; j < rows; ++j) \
+            left(j, i) op other(j, i); \
+    return left; \
+} \
+ \
+template <class T, class C> \
+MultiArrayView<2, T, C> &  \
+operator op(MultiArrayView<2, T, C> & left, T other) \
+{ \
+    const std::size_t rows = rowCount(left); \
+    const std::size_t cols = columnCount(left); \
+ \
+    for(std::size_t i = 0; i < cols; ++i) \
+        for(std::size_t j = 0; j < rows; ++j) \
+            left(j, i) op other; \
+    return left; \
 }
 
-template <class T, class C>
-MultiArrayView<2, T, C> & operator+=(MultiArrayView<2, T, C> const & l, T other)
-{
-    MultiArrayView<2, T, C> & left = const_cast<MultiArrayView<2, T, C> &>(l);
-    const std::size_t rows = rowCount(left);
-    const std::size_t cols = columnCount(left);
+#endif
 
-    for(std::size_t i = 0; i < cols; ++i)
-        for(std::size_t j = 0; j < rows; ++j)
-            left(j, i) += other;
-    return left;
-}
+VIGRA_ARRAY_COMPUTED_ASSIGNMENT(+=)
+VIGRA_ARRAY_COMPUTED_ASSIGNMENT(-=)
+VIGRA_ARRAY_COMPUTED_ASSIGNMENT(*=)
+VIGRA_ARRAY_COMPUTED_ASSIGNMENT(/=)
 
-template <class T, class C>
-MultiArrayView<2, T, C> & operator-=(MultiArrayView<2, T, C> const & l, T other)
-{
-    MultiArrayView<2, T, C> & left = const_cast<MultiArrayView<2, T, C> &>(l);
-    const std::size_t rows = rowCount(left);
-    const std::size_t cols = columnCount(left);
-
-    for(std::size_t i = 0; i < cols; ++i)
-        for(std::size_t j = 0; j < rows; ++j)
-            left(j, i) -= other;
-    return left;
-}
-
-template <class T, class C>
-MultiArrayView<2, T, C> & operator*=(MultiArrayView<2, T, C> const & l, T other)
-{
-    MultiArrayView<2, T, C> & left = const_cast<MultiArrayView<2, T, C> &>(l);
-    const std::size_t rows = rowCount(left);
-    const std::size_t cols = columnCount(left);
-
-    for(std::size_t i = 0; i < cols; ++i)
-        for(std::size_t j = 0; j < rows; ++j)
-            left(j, i) *= other;
-    return left;
-}
-
-template <class T, class C>
-MultiArrayView<2, T, C> & operator/=(MultiArrayView<2, T, C> const & l, T other)
-{
-    MultiArrayView<2, T, C> & left = const_cast<MultiArrayView<2, T, C> &>(l);
-    const std::size_t rows = rowCount(left);
-    const std::size_t cols = columnCount(left);
-
-    for(std::size_t i = 0; i < cols; ++i)
-        for(std::size_t j = 0; j < rows; ++j)
-            left(j, i) /= other;
-    return left;
-}
+#undef VIGRA_ARRAY_COMPUTED_ASSIGNMENT
 
 enum RawArrayMemoryLayout { RowMajor, ColumnMajor };
 
@@ -371,7 +362,16 @@ class Matrix
         return *this;
     }
 
-        /** reshape to the given shape and initialize with zero.
+         /** init elements with a constant
+         */
+    template <class U>
+    Matrix & init(const U & init)
+    {
+        BaseType::init(init);
+        return *this;
+    }
+
+       /** reshape to the given shape and initialize with zero.
          */
     void reshape(std::size_t rows, std::size_t columns)
     {
@@ -493,6 +493,24 @@ class Matrix
         return *this;
     }
 
+        /** multiply \a other element-wise with this matrix (sizes must match).
+         */
+    template <class U, class C>
+    Matrix & operator*=(MultiArrayView<2, U, C> const & other)
+    {
+        vigra::linalg::operator*=(*this, other);
+        return *this;
+    }
+
+        /** divide this matrix element-wise by \a other (sizes must match).
+         */
+    template <class U, class C>
+    Matrix & operator/=(MultiArrayView<2, U, C> const & other)
+    {
+        vigra::linalg::operator/=(*this, other);
+        return *this;
+    }
+
         /** add \a other to each element of this matrix
          */
     Matrix & operator+=(T other)
@@ -574,6 +592,13 @@ class TemporaryMatrix
         this->swap(const_cast<TemporaryMatrix &>(rhs));
     }
     
+    template <class U>
+    TemporaryMatrix & init(const U & init)
+    {
+        BaseType::init(init);
+        return *this;
+    }
+
     template <class U, class C>
     TemporaryMatrix & operator+=(MultiArrayView<2, U, C> const & other)
     {
@@ -585,6 +610,20 @@ class TemporaryMatrix
     TemporaryMatrix & operator-=(MultiArrayView<2, U, C> const & other)
     {
         vigra::linalg::operator-=(*this, other);
+        return *this;
+    }
+
+    template <class U, class C>
+    TemporaryMatrix & operator*=(MultiArrayView<2, U, C> const & other)
+    {
+        vigra::linalg::operator*=(*this, other);
+        return *this;
+    }
+
+    template <class U, class C>
+    TemporaryMatrix & operator/=(MultiArrayView<2, U, C> const & other)
+    {
+        vigra::linalg::operator/=(*this, other);
         return *this;
     }
 
@@ -613,7 +652,7 @@ class TemporaryMatrix
     }
   private:
 
-    TemporaryMatrix &operator=(const TemporaryMatrix &rhs); // not implemented
+    TemporaryMatrix &operator=(const TemporaryMatrix &rhs); // intentionally not implemented
 };
 
 /** \addtogroup LinearAlgebraFunctions Matrix functions
@@ -2208,7 +2247,7 @@ namespace detail {
 
 template <class T1, class C1, class T2, class C2, class T3, class C3>
 void
-columnStatisticsImpl(const MultiArrayView<2, T1, C1> & A, 
+columnStatisticsImpl(MultiArrayView<2, T1, C1> const & A, 
                  MultiArrayView<2, T2, C2> & mean, MultiArrayView<2, T3, C3> & sumOfSquaredDifferences)
 {
     unsigned int m = rowCount(A);
@@ -2236,17 +2275,63 @@ columnStatisticsImpl(const MultiArrayView<2, T1, C1> & A,
 /** \addtogroup LinearAlgebraFunctions Matrix functions
  */
 //@{
-    /** compute mean of every column of matrix \a A.
+    /** Compute statistics of every column of matrix \a A.
     
-        \a mean must be a row vector with as many columns as \a A.
+    The result matrices must be row vectors with as many columns as \a A.
+
+    <b> Declarations:</b>
+
+    compute only the mean:
+    \code
+    namespace vigra { namespace linalg {
+        template <class T1, class C1, class T2, class C2>
+        void
+        columnStatistics(MultiArrayView<2, T1, C1> const & A, 
+                         MultiArrayView<2, T2, C2> & mean);
+    } }
+    \endcode
+
+    compute mean and standard deviation:
+    \code
+    namespace vigra { namespace linalg {
+        template <class T1, class C1, class T2, class C2, class T3, class C3>
+        void
+        columnStatistics(MultiArrayView<2, T1, C1> const & A, 
+                         MultiArrayView<2, T2, C2> & mean, 
+                         MultiArrayView<2, T3, C3> & stdDev);
+    } }
+    \endcode
+
+    compute mean, standard deviation, and norm:
+    \code
+    namespace vigra { namespace linalg {
+        template <class T1, class C1, class T2, class C2, class T3, class C3, class T4, class C4>
+        void
+        columnStatistics(MultiArrayView<2, T1, C1> const & A, 
+                         MultiArrayView<2, T2, C2> & mean, 
+                         MultiArrayView<2, T3, C3> & stdDev, 
+                         MultiArrayView<2, T4, C4> & norm);
+    } }
+    \endcode
+
+    <b> Usage:</b>
 
     <b>\#include</b> "<a href="matrix_8hxx-source.html">vigra/matrix.hxx</a>" or<br>
     <b>\#include</b> "<a href="linear__algebra_8hxx-source.html">vigra/linear_algebra.hxx</a>"<br>
-        Namespace: vigra
+        Namespaces: vigra and vigra::linalg
+
+    \code
+    Matrix A(rows, columns);
+    .. // fill A
+    Matrix columnMean(1, columns), columnStdDev(1, columns), columnNorm(1, columns);
+
+    columnStatistics(A, columnMean, columnStdDev, columnNorm);
+
+    \endcode
      */
 template <class T1, class C1, class T2, class C2>
 void
-columnStatistics(const MultiArrayView<2, T1, C1> & A, 
+columnStatistics(MultiArrayView<2, T1, C1> const & A, 
                  MultiArrayView<2, T2, C2> & mean)
 {
     unsigned int m = rowCount(A);
@@ -2265,7 +2350,7 @@ columnStatistics(const MultiArrayView<2, T1, C1> & A,
 
 template <class T1, class C1, class T2, class C2, class T3, class C3>
 void
-columnStatistics(const MultiArrayView<2, T1, C1> & A, 
+columnStatistics(MultiArrayView<2, T1, C1> const & A, 
                  MultiArrayView<2, T2, C2> & mean, MultiArrayView<2, T3, C3> & stdDev)
 {
     detail::columnStatisticsImpl(A, mean, stdDev);
@@ -2276,7 +2361,7 @@ columnStatistics(const MultiArrayView<2, T1, C1> & A,
 
 template <class T1, class C1, class T2, class C2, class T3, class C3, class T4, class C4>
 void
-columnStatistics(const MultiArrayView<2, T1, C1> & A, 
+columnStatistics(MultiArrayView<2, T1, C1> const & A, 
                  MultiArrayView<2, T2, C2> & mean, MultiArrayView<2, T3, C3> & stdDev, MultiArrayView<2, T4, C4> & norm)
 {
     unsigned int m = rowCount(A);
@@ -2291,9 +2376,63 @@ columnStatistics(const MultiArrayView<2, T1, C1> & A,
     stdDev = sqrt(stdDev / T3(m - 1.0));
 }
 
+    /** Compute statistics of every row of matrix \a A.
+    
+    The result matrices must be column vectors with as many rows as \a A.
+
+    <b> Declarations:</b>
+
+    compute only the mean:
+    \code
+    namespace vigra { namespace linalg {
+        template <class T1, class C1, class T2, class C2>
+        void
+        rowStatistics(MultiArrayView<2, T1, C1> const & A, 
+                      MultiArrayView<2, T2, C2> & mean);
+    } }
+    \endcode
+
+    compute mean and standard deviation:
+    \code
+    namespace vigra { namespace linalg {
+        template <class T1, class C1, class T2, class C2, class T3, class C3>
+        void
+        rowStatistics(MultiArrayView<2, T1, C1> const & A, 
+                      MultiArrayView<2, T2, C2> & mean, 
+                      MultiArrayView<2, T3, C3> & stdDev);
+    } }
+    \endcode
+
+    compute mean, standard deviation, and norm:
+    \code
+    namespace vigra { namespace linalg {
+        template <class T1, class C1, class T2, class C2, class T3, class C3, class T4, class C4>
+        void
+        rowStatistics(MultiArrayView<2, T1, C1> const & A, 
+                      MultiArrayView<2, T2, C2> & mean, 
+                      MultiArrayView<2, T3, C3> & stdDev, 
+                      MultiArrayView<2, T4, C4> & norm);
+    } }
+    \endcode
+
+    <b> Usage:</b>
+
+    <b>\#include</b> "<a href="matrix_8hxx-source.html">vigra/matrix.hxx</a>" or<br>
+    <b>\#include</b> "<a href="linear__algebra_8hxx-source.html">vigra/linear_algebra.hxx</a>"<br>
+        Namespaces: vigra and vigra::linalg
+
+    \code
+    Matrix A(rows, columns);
+    .. // fill A
+    Matrix rowMean(rows, 1), rowStdDev(rows, 1), rowNorm(rows, 1);
+
+    rowStatistics(a, rowMean, rowStdDev, rowNorm);
+
+    \endcode
+     */
 template <class T1, class C1, class T2, class C2>
 void
-rowStatistics(const MultiArrayView<2, T1, C1> & A, 
+rowStatistics(MultiArrayView<2, T1, C1> const & A, 
                  MultiArrayView<2, T2, C2> & mean)
 {
     vigra_precondition(1 == columnCount(mean) && rowCount(A) == rowCount(mean),
@@ -2304,7 +2443,7 @@ rowStatistics(const MultiArrayView<2, T1, C1> & A,
 
 template <class T1, class C1, class T2, class C2, class T3, class C3>
 void
-rowStatistics(const MultiArrayView<2, T1, C1> & A, 
+rowStatistics(MultiArrayView<2, T1, C1> const & A, 
                  MultiArrayView<2, T2, C2> & mean, MultiArrayView<2, T3, C3> & stdDev)
 {
     vigra_precondition(1 == columnCount(mean) && rowCount(A) == rowCount(mean) &&
@@ -2317,7 +2456,7 @@ rowStatistics(const MultiArrayView<2, T1, C1> & A,
 
 template <class T1, class C1, class T2, class C2, class T3, class C3, class T4, class C4>
 void
-rowStatistics(const MultiArrayView<2, T1, C1> & A, 
+rowStatistics(MultiArrayView<2, T1, C1> const & A, 
                  MultiArrayView<2, T2, C2> & mean, MultiArrayView<2, T3, C3> & stdDev, MultiArrayView<2, T4, C4> & norm)
 {
     vigra_precondition(1 == columnCount(mean) && rowCount(A) == rowCount(mean) &&
@@ -2379,6 +2518,14 @@ void updateCovarianceMatrix(MultiArrayView<2, T1, C1> const & features,
 
 } // namespace detail
 
+    /*! Compute the covariance matrix between the columns of a matrix \a features.
+    
+        The result matrix \a covariance must by a square matrix with as many rows and
+        columns as the number of columns in matrix \a features.
+
+        <b>\#include</b> "<a href="matrix_8hxx-source.html">vigra/matrix.hxx</a>"<br>
+        Namespace: vigra
+    */
 template <class T1, class C1, class T2, class C2>
 void covarianceMatrixOfColumns(MultiArrayView<2, T1, C1> const & features,
                                MultiArrayView<2, T2, C2> & covariance)
@@ -2394,6 +2541,14 @@ void covarianceMatrixOfColumns(MultiArrayView<2, T1, C1> const & features,
     covariance /= T2(m - 1);
 }
 
+    /*! Compute the covariance matrix between the columns of a matrix \a features.
+    
+        The result is returned as a square temporary matrix with as many rows and
+        columns as the number of columns in matrix \a features.
+
+        <b>\#include</b> "<a href="matrix_8hxx-source.html">vigra/matrix.hxx</a>"<br>
+        Namespace: vigra
+    */
 template <class T, class C>
 TemporaryMatrix<T> 
 covarianceMatrixOfColumns(MultiArrayView<2, T, C> const & features)
@@ -2403,6 +2558,14 @@ covarianceMatrixOfColumns(MultiArrayView<2, T, C> const & features)
     return res;
 }
 
+    /*! Compute the covariance matrix between the rows of a matrix \a features.
+    
+        The result matrix \a covariance must by a square matrix with as many rows and
+        columns as the number of rows in matrix \a features.
+
+        <b>\#include</b> "<a href="matrix_8hxx-source.html">vigra/matrix.hxx</a>"<br>
+        Namespace: vigra
+    */
 template <class T1, class C1, class T2, class C2>
 void covarianceMatrixOfRows(MultiArrayView<2, T1, C1> const & features,
                             MultiArrayView<2, T2, C2> & covariance)
@@ -2418,6 +2581,14 @@ void covarianceMatrixOfRows(MultiArrayView<2, T1, C1> const & features,
     covariance /= T2(m - 1);
 }
 
+    /*! Compute the covariance matrix between the rows of a matrix \a features.
+    
+        The result is returned as a square temporary matrix with as many rows and
+        columns as the number of rows in matrix \a features.
+
+        <b>\#include</b> "<a href="matrix_8hxx-source.html">vigra/matrix.hxx</a>"<br>
+        Namespace: vigra
+    */
 template <class T, class C>
 TemporaryMatrix<T> 
 covarianceMatrixOfRows(MultiArrayView<2, T, C> const & features)
@@ -2484,13 +2655,11 @@ prepareDataImpl(const MultiArrayView<2, T, C1> & A,
             offset(0, k) = NumericTraits<T>::zero();
         }
         
-        if(unitNorm)
+        T norm = mean(0,k) == NumericTraits<T>::zero()
+                  ? std::sqrt(sumOfSquaredDifferences(0, k))
+                  : std::sqrt(sumOfSquaredDifferences(0, k) + T(m) * sq(mean(0,k)));
+        if(unitNorm && norm > NumericTraits<T>::zero())
         {
-            T norm = mean(0,k) == NumericTraits<T>::zero()
-                      ? std::sqrt(sumOfSquaredDifferences(0, k))
-                      : stdDev > NumericTraits<T>::zero()
-                           ? std::sqrt(sumOfSquaredDifferences(0, k) + T(m) * sq(mean(0,k)))
-                           : NumericTraits<T>::one();
             columnVector(res, k) /= norm;
             scaling(0, k) = NumericTraits<T>::one() / norm;
         }
@@ -2508,9 +2677,80 @@ prepareDataImpl(const MultiArrayView<2, T, C1> & A,
 
 } // namespace detail
 
+    /*! Standardize the columns of a matrix according to given <tt>DataPreparationGoals</tt>.
+    
+    For every column of the matrix \a A, this function computes mean, 
+    standard deviation, and norm. It than applies a linear transformation to the values of 
+    the column according to these statistics and the given <tt>DataPreparationGoals</tt>.
+    The result in returned in matrix \a res which must have the same size as \a A.
+    Optionally, the transformation applied can also be obtained in result matrics \a offset
+    and \a scaling (see below for an example how these matrices can be used to standardize
+    more data according to the same transformation).
+    
+    The following <tt>DataPreparationGoals</tt> are supported:
+    
+    <DL>
+    <DT><tt>ZeroMean</tt><DD> Subtract the column mean form every column if the values in the column are not constant. 
+                              Do nothing in a constant column.
+    <DT><tt>UnitVariance</tt><DD> Divide by the column standard deviation if the values in the column are not constant. 
+                              Do nothing in a constant column.
+    <DT><tt>UnitNorm</tt><DD> Divide by the column norm if it is non-zero.
+    <DT><tt>ZeroMean | UnitVariance</tt><DD> First subtact the mean and then divide by the standard deviation, unless the 
+                                             column is constant (in which case the column remains unchanged).
+    <DT><tt>ZeroMean | UnitNorm</tt><DD> If the column is non-constant, subtract the mean. Then divide by the norm
+                                         of the result if the norm is non-zero.
+    </DL>
+
+    <b> Declarations:</b>
+
+    Standardize the matrix and return the parameters of the linear transformation.
+    The matrices \a offset and \a scaling must be row vectors with as many columns as \a A.
+    \code
+    namespace vigra { namespace linalg {
+        template <class T, class C1, class C2, class C3, class C4>
+        void
+        prepareColumns(MultiArrayView<2, T, C1> const & A, 
+                       MultiArrayView<2, T, C2> & res, 
+                       MultiArrayView<2, T, C3> & offset, 
+                       MultiArrayView<2, T, C4> & scaling, 
+                       DataPreparationGoals goals = ZeroMean | UnitVariance);
+    } }
+    \endcode
+
+    Only standardize the matrix.
+    \code
+    namespace vigra { namespace linalg {
+        template <class T, class C1, class C2>
+        void
+        prepareColumns(MultiArrayView<2, T, C1> const & A, 
+                       MultiArrayView<2, T, C2> & res, 
+                       DataPreparationGoals goals = ZeroMean | UnitVariance);
+    } }
+    \endcode
+
+    <b> Usage:</b>
+
+    <b>\#include</b> "<a href="matrix_8hxx-source.html">vigra/matrix.hxx</a>" or<br>
+    <b>\#include</b> "<a href="linear__algebra_8hxx-source.html">vigra/linear_algebra.hxx</a>"<br>
+        Namespaces: vigra and vigra::linalg
+
+    \code
+    Matrix A(rows, columns);
+    .. // fill A
+    Matrix standardizedA(rows, columns), offset(1, columns), scaling(1, columns);
+
+    prepareColumns(A, standardizedA, offset, scaling, ZeroMean | UnitNorm);
+    
+    // use offset and scaling to prepare additional data according to the same transformation
+    Matrix newData(nrows, columns);
+    
+    Matrix standardizedNewData = (newData - repeatMatrix(offset, nrows, 1)) * pointWise(repeatMatrix(scaling, nrows, 1));
+
+    \endcode
+    */
 template <class T, class C1, class C2, class C3, class C4>
 inline void
-prepareColumns(const MultiArrayView<2, T, C1> & A, 
+prepareColumns(MultiArrayView<2, T, C1> const & A, 
                MultiArrayView<2, T, C2> & res, MultiArrayView<2, T, C3> & offset, MultiArrayView<2, T, C4> & scaling, 
                DataPreparationGoals goals = ZeroMean | UnitVariance)
 {
@@ -2519,18 +2759,73 @@ prepareColumns(const MultiArrayView<2, T, C1> & A,
 
 template <class T, class C1, class C2>
 inline void
-prepareColumns(const MultiArrayView<2, T, C1> & A, MultiArrayView<2, T, C2> & res, 
+prepareColumns(MultiArrayView<2, T, C1> const & A, MultiArrayView<2, T, C2> & res, 
                DataPreparationGoals goals = ZeroMean | UnitVariance)
 {
     Matrix<T> offset(1, columnCount(A)), scaling(1, columnCount(A));
     detail::prepareDataImpl(A, res, offset, scaling, goals);
 }
 
+    /*! Standardize the rows of a matrix according to given <tt>DataPreparationGoals</tt>.
+    
+    This algorithm works in the same way as \ref prepareColumns() (see there for detailed
+    documentation), but is applied to the rows of the matrix \a A instead. Accordingly, the
+    matrices holding the parameters of the linear transformation must be column vectors
+    with as many rows as \a A.
+
+    <b> Declarations:</b>
+
+    Standardize the matrix and return the parameters of the linear transformation.
+    The matrices \a offset and \a scaling must be row vectors with as many columns as \a A.
+    \code
+    namespace vigra { namespace linalg {
+        template <class T, class C1, class C2, class C3, class C4>
+        void
+        prepareRows(MultiArrayView<2, T, C1> const & A, 
+                    MultiArrayView<2, T, C2> & res, 
+                    MultiArrayView<2, T, C3> & offset, 
+                    MultiArrayView<2, T, C4> & scaling, 
+                    DataPreparationGoals goals = ZeroMean | UnitVariance)´;
+    } }
+    \endcode
+
+    Only standardize the matrix.
+    \code
+    namespace vigra { namespace linalg {
+        template <class T, class C1, class C2>
+        void
+        prepareRows(MultiArrayView<2, T, C1> const & A, 
+                    MultiArrayView<2, T, C2> & res, 
+                    DataPreparationGoals goals = ZeroMean | UnitVariance);
+    } }
+    \endcode
+
+    <b> Usage:</b>
+
+    <b>\#include</b> "<a href="matrix_8hxx-source.html">vigra/matrix.hxx</a>" or<br>
+    <b>\#include</b> "<a href="linear__algebra_8hxx-source.html">vigra/linear_algebra.hxx</a>"<br>
+        Namespaces: vigra and vigra::linalg
+
+    \code
+    Matrix A(rows, columns);
+    .. // fill A
+    Matrix standardizedA(rows, columns), offset(rows, 1), scaling(rows, 1);
+
+    prepareRows(A, standardizedA, offset, scaling, ZeroMean | UnitNorm);
+    
+    // use offset and scaling to prepare additional data according to the same transformation
+    Matrix newData(rows, ncolumns);
+    
+    Matrix standardizedNewData = (newData - repeatMatrix(offset, 1, ncolumns)) * pointWise(repeatMatrix(scaling, 1, ncolumns));
+
+    \endcode
+    */
+
 template <class T, class C1, class C2, class C3, class C4>
 inline void
-prepareRows(const MultiArrayView<2, T, C1> & A, 
-               MultiArrayView<2, T, C2> & res, MultiArrayView<2, T, C3> & offset, MultiArrayView<2, T, C4> & scaling, 
-               DataPreparationGoals goals = ZeroMean | UnitVariance)
+prepareRows(MultiArrayView<2, T, C1> const & A, 
+            MultiArrayView<2, T, C2> & res, MultiArrayView<2, T, C3> & offset, MultiArrayView<2, T, C4> & scaling, 
+            DataPreparationGoals goals = ZeroMean | UnitVariance)
 {
     MultiArrayView<2, T, StridedArrayTag> tr = transpose(res), to = transpose(offset), ts = transpose(scaling);
     detail::prepareDataImpl(transpose(A), tr, to, ts, goals);
@@ -2538,8 +2833,8 @@ prepareRows(const MultiArrayView<2, T, C1> & A,
 
 template <class T, class C1, class C2>
 inline void
-prepareRows(const MultiArrayView<2, T, C1> & A, MultiArrayView<2, T, C2> & res, 
-               DataPreparationGoals goals = ZeroMean | UnitVariance)
+prepareRows(MultiArrayView<2, T, C1> const & A, MultiArrayView<2, T, C2> & res, 
+            DataPreparationGoals goals = ZeroMean | UnitVariance)
 {
     MultiArrayView<2, T, StridedArrayTag> tr = transpose(res);
     Matrix<T> offset(rowCount(A), 1), scaling(rowCount(A), 1);
