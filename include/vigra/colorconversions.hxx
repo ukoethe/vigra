@@ -395,13 +395,13 @@ class FunctorTraits<RGB2RGBPrimeFunctor<From, To> >
     
     \f[
         C_{sRGB} = \left\{ \begin{array}{ll}
-        12.92 C_{RGB} & \textrm{ if }\frac{C_{RGB}}{C_{max}} \le 0.00304 \\
+        12.92\,C_{RGB} & \textrm{ if }\frac{C_{RGB}}{C_{max}} \le 0.00304 \\
         C_{max}\left( 1.055 \left(\frac{C_{RGB}}{C_{max}}\right)^{1/2.4}-0.055\right) & \textrm{ otherwise}
         \end{array}  \right.
     \f]
     
-    where C is any of the primaries R, G, and B. By default, \f$ C_{max} = 255 \f$ (This default can be 
-    overridden in the constructor). If both source and target colors components are stored 
+    where C is any of the primaries R, G, and B. By default, \f$ C_{max} = 255 \f$ (this default can be
+    overridden in the constructor). If both source and target color components are stored
     as <tt>unsigned char</tt>, a look-up-table will be used to speed up the transformation.
 
     <b> Traits defined:</b>
