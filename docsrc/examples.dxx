@@ -87,7 +87,7 @@
     
 /** \example invert.cxx
     Invert an image file (create a negative) using the function 
-    \ref transformImage
+    \ref transformImage()
     <br>
     Usage: <TT>invert infile outfile</TT>
 */
@@ -100,7 +100,7 @@
 */
     
 /** \example resize.cxx
-    Resize an image using \ref resizeImageSplineInterpolation<br>
+    Resize an image using \ref resizeImageSplineInterpolation()<br>
     Usage: <TT>resize infile outfile</TT>
 */
     
@@ -139,7 +139,7 @@
 */
     
 /** \example voronoi.cxx
-    Generate a Voronoi diagram, using \ref distanceTransform and
+    Generate a Voronoi diagram, using \ref distanceTransform() and
     \ref seededRegionGrowing()<br>
     Usage: <TT>voronoi</TT>, generates: <TT>distances.gif</TT> (Euclidean distance transform) and <TT>voronoi.gif</TT> (Voronoi diagram)
 */
