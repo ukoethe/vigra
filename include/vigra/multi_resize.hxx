@@ -102,6 +102,98 @@ internalResizeMultiArrayOneDimension(
 
 } // namespace detail
 
+/** \addtogroup GeometricTransformations Geometric Transformations
+*/
+//@{
+
+
+/***************************************************************/
+/*                                                             */
+/*             resizeMultiArraySplineInterpolation             */
+/*                                                             */
+/***************************************************************/
+
+/** \brief Resize MultiArray using B-spline interpolation.
+
+    The function implements separable spline interpolation algorithm described in
+
+    M. Unser, A. Aldroubi, M. Eden, <i>"B-Spline Signal Processing"</i>
+    IEEE Transactions on Signal Processing, vol. 41, no. 2, pp. 821-833 (part I),
+    pp. 834-848 (part II), 1993.
+
+    to obtain optimal interpolation quality and speed. You may pass the funcion
+    a spline of arbitrary order (e.g. <TT>BSpline&lt;ORDER, double&gt;</tt> or
+    <TT>CatmullRomSpline&lt;double&gt;</tt>). The default is a third order spline
+    which gives a twice continuously differentiable interpolant.
+    The implementation ensures that image values are interpolated rather
+    than smoothed by first calling a recursive (sharpening) prefilter as
+    described in the above paper. Then the actual interpolation is done
+    using \ref resamplingConvolveLine().
+
+    The range of both the input and output images (resp. regions)
+    must be given. The input image must have a size of at
+    least 4x4, the destination of at least 2x2. The scaling factors are then calculated
+    accordingly. If the source image is larger than the destination, it
+    is smoothed (band limited) using a recursive
+    exponential filter. The source value_type (SrcAccessor::value_type) must
+    be a linear algebra, i.e. it must support addition, subtraction,
+    and multiplication (+, -, *), multiplication with a scalar
+    real number and \ref NumericTraits "NumericTraits".
+    The function uses accessors.
+
+    <b> Declarations:</b>
+
+    pass arguments explicitly:
+    \code
+    namespace vigra {
+        template <class SrcIterator, class Shape, class SrcAccessor,
+                  class DestIterator, class DestAccessor,
+                  class Kernel = BSpline<3, double> >
+        void
+        resizeMultiArraySplineInterpolation(
+                              SrcIterator si, Shape const & sshape, SrcAccessor src,
+                              DestIterator di, Shape const & dshape, DestAccessor dest,
+                              Kernel const & spline = BSpline<3, double>());
+    }
+    \endcode
+
+
+    use argument objects in conjunction with \ref ArgumentObjectFactories:
+    \code
+    namespace vigra {
+        template <class SrcIterator, class Shape, class SrcAccessor,
+                  class DestIterator, class DestAccessor,
+                  class Kernel = BSpline<3, double> >
+        void
+        resizeMultiArraySplineInterpolation(
+                              triple<SrcIterator, Shape, SrcAccessor> src,
+                              triple<DestIterator, Shape, DestAccessor> dest,
+                              Kernel const & spline = BSpline<3, double>());
+    }
+    \endcode
+
+    <b> Usage:</b>
+
+        <b>\#include</b> "<a href="multi__resize_8hxx-source.html">vigra/multi_resize.hxx</a>"<br>
+        Namespace: vigra
+
+    \code
+    typedef vigra::MultiArray<3, float>::difference_type Shape;
+    vigra::MultiArray<3, float> src(Shape(5, 7, 10)),
+                                dest(Shape(9, 13, 19)); // double the size
+
+    // use default cubic spline interpolator
+    vigra::resizeMultiArraySplineInterpolation(
+               srcMultiArrayRange(src),
+               destMultiArrayRange(dest));
+
+    \endcode
+
+    <b> Required Interface:</b>
+
+    The source and destination iterators must be compatible with \ref vigra::MultiIterator. The array value
+    types must be models of \ref LinearSpace.
+*/
 template <class SrcIterator, class Shape, class SrcAccessor,
           class DestIterator, class DestAccessor, 
           class Kernel>

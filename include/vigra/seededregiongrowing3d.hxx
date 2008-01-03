@@ -162,7 +162,7 @@ public:
 
 } // namespace detail
 
-/** \addtogroup SeededRegionGrowing Seeded Region Growing
+/** \addtogroup SeededRegionGrowing
     Region segmentation and voronoi tesselation
 */
 //@{

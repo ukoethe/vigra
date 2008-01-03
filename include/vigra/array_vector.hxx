@@ -116,7 +116,7 @@ public:
             <li> Otherwise, a <tt>PreconditionViolation</tt> exception is thrown.
             </ul>
         */
-    this_type & operator=( this_type const & rhs );
+    ArrayVectorView & operator=( ArrayVectorView const & rhs );
 
         /** Copy assignment. 
             When the shapes of the two arrays match, the array contents 

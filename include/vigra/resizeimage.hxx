@@ -144,7 +144,7 @@ class CoscotFunction
 /** \addtogroup GeometricTransformations Geometric Transformations
     Zoom up and down by repeating pixels, or using various interpolation schemes.
 
-    See also: \ref resamplingConvolveImage(), \ref resampleImage()
+    See also: \ref resamplingConvolveImage(), \ref resampleImage(), \ref resizeMultiArraySplineInterpolation()
 
     <b>\#include</b> "<a href="stdimagefunctions_8hxx-source.html">vigra/stdimagefunctions.hxx</a>"<br>
     <b>or</b><br>

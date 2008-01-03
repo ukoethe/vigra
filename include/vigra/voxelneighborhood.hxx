@@ -64,7 +64,7 @@ namespace vigra {
 /** \brief Encode whether a voxel is near the volume border.
 
         //    This enum is used with \ref isAtVolumeBorder() and 
-        //    \ref vigra::RestrictedNeighborhoodTraverser.
+        //    \ref vigra::RestrictedNeighborhoodCirculator.
 
         //<b>\#include</b> "<a href="voxelneighborhood_8hxx-source.html">vigra/voxelneighborhood.hxx</a>"<br>
         //Namespace: vigra
@@ -450,7 +450,7 @@ static const Direction DirectionCount = NeighborCode3D::DirectionCount;     /**<
 
 }//namespace Neighborhood3DSix
     
-/** Export \ref vigraext::Neighborhood3DSix::NeighborCode3D into the scope of namespace vigraext.
+/** Export \ref vigra::Neighborhood3DSix::NeighborCode3D into the scope of namespace vigraext.
 */
 typedef Neighborhood3DSix::NeighborCode3D NeighborCode3DSix;
 
@@ -1578,7 +1578,7 @@ static const Direction DirectionCount     = NeighborCode3D::DirectionCount;     
 
 }//namespace Neighborhood3DTwentySix
     
-/** Export \ref vigraext::Neighborhood3DTwentySix::NeighborCode3D into the scope of namespace vigraext.
+/** Export \ref vigra::Neighborhood3DTwentySix::NeighborCode3D into the scope of namespace vigraext.
  */
 typedef Neighborhood3DTwentySix::NeighborCode3D NeighborCode3DTwentySix;
 

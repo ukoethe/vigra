@@ -394,10 +394,10 @@ class FunctorTraits<RGB2RGBPrimeFunctor<From, To> >
     (digital cameras, printers, and screens). The functor realizes the transformation
     
     \f[
-        C_{sRGB} = \begin{cases}
-        12.92 C_{RGB} & \textrm{if }\frac{C_{RGB}}{C_{max}} \le 0.00304 \\
-        C_{max}\left( 1.055 \left(\frac{C_{RGB}}{C_{max}}\right)^{1/2.4}-0.055\right) & \textrm{otherwise}
-        \end{cases}
+        C_{sRGB} = \left{ \begin{array}{ll}
+        12.92 C_{RGB} & \textrm{ if }\frac{C_{RGB}}{C_{max}} \le 0.00304 \\
+        C_{max}\left( 1.055 \left(\frac{C_{RGB}}{C_{max}}\right)^{1/2.4}-0.055\right) & \textrm{ otherwise}
+        \end{array}  \right.
     \f]
     
     where C is any of the primaries R, G, and B. By default, \f$ C_{max} = 255 \f$ (This default can be 
