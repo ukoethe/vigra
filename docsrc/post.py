@@ -92,10 +92,18 @@ def generateFunctionIndex():
     f = open(path + "/namespacevigra.html")
     text = f.read()
     f.close()
-    
+
     functionList = getFunctionList(text)
+
+    for k in ['srcImageRange', 'srcImage', 'destImageRange', 'destImage', 'maskImage']:
+        functionList.append(('group__ImageIterators.html#ImageBasedArgumentObjectFactories', k))
+    for k in ['srcMultiArrayRange', 'srcMultiArray', 'destMultiArrayRange', 'destMultiArray']:
+        functionList.append(('group__ImageIterators.html#MultiArrayBasedArgumentObjectFactories', k))
+    for k in ['srcIterRange', 'srcIter', 'destIterRange', 'destIter', 'maskIter']:
+        functionList.append(('group__ImageIterators.html#IteratorBasedArgumentObjectFactories', k))
+
     functionList.sort(lambda a,b: cmp(a[1], b[1]))
-    
+
     index = ""
     initials = []
     for i in range(len(functionList)):
@@ -123,14 +131,14 @@ def generateFunctionIndex():
             group = re.sub(r'group__([^\.]+)\.html.*', r'\1', link)
             index = index + ' [' + group + ']'
         index = index + '<br>\n'
-    
+
     f = open(path + "/functions.html")
     text = f.read()
     f.close()
-    
+
     header = re.match(r'(?s)(.*)\n<a href="#index', text).group(1)
     footer = re.search(r'(?s)(<!-- footer.html -->.*)', text).group(1)
-    
+
     text = re.sub(r'Compound\s(Member\sIndex|Members)', r'Function Index', header)
     for i in range(len(initials)):
         initial = initials[i]
