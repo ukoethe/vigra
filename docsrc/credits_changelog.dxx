@@ -59,7 +59,7 @@ Many thanks to all!
       
       <li> Added \ref gaussianGradientMagnitude()
       
-      <li> Added \ref fourierTransform() and \ref fourierTransfomInverse()
+      <li> Added \ref fourierTransform() and \ref fourierTransformInverse()
       
       <li> Added \ref cannyEdgelList3x3()
       
@@ -83,7 +83,7 @@ Many thanks to all!
       <li> Added mathematical functions:  elliptic integrals (\ref ellipticIntegralF(), \ref ellipticIntegralE()),
              chi-squared distribution (\ref chi2(), \ref chi2CDF(), \ref noncentralChi2(), \ref noncentralChi2CDF())
       
-      <li> Dropped "vigra/" from #includes in headers (so compiler will first look in the same disrectory).
+      <li> Dropped "vigra/" from \#includes in headers (so compiler will first look in the same disrectory).
       
       <li> Switched to relative paths in the MSVC project files. Compile vigraimpex into a DLL.
       
@@ -184,7 +184,7 @@ Many thanks to all!
 
 <UL>
 
-      <li> Added algorithms for \ref MultiDimensionalArrays:
+      <li> Added algorithms for \ref MultiDimensionalArrays :
            \ref MultiPointoperators and \ref MultiArrayConvolutionFilters
            and the \link vigra::MultiArrayNavigator navigator utility\endlink.
       

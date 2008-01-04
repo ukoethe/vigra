@@ -38,7 +38,7 @@
     Usage: <TT>smooth infile outfile</TT>
     
     <li> Find the gray value profile along the image diagonal 
-    by means of a \ref vigra::LineIterator:
+    by means of a \ref vigra::LineIterator :
     <a href="profile_8cxx-example.html">profile.cxx</a> <br>
     Usage: <TT>profile infile</TT>, generates <TT>profile.gif</TT>
 

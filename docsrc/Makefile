@@ -1,5 +1,5 @@
 ifndef docdir
-    include ../config/Makefile.include
+    docdir=../doc/vigra
 endif
 
          DOC = doxygen
@@ -9,15 +9,18 @@ endif
 FILES = \
 	index.dxx
 
-all:: doc
+all:: doxygen post
 
-doc::
+doxygen::
 	@if [ ! -d $(DOCDIR) ]; then mkdir -p $(DOCDIR); fi
 	@rm -f $(DOCDIR)/*.html
 	cat Doxyfile.in | \
           sed -e "s/\(PROJECT_NUMBER *= \)/\1 $(VIGRA_VERSION)/" \
+              -e "s/\(vigra_version=\)/\1\"$(VIGRA_VERSION)\"/" \
               -e "s@\(HTML_OUTPUT *= \).*@\1 $(DOCDIR)@" > Doxyfile
 	$(DOC)
+
+post::
 	python post.py $(DOCDIR) $(VIGRA_VERSION)
 	cp $(DOCDIR)/index.html $(DOCDIR)/index.html.in
 	cp ../src/examples/lenna*.gif $(DOCDIR)
