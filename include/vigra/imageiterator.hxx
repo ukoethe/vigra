@@ -1588,11 +1588,9 @@ struct IteratorTraits<ConstValueIterator<T> >
 
 #endif
 
-typedef Diff2D CoordinateIterator;
+/** \brief Simulate an image where each pixel contains its coordinate.
 
-/** \class CoordinateIterator
-
-    This used to be a separate class,
+    CoordinateIterator used to be a separate class,
     but has now become an alias for \ref vigra::Diff2D. This is possible because
     Diff2D now provides all the necessary functionality.
 
@@ -1650,9 +1648,8 @@ typedef Diff2D CoordinateIterator;
     <b>\#include</b> \<<a href="imageiterator_8hxx-source.html">vigra/imageiterator.hxx</a>\>
 
     Namespace: vigra
-
-    \brief Simulate an image where each pixel contains its coordinate
 */
+typedef Diff2D CoordinateIterator;
 
 //@}
 
