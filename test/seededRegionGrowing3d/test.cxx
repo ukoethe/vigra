@@ -193,7 +193,7 @@ struct SeededRegionGrowing3DTest
         DoubleVolume res(vol2);
 
         vigra::ArrayOfRegionStatistics<DirectCostFunctor> cost(2);
-        seededRegionGrowing3d(srcMultiArrayRange(distvol2), srcMultiArray(vol2),
+        seededRegionGrowing3D(srcMultiArrayRange(distvol2), srcMultiArray(vol2),
                               destMultiArray(res), cost, CompleteGrow);
 
         DoubleVolume::iterator i = res.begin();
@@ -260,7 +260,7 @@ struct SeededRegionGrowing3DTest
         IntVolume res(vol1);
 
         vigra::ArrayOfRegionStatistics<DirectCostFunctor> cost(2);
-        seededRegionGrowing3d(srcMultiArrayRange(distvol1), srcMultiArray(vol1),
+        seededRegionGrowing3D(srcMultiArrayRange(distvol1), srcMultiArray(vol1),
                               destMultiArray(res), cost, KeepContours);
 
         //int c=1;
@@ -279,7 +279,7 @@ struct SeededRegionGrowing3DTest
         IntVolume res(vol3);
 
         vigra::ArrayOfRegionStatistics<DirectCostFunctor> cost(4);
-        seededRegionGrowing3d(srcMultiArrayRange(vol3), srcMultiArray(vol3),
+        seededRegionGrowing3D(srcMultiArrayRange(vol3), srcMultiArray(vol3),
                               destMultiArray(res), cost, CompleteGrow);
 
         shouldEqualSequence(res.begin(), res.end(), vol3.begin());
