@@ -291,7 +291,7 @@ Many thanks to all!
            
       <li> Extended \link FunctorExpressions functor expression library \endlink.
            
-      <li> Added \link InitAlgo#initImageWithFunctor initImageWithFunctor\endlink().
+      <li> Added \ref initImageWithFunctor().
            
       <li> Improved Gaussian derivative filters (higher accuracy, correct sign,
            see \ref vigra#Kernel1D#initGaussianDerivative()).
