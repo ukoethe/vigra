@@ -240,6 +240,8 @@ class ImageExportInfo
             </DL>
 
             <b>Usage:</b>
+            
+            \code
             FImage img(w,h);
 
             // by default, float images are exported with pixeltype float
@@ -248,6 +250,7 @@ class ImageExportInfo
 
             // if this is not desired, force a different pixeltype
             exportImage(srcImageRange(img), ImageExportInfo("asByte.tif").setPixelType("UINT8"));
+            \endcode
          **/
     VIGRA_EXPORT ImageExportInfo & setPixelType( const char * );
 
@@ -287,8 +290,8 @@ class ImageExportInfo
 
             The offset is encoded in the XPosition and YPosition TIFF tags.
 
-            @param position of the upper left corner in pixels
-                           must be >= 0
+            @param pos     position of the upper left corner in pixels
+                           (must be >= 0)
          **/
     VIGRA_EXPORT ImageExportInfo & setPosition(const Diff2D & pos);
 

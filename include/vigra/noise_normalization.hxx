@@ -1018,6 +1018,8 @@ struct noiseVarianceEstimation_can_only_work_on_scalar_images
     result.push_back(ResultType(intensity, variance));
     \endcode
 */
+doxygen_overloaded_function(template <...> void noiseVarianceEstimation)
+
 template <class SrcIterator, class SrcAccessor, class BackInsertable>
 inline
 void noiseVarianceEstimation(SrcIterator sul, SrcIterator slr, SrcAccessor src,
@@ -1105,6 +1107,8 @@ void noiseVarianceEstimation(triple<SrcIterator, SrcIterator, SrcAccessor> src,
     
     same as \ref noiseVarianceEstimation()
 */
+doxygen_overloaded_function(template <...> void noiseVarianceClustering)
+
 template <class SrcIterator, class SrcAccessor, class BackInsertable>
 inline
 void noiseVarianceClustering(SrcIterator sul, SrcIterator slr, SrcAccessor src,
@@ -1194,6 +1198,8 @@ void noiseVarianceClustering(triple<SrcIterator, SrcIterator, SrcAccessor> src,
     
     same as \ref noiseVarianceEstimation()
 */
+doxygen_overloaded_function(template <...> bool nonparametricNoiseNormalization)
+
 template <class SrcIterator, class SrcAccessor,
           class DestIterator, class DestAccessor>
 inline bool
@@ -1272,6 +1278,8 @@ bool nonparametricNoiseNormalization(triple<SrcIterator, SrcIterator, SrcAccesso
     
     same as \ref noiseVarianceEstimation()
 */
+doxygen_overloaded_function(template <...> bool quadraticNoiseNormalization)
+
 template <class SrcIterator, class SrcAccessor,
           class DestIterator, class DestAccessor>
 inline bool
@@ -1354,6 +1362,8 @@ bool quadraticNoiseNormalization(triple<SrcIterator, SrcIterator, SrcAccessor> s
     are convertible to <tt>double</tt>. Likewise, the destination type must be assignable from <tt>double</tt>
     or a vector whose elements are assignable from <tt>double</tt>.
 */
+doxygen_overloaded_function(template <...> void quadraticNoiseNormalization)
+
 template <class SrcIterator, class SrcAccessor,
           class DestIterator, class DestAccessor>
 inline void
@@ -1432,6 +1442,8 @@ void quadraticNoiseNormalization(triple<SrcIterator, SrcIterator, SrcAccessor> s
     
     same as \ref noiseVarianceEstimation()
 */
+doxygen_overloaded_function(template <...> bool linearNoiseNormalization)
+
 template <class SrcIterator, class SrcAccessor,
           class DestIterator, class DestAccessor>
 inline bool
@@ -1514,6 +1526,8 @@ bool linearNoiseNormalization(triple<SrcIterator, SrcIterator, SrcAccessor> src,
     are convertible to <tt>double</tt>. Likewise, the destination type must be assignable from <tt>double</tt>
     or a vector whose elements are assignable from <tt>double</tt>.
 */
+doxygen_overloaded_function(template <...> void linearNoiseNormalization)
+
 template <class SrcIterator, class SrcAccessor,
           class DestIterator, class DestAccessor>
 inline

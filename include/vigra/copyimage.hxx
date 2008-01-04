@@ -141,6 +141,8 @@ copyLineIf(SrcIterator s,
     \endcode
     
 */
+doxygen_overloaded_function(template <...> void copyImage)
+
 template <class SrcImageIterator, class SrcAccessor,
           class DestImageIterator, class DestAccessor>
 void
@@ -243,6 +245,8 @@ copyImage(triple<SrcImageIterator, SrcImageIterator, SrcAccessor> src,
     \endcode
     
 */
+doxygen_overloaded_function(template <...> void copyImageIf)
+
 template <class SrcImageIterator, class SrcAccessor,
           class MaskImageIterator, class MaskAccessor,
           class DestImageIterator, class DestAccessor>

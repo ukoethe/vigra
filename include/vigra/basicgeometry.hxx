@@ -115,6 +115,8 @@ namespace vigra {
     \endcode
     
 */
+doxygen_overloaded_function(template <...> void rotateImage)
+
 template <class SrcIterator, class SrcAccessor, 
           class DestIterator, class DestAccessor>
 void rotateImage(SrcIterator is, SrcIterator end, SrcAccessor as,
@@ -266,6 +268,8 @@ enum Reflect{horizontal = 1, vertical = 2};
     \endcode
     
 */
+doxygen_overloaded_function(template <...> void reflectImage)
+
 template <class SrcIterator, class SrcAccessor, 
           class DestIterator, class DestAccessor>
 void reflectImage(SrcIterator is, SrcIterator end, SrcAccessor as,
@@ -407,6 +411,8 @@ enum Transpose{major = 1, minor = 2};
     \endcode
     
 */
+doxygen_overloaded_function(template <...> void transposeImage)
+
 template <class SrcIterator, class SrcAccessor, 
           class DestIterator, class DestAccessor>
 void transposeImage(SrcIterator is, SrcIterator end, SrcAccessor as,
@@ -639,6 +645,8 @@ inline int sizeForResamplingFactor(int oldsize, double factor)
     \endcode
     
 */
+doxygen_overloaded_function(template <...> void resampleImage)
+
 template <class SrcIterator, class SrcAccessor,
           class DestIterator, class DestAccessor>
 void 

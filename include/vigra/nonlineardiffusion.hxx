@@ -253,8 +253,8 @@ void internalNonlinearDiffusionAOSStep(
                   class DestIterator, class DestAccessor,
                   class DiffusivityFunctor>
         void nonlinearDiffusion(SrcIterator sul, SrcIterator slr, SrcAccessor as,
-                           DestIterator dul, DestAccessor ad,
-                           DiffusivityFunctor const & weight, double scale);
+                                DestIterator dul, DestAccessor ad,
+                                DiffusivityFunctor const & weight, double scale);
     }
     \endcode
     
@@ -266,9 +266,9 @@ void internalNonlinearDiffusionAOSStep(
                   class DestIterator, class DestAccessor,
                   class DiffusivityFunctor>
         void nonlinearDiffusion(
-            triple<SrcIterator, SrcIterator, SrcAccessor> src,
-            pair<DestIterator, DestAccessor> dest,
-            DiffusivityFunctor const & weight, double scale);
+                  triple<SrcIterator, SrcIterator, SrcAccessor> src,
+                  pair<DestIterator, DestAccessor> dest,
+                  DiffusivityFunctor const & weight, double scale);
     }
     \endcode
     
@@ -303,6 +303,8 @@ void internalNonlinearDiffusionAOSStep(
     
     <TT>scale > 0</TT>
 */
+doxygen_overloaded_function(template <...> void nonlinearDiffusion)
+
 template <class SrcIterator, class SrcAccessor,
           class DestIterator, class DestAccessor,
           class DiffusivityFunc>

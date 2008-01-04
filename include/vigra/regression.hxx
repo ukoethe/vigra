@@ -112,7 +112,7 @@ leastSquares(MultiArrayView<2, T, C1> const & A,
        The function returns
        <tt>false</tt> when the rank of the weighted matrix \a A is less than <tt>n</tt>.
 
-    <b>\#include</b> \<<a href="regression_8hxx-source.html">vigra/regression_8hxx.hxx</a>\> or<br>
+    <b>\#include</b> \<<a href="regression_8hxx-source.html">vigra/regression.hxx</a>\> or<br>
     <b>\#include</b> \<<a href="linear__algebra_8hxx-source.html">vigra/linear_algebra.hxx</a>\><br>
         Namespaces: vigra and vigra::linalg
    */
@@ -171,7 +171,7 @@ weightedLeastSquares(MultiArrayView<2, T, C1> const & A,
        The function returns <tt>false</tt> if the rank of \a A is less than <tt>n</tt>
        and <tt>lambda == 0.0</tt>.
 
-    <b>\#include</b> \<<a href="regression_8hxx-source.html">vigra/regression_8hxx.hxx</a>\> or<br>
+    <b>\#include</b> \<<a href="regression_8hxx-source.html">vigra/regression.hxx</a>\> or<br>
     <b>\#include</b> \<<a href="linear__algebra_8hxx-source.html">vigra/linear_algebra.hxx</a>\><br>
         Namespaces: vigra and vigra::linalg
    */
@@ -242,7 +242,7 @@ ridgeRegression(MultiArrayView<2, T, C1> const & A,
        The function returns <tt>false</tt> if the rank of \a A is less than <tt>n</tt>
        and <tt>lambda == 0.0</tt>.
 
-    <b>\#include</b> \<<a href="regression_8hxx-source.html">vigra/regression_8hxx.hxx</a>\> or<br>
+    <b>\#include</b> \<<a href="regression_8hxx-source.html">vigra/regression.hxx</a>\> or<br>
     <b>\#include</b> \<<a href="linear__algebra_8hxx-source.html">vigra/linear_algebra.hxx</a>\><br>
         Namespaces: vigra and vigra::linalg
    */
@@ -297,7 +297,7 @@ weightedRidgeRegression(MultiArrayView<2, T, C1> const & A,
        The function returns <tt>false</tt> when the matrix \a A is rank deficient. If this
        happens, and one of the lambdas is zero, the corresponding column of \a x will be skipped.
 
-    <b>\#include</b> \<<a href="regression_8hxx-source.html">vigra/regression_8hxx.hxx</a>\> or<br>
+    <b>\#include</b> \<<a href="regression_8hxx-source.html">vigra/regression.hxx</a>\> or<br>
     <b>\#include</b> \<<a href="linear__algebra_8hxx-source.html">vigra/linear_algebra.hxx</a>\><br>
         Namespaces: vigra and vigra::linalg
    */

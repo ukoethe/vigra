@@ -734,7 +734,6 @@ void convolveImage(
                   class MaskIterator, class MaskAccessor,
                   class DestIterator, class DestAccessor,
                   class KernelIterator, class KernelAccessor>
-        inline
         void normalizedConvolveImage(triple<SrcIterator, SrcIterator, SrcAccessor> src,
                                      pair<MaskIterator, MaskAccessor> mask,
                                      pair<DestIterator, DestAccessor> dest,
@@ -812,6 +811,8 @@ void convolveImage(
     Sum of kernel elements must be != 0.
 
 */
+doxygen_overloaded_function(template <...> void normalizedConvolveImage)
+
 template <class SrcIterator, class SrcAccessor,
           class DestIterator, class DestAccessor,
           class MaskIterator, class MaskAccessor,
@@ -986,7 +987,6 @@ void normalizedConvolveImage(
                   class MaskIterator, class MaskAccessor,
                   class DestIterator, class DestAccessor,
                   class KernelIterator, class KernelAccessor>
-        inline
         void convolveImageWithMask(triple<SrcIterator, SrcIterator, SrcAccessor> src,
                                    pair<MaskIterator, MaskAccessor> mask,
                                    pair<DestIterator, DestAccessor> dest,
@@ -995,6 +995,8 @@ void normalizedConvolveImage(
     }
     \endcode
 */
+doxygen_overloaded_function(template <...> void convolveImageWithMask)
+
 template <class SrcIterator, class SrcAccessor,
           class DestIterator, class DestAccessor,
           class MaskIterator, class MaskAccessor,

@@ -107,7 +107,7 @@ transformLineIf(SrcIterator s,
     \code
     namespace vigra {
         template <class SrcImageIterator, class SrcAccessor,
-              class DestImageIterator, class DestAccessor, class Functor>
+                  class DestImageIterator, class DestAccessor, class Functor>
         void
         transformImage(SrcImageIterator src_upperleft,
                SrcImageIterator src_lowerright, SrcAccessor sa,
@@ -121,7 +121,7 @@ transformLineIf(SrcIterator s,
     \code
     namespace vigra {
         template <class SrcImageIterator, class SrcAccessor,
-              class DestImageIterator, class DestAccessor, class Functor>
+                  class DestImageIterator, class DestAccessor, class Functor>
         void
         transformImage(triple<SrcImageIterator, SrcImageIterator, SrcAccessor> src,
                pair<DestImageIterator, DestAccessor> dest,
@@ -162,6 +162,8 @@ transformLineIf(SrcIterator s,
     \endcode
 
 */
+doxygen_overloaded_function(template <...> void transformImage)
+
 template <class SrcImageIterator, class SrcAccessor,
           class DestImageIterator, class DestAccessor, class Functor>
 void
@@ -216,15 +218,15 @@ transformImage(triple<SrcImageIterator, SrcImageIterator, SrcAccessor> src,
     \code
     namespace vigra {
         template <class SrcImageIterator, class SrcAccessor,
-              class MaskImageIterator, class MaskAccessor,
-              class DestImageIterator, clas DestAccessor,
-              class Functor>
+                  class MaskImageIterator, class MaskAccessor,
+                  class DestImageIterator, clas DestAccessor,
+                  class Functor>
         void
         transformImageIf(SrcImageIterator src_upperleft,
-            SrcImageIterator src_lowerright, SrcAccessor sa,
-            MaskImageIterator mask_upperleft, MaskAccessor ma,
-            DestImageIterator dest_upperleft, DestAccessor da,
-            Functor const & f)
+                         SrcImageIterator src_lowerright, SrcAccessor sa,
+                         MaskImageIterator mask_upperleft, MaskAccessor ma,
+                         DestImageIterator dest_upperleft, DestAccessor da,
+                         Functor const & f)
     }
     \endcode
 
@@ -233,14 +235,14 @@ transformImage(triple<SrcImageIterator, SrcImageIterator, SrcAccessor> src,
     \code
     namespace vigra {
         template <class SrcImageIterator, class SrcAccessor,
-              class MaskImageIterator, class MaskAccessor,
-              class DestImageIterator, clas DestAccessor,
-              class Functor>
+                  class MaskImageIterator, class MaskAccessor,
+                  class DestImageIterator, clas DestAccessor,
+                  class Functor>
         void
         transformImageIf(triple<SrcImageIterator, SrcImageIterator, SrcAccessor> src,
-                 pair<MaskImageIterator, MaskAccessor> mask,
-                 pair<DestImageIterator, DestAccessor> dest,
-                 Functor const & f)
+                         pair<MaskImageIterator, MaskAccessor> mask,
+                         pair<DestImageIterator, DestAccessor> dest,
+                         Functor const & f)
     }
     \endcode
 
@@ -280,6 +282,8 @@ transformImage(triple<SrcImageIterator, SrcImageIterator, SrcAccessor> src,
     \endcode
 
 */
+doxygen_overloaded_function(template <...> void transformImageIf)
+
 template <class SrcImageIterator, class SrcAccessor,
           class MaskImageIterator, class MaskAccessor,
           class DestImageIterator, class DestAccessor,
@@ -344,7 +348,7 @@ transformImageIf(triple<SrcImageIterator, SrcImageIterator, SrcAccessor> src,
                   class DestImageIterator, class DestAccessor, class Functor>
         void
         gradientBasedTransform(SrcImageIterator srcul, SrcImageIterator srclr, SrcAccessor sa,
-                      DestImageIterator destul, DestAccessor da, Functor const & f)
+                               DestImageIterator destul, DestAccessor da, Functor const & f)
     }
     \endcode
 
@@ -356,7 +360,7 @@ transformImageIf(triple<SrcImageIterator, SrcImageIterator, SrcAccessor> src,
                   class DestImageIterator, class DestAccessor, class Functor>
         void
         gradientBasedTransform(triple<SrcImageIterator, SrcImageIterator, SrcAccessor> src,
-                       pair<DestImageIterator, DestAccessor> dest, Functor const & const & f)
+                               pair<DestImageIterator, DestAccessor> dest, Functor const & const & f)
     }
     \endcode
 
@@ -395,6 +399,7 @@ transformImageIf(triple<SrcImageIterator, SrcImageIterator, SrcAccessor> src,
     \endcode
 
 */
+doxygen_overloaded_function(template <...> void gradientBasedTransform)
 
 template <class SrcImageIterator, class SrcAccessor,
           class DestImageIterator, class DestAccessor, class Functor>

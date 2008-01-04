@@ -150,9 +150,9 @@ class BSplineBase
         /** Get the prefilter coefficients required for interpolation.
             To interpolate with a B-spline, \ref resamplingConvolveImage()
             can be used. However, the image to be interpolated must be
-            pre-filtered using \ref recursiveFilterImage() with the filter
-            coefficients given by this function. The length of the array
-            corresponds to the number of times \ref recursiveFilterImage()
+            pre-filtered using \ref recursiveFilterX() and \ref recursiveFilterY()
+            with the filter coefficients given by this function. The length of the array
+            corresponds to how many times the above recursive filtering
             has to be applied (zero length means no prefiltering necessary).
         */
     ArrayVector<double> const & prefilterCoefficients() const

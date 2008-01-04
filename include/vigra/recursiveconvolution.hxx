@@ -159,6 +159,8 @@ namespace vigra {
     \endcode
 
 */
+doxygen_overloaded_function(template <...> void recursiveFilterLine)
+
 template <class SrcIterator, class SrcAccessor,
           class DestIterator, class DestAccessor>
 void recursiveFilterLine(SrcIterator is, SrcIterator isend, SrcAccessor as,
@@ -420,6 +422,8 @@ void recursiveFilterLine(SrcIterator is, SrcIterator isend, SrcAccessor as,
     \endcode
 
 */
+doxygen_overloaded_function(template <...> void recursiveSmoothLine)
+
 template <class SrcIterator, class SrcAccessor,
           class DestIterator, class DestAccessor>
 inline 
@@ -507,6 +511,8 @@ void recursiveSmoothLine(SrcIterator is, SrcIterator isend, SrcAccessor as,
     \endcode
 
 */
+doxygen_overloaded_function(template <...> void recursiveFirstDerivativeLine)
+
 template <class SrcIterator, class SrcAccessor,
           class DestIterator, class DestAccessor>
 void recursiveFirstDerivativeLine(SrcIterator is, SrcIterator isend, SrcAccessor as,
@@ -626,6 +632,8 @@ void recursiveFirstDerivativeLine(SrcIterator is, SrcIterator isend, SrcAccessor
     \endcode
 
 */
+doxygen_overloaded_function(template <...> void recursiveSecondDerivativeLine)
+
 template <class SrcIterator, class SrcAccessor,
           class DestIterator, class DestAccessor>
 void recursiveSecondDerivativeLine(SrcIterator is, SrcIterator isend, SrcAccessor as,
@@ -747,6 +755,8 @@ void recursiveSecondDerivativeLine(SrcIterator is, SrcIterator isend, SrcAccesso
     \endcode
 
 */
+doxygen_overloaded_function(template <...> void recursiveFilterX)
+
 template <class SrcImageIterator, class SrcAccessor,
           class DestImageIterator, class DestAccessor>
 void recursiveFilterX(SrcImageIterator supperleft, 
@@ -874,6 +884,8 @@ inline void recursiveFilterX(
     \endcode
 
 */
+doxygen_overloaded_function(template <...> void recursiveSmoothX)
+
 template <class SrcImageIterator, class SrcAccessor,
           class DestImageIterator, class DestAccessor>
 void recursiveSmoothX(SrcImageIterator supperleft, 
@@ -979,6 +991,8 @@ inline void recursiveSmoothX(
     \endcode
 
 */
+doxygen_overloaded_function(template <...> void recursiveFilterY)
+
 template <class SrcImageIterator, class SrcAccessor,
           class DestImageIterator, class DestAccessor>
 void recursiveFilterY(SrcImageIterator supperleft, 
@@ -1106,6 +1120,8 @@ inline void recursiveFilterY(
     \endcode
 
 */
+doxygen_overloaded_function(template <...> void recursiveSmoothY)
+
 template <class SrcImageIterator, class SrcAccessor,
           class DestImageIterator, class DestAccessor>
 void recursiveSmoothY(SrcImageIterator supperleft, 
@@ -1194,6 +1210,8 @@ inline void recursiveSmoothY(
     \endcode
 
 */
+doxygen_overloaded_function(template <...> void recursiveFirstDerivativeX)
+
 template <class SrcImageIterator, class SrcAccessor,
           class DestImageIterator, class DestAccessor>
 void recursiveFirstDerivativeX(SrcImageIterator supperleft, 
@@ -1282,6 +1300,8 @@ inline void recursiveFirstDerivativeX(
     \endcode
 
 */
+doxygen_overloaded_function(template <...> void recursiveFirstDerivativeY)
+
 template <class SrcImageIterator, class SrcAccessor,
           class DestImageIterator, class DestAccessor>
 void recursiveFirstDerivativeY(SrcImageIterator supperleft, 
@@ -1370,6 +1390,8 @@ inline void recursiveFirstDerivativeY(
     \endcode
 
 */
+doxygen_overloaded_function(template <...> void recursiveSecondDerivativeX)
+
 template <class SrcImageIterator, class SrcAccessor,
           class DestImageIterator, class DestAccessor>
 void recursiveSecondDerivativeX(SrcImageIterator supperleft, 
@@ -1458,6 +1480,8 @@ inline void recursiveSecondDerivativeX(
     \endcode
 
 */
+doxygen_overloaded_function(template <...> void recursiveSecondDerivativeY)
+
 template <class SrcImageIterator, class SrcAccessor,
           class DestImageIterator, class DestAccessor>
 void recursiveSecondDerivativeY(SrcImageIterator supperleft, 

@@ -1594,7 +1594,7 @@ struct IteratorTraits<ConstValueIterator<T> >
     but has now become an alias for \ref vigra::Diff2D. This is possible because
     Diff2D now provides all the necessary functionality.
 
-    CoordinateIterator behaves like a read-only \ref ImageIterator for
+    CoordinateIterator behaves like a read-only \ref vigra::ImageIterator for
     an image in which each pixel contains its coordinate. This is useful for
     algorithms that need access to the current pixel's location.
     For example, you can use CoordinateIterator/Diff2D to

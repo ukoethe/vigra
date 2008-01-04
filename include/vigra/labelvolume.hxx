@@ -163,6 +163,8 @@ namespace vigra{
     \endcode
 
 */
+doxygen_overloaded_function(template <...> unsigned int labelVolumeSix)
+
 template <class SrcIterator, class SrcAccessor,class SrcShape,
           class DestIterator, class DestAccessor>
 unsigned int labelVolumeSix(triple<SrcIterator, SrcShape, SrcAccessor> src,
@@ -493,6 +495,8 @@ unsigned int labelVolume(SrcIterator s_Iter, SrcShape srcShape, SrcAccessor sa,
     \endcode
 
 */
+doxygen_overloaded_function(template <...> unsigned int labelVolumeWithBackground)
+
 template <class SrcIterator, class SrcAccessor,class SrcShape,
           class DestIterator, class DestAccessor,
           class Neighborhood3D,

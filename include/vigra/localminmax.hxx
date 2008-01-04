@@ -181,6 +181,8 @@ localMinMax(SrcIterator sul, SrcIterator slr, SrcAccessor sa,
     \endcode
 
 */
+doxygen_overloaded_function(template <...> void localMinima)
+
 template <class SrcIterator, class SrcAccessor,
           class DestIterator, class DestAccessor,
           class DestValue, class Neighborhood>
@@ -329,6 +331,8 @@ localMinima(triple<SrcIterator, SrcIterator, SrcAccessor> src,
     \endcode
 
 */
+doxygen_overloaded_function(template <...> void localMaxima)
+
 template <class SrcIterator, class SrcAccessor,
           class DestIterator, class DestAccessor,
           class DestValue, class Neighborhood>
@@ -588,6 +592,8 @@ extendedLocalMinMax(SrcIterator sul, SrcIterator slr, SrcAccessor sa,
     \endcode
 
 */
+doxygen_overloaded_function(template <...> void extendedLocalMinima)
+
 template <class SrcIterator, class SrcAccessor,
           class DestIterator, class DestAccessor, class DestValue,
           class Neighborhood, class EqualityFunctor>
@@ -805,6 +811,8 @@ extendedLocalMinima(triple<SrcIterator, SrcIterator, SrcAccessor> src,
     \endcode
 
 */
+doxygen_overloaded_function(template <...> void extendedLocalMaxima)
+
 template <class SrcIterator, class SrcAccessor,
           class DestIterator, class DestAccessor, class DestValue,
           class Neighborhood, class EqualityFunctor>

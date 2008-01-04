@@ -101,8 +101,6 @@ namespace vigra
       \param ys  image iterator referencing the upper left pixel of the destination image
       \param a   image accessor for the destination image
     */
-doxygen_overloaded_function(template <...> void read_bands)
-
     template< class ImageIterator, class Accessor, class SrcValueType >
     void read_bands( Decoder * dec, ImageIterator ys, Accessor a, SrcValueType )
     {
@@ -195,8 +193,6 @@ doxygen_overloaded_function(template <...> void read_bands)
       \param ys  image iterator referencing the upper left pixel of the destination image
       \param a   image accessor for the destination image
     */
-doxygen_overloaded_function(template <...> void read_band)
-
     template< class ImageIterator, class Accessor, class SrcValueType >
     void read_band( Decoder * dec, ImageIterator ys, Accessor a, SrcValueType )
     {
@@ -234,11 +230,15 @@ doxygen_overloaded_function(template <...> void read_band)
         }
         \endcode
 
-      \param ImageIterator the image iterator type for the destination image
-      \param Accessor      the image accessor type for the destination image
-      \param info          user supplied image import information
-      \param iter          image iterator referencing the upper left pixel of the destination image
-      \param a             image accessor for the destination image
+        <b> Paramters:</b>
+
+        <DL>
+        <DT>ImageIterator<DD> the image iterator type for the destination image
+        <DT>Accessor<DD> the image accessor type for the destination image
+        <DT>info<DD> user supplied image import information
+        <DT>iter<DD> image iterator referencing the upper left pixel of the destination image
+        <DT>a<DD> image accessor for the destination image
+        </DL>
     */
 doxygen_overloaded_function(template <...> void importVectorImage)
 
@@ -284,11 +284,15 @@ doxygen_overloaded_function(template <...> void importVectorImage)
         }
         \endcode
 
-      \param ImageIterator the image iterator type for the destination image
-      \param Accessor      the image accessor type for the destination image
-      \param info          user supplied image import information
-      \param iter          image iterator referencing the upper left pixel of the destination image
-      \param a             image accessor for the destination image
+        <b> Paramters:</b>
+
+        <DL>
+        <DT>ImageIterator<DD> the image iterator type for the destination image
+        <DT>Accessor<DD> the image accessor type for the destination image
+        <DT>info<DD> user supplied image import information
+        <DT>iter<DD> image iterator referencing the upper left pixel of the destination image
+        <DT>a<DD> image accessor for the destination image
+        </DL>
     */
 doxygen_overloaded_function(template <...> void importScalarImage)
 
@@ -444,8 +448,6 @@ doxygen_overloaded_function(template <...> void importImage)
       \param lr  image iterator referencing the lower right pixel of the source image
       \param a   image accessor for the source image
     */
-doxygen_overloaded_function(template <...> void write_bands)
-
     template< class ImageIterator, class Accessor, class DstValueType >
     void write_bands( Encoder * enc, ImageIterator ul, ImageIterator lr, Accessor a, DstValueType)
     {
@@ -573,8 +575,6 @@ doxygen_overloaded_function(template <...> void write_bands)
       \param lr  image iterator referencing the lower right pixel of the source image
       \param a   image accessor for the source image
     */
-doxygen_overloaded_function(template <...> void write_band)
-
     template< class ImageIterator, class Accessor, class DstValueType >
     void write_band( Encoder * enc, ImageIterator ul, ImageIterator lr, Accessor a, DstValueType)
     {

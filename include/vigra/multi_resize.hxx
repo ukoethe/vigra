@@ -194,6 +194,8 @@ internalResizeMultiArrayOneDimension(
     The source and destination iterators must be compatible with \ref vigra::MultiIterator. The array value
     types must be models of \ref LinearSpace.
 */
+doxygen_overloaded_function(template <...> void resizeMultiArraySplineInterpolation)
+
 template <class SrcIterator, class Shape, class SrcAccessor,
           class DestIterator, class DestAccessor, 
           class Kernel>

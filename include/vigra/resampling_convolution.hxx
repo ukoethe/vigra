@@ -224,6 +224,49 @@ resamplingReduceLine2(SrcIter s, SrcIter send, SrcAcc src,
     }
 }
 
+/** \addtogroup ResamplingConvolutionFilters Resampling Convolution Filters
+
+    These functions implement the convolution operation when the source and target images
+    have different sizes. This is realized by accessing a continous kernel at the
+    appropriate non-integer positions. The technique is, for example, described in
+    D. Schumacher: <i>General Filtered Image Rescaling</i>, in: Graphics Gems III,
+    Academic Press, 1992.
+*/
+//@{
+
+/********************************************************/
+/*                                                      */
+/*                resamplingConvolveLine                */
+/*                                                      */
+/********************************************************/
+
+/** \brief Performs a 1-dimensional resampling convolution of the source signal using the given
+    set of kernels.
+
+    This function is mainly used internally: It is called for each dimension of a 
+    a higher dimensional array in order to perform a separable resize operation.
+
+    <b> Declaration:</b>
+
+    <b>\#include</b> \<<a href="resampling__convolution_8hxx-source.html">vigra/resampling_convolution.hxx</a>\>
+
+    \code
+    namespace vigra {
+        template <class SrcIter, class SrcAcc,
+                  class DestIter, class DestAcc,
+                  class KernelArray,
+                  class Functor>
+        void
+        resamplingConvolveLine(SrcIter s, SrcIter send, SrcAcc src,
+                               DestIter d, DestIter dend, DestAcc dest,
+                               KernelArray const & kernels,
+                               Functor mapTargetToSourceCoordinate)    
+    }
+    \endcode
+
+*/
+doxygen_overloaded_function(template <...> void resamplingConvolveLine)
+
 template <class SrcIter, class SrcAcc,
           class DestIter, class DestAcc,
           class KernelArray,
@@ -323,22 +366,6 @@ createResamplingKernels(Kernel const & kernel,
     }
 }
 
-/** \addtogroup ResamplingConvolutionFilters Resampling Convolution Filters
-
-    These functions implement the convolution operation when the source and target images
-    have different sizes. This is realized by accessing a continous kernel at the
-    appropriate non-integer positions. The technique is, for example, described in
-    D. Schumacher: <i>General Filtered Image Rescaling</i>, in: Graphics Gems III,
-    Academic Press, 1992.
-*/
-//@{
-
-/********************************************************/
-/*                                                      */
-/*                  resamplingConvolveX                 */
-/*                                                      */
-/********************************************************/
-
 /** \brief Apply a resampling filter in the x-direction.
 
     This function implements a convolution operation in x-direction
@@ -423,6 +450,8 @@ createResamplingKernels(Kernel const & kernel,
     double value = kernel(x);
     \endcode
 */
+doxygen_overloaded_function(template <...> void resamplingConvolveX)
+
 template <class SrcIter, class SrcAcc,
           class DestIter, class DestAcc,
           class Kernel>
@@ -560,6 +589,8 @@ resamplingConvolveX(triple<SrcIter, SrcIter, SrcAcc> src,
     double value = kernel(y);
     \endcode
 */
+doxygen_overloaded_function(template <...> void resamplingConvolveY)
+
 template <class SrcIter, class SrcAcc,
           class DestIter, class DestAcc,
           class Kernel>
@@ -678,6 +709,8 @@ resamplingConvolveY(triple<SrcIter, SrcIter, SrcAcc> src,
     \endcode
 
 */
+doxygen_overloaded_function(template <...> void resamplingConvolveImage)
+
 template <class SrcIterator, class SrcAccessor,
           class DestIterator, class DestAccessor,
           class KernelX, class KernelY>

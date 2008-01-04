@@ -237,6 +237,8 @@ linalg::TemporaryMatrix<double> rotationMatrix2DDegrees(double angle, TinyVector
 
     \endcode
 */
+doxygen_overloaded_function(template <...> void rotateImage)
+
 template <int ORDER, class T, 
           class DestIterator, class DestAccessor>
 void rotateImage(SplineImageView<ORDER, T> const & src,
@@ -381,6 +383,8 @@ rotateImage(SplineImageView<ORDER, T> const & src,
 
     \endcode
 */
+doxygen_overloaded_function(template <...> void affineWarpImage)
+
 template <int ORDER, class T, 
           class DestIterator, class DestAccessor,
           class C>

@@ -414,6 +414,8 @@ oddPolarFilters(SrcIterator supperleft, SrcIterator slowerright, SrcAccessor src
     \endcode
 
 */
+doxygen_overloaded_function(template <...> void rieszTransformOfLOG)
+
 template <class SrcIterator, class SrcAccessor,
           class DestIterator, class DestAccessor>
 void rieszTransformOfLOG(SrcIterator supperleft, SrcIterator slowerright, SrcAccessor src,
@@ -537,7 +539,7 @@ void rieszTransformOfLOG(triple<SrcIterator, SrcIterator, SrcAccessor> src,
 
 /** \brief Calculate the boundary tensor for a scalar valued image.
 
-    These functions calculates a spatial domain approximation of
+    These functions calculate a spatial domain approximation of
     the boundary tensor as described in
 
     U. K&ouml;the: <a href="http://kogs-www.informatik.uni-hamburg.de/~koethe/papers/abstracts/polarfilters.html">
@@ -558,7 +560,7 @@ void rieszTransformOfLOG(triple<SrcIterator, SrcIterator, SrcAccessor> src,
     \code
     namespace vigra {
         template <class SrcIterator, class SrcAccessor,
-                class DestIterator, class DestAccessor>
+                  class DestIterator, class DestAccessor>
         void boundaryTensor(SrcIterator supperleft, SrcIterator slowerright, SrcAccessor src,
                             DestIterator dupperleft, DestAccessor dest,
                             double scale);
@@ -569,7 +571,7 @@ void rieszTransformOfLOG(triple<SrcIterator, SrcIterator, SrcAccessor> src,
     \code
     namespace vigra {
         template <class SrcIterator, class SrcAccessor,
-                class DestIterator, class DestAccessor>
+                  class DestIterator, class DestAccessor>
         void boundaryTensor(triple<SrcIterator, SrcIterator, SrcAccessor> src,
                             pair<DestIterator, DestAccessor> dest,
                             double scale);
@@ -588,6 +590,8 @@ void rieszTransformOfLOG(triple<SrcIterator, SrcIterator, SrcAccessor> src,
     \endcode
 
 */
+doxygen_overloaded_function(template <...> void boundaryTensor)
+
 template <class SrcIterator, class SrcAccessor,
           class DestIterator, class DestAccessor>
 void boundaryTensor(SrcIterator supperleft, SrcIterator slowerright, SrcAccessor src,
@@ -615,6 +619,41 @@ void boundaryTensor(triple<SrcIterator, SrcIterator, SrcAccessor> src,
     boundaryTensor(src.first, src.second, src.third,
                    dest.first, dest.second, scale);
 }
+
+/** \brief Boundary tensor variant.
+
+    This function implements a variant of the boundary tensor where the 
+    0th-order Riesz transform has been dropped, so that the tensor is no 
+    longer sensitive to blobs. See \ref boundaryTensor() for more detailed 
+    documentation.
+
+    <b> Declarations:</b>
+
+    <b>\#include</b> \<<a href="boundarytensor_8hxx-source.html">vigra/boundarytensor.hxx</a>\>
+
+    pass arguments explicitly:
+    \code
+    namespace vigra {
+        template <class SrcIterator, class SrcAccessor,
+                  class DestIterator, class DestAccessor>
+        void boundaryTensor1(SrcIterator supperleft, SrcIterator slowerright, SrcAccessor src,
+                             DestIterator dupperleft, DestAccessor dest,
+                             double scale);
+    }
+    \endcode
+
+    use argument objects in conjunction with \ref ArgumentObjectFactories :
+    \code
+    namespace vigra {
+        template <class SrcIterator, class SrcAccessor,
+                  class DestIterator, class DestAccessor>
+        void boundaryTensor1(triple<SrcIterator, SrcIterator, SrcAccessor> src,
+                             pair<DestIterator, DestAccessor> dest,
+                             double scale);
+    }
+    \endcode
+*/
+doxygen_overloaded_function(template <...> void boundaryTensor1)
 
 template <class SrcIterator, class SrcAccessor,
           class DestIterator, class DestAccessor>

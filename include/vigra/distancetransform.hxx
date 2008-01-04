@@ -373,6 +373,8 @@ internalDistanceTransform(SrcImageIterator src_upperleft,
  
     \endcode
 */
+doxygen_overloaded_function(template <...> void distanceTransform)
+
 template <class SrcImageIterator, class SrcAccessor,
                    class DestImageIterator, class DestAccessor,
                    class ValueType>

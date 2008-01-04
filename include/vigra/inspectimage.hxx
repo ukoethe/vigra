@@ -178,6 +178,8 @@ inspectTwoLinesIf(SrcIterator1 s1,
     \endcode
 
 */
+doxygen_overloaded_function(template <...> void inspectImage)
+
 template <class ImageIterator, class Accessor, class Functor>
 void
 inspectImage(ImageIterator upperleft, ImageIterator lowerright,
@@ -304,6 +306,8 @@ inspectImage(triple<ImageIterator, ImageIterator, Accessor> img,
     \endcode
 
 */
+doxygen_overloaded_function(template <...> void inspectImageIf)
+
 template <class ImageIterator, class Accessor,
       class MaskImageIterator, class MaskAccessor, class Functor>
 void
@@ -410,6 +414,8 @@ inspectImageIf(triple<ImageIterator, ImageIterator, Accessor> img,
     \endcode
 
 */
+doxygen_overloaded_function(template <...> void inspectTwoImages)
+
 template <class ImageIterator1, class Accessor1,
           class ImageIterator2, class Accessor2,
       class Functor>
@@ -526,6 +532,8 @@ inspectTwoImages(triple<ImageIterator1, ImageIterator1, Accessor1> img1,
     \endcode
 
 */
+doxygen_overloaded_function(template <...> void inspectTwoImagesIf)
+
 template <class ImageIterator1, class Accessor1,
           class ImageIterator2, class Accessor2,
           class MaskImageIterator, class MaskAccessor,

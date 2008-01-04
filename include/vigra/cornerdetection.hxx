@@ -246,6 +246,8 @@ class FunctorTraits<BeaudetCornerFunctor<T> >
     dest_accessor.set(u, dest_upperleft);
     \endcode
 */
+doxygen_overloaded_function(template <...> void cornerResponseFunction)
+
 template <class SrcIterator, class SrcAccessor,
           class DestIterator, class DestAccessor>
 void
@@ -394,6 +396,8 @@ void cornerResponseFunction(
     dest_accessor.set(u, dest_upperleft);
     \endcode
 */
+doxygen_overloaded_function(template <...> void foerstnerCornerDetector)
+
 template <class SrcIterator, class SrcAccessor,
           class DestIterator, class DestAccessor>
 void
@@ -539,6 +543,8 @@ void foerstnerCornerDetector(
     dest_accessor.set(u, dest_upperleft);
     \endcode
 */
+doxygen_overloaded_function(template <...> void rohrCornerDetector)
+
 template <class SrcIterator, class SrcAccessor,
           class DestIterator, class DestAccessor>
 void
@@ -675,6 +681,8 @@ void rohrCornerDetector(
     dest_accessor.set(u, dest_upperleft);
     \endcode
 */
+doxygen_overloaded_function(template <...> void beaudetCornerDetector)
+
 template <class SrcIterator, class SrcAccessor,
           class DestIterator, class DestAccessor>
 void

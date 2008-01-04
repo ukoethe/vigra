@@ -151,6 +151,8 @@ namespace vigra {
     \endcode
 
 */
+doxygen_overloaded_function(template <...> unsigned int labelImage)
+
 template <class SrcIterator, class SrcAccessor,
           class DestIterator, class DestAccessor,
           class EqualityFunctor>
@@ -384,7 +386,6 @@ unsigned int labelImage(triple<SrcIterator, SrcIterator, SrcAccessor> src,
         template <class SrcIterator, class SrcAccessor,
                   class DestIterator, class DestAccessor,
                   class ValueType>
-        inline
         int labelImageWithBackground(triple<SrcIterator, SrcIterator, SrcAccessor> src,
                                      pair<DestIterator, DestAccessor> dest,
                                      bool eight_neighbors,
@@ -393,7 +394,6 @@ unsigned int labelImage(triple<SrcIterator, SrcIterator, SrcAccessor> src,
         template <class SrcIterator, class SrcAccessor,
                   class DestIterator, class DestAccessor,
                   class ValueType, class EqualityFunctor>
-        inline
         int labelImageWithBackground(triple<SrcIterator, SrcIterator, SrcAccessor> src,
                                      pair<DestIterator, DestAccessor> dest,
                                      bool eight_neighbors,
@@ -446,6 +446,8 @@ unsigned int labelImage(triple<SrcIterator, SrcIterator, SrcAccessor> src,
     \endcode
 
 */
+doxygen_overloaded_function(template <...> unsigned int labelImageWithBackground)
+
 template <class SrcIterator, class SrcAccessor,
           class DestIterator, class DestAccessor,
           class ValueType, class EqualityFunctor>
@@ -680,7 +682,6 @@ unsigned int labelImageWithBackground(
     namespace vigra {
         template <class SrcIterator, class SrcAccessor,
                   class DestIterator, class DestAccessor, class DestValue>
-        inline
         void regionImageToCrackEdgeImage(
                    triple<SrcIterator, SrcIterator, SrcAccessor> src,
                    pair<DestIterator, DestAccessor> dest,
@@ -735,6 +736,8 @@ unsigned int labelImageWithBackground(
     h_dest = 2 * h_src - 1
     \endcode
 */
+doxygen_overloaded_function(template <...> void regionImageToCrackEdgeImage)
+
 template <class SrcIterator, class SrcAccessor,
           class DestIterator, class DestAccessor, class DestValue>
 void regionImageToCrackEdgeImage(
@@ -891,7 +894,6 @@ void regionImageToCrackEdgeImage(
     namespace vigra {
         template <class SrcIterator, class SrcAccessor,
                   class DestIterator, class DestAccessor, class DestValue>
-        inline
         void regionImageToEdgeImage(
                    triple<SrcIterator, SrcIterator, SrcAccessor> src,
                    pair<DestIterator, DestAccessor> dest,
@@ -940,6 +942,8 @@ void regionImageToCrackEdgeImage(
     \endcode
 
 */
+doxygen_overloaded_function(template <...> void regionImageToEdgeImage)
+
 template <class SrcIterator, class SrcAccessor,
           class DestIterator, class DestAccessor, class DestValue>
 void regionImageToEdgeImage(

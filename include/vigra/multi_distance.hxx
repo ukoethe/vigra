@@ -350,6 +350,8 @@ inline void internalSeparableMultiArrayDistTmp( SrcIterator si, SrcShape const &
 
     \see vigra::distanceTransform()
 */
+doxygen_overloaded_function(template <...> void separableMultiDistSquared)
+
 template <class SrcIterator, class SrcShape, class SrcAccessor,
           class DestIterator, class DestAccessor>
 void separableMultiDistSquared( SrcIterator s, SrcShape const & shape, SrcAccessor src,
@@ -483,6 +485,8 @@ inline void separableMultiDistSquared( triple<SrcIterator, SrcShape, SrcAccessor
 
     \see vigra::distanceTransform()
 */
+doxygen_overloaded_function(template <...> void separableMultiDistance)
+
 template <class SrcIterator, class SrcShape, class SrcAccessor,
           class DestIterator, class DestAccessor>
 void separableMultiDistance( SrcIterator s, SrcShape const & shape, SrcAccessor src,

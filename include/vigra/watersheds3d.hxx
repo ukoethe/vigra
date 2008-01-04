@@ -34,8 +34,8 @@
 /*                                                                      */
 /************************************************************************/
 
-#ifndef VIGRA_WATERSHEDS3D_HXX
-#define VIGRA_WATERSHEDS3D_HXX
+#ifndef VIGRA_watersheds3D_HXX
+#define VIGRA_watersheds3D_HXX
 
 #include "voxelneighborhood.hxx"
 #include "multi_array.hxx"
@@ -45,7 +45,7 @@ namespace vigra
 
 template <class SrcIterator, class SrcAccessor, class SrcShape,
           class DestIterator, class DestAccessor, class Neighborhood3D>
-int prepareWatersheds3D( SrcIterator s_Iter, SrcShape srcShape, SrcAccessor sa,
+int preparewatersheds3D( SrcIterator s_Iter, SrcShape srcShape, SrcAccessor sa,
                          DestIterator d_Iter, DestAccessor da, Neighborhood3D)
 {
     //basically needed for iteration and border-checks
@@ -320,7 +320,7 @@ unsigned int watershedLabeling3D( SrcIterator s_Iter, SrcShape srcShape, SrcAcce
 
 /********************************************************/
 /*                                                      */
-/*                     watersheds3d                     */
+/*                     watersheds3D                     */
 /*                                                      */
 /********************************************************/
 
@@ -353,7 +353,7 @@ unsigned int watershedLabeling3D( SrcIterator s_Iter, SrcShape srcShape, SrcAcce
         template <class SrcIterator, class SrcAccessor,class SrcShape,
                   class DestIterator, class DestAccessor,
                   class Neighborhood3D>
-        unsigned int watersheds3d(SrcIterator s_Iter, SrcShape srcShape, SrcAccessor sa,
+        unsigned int watersheds3D(SrcIterator s_Iter, SrcShape srcShape, SrcAccessor sa,
                                   DestIterator d_Iter, DestAccessor da,
                                   Neighborhood3D neighborhood3D);
     }
@@ -365,7 +365,7 @@ unsigned int watershedLabeling3D( SrcIterator s_Iter, SrcShape srcShape, SrcAcce
         template <class SrcIterator, class SrcAccessor,class SrcShape,
                   class DestIterator, class DestAccessor,
                   class Neighborhood3D>
-        unsigned int watersheds3d(triple<SrcIterator, SrcShape, SrcAccessor> src,
+        unsigned int watersheds3D(triple<SrcIterator, SrcShape, SrcAccessor> src,
                                   pair<DestIterator, DestAccessor> dest,
                                   Neighborhood3D neighborhood3D);
     }
@@ -377,7 +377,7 @@ unsigned int watershedLabeling3D( SrcIterator s_Iter, SrcShape srcShape, SrcAcce
     
         template <class SrcIterator, class SrcAccessor,class SrcShape,
                   class DestIterator, class DestAccessor>
-        unsigned int watersheds3dSix(triple<SrcIterator, SrcShape, SrcAccessor> src,
+        unsigned int watersheds3DSix(triple<SrcIterator, SrcShape, SrcAccessor> src,
                                      pair<DestIterator, DestAccessor> dest);
                                     
     }
@@ -389,7 +389,7 @@ unsigned int watershedLabeling3D( SrcIterator s_Iter, SrcShape srcShape, SrcAcce
     
         template <class SrcIterator, class SrcAccessor,class SrcShape,
                   class DestIterator, class DestAccessor>
-        unsigned int watersheds3dTwentySix(triple<SrcIterator, SrcShape, SrcAccessor> src,
+        unsigned int watersheds3DTwentySix(triple<SrcIterator, SrcShape, SrcAccessor> src,
                                            pair<DestIterator, DestAccessor> dest);
                                     
     }
@@ -397,10 +397,10 @@ unsigned int watershedLabeling3D( SrcIterator s_Iter, SrcShape srcShape, SrcAcce
 
     <b> Usage:</b>
 
-    <b>\#include</b> \<<a href="watersheds3d_8hxx-source.html">vigra/watersheds3d.hxx</a>\><br>
+    <b>\#include</b> \<<a href="watersheds3D_8hxx-source.html">vigra/watersheds3D.hxx</a>\><br>
     Namespace: vigra
 
-    Example: watersheds3d of the gradient magnitude.
+    Example: watersheds3D of the gradient magnitude.
 
     \code
     typedef vigra::MultiArray<3,int> IntVolume;
@@ -443,6 +443,8 @@ unsigned int watershedLabeling3D( SrcIterator s_Iter, SrcShape srcShape, SrcAcce
     dest_accessor.set(label, dest_begin);
     \endcode
 */
+doxygen_overloaded_function(template <...> unsigned int watersheds3D)
+
 template <class SrcIterator, class SrcAccessor, class SrcShape,
           class DestIterator, class DestAccessor,
           class Neighborhood3D>
@@ -454,7 +456,7 @@ unsigned int watersheds3D( SrcIterator s_Iter, SrcShape srcShape, SrcAccessor sa
         
         vigra::MultiArray<3,int> orientationVolume(srcShape);
 
-        int local_min_count= prepareWatersheds3D( s_Iter, srcShape, sa, 
+        int local_min_count= preparewatersheds3D( s_Iter, srcShape, sa, 
                                                   destMultiArray(orientationVolume).first, destMultiArray(orientationVolume).second,
                                                   neighborhood3D);
      
@@ -466,7 +468,7 @@ unsigned int watersheds3D( SrcIterator s_Iter, SrcShape srcShape, SrcAccessor sa
                 
         vigra::MultiArray<3,unsigned char> orientationVolume(srcShape);
 
-        int local_min_count= prepareWatersheds3D( s_Iter, srcShape, sa, 
+        int local_min_count= preparewatersheds3D( s_Iter, srcShape, sa, 
                                                   destMultiArray(orientationVolume).first, destMultiArray(orientationVolume).second,
                                                   neighborhood3D);
      
@@ -494,4 +496,4 @@ inline unsigned int watersheds3DTwentySix( vigra::triple<SrcIterator, SrcShape, 
 
 }//namespace vigra
 
-#endif //VIGRA_WATERSHEDS3D_HXX
+#endif //VIGRA_watersheds3D_HXX

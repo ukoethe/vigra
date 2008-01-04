@@ -125,6 +125,8 @@ typedef TIFF TiffImage;
     see \ref tiffToScalarImage() and \ref tiffToRGBImage()
     
 */
+doxygen_overloaded_function(template <...> void importTiffImage)
+
 template <class ImageIterator, class Accessor>
 inline void
 importTiffImage(TiffImage * tiff, ImageIterator iter, Accessor a)
@@ -247,6 +249,8 @@ importTiffImage(TiffImage * tiff, ImageIterator iter, Accessor a, VigraFalseType
     \endcode
     
 */
+doxygen_overloaded_function(template <...> void tiffToScalarImage)
+
 template <class ImageIterator, class Accessor>
 void
 tiffToScalarImage(TiffImage * tiff, ImageIterator iter, Accessor a)
@@ -606,6 +610,8 @@ tiffToScalarImage(TiffImage * tiff, pair<ImageIterator, Accessor> dest)
     \endcode
     
 */
+doxygen_overloaded_function(template <...> void tiffToRGBImage)
+
 template <class RGBImageIterator, class RGBAccessor>
 void
 tiffToRGBImage(TiffImage * tiff, RGBImageIterator iter, RGBAccessor a)
@@ -1018,7 +1024,7 @@ struct CreateTiffImage;
     \code
     namespace vigra {
         template <class ImageIterator, class Accessor>
-        inline TiffImage *
+        TiffImage *
         createTiffImage(ImageIterator upperleft, ImageIterator lowerright, 
                         Accessor a)
     }
@@ -1028,7 +1034,7 @@ struct CreateTiffImage;
     \code
     namespace vigra {
         template <class ImageIterator, class Accessor>
-        inline TiffImage *
+        TiffImage *
         createTiffImage(triple<ImageIterator, ImageIterator, Accessor> src)
     }
     \endcode
@@ -1059,6 +1065,8 @@ struct CreateTiffImage;
     \endcode
     
 */
+doxygen_overloaded_function(template <...> void createTiffImage)
+
 template <class ImageIterator, class Accessor>
 inline void
 createTiffImage(ImageIterator upperleft, ImageIterator lowerright, 
@@ -1093,7 +1101,7 @@ createTiffImage(triple<ImageIterator, ImageIterator, Accessor> src, TiffImage * 
     \code
     namespace vigra {
         template <class ImageIterator, class Accessor>
-        inline TiffImage *
+        TiffImage *
         createScalarTiffImage(ImageIterator upperleft, ImageIterator lowerright, 
                   Accessor a)
     }
@@ -1103,7 +1111,7 @@ createTiffImage(triple<ImageIterator, ImageIterator, Accessor> src, TiffImage * 
     \code
     namespace vigra {
         template <class ImageIterator, class Accessor>
-        inline TiffImage *
+        TiffImage *
         createScalarTiffImage(triple<ImageIterator, ImageIterator, Accessor> src)
     }
     \endcode
@@ -1134,6 +1142,8 @@ createTiffImage(triple<ImageIterator, ImageIterator, Accessor> src, TiffImage * 
     \endcode
     
 */
+doxygen_overloaded_function(template <...> void createScalarTiffImage)
+
 template <class ImageIterator, class Accessor>
 inline void
 createScalarTiffImage(ImageIterator upperleft, ImageIterator lowerright, 
@@ -1455,7 +1465,7 @@ struct CreateTiffImage<double>
     \code
     namespace vigra {
         template <class RGBImageIterator, class RGBAccessor>
-        inline TiffImage *
+        TiffImage *
         createRGBTiffImage(triple<RGBImageIterator, RGBImageIterator, RGBAccessor> src)
     }
     \endcode
@@ -1488,6 +1498,8 @@ struct CreateTiffImage<double>
     \endcode
     
 */
+doxygen_overloaded_function(template <...> void createRGBTiffImage)
+
 template <class RGBImageIterator, class RGBAccessor>
 inline void
 createRGBTiffImage(RGBImageIterator upperleft, RGBImageIterator lowerright,

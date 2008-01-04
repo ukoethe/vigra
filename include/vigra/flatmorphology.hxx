@@ -130,6 +130,8 @@ namespace vigra {
     \endcode
     
 */
+doxygen_overloaded_function(template <...> void discRankOrderFilter)
+
 template <class SrcIterator, class SrcAccessor,
           class DestIterator, class DestAccessor>
 void
@@ -377,7 +379,7 @@ discRankOrderFilter(triple<SrcIterator, SrcIterator, SrcAccessor> src,
     namespace vigra {
         template <class SrcIterator, class SrcAccessor,
                   class DestIterator, class DestAccessor>
-        inline void 
+        void 
         discErosion(SrcIterator upperleft1, 
                     SrcIterator lowerright1, SrcAccessor sa,
                     DestIterator upperleft2, DestAccessor da,
@@ -399,6 +401,8 @@ discRankOrderFilter(triple<SrcIterator, SrcIterator, SrcAccessor> src,
     \endcode
 
 */
+doxygen_overloaded_function(template <...> void discErosion)
+
 template <class SrcIterator, class SrcAccessor,
           class DestIterator, class DestAccessor>
 inline void 
@@ -445,7 +449,7 @@ discErosion(triple<SrcIterator, SrcIterator, SrcAccessor> src,
     namespace vigra {
         template <class SrcIterator, class SrcAccessor,
                   class DestIterator, class DestAccessor>
-        inline void 
+        void 
         discDilation(SrcIterator upperleft1, 
                     SrcIterator lowerright1, SrcAccessor sa,
                     DestIterator upperleft2, DestAccessor da,
@@ -467,6 +471,8 @@ discErosion(triple<SrcIterator, SrcIterator, SrcAccessor> src,
     \endcode
 
 */
+doxygen_overloaded_function(template <...> void discDilation)
+
 template <class SrcIterator, class SrcAccessor,
           class DestIterator, class DestAccessor>
 inline void 
@@ -513,7 +519,7 @@ discDilation(triple<SrcIterator, SrcIterator, SrcAccessor> src,
     namespace vigra {
         template <class SrcIterator, class SrcAccessor,
                   class DestIterator, class DestAccessor>
-        inline void 
+        void 
         discMedian(SrcIterator upperleft1, 
                     SrcIterator lowerright1, SrcAccessor sa,
                     DestIterator upperleft2, DestAccessor da,
@@ -535,6 +541,8 @@ discDilation(triple<SrcIterator, SrcIterator, SrcAccessor> src,
     \endcode
 
 */
+doxygen_overloaded_function(template <...> void discMedian)
+
 template <class SrcIterator, class SrcAccessor,
           class DestIterator, class DestAccessor>
 inline void 
@@ -617,7 +625,7 @@ discMedian(triple<SrcIterator, SrcIterator, SrcAccessor> src,
     
     <b> Usage:</b>
     
-        <b>\#include</b> \<<a href="flatmorphology_8hxx-source.html">vigra/flatmorphology.hxx</a>\><br>
+    <b>\#include</b> \<<a href="flatmorphology_8hxx-source.html">vigra/flatmorphology.hxx</a>\><br>
     Namespace: vigra
     
     \code
@@ -659,6 +667,8 @@ discMedian(triple<SrcIterator, SrcIterator, SrcAccessor> src,
     \endcode
     
 */
+doxygen_overloaded_function(template <...> void discRankOrderFilterWithMask)
+
 template <class SrcIterator, class SrcAccessor,
           class MaskIterator, class MaskAccessor,
           class DestIterator, class DestAccessor>
@@ -951,7 +961,7 @@ discRankOrderFilterWithMask(triple<SrcIterator, SrcIterator, SrcAccessor> src,
         template <class SrcIterator, class SrcAccessor,
                   class MaskIterator, class MaskAccessor,
                   class DestIterator, class DestAccessor>
-        inline void 
+        void 
         discErosionWithMask(SrcIterator upperleft1, 
                             SrcIterator lowerright1, SrcAccessor sa,
                             MaskIterator upperleftm, MaskAccessor mask,
@@ -967,7 +977,7 @@ discRankOrderFilterWithMask(triple<SrcIterator, SrcIterator, SrcAccessor> src,
         template <class SrcIterator, class SrcAccessor,
                   class MaskIterator, class MaskAccessor,
                   class DestIterator, class DestAccessor>
-        inline void 
+        void 
         discErosionWithMask(triple<SrcIterator, SrcIterator, SrcAccessor> src,
                             pair<MaskIterator, MaskAccessor> mask,
                             pair<DestIterator, DestAccessor> dest,
@@ -976,6 +986,8 @@ discRankOrderFilterWithMask(triple<SrcIterator, SrcIterator, SrcAccessor> src,
     \endcode
 
 */
+doxygen_overloaded_function(template <...> void discErosionWithMask)
+
 template <class SrcIterator, class SrcAccessor,
           class MaskIterator, class MaskAccessor,
           class DestIterator, class DestAccessor>
@@ -1031,7 +1043,7 @@ discErosionWithMask(triple<SrcIterator, SrcIterator, SrcAccessor> src,
         template <class SrcIterator, class SrcAccessor,
                   class MaskIterator, class MaskAccessor,
                   class DestIterator, class DestAccessor>
-        inline void 
+        void 
         discDilationWithMask(SrcIterator upperleft1, 
                             SrcIterator lowerright1, SrcAccessor sa,
                             MaskIterator upperleftm, MaskAccessor mask,
@@ -1047,7 +1059,7 @@ discErosionWithMask(triple<SrcIterator, SrcIterator, SrcAccessor> src,
         template <class SrcIterator, class SrcAccessor,
                   class MaskIterator, class MaskAccessor,
                   class DestIterator, class DestAccessor>
-        inline void 
+        void 
         discDilationWithMask(triple<SrcIterator, SrcIterator, SrcAccessor> src,
                             pair<MaskIterator, MaskAccessor> mask,
                             pair<DestIterator, DestAccessor> dest,
@@ -1056,6 +1068,8 @@ discErosionWithMask(triple<SrcIterator, SrcIterator, SrcAccessor> src,
     \endcode
 
 */
+doxygen_overloaded_function(template <...> void discDilationWithMask)
+
 template <class SrcIterator, class SrcAccessor,
           class MaskIterator, class MaskAccessor,
           class DestIterator, class DestAccessor>
@@ -1111,7 +1125,7 @@ discDilationWithMask(triple<SrcIterator, SrcIterator, SrcAccessor> src,
         template <class SrcIterator, class SrcAccessor,
                   class MaskIterator, class MaskAccessor,
                   class DestIterator, class DestAccessor>
-        inline void 
+        void 
         discMedianWithMask(SrcIterator upperleft1, 
                             SrcIterator lowerright1, SrcAccessor sa,
                             MaskIterator upperleftm, MaskAccessor mask,
@@ -1127,7 +1141,7 @@ discDilationWithMask(triple<SrcIterator, SrcIterator, SrcAccessor> src,
         template <class SrcIterator, class SrcAccessor,
                   class MaskIterator, class MaskAccessor,
                   class DestIterator, class DestAccessor>
-        inline void 
+        void 
         discMedianWithMask(triple<SrcIterator, SrcIterator, SrcAccessor> src,
                             pair<MaskIterator, MaskAccessor> mask,
                             pair<DestIterator, DestAccessor> dest,
@@ -1136,6 +1150,8 @@ discDilationWithMask(triple<SrcIterator, SrcIterator, SrcAccessor> src,
     \endcode
 
 */
+doxygen_overloaded_function(template <...> void discMedianWithMask)
+
 template <class SrcIterator, class SrcAccessor,
           class MaskIterator, class MaskAccessor,
           class DestIterator, class DestAccessor>

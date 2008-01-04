@@ -592,6 +592,8 @@ void slantedEdgeMTFImpl(Image const & i, BackInsertable & mtf, double angle,
     result.push_back(ResultType(intensity, variance));
     \endcode
 */
+doxygen_overloaded_function(template <...> void slantedEdgeMTF)
+
 template <class SrcIterator, class SrcAccessor, class BackInsertable>
 void
 slantedEdgeMTF(SrcIterator sul, SrcIterator slr, SrcAccessor src, BackInsertable & mtf,

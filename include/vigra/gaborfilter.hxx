@@ -90,7 +90,6 @@ namespace vigra {
     \code
     namespace vigra {
         template <class DestImageIterator, class DestAccessor>
-        inline
         void createGaborFilter(triple<DestImageIterator,
                                       DestImageIterator,
                                       DestAccessor> dest,
@@ -113,6 +112,7 @@ namespace vigra {
                              radialGaborSigma(freq));
     \endcode
 */
+doxygen_overloaded_function(template <...> void createGaborFilter)
 
 template <class DestImageIterator, class DestAccessor>
 void createGaborFilter(DestImageIterator destUpperLeft,
@@ -205,7 +205,6 @@ void createGaborFilter(triple<DestImageIterator, DestImageIterator,
 
     \code
     namespace vigra {
-        inline
         double radialGaborSigma(double centerFrequency)
     }
     \endcode
@@ -249,7 +248,6 @@ inline double radialGaborSigma(double centerFrequency)
 
     \code
     namespace vigra {
-        inline
         double angularGaborSigma(int directionCount, double centerFrequency)
     }
     \endcode

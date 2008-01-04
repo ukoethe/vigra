@@ -385,20 +385,68 @@ estimateAffineMotionImpl(SrcIterator sul, SrcIterator slr, SrcAccessor src,
 
 } // namespace detail 
 
-template <class SrcIterator, class SrcAccessor, 
-          class DestIterator, class DestAccessor, 
+/********************************************************/
+/*                                                      */
+/*                 estimateTranslation                  */
+/*                                                      */
+/********************************************************/
+
+/** \brief Estimate the optical flow between two images according to a translation model.
+
+    Sorry, no \ref detailedDocumentation() available yet.
+
+    <b> Declarations:</b>
+
+    <b>\#include</b> \<<a href="affine__registration_8hxx-source.html">vigra/affine_registration.hxx</a>\><br>
+    Namespace: vigra
+
+    pass arguments explicitly:
+    \code
+    namespace vigra {
+        template <class SrcIterator, class SrcAccessor,
+                  class DestIterator, class DestAccessor,
+                  int SPLINEORDER = 2>
+        void
+        estimateTranslation(SrcIterator sul, SrcIterator slr, SrcAccessor src,
+                            DestIterator dul, DestIterator dlr, DestAccessor dest,
+                            Matrix<double> & affineMatrix,
+                            AffineMotionEstimationOptions<SPLINEORDER> const & options = 
+                                                        AffineMotionEstimationOptions<>())
+    }
+    \endcode
+
+
+    use argument objects in conjunction with \ref ArgumentObjectFactories :
+    \code
+    namespace vigra {
+        template <class SrcIterator, class SrcAccessor,
+                  class DestIterator, class DestAccessor,
+                  int SPLINEORDER = 2>
+        void
+        estimateTranslation(triple<SrcIterator, SrcIterator, SrcAccessor> src,
+                            triple<DestIterator, DestIterator, DestAccessor> dest,
+                            Matrix<double> & affineMatrix,
+                            AffineMotionEstimationOptions<SPLINEORDER> const & options =
+                                                        AffineMotionEstimationOptions<>())
+    }
+    \endcode
+*/
+doxygen_overloaded_function(template <...> void estimateTranslation)
+
+template <class SrcIterator, class SrcAccessor,
+          class DestIterator, class DestAccessor,
           int SPLINEORDER>
-inline void 
+inline void
 estimateTranslation(SrcIterator sul, SrcIterator slr, SrcAccessor src,
                     DestIterator dul, DestIterator dlr, DestAccessor dest,
-                    Matrix<double> & affineMatrix, 
+                    Matrix<double> & affineMatrix,
                     AffineMotionEstimationOptions<SPLINEORDER> const & options)
 {
     detail::estimateAffineMotionImpl(sul, slr, src, dul, dlr, dest, affineMatrix,
                                      options, detail::TranslationEstimationFunctor());
 }
              
-template <class SrcIterator, class SrcAccessor, 
+template <class SrcIterator, class SrcAccessor,
           class DestIterator, class DestAccessor>
 inline void 
 estimateTranslation(SrcIterator sul, SrcIterator slr, SrcAccessor src,
@@ -408,7 +456,7 @@ estimateTranslation(SrcIterator sul, SrcIterator slr, SrcAccessor src,
     estimateTranslation(sul, slr, src, dul, dlr, dest,
                         affineMatrix, AffineMotionEstimationOptions<>());
 }
-             
+
 template <class SrcIterator, class SrcAccessor, 
           class DestIterator, class DestAccessor, 
           int SPLINEORDER>
@@ -433,7 +481,56 @@ estimateTranslation(triple<SrcIterator, SrcIterator, SrcAccessor> src,
                         affineMatrix, AffineMotionEstimationOptions<>());
 }
 
-template <class SrcIterator, class SrcAccessor, 
+/********************************************************/
+/*                                                      */
+/*              estimateSimilarityTransform             */
+/*                                                      */
+/********************************************************/
+
+/** \brief Estimate the optical flow between two images according to a similarity transform model
+           (e.g. translation, rotation, and uniform scaling).
+
+    Sorry, no \ref detailedDocumentation() available yet.
+
+    <b> Declarations:</b>
+
+    <b>\#include</b> \<<a href="affine__registration_8hxx-source.html">vigra/affine_registration.hxx</a>\><br>
+    Namespace: vigra
+
+    pass arguments explicitly:
+    \code
+    namespace vigra {
+        template <class SrcIterator, class SrcAccessor,
+                  class DestIterator, class DestAccessor,
+                  int SPLINEORDER = 2>
+        void
+        estimateSimilarityTransform(SrcIterator sul, SrcIterator slr, SrcAccessor src,
+                            DestIterator dul, DestIterator dlr, DestAccessor dest,
+                            Matrix<double> & affineMatrix,
+                            AffineMotionEstimationOptions<SPLINEORDER> const & options = 
+                                                        AffineMotionEstimationOptions<>())
+    }
+    \endcode
+
+
+    use argument objects in conjunction with \ref ArgumentObjectFactories :
+    \code
+    namespace vigra {
+        template <class SrcIterator, class SrcAccessor,
+                  class DestIterator, class DestAccessor,
+                  int SPLINEORDER = 2>
+        void
+        estimateSimilarityTransform(triple<SrcIterator, SrcIterator, SrcAccessor> src,
+                            triple<DestIterator, DestIterator, DestAccessor> dest,
+                            Matrix<double> & affineMatrix,
+                            AffineMotionEstimationOptions<SPLINEORDER> const & options =
+                                                        AffineMotionEstimationOptions<>())
+    }
+    \endcode
+*/
+doxygen_overloaded_function(template <...> void estimateSimilarityTransform)
+
+template <class SrcIterator, class SrcAccessor,
           class DestIterator, class DestAccessor, 
           int SPLINEORDER>
 inline void 
@@ -481,7 +578,56 @@ estimateSimilarityTransform(triple<SrcIterator, SrcIterator, SrcAccessor> src,
                                 affineMatrix, AffineMotionEstimationOptions<>());
 }
 
-template <class SrcIterator, class SrcAccessor, 
+/********************************************************/
+/*                                                      */
+/*                estimateAffineTransform               */
+/*                                                      */
+/********************************************************/
+
+/** \brief Estimate the optical flow between two images according to an affine transform model
+           (e.g. translation, rotation, non-uniform scaling, and shearing).
+
+    Sorry, no \ref detailedDocumentation() available yet.
+
+    <b> Declarations:</b>
+
+    <b>\#include</b> \<<a href="affine__registration_8hxx-source.html">vigra/affine_registration.hxx</a>\><br>
+    Namespace: vigra
+
+    pass arguments explicitly:
+    \code
+    namespace vigra {
+        template <class SrcIterator, class SrcAccessor,
+                  class DestIterator, class DestAccessor,
+                  int SPLINEORDER = 2>
+        void
+        estimateAffineTransform(SrcIterator sul, SrcIterator slr, SrcAccessor src,
+                            DestIterator dul, DestIterator dlr, DestAccessor dest,
+                            Matrix<double> & affineMatrix,
+                            AffineMotionEstimationOptions<SPLINEORDER> const & options = 
+                                                        AffineMotionEstimationOptions<>())
+    }
+    \endcode
+
+
+    use argument objects in conjunction with \ref ArgumentObjectFactories :
+    \code
+    namespace vigra {
+        template <class SrcIterator, class SrcAccessor,
+                  class DestIterator, class DestAccessor,
+                  int SPLINEORDER = 2>
+        void
+        estimateAffineTransform(triple<SrcIterator, SrcIterator, SrcAccessor> src,
+                            triple<DestIterator, DestIterator, DestAccessor> dest,
+                            Matrix<double> & affineMatrix,
+                            AffineMotionEstimationOptions<SPLINEORDER> const & options =
+                                                        AffineMotionEstimationOptions<>())
+    }
+    \endcode
+*/
+doxygen_overloaded_function(template <...> void estimateAffineTransform)
+
+template <class SrcIterator, class SrcAccessor,
           class DestIterator, class DestAccessor, 
           int SPLINEORDER>
 inline void 

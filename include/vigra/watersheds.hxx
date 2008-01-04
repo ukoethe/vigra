@@ -419,6 +419,8 @@ void prepareWatersheds(SrcIterator upperlefts, SrcIterator lowerrights, SrcAcces
     dest_accessor.set(label, dest_upperleft);
     \endcode
 */
+doxygen_overloaded_function(template <...> unsigned int watersheds)
+
 template <class SrcIterator, class SrcAccessor,
           class DestIterator, class DestAccessor,
           class Neighborhood>

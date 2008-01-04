@@ -169,7 +169,7 @@ public:
 
 /********************************************************/
 /*                                                      */
-/*                    seededRegionGrowing3d             */
+/*                    seededRegionGrowing3D             */
 /*                                                      */
 /********************************************************/
 
@@ -218,7 +218,7 @@ public:
     \ref ArrayOfRegionStatistics functor and contains an <em> array</em> of
     statistics objects for each region. The indices must correspond to the
     labels of the seed regions. The statistics for the initial regions must have
-    been calculated prior to calling <TT>seededRegionGrowing3d()</TT>
+    been calculated prior to calling <TT>seededRegionGrowing3D()</TT>
 
     For each candidate
     <TT>x</TT> that is adjacent to region <TT>i</TT>, the algorithm will call
@@ -246,7 +246,7 @@ public:
                   class SeedImageIterator, class SeedAccessor,
                   class DestImageIterator, class DestAccessor,
                   class RegionStatisticsArray >
-        void seededRegionGrowing3d(SrcImageIterator srcul, Diff_type shape,
+        void seededRegionGrowing3D(SrcImageIterator srcul, Diff_type shape,
                                  SrcAccessor as,
                                  SeedImageIterator seedsul, SeedAccessor aseeds,
                                  DestImageIterator destul, DestAccessor ad,
@@ -263,8 +263,8 @@ public:
                   class SeedImageIterator, class SeedAccessor,
                   class DestImageIterator, class DestAccessor,
                   class RegionStatisticsArray>
-            inline void
-            seededRegionGrowing3d(triple<SrcImageIterator, Shape, SrcAccessor> img1,
+            void
+            seededRegionGrowing3D(triple<SrcImageIterator, Shape, SrcAccessor> img1,
                             pair<SeedImageIterator, SeedAccessor> img3,
                             pair<DestImageIterator, DestAccessor> img4,
                             RegionStatisticsArray & stats, 
@@ -273,24 +273,13 @@ public:
     \endcode
 
 */
+doxygen_overloaded_function(template <...> void seededRegionGrowing3D)
 
-/*
-template <class SrcImageIterator, class SrcAccessor,
-          class SeedImageIterator, class SeedAccessor,
-          class DestImageIterator, class DestAccessor,
-          class RegionStatisticsArray>
-void seededRegionGrowing3d(SrcImageIterator srcul,
-                         SrcImageIterator srclr, SrcAccessor as,
-                         SeedImageIterator seedsul, SeedAccessor aseeds,
-                         DestImageIterator destul, DestAccessor ad,
-                         RegionStatisticsArray & stats,
-                         const SRGType srgType)
-*/
 template <class SrcImageIterator, class Diff_type, class SrcAccessor,
           class SeedImageIterator, class SeedAccessor,
           class DestImageIterator, class DestAccessor,
           class RegionStatisticsArray >
-void seededRegionGrowing3d(SrcImageIterator srcul, Diff_type shape,
+void seededRegionGrowing3D(SrcImageIterator srcul, Diff_type shape,
                          SrcAccessor as,
                          SeedImageIterator seedsul, SeedAccessor aseeds,
                          DestImageIterator destul, DestAccessor ad,
@@ -445,13 +434,13 @@ template <class SrcImageIterator, class SrcAccessor,
           class DestImageIterator, class DestAccessor,
           class RegionStatisticsArray>
 inline void
-seededRegionGrowing3d(SrcImageIterator srcul,
+seededRegionGrowing3D(SrcImageIterator srcul,
                     SrcImageIterator srclr, SrcAccessor as,
                     SeedImageIterator seedsul, SeedAccessor aseeds,
                     DestImageIterator destul, DestAccessor ad,
                     RegionStatisticsArray & stats)
 {
-    seededRegionGrowing3d(srcul, srclr, as,
+    seededRegionGrowing3D(srcul, srclr, as,
                         seedsul, aseeds,
                         destul, ad,
                         stats, CompleteGrow);
@@ -462,13 +451,13 @@ template <class SrcImageIterator, class SrcAccessor,
           class DestImageIterator, class DestAccessor,
           class RegionStatisticsArray>
 inline void
-seededRegionGrowing3d(triple<SrcImageIterator, SrcImageIterator, SrcAccessor> img1,
+seededRegionGrowing3D(triple<SrcImageIterator, SrcImageIterator, SrcAccessor> img1,
                     pair<SeedImageIterator, SeedAccessor> img3,
                     pair<DestImageIterator, DestAccessor> img4,
                     RegionStatisticsArray & stats,
                     SRGType srgType)
 {
-    seededRegionGrowing3d(img1.first, img1.second, img1.third,
+    seededRegionGrowing3D(img1.first, img1.second, img1.third,
                         img3.first, img3.second,
                         img4.first, img4.second,
                         stats, srgType);
@@ -479,12 +468,12 @@ template <class SrcImageIterator, class SrcAccessor,
           class DestImageIterator, class DestAccessor,
           class RegionStatisticsArray>
 inline void
-seededRegionGrowing3d(triple<SrcImageIterator, SrcImageIterator, SrcAccessor> img1,
+seededRegionGrowing3D(triple<SrcImageIterator, SrcImageIterator, SrcAccessor> img1,
                     pair<SeedImageIterator, SeedAccessor> img3,
                     pair<DestImageIterator, DestAccessor> img4,
                     RegionStatisticsArray & stats)
 {
-    seededRegionGrowing3d(img1.first, img1.second, img1.third,
+    seededRegionGrowing3D(img1.first, img1.second, img1.third,
                         img3.first, img3.second,
                         img4.first, img4.second,
                         stats, CompleteGrow);
@@ -495,39 +484,39 @@ template <class SrcImageIterator, class Diff_type, class SrcAccessor,
           class SeedImageIterator, class SeedAccessor,
           class DestImageIterator, class DestAccessor,
           class RegionStatisticsArray >
-void seededRegionGrowing3d(SrcImageIterator srcul, Diff_type shape,
+void seededRegionGrowing3D(SrcImageIterator srcul, Diff_type shape,
                          SrcAccessor as,
                          SeedImageIterator seedsul, SeedAccessor aseeds,
                          DestImageIterator destul, DestAccessor ad,
                          RegionStatisticsArray & stats, int max_cost)
 {
-    seededRegionGrowing3d( srcul, shape, as, seedsul, aseeds, destul, ad, stats, max_cost, CompleteGrow);
+    seededRegionGrowing3D( srcul, shape, as, seedsul, aseeds, destul, ad, stats, max_cost, CompleteGrow);
 }
 
 template <class SrcImageIterator, class Diff_type, class SrcAccessor,
           class SeedImageIterator, class SeedAccessor,
           class DestImageIterator, class DestAccessor,
           class RegionStatisticsArray >
-void seededRegionGrowing3d(SrcImageIterator srcul, Diff_type shape,
+void seededRegionGrowing3D(SrcImageIterator srcul, Diff_type shape,
                          SrcAccessor as,
                          SeedImageIterator seedsul, SeedAccessor aseeds,
                          DestImageIterator destul, DestAccessor ad,
                          RegionStatisticsArray & stats)
 {
-    seededRegionGrowing3d( srcul, shape, as, seedsul, aseeds, destul, ad, stats, -1, CompleteGrow);
+    seededRegionGrowing3D( srcul, shape, as, seedsul, aseeds, destul, ad, stats, -1, CompleteGrow);
 }
 
 template <class SrcImageIterator, class Diff_type, class SrcAccessor,
           class SeedImageIterator, class SeedAccessor,
           class DestImageIterator, class DestAccessor,
           class RegionStatisticsArray >
-void seededRegionGrowing3d(SrcImageIterator srcul, Diff_type shape,
+void seededRegionGrowing3D(SrcImageIterator srcul, Diff_type shape,
                          SrcAccessor as,
                          SeedImageIterator seedsul, SeedAccessor aseeds,
                          DestImageIterator destul, DestAccessor ad,
                          RegionStatisticsArray & stats, SRGType srgType)
 {
-    seededRegionGrowing3d( srcul, shape, as, seedsul, aseeds, destul, ad, stats, -1, srgType);
+    seededRegionGrowing3D( srcul, shape, as, seedsul, aseeds, destul, ad, stats, -1, srgType);
 }
 
 
@@ -537,12 +526,12 @@ template <class SrcImageIterator, class Shape, class SrcAccessor,
           class DestImageIterator, class DestAccessor,
           class RegionStatisticsArray>
 inline void
-seededRegionGrowing3d(triple<SrcImageIterator, Shape, SrcAccessor> img1,
+seededRegionGrowing3D(triple<SrcImageIterator, Shape, SrcAccessor> img1,
                     pair<SeedImageIterator, SeedAccessor> img3,
                     pair<DestImageIterator, DestAccessor> img4,
                     RegionStatisticsArray & stats, int max_cost)
 {
-    seededRegionGrowing3d(img1.first, img1.second, img1.third,
+    seededRegionGrowing3D(img1.first, img1.second, img1.third,
                         img3.first, img3.second,
                         img4.first, img4.second,
                         stats, max_cost, CompleteGrow);
@@ -553,12 +542,12 @@ template <class SrcImageIterator, class Shape, class SrcAccessor,
           class DestImageIterator, class DestAccessor,
           class RegionStatisticsArray>
 inline void
-seededRegionGrowing3d(triple<SrcImageIterator, Shape, SrcAccessor> img1,
+seededRegionGrowing3D(triple<SrcImageIterator, Shape, SrcAccessor> img1,
                     pair<SeedImageIterator, SeedAccessor> img3,
                     pair<DestImageIterator, DestAccessor> img4,
                     RegionStatisticsArray & stats, int max_cost, const SRGType srgType)
 {
-    seededRegionGrowing3d(img1.first, img1.second, img1.third,
+    seededRegionGrowing3D(img1.first, img1.second, img1.third,
                         img3.first, img3.second,
                         img4.first, img4.second,
                         stats, max_cost, srgType);
@@ -570,12 +559,12 @@ template <class SrcImageIterator, class Shape, class SrcAccessor,
           class DestImageIterator, class DestAccessor,
           class RegionStatisticsArray>
 inline void
-seededRegionGrowing3d(triple<SrcImageIterator, Shape, SrcAccessor> img1,
+seededRegionGrowing3D(triple<SrcImageIterator, Shape, SrcAccessor> img1,
                     pair<SeedImageIterator, SeedAccessor> img3,
                     pair<DestImageIterator, DestAccessor> img4,
                     RegionStatisticsArray & stats, const SRGType srgType)
 {
-    seededRegionGrowing3d(img1.first, img1.second, img1.third,
+    seededRegionGrowing3D(img1.first, img1.second, img1.third,
                         img3.first, img3.second,
                         img4.first, img4.second,
                         stats, -1, srgType);
@@ -586,12 +575,12 @@ template <class SrcImageIterator, class Shape, class SrcAccessor,
           class DestImageIterator, class DestAccessor,
           class RegionStatisticsArray>
 inline void
-seededRegionGrowing3d(triple<SrcImageIterator, Shape, SrcAccessor> img1,
+seededRegionGrowing3D(triple<SrcImageIterator, Shape, SrcAccessor> img1,
                     pair<SeedImageIterator, SeedAccessor> img3,
                     pair<DestImageIterator, DestAccessor> img4,
                     RegionStatisticsArray & stats)
 {
-    seededRegionGrowing3d(img1.first, img1.second, img1.third,
+    seededRegionGrowing3D(img1.first, img1.second, img1.third,
                         img3.first, img3.second,
                         img4.first, img4.second,
                         stats, -1, CompleteGrow);

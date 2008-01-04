@@ -124,6 +124,8 @@ namespace vigra {
     
     \see vectorToTensor()
 */
+doxygen_overloaded_function(template <...> void hourGlassFilter)
+
 template <class SrcIterator, class SrcAccessor,
           class DestIterator, class DestAccessor>
 void hourGlassFilter(SrcIterator sul, SrcIterator slr, SrcAccessor src,

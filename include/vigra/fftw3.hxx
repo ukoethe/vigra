@@ -1007,6 +1007,8 @@ class FFTWPhaseAccessor
     fftw_destroy_plan(forwardPlan);
     \endcode
 */
+doxygen_overloaded_function(template <...> void moveDCToCenter)
+
 template <class SrcImageIterator, class SrcAccessor,
           class DestImageIterator, class DestAccessor>
 void moveDCToCenter(SrcImageIterator src_upperleft,
@@ -1063,31 +1065,33 @@ inline void moveDCToCenter(
      This function is the inversion of \ref moveDCToCenter(). See there
      for declarations and a usage example.
 
-    <b> Declarations:</b>
+     <b> Declarations:</b>
 
-    pass arguments explicitly:
-    \code
-    namespace vigra {
-        template <class SrcImageIterator, class SrcAccessor,
-          class DestImageIterator, class DestAccessor>
-        void moveDCToUpperLeft(SrcImageIterator src_upperleft,
-                               SrcImageIterator src_lowerright, SrcAccessor sa,
-                               DestImageIterator dest_upperleft, DestAccessor da);
-    }
-    \endcode
+     pass arguments explicitly:
+     \code
+        namespace vigra {
+            template <class SrcImageIterator, class SrcAccessor,
+                      class DestImageIterator, class DestAccessor>
+            void moveDCToUpperLeft(SrcImageIterator src_upperleft,
+                                   SrcImageIterator src_lowerright, SrcAccessor sa,
+                                   DestImageIterator dest_upperleft, DestAccessor da);
+        }
+     \endcode
 
 
-    use argument objects in conjunction with \ref ArgumentObjectFactories :
-    \code
-    namespace vigra {
-        template <class SrcImageIterator, class SrcAccessor,
-                  class DestImageIterator, class DestAccessor>
-        void moveDCToUpperLeft(
-            triple<SrcImageIterator, SrcImageIterator, SrcAccessor> src,
-            pair<DestImageIterator, DestAccessor> dest);
-    }
-    \endcode
+     use argument objects in conjunction with \ref ArgumentObjectFactories :
+     \code
+        namespace vigra {
+            template <class SrcImageIterator, class SrcAccessor,
+                      class DestImageIterator, class DestAccessor>
+            void moveDCToUpperLeft(
+                triple<SrcImageIterator, SrcImageIterator, SrcAccessor> src,
+                pair<DestImageIterator, DestAccessor> dest);
+        }
+     \endcode
 */
+doxygen_overloaded_function(template <...> void moveDCToUpperLeft)
+
 template <class SrcImageIterator, class SrcAccessor,
           class DestImageIterator, class DestAccessor>
 void moveDCToUpperLeft(SrcImageIterator src_upperleft,
@@ -1234,6 +1238,8 @@ fourierTransformImpl(FFTWComplexImage::const_traverser sul,
     fourierTransform(srcImageRange(fourier), destImage(inverseFourier));
     \endcode
 */
+doxygen_overloaded_function(template <...> void fourierTransform)
+
 inline void 
 fourierTransform(FFTWComplexImage::const_traverser sul,
                  FFTWComplexImage::const_traverser slr, FFTWComplexImage::ConstAccessor src,
@@ -1329,8 +1335,8 @@ fourierTransformInverse(triple<FFTWComplexImage::const_traverser,
     \code
     namespace vigra {
         template <class SrcImageIterator, class SrcAccessor,
-                class FilterImageIterator, class FilterAccessor,
-                class DestImageIterator, class DestAccessor>
+                  class FilterImageIterator, class FilterAccessor,
+                  class DestImageIterator, class DestAccessor>
         void applyFourierFilter(triple<SrcImageIterator, SrcImageIterator, SrcAccessor> src,
                                 pair<FilterImageIterator, FilterAccessor> filter,
                                 pair<DestImageIterator, DestAccessor> dest);
@@ -1367,6 +1373,8 @@ fourierTransformInverse(triple<FFTWComplexImage::const_traverser,
     efficient to use the FFTW functions directly with FFTW plans optimized
     for good performance.
 */
+doxygen_overloaded_function(template <...> void applyFourierFilter)
+
 template <class SrcImageIterator, class SrcAccessor,
           class FilterImageIterator, class FilterAccessor,
           class DestImageIterator, class DestAccessor>
@@ -1555,7 +1563,6 @@ void applyFourierFilterImplNormalization(FFTWComplexImage const & srcImage,
     \code
     namespace vigra {
         template <class SrcImageIterator, class SrcAccessor, class FilterType>
-        inline
         void applyFourierFilterFamily(triple<SrcImageIterator, SrcImageIterator, SrcAccessor> src,
                                       const ImageArray<FilterType> &filters,
                                       ImageArray<FFTWComplexImage> &results)
@@ -1582,6 +1589,8 @@ void applyFourierFilterImplNormalization(FFTWComplexImage const & srcImage,
     vigra::applyFourierFilterFamily(srcImageRange(image), filters, results);
     \endcode
 */
+doxygen_overloaded_function(template <...> void applyFourierFilterFamily)
+
 template <class SrcImageIterator, class SrcAccessor,
           class FilterType, class DestImage>
 inline
@@ -1812,6 +1821,8 @@ void applyFourierFilterFamilyImpl(
                            (fftw_real)-4.0 * (width+1) * (height-1));
     \endcode
 */
+doxygen_overloaded_function(template <...> void fourierTransformReal)
+
 template <class SrcTraverser, class SrcAccessor,
           class DestTraverser, class DestAccessor>
 inline void

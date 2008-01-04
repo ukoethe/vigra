@@ -442,20 +442,13 @@ public:
 
 /********************************************************/
 /*                                                      */
-/*                      ImagePyramid                      */
+/*                      ImagePyramid                    */
 /*                                                      */
 /********************************************************/
 
-/** \brief Fundamental class template for arrays of equal-sized images.
+/** \brief Fundamental class template for image pyramids.
 
-    An ImageArray manages an array of images of the type given as
-    template parameter. Use it like a ArrayVector<ImageType>, it has
-    the same interface, only operator< is missing from ImageArray. It
-    offers additional functions for resizing the images and querying
-    their common size. See \ref imageSize() for additional notes.
-    
-    A custimized allocator can be passed as a template argument and via the constructor.
-    By default, the allocator of the <tt>ImageType</tt> is reused.
+    Sorry, no \ref detailedDocumentation() available yet.
 
     <b>\#include</b> \<<a href="imagecontainer_8hxx-source.html">vigra/imagecontainer.hxx</a>\>
 

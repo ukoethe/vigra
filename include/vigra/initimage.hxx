@@ -196,6 +196,8 @@ initLineFunctorIf(DestIterator d, DestIterator dend, DestAccessor dest,
     \endcode
     
 */
+doxygen_overloaded_function(template <...> void initImage)
+
 template <class ImageIterator, class Accessor, class VALUETYPE>
 void
 initImage(ImageIterator upperleft, ImageIterator lowerright, 
@@ -284,6 +286,8 @@ initImage(triple<ImageIterator, ImageIterator, Accessor> img, VALUETYPE v)
     \endcode
     
 */
+doxygen_overloaded_function(template <...> void initImageWithFunctor)
+
 template <class ImageIterator, class Accessor, class FUNCTOR>
 void
 initImageWithFunctor(ImageIterator upperleft, ImageIterator lowerright, 
@@ -376,6 +380,8 @@ initImageWithFunctor(triple<ImageIterator, ImageIterator, Accessor> img, FUNCTOR
     \endcode
     
 */
+doxygen_overloaded_function(template <...> void initImageIf)
+
 template <class ImageIterator, class Accessor, 
           class MaskImageIterator, class MaskAccessor,
           class VALUETYPE>
@@ -458,6 +464,8 @@ initImageIf(triple<ImageIterator, ImageIterator, Accessor> img,
     see \ref initImage()
     
 */
+doxygen_overloaded_function(template <...> void initImageBorder)
+
 template <class ImageIterator, class Accessor, class VALUETYPE>
 inline 
 void

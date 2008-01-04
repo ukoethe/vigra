@@ -121,7 +121,6 @@ namespace vigra {
               class DestIterator, class DestAccessor,
               class GradValue,
               class DestValue = DestAccessor::value_type>
-        inline
         void differenceOfExponentialEdgeImage(
                triple<SrcIterator, SrcIterator, SrcAccessor> src,
                pair<DestIterator, DestAccessor> dest,
@@ -177,6 +176,8 @@ namespace vigra {
     gradient_threshold > 0
     \endcode
 */
+doxygen_overloaded_function(template <...> void differenceOfExponentialEdgeImage)
+
 template <class SrcIterator, class SrcAccessor,
           class DestIterator, class DestAccessor,
           class GradValue, class DestValue>
@@ -399,7 +400,6 @@ sign of difference image     insert zero- and one-cells     resulting edge point
               class DestIterator, class DestAccessor,
               class GradValue,
               class DestValue = DestAccessor::value_type>
-        inline
         void differenceOfExponentialCrackEdgeImage(
                triple<SrcIterator, SrcIterator, SrcAccessor> src,
                pair<DestIterator, DestAccessor> dest,
@@ -461,6 +461,8 @@ sign of difference image     insert zero- and one-cells     resulting edge point
     h_dest = 2 * h_src - 1
     \endcode
 */
+doxygen_overloaded_function(template <...> void differenceOfExponentialCrackEdgeImage)
+
 template <class SrcIterator, class SrcAccessor,
           class DestIterator, class DestAccessor,
           class GradValue, class DestValue>
@@ -700,7 +702,6 @@ void differenceOfExponentialCrackEdgeImage(
     \code
     namespace vigra {
         template <class Iterator, class Accessor, class SrcValue>
-        inline
         void removeShortEdges(
                triple<Iterator, Iterator, Accessor> src,
                int min_edge_length, SrcValue non_edge_marker)
@@ -744,6 +745,8 @@ void differenceOfExponentialCrackEdgeImage(
     src_accessor.set(non_edge_marker, src_upperleft);
     \endcode
 */
+doxygen_overloaded_function(template <...> void removeShortEdges)
+
 template <class Iterator, class Accessor, class Value>
 void removeShortEdges(
                Iterator sul, Iterator slr, Accessor sa,
@@ -832,7 +835,6 @@ void removeShortEdges(
     \code
     namespace vigra {
         template <class SrcIterator, class SrcAccessor, class SrcValue>
-        inline
         void closeGapsInCrackEdgeImage(
                triple<SrcIterator, SrcIterator, SrcAccessor> src,
                SrcValue edge_marker)
@@ -879,6 +881,8 @@ void removeShortEdges(
     src_accessor.set(edge_marker, src_upperleft);
     \endcode
 */
+doxygen_overloaded_function(template <...> void closeGapsInCrackEdgeImage)
+
 template <class SrcIterator, class SrcAccessor, class SrcValue>
 void closeGapsInCrackEdgeImage(
                SrcIterator sul, SrcIterator slr, SrcAccessor sa,
@@ -1044,7 +1048,6 @@ void closeGapsInCrackEdgeImage(
     \code
     namespace vigra {
         template <class SrcIterator, class SrcAccessor, class SrcValue>
-        inline
         void beautifyCrackEdgeImage(
                    triple<SrcIterator, SrcIterator, SrcAccessor> src,
                SrcValue edge_marker, SrcValue background_marker)
@@ -1091,6 +1094,8 @@ void closeGapsInCrackEdgeImage(
     src_accessor.set(background_marker, src_upperleft);
     \endcode
 */
+doxygen_overloaded_function(template <...> void beautifyCrackEdgeImage)
+
 template <class SrcIterator, class SrcAccessor, class SrcValue>
 void beautifyCrackEdgeImage(
                SrcIterator sul, SrcIterator slr, SrcAccessor sa,
@@ -1319,6 +1324,8 @@ void internalCannyFindEdgels(Image1 const & gx,
     scale > 0
     \endcode
 */
+doxygen_overloaded_function(template <...> void cannyEdgelList)
+
 template <class SrcIterator, class SrcAccessor, class BackInsertable>
 void cannyEdgelList(SrcIterator ul, SrcIterator lr, SrcAccessor src,
                         BackInsertable & edgels, double scale)
@@ -1395,7 +1402,7 @@ cannyEdgelList(triple<SrcIterator, SrcIterator, SrcAccessor> src,
         template <class SrcIterator, class SrcAccessor,
                   class DestIterator, class DestAccessor,
                   class GradValue, class DestValue>
-        inline void cannyEdgeImage(
+        void cannyEdgeImage(
                    triple<SrcIterator, SrcIterator, SrcAccessor> src,
                    pair<DestIterator, DestAccessor> dest,
                    double scale, GradValue gradient_threshold, DestValue edge_marker);
@@ -1438,6 +1445,8 @@ cannyEdgelList(triple<SrcIterator, SrcIterator, SrcAccessor> src,
     gradient_threshold > 0
     \endcode
 */
+doxygen_overloaded_function(template <...> void cannyEdgeImage)
+
 template <class SrcIterator, class SrcAccessor,
           class DestIterator, class DestAccessor,
           class GradValue, class DestValue>
@@ -1677,6 +1686,8 @@ void cannyEdgeImageFromGrad(
     gradient_threshold > 0
     \endcode
 */
+doxygen_overloaded_function(template <...> void cannyEdgeImageFromGradWithThinning)
+
 template <class SrcIterator, class SrcAccessor,
           class DestIterator, class DestAccessor,
           class GradValue, class DestValue>
@@ -1895,6 +1906,8 @@ inline void cannyEdgeImageFromGradWithThinning(
     gradient_threshold > 0
     \endcode
 */
+doxygen_overloaded_function(template <...> void cannyEdgeImageWithThinning)
+
 template <class SrcIterator, class SrcAccessor,
           class DestIterator, class DestAccessor,
           class GradValue, class DestValue>
@@ -2087,6 +2100,8 @@ void internalCannyFindEdgels3x3(Image1 const & grad,
     scale > 0
     \endcode
 */
+doxygen_overloaded_function(template <...> void cannyEdgelList3x3)
+
 template <class SrcIterator, class SrcAccessor, class BackInsertable>
 void cannyEdgelList3x3(SrcIterator ul, SrcIterator lr, SrcAccessor src,
                         BackInsertable & edgels, double scale)

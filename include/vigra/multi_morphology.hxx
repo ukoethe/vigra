@@ -123,6 +123,8 @@ namespace vigra
 
     \see vigra::discErosion()
 */
+doxygen_overloaded_function(template <...> void multiBinaryErosion)
+
 template <class SrcIterator, class SrcShape, class SrcAccessor,
           class DestIterator, class DestAccessor>
 void
@@ -245,6 +247,8 @@ void multiBinaryErosion(
 
     \see vigra::discDilation()
 */
+doxygen_overloaded_function(template <...> void multiBinaryDilation)
+
 template <class SrcIterator, class SrcShape, class SrcAccessor,
           class DestIterator, class DestAccessor>
 void
@@ -363,6 +367,7 @@ void multiBinaryDilation(
 
     \see vigra::discErosion()
 */
+doxygen_overloaded_function(template <...> void multiGrayscaleErosion)
 
 template <class SrcIterator, class SrcShape, class SrcAccessor,
           class DestIterator, class DestAccessor>
@@ -479,7 +484,7 @@ void multiGrayscaleErosion(
 
     \see vigra::discErosion()
 */
-
+doxygen_overloaded_function(template <...> void multiGrayscaleDilation)
 
 template <class SrcIterator, class SrcShape, class SrcAccessor,
           class DestIterator, class DestAccessor>

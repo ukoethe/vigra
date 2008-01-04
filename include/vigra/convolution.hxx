@@ -364,6 +364,8 @@ convolveImage(triple<SrcIterator, SrcIterator, SrcAccessor> src,
     \endcode
 
 */    
+doxygen_overloaded_function(template <...> void simpleSharpening)
+
 template <class SrcIterator, class SrcAccessor,
           class DestIterator, class DestAccessor>
 void simpleSharpening(SrcIterator src_ul, SrcIterator src_lr, SrcAccessor src_acc,
@@ -461,6 +463,8 @@ void simpleSharpening(triple<SrcIterator, SrcIterator, SrcAccessor> src,
     \endcode
 
 */    
+doxygen_overloaded_function(template <...> void gaussianSharpening)
+
 template <class SrcIterator, class SrcAccessor,
           class DestIterator, class DestAccessor>
 void gaussianSharpening(SrcIterator src_ul, SrcIterator src_lr, SrcAccessor src_acc,
@@ -564,6 +568,8 @@ void gaussianSharpening(triple<SrcIterator, SrcIterator, SrcAccessor> src,
     \endcode
 
 */
+doxygen_overloaded_function(template <...> void gaussianSmoothing)
+
 template <class SrcIterator, class SrcAccessor,
           class DestIterator, class DestAccessor>
 void gaussianSmoothing(SrcIterator supperleft,
@@ -677,6 +683,8 @@ gaussianSmoothing(triple<SrcIterator, SrcIterator, SrcAccessor> src,
     \endcode
 
 */
+doxygen_overloaded_function(template <...> void gaussianGradient)
+
 template <class SrcIterator, class SrcAccessor,
           class DestIteratorX, class DestAccessorX,
           class DestIteratorY, class DestAccessorY>
@@ -791,6 +799,8 @@ gaussianGradient(triple<SrcIterator, SrcIterator, SrcAccessor> src,
     \endcode
 
 */
+doxygen_overloaded_function(template <...> void gaussianGradientMagnitude)
+
 template <class SrcIterator, class SrcAccessor,
           class DestIterator, class DestAccessor>
 void gaussianGradientMagnitude(SrcIterator sul,
@@ -873,6 +883,8 @@ gaussianGradientMagnitude(triple<SrcIterator, SrcIterator, SrcAccessor> src,
     \endcode
 
 */
+doxygen_overloaded_function(template <...> void laplacianOfGaussian)
+
 template <class SrcIterator, class SrcAccessor,
           class DestIterator, class DestAccessor>
 void laplacianOfGaussian(SrcIterator supperleft,
@@ -994,6 +1006,8 @@ laplacianOfGaussian(triple<SrcIterator, SrcIterator, SrcAccessor> src,
     \endcode
 
 */
+doxygen_overloaded_function(template <...> void hessianMatrixOfGaussian)
+
 template <class SrcIterator, class SrcAccessor,
           class DestIteratorX, class DestAccessorX,
           class DestIteratorXY, class DestAccessorXY,
@@ -1157,6 +1171,8 @@ hessianMatrixOfGaussian(triple<SrcIterator, SrcIterator, SrcAccessor> src,
     \endcode
 
 */
+doxygen_overloaded_function(template <...> void structureTensor)
+
 template <class SrcIterator, class SrcAccessor,
           class DestIteratorX, class DestAccessorX,
           class DestIteratorXY, class DestAccessorXY,

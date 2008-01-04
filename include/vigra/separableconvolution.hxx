@@ -413,7 +413,7 @@ void internalConvolveLineAvoid(SrcIterator is, SrcIterator iend, SrcAccessor sa,
 */
 //@{
 
-/** \brief Performs a 1 dimensional convolution of the source signal using the given
+/** \brief Performs a 1-dimensional convolution of the source signal using the given
     kernel.
 
     The KernelIterator must point to the center iterator, and
@@ -528,6 +528,8 @@ void internalConvolveLineAvoid(SrcIterator is, SrcIterator iend, SrcAccessor sa,
     != 0.
 
 */
+doxygen_overloaded_function(template <...> void convolveLine)
+
 template <class SrcIterator, class SrcAccessor,
           class DestIterator, class DestAccessor,
           class KernelIterator, class KernelAccessor>
@@ -668,6 +670,8 @@ void convolveLine(triple<SrcIterator, SrcIterator, SrcAccessor> src,
     \endcode
 
 */
+doxygen_overloaded_function(template <...> void separableConvolveX)
+
 template <class SrcIterator, class SrcAccessor,
           class DestIterator, class DestAccessor,
           class KernelIterator, class KernelAccessor>
@@ -778,6 +782,8 @@ separableConvolveX(triple<SrcIterator, SrcIterator, SrcAccessor> src,
     \endcode
 
 */
+doxygen_overloaded_function(template <...> void separableConvolveY)
+
 template <class SrcIterator, class SrcAccessor,
           class DestIterator, class DestAccessor,
           class KernelIterator, class KernelAccessor>

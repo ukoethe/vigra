@@ -119,6 +119,8 @@ namespace vigra {
     \endcode
 
 */
+doxygen_overloaded_function(template <...> void gradientEnergyTensor)
+
 template <class SrcIterator, class SrcAccessor,
           class DestIterator, class DestAccessor>
 void gradientEnergyTensor(SrcIterator supperleft, SrcIterator slowerright, SrcAccessor src,

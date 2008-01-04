@@ -222,6 +222,8 @@ internalSeparableConvolveMultiArrayTmp(
 
     \see vigra::Kernel1D, convolveLine()
 */
+doxygen_overloaded_function(template <...> void separableConvolveMultiArray)
+
 template <class SrcIterator, class SrcShape, class SrcAccessor,
           class DestIterator, class DestAccessor, class KernelIterator>
 void
@@ -341,6 +343,8 @@ separableConvolveMultiArray(triple<SrcIterator, SrcShape, SrcAccessor> const & s
 
     \see separableConvolveMultiArray()
 */
+doxygen_overloaded_function(template <...> void convolveMultiArrayOneDimension)
+
 template <class SrcIterator, class SrcShape, class SrcAccessor,
           class DestIterator, class DestAccessor, class T>
 void
@@ -445,6 +449,8 @@ convolveMultiArrayOneDimension(triple<SrcIterator, SrcShape, SrcAccessor> const 
 
     \see separableConvolveMultiArray()
 */
+doxygen_overloaded_function(template <...> void gaussianSmoothMultiArray)
+
 template <class SrcIterator, class SrcShape, class SrcAccessor,
           class DestIterator, class DestAccessor>
 void
@@ -539,6 +545,8 @@ gaussianSmoothMultiArray(triple<SrcIterator, SrcShape, SrcAccessor> const & sour
 
     \see separableConvolveMultiArray()
 */
+doxygen_overloaded_function(template <...> void gaussianGradientMultiArray)
+
 template <class SrcIterator, class SrcShape, class SrcAccessor,
           class DestIterator, class DestAccessor>
 void
@@ -637,6 +645,8 @@ gaussianGradientMultiArray(triple<SrcIterator, SrcShape, SrcAccessor> const & so
 
     \see convolveMultiArrayOneDimension()
 */
+doxygen_overloaded_function(template <...> void symmetricGradientMultiArray)
+
 template <class SrcIterator, class SrcShape, class SrcAccessor,
           class DestIterator, class DestAccessor>
 void

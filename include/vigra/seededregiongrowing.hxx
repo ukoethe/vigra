@@ -273,7 +273,7 @@ enum SRGType { KeepContours, CompleteGrow, SRGWatershedLabel = -1 };
                   class SeedImageIterator, class SeedAccessor,
                   class DestImageIterator, class DestAccessor,
                   class RegionStatisticsArray>
-        inline void
+        void
         seededRegionGrowing(triple<SrcImageIterator, SrcImageIterator, SrcAccessor> img1,
                             pair<SeedImageIterator, SeedAccessor> img3,
                             pair<DestImageIterator, DestAccessor> img4,
@@ -344,6 +344,8 @@ enum SRGType { KeepContours, CompleteGrow, SRGWatershedLabel = -1 };
 
     Further requirements are determined by the <TT>RegionStatisticsArray</TT>.
 */
+doxygen_overloaded_function(template <...> void seededRegionGrowing)
+
 template <class SrcImageIterator, class SrcAccessor,
           class SeedImageIterator, class SeedAccessor,
           class DestImageIterator, class DestAccessor,

@@ -72,7 +72,7 @@ namespace vigra {
     \code
     namespace vigra {
         template <class SrcIterator, class SrcAccessor,
-                class DestIterator, class DestAccessor>
+                  class DestIterator, class DestAccessor>
         void vectorToTensor(SrcIterator sul, SrcIterator slr, SrcAccessor src,
                             DestIterator dul, DestAccessor dest,
                             bool negateComponent2 = true);
@@ -84,7 +84,7 @@ namespace vigra {
     \code
     namespace vigra {
         template <class SrcIterator, class SrcAccessor,
-                class DestIterator, class DestAccessor>
+                  class DestIterator, class DestAccessor>
         void vectorToTensor(triple<SrcIterator, SrcIterator, SrcAccessor> s,
                             pair<DestIterator, DestAccessor> d,
                             bool negateComponent2 = true);
@@ -105,6 +105,8 @@ namespace vigra {
     \endcode
 
 */
+doxygen_overloaded_function(template <...> void vectorToTensor)
+
 template <class SrcIterator, class SrcAccessor,
           class DestIterator, class DestAccessor>
 void vectorToTensor(SrcIterator sul, SrcIterator slr, SrcAccessor src,
@@ -195,7 +197,7 @@ void vectorToTensor(triple<SrcIterator, SrcIterator, SrcAccessor> s,
     \code
     namespace vigra {
         template <class SrcIterator, class SrcAccessor,
-                class DestIterator, class DestAccessor>
+                  class DestIterator, class DestAccessor>
         void tensorEigenRepresentation(SrcIterator sul, SrcIterator slr, SrcAccessor src,
                                        DestIterator dul, DestAccessor dest);
     }
@@ -206,7 +208,7 @@ void vectorToTensor(triple<SrcIterator, SrcIterator, SrcAccessor> s,
     \code
     namespace vigra {
         template <class SrcIterator, class SrcAccessor,
-                class DestIterator, class DestAccessor>
+                  class DestIterator, class DestAccessor>
         void tensorEigenRepresentation(triple<SrcIterator, SrcIterator, SrcAccessor> s,
                                        pair<DestIterator, DestAccessor> d);
     }
@@ -224,6 +226,8 @@ void vectorToTensor(triple<SrcIterator, SrcIterator, SrcAccessor> s,
     \endcode
 
 */
+doxygen_overloaded_function(template <...> void tensorEigenRepresentation)
+
 template <class SrcIterator, class SrcAccessor,
           class DestIterator, class DestAccessor>
 void tensorEigenRepresentation(SrcIterator sul, SrcIterator slr, SrcAccessor src,
@@ -292,7 +296,7 @@ void tensorEigenRepresentation(triple<SrcIterator, SrcIterator, SrcAccessor> s,
     \code
     namespace vigra {
         template <class SrcIterator, class SrcAccessor,
-                class DestIterator, class DestAccessor>
+                  class DestIterator, class DestAccessor>
         void tensorTrace(SrcIterator sul, SrcIterator slr, SrcAccessor src,
                          DestIterator dul, DestAccessor dest);
     }
@@ -303,7 +307,7 @@ void tensorEigenRepresentation(triple<SrcIterator, SrcIterator, SrcAccessor> s,
     \code
     namespace vigra {
         template <class SrcIterator, class SrcAccessor,
-                class DestIterator, class DestAccessor>
+                  class DestIterator, class DestAccessor>
         void tensorTrace(triple<SrcIterator, SrcIterator, SrcAccessor> s,
                          pair<DestIterator, DestAccessor> d);
     }
@@ -321,6 +325,8 @@ void tensorEigenRepresentation(triple<SrcIterator, SrcIterator, SrcAccessor> s,
     \endcode
 
 */
+doxygen_overloaded_function(template <...> void tensorTrace)
+
 template <class SrcIterator, class SrcAccessor,
           class DestIterator, class DestAccessor>
 void tensorTrace(SrcIterator sul, SrcIterator slr, SrcAccessor src,
@@ -409,6 +415,8 @@ void tensorTrace(triple<SrcIterator, SrcIterator, SrcAccessor> s,
     \endcode
 
 */
+doxygen_overloaded_function(template <...> void tensorToEdgeCorner)
+
 template <class SrcIterator, class SrcAccessor,
           class DestIterator1, class DestAccessor1,
           class DestIterator2, class DestAccessor2>

@@ -2331,6 +2331,8 @@ columnStatisticsImpl(MultiArrayView<2, T1, C1> const & A,
 
     \endcode
      */
+doxygen_overloaded_function(template <...> void columnStatistics)
+
 template <class T1, class C1, class T2, class C2>
 void
 columnStatistics(MultiArrayView<2, T1, C1> const & A, 
@@ -2432,6 +2434,8 @@ columnStatistics(MultiArrayView<2, T1, C1> const & A,
 
     \endcode
      */
+doxygen_overloaded_function(template <...> void rowStatistics)
+
 template <class T1, class C1, class T2, class C2>
 void
 rowStatistics(MultiArrayView<2, T1, C1> const & A, 
@@ -2750,6 +2754,8 @@ prepareDataImpl(const MultiArrayView<2, T, C1> & A,
 
     \endcode
     */
+doxygen_overloaded_function(template <...> void prepareColumns)
+
 template <class T, class C1, class C2, class C3, class C4>
 inline void
 prepareColumns(MultiArrayView<2, T, C1> const & A, 
@@ -2821,7 +2827,8 @@ prepareColumns(MultiArrayView<2, T, C1> const & A, MultiArrayView<2, T, C2> & re
     Matrix standardizedNewData = (newData - repeatMatrix(offset, 1, ncolumns)) * pointWise(repeatMatrix(scaling, 1, ncolumns));
 
     \endcode
-    */
+*/
+doxygen_overloaded_function(template <...> void prepareRows)
 
 template <class T, class C1, class C2, class C3, class C4>
 inline void

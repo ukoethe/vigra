@@ -199,6 +199,8 @@ combineThreeLines(SrcIterator1 s1,
     
     
 */
+doxygen_overloaded_function(template <...> void combineTwoImages)
+
 template <class SrcImageIterator1, class SrcAccessor1,
           class SrcImageIterator2, class SrcAccessor2,
           class DestImageIterator, class DestAccessor,
@@ -343,6 +345,8 @@ combineTwoImages(triple<SrcImageIterator1, SrcImageIterator1, SrcAccessor1> src1
     \endcode
     
 */
+doxygen_overloaded_function(template <...> void combineTwoImagesIf)
+
 template <class SrcImageIterator1, class SrcAccessor1,
           class SrcImageIterator2, class SrcAccessor2,
           class MaskImageIterator, class MaskAccessor,
@@ -484,6 +488,8 @@ combineTwoImagesIf(triple<SrcImageIterator1, SrcImageIterator1, SrcAccessor1> sr
     
     
 */
+doxygen_overloaded_function(template <...> void combineThreeImages)
+
 template <class SrcImageIterator1, class SrcAccessor1,
           class SrcImageIterator2, class SrcAccessor2,
           class SrcImageIterator3, class SrcAccessor3,

@@ -215,11 +215,11 @@ resizeLineNoInterpolation(SrcIterator i1, SrcIterator iend, SrcAccessor as,
     \code
     namespace vigra {
         template <class SrcImageIterator, class SrcAccessor,
-              class DestImageIterator, class DestAccessor>
+                  class DestImageIterator, class DestAccessor>
         void
         resizeImageNoInterpolation(
               SrcImageIterator is, SrcImageIterator iend, SrcAccessor sa,
-          DestImageIterator id, DestImageIterator idend, DestAccessor da)
+              DestImageIterator id, DestImageIterator idend, DestAccessor da)
     }
     \endcode
 
@@ -228,11 +228,11 @@ resizeLineNoInterpolation(SrcIterator i1, SrcIterator iend, SrcAccessor as,
     \code
     namespace vigra {
         template <class SrcImageIterator, class SrcAccessor,
-              class DestImageIterator, class DestAccessor>
+                  class DestImageIterator, class DestAccessor>
         void
         resizeImageNoInterpolation(
               triple<SrcImageIterator, SrcImageIterator, SrcAccessor> src,
-          triple<DestImageIterator, DestImageIterator, DestAccessor> dest)
+              triple<DestImageIterator, DestImageIterator, DestAccessor> dest)
     }
     \endcode
 
@@ -271,6 +271,8 @@ resizeLineNoInterpolation(SrcIterator i1, SrcIterator iend, SrcAccessor as,
     \endcode
 
 */
+doxygen_overloaded_function(template <...> void resizeImageNoInterpolation)
+
 template <class SrcIterator, class SrcAccessor,
           class DestIterator, class DestAccessor>
 void
@@ -397,11 +399,11 @@ resizeLineLinearInterpolation(SrcIterator i1, SrcIterator iend, SrcAccessor as,
     \code
     namespace vigra {
         template <class SrcImageIterator, class SrcAccessor,
-              class DestImageIterator, class DestAccessor>
+                  class DestImageIterator, class DestAccessor>
         void
         resizeImageLinearInterpolation(
               SrcImageIterator is, SrcImageIterator iend, SrcAccessor sa,
-          DestImageIterator id, DestImageIterator idend, DestAccessor da)
+              DestImageIterator id, DestImageIterator idend, DestAccessor da)
     }
     \endcode
 
@@ -410,11 +412,11 @@ resizeLineLinearInterpolation(SrcIterator i1, SrcIterator iend, SrcAccessor as,
     \code
     namespace vigra {
         template <class SrcImageIterator, class SrcAccessor,
-              class DestImageIterator, class DestAccessor>
+                  class DestImageIterator, class DestAccessor>
         void
         resizeImageLinearInterpolation(
               triple<SrcImageIterator, SrcImageIterator, SrcAccessor> src,
-          triple<DestImageIterator, DestImageIterator, DestAccessor> dest)
+              triple<DestImageIterator, DestImageIterator, DestAccessor> dest)
     }
     \endcode
 
@@ -463,6 +465,8 @@ resizeLineLinearInterpolation(SrcIterator i1, SrcIterator iend, SrcAccessor as,
     \endcode
 
 */
+doxygen_overloaded_function(template <...> void resizeImageLinearInterpolation)
+
 template <class SrcIterator, class SrcAccessor,
           class DestIterator, class DestAccessor>
 void
@@ -591,13 +595,13 @@ resizeImageLinearInterpolation(triple<SrcIterator, SrcIterator, SrcAccessor> src
     \code
     namespace vigra {
         template <class SrcImageIterator, class SrcAccessor,
-              class DestImageIterator, class DestAccessor,
-              class SPLINE>
+                  class DestImageIterator, class DestAccessor,
+                  class SPLINE>
         void
         resizeImageSplineInterpolation(
               SrcImageIterator is, SrcImageIterator iend, SrcAccessor sa,
-          DestImageIterator id, DestImageIterator idend, DestAccessor da,
-          SPLINE spline = BSpline<3, double>())
+              DestImageIterator id, DestImageIterator idend, DestAccessor da,
+              SPLINE spline = BSpline<3, double>())
     }
     \endcode
 
@@ -606,8 +610,8 @@ resizeImageLinearInterpolation(triple<SrcIterator, SrcIterator, SrcAccessor> src
     \code
     namespace vigra {
         template <class SrcImageIterator, class SrcAccessor,
-              class DestImageIterator, class DestAccessor,
-              class SPLINE>
+                  class DestImageIterator, class DestAccessor,
+                  class SPLINE>
         void
         resizeImageSplineInterpolation(
               triple<SrcImageIterator, SrcImageIterator, SrcAccessor> src,
@@ -665,6 +669,8 @@ resizeImageLinearInterpolation(triple<SrcIterator, SrcIterator, SrcAccessor> src
     \endcode
 
 */
+doxygen_overloaded_function(template <...> void resizeImageSplineInterpolation)
+
 template <class SrcIterator, class SrcAccessor,
           class DestIterator, class DestAccessor,
           class SPLINE>
@@ -891,9 +897,11 @@ resizeImageSplineInterpolation(triple<SrcIterator, SrcIterator, SrcAccessor> src
     Namespace: vigra
 
 */
+doxygen_overloaded_function(template <...> void resizeImageCatmullRomInterpolation)
+
 template <class SrcIterator, class SrcAccessor,
           class DestIterator, class DestAccessor>
-void
+inline void
 resizeImageCatmullRomInterpolation(SrcIterator src_iter, SrcIterator src_iter_end, SrcAccessor src_acc,
                       DestIterator dest_iter, DestIterator dest_iter_end, DestAccessor dest_acc)
 {
@@ -995,6 +1003,8 @@ resizeImageCubicInterpolation(triple<SrcIterator, SrcIterator, SrcAccessor> src,
     Namespace: vigra
 
 */
+doxygen_overloaded_function(template <...> void resizeImageCoscotInterpolation)
+
 template <class SrcIterator, class SrcAccessor,
           class DestIterator, class DestAccessor>
 void

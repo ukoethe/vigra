@@ -74,11 +74,11 @@ namespace vigra {
     \code
     namespace vigra {
         template <class SrcIterator, class SrcAccessor,
-	          class DestIterator, class DestAccessor>
+	              class DestIterator, class DestAccessor>
         void
         radialSymmetryTransform(SrcIterator sul, SrcIterator slr, SrcAccessor as,
-			       DestIterator dul, DestAccessor ad,
-			       double scale)
+			                    DestIterator dul, DestAccessor ad,
+			                    double scale)
     }
     \endcode
 
@@ -86,7 +86,7 @@ namespace vigra {
     \code
     namespace vigra {
         template <class SrcIterator, class SrcAccessor,
-	          class DestIterator, class DestAccessor>
+	              class DestIterator, class DestAccessor>
         inline
         void radialSymmetryTransform(
 	           triple<SrcIterator, SrcIterator, SrcAccessor> src,
@@ -139,6 +139,8 @@ namespace vigra {
     dest_accessor.set(u, dest_upperleft);
     \endcode
 */
+doxygen_overloaded_function(template <...> void radialSymmetryTransform)
+
 template <class SrcIterator, class SrcAccessor,
           class DestIterator, class DestAccessor>
 void
