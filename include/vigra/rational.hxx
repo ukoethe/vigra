@@ -75,7 +75,7 @@ namespace vigra {
     This function works for arbitrary integer types, including user-defined
     (e.g. infinite precision) ones.
 
-    <b>\#include</b> "<a href="rational_8hxx-source.html">vigra/rational.hxx</a>"<br>
+    <b>\#include</b> \<<a href="rational_8hxx-source.html">vigra/rational.hxx</a>\><br>
     Namespace: vigra
 */
 template <typename IntType>
@@ -116,7 +116,7 @@ IntType gcd(IntType n, IntType m)
     This function works for arbitrary integer types, including user-defined
     (e.g. infinite precision) ones.
 
-    <b>\#include</b> "<a href="rational_8hxx-source.html">vigra/rational.hxx</a>"<br>
+    <b>\#include</b> \<<a href="rational_8hxx-source.html">vigra/rational.hxx</a>\><br>
     Namespace: vigra
 */
 template <typename IntType>
@@ -187,7 +187,7 @@ Rational<IntType> ceil(const Rational<IntType>& r);
     </ul>
 
 
-    <b>\#include</b> "<a href="rational_8hxx-source.html">vigra/rational.hxx</a>"<br>
+    <b>\#include</b> \<<a href="rational_8hxx-source.html">vigra/rational.hxx</a>\><br>
     Namespace: vigra
 */
 template <typename IntType>
@@ -732,7 +732,7 @@ void Rational<IntType>::normalize()
     };
     \endcode
 
-    <b>\#include</b> "<a href="rational_8hxx-source.html">vigra/rational.hxx</a>"<br>
+    <b>\#include</b> \<<a href="rational_8hxx-source.html">vigra/rational.hxx</a>\><br>
     Namespace: vigra
 
 */
@@ -818,7 +818,7 @@ struct PromoteTraits<T1, Rational<T2> >
 
 /** \addtogroup RationalOperations Functions for Rational
 
-    \brief     <b>\#include</b> "<a href="rational_8hxx-source.html">vigra/rational.hxx</a>"<br>
+    \brief     <b>\#include</b> \<<a href="rational_8hxx-source.html">vigra/rational.hxx</a>\><br>
 
     These functions fulfill the requirements of an \ref AlgebraicField.
 

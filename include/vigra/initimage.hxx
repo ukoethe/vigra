@@ -161,7 +161,7 @@ initLineFunctorIf(DestIterator d, DestIterator dend, DestAccessor dest,
     }
     \endcode
 
-    use argument objects in conjunction with \ref ArgumentObjectFactories:
+    use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
         template <class ImageIterator, class Accessor, class VALUETYPE>
@@ -172,7 +172,7 @@ initLineFunctorIf(DestIterator d, DestIterator dend, DestAccessor dest,
     
     <b> Usage:</b>
     
-        <b>\#include</b> "<a href="initimage_8hxx-source.html">vigra/initimage.hxx</a>"<br>
+        <b>\#include</b> \<<a href="initimage_8hxx-source.html">vigra/initimage.hxx</a>\><br>
         Namespace: vigra
     
     \code
@@ -242,7 +242,7 @@ initImage(triple<ImageIterator, ImageIterator, Accessor> img, VALUETYPE v)
     }
     \endcode
 
-    use argument objects in conjunction with \ref ArgumentObjectFactories:
+    use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
         template <class ImageIterator, class Accessor, class FUNCTOR>
@@ -253,7 +253,7 @@ initImage(triple<ImageIterator, ImageIterator, Accessor> img, VALUETYPE v)
     
     <b> Usage:</b>
     
-        <b>\#include</b> "<a href="initimage_8hxx-source.html">vigra/initimage.hxx</a>"<br>
+        <b>\#include</b> \<<a href="initimage_8hxx-source.html">vigra/initimage.hxx</a>\><br>
         Namespace: vigra
     
     \code
@@ -332,7 +332,7 @@ initImageWithFunctor(triple<ImageIterator, ImageIterator, Accessor> img, FUNCTOR
     }
     \endcode    
     
-    use argument objects in conjunction with \ref ArgumentObjectFactories:
+    use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
         template <class ImageIterator, class Accessor, 
@@ -347,7 +347,7 @@ initImageWithFunctor(triple<ImageIterator, ImageIterator, Accessor> img, FUNCTOR
     
     <b> Usage:</b>
     
-        <b>\#include</b> "<a href="initimage_8hxx-source.html">vigra/initimage.hxx</a>"<br>
+        <b>\#include</b> \<<a href="initimage_8hxx-source.html">vigra/initimage.hxx</a>\><br>
         Namespace: vigra
     
     \code
@@ -430,7 +430,7 @@ initImageIf(triple<ImageIterator, ImageIterator, Accessor> img,
     }
     \endcode
 
-    use argument objects in conjunction with \ref ArgumentObjectFactories:
+    use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
         template <class ImageIterator, class Accessor, class VALUETYPE>
@@ -442,7 +442,7 @@ initImageIf(triple<ImageIterator, ImageIterator, Accessor> img,
     
     <b> Usage:</b>
     
-        <b>\#include</b> "<a href="initimage_8hxx-source.html">vigra/initimage.hxx</a>"<br>
+        <b>\#include</b> \<<a href="initimage_8hxx-source.html">vigra/initimage.hxx</a>\><br>
         Namespace: vigra
     
     \code

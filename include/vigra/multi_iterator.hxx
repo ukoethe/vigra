@@ -57,20 +57,14 @@ template <unsigned int N, class T,
 
 
 <p>
-<DL>
-<DT>
-    <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif">
-    \ref vigra::MultiArrayShape
-    <DD> <em>Iterator for unstrided \ref vigra::MultiArrayView</em>
-<DT>
-    <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif">
-    \ref vigra::MultiIterator
-    <DD> <em>Iterator for unstrided \ref vigra::MultiArrayView</em>
-<DT>
-    <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif">
-    \ref vigra::StridedMultiIterator
-    <DD> <em>Iterator for strided \ref vigra::MultiArrayView</em>
-</DL>
+<UL style="list-style-image:url(documents/bullet.gif)">
+<LI> \ref vigra::MultiArrayShape
+     <BR>&nbsp;&nbsp;&nbsp;<em>Iterator for unstrided \ref vigra::MultiArrayView</em>
+<LI> \ref vigra::MultiIterator
+     <BR>&nbsp;&nbsp;&nbsp;<em>Iterator for unstrided \ref vigra::MultiArrayView</em>
+<LI> \ref vigra::StridedMultiIterator
+     <BR>&nbsp;&nbsp;&nbsp;<em>Iterator for strided \ref vigra::MultiArrayView</em>
+</UL>
 </p>
 
 <p>
@@ -840,7 +834,7 @@ class MultiIterator<2, T, REFERENCE, POINTER>
 
      See \ref MultiIteratorPage for further documentation.
 
-<b>\#include</b> "<a href="multi__iterator_8hxx-source.html">vigra/multi_iterator.hxx</a>"
+<b>\#include</b> \<<a href="multi__iterator_8hxx-source.html">vigra/multi_iterator.hxx</a>\>
 
 Namespace: vigra
 */
@@ -1590,7 +1584,7 @@ class StridedMultiIterator<2, T, REFERENCE, POINTER>
 
      See \ref MultiIteratorPage for further documentation.
 
-<b>\#include</b> "<a href="multi__iterator_8hxx-source.html">vigra/multi_iterator.hxx</a>"
+<b>\#include</b> \<<a href="multi__iterator_8hxx-source.html">vigra/multi_iterator.hxx</a>\>
 
 Namespace: vigra
 */

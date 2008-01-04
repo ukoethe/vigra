@@ -447,7 +447,7 @@ void internalConvolveLineAvoid(SrcIterator is, SrcIterator iend, SrcAccessor sa,
     \endcode
 
 
-    use argument objects in conjunction with \ref ArgumentObjectFactories:
+    use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
         template <class SrcIterator, class SrcAccessor,
@@ -462,7 +462,7 @@ void internalConvolveLineAvoid(SrcIterator is, SrcIterator iend, SrcAccessor sa,
 
     <b> Usage:</b>
 
-    <b>\#include</b> "<a href="separableconvolution_8hxx-source.html">vigra/separableconvolution.hxx</a>"
+    <b>\#include</b> \<<a href="separableconvolution_8hxx-source.html">vigra/separableconvolution.hxx</a>\>
 
 
     \code
@@ -617,9 +617,8 @@ void convolveLine(triple<SrcIterator, SrcIterator, SrcAccessor> src,
 
 /** \brief Performs a 1 dimensional convolution in x direction.
 
-    It calls \link SeparableConvolution#convolveLine convolveLine\endlink() for every row of the
-    image. See \link SeparableConvolution#convolveLine convolveLine\endlink() for more information about required interfaces
-    and vigra_preconditions.
+    It calls \ref convolveLine() for every row of the image. See \ref convolveLine() 
+    for more information about required interfaces and vigra_preconditions.
 
     <b> Declarations:</b>
 
@@ -638,7 +637,7 @@ void convolveLine(triple<SrcIterator, SrcIterator, SrcAccessor> src,
     \endcode
 
 
-    use argument objects in conjunction with \ref ArgumentObjectFactories:
+    use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
         template <class SrcImageIterator, class SrcAccessor,
@@ -653,7 +652,7 @@ void convolveLine(triple<SrcIterator, SrcIterator, SrcAccessor> src,
 
     <b> Usage:</b>
 
-    <b>\#include</b> "<a href="separableconvolution_8hxx-source.html">vigra/separableconvolution.hxx</a>"
+    <b>\#include</b> \<<a href="separableconvolution_8hxx-source.html">vigra/separableconvolution.hxx</a>\>
 
 
     \code
@@ -728,9 +727,8 @@ separableConvolveX(triple<SrcIterator, SrcIterator, SrcAccessor> src,
 
 /** \brief Performs a 1 dimensional convolution in y direction.
 
-    It calls \link SeparableConvolution#convolveLine convolveLine\endlink() for every column of the
-    image. See \link SeparableConvolution#convolveLine convolveLine\endlink() for more information about required interfaces
-    and vigra_preconditions.
+    It calls \ref convolveLine() for every column of the image. See \ref convolveLine() 
+    for more information about required interfaces and vigra_preconditions.
 
     <b> Declarations:</b>
 
@@ -749,7 +747,7 @@ separableConvolveX(triple<SrcIterator, SrcIterator, SrcAccessor> src,
     \endcode
 
 
-    use argument objects in conjunction with \ref ArgumentObjectFactories:
+    use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
         template <class SrcImageIterator, class SrcAccessor,
@@ -764,7 +762,7 @@ separableConvolveX(triple<SrcIterator, SrcIterator, SrcAccessor> src,
 
     <b> Usage:</b>
 
-    <b>\#include</b> "<a href="separableconvolution_8hxx-source.html">vigra/separableconvolution.hxx</a>"
+    <b>\#include</b> \<<a href="separableconvolution_8hxx-source.html">vigra/separableconvolution.hxx</a>\>
 
 
     \code
@@ -858,7 +856,7 @@ separableConvolveY(triple<SrcIterator, SrcIterator, SrcAccessor> src,
 
     <b> Usage:</b>
 
-    <b>\#include</b> "<a href="stdconvolution_8hxx-source.html">vigra/stdconvolution.hxx</a>"
+    <b>\#include</b> \<<a href="stdconvolution_8hxx-source.html">vigra/stdconvolution.hxx</a>\>
 
     \code
     vigra::FImage src(w,h), dest(w,h);
@@ -1080,7 +1078,7 @@ class Kernel1D
         */
     void initDiscreteGaussian(double std_dev, value_type norm);
 
-        /** Init as a LOineberg's discrete analog of the Gaussian function
+        /** Init as a Lindeberg's discrete analog of the Gaussian function
             with norm 1.
          */
     void initDiscreteGaussian(double std_dev)
@@ -1629,7 +1627,7 @@ class Kernel1D
     value_type norm() const { return norm_; }
 
         /** set a new norm and normalize kernel, use the normalization formula
-            for the given </tt>derivativeOrder</tt>.
+            for the given <tt>derivativeOrder</tt>.
         */
     void
     normalize(value_type norm, unsigned int derivativeOrder = 0, double offset = 0.0);

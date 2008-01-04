@@ -72,7 +72,7 @@ namespace vigra
 
         <b> Usage:</b>
 
-        <b>\#include</b> "<a href="imageinfo_8hxx-source.html">vigra/imageinfo.hxx</a>"<br>
+        <b>\#include</b> \<<a href="imageinfo_8hxx-source.html">vigra/imageinfo.hxx</a>\><br>
         Namespace: vigra
 
         \code
@@ -89,7 +89,7 @@ VIGRA_EXPORT std::string impexListFormats();
 
         <b> Usage:</b>
 
-        <b>\#include</b> "<a href="imageinfo_8hxx-source.html">vigra/imageinfo.hxx</a>"<br>
+        <b>\#include</b> \<<a href="imageinfo_8hxx-source.html">vigra/imageinfo.hxx</a>\><br>
         Namespace: vigra
 
         \code
@@ -106,7 +106,7 @@ VIGRA_EXPORT std::string impexListExtensions();
 
     <b> Usage:</b>
 
-    <b>\#include</b> "<a href="imageinfo_8hxx-source.html">vigra/imageinfo.hxx</a>"<br>
+    <b>\#include</b> \<<a href="imageinfo_8hxx-source.html">vigra/imageinfo.hxx</a>\><br>
     Namespace: vigra
 
     \code
@@ -123,10 +123,11 @@ VIGRA_EXPORT bool isImage(char const * filename);
 /********************************************************/
 
 /** \brief Argument object for the function exportImage().
+
     See \ref exportImage() for usage example. This object must be used
     to define the properties of an image to be written to disk.
 
-    <b>\#include</b> "<a href="imageinfo_8hxx-source.html">vigra/imageinfo.hxx</a>"<br>
+    <b>\#include</b> \<<a href="imageinfo_8hxx-source.html">vigra/imageinfo.hxx</a>\><br>
     Namespace: vigra
 **/
 class ImageExportInfo
@@ -331,10 +332,11 @@ VIGRA_EXPORT std::auto_ptr<Encoder> encoder( const ImageExportInfo & info );
 /********************************************************/
 
 /** \brief Argument object for the function importImage().
+
 See \ref importImage() for a usage example. This object must be
 used to read an image from disk and enquire about its properties.
 
-<b>\#include</b> "<a href="imageinfo_8hxx-source.html">vigra/imageinfo.hxx</a>"<br>
+<b>\#include</b> &lt;<a href="imageinfo_8hxx-source.html">vigra/imageinfo.hxx</a>&gt;<br>
 Namespace: vigra
 **/
 class ImageImportInfo
@@ -465,6 +467,8 @@ class ImageImportInfo
 
 // return a decoder for a given ImageImportInfo object
 VIGRA_EXPORT std::auto_ptr<Decoder> decoder( const ImageImportInfo & info );
+
+//@}
 
 } // namespace vigra
 

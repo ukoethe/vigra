@@ -206,4 +206,11 @@ namespace vigra {
 
 } // namespace vigra
 
+#ifdef DOXYGEN
+#  define doxygen_overloaded_function(fun) fun(...);
+#else
+#  define doxygen_overloaded_function(fun)
+#endif
+
+
 #endif // VIGRA_CONFIG_HXX

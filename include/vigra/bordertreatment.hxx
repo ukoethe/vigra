@@ -48,7 +48,7 @@ namespace vigra {
     all image pixels where the kernel does not completely fit inside 
     the image.
     
-    <b>\#include</b> "<a href="bordertreatment_8hxx-source.html">vigra/bordertreatment.hxx</a>"<br>
+    <b>\#include</b> \<<a href="bordertreatment_8hxx-source.html">vigra/bordertreatment.hxx</a>\><br>
     Namespace: vigra
     
     \code

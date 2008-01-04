@@ -90,7 +90,7 @@ namespace vigra {
     
     <b> Declaration:</b>
     
-    <b>First order recursive filter:<b>
+    <b>First order recursive filter:</b>
     
     \code
     namespace vigra {
@@ -102,7 +102,7 @@ namespace vigra {
     }
     \endcode
     
-    <b>Second order recursive filter:<b>
+    <b>Second order recursive filter:</b>
     
     \code
     namespace vigra {
@@ -116,7 +116,7 @@ namespace vigra {
     
     <b> Usage:</b>
     
-    <b>\#include</b> "<a href="recursiveconvolution_8hxx-source.html">vigra/recursiveconvolution.hxx</a>"<br>
+    <b>\#include</b> \<<a href="recursiveconvolution_8hxx-source.html">vigra/recursiveconvolution.hxx</a>\><br>
     Namespace: vigra
     
     
@@ -155,7 +155,7 @@ namespace vigra {
     <b> Preconditions:</b>
     
     \code
-    -1 < b < 1
+    -1 < b  < 1
     \endcode
 
 */
@@ -378,7 +378,7 @@ void recursiveFilterLine(SrcIterator is, SrcIterator isend, SrcAccessor as,
     
     <b> Usage:</b>
     
-    <b>\#include</b> "<a href="recursiveconvolution_8hxx-source.html">vigra/recursiveconvolution.hxx</a>"<br>
+    <b>\#include</b> \<<a href="recursiveconvolution_8hxx-source.html">vigra/recursiveconvolution.hxx</a>\><br>
     Namespace: vigra
     
     
@@ -464,7 +464,7 @@ void recursiveSmoothLine(SrcIterator is, SrcIterator isend, SrcAccessor as,
     
     <b> Usage:</b>
     
-    <b>\#include</b> "<a href="recursiveconvolution_8hxx-source.html">vigra/recursiveconvolution.hxx</a>"<br>
+    <b>\#include</b> \<<a href="recursiveconvolution_8hxx-source.html">vigra/recursiveconvolution.hxx</a>\><br>
     Namespace: vigra
     
     
@@ -583,7 +583,7 @@ void recursiveFirstDerivativeLine(SrcIterator is, SrcIterator isend, SrcAccessor
     
     <b> Usage:</b>
     
-    <b>\#include</b> "<a href="recursiveconvolution_8hxx-source.html">vigra/recursiveconvolution.hxx</a>"<br>
+    <b>\#include</b> \<<a href="recursiveconvolution_8hxx-source.html">vigra/recursiveconvolution.hxx</a>\><br>
     Namespace: vigra
     
     
@@ -711,7 +711,7 @@ void recursiveSecondDerivativeLine(SrcIterator is, SrcIterator isend, SrcAccesso
     \endcode
     
     
-    use argument objects in conjunction with \ref ArgumentObjectFactories:
+    use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
         // first order filter
@@ -734,7 +734,7 @@ void recursiveSecondDerivativeLine(SrcIterator is, SrcIterator isend, SrcAccesso
     
     <b> Usage:</b>
     
-    <b>\#include</b> "<a href="recursiveconvolution_8hxx-source.html">vigra/recursiveconvolution.hxx</a>"<br>
+    <b>\#include</b> \<<a href="recursiveconvolution_8hxx-source.html">vigra/recursiveconvolution.hxx</a>\><br>
     Namespace: vigra
     
     \code
@@ -848,7 +848,7 @@ inline void recursiveFilterX(
     \endcode
     
     
-    use argument objects in conjunction with \ref ArgumentObjectFactories:
+    use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
         template <class SrcImageIterator, class SrcAccessor,
@@ -862,7 +862,7 @@ inline void recursiveFilterX(
     
     <b> Usage:</b>
     
-    <b>\#include</b> "<a href="recursiveconvolution_8hxx-source.html">vigra/recursiveconvolution.hxx</a>"<br>
+    <b>\#include</b> \<<a href="recursiveconvolution_8hxx-source.html">vigra/recursiveconvolution.hxx</a>\><br>
     Namespace: vigra
     
     \code
@@ -944,7 +944,7 @@ inline void recursiveSmoothX(
     \endcode
     
     
-    use argument objects in conjunction with \ref ArgumentObjectFactories:
+    use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
         // first order filter
@@ -967,7 +967,7 @@ inline void recursiveSmoothX(
     
     <b> Usage:</b>
     
-    <b>\#include</b> "<a href="recursiveconvolution_8hxx-source.html">vigra/recursiveconvolution.hxx</a>"<br>
+    <b>\#include</b> \<<a href="recursiveconvolution_8hxx-source.html">vigra/recursiveconvolution.hxx</a>\><br>
     Namespace: vigra
     
     \code
@@ -1080,7 +1080,7 @@ inline void recursiveFilterY(
     \endcode
     
     
-    use argument objects in conjunction with \ref ArgumentObjectFactories:
+    use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
         template <class SrcImageIterator, class SrcAccessor,
@@ -1094,7 +1094,7 @@ inline void recursiveFilterY(
     
     <b> Usage:</b>
     
-    <b>\#include</b> "<a href="recursiveconvolution_8hxx-source.html">vigra/recursiveconvolution.hxx</a>"<br>
+    <b>\#include</b> \<<a href="recursiveconvolution_8hxx-source.html">vigra/recursiveconvolution.hxx</a>\><br>
     Namespace: vigra
     
     \code
@@ -1168,7 +1168,7 @@ inline void recursiveSmoothY(
     \endcode
     
     
-    use argument objects in conjunction with \ref ArgumentObjectFactories:
+    use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
         template <class SrcImageIterator, class SrcAccessor,
@@ -1182,7 +1182,7 @@ inline void recursiveSmoothY(
     
     <b> Usage:</b>
     
-    <b>\#include</b> "<a href="recursiveconvolution_8hxx-source.html">vigra/recursiveconvolution.hxx</a>"<br>
+    <b>\#include</b> \<<a href="recursiveconvolution_8hxx-source.html">vigra/recursiveconvolution.hxx</a>\><br>
     Namespace: vigra
     
     \code
@@ -1256,7 +1256,7 @@ inline void recursiveFirstDerivativeX(
     \endcode
     
     
-    use argument objects in conjunction with \ref ArgumentObjectFactories:
+    use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
         template <class SrcImageIterator, class SrcAccessor,
@@ -1270,7 +1270,7 @@ inline void recursiveFirstDerivativeX(
     
     <b> Usage:</b>
     
-    <b>\#include</b> "<a href="recursiveconvolution_8hxx-source.html">vigra/recursiveconvolution.hxx</a>"<br>
+    <b>\#include</b> \<<a href="recursiveconvolution_8hxx-source.html">vigra/recursiveconvolution.hxx</a>\><br>
     Namespace: vigra
     
     \code
@@ -1344,7 +1344,7 @@ inline void recursiveFirstDerivativeY(
     \endcode
     
     
-    use argument objects in conjunction with \ref ArgumentObjectFactories:
+    use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
         template <class SrcImageIterator, class SrcAccessor,
@@ -1358,7 +1358,7 @@ inline void recursiveFirstDerivativeY(
     
     <b> Usage:</b>
     
-    <b>\#include</b> "<a href="recursiveconvolution_8hxx-source.html">vigra/recursiveconvolution.hxx</a>"<br>
+    <b>\#include</b> \<<a href="recursiveconvolution_8hxx-source.html">vigra/recursiveconvolution.hxx</a>\><br>
     Namespace: vigra
     
     \code
@@ -1432,7 +1432,7 @@ inline void recursiveSecondDerivativeX(
     \endcode
     
     
-    use argument objects in conjunction with \ref ArgumentObjectFactories:
+    use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
         template <class SrcImageIterator, class SrcAccessor,
@@ -1446,7 +1446,7 @@ inline void recursiveSecondDerivativeX(
     
     <b> Usage:</b>
     
-    <b>\#include</b> "<a href="recursiveconvolution_8hxx-source.html">vigra/recursiveconvolution.hxx</a>"<br>
+    <b>\#include</b> \<<a href="recursiveconvolution_8hxx-source.html">vigra/recursiveconvolution.hxx</a>\><br>
     Namespace: vigra
     
     \code

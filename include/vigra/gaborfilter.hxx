@@ -86,7 +86,7 @@ namespace vigra {
     }
     \endcode
 
-    use argument objects in conjunction with \ref ArgumentObjectFactories:
+    use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
         template <class DestImageIterator, class DestAccessor>
@@ -101,7 +101,7 @@ namespace vigra {
 
     <b> Usage:</b>
 
-    <b>\#include</b> "<a href="gaborfilter_8hxx-source.html">vigra/gaborfilter.hxx</a>"<br>
+    <b>\#include</b> \<<a href="gaborfilter_8hxx-source.html">vigra/gaborfilter.hxx</a>\><br>
 
     Namespace: vigra
 
@@ -283,7 +283,7 @@ inline double angularGaborSigma(int directionCount, double centerFrequency)
 
     The template parameter ImageType should be a scalar image type suitable for filling in
 
-    <b>\#include</b> "<a href="gaborfilter_8hxx-source.html">vigra/gaborfilter.hxx</a>"
+    <b>\#include</b> \<<a href="gaborfilter_8hxx-source.html">vigra/gaborfilter.hxx</a>\>
 
     Namespace: vigra
 */

@@ -69,7 +69,7 @@ namespace vigra {
     ColumnIterator is only necessary if this 'native' column iterator
     is not usable in a particular situation or is not provided.
 
-    <b>\#include</b> "<a href="imageiteratoradapter_8hxx-source.html">vigra/imageiteratoradapter.hxx</a>"
+    <b>\#include</b> \<<a href="imageiteratoradapter_8hxx-source.html">vigra/imageiteratoradapter.hxx</a>\>
 
     Namespace: vigra
 
@@ -275,7 +275,7 @@ class ColumnIterator : private IMAGE_ITERATOR
     RowIterator is only necessary if this 'native' row iterator
     is not usable in a particular situation or is not provided.
 
-    <b>\#include</b> "<a href="imageiteratoradapter_8hxx-source.html">vigra/imageiteratoradapter.hxx</a>"
+    <b>\#include</b> \<<a href="imageiteratoradapter_8hxx-source.html">vigra/imageiteratoradapter.hxx</a>\>
 
     Namespace: vigra
 
@@ -474,7 +474,7 @@ class RowIterator : private IMAGE_ITERATOR
     an arbitraty line on the image.
     The iterator gets associated with the accessor of the base iterator.
 
-    <b>\#include</b> "<a href="imageiteratoradapter_8hxx-source.html">vigra/imageiteratoradapter.hxx</a>"
+    <b>\#include</b> \<<a href="imageiteratoradapter_8hxx-source.html">vigra/imageiteratoradapter.hxx</a>\>
 
     Namespace: vigra
 

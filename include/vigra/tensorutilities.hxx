@@ -80,7 +80,7 @@ namespace vigra {
     \endcode
 
 
-    use argument objects in conjunction with \ref ArgumentObjectFactories:
+    use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
         template <class SrcIterator, class SrcAccessor,
@@ -93,7 +93,7 @@ namespace vigra {
 
     <b> Usage:</b>
 
-    <b>\#include</b> "<a href="tensorutilities_8hxx-source.html">vigra/tensorutilities.hxx</a>"
+    <b>\#include</b> \<<a href="tensorutilities_8hxx-source.html">vigra/tensorutilities.hxx</a>\>
 
     \code
     FImage img(w,h);
@@ -202,7 +202,7 @@ void vectorToTensor(triple<SrcIterator, SrcIterator, SrcAccessor> s,
     \endcode
 
 
-    use argument objects in conjunction with \ref ArgumentObjectFactories:
+    use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
         template <class SrcIterator, class SrcAccessor,
@@ -214,7 +214,7 @@ void vectorToTensor(triple<SrcIterator, SrcIterator, SrcAccessor> s,
 
     <b> Usage:</b>
 
-    <b>\#include</b> "<a href="tensorutilities_8hxx-source.html">vigra/tensorutilities.hxx</a>"
+    <b>\#include</b> \<<a href="tensorutilities_8hxx-source.html">vigra/tensorutilities.hxx</a>\>
 
     \code
     FVector3Image tensor(w,h);
@@ -299,7 +299,7 @@ void tensorEigenRepresentation(triple<SrcIterator, SrcIterator, SrcAccessor> s,
     \endcode
 
 
-    use argument objects in conjunction with \ref ArgumentObjectFactories:
+    use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
         template <class SrcIterator, class SrcAccessor,
@@ -311,7 +311,7 @@ void tensorEigenRepresentation(triple<SrcIterator, SrcIterator, SrcAccessor> s,
 
     <b> Usage:</b>
 
-    <b>\#include</b> "<a href="tensorutilities_8hxx-source.html">vigra/tensorutilities.hxx</a>"
+    <b>\#include</b> \<<a href="tensorutilities_8hxx-source.html">vigra/tensorutilities.hxx</a>\>
 
     \code
     FVector3Image tensor(w,h);
@@ -384,7 +384,7 @@ void tensorTrace(triple<SrcIterator, SrcIterator, SrcAccessor> s,
     \endcode
 
 
-    use argument objects in conjunction with \ref ArgumentObjectFactories:
+    use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
         template <class SrcIterator, class SrcAccessor,
@@ -398,7 +398,7 @@ void tensorTrace(triple<SrcIterator, SrcIterator, SrcAccessor> s,
 
     <b> Usage:</b>
 
-    <b>\#include</b> "<a href="tensorutilities_8hxx-source.html">vigra/tensorutilities.hxx</a>"
+    <b>\#include</b> \<<a href="tensorutilities_8hxx-source.html">vigra/tensorutilities.hxx</a>\>
 
     \code
     FVector3Image tensor(w,h);

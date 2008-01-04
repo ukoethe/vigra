@@ -85,7 +85,7 @@ namespace vigra
     /*!
       \brief used for reading bands after the source data type has been figured out.
 
-        <b>\#include</b> "<a href="impex_8hxx-source.html">vigra/impex.hxx</a>"<br>
+        <b>\#include</b> \<<a href="impex_8hxx-source.html">vigra/impex.hxx</a>\><br>
         Namespace: vigra
 
         <b> Declaration:</b>
@@ -101,6 +101,8 @@ namespace vigra
       \param ys  image iterator referencing the upper left pixel of the destination image
       \param a   image accessor for the destination image
     */
+doxygen_overloaded_function(template <...> void read_bands)
+
     template< class ImageIterator, class Accessor, class SrcValueType >
     void read_bands( Decoder * dec, ImageIterator ys, Accessor a, SrcValueType )
     {
@@ -177,7 +179,7 @@ namespace vigra
     /*!
       \brief used for reading bands after the source data type has been figured out.
 
-        <b>\#include</b> "<a href="impex_8hxx-source.html">vigra/impex.hxx</a>"<br>
+        <b>\#include</b> \<<a href="impex_8hxx-source.html">vigra/impex.hxx</a>\><br>
         Namespace: vigra
 
         <b> Declaration:</b>
@@ -193,6 +195,8 @@ namespace vigra
       \param ys  image iterator referencing the upper left pixel of the destination image
       \param a   image accessor for the destination image
     */
+doxygen_overloaded_function(template <...> void read_band)
+
     template< class ImageIterator, class Accessor, class SrcValueType >
     void read_band( Decoder * dec, ImageIterator ys, Accessor a, SrcValueType )
     {
@@ -218,7 +222,7 @@ namespace vigra
     /*!
       \brief used for reading images of vector type, such as integer of float rgb.
 
-        <b>\#include</b> "<a href="impex_8hxx-source.html">vigra/impex.hxx</a>"<br>
+        <b>\#include</b> \<<a href="impex_8hxx-source.html">vigra/impex.hxx</a>\><br>
         Namespace: vigra
 
         <b> Declaration:</b>
@@ -236,6 +240,8 @@ namespace vigra
       \param iter          image iterator referencing the upper left pixel of the destination image
       \param a             image accessor for the destination image
     */
+doxygen_overloaded_function(template <...> void importVectorImage)
+
     template< class ImageIterator, class Accessor >
     void importVectorImage( const ImageImportInfo & info, ImageIterator iter, Accessor a )
     {
@@ -266,7 +272,7 @@ namespace vigra
     /*!
       \brief used for reading images of  scalar type, such as integer and float grayscale.
 
-        <b>\#include</b> "<a href="impex_8hxx-source.html">vigra/impex.hxx</a>"<br>
+        <b>\#include</b> \<<a href="impex_8hxx-source.html">vigra/impex.hxx</a>\><br>
         Namespace: vigra
 
         <b> Declaration:</b>
@@ -284,6 +290,8 @@ namespace vigra
       \param iter          image iterator referencing the upper left pixel of the destination image
       \param a             image accessor for the destination image
     */
+doxygen_overloaded_function(template <...> void importScalarImage)
+
     template < class ImageIterator, class Accessor >
     void importScalarImage( const ImageImportInfo & info, ImageIterator iter, Accessor a )
     {
@@ -311,25 +319,13 @@ namespace vigra
         dec->close();
     }
 
-    template < class ImageIterator, class Accessor >
-    void importImage( const ImageImportInfo & info, ImageIterator iter, Accessor a, VigraFalseType )
-    {
-        importVectorImage( info, iter, a );
-    }
-
-    template < class ImageIterator, class Accessor >
-    void importImage( const ImageImportInfo & info, ImageIterator iter, Accessor a, VigraTrueType )
-    {
-        importScalarImage( info, iter, a );
-    }
-
 /********************************************************/
 /*                                                      */
 /*                     importImage                      */
 /*                                                      */
 /********************************************************/
 
-    /** \brief Read an image, given an \ref vigra::ImageImportInfo object.
+    /** \brief Read the image specified by the given \ref vigra::ImageImportInfo object.
 
         <b> Declarations:</b>
 
@@ -342,7 +338,7 @@ namespace vigra
         }
         \endcode
 
-        use argument objects in conjunction with \ref ArgumentObjectFactories:
+        use argument objects in conjunction with \ref ArgumentObjectFactories :
         \code
         namespace vigra {
             template <class ImageIterator, class Accessor>
@@ -353,7 +349,7 @@ namespace vigra
 
         <b> Usage:</b>
 
-        <b>\#include</b> "<a href="impex_8hxx-source.html">vigra/impex.hxx</a>"<br>
+        <b>\#include</b> \<<a href="impex_8hxx-source.html">vigra/impex.hxx</a>\><br>
         Namespace: vigra
 
         \code
@@ -401,6 +397,8 @@ namespace vigra
                 </DL>
         </UL>
     **/
+doxygen_overloaded_function(template <...> void importImage)
+
     template < class ImageIterator, class Accessor >
     void importImage( const ImageImportInfo & info, ImageIterator iter, Accessor a )
     {
@@ -414,10 +412,22 @@ namespace vigra
         importImage( info, dest.first, dest.second );
     }
 
+    template < class ImageIterator, class Accessor >
+    void importImage( const ImageImportInfo & info, ImageIterator iter, Accessor a, VigraFalseType )
+    {
+        importVectorImage( info, iter, a );
+    }
+
+    template < class ImageIterator, class Accessor >
+    void importImage( const ImageImportInfo & info, ImageIterator iter, Accessor a, VigraTrueType )
+    {
+        importScalarImage( info, iter, a );
+    }
+
     /*!
       \brief used for writing bands after the source data type has been figured out.
 
-        <b>\#include</b> "<a href="impex_8hxx-source.html">vigra/impex.hxx</a>"<br>
+        <b>\#include</b> \<<a href="impex_8hxx-source.html">vigra/impex.hxx</a>\><br>
         Namespace: vigra
 
         <b> Declaration:</b>
@@ -434,6 +444,8 @@ namespace vigra
       \param lr  image iterator referencing the lower right pixel of the source image
       \param a   image accessor for the source image
     */
+doxygen_overloaded_function(template <...> void write_bands)
+
     template< class ImageIterator, class Accessor, class DstValueType >
     void write_bands( Encoder * enc, ImageIterator ul, ImageIterator lr, Accessor a, DstValueType)
     {
@@ -544,7 +556,7 @@ namespace vigra
     /*!
       \brief used for writing bands after the source data type has been figured out.
 
-        <b>\#include</b> "<a href="impex_8hxx-source.html">vigra/impex.hxx</a>"<br>
+        <b>\#include</b> \<<a href="impex_8hxx-source.html">vigra/impex.hxx</a>\><br>
         Namespace: vigra
 
         <b> Declaration:</b>
@@ -561,6 +573,8 @@ namespace vigra
       \param lr  image iterator referencing the lower right pixel of the source image
       \param a   image accessor for the source image
     */
+doxygen_overloaded_function(template <...> void write_band)
+
     template< class ImageIterator, class Accessor, class DstValueType >
     void write_band( Encoder * enc, ImageIterator ul, ImageIterator lr, Accessor a, DstValueType)
     {
@@ -720,6 +734,8 @@ namespace detail {
         }
         \endcode
     */
+doxygen_overloaded_function(template <...> void exportFloatingVectorImage)
+
     template < class SrcIterator, class SrcAccessor >
     void exportFloatingVectorImage( SrcIterator sul, SrcIterator slr, SrcAccessor sget,
                                     const ImageExportInfo & info )
@@ -742,6 +758,8 @@ namespace detail {
         }
         \endcode
     */
+doxygen_overloaded_function(template <...> void exportIntegralVectorImage)
+
     template < class SrcIterator, class SrcAccessor >
     void exportIntegralVectorImage( SrcIterator sul, SrcIterator slr, SrcAccessor sget,
                                     const ImageExportInfo & info )
@@ -764,6 +782,8 @@ namespace detail {
         }
         \endcode
     */
+doxygen_overloaded_function(template <...> void exportFloatingScalarImage)
+
     template < class SrcIterator, class SrcAccessor >
     void exportFloatingScalarImage( SrcIterator sul, SrcIterator slr, SrcAccessor sget,
                                     const ImageExportInfo & info )
@@ -786,11 +806,128 @@ namespace detail {
         }
         \endcode
     */
+doxygen_overloaded_function(template <...> void exportIntegralScalarImage)
+
     template < class SrcIterator, class SrcAccessor >
     void exportIntegralScalarImage( SrcIterator sul, SrcIterator slr, SrcAccessor sget,
                                     const ImageExportInfo & info )
     {
         exportImage(sul, slr, sget, info);
+    }
+
+/********************************************************/
+/*                                                      */
+/*                     exportImage                      */
+/*                                                      */
+/********************************************************/
+
+/** \brief Write an image, given an \ref vigra::ImageExportInfo object.
+
+    If the file format to be exported to supports the pixel type of the
+    source image, the pixel type will be kept (e.g. <tt>float</tt>
+    can be stored as TIFF without conversion, in contrast to most other
+    image export toolkits). Otherwise, the pixel values are transformed
+    to the range 0.255 and converted to <tt>unsigned char</tt>. Currently,
+    the following file formats are supported. The pixel types given in
+    brackets are those that are written without conversion:
+
+    <DL>
+    <DT>"BMP"<DD> Microsoft Windows bitmap image file (pixel types: UINT8 as gray and RGB).
+    <DT>"GIF"<DD> CompuServe graphics interchange format; 8-bit color (pixel types: UINT8 as gray and RGB).
+    <DT>"JPEG"<DD> Joint Photographic Experts Group JFIF format; compressed 24-bit color
+                  (pixel types: UINT8 as gray and RGB). (only available if libjpeg is installed)
+    <DT>"PNG"<DD> Portable Network Graphic (pixel types: UINT8 and UINT16 with up to 4 channels).
+                  (only available if libpng is installed)
+    <DT>"PBM"<DD> Portable bitmap format (black and white).
+    <DT>"PGM"<DD> Portable graymap format (pixel types: UINT8, INT16, INT32 as gray scale)).
+    <DT>"PNM"<DD> Portable anymap (pixel types: UINT8, INT16, INT32 as gray and RGB).
+    <DT>"PPM"<DD> Portable pixmap format (pixel types: UINT8, INT16, INT32 as RGB).
+    <DT>"SUN"<DD> SUN Rasterfile (pixel types: UINT8 as gray and RGB).
+    <DT>"TIFF"<DD> Tagged Image File Format
+                (pixel types: UINT8, INT16, INT32, FLOAT, DOUBLE with up to 4 channels).
+                (only available if libtiff is installed.)
+    <DT>"VIFF"<DD> Khoros Visualization image file
+        (pixel types: UINT8, INT16, INT32, FLOAT, DOUBLE with arbitrary many channels).
+    </DL>
+
+    <b> Declarations:</b>
+
+    pass arguments explicitly:
+    \code
+    namespace vigra {
+        template <class SrcIterator, class SrcAccessor>
+        void exportImage(SrcIterator sul, SrcIterator slr, SrcAccessor sget,
+                         ImageExportInfo const & info)
+    }
+    \endcode
+
+
+    use argument objects in conjunction with \ref ArgumentObjectFactories :
+    \code
+    namespace vigra {
+        template <class SrcIterator, class SrcAccessor>
+        void exportImage(SrcIterator sul, SrcIterator slr, SrcAccessor sget,
+                         ImageExportInfo const & info)
+    }
+    \endcode
+
+    <b> Usage:</b>
+
+    <b>\#include</b> \<<a href="impex_8hxx-source.html">vigra/impex.hxx</a>\><br>
+    Namespace: vigra
+
+    \code
+
+
+    vigra::BRGBImage out(w, h);
+    ...
+
+    // write as JPEG image, using compression quality 80
+    vigra::exportImage(srcImageRange(out),
+                      vigra::ImageExportInfo("myimage.jpg").setCompression("80"));
+
+
+    // force it to a particular pixel type (the pixel type must be supported by the
+    // desired image file format, otherwise an \ref vigra::PreconditionViolation exception will be thrown)
+    vigra::exportImage(srcImageRange(out),
+                      vigra::ImageExportInfo("myINT16image.tif").setPixelType("INT16"));
+    \endcode
+
+    <b> Preconditions:</b>
+
+    <UL>
+
+    <LI> the image file must be writable.
+    <LI> the file type must be one of the supported file types.
+
+
+    </UL>
+**/
+doxygen_overloaded_function(template <...> void exportImage)
+
+    template < class SrcIterator, class SrcAccessor >
+    void exportImage( SrcIterator sul, SrcIterator slr, SrcAccessor sget,
+                      const ImageExportInfo & info )
+    {
+        typedef typename NumericTraits<typename SrcAccessor::value_type>::isScalar is_scalar;
+
+        try
+        {
+            exportImage( sul, slr, sget, info, is_scalar() );
+        }
+        catch(Encoder::TIFFCompressionException &)
+        {
+            const_cast<ImageExportInfo &>(info).setCompression("");
+            exportImage( sul, slr, sget, info, is_scalar() );
+        }
+    }
+
+    template < class SrcIterator, class SrcAccessor >
+    inline
+    void exportImage( triple<SrcIterator, SrcIterator, SrcAccessor> src,
+                      const ImageExportInfo & info )
+    {
+        exportImage( src.first, src.second, src.third, info );
     }
 
     template < class SrcIterator, class SrcAccessor >
@@ -886,120 +1023,6 @@ namespace detail {
                 detail::exportScalarImage( sul, slr, sget, enc.get(), double());
         }
         enc->close();
-    }
-
-/********************************************************/
-/*                                                      */
-/*                     exportImage                      */
-/*                                                      */
-/********************************************************/
-
-/** \brief Write an image, given an \ref vigra::ImageExportInfo object.
-
-    If the file format to be exported to supports the pixel type of the
-    source image, the pixel type will be kept (e.g. <tt>float</tt>
-    can be stored as TIFF without conversion, in contrast to most other
-    image export toolkits). Otherwise, the pixel values are transformed
-    to the range 0.255 and converted to <tt>unsigned char</tt>. Currently,
-    the following file formats are supported. The pixel types given in
-    brackets are those that are written without conversion:
-
-    <DL>
-    <DT>"BMP"<DD> Microsoft Windows bitmap image file (pixel types: UINT8 as gray and RGB).
-    <DT>"GIF"<DD> CompuServe graphics interchange format; 8-bit color (pixel types: UINT8 as gray and RGB).
-    <DT>"JPEG"<DD> Joint Photographic Experts Group JFIF format; compressed 24-bit color
-                  (pixel types: UINT8 as gray and RGB). (only available if libjpeg is installed)
-    <DT>"PNG"<DD> Portable Network Graphic (pixel types: UINT8 and UINT16 with up to 4 channels).
-                  (only available if libpng is installed)
-    <DT>"PBM"<DD> Portable bitmap format (black and white).
-    <DT>"PGM"<DD> Portable graymap format (pixel types: UINT8, INT16, INT32 as gray scale)).
-    <DT>"PNM"<DD> Portable anymap (pixel types: UINT8, INT16, INT32 as gray and RGB).
-    <DT>"PPM"<DD> Portable pixmap format (pixel types: UINT8, INT16, INT32 as RGB).
-    <DT>"SUN"<DD> SUN Rasterfile (pixel types: UINT8 as gray and RGB).
-    <DT>"TIFF"<DD> Tagged Image File Format
-                (pixel types: UINT8, INT16, INT32, FLOAT, DOUBLE with up to 4 channels).
-                (only available if libtiff is installed.)
-    <DT>"VIFF"<DD> Khoros Visualization image file
-        (pixel types: UINT8, INT16, INT32, FLOAT, DOUBLE with arbitrary many channels).
-    </DL>
-
-    <b> Declarations:</b>
-
-    pass arguments explicitly:
-    \code
-    namespace vigra {
-        template <class SrcIterator, class SrcAccessor>
-        void exportImage(SrcIterator sul, SrcIterator slr, SrcAccessor sget,
-                         ImageExportInfo const & info)
-    }
-    \endcode
-
-
-    use argument objects in conjunction with \ref ArgumentObjectFactories:
-    \code
-    namespace vigra {
-        template <class SrcIterator, class SrcAccessor>
-        void exportImage(SrcIterator sul, SrcIterator slr, SrcAccessor sget,
-                         ImageExportInfo const & info)
-    }
-    \endcode
-
-    <b> Usage:</b>
-
-    <b>\#include</b> "<a href="impex_8hxx-source.html">vigra/impex.hxx</a>"<br>
-    Namespace: vigra
-
-    \code
-
-
-    vigra::BRGBImage out(w, h);
-    ...
-
-    // write as JPEG image, using compression quality 80
-    vigra::exportImage(srcImageRange(out),
-                      vigra::ImageExportInfo("myimage.jpg").setCompression("80"));
-
-
-    // force it to a particular pixel type (the pixel type must be supported by the
-    // desired image file format, otherwise an \ref vigra::PreconditionViolation exception will be thrown)
-    vigra::exportImage(srcImageRange(out),
-                      vigra::ImageExportInfo("myINT16image.tif").setPixelType("INT16"));
-    \endcode
-
-    <b> Preconditions:</b>
-
-    <UL>
-
-    <LI> the image file must be writable.
-    <LI> the file type must be one of the supported file types.
-
-
-    </UL>
-**/
-    template < class SrcIterator, class SrcAccessor >
-    inline
-    void exportImage( SrcIterator sul, SrcIterator slr, SrcAccessor sget,
-                      const ImageExportInfo & info )
-    {
-        typedef typename NumericTraits<typename SrcAccessor::value_type>::isScalar is_scalar;
-
-        try
-        {
-            exportImage( sul, slr, sget, info, is_scalar() );
-        }
-        catch(Encoder::TIFFCompressionException &)
-        {
-            const_cast<ImageExportInfo &>(info).setCompression("");
-            exportImage( sul, slr, sget, info, is_scalar() );
-        }
-    }
-
-    template < class SrcIterator, class SrcAccessor >
-    inline
-    void exportImage( triple<SrcIterator, SrcIterator, SrcAccessor> src,
-                      const ImageExportInfo & info )
-    {
-        exportImage( src.first, src.second, src.third, info );
     }
 
 //@}

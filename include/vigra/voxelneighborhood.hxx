@@ -46,7 +46,7 @@ namespace vigra {
 
     6- and 26-neighborhood definitions and circulators.
 
-    <b>\#include</b> "<a href="voxelneighborhood_8hxx-source.html">vigra/voxelneighborhood.hxx</a>"<br>
+    <b>\#include</b> \<<a href="voxelneighborhood_8hxx-source.html">vigra/voxelneighborhood.hxx</a>\><br>
 
     <b>See also:</b> \ref vigra::NeighborhoodCirculator
  */
@@ -66,7 +66,7 @@ namespace vigra {
         //    This enum is used with \ref isAtVolumeBorder() and 
         //    \ref vigra::RestrictedNeighborhoodCirculator.
 
-        //<b>\#include</b> "<a href="voxelneighborhood_8hxx-source.html">vigra/voxelneighborhood.hxx</a>"<br>
+        //<b>\#include</b> \<<a href="voxelneighborhood_8hxx-source.html">vigra/voxelneighborhood.hxx</a>\><br>
         //Namespace: vigra
 */
 
@@ -77,7 +77,7 @@ typedef AtImageBorder AtVolumeBorder;
 
     This function checks if \a x == 0 or \a x == \a width - 1 and 
     \a y == 0 or \a y == \a height - 1 and so on and returns the appropriate value
-    of \ref vigraext::AtVolumeBorder, or zero when the voxel is not at te volume border.
+    of \ref vigra::AtVolumeBorder, or zero when the voxel is not at te volume border.
     The behavior of the function is undefined if (x,y,z) is not inside the volume.
 */
 inline AtVolumeBorder isAtVolumeBorder(int x, int y, int z, int width, int height, int depth)
@@ -100,7 +100,7 @@ inline AtVolumeBorder isAtVolumeBorder(int x, int y, int z, int width, int heigh
 };
 /** \brief Find out whether a voxel is at a scan-order relevant volume border.
     This function checks if \a x == 0 or \a y == 0 or \a z == \a 0 and returns the 
-        appropriate value of \ref vigraext::AtVolumeBorder, or zero when the voxel is
+        appropriate value of \ref vigra::AtVolumeBorder, or zero when the voxel is
         not at te volume border.
     The behavior of the function is undefined if (x,y,z) is not inside the volume.
 */
@@ -118,7 +118,7 @@ inline AtVolumeBorder isAtVolumeBorderCausal(int x, int y, int z, int width, int
 };
 /** TODO: Write new comment \brief Find out whether a voxel is at a scan-order relevant volume border.
     This function checks if \a x == 0 or \a y == 0 or \a z == \a 0 and returns the 
-        appropriate value of \ref vigraext::AtVolumeBorder, or zero when the voxel is
+        appropriate value of \ref vigra::AtVolumeBorder, or zero when the voxel is
         not at te volume border.
     The behavior of the function is undefined if (x,y,z) is not inside the volume.
 */
@@ -450,7 +450,7 @@ static const Direction DirectionCount = NeighborCode3D::DirectionCount;     /**<
 
 }//namespace Neighborhood3DSix
     
-/** Export \ref vigra::Neighborhood3DSix::NeighborCode3D into the scope of namespace vigraext.
+/** Export \ref vigra::Neighborhood3DSix::NeighborCode3D into the scope of namespace vigra.
 */
 typedef Neighborhood3DSix::NeighborCode3D NeighborCode3DSix;
 
@@ -1578,7 +1578,7 @@ static const Direction DirectionCount     = NeighborCode3D::DirectionCount;     
 
 }//namespace Neighborhood3DTwentySix
     
-/** Export \ref vigra::Neighborhood3DTwentySix::NeighborCode3D into the scope of namespace vigraext.
+/** Export \ref vigra::Neighborhood3DTwentySix::NeighborCode3D into the scope of namespace vigra.
  */
 typedef Neighborhood3DTwentySix::NeighborCode3D NeighborCode3DTwentySix;
 

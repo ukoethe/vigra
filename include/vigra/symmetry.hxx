@@ -82,7 +82,7 @@ namespace vigra {
     }
     \endcode
 
-    use argument objects in conjunction with \ref ArgumentObjectFactories:
+    use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
         template <class SrcIterator, class SrcAccessor,
@@ -97,7 +97,7 @@ namespace vigra {
 
     <b> Usage:</b>
 
-        <b>\#include</b> "<a href="symmetry_8hxx-source.html">vigra/symmetry.hxx</a>"<br>
+        <b>\#include</b> \<<a href="symmetry_8hxx-source.html">vigra/symmetry.hxx</a>\><br>
     Namespace: vigra
 
     \code

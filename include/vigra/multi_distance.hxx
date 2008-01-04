@@ -321,7 +321,7 @@ inline void internalSeparableMultiArrayDistTmp( SrcIterator si, SrcShape const &
     }
     \endcode
 
-    use argument objects in conjunction with \ref ArgumentObjectFactories:
+    use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
         template <class SrcIterator, class SrcShape, class SrcAccessor,
@@ -336,7 +336,7 @@ inline void internalSeparableMultiArrayDistTmp( SrcIterator si, SrcShape const &
 
     <b> Usage:</b>
 
-    <b>\#include</b> "<a href="multi__distance_8hxx-source.html">vigra/multi_distance.hxx</a>"
+    <b>\#include</b> \<<a href="multi__distance_8hxx-source.html">vigra/multi_distance.hxx</a>\>
 
     \code
     MultiArray<3, unsigned char>::size_type shape(width, height, depth);
@@ -454,7 +454,7 @@ inline void separableMultiDistSquared( triple<SrcIterator, SrcShape, SrcAccessor
     }
     \endcode
 
-    use argument objects in conjunction with \ref ArgumentObjectFactories:
+    use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
         template <class SrcIterator, class SrcShape, class SrcAccessor,
@@ -469,7 +469,7 @@ inline void separableMultiDistSquared( triple<SrcIterator, SrcShape, SrcAccessor
 
     <b> Usage:</b>
 
-    <b>\#include</b> "<a href="multi__distance_8hxx-source.html">vigra/multi_distance.hxx</a>"
+    <b>\#include</b> \<<a href="multi__distance_8hxx-source.html">vigra/multi_distance.hxx</a>\>
 
     \code
     MultiArray<3, unsigned char>::size_type shape(width, height, depth);

@@ -359,7 +359,7 @@ unsigned int watershedLabeling3D( SrcIterator s_Iter, SrcShape srcShape, SrcAcce
     }
     \endcode
 
-    use argument objects in conjunction with \ref ArgumentObjectFactories:
+    use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
         template <class SrcIterator, class SrcAccessor,class SrcShape,
@@ -397,7 +397,7 @@ unsigned int watershedLabeling3D( SrcIterator s_Iter, SrcShape srcShape, SrcAcce
 
     <b> Usage:</b>
 
-    <b>\#include</b> "<a href="watersheds3d_8hxx-source.html">vigra/watersheds3d.hxx</a>"<br>
+    <b>\#include</b> \<<a href="watersheds3d_8hxx-source.html">vigra/watersheds3d.hxx</a>\><br>
     Namespace: vigra
 
     Example: watersheds3d of the gradient magnitude.

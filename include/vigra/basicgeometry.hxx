@@ -72,7 +72,7 @@ namespace vigra {
     }
     \endcode
     
-    use argument objects in conjunction with \ref ArgumentObjectFactories:
+    use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
         template <class SrcImageIterator, class SrcAccessor,
@@ -85,7 +85,7 @@ namespace vigra {
     
     <b> Usage:</b>
     
-        <b>\#include</b> "<a href="basicgeometry_8hxx-source.html">vigra/basicgeometry.hxx</a>"<br>
+        <b>\#include</b> \<<a href="basicgeometry_8hxx-source.html">vigra/basicgeometry.hxx</a>\><br>
         Namespace: vigra
     
     \code
@@ -223,7 +223,7 @@ enum Reflect{horizontal = 1, vertical = 2};
     }
     \endcode
     
-    use argument objects in conjunction with \ref ArgumentObjectFactories:
+    use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
         template <class SrcImageIterator, class SrcAccessor,
@@ -236,7 +236,7 @@ enum Reflect{horizontal = 1, vertical = 2};
     
     <b> Usage:</b>
     
-        <b>\#include</b> "<a href="basicgeometry_8hxx-source.html">vigra/basicgeometry.hxx</a>"<br>
+        <b>\#include</b> \<<a href="basicgeometry_8hxx-source.html">vigra/basicgeometry.hxx</a>\><br>
         Namespace: vigra
     
     \code
@@ -364,7 +364,7 @@ enum Transpose{major = 1, minor = 2};
     }
     \endcode
     
-    use argument objects in conjunction with \ref ArgumentObjectFactories:
+    use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
         template <class SrcImageIterator, class SrcAccessor,
@@ -377,7 +377,7 @@ enum Transpose{major = 1, minor = 2};
     
     <b> Usage:</b>
     
-        <b>\#include</b> "<a href="basicgeometry_8hxx-source.html">vigra/basicgeometry.hxx</a>"<br>
+        <b>\#include</b> \<<a href="basicgeometry_8hxx-source.html">vigra/basicgeometry.hxx</a>\><br>
         Namespace: vigra
     
     \code
@@ -595,7 +595,7 @@ inline int sizeForResamplingFactor(int oldsize, double factor)
     }
     \endcode
     
-    use argument objects in conjunction with \ref ArgumentObjectFactories:
+    use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
         template <class SrcImageIterator, class SrcAccessor,
@@ -608,7 +608,7 @@ inline int sizeForResamplingFactor(int oldsize, double factor)
     
     <b> Usage:</b>
     
-        <b>\#include</b> "<a href="basicgeometry_8hxx-source.html">vigra/basicgeometry.hxx</a>"<br>
+        <b>\#include</b> \<<a href="basicgeometry_8hxx-source.html">vigra/basicgeometry.hxx</a>\><br>
         Namespace: vigra
     
     \code

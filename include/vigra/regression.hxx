@@ -55,7 +55,7 @@ namespace linalg
 //@{
    /** Ordinary Least Squares Regression.
 
-       Given a matrix \a A with <tt>m</tt> rows and tt>n</tt> columns (with <tt>m >= n</tt>),
+       Given a matrix \a A with <tt>m</tt> rows and <tt>n</tt> columns (with <tt>m \>= n</tt>),
        and a column vector \a b of length <tt>m</tt> rows, this function computes 
        a column vector \a x of length <tt>n</tt> rows such that the residual
 
@@ -67,12 +67,12 @@ namespace linalg
        \a b. Note that all matrices must already have the correct shape.
        
        This function is just another name for \ref linearSolve(), perhaps 
-       leading to more readable code when \A is a rectangular matrix. It returns
+       leading to more readable code when \a A is a rectangular matrix. It returns
        <tt>false</tt> when the rank of \a A is less than <tt>n</tt>.
        See \ref linearSolve() for more documentation.
 
-    <b>\#include</b> "<a href="regression_8hxx-source.html">vigra/regression_8hxx.hxx</a>" or<br>
-    <b>\#include</b> "<a href="linear__algebra_8hxx-source.html">vigra/linear_algebra.hxx</a>"<br>
+    <b>\#include</b> \<<a href="regression_8hxx-source.html">vigra/regression_8hxx.hxx</a>\> or<br>
+    <b>\#include</b> \<<a href="linear__algebra_8hxx-source.html">vigra/linear_algebra.hxx</a>\><br>
         Namespaces: vigra and vigra::linalg
    */
 template <class T, class C1, class C2, class C3>
@@ -86,7 +86,7 @@ leastSquares(MultiArrayView<2, T, C1> const & A,
 
    /** Weighted Least Squares Regression.
 
-       Given a matrix \a A with <tt>m</tt> rows and tt>n</tt> columns (with <tt>m >= n</tt>),
+       Given a matrix \a A with <tt>m</tt> rows and <tt>n</tt> columns (with <tt>m \>= n</tt>),
        a vector \a b of length <tt>m</tt>, and a weight vector \a weights of length <tt>m</tt>
        with non-negative entries, this function computes a vector \a x of length <tt>n</tt> 
        such that the weighted residual
@@ -112,8 +112,8 @@ leastSquares(MultiArrayView<2, T, C1> const & A,
        The function returns
        <tt>false</tt> when the rank of the weighted matrix \a A is less than <tt>n</tt>.
 
-    <b>\#include</b> "<a href="regression_8hxx-source.html">vigra/regression_8hxx.hxx</a>" or<br>
-    <b>\#include</b> "<a href="linear__algebra_8hxx-source.html">vigra/linear_algebra.hxx</a>"<br>
+    <b>\#include</b> \<<a href="regression_8hxx-source.html">vigra/regression_8hxx.hxx</a>\> or<br>
+    <b>\#include</b> \<<a href="linear__algebra_8hxx-source.html">vigra/linear_algebra.hxx</a>\><br>
         Namespaces: vigra and vigra::linalg
    */
 template <class T, class C1, class C2, class C3, class C4>
@@ -154,8 +154,8 @@ weightedLeastSquares(MultiArrayView<2, T, C1> const & A,
 
    /** Ridge Regression.
 
-       Given a matrix \a A with <tt>m</tt> rows and tt>n</tt> columns (with <tt>m >= n</tt>),
-       a vector \a b of length <tt>m</tt>, and a regularization parameter <tt>lambda >= 0.0</tt>, 
+       Given a matrix \a A with <tt>m</tt> rows and <tt>n</tt> columns (with <tt>m \>= n</tt>),
+       a vector \a b of length <tt>m</tt>, and a regularization parameter <tt>lambda \>= 0.0</tt>, 
        this function computes a vector \a x of length <tt>n</tt> such that the residual
 
         \f[ \left|\textrm{\bf A} \textrm{\bf x} - \textrm{\bf b}\right|^2 + 
@@ -171,8 +171,8 @@ weightedLeastSquares(MultiArrayView<2, T, C1> const & A,
        The function returns <tt>false</tt> if the rank of \a A is less than <tt>n</tt>
        and <tt>lambda == 0.0</tt>.
 
-    <b>\#include</b> "<a href="regression_8hxx-source.html">vigra/regression_8hxx.hxx</a>" or<br>
-    <b>\#include</b> "<a href="linear__algebra_8hxx-source.html">vigra/linear_algebra.hxx</a>"<br>
+    <b>\#include</b> \<<a href="regression_8hxx-source.html">vigra/regression_8hxx.hxx</a>\> or<br>
+    <b>\#include</b> \<<a href="linear__algebra_8hxx-source.html">vigra/linear_algebra.hxx</a>\><br>
         Namespaces: vigra and vigra::linalg
    */
 template <class T, class C1, class C2, class C3>
@@ -213,7 +213,7 @@ ridgeRegression(MultiArrayView<2, T, C1> const & A,
 
    /** Weighted ridge Regression.
 
-       Given a matrix \a A with <tt>m</tt> rows and tt>n</tt> columns (with <tt>m >= n</tt>),
+       Given a matrix \a A with <tt>m</tt> rows and <tt>n</tt> columns (with <tt>m \>= n</tt>),
        a vector \a b of length <tt>m</tt>, a weight vector \a weights of length <tt>m</tt>
        with non-negative entries, and a regularization parameter <tt>lambda >= 0.0</tt>
        this function computes a vector \a x of length <tt>n</tt> such that the weighted residual
@@ -242,8 +242,8 @@ ridgeRegression(MultiArrayView<2, T, C1> const & A,
        The function returns <tt>false</tt> if the rank of \a A is less than <tt>n</tt>
        and <tt>lambda == 0.0</tt>.
 
-    <b>\#include</b> "<a href="regression_8hxx-source.html">vigra/regression_8hxx.hxx</a>" or<br>
-    <b>\#include</b> "<a href="linear__algebra_8hxx-source.html">vigra/linear_algebra.hxx</a>"<br>
+    <b>\#include</b> \<<a href="regression_8hxx-source.html">vigra/regression_8hxx.hxx</a>\> or<br>
+    <b>\#include</b> \<<a href="linear__algebra_8hxx-source.html">vigra/linear_algebra.hxx</a>\><br>
         Namespaces: vigra and vigra::linalg
    */
 template <class T, class C1, class C2, class C3, class C4>
@@ -297,8 +297,8 @@ weightedRidgeRegression(MultiArrayView<2, T, C1> const & A,
        The function returns <tt>false</tt> when the matrix \a A is rank deficient. If this
        happens, and one of the lambdas is zero, the corresponding column of \a x will be skipped.
 
-    <b>\#include</b> "<a href="regression_8hxx-source.html">vigra/regression_8hxx.hxx</a>" or<br>
-    <b>\#include</b> "<a href="linear__algebra_8hxx-source.html">vigra/linear_algebra.hxx</a>"<br>
+    <b>\#include</b> \<<a href="regression_8hxx-source.html">vigra/regression_8hxx.hxx</a>\> or<br>
+    <b>\#include</b> \<<a href="linear__algebra_8hxx-source.html">vigra/linear_algebra.hxx</a>\><br>
         Namespaces: vigra and vigra::linalg
    */
 template <class T, class C1, class C2, class C3, class Array>

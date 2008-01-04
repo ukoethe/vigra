@@ -89,7 +89,7 @@ class FunctorTraitsBase
 
     Where the dots are either <tt>VigraTrueType</tt> or <tt>VigraFalseType</tt>
     depending on whether the functor supports the respective functionality or not.
-    If a functor <tt>f<tt> is a model of these categories, it supports the following
+    If a functor <tt>f</tt> is a model of these categories, it supports the following
     calls (<tt>v</tt> is a variable such that the result type of the functor
     calls can be converted into <tt>v</tt>'s type, and <tt>a1, a2, a3</tt> are
     variables convertible into the functor's argument types):
@@ -104,11 +104,11 @@ class FunctorTraitsBase
     <DT><b>TernaryFunctor</b>
         <DD> <tt>v = f(a1, a2, a3)</tt> (used with combineThreeImages())
     <DT><b>UnaryAnalyser</b>
-        <DD> <tt>f(a1)</tt> (return type <tt>void>/tt>, used with inspectImage())
+        <DD> <tt>f(a1)</tt> (return type <tt>void</tt>, used with inspectImage())
     <DT><b>BinaryAnalyser</b>
-        <DD> <tt>f(a1, a2)</tt> (return type <tt>void>/tt>, used with inspectTwoImages())
+        <DD> <tt>f(a1, a2)</tt> (return type <tt>void</tt>, used with inspectTwoImages())
     <DT><b>TernaryAnalyser</b>
-        <DD> <tt>f(a1, a2, a3)</tt> (return type <tt>void>/tt>)
+        <DD> <tt>f(a1, a2, a3)</tt> (return type <tt>void</tt>)
     </DL>
     
     It should be noted that the functor's argument and result types are not contained
@@ -117,7 +117,7 @@ class FunctorTraitsBase
     types fixed in this case because they are computed (via a template meta-program)
     from the argument types.
 
-    <b>\#include</b> "<a href="functortraits_8hxx-source.html">vigra/functortraits.hxx</a>"
+    <b>\#include</b> \<<a href="functortraits_8hxx-source.html">vigra/functortraits.hxx</a>\>
     Namespace: vigra
 */
 template <class T>

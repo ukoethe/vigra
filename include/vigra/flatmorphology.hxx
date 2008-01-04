@@ -79,7 +79,7 @@ namespace vigra {
     \endcode
     
     
-    use argument objects in conjunction with \ref ArgumentObjectFactories:
+    use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
         template <class SrcIterator, class SrcAccessor,
@@ -93,7 +93,7 @@ namespace vigra {
     
     <b> Usage:</b>
     
-        <b>\#include</b> "<a href="flatmorphology_8hxx-source.html">vigra/flatmorphology.hxx</a>"<br>
+        <b>\#include</b> \<<a href="flatmorphology_8hxx-source.html">vigra/flatmorphology.hxx</a>\><br>
     Namespace: vigra
     
     \code
@@ -386,7 +386,7 @@ discRankOrderFilter(triple<SrcIterator, SrcIterator, SrcAccessor> src,
     \endcode
     
     
-    use argument objects in conjunction with \ref ArgumentObjectFactories:
+    use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
         template <class SrcIterator, class SrcAccessor,
@@ -454,7 +454,7 @@ discErosion(triple<SrcIterator, SrcIterator, SrcAccessor> src,
     \endcode
     
     
-    use argument objects in conjunction with \ref ArgumentObjectFactories:
+    use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
         template <class SrcIterator, class SrcAccessor,
@@ -522,7 +522,7 @@ discDilation(triple<SrcIterator, SrcIterator, SrcAccessor> src,
     \endcode
     
     
-    use argument objects in conjunction with \ref ArgumentObjectFactories:
+    use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
         template <class SrcIterator, class SrcAccessor,
@@ -617,7 +617,7 @@ discMedian(triple<SrcIterator, SrcIterator, SrcAccessor> src,
     
     <b> Usage:</b>
     
-        <b>\#include</b> "<a href="flatmorphology_8hxx-source.html">vigra/flatmorphology.hxx</a>"<br>
+        <b>\#include</b> \<<a href="flatmorphology_8hxx-source.html">vigra/flatmorphology.hxx</a>\><br>
     Namespace: vigra
     
     \code

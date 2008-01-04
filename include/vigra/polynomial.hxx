@@ -65,7 +65,7 @@ template <unsigned int MAXORDER, class T> class StaticPolynomial;
     
     \see vigra::Polynomial, vigra::StaticPolynomial, polynomialRoots()
 
-    <b>\#include</b> "<a href="polynomial_8hxx-source.html">vigra/polynomial.hxx</a>"<br>
+    <b>\#include</b> \<<a href="polynomial_8hxx-source.html">vigra/polynomial.hxx</a>\><br>
     Namespace: vigra
     
     \ingroup Polynomials
@@ -435,7 +435,7 @@ PolynomialView<T>::balance()
 
     \see vigra::PolynomialView, vigra::StaticPolynomial, polynomialRoots()
 
-    <b>\#include</b> "<a href="polynomial_8hxx-source.html">vigra/polynomial.hxx</a>"<br>
+    <b>\#include</b> \<<a href="polynomial_8hxx-source.html">vigra/polynomial.hxx</a>\><br>
     Namespace: vigra
     
     \ingroup Polynomials
@@ -566,7 +566,7 @@ class Polynomial
 
     \see vigra::PolynomialView, vigra::Polynomial, polynomialRoots()
 
-    <b>\#include</b> "<a href="polynomial_8hxx-source.html">vigra/polynomial.hxx</a>"<br>
+    <b>\#include</b> \<<a href="polynomial_8hxx-source.html">vigra/polynomial.hxx</a>\><br>
     Namespace: vigra
     
     \ingroup Polynomials
@@ -921,7 +921,7 @@ struct PolynomialRootCompare
 
     <b> Usage:</b>
 
-        <b>\#include</b> "<a href="polynomial_8hxx-source.html">vigra/polynomial.hxx</a>"<br>
+        <b>\#include</b> \<<a href="polynomial_8hxx-source.html">vigra/polynomial.hxx</a>\><br>
         Namespace: vigra
 
     \code
@@ -1059,7 +1059,7 @@ polynomialRoots(POLYNOMIAL const & poriginal, VECTOR & roots)
 
     <b> Usage:</b>
 
-        <b>\#include</b> "<a href="polynomial_8hxx-source.html">vigra/polynomial.hxx</a>"<br>
+        <b>\#include</b> \<<a href="polynomial_8hxx-source.html">vigra/polynomial.hxx</a>\><br>
         Namespace: vigra
 
     \code

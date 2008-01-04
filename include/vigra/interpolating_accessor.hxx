@@ -62,7 +62,7 @@ namespace vigra {
     accessor originally associated with the iterator)
     to access data.
 
-    <b>\#include</b> "<a href="accessor_8hxx-source.html">vigra/accessor.hxx</a>"
+    <b>\#include</b> \<<a href="accessor_8hxx-source.html">vigra/accessor.hxx</a>\>
     Namespace: vigra
 
     <b> Required Interface:</b>

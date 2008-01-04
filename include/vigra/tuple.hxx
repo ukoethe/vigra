@@ -45,7 +45,7 @@ namespace vigra {
 
     pair, triple, tuple4, tuple5
 
-    <b>\#include</b> "<a href="utilities_8hxx-source.html">vigra/utilities.hxx</a>"<br>
+    <b>\#include</b> \<<a href="utilities_8hxx-source.html">vigra/utilities.hxx</a>\><br>
     Namespace: vigra
 
     VIGRA defines tuple types \p vigra::triple, \p vigra::tuple4, \p vigra::tuple5.

@@ -199,7 +199,7 @@ VIGRA_EXPORT void findImageSequence(const std::string &name_base,
     size of the slices found.
 
     <b>\#include</b>
-    "<a href="multi__impex_8hxx-source.html">vigra/multi_impex.hxx</a>"
+    \<<a href="multi__impex_8hxx-source.html">vigra/multi_impex.hxx</a>\>
 
     Namespace: vigra
 */
@@ -247,7 +247,7 @@ void importVolume (MultiArray <3, T, Allocator> & volume,
     size of the slices found.
 
     <b>\#include</b>
-    "<a href="multi__impex_8hxx-source.html">vigra/multi_impex.hxx</a>"
+    \<<a href="multi__impex_8hxx-source.html">vigra/multi_impex.hxx</a>\>
 
     Namespace: vigra
 */
@@ -269,7 +269,7 @@ void importVolume(MultiArray <3, T, Allocator> &volume,
     size of the slices found.
 
     <b>\#include</b>
-    "<a href="multi__impex_8hxx-source.html">vigra/multi_impex.hxx</a>"
+    \<<a href="multi__impex_8hxx-source.html">vigra/multi_impex.hxx</a>\>
 
     Namespace: vigra
 */
@@ -367,7 +367,7 @@ void setRangeMapping(MultiArrayView <3, T, Tag> const & volume,
     to the appropriate target range.
 
     <b>\#include</b>
-    "<a href="multi__impex_8hxx-source.html">vigra/multi_impex.hxx</a>"
+    \<<a href="multi__impex_8hxx-source.html">vigra/multi_impex.hxx</a>\>
 
     Namespace: vigra
 */

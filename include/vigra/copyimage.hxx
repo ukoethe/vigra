@@ -104,7 +104,7 @@ copyLineIf(SrcIterator s,
     \endcode
     
     
-    use argument objects in conjunction with \ref ArgumentObjectFactories:
+    use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
         template <class SrcImageIterator, class SrcAccessor,
@@ -117,7 +117,7 @@ copyLineIf(SrcIterator s,
     
     <b> Usage:</b>
     
-        <b>\#include</b> "<a href="copyimage_8hxx-source.html">vigra/copyimage.hxx</a>"<br>
+        <b>\#include</b> \<<a href="copyimage_8hxx-source.html">vigra/copyimage.hxx</a>\><br>
         Namespace: vigra
     
     \code
@@ -199,7 +199,7 @@ copyImage(triple<SrcImageIterator, SrcImageIterator, SrcAccessor> src,
     \endcode
     
     
-    use argument objects in conjunction with \ref ArgumentObjectFactories:
+    use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
         template <class SrcImageIterator, class SrcAccessor,
@@ -214,7 +214,7 @@ copyImage(triple<SrcImageIterator, SrcImageIterator, SrcAccessor> src,
     
     <b> Usage:</b>
     
-        <b>\#include</b> "<a href="copyimage_8hxx-source.html">vigra/copyimage.hxx</a>"<br>
+        <b>\#include</b> \<<a href="copyimage_8hxx-source.html">vigra/copyimage.hxx</a>\><br>
         Namespace: vigra
     
     \code

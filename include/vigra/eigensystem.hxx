@@ -1000,8 +1000,8 @@ bool hessenbergQrDecomposition(MultiArrayView<2, T, C1> & H, MultiArrayView<2, T
         converge. It can be applied in-place, i.e. <tt>&a == &ev</tt> is allowed.
         The code of this function was adapted from JAMA.
 
-    <b>\#include</b> "<a href="eigensystem_8hxx-source.html">vigra/eigensystem.hxx</a>" or<br>
-    <b>\#include</b> "<a href="linear__algebra_8hxx-source.html">vigra/linear_algebra.hxx</a>"<br>
+    <b>\#include</b> \<<a href="eigensystem_8hxx-source.html">vigra/eigensystem.hxx</a>\> or<br>
+    <b>\#include</b> \<<a href="linear__algebra_8hxx-source.html">vigra/linear_algebra.hxx</a>\><br>
         Namespaces: vigra and vigra::linalg
      */
 template <class T, class C1, class C2, class C3>
@@ -1037,8 +1037,8 @@ symmetricEigensystem(MultiArrayView<2, T, C1> const & a,
         converge. It can be applied in-place, i.e. <tt>&a == &ev</tt> is allowed.
         The code of this function was adapted from JAMA.
 
-    <b>\#include</b> "<a href="eigensystem_8hxx-source.html">vigra/eigensystem.hxx</a>" or<br>
-    <b>\#include</b> "<a href="linear__algebra_8hxx-source.html">vigra/linear_algebra.hxx</a>"<br>
+    <b>\#include</b> \<<a href="eigensystem_8hxx-source.html">vigra/eigensystem.hxx</a>\> or<br>
+    <b>\#include</b> \<<a href="linear__algebra_8hxx-source.html">vigra/linear_algebra.hxx</a>\><br>
         Namespaces: vigra and vigra::linalg
      */
 template <class T, class C1, class C2, class C3>
@@ -1075,8 +1075,8 @@ nonsymmetricEigensystem(MultiArrayView<2, T, C1> const & a,
         companion matrix yielding the roots as eigenvalues. It returns <tt>false</tt> if
         it fails to converge.
 
-        <b>\#include</b> "<a href="eigensystem_8hxx-source.html">vigra/eigensystem.hxx</a>" or<br>
-        <b>\#include</b> "<a href="linear__algebra_8hxx-source.html">vigra/linear_algebra.hxx</a>"<br>
+        <b>\#include</b> \<<a href="eigensystem_8hxx-source.html">vigra/eigensystem.hxx</a>\> or<br>
+        <b>\#include</b> \<<a href="linear__algebra_8hxx-source.html">vigra/linear_algebra.hxx</a>\><br>
         Namespaces: vigra and vigra::linalg
 
         \see polynomialRoots(), vigra::Polynomial
@@ -1127,8 +1127,8 @@ bool polynomialRootsEigenvalueMethod(POLYNOMIAL const & poly, VECTOR & roots)
         the roots are appended. The function calls \ref polynomialRootsEigenvalueMethod() and
         throws away all complex roots. It returns <tt>false</tt> if it fails to converge.
 
-        <b>\#include</b> "<a href="eigensystem_8hxx-source.html">vigra/eigensystem.hxx</a>" or<br>
-        <b>\#include</b> "<a href="linear__algebra_8hxx-source.html">vigra/linear_algebra.hxx</a>"<br>
+        <b>\#include</b> \<<a href="eigensystem_8hxx-source.html">vigra/eigensystem.hxx</a>\> or<br>
+        <b>\#include</b> \<<a href="linear__algebra_8hxx-source.html">vigra/linear_algebra.hxx</a>\><br>
         Namespaces: vigra and vigra::linalg
 
         \see polynomialRealRoots(), vigra::Polynomial

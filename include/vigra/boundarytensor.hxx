@@ -390,7 +390,7 @@ oddPolarFilters(SrcIterator supperleft, SrcIterator slowerright, SrcAccessor src
     \endcode
 
 
-    use argument objects in conjunction with \ref ArgumentObjectFactories:
+    use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
         template <class SrcIterator, class SrcAccessor,
@@ -403,7 +403,7 @@ oddPolarFilters(SrcIterator supperleft, SrcIterator slowerright, SrcAccessor src
 
     <b> Usage:</b>
 
-    <b>\#include</b> "<a href="boundarytensor_8hxx-source.html">vigra/boundarytensor.hxx</a>"
+    <b>\#include</b> \<<a href="boundarytensor_8hxx-source.html">vigra/boundarytensor.hxx</a>\>
 
     \code
     FImage impulse(17,17), res(17, 17);
@@ -565,7 +565,7 @@ void rieszTransformOfLOG(triple<SrcIterator, SrcIterator, SrcAccessor> src,
     }
     \endcode
 
-    use argument objects in conjunction with \ref ArgumentObjectFactories:
+    use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
         template <class SrcIterator, class SrcAccessor,
@@ -578,7 +578,7 @@ void rieszTransformOfLOG(triple<SrcIterator, SrcIterator, SrcAccessor> src,
 
     <b> Usage:</b>
 
-    <b>\#include</b> "<a href="boundarytensor_8hxx-source.html">vigra/boundarytensor.hxx</a>"
+    <b>\#include</b> \<<a href="boundarytensor_8hxx-source.html">vigra/boundarytensor.hxx</a>\>
 
     \code
     FImage img(w,h);

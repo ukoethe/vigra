@@ -45,7 +45,7 @@ namespace vigra {
 
     4- and 8-neighborhood definitions and circulators.
 
-    <b>\#include</b> "<a href="pixelneighborhood_8hxx-source.html">vigra/pixelneighborhood.hxx</a>"<br>
+    <b>\#include</b> \<<a href="pixelneighborhood_8hxx-source.html">vigra/pixelneighborhood.hxx</a>\><br>
 
     <b>See also:</b> \ref vigra::NeighborhoodCirculator
  */
@@ -62,7 +62,7 @@ namespace vigra {
     This enum is used with \ref isAtImageBorder() and
     \ref vigra::RestrictedNeighborhoodCirculator.
 
-    <b>\#include</b> "<a href="pixelneighborhood_8hxx-source.html">vigra/pixelneighborhood.hxx</a>"<br>
+    <b>\#include</b> \<<a href="pixelneighborhood_8hxx-source.html">vigra/pixelneighborhood.hxx</a>\><br>
     Namespace: vigra
 */
 
@@ -106,7 +106,7 @@ enum AtImageBorder
     of \ref vigra::AtImageBorder, or zero when the point is not at te image border.
     The behavior of the function is undefined if (x,y) is not inside the image.
 
-    <b>\#include</b> "<a href="pixelneighborhood_8hxx-source.html">vigra/pixelneighborhood.hxx</a>"<br>
+    <b>\#include</b> \<<a href="pixelneighborhood_8hxx-source.html">vigra/pixelneighborhood.hxx</a>\><br>
     Namespace: vigra
 */
 inline AtImageBorder isAtImageBorder(int x, int y, int width, int height)
@@ -160,7 +160,7 @@ namespace FourNeighborhood
     If you want to pass 4-neighborhood codes as a template parameter, use
     the class FourNeighborhood::NeighborCode.
 
-    <b>\#include</b> "<a href="pixelneighborhood_8hxx-source.html">vigra/pixelneighborhood.hxx</a>"<br>
+    <b>\#include</b> \<<a href="pixelneighborhood_8hxx-source.html">vigra/pixelneighborhood.hxx</a>\><br>
     Namespace: vigra::FourNeighborhood
 */
 class NeighborCode
@@ -391,7 +391,7 @@ namespace EightNeighborhood
     If you want to pass 8-neighborhood codes as a template parameter, use
     the class EightNeighborhood::NeighborCode.
 
-    <b>\#include</b> "<a href="pixelneighborhood_8hxx-source.html">vigra/pixelneighborhood.hxx</a>"<br>
+    <b>\#include</b> \<<a href="pixelneighborhood_8hxx-source.html">vigra/pixelneighborhood.hxx</a>\><br>
     Namespace: vigra::EightNeighborhood
 */
 class NeighborCode
@@ -662,7 +662,7 @@ typedef EightNeighborhood::NeighborCode EightNeighborCode;
     you usually doesn't use it directly but rather as a base class or helper for
     neighborhood circulators refering to a particular image (e.g. NeighborhoodCirculator)
 
-    <b>\#include</b> "<a href="pixelneighborhood_8hxx-source.html">vigra/pixelneighborhood.hxx</a>"<br>
+    <b>\#include</b> \<<a href="pixelneighborhood_8hxx-source.html">vigra/pixelneighborhood.hxx</a>\><br>
     Namespace: vigra
 */
 template<class NEIGHBORCODE>
@@ -961,7 +961,7 @@ typedef NeighborOffsetCirculator<FourNeighborCode> FourNeighborOffsetCirculator;
 
     <b>Usage:</b><br>
 
-    <b>\#include</b> "<a href="pixelneighborhood_8hxx-source.html">vigra/pixelneighborhood.hxx</a>"<br>
+    <b>\#include</b> \<<a href="pixelneighborhood_8hxx-source.html">vigra/pixelneighborhood.hxx</a>\><br>
     Namespace: vigra
 
     \code
@@ -1271,7 +1271,7 @@ private:
 
     <b>Usage:</b><br>
 
-    <b>\#include</b> "<a href="pixelneighborhood_8hxx-source.html">vigra/pixelneighborhood.hxx</a>"<br>
+    <b>\#include</b> \<<a href="pixelneighborhood_8hxx-source.html">vigra/pixelneighborhood.hxx</a>\><br>
     Namespace: vigra
 
     \code

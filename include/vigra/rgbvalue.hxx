@@ -120,7 +120,7 @@ struct RGBValue_bad_color_indices
     that support access to RGBValues as a whole, to a selected
     color component, or to the luminance value.
 
-    <b>\#include</b> "<a href="rgbvalue_8hxx-source.html">vigra/rgbvalue.hxx</a>"<br>
+    <b>\#include</b> \<<a href="rgbvalue_8hxx-source.html">vigra/rgbvalue.hxx</a>\><br>
     Namespace: vigra
 */
 template <class VALUETYPE, unsigned int RED_IDX = 0, unsigned int GREEN_IDX = 1, unsigned int BLUE_IDX = 2>
@@ -432,7 +432,7 @@ operator!=(RGBValue<V1, RIDX1, GIDX1, BIDX1> const & l,
     };
     \endcode
 
-    <b>\#include</b> "<a href="rgbvalue_8hxx-source.html">vigra/rgbvalue.hxx</a>"<br>
+    <b>\#include</b> \<<a href="rgbvalue_8hxx-source.html">vigra/rgbvalue.hxx</a>\><br>
     Namespace: vigra
 
 */
@@ -869,7 +869,7 @@ floor(RGBValue<V, RIDX, GIDX, BIDX> const & r)
 //@{
     /** Encapsulate access to rgb values.
 
-    <b>\#include</b> "<a href="rgbvalue_8hxx-source.html">vigra/rgbvalue.hxx</a>"<br>
+    <b>\#include</b> \<<a href="rgbvalue_8hxx-source.html">vigra/rgbvalue.hxx</a>\><br>
     Namespace: vigra
     */
 template <class RGBVALUE>
@@ -1000,7 +1000,7 @@ class RGBAccessor
 
     /** Encapsulate access to red band of an rgb value.
 
-    <b>\#include</b> "<a href="rgbvalue_8hxx-source.html">vigra/rgbvalue.hxx</a>"<br>
+    <b>\#include</b> \<<a href="rgbvalue_8hxx-source.html">vigra/rgbvalue.hxx</a>\><br>
     Namespace: vigra
     */
 template <class RGBVALUE>
@@ -1051,7 +1051,7 @@ class RedAccessor
 
     /** Encapsulate access to green band of an rgb value.
 
-    <b>\#include</b> "<a href="rgbvalue_8hxx-source.html">vigra/rgbvalue.hxx</a>"<br>
+    <b>\#include</b> \<<a href="rgbvalue_8hxx-source.html">vigra/rgbvalue.hxx</a>\><br>
     Namespace: vigra
     */
 template <class RGBVALUE>
@@ -1102,7 +1102,7 @@ class GreenAccessor
 
     /** Encapsulate access to blue band of an rgb value.
 
-    <b>\#include</b> "<a href="rgbvalue_8hxx-source.html">vigra/rgbvalue.hxx</a>"<br>
+    <b>\#include</b> \<<a href="rgbvalue_8hxx-source.html">vigra/rgbvalue.hxx</a>\><br>
     Namespace: vigra
     */
 template <class RGBVALUE>
@@ -1153,7 +1153,7 @@ class BlueAccessor
 
     /** Encapsulate access to luminance of an rgb value.
 
-    <b>\#include</b> "<a href="rgbvalue_8hxx-source.html">vigra/rgbvalue.hxx</a>"<br>
+    <b>\#include</b> \<<a href="rgbvalue_8hxx-source.html">vigra/rgbvalue.hxx</a>\><br>
     Namespace: vigra
     */
 template <class RGBVALUE>
@@ -1187,7 +1187,7 @@ class RGBToGrayAccessor
     /** Create an RGB view for a grayscale image by making all three channels
         equal.
 
-    <b>\#include</b> "<a href="rgbvalue_8hxx-source.html">vigra/rgbvalue.hxx</a>"<br>
+    <b>\#include</b> \<<a href="rgbvalue_8hxx-source.html">vigra/rgbvalue.hxx</a>\><br>
     Namespace: vigra
     */
 template <class VALUETYPE>

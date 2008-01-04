@@ -158,7 +158,7 @@ internalResizeMultiArrayOneDimension(
     \endcode
 
 
-    use argument objects in conjunction with \ref ArgumentObjectFactories:
+    use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
         template <class SrcIterator, class Shape, class SrcAccessor,
@@ -174,7 +174,7 @@ internalResizeMultiArrayOneDimension(
 
     <b> Usage:</b>
 
-        <b>\#include</b> "<a href="multi__resize_8hxx-source.html">vigra/multi_resize.hxx</a>"<br>
+        <b>\#include</b> \<<a href="multi__resize_8hxx-source.html">vigra/multi_resize.hxx</a>\><br>
         Namespace: vigra
 
     \code

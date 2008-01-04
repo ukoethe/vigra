@@ -114,7 +114,7 @@ namespace vigra {
     }
     \endcode
 
-    use argument objects in conjunction with \ref ArgumentObjectFactories:
+    use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
         template <class SrcIterator, class SrcAccessor,
@@ -132,7 +132,7 @@ namespace vigra {
 
     <b> Usage:</b>
 
-        <b>\#include</b> "<a href="edgedetection_8hxx-source.html">vigra/edgedetection.hxx</a>"<br>
+        <b>\#include</b> \<<a href="edgedetection_8hxx-source.html">vigra/edgedetection.hxx</a>\><br>
     Namespace: vigra
 
     \code
@@ -392,7 +392,7 @@ sign of difference image     insert zero- and one-cells     resulting edge point
     }
     \endcode
 
-    use argument objects in conjunction with \ref ArgumentObjectFactories:
+    use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
         template <class SrcIterator, class SrcAccessor,
@@ -410,7 +410,7 @@ sign of difference image     insert zero- and one-cells     resulting edge point
 
     <b> Usage:</b>
 
-        <b>\#include</b> "<a href="edgedetection_8hxx-source.html">vigra/edgedetection.hxx</a>"<br>
+        <b>\#include</b> \<<a href="edgedetection_8hxx-source.html">vigra/edgedetection.hxx</a>\><br>
     Namespace: vigra
 
     \code
@@ -696,7 +696,7 @@ void differenceOfExponentialCrackEdgeImage(
     }
     \endcode
 
-    use argument objects in conjunction with \ref ArgumentObjectFactories:
+    use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
         template <class Iterator, class Accessor, class SrcValue>
@@ -709,7 +709,7 @@ void differenceOfExponentialCrackEdgeImage(
 
     <b> Usage:</b>
 
-        <b>\#include</b> "<a href="edgedetection_8hxx-source.html">vigra/edgedetection.hxx</a>"<br>
+        <b>\#include</b> \<<a href="edgedetection_8hxx-source.html">vigra/edgedetection.hxx</a>\><br>
     Namespace: vigra
 
     \code
@@ -828,7 +828,7 @@ void removeShortEdges(
     }
     \endcode
 
-    use argument objects in conjunction with \ref ArgumentObjectFactories:
+    use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
         template <class SrcIterator, class SrcAccessor, class SrcValue>
@@ -841,7 +841,7 @@ void removeShortEdges(
 
     <b> Usage:</b>
 
-        <b>\#include</b> "<a href="edgedetection_8hxx-source.html">vigra/edgedetection.hxx</a>"<br>
+        <b>\#include</b> \<<a href="edgedetection_8hxx-source.html">vigra/edgedetection.hxx</a>\><br>
     Namespace: vigra
 
     \code
@@ -1040,7 +1040,7 @@ void closeGapsInCrackEdgeImage(
     }
     \endcode
 
-    use argument objects in conjunction with \ref ArgumentObjectFactories:
+    use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
         template <class SrcIterator, class SrcAccessor, class SrcValue>
@@ -1053,7 +1053,7 @@ void closeGapsInCrackEdgeImage(
 
     <b> Usage:</b>
 
-        <b>\#include</b> "<a href="edgedetection_8hxx-source.html">vigra/edgedetection.hxx</a>"<br>
+        <b>\#include</b> \<<a href="edgedetection_8hxx-source.html">vigra/edgedetection.hxx</a>\><br>
     Namespace: vigra
 
     \code
@@ -1273,7 +1273,7 @@ void internalCannyFindEdgels(Image1 const & gx,
     }
     \endcode
 
-    use argument objects in conjunction with \ref ArgumentObjectFactories:
+    use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
         template <class SrcIterator, class SrcAccessor, class BackInsertable>
@@ -1285,7 +1285,7 @@ void internalCannyFindEdgels(Image1 const & gx,
 
     <b> Usage:</b>
 
-    <b>\#include</b> "<a href="edgedetection_8hxx-source.html">vigra/edgedetection.hxx</a>"<br>
+    <b>\#include</b> \<<a href="edgedetection_8hxx-source.html">vigra/edgedetection.hxx</a>\><br>
     Namespace: vigra
 
     \code
@@ -1389,7 +1389,7 @@ cannyEdgelList(triple<SrcIterator, SrcIterator, SrcAccessor> src,
     }
     \endcode
 
-    use argument objects in conjunction with \ref ArgumentObjectFactories:
+    use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
         template <class SrcIterator, class SrcAccessor,
@@ -1404,7 +1404,7 @@ cannyEdgelList(triple<SrcIterator, SrcIterator, SrcAccessor> src,
 
     <b> Usage:</b>
 
-    <b>\#include</b> "<a href="edgedetection_8hxx-source.html">vigra/edgedetection.hxx</a>"<br>
+    <b>\#include</b> \<<a href="edgedetection_8hxx-source.html">vigra/edgedetection.hxx</a>\><br>
     Namespace: vigra
 
     \code
@@ -1618,7 +1618,7 @@ void cannyEdgeImageFromGrad(
     }
     \endcode
 
-    use argument objects in conjunction with \ref ArgumentObjectFactories:
+    use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
         template <class SrcIterator, class SrcAccessor,
@@ -1634,7 +1634,7 @@ void cannyEdgeImageFromGrad(
 
     <b> Usage:</b>
 
-    <b>\#include</b> "<a href="edgedetection_8hxx-source.html">vigra/edgedetection.hxx</a>"<br>
+    <b>\#include</b> \<<a href="edgedetection_8hxx-source.html">vigra/edgedetection.hxx</a>\><br>
     Namespace: vigra
 
     \code
@@ -1845,7 +1845,7 @@ inline void cannyEdgeImageFromGradWithThinning(
     }
     \endcode
 
-    use argument objects in conjunction with \ref ArgumentObjectFactories:
+    use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
         template <class SrcIterator, class SrcAccessor,
@@ -1861,7 +1861,7 @@ inline void cannyEdgeImageFromGradWithThinning(
 
     <b> Usage:</b>
 
-    <b>\#include</b> "<a href="edgedetection_8hxx-source.html">vigra/edgedetection.hxx</a>"<br>
+    <b>\#include</b> \<<a href="edgedetection_8hxx-source.html">vigra/edgedetection.hxx</a>\><br>
     Namespace: vigra
 
     \code
@@ -2041,7 +2041,7 @@ void internalCannyFindEdgels3x3(Image1 const & grad,
     }
     \endcode
 
-    use argument objects in conjunction with \ref ArgumentObjectFactories:
+    use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
         template <class SrcIterator, class SrcAccessor, class BackInsertable>
@@ -2053,7 +2053,7 @@ void internalCannyFindEdgels3x3(Image1 const & grad,
 
     <b> Usage:</b>
 
-    <b>\#include</b> "<a href="edgedetection_8hxx-source.html">vigra/edgedetection.hxx</a>"<br>
+    <b>\#include</b> \<<a href="edgedetection_8hxx-source.html">vigra/edgedetection.hxx</a>\><br>
     Namespace: vigra
 
     \code

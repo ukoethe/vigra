@@ -94,7 +94,7 @@ namespace vigra
     }
     \endcode
 
-    use argument objects in conjunction with \ref ArgumentObjectFactories:
+    use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
         template <class SrcIterator, class SrcShape, class SrcAccessor,
@@ -109,7 +109,7 @@ namespace vigra
 
     <b> Usage:</b>
 
-    <b>\#include</b> "<a href="multi__morphology_8hxx-source.html">vigra/multi_morphology.hxx</a>"
+    <b>\#include</b> \<<a href="multi__morphology_8hxx-source.html">vigra/multi_morphology.hxx</a>\>
 
     \code
     MultiArray<3, unsigned char>::size_type shape(width, height, depth);
@@ -216,7 +216,7 @@ void multiBinaryErosion(
     }
     \endcode
 
-    use argument objects in conjunction with \ref ArgumentObjectFactories:
+    use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
         template <class SrcIterator, class SrcShape, class SrcAccessor,
@@ -231,7 +231,7 @@ void multiBinaryErosion(
 
     <b> Usage:</b>
 
-    <b>\#include</b> "<a href="multi__morphology_8hxx-source.html">vigra/multi_morphology.hxx</a>"
+    <b>\#include</b> \<<a href="multi__morphology_8hxx-source.html">vigra/multi_morphology.hxx</a>\>
 
     \code
     MultiArray<3, unsigned char>::size_type shape(width, height, depth);
@@ -334,7 +334,7 @@ void multiBinaryDilation(
     }
     \endcode
 
-    use argument objects in conjunction with \ref ArgumentObjectFactories:
+    use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
         template <class SrcIterator, class SrcShape, class SrcAccessor,
@@ -349,7 +349,7 @@ void multiBinaryDilation(
 
     <b> Usage:</b>
 
-    <b>\#include</b> "<a href="multi__morphology_8hxx-source.html">vigra/multi_morphology.hxx</a>"
+    <b>\#include</b> \<<a href="multi__morphology_8hxx-source.html">vigra/multi_morphology.hxx</a>\>
 
     \code
     MultiArray<3, unsigned char>::size_type shape(width, height, depth);
@@ -450,7 +450,7 @@ void multiGrayscaleErosion(
     }
     \endcode
 
-    use argument objects in conjunction with \ref ArgumentObjectFactories:
+    use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
         template <class SrcIterator, class SrcShape, class SrcAccessor,
@@ -465,7 +465,7 @@ void multiGrayscaleErosion(
 
     <b> Usage:</b>
 
-    <b>\#include</b> "<a href="multi__morphology_8hxx-source.html">vigra/multi_morphology.hxx</a>"
+    <b>\#include</b> \<<a href="multi__morphology_8hxx-source.html">vigra/multi_morphology.hxx</a>\>
 
     \code
     MultiArray<3, unsigned char>::size_type shape(width, height, depth);

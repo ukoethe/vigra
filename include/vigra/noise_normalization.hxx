@@ -73,7 +73,7 @@ namespace vigra {
     
     <b> Usage:</b>
     
-        <b>\#include</b> "<a href="noise__normalization_8hxx-source.html">vigra/noise_normalization.hxx</a>"<br>
+        <b>\#include</b> \<<a href="noise__normalization_8hxx-source.html">vigra/noise_normalization.hxx</a>\><br>
     Namespace: vigra
     
     \code
@@ -972,7 +972,7 @@ struct noiseVarianceEstimation_can_only_work_on_scalar_images
     }
     \endcode
     
-    use argument objects in conjunction with \ref ArgumentObjectFactories:
+    use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
         template <class SrcIterator, class SrcAccessor, class BackInsertable>
@@ -984,7 +984,7 @@ struct noiseVarianceEstimation_can_only_work_on_scalar_images
     
     <b> Usage:</b>
     
-        <b>\#include</b> "<a href="noise__normalization_8hxx-source.html">vigra/noise_normalization.hxx</a>"<br>
+        <b>\#include</b> \<<a href="noise__normalization_8hxx-source.html">vigra/noise_normalization.hxx</a>\><br>
     Namespace: vigra
     
     \code
@@ -1072,7 +1072,7 @@ void noiseVarianceEstimation(triple<SrcIterator, SrcIterator, SrcAccessor> src,
     }
     \endcode
     
-    use argument objects in conjunction with \ref ArgumentObjectFactories:
+    use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
         template <class SrcIterator, class SrcAccessor, class BackInsertable>
@@ -1084,7 +1084,7 @@ void noiseVarianceEstimation(triple<SrcIterator, SrcIterator, SrcAccessor> src,
     
     <b> Usage:</b>
     
-        <b>\#include</b> "<a href="noise__normalization_8hxx-source.html">vigra/noise_normalization.hxx</a>"<br>
+        <b>\#include</b> \<<a href="noise__normalization_8hxx-source.html">vigra/noise_normalization.hxx</a>\><br>
     Namespace: vigra
     
     \code
@@ -1165,7 +1165,7 @@ void noiseVarianceClustering(triple<SrcIterator, SrcIterator, SrcAccessor> src,
     }
     \endcode
     
-    use argument objects in conjunction with \ref ArgumentObjectFactories:
+    use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
         template <class SrcIterator, class SrcAccessor,
@@ -1178,7 +1178,7 @@ void noiseVarianceClustering(triple<SrcIterator, SrcIterator, SrcAccessor> src,
     
     <b> Usage:</b>
     
-        <b>\#include</b> "<a href="noise__normalization_8hxx-source.html">vigra/noise_normalization.hxx</a>"<br>
+        <b>\#include</b> \<<a href="noise__normalization_8hxx-source.html">vigra/noise_normalization.hxx</a>\><br>
     Namespace: vigra
     
     \code
@@ -1243,7 +1243,7 @@ bool nonparametricNoiseNormalization(triple<SrcIterator, SrcIterator, SrcAccesso
     }
     \endcode
     
-    use argument objects in conjunction with \ref ArgumentObjectFactories:
+    use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
         template <class SrcIterator, class SrcAccessor,
@@ -1256,7 +1256,7 @@ bool nonparametricNoiseNormalization(triple<SrcIterator, SrcIterator, SrcAccesso
     
     <b> Usage:</b>
     
-        <b>\#include</b> "<a href="noise__normalization_8hxx-source.html">vigra/noise_normalization.hxx</a>"<br>
+        <b>\#include</b> \<<a href="noise__normalization_8hxx-source.html">vigra/noise_normalization.hxx</a>\><br>
     Namespace: vigra
     
     \code
@@ -1324,7 +1324,7 @@ bool quadraticNoiseNormalization(triple<SrcIterator, SrcIterator, SrcAccessor> s
     }
     \endcode
     
-    use argument objects in conjunction with \ref ArgumentObjectFactories:
+    use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
         template <class SrcIterator, class SrcAccessor,
@@ -1337,7 +1337,7 @@ bool quadraticNoiseNormalization(triple<SrcIterator, SrcIterator, SrcAccessor> s
     
     <b> Usage:</b>
     
-        <b>\#include</b> "<a href="noise__normalization_8hxx-source.html">vigra/noise_normalization.hxx</a>"<br>
+        <b>\#include</b> \<<a href="noise__normalization_8hxx-source.html">vigra/noise_normalization.hxx</a>\><br>
     Namespace: vigra
     
     \code
@@ -1403,7 +1403,7 @@ void quadraticNoiseNormalization(triple<SrcIterator, SrcIterator, SrcAccessor> s
     }
     \endcode
     
-    use argument objects in conjunction with \ref ArgumentObjectFactories:
+    use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
         template <class SrcIterator, class SrcAccessor,
@@ -1416,7 +1416,7 @@ void quadraticNoiseNormalization(triple<SrcIterator, SrcIterator, SrcAccessor> s
     
     <b> Usage:</b>
     
-        <b>\#include</b> "<a href="noise__normalization_8hxx-source.html">vigra/noise_normalization.hxx</a>"<br>
+        <b>\#include</b> \<<a href="noise__normalization_8hxx-source.html">vigra/noise_normalization.hxx</a>\><br>
     Namespace: vigra
     
     \code
@@ -1484,7 +1484,7 @@ bool linearNoiseNormalization(triple<SrcIterator, SrcIterator, SrcAccessor> src,
     }
     \endcode
     
-    use argument objects in conjunction with \ref ArgumentObjectFactories:
+    use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
         template <class SrcIterator, class SrcAccessor,
@@ -1497,7 +1497,7 @@ bool linearNoiseNormalization(triple<SrcIterator, SrcIterator, SrcAccessor> src,
     
     <b> Usage:</b>
     
-        <b>\#include</b> "<a href="noise__normalization_8hxx-source.html">vigra/noise_normalization.hxx</a>"<br>
+        <b>\#include</b> \<<a href="noise__normalization_8hxx-source.html">vigra/noise_normalization.hxx</a>\><br>
     Namespace: vigra
     
     \code

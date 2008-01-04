@@ -380,7 +380,7 @@ createResamplingKernels(Kernel const & kernel,
     \endcode
 
 
-    use argument objects in conjunction with \ref ArgumentObjectFactories:
+    use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
         template <class SrcIter, class SrcAcc,
@@ -396,7 +396,7 @@ createResamplingKernels(Kernel const & kernel,
 
     <b> Usage:</b>
 
-    <b>\#include</b> "<a href="resampling__convolution_8hxx-source.html">vigra/resampling_convolution.hxx</a>"
+    <b>\#include</b> \<<a href="resampling__convolution_8hxx-source.html">vigra/resampling_convolution.hxx</a>\>
 
 
     \code
@@ -517,7 +517,7 @@ resamplingConvolveX(triple<SrcIter, SrcIter, SrcAcc> src,
     \endcode
 
 
-    use argument objects in conjunction with \ref ArgumentObjectFactories:
+    use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
         template <class SrcIter, class SrcAcc,
@@ -533,7 +533,7 @@ resamplingConvolveX(triple<SrcIter, SrcIter, SrcAcc> src,
 
     <b> Usage:</b>
 
-    <b>\#include</b> "<a href="resampling__convolution_8hxx-source.html">vigra/resampling_convolution.hxx</a>"
+    <b>\#include</b> \<<a href="resampling__convolution_8hxx-source.html">vigra/resampling_convolution.hxx</a>\>
 
 
     \code
@@ -618,8 +618,7 @@ resamplingConvolveY(triple<SrcIter, SrcIter, SrcAcc> src,
            the second in y-direction.
 
     This function is a shorthand for the concatenation of a call to
-    \link ResamplingConvolutionFilters#resamplingConvolveX resamplingConvolveX\endlink()
-    and \link ResamplingConvolutionFilters#resamplingConvolveY resamplingConvolveY\endlink()
+    \ref resamplingConvolveX() and \ref resamplingConvolveY()
     with the given kernels. See there for detailed documentation.
 
     <b> Declarations:</b>
@@ -640,7 +639,7 @@ resamplingConvolveY(triple<SrcIter, SrcIter, SrcAcc> src,
     \endcode
 
 
-    use argument objects in conjunction with \ref ArgumentObjectFactories:
+    use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
         template <class SrcIterator, class SrcAccessor,
@@ -658,7 +657,7 @@ resamplingConvolveY(triple<SrcIter, SrcIter, SrcAcc> src,
 
     <b> Usage:</b>
 
-    <b>\#include</b> "<a href="resampling__convolution_8hxx-source.html">vigra/resampling_convolution.hxx</a>"
+    <b>\#include</b> \<<a href="resampling__convolution_8hxx-source.html">vigra/resampling_convolution.hxx</a>\>
 
 
     \code

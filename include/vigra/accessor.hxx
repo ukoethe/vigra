@@ -143,7 +143,7 @@ namespace vigra {
     When a floating point number is assigned by means of an accessor
     with integral value_type, the value is rounded and clipped as approriate.
 
-    <b>\#include</b> "<a href="accessor_8hxx-source.html">vigra/accessor.hxx</a>"<br>
+    <b>\#include</b> \<<a href="accessor_8hxx-source.html">vigra/accessor.hxx</a>\><br>
     Namespace: vigra
 */
 template <class VALUETYPE>
@@ -208,7 +208,7 @@ class StandardAccessor
     When a floating point number is assigned by means of an accessor
     with integral value_type, the value is rounded and clipped as approriate.
 
-    <b>\#include</b> "<a href="accessor_8hxx-source.html">vigra/accessor.hxx</a>"<br>
+    <b>\#include</b> \<<a href="accessor_8hxx-source.html">vigra/accessor.hxx</a>\><br>
     Namespace: vigra
 */
 template <class VALUETYPE>
@@ -279,7 +279,7 @@ class StandardValueAccessor
     StandardConstAccessor is usually faster for compound pixel types,
     while StandardConstValueAccessor is faster for the built-in types.
 
-    <b>\#include</b> "<a href="accessor_8hxx-source.html">vigra/accessor.hxx</a>"<br>
+    <b>\#include</b> \<<a href="accessor_8hxx-source.html">vigra/accessor.hxx</a>\><br>
     Namespace: vigra
 */
 template <class VALUETYPE>
@@ -317,7 +317,7 @@ class StandardConstAccessor
     When an iterator passes a floating point number to an accessor
     with integral value_type, the value is rounded and clipped as approriate.
 
-    <b>\#include</b> "<a href="accessor_8hxx-source.html">vigra/accessor.hxx</a>"<br>
+    <b>\#include</b> \<<a href="accessor_8hxx-source.html">vigra/accessor.hxx</a>\><br>
     Namespace: vigra
 */
 template <class VALUETYPE>
@@ -374,7 +374,7 @@ class StandardConstValueAccessor
               255);
     \endcode
 
-    <b>\#include</b> "<a href="accessor_8hxx-source.html">vigra/accessor.hxx</a>"<br>
+    <b>\#include</b> \<<a href="accessor_8hxx-source.html">vigra/accessor.hxx</a>\><br>
     Namespace: vigra
 
 */
@@ -458,7 +458,7 @@ class VectorComponentAccessor
               255);
     \endcode
 
-    <b>\#include</b> "<a href="accessor_8hxx-source.html">vigra/accessor.hxx</a>"<br>
+    <b>\#include</b> \<<a href="accessor_8hxx-source.html">vigra/accessor.hxx</a>\><br>
     Namespace: vigra
 
 */
@@ -548,7 +548,7 @@ class VectorComponentValueAccessor
               255);
     \endcode
     
-    <b>\#include</b> "<a href="accessor_8hxx-source.html">vigra/accessor.hxx</a>"<br>
+    <b>\#include</b> \<<a href="accessor_8hxx-source.html">vigra/accessor.hxx</a>\><br>
     Namespace: vigra
     
 */
@@ -625,7 +625,7 @@ class VectorElementAccessor
 
     <b>Usage:</b>
 
-    <b>\#include</b> "<a href="accessor_8hxx-source.html">vigra/accessor.hxx</a>"<br>
+    <b>\#include</b> \<<a href="accessor_8hxx-source.html">vigra/accessor.hxx</a>\><br>
     Namespace: vigra
 
     \code
@@ -724,7 +724,7 @@ class SequenceAccessor
 
     <b> Usage:</b>
 
-    <b>\#include</b> "<a href="accessor_8hxx-source.html">vigra/accessor.hxx</a>"<br>
+    <b>\#include</b> \<<a href="accessor_8hxx-source.html">vigra/accessor.hxx</a>\><br>
     Namespace: vigra
 
     The accessor has two modes of operation:
@@ -858,7 +858,7 @@ class VectorAccessor
 
     <b> Usage:</b>
 
-    <b>\#include</b> "<a href="accessor_8hxx-source.html">vigra/accessor.hxx</a>"<br>
+    <b>\#include</b> \<<a href="accessor_8hxx-source.html">vigra/accessor.hxx</a>\><br>
     Namespace: vigra
 
     \code

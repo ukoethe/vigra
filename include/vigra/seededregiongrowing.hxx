@@ -266,7 +266,7 @@ enum SRGType { KeepContours, CompleteGrow, SRGWatershedLabel = -1 };
     }
     \endcode
 
-    use argument objects in conjunction with \ref ArgumentObjectFactories:
+    use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
         template <class SrcImageIterator, class SrcAccessor,
@@ -284,7 +284,7 @@ enum SRGType { KeepContours, CompleteGrow, SRGWatershedLabel = -1 };
 
     <b> Usage:</b>
 
-    <b>\#include</b> "<a href="seededregiongrowing_8hxx-source.html">vigra/seededregiongrowing.hxx</a>"<br>
+    <b>\#include</b> \<<a href="seededregiongrowing_8hxx-source.html">vigra/seededregiongrowing.hxx</a>\><br>
     Namespace: vigra
 
     Example: implementation of the voronoi tesselation
@@ -534,7 +534,7 @@ seededRegionGrowing(triple<SrcImageIterator, SrcImageIterator, SrcAccessor> img1
     candidate and does not depend on properties of the region it is going to
     be merged with.
 
-    <b>\#include</b> "<a href="seededregiongrowing_8hxx-source.html">vigra/seededregiongrowing.hxx</a>"<br>
+    <b>\#include</b> \<<a href="seededregiongrowing_8hxx-source.html">vigra/seededregiongrowing.hxx</a>\><br>
     Namespace: vigra
 
 

@@ -138,7 +138,7 @@ inspectTwoLinesIf(SrcIterator1 s1,
     }
     \endcode
 
-    use argument objects in conjunction with \ref ArgumentObjectFactories:
+    use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
         template <class ImageIterator, class Accessor, class Functor>
@@ -150,7 +150,7 @@ inspectTwoLinesIf(SrcIterator1 s1,
 
     <b> Usage:</b>
 
-        <b>\#include</b> "<a href="inspectimage_8hxx-source.html">vigra/inspectimage.hxx</a>"<br>
+        <b>\#include</b> \<<a href="inspectimage_8hxx-source.html">vigra/inspectimage.hxx</a>\><br>
         Namespace: vigra
 
     \code
@@ -256,7 +256,7 @@ inspectImage(triple<ImageIterator, ImageIterator, Accessor> img,
     \endcode
 
 
-    use argument objects in conjunction with \ref ArgumentObjectFactories:
+    use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
         template <class ImageIterator, class Accessor,
@@ -270,7 +270,7 @@ inspectImage(triple<ImageIterator, ImageIterator, Accessor> img,
 
     <b> Usage:</b>
 
-        <b>\#include</b> "<a href="inspectimage_8hxx-source.html">vigra/inspectimage.hxx</a>"<br>
+        <b>\#include</b> \<<a href="inspectimage_8hxx-source.html">vigra/inspectimage.hxx</a>\><br>
         Namespace: vigra
 
     \code
@@ -364,7 +364,7 @@ inspectImageIf(triple<ImageIterator, ImageIterator, Accessor> img,
     \endcode
 
 
-    use argument objects in conjunction with \ref ArgumentObjectFactories:
+    use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
         template <class ImageIterator1, class Accessor1,
@@ -379,7 +379,7 @@ inspectImageIf(triple<ImageIterator, ImageIterator, Accessor> img,
 
     <b> Usage:</b>
 
-        <b>\#include</b> "<a href="inspectimage_8hxx-source.html">vigra/inspectimage.hxx</a>"<br>
+        <b>\#include</b> \<<a href="inspectimage_8hxx-source.html">vigra/inspectimage.hxx</a>\><br>
         Namespace: vigra
 
     \code
@@ -474,7 +474,7 @@ inspectTwoImages(triple<ImageIterator1, ImageIterator1, Accessor1> img1,
     \endcode
 
 
-    use argument objects in conjunction with \ref ArgumentObjectFactories:
+    use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
         template <class ImageIterator1, class Accessor1,
@@ -491,7 +491,7 @@ inspectTwoImages(triple<ImageIterator1, ImageIterator1, Accessor1> img1,
 
     <b> Usage:</b>
 
-        <b>\#include</b> "<a href="inspectimage_8hxx-source.html">vigra/inspectimage.hxx</a>"<br>
+        <b>\#include</b> \<<a href="inspectimage_8hxx-source.html">vigra/inspectimage.hxx</a>\><br>
         Namespace: vigra
 
     \code
@@ -586,11 +586,11 @@ inspectTwoImagesIf(triple<ImageIterator1, ImageIterator1, Accessor1> img1,
     
     <b> Traits defined:</b>
     
-    <tt>FunctorTraits::isUnaryAnalyser</tt> is true (<tt>VigraTrueType<tt>)
+    <tt>FunctorTraits::isUnaryAnalyser</tt> is true (<tt>VigraTrueType</tt>)
     
     <b> Usage:</b>
 
-        <b>\#include</b> "<a href="inspectimage_8hxx-source.html">vigra/inspectimage.hxx</a>"<br>
+        <b>\#include</b> \<<a href="inspectimage_8hxx-source.html">vigra/inspectimage.hxx</a>\><br>
         Namespace: vigra
 
     \code
@@ -730,11 +730,11 @@ class FunctorTraits<FindMinMax<VALUETYPE> >
     <b> Traits defined:</b>
     
     <tt>FunctorTraits::isUnaryAnalyser</tt> and <tt>FunctorTraits::isInitializer</tt>
-    are true (<tt>VigraTrueType<tt>)
+    are true (<tt>VigraTrueType</tt>)
     
     <b> Usage:</b>
 
-        <b>\#include</b> "<a href="inspectimage_8hxx-source.html">vigra/inspectimage.hxx</a>"<br>
+        <b>\#include</b> \<<a href="inspectimage_8hxx-source.html">vigra/inspectimage.hxx</a>\><br>
         Namespace: vigra
 
     \code
@@ -858,11 +858,11 @@ class FunctorTraits<FindAverage<VALUETYPE> >
     <b> Traits defined:</b>
     
     <tt>FunctorTraits::isUnaryAnalyser</tt> and <tt>FunctorTraits::isInitializer</tt>
-    are true (<tt>VigraTrueType<tt>)
+    are true (<tt>VigraTrueType</tt>)
     
     <b> Usage:</b>
 
-        <b>\#include</b> "<a href="inspectimage_8hxx-source.html">vigra/inspectimage.hxx</a>"<br>
+        <b>\#include</b> \<<a href="inspectimage_8hxx-source.html">vigra/inspectimage.hxx</a>\><br>
         Namespace: vigra
 
     \code
@@ -1007,11 +1007,11 @@ class FunctorTraits<FindAverageAndVariance<VALUETYPE> >
     <b> Traits defined:</b>
     
     <tt>FunctorTraits::isUnaryAnalyser</tt> and <tt>FunctorTraits::isInitializer</tt>
-    are true (<tt>VigraTrueType<tt>)
+    are true (<tt>VigraTrueType</tt>)
     
     <b> Usage:</b>
 
-    <b>\#include</b> "<a href="inspectimage_8hxx-source.html">vigra/inspectimage.hxx</a>"<br>
+    <b>\#include</b> \<<a href="inspectimage_8hxx-source.html">vigra/inspectimage.hxx</a>\><br>
         Namespace: vigra
 
     \code
@@ -1116,11 +1116,11 @@ class FunctorTraits<FindROISize<VALUETYPE> >
     <b> Traits defined:</b>
     
     <tt>FunctorTraits::isUnaryAnalyser</tt> and <tt>FunctorTraits::isInitializer</tt>
-    are true (<tt>VigraTrueType<tt>)
+    are true (<tt>VigraTrueType</tt>)
     
     <b> Usage:</b>
 
-    <b>\#include</b> "<a href="inspectimage_8hxx-source.html">vigra/inspectimage.hxx</a>"<br>
+    <b>\#include</b> \<<a href="inspectimage_8hxx-source.html">vigra/inspectimage.hxx</a>\><br>
         Namespace: vigra
 
     \code
@@ -1262,11 +1262,11 @@ class FunctorTraits<FindBoundingRectangle>
     <b> Traits defined:</b>
     
     <tt>FunctorTraits::isUnaryAnalyser</tt> and <tt>FunctorTraits::isInitializer</tt>
-    are true (<tt>VigraTrueType<tt>)
+    are true (<tt>VigraTrueType</tt>)
     
     <b> Usage:</b>
 
-    <b>\#include</b> "<a href="inspectimage_8hxx-source.html">vigra/inspectimage.hxx</a>"<br>
+    <b>\#include</b> \<<a href="inspectimage_8hxx-source.html">vigra/inspectimage.hxx</a>\><br>
         Namespace: vigra
 
     \code
@@ -1357,11 +1357,11 @@ class FunctorTraits<LastValueFunctor<VALUETYPE> >
     
     <tt>FunctorTraits::isUnaryAnalyser</tt>, <tt>FunctorTraits::isBinaryAnalyser</tt> 
     and <tt>FunctorTraits::isInitializer</tt>
-    are true (<tt>VigraTrueType<tt>)
+    are true (<tt>VigraTrueType</tt>)
     
     <b> Usage:</b>
 
-    <b>\#include</b> "<a href="inspectimage_8hxx-source.html">vigra/inspectimage.hxx</a>"<br>
+    <b>\#include</b> \<<a href="inspectimage_8hxx-source.html">vigra/inspectimage.hxx</a>\><br>
         Namespace: vigra
 
     \code
@@ -1491,11 +1491,11 @@ class FunctorTraits<ReduceFunctor<FUNCTOR, VALUETYPE> >
     <b> Traits defined:</b>
     
     <tt>FunctorTraits::isBinaryAnalyser</tt> and <tt>FunctorTraits::isUnaryFunctor</tt>
-    are true (<tt>VigraTrueType<tt>)
+    are true (<tt>VigraTrueType</tt>)
     
     <b> Usage:</b>
 
-    <b>\#include</b> "<a href="inspectimage_8hxx-source.html">vigra/inspectimage.hxx</a>"<br>
+    <b>\#include</b> \<<a href="inspectimage_8hxx-source.html">vigra/inspectimage.hxx</a>\><br>
         Namespace: vigra
 
     \code

@@ -59,7 +59,7 @@ class ArrayVector;
     dependent views. The rules what operations invalidate view objects are the
     same as the rules concerning standard iterators.
 
-    <b>\#include</b> "<a href="array__vector_8hxx-source.html">vigra/array_vector.hxx</a>"<br>
+    <b>\#include</b> \<<a href="array__vector_8hxx-source.html">vigra/array_vector.hxx</a>\><br>
     Namespace: vigra
 */
 template <class T>
@@ -442,7 +442,7 @@ ArrayVectorView <T>::swapDataImpl(const ArrayVectorView <U>& rhs)
     Refer to the documentation of <tt>std::vector</tt> for a detailed
     description of <tt>ArrayVector</tt> functionality.
 
-    <b>\#include</b> "<a href="array__vector_8hxx-source.html">vigra/array_vector.hxx</a>"<br>
+    <b>\#include</b> \<<a href="array__vector_8hxx-source.html">vigra/array_vector.hxx</a>\><br>
     Namespace: vigra
 */
 template <class T, class Alloc /* = std::allocator<T> */ >

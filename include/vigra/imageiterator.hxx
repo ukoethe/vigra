@@ -628,7 +628,7 @@ class LinearIteratorSelector<StridedArrayTag>
     It is usually not constructed directly, but via some derived class such as
     \ref ImageIterator or \ref StridedImageIterator.
 
-    <b>\#include</b> "<a href="imageiterator_8hxx-source.html">vigra/imageiterator.hxx</a>"
+    <b>\#include</b> \<<a href="imageiterator_8hxx-source.html">vigra/imageiterator.hxx</a>\>
 
     Namespace: vigra
 
@@ -928,7 +928,7 @@ class ImageIteratorBase
     <a href="documents/GenericProg2D.ps">Reusable Algorithms in Image Processing</a>
     for a discussion of the concepts behind ImageIterators.
 
-    <b>\#include</b> "<a href="imageiterator_8hxx-source.html">vigra/imageiterator.hxx</a>"
+    <b>\#include</b> \<<a href="imageiterator_8hxx-source.html">vigra/imageiterator.hxx</a>\>
 
     Namespace: vigra
 
@@ -974,7 +974,7 @@ class ImageIterator
 
     Most functions are inherited from ImageIteratorBase.
 
-    <b>\#include</b> "<a href="imageiterator_8hxx-source.html">vigra/imageiterator.hxx</a>"
+    <b>\#include</b> \<<a href="imageiterator_8hxx-source.html">vigra/imageiterator.hxx</a>\>
 
     Namespace: vigra
 
@@ -1048,7 +1048,7 @@ class ConstImageIterator
     // the original resolution in either dimension
     \endcode
 
-    <b>\#include</b> "<a href="imageiterator_8hxx-source.html">vigra/imageiterator.hxx</a>"
+    <b>\#include</b> \<<a href="imageiterator_8hxx-source.html">vigra/imageiterator.hxx</a>\>
 
     Namespace: vigra
 
@@ -1109,7 +1109,7 @@ class StridedImageIterator
     // the original resolution in either dimension
     \endcode
 
-    <b>\#include</b> "<a href="imageiterator_8hxx-source.html">vigra/imageiterator.hxx</a>"
+    <b>\#include</b> \<<a href="imageiterator_8hxx-source.html">vigra/imageiterator.hxx</a>\>
 
     Namespace: vigra
 
@@ -1373,7 +1373,7 @@ class ConstValueIteratorPolicy
     This iterator can be used to simulate an image that
     does not actually exist.
 
-    <b>\#include</b> "<a href="imageiterator_8hxx-source.html">vigra/imageiterator.hxx</a>"
+    <b>\#include</b> \<<a href="imageiterator_8hxx-source.html">vigra/imageiterator.hxx</a>\>
 
     Namespace: vigra
 
@@ -1647,7 +1647,7 @@ typedef Diff2D CoordinateIterator;
                                 ", " << center.yCenter() << std::endl;
     \endcode
 
-    <b>\#include</b> "<a href="imageiterator_8hxx-source.html">vigra/imageiterator.hxx</a>"
+    <b>\#include</b> \<<a href="imageiterator_8hxx-source.html">vigra/imageiterator.hxx</a>\>
 
     Namespace: vigra
 

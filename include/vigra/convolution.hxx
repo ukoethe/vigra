@@ -49,55 +49,33 @@
 
     1D and 2D filters, including separable and recursive convolution, and non-linear diffusion
 
-    <b>\#include</b> "<a href="convolution_8hxx-source.html">vigra/convolution.hxx</a>"<br>
+    <b>\#include</b> \<<a href="convolution_8hxx-source.html">vigra/convolution.hxx</a>\><br>
     Namespace: vigra
 
-    <DL>
-    <DT>
-        <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif">
-        \ref CommonConvolutionFilters
-        <DD><em>Short-hands for the most common 2D convolution filters</em>
-    <DT>
-        <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif">
-        \ref MultiArrayConvolutionFilters
-        <DD><em>Convolution filters for arbitrary dimensional arrays (MultiArray etc.)</em>
-    <DT>
-        <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif">
-        \ref ResamplingConvolutionFilters
-        <DD><em>Resampling convolution filters</em>
-    <DT>
-        <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif">
-        \ref StandardConvolution
-        <DD><em>2D non-separable convolution, with and without ROI mask </em>
-    <DT>
-        <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif">
-        \ref vigra::Kernel2D
-        <DD><em>Generic 2-dimensional discrete convolution kernel </em>
-    <DT>
-        <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif">
-        \ref SeparableConvolution
-        <DD> <em>1D convolution and separable filters in 2 dimensions </em>
-    <DT>
-        <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif">
-        \ref vigra::Kernel1D
-        <DD> <em>Generic 1-dimensional discrete convolution kernel </em>
-    <DT>
-        <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif">
-        \ref RecursiveConvolution
-        <DD> <em>Recursive filters (1st and 2nd order)</em>
-    <DT>
-        <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif">
-        \ref NonLinearDiffusion
-        <DD> <em>Edge-preserving smoothing </em>
-    <DT>
-        <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif">
-        \ref BorderTreatmentMode
-        <DD><em>Choose between different border treatment modes </em>
-    <DT>
-        <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif">
-        \ref KernelArgumentObjectFactories
-        <DD> <em>Factory functions to create argument objects to simplify passing kernels</em>
-    </DL>
+    <UL style="list-style-image:url(documents/bullet.gif)">
+    <LI> \ref CommonConvolutionFilters
+         <BR>&nbsp;&nbsp;&nbsp;<em>Short-hands for the most common 2D convolution filters</em>
+    <LI> \ref MultiArrayConvolutionFilters
+         <BR>&nbsp;&nbsp;&nbsp;<em>Convolution filters for arbitrary dimensional arrays (MultiArray etc.)</em>
+    <LI> \ref ResamplingConvolutionFilters
+         <BR>&nbsp;&nbsp;&nbsp;<em>Resampling convolution filters</em>
+    <LI> \ref StandardConvolution
+         <BR>&nbsp;&nbsp;&nbsp;<em>2D non-separable convolution, with and without ROI mask </em>
+    <LI> \ref vigra::Kernel2D
+         <BR>&nbsp;&nbsp;&nbsp;<em>Generic 2-dimensional discrete convolution kernel </em>
+    <LI> \ref SeparableConvolution
+         <BR>&nbsp;&nbsp;&nbsp;<em>1D convolution and separable filters in 2 dimensions </em>
+    <LI> \ref vigra::Kernel1D
+         <BR>&nbsp;&nbsp;&nbsp;<em>Generic 1-dimensional discrete convolution kernel </em>
+    <LI> \ref RecursiveConvolution
+         <BR>&nbsp;&nbsp;&nbsp;<em>Recursive filters (1st and 2nd order)</em>
+    <LI> \ref NonLinearDiffusion
+         <BR>&nbsp;&nbsp;&nbsp;<em>Edge-preserving smoothing </em>
+    <LI> \ref BorderTreatmentMode
+         <BR>&nbsp;&nbsp;&nbsp;<em>Choose between different border treatment modes </em>
+    <LI> \ref KernelArgumentObjectFactories
+         <BR>&nbsp;&nbsp;&nbsp;<em>Factory functions to create argument objects to simplify passing kernels</em>
+    </UL>
 */
 
 /** \page KernelArgumentObjectFactories Kernel Argument Object Factories
@@ -219,8 +197,7 @@ namespace vigra {
 /** \addtogroup CommonConvolutionFilters Common Filters
 
     These functions calculate common filters by appropriate sequences of calls 
-    to \link SeparableConvolution#separableConvolveX separableConvolveX\endlink()
-    and \link SeparableConvolution#separableConvolveY separableConvolveY\endlink().
+    to \ref separableConvolveX() and \ref separableConvolveY().
 */
 //@{
 
@@ -234,8 +211,7 @@ namespace vigra {
            the second in y-direction.
 
     This function is a shorthand for the concatenation of a call to
-    \link SeparableConvolution#separableConvolveX separableConvolveX\endlink()
-    and \link SeparableConvolution#separableConvolveY separableConvolveY\endlink() 
+    \ref separableConvolveX() and \ref separableConvolveY() 
     with the given kernels.
 
     <b> Declarations:</b>
@@ -254,7 +230,7 @@ namespace vigra {
     \endcode
 
 
-    use argument objects in conjunction with \ref ArgumentObjectFactories:
+    use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
         template <class SrcIterator, class SrcAccessor,
@@ -269,7 +245,7 @@ namespace vigra {
 
     <b> Usage:</b>
 
-    <b>\#include</b> "<a href="convolution_8hxx-source.html">vigra/convolution.hxx</a>"
+    <b>\#include</b> \<<a href="convolution_8hxx-source.html">vigra/convolution.hxx</a>\>
 
 
     \code
@@ -325,7 +301,7 @@ convolveImage(triple<SrcIterator, SrcIterator, SrcAccessor> src,
 
 /** \brief Perform simple sharpening function.
 
-    This function use \link StandardConvolution#convolveImage convolveImage\endlink( ) with following filter:
+    This function use \ref convolveImage() with following filter:
     
     \code
     -sharpening_factor/16.0,    -sharpening_factor/8.0,    -sharpening_factor/16.0,
@@ -357,7 +333,7 @@ convolveImage(triple<SrcIterator, SrcIterator, SrcAccessor> src,
     \endcode
 
 
-    use argument objects in conjunction with \ref ArgumentObjectFactories:
+    use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
       template <class SrcIterator, class SrcAccessor, 
@@ -375,7 +351,7 @@ convolveImage(triple<SrcIterator, SrcIterator, SrcAccessor> src,
 
     <b> Usage:</b>
 
-    <b>\#include</b> "<a href="convolution_8hxx-source.html">vigra/convolution.hxx</a>"
+    <b>\#include</b> \<<a href="convolution_8hxx-source.html">vigra/convolution.hxx</a>\>
 
 
     \code
@@ -428,8 +404,7 @@ void simpleSharpening(triple<SrcIterator, SrcIterator, SrcAccessor> src,
 /** \brief Perform sharpening function with gaussian filter.
 
 
-    This function use the 
-    \link vigra::gaussianSmoothing gaussianSmoothing \endlink()
+    This function use the \ref gaussianSmoothing()
     at first and scale the source image 
     (\code src \endcode) with the \code scale \endcode
     factor in an temporary image (\code tmp \endcode). At second the new 
@@ -459,7 +434,7 @@ void simpleSharpening(triple<SrcIterator, SrcIterator, SrcAccessor> src,
     \endcode
 
 
-    use argument objects in conjunction with \ref ArgumentObjectFactories:
+    use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
       template <class SrcIterator, class SrcAccessor,
@@ -472,7 +447,7 @@ void simpleSharpening(triple<SrcIterator, SrcIterator, SrcAccessor> src,
 
     <b> Usage:</b>
 
-    <b>\#include</b> "<a href="convolution_8hxx-source.html">vigra/convolution.hxx</a>"
+    <b>\#include</b> \<<a href="convolution_8hxx-source.html">vigra/convolution.hxx</a>\>
 
 
     \code
@@ -543,8 +518,7 @@ void gaussianSharpening(triple<SrcIterator, SrcIterator, SrcAccessor> src,
 /** \brief Perform isotropic Gaussian convolution.
 
     This function is a shorthand for the concatenation of a call to
-    \link SeparableConvolution#separableConvolveX separableConvolveX\endlink()
-    and \link SeparableConvolution#separableConvolveY separableConvolveY\endlink() with a
+    \ref separableConvolveX() and \ref separableConvolveY() with a
     Gaussian kernel of the given scale. The function uses 
     <TT>BORDER_TREATMENT_REFLECT</TT>.
 
@@ -563,7 +537,7 @@ void gaussianSharpening(triple<SrcIterator, SrcIterator, SrcAccessor> src,
     \endcode
 
 
-    use argument objects in conjunction with \ref ArgumentObjectFactories:
+    use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
         template <class SrcIterator, class SrcAccessor,
@@ -577,7 +551,7 @@ void gaussianSharpening(triple<SrcIterator, SrcIterator, SrcAccessor> src,
 
     <b> Usage:</b>
 
-    <b>\#include</b> "<a href="convolution_8hxx-source.html">vigra/convolution.hxx</a>"
+    <b>\#include</b> \<<a href="convolution_8hxx-source.html">vigra/convolution.hxx</a>\>
 
 
     \code
@@ -633,8 +607,7 @@ gaussianSmoothing(triple<SrcIterator, SrcIterator, SrcAccessor> src,
     Gaussian filter.
 
     This function is a shorthand for the concatenation of a call to
-    \link SeparableConvolution#separableConvolveX separableConvolveX\endlink()
-    and \link SeparableConvolution#separableConvolveY separableConvolveY\endlink() with the
+    \ref separableConvolveX() and \ref separableConvolveY() with the
     appropriate kernels at the given scale. Note that this function can either produce
     two separate result images for the x- and y-components of the gradient, or write
     into a vector valued image (with at least two components).
@@ -665,7 +638,7 @@ gaussianSmoothing(triple<SrcIterator, SrcIterator, SrcAccessor> src,
     \endcode
 
 
-    use argument objects in conjunction with \ref ArgumentObjectFactories:
+    use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
         // write x and y component of the gradient into separate images
@@ -690,7 +663,7 @@ gaussianSmoothing(triple<SrcIterator, SrcIterator, SrcAccessor> src,
 
     <b> Usage:</b>
 
-    <b>\#include</b> "<a href="convolution_8hxx-source.html">vigra/convolution.hxx</a>"
+    <b>\#include</b> \<<a href="convolution_8hxx-source.html">vigra/convolution.hxx</a>\>
 
 
     \code
@@ -791,7 +764,7 @@ gaussianGradient(triple<SrcIterator, SrcIterator, SrcAccessor> src,
     \endcode
 
 
-    use argument objects in conjunction with \ref ArgumentObjectFactories:
+    use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
         template <class SrcIterator, class SrcAccessor,
@@ -805,7 +778,7 @@ gaussianGradient(triple<SrcIterator, SrcIterator, SrcAccessor> src,
 
     <b> Usage:</b>
 
-    <b>\#include</b> "<a href="convolution_8hxx-source.html">vigra/convolution.hxx</a>"
+    <b>\#include</b> \<<a href="convolution_8hxx-source.html">vigra/convolution.hxx</a>\>
 
 
     \code
@@ -854,8 +827,7 @@ gaussianGradientMagnitude(triple<SrcIterator, SrcIterator, SrcAccessor> src,
 /** \brief Filter image with the Laplacian of Gaussian operator
     at the given scale.
 
-    This function calls \link SeparableConvolution#separableConvolveX separableConvolveX\endlink() and
-    \link SeparableConvolution#separableConvolveY separableConvolveY\endlink() with the appropriate 2nd derivative
+    This function calls \ref separableConvolveX() and \ref separableConvolveY() with the appropriate 2nd derivative
     of Gaussian kernels in x- and y-direction and then sums the results
     to get the Laplacian.
 
@@ -874,7 +846,7 @@ gaussianGradientMagnitude(triple<SrcIterator, SrcIterator, SrcAccessor> src,
     \endcode
 
 
-    use argument objects in conjunction with \ref ArgumentObjectFactories:
+    use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
         template <class SrcIterator, class SrcAccessor,
@@ -888,7 +860,7 @@ gaussianGradientMagnitude(triple<SrcIterator, SrcIterator, SrcAccessor> src,
 
     <b> Usage:</b>
 
-    <b>\#include</b> "<a href="convolution_8hxx-source.html">vigra/convolution.hxx</a>"
+    <b>\#include</b> \<<a href="convolution_8hxx-source.html">vigra/convolution.hxx</a>\>
 
 
     \code
@@ -964,8 +936,7 @@ laplacianOfGaussian(triple<SrcIterator, SrcIterator, SrcAccessor> src,
     where \f$G_{xx}, G_{xy}, G_{yy}\f$ denote 2nd derivatives of Gaussians
     at the given scale, and
     \f$\ast\f$ is the convolution symbol. This function calls
-    \link SeparableConvolution#separableConvolveX separableConvolveX\endlink() and
-    \link SeparableConvolution#separableConvolveY separableConvolveY\endlink()
+    \ref separableConvolveX() and \ref separableConvolveY()
     with the appropriate 2nd derivative
     of Gaussian kernels and puts the results in
     the three destination images. The first destination image will
@@ -991,7 +962,7 @@ laplacianOfGaussian(triple<SrcIterator, SrcIterator, SrcAccessor> src,
     \endcode
 
 
-    use argument objects in conjunction with \ref ArgumentObjectFactories:
+    use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
         template <class SrcIterator, class SrcAccessor,
@@ -1009,7 +980,7 @@ laplacianOfGaussian(triple<SrcIterator, SrcIterator, SrcAccessor> src,
 
     <b> Usage:</b>
 
-    <b>\#include</b> "<a href="convolution_8hxx-source.html">vigra/convolution.hxx</a>"
+    <b>\#include</b> \<<a href="convolution_8hxx-source.html">vigra/convolution.hxx</a>\>
 
 
     \code
@@ -1104,8 +1075,7 @@ hessianMatrixOfGaussian(triple<SrcIterator, SrcIterator, SrcAccessor> src,
     \f$I_x, I_y\f$ are the gradient components taken at the <i>inner scale</i>,
     \f$\ast\f$ is the convolution symbol, and \f$I_x I_x\f$ etc. are pixelwise
     products of the 1st derivative images. This function calls
-    \link SeparableConvolution#separableConvolveX separableConvolveX\endlink()
-    and \link SeparableConvolution#separableConvolveY separableConvolveY\endlink() with the
+    \ref separableConvolveX() and \ref separableConvolveY() with the
     appropriate Gaussian kernels and puts the results in
     the three separate destination images (where the first one will
     contain \f$G \ast (I_x I_x)\f$, the second one \f$G \ast (I_x I_y)\f$, and the
@@ -1142,7 +1112,7 @@ hessianMatrixOfGaussian(triple<SrcIterator, SrcIterator, SrcAccessor> src,
     \endcode
 
 
-    use argument objects in conjunction with \ref ArgumentObjectFactories:
+    use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
         // create three separate destination images
@@ -1169,7 +1139,7 @@ hessianMatrixOfGaussian(triple<SrcIterator, SrcIterator, SrcAccessor> src,
 
     <b> Usage:</b>
 
-    <b>\#include</b> "<a href="convolution_8hxx-source.html">vigra/convolution.hxx</a>"
+    <b>\#include</b> \<<a href="convolution_8hxx-source.html">vigra/convolution.hxx</a>\>
 
 
     \code

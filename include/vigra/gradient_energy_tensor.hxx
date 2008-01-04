@@ -93,7 +93,7 @@ namespace vigra {
     }
     \endcode
 
-    use argument objects in conjunction with \ref ArgumentObjectFactories:
+    use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
         template <class SrcIterator, class SrcAccessor,
@@ -106,7 +106,7 @@ namespace vigra {
 
     <b> Usage:</b>
 
-    <b>\#include</b> "<a href="gradient__energy__tensor_8hxx-source.html">vigra/gradient_energy_tensor.hxx</a>"
+    <b>\#include</b> \<<a href="gradient__energy__tensor_8hxx-source.html">vigra/gradient_energy_tensor.hxx</a>\>
 
     \code
     FImage img(w,h);

@@ -316,7 +316,7 @@ internalDistanceTransform(SrcImageIterator src_upperleft,
     \endcode
     
     
-    use argument objects in conjunction with \ref ArgumentObjectFactories:
+    use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
         template <class SrcImageIterator, class SrcAccessor,
@@ -331,7 +331,7 @@ internalDistanceTransform(SrcImageIterator src_upperleft,
     
     <b> Usage:</b>
     
-    <b>\#include</b> "<a href="distancetransform_8hxx-source.html">vigra/distancetransform.hxx</a>"<br>
+    <b>\#include</b> \<<a href="distancetransform_8hxx-source.html">vigra/distancetransform.hxx</a>\><br>
     Namespace: vigra
     
     

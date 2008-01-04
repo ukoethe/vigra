@@ -89,7 +89,7 @@ namespace vigra{
     }
     \endcode
 
-    use argument objects in conjunction with \ref ArgumentObjectFactories:
+    use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
 
@@ -126,7 +126,7 @@ namespace vigra{
 
     <b> Usage:</b>
 
-    <b>\#include</b> "<a href="labelvolume_8hxx-source.html">vigra/labelvolume.hxx</a>"<br>
+    <b>\#include</b> \<<a href="labelvolume_8hxx-source.html">vigra/labelvolume.hxx</a>\><br>
     Namespace: vigra
 
     \code
@@ -432,7 +432,7 @@ unsigned int labelVolume(SrcIterator s_Iter, SrcShape srcShape, SrcAccessor sa,
     }
     \endcode
 
-    use argument objects in conjunction with \ref ArgumentObjectFactories:
+    use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
 
@@ -458,7 +458,7 @@ unsigned int labelVolume(SrcIterator s_Iter, SrcShape srcShape, SrcAccessor sa,
 
     <b> Usage:</b>
 
-    <b>\#include</b> "<a href="labelvolume_8hxx-source.html">vigra/labelvolume.hxx</a>"<br>
+    <b>\#include</b> \<<a href="labelvolume_8hxx-source.html">vigra/labelvolume.hxx</a>\><br>
     Namespace: vigra
 
     \code

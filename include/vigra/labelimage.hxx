@@ -92,7 +92,7 @@ namespace vigra {
     }
     \endcode
 
-    use argument objects in conjunction with \ref ArgumentObjectFactories:
+    use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
         template <class SrcIterator, class SrcAccessor,
@@ -114,7 +114,7 @@ namespace vigra {
 
     <b> Usage:</b>
 
-        <b>\#include</b> "<a href="labelimage_8hxx-source.html">vigra/labelimage.hxx</a>"<br>
+        <b>\#include</b> \<<a href="labelimage_8hxx-source.html">vigra/labelimage.hxx</a>\><br>
     Namespace: vigra
 
     \code
@@ -378,7 +378,7 @@ unsigned int labelImage(triple<SrcIterator, SrcIterator, SrcAccessor> src,
     }
     \endcode
 
-    use argument objects in conjunction with \ref ArgumentObjectFactories:
+    use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
         template <class SrcIterator, class SrcAccessor,
@@ -405,7 +405,7 @@ unsigned int labelImage(triple<SrcIterator, SrcIterator, SrcAccessor> src,
 
     <b> Usage:</b>
 
-        <b>\#include</b> "<a href="labelimage_8hxx-source.html">vigra/labelimage.hxx</a>"<br>
+        <b>\#include</b> \<<a href="labelimage_8hxx-source.html">vigra/labelimage.hxx</a>\><br>
     Namespace: vigra
 
     \code
@@ -675,7 +675,7 @@ unsigned int labelImageWithBackground(
     }
     \endcode
 
-    use argument objects in conjunction with \ref ArgumentObjectFactories:
+    use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
         template <class SrcIterator, class SrcAccessor,
@@ -690,7 +690,7 @@ unsigned int labelImageWithBackground(
 
     <b> Usage:</b>
 
-        <b>\#include</b> "<a href="labelimage_8hxx-source.html">vigra/labelimage.hxx</a>"<br>
+        <b>\#include</b> \<<a href="labelimage_8hxx-source.html">vigra/labelimage.hxx</a>\><br>
     Namespace: vigra
 
     \code
@@ -886,7 +886,7 @@ void regionImageToCrackEdgeImage(
     }
     \endcode
 
-    use argument objects in conjunction with \ref ArgumentObjectFactories:
+    use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
         template <class SrcIterator, class SrcAccessor,
@@ -901,7 +901,7 @@ void regionImageToCrackEdgeImage(
 
     <b> Usage:</b>
 
-        <b>\#include</b> "<a href="labelimage_8hxx-source.html">vigra/labelimage.hxx</a>"<br>
+        <b>\#include</b> \<<a href="labelimage_8hxx-source.html">vigra/labelimage.hxx</a>\><br>
     Namespace: vigra
 
     \code

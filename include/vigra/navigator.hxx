@@ -63,7 +63,7 @@ namespace vigra {
 
     <b>Usage:</b>
 
-    <b>\#include</b> "<a href="navigator_8hxx-source.html">vigra/navigator.hxx</a>"
+    <b>\#include</b> \<<a href="navigator_8hxx-source.html">vigra/navigator.hxx</a>\>
 
     Namespace: vigra
 

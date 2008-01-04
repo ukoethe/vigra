@@ -57,7 +57,7 @@ namespace vigra {
         It uses \ref vigra::BasicImageIterator and \ref vigra::StandardAccessor and 
         their const counterparts to access the data.
         
-        <b>\#include</b> "<a href="stdimage_8hxx-source.html">vigra/stdimage.hxx</a>"<br>
+        <b>\#include</b> \<<a href="stdimage_8hxx-source.html">vigra/stdimage.hxx</a>\><br>
         Namespace: vigra
     */
 typedef BasicImage<UInt8> BImage;
@@ -66,7 +66,7 @@ typedef BasicImage<UInt8> BImage;
         It uses \ref vigra::BasicImageIterator and \ref vigra::StandardAccessor and 
         their const counterparts to access the data.
         
-        <b>\#include</b> "<a href="stdimage_8hxx-source.html">vigra/stdimage.hxx</a>"<br>
+        <b>\#include</b> \<<a href="stdimage_8hxx-source.html">vigra/stdimage.hxx</a>\><br>
         Namespace: vigra
     */
 typedef BasicImage<UInt8> UInt8Image;
@@ -75,7 +75,7 @@ typedef BasicImage<UInt8> UInt8Image;
         It uses \ref vigra::BasicImageIterator and \ref vigra::StandardAccessor and 
         their const counterparts to access the data.
         
-        <b>\#include</b> "<a href="stdimage_8hxx-source.html">vigra/stdimage.hxx</a>"<br>
+        <b>\#include</b> \<<a href="stdimage_8hxx-source.html">vigra/stdimage.hxx</a>\><br>
         Namespace: vigra
     */
 typedef BasicImage<Int8> Int8Image;
@@ -84,7 +84,7 @@ typedef BasicImage<Int8> Int8Image;
         It uses \ref vigra::BasicImageIterator and \ref vigra::StandardAccessor and 
         their const counterparts to access the data.
         
-        <b>\#include</b> "<a href="stdimage_8hxx-source.html">vigra/stdimage.hxx</a>"<br>
+        <b>\#include</b> \<<a href="stdimage_8hxx-source.html">vigra/stdimage.hxx</a>\><br>
         Namespace: vigra
     */
 typedef BasicImage<Int16> SImage;
@@ -93,7 +93,7 @@ typedef BasicImage<Int16> SImage;
         It uses \ref vigra::BasicImageIterator and \ref vigra::StandardAccessor and 
         their const counterparts to access the data.
         
-        <b>\#include</b> "<a href="stdimage_8hxx-source.html">vigra/stdimage.hxx</a>"<br>
+        <b>\#include</b> \<<a href="stdimage_8hxx-source.html">vigra/stdimage.hxx</a>\><br>
         Namespace: vigra
     */
 typedef BasicImage<UInt16> UInt16Image;
@@ -102,7 +102,7 @@ typedef BasicImage<UInt16> UInt16Image;
         It uses \ref vigra::BasicImageIterator and \ref vigra::StandardAccessor and 
         their const counterparts to access the data.
         
-        <b>\#include</b> "<a href="stdimage_8hxx-source.html">vigra/stdimage.hxx</a>"<br>
+        <b>\#include</b> \<<a href="stdimage_8hxx-source.html">vigra/stdimage.hxx</a>\><br>
         Namespace: vigra
     */
 typedef BasicImage<Int16> Int16Image;
@@ -111,7 +111,7 @@ typedef BasicImage<Int16> Int16Image;
         It uses \ref vigra::BasicImageIterator and \ref vigra::StandardAccessor and 
         their const counterparts to access the data.
         
-        <b>\#include</b> "<a href="stdimage_8hxx-source.html">vigra/stdimage.hxx</a>"<br>
+        <b>\#include</b> \<<a href="stdimage_8hxx-source.html">vigra/stdimage.hxx</a>\><br>
         Namespace: vigra
     */
 typedef BasicImage<Int32> IImage;
@@ -120,7 +120,7 @@ typedef BasicImage<Int32> IImage;
         It uses \ref vigra::BasicImageIterator and \ref vigra::StandardAccessor and 
         their const counterparts to access the data.
         
-        <b>\#include</b> "<a href="stdimage_8hxx-source.html">vigra/stdimage.hxx</a>"<br>
+        <b>\#include</b> \<<a href="stdimage_8hxx-source.html">vigra/stdimage.hxx</a>\><br>
         Namespace: vigra
     */
 typedef BasicImage<UInt32> UInt32Image;
@@ -129,7 +129,7 @@ typedef BasicImage<UInt32> UInt32Image;
         It uses \ref vigra::BasicImageIterator and \ref vigra::StandardAccessor and 
         their const counterparts to access the data.
         
-        <b>\#include</b> "<a href="stdimage_8hxx-source.html">vigra/stdimage.hxx</a>"<br>
+        <b>\#include</b> \<<a href="stdimage_8hxx-source.html">vigra/stdimage.hxx</a>\><br>
         Namespace: vigra
     */
 typedef BasicImage<Int32> Int32Image;
@@ -138,7 +138,7 @@ typedef BasicImage<Int32> Int32Image;
         It uses \ref vigra::BasicImageIterator and \ref vigra::StandardAccessor and 
         their const counterparts to access the data.
         
-        <b>\#include</b> "<a href="stdimage_8hxx-source.html">vigra/stdimage.hxx</a>"<br>
+        <b>\#include</b> \<<a href="stdimage_8hxx-source.html">vigra/stdimage.hxx</a>\><br>
         Namespace: vigra
     */
 typedef BasicImage<float> FImage;
@@ -148,7 +148,7 @@ typedef BasicImage<float> FImage;
         It uses \ref vigra::BasicImageIterator and \ref vigra::StandardAccessor and 
         their const counterparts to access the data.
    
-       <b>\#include</b> "<a href="stdimage_8hxx-source.html">vigra/stdimage.hxx</a>"<br>
+       <b>\#include</b> \<<a href="stdimage_8hxx-source.html">vigra/stdimage.hxx</a>\><br>
         Namespace: vigra
  */
 typedef BasicImage<double> DImage;
@@ -159,7 +159,7 @@ typedef BasicImage<double> DImage;
         It uses \ref vigra::BasicImageIterator and \ref vigra::RGBAccessor and 
         their const counterparts to access the data.
         
-        <b>\#include</b> "<a href="stdimage_8hxx-source.html">vigra/stdimage.hxx</a>"<br>
+        <b>\#include</b> \<<a href="stdimage_8hxx-source.html">vigra/stdimage.hxx</a>\><br>
         Namespace: vigra
     */
 typedef BasicImage<RGBValue<UInt8> > BRGBImage;
@@ -169,7 +169,7 @@ typedef BasicImage<RGBValue<UInt8> > BRGBImage;
         It uses \ref vigra::BasicImageIterator and \ref vigra::RGBAccessor and 
         their const counterparts to access the data.
         
-        <b>\#include</b> "<a href="stdimage_8hxx-source.html">vigra/stdimage.hxx</a>"<br>
+        <b>\#include</b> \<<a href="stdimage_8hxx-source.html">vigra/stdimage.hxx</a>\><br>
         Namespace: vigra
     */
 typedef BasicImage<RGBValue<UInt8> > UInt8RGBImage;
@@ -179,7 +179,7 @@ typedef BasicImage<RGBValue<UInt8> > UInt8RGBImage;
         It uses \ref vigra::BasicImageIterator and \ref vigra::RGBAccessor and 
         their const counterparts to access the data.
         
-        <b>\#include</b> "<a href="stdimage_8hxx-source.html">vigra/stdimage.hxx</a>"<br>
+        <b>\#include</b> \<<a href="stdimage_8hxx-source.html">vigra/stdimage.hxx</a>\><br>
         Namespace: vigra
     */
 typedef BasicImage<RGBValue<Int8> > Int8RGBImage;
@@ -189,7 +189,7 @@ typedef BasicImage<RGBValue<Int8> > Int8RGBImage;
         It uses \ref vigra::BasicImageIterator and \ref vigra::RGBAccessor and 
         their const counterparts to access the data.
         
-        <b>\#include</b> "<a href="stdimage_8hxx-source.html">vigra/stdimage.hxx</a>"<br>
+        <b>\#include</b> \<<a href="stdimage_8hxx-source.html">vigra/stdimage.hxx</a>\><br>
         Namespace: vigra
     */
 typedef BasicImage<RGBValue<Int16> > SRGBImage;
@@ -199,7 +199,7 @@ typedef BasicImage<RGBValue<Int16> > SRGBImage;
         It uses \ref vigra::BasicImageIterator and \ref vigra::RGBAccessor and 
         their const counterparts to access the data.
         
-        <b>\#include</b> "<a href="stdimage_8hxx-source.html">vigra/stdimage.hxx</a>"<br>
+        <b>\#include</b> \<<a href="stdimage_8hxx-source.html">vigra/stdimage.hxx</a>\><br>
         Namespace: vigra
     */
 typedef BasicImage<RGBValue<UInt16> > UInt16RGBImage;
@@ -209,7 +209,7 @@ typedef BasicImage<RGBValue<UInt16> > UInt16RGBImage;
         It uses \ref vigra::BasicImageIterator and \ref vigra::RGBAccessor and 
         their const counterparts to access the data.
         
-        <b>\#include</b> "<a href="stdimage_8hxx-source.html">vigra/stdimage.hxx</a>"<br>
+        <b>\#include</b> \<<a href="stdimage_8hxx-source.html">vigra/stdimage.hxx</a>\><br>
         Namespace: vigra
     */
 typedef BasicImage<RGBValue<Int16> > Int16RGBImage;
@@ -219,7 +219,7 @@ typedef BasicImage<RGBValue<Int16> > Int16RGBImage;
         It uses \ref vigra::BasicImageIterator and \ref vigra::RGBAccessor and 
         their const counterparts to access the data.
         
-        <b>\#include</b> "<a href="stdimage_8hxx-source.html">vigra/stdimage.hxx</a>"<br>
+        <b>\#include</b> \<<a href="stdimage_8hxx-source.html">vigra/stdimage.hxx</a>\><br>
         Namespace: vigra
     */
 typedef BasicImage<RGBValue<Int32> > IRGBImage;
@@ -229,7 +229,7 @@ typedef BasicImage<RGBValue<Int32> > IRGBImage;
         It uses \ref vigra::BasicImageIterator and \ref vigra::RGBAccessor and 
         their const counterparts to access the data.
         
-        <b>\#include</b> "<a href="stdimage_8hxx-source.html">vigra/stdimage.hxx</a>"<br>
+        <b>\#include</b> \<<a href="stdimage_8hxx-source.html">vigra/stdimage.hxx</a>\><br>
         Namespace: vigra
     */
 typedef BasicImage<RGBValue<UInt32> > UInt32RGBImage;
@@ -239,7 +239,7 @@ typedef BasicImage<RGBValue<UInt32> > UInt32RGBImage;
         It uses \ref vigra::BasicImageIterator and \ref vigra::RGBAccessor and 
         their const counterparts to access the data.
         
-        <b>\#include</b> "<a href="stdimage_8hxx-source.html">vigra/stdimage.hxx</a>"<br>
+        <b>\#include</b> \<<a href="stdimage_8hxx-source.html">vigra/stdimage.hxx</a>\><br>
         Namespace: vigra
     */
 typedef BasicImage<RGBValue<Int32> > Int32RGBImage;
@@ -250,7 +250,7 @@ typedef BasicImage<RGBValue<Int32> > Int32RGBImage;
         It uses \ref vigra::BasicImageIterator and \ref vigra::RGBAccessor and 
         their const counterparts to access the data.
         
-        <b>\#include</b> "<a href="stdimage_8hxx-source.html">vigra/stdimage.hxx</a>"<br>
+        <b>\#include</b> \<<a href="stdimage_8hxx-source.html">vigra/stdimage.hxx</a>\><br>
         Namespace: vigra
     */
 typedef BasicImage<RGBValue<float> > FRGBImage;
@@ -261,7 +261,7 @@ typedef BasicImage<RGBValue<float> > FRGBImage;
         It uses \ref vigra::BasicImageIterator and \ref vigra::RGBAccessor and 
         their const counterparts to access the data.
         
-        <b>\#include</b> "<a href="stdimage_8hxx-source.html">vigra/stdimage.hxx</a>"<br>
+        <b>\#include</b> \<<a href="stdimage_8hxx-source.html">vigra/stdimage.hxx</a>\><br>
         Namespace: vigra
     */
 typedef BasicImage<RGBValue<double> > DRGBImage;
@@ -271,7 +271,7 @@ typedef BasicImage<RGBValue<double> > DRGBImage;
         It uses \ref vigra::BasicImageIterator and \ref vigra::VectorAccessor and 
         their const counterparts to access the data.
         
-        <b>\#include</b> "<a href="stdimage_8hxx-source.html">vigra/stdimage.hxx</a>"<br>
+        <b>\#include</b> \<<a href="stdimage_8hxx-source.html">vigra/stdimage.hxx</a>\><br>
         Namespace: vigra
     */
 typedef BasicImage<TinyVector<float, 2> > FVector2Image; 
@@ -281,7 +281,7 @@ typedef BasicImage<TinyVector<float, 2> > FVector2Image;
         It uses \ref vigra::BasicImageIterator and \ref vigra::VectorAccessor and 
         their const counterparts to access the data.
         
-        <b>\#include</b> "<a href="stdimage_8hxx-source.html">vigra/stdimage.hxx</a>"<br>
+        <b>\#include</b> \<<a href="stdimage_8hxx-source.html">vigra/stdimage.hxx</a>\><br>
         Namespace: vigra
     */
 typedef BasicImage<TinyVector<float, 3> > FVector3Image; 
@@ -291,7 +291,7 @@ typedef BasicImage<TinyVector<float, 3> > FVector3Image;
         It uses \ref vigra::BasicImageIterator and \ref vigra::VectorAccessor and 
         their const counterparts to access the data.
         
-        <b>\#include</b> "<a href="stdimage_8hxx-source.html">vigra/stdimage.hxx</a>"<br>
+        <b>\#include</b> \<<a href="stdimage_8hxx-source.html">vigra/stdimage.hxx</a>\><br>
         Namespace: vigra
     */
 typedef BasicImage<TinyVector<float, 4> > FVector4Image; 
@@ -301,7 +301,7 @@ typedef BasicImage<TinyVector<float, 4> > FVector4Image;
         It uses \ref vigra::BasicImageIterator and \ref vigra::VectorAccessor and 
         their const counterparts to access the data.
         
-        <b>\#include</b> "<a href="stdimage_8hxx-source.html">vigra/stdimage.hxx</a>"<br>
+        <b>\#include</b> \<<a href="stdimage_8hxx-source.html">vigra/stdimage.hxx</a>\><br>
         Namespace: vigra
     */
 typedef BasicImage<TinyVector<double, 2> > DVector2Image; 
@@ -311,7 +311,7 @@ typedef BasicImage<TinyVector<double, 2> > DVector2Image;
         It uses \ref vigra::BasicImageIterator and \ref vigra::VectorAccessor and 
         their const counterparts to access the data.
         
-        <b>\#include</b> "<a href="stdimage_8hxx-source.html">vigra/stdimage.hxx</a>"<br>
+        <b>\#include</b> \<<a href="stdimage_8hxx-source.html">vigra/stdimage.hxx</a>\><br>
         Namespace: vigra
     */
 //typedef BasicImage<TinyVector<double, 3> > DVector3Image; 
@@ -322,7 +322,7 @@ typedef BasicImage<TinyVector<double, 3> > DVector3Image;
         It uses \ref vigra::BasicImageIterator and \ref vigra::VectorAccessor and 
         their const counterparts to access the data.
         
-        <b>\#include</b> "<a href="stdimage_8hxx-source.html">vigra/stdimage.hxx</a>"<br>
+        <b>\#include</b> \<<a href="stdimage_8hxx-source.html">vigra/stdimage.hxx</a>\><br>
         Namespace: vigra
     */
 typedef BasicImage<TinyVector<double, 4> > DVector4Image; 

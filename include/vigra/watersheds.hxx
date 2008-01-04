@@ -366,7 +366,7 @@ void prepareWatersheds(SrcIterator upperlefts, SrcIterator lowerrights, SrcAcces
     }
     \endcode
 
-    use argument objects in conjunction with \ref ArgumentObjectFactories:
+    use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
         template <class SrcIterator, class SrcAccessor,
@@ -381,7 +381,7 @@ void prepareWatersheds(SrcIterator upperlefts, SrcIterator lowerrights, SrcAcces
 
     <b> Usage:</b>
 
-    <b>\#include</b> "<a href="watersheds_8hxx-source.html">vigra/watersheds.hxx</a>"<br>
+    <b>\#include</b> \<<a href="watersheds_8hxx-source.html">vigra/watersheds.hxx</a>\><br>
     Namespace: vigra
 
     Example: watersheds of the gradient magnitude.

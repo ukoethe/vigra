@@ -365,7 +365,7 @@ class TinyVectorView;
     \ref TinyVector and \ref TinyVectorView, and enables these classes
     to be freely mixed within expressions. It is typically not used directly.
 
-    <b>\#include</b> "<a href="tinyvector_8hxx-source.html">vigra/tinyvector.hxx</a>"<br>
+    <b>\#include</b> \<<a href="tinyvector_8hxx-source.html">vigra/tinyvector.hxx</a>\><br>
     Namespace: vigra
 **/
 template <class VALUETYPE, int SIZE, class DATA, class DERIVED>
@@ -556,26 +556,14 @@ class TinyVectorBase
     TinyVectors as a whole, or specific components of them.
 
     See also:<br>
-    <DL>
-        <DT>
-            <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif">
-            \ref vigra::TinyVectorBase
-            <DD>
-        <DT>
-            <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif">
-            \ref vigra::TinyVectorView
-            <DD>
-        <DT>
-            <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif">
-            \ref TinyVectorTraits
-            <DD>
-        <DT>
-            <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif">
-            \ref TinyVectorOperators
-            <DD>
-    </DL>
+    <UL style="list-style-image:url(documents/bullet.gif)">
+        <LI> \ref vigra::TinyVectorBase
+        <LI> \ref vigra::TinyVectorView
+        <LI> \ref TinyVectorTraits
+        <LI> \ref TinyVectorOperators
+    </UL>
 
-    <b>\#include</b> "<a href="tinyvector_8hxx-source.html">vigra/tinyvector.hxx</a>"<br>
+    <b>\#include</b> \<<a href="tinyvector_8hxx-source.html">vigra/tinyvector.hxx</a>\><br>
     Namespace: vigra
 **/
 template <class T, int SIZE>
@@ -723,7 +711,7 @@ class TinyVector
         <li> \ref TinyVectorOperators
     </ul>
 
-    <b>\#include</b> "<a href="tinyvector_8hxx-source.html">vigra/tinyvector.hxx</a>"<br>
+    <b>\#include</b> \<<a href="tinyvector_8hxx-source.html">vigra/tinyvector.hxx</a>\><br>
     Namespace: vigra
 **/
 template <class T, int SIZE>
@@ -899,7 +887,7 @@ operator<<(std::ostream & out, TinyVectorBase<V1, SIZE, DATA, DERIVED> const & l
     };
     \endcode
 
-    <b>\#include</b> "<a href="tinyvector_8hxx-source.html">vigra/tinyvector.hxx</a>"<br>
+    <b>\#include</b> \<<a href="tinyvector_8hxx-source.html">vigra/tinyvector.hxx</a>\><br>
     Namespace: vigra
 
     On compilers that don't support pertial template specialization (e.g.

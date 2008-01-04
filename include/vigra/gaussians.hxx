@@ -55,7 +55,7 @@ namespace vigra {
     Implemented as a unary functor. Since it supports the <tt>radius()</tt> function
     it can also be used as a kernel in \ref resamplingConvolveImage().
 
-    <b>\#include</b> "<a href="gaussians_8hxx-source.html">vigra/gaussians.hxx</a>"<br>
+    <b>\#include</b> \<<a href="gaussians_8hxx-source.html">vigra/gaussians.hxx</a>\><br>
     Namespace: vigra
 
     \ingroup MathFunctions

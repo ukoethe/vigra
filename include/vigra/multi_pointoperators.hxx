@@ -58,7 +58,7 @@ namespace vigra
     specified by a pair: an iterator referring to the first point of the array 
     and a shape object specifying the size of the (rectangular) ROI.
 
-    <b>\#include</b> "<a href="multi__pointoperators_8hxx-source.html">vigra/multi_pointoperators.hxx</a>"
+    <b>\#include</b> \<<a href="multi__pointoperators_8hxx-source.html">vigra/multi_pointoperators.hxx</a>\>
 */
 //@{
 
@@ -114,7 +114,7 @@ initMultiArrayImpl(Iterator s, Shape const & shape, Accessor a,
     }
     \endcode
 
-    use argument objects in conjunction with \ref ArgumentObjectFactories:
+    use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
         template <class Iterator, class Shape, class Accessor, class VALUETYPE>
@@ -130,7 +130,7 @@ initMultiArrayImpl(Iterator s, Shape const & shape, Accessor a,
     
     <b> Usage:</b>
     
-    <b>\#include</b> "<a href="multi__pointoperators_8hxx-source.html">vigra/multi_pointoperators.hxx</a>"<br>
+    <b>\#include</b> \<<a href="multi__pointoperators_8hxx-source.html">vigra/multi_pointoperators.hxx</a>\><br>
     Namespace: vigra
     
     \code
@@ -299,7 +299,7 @@ copyMultiArrayImpl(SrcIterator s, SrcShape const & sshape, SrcAccessor src,
     
     <b> Declarations:</b>
     
-    <b>\#include</b> "<a href="multi__pointoperators_8hxx-source.html">vigra/multi_pointoperators.hxx</a>"<br>
+    <b>\#include</b> \<<a href="multi__pointoperators_8hxx-source.html">vigra/multi_pointoperators.hxx</a>\><br>
     Namespace: vigra
     
     pass arguments explicitly:
@@ -322,7 +322,7 @@ copyMultiArrayImpl(SrcIterator s, SrcShape const & sshape, SrcAccessor src,
     \endcode
     
     
-    use argument objects in conjunction with \ref ArgumentObjectFactories:
+    use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
         template <class SrcIterator, class SrcShape, class SrcAccessor,
@@ -598,7 +598,7 @@ transformMultiArrayImpl(SrcIterator s, SrcShape const & sshape, SrcAccessor src,
     
     <b> Declarations:</b>
 
-    <b>\#include</b> "<a href="multi__pointoperators_8hxx-source.html">vigra/multi_pointoperators.hxx</a>"<br>
+    <b>\#include</b> \<<a href="multi__pointoperators_8hxx-source.html">vigra/multi_pointoperators.hxx</a>\><br>
     Namespace: vigra
     
     pass arguments explicitly:
@@ -623,7 +623,7 @@ transformMultiArrayImpl(SrcIterator s, SrcShape const & sshape, SrcAccessor src,
     \endcode
 
 
-    use argument objects in conjunction with \ref ArgumentObjectFactories:
+    use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
         template <class SrcIterator, class SrcShape, class SrcAccessor,
@@ -1011,7 +1011,7 @@ combineTwoMultiArraysImpl(
     
     <b> Declarations:</b>
     
-    <b>\#include</b> "<a href="multi__pointoperators_8hxx-source.html">vigra/multi_pointoperators.hxx</a>"<br>
+    <b>\#include</b> \<<a href="multi__pointoperators_8hxx-source.html">vigra/multi_pointoperators.hxx</a>\><br>
     Namespace: vigra
     
     pass arguments explicitly:
@@ -1040,7 +1040,7 @@ combineTwoMultiArraysImpl(
     \endcode
     
     
-    use argument objects in conjunction with \ref ArgumentObjectFactories:
+    use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
         template <class SrcIterator1, class SrcShape, class SrcAccessor1,
@@ -1323,7 +1323,7 @@ combineThreeMultiArraysImpl(SrcIterator1 s1, SrcShape const & shape, SrcAccessor
     \endcode
     
     
-    use argument objects in conjunction with \ref ArgumentObjectFactories:
+    use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
         template <class SrcIterator1, class SrcShape, class SrcAccessor1,
@@ -1341,7 +1341,7 @@ combineThreeMultiArraysImpl(SrcIterator1 s1, SrcShape const & shape, SrcAccessor
     
     <b> Usage:</b>
     
-    <b>\#include</b> "<a href="multi__pointoperators_8hxx-source.html">vigra/multi_pointoperators.hxx</a>"<br>
+    <b>\#include</b> \<<a href="multi__pointoperators_8hxx-source.html">vigra/multi_pointoperators.hxx</a>\><br>
     Namespace: vigra
     
     \code
@@ -1441,7 +1441,7 @@ inspectMultiArrayImpl(Iterator s, Shape const & shape, Accessor a,  Functor & f,
     }
     \endcode
 
-    use argument objects in conjunction with \ref ArgumentObjectFactories:
+    use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
         template <class Iterator, class Shape, class Accessor, class Functor>
@@ -1452,7 +1452,7 @@ inspectMultiArrayImpl(Iterator s, Shape const & shape, Accessor a,  Functor & f,
 
     <b> Usage:</b>
 
-    <b>\#include</b> "<a href="multi__pointoperators_8hxx-source.html">vigra/multi_pointoperators.hxx</a>"<br>
+    <b>\#include</b> \<<a href="multi__pointoperators_8hxx-source.html">vigra/multi_pointoperators.hxx</a>\><br>
     Namespace: vigra
 
     \code
@@ -1553,7 +1553,7 @@ inspectTwoMultiArraysImpl(Iterator1 s1, Shape const & shape, Accessor1 a1,
     }
     \endcode
 
-    use argument objects in conjunction with \ref ArgumentObjectFactories:
+    use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
         template <class Iterator1, class Shape1, class Accessor1, 
@@ -1567,7 +1567,7 @@ inspectTwoMultiArraysImpl(Iterator1 s1, Shape const & shape, Accessor1 a1,
 
     <b> Usage:</b>
 
-    <b>\#include</b> "<a href="multi__pointoperators_8hxx-source.html">vigra/multi_pointoperators.hxx</a>"<br>
+    <b>\#include</b> \<<a href="multi__pointoperators_8hxx-source.html">vigra/multi_pointoperators.hxx</a>\><br>
     Namespace: vigra
 
     \code

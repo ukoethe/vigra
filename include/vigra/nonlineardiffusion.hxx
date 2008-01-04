@@ -259,7 +259,7 @@ void internalNonlinearDiffusionAOSStep(
     \endcode
     
     
-    use argument objects in conjunction with \ref ArgumentObjectFactories:
+    use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
         template <class SrcIterator, class SrcAccessor,
@@ -274,7 +274,7 @@ void internalNonlinearDiffusionAOSStep(
     
     <b> Usage:</b>
     
-    <b>\#include</b> "<a href="nonlineardiffusion_8hxx-source.html">vigra/nonlineardiffusion.hxx</a>"
+    <b>\#include</b> \<<a href="nonlineardiffusion_8hxx-source.html">vigra/nonlineardiffusion.hxx</a>\>
     
     
     \code

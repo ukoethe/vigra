@@ -117,7 +117,7 @@ transformLineIf(SrcIterator s,
     \endcode
 
 
-    use argument objects in conjunction with \ref ArgumentObjectFactories:
+    use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
         template <class SrcImageIterator, class SrcAccessor,
@@ -131,7 +131,7 @@ transformLineIf(SrcIterator s,
 
     <b> Usage:</b>
 
-    <b>\#include</b> "<a href="transformimage_8hxx-source.html">vigra/transformimage.hxx</a>"<br>
+    <b>\#include</b> \<<a href="transformimage_8hxx-source.html">vigra/transformimage.hxx</a>\><br>
     Namespace: vigra
 
     \code
@@ -229,7 +229,7 @@ transformImage(triple<SrcImageIterator, SrcImageIterator, SrcAccessor> src,
     \endcode
 
 
-    use argument objects in conjunction with \ref ArgumentObjectFactories:
+    use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
         template <class SrcImageIterator, class SrcAccessor,
@@ -246,7 +246,7 @@ transformImage(triple<SrcImageIterator, SrcImageIterator, SrcAccessor> src,
 
     <b> Usage:</b>
 
-        <b>\#include</b> "<a href="transformimage_8hxx-source.html">vigra/transformimage.hxx</a>"<br>
+        <b>\#include</b> \<<a href="transformimage_8hxx-source.html">vigra/transformimage.hxx</a>\><br>
         Namespace: vigra
 
     \code
@@ -349,7 +349,7 @@ transformImageIf(triple<SrcImageIterator, SrcImageIterator, SrcAccessor> src,
     \endcode
 
 
-    use argument objects in conjunction with \ref ArgumentObjectFactories:
+    use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
         template <class SrcImageIterator, class SrcAccessor,
@@ -362,7 +362,7 @@ transformImageIf(triple<SrcImageIterator, SrcImageIterator, SrcAccessor> src,
 
     <b> Usage:</b>
 
-    <b>\#include</b> "<a href="transformimage_8hxx-source.html">vigra/transformimage.hxx</a>"
+    <b>\#include</b> \<<a href="transformimage_8hxx-source.html">vigra/transformimage.hxx</a>\>
 
 
     \code
@@ -620,7 +620,7 @@ class FunctorTraits<ScalarIntensityTransform<DestValueType, Multiplier> >
 
     <b> Traits defined:</b>
 
-    <tt>FunctorTraits::isUnaryFunctor</tt> is true (<tt>VigraTrueType<tt>)
+    <tt>FunctorTraits::isUnaryFunctor</tt> is true (<tt>VigraTrueType</tt>)
 
     <b> Declaration:</b>
 
@@ -638,7 +638,7 @@ class FunctorTraits<ScalarIntensityTransform<DestValueType, Multiplier> >
 
     <b> Usage:</b>
 
-        <b>\#include</b> "<a href="transformimage_8hxx-source.html">vigra/transformimage.hxx</a>"<br>
+        <b>\#include</b> \<<a href="transformimage_8hxx-source.html">vigra/transformimage.hxx</a>\><br>
         Namespace: vigra
 
     \code
@@ -715,7 +715,7 @@ linearIntensityTransform(Multiplier scale)
 
     <b> Usage:</b>
 
-        <b>\#include</b> "<a href="transformimage_8hxx-source.html">vigra/transformimage.hxx</a>"<br>
+        <b>\#include</b> \<<a href="transformimage_8hxx-source.html">vigra/transformimage.hxx</a>\><br>
         Namespace: vigra
 
     \code
@@ -800,11 +800,11 @@ linearRangeMapping(
 
     <b> Traits defined:</b>
 
-    <tt>FunctorTraits::isUnaryFunctor</tt> is true (<tt>VigraTrueType<tt>)
+    <tt>FunctorTraits::isUnaryFunctor</tt> is true (<tt>VigraTrueType</tt>)
 
     <b> Usage:</b>
 
-        <b>\#include</b> "<a href="transformimage_8hxx-source.html">vigra/transformimage.hxx</a>"<br>
+        <b>\#include</b> \<<a href="transformimage_8hxx-source.html">vigra/transformimage.hxx</a>\><br>
         Namespace: vigra
 
     \code
@@ -910,11 +910,11 @@ class FunctorTraits<Threshold<SrcValueType, DestValueType> >
 
     <b> Traits defined:</b>
 
-    <tt>FunctorTraits::isUnaryFunctor</tt> is true (<tt>VigraTrueType<tt>)
+    <tt>FunctorTraits::isUnaryFunctor</tt> is true (<tt>VigraTrueType</tt>)
 
     <b> Usage:</b>
 
-        <b>\#include</b> "<a href="transformimage_8hxx-source.html">vigra/transformimage.hxx</a>"<br>
+        <b>\#include</b> \<<a href="transformimage_8hxx-source.html">vigra/transformimage.hxx</a>\><br>
         Namespace: vigra
 
     \code
@@ -1159,11 +1159,11 @@ class BrightnessContrastFunctor<RGBValue<unsigned char> >
 
     <b> Traits defined:</b>
 
-    <tt>FunctorTraits::isUnaryFunctor</tt> is true (<tt>VigraTrueType<tt>)
+    <tt>FunctorTraits::isUnaryFunctor</tt> is true (<tt>VigraTrueType</tt>)
 
     <b> Usage:</b>
 
-        <b>\#include</b> "<a href="transformimage_8hxx-source.html">vigra/transformimage.hxx</a>"<br>
+        <b>\#include</b> \<<a href="transformimage_8hxx-source.html">vigra/transformimage.hxx</a>\><br>
         Namespace: vigra
 
     \code
@@ -1219,7 +1219,7 @@ class FunctorTraits<VectorNormFunctor<ValueType> >
 
     <b> Traits defined:</b>
 
-    <tt>FunctorTraits::isUnaryFunctor</tt> is true (<tt>VigraTrueType<tt>)
+    <tt>FunctorTraits::isUnaryFunctor</tt> is true (<tt>VigraTrueType</tt>)
 
     \see TinyVector, dot()
 */

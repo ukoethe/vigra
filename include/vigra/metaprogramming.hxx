@@ -73,7 +73,7 @@ struct VigraFalseType
 /** tag for marking a MultiArray strided.
 
 <b>\#include</b>
-"<a href="multi__array_8hxx-source.html">vigra/multi_array.hxx</a>"
+\<<a href="multi__array_8hxx-source.html">vigra/multi_array.hxx</a>\>
 
 Namespace: vigra
 */
@@ -88,7 +88,7 @@ struct StridedArrayTag {};
 /** tag for marking a MultiArray unstrided.
 
 <b>\#include</b>
-"<a href="multi__array_8hxx-source.html">vigra/multi_array.hxx</a>"
+\<<a href="multi__array_8hxx-source.html">vigra/multi_array.hxx</a>\>
 
 Namespace: vigra
 */

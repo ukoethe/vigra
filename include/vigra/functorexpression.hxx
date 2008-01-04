@@ -43,7 +43,7 @@
     Simple automatic functor creation by means of expression templates
     (also known as a "lambda library").    
 
-    <b>\#include</b> "<a href="functorexpression_8hxx-source.html">vigra/functorexpression.hxx</a>"<br>
+    <b>\#include</b> \<<a href="functorexpression_8hxx-source.html">vigra/functorexpression.hxx</a>\><br>
     Namespace: vigra::functor
     
     <b> Note:</b> This functionality is not available under Microsoft Visual C++, 

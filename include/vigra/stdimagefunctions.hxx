@@ -40,46 +40,28 @@
 
 /** \page PointOperators Point Operators 
 
-    <DL>
-    <DT>
-        <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif"> 
-        \ref InitAlgo
-        <DD><em>init images or image borders </em>
-    <DT>
-        <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif"> 
-        \ref InspectAlgo
-        <DD> <em>Apply read-only functor to every pixel</em>
-    <DT>
-        <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif"> 
-        \ref InspectFunctor
-        <DD><em>Functors which report image statistics</em>
-    <DT>
-        <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif"> 
-        \ref CopyAlgo
-        <DD> <em>Copy images or regions</em>
-    <DT>
-        <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif"> 
-        \ref TransformAlgo
-        <DD><em>apply functor to calculate a pixelwise transformation of one image</em>
-    <DT>
-        <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif"> 
-        \ref TransformFunctor
-        <DD> <em>frequently used unary transformation functors</em>
-    <DT>
-        <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif"> 
-        \ref CombineAlgo
-        <DD><em>apply functor to calculate a pixelwise transformation from several image</em>
-    <DT>
-        <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif"> 
-        \ref CombineFunctor
-        <DD> <em>frequently used binary transformations functors</em>
-    <DT>
-        <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif"> 
-        \ref MultiPointoperators
-        <DD> <em>Point operators on multi-dimensional arrays</em>
-    </DL>
+    <UL style="list-style-image:url(documents/bullet.gif)">
+    <LI> \ref InitAlgo
+         <BR>&nbsp;&nbsp;&nbsp; <em>init images or image borders </em>
+    <LI> \ref InspectAlgo
+         <BR>&nbsp;&nbsp;&nbsp; <em>Apply read-only functor to every pixel</em>
+    <LI> \ref InspectFunctor
+         <BR>&nbsp;&nbsp;&nbsp; <em>Functors which report image statistics</em>
+    <LI> \ref CopyAlgo
+         <BR>&nbsp;&nbsp;&nbsp; <em>Copy images or regions</em>
+    <LI> \ref TransformAlgo
+         <BR>&nbsp;&nbsp;&nbsp; <em>apply functor to calculate a pixelwise transformation of one image</em>
+    <LI> \ref TransformFunctor
+         <BR>&nbsp;&nbsp;&nbsp; <em>frequently used unary transformation functors</em>
+    <LI> \ref CombineAlgo
+         <BR>&nbsp;&nbsp;&nbsp; <em>apply functor to calculate a pixelwise transformation from several image</em>
+    <LI> \ref CombineFunctor
+         <BR>&nbsp;&nbsp;&nbsp; <em>frequently used binary transformations functors</em>
+    <LI> \ref MultiPointoperators
+         <BR>&nbsp;&nbsp;&nbsp; <em>Point operators on multi-dimensional arrays</em>
+    </UL>
     
-    <b>\#include</b> "<a href="stdimagefunctions_8hxx-source.html">vigra/stdimagefunctions.hxx</a>"<br>
+    <b>\#include</b> \<<a href="stdimagefunctions_8hxx-source.html">vigra/stdimagefunctions.hxx</a>\><br>
     Namespace: vigra
         
     see also: \ref FunctorExpressions "Automatic Functor Creation"

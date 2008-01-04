@@ -134,7 +134,7 @@ localMinMax(SrcIterator sul, SrcIterator slr, SrcAccessor sa,
     }
     \endcode
 
-    use argument objects in conjunction with \ref ArgumentObjectFactories:
+    use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
         template <class SrcIterator, class SrcAccessor,
@@ -151,7 +151,7 @@ localMinMax(SrcIterator sul, SrcIterator slr, SrcAccessor sa,
 
     <b> Usage:</b>
 
-        <b>\#include</b> "<a href="localminmax_8hxx-source.html">vigra/localminmax.hxx</a>"<br>
+        <b>\#include</b> \<<a href="localminmax_8hxx-source.html">vigra/localminmax.hxx</a>\><br>
     Namespace: vigra
 
     \code
@@ -282,7 +282,7 @@ localMinima(triple<SrcIterator, SrcIterator, SrcAccessor> src,
     }
     \endcode
 
-    use argument objects in conjunction with \ref ArgumentObjectFactories:
+    use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
         template <class SrcIterator, class SrcAccessor,
@@ -299,7 +299,7 @@ localMinima(triple<SrcIterator, SrcIterator, SrcAccessor> src,
 
     <b> Usage:</b>
 
-        <b>\#include</b> "<a href="localminmax_8hxx-source.html">vigra/localminmax.hxx</a>"<br>
+        <b>\#include</b> \<<a href="localminmax_8hxx-source.html">vigra/localminmax.hxx</a>\><br>
     Namespace: vigra
 
     \code
@@ -514,7 +514,7 @@ extendedLocalMinMax(SrcIterator sul, SrcIterator slr, SrcAccessor sa,
     }
     \endcode
 
-    use argument objects in conjunction with \ref ArgumentObjectFactories:
+    use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
         template <class SrcIterator, class SrcAccessor,
@@ -533,7 +533,7 @@ extendedLocalMinMax(SrcIterator sul, SrcIterator slr, SrcAccessor sa,
 
     <b> Usage:</b>
 
-        <b>\#include</b> "<a href="localminmax_8hxx-source.html">vigra/localminmax.hxx</a>"<br>
+        <b>\#include</b> \<<a href="localminmax_8hxx-source.html">vigra/localminmax.hxx</a>\><br>
     Namespace: vigra
 
     \code
@@ -731,7 +731,7 @@ extendedLocalMinima(triple<SrcIterator, SrcIterator, SrcAccessor> src,
     }
     \endcode
 
-    use argument objects in conjunction with \ref ArgumentObjectFactories:
+    use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
         template <class SrcIterator, class SrcAccessor,
@@ -750,7 +750,7 @@ extendedLocalMinima(triple<SrcIterator, SrcIterator, SrcAccessor> src,
 
     <b> Usage:</b>
 
-        <b>\#include</b> "<a href="localminmax_8hxx-source.html">vigra/localminmax.hxx</a>"<br>
+        <b>\#include</b> \<<a href="localminmax_8hxx-source.html">vigra/localminmax.hxx</a>\><br>
     Namespace: vigra
 
     \code

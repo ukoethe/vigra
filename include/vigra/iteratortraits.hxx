@@ -103,7 +103,7 @@ namespace vigra {
     <tt>std::list&lt;int&gt;::iterator</tt>, but is <tt>VigraTrueType</tt> 
     for most VIGRA iterators.
 
-    <b>\#include</b> "<a href="iteratortraits_8hxx-source.html">vigra/iteratortraits.hxx</a>"
+    <b>\#include</b> \<<a href="iteratortraits_8hxx-source.html">vigra/iteratortraits.hxx</a>\>
     Namespace: vigra
 */
 template <class T>
@@ -148,20 +148,11 @@ struct IteratorTraitsBase
 
     Factory functions to create argument objects which simplify long argument lists.
 
-    <DL>
-    <DT>
-        <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif">
-        \ref ImageBasedArgumentObjectFactories
-        <DD>
-    <DT>
-        <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif">
-        \ref MultiArrayBasedArgumentObjectFactories
-        <DD>
-    <DT>
-        <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif">
-        \ref IteratorBasedArgumentObjectFactories
-        <DD>
-    </DL>
+    <UL style="list-style-image:url(documents/bullet.gif)">
+    <LI> \ref ImageBasedArgumentObjectFactories
+    <LI> \ref MultiArrayBasedArgumentObjectFactories
+    <LI> \ref IteratorBasedArgumentObjectFactories
+    </UL>
 
     Long argument lists provide for greater flexibility of functions,
     but they are also tedious and error prone, when we don't need
@@ -433,7 +424,7 @@ struct IteratorTraitsBase
   \section MultiArrayBasedArgumentObjectFactories MultiArrayView Based Argument Object Factories
 
     <b>Include:</b> automatically included with 
-       "<a href="multi__array_8hxx-source.html">vigra/multi_array.hxx</a>"<br>
+       \<<a href="multi__array_8hxx-source.html">vigra/multi_array.hxx</a>\><br>
     Namespace: vigra
 
     These factories can be used to create argument objects when we
@@ -531,7 +522,7 @@ struct IteratorTraitsBase
 
   \section IteratorBasedArgumentObjectFactories Iterator Based Argument Object Factories
 
-    <b>\#include</b> "<a href="iteratortraits_8hxx-source.html">vigra/iteratortraits.hxx</a>"
+    <b>\#include</b> \<<a href="iteratortraits_8hxx-source.html">vigra/iteratortraits.hxx</a>\>
     Namespace: vigra
 
     These factories can be used to create argument objects when we

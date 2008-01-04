@@ -55,22 +55,16 @@
 
     Meta-information about arithmetic types.
     
-    <DL>
-    <DT>
-    <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif"> 
-    \ref NumericTraits
-    <DD><em>Unary traits for promotion, conversion, creation of arithmetic objects</em>
-    <DT>
-    <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif"> 
-    \ref PromoteTraits
-    <DD><em>Binary traits for promotion of arithmetic objects</em>
-    <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif"> 
-    \ref SquareRootTraits
-    <DD><em>Unary traits for the calculation of the square root of arithmetic objects</em>
-    <IMG BORDER=0 ALT="-" SRC="documents/bullet.gif"> 
-    \ref NormTraits
-    <DD><em>Unary traits for the calculation of the norm and squared norm of arithmetic objects</em>
-    </DL>
+    <UL style="list-style-image:url(documents/bullet.gif)">
+    <LI> \ref NumericTraits
+         <BR>&nbsp;&nbsp;&nbsp;<em>Unary traits for promotion, conversion, creation of arithmetic objects</em>
+    <LI> \ref PromoteTraits
+         <BR>&nbsp;&nbsp;&nbsp;<em>Binary traits for promotion of arithmetic objects</em>
+    <LI> \ref SquareRootTraits
+         <BR>&nbsp;&nbsp;&nbsp;<em>Unary traits for the calculation of the square root of arithmetic objects</em>
+    <LI> \ref NormTraits
+         <BR>&nbsp;&nbsp;&nbsp;<em>Unary traits for the calculation of the norm and squared norm of arithmetic objects</em>
+    </UL>
     
     These traits classes contain information that is used by generic
     algorithms and data structures to determine intermediate and result
@@ -90,7 +84,7 @@
     Unary traits for promotion, conversion, creation of arithmetic objects.
 
     <b>\#include</b> 
-    "<a href="numerictraits_8hxx-source.html">vigra/numerictraits.hxx</a>"
+    \<<a href="numerictraits_8hxx-source.html">vigra/numerictraits.hxx</a>\>
 
     This traits class is used derive important properties of
     an arithmetic type. Consider the following algorithm:
@@ -319,7 +313,7 @@
     </table>
     
     NumericTraits for the built-in types are defined in <b>\#include</b> 
-    "<a href="numerictraits_8hxx-source.html">vigra/numerictraits.hxx</a>"
+    \<<a href="numerictraits_8hxx-source.html">vigra/numerictraits.hxx</a>\>
     
     Namespace: vigra
     
@@ -330,7 +324,7 @@
     Binary traits for promotion of arithmetic objects.
     
     <b>\#include</b> 
-    "<a href="numerictraits_8hxx-source.html">vigra/numerictraits.hxx</a>"
+    \<<a href="numerictraits_8hxx-source.html">vigra/numerictraits.hxx</a>\>
 
     This traits class is used to determine the appropriate result type
     of arithmetic expressions which depend of two arguments. Consider
@@ -382,7 +376,7 @@
     </table>
     
     PromoteTraits for the built-in types are defined in <b>\#include</b> 
-    "<a href="numerictraits_8hxx-source.html">vigra/numerictraits.hxx</a>"
+    \<<a href="numerictraits_8hxx-source.html">vigra/numerictraits.hxx</a>\>
     
     Namespace: vigra
 */
@@ -392,7 +386,7 @@
     Unary traits for the calculation of the square root of arithmetic objects.
     
     <b>\#include</b> 
-    "<a href="numerictraits_8hxx-source.html">vigra/numerictraits.hxx</a>"
+    \<<a href="numerictraits_8hxx-source.html">vigra/numerictraits.hxx</a>\>
 
     This traits class is used to determine appropriate argument and result types
     for the function sqrt(). These traits are typically used like this:
@@ -428,7 +422,7 @@
     </table>
     
     NormTraits for the built-in types are defined in <b>\#include</b> 
-    "<a href="numerictraits_8hxx-source.html">vigra/numerictraits.hxx</a>"
+    \<<a href="numerictraits_8hxx-source.html">vigra/numerictraits.hxx</a>\>
     
     Namespace: vigra
 */
@@ -438,7 +432,7 @@
     Unary traits for the calculation of the norm and squared norm of arithmetic objects.
     
     <b>\#include</b> 
-    "<a href="numerictraits_8hxx-source.html">vigra/numerictraits.hxx</a>"
+    \<<a href="numerictraits_8hxx-source.html">vigra/numerictraits.hxx</a>\>
 
     This traits class is used to determine appropriate result types
     for the functions norm() and squaredNorm(). These functions are always 
@@ -466,12 +460,12 @@
     <b> <TT>typedef ... NormType;</TT></b>
     </td><td>
             result of <tt>norm(ArithmeticType)</tt><br>
-            Usually equal to <tt>SquareRootTraits&lt;SquaredNormType&gt;::SquareRootResult
+            Usually equal to <tt>SquareRootTraits&lt;SquaredNormType&gt;::SquareRootResult</tt>
     </td></tr>
     </table>
     
     NormTraits for the built-in types are defined in <b>\#include</b> 
-    "<a href="numerictraits_8hxx-source.html">vigra/numerictraits.hxx</a>"
+    \<<a href="numerictraits_8hxx-source.html">vigra/numerictraits.hxx</a>\>
     
     Namespace: vigra
 */

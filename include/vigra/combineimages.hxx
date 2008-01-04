@@ -140,7 +140,7 @@ combineThreeLines(SrcIterator1 s1,
     \endcode
     
     
-    use argument objects in conjunction with \ref ArgumentObjectFactories:
+    use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
         template <class SrcImageIterator1, class SrcAccessor1,
@@ -157,7 +157,7 @@ combineThreeLines(SrcIterator1 s1,
     
     <b> Usage:</b>
     
-        <b>\#include</b> "<a href="combineimages_8hxx-source.html">vigra/combineimages.hxx</a>"<br>
+        <b>\#include</b> \<<a href="combineimages_8hxx-source.html">vigra/combineimages.hxx</a>\><br>
         Namespace: vigra
     
     \code
@@ -277,7 +277,7 @@ combineTwoImages(triple<SrcImageIterator1, SrcImageIterator1, SrcAccessor1> src1
     \endcode
     
     
-    use argument objects in conjunction with \ref ArgumentObjectFactories:
+    use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
         template <class SrcImageIterator1, class SrcAccessor1,
@@ -296,7 +296,7 @@ combineTwoImages(triple<SrcImageIterator1, SrcImageIterator1, SrcAccessor1> src1
     
     <b> Usage:</b>
     
-        <b>\#include</b> "<a href="combineimages_8hxx-source.html">vigra/combineimages.hxx</a>"<br>
+        <b>\#include</b> \<<a href="combineimages_8hxx-source.html">vigra/combineimages.hxx</a>\><br>
         Namespace: vigra
     
     \code
@@ -423,7 +423,7 @@ combineTwoImagesIf(triple<SrcImageIterator1, SrcImageIterator1, SrcAccessor1> sr
     \endcode
     
     
-    use argument objects in conjunction with \ref ArgumentObjectFactories:
+    use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
         template <class SrcImageIterator1, class SrcAccessor1,
@@ -442,7 +442,7 @@ combineTwoImagesIf(triple<SrcImageIterator1, SrcImageIterator1, SrcAccessor1> sr
     
     <b> Usage:</b>
     
-        <b>\#include</b> "<a href="combineimages_8hxx-source.html">vigra/combineimages.hxx</a>"<br>
+        <b>\#include</b> \<<a href="combineimages_8hxx-source.html">vigra/combineimages.hxx</a>\><br>
         Namespace: vigra
     
     \code
@@ -553,7 +553,7 @@ combineThreeImages(triple<SrcImageIterator1, SrcImageIterator1, SrcAccessor1> sr
 
     <b> Traits defined:</b>
     
-    <tt>FunctorTraits::isBinaryFunctor</tt> are true (<tt>VigraTrueType<tt>)    
+    <tt>FunctorTraits::isBinaryFunctor</tt> are true (<tt>VigraTrueType</tt>)    
 */
 template <class ValueType>
 class MagnitudeFunctor
@@ -604,7 +604,7 @@ public:
 
     <b> Traits defined:</b>
     
-    <tt>FunctorTraits::isBinaryFunctor</tt> are true (<tt>VigraTrueType<tt>)    
+    <tt>FunctorTraits::isBinaryFunctor</tt> are true (<tt>VigraTrueType</tt>)    
 */
 template <class ValueType>
 class RGBGradientMagnitudeFunctor
