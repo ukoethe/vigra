@@ -335,11 +335,12 @@ class RGBValue
 
 /** \addtogroup RGBValueOperators Functions for RGBValue
 
-    \brief <b>\#include</b> "<a href="rgbvalue_8hxx-source.html">vigra/rgbvalue.hxx</a>
+    \brief Implement basic arithmetic and equality for RGBValue.
 
     These functions fulfill the requirements of a Linear Algebra.
     Return types are determined according to \ref RGBValueTraits.
 
+    <b>\#include</b> \<<a href="rgbvalue_8hxx-source.html">vigra/rgbvalue.hxx</a>\><br>
     Namespace: vigra
     <p>
 

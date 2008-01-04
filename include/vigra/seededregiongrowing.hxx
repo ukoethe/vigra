@@ -181,7 +181,7 @@ enum SRGType { KeepContours, CompleteGrow, SRGWatershedLabel = -1 };
     Analysis and Maschine Intelligence, vol 16, no 6, 1994, and
 
     Ullrich K&ouml;the:
-    <em> "<a href="http://kogs-www.informatik.uni-hamburg.de/~koethe/papers/#primary">Primary Image Segmentation</a>"</em>,
+    <em><a href="http://kogs-www.informatik.uni-hamburg.de/~koethe/papers/#primary">Primary Image Segmentation</a></em>,
     in: G. Sagerer, S.
     Posch, F. Kummert (eds.): Mustererkennung 1995, Proc. 17. DAGM-Symposium,
     Springer 1995

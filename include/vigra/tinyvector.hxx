@@ -796,15 +796,14 @@ class TinyVectorView
 
 /** \addtogroup TinyVectorOperators Functions for TinyVector
 
-    \brief <b>\#include</b> "<a href="tinyvector_8hxx-source.html">vigra/tinyvector.hxx</a>
+    \brief Implement basic arithmetic and equality for TinyVector.
 
     These functions fulfill the requirements of a Linear Space (vector space).
     Return types are determined according to \ref TinyVectorTraits.
 
+    <b>\#include</b> \<<a href="tinyvector_8hxx-source.html">vigra/tinyvector.hxx</a>\><br>
     Namespace: vigra
-    <p>
-
- */
+*/
 //@{
     /// component-wise equal
 template <class V1, int SIZE, class D1, class D2, class V2, class D3, class D4>
