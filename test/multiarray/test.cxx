@@ -330,6 +330,13 @@ public:
     {
         array1_t a (shape1_t(2), 1);
         shouldEqual (a.shape (0), 2);
+        shouldEqual (a(0), 1);
+        shouldEqual (a(1), 1);
+        
+        a.init(2);
+        shouldEqual(a(0), 2);
+        shouldEqual(a(1), 2);
+        should(a == array1_t(shape1_t(2), 4).init(2));
     }
 
     void test_assignment ()
