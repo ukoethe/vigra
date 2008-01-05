@@ -570,8 +570,8 @@ resizeImageLinearInterpolation(triple<SrcIterator, SrcIterator, SrcAccessor> src
     pp. 834-848 (part II), 1993.
 
     to obtain optimal interpolation quality and speed. You may pass the funcion
-    a spline of arbitrary order (e.g. <TT>BSpline&lt;ORDER, double&gt;</tt> or
-    <TT>CatmullRomSpline&lt;double&gt;</tt>). The default is a third order spline
+    a spline of arbitrary order (e.g. <TT>BSpline<ORDER, double></tt> or
+    <TT>CatmullRomSpline<double></tt>). The default is a third order spline
     which gives a twice continuously differentiable interpolant.
     The implementation ensures that image values are interpolated rather
     than smoothed by first calling a recursive (sharpening) prefilter as

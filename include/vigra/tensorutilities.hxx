@@ -186,7 +186,7 @@ void vectorToTensor(triple<SrcIterator, SrcIterator, SrcAccessor> s,
 
     This function turns a 3-band image representing the tensor components
     t11, t12 (== t21 due to symmetry), t22 into the a 3-band image holding the eigen
-    representation e1, e2, and angle, where e1 &gt; e2. The original tensor must be
+    representation e1, e2, and angle, where e1 \> e2. The original tensor must be
     defined in a right-handed coordinate system, and the angle of the tensor will
     then be given in mathematical positive (counter-clockwise) orientation, starting
     at the x-axis.

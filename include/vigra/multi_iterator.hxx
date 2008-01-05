@@ -78,85 +78,48 @@ template <unsigned int N, class T,
     direct traversal functions should not be used in the hierarchical mode
     because the hierarchical functions are only well-defined if the
     iterator points to element 0 in all dimensions below its current dimension.
-    The current dimension of a <tt>MultiIterator&lt;N, ..&gt;</tt> is <tt>N-1</tt>.
+    The current dimension of a <tt>MultiIterator<N, ...></tt> is <tt>N-1</tt>.
 </p>
 <h3>Gerneral Requirements for MultiIterator</h3>
 <p>
 <table border=2 cellspacing=0 cellpadding=2 width="100%">
-<tr><td>
-    \htmlonly
-    <th colspan=2>
-    \endhtmlonly
+<tr><th colspan=2>
     Local Types
-    \htmlonly
     </th><th>
-    \endhtmlonly
     Meaning
-    \htmlonly
     </th>
-    \endhtmlonly
-</td></tr>
-<tr><td>
-    \htmlonly
-    <td colspan=2>
-    \endhtmlonly
+</tr>
+<tr><td colspan=2>
     <tt>MultiIterator::value_type</tt></td><td>the underlying arrays's pixel type</td>
 </tr>
-<tr>
-    <td>
-    \htmlonly
-    <td colspan=2>
-    \endhtmlonly
+<tr><td colspan=2>
     <tt>MultiIterator::reference</tt></td>
     <td>the iterator's reference type (return type of <TT>*iter</TT>). Will be
     <tt>value_type &</tt> for a mutable iterator, and convertible to
     <tt>value_type const &</tt> for a const iterator.</td>
 </tr>
-<tr>
-    <td>
-    \htmlonly
-    <td colspan=2>
-    \endhtmlonly
+<tr><td colspan=2>
     <tt>MultiIterator::pointer</tt></td>
     <td>the iterator's pointer type (return type of <TT>iter.operator->()</TT>). Will be
     <tt>value_type *</tt> for a mutable iterator, and convertible to
     <tt>value_type const *</tt> for a const iterator.</td>
 </tr>
-<tr>
-    <td>
-    \htmlonly
-    <td colspan=2>
-    \endhtmlonly
+<tr><td colspan=2>
     <tt>MultiIterator::iterator_category</tt></td>
     <td>the iterator tag (<tt>vigra::multi_dimensional_traverser_tag</tt>)</td>
 </tr>
-<tr><td>
-    \htmlonly
-    <th>
-    \endhtmlonly
+<tr><th>
     Operation
-    \htmlonly
     </th><th>
-    \endhtmlonly
     Result
-    \htmlonly
     </th><th>
-    \endhtmlonly
     Semantics
-    \htmlonly
     </th>
-    \endhtmlonly
-</td></tr>
-<tr><td>
-    \htmlonly
-    <td colspan=2>
-    \endhtmlonly
+</tr>
+<tr><td colspan=2>
     <tt>MultiIterator k;</tt></td><td>default constructor</td>
 </tr>
-<tr><td>
-    \htmlonly
-    <td colspan=2>
-    \endhtmlonly
+<tr><td colspan=2>
     <tt>MultiIterator k(i);</tt></td><td>copy constructor</td>
 </tr>
 <tr>
@@ -184,43 +147,24 @@ template <unsigned int N, class T,
 <h3>Requirements for Direct Traversal</h3>
 <p>
 <table border=2 cellspacing=0 cellpadding=2 width="100%">
-<tr><td>
-    \htmlonly
-    <th colspan=2>
-    \endhtmlonly
+<tr><th colspan=2>
     Local Types
-    \htmlonly
     </th><th>
-    \endhtmlonly
     Meaning
-    \htmlonly
     </th>
-    \endhtmlonly
-</td></tr>
-<tr><td>
-    \htmlonly
-    <td colspan=2>
-    \endhtmlonly
-    <tt>MultiIterator::multi_difference_type</tt></td>
-    <td>the iterator's multi-dimensional difference type (<TT>TinyVector&lt;ptrdiff_t, N&gt;</TT>)</td>
 </tr>
-<tr><td>
-    \htmlonly
-    <th>
-    \endhtmlonly
+<tr><td colspan=2>
+    <tt>MultiIterator::multi_difference_type</tt></td>
+    <td>the iterator's multi-dimensional difference type (<TT>TinyVector<ptrdiff_t, N></TT>)</td>
+</tr>
+<tr><th>
     Operation
-    \htmlonly
     </th><th>
-    \endhtmlonly
     Result
-    \htmlonly
     </th><th>
-    \endhtmlonly
     Semantics
-    \htmlonly
     </th>
-    \endhtmlonly
-</td></tr>
+</tr>
 <tr>
     <td><tt>i += diff</tt></td><td><tt>MultiIterator &</tt></td>
     <td>add offset to current position</td>
@@ -242,7 +186,7 @@ template <unsigned int N, class T,
     <td>access element at offset <tt>diff</tt></td>
 </tr>
 <tr>
-    <td><tt>i.dim<K>()</tt></td><td><tt>MultiIterator&lt;K+1, T, ...&gt;</tt></td>
+    <td><tt>i.dim<K>()</tt></td><td><tt>MultiIterator<K+1, T, ...></tt></td>
     <td>Access the traverser with the current dimension set to K. Typically used to call
         navigation functions referring to a particular dimension.<br>
         Example (assuming <tt>i, j</tt> are 3-dimensional):<br>
@@ -255,10 +199,7 @@ template <unsigned int N, class T,
         \endcode
     </td>
 </tr>
-<tr><td>
-    \htmlonly
-    <td colspan=3>
-    \endhtmlonly
+<tr><td colspan=3>
        <tt>i, j</tt> are of type <tt>MultiIterator</tt><br>
        <tt>diff</tt> is of type <tt>MultiIterator::multi_difference_type</tt><br>
        <tt>K</tt> is an integer compile-time constant
@@ -280,52 +221,28 @@ but iterator performance will suffer significantly, as is experienced with
 <h3>Requirements for Hierarchical Traversal</h3>
 <p>
 <table border=2 cellspacing=0 cellpadding=2 width="100%">
-<tr><td>
-    \htmlonly
-    <th colspan=2>
-    \endhtmlonly
+<tr><th colspan=2>
     Local Types
-    \htmlonly
     </th><th>
-    \endhtmlonly
     Meaning
-    \htmlonly
     </th>
-    \endhtmlonly
-</td></tr>
-<tr>
-    <td>
-    \htmlonly
-    <td colspan=2>
-    \endhtmlonly
+</tr>
+<tr><td colspan=2>
     <tt>MultiIterator::difference_type</tt></td>
     <td>the iterator's difference type (<TT>ptrdiff_t</TT>)</td>
 </tr>
-<tr>
-    <td>
-    \htmlonly
-    <td colspan=2>
-    \endhtmlonly
+<tr><td colspan=2>
     <tt>MultiIterator::next_type</tt></td><td>type of the next iterator
        (referring to the next lower dimension) in the hierarchy</td>
 </tr>
-<tr><td>
-    \htmlonly
-    <th>
-    \endhtmlonly
+<tr><th>
     Operation
-    \htmlonly
     </th><th>
-    \endhtmlonly
     Result
-    \htmlonly
     </th><th>
-    \endhtmlonly
     Semantics
-    \htmlonly
     </th>
-    \endhtmlonly
-</td></tr>
+</tr>
 <tr>
     <td><tt>++i</tt></td><td><tt>MultiIterator &</tt></td>
     <td>pre-increment iterator in its current dimension</td>
@@ -406,11 +323,7 @@ but iterator performance will suffer significantly, as is experienced with
     <em>Note:</em> The result of this operation is undefined if the iterator
     doesn't point to element 0 in all dimensions below its current dimension.</td>
 </tr>
-<tr>
-    <td>
-    \htmlonly
-    <td colspan=3>
-    \endhtmlonly
+<tr><td colspan=3>
        <tt>i, j</tt> are of type <tt>MultiIterator</tt><br>
        <tt>d</tt> is of type <tt>MultiIterator::difference_type</tt>
     </td>

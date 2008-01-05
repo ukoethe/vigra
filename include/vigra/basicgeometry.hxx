@@ -577,7 +577,7 @@ inline int sizeForResamplingFactor(int oldsize, double factor)
     The input image must have a size of at
     least 2x2. Destiniation pixels are directly copied from the appropriate
     source pixels. The size of the result image is the product of <tt>factor</tt>
-    and the original size, where we round up if <tt>factor &lt; 1.0</tt> and down otherwise.
+    and the original size, where we round up if <tt>factor < 1.0</tt> and down otherwise.
     This size calculation is the main difference to the convention used in the similar 
     function \ref resizeImageNoInterpolation():
     there, the result size is calculated as <tt>n*(old_width-1)+1</tt> and 

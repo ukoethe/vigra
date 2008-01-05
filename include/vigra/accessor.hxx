@@ -57,23 +57,14 @@ namespace vigra {
     accessor requirements:
 <p>
 <table border=2 cellspacing=0 cellpadding=2 width="100%">
-<tr><td>
-    \htmlonly
-    <th>
-    \endhtmlonly
+<tr><th>
     Operation
-    \htmlonly
     </th><th>
-    \endhtmlonly
     Result
-    \htmlonly
     </th><th>
-    \endhtmlonly
     Semantics
-    \htmlonly
     </th>
-    \endhtmlonly
-</td></tr>
+</tr>
 <tr>
     <td><tt>accessor(iter)</tt></td><td>convertible to <br><tt>Iterator::value_type const &</tt></td>
     <td>read data at the current position of the iterator</td>
@@ -92,19 +83,11 @@ namespace vigra {
     <td>write data <tt>value</tt> at offset <tt>index</tt> relative to iterator's current position
     (mutable random-access iterator only)</td>
 </tr>
-<tr>
-    <td>
-    \htmlonly
-    <td colspan=2>
-    \endhtmlonly
+<tr><td colspan=2>
     <tt>Accessor::value_type</tt></td>
     <td>type of the data field the accessor refers to</td>
 </tr>
-<tr>
-    <td>
-    \htmlonly
-    <td colspan=3>
-    \endhtmlonly
+<tr><td colspan=3>
         <tt>iter</tt> is an iterator<br>
         <tt>index</tt> has the iterator's index type (<tt>Iterator::difference_type</tt>)<br>
         <tt>value</tt> is convertible to <tt>Accessor::value_type const &</tt>
@@ -113,7 +96,7 @@ namespace vigra {
 </table>
 </p>
 
-    The template <tt>AccessorTraits&lt;T&gt;</tt> can be used to find the default accessor
+    The template <tt>AccessorTraits<T></tt> can be used to find the default accessor
     associated with the type <tt>T</tt>, e.g.
     
     \code

@@ -661,7 +661,7 @@ class TemporaryMatrix
  */
 //@{
 
-    /** Number of rows of a matrix represented as a <tt>MultiArrayView&lt;2,...&gt;</tt>
+    /** Number of rows of a matrix represented as a <tt>MultiArrayView<2, ...></tt>
 
     <b>\#include</b> \<<a href="matrix_8hxx-source.html">vigra/matrix.hxx</a>\> or<br>
     <b>\#include</b> \<<a href="linear__algebra_8hxx-source.html">vigra/linear_algebra.hxx</a>\><br>
@@ -673,7 +673,7 @@ inline std::size_t rowCount(const MultiArrayView<2, T, C> &x)
     return x.shape(0);
 }
 
-    /** Number of columns of a matrix represented as a <tt>MultiArrayView&lt;2,...&gt;</tt>
+    /** Number of columns of a matrix represented as a <tt>MultiArrayView<2, ...></tt>
 
     <b>\#include</b> \<<a href="matrix_8hxx-source.html">vigra/matrix.hxx</a>\> or<br>
     <b>\#include</b> \<<a href="linear__algebra_8hxx-source.html">vigra/linear_algebra.hxx</a>\><br>

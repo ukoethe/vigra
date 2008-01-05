@@ -339,7 +339,7 @@ VIGRA_EXPORT std::auto_ptr<Encoder> encoder( const ImageExportInfo & info );
 See \ref importImage() for a usage example. This object must be
 used to read an image from disk and enquire about its properties.
 
-<b>\#include</b> &lt;<a href="imageinfo_8hxx-source.html">vigra/imageinfo.hxx</a>&gt;<br>
+<b>\#include</b> \<<a href="imageinfo_8hxx-source.html">vigra/imageinfo.hxx</a>\><br>
 Namespace: vigra
 **/
 class ImageImportInfo

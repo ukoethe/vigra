@@ -2033,7 +2033,7 @@ makeBasicImageView (MultiArray <3, T> const &array)
     This wrapper only works if <tt>T</tt> is a scalar type and the
     array's innermost dimension has size 3. It then re-interprets
     the data array as a 2-dimensional array with value_type
-    <tt>RGBValue&lt; T &gt;</tt>.
+    <tt>RGBValue<T></tt>.
 */
 template <class T>
 BasicImageView <RGBValue<T> >

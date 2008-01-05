@@ -157,7 +157,7 @@ initMultiArrayImpl(Iterator s, Shape const & shape, Accessor a,
     or a functor that is called (without argument) at every location,
     and the result is written into the current element. Internally,
     functors are recognized by the meta function 
-    <tt>FunctorTraits&lt;FUNCTOR&gt;::</tt><tt>isInitializer</tt> yielding <tt>VigraTrueType</tt>.
+    <tt>FunctorTraits<FUNCTOR>::isInitializer</tt> yielding <tt>VigraTrueType</tt>.
     Make sure that your functor correctly defines <tt>FunctorTraits</tt> because
     otherwise the code will not compile.
     
@@ -730,8 +730,8 @@ transformMultiArrayImpl(SrcIterator s, SrcShape const & sshape, SrcAccessor src,
     with one argument and no return vakue <tt>functor(arg)</tt>) and Initializer
     (i.e. support function call with no argument, but return value 
     <tt>res = functor()</tt>). Internally, such functors are recognized by the 
-    meta functions <tt>FunctorTraits&lt;FUNCTOR&gt;::</tt><tt>isUnaryAnalyser</tt> and
-    <tt>FunctorTraits&lt;FUNCTOR&gt;::</tt><tt>isInitializer</tt> which must both yield 
+    meta functions <tt>FunctorTraits<FUNCTOR>::isUnaryAnalyser</tt> and
+    <tt>FunctorTraits<FUNCTOR>::isInitializer</tt> which must both yield 
     <tt>VigraTrueType</tt>. Make sure that your functor correctly defines 
     <tt>FunctorTraits</tt> because otherwise reduce mode will not work. In addition,
     the functor must be copy constructible in order to start each reduction
@@ -1174,8 +1174,8 @@ combineTwoMultiArraysImpl(
     with two arguments and no return vakue <tt>functor(arg1, arg2)</tt>) and Initializer
     (i.e. support function call with no argument, but return value 
     <tt>res = functor()</tt>). Internally, such functors are recognized by the 
-    meta functions <tt>FunctorTraits&lt;FUNCTOR&gt;::</tt><tt>isBinaryAnalyser</tt> and
-    <tt>FunctorTraits&lt;FUNCTOR&gt;::</tt><tt>isInitializer</tt> which must both yield 
+    meta functions <tt>FunctorTraits<FUNCTOR>::isBinaryAnalyser</tt> and
+    <tt>FunctorTraits<FUNCTOR>::isInitializer</tt> which must both yield 
     <tt>VigraTrueType</tt>. Make sure that your functor correctly defines 
     <tt>FunctorTraits</tt> because otherwise reduce mode will not work. In addition,
     the functor must be copy constructible in order to start each reduction

@@ -113,123 +113,64 @@ class StridedIteratorPolicy
 <p>
 
 <table border=2 cellspacing=0 cellpadding=2 width="100%">
-<tr><td>
-    \htmlonly
-    <th colspan=2>
-    \endhtmlonly
+<tr><th colspan=2>
     Local Types
-    \htmlonly
     </th><th>
-    \endhtmlonly
     Meaning
-    \htmlonly
     </th>
-    \endhtmlonly
-</td></tr>
-<tr><td>
-    \htmlonly
-    <td colspan=2>
-    \endhtmlonly
+</tr>
+<tr><td colspan=2>
     <tt>ImageIterator::value_type</tt></td><td>the underlying image's pixel type</td>
 </tr>
-<tr>
-    <td>
-    \htmlonly
-    <td colspan=2>
-    \endhtmlonly
+<tr><td colspan=2>
     <tt>ImageIterator::PixelType</tt></td><td>the underlying image's pixel type</td>
 </tr>
-<tr>
-    <td>
-    \htmlonly
-    <td colspan=2>
-    \endhtmlonly
+<tr><td colspan=2>
     <tt>ImageIterator::reference</tt></td>
     <td>the iterator's reference type (return type of <TT>*iter</TT>). Will be
     <tt>value_type &</tt> for a mutable iterator, and convertible to
     <tt>value_type const &</tt> for a const iterator.</td>
 </tr>
-<tr>
-    <td>
-    \htmlonly
-    <td colspan=2>
-    \endhtmlonly
+<tr><td colspan=2>
     <tt>ImageIterator::index_reference</tt></td>
     <td>the iterator's index reference type (return type of <TT>iter[diff]</TT>). Will be
     <tt>value_type &</tt> for a mutable iterator, and convertible to
     <tt>value_type const &</tt> for a const iterator.</td>
 </tr>
-<tr>
-    <td>
-    \htmlonly
-    <td colspan=2>
-    \endhtmlonly
+<tr><td colspan=2>
     <tt>ImageIterator::pointer</tt></td>
     <td>the iterator's pointer type (return type of <TT>iter.operator->()</TT>). Will be
     <tt>value_type *</tt> for a mutable iterator, and convertible to
     <tt>value_type const *</tt> for a const iterator.</td>
 </tr>
-<tr>
-    <td>
-    \htmlonly
-    <td colspan=2>
-    \endhtmlonly
+<tr><td colspan=2>
     <tt>ImageIterator::difference_type</tt></td>
     <td>the iterator's difference type (<TT>vigra::Diff2D</TT>)</td>
 </tr>
-<tr>
-    <td>
-    \htmlonly
-    <td colspan=2>
-    \endhtmlonly
+<tr><td colspan=2>
     <tt>ImageIterator::iterator_category</tt></td>
     <td>the iterator tag (<tt>vigra::image_traverser_tag</tt>)</td>
 </tr>
-<tr>
-    <td>
-    \htmlonly
-    <td colspan=2>
-    \endhtmlonly
+<tr><td colspan=2>
     <tt>ImageIterator::row_iterator</tt></td><td>the associated row iterator</td>
 </tr>
-<tr>
-    <td>
-    \htmlonly
-    <td colspan=2>
-    \endhtmlonly
+<tr><td colspan=2>
     <tt>ImageIterator::column_iterator</tt></td><td>the associated column iterator</td>
 </tr>
-<tr>
-    <td>
-    \htmlonly
-    <td colspan=2>
-    \endhtmlonly
+<tr><td colspan=2>
     <tt>ImageIterator::MoveX</tt></td><td>type of the horizontal navigator</td>
 </tr>
-<tr>
-    <td>
-    \htmlonly
-    <td colspan=2>
-    \endhtmlonly
+<tr><td colspan=2>
     <tt>ImageIterator::MoveY</tt></td><td>type of the vertical navigator</td>
 </tr>
-<tr><td>
-    \htmlonly
-    <th>
-    \endhtmlonly
+<tr><th>
     Operation
-    \htmlonly
     </th><th>
-    \endhtmlonly
     Result
-    \htmlonly
     </th><th>
-    \endhtmlonly
     Semantics
-    \htmlonly
     </th>
-    \endhtmlonly
-</td></tr>
+</tr>
 <tr>
     <td><tt>++i.x<br>i.x--</tt></td><td><tt>void</tt></td><td>increment x-coordinate</td>
 </tr>
@@ -287,35 +228,19 @@ class StridedIteratorPolicy
 <tr>
     <td><tt>i.y < j.y</tt></td><td><tt>bool</tt></td><td><tt>j.y - i.y > 0</tt></td>
 </tr>
-<tr>
-    <td>
-    \htmlonly
-    <td colspan=2>
-    \endhtmlonly
+<tr><td colspan=2>
     <tt>ImageIterator k(i)</tt></td><td>copy constructor</td>
 </tr>
 <tr>
     <td><tt>k = i</tt></td><td><tt>ImageIterator &</tt></td><td>assignment</td>
 </tr>
-<tr>
-    <td>
-    \htmlonly
-    <td colspan=2>
-    \endhtmlonly
+<tr><td colspan=2>
     <tt>ImageIterator k</tt></td><td>default constructor</td>
 </tr>
-<tr>
-    <td>
-    \htmlonly
-    <td colspan=2>
-    \endhtmlonly
+<tr><td colspan=2>
     <tt>ImageIterator::row_iterator r(i)</tt></td><td>construction of row iterator</td>
 </tr>
-<tr>
-    <td>
-    \htmlonly
-    <td colspan=2>
-    \endhtmlonly
+<tr><td colspan=2>
     <tt>ImageIterator::column_iterator c(i)</tt></td><td>construction of column iterator</td>
 </tr>
 <tr>
@@ -358,11 +283,7 @@ class StridedIteratorPolicy
     <td><tt>i->member()</tt></td><td>depends on operation</td>
     <td>call member function of underlying pixel type via <tt>operator-></tt> of iterator</td>
 </tr>
-<tr>
-    <td>
-    \htmlonly
-    <td colspan=3>
-    \endhtmlonly
+<tr><td colspan=3>
        <tt>i, j, k</tt> are of type <tt>ImageIterator</tt><br>
        <tt>diff</tt> is of type <tt>ImageIterator::difference_type</tt><br>
        <tt>dx, dy</tt> are of type <tt>int</tt><br>
@@ -376,64 +297,57 @@ The following iterator traits must be defined for an image iterator:
 </p>
 <p>
 <table border=2 cellspacing=0 cellpadding=2 width="100%">
-<tr><td>
-    \htmlonly
-    <th>
-    \endhtmlonly
+<tr><th>
     Types
-    \htmlonly
     </th><th>
-    \endhtmlonly
     Meaning
-    \htmlonly
     </th>
-    \endhtmlonly
-</td></tr>
-<tr>
-    <td><tt>IteratorTraits&lt;ImageIterator&gt;::Iterator</tt></td><td>the iterator type the traits are referring to</td>
 </tr>
 <tr>
-    <td><tt>IteratorTraits&lt;ImageIterator&gt;::iterator</tt></td><td>the iterator type the traits are referring to</td>
+    <td><tt>IteratorTraits<ImageIterator>::Iterator</tt></td><td>the iterator type the traits are referring to</td>
 </tr>
 <tr>
-    <td><tt>IteratorTraits&lt;ImageIterator&gt;::value_type</tt></td><td>the underlying image's pixel type</td>
+    <td><tt>IteratorTraits<ImageIterator>::iterator</tt></td><td>the iterator type the traits are referring to</td>
 </tr>
 <tr>
-    <td><tt>IteratorTraits&lt;ImageIterator&gt;::reference</tt></td>
+    <td><tt>IteratorTraits<ImageIterator>::value_type</tt></td><td>the underlying image's pixel type</td>
+</tr>
+<tr>
+    <td><tt>IteratorTraits<ImageIterator>::reference</tt></td>
     <td>the iterator's reference type (return type of <TT>*iter</TT>)</td>
 </tr>
 <tr>
-    <td><tt>IteratorTraits&lt;ImageIterator&gt;::index_reference</tt></td>
+    <td><tt>IteratorTraits<ImageIterator>::index_reference</tt></td>
     <td>the iterator's index reference type (return type of <TT>iter[diff]</TT>)</td>
 </tr>
 <tr>
-    <td><tt>IteratorTraits&lt;ImageIterator&gt;::pointer</tt></td>
+    <td><tt>IteratorTraits<ImageIterator>::pointer</tt></td>
     <td>the iterator's pointer type (return type of <TT>iter.operator->()</TT>)</td>
 </tr>
 <tr>
-    <td><tt>IteratorTraits&lt;ImageIterator&gt;::difference_type</tt></td>
+    <td><tt>IteratorTraits<ImageIterator>::difference_type</tt></td>
     <td>the iterator's difference type</td>
 </tr>
 <tr>
-    <td><tt>IteratorTraits&lt;ImageIterator&gt;::iterator_category</tt></td>
+    <td><tt>IteratorTraits<ImageIterator>::iterator_category</tt></td>
     <td>the iterator tag (<tt>vigra::image_traverser_tag</tt>)</td>
 </tr>
 <tr>
-    <td><tt>IteratorTraits&lt;ImageIterator&gt;::row_iterator</tt></td><td>the associated row iterator</td>
+    <td><tt>IteratorTraits<ImageIterator>::row_iterator</tt></td><td>the associated row iterator</td>
 </tr>
 <tr>
-    <td><tt>IteratorTraits&lt;ImageIterator&gt;::column_iterator</tt></td><td>the associated column iterator</td>
+    <td><tt>IteratorTraits<ImageIterator>::column_iterator</tt></td><td>the associated column iterator</td>
 </tr>
 <tr>
-    <td><tt>IteratorTraits&lt;ImageIterator&gt;::DefaultAccessor</tt></td>
+    <td><tt>IteratorTraits<ImageIterator>::DefaultAccessor</tt></td>
     <td>the default accessor to be used with the iterator</td>
 </tr>
 <tr>
-    <td><tt>IteratorTraits&lt;ImageIterator&gt;::default_accessor</tt></td>
+    <td><tt>IteratorTraits<ImageIterator>::default_accessor</tt></td>
     <td>the default accessor to be used with the iterator</td>
 </tr>
 <tr>
-    <td><tt>IteratorTraits&lt;ImageIterator&gt;::hasConstantStrides</tt></td>
+    <td><tt>IteratorTraits<ImageIterator>::hasConstantStrides</tt></td>
     <td>whether the iterator uses constant strides on the underlying memory
         (always <tt>VigraTrueType</tt> for <tt>ImageIterator</tt>s).</td>
 </tr>

@@ -460,7 +460,7 @@
     <b> <TT>typedef ... NormType;</TT></b>
     </td><td>
             result of <tt>norm(ArithmeticType)</tt><br>
-            Usually equal to <tt>SquareRootTraits&lt;SquaredNormType&gt;::SquareRootResult</tt>
+            Usually equal to <tt>SquareRootTraits<SquaredNormType>::SquareRootResult</tt>
     </td></tr>
     </table>
     

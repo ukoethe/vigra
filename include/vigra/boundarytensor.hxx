@@ -371,9 +371,9 @@ oddPolarFilters(SrcIterator supperleft, SrcIterator slowerright, SrcAccessor src
     \f]
 
     where <i>n</i> = <tt>xorder</tt> and <i>m</i> = <tt>yorder</tt> determine th e
-    order of the transform, and <tt>sigma &gt; 0</tt> is the scale of the Laplacian
+    order of the transform, and <tt>sigma > 0</tt> is the scale of the Laplacian
     of Gaussian. This function computes a good spatial domain approximation of
-    these transforms for <tt>xorder + yorder &lt;= 2</tt>. The filter responses may be used
+    these transforms for <tt>xorder + yorder <= 2</tt>. The filter responses may be used
     to calculate the monogenic signal or the boundary tensor.
 
     <b> Declarations:</b>

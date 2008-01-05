@@ -184,7 +184,7 @@ struct FPMulImplementation<true>
     
     The template wraps an <tt>int</tt> and uses <tt>IntBits</tt> to
     represent the integral part of a number, and <tt>FractionalBits</tt>
-    for the fractional part, where <tt>IntBits + FractionalBits &lt; 32</tt>.
+    for the fractional part, where <tt>IntBits + FractionalBits < 32</tt>.
     (The 32rd bit is reserved because FixedPoint is a signed type).
     These numbers will be automatically allocated in an intelligent way
     in the result of an arithmetic operation. For example, when two 

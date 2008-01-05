@@ -100,7 +100,7 @@ namespace vigra {
     the pointer is obtained as the address of iterator's pointee 
     (the object the iterator currently  refers to). 
     This flag would be <tt>VigraFalseType</tt> for a
-    <tt>std::list&lt;int&gt;::iterator</tt>, but is <tt>VigraTrueType</tt> 
+    <tt>std::list<int>::iterator</tt>, but is <tt>VigraTrueType</tt> 
     for most VIGRA iterators.
 
     <b>\#include</b> \<<a href="iteratortraits_8hxx-source.html">vigra/iteratortraits.hxx</a>\>
@@ -248,16 +248,11 @@ struct IteratorTraitsBase
     given explicitly). The following factory functions are provided:
 
     <table>
-    <tr><td>
-        \htmlonly
-        <th bgcolor="#f0e0c0" colspan=2 align=left>
-        \endhtmlonly
+    <tr><th bgcolor="#f0e0c0" colspan=2 align=left>
         <TT>\ref vigra::BasicImage "vigra::BasicImage<SomeType>" img;</TT> or <br>
          <TT>\ref vigra::BasicImageView "vigra::BasicImageView<SomeType>" img;</TT>
-         \htmlonly
         </th>
-        \endhtmlonly
-    </td></tr>
+    </tr>
     <tr><td>
 
     <TT>srcImageRange(img)</TT>
@@ -436,15 +431,10 @@ struct IteratorTraitsBase
     The following factory functions are provided:
 
     <table>
-    <tr><td>
-        \htmlonly
-        <th bgcolor="#f0e0c0" colspan=2 align=left>
-        \endhtmlonly
+    <tr><th bgcolor="#f0e0c0" colspan=2 align=left>
         <TT>\ref vigra::MultiArrayView "vigra::MultiArrayView<N, SomeType>" array;</TT>
-        \htmlonly
         </th>
-        \endhtmlonly
-    </td></tr>
+    </tr>
     <tr><td>
 
     <TT>srcMultiArrayRange(img)</TT>
@@ -533,15 +523,10 @@ struct IteratorTraitsBase
     are provided:
 
     <table>
-    <tr><td>
-        \htmlonly
-        <th bgcolor="#f0e0c0" colspan=2 align=left>
-        \endhtmlonly
+    <tr><th bgcolor="#f0e0c0" colspan=2 align=left>
         <TT>\ref vigra::BasicImage::Iterator "vigra::BasicImage<SomeType>::Iterator" i1, i2;</TT>
-        \htmlonly
         </th>
-        \endhtmlonly
-    </td></tr>
+    </tr>
     <tr><td>
 
     <TT>srcIterRange(i1, i2)</TT>

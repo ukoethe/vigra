@@ -97,15 +97,10 @@
         information. The following factory functions are provided:
 
         <table>
-        <tr><td>
-            \htmlonly
-            <th bgcolor="#f0e0c0" colspan=2 align=left>
-            \endhtmlonly
+        <tr><th bgcolor="#f0e0c0" colspan=2 align=left>
             <TT>\ref vigra::Kernel1D "vigra::Kernel1D<SomeType>" kernel;</TT>
-            \htmlonly
             </th>
-            \endhtmlonly
-        </td></tr>
+        </tr>
         <tr><td>
         <TT>kernel1d(kernel)</TT>
         </td><td>
@@ -147,15 +142,10 @@
         information. The following factory functions are provided:
 
         <table>
-        <tr><td>
-            \htmlonly
-            <th bgcolor="#f0e0c0" colspan=2 align=left>
-            \endhtmlonly
+        <tr><th bgcolor="#f0e0c0" colspan=2 align=left>
             <TT>\ref vigra::Kernel2D "vigra::Kernel2D<SomeType>" kernel;</TT>
-            \htmlonly
             </th>
-            \endhtmlonly
-        </td></tr>
+        </tr>
         <tr><td>
         <TT>kernel2d(kernel)</TT>
         </td><td>
