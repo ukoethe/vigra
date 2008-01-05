@@ -39,13 +39,13 @@
     by <a href="http://kogs-www.informatik.uni-hamburg.de/~koethe/">Ullrich K&ouml;the</a>
     </CENTER>
 
-    VIGRA  is a computer vision library that puts its main emphasize on
+    VIGRA  is a computer vision library that puts its main emphasis on
     <em>flexible algorithms</em>, because
     algorithms represent the principle know-how of this field.
     The library was consequently built
     using <em>generic programming</em> as introduced by Stepanov
     and Musser  and exemplified in the C++
-    <a href="WWW_STL_DOCU">Standard Template Library</a>.
+    <a href=\stl_link>Standard Template Library</a>.
     By writing a few adapters (image iterators and accessors)
     you can use VIGRA's algorithms on top of
     <em>your</em> data structures, within <em>your</em> environment. Alternatively,
@@ -321,7 +321,7 @@ of \ref AlgebraicField and \ref DivisionAlgebra.
     <li>A model of Algebraic Ring implements <tt>Assignable</TT>, <tt>Default Constructible</TT>,
         <tt>Equality Comparable</TT> and <tt>Strict Weakly Comparable</TT>
         as defined in the C++ standard (cf. the
-        <a href="WWW_STL_DOCU">Standard Template Library documentation</a>).
+        <a href=\stl_link>Standard Template Library documentation</a>).
 
     <li>A model of Algebraic Ring implements addition, subtraction and unary negation. The associated
     \link NumericTraits NumericTraits \endlink define a 'zero' element, the type of the
@@ -408,7 +408,7 @@ of \ref AlgebraicField and \ref DivisionAlgebra.
     <li>A model of Linear Space implements <tt>Assignable</TT>, <tt>Default Constructible</TT>
         and <tt>Equality Comparable</TT>
         as defined in the C++ standard (cf. the
-        <a href="WWW_STL_DOCU">Standard Template Library documentation</a>).
+        <a href=\stl_link>Standard Template Library documentation</a>).
 
     <li>A model of Algebraic Ring implements addition, subtraction and unary negation. The associated
     \link NumericTraits NumericTraits \endlink define a 'zero' element, the type of the
