@@ -19,7 +19,7 @@ doxygen::
               -e "s/\(vigra_version=\)/\1\"$(VIGRA_VERSION)\"/" \
               -e "s@\(HTML_OUTPUT *= \).*@\1 $(DOCDIR)@" > Doxyfile
 	$(DOC)
-        @rm -f doxygen*.tmp
+	@rm -f doxygen*.tmp
 
 post::
 #	python post.py $(DOCDIR) $(VIGRA_VERSION)
