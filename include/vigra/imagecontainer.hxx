@@ -30,10 +30,10 @@
 /*    HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,      */
 /*    WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING      */
 /*    FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR     */
-/*    OTHER DEALINGS IN THE SOFTWARE.                                   */                
+/*    OTHER DEALINGS IN THE SOFTWARE.                                   */
 /*                                                                      */
 /************************************************************************/
- 
+
 #ifndef VIGRA_IMAGECONTAINER_HXX
 #define VIGRA_IMAGECONTAINER_HXX
 
@@ -61,7 +61,7 @@ namespace vigra {
     the same interface, only operator< is missing from ImageArray. It
     offers additional functions for resizing the images and querying
     their common size. See \ref imageSize() for additional notes.
-    
+
     A custimized allocator can be passed as a template argument and via the constructor.
     By default, the allocator of the <tt>ImageType</tt> is reused.
 
@@ -69,7 +69,7 @@ namespace vigra {
 
     Namespace: vigra
 */
-template <class ImageType, 
+template <class ImageType,
       class Alloc = typename ImageType::allocator_type::template rebind<ImageType>::other >
 class ImageArray
 {
@@ -98,7 +98,7 @@ public:
 
         /** init an array of numImages equal-sized images; use the specified allocator.
          */
-    ImageArray(unsigned int numImages, const Diff2D &imageSize, 
+    ImageArray(unsigned int numImages, const Diff2D &imageSize,
                Alloc const & alloc = Alloc())
         : imageSize_(imageSize),
           images_(numImages, ImageType(), alloc)
@@ -125,10 +125,10 @@ public:
           images_(numImages, image, alloc)
     {
     }
-    
+
         /** range constructor: Construct an array containing copies of
             the images in [begin, end). Those images must all have the
-            same size, see \ref imageSize(). (STL-Sequence interface); 
+            same size, see \ref imageSize(). (STL-Sequence interface);
             use the specified allocator.
          */
     template<class InputIterator>
@@ -430,7 +430,7 @@ public:
         /** Resize all images to a common new size (No-op if
             <tt>newSize == imageSize()</tt>). See \ref imageSize() for
             an important note about resizing the images.
-            
+
             (Convenience function, same as calling
             <tt>resizeImages(Diff2D(width, height));</tt>.)
         */
@@ -446,15 +446,24 @@ public:
 /*                                                      */
 /********************************************************/
 
-/** \brief Fundamental class template for image pyramids.
+/** \brief Class template for logarithmically tapering image pyramids.
 
-    Sorry, no \ref detailedDocumentation() available yet.
+    An ImagePyramid manages an array of images of the type given as
+    template parameter, where each level has half the width and height
+    of its predecessor.  It actually represents a sequence of pyramid
+    levels whose start and end index are configurable.  For Burt-style
+    pyramids, see also \ref pyramidReduceBurtFilter and \ref
+    pyramidExpandBurtFilter.
+
+    A custimized allocator can be passed as a template argument and
+    via the constructor.  By default, the allocator of the
+    <tt>ImageType</tt> is reused.
 
     <b>\#include</b> \<<a href="imagecontainer_8hxx-source.html">vigra/imagecontainer.hxx</a>\>
 
     Namespace: vigra
 */
-template <class ImageType, 
+template <class ImageType,
       class Alloc = typename ImageType::allocator_type::template rebind<ImageType>::other >
 class ImagePyramid
 {
@@ -481,12 +490,17 @@ public:
     typedef typename ImageVector::difference_type difference_type;
     typedef int size_type;
 
-        /** Init a pyramid between the given levels (inclusive). Allocate the given \a imageSize
-                   at the pyramid level given in \a sizeAppliesToLevel and size the other levels using recursive
-                   reduction/expansion by factors of 2. Use the specified allocator for image creation 
-                   The image type must be default constructible and resizable.
+        /** Init a pyramid between the given levels (inclusive).
+         *
+         * Allocate the given \a imageSize at the pyramid level given
+         * in \a sizeAppliesToLevel (default: level 0 / bottom) and
+         * size the other levels using recursive reduction/expansion
+         * by factors of 2.  Use the specified allocator for image
+         * creation.  The image type must be default constructible and
+         * resizable.  sizeAppliesToLevel must be the in range
+         * lowestLevel..highestLevel (inclusive).
          */
-    ImagePyramid(int lowestLevel, int highestLevel, 
+    ImagePyramid(int lowestLevel, int highestLevel,
                  const Diff2D &imageSize, int sizeAppliesToLevel = 0,
                  Alloc const & alloc = Alloc())
         : lowestLevel_(0), highestLevel_(-1),
@@ -495,14 +509,19 @@ public:
         resize(lowestLevel, highestLevel, imageSize, sizeAppliesToLevel);
     }
 
-
-        /** Init a pyramid between the given levels (inclusive). Copy the given \a image
-                   into the pyramid level given in \a copyImageToLevel and size the other levels 
-                   using recursive reduction/expansion by factors of 2 (no image data are copied here). 
-                   Use the specified allocator for image creation 
-                   The image type must be default constructible and resizable.
-            */
-    ImagePyramid(int lowestLevel, int highestLevel, 
+        /**
+         * Init a pyramid between the given levels (inclusive).
+         *
+         * Copy the given \a image into the pyramid level given in \a
+         * copyImageToLevel (default: level 0 / bottom) and size the
+         * other levels using recursive reduction/expansion by factors
+         * of 2 (their image data is not initialized).  Use the
+         * specified allocator for image creation.  The image type
+         * must be default constructible and resizable.
+         * sizeAppliesToLevel must be the in range
+         * lowestLevel..highestLevel (inclusive).
+         */
+    ImagePyramid(int lowestLevel, int highestLevel,
                  const ImageType &image, int copyImageToLevel = 0,
                  Alloc const & alloc = Alloc())
         : lowestLevel_(0), highestLevel_(-1),
@@ -512,15 +531,22 @@ public:
         copyImage(srcImageRange(image), destImage((*this)[copyImageToLevel]));
     }
 
-        /** Init a pyramid between the given levels (inclusive). Copy the image given by the range
-                   \a ul to \a lr into the pyramid level given in \a copyImageToLevel and size the other levels 
-                   using recursive reduction/expansion by factors of 2 (no image data are copied here). 
-                   Use the specified allocator for image creation 
-                   The image type must be default constructible and resizable.
-            */
+        /**
+         * Init a pyramid between the given levels (inclusive).
+         *
+         * Copy the image given by the range \a ul to \a lr into the
+         * pyramid level given in \a copyImageToLevel (default: level
+         * 0 / bottom) and size the other levels using recursive
+         * reduction/expansion by factors of 2 (their image data is
+         * not initialized).  Use the specified allocator for image
+         * creation.  The image type must be default constructible and
+         * resizable.  sizeAppliesToLevel must be the in range
+         * lowestLevel..highestLevel (inclusive).
+         */
     template <class SrcIterator, class SrcAccessor>
-    ImagePyramid(int lowestLevel, int highestLevel, 
-                 SrcIterator ul, SrcIterator lr, SrcAccessor src, int copyImageToLevel = 0,
+    ImagePyramid(int lowestLevel, int highestLevel,
+                 SrcIterator ul, SrcIterator lr, SrcAccessor src,
+                 int copyImageToLevel = 0,
                  Alloc const & alloc = Alloc())
         : lowestLevel_(0), highestLevel_(-1),
           images_(alloc)
@@ -529,23 +555,23 @@ public:
         copyImage(srcIterRange(ul, lr, src), destImage((*this)[copyImageToLevel]));
     }
 
-        /** Init an impty pyramid. use the specified allocator.
+        /** Init an empty pyramid.  Use the specified allocator.
          */
     ImagePyramid(Alloc const & alloc = Alloc())
         : lowestLevel_(0), highestLevel_(-1),
           images_(alloc)
     {}
-    
+
     virtual ~ImagePyramid() {}
-    
-        /** Get the lowest allocated level of the pyramid.
+
+        /** Get the index of the lowest allocated level of the pyramid.
         */
     int lowestLevel() const
     {
         return lowestLevel_;
     }
-    
-        /** Get the highest allocated level of the pyramid.
+
+        /** Get the index of the highest allocated level of the pyramid.
         */
     int highestLevel() const
     {
@@ -659,7 +685,7 @@ public:
          */
     bool operator ==(const ImagePyramid<ImageType, Alloc> &other) const
     {
-        return (lowestLevel_ == other.lowestLevel_) && (highestLevel_ == other.highestLevel_) && 
+        return (lowestLevel_ == other.lowestLevel_) && (highestLevel_ == other.highestLevel_) &&
                 (images_ == other.images_);
     }
 
@@ -677,16 +703,16 @@ public:
             right size at the end of the array if you make it
             larger. (STL-Sequence interface)
         */
-    void resize(int lowestLevel, int highestLevel, 
+    void resize(int lowestLevel, int highestLevel,
                 const Diff2D &imageSize, int sizeAppliesToLevel = 0)
     {
-        vigra_precondition(lowestLevel <= highestLevel, 
+        vigra_precondition(lowestLevel <= highestLevel,
            "ImagePyramid::resize(): lowestLevel <= highestLevel required.");
-        vigra_precondition(lowestLevel <= sizeAppliesToLevel && sizeAppliesToLevel <= highestLevel, 
+        vigra_precondition(lowestLevel <= sizeAppliesToLevel && sizeAppliesToLevel <= highestLevel,
            "ImagePyramid::resize(): sizeAppliesToLevel must be between lowest and highest level (inclusive).");
-        
+
         ImageVector images(highestLevel - lowestLevel + 1, ImageType());
-        
+
         images[sizeAppliesToLevel - lowestLevel].resize(imageSize);
         for(int i=sizeAppliesToLevel + 1; i<=highestLevel; ++i)
         {
@@ -700,34 +726,34 @@ public:
             unsigned int h = 2*images[i + 1 - lowestLevel].height() - 1;
             images[i - lowestLevel].resize(w, h);
         }
-        
+
         images_.swap(images);
         lowestLevel_ = lowestLevel;
         highestLevel_ = highestLevel;
     }
 
-        /** return the first image. (STL-Sequence interface)
+        /** return the first image (lowestLevel()). (STL-Sequence interface)
          */
     reference front()
     {
         return images_.front();
     }
 
-        /** return the first image. (STL-Sequence interface)
+        /** return the first image (lowestLevel()). (STL-Sequence interface)
          */
     const_reference front() const
     {
         return images_.front();
     }
 
-        /** return the last image. (STL-Vector interface)
+        /** return the last image (highestLevel()). (STL-Vector interface)
          */
     reference back()
     {
         return images_.back();
     }
 
-        /** return the last image. (STL-Vector interface)
+        /** return the last image (highestLevel()). (STL-Vector interface)
          */
     const_reference back() const
     {
