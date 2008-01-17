@@ -230,7 +230,10 @@ public:
     the original statistics.
 
     If a candidate could be merged into more than one regions with identical
-    cost, the algorithm will favour the nearest region.
+    cost, the algorithm will favour the nearest region. If, at any point in the algorithm,
+    the cost of the current candidate exceeds the optional <tt>max_cost</tt> value (which defaults to
+    <tt>-1</tt>), region growing is aborted, and all voxels not yet assigned to a region 
+    remain unlabeled.
 
     In some cases, the cost only depends on the feature value of the current
     voxel. Then the update operation will simply be a no-op, and the <TT>cost()</TT>
@@ -245,13 +248,25 @@ public:
         template <class SrcImageIterator, class Diff_type, class SrcAccessor,
                   class SeedImageIterator, class SeedAccessor,
                   class DestImageIterator, class DestAccessor,
-                  class RegionStatisticsArray >
+                  class RegionStatisticsArray, class CostThresholdType >
         void seededRegionGrowing3D(SrcImageIterator srcul, Diff_type shape,
                                  SrcAccessor as,
                                  SeedImageIterator seedsul, SeedAccessor aseeds,
                                  DestImageIterator destul, DestAccessor ad,
                                  RegionStatisticsArray & stats, 
-                                 const SRGType srgType == CompleteGrow)
+                                 CostThresholdType max_cost = -1.0,
+                                 const SRGType srgType == CompleteGrow);
+
+        template <class SrcImageIterator, class Diff_type, class SrcAccessor,
+                  class SeedImageIterator, class SeedAccessor,
+                  class DestImageIterator, class DestAccessor,
+                  class RegionStatisticsArray>
+        void seededRegionGrowing3D(SrcImageIterator srcul, Diff_type shape,
+                                 SrcAccessor as,
+                                 SeedImageIterator seedsul, SeedAccessor aseeds,
+                                 DestImageIterator destul, DestAccessor ad,
+                                 RegionStatisticsArray & stats, 
+                                 const SRGType srgType == CompleteGrow);
 
        }
     \endcode
@@ -262,13 +277,25 @@ public:
             template <class SrcImageIterator, class Shape, class SrcAccessor,
                   class SeedImageIterator, class SeedAccessor,
                   class DestImageIterator, class DestAccessor,
+                  class RegionStatisticsArray, class CostThresholdType>
+            void
+            seededRegionGrowing3D(triple<SrcImageIterator, Shape, SrcAccessor> img1,
+                            pair<SeedImageIterator, SeedAccessor> img3,
+                            pair<DestImageIterator, DestAccessor> img4,
+                            RegionStatisticsArray & stats, 
+                            CostThresholdType max_cost = -1.0,
+                            const SRGType srgType == CompleteGrow);
+
+            template <class SrcImageIterator, class Shape, class SrcAccessor,
+                  class SeedImageIterator, class SeedAccessor,
+                  class DestImageIterator, class DestAccessor,
                   class RegionStatisticsArray>
             void
             seededRegionGrowing3D(triple<SrcImageIterator, Shape, SrcAccessor> img1,
                             pair<SeedImageIterator, SeedAccessor> img3,
                             pair<DestImageIterator, DestAccessor> img4,
                             RegionStatisticsArray & stats, 
-                            const SRGType srgType == CompleteGrow)
+                            const SRGType srgType == CompleteGrow);
     }
     \endcode
 
@@ -278,12 +305,12 @@ doxygen_overloaded_function(template <...> void seededRegionGrowing3D)
 template <class SrcImageIterator, class Diff_type, class SrcAccessor,
           class SeedImageIterator, class SeedAccessor,
           class DestImageIterator, class DestAccessor,
-          class RegionStatisticsArray >
+          class RegionStatisticsArray, class CostThresholdType>
 void seededRegionGrowing3D(SrcImageIterator srcul, Diff_type shape,
                          SrcAccessor as,
                          SeedImageIterator seedsul, SeedAccessor aseeds,
                          DestImageIterator destul, DestAccessor ad,
-                         RegionStatisticsArray & stats, int max_cost, 
+                         RegionStatisticsArray & stats, CostThresholdType max_cost, 
                          const SRGType srgType)
 {
     SrcImageIterator srclr = srcul + shape;
@@ -298,7 +325,7 @@ void seededRegionGrowing3D(SrcImageIterator srcul, Diff_type shape,
     SrcImageIterator isy = srcul, isx = srcul, isz = srcul;  // iterators for the src image
 
     typedef typename RegionStatisticsArray::value_type RegionStatistics;
-    typedef typename RegionStatistics::cost_type CostType;
+    typedef typename PromoteTraits<typename RegionStatistics::cost_type, CostThresholdType>::Promote CostType;
     typedef detail::SeedRgVoxel<CostType, Diff_type> Voxel;
 
     typename Voxel::Allocator allocator;
@@ -374,7 +401,7 @@ void seededRegionGrowing3D(SrcImageIterator srcul, Diff_type shape,
         Voxel * voxel = pheap.top();
         pheap.pop();
 
-        if(max_cost > 0 && voxel->cost_ > max_cost) break;
+        if(max_cost > NumericTraits<CostThresholdType>::zero() && voxel->cost_ > max_cost) break;
 
         Diff_type pos = voxel->location_;
         Diff_type nearest = voxel->nearest_;
@@ -483,12 +510,12 @@ seededRegionGrowing3D(triple<SrcImageIterator, SrcImageIterator, SrcAccessor> im
 template <class SrcImageIterator, class Diff_type, class SrcAccessor,
           class SeedImageIterator, class SeedAccessor,
           class DestImageIterator, class DestAccessor,
-          class RegionStatisticsArray >
+          class RegionStatisticsArray, class CostThresholdType>
 void seededRegionGrowing3D(SrcImageIterator srcul, Diff_type shape,
                          SrcAccessor as,
                          SeedImageIterator seedsul, SeedAccessor aseeds,
                          DestImageIterator destul, DestAccessor ad,
-                         RegionStatisticsArray & stats, int max_cost)
+                         RegionStatisticsArray & stats, CostThresholdType max_cost)
 {
     seededRegionGrowing3D( srcul, shape, as, seedsul, aseeds, destul, ad, stats, max_cost, CompleteGrow);
 }
@@ -503,7 +530,7 @@ void seededRegionGrowing3D(SrcImageIterator srcul, Diff_type shape,
                          DestImageIterator destul, DestAccessor ad,
                          RegionStatisticsArray & stats)
 {
-    seededRegionGrowing3D( srcul, shape, as, seedsul, aseeds, destul, ad, stats, -1, CompleteGrow);
+    seededRegionGrowing3D( srcul, shape, as, seedsul, aseeds, destul, ad, stats, -1.0, CompleteGrow);
 }
 
 template <class SrcImageIterator, class Diff_type, class SrcAccessor,
@@ -516,7 +543,7 @@ void seededRegionGrowing3D(SrcImageIterator srcul, Diff_type shape,
                          DestImageIterator destul, DestAccessor ad,
                          RegionStatisticsArray & stats, SRGType srgType)
 {
-    seededRegionGrowing3D( srcul, shape, as, seedsul, aseeds, destul, ad, stats, -1, srgType);
+    seededRegionGrowing3D( srcul, shape, as, seedsul, aseeds, destul, ad, stats, -1.0, srgType);
 }
 
 
@@ -540,12 +567,12 @@ seededRegionGrowing3D(triple<SrcImageIterator, Shape, SrcAccessor> img1,
 template <class SrcImageIterator, class Shape, class SrcAccessor,
           class SeedImageIterator, class SeedAccessor,
           class DestImageIterator, class DestAccessor,
-          class RegionStatisticsArray>
+          class RegionStatisticsArray, class CostThresholdType>
 inline void
 seededRegionGrowing3D(triple<SrcImageIterator, Shape, SrcAccessor> img1,
                     pair<SeedImageIterator, SeedAccessor> img3,
                     pair<DestImageIterator, DestAccessor> img4,
-                    RegionStatisticsArray & stats, int max_cost, const SRGType srgType)
+                    RegionStatisticsArray & stats, CostThresholdType max_cost, const SRGType srgType)
 {
     seededRegionGrowing3D(img1.first, img1.second, img1.third,
                         img3.first, img3.second,
@@ -567,7 +594,7 @@ seededRegionGrowing3D(triple<SrcImageIterator, Shape, SrcAccessor> img1,
     seededRegionGrowing3D(img1.first, img1.second, img1.third,
                         img3.first, img3.second,
                         img4.first, img4.second,
-                        stats, -1, srgType);
+                        stats, -1.0, srgType);
 }
 
 template <class SrcImageIterator, class Shape, class SrcAccessor,
@@ -583,7 +610,7 @@ seededRegionGrowing3D(triple<SrcImageIterator, Shape, SrcAccessor> img1,
     seededRegionGrowing3D(img1.first, img1.second, img1.third,
                         img3.first, img3.second,
                         img4.first, img4.second,
-                        stats, -1, CompleteGrow);
+                        stats, -1.0, CompleteGrow);
 }
 
 
