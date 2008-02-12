@@ -1126,15 +1126,15 @@ struct LinalgTest
         Matrix g = outer(e, f);
         shouldEqual(g.rowCount(), e.rowCount());
         shouldEqual(g.columnCount(), f.columnCount());
-        for(unsigned int i=0; i<g.rowCount(); ++i)
-            for(unsigned int j=0; j<g.columnCount(); ++j)
+        for(int i=0; i<g.rowCount(); ++i)
+            for(int j=0; j<g.columnCount(); ++j)
                 shouldEqual(g(i,j), data[i]*tref[j]);
 
         Matrix h = transpose(a) * a;
         shouldEqual(h.rowCount(), c);
         shouldEqual(h.columnCount(), c);
-        for(unsigned int i=0; i<c; ++i)
-            for(unsigned int j=0; j<c; ++j)
+        for(int i=0; i<(int)c; ++i)
+            for(int j=0; j<(int)c; ++j)
                 shouldEqual(h(i,j), dot(rowVector(at, i), columnVector(a, j)));
 
         should(isSymmetric(random_symmetric_matrix(10)));
