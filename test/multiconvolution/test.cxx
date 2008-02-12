@@ -62,7 +62,7 @@ struct MultiArrayPointoperatorsTest
     MultiArrayPointoperatorsTest()
     : img(Size3(5,4,3))
     {
-        unsigned int i;
+        int i;
         PixelType c = 0.1;
         for(i=0; i<img.elementCount(); ++i, ++c)
             img.data()[i] = c;
