@@ -671,7 +671,7 @@ struct ResultTraits3<ParameterFunctor<T>, T1, T2, T3>
 };
 
 template <class T>
-UnaryFunctor<ParameterFunctor<T> >
+inline UnaryFunctor<ParameterFunctor<T> >
 Param(T const & v)
 {
     ParameterFunctor<T> fv(v);
@@ -891,7 +891,7 @@ struct ResultTraits3<UnaryFunctor<VarFunctor<T> >, T1, T2, T3>
 };
 
 template <class T>
-UnaryFunctor<VarFunctor<T> >
+inline UnaryFunctor<VarFunctor<T> >
 Var(T & v)
 {
     return UnaryFunctor<VarFunctor<T> >(v);
@@ -1154,7 +1154,7 @@ ifThenElse(UnaryFunctor<EXPR1> const & e1,
     }; \
      \
     template <class EXPR> \
-    UnaryFunctor<Functor_##function<UnaryFunctor<EXPR> > > \
+    inline UnaryFunctor<Functor_##function<UnaryFunctor<EXPR> > > \
     function(UnaryFunctor<EXPR> const & e) \
     { \
         Functor_##function<UnaryFunctor<EXPR> > p(e); \
@@ -1254,7 +1254,7 @@ MAKE_FUNCTOR_UNARY_FUNCTION(abs, vigra)
     }; \
      \
     template <class EXPR> \
-    UnaryFunctor<Functor_##name<UnaryFunctor<EXPR> > > \
+    inline UnaryFunctor<Functor_##name<UnaryFunctor<EXPR> > > \
     operator op(UnaryFunctor<EXPR> const & e) \
     { \
         Functor_##name<UnaryFunctor<EXPR> > p(e); \
@@ -1358,7 +1358,7 @@ MAKE_FUNCTOR_UNARY_OPERATOR(bitNegate, ~)
     }; \
      \
     template <class EXPR1, class EXPR2> \
-    UnaryFunctor<Functor_##function<UnaryFunctor<EXPR1>, UnaryFunctor<EXPR2> > > \
+    inline UnaryFunctor<Functor_##function<UnaryFunctor<EXPR1>, UnaryFunctor<EXPR2> > > \
     function(UnaryFunctor<EXPR1> const & e1, UnaryFunctor<EXPR2> const & e2) \
     { \
         Functor_##function<UnaryFunctor<EXPR1>, UnaryFunctor<EXPR2> > p(e1, e2); \
@@ -1469,7 +1469,7 @@ MAKE_FUNCTOR_BINARY_FUNCTION(fmod)
     }; \
      \
     template <class EXPR1, class EXPR2> \
-    UnaryFunctor<Functor_##name<UnaryFunctor<EXPR1>, UnaryFunctor<EXPR2> > > \
+    inline UnaryFunctor<Functor_##name<UnaryFunctor<EXPR1>, UnaryFunctor<EXPR2> > > \
     name(UnaryFunctor<EXPR1> const & e1, UnaryFunctor<EXPR2> const & e2) \
     { \
         Functor_##name<UnaryFunctor<EXPR1>, UnaryFunctor<EXPR2> > p(e1, e2); \
@@ -1565,7 +1565,7 @@ MAKE_FUNCTOR_MINMAX(max, >)
     }; \
      \
     template <class EXPR1, class EXPR2> \
-    UnaryFunctor<Functor_##name<UnaryFunctor<EXPR1>, UnaryFunctor<EXPR2> > > \
+    inline UnaryFunctor<Functor_##name<UnaryFunctor<EXPR1>, UnaryFunctor<EXPR2> > > \
     operator op(UnaryFunctor<EXPR1> const & e1, UnaryFunctor<EXPR2> const & e2) \
     { \
         Functor_##name<UnaryFunctor<EXPR1>, UnaryFunctor<EXPR2> > p(e1, e2); \
@@ -1653,7 +1653,7 @@ MAKE_FUNCTOR_BINARY_OPERATOR(bitXor, ^)
     }; \
      \
     template <class EXPR1, class EXPR2> \
-    UnaryFunctor<Functor_##name<UnaryFunctor<EXPR1>, UnaryFunctor<EXPR2> > > \
+    inline UnaryFunctor<Functor_##name<UnaryFunctor<EXPR1>, UnaryFunctor<EXPR2> > > \
     operator op(UnaryFunctor<EXPR1> const & e1, UnaryFunctor<EXPR2> const & e2) \
     { \
         Functor_##name<UnaryFunctor<EXPR1>, UnaryFunctor<EXPR2> > p(e1, e2); \
@@ -1740,7 +1740,7 @@ struct ResultTraits3<UnaryFctPtrFunctor<EXPR, RES, ARG>, T1, T2, T3>
 };
 
 template <class EXPR, class RES, class ARG>
-UnaryFunctor<UnaryFctPtrFunctor<UnaryFunctor<EXPR>, RES, ARG> >
+inline UnaryFunctor<UnaryFctPtrFunctor<UnaryFunctor<EXPR>, RES, ARG> >
 applyFct(RES (*f)(ARG), UnaryFunctor<EXPR> const & e)
 {
     UnaryFctPtrFunctor<UnaryFunctor<EXPR>, RES, ARG> p(e, f);
@@ -1818,7 +1818,7 @@ struct ResultTraits3<BinaryFctPtrFunctor<EXPR1, EXPR2, RES, ARG1, ARG2>, T1, T2,
 };
 
 template <class EXPR1, class EXPR2, class RES, class ARG1, class ARG2>
-UnaryFunctor<BinaryFctPtrFunctor<UnaryFunctor<EXPR1>, 
+inline UnaryFunctor<BinaryFctPtrFunctor<UnaryFunctor<EXPR1>, 
                                  UnaryFunctor<EXPR2>, 
                                  RES, ARG1, ARG2> >
 applyFct(RES (*f)(ARG1, ARG2), UnaryFunctor<EXPR1> const & e1, 
@@ -1907,7 +1907,7 @@ struct ResultTraits3<CommaFunctor<Expr1, Expr2>, T1, T2, T3>
 };
 
 template <class EXPR1, class EXPR2>
-UnaryFunctor<CommaFunctor<UnaryAnalyser<EXPR1>, 
+inline UnaryFunctor<CommaFunctor<UnaryAnalyser<EXPR1>, 
                             UnaryFunctor<EXPR2> > >
 operator,(UnaryAnalyser<EXPR1> const & e1, 
           UnaryFunctor<EXPR2> const & e2)
@@ -1961,7 +1961,7 @@ struct CommaAnalyser
 };
 
 template <class EXPR1, class EXPR2>
-UnaryAnalyser<CommaAnalyser<UnaryAnalyser<EXPR1>, 
+inline UnaryAnalyser<CommaAnalyser<UnaryAnalyser<EXPR1>, 
                             UnaryAnalyser<EXPR2> > >
 operator,(UnaryAnalyser<EXPR1> const & e1, 
           UnaryAnalyser<EXPR2> const & e2)

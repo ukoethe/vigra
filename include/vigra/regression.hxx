@@ -367,7 +367,7 @@ class LeastAngleRegressionOptions
         */
     LeastAngleRegressionOptions & maxSolutionCount(unsigned int n)
     {
-        max_solution_count = n;
+        max_solution_count = (int)n;
         return *this;
     }
 
@@ -381,7 +381,7 @@ class LeastAngleRegressionOptions
         */
     LeastAngleRegressionOptions & unconstrainedDimensionCount(unsigned int n)
     {
-        unconstrained_dimension_count = n;
+        unconstrained_dimension_count = (int)n;
         return *this;
     }
 #endif
@@ -444,16 +444,13 @@ class LeastAngleRegressionOptions
         */
     LeastAngleRegressionOptions & stopAtMinimumOfBIC(double variance, unsigned int delay = 5)
     {
-        vigra_precondition(delay > 0,
-           "LeastAngleRegressionOptions::stopAtMinimumOfBIC(): delay must be > 0.");
-        
         bic_variance = variance;
-        bic_delay = delay;
+        bic_delay = (int)delay;
         return *this;
     }
 
     double bic_variance;
-    unsigned int max_solution_count, unconstrained_dimension_count, bic_delay;
+    int max_solution_count, unconstrained_dimension_count, bic_delay;
     bool lasso_modification, enforce_positive, least_squares_solutions;
 };
 
@@ -468,35 +465,39 @@ leastAngleRegression(MultiArrayView<2, T, C1> const & A, MultiArrayView<2, T, C2
     
     typedef typename MultiArrayShape<2>::type Shape;
     typedef typename Matrix<T>::view_type Subarray;
-    typedef ArrayVectorView<unsigned int> ColumnSet;
+
+    typedef typename Array2::value_type Permutation;
+    typedef typename Permutation::view_type ColumnSet;
     
     if(options.enforce_positive && !options.lasso_modification)
         vigra_precondition(false,
               "leastAngleRegression(): Positive solutions can only be enforced whan LASSO modification is active.");
 
-    const unsigned int rows = rowCount(A);
-    const unsigned int cols = columnCount(A);
+    const MultiArrayIndex rows = rowCount(A);
+    const MultiArrayIndex cols = columnCount(A);
+    const unsigned int ucols = (unsigned int)cols;
 
     vigra_precondition(rowCount(b) == rows && columnCount(b) == 1,
        "leastAngleRegression(): Shape mismatch between matrices A and b.");
        
-    unsigned int maxSolutionCount = options.max_solution_count;
+    MultiArrayIndex maxSolutionCount = options.max_solution_count;
     if(maxSolutionCount == 0)
-        maxSolutionCount = 10*std::min(rows, cols);
+        maxSolutionCount = options.lasso_modification
+                                ? 10*std::min(rows, cols)
+                                : std::min(rows, cols);
     
     Matrix<T> R(A), qtb(b);
 
     // the first activeSetSize entries will hold the active set indices,
     // the other entries are the inactive set, all permuted in the same way as the
     // columns of the matrix R
-    int k;
-    ArrayVector<unsigned int> columnPermutation(cols);
-    for(k=0; k<cols; ++k)
+    Permutation columnPermutation(ucols);
+    for(int k=0; k<cols; ++k)
         columnPermutation[k] = k;
         
     // find dimension with largest correlation
     Matrix<T> c = transpose(A)*b;
-    int initialColumn;
+    MultiArrayIndex initialColumn;
     if(options.enforce_positive)
         initialColumn = argMaxIf(c, Arg1() > Param(0.0));
     else
@@ -505,7 +506,7 @@ leastAngleRegression(MultiArrayView<2, T, C1> const & A, MultiArrayView<2, T, C2
         return 0; // no solution found
     
     // prepare initial active set and search direction etc.
-    int activeSetSize = 1;
+    MultiArrayIndex activeSetSize = 1;
     std::swap(columnPermutation[0], columnPermutation[initialColumn]);
     columnVector(R, 0).swapData(columnVector(R, initialColumn));
     detail::qrColumnHouseholderStep(0, R, qtb);
@@ -514,17 +515,18 @@ leastAngleRegression(MultiArrayView<2, T, C1> const & A, MultiArrayView<2, T, C2
     
     Matrix<T> next_lsq_solution(cols, 1);
     next_lsq_solution(0,0) = qtb(0,0) / R(0,0);
-    Matrix<T> searchVector = next_lsq_solution(0,0) * columnVector(A, columnPermutation[0]);
+    Matrix<T> searchVector = 
+         next_lsq_solution(0,0) * columnVector(A, (MultiArrayIndex)columnPermutation[0]);
     
     double minimal_bic = NumericTraits<double>::max();
     int minimal_bic_solution = -1;
     
-    ArrayVector<unsigned int> columnsToBeRemoved;
-    unsigned int currentSolutionCount = 0;
+    Permutation columnsToBeRemoved;
+    MultiArrayIndex currentSolutionCount = 0;
     while(currentSolutionCount < maxSolutionCount)
     {
-        ColumnSet activeSet = columnPermutation.subarray(0, activeSetSize);
-        ColumnSet inactiveSet = columnPermutation.subarray(activeSetSize, cols);
+        ColumnSet activeSet = columnPermutation.subarray(0, (unsigned int)activeSetSize);
+        ColumnSet inactiveSet = columnPermutation.subarray((unsigned int)activeSetSize, ucols);
         
         // find next dimension to be activated
         Matrix<T> c(cols - activeSetSize, 1), ac(cols - activeSetSize, 1);
@@ -532,7 +534,7 @@ leastAngleRegression(MultiArrayView<2, T, C1> const & A, MultiArrayView<2, T, C2
 
         T C = abs(dot(columnVector(A, activeSet[0]), lars_residual));
         
-        for(unsigned int k = 0; k<cols-activeSetSize; ++k)
+        for(MultiArrayIndex k = 0; k<cols-activeSetSize; ++k)
         {
             // perform permutation on A explicitly, so that we need not store a permuted copy of A
             c(k, 0) = dot(columnVector(A, inactiveSet[k]), lars_residual);
@@ -546,7 +548,7 @@ leastAngleRegression(MultiArrayView<2, T, C1> const & A, MultiArrayView<2, T, C2
                 ac(k, 0) = am;
         }
 
-        int columnToBeAdded = argMinIf(ac, Arg1() > Param(0.0));
+        MultiArrayIndex columnToBeAdded = argMinIf(ac, Arg1() > Param(0.0));
         if(columnToBeAdded == -1)
             break;  // no further solution possible
         
@@ -561,7 +563,7 @@ leastAngleRegression(MultiArrayView<2, T, C1> const & A, MultiArrayView<2, T, C2
         {
             // find dimensions whose weight changes sign below gamma*searchDirection
             Matrix<T> d(Shape(activeSetSize, 1), NumericTraits<T>::max());
-            for(int k=0; k<activeSetSize; ++k)
+            for(MultiArrayIndex k=0; k<activeSetSize; ++k)
                 if(sign(lsq_solution(k,0))*sign(next_lsq_solution(k,0)) == -1.0)
                     d(k,0) = lsq_solution(k,0) / (lsq_solution(k,0) - next_lsq_solution(k,0));
             int changesSign = argMinIf(d, Arg1() < Param(gamma));
@@ -583,11 +585,12 @@ leastAngleRegression(MultiArrayView<2, T, C1> const & A, MultiArrayView<2, T, C2
             lars_solution = gamma * next_lsq_solution + (1.0 - gamma) * lars_solution;
             
             columnsToBeRemoved.clear();
-            for(unsigned int k=0; k<activeSetSize; ++k)
-                if((options.enforce_positive && lars_solution(k,0) <= tolerance) || abs(lars_solution(k,0)) <= tolerance)
+            for(MultiArrayIndex k=0; k<activeSetSize; ++k)
+                if((options.enforce_positive && lars_solution(k,0) <= tolerance) ||
+                   abs(lars_solution(k,0)) <= tolerance)
                     columnsToBeRemoved.push_back(k);
             
-            for(unsigned int k=0; k<columnsToBeRemoved.size(); ++k)
+            for(MultiArrayIndex k=0; k<(MultiArrayIndex)columnsToBeRemoved.size(); ++k)
             {
                 // remove column 'columnsToBeRemoved[k]' and restore triangular from of R
                 detail::upperTriangularSwapColumns(columnsToBeRemoved[k], activeSetSize, R, qtb, columnPermutation);
@@ -609,7 +612,7 @@ leastAngleRegression(MultiArrayView<2, T, C1> const & A, MultiArrayView<2, T, C2
             // compute the predictions of the reduced active set
             lsq_prediction.init(NumericTraits<T>::zero()); 
             lars_prediction.init(NumericTraits<T>::zero()); 
-            for(int k=0; k<activeSetSize; ++k)
+            for(MultiArrayIndex k=0; k<activeSetSize; ++k)
             {
                lsq_prediction += current_lsq_solution(k,0)*columnVector(A, columnPermutation[k]);
                lars_prediction += current_lars_solution(k,0)*columnVector(A, columnPermutation[k]);
@@ -626,7 +629,7 @@ leastAngleRegression(MultiArrayView<2, T, C1> const & A, MultiArrayView<2, T, C2
         }
             
         ++currentSolutionCount;
-        activeSets.push_back(typename Array2::value_type(columnPermutation.subarray(0, activeSetSize)));
+        activeSets.push_back(Permutation(columnPermutation.subarray(0, (unsigned int)activeSetSize)));
         
         double residual;
         if(options.least_squares_solutions)
@@ -650,7 +653,7 @@ leastAngleRegression(MultiArrayView<2, T, C1> const & A, MultiArrayView<2, T, C2
                 minimal_bic_solution = currentSolutionCount;
             }
             if(currentSolutionCount - minimal_bic_solution >= options.bic_delay)
-                return minimal_bic_solution;
+                return (unsigned int)minimal_bic_solution;
         }
 
         if(needToRemoveColumns)
@@ -683,22 +686,22 @@ leastAngleRegression(MultiArrayView<2, T, C1> const & A, MultiArrayView<2, T, C2
             {
                 // if all columns are active, LARS solution and LSQ solution are identical, and no further solution is possible
                 ++currentSolutionCount;
-                activeSets.push_back(typename Array2::value_type(columnPermutation.subarray(0, activeSetSize)));
+                activeSets.push_back(Permutation(columnPermutation.subarray(0, (unsigned int)activeSetSize)));
                 solutions.push_back(next_lsq_solution_k);
                 break;
             }
 
             // compute new search direction
             searchVector = -lars_prediction;
-            for(unsigned int k=0; k<activeSetSize; ++k)
+            for(MultiArrayIndex k=0; k<activeSetSize; ++k)
                 searchVector += next_lsq_solution_k(k,0)*columnVector(A, columnPermutation[k]);
         }
     }
     
-    if(options.bic_variance > 0.0 && minimal_bic_solution != currentSolutionCount)
-        return minimal_bic_solution;
+    if(options.bic_variance > 0.0 && minimal_bic_solution != (int)currentSolutionCount)
+        return (unsigned int)minimal_bic_solution;
     else
-        return currentSolutionCount;
+        return (unsigned int)currentSolutionCount;
 }
 
 } // namespace linalg

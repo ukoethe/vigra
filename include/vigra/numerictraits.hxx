@@ -622,14 +622,18 @@ struct NumericTraits<unsigned char>
     static Promote toPromote(unsigned char v) { return v; }
     static RealPromote toRealPromote(unsigned char v) { return v; }
     static unsigned char fromPromote(Promote const & v) { 
-        return ((v < 0) ? 0 : (v > UCHAR_MAX) ? UCHAR_MAX : v); 
+        return Type((v < 0) 
+             ? 0 
+             : (v > (Promote)UCHAR_MAX) 
+                    ? UCHAR_MAX
+                    : v); 
     }
     static unsigned char fromRealPromote(RealPromote const & v) {
-            return ((v < 0.0) 
+            return Type((v < 0.0) 
                      ? 0 
                      : ((v > (RealPromote)UCHAR_MAX) 
                          ? UCHAR_MAX 
-                         : static_cast<unsigned char>(v + 0.5)));
+                         : v + 0.5));
     }
 };
 
@@ -709,14 +713,18 @@ struct NumericTraits<short unsigned int>
     static Promote toPromote(short unsigned int v) { return v; }
     static RealPromote toRealPromote(short unsigned int v) { return v; }
     static short unsigned int fromPromote(Promote v) { 
-        return ((v < 0) ? 0 : (v > USHRT_MAX) ? USHRT_MAX : v); 
+        return Type((v < 0) 
+              ? 0 
+              : (v > USHRT_MAX) 
+                   ? USHRT_MAX 
+                   : v); 
     }
     static short unsigned int fromRealPromote(RealPromote v) {
-            return ((v < 0.0) 
+            return Type((v < 0.0) 
                      ? 0 
                      : ((v > (RealPromote)USHRT_MAX) 
                          ? USHRT_MAX 
-                         : static_cast<short unsigned int>(v + 0.5)));
+                         : v + 0.5));
     }
 };
 
@@ -1107,7 +1115,7 @@ template<>
 struct PromoteTraits<signed char, short unsigned int>
 {
     typedef unsigned int Promote;
-    static Promote toPromote(signed char v) { return v; }
+    static Promote toPromote(signed char v) { return Promote(v); }
     static Promote toPromote(short unsigned int v) { return v; }
 };
 
@@ -1123,7 +1131,7 @@ template<>
 struct PromoteTraits<signed char, unsigned int>
 {
     typedef unsigned int Promote;
-    static Promote toPromote(signed char v) { return v; }
+    static Promote toPromote(signed char v) { return Promote(v); }
     static Promote toPromote(unsigned int v) { return v; }
 };
 
@@ -1139,7 +1147,7 @@ template<>
 struct PromoteTraits<signed char, unsigned long>
 {
     typedef unsigned long Promote;
-    static Promote toPromote(signed char v) { return v; }
+    static Promote toPromote(signed char v) { return Promote(v); }
     static Promote toPromote(unsigned long v) { return v; }
 };
 
@@ -1281,7 +1289,7 @@ template<>
 struct PromoteTraits<short int, short unsigned int>
 {
     typedef unsigned int Promote;
-    static Promote toPromote(short int v) { return v; }
+    static Promote toPromote(short int v) { return Promote(v); }
     static Promote toPromote(short unsigned int v) { return v; }
 };
 
@@ -1297,7 +1305,7 @@ template<>
 struct PromoteTraits<short int, unsigned int>
 {
     typedef unsigned int Promote;
-    static Promote toPromote(short int v) { return v; }
+    static Promote toPromote(short int v) { return Promote(v); }
     static Promote toPromote(unsigned int v) { return v; }
 };
 
@@ -1313,7 +1321,7 @@ template<>
 struct PromoteTraits<short int, unsigned long>
 {
     typedef unsigned long Promote;
-    static Promote toPromote(short int v) { return v; }
+    static Promote toPromote(short int v) { return Promote(v); }
     static Promote toPromote(unsigned long v) { return v; }
 };
 
@@ -1346,7 +1354,7 @@ struct PromoteTraits<short unsigned int, signed char>
 {
     typedef unsigned int Promote;
     static Promote toPromote(short unsigned int v) { return v; }
-    static Promote toPromote(signed char v) { return v; }
+    static Promote toPromote(signed char v) { return Promote(v); }
 };
 
 template<>
@@ -1362,7 +1370,7 @@ struct PromoteTraits<short unsigned int, short int>
 {
     typedef unsigned int Promote;
     static Promote toPromote(short unsigned int v) { return v; }
-    static Promote toPromote(short int v) { return v; }
+    static Promote toPromote(short int v) { return Promote(v); }
 };
 
 template<>
@@ -1377,7 +1385,7 @@ struct PromoteTraits<short unsigned int, int>
 {
     typedef unsigned int Promote;
     static Promote toPromote(short unsigned int v) { return v; }
-    static Promote toPromote(int v) { return v; }
+    static Promote toPromote(int v) { return Promote(v); }
 };
 
 template<>
@@ -1456,7 +1464,7 @@ template<>
 struct PromoteTraits<int, short unsigned int>
 {
     typedef unsigned int Promote;
-    static Promote toPromote(int v) { return v; }
+    static Promote toPromote(int v) { return Promote(v); }
     static Promote toPromote(short unsigned int v) { return v; }
 };
 
@@ -1471,7 +1479,7 @@ template<>
 struct PromoteTraits<int, unsigned int>
 {
     typedef unsigned int Promote;
-    static Promote toPromote(int v) { return v; }
+    static Promote toPromote(int v) { return Promote(v); }
     static Promote toPromote(unsigned int v) { return v; }
 };
 
@@ -1487,7 +1495,7 @@ template<>
 struct PromoteTraits<int, unsigned long>
 {
     typedef unsigned long Promote;
-    static Promote toPromote(int v) { return v; }
+    static Promote toPromote(int v) { return Promote(v); }
     static Promote toPromote(unsigned long v) { return v; }
 };
 
@@ -1520,7 +1528,7 @@ struct PromoteTraits<unsigned int, signed char>
 {
     typedef unsigned int Promote;
     static Promote toPromote(unsigned int v) { return v; }
-    static Promote toPromote(signed char v) { return v; }
+    static Promote toPromote(signed char v) { return Promote(v); }
 };
 
 template<>
@@ -1536,7 +1544,7 @@ struct PromoteTraits<unsigned int, short int>
 {
     typedef unsigned int Promote;
     static Promote toPromote(unsigned int v) { return v; }
-    static Promote toPromote(short int v) { return v; }
+    static Promote toPromote(short int v) { return Promote(v); }
 };
 
 template<>
@@ -1552,7 +1560,7 @@ struct PromoteTraits<unsigned int, int>
 {
     typedef unsigned int Promote;
     static Promote toPromote(unsigned int v) { return v; }
-    static Promote toPromote(int v) { return v; }
+    static Promote toPromote(int v) { return Promote(v); }
 };
 
 template<>
@@ -1566,7 +1574,7 @@ template<>
 struct PromoteTraits<unsigned int, long>
 {
     typedef long Promote;
-    static Promote toPromote(unsigned int v) { return v; }
+    static Promote toPromote(unsigned int v) { return Promote(v); }
     static Promote toPromote(long v) { return v; }
 };
 
@@ -1647,7 +1655,7 @@ struct PromoteTraits<long, unsigned int>
 {
     typedef long Promote;
     static Promote toPromote(long v) { return v; }
-    static Promote toPromote(unsigned int v) { return v; }
+    static Promote toPromote(unsigned int v) { return Promote(v); }
 };
 
 template<>
@@ -1661,7 +1669,7 @@ template<>
 struct PromoteTraits<long, unsigned long>
 {
     typedef unsigned long Promote;
-    static Promote toPromote(long v) { return v; }
+    static Promote toPromote(long v) { return Promote(v); }
     static Promote toPromote(unsigned long v) { return v; }
 };
 
@@ -1669,7 +1677,7 @@ template<>
 struct PromoteTraits<long, float>
 {
     typedef float Promote;
-    static Promote toPromote(long v) { return static_cast<Promote>(v); }
+    static Promote toPromote(long v) { return Promote(v); }
     static Promote toPromote(float v) { return v; }
 };
 
@@ -1694,7 +1702,7 @@ struct PromoteTraits<unsigned long, signed char>
 {
     typedef unsigned long Promote;
     static Promote toPromote(unsigned long v) { return v; }
-    static Promote toPromote(signed char v) { return v; }
+    static Promote toPromote(signed char v) { return Promote(v); }
 };
 
 template<>
@@ -1710,7 +1718,7 @@ struct PromoteTraits<unsigned long, short int>
 {
     typedef unsigned long Promote;
     static Promote toPromote(unsigned long v) { return v; }
-    static Promote toPromote(short int v) { return v; }
+    static Promote toPromote(short int v) { return Promote(v); }
 };
 
 template<>
@@ -1726,7 +1734,7 @@ struct PromoteTraits<unsigned long, int>
 {
     typedef unsigned long Promote;
     static Promote toPromote(unsigned long v) { return v; }
-    static Promote toPromote(int v) { return v; }
+    static Promote toPromote(int v) { return Promote(v); }
 };
 
 template<>
@@ -1742,7 +1750,7 @@ struct PromoteTraits<unsigned long, long>
 {
     typedef unsigned long Promote;
     static Promote toPromote(unsigned long v) { return v; }
-    static Promote toPromote(long v) { return v; }
+    static Promote toPromote(long v) { return Promote(v); }
 };
 
 template<>

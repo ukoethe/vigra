@@ -58,25 +58,25 @@ T determinantByLUDecomposition(MultiArrayView<2, T, C1> const & a)
 {
     typedef MultiArrayShape<2>::type Shape;
 
-    unsigned int m = rowCount(a), n = columnCount(a);
+    MultiArrayIndex m = rowCount(a), n = columnCount(a);
     vigra_precondition(n == m,
        "determinant(): square matrix required.");
        
     Matrix<T> LU(a);
     T det = 1.0;
 
-    for (unsigned int j = 0; j < n; ++j) 
+    for (MultiArrayIndex j = 0; j < n; ++j) 
     {
         // Apply previous transformations.
-        for (unsigned int i = 0; i < m; ++i) 
+        for (MultiArrayIndex i = 0; i < m; ++i) 
         {
-            unsigned int end = std::min(i, j);
+            MultiArrayIndex end = std::min(i, j);
             T s = dot(rowVector(LU, Shape(i,0), end), columnVector(LU, Shape(0,j), end));
             LU(i,j) = LU(i,j) -= s;
         }
 
         // Find pivot and exchange if necessary.
-        unsigned int p = j + argMax(abs(columnVector(LU, Shape(j,j), m)));
+        MultiArrayIndex p = j + argMax(abs(columnVector(LU, Shape(j,j), m)));
         if (p != j) 
         {
             rowVector(LU, p).swapData(rowVector(LU, j));
@@ -138,7 +138,8 @@ bool givensRotationMatrix(T a, T b, Matrix<T> & gTranspose)
 // reflections are symmetric matrices and can thus be applied to rows
 // and columns in the same way => code simplification relative to rotations
 template <class T>
-bool givensReflectionMatrix(T a, T b, Matrix<T> & g)
+inline bool 
+givensReflectionMatrix(T a, T b, Matrix<T> & g)
 {
     if(b == 0.0)
         return false; // no reflection needed
@@ -151,13 +152,13 @@ bool givensReflectionMatrix(T a, T b, Matrix<T> & g)
 // see Golub, van Loan: Algorithm 5.2.2 (p. 227) and Section 12.5.2 (p. 608)
 template <class T, class C1, class C2>
 bool 
-qrGivensStepImpl(unsigned int i, MultiArrayView<2, T, C1> &r, MultiArrayView<2, T, C2> &rhs)
+qrGivensStepImpl(MultiArrayIndex i, MultiArrayView<2, T, C1> &r, MultiArrayView<2, T, C2> &rhs)
 {
     typedef typename Matrix<T>::difference_type Shape;
     
-    const unsigned int m = rowCount(r);
-    const unsigned int n = columnCount(r);
-    const unsigned int rhsCount = columnCount(rhs);
+    const MultiArrayIndex m = rowCount(r);
+    const MultiArrayIndex n = columnCount(r);
+    const MultiArrayIndex rhsCount = columnCount(rhs);
     vigra_precondition(m == rowCount(rhs),
                        "qrGivensStepImpl(): Matrix shape mismatch.");
 
@@ -179,14 +180,14 @@ qrGivensStepImpl(unsigned int i, MultiArrayView<2, T, C1> &r, MultiArrayView<2, 
 // see Golub, van Loan: Section 12.5.2 (p. 608)
 template <class T, class C1, class C2, class Permutation>
 void 
-upperTriangularCyclicShiftColumns(unsigned int i, unsigned int j, 
+upperTriangularCyclicShiftColumns(MultiArrayIndex i, MultiArrayIndex j, 
                                   MultiArrayView<2, T, C1> &r, MultiArrayView<2, T, C2> &rhs, Permutation & permutation)
 {
     typedef typename Matrix<T>::difference_type Shape;
     
-    const unsigned int m = rowCount(r);
-    const unsigned int n = columnCount(r);
-    const unsigned int rhsCount = columnCount(rhs);
+    const MultiArrayIndex m = rowCount(r);
+    const MultiArrayIndex n = columnCount(r);
+    const MultiArrayIndex rhsCount = columnCount(rhs);
     vigra_precondition(i < n && j < n,
                        "upperTriangularCyclicShiftColumns(): Shift indices out of range.");
     vigra_precondition(m == rowCount(rhs),
@@ -198,8 +199,8 @@ upperTriangularCyclicShiftColumns(unsigned int i, unsigned int j,
         std::swap(j,i);
         
     Matrix<T> t = columnVector(r, i);
-    unsigned int ti = permutation[i];
-    for(unsigned int k=i; k<j;++k)
+    MultiArrayIndex ti = permutation[i];
+    for(MultiArrayIndex k=i; k<j;++k)
     {
         columnVector(r, k) = columnVector(r, k+1);
         permutation[k] = permutation[k+1];
@@ -208,7 +209,7 @@ upperTriangularCyclicShiftColumns(unsigned int i, unsigned int j,
     permutation[j] = ti;
     
     Matrix<T> givens(2,2);
-    for(unsigned int k=i; k<j; ++k)
+    for(MultiArrayIndex k=i; k<j; ++k)
     {
         if(!givensReflectionMatrix(r(k,k), r(k+1,k), givens))
             continue;  // r(k+1,k) was already zero
@@ -224,14 +225,14 @@ upperTriangularCyclicShiftColumns(unsigned int i, unsigned int j,
 // see Golub, van Loan: Section 12.5.2 (p. 608)
 template <class T, class C1, class C2, class Permutation>
 void 
-upperTriangularSwapColumns(unsigned int i, unsigned int j, 
+upperTriangularSwapColumns(MultiArrayIndex i, MultiArrayIndex j, 
                            MultiArrayView<2, T, C1> &r, MultiArrayView<2, T, C2> &rhs, Permutation & permutation)
 {    
     typedef typename Matrix<T>::difference_type Shape;
     
-    const unsigned int m = rowCount(r);
-    const unsigned int n = columnCount(r);
-    const unsigned int rhsCount = columnCount(rhs);
+    const MultiArrayIndex m = rowCount(r);
+    const MultiArrayIndex n = columnCount(r);
+    const MultiArrayIndex rhsCount = columnCount(rhs);
     vigra_precondition(i < n && j < n,
                        "upperTriangularSwapColumns(): Swap indices out of range.");
     vigra_precondition(m == rowCount(rhs),
@@ -257,8 +258,8 @@ upperTriangularSwapColumns(unsigned int i, unsigned int j,
         r.subarray(Shape(k-1,i+1), Shape(k+1,n)) = givens*r.subarray(Shape(k-1,i+1), Shape(k+1,n));
         rhs.subarray(Shape(k-1,0), Shape(k+1,rhsCount)) = givens*rhs.subarray(Shape(k-1,0), Shape(k+1,rhsCount));
     }
-    unsigned int end = std::min(j, m-1);
-    for(unsigned int k=i+1; k<end; ++k)
+    MultiArrayIndex end = std::min(j, m-1);
+    for(MultiArrayIndex k=i+1; k<end; ++k)
     {
         if(!givensReflectionMatrix(r(k,k), r(k+1,k), givens))
             continue;  // r(k+1,k) was already zero
@@ -288,7 +289,7 @@ bool householderVector(MultiArrayView<2, T, C1> const & v, MultiArrayView<2, T, 
     else
     {
         u(0,0) = (v(0,0) - vnorm) / f;
-        for(unsigned int k=1; k<rowCount(u); ++k)
+        for(MultiArrayIndex k=1; k<rowCount(u); ++k)
             u(k,0) = v(k,0) / f;
         return true;
     }
@@ -297,14 +298,14 @@ bool householderVector(MultiArrayView<2, T, C1> const & v, MultiArrayView<2, T, 
 // see Lawson & Hanson: Algorithm H1 (p. 57)
 template <class T, class C1, class C2, class C3>
 bool 
-qrHouseholderStepImpl(unsigned int i, MultiArrayView<2, T, C1> & r, 
+qrHouseholderStepImpl(MultiArrayIndex i, MultiArrayView<2, T, C1> & r, 
                       MultiArrayView<2, T, C2> & rhs, MultiArrayView<2, T, C3> & householderMatrix)
 {
     typedef typename Matrix<T>::difference_type Shape;
     
-    const unsigned int m = rowCount(r);
-    const unsigned int n = columnCount(r);
-    const unsigned int rhsCount = columnCount(rhs);
+    const MultiArrayIndex m = rowCount(r);
+    const MultiArrayIndex n = columnCount(r);
+    const MultiArrayIndex rhsCount = columnCount(rhs);
 
     if(i >= n)
         return false;
@@ -321,9 +322,9 @@ qrHouseholderStepImpl(unsigned int i, MultiArrayView<2, T, C1> & r,
 
     if(nontrivial)
     {
-        for(unsigned int k=i+1; k<n; ++k)
+        for(MultiArrayIndex k=i+1; k<n; ++k)
             columnVector(r, Shape(i,k), m) -= dot(columnVector(r, Shape(i,k), m), u) * u;
-        for(unsigned int k=0; k<rhsCount; ++k)
+        for(MultiArrayIndex k=0; k<rhsCount; ++k)
             columnVector(rhs, Shape(i,k), m) -= dot(columnVector(rhs, Shape(i,k), m), u) * u;
     }
     return r(i,i) != 0.0;
@@ -331,7 +332,7 @@ qrHouseholderStepImpl(unsigned int i, MultiArrayView<2, T, C1> & r,
 
 template <class T, class C1, class C2>
 bool 
-qrColumnHouseholderStep(unsigned int i, MultiArrayView<2, T, C1> &r, MultiArrayView<2, T, C2> &rhs)
+qrColumnHouseholderStep(MultiArrayIndex i, MultiArrayView<2, T, C1> &r, MultiArrayView<2, T, C2> &rhs)
 {
     Matrix<T> dontStoreHouseholderVectors; // intentionally empty
     return qrHouseholderStepImpl(i, r, rhs, dontStoreHouseholderVectors);
@@ -339,7 +340,7 @@ qrColumnHouseholderStep(unsigned int i, MultiArrayView<2, T, C1> &r, MultiArrayV
 
 template <class T, class C1, class C2>
 bool 
-qrRowHouseholderStep(unsigned int i, MultiArrayView<2, T, C1> &r, MultiArrayView<2, T, C2> & householderMatrix)
+qrRowHouseholderStep(MultiArrayIndex i, MultiArrayView<2, T, C1> &r, MultiArrayView<2, T, C2> & householderMatrix)
 {
     Matrix<T> dontTransformRHS; // intentionally empty
     MultiArrayView<2, T, StridedArrayTag> rt = transpose(r),
@@ -354,7 +355,7 @@ incrementalMaxSingularValueApproximation(MultiArrayView<2, T, C1> const & newCol
                                          MultiArrayView<2, T, C2> & z, SNType & v) 
 {
     typedef typename Matrix<T>::difference_type Shape;
-    unsigned int n = rowCount(newColumn) - 1;
+    MultiArrayIndex n = rowCount(newColumn) - 1;
     
     SNType vneu = squaredNorm(newColumn);
     T yv = dot(columnVector(newColumn, Shape(0,0),n), columnVector(z, Shape(0,0),n));
@@ -381,7 +382,7 @@ incrementalMinSingularValueApproximation(MultiArrayView<2, T, C1> const & newCol
         return;
     }
 
-    unsigned int n = rowCount(newColumn) - 1;
+    MultiArrayIndex n = rowCount(newColumn) - 1;
     
     T gamma = newColumn(n,0);
     if(gamma == 0.0) 
@@ -404,20 +405,20 @@ incrementalMinSingularValueApproximation(MultiArrayView<2, T, C1> const & newCol
 template <class T, class C1, class C2, class C3>
 unsigned int 
 qrTransformToTriangularImpl(MultiArrayView<2, T, C1> & r, MultiArrayView<2, T, C2> & rhs, MultiArrayView<2, T, C3> & householder,
-                            ArrayVector<unsigned int> & permutation, double epsilon)
+                            ArrayVector<MultiArrayIndex> & permutation, double epsilon)
 {
     typedef typename Matrix<T>::difference_type Shape;
     typedef typename NormTraits<MultiArrayView<2, T, C1> >::NormType NormType;
     typedef typename NormTraits<MultiArrayView<2, T, C1> >::SquaredNormType SNType;
     
-    const unsigned int m = rowCount(r);
-    const unsigned int n = columnCount(r);
-    const unsigned int maxRank = std::min(m, n);
+    const MultiArrayIndex m = rowCount(r);
+    const MultiArrayIndex n = columnCount(r);
+    const MultiArrayIndex maxRank = std::min(m, n);
     
     vigra_precondition(m >= n,
         "qrTransformToTriangularImpl(): Coefficient matrix with at least as many rows as columns required.");
 
-    const unsigned int rhsCount = columnCount(rhs);
+    const MultiArrayIndex rhsCount = columnCount(rhs);
     bool transformRHS = rhsCount > 0;
     vigra_precondition(!transformRHS || m == rowCount(rhs),
                        "qrTransformToTriangularImpl(): RHS matrix shape mismatch.");
@@ -427,7 +428,7 @@ qrTransformToTriangularImpl(MultiArrayView<2, T, C1> & r, MultiArrayView<2, T, C
                        "qrTransformToTriangularImpl(): Householder matrix shape mismatch.");
                        
     bool pivoting = permutation.size() > 0;
-    vigra_precondition(!pivoting || n == permutation.size(),
+    vigra_precondition(!pivoting || n == (MultiArrayIndex)permutation.size(),
                        "qrTransformToTriangularImpl(): Permutation array size mismatch.");
 
     if(n == 0)
@@ -437,7 +438,7 @@ qrTransformToTriangularImpl(MultiArrayView<2, T, C1> & r, MultiArrayView<2, T, C
     if(pivoting)
     {
         columnSquaredNorms.reshape(Shape(1,n));
-        for(unsigned int k=0; k<n; ++k)
+        for(MultiArrayIndex k=0; k<n; ++k)
             columnSquaredNorms[k] = squaredNorm(columnVector(r, k));
             
         int pivot = argMax(columnSquaredNorms);
@@ -451,7 +452,7 @@ qrTransformToTriangularImpl(MultiArrayView<2, T, C1> & r, MultiArrayView<2, T, C
     
     qrHouseholderStepImpl(0, r, rhs, householder);
     
-    unsigned int rank = 1;
+    MultiArrayIndex rank = 1;
     NormType maxApproxSingularValue = norm(r(0,0)),
              minApproxSingularValue = maxApproxSingularValue;
     
@@ -475,11 +476,11 @@ qrTransformToTriangularImpl(MultiArrayView<2, T, C1> & r, MultiArrayView<2, T, C
         zmin(0,0) = 1.0 / r(0,0);
     }
 
-    for(unsigned int k=1; k<maxRank; ++k)
+    for(MultiArrayIndex k=1; k<maxRank; ++k)
     {
         if(pivoting)
         {
-            for(unsigned int l=k; l<n; ++l)
+            for(MultiArrayIndex l=k; l<n; ++l)
                 columnSquaredNorms[l] -= squaredNorm(r(k, l));
             int pivot = k + argMax(rowVector(columnSquaredNorms, Shape(0,k), n));
             if(pivot != (int)k)
@@ -518,13 +519,13 @@ qrTransformToTriangularImpl(MultiArrayView<2, T, C1> & r, MultiArrayView<2, T, C
         else
             pivoting = false; // matrix doesn't have full rank, triangulize the rest without pivoting
     }
-    return rank;
+    return (unsigned int)rank;
 }
 
 template <class T, class C1, class C2>
 unsigned int 
 qrTransformToUpperTriangular(MultiArrayView<2, T, C1> & r, MultiArrayView<2, T, C2> & rhs, 
-                             ArrayVector<unsigned int> & permutation, double epsilon = 0.0)
+                             ArrayVector<MultiArrayIndex> & permutation, double epsilon = 0.0)
 {
     Matrix<T> dontStoreHouseholderVectors; // intentionally empty
     return qrTransformToTriangularImpl(r, rhs, dontStoreHouseholderVectors, permutation, epsilon);
@@ -536,8 +537,8 @@ unsigned int
 qrTransformToLowerTriangular(MultiArrayView<2, T, C1> & r, MultiArrayView<2, T, C2> & rhs, MultiArrayView<2, T, C3> & householderMatrix, 
                       double epsilon = 0.0)
 {
-    ArrayVector<unsigned int> permutation(rowCount(rhs));
-    for(unsigned int k=0; k<permutation.size(); ++k)
+    ArrayVector<MultiArrayIndex> permutation((unsigned int)rowCount(rhs));
+    for(MultiArrayIndex k=0; k<(MultiArrayIndex)permutation.size(); ++k)
         permutation[k] = k;
     Matrix<T> dontTransformRHS; // intentionally empty
     MultiArrayView<2, T, StridedArrayTag> rt = transpose(r),
@@ -546,7 +547,7 @@ qrTransformToLowerTriangular(MultiArrayView<2, T, C1> & r, MultiArrayView<2, T, 
     
     // apply row permutation to RHS
     Matrix<T> tempRHS(rhs);
-    for(unsigned int k=0; k<permutation.size(); ++k)
+    for(MultiArrayIndex k=0; k<(MultiArrayIndex)permutation.size(); ++k)
         rowVector(rhs, k) = rowVector(tempRHS, permutation[k]);
     return rank;
 }
@@ -557,9 +558,10 @@ inline bool
 qrTransformToUpperTriangular(MultiArrayView<2, T, C1> & r, MultiArrayView<2, T, C2> & rhs, 
                       double epsilon = 0.0)
 {
-    ArrayVector<unsigned int> noPivoting; // intentionally empty
+    ArrayVector<MultiArrayIndex> noPivoting; // intentionally empty
     
-    return (qrTransformToUpperTriangular(r, rhs, noPivoting, epsilon) == columnCount(r));
+    return (qrTransformToUpperTriangular(r, rhs, noPivoting, epsilon) == 
+            (unsigned int)columnCount(r));
 }
 
 // QR algorithm without row pivoting
@@ -570,7 +572,8 @@ qrTransformToLowerTriangular(MultiArrayView<2, T, C1> & r, MultiArrayView<2, T, 
 {
     Matrix<T> noPivoting; // intentionally empty
     
-    return (qrTransformToLowerTriangular(r, noPivoting, householder, epsilon) == rowCount(r));
+    return (qrTransformToLowerTriangular(r, noPivoting, householder, epsilon) == 
+           (unsigned int)rowCount(r));
 }
 
 // restore ordering of result vector elements after QR solution with column pivoting
@@ -578,8 +581,8 @@ template <class T, class C1, class C2, class Permutation>
 void inverseRowPermutation(MultiArrayView<2, T, C1> &permuted, MultiArrayView<2, T, C2> &res,
                            Permutation const & permutation)
 {
-    for(unsigned int k=0; k<columnCount(permuted); ++k)
-        for(unsigned int l=0; l<rowCount(permuted); ++l)
+    for(MultiArrayIndex k=0; k<columnCount(permuted); ++k)
+        for(MultiArrayIndex l=0; l<rowCount(permuted); ++l)
             res(permutation[l], k) = permuted(l,k);
 }
 
@@ -587,14 +590,14 @@ template <class T, class C1, class C2>
 void applyHouseholderColumnReflections(MultiArrayView<2, T, C1> const &householder, MultiArrayView<2, T, C2> &res)
 {
     typedef typename Matrix<T>::difference_type Shape;
-    unsigned int n = rowCount(householder);
-    unsigned int m = columnCount(householder);
-    unsigned int rhsCount = columnCount(res);
+    MultiArrayIndex n = rowCount(householder);
+    MultiArrayIndex m = columnCount(householder);
+    MultiArrayIndex rhsCount = columnCount(res);
     
     for(int k = m-1; k >= 0; --k)
     {
         MultiArrayView<2, T, C1> u = columnVector(householder, Shape(k,k), n);
-        for(unsigned int l=0; l<rhsCount; ++l)
+        for(MultiArrayIndex l=0; l<rhsCount; ++l)
             columnVector(res, Shape(k,l), n) -= dot(columnVector(res, Shape(k,l), n), u) * u;
     }
 }
@@ -609,10 +612,10 @@ linearSolveQRReplace(MultiArrayView<2, T, C1> &A, MultiArrayView<2, T, C2> &b,
 {
     typedef typename Matrix<T>::difference_type Shape;
 
-    unsigned int n = columnCount(A);
-    unsigned int m = rowCount(A);
-    unsigned int rhsCount = columnCount(res);
-    unsigned int rank = std::min(m,n);
+    MultiArrayIndex n = columnCount(A);
+    MultiArrayIndex m = rowCount(A);
+    MultiArrayIndex rhsCount = columnCount(res);
+    MultiArrayIndex rank = std::min(m,n);
     
     vigra_precondition(rhsCount == columnCount(b),
            "linearSolveQR(): RHS and solution must have the same number of columns.");
@@ -628,7 +631,7 @@ linearSolveQRReplace(MultiArrayView<2, T, C1> &A, MultiArrayView<2, T, C2> &b,
         // minimum norm solution of underdetermined system
         Matrix<T> householderMatrix(n, m);
         MultiArrayView<2, T, StridedArrayTag> ht = transpose(householderMatrix);
-        rank = detail::qrTransformToLowerTriangular(A, b, ht, epsilon);
+        rank = (MultiArrayIndex)detail::qrTransformToLowerTriangular(A, b, ht, epsilon);
         res.subarray(Shape(rank,0), Shape(n, rhsCount)).init(NumericTraits<T>::zero());
 
         if(rank < m)
@@ -652,11 +655,11 @@ linearSolveQRReplace(MultiArrayView<2, T, C1> &A, MultiArrayView<2, T, C2> &b,
     else
     {
         // solution of well-determined or overdetermined system
-        ArrayVector<unsigned int> permutation(n);
-        for(unsigned int k=0; k<n; ++k)
+        ArrayVector<MultiArrayIndex> permutation((unsigned int)n);
+        for(MultiArrayIndex k=0; k<n; ++k)
             permutation[k] = k;
 
-        rank = detail::qrTransformToUpperTriangular(A, b, permutation, epsilon);
+        rank = (MultiArrayIndex)detail::qrTransformToUpperTriangular(A, b, permutation, epsilon);
         
         Matrix<T> permutedSolution(n, rhsCount);
         if(rank < n)
@@ -680,7 +683,7 @@ linearSolveQRReplace(MultiArrayView<2, T, C1> &A, MultiArrayView<2, T, C2> &b,
         }
         detail::inverseRowPermutation(permutedSolution, res, permutation);
     }
-    return rank;
+    return (unsigned int)rank;
 }
 
 template <class T, class C1, class C2, class C3>
@@ -711,7 +714,7 @@ unsigned int linearSolveQR(MultiArrayView<2, T, C1> const & A, MultiArrayView<2,
 template <class T, class C1, class C2>
 bool inverse(const MultiArrayView<2, T, C1> &v, MultiArrayView<2, T, C2> &res)
 {
-    const unsigned int n = columnCount(v);
+    const MultiArrayIndex n = columnCount(v);
     vigra_precondition(n <= rowCount(v),
        "inverse(): input matrix must have at least as many rows as columns.");
     vigra_precondition(n == rowCount(res) && rowCount(v) == columnCount(res),
@@ -792,7 +795,7 @@ TemporaryMatrix<T> inverse(const TemporaryMatrix<T> &v)
 template <class T, class C1>
 T determinant(MultiArrayView<2, T, C1> const & a, std::string method = "LU")
 {
-    unsigned int n = columnCount(a);
+    MultiArrayIndex n = columnCount(a);
     vigra_precondition(rowCount(a) == n,
                "determinant(): Square matrix required.");    
 
@@ -813,7 +816,7 @@ T determinant(MultiArrayView<2, T, C1> const & a, std::string method = "LU")
         vigra_precondition(choleskyDecomposition(a, L),
            "determinant(): Cholesky method requires symmetric positive definite matrix.");
         T det = L(0,0);
-        for(unsigned int k=1; k<n; ++k)
+        for(MultiArrayIndex k=1; k<n; ++k)
             det *= L(k,k);
         return sq(det);
     }
@@ -836,7 +839,7 @@ T determinant(MultiArrayView<2, T, C1> const & a, std::string method = "LU")
 template <class T, class C1>
 T logDeterminant(MultiArrayView<2, T, C1> const & a)
 {
-    unsigned int n = columnCount(a);
+    MultiArrayIndex n = columnCount(a);
     vigra_precondition(rowCount(a) == n,
                "logDeterminant(): Square matrix required.");    
     if(n == 1)
@@ -858,7 +861,7 @@ T logDeterminant(MultiArrayView<2, T, C1> const & a)
         vigra_precondition(choleskyDecomposition(a, L),
                 "logDeterminant(): Matrix not positive definite.");  
         T logdet = std::log(L(0,0)); 
-        for(unsigned int k=1; k<n; ++k)
+        for(MultiArrayIndex k=1; k<n; ++k)
             logdet += std::log(L(k,k));  // L(k,k) is guaranteed to be positive
         return 2.0*logdet;
     }
@@ -887,20 +890,20 @@ bool choleskyDecomposition(MultiArrayView<2, T, C1> const & A,
 {
     typedef T Real;
     
-	unsigned int n = columnCount(A);
+	MultiArrayIndex n = columnCount(A);
 	
     vigra_precondition(rowCount(A) == n,
                        "choleskyDecomposition(): Input matrix must be square.");
     vigra_precondition(n == columnCount(L) && n == rowCount(L),
                        "choleskyDecomposition(): Output matrix must have same shape as input matrix.");
 
-    for (unsigned int j = 0; j < n; ++j) 
+    for (MultiArrayIndex j = 0; j < n; ++j) 
     {
         Real d(0.0);
-        for (unsigned int k = 0; k < j; ++k) 
+        for (MultiArrayIndex k = 0; k < j; ++k) 
 		{
             Real s(0.0);
-            for (unsigned int i = 0; i < k; ++i) 
+            for (MultiArrayIndex i = 0; i < k; ++i) 
 			{
                s += L(k, i)*L(j, i);
             }
@@ -913,7 +916,7 @@ bool choleskyDecomposition(MultiArrayView<2, T, C1> const & A,
         if(d <= 0.0)
             return false;  // A is not positive definite
         L(j, j) = std::sqrt(d);
-        for (unsigned int k = j+1; k < n; ++k) 
+        for (MultiArrayIndex k = j+1; k < n; ++k) 
         {
            L(j, k) = 0.0;
         }
@@ -944,8 +947,8 @@ bool qrDecomposition(MultiArrayView<2, T, C1> const & a,
                      MultiArrayView<2, T, C2> &q, MultiArrayView<2, T, C3> &r,
                      double epsilon = 0.0)
 {
-    const unsigned int m = rowCount(a);
-    const unsigned int n = columnCount(a);
+    const MultiArrayIndex m = rowCount(a);
+    const MultiArrayIndex n = columnCount(a);
     vigra_precondition(n == columnCount(r) && m == rowCount(r) &&
                        m == columnCount(q) && m == rowCount(q),
                        "qrDecomposition(): Matrix shape mismatch.");
@@ -953,7 +956,7 @@ bool qrDecomposition(MultiArrayView<2, T, C1> const & a,
     q = identityMatrix<T>(m);
     MultiArrayView<2,T, StridedArrayTag> tq = transpose(q);
     r = a;
-    ArrayVector<unsigned int> noPivoting; // intentionally empty
+    ArrayVector<MultiArrayIndex> noPivoting; // intentionally empty
     return (detail::qrTransformToUpperTriangular(r, tq, noPivoting, epsilon) == std::min(m,n));
 }
 
@@ -996,21 +999,21 @@ bool linearSolveUpperTriangular(const MultiArrayView<2, T, C1> &r, const MultiAr
                                 MultiArrayView<2, T, C3> x)
 {
     typedef MultiArrayShape<2>::type Shape;
-    unsigned int m = rowCount(r);
-    unsigned int rhsCount = columnCount(b);
+    MultiArrayIndex m = rowCount(r);
+    MultiArrayIndex rhsCount = columnCount(b);
     vigra_precondition(m == columnCount(r),
         "linearSolveUpperTriangular(): square coefficient matrix required.");
     vigra_precondition(m == rowCount(b) && m == rowCount(x) && rhsCount == columnCount(x),
         "linearSolveUpperTriangular(): matrix shape mismatch.");
 
-    for(unsigned int k = 0; k < rhsCount; ++k)
+    for(MultiArrayIndex k = 0; k < rhsCount; ++k)
     {
         for(int i=m-1; i>=0; --i)
         {
             if(r(i,i) == NumericTraits<T>::zero())
                 return false;  // r doesn't have full rank
             T sum = b(i, k);
-            for(unsigned int j=i+1; j<m; ++j)
+            for(MultiArrayIndex j=i+1; j<m; ++j)
                  sum -= r(i, j) * x(j, k);
             x(i, k) = sum / r(i, i);
         }
@@ -1046,21 +1049,21 @@ template <class T, class C1, class C2, class C3>
 bool linearSolveLowerTriangular(const MultiArrayView<2, T, C1> &l, const MultiArrayView<2, T, C2> &b,
                             MultiArrayView<2, T, C3> x)
 {
-    unsigned int m = columnCount(l);
-    unsigned int n = columnCount(b);
+    MultiArrayIndex m = columnCount(l);
+    MultiArrayIndex n = columnCount(b);
     vigra_precondition(m == rowCount(l),
         "linearSolveLowerTriangular(): square coefficient matrix required.");
     vigra_precondition(m == rowCount(b) && m == rowCount(x) && n == columnCount(x),
         "linearSolveLowerTriangular(): matrix shape mismatch.");
 
-    for(unsigned int k = 0; k < n; ++k)
+    for(MultiArrayIndex k = 0; k < n; ++k)
     {
-        for(unsigned int i=0; i<m; ++i)
+        for(MultiArrayIndex i=0; i<m; ++i)
         {
             if(l(i,i) == NumericTraits<T>::zero())
                 return false;  // l doesn't have full rank
             T sum = b(i, k);
-            for(unsigned int j=0; j<i; ++j)
+            for(MultiArrayIndex j=0; j<i; ++j)
                  sum -= l(i, j) * x(j, k);
             x(i, k) = sum / l(i, i);
         }
@@ -1124,8 +1127,8 @@ bool linearSolve(const MultiArrayView<2, T, C1> &A, const MultiArrayView<2, T, C
     typedef typename Matrix<T>::difference_type Shape;
     typedef typename Matrix<T>::view_type SubMatrix;
     
-    const unsigned int n = columnCount(A);
-    const unsigned int m = rowCount(A);
+    const MultiArrayIndex n = columnCount(A);
+    const MultiArrayIndex m = rowCount(A);
 
     vigra_precondition(n <= m,
         "linearSolve(): Coefficient matrix A must have at least as many rows as columns.");
@@ -1134,7 +1137,7 @@ bool linearSolve(const MultiArrayView<2, T, C1> &A, const MultiArrayView<2, T, C
         "linearSolve(): matrix shape mismatch.");
 
     for(unsigned int k=0; k<method.size(); ++k)
-        method[k] = tolower(method[k]);
+        method[k] = (std::string::value_type)tolower(method[k]);
     
     if(method == "cholesky")
     {
@@ -1148,7 +1151,7 @@ bool linearSolve(const MultiArrayView<2, T, C1> &A, const MultiArrayView<2, T, C
     }
     else if(method == "qr")
     {
-        return linearSolveQR(A, b, res) == n;
+        return (MultiArrayIndex)linearSolveQR(A, b, res) == n;
     }
     else if(method == "ne")
     {
@@ -1156,17 +1159,17 @@ bool linearSolve(const MultiArrayView<2, T, C1> &A, const MultiArrayView<2, T, C
     }
     else if(method == "svd")
     {
-        unsigned int rhsCount = columnCount(b);
+        MultiArrayIndex rhsCount = columnCount(b);
 	    Matrix<T> u(A.shape()), s(n, 1), v(n, n);
 
-        unsigned int rank = singularValueDecomposition(A, u, s, v);
+        MultiArrayIndex rank = (MultiArrayIndex)singularValueDecomposition(A, u, s, v);
 
         Matrix<T> t = transpose(u)*b;
-        for(unsigned int l=0; l<rhsCount; ++l)
+        for(MultiArrayIndex l=0; l<rhsCount; ++l)
         {
-            for(unsigned int k=0; k<rank; ++k)
+            for(MultiArrayIndex k=0; k<rank; ++k)
                 t(k,l) /= s(k,0);
-            for(unsigned int k=rank; k<n; ++k)
+            for(MultiArrayIndex k=rank; k<n; ++k)
                 t(k,l) = NumericTraits<T>::zero();
         }
         res = v*t;

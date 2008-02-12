@@ -160,12 +160,12 @@ template <class T>
 class IntSquareRoot
 {
   public:
-    static int sqq_table[];
+    static UInt32 sqq_table[];
     static UInt32 exec(UInt32 v);
 };
 
 template <class T>
-int IntSquareRoot<T>::sqq_table[] = {
+UInt32 IntSquareRoot<T>::sqq_table[] = {
 	       0,  16,  22,  27,  32,  35,  39,  42,  45,  48,  50,  53,  55,  57,
 	      59,  61,  64,  65,  67,  69,  71,  73,  75,  76,  78,  80,  81,  83,
 	      84,  86,  87,  89,  90,  91,  93,  94,  96,  97,  98,  99, 101, 102,
@@ -313,7 +313,7 @@ using ::hypot;
         Namespace: vigra
     */
 template <class T>
-T sign(T t) 
+inline T sign(T t) 
 { 
     return t > NumericTraits<T>::zero()
                ? NumericTraits<T>::one()
@@ -330,7 +330,7 @@ T sign(T t)
         Namespace: vigra
     */
 template <class T1, class T2>
-T1 sign(T1 t1, T2 t2) 
+inline T1 sign(T1 t1, T2 t2) 
 { 
     return t2 >= NumericTraits<T2>::zero()
                ? abs(t1)
@@ -538,7 +538,7 @@ template <class T>
 T ellipticRD(T x, T y, T z)
 {
     double f = 1.0, s = 0.0, X, Y, Z, m;
-    while(true)
+    for(;;)
     {
         m = (x + y + 3.0*z) / 5.0;
         X = 1.0 - x/m;
@@ -566,7 +566,7 @@ template <class T>
 T ellipticRF(T x, T y, T z)
 {
     double X, Y, Z, m;
-    while(true)
+    for(;;)
     {
         m = (x + y + z) / 3.0;
         X = 1.0 - x/m;
@@ -893,7 +893,8 @@ FPT safeFloatDivision( FPT f1, FPT f2 )
         Namespace: vigra
     */
 template <class T1, class T2>
-bool closeAtTolerance(T1 l, T2 r, typename PromoteTraits<T1, T2>::Promote epsilon)
+bool 
+closeAtTolerance(T1 l, T2 r, typename PromoteTraits<T1, T2>::Promote epsilon)
 {
     typedef typename PromoteTraits<T1, T2>::Promote T;
     if(l == 0.0)
@@ -908,7 +909,7 @@ bool closeAtTolerance(T1 l, T2 r, typename PromoteTraits<T1, T2>::Promote epsilo
 }
 
 template <class T1, class T2>
-bool closeAtTolerance(T1 l, T2 r)
+inline bool closeAtTolerance(T1 l, T2 r)
 {
     typedef typename PromoteTraits<T1, T2>::Promote T;
     return closeAtTolerance(l, r, 2.0 * NumericTraits<T>::epsilon());

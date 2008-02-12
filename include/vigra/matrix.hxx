@@ -55,18 +55,20 @@ namespace linalg
 {
 
 template <class T, class C>
-inline std::size_t rowCount(const MultiArrayView<2, T, C> &x);
+inline MultiArrayIndex 
+rowCount(const MultiArrayView<2, T, C> &x);
 
 template <class T, class C>
-inline std::size_t columnCount(const MultiArrayView<2, T, C> &x);
+inline MultiArrayIndex 
+columnCount(const MultiArrayView<2, T, C> &x);
 
 template <class T, class C>
-MultiArrayView <2, T, C>
-rowVector(MultiArrayView <2, T, C> const & m, int d);
+inline MultiArrayView <2, T, C>
+rowVector(MultiArrayView <2, T, C> const & m, MultiArrayIndex d);
 
 template <class T, class C>
-MultiArrayView <2, T, C>
-columnVector(MultiArrayView<2, T, C> const & m, int d);
+inline MultiArrayView <2, T, C>
+columnVector(MultiArrayView<2, T, C> const & m, MultiArrayIndex d);
 
 template <class T, class ALLOC>
 class TemporaryMatrix;
@@ -76,82 +78,6 @@ void transpose(const MultiArrayView<2, T, C1> &v, MultiArrayView<2, T, C2> &r);
 
 template <class T, class C>
 bool isSymmetric(const MultiArrayView<2, T, C> &v);
-
-#if defined(__GNUC__) && __GNUC__ == 3
-
-// define these operators for const LHS so that they can be applied to temporary objects
-// e.g. columnVector(matrix, 0)
-
-#define VIGRA_ARRAY_COMPUTED_ASSIGNMENT(op) \
-template <class T, class C1, class U, class C2> \
-MultiArrayView<2, T, C1> & \
-operator op(MultiArrayView<2, T, C1> const & l, MultiArrayView<2, U, C2> const & other) \
-{\
-    MultiArrayView<2, T, C1> & left = const_cast<MultiArrayView<2, T, C1> &>(l); \
-    const std::size_t rows = rowCount(left); \
-    const std::size_t cols = columnCount(left); \
-    vigra_precondition(rows == rowCount(other) && cols == columnCount(other), \
-       "operator" #op "(MultiArrayView, MultiArrayView): Shape mismatch."); \
- \
-    for(std::size_t i = 0; i < cols; ++i) \
-        for(std::size_t j = 0; j < rows; ++j) \
-            left(j, i) op other(j, i); \
-    return left; \
-} \
- \
-template <class T, class C> \
-MultiArrayView<2, T, C> &  \
-operator op(MultiArrayView<2, T, C> const & l, T other) \
-{ \
-    MultiArrayView<2, T, C> & left = const_cast<MultiArrayView<2, T, C> &>(l); \
-    const std::size_t rows = rowCount(left); \
-    const std::size_t cols = columnCount(left); \
- \
-    for(std::size_t i = 0; i < cols; ++i) \
-        for(std::size_t j = 0; j < rows; ++j) \
-            left(j, i) op other; \
-    return left; \
-}
-
-#else
-
-#define VIGRA_ARRAY_COMPUTED_ASSIGNMENT(op) \
-template <class T, class C1, class U, class C2> \
-MultiArrayView<2, T, C1> & \
-operator op(MultiArrayView<2, T, C1> & left, MultiArrayView<2, U, C2> const & other) \
-{\
-    const std::size_t rows = rowCount(left); \
-    const std::size_t cols = columnCount(left); \
-    vigra_precondition(rows == rowCount(other) && cols == columnCount(other), \
-       "operator" #op "(MultiArrayView, MultiArrayView): Shape mismatch."); \
- \
-    for(std::size_t i = 0; i < cols; ++i) \
-        for(std::size_t j = 0; j < rows; ++j) \
-            left(j, i) op other(j, i); \
-    return left; \
-} \
- \
-template <class T, class C> \
-MultiArrayView<2, T, C> &  \
-operator op(MultiArrayView<2, T, C> & left, T other) \
-{ \
-    const std::size_t rows = rowCount(left); \
-    const std::size_t cols = columnCount(left); \
- \
-    for(std::size_t i = 0; i < cols; ++i) \
-        for(std::size_t j = 0; j < rows; ++j) \
-            left(j, i) op other; \
-    return left; \
-}
-
-#endif
-
-VIGRA_ARRAY_COMPUTED_ASSIGNMENT(+=)
-VIGRA_ARRAY_COMPUTED_ASSIGNMENT(-=)
-VIGRA_ARRAY_COMPUTED_ASSIGNMENT(*=)
-VIGRA_ARRAY_COMPUTED_ASSIGNMENT(/=)
-
-#undef VIGRA_ARRAY_COMPUTED_ASSIGNMENT
 
 enum RawArrayMemoryLayout { RowMajor, ColumnMajor };
 
@@ -197,6 +123,7 @@ class Matrix
     typedef typename BaseType::reference            reference;
     typedef typename BaseType::const_reference      const_reference;
     typedef typename BaseType::difference_type      difference_type;
+    typedef typename BaseType::difference_type_1    difference_type_1;
     typedef ALLOC                                   allocator_type;
 
         /** default constructor
@@ -225,7 +152,7 @@ class Matrix
             <tt>(rows, columns)</tt> which
             is the opposite of the usual VIGRA convention.
          */
-    Matrix(std::size_t rows, std::size_t columns,
+    Matrix(difference_type_1 rows, difference_type_1 columns,
                     ALLOC const & alloc = allocator_type())
     : BaseType(difference_type(rows, columns), alloc)
     {}
@@ -245,7 +172,7 @@ class Matrix
             <tt>(rows, columns)</tt> which
             is the opposite of the usual VIGRA convention.
          */
-    Matrix(std::size_t rows, std::size_t columns, const_reference init,
+    Matrix(difference_type_1 rows, difference_type_1 columns, const_reference init,
            allocator_type const & alloc = allocator_type())
     : BaseType(difference_type(rows, columns), init, alloc)
     {}
@@ -279,7 +206,7 @@ class Matrix
             Note that the order of the axes is <tt>(rows, columns)</tt> which
             is the opposite of the usual VIGRA convention.
          */
-    Matrix(std::size_t rows, std::size_t columns, const_pointer init, RawArrayMemoryLayout layout = RowMajor,
+    Matrix(difference_type_1 rows, difference_type_1 columns, const_pointer init, RawArrayMemoryLayout layout = RowMajor,
            allocator_type const & alloc = allocator_type())
     : BaseType(difference_type(rows, columns), alloc) // FIXME: this function initializes the memory twice
     {
@@ -375,14 +302,14 @@ class Matrix
 
        /** reshape to the given shape and initialize with zero.
          */
-    void reshape(std::size_t rows, std::size_t columns)
+    void reshape(difference_type_1 rows, difference_type_1 columns)
     {
         BaseType::reshape(difference_type(rows, columns));
     }
 
         /** reshape to the given shape and initialize with \a init.
          */
-    void reshape(std::size_t rows, std::size_t columns, const_reference init)
+    void reshape(difference_type_1 rows, difference_type_1 columns, const_reference init)
     {
         BaseType::reshape(difference_type(rows, columns), init);
     }
@@ -403,35 +330,35 @@ class Matrix
 
         /** Create a matrix view that represents the row vector of row \a d.
          */
-    view_type rowVector(std::size_t d) const
+    view_type rowVector(difference_type_1 d) const
     {
         return vigra::linalg::rowVector(*this, d);
     }
 
         /** Create a matrix view that represents the column vector of column \a d.
          */
-    view_type columnVector(std::size_t d) const
+    view_type columnVector(difference_type_1 d) const
     {
         return vigra::linalg::columnVector(*this, d);
     }
 
         /** number of rows (height) of the matrix.
         */
-    std::size_t rowCount() const
+    difference_type_1 rowCount() const
     {
         return this->m_shape[0];
     }
 
         /** number of columns (width) of the matrix.
         */
-    std::size_t columnCount() const
+    difference_type_1 columnCount() const
     {
         return this->m_shape[1];
     }
 
         /** number of elements (width*height) of the matrix.
         */
-    std::size_t elementCount() const
+    difference_type_1 elementCount() const
     {
         return rowCount()*columnCount();
     }
@@ -450,13 +377,13 @@ class Matrix
             Note that the order of the argument is the opposite of the usual
             VIGRA convention due to column-major matrix order.
         */
-    value_type & operator()(std::size_t row, std::size_t column);
+    value_type & operator()(difference_type_1 row, difference_type_1 column);
 
         /** read access to matrix element <tt>(row, column)</tt>.
             Note that the order of the argument is the opposite of the usual
             VIGRA convention due to column-major matrix order.
         */
-    value_type operator()(std::size_t row, std::size_t column) const;
+    value_type operator()(difference_type_1 row, difference_type_1 column) const;
 
         /** squared Frobenius norm. Sum of squares of the matrix elements.
         */
@@ -482,7 +409,7 @@ class Matrix
     template <class U, class C>
     Matrix & operator+=(MultiArrayView<2, U, C> const & other)
     {
-        vigra::linalg::operator+=(*this, other);
+        BaseType::operator+=(other);
         return *this;
     }
 
@@ -491,7 +418,7 @@ class Matrix
     template <class U, class C>
     Matrix & operator-=(MultiArrayView<2, U, C> const & other)
     {
-        vigra::linalg::operator-=(*this, other);
+        BaseType::operator-=(other);
         return *this;
     }
 
@@ -500,7 +427,7 @@ class Matrix
     template <class U, class C>
     Matrix & operator*=(MultiArrayView<2, U, C> const & other)
     {
-        vigra::linalg::operator*=(*this, other);
+        BaseType::operator*=(other);
         return *this;
     }
 
@@ -509,7 +436,7 @@ class Matrix
     template <class U, class C>
     Matrix & operator/=(MultiArrayView<2, U, C> const & other)
     {
-        vigra::linalg::operator/=(*this, other);
+        BaseType::operator/=(other);
         return *this;
     }
 
@@ -517,7 +444,7 @@ class Matrix
          */
     Matrix & operator+=(T other)
     {
-        vigra::linalg::operator+=(*this, other);
+        BaseType::operator+=(other);
         return *this;
     }
 
@@ -525,7 +452,7 @@ class Matrix
          */
     Matrix & operator-=(T other)
     {
-        vigra::linalg::operator-=(*this, other);
+        BaseType::operator-=(other);
         return *this;
     }
 
@@ -533,7 +460,7 @@ class Matrix
          */
     Matrix & operator*=(T other)
     {
-        vigra::linalg::operator*=(*this, other);
+        BaseType::operator*=(other);
         return *this;
     }
 
@@ -541,7 +468,7 @@ class Matrix
          */
     Matrix & operator/=(T other)
     {
-        vigra::linalg::operator/=(*this, other);
+        BaseType::operator/=(other);
         return *this;
     }
 };
@@ -565,6 +492,7 @@ class TemporaryMatrix
     typedef typename BaseType::reference            reference;
     typedef typename BaseType::const_reference      const_reference;
     typedef typename BaseType::difference_type      difference_type;
+    typedef typename BaseType::difference_type_1    difference_type_1;
     typedef ALLOC                                   allocator_type;
 
     TemporaryMatrix(difference_type const & shape)
@@ -575,11 +503,11 @@ class TemporaryMatrix
     : BaseType(shape, init, ALLOC())
     {}
 
-    TemporaryMatrix(std::size_t rows, std::size_t columns)
+    TemporaryMatrix(difference_type_1 rows, difference_type_1 columns)
     : BaseType(rows, columns, ALLOC())
     {}
 
-    TemporaryMatrix(std::size_t rows, std::size_t columns, const_reference init)
+    TemporaryMatrix(difference_type_1 rows, difference_type_1 columns, const_reference init)
     : BaseType(rows, columns, init, ALLOC())
     {}
 
@@ -604,52 +532,52 @@ class TemporaryMatrix
     template <class U, class C>
     TemporaryMatrix & operator+=(MultiArrayView<2, U, C> const & other)
     {
-        vigra::linalg::operator+=(*this, other);
+        BaseType::operator+=(other);
         return *this;
     }
 
     template <class U, class C>
     TemporaryMatrix & operator-=(MultiArrayView<2, U, C> const & other)
     {
-        vigra::linalg::operator-=(*this, other);
+        BaseType::operator-=(other);
         return *this;
     }
 
     template <class U, class C>
     TemporaryMatrix & operator*=(MultiArrayView<2, U, C> const & other)
     {
-        vigra::linalg::operator*=(*this, other);
+        BaseType::operator*=(other);
         return *this;
     }
 
     template <class U, class C>
     TemporaryMatrix & operator/=(MultiArrayView<2, U, C> const & other)
     {
-        vigra::linalg::operator/=(*this, other);
+        BaseType::operator/=(other);
         return *this;
     }
 
     TemporaryMatrix & operator+=(T other)
     {
-        vigra::linalg::operator+=(*this, other);
+        BaseType::operator+=(other);
         return *this;
     }
 
     TemporaryMatrix & operator-=(T other)
     {
-        vigra::linalg::operator-=(*this, other);
+        BaseType::operator-=(other);
         return *this;
     }
 
     TemporaryMatrix & operator*=(T other)
     {
-        vigra::linalg::operator*=(*this, other);
+        BaseType::operator*=(other);
         return *this;
     }
 
     TemporaryMatrix & operator/=(T other)
     {
-        vigra::linalg::operator/=(*this, other);
+        BaseType::operator/=(other);
         return *this;
     }
   private:
@@ -668,7 +596,8 @@ class TemporaryMatrix
         Namespaces: vigra and vigra::linalg
      */
 template <class T, class C>
-inline std::size_t rowCount(const MultiArrayView<2, T, C> &x)
+inline MultiArrayIndex 
+rowCount(const MultiArrayView<2, T, C> &x)
 {
     return x.shape(0);
 }
@@ -680,7 +609,8 @@ inline std::size_t rowCount(const MultiArrayView<2, T, C> &x)
         Namespaces: vigra and vigra::linalg
      */
 template <class T, class C>
-inline std::size_t columnCount(const MultiArrayView<2, T, C> &x)
+inline MultiArrayIndex 
+columnCount(const MultiArrayView<2, T, C> &x)
 {
     return x.shape(1);
 }
@@ -692,8 +622,8 @@ inline std::size_t columnCount(const MultiArrayView<2, T, C> &x)
         Namespaces: vigra and vigra::linalg
      */
 template <class T, class C>
-MultiArrayView <2, T, C>
-rowVector(MultiArrayView <2, T, C> const & m, int d)
+inline MultiArrayView <2, T, C>
+rowVector(MultiArrayView <2, T, C> const & m, MultiArrayIndex d)
 {
     typedef typename MultiArrayView <2, T, C>::difference_type Shape;
     return m.subarray(Shape(d, 0), Shape(d+1, columnCount(m)));
@@ -708,8 +638,8 @@ rowVector(MultiArrayView <2, T, C> const & m, int d)
         Namespaces: vigra and vigra::linalg
      */
 template <class T, class C>
-MultiArrayView <2, T, C>
-rowVector(MultiArrayView <2, T, C> const & m, MultiArrayShape<2>::type first, int end)
+inline MultiArrayView <2, T, C>
+rowVector(MultiArrayView <2, T, C> const & m, MultiArrayShape<2>::type first, MultiArrayIndex end)
 {
     typedef typename MultiArrayView <2, T, C>::difference_type Shape;
     return m.subarray(first, Shape(first[0]+1, end));
@@ -722,8 +652,8 @@ rowVector(MultiArrayView <2, T, C> const & m, MultiArrayShape<2>::type first, in
         Namespaces: vigra and vigra::linalg
      */
 template <class T, class C>
-MultiArrayView <2, T, C>
-columnVector(MultiArrayView<2, T, C> const & m, int d)
+inline MultiArrayView <2, T, C>
+columnVector(MultiArrayView<2, T, C> const & m, MultiArrayIndex d)
 {
     typedef typename MultiArrayView <2, T, C>::difference_type Shape;
     return m.subarray(Shape(0, d), Shape(rowCount(m), d+1));
@@ -737,7 +667,7 @@ columnVector(MultiArrayView<2, T, C> const & m, int d)
         Namespaces: vigra and vigra::linalg
      **/
 template <class T, class C>
-MultiArrayView <2, T, C>
+inline MultiArrayView <2, T, C>
 columnVector(MultiArrayView<2, T, C> const & m, MultiArrayShape<2>::type first, int end)
 {
     typedef typename MultiArrayView <2, T, C>::difference_type Shape;
@@ -754,12 +684,12 @@ template <class T, class C>
 bool
 isSymmetric(MultiArrayView<2, T, C> const & m)
 {
-    const std::size_t size = rowCount(m);
+    const MultiArrayIndex size = rowCount(m);
     if(size != columnCount(m))
         return false;
 
-    for(std::size_t i = 0; i < size; ++i)
-        for(std::size_t j = i+1; j < size; ++j)
+    for(MultiArrayIndex i = 0; i < size; ++i)
+        for(MultiArrayIndex j = i+1; j < size; ++j)
             if(m(j, i) != m(i, j))
                 return false;
     return true;
@@ -798,11 +728,11 @@ norm(const Matrix<T, ALLLOC> &a);
 template <class T, class C>
 void identityMatrix(MultiArrayView<2, T, C> &r)
 {
-    const std::size_t rows = rowCount(r);
+    const MultiArrayIndex rows = rowCount(r);
     vigra_precondition(rows == columnCount(r),
        "identityMatrix(): Matrix must be square.");
-    for(std::size_t i = 0; i < rows; ++i) {
-        for(std::size_t j = 0; j < rows; ++j)
+    for(MultiArrayIndex i = 0; i < rows; ++i) {
+        for(MultiArrayIndex j = 0; j < rows; ++j)
             r(j, i) = NumericTraits<T>::zero();
         r(i, i) = NumericTraits<T>::one();
     }
@@ -820,10 +750,10 @@ void identityMatrix(MultiArrayView<2, T, C> &r)
         Namespaces: vigra and vigra::linalg
      */
 template <class T>
-TemporaryMatrix<T> identityMatrix(std::size_t size)
+TemporaryMatrix<T> identityMatrix(MultiArrayIndex size)
 {
     TemporaryMatrix<T> ret(size, size, NumericTraits<T>::zero());
-    for(std::size_t i = 0; i < size; ++i)
+    for(MultiArrayIndex i = 0; i < size; ++i)
         ret(i, i) = NumericTraits<T>::one();
     return ret;
 }
@@ -831,10 +761,10 @@ TemporaryMatrix<T> identityMatrix(std::size_t size)
 template <class T, class C1, class C2>
 void diagonalMatrixImpl(MultiArrayView<1, T, C1> const & v, MultiArrayView<2, T, C2> &r)
 {
-    const std::size_t size = v.elementCount();
+    const MultiArrayIndex size = v.elementCount();
     vigra_precondition(rowCount(r) == size && columnCount(r) == size,
         "diagonalMatrix(): result must be a square matrix.");
-    for(std::size_t i = 0; i < size; ++i)
+    for(MultiArrayIndex i = 0; i < size; ++i)
         r(i, i) = v(i);
 }
 
@@ -879,7 +809,7 @@ TemporaryMatrix<T> diagonalMatrix(MultiArrayView<2, T, C> const & v)
 {
     vigra_precondition(rowCount(v) == 1 || columnCount(v) == 1,
         "diagonalMatrix(): input must be a vector.");
-    std::size_t size = v.elementCount();
+    MultiArrayIndex size = v.elementCount();
     TemporaryMatrix<T> ret(size, size, NumericTraits<T>::zero());
     if(rowCount(v) == 1)
         diagonalMatrixImpl(v.bindInner(0), ret);
@@ -899,12 +829,12 @@ TemporaryMatrix<T> diagonalMatrix(MultiArrayView<2, T, C> const & v)
 template <class T, class C1, class C2>
 void transpose(const MultiArrayView<2, T, C1> &v, MultiArrayView<2, T, C2> &r)
 {
-    const std::size_t rows = rowCount(r);
-    const std::size_t cols = columnCount(r);
+    const MultiArrayIndex rows = rowCount(r);
+    const MultiArrayIndex cols = columnCount(r);
     vigra_precondition(rows == columnCount(v) && cols == rowCount(v),
        "transpose(): arrays must have transposed shapes.");
-    for(std::size_t i = 0; i < cols; ++i)
-        for(std::size_t j = 0; j < rows; ++j)
+    for(MultiArrayIndex i = 0; i < cols; ++i)
+        for(MultiArrayIndex j = 0; j < rows; ++j)
             r(j, i) = v(i, j);
 }
 
@@ -926,7 +856,8 @@ void transpose(const MultiArrayView<2, T, C1> &v, MultiArrayView<2, T, C2> &r)
         Namespaces: vigra and vigra::linalg
      */
 template <class T, class C>
-MultiArrayView<2, T, StridedArrayTag> transpose(MultiArrayView<2, T, C> const & v)
+inline MultiArrayView<2, T, StridedArrayTag> 
+transpose(MultiArrayView<2, T, C> const & v)
 {
     return v.transpose();
 }
@@ -945,12 +876,12 @@ joinVertically(const MultiArrayView<2, T, C1> &a, const MultiArrayView<2, T, C2>
 {
     typedef typename TemporaryMatrix<T>::difference_type Shape;
     
-    int n = columnCount(a);
+    MultiArrayIndex n = columnCount(a);
     vigra_precondition(n == columnCount(b),
        "joinVertically(): shape mismatch.");
     
-    int ma = rowCount(a);
-    int mb = rowCount(b);
+    MultiArrayIndex ma = rowCount(a);
+    MultiArrayIndex mb = rowCount(b);
     TemporaryMatrix<T> t(ma + mb, n, T());
     t.subarray(Shape(0,0), Shape(ma, n)) = a;
     t.subarray(Shape(ma,0), Shape(ma+mb, n)) = b;
@@ -971,12 +902,12 @@ joinHorizontally(const MultiArrayView<2, T, C1> &a, const MultiArrayView<2, T, C
 {
     typedef typename TemporaryMatrix<T>::difference_type Shape;
     
-    int m = rowCount(a);
+    MultiArrayIndex m = rowCount(a);
     vigra_precondition(m == rowCount(b),
        "joinHorizontally(): shape mismatch.");
     
-    int na = columnCount(a);
-    int nb = columnCount(b);
+    MultiArrayIndex na = columnCount(a);
+    MultiArrayIndex nb = columnCount(b);
     TemporaryMatrix<T> t(m, na + nb, T());
     t.subarray(Shape(0,0), Shape(m, na)) = a;
     t.subarray(Shape(0, na), Shape(m, na + nb)) = b;
@@ -999,13 +930,13 @@ void repeatMatrix(MultiArrayView<2, T, C1> const & v, MultiArrayView<2, T, C2> &
 {
     typedef typename Matrix<T>::difference_type Shape;
 
-    int m = rowCount(v), n = columnCount(v);
+    MultiArrayIndex m = rowCount(v), n = columnCount(v);
     vigra_precondition(m*verticalCount == rowCount(r) && n*horizontalCount == columnCount(r),
         "repeatMatrix(): Shape mismatch.");
         
-    for(unsigned int l=0; l<horizontalCount; ++l)
+    for(MultiArrayIndex l=0; l<(MultiArrayIndex)horizontalCount; ++l)
     {
-        for(unsigned int k=0; k<verticalCount; ++k)
+        for(MultiArrayIndex k=0; k<(MultiArrayIndex)verticalCount; ++k)
         {
             r.subarray(Shape(k*m, l*n), Shape((k+1)*m, (l+1)*n)) = v;
         }
@@ -1027,7 +958,7 @@ template <class T, class C>
 TemporaryMatrix<T> 
 repeatMatrix(MultiArrayView<2, T, C> const & v, unsigned int verticalCount, unsigned int horizontalCount)
 {
-    int m = rowCount(v), n = columnCount(v);
+    MultiArrayIndex m = rowCount(v), n = columnCount(v);
     TemporaryMatrix<T> ret(verticalCount*m, horizontalCount*n);
     repeatMatrix(v, ret, verticalCount, horizontalCount);
     return ret;
@@ -1044,14 +975,14 @@ template <class T, class C1, class C2, class C3>
 void add(const MultiArrayView<2, T, C1> &a, const MultiArrayView<2, T, C2> &b,
               MultiArrayView<2, T, C3> &r)
 {
-    const std::size_t rrows = rowCount(r);
-    const std::size_t rcols = columnCount(r);
+    const MultiArrayIndex rrows = rowCount(r);
+    const MultiArrayIndex rcols = columnCount(r);
     vigra_precondition(rrows == rowCount(a) && rcols == columnCount(a) &&
                        rrows == rowCount(b) && rcols == columnCount(b),
                        "add(): Matrix shapes must agree.");
 
-    for(std::size_t i = 0; i < rcols; ++i) {
-        for(std::size_t j = 0; j < rrows; ++j) {
+    for(MultiArrayIndex i = 0; i < rcols; ++i) {
+        for(MultiArrayIndex j = 0; j < rrows; ++j) {
             r(j, i) = a(j, i) + b(j, i);
         }
     }
@@ -1146,14 +1077,14 @@ template <class T, class C1, class C2, class C3>
 void sub(const MultiArrayView<2, T, C1> &a, const MultiArrayView<2, T, C2> &b,
               MultiArrayView<2, T, C3> &r)
 {
-    const std::size_t rrows = rowCount(r);
-    const std::size_t rcols = columnCount(r);
+    const MultiArrayIndex rrows = rowCount(r);
+    const MultiArrayIndex rcols = columnCount(r);
     vigra_precondition(rrows == rowCount(a) && rcols == columnCount(a) &&
                        rrows == rowCount(b) && rcols == columnCount(b),
                        "subtract(): Matrix shapes must agree.");
 
-    for(std::size_t i = 0; i < rcols; ++i) {
-        for(std::size_t j = 0; j < rrows; ++j) {
+    for(MultiArrayIndex i = 0; i < rcols; ++i) {
+        for(MultiArrayIndex j = 0; j < rrows; ++j) {
             r(j, i) = a(j, i) - b(j, i);
         }
     }
@@ -1185,13 +1116,13 @@ template <class T, class C>
 TemporaryMatrix<T>
 operator-(const MultiArrayView<2, T, C> &a, const TemporaryMatrix<T> &b)
 {
-    const std::size_t rows = rowCount(a);
-    const std::size_t cols = columnCount(a);
+    const MultiArrayIndex rows = rowCount(a);
+    const MultiArrayIndex cols = columnCount(a);
     vigra_precondition(rows == b.rowCount() && cols == b.columnCount(),
        "Matrix::operator-(): Shape mismatch.");
 
-    for(std::size_t i = 0; i < cols; ++i)
-        for(std::size_t j = 0; j < rows; ++j)
+    for(MultiArrayIndex i = 0; i < cols; ++i)
+        for(MultiArrayIndex j = 0; j < rows; ++j)
             const_cast<TemporaryMatrix<T> &>(b)(j, i) = a(j, i) - b(j, i);
     return b;
 }
@@ -1275,27 +1206,28 @@ template <class T, class C1, class C2>
 typename NormTraits<T>::SquaredNormType 
 dot(const MultiArrayView<2, T, C1> &x, const MultiArrayView<2, T, C2> &y)
 {
-    typename NormTraits<T>::SquaredNormType ret = NumericTraits<typename NormTraits<T>::SquaredNormType>::zero();
+    typename NormTraits<T>::SquaredNormType ret = 
+           NumericTraits<typename NormTraits<T>::SquaredNormType>::zero();
     if(y.shape(1) == 1)
     {
-        unsigned int size = y.shape(0);
+        std::ptrdiff_t size = y.shape(0);
         if(x.shape(0) == 1 && x.shape(1) == size) // proper scalar product
-            for(std::size_t i = 0; i < size; ++i)
+            for(std::ptrdiff_t i = 0; i < size; ++i)
                 ret += x(0, i) * y(i, 0);
-        else if(x.shape(1) == 1 && x.shape(0) == size) // two column vectors
-            for(std::size_t i = 0; i < size; ++i)
+        else if(x.shape(1) == 1u && x.shape(0) == size) // two column vectors
+            for(std::ptrdiff_t i = 0; i < size; ++i)
                 ret += x(i, 0) * y(i, 0);
         else    
             vigra_precondition(false, "dot(): wrong matrix shapes.");
     }
     else if(y.shape(0) == 1)
     {
-        unsigned int size = y.shape(1);
-        if(x.shape(0) == 1 && x.shape(1) == size) // two row vectors
-            for(std::size_t i = 0; i < size; ++i)
+        std::ptrdiff_t size = y.shape(1);
+        if(x.shape(0) == 1u && x.shape(1) == size) // two row vectors
+            for(std::ptrdiff_t i = 0; i < size; ++i)
                 ret += x(0, i) * y(0, i);
-        else if(x.shape(1) == 1 && x.shape(0) == size) // column dot row
-            for(std::size_t i = 0; i < size; ++i)
+        else if(x.shape(1) == 1u && x.shape(0) == size) // column dot row
+            for(std::ptrdiff_t i = 0; i < size; ++i)
                 ret += x(i, 0) * y(0, i);
         else    
             vigra_precondition(false, "dot(): wrong matrix shapes.");
@@ -1316,11 +1248,12 @@ template <class T, class C1, class C2>
 typename NormTraits<T>::SquaredNormType 
 dot(const MultiArrayView<1, T, C1> &x, const MultiArrayView<1, T, C2> &y)
 {
-    const std::size_t n = x.elementCount();
+    const MultiArrayIndex n = x.elementCount();
     vigra_precondition(n == y.elementCount(),
        "dot(): shape mismatch.");
-    typename NormTraits<T>::SquaredNormType ret = NumericTraits<typename NormTraits<T>::SquaredNormType>::zero();
-    for(std::size_t i = 0; i < n; ++i)
+    typename NormTraits<T>::SquaredNormType ret = 
+                NumericTraits<typename NormTraits<T>::SquaredNormType>::zero();
+    for(MultiArrayIndex i = 0; i < n; ++i)
         ret += x(i) * y(i);
     return ret;
 }
@@ -1391,13 +1324,13 @@ template <class T, class C1, class C2, class C3>
 void outer(const MultiArrayView<2, T, C1> &x, const MultiArrayView<2, T, C2> &y,
       MultiArrayView<2, T, C3> &r)
 {
-    const std::size_t rows = rowCount(r);
-    const std::size_t cols = columnCount(r);
+    const MultiArrayIndex rows = rowCount(r);
+    const MultiArrayIndex cols = columnCount(r);
     vigra_precondition(rows == rowCount(x) && cols == columnCount(y) &&
                        1 == columnCount(x) && 1 == rowCount(y),
        "outer(): shape mismatch.");
-    for(std::size_t i = 0; i < cols; ++i)
-        for(std::size_t j = 0; j < rows; ++j)
+    for(MultiArrayIndex i = 0; i < cols; ++i)
+        for(MultiArrayIndex j = 0; j < rows; ++j)
             r(j, i) = x(j, 0) * y(0, i);
 }
 
@@ -1414,8 +1347,8 @@ template <class T, class C1, class C2>
 TemporaryMatrix<T>
 outer(const MultiArrayView<2, T, C1> &x, const MultiArrayView<2, T, C2> &y)
 {
-    const std::size_t rows = rowCount(x);
-    const std::size_t cols = columnCount(y);
+    const MultiArrayIndex rows = rowCount(x);
+    const MultiArrayIndex cols = columnCount(y);
     vigra_precondition(1 == columnCount(x) && 1 == rowCount(y),
        "outer(): shape mismatch.");
     TemporaryMatrix<T> ret(rows, cols);
@@ -1430,27 +1363,27 @@ outer(const MultiArrayView<2, T, C1> &x, const MultiArrayView<2, T, C2> &y)
     <b>\#include</b> \<<a href="linear__algebra_8hxx-source.html">vigra/linear_algebra.hxx</a>\><br>
         Namespaces: vigra and vigra::linalg
      */
-template <class T, class C1>
+template <class T, class C>
 TemporaryMatrix<T>
-outer(const MultiArrayView<2, T, C1> &x)
+outer(const MultiArrayView<2, T, C> &x)
 {
-    const std::size_t rows = rowCount(x);
-    const std::size_t cols = columnCount(x);
+    const MultiArrayIndex rows = rowCount(x);
+    const MultiArrayIndex cols = columnCount(x);
     vigra_precondition(rows == 1 || cols == 1,
        "outer(): matrix does not represent a vector.");
-    const std::size_t size = std::max(rows, cols);
+    const MultiArrayIndex size = std::max(rows, cols);
     TemporaryMatrix<T> ret(size, size);
 
     if(rows == 1)
     {
-        for(std::size_t i = 0; i < size; ++i)
-            for(std::size_t j = 0; j < size; ++j)
+        for(MultiArrayIndex i = 0; i < size; ++i)
+            for(MultiArrayIndex j = 0; j < size; ++j)
                 ret(j, i) = x(0, j) * x(0, i);
     }
     else
     {
-        for(std::size_t i = 0; i < size; ++i)
-            for(std::size_t j = 0; j < size; ++j)
+        for(MultiArrayIndex i = 0; i < size; ++i)
+            for(MultiArrayIndex j = 0; j < size; ++j)
                 ret(j, i) = x(j, 0) * x(i, 0);
     }
     return ret;
@@ -1484,13 +1417,13 @@ PointWise<T> pointWise(T const & t)
 template <class T, class C1, class C2>
 void smul(const MultiArrayView<2, T, C1> &a, T b, MultiArrayView<2, T, C2> &r)
 {
-    const std::size_t rows = rowCount(a);
-    const std::size_t cols = columnCount(a);
+    const MultiArrayIndex rows = rowCount(a);
+    const MultiArrayIndex cols = columnCount(a);
     vigra_precondition(rows == rowCount(r) && cols == columnCount(r),
                        "smul(): Matrix sizes must agree.");
 
-    for(std::size_t i = 0; i < cols; ++i)
-        for(std::size_t j = 0; j < rows; ++j)
+    for(MultiArrayIndex i = 0; i < cols; ++i)
+        for(MultiArrayIndex j = 0; j < rows; ++j)
             r(j, i) = a(j, i) * b;
 }
 
@@ -1518,19 +1451,19 @@ template <class T, class C1, class C2, class C3>
 void mmul(const MultiArrayView<2, T, C1> &a, const MultiArrayView<2, T, C2> &b,
          MultiArrayView<2, T, C3> &r)
 {
-    const std::size_t rrows = rowCount(r);
-    const std::size_t rcols = columnCount(r);
-    const std::size_t acols = columnCount(a);
+    const MultiArrayIndex rrows = rowCount(r);
+    const MultiArrayIndex rcols = columnCount(r);
+    const MultiArrayIndex acols = columnCount(a);
     vigra_precondition(rrows == rowCount(a) && rcols == columnCount(b) && acols == rowCount(b),
                        "mmul(): Matrix shapes must agree.");
 
     // order of loops ensures that inner loop goes down columns
-    for(std::size_t i = 0; i < rcols; ++i) 
+    for(MultiArrayIndex i = 0; i < rcols; ++i) 
     {
-        for(std::size_t j = 0; j < rrows; ++j) 
+        for(MultiArrayIndex j = 0; j < rrows; ++j) 
             r(j, i) = a(j, 0) * b(0, i);
-        for(std::size_t k = 1; k < acols; ++k) 
-            for(std::size_t j = 0; j < rrows; ++j) 
+        for(MultiArrayIndex k = 1; k < acols; ++k) 
+            for(MultiArrayIndex j = 0; j < rrows; ++j) 
                 r(j, i) += a(j, k) * b(k, i);
     }
 }
@@ -1563,14 +1496,14 @@ template <class T, class C1, class C2, class C3>
 void pmul(const MultiArrayView<2, T, C1> &a, const MultiArrayView<2, T, C2> &b,
               MultiArrayView<2, T, C3> &r)
 {
-    const std::size_t rrows = rowCount(r);
-    const std::size_t rcols = columnCount(r);
+    const MultiArrayIndex rrows = rowCount(r);
+    const MultiArrayIndex rcols = columnCount(r);
     vigra_precondition(rrows == rowCount(a) && rcols == columnCount(a) &&
                        rrows == rowCount(b) && rcols == columnCount(b),
                        "pmul(): Matrix shapes must agree.");
 
-    for(std::size_t i = 0; i < rcols; ++i) {
-        for(std::size_t j = 0; j < rrows; ++j) {
+    for(MultiArrayIndex i = 0; i < rcols; ++i) {
+        for(MultiArrayIndex j = 0; j < rrows; ++j) {
             r(j, i) = a(j, i) * b(j, i);
         }
     }
@@ -1676,7 +1609,7 @@ operator*(const Matrix<T, A> &a, const TinyVectorBase<T, N, DATA, DERIVED> &b)
          "operator*(Matrix, TinyVector): Shape mismatch.");
 
     TinyVector<T, N> res = TinyVectorView<T, N>(&a(0,0)) * b[0];
-    for(std::size_t i = 1; i < N; ++i)
+    for(MultiArrayIndex i = 1; i < N; ++i)
         res += TinyVectorView<T, N>(&a(0,i)) * b[i];
     return res;
 }
@@ -1697,7 +1630,7 @@ operator*(const TinyVectorBase<T, N, DATA, DERIVED> &a, const Matrix<T, A> &b)
          "operator*(TinyVector, Matrix): Shape mismatch.");
 
     TinyVector<T, N> res;
-    for(std::size_t i = 0; i < N; ++i)
+    for(MultiArrayIndex i = 0; i < N; ++i)
         res[i] = dot(a, TinyVectorView<T, N>(&b(0,i)));
     return res;
 }
@@ -1729,13 +1662,13 @@ operator*(const MultiArrayView<2, T, C1> &a, const MultiArrayView<2, T, C2> &b)
 template <class T, class C1, class C2>
 void sdiv(const MultiArrayView<2, T, C1> &a, T b, MultiArrayView<2, T, C2> &r)
 {
-    const std::size_t rows = rowCount(a);
-    const std::size_t cols = columnCount(a);
+    const MultiArrayIndex rows = rowCount(a);
+    const MultiArrayIndex cols = columnCount(a);
     vigra_precondition(rows == rowCount(r) && cols == columnCount(r),
                        "sdiv(): Matrix sizes must agree.");
 
-    for(std::size_t i = 0; i < cols; ++i)
-        for(std::size_t j = 0; j < rows; ++j)
+    for(MultiArrayIndex i = 0; i < cols; ++i)
+        for(MultiArrayIndex j = 0; j < rows; ++j)
             r(j, i) = a(j, i) / b;
 }
 
@@ -1750,14 +1683,14 @@ template <class T, class C1, class C2, class C3>
 void pdiv(const MultiArrayView<2, T, C1> &a, const MultiArrayView<2, T, C2> &b,
               MultiArrayView<2, T, C3> &r)
 {
-    const std::size_t rrows = rowCount(r);
-    const std::size_t rcols = columnCount(r);
+    const MultiArrayIndex rrows = rowCount(r);
+    const MultiArrayIndex rcols = columnCount(r);
     vigra_precondition(rrows == rowCount(a) && rcols == columnCount(a) &&
                        rrows == rowCount(b) && rcols == columnCount(b),
                        "pdiv(): Matrix shapes must agree.");
 
-    for(std::size_t i = 0; i < rcols; ++i) {
-        for(std::size_t j = 0; j < rrows; ++j) {
+    for(MultiArrayIndex i = 0; i < rcols; ++i) {
+        for(MultiArrayIndex j = 0; j < rrows; ++j) {
             r(j, i) = a(j, i) / b(j, i);
         }
     }
@@ -1862,7 +1795,7 @@ int argMin(MultiArrayView<2, T, C> const & a)
 {
     T vopt = NumericTraits<T>::max();
     int best = -1;
-    for(unsigned int k=0; k < a.size(); ++k)
+    for(int k=0; k < a.size(); ++k)
     {
         if(a[k] < vopt)
         {
@@ -1895,7 +1828,7 @@ int argMax(MultiArrayView<2, T, C> const & a)
 {
     T vopt = NumericTraits<T>::min();
     int best = -1;
-    for(unsigned int k=0; k < a.size(); ++k)
+    for(int k=0; k < a.size(); ++k)
     {
         if(vopt < a[k])
         {
@@ -1930,7 +1863,7 @@ int argMinIf(MultiArrayView<2, T, C> const & a, UnaryFunctor condition)
 {
     T vopt = NumericTraits<T>::max();
     int best = -1;
-    for(unsigned int k=0; k < a.size(); ++k)
+    for(int k=0; k < a.size(); ++k)
     {
         if(condition(a[k]) && a[k] < vopt)
         {
@@ -1965,7 +1898,7 @@ int argMaxIf(MultiArrayView<2, T, C> const & a, UnaryFunctor condition)
 {
     T vopt = NumericTraits<T>::min();
     int best = -1;
-    for(unsigned int k=0; k < a.size(); ++k)
+    for(int k=0; k < a.size(); ++k)
     {
         if(condition(a[k]) && vopt < a[k])
         {
@@ -1982,10 +1915,10 @@ template <class T, class C>
 linalg::TemporaryMatrix<T> pow(MultiArrayView<2, T, C> const & v, T exponent)
 {
     linalg::TemporaryMatrix<T> t(v.shape());
-    unsigned int m = rowCount(v), n = columnCount(v);
+    MultiArrayIndex m = rowCount(v), n = columnCount(v);
 
-    for(unsigned int i = 0; i < n; ++i)
-        for(unsigned int j = 0; j < m; ++j)
+    for(MultiArrayIndex i = 0; i < n; ++i)
+        for(MultiArrayIndex j = 0; j < m; ++j)
             t(j, i) = vigra::pow(v(j, i), exponent);
     return t;
 }
@@ -1994,10 +1927,10 @@ template <class T>
 linalg::TemporaryMatrix<T> pow(linalg::TemporaryMatrix<T> const & v, T exponent)
 {
     linalg::TemporaryMatrix<T> & t = const_cast<linalg::TemporaryMatrix<T> &>(v);
-    unsigned int m = rowCount(t), n = columnCount(t);
+    MultiArrayIndex m = rowCount(t), n = columnCount(t);
 
-    for(unsigned int i = 0; i < n; ++i)
-        for(unsigned int j = 0; j < m; ++j)
+    for(MultiArrayIndex i = 0; i < n; ++i)
+        for(MultiArrayIndex j = 0; j < m; ++j)
             t(j, i) = vigra::pow(t(j, i), exponent);
     return t;
 }
@@ -2006,10 +1939,10 @@ template <class T, class C>
 linalg::TemporaryMatrix<T> pow(MultiArrayView<2, T, C> const & v, int exponent)
 {
     linalg::TemporaryMatrix<T> t(v.shape());
-    unsigned int m = rowCount(v), n = columnCount(v);
+    MultiArrayIndex m = rowCount(v), n = columnCount(v);
 
-    for(unsigned int i = 0; i < n; ++i)
-        for(unsigned int j = 0; j < m; ++j)
+    for(MultiArrayIndex i = 0; i < n; ++i)
+        for(MultiArrayIndex j = 0; j < m; ++j)
             t(j, i) = vigra::pow(v(j, i), exponent);
     return t;
 }
@@ -2018,10 +1951,10 @@ template <class T>
 linalg::TemporaryMatrix<T> pow(linalg::TemporaryMatrix<T> const & v, int exponent)
 {
     linalg::TemporaryMatrix<T> & t = const_cast<linalg::TemporaryMatrix<T> &>(v);
-    unsigned int m = rowCount(t), n = columnCount(t);
+    MultiArrayIndex m = rowCount(t), n = columnCount(t);
 
-    for(unsigned int i = 0; i < n; ++i)
-        for(unsigned int j = 0; j < m; ++j)
+    for(MultiArrayIndex i = 0; i < n; ++i)
+        for(MultiArrayIndex j = 0; j < m; ++j)
             t(j, i) = vigra::pow(t(j, i), exponent);
     return t;
 }
@@ -2030,10 +1963,10 @@ template <class C>
 linalg::TemporaryMatrix<int> pow(MultiArrayView<2, int, C> const & v, int exponent)
 {
     linalg::TemporaryMatrix<int> t(v.shape());
-    unsigned int m = rowCount(v), n = columnCount(v);
+    MultiArrayIndex m = rowCount(v), n = columnCount(v);
 
-    for(unsigned int i = 0; i < n; ++i)
-        for(unsigned int j = 0; j < m; ++j)
+    for(MultiArrayIndex i = 0; i < n; ++i)
+        for(MultiArrayIndex j = 0; j < m; ++j)
             t(j, i) = (int)vigra::pow((double)v(j, i), exponent);
     return t;
 }
@@ -2042,10 +1975,10 @@ inline
 linalg::TemporaryMatrix<int> pow(linalg::TemporaryMatrix<int> const & v, int exponent)
 {
     linalg::TemporaryMatrix<int> & t = const_cast<linalg::TemporaryMatrix<int> &>(v);
-    unsigned int m = rowCount(t), n = columnCount(t);
+    MultiArrayIndex m = rowCount(t), n = columnCount(t);
 
-    for(unsigned int i = 0; i < n; ++i)
-        for(unsigned int j = 0; j < m; ++j)
+    for(MultiArrayIndex i = 0; i < n; ++i)
+        for(MultiArrayIndex j = 0; j < m; ++j)
             t(j, i) = (int)vigra::pow((double)t(j, i), exponent);
     return t;
 }
@@ -2105,10 +2038,10 @@ template <class T, class C> \
 linalg::TemporaryMatrix<T> FUNCTION(MultiArrayView<2, T, C> const & v) \
 { \
     linalg::TemporaryMatrix<T> t(v.shape()); \
-    unsigned int m = rowCount(v), n = columnCount(v); \
+    MultiArrayIndex m = rowCount(v), n = columnCount(v); \
  \
-    for(unsigned int i = 0; i < n; ++i) \
-        for(unsigned int j = 0; j < m; ++j) \
+    for(MultiArrayIndex i = 0; i < n; ++i) \
+        for(MultiArrayIndex j = 0; j < m; ++j) \
             t(j, i) = NAMESPACE::FUNCTION(v(j, i)); \
     return t; \
 } \
@@ -2117,10 +2050,10 @@ template <class T> \
 linalg::TemporaryMatrix<T> FUNCTION(linalg::Matrix<T> const & v) \
 { \
     linalg::TemporaryMatrix<T> t(v.shape()); \
-    unsigned int m = rowCount(v), n = columnCount(v); \
+    MultiArrayIndex m = rowCount(v), n = columnCount(v); \
  \
-    for(unsigned int i = 0; i < n; ++i) \
-        for(unsigned int j = 0; j < m; ++j) \
+    for(MultiArrayIndex i = 0; i < n; ++i) \
+        for(MultiArrayIndex j = 0; j < m; ++j) \
             t(j, i) = NAMESPACE::FUNCTION(v(j, i)); \
     return t; \
 } \
@@ -2129,10 +2062,10 @@ template <class T> \
 linalg::TemporaryMatrix<T> FUNCTION(linalg::TemporaryMatrix<T> const & v) \
 { \
     linalg::TemporaryMatrix<T> & t = const_cast<linalg::TemporaryMatrix<T> &>(v); \
-    unsigned int m = rowCount(t), n = columnCount(t); \
+    MultiArrayIndex m = rowCount(t), n = columnCount(t); \
  \
-    for(unsigned int i = 0; i < n; ++i) \
-        for(unsigned int j = 0; j < m; ++j) \
+    for(MultiArrayIndex i = 0; i < n; ++i) \
+        for(MultiArrayIndex j = 0; j < m; ++j) \
             t(j, i) = NAMESPACE::FUNCTION(t(j, i)); \
     return v; \
 }\
@@ -2225,13 +2158,13 @@ template <class T, class C>
 std::ostream &
 operator<<(std::ostream & s, const vigra::MultiArrayView<2, T, C> &m)
 {
-    const std::size_t rows = vigra::linalg::rowCount(m);
-    const std::size_t cols = vigra::linalg::columnCount(m);
+    const MultiArrayIndex rows = vigra::linalg::rowCount(m);
+    const MultiArrayIndex cols = vigra::linalg::columnCount(m);
     std::ios::fmtflags flags =
         s.setf(std::ios::right | std::ios::fixed, std::ios::adjustfield | std::ios::floatfield);
-    for(std::size_t j = 0; j < rows; ++j)
+    for(MultiArrayIndex j = 0; j < rows; ++j)
     {
-        for(std::size_t i = 0; i < cols; ++i)
+        for(MultiArrayIndex i = 0; i < cols; ++i)
         {
             s << std::setw(7) << std::setprecision(4) << m(j, i) << " ";
         }
@@ -2252,8 +2185,8 @@ void
 columnStatisticsImpl(MultiArrayView<2, T1, C1> const & A, 
                  MultiArrayView<2, T2, C2> & mean, MultiArrayView<2, T3, C3> & sumOfSquaredDifferences)
 {
-    unsigned int m = rowCount(A);
-    unsigned int n = columnCount(A);
+    MultiArrayIndex m = rowCount(A);
+    MultiArrayIndex n = columnCount(A);
     vigra_precondition(1 == rowCount(mean) && n == columnCount(mean) &&
                        1 == rowCount(sumOfSquaredDifferences) && n == columnCount(sumOfSquaredDifferences),
                        "columnStatistics(): Shape mismatch between input and output.");
@@ -2262,7 +2195,7 @@ columnStatisticsImpl(MultiArrayView<2, T1, C1> const & A,
     mean.init(NumericTraits<T2>::zero());
     sumOfSquaredDifferences.init(NumericTraits<T3>::zero());
     
-    for(unsigned int k=0; k<m; ++k)
+    for(MultiArrayIndex k=0; k<m; ++k)
     {
         Matrix<T2> t = rowVector(A, k) - mean;
         typename NumericTraits<T2>::RealPromote f  = 1.0 / (k + 1.0),
@@ -2338,14 +2271,14 @@ void
 columnStatistics(MultiArrayView<2, T1, C1> const & A, 
                  MultiArrayView<2, T2, C2> & mean)
 {
-    unsigned int m = rowCount(A);
-    unsigned int n = columnCount(A);
+    MultiArrayIndex m = rowCount(A);
+    MultiArrayIndex n = columnCount(A);
     vigra_precondition(1 == rowCount(mean) && n == columnCount(mean),
                        "columnStatistics(): Shape mismatch between input and output.");
 
     mean.init(NumericTraits<T2>::zero());
     
-    for(unsigned int k=0; k<m; ++k)
+    for(MultiArrayIndex k=0; k<m; ++k)
     {
         mean += rowVector(A, k);
     }
@@ -2368,8 +2301,8 @@ void
 columnStatistics(MultiArrayView<2, T1, C1> const & A, 
                  MultiArrayView<2, T2, C2> & mean, MultiArrayView<2, T3, C3> & stdDev, MultiArrayView<2, T4, C4> & norm)
 {
-    unsigned int m = rowCount(A);
-    unsigned int n = columnCount(A);
+    MultiArrayIndex m = rowCount(A);
+    MultiArrayIndex n = columnCount(A);
     vigra_precondition(1 == rowCount(mean) && n == columnCount(mean) &&
                        1 == rowCount(stdDev) && n == columnCount(stdDev) &&
                        1 == rowCount(norm) && n == columnCount(norm),
@@ -2481,7 +2414,7 @@ template <class T1, class C1, class U, class T2, class C2, class T3, class C3>
 void updateCovarianceMatrix(MultiArrayView<2, T1, C1> const & features,
                        U & count, MultiArrayView<2, T2, C2> & mean, MultiArrayView<2, T3, C3> & covariance)
 {
-    unsigned int n = std::max(rowCount(features), columnCount(features));
+    MultiArrayIndex n = std::max(rowCount(features), columnCount(features));
     vigra_precondition(std::min(rowCount(features), columnCount(features)) == 1,
           "updateCovarianceMatrix(): Features must be a row or column vector.");
     vigra_precondition(mean.shape() == features.shape(),
@@ -2498,10 +2431,10 @@ void updateCovarianceMatrix(MultiArrayView<2, T1, C1> const & features,
     
     if(rowCount(features) == 1) // update column covariance from current row
     {
-        for(unsigned int k=0; k<n; ++k)
+        for(MultiArrayIndex k=0; k<n; ++k)
         {
             covariance(k, k) += f1*sq(t(0, k));
-            for(unsigned int l=k+1; l<n; ++l)
+            for(MultiArrayIndex l=k+1; l<n; ++l)
             {
                 covariance(k, l) += f1*t(0, k)*t(0, l);
                 covariance(l, k) = covariance(k, l);
@@ -2510,10 +2443,10 @@ void updateCovarianceMatrix(MultiArrayView<2, T1, C1> const & features,
     }
     else // update row covariance from current column
     {
-        for(unsigned int k=0; k<n; ++k)
+        for(MultiArrayIndex k=0; k<n; ++k)
         {
             covariance(k, k) += f1*sq(t(k, 0));
-            for(unsigned int l=k+1; l<n; ++l)
+            for(MultiArrayIndex l=k+1; l<n; ++l)
             {
                 covariance(k, l) += f1*t(k, 0)*t(l, 0);
                 covariance(l, k) = covariance(k, l);
@@ -2536,13 +2469,13 @@ template <class T1, class C1, class T2, class C2>
 void covarianceMatrixOfColumns(MultiArrayView<2, T1, C1> const & features,
                                MultiArrayView<2, T2, C2> & covariance)
 {
-    unsigned int m = rowCount(features), n = columnCount(features);
+    MultiArrayIndex m = rowCount(features), n = columnCount(features);
     vigra_precondition(n == rowCount(covariance) && n == columnCount(covariance),
           "covarianceMatrixOfColumns(): Shape mismatch between feature matrix and covariance matrix.");
-    unsigned int count = 0;
+    MultiArrayIndex count = 0;
     Matrix<T2> means(1, n);
     covariance.init(NumericTraits<T2>::zero());
-    for(unsigned int k=0; k<m; ++k)
+    for(MultiArrayIndex k=0; k<m; ++k)
         detail::updateCovarianceMatrix(rowVector(features, k), count, means, covariance);
     covariance /= T2(m - 1);
 }
@@ -2576,13 +2509,13 @@ template <class T1, class C1, class T2, class C2>
 void covarianceMatrixOfRows(MultiArrayView<2, T1, C1> const & features,
                             MultiArrayView<2, T2, C2> & covariance)
 {
-    unsigned int m = rowCount(features), n = columnCount(features);
+    MultiArrayIndex m = rowCount(features), n = columnCount(features);
     vigra_precondition(m == rowCount(covariance) && m == columnCount(covariance),
           "covarianceMatrixOfRows(): Shape mismatch between feature matrix and covariance matrix.");
-    unsigned int count = 0;
+    MultiArrayIndex count = 0;
     Matrix<T2> means(m, 1);
     covariance.init(NumericTraits<T2>::zero());
-    for(unsigned int k=0; k<n; ++k)
+    for(MultiArrayIndex k=0; k<n; ++k)
         detail::updateCovarianceMatrix(columnVector(features, k), count, means, covariance);
     covariance /= T2(m - 1);
 }
@@ -2619,8 +2552,8 @@ prepareDataImpl(const MultiArrayView<2, T, C1> & A,
                MultiArrayView<2, T, C2> & res, MultiArrayView<2, T, C3> & offset, MultiArrayView<2, T, C4> & scaling, 
                DataPreparationGoals goals)
 {
-    unsigned int m = rowCount(A);
-    unsigned int n = columnCount(A);
+    MultiArrayIndex m = rowCount(A);
+    MultiArrayIndex n = columnCount(A);
     vigra_precondition(A.shape() == res.shape() && 
                        n == columnCount(offset) && 1 == rowCount(offset) &&
                        n == columnCount(scaling) && 1 == rowCount(scaling),
@@ -2644,7 +2577,7 @@ prepareDataImpl(const MultiArrayView<2, T, C1> & A,
     Matrix<T> mean(1, n), sumOfSquaredDifferences(1, n);
     detail::columnStatisticsImpl(A, mean, sumOfSquaredDifferences);
     
-    for(unsigned int k=0; k<n; ++k)
+    for(MultiArrayIndex k=0; k<n; ++k)
     {
         T stdDev = std::sqrt(sumOfSquaredDifferences(0, k) / T(m-1));
         if(closeAtTolerance(stdDev / mean(0,k), NumericTraits<T>::zero()))

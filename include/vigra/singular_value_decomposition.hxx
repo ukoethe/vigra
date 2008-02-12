@@ -80,8 +80,8 @@ singularValueDecomposition(MultiArrayView<2, T, C1> const & A,
     typedef T Real;
     typedef MultiArrayShape<2>::type Shape;
     
-    const unsigned int rows = rowCount(A);
-    const unsigned int cols = columnCount(A);
+    const MultiArrayIndex rows = rowCount(A);
+    const MultiArrayIndex cols = columnCount(A);
     vigra_precondition(rows >= cols,
        "singularValueDecomposition(): Input matrix A must be rectangular with rowCount >= columnCount.");
     vigra_precondition(rowCount(S) == cols && columnCount(S) == 1,
@@ -91,25 +91,25 @@ singularValueDecomposition(MultiArrayView<2, T, C1> const & A,
     vigra_precondition(rowCount(V) == cols && columnCount(V) == cols,
        "singularValueDecomposition(): Output matrix V must be square with n = columnCount(A).");
     
-    int m = rows;
-    int n = cols;    
-    int nu = n;
+    MultiArrayIndex m = rows;
+    MultiArrayIndex n = cols;    
+    MultiArrayIndex nu = n;
 
     U.init(0.0);
     S.init(0.0);
     V.init(0.0);
     
-    ArrayVector<Real> e(n);
-    ArrayVector<Real> work(m);
+    ArrayVector<Real> e((unsigned int)n);
+    ArrayVector<Real> work((unsigned int)m);
     Matrix<Real> a(A); 
     MultiArrayView<1, T, C3> s = S.bindOuter(0);
     
-    int i=0, j=0, k=0;
+    MultiArrayIndex i=0, j=0, k=0;
 
     // Reduce a to bidiagonal form, storing the diagonal elements
     // in s and the super-diagonal elements in e.
-    int nct = std::min(m-1,n);
-    int nrt = std::max(0,n-2);
+    MultiArrayIndex nct = std::min(m-1,n);
+    MultiArrayIndex nrt = std::max(0,n-2);
     for (k = 0; k < std::max(nct,nrt); ++k) 
     {
         if (k < nct) 
@@ -225,7 +225,7 @@ singularValueDecomposition(MultiArrayView<2, T, C1> const & A,
 
     // Set up the final bidiagonal matrix of order p.
 
-    int p = n;
+    MultiArrayIndex p = n;
     if (nct < n) 
     {
         s(nct) = a(nct, nct);
@@ -314,12 +314,12 @@ singularValueDecomposition(MultiArrayView<2, T, C1> const & A,
 
     // Main iteration loop for the singular values.
 
-    int pp = p-1;
+    MultiArrayIndex pp = p-1;
     int iter = 0;
     Real eps = NumericTraits<Real>::epsilon()*2.0;
     while (p > 0) 
     {
-        int k=0;
+        MultiArrayIndex k=0;
         int kase=0;
 
         // Here is where a test for too many iterations would go.
@@ -352,7 +352,7 @@ singularValueDecomposition(MultiArrayView<2, T, C1> const & A,
         } 
         else 
         {
-            int ks;
+            MultiArrayIndex ks;
             for (ks = p-1; ks >= k; --ks) 
             {
                 if (ks == k) 
@@ -549,7 +549,7 @@ singularValueDecomposition(MultiArrayView<2, T, C1> const & A,
     }
     Real tol = std::max(m,n)*s(0)*eps;
     unsigned int rank = 0;
-    for (int i = 0; i < n; ++i) 
+    for (MultiArrayIndex i = 0; i < n; ++i) 
     {
         if (s(i) > tol) 
         {

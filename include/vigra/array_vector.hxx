@@ -294,14 +294,14 @@ public:
 
         /** Access array element \a i.
         */
-    reference operator[]( size_type i )
+    reference operator[]( difference_type i )
     {
         return data()[i];
     }
 
         /** Read array element \a i.
         */
-    const_reference operator[]( size_type i ) const
+    const_reference operator[]( difference_type i ) const
     {
         return data()[i];
     }
@@ -437,7 +437,17 @@ ArrayVectorView <T>::swapDataImpl(const ArrayVectorView <U>& rhs)
     optimizations.
     
     Moreover, <tt>ArrayVector</tt> is derived from <tt>ArrayVectorView</tt> so that one 
-    can create views of the array (in particular, subarrays).    
+    can create views of the array (in particular, subarrays). This implies another
+    important difference to <tt>std::vector</tt>: the indexing operator
+    (<tt>ArrayVector::operator[]</tt>) takes <tt>signed</tt> indices. In this way,
+    an <tt>ArrayVectorView</tt> can be used with negative indices:
+    
+    \code
+    ArrayVector<int> data(100);
+    ArrayVectorView<int> view = data.subarray(50, 100);
+    
+    view[-50] = 1; // valid access
+    \endcode  
 
     Refer to the documentation of <tt>std::vector</tt> for a detailed
     description of <tt>ArrayVector</tt> functionality.
@@ -450,33 +460,70 @@ class ArrayVector
 : public ArrayVectorView<T>
 {
     typedef ArrayVector<T, Alloc> this_type;
-    typedef ArrayVectorView<T> base_type;
     enum { minimumCapacity = 2 };
 
 public:
-    typedef typename base_type::value_type value_type;
-    typedef typename base_type::reference reference;
-    typedef typename base_type::const_reference const_reference;
-    typedef typename base_type::pointer pointer;
-    typedef typename base_type::const_pointer const_pointer;
-    typedef typename base_type::iterator iterator;
-    typedef typename base_type::const_iterator const_iterator;
-    typedef typename base_type::size_type size_type;
-    typedef typename base_type::difference_type difference_type;
-    typedef typename base_type::reverse_iterator reverse_iterator;
-    typedef typename base_type::const_reverse_iterator const_reverse_iterator;
+    typedef ArrayVectorView<T> view_type;
+    typedef typename view_type::value_type value_type;
+    typedef typename view_type::reference reference;
+    typedef typename view_type::const_reference const_reference;
+    typedef typename view_type::pointer pointer;
+    typedef typename view_type::const_pointer const_pointer;
+    typedef typename view_type::iterator iterator;
+    typedef typename view_type::const_iterator const_iterator;
+    typedef typename view_type::size_type size_type;
+    typedef typename view_type::difference_type difference_type;
+    typedef typename view_type::reverse_iterator reverse_iterator;
+    typedef typename view_type::const_reverse_iterator const_reverse_iterator;
     typedef Alloc        allocator_type;
 
 public:
-    ArrayVector();
+    ArrayVector()
+    : view_type(),
+      capacity_(minimumCapacity),
+      alloc_(Alloc())
+    {
+        this->data_ = reserve_raw(capacity_);
+    }
 
-    explicit ArrayVector(Alloc const & alloc);
+    explicit ArrayVector(Alloc const & alloc)
+    : view_type(),
+      capacity_(minimumCapacity),
+      alloc_(alloc)
+    {
+        this->data_ = reserve_raw(capacity_);
+    }
 
-    explicit ArrayVector( size_type size, Alloc const & alloc = Alloc());
+    explicit ArrayVector( size_type size, Alloc const & alloc = Alloc())
+    : view_type(size, 0),
+      capacity_(size),
+      alloc_(alloc)
+    {
+        this->data_ = reserve_raw(capacity_);
+        if(this->size_ > 0)
+           std::uninitialized_fill(this->data_, this->data_+this->size_, value_type());
+    }
 
-    ArrayVector( size_type size, value_type const & initial, Alloc const & alloc = Alloc());
+    ArrayVector( size_type size, value_type const & initial, Alloc const & alloc = Alloc())
+    : view_type(size, 0),
+      capacity_(size),
+      alloc_(alloc)
+    {
+        this->data_ = reserve_raw(capacity_);
+        if(this->size_ > 0)
+            std::uninitialized_fill(this->data_, this->data_+this->size_, initial);
+    }
 
-    ArrayVector( this_type const & rhs );
+
+    ArrayVector( this_type const & rhs )
+    : view_type(rhs.size(), 0),
+      capacity_(rhs.capacity_),
+      alloc_(rhs.alloc_)
+    {
+        this->data_ = reserve_raw(capacity_);
+        if(this->size_ > 0)
+            std::uninitialized_copy(rhs.data_, rhs.data_+rhs.size_, this->data_);
+    }
 
     template <class U>
     explicit ArrayVector( ArrayVectorView<U> const & rhs, Alloc const & alloc = Alloc() );
@@ -487,12 +534,27 @@ public:
     template <class InputIterator>
     ArrayVector(InputIterator i, InputIterator end, Alloc const & alloc);
 
-    this_type & operator=( this_type const & rhs );
+    this_type & operator=( this_type const & rhs )
+    {
+        if(this == &rhs)
+            return *this;
+        if(this->size_ == rhs.size_)
+            this->copyImpl(rhs);
+        else
+        {
+            ArrayVector t(rhs);
+            this->swap(t);
+        }
+        return *this;
+    }
 
     template <class U>
     this_type & operator=( ArrayVectorView<U> const & rhs);
 
-    ~ArrayVector();
+    ~ArrayVector()
+    {
+        deallocate(this->data_, this->size_);
+    }
 
     void pop_back();
 
@@ -540,61 +602,9 @@ public:
 };
 
 template <class T, class Alloc>
-ArrayVector<T, Alloc>::ArrayVector()
-: base_type(),
-  capacity_(minimumCapacity),
-  alloc_(Alloc())
-{
-    this->data_ = reserve_raw(capacity_);
-}
-
-template <class T, class Alloc>
-ArrayVector<T, Alloc>::ArrayVector(Alloc const & alloc)
-: base_type(),
-  capacity_(minimumCapacity),
-  alloc_(alloc)
-{
-    this->data_ = reserve_raw(capacity_);
-}
-
-template <class T, class Alloc>
-ArrayVector<T, Alloc>::ArrayVector( size_type size, Alloc const & alloc)
-: base_type(size, 0),
-  capacity_(size),
-  alloc_(alloc)
-{
-    this->data_ = reserve_raw(capacity_);
-    if(this->size_ > 0)
-       std::uninitialized_fill(this->data_, this->data_+this->size_, value_type());
-}
-
-template <class T, class Alloc>
-ArrayVector<T, Alloc>::ArrayVector( size_type size,
-                         value_type const & initial, Alloc const & alloc)
-: base_type(size, 0),
-  capacity_(size),
-  alloc_(alloc)
-{
-    this->data_ = reserve_raw(capacity_);
-    if(this->size_ > 0)
-        std::uninitialized_fill(this->data_, this->data_+this->size_, initial);
-}
-
-template <class T, class Alloc>
-ArrayVector<T, Alloc>::ArrayVector( this_type const & rhs )
-: base_type(rhs.size(), 0),
-  capacity_(rhs.capacity_),
-  alloc_(rhs.alloc_)
-{
-    this->data_ = reserve_raw(capacity_);
-    if(this->size_ > 0)
-        std::uninitialized_copy(rhs.data_, rhs.data_+rhs.size_, this->data_);
-}
-
-template <class T, class Alloc>
 template <class U>
 ArrayVector<T, Alloc>::ArrayVector( ArrayVectorView<U> const & rhs, Alloc const & alloc )
-: base_type(rhs.size(), 0),
+: view_type(rhs.size(), 0),
   capacity_(rhs.size()),
   alloc_(alloc)
 {
@@ -606,8 +616,8 @@ ArrayVector<T, Alloc>::ArrayVector( ArrayVectorView<U> const & rhs, Alloc const 
 template <class T, class Alloc>
 template <class InputIterator>
 ArrayVector<T, Alloc>::ArrayVector(InputIterator i, InputIterator end)
-: base_type(std::distance(i, end), 0),
-  capacity_(base_type::size_),
+: view_type(std::distance(i, end), 0),
+  capacity_(view_type::size_),
   alloc_()
 {
     this->data_ = reserve_raw(capacity_);
@@ -617,27 +627,12 @@ ArrayVector<T, Alloc>::ArrayVector(InputIterator i, InputIterator end)
 template <class T, class Alloc>
 template <class InputIterator>
 ArrayVector<T, Alloc>::ArrayVector(InputIterator i, InputIterator end, Alloc const & alloc)
-: base_type(std::distance(i, end), 0),
-  capacity_(base_type::size_),
+: view_type(std::distance(i, end), 0),
+  capacity_(view_type::size_),
   alloc_(alloc)
 {
     this->data_ = reserve_raw(capacity_);
     std::uninitialized_copy(i, end, this->data_);
-}
-
-template <class T, class Alloc>
-ArrayVector<T, Alloc> & ArrayVector<T, Alloc>::operator=( this_type const & rhs )
-{
-    if(this == &rhs)
-        return *this;
-    if(this->size_ == rhs.size_)
-        this->copyImpl(rhs);
-    else
-    {
-        ArrayVector t(rhs);
-        this->swap(t);
-    }
-    return *this;
 }
 
 template <class T, class Alloc>
@@ -655,20 +650,14 @@ ArrayVector<T, Alloc> & ArrayVector<T, Alloc>::operator=( ArrayVectorView<U> con
 }
 
 template <class T, class Alloc>
-ArrayVector<T, Alloc>::~ArrayVector()
-{
-    deallocate(this->data_, this->size_);
-}
-
-template <class T, class Alloc>
-void ArrayVector<T, Alloc>::pop_back()
+inline void ArrayVector<T, Alloc>::pop_back()
 {
     --this->size_;
     alloc_.destroy(this->data_ + this->size_);
 }
 
 template <class T, class Alloc>
-void ArrayVector<T, Alloc>::push_back( value_type const & t )
+inline void ArrayVector<T, Alloc>::push_back( value_type const & t )
 {
     reserve();
     alloc_.construct(this->data_ + this->size_, t);
@@ -676,9 +665,9 @@ void ArrayVector<T, Alloc>::push_back( value_type const & t )
 }
 
 template <class T, class Alloc>
-void ArrayVector<T, Alloc>::clear()
+inline void ArrayVector<T, Alloc>::clear()
 {
-    detail::destroy_n(this->data_, this->size_);
+    detail::destroy_n(this->data_, (int)this->size_);
     this->size_ = 0;
 }
 
@@ -786,14 +775,15 @@ typename ArrayVector<T, Alloc>::iterator
 ArrayVector<T, Alloc>::erase(iterator p, iterator q)
 {
     std::copy(q, this->end(), p);
-    size_type eraseCount = q - p;
+    difference_type eraseCount = q - p;
     detail::destroy_n(this->end() - eraseCount, eraseCount);
     this->size_ -= eraseCount;
     return p;
 }
 
 template <class T, class Alloc>
-void ArrayVector<T, Alloc>::reserve( size_type new_capacity )
+inline void 
+ArrayVector<T, Alloc>::reserve( size_type new_capacity )
 {
     if(new_capacity <= capacity_)
         return;
@@ -806,7 +796,8 @@ void ArrayVector<T, Alloc>::reserve( size_type new_capacity )
 }
 
 template <class T, class Alloc>
-void ArrayVector<T, Alloc>::reserve()
+inline void 
+ArrayVector<T, Alloc>::reserve()
 {
     if(capacity_ == 0)
         reserve(minimumCapacity);
@@ -815,7 +806,8 @@ void ArrayVector<T, Alloc>::reserve()
 }
 
 template <class T, class Alloc>
-void ArrayVector<T, Alloc>::resize( size_type new_size, value_type const & initial)
+inline void 
+ArrayVector<T, Alloc>::resize( size_type new_size, value_type const & initial)
 {
     if(new_size < this->size_)
         erase(this->begin() + new_size, this->end());
@@ -826,7 +818,8 @@ void ArrayVector<T, Alloc>::resize( size_type new_size, value_type const & initi
 }
 
 template <class T, class Alloc>
-void ArrayVector<T, Alloc>::swap(this_type & rhs)
+inline void 
+ArrayVector<T, Alloc>::swap(this_type & rhs)
 {
     std::swap(this->size_, rhs.size_);
     std::swap(capacity_, rhs.capacity_);
@@ -834,17 +827,18 @@ void ArrayVector<T, Alloc>::swap(this_type & rhs)
 }
 
 template <class T, class Alloc>
-void ArrayVector<T, Alloc>::deallocate(pointer data, size_type size)
+inline void 
+ArrayVector<T, Alloc>::deallocate(pointer data, size_type size)
 {
     if(data)
     {
-        detail::destroy_n(data, size);
+        detail::destroy_n(data, (int)size);
         alloc_.deallocate(data, size);
     }
 }
 
 template <class T, class Alloc>
-typename ArrayVector<T, Alloc>::pointer
+inline typename ArrayVector<T, Alloc>::pointer
 ArrayVector<T, Alloc>::reserve_raw(size_type capacity)
 {
     pointer data = 0;

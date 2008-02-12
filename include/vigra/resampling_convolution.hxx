@@ -60,7 +60,7 @@ struct MapTargetToSourceCoordinate
       c(samplingRatio.numerator()*offset.denominator())
     {}
 
-//        the following funcions are more efficient realizations of:
+//        the following functions are more efficient realizations of:
 //             rational_cast<T>(i / samplingRatio + offset);
 //        we need efficiency because this may be called in the inner loop
 
@@ -244,7 +244,7 @@ resamplingReduceLine2(SrcIter s, SrcIter send, SrcAcc src,
     set of kernels.
 
     This function is mainly used internally: It is called for each dimension of a 
-    a higher dimensional array in order to perform a separable resize operation.
+    higher dimensional array in order to perform a separable resize operation.
 
     <b> Declaration:</b>
 
@@ -752,15 +752,56 @@ resamplingConvolveImage(triple<SrcIterator, SrcIterator, SrcAccessor> src,
                             ky, samplingRatioY, offsetY);
 }
 
+/** \brief Two-fold down-sampling for image pyramid construction.
+
+    Sorry, no \ref detailedDocumentation() available yet.
+
+    <b> Declarations:</b>
+
+    <b>\#include</b> \<<a href="resampling__convolution_8hxx-source.html">vigra/resampling_convolution.hxx</a>\><br>
+    Namespace: vigra
+
+    pass arguments explicitly:
+    \code
+    namespace vigra {
+        template <class SrcIterator, class SrcAccessor,
+                  class DestIterator, class DestAccessor>
+        void pyramidReduceBurtFilter(SrcIterator sul, SrcIterator slr, SrcAccessor src,
+                                     DestIterator dul, DestIterator dlr, DestAccessor dest,
+                                     double centerValue = 0.4);
+    }
+    \endcode
+
+    use argument objects in conjunction with \ref ArgumentObjectFactories :
+    \code
+    namespace vigra {
+        template <class SrcIterator, class SrcAccessor,
+                  class DestIterator, class DestAccessor>
+        void pyramidReduceBurtFilter(triple<SrcIterator, SrcIterator, SrcAccessor> src,
+                                     triple<DestIterator, DestIterator, DestAccessor> dest,
+                                     double centerValue = 0.4);
+    }
+    \endcode
+
+    use a \ref vigra::ImagePyramid :
+    \code
+    namespace vigra {
+        template <class Image, class Alloc>
+        void pyramidReduceBurtFilter(ImagePyramid<Image, Alloc> & pyramid, int fromLevel, int toLevel,
+                                     double centerValue = 0.4);
+    }
+    \endcode
+*/
+doxygen_overloaded_function(template <...> void pyramidReduceBurtFilter)
 
 template <class SrcIterator, class SrcAccessor,
           class DestIterator, class DestAccessor>
 void pyramidReduceBurtFilter(SrcIterator sul, SrcIterator slr, SrcAccessor src,
                              DestIterator dul, DestIterator dlr, DestAccessor dest,
-                             double strength = 0.4)
+                             double centerValue = 0.4)
 {
-    vigra_precondition(0.25 <= strength && strength <= 0.5,
-             "pyramidReduceBurtFilter(): strength must be between 0.25 and 0.5.");
+    vigra_precondition(0.25 <= centerValue && centerValue <= 0.5,
+             "pyramidReduceBurtFilter(): centerValue must be between 0.25 and 0.5.");
              
     int wold = slr.x - sul.x;
     int wnew = dlr.x - dul.x;
@@ -771,7 +812,7 @@ void pyramidReduceBurtFilter(SrcIterator sul, SrcIterator slr, SrcAccessor src,
     resampling_detail::MapTargetToSourceCoordinate mapCoordinate(samplingRatio, offset);
     
     ArrayVector<Kernel1D<double> > kernels(1);
-    kernels[0].initExplicitly(-2, 2) = 0.25 - strength / 2.0, 0.25, strength, 0.25, 0.25 - strength / 2.0;
+    kernels[0].initExplicitly(-2, 2) = 0.25 - centerValue / 2.0, 0.25, centerValue, 0.25, 0.25 - centerValue / 2.0;
    
     typedef typename
         NumericTraits<typename SrcAccessor::value_type>::RealPromote
@@ -808,16 +849,16 @@ template <class SrcIterator, class SrcAccessor,
 inline
 void pyramidReduceBurtFilter(triple<SrcIterator, SrcIterator, SrcAccessor> src,
                              triple<DestIterator, DestIterator, DestAccessor> dest,
-                             double strength = 0.4)
+                             double centerValue = 0.4)
 {
     pyramidReduceBurtFilter(src.first, src.second, src.third, 
-                            dest.first, dest.second, dest.third, strength);
+                            dest.first, dest.second, dest.third, centerValue);
 }
 
 template <class Image, class Alloc>
 inline
 void pyramidReduceBurtFilter(ImagePyramid<Image, Alloc> & pyramid, int fromLevel, int toLevel,
-                             double strength = 0.4)
+                             double centerValue = 0.4)
 {
     vigra_precondition(fromLevel  < toLevel,
        "pyramidReduceBurtFilter(): fromLevel must be smaller than toLevel.");
@@ -825,17 +866,60 @@ void pyramidReduceBurtFilter(ImagePyramid<Image, Alloc> & pyramid, int fromLevel
        "pyramidReduceBurtFilter(): fromLevel and toLevel must be between the lowest and highest pyramid levels (inclusive).");
 
     for(int i=fromLevel+1; i <= toLevel; ++i)
-        pyramidReduceBurtFilter(srcImageRange(pyramid[i-1]), destImageRange(pyramid[i]), strength);
+        pyramidReduceBurtFilter(srcImageRange(pyramid[i-1]), destImageRange(pyramid[i]), centerValue);
 }
+
+/** \brief Two-fold up-sampling for image pyramid reconstruction.
+
+    Sorry, no \ref detailedDocumentation() available yet.
+
+    <b> Declarations:</b>
+
+    <b>\#include</b> \<<a href="resampling__convolution_8hxx-source.html">vigra/resampling_convolution.hxx</a>\><br>
+    Namespace: vigra
+
+    pass arguments explicitly:
+    \code
+    namespace vigra {
+        template <class SrcIterator, class SrcAccessor,
+                  class DestIterator, class DestAccessor>
+        void pyramidExpandBurtFilter(SrcIterator sul, SrcIterator slr, SrcAccessor src,
+                                     DestIterator dul, DestIterator dlr, DestAccessor dest,
+                                     double centerValue = 0.4);
+    }
+    \endcode
+
+
+    use argument objects in conjunction with \ref ArgumentObjectFactories :
+    \code
+    namespace vigra {
+        template <class SrcIterator, class SrcAccessor,
+                  class DestIterator, class DestAccessor>
+        void pyramidExpandBurtFilter(triple<SrcIterator, SrcIterator, SrcAccessor> src,
+                                     triple<DestIterator, DestIterator, DestAccessor> dest,
+                                     double centerValue = 0.4);
+    }
+    \endcode
+
+    use a \ref vigra::ImagePyramid :
+    \code
+    namespace vigra {
+        template <class Image, class Alloc>
+        void pyramidExpandBurtFilter(ImagePyramid<Image, Alloc> & pyramid, int fromLevel, int toLevel,
+                                     double centerValue = 0.4);
+    }
+    \endcode
+*/
+doxygen_overloaded_function(template <...> void pyramidExpandBurtFilter)
 
 template <class SrcIterator, class SrcAccessor,
           class DestIterator, class DestAccessor>
 void pyramidExpandBurtFilter(SrcIterator sul, SrcIterator slr, SrcAccessor src,
                              DestIterator dul, DestIterator dlr, DestAccessor dest,
-                             double strength = 0.4)
+                             double centerValue = 0.4)
 {
-    vigra_precondition(0.25 <= strength && strength <= 0.5,
-             "pyramidExpandBurtFilter(): strength must be between 0.25 and 0.5.");
+    vigra_precondition(0.25 <= centerValue && centerValue <= 0.5,
+             "pyramidExpandBurtFilter(): centerValue must be between 0.25 and 0.5.");
              
     int wold = slr.x - sul.x;
     int wnew = dlr.x - dul.x;
@@ -846,7 +930,7 @@ void pyramidExpandBurtFilter(SrcIterator sul, SrcIterator slr, SrcAccessor src,
     resampling_detail::MapTargetToSourceCoordinate mapCoordinate(samplingRatio, offset);
     
     ArrayVector<Kernel1D<double> > kernels(2);
-    kernels[0].initExplicitly(-1, 1) = 0.5 - strength, 2.0*strength, 0.5 - strength;
+    kernels[0].initExplicitly(-1, 1) = 0.5 - centerValue, 2.0*centerValue, 0.5 - centerValue;
     kernels[1].initExplicitly(-1, 0) = 0.5, 0.5;
    
     typedef typename
@@ -884,17 +968,17 @@ template <class SrcIterator, class SrcAccessor,
 inline
 void pyramidExpandBurtFilter(triple<SrcIterator, SrcIterator, SrcAccessor> src,
                              triple<DestIterator, DestIterator, DestAccessor> dest,
-                             double strength = 0.4)
+                             double centerValue = 0.4)
 {
     pyramidExpandBurtFilter(src.first, src.second, src.third, 
-                            dest.first, dest.second, dest.third, strength);
+                            dest.first, dest.second, dest.third, centerValue);
 }
 
 
 template <class Image, class Alloc>
 inline
 void pyramidExpandBurtFilter(ImagePyramid<Image, Alloc> & pyramid, int fromLevel, int toLevel,
-                             double strength = 0.4)
+                             double centerValue = 0.4)
 {
     vigra_precondition(fromLevel  > toLevel,
        "pyramidExpandBurtFilter(): fromLevel must be larger than toLevel.");
@@ -902,31 +986,44 @@ void pyramidExpandBurtFilter(ImagePyramid<Image, Alloc> & pyramid, int fromLevel
        "pyramidExpandBurtFilter(): fromLevel and toLevel must be between the lowest and highest pyramid levels (inclusive).");
 
     for(int i=fromLevel-1; i >= toLevel; --i)
-        pyramidExpandBurtFilter(srcImageRange(pyramid[i+1]), destImageRange(pyramid[i]), strength);
+        pyramidExpandBurtFilter(srcImageRange(pyramid[i+1]), destImageRange(pyramid[i]), centerValue);
 }
 
+/** \brief Create a Laplacian pyramid.
+
+    Sorry, no \ref detailedDocumentation() available yet.
+
+    <b>\#include</b> \<<a href="resampling__convolution_8hxx-source.html">vigra/resampling_convolution.hxx</a>\><br>
+    Namespace: vigra
+*/
 template <class Image, class Alloc>
 inline
 void pyramidReduceBurtLaplacian(ImagePyramid<Image, Alloc> & pyramid, int fromLevel, int toLevel,
-                             double strength = 0.4)
+                             double centerValue = 0.4)
 {
     using namespace functor;
     
-    pyramidReduceBurtFilter(pyramid, fromLevel, toLevel, strength);
+    pyramidReduceBurtFilter(pyramid, fromLevel, toLevel, centerValue);
     for(int i=fromLevel; i < toLevel; ++i)
     {
         typename ImagePyramid<Image, Alloc>::value_type tmpImage(pyramid[i].size());
-        pyramidExpandBurtFilter(srcImageRange(pyramid[i+1]), destImageRange(tmpImage), strength);
+        pyramidExpandBurtFilter(srcImageRange(pyramid[i+1]), destImageRange(tmpImage), centerValue);
         combineTwoImages(srcImageRange(tmpImage), srcImage(pyramid[i]), destImage(pyramid[i]),
                        Arg1() - Arg2()); 
     }
 }
 
+/** \brief Reconstruct a Laplacian pyramid.
 
+    Sorry, no \ref detailedDocumentation() available yet.
+
+    <b>\#include</b> \<<a href="resampling__convolution_8hxx-source.html">vigra/resampling_convolution.hxx</a>\><br>
+    Namespace: vigra
+*/
 template <class Image, class Alloc>
 inline
 void pyramidExpandBurtLaplacian(ImagePyramid<Image, Alloc> & pyramid, int fromLevel, int toLevel,
-                                double strength = 0.4)
+                                double centerValue = 0.4)
 {
     using namespace functor;
     
@@ -938,13 +1035,13 @@ void pyramidExpandBurtLaplacian(ImagePyramid<Image, Alloc> & pyramid, int fromLe
     for(int i=fromLevel-1; i >= toLevel; --i)
     {
         typename ImagePyramid<Image, Alloc>::value_type tmpImage(pyramid[i].size());
-        pyramidExpandBurtFilter(srcImageRange(pyramid[i+1]), destImageRange(tmpImage), strength);
+        pyramidExpandBurtFilter(srcImageRange(pyramid[i+1]), destImageRange(tmpImage), centerValue);
         combineTwoImages(srcImageRange(tmpImage), srcImage(pyramid[i]), destImage(pyramid[i]),
                        Arg1() - Arg2()); 
     }
 }
 
-
+//@}
 
 } // namespace vigra
 
