@@ -185,7 +185,7 @@ public:
     void testPermute ()
     {   
         array3.reshape(difference3_type(3,5,7));
-        for(unsigned int k=0; k<array3.size(); ++k)
+        for(int k=0; k<array3.size(); ++k)
             array3[k] = k;
 
         array3_type ref(difference3_type(array3.shape(2), array3.shape(0), array3.shape(1)));
@@ -243,7 +243,7 @@ public:
     void testScanOrderAccess()
     {
         shouldEqual(array3.size(), 1000);
-        for(unsigned int k=0; k< array3.size(); ++k)
+        for(int k=0; k< array3.size(); ++k)
         {
             shouldEqual(array3[k], k);
             shouldEqual(array3[array3.scanOrderIndexToCoordinate(k)], k);
@@ -252,14 +252,14 @@ public:
             
         MultiArrayView <2, scalar_type, StridedArrayTag> array = array3.bindInner(2);
         shouldEqual(array.size(), 100);
-        for(unsigned int k=0; k< array.size(); ++k)
+        for(int k=0; k< array.size(); ++k)
             shouldEqual(array[k], 10*k+2);
             
         typedef MultiArrayView <2, scalar_type, UnstridedArrayTag>::difference_type Shape;
         MultiArrayView <2, scalar_type, UnstridedArrayTag>
             subarray = array3.bindOuter(2).subarray(Shape(1,0), Shape(10,9));
         shouldEqual(subarray.size(), 81);
-        for(unsigned int k=0, l=200; k< subarray.size(); ++k, ++l)
+        for(int k=0, l=200; k< subarray.size(); ++k, ++l)
         {
             if(k%9 == 0)
                 ++l;
@@ -287,6 +287,31 @@ public:
         subarray = array3.subarray(Shape(0,1,0), Shape(10,2,1)); // should overwrite the data
         for(unsigned int k=0; k<10; ++k)
             shouldEqual(array3(k,0,0), array3(k,1,0));
+        subarray += array3.subarray(Shape(0,1,0), Shape(10,2,1)); // should overwrite the data
+        for(unsigned int k=0; k<10; ++k)
+            shouldEqual(array3(k,0,0), 2.0*array3(k,1,0));
+        subarray -= array3.subarray(Shape(0,1,0), Shape(10,2,1)); // should overwrite the data
+        for(unsigned int k=0; k<10; ++k)
+            shouldEqual(array3(k,0,0), array3(k,1,0));
+        subarray *= array3.subarray(Shape(0,1,0), Shape(10,2,1)); // should overwrite the data
+        for(unsigned int k=0; k<10; ++k)
+            shouldEqual(array3(k,0,0), sq(array3(k,1,0)));
+        subarray /= array3.subarray(Shape(0,1,0), Shape(10,2,1)); // should overwrite the data
+        for(unsigned int k=0; k<10; ++k)
+            shouldEqual(array3(k,0,0), array3(k,1,0));
+            
+        subarray += 1; // should overwrite the data
+        for(unsigned int k=0; k<10; ++k)
+            shouldEqual(array3(k,0,0), array3(k,1,0) + 1);
+        subarray -= 2; // should overwrite the data
+        for(unsigned int k=0; k<10; ++k)
+            shouldEqual(array3(k,0,0), array3(k,1,0) - 1);
+        subarray *= 2; // should overwrite the data
+        for(unsigned int k=0; k<10; ++k)
+            shouldEqual(array3(k,0,0), 2*(array3(k,1,0) - 1));
+        subarray /= 2; // should overwrite the data
+        for(unsigned int k=0; k<10; ++k)
+            shouldEqual(array3(k,0,0), array3(k,1,0) - 1);
     }
 };
 
