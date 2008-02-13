@@ -71,7 +71,7 @@ namespace vigra
 template <class Iterator, class Shape, class Accessor, 
           class VALUETYPE>
 inline void
-initMultiArrayImpl(Iterator s, Shape const & shape, Accessor a,  VALUETYPE v, MetaInt<0>)
+initMultiArrayImpl(Iterator s, Shape const & shape, Accessor a,  VALUETYPE const & v, MetaInt<0>)
 {
     initLine(s, s + shape[0], a, v);
 }
@@ -80,7 +80,7 @@ template <class Iterator, class Shape, class Accessor,
           class VALUETYPE, int N>
 void
 initMultiArrayImpl(Iterator s, Shape const & shape, Accessor a,  
-                   VALUETYPE v, MetaInt<N>)
+                   VALUETYPE const & v, MetaInt<N>)
 {
     Iterator send = s + shape[N];
     for(; s != send; ++s)
@@ -98,6 +98,12 @@ initMultiArrayImpl(Iterator s, Shape const & shape, Accessor a,
     the range simultaneously in all dimensions (this is a necessary consequence
     of the \ref vigra::MultiIterator design).
     
+    The initial value can either be a constant of appropriate type (compatible with 
+    the destination's value_type), or a functor with compatible result_type. These two 
+    cases are automatically distinguished when <tt>FunctorTraits<FUNCTOR>::isInitializer</tt>
+    yields <tt>VigraTrueType</tt>. Since the functor is passed by <tt>const</tt> reference, its 
+    <tt>operator()</tt> must be const, and ist internal state may need to be <tt>mutable</tt>.
+    
     <b> Declarations:</b>
     
     pass arguments explicitly:
@@ -105,7 +111,7 @@ initMultiArrayImpl(Iterator s, Shape const & shape, Accessor a,
     namespace vigra {
         template <class Iterator, class Shape, class Accessor, class VALUETYPE>
         void
-        initMultiArray(Iterator s, Shape const & shape, Accessor a,  VALUETYPE v);
+        initMultiArray(Iterator s, Shape const & shape, Accessor a,  VALUETYPE const & v);
 
 
         template <class Iterator, class Shape, class Accessor, class FUNCTOR>
@@ -119,7 +125,7 @@ initMultiArrayImpl(Iterator s, Shape const & shape, Accessor a,
     namespace vigra {
         template <class Iterator, class Shape, class Accessor, class VALUETYPE>
         void
-        initMultiArray(triple<Iterator, Shape, Accessor> const & s, VALUETYPE v);
+        initMultiArray(triple<Iterator, Shape, Accessor> const & s, VALUETYPE const & v);
 
 
         template <class Iterator, class Shape, class Accessor, class FUNCTOR>
@@ -177,7 +183,7 @@ doxygen_overloaded_function(template <...> void initMultiArray)
 
 template <class Iterator, class Shape, class Accessor, class VALUETYPE>
 inline void
-initMultiArray(Iterator s, Shape const & shape, Accessor a,  VALUETYPE v)
+initMultiArray(Iterator s, Shape const & shape, Accessor a,  VALUETYPE const & v)
 {
     initMultiArrayImpl(s, shape, a, v, MetaInt<Iterator::level>());
 }
@@ -185,7 +191,7 @@ initMultiArray(Iterator s, Shape const & shape, Accessor a,  VALUETYPE v)
 template <class Iterator, class Shape, class Accessor, class VALUETYPE>
 inline 
 void
-initMultiArray(triple<Iterator, Shape, Accessor> const & s, VALUETYPE v)
+initMultiArray(triple<Iterator, Shape, Accessor> const & s, VALUETYPE const & v)
 {
     initMultiArray(s.first, s.second, s.third, v);
 }

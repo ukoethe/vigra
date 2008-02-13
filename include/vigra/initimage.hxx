@@ -57,16 +57,16 @@ namespace vigra {
 /********************************************************/
 
 template <class DestIterator, class DestAccessor, class VALUETYPE>
-void
+inline void
 initLineImpl(DestIterator d, DestIterator dend, DestAccessor dest,
-             VALUETYPE v, VigraFalseType)
+             VALUETYPE const & v, VigraFalseType)
 {
     for(; d != dend; ++d)
         dest.set(v, d);
 }
 
 template <class DestIterator, class DestAccessor, class FUNCTOR>
-void
+inline void
 initLineImpl(DestIterator d, DestIterator dend, DestAccessor dest,
              FUNCTOR const & f, VigraTrueType)
 {
@@ -77,7 +77,7 @@ initLineImpl(DestIterator d, DestIterator dend, DestAccessor dest,
 template <class DestIterator, class DestAccessor, class VALUETYPE>
 inline void
 initLine(DestIterator d, DestIterator dend, DestAccessor dest,
-         VALUETYPE v)
+         VALUETYPE const & v)
 {
     initLineImpl(d, dend, dest, v, typename FunctorTraits<VALUETYPE>::isInitializer());
 }
@@ -85,18 +85,19 @@ initLine(DestIterator d, DestIterator dend, DestAccessor dest,
 template <class DestIterator, class DestAccessor, class FUNCTOR>
 inline void
 initLineFunctor(DestIterator d, DestIterator dend, DestAccessor dest,
-         FUNCTOR f)
+         FUNCTOR & f)
 {
-    initLineImpl(d, dend, dest, f, VigraTrueType());
+    for(; d != dend; ++d)
+        dest.set(f(), d);
 }
 
 template <class DestIterator, class DestAccessor, 
           class MaskIterator, class MaskAccessor, 
           class VALUETYPE>
-void
+inline void
 initLineIfImpl(DestIterator d, DestIterator dend, DestAccessor dest,
                MaskIterator m, MaskAccessor mask,
-               VALUETYPE v, VigraFalseType)
+               VALUETYPE const & v, VigraFalseType)
 {
     for(; d != dend; ++d, ++m)
         if(mask(m))
@@ -106,7 +107,7 @@ initLineIfImpl(DestIterator d, DestIterator dend, DestAccessor dest,
 template <class DestIterator, class DestAccessor, 
           class MaskIterator, class MaskAccessor, 
           class FUNCTOR>
-void
+inline void
 initLineIfImpl(DestIterator d, DestIterator dend, DestAccessor dest,
                MaskIterator m, MaskAccessor mask,
                FUNCTOR const & f, VigraTrueType)
@@ -122,7 +123,7 @@ template <class DestIterator, class DestAccessor,
 inline void
 initLineIf(DestIterator d, DestIterator dend, DestAccessor dest,
            MaskIterator m, MaskAccessor mask,
-           VALUETYPE v)
+           VALUETYPE const & v)
 {
     initLineIfImpl(d, dend, dest, m, mask, v, typename FunctorTraits<VALUETYPE>::isInitializer());
 }
@@ -130,12 +131,14 @@ initLineIf(DestIterator d, DestIterator dend, DestAccessor dest,
 template <class DestIterator, class DestAccessor, 
           class MaskIterator, class MaskAccessor, 
           class FUNCTOR>
-void
+inline void
 initLineFunctorIf(DestIterator d, DestIterator dend, DestAccessor dest,
                   MaskIterator m, MaskAccessor mask,
-                  FUNCTOR f)
+                  FUNCTOR & f)
 {
-    initLineIfImpl(d, dend, dest, m, mask, f, VigraTrueType());
+    for(; d != dend; ++d, ++m)
+        if(mask(m))
+            dest.set(f(), d);
 }
 
 /********************************************************/
@@ -147,17 +150,26 @@ initLineFunctorIf(DestIterator d, DestIterator dend, DestAccessor dest,
 /** \brief Write a value to every pixel in an image or rectangular ROI.
 
     This function can be used to init the image.
-    It uses an accessor to access the pixel data.
+    It uses an accessor to access the pixel data.    
     
+    The initial value can either be a constant of appropriate type (compatible with 
+    the destination's value_type), or a functor with compatible result_type. These two 
+    cases are automatically distinguished when <tt>FunctorTraits<FUNCTOR>::isInitializer</tt>
+    yields <tt>VigraTrueType</tt>. Since the functor is passed by <tt>const</tt> reference, its 
+    <tt>operator()</tt> must be const, and its internal state may need to be <tt>mutable</tt>.
+
     <b> Declarations:</b>
     
     pass arguments explicitly:
     \code
     namespace vigra {
         template <class ImageIterator, class Accessor, class VALUETYPE>
-        void
-        initImage(ImageIterator upperleft, ImageIterator lowerright, 
-              Accessor a, VALUETYPE v)
+        void initImage(ImageIterator upperleft, ImageIterator lowerright, 
+                       Accessor a, VALUETYPE const & v);
+
+        template <class ImageIterator, class Accessor, class FUNCTOR>
+        void initImage(ImageIterator upperleft, ImageIterator lowerright, 
+                       Accessor a, FUNCTOR const & v);
     }
     \endcode
 
@@ -165,8 +177,10 @@ initLineFunctorIf(DestIterator d, DestIterator dend, DestAccessor dest,
     \code
     namespace vigra {
         template <class ImageIterator, class Accessor, class VALUETYPE>
-        void
-        initImage(triple<ImageIterator, ImageIterator, Accessor> img, VALUETYPE v)
+        void initImage(triple<ImageIterator, ImageIterator, Accessor> img, VALUETYPE const & v);
+
+        template <class ImageIterator, class Accessor, class FUNCTOR>
+        void initImage(triple<ImageIterator, ImageIterator, Accessor> img, FUNCTOR const & v);
     }
     \endcode
     
@@ -201,36 +215,36 @@ doxygen_overloaded_function(template <...> void initImage)
 template <class ImageIterator, class Accessor, class VALUETYPE>
 void
 initImage(ImageIterator upperleft, ImageIterator lowerright, 
-          Accessor a,  VALUETYPE v)
+          Accessor a,  VALUETYPE const & v)
 {
     int w = lowerright.x - upperleft.x;
     
     for(; upperleft.y < lowerright.y; ++upperleft.y)
     {
-        initLine(upperleft.rowIterator(), 
-                 upperleft.rowIterator() + w, a, v);
+        initLineImpl(upperleft.rowIterator(), upperleft.rowIterator() + w, a, 
+                     v, typename FunctorTraits<VALUETYPE>::isInitializer());
     }
 }
     
 template <class ImageIterator, class Accessor, class VALUETYPE>
 inline 
 void
-initImage(triple<ImageIterator, ImageIterator, Accessor> img, VALUETYPE v)
+initImage(triple<ImageIterator, ImageIterator, Accessor> img, VALUETYPE const & v)
 {
     initImage(img.first, img.second, img.third, v);
 }
     
 /********************************************************/
 /*                                                      */
-/*                        initImage                     */
+/*                 initImageWithFunctor                 */
 /*                                                      */
 /********************************************************/
 
 /** \brief Write the result of a functor call to every pixel in an image or rectangular ROI.
 
     This function can be used to init the image by calling the given 
-    functor for each pixel.
-    It uses an accessor to access the pixel data.
+    functor for each pixel. It uses an accessor to access the pixel data. The functor is 
+    passed by reference, so that its internal state can be updated in each call.
     
     <b> Declarations:</b>
     
@@ -240,7 +254,7 @@ initImage(triple<ImageIterator, ImageIterator, Accessor> img, VALUETYPE v)
         template <class ImageIterator, class Accessor, class FUNCTOR>
         void
         initImageWithFunctor(ImageIterator upperleft, ImageIterator lowerright, 
-                  Accessor a,  FUNCTOR f);
+                  Accessor a,  FUNCTOR & f);
     }
     \endcode
 
@@ -249,7 +263,7 @@ initImage(triple<ImageIterator, ImageIterator, Accessor> img, VALUETYPE v)
     namespace vigra {
         template <class ImageIterator, class Accessor, class FUNCTOR>
         void
-        initImageWithFunctor(triple<ImageIterator, ImageIterator, Accessor> img, FUNCTOR f);
+        initImageWithFunctor(triple<ImageIterator, ImageIterator, Accessor> img, FUNCTOR & f);
     }
     \endcode
     
@@ -291,21 +305,20 @@ doxygen_overloaded_function(template <...> void initImageWithFunctor)
 template <class ImageIterator, class Accessor, class FUNCTOR>
 void
 initImageWithFunctor(ImageIterator upperleft, ImageIterator lowerright, 
-          Accessor a,  FUNCTOR f)
+          Accessor a,  FUNCTOR & f)
 {
     int w = lowerright.x - upperleft.x;
     
     for(; upperleft.y < lowerright.y; ++upperleft.y)
     {
-        initLineFunctor(upperleft.rowIterator(), 
-                 upperleft.rowIterator() + w, a, f);
+        initLineFunctor(upperleft.rowIterator(), upperleft.rowIterator() + w, a, f);
     }
 }
     
 template <class ImageIterator, class Accessor, class FUNCTOR>
 inline 
 void
-initImageWithFunctor(triple<ImageIterator, ImageIterator, Accessor> img, FUNCTOR f)
+initImageWithFunctor(triple<ImageIterator, ImageIterator, Accessor> img, FUNCTOR & f)
 {
     initImageWithFunctor(img.first, img.second, img.third, f);
 }
@@ -321,18 +334,30 @@ initImageWithFunctor(triple<ImageIterator, ImageIterator, Accessor> img, FUNCTOR
     This function can be used to init a region-of-interest of the image.
     It uses an accessor to access the pixel data.
     
+    The initial value can either be a constant of appropriate type (compatible with 
+    the destination's value_type), or a functor with compatible result_type. These two 
+    cases are automatically distinguished when <tt>FunctorTraits<FUNCTOR>::isInitializer</tt>
+    yields <tt>VigraTrueType</tt>. Since the functor is passed by <tt>const</tt> reference, its 
+    <tt>operator()</tt> must be const, and its internal state may need to be <tt>mutable</tt>.
+    
     <b> Declarations:</b>
     
     pass arguments explicitly:
     \code
     namespace vigra {
         template <class ImageIterator, class Accessor, 
-              class MaskImageIterator, class MaskAccessor,
-              class VALUETYPE>
-        void
-        initImageIf(ImageIterator upperleft, ImageIterator lowerright, Accessor a,
-              MaskImageIterator mask_upperleft, MaskAccessor ma,
-              VALUETYPE v)
+                  class MaskImageIterator, class MaskAccessor,
+                  class VALUETYPE>
+        void initImageIf(ImageIterator upperleft, ImageIterator lowerright, Accessor a,
+                         MaskImageIterator mask_upperleft, MaskAccessor ma,
+                         VALUETYPE const & v);
+
+        template <class ImageIterator, class Accessor, 
+                  class MaskImageIterator, class MaskAccessor,
+                  class FUNCTOR>
+        void initImageIf(ImageIterator upperleft, ImageIterator lowerright, Accessor a,
+                         MaskImageIterator mask_upperleft, MaskAccessor ma,
+                         FUNCTOR const & v);
     }
     \endcode    
     
@@ -340,12 +365,18 @@ initImageWithFunctor(triple<ImageIterator, ImageIterator, Accessor> img, FUNCTOR
     \code
     namespace vigra {
         template <class ImageIterator, class Accessor, 
-              class MaskImageIterator, class MaskAccessor,
-              class VALUETYPE>
-        void
-        initImageIf(triple<ImageIterator, ImageIterator, Accessor> img, 
-            pair<MaskImageIterator, MaskAccessor> mask,
-            VALUETYPE v)
+                  class MaskImageIterator, class MaskAccessor,
+                  class VALUETYPE>
+        void initImageIf(triple<ImageIterator, ImageIterator, Accessor> img, 
+                         pair<MaskImageIterator, MaskAccessor> mask,
+                         VALUETYPE const & v);
+
+        template <class ImageIterator, class Accessor, 
+                  class MaskImageIterator, class MaskAccessor,
+                  class FUNCTOR>
+        void initImageIf(triple<ImageIterator, ImageIterator, Accessor> img, 
+                         pair<MaskImageIterator, MaskAccessor> mask,
+                         FUNCTOR const & v);
     }
     \endcode
     
@@ -388,15 +419,16 @@ template <class ImageIterator, class Accessor,
 void
 initImageIf(ImageIterator upperleft, ImageIterator lowerright, Accessor a,
           MaskImageIterator mask_upperleft, MaskAccessor ma,
-          VALUETYPE v)
+          VALUETYPE const & v)
 {
     int w = lowerright.x - upperleft.x;
         
     for(; upperleft.y < lowerright.y; ++upperleft.y, ++mask_upperleft.y)
     {
-        initLineIf(upperleft.rowIterator(), 
+        initLineIfImpl(upperleft.rowIterator(), 
                    upperleft.rowIterator() + w, a, 
-                   mask_upperleft.rowIterator(), ma, v);
+                   mask_upperleft.rowIterator(), ma, 
+                   v, typename FunctorTraits<VALUETYPE>::isInitializer());
     }
 }
     
@@ -407,7 +439,7 @@ inline
 void
 initImageIf(triple<ImageIterator, ImageIterator, Accessor> img, 
             pair<MaskImageIterator, MaskAccessor> mask,
-            VALUETYPE v)
+            VALUETYPE const & v)
 {
     initImageIf(img.first, img.second, img.third, mask.first, mask.second, v);
 }
@@ -421,8 +453,13 @@ initImageIf(triple<ImageIterator, ImageIterator, Accessor> img,
 /** \brief Write value to the specified border pixels in the image.
 
     A pixel is initialized if its distance to the border 
-    is at most 'borderwidth'.
-    It uses an accessor to access the pixel data.
+    is at most 'borderwidth'. It uses an accessor to access the pixel data.
+    
+    The initial value can either be a constant of appropriate type (compatible with 
+    the destination's value_type), or a functor with compatible result_type. These two 
+    cases are automatically distinguished when <tt>FunctorTraits<FUNCTOR>::isInitializer</tt>
+    yields <tt>VigraTrueType</tt>. Since the functor is passed by <tt>const</tt> reference, its 
+    <tt>operator()</tt> must be const, and its internal state may need to be <tt>mutable</tt>.
     
     <b> Declarations:</b>
     
@@ -430,9 +467,12 @@ initImageIf(triple<ImageIterator, ImageIterator, Accessor> img,
     \code
     namespace vigra {
         template <class ImageIterator, class Accessor, class VALUETYPE>
-        void
-        initImageBorder(ImageIterator upperleft, ImageIterator lowerright, 
-                Accessor a,  int border_width, VALUETYPE v)
+        void initImageBorder(ImageIterator upperleft, ImageIterator lowerright, Accessor a,
+                             int border_width, VALUETYPE const & v);
+
+        template <class ImageIterator, class Accessor, class FUNCTOR>
+        void initImageBorder(ImageIterator upperleft, ImageIterator lowerright, Accessor a,
+                             int border_width, FUNCTOR const & v);
     }
     \endcode
 
@@ -440,9 +480,12 @@ initImageIf(triple<ImageIterator, ImageIterator, Accessor> img,
     \code
     namespace vigra {
         template <class ImageIterator, class Accessor, class VALUETYPE>
-        void
-        initImageBorder(triple<ImageIterator, ImageIterator, Accessor> img, 
-                int border_width, VALUETYPE v)
+        void initImageBorder(triple<ImageIterator, ImageIterator, Accessor> img, 
+                             int border_width, VALUETYPE const & v);
+
+        template <class ImageIterator, class Accessor, class FUNCTOR>
+        void initImageBorder(triple<ImageIterator, ImageIterator, Accessor> img, 
+                             int border_width, FUNCTOR const & v);
     }
     \endcode
     
@@ -470,7 +513,7 @@ template <class ImageIterator, class Accessor, class VALUETYPE>
 inline 
 void
 initImageBorder(ImageIterator upperleft, ImageIterator lowerright, 
-                Accessor a,  int border_width, VALUETYPE v)
+                Accessor a,  int border_width, VALUETYPE const & v)
 {
     int w = lowerright.x - upperleft.x;
     int h = lowerright.y - upperleft.y;
@@ -488,7 +531,7 @@ template <class ImageIterator, class Accessor, class VALUETYPE>
 inline 
 void
 initImageBorder(triple<ImageIterator, ImageIterator, Accessor> img, 
-                int border_width, VALUETYPE v)
+                int border_width, VALUETYPE const & v)
 {
     initImageBorder(img.first, img.second, img.third, border_width, v);
 }
