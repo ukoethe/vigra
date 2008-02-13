@@ -189,13 +189,32 @@ initLineFunctorIf(DestIterator d, DestIterator dend, DestAccessor dest,
         <b>\#include</b> \<<a href="initimage_8hxx-source.html">vigra/initimage.hxx</a>\><br>
         Namespace: vigra
     
+    Initialize with a constant:
+    
     \code
     vigra::BImage img(100, 100);
     
-    // zero the image
-    vigra::initImage(destImageRange(img),
-                     vigra::NumericTraits<vigra::BImage::PixelType>::zero());
+    // init the image with the value 128
+    vigra::initImage(destImageRange(img), 128);
     \endcode
+
+    Initialize with a functor:
+    
+    \code
+    struct Counter {
+        Counter() : count(0) {}
+        
+        int operator()() const { return count++; }
+    
+        mutable int count;
+    };
+    
+    vigra::IImage img(100, 100);
+        
+    // write the current count in every pixel
+    vigra::initImage(destImageRange(img), Counter());
+    \endcode
+    
 
     <b> Required Interface:</b>
     
@@ -282,9 +301,10 @@ initImage(triple<ImageIterator, ImageIterator, Accessor> img, VALUETYPE const & 
     };
     
     vigra::IImage img(100, 100);
-    
+        
     // write the current count in every pixel
-    vigra::initImageWithFunctor(destImageRange(img), Counter());
+    Counter counter;
+    vigra::initImageWithFunctor(destImageRange(img), counter);
     \endcode
 
     <b> Required Interface:</b>
