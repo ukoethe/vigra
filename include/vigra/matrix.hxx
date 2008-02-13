@@ -1,7 +1,6 @@
 /************************************************************************/
 /*                                                                      */
-/*        Copyright 2004 by Gunnar Kedenburg and Ullrich Koethe         */
-/*       Cognitive Systems Group, University of Hamburg, Germany        */
+/*     Copyright 2003-2008 by Gunnar Kedenburg and Ullrich Koethe       */
 /*                                                                      */
 /*    This file is part of the VIGRA computer vision library.           */
 /*    The VIGRA Website is                                              */
