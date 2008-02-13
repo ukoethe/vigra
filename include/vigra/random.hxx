@@ -38,6 +38,7 @@
 #define VIGRA_RANDOM_HXX
 
 #include "mathutil.hxx"
+#include "functortraits.hxx"
 
 namespace vigra {
 
@@ -68,7 +69,7 @@ class RandomNumberGenerator
 	        0xc1de75b7, 0x8858a9c9, 0x2da87693, 0xb657f9dd, 0xffdc8a9f,
 	        0x8121da71, 0x8b823ecb, 0x885d05f5, 0x4e20cd47, 0x5a9ad5d9,
 	        0x512c0c03, 0xea857ccd, 0x4cc1d30f, 0x8891a8a1, 0xa6b7aadb
-         };
+        };
          
         for(UInt32 i=1; i<stateLength; ++i)
             state_[i] = seeds[i];
@@ -167,6 +168,103 @@ class RandomNumberGenerator
     }
  
 };
+
+class UniformRandomFunctor
+{
+    double offset_, scale_;
+    RandomNumberGenerator generator_;
+
+  public:
+  
+    typedef double result_type;
+
+    UniformRandomFunctor(RandomNumberGenerator const & generator = RandomNumberGenerator())
+    : offset_(0.0),
+      scale_(1.0),
+      generator_(generator)
+    {}
+
+    UniformRandomFunctor(double lower, double upper, RandomNumberGenerator const & generator = RandomNumberGenerator())
+    : offset_(lower),
+      scale_(upper - lower),
+      generator_(generator)
+    {
+        vigra_precondition(lower < upper,
+          "UniformRandomFunctor(): lower bound must be smaller than upper bound."); 
+    }
+    
+    double operator()() const
+    {
+        return generator_.uniform() * scale_ + offset_;
+    }
+
+};
+
+template <>
+class FunctorTraits<UniformRandomFunctor>
+{
+  public:
+    typedef UniformRandomFunctor type;
+    
+    typedef VigraTrueType  isInitializer;
+    
+    typedef VigraFalseType isUnaryFunctor;
+    typedef VigraFalseType isBinaryFunctor;
+    typedef VigraFalseType isTernaryFunctor;
+    
+    typedef VigraFalseType isUnaryAnalyser;
+    typedef VigraFalseType isBinaryAnalyser;
+    typedef VigraFalseType isTernaryAnalyser;
+};
+
+struct NormalRandomFunctor
+{
+    double mean_, stddev_;
+    RandomNumberGenerator generator_;
+
+  public:
+  
+    typedef double result_type;
+
+    NormalRandomFunctor(RandomNumberGenerator const & generator = RandomNumberGenerator())
+    : mean_(0.0),
+      stddev_(1.0),
+      generator_(generator)
+    {}
+
+    NormalRandomFunctor(double mean, double stddev, RandomNumberGenerator const & generator = RandomNumberGenerator())
+    : mean_(mean),
+      stddev_(stddev),
+      generator_(generator)
+    {
+        vigra_precondition(stddev > 0.0,
+          "NormalRandomFunctor(): standard deviation must be positive."); 
+    }
+    
+    double operator()() const
+    {
+        return generator_.normal() * stddev_ + mean_;
+    }
+
+};
+
+template <>
+class FunctorTraits<NormalRandomFunctor>
+{
+  public:
+    typedef UniformRandomFunctor type;
+    
+    typedef VigraTrueType  isInitializer;
+    
+    typedef VigraFalseType isUnaryFunctor;
+    typedef VigraFalseType isBinaryFunctor;
+    typedef VigraFalseType isTernaryFunctor;
+    
+    typedef VigraFalseType isUnaryAnalyser;
+    typedef VigraFalseType isBinaryAnalyser;
+    typedef VigraFalseType isTernaryAnalyser;
+};
+
 
 } // namespace vigra 
 
