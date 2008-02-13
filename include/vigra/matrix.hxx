@@ -2618,10 +2618,10 @@ prepareDataImpl(const MultiArrayView<2, T, C1> & A,
     /*! Standardize the columns of a matrix according to given <tt>DataPreparationGoals</tt>.
     
     For every column of the matrix \a A, this function computes mean, 
-    standard deviation, and norm. It than applies a linear transformation to the values of 
+    standard deviation, and norm. It then applies a linear transformation to the values of 
     the column according to these statistics and the given <tt>DataPreparationGoals</tt>.
-    The result in returned in matrix \a res which must have the same size as \a A.
-    Optionally, the transformation applied can also be obtained in result matrics \a offset
+    The result is returned in matrix \a res which must have the same size as \a A.
+    Optionally, the transformation applied can also be returned in the matrices \a offset
     and \a scaling (see below for an example how these matrices can be used to standardize
     more data according to the same transformation).
     
@@ -2716,7 +2716,9 @@ prepareColumns(MultiArrayView<2, T, C1> const & A, MultiArrayView<2, T, C2> & re
     <b> Declarations:</b>
 
     Standardize the matrix and return the parameters of the linear transformation.
-    The matrices \a offset and \a scaling must be row vectors with as many columns as \a A.
+    The matrices \a offset and \a scaling must be column vectors
+    with as many rows as \a A.
+    
     \code
     namespace vigra { namespace linalg {
         template <class T, class C1, class C2, class C3, class C4>
