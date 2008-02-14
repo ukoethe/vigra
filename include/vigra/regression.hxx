@@ -376,7 +376,7 @@ class LeastAngleRegressionOptions
         
             The first \a n columns in the feature matrix will be considered as unconstrained,
             i.e. they will always be in the active set, and there is no restriction on the size
-            or sign of the coirresponding solution coefficients.<br>
+            or sign of the corresponding solution coefficients.<br>
             Default: 0 
         */
     LeastAngleRegressionOptions & unconstrainedDimensionCount(unsigned int n)
@@ -475,6 +475,7 @@ leastAngleRegression(MultiArrayView<2, T, C1> const & A, MultiArrayView<2, T, C2
 
     const MultiArrayIndex rows = rowCount(A);
     const MultiArrayIndex cols = columnCount(A);
+    const MultiArrayIndex maxRank = std::min(rows, cols);
     const unsigned int ucols = (unsigned int)cols;
 
     vigra_precondition(rowCount(b) == rows && columnCount(b) == 1,
@@ -483,8 +484,8 @@ leastAngleRegression(MultiArrayView<2, T, C1> const & A, MultiArrayView<2, T, C2
     MultiArrayIndex maxSolutionCount = options.max_solution_count;
     if(maxSolutionCount == 0)
         maxSolutionCount = options.lasso_modification
-                                ? 10*std::min(rows, cols)
-                                : std::min(rows, cols);
+                                ? 10*maxRank
+                                : maxRank;
     
     Matrix<T> R(A), qtb(b);
 
@@ -682,7 +683,7 @@ leastAngleRegression(MultiArrayView<2, T, C1> const & A, MultiArrayView<2, T, C2
             Subarray next_lsq_solution_k = next_lsq_solution.subarray(Shape(0,0), Shape(activeSetSize, 1));
             linearSolveUpperTriangular(Ractive, qtbactive, next_lsq_solution_k);
             
-            if(activeSetSize == cols)
+            if(activeSetSize == maxRank)
             {
                 // if all columns are active, LARS solution and LSQ solution are identical, and no further solution is possible
                 ++currentSolutionCount;
