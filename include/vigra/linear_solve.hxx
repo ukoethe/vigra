@@ -307,7 +307,7 @@ qrHouseholderStepImpl(MultiArrayIndex i, MultiArrayView<2, T, C1> & r,
     const MultiArrayIndex n = columnCount(r);
     const MultiArrayIndex rhsCount = columnCount(rhs);
 
-    if(i >= n)
+    if(i >= n || i >= m)
         return false;
 
     Matrix<T> u(m-i,1);
@@ -315,7 +315,8 @@ qrHouseholderStepImpl(MultiArrayIndex i, MultiArrayView<2, T, C1> & r,
     bool nontrivial = householderVector(columnVector(r, Shape(i,i), m), u, vnorm);
     
     r(i,i) = vnorm;
-    columnVector(r, Shape(i+1,i), m).init(NumericTraits<T>::zero()); 
+    for(MultiArrayIndex k=i+1; k<m; ++k)
+        r(k,i) = NumericTraits<T>::zero();
 
     if(columnCount(householderMatrix) == n)
         columnVector(householderMatrix, Shape(i,i), m) = u;

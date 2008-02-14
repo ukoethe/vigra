@@ -306,7 +306,7 @@ inline void
 initMultiArrayData(DestIterator d, Shape const & shape, T const & init, MetaInt<0>)
 {    
     DestIterator dend = d + shape[0];
-    for(; d != dend; ++d)
+    for(; d < dend; ++d)
     {
         *d = init;
     }
@@ -317,7 +317,7 @@ void
 initMultiArrayData(DestIterator d, Shape const & shape, T const & init, MetaInt<N>)
 {    
     DestIterator dend = d + shape[N];
-    for(; d != dend; ++d)
+    for(; d < dend; ++d)
     {
         initMultiArrayData(d.begin(), shape, init, MetaInt<N-1>());
     }
@@ -329,7 +329,7 @@ inline void \
 name##MultiArrayData(SrcIterator s, Shape const & shape, DestIterator d, MetaInt<0>) \
 {     \
     SrcIterator send = s + shape[0]; \
-    for(; s != send; ++s, ++d) \
+    for(; s < send; ++s, ++d) \
     { \
         *d op *s; \
     } \
@@ -340,7 +340,7 @@ void \
 name##MultiArrayData(SrcIterator s, Shape const & shape, DestIterator d, MetaInt<N>) \
 { \
     SrcIterator send = s + shape[N]; \
-    for(; s != send; ++s, ++d) \
+    for(; s < send; ++s, ++d) \
     { \
         name##MultiArrayData(s.begin(), shape, d.begin(), MetaInt<N-1>()); \
     } \
@@ -351,7 +351,7 @@ inline void \
 name##ScalarMultiArrayData(DestIterator d, Shape const & shape, T const & init, MetaInt<0>) \
 {     \
     DestIterator dend = d + shape[0]; \
-    for(; d != dend; ++d) \
+    for(; d < dend; ++d) \
     { \
         *d op init; \
     } \
@@ -362,7 +362,7 @@ void \
 name##ScalarMultiArrayData(DestIterator d, Shape const & shape, T const & init, MetaInt<N>) \
 {     \
     DestIterator dend = d + shape[N]; \
-    for(; d != dend; ++d) \
+    for(; d < dend; ++d) \
     { \
         name##ScalarMultiArrayData(d.begin(), shape, init, MetaInt<N-1>()); \
     } \
@@ -381,7 +381,7 @@ inline void
 uninitializedCopyMultiArrayData(SrcIterator s, Shape const & shape, T * & d, ALLOC & a, MetaInt<0>)
 {    
     SrcIterator send = s + shape[0];
-    for(; s != send; ++s, ++d)
+    for(; s < send; ++s, ++d)
     {
         a.construct(d, static_cast<T const &>(*s));
     }
@@ -392,7 +392,7 @@ void
 uninitializedCopyMultiArrayData(SrcIterator s, Shape const & shape, T * & d, ALLOC & a, MetaInt<N>)
 {    
     SrcIterator send = s + shape[N];
-    for(; s != send; ++s)
+    for(; s < send; ++s)
     {
         uninitializedCopyMultiArrayData(s.begin(), shape, d, a, MetaInt<N-1>());
     }
@@ -403,7 +403,7 @@ inline void
 normMaxOfMultiArray(SrcIterator s, Shape const & shape, T & result, MetaInt<0>)
 {    
     SrcIterator send = s + shape[0];
-    for(; s != send; ++s)
+    for(; s < send; ++s)
     {
         T v = norm(*s);
         if(result < v)
@@ -416,7 +416,7 @@ void
 normMaxOfMultiArray(SrcIterator s, Shape const & shape, T & result, MetaInt<N>)
 {    
     SrcIterator send = s + shape[N];
-    for(; s != send; ++s)
+    for(; s < send; ++s)
     {
         normMaxOfMultiArray(s.begin(), shape, result, MetaInt<N-1>());
     }
@@ -457,7 +457,7 @@ inline void
 sumOverMultiArray(SrcIterator s, Shape const & shape, Functor f, T & result, MetaInt<0>)
 {    
     SrcIterator send = s + shape[0];
-    for(; s != send; ++s)
+    for(; s < send; ++s)
     {
         result += f(*s);
     }
@@ -468,7 +468,7 @@ void
 sumOverMultiArray(SrcIterator s, Shape const & shape, Functor f, T & result, MetaInt<N>)
 {    
     SrcIterator send = s + shape[N];
-    for(; s != send; ++s)
+    for(; s < send; ++s)
     {
         sumOverMultiArray(s.begin(), shape, f, result, MetaInt<N-1>());
     }
@@ -479,7 +479,7 @@ inline bool
 equalityOfMultiArrays(SrcIterator s, Shape const & shape, DestIterator d, MetaInt<0>)
 {    
     SrcIterator send = s + shape[0];
-    for(; s != send; ++s, ++d)
+    for(; s < send; ++s, ++d)
     {
         if(!(*s == *d))
             return false;
@@ -492,7 +492,7 @@ bool
 equalityOfMultiArrays(SrcIterator s, Shape const & shape, DestIterator d, MetaInt<N>)
 {    
     SrcIterator send = s + shape[N];
-    for(; s != send; ++s, ++d)
+    for(; s < send; ++s, ++d)
     {
         if(!equalityOfMultiArrays(s.begin(), shape, d.begin(), MetaInt<N-1>()))
             return false;
@@ -506,7 +506,7 @@ inline void
 swapDataImpl(SrcIterator s, Shape const & shape, DestIterator d, MetaInt<0>)
 {    
     SrcIterator send = s + shape[0];
-    for(; s != send; ++s, ++d)
+    for(; s < send; ++s, ++d)
         std::swap(*s, *d);
 }
 
@@ -515,7 +515,7 @@ void
 swapDataImpl(SrcIterator s, Shape const & shape, DestIterator d, MetaInt<N>)
 {    
     SrcIterator send = s + shape[N];
-    for(; s != send; ++s, ++d)
+    for(; s < send; ++s, ++d)
         swapDataImpl(s.begin(), shape, d.begin(), MetaInt<N-1>());
 }
 

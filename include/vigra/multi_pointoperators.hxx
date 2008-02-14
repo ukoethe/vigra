@@ -83,7 +83,7 @@ initMultiArrayImpl(Iterator s, Shape const & shape, Accessor a,
                    VALUETYPE const & v, MetaInt<N>)
 {
     Iterator send = s + shape[N];
-    for(; s != send; ++s)
+    for(; s < send; ++s)
     {
         initMultiArrayImpl(s.begin(), shape, a, v, MetaInt<N-1>());
     }
@@ -265,14 +265,14 @@ copyMultiArrayImpl(SrcIterator s, SrcShape const & sshape, SrcAccessor src,
     DestIterator dend = d + dshape[N];
     if(sshape[N] == 1)
     {
-        for(; d != dend; ++d)
+        for(; d < dend; ++d)
         {
             copyMultiArrayImpl(s.begin(), sshape, src, d.begin(), dshape, dest, MetaInt<N-1>());
         }
     }
     else
     {
-        for(; d != dend; ++s, ++d)
+        for(; d < dend; ++s, ++d)
         {
             copyMultiArrayImpl(s.begin(), sshape, src, d.begin(), dshape, dest, MetaInt<N-1>());
         }
@@ -452,7 +452,7 @@ transformMultiArrayReduceImpl(SrcIterator s, SrcShape const & sshape, SrcAccesso
                Functor const & ff, MetaInt<0>)
 {
     DestIterator dend = d + dshape[0];
-    for(; d != dend; ++s.template dim<0>(), ++d)
+    for(; d < dend; ++s.template dim<0>(), ++d)
     {
         Functor f = ff;
         inspectMultiArray(s, reduceShape, src, f);
@@ -470,7 +470,7 @@ transformMultiArrayReduceImpl(SrcIterator s, SrcShape const & sshape, SrcAccesso
                    Functor const & f, MetaInt<N>)
 {
     DestIterator dend = d + dshape[N];
-    for(; d != dend; ++s.template dim<N>(), ++d)
+    for(; d < dend; ++s.template dim<N>(), ++d)
     {
         transformMultiArrayReduceImpl(s, sshape, src, d.begin(), dshape, dest,
                                       reduceShape, f, MetaInt<N-1>());
@@ -529,7 +529,7 @@ transformMultiArrayExpandImpl(SrcIterator s, SrcShape const & sshape, SrcAccesso
     DestIterator dend = d + dshape[N];
     if(sshape[N] == 1)
     {
-        for(; d != dend; ++d)
+        for(; d < dend; ++d)
         {
             transformMultiArrayExpandImpl(s.begin(), sshape, src, d.begin(), dshape, dest,
                                           f, MetaInt<N-1>());
@@ -537,7 +537,7 @@ transformMultiArrayExpandImpl(SrcIterator s, SrcShape const & sshape, SrcAccesso
     }
     else
     {
-        for(; d != dend; ++s, ++d)
+        for(; d < dend; ++s, ++d)
         {
             transformMultiArrayExpandImpl(s.begin(), sshape, src, d.begin(), dshape, dest,
                                           f, MetaInt<N-1>());
@@ -832,7 +832,7 @@ combineTwoMultiArraysReduceImpl(
                Functor const & ff, MetaInt<0>)
 {
     DestIterator dend = d + dshape[0];
-    for(; d != dend; ++s1.template dim<0>(), ++s2.template dim<0>(), ++d)
+    for(; d < dend; ++s1.template dim<0>(), ++s2.template dim<0>(), ++d)
     {
         Functor f = ff;
         inspectTwoMultiArrays(s1, reduceShape, src1, s2, src2, f);
@@ -853,7 +853,7 @@ combineTwoMultiArraysReduceImpl(
                Functor const & f, MetaInt<N>)
 {
     DestIterator dend = d + dshape[N];
-    for(; d != dend; ++s1.template dim<N>(), ++s2.template dim<N>(), ++d)
+    for(; d < dend; ++s1.template dim<N>(), ++s2.template dim<N>(), ++d)
     {
         combineTwoMultiArraysReduceImpl(s1, sshape, src1, s2, src2, 
                                         d.begin(), dshape, dest,
@@ -909,13 +909,13 @@ combineTwoMultiArraysExpandImpl(
     else if(sshape1[0] == 1)
     {
         typename SrcAccessor1::value_type sv1 = src1(s1);
-        for(; d != dend; ++d, ++s2)
+        for(; d < dend; ++d, ++s2)
             dest.set(f(sv1, src2(s2)), d);
     }
     else if(sshape2[0] == 1)
     {
         typename SrcAccessor2::value_type sv2 = src2(s2);
-        for(; d != dend; ++d, ++s1)
+        for(; d < dend; ++d, ++s1)
             dest.set(f(src1(s1), sv2), d);
     }
     else
@@ -942,7 +942,7 @@ combineTwoMultiArraysExpandImpl(
     int s2inc = sshape2[N] == 1
                     ? 0 
                     : 1;
-    for(; d != dend; ++d, s1 += s1inc, s2 += s2inc)
+    for(; d < dend; ++d, s1 += s1inc, s2 += s2inc)
     {
         combineTwoMultiArraysExpandImpl(s1.begin(), sshape1, src1, 
                                         s2.begin(), sshape2, src2, 
@@ -1303,7 +1303,7 @@ combineThreeMultiArraysImpl(SrcIterator1 s1, SrcShape const & shape, SrcAccessor
                    Functor const & f, MetaInt<N>)
 {
     SrcIterator1 s1end = s1 + shape[N];
-    for(; s1 != s1end; ++s1, ++s2, ++s3, ++d)
+    for(; s1 < s1end; ++s1, ++s2, ++s3, ++d)
     {
         combineThreeMultiArraysImpl(s1.begin(), shape, src1, 
                                   s2.begin(), src2, s3.begin(), src3, d.begin(), dest, 
@@ -1429,7 +1429,7 @@ void
 inspectMultiArrayImpl(Iterator s, Shape const & shape, Accessor a,  Functor & f, MetaInt<N>)
 {
     Iterator send = s + shape[N];
-    for(; s != send; ++s)
+    for(; s < send; ++s)
     {
         inspectMultiArrayImpl(s.begin(), shape, a, f, MetaInt<N-1>());
     }
@@ -1538,7 +1538,7 @@ inspectTwoMultiArraysImpl(Iterator1 s1, Shape const & shape, Accessor1 a1,
                           Functor & f, MetaInt<N>)
 {
     Iterator1 s1end = s1 + shape[N];
-    for(; s1 != s1end; ++s1, ++s2)
+    for(; s1 < s1end; ++s1, ++s2)
     {
         inspectTwoMultiArraysImpl(s1.begin(), shape, a1, 
                                   s2.begin(), a2, f, MetaInt<N-1>());
