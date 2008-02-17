@@ -182,6 +182,25 @@ inline UInt32 floorPower2(UInt32 x)
     return x - (x >> 1);
 }
 
+namespace detail {
+
+template <class T>
+class IntLog2
+{
+  public:
+    static Int32 table[64];
+};
+
+template <class T>
+Int32 IntLog2<T>::table[64] = {
+         -1,  0,  -1,  15,  -1,  1,  28,  -1,  16,  -1,  -1,  -1,  2,  21,  
+         29,  -1,  -1,  -1,  19,  17,  10,  -1,  12,  -1,  -1,  3,  -1,  6,  
+         -1,  22,  30,  -1,  14,  -1,  27,  -1,  -1,  -1,  20,  -1,  18,  9,  
+         11,  -1,  5,  -1,  -1,  13,  26,  -1,  -1,  8,  -1,  4,  -1,  25,  
+         -1,  7,  24,  -1,  23,  -1,  31,  -1};
+
+} // namespace detail
+
     /*! Compute the base-2 logarithm of an integer.
 
         Returns the position of the left-most 1-bit in the given number \a x, or
@@ -200,13 +219,6 @@ inline UInt32 floorPower2(UInt32 x)
     */
 inline Int32 log2i(UInt32 x) 
 { 
-    // -1 means -infinity
-    static Int32 table[64] = {
-         -1,  0,  -1,  15,  -1,  1,  28,  -1,  16,  -1,  -1,  -1,  2,  21,  
-         29,  -1,  -1,  -1,  19,  17,  10,  -1,  12,  -1,  -1,  3,  -1,  6,  
-         -1,  22,  30,  -1,  14,  -1,  27,  -1,  -1,  -1,  20,  -1,  18,  9,  
-         11,  -1,  5,  -1,  -1,  13,  26,  -1,  -1,  8,  -1,  4,  -1,  25,  
-         -1,  7,  24,  -1,  23,  -1,  31,  -1};
     // Propagate leftmost 1-bit to the right.
     x = x | (x >> 1);
     x = x | (x >> 2);
@@ -214,12 +226,12 @@ inline Int32 log2i(UInt32 x)
     x = x | (x >> 8);
     x = x | (x >>16);
     x = x*0x06EB14F9; // Multiplier is 7*255**3. 
-    return table[x >> 26];
+    return detail::IntLog2<Int32>::table[x >> 26];
 }
 
     /*! The square function.
 
-        sq(x) is needed so often that it makes sense to define it as a function.
+        <tt>sq(x) = x*x</tt> is needed so often that it makes sense to define it as a function.
 
         <b>\#include</b> \<<a href="mathutil_8hxx-source.html">vigra/mathutil.hxx</a>\><br>
         Namespace: vigra
