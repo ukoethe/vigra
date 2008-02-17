@@ -143,7 +143,12 @@ class RandomNumberGenerator
         return normal()*stddev + mean;
     }
     
-  private:
+    static RandomNumberGenerator & globalGenerator()
+    {
+        static RandomNumberGenerator generator;
+        return generator;
+    }
+    
     void seed(UInt32 theSeed = 5489)
     {
         state_[0] = theSeed;
@@ -152,6 +157,8 @@ class RandomNumberGenerator
             state_[i] = (1812433253UL * (state_[i-1] ^ (state_[i-1] >> 30)) + i) & mask;
         }
     }
+
+  private:
 
     void generateNumbers() const
     {
@@ -169,22 +176,143 @@ class RandomNumberGenerator
  
 };
 
+template <>
+class FunctorTraits<RandomNumberGenerator>
+{
+  public:
+    typedef RandomNumberGenerator type;
+    
+    typedef VigraTrueType  isInitializer;
+    
+    typedef VigraFalseType isUnaryFunctor;
+    typedef VigraFalseType isBinaryFunctor;
+    typedef VigraFalseType isTernaryFunctor;
+    
+    typedef VigraFalseType isUnaryAnalyser;
+    typedef VigraFalseType isBinaryAnalyser;
+    typedef VigraFalseType isTernaryAnalyser;
+};
+
+class UniformIntRandomFunctor
+{
+    UInt32 lower_, difference_, factor_;
+    RandomNumberGenerator & generator_;
+    bool useLowBits_;
+
+  public:
+  
+    typedef UInt32 argument_type;
+    typedef UInt32 result_type;
+
+    UniformIntRandomFunctor(RandomNumberGenerator & generator = RandomNumberGenerator::globalGenerator(),
+                            bool useLowBits = false)
+    : lower_(0), difference_(0xffffffff), factor_(1),
+      generator_(generator),
+      useLowBits_(useLowBits)
+    {}
+    
+    UniformIntRandomFunctor(UInt32 lower, UInt32 upper, 
+                            RandomNumberGenerator & generator = RandomNumberGenerator::globalGenerator(),
+                            bool useLowBits = false)
+    : lower_(lower), difference_(upper-lower), factor_(computeFactor(difference_ + 1)),
+      generator_(generator),
+      useLowBits_(useLowBits)
+    {
+        vigra_precondition(lower < upper,
+          "UniformIntRandomFunctor(): lower bound must be smaller than upper bound."); 
+    }
+    
+    UInt32 operator()() const
+    {
+        UInt32 res = generator_();
+        if(useLowBits_)
+        {
+            if(difference_ < 0xffffffff)
+                res %= difference_ + 1;
+        }
+        else
+        {
+            res /= factor_;
+
+            // Use rejection method to avoid quantization bias.
+            // On average, we will need two raw random numbers to generate one.
+            while(res > difference_)
+                res = generator_() / factor_;
+        }
+        return res + lower_;
+    }
+
+        /** Return a uniformly distributed integer random number such that
+            <tt>0 <= i < beyond</tt>. This is a required interface for 
+            <tt>std::random_shuffle</tt>. It ignores the limits specified 
+            in the constructor.
+        */
+    UInt32 operator()(UInt32 beyond) const
+    {
+        if(beyond < 2)
+            return 0;
+
+        UInt32 res = generator_();
+        if(useLowBits_)
+        {
+            res %= beyond;
+        }
+        else
+        {
+            UInt32 factor = computeFactor(beyond);
+
+            res /= factor;
+
+            // Use rejection method to avoid quantization bias.
+            // On average, we will need two raw random numbers to generate one.
+            while(res >= beyond)
+                res = generator_() / factor;
+        }
+        return res;
+    }
+    
+    static UInt32 computeFactor(UInt32 range)
+    {
+        return (range > 2147483648UL || range == 0)
+                     ? 1
+                     : 2*(2147483648UL / ceilPower2(range));
+    }
+};
+
+template <>
+class FunctorTraits<UniformIntRandomFunctor>
+{
+  public:
+    typedef UniformIntRandomFunctor type;
+    
+    typedef VigraTrueType  isInitializer;
+    
+    typedef VigraFalseType isUnaryFunctor;
+    typedef VigraFalseType isBinaryFunctor;
+    typedef VigraFalseType isTernaryFunctor;
+    
+    typedef VigraFalseType isUnaryAnalyser;
+    typedef VigraFalseType isBinaryAnalyser;
+    typedef VigraFalseType isTernaryAnalyser;
+};
+
 class UniformRandomFunctor
 {
     double offset_, scale_;
-    RandomNumberGenerator generator_;
+    RandomNumberGenerator & generator_;
 
   public:
   
     typedef double result_type;
 
-    UniformRandomFunctor(RandomNumberGenerator const & generator = RandomNumberGenerator())
+    UniformRandomFunctor(RandomNumberGenerator & generator = RandomNumberGenerator::globalGenerator())
     : offset_(0.0),
       scale_(1.0),
       generator_(generator)
     {}
 
-    UniformRandomFunctor(double lower, double upper, RandomNumberGenerator const & generator = RandomNumberGenerator())
+    UniformRandomFunctor(double lower, double upper, 
+                         RandomNumberGenerator & generator = RandomNumberGenerator::globalGenerator())
     : offset_(lower),
       scale_(upper - lower),
       generator_(generator)
@@ -220,19 +348,20 @@ class FunctorTraits<UniformRandomFunctor>
 struct NormalRandomFunctor
 {
     double mean_, stddev_;
-    RandomNumberGenerator generator_;
+    RandomNumberGenerator & generator_;
 
   public:
   
     typedef double result_type;
 
-    NormalRandomFunctor(RandomNumberGenerator const & generator = RandomNumberGenerator())
+    NormalRandomFunctor(RandomNumberGenerator & generator = RandomNumberGenerator::globalGenerator())
     : mean_(0.0),
       stddev_(1.0),
       generator_(generator)
     {}
 
-    NormalRandomFunctor(double mean, double stddev, RandomNumberGenerator const & generator = RandomNumberGenerator())
+    NormalRandomFunctor(double mean, double stddev, 
+                        RandomNumberGenerator & generator = RandomNumberGenerator::globalGenerator())
     : mean_(mean),
       stddev_(stddev),
       generator_(generator)
