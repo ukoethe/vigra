@@ -140,6 +140,45 @@ inline long double round(long double t)
                 : ceil(t - 0.5);
 }
 
+    /*! Round up to the nearest power of 2.
+
+        Efficient algorithm for finding the smallest power of 2 which is not smaller than \a x.
+        If \a x > 2^31, the function will return 0 because integer arithmetic is defined modulo 2^32.
+
+        <b>\#include</b> \<<a href="mathutil_8hxx-source.html">vigra/mathutil.hxx</a>\><br>
+        Namespace: vigra
+    */
+inline UInt32 ceilPower2(UInt32 x) 
+{
+    if(x == 0) return 0;
+    
+    x = x - 1;
+    x = x | (x >> 1);
+    x = x | (x >> 2);
+    x = x | (x >> 4);
+    x = x | (x >> 8);
+    x = x | (x >>16);
+    return x + 1;
+} 
+    
+    /*! Round down to the nearest power of 2.
+
+        Efficient algorithm for finding the largest power of 2 which is not greater than \a x.
+
+        <b>\#include</b> \<<a href="mathutil_8hxx-source.html">vigra/mathutil.hxx</a>\><br>
+        Namespace: vigra
+    */
+inline UInt32 floorPower2(UInt32 x) 
+{ 
+    x = x | (x >> 1);
+    x = x | (x >> 2);
+    x = x | (x >> 4);
+    x = x | (x >> 8);
+    x = x | (x >>16);
+    return x - (x >> 1);
+}
+
+
     /*! The square function.
 
         sq(x) is needed so often that it makes sense to define it as a function.
