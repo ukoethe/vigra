@@ -329,6 +329,19 @@ struct FunctionsTest
         }
     }
 
+    void roundPower2()
+    {
+        vigra::UInt32 test[] = {0, 1, 2, 3, 4, 5, 7, 8, 9, 15, 16, 0xffff, 0x7fffffff, 0x80000000, 0x80000001, 0xffffffff};
+        vigra::UInt32 floorResult[] = {0, 1, 2, 2, 4, 4, 4, 8, 8, 8, 16, 0x8000, 0x40000000, 0x80000000, 0x80000000, 0x80000000};
+        vigra::UInt32 ceilResult[] = {0, 1, 2, 4, 4, 8, 8, 8, 16, 16, 16, 0x10000, 0x80000000, 0x80000000, 0, 0};
+        for(int i = 0; i < sizeof(test) / sizeof(vigra::UInt32); ++i)
+        {
+            shouldEqual(vigra::floorPower2(test[i]), floorResult[i]);
+            shouldEqual(vigra::ceilPower2(test[i]), ceilResult[i]);
+        }
+    }
+
+
     void testSpecialFunctions()
     {
         shouldEqualTolerance(vigra::ellipticIntegralE(M_PI / 2.0, 0.0), M_PI / 2.0, 1e-14);
@@ -1814,6 +1827,7 @@ struct MathTestSuite
 
         add( testCase(&FunctionsTest::testGaussians));
         add( testCase(&FunctionsTest::intSquareRootTest));
+        add( testCase(&FunctionsTest::roundPower2));
         add( testCase(&FunctionsTest::testSpecialFunctions));
         add( testCase(&FunctionsTest::closeAtToleranceTest));
         add( testCase(&FunctionsTest::testArgMinMax));
