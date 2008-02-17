@@ -178,6 +178,40 @@ inline UInt32 floorPower2(UInt32 x)
     return x - (x >> 1);
 }
 
+    /*! Compute the base-2 logarithm of an integer.
+
+        Returns the position of the left-most 1-bit in the given number \a x, or
+        -1 if \a x == 0. That is,
+        
+        \code
+        assert(k >= 0 && k < 32 && log2i(1 << k) == k);
+        \endcode
+        
+        The function uses Robert Harley's algorithm to determine the number of leading zeros
+        in \a x (algorithm nlz10() at http://www.hackersdelight.org/). But note that the functions
+        \ref floorPower2() or \ref ceilPower2() are more efficient and should be preferred when possible.
+
+        <b>\#include</b> \<<a href="mathutil_8hxx-source.html">vigra/mathutil.hxx</a>\><br>
+        Namespace: vigra
+    */
+inline Int32 log2i(UInt32 x) 
+{ 
+    // -1 means -infinity
+    static Int32 table[64] = {
+         -1,  0,  -1,  15,  -1,  1,  28,  -1,  16,  -1,  -1,  -1,  2,  21,  
+         29,  -1,  -1,  -1,  19,  17,  10,  -1,  12,  -1,  -1,  3,  -1,  6,  
+         -1,  22,  30,  -1,  14,  -1,  27,  -1,  -1,  -1,  20,  -1,  18,  9,  
+         11,  -1,  5,  -1,  -1,  13,  26,  -1,  -1,  8,  -1,  4,  -1,  25,  
+         -1,  7,  24,  -1,  23,  -1,  31,  -1};
+    // Propagate leftmost 1-bit to the right.
+    x = x | (x >> 1);
+    x = x | (x >> 2);
+    x = x | (x >> 4);
+    x = x | (x >> 8);
+    x = x | (x >>16);
+    x = x*0x06EB14F9; // Multiplier is 7*255**3. 
+    return table[x >> 26];
+}
 
     /*! The square function.
 
