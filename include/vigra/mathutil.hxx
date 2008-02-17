@@ -142,7 +142,9 @@ inline long double round(long double t)
 
     /*! Round up to the nearest power of 2.
 
-        Efficient algorithm for finding the smallest power of 2 which is not smaller than \a x.
+        Efficient algorithm for finding the smallest power of 2 which is not smaller than \a x
+        (function clp2() from Henry Warren: "Hacker's Delight", Addison-Wesley, 2003,
+         see http://www.hackersdelight.org/).
         If \a x > 2^31, the function will return 0 because integer arithmetic is defined modulo 2^32.
 
         <b>\#include</b> \<<a href="mathutil_8hxx-source.html">vigra/mathutil.hxx</a>\><br>
@@ -163,7 +165,9 @@ inline UInt32 ceilPower2(UInt32 x)
     
     /*! Round down to the nearest power of 2.
 
-        Efficient algorithm for finding the largest power of 2 which is not greater than \a x.
+        Efficient algorithm for finding the largest power of 2 which is not greater than \a x
+        (function flp2() from Henry Warren: "Hacker's Delight", Addison-Wesley, 2003,
+         see http://www.hackersdelight.org/).
 
         <b>\#include</b> \<<a href="mathutil_8hxx-source.html">vigra/mathutil.hxx</a>\><br>
         Namespace: vigra
