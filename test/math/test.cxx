@@ -321,23 +321,27 @@ struct FunctionsTest
         shouldEqualTolerance(g5(5.713940027745611), 0, epsilon);
     }
     
-    void intSquareRootTest()
+    void testSpecialIntegerFunctions()
     {
         for(int i = 0; i < 1024; ++i)
         {
             shouldEqual(vigra::sqrti(i), (vigra::Int32)vigra::floor(vigra::sqrt((double)i)));
         }
-    }
 
-    void roundPower2()
-    {
-        vigra::UInt32 test[] = {0, 1, 2, 3, 4, 5, 7, 8, 9, 15, 16, 0xffff, 0x7fffffff, 0x80000000, 0x80000001, 0xffffffff};
+        vigra::UInt32 roundPower2[] = {0, 1, 2, 3, 4, 5, 7, 8, 9, 15, 16, 0xffff, 0x7fffffff, 0x80000000, 0x80000001, 0xffffffff};
         vigra::UInt32 floorResult[] = {0, 1, 2, 2, 4, 4, 4, 8, 8, 8, 16, 0x8000, 0x40000000, 0x80000000, 0x80000000, 0x80000000};
         vigra::UInt32 ceilResult[] = {0, 1, 2, 4, 4, 8, 8, 8, 16, 16, 16, 0x10000, 0x80000000, 0x80000000, 0, 0};
-        for(int i = 0; i < sizeof(test) / sizeof(vigra::UInt32); ++i)
+        for(int i = 0; i < sizeof(roundPower2) / sizeof(vigra::UInt32); ++i)
         {
-            shouldEqual(vigra::floorPower2(test[i]), floorResult[i]);
-            shouldEqual(vigra::ceilPower2(test[i]), ceilResult[i]);
+            shouldEqual(vigra::floorPower2(roundPower2[i]), floorResult[i]);
+            shouldEqual(vigra::ceilPower2(roundPower2[i]), ceilResult[i]);
+        }
+        
+        for(vigra::Int32 k=0; k<32; ++k)
+        {
+            shouldEqual(vigra::log2i(1 << k), k);
+            shouldEqual(vigra::log2i((1 << k) + 1), k == 0 ? 1 : k);
+            shouldEqual(vigra::log2i((1 << k) - 1), k-1);
         }
     }
 
@@ -1826,8 +1830,7 @@ struct MathTestSuite
         add( testCase(&SplineTest<5>::testWeightMatrix));
 
         add( testCase(&FunctionsTest::testGaussians));
-        add( testCase(&FunctionsTest::intSquareRootTest));
-        add( testCase(&FunctionsTest::roundPower2));
+        add( testCase(&FunctionsTest::testSpecialIntegerFunctions));
         add( testCase(&FunctionsTest::testSpecialFunctions));
         add( testCase(&FunctionsTest::closeAtToleranceTest));
         add( testCase(&FunctionsTest::testArgMinMax));
