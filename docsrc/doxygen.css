@@ -72,6 +72,8 @@ A.qindexHL:hover {
 }
 A.qindexHL:visited { text-decoration: none; background-color: #6666cc; color: #ffffff }
 A.el { text-decoration: none; font-weight: bold }
+A:link { color: #0040b0; }
+A:visited { color: #a00040; }
 A.elRef { font-weight: bold }
 A.code:link { text-decoration: none; font-weight: normal; color: #0000FF}
 A.code:visited { text-decoration: none; font-weight: normal; color: #0000FF}
@@ -105,7 +107,7 @@ DIV.groupHeader {
 }
 DIV.groupText { margin-left: 16px; font-style: italic; font-size: 90% }
 BODY {
-	background: white;
+	background: #f8f0e0;
 	color: black;
 	margin-right: 20px;
 	margin-left: 20px;
@@ -137,7 +139,7 @@ TD.indexvalue {
 	border: 1px solid #CCCCCC;
 }
 TR.memlist {
-   background-color: #f0f0f0; 
+   background-color: #f0f0f0;
 }
 P.formulaDsp { text-align: center; }
 IMG.formulaDsp { }
@@ -300,8 +302,8 @@ HR { height: 1px;
   color: #606060;
   font-weight: normal;
   margin-left: 3px;
-} 
-.memnav { 
+}
+.memnav {
   background-color: #e8eef2;
   border: 1px solid #84b0c7;
   text-align: center;
