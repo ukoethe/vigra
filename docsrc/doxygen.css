@@ -5,6 +5,8 @@ BODY,TD {
        font-size: 90%;
 }
 H1 {
+	background-color: #e0d0a0;
+	padding: 0.5em;
 	text-align: center;
        font-size: 160%;
 }
