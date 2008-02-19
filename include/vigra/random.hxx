@@ -83,6 +83,7 @@ class RandomNumberGenerator
         seed(theSeed);
     }
 
+        // in [0, 2^32)
     UInt32 operator()() const
     {
         if(current_ == stateLength)
@@ -96,12 +97,38 @@ class RandomNumberGenerator
         y ^= (y >> 16);
         return y;
     }
+
+        // in [0,beyond)
+    UInt32 uniformInt(UInt32 beyond) const
+    {
+        if(beyond < 2)
+            return 0;
+
+        UInt32 factor = factorForUniformInt(beyond);
+        UInt32 res = (*this)() / factor;
+
+        // Use rejection method to avoid quantization bias.
+        // On average, we will need two raw random numbers to generate one.
+        while(res >= beyond)
+            res = (*this)() / factor;
+        return res;
+    }
     
+        // in [0,1)
+    double uniform53() const
+    {
+	    // make full use of the entire 53-bit mantissa of a double, by Isaku Wada
+        UInt32 a = (*this)() >> 5, b = (*this)() >> 6;
+	    return ( a * 67108864.0 + b ) * (1.0/9007199254740992.0); 
+    }
+    
+        // in [0,1]
     double uniform() const
     {
         return (double)operator()() / double(mask);
     }
 
+        // in [lower, upper]
     double uniform(double lower, double upper) const
     {
         vigra_precondition(lower < upper,
@@ -156,6 +183,13 @@ class RandomNumberGenerator
         {
             state_[i] = (1812433253UL * (state_[i-1] ^ (state_[i-1] >> 30)) + i) & mask;
         }
+    }
+
+    static UInt32 factorForUniformInt(UInt32 range)
+    {
+        return (range > 2147483648UL || range == 0)
+                     ? 1
+                     : 2*(2147483648UL / ceilPower2(range));
     }
 
   private:
@@ -214,7 +248,8 @@ class UniformIntRandomFunctor
     UniformIntRandomFunctor(UInt32 lower, UInt32 upper, 
                             RandomNumberGenerator & generator = RandomNumberGenerator::globalGenerator(),
                             bool useLowBits = false)
-    : lower_(lower), difference_(upper-lower), factor_(computeFactor(difference_ + 1)),
+    : lower_(lower), difference_(upper-lower), 
+      factor_(RandomNumberGenerator::factorForUniformInt(difference_ + 1)),
       generator_(generator),
       useLowBits_(useLowBits)
     {
@@ -224,22 +259,20 @@ class UniformIntRandomFunctor
     
     UInt32 operator()() const
     {
-        UInt32 res = generator_();
-        if(useLowBits_)
-        {
-            if(difference_ < 0xffffffff)
-                res %= difference_ + 1;
-        }
+        if(difference_ == 0xffffffff) // lower_ is necessarily 0
+            return generator_();
+        else if(useLowBits_)
+            return generator_() % (difference_ + 1) + lower_;
         else
         {
-            res /= factor_;
+            UInt32 res = generator_() / factor_;
 
             // Use rejection method to avoid quantization bias.
             // On average, we will need two raw random numbers to generate one.
             while(res > difference_)
                 res = generator_() / factor_;
+            return res + lower_;
         }
-        return res + lower_;
     }
 
         /** Return a uniformly distributed integer random number such that
@@ -252,30 +285,10 @@ class UniformIntRandomFunctor
         if(beyond < 2)
             return 0;
 
-        UInt32 res = generator_();
         if(useLowBits_)
-        {
-            res %= beyond;
-        }
+            return generator_() % beyond;
         else
-        {
-            UInt32 factor = computeFactor(beyond);
-
-            res /= factor;
-
-            // Use rejection method to avoid quantization bias.
-            // On average, we will need two raw random numbers to generate one.
-            while(res >= beyond)
-                res = generator_() / factor;
-        }
-        return res;
-    }
-    
-    static UInt32 computeFactor(UInt32 range)
-    {
-        return (range > 2147483648UL || range == 0)
-                     ? 1
-                     : 2*(2147483648UL / ceilPower2(range));
+            return generator_.uniformInt(beyond);
     }
 };
 
