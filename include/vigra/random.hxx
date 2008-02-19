@@ -195,7 +195,7 @@ struct RandomState<MT19937>
     mutable UInt32 current_;
                    
     RandomState()
-    : current_(0) // initialize to N in order to match reference output of Matsumoto's implementation
+    : current_(0)
     {
         seed(19650218UL, *this);
     }
