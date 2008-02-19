@@ -40,7 +40,11 @@
 #include "mathutil.hxx"
 #include "functortraits.hxx"
 
+#include <time.h>
+
 namespace vigra {
+
+enum RandomSeedTag { RandomSeed };
 
 namespace detail {
 
@@ -102,6 +106,14 @@ void seed(Iterator init, UInt32 key_length, RandomState<EngineTag> & engine)
     engine.state_[0] = 0x80000000UL; /* MSB is 1; assuring non-zero initial array */ 
 }
 
+template <RandomEngineTag EngineTag>
+void seed(RandomSeedTag, RandomState<EngineTag> & engine)
+{
+    UInt32 init[2] = { (UInt32)time(0), (UInt32)clock() };
+    seed(init, 2, engine);
+}
+
+
     /* Tempered twister TT800 by M. Matsumoto */
 template<>
 struct RandomState<TT800>
@@ -140,6 +152,22 @@ struct RandomState<TT800>
     }
     
     void generateNumbers() const;
+
+    void seedImpl(RandomSeedTag)
+    {
+        seed(RandomSeed, *this);
+    }
+
+    void seedImpl(UInt32 theSeed)
+    {
+        seed(theSeed, *this);
+    }
+    
+    template<class Iterator>
+    void seedImpl(Iterator init, UInt32 length)
+    {
+        seed(init, length, *this);
+    }
 };
 
 void RandomState<TT800>::generateNumbers() const
@@ -167,7 +195,7 @@ struct RandomState<MT19937>
     mutable UInt32 current_;
                    
     RandomState()
-    : current_(N) // initialize to N in order to match reference output of Matsumoto's implementation
+    : current_(0) // initialize to N in order to match reference output of Matsumoto's implementation
     {
         seed(19650218UL, *this);
     }
@@ -194,6 +222,25 @@ struct RandomState<MT19937>
                 ^ ((v & 1UL) ? 0x9908B0DFUL : 0x0UL);
     }
 
+    void seedImpl(RandomSeedTag)
+    {
+        seed(RandomSeed, *this);
+        generateNumbers();
+    }
+
+    void seedImpl(UInt32 theSeed)
+    {
+        seed(theSeed, *this);
+        generateNumbers();
+    }
+    
+    template<class Iterator>
+    void seedImpl(Iterator init, UInt32 length)
+    {
+        seed(19650218UL, *this);
+        seed(init, length, *this);
+        generateNumbers();
+    }
 };
 
 void RandomState<MT19937>::generateNumbers() const
@@ -226,11 +273,18 @@ class RandomNumberGenerator
       normalState_(0.0)
     {}
 
+    RandomNumberGenerator(RandomSeedTag)
+    : normalCurrent_(0),
+      normalState_(0.0)
+    {
+        seedImpl(RandomSeed);
+    }
+
     RandomNumberGenerator(UInt32 theSeed)
     : normalCurrent_(0),
       normalState_(0.0)
     {
-        seed(theSeed);
+        seedImpl(theSeed);
     }
 
     template<class Iterator>
@@ -238,18 +292,23 @@ class RandomNumberGenerator
     : normalCurrent_(0),
       normalState_(0.0)
     {
-        seed(init, length);
+        seedImpl(init, length);
+    }
+
+    void seed(RandomSeedTag)
+    {
+        seedImpl(RandomSeed);
     }
 
     void seed(UInt32 theSeed)
     {
-        detail::seed(theSeed, *this);
+        seedImpl(theSeed);
     }
     
     template<class Iterator>
     void seed(Iterator init, UInt32 length)
     {
-        detail::seed(init, length, *this);
+        seedImpl(init, length);
     }
 
         // in [0, 2^32)
