@@ -1810,6 +1810,8 @@ struct RandomTest
         vigra::RandomTT800 randomf;
         for(int k=0; k<n; ++k)
             should(vigra::abs(randomf.uniform() - fref[k]) < 2e-6);
+            
+        vigra::RandomTT800 randomr(vigra::RandomSeed);
     }
     
     void testMT19937()
@@ -1833,9 +1835,17 @@ struct RandomTest
             random();
         for(int k=0; k<n; ++k)
             shouldEqual(random(), last[k]);
+
         for(int k=0; k<skip; ++k)
             should(random.uniformInt(31) < 31);
 
+        random.seed(0xDEADBEEF);
+        for(int k=0; k<n; ++k)
+            shouldEqual(random(), first[k]);
+        for(int k=0; k<skip; ++k)
+            random();
+        for(int k=0; k<n; ++k)
+            shouldEqual(random(), last[k]);
 
         unsigned int firsta[n] = {
             1067595299,  955945823,  477289528, 4107218783, 4228976476, 
@@ -1864,6 +1874,14 @@ struct RandomTest
             0.77408120, 0.04605807, 0.69398269, 0.61711170, 0.10133577};
         for(int k=0; k<n; ++k)
             should(vigra::abs(randoma.uniform53()-ref53[k]) < 2e-8);
+
+        randoma.seed(init, ilen);
+        for(int k=0; k<n; ++k)
+            shouldEqual(randoma(), firsta[k]);
+        for(int k=0; k<skip; ++k)
+            randoma();
+        for(int k=0; k<n; ++k)
+            shouldEqual(randoma(), lasta[k]);
     }
     
     void testRandomFunctors()
