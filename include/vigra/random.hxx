@@ -42,28 +42,24 @@
 
 namespace vigra {
 
+namespace detail {
 
-/* Mersenne twister according to TT800 by M. Matsumoto */
-class RandomNumberGenerator
+template<UInt32 StateLength>
+struct RandomState;
+
+    /* Tempered twister according to TT800 by M. Matsumoto */
+template<>
+struct RandomState<25>
 {
-    static const UInt32 stateLength = 25,
-                        M           = 7, 
-                        upperMask   = 1<<31, 
-                        lowerMask   = ~upperMask, 
-                        mask        = 0xffffffff;
+    static const UInt32 N = 25, M = 7;
     
-    mutable UInt32 state_[stateLength],
-                   current_, normalCurrent_;
-    mutable double normalState_;
-    
-  public:
-  
-    RandomNumberGenerator()
-    : current_(0),
-      normalCurrent_(0),
-      normalState_(0.0)
+    mutable UInt32 state_[N];
+    mutable UInt32 current_;
+                   
+    RandomState()
+    : current_(0)
     {
-        UInt32 seeds[stateLength] = { 
+        UInt32 seeds[N] = { 
 	        0x95f24dab, 0x0b685215, 0xe76ccae7, 0xaf3ec239, 0x715fad23,
 	        0x24a590ad, 0x69e4b5ef, 0xbf456141, 0x96bc1b7b, 0xa7bdf825,
 	        0xc1de75b7, 0x8858a9c9, 0x2da87693, 0xb657f9dd, 0xffdc8a9f,
@@ -71,13 +67,131 @@ class RandomNumberGenerator
 	        0x512c0c03, 0xea857ccd, 0x4cc1d30f, 0x8891a8a1, 0xa6b7aadb
         };
          
-        for(UInt32 i=1; i<stateLength; ++i)
+        for(UInt32 i=1; i<N; ++i)
             state_[i] = seeds[i];
     }
+    
+    void seed(UInt32 theSeed)
+    {
+        state_[0] = theSeed;
+        for(UInt32 i=1; i<N; ++i)
+        {
+            state_[i] = 1812433253UL * (state_[i-1] ^ (state_[i-1] >> 30)) + i;
+        }
+    }
+
+  protected:  
+
+    UInt32 get() const
+    {
+        if(current_ == N)
+            generateNumbers();
+            
+        UInt32 y = state_[current_++];
+        y ^= (y << 7) & 0x2b5b2500; 
+        y ^= (y << 15) & 0xdb8b0000; 
+        y ^= (y >> 16);
+        return y;
+    }
+    
+    void generateNumbers() const;
+};
+
+void RandomState<25>::generateNumbers() const
+{
+    UInt32 mag01[2]= { 0x0, 0x8ebfd028 };
+
+    for(UInt32 i=0; i<N-M; ++i)
+    {
+    	state_[i] = state_[i+M] ^ (state_[i] >> 1) ^ mag01[state_[i] % 2];
+    }
+    for (UInt32 i=M; i<N; ++i) 
+    {
+        state_[i] = state_[i+(M-N)] ^ (state_[i] >> 1) ^ mag01[state_[i] % 2];
+    }
+    current_ = 0;
+}
+
+    /* Mersenne twister according to MT19937 by M. Matsumoto */
+template<>
+struct RandomState<624>
+{
+    static const UInt32 N = 624, M = 397;
+    
+    mutable UInt32 state_[N];
+    mutable UInt32 current_;
+                   
+    RandomState()
+    : current_(0)
+    {
+        seed(0xDEADBEEF);
+    }
+    
+    void seed(UInt32 theSeed)
+    {
+        state_[0] = theSeed;
+        for(UInt32 i=1; i<N; ++i)
+        {
+            state_[i] = 1812433253UL * (state_[i-1] ^ (state_[i-1] >> 30)) + i;
+        }
+    }
+
+  protected:  
+
+    UInt32 get() const
+    {
+        if(current_ == N)
+            generateNumbers();
+            
+        UInt32 x = state_[current_++];
+        x ^= (x >> 11);
+        x ^= (x << 7) & 0x9D2C5680UL;
+        x ^= (x << 15) & 0xEFC60000UL;
+        return x ^ (x >> 18);
+    }
+    
+    void generateNumbers() const;
+
+    static UInt32 twiddle(UInt32 u, UInt32 v) 
+    {
+        return (((u & 0x80000000UL) | (v & 0x7FFFFFFFUL)) >> 1)
+                ^ ((v & 1UL) ? 0x9908B0DFUL : 0x0UL);
+    }
+
+};
+
+void RandomState<624>::generateNumbers() const
+{
+    for (int i = 0; i < (N - M); ++i)
+    {
+        state_[i] = state_[i + M] ^ twiddle(state_[i], state_[i + 1]);
+    }
+    for (int i = N - M; i < (N - 1); ++i)
+    {
+        state_[i] = state_[i + M - N] ^ twiddle(state_[i], state_[i + 1]);
+    }
+    state_[N - 1] = state_[M - 1] ^ twiddle(state_[N - 1], state_[0]);
+    current_ = 0;
+}
+
+} // namespace detail
+
+template <UInt32 StateLength = 25>
+class RandomNumberGenerator
+: public detail::RandomState<StateLength>
+{
+    mutable UInt32 normalCurrent_;
+    mutable double normalState_;
+    
+  public:
+  
+    RandomNumberGenerator()
+    : normalCurrent_(0),
+      normalState_(0.0)
+    {}
 
     RandomNumberGenerator(UInt32 theSeed)
-    : current_(0),
-      normalCurrent_(0),
+    : normalCurrent_(0),
       normalState_(0.0)
     {
         seed(theSeed);
@@ -86,16 +200,7 @@ class RandomNumberGenerator
         // in [0, 2^32)
     UInt32 operator()() const
     {
-        if(current_ == stateLength)
-        {
-            generateNumbers();
-            current_ = 0;
-        }
-        UInt32 y = state_[current_++];
-        y ^= (y << 7) & 0x2b5b2500; 
-        y ^= (y << 15) & 0xdb8b0000; 
-        y ^= (y >> 16);
-        return y;
+        return get();
     }
 
         // in [0,beyond)
@@ -105,12 +210,12 @@ class RandomNumberGenerator
             return 0;
 
         UInt32 factor = factorForUniformInt(beyond);
-        UInt32 res = (*this)() / factor;
+        UInt32 res = get() / factor;
 
         // Use rejection method to avoid quantization bias.
         // On average, we will need two raw random numbers to generate one.
         while(res >= beyond)
-            res = (*this)() / factor;
+            res = get() / factor;
         return res;
     }
     
@@ -118,14 +223,13 @@ class RandomNumberGenerator
     double uniform53() const
     {
 	    // make full use of the entire 53-bit mantissa of a double, by Isaku Wada
-        UInt32 a = (*this)() >> 5, b = (*this)() >> 6;
-	    return ( a * 67108864.0 + b ) * (1.0/9007199254740992.0); 
+	    return ( (get() >> 5) * 67108864.0 + (get() >> 6)) * (1.0/9007199254740992.0); 
     }
     
         // in [0,1]
     double uniform() const
     {
-        return (double)operator()() / double(mask);
+        return (double)get() / 4294967295.0;
     }
 
         // in [lower, upper]
@@ -170,19 +274,10 @@ class RandomNumberGenerator
         return normal()*stddev + mean;
     }
     
-    static RandomNumberGenerator & globalGenerator()
+    static RandomNumberGenerator & global()
     {
         static RandomNumberGenerator generator;
         return generator;
-    }
-    
-    void seed(UInt32 theSeed = 5489)
-    {
-        state_[0] = theSeed;
-        for(UInt32 i=1; i<stateLength; ++i)
-        {
-            state_[i] = (1812433253UL * (state_[i-1] ^ (state_[i-1] >> 30)) + i) & mask;
-        }
     }
 
     static UInt32 factorForUniformInt(UInt32 range)
@@ -191,30 +286,16 @@ class RandomNumberGenerator
                      ? 1
                      : 2*(2147483648UL / ceilPower2(range));
     }
-
-  private:
-
-    void generateNumbers() const
-    {
-        UInt32 mag01[2]= { 0x0, 0x8ebfd028 };
-        
-        for(UInt32 i=0; i<stateLength-M; ++i)
-        {
-    	    state_[i] = state_[i+M] ^ (state_[i] >> 1) ^ mag01[state_[i] % 2];
-        }
-        for (UInt32 i=M; i<stateLength; ++i) 
-        {
-            state_[i] = state_[i+(M-stateLength)] ^ (state_[i] >> 1) ^ mag01[state_[i] % 2];
-        }
-    }
- 
 };
 
-template <>
-class FunctorTraits<RandomNumberGenerator>
+typedef RandomNumberGenerator<25>  TT800; 
+typedef RandomNumberGenerator<624> MT19937;
+
+template <UInt32 StateLength>
+class FunctorTraits<RandomNumberGenerator<StateLength> >
 {
   public:
-    typedef RandomNumberGenerator type;
+    typedef RandomNumberGenerator<StateLength> type;
     
     typedef VigraTrueType  isInitializer;
     
@@ -227,10 +308,11 @@ class FunctorTraits<RandomNumberGenerator>
     typedef VigraFalseType isTernaryAnalyser;
 };
 
+template <class Engine =TT800>
 class UniformIntRandomFunctor
 {
     UInt32 lower_, difference_, factor_;
-    RandomNumberGenerator & generator_;
+    Engine & generator_;
     bool useLowBits_;
 
   public:
@@ -238,7 +320,7 @@ class UniformIntRandomFunctor
     typedef UInt32 argument_type;
     typedef UInt32 result_type;
 
-    UniformIntRandomFunctor(RandomNumberGenerator & generator = RandomNumberGenerator::globalGenerator(),
+    UniformIntRandomFunctor(Engine & generator = Engine::global(),
                             bool useLowBits = false)
     : lower_(0), difference_(0xffffffff), factor_(1),
       generator_(generator),
@@ -246,10 +328,10 @@ class UniformIntRandomFunctor
     {}
     
     UniformIntRandomFunctor(UInt32 lower, UInt32 upper, 
-                            RandomNumberGenerator & generator = RandomNumberGenerator::globalGenerator(),
+                            Engine & generator = Engine::global(),
                             bool useLowBits = false)
     : lower_(lower), difference_(upper-lower), 
-      factor_(RandomNumberGenerator::factorForUniformInt(difference_ + 1)),
+      factor_(Engine::factorForUniformInt(difference_ + 1)),
       generator_(generator),
       useLowBits_(useLowBits)
     {
@@ -292,11 +374,11 @@ class UniformIntRandomFunctor
     }
 };
 
-template <>
-class FunctorTraits<UniformIntRandomFunctor>
+template <class Engine>
+class FunctorTraits<UniformIntRandomFunctor<Engine> >
 {
   public:
-    typedef UniformIntRandomFunctor type;
+    typedef UniformIntRandomFunctor<Engine> type;
     
     typedef VigraTrueType  isInitializer;
     
@@ -309,23 +391,24 @@ class FunctorTraits<UniformIntRandomFunctor>
     typedef VigraFalseType isTernaryAnalyser;
 };
 
+template <class Engine =TT800>
 class UniformRandomFunctor
 {
     double offset_, scale_;
-    RandomNumberGenerator & generator_;
+    Engine & generator_;
 
   public:
   
     typedef double result_type;
 
-    UniformRandomFunctor(RandomNumberGenerator & generator = RandomNumberGenerator::globalGenerator())
+    UniformRandomFunctor(Engine & generator = Engine::global())
     : offset_(0.0),
       scale_(1.0),
       generator_(generator)
     {}
 
     UniformRandomFunctor(double lower, double upper, 
-                         RandomNumberGenerator & generator = RandomNumberGenerator::globalGenerator())
+                         Engine & generator = Engine::global())
     : offset_(lower),
       scale_(upper - lower),
       generator_(generator)
@@ -338,14 +421,13 @@ class UniformRandomFunctor
     {
         return generator_.uniform() * scale_ + offset_;
     }
-
 };
 
-template <>
-class FunctorTraits<UniformRandomFunctor>
+template <class Engine>
+class FunctorTraits<UniformRandomFunctor<Engine> >
 {
   public:
-    typedef UniformRandomFunctor type;
+    typedef UniformRandomFunctor<Engine> type;
     
     typedef VigraTrueType  isInitializer;
     
@@ -358,23 +440,24 @@ class FunctorTraits<UniformRandomFunctor>
     typedef VigraFalseType isTernaryAnalyser;
 };
 
+template <class Engine = TT800>
 struct NormalRandomFunctor
 {
     double mean_, stddev_;
-    RandomNumberGenerator & generator_;
+    Engine & generator_;
 
   public:
   
     typedef double result_type;
 
-    NormalRandomFunctor(RandomNumberGenerator & generator = RandomNumberGenerator::globalGenerator())
+    NormalRandomFunctor(Engine & generator = Engine::global())
     : mean_(0.0),
       stddev_(1.0),
       generator_(generator)
     {}
 
     NormalRandomFunctor(double mean, double stddev, 
-                        RandomNumberGenerator & generator = RandomNumberGenerator::globalGenerator())
+                        Engine & generator = Engine::global())
     : mean_(mean),
       stddev_(stddev),
       generator_(generator)
@@ -390,11 +473,11 @@ struct NormalRandomFunctor
 
 };
 
-template <>
-class FunctorTraits<NormalRandomFunctor>
+template <class Engine>
+class FunctorTraits<NormalRandomFunctor<Engine> >
 {
   public:
-    typedef UniformRandomFunctor type;
+    typedef UniformRandomFunctor<Engine>  type;
     
     typedef VigraTrueType  isInitializer;
     
