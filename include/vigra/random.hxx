@@ -277,14 +277,14 @@ class RandomNumberGenerator
     : normalCurrent_(0),
       normalState_(0.0)
     {
-        seedImpl(RandomSeed);
+        this->seedImpl(RandomSeed);
     }
 
     RandomNumberGenerator(UInt32 theSeed)
     : normalCurrent_(0),
       normalState_(0.0)
     {
-        seedImpl(theSeed);
+        this->seedImpl(theSeed);
     }
 
     template<class Iterator>
@@ -292,29 +292,29 @@ class RandomNumberGenerator
     : normalCurrent_(0),
       normalState_(0.0)
     {
-        seedImpl(init, length);
+        this->seedImpl(init, length);
     }
 
     void seed(RandomSeedTag)
     {
-        seedImpl(RandomSeed);
+        this->seedImpl(RandomSeed);
     }
 
     void seed(UInt32 theSeed)
     {
-        seedImpl(theSeed);
+        this->seedImpl(theSeed);
     }
     
     template<class Iterator>
     void seed(Iterator init, UInt32 length)
     {
-        seedImpl(init, length);
+        this->seedImpl(init, length);
     }
 
         // in [0, 2^32)
     UInt32 operator()() const
     {
-        return get();
+        return this->get();
     }
 
         // in [0,beyond)
@@ -324,12 +324,12 @@ class RandomNumberGenerator
             return 0;
 
         UInt32 factor = factorForUniformInt(beyond);
-        UInt32 res = get() / factor;
+        UInt32 res = this->get() / factor;
 
         // Use rejection method to avoid quantization bias.
         // On average, we will need two raw random numbers to generate one.
         while(res >= beyond)
-            res = get() / factor;
+            res = this->get() / factor;
         return res;
     }
     
@@ -337,13 +337,13 @@ class RandomNumberGenerator
     double uniform53() const
     {
 	    // make full use of the entire 53-bit mantissa of a double, by Isaku Wada
-	    return ( (get() >> 5) * 67108864.0 + (get() >> 6)) * (1.0/9007199254740992.0); 
+	    return ( (this->get() >> 5) * 67108864.0 + (this->get() >> 6)) * (1.0/9007199254740992.0); 
     }
     
         // in [0,1]
     double uniform() const
     {
-        return (double)get() / 4294967295.0;
+        return (double)this->get() / 4294967295.0;
     }
 
         // in [lower, upper]
