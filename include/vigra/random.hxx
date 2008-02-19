@@ -59,7 +59,7 @@ void seed(UInt32 theSeed, RandomState<EngineTag> & engine)
     engine.state_[0] = theSeed;
     for(UInt32 i=1; i<RandomState<EngineTag>::N; ++i)
     {
-        engine.state_[i] = 1812433253UL * (engine.state_[i-1] ^ (engine.state_[i-1] >> 30)) + i;
+        engine.state_[i] = 1812433253U * (engine.state_[i-1] ^ (engine.state_[i-1] >> 30)) + i;
     }
 }
 
@@ -67,15 +67,14 @@ template <class Iterator, RandomEngineTag EngineTag>
 void seed(Iterator init, UInt32 key_length, RandomState<EngineTag> & engine)
 {
     const UInt32 N = RandomState<EngineTag>::N;
-    int i = 1, 
-        k = (N>key_length)
+    int k = (N>key_length)
               ? N 
               : key_length;
-    UInt32 j = 0;
+    UInt32 i = 1, j = 0;
     Iterator data = init;
     for (; k; --k) 
     {
-        engine.state_[i] = (engine.state_[i] ^ ((engine.state_[i-1] ^ (engine.state_[i-1] >> 30)) * 1664525UL))
+        engine.state_[i] = (engine.state_[i] ^ ((engine.state_[i-1] ^ (engine.state_[i-1] >> 30)) * 1664525U))
                            + *data + j; /* non linear */
         ++i; ++j; ++data;
         
@@ -93,7 +92,7 @@ void seed(Iterator init, UInt32 key_length, RandomState<EngineTag> & engine)
 
     for (k=N-1; k; --k) 
     {
-        engine.state_[i] = (engine.state_[i] ^ ((engine.state_[i-1] ^ (engine.state_[i-1] >> 30)) * 1566083941UL))
+        engine.state_[i] = (engine.state_[i] ^ ((engine.state_[i-1] ^ (engine.state_[i-1] >> 30)) * 1566083941U))
                            - i; /* non linear */
         ++i;
         if (i>=N) 
@@ -103,7 +102,7 @@ void seed(Iterator init, UInt32 key_length, RandomState<EngineTag> & engine)
         }
     }
 
-    engine.state_[0] = 0x80000000UL; /* MSB is 1; assuring non-zero initial array */ 
+    engine.state_[0] = 0x80000000U; /* MSB is 1; assuring non-zero initial array */ 
 }
 
 template <RandomEngineTag EngineTag>
@@ -197,7 +196,7 @@ struct RandomState<MT19937>
     RandomState()
     : current_(0)
     {
-        seed(19650218UL, *this);
+        seed(19650218U, *this);
     }
 
   protected:  
@@ -209,8 +208,8 @@ struct RandomState<MT19937>
             
         UInt32 x = state_[current_++];
         x ^= (x >> 11);
-        x ^= (x << 7) & 0x9D2C5680UL;
-        x ^= (x << 15) & 0xEFC60000UL;
+        x ^= (x << 7) & 0x9D2C5680U;
+        x ^= (x << 15) & 0xEFC60000U;
         return x ^ (x >> 18);
     }
     
@@ -218,8 +217,8 @@ struct RandomState<MT19937>
 
     static UInt32 twiddle(UInt32 u, UInt32 v) 
     {
-        return (((u & 0x80000000UL) | (v & 0x7FFFFFFFUL)) >> 1)
-                ^ ((v & 1UL) ? 0x9908B0DFUL : 0x0UL);
+        return (((u & 0x80000000U) | (v & 0x7FFFFFFFU)) >> 1)
+                ^ ((v & 1U) ? 0x9908B0DFU : 0x0U);
     }
 
     void seedImpl(RandomSeedTag)
@@ -237,7 +236,7 @@ struct RandomState<MT19937>
     template<class Iterator>
     void seedImpl(Iterator init, UInt32 length)
     {
-        seed(19650218UL, *this);
+        seed(19650218U, *this);
         seed(init, length, *this);
         generateNumbers();
     }
@@ -371,9 +370,9 @@ class RandomNumberGenerator
 
     static UInt32 factorForUniformInt(UInt32 range)
     {
-        return (range > 2147483648UL || range == 0)
+        return (range > 2147483648U || range == 0)
                      ? 1
-                     : 2*(2147483648UL / ceilPower2(range));
+                     : 2*(2147483648U / ceilPower2(range));
     }
 };
 
