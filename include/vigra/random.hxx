@@ -49,6 +49,59 @@ enum RandomEngineTag { TT800, MT19937 };
 template<RandomEngineTag EngineTag>
 struct RandomState;
 
+template <RandomEngineTag EngineTag>
+void seed(UInt32 theSeed, RandomState<EngineTag> & engine)
+{
+    engine.state_[0] = theSeed;
+    for(UInt32 i=1; i<RandomState<EngineTag>::N; ++i)
+    {
+        engine.state_[i] = 1812433253UL * (engine.state_[i-1] ^ (engine.state_[i-1] >> 30)) + i;
+    }
+}
+
+template <class Iterator, RandomEngineTag EngineTag>
+void seed(Iterator init, UInt32 key_length, RandomState<EngineTag> & engine)
+{
+    const UInt32 N = RandomState<EngineTag>::N;
+    int i = 1, 
+        k = (N>key_length)
+              ? N 
+              : key_length;
+    UInt32 j = 0;
+    Iterator data = init;
+    for (; k; --k) 
+    {
+        engine.state_[i] = (engine.state_[i] ^ ((engine.state_[i-1] ^ (engine.state_[i-1] >> 30)) * 1664525UL))
+                           + *data + j; /* non linear */
+        ++i; ++j; ++data;
+        
+        if (i >= N) 
+        { 
+            engine.state_[0] = engine.state_[N-1]; 
+            i=1; 
+        }
+        if (j>=key_length)
+        { 
+            j=0;
+            data = init;
+        }
+    }
+
+    for (k=N-1; k; --k) 
+    {
+        engine.state_[i] = (engine.state_[i] ^ ((engine.state_[i-1] ^ (engine.state_[i-1] >> 30)) * 1566083941UL))
+                           - i; /* non linear */
+        ++i;
+        if (i>=N) 
+        { 
+            engine.state_[0] = engine.state_[N-1]; 
+            i=1; 
+        }
+    }
+
+    engine.state_[0] = 0x80000000UL; /* MSB is 1; assuring non-zero initial array */ 
+}
+
     /* Tempered twister TT800 by M. Matsumoto */
 template<>
 struct RandomState<TT800>
@@ -69,17 +122,8 @@ struct RandomState<TT800>
 	        0x512c0c03, 0xea857ccd, 0x4cc1d30f, 0x8891a8a1, 0xa6b7aadb
         };
          
-        for(UInt32 i=1; i<N; ++i)
+        for(UInt32 i=0; i<N; ++i)
             state_[i] = seeds[i];
-    }
-    
-    void seed(UInt32 theSeed)
-    {
-        state_[0] = theSeed;
-        for(UInt32 i=1; i<N; ++i)
-        {
-            state_[i] = 1812433253UL * (state_[i-1] ^ (state_[i-1] >> 30)) + i;
-        }
     }
 
   protected:  
@@ -106,7 +150,7 @@ void RandomState<TT800>::generateNumbers() const
     {
     	state_[i] = state_[i+M] ^ (state_[i] >> 1) ^ mag01[state_[i] % 2];
     }
-    for (UInt32 i=M; i<N; ++i) 
+    for (UInt32 i=N-M; i<N; ++i) 
     {
         state_[i] = state_[i+(M-N)] ^ (state_[i] >> 1) ^ mag01[state_[i] % 2];
     }
@@ -123,18 +167,9 @@ struct RandomState<MT19937>
     mutable UInt32 current_;
                    
     RandomState()
-    : current_(0)
+    : current_(N) // initialize to N in order to match reference output of Matsumoto's implementation
     {
-        seed(0xDEADBEEF);
-    }
-    
-    void seed(UInt32 theSeed)
-    {
-        state_[0] = theSeed;
-        for(UInt32 i=1; i<N; ++i)
-        {
-            state_[i] = 1812433253UL * (state_[i-1] ^ (state_[i-1] >> 30)) + i;
-        }
+        seed(19650218UL, *this);
     }
 
   protected:  
@@ -198,6 +233,25 @@ class RandomNumberGenerator
         seed(theSeed);
     }
 
+    template<class Iterator>
+    RandomNumberGenerator(Iterator init, UInt32 length)
+    : normalCurrent_(0),
+      normalState_(0.0)
+    {
+        seed(init, length);
+    }
+
+    void seed(UInt32 theSeed)
+    {
+        detail::seed(theSeed, *this);
+    }
+    
+    template<class Iterator>
+    void seed(Iterator init, UInt32 length)
+    {
+        detail::seed(init, length, *this);
+    }
+
         // in [0, 2^32)
     UInt32 operator()() const
     {
@@ -241,32 +295,7 @@ class RandomNumberGenerator
         return uniform() * (upper-lower) + lower;
     }
     
-    double normal() const
-    {
-        if(normalCurrent_ == 0)
-        {
-            normalCurrent_ = 1;
-
-            double x1, x2, w;
-            do 
-            {
-                 x1 = uniform(-1.0, 1.0);
-                 x2 = uniform(-1.0, 1.0);
-                 w = x1 * x1 + x2 * x2;
-            } 
-            while ( w >= 1.0 || w == 0.0);
-            w = std::sqrt( -2.0 * std::log( w )  / w );
-            normalState_ = x2 * w;
-            return x1 * w;
-            
-        }
-        else
-        {
-            normalCurrent_ = 0;
-            return normalState_;
-        }
-    }
-    
+    double normal() const;
     
     double normal(double mean, double stddev) const
     {
@@ -289,8 +318,38 @@ class RandomNumberGenerator
     }
 };
 
+template <class Engine>
+double RandomNumberGenerator<Engine>::normal() const
+{
+    if(normalCurrent_ == 0)
+    {
+        normalCurrent_ = 1;
+
+        double x1, x2, w;
+        do 
+        {
+             x1 = uniform(-1.0, 1.0);
+             x2 = uniform(-1.0, 1.0);
+             w = x1 * x1 + x2 * x2;
+        } 
+        while ( w >= 1.0 || w == 0.0);
+        w = std::sqrt( -2.0 * std::log( w )  / w );
+        normalState_ = x2 * w;
+        return x1 * w;
+
+    }
+    else
+    {
+        normalCurrent_ = 0;
+        return normalState_;
+    }
+}
+
 typedef RandomNumberGenerator<>  RandomTT800; 
 typedef RandomNumberGenerator<detail::RandomState<detail::MT19937> > RandomMT19937;
+
+inline RandomTT800   & randomTT800()   { return RandomTT800::global(); }
+inline RandomMT19937 & randomMT19937() { return RandomMT19937::global(); }
 
 template <class Engine>
 class FunctorTraits<RandomNumberGenerator<Engine> >
