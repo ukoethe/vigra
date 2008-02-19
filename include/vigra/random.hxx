@@ -44,12 +44,14 @@ namespace vigra {
 
 namespace detail {
 
-template<UInt32 StateLength>
+enum RandomEngineTag { TT800, MT19937 };
+
+template<RandomEngineTag EngineTag>
 struct RandomState;
 
-    /* Tempered twister according to TT800 by M. Matsumoto */
+    /* Tempered twister TT800 by M. Matsumoto */
 template<>
-struct RandomState<25>
+struct RandomState<TT800>
 {
     static const UInt32 N = 25, M = 7;
     
@@ -90,14 +92,13 @@ struct RandomState<25>
         UInt32 y = state_[current_++];
         y ^= (y << 7) & 0x2b5b2500; 
         y ^= (y << 15) & 0xdb8b0000; 
-        y ^= (y >> 16);
-        return y;
+        return y ^ (y >> 16);
     }
     
     void generateNumbers() const;
 };
 
-void RandomState<25>::generateNumbers() const
+void RandomState<TT800>::generateNumbers() const
 {
     UInt32 mag01[2]= { 0x0, 0x8ebfd028 };
 
@@ -112,9 +113,9 @@ void RandomState<25>::generateNumbers() const
     current_ = 0;
 }
 
-    /* Mersenne twister according to MT19937 by M. Matsumoto */
+    /* Mersenne twister MT19937 by M. Matsumoto */
 template<>
-struct RandomState<624>
+struct RandomState<MT19937>
 {
     static const UInt32 N = 624, M = 397;
     
@@ -160,7 +161,7 @@ struct RandomState<624>
 
 };
 
-void RandomState<624>::generateNumbers() const
+void RandomState<MT19937>::generateNumbers() const
 {
     for (int i = 0; i < (N - M); ++i)
     {
@@ -176,9 +177,9 @@ void RandomState<624>::generateNumbers() const
 
 } // namespace detail
 
-template <UInt32 StateLength = 25>
+template <class Engine = detail::RandomState<detail::TT800> >
 class RandomNumberGenerator
-: public detail::RandomState<StateLength>
+: public Engine
 {
     mutable UInt32 normalCurrent_;
     mutable double normalState_;
@@ -288,14 +289,14 @@ class RandomNumberGenerator
     }
 };
 
-typedef RandomNumberGenerator<25>  TT800; 
-typedef RandomNumberGenerator<624> MT19937;
+typedef RandomNumberGenerator<>  RandomTT800; 
+typedef RandomNumberGenerator<detail::RandomState<detail::MT19937> > RandomMT19937;
 
-template <UInt32 StateLength>
-class FunctorTraits<RandomNumberGenerator<StateLength> >
+template <class Engine>
+class FunctorTraits<RandomNumberGenerator<Engine> >
 {
   public:
-    typedef RandomNumberGenerator<StateLength> type;
+    typedef RandomNumberGenerator<Engine> type;
     
     typedef VigraTrueType  isInitializer;
     
@@ -308,7 +309,7 @@ class FunctorTraits<RandomNumberGenerator<StateLength> >
     typedef VigraFalseType isTernaryAnalyser;
 };
 
-template <class Engine =TT800>
+template <class Engine = RandomTT800>
 class UniformIntRandomFunctor
 {
     UInt32 lower_, difference_, factor_;
@@ -391,7 +392,7 @@ class FunctorTraits<UniformIntRandomFunctor<Engine> >
     typedef VigraFalseType isTernaryAnalyser;
 };
 
-template <class Engine =TT800>
+template <class Engine = RandomTT800>
 class UniformRandomFunctor
 {
     double offset_, scale_;
@@ -440,7 +441,7 @@ class FunctorTraits<UniformRandomFunctor<Engine> >
     typedef VigraFalseType isTernaryAnalyser;
 };
 
-template <class Engine = TT800>
+template <class Engine = RandomTT800>
 struct NormalRandomFunctor
 {
     double mean_, stddev_;
