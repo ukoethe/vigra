@@ -67,9 +67,7 @@ template <class Iterator, RandomEngineTag EngineTag>
 void seed(Iterator init, UInt32 key_length, RandomState<EngineTag> & engine)
 {
     const UInt32 N = RandomState<EngineTag>::N;
-    int k = (N>key_length)
-              ? N 
-              : key_length;
+    int k = (int)std::max(N, key_length);
     UInt32 i = 1, j = 0;
     Iterator data = init;
     for (; k; --k) 
@@ -262,34 +260,34 @@ template <class Engine = detail::RandomState<detail::TT800> >
 class RandomNumberGenerator
 : public Engine
 {
-    mutable UInt32 normalCurrent_;
-    mutable double normalState_;
+    mutable double normalCached_;
+    mutable bool normalCachedValid_;
     
   public:
   
     RandomNumberGenerator()
-    : normalCurrent_(0),
-      normalState_(0.0)
+    : normalCached_(0.0),
+      normalCachedValid_(false)
     {}
 
     RandomNumberGenerator(RandomSeedTag)
-    : normalCurrent_(0),
-      normalState_(0.0)
+    : normalCached_(0.0),
+      normalCachedValid_(false)
     {
         this->seedImpl(RandomSeed);
     }
 
     RandomNumberGenerator(UInt32 theSeed)
-    : normalCurrent_(0),
-      normalState_(0.0)
+    : normalCached_(0.0),
+      normalCachedValid_(false)
     {
         this->seedImpl(theSeed);
     }
 
     template<class Iterator>
     RandomNumberGenerator(Iterator init, UInt32 length)
-    : normalCurrent_(0),
-      normalState_(0.0)
+    : normalCached_(0.0),
+      normalCachedValid_(false)
     {
         this->seedImpl(init, length);
     }
@@ -297,17 +295,20 @@ class RandomNumberGenerator
     void seed(RandomSeedTag)
     {
         this->seedImpl(RandomSeed);
+        normalCachedValid_ = false;
     }
 
     void seed(UInt32 theSeed)
     {
         this->seedImpl(theSeed);
+        normalCachedValid_ = false;
     }
     
     template<class Iterator>
     void seed(Iterator init, UInt32 length)
     {
         this->seedImpl(init, length);
+        normalCachedValid_ = false;
     }
 
         // in [0, 2^32)
@@ -379,10 +380,13 @@ class RandomNumberGenerator
 template <class Engine>
 double RandomNumberGenerator<Engine>::normal() const
 {
-    if(normalCurrent_ == 0)
+    if(normalCachedValid_)
     {
-        normalCurrent_ = 1;
-
+        normalCachedValid_ = false;
+        return normalCached_;
+    }
+    else
+    {
         double x1, x2, w;
         do 
         {
@@ -390,16 +394,14 @@ double RandomNumberGenerator<Engine>::normal() const
              x2 = uniform(-1.0, 1.0);
              w = x1 * x1 + x2 * x2;
         } 
-        while ( w >= 1.0 || w == 0.0);
+        while ( w > 1.0 || w == 0.0);
+        
         w = std::sqrt( -2.0 * std::log( w )  / w );
-        normalState_ = x2 * w;
-        return x1 * w;
 
-    }
-    else
-    {
-        normalCurrent_ = 0;
-        return normalState_;
+        normalCached_ = x2 * w;
+        normalCachedValid_ = true;
+
+        return x1 * w;
     }
 }
 
