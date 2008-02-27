@@ -347,6 +347,8 @@ public:
     template <class U>
     void copyImpl(const ArrayVectorView <U>& rhs);
 
+    void copyImpl(const ArrayVectorView & rhs);
+
     template <class U>
     void swapDataImpl(const ArrayVectorView <U>& rhs);
 
@@ -380,9 +382,8 @@ bool ArrayVectorView<T>::operator==(ArrayVectorView<U> const & rhs) const
 }
 
 template <class T>
-template <class U>
 void 
-ArrayVectorView <T>::copyImpl(const ArrayVectorView <U>& rhs)
+ArrayVectorView <T>::copyImpl(const ArrayVectorView & rhs)
 {
     vigra_precondition (size() == rhs.size(),
         "ArrayVectorView::copy(): shape mismatch.");
@@ -395,6 +396,16 @@ ArrayVectorView <T>::copyImpl(const ArrayVectorView <U>& rhs)
     {
         std::copy_backward(rhs.begin(), rhs.end(), end());
     }
+}
+
+template <class T>
+template <class U>
+void 
+ArrayVectorView <T>::copyImpl(const ArrayVectorView <U>& rhs)
+{
+    vigra_precondition (size() == rhs.size(),
+        "ArrayVectorView::copy(): shape mismatch.");
+    std::copy(rhs.begin(), rhs.end(), begin());
 }
 
 template <class T>
