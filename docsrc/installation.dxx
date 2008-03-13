@@ -87,12 +87,14 @@
     include and library files for <a href="http://www.ijg.org/">libjpeg</a>,  
     <a href="http://www.libtiff.org/">libtiff</a>,
     <a href="http://www.libpng.org/">libpng</a>,
-    and <a href="http://www.fftw.org/">libfftw</a> on your 
-    system <br>
+    and <a href="http://www.fftw.org/">libfftw</a> on your system <br>
      -- <em> or</em> -- 
-     remove the <TT>HasJPEG</TT>, <TT>HasTIFF</TT>, and <TT>HasPNG</TT> preprocessor flags.
+     remove the <TT>HasJPEG</TT>, <TT>HasTIFF</TT>, and <TT>HasPNG</TT> preprocessor flags and
+     the entries referring to these libs in the linker dependencies of the "vigraimpex_dll" project.
     
-    <li> build the workspace (that is, the library <TT>vigraimpex.lib</TT> and the \ref Examples)
+    <li> build the workspace (that is, the library <TT>vigraimpex.dll</TT> and the \ref Examples) and move
+         <TT>[some path]/vigra/src/impex/vigraimpex.dll</TT> to a directory where Windows finds it 
+         (or add the appropriate path to the Windows PATH environment variable).
 
     <li> the \ref Examples can now be invoked from the command line (DOS prompt).
 
