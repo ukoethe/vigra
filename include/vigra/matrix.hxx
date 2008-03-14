@@ -1772,6 +1772,11 @@ operator/(T a, const MultiArrayView<2, T, C> &b)
     return TemporaryMatrix<T>(b.shape(), a) / pointWise(b);
 }
 
+using vigra::argMin;
+using vigra::argMinIf;
+using vigra::argMax;
+using vigra::argMaxIf;
+
     /*! Find the index of the minimum element in a matrix.
     
         The function returns the index in column-major scan-order sense,
