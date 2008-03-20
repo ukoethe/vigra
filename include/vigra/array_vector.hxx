@@ -40,6 +40,7 @@
 #include "memory.hxx"
 #include <memory>
 #include <algorithm>
+#include <iosfwd>
 
 namespace vigra
 {
@@ -861,6 +862,20 @@ ArrayVector<T, Alloc>::reserve_raw(size_type capacity)
 }
 
 } // namespace vigra
+
+namespace std {
+
+template <class T>
+ostream & operator<<(ostream & s, vigra::ArrayVectorView<T> const & a)
+{
+    for(unsigned int k=0; k<a.size()-1; ++k)
+        s << a[k] << ", ";
+    if(a.size())
+            s << a.back();
+    return s;
+}
+
+} // namespace std
 
 
 #endif /* VIGRA_ARRAY_VECTOR_HXX */
