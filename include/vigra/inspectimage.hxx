@@ -38,6 +38,8 @@
 #ifndef VIGRA_INSPECTIMAGE_HXX
 #define VIGRA_INSPECTIMAGE_HXX
 
+#pragma warning (disable: 4350)
+
 #include <vector>
 #include <algorithm>
 #include "utilities.hxx"
@@ -338,6 +340,29 @@ inspectImageIf(triple<ImageIterator, ImageIterator, Accessor> img,
                    mask.first, mask.second, f);
 }
 
+template <class ImageIterator, class Accessor,
+      class MaskImageIterator, class MaskAccessor, class Functor>
+inline void
+inspectImageIf(ImageIterator upperleft,
+               ImageIterator lowerright, Accessor a,
+               MaskImageIterator mask_upperleft, MaskAccessor ma,
+               functor::UnaryAnalyser<Functor> const & f)
+{
+    inspectImageIf(upperleft, lowerright, a,
+                   mask_upperleft, ma, const_cast<functor::UnaryAnalyser<Functor> &>(f));
+}
+
+template <class ImageIterator, class Accessor,
+      class MaskImageIterator, class MaskAccessor, class Functor>
+inline void
+inspectImageIf(triple<ImageIterator, ImageIterator, Accessor> img,
+               pair<MaskImageIterator, MaskAccessor> mask,
+               functor::UnaryAnalyser<Functor> const & f)
+{
+    inspectImageIf(img.first, img.second, img.third,
+                   mask.first, mask.second, const_cast<functor::UnaryAnalyser<Functor> &>(f));
+}
+
 /********************************************************/
 /*                                                      */
 /*                  inspectTwoImages                    */
@@ -418,11 +443,11 @@ doxygen_overloaded_function(template <...> void inspectTwoImages)
 
 template <class ImageIterator1, class Accessor1,
           class ImageIterator2, class Accessor2,
-      class Functor>
+          class Functor>
 void
 inspectTwoImages(ImageIterator1 upperleft1, ImageIterator1 lowerright1, Accessor1 a1,
                  ImageIterator2 upperleft2, Accessor2 a2,
-         Functor & f)
+                 Functor & f)
 {
     int w = lowerright1.x - upperleft1.x;
 
@@ -445,6 +470,31 @@ inspectTwoImages(triple<ImageIterator1, ImageIterator1, Accessor1> img1,
 {
     inspectTwoImages(img1.first, img1.second, img1.third,
                      img2.first, img2.second, f);
+}
+
+template <class ImageIterator1, class Accessor1,
+          class ImageIterator2, class Accessor2,
+          class Functor>
+inline void
+inspectTwoImages(ImageIterator1 upperleft1, ImageIterator1 lowerright1, Accessor1 a1,
+                 ImageIterator2 upperleft2, Accessor2 a2,
+                 functor::UnaryAnalyser<Functor> const & f)
+{
+    inspectTwoImages(upperleft1, lowerright1, a1,
+                     upperleft2, a2, const_cast<functor::UnaryAnalyser<Functor> &>(f));
+}
+
+template <class ImageIterator1, class Accessor1,
+      class ImageIterator2, class Accessor2,
+      class Functor>
+inline
+void
+inspectTwoImages(triple<ImageIterator1, ImageIterator1, Accessor1> img1,
+         pair<ImageIterator2, Accessor2> img2,
+         functor::UnaryAnalyser<Functor> const & f)
+{
+    inspectTwoImages(img1.first, img1.second, img1.third,
+                     img2.first, img2.second, const_cast<functor::UnaryAnalyser<Functor> &>(f));
 }
 
 /********************************************************/
@@ -570,6 +620,39 @@ inspectTwoImagesIf(triple<ImageIterator1, ImageIterator1, Accessor1> img1,
                      img2.first, img2.second,
                      m.first, m.second,
                      f);
+}
+
+template <class ImageIterator1, class Accessor1,
+          class ImageIterator2, class Accessor2,
+          class MaskImageIterator, class MaskAccessor,
+          class Functor>
+inline void
+inspectTwoImagesIf(ImageIterator1 upperleft1, ImageIterator1 lowerright1, Accessor1 a1,
+                 ImageIterator2 upperleft2, Accessor2 a2,
+                 MaskImageIterator mupperleft, MaskAccessor mask,
+                 functor::UnaryAnalyser<Functor> const & f)
+{
+    inspectTwoImagesIf(upperleft1, lowerright1, a1,
+                       upperleft2, a2,
+                       mupperleft, mask,
+                       const_cast<functor::UnaryAnalyser<Functor> &>(f));
+}
+
+template <class ImageIterator1, class Accessor1,
+          class ImageIterator2, class Accessor2,
+          class MaskImageIterator, class MaskAccessor,
+          class Functor>
+inline
+void
+inspectTwoImagesIf(triple<ImageIterator1, ImageIterator1, Accessor1> img1,
+         pair<ImageIterator2, Accessor2> img2,
+         pair<MaskImageIterator, MaskAccessor> m,
+         functor::UnaryAnalyser<Functor> const & f)
+{
+    inspectTwoImagesIf(img1.first, img1.second, img1.third,
+                       img2.first, img2.second,
+                       m.first, m.second,
+                       const_cast<functor::UnaryAnalyser<Functor> &>(f));
 }
 
 //@}
