@@ -410,6 +410,9 @@ struct UnaryFunctor
   
   protected:  
     EXPR expr_;
+  
+  private:
+    UnaryFunctor & operator=(UnaryFunctor const &); // not implemented
 };
 
 template <class Expr>
@@ -469,6 +472,9 @@ struct UnaryFunctor<ArgumentFunctor1>
     {
         return v1;
     }
+  
+  private:
+    UnaryFunctor & operator=(UnaryFunctor const &); // not implemented
 };
 
 template <>
@@ -523,6 +529,9 @@ struct UnaryFunctor<ArgumentFunctor2>
     {
         return v2;
     }
+  
+  private:
+    UnaryFunctor & operator=(UnaryFunctor const &); // not implemented
 };
 
 template <>
@@ -571,6 +580,9 @@ struct UnaryFunctor<ArgumentFunctor3>
     {
         return v3;
     }
+  
+  private:
+    UnaryFunctor & operator=(UnaryFunctor const &); // not implemented
 };
 
 template <>
@@ -644,6 +656,9 @@ struct ParameterFunctor
     
   protected:
     T value_;
+  
+  private:
+    ParameterFunctor & operator=(ParameterFunctor const &); // not implemented
 };
 
 template <class T>
@@ -718,6 +733,9 @@ class UnaryAnalyser
   protected:
   
     EXPR expr_;
+  
+  private:
+    UnaryAnalyser & operator=(UnaryAnalyser const &); // not implemented
 };
 
 /************************************************************/
@@ -773,6 +791,8 @@ struct UnaryFunctor<VarFunctor<T> >;
       private: \
         V & value_; \
         UnaryFunctor<EXPR> expr_; \
+        \
+        AssignmentFunctor_##name & operator=(AssignmentFunctor_##name const &);\
     }; 
 
 /************************************************************/
@@ -864,6 +884,9 @@ struct UnaryFunctor<VarFunctor<T> >
     }
     
     T & value_;
+  
+  private:
+    UnaryFunctor & operator=(UnaryFunctor const &); // not implemented
 };
 
 template <class T>
@@ -939,6 +962,9 @@ struct IfThenFunctor
   
     EXPR1 expr1_;
     EXPR2 expr2_;
+  
+  private:
+    IfThenFunctor & operator=(IfThenFunctor const &); // not implemented
 };
 
 template <class EXPR1, class EXPR2>
@@ -1057,6 +1083,8 @@ struct IfThenElseFunctor
     EXPR1 expr1_;
     EXPR2 expr2_;
     EXPR3 expr3_;
+  
+    IfThenElseFunctor & operator=(IfThenElseFunctor const &); // not implemented
 };
 
 template <class EXPR1, class EXPR2, class EXPR3>
@@ -1151,6 +1179,9 @@ ifThenElse(UnaryFunctor<EXPR1> const & e1,
       protected: \
        \
         EXPR expr_; \
+       \
+      private: \
+        Functor_##function & operator=(Functor_##function const &); \
     }; \
      \
     template <class EXPR> \
@@ -1251,6 +1282,9 @@ MAKE_FUNCTOR_UNARY_FUNCTION(abs, vigra)
       protected: \
        \
         EXPR expr_; \
+       \
+      private: \
+        Functor_##name & operator=(Functor_##name const &);\
     }; \
      \
     template <class EXPR> \
@@ -1355,6 +1389,8 @@ MAKE_FUNCTOR_UNARY_OPERATOR(bitNegate, ~)
          \
         EXPR1 expr1_; \
         EXPR2 expr2_; \
+        \
+        Functor_##function & operator=(Functor_##function const &); \
     }; \
      \
     template <class EXPR1, class EXPR2> \
@@ -1466,6 +1502,8 @@ MAKE_FUNCTOR_BINARY_FUNCTION(fmod)
          \
         EXPR1 expr1_; \
         EXPR2 expr2_; \
+        \
+        Functor_##name & operator=(Functor_##name const &); \
     }; \
      \
     template <class EXPR1, class EXPR2> \
@@ -1562,6 +1600,8 @@ MAKE_FUNCTOR_MINMAX(max, >)
          \
         EXPR1 expr1_; \
         EXPR2 expr2_; \
+        \
+        Functor_##name & operator=(Functor_##name const &); \
     }; \
      \
     template <class EXPR1, class EXPR2> \
@@ -1650,6 +1690,8 @@ MAKE_FUNCTOR_BINARY_OPERATOR(bitXor, ^)
          \
         EXPR1 expr1_; \
         EXPR2 expr2_; \
+        \
+        Functor_##name & operator=(Functor_##name const &); \
     }; \
      \
     template <class EXPR1, class EXPR2> \
@@ -1713,6 +1755,9 @@ struct UnaryFctPtrFunctor
   
     EXPR expr_;
     RES (*f_)(ARG);
+  
+  private:
+    UnaryFctPtrFunctor & operator=(UnaryFctPtrFunctor const &); // not implemented
 };
 
 template <class EXPR, class RES, class ARG>
@@ -1783,11 +1828,15 @@ struct BinaryFctPtrFunctor
     {
         return f_(expr1_(v1, v2, v3), expr2_(v1, v2, v3));
     }
+    
   protected:
   
     EXPR1 expr1_;
     EXPR2 expr2_;
     RES (*f_)(ARG1, ARG2);
+  
+  private:
+    BinaryFctPtrFunctor & operator=(BinaryFctPtrFunctor const &); // not implemented
 };
 
 template <class EXPR1, class EXPR2, class RES, class ARG1, class ARG2>
@@ -1880,6 +1929,9 @@ struct CommaFunctor
   
     EXPR1 expr1_;
     EXPR2 expr2_;
+  
+  private:
+    CommaFunctor & operator=(CommaFunctor const &); // not implemented
 };
 
 template <class Expr1, class Expr2>
@@ -1958,6 +2010,9 @@ struct CommaAnalyser
   
     EXPR1 expr1_;
     EXPR2 expr2_;
+  
+  private:
+    CommaAnalyser & operator=(CommaAnalyser const &); // not implemented
 };
 
 template <class EXPR1, class EXPR2>
