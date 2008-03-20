@@ -30,7 +30,7 @@
 /*    HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,      */
 /*    WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING      */
 /*    FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR     */
-/*    OTHER DEALINGS IN THE SOFTWARE.                                   */                
+/*    OTHER DEALINGS IN THE SOFTWARE.                                   */
 /*                                                                      */
 /************************************************************************/
 
@@ -885,16 +885,21 @@ class FunctorTraits<Threshold<SrcValueType, DestValueType> >
 /** \brief Adjust brightness and contrast of an image.
 
     This functor applies a gamma correction to each pixel in order to
-    modify the brightness of the image. To the result of the gamma correction,
-    another transform is applied that modifies the contrast. The brightness and
-    contrast parameters must be positive. Values greater than 1 will increase image
-    brightness and contrast, values smaller than 1 decrease them. A value = 1 will
-    have no effect.
-    For \ref RGBValue "RGBValue's", the transforms are applied component-wise. The pixel
-    values are assumed to lie between the given minimum and maximum
-    values. In case of RGB, this is again understood component-wise. In case
-    of <TT>unsigned char</TT>, min and max default to 0 and 255 respectively.
-    Precisely, the following transform is applied to each <em> PixelValue</em>:
+    modify the brightness of the image. To the result of the gamma
+    correction, another transform is applied that modifies the
+    contrast. The brightness and contrast parameters must be
+    positive. Values greater than 1 will increase image brightness or
+    contrast respectively, values smaller than 1 decrease them.  A
+    value of exactly 1 will have no effect.  If contrast is set to 1,
+    the result is equivalent to that of the GammaFunctor with gamma =
+    1./brightness.
+
+    For \ref RGBValue "RGBValue's", the transforms are applied
+    component-wise. The pixel values are assumed to lie between the
+    given minimum and maximum values (in case of RGB, this is again
+    understood component-wise). In case of <TT>unsigned char</TT>, min
+    and max default to 0 and 255 respectively.  Precisely, the
+    following transform is applied to each <em> PixelValue</em>:
 
     \f[
     \begin{array}{rcl}
@@ -1144,6 +1149,260 @@ class BrightnessContrastFunctor<RGBValue<unsigned char> >
     }
 };
 
+
+
+/********************************************************/
+/*                                                      */
+/*                     GammaFunctor                     */
+/*                                                      */
+/********************************************************/
+
+/** \brief Perform gamma correction of an image.
+
+    This functor applies a gamma correction to each pixel in order to
+    modify the brightness of the image.  Gamma values smaller than 1
+    will increase image brightness, whereas values greater than 1
+    decrease it. A value of gamma = 1 will have no effect.  (See also
+    BrightnessContrastFunctor, which additionally changes the
+    contrast.)
+
+    For \ref RGBValue "RGBValue's", the transforms are applied
+    component-wise.  For ease of use, the pixel values are assumed to
+    lie between the given minimum and maximum values (in case of RGB,
+    this is again understood component-wise). In case of <TT>unsigned
+    char</TT>, min and max default to 0 and 255 respectively.
+    Precisely, the following transform is applied to each <em>
+    PixelValue</em>:
+
+    \f[
+    \begin{array}{rcl}
+    V_1 & = & \frac{PixelValue - min}{max - min} \\
+    V_2 & = & V_1^{gamma} \\
+    Result & = & V_2 (max - min) + min
+    \end{array}
+    \f]
+
+    If the <TT>PixelType</TT> is <TT>unsigned char</TT>, a
+    look-up-table is used for faster computation.
+
+    <b> Traits defined:</b>
+
+    <tt>FunctorTraits::isUnaryFunctor</tt> is true (<tt>VigraTrueType</tt>)
+
+    <b> Usage:</b>
+
+        <b>\#include</b> \<<a href="transformimage_8hxx-source.html">vigra/transformimage.hxx</a>\><br>
+        Namespace: vigra
+
+    \code
+    vigra::BImage bimage(width, height);
+    double gamma;
+    ...
+    vigra::transformImage(srcImageRange(bimage), destImage(bimage),
+       vigra::GammaFunctor<unsigned char>(gamma));
+
+
+
+    vigra::FImage fimage(width, height);
+    ...
+
+    vigra::FindMinmax<float> minmax;
+    vigra::inspectImage(srcImageRange(fimage), minmax);
+
+    vigra::transformImage(srcImageRange(fimage), destImage(fimage),
+       vigra::GammaFunctor<float>(gamma, minmax.min, minmax.max));
+
+    \endcode
+
+    <b> Required Interface:</b>
+
+    Scalar types: must be a linear algebra (+, - *, NumericTraits),
+    strict weakly ordered (<), and <TT>pow()</TT> must be defined.
+
+    RGB values: the component type must meet the above requirements.
+*/
+template <class PixelType>
+class GammaFunctor
+{
+    typedef typename
+        NumericTraits<PixelType>::RealPromote promote_type;
+
+ public:
+
+        /** the functor's argument type
+        */
+    typedef PixelType argument_type;
+
+        /** the functor's result type
+        */
+    typedef PixelType result_type;
+
+        /** \deprecated use argument_type and result_type
+        */
+    typedef PixelType value_type;
+
+        /** Init functor for argument range <TT>[min, max]</TT>.
+            <TT>gamma</TT> values < 1 will increase brightness, > 1
+            will decrease it (gamma == 1 means no change).
+        */
+    GammaFunctor(promote_type gamma,
+                 argument_type const & min, argument_type const & max)
+    : gamma_(gamma),
+      min_(min),
+      diff_(max - min),
+      zero_(NumericTraits<promote_type>::zero()),
+      one_(NumericTraits<promote_type>::one())
+    {}
+
+        /** Calculate modified gray or color value
+        */
+    result_type operator()(argument_type const & v) const
+    {
+        promote_type v1 = (v - min_) / diff_;
+        promote_type brighter = VIGRA_CSTD::pow(v1, gamma_);
+        return result_type(diff_ * brighter + min_);
+    }
+
+  private:
+    promote_type gamma_;
+    argument_type min_;
+    promote_type diff_, zero_, one_;
+};
+
+template <>
+class GammaFunctor<unsigned char>
+{
+    typedef NumericTraits<unsigned char>::RealPromote promote_type;
+     unsigned char lut[256];
+
+ public:
+
+    typedef unsigned char value_type;
+
+    GammaFunctor(promote_type gamma,
+                 value_type const & min = 0, value_type const & max = 255)
+    {
+        GammaFunctor<promote_type> f(gamma, min, max);
+
+        for(int i = min; i <= max; ++i)
+        {
+            lut[i] = static_cast<unsigned char>(f(i)+0.5);
+        }
+    }
+
+    value_type operator()(value_type const & v) const
+    {
+
+        return lut[v];
+    }
+};
+
+#ifndef NO_PARTIAL_TEMPLATE_SPECIALIZATION
+
+template <class ComponentType>
+class GammaFunctor<RGBValue<ComponentType> >
+{
+    typedef typename
+        NumericTraits<ComponentType>::RealPromote promote_type;
+    GammaFunctor<ComponentType> red, green, blue;
+
+ public:
+
+    typedef RGBValue<ComponentType> value_type;
+
+    GammaFunctor(promote_type gamma,
+                 value_type const & min, value_type const & max)
+    : red(gamma, min.red(), max.red()),
+      green(gamma, min.green(), max.green()),
+      blue(gamma, min.blue(), max.blue())
+    {}
+
+    value_type operator()(value_type const & v) const
+    {
+        return value_type(red(v.red()), green(v.green()), blue(v.blue()));
+    }
+};
+
+#else // NO_PARTIAL_TEMPLATE_SPECIALIZATION
+
+template <>
+class GammaFunctor<RGBValue<int> >
+{
+    typedef NumericTraits<int>::RealPromote promote_type;
+    GammaFunctor<int> red, green, blue;
+
+ public:
+
+    typedef RGBValue<int> value_type;
+
+    GammaFunctor(promote_type gamma,
+                 value_type const & min, value_type const & max)
+    : red(gamma, min.red(), max.red()),
+      green(gamma, min.green(), max.green()),
+      blue(gamma, min.blue(), max.blue())
+    {}
+
+    value_type operator()(value_type const & v) const
+    {
+        return value_type(red(v.red()), green(v.green()), blue(v.blue()));
+    }
+};
+
+template <>
+class GammaFunctor<RGBValue<float> >
+{
+    typedef NumericTraits<float>::RealPromote promote_type;
+    GammaFunctor<float> red, green, blue;
+
+ public:
+
+    typedef RGBValue<float> value_type;
+
+    GammaFunctor(promote_type gamma,
+                 value_type const & min, value_type const & max)
+    : red(gamma, min.red(), max.red()),
+      green(gamma, min.green(), max.green()),
+      blue(gamma, min.blue(), max.blue())
+    {}
+
+    value_type operator()(value_type const & v) const
+    {
+        return value_type(red(v.red()), green(v.green()), blue(v.blue()));
+    }
+};
+
+template <class PixelType>
+class FunctorTraits<GammaFunctor<PixelType> >
+: public FunctorTraitsBase<GammaFunctor<PixelType> >
+{
+  public:
+    typedef VigraTrueType isUnaryFunctor;
+};
+
+#endif // NO_PARTIAL_TEMPLATE_SPECIALIZATION
+
+template <>
+class GammaFunctor<RGBValue<unsigned char> >
+{
+    typedef NumericTraits<unsigned char>::RealPromote promote_type;
+    GammaFunctor<unsigned char> red, green, blue;
+
+ public:
+    typedef RGBValue<unsigned char> value_type;
+
+    GammaFunctor(promote_type gamma,
+                 value_type const & min = value_type(0,0,0),
+                 value_type const & max = value_type(255, 255, 255))
+    : red(gamma, min.red(), max.red()),
+      green(gamma, min.green(), max.green()),
+      blue(gamma, min.blue(), max.blue())
+    {}
+
+    value_type operator()(value_type const & v) const
+    {
+        return value_type(red(v.red()), green(v.green()), blue(v.blue()));
+    }
+};
 
 
 /********************************************************/
