@@ -1079,7 +1079,7 @@ BasicImage<PIXELTYPE, Alloc>::resize(int width, int height, value_type const & d
         {
             if (width*height != width_*height_) // different sizes, must reallocate
             {
-                newdata = allocator_.allocate(width*height);
+                newdata = allocator_.allocate(typename Alloc::size_type(width*height));
                 std::uninitialized_fill_n(newdata, width*height, d);
                 newlines = initLineStartArray(newdata, width, height);
                 deallocate();
@@ -1089,7 +1089,7 @@ BasicImage<PIXELTYPE, Alloc>::resize(int width, int height, value_type const & d
                 newdata = data_;
                 std::fill_n(newdata, width*height, d);
                 newlines = initLineStartArray(newdata, width, height);
-                pallocator_.deallocate(lines_, height_);
+                pallocator_.deallocate(lines_, typename Alloc::size_type(height_));
             }
         }
         else
@@ -1122,7 +1122,7 @@ BasicImage<PIXELTYPE, Alloc>::resizeCopy(int width, int height, const_pointer da
         {
             if (newsize != width_*height_) // different sizes, must reallocate
             {
-                newdata = allocator_.allocate(newsize);
+                newdata = allocator_.allocate(typename Alloc::size_type(newsize));
                 std::uninitialized_copy(data, data + newsize, newdata);
                 newlines = initLineStartArray(newdata, width, height);
                 deallocate();
@@ -1132,7 +1132,7 @@ BasicImage<PIXELTYPE, Alloc>::resizeCopy(int width, int height, const_pointer da
                 newdata = data_;
                 std::copy(data, data + newsize, newdata);
                 newlines = initLineStartArray(newdata, width, height);
-                pallocator_.deallocate(lines_, height_);
+                pallocator_.deallocate(lines_, typename Alloc::size_type(height_));
             }
         }
         else
@@ -1175,8 +1175,8 @@ BasicImage<PIXELTYPE, Alloc>::deallocate()
 
         for(; i != iend; ++i)   (*i).~PIXELTYPE();
 
-        allocator_.deallocate(data_, width()*height());
-        pallocator_.deallocate(lines_, height_);
+        allocator_.deallocate(data_, typename Alloc::size_type(width()*height()));
+        pallocator_.deallocate(lines_, typename Alloc::size_type(height_));
     }
 }
 
@@ -1184,7 +1184,7 @@ template <class PIXELTYPE, class Alloc>
 PIXELTYPE **
 BasicImage<PIXELTYPE, Alloc>::initLineStartArray(value_type * data, int width, int height)
 {
-    value_type ** lines = pallocator_.allocate(height);
+    value_type ** lines = pallocator_.allocate(typename Alloc::size_type(height));
     for(int y=0; y<height; ++y)
          lines[y] = data + y*width;
     return lines;
