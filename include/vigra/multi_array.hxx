@@ -958,14 +958,34 @@ public:
     
         /** bind the M outmost dimensions to certain indices.
             this reduces the dimensionality of the image to
-            max { 1, N-M }
+            max { 1, N-M }.
+
+            <b>Usage:</b> 
+            \code
+            // create a 3D array of size 40x30x20
+            typedef MultiArray<3, double>::difference_type Shape;
+            MultiArray<3, double> array3(Shape(40, 30, 20));
+
+            // get a 1D array by fixing index 1 to 12, and index 2 to 10
+            MultiArrayView <1, double> array1 = array3.bindOuter(TinyVector<int, 2>(12, 10)); 
+            \endcode
         */
     template <unsigned int M>
     MultiArrayView <N-M, T, C> bindOuter (const TinyVector <MultiArrayIndex, M> &d) const;
 
         /** bind the M innermost dimensions to certain indices.
             this reduces the dimensionality of the image to
-            max { 1, N-M }
+            max { 1, N-M }.
+
+            <b>Usage:</b> 
+            \code
+            // create a 3D array of size 40x30x20
+            typedef MultiArray<3, double>::difference_type Shape;
+            MultiArray<3, double> array3(Shape(40, 30, 20));
+
+            // get a 1D array by fixing index 0 to 12, and index 1 to 10
+            MultiArrayView <1, double, StridedArrayTag> array1 = array3.bindInner(TinyVector<int, 2>(12, 10)); 
+            \endcode
         */
     template <unsigned int M>
     MultiArrayView <N-M, T, StridedArrayTag>
@@ -973,7 +993,20 @@ public:
 
         /** bind dimension M to index d.
             this reduces the dimensionality of the image to
-            max { 1, N-1 }
+            max { 1, N-1 }.
+
+            <b>Usage:</b> 
+            \code
+            // create a 3D array of size 40x30x20
+            typedef MultiArray<3, double>::difference_type Shape;
+            MultiArray<3, double> array3(Shape(40, 30, 20));
+
+            // get a 2D array by fixing index 1 to 12
+            MultiArrayView <2, double> array2 = array3.bind<1>(12); 
+
+            // get a 2D array by fixing index 0 to 23
+            MultiArrayView <2, double, StridedArrayTag> array2a = array3.bind<0>(23); 
+            \endcode
          */
     template <unsigned int M>
     MultiArrayView <N-1, T, typename vigra::detail::MaybeStrided <M>::type >
@@ -981,25 +1014,65 @@ public:
 
         /** bind the outmost dimension to a certain index.
             this reduces the dimensionality of the image to
-            max { 1, N-1 }
+            max { 1, N-1 }.
+
+            <b>Usage:</b> 
+            \code
+            // create a 3D array of size 40x30x20
+            typedef MultiArray<3, double>::difference_type Shape;
+            MultiArray<3, double> array3(Shape(40, 30, 20));
+
+            // get a 2D array by fixing the outermost index (i.e. index 2) to 12
+            MultiArrayView <2, double> array2 = array3.bindOuter(12); 
+            \endcode
         */
     MultiArrayView <N-1, T, C> bindOuter (difference_type_1 d) const;
 
         /** bind the innermost dimension to a certain index.
             this reduces the dimensionality of the image to
-            max { 1, N-1 }
+            max { 1, N-1 }.
+
+            <b>Usage:</b> 
+            \code
+            // create a 3D array of size 40x30x20
+            typedef MultiArray<3, double>::difference_type Shape;
+            MultiArray<3, double> array3(Shape(40, 30, 20));
+
+            // get a 2D array by fixing the innermost index (i.e. index 0) to 23
+            MultiArrayView <2, double, StridedArrayTag> array2 = array3.bindInner(23); 
+            \endcode
         */
     MultiArrayView <N-1, T, StridedArrayTag> bindInner (difference_type_1 d) const;
 
         /** bind dimension m to index d.
             this reduces the dimensionality of the image to
-            max { 1, N-1 }
+            max { 1, N-1 }.
+
+            <b>Usage:</b> 
+            \code
+            // create a 3D array of size 40x30x20
+            typedef MultiArray<3, double>::difference_type Shape;
+            MultiArray<3, double> array3(Shape(40, 30, 20));
+
+            // get a 2D array by fixing index 2 to 15
+            MultiArrayView <2, double, StridedArrayTag> array2 = array3.bindAt(2, 15); 
+            \endcode
          */
     MultiArrayView <N-1, T, StridedArrayTag>
     bindAt (difference_type_1 m, difference_type_1 d) const;
 
         /** create a rectangular subarray that spans between the
             points p and q, where p is in the subarray, q not.
+
+            <b>Usage:</b> 
+            \code
+            // create a 3D array of size 40x30x20
+            typedef MultiArray<3, double>::difference_type Shape;
+            MultiArray<3, double> array3(Shape(40, 30, 20));
+
+            // get a subarray set is smaller by one element at all sides
+            MultiArrayView <3, double> subarray = array3.subarray(Shape(1,1,1), Shape(39, 29, 19)); 
+            \endcode
         */
     MultiArrayView subarray (const difference_type &p,
                              const difference_type &q) const
@@ -1026,8 +1099,8 @@ public:
 
         /** permute the dimensions of the array.
             The function exchanges the meaning of the dimensions without copying the data. 
-            In case of 2-dimensional array, this is simply array transposition. In higher dimensions,
-            there are more posibilities.
+            In case of a 2-dimensional array, this is simply array transposition. In higher dimensions,
+            there are more possibilities.
             
             <b>Usage:</b><br>
             \code
