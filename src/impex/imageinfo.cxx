@@ -175,7 +175,7 @@ VIGRA_EXPORT void findImageSequence(const std::string &name_base,
                 {
                     std::string num(numbuf);
                     std::string name = name_base + num + name_ext;
-                    // skip matching files names that are not images 
+                    // skip matching files names that are not images
                     if(isImage(name.c_str()))
                         result.push_back(num);
                 }
@@ -243,7 +243,7 @@ void findImageSequence(const std::string &name_base,
             {
                 std::string num(numbuf);
                 std::string name = name_base + num + name_ext;
-                // skip matching files names that are not images 
+                // skip matching files names that are not images
                 if(isImage(name.c_str()))
                     result.push_back(num);
             }
@@ -322,7 +322,7 @@ bool isImage(char const * filename)
 // class ImageExportInfo
 
 ImageExportInfo::ImageExportInfo( const char * filename )
-    : m_filename(filename), 
+    : m_filename(filename),
       m_x_res(0), m_y_res(0),
       fromMin_(0.0), fromMax_(0.0), toMin_(0.0), toMax_(0.0)
 {}
@@ -642,7 +642,7 @@ std::auto_ptr<Decoder> decoder( const ImageImportInfo & info )
 }
 
 VolumeImportInfo::VolumeImportInfo(const std::string &filename)
-: size_(0, 0, 0),
+: shape_(0, 0, 0),
   resolution_(1.f, 1.f, 1.f),
   numBands_(0)
 {
@@ -672,9 +672,9 @@ VolumeImportInfo::VolumeImportInfo(const std::string &filename)
                 splitPathFromFilename(baseName, path_, name_);
                 baseName_ = baseName;
                 extension_ = extension;
-                size_[2] = numbers.size();
+                shape_[2] = numbers.size();
                 std::swap(numbers, numbers_);
-                
+
                 break;
             }
         }
@@ -703,11 +703,11 @@ VolumeImportInfo::VolumeImportInfo(const std::string &filename)
                 value = detail::trimString(value);
 
                 if(key == "width")
-                    size_[0] = atoi(value.c_str());
+                    shape_[0] = atoi(value.c_str());
                 else if(key == "height")
-                    size_[1] = atoi(value.c_str());
+                    shape_[1] = atoi(value.c_str());
                 else if(key == "depth")
-                    size_[2] = atoi(value.c_str());
+                    shape_[2] = atoi(value.c_str());
                 else if(key == "datatype")
                 {
                     // FUTURE: store bit depth / signedness
@@ -738,7 +738,7 @@ VolumeImportInfo::VolumeImportInfo(const std::string &filename)
             }
         }
 
-        if((size_[0]*size_[1]*size_[2] > 0) && (rawFilename_.size() > 0))
+        if((shape_[0]*shape_[1]*shape_[2] > 0) && (rawFilename_.size() > 0))
         {
             if(!numBands_)
                 numBands_ = 1; // default to UNSIGNED_CHAR datatype
@@ -763,7 +763,7 @@ VolumeImportInfo::VolumeImportInfo(const std::string &filename)
 }
 
 VolumeImportInfo::VolumeImportInfo(const std::string &baseName, const std::string &extension)
-: size_(0, 0, 0),
+: shape_(0, 0, 0),
   resolution_(1.f, 1.f, 1.f),
   numBands_(0)
 {
@@ -779,15 +779,15 @@ VolumeImportInfo::VolumeImportInfo(const std::string &baseName, const std::strin
     splitPathFromFilename(baseName, path_, name_);
     baseName_ = baseName;
     extension_ = extension;
-    size_[2] = numbers.size();
+    shape_[2] = numbers.size();
     std::swap(numbers, numbers_);
 }
 
 void VolumeImportInfo::getVolumeInfoFromFirstSlice(const std::string &filename)
 {
     ImageImportInfo info(filename.c_str());
-    size_[0] = info.width();
-    size_[1] = info.height();
+    shape_[0] = info.width();
+    shape_[1] = info.height();
     resolution_[1] = -1.f; // assume images to be right-handed
     pixelType_ = info.pixelType();
     numBands_ = info.numBands();

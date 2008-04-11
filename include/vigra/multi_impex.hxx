@@ -64,14 +64,19 @@ class VolumeImportInfo
   public:
     typedef ImageImportInfo::PixelType PixelType;
 
-    typedef TinyVector<int, 3>         size_type;
+        /// type of volume size returned by shape()
+    typedef MultiArrayShape<3>::type   ShapeType;
 
+        /// provided for backwards-compatibility (deprecated)
+    typedef ShapeType                  size_type;
+
+        /// 3D resolution type returned by resolution()
     typedef TinyVector<float, 3>       Resolution;
 
     VIGRA_EXPORT VolumeImportInfo(const std::string &filename);
     VIGRA_EXPORT VolumeImportInfo(const std::string &baseName, const std::string &extension);
 
-    VIGRA_EXPORT size_type size() const { return size_; }
+    VIGRA_EXPORT ShapeType shape() const { return shape_; }
 
         /**
          * resolution() contains the alignment and resolution of the
@@ -96,7 +101,7 @@ class VolumeImportInfo
 
     // get base file name without path, image index, and extension
     VIGRA_EXPORT const std::string &name() const { return name_; }
-    
+
     VIGRA_EXPORT const std::string &description() const { return description_; }
 
     template <class T, class Allocator>
@@ -104,8 +109,8 @@ class VolumeImportInfo
 
   protected:
     void getVolumeInfoFromFirstSlice(const std::string &filename);
-    
-    size_type size_;
+
+    size_type shape_;
     Resolution resolution_;
     PixelType pixelType_;
     int numBands_;
@@ -120,8 +125,8 @@ class VolumeImportInfo
 template <class T, class Allocator>
 void VolumeImportInfo::importImpl(MultiArray <3, T, Allocator> &volume) const
 {
-    volume.reshape(this->size());
-    
+    volume.reshape(this->shape());
+
     if(rawFilename_.size())
     {
         std::string dirName, baseName;
@@ -139,7 +144,7 @@ void VolumeImportInfo::importImpl(MultiArray <3, T, Allocator> &volume) const
 
         std::ifstream s(rawFilename_.c_str(), std::ios::binary);
         vigra_precondition(s.good(), "RAW file could not be opened");
-        s.read((char*)volume.begin(), size_[0]*size_[1]*size_[2]*sizeof(T));
+        s.read((char*)volume.begin(), shape_[0]*shape_[1]*shape_[2]*sizeof(T));
 
 #ifdef _MSC_VER
         _chdir(oldCWD);
@@ -148,7 +153,7 @@ void VolumeImportInfo::importImpl(MultiArray <3, T, Allocator> &volume) const
 #endif
 
         vigra_postcondition(
-            volume.shape() == size(), "imported volume has wrong size");
+            volume.shape() == shape(), "imported volume has wrong size");
     }
     else
     {
@@ -217,17 +222,17 @@ void importVolume (MultiArray <3, T, Allocator> & volume,
 /** \brief Function for importing a 3D volume.
 
     The data can be given in two ways:
-    
+
     <UL>
     <LI> If the volume is stored in a by-slice manner (e.g. one image per slice),
          the <tt>filename</tt> can refer to an arbitrary image from the set. <tt>importVolume()</tt>
          then assumes that the slices are enumerated like <tt>name_base+"[0-9]+"+name_ext</tt>,
-         where <tt>name_base</tt>, the index, and <tt>name_ext</tt> are determined automatically. 
-         All slice files with the same name base and extension are considered part of the same 
-         volume. Slice numbers must be non-negative, but can otherwise start anywhere and need 
-         not be successive. Slices will be read in ascending numerical (not lexicographic) order. 
+         where <tt>name_base</tt>, the index, and <tt>name_ext</tt> are determined automatically.
+         All slice files with the same name base and extension are considered part of the same
+         volume. Slice numbers must be non-negative, but can otherwise start anywhere and need
+         not be successive. Slices will be read in ascending numerical (not lexicographic) order.
          All slices must have the same size.
-    <li> Otherwise, <tt>importVolume()</tt> will try to read <tt>filename</tt> as an 
+    <li> Otherwise, <tt>importVolume()</tt> will try to read <tt>filename</tt> as an
          info text file with the following key-value pairs:
          <UL>
          <LI> name = [short descriptive name of the volume] (optional)
@@ -239,10 +244,10 @@ void importVolume (MultiArray <3, T, Allocator> & volume,
          <li> depth = [positive integer] (required)
          <li> datatype = [UNSIGNED_CHAR | UNSIGNED_BYTE] (default: UNSIGNED_CHAR)
          </UL>
-         The voxel type is currently assumed to be binary compatible to the <tt>value_type T</TT> 
-         of the <tt>MuliArray</tt>. Lines starting with "#" are ignored. 
+         The voxel type is currently assumed to be binary compatible to the <tt>value_type T</TT>
+         of the <tt>MuliArray</tt>. Lines starting with "#" are ignored.
     </UL>
-    
+
     In either case, the <tt>volume</tt> will be reshaped to match the count and
     size of the slices found.
 
@@ -282,28 +287,28 @@ void importVolume(VolumeImportInfo const & info, MultiArray <3, T, Allocator> &v
 namespace detail {
 
 template <class T>
-void setRangeMapping(std::string const & pixeltype, 
+void setRangeMapping(std::string const & pixeltype,
                      FindMinMax<T> const & minmax, ImageExportInfo & info)
 {
     if(pixeltype == "UINT8")
-        info.setForcedRangeMapping(minmax.min, minmax.max, 
-                                   (double)NumericTraits<Int8>::min(), 
+        info.setForcedRangeMapping(minmax.min, minmax.max,
+                                   (double)NumericTraits<Int8>::min(),
                                    (double)NumericTraits<Int8>::max());
     else if(pixeltype == "INT16")
-        info.setForcedRangeMapping(minmax.min, minmax.max, 
-                                   (double)NumericTraits<Int16>::min(), 
+        info.setForcedRangeMapping(minmax.min, minmax.max,
+                                   (double)NumericTraits<Int16>::min(),
                                    (double)NumericTraits<Int16>::max());
     else if(pixeltype == "UINT16")
-        info.setForcedRangeMapping(minmax.min, minmax.max, 
-                                   (double)NumericTraits<UInt16>::min(), 
+        info.setForcedRangeMapping(minmax.min, minmax.max,
+                                   (double)NumericTraits<UInt16>::min(),
                                    (double)NumericTraits<UInt16>::max());
     else if(pixeltype == "INT32")
-        info.setForcedRangeMapping(minmax.min, minmax.max, 
-                                   (double)NumericTraits<Int32>::min(), 
+        info.setForcedRangeMapping(minmax.min, minmax.max,
+                                   (double)NumericTraits<Int32>::min(),
                                    (double)NumericTraits<Int32>::max());
     else if(pixeltype == "UINT32")
-        info.setForcedRangeMapping(minmax.min, minmax.max, 
-                                   (double)NumericTraits<UInt32>::min(), 
+        info.setForcedRangeMapping(minmax.min, minmax.max,
+                                   (double)NumericTraits<UInt32>::min(),
                                    (double)NumericTraits<UInt32>::max());
     else if(pixeltype == "FLOAT")
         info.setForcedRangeMapping(minmax.min, minmax.max, 0.0, 1.0);
@@ -312,7 +317,7 @@ void setRangeMapping(std::string const & pixeltype,
 }
 
 template <class T, class Tag>
-void setRangeMapping(MultiArrayView <3, T, Tag> const & volume, 
+void setRangeMapping(MultiArrayView <3, T, Tag> const & volume,
                      ImageExportInfo & info, VigraTrueType /* isScalar */)
 {
     std::string pixeltype = info.getPixelType();
@@ -328,7 +333,7 @@ void setRangeMapping(MultiArrayView <3, T, Tag> const & volume,
 }
 
 template <class T, class Tag>
-void setRangeMapping(MultiArrayView <3, T, Tag> const & volume, 
+void setRangeMapping(MultiArrayView <3, T, Tag> const & volume,
                      ImageExportInfo & info, VigraFalseType /* isScalar */)
 {
     typedef typename T::value_type SrcComponent;
@@ -379,7 +384,7 @@ void exportVolume (MultiArrayView <3, T, Tag> const & volume,
     std::string name = name_base + name_ext;
     ImageExportInfo info(name.c_str());
     detail::setRangeMapping(volume, info, typename NumericTraits<T>::isScalar());
-    
+
     const unsigned int depth = volume.shape (2);
     int numlen = static_cast <int> (std::ceil (std::log10 ((double)depth)));
     for (unsigned int i = 0; i < depth; ++i)
@@ -391,7 +396,7 @@ void exportVolume (MultiArrayView <3, T, Tag> const & volume,
         std::string name_num;
         stream >> name_num;
         std::string name = name_base + name_num + name_ext;
-        
+
         if(i == 0)
         {
         }
