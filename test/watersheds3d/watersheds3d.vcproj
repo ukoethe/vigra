@@ -167,7 +167,7 @@
 				SuppressStartupBanner="true"
 				AdditionalLibraryDirectories="..\..\src\impex"
 				GenerateDebugInformation="true"
-				ProgramDatabaseFile=".\Debug/watersheds3d.pdb"
+				ProgramDatabaseFile="./Debug/watersheds3d.pdb"
 				SubSystem="1"
 			/>
 			<Tool
