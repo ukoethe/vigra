@@ -60,7 +60,7 @@ s = '''/************************************************************************
 
 '''
 for k in t:
-    s += ifdefAround(k, l, pt % { 'A': k, 'B': k})
+    s += ifdefAround(k, k, pt % { 'A': k, 'B': k})
     for l in t:
         if l == k: continue
         s += ifdefAround(k, l, pt % { 'A': k, 'B': l})
