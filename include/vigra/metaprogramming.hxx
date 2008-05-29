@@ -38,6 +38,7 @@
 #define VIGRA_METAPROGRAMMING_HXX
 
 #include "config.hxx"
+#include <limits.h>
 
 namespace vigra {
 
@@ -133,7 +134,14 @@ class TypeTraits<T const *>
 
 #endif // NO_PARTIAL_TEMPLATE_SPECIALIZATION
 
-#define VIGRA_TYPE_TRAITS(type) \
+namespace detail {
+
+template <int size>
+struct SizeToType;
+
+} // namespace detail 
+
+#define VIGRA_TYPE_TRAITS(type, size) \
 template<> \
 class TypeTraits<type> \
 { \
@@ -141,24 +149,56 @@ class TypeTraits<type> \
     typedef VigraFalseType isConst; \
     typedef VigraTrueType isPOD; \
     typedef VigraTrueType isBuiltinType; \
-};
+    typedef char TypeToSize[size]; \
+}; \
+ \
+namespace detail { \
+  TypeTraits<type>::TypeToSize * typeToSize(type); \
+  \
+  template <> \
+  struct SizeToType<size> \
+  { \
+      typedef type result; \
+  }; \
+} 
 
-VIGRA_TYPE_TRAITS(char)
-VIGRA_TYPE_TRAITS(signed char)
-VIGRA_TYPE_TRAITS(unsigned char)
-VIGRA_TYPE_TRAITS(short)
-VIGRA_TYPE_TRAITS(unsigned short)
-VIGRA_TYPE_TRAITS(int)
-VIGRA_TYPE_TRAITS(unsigned int)
-VIGRA_TYPE_TRAITS(long)
-VIGRA_TYPE_TRAITS(unsigned long)
-VIGRA_TYPE_TRAITS(float)
-VIGRA_TYPE_TRAITS(double)
-VIGRA_TYPE_TRAITS(long double)
+VIGRA_TYPE_TRAITS(char, 1)
+VIGRA_TYPE_TRAITS(signed char, 2)
+VIGRA_TYPE_TRAITS(unsigned char, 3)
+VIGRA_TYPE_TRAITS(short, 4)
+VIGRA_TYPE_TRAITS(unsigned short, 5)
+VIGRA_TYPE_TRAITS(int, 6)
+VIGRA_TYPE_TRAITS(unsigned int, 7)
+VIGRA_TYPE_TRAITS(long, 8)
+VIGRA_TYPE_TRAITS(unsigned long, 9)
+VIGRA_TYPE_TRAITS(float, 10)
+VIGRA_TYPE_TRAITS(double, 11)
+VIGRA_TYPE_TRAITS(long double, 12)
+#ifdef LLONG_MAX
+VIGRA_TYPE_TRAITS(long long, 13)
+VIGRA_TYPE_TRAITS(unsigned long long, 14)
+#endif
 
 #undef VIGRA_TYPE_TRAITS
 
 //@}
+
+template <class A>
+struct Not;
+
+template <>
+struct Not<VigraTrueType>
+{
+    typedef VigraFalseType result;
+    static const bool boolResult = false;
+};
+
+template <>
+struct Not<VigraFalseType>
+{
+    typedef VigraTrueType result;
+    static const bool boolResult = true;
+};
 
 template <class L, class R>
 struct And;
