@@ -317,6 +317,8 @@ class RandomNumberGenerator
         return this->get();
     }
 
+
+#if 0 // difficult implementation necessary if low bits are not sufficiently random
         // in [0,beyond)
     UInt32 uniformInt(UInt32 beyond) const
     {
@@ -331,6 +333,25 @@ class RandomNumberGenerator
         while(res >= beyond)
             res = this->get() / factor;
         return res;
+    }
+#endif /* #if 0 */
+
+        // in [0,beyond) -- simple implementation when low bits are sufficiently random, which is
+        // the case for TT800 and MT19937
+    UInt32 uniformInt(UInt32 beyond) const
+    {
+        if(beyond < 2)
+            return 0;
+
+        UInt32 remainder = (NumericTraits<UInt32>::max() - beyond + 1) % beyond;
+        UInt32 lastSafeValue = NumericTraits<UInt32>::max() - remainder;
+        UInt32 res = this->get();
+
+        // Use rejection method to avoid quantization bias.
+        // We will need two raw random numbers in amortized worst case.
+        while(res > lastSafeValue)
+            res = this->get();
+        return res % beyond;
     }
     
         // in [0,1)
