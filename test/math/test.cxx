@@ -321,7 +321,7 @@ struct FunctionsTest
         shouldEqualTolerance(g5(2.711252359948531), 0, epsilon);
         shouldEqualTolerance(g5(5.713940027745611), 0, epsilon);
     }
-    
+
     void testSpecialIntegerFunctions()
     {
         for(int i = 0; i < 1024; ++i)
@@ -337,7 +337,7 @@ struct FunctionsTest
             shouldEqual(vigra::floorPower2(roundPower2[i]), floorResult[i]);
             shouldEqual(vigra::ceilPower2(roundPower2[i]), ceilResult[i]);
         }
-        
+
         for(vigra::Int32 k=0; k<32; ++k)
         {
             shouldEqual(vigra::log2i(1 << k), k);
@@ -354,12 +354,12 @@ struct FunctionsTest
         shouldEqualTolerance(vigra::ellipticIntegralE(0.3, 0.3), 0.29960175507025716, 1e-14);
 
         shouldEqualTolerance(vigra::erf(0.3), 0.32862675945912745, 1e-7);
-        
+
         should(vigra::noncentralChi2CDFApprox(200, 0.0, 200.0) > 0.5);
         should(vigra::noncentralChi2CDFApprox(200, 0.0, 199.0) < 0.5);
         should(vigra::noncentralChi2CDF(200, 0.0, 200.0) > 0.5);
         should(vigra::noncentralChi2CDF(200, 0.0, 199.0) < 0.5);
-        
+
         shouldEqualTolerance(vigra::noncentralChi2CDF(2, 2.0, 2.0), 0.34574583872316456, 1e-7);
         shouldEqualTolerance(vigra::noncentralChi2(2, 2.0, 2.0), 0.154254161276835, 1e-7);
         shouldEqualTolerance(vigra::noncentralChi2CDF(3, 2.0, 2.0), 0.22073308707450343, 1e-7);
@@ -390,12 +390,12 @@ struct FunctionsTest
     {
         using namespace vigra;
         using namespace vigra::functor;
-        
+
         double data[] = {1.0, 5.0,
                          3.0, 2.0,
                         -2.0, 4.0};
         double *end = data + 6;
-        
+
         shouldEqual(argMin(data, end), data+4);
         shouldEqual(argMax(data, end), data+1);
         shouldEqual(argMinIf(data, end, Arg1() > Param(0.0)), data);
@@ -829,7 +829,7 @@ struct FixedPointTest
         shouldEqual(r3.value, (vigra::FixedPoint<2, 24>(d1 - d2)).value);
         mul(r1, r2, r3);
         shouldEqual(r3.value >> 2, (vigra::FixedPoint<2, 24>(d1 * d2)).value >> 2);
-        
+
         for(int i = 0; i < 1024; ++i)
         {
             vigra::FixedPoint<4,5> fv1(i, vigra::FPNoShift);
@@ -889,7 +889,7 @@ struct LinalgTest
                 ret (j, i) = ret (i, j) = random_double ();
         return ret;
     }
-    
+
     void testMatrix()
     {
         double data[] = {1.0, 5.0,
@@ -915,11 +915,11 @@ struct LinalgTest
         shouldEqual(a.norm(), norm(a));
         shouldEqual(rowCount(a), r);
         shouldEqual(columnCount(a), c);
-        
+
         for(unsigned int i=0, k=0; i<r; ++i)
             for(unsigned int j=0; j<c; ++j, ++k)
                 shouldEqual(zero(i,j), 0.0);
-                
+
         Matrix one = zero + Matrix(r,c).init(1.0);
         for(unsigned int i=0, k=0; i<r; ++i)
             for(unsigned int j=0; j<c; ++j, ++k)
@@ -959,10 +959,10 @@ struct LinalgTest
 
         b.init(0.0);
         should(b == zero);
-        
+
         Matrix::iterator ib = b.begin();
         b = a;
-        shouldEqual(ib, b.begin()); 
+        shouldEqual(ib, b.begin());
         shouldEqualSequence(a.begin(), a.end(), b.begin());
 
         b = 4.0 + a;
@@ -1097,7 +1097,7 @@ struct LinalgTest
                 shouldEqual(ac1(j,0), tref[k]);
             }
         }
-        
+
         double sn = squaredNorm(columnVector(a, 0));
         shouldEqual(sn, 26.0);
         shouldEqual(sn, dot(columnVector(a, 0), columnVector(a, 0)));
@@ -1162,28 +1162,28 @@ struct LinalgTest
         vigra::TinyVector<double, 2> tv(1.0, 2.0), tvrref(7.0, 9.0), tvlref(11.0, 7.0);
         shouldEqual(tm * tv, tvrref);
         shouldEqual(tv * tm, tvlref);
-        
+
         Matrix rep = repeatMatrix(a, 2, 4);
         shouldEqual(rowCount(rep), 2*r);
         shouldEqual(columnCount(rep), 4*c);
-        
+
         for(unsigned int l=0; l<4; ++l)
             for(unsigned int k=0; k<2; ++k)
                 for(unsigned int j=0; j<c; ++j)
                     for(unsigned int i=0; i<r; ++i)
                         shouldEqual(rep(k*r+i, l*c+j), a(i,j));
     }
- 
+
     void testArgMinMax()
     {
         using namespace vigra::functor;
-        
+
         double data[] = {1.0, 5.0,
                          3.0, 2.0,
                         -2.0, 4.0};
         unsigned int r = 3, c = 2;
         Matrix minmax(r, c, data);
-        
+
         shouldEqual(argMin(minmax), 2);
         shouldEqual(argMax(minmax), 3);
         shouldEqual(argMinIf(minmax, Arg1() > Param(0.0)), 0);
@@ -1194,24 +1194,24 @@ struct LinalgTest
 
     void testColumnAndRowStatistics()
     {
-#if defined(__GNUC__) && __GNUC__ == 3
+#if defined(__GNUC__)
         double epsilon = 1e-11, epsilon2 = 1e-8;
 #else
         double epsilon = 1e-13, epsilon2 = 1e-10;
 #endif
-        
+
         Matrix rowMean(size, 1), columnMean(1, size);
         Matrix rowStdDev(size, 1), columnStdDev(1, size);
         Matrix rowNorm(size, 1), columnNorm(1, size);
         Matrix rowCovariance(size, size), columnCovariance(size, size);
-        
+
         for(unsigned int i = 0; i < iterations; ++i)
         {
             Matrix a = random_matrix (size, size);
-            
+
             rowStatistics(a, rowMean, rowStdDev, rowNorm);
             columnStatistics(a, columnMean, columnStdDev, columnNorm);
-            
+
             for(unsigned int k=0; k<size; ++k)
             {
                 double rm = 0.0, cm = 0.0, rn = 0.0, cn = 0.0, rs = 0.0, cs = 0.0;
@@ -1223,10 +1223,10 @@ struct LinalgTest
                     cn += vigra::sq(a(l, k));
                 }
                 rm /= size;
-                cm /= size;                
+                cm /= size;
                 rn = std::sqrt(rn);
                 cn = std::sqrt(cn);
-                
+
                 shouldEqualTolerance(rm, rowMean(k,0), epsilon);
                 shouldEqualTolerance(cm, columnMean(0,k), epsilon);
                 shouldEqualTolerance(rn, rowNorm(k,0), epsilon);
@@ -1238,8 +1238,8 @@ struct LinalgTest
                     cs += vigra::sq(a(l, k) - cm);
                 }
                 rs = std::sqrt(rs / (size-1));
-                cs = std::sqrt(cs / (size-1));                
-                
+                cs = std::sqrt(cs / (size-1));
+
                 shouldEqualTolerance(rs, rowStdDev(k,0), epsilon);
                 shouldEqualTolerance(cs, columnStdDev(0,k), epsilon);
             }
@@ -1260,7 +1260,7 @@ struct LinalgTest
             }
             rowCovarianceRef /= (size-1);
             columnCovarianceRef /= (size-1);
-            
+
             shouldEqualSequenceTolerance(rowCovariance.data(), rowCovariance.data()+size*size, rowCovarianceRef.data(), epsilon2);
             shouldEqualSequenceTolerance(columnCovariance.data(), columnCovariance.data()+size*size, columnCovarianceRef.data(), epsilon2);
         }
@@ -1277,59 +1277,59 @@ struct LinalgTest
 #else
         double epsilon = 1e-13, epsilon2 = 1e-10;
 #endif
-        
+
         Matrix rowMean(size, 1), columnMean(1, size);
         Matrix rowStdDev(size, 1), columnStdDev(1, size);
         Matrix rowNorm(size, 1), columnNorm(1, size);
-        
+
         Matrix rowPrepared(size, size), columnPrepared(size, size);
         Matrix rowMeanPrepared(size, 1), columnMeanPrepared(1, size);
         Matrix rowStdDevPrepared(size, 1), columnStdDevPrepared(1, size);
         Matrix rowNormPrepared(size, 1), columnNormPrepared(1, size);
         Matrix rowOffset(size, 1), columnOffset(1, size);
         Matrix rowScaling(size, 1), columnScaling(1, size);
-        
+
         Matrix zeroRowRef(size,1), zeroColRef(1, size);
         Matrix oneRowRef(size,1), oneColRef(1, size);
         oneRowRef.init(1.0);
         oneColRef.init(1.0);
-        
+
         {
             Matrix a = random_matrix (size, size);
-            
+
             columnStatistics(a, columnMean, columnStdDev, columnNorm);
-            
+
             prepareColumns(a, columnPrepared, columnOffset, columnScaling, ZeroMean);
             columnStatistics(columnPrepared, columnMeanPrepared, columnStdDevPrepared, columnNormPrepared);
             shouldEqualSequenceTolerance(zeroColRef.data(), zeroColRef.data()+size, columnMeanPrepared.data(), epsilon);
             shouldEqualSequenceTolerance(columnStdDev.data(), columnStdDev.data()+size, columnStdDevPrepared.data(), epsilon);
 
             Matrix ap = columnPrepared / pointWise(repeatMatrix(columnScaling, size, 1)) + repeatMatrix(columnOffset, size, 1);
-            shouldEqualSequenceTolerance(a.data(), a.data()+size*size, ap.data(), epsilon);            
+            shouldEqualSequenceTolerance(a.data(), a.data()+size*size, ap.data(), epsilon);
 
             prepareColumns(a, columnPrepared, columnOffset, columnScaling, UnitNorm);
             columnStatistics(columnPrepared, columnMeanPrepared, columnStdDevPrepared, columnNormPrepared);
             shouldEqualSequenceTolerance(oneColRef.data(), oneColRef.data()+size, columnNormPrepared.data(), epsilon);
-            
+
             ap = columnPrepared / pointWise(repeatMatrix(columnScaling, size, 1)) + repeatMatrix(columnOffset, size, 1);
-            shouldEqualSequenceTolerance(a.data(), a.data()+size*size, ap.data(), epsilon);            
+            shouldEqualSequenceTolerance(a.data(), a.data()+size*size, ap.data(), epsilon);
 
             prepareColumns(a, columnPrepared, columnOffset, columnScaling, UnitVariance);
             columnStatistics(columnPrepared, columnMeanPrepared, columnStdDevPrepared, columnNormPrepared);
             columnMeanPrepared /= columnScaling;
             shouldEqualSequenceTolerance(columnMean.data(), columnMean.data()+size, columnMeanPrepared.data(), epsilon2);
             shouldEqualSequenceTolerance(oneColRef.data(), oneColRef.data()+size, columnStdDevPrepared.data(), epsilon);
-            
+
             ap = columnPrepared / pointWise(repeatMatrix(columnScaling, size, 1)) + repeatMatrix(columnOffset, size, 1);
-            shouldEqualSequenceTolerance(a.data(), a.data()+size*size, ap.data(), epsilon);            
+            shouldEqualSequenceTolerance(a.data(), a.data()+size*size, ap.data(), epsilon);
 
             prepareColumns(a, columnPrepared, columnOffset, columnScaling, ZeroMean | UnitVariance);
             columnStatistics(columnPrepared, columnMeanPrepared, columnStdDevPrepared, columnNormPrepared);
             shouldEqualSequenceTolerance(zeroColRef.data(), zeroColRef.data()+size, columnMeanPrepared.data(), epsilon);
             shouldEqualSequenceTolerance(oneColRef.data(), oneColRef.data()+size, columnStdDevPrepared.data(), epsilon);
-            
+
             ap = columnPrepared / pointWise(repeatMatrix(columnScaling, size, 1)) + repeatMatrix(columnOffset, size, 1);
-            shouldEqualSequenceTolerance(a.data(), a.data()+size*size, ap.data(), epsilon);            
+            shouldEqualSequenceTolerance(a.data(), a.data()+size*size, ap.data(), epsilon);
 
             prepareColumns(a, columnPrepared, columnOffset, columnScaling, ZeroMean | UnitNorm);
             columnStatistics(columnPrepared, columnMeanPrepared, columnStdDevPrepared, columnNormPrepared);
@@ -1337,41 +1337,41 @@ struct LinalgTest
             shouldEqualSequenceTolerance(oneColRef.data(), oneColRef.data()+size, columnNormPrepared.data(), epsilon);
 
             ap = columnPrepared / pointWise(repeatMatrix(columnScaling, size, 1)) + repeatMatrix(columnOffset, size, 1);
-            shouldEqualSequenceTolerance(a.data(), a.data()+size*size, ap.data(), epsilon2);            
-            
+            shouldEqualSequenceTolerance(a.data(), a.data()+size*size, ap.data(), epsilon2);
+
             rowStatistics(a, rowMean, rowStdDev, rowNorm);
-            
+
             prepareRows(a, rowPrepared, rowOffset, rowScaling, ZeroMean);
             rowStatistics(rowPrepared, rowMeanPrepared, rowStdDevPrepared, rowNormPrepared);
             shouldEqualSequenceTolerance(zeroRowRef.data(), zeroRowRef.data()+size, rowMeanPrepared.data(), epsilon);
             shouldEqualSequenceTolerance(rowStdDev.data(), rowStdDev.data()+size, rowStdDevPrepared.data(), epsilon);
 
             ap = rowPrepared / pointWise(repeatMatrix(rowScaling, 1, size)) + repeatMatrix(rowOffset, 1, size);
-            shouldEqualSequenceTolerance(a.data(), a.data()+size*size, ap.data(), epsilon);            
+            shouldEqualSequenceTolerance(a.data(), a.data()+size*size, ap.data(), epsilon);
 
             prepareRows(a, rowPrepared, rowOffset, rowScaling, UnitNorm);
             rowStatistics(rowPrepared, rowMeanPrepared, rowStdDevPrepared, rowNormPrepared);
             shouldEqualSequenceTolerance(oneRowRef.data(), oneRowRef.data()+size, rowNormPrepared.data(), epsilon);
-            
+
             ap = rowPrepared / pointWise(repeatMatrix(rowScaling, 1, size)) + repeatMatrix(rowOffset, 1, size);
-            shouldEqualSequenceTolerance(a.data(), a.data()+size*size, ap.data(), epsilon);            
+            shouldEqualSequenceTolerance(a.data(), a.data()+size*size, ap.data(), epsilon);
 
             prepareRows(a, rowPrepared, rowOffset, rowScaling, UnitVariance);
             rowStatistics(rowPrepared, rowMeanPrepared, rowStdDevPrepared, rowNormPrepared);
             rowMeanPrepared /= rowScaling;
             shouldEqualSequenceTolerance(rowMean.data(), rowMean.data()+size, rowMeanPrepared.data(), epsilon);
             shouldEqualSequenceTolerance(oneRowRef.data(), oneRowRef.data()+size, rowStdDevPrepared.data(), epsilon);
-            
+
             ap = rowPrepared / pointWise(repeatMatrix(rowScaling, 1, size)) + repeatMatrix(rowOffset, 1, size);
-            shouldEqualSequenceTolerance(a.data(), a.data()+size*size, ap.data(), epsilon);            
+            shouldEqualSequenceTolerance(a.data(), a.data()+size*size, ap.data(), epsilon);
 
             prepareRows(a, rowPrepared, rowOffset, rowScaling, ZeroMean | UnitVariance);
             rowStatistics(rowPrepared, rowMeanPrepared, rowStdDevPrepared, rowNormPrepared);
             shouldEqualSequenceTolerance(zeroRowRef.data(), zeroRowRef.data()+size, rowMeanPrepared.data(), epsilon);
             shouldEqualSequenceTolerance(oneRowRef.data(), oneRowRef.data()+size, rowStdDevPrepared.data(), epsilon);
-            
+
             ap = rowPrepared / pointWise(repeatMatrix(rowScaling, 1, size)) + repeatMatrix(rowOffset, 1, size);
-            shouldEqualSequenceTolerance(a.data(), a.data()+size*size, ap.data(), epsilon);            
+            shouldEqualSequenceTolerance(a.data(), a.data()+size*size, ap.data(), epsilon);
 
             prepareRows(a, rowPrepared, rowOffset, rowScaling, ZeroMean | UnitNorm);
             rowStatistics(rowPrepared, rowMeanPrepared, rowStdDevPrepared, rowNormPrepared);
@@ -1379,23 +1379,23 @@ struct LinalgTest
             shouldEqualSequenceTolerance(oneRowRef.data(), oneRowRef.data()+size, rowNormPrepared.data(), epsilon);
 
             ap = rowPrepared / pointWise(repeatMatrix(rowScaling, 1, size)) + repeatMatrix(rowOffset, 1, size);
-            shouldEqualSequenceTolerance(a.data(), a.data()+size*size, ap.data(), epsilon2);            
+            shouldEqualSequenceTolerance(a.data(), a.data()+size*size, ap.data(), epsilon2);
         }
-        
+
         {
             Matrix a(size, size, 2.0), aref(size, size, 1.0/std::sqrt((double)size));
-            
+
             prepareColumns(a, columnPrepared, columnOffset, columnScaling, ZeroMean | UnitVariance);
             shouldEqualSequence(a.data(), a.data()+size*size, columnPrepared.data());
-            
+
             prepareColumns(a, columnPrepared, columnOffset, columnScaling, ZeroMean | UnitNorm);
             shouldEqualSequenceTolerance(aref.data(), aref.data()+size*size, columnPrepared.data(), epsilon);
             Matrix ap = columnPrepared / pointWise(repeatMatrix(columnScaling, size, 1)) + repeatMatrix(columnOffset, size, 1);
             shouldEqualSequenceTolerance(a.data(), a.data()+size*size, ap.data(), epsilon);
-            
+
             prepareRows(a, rowPrepared, rowOffset, rowScaling, ZeroMean | UnitVariance);
             shouldEqualSequence(a.data(), a.data()+size*size, rowPrepared.data());
-            
+
             prepareRows(a, rowPrepared, rowOffset, rowScaling, ZeroMean | UnitNorm);
             shouldEqualSequenceTolerance(aref.data(), aref.data()+size*size, rowPrepared.data(), epsilon);
             ap = rowPrepared / pointWise(repeatMatrix(rowScaling, 1, size)) + repeatMatrix(rowOffset, 1, size);
@@ -1439,7 +1439,7 @@ struct LinalgTest
 
     void testLinearSolve()
     {
-#if defined(__GNUC__) && __GNUC__ == 3
+#if defined(__GNUC__)
         double epsilon = 1e-8;
 #else
         double epsilon = 1e-10;
@@ -1459,7 +1459,7 @@ struct LinalgTest
             should(linearSolve(a, b, x, "SVD"));
             ax = a * x;
             shouldEqualSequenceTolerance(ax.data(), ax.data()+size, b.data(), epsilon);
-            
+
             should(linearSolve(a, b, x, "NE"));
             ax = a * x;
             shouldEqualSequenceTolerance(ax.data(), ax.data()+size, b.data(), epsilon);
@@ -1470,18 +1470,18 @@ struct LinalgTest
             shouldEqualSequenceTolerance(ax.data(), ax.data()+size, b.data(), epsilon);
         }
     }
-    
+
     void testUnderdetermined()
-    {   
+    {
         // test singular matrix
         Matrix a = vigra::identityMatrix<Matrix::value_type> (size);
-        a(0,0) = 0; 
+        a(0,0) = 0;
         Matrix b = random_matrix (size, 1);
         Matrix x(size, 1);
         should(!linearSolve (a, b, x, "Cholesky"));
         should(!linearSolve (a, b, x, "QR"));
         should(!linearSolve (a, b, x, "SVD"));
-        
+
         {
             // square, rank-deficient system (compute minimum norm solution)
             double mdata[] = {1.0,  3.0,  7.0,
@@ -1489,9 +1489,9 @@ struct LinalgTest
                               1.0, 10.0, 18.0};
             double rhsdata[] = { 5.0, 2.0, 12.0};
             double refdata[] = { 0.3850, -0.1103, 0.7066 };
-            
+
             Matrix m(3,3,mdata), rhs(3,1,rhsdata), xx(3,1);
-            
+
             shouldEqual(linearSolveQR(m, rhs, xx), 2);
             shouldEqualSequenceTolerance(refdata, refdata+3, xx.data(), 1e-3);
         }
@@ -1502,9 +1502,9 @@ struct LinalgTest
                               3.0,  1.0, 1.0,  8.0};
             double rhsdata[] = { -7.0, -7.0, -8.0};
             double refdata[] = { -3.26666666666667, 3.6, 5.13333333333333, -0.86666666666667 };
-            
+
             Matrix m(3,4,mdata), rhs(3,1,rhsdata), xx(4,1);
-            
+
             shouldEqual(linearSolveQR(m, rhs, xx), 3);
             shouldEqualSequenceTolerance(refdata, refdata+4, xx.data(), 1e-12);
         }
@@ -1515,9 +1515,9 @@ struct LinalgTest
                              -1.0, -3.0, 3.0, 0.0};
             double rhsdata[] = { 1.0, 5.0, 5.0};
             double refdata[] = { -0.211009, -0.633027, 0.963303, 0.110092 };
-            
+
             Matrix m(3,4,mdata), rhs(3,1,rhsdata), xx(4,1);
-            
+
             shouldEqual(linearSolveQR(m, rhs, xx), 2);
             shouldEqualSequenceTolerance(refdata, refdata+4, xx.data(), 1e-5);
         }
@@ -1528,22 +1528,26 @@ struct LinalgTest
                               1.0, 1.0,  4.0, -5.0};
             double rhsdata[] = { 2.0, 3.0, 2.0};
             double refdata[] = { -0.0627, 0.1561, -0.0321, -0.3427 };
-            
+
             Matrix m(3,4,mdata), rhs(3,1,rhsdata), xx(4,1);
-            
+
             shouldEqual(linearSolveQR(m, rhs, xx), 2);
             shouldEqualSequenceTolerance(refdata, refdata+4, xx.data(), 1e-3);
         }
     }
 
     void testOverdetermined()
-    {   
+    {
+#if defined(__GNUC__)
+        double epsilon = 1e-11;
+#else
         double epsilon = 1e-12;
-        
+#endif
+
         unsigned int n = 5;
         unsigned int size = 1000;
         double noiseStdDev = 0.1;
-        
+
         Matrix A(size, n), xs(n,1), xq(n,1), xn(n,1), r(size, 1);
 
         for(unsigned int iter=0; iter<iterations; ++iter)
@@ -1551,7 +1555,7 @@ struct LinalgTest
             // set up a linear regression problem for a polynomial of degree n
             Matrix weights = random_matrix (n, 1);
             Matrix v = random_matrix (size, 1);
-            
+
             // init rhs with Gaussian noise with zero mean and noiseStdDev
             Matrix rhs = 0.5*noiseStdDev*random_matrix (size, 1);
             for(unsigned int k=1; k<12; ++k)
@@ -1565,15 +1569,15 @@ struct LinalgTest
                     rhs(k,0) += weights(l,0)*A(k,l);
                 }
             }
-            
+
             shouldEqual(linearSolve(A, rhs, xs, "SVD"), true);
-            
-            // check that solution is indeed a minimum by 
+
+            // check that solution is indeed a minimum by
             // testing for zero derivative of the objective
             Matrix derivative = abs(transpose(A)*(A*xs - rhs));
             int absIndex = argMax(derivative);
             shouldEqualTolerance(derivative(absIndex,0), 0.0, epsilon);
-            
+
             shouldEqual(linearSolveQR(A, rhs, xq), n);
             shouldEqualSequenceTolerance(xs.data(), xs.data()+n, xq.data(), epsilon);
 
@@ -1598,11 +1602,11 @@ struct LinalgTest
             Matrix x(size, 1);
 
             should(linearSolve(a, b, x, "QR"));
-            
+
             {
                 Matrix r(a), qtb(b), px(size,1), xx(size,1);
                 vigra::ArrayVector<unsigned int> permutation(size);
-                
+
                 for(int k=0; k<size; ++k)
                 {
                     // use Givens steps for a change (Householder steps like
@@ -1611,12 +1615,12 @@ struct LinalgTest
                     should(vigra::linalg::detail::qrGivensStepImpl(k, r, qtb));
                     permutation[k] = k;
                 }
-                
+
                 for(int k=0; k<size; ++k)
                 {
                     int i = rand() % size, j = rand() % size;
                     if(i==j) continue;
-                    
+
                     vigra::linalg::detail::upperTriangularCyclicShiftColumns(i, j, r, qtb, permutation);
                 }
                 should(vigra::linalg::linearSolveUpperTriangular(r, qtb, px));
@@ -1628,7 +1632,7 @@ struct LinalgTest
             {
                 Matrix r(a), qtb(b), px(size,1), xx(size,1);
                 vigra::ArrayVector<unsigned int> permutation(size);
-                
+
                 for(int k=0; k<size; ++k)
                 {
                     // use Givens steps for a change (Householder steps like
@@ -1637,7 +1641,7 @@ struct LinalgTest
                     should(vigra::linalg::detail::qrGivensStepImpl(k, r, qtb));
                     permutation[k] = k;
                 }
-                
+
                 for(int k=0; k<size; ++k)
                 {
                     int i = rand() % size, j = rand() % size;
@@ -1645,12 +1649,12 @@ struct LinalgTest
                 }
                 should(vigra::linalg::linearSolveUpperTriangular(r, qtb, px));
                 vigra::linalg::detail::inverseRowPermutation(px, xx, permutation);
-   
+
                 shouldEqualSequenceTolerance(x.data(), x.data()+size, xx.data(), epsilon);
             }
         }
     }
-    
+
     void testInverse()
     {
         double epsilon = 1e-10;
@@ -1728,7 +1732,7 @@ struct LinalgTest
             shouldEqualSequenceTolerance(ae.data(), ae.data()+size*size, a.data(), epsilon);
         }
     }
-    
+
     void testDeterminant()
     {
         double ds2[] = {1, 2, 2, 1};
@@ -1752,7 +1756,7 @@ struct LinalgTest
         shouldEqualTolerance(logDeterminant(transpose(ms3)*ms3), std::log(324.0), eps);
         shouldEqualTolerance(logDeterminant(transpose(mns3)*mns3), std::log(441.0), eps);
     }
-    
+
     void testSVD()
     {
         int m = 6, n = 4;
@@ -1767,7 +1771,11 @@ struct LinalgTest
 	    unsigned int rank = singularValueDecomposition(a, u, S, v);
 	    shouldEqual(rank, n);
 
+#if defined(__GNUC__)
+        double eps = 1e-9;
+#else
         double eps = 1e-10;
+#endif
 	    shouldEqualTolerance(norm(a-u*diagonalMatrix(S)*transpose(v)), 0.0, eps);
 	    shouldEqualTolerance(norm(vigra::identityMatrix<double>(4) - transpose(u)*u), 0.0, eps);
 	    shouldEqualTolerance(norm(vigra::identityMatrix<double>(4) - transpose(v)*v), 0.0, eps);
@@ -1781,53 +1789,53 @@ struct RandomTest
     {
         const unsigned int n = 50;
         unsigned int iref[n] = {
-            3169973338U, 2724982910U,  347012937U, 1735893326U, 2282497071U, 
-            3975116866U,   62755666U,  500522132U,  129776071U, 1978109378U, 
-            4040131704U, 3800592193U, 3057303977U, 1468369496U,  370579849U, 
-            3630178833U,   51910867U,  819270944U,  476180518U,  190380673U, 
-            1370447020U, 1620916304U,  663482756U, 1354889312U, 4000276916U, 
-             868393086U, 1441698743U, 1086138563U, 1899869374U, 3717419747U, 
-            2455034041U, 2617437696U, 1595651084U, 4148285605U, 1860328467U, 
-             928897371U,  263340857U, 4091726170U, 2359987311U, 1669697327U, 
-            1882626857U, 1635656338U,  897501559U, 3233276032U,  373770970U, 
+            3169973338U, 2724982910U,  347012937U, 1735893326U, 2282497071U,
+            3975116866U,   62755666U,  500522132U,  129776071U, 1978109378U,
+            4040131704U, 3800592193U, 3057303977U, 1468369496U,  370579849U,
+            3630178833U,   51910867U,  819270944U,  476180518U,  190380673U,
+            1370447020U, 1620916304U,  663482756U, 1354889312U, 4000276916U,
+             868393086U, 1441698743U, 1086138563U, 1899869374U, 3717419747U,
+            2455034041U, 2617437696U, 1595651084U, 4148285605U, 1860328467U,
+             928897371U,  263340857U, 4091726170U, 2359987311U, 1669697327U,
+            1882626857U, 1635656338U,  897501559U, 3233276032U,  373770970U,
             2950632840U, 2706386845U, 3294066568U, 3819538748U, 1902519841U };
-        
+
         vigra::RandomTT800 random;
         for(int k=0; k<n; ++k)
             shouldEqual(random(), iref[k]);
 
         double fref[n] = {
-              0.738067,   0.634460,   0.080795,   0.404169,   0.531435, 
-              0.925529,   0.014611,   0.116537,   0.030216,   0.460564, 
-              0.940666,   0.884894,   0.711834,   0.341881,   0.086282, 
-              0.845217,   0.012086,   0.190751,   0.110869,   0.044326, 
-              0.319082,   0.377399,   0.154479,   0.315460,   0.931387, 
-              0.202189,   0.335672,   0.252886,   0.442348,   0.865529, 
-              0.571607,   0.609420,   0.371516,   0.965848,   0.433141, 
-              0.216276,   0.061314,   0.952679,   0.549477,   0.388757, 
-              0.438333,   0.380831,   0.208966,   0.752806,   0.087025, 
+              0.738067,   0.634460,   0.080795,   0.404169,   0.531435,
+              0.925529,   0.014611,   0.116537,   0.030216,   0.460564,
+              0.940666,   0.884894,   0.711834,   0.341881,   0.086282,
+              0.845217,   0.012086,   0.190751,   0.110869,   0.044326,
+              0.319082,   0.377399,   0.154479,   0.315460,   0.931387,
+              0.202189,   0.335672,   0.252886,   0.442348,   0.865529,
+              0.571607,   0.609420,   0.371516,   0.965848,   0.433141,
+              0.216276,   0.061314,   0.952679,   0.549477,   0.388757,
+              0.438333,   0.380831,   0.208966,   0.752806,   0.087025,
               0.686998,   0.630130,   0.766960,   0.889306,   0.442965 };
         vigra::RandomTT800 randomf;
         for(int k=0; k<n; ++k)
             should(vigra::abs(randomf.uniform() - fref[k]) < 2e-6);
-            
+
         vigra::RandomTT800 randomr(vigra::RandomSeed);
     }
-    
+
     void testMT19937()
     {
         const unsigned int n = 20, skip = 960, ilen = 4;
         unsigned int first[n] = {
-             956529277U, 3842322136U, 3319553134U, 1843186657U, 2704993644U, 
-             595827513U,  938518626U, 1676224337U, 3221315650U, 1819026461U, 
-            2401778706U, 2494028885U,  767405145U, 1590064561U, 2766888951U, 
-            3951114980U, 2568046436U, 2550998890U, 2642089177U,  568249289U }; 
+             956529277U, 3842322136U, 3319553134U, 1843186657U, 2704993644U,
+             595827513U,  938518626U, 1676224337U, 3221315650U, 1819026461U,
+            2401778706U, 2494028885U,  767405145U, 1590064561U, 2766888951U,
+            3951114980U, 2568046436U, 2550998890U, 2642089177U,  568249289U };
         unsigned int last[n] = {
-            2396869032U, 1982500200U, 2649478910U,  839934727U, 3814542520U, 
-             918389387U,  995030736U, 2017568170U, 2621335422U, 1020082601U, 
-              24244213U, 2575242697U, 3941971804U,  922591409U, 2851763435U, 
+            2396869032U, 1982500200U, 2649478910U,  839934727U, 3814542520U,
+             918389387U,  995030736U, 2017568170U, 2621335422U, 1020082601U,
+              24244213U, 2575242697U, 3941971804U,  922591409U, 2851763435U,
             2055641408U, 3695291669U, 2040276077U, 4118847636U, 3528766079U };
-                     
+
         vigra::RandomMT19937 random(0xDEADBEEF);
         for(int k=0; k<n; ++k)
             shouldEqual(random(), first[k]);
@@ -1848,14 +1856,14 @@ struct RandomTest
             shouldEqual(random(), last[k]);
 
         unsigned int firsta[n] = {
-            1067595299U,  955945823U,  477289528U, 4107218783U, 4228976476U, 
-            3344332714U, 3355579695U,  227628506U,  810200273U, 2591290167U, 
-            2560260675U, 3242736208U,  646746669U, 1479517882U, 4245472273U, 
-            1143372638U, 3863670494U, 3221021970U, 1773610557U, 1138697238U }; 
+            1067595299U,  955945823U,  477289528U, 4107218783U, 4228976476U,
+            3344332714U, 3355579695U,  227628506U,  810200273U, 2591290167U,
+            2560260675U, 3242736208U,  646746669U, 1479517882U, 4245472273U,
+            1143372638U, 3863670494U, 3221021970U, 1773610557U, 1138697238U };
         unsigned int lasta[n] = {
-             123599888U,  472658308U, 1053598179U, 1012713758U, 3481064843U, 
-            3759461013U, 3981457956U, 3830587662U, 1877191791U, 3650996736U, 
-             988064871U, 3515461600U, 4089077232U, 2225147448U, 1249609188U, 
+             123599888U,  472658308U, 1053598179U, 1012713758U, 3481064843U,
+            3759461013U, 3981457956U, 3830587662U, 1877191791U, 3650996736U,
+             988064871U, 3515461600U, 4089077232U, 2225147448U, 1249609188U,
             2643151863U, 3896204135U, 2416995901U, 1397735321U, 3460025646U };
 
         unsigned int init[ilen] = {0x123, 0x234, 0x345, 0x456};
@@ -1868,9 +1876,9 @@ struct RandomTest
             shouldEqual(randoma(), lasta[k]);
 
         double ref53[n] = {
-            0.76275444, 0.98670464, 0.27933125, 0.94218739, 0.78842173, 
-            0.92179002, 0.54534773, 0.38107717, 0.65286910, 0.22765212, 
-            0.74557914, 0.54708246, 0.42043117, 0.19189126, 0.70259889, 
+            0.76275444, 0.98670464, 0.27933125, 0.94218739, 0.78842173,
+            0.92179002, 0.54534773, 0.38107717, 0.65286910, 0.22765212,
+            0.74557914, 0.54708246, 0.42043117, 0.19189126, 0.70259889,
             0.77408120, 0.04605807, 0.69398269, 0.61711170, 0.10133577};
         for(int k=0; k<n; ++k)
             should(vigra::abs(randoma.uniform53()-ref53[k]) < 2e-8);
@@ -1883,45 +1891,45 @@ struct RandomTest
         for(int k=0; k<n; ++k)
             shouldEqual(randoma(), lasta[k]);
     }
-    
+
     void testRandomFunctors()
     {
         const unsigned int n = 50;
         unsigned int iref[n] = {
-            3169973338U, 2724982910U,  347012937U, 1735893326U, 2282497071U, 
-            3975116866U,   62755666U,  500522132U,  129776071U, 1978109378U, 
-            4040131704U, 3800592193U, 3057303977U, 1468369496U,  370579849U, 
-            3630178833U,   51910867U,  819270944U,  476180518U,  190380673U, 
-            1370447020U, 1620916304U,  663482756U, 1354889312U, 4000276916U, 
-             868393086U, 1441698743U, 1086138563U, 1899869374U, 3717419747U, 
-            2455034041U, 2617437696U, 1595651084U, 4148285605U, 1860328467U, 
-             928897371U,  263340857U, 4091726170U, 2359987311U, 1669697327U, 
-            1882626857U, 1635656338U,  897501559U, 3233276032U,  373770970U, 
+            3169973338U, 2724982910U,  347012937U, 1735893326U, 2282497071U,
+            3975116866U,   62755666U,  500522132U,  129776071U, 1978109378U,
+            4040131704U, 3800592193U, 3057303977U, 1468369496U,  370579849U,
+            3630178833U,   51910867U,  819270944U,  476180518U,  190380673U,
+            1370447020U, 1620916304U,  663482756U, 1354889312U, 4000276916U,
+             868393086U, 1441698743U, 1086138563U, 1899869374U, 3717419747U,
+            2455034041U, 2617437696U, 1595651084U, 4148285605U, 1860328467U,
+             928897371U,  263340857U, 4091726170U, 2359987311U, 1669697327U,
+            1882626857U, 1635656338U,  897501559U, 3233276032U,  373770970U,
             2950632840U, 2706386845U, 3294066568U, 3819538748U, 1902519841U };
         double fref[n] = {
-              0.738067,   0.634460,   0.080795,   0.404169,   0.531435, 
-              0.925529,   0.014611,   0.116537,   0.030216,   0.460564, 
-              0.940666,   0.884894,   0.711834,   0.341881,   0.086282, 
-              0.845217,   0.012086,   0.190751,   0.110869,   0.044326, 
-              0.319082,   0.377399,   0.154479,   0.315460,   0.931387, 
-              0.202189,   0.335672,   0.252886,   0.442348,   0.865529, 
-              0.571607,   0.609420,   0.371516,   0.965848,   0.433141, 
-              0.216276,   0.061314,   0.952679,   0.549477,   0.388757, 
-              0.438333,   0.380831,   0.208966,   0.752806,   0.087025, 
+              0.738067,   0.634460,   0.080795,   0.404169,   0.531435,
+              0.925529,   0.014611,   0.116537,   0.030216,   0.460564,
+              0.940666,   0.884894,   0.711834,   0.341881,   0.086282,
+              0.845217,   0.012086,   0.190751,   0.110869,   0.044326,
+              0.319082,   0.377399,   0.154479,   0.315460,   0.931387,
+              0.202189,   0.335672,   0.252886,   0.442348,   0.865529,
+              0.571607,   0.609420,   0.371516,   0.965848,   0.433141,
+              0.216276,   0.061314,   0.952679,   0.549477,   0.388757,
+              0.438333,   0.380831,   0.208966,   0.752806,   0.087025,
               0.686998,   0.630130,   0.766960,   0.889306,   0.442965 };
         double nref[n] = {
-            1.35298, 0.764158, -0.757076, -0.173069, 0.0586711, 
-            0.794212, -0.483372, -0.0405762, 1.27956, -0.955101, 
-            -1.5062, -1.02069, -0.871562, -0.465495, -0.799888, 
-            -1.20286, -0.170944, 1.08383, 1.26832, 1.93807, 
-            -0.098183, 0.355986, -0.336965, -1.42996, 0.966012, 
-            -2.17195, -1.05422, -2.03724, -0.769992, 0.668851, 
-            -0.570259, 0.258217, 0.632492, 1.29755, 0.96869, 
-            -0.141918, -0.836236, -0.62337, 0.116509, -0.0314471, 
-            0.402451, -1.20504, -0.140861, -0.0765263, 1.06057, 
+            1.35298, 0.764158, -0.757076, -0.173069, 0.0586711,
+            0.794212, -0.483372, -0.0405762, 1.27956, -0.955101,
+            -1.5062, -1.02069, -0.871562, -0.465495, -0.799888,
+            -1.20286, -0.170944, 1.08383, 1.26832, 1.93807,
+            -0.098183, 0.355986, -0.336965, -1.42996, 0.966012,
+            -2.17195, -1.05422, -2.03724, -0.769992, 0.668851,
+            -0.570259, 0.258217, 0.632492, 1.29755, 0.96869,
+            -0.141918, -0.836236, -0.62337, 0.116509, -0.0314471,
+            0.402451, -1.20504, -0.140861, -0.0765263, 1.06057,
             2.57671, 0.0299117, 0.471425, 1.59464, 1.37346};
-             
-        vigra::RandomTT800 random1;        
+
+        vigra::RandomTT800 random1;
         vigra::UniformRandomFunctor<> f1(random1);
         for(int k=0; k<n; ++k)
             should(vigra::abs(f1() - fref[k]) < 2e-6);
@@ -1930,12 +1938,12 @@ struct RandomTest
         vigra::UniformIntRandomFunctor<> f2(4, 34, random2, true);
         for(int k=0; k<n; ++k)
             shouldEqual(f2(), iref[k] % 31 + 4);
-            
+
         vigra::RandomTT800 random3;
         vigra::UniformIntRandomFunctor<> f3(random3);
         for(int k=0; k<n; ++k)
             shouldEqual(f3(32), iref[k] / ((1u << 31) / 16u));
-            
+
         vigra::RandomTT800 random4;
         vigra::NormalRandomFunctor<> f4(random4);
         for(int k=0; k<n; ++k)
@@ -2040,7 +2048,7 @@ struct MathTestSuite
 
 int main()
 {
-  try 
+  try
   {
     MathTestSuite test;
 
