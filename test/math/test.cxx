@@ -1942,7 +1942,7 @@ struct RandomTest
         vigra::RandomTT800 random3;
         vigra::UniformIntRandomFunctor<> f3(random3);
         for(int k=0; k<n; ++k)
-            shouldEqual(f3(32), iref[k] / ((1u << 31) / 16u));
+            shouldEqual(f3(32), iref[k] % 32);
 
         vigra::RandomTT800 random4;
         vigra::NormalRandomFunctor<> f4(random4);
