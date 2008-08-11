@@ -2209,6 +2209,32 @@ columnStatisticsImpl(MultiArrayView<2, T1, C1> const & A,
     }
 }
 
+template <class T1, class C1, class T2, class C2, class T3, class C3>
+void
+columnStatistics2PassImpl(MultiArrayView<2, T1, C1> const & A, 
+                 MultiArrayView<2, T2, C2> & mean, MultiArrayView<2, T3, C3> & sumOfSquaredDifferences)
+{
+    MultiArrayIndex m = rowCount(A);
+    MultiArrayIndex n = columnCount(A);
+    vigra_precondition(1 == rowCount(mean) && n == columnCount(mean) &&
+                       1 == rowCount(sumOfSquaredDifferences) && n == columnCount(sumOfSquaredDifferences),
+                       "columnStatistics(): Shape mismatch between input and output.");
+
+    // two-pass algorithm for incremental variance computation
+    mean.init(NumericTraits<T2>::zero());    
+    for(MultiArrayIndex k=0; k<m; ++k)
+    {
+        mean += rowVector(A, k);
+    }
+    mean /= (double)m;
+    
+    sumOfSquaredDifferences.init(NumericTraits<T3>::zero());
+    for(MultiArrayIndex k=0; k<m; ++k)
+    {
+        sumOfSquaredDifferences += sq(rowVector(A, k) - mean);
+    }
+}
+
 } // namespace detail
 
 /** \addtogroup LinearAlgebraFunctions Matrix functions
