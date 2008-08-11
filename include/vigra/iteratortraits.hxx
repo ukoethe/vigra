@@ -142,6 +142,10 @@ struct IteratorTraitsBase
     typedef typename iterator::column_iterator    column_iterator;
 };
 
+
+//@}
+
+
 /***********************************************************/
 
 /** \page ArgumentObjectFactories Argument Object Factories
@@ -692,8 +696,6 @@ destIterRange(Iterator const & upperleft, Iterator const & lowerright)
                   upperleft, lowerright,
                   typename IteratorTraits<Iterator>::DefaultAccessor());
 }
-
-//@}
 
 } // namespace vigra
 
