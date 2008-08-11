@@ -100,6 +100,10 @@
         #endif // _MSC_EXTENSIONS
     #endif // _MSC_VER < 1310
 
+    #if _MSC_VER < 1400
+        #define VIGRA_NO_WORKING_STRINGSTREAM
+    #endif
+    
     #define VIGRA_NEED_BIN_STREAMS
 
     #ifdef VIGRA_DLL
@@ -120,6 +124,9 @@
 #if defined(__GNUC__)
     #if  __GNUC__ < 2 || ((__GNUC__ == 2) && (__GNUC_MINOR__ <= 8))
         #error "Need at least g++ 2.95"
+    #endif
+    #if __GNUC__ < 3
+        #define VIGRA_NO_WORKING_STRINGSTREAM
     #endif
     #define HAS_HASH_CONTAINERS
 #endif  // __GNUC__
