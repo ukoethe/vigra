@@ -45,23 +45,23 @@
 #include <typeinfo>           // for bad_cast, bad_typeid
 #include <exception>          // for exception, bad_exception
 #include <stdexcept>
-
-#if __GNUC__ >= 3  // why does this not work with MSVC 7.1 ???
-#include <sstream>
-#define VIGRA_SSTREAM std::basic_stringstream<char>
-#define VIGRA_SSTREAM_STR(s) s.str().c_str()
-#else
-#include <strstream>
-#define VIGRA_SSTREAM std::strstream
-#define VIGRA_SSTREAM_STR(s) ((s << char()), s.str())
-#endif
-
 #include <iostream>
 #include <limits.h>
 #include <cfloat>
 #include <cmath>
 #include "vigra/config.hxx"
 #include "vigra/error.hxx"
+
+#ifdef VIGRA_NO_WORKING_STRINGSTREAM 
+#include <strstream>
+#define VIGRA_SSTREAM std::strstream
+#define VIGRA_SSTREAM_STR(s) ((s << char()), std::string(s.str()))
+#else
+#include <sstream>
+#define VIGRA_SSTREAM std::basic_stringstream<char>
+#define VIGRA_SSTREAM_STR(s) s.str()
+#endif
+
 
 #ifdef _MSC_VER
 
@@ -144,7 +144,7 @@ namespace detail {
 struct errstream
 {
     VIGRA_SSTREAM buf;
-    char const * str() { return VIGRA_SSTREAM_STR(buf); }
+    std::string str() { return VIGRA_SSTREAM_STR(buf); }
     template <class T>
     errstream & operator<<(T t) { buf << t;  return *this; }
 };
@@ -162,7 +162,7 @@ inline void report_exception( detail::errstream & os,
     os << "Unexpected " << name << " " << info << "\n";
     if(exception_checkpoint().size() > 0)
     {
-        os << "Last checkpoint: " << exception_checkpoint().c_str() << "\n";
+        os << "Last checkpoint: " << exception_checkpoint() << "\n";
     }
 }
 
@@ -422,7 +422,7 @@ namespace detail {
 struct unit_test_failed
 : public std::exception
 {
-    unit_test_failed(char const * message)
+    unit_test_failed(std::string const & message)
     : what_(message)
     {}
 
@@ -469,7 +469,7 @@ sequence_equal_impl(Iter1 i1, Iter1 end1, Iter2 i2, const char * file, int line)
             detail::errstream buf;
             buf << "Sequence items differ at index " << counter <<
                    " ["<< *i1 << " != " << *i2 << "]";
-            should_impl(false, buf.str(), file, line); 
+            should_impl(false, buf.str().c_str(), file, line); 
         }
     }
 }
@@ -598,7 +598,7 @@ tolerance_equal_impl(T1 left, T2 right, T3 epsilon,
 
     close_at_tolerance<T3> fcomparator( epsilon );
     bool compare = fcomparator ( left , right );
-    should_impl(compare, buf.str(), file, line);
+    should_impl(compare, buf.str().c_str(), file, line);
 
 }
 
@@ -616,7 +616,7 @@ tolerance_equal_impl(T1 left, T2 right, T3 epsilon,
         close_at_tolerance<typename T3::value_type> fcomparator( epsilon[i] );
         compare = compare && fcomparator ( left[i] , right[i] );
     }
-    should_impl(compare, buf.str(), file, line);
+    should_impl(compare, buf.str().c_str(), file, line);
 }
 
 template <class T1, class T2, class T3>
@@ -635,7 +635,7 @@ sequence_equal_tolerance_impl(Iter1 i1, Iter1 end1, Iter2 i2, T epsilon, const c
     {
         detail::errstream buf;
         buf << "Sequence items differ at index " << counter;
-        tolerance_equal_impl(*i1, *i2, epsilon, buf.str(), file, line); 
+        tolerance_equal_impl(*i1, *i2, epsilon, buf.str().c_str(), file, line); 
     }
 }
 
@@ -645,7 +645,7 @@ equal_impl(Left left, Right right, const char * message, const char * file, int 
 {
     detail::errstream buf;
     buf << message << " [" << left << " != " << right << "]";
-    should_impl(left == right, buf.str(), file, line);
+    should_impl(left == right, buf.str().c_str(), file, line);
 }
 
 inline void
