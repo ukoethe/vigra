@@ -43,7 +43,7 @@
 #include "rgbvalue.hxx"
 #include "functortraits.hxx"
 
-/** \page ColorConversions  Color Space Conversions
+/** \addtogroup ColorConversions  Color Space Conversions
 
     Convert between RGB, sRGB, R'G'B', XYZ, L*a*b*, L*u*v*, Y'PbPr, Y'CbCr, Y'IQ, and Y'UV color spaces.
 
@@ -195,6 +195,7 @@
     interface to color specification by users and make different color spaces somewhat 
     comparable.
 */
+//@{
 namespace vigra {
 
 namespace detail
@@ -349,7 +350,7 @@ class FunctorTraits<RGB2RGBPrimeFunctor<From, To> >
     <b>\#include</b> \<<a href="colorconversions_8hxx-source.html">vigra/colorconversions.hxx</a>\><br>
     Namespace: vigra
     
-    The sRGB color space is a slight improvement over the R'G'B' space. Is is now a widely accepted 
+    The sRGB color space is a slight improvement over the R'G'B' space. It is now a widely accepted 
     international standard (IEC 61966-2.1) which is used by most consumer products
     (digital cameras, printers, and screens). The functor realizes the transformation
     
@@ -3179,6 +3180,7 @@ yPrimeUV2Polar(V const & yuv)
     return result;
 }
 
+//@}
 //@}
 
 } // namespace vigra 
