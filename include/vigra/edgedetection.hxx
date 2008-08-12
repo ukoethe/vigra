@@ -1265,7 +1265,8 @@ void internalCannyFindEdgels(Image1 const & gx,
     edgel position is determined by fitting a parabola
     to the three gradient magnitude values
     mentioned above. The sub-pixel location of the parabola's tip
-    and the gradient magnitude and direction are written in the newly created edgel.
+    and the gradient magnitude and direction (from the pixel center)
+    are written in the newly created edgel.
 
     <b> Declarations:</b>
 
