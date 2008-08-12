@@ -113,13 +113,15 @@ A.code:visited { text-decoration: none; font-weight: normal; color: #0000FF}
 A.codeRef:link { font-weight: normal; color: #0000FF}
 A.codeRef:visited { font-weight: normal; color: #0000FF}
 code  { 
-    font-family: Lucida Console, monospace, fixed;
+/*    font-family: Lucida Console, monospace, fixed; */
+    font-family: monospace, fixed;
     color: #303030; 
     font-weight: bold;
 } 
 DL.el { margin-left: -1cm }
 .fragment {
-       font-family: Lucida Console, monospace, fixed;
+/*    font-family: Lucida Console, monospace, fixed; */
+    font-family: monospace, fixed;
        font-size: 95%;
 }
 PRE.fragment {
