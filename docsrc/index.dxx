@@ -110,7 +110,12 @@
              <BR>&nbsp;&nbsp;&nbsp;<em>Requirements for types that implement arithmetic operations</em>
         <LI> \ref NumericPromotionTraits
              <BR>&nbsp;&nbsp;&nbsp;<em>Meta-information about arithmetic types</em>
+        <LI> Grid Neighborhood Specification
+             <BR>&nbsp;&nbsp;&nbsp;\ref PixelNeighborhood "2-dimensional" (4- and 8-neighborhood) and
+                                   \ref VoxelNeighborhood "3-dimensional" (6- and 26-neighborhood)
         <LI> \ref vigra::Rational, \ref vigra::TinyVector, \ref vigra::FFTWComplex<BR>&nbsp;&nbsp;&nbsp;<em>Number types</em>
+        <LI> \ref RandomNumberGeneration
+             <BR>&nbsp;&nbsp;&nbsp;<em>Mersenne twister class and random number functors</em>
         <LI> \ref Polynomials
              <BR>&nbsp;&nbsp;&nbsp;<em>Polynomials and root determination</em>
         <LI> \ref MathConstants
@@ -184,6 +189,8 @@
          <BR>&nbsp;&nbsp;&nbsp;<em>Image import/export</em>
     <LI> \ref ImageContainers
          <BR>&nbsp;&nbsp;&nbsp;<em>Classes to manage multiple images (ImageArray..)</em>
+    <LI> \ref PixelNeighborhood
+         <BR>&nbsp;&nbsp;&nbsp;<em>Easy access to the 4- and 8-neighbors of a pixel</em>
     <LI> \ref ImageIterators
          <BR>&nbsp;&nbsp;&nbsp;<em>Basic image iterator implementations </em>
     <LI> \ref ImageIteratorAdapters
@@ -207,9 +214,19 @@
     <LI> \ref MultiPointoperators
          <BR>&nbsp;&nbsp;&nbsp;<em>Point operators on multi-dimensional arrays</em>
     <LI> \ref MultiArrayConvolutionFilters
-         <BR>&nbsp;&nbsp;&nbsp;<em>Separable convolution of multi-dimensional arrays</em>
+         <BR>&nbsp;&nbsp;&nbsp;<em>Separable convolution for arrays of arbitrary dimension</em>
+    <LI> \ref resizeMultiArraySplineInterpolation()
+         <BR>&nbsp;&nbsp;&nbsp;<em>Interpolation of arrays in arbitrary dimensions</em>
+    <LI> \ref MultiArrayDistanceTransform 
+         <BR>&nbsp;&nbsp;&nbsp;<em>Separable distance transform for arrays of arbitrary dimension</em>
+    <LI> \ref MultiArrayMorphology 
+         <BR>&nbsp;&nbsp;&nbsp;<em>Separable morphology with parabola structuring function for arrays of arbitrary dimension</em>
+    <LI> \ref labelVolume(), \ref seededRegionGrowing3D(), \ref watersheds3D()
+         <BR>&nbsp;&nbsp;&nbsp;<em>3-dimensional image (i.e. volume) analysis</em>
     <LI> \ref MultiArrayTags
          <BR>&nbsp;&nbsp;&nbsp;<em>Meta-programming tags to mark array's as strided or unstrided</em>
+    <LI> \ref VoxelNeighborhood
+         <BR>&nbsp;&nbsp;&nbsp;<em>Easy access to the 6- and 26-neighbors of a voxel</em>
     <LI> \ref MultiIteratorPage
          <BR>&nbsp;&nbsp;&nbsp;<em>Iterators for multi-dimensional arrays</em>
     <LI> \ref vigra::MultiArrayNavigator
@@ -258,8 +275,8 @@
          <BR>&nbsp;&nbsp;&nbsp;<em>algorithms and functors for image arithmetic, inspection, transformations etc.</em>
     <LI> \ref FunctorExpressions
          <BR>&nbsp;&nbsp;&nbsp;<em>Expression templates for automated functor creation</em>
-    <LI> \ref GeometricTransformations
-         <BR>&nbsp;&nbsp;&nbsp;<em>image mirroring, resizing and interpolation</em>
+    <LI> \ref GeometricTransformations "Resize and Other Geometric Image Transformations"
+         <BR>&nbsp;&nbsp;&nbsp;<em>resize and interpolation, image mirroring, rotation, arbitrary affine transformations</em>
     <LI> \ref vigra::SplineImageView
          <BR>&nbsp;&nbsp;&nbsp;<em>Wrap a discrete image as a continous function</em>
     <LI> \ref Convolution

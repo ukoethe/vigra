@@ -15,7 +15,7 @@
       (<a href="mailto:hans_meine@gmx.net">hans_meine@gmx.net</a>)
       contributed interface code for the FFTW Fourier transform library,
       the ImageArray class and the Gabor filter code. He also
-      collaborated in the implementation of many other modules.
+      collaborated in the implementation of many other modules and contributed various improvements.
 
       <li> Gunnar Kedenburg 
       (<a href="mailto:gunnar@haquebright.de">gunnar@haquebright.de</a>)
@@ -30,6 +30,9 @@
       (<a href="mailto:rahn@informatik.uni-hamburg.de">rahn@informatik.uni-hamburg.de</a>)
       implemented much of the \ref MultiArrayConvolutionFilters.
 
+      <li> Kasim Terzic, Florian Heinrich and Benjamin Seppke
+      implemented image analysis functionality for 3- and higher-dimensional data.
+
       <li> Pablo d'Angelo, Douglas Wilkins and other members of the  
       (<a href="http://hugin.sourceforge.net">Hugin team</a>) contributed various extensions of the impex
       library (UINT16/UINT32 support, ICC profile support, HDR file type).
@@ -42,11 +45,57 @@ Many thanks to all!
 
 <b> Changes from Version 1.5.0 to 1.6.0</b>
 
-<UL>      
-      <li> Added \ref affineWarpImage() and factory functions for 
-           affine transformation matrices
+<UL>  
+      <li> Added functions for arrays of arbitrary dimensions: 
+      <ul>
+          <li> \ref MultiArrayDistanceTransform "Euclidean distance transform"
+          <li> \ref MultiArrayMorphology "separable morphology"
+          <li> \ref resizeMultiArraySplineInterpolation()
+      </ul>    
       
-      <li> Bug fixes in the code and documentation. 
+      <li> Added functionality for 3D image analysis: \ref labelVolume(), \ref seededRegionGrowing3D(), 
+           \ref watersheds3D(), \ref VoxelNeighborhood
+          
+      <li> Added \ref RandomNumberGeneration
+          
+      <li> Added \ref affineWarpImage() and  and factory functions for 
+           affine transformation matrices
+          
+      <li> Added linear algebra functionality: \ref linearSolveQR(), \ref linearSolveQRInplace(),
+           \ref choleskyDecomposition(), \ref singularValueDecomposition(), \ref determinant(), \ref logDeterminant(), 
+           \ref leastSquares(), \ref weightedLeastSquares(), \ref ridgeRegression()
+          
+      <li> Extended \ref linearSolve(), \ref qrDecomposition(), and \ref inverse() to handle 
+           rectangular matrices (complete reimplementation of these functions).
+          
+      <li> Added matrix functionality: \ref joinVertically(), \ref joinHorizontally(), 
+           \ref columnStatistics(), \ref rowStatistics(), \ref prepareData()
+          
+      <li> Added/fixed \ref vigra::MultiArray and \ref vigra::linalg::Matrix computed assignments
+      
+      <li> Extended MultiArrayView::norm() to compute L1, L2 and Linfinity, added MultiArrayView::swapData(), 
+           MultiArrayView::permuteDimensions(), MultiArrayView::transpose(), and other minor improvements
+           to MultiArrayView
+          
+      <li> Added typedef \ref vigra::MultiArrayIndex to fix signed/unsigned mismatch problems
+          
+      <li> Added \ref vigra::ImagePyramid
+          
+      <li> Minor improvements in \ref VigraImpex
+          
+      <li> Added sRGB to \ref ColorConversions
+          
+      <li> Added weighted operator()s to FindAverage[AndVariance] functors.
+          
+      <li> Added \ref log2i() (integer base-2 logarithm), \ref floorPower2(), and \ref ceilPower2()
+          
+      <li> Added \ref argMin(), \ref argMax(), \ref argMinIf(), \ref argMaxIf()
+          
+      <li> Changed default border treatment of Gaussian filters and derivatives to BORDER_TREATMENT_REFLECT
+          
+      <li> Promoted documentation to Doxygen 1.5.6
+          
+      <li> Minor improvements and bug fixes in the code and documentation. 
            
 </UL>
 
