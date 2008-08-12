@@ -30,7 +30,7 @@
 /*    HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,      */
 /*    WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING      */
 /*    FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR     */
-/*    OTHER DEALINGS IN THE SOFTWARE.                                   */                
+/*    OTHER DEALINGS IN THE SOFTWARE.                                   */
 /*                                                                      */
 /************************************************************************/
 
@@ -611,9 +611,9 @@ inline FFTWComplex::SquaredNormType squaredNorm(const FFTWComplex &a)
 /********************************************************/
 
     /** Float (<tt>fftw_real</tt>) image.
-        
+
         The type <tt>fftw_real</tt> is defined as <tt>double</tt> (in FFTW 2 it used to be
-        either <tt>float</tt> or <tt>double</tt>, as specified during compilation of FFTW). 
+        either <tt>float</tt> or <tt>double</tt>, as specified during compilation of FFTW).
         FFTWRealImage uses \ref vigra::BasicImageIterator and \ref vigra::StandardAccessor and
         their const counterparts to access the data.
 
@@ -864,10 +864,10 @@ class FFTWPhaseAccessor
 /********************************************************/
 
 /** \addtogroup FourierTransform Fast Fourier Transform
-    
+
     This documentation describes the VIGRA interface to FFTW version 3. The interface
     to the old FFTW version 2 (file "vigra/fftw.hxx") is deprecated.
-    
+
     VIGRA uses the <a href="http://www.fftw.org/">FFTW Fast Fourier
     Transform</a> package to perform Fourier transformations. VIGRA
     provides a wrapper for FFTW's complex number type (FFTWComplex),
@@ -879,23 +879,23 @@ class FFTWPhaseAccessor
     ... // fill image with data
 
     // create a plan with estimated performance optimization
-    fftw_plan forwardPlan = fftw_plan_dft_2d(height, width, 
-                                (fftw_complex *)spatial.begin(), (fftw_complex *)fourier.begin(), 
+    fftw_plan forwardPlan = fftw_plan_dft_2d(height, width,
+                                (fftw_complex *)spatial.begin(), (fftw_complex *)fourier.begin(),
                                 FFTW_FORWARD, FFTW_ESTIMATE );
-    // calculate FFT (this can be repeated as often as needed, 
+    // calculate FFT (this can be repeated as often as needed,
     //                with fresh data written into the source array)
     fftw_execute(forwardPlan);
-    
+
     // release the plan memory
     fftw_destroy_plan(forwardPlan);
-    
+
     // likewise for the inverse transform
-    fftw_plan backwardPlan = fftw_plan_dft_2d(height, width, 
-                                 (fftw_complex *)fourier.begin(), (fftw_complex *)spatial.begin(), 
-                                 FFTW_BACKWARD, FFTW_ESTIMATE);        
+    fftw_plan backwardPlan = fftw_plan_dft_2d(height, width,
+                                 (fftw_complex *)fourier.begin(), (fftw_complex *)spatial.begin(),
+                                 FFTW_BACKWARD, FFTW_ESTIMATE);
     fftw_execute(backwardPlan);
     fftw_destroy_plan(backwardPlan);
-    
+
     // do not forget to normalize the result according to the image size
     transformImage(srcImageRange(spatial), destImage(spatial),
                    std::bind1st(std::multiplies<FFTWComplex>(), 1.0 / width / height));
@@ -906,7 +906,7 @@ class FFTWPhaseAccessor
     to <TT>fftw_plan_dft_2d</TT> if the transform shall be applied to the
     entire image. When you want to restrict operation to an ROI, you
     can create a copy of the ROI in an image of appropriate size, or
-    you may use the Guru interface to FFTW. 
+    you may use the Guru interface to FFTW.
 
     More information on using FFTW can be found <a href="http://www.fftw.org/doc/">here</a>.
 
@@ -921,7 +921,7 @@ class FFTWPhaseAccessor
     Namespace: vigra
 */
 
-/** \addtogroup FourierTransform 
+/** \addtogroup FourierTransform
 */
 //@{
 
@@ -994,8 +994,8 @@ class FFTWPhaseAccessor
     ... // fill image with data
 
     // create a plan with estimated performance optimization
-    fftw_plan forwardPlan = fftw_plan_dft_2d(height, width, 
-                                (fftw_complex *)spatial.begin(), (fftw_complex *)fourier.begin(), 
+    fftw_plan forwardPlan = fftw_plan_dft_2d(height, width,
+                                (fftw_complex *)spatial.begin(), (fftw_complex *)fourier.begin(),
                                 FFTW_FORWARD, FFTW_ESTIMATE );
     // calculate FFT
     fftw_execute(forwardPlan);
@@ -1139,7 +1139,7 @@ inline void moveDCToUpperLeft(
 namespace detail {
 
 template <class T>
-void 
+void
 fourierTransformImpl(FFTWComplexImage::const_traverser sul,
                      FFTWComplexImage::const_traverser slr, FFTWComplexImage::ConstAccessor src,
                      FFTWComplexImage::traverser dul, FFTWComplexImage::Accessor dest, T sign)
@@ -1148,10 +1148,10 @@ fourierTransformImpl(FFTWComplexImage::const_traverser sul,
     int h = slr.y - sul.y;
 
     FFTWComplexImage sworkImage, dworkImage;
-    
+
     fftw_complex * srcPtr = (fftw_complex *)(&*sul);
     fftw_complex * destPtr = (fftw_complex *)(&*dul);
-    
+
     // test for right memory layout (fftw expects a 2*width*height floats array)
     if (&(*(sul + Diff2D(w, 0))) != &(*(sul + Diff2D(0, 1))))
     {
@@ -1168,7 +1168,7 @@ fourierTransformImpl(FFTWComplexImage::const_traverser sul,
     fftw_plan plan = fftw_plan_dft_2d(h, w, srcPtr, destPtr, sign, FFTW_ESTIMATE );
     fftw_execute(plan);
     fftw_destroy_plan(plan);
-    
+
     if (&(*(dul + Diff2D(w, 0))) != &(*(dul + Diff2D(0, 1))))
     {
         copyImage(srcImageRange(dworkImage), destIter(dul, dest));
@@ -1186,8 +1186,8 @@ fourierTransformImpl(FFTWComplexImage::const_traverser sul,
 /** \brief Compute forward and inverse Fourier transforms.
 
     In the forward direction, the input image may be scalar or complex, and the output image
-    is always complex. In the inverse direction, both input and output must be complex.    
-    
+    is always complex. In the inverse direction, both input and output must be complex.
+
     <b> Declarations:</b>
 
     pass arguments explicitly:
@@ -1198,7 +1198,7 @@ fourierTransformImpl(FFTWComplexImage::const_traverser sul,
                               SrcImageIterator srcLowerRight, SrcAccessor src,
                               FFTWComplexImage::traverser destUpperLeft, FFTWComplexImage::Accessor dest);
 
-        void 
+        void
         fourierTransformInverse(FFTWComplexImage::const_traverser sul,
                                 FFTWComplexImage::const_traverser slr, FFTWComplexImage::ConstAccessor src,
                                 FFTWComplexImage::traverser dul, FFTWComplexImage::Accessor dest)
@@ -1212,8 +1212,8 @@ fourierTransformImpl(FFTWComplexImage::const_traverser sul,
         void fourierTransform(triple<SrcImageIterator, SrcImageIterator, SrcAccessor> src,
                               pair<FFTWComplexImage::traverser, FFTWComplexImage::Accessor> dest);
 
-        void 
-        fourierTransformInverse(triple<FFTWComplexImage::const_traverser, 
+        void
+        fourierTransformInverse(triple<FFTWComplexImage::const_traverser,
                                        FFTWComplexImage::const_traverser, FFTWComplexImage::ConstAccessor> src,
                                 pair<FFTWComplexImage::traverser, FFTWComplexImage::Accessor> dest);
     }
@@ -1228,7 +1228,7 @@ fourierTransformImpl(FFTWComplexImage::const_traverser sul,
     // compute complex Fourier transform of a real image
     vigra::DImage src(w, h);
     vigra::FFTWComplexImage fourier(w, h);
-    
+
     fourierTransform(srcImageRange(src), destImage(fourier));
 
     // compute inverse Fourier transform
@@ -1240,7 +1240,7 @@ fourierTransformImpl(FFTWComplexImage::const_traverser sul,
 */
 doxygen_overloaded_function(template <...> void fourierTransform)
 
-inline void 
+inline void
 fourierTransform(FFTWComplexImage::const_traverser sul,
                  FFTWComplexImage::const_traverser slr, FFTWComplexImage::ConstAccessor src,
                  FFTWComplexImage::traverser dul, FFTWComplexImage::Accessor dest)
@@ -1279,7 +1279,7 @@ void fourierTransform(triple<SrcImageIterator, SrcImageIterator, SrcAccessor> sr
 
     See \ref fourierTransform() for details.
 */
-inline void 
+inline void
 fourierTransformInverse(FFTWComplexImage::const_traverser sul,
                         FFTWComplexImage::const_traverser slr, FFTWComplexImage::ConstAccessor src,
                         FFTWComplexImage::traverser dul, FFTWComplexImage::Accessor dest)
@@ -1287,8 +1287,8 @@ fourierTransformInverse(FFTWComplexImage::const_traverser sul,
     detail::fourierTransformImpl(sul, slr, src, dul, dest, FFTW_BACKWARD);
 }
 
-inline void 
-fourierTransformInverse(triple<FFTWComplexImage::const_traverser, 
+inline void
+fourierTransformInverse(triple<FFTWComplexImage::const_traverser,
                                FFTWComplexImage::const_traverser, FFTWComplexImage::ConstAccessor> src,
                         pair<FFTWComplexImage::traverser, FFTWComplexImage::Accessor> dest)
 {
@@ -1305,12 +1305,12 @@ fourierTransformInverse(triple<FFTWComplexImage::const_traverser,
 
     After transferring the image into the frequency domain, it is
     multiplied pixel-wise with the filter and transformed back. The
-    result is put into the given destination image which must have the right size. 
-    The result will be normalized to compensate for the two FFTs. 
-    
-    If the destination image is scalar, only the real part of the result image is 
+    result is put into the given destination image which must have the right size.
+    The result will be normalized to compensate for the two FFTs.
+
+    If the destination image is scalar, only the real part of the result image is
     retained. In this case, you are responsible for choosing a filter image
-    which ensures a zero imaginary part of the result (e.g. use a real, even symmetric 
+    which ensures a zero imaginary part of the result (e.g. use a real, even symmetric
     filter image, or a purely imaginary, odd symmetric on).
 
     The DC entry of the filter must be in the upper left, which is the
@@ -1657,6 +1657,9 @@ void applyFourierFilterFamilyImpl(
     const ImageArray<FilterType> &filters,
     ImageArray<DestImage> &results)
 {
+    // FIXME: sa is not used
+    // (maybe check if StandardAccessor, else copy?)    
+
     // make sure the filter images have the right dimensions
     vigra_precondition((srcLowerRight - srcUpperLeft) == filters.imageSize(),
                        "applyFourierFilterFamily called with src image size != filters.imageSize()!");
@@ -1713,7 +1716,7 @@ void applyFourierFilterFamilyImpl(
 /** \brief Real Fourier transforms for even and odd boundary conditions
            (aka. cosine and sine transforms).
 
-    
+
     If the image is real and has even symmetry, its Fourier transform
     is also real and has even symmetry. The Fourier transform of a real image with odd
     symmetry is imaginary and has odd symmetry. In either case, only about a quarter
@@ -1727,30 +1730,30 @@ void applyFourierFilterFamilyImpl(
     odd (anti-reflective boundary conditions):  f[-1] = 0
                                                 f[-x] = -f[x-2]  (x = 2,...,N-1)
     \endcode
-    
-    end similar at the other boundary (see the FFTW documentation for details). 
+
+    end similar at the other boundary (see the FFTW documentation for details).
     This has the advantage that more efficient Fourier transforms that use only
     real numbers can be implemented. These are also known as cosine and sine transforms
-    respectively. 
-    
+    respectively.
+
     If you use the odd transform it is important to note that in the Fourier domain,
     the DC component is always zero and is therefore dropped from the data structure.
     This means that index 0 in an odd symmetric Fourier domain image refers to
-    the <i>first</i> harmonic. This is especially important if an image is first 
-    cosine transformed (even symmetry), then in the Fourier domain multiplied 
+    the <i>first</i> harmonic. This is especially important if an image is first
+    cosine transformed (even symmetry), then in the Fourier domain multiplied
     with an odd symmetric filter (e.g. a first derivative) and finally transformed
     back to the spatial domain with a sine transform (odd symmetric). For this to work
     properly the image must be shifted left or up by one pixel (depending on whether
     the x- or y-axis is odd symmetric) before the inverse transform can be applied.
     (see example below).
-    
+
     The real Fourier transform functions are named <tt>fourierTransformReal??</tt>
     where the questions marks stand for either <tt>E</tt> or <tt>O</tt> indicating
     whether the x- and y-axis is to be transformed using even or odd symmetry.
     The same functions can be used for both the forward and inverse transforms,
-    only the normalization changes. For signal processing, the following 
+    only the normalization changes. For signal processing, the following
     normalization factors are most appropriate:
-    
+
     \code
                           forward             inverse
     ------------------------------------------------------------
@@ -1772,7 +1775,7 @@ void applyFourierFilterFamilyImpl(
         void
         fourierTransformRealEE(SrcTraverser sul, SrcTraverser slr, SrcAccessor src,
                                DestTraverser dul, DestAccessor dest, fftw_real norm);
-                               
+
         fourierTransformRealEO, fourierTransformRealOE, fourierTransformRealOO likewise
     }
     \endcode
@@ -1786,7 +1789,7 @@ void applyFourierFilterFamilyImpl(
         void
         fourierTransformRealEE(triple<SrcTraverser, SrcTraverser, SrcAccessor> src,
                                pair<DestTraverser, DestAccessor> dest, fftw_real norm);
-                               
+
         fourierTransformRealEO, fourierTransformRealOE, fourierTransformRealOO likewise
     }
     \endcode
@@ -1814,10 +1817,10 @@ void applyFourierFilterFamilyImpl(
         }
         fourier(width-1, y) = 0.0;
     }
-    
+
     // inverse transform -- odd symmetry in x-direction, even in y,
     //                      due to symmetry of the filter
-    fourierTransformRealOE(srcImageRange(fourier), destImage(spatial), 
+    fourierTransformRealOE(srcImageRange(fourier), destImage(spatial),
                            (fftw_real)-4.0 * (width+1) * (height-1));
     \endcode
 */
@@ -2013,8 +2016,8 @@ fourierTransformRealImpl(
     int w = slr.x - sul.x;
     int h = slr.y - sul.y;
     BasicImage<fftw_real> res(w, h);
-    
-    fftw_plan plan = fftw_plan_r2r_2d(h, w, 
+
+    fftw_plan plan = fftw_plan_r2r_2d(h, w,
                          (fftw_real *)&(*sul), (fftw_real *)res.begin(),
                          kindy, kindx, FFTW_ESTIMATE);
     fftw_execute(plan);
