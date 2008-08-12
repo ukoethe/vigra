@@ -371,15 +371,15 @@ struct PixelTypesTestSuite
 {
     typedef TinyVectorTest<vigra::TinyVector<unsigned char, 3>,
                            vigra::TinyVector<int, 3>,
-                           vigra::TinyVector<float, 3> > TinyVectorTest;
+                           vigra::TinyVector<float, 3> > TinyVectorTests;
 
     PixelTypesTestSuite()
     : vigra::test_suite("PixelTypesTest")
     {
-        add( testCase(&TinyVectorTest::testConstruction));
-        add( testCase(&TinyVectorTest::testComparison));
-        add( testCase(&TinyVectorTest::testArithmetic));
-        add( testCase(&TinyVectorTest::testAccessor));
+        add( testCase(&TinyVectorTests::testConstruction));
+        add( testCase(&TinyVectorTests::testComparison));
+        add( testCase(&TinyVectorTests::testArithmetic));
+        add( testCase(&TinyVectorTests::testAccessor));
 
         add( testCase(&RGBValueTest::testConstruction));
         add( testCase(&RGBValueTest::testComparison));
