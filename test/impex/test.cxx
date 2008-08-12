@@ -37,6 +37,7 @@
 #include <iostream>
 #include <cmath>
 #include <cstdlib>
+#include <cstring>
 #include "vigra/stdimage.hxx"
 #include "vigra/impex.hxx"
 #include "unittest.hxx"
