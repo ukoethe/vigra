@@ -196,13 +196,13 @@ namespace vigra
         virtual void setPixelType( const std::string & ) = 0;
         virtual void finalizeSettings() = 0;
 
-        virtual void setPosition( const vigra::Diff2D & pos )
+        virtual void setPosition( const vigra::Diff2D & /*pos*/ )
         {
         }
-        virtual void setXResolution( float xres )
+        virtual void setXResolution( float /*xres*/ )
         {
         }
-        virtual void setYResolution( float yres )
+        virtual void setYResolution( float /*yres*/ )
         {
         }
 
