@@ -289,23 +289,6 @@ inline void internalSeparableMultiArrayDistTmp( SrcIterator si, SrcShape const &
 
 /** \brief Euclidean distance squared on multi-dimensional arrays.
 
-    This function performs a Euclidean distance squared transform on the given
-    multi-dimensional array. Both source and destination
-    arrays are represented by iterators, shape objects and accessors.
-    The destination array is required to already have the correct size.
-
-    This function expects a mask as its source, where background pixels are 
-    marked as zero, and non-background pixels as non-zero. If the parameter 
-    <i>background</i> is true, then the squared distance of all background
-    pixels to the nearest object is calculated. Otherwise, the distance of all
-    object pixels to the nearest background pixel is calculated.
-
-    This function may work in-place, which means that <tt>siter == diter</tt> is allowed.
-    A full-sized internal array is only allocated if working on the destination
-    array directly would cause overflow errors (i.e. if
-    <tt> typeid(typename DestAccessor::value_type) < N * M*M</tt>, where M is the
-    size of the largest dimension of the array.
-
     <b> Declarations:</b>
 
     pass arguments explicitly:
@@ -333,6 +316,23 @@ inline void internalSeparableMultiArrayDistTmp( SrcIterator si, SrcShape const &
 
     }
     \endcode
+
+    This function performs a Euclidean distance squared transform on the given
+    multi-dimensional array. Both source and destination
+    arrays are represented by iterators, shape objects and accessors.
+    The destination array is required to already have the correct size.
+
+    This function expects a mask as its source, where background pixels are 
+    marked as zero, and non-background pixels as non-zero. If the parameter 
+    <i>background</i> is true, then the squared distance of all background
+    pixels to the nearest object is calculated. Otherwise, the distance of all
+    object pixels to the nearest background pixel is calculated.
+
+    This function may work in-place, which means that <tt>siter == diter</tt> is allowed.
+    A full-sized internal array is only allocated if working on the destination
+    array directly would cause overflow errors (i.e. if
+    <tt> typeid(typename DestAccessor::value_type) < N * M*M</tt>, where M is the
+    size of the largest dimension of the array.
 
     <b> Usage:</b>
 
@@ -424,23 +424,6 @@ inline void separableMultiDistSquared( triple<SrcIterator, SrcShape, SrcAccessor
 
 /** \brief Euclidean distance on multi-dimensional arrays.
 
-    This function performs a Euclidean distance transform on the given
-    multi-dimensional array. Both source and destination
-    arrays are represented by iterators, shape objects and accessors.
-    The destination array is required to already have the correct size.
-
-    This function expects a mask as its source, where background pixels are 
-    marked as zero, and non-background pixels as non-zero. If the parameter 
-    <i>background</i> is true, then the squared distance of all background
-    pixels to the nearest object is calculated. Otherwise, the distance of all
-    object pixels to the nearest background pixel is calculated.
-
-    This function may work in-place, which means that <tt>siter == diter</tt> is allowed.
-    A full-sized internal array is only allocated if working on the destination
-    array directly would cause overflow errors (i.e. if
-    <tt> typeid(typename DestAccessor::value_type) < N * M*M</tt>, where M is the
-    size of the largest dimension of the array.
-
     <b> Declarations:</b>
 
     pass arguments explicitly:
@@ -468,6 +451,23 @@ inline void separableMultiDistSquared( triple<SrcIterator, SrcShape, SrcAccessor
 
     }
     \endcode
+
+    This function performs a Euclidean distance transform on the given
+    multi-dimensional array. Both source and destination
+    arrays are represented by iterators, shape objects and accessors.
+    The destination array is required to already have the correct size.
+
+    This function expects a mask as its source, where background pixels are 
+    marked as zero, and non-background pixels as non-zero. If the parameter 
+    <i>background</i> is true, then the squared distance of all background
+    pixels to the nearest object is calculated. Otherwise, the distance of all
+    object pixels to the nearest background pixel is calculated.
+
+    This function may work in-place, which means that <tt>siter == diter</tt> is allowed.
+    A full-sized internal array is only allocated if working on the destination
+    array directly would cause overflow errors (i.e. if
+    <tt> typeid(typename DestAccessor::value_type) < N * M*M</tt>, where M is the
+    size of the largest dimension of the array.
 
     <b> Usage:</b>
 

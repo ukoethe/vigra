@@ -46,6 +46,8 @@ namespace vigra {
 
 /** \addtogroup Morphology Basic Morphological Operations
     Perform erosion, dilation, and median with disc structuring functions
+    
+    See also: \ref MultiArrayMorphology Separable morphology with parabola structuring functions in arbitrary dimensions
 */
 //@{
 

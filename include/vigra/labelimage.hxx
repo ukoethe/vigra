@@ -46,7 +46,7 @@
 namespace vigra {
 
 /** \addtogroup Labeling Connected Components Labeling
-     The connected components algorithm may use either 4 or 8 connectivity.
+     The 2-dimensional connected components algorithms may use either 4 or 8 connectivity.
      By means of a functor the merge criterium can be defined arbitrarily.
 */
 //@{
@@ -58,17 +58,6 @@ namespace vigra {
 /********************************************************/
 
 /** \brief Find the connected components of a segmented image.
-
-    Connected components are defined as regions with uniform pixel
-    values. Thus, <TT>SrcAccessor::value_type</TT> either must be
-    equality comparable (first form), or an EqualityFunctor must be
-    provided that realizes the desired predicate (second form). The
-    destination's value type should be large enough to hold the labels
-    without overflow. Region numbers will be a consecutive sequence
-    starting with one and ending with the region number returned by
-    the function (inclusive). The parameter '<TT>eight_neighbors</TT>'
-    determines whether the regions should be 4-connected or
-    8-connected. The function uses accessors.
 
     <b> Declarations:</b>
 
@@ -109,6 +98,17 @@ namespace vigra {
                                 bool eight_neighbors, EqualityFunctor equal)
     }
     \endcode
+
+    Connected components are defined as regions with uniform pixel
+    values. Thus, <TT>SrcAccessor::value_type</TT> either must be
+    equality comparable (first form), or an EqualityFunctor must be
+    provided that realizes the desired predicate (second form). The
+    destination's value type should be large enough to hold the labels
+    without overflow. Region numbers will be a consecutive sequence
+    starting with one and ending with the region number returned by
+    the function (inclusive). The parameter '<TT>eight_neighbors</TT>'
+    determines whether the regions should be 4-connected or
+    8-connected. The function uses accessors.
 
     Return:  the number of regions found (= largest region label)
 
@@ -340,21 +340,6 @@ unsigned int labelImage(triple<SrcIterator, SrcIterator, SrcAccessor> src,
 /** \brief Find the connected components of a segmented image,
     excluding the background from labeling.
 
-    Connected components are defined as regions with uniform pixel
-    values. Thus, <TT>SrcAccessor::value_type</TT> either must be
-    equality comparable (first form), or an EqualityFunctor must be
-    provided that realizes the desired predicate (second form). All
-    pixel equal to the given '<TT>background_value</TT>' are ignored
-    when determining connected components and remain untouched in the
-    destination image and
-
-    The destination's value type should be large enough to hold the
-    labels without overflow. Region numbers will be a consecutive
-    sequence starting with one and ending with the region number
-    returned by the function (inclusive). The parameter
-    '<TT>eight_neighbors</TT>' determines whether the regions should
-    be 4-connected or 8-connected. The function uses accessors.
-
     <b> Declarations:</b>
 
     pass arguments explicitly:
@@ -400,6 +385,21 @@ unsigned int labelImage(triple<SrcIterator, SrcIterator, SrcAccessor> src,
                                      ValueType background_value, EqualityFunctor equal);
     }
     \endcode
+
+    Connected components are defined as regions with uniform pixel
+    values. Thus, <TT>SrcAccessor::value_type</TT> either must be
+    equality comparable (first form), or an EqualityFunctor must be
+    provided that realizes the desired predicate (second form). All
+    pixel equal to the given '<TT>background_value</TT>' are ignored
+    when determining connected components and remain untouched in the
+    destination image and
+
+    The destination's value type should be large enough to hold the
+    labels without overflow. Region numbers will be a consecutive
+    sequence starting with one and ending with the region number
+    returned by the function (inclusive). The parameter
+    '<TT>eight_neighbors</TT>' determines whether the regions should
+    be 4-connected or 8-connected. The function uses accessors.
 
     Return:  the number of regions found (= largest region label)
 
@@ -639,30 +639,6 @@ unsigned int labelImageWithBackground(
 
 /** \brief Transform a labeled image into a crack edge image.
 
-    This algorithm inserts border pixels (so called "crack edges")
-    between regions in a labeled image like this (<TT>a</TT> and
-    <TT>c</TT> are the original labels, and <TT>0</TT> is the value of
-    <TT>edge_marker</TT> and denotes the inserted edges):
-
-    \code
-       original image     insert zero- and one-cells
-
-                                         a 0 c c c
-          a c c                          a 0 0 0 c
-          a a c               =>         a a a 0 c
-          a a a                          a a a 0 0
-                                         a a a a a
-    \endcode
-
-    The algorithm assumes that the original labeled image contains
-    no background. Therefore, it is suitable as a post-processing
-    operation of \ref labelImage() or \ref seededRegionGrowing().
-
-    The destination image must be twice the size of the original
-    (precisely, <TT>(2*w-1)</TT> by <TT>(2*h-1)</TT> pixels). The
-    source value type (<TT>SrcAccessor::value-type</TT>) must be
-    equality-comparable.
-
     <b> Declarations:</b>
 
     pass arguments explicitly:
@@ -688,6 +664,30 @@ unsigned int labelImageWithBackground(
                    DestValue edge_marker)
     }
     \endcode
+
+    This algorithm inserts border pixels (so called "crack edges")
+    between regions in a labeled image like this (<TT>a</TT> and
+    <TT>c</TT> are the original labels, and <TT>0</TT> is the value of
+    <TT>edge_marker</TT> and denotes the inserted edges):
+
+    \code
+       original image     insert zero- and one-cells
+
+                                         a 0 c c c
+          a c c                          a 0 0 0 c
+          a a c               =>         a a a 0 c
+          a a a                          a a a 0 0
+                                         a a a a a
+    \endcode
+
+    The algorithm assumes that the original labeled image contains
+    no background. Therefore, it is suitable as a post-processing
+    operation of \ref labelImage() or \ref seededRegionGrowing().
+
+    The destination image must be twice the size of the original
+    (precisely, <TT>(2*w-1)</TT> by <TT>(2*h-1)</TT> pixels). The
+    source value type (<TT>SrcAccessor::value-type</TT>) must be
+    equality-comparable.
 
     <b> Usage:</b>
 
@@ -858,23 +858,6 @@ void regionImageToCrackEdgeImage(
 
 /** \brief Transform a labeled image into an edge image.
 
-    This algorithm marks all pixels with the given <TT>edge_marker</TT>
-    which belong to a different region (label) than their right or lower
-    neighbors:
-
-    \code
-       original image                     edges
-                                 (assuming edge_marker == 1)
-
-          a c c                            1 1 *
-          a a c               =>           * 1 1
-          a a a                            * * *
-    \endcode
-
-    The non-edge pixels of the destination image will not be touched.
-    The source value type (<TT>SrcAccessor::value-type</TT>) must be
-    equality-comparable.
-
     <b> Declarations:</b>
 
     pass arguments explicitly:
@@ -900,6 +883,23 @@ void regionImageToCrackEdgeImage(
                    DestValue edge_marker)
     }
     \endcode
+
+    This algorithm marks all pixels with the given <TT>edge_marker</TT>
+    which belong to a different region (label) than their right or lower
+    neighbors:
+
+    \code
+       original image                     edges
+                                 (assuming edge_marker == 1)
+
+          a c c                            1 1 *
+          a a c               =>           * 1 1
+          a a a                            * * *
+    \endcode
+
+    The non-edge pixels of the destination image will not be touched.
+    The source value type (<TT>SrcAccessor::value-type</TT>) must be
+    equality-comparable.
 
     <b> Usage:</b>
 

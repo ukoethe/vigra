@@ -305,20 +305,6 @@ rotateImage(SplineImageView<ORDER, T> const & src,
 
 /** \brief Warp an image according to an affine transformation.
 
-    The algorithm applies the given \a affineMatrix to the <i>destination coordinates</i> and copies
-    the image value from the resulting source coordinates, using the given SplineImageView \a src for interpolation. 
-    If the resulting coordinate is outside the source image, nothing will be writen at that destination point.
-    
-    \code
-        for all dest pixels:
-            currentSrcCoordinate = affineMatrix * currentDestCoordinate;
-            if src.isInside(currentSrcCoordinate):
-                dest[currentDestCoordinate] = src[currentSrcCoordinate]; // copy an interpolated value
-    \endcode
-    
-    The matrix represent a 2-dimensional affine transform by means of homogeneous coordinates,
-    i.e. it must be a 3x3 matrix whose last row is (0,0,1).
-    
     <b> Declarations:</b>
     
     pass arguments explicitly:
@@ -344,6 +330,20 @@ rotateImage(SplineImageView<ORDER, T> const & src,
                             MultiArrayView<2, double, C> const & affineMatrix);
     }
     \endcode
+    
+    The algorithm applies the given \a affineMatrix to the <i>destination coordinates</i> and copies
+    the image value from the resulting source coordinates, using the given SplineImageView \a src for interpolation. 
+    If the resulting coordinate is outside the source image, nothing will be writen at that destination point.
+    
+    \code
+        for all dest pixels:
+            currentSrcCoordinate = affineMatrix * currentDestCoordinate;
+            if src.isInside(currentSrcCoordinate):
+                dest[currentDestCoordinate] = src[currentSrcCoordinate]; // copy an interpolated value
+    \endcode
+    
+    The matrix represent a 2-dimensional affine transform by means of homogeneous coordinates,
+    i.e. it must be a 3x3 matrix whose last row is (0,0,1).
     
     <b> Usage:</b>
     
@@ -382,6 +382,9 @@ rotateImage(SplineImageView<ORDER, T> const & src,
         dest_accessor.set(spline(x, y), dest_upperleft);
 
     \endcode
+    
+    <b>See also:</b> Functions to specify affine transformation: \ref translationMatrix2D(), \ref scalingMatrix2D(), 
+                    \ref shearMatrix2D(), \ref rotationMatrix2DRadians(), \ref rotationMatrix2DDegrees()
 */
 doxygen_overloaded_function(template <...> void affineWarpImage)
 

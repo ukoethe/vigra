@@ -43,6 +43,44 @@
 #include "rgbvalue.hxx"
 #include "functortraits.hxx"
 
+namespace vigra {
+
+namespace detail
+{
+
+inline double gammaCorrection(double value, double gamma)
+{
+    return (value < 0.0) ? 
+            -VIGRA_CSTD::pow(-value, gamma) :
+            VIGRA_CSTD::pow(value, gamma);
+}
+
+inline double gammaCorrection(double value, double gamma, double norm)
+{
+    return (value < 0.0) ? 
+            -norm*VIGRA_CSTD::pow(-value/norm, gamma) :
+            norm*VIGRA_CSTD::pow(value/norm, gamma);
+}
+
+inline double sRGBCorrection(double value, double norm)
+{
+    value /= norm;
+    return (value <= 0.00304) 
+               ? norm*12.92*value 
+               : norm*(1.055*VIGRA_CSTD::pow(value, 0.41666666666666667) - 0.055);
+}
+
+inline double inverse_sRGBCorrection(double value, double norm)
+{
+    value /= norm;
+    return (value <= 0.03928) 
+               ? norm*value / 12.92
+               : norm*VIGRA_CSTD::pow((value + 0.055)/1.055, 2.4);
+}
+
+
+} // namespace detail
+
 /** \addtogroup ColorConversions  Color Space Conversions
 
     Convert between RGB, sRGB, R'G'B', XYZ, L*a*b*, L*u*v*, Y'PbPr, Y'CbCr, Y'IQ, and Y'UV color spaces.
@@ -196,43 +234,7 @@
     comparable.
 */
 //@{
-namespace vigra {
 
-namespace detail
-{
-
-inline double gammaCorrection(double value, double gamma)
-{
-    return (value < 0.0) ? 
-            -VIGRA_CSTD::pow(-value, gamma) :
-            VIGRA_CSTD::pow(value, gamma);
-}
-
-inline double gammaCorrection(double value, double gamma, double norm)
-{
-    return (value < 0.0) ? 
-            -norm*VIGRA_CSTD::pow(-value/norm, gamma) :
-            norm*VIGRA_CSTD::pow(value/norm, gamma);
-}
-
-inline double sRGBCorrection(double value, double norm)
-{
-    value /= norm;
-    return (value <= 0.00304) 
-               ? norm*12.92*value 
-               : norm*(1.055*VIGRA_CSTD::pow(value, 0.41666666666666667) - 0.055);
-}
-
-inline double inverse_sRGBCorrection(double value, double norm)
-{
-    value /= norm;
-    return (value <= 0.03928) 
-               ? norm*value / 12.92
-               : norm*VIGRA_CSTD::pow((value + 0.055)/1.055, 2.4);
-}
-
-
-} // namespace detail
 
 /** \brief Convert linear (raw) RGB into non-linear (gamma corrected) R'G'B'.
 
@@ -2655,7 +2657,7 @@ YUV: white = [229.992, 1, 9.81512e-17]
 
 */
 
-/** \addtogroup PolarColors Polar Color Coordinates
+/** \page PolarColors Polar Color Coordinates
     
     Transform colors from/to a polar representation (hue, brighness, saturation).
     In many situations, this is more inituitive than direct initialization in a 

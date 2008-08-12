@@ -115,32 +115,6 @@ internalResizeMultiArrayOneDimension(
 
 /** \brief Resize MultiArray using B-spline interpolation.
 
-    The function implements separable spline interpolation algorithm described in
-
-    M. Unser, A. Aldroubi, M. Eden, <i>"B-Spline Signal Processing"</i>
-    IEEE Transactions on Signal Processing, vol. 41, no. 2, pp. 821-833 (part I),
-    pp. 834-848 (part II), 1993.
-
-    to obtain optimal interpolation quality and speed. You may pass the funcion
-    a spline of arbitrary order (e.g. <TT>BSpline<ORDER, double></tt> or
-    <TT>CatmullRomSpline<double></tt>). The default is a third order spline
-    which gives a twice continuously differentiable interpolant.
-    The implementation ensures that image values are interpolated rather
-    than smoothed by first calling a recursive (sharpening) prefilter as
-    described in the above paper. Then the actual interpolation is done
-    using \ref resamplingConvolveLine().
-
-    The range of both the input and output images (resp. regions)
-    must be given. The input image must have a size of at
-    least 4x4, the destination of at least 2x2. The scaling factors are then calculated
-    accordingly. If the source image is larger than the destination, it
-    is smoothed (band limited) using a recursive
-    exponential filter. The source value_type (SrcAccessor::value_type) must
-    be a linear algebra, i.e. it must support addition, subtraction,
-    and multiplication (+, -, *), multiplication with a scalar
-    real number and \ref NumericTraits "NumericTraits".
-    The function uses accessors.
-
     <b> Declarations:</b>
 
     pass arguments explicitly:
@@ -171,6 +145,32 @@ internalResizeMultiArrayOneDimension(
                               Kernel const & spline = BSpline<3, double>());
     }
     \endcode
+
+    The function implements separable spline interpolation algorithm described in
+
+    M. Unser, A. Aldroubi, M. Eden, <i>"B-Spline Signal Processing"</i>
+    IEEE Transactions on Signal Processing, vol. 41, no. 2, pp. 821-833 (part I),
+    pp. 834-848 (part II), 1993.
+
+    to obtain optimal interpolation quality and speed. You may pass the funcion
+    a spline of arbitrary order (e.g. <TT>BSpline<ORDER, double></tt> or
+    <TT>CatmullRomSpline<double></tt>). The default is a third order spline
+    which gives a twice continuously differentiable interpolant.
+    The implementation ensures that image values are interpolated rather
+    than smoothed by first calling a recursive (sharpening) prefilter as
+    described in the above paper. Then the actual interpolation is done
+    using \ref resamplingConvolveLine().
+
+    The range of both the input and output images (resp. regions)
+    must be given. The input image must have a size of at
+    least 4x4, the destination of at least 2x2. The scaling factors are then calculated
+    accordingly. If the source image is larger than the destination, it
+    is smoothed (band limited) using a recursive
+    exponential filter. The source value_type (SrcAccessor::value_type) must
+    be a linear algebra, i.e. it must support addition, subtraction,
+    and multiplication (+, -, *), multiplication with a scalar
+    real number and \ref NumericTraits "NumericTraits".
+    The function uses accessors.
 
     <b> Usage:</b>
 

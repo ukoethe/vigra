@@ -276,6 +276,8 @@ internalDistanceTransform(SrcImageIterator src_upperleft,
 /** \addtogroup DistanceTransform Distance Transform
     Perform a distance transform using either the Euclidean, Manhattan, 
     or chessboard metrics.
+    
+    See also: \ref MultiArrayDistanceTransform "multi-dimensional distance transforms"
 */
 //@{
 

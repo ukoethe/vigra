@@ -326,25 +326,6 @@ unsigned int watershedLabeling3D( SrcIterator s_Iter, SrcShape srcShape, SrcAcce
 
 /** \brief Region Segmentation by means of the watershed algorithm.
 
-    This function implements the union-find version of the watershed algorithms
-    as described in
-
-    J. Roerdink, R. Meijster: "<em>The watershed transform: definitions, algorithms,
-    and parallelization stretegies</em>", Fundamenta Informaticae, 41:187-228, 2000
-
-    The source volume is a boundary indicator such as the gradient magnitude
-    of the trace of the \ref boundaryTensor(). Local minima of the boundary indicator
-    are used as region seeds, and all other voxels are recursively assigned to the same 
-    region as their lowest neighbor. Pass \ref vigra::NeighborCode3DSix or 
-    \ref vigra::NeighborCode3DTwentySix to determine the neighborhood where voxel values 
-    are compared. The voxel type of the input volume must be <tt>LessThanComparable</tt>.
-    The function uses accessors. 
-    
-    ...probably soon in VIGRA:
-    Note that VIGRA provides an alternative implementaion of the watershed transform via
-    \ref seededRegionGrowing3D(). It is slower, but handles plateaus better 
-    and allows to keep a one pixel wide boundary between regions.
-    
     <b> Declarations:</b>
 
     pass arguments explicitly:
@@ -395,6 +376,25 @@ unsigned int watershedLabeling3D( SrcIterator s_Iter, SrcShape srcShape, SrcAcce
     }
     \endcode
 
+    This function implements the union-find version of the watershed algorithms
+    as described in
+
+    J. Roerdink, R. Meijster: "<em>The watershed transform: definitions, algorithms,
+    and parallelization stretegies</em>", Fundamenta Informaticae, 41:187-228, 2000
+
+    The source volume is a boundary indicator such as the gradient magnitude
+    of the trace of the \ref boundaryTensor(). Local minima of the boundary indicator
+    are used as region seeds, and all other voxels are recursively assigned to the same 
+    region as their lowest neighbor. Pass \ref vigra::NeighborCode3DSix or 
+    \ref vigra::NeighborCode3DTwentySix to determine the neighborhood where voxel values 
+    are compared. The voxel type of the input volume must be <tt>LessThanComparable</tt>.
+    The function uses accessors. 
+    
+    ...probably soon in VIGRA:
+    Note that VIGRA provides an alternative implementaion of the watershed transform via
+    \ref seededRegionGrowing3D(). It is slower, but handles plateaus better 
+    and allows to keep a one pixel wide boundary between regions.
+    
     <b> Usage:</b>
 
     <b>\#include</b> \<<a href="watersheds3D_8hxx-source.html">vigra/watersheds3D.hxx</a>\><br>

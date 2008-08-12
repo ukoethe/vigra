@@ -44,7 +44,7 @@
 namespace vigra{
 
 /** \addtogroup Labeling Connected Components Labeling
-     The connected components algorithm may use either 6 or 26 connectivity.
+     The 3-dimensional connected components algorithms may use either 6 or 26 connectivity.
      By means of a functor the merge criterium can be defined arbitrarily.
 */
 //@{
@@ -56,15 +56,6 @@ namespace vigra{
 /********************************************************/
 
 /** \brief Find the connected components of a segmented volume.
-
-    Connected components are defined as regions with uniform voxel
-    values. Thus, <TT>SrcAccessor::value_type</TT> either must be
-    equality comparable (first form), or an EqualityFunctor must be
-    provided that realizes the desired predicate (second form). The
-    destination's value type should be large enough to hold the labels
-    without overflow. Region numbers will be a consecutive sequence
-    starting with one and ending with the region number returned by
-    the function (inclusive).
 
     <b> Declarations:</b>
 
@@ -122,6 +113,15 @@ namespace vigra{
     }
     \endcode
 
+    Connected components are defined as regions with uniform voxel
+    values. Thus, <TT>SrcAccessor::value_type</TT> either must be
+    equality comparable (first form), or an EqualityFunctor must be
+    provided that realizes the desired predicate (second form). The
+    destination's value type should be large enough to hold the labels
+    without overflow. Region numbers will be a consecutive sequence
+    starting with one and ending with the region number returned by
+    the function (inclusive).
+
     Return:  the number of regions found (= largest region label)
 
     <b> Usage:</b>
@@ -163,15 +163,7 @@ namespace vigra{
     \endcode
 
 */
-doxygen_overloaded_function(template <...> unsigned int labelVolumeSix)
-
-template <class SrcIterator, class SrcAccessor,class SrcShape,
-          class DestIterator, class DestAccessor>
-unsigned int labelVolumeSix(triple<SrcIterator, SrcShape, SrcAccessor> src,
-                            pair<DestIterator, DestAccessor> dest)
-{
-    return labelVolume(src.first, src.second, src.third, dest.first, dest.second, NeighborCode3DSix(), std::equal_to<typename SrcAccessor::value_type>());
-}
+doxygen_overloaded_function(template <...> unsigned int labelVolume)
 
 template <class SrcIterator, class SrcAccessor,class SrcShape,
           class DestIterator, class DestAccessor,
@@ -387,6 +379,28 @@ unsigned int labelVolume(SrcIterator s_Iter, SrcShape srcShape, SrcAccessor sa,
     return count;
 }
 
+/********************************************************/
+/*                                                      */
+/*                    labelVolumeSix                    */
+/*                                                      */
+/********************************************************/
+
+/** \brief Find the connected components of a segmented volume
+     using the 6-neighborhood.
+     
+     See \ref labelVolume() for detailed documentation.
+
+*/
+template <class SrcIterator, class SrcAccessor,class SrcShape,
+          class DestIterator, class DestAccessor>
+unsigned int labelVolumeSix(triple<SrcIterator, SrcShape, SrcAccessor> src,
+                            pair<DestIterator, DestAccessor> dest)
+{
+    return labelVolume(src.first, src.second, src.third, dest.first, dest.second, NeighborCode3DSix(), std::equal_to<typename SrcAccessor::value_type>());
+}
+
+
+
 
 /********************************************************/
 /*                                                      */
@@ -396,19 +410,6 @@ unsigned int labelVolume(SrcIterator s_Iter, SrcShape srcShape, SrcAccessor sa,
 
 /** \brief Find the connected components of a segmented volume,
      excluding the background from labeling.
-
-    Connected components are defined as regions with uniform voxel
-    values. Thus, <TT>SrcAccessor::value_type</TT> either must be
-    equality comparable (first form), or an EqualityFunctor must be
-    provided that realizes the desired predicate (second form). All
-    voxel equal to the given '<TT>background_value</TT>' are ignored
-    when determining connected components and remain untouched in the
-    destination volume.
-
-    The destination's value type should be large enough to hold the
-    labels without overflow. Region numbers will be a consecutive
-    sequence starting with one and ending with the region number
-    returned by the function (inclusive).
 
     <b> Declarations:</b>
 
@@ -455,6 +456,19 @@ unsigned int labelVolume(SrcIterator s_Iter, SrcShape srcShape, SrcAccessor sa,
 
     }
     \endcode
+
+    Connected components are defined as regions with uniform voxel
+    values. Thus, <TT>SrcAccessor::value_type</TT> either must be
+    equality comparable (first form), or an EqualityFunctor must be
+    provided that realizes the desired predicate (second form). All
+    voxel equal to the given '<TT>background_value</TT>' are ignored
+    when determining connected components and remain untouched in the
+    destination volume.
+
+    The destination's value type should be large enough to hold the
+    labels without overflow. Region numbers will be a consecutive
+    sequence starting with one and ending with the region number
+    returned by the function (inclusive).
 
     Return:  the number of regions found (= largest region label)
 
