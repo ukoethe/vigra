@@ -54,7 +54,7 @@ struct ImageFunctionsTest
     typedef vigra::DRGBImage RGBImage;
     typedef Image::value_type GrayValue;
     typedef RGBImage::value_type RGBValue;
-    
+
     ImageFunctionsTest()
     : img(3,3), mask(3,3), rgb(3,3), col(1.0, 2.0, 3.0)
     {
@@ -309,7 +309,7 @@ struct ImageFunctionsTest
 
         should(average.count() == 9);
         should(average() == 5.5);
-        
+
         average(average); // combine
 
         should(average.count() == 18);
@@ -326,6 +326,23 @@ struct ImageFunctionsTest
         should(average() == 5.5);
     }
 
+    void findAverageWeightedTest()
+    {
+        vigra::FindAverage<Image::value_type> average;
+
+        average(10);
+        average(5,  2.0);
+        average(42, 0.2);
+
+        shouldEqualTolerance(average.count(), 3.2, 1e-12);
+        shouldEqualTolerance(average(), (10+10+42*0.2)/(1+2+0.2), 1e-8);
+
+        average(average); // combine
+
+        shouldEqualTolerance(average.count(), 6.4, 1e-12);
+        shouldEqualTolerance(average(), (10+10+42*0.2)/(1+2+0.2), 1e-8);
+    }
+
     void findAverageAndVarianceTest()
     {
         vigra::FindAverageAndVariance<Image::value_type> averageAndVariance;
@@ -334,7 +351,7 @@ struct ImageFunctionsTest
 
         should(averageAndVariance.count() == 9);
         shouldEqualTolerance(averageAndVariance.average(), 5.5, 1e-14);
-        
+
         // compute variance explicitly
         double sumOfSquares = 0.0;
         Image::ScanOrderIterator i = img.begin();
@@ -342,19 +359,19 @@ struct ImageFunctionsTest
         {
             sumOfSquares += sq(*i - averageAndVariance.average());
         }
-        
+
         shouldEqualTolerance(averageAndVariance.variance(), sumOfSquares / 9.0, 1e-14);
         shouldEqualTolerance(averageAndVariance(), sumOfSquares / 9.0, 1e-14);
         shouldEqualTolerance(averageAndVariance.variance(true), sumOfSquares / 8.0, 1e-14);
 
         // check merge of functors
         vigra::FindAverageAndVariance<Image::value_type> averageAndVariance1(averageAndVariance), averageAndVariance2;
-        
+
         averageAndVariance1(5.31);
         averageAndVariance1(-0.3);
         averageAndVariance1(2.88);
         averageAndVariance1(10.521);
-        
+
         averageAndVariance2(5.31);
         averageAndVariance2(-0.3);
         averageAndVariance2(2.88);
@@ -447,6 +464,28 @@ struct ImageFunctionsTest
         should(rect.upperLeft().y == 0);
         should(rect.lowerRight().x == 5);
         should(rect.lowerRight().y == 5);
+    }
+
+    void lastValueFunctorTest()
+    {
+        typedef vigra::LastValueFunctor<int> LastValue;
+        {
+            LastValue a;
+            a(10);
+            shouldEqual(a(), 10);
+            a(vigra::NumericTraits<int>::max());
+            shouldEqual(a(), vigra::NumericTraits<int>::max());
+            a(42);
+            shouldEqual(a(), 42);
+        }
+        {
+            // try to construct at same place on stack as a
+            // (check whether ints are initialized to zero)
+            LastValue b;
+            shouldEqual(b(), 0);
+        }
+        LastValue c(23); // test init. with value
+        shouldEqual(c(), 23);
     }
 
     void arrayOfRegionStatisticsTest()
@@ -1411,7 +1450,7 @@ struct GeometricTransformsTest
     void testSimpleGeometry()
     {
         Image res1(img.size()), res2(h, w);
-        
+
         rotateImage(srcImageRange(img), destImage(res1), 180);
         for(int y = 0; y < 10; ++y)
             for(int x = 0; x < 10; ++x)
@@ -1431,7 +1470,7 @@ struct GeometricTransformsTest
             failTest("rotateImage() failed to throw exception");
         }
         catch(vigra::PreconditionViolation) {}
-        
+
         transposeImage(srcImageRange(img), destImage(res2), major);
         for(int y = 0; y < 10; ++y)
             for(int x = 0; x < 10; ++x)
@@ -1440,7 +1479,7 @@ struct GeometricTransformsTest
         for(int y = 0; y < 10; ++y)
             for(int x = 0; x < 10; ++x)
                 shouldEqual(img(x,y), res2(h-y-1, w-x-1));
-        
+
         reflectImage(srcImageRange(img), destImage(res1), horizontal);
         for(int y = 0; y < 10; ++y)
             for(int x = 0; x < 10; ++x)
@@ -1450,70 +1489,70 @@ struct GeometricTransformsTest
             for(int x = 0; x < 10; ++x)
                 shouldEqual(img(x,y), res1(w-x-1, y));
     }
-    
+
     void testAffineMatrix()
     {
         typedef TinyVector<double, 2> Vector2;
-        
+
         Matrix<double> point(3,1);
         point(0,0) = 1.6;
         point(1,0) = 2.9;
         point(2,0) = 1.0;
-        
+
         Matrix<double> t = translationMatrix2D(Vector2(2.2, 4.1));
         Matrix<double> res = t * point;
         shouldEqualTolerance(res(0,0), 3.8, 1e-14);
         shouldEqualTolerance(res(1,0), 7.0, 1e-14);
         shouldEqual(res(2,0), 1.0);
-        
+
         Matrix<double> r = rotationMatrix2DDegrees(-90.0);
         res = r * point;
         shouldEqualTolerance(res(0,0), 2.9, 1e-14);
         shouldEqualTolerance(res(1,0), -1.6, 1e-14);
         shouldEqual(res(2,0), 1.0);
-        
+
         r = rotationMatrix2DDegrees(-90.0, Vector2(1.6, 2.9));
         res = r * point;
         shouldEqualTolerance(res(0,0), 1.6, 1e-14);
         shouldEqualTolerance(res(1,0), 2.9, 1e-14);
         shouldEqual(res(2,0), 1.0);
-        
+
         Matrix<double> s = scalingMatrix2D(2.0);
         res = s * point;
         shouldEqualTolerance(res(0,0), 3.2, 1e-14);
         shouldEqualTolerance(res(1,0), 5.8, 1e-14);
         shouldEqual(res(2,0), 1.0);
-        
+
         Matrix<double> sh = shearMatrix2D(2.0, 0.5);
         res = sh * point;
         shouldEqualTolerance(res(0,0), 7.4, 1e-14);
         shouldEqualTolerance(res(1,0), 3.7, 1e-14);
         shouldEqual(res(2,0), 1.0);
     }
-    
+
     void testRotation()
     {
         Image res(img.size()), ref(img.size());
         importImage(vigra::ImageImportInfo("lenna_rotate.xv"), destImage(ref));
-        
+
         SplineImageView<3, double> sp(srcImageRange(img));
-        
+
         rotateImage(sp, destImage(res), 45.0);
-        
+
         shouldEqualSequenceTolerance(res.begin(), res.end(), ref.begin(), 1e-12);
-        
+
         TinyVector<double, 2> center((w-1.0)/2.0, (h-1.0)/2.0);
         affineWarpImage(sp, destImageRange(res), rotationMatrix2DDegrees(45.0, center));
         shouldEqualSequenceTolerance(res.begin(), res.end(), ref.begin(), 1e-12);
     }
-    
+
     void testScaling()
     {
         Image res(2*w-1, 2*h-1), ref(2*w-1, 2*h-1);
         resizeImageSplineInterpolation(srcImageRange(img), destImageRange(ref));
-                
+
         SplineImageView<3, double> sp(srcImageRange(img));
-        
+
         affineWarpImage(sp, destImageRange(res), scalingMatrix2D(0.5));
         shouldEqualSequenceTolerance(res.begin(), res.end(), ref.begin(), 1e-14);
     }
@@ -1538,9 +1577,11 @@ struct ImageFunctionsTestSuite
         add( testCase( &ImageFunctionsTest::findMinMaxIfTest));
         add( testCase( &ImageFunctionsTest::findAverageTest));
         add( testCase( &ImageFunctionsTest::findAverageIfTest));
+        add( testCase( &ImageFunctionsTest::findAverageWeightedTest));
         add( testCase( &ImageFunctionsTest::findAverageAndVarianceTest));
         add( testCase( &ImageFunctionsTest::reduceFunctorTest));
         add( testCase( &ImageFunctionsTest::findBoundingRectangleTest));
+        add( testCase( &ImageFunctionsTest::lastValueFunctorTest));
         add( testCase( &ImageFunctionsTest::arrayOfRegionStatisticsTest));
         add( testCase( &ImageFunctionsTest::arrayOfRegionStatisticsIfTest));
         add( testCase( &ImageFunctionsTest::writeArrayOfRegionStatisticsTest));

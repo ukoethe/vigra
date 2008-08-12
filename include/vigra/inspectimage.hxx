@@ -30,7 +30,7 @@
 /*    HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,      */
 /*    WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING      */
 /*    FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR     */
-/*    OTHER DEALINGS IN THE SOFTWARE.                                   */                
+/*    OTHER DEALINGS IN THE SOFTWARE.                                   */
 /*                                                                      */
 /************************************************************************/
 
@@ -674,11 +674,11 @@ inspectTwoImagesIf(triple<ImageIterator1, ImageIterator1, Accessor1> img1,
     These functors can also be used in conjunction with
     \ref ArrayOfRegionStatistics to find the extremes of all regions in
     a labeled image.
-    
+
     <b> Traits defined:</b>
-    
+
     <tt>FunctorTraits::isUnaryAnalyser</tt> is true (<tt>VigraTrueType</tt>)
-    
+
     <b> Usage:</b>
 
         <b>\#include</b> \<<a href="inspectimage_8hxx-source.html">vigra/inspectimage.hxx</a>\><br>
@@ -726,7 +726,7 @@ class FindMinMax
         */
     FindMinMax()
     : min( NumericTraits<value_type>::max() ),
-      max( NumericTraits<value_type>::min() ),    
+      max( NumericTraits<value_type>::min() ),
       count(0)
     {}
 
@@ -819,10 +819,10 @@ class FunctorTraits<FindMinMax<VALUETYPE> >
     a labeled image.
 
     <b> Traits defined:</b>
-    
+
     <tt>FunctorTraits::isUnaryAnalyser</tt> and <tt>FunctorTraits::isInitializer</tt>
     are true (<tt>VigraTrueType</tt>)
-    
+
     <b> Usage:</b>
 
         <b>\#include</b> \<<a href="inspectimage_8hxx-source.html">vigra/inspectimage.hxx</a>\><br>
@@ -844,7 +844,7 @@ class FunctorTraits<FindMinMax<VALUETYPE> >
     \code
     VALUETYPE v1, v2(v1);
     double d;
-    
+
     v1 += v2;
     v1 / d;
     \endcode
@@ -858,6 +858,14 @@ class FindAverage
         /** the functor's argument type
         */
     typedef VALUETYPE argument_type;
+
+        /** the functor's first argument type (for calls with a weight)
+        */
+    typedef VALUETYPE first_argument_type;
+
+        /** the functor's second argument type (for calls with a weight)
+        */
+    typedef double second_argument_type;
 
         /** the functor's result type
         */
@@ -889,17 +897,28 @@ class FindAverage
         ++count_;
     }
 
+        /** update average, using weighted input.
+         * <tt>stats(value, 1.0)</tt> is equivalent to the unweighted
+         * call <tt>stats(value)</tt>, and <tt>stats(value, 2.0)</tt>
+         * is equivalent to two unweighted calls.
+         */
+    void operator()(first_argument_type const & v, second_argument_type weight)
+    {
+        sum_   += v * weight;
+        count_ += weight;
+    }
+
         /** merge two statistics
         */
     void operator()(FindAverage const & v)
     {
-        sum_ += v.sum_;
+        sum_   += v.sum_;
         count_ += v.count_;
     }
 
-        /** return number of values seen so far
+        /** return number of values (sum of weights) seen so far
         */
-    unsigned int count() const
+    double count() const
     {
         return count_;
     }
@@ -919,7 +938,7 @@ class FindAverage
     }
 
     result_type sum_;
-    unsigned int count_;
+    double count_;
 };
 
 template <class VALUETYPE>
@@ -933,24 +952,25 @@ class FunctorTraits<FindAverage<VALUETYPE> >
 
 /********************************************************/
 /*                                                      */
-/*                    FindAverageAndVariance            */
+/*                 FindAverageAndVariance               */
 /*                                                      */
 /********************************************************/
 
 /** \brief  Find the average pixel value and its variance in an image or ROI.
 
-    This Functor uses West's algorithm to accumulate highly accurate values for the mean and
-    the sum of squared differences of all values seen so far (the naive incremental algorithm
-    for the computation of the sum of squares produces large round-off errors when the mean is
-    much larger than the standard deviation of the data.) This Functor can also be used in conjunction with
-    \ref ArrayOfRegionStatistics to find the average of all regions in
-    a labeled image.
+    This Functor uses West's algorithm to accumulate highly accurate values for
+    the mean and the sum of squared differences of all values seen so far (the
+    naive incremental algorithm for the computation of the sum of squares
+    produces large round-off errors when the mean is much larger than the
+    standard deviation of the data.) This Functor can also be used in
+    conjunction with \ref ArrayOfRegionStatistics to find the statistics of all
+    regions in a labeled image.
 
     <b> Traits defined:</b>
-    
+
     <tt>FunctorTraits::isUnaryAnalyser</tt> and <tt>FunctorTraits::isInitializer</tt>
     are true (<tt>VigraTrueType</tt>)
-    
+
     <b> Usage:</b>
 
         <b>\#include</b> \<<a href="inspectimage_8hxx-source.html">vigra/inspectimage.hxx</a>\><br>
@@ -973,7 +993,7 @@ class FunctorTraits<FindAverage<VALUETYPE> >
     \code
     VALUETYPE v1, v2(v1);
     double d;
-    
+
     v1 += v2;
     v1 + v2;
     v1 - v2;
@@ -992,6 +1012,14 @@ class FindAverageAndVariance
         */
     typedef VALUETYPE argument_type;
 
+        /** the functor's first argument type (for calls with a weight)
+        */
+    typedef VALUETYPE first_argument_type;
+
+        /** the functor's second argument type (for calls with a weight)
+        */
+    typedef double second_argument_type;
+
         /** the functor's result type
         */
     typedef typename NumericTraits<VALUETYPE>::RealPromote result_type;
@@ -1008,7 +1036,7 @@ class FindAverageAndVariance
       count_(0.0)
     {}
 
-        /** (re-)init average
+        /** (re-)init average and variance
         */
     void reset()
     {
@@ -1017,7 +1045,7 @@ class FindAverageAndVariance
         sumOfSquaredDifferences_ = NumericTraits<result_type>::zero();
     }
 
-        /** update average
+        /** update average and variance
         */
     void operator()(argument_type const & v)
     {
@@ -1028,18 +1056,37 @@ class FindAverageAndVariance
         sumOfSquaredDifferences_ += (count_-1.0)*t1*t2;
     }
 
+        /** update average and variance, using weighted input.
+         * <tt>stats(value, 1.0)</tt> is equivalent to the unweighted
+         * call <tt>stats(value)</tt>, and <tt>stats(value, 2.0)</tt>
+         * is equivalent to two unweighted calls.
+         */
+    void operator()(first_argument_type const & v, second_argument_type weight)
+    {
+        count_ += weight;
+        result_type t1 = v - mean_;
+        result_type t2 = t1 * weight / count_;
+        mean_ += t2;
+
+        //sumOfSquaredDifferences_ += (count_ - weight)*t1*t2;
+
+        if(count_ > weight)
+            sumOfSquaredDifferences_ +=
+                (t1 * t1 * weight / count_) * (count_ - weight );
+    }
+
         /** merge two statistics
         */
     void operator()(FindAverageAndVariance const & v)
     {
         double newCount = count_ + v.count_;
-        sumOfSquaredDifferences_ += v.sumOfSquaredDifferences_ + 
+        sumOfSquaredDifferences_ += v.sumOfSquaredDifferences_ +
                                     count_ / newCount * v.count_ * (mean_ - v.mean_) * (mean_ - v.mean_);
         mean_ = (count_ * mean_ + v.count_ * v.mean_) / newCount;
         count_ += v.count_;
     }
 
-        /** return number of values seen so far
+        /** return number of values (sum of weights) seen so far
         */
     unsigned int count() const
     {
@@ -1053,12 +1100,13 @@ class FindAverageAndVariance
         return mean_;
     }
 
-        /** return current variance.  If <tt>unbiased = true</tt>, the sum of squared differences
-                   is divided by <tt>count()-1</tt> instead of just <tt>count()</tt>.
+        /** return current variance.
+            If <tt>unbiased = true</tt>, the sum of squared differences
+            is divided by <tt>count()-1</tt> instead of just <tt>count()</tt>.
         */
     result_type variance(bool unbiased = false) const
     {
-        return unbiased 
+        return unbiased
                   ? sumOfSquaredDifferences_ / (count_ - 1.0)
                   : sumOfSquaredDifferences_ / count_;
     }
@@ -1096,10 +1144,10 @@ class FunctorTraits<FindAverageAndVariance<VALUETYPE> >
     a labeled image.
 
     <b> Traits defined:</b>
-    
+
     <tt>FunctorTraits::isUnaryAnalyser</tt> and <tt>FunctorTraits::isInitializer</tt>
     are true (<tt>VigraTrueType</tt>)
-    
+
     <b> Usage:</b>
 
     <b>\#include</b> \<<a href="inspectimage_8hxx-source.html">vigra/inspectimage.hxx</a>\><br>
@@ -1205,10 +1253,10 @@ class FunctorTraits<FindROISize<VALUETYPE> >
     of all regions in a labeled image.
 
     <b> Traits defined:</b>
-    
+
     <tt>FunctorTraits::isUnaryAnalyser</tt> and <tt>FunctorTraits::isInitializer</tt>
     are true (<tt>VigraTrueType</tt>)
-    
+
     <b> Usage:</b>
 
     <b>\#include</b> \<<a href="inspectimage_8hxx-source.html">vigra/inspectimage.hxx</a>\><br>
@@ -1351,10 +1399,10 @@ class FunctorTraits<FindBoundingRectangle>
     \ref ArrayOfRegionStatistics to realize a look-up table.
 
     <b> Traits defined:</b>
-    
+
     <tt>FunctorTraits::isUnaryAnalyser</tt> and <tt>FunctorTraits::isInitializer</tt>
     are true (<tt>VigraTrueType</tt>)
-    
+
     <b> Usage:</b>
 
     <b>\#include</b> \<<a href="inspectimage_8hxx-source.html">vigra/inspectimage.hxx</a>\><br>
@@ -1392,16 +1440,17 @@ class LastValueFunctor
         */
     typedef VALUETYPE value_type;
 
-        /** default initialization of value
+        /** default construction of value (i.e. builtin types will be set to zero)
         */
-    LastValueFunctor()
+    LastValueFunctor(argument_type const &initial = argument_type())
+    : value(initial)
     {}
 
         /** replace value
         */
     void operator=(argument_type const & v) { value = v; }
 
-        /** reset to initia÷ value
+        /** reset to initial value (the same as after default construction)
         */
     void reset() { value = VALUETYPE(); }
 
@@ -1442,14 +1491,14 @@ class FunctorTraits<LastValueFunctor<VALUETYPE> >
     the expression to be applied, and an accumulator storing the current state
     of the reduction. For each element of the array, the embedded functor is called
     with the accumulator and the current element(s) of the array. The result
-    of the reduction is available by calling <tt>reduceFunctor()</tt>. 
+    of the reduction is available by calling <tt>reduceFunctor()</tt>.
 
     <b> Traits defined:</b>
-    
-    <tt>FunctorTraits::isUnaryAnalyser</tt>, <tt>FunctorTraits::isBinaryAnalyser</tt> 
+
+    <tt>FunctorTraits::isUnaryAnalyser</tt>, <tt>FunctorTraits::isBinaryAnalyser</tt>
     and <tt>FunctorTraits::isInitializer</tt>
     are true (<tt>VigraTrueType</tt>)
-    
+
     <b> Usage:</b>
 
     <b>\#include</b> \<<a href="inspectimage_8hxx-source.html">vigra/inspectimage.hxx</a>\><br>
@@ -1461,7 +1510,7 @@ class FunctorTraits<LastValueFunctor<VALUETYPE> >
 
     // create a functor to sum the elements of the image
     vigra::ReduceFunctor<std::plus<int>, int> sumElements(std::plus<int>, 0);
-    
+
     vigra::inspectImage(srcImageRange(img), sumElements);
 
     cout << "The sum of the elements " << sumElements() << endl;
@@ -1473,7 +1522,7 @@ class FunctorTraits<LastValueFunctor<VALUETYPE> >
     \code
     FUNCTOR f;
     VALUETYPE accumulator, current1, current2;
-    
+
     f(accumulator, current1); // for inspectImage()
     f(accumulator, current1, current2); // for inspectTwoImages()
     \endcode
@@ -1518,7 +1567,7 @@ class ReduceFunctor
       start_(initial),
       accumulator_(initial)
     {}
-    
+
         /** Reset accumulator to the initial value.
         */
     void reset()
@@ -1529,9 +1578,9 @@ class ReduceFunctor
             as the second.
         */
     template <class T>
-    void operator()(T const & v) 
-    { 
-        accumulator_ = f_(accumulator_, v); 
+    void operator()(T const & v)
+    {
+        accumulator_ = f_(accumulator_, v);
     }
 
         /** Use ternary functor to connect given values with accumulator.
@@ -1539,14 +1588,14 @@ class ReduceFunctor
             ans \a v2 as the second and third.
         */
     template <class T1, class T2>
-    void operator()(T1 const & v1, T2 const & v2) 
-    { 
-        accumulator_ = f_(accumulator_, v1, v2); 
+    void operator()(T1 const & v1, T2 const & v2)
+    {
+        accumulator_ = f_(accumulator_, v1, v2);
     }
 
         /** return current value
         */
-    result_type const & operator()() const 
+    result_type const & operator()() const
       { return accumulator_; }
 };
 
@@ -1580,10 +1629,10 @@ class FunctorTraits<ReduceFunctor<FUNCTOR, VALUETYPE> >
     pixel's label.
 
     <b> Traits defined:</b>
-    
+
     <tt>FunctorTraits::isBinaryAnalyser</tt> and <tt>FunctorTraits::isUnaryFunctor</tt>
     are true (<tt>VigraTrueType</tt>)
-    
+
     <b> Usage:</b>
 
     <b>\#include</b> \<<a href="inspectimage_8hxx-source.html">vigra/inspectimage.hxx</a>\><br>
