@@ -672,7 +672,7 @@ STRIP_CODE_COMMENTS    = NO
 # then for each documented function all documented 
 # functions referencing it will be listed.
 
-REFERENCED_BY_RELATION = YES
+REFERENCED_BY_RELATION = NO
 
 # If the REFERENCES_RELATION tag is set to YES 
 # then for each documented function all documented entities 
