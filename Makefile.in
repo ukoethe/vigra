@@ -58,7 +58,7 @@ clean::
 
 
 distclean: clean
-	rm -f config/vigra-config config/Makefile.include
+	rm -rf config/vigra-config config/Makefile.include config/*cache
 	rm -f config.log config.cache config.status libtool
 	cp config/Makefile.include.empty config/Makefile.include
 
