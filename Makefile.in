@@ -1,5 +1,7 @@
 ifneq "$(MAKECMDGOALS)" "autoconf"
+ifneq "$(MAKECMDGOALS)" "distclean"
 include config/Makefile.include
+endif
 endif
 
 all::
@@ -26,7 +28,7 @@ install-docs:
           $(INSTALL_DATA) \
             $(vigra_srcdir)/doc/vigra/*.html \
             $(vigra_srcdir)/doc/vigra/classvigra*.png $(vigra_srcdir)/doc/vigra/form*.png \
-            $(vigra_srcdir)/doc/vigra/doxygen.png $(vigra_srcdir)/doc/vigra/doxygen.css \
+            $(vigra_srcdir)/doc/vigra/doxygen.png $(vigra_srcdir)/doc/vigra/vigra.css \
             $(docdir) ; \
           $(INSTALL_MKDIR) $(docdir)/documents ; \
           $(INSTALL_DATA) \
