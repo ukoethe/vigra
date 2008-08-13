@@ -13,7 +13,7 @@ all:: doxygen post
 
 doxygen::
 	@if [ ! -d $(DOCDIR) ]; then mkdir -p $(DOCDIR); fi
-	@rm -f $(DOCDIR)/*.html
+	rm -f $(DOCDIR)/*.html
 	cat Doxyfile.in | \
           sed -e "s/\(PROJECT_NUMBER *= \)/\1 $(VIGRA_VERSION)/" \
               -e "s/\(vigra_version=\)/\1\"$(VIGRA_VERSION)\"/" \
