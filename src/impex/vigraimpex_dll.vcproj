@@ -61,7 +61,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="libtiff.lib libjpeg.lib libpng.lib zlib.lib"
+				AdditionalDependencies="libtiff_i.lib libjpeg.lib libpng.lib zlib.lib"
 				OutputFile="$(OutDir)/vigraimpex_debug.dll"
 				LinkIncremental="2"
 				AdditionalLibraryDirectories="..\..\lib"
