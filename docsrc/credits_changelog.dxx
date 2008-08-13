@@ -61,15 +61,15 @@ Many thanks to all!
       <li> Added \ref affineWarpImage() and  and factory functions for 
            affine transformation matrices
           
-      <li> Added linear algebra functionality: \ref linearSolveQR(), \ref linearSolveQRInplace(),
-           \ref choleskyDecomposition(), \ref singularValueDecomposition(), \ref determinant(), \ref logDeterminant(), 
+      <li> Added linear algebra functionality: \ref choleskyDecomposition(), \ref singularValueDecomposition(), 
+           \ref determinant(), \ref logDeterminant(), 
            \ref leastSquares(), \ref weightedLeastSquares(), \ref ridgeRegression()
           
       <li> Extended \ref linearSolve(), \ref qrDecomposition(), and \ref inverse() to handle 
            rectangular matrices (complete reimplementation of these functions).
           
       <li> Added matrix functionality: \ref joinVertically(), \ref joinHorizontally(), 
-           \ref columnStatistics(), \ref rowStatistics(), \ref prepareData()
+           \ref columnStatistics(), \ref rowStatistics(), \ref prepareColumns(), \ref prepareRows()
           
       <li> Added/fixed \ref vigra::MultiArray and \ref vigra::linalg::Matrix computed assignments
       
