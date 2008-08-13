@@ -987,8 +987,8 @@ bool hessenbergQrDecomposition(MultiArrayView<2, T, C1> & H, MultiArrayView<2, T
 
 } // namespace detail
 
-/** \addtogroup LinearAlgebraFunctions Matrix functions
- */
+/** \addtogroup MatrixAlgebra 
+*/
 //@{
     /** Compute the eigensystem of a symmetric matrix.
 

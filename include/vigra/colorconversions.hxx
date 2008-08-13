@@ -81,7 +81,7 @@ inline double inverse_sRGBCorrection(double value, double norm)
 
 } // namespace detail
 
-/** \addtogroup ColorConversions  Color Space Conversions
+/** \defgroup ColorConversions  Color Space Conversions
 
     Convert between RGB, sRGB, R'G'B', XYZ, L*a*b*, L*u*v*, Y'PbPr, Y'CbCr, Y'IQ, and Y'UV color spaces.
 
@@ -218,7 +218,7 @@ inline double inverse_sRGBCorrection(double value, double norm)
     The names of VIGRA's color conversion functors always make clear to which color space 
     they must be applied.
    
-    In addition VIGRA provides a <em>polar coordinate interface</em>
+    In addition VIGRA provides a <em>\ref PolarColors "polar coordinate interface"</em>
     to several color spaces (L*a*b*, L*u*v*, Y'PbPr, Y'CbCr, Y'IQ, and Y'UV). This
     interface makes use of the fact that these color spaces are conceptually similar:
     they represent colors by a "brightness" coordinate (L* or Y') and a pair of 
@@ -2602,6 +2602,8 @@ class FunctorTraits<YPrimeCbCr2RGBPrimeFunctor<T> >
     typedef VigraTrueType isUnaryFunctor;
 };
 
+//@}
+
 /*
 Polar coordinates of standard colors:
 =====================================
@@ -2657,7 +2659,8 @@ YUV: white = [229.992, 1, 9.81512e-17]
 
 */
 
-/** \page PolarColors Polar Color Coordinates
+/** \ingroup ColorConversions
+    \defgroup PolarColors Polar Color Coordinates
     
     Transform colors from/to a polar representation (hue, brighness, saturation).
     In many situations, this is more inituitive than direct initialization in a 
@@ -3182,7 +3185,6 @@ yPrimeUV2Polar(V const & yuv)
     return result;
 }
 
-//@}
 //@}
 
 } // namespace vigra 

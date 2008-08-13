@@ -47,10 +47,8 @@ namespace vigra
 namespace linalg
 {
 
-/** \addtogroup LinearAlgebraFunctions Matrix functions
- */
-//@{
    /** Singular Value Decomposition.
+       \ingroup MatrixAlgebra
 
    For an m-by-n matrix \a A with m >= n, the singular value decomposition is
    an m-by-n orthogonal matrix \a U, an n-by-n diagonal matrix S, and
@@ -65,7 +63,7 @@ namespace linalg
    never fail (except if the shapes of the argument matrices don't match).
    The effective numerical rank of A is returned.
 
-	(Adapted from JAMA, a Java Matrix Library, developed by jointly
+	(Adapted from JAMA, a Java Matrix Library, developed jointly
 	by the Mathworks and NIST; see  http://math.nist.gov/javanumerics/jama).
 
     <b>\#include</b> \<<a href="singular__value__decomposition_8hxx-source.html">vigra/singular_value_decomposition.hxx</a>\> or<br>
@@ -558,8 +556,6 @@ singularValueDecomposition(MultiArrayView<2, T, C1> const & A,
     }
     return rank; // effective rank
 }
-
-//@}
 
 } // namespace linalg
 

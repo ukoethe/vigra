@@ -694,7 +694,11 @@ unsigned int linearSolveQR(MultiArrayView<2, T, C1> const & A, MultiArrayView<2,
     return linearSolveQRReplace(r, rhs, res);
 }
 
-/** \addtogroup LinearAlgebraFunctions Matrix functions
+/** \defgroup MatrixAlgebra Advanced Matrix Algebra
+    
+    \brief Solution of linear systems, eigen systems, linear least squares etc.
+    
+    \ingroup LinearAlgebraModule
  */
 //@{
     /** Create the inverse or pseudo-inverse of matrix \a v.
@@ -977,8 +981,8 @@ bool reverseElimination(const MultiArrayView<2, T, C1> &r, const MultiArrayView<
         the function fails and returns <tt>false</tt>, otherwise it returns <tt>true</tt>. The 
         lower triangular part of matrix \a r will not be touched, so it doesn't need to contain zeros.
         
-        The column vectors in \a b are the right-hand sides of the equation, so that several equations
-        with the same coefficients can be solved in one go. The result is returned
+        The column vectors of matrix \a b are the right-hand sides of the equation (several equations
+        with the same coefficients can thus be solved in one go). The result is returned
         int \a x, whose columns contain the solutions for the corresponding
         columns of \a b. This implementation can be applied in-place, i.e. <tt>&b == &x</tt> is allowed.
         The following size requirements apply:
@@ -1025,12 +1029,12 @@ bool linearSolveUpperTriangular(const MultiArrayView<2, T, C1> &r, const MultiAr
 
         The square matrix \a l must be a lower-triangular coefficient matrix. If \a l 
         doesn't have full rank the function fails and returns <tt>false</tt>, 
-        otherwise it returns <tt>true</tt>. The upper triangular part of matrix \a r will not be touched, 
+        otherwise it returns <tt>true</tt>. The upper triangular part of matrix \a l will not be touched, 
         so it doesn't need to contain zeros.
         
-        The column vectors in \a b are the right-hand sides of the equation (so, several equations
-        with the same coefficients can be solved in one go). The result is returned
-        int \a x, whose columns contain the solutions for the correspoinding
+        The column vectors of matrix \a b are the right-hand sides of the equation (several equations
+        with the same coefficients can thus be solved in one go). The result is returned
+        in \a x, whose columns contain the solutions for the correspoinding
         columns of \a b. This implementation can be applied in-place, i.e. <tt>&b == &x</tt> is allowed.
         The following size requirements apply:
         

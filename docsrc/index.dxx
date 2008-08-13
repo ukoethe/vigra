@@ -103,13 +103,15 @@
 
 /** \page MathFunctionality Mathematical tools
 
-    <b>Number types, mathematical constants, traits, and functions</b>
+    <b>Number types, mathematical constants, special functions, linear algebra</b>
     <p>
     <UL style="list-style-image:url(documents/bullet.gif)">
         <LI> \ref AlgebraicConcepts
              <BR>&nbsp;&nbsp;&nbsp;<em>Requirements for types that implement arithmetic operations</em>
         <LI> \ref NumericPromotionTraits
              <BR>&nbsp;&nbsp;&nbsp;<em>Meta-information about arithmetic types</em>
+        <LI> \ref MathConstants
+             <BR>&nbsp;&nbsp;&nbsp;<em>M_PI, M_SQRT2</em>
         <LI> Grid Neighborhood Specification
              <BR>&nbsp;&nbsp;&nbsp;\ref PixelNeighborhood "2-dimensional" (4- and 8-neighborhood) and
                                    \ref VoxelNeighborhood "3-dimensional" (6- and 26-neighborhood)
@@ -118,13 +120,11 @@
              <BR>&nbsp;&nbsp;&nbsp;<em>Mersenne twister class and random number functors</em>
         <LI> \ref Polynomials
              <BR>&nbsp;&nbsp;&nbsp;<em>Polynomials and root determination</em>
-        <LI> \ref MathConstants
-             <BR>&nbsp;&nbsp;&nbsp;<em>M_PI, M_SQRT2</em>
         <LI> \ref MathFunctions
              <BR>&nbsp;&nbsp;&nbsp;<em>and functors</em>
         <LI> \ref vigra::linalg::Matrix "Matrix class"
              <BR>&nbsp;&nbsp;&nbsp;<em>the matrix class</em>
-        <LI> \ref LinearAlgebraFunctions "Linear Algebra"
+        <LI> \ref LinearAlgebraModule "Linear Algebra"
              <BR>&nbsp;&nbsp;&nbsp;<em>matrix algebra, solution of linear systems, eigenvalue calculation etc.</em>
     </UL>
 
@@ -209,6 +209,12 @@
          <BR>&nbsp;&nbsp;&nbsp;<em>Interface for multi-dimensional arrays </em>
     <LI> \ref vigra::MultiArray
          <BR>&nbsp;&nbsp;&nbsp;<em>Array class that holds the actual memory</em>
+    <LI> \ref MultiArrayTags
+         <BR>&nbsp;&nbsp;&nbsp;<em>Meta-programming tags to mark array's as strided or unstrided</em>
+    <LI> \ref MultiIteratorPage
+         <BR>&nbsp;&nbsp;&nbsp;<em>Iterators for multi-dimensional arrays</em>
+    <LI> \ref vigra::MultiArrayNavigator
+         <BR>&nbsp;&nbsp;&nbsp;<em>Navigator utility for multi-dimensional arrays</em>
     <LI> \ref VolumeImpex
          <BR>&nbsp;&nbsp;&nbsp;<em>Import/export of volume data.</em>
     <LI> \ref MultiPointoperators
@@ -223,14 +229,8 @@
          <BR>&nbsp;&nbsp;&nbsp;<em>Separable morphology with parabola structuring function for arrays of arbitrary dimension</em>
     <LI> \ref labelVolume(), \ref seededRegionGrowing3D(), \ref watersheds3D()
          <BR>&nbsp;&nbsp;&nbsp;<em>3-dimensional image (i.e. volume) analysis</em>
-    <LI> \ref MultiArrayTags
-         <BR>&nbsp;&nbsp;&nbsp;<em>Meta-programming tags to mark array's as strided or unstrided</em>
     <LI> \ref VoxelNeighborhood
          <BR>&nbsp;&nbsp;&nbsp;<em>Easy access to the 6- and 26-neighbors of a voxel</em>
-    <LI> \ref MultiIteratorPage
-         <BR>&nbsp;&nbsp;&nbsp;<em>Iterators for multi-dimensional arrays</em>
-    <LI> \ref vigra::MultiArrayNavigator
-         <BR>&nbsp;&nbsp;&nbsp;<em>Navigator utility for multi-dimensional arrays</em>
     </UL>
 */
 
@@ -488,7 +488,7 @@ of \ref AlgebraicField and \ref DivisionAlgebra.
     \endcode
 </ul>
 
-\anchor LinearAlgebra
+\anchor LinearAlgebraConcept
 <h3>Linear Algebra</h3>
 
 <ul>

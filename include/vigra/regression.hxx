@@ -50,7 +50,7 @@ namespace vigra
 namespace linalg
 {
 
-/** \addtogroup LinearAlgebraFunctions Matrix functions
+/** \addtogroup MatrixAlgebra
  */
 //@{
    /** Ordinary Least Squares Regression.

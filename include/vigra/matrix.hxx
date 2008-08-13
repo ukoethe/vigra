@@ -48,7 +48,15 @@
 namespace vigra
 {
 
-/** classes and functions for linear algebra, linear equations systems, eigen systems etc.
+/** \defgroup LinearAlgebraModule Linear Algebra
+
+    \brief Classes and functions for matrix algebra, linear equations systems, eigen systems, least squares etc.
+*/
+
+/** \ingroup LinearAlgebraModule
+
+    Namespace <tt>vigra/linalg</tt> hold VIGRA's linear algebra functionality. But most of its contents
+    is exported into namespace <tt>vigra</tt> via <tt>using</tt> directives.
 */
 namespace linalg
 {
@@ -86,7 +94,9 @@ enum RawArrayMemoryLayout { RowMajor, ColumnMajor };
 /*                                                      */
 /********************************************************/
 
-/** Matrix class.
+/** Matrix class. 
+
+    \ingroup LinearAlgebraModule 
 
     This is the basic class for all linear algebra computations. Matrices are
     strored in a <i>column-major</i> format, i.e. the row index is varying fastest.
@@ -584,7 +594,11 @@ class TemporaryMatrix
     TemporaryMatrix &operator=(const TemporaryMatrix &rhs); // intentionally not implemented
 };
 
-/** \addtogroup LinearAlgebraFunctions Matrix functions
+/** \defgroup LinearAlgebraFunctions Matrix Functions
+
+    \brief Basic matrix algebra, element-wise mathematical functions, row and columns statistics, data normalization etc.
+    
+    \ingroup LinearAlgebraModule
  */
 //@{
 
@@ -2148,7 +2162,7 @@ struct NormTraits<linalg::TemporaryMatrix<T, ALLOC> >
     typedef typename BaseType::NormType          NormType;
 };
 
-/** \addtogroup LinearAlgebraFunctions Matrix functions
+/** \addtogroup LinearAlgebraFunctions
  */
 //@{
 
@@ -2237,7 +2251,7 @@ columnStatistics2PassImpl(MultiArrayView<2, T1, C1> const & A,
 
 } // namespace detail
 
-/** \addtogroup LinearAlgebraFunctions Matrix functions
+/** \addtogroup LinearAlgebraFunctions
  */
 //@{
     /** Compute statistics of every column of matrix \a A.

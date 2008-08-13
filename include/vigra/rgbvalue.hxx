@@ -114,7 +114,7 @@ struct RGBValue_bad_color_indices
     operations. Addition, subtraction, and multiplication of two RGBValues
     (+=, -=, *=, +, -, *, unary -), multiplication and division of an
     RGBValue with a double, and NumericTraits/PromoteTraits are defined,
-    so that RGBValue fulfills the requirements of a \ref LinearAlgebra.
+    so that RGBValue fulfills the requirements of a \ref LinearAlgebraConcept "Linear Algebra".
 
     A number of \ref RGBValueAccessors "accessors" are provided
     that support access to RGBValues as a whole, to a selected

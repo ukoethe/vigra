@@ -550,7 +550,7 @@ class TinyVectorBase
     operations. Addition and subtraction of two TinyVectors
     (+=, -=, +, -, unary -), multiplication and division of an
     TinyVector with a double, and NumericTraits/PromoteTraits are defined,
-    so that TinyVector fulfills the requirements of \ref LinearAlgebra.
+    so that TinyVector fulfills the requirements of \ref LinearAlgebraConcept "Linear Algebra".
 
     VIGRA algorithms typically use \ref vigra::VectorAccessor to access
     TinyVectors as a whole, or specific components of them.
@@ -698,7 +698,7 @@ class TinyVector
     operations. Addition and subtraction of two TinyVectorViews
     (+=, -=, +, -, unary -), multiplication and division of an
     TinyVectorViews with a double, and NumericTraits/PromoteTraits are defined,
-    so that TinyVectorView fulfills the requirements of \ref LinearAlgebra.
+    so that TinyVectorView fulfills the requirements of \ref LinearAlgebraConcept "Linear Algebra".
 
     VIGRA algorithms typically use \ref vigra::VectorAccessor to access
     TinyVectorViews as a whole, or specific components of them.
