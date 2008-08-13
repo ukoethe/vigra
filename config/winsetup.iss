@@ -1,10 +1,10 @@
-#define MyAppName "Vigra 1.5"
-#define MyAppVersion "1.5.0"
-#define MyAppPublisher "Ullrich Köthe, University of Hamburg"
+#define MyAppName "Vigra 1.6"
+#define MyAppVersion "1.6.0"
+#define MyAppPublisher "Ullrich Köthe, University of Heidelberg"
 #define MyAppURL "http://kogs.informatik.uni-hamburg.de/~koethe/vigra/"
-#define MySourcePath "C:\Users\koethe\src\vigra1.5.0"
-#define MyExternalPath "C:\Users\koethe\src\vigra\current"
-#define RequiredVCVersion "7.1"
+#define MySourcePath "C:\ukoethe\tmp\vigra1.6.0"
+#define MyExternalPath "C:\ukoethe\vigra\current"
+#define RequiredVCVersion "8.0"
 
 [Setup]
 AppCopyright=Ullrich Köthe
@@ -14,12 +14,12 @@ LicenseFile={#MySourcePath}\LICENSE.txt
 ShowLanguageDialog=yes
 AppSupportURL={#MyAppUrl}
 AppVersion={#MyAppVersion}
-DefaultDirName={reg:HKCU\Software\Microsoft\VisualStudio\7.1,VisualStudioProjectsLocation|{pf}}\{#MyAppName}
+DefaultDirName={reg:HKCU\Software\Microsoft\VisualStudio\8.0,VisualStudioProjectsLocation|{pf}}\{#MyAppName}
 OutputBaseFilename=Setup-Vigra-{#MyAppVersion}
 Compression=lzma
 SolidCompression=true
 AppID={#MyAppName}
-OutputDir=C:\Users\koethe\src\vigra\current\WinSetup
+OutputDir=C:\ukoethe\vigra\current\WinSetup
 InfoBeforeFile=
 
 [Files]
@@ -31,15 +31,15 @@ Source: {#MySourcePath}\src\*.cxx; DestDir: {app}\src; Flags: recursesubdirs
 Source: {#MySourcePath}\src\*.hxx; DestDir: {app}\src; Flags: recursesubdirs
 Source: {#MySourcePath}\src\*.c; DestDir: {app}\src; Flags: recursesubdirs
 Source: {#MySourcePath}\src\*.h; DestDir: {app}\src; Flags: recursesubdirs
-Source: {#MySourcePath}\src\*.vcproj; DestDir: {app}\src; Flags: recursesubdirs
-Source: {#MySourcePath}\src\*.sln; DestDir: {app}\src
+Source: {#MySourcePath}\src\*.vcproj; Excludes: *-vc71.vcproj; DestDir: {app}\src; Flags: recursesubdirs
+Source: {#MySourcePath}\src\*.sln; Excludes: *-vc71.sln; DestDir: {app}\src
 Source: {#MySourcePath}\src\examples\*.gif; DestDir: {app}\src\examples
 Source: {#MySourcePath}\test\*.cxx; DestDir: {app}\test; Flags: recursesubdirs
 Source: {#MySourcePath}\test\*.hxx; DestDir: {app}\test; Flags: recursesubdirs
 Source: {#MySourcePath}\test\*.gif; DestDir: {app}\test; Flags: recursesubdirs
 Source: {#MySourcePath}\test\*.xv; DestDir: {app}\test; Flags: recursesubdirs
-Source: {#MySourcePath}\test\*.vcproj; DestDir: {app}\test; Flags: recursesubdirs
-Source: {#MySourcePath}\test\*.sln; DestDir: {app}\test
+Source: {#MySourcePath}\test\*.vcproj; Excludes: *-vc71.vcproj; DestDir: {app}\test; Flags: recursesubdirs
+Source: {#MySourcePath}\test\*.sln; Excludes: *-vc71.sln; DestDir: {app}\test
 Source: {#MySourcePath}\test\testOrDelete.bat; DestDir: {app}\test
 Source: {#MySourcePath}\doc\vigra\*; Excludes: CVS; DestDir: {app}\doc\vigra; Flags: recursesubdirs
 Source: {#MySourcePath}\include\external\fftw3.h; DestDir: {app}\include\external
@@ -54,11 +54,13 @@ Source: {#MySourcePath}\include\external\tiffio.h; DestDir: {app}\include\extern
 Source: {#MySourcePath}\include\external\tiffvers.h; DestDir: {app}\include\external
 Source: {#MySourcePath}\include\external\zconf.h; DestDir: {app}\include\external
 Source: {#MySourcePath}\include\external\zlib.h; DestDir: {app}\include\external
-Source: {#MySourcePath}\lib\FFTW3.lib; DestDir: {app}\lib
+Source: {#MySourcePath}\lib\libfftw3-3.lib; DestDir: {app}\lib
 Source: {#MySourcePath}\lib\libjpeg.lib; DestDir: {app}\lib
 Source: {#MySourcePath}\lib\libpng.lib; DestDir: {app}\lib
-Source: {#MySourcePath}\lib\libtiff.lib; DestDir: {app}\lib
+Source: {#MySourcePath}\lib\libtiff_i.lib; DestDir: {app}\lib
 Source: {#MySourcePath}\lib\zlib.lib; DestDir: {app}\lib
+Source: {#MySourcePath}\bin\libfftw3-3.dll; DestDir: {app}\bin
+Source: {#MySourcePath}\bin\libtiff.dll; DestDir: {app}\bin
 Source: {#MySourcePath}\src\impex\vigraimpex.dll.lib; DestDir: {app}\lib
 Source: {#MySourcePath}\src\impex\vigraimpex.dll; DestDir: {app}\bin
 Source: {#MySourcePath}\src\examples\*.exe; DestDir: {app}\bin
@@ -135,7 +137,7 @@ end;
 
 function InitializeSetup(): Boolean;
 begin
-	// Look for Visual Studio 7.1
+	// Look for Visual Studio
 	VCPath := '';
 	VCUserPath := '';
 	if RegQueryStringValue(HKLM, 'Software\Microsoft\VisualStudio\{#RequiredVCVersion}\Setup\VC', 'ProductDir', VCPath) then
