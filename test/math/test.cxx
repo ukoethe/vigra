@@ -7,8 +7,8 @@
 /*    The VIGRA Website is                                              */
 /*        http://kogs-www.informatik.uni-hamburg.de/~koethe/vigra/      */
 /*    Please direct questions, bug reports, and contributions to        */
-/*        koethe@informatik.uni-hamburg.de          or                  */
-/*        vigra@kogs1.informatik.uni-hamburg.de                         */
+/*        ullrich.koethe@iwr.uni-heidelberg.de    or                    */
+/*        vigra@informatik.uni-hamburg.de                               */
 /*                                                                      */
 /*    Permission is hereby granted, free of charge, to any person       */
 /*    obtaining a copy of this software and associated documentation    */
@@ -57,6 +57,9 @@
 #include "vigra/singular_value_decomposition.hxx"
 #include "vigra/regression.hxx"
 #include "vigra/random.hxx"
+
+#define VIGRA_TOLERANCE_MESSAGE "If this test fails, please adjust the tolerance threshold and report\n" \
+                       "your findings (including compiler information etc.) to the VIGRA mailing list:"
 
 static double coefficients[][12] =
 {
@@ -1776,10 +1779,10 @@ struct LinalgTest
 #else
         double eps = 1e-10;
 #endif
-	    shouldEqualTolerance(norm(a-u*diagonalMatrix(S)*transpose(v)), 0.0, eps);
-	    shouldEqualTolerance(norm(vigra::identityMatrix<double>(4) - transpose(u)*u), 0.0, eps);
-	    shouldEqualTolerance(norm(vigra::identityMatrix<double>(4) - transpose(v)*v), 0.0, eps);
-	    shouldEqualTolerance(norm(vigra::identityMatrix<double>(4) - v*transpose(v)), 0.0, eps);
+   	    shouldEqualToleranceMessage(norm(a-u*diagonalMatrix(S)*transpose(v)), 0.0, eps, VIGRA_TOLERANCE_MESSAGE);
+	    shouldEqualToleranceMessage(norm(vigra::identityMatrix<double>(4) - transpose(u)*u), 0.0, eps, VIGRA_TOLERANCE_MESSAGE);
+	    shouldEqualToleranceMessage(norm(vigra::identityMatrix<double>(4) - transpose(v)*v), 0.0, eps, VIGRA_TOLERANCE_MESSAGE);
+	    shouldEqualToleranceMessage(norm(vigra::identityMatrix<double>(4) - v*transpose(v)), 0.0, eps, VIGRA_TOLERANCE_MESSAGE);
     }
 };
 

@@ -9,8 +9,8 @@
 /*    The VIGRA Website is                                              */
 /*        http://kogs-www.informatik.uni-hamburg.de/~koethe/vigra/      */
 /*    Please direct questions, bug reports, and contributions to        */
-/*        koethe@informatik.uni-hamburg.de          or                  */
-/*        vigra@kogs1.informatik.uni-hamburg.de                         */
+/*        ullrich.koethe@iwr.uni-heidelberg.de    or                    */
+/*        vigra@informatik.uni-hamburg.de                               */
 /*                                                                      */
 /*    Permission is hereby granted, free of charge, to any person       */
 /*    obtaining a copy of this software and associated documentation    */
@@ -121,8 +121,14 @@
 #define shouldEqual(left, right) \
     vigra::detail::equal_impl(left, right, #left " == " #right, __FILE__, __LINE__)
 
+#define shouldEqualMessage(left, right, message) \
+    vigra::detail::equal_impl(left, right, message "\n" #left " == " #right, __FILE__, __LINE__)
+
 #define shouldEqualTolerance(left, right, eps) \
     vigra::detail::tolerance_equal_impl(left, right, eps, #left " == " #right, __FILE__, __LINE__)
+
+#define shouldEqualToleranceMessage(left, right, eps, message) \
+    vigra::detail::tolerance_equal_impl(left, right, eps, message "\n" #left " == " #right, __FILE__, __LINE__)
 
 #define shouldEqualSequence(begin1, end1, begin2) \
     vigra::detail::sequence_equal_impl(begin1, end1, begin2, __FILE__, __LINE__)
