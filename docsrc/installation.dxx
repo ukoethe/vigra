@@ -6,7 +6,7 @@
     
     <ul>
     <li> <a href="http://gcc.gnu.org/">GNU g++ 2.95.3 and newer</a> 
-    <li> Microsoft Visual C++ 7.1 (aka C++.net 2003)
+    <li> Microsoft Visual C++ 7.1 (aka C++.net 2003) and newer
     </ul>
 
     VIGRA is known NOT to work with the following compilers:
@@ -71,36 +71,35 @@
     
     </ul>
 
-    <h3> Windows (Microsoft Visual C++ 7.1, also known as C++.net 2003):</h3>
+    <h3> Windows: <small>(Microsoft Visual C++ 7.1, Visual Studio 2003 and 
+                 Microsoft Visual C++ 8.0, Visual Studio 2005)</small></h3>
     
     <ul>
-    <li> uncompress and unpack the source distribution
+    <li> Uncompress and unpack the source distribution, or run the binary installer <b>Setup-Vigra-1.6.0.exe</b>.
 
-    <li> go into the directory <TT>[some path]/vigra/src/</TT>
+    <li> Go into the directory <TT>[some path]/vigra/src/</TT>
 
-    <li> load the workspace <TT>vigra.sln</TT> into Visual Studio
-    (<b>note:</b> A Visual C++ 6.0 workspace <TT>vigra.dsw</TT> and workarounds 
-      for compiler bugs are still in the distribution but will no longer be maintained.)
+    <li> Load the workspace <TT>vigra.sln</TT> into Visual Studio
 
-    <li> specify in the project settings if and where JPEG, TIFF, and FFTW libraries are installed: <br>
-    <em> either</em> update the paths to the
-    include and library files for <a href="http://www.ijg.org/">libjpeg</a>,  
-    <a href="http://www.libtiff.org/">libtiff</a>,
+    <li> Specify in the project settings if and where JPEG, TIFF, PNG, and FFTW libraries are installed: 
+    <ul>
+    <li>If you installed VIGRA using Setup-Vigra-1.6.0.exe: Settings should work out of the box. The installer comes with pre-compiled versions of these libraries which are invoked by the pre-defined settings.
+    <li>If you have installed these libraries independently of VIGRA: Open the preferences dialog for the project <tt>vigraimpex_dll</tt> and update the paths to the include and library files for <a href="http://www.ijg.org/">libjpeg</a>,     <a href="http://www.libtiff.org/">libtiff</a>,
     <a href="http://www.libpng.org/">libpng</a>,
-    and <a href="http://www.fftw.org/">libfftw</a> on your system <br>
-     -- <em> or</em> -- 
-     remove the <TT>HasJPEG</TT>, <TT>HasTIFF</TT>, and <TT>HasPNG</TT> preprocessor flags and
+    and <a href="http://www.fftw.org/">libfftw</a>
+    <li>If you don't need the functionality provided by these libraries: Remove the <TT>HasJPEG</TT>, <TT>HasTIFF</TT>, and <TT>HasPNG</TT> preprocessor flags and
      the entries referring to these libs in the linker dependencies of the "vigraimpex_dll" project.
+    </ul>
     
-    <li> build the workspace (that is, the library <TT>vigraimpex.dll</TT> and the \ref Examples) and move
+    <li> Build the workspace (that is, the library <TT>vigraimpex.dll</TT> and the \ref Examples) and move
          <TT>[some path]/vigra/src/impex/vigraimpex.dll</TT> to a directory where Windows finds it 
          (or add the appropriate path to the Windows PATH environment variable).
 
-    <li> the \ref Examples can now be invoked from the command line (DOS prompt).
-
-    <li> if you include "<b>windows.h</b>": there are some name clashes -- include "vigra/windows.h" instead.
+    <li> The \ref Examples can now be invoked from the command line (DOS prompt).
 
     <li> The VIGRA test suite can be similarly compiled and executed by loading the solution <TT>[some path]/vigra/test/test.sln</TT>.
+
+    <li> <b>Important note</b>: If you include <b>"windows.h"</b> in your projects: there are some name clashes with VIGRA -- always include <b>"vigra/windows.h"</b> instead.
     </ul>
 
     
