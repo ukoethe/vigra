@@ -759,7 +759,7 @@ class FunctorTraits<UniformRandomFunctor<Engine> >
     <tt>FunctorTraits<UniformIntRandomFunctor<Engine> >::isInitializer</tt> is true (<tt>VigraTrueType</tt>).
 */
 template <class Engine = RandomTT800>
-struct NormalRandomFunctor
+class NormalRandomFunctor
 {
     double mean_, stddev_;
     Engine & generator_;
