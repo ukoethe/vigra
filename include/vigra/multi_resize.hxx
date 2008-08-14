@@ -40,6 +40,7 @@
 
 #include <vector>
 #include "resizeimage.hxx"
+#include "navigator.hxx"
 
 namespace vigra {
 
