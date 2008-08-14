@@ -50,7 +50,7 @@ class ArrayVector;
 
 /** Provide STL conforming interface for C-arrays.
 
-    This template implements much of the functionality of <tt>std::vector</tt>
+    This template implements much of the functionality of <tt><a href="http://www.sgi.com/tech/stl/Vector.html">std::vector</a></tt>
     on top of a C-array. <tt>ArrayVectorView</tt> does not manage the memory
     it refers to (i.e. it does not allocate or deallocate any memory).
     Thus, if the underlying memory changes, all dependent <tt>ArrayVectorView</tt>
@@ -434,7 +434,7 @@ ArrayVectorView <T>::swapDataImpl(const ArrayVectorView <U>& rhs)
 
 /** Replacement for <tt>std::vector</tt>.
 
-    This template implements the same functionality as <tt>std::vector</tt>.
+    This template implements the same functionality as <tt>a href="http://www.sgi.com/tech/stl/Vector.html">std::vector</a></tt> (see there for detailed documentation).
     However, it gives two useful guarantees, that <tt>std::vector</tt> fails
     to provide:
 
