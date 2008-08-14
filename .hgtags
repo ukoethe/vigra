@@ -12,11 +12,9 @@
 84b837eaa19f8370622a060ca9b355a41038e08d Version-1-5-1b
 85d8c564cdd553ff430a7e9bdc1202f189ee6d42 Version-1-1-5 **FUNKY**
 88326fcf7895c6760dc2b8ddcc9b00465e67538e Version-1-5-1a
-8ce062c9fbd5cd251d05e7980c8e1d961706fa20 final_qt_2
 9830e20a00ef81b94c43fae88665bcf45fb0b092 before-big-refactoring
 98fa13b6a9c6bdba1fc46fdc1bf4050732b9f1cf before_new_impex_commit
 9f586aaf36187dae5a6fa1f393d534edc670e90e start
-b3dd5a300c66ef68e43f584381f16705cc3a8aaf interactive3_copy
 b7279b937e4a431644e9600d491eed66cda2f77b vigra1-1-0
 bd2948d8c2a1496db9920dc86cd834878c2f025d Version-1-5-0
 bd8f5a5315d5c3af17fd4ec66dbb74539e4c1e25 before-new-build-system
