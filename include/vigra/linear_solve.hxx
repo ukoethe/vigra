@@ -360,9 +360,9 @@ incrementalMaxSingularValueApproximation(MultiArrayView<2, T, C1> const & newCol
     SNType vneu = squaredNorm(newColumn);
     T yv = dot(columnVector(newColumn, Shape(0,0),n), columnVector(z, Shape(0,0),n));
     // use atan2 as it is robust against overflow/underflow
-    double t = 0.5*std::atan2(2.0*yv, sq(v)-vneu),
-           s = std::sin(t),
-           c = std::cos(t);
+    T t = 0.5*std::atan2(T(2.0*yv), T(sq(v)-vneu)),
+      s = std::sin(t),
+      c = std::cos(t);
     v = std::sqrt(sq(c*v) + sq(s)*vneu + 2.0*s*c*yv);
     columnVector(z, Shape(0,0),n) = c*columnVector(z, Shape(0,0),n) + s*columnVector(newColumn, Shape(0,0),n);
     z(n,0) = s*newColumn(n,0);
@@ -393,9 +393,9 @@ incrementalMinSingularValueApproximation(MultiArrayView<2, T, C1> const & newCol
     
     T yv = dot(columnVector(newColumn, Shape(0,0),n), columnVector(z, Shape(0,0),n));
     // use atan2 as it is robust against overflow/underflow
-    double t = 0.5*std::atan2(-2.0*yv, squaredNorm(gamma / v) + squaredNorm(yv) - 1.0),
-           s = std::sin(t),
-           c = std::cos(t);
+    T t = 0.5*std::atan2(T(-2.0*yv), T(squaredNorm(gamma / v) + squaredNorm(yv) - 1.0)),
+      s = std::sin(t),
+      c = std::cos(t);
     columnVector(z, Shape(0,0),n) *= c;
     z(n,0) = (s - c*yv) / gamma;
     v *= norm(gamma) / hypot(c*gamma, v*(s - c*yv));
