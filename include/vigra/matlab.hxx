@@ -181,7 +181,7 @@ T
 getScalar(mxArray const * t)
 {
     if(mxIsEmpty(t))
-        mexErrMsgTxt("getScala() on empty input.");
+        mexErrMsgTxt("getScalar() on empty input.");
     return static_cast<T>(mxGetScalar(t));
 }
 
@@ -229,7 +229,7 @@ getMultiArray(mxArray const * t)
 
     if(!detail::ValueType<T>::check(t))
     {
-        std::string msg = std::string("Input array must have type ") + 
+        std::string msg = std::string("getMultiArray(): Input array must have type ") + 
                           detail::ValueType<T>::typeName() + ".";
         mexErrMsgTxt(msg.c_str());
     }
@@ -239,7 +239,7 @@ getMultiArray(mxArray const * t)
     {
         if(DIM != mxGetNumberOfDimensions(t))
         {
-            mexErrMsgTxt("Input array has wrong number of dimensions.");
+            mexErrMsgTxt("getMultiArray(): Input array has wrong number of dimensions.");
         }
         const mwSize * matlabShape = mxGetDimensions(t);
         for(unsigned int k=0; k<DIM; ++k)
@@ -274,13 +274,13 @@ getMatrix(mxArray const * t)
 
     if(!detail::ValueType<T>::check(t))
     {
-        std::string msg = std::string("Input matrix must have type ") + 
+        std::string msg = std::string("getMatrix(): Input matrix must have type ") + 
                           detail::ValueType<T>::typeName() + ".";
         mexErrMsgTxt(msg.c_str());
     }
 
     if(2 != mxGetNumberOfDimensions(t))
-        mexErrMsgTxt("Input matrix must have 2 dimensions.");
+        mexErrMsgTxt("getMatrix(): Input matrix must have 2 dimensions.");
     const mwSize * matlabShape = mxGetDimensions(t);
     Shape shape;
     for(int k=0; k<2; ++k)
