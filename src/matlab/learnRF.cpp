@@ -36,13 +36,13 @@ void vigraMexFunction(matlab::OutputArray outputs, matlab::InputArray inputs)
 
     // write RF parameters
     int parameterCount = 3;
-    MultiArray<1, UInt32> parameters = matlab::createArray<UInt32>(parameterCount, cells[0]);
+    MultiArrayView<1, UInt32> parameters = matlab::createArray<UInt32>(parameterCount, cells[0]);
     parameters(0) = labelCount;
     parameters(1) = numberOfFeatures;
     parameters(2) = Ntree;
      
     // write array of possible class labels
-    MultiArray<1, double> classLabels = matlab::createArray<double>(labelCount, cells[1]);
+    MultiArrayView<1, double> classLabels = matlab::createArray<double>(labelCount, cells[1]);
     for(unsigned int k =0; k<labelCount; ++k)
         classLabels(k) = rf.classes_[k];
     
@@ -50,13 +50,13 @@ void vigraMexFunction(matlab::OutputArray outputs, matlab::InputArray inputs)
     for(unsigned int k=0; k<Ntree; ++k)
     {
         // write int tree array
-        MultiArray<1, Int32> tree = 
+        MultiArrayView<1, Int32> tree = 
             matlab::createArray<Int32>(rf.trees_[k].tree_.size(), cells[2*k+2]);
         for(unsigned int i =0; i<rf.trees_[k].tree_.size(); ++i)
             tree(i) = rf.trees_[k].tree_[i];
         
         // write double weight/threshold array
-        MultiArray<1, double> weights = 
+        MultiArrayView<1, double> weights = 
             matlab::createArray<double>(rf.trees_[k].terminalWeights_.size(), cells[2*k+3]);
         for(unsigned int i =0; i<rf.trees_[k].terminalWeights_.size(); ++i)
             weights(i) = rf.trees_[k].terminalWeights_[i];

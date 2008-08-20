@@ -715,6 +715,18 @@ class RandomForest
         }
     }
     
+    int featureCount() const
+    {
+        vigra_precondition(columnCount_ > 0,
+           "RandomForest::featureCount(): Random forest has not been trained yet.");
+        return columnCount_;
+    }
+    
+    int labelCount() const
+    {
+        return classes_.size();
+    }
+    
     // loss == 0.0 means unweighted random forest
     template <class U, class C, class Array, class Random>
     double learn(MultiArrayView<2, U, C> const & features, Array const & labels,
@@ -913,6 +925,8 @@ template <class U, class C>
 ClassLabelType 
 RandomForest<ClassLabelType>::predictLabel(MultiArrayView<2, U, C> const & features) const
 {
+    vigra_precondition(columnCount(features) >= featureCount(),
+        "RandomForest::predictLabel(): Too few columns in feature matrix.");
     vigra_precondition(rowCount(features) == 1,
         "RandomForest::predictLabel(): Feature matrix must have a single row.");
     Matrix<double> prob(1, classes_.size());
@@ -927,6 +941,8 @@ RandomForest<ClassLabelType>::predictLabel(MultiArrayView<2, U, C> const & featu
                                            Iterator priors) const
 {
     using namespace functor;
+    vigra_precondition(columnCount(features) >= featureCount(),
+        "RandomForest::predictLabel(): Too few columns in feature matrix.");
     vigra_precondition(rowCount(features) == 1,
         "RandomForest::predictLabel(): Feature matrix must have a single row.");
     Matrix<double> prob(1,classes_.size());
@@ -943,9 +959,9 @@ RandomForest<ClassLabelType>::predictProbabilities(MultiArrayView<2, U, C1> cons
 {
     vigra_precondition(rowCount(features) == rowCount(prob),
       "RandomForest::predictProbabilities(): Feature matrix and probability matrix size mismatch.");
-    vigra_precondition(columnCount(features) >= columnCount_,
+    vigra_precondition(columnCount(features) >= featureCount(),
       "RandomForest::predictProbabilities(): Too few columns in feature matrix.");
-    vigra_precondition(columnCount(prob) >= (MultiArrayIndex)classes_.size(),
+    vigra_precondition(columnCount(prob) == (MultiArrayIndex)labelCount(),
       "RandomForest::predictProbabilities(): Probability matrix must have as many columns as there are classes.");
       
     for(int row=0; row < rowCount(features); ++row)
