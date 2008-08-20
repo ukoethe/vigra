@@ -49,6 +49,48 @@ namespace vigra {
 
 namespace matlab {
 
+namespace detail {
+
+template <class T>
+struct ValueType;
+
+#define VIGRA_MATLAB_VALUETYPE_UTIL(type, functionName, typeID, matTypeName) \
+template <> \
+struct ValueType<type> \
+{ \
+    static bool check(mxArray const * t) \
+    { \
+        return mxIs##functionName(t); \
+    } \
+    \
+    static mxClassID const classID = typeID; \
+    \
+    static std::string typeName() \
+    { \
+        return #matTypeName; \
+    } \
+};
+
+VIGRA_MATLAB_VALUETYPE_UTIL(double, Double, mxDOUBLE_CLASS, double)
+VIGRA_MATLAB_VALUETYPE_UTIL(float, Single, mxSINGLE_CLASS, single)
+VIGRA_MATLAB_VALUETYPE_UTIL(Int8,  Int8, mxINT8_CLASS, int8)
+VIGRA_MATLAB_VALUETYPE_UTIL(Int16, Int16, mxINT16_CLASS, int16)
+VIGRA_MATLAB_VALUETYPE_UTIL(Int32, Int32, mxINT32_CLASS, int32)
+VIGRA_MATLAB_VALUETYPE_UTIL(Int64, Int64, mxINT64_CLASS, int64)
+VIGRA_MATLAB_VALUETYPE_UTIL(UInt8,  Uint8, mxUINT8_CLASS, uint8)
+VIGRA_MATLAB_VALUETYPE_UTIL(UInt16, Uint16, mxUINT16_CLASS, uint16)
+VIGRA_MATLAB_VALUETYPE_UTIL(UInt32, Uint32, mxUINT32_CLASS, uint32)
+VIGRA_MATLAB_VALUETYPE_UTIL(UInt64, Uint64, mxUINT64_CLASS, uint64)
+
+#undef VIGRA_MATLAB_VALUETYPE_UTIL
+
+} // namespace detail 
+
+// TODO: 
+//    * handle rgb images
+//    * handle complex matrices
+//    * handle sparse matrices
+
 class InputArray
 {
     int size_;
@@ -219,48 +261,6 @@ class CellArray
         return ConstCellArray::Proxy(matPointer_, i);
     }
 };
-
-namespace detail {
-
-template <class T>
-struct ValueType;
-
-#define VIGRA_MATLAB_VALUETYPE_UTIL(type, functionName, typeID, matTypeName) \
-template <> \
-struct ValueType<type> \
-{ \
-    static bool check(mxArray const * t) \
-    { \
-        return mxIs##functionName(t); \
-    } \
-    \
-    static mxClassID const classID = typeID; \
-    \
-    static std::string typeName() \
-    { \
-        return #matTypeName; \
-    } \
-};
-
-VIGRA_MATLAB_VALUETYPE_UTIL(double, Double, mxDOUBLE_CLASS, double)
-VIGRA_MATLAB_VALUETYPE_UTIL(float, Single, mxSINGLE_CLASS, single)
-VIGRA_MATLAB_VALUETYPE_UTIL(Int8,  Int8, mxINT8_CLASS, int8)
-VIGRA_MATLAB_VALUETYPE_UTIL(Int16, Int16, mxINT16_CLASS, int16)
-VIGRA_MATLAB_VALUETYPE_UTIL(Int32, Int32, mxINT32_CLASS, int32)
-VIGRA_MATLAB_VALUETYPE_UTIL(Int64, Int64, mxINT64_CLASS, int64)
-VIGRA_MATLAB_VALUETYPE_UTIL(UInt8,  Uint8, mxUINT8_CLASS, uint8)
-VIGRA_MATLAB_VALUETYPE_UTIL(UInt16, Uint16, mxUINT16_CLASS, uint16)
-VIGRA_MATLAB_VALUETYPE_UTIL(UInt32, Uint32, mxUINT32_CLASS, uint32)
-VIGRA_MATLAB_VALUETYPE_UTIL(UInt64, Uint64, mxUINT64_CLASS, uint64)
-
-#undef VIGRA_MATLAB_VALUETYPE_UTIL
-
-} // namespace detail 
-
-// TODO: 
-//    * handle complex matrices
-//    * handle sparse matrices
-//    * convert from/to BasicImageView
 
 template<class T>
 T
