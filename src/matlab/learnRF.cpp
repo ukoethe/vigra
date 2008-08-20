@@ -4,15 +4,9 @@
 #include <vigra/random_forest.hxx>
 
 using namespace vigra;
- 
- 
- 
-void mexFunction(int nlhs, mxArray *plhs[], int nrhs,
-                 const mxArray *prhs[])
-{
-    matlab::InputArgumentArray inputs(nrhs, prhs);
-    matlab::OutputArgumentArray outputs(nlhs, plhs);
-    
+
+void vigraMexFunction(matlab::OutputArray outputs, matlab::InputArray inputs)
+{    
     if (inputs.size() != 3)
         mexErrMsgTxt("Three inputs required.");
     if (outputs.size() > 1)

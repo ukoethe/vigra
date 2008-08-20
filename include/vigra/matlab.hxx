@@ -49,7 +49,7 @@ namespace vigra {
 
 namespace matlab {
 
-class InputArgumentArray
+class InputArray
 {
     int size_;
     const mxArray ** data_;
@@ -64,7 +64,7 @@ class InputArgumentArray
     typedef int size_type;
     typedef int difference_type;
 
-    InputArgumentArray(size_type size, pointer data)
+    InputArray(size_type size, pointer data)
     : size_(size),
       data_(data)
     {}
@@ -88,7 +88,7 @@ class InputArgumentArray
       
 };
 
-class OutputArgumentArray
+class OutputArray
 {
     int size_;
     mxArray ** data_;
@@ -103,7 +103,7 @@ class OutputArgumentArray
     typedef int size_type;
     typedef int difference_type;
 
-    OutputArgumentArray(size_type size, pointer data)
+    OutputArray(size_type size, pointer data)
     : size_(size),
       data_(data)
     {}
@@ -508,5 +508,24 @@ createCellArray(mwSize size, CellArray::Proxy t)
 } // namespace matlab 
 
 } // namespace vigra 
+
+void vigraMexFunction(vigra::matlab::OutputArray, vigra::matlab::InputArray);
+
+void mexFunction(int nlhs, mxArray *plhs[], 
+                 int nrhs, const mxArray *prhs[])
+{
+  try 
+  {
+    vigra::matlab::InputArray inputs(nrhs, prhs);
+    vigra::matlab::OutputArray outputs(nlhs, plhs);
+    
+    vigraMexFunction(outputs, inputs);
+  }
+  catch(std::exception & e)
+  {
+    mexErrMsgTxt(e.what());
+  }
+}
+
 
 #endif // VIGRA_MATLAB_HXX
