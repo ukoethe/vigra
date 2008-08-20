@@ -262,24 +262,6 @@ class CellArray
     }
 };
 
-template<class T>
-T
-getScalar(mxArray const * t)
-{
-    if(mxIsEmpty(t))
-        mexErrMsgTxt("getScalar() on empty input.");
-    return static_cast<T>(mxGetScalar(t));
-}
-
-template<class T>
-mxArray *
-createScalar(T v)
-{
-    mxArray * m;
-    createMatrix<double>(1, 1, m)(0,0) = static_cast<double>(v);
-    return m;
-}
-
 template <unsigned int SIZE, class T>
 TinyVectorView<T, SIZE>
 getTinyVector(mxArray const * t)
@@ -503,6 +485,24 @@ createCellArray(mwSize size, CellArray::Proxy t)
     t = mxCreateCellArray(1, matSize);  
     
     return CellArray(t, size);
+}
+
+template<class T>
+T
+getScalar(mxArray const * t)
+{
+    if(mxIsEmpty(t))
+        mexErrMsgTxt("getScalar() on empty input.");
+    return static_cast<T>(mxGetScalar(t));
+}
+
+template<class T>
+mxArray *
+createScalar(T v)
+{
+    mxArray * m;
+    createMatrix<double>(1, 1, m)(0,0) = static_cast<double>(v);
+    return m;
 }
 
 } // namespace matlab 
