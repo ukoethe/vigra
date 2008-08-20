@@ -34,8 +34,8 @@
 /************************************************************************/
 
 
-#ifndef VIGRA_CREATE_RANDOM_FOREST_HXX
-#define VIGRA_CREATE_RANDOM_FOREST_HXX
+#ifndef VIGRA_RANDOM_FOREST_IMPEX_HXX
+#define VIGRA_RANDOM_FOREST_IMPEX_HXX
 
 #include <set>
 #include <memory>
@@ -47,7 +47,7 @@ namespace matlab {
 
 template <class T>
 std::auto_ptr<RandomForest<T> >
-createRandomForest(ConstCellArray cells)
+importRandomForest(ConstCellArray cells)
 {
     // read RF parameters
     MultiArrayView<1, UInt32> parameters = getArray<UInt32>(cells[0]);
@@ -115,4 +115,4 @@ exportRandomForest(RandomForest<T> const & rf, CellArray cells)
 
 }} // namespace vigra::matlab
 
-#endif // VIGRA_CREATE_RANDOM_FOREST_HXX
+#endif // VIGRA_RANDOM_FOREST_IMPEX_HXX

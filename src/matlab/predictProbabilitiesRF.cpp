@@ -1,7 +1,7 @@
 #include <iostream>
 #include <set>
 #include <vigra/matlab.hxx>
-#include "create_random_forest.hxx"
+#include "random_forest_impex.hxx"
 
 using namespace vigra;
 
@@ -25,7 +25,7 @@ void vigraMexFunction(matlab::OutputArray outputs, matlab::InputArray inputs)
 
     // get RF object
     std::auto_ptr<RandomForest<double> > rf =
-                  matlab::createRandomForest<double>(matlab::getCellArray(inputs[0]));
+                  matlab::importRandomForest<double>(matlab::getCellArray(inputs[0]));
 
     // get feature matrix
     MultiArrayView<2, double> features = matlab::getMatrix<double>(inputs[1]);
