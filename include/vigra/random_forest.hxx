@@ -204,7 +204,7 @@ struct DecisionTreeAxisSplitFunctor
 
     unsigned int totalCount(int k) const
     {
-        return bestTotalCounts[k];
+        return (unsigned int)bestTotalCounts[k];
     }
     
     int sizeofNode() const { return 4; }
