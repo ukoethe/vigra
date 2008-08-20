@@ -4,6 +4,13 @@
 
 using namespace vigra;
  
+/** MATLAB 
+function resized = resizeImage(original, newShape)
+
+resize a 2D array to a new shape using cubic spline interpolation.
+    original - 2D matrix with original image
+    newShape - int32-array of length 2 giving the new shape
+*/
 void vigraMexFunction(matlab::OutputArray outputs, matlab::InputArray inputs)
 {    
     BasicImageView<double> in = matlab::getImage<double>(inputs[0]);    
