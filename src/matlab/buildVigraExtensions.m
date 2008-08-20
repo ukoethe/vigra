@@ -67,15 +67,18 @@ if strcmp( TARGET, 'all' )
             
             m_filename = [cpp_filename(1:end-4) '.m' ];
             if isempty(dir(['./' m_filename])) == 0  % file exists
+                disp(['copying: ' m_filename]);
                 copyfile(['./' m_filename], [OUTDIR '/' m_filename]);  % => copy it
             else  % build documentation from C++ comment
                 text = fileread(cpp_filename);
-                [match comment] = regexp(text, '/\*\*\s*MATLAB\s*(.*)\*/', 'match', 'tokens');
+                [match comment] = regexp(text, '/\*\*\s*MATLAB\s*(.*?)\*/', 'match', 'tokens', 'ignorecase');
                 if isempty(match)  % documentation string not found
+                    disp(['No comment found, cannot create documentation for ' m_filename]);
                     continue;      % cannot create documentation
                 end
-                [match func] = regexp(comment{1}{1}, '(^\s*function [^\n]*)', 'match', 'tokens');
+                [match func] = regexp(comment{1}{1}, '(^\s*function [^\n]*)', 'lineanchors', 'match', 'tokens');
                 if isempty(match)  % 'function' line not found
+                    disp(['No MATLAB function found, cannot create documentation for ' m_filename]);
                     continue;      % cannot create documentation
                 end
                 m_file = func{1}{1};
@@ -85,6 +88,7 @@ if strcmp( TARGET, 'all' )
                     m_file = sprintf('%s\n%% %s', m_file, line(1:end-1));
                 end
                 m_file = sprintf('%s\n%% \n  %s', m_file, 'error(''mex-file missing. Call buildVigraExtensions(INSTALL_PATH) to create it.'')');
+                disp(['creating: ' m_filename]);
                 dlmwrite([OUTDIR '/' m_filename], m_file, '');
             end
 		else
