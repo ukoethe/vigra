@@ -76,8 +76,9 @@ importRandomForest(ConstCellArray cells)
         MultiArrayView<1, double> weight = getArray<double>(cells[2*k+3]);
         weights.push_back(ArrayVector<double>(weight.traverser_begin(), weight.traverser_end()));
     }
-    return new RandomForest<T>(classLabels.traverser_begin(), classLabels.traverser_end(), 
-                               Ntree, numberOfFeatures, trees.begin(), weights.begin());
+    return std::auto_ptr<RandomForest<T> >(
+                           new RandomForest<T>(classLabels.traverser_begin(), classLabels.traverser_end(), 
+                               Ntree, numberOfFeatures, trees.begin(), weights.begin()));
 }
 
 template <class T>
