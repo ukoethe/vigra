@@ -82,7 +82,7 @@ internalResizeMultiArrayOneDimension(
 
     // temporay array to hold the current line to enable in-place operation
     ArrayVector<TmpType> tmp( ssize );
-    ArrayVector<TmpType>::iterator t = tmp.begin(), tend = tmp.end();
+    typename ArrayVector<TmpType>::iterator t = tmp.begin(), tend = tmp.end();
     typename AccessorTraits<TmpType>::default_accessor ta;
     
     for( ; snav.hasMore(); snav++, dnav++ )
