@@ -134,6 +134,92 @@ class OutputArgumentArray
       
 };
 
+class ConstCellArray
+{
+  protected:
+    mxArray * matPointer_;
+    int size_;
+      
+  public:
+  
+    struct Proxy
+    {
+        mxArray * matPointer_;
+        int index_;
+        
+        Proxy(mxArray * matPointer, int index)
+        : matPointer_(matPointer),
+          index_(index)
+        {}
+        
+        operator const mxArray *() const
+        {
+            return mxGetCell(matPointer_, index_);
+        }
+    };
+  
+    ConstCellArray(const mxArray * matPointer, int size)
+    : matPointer_(const_cast<mxArray *>(matPointer)),
+      size_(size)
+    {}
+      
+    Proxy operator[](int i) const
+    {
+        if(!isValid(i))
+            mexErrMsgTxt("CellArray::operator[]: Index out of range.");
+        return Proxy(matPointer_, i);
+    }
+
+    int size() const
+    {
+        return size_;
+    }
+
+    bool isValid( int i ) const
+    {
+        return i >= 0 && i < size_;
+    }
+      
+};
+
+class CellArray
+: public ConstCellArray
+{
+  public:
+  
+    struct Proxy
+    : public ConstCellArray::Proxy
+    {
+        Proxy(mxArray * matPointer, int index)
+        : ConstCellArray::Proxy(matPointer, index)
+        {}
+        
+        void operator=(mxArray * v)
+        {
+            mxDestroyArray(mxGetCell(matPointer_, index_));
+            mxSetCell(matPointer_, index_, v);
+        }
+    };
+  
+    CellArray(const mxArray * matPointer, int size)
+    : ConstCellArray(matPointer, size)
+    {}
+      
+    Proxy operator[](int i)
+    {
+        if(!isValid(i))
+            mexErrMsgTxt("CellArray::operator[]: Index out of range.");
+        return Proxy(matPointer_, i);
+    }
+      
+    ConstCellArray::Proxy operator[](int i) const
+    {
+        if(!isValid(i))
+            mexErrMsgTxt("CellArray::operator[]: Index out of range.");
+        return ConstCellArray::Proxy(matPointer_, i);
+    }
+};
+
 namespace detail {
 
 template <class T>
@@ -183,6 +269,15 @@ getScalar(mxArray const * t)
     if(mxIsEmpty(t))
         mexErrMsgTxt("getScalar() on empty input.");
     return static_cast<T>(mxGetScalar(t));
+}
+
+template<class T>
+mxArray *
+createScalar(T v)
+{
+    mxArray * m;
+    createMatrix<double>(1, 1, m)(0,0) = static_cast<double>(v);
+    return m;
 }
 
 template <unsigned int SIZE, class T>
@@ -266,6 +361,39 @@ createMultiArray(typename MultiArrayShape<DIM>::type const & shape, mxArray * & 
     return MultiArrayView<DIM, T>(shape, (T *)mxGetData(t));
 }
 
+template <unsigned int DIM, class T>
+MultiArrayView<DIM, T>
+createMultiArray(typename MultiArrayShape<DIM>::type const & shape, CellArray::Proxy t)
+{
+    mwSize matlabShape[DIM];
+    for(int k=0; k<DIM; ++k)
+        matlabShape[k] = static_cast<mwSize>(shape[k]);
+    t = mxCreateNumericArray(DIM, matlabShape, detail::ValueType<T>::classID, mxREAL);   
+    
+    return MultiArrayView<DIM, T>(shape, (T *)mxGetData(t));
+}
+
+template <class T>
+inline MultiArrayView<1, T>
+getArray(mxArray const * t)
+{
+    return getMultiArray<1, T>(t);
+}
+
+template <class T>
+inline MultiArrayView<1, T>
+createArray(MultiArrayIndex size, mxArray * & t)
+{
+    return createMultiArray<1, T>(MultiArrayShape<1>::type(size), t);
+}
+
+template <class T>
+inline MultiArrayView<1, T>
+createArray(MultiArrayIndex size, CellArray::Proxy t)
+{
+    return createMultiArray<1, T>(MultiArrayShape<1>::type(size), t);
+}
+
 template <class T>
 MultiArrayView<2, T>
 getMatrix(mxArray const * t)
@@ -281,10 +409,10 @@ getMatrix(mxArray const * t)
 
     if(2 != mxGetNumberOfDimensions(t))
         mexErrMsgTxt("getMatrix(): Input matrix must have 2 dimensions.");
+        
     const mwSize * matlabShape = mxGetDimensions(t);
-    Shape shape;
-    for(int k=0; k<2; ++k)
-        shape[k] = static_cast<typename Shape::value_type>(matlabShape[k]);
+    Shape shape(static_cast<MultiArrayIndex>(matlabShape[0]),
+                static_cast<MultiArrayIndex>(matlabShape[1]));
         
     return MultiArrayView<2, T>(shape, (T *)mxGetData(t));
 }
@@ -299,6 +427,82 @@ createMatrix(mwSize rowCount, mwSize columnCount, mxArray * & t)
     t = mxCreateNumericMatrix(rowCount, columnCount, detail::ValueType<T>::classID, mxREAL);  
     
     return MultiArrayView<2, T>(shape, (T *)mxGetData(t));
+}
+
+template <class T>
+MultiArrayView<2, T>
+createMatrix(mwSize rowCount, mwSize columnCount, CellArray::Proxy t)
+{
+    typedef typename MultiArrayView<2, T>::difference_type Shape;
+
+    Shape shape(rowCount, columnCount);
+    t = mxCreateNumericMatrix(rowCount, columnCount, detail::ValueType<T>::classID, mxREAL);  
+    
+    return MultiArrayView<2, T>(shape, (T *)mxGetData(t));
+}
+
+template <class T>
+BasicImageView<T>
+getImage(mxArray const * t)
+{
+    if(!detail::ValueType<T>::check(t))
+    {
+        std::string msg = std::string("getImage(): Input matrix must have type ") + 
+                          detail::ValueType<T>::typeName() + ".";
+        mexErrMsgTxt(msg.c_str());
+    }
+
+    if(2 != mxGetNumberOfDimensions(t))
+        mexErrMsgTxt("getImage(): Input matrix must have 2 dimensions.");
+        
+    const mwSize * matlabShape = mxGetDimensions(t);
+    return BasicImageView<T>((T *)mxGetData(t), static_cast<int>(matlabShape[0]),
+                                                static_cast<int>(matlabShape[1]));
+}
+
+template <class T>
+BasicImageView<T>
+createImage(mwSize width, mwSize height, mxArray * & t)
+{
+    t = mxCreateNumericMatrix(width, height, detail::ValueType<T>::classID, mxREAL);  
+    
+    return BasicImageView<T>((T *)mxGetData(t), width, height);
+}
+
+template <class T>
+BasicImageView<T>
+createImage(mwSize width, mwSize height, CellArray::Proxy t)
+{
+    t = mxCreateNumericMatrix(width, height, detail::ValueType<T>::classID, mxREAL);  
+    
+    return BasicImageView<T>((T *)mxGetData(t), width, height);
+}
+
+inline ConstCellArray
+getCellArray(mxArray const * t)
+{
+    if(!mxIsCell(t))
+        mexErrMsgTxt("getCellArray(): Input must have type CellArray.");
+
+    return ConstCellArray(t, mxGetNumberOfElements(t));
+}
+
+inline CellArray
+createCellArray(mwSize size, mxArray * & t)
+{
+    mwSize matSize[] = { size };
+    t = mxCreateCellArray(1, matSize);  
+    
+    return CellArray(t, size);
+}
+
+inline CellArray
+createCellArray(mwSize size, CellArray::Proxy t)
+{
+    mwSize matSize[] = { size };
+    t = mxCreateCellArray(1, matSize);  
+    
+    return CellArray(t, size);
 }
 
 } // namespace matlab 

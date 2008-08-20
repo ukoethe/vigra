@@ -37,6 +37,7 @@
 #ifndef VIGRA_ARRAY_VECTOR_HXX
 #define VIGRA_ARRAY_VECTOR_HXX
 
+#include "error.hxx"
 #include "memory.hxx"
 #include <memory>
 #include <algorithm>
