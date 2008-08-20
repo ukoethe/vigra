@@ -727,6 +727,11 @@ class RandomForest
         return classes_.size();
     }
     
+    int treeCount() const
+    {
+        return trees_.size();
+    }
+    
     // loss == 0.0 means unweighted random forest
     template <class U, class C, class Array, class Random>
     double learn(MultiArrayView<2, U, C> const & features, Array const & labels,
