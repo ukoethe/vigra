@@ -1030,52 +1030,56 @@ struct IfThenElseFunctor
     typename ResultTraits0<IfThenElseFunctor>::Res 
     operator()() const 
     {
-        typename 
-            ResultTraits0<IfThenElseFunctor>::Res 
-            r2(expr2_());
-        typename 
-            ResultTraits0<IfThenElseFunctor>::Res 
-            r3(expr3_());
-        return expr1_() ? r2 : r3;
+        if(expr1_())
+        {
+            return typename ResultTraits0<IfThenElseFunctor>::Res(expr2_());
+        }
+        else
+        {
+            return typename ResultTraits0<IfThenElseFunctor>::Res(expr3_());
+        }
     }
 
     template <class T> 
     typename ResultTraits1<IfThenElseFunctor, T>::Res 
     operator()(T const & v1) const 
     {
-        typename 
-            ResultTraits1<IfThenElseFunctor, T>::Res 
-            r2(expr2_(v1));
-        typename 
-            ResultTraits1<IfThenElseFunctor, T>::Res 
-            r3(expr3_(v1));
-        return expr1_(v1) ? r2 : r3;
+        if(expr1_(v1))
+        {
+            return typename ResultTraits1<IfThenElseFunctor, T>::Res(expr2_(v1));
+        }
+        else
+        {
+            return typename ResultTraits1<IfThenElseFunctor, T>::Res(expr3_(v1));
+        }
     }
 
     template <class T1, class T2> 
     typename ResultTraits2<IfThenElseFunctor, T1, T2>::Res 
     operator()(T1 const & v1, T2 const & v2) const 
     {
-        typename 
-            ResultTraits2<IfThenElseFunctor, T1, T2>::Res 
-            r2(expr2_(v1, v2));
-        typename 
-            ResultTraits2<IfThenElseFunctor, T1, T2>::Res 
-            r3(expr3_(v1, v2));
-        return expr1_(v1, v2) ? r2 : r3;
+        if(expr1_(v1, v2))
+        {
+            return typename ResultTraits2<IfThenElseFunctor, T1, T2>::Res(expr2_(v1, v2));
+        }
+        else
+        {
+            return typename ResultTraits2<IfThenElseFunctor, T1, T2>::Res(expr3_(v1, v2));
+        }
     }
 
     template <class T1, class T2, class T3> 
     typename ResultTraits3<IfThenElseFunctor, T1, T2, T3>::Res 
     operator()(T1 const & v1, T2 const & v2, T3 const & v3) const 
     {
-        typename 
-            ResultTraits3<IfThenElseFunctor, T1, T2, T3>::Res 
-            r2(expr2_(v1, v2, v3));
-        typename 
-            ResultTraits3<IfThenElseFunctor, T1, T2, T3>::Res 
-            r3(expr3_(v1, v2, v3));
-        return expr1_(v1, v2, v3) ? r2 : r3;
+        if(expr1_(v1, v2, v3))
+        {
+            return typename ResultTraits3<IfThenElseFunctor, T1, T2, T3>::Res(expr2_(v1, v2, v3));
+        }
+        else
+        {
+            return typename ResultTraits3<IfThenElseFunctor, T1, T2, T3>::Res(expr3_(v1, v2, v3));
+        }
     }
     
   private:
