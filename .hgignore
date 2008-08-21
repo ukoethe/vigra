@@ -1,5 +1,16 @@
 syntax: glob
 
+*.mex
 *.mexw32
+*.mexglx
 *.bak
 *.obj
+Release
+Debug
+*.exe
+*.ilk
+*.pdb
+*.exp
+*.lib
+*.dll
+*.ncb
