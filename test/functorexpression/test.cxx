@@ -148,7 +148,22 @@ struct FunctorExpressionTest
     void testIfThenElse()
     {
         should(exec(ifThenElse(Arg1(), Arg2(), Arg3()), true, 2, 3.5) == 2.0); 
-        should(exec(ifThenElse(Arg1(), Arg2(), Arg3()), false, 2, 3.5) == 3.5); 
+        should(exec(ifThenElse(Arg1(), Arg2(), Arg3()), false, 2, 3.5) == 3.5);
+        int trueBranch = 0, falseBranch = 0;
+        should(exec(ifThenElse(Arg1(), 
+                               (Var(trueBranch)  += Param(1), Arg2()),
+                               (Var(falseBranch) += Param(1), Arg3())), 
+                    true, 1, 2) == 1);
+        should(exec(ifThenElse(Arg1(), 
+                               (Var(trueBranch)  += Param(1), Arg2()),
+                               (Var(falseBranch) += Param(1), Arg3())), 
+                    true, 3.5, 2) == 3.5);
+        should(exec(ifThenElse(Arg1(), 
+                               (Var(trueBranch)  += Param(1), Arg2()),
+                               (Var(falseBranch) += Param(1), Arg3())), 
+                    false, 1, 2) == 2);
+        shouldEqual(trueBranch, 2);
+        shouldEqual(falseBranch, 1);
     }
     
     void testUnary()
