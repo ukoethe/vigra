@@ -114,7 +114,7 @@ class InputArray
     const_reference operator[]( difference_type i ) const
     {
         if(!isValid(i))
-            mexErrMsgTxt("Input parameter index out of range.");
+            mexErrMsgTxt("Too few input arguments.");
         return data_[i];
     }
 
@@ -153,14 +153,14 @@ class OutputArray
     reference operator[]( difference_type i )
     {
         if(!isValid(i))
-            mexErrMsgTxt("Output parameter index out of range.");
+            mexErrMsgTxt("Too few output arguments.");
         return data_[i];
     }
 
     const_reference operator[]( difference_type i ) const
     {
         if(!isValid(i))
-            mexErrMsgTxt("Output parameter index out of range.");
+            mexErrMsgTxt("Too few output arguments.");
         return data_[i];
     }
 
