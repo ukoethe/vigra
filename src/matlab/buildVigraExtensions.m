@@ -23,6 +23,12 @@ if nargin < 2
 	TARGET = 'all';
 end
 
+if exist('octave_config_info')
+    isOctave = 1;
+else
+    isOctave = 0;
+end
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %          MAKE ALL            %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -58,8 +64,11 @@ if strcmp( TARGET, 'all' )
 		if isempty( mex_file ) || ( cpp_file.datenum > mex_file.datenum )
 			% compile
 			disp(['compiling: ' cpp_filename ] );
-			eval(['mex -O -I../../include -outdir ' OUTDIR ' ' cpp_filename]);
-            
+			if isOctave
+                eval(['mex -I../../include -o ' mex_filename ' ' cpp_filename]);
+            else
+                eval(['mex -O -I../../include -outdir ' OUTDIR ' ' cpp_filename]);
+            end
             % create the associated .m documentation file
             if strcmp(OUTDIR, '.') ~= 0   % we are in the source directory
                continue;                  % do not care about documentation
@@ -70,7 +79,14 @@ if strcmp( TARGET, 'all' )
                 disp(['copying: ' m_filename]);
                 copyfile(['./' m_filename], [OUTDIR '/' m_filename]);  % => copy it
             else  % build documentation from C++ comment
-                text = fileread(cpp_filename);
+                text = '';
+                f = fopen(cpp_filename);
+                line = fgetl(f);
+                while ischar(line)
+                    text = sprintf('%s\n%s', text, line);
+                    line = fgetl(f);
+                end
+                fclose(f);
                 [match comment] = regexp(text, '/\*\*\s*MATLAB\s*(.*?)\*/', 'match', 'tokens', 'ignorecase');
                 if isempty(match)  % documentation string not found
                     disp(['No comment found, cannot create documentation for ' m_filename]);
@@ -89,7 +105,9 @@ if strcmp( TARGET, 'all' )
                 end
                 m_file = sprintf('%s\n%% \n  %s', m_file, 'error(''mex-file missing. Call buildVigraExtensions(INSTALL_PATH) to create it.'')');
                 disp(['creating: ' m_filename]);
-                dlmwrite([OUTDIR '/' m_filename], m_file, '');
+                fopen([OUTDIR '/' m_filename], 'w');
+                fprintf(f, '%s', m_file);
+                fclose(f);
             end
 		else
 			continue;
