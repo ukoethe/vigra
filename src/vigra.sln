@@ -66,8 +66,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "vigraimpex_dll", "impex\vig
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
-		Debug|Win32 = Debug|Win32
 		Release|Win32 = Release|Win32
+		Debug|Win32 = Debug|Win32
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{7D9C26CA-8E77-41BE-B85A-0569136B0ABE}.Debug|Win32.ActiveCfg = Debug|Win32

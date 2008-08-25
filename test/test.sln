@@ -73,8 +73,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "seededRegionGrowing3d", "se
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
-		Debug|Win32 = Debug|Win32
 		Release|Win32 = Release|Win32
+		Debug|Win32 = Debug|Win32
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{DF27C171-3209-4A26-9E45-4A60DDB7C408}.Debug|Win32.ActiveCfg = Debug|Win32
