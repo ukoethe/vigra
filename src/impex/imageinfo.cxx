@@ -793,6 +793,7 @@ void VolumeImportInfo::getVolumeInfoFromFirstSlice(const std::string &filename)
     numBands_ = info.numBands();
 }
 
+VolumeImportInfo::ShapeType VolumeImportInfo::shape() const { return shape_; }
 VolumeImportInfo::Resolution VolumeImportInfo::resolution() const { return resolution_; }
 VolumeImportInfo::PixelType VolumeImportInfo::pixelType() const { return pixelType_; }
 int VolumeImportInfo::numBands() const { return numBands_; }
