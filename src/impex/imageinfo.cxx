@@ -793,4 +793,12 @@ void VolumeImportInfo::getVolumeInfoFromFirstSlice(const std::string &filename)
     numBands_ = info.numBands();
 }
 
+VolumeImportInfo::Resolution VolumeImportInfo::resolution() const { return resolution_; }
+VolumeImportInfo::PixelType VolumeImportInfo::pixelType() const { return pixelType_; }
+int VolumeImportInfo::numBands() const { return numBands_; }
+bool VolumeImportInfo::isGrayscale() const { return numBands_ == 1; }
+bool VolumeImportInfo::isColor() const { return numBands_ > 1; }
+const std::string & VolumeImportInfo::name() const { return name_; }
+const std::string & VolumeImportInfo::description() const { return description_; }
+
 } // namespace vigra

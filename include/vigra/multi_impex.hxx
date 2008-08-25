@@ -59,6 +59,20 @@
 
 namespace vigra {
 
+/** \addtogroup VolumeImpex Import/export of volume data.
+*/
+
+//@{
+
+/** \brief Argument object for the function importVolume().
+
+    See \ref importVolume() for usage example. This object can be used
+    to define the properties of a volume data set to be read from disk.
+    Sorry, no \ref detailedDocumentation() available yet.
+
+    <b>\#include</b> \<<a href="imageinfo_8hxx-source.html">vigra/multi_impex.hxx</a>\><br>
+    Namespace: vigra
+**/
 class VolumeImportInfo
 {
   public:
@@ -76,7 +90,7 @@ class VolumeImportInfo
     VIGRA_EXPORT VolumeImportInfo(const std::string &filename);
     VIGRA_EXPORT VolumeImportInfo(const std::string &baseName, const std::string &extension);
 
-    VIGRA_EXPORT ShapeType shape() const { return shape_; }
+    VIGRA_EXPORT ShapeType shape() const;
 
         /**
          * resolution() contains the alignment and resolution of the
@@ -91,18 +105,18 @@ class VolumeImportInfo
          * (1.f, -1.f, 1.f) means that the volume coordinate system is
          * right-handed.
          */
-    VIGRA_EXPORT Resolution resolution() const { return resolution_; }
+    VIGRA_EXPORT Resolution resolution() const;
 
-    VIGRA_EXPORT PixelType pixelType() const { return pixelType_; }
+    VIGRA_EXPORT PixelType pixelType() const;
 
-    VIGRA_EXPORT int numBands() const { return numBands_; }
-    VIGRA_EXPORT bool isGrayscale() const { return numBands_ == 1; }
-    VIGRA_EXPORT bool isColor() const { return numBands_ > 1; }
+    VIGRA_EXPORT int numBands() const;
+    VIGRA_EXPORT bool isGrayscale() const;
+    VIGRA_EXPORT bool isColor() const;
 
     // get base file name without path, image index, and extension
-    VIGRA_EXPORT const std::string &name() const { return name_; }
+    VIGRA_EXPORT const std::string &name() const;
 
-    VIGRA_EXPORT const std::string &description() const { return description_; }
+    VIGRA_EXPORT const std::string &description() const;
 
     template <class T, class Allocator>
     void importImpl(MultiArray <3, T, Allocator> &volume) const;
@@ -180,11 +194,6 @@ void VolumeImportInfo::importImpl(MultiArray <3, T, Allocator> &volume) const
 VIGRA_EXPORT void findImageSequence(const std::string &name_base,
                        const std::string &name_ext,
                        std::vector<std::string> & numbers);
-
-/** \addtogroup VolumeImpex Import/export of volume data.
-*/
-
-//@{
 
 /********************************************************/
 /*                                                      */
