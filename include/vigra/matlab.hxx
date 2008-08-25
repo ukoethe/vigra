@@ -49,8 +49,6 @@ namespace vigra {
 
 namespace matlab {
 
-namespace detail {
-
 template <class T>
 struct ValueType;
 
@@ -83,8 +81,6 @@ VIGRA_MATLAB_VALUETYPE_UTIL(UInt32, Uint32, mxUINT32_CLASS, uint32)
 VIGRA_MATLAB_VALUETYPE_UTIL(UInt64, Uint64, mxUINT64_CLASS, uint64)
 
 #undef VIGRA_MATLAB_VALUETYPE_UTIL
-
-} // namespace detail 
 
 // TODO: 
 //    * handle rgb images
@@ -266,10 +262,10 @@ template <unsigned int SIZE, class T>
 TinyVectorView<T, SIZE>
 getTinyVector(mxArray const * t)
 {
-    if(!detail::ValueType<T>::check(t))
+    if(!ValueType<T>::check(t))
     {
         std::string msg = std::string("Input array must have type ") + 
-                          detail::ValueType<T>::typeName() + ".";
+                          ValueType<T>::typeName() + ".";
         mexErrMsgTxt(msg.c_str());
     }
     if(SIZE != mxGetNumberOfElements(t))
@@ -284,10 +280,10 @@ template <unsigned int SIZE>
 TinyVectorView<MultiArrayIndex, SIZE>
 getShape(mxArray const * t)
 {
-    if(!detail::ValueType<MultiArrayIndex>::check(t))
+    if(!ValueType<MultiArrayIndex>::check(t))
     {
         std::string msg = std::string("Input array must have type ") + 
-                          detail::ValueType<MultiArrayIndex>::typeName() + ".";
+                          ValueType<MultiArrayIndex>::typeName() + ".";
         mexErrMsgTxt(msg.c_str());
     }
     if(SIZE != mxGetNumberOfElements(t))
@@ -304,24 +300,29 @@ getMultiArray(mxArray const * t)
 {
     typedef typename MultiArrayView<DIM, T>::difference_type Shape;
 
-    if(!detail::ValueType<T>::check(t))
+    if(!ValueType<T>::check(t))
     {
         std::string msg = std::string("getMultiArray(): Input array must have type ") + 
-                          detail::ValueType<T>::typeName() + ".";
+                          ValueType<T>::typeName() + ".";
         mexErrMsgTxt(msg.c_str());
     }
     
     Shape shape;
     if(DIM > 1)
     {
-        if(DIM != mxGetNumberOfDimensions(t))
+        int mdim = mxGetNumberOfDimensions(t);
+        if(DIM < mdim)
         {
-            mexErrMsgTxt("getMultiArray(): Input array has wrong number of dimensions.");
+            mexErrMsgTxt("getMultiArray(): Input array has too many dimensions.");
         }
         const mwSize * matlabShape = mxGetDimensions(t);
-        for(unsigned int k=0; k<DIM; ++k)
+        for(unsigned int k=0; k<mdim; ++k)
         {
             shape[k] = static_cast<typename Shape::value_type>(matlabShape[k]);
+        }
+        for(unsigned int k=mdim; k<DIM; ++k)
+        {
+            shape[k] = 1;
         }
     }
     else
@@ -338,7 +339,7 @@ createMultiArray(typename MultiArrayShape<DIM>::type const & shape, mxArray * & 
     mwSize matlabShape[DIM];
     for(int k=0; k<DIM; ++k)
         matlabShape[k] = static_cast<mwSize>(shape[k]);
-    t = mxCreateNumericArray(DIM, matlabShape, detail::ValueType<T>::classID, mxREAL);   
+    t = mxCreateNumericArray(DIM, matlabShape, ValueType<T>::classID, mxREAL);   
     
     return MultiArrayView<DIM, T>(shape, (T *)mxGetData(t));
 }
@@ -350,7 +351,7 @@ createMultiArray(typename MultiArrayShape<DIM>::type const & shape, CellArray::P
     mwSize matlabShape[DIM];
     for(int k=0; k<DIM; ++k)
         matlabShape[k] = static_cast<mwSize>(shape[k]);
-    t = mxCreateNumericArray(DIM, matlabShape, detail::ValueType<T>::classID, mxREAL);   
+    t = mxCreateNumericArray(DIM, matlabShape, ValueType<T>::classID, mxREAL);   
     
     return MultiArrayView<DIM, T>(shape, (T *)mxGetData(t));
 }
@@ -382,10 +383,10 @@ getMatrix(mxArray const * t)
 {
     typedef typename MultiArrayView<2, T>::difference_type Shape;
 
-    if(!detail::ValueType<T>::check(t))
+    if(!ValueType<T>::check(t))
     {
         std::string msg = std::string("getMatrix(): Input matrix must have type ") + 
-                          detail::ValueType<T>::typeName() + ".";
+                          ValueType<T>::typeName() + ".";
         mexErrMsgTxt(msg.c_str());
     }
 
@@ -406,7 +407,7 @@ createMatrix(mwSize rowCount, mwSize columnCount, mxArray * & t)
     typedef typename MultiArrayView<2, T>::difference_type Shape;
 
     Shape shape(rowCount, columnCount);
-    t = mxCreateNumericMatrix(rowCount, columnCount, detail::ValueType<T>::classID, mxREAL);  
+    t = mxCreateNumericMatrix(rowCount, columnCount, ValueType<T>::classID, mxREAL);  
     
     return MultiArrayView<2, T>(shape, (T *)mxGetData(t));
 }
@@ -418,7 +419,7 @@ createMatrix(mwSize rowCount, mwSize columnCount, CellArray::Proxy t)
     typedef typename MultiArrayView<2, T>::difference_type Shape;
 
     Shape shape(rowCount, columnCount);
-    t = mxCreateNumericMatrix(rowCount, columnCount, detail::ValueType<T>::classID, mxREAL);  
+    t = mxCreateNumericMatrix(rowCount, columnCount, ValueType<T>::classID, mxREAL);  
     
     return MultiArrayView<2, T>(shape, (T *)mxGetData(t));
 }
@@ -427,10 +428,10 @@ template <class T>
 BasicImageView<T>
 getImage(mxArray const * t)
 {
-    if(!detail::ValueType<T>::check(t))
+    if(!ValueType<T>::check(t))
     {
         std::string msg = std::string("getImage(): Input matrix must have type ") + 
-                          detail::ValueType<T>::typeName() + ".";
+                          ValueType<T>::typeName() + ".";
         mexErrMsgTxt(msg.c_str());
     }
 
@@ -446,7 +447,7 @@ template <class T>
 BasicImageView<T>
 createImage(mwSize width, mwSize height, mxArray * & t)
 {
-    t = mxCreateNumericMatrix(width, height, detail::ValueType<T>::classID, mxREAL);  
+    t = mxCreateNumericMatrix(width, height, ValueType<T>::classID, mxREAL);  
     
     return BasicImageView<T>((T *)mxGetData(t), width, height);
 }
@@ -455,7 +456,7 @@ template <class T>
 BasicImageView<T>
 createImage(mwSize width, mwSize height, CellArray::Proxy t)
 {
-    t = mxCreateNumericMatrix(width, height, detail::ValueType<T>::classID, mxREAL);  
+    t = mxCreateNumericMatrix(width, height, ValueType<T>::classID, mxREAL);  
     
     return BasicImageView<T>((T *)mxGetData(t), width, height);
 }
