@@ -1459,12 +1459,18 @@ void cannyEdgeImage(
     std::vector<Edgel> edgels;
 
     cannyEdgelList(sul, slr, sa, edgels, scale);
+    
+    int w = slr.x - sul.x;
+    int h = slr.y - sul.y;
 
     for(unsigned int i=0; i<edgels.size(); ++i)
     {
         if(gradient_threshold < edgels[i].strength)
         {
             Diff2D pix((int)(edgels[i].x + 0.5), (int)(edgels[i].y + 0.5));
+            
+            if(pix.x < 0 || pix.x >= w || pix.y < 0 || pix.y >= h)
+                continue;
 
             da.set(edge_marker, dul, pix);
         }
