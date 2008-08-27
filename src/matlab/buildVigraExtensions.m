@@ -68,7 +68,7 @@ if strcmp( TARGET, 'all' )
 			if isOctave
                 eval(['mex -I../../include -o ' mex_filename ' ' cpp_filename]);
             else
-                eval(['mex -O -I../../include -outdir ' OUTDIR ' ' cpp_filename]);
+                eval(['mex -O -I../../include -outdir ''' OUTDIR ''' ' cpp_filename]);
             end
             % create the associated .m documentation file
             if strcmp(OUTDIR, '.') ~= 0   % we are in the source directory
