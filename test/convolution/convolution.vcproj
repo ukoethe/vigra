@@ -25,6 +25,8 @@
 			>
 			<Tool
 				Name="VCPreBuildEventTool"
+				Description="Removing ..\testSuccess"
+				CommandLine="IF EXIST ..\testSuccess del ..\testSuccess"
 			/>
 			<Tool
 				Name="VCCustomBuildTool"
@@ -102,7 +104,7 @@
 			<Tool
 				Name="VCPostBuildEventTool"
 				Description="Running tests"
-				CommandLine="..\testOrDelete convolution_debug.exe"
+				CommandLine="..\testOrDelete convolution_debug.exe ..\testSuccess"
 			/>
 		</Configuration>
 		<Configuration
@@ -117,6 +119,8 @@
 			>
 			<Tool
 				Name="VCPreBuildEventTool"
+				Description="Removing ..\testSuccess"
+				CommandLine="IF EXIST ..\testSuccess del ..\testSuccess"
 			/>
 			<Tool
 				Name="VCCustomBuildTool"
@@ -197,7 +201,7 @@
 			<Tool
 				Name="VCPostBuildEventTool"
 				Description="Running tests"
-				CommandLine="..\testOrDelete convolution.exe"
+				CommandLine="..\testOrDelete convolution.exe ..\testSuccess"
 				ExcludedFromBuild="false"
 			/>
 		</Configuration>

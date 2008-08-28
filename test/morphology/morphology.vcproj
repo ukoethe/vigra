@@ -25,6 +25,8 @@
 			>
 			<Tool
 				Name="VCPreBuildEventTool"
+				Description="Removing ..\testSuccess"
+				CommandLine="IF EXIST ..\testSuccess del ..\testSuccess"
 			/>
 			<Tool
 				Name="VCCustomBuildTool"
@@ -101,7 +103,7 @@
 			<Tool
 				Name="VCPostBuildEventTool"
 				Description="Running tests"
-				CommandLine="..\testOrDelete morphology.exe"
+				CommandLine="..\testOrDelete morphology.exe ..\testSuccess"
 			/>
 		</Configuration>
 		<Configuration
@@ -116,6 +118,8 @@
 			>
 			<Tool
 				Name="VCPreBuildEventTool"
+				Description="Removing ..\testSuccess"
+				CommandLine="IF EXIST ..\testSuccess del ..\testSuccess"
 			/>
 			<Tool
 				Name="VCCustomBuildTool"
@@ -192,7 +196,7 @@
 			<Tool
 				Name="VCPostBuildEventTool"
 				Description="Running tests"
-				CommandLine="..\testOrDelete morphology_debug.exe"
+				CommandLine="..\testOrDelete morphology_debug.exe ..\testSuccess"
 			/>
 		</Configuration>
 	</Configurations>

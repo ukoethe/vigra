@@ -26,6 +26,8 @@
 			>
 			<Tool
 				Name="VCPreBuildEventTool"
+				Description="Removing ..\testSuccess"
+				CommandLine="IF EXIST ..\testSuccess del ..\testSuccess"
 			/>
 			<Tool
 				Name="VCCustomBuildTool"
@@ -108,7 +110,7 @@
 			<Tool
 				Name="VCPostBuildEventTool"
 				Description="Running tests"
-				CommandLine="..\testOrDelete functorexpression_debug.exe"
+				CommandLine="..\testOrDelete functorexpression_debug.exe ..\testSuccess"
 			/>
 		</Configuration>
 		<Configuration
@@ -123,6 +125,8 @@
 			>
 			<Tool
 				Name="VCPreBuildEventTool"
+				Description="Removing ..\testSuccess"
+				CommandLine="IF EXIST ..\testSuccess del ..\testSuccess"
 			/>
 			<Tool
 				Name="VCCustomBuildTool"
@@ -207,7 +211,7 @@
 			<Tool
 				Name="VCPostBuildEventTool"
 				Description="Running tests"
-				CommandLine="..\testOrDelete functorexpression.exe"
+				CommandLine="..\testOrDelete functorexpression.exe ..\testSuccess"
 			/>
 		</Configuration>
 	</Configurations>
