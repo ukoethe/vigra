@@ -26,6 +26,8 @@
 			>
 			<Tool
 				Name="VCPreBuildEventTool"
+				Description="Removing ..\testSuccess"
+				CommandLine="IF EXIST ..\testSuccess del ..\testSuccess"
 			/>
 			<Tool
 				Name="VCCustomBuildTool"
@@ -108,7 +110,7 @@
 			<Tool
 				Name="VCPostBuildEventTool"
 				Description="Running tests"
-				CommandLine="..\testOrDelete pixeltypes_debug.exe"
+				CommandLine="..\testOrDelete pixeltypes_debug.exe ..\testSuccess"
 			/>
 		</Configuration>
 		<Configuration
@@ -123,6 +125,8 @@
 			>
 			<Tool
 				Name="VCPreBuildEventTool"
+				Description="Removing ..\testSuccess"
+				CommandLine="IF EXIST ..\testSuccess del ..\testSuccess"
 			/>
 			<Tool
 				Name="VCCustomBuildTool"
@@ -207,7 +211,7 @@
 			<Tool
 				Name="VCPostBuildEventTool"
 				Description="Running tests"
-				CommandLine="..\testOrDelete pixeltypes.exe"
+				CommandLine="..\testOrDelete pixeltypes.exe ..\testSuccess"
 			/>
 		</Configuration>
 	</Configurations>

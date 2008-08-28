@@ -25,6 +25,8 @@
 			>
 			<Tool
 				Name="VCPreBuildEventTool"
+				Description="Removing ..\testSuccess"
+				CommandLine="IF EXIST ..\testSuccess del ..\testSuccess"
 			/>
 			<Tool
 				Name="VCCustomBuildTool"
@@ -102,7 +104,7 @@
 			<Tool
 				Name="VCPostBuildEventTool"
 				Description="Running tests"
-				CommandLine="..\testOrDelete impex_debug.exe"
+				CommandLine="..\testOrDelete impex_debug.exe ..\testSuccess"
 			/>
 		</Configuration>
 		<Configuration
@@ -117,6 +119,8 @@
 			>
 			<Tool
 				Name="VCPreBuildEventTool"
+				Description="Removing ..\testSuccess"
+				CommandLine="IF EXIST ..\testSuccess del ..\testSuccess"
 			/>
 			<Tool
 				Name="VCCustomBuildTool"
@@ -194,7 +198,7 @@
 			<Tool
 				Name="VCPostBuildEventTool"
 				Description="Running tests"
-				CommandLine="..\testOrDelete impex.exe"
+				CommandLine="..\testOrDelete impex.exe ..\testSuccess"
 			/>
 		</Configuration>
 	</Configurations>

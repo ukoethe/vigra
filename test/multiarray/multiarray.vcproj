@@ -25,8 +25,8 @@
 			>
 			<Tool
 				Name="VCPreBuildEventTool"
-				Description="mkdir impex"
-				CommandLine="IF NOT EXIST impex mkdir impex"
+				Description="Removing ..\testSuccess"
+				CommandLine="IF EXIST ..\testSuccess del ..\testSuccess"
 			/>
 			<Tool
 				Name="VCCustomBuildTool"
@@ -104,7 +104,7 @@
 			<Tool
 				Name="VCPostBuildEventTool"
 				Description="Running tests"
-				CommandLine="..\testOrDelete multiarray.exe"
+				CommandLine="..\testOrDelete multiarray.exe ..\testSuccess"
 			/>
 		</Configuration>
 		<Configuration
@@ -119,8 +119,8 @@
 			>
 			<Tool
 				Name="VCPreBuildEventTool"
-				Description="mkdir impex"
-				CommandLine="IF NOT EXIST impex mkdir impex"
+				Description="Removing ..\testSuccess"
+				CommandLine="IF EXIST ..\testSuccess del ..\testSuccess"
 			/>
 			<Tool
 				Name="VCCustomBuildTool"
@@ -198,7 +198,7 @@
 			<Tool
 				Name="VCPostBuildEventTool"
 				Description="Running tests"
-				CommandLine="..\testOrDelete multiarray_debug.exe"
+				CommandLine="..\testOrDelete multiarray_debug.exe ..\testSuccess"
 			/>
 		</Configuration>
 	</Configurations>
