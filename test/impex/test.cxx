@@ -1303,10 +1303,10 @@ struct ImageImportExportTestSuite : public vigra::test_suite
     }
 };
 
-int main ()
+int main (int argc, char ** argv)
 {
     ImageImportExportTestSuite test;
-    const int failed = test.run();
+    const int failed = test.run(vigra::testsToBeExecuted(argc, argv));
     std::cout << test.report() << std::endl;
 
     return failed != 0;

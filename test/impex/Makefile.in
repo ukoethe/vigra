@@ -10,7 +10,7 @@ CXXDEBUG := -O # or -g
 
 test: test.o $(PREINSTALL_IMPEX_LIB) $(TESTIMAGES)
 	$(CXX) -o test test.o $(PREINSTALL_IMPEX_LIB) $(IMPEX_DEPLIBS)
-	./test $(curdir) || { rm ./test$(EXEEXT) ; exit 1; }
+	./test || { rm ./test$(EXEEXT) ; exit 1; }
 
 impex.exe: test.d
 	devenv "..\test.sln" /build Release /project impex

@@ -430,18 +430,18 @@ struct GaborTestSuite
 
 int main(int argc, char **argv)
 {
-    initializing= argc>1; // global variable,
+    initializing= argc>1 && std::string(argv[1]) == "init"; // global variable,
     // initializing means: don't compare with image files but create them
 
     FFTWTestSuite fftwTest;
 
-    int failed = fftwTest.run();
+    int failed = fftwTest.run(vigra::testsToBeExecuted(argc, argv));
 
     std::cout << fftwTest.report() << std::endl;
 
     GaborTestSuite gaborTest;
 
-    failed = failed || gaborTest.run();
+    failed = failed || gaborTest.run(vigra::testsToBeExecuted(argc, argv));
 
     std::cout << gaborTest.report() << std::endl;
 

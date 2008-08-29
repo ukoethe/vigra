@@ -848,15 +848,15 @@ struct MultiArraySeparableConvolutionTestSuite
 
 //--------------------------------------------------------
 
-int main()
+int main(int argc, char ** argv)
 {
   // run the multi-array point operator test suite
   MultiArrayPointOperatorsTestSuite test0;
-  int failed = test0.run();
+  int failed = test0.run(vigra::testsToBeExecuted(argc, argv));
   std::cout << test0.report() << std::endl;
   // run the multi-array separable convolution test suite
   MultiArraySeparableConvolutionTestSuite test1;
-  failed += test1.run();
+  failed += test1.run(vigra::testsToBeExecuted(argc, argv));
   std::cout << test1.report() << std::endl;
   return (failed != 0);
 }

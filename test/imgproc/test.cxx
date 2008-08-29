@@ -1635,11 +1635,11 @@ struct ImageFunctionsTestSuite
     }
 };
 
-int main()
+int main(int argc, char ** argv)
 {
     ImageFunctionsTestSuite test;
 
-    int failed = test.run();
+    int failed = test.run(vigra::testsToBeExecuted(argc, argv));
 
     std::cout << test.report() << std::endl;
 

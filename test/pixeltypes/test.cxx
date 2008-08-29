@@ -578,18 +578,18 @@ struct Rect2DTestSuite
 
 /********************************************************************/
 
-int main()
+int main(int argc, char ** argv)
 {
     PixelTypesTestSuite test;
-    int failed = test.run();
+    int failed = test.run(vigra::testsToBeExecuted(argc, argv));
     std::cout << test.report() << std::endl;
 
     Point2DTestSuite test2;
-    failed += test2.run();
+    failed += test2.run(vigra::testsToBeExecuted(argc, argv));
     std::cout << test2.report() << std::endl;
 
     Rect2DTestSuite test3;
-    failed += test3.run();
+    failed += test3.run(vigra::testsToBeExecuted(argc, argv));
     std::cout << test3.report() << std::endl;
 
     return (failed != 0);
