@@ -14,3 +14,4 @@ Debug
 *.lib
 *.dll
 *.ncb
+build-gcc/*
