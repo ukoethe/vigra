@@ -688,13 +688,24 @@ class test_case
 
     virtual ~test_case() {}
 
-    virtual int run() = 0;
+    virtual int run() { return run(std::vector<std::string>()); }
+    virtual int run(std::vector<std::string> const & testsToBeRun) = 0;
     virtual void do_init() {}
     virtual void do_run() {}
     virtual void do_destroy() {}
 
     virtual char const * name() { return name_.c_str(); }
     virtual int size() const { return 1; }
+    
+    virtual int numberOfTestsToRun(std::vector<std::string> const & testsToBeRun) const
+    {
+        if(testsToBeRun.empty()) // empty list => run all tests
+            return 1;
+        for(unsigned int k=0; k<testsToBeRun.size(); ++k)
+            if(this->name_.find(testsToBeRun[k]) != std::string::npos)
+                return 1;
+        return 0;
+    }
 
     std::string name_;
     std::string report_;
@@ -704,10 +715,20 @@ class test_case
 
 } // namespace detail
 
+std::vector<std::string> testsToBeExecuted(int argc, char ** argv)
+{
+    std::vector<std::string> res;
+    for(int i=1; i < argc; ++i)
+        res.push_back(std::string(argv[i]));
+    return res;
+}
+
 class test_suite
 : public detail::test_case
 {
   public:
+    using detail::test_case::run;
+    
     test_suite(char const * name = "TopLevel")
     : detail::test_case(name),
       size_(0)
@@ -725,15 +746,22 @@ class test_suite
         testcases_.push_back(t);
         size_ += t->size();
     }
-
-    virtual int run()
+    
+    virtual int run(std::vector<std::string> const & testsToBeRun)
     {
+        int size = numberOfTestsToRun(testsToBeRun);
+        
+        std::vector<std::string> testsToBeRunRecursive = 
+                   size < this->size()
+                       ? testsToBeRun                 // run selectively
+                       : std::vector<std::string>();  // run all
+
         int failed = 0;
         report_ = std::string("Entering test suite ") + name() + "\n";
 
         for(unsigned int i=0; i != testcases_.size(); ++i)
         {
-            int result = testcases_[i]->run();
+            int result = testcases_[i]->run(testsToBeRunRecursive);
             report_ += testcases_[i]->report_;
 
             if(detail::critical_error(result))
@@ -750,14 +778,14 @@ class test_suite
         if(failed)
         {
             detail::errstream buf;
-            buf << "\n" << failed << " of " << size() <<
+            buf << "\n" << failed << " of " << size <<
                 " tests failed in test suite " << name() << "\n";
             report_ += buf.str();
         }
         else
         {
             detail::errstream buf;
-            buf << "All (" << size() <<
+            buf << "All (" << size <<
                ") tests passed in test suite " << name() << "\n";
             report_ += buf.str();
         }
@@ -765,6 +793,16 @@ class test_suite
         report_ += std::string("Leaving test suite ") + name() + "\n";
 
         return failed;
+    }
+    
+    virtual int numberOfTestsToRun(std::vector<std::string> const & testsToBeRun) const
+    {
+        if(detail::test_case::numberOfTestsToRun(testsToBeRun) > 0)
+            return this->size();
+        int size = 0;
+        for(unsigned int i=0; i != testcases_.size(); ++i)
+            size += testcases_[i]->numberOfTestsToRun(testsToBeRun);
+        return size;
     }
 
     virtual int size() const { return size_; }
@@ -853,7 +891,8 @@ class class_test_case
 : public test_case
 {
   public:
-
+    using test_case::run;
+    
     class_test_case(void (TESTCASE::*fct)(), char const * name)
     : test_case(name),
       fct_(fct),
@@ -903,8 +942,11 @@ class class_test_case
             (testcase_->*fct_)();
     }
 
-    virtual int run()
+    virtual int run(std::vector<std::string> const & testsToBeRun)
     {
+        if(numberOfTestsToRun(testsToBeRun) == 0)
+            return 0;
+
         int failed = init();
 
         if(failed)
@@ -960,6 +1002,7 @@ class function_test_case
 : public test_case
 {
   public:
+    using test_case::run;
 
     function_test_case(void (*fct)(), char const * name)
     : test_case(name),
@@ -971,8 +1014,11 @@ class function_test_case
         (*fct_)();
     }
 
-    virtual int run()
+    virtual int run(std::vector<std::string> const & testsToBeRun)
     {
+        if(numberOfTestsToRun(testsToBeRun) == 0)
+            return 0;
+
         report_ = "";
         exception_checkpoint() = "";
 
@@ -1007,6 +1053,7 @@ class functor_test_case
 : public test_case
 {
   public:
+    using test_case::run;
     
     functor_test_case(FCT const & fct, char const * name)
     : test_case(name),
@@ -1018,8 +1065,11 @@ class functor_test_case
         fct_();
     }
     
-    virtual int run()
+    virtual int run(std::vector<std::string> const & testsToBeRun)
     {
+        if(numberOfTestsToRun(testsToBeRun) == 0)
+            return 0;
+
         report_ = "";
         exception_checkpoint() = "";
         

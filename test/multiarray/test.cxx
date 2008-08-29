@@ -1083,21 +1083,21 @@ struct MultiArrayDataTestSuite
 };
 
 
-int main()
+int main(int argc, char ** argv)
 {
     // run the multi-array testsuite
     MultiArrayTestSuite test1;
-    int failed = test1.run();
+    int failed = test1.run(vigra::testsToBeExecuted(argc, argv));
     std::cout << test1.report() << std::endl;
 
     // run the multi-array data-testsuite
     MultiArrayDataTestSuite test1a;
-    failed += test1a.run();
+    failed += test1a.run(vigra::testsToBeExecuted(argc, argv));
     std::cout << test1a.report() << std::endl;
 
     // run the image testsuite
     ImageTestSuite test2;
-    failed += test2.run();
+    failed += test2.run(vigra::testsToBeExecuted(argc, argv));
     std::cout << test2.report() << std::endl;
 
     return (failed != 0);
