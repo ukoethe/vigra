@@ -79,8 +79,8 @@ public:
     typedef value_type const * const_pointer;
     typedef value_type * iterator;
     typedef value_type const * const_iterator;
-    typedef unsigned int size_type;
-    typedef int          difference_type;
+    typedef std::size_t size_type;
+    typedef std::ptrdiff_t difference_type;
     typedef std::reverse_iterator<iterator> reverse_iterator;
     typedef std::reverse_iterator<const_iterator> const_reverse_iterator;
 

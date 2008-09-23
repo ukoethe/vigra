@@ -2712,9 +2712,9 @@ polar2Lab(double color, double brightness, double saturation)
     double normsat = saturation*133.809;
     
     TinyVector<float, 3> result;
-    result[0] = 100.0*brightness;
-    result[1] = normsat*VIGRA_CSTD::cos(angle);
-    result[2] = normsat*VIGRA_CSTD::sin(angle);
+    result[0] = float(100.0*brightness);
+    result[1] = float(normsat*VIGRA_CSTD::cos(angle));
+    result[2] = float(normsat*VIGRA_CSTD::sin(angle));
     return result;
 }
 
@@ -2747,14 +2747,14 @@ TinyVector<float, 3>
 lab2Polar(V const & lab)
 {
     TinyVector<float, 3> result;
-    result[1] = lab[0]/100.0;
+    result[1] = float(lab[0]/100.0);
     double angle = (lab[1] == 0.0 && lab[2] == 0.0)
         ? 0.0
         : VIGRA_CSTD::atan2(lab[2], lab[1])/M_PI*180.0-39.9977;
     result[0] = angle < 0.0 ?
-                    angle + 360.0 :
-                    angle;
-    result[2] = VIGRA_CSTD::sqrt(lab[1]*lab[1] + lab[2]*lab[2])/133.809;
+                    float(angle + 360.0) :
+                    float(angle);
+    result[2] = float(VIGRA_CSTD::sqrt(lab[1]*lab[1] + lab[2]*lab[2])/133.809);
     return result;
 }
 
@@ -2798,9 +2798,9 @@ polar2Luv(double color, double brightness, double saturation)
     double normsat = saturation*179.04;
     
     TinyVector<float, 3> result;
-    result[0] = 100.0*brightness;
-    result[1] = normsat*VIGRA_CSTD::cos(angle);
-    result[2] = normsat*VIGRA_CSTD::sin(angle);
+    result[0] = float(100.0*brightness);
+    result[1] = float(normsat*VIGRA_CSTD::cos(angle));
+    result[2] = float(normsat*VIGRA_CSTD::sin(angle));
     return result;
 }
 
@@ -2832,14 +2832,14 @@ TinyVector<float, 3>
 luv2Polar(V const & luv)
 {
     TinyVector<float, 3> result;
-    result[1] = luv[0]/100.0;
+    result[1] = float(luv[0]/100.0);
     double angle = (luv[1] == 0.0 && luv[2] == 0.0)
         ? 0.0
         : VIGRA_CSTD::atan2(luv[2], luv[1])/M_PI*180.0-12.1727;
     result[0] = angle < 0.0 ?
-                    angle + 360.0 :
-                    angle;
-    result[2] = VIGRA_CSTD::sqrt(luv[1]*luv[1] + luv[2]*luv[2])/179.04;
+                    float(angle + 360.0) :
+                    float(angle);
+    result[2] = float(VIGRA_CSTD::sqrt(luv[1]*luv[1] + luv[2]*luv[2])/179.04);
     return result;
 }
 
@@ -2883,9 +2883,9 @@ polar2YPrimePbPr(double color, double brightness, double saturation)
     double normsat = saturation*0.533887;
     
     TinyVector<float, 3> result;
-    result[0] = brightness;
-    result[1] = -normsat*VIGRA_CSTD::sin(angle);
-    result[2] = normsat*VIGRA_CSTD::cos(angle);
+    result[0] = float(brightness);
+    result[1] = float(-normsat*VIGRA_CSTD::sin(angle));
+    result[2] = float(normsat*VIGRA_CSTD::cos(angle));
     return result;
 }
 
@@ -2917,14 +2917,14 @@ TinyVector<float, 3>
 yPrimePbPr2Polar(V const & ypbpr)
 {
     TinyVector<float, 3> result;
-    result[1] = ypbpr[0];
+    result[1] = float(ypbpr[0]);
     double angle = (ypbpr[1] == 0.0 && ypbpr[2] == 0.0)
         ? 0.0
         : VIGRA_CSTD::atan2(-ypbpr[1], ypbpr[2])/M_PI*180.0-18.6481;
     result[0] = angle < 0.0 ?
-                    angle + 360.0 :
-                    angle;
-    result[2] = VIGRA_CSTD::sqrt(ypbpr[1]*ypbpr[1] + ypbpr[2]*ypbpr[2])/0.533887;
+                    float(angle + 360.0) :
+                    float(angle);
+    result[2] = float(VIGRA_CSTD::sqrt(ypbpr[1]*ypbpr[1] + ypbpr[2]*ypbpr[2])/0.533887);
     return result;
 }
 
@@ -2968,9 +2968,9 @@ polar2YPrimeCbCr(double color, double brightness, double saturation)
     double normsat = saturation*119.591;
     
     TinyVector<float, 3> result;
-    result[0] = brightness*219.0 + 16.0;
-    result[1] = -normsat*VIGRA_CSTD::sin(angle)+128.0;
-    result[2] = normsat*VIGRA_CSTD::cos(angle)+128.0;
+    result[0] = float(brightness*219.0 + 16.0);
+    result[1] = float(-normsat*VIGRA_CSTD::sin(angle)+128.0);
+    result[2] = float(normsat*VIGRA_CSTD::cos(angle)+128.0);
     return result;
 }
 
@@ -3002,16 +3002,16 @@ TinyVector<float, 3>
 yPrimeCbCr2Polar(V const & ycbcr)
 {
     TinyVector<float, 3> result;
-    result[1] = (ycbcr[0]-16.0)/219.0;
+    result[1] = float((ycbcr[0]-16.0)/219.0);
     double cb = ycbcr[1]-128.0;
     double cr = ycbcr[2]-128.0;
     double angle = (cb == 0.0 && cr == 0.0)
         ? 0.0
         : VIGRA_CSTD::atan2(-cb, cr)/M_PI*180.0-18.6482;
     result[0] = angle < 0.0 ?
-                    angle + 360.0 :
-                    angle;
-    result[2] = VIGRA_CSTD::sqrt(cb*cb + cr*cr)/119.591;
+                    float(angle + 360.0) :
+                    float(angle);
+    result[2] = float(VIGRA_CSTD::sqrt(cb*cb + cr*cr)/119.591);
     return result;
 }
 
@@ -3055,9 +3055,9 @@ polar2YPrimeIQ(double color, double brightness, double saturation)
     double normsat = saturation*0.632582;
     
     TinyVector<float, 3> result;
-    result[0] = brightness;
-    result[1] = normsat*VIGRA_CSTD::cos(angle);
-    result[2] = -normsat*VIGRA_CSTD::sin(angle);
+    result[0] = float(brightness);
+    result[1] = float(normsat*VIGRA_CSTD::cos(angle));
+    result[2] = float(-normsat*VIGRA_CSTD::sin(angle));
     return result;
 }
 
@@ -3089,14 +3089,14 @@ TinyVector<float, 3>
 yPrimeIQ2Polar(V const & yiq)
 {
     TinyVector<float, 3> result;
-    result[1] = yiq[0];
+    result[1] = float(yiq[0]);
     double angle = (yiq[1] == 0.0 && yiq[2] == 0.0)
         ? 0.0
         : VIGRA_CSTD::atan2(-yiq[2], yiq[1])/M_PI*180.0+19.5807;
     result[0] = angle < 0.0 ?
-                    angle + 360.0 :
-                    angle;
-    result[2] = VIGRA_CSTD::sqrt(yiq[1]*yiq[1] + yiq[2]*yiq[2])/0.632582;
+                    float(angle + 360.0) :
+                    float(angle);
+    result[2] = float(VIGRA_CSTD::sqrt(yiq[1]*yiq[1] + yiq[2]*yiq[2])/0.632582);
     return result;
 }
 
@@ -3140,9 +3140,9 @@ polar2YPrimeUV(double color, double brightness, double saturation)
     double normsat = saturation*0.632324;
     
     TinyVector<float, 3> result;
-    result[0] = brightness;
-    result[1] = -normsat*VIGRA_CSTD::sin(angle);
-    result[2] = normsat*VIGRA_CSTD::cos(angle);
+    result[0] = float(brightness);
+    result[1] = float(-normsat*VIGRA_CSTD::sin(angle));
+    result[2] = float(normsat*VIGRA_CSTD::cos(angle));
     return result;
 }
 
@@ -3174,14 +3174,14 @@ TinyVector<float, 3>
 yPrimeUV2Polar(V const & yuv)
 {
     TinyVector<float, 3> result;
-    result[1] = yuv[0];
+    result[1] = float(yuv[0]);
     double angle = (yuv[1] == 0.0 && yuv[2] == 0.0)
         ? 0.0
         : VIGRA_CSTD::atan2(-yuv[1], yuv[2])/M_PI*180.0-13.4569;
     result[0] = angle < 0.0 ?
-                    angle + 360.0 :
-                    angle;
-    result[2] = VIGRA_CSTD::sqrt(yuv[1]*yuv[1] + yuv[2]*yuv[2])/0.632324;
+                    float(angle + 360.0) :
+                    float(angle);
+    result[2] = float(VIGRA_CSTD::sqrt(yuv[1]*yuv[1] + yuv[2]*yuv[2])/0.632324);
     return result;
 }
 

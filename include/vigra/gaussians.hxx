@@ -89,7 +89,7 @@ class Gaussian
         */
     explicit Gaussian(T sigma = 1.0, unsigned int derivativeOrder = 0)
     : sigma_(sigma),
-      sigma2_(-0.5 / sigma / sigma),
+      sigma2_(T(-0.5 / sigma / sigma)),
       norm_(0.0),
       order_(derivativeOrder),
       hermitePolynomial_(derivativeOrder / 2 + 1)
@@ -100,13 +100,13 @@ class Gaussian
         {
             case 1:
             case 2:
-                norm_ = -1.0 / (VIGRA_CSTD::sqrt(2.0 * M_PI) * sq(sigma) * sigma);
+                norm_ = T(-1.0 / (VIGRA_CSTD::sqrt(2.0 * M_PI) * sq(sigma) * sigma));
                 break;
             case 3:
-                norm_ = 1.0 / (VIGRA_CSTD::sqrt(2.0 * M_PI) * sq(sigma) * sq(sigma) * sigma);
+                norm_ = T(1.0 / (VIGRA_CSTD::sqrt(2.0 * M_PI) * sq(sigma) * sq(sigma) * sigma));
                 break;
             default:
-                norm_ = 1.0 / VIGRA_CSTD::sqrt(2.0 * M_PI) / sigma;
+                norm_ = T(1.0 / VIGRA_CSTD::sqrt(2.0 * M_PI) / sigma);
         }
         calculateHermitePolynomial();
     }
@@ -152,17 +152,17 @@ Gaussian<T>::operator()(argument_type x) const
     switch(order_)
     {
         case 0:
-            return g;
+            return detail::RequiresExplicitCast<result_type>::cast(g);
         case 1:
-            return x * g;
+            return detail::RequiresExplicitCast<result_type>::cast(x * g);
         case 2:
-            return (1.0 - sq(x / sigma_)) * g;
+            return detail::RequiresExplicitCast<result_type>::cast((1.0 - sq(x / sigma_)) * g);
         case 3:
-            return (3.0 - sq(x / sigma_)) * x * g;
+            return detail::RequiresExplicitCast<result_type>::cast((3.0 - sq(x / sigma_)) * x * g);
         default:
             return order_ % 2 == 0 ?
-                       g * horner(x2)
-                     : x * g * horner(x2);
+                       detail::RequiresExplicitCast<result_type>::cast(g * horner(x2))
+                     : detail::RequiresExplicitCast<result_type>::cast(x * g * horner(x2));
     }
 }
 
@@ -185,7 +185,7 @@ void Gaussian<T>::calculateHermitePolynomial()
     }
     else if(order_ == 1)
     {
-        hermitePolynomial_[0] = -1.0 / sigma_ / sigma_;
+        hermitePolynomial_[0] = T(-1.0 / sigma_ / sigma_);
     }
     else
     {
@@ -200,7 +200,7 @@ void Gaussian<T>::calculateHermitePolynomial()
         //     (n+1)                        (n)           (n-1)
         //    h     (x) = -1 / s^2 * [ x * h   (x) + n * h     (x) ]
         //
-        T s2 = -1.0 / sigma_ / sigma_;
+        T s2 = T(-1.0 / sigma_ / sigma_);
         ArrayVector<T> hn(3*order_+3, 0.0);
         typename ArrayVector<T>::iterator hn0 = hn.begin(),
                                           hn1 = hn0 + order_+1,

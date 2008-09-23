@@ -172,7 +172,8 @@ class BasicImageIteratorBase
 
     difference_type operator-(BasicImageIteratorBase const & rhs) const
     {
-        return difference_type(x - rhs.x, y - rhs.y);
+        return difference_type(difference_type::MoveX(x - rhs.x), 
+                               difference_type::MoveY(y - rhs.y));
     }
 
     bool operator==(BasicImageIteratorBase const & rhs) const

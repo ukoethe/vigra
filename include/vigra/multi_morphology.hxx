@@ -178,7 +178,7 @@ template <class SrcIterator, class SrcShape, class SrcAccessor,
 inline
 void multiBinaryErosion(
     triple<SrcIterator, SrcShape, SrcAccessor> const & source,
-    pair<DestIterator, DestAccessor> const & dest, int radius)
+    pair<DestIterator, DestAccessor> const & dest, float radius)
 {
     multiBinaryErosion( source.first, source.second, source.third,
                                  dest.first, dest.second, radius );
@@ -301,7 +301,7 @@ template <class SrcIterator, class SrcShape, class SrcAccessor,
 inline
 void multiBinaryDilation(
     triple<SrcIterator, SrcShape, SrcAccessor> const & source,
-    pair<DestIterator, DestAccessor> const & dest, int radius)
+    pair<DestIterator, DestAccessor> const & dest, float radius)
 {
     multiBinaryDilation( source.first, source.second, source.third,
                                  dest.first, dest.second, radius );

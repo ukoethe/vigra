@@ -81,15 +81,15 @@ RGBValue<float> * testData(RGBValue<float>)
 {
     typedef vigra::RGBValue<float> FRGB;
     static FRGB data[] = {
-        FRGB(1.1, 1.1, 1.1),
-        FRGB(2.2, 2.2, 2.2),
-        FRGB(3.3, 3.3, 3.3),
-        FRGB(4.4, 4.4, 4.4),
-        FRGB(5.5, 5.5, 5.5),
-        FRGB(6.6, 6.6, 6.6),
-        FRGB(7.7, 7.7, 7.7),
-        FRGB(8.8, 8.8, 8.8),
-        FRGB(9.9, 9.9, 9.9)
+        FRGB(1.1f, 1.1f, 1.1f),
+        FRGB(2.2f, 2.2f, 2.2f),
+        FRGB(3.3f, 3.3f, 3.3f),
+        FRGB(4.4f, 4.4f, 4.4f),
+        FRGB(5.5f, 5.5f, 5.5f),
+        FRGB(6.6f, 6.6f, 6.6f),
+        FRGB(7.7f, 7.7f, 7.7f),
+        FRGB(8.8f, 8.8f, 8.8f),
+        FRGB(9.9f, 9.9f, 9.9f)
     };
     return data;
 }

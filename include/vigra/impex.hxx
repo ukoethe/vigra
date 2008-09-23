@@ -57,10 +57,6 @@
 #ifndef VIGRA_IMPEX_HXX
 #define VIGRA_IMPEX_HXX
 
-#if defined(_MSC_VER)
-#pragma warning (disable: 4267)
-#endif
-
 #include "sized_int.hxx"
 #include "stdimage.hxx"
 #include "tinyvector.hxx"
@@ -583,8 +579,8 @@ doxygen_overloaded_function(template <...> void importImage)
         typedef typename Accessor::value_type SrcValueType;
 
         // complete decoder settings
-        const size_type width = lr.x - ul.x;
-        const size_type height = lr.y - ul.y;
+        const size_type width = size_type(lr.x - ul.x);
+        const size_type height = size_type(lr.y - ul.y);
         enc->setWidth(width);
         enc->setHeight(height);
         enc->setNumBands(1);

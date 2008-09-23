@@ -42,6 +42,7 @@
 #include "linear_solve.hxx"
 #include "tinyvector.hxx"
 #include "splineimageview.hxx"
+#include "imagecontainer.hxx"
 #include <cmath>
 
 namespace vigra {

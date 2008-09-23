@@ -752,7 +752,7 @@ struct ImageFunctionsTest
 
         gradientBasedTransform(
           srcImageRange(in, vigra::RedAccessor<RGBValue >()),
-          destImage(res), vigra::MagnitudeFunctor<float>());
+          destImage(res), vigra::MagnitudeFunctor<double>());
 
         for(y=0; y<3; ++y)
         {
@@ -764,7 +764,7 @@ struct ImageFunctionsTest
 
         gradientBasedTransform(
           srcImageRange(in),
-          destImage(res), vigra::RGBGradientMagnitudeFunctor<float>());
+          destImage(res), vigra::RGBGradientMagnitudeFunctor<double>());
 
         for(y=0; y<3; ++y)
         {

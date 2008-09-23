@@ -213,12 +213,12 @@ struct MultiMorphologyTest
         
         //create comparable result = result+2 for every pixel
         for(FloatImage::iterator iter=res.begin(); iter!=res.end(); ++iter){
-            *iter+=2.9;
+            *iter+=2.9f;
         }
         
         //create compare image = img+2 for every pixel
         for(FloatImage::iterator iter=in.begin(); iter!=in.end(); ++iter){
-            *iter+=2.9;
+            *iter+=2.9f;
         }
         //erosion on compare image (image+2)
         multiGrayscaleErosion(srcMultiArrayRange(in), destMultiArray(res_cmp), 1);

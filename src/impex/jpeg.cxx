@@ -427,7 +427,7 @@ namespace vigra
         jpeg_start_compress( &info, TRUE );
 
         if (iccProfile.size()) {
-            write_icc_profile(&info, iccProfile.begin(), iccProfile.size());
+            write_icc_profile(&info, iccProfile.begin(), (unsigned int)iccProfile.size());
         }
     }
 

@@ -42,12 +42,12 @@
 namespace vigra { namespace detail {
 
 template <class T>
-inline void destroy_n(T * /* p */, int /* n */, VigraTrueType /* isPOD */)
+inline void destroy_n(T * /* p */, std::ptrdiff_t /* n */, VigraTrueType /* isPOD */)
 {
 }
 
 template <class T>
-inline void destroy_n(T * p, int n, VigraFalseType /* isPOD */)
+inline void destroy_n(T * p, std::ptrdiff_t n, VigraFalseType /* isPOD */)
 {
 	T * end = p + n;
 	for(; p != end; ++p)
@@ -55,7 +55,7 @@ inline void destroy_n(T * p, int n, VigraFalseType /* isPOD */)
 }
 
 template <class T>
-inline void destroy_n(T * p, int n)
+inline void destroy_n(T * p, std::ptrdiff_t n)
 {
     destroy_n(p, n, typename TypeTraits<T>::isPOD());
 }

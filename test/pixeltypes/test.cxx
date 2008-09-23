@@ -46,7 +46,7 @@
 using namespace vigra;
 
 static float di[] = {1, 2, 4 };
-static float df[] = {1.2, 2.4, 3.6 };
+static float df[] = {1.2f, 2.4f, 3.6f };
 
 template <class BVector, class IVector, class FVector>
 struct TinyVectorTest
@@ -168,7 +168,7 @@ struct TinyVectorTest
         FV fvm3 = -fv3;
 
         int mi[] = { -1, -2, -4};
-        float mf[] = { -1.2, -2.4, -3.6 };
+        float mf[] = { -1.2f, -2.4f, -3.6f };
 
         should(equalIter(ivm3.begin(), ivm3.end(), mi));
         should(equalIter(fvm3.begin(), fvm3.end(), mf));
@@ -258,7 +258,7 @@ struct TinyVectorTest
         should(equalIter(bvp.begin(), bvp.end(), ip));
         should(equalIter(fvp.begin(), fvp.end(), fp));
         fvp = fv3 / 2.0;
-        float fp1[] = {0.6, 1.2, 1.8};
+        float fp1[] = {0.6f, 1.2f, 1.8f};
         should(equalIter(fvp.begin(), fvp.end(), fp1));
     }
 

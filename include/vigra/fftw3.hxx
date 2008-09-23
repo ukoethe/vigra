@@ -1015,8 +1015,8 @@ void moveDCToCenter(SrcImageIterator src_upperleft,
                                SrcImageIterator src_lowerright, SrcAccessor sa,
                                DestImageIterator dest_upperleft, DestAccessor da)
 {
-    int w= src_lowerright.x - src_upperleft.x;
-    int h= src_lowerright.y - src_upperleft.y;
+    int w = int(src_lowerright.x - src_upperleft.x);
+    int h = int(src_lowerright.y - src_upperleft.y);
     int w1 = w/2;
     int h1 = h/2;
     int w2 = (w+1)/2;
@@ -1098,8 +1098,8 @@ void moveDCToUpperLeft(SrcImageIterator src_upperleft,
                                SrcImageIterator src_lowerright, SrcAccessor sa,
                                DestImageIterator dest_upperleft, DestAccessor da)
 {
-    int w= src_lowerright.x - src_upperleft.x;
-    int h= src_lowerright.y - src_upperleft.y;
+    int w = int(src_lowerright.x - src_upperleft.x);
+    int h = int(src_lowerright.y - src_upperleft.y);
     int w2 = w/2;
     int h2 = h/2;
     int w1 = (w+1)/2;
@@ -1144,8 +1144,8 @@ fourierTransformImpl(FFTWComplexImage::const_traverser sul,
                      FFTWComplexImage::const_traverser slr, FFTWComplexImage::ConstAccessor src,
                      FFTWComplexImage::traverser dul, FFTWComplexImage::Accessor dest, T sign)
 {
-    int w = slr.x - sul.x;
-    int h = slr.y - sul.y;
+    int w = int(slr.x - sul.x);
+    int h = int(slr.y - sul.y);
 
     FFTWComplexImage sworkImage, dworkImage;
 
@@ -1384,8 +1384,8 @@ void applyFourierFilter(SrcImageIterator srcUpperLeft,
                         DestImageIterator destUpperLeft, DestAccessor da)
 {
     // copy real input images into a complex one...
-    int w= srcLowerRight.x - srcUpperLeft.x;
-    int h= srcLowerRight.y - srcUpperLeft.y;
+    int w = int(srcLowerRight.x - srcUpperLeft.x);
+    int h = int(srcLowerRight.y - srcUpperLeft.y);
 
     FFTWComplexImage workImage(w, h);
     copyImage(srcIterRange(srcUpperLeft, srcLowerRight, sa),
@@ -1451,8 +1451,8 @@ void applyFourierFilterImpl(
     FilterImageIterator filterUpperLeft, FilterAccessor fa,
     DestImageIterator destUpperLeft, DestAccessor da)
 {
-    int w = srcLowerRight.x - srcUpperLeft.x;
-    int h = srcLowerRight.y - srcUpperLeft.y;
+    int w = int(srcLowerRight.x - srcUpperLeft.x);
+    int h = int(srcLowerRight.y - srcUpperLeft.y);
 
     FFTWComplexImage complexResultImg(srcLowerRight - srcUpperLeft);
 
@@ -1609,8 +1609,8 @@ void applyFourierFilterFamily(SrcImageIterator srcUpperLeft,
                               const ImageArray<FilterType> &filters,
                               ImageArray<DestImage> &results)
 {
-    int w= srcLowerRight.x - srcUpperLeft.x;
-    int h= srcLowerRight.y - srcUpperLeft.y;
+    int w = int(srcLowerRight.x - srcUpperLeft.x);
+    int h = int(srcLowerRight.y - srcUpperLeft.y);
 
     FFTWComplexImage workImage(w, h);
     copyImage(srcIterRange(srcUpperLeft, srcLowerRight, sa),
@@ -1669,8 +1669,8 @@ void applyFourierFilterFamilyImpl(
     results.resizeImages(filters.imageSize());
 
     // FFT from srcImage to freqImage
-    int w= srcLowerRight.x - srcUpperLeft.x;
-    int h= srcLowerRight.y - srcUpperLeft.y;
+    int w = int(srcLowerRight.x - srcUpperLeft.x);
+    int h = int(srcLowerRight.y - srcUpperLeft.y);
 
     FFTWComplexImage freqImage(w, h);
     FFTWComplexImage result(w, h);

@@ -91,8 +91,8 @@ internalDistanceTransform(SrcImageIterator src_upperleft,
     
     FImage xdist(w,h), ydist(w,h);
     
-    xdist = w;    // init x and
-    ydist = h;    // y distances with 'large' values
+    xdist = (FImage::value_type)w;    // init x and
+    ydist = (FImage::value_type)h;    // y distances with 'large' values
 
     SrcImageIterator sy = src_upperleft;
     DestImageIterator ry = dest_upperleft;
@@ -133,7 +133,7 @@ internalDistanceTransform(SrcImageIterator src_upperleft,
         }
         else
         {
-            *xdx  = xdx[left] + 1.0;   // propagate x and
+            *xdx  = xdx[left] + 1.0f;   // propagate x and
             *ydx  = ydx[left];         // y components of distance from left pixel
             da.set(norm(*xdx, *ydx), rx); // calculate distance from x and y components
         }
@@ -142,11 +142,11 @@ internalDistanceTransform(SrcImageIterator src_upperleft,
         x>=0; 
         --x, --xdx.x, --ydx.x, --sx.x, --rx.x)   // first row right to left
     {
-        float d = norm(xdx[right] + 1.0, ydx[right]);
+        float d = norm(xdx[right] + 1.0f, ydx[right]);
         
         if(da(rx) < d) continue;
         
-        *xdx = xdx[right] + 1.0;
+        *xdx = xdx[right] + 1.0f;
         *ydx = ydx[right];
         da.set(d, rx);
     }
@@ -161,14 +161,14 @@ internalDistanceTransform(SrcImageIterator src_upperleft,
         
         if(sa(sx) != background)    // first pixel of current row
         {
-            *xdx = 0.0;
-            *ydx = 0.0;
+            *xdx = 0.0f;
+            *ydx = 0.0f;
             da.set(0.0, rx);
         }
         else
         {
             *xdx = xdx[top];
-            *ydx = ydx[top] + 1.0;
+            *ydx = ydx[top] + 1.0f;
             da.set(norm(*xdx, *ydx), rx);
         }
         
@@ -178,25 +178,25 @@ internalDistanceTransform(SrcImageIterator src_upperleft,
         {
             if(sa(sx) != background)
             {
-                *xdx = 0.0;
-                *ydx = 0.0;
+                *xdx = 0.0f;
+                *ydx = 0.0f;
                 da.set(0.0, rx);
             }
             else
             {
-                float d1 = norm(xdx[left] + 1.0, ydx[left]);
-                float d2 = norm(xdx[top], ydx[top] + 1.0);
+                float d1 = norm(xdx[left] + 1.0f, ydx[left]);
+                float d2 = norm(xdx[top], ydx[top] + 1.0f);
                 
                 if(d1 < d2)
                 {
-                    *xdx = xdx[left] + 1.0;
+                    *xdx = xdx[left] + 1.0f;
                     *ydx = ydx[left];
                     da.set(d1, rx);
                 }
                 else
                 {
                     *xdx = xdx[top];
-                    *ydx = ydx[top] + 1.0;
+                    *ydx = ydx[top] + 1.0f;
                     da.set(d2, rx);
                 }
             }
@@ -205,11 +205,11 @@ internalDistanceTransform(SrcImageIterator src_upperleft,
             x>=0; 
             --x, --xdx.x, --ydx.x, --sx.x, --rx.x)  // current row right to left
         {
-            float d1 = norm(xdx[right] + 1.0, ydx[right]);
+            float d1 = norm(xdx[right] + 1.0f, ydx[right]);
             
             if(da(rx) < d1) continue;
             
-            *xdx = xdx[right] + 1.0;
+            *xdx = xdx[right] + 1.0f;
             *ydx = ydx[right];
             da.set(d1, rx);
         }
@@ -223,11 +223,11 @@ internalDistanceTransform(SrcImageIterator src_upperleft,
         xdx = xdy;
         ydx = ydy;
         
-        float d = norm(xdx[bottom], ydx[bottom] + 1.0);
+        float d = norm(xdx[bottom], ydx[bottom] + 1.0f);
         if(d < da(rx))    // first pixel of current row
         { 
             *xdx = xdx[bottom];
-            *ydx = ydx[bottom] + 1.0;
+            *ydx = ydx[bottom] + 1.0f;
             da.set(d, rx);
         }
             
@@ -235,13 +235,13 @@ internalDistanceTransform(SrcImageIterator src_upperleft,
             x<w;
             ++x, ++xdx.x, ++ydx.x, ++sx.x, ++rx.x)  // current row left to right
         {
-            float d1 = norm(xdx[left] + 1.0, ydx[left]);
-            float d2 = norm(xdx[bottom], ydx[bottom] + 1.0);
+            float d1 = norm(xdx[left] + 1.0f, ydx[left]);
+            float d2 = norm(xdx[bottom], ydx[bottom] + 1.0f);
             
             if(d1 < d2)
             {
                 if(da(rx) < d1) continue;
-                *xdx = xdx[left] + 1.0;
+                *xdx = xdx[left] + 1.0f;
                 *ydx = ydx[left];
                 da.set(d1, rx);
             }
@@ -249,7 +249,7 @@ internalDistanceTransform(SrcImageIterator src_upperleft,
             {
                 if(da(rx) < d2) continue;
                 *xdx = xdx[bottom];
-                *ydx = ydx[bottom] + 1.0;
+                *ydx = ydx[bottom] + 1.0f;
                 da.set(d2, rx);
             }
         }
@@ -257,10 +257,10 @@ internalDistanceTransform(SrcImageIterator src_upperleft,
             x>=0; 
             --x, --xdx.x, --ydx.x, --sx.x, --rx.x)  // current row right to left
         {
-            float d1 = norm(xdx[right] + 1.0, ydx[right]);
+            float d1 = norm(xdx[right] + 1.0f, ydx[right]);
 
             if(da(rx) < d1) continue;
-            *xdx = xdx[right] + 1.0;
+            *xdx = xdx[right] + 1.0f;
             *ydx = ydx[right];
             da.set(d1, rx);
         }

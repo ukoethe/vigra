@@ -1686,7 +1686,7 @@ void Kernel1D<ARITHTYPE>::normalize(value_type norm,
             faculty *= i;
         for(double x = left() + offset; k < kernel_.end(); ++x, ++k)
         {
-            sum += *k * VIGRA_CSTD::pow(-x, int(derivativeOrder)) / faculty;
+            sum = TmpType(sum + *k * VIGRA_CSTD::pow(-x, int(derivativeOrder)) / faculty);
         }
     }
 
@@ -1715,7 +1715,7 @@ void Kernel1D<ARITHTYPE>::initGaussian(double std_dev,
 
     if(std_dev > 0.0)
     {
-        Gaussian<ARITHTYPE> gauss(std_dev);
+        Gaussian<ARITHTYPE> gauss((ARITHTYPE)std_dev);
 
         // first calculate required kernel sizes
         int radius = (int)(3.0 * std_dev + 0.5);
@@ -1726,7 +1726,7 @@ void Kernel1D<ARITHTYPE>::initGaussian(double std_dev,
         kernel_.erase(kernel_.begin(), kernel_.end());
         kernel_.reserve(radius*2+1);
 
-        for(ARITHTYPE x = -radius; x <= radius; ++x)
+        for(ARITHTYPE x = -(ARITHTYPE)radius; x <= (ARITHTYPE)radius; ++x)
         {
             kernel_.push_back(gauss(x));
         }
@@ -1841,7 +1841,7 @@ Kernel1D<ARITHTYPE>::initGaussianDerivative(double std_dev,
               "Kernel1D::initGaussianDerivative(): "
               "Standard deviation must be > 0.");
 
-    Gaussian<ARITHTYPE> gauss(std_dev, order);
+    Gaussian<ARITHTYPE> gauss((ARITHTYPE)std_dev, order);
 
     // first calculate required kernel sizes
     int radius = (int)(3.0 * std_dev + 0.5 * order + 0.5);
@@ -1855,12 +1855,12 @@ Kernel1D<ARITHTYPE>::initGaussianDerivative(double std_dev,
     // fill the kernel and calculate the DC component
     // introduced by truncation of the Gaussian
     ARITHTYPE dc = 0.0;
-    for(ARITHTYPE x = -radius; x <= radius; ++x)
+    for(ARITHTYPE x = -(ARITHTYPE)radius; x <= (ARITHTYPE)radius; ++x)
     {
         kernel_.push_back(gauss(x));
         dc += kernel_[kernel_.size()-1];
     }
-    dc /= (2.0*radius + 1.0);
+    dc = ARITHTYPE(dc / (2.0*radius + 1.0));
 
     // remove DC, but only if kernel correction is permitted by a non-zero
     // value for norm
@@ -1969,9 +1969,9 @@ Kernel1D<ARITHTYPE>::initSymmetricDifference(value_type norm)
     kernel_.erase(kernel_.begin(), kernel_.end());
     kernel_.reserve(3);
 
-    kernel_.push_back(0.5 * norm);
-    kernel_.push_back(0.0 * norm);
-    kernel_.push_back(-0.5 * norm);
+    kernel_.push_back(ARITHTYPE(0.5 * norm));
+    kernel_.push_back(ARITHTYPE(0.0 * norm));
+    kernel_.push_back(ARITHTYPE(-0.5 * norm));
 
     left_ = -1;
     right_ = 1;

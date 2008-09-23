@@ -38,8 +38,6 @@
 #ifndef VIGRA_INSPECTIMAGE_HXX
 #define VIGRA_INSPECTIMAGE_HXX
 
-#pragma warning (disable: 4350)
-
 #include <vector>
 #include <algorithm>
 #include "utilities.hxx"

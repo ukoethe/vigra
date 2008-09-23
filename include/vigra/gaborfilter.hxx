@@ -120,8 +120,8 @@ void createGaborFilter(DestImageIterator destUpperLeft,
                        double orientation, double centerFrequency,
                        double angularSigma, double radialSigma)
 {
-    int w= destLowerRight.x - destUpperLeft.x;
-    int h= destLowerRight.y - destUpperLeft.y;
+    int w = int(destLowerRight.x - destUpperLeft.x);
+    int h = int(destLowerRight.y - destUpperLeft.y);
 
     double squaredSum = 0.0;
     double cosTheta= VIGRA_CSTD::cos(orientation);

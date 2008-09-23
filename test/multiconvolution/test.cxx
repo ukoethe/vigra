@@ -63,7 +63,7 @@ struct MultiArrayPointoperatorsTest
     : img(Size3(5,4,3))
     {
         int i;
-        PixelType c = 0.1;
+        PixelType c = 0.1f;
         for(i=0; i<img.elementCount(); ++i, ++c)
             img.data()[i] = c;
     }
@@ -71,7 +71,7 @@ struct MultiArrayPointoperatorsTest
     void testInit()
     {
         Image3D res(img.shape());
-        const Image3D::value_type ini = 1.1;
+        const Image3D::value_type ini = 1.1f;
         should(res.shape() == Size3(5,4,3));
 
         initMultiArray(destMultiArrayRange(res), ini);
@@ -489,7 +489,7 @@ struct MultiArraySeparableConvolutionTest
       {
         for( int x = 0; x < width; ++x ) 
         {
-          const Image3D::value_type val = x + y + z;
+          const Image3D::value_type val = Image3D::value_type(x + y + z);
           image( x, y, z ) = val;
         }
       }
@@ -764,7 +764,7 @@ struct MultiArraySeparableConvolutionTest
   MultiArraySeparableConvolutionTest()
     : shape( 60, 70, 50 ),
       srcImage( shape ),
-      kernelSize( 1.8 )
+      kernelSize( 1.8f )
   {
     makeBox( srcImage );
   }

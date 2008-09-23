@@ -934,7 +934,7 @@ struct NumericTraits<long long>
 #endif
 
     static Promote toPromote(long long v) { return v; }
-    static RealPromote toRealPromote(long long v) { return v; }
+    static RealPromote toRealPromote(long long v) { return (RealPromote)v; }
     static long long fromPromote(Promote v) { return v; }
     static long long fromRealPromote(RealPromote v) {
         return ((v < 0.0) 
@@ -977,7 +977,7 @@ struct NumericTraits<unsigned long long>
 #endif
 
     static Promote toPromote(unsigned long long v) { return v; }
-    static RealPromote toRealPromote(unsigned long long v) { return v; }
+    static RealPromote toRealPromote(unsigned long long v) { return (RealPromote)v; }
     static unsigned long long fromPromote(Promote v) { return v; }
     static unsigned long long fromRealPromote(RealPromote v) {
             return ((v < 0.0) 
@@ -1319,6 +1319,18 @@ VIGRA_SPECIALIZED_CAST(unsigned long)
 
 template <>
 struct RequiresExplicitCast<float> {
+    static float cast(Int32 v)
+        { return (float)v; }
+
+    static float cast(UInt32 v)
+        { return (float)v; }
+
+    static float cast(double v)
+        { return (float)v; }
+
+    static float cast(long double v)
+        { return (float)v; }
+
     template <class U>
     static U cast(U v)
         { return v; }

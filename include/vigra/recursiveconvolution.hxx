@@ -189,6 +189,7 @@ void recursiveFilterLine(SrcIterator is, SrcIterator isend, SrcAccessor as,
     typedef typename
         NumericTraits<typename SrcAccessor::value_type>::RealPromote TempType;
     typedef NumericTraits<typename DestAccessor::value_type> DestTraits;
+    typedef typename DestTraits::RealPromote RealPromote;
     
     // store result of causal filtering
     std::vector<TempType> vline(w);
@@ -201,21 +202,21 @@ void recursiveFilterLine(SrcIterator is, SrcIterator isend, SrcAccessor as,
     if(border == BORDER_TREATMENT_REPEAT ||
        border == BORDER_TREATMENT_AVOID)
     {
-         old = (1.0 / (1.0 - b)) * as(is);
+         old = TempType((1.0 / (1.0 - b)) * as(is));
     }
     else if(border == BORDER_TREATMENT_REFLECT)
     {
         is += kernelw;
-        old = (1.0 / (1.0 - b)) * as(is);
+        old = TempType((1.0 / (1.0 - b)) * as(is));
         for(x = 0; x < kernelw; ++x, --is)
-            old = as(is) + b * old;
+            old = TempType(as(is) + b * old);
     }
     else if(border == BORDER_TREATMENT_WRAP)
     {
         is = isend - kernelw; 
-        old = (1.0 / (1.0 - b)) * as(is);
+        old = TempType((1.0 / (1.0 - b)) * as(is));
         for(x = 0; x < kernelw; ++x, ++is)
-            old = as(is) + b * old;
+            old = TempType(as(is) + b * old);
     }
     else if(border == BORDER_TREATMENT_CLIP)
     {
@@ -227,7 +228,7 @@ void recursiveFilterLine(SrcIterator is, SrcIterator isend, SrcAccessor as,
     // left side of filter
     for(x=0, is = istart; x < w; ++x, ++is)
     {
-        old = as(is) + b * old;
+        old = TempType(as(is) + b * old);
         line[x] = old;
     }
 
@@ -236,7 +237,7 @@ void recursiveFilterLine(SrcIterator is, SrcIterator isend, SrcAccessor as,
        border == BORDER_TREATMENT_AVOID)
     {
         is = isend - 1;
-        old = (1.0 / (1.0 - b)) * as(is);
+        old = TempType((1.0 / (1.0 - b)) * as(is));
     }
     else if(border == BORDER_TREATMENT_REFLECT)
     {
@@ -245,9 +246,9 @@ void recursiveFilterLine(SrcIterator is, SrcIterator isend, SrcAccessor as,
     else if(border == BORDER_TREATMENT_WRAP)
     {
       is = istart + kernelw - 1;
-      old = (1.0 / (1.0 - b)) * as(is);
+      old = TempType((1.0 / (1.0 - b)) * as(is));
       for(x = 0; x < kernelw; ++x, --is)
-          old = as(is) + b * old;
+          old = TempType(as(is) + b * old);
     }
     else if(border == BORDER_TREATMENT_CLIP)
     {
@@ -264,7 +265,7 @@ void recursiveFilterLine(SrcIterator is, SrcIterator isend, SrcAccessor as,
 
         for(x=w-1; x>=0; --x, --is, --id)
         {    
-            TempType f = b * old;
+            TempType f = TempType(b * old);
             old = as(is) + f;
             double norm = (1.0 - b) / (1.0 + b - bleft - bright);
             bleft /= b;
@@ -276,19 +277,19 @@ void recursiveFilterLine(SrcIterator is, SrcIterator isend, SrcAccessor as,
     {
         for(x=w-1; x >= kernelw; --x, --is, --id)
         {    
-            TempType f = b * old;
+            TempType f = TempType(b * old);
             old = as(is) + f;
             if(x < w - kernelw)
-                ad.set(DestTraits::fromRealPromote(norm * (line[x] + f)), id);
+                ad.set(DestTraits::fromRealPromote(RealPromote(norm * (line[x] + f))), id);
         }
     }
     else
     {
         for(x=w-1; x>=0; --x, --is, --id)
         {    
-            TempType f = b * old;
+            TempType f = TempType(b * old);
             old = as(is) + f;
-            ad.set(DestTraits::fromRealPromote(norm * (line[x] + f)), id);
+            ad.set(DestTraits::fromRealPromote(RealPromote(norm * (line[x] + f))), id);
         }
     }
 }

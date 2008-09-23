@@ -122,8 +122,8 @@ VIGRA_DEFINE_MISSING_ABS(signed short)
 inline float round(float t)
 {
      return t >= 0.0
-                ? floor(t + 0.5)
-                : ceil(t - 0.5);
+                ? floor(t + 0.5f)
+                : ceil(t - 0.5f);
 }
 
 inline double round(double t)

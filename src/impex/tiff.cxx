@@ -436,17 +436,17 @@ namespace vigra {
 
         // other fields
         uint16 u16value;
-        float unitLength = 1;
+        float unitLength = 1.0f;
         if (TIFFGetField( tiff, TIFFTAG_RESOLUTIONUNIT, &u16value )) {
             switch (u16value) {
             case RESUNIT_NONE:
-                unitLength = 1;
+                unitLength = 1.0f;
                 break;
             case RESUNIT_INCH:
-                unitLength = 1;
+                unitLength = 1.0f;
                 break;
             case RESUNIT_CENTIMETER:
-                unitLength = 1/2.54;
+                unitLength = 1.0f/2.54f;
                 break;
             default:
                 vigra_fail("Unkown resolution unit");
@@ -746,8 +746,8 @@ namespace vigra {
         // This will do a 1MB strip for 8-bit images,
         // 2MB strip for 16-bit, and so forth.
         unsigned int estimate =
-            std::max(static_cast<UIntBiggest>(1),
-                     (static_cast<UIntBiggest>(1)<<20) / (width * samples_per_pixel));
+            (unsigned int)std::max(static_cast<UIntBiggest>(1),
+                                  (static_cast<UIntBiggest>(1)<<20) / (width * samples_per_pixel));
         TIFFSetField( tiff, TIFFTAG_ROWSPERSTRIP,
                       stripheight = TIFFDefaultStripSize( tiff, estimate ) );
         TIFFSetField( tiff, TIFFTAG_SAMPLESPERPIXEL, samples_per_pixel );

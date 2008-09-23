@@ -242,11 +242,11 @@ struct RandomState<MT19937>
 
 void RandomState<MT19937>::generateNumbers() const
 {
-    for (int i = 0; i < (N - M); ++i)
+    for (unsigned int i = 0; i < (N - M); ++i)
     {
         state_[i] = state_[i + M] ^ twiddle(state_[i], state_[i + 1]);
     }
-    for (int i = N - M; i < (N - 1); ++i)
+    for (unsigned int i = N - M; i < (N - 1); ++i)
     {
         state_[i] = state_[i + M - N] ^ twiddle(state_[i], state_[i + 1]);
     }

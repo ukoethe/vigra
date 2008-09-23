@@ -51,8 +51,6 @@
         #error "Need VisualC++ 5.0, Service Pack 2, or later"
     #endif // _MSC_VER < 1100
 
-	#pragma warning( disable : 4786 4250 4244 4305)
-
 	#if (_MSC_VER < 1300)
 		#define NO_TYPENAME         // no 'typename' keyword
 		#define TEMPLATE_COPY_CONSTRUCTOR_BUG
@@ -84,6 +82,8 @@
 	#endif // (_MSC_VER < 1300)
 
     #if _MSC_VER < 1310
+    	#pragma warning( disable : 4786 4250 4244 4305)
+
         #define NO_PARTIAL_TEMPLATE_SPECIALIZATION
         #define NO_OUT_OF_LINE_MEMBER_TEMPLATES
         #include <cmath>

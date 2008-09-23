@@ -1146,17 +1146,22 @@ void beautifyCrackEdgeImage(
 class Edgel
 {
   public:
+  
+        /** The type of an Edgel's members.
+        */
+    typedef float value_type;
+
         /** The edgel's sub-pixel x coordinate.
         */
-    float x;
+    value_type x;
 
         /** The edgel's sub-pixel y coordinate.
         */
-    float y;
+    value_type y;
 
         /** The edgel's strength (magnitude of the gradient vector).
         */
-    float strength;
+    value_type strength;
 
         /**
         The edgel's orientation. This is the angle
@@ -1187,13 +1192,13 @@ class Edgel
         by PI if the contrast is reversed.
 
         */
-    float orientation;
+    value_type orientation;
 
     Edgel()
-    : x(0.0f), y(0.0f), strength(0.0f), orientation(0.0f)
+    : x(0.0), y(0.0), strength(0.0), orientation(0.0)
     {}
 
-    Edgel(float ix, float iy, float is, float io)
+    Edgel(value_type ix, value_type iy, value_type is, value_type io)
     : x(ix), y(iy), strength(is), orientation(io)
     {}
 };
@@ -1234,13 +1239,13 @@ void internalCannyFindEdgels(Image1 const & gx,
 
                 // local maximum => quadratic interpolation of sub-pixel location
                 PixelType del = (m1 - m3) / 2.0 / (m1 + m3 - 2.0*mag);
-                edgel.x = x + dx*del;
-                edgel.y = y + dy*del;
-                edgel.strength = mag;
+                edgel.x = Edgel::value_type(x + dx*del);
+                edgel.y = Edgel::value_type(y + dy*del);
+                edgel.strength = Edgel::value_type(mag);
                 double orientation = VIGRA_CSTD::atan2(-grady, gradx) - M_PI * 1.5;
                 if(orientation < 0.0)
                     orientation += 2.0*M_PI;
-                edgel.orientation = orientation;
+                edgel.orientation = Edgel::value_type(orientation);
                 edgels.push_back(edgel);
             }
         }
@@ -2021,13 +2026,13 @@ void internalCannyFindEdgels3x3(Image1 const & grad,
             double del = -r(1,0) / 2.0 / r(2,0);
             if(std::fabs(del) > 1.5)  // don't move by more than about a pixel diameter
                 del = 0.0;
-            edgel.x = x + c*del;
-            edgel.y = y + s*del;
-            edgel.strength = mag;
+            edgel.x = Edgel::value_type(x + c*del);
+            edgel.y = Edgel::value_type(y + s*del);
+            edgel.strength = Edgel::value_type(mag);
             double orientation = VIGRA_CSTD::atan2(-grady, gradx) - M_PI * 1.5;
             if(orientation < 0.0)
                 orientation += 2.0*M_PI;
-            edgel.orientation = orientation;
+            edgel.orientation = Edgel::value_type(orientation);
             edgels.push_back(edgel);
         }
     }

@@ -292,7 +292,7 @@ struct CompareFunctor
 
 	CompareFunctor(): sumDifference_(0) {}
 
-	void operator()(const float &a, const float &b)
+	void operator()(const fftw_real &a, const fftw_real &b)
 		{ sumDifference_+= abs(a-b); }
 
     double operator()()
@@ -303,7 +303,7 @@ struct GaborTests
 {
 	ImageImportInfo info;
 	int w, h;
-	FImage image;
+	BasicImage<fftw_real> image;
 
 	GaborTests()
 		: info("ghouse.gif"),
@@ -337,7 +337,7 @@ struct GaborTests
 
 	void testImages()
 	{
-		FImage filter(w, h);
+		BasicImage<fftw_real> filter(w, h);
 		int directionCount= 8;
 		int dir= 1, scale= 1;
 		double angle = dir * M_PI / directionCount;
@@ -354,7 +354,7 @@ struct GaborTests
 		applyFourierFilter(srcImageRange(image), srcImage(filter), destImage(result));
 		checkImage(srcImageRange(result, FFTWMagnitudeAccessor()), "gaborresult.xv");
 
-		FImage realPart(w, h);
+		BasicImage<fftw_real> realPart(w, h);
 		applyFourierFilter(srcImageRange(image), srcImage(filter), destImage(realPart));
 
 		CompareFunctor cmp;
@@ -376,8 +376,8 @@ struct GaborTests
 		shouldEqualTolerance(cmp(), 0.0, 1e-4);
 
 		cout << "applying on ROI...\n";
-		FImage bigImage(w+20, h+20);
-		FImage::Iterator bigUL= bigImage.upperLeft() + Diff2D(5, 5);
+		BasicImage<fftw_real> bigImage(w+20, h+20);
+		BasicImage<fftw_real>::Iterator bigUL= bigImage.upperLeft() + Diff2D(5, 5);
 		copyImage(srcImageRange(image), destIter(bigUL));
 		applyFourierFilter(srcIterRange(bigUL, bigUL + Diff2D(w, h)),
 						   srcImage(filter), destImage(result));

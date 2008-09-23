@@ -348,6 +348,7 @@ resizeLineLinearInterpolation(SrcIterator i1, SrcIterator iend, SrcAccessor as,
 
     typedef
         NumericTraits<typename DestAccessor::value_type> DestTraits;
+    typedef typename DestTraits::RealPromote RealPromote;
 
     ad.set(DestTraits::fromRealPromote(as(i1)), id);
     ++id;
@@ -368,7 +369,7 @@ resizeLineLinearInterpolation(SrcIterator i1, SrcIterator iend, SrcAccessor as,
         }
         double x1 = 1.0 - x;
 
-        ad.set(DestTraits::fromRealPromote(x1 * as(i1) + x * as(i1, 1)), id);
+        ad.set(DestTraits::fromRealPromote(RealPromote(x1 * as(i1) + x * as(i1, 1))), id);
     }
 }
 

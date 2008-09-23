@@ -1390,6 +1390,8 @@ class NeighborCode3D
                     return South;
             case Neighborhood3DSix::Behind :
                     return Behind;
+            default:
+                vigra_fail("NeighborCode3D::code(): Internal error -- invalid direction code.");
         }
         return Error;
     }

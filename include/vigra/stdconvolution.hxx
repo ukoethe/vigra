@@ -588,10 +588,10 @@ void convolveImage(SrcIterator src_ul, SrcIterator src_lr, SrcAccessor src_acc,
     // work on entire image (but skip the already computed points in the loop)
     for(int y = 0; y < h; ++y, ++ys.y, ++yd.y)
     {
-        int top    = std::max(static_cast<IntBiggest>(-klr.y),
-                              static_cast<IntBiggest>(src_ul.y - ys.y));
-        int bottom = std::min(static_cast<IntBiggest>(-kul.y),
-                              static_cast<IntBiggest>(src_lr.y - ys.y - 1));
+        int top    = int(std::max(static_cast<IntBiggest>(-klr.y),
+                                  static_cast<IntBiggest>(src_ul.y - ys.y)));
+        int bottom = int(std::min(static_cast<IntBiggest>(-kul.y),
+                                  static_cast<IntBiggest>(src_lr.y - ys.y - 1)));
 
         // create x iterators
         DestIterator xd(yd);

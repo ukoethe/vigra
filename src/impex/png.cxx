@@ -309,8 +309,8 @@ namespace vigra {
         }
 
         // read resolution
-        x_resolution = png_get_x_pixels_per_meter( png, info ) / 254.0;
-        y_resolution = png_get_y_pixels_per_meter( png, info ) / 254.0;
+        x_resolution = png_get_x_pixels_per_meter( png, info ) / 254.0f;
+        y_resolution = png_get_y_pixels_per_meter( png, info ) / 254.0f;
 
         // read offset
         position.x = png_get_x_offset_pixels( png, info );
@@ -592,7 +592,7 @@ namespace vigra {
         // set icc profile
         if (iccProfile.size() > 0) {
             png_set_iCCP(png, info, (char*)"icc", 0,
-                         (char *)iccProfile.begin(), iccProfile.size());
+                         (char *)iccProfile.begin(), (png_uint_32)iccProfile.size());
         }
 #endif
 

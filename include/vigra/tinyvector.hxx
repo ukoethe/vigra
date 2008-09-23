@@ -77,7 +77,7 @@ namespace detail {
     static void NAME(T1 * left, T2 right)  \
     {  \
         for(int i=0; i<LEVEL; ++i)  \
-            (left[i]) OPER (right);  \
+            (left[i]) = detail::RequiresExplicitCast<T1>::cast((left[i]) OPER (right));  \
     }
 
 template <int LEVEL>
@@ -90,6 +90,13 @@ struct ExecLoop
             left[i] = detail::RequiresExplicitCast<T1>::cast(right[i]);
     }
 
+    template <class T1, class T2>
+    static void assignScalar(T1 * left, T2 right)
+    {
+        for(int i=0; i<LEVEL; ++i)
+            left[i] = detail::RequiresExplicitCast<T1>::cast(right);
+    }
+
     VIGRA_EXEC_LOOP(assign, =)
     VIGRA_EXEC_LOOP(add, +=)
     VIGRA_EXEC_LOOP(sub, -=)
@@ -100,9 +107,8 @@ struct ExecLoop
     VIGRA_EXEC_LOOP(ceil, = vigra::ceil)
     VIGRA_EXEC_LOOP(fromPromote, = NumericTraits<T1>::fromPromote)
     VIGRA_EXEC_LOOP(fromRealPromote, = NumericTraits<T1>::fromRealPromote)
-    VIGRA_EXEC_LOOP_SCALAR(assignScalar, =)
-    VIGRA_EXEC_LOOP_SCALAR(mulScalar, *=)
-    VIGRA_EXEC_LOOP_SCALAR(divScalar, /=)
+    VIGRA_EXEC_LOOP_SCALAR(mulScalar, *)
+    VIGRA_EXEC_LOOP_SCALAR(divScalar, /)
 
     template <class T1, class T2>
     static bool notEqual(T1 const * left, T2 const * right)
@@ -217,7 +223,7 @@ struct UnrollSquaredNorm<1>
     template <class T1, class T2>  \
     static void NAME(T1 * left, T2 right)  \
     {  \
-        (*left) OPER (right);  \
+        (*left) = detail::RequiresExplicitCast<T1>::cast((*left) OPER (right));  \
         UnrollLoop<LEVEL-1>::NAME(left+1, right); \
     }
 
@@ -232,6 +238,13 @@ struct UnrollLoop
         UnrollLoop<LEVEL-1>::assignCast(left+1, right+1);
     }
 
+    template <class T1, class T2>
+    static void assignScalar(T1 * left, T2 right)
+    {
+        *left = detail::RequiresExplicitCast<T1>::cast(right);
+        UnrollLoop<LEVEL-1>::assignScalar(left+1, right);
+    }
+
     VIGRA_UNROLL_LOOP(assign, =)
     VIGRA_UNROLL_LOOP(add, +=)
     VIGRA_UNROLL_LOOP(sub, -=)
@@ -242,9 +255,8 @@ struct UnrollLoop
     VIGRA_UNROLL_LOOP(ceil, = vigra::ceil)
     VIGRA_UNROLL_LOOP(fromPromote, = NumericTraits<T1>::fromPromote)
     VIGRA_UNROLL_LOOP(fromRealPromote, = NumericTraits<T1>::fromRealPromote)
-    VIGRA_UNROLL_LOOP_SCALAR(assignScalar, =)
-    VIGRA_UNROLL_LOOP_SCALAR(mulScalar, *=)
-    VIGRA_UNROLL_LOOP_SCALAR(divScalar, /=)
+    VIGRA_UNROLL_LOOP_SCALAR(mulScalar, *)
+    VIGRA_UNROLL_LOOP_SCALAR(divScalar, /)
 
     template <class T1, class T2>
     static bool notEqual(T1 const * left, T2 const * right)

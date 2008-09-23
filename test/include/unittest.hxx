@@ -603,7 +603,7 @@ tolerance_equal_impl(T1 left, T2 right, T3 epsilon,
     buf << message << " [" << left << " != " << right << "]";
 
     close_at_tolerance<T3> fcomparator( epsilon );
-    bool compare = fcomparator ( left , right );
+    bool compare = fcomparator ( (T3)left , (T3)right );
     should_impl(compare, buf.str().c_str(), file, line);
 
 }

@@ -683,9 +683,9 @@ inline
 RGBValue<V, RIDX, GIDX, BIDX> &
 operator*=(RGBValue<V, RIDX, GIDX, BIDX> & l, double r)
 {
-    l.red() *= r;
-    l.green() *= r;
-    l.blue() *= r;
+    l.red() = V(l.red() * r);
+    l.green() = V(l.green() * r);
+    l.blue() = V(l.blue() * r);
     return l;
 }
 
@@ -695,9 +695,9 @@ inline
 RGBValue<V, RIDX, GIDX, BIDX> &
 operator/=(RGBValue<V, RIDX, GIDX, BIDX> & l, double r)
 {
-    l.red() /= r;
-    l.green() /= r;
-    l.blue() /= r;
+    l.red() = V(l.red() / r);
+    l.green() = V(l.green() / r);
+    l.blue() = V(l.blue() / r);
     return l;
 }
 

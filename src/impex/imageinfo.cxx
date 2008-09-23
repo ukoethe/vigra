@@ -87,7 +87,7 @@ bool splitString(
     const std::string &s, char separator, std::string &a, std::string &b,
     bool reverse = false)
 {
-    unsigned int splitPos = (reverse ? s.rfind(separator) : s.find(separator));
+    std::size_t splitPos = (reverse ? s.rfind(separator) : s.find(separator));
     if(splitPos >= s.size())
         return false;
     a = std::string(s.begin(), s.begin() + splitPos);
@@ -100,7 +100,7 @@ std::string trimString(const std::string &s)
     unsigned int begin = 0;
     while(begin < s.size() && ((s[begin] == ' ') || (s[begin] == '\t')))
         ++begin;
-    unsigned int end = s.size();
+    std::size_t end = s.size();
     while(end > 0 && ((s[end-1] == ' ') || (s[end-1] == '\t')))
         --end;
     return std::string(s.begin() + begin, s.begin() + end);

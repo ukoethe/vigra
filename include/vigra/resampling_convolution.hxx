@@ -326,7 +326,7 @@ resamplingConvolveLine(SrcIter s, SrcIter send, SrcAcc src,
                             (m >= wo) ?
                                 wo2 - m :
                                 m;
-                sum += *k * src(s, mm);
+                sum = TmpType(sum + *k * src(s, mm));
             }
         }
         else
@@ -336,7 +336,7 @@ resamplingConvolveLine(SrcIter s, SrcIter send, SrcAcc src,
 
             for(; ss <= ssend; ++ss, --k)
             {
-                sum += *k * src(ss);
+                sum = TmpType(sum + *k * src(ss));
             }
         }
 
@@ -808,6 +808,9 @@ void pyramidReduceBurtFilter(SrcIterator sul, SrcIterator slr, SrcAccessor src,
     int hold = slr.y - sul.y;
     int hnew = dlr.y - dul.y;
     
+    vigra_precondition(wnew == (wold + 1) / 2 && hnew == (hold + 1) / 2,
+       "pyramidReduceBurtFilter(): oldSize = ceil(newSize / 2) required.");
+    
     Rational<int> samplingRatio(1,2), offset(0);
     resampling_detail::MapTargetToSourceCoordinate mapCoordinate(samplingRatio, offset);
     
@@ -925,6 +928,9 @@ void pyramidExpandBurtFilter(SrcIterator sul, SrcIterator slr, SrcAccessor src,
     int wnew = dlr.x - dul.x;
     int hold = slr.y - sul.y;
     int hnew = dlr.y - dul.y;
+    
+    vigra_precondition(wold == (wnew + 1) / 2 && hold == (hnew + 1) / 2,
+       "pyramidExpandBurtFilter(): oldSize = ceil(newSize / 2) required.");
     
     Rational<int> samplingRatio(2), offset(0);
     resampling_detail::MapTargetToSourceCoordinate mapCoordinate(samplingRatio, offset);

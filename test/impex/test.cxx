@@ -312,7 +312,7 @@ public:
         Image::ScanOrderIterator i1 = res.begin ();
         Image::Accessor acc = ref.accessor ();
 
-        float sum = 0;
+        double sum = 0.0;
         for (; i != ref.end (); ++i, ++i1)
                 sum += (acc (i) - acc (i1)).magnitude ();
 
@@ -340,7 +340,7 @@ public:
         Image::ScanOrderIterator i1 = res.begin ();
         Image::Accessor acc = img.accessor ();
 
-        float sum = 0;
+        double sum = 0.0;
         for (; i != img.end (); ++i, ++i1)
             {
                 sum += (acc (i) - acc (i1)).magnitude ();
@@ -567,7 +567,7 @@ public:
         Image::ScanOrderIterator i1 = res.begin ();
         Image::Accessor acc = reread.accessor ();
 
-        float sum = 0;
+        double sum = 0.0;
         for (; i != reread.end (); ++i, ++i1)
             sum += std::abs (acc (i) - acc (i1));
         should (sum / (info.width () * info.height ()) < 0.1);
@@ -593,7 +593,7 @@ public:
         Image::ScanOrderIterator i1 = res.begin ();
         Image::Accessor acc = reread.accessor ();
 
-        float sum = 0;
+        double sum = 0.0;
         for (; i != reread.end (); ++i, ++i1)
             sum += std::abs (acc (i) - acc (i1));
         should (sum / (info.width () * info.height ()) < 0.1);
@@ -948,7 +948,7 @@ public:
         {
             for(int x=0; x<2; ++x)
             {
-                img(x,y)[0] = 2*y+x + 0.5;
+                img(x,y)[0] = 2*y+x + 0.5f;
                 img(x,y)[1] = -img(x,y)[0];
                 img(x,y)[2] = 0.0;
                 img(x,y)[3] = 0.5;
