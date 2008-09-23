@@ -7,7 +7,7 @@ def hook(ui, repo, **args):
         return True
     testTime = os.path.getmtime(testSuccessFile)
     stat = repo.status()
-    files = stat[0]+stat[1]
+    files = stat[0]+stat[1]  # added or modified files
     modified = []
     for file in files:
         if file[-4:] not in ['.cxx', '.hxx']:
