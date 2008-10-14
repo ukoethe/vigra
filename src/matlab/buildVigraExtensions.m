@@ -62,7 +62,16 @@ if strcmp( TARGET, 'all' )
 		mex_file     = dir( mex_filename );
 		
 		% file not already compiled OR file compiled is outdated
-		if isempty( mex_file ) || ( cpp_file.datenum > mex_file.datenum )
+		ver = version;
+        if str2double(ver(end- 5:end-2)) < 2008
+            if ~isempty( cpp_file )
+                cpp_file.datenum = datenum(cpp_file.date, 0);
+            end
+            if ~isempty( mex_file )
+                mex_file.datenum = datenum(mex_file.date, 0);
+            end
+        end
+        if isempty( mex_file ) || ( cpp_file.datenum > mex_file.datenum )
 			% compile
 			disp(['compiling: ' cpp_filename ] );
 			if isOctave

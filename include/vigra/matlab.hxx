@@ -123,7 +123,10 @@ class InputArray
     {
         return i >= 0 && i < size_;
     }
-      
+	
+	bool isEmpty(difference_type i){
+		return mxIsEmpty(data_[i]);
+	} 
 };
 
 class OutputArray
@@ -169,6 +172,10 @@ class OutputArray
     {
         return i >= 0 && i < size_;
     }
+	
+	bool isEmpty(difference_type i){
+		return mxIsEmpty(data_[i]);
+	}
       
 };
 
@@ -495,6 +502,20 @@ getScalar(mxArray const * t)
     if(mxIsEmpty(t))
         mexErrMsgTxt("getScalar() on empty input.");
     return static_cast<T>(mxGetScalar(t));
+}
+
+
+std::string getString(mxArray const * t)
+{
+    if(mxIsEmpty(t))
+        mexErrMsgTxt("getString() on empty input.");
+	char temp_save[30];
+	int sze =  mxGetN(t);
+
+	mxGetString(t, temp_save, sze+1);
+	
+	std::string out = temp_save;
+	return out;
 }
 
 template<class T>
