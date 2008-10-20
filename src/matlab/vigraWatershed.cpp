@@ -148,7 +148,7 @@ function L = vigraWatershed(inputArray, connectivity);
 function L = vigraWatershed(inputArray, [], seedArray);
 
 L = vigraWatershed(inputArray) computes a label matrix identifying the watershed regions of the inputArray , which may be 2 or 3 dimensional. The elements of L are Int32 values  greater than 0. 
-There are no watershedpixels.
+There are no watershedpixels. Do not use this  with Arrays of type other than single or double.
 L = vigraWatershed(inputImage, connectivity)  does same as above using the connectivity given. connectivity may be 4 or 8 for 2dimensional and 6 or 26 for 3Dimensional data.
 default values for connectivity are 8/26
 L = vigraWatershed(inputArray, [], seedArray) uses seeded Region growing to identify the watershed regions. seedArray must be an array of same size and type as inputArray. The seeds must be consecutively labeled with whole numbers. 
@@ -166,19 +166,19 @@ void vigraMexFunction(matlab::OutputArray outputs, matlab::InputArray inputs)
     else if(matlab::ValueType<double>::check(inputs[0]))
         vigraWatershed<double>(outputs, inputs);
     else if(matlab::ValueType<UInt16>::check(inputs[0]))
-        vigraWatershed<UInt8>(outputs, inputs);
+        vigraWatershed<UInt16>(outputs, inputs);
     else if(matlab::ValueType<UInt32>::check(inputs[0]))
-        vigraWatershed<float>(outputs, inputs);
+        vigraWatershed<UInt32>(outputs, inputs);
     else if(matlab::ValueType<UInt64>::check(inputs[0]))
-        vigraWatershed<double>(outputs, inputs);
+        vigraWatershed<UInt64>(outputs, inputs);
     else if(matlab::ValueType<Int8>::check(inputs[0]))
-        vigraWatershed<double>(outputs, inputs);
+        vigraWatershed<Int8>(outputs, inputs);
     else if(matlab::ValueType<Int16>::check(inputs[0]))
-        vigraWatershed<UInt8>(outputs, inputs);
+        vigraWatershed<Int16>(outputs, inputs);
     else if(matlab::ValueType<Int32>::check(inputs[0]))
-        vigraWatershed<float>(outputs, inputs);
+        vigraWatershed<Int32>(outputs, inputs);
     else if(matlab::ValueType<Int64>::check(inputs[0]))
-        vigraWatershed<double>(outputs, inputs);
+        vigraWatershed<Int64>(outputs, inputs);
 	else
         mexErrMsgTxt("Input image must have type 'uint8'-16-32-64', 'int8-16-32-64' 'single' or 'double'.");
 }
