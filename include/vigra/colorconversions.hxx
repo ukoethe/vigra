@@ -1033,7 +1033,7 @@ class FunctorTraits<XYZ2RGBPrimeFunctor<T> >
     
     where \f$(X_n, Y_n, Z_n) = (0.950456, 1.0, 1.088754)\f$ is the reference white point of standard illuminant D65, 
     and \f$u_n' = 0.197839, v_n'=0.468342\f$ are the quantities \f$u', v'\f$ calculated for this point. 
-    \f$L^{*}\f$ represents the <em>lighness</em> ("brightness") of the color, and \f$u^{*}, v^{*}\f$ code the 
+    \f$L^{*}\f$ represents the <em>lightness</em> ("brightness") of the color, and \f$u^{*}, v^{*}\f$ code the 
     chromaticity. (Instead of the rationals \f$\frac{216}{24389}\f$ and \f$\frac{24389}{27}\f$, the original standard gives the
     rounded values 0.008856 and 903.3. As <a href="http://www.brucelindbloom.com/index.html?LContinuity.html">Bruce Lindbloom</a> 
     points out, the rounded values give raise to a discontinuity which is removed by the accurate rationals. This bug will be fixed 
@@ -1202,7 +1202,7 @@ class FunctorTraits<Luv2XYZFunctor<T> >
     \f]
     
     where \f$(X_n, Y_n, Z_n) = (0.950456, 1.0, 1.088754)\f$ is the reference white point of standard illuminant D65. 
-    \f$L^{*}\f$ represents the <em>lighness</em> ("brightness") of the color, and \f$a^{*}, b^{*}\f$ code the 
+    \f$L^{*}\f$ represents the <em>lightness</em> ("brightness") of the color, and \f$a^{*}, b^{*}\f$ code the 
     chromaticity. (Instead of the rationals \f$\frac{216}{24389}\f$ and \f$\frac{24389}{27}\f$, the original standard gives the
     rounded values 0.008856 and 903.3. As <a href="http://www.brucelindbloom.com/index.html?LContinuity.html">Bruce Lindbloom</a> 
     points out, the rounded values give raise to a discontinuity which is removed by the accurate rationals. This bug will be fixed 
