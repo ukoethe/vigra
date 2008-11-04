@@ -65,7 +65,7 @@ inline double gammaCorrection(double value, double gamma, double norm)
 inline double sRGBCorrection(double value, double norm)
 {
     value /= norm;
-    return (value <= 0.00304) 
+    return (value <= 0.0031308) 
                ? norm*12.92*value 
                : norm*(1.055*VIGRA_CSTD::pow(value, 0.41666666666666667) - 0.055);
 }
@@ -73,7 +73,7 @@ inline double sRGBCorrection(double value, double norm)
 inline double inverse_sRGBCorrection(double value, double norm)
 {
     value /= norm;
-    return (value <= 0.03928) 
+    return (value <= 0.04045) 
                ? norm*value / 12.92
                : norm*VIGRA_CSTD::pow((value + 0.055)/1.055, 2.4);
 }
@@ -358,7 +358,7 @@ class FunctorTraits<RGB2RGBPrimeFunctor<From, To> >
     
     \f[
         C_{sRGB} = \left\{ \begin{array}{ll}
-        12.92\,C_{RGB} & \textrm{ if }\frac{C_{RGB}}{C_{max}} \le 0.00304 \\
+        12.92\,C_{RGB} & \textrm{ if }\frac{C_{RGB}}{C_{max}} \le 0.0031308 \\
         C_{max}\left( 1.055 \left(\frac{C_{RGB}}{C_{max}}\right)^{1/2.4}-0.055\right) & \textrm{ otherwise}
         \end{array}  \right.
     \f]
@@ -583,7 +583,7 @@ class FunctorTraits<RGBPrime2RGBFunctor<From, To> >
     
     \f[
         C_{RGB} = \left\{\begin{array}{ll}
-        C_{sRGB} / 12.92 & \textrm{if }\frac{C_{sRGB}}{C_{max}} \le 0.03928 \\
+        C_{sRGB} / 12.92 & \textrm{if }\frac{C_{sRGB}}{C_{max}} \le 0.04045 \\
         C_{max}\left( \frac{C_{sRGB}/C_{max}+0.055}{1.055}\right)^{2.4} & \textrm{otherwise}
         \end{array}\right.
     \f]
@@ -703,7 +703,10 @@ class FunctorTraits<sRGB2RGBFunctor<From, To> >
     By default, \f$ R_{max} = G_{max} = B_{max} = 255 \f$. This default can be overridden
     in the constructor. X, Y, and Z are always positive and reach their maximum for white. 
     The white point is obtained by transforming RGB(255, 255, 255). It corresponds to the 
-    D65 illuminant. Y represents the <em>luminance</em> ("brightness") of the color.
+    D65 illuminant. Y represents the <em>luminance</em> ("brightness") of the color. The above
+    transformation is officially defined in connection with the sRGB color space (i.e. when the RGB values
+    are obtained by inverse gamma correction of sRGB), other color spaces use slightly different numbers
+    or another standard illuminant (which gives raise to significantly different numbers).
 
     <b> Traits defined:</b>
     
@@ -1028,11 +1031,13 @@ class FunctorTraits<XYZ2RGBPrimeFunctor<T> >
         \end{array}
     \f]
     
-    where \f$(X_n, Y_n, Z_n)\f$ is the reference white point, and 
-    \f$u_n' = 0.197839, v_n'=0.468342\f$ are the quantities \f$u', v'\f$ calculated for this
-    point. \f$L^{*}\f$ represents the
-    <em>lighness</em> ("brightness") of the color, and \f$u^{*}, v^{*}\f$ code the 
-    chromaticity.
+    where \f$(X_n, Y_n, Z_n) = (0.950456, 1.0, 1.088754)\f$ is the reference white point of standard illuminant D65, 
+    and \f$u_n' = 0.197839, v_n'=0.468342\f$ are the quantities \f$u', v'\f$ calculated for this point. 
+    \f$L^{*}\f$ represents the <em>lighness</em> ("brightness") of the color, and \f$u^{*}, v^{*}\f$ code the 
+    chromaticity. (Instead of the rationals \f$\frac{216}{24389}\f$ and \f$\frac{24389}{27}\f$, the original standard gives the
+    rounded values 0.008856 and 903.3. As <a href="http://www.brucelindbloom.com/index.html?LContinuity.html">Bruce Lindbloom</a> 
+    points out, the rounded values give raise to a discontinuity which is removed by the accurate rationals. This bug will be fixed 
+    in future versions of the CIE Luv standard.)
 
     <b> Traits defined:</b>
     
@@ -1060,7 +1065,9 @@ class XYZ2LuvFunctor
     typedef TinyVector<component_type, 3> value_type;
     
     XYZ2LuvFunctor()
-    : gamma_(1.0/3.0)
+    : gamma_(1.0/3.0),
+      kappa_(24389.0/27.0),
+      epsilon_(216.0/24389.0)
     {}
     
     template <class V>
@@ -1075,8 +1082,8 @@ class XYZ2LuvFunctor
         }
         else
         {
-            component_type L = xyz[1] < 0.008856 ?
-                                  903.3 * xyz[1] :
+            component_type L = xyz[1] < epsilon_ ?
+                                  kappa_ * xyz[1] :
                                   116.0 * VIGRA_CSTD::pow((double)xyz[1], gamma_) - 16.0;
             component_type denom = xyz[0] + 15.0*xyz[1] + 3.0*xyz[2];
             component_type uprime = 4.0 * xyz[0] / denom;
@@ -1089,7 +1096,7 @@ class XYZ2LuvFunctor
     }
 
   private:
-    double gamma_;
+    double gamma_, kappa_, epsilon_;
 };
 
 template <class T>
@@ -1133,7 +1140,8 @@ class Luv2XYZFunctor
     typedef TinyVector<component_type, 3> value_type;
     
     Luv2XYZFunctor()
-    : gamma_(3.0)
+    : gamma_(3.0),
+      ikappa_(27.0/24389.0)
     {}
     
         /** apply the transformation
@@ -1154,7 +1162,7 @@ class Luv2XYZFunctor
             component_type vprime = luv[2] / 13.0 / luv[0] + 0.468342;
 
             result[1] = luv[0] < 8.0 ?
-                                  luv[0] / 903.3 :
+                                  luv[0] * ikappa_ :
                                   VIGRA_CSTD::pow((luv[0] + 16.0) / 116.0, gamma_);
             result[0] = 9.0*uprime*result[1] / 4.0 / vprime;
             result[2] = ((9.0 / vprime - 15.0)*result[1] - result[0])/ 3.0;
@@ -1163,7 +1171,7 @@ class Luv2XYZFunctor
     }
 
   private:
-    double gamma_;
+    double gamma_, ikappa_;
 };
 
 template <class T>
@@ -1183,9 +1191,9 @@ class FunctorTraits<Luv2XYZFunctor<T> >
     
     \f[
         \begin{array}{rcl}
-        L^{*} & = & 116 \left( \frac{Y}{Y_n} \right)^\frac{1}{3}-16 \quad \mbox{if} \quad 0.008856 < \frac{Y}{Y_n}\\
+        L^{*} & = & 116 \left( \frac{Y}{Y_n} \right)^\frac{1}{3}-16 \quad \mbox{if} \quad \frac{216}{24389} < \frac{Y}{Y_n}\\
         & & \\
-        L^{*} & = & 903.3\enspace \frac{Y}{Y_n} \quad \mbox{otherwise} \\
+        L^{*} & = & \frac{24389}{27} \enspace \frac{Y}{Y_n} \quad \mbox{otherwise} \\
         & & \\
         a^{*} & = & 500 \left[ \left( \frac{X}{X_n} \right)^\frac{1}{3} - \left( \frac{Y}{Y_n} \right)^\frac{1}{3} \right] \\
         & & \\
@@ -1193,9 +1201,12 @@ class FunctorTraits<Luv2XYZFunctor<T> >
         \end{array}
     \f]
     
-    where \f$(X_n, Y_n, Z_n)\f$ is the reference white point. \f$L^{*}\f$ represents the
-    <em>lighness</em> ("brightness") of the color, and \f$a^{*}, b^{*}\f$ code the 
-    chromaticity.
+    where \f$(X_n, Y_n, Z_n) = (0.950456, 1.0, 1.088754)\f$ is the reference white point of standard illuminant D65. 
+    \f$L^{*}\f$ represents the <em>lighness</em> ("brightness") of the color, and \f$a^{*}, b^{*}\f$ code the 
+    chromaticity. (Instead of the rationals \f$\frac{216}{24389}\f$ and \f$\frac{24389}{27}\f$, the original standard gives the
+    rounded values 0.008856 and 903.3. As <a href="http://www.brucelindbloom.com/index.html?LContinuity.html">Bruce Lindbloom</a> 
+    points out, the rounded values give raise to a discontinuity which is removed by the accurate rationals. This bug will be fixed 
+    in future versions of the CIE Lab standard.)
 
     <b> Traits defined:</b>
     
@@ -1223,7 +1234,9 @@ class XYZ2LabFunctor
     typedef TinyVector<component_type, 3> value_type;
     
     XYZ2LabFunctor()
-    : gamma_(1.0/3.0)
+    : gamma_(1.0/3.0),
+      kappa_(24389.0/27.0),
+      epsilon_(216.0/24389.0)
     {}
     
         /** apply the transformation
@@ -1234,8 +1247,8 @@ class XYZ2LabFunctor
         component_type xgamma = VIGRA_CSTD::pow(xyz[0] / 0.950456, gamma_);
         component_type ygamma = VIGRA_CSTD::pow((double)xyz[1], gamma_);
         component_type zgamma = VIGRA_CSTD::pow(xyz[2] / 1.088754, gamma_);
-        component_type L = xyz[1] < 0.008856 ?
-                              903.3 * xyz[1] :
+        component_type L = xyz[1] < epsilon_ ?
+                              kappa_ * xyz[1] :
                               116.0 * ygamma - 16.0;
         result_type result;
         result[0] = L;
@@ -1245,7 +1258,7 @@ class XYZ2LabFunctor
     }
 
   private:
-    double gamma_;
+    double gamma_, kappa_, epsilon_;
 };
 
 template <class T>
@@ -1291,7 +1304,8 @@ class Lab2XYZFunctor
         /** the functor's value type
         */
     Lab2XYZFunctor()
-    : gamma_(3.0)
+    : gamma_(3.0),
+      ikappa_(27.0/24389.0)
     {}
     
         /** apply the transformation
@@ -1300,7 +1314,7 @@ class Lab2XYZFunctor
     result_type operator()(V const & lab) const
     {
         component_type Y = lab[0] < 8.0 ?
-                              lab[0] / 903.3 :
+                              lab[0] * ikappa_ :
                               VIGRA_CSTD::pow((lab[0] + 16.0) / 116.0, gamma_);
         component_type ygamma = VIGRA_CSTD::pow((double)Y, 1.0 / gamma_);
         component_type X = VIGRA_CSTD::pow(lab[1] / 500.0 + ygamma, gamma_) * 0.950456;
@@ -1313,7 +1327,7 @@ class Lab2XYZFunctor
     }
 
   private:
-    double gamma_;
+    double gamma_, ikappa_;
 };
 
 template <class T>
