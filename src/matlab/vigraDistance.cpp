@@ -80,36 +80,15 @@ void vigraFunc(matlab::OutputArray outputs, matlab::InputArray inputs){
 	
 	//Default Options
 	options<T> opt(mxGetNumberOfDimensions(inputs[0]), false, MULT, 0 , 2);
+	{//Preconditions on default options
+	if(opt.numOfDim > VOLUME)  
+						mexErrMsgTxt("Currently InputArray may only have 2 or 3 dimensions");
+	if(inputs.isEmpty(0)) 
+						mexErrMsgTxt("Input Image is empty!");
+					
+	}	
 	
-	//User supplied Options
-	if(inputs.isValid(1)){	
-
-		fillOptNumericField(backgroundMode);
-		/*mxArray* backgroundMode =mxGetField(inputs[1], 0, "backgroundMode");
-		opt.backgroundMode = (backgroundMode!=NULL&&mxIsNumeric(backgroundMode))?
-							mxGetScalar(backgroundMode) : opt.backgroundMode;*/
-						
-		mxArray* method =mxGetField(inputs[1], 0, "method");
-		if(method!=NULL&&mxIsChar(method)){
-			std::string meth = matlab::getString(method);
-			if(meth == "MULT_SQUARED") opt.method = MULT_SQUARED;
-			else if(meth == "IMAG_DIST_TRANS" && opt.numOfDim == IMAG){
-				opt.method = IMAG_DIST_TRANS;
-				fillOptNumericField(backgroundPixel);
-				fillOptNumericField(norm);
-				/*mxArray* backgroundPixel =mxGetField(inputs[1], 0, "backgroundPixel");
-				opt.backgroundPixel = mxIsNumeric(backgroundPixel)?
-								mxGetScalar(backgroundPixel) : opt.backgroundPixel;					
-				mxArray* norm =mxGetField(inputs[1], 0, "norm");
-				opt.norm = mxIsNumeric(norm)?
-								mxGetScalar(norm) : opt.norm;	*/
-			}else if(meth == "IMAG_DIST_TRANS")
-				mexWarnMsgTxt("IMAG_DIST_TRANS only valid for 2D images using default: MULT");
-			else if(meth != "MULT")
-				mexWarnMsgTxt("User supplied backgroundmode not supported using default: MULT");
-		}
-	}
-
+	//Map data to option fields
 	if(opt.numOfDim == IMAG){
 		opt.in = matlab::getImage<T>(inputs[0]);
 		opt.out = matlab::createImage<double>(opt.in.width(), opt.in.height(), outputs[0]);
@@ -118,15 +97,32 @@ void vigraFunc(matlab::OutputArray outputs, matlab::InputArray inputs){
 	}else{
 		opt.in3D = matlab::getMultiArray<3, T>(inputs[0]);
 		opt.out3D = matlab::createMultiArray<3,double>(opt.in3D.shape(), outputs[0]);
+	}	
+	
+	//User supplied Options
+	if(inputs.isValid(1)){	
+		fillOptNumericField(backgroundMode);
+		
+		mxArray* method =mxGetField(inputs[1], 0, "method");
+		if(method!=NULL&&mxIsChar(method)){
+			std::string meth = matlab::getString(method);
+			
+			if(meth == "MULT_SQUARED") 
+				opt.method = MULT_SQUARED;
+			else if(meth == "IMAG_DIST_TRANS" && opt.numOfDim == IMAG){
+				opt.method = IMAG_DIST_TRANS;
+				fillOptNumericField(backgroundPixel);
+				fillOptNumericField(norm);
+			}else if(meth == "IMAG_DIST_TRANS")
+				mexWarnMsgTxt("IMAG_DIST_TRANS only valid for 2D images using default: MULT");
+			else if(meth != "MULT")
+				mexWarnMsgTxt("User supplied backgroundmode not supported using default: MULT");
+		}
 	}
 
-	{//Preconditions
-	if(opt.numOfDim > VOLUME)  
-						mexErrMsgTxt("Currently InputArray may only have 2 or 3 dimensions");
-	if(inputs.isEmpty(0)) 
-						mexErrMsgTxt("Input Image is empty!");
-					
-	}
+
+
+
 
 	// contorPair maps 2 integers bijectively onto one dimension. (see Wikipedia Cantor pair Function) 
 	switch(cantorPair(opt.numOfDim, opt.method)){
