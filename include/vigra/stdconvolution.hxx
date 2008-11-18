@@ -561,7 +561,7 @@ void convolveImage(SrcIterator src_ul, SrcIterator src_lr, SrcAccessor src_acc,
     int interiorskip = w + kul.x - klr.x - 1;
     int borderskipx = 0;
     int borderskipy = 0;
-    int borderinc;
+    int borderinc = 0;
     if(border == BORDER_TREATMENT_REPEAT)
     {
         borderskipx = 0;
