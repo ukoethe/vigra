@@ -1,0 +1,59 @@
+#include <vigra/symmetry.hxx>
+#include <vigra/basicimageview.hxx>
+#include <vigra/matlab.hxx>
+
+using namespace vigra;
+
+template <class T>
+void vigraRadialSymmetry(matlab::OutputArray outputs, matlab::InputArray inputs){
+	if(mxGetNumberOfDimensions(inputs[0] != 2)
+		mexErrMsgTxt("vigraCorner only operates on 2D Images");
+	double scale = 1.0;
+	if(inputs.isValid(1) && !inputs.isEmpty(1)){	
+		if(mxIsScalar(inputs[1])){
+			scale = mxGetScalar(inputs[1]);
+		}else{
+			mexWarnMsgTxt("Scale parameter is not valid. Using default: 1.0");
+			scale = 1.0;
+		}
+	}else scale = 1.0;
+	
+	BasicImageView<T>in = matlab::getImage<T>(inputs[0]);
+	BasicImageView<double>out = matlab::createImage<double>(in.width(), in.height(), outputs[0]);
+	
+	radialSymmetryTransform(srcImageRange(in), destImage(out), scale);
+}
+
+
+
+
+#define vigraFUNC vigraRadialSymmetry
+void vigraMexFunction(matlab::OutputArray outputs, matlab::InputArray inputs)
+{    
+	mxClassID inClass = mxGetClassID(inputs[0]);
+	switch(inClass){
+		case mxDOUBLE_CLASS:
+			vigraFUNC<double>(outputs, inputs);	break;
+		case mxSINGLE_CLASS:
+			vigraFUNC<float>(outputs, inputs);		break;
+        case mxINT8_CLASS:
+			vigraFUNC<Int8>(outputs, inputs);		break;
+		case mxINT16_CLASS:
+			vigraFUNC<Int16>(outputs, inputs);		break;
+		case mxINT32_CLASS:
+			vigraFUNC<Int32>(outputs, inputs);		break;
+		case mxINT64_CLASS:
+			vigraFUNC<Int64>(outputs, inputs);		break;
+        case mxUINT8_CLASS:
+			vigraFUNC<UInt8>(outputs, inputs);		break;
+		case mxUINT16_CLASS:
+			vigraFUNC<UInt16>(outputs, inputs);	break;
+		case mxUINT32_CLASS:
+			vigraFUNC<UInt32>(outputs, inputs);	break;
+		case mxUINT64_CLASS:
+			vigraFUNC<UInt64>(outputs, inputs);	break;		
+		default:
+			mexErrMsgTxt("Input image must have type 'uint8'-16-32-64', 'int8-16-32-64' 'single' or 'double'.");
+	}
+
+}

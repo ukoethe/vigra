@@ -47,6 +47,25 @@
 
 namespace vigra {
 
+typedef enum {
+        vUNKNOWN,
+        vCELL,
+        vSTRUCT,
+        vLOGICAL,
+        vCHAR,
+        vDOUBLE,
+        vSINGLE,
+        vINT8,
+        vUINT8,
+        vINT16,
+        vUINT16,
+        vINT32,
+        vUINT32,
+        vINT64,
+        vUINT64,
+        vFUNCTION
+} vClassID;
+
 namespace matlab {
 
 template <class T>

@@ -1,0 +1,196 @@
+#include <iostream>
+#include <string>
+#include <vigra/watersheds.hxx>
+#include <vigra/watersheds3D.hxx>
+#include <vigra/matlab.hxx>
+#include <vigra/basicimageview.hxx>
+#include <vigra/seededregiongrowing.hxx>
+#include <vigra/seededregiongrowing3D.hxx>
+#include <vigra/contourcirculator.hxx>
+#include <vigra/pixelneighborhood.hxx>
+#include <vigra/diff2d.hxx>
+#include <sstream>
+#include <vigra/cellconfigurations.hxx>
+#include <set>
+
+
+using namespace vigra;
+
+int cantorPair(int x, int y){
+		return (int)(((x+y)*(x+y+1))/2+y);
+}
+int cantorPair(int x, int y, int z){
+		return cantorPair(cantorPair(x,y),z);
+}
+
+template <int x, int y>
+struct cP{
+	enum { value = (int)(((x+y)*(x+y+1))/2+y)};
+};
+
+template <int x, int y, int z>
+struct cP3{
+	enum { value = cP<cP<x, y>::value, z>::value};
+};
+
+template <class T>
+struct options{
+	int numOfDim;
+	int conn;
+	int backgrd;
+	
+
+	BasicImageView<T>  in;
+	MultiArrayView<3,T> in3D;
+
+	BasicImageView<Int32>  out;
+	MultiArrayView<3,Int32> out3D;
+	
+	options(int a, int b, int d){
+		numOfDim = a;
+		conn = b; 
+		backgrd = d;
+	}
+};
+
+
+template <class T>
+void vigraConnectComponents(matlab::OutputArray outputs, matlab::InputArray inputs){
+	
+	// Constant definition for readibility
+	enum {IMAG = 2, VOLUME = 3}dim;
+	enum {FourNeighbor = 4, SixNeighbor = 6, EightNeighbor = 8, TSixNeighbor = 26};
+
+	//Default Options
+	options<T> opt(mxGetNumberOfDimensions(inputs[0]), 
+				mxGetNumberOfDimensions(inputs[0])==VOLUME? TSixNeighbor:EightNeighbor,
+				-1);
+	
+	//User supplied Options
+	if(inputs.isValid(1)){	
+		mxArray* back =mxGetField(inputs[1], 0, "backgroundValue");
+		mxArray* conn  =mxGetField(inputs[1], 0, "conn");
+		opt.backgrd = mxIsNumeric(back)?
+							mxGetScalar(back) : opt.back;
+							
+		switch(cantorPair( !mxIsChar(seed), opt.numOfDim) ){
+			case cP<UNION, IMAG>::value :{
+				int connect = mxIsNumeric(conn)?
+							mxGetScalar(conn) : opt.conn;
+				if(connect == FourNeighbor|| connect == EightNeighbor)opt.conn = connect;
+				else mexWarnMsgTxt("Warning: User supplied connectivity not supported, using default (8)");
+				break;
+			}
+			case cP<UNION, VOLUME>::value:{
+				int connect = mxIsNumeric(conn)?
+							mxGetScalar(conn) : opt.conn;
+				if(connect == SixNeighbor || connect == TSixNeighbor)opt.conn = connect;
+				else mexWarnMsgTxt("Warning: User supplied connectivity not supported, using default (26)");
+				break;
+			}
+		}
+	
+	}
+	
+	if(opt.numOfDim == IMAG){
+		opt.in = matlab::getImage<T>(inputs[0]);
+		opt.out = matlab::createImage<Int32>(opt.in.width(), opt.in.height(), outputs[0]);
+	}else{
+		opt.in3D = matlab::getMultiArray<3, T>(inputs[0]);
+		opt.out3D = matlab::createMultiArray<3,Int32>(opt.in3D.shape(), outputs[0]);
+	}
+
+					
+	{//Preconditions
+	if(opt.numOfDim > VOLUME)  
+						mexErrMsgTxt("Currently InputArray may only have 2 or 3 dimensions");
+	if(inputs.isEmpty(0)) 
+						mexErrMsgTxt("Input Image is empty!");
+	}
+
+	// contorPair maps 2 integers bijectively onto one dimension. (see Wikipedia Cantor pair Function) 
+	int max_region_label = 0;
+	switch(cantorPair(opt.backgrd != -1,opt.numOfDim, opt.conn)){
+		//cP is the templated version o f the cantorPair function first value is Dimension of Inputimage, second the connectivity setting
+		//Code is basically the code on the VIGRA-reference page 
+		case cP<0, IMAG, EightNeighbor>::value:	
+			max_region_label = labelImage(srcImageRange(in), destImage(out), true);
+			break;
+		case cP<0, IMAG, FourNeighbor>::value:
+			max_region_label = labelImage(srcImageRange(in), destImage(out), false);
+			break;
+		case cP<0, VOLUME, TSixNeighbor>::value:
+			max_region_label = labelVolumeSix(srcMultiArrayRange(opt.in3D), destMultiArray(opt.out3D));
+			break;
+		case cP<0, VOLUME, SixNeighbor>::value:
+			max_region_label = labelVolume(srcMultiArrayRange(opt.in3D), destMultiArray(opt.out3D), NeighborCode3DTwentySix());
+			break;
+		case cP<1, IMAG, EightNeighbor>::value:	
+			max_region_label = labelImageWithBackground(srcImageRange(opt.in), destImage(opt.out), true, opt.backgrd);
+			break;
+		case cP<1, IMAG, FourNeighbor>::value:
+			max_region_label = labelImageWithBackground(srcImageRange(opt.in), destImage(opt.out), false, opt.backgrd);
+			break;
+		case cP<1, VOLUME, TSixNeighbor>::value:
+			max_region_label = labelVolumeWithBackground(srcMultiArrayRange(opt.in3D), destMultiArray(opt.out3D), 
+																						NeighborCode3DSix(), opt.backgrd);
+			break;
+		case cP<1, VOLUME, SixNeighbor>::value:
+			max_region_label = labelVolumeWithBackground(srcMultiArrayRange(opt.in3D), destMultiArray(opt.out3D), 
+																						NeighborCode3DTwentySix(), opt.backgrd);
+			break;
+		default:
+			mexErrMsgTxt("Something went wrong");
+	}	
+}
+
+/** MATLAB 
+function L = vigraWatershedb(inputArray)
+function L = vigraWatershedb(inputArray, options);
+function [L A] = vigraWatershedb(..);
+
+L = vigraWatershed(inputArray) computes a label matrix identifying the watershed regions of the inputArray , which may be 2 or 3 dimensional. The elements of L are Int32 values  greater than 0. 
+There are no watershedpixels. Do not use this  with Arrays of type other than single or double.
+L = vigraWatershed(inputImage, options)  does the same with user options.
+options is a struct with possible fields: "seed", "conn" and "crack
+
+"seed": either a matrix of the size of input (seed) or "none", if "none" or field not supplied the union find algorithm will be used. in this case "conn" will change the connectivity settings
+(4 or 8 in 2D and 6 ord 26 in 3D images - 8 and 26 are default for union find)
+"conn": see above. only used if seed not supplied
+"crack": only used if seeded region growing is  being used. crack = 1 means crack edge borders, crack = 0 means the watershed pixels are left. 
+L A = vigraWatershed(...) 	additionally produces an adjacency matrix. If watershed pixels exist then the value in the matrix is the number of watershedpixels, that truely connect
+					two regions. If watershed pixels do not exists then the value corresponds to the number of cracks between two regions.
+
+L is of type Int32
+
+*/
+#define vigraFUNC vigraConnectComponents
+void vigraMexFunction(matlab::OutputArray outputs, matlab::InputArray inputs)
+{    
+	mxClassID inClass = mxGetClassID(inputs[0]);
+	switch(inClass){
+		case mxDOUBLE_CLASS:
+			vigraFUNC<double>(outputs, inputs);	break;
+		case mxSINGLE_CLASS:
+			vigraFUNC<float>(outputs, inputs);		break;
+        case mxINT8_CLASS:
+			vigraFUNC<Int8>(outputs, inputs);		break;
+		case mxINT16_CLASS:
+			vigraFUNC<Int16>(outputs, inputs);		break;
+		case mxINT32_CLASS:
+			vigraFUNC<Int32>(outputs, inputs);		break;
+		case mxINT64_CLASS:
+			vigraFUNC<Int64>(outputs, inputs);		break;
+        case mxUINT8_CLASS:
+			vigraFUNC<UInt8>(outputs, inputs);		break;
+		case mxUINT16_CLASS:
+			vigraFUNC<UInt16>(outputs, inputs);	break;
+		case mxUINT32_CLASS:
+			vigraFUNC<UInt32>(outputs, inputs);	break;
+		case mxUINT64_CLASS:
+			vigraFUNC<UInt64>(outputs, inputs);	break;		
+		default:
+			mexErrMsgTxt("Input image must have type 'uint8'-16-32-64', 'int8-16-32-64' 'single' or 'double'.");
+	}
+
+}
