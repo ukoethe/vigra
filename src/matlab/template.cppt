@@ -1,10 +1,10 @@
-/*
-This is a template file used to create all porting functions of VIGRA
-*/
-
-/*++++++++++++++++++++++++++INCLUDES+++++++++++++++++++++++++++++++++*/
+/*++++++++++++++++++++INCLUDES+and+Definitions++++++++++++++++++++++++*/
 
 #include <vigra/matlab.hxx>
+#include <string>
+
+
+#define vigraFunc vigraDistance
 
 /*++++++++++++++++++++++++++HELPERFUNC+++++++++++++++++++++++++++++++*/
 /* This is used for better readibility of the test cases            .
@@ -28,6 +28,7 @@ template <int x, int y, int z>
 struct cP3{
 	enum { value = cP<cP<x, y>::value, z>::value};
 };
+
 /*+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
 /* The Optons struct contains all the necassary working data and 
 /* options for the vigraFunc. This is the minimal struct
@@ -48,6 +49,11 @@ struct options{
 	}
 };
 
+// Quick and dirty macro for filling numerical options fields.
+#define fillOptNumericField(name); \
+		mxArray* name =mxGetField(inputs[1], 0, #name);\
+		opt.name = (name!=NULL&&mxIsNumeric(name))?\
+							mxGetScalar(name) : opt.name;
 /*+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
 /* This function does all the work
 /*+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
@@ -55,30 +61,35 @@ template <class T ...>
 void vigraFunc(matlab::OutputArray outputs, matlab::InputArray inputs){
 	// Constant definition for readibility
 	enum {IMAG = 2, VOLUME = 3}dim;
+	
 	//Default Options
 	options<T> opt(mxGetNumberOfDimensions(inputs[0]));
 	
-	//User supplied Options
-	if(inputs.isValid(1)){	
-		mxArray* NAME =mxGetField(inputs[1], 0, "NAME");
-		opt.NAME = mxIsNumeric(NAME)?
-							mxGetScalar(NAME) : opt.NAME;
-	}
-	
-	if(opt.numOfDim == IMAG){
-		opt.in = matlab::getImage<T>(inputs[0]);
-		opt.out = matlab::createImage<Int32>(opt.in.width(), opt.in.height(), outputs[0]);
-	}else{
-		opt.in3D = matlab::getMultiArray<3, T>(inputs[0]);
-		opt.out3D = matlab::createMultiArray<3,Int32>(opt.in3D.shape(), outputs[0]);
-	}
-
-	{//Preconditions
+	{//Preconditions on default options
 	if(opt.numOfDim > VOLUME)  
 						mexErrMsgTxt("Currently InputArray may only have 2 or 3 dimensions");
 	if(inputs.isEmpty(0)) 
 						mexErrMsgTxt("Input Image is empty!");
+					
+	}	
+	
+	//Map data to option fields
+	if(opt.numOfDim == IMAG){
+		opt.in = matlab::getImage<T>(inputs[0]);
+		opt.out = matlab::createImage<double>(opt.in.width(), opt.in.height(), outputs[0]);
+		opt.in3D = matlab::getMultiArray<3, T>(inputs[0]);
+		opt.out3D = matlab::createMultiArray<3,double>(opt.in3D.shape(), outputs[0]);
+	}else{
+		opt.in3D = matlab::getMultiArray<3, T>(inputs[0]);
+		opt.out3D = matlab::createMultiArray<3,double>(opt.in3D.shape(), outputs[0]);
 	}
+	
+	//User supplied Options
+	if(inputs.isValid(1)){	
+		filloptNumericField(NAME);
+	}
+
+	
 
 	// contorPair maps 2 integers bijectively onto one dimension. (see Wikipedia Cantor pair Function) 
 	switch(cantorPair(...)){
@@ -102,25 +113,25 @@ void vigraMexFunction(matlab::OutputArray outputs, matlab::InputArray inputs)
 	mxClassID inClass = mxGetClassID(inputs[0]);
 	switch(inClass){
 		case mxDOUBLE_CLASS:
-			vigraWatershed<double>(outputs, inputs);	break;
+			vigraFunc<double>(outputs, inputs);	break;
 		case mxSINGLE_CLASS:
-			vigraWatershed<float>(outputs, inputs);		break;
+			vigraFunc<float>(outputs, inputs);		break;
         case mxINT8_CLASS:
-			vigraWatershed<Int8>(outputs, inputs);		break;
+			vigraFunc<Int8>(outputs, inputs);		break;
 		case mxINT16_CLASS:
-			vigraWatershed<Int16>(outputs, inputs);		break;
+			vigraFunc<Int16>(outputs, inputs);		break;
 		case mxINT32_CLASS:
-			vigraWatershed<Int32>(outputs, inputs);		break;
+			vigraFunc<Int32>(outputs, inputs);		break;
 		case mxINT64_CLASS:
-			vigraWatershed<Int64>(outputs, inputs);		break;
+			vigraFunc<Int64>(outputs, inputs);		break;
         case mxUINT8_CLASS:
-			vigraWatershed<UInt8>(outputs, inputs);		break;
+			vigraFunc<UInt8>(outputs, inputs);		break;
 		case mxUINT16_CLASS:
-			vigraWatershed<UInt16>(outputs, inputs);	break;
+			vigraFunc<UInt16>(outputs, inputs);	break;
 		case mxUINT32_CLASS:
-			vigraWatershed<UInt32>(outputs, inputs);	break;
+			vigraFunc<UInt32>(outputs, inputs);	break;
 		case mxUINT64_CLASS:
-			vigraWatershed<UInt64>(outputs, inputs);	break;		
+			vigraFunc<UInt64>(outputs, inputs);	break;		
 		default:
 			mexErrMsgTxt("Input image must have type 'uint8'-16-32-64', 'int8-16-32-64' 'single' or 'double'.");
 	}
