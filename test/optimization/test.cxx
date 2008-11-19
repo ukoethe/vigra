@@ -63,7 +63,7 @@ struct LarsTest {
                        Matrix<double> X, Matrix<double> y, 
                        Matrix<double> const & ref, const char * message)
     {
-        double espilon = 1e-10;
+        double epsilon = 1e-10;
         
 	    ArrayVector<Matrix<double> > results;
 	    ArrayVector<ArrayVector<int> > activeSets;
@@ -87,7 +87,7 @@ struct LarsTest {
 		    }
 		    std::ostringstream s;
 		    s << "solution " << j << " differs in " << message;
-		    shouldMsg((B - columnVector(ref, j)).norm(0) < espilon, s.str().c_str());
+		    shouldMsg((B - columnVector(ref, j)).norm(0) < epsilon, s.str().c_str());
 		}
     }
 
@@ -171,6 +171,25 @@ struct LarsTest {
     		VIGRA_TEST_LARS(larsOptions, k, nnlassolsq, s.str().c_str());
 		}
     }
+
+    void testNNLSQ()
+    {
+        double epsilon = 1e-10;
+		for(int k=0; k<size; ++k)
+		{
+	        Matrix<double> result(50, 1);
+            nonnegativeLeastSquares(x[k], y[k], result);
+	        
+	        // check the KKT conditions
+	        Matrix<double> w = transpose(x[k])*(y[k] - x[k]*result);
+	        w /= w.norm(0);
+	        
+	        std::ostringstream s;
+	        s << "failure in problem " << k << " of NNLSQ test";
+	        for(int l=0; l<50; ++l)
+    	        shouldMsg((w(l,0) < 0.0 && result(l,0) == 0.0) || (abs(w(l,0)) < epsilon && result(l,0) > 0.0), s.str().c_str());
+		}
+    }
 };
 
 
@@ -182,6 +201,7 @@ struct OptimizationTestSuite : public vigra::test_suite {
 		add( testCase(&LarsTest::testLassoLSQ));
 		add( testCase(&LarsTest::testNNLasso));
 		add( testCase(&LarsTest::testNNLassoLSQ));
+		add( testCase(&LarsTest::testNNLSQ));
 	}
 };
 
