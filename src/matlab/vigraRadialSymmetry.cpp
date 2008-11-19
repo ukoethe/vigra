@@ -4,12 +4,10 @@
 #include <string>
 
 
-
-
 //this could be a typedef but if you want outType to be the same type as inType then you can just 
 //set outType to T
 #define outType double
-#define vigraFunc vigraDistance
+#define vigraFunc vigraRadialSymmetry
 /*++++++++++++++++++++++++++HELPERFUNC+++++++++++++++++++++++++++++++*/
 /* This is used for better readibility of the test cases            .
 /* Nothing to be done here.
@@ -38,9 +36,10 @@ struct cP3{
 /* options for the vigraFunc. This is the minimal struct
 /* Add fields as necessary
 /*+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
-template <class T ...>
+template <class T>
 struct options{
 	int numOfDim;
+	double scale;
 	
 	BasicImageView<T>  in;
 	MultiArrayView<3,T> in3D;
@@ -48,8 +47,9 @@ struct options{
 	BasicImageView<YOURTYPE>  out;
 	MultiArrayView<3,YOURTYPE> out3D;
 	
-	options(int nofDim){
+	options(int nofDim, double scle){
 		numOfDim = nofDim
+		scale = scle;
 	}
 };
 
@@ -67,11 +67,11 @@ void vigraFunc(matlab::OutputArray outputs, matlab::InputArray inputs){
 	enum {IMAG = 2, VOLUME = 3}dim;
 	
 	//Default Options
-	options<T> opt(mxGetNumberOfDimensions(inputs[0]));
+	options<T> opt(mxGetNumberOfDimensions(inputs[0]), 1.0);
 	
 	{//Preconditions on default options
-	if(opt.numOfDim > VOLUME)  
-						mexErrMsgTxt("Currently InputArray may only have 2 or 3 dimensions");
+	if(opt.numOfDim > IMAG)  
+						mexErrMsgTxt("Currently InputArray may only have 2 dimensions");
 	if(inputs.isEmpty(0)) 
 						mexErrMsgTxt("Input Image is empty!");
 					
@@ -91,19 +91,16 @@ void vigraFunc(matlab::OutputArray outputs, matlab::InputArray inputs){
 	
 	//User supplied Options
 	if(inputs.isValid(1)){	
-		filloptNumericField(NAME);
+		filloptNumericField(scale);
+		if(scale < 0){
+			mexWarnMsgTxt("Negative scale parameter. Using default: 1.0");
+			opt.scale = 1.0;
+		}
 	}
 
 	
 
-	// contorPair maps 2 integers bijectively onto one dimension. (see Wikipedia Cantor pair Function) 
-	switch(cantorPair(...)){
-		case cP3<...>::value:
-		default:
-			mexErrMsgTxt("Something went wrong");
-	}
-	
-	// Are there more than one output? nargout.
+	radialSymmetryTransform(srcImageRange(opt.in), destImage(opt.out), opt.scale);
 	
 }
 
