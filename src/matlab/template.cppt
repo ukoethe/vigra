@@ -49,7 +49,7 @@ struct options{
 	MultiArrayView<3,YOURTYPE> out3D;
 	
 	options(int nofDim){
-		numOfDim = nofDim
+		numOfDim = nofDim;
 	}
 };
 
@@ -61,7 +61,7 @@ struct options{
 /*+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
 /* This function does all the work
 /*+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
-template <class T ...>
+template <class T>
 void vigraFunc(matlab::OutputArray outputs, matlab::InputArray inputs){
 	// Constant definition for readibility
 	enum {IMAG = 2, VOLUME = 3}dim;
@@ -91,7 +91,7 @@ void vigraFunc(matlab::OutputArray outputs, matlab::InputArray inputs){
 	
 	//User supplied Options
 	if(inputs.isValid(1)){	
-		filloptNumericField(NAME);
+		fillOptNumericField(NAME);
 	}
 
 	

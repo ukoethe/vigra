@@ -159,7 +159,7 @@ void vigraFunc(matlab::OutputArray outputs, matlab::InputArray inputs){
 /*+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
 /** MATLAB 
 function D = vigraConnectedComponents(inputArray)
-function D = vigraConnectedComponentsinputArray, options);
+function D = vigraConnectedComponents(inputArray, options);
 
 D = vigraConnectedComponents(inputArray) computes the ConnectedComponents using the default options.
 D = vigraConnectedComponents(inputImage, options)  does the same with user options.

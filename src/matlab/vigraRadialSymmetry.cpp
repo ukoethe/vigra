@@ -2,7 +2,7 @@
 
 #include <vigra/matlab.hxx>
 #include <string>
-
+#include <vigra/symmetry.hxx>
 
 //this could be a typedef but if you want outType to be the same type as inType then you can just 
 //set outType to T
@@ -44,11 +44,11 @@ struct options{
 	BasicImageView<T>  in;
 	MultiArrayView<3,T> in3D;
 
-	BasicImageView<YOURTYPE>  out;
-	MultiArrayView<3,YOURTYPE> out3D;
+	BasicImageView<outType>  out;
+	MultiArrayView<3,outType> out3D;
 	
 	options(int nofDim, double scle){
-		numOfDim = nofDim
+		numOfDim = nofDim;
 		scale = scle;
 	}
 };
@@ -61,7 +61,7 @@ struct options{
 /*+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
 /* This function does all the work
 /*+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
-template <class T ...>
+template <class T>
 void vigraFunc(matlab::OutputArray outputs, matlab::InputArray inputs){
 	// Constant definition for readibility
 	enum {IMAG = 2, VOLUME = 3}dim;
@@ -91,8 +91,8 @@ void vigraFunc(matlab::OutputArray outputs, matlab::InputArray inputs){
 	
 	//User supplied Options
 	if(inputs.isValid(1)){	
-		filloptNumericField(scale);
-		if(scale < 0){
+		fillOptNumericField(scale);
+		if(opt.scale < 0){
 			mexWarnMsgTxt("Negative scale parameter. Using default: 1.0");
 			opt.scale = 1.0;
 		}
@@ -109,7 +109,24 @@ void vigraFunc(matlab::OutputArray outputs, matlab::InputArray inputs){
 /*+++++++++++++++++++++++MexEntryFunc++++++++++++++++++++++++++++++++*/
 /* DELETE LINES IF A CERTAIN CLASS IS NOT SUPPORTED
 /*+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
+/** MATLAB 
+function D = vigraRadialSymmetry(inputArray)
+function D = vigraradialSymmetry(inputArray, options);
 
+D = vigraConnectedComponents(inputArray) computes the Fast Radial Symmetry Transform using the default options. see vigra::RadialSymmetryTransform
+for more information.
+D = vigraConnectedComponents(inputImage, options)  does the same with user options.
+options is a struct with possible fields: "method", "backgroundMode" and "backgroundPixel" and "norm"
+
+"scale": 				1.0(default),any floating point value
+						scale parameter for the vigraRadialSymmetry
+
+
+Usage:
+	opt = struct('method' ,value);
+	out = vigraConnectedComponents(in, opt);
+
+*/
 void vigraMexFunction(matlab::OutputArray outputs, matlab::InputArray inputs)
 {    
 	mxClassID inClass = mxGetClassID(inputs[0]);
