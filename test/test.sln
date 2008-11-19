@@ -71,10 +71,12 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "multimorphology", "multimor
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "seededRegionGrowing3d", "seededRegionGrowing3d\seededregiongrowing3d.vcproj", "{95AF3C6F-616A-445B-B7F2-15C121F986C6}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "optimization", "optimization\optimization.vcproj", "{C02EDE56-985B-44E6-8022-765F160B6FF4}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
-		Release|Win32 = Release|Win32
 		Debug|Win32 = Debug|Win32
+		Release|Win32 = Release|Win32
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{DF27C171-3209-4A26-9E45-4A60DDB7C408}.Debug|Win32.ActiveCfg = Debug|Win32
@@ -168,6 +170,10 @@ Global
 		{95AF3C6F-616A-445B-B7F2-15C121F986C6}.Debug|Win32.ActiveCfg = Debug|Win32
 		{95AF3C6F-616A-445B-B7F2-15C121F986C6}.Release|Win32.ActiveCfg = Release|Win32
 		{95AF3C6F-616A-445B-B7F2-15C121F986C6}.Release|Win32.Build.0 = Release|Win32
+		{C02EDE56-985B-44E6-8022-765F160B6FF4}.Debug|Win32.ActiveCfg = Debug|Win32
+		{C02EDE56-985B-44E6-8022-765F160B6FF4}.Debug|Win32.Build.0 = Debug|Win32
+		{C02EDE56-985B-44E6-8022-765F160B6FF4}.Release|Win32.ActiveCfg = Release|Win32
+		{C02EDE56-985B-44E6-8022-765F160B6FF4}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
