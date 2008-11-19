@@ -2,10 +2,14 @@
 
 #include <vigra/matlab.hxx>
 #include <string>
+#include <vigra/labelimage.hxx>
+#include <vigra/labelvolume.hxx>
 
 
-#define vigraFunc vigraDistance
-
+//this could be a typedef but if you want outType to be the same type as inType then you can just 
+//set outType to T
+#define vigraFunc vigraConnectedComponents
+#define outType double
 /*++++++++++++++++++++++++++HELPERFUNC+++++++++++++++++++++++++++++++*/
 /* This is used for better readibility of the test cases            .
 /* Nothing to be done here.
@@ -44,8 +48,8 @@ struct options{
 	BasicImageView<T>  in;
 	MultiArrayView<3,T> in3D;
 
-	BasicImageView<Int32>  out;
-	MultiArrayView<3,Int32> out3D;
+	BasicImageView<outType>  out;
+	MultiArrayView<3,outType> out3D;
 	
 	options(int a, int b, int d){
 		numOfDim = a;
@@ -62,7 +66,7 @@ struct options{
 /*+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
 /* This function does all the work
 /*+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
-template <class T ...>
+template <class T>
 void vigraFunc(matlab::OutputArray outputs, matlab::InputArray inputs){
 	// Constant definition for readibility
 	enum {IMAG = 2, VOLUME = 3}dim;
@@ -84,12 +88,13 @@ void vigraFunc(matlab::OutputArray outputs, matlab::InputArray inputs){
 	//Map data to option fields
 	if(opt.numOfDim == IMAG){
 		opt.in = matlab::getImage<T>(inputs[0]);
-		opt.out = matlab::createImage<double>(opt.in.width(), opt.in.height(), outputs[0]);
+		opt.out = matlab::createImage<outType>(opt.in.width(), opt.in.height(), outputs[0]);
 		opt.in3D = matlab::getMultiArray<3, T>(inputs[0]);
-		opt.out3D = matlab::createMultiArray<3,double>(opt.in3D.shape(), outputs[0]);
+		//Lets out3D View the same data as out.
+		opt.out3D = MultiArrayView<3, outType>(opt.in3D.shape(), (outType*)opt.out.data());
 	}else{
 		opt.in3D = matlab::getMultiArray<3, T>(inputs[0]);
-		opt.out3D = matlab::createMultiArray<3,double>(opt.in3D.shape(), outputs[0]);
+		opt.out3D = matlab::createMultiArray<3,outType>(opt.in3D.shape(), outputs[0]);
 	}
 	
 	//User supplied Options
@@ -98,10 +103,10 @@ void vigraFunc(matlab::OutputArray outputs, matlab::InputArray inputs){
 		fillOptNumericField(conn);					
 		if(opt.numOfDim == IMAG && opt.conn != FourNeighbor && opt.conn !=EightNeighbor){
 			opt.conn = 	EightNeighbor;
-			mexWarnMsgText("Invalid User supplied connectivity - using Default: 8");
+			mexWarnMsgTxt("Invalid User supplied connectivity - using Default: 8");
 		}else if(opt.numOfDim == VOLUME && opt.conn != SixNeighbor && opt.conn !=TSixNeighbor){
 			opt.conn = TSixNeighbor;
-			mexWarnMsgText("Invalid User supplied connectivity - using Default: 26");
+			mexWarnMsgTxt("Invalid User supplied connectivity - using Default: 26");
 		}
 	}
 
@@ -109,34 +114,35 @@ void vigraFunc(matlab::OutputArray outputs, matlab::InputArray inputs){
 
 	// contorPair maps 2 integers bijectively onto one dimension. (see Wikipedia Cantor pair Function) 
 	int max_region_label = 0;
-	switch(cantorPair(opt.backgrd != -1,opt.numOfDim, opt.conn)){
+	switch(cantorPair(opt.backgroundValue != -1,opt.numOfDim, opt.conn)){
 		//cP is the templated version o f the cantorPair function first value is Dimension of Inputimage, second the connectivity setting
 		//Code is basically the code on the VIGRA-reference page 
-		case cP<0, IMAG, EightNeighbor>::value:	
-			max_region_label = labelImage(srcImageRange(in), destImage(out), true);
+		case cP3<0, IMAG, EightNeighbor>::value:	
+			max_region_label = labelImage(srcImageRange(opt.in), destImage(opt.out), true);
+			mexWarnMsgTxt("Breakpoint");
 			break;
-		case cP<0, IMAG, FourNeighbor>::value:
-			max_region_label = labelImage(srcImageRange(in), destImage(out), false);
+		case cP3<0, IMAG, FourNeighbor>::value:
+			max_region_label = labelImage(srcImageRange(opt.in), destImage(opt.out), false);
 			break;
-		case cP<0, VOLUME, TSixNeighbor>::value:
+		case cP3<0, VOLUME, TSixNeighbor>::value:
 			max_region_label = labelVolumeSix(srcMultiArrayRange(opt.in3D), destMultiArray(opt.out3D));
 			break;
-		case cP<0, VOLUME, SixNeighbor>::value:
+		case cP3<0, VOLUME, SixNeighbor>::value:
 			max_region_label = labelVolume(srcMultiArrayRange(opt.in3D), destMultiArray(opt.out3D), NeighborCode3DTwentySix());
 			break;
-		case cP<1, IMAG, EightNeighbor>::value:	
-			max_region_label = labelImageWithBackground(srcImageRange(opt.in), destImage(opt.out), true, opt.backgrd);
+		case cP3<1, IMAG, EightNeighbor>::value:	
+			max_region_label = labelImageWithBackground(srcImageRange(opt.in), destImage(opt.out), true, opt.backgroundValue);
 			break;
-		case cP<1, IMAG, FourNeighbor>::value:
-			max_region_label = labelImageWithBackground(srcImageRange(opt.in), destImage(opt.out), false, opt.backgrd);
+		case cP3<1, IMAG, FourNeighbor>::value:
+			max_region_label = labelImageWithBackground(srcImageRange(opt.in), destImage(opt.out), false, opt.backgroundValue);
 			break;
-		case cP<1, VOLUME, TSixNeighbor>::value:
+		case cP3<1, VOLUME, TSixNeighbor>::value:
 			max_region_label = labelVolumeWithBackground(srcMultiArrayRange(opt.in3D), destMultiArray(opt.out3D), 
-																						NeighborCode3DSix(), opt.backgrd);
+																						NeighborCode3DSix(), opt.backgroundValue);
 			break;
-		case cP<1, VOLUME, SixNeighbor>::value:
+		case cP3<1, VOLUME, SixNeighbor>::value:
 			max_region_label = labelVolumeWithBackground(srcMultiArrayRange(opt.in3D), destMultiArray(opt.out3D), 
-																						NeighborCode3DTwentySix(), opt.backgrd);
+																						NeighborCode3DTwentySix(), opt.backgroundValue);
 			break;
 		default:
 			mexErrMsgTxt("Something went wrong");

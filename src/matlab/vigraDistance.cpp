@@ -9,6 +9,10 @@ This is a template file used to create all porting functions of VIGRA
 #include <vigra/multi_distance.hxx>
 #include <string>
 
+
+//this could be a typedef but if you want outType to be the same type as inType then you can just 
+//set outType to T
+#define outType double
 #define vigraFunc vigraDistance
 /*++++++++++++++++++++++++++HELPERFUNC+++++++++++++++++++++++++++++++*/
 /* This is used for better readibility of the test cases            .
@@ -91,12 +95,13 @@ void vigraFunc(matlab::OutputArray outputs, matlab::InputArray inputs){
 	//Map data to option fields
 	if(opt.numOfDim == IMAG){
 		opt.in = matlab::getImage<T>(inputs[0]);
-		opt.out = matlab::createImage<double>(opt.in.width(), opt.in.height(), outputs[0]);
+		opt.out = matlab::createImage<outType>(opt.in.width(), opt.in.height(), outputs[0]);
 		opt.in3D = matlab::getMultiArray<3, T>(inputs[0]);
-		opt.out3D = matlab::createMultiArray<3,double>(opt.in3D.shape(), outputs[0]);
+		//Lets out3D View the same data as out.
+		opt.out3D = MultiArrayView<3, outType>(opt.in3D.shape(), (outType*)opt.out.data());
 	}else{
 		opt.in3D = matlab::getMultiArray<3, T>(inputs[0]);
-		opt.out3D = matlab::createMultiArray<3,double>(opt.in3D.shape(), outputs[0]);
+		opt.out3D = matlab::createMultiArray<3,outType>(opt.in3D.shape(), outputs[0]);
 	}	
 	
 	//User supplied Options
@@ -132,6 +137,7 @@ void vigraFunc(matlab::OutputArray outputs, matlab::InputArray inputs){
 			break;
 		case cP<VOLUME, MULT>::value:
 			separableMultiDistance(srcMultiArrayRange(opt.in3D), destMultiArray(opt.out3D), opt.backgroundMode);
+			mexWarnMsgTxt("asd");
 			break;
 		case cP<IMAG, MULT_SQUARED>::value:
 			separableMultiDistSquared(srcMultiArrayRange(opt.in3D), destMultiArray(opt.out3D), opt.backgroundMode);

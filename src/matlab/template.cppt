@@ -6,6 +6,9 @@
 
 #define vigraFunc vigraDistance
 
+//this could be a typedef but if you want outType to be the same type as inType then you can just 
+//set outType to T
+#define outType double
 /*++++++++++++++++++++++++++HELPERFUNC+++++++++++++++++++++++++++++++*/
 /* This is used for better readibility of the test cases            .
 /* Nothing to be done here.
@@ -41,8 +44,8 @@ struct options{
 	BasicImageView<T>  in;
 	MultiArrayView<3,T> in3D;
 
-	BasicImageView<Int32>  out;
-	MultiArrayView<3,Int32> out3D;
+	BasicImageView<YOURTYPE>  out;
+	MultiArrayView<3,YOURTYPE> out3D;
 	
 	options(int nofDim){
 		numOfDim = nofDim
@@ -78,7 +81,8 @@ void vigraFunc(matlab::OutputArray outputs, matlab::InputArray inputs){
 		opt.in = matlab::getImage<T>(inputs[0]);
 		opt.out = matlab::createImage<double>(opt.in.width(), opt.in.height(), outputs[0]);
 		opt.in3D = matlab::getMultiArray<3, T>(inputs[0]);
-		opt.out3D = matlab::createMultiArray<3,double>(opt.in3D.shape(), outputs[0]);
+		//Lets opt3D View the same data as out.
+		opt.out3D = MultiArrayView<3, outType>(opt.in3D.shape(), (outType*)opt.out.data());
 	}else{
 		opt.in3D = matlab::getMultiArray<3, T>(inputs[0]);
 		opt.out3D = matlab::createMultiArray<3,double>(opt.in3D.shape(), outputs[0]);
