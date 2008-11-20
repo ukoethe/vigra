@@ -712,12 +712,14 @@ leastAngleRegressionImpl(MultiArrayView<2, T, C1> const & A, MultiArrayView<2, T
     \code
     namespace vigra { 
       namespace linalg {
+        // compute either LASSO or least sqaures solutions
         template <class T, class C1, class C2, class Array1, class Array2>
         unsigned int
         leastAngleRegression(MultiArrayView<2, T, C1> const & A, MultiArrayView<2, T, C2> const &b, 
                              Array1 & activeSets, Array2 & solutions,
                              LeastAngleRegressionOptions const & options = LeastAngleRegressionOptions());
 
+        // compute LASSO and least sqaures solutions
         template <class T, class C1, class C2, class Array1, class Array2>
         unsigned int
         leastAngleRegression(MultiArrayView<2, T, C1> const & A, MultiArrayView<2, T, C2> const &b, 
@@ -785,7 +787,7 @@ leastAngleRegressionImpl(MultiArrayView<2, T, C1> const & A, MultiArrayView<2, T
                           <DD> Use the algorithm mode selected above 
                                to determine the sequence of active sets, but then compute and return an 
                                ordinary (unconstrained) least squares solution for every active set.<br>
-                               <b>Note:</b> The second call for leastAngleRegression() ignores this option and
+                               <b>Note:</b> The second form of leastAngleRegression() ignores this option and
                                does always compute both constrained and unconstrained solutions (returned in 
                                \a lasso_solutions and \a lsq_solutions respectively).
         <DT><b>maxSolutionCount(unsigned int n)</b> (default: n = 0, i.e. compute all solutions)
