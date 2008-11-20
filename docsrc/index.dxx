@@ -126,6 +126,8 @@
              <BR>&nbsp;&nbsp;&nbsp;<em>the matrix class</em>
         <LI> \ref LinearAlgebraModule "Linear Algebra"
              <BR>&nbsp;&nbsp;&nbsp;<em>matrix algebra, solution of linear systems, eigenvalue calculation etc.</em>
+        <LI> \ref Optimization "Optimization and Regression"
+             <BR>&nbsp;&nbsp;&nbsp;<em>ordinary and non-negative least squares, ridge regression, least angle regression (LARS and LASSO)</em>
     </UL>
 
 */

@@ -50,19 +50,20 @@ namespace vigra
 namespace linalg
 {
 
-/** \addtogroup MatrixAlgebra
+/** \addtogroup Optimization Optimization and Regression
  */
 //@{
    /** Ordinary Least Squares Regression.
 
        Given a matrix \a A with <tt>m</tt> rows and <tt>n</tt> columns (with <tt>m \>= n</tt>),
        and a column vector \a b of length <tt>m</tt> rows, this function computes 
-       a column vector \a x of length <tt>n</tt> rows such that the residual
+       the column vector \a x of length <tt>n</tt> rows that solves the optimization problem
 
-        \f[ \left|\textrm{\bf A} \textrm{\bf x} - \textrm{\bf b}\right|^2
+        \f[ \tilde \textrm{\bf x} = \textrm{argmin} 
+            \left|\left|\textrm{\bf A} \textrm{\bf x} - \textrm{\bf b}\right|\right|_2^2
         \f]
 
-       is minimized. When \a b is a matrix with <tt>k</tt> columns, \a x must also have 
+       When \a b is a matrix with <tt>k</tt> columns, \a x must also have 
        <tt>k</tt> columns, which will contain the solutions for the corresponding columns of 
        \a b. Note that all matrices must already have the correct shape.
        
@@ -88,19 +89,21 @@ leastSquares(MultiArrayView<2, T, C1> const & A,
 
        Given a matrix \a A with <tt>m</tt> rows and <tt>n</tt> columns (with <tt>m \>= n</tt>),
        a vector \a b of length <tt>m</tt>, and a weight vector \a weights of length <tt>m</tt>
-       with non-negative entries, this function computes a vector \a x of length <tt>n</tt> 
-       such that the weighted residual
+       with non-negative entries, this function computes the vector \a x of length <tt>n</tt> 
+       that solves the optimization problem
 
-        \f[  \left(\textrm{\bf A} \textrm{\bf x} - \textrm{\bf b}\right)^T 
+        \f[ \tilde \textrm{\bf x} = \textrm{argmin} 
+            \left(\textrm{\bf A} \textrm{\bf x} - \textrm{\bf b}\right)^T 
              \textrm{diag}(\textrm{\bf weights}) 
              \left(\textrm{\bf A} \textrm{\bf x} - \textrm{\bf b}\right)
         \f]
 
-       is minimized, where <tt>diag(weights)</tt> creates a diagonal matrix from \a weights.
+       where <tt>diag(weights)</tt> creates a diagonal matrix from \a weights.
        The algorithm calls \ref leastSquares() on the equivalent problem 
 
-        \f[ \left|\textrm{diag}(\textrm{\bf weights})^{1/2}\textrm{\bf A} \textrm{\bf x} - 
-                  \textrm{diag}(\textrm{\bf weights})^{1/2} \textrm{\bf b}\right|^2
+        \f[ \tilde \textrm{\bf x} = \textrm{argmin} 
+             \left|\left|\textrm{diag}(\textrm{\bf weights})^{1/2}\textrm{\bf A} \textrm{\bf x} - 
+                  \textrm{diag}(\textrm{\bf weights})^{1/2} \textrm{\bf b}\right|\right|_2^2
         \f]
         
        where the square root of \a weights is just taken element-wise. 
@@ -156,13 +159,15 @@ weightedLeastSquares(MultiArrayView<2, T, C1> const & A,
 
        Given a matrix \a A with <tt>m</tt> rows and <tt>n</tt> columns (with <tt>m \>= n</tt>),
        a vector \a b of length <tt>m</tt>, and a regularization parameter <tt>lambda \>= 0.0</tt>, 
-       this function computes a vector \a x of length <tt>n</tt> such that the residual
+       this function computes the vector \a x of length <tt>n</tt> 
+       that solves the optimization problem
 
-        \f[ \left|\textrm{\bf A} \textrm{\bf x} - \textrm{\bf b}\right|^2 + 
+        \f[ \tilde \textrm{\bf x} = \textrm{argmin} 
+            \left|\left|\textrm{\bf A} \textrm{\bf x} - \textrm{\bf b}\right|\right|_2^2 + 
             \lambda \textrm{\bf x}^T\textrm{\bf x}
         \f]
 
-       is minimized. This is implemented by means of \ref singularValueDecomposition().
+       This is implemented by means of \ref singularValueDecomposition().
        
        When \a b is a matrix with <tt>k</tt> columns, \a x must also have 
        <tt>k</tt> columns, which will contain the solutions for the corresponding columns of 
@@ -216,19 +221,22 @@ ridgeRegression(MultiArrayView<2, T, C1> const & A,
        Given a matrix \a A with <tt>m</tt> rows and <tt>n</tt> columns (with <tt>m \>= n</tt>),
        a vector \a b of length <tt>m</tt>, a weight vector \a weights of length <tt>m</tt>
        with non-negative entries, and a regularization parameter <tt>lambda >= 0.0</tt>
-       this function computes a vector \a x of length <tt>n</tt> such that the weighted residual
+       this function computes the vector \a x of length <tt>n</tt> 
+       that solves the optimization problem
 
-        \f[  \left(\textrm{\bf A} \textrm{\bf x} - \textrm{\bf b}\right)^T 
+        \f[ \tilde \textrm{\bf x} = \textrm{argmin} 
+            \left(\textrm{\bf A} \textrm{\bf x} - \textrm{\bf b}\right)^T 
              \textrm{diag}(\textrm{\bf weights}) 
              \left(\textrm{\bf A} \textrm{\bf x} - \textrm{\bf b}\right) +
              \lambda \textrm{\bf x}^T\textrm{\bf x}
         \f]
 
-       is minimized, where <tt>diag(weights)</tt> creates a diagonal matrix from \a weights.
+       where <tt>diag(weights)</tt> creates a diagonal matrix from \a weights.
        The algorithm calls \ref ridgeRegression() on the equivalent problem 
 
-        \f[ \left|\textrm{diag}(\textrm{\bf weights})^{1/2}\textrm{\bf A} \textrm{\bf x} - 
-                  \textrm{diag}(\textrm{\bf weights})^{1/2} \textrm{\bf b}\right|^2 + 
+        \f[ \tilde \textrm{\bf x} = \textrm{argmin} 
+            \left|\left|\textrm{diag}(\textrm{\bf weights})^{1/2}\textrm{\bf A} \textrm{\bf x} - 
+                  \textrm{diag}(\textrm{\bf weights})^{1/2} \textrm{\bf b}\right|\right|_2^2 + 
              \lambda \textrm{\bf x}^T\textrm{\bf x}
         \f]
         
@@ -331,7 +339,7 @@ ridgeRegressionSeries(MultiArrayView<2, T, C1> const & A,
     {
         vigra_precondition(lambda[i] >= 0.0,
            "ridgeRegressionSeries(): lambda >= 0.0 required.");
-        if(lambda == 0.0 && rank < rows)
+        if(lambda[i] == 0.0 && rank < rows)
             continue;
         for(unsigned int k=0; k<cols; ++k)
             xt(k,0) = xl(k,0) * s(k,0) / (sq(s(k,0)) + lambda[i]);
@@ -369,21 +377,6 @@ class LeastAngleRegressionOptions
         max_solution_count = (int)n;
         return *this;
     }
-
-#if 0 // option currently disabled
-        /** Number of unconstrained dimensions in the feature matrix.
-        
-            The first \a n columns in the feature matrix will be considered as unconstrained,
-            i.e. they will always be in the active set, and there is no restriction on the size
-            or sign of the coirresponding solution coefficients.<br>
-            Default: 0 
-        */
-    LeastAngleRegressionOptions & unconstrainedDimensionCount(unsigned int n)
-    {
-        unconstrained_dimension_count = (int)n;
-        return *this;
-    }
-#endif
 
         /** Use the plain LARS algorithm.
         
@@ -424,7 +417,7 @@ class LeastAngleRegressionOptions
             instead of constrained solutions.<br>
             Default: <tt>true</tt>
         */
-    LeastAngleRegressionOptions & leastSquaresSolutions(bool select)
+    LeastAngleRegressionOptions & leastSquaresSolutions(bool select = true)
     {
         least_squares_solutions = select;
         return *this;
@@ -708,6 +701,150 @@ leastAngleRegressionImpl(MultiArrayView<2, T, C1> const & A, MultiArrayView<2, T
 
 } // namespace detail
 
+   /** Least Angle Regression.
+
+    <b>\#include</b> \<<a href="regression_8hxx-source.html">vigra/regression.hxx</a>\> or<br>
+    <b>\#include</b> \<<a href="linear__algebra_8hxx-source.html">vigra/linear_algebra.hxx</a>\><br>
+        Namespaces: vigra and vigra::linalg
+
+   <b> Declarations:</b>
+
+    \code
+    namespace vigra { 
+      namespace linalg {
+        template <class T, class C1, class C2, class Array1, class Array2>
+        unsigned int
+        leastAngleRegression(MultiArrayView<2, T, C1> const & A, MultiArrayView<2, T, C2> const &b, 
+                             Array1 & activeSets, Array2 & solutions,
+                             LeastAngleRegressionOptions const & options = LeastAngleRegressionOptions());
+
+        template <class T, class C1, class C2, class Array1, class Array2>
+        unsigned int
+        leastAngleRegression(MultiArrayView<2, T, C1> const & A, MultiArrayView<2, T, C2> const &b, 
+                             Array1 & activeSets, Array2 & lasso_solutions, Array2 & lsq_solutions,
+                             LeastAngleRegressionOptions const & options = LeastAngleRegressionOptions());
+      }
+      using linalg::leastAngleRegression;
+    }
+    \endcode
+
+       This function implements Least Angle Regression (LARS) as described in
+       
+       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+       B.Efron, T.Hastie, I.Johnstone, and R.Tibshirani: <em>"Least Angle Regression"</em>, 
+       Annals of Statistics 32(2):407-499, 2004.
+       
+       It is an efficient algorithm to solve the L1-regularized least squares (LASSO) problem 
+
+        \f[ \tilde \textrm{\bf x} = \textrm{argmin} 
+             \left|\left|\textrm{\bf A} \textrm{\bf x} - \textrm{\bf b}\right|\right|_2^2 
+           \textrm{ subject to } \left|\left|\textrm{\bf x}\right|\right|_1\le s
+        \f]
+
+       and the L1-regularized non-negative least squares (NN-LASSO) problem 
+
+        \f[ \tilde \textrm{\bf x} = \textrm{argmin} \left|\left|\textrm{\bf A} \textrm{\bf x} - \textrm{\bf b}\right|\right|_2^2 
+           \textrm{ subject to } \left|\left|\textrm{\bf x}\right|\right|_1\le s \textrm{ and } \textrm{\bf x}\ge \textrm{\bf 0}
+        \f]
+       
+       where \a A is a matrix with <tt>m</tt> rows and <tt>n</tt> columns (often with <tt>m \< n</tt>),
+       \a b a vector of length <tt>m</tt>, and a regularization parameter s \>= 0.0. 
+       L1-regularization has the desirable effect that it causes the solution \a x to be sparse, i.e. only
+       the most important variables (called the <em>active set</em>) have non-zero values. The 
+       key insight of the LARS algorithm is the following: When the solution vector is considered 
+       as a function of the regularization parameter s, then <b>x</b>(s) is a piecewise
+       linear function, i.e. a polyline in n-dimensional space. The knots of the polyline 
+       occur precisely at those values of s where one variable enters or leaves the active set,
+       and can be efficiently computed. 
+       
+       Therefore, leastAngleRegression() returns the entire solution path as a sequence of knot points, starting
+       at \f$\textrm{\bf x}(s=0)\f$ (where the only feasible solution is obviously <b>x</b> = 0) and ending at 
+       \f$\textrm{\bf x}(s=\infty)\f$ (where the solution becomes the ordinary least squares solution). Actually, 
+       the initial null solution is not explicitly returned, i.e. the sequence starts at the first non-zero 
+       solution with one variable in the active set. The function leastAngleRegression() returns the number 
+       of solutions( i.e. knot points) computed.
+       
+       The sequences of active sets and corresponding variable weights are returned in \a activeSets and 
+       \a solutions respectively. That is, <tt>activeSets[i]</tt> is an \ref vigra::ArrayVector "ArrayVector\<int\>"
+       containing the indices of the variables that are active at the i-th knot, and <tt>solutions</tt> is a 
+       \ref vigra::linalg::Matrix "Matrix\<T\>" containing the weights of those variables, in the same order (see
+       example below). Variables not contained in <tt>activeSets[i]</tt> are zero at this solution.
+       
+       The behavior of the algorithm can be adapted by \ref vigra::linalg::LeastAngleRegressionOptions
+       "LeastAngleRegressionOptions":
+        <DL>
+        <DT><b>options.lasso()</b> (active by default)
+                          <DD> Compute the LASSO solution as described above.
+        <DT><b>options.nnlasso()</b> (inactive by default)
+                          <DD> Compute non-negative LASSO solutions, i.e. use the additional constraint that
+                               <b>x</b> \>= 0 in all solutions.
+        <DT><b>options.lars()</b> (inactive by default)
+                          <DD> Compute a solution path according to the plain LARS rule, i.e. never remove
+                               a variable from the active set once it entered.
+        <DT><b>options.leastSquaresSolutions(bool)</b> (default: true)
+                          <DD> Use the algorithm mode selected above 
+                               to determine the sequence of active sets, but then compute and return an 
+                               ordinary (unconstrained) least squares solution for every active set.<br>
+                               <b>Note:</b> The second call for leastAngleRegression() ignores this option and
+                               does always compute both constrained and unconstrained solutions (returned in 
+                               \a lasso_solutions and \a lsq_solutions respectively).
+        <DT><b>maxSolutionCount(unsigned int n)</b> (default: n = 0, i.e. compute all solutions)
+                          <DD> Compute at most <tt>n</tt> solutions.
+        </DL>
+        
+        <b>Usage:</b>
+        
+        \code
+	    int m = ..., n = ...;
+	    Matrix<double> A(m, n), b(m, 1);
+	    ... // fill A and b
+
+        // normalize the input
+	    Matrix<double> offset(1,n), scaling(1,n);
+	    prepareColumns(A, A, offset, scaling, DataPreparationGoals(ZeroMean|UnitVariance));
+	    prepareColumns(b, b, DataPreparationGoals(ZeroMean));
+
+	    // arrays to hold the output
+	    ArrayVector<ArrayVector<int> > activeSets;
+	    ArrayVector<Matrix<double> > solutions;
+	    
+	    // run leastAngleRegression() in non-negative LASSO mode
+	    int numSolutions = leastAngleRegression(A, b, activeSets, solutions,
+	                                LeastAngleRegressionOptions().nnlasso());
+    	
+	    // print results
+	    Matrix<double> denseSolution(1, n);
+	    for (MultiArrayIndex k = 0; k < numSolutions; ++k) 
+	    {
+		    // transform the sparse solution into a dense vector
+		    denseSolution.init(0.0); // ensure that inactive variables are zero
+		    for (unsigned int i = 0; i < activeSets[k].size(); ++i) {
+		    {
+			    // set the values of the active variables;
+			    // activeSets[k][i] is the true index of the i-th variable in the active set
+			    denseSolution(0, activeSets[k][i]) = solutions[k](i,0);
+		    }
+		    
+		    // invert the input normalization
+		    denseSolution = denseSolution * pointWise(scaling);
+		    
+		    // output the solution
+            std::cout << "solution " << k << ":\n" << denseSolution << std::endl;
+	    }
+        \endcode
+        
+        <b>Required Interface:</b>
+        
+        <ul>
+        <li> <tt>T</tt> must be numeric type (compatible to double)
+        <li> <tt>Array1 a1;</tt><br>
+             <tt>a1.push_back(ArrayVector\<int\>());</tt>
+        <li> <tt>Array2 a2;</tt><br>
+             <tt>a2.push_back(Matrix\<T\>());</tt>
+        </ul>
+   */
+doxygen_overloaded_function(template <...> unsigned int leastAngleRegression)
+
 template <class T, class C1, class C2, class Array1, class Array2>
 inline unsigned int
 leastAngleRegression(MultiArrayView<2, T, C1> const & A, MultiArrayView<2, T, C2> const &b, 
@@ -733,13 +870,17 @@ leastAngleRegression(MultiArrayView<2, T, C1> const & A, MultiArrayView<2, T, C2
 
        Given a matrix \a A with <tt>m</tt> rows and <tt>n</tt> columns (with <tt>m \>= n</tt>),
        and a column vector \a b of length <tt>m</tt> rows, this function computes 
-       a column vector \a x of length <tt>n</tt> with <b>non-negative entries</b> such that the residual
+       a column vector \a x of length <tt>n</tt> with <b>non-negative entries</b> that minimizes the residual,
+       i.e. it solves the optimization problem
 
-        \f[ \left|\textrm{\bf A} \textrm{\bf x} - \textrm{\bf b}\right|^2
+        \f[ \tilde \textrm{\bf x} = \textrm{argmin} 
+            \left|\left|\textrm{\bf A} \textrm{\bf x} - \textrm{\bf b}\right|\right|_2^2
+            \textrm{ subject to } \textrm{\bf x} \ge \textrm{\bf 0}
         \f]
 
-       is minimized. Both \a b and \a x must be column vectors (i.e. matrices with <tt>1</tt> column).
-       Note that all matrices must already have the correct shape.
+       Both \a b and \a x must be column vectors (i.e. matrices with <tt>1</tt> column).
+       Note that all matrices must already have the correct shape. The solution is computed by means
+       of \ref leastAngleRegression() with non-negativity constraint.
 
     <b>\#include</b> \<<a href="regression_8hxx-source.html">vigra/regression_8hxx.hxx</a>\> or<br>
     <b>\#include</b> \<<a href="linear__algebra_8hxx-source.html">vigra/linear_algebra.hxx</a>\><br>
