@@ -72,8 +72,7 @@ namespace linalg
        <tt>false</tt> when the rank of \a A is less than <tt>n</tt>.
        See \ref linearSolve() for more documentation.
 
-    <b>\#include</b> \<<a href="regression_8hxx-source.html">vigra/regression_8hxx.hxx</a>\> or<br>
-    <b>\#include</b> \<<a href="linear__algebra_8hxx-source.html">vigra/linear_algebra.hxx</a>\><br>
+    <b>\#include</b> \<<a href="regression_8hxx-source.html">vigra/regression.hxx</a>\>
         Namespaces: vigra and vigra::linalg
    */
 template <class T, class C1, class C2, class C3>
@@ -115,8 +114,7 @@ leastSquares(MultiArrayView<2, T, C1> const & A,
        The function returns
        <tt>false</tt> when the rank of the weighted matrix \a A is less than <tt>n</tt>.
 
-    <b>\#include</b> \<<a href="regression_8hxx-source.html">vigra/regression.hxx</a>\> or<br>
-    <b>\#include</b> \<<a href="linear__algebra_8hxx-source.html">vigra/linear_algebra.hxx</a>\><br>
+    <b>\#include</b> \<<a href="regression_8hxx-source.html">vigra/regression.hxx</a>\>
         Namespaces: vigra and vigra::linalg
    */
 template <class T, class C1, class C2, class C3, class C4>
@@ -176,8 +174,7 @@ weightedLeastSquares(MultiArrayView<2, T, C1> const & A,
        The function returns <tt>false</tt> if the rank of \a A is less than <tt>n</tt>
        and <tt>lambda == 0.0</tt>.
 
-    <b>\#include</b> \<<a href="regression_8hxx-source.html">vigra/regression.hxx</a>\> or<br>
-    <b>\#include</b> \<<a href="linear__algebra_8hxx-source.html">vigra/linear_algebra.hxx</a>\><br>
+    <b>\#include</b> \<<a href="regression_8hxx-source.html">vigra/regression.hxx</a>\>
         Namespaces: vigra and vigra::linalg
    */
 template <class T, class C1, class C2, class C3>
@@ -250,8 +247,7 @@ ridgeRegression(MultiArrayView<2, T, C1> const & A,
        The function returns <tt>false</tt> if the rank of \a A is less than <tt>n</tt>
        and <tt>lambda == 0.0</tt>.
 
-    <b>\#include</b> \<<a href="regression_8hxx-source.html">vigra/regression.hxx</a>\> or<br>
-    <b>\#include</b> \<<a href="linear__algebra_8hxx-source.html">vigra/linear_algebra.hxx</a>\><br>
+    <b>\#include</b> \<<a href="regression_8hxx-source.html">vigra/regression.hxx</a>\>
         Namespaces: vigra and vigra::linalg
    */
 template <class T, class C1, class C2, class C3, class C4>
@@ -305,8 +301,7 @@ weightedRidgeRegression(MultiArrayView<2, T, C1> const & A,
        The function returns <tt>false</tt> when the matrix \a A is rank deficient. If this
        happens, and one of the lambdas is zero, the corresponding column of \a x will be skipped.
 
-    <b>\#include</b> \<<a href="regression_8hxx-source.html">vigra/regression.hxx</a>\> or<br>
-    <b>\#include</b> \<<a href="linear__algebra_8hxx-source.html">vigra/linear_algebra.hxx</a>\><br>
+    <b>\#include</b> \<<a href="regression_8hxx-source.html">vigra/regression.hxx</a>\>
         Namespaces: vigra and vigra::linalg
    */
 template <class T, class C1, class C2, class C3, class Array>
@@ -350,6 +345,8 @@ ridgeRegressionSeries(MultiArrayView<2, T, C1> const & A,
 
 /** \brief Pass options to leastAngleRegression().
 
+    <b>\#include</b> \<<a href="regression_8hxx-source.html">vigra/regression.hxx</a>\>
+        Namespaces: vigra and vigra::linalg
 */
 class LeastAngleRegressionOptions
 {
@@ -703,8 +700,7 @@ leastAngleRegressionImpl(MultiArrayView<2, T, C1> const & A, MultiArrayView<2, T
 
    /** Least Angle Regression.
 
-    <b>\#include</b> \<<a href="regression_8hxx-source.html">vigra/regression.hxx</a>\> or<br>
-    <b>\#include</b> \<<a href="linear__algebra_8hxx-source.html">vigra/linear_algebra.hxx</a>\><br>
+    <b>\#include</b> \<<a href="regression_8hxx-source.html">vigra/regression.hxx</a>\>
         Namespaces: vigra and vigra::linalg
 
    <b> Declarations:</b>
@@ -872,8 +868,7 @@ leastAngleRegression(MultiArrayView<2, T, C1> const & A, MultiArrayView<2, T, C2
 
        Given a matrix \a A with <tt>m</tt> rows and <tt>n</tt> columns (with <tt>m \>= n</tt>),
        and a column vector \a b of length <tt>m</tt> rows, this function computes 
-       a column vector \a x of length <tt>n</tt> with <b>non-negative entries</b> that minimizes the residual,
-       i.e. it solves the optimization problem
+       a column vector \a x of length <tt>n</tt> with <b>non-negative entries</b> that solves the optimization problem
 
         \f[ \tilde \textrm{\bf x} = \textrm{argmin} 
             \left|\left|\textrm{\bf A} \textrm{\bf x} - \textrm{\bf b}\right|\right|_2^2
@@ -884,8 +879,7 @@ leastAngleRegression(MultiArrayView<2, T, C1> const & A, MultiArrayView<2, T, C2
        Note that all matrices must already have the correct shape. The solution is computed by means
        of \ref leastAngleRegression() with non-negativity constraint.
 
-    <b>\#include</b> \<<a href="regression_8hxx-source.html">vigra/regression_8hxx.hxx</a>\> or<br>
-    <b>\#include</b> \<<a href="linear__algebra_8hxx-source.html">vigra/linear_algebra.hxx</a>\><br>
+    <b>\#include</b> \<<a href="regression_8hxx-source.html">vigra/regression.hxx</a>\>
         Namespaces: vigra and vigra::linalg
    */
 template <class T, class C1, class C2, class C3>
