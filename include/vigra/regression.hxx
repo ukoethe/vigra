@@ -474,6 +474,9 @@ unsigned int leastAngleRegressionMainLoop(LarsData<T, C1, C2> & d,
     typedef typename Matrix<T>::view_type Subarray;
     typedef ArrayVector<MultiArrayIndex> Permutation;
     typedef typename Permutation::view_type ColumnSet;
+    
+    vigra_precondition(d.activeSetSize > 0,
+       "leastAngleRegressionMainLoop() must not be called with empty active set.");
 
     bool enforce_positive = (options.mode == LeastAngleRegressionOptions::NNLASSO);
     bool lasso_modification = (options.mode != LeastAngleRegressionOptions::LARS);

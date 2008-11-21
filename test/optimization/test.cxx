@@ -273,7 +273,7 @@ struct OptimizationTest {
 	        std::ostringstream s;
 	        s << "failure in problem " << k << " of NNLSQ test";
 	        for(int l=0; l<50; ++l)
-    	        shouldMsg((r(l,0) < 0.0 && result(l,0) == 0.0) || (abs(r(l,0)) < epsilon && result(l,0) > 0.0), s.str().c_str());
+    	        shouldMsg((r(l,0) <= 0.0 && result(l,0) == 0.0) || (abs(r(l,0)) < epsilon && result(l,0) > 0.0), s.str().c_str());
 		}
     }
 };
