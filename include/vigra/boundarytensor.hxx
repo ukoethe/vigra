@@ -55,11 +55,12 @@ namespace detail {
 
 typedef ArrayVector<Kernel1D<double> > KernelArray;
 
+template <class KernelArray>
 void
 initGaussianPolarFilters1(double std_dev, KernelArray & k)
 {
-    typedef KernelArray::value_type Kernel;
-    typedef Kernel::iterator iterator;
+    typedef typename KernelArray::value_type Kernel;
+    typedef typename Kernel::iterator iterator;
 
     vigra_precondition(std_dev >= 0.0,
               "initGaussianPolarFilter1(): "
@@ -112,10 +113,12 @@ initGaussianPolarFilters1(double std_dev, KernelArray & k)
     }
 }
 
+template <class KernelArray>
 void
 initGaussianPolarFilters2(double std_dev, KernelArray & k)
 {
-    typedef Kernel1D<double>::iterator iterator;
+    typedef typename KernelArray::value_type Kernel;
+    typedef typename Kernel::iterator iterator;
 
     vigra_precondition(std_dev >= 0.0,
               "initGaussianPolarFilter2(): "
@@ -159,10 +162,12 @@ initGaussianPolarFilters2(double std_dev, KernelArray & k)
     }
 }
 
+template <class KernelArray>
 void
 initGaussianPolarFilters3(double std_dev, KernelArray & k)
 {
-    typedef Kernel1D<double>::iterator iterator;
+    typedef typename KernelArray::value_type Kernel;
+    typedef typename Kernel::iterator iterator;
 
     vigra_precondition(std_dev >= 0.0,
               "initGaussianPolarFilter3(): "
