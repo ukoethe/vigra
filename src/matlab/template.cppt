@@ -8,136 +8,92 @@
 
 //this could be a typedef but if you want outType to be the same type as inType then you can just 
 //set outType to T
-#define outType double
-#define vigraFunc vigraDistance
-/*++++++++++++++++++++++++++HELPERFUNC+++++++++++++++++++++++++++++++*/
-/* This is used for better readibility of the test cases            .
-/* Nothing to be done here.
-/*+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
+
+#define vigraFunctor vigraDistance
+
 using namespace vigra;
 
-int cantorPair(int x, int y){
-		return (int)(((x+y)*(x+y+1))/2+y);
-}
-int cantorPair(int x, int y, int z){
-		return cantorPair(cantorPair(x,y),z);
-}
 
-template <int x, int y>
-struct cP{
-	enum { value = (int)(((x+y)*(x+y+1))/2+y)};
-};
 
-template <int x, int y, int z>
-struct cP3{
-	enum { value = cP<cP<x, y>::value, z>::value};
-};
-
+/*+++++++++++++++++++User data structure+++++++++++++++++++++++++++++*/
+/* This is the structure which contains all user data and user Options. 
+/*
+/* Predefined fields.
+/* numOfDim:			Number of Dimensions of the first parameter
+/*					can be IMAG(2) or VOLUME(3) 
+/* enum dim 			(IMAG =2 , VOLUME = 4)
+/
+/* in				BasicImageView that maps to inputs[0] in the 
+/*					2D case. Uninitialised in 3D case.
+/* in3D				MultiArrayViews that maps on to imputs[0] in 
+/*					2D AND 3D case.
+/* out				unitialised BasicImageView. Use one of the
+/*					createOutput functions to create a suitible 
+/*					Basic Image.
+/* out3D				same as above only as MultiArrayView.
+/* 
+/* Predefined Macros:
+/* declScalar
+/* declMinMaxScalar
+/* declCharConstr
+/*
+/* The constructor:
+/*
 /*+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
-/* The Optons struct contains all the necassary working data and 
-/* options for the vigraFunc. This is the minimal struct
-/* Add fields as necessary
-/*+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
-template <class T ...>
-struct options{
-	int numOfDim;
+template <class T>
+struct data: public basedata<T>{
+	declScalar()
+	declMinMaxScalar()
+	declCharConstr()
 	
-	BasicImageView<T>  in;
-	MultiArrayView<3,T> in3D;
-
-	BasicImageView<YOURTYPE>  out;
-	MultiArrayView<3,YOURTYPE> out3D;
+	data(matlab::OutputArray outputs, matlab::InputArray inputs)
+	:			basedata(inputs),
+				map(title), 
+				map(title2)
+	{
+	//DO SOME HARDCORE PRECONDITION CHECKING.
 	
-	options(int nofDim){
-		numOfDim = nofDim;
 	}
-};
-
-// Quick and dirty macro for filling numerical options fields.
-#define fillOptNumericField(name); \
-		mxArray* name =mxGetField(inputs[1], 0, #name);\
-		opt.name = (name!=NULL&&mxIsNumeric(name))?\
-							mxGetScalar(name) : opt.name;
+	
+	
+	
+	
+}
 /*+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
 /* This function does all the work
 /*+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
 template <class T>
-void vigraFunc(matlab::OutputArray outputs, matlab::InputArray inputs){
-	// Constant definition for readibility
-	enum {IMAG = 2, VOLUME = 3}dim;
-	
-	//Default Options
-	options<T> opt(mxGetNumberOfDimensions(inputs[0]));
-	
-	{//Preconditions on default options
-	if(opt.numOfDim > VOLUME)  
-						mexErrMsgTxt("Currently InputArray may only have 2 or 3 dimensions");
-	if(inputs.isEmpty(0)) 
-						mexErrMsgTxt("Input Image is empty!");
-					
-	}	
-	
-	//Map data to option fields
-	if(opt.numOfDim == IMAG){
-		opt.in = matlab::getImage<T>(inputs[0]);
-		opt.out = matlab::createImage<double>(opt.in.width(), opt.in.height(), outputs[0]);
-		opt.in3D = matlab::getMultiArray<3, T>(inputs[0]);
-		//Lets opt3D View the same data as out.
-		opt.out3D = MultiArrayView<3, outType>(opt.in3D.shape(), (outType*)opt.out.data());
-	}else{
-		opt.in3D = matlab::getMultiArray<3, T>(inputs[0]);
-		opt.out3D = matlab::createMultiArray<3,double>(opt.in3D.shape(), outputs[0]);
-	}
-	
-	//User supplied Options
-	if(inputs.isValid(1)){	
-		fillOptNumericField(NAME);
-	}
+class vigraFunctor
+{
+	void exec(matlab::OutputArray outputs, matlab::InputArray inputs){
+		//Default Options
+		data<T>  o(outputs, inputs);
+		
+		o.outputs(normal)
+		o.outputs(wierdsize);
 
-	
-
-	// contorPair maps 2 integers bijectively onto one dimension. (see Wikipedia Cantor pair Function) 
-	switch(cantorPair(...)){
-		case cP3<...>::value:
-		default:
-			mexErrMsgTxt("Something went wrong");
+		// contorPair maps 2 integers bijectively onto one dimension. (see Wikipedia Cantor pair Function) 
+		switch(cantorPair(...)){
+			case cP3<...>::value:
+			default:
+				mexErrMsgTxt("Something went wrong");
+		}
+		
+		// Are there more than one output? nargout.
+		
 	}
-	
-	// Are there more than one output? nargout.
-	
 }
-
 
 
 /*+++++++++++++++++++++++MexEntryFunc++++++++++++++++++++++++++++++++*/
-/* DELETE LINES IF A CERTAIN CLASS IS NOT SUPPORTED
+/* Gatewayfunction - see matlab.hxx for details.
+/* if a certain class is NOT supported - you will have to copy the 
+/* body of the callMexFunctor function and edit it here.
+/* Supports (u)int[8|16|32|64], float and double.
 /*+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
 
-void vigraMexFunction(matlab::OutputArray outputs, matlab::InputArray inputs)
-{    
-	mxClassID inClass = mxGetClassID(inputs[0]);
-	switch(inClass){
-		case mxDOUBLE_CLASS:
-			vigraFunc<double>(outputs, inputs);	break;
-		case mxSINGLE_CLASS:
-			vigraFunc<float>(outputs, inputs);		break;
-        case mxINT8_CLASS:
-			vigraFunc<Int8>(outputs, inputs);		break;
-		case mxINT16_CLASS:
-			vigraFunc<Int16>(outputs, inputs);		break;
-		case mxINT32_CLASS:
-			vigraFunc<Int32>(outputs, inputs);		break;
-		case mxINT64_CLASS:
-			vigraFunc<Int64>(outputs, inputs);		break;
-        case mxUINT8_CLASS:
-			vigraFunc<UInt8>(outputs, inputs);		break;
-		case mxUINT16_CLASS:
-			vigraFunc<UInt16>(outputs, inputs);	break;
-		case mxUINT32_CLASS:
-			vigraFunc<UInt32>(outputs, inputs);	break;
-		case mxUINT64_CLASS:
-			vigraFunc<UInt64>(outputs, inputs);	break;		
-		default:
-			mexErrMsgTxt("Input image must have type 'uint8'-16-32-64', 'int8-16-32-64' 'single' or 'double'.");
-	}
+void vigraMexFunction(matlab::OutputArray outputs, matlab::InputArray inputs){
+	// 
+	callMexFunctor<vigraFunctor>(outputs, inputs);
 }
+

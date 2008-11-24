@@ -568,5 +568,225 @@ void mexFunction(int nlhs, mxArray *plhs[],
   }
 }
 
+/*+*********************************
+Rahuls code starts here
+************************************+*/
+using namespace vigra;
+
+template <class Functor>
+void callMexFunctor(matlab::OutputArray outputs, matlab::InputArray inputs)
+{
+	mxClassID inClass = mxGetClassID(inputs[0]);
+	switch(inClass){
+		case mxDOUBLE_CLASS:
+			Functor::exec<double>(outputs, inputs);	break;
+		case mxSINGLE_CLASS:
+			Functor::exec<float>(outputs, inputs);		break;
+        case mxINT8_CLASS:
+			Functor::exec<Int8>(outputs, inputs);		break;
+		case mxINT16_CLASS:
+			Functor::exec<Int16>(outputs, inputs);		break;
+		case mxINT32_CLASS:
+			Functor::exec<Int32>(outputs, inputs);		break;
+		case mxINT64_CLASS:
+			Functor::exec<Int64>(outputs, inputs);		break;
+        case mxUINT8_CLASS:
+			Functor::exec<UInt8>(outputs, inputs);		break;
+		case mxUINT16_CLASS:
+			Functor::exec<UInt16>(outputs, inputs);	break;
+		case mxUINT32_CLASS:
+			Functor::exec<UInt32>(outputs, inputs);	break;
+		case mxUINT64_CLASS:
+			Functor::exec<UInt64>(outputs, inputs);	break;
+		default:
+			mexErrMsgTxt("Input image must have type 'uint8'-16-32-64', 'int8-16-32-64' 'single' or 'double'.");
+	}
+}
+
+/*++++++++++++++++++++++++++HELPERFUNC+++++++++++++++++++++++++++++++*/
+/* This is used for better readibility of the test cases            .
+/* Nothing to be done here.
+/*+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
+int cantorPair(int x, int y){
+		return (int)(((x+y)*(x+y+1))/2+y);
+}
+int cantorPair(int x, int y, int z){
+		return cantorPair(cantorPair(x,y),z);
+}
+
+template <int x, int y>
+struct cP{
+	enum { value = (int)(((x+y)*(x+y+1))/2+y)};
+};
+
+template <int x, int y, int z>
+struct cP3{
+	enum { value = cP<cP<x, y>::value, z>::value};
+};
+
+template <class T>
+bool is_in_range(T in, T min, T max)
+{
+	return (in >= min && in <= max)? true:false;
+}
+template<class T>
+bool is_in_range(T in, std::string min, T max)
+{
+	return(in <= max)? true:false;
+}
+
+template<class T>
+bool is_in_range(T in, T min, std::string max)
+{
+	return (in >= min)? true:false;
+}
+/*++++++++++++++++++++++++++HARDCORE-MACROS++++++++++++++++++++++++++++*/
+
+//Definition of Membervariables and assignment functions
+#define declScalar(type, name, default); \
+    type name;\
+	type get_##name(matlab::InputArray inputs)\
+	{\
+		if(inputs.size() == 1){\
+			return default;\
+		}else{\
+			mxArray* name =mxGetField(inputs[1], 0, #name);\
+			return (name!=NULL&&mxIsNumeric(name))\
+							? matlab::getScalar<type>(name)\
+							: default;\
+		}\
+	}\
+
+#define declScalarMinMax(type, name, default,min, max); \
+	type name;\
+	type get_##name(matlab::InputArray inputs)\
+	{\
+		if(inputs.size() == 1){\
+			return default;\
+		}else{\
+			mxArray* name =mxGetField(inputs[1], 0, #name);\
+			type out = (name!=NULL&&mxIsNumeric(name))\
+								? matlab::getScalar<type>(name)\
+							 	: default;\
+			if(!is_in_range<type>(out,min,max)){\
+				out = default;\
+				mexWarnMsgTxt("Value of '"#name"' out of range ["#min" ... "#max"]. using default: " #default );\
+			}\
+			return out;\
+		}\
+	}
+
+#define declCharConstr(title, number, name1_default, name2, name3, name4, name5);\
+	enum {name1_default = 1, name2 = 2, name3 = 3, name4 = 4, name5 = 5}title##enum;\
+	int title;\
+	int get_##title(matlab::InputArray inputs)\
+	{\
+		std::string title##_str[5];\
+		title##_str[0]= #name1_default;\
+		title##_str[1]= #name2;\
+		title##_str[2]= #name3;\
+		title##_str[3]= #name4;\
+		title##_str[4]= #name5;\
+		int returnval = name1_default;\
+		if(inputs.size() == 2){\
+			mxArray* title = mxGetField(inputs[1], 0 , #title);\
+			std::string test;\
+			bool flag = true;\
+			if(title !=NULL && mxIsChar(title)){\
+				test = matlab::getString(title);\
+				for(int ii = 0; ii < number;ii++)\
+				{\
+					if(test == title##_str[ii])\
+					{\
+						returnval = ii+1;\
+						flag = false;\
+					}\
+				}\
+			}\
+			if(flag)mexWarnMsgTxt("Value of '" #title "' not Valid. Using default: '" #name1_default "'");\
+		}\
+		return returnval;\
+	}
+
+#define declImage(name, type);\
+		BasicImageView<type>  name;\
+		BasicImageView<type> get_##name(mxArray *opt)\
+		{\
+			mxArray* nameArr =mxGetField(opt, 0, #name);\
+			BasicImageView<type> bla;\
+			return (name!=NULL&&mxIsNumeric(name))\
+		                 ? matlab::getImage<type>(name)\
+						 : bla;\
+		}
+
+#define declMultiArray(name, type);\
+		MultiArrayView<3,type>  name;\
+		MultiArrayView<3,type> get_##name(mxArray *opt)\
+		{\
+			mxArray* nameArr =mxGetField(opt, 0, #name);\
+			MultiArrayView<3,type> bla;\
+			return (name!=NULL&&mxIsNumeric(name))\
+		                 ? matlab::getMultiArray<3, T><type>(name)\
+						 : bla;\
+		}
+
+#define declOut(type);\
+	BasicImageView<type>  out;\
+	MultiArrayView<3,type> out3D;
+// Some Macros for commonly used output declarations
+#define mapOut_SAME(outType);\
+	if(numOfDim == IMAG){\
+		out = matlab::createImage<outType>(in.width(), in.height(), outputs[0]);\
+		out3D = MultiArrayView<3, outType>(in3D.shape(), (outType*)out.data());\
+	}else{\
+		out3D = matlab::createMultiArray<3,outType>(in3D.shape(), outputs[0]);\
+	}	
+#define mapOut_SIZE(outType,w,h,d);\
+	MultiArrayShape<3>::type newShape(w, h, d);\
+	if(numOfDim == IMAG){\
+		out = matlab::createImage<outType>(w, h, outputs[0]);\
+		out3D = MultiArrayView<3, outType>(newShape, (outType*)out.data());\
+	}else{\
+		out3D = matlab::createMultiArray<3,outType>(newShape, outputs[0]);\
+	}	
+#define mapOut_2D(outType,w,h,d);\
+	MultiArrayShape<3>::type newShape(w, h, 1);\
+	out = matlab::createImage<outType>(w, h, outputs[0]);\
+	out3D = MultiArrayView<3, outType>(newShape, (outType*)out.data());\
+
+#define mapOut_3D(outType,w,h,d)\
+	MultiArrayShape<3>::type newShape(w, h, d);\
+	out3D = matlab::createMultiArray<3,outType>(newShape, outputs[0]);\
+
+//Simplify Member Initialisors 
+#define map(name) name(get_##name(inputs))
+/*+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
+/* The Optons struct contains all the necassary working data and 
+/* options for the vigraFunc. This is the minimal struct
+/* Add fields as necessary
+/*+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
+template <class T>
+struct base_data{
+	int numOfDim;
+	enum {IMAG = 2, VOLUME = 3}dim;
+	BasicImageView<T>  in;
+	MultiArrayView<3,T> in3D;
+
+	base_data(matlab::InputArray inputs)
+	{
+		numOfDim = mxGetNumberOfDimensions(inputs[0]);
+		if(numOfDim > 3)  
+							mexErrMsgTxt("Currently InputArray may only have 2 or 3 dimensions");
+		if(inputs.isEmpty(0)) 
+							mexErrMsgTxt("Input Image is empty!");
+		if(numOfDim == 2){
+			in = matlab::getImage<T>(inputs[0]);
+			in3D = matlab::getMultiArray<3, T>(inputs[0]);
+		}else{
+			in3D = matlab::getMultiArray<3, T>(inputs[0]);
+		}
+	}
+	
+};
 
 #endif // VIGRA_MATLAB_HXX
