@@ -22,12 +22,12 @@ struct data{
     MultiArrayView<4, T> in; 
     MultiArrayView<4, T> out;
 	
-	declScalarMinMax(bool, useCatmull, 0, 0, 1);
+	declCharConstr(method, 2, BSpline, CatmullRom, o, a, e);
 	declScalarMinMax(int, splineOrder, 3, 0, 5);
 
 	
 	data(matlab::OutputArray outputs, matlab::InputArray inputs)
-	:			map(useCatmull),
+	:			map(method),
 				map(splineOrder)
 	{
 		in = matlab::getMultiArray<4, T>(inputs[0]);
@@ -43,13 +43,18 @@ struct data{
 			else out = matlab::createMultiArray<4,T>(in.shape(), outputs[0]);
 		}
 		else out = matlab::createMultiArray<4,T>(in.shape(), outputs[0]);
+		
+		if(method == CatmullRom){
+			splineOrder = 0;
+			mexWarnMsgTxt("Ignoring splineOrder parameter.");
+		}
 	}
 };
 /*+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
 /* This function does all the work
 /*+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
 
-
+#define cP2_(a, b) cP<data<T>::a, b>::value
 struct vigraFunctor
 {
 	template <class T>
@@ -63,32 +68,27 @@ struct vigraFunctor
 	    {
 	        MultiArrayView<3, T> ink = o.in.bindOuter(k);    
 	        MultiArrayView<3, T> outk = o.out.bindOuter(k);
-	        switch(cantorPair(o.useCatmull, o.splineOrder))
+	        switch(cantorPair(o.method, o.splineOrder))
 	        {
-	          case cP<0, 0>::value:
+	        case cP2_(BSpline, 0):
 	            resizeMultiArraySplineInterpolation(srcMultiArrayRange(ink), destMultiArrayRange(outk), BSpline<0>());
 	            break;
-	          case cP<0, 1>::value:
+	        case cP2_(BSpline, 1):
 	            resizeMultiArraySplineInterpolation(srcMultiArrayRange(ink), destMultiArrayRange(outk), BSpline<1>());
 	            break;
-	          case cP<0, 2>::value:
+	        case cP2_(BSpline, 2):
 	            resizeMultiArraySplineInterpolation(srcMultiArrayRange(ink), destMultiArrayRange(outk), BSpline<2>());
 	            break;
-	          case cP<0, 3>::value:
+	        case cP2_(BSpline, 3):
 	            resizeMultiArraySplineInterpolation(srcMultiArrayRange(ink), destMultiArrayRange(outk), BSpline<3>());
 	            break;
-	          case cP<0, 4>::value:
+	        case cP2_(BSpline, 4):
 	            resizeMultiArraySplineInterpolation(srcMultiArrayRange(ink), destMultiArrayRange(outk), BSpline<4>());
 	            break;
-	          case cP<0, 5>::value:
+	        case cP2_(BSpline, 5):
 	            resizeMultiArraySplineInterpolation(srcMultiArrayRange(ink), destMultiArrayRange(outk), BSpline<5>());
 	            break;
-			case cP<1, 0>::value:
-			case cP<1, 1>::value:
-			case cP<1, 2>::value:
-			case cP<1, 3>::value:
-			case cP<1, 4>::value:
-			case cP<1, 5>::value:
+			case cP2_(CatmullRom, 0):
 				resizeMultiArraySplineInterpolation(srcMultiArrayRange(ink), destMultiArrayRange(outk), CatmullRomSpline<double>());
 	            break;
 	         default:

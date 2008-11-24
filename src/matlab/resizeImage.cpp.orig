@@ -1,3 +1,134 @@
+/*++++++++++++++++++++INCLUDES+and+Definitions++++++++++++++++++++++++*/
+
+#include <vigra/matlab.hxx>
+#include <string>
+#include <vigra/multi_resize.hxx>
+
+
+
+//this could be a typedef but if you want outType to be the same type as inType then you can just 
+//set outType to T
+
+#define vigraFunctor vigraResize3
+
+using namespace vigra;
+
+/*+++++++++++++++++++User data structure+++++++++++++++++++++++++++++*/
+
+/*+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
+//This is not using base_data as base class. because input is 4D.
+
+struct data: public base_data<T>{
+
+	
+	declCharConstr(method, 3, BSpline, Catmull, Coscott, a, e);
+	declScalarMinMax(int, splineOrder, 3, 0, 5);
+	declOut(T);
+	
+	data(matlab::OutputArray outputs, matlab::InputArray inputs)
+	:			base_data(inputs),
+				map(method),
+				map(splineOrder)
+	{
+		if(inputs.size() == 2)
+		{
+			mxArray* shape =mxGetField(inputs[1], 0, "shape");
+			if(shape != NULL && mxIsNumeric(shape))
+			{
+				MultiArrayShape<2>::type newShape = matlab::getShape<2>(shape);		
+				mapOut_3D(T, newShape[0], newShape[1], in3D.shape(2));
+			}
+			else out3D = matlab::createMultiArray<3,T>(in3D.shape(), outputs[0]);
+		}
+		else out3D = matlab::createMultiArray<3,T>(in.shape(), outputs[0]);
+		
+		if(method == Cascott || method == Catmull){
+			mexWarnMsgTxt("Ignoring splineOrder parameter.");
+			solineOrder = 0;
+		}
+	}
+};
+/*+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
+/* This function does all the work
+/*+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
+
+#define cP2_(a, b) cP<data<T>::a, b>::value
+
+struct vigraFunctor
+{
+	template <class T>
+	static void exec(matlab::OutputArray outputs, matlab::InputArray inputs){
+		//Options
+		data<T>  o(outputs, inputs);
+
+		// contorPair maps 2 integers bijectively onto one dimension. (see Wikipedia Cantor pair Function) 
+
+	    for(int k=0; k<o.in.shape(3); ++k)
+	    {
+	        MultiArrayView<3, T> ink = o.in.bindOuter(k);    
+	        MultiArrayView<3, T> outk = o.out.bindOuter(k);
+	        switch(cantorPair(o.method, o.splineOrder))
+	        {
+	        case cP2_(BSpline, 0):
+	            resizeImageNoInterpolation(srcImageRange(ink), destImageRange(outk));
+	            break;
+	        case cP2_(BSpline, 1):
+				resizeImageLinearInterpolation(srcImageRange(ink), destImageRange(outk));
+	            break;
+	        case cP2_(BSpline, 2):
+				resizeImageSplineInterpolation(srcImageRange(ink), destImageRange(outk), BSpline<2>());
+	            break;
+	        case cP2_(BSpline, 3):
+				resizeImageSplineInterpolation(srcImageRange(ink), destImageRange(outk), BSpline<3>());
+	            break;
+	        case cP2_(BSpline, 4):
+				resizeImageSplineInterpolation(srcImageRange(ink), destImageRange(outk), BSpline<4>());
+	            break;
+	        case cP2_(BSpline, 5):
+				resizeImageSplineInterpolation(srcImageRange(ink), destImageRange(outk), BSpline<5>());
+	            break;
+			case cP2_(CatmullRom, 0):
+				resizeImageCatmullRomInterpolation(srcImageRange(ink), destImageRange(outk));
+	            break;
+			case cP2_(Cascott, 0):
+				resizeImageCoscotInterpolation(srcMultiArrayRange(ink), destMultiArrayRange(outk));
+	            break;			
+	        default:
+	            mexErrMsgTxt("Something went wrong");
+	        }
+	    }
+		
+	}
+};
+
+
+/*+++++++++++++++++++++++MexEntryFunc++++++++++++++++++++++++++++++++*/
+/* Gatewayfunction - see matlab.hxx for details.
+/* if a certain class is NOT supported - you will have to copy the 
+/* body of the callMexFunctor function and edit it here.
+/* Supports (u)int[8|16|32|64], float and double.
+/*+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
+/** MATLAB 
+function resized = vigraResize3(original)
+function resized = vigraResize3(original, options)
+
+D = vigraresize3(inputArray) resizes original Volume data with default options.
+D = vigraConnectedComponents(inputImage, options)  does the same with user options.
+
+	original    - 3D matrix with original volume data 
+					(gray scale or multi-band/RGB, type 'uint8', 'single' or 'double')
+	options
+		shape    - int32 array of length 3 giving the new shape
+			(default: same size as old volume)
+		splineOrder - order of interpolation 
+			(0 <= splineOrder <= 5, default: 3, i.e. cubic splines)
+		useCatmull - use CatmullRom Splines - (Ignores splineOrder value)
+			derfault: 0;
+*/
+void vigraMexFunction(matlab::OutputArray outputs, matlab::InputArray inputs){
+	// 
+	callMexFunctor<vigraFunctor>(outputs, inputs);
+}
 #include <vigra/matlab.hxx>
 #include <vigra/basicimageview.hxx>
 #include <vigra/resizeimage.hxx>
@@ -7,13 +138,6 @@ using namespace vigra;
 template <class T>
 void vigraResizeImageImpl(matlab::OutputArray outputs, matlab::InputArray inputs)
 {    
-    MultiArrayView<3, T> in = matlab::getMultiArray<3, T>(inputs[0]);
-    MultiArrayShape<2>::type newShape = matlab::getShape<2>(inputs[1]);
-    MultiArrayShape<3>::type newShape3(newShape[0], newShape[1], in.shape(2));
-    MultiArrayView<3, T> out = matlab::createMultiArray<3, T>(newShape3, outputs[0]);
-    unsigned int splineOrder = inputs.isValid(2) 
-                                   ? matlab::getScalar<unsigned int>(inputs[2])
-                                   : 3;
 
     for(int k=0; k<in.shape(2); ++k)
     {
@@ -47,8 +171,8 @@ void vigraResizeImageImpl(matlab::OutputArray outputs, matlab::InputArray inputs
 
  
 /** MATLAB 
-function resized = vigraWatershed(original, newShape)
-function resized = vigraWatershed(original, newShape, splineOrder)
+function resized = resizeImage(original, newShape)
+function resized = resizeImage(original, newShape, splineOrder)
 
 resize a 2D array to a new shape using spline interpolation of the given order 
 (default: using cubic spline interpolation).

@@ -755,14 +755,12 @@ bool is_in_range(T in, T min, std::string max)
 	out3D = MultiArrayView<3, outType>(newShape, (outType*)out.data());\
 
 #define mapOut_3D(outType,w,h,d)\
-	MultiArrayShape<3>::type newShape(w, h, d);\
-	out3D = matlab::createMultiArray<3,outType>(newShape, outputs[0]);\
+	MultiArrayShape<3>::type scrabawaduwada(w, h, d);\
+	out3D = matlab::createMultiArray<3,outType>(scrabawaduwada, outputs[0]);\
 
 //Simplify Member Initialisors 
 #define map(name) name(get_##name(inputs))
 
-#define cP2_(a, b) cP<data<T>::a, data<T>::b>::value
-#define cP3_(a, b, c) cP3<data<T>::a, data<T>::b, data<T>::c>::value
 /*+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
 /* The Optons struct contains all the necassary working data and 
 /* options for the vigraFunc. This is the minimal struct

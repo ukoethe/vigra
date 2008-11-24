@@ -40,7 +40,7 @@ struct data: public base_data<T>{
 /* This function does all the work
 /*+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
 
-
+#define cP2_(a, b) cP<data<T>::a, data<T>::b>::value
 struct vigraFunctor
 {
 	template <class T>
