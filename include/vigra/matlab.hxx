@@ -760,6 +760,9 @@ bool is_in_range(T in, T min, std::string max)
 
 //Simplify Member Initialisors 
 #define map(name) name(get_##name(inputs))
+
+#define cP2_(a, b) cP<data<T>::a, data<T>::b>::value
+#define cP3_(a, b, c) cP3<data<T>::a, data<T>::b, data<T>::c>::value
 /*+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
 /* The Optons struct contains all the necassary working data and 
 /* options for the vigraFunc. This is the minimal struct

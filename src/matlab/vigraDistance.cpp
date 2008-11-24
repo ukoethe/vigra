@@ -1,165 +1,85 @@
-/*
-This is a template file used to create all porting functions of VIGRA
-*/
-
-/*++++++++++++++++++++++++++INCLUDES+++++++++++++++++++++++++++++++++*/
+/*++++++++++++++++++++INCLUDES+and+Definitions++++++++++++++++++++++++*/
 
 #include <vigra/matlab.hxx>
+#include <string>
 #include <vigra/distancetransform.hxx>
 #include <vigra/multi_distance.hxx>
-#include <string>
 
 
 //this could be a typedef but if you want outType to be the same type as inType then you can just 
 //set outType to T
-#define outType double
-#define vigraFunc vigraDistance
-/*++++++++++++++++++++++++++HELPERFUNC+++++++++++++++++++++++++++++++*/
-/* This is used for better readibility of the test cases            .
-/* Nothing to be done here.
-/*+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
+
+#define vigraFunctor vigraDistance
+
 using namespace vigra;
 
-int cantorPair(int x, int y){
-		return (int)(((x+y)*(x+y+1))/2+y);
-}
-int cantorPair(int x, int y, int z){
-		return cantorPair(cantorPair(x,y),z);
-}
+/*+++++++++++++++++++User data structure+++++++++++++++++++++++++++++*/
 
-template <int x, int y>
-struct cP{
-	enum { value = (int)(((x+y)*(x+y+1))/2+y)};
-};
-
-template <int x, int y, int z>
-struct cP3{
-	enum { value = cP<cP<x, y>::value, z>::value};
-};
 /*+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
-/* The Optons struct contains all the necassary working data and 
-/* options for the vigraFunc. This is the minimal struct
-/* Add fields as necessary
-/*+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
-template <class T >
-struct options{
-	int numOfDim;
-	bool backgroundMode;
-	int method;
+template <class T>
+struct data: public base_data<T>{
+	declScalarMinMax(bool, backgroundMode, 0, 0, 1);
+	declCharConstr(method, 4, MULT, MULT_SQUARED, IMAG_DIST_TRANS, INVERTEDCRAP, e);
+	declOut(double);
 	
-	//Currently only supported in the 2 Version
-	int backgroundPixel;
-	int norm;
+	//Only supported with IMAG_DIST_TRANS
+	declScalar(T, backgroundPixel, 0);
+	declScalarMinMax(int, norm, 2, 0, 2);
 	
-	
-	BasicImageView<T>  in;
-	MultiArrayView<3,T> in3D;
-
-	BasicImageView<double>  out;
-	MultiArrayView<3,double> out3D;
-	
-	options(int nofDim, bool back, int meth, int backp, int nrm){
-		numOfDim = nofDim;
-		backgroundMode = back;
-		method = meth;
-		backgroundPixel = backp;
-		norm = nrm;
+	data(matlab::OutputArray outputs, matlab::InputArray inputs)
+	:			base_data(inputs), map(backgroundMode), map(method), map(backgroundPixel), map(norm)
+	{
+		mapOut_SAME(double);
+		if(this->numOfDim == 3 && this->method == IMAG_DIST_TRANS){
+			this->method = MULT;
+			mexWarnMsgTxt("IMAG_DIST_TRANS only works with 2D Images using default: MULT");
+		}
 	}
 };
-
-#define fillOptNumericField(name); \
-		mxArray* name =mxGetField(inputs[1], 0, #name);\
-		opt.name = (name!=NULL&&mxIsNumeric(name))?\
-							mxGetScalar(name) : opt.name;
-
-
 /*+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
 /* This function does all the work
 /*+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
-template <class T>
-void vigraFunc(matlab::OutputArray outputs, matlab::InputArray inputs){
-	// Constant definition for readibility
-	enum {IMAG = 2, VOLUME = 3}dim;
-	enum {MULT = 1, MULT_SQUARED = 2, IMAG_DIST_TRANS =3}meth;
-	
-	//Default Options
-	options<T> opt(mxGetNumberOfDimensions(inputs[0]), false, MULT, 0 , 2);
-	{//Preconditions on default options
-	if(opt.numOfDim > VOLUME)  
-						mexErrMsgTxt("Currently InputArray may only have 2 or 3 dimensions");
-	if(inputs.isEmpty(0)) 
-						mexErrMsgTxt("Input Image is empty!");
-					
-	}	
-	
-	//Map data to option fields
-	if(opt.numOfDim == IMAG){
-		opt.in = matlab::getImage<T>(inputs[0]);
-		opt.out = matlab::createImage<outType>(opt.in.width(), opt.in.height(), outputs[0]);
-		opt.in3D = matlab::getMultiArray<3, T>(inputs[0]);
-		//Lets out3D View the same data as out.
-		opt.out3D = MultiArrayView<3, outType>(opt.in3D.shape(), (outType*)opt.out.data());
-	}else{
-		opt.in3D = matlab::getMultiArray<3, T>(inputs[0]);
-		opt.out3D = matlab::createMultiArray<3,outType>(opt.in3D.shape(), outputs[0]);
-	}	
-	
-	//User supplied Options
-	if(inputs.isValid(1)){	
-		fillOptNumericField(backgroundMode);
-		
-		mxArray* method =mxGetField(inputs[1], 0, "method");
-		if(method!=NULL&&mxIsChar(method)){
-			std::string meth = matlab::getString(method);
-			
-			if(meth == "MULT_SQUARED") 
-				opt.method = MULT_SQUARED;
-			else if(meth == "IMAG_DIST_TRANS" && opt.numOfDim == IMAG){
-				opt.method = IMAG_DIST_TRANS;
-				fillOptNumericField(backgroundPixel);
-				fillOptNumericField(norm);
-			}else if(meth == "IMAG_DIST_TRANS")
-				mexWarnMsgTxt("IMAG_DIST_TRANS only valid for 2D images using default: MULT");
-			else if(meth != "MULT")
-				mexWarnMsgTxt("User supplied backgroundmode not supported using default: MULT");
+
+
+struct vigraFunctor
+{
+	template <class T>
+	static void exec(matlab::OutputArray outputs, matlab::InputArray inputs){
+		//Options
+		data<T>  o(outputs, inputs);
+
+		// contorPair maps 2 integers bijectively onto one dimension. (see Wikipedia Cantor pair Function) 
+		switch(cantorPair(o.numOfDim, o.method)){
+			//In this case function pointers may have been more elegant.
+			case cP2_(IMAG, MULT):
+				separableMultiDistance(srcMultiArrayRange(o.in3D), destMultiArray(o.out3D), o.backgroundMode);
+				break;
+			case cP2_(VOLUME, MULT):
+				separableMultiDistance(srcMultiArrayRange(o.in3D), destMultiArray(o.out3D), o.backgroundMode);
+				mexWarnMsgTxt("asd");
+				break;
+			case cP2_(IMAG, MULT_SQUARED):
+				separableMultiDistSquared(srcMultiArrayRange(o.in3D), destMultiArray(o.out3D), o.backgroundMode);
+				break;
+			case cP2_(VOLUME, MULT_SQUARED):
+				separableMultiDistSquared(srcMultiArrayRange(o.in3D), destMultiArray(o.out3D), o.backgroundMode);
+				break;
+			case cP2_(IMAG, IMAG_DIST_TRANS):
+				distanceTransform(srcImageRange(o.in), destImage(o.out),o.backgroundPixel, o.norm);
+				break;
+			default:
+				mexErrMsgTxt("Precondition checking not complete - something went wrong");
 		}
+		
 	}
-
-
-
-
-
-	// contorPair maps 2 integers bijectively onto one dimension. (see Wikipedia Cantor pair Function) 
-	switch(cantorPair(opt.numOfDim, opt.method)){
-		//In this case function pointers may have been more elegant.
-		case cP<IMAG, MULT>::value:
-			separableMultiDistance(srcMultiArrayRange(opt.in3D), destMultiArray(opt.out3D), opt.backgroundMode);
-			break;
-		case cP<VOLUME, MULT>::value:
-			separableMultiDistance(srcMultiArrayRange(opt.in3D), destMultiArray(opt.out3D), opt.backgroundMode);
-			mexWarnMsgTxt("asd");
-			break;
-		case cP<IMAG, MULT_SQUARED>::value:
-			separableMultiDistSquared(srcMultiArrayRange(opt.in3D), destMultiArray(opt.out3D), opt.backgroundMode);
-			break;
-		case cP<VOLUME, MULT_SQUARED>::value:
-			separableMultiDistSquared(srcMultiArrayRange(opt.in3D), destMultiArray(opt.out3D), opt.backgroundMode);
-			break;
-		case cP<IMAG, IMAG_DIST_TRANS>::value:
-			distanceTransform(srcImageRange(opt.in), destImage(opt.out),opt.backgroundPixel, opt.norm);
-			break;
-		default:
-			mexErrMsgTxt("Precondition checking not complete - something went wrong");
-	}
-	
-	// Are there more than one output? nargout.
-	
-}
-
+};
 
 
 /*+++++++++++++++++++++++MexEntryFunc++++++++++++++++++++++++++++++++*/
-/* DELETE LINES IF A CERTAIN CLASS IS NOT SUPPORTED
+/* Gatewayfunction - see matlab.hxx for details.
+/* if a certain class is NOT supported - you will have to copy the 
+/* body of the callMexFunctor function and edit it here.
+/* Supports (u)int[8|16|32|64], float and double.
 /*+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
 /** MATLAB 
 function D = vigraDistance(inputArray)
@@ -188,31 +108,7 @@ Usage:
 	out = vigraDistance(in, opt);
 
 */
-void vigraMexFunction(matlab::OutputArray outputs, matlab::InputArray inputs)
-{    
-	mxClassID inClass = mxGetClassID(inputs[0]);
-	switch(inClass){
-		case mxDOUBLE_CLASS:
-			vigraFunc<double>(outputs, inputs);	break;
-		case mxSINGLE_CLASS:
-			vigraFunc<float>(outputs, inputs);		break;
-        case mxINT8_CLASS:
-			vigraFunc<Int8>(outputs, inputs);		break;
-		case mxINT16_CLASS:
-			vigraFunc<Int16>(outputs, inputs);		break;
-		case mxINT32_CLASS:
-			vigraFunc<Int32>(outputs, inputs);		break;
-		case mxINT64_CLASS:
-			vigraFunc<Int64>(outputs, inputs);		break;
-        case mxUINT8_CLASS:
-			vigraFunc<UInt8>(outputs, inputs);		break;
-		case mxUINT16_CLASS:
-			vigraFunc<UInt16>(outputs, inputs);	break;
-		case mxUINT32_CLASS:
-			vigraFunc<UInt32>(outputs, inputs);	break;
-		case mxUINT64_CLASS:
-			vigraFunc<UInt64>(outputs, inputs);	break;		
-		default:
-			mexErrMsgTxt("Input image must have type 'uint8'-16-32-64', 'int8-16-32-64' 'single' or 'double'.");
-	}
+void vigraMexFunction(matlab::OutputArray outputs, matlab::InputArray inputs){
+	// 
+	callMexFunctor<vigraFunctor>(outputs, inputs);
 }
