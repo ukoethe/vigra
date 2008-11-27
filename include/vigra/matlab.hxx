@@ -42,6 +42,7 @@
 #include "array_vector.hxx"
 #include "sized_int.hxx"
 #include "matrix.hxx"
+#include <map>
 
 #include <time.h>
 
@@ -603,6 +604,31 @@ void callMexFunctor(matlab::OutputArray outputs, matlab::InputArray inputs)
 	}
 }
 
+template <class Functor>
+void callMexAllIntFunctor(matlab::OutputArray outputs, matlab::InputArray inputs)
+{
+	mxClassID inClass = mxGetClassID(inputs[0]);
+	switch(inClass){
+        case mxINT8_CLASS:
+			Functor::exec<Int8>(outputs, inputs);		break;
+		case mxINT16_CLASS:
+			Functor::exec<Int16>(outputs, inputs);		break;
+		case mxINT32_CLASS:
+			Functor::exec<Int32>(outputs, inputs);		break;
+		case mxINT64_CLASS:
+			Functor::exec<Int64>(outputs, inputs);		break;
+        case mxUINT8_CLASS:
+			Functor::exec<UInt8>(outputs, inputs);		break;
+		case mxUINT16_CLASS:
+			Functor::exec<UInt16>(outputs, inputs);	break;
+		case mxUINT32_CLASS:
+			Functor::exec<UInt32>(outputs, inputs);	break;
+		case mxUINT64_CLASS:
+			Functor::exec<UInt64>(outputs, inputs);	break;
+		default:
+			mexErrMsgTxt("Input image must have type 'uint8'-16-32-64', 'int8-16-32-64' 'single' or 'double'.");
+	}
+}
 /*++++++++++++++++++++++++++HELPERFUNC+++++++++++++++++++++++++++++++*/
 /* This is used for better readibility of the test cases            .
 /* Nothing to be done here.
@@ -657,6 +683,20 @@ bool is_in_range(T in, T min, std::string max)
 		}\
 	}\
 
+#define declScalar2D3D(type, name, default2D, default3D); \
+    type name;\
+	type get_##name(matlab::InputArray inputs)\
+	{\
+		if(inputs.size() == 1){\
+			return numOfDim == 2? default2D : default3D;;\
+		}else{\
+			mxArray* name =mxGetField(inputs[1], 0, #name);\
+			return (name!=NULL&&mxIsNumeric(name))\
+							? matlab::getScalar<type>(name)\
+							: numOfDim == 2? default2D : default3D;\
+		}\
+	}\
+	
 #define declScalarMinMax(type, name, default,min, max); \
 	type name;\
 	type get_##name(matlab::InputArray inputs)\
@@ -691,8 +731,9 @@ bool is_in_range(T in, T min, std::string max)
 		if(inputs.size() == 2){\
 			mxArray* title = mxGetField(inputs[1], 0 , #title);\
 			std::string test;\
-			bool flag = true;\
-			if(title !=NULL && mxIsChar(title)){\
+			bool flag = false;\
+			if(title != NULL && mxIsChar(title)){\
+				flag = true;\
 				test = matlab::getString(title);\
 				for(int ii = 0; ii < number;ii++)\
 				{\
@@ -790,4 +831,82 @@ struct base_data{
 	
 };
 
+
+//Wrapper classes to STL-Map for use as a sparse array.
+
+//This is used for the ordering of the map. Lexicographical ordering of the index pairs.
+struct ShapeCmp {
+  bool operator()( TinyVector<int,2> s1, TinyVector<int,2>  s2 ) const {
+	if(s1[0] != s2[0]){
+		return (s1[0] < s2[0]);
+	} else {
+		return s1[1] < s2[1];
+	}
+  }
+};
+
+template<class T>
+class SparseArray{
+	
+	std::map<TinyVector<int,2>, T,ShapeCmp> data;
+	int width, length;
+	
+	public:
+	void assign(int i = 1, int j = 1){
+		width = j;
+		length = i;
+	}
+	SparseArray(int i = 1 , int j = 1){
+		width = j;
+		length = i;
+	}
+	
+	//Any better idea? i would like to unify the get and operator() functions. 
+	// Problem is that  operator() always passes a reference or creates one.
+	T& operator()(int i, int j){
+		TinyVector<int,2> newShapew(i, j);
+		std::map<TinyVector<int,2>, T, ShapeCmp>::iterator iter;
+		TinyVector<int,2> newShape;
+		return data[newShapew];
+	}
+	
+	const T get(int i, int j){
+		TinyVector<int,2> newShape(i, j);
+		if(data.find(newShape) == data.end()) return 0;
+		else return data.find(newShape)->second;
+	}
+	
+	//see dokumentation of mxCreateSparse and the mxGet functions to understand this.
+	void mapToMxArray(mxArray * & in){
+
+		int len = data.size();
+		in = mxCreateSparse(width, length, len, mxREAL);		
+		int* jc = mxGetJc(in);
+		int* ir = mxGetIr(in);
+		double* pr = mxGetPr(in);
+		if(len == 0){
+			jc[0] = 1;
+			return;
+		}		
+		std::map<TinyVector<int,2>, T, ShapeCmp>::iterator iter;
+		TinyVector<int,2> newShape;
+		int ii = 0;
+		int jj = 0;
+		int curjc = -1;
+		for( iter = data.begin(); iter != data.end(); ++iter ) {
+			newShape = iter->first;
+			ir[ii] = newShape[1];
+			pr[ii] = iter->second;
+			if(newShape[0]  != curjc){
+				curjc = newShape[0] ;
+				jc[jj] = ii;
+				jj++;
+			}
+			
+			ii++;
+		}
+		jc[jj] = len;
+	}
+	
+};
 #endif // VIGRA_MATLAB_HXX

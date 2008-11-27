@@ -76,18 +76,19 @@ struct vigraFunctor
 function D = vigraCorner(inputArray)
 function D = vigraCorner(inputArray, options);
 
-D = vigraCorner(inputArray) computes the Fast Radial Symmetry Transform using the default options. see vigra::RadialSymmetryTransform
-for more information.
+D = vigraCorner(inputArray) does Corner detection.
 D = vigraCorner(inputImage, options)  does the same with user options.
-options is a struct with possible fields: "method", "backgroundMode" and "backgroundPixel" and "norm"
+options is a struct with possible fields: "method", "scale"
 
+"method":				Corner (default), Beaudet,Foerstner,Rohr
+					Use appropriate Methods to detect corners.  (See vigra reference for more details)
 "scale": 				1.0(default),any floating point value
 						scale parameter for the vigraCornerdetector
 
 
 Usage:
 	opt = struct('method' ,value);
-	out = vigraConnectedComponents(in, opt);
+	out = vigraCorner(in, opt);
 
 */
 void vigraMexFunction(matlab::OutputArray outputs, matlab::InputArray inputs){

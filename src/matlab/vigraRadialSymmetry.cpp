@@ -58,9 +58,9 @@ struct vigraFunctor
 function D = vigraRadialSymmetry(inputArray)
 function D = vigraradialSymmetry(inputArray, options);
 
-D = vigraConnectedComponents(inputArray) computes the Fast Radial Symmetry Transform using the default options. see vigra::RadialSymmetryTransform
+D = vigraCRadialSymmetry(inputArray) computes the Fast Radial Symmetry Transform using the default options. see vigra::RadialSymmetryTransform
 for more information.
-D = vigraConnectedComponents(inputImage, options)  does the same with user options.
+D = vigraRadialSymmetry(inputImage, options)  does the same with user options.
 options is a struct with possible fields: "method", "backgroundMode" and "backgroundPixel" and "norm"
 
 "scale": 				1.0(default),any floating point value
@@ -69,7 +69,7 @@ options is a struct with possible fields: "method", "backgroundMode" and "backgr
 
 Usage:
 	opt = struct('method' ,value);
-	out = vigraConnectedComponents(in, opt);
+	out = vigraRadialSymmetry(in, opt);
 
 */
 void vigraMexFunction(matlab::OutputArray outputs, matlab::InputArray inputs){

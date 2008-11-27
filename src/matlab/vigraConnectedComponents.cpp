@@ -19,7 +19,7 @@ using namespace vigra;
 /*+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
 template <class T>
 struct data: public base_data<T>{
-	declScalarMinMax(int, conn, 8, 4, 26);
+	declScalar2D3D(int, conn, 8, 26);
     T backgroundValue;
 	bool hasbackground;
 	T get_backgroundValue(matlab::InputArray inputs)
@@ -45,11 +45,12 @@ struct data: public base_data<T>{
 	:			base_data(inputs),
 				map(backgroundValue), map(conn)
 	{
-		if(numOfDim == 3)conn = 26;
 		
-		if(numOfDim == IMAG && conn != 4 && conn !=8){
+		if(numOfDim == IMAG && conn != 8 && conn !=4){
+			conn = 8;
 			mexWarnMsgTxt("Invalid User supplied connectivity - using Default: 8");
-		}else if(numOfDim == VOLUME && conn != 6 && conn !=26){
+		}else if(numOfDim == VOLUME && conn != 26 && conn !=6){
+			conn = 26;
 			mexWarnMsgTxt("Invalid User supplied connectivity - using Default: 26");
 		}
 		mapOut_SAME(double);
@@ -114,8 +115,8 @@ struct vigraFunctor
 /* Supports (u)int[8|16|32|64], float and double.
 /*+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
 /** MATLAB 
-function D = vigraRadialSymmetry(inputArray)
-function D = vigraradialSymmetry(inputArray, options);
+function D = vigraConnectedComponentsinputArray)
+function D = vigraConnectedComponents(inputArray, options);
 
 D = vigraConnectedComponents(inputArray) computes the Fast Radial Symmetry Transform using the default options. see vigra::RadialSymmetryTransform
 for more information.
