@@ -8,12 +8,19 @@
 ^test/testSuccess$
 ^config/Makefile.include$
 ^config/vigra-config$
-^doc/vigra/index.html$
+^docsrc/vigra/.*\.html$
+^doc/vigra/.*\.html$
+^doc/vigra/doxygen\.(css|gif|png)$
+^doc/vigra/form.*\.(gif|png)$
+^doc/vigra/formula.repository$
+^doc/vigra/classvigra_1_1.*\.(gif|png)$
+^doc/vigra/LICENSE.txt$
 ^test/multiarray/(impex/)?test[0-3]\.(tif|png)$
 ^test/impex/res\.
 ^test/impex/resrgb.gif$
 ^test/syntax/test\.cxx$
 ^test/multiconvolution/speedtest$
+^src/examples/(convert|subimage|invert|invert_explicitly|resize|smooth|profile|palette|pyramid|edge|watershed|voronoi)$
 
 syntax: glob
 
