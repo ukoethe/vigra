@@ -45,6 +45,7 @@
 #include "error.hxx"
 #include "numerictraits.hxx"
 #include "mathutil.hxx"
+#include "diff2d.hxx"
 
 namespace vigra {
 
@@ -101,6 +102,7 @@ struct ExecLoop
     VIGRA_EXEC_LOOP(add, +=)
     VIGRA_EXEC_LOOP(sub, -=)
     VIGRA_EXEC_LOOP(mul, *=)
+    VIGRA_EXEC_LOOP(div, /=)
     VIGRA_EXEC_LOOP(neg, = -)
     VIGRA_EXEC_LOOP(abs, = vigra::abs)
     VIGRA_EXEC_LOOP(floor, = vigra::floor)
@@ -249,6 +251,7 @@ struct UnrollLoop
     VIGRA_UNROLL_LOOP(add, +=)
     VIGRA_UNROLL_LOOP(sub, -=)
     VIGRA_UNROLL_LOOP(mul, *=)
+    VIGRA_UNROLL_LOOP(div, /=)
     VIGRA_UNROLL_LOOP(neg, = -)
     VIGRA_UNROLL_LOOP(abs, = vigra::abs)
     VIGRA_UNROLL_LOOP(floor, = vigra::floor)
@@ -484,6 +487,15 @@ class TinyVectorBase
         return static_cast<DERIVED &>(*this);
     }
 
+        /** Component-wise divide-assignment
+        */
+    template <class T1, class D1, class D2>
+    DERIVED & operator/=(TinyVectorBase<T1, SIZE, D1, D2> const & r)
+    {
+        Loop::div(data_, r.begin());
+        return static_cast<DERIVED &>(*this);
+    }
+
         /** Component-wise scalar multiply-assignment
         */
     DERIVED & operator*=(double r)
@@ -608,6 +620,15 @@ class TinyVector
         Loop::assignScalar(BaseType::begin(), initial);
     }
 
+        /** Construction with Diff2D (only implemented for 2D TinyVector)
+        */
+    explicit TinyVector(Diff2D const & initial)
+    : BaseType()
+    {
+        BaseType::data_[0] = detail::RequiresExplicitCast<T>::cast(initial.x);
+        BaseType::data_[1] = detail::RequiresExplicitCast<T>::cast(initial.y);
+    }
+
         /** Construction with explicit values.
             Call only if SIZE == 2
         */
@@ -671,6 +692,15 @@ class TinyVector
     TinyVector & operator=(TinyVector const & r)
     {
         Loop::assign(BaseType::data_, r.data_);
+        return *this;
+    }
+
+        /** Assignment from Diff2D.
+        */
+    TinyVector & operator=(Diff2D const & r)
+    {
+        BaseType::data_[0] = detail::RequiresExplicitCast<T>::cast(r.x);
+        BaseType::data_[1] = detail::RequiresExplicitCast<T>::cast(r.y);
         return *this;
     }
 
@@ -1200,6 +1230,16 @@ operator*(TinyVectorBase<V1, SIZE, D1, D2> const & l,
           TinyVectorBase<V2, SIZE, D3, D4> const & r)
 {
     return typename PromoteTraits<TinyVector<V1, SIZE>, TinyVector<V2 , SIZE> >::Promote(l) *= r;
+}
+
+    /// component-wise division
+template <class V1, int SIZE, class D1, class D2, class V2, class D3, class D4>
+inline
+typename PromoteTraits<TinyVector<V1, SIZE>, TinyVector<V2, SIZE> >::Promote
+operator/(TinyVectorBase<V1, SIZE, D1, D2> const & l,
+          TinyVectorBase<V2, SIZE, D3, D4> const & r)
+{
+    return typename PromoteTraits<TinyVector<V1, SIZE>, TinyVector<V2 , SIZE> >::Promote(l) /= r;
 }
 
     /// component-wise left scalar multiplication

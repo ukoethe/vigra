@@ -722,16 +722,28 @@ class FFTWRealAccessor
         return i[d].re();
     }
 
-        /// Write real part at iterator position.
+        /// Write real part at iterator position from a scalar.
     template <class ITERATOR>
     void set(value_type const & v, ITERATOR const & i) const {
         (*i).re()= v;
     }
 
-        /// Write real part at offset from iterator position.
+        /// Write real part at offset from iterator position from a scalar.
     template <class ITERATOR, class DIFFERENCE>
     void set(value_type const & v, ITERATOR const & i, DIFFERENCE d) const {
         i[d].re()= v;
+    }
+
+        /// Write real part at iterator position into a scalar.
+    template <class ITERATOR>
+    void set(FFTWComplex const & v, ITERATOR const & i) const {
+        *i = v.re();
+    }
+
+        /// Write real part at offset from iterator position into a scalar.
+    template <class ITERATOR, class DIFFERENCE>
+    void set(FFTWComplex const & v, ITERATOR const & i, DIFFERENCE d) const {
+        i[d] = v.re();
     }
 };
 
@@ -759,16 +771,28 @@ class FFTWImaginaryAccessor
         return i[d].im();
     }
 
-        /// Write imaginary part at iterator position.
+        /// Write imaginary part at iterator position from a scalar.
     template <class ITERATOR>
     void set(value_type const & v, ITERATOR const & i) const {
         (*i).im()= v;
     }
 
-        /// Write imaginary part at offset from iterator position.
+        /// Write imaginary part at offset from iterator position from a scalar.
     template <class ITERATOR, class DIFFERENCE>
     void set(value_type const & v, ITERATOR const & i, DIFFERENCE d) const {
         i[d].im()= v;
+    }
+
+        /// Write imaginary part at iterator position into a scalar.
+    template <class ITERATOR>
+    void set(FFTWComplex const & v, ITERATOR const & i) const {
+        *i = v.im();
+    }
+
+        /// Write imaginary part at offset from iterator position into a scalar.
+    template <class ITERATOR, class DIFFERENCE>
+    void set(FFTWComplex const & v, ITERATOR const & i, DIFFERENCE d) const {
+        i[d] = v.im();
     }
 };
 
@@ -1136,6 +1160,36 @@ inline void moveDCToUpperLeft(
                                           dest.first, dest.second);
 }
 
+template <class DestImageIterator, class DestAccessor>
+void fftShift(DestImageIterator upperleft,
+              DestImageIterator lowerright, DestAccessor da)
+{
+    int w = int(lowerright.x - upperleft.x);
+    int h = int(lowerright.y - upperleft.y);
+    int w2 = w/2;
+    int h2 = h/2;
+    int w1 = (w+1)/2;
+    int h1 = (h+1)/2;
+
+    // 2. Quadrant  zum 4.
+    swapImageData(destIterRange(upperleft,
+                                upperleft  + Diff2D(w2, h2), da),
+                  destIter     (upperleft + Diff2D(w1, h1), da));
+
+    // 1. Quadrant zum 3.
+    swapImageData(destIterRange(upperleft  + Diff2D(w2, 0),
+                                upperleft  + Diff2D(w,  h2), da),
+                  destIter     (upperleft + Diff2D(0,  h1), da));
+}
+
+template <class DestImageIterator, class DestAccessor>
+inline void fftShift(
+    triple<DestImageIterator, DestImageIterator, DestAccessor> dest)
+{
+    fftShift(dest.first, dest.second, dest.third);
+}
+
+
 namespace detail {
 
 template <class T>
@@ -1287,13 +1341,30 @@ fourierTransformInverse(FFTWComplexImage::const_traverser sul,
     detail::fourierTransformImpl(sul, slr, src, dul, dest, FFTW_BACKWARD);
 }
 
+template <class DestImageIterator, class DestAccessor>
+void fourierTransformInverse(FFTWComplexImage::const_traverser sul,
+                             FFTWComplexImage::const_traverser slr, FFTWComplexImage::ConstAccessor src,
+                             DestImageIterator dul, DestAccessor dest)
+{
+    int w = slr.x - sul.x;
+    int h = slr.y - sul.y;
+
+    FFTWComplexImage workImage(w, h);
+    fourierTransformInverse(sul, slr, src, workImage.upperLeft(), workImage.accessor());
+    copyImage(srcImageRange(workImage), destIter(dul, dest));
+}
+
+
+template <class DestImageIterator, class DestAccessor>
 inline void
 fourierTransformInverse(triple<FFTWComplexImage::const_traverser,
                                FFTWComplexImage::const_traverser, FFTWComplexImage::ConstAccessor> src,
-                        pair<FFTWComplexImage::traverser, FFTWComplexImage::Accessor> dest)
+                        pair<DestImageIterator, DestAccessor> dest)
 {
     fourierTransformInverse(src.first, src.second, src.third, dest.first, dest.second);
 }
+
+
 
 /********************************************************/
 /*                                                      */

@@ -671,9 +671,9 @@ RGBValue<V1, RIDX1, GIDX1, BIDX1> &
 operator*=(RGBValue<V1, RIDX1, GIDX1, BIDX1> & l,
            RGBValue<V2, RIDX2, GIDX2, BIDX2> const & r)
 {
-    l.red() *= r.red();
-    l.green() *= r.green();
-    l.blue() *= r.blue();
+    l.red() = V1(l.red() * r.red());
+    l.green() = V1(l.green() * r.green());
+    l.blue() = V1(l.blue() * r.blue());
     return l;
 }
 
@@ -686,6 +686,20 @@ operator*=(RGBValue<V, RIDX, GIDX, BIDX> & l, double r)
     l.red() = V(l.red() * r);
     l.green() = V(l.green() * r);
     l.blue() = V(l.blue() * r);
+    return l;
+}
+
+    /// componentwise divide-assignment
+template <class V1, unsigned int RIDX1, unsigned int GIDX1, unsigned int BIDX1,
+          class V2, unsigned int RIDX2, unsigned int GIDX2, unsigned int BIDX2>
+inline
+RGBValue<V1, RIDX1, GIDX1, BIDX1> &
+operator/=(RGBValue<V1, RIDX1, GIDX1, BIDX1> & l,
+           RGBValue<V2, RIDX2, GIDX2, BIDX2> const & r)
+{
+    l.red() = V1(l.red() / r.red());
+    l.green() = V1(l.green() / r.green());
+    l.blue() = V1(l.blue() / r.blue());
     return l;
 }
 
@@ -782,6 +796,22 @@ operator*(RGBValue<V, R, G, B> const & r, double v)
     typename NumericTraits<RGBValue<V, R, G, B> >::RealPromote res(r);
 
     res *= v;
+
+    return res;
+}
+
+    /// component-wise division
+template <class V1, unsigned int R, unsigned int G, unsigned int B, class V2>
+inline
+typename PromoteTraits<RGBValue<V1, R, G, B>,
+                       RGBValue<V2, R, G, B> >::Promote
+operator/(RGBValue<V1, R, G, B> const & r1,
+          RGBValue<V2, R, G, B> const & r2)
+{
+    typename PromoteTraits<RGBValue<V1, R, G, B>,
+                           RGBValue<V2, R, G, B> >::Promote res(r1);
+
+    res /= r2;
 
     return res;
 }

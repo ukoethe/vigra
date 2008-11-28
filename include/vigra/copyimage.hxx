@@ -78,6 +78,21 @@ copyLineIf(SrcIterator s,
             dest.set(src(s), d);
 }
 
+template <class SrcIterator, class SrcAccessor,
+          class DestIterator, class DestAccessor>
+void
+swapLine(SrcIterator s, 
+         SrcIterator send, SrcAccessor src,
+         DestIterator d, DestAccessor dest)
+{
+    for(; s != send; ++s, ++d)
+    {
+        typename SrcAccessor::value_type t = src(s);
+        src.set(dest(d), s);
+        dest.set(t, d);
+    }
+}
+
 /********************************************************/
 /*                                                      */
 /*                        copyImage                     */
@@ -169,6 +184,34 @@ copyImage(triple<SrcImageIterator, SrcImageIterator, SrcAccessor> src,
 {
     copyImage(src.first, src.second, src.third, 
                    dest.first, dest.second);
+}
+
+template <class SrcImageIterator, class SrcAccessor,
+          class DestImageIterator, class DestAccessor>
+void
+swapImageData(SrcImageIterator src_upperleft, 
+              SrcImageIterator src_lowerright, SrcAccessor sa,
+              DestImageIterator dest_upperleft, DestAccessor da)
+{
+    int w = src_lowerright.x - src_upperleft.x;
+    
+    for(; src_upperleft.y<src_lowerright.y; ++src_upperleft.y, ++dest_upperleft.y)
+    {
+        swapLine(src_upperleft.rowIterator(), 
+                 src_upperleft.rowIterator() + w, sa, 
+                 dest_upperleft.rowIterator(), da);
+    }
+}
+    
+template <class SrcImageIterator, class SrcAccessor,
+          class DestImageIterator, class DestAccessor>
+inline
+void
+swapImageData(triple<SrcImageIterator, SrcImageIterator, SrcAccessor> src,
+              pair<DestImageIterator, DestAccessor> dest)
+{
+    swapImageData(src.first, src.second, src.third, 
+                  dest.first, dest.second);
 }
 
 /********************************************************/

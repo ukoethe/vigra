@@ -547,7 +547,25 @@ createScalar(T v)
     return m;
 }
 
-} // namespace matlab 
+} // namespace matlab
+
+struct MeshGridAccessor
+{
+    typedef TinyVector<Diff2D::MoveX, 2> value_type;
+    
+    template <class ITERATOR>
+    value_type operator()(ITERATOR const & i) const
+    {
+        return value_type(i->x, i->y);
+    }
+};
+
+inline 
+triple<Diff2D, Diff2D, MeshGridAccessor>
+meshGrid(Diff2D ul, Diff2D lr)
+{
+    return triple<Diff2D, Diff2D, MeshGridAccessor>(ul, lr, MeshGridAccessor());
+}
 
 } // namespace vigra 
 
