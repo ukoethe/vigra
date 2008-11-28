@@ -297,18 +297,21 @@ struct vigraFunctor
 function D = vigraAdjacency(inputArray)
 function D = vigraAdjacency(inputArray, options);
 
-D = vigraConnectedComponents(inputArray) computes the Fast Radial Symmetry Transform using the default options. see vigra::RadialSymmetryTransform
-for more information.
-D = vigraConnectedComponents(inputImage, options)  does the same with user options.
-options is a struct with possible fields: "method", "backgroundMode" and "backgroundPixel" and "norm"
+D = vigraAdjacency(inputArray) computes the Adjacencymatrix of Label images.
+D = vigraAdjacency(inputImage, options)  does the same with user options.
+options is a struct with possible fields: "hasWatershedPixel"
 
-"scale": 				1.0(default),any floating point value
-						scale parameter for the vigraRadialSymmetry
-
+D 				is a sparse matrix of size max_region_label x max_region_label.
+				The entries in D correlate to the length of region borders. 
+				(Images with and without watershedPixels return different values)
+inputArray 			must be a Image or a Volume with regions labeled with positive whole numbers
+				0 denotes watershed Pixels.
+hasWatershedPixel:	it is advised to set this attribute. Otherwise the Function searches for 0 in the 
+				image.
 
 Usage:
 	opt = struct('method' ,value);
-	out = vigraConnectedComponents(in, opt);
+	out = vigraAdjacency(in, opt);
 
 */
 void vigraMexFunction(matlab::OutputArray outputs, matlab::InputArray inputs){

@@ -108,15 +108,15 @@ function resized = vigraResize2(original, options)
 D = vigraresize3(inputArray) resizes original Volume data with default options.
 D = vigraConnectedComponents(inputImage, options)  does the same with user options.
 
-	original    - 3D matrix with original volume data 
-					(gray scale or multi-band/RGB, type 'uint8', 'single' or 'double')
+	original    - Rrray with original image data 
+					(gray scale or multi-band/RGB, type)
 	options
-		shape    - int32 array of length 3 giving the new shape
-			(default: same size as old volume)
+		shape    - int32 array of length 2 giving the new shape
+			(default: same size as old Image)
 		splineOrder - order of interpolation 
 			(0 <= splineOrder <= 5, default: 3, i.e. cubic splines)
-		useCatmull - use CatmullRom Splines - (Ignores splineOrder value)
-			derfault: 0;
+		method- BSpline(default), Cascot or CatmullRom
+			only BSpline uses the splineOrder method
 */
 void vigraMexFunction(matlab::OutputArray outputs, matlab::InputArray inputs){
 	// 
