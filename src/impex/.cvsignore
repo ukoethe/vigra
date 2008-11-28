@@ -3,5 +3,3 @@ libvigraimpex.la
 .libs
 *.ld
 *.loT
-Release
-Debug
