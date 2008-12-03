@@ -19096,7 +19096,7 @@ for VIGRA_FIND_PATH_i in $CPPFLAGS;  do
 done
 
 CPPFLAGS=""
-LIBCPPFLAGS=""
+LIBCPPFLAGS="-DVIGRA_DLL"
 
 # look for extra library directories in $LDFLAGS
 LIBSEARCHPATH=""
