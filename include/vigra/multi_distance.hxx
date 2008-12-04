@@ -87,7 +87,6 @@ void distParabola(SrcIterator is, SrcIterator iend, SrcAccessor sa,
     typedef typename SrcAccessor::value_type SrcType;
     typedef DistParabolaStackEntry<SrcType> Influence;
     std::vector<Influence> _stack;
-
     _stack.push_back(Influence(sa(is), 0.0, 0.0, w));
     
     ++is;
@@ -98,42 +97,32 @@ void distParabola(SrcIterator is, SrcIterator iend, SrcAccessor sa,
         double diff = current - s.center;
         double intersection = current + (sa(is) - s.prevVal - sigma2*sq(diff)) / (sigma22 * diff);
         
-        if(intersection >= s.right) // current point has no influence
-        {
-            ++is;
-            ++current;
-        }
-        else if( intersection < s.left) // previous point has no influence
+        if( intersection < s.left) // previous point has no influence
         {
             _stack.pop_back();
             if(_stack.empty())
-            {
                 _stack.push_back(Influence(sa(is), 0.0, current, w));
-                ++is;
-                ++current;
-            }
+            else
+                continue; // try new top of stack without advancing current
         }
-        else 
+        else if(intersection < s.right)
         {
             s.right = intersection;
             _stack.push_back(Influence(sa(is), intersection, current, w));
-            ++is;
-            ++current;
         }
+        ++is;
+        ++current;
     }
 
     // Now we have the stack indicating which rows are influenced by (and therefore
     // closest to) which row. We can go through the stack and calculate the
     // distance squared for each element of the column.
-
     typename std::vector<Influence>::iterator it = _stack.begin();
-
     for(current = 0.0; current < w; ++current, ++id)
     {
         if( current >= it->right) 
             ++it; 
         da.set(sigma2 * sq(current - it->center) + it->prevVal, id);
-    
     }
 }
 
