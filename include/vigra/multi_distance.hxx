@@ -352,15 +352,17 @@ void separableMultiDistSquared( SrcIterator s, SrcShape const & shape, SrcAccess
     typedef typename NumericTraits<DestType>::RealPromote Real;
     
     double dmax = 0.0;
+    bool pixelPitchIsReal = false;
     for( int k=0; k<N; ++k)
     {
+        if(int(pixelPitch[k]) != pixelPitch[k])
+            pixelPitchIsReal = true;
         dmax += sq(pixelPitch[k]*shape[k]);
     }
-    
             
     using namespace vigra::functor;
    
-    if(dmax > NumericTraits<DestType>::max()) // need a temporary array to avoid overflows
+    if(dmax > NumericTraits<DestType>::max() || pixelPitchIsReal) // need a temporary array to avoid overflows
     {
         // Threshold the values so all objects have infinity value in the beginning
         double maxDist = dmax;
