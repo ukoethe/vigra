@@ -21,6 +21,8 @@
 ^test/syntax/test\.cxx$
 ^test/multiconvolution/speedtest$
 ^src/examples/(convert|subimage|invert|invert_explicitly|resize|smooth|profile|palette|pyramid|edge|watershed|voronoi)$
+^src/impex/libvigraimpex
+^src/impex/(impex\.layout|Makefile\.win)$
 
 syntax: glob
 

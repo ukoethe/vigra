@@ -19,7 +19,7 @@ IsCpp=1
 ExeOutput=
 ObjectOutput=DevCpp
 OverrideOutput=1
-OverrideOutputName=vigraimpex.dev.dll
+OverrideOutputName=vigraimpex.dll
 HostApplication=
 Folders=
 CommandLine=
@@ -50,27 +50,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit4]
-FileName=byteorder.hxx
-CompileCpp=1
-Folder=
-Compile=1
-Link=1
-Priority=1000
-OverrideBuildCmd=0
-BuildCmd=
-
 [Unit5]
-FileName=codecmanager.cxx
-CompileCpp=1
-Folder=
-Compile=1
-Link=1
-Priority=1000
-OverrideBuildCmd=0
-BuildCmd=
-
-[Unit6]
 FileName=gif.cxx
 CompileCpp=1
 Folder=
@@ -80,7 +60,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit7]
+[Unit6]
 FileName=imageinfo.cxx
 CompileCpp=1
 Folder=
@@ -90,7 +70,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit8]
+[Unit7]
 FileName=jpeg.cxx
 CompileCpp=1
 Folder=
@@ -100,7 +80,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit9]
+[Unit8]
 FileName=png.cxx
 CompileCpp=1
 Folder=
@@ -110,7 +90,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit10]
+[Unit9]
 FileName=pnm.cxx
 CompileCpp=1
 Folder=
@@ -120,7 +100,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit11]
+[Unit10]
 FileName=sun.cxx
 CompileCpp=1
 Folder=
@@ -130,7 +110,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit12]
+[Unit11]
 FileName=tiff.cxx
 CompileCpp=1
 Folder=
@@ -140,7 +120,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit13]
+[Unit12]
 FileName=viff.cxx
 CompileCpp=1
 Folder=
@@ -154,17 +134,6 @@ BuildCmd=
 FileName=void_vector.cxx
 CompileCpp=1
 Folder=
-Compile=1
-Link=1
-Priority=1000
-OverrideBuildCmd=0
-BuildCmd=
-
-[Unit15]
-FileTime=890334310
-FileName=..\..\include\vigra\imageinfo.hxx
-CompileCpp=1
-Folder=vigraimpex.dll
 Compile=1
 Link=1
 Priority=1000
@@ -190,7 +159,37 @@ ProductVersion=
 AutoIncBuildNr=0
 
 [Unit14]
-FileName=..\..\include\vigra\codec.hxx
+FileName=iccjpeg.c
+CompileCpp=1
+Folder=vigraimpex.dll
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
+
+[Unit4]
+FileName=codecmanager.cxx
+CompileCpp=1
+Folder=
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
+
+[Unit13]
+FileName=hdr.cxx
+CompileCpp=1
+Folder=vigraimpex.dll
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
+
+[Unit15]
+FileName=rgbe.c
 CompileCpp=1
 Folder=vigraimpex.dll
 Compile=1
