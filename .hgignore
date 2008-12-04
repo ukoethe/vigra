@@ -8,9 +8,12 @@
 ^test/testSuccess$
 ^config/Makefile.include$
 ^config/vigra-config$
-^docsrc/vigra/.*\.html$
+^config/(aclocal.m4$|autom4te.cache)
+^docsrc/(vigra/.*\.html|Doxyfile)$
 ^doc/vigra/.*\.html$
 ^doc/vigra/doxygen\.(css|gif|png)$
+^doc/vigra/(tabs|vigra)\.css$
+^doc/vigra/(tab_.|lenna_(color|gray))\.gif$
 ^doc/vigra/form.*\.(gif|png)$
 ^doc/vigra/formula.repository$
 ^doc/vigra/classvigra_1_1.*\.(gif|png)$
