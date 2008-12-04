@@ -80,8 +80,7 @@ void distParabola(SrcIterator is, SrcIterator iend, SrcAccessor sa,
                   DestIterator id, DestAccessor da, double sigma )
 {
     // We assume that the data in the input is distance squared and treat it as such
-    int w = iend - is;
-    double dw = w;
+    double w = iend - is;
     double sigma2 = sigma * sigma;
     double sigma22 = 2.0 * sigma2;
     
@@ -89,7 +88,7 @@ void distParabola(SrcIterator is, SrcIterator iend, SrcAccessor sa,
     typedef DistParabolaStackEntry<SrcType> Influence;
     std::vector<Influence> _stack;
 
-    _stack.push_back(Influence(sa(is), 0.0, 0.0, dw));
+    _stack.push_back(Influence(sa(is), 0.0, 0.0, w));
     
     ++is;
     double current = 1.0;
@@ -109,7 +108,7 @@ void distParabola(SrcIterator is, SrcIterator iend, SrcAccessor sa,
             _stack.pop_back();
             if(_stack.empty())
             {
-                _stack.push_back(Influence(sa(is), 0.0, current, dw));
+                _stack.push_back(Influence(sa(is), 0.0, current, w));
                 ++is;
                 ++current;
             }
@@ -117,7 +116,7 @@ void distParabola(SrcIterator is, SrcIterator iend, SrcAccessor sa,
         else 
         {
             s.right = intersection;
-            _stack.push_back(Influence(sa(is), intersection, current, dw));
+            _stack.push_back(Influence(sa(is), intersection, current, w));
             ++is;
             ++current;
         }
@@ -165,7 +164,7 @@ void internalSeparableMultiArrayDistTmp(
     enum { N =  SrcShape::static_size};
 
     // we need the Promote type here if we want to invert the image (dilation)
-    typedef typename NumericTraits<typename DestAccessor::value_type>::Promote TmpType;
+    typedef typename NumericTraits<typename DestAccessor::value_type>::RealPromote TmpType;
     
     // temporary array to hold the current line to enable in-place operation
     ArrayVector<TmpType> tmp( shape[0] );
