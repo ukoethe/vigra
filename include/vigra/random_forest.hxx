@@ -782,7 +782,7 @@ RandomForest<ClassLabelType>::learn(MultiArrayView<2, U, C1> const & features,
        "RandomForest::learn(): Requested training set size exceeds total number of examples.");
 
     MultiArrayIndex mtry = (options_.mtry == 0)
-                                ? int(std::ceil(std::sqrt(double(n))))
+                                ? int(std::floor(std::sqrt(double(n)) + 0.5))
                                 : options_.mtry;
 
     vigra_precondition(mtry < (MultiArrayIndex)n,
