@@ -129,12 +129,12 @@ template <class SrcIterator, class SrcShape, class SrcAccessor,
           class DestIterator, class DestAccessor>
 void
 multiBinaryErosion( SrcIterator s, SrcShape const & shape, SrcAccessor src,
-                             DestIterator d, DestAccessor dest, float radius)
+                             DestIterator d, DestAccessor dest, double radius)
 {
     typedef typename NumericTraits<typename DestAccessor::value_type>::ValueType DestType;
     typedef typename NumericTraits<typename DestAccessor::value_type>::Promote TmpType;
     DestType MaxValue = NumericTraits<DestType>::max();
-    float radius2 = (float) radius * radius;
+    double radius2 = radius * radius;
     enum { N = 1 + SrcIterator::level };
     
     int MaxDim = 0; 
@@ -178,7 +178,7 @@ template <class SrcIterator, class SrcShape, class SrcAccessor,
 inline
 void multiBinaryErosion(
     triple<SrcIterator, SrcShape, SrcAccessor> const & source,
-    pair<DestIterator, DestAccessor> const & dest, float radius)
+    pair<DestIterator, DestAccessor> const & dest, double radius)
 {
     multiBinaryErosion( source.first, source.second, source.third,
                                  dest.first, dest.second, radius );
@@ -253,12 +253,12 @@ template <class SrcIterator, class SrcShape, class SrcAccessor,
           class DestIterator, class DestAccessor>
 void
 multiBinaryDilation( SrcIterator s, SrcShape const & shape, SrcAccessor src,
-                             DestIterator d, DestAccessor dest, float radius)
+                             DestIterator d, DestAccessor dest, double radius)
 {
     typedef typename NumericTraits<typename DestAccessor::value_type>::ValueType DestType;
     typedef typename NumericTraits<typename DestAccessor::value_type>::Promote TmpType;
     DestType MaxValue = NumericTraits<DestType>::max();
-    float radius2 = (float) radius * radius;
+    double radius2 = radius * radius;
     enum { N = 1 + SrcIterator::level };
     
     int MaxDim = 0; 
@@ -301,7 +301,7 @@ template <class SrcIterator, class SrcShape, class SrcAccessor,
 inline
 void multiBinaryDilation(
     triple<SrcIterator, SrcShape, SrcAccessor> const & source,
-    pair<DestIterator, DestAccessor> const & dest, float radius)
+    pair<DestIterator, DestAccessor> const & dest, double radius)
 {
     multiBinaryDilation( source.first, source.second, source.third,
                                  dest.first, dest.second, radius );
@@ -333,7 +333,7 @@ void multiBinaryDilation(
                   class DestIterator, class DestAccessor>
         void
         multiGrayscaleErosion(SrcIterator siter, SrcShape const & shape, SrcAccessor src,
-                                    DestIterator diter, DestAccessor dest, float sigma);
+                                    DestIterator diter, DestAccessor dest, double sigma);
 
     }
     \endcode
@@ -346,7 +346,7 @@ void multiBinaryDilation(
         void
         multiGrayscaleErosion(triple<SrcIterator, SrcShape, SrcAccessor> const & source,
                                     pair<DestIterator, DestAccessor> const & dest, 
-                                    float sigma);
+                                    double sigma);
 
     }
     \endcode
@@ -373,7 +373,7 @@ template <class SrcIterator, class SrcShape, class SrcAccessor,
           class DestIterator, class DestAccessor>
 void
 multiGrayscaleErosion( SrcIterator s, SrcShape const & shape, SrcAccessor src,
-                       DestIterator d, DestAccessor dest, float sigma)
+                       DestIterator d, DestAccessor dest, double sigma)
 {
     typedef typename NumericTraits<typename DestAccessor::value_type>::ValueType DestType;
     typedef typename NumericTraits<typename DestAccessor::value_type>::Promote TmpType;
@@ -392,13 +392,15 @@ multiGrayscaleErosion( SrcIterator s, SrcShape const & shape, SrcAccessor src,
     
     using namespace vigra::functor;
     
+    ArrayVector<double> sigmas(shape.size(), sigma);
+    
     // Allocate a new temporary array if the distances squared wouldn't fit
     if(N*MaxDim*MaxDim > MaxValue)
     {
         MultiArray<SrcShape::static_size, TmpType> tmpArray(shape);
 
         detail::internalSeparableMultiArrayDistTmp( s, shape, src, tmpArray.traverser_begin(),
-            typename AccessorTraits<TmpType>::default_accessor(), sigma );
+            typename AccessorTraits<TmpType>::default_accessor(), sigmas );
         
         transformMultiArray( tmpArray.traverser_begin(), shape,
                 typename AccessorTraits<TmpType>::default_accessor(), d, dest,
@@ -408,7 +410,7 @@ multiGrayscaleErosion( SrcIterator s, SrcShape const & shape, SrcAccessor src,
     }
     else
     {
-        detail::internalSeparableMultiArrayDistTmp( s, shape, src, d, dest, sigma );
+        detail::internalSeparableMultiArrayDistTmp( s, shape, src, d, dest, sigmas );
     }
 
 }
@@ -418,7 +420,7 @@ template <class SrcIterator, class SrcShape, class SrcAccessor,
 inline 
 void multiGrayscaleErosion(
     triple<SrcIterator, SrcShape, SrcAccessor> const & source,
-    pair<DestIterator, DestAccessor> const & dest, float sigma)
+    pair<DestIterator, DestAccessor> const & dest, double sigma)
 {
     multiGrayscaleErosion( source.first, source.second, source.third, 
             dest.first, dest.second, sigma);
@@ -450,7 +452,7 @@ void multiGrayscaleErosion(
                   class DestIterator, class DestAccessor>
         void
         multiGrayscaleDilation(SrcIterator siter, SrcShape const & shape, SrcAccessor src,
-                                    DestIterator diter, DestAccessor dest, float sigma);
+                                    DestIterator diter, DestAccessor dest, double sigma);
 
     }
     \endcode
@@ -463,7 +465,7 @@ void multiGrayscaleErosion(
         void
         multiGrayscaleDilation(triple<SrcIterator, SrcShape, SrcAccessor> const & source,
                                     pair<DestIterator, DestAccessor> const & dest, 
-                                    float sigma);
+                                    double sigma);
 
     }
     \endcode
@@ -489,7 +491,7 @@ doxygen_overloaded_function(template <...> void multiGrayscaleDilation)
 template <class SrcIterator, class SrcShape, class SrcAccessor,
           class DestIterator, class DestAccessor>
 void multiGrayscaleDilation( SrcIterator s, SrcShape const & shape, SrcAccessor src,
-                             DestIterator d, DestAccessor dest, float sigma)
+                             DestIterator d, DestAccessor dest, double sigma)
 {
     typedef typename NumericTraits<typename DestAccessor::value_type>::ValueType DestType;
     typedef typename NumericTraits<typename DestAccessor::value_type>::Promote TmpType;
@@ -535,7 +537,7 @@ template <class SrcIterator, class SrcShape, class SrcAccessor,
 inline 
 void multiGrayscaleDilation(
     triple<SrcIterator, SrcShape, SrcAccessor> const & source,
-    pair<DestIterator, DestAccessor> const & dest, float sigma)
+    pair<DestIterator, DestAccessor> const & dest, double sigma)
 {
     multiGrayscaleDilation( source.first, source.second, source.third, 
             dest.first, dest.second, sigma);

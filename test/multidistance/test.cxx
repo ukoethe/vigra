@@ -37,11 +37,11 @@
 #include <iostream>
 #include <functional>
 #include <cmath>
+#include <list>
 #include "unittest.hxx"
 
 #include "vigra/multi_distance.hxx"
 #include "vigra/distancetransform.hxx"
-#include "list"
 
 using namespace vigra;
 
@@ -51,19 +51,27 @@ struct MultiDistanceTest
     typedef vigra::MultiArray<3,double> DoubleVolume; 
     typedef vigra::MultiArray<2,double> Double2DArray;
     typedef vigra::DImage Image;
+    typedef vigra::MultiArrayView<2,Image::value_type> ImageView;
     typedef vigra::TinyVector<int,3> IntVec;
 
+#if 1
     enum { WIDTH    =   15,  // 
            HEIGHT   =   15,  // Volume-Dimensionen
            DEPTH    =   15}; //
+#else
+    enum { WIDTH    =   4,  // 
+           HEIGHT   =   4,  // Volume-Dimensionen
+           DEPTH    =   1}; //
+#endif
 
+    std::list<std::list<IntVec> > pointslists;
+    std::vector<Image> images;
+    Double2DArray img2;
     DoubleVolume volume;
     IntVolume shouldVol;
-    std::list<std::list<IntVec> > pointslists;
 
     MultiDistanceTest()
-    : image(7,7), img_array(Double2DArray::difference_type(7,7)),
-      img2(Double2DArray::difference_type(7,1)),
+    : images(3, Image(7,7)), img2(Double2DArray::difference_type(7,1)),
       volume(IntVolume::difference_type(WIDTH,HEIGHT,DEPTH)),
       shouldVol(IntVolume::difference_type(WIDTH,HEIGHT,DEPTH))
     {
@@ -97,20 +105,62 @@ struct MultiDistanceTest
             0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0,
             0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
 
-        Image::ScanOrderIterator i = image.begin();
-        Image::ScanOrderIterator end = image.end();
-        Image::Accessor acc = image.accessor();
-        Double2DArray::iterator array_iter = img_array.begin();
-        const double * p = in;
-
-        for(; i != end; ++i, ++array_iter, ++p)
         {
-            acc.set(*p, i);
-            *array_iter=*p;
+            Image::ScanOrderIterator i = images[0].begin();
+            Image::ScanOrderIterator end = images[0].end();
+            Image::Accessor acc = images[0].accessor();
+            const double * p = in;
+
+            for(; i != end; ++i, ++p)
+            {
+                acc.set(*p, i);
+            }
+        }
+        
+        static const unsigned char in2[] = {
+            1, 0, 0, 0, 0, 0, 1,
+            1, 0, 0, 0, 0, 0, 1,
+            1, 0, 0, 0, 0, 0, 1,
+            1, 0, 0, 0, 0, 0, 1,
+            1, 0, 0, 0, 0, 0, 1,
+            1, 0, 0, 0, 0, 0, 1,
+            1, 0, 0, 0, 0, 0, 1};
+
+        {
+            Image::ScanOrderIterator i = images[1].begin();
+            Image::ScanOrderIterator end = images[1].end();
+            Image::Accessor acc = images[1].accessor();
+            const unsigned char * p = in2;
+
+            for(; i != end; ++i, ++p)
+            {
+                acc.set(*p, i);
+            }
+        }
+
+        static const unsigned char in3[] = {
+            1, 1, 1, 1, 1, 1, 1,
+            1, 0, 0, 0, 0, 0, 1,
+            1, 0, 0, 0, 0, 0, 1,
+            1, 0, 0, 0, 0, 0, 1,
+            1, 0, 0, 0, 0, 0, 1,
+            1, 0, 0, 0, 0, 0, 1,
+            1, 1, 1, 1, 1, 1, 1};
+
+        {
+            Image::ScanOrderIterator i = images[2].begin();
+            Image::ScanOrderIterator end = images[2].end();
+            Image::Accessor acc = images[2].accessor();
+            const unsigned char * p = in3;
+
+            for(; i != end; ++i, ++p)
+            {
+                acc.set(*p, i);
+            }
         }
 
         static const double in2d[] = {0, 0, 0, 1, 0, 0, 0};
-        p=in2d;
+        const double * p=in2d;
         for(Double2DArray::iterator iter=img2.begin(); iter!=img2.end(); ++iter, ++p){
             *iter=*p;
         }
@@ -147,30 +197,71 @@ struct MultiDistanceTest
         }
     }
 
+    void testDistanceVolumesAnisoptopic()
+    {    
+        double epsilon = 1e-14;
+        TinyVector<double, 3> pixelPitch(1.2, 1.0, 2.4);
+        
+        DoubleVolume desired(volume);
+        for(std::list<std::list<IntVec> >::iterator list_iter=pointslists.begin(); list_iter!=pointslists.end(); ++list_iter){
+
+            for(DoubleVolume::iterator vol_iter = volume.begin(); vol_iter != volume.end(); ++vol_iter)
+                *vol_iter=0;
+            for(std::list<IntVec>::iterator iter=(*list_iter).begin(); iter!=(*list_iter).end(); ++iter)
+                *(volume.traverser_begin()+*iter)=1;
+
+            IntVec temp;
+            for(int z=0; z<DEPTH; ++z)
+                for(int y=0; y<HEIGHT; ++y)
+                {
+                    for(int x=0; x<WIDTH; ++x)
+                    {
+                        temp = IntVec(x,y,z);
+                        double tempVal=10000000.0;
+                        for(std::list<IntVec>::iterator iter=(*list_iter).begin(); iter!=(*list_iter).end(); ++iter){
+                            double squaredMag = (pixelPitch*(temp-*iter)).squaredMagnitude();
+                            if(squaredMag<tempVal){
+                                tempVal = squaredMag;
+                            }
+                        }
+                        desired(x,y,z)=tempVal;
+                    }
+                }
+
+
+            separableMultiDistSquared(srcMultiArrayRange(volume),
+                                      destMultiArray(volume),
+                                      true, pixelPitch);
+            shouldEqualSequenceTolerance(volume.begin(),volume.end(),desired.begin(), epsilon);
+        }
+    }
+
     void distanceTransform2DCompare()
     {
-        Image res(image);
-
-        distanceTransform(srcImageRange(image), destImage(res), 0.0, 2);
-
-        separableMultiDistance(srcMultiArrayRange(img_array),
-                               destMultiArray(img_array),
-                               true);
-
-        Image::Iterator i = res.upperLeft();
-        Image::Accessor acc = res.accessor();
-        Double2DArray::iterator array_iter = img_array.begin();
-
-        int x,y;
-
-        for(y=0; y<7; ++y)
+        for(unsigned int k=0; k<images.size(); ++k)
         {
-            for(x=0; x<7; ++x)
-            {
-                double dist_old = acc(i, vigra::Diff2D(x,y));
-                double dist_new = *array_iter++;
+            Image res(images[k]);
+            ImageView img_array(ImageView::difference_type(images[k].width(), images[k].height()), &images[k](0,0));
 
-                shouldEqualTolerance(dist_old, dist_new, 1e-7);
+            distanceTransform(srcImageRange(images[k]), destImage(res), 0.0, 2);
+
+            separableMultiDistance(srcMultiArrayRange(img_array),
+                                   destMultiArray(img_array),
+                                   true);
+
+            Image::Iterator i = res.upperLeft();
+            Image::Accessor acc = res.accessor();
+
+            int x,y;
+
+            for(y=0; y<7; ++y)
+            {
+                for(x=0; x<7; ++x)
+                {
+                    double dist_old = acc(i, vigra::Diff2D(x,y));
+
+                    shouldEqualTolerance(dist_old, img_array(x,y), 1e-7);
+                }
             }
         }
     }
@@ -183,9 +274,6 @@ struct MultiDistanceTest
         separableMultiDistance(srcMultiArrayRange(img2), destMultiArray(res), true);
         shouldEqualSequence(res.begin(), res.end(), desired);
     }
-
-    Image image;
-    Double2DArray img_array, img2;
 };
 
 
@@ -197,6 +285,7 @@ struct SimpleAnalysisTestSuite
     : vigra::test_suite("SimpleAnalysisTestSuite")
     {
         add( testCase( &MultiDistanceTest::testDistanceVolumes));
+        add( testCase( &MultiDistanceTest::testDistanceVolumesAnisoptopic));
         add( testCase( &MultiDistanceTest::distanceTransform2DCompare));
         add( testCase( &MultiDistanceTest::distanceTest1D));
     }

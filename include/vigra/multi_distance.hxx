@@ -52,9 +52,19 @@
 namespace vigra
 {
 
-
 namespace detail
 {
+
+template <class Value>
+struct DistParabolaStackEntry
+{
+    double left, center, right;
+    Value prevVal;
+    
+    DistParabolaStackEntry(Value const & p, double l, double c, double r)
+    : left(l), center(c), right(r), prevVal(p)
+    {}
+};
 
 /********************************************************/
 /*                                                      */
@@ -67,80 +77,49 @@ namespace detail
 template <class SrcIterator, class SrcAccessor,
           class DestIterator, class DestAccessor >
 void distParabola(SrcIterator is, SrcIterator iend, SrcAccessor sa,
-                              DestIterator id, DestAccessor da, float sigma )
+                  DestIterator id, DestAccessor da, double sigma )
 {
     // We assume that the data in the input is distance squared and treat it as such
     int w = iend - is;
+    double dw = w;
+    double sigma2 = sigma * sigma;
+    double sigma22 = 2.0 * sigma2;
     
-    typedef typename NumericTraits<typename DestAccessor::value_type>::ValueType ValueType;
-    typedef typename NumericTraits<typename DestAccessor::value_type>::RealPromote SumType;
-    
-    // Define the stack we use to determine the nearest background row 
-    // (from previous dimension), the items on the stack will separate this column into
-    // separate regions of influence. Each region of influence is closest to the same 
-    // background row from the previous dimension.
-    typedef triple<int, ValueType, int> influence;
-    std::vector<influence> _stack;
+    typedef typename SrcAccessor::value_type SrcType;
+    typedef DistParabolaStackEntry<SrcType> Influence;
+    std::vector<Influence> _stack;
 
-    SrcIterator ibegin = is;
-    _stack.push_back(influence(0, sa(is), w));
+    _stack.push_back(Influence(sa(is), 0.0, 0.0, dw));
     
     ++is;
-    int current = 1;
-    
-    int y0, y1, y2, y_dash, delta_y;
-    sigma = sigma * sigma;
-    bool nosigma = closeAtTolerance( sigma, 1.0 );
-    
-    y0 = 0;   // The beginning of the influence of row y1
-   
-    while( is != iend && current < w )
+    double current = 1.0;
+    while(current < w )
     {
-        y1 = _stack.back().first;
-        y2 = current;
-        delta_y = y2 - y1;
-
-        // If sigma is 1 (common case) avoid float multiplication here.
-        if(nosigma)
-            y_dash = (int)(sa(is) - _stack.back().second) - delta_y*delta_y;
-        else
-            y_dash = (int)(sigma * (sa(is) - _stack.back().second)) - delta_y*delta_y;
-        y_dash = y_dash / (delta_y + delta_y);
-        y_dash += y2;
-
-        if( y_dash > y0)      
+        Influence & s = _stack.back();
+        double diff = current - s.center;
+        double intersection = current + (sa(is) - s.prevVal - sigma2*sq(diff)) / (sigma22 * diff);
+        
+        if(intersection >= s.right) // current point has no influence
         {
-            if( y_dash <= w )   // CASE 2 -- A new region of influence
-            {
-                y0 = y_dash;
-                
-                _stack.back().third = y_dash; 
-                
-                _stack.push_back(influence(current, sa(is), w));
-            }
-
-            // CASE 1 -- This parabola is never active
             ++is;
             ++current;
-            continue;
-        } 
-        else    // CASE 3 -- Parabola shadows the previous one completely
+        }
+        else if( intersection < s.left) // previous point has no influence
         {
             _stack.pop_back();
-
-            if(_stack.size() < 2) 
-                y0=0;
-            else    
-                y0=_stack[_stack.size()-2].third;
-            
-            if(_stack.empty())  // This row influences all previous rows.
+            if(_stack.empty())
             {
-                _stack.push_back(influence(current, sa(is), w));
-
+                _stack.push_back(Influence(sa(is), 0.0, current, dw));
                 ++is;
                 ++current;
-                continue;
             }
+        }
+        else 
+        {
+            s.right = intersection;
+            _stack.push_back(Influence(sa(is), intersection, current, dw));
+            ++is;
+            ++current;
         }
     }
 
@@ -148,37 +127,21 @@ void distParabola(SrcIterator is, SrcIterator iend, SrcAccessor sa,
     // closest to) which row. We can go through the stack and calculate the
     // distance squared for each element of the column.
 
-    typename std::vector<influence>::iterator it = _stack.begin();
+    typename std::vector<Influence>::iterator it = _stack.begin();
 
-    ValueType distance = 0;   // The distance squared
-    current = 0;
-    delta_y = 0;
-    is = ibegin;
-
-    for(; is != iend; ++current, ++id, ++is)
+    for(current = 0.0; current < w; ++current, ++id)
     {
-        // FIXME FIXME Bound checking incorrect here? vvv
-        if( current >= (*it).third && it != _stack.end()) ++it; 
-       
-        // FIXME FIXME The following check speeds things up for distance, but completely
-        // messes up the grayscale morphology. Use an extra flag???
-  /*      if( *is == 0 ) // Skip background pixels
-        {
-            *id = 0;
-            continue;
-        }
-  */      
-        delta_y = current - (*it).first;
-        distance = delta_y * delta_y + (*it).second;
-        *id = distance;
+        if( current >= it->right) 
+            ++it; 
+        da.set(sigma2 * sq(current - it->center) + it->prevVal, id);
+    
     }
-
 }
 
 template <class SrcIterator, class SrcAccessor,
           class DestIterator, class DestAccessor>
 inline void distParabola(triple<SrcIterator, SrcIterator, SrcAccessor> src,
-                         pair<DestIterator, DestAccessor> dest, float sigma )
+                         pair<DestIterator, DestAccessor> dest, double sigma )
 {
     distParabola(src.first, src.second, src.third,
                  dest.first, dest.second, sigma);
@@ -191,14 +154,15 @@ inline void distParabola(triple<SrcIterator, SrcIterator, SrcAccessor> src,
 /********************************************************/
 
 template <class SrcIterator, class SrcShape, class SrcAccessor,
-          class DestIterator, class DestAccessor>
+          class DestIterator, class DestAccessor, class Array>
 void internalSeparableMultiArrayDistTmp(
                       SrcIterator si, SrcShape const & shape, SrcAccessor src,
-                      DestIterator di, DestAccessor dest, float sigma, bool invert)
+                      DestIterator di, DestAccessor dest, Array const & sigmas, bool invert)
 {
-    // Sigma is the spread of the parabolas and is only used for ND morphology. When
-    // calculating the distance transform, it is set to 1
-    enum { N = 1 + SrcIterator::level };
+    // Sigma is the spread of the parabolas. It determines the structuring element size
+    // for ND morphology. When calculating the distance transforms, sigma is usually set to 1,
+    // unless one wants to account for anisotropic pixel pitch
+    enum { N =  SrcShape::static_size};
 
     // we need the Promote type here if we want to invert the image (dilation)
     typedef typename NumericTraits<typename DestAccessor::value_type>::Promote TmpType;
@@ -230,9 +194,9 @@ void internalSeparableMultiArrayDistTmp(
 
             detail::distParabola( srcIterRange(tmp.begin(), tmp.end(),
                           typename AccessorTraits<TmpType>::default_const_accessor()),
-                          destIter( dnav.begin(), dest ), sigma );
+                          destIter( dnav.begin(), dest ), sigmas[0] );
     }
-
+    
     // operate on further dimensions
     for( int d = 1; d < N; ++d )
     {
@@ -248,18 +212,18 @@ void internalSeparableMultiArrayDistTmp(
 
              detail::distParabola( srcIterRange(tmp.begin(), tmp.end(),
                            typename AccessorTraits<TmpType>::default_const_accessor()),
-                           destIter( dnav.begin(), dest ), sigma );
+                           destIter( dnav.begin(), dest ), sigmas[d] );
         }
     }
     if(invert) transformMultiArray( di, shape, dest, di, dest, -Arg1());
 }
 
 template <class SrcIterator, class SrcShape, class SrcAccessor,
-          class DestIterator, class DestAccessor>
+          class DestIterator, class DestAccessor, class Array>
 inline void internalSeparableMultiArrayDistTmp( SrcIterator si, SrcShape const & shape, SrcAccessor src,
-                                                DestIterator di, DestAccessor dest, float sigma)
+                                                DestIterator di, DestAccessor dest, Array const & sigmas)
 {
-    internalSeparableMultiArrayDistTmp( si, shape, src, di, dest, sigma, false );
+    internalSeparableMultiArrayDistTmp( si, shape, src, di, dest, sigmas, false );
 }
 
 template <class SrcIterator, class SrcShape, class SrcAccessor,
@@ -267,7 +231,8 @@ template <class SrcIterator, class SrcShape, class SrcAccessor,
 inline void internalSeparableMultiArrayDistTmp( SrcIterator si, SrcShape const & shape, SrcAccessor src,
                                                 DestIterator di, DestAccessor dest)
 {
-    internalSeparableMultiArrayDistTmp( si, shape, src, di, dest, 1, false );
+    ArrayVector<double> sigmas(shape.size(), 1.0);
+    internalSeparableMultiArrayDistTmp( si, shape, src, di, dest, sigmas, false );
 }
 
 } // namespace detail
@@ -294,12 +259,22 @@ inline void internalSeparableMultiArrayDistTmp( SrcIterator si, SrcShape const &
     pass arguments explicitly:
     \code
     namespace vigra {
-        // apply the same kernel to all dimensions
+        // explicitly specify pixel pitch for each coordinate
+        template <class SrcIterator, class SrcShape, class SrcAccessor,
+                  class DestIterator, class DestAccessor, class Array>
+        void 
+        separableMultiDistSquared( SrcIterator s, SrcShape const & shape, SrcAccessor src,
+                                   DestIterator d, DestAccessor dest, 
+                                   bool background,
+                                   Array const & pixelPitch);
+                                        
+        // use default pixel pitch = 1.0 for each coordinate
         template <class SrcIterator, class SrcShape, class SrcAccessor,
                   class DestIterator, class DestAccessor>
         void
         separableMultiDistSquared(SrcIterator siter, SrcShape const & shape, SrcAccessor src,
-                                    DestIterator diter, DestAccessor dest, bool background);
+                                  DestIterator diter, DestAccessor dest, 
+                                  bool background);
 
     }
     \endcode
@@ -307,17 +282,27 @@ inline void internalSeparableMultiArrayDistTmp( SrcIterator si, SrcShape const &
     use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
+        // explicitly specify pixel pitch for each coordinate
+        template <class SrcIterator, class SrcShape, class SrcAccessor,
+                  class DestIterator, class DestAccessor, class Array>
+        void 
+        separableMultiDistSquared( triple<SrcIterator, SrcShape, SrcAccessor> const & source,
+                                   pair<DestIterator, DestAccessor> const & dest, 
+                                   bool background,
+                                   Array const & pixelPitch);
+                                               
+        // use default pixel pitch = 1.0 for each coordinate
         template <class SrcIterator, class SrcShape, class SrcAccessor,
                   class DestIterator, class DestAccessor>
         void
-        separableMultiDistance(triple<SrcIterator, SrcShape, SrcAccessor> const & source,
-                                    pair<DestIterator, DestAccessor> const & dest,
-                                    bool background);
+        separableMultiDistSquared(triple<SrcIterator, SrcShape, SrcAccessor> const & source,
+                                  pair<DestIterator, DestAccessor> const & dest,
+                                  bool background);
 
     }
     \endcode
 
-    This function performs a Euclidean distance squared transform on the given
+    This function performs a squared Euclidean distance squared transform on the given
     multi-dimensional array. Both source and destination
     arrays are represented by iterators, shape objects and accessors.
     The destination array is required to already have the correct size.
@@ -327,11 +312,15 @@ inline void internalSeparableMultiArrayDistTmp( SrcIterator si, SrcShape const &
     <i>background</i> is true, then the squared distance of all background
     pixels to the nearest object is calculated. Otherwise, the distance of all
     object pixels to the nearest background pixel is calculated.
+    
+    Optionally, one can pass an array that specifies the pixel pitch in each direction. 
+    This is necessary when the data have non-uniform resolution (as is common in confocal
+    micriscopy, for example). 
 
     This function may work in-place, which means that <tt>siter == diter</tt> is allowed.
     A full-sized internal array is only allocated if working on the destination
     array directly would cause overflow errors (i.e. if
-    <tt> typeid(typename DestAccessor::value_type) < N * M*M</tt>, where M is the
+    <tt> NumericTraits<typename DestAccessor::value_type>::max() < N * M*M</tt>, where M is the
     size of the largest dimension of the array.
 
     <b> Usage:</b>
@@ -348,63 +337,84 @@ inline void internalSeparableMultiArrayDistTmp( SrcIterator si, SrcShape const &
     separableMultiDistSquared(srcMultiArrayRange(source), destMultiArray(dest), true);
     \endcode
 
-    \see vigra::distanceTransform()
+    \see vigra::distanceTransform(), vigra::separableMultiDistance()
 */
 doxygen_overloaded_function(template <...> void separableMultiDistSquared)
 
 template <class SrcIterator, class SrcShape, class SrcAccessor,
-          class DestIterator, class DestAccessor>
+          class DestIterator, class DestAccessor, class Array>
 void separableMultiDistSquared( SrcIterator s, SrcShape const & shape, SrcAccessor src,
-                                DestIterator d, DestAccessor dest, bool background)
+                                DestIterator d, DestAccessor dest, bool background,
+                                Array const & pixelPitch)
 {
-    typedef typename NumericTraits<typename DestAccessor::value_type>::ValueType DestType;
-    typedef typename NumericTraits<typename DestAccessor::value_type>::Promote TmpType;
-    DestType MaxValue = NumericTraits<DestType>::max();
-    enum { N = 1 + SrcIterator::level };
+    int N = shape.size();
 
-    int MaxDim = 0;
-    for( int i=0; i<N; i++)
-        if(MaxDim < shape[i]) MaxDim = shape[i];
-    int MaxDist = MaxDim*MaxDim;
-
+    typedef typename DestAccessor::value_type DestType;
+    typedef typename NumericTraits<DestType>::RealPromote Real;
+    
+    double dmax = 0.0;
+    for( int k=0; k<N; ++k)
+    {
+        dmax += sq(pixelPitch[k]*shape[k]);
+    }
+    
+            
     using namespace vigra::functor;
    
-    if(N*MaxDim*MaxDim > MaxValue) // need a temporary array to avoid overflows
+    if(dmax > NumericTraits<DestType>::max()) // need a temporary array to avoid overflows
     {
         // Threshold the values so all objects have infinity value in the beginning
-        MultiArray<SrcShape::static_size, TmpType> tmpArray(shape);
+        double maxDist = dmax;
+        MultiArray<SrcShape::static_size, Real> tmpArray(shape);
         if(background == true)
-            transformMultiArray( s, shape, src, tmpArray.traverser_begin(),
-                                 typename AccessorTraits<TmpType>::default_accessor(),
-                                 ifThenElse( Arg1() == Param(0), Param(MaxDist), Param(0) ));
+            transformMultiArray( s, shape, src, 
+                                 tmpArray.traverser_begin(), typename AccessorTraits<Real>::default_accessor(),
+                                 ifThenElse( Arg1() == Param(0), Param(maxDist), Param(0) ));
         else
-            transformMultiArray( s, shape, src, tmpArray.traverser_begin(),
-                                 typename AccessorTraits<TmpType>::default_accessor(),
-                                 ifThenElse( Arg1() != Param(0), Param(MaxDist), Param(0) ));
+            transformMultiArray( s, shape, src, 
+                                 tmpArray.traverser_begin(), typename AccessorTraits<Real>::default_accessor(),
+                                 ifThenElse( Arg1() != Param(0), Param(maxDist), Param(0) ));
         
         detail::internalSeparableMultiArrayDistTmp( tmpArray.traverser_begin(), 
-                shape, typename AccessorTraits<TmpType>::default_accessor(),
+                shape, typename AccessorTraits<Real>::default_accessor(),
                 tmpArray.traverser_begin(), 
-                typename AccessorTraits<TmpType>::default_accessor());
+                typename AccessorTraits<Real>::default_accessor(), pixelPitch);
         
-        //copyMultiArray(srcMultiArrayRange(tmpArray), destIter(d, dest));
-        transformMultiArray( tmpArray.traverser_begin(), shape,
-                             typename AccessorTraits<TmpType>::default_accessor(), d, dest,
-                             ifThenElse( Arg1() > Param(MaxValue), Param(MaxValue), Arg1() ) );
-              
+        copyMultiArray(srcMultiArrayRange(tmpArray), destIter(d, dest));
     }
     else        // work directly on the destination array    
     {
         // Threshold the values so all objects have infinity value in the beginning
+        int maxDist = int(std::ceil(dmax));
         if(background == true)
             transformMultiArray( s, shape, src, d, dest,
-                                 ifThenElse( Arg1() == Param(0), Param(MaxDist), Param(0) ));
+                                 ifThenElse( Arg1() == Param(0), Param(maxDist), Param(0) ));
         else
             transformMultiArray( s, shape, src, d, dest, 
-                                 ifThenElse( Arg1() != Param(0), Param(MaxDist), Param(0) ));
+                                 ifThenElse( Arg1() != Param(0), Param(maxDist), Param(0) ));
      
-        detail::internalSeparableMultiArrayDistTmp( d, shape, dest, d, dest);
+        detail::internalSeparableMultiArrayDistTmp( d, shape, dest, d, dest, pixelPitch);
     }
+}
+
+template <class SrcIterator, class SrcShape, class SrcAccessor,
+          class DestIterator, class DestAccessor, class Array>
+inline void separableMultiDistSquared( triple<SrcIterator, SrcShape, SrcAccessor> const & source,
+                                       pair<DestIterator, DestAccessor> const & dest, bool background,
+                                       Array const & pixelPitch)
+{
+    separableMultiDistSquared( source.first, source.second, source.third,
+                               dest.first, dest.second, background, pixelPitch );
+}
+
+template <class SrcIterator, class SrcShape, class SrcAccessor,
+          class DestIterator, class DestAccessor>
+inline 
+void separableMultiDistSquared( SrcIterator s, SrcShape const & shape, SrcAccessor src,
+                                DestIterator d, DestAccessor dest, bool background)
+{
+    ArrayVector<double> pixelPitch(shape.size(), 1.0);
+    separableMultiDistSquared( s, shape, src, d, dest, background, pixelPitch );
 }
 
 template <class SrcIterator, class SrcShape, class SrcAccessor,
@@ -429,12 +439,22 @@ inline void separableMultiDistSquared( triple<SrcIterator, SrcShape, SrcAccessor
     pass arguments explicitly:
     \code
     namespace vigra {
-        // apply the same kernel to all dimensions
+        // explicitly specify pixel pitch for each coordinate
+        template <class SrcIterator, class SrcShape, class SrcAccessor,
+                  class DestIterator, class DestAccessor, class Array>
+        void 
+        separableMultiDistance( SrcIterator s, SrcShape const & shape, SrcAccessor src,
+                                DestIterator d, DestAccessor dest, 
+                                bool background,
+                                Array const & pixelPitch);
+                                        
+        // use default pixel pitch = 1.0 for each coordinate
         template <class SrcIterator, class SrcShape, class SrcAccessor,
                   class DestIterator, class DestAccessor>
         void
         separableMultiDistance(SrcIterator siter, SrcShape const & shape, SrcAccessor src,
-                                    DestIterator diter, DestAccessor dest, bool background);
+                               DestIterator diter, DestAccessor dest, 
+                               bool background);
 
     }
     \endcode
@@ -442,33 +462,31 @@ inline void separableMultiDistSquared( triple<SrcIterator, SrcShape, SrcAccessor
     use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
+        // explicitly specify pixel pitch for each coordinate
+        template <class SrcIterator, class SrcShape, class SrcAccessor,
+                  class DestIterator, class DestAccessor, class Array>
+        void 
+        separableMultiDistance( triple<SrcIterator, SrcShape, SrcAccessor> const & source,
+                                pair<DestIterator, DestAccessor> const & dest, 
+                                bool background,
+                                Array const & pixelPitch);
+                                               
+        // use default pixel pitch = 1.0 for each coordinate
         template <class SrcIterator, class SrcShape, class SrcAccessor,
                   class DestIterator, class DestAccessor>
         void
         separableMultiDistance(triple<SrcIterator, SrcShape, SrcAccessor> const & source,
-                                    pair<DestIterator, DestAccessor> const & dest,
-                                    bool background);
+                               pair<DestIterator, DestAccessor> const & dest,
+                               bool background);
 
     }
     \endcode
 
     This function performs a Euclidean distance transform on the given
-    multi-dimensional array. Both source and destination
-    arrays are represented by iterators, shape objects and accessors.
-    The destination array is required to already have the correct size.
-
-    This function expects a mask as its source, where background pixels are 
-    marked as zero, and non-background pixels as non-zero. If the parameter 
-    <i>background</i> is true, then the squared distance of all background
-    pixels to the nearest object is calculated. Otherwise, the distance of all
-    object pixels to the nearest background pixel is calculated.
-
-    This function may work in-place, which means that <tt>siter == diter</tt> is allowed.
-    A full-sized internal array is only allocated if working on the destination
-    array directly would cause overflow errors (i.e. if
-    <tt> typeid(typename DestAccessor::value_type) < N * M*M</tt>, where M is the
-    size of the largest dimension of the array.
-
+    multi-dimensional array. It simply calls \ref separableMultiDistSquared()
+    and takes the pixel-wise square root of the result. See \ref separableMultiDistSquared()
+    for more documentation.
+    
     <b> Usage:</b>
 
     <b>\#include</b> \<<a href="multi__distance_8hxx-source.html">vigra/multi_distance.hxx</a>\>
@@ -476,16 +494,28 @@ inline void separableMultiDistSquared( triple<SrcIterator, SrcShape, SrcAccessor
     \code
     MultiArray<3, unsigned char>::size_type shape(width, height, depth);
     MultiArray<3, unsigned char> source(shape);
-    MultiArray<3, unsigned float> dest(shape);
+    MultiArray<3, float> dest(shape);
     ...
 
     // Calculate Euclidean distance squared for all background pixels 
     separableMultiDistance(srcMultiArrayRange(source), destMultiArray(dest), true);
     \endcode
 
-    \see vigra::distanceTransform()
+    \see vigra::distanceTransform(), vigra::separableMultiDistSquared()
 */
 doxygen_overloaded_function(template <...> void separableMultiDistance)
+
+template <class SrcIterator, class SrcShape, class SrcAccessor,
+          class DestIterator, class DestAccessor, class Array>
+void separableMultiDistance( SrcIterator s, SrcShape const & shape, SrcAccessor src,
+                             DestIterator d, DestAccessor dest, bool background,
+                             Array const & pixelPitch)
+{
+    separableMultiDistSquared( s, shape, src, d, dest, background, pixelPitch);
+    
+    // Finally, calculate the square root of the distances
+    transformMultiArray( d, shape, dest, d, dest, (double(*)(double))&std::sqrt );
+}
 
 template <class SrcIterator, class SrcShape, class SrcAccessor,
           class DestIterator, class DestAccessor>
@@ -496,6 +526,16 @@ void separableMultiDistance( SrcIterator s, SrcShape const & shape, SrcAccessor 
     
     // Finally, calculate the square root of the distances
     transformMultiArray( d, shape, dest, d, dest, (double(*)(double))&std::sqrt );
+}
+
+template <class SrcIterator, class SrcShape, class SrcAccessor,
+          class DestIterator, class DestAccessor, class Array>
+inline void separableMultiDistance( triple<SrcIterator, SrcShape, SrcAccessor> const & source,
+                                    pair<DestIterator, DestAccessor> const & dest, bool background,
+                                    Array const & pixelPitch)
+{
+    separableMultiDistance( source.first, source.second, source.third,
+                            dest.first, dest.second, background, pixelPitch );
 }
 
 template <class SrcIterator, class SrcShape, class SrcAccessor,
