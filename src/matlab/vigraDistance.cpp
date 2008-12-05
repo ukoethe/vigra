@@ -22,15 +22,37 @@ struct data: public base_data<T>{
 	declCharConstr(method, 4, MULT, MULT_SQUARED, IMAG_DIST_TRANS, INVERTEDCRAP, e);
 	declOut(double);
 	
+	//Only supported with MULT
+	TinyVector<double, 3> pitch3D;
 	//Only supported with IMAG_DIST_TRANS
 	declScalar(T, backgroundPixel, 0);
 	declScalarMinMax(int, norm, 2, 0, 2);
 	
 	data(matlab::OutputArray outputs, matlab::InputArray inputs)
-	:			base_data(inputs), map(backgroundMode), map(method), map(backgroundPixel), map(norm)
+	:			base_data(inputs), map(backgroundMode), map(method), map(backgroundPixel), map(norm),
+				pitch3D(1.0,1.0,1.0)
 	{
 		mapOut_SAME(double);
-		if(this->numOfDim == 3 && this->method == IMAG_DIST_TRANS){
+		if(inputs.size() == 2)
+		{
+			mxArray* pitchArr =mxGetField(inputs[1], 0, "pitch");
+			if(pitchArr != NULL && mxIsNumeric(pitchArr))
+			{
+				if(numOfDim == IMAG){
+					TinyVectorView<double, 2> temp = matlab::getVector<double,2>(pitchArr);
+					pitch3D[0] = temp[0]>0? temp[0]:1.0;
+					pitch3D[1] = temp[1]>0? temp[1]:1.0;
+				}else{
+					TinyVectorView<double, 3> temp = matlab::getVector<double,3>(pitchArr);
+					pitch3D = temp;
+				}
+				if(this->method != MULT){
+					mexWarnMsgTxt("pitch option is only supported with the method MULT");
+				}
+			}
+		}
+		else
+		if(this->numOfDim == VOLUME && this->method == IMAG_DIST_TRANS){
 			this->method = MULT;
 			mexWarnMsgTxt("IMAG_DIST_TRANS only works with 2D Images using default: MULT");
 		}
@@ -52,11 +74,10 @@ struct vigraFunctor
 		switch(cantorPair(o.numOfDim, o.method)){
 			//In this case function pointers may have been more elegant.
 			case cP2_(IMAG, MULT):
-				separableMultiDistance(srcMultiArrayRange(o.in3D), destMultiArray(o.out3D), o.backgroundMode);
+				separableMultiDistance(srcMultiArrayRange(o.in3D), destMultiArray(o.out3D), o.backgroundMode, o.pitch3D);
 				break;
 			case cP2_(VOLUME, MULT):
-				separableMultiDistance(srcMultiArrayRange(o.in3D), destMultiArray(o.out3D), o.backgroundMode);
-				mexWarnMsgTxt("asd");
+				separableMultiDistance(srcMultiArrayRange(o.in3D), destMultiArray(o.out3D), o.backgroundMode, o.pitch3D);
 				break;
 			case cP2_(IMAG, MULT_SQUARED):
 				separableMultiDistSquared(srcMultiArrayRange(o.in3D), destMultiArray(o.out3D), o.backgroundMode);

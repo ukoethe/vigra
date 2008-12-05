@@ -321,6 +321,25 @@ getShape(mxArray const * t)
     return TinyVectorView<MultiArrayIndex, SIZE>((MultiArrayIndex *)mxGetData(t));
 }
 
+template <class T, unsigned int SIZE>
+TinyVectorView<T, SIZE>
+getVector(mxArray const * t)
+{
+    if(!ValueType<T>::check(t))
+    {
+        std::string msg = std::string("Input array must have type ") + 
+                          ValueType<T>::typeName() + ".";
+        mexErrMsgTxt(msg.c_str());
+    }
+    if(SIZE != mxGetNumberOfElements(t))
+    {
+        mexErrMsgTxt("getVector(): Input array has wrong number of elements.");
+    }
+    
+    return TinyVectorView<T, SIZE>((T *)mxGetData(t));
+}
+
+
 template <unsigned int DIM, class T>
 MultiArrayView<DIM, T>
 getMultiArray(mxArray const * t)
