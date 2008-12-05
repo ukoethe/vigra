@@ -123,6 +123,8 @@ options is a struct with possible fields: "method", "backgroundMode" and "backgr
 						This option defines the background Pixel value. Only used with method = IMAG_DIST_TRANS
 "norm": 					2(default), 1 , 0.  
 						Defines the norm used to calculate the distance (Only used with method = IMAG_DIST_TRANS)
+"pitch"				[1.0, 1.0]  (2D)or [1.0, 1.0, 1.0](3D) , arb 2D or 3D array.
+						define a pitch if data has non-uniform resolution .
 
 Usage:
 	opt = struct('method' ,'IMAGE_DIST_TRANS' , 'backgroundPixel', 10 , 'norm' , 0);
