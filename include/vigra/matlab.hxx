@@ -725,12 +725,12 @@ bool is_in_range(T in, T min, std::string max)
 	type get_##name(matlab::InputArray inputs)\
 	{\
 		if(inputs.size() == 1){\
-			return numOfDim == 2? default2D : default3D;;\
+			return this->numOfDim == 2? default2D : default3D;;\
 		}else{\
 			mxArray* name =mxGetField(inputs[1], 0, #name);\
 			return (name!=NULL&&mxIsNumeric(name))\
 							? matlab::getScalar<type>(name)\
-							: numOfDim == 2? default2D : default3D;\
+							: this->numOfDim == 2? default2D : default3D;\
 		}\
 	}\
 	
@@ -813,11 +813,11 @@ bool is_in_range(T in, T min, std::string max)
 	MultiArrayView<3,type> out3D;
 // Some Macros for commonly used output declarations
 #define mapOut_SAME(outType);\
-	if(numOfDim == IMAG){\
-		out = matlab::createImage<outType>(in.width(), in.height(), outputs[0]);\
-		out3D = MultiArrayView<3, outType>(in3D.shape(), (outType*)out.data());\
+	if(this->numOfDim == 2){\
+		out = matlab::createImage<outType>(this->in.width(), this->in.height(), outputs[0]);\
+		out3D = MultiArrayView<3, outType>(this->in3D.shape(), (outType*)out.data());\
 	}else{\
-		out3D = matlab::createMultiArray<3,outType>(in3D.shape(), outputs[0]);\
+		out3D = matlab::createMultiArray<3,outType>(this->in3D.shape(), outputs[0]);\
 	}	
 #define mapOut_SIZE(outType,w,h,d);\
 	MultiArrayShape<3>::type newShape(w, h, d);\
@@ -839,6 +839,8 @@ bool is_in_range(T in, T min, std::string max)
 //Simplify Member Initialisors 
 #define map(name) name(get_##name(inputs))
 
+//enumeration - for GCC 
+enum {IMAG = 2, VOLUME = 3}dim;
 /*+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
 /* The Optons struct contains all the necassary working data and 
 /* options for the vigraFunc. This is the minimal struct

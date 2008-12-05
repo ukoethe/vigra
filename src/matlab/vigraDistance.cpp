@@ -18,7 +18,7 @@ using namespace vigra;
 /*+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
 template <class T>
 struct data: public base_data<T>{
-	declScalarMinMax(int, backgroundMode, 0, 0, 2);
+	declScalarMinMax(int, backgroundMode, 1, 0, 2);
 	declCharConstr(method, 4, MULT, MULT_SQUARED, IMAG_DIST_TRANS, INVERTEDCRAP, e);
 	declOut(double);
 	
@@ -146,7 +146,7 @@ options is a struct with possible fields: "method", "backgroundMode" and "backgr
 						(vigra::seperableMultiDist....).MULT_SQUARED returns the squared values of MULT. 
 						IMAG_DIST_TRANS is defined with BasicImage and is slower. Use it only if  you explicitely need the backgroundPixel
 						or norm option. (vigra::distanceTransform)
-"backgroundMode": 		0 (default) ,  1, 2: 	
+"backgroundMode": 		0 ,  1(default) , 2: 	
 						This option is only used with methods MULT and MULT_SQUARED
 						If the parameter background is 1, then the squared distance of all background pixels to the nearest object is calculated. 
 						Otherwise, the distance of all object pixels to the nearest background pixel is calculated.
