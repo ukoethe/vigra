@@ -2,10 +2,10 @@
 
 #include <string>
 #include <vigra/watersheds.hxx>
-#include <vigra/watersheds3D.hxx>
+#include <vigra/watersheds3d.hxx>
 #include <vigra/matlab.hxx>
 #include <vigra/seededregiongrowing.hxx>
-#include <vigra/seededregiongrowing3D.hxx>
+#include <vigra/seededregiongrowing3d.hxx>
 
 
 
@@ -15,6 +15,7 @@
 #define vigraFunctor vigraWatershed
 
 using namespace vigra;
+using namespace matlab;
 
 /*+++++++++++++++++++User data structure+++++++++++++++++++++++++++++*/
 
@@ -31,13 +32,13 @@ struct data: public base_data<T>{
 	MultiArrayView<3,T> seed3D;	
 	
 	data(matlab::OutputArray outputs, matlab::InputArray inputs)
-	:			base_data(inputs),
+	:			base_data<T>(inputs),
 				map(conn), map(crack)
 	{
-		if(numOfDim == IMAG && conn != 8 && conn !=4){
+		if(this->numOfDim == IMAG && conn != 8 && conn !=4){
 			conn = 8;
 			mexWarnMsgTxt("Invalid User supplied connectivity - using Default: 8");
-		}else if(numOfDim == VOLUME && conn != 26 && conn !=6){
+		}else if(this->numOfDim == VOLUME && conn != 26 && conn !=6){
 			conn = 26;
 			mexWarnMsgTxt("Invalid User supplied connectivity - using Default: 26");
 		}
@@ -45,7 +46,7 @@ struct data: public base_data<T>{
 		if(inputs.size()!= 1){
 			mxArray* mxArrSeed =mxGetField(inputs[1], 0, "seed");
 			if(mxArrSeed != NULL && mxIsNumeric(mxArrSeed)){
-				if(numOfDim == IMAG){
+				if(this->numOfDim == IMAG){
 					seed = matlab::getImage<T>(mxArrSeed);
 					seed3D = matlab::getMultiArray<3, T>(mxArrSeed);
 					conn = 4;
@@ -53,7 +54,7 @@ struct data: public base_data<T>{
 					seed3D = matlab::getMultiArray<3, T>(mxArrSeed);
 				}
 				method = SEED;
-				if(seed3D.shape() != in3D.shape()){
+				if(seed3D.shape() != this->in3D.shape()){
 					conn = 6;
 					method = UNION;
 					mexWarnMsgTxt("Seed and Input dimension mismatch. Using UNION algorithm");
@@ -69,7 +70,7 @@ struct data: public base_data<T>{
 /* This function does all the work
 /*+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
 
-#define cP3_(a, b , c) cP3<data<T>::a, data<T>::b, c>::value
+#define cP3_(a, b , c) cP3<data<T>::a, b, c>::value
 struct vigraFunctor
 {
 	template <class T>

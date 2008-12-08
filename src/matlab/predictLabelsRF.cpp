@@ -4,6 +4,7 @@
 #include "random_forest_impex.hxx"
 
 using namespace vigra;
+using namespace matlab;
 
 /** MATLAB 
 function labels = predictLabelsRF(RF, features)

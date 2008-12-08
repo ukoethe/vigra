@@ -12,6 +12,7 @@
 #define vigraFunctor vigraResize3
 
 using namespace vigra;
+using namespace matlab;
 
 /*+++++++++++++++++++User data structure+++++++++++++++++++++++++++++*/
 
@@ -27,7 +28,7 @@ struct data: public base_data<T>{
 	declOut(T);
 	
 	data(matlab::OutputArray outputs, matlab::InputArray inputs)
-	:			base_data(inputs),
+	:			base_data<T>(inputs),
 				map(method),
 				map(splineOrder)
 	{
@@ -37,11 +38,11 @@ struct data: public base_data<T>{
 			if(shape != NULL && mxIsNumeric(shape))
 			{
 				MultiArrayShape<2>::type newShape = matlab::getShape<2>(shape);		
-				mapOut_3D(T, newShape[0], newShape[1], in3D.shape(2));
+				mapOut_3D(T, newShape[0], newShape[1], this->in3D.shape(2));
 			}
-			else out3D = matlab::createMultiArray<3,T>(in3D.shape(), outputs[0]);
+			else out3D = matlab::createMultiArray<3,T>(this->in3D.shape(), outputs[0]);
 		}
-		else out3D = matlab::createMultiArray<3,T>(in3D.shape(), outputs[0]);
+		else out3D = matlab::createMultiArray<3,T>(this->in3D.shape(), outputs[0]);
 		
 		if(method == Coscot || method == CatmullRom){
 			mexWarnMsgTxt("Ignoring splineOrder parameter.");

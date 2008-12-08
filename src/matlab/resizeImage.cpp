@@ -3,6 +3,7 @@
 #include <vigra/resizeimage.hxx>
 
 using namespace vigra;
+using namespace matlab;
 
 template <class T>
 void vigraResizeImageImpl(matlab::OutputArray outputs, matlab::InputArray inputs)

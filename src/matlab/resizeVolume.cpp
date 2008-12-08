@@ -2,6 +2,7 @@
 #include <vigra/multi_resize.hxx>
 
 using namespace vigra;
+using namespace matlab;
 
 template <class T>
 void vigraResizeVolumeImpl(matlab::OutputArray outputs, matlab::InputArray inputs)

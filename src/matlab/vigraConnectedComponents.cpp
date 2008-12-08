@@ -13,6 +13,7 @@
 #define vigraFunctor vigraConnectedComponents
 
 using namespace vigra;
+using namespace matlab;
 
 /*+++++++++++++++++++User data structure+++++++++++++++++++++++++++++*/
 
@@ -21,6 +22,7 @@ template <class T>
 struct data: public base_data<T>{
 	declScalar2D3D(int, conn, 8, 26);
     T backgroundValue;
+
 	bool hasbackground;
 	T get_backgroundValue(matlab::InputArray inputs)
 	{
@@ -42,14 +44,14 @@ struct data: public base_data<T>{
 
 	
 	data(matlab::OutputArray outputs, matlab::InputArray inputs)
-	:			base_data(inputs),
+	:			base_data<T>(inputs),
 				map(backgroundValue), map(conn)
 	{
 		
-		if(numOfDim == IMAG && conn != 8 && conn !=4){
+		if(this->numOfDim == IMAG && conn != 8 && conn !=4){
 			conn = 8;
 			mexWarnMsgTxt("Invalid User supplied connectivity - using Default: 8");
-		}else if(numOfDim == VOLUME && conn != 26 && conn !=6){
+		}else if(this->numOfDim == VOLUME && conn != 26 && conn !=6){
 			conn = 26;
 			mexWarnMsgTxt("Invalid User supplied connectivity - using Default: 26");
 		}
@@ -60,7 +62,7 @@ struct data: public base_data<T>{
 /* This function does all the work
 /*+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
 
-#define cP3_(a, b , c) cP3<a, data<T>::b, c>::value
+#define cP3_(a, b , c) cP3<a, b, c>::value
 struct vigraFunctor
 {
 	template <class T>

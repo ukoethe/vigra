@@ -12,6 +12,7 @@
 #define vigraFunctor vigraResize3
 
 using namespace vigra;
+using namespace matlab;
 
 /*+++++++++++++++++++User data structure+++++++++++++++++++++++++++++*/
 

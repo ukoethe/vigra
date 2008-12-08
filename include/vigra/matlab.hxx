@@ -566,47 +566,7 @@ createScalar(T v)
     return m;
 }
 
-} // namespace matlab
-
-struct MeshGridAccessor
-{
-    typedef TinyVector<Diff2D::MoveX, 2> value_type;
-    
-    template <class ITERATOR>
-    value_type operator()(ITERATOR const & i) const
-    {
-        return value_type(i->x, i->y);
-    }
-};
-
-inline 
-triple<Diff2D, Diff2D, MeshGridAccessor>
-meshGrid(Diff2D ul, Diff2D lr)
-{
-    return triple<Diff2D, Diff2D, MeshGridAccessor>(ul, lr, MeshGridAccessor());
-}
-
-} // namespace vigra 
-
-void vigraMexFunction(vigra::matlab::OutputArray, vigra::matlab::InputArray);
-
-void mexFunction(int nlhs, mxArray *plhs[], 
-                 int nrhs, const mxArray *prhs[])
-{
-  try 
-  {
-    vigra::matlab::InputArray inputs(nrhs, prhs);
-    vigra::matlab::OutputArray outputs(nlhs, plhs);
-    
-    vigraMexFunction(outputs, inputs);
-  }
-  catch(std::exception & e)
-  {
-    mexErrMsgTxt(e.what());
-  }
-}
-
-/*+*********************************
+/***********************************
 Rahuls code starts here
 ************************************+*/
 using namespace vigra;
@@ -617,25 +577,25 @@ void callMexFunctor(matlab::OutputArray outputs, matlab::InputArray inputs)
 	mxClassID inClass = mxGetClassID(inputs[0]);
 	switch(inClass){
 		case mxDOUBLE_CLASS:
-			Functor::exec<double>(outputs, inputs);	break;
+			Functor::template exec<double>(outputs, inputs);	break;
 		case mxSINGLE_CLASS:
-			Functor::exec<float>(outputs, inputs);		break;
+			Functor::template exec<float>(outputs, inputs);		break;
         case mxINT8_CLASS:
-			Functor::exec<Int8>(outputs, inputs);		break;
+			Functor::template exec<Int8>(outputs, inputs);		break;
 		case mxINT16_CLASS:
-			Functor::exec<Int16>(outputs, inputs);		break;
+			Functor::template exec<Int16>(outputs, inputs);		break;
 		case mxINT32_CLASS:
-			Functor::exec<Int32>(outputs, inputs);		break;
+			Functor::template exec<Int32>(outputs, inputs);		break;
 		case mxINT64_CLASS:
-			Functor::exec<Int64>(outputs, inputs);		break;
+			Functor::template exec<Int64>(outputs, inputs);		break;
         case mxUINT8_CLASS:
-			Functor::exec<UInt8>(outputs, inputs);		break;
+			Functor::template exec<UInt8>(outputs, inputs);		break;
 		case mxUINT16_CLASS:
-			Functor::exec<UInt16>(outputs, inputs);	break;
+			Functor::template exec<UInt16>(outputs, inputs);	break;
 		case mxUINT32_CLASS:
-			Functor::exec<UInt32>(outputs, inputs);	break;
+			Functor::template exec<UInt32>(outputs, inputs);	break;
 		case mxUINT64_CLASS:
-			Functor::exec<UInt64>(outputs, inputs);	break;
+			Functor::template exec<UInt64>(outputs, inputs);	break;
 		default:
 			mexErrMsgTxt("Input image must have type 'uint8'-16-32-64', 'int8-16-32-64' 'single' or 'double'.");
 	}
@@ -647,21 +607,21 @@ void callMexAllIntFunctor(matlab::OutputArray outputs, matlab::InputArray inputs
 	mxClassID inClass = mxGetClassID(inputs[0]);
 	switch(inClass){
         case mxINT8_CLASS:
-			Functor::exec<Int8>(outputs, inputs);		break;
+			Functor::template exec<Int8>(outputs, inputs);		break;
 		case mxINT16_CLASS:
-			Functor::exec<Int16>(outputs, inputs);		break;
+			Functor::template exec<Int16>(outputs, inputs);		break;
 		case mxINT32_CLASS:
-			Functor::exec<Int32>(outputs, inputs);		break;
+			Functor::template exec<Int32>(outputs, inputs);		break;
 		case mxINT64_CLASS:
-			Functor::exec<Int64>(outputs, inputs);		break;
+			Functor::template exec<Int64>(outputs, inputs);		break;
         case mxUINT8_CLASS:
-			Functor::exec<UInt8>(outputs, inputs);		break;
+			Functor::template exec<UInt8>(outputs, inputs);		break;
 		case mxUINT16_CLASS:
-			Functor::exec<UInt16>(outputs, inputs);	break;
+			Functor::template exec<UInt16>(outputs, inputs);	break;
 		case mxUINT32_CLASS:
-			Functor::exec<UInt32>(outputs, inputs);	break;
+			Functor::template exec<UInt32>(outputs, inputs);	break;
 		case mxUINT64_CLASS:
-			Functor::exec<UInt64>(outputs, inputs);	break;
+			Functor::template exec<UInt64>(outputs, inputs);	break;
 		default:
 			mexErrMsgTxt("Input image must have type 'uint8'-16-32-64', 'int8-16-32-64' 'single' or 'double'.");
 	}
@@ -754,7 +714,7 @@ bool is_in_range(T in, T min, std::string max)
 	}
 
 #define declCharConstr(title, number, name1_default, name2, name3, name4, name5);\
-	enum {name1_default = 1, name2 = 2, name3 = 3, name4 = 4, name5 = 5}title##enum;\
+	enum title##Enum {name1_default = 1, name2 = 2, name3 = 3, name4 = 4, name5 = 5};\
 	int title;\
 	int get_##title(matlab::InputArray inputs)\
 	{\
@@ -811,6 +771,7 @@ bool is_in_range(T in, T min, std::string max)
 #define declOut(type);\
 	BasicImageView<type>  out;\
 	MultiArrayView<3,type> out3D;
+    
 // Some Macros for commonly used output declarations
 #define mapOut_SAME(outType);\
 	if(this->numOfDim == 2){\
@@ -840,7 +801,8 @@ bool is_in_range(T in, T min, std::string max)
 #define map(name) name(get_##name(inputs))
 
 //enumeration - for GCC 
-enum {IMAG = 2, VOLUME = 3}dim;
+enum DataDimension {IMAG = 2, VOLUME = 3};
+
 /*+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
 /* The Optons struct contains all the necassary working data and 
 /* options for the vigraFunc. This is the minimal struct
@@ -849,7 +811,7 @@ enum {IMAG = 2, VOLUME = 3}dim;
 template <class T>
 struct base_data{
 	int numOfDim;
-	enum {IMAG = 2, VOLUME = 3}dim;
+//	enum {IMAG = 2, VOLUME = 3} dim;
 	BasicImageView<T>  in;
 	MultiArrayView<3,T> in3D;
 
@@ -904,7 +866,7 @@ class SparseArray{
 	// Problem is that  operator() always passes a reference or creates one.
 	T& operator()(int i, int j){
 		TinyVector<int,2> newShapew(i, j);
-		std::map<TinyVector<int,2>, T, ShapeCmp>::iterator iter;
+		typename std::map<TinyVector<int,2>, T, ShapeCmp>::iterator iter;
 		TinyVector<int,2> newShape;
 		return data[newShapew];
 	}
@@ -927,7 +889,7 @@ class SparseArray{
 			jc[0] = 1;
 			return;
 		}		
-		std::map<TinyVector<int,2>, T, ShapeCmp>::iterator iter;
+		typename std::map<TinyVector<int,2>, T, ShapeCmp>::iterator iter;
 		TinyVector<int,2> newShape;
 		int ii = 0;
 		int jj = 0;
@@ -948,4 +910,45 @@ class SparseArray{
 	}
 	
 };
+
+} // namespace matlab
+
+struct MeshGridAccessor
+{
+    typedef TinyVector<Diff2D::MoveX, 2> value_type;
+    
+    template <class ITERATOR>
+    value_type operator()(ITERATOR const & i) const
+    {
+        return value_type(i->x, i->y);
+    }
+};
+
+inline 
+triple<Diff2D, Diff2D, MeshGridAccessor>
+meshGrid(Diff2D ul, Diff2D lr)
+{
+    return triple<Diff2D, Diff2D, MeshGridAccessor>(ul, lr, MeshGridAccessor());
+}
+
+} // namespace vigra 
+
+void vigraMexFunction(vigra::matlab::OutputArray, vigra::matlab::InputArray);
+
+void mexFunction(int nlhs, mxArray *plhs[], 
+                 int nrhs, const mxArray *prhs[])
+{
+  try 
+  {
+    vigra::matlab::InputArray inputs(nrhs, prhs);
+    vigra::matlab::OutputArray outputs(nlhs, plhs);
+    
+    vigraMexFunction(outputs, inputs);
+  }
+  catch(std::exception & e)
+  {
+    mexErrMsgTxt(e.what());
+  }
+}
+
 #endif // VIGRA_MATLAB_HXX

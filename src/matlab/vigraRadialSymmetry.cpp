@@ -12,6 +12,7 @@
 #define vigraFunctor vigraRadialSymmetry
 
 using namespace vigra;
+using namespace matlab;
 
 /*+++++++++++++++++++User data structure+++++++++++++++++++++++++++++*/
 
@@ -23,7 +24,7 @@ struct data: public base_data<T>{
 	
 	
 	data(matlab::OutputArray outputs, matlab::InputArray inputs)
-	:			base_data(inputs),
+	:			base_data<T>(inputs),
 				map(scale)
 	{
 		mapOut_SAME(double);

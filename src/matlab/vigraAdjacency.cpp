@@ -17,50 +17,22 @@
 #define vigraFunctor vigraAdjacency
 
 using namespace vigra;
+using namespace matlab;
 
 /*+++++++++++++++++++User data structure+++++++++++++++++++++++++++++*/
 
 /*+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
 template <class T>
-struct data: public base_data<T>{
+struct data: public base_data<T>
+{
 	bool hasWatershedPixel;
-	bool get_hasWatershedPixel(matlab::InputArray inputs)
-	{
-		if(inputs.size() == 1){
-			mexWarnMsgTxt("It is recommended to set opt.hasWatershedPixel for speed");
-			for(int ii = 0; ii < in3D.elementCount(); ii++){
-				if(in3D[ii] == 0)return  1;
-				
-			}
-			return 0;
-		}else{
-			bool in;
-			mxArray* hasWatershedPixel =mxGetField(inputs[1], 0, "hasWatershedPixel");
-			if(hasWatershedPixel!=NULL&&mxIsNumeric(hasWatershedPixel)){
-				in = matlab::getScalar<bool>(hasWatershedPixel);
-			}else{
-				mexWarnMsgTxt("It is recommended to set opt.hasWatershedPixel for speed");
-				for(int ii = 0; ii < in3D.elementCount(); ii++){
-					if(in3D[ii] == 0)return  1;
-				}
-				return 0;
-			}
-			if(!is_in_range<bool>(in,0,1)){
-				mexWarnMsgTxt("Invalid Value for has WatershedPixel != 0..1");
-				for(int ii = 0; ii < in3D.elementCount(); ii++){
-					if(in3D[ii] == 0)return  1;
-					
-				}
-				return 0;
-			}
-			return in;
-		}
-	}
 	SparseArray<int> adj_matrix;
 	T max_region_label;
-	
+    
+    using  base_data<T>::in3D;
+
 	data(matlab::OutputArray outputs, matlab::InputArray inputs)
-	:			base_data(inputs),
+	:			base_data<T>(inputs),
 				map(hasWatershedPixel)
 	{
 		FindMinMax<T> minmax;
@@ -68,12 +40,49 @@ struct data: public base_data<T>{
 		max_region_label = minmax.max;		
 		adj_matrix.assign(max_region_label, max_region_label);
 	}
+
+	bool get_hasWatershedPixel(matlab::InputArray inputs)
+	{
+		if(inputs.size() == 1){
+			mexWarnMsgTxt("It is recommended to set opt.hasWatershedPixel for speed");
+			for(int ii = 0; ii < in3D.elementCount(); ii++){
+				if(in3D[ii] == 0)
+                    return  1;
+				
+			}
+			return 0;
+		}else{
+			bool in;
+			mxArray* hasWatershedPixel = mxGetField(inputs[1], 0, "hasWatershedPixel");
+			if(hasWatershedPixel!=NULL && mxIsNumeric(hasWatershedPixel)){
+				in = matlab::getScalar<bool>(hasWatershedPixel);
+			}else{
+				mexWarnMsgTxt("It is recommended to set opt.hasWatershedPixel for speed");
+				for(int ii = 0; ii <  in3D.elementCount(); ii++){
+					if(in3D[ii] == 0)
+                        return  1;
+				}
+				return 0;
+			}
+			if(!is_in_range<bool>(in,0,1)){
+				mexWarnMsgTxt("Invalid Value for has WatershedPixel != 0..1");
+				for(int ii = 0; ii < in3D.elementCount(); ii++){
+					if(in3D[ii] == 0)
+                        return 1;
+					
+				}
+				return 0;
+			}
+			return in;
+		}
+	}
 };
 /*+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
 /* This function does all the work
 /*+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
 
-#define cP2_(a, b) cP<data<T>::a, b>::value
+#define cP2_(a, b) cP<a, b>::value
+
 struct vigraFunctor
 {
 	template <class T>
@@ -179,10 +188,10 @@ struct vigraFunctor
 				for(int y = 1; y < size.y-1; ++y){
 					for(int x = 1; x< size.x-1; ++x){
 						if(upleft(x,y) == 0){
-							NeighborhoodCirculator<BasicImageView<T>::Iterator, EightNeighborCode>
+							NeighborhoodCirculator<typename BasicImageView<T>::Iterator, EightNeighborCode>
 																circulator(upleft+ Diff2D(x, y));
 							//circulator += 2;
-							NeighborhoodCirculator<BasicImageView<T>::Iterator, EightNeighborCode>
+							NeighborhoodCirculator<typename BasicImageView<T>::Iterator, EightNeighborCode>
 																end(circulator);
 							unsigned char BitField = 0;
 							std::set<int> regions;

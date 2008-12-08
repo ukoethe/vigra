@@ -12,25 +12,26 @@
 #define vigraFunctor vigraCorner
 
 using namespace vigra;
+using namespace matlab;
 
 /*+++++++++++++++++++User data structure+++++++++++++++++++++++++++++*/
 
 /*+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
 template <class T>
 struct data: public base_data<T>{
-	declScalarMinMax(double, scale, 1.0, 0.0, "inf");
-	declCharConstr(method, 4, Corner, Beaudet,Foerstner,Rohr, a);
-	declOut(double);
-	
-	
-	data(matlab::OutputArray outputs, matlab::InputArray inputs)
-	:			base_data(inputs),
-				map(scale), map(method)
-	{
-	if(numOfDim != 2)
-		mexErrMsgTxt("vigraCorner only operates on 2D Images");
-	mapOut_SAME(double);
-	}
+    declScalarMinMax(double, scale, 1.0, 0.0, "inf");
+    declCharConstr(method, 4, Corner, Beaudet,Foerstner,Rohr, a);
+    declOut(double);
+    
+    
+    data(matlab::OutputArray outputs, matlab::InputArray inputs)
+    :            base_data<T>(inputs),
+                 map(scale), map(method)
+    {
+        if(this->numOfDim != 2)
+            mexErrMsgTxt("vigraCorner only operates on 2D Images");
+        mapOut_SAME(double);
+    }
 };
 /*+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
 /* This function does all the work
@@ -39,30 +40,30 @@ struct data: public base_data<T>{
 
 struct vigraFunctor
 {
-	template <class T>
-	static void exec(matlab::OutputArray outputs, matlab::InputArray inputs){
-		//Options
-		data<T>  o(outputs, inputs);
+    template <class T>
+    static void exec(matlab::OutputArray outputs, matlab::InputArray inputs){
+        //Options
+        data<T>  o(outputs, inputs);
 
-		// contorPair maps 2 integers bijectively onto one dimension. (see Wikipedia Cantor pair Function) 
-		switch(o.method){
-			case data<T>::Corner:
-				cornerResponseFunction (srcImageRange(o.in), destImage(o.out), o.scale);
-				break;
-			case data<T>::Foerstner:
-				foerstnerCornerDetector (srcImageRange(o.in), destImage(o.out), o.scale);
-				break;
-			case data<T>::Rohr:
-				rohrCornerDetector (srcImageRange(o.in), destImage(o.out), o.scale);
-				break;
-			case data<T>::Beaudet:
-				beaudetCornerDetector (srcImageRange(o.in), destImage(o.out), o.scale);
-				break;
-			default:
-				mexErrMsgTxt("Some Error occured");
-		}
-		
-	}
+        // contorPair maps 2 integers bijectively onto one dimension. (see Wikipedia Cantor pair Function) 
+        switch(o.method){
+            case data<T>::Corner:
+                cornerResponseFunction (srcImageRange(o.in), destImage(o.out), o.scale);
+                break;
+            case data<T>::Foerstner:
+                foerstnerCornerDetector (srcImageRange(o.in), destImage(o.out), o.scale);
+                break;
+            case data<T>::Rohr:
+                rohrCornerDetector (srcImageRange(o.in), destImage(o.out), o.scale);
+                break;
+            case data<T>::Beaudet:
+                beaudetCornerDetector (srcImageRange(o.in), destImage(o.out), o.scale);
+                break;
+            default:
+                mexErrMsgTxt("Some Error occured");
+        }
+        
+    }
 };
 
 
@@ -80,19 +81,19 @@ D = vigraCorner(inputArray) does Corner detection.
 D = vigraCorner(inputImage, options)  does the same with user options.
 options is a struct with possible fields: "method", "scale"
 
-"method":				Corner (default), Beaudet,Foerstner,Rohr
-					Use appropriate Methods to detect corners.  (See vigra reference for more details)
-"scale": 				1.0(default),any floating point value
-						scale parameter for the vigraCornerdetector
+"method":                Corner (default), Beaudet,Foerstner,Rohr
+                    Use appropriate Methods to detect corners.  (See vigra reference for more details)
+"scale":                 1.0(default),any floating point value
+                        scale parameter for the vigraCornerdetector
 
 
 Usage:
-	opt = struct('method' ,value);
-	out = vigraCorner(in, opt);
+    opt = struct('method' ,value);
+    out = vigraCorner(in, opt);
 
 */
 void vigraMexFunction(matlab::OutputArray outputs, matlab::InputArray inputs){
-	// 
-	callMexFunctor<vigraFunctor>(outputs, inputs);
+    // 
+    callMexFunctor<vigraFunctor>(outputs, inputs);
 }
 

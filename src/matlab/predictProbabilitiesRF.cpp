@@ -4,6 +4,7 @@
 #include "random_forest_impex.hxx"
 
 using namespace vigra;
+using namespace matlab;
 
 /** Matlab 
 function probs = predictProbabilitiesRF(RF, features)
