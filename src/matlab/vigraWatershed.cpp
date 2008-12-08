@@ -21,50 +21,55 @@ using namespace matlab;
 
 /*+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
 template <class T>
-struct data: public base_data<T>{
-	declScalar2D3D(int, conn, 8, 26);
-	declCharConstr(method,2, UNION, SEED, a, e, i);
-	declCharConstr(crack, 2, completeGrow, keepContours, o, u, n);
-	declOut(Int32);
-	
-	SRGType SRGcrack;
-	BasicImageView<T>  seed;
-	MultiArrayView<3,T> seed3D;	
-	
-	data(matlab::OutputArray outputs, matlab::InputArray inputs)
-	:			base_data<T>(inputs),
-				map(conn), map(crack)
-	{
-		if(this->numOfDim == IMAG && conn != 8 && conn !=4){
-			conn = 8;
-			mexWarnMsgTxt("Invalid User supplied connectivity - using Default: 8");
-		}else if(this->numOfDim == VOLUME && conn != 26 && conn !=6){
-			conn = 26;
-			mexWarnMsgTxt("Invalid User supplied connectivity - using Default: 26");
-		}
-		method = UNION;
-		if(inputs.size()!= 1){
-			mxArray* mxArrSeed =mxGetField(inputs[1], 0, "seed");
-			if(mxArrSeed != NULL && mxIsNumeric(mxArrSeed)){
-				if(this->numOfDim == IMAG){
-					seed = matlab::getImage<T>(mxArrSeed);
-					seed3D = matlab::getMultiArray<3, T>(mxArrSeed);
-					conn = 4;
-				}else{
-					seed3D = matlab::getMultiArray<3, T>(mxArrSeed);
-				}
-				method = SEED;
-				if(seed3D.shape() != this->in3D.shape()){
-					conn = 6;
-					method = UNION;
-					mexWarnMsgTxt("Seed and Input dimension mismatch. Using UNION algorithm");
-				}
-			}
-		}
-		if(crack == completeGrow)SRGcrack = vigra::CompleteGrow;
-		else SRGcrack = vigra::KeepContours;
-		mapOut_SAME(Int32);
-	}
+struct data
+: public base_data<T>
+{
+    declScalar2D3D(int, conn, 4, 6);
+    declCharConstr2(crack, completeGrow, keepContours);
+    declOut(Int32);
+    
+    enum method_enum {UNION, SEED};
+    method_enum method;
+    
+    SRGType SRGcrack;
+    BasicImageView<T>  seed;
+    MultiArrayView<3,T> seed3D; 
+    
+    data(matlab::OutputArray outputs, matlab::InputArray inputs)
+    :           base_data<T>(inputs),
+                map(conn), map(crack), method(UNION),
+                SRGcrack(crack == completeGrow
+                             ? vigra::CompleteGrow
+                             : vigra::KeepContours)
+    {
+        if(this->options.isValid("seeds"))
+        {
+            method = SEED;
+            if(this->numOfDim == IMAG)
+            {
+                if(conn != 4)
+                    mexErrMsgTxt("vigraWatershed(): Connectivity for 2D seeded region growing must be 4.");
+                
+                seed = matlab::getImage<T>(this->options["seeds"]);
+            }
+            if(this->numOfDim == VOLUME && conn != 6)
+                mexErrMsgTxt("vigraWatershed(): Connectivity for 3D seeded region growing must be 6.");
+
+            seed3D = matlab::getMultiArray<3, T>(this->options["seeds"]);
+            if(seed3D.shape() != this->in3D.shape())
+                mexErrMsgTxt("igraWatershed(): Seed and input array dimension mismatch.");
+        }
+        else
+        {
+            method = UNION;
+            if(this->numOfDim == IMAG && conn != 4 && conn != 8)
+                mexErrMsgTxt("vigraWatershed(): Connectivity for 2D union find must be 4 or 8.");
+            if(this->numOfDim == VOLUME && conn != 6 && conn != 26)
+                mexErrMsgTxt("vigraWatershed(): Connectivity for 3D union find must be 6 or 26.");
+        }
+
+        mapOut_SAME(Int32);
+    }
 };
 /*+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
 /* This function does all the work
@@ -73,72 +78,72 @@ struct data: public base_data<T>{
 #define cP3_(a, b , c) cP3<data<T>::a, b, c>::value
 struct vigraFunctor
 {
-	template <class T>
-	static void exec(matlab::OutputArray outputs, matlab::InputArray inputs){
-		//Options
-		data<T>  o(outputs, inputs);
+    template <class T>
+    static void exec(matlab::OutputArray outputs, matlab::InputArray inputs){
+        //Options
+        data<T>  o(outputs, inputs);
 
-		// contorPair maps 2 integers bijectively onto one dimension. (see Wikipedia Cantor pair Function) 
-		int max_region_label = -1;
-		// contorPair maps 2 integers bijectively onto one dimension. (see Wikipedia Cantor pair Function) 
-		switch(cantorPair(o.method, o.numOfDim, o.conn)){
-			//cP is the templated version o f the cantorPair function first value is Dimension of Inputimage, second the connectivity setting
-			//Code is basically the code on the VIGRA-reference page 
-			case cP3_(UNION, IMAG, 8):	
-				max_region_label = watersheds(srcImageRange(o.in), destImage(o.out));
-				mexWarnMsgTxt("UNION IMAG 8");
-				break;
-			case cP3_(UNION, IMAG, 4):
-				max_region_label = watersheds(srcImageRange(o.in), destImage(o.out), FourNeighborCode());
-				mexWarnMsgTxt("UNION IMAG 4");
-				break;
-			case cP3_(UNION, VOLUME, 26):
-				max_region_label = watersheds3DTwentySix(srcMultiArrayRange(o.in3D), destMultiArray(o.out3D));
-				mexWarnMsgTxt("UNION VOLUME 26");
-				break;
-			case cP3_(UNION, VOLUME, 6):
-				max_region_label = watersheds3DSix(srcMultiArrayRange(o.in3D), destMultiArray(o.out3D));
-				mexWarnMsgTxt("UNION VOLUME 6");
-				break;
-			case cP3_(SEED, IMAG, 4):
-			{				
-				//find maximimum of seed Image
-				mexWarnMsgTxt("SEED IMAG 4");
-				FindMinMax<T> minmax;   // init functor
-				inspectImage(srcImageRange(o.seed), minmax);
-				max_region_label = minmax.max;
-				
-				ArrayOfRegionStatistics<vigra::SeedRgDirectValueFunctor<T> >
-												gradstat(max_region_label);
-												
-				seededRegionGrowing(	srcImageRange(o.in), 
-										srcImage(o.seed),
-										destImage(o.out), 
-										gradstat,o.SRGcrack );
-				break;
-			}
-			case cP3_(SEED, VOLUME, 6):
-			{
-				mexWarnMsgTxt("SEED IMAG 4");
-				FindMinMax<T> minmax;
-				inspectMultiArray(srcMultiArrayRange(o.seed3D), minmax);
-				max_region_label = minmax.max;
-				
-				ArrayOfRegionStatistics<vigra::SeedRgDirectValueFunctor<T> >
-												gradstat(max_region_label);
-												
-				seededRegionGrowing3D(	srcMultiArrayRange(o.in3D),
-										srcMultiArray(o.seed3D),
-										destMultiArray(o.out3D),
-										gradstat, o.SRGcrack);
-				break;
-			}		
-			default:
-				mexErrMsgTxt("Something went wrong");
-		}	
+        // contorPair maps 2 integers bijectively onto one dimension. (see Wikipedia Cantor pair Function) 
+        int max_region_label = -1;
+        // contorPair maps 2 integers bijectively onto one dimension. (see Wikipedia Cantor pair Function) 
+        switch(cantorPair(o.method, o.numOfDim, o.conn)){
+            //cP is the templated version o f the cantorPair function first value is Dimension of Inputimage, second the connectivity setting
+            //Code is basically the code on the VIGRA-reference page 
+            case cP3_(UNION, IMAG, 8):  
+                max_region_label = watersheds(srcImageRange(o.in), destImage(o.out));
+                mexWarnMsgTxt("UNION IMAG 8");
+                break;
+            case cP3_(UNION, IMAG, 4):
+                max_region_label = watersheds(srcImageRange(o.in), destImage(o.out), FourNeighborCode());
+                mexWarnMsgTxt("UNION IMAG 4");
+                break;
+            case cP3_(UNION, VOLUME, 26):
+                max_region_label = watersheds3DTwentySix(srcMultiArrayRange(o.in3D), destMultiArray(o.out3D));
+                mexWarnMsgTxt("UNION VOLUME 26");
+                break;
+            case cP3_(UNION, VOLUME, 6):
+                max_region_label = watersheds3DSix(srcMultiArrayRange(o.in3D), destMultiArray(o.out3D));
+                mexWarnMsgTxt("UNION VOLUME 6");
+                break;
+            case cP3_(SEED, IMAG, 4):
+            {               
+                //find maximimum of seed Image
+                mexWarnMsgTxt("SEED IMAG 4");
+                FindMinMax<T> minmax;   // init functor
+                inspectImage(srcImageRange(o.seed), minmax);
+                max_region_label = minmax.max;
+                
+                ArrayOfRegionStatistics<vigra::SeedRgDirectValueFunctor<T> >
+                                                gradstat(max_region_label);
+                                                
+                seededRegionGrowing(    srcImageRange(o.in), 
+                                        srcImage(o.seed),
+                                        destImage(o.out), 
+                                        gradstat,o.SRGcrack );
+                break;
+            }
+            case cP3_(SEED, VOLUME, 6):
+            {
+                mexWarnMsgTxt("SEED IMAG 4");
+                FindMinMax<T> minmax;
+                inspectMultiArray(srcMultiArrayRange(o.seed3D), minmax);
+                max_region_label = minmax.max;
+                
+                ArrayOfRegionStatistics<vigra::SeedRgDirectValueFunctor<T> >
+                                                gradstat(max_region_label);
+                                                
+                seededRegionGrowing3D(  srcMultiArrayRange(o.in3D),
+                                        srcMultiArray(o.seed3D),
+                                        destMultiArray(o.out3D),
+                                        gradstat, o.SRGcrack);
+                break;
+            }       
+            default:
+                mexErrMsgTxt("Something went wrong");
+        }   
 
-		
-	}
+        
+    }
 };
 
 
@@ -152,23 +157,38 @@ struct vigraFunctor
 function L = vigraWatershed(inputArray)
 function L = vigraWatershed(inputArray, options);
 
-L = vigraWatershed(inputArray) computes a label matrix identifying the watershed regions of the inputArray , which may be 2 or 3 dimensional. The elements of L are Int32 values  greater than 0. 
-There are no watershedpixels. Do not use this  with Arrays of type other than single or double.
-L = vigraWatershed(inputImage, options)  does the same with user options.
-options is a struct with possible fields: "seed", "conn" and "crack
+L = vigraWatershed(inputArray);
+        Uses the union find algorithm to compute a label matrix identifying 
+        the watershed regions of the inputArray (which may be 2 or 3 dimensional). 
+        The elements of L are Int32 values greater than 0. Boundaries are 
+        represented by crack edges, i.e. there are no explicit watershed pixels.
 
-"seed": 				An Array of same size as inputArray. If supplied seeded Region growing shall be used. If not the union find algorithm will be used.
-					As of now seed has to be of same type as the inputArray. - this will be changed in the next update.
-"conn": 		 		2D 4(default for Seed.), 8 (default for Union) . 3D 6 (default for Seed), 26 (default for union);
-					While using seeded region growing only the default values are used.
-"crack"				'completeGrow' (Default), 'keepContours'
-					Choose whether to keep watershed pixels or not.  Only used while using Seeded Region Growing.
+options = struct('seeds', seedImage, 'crack' = 'keepContours');
+L = vigraWatershed(inputImage, options);
+        Uses seeded region growing to compute a label matrix identifying 
+        the watershed regions of the inputArray (which may be 2 or 3 dimensional). 
+        The elements of L are Int32 values greater than 0. Boundaries are 
+        represented by explicit watershed pixels, i.e. there is a one-pixel
+        thick boundary between every pair of regions.
+
+inputArray - a 2D or 3D array of type 'single' or 'double'
+
+options    - is a struct with the following possible fields
+    'seeds':    An Array of same size as inputArray. If supplied, seeded region growing 
+                shall be used. If not, the union find algorithm will be used. As of now,
+                the seed array has to be of same type as the input array - this will be changed in the next update.
+    'conn':     2D: 4 (default),  8 (only supported by the union find algorithm)
+                3D: 6 (default), 26 (only supported by the union find algorithm)
+                While using seeded region growing, only the default values can be used.
+    'crack':    'completeGrow' (default), 'keepContours' (only supported by seeded region growing)
+                Choose whether to keep watershed pixels or not. While using union find, 
+                only the default value can be used.
 Usage:
-	opt = struct('fieldname' ,'value',....);
-	out = vigraFunc(in, opt);
+    opt = struct('fieldname' ,'value',....);
+    out = vigraWatershed(in, opt);
 */
 void vigraMexFunction(matlab::OutputArray outputs, matlab::InputArray inputs){
-	// 
-	callMexFunctor<vigraFunctor>(outputs, inputs);
+    // 
+    callMexFunctor<vigraFunctor>(outputs, inputs);
 }
 

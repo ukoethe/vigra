@@ -20,7 +20,7 @@ using namespace matlab;
 template <class T>
 struct data: public base_data<T>{
     declScalarMinMax(double, scale, 1.0, 0.0, "inf");
-    declCharConstr(method, 4, Corner, Beaudet,Foerstner,Rohr, a);
+    declCharConstr4(method, Corner, Beaudet, Foerstner,Rohr);
     declOut(double);
     
     
@@ -74,18 +74,18 @@ struct vigraFunctor
 /* Supports (u)int[8|16|32|64], float and double.
 /*+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
 /** MATLAB 
-function D = vigraCorner(inputArray)
-function D = vigraCorner(inputArray, options);
+function D = vigraCorner(inputImage)
+function D = vigraCorner(inputImage, options);
 
 D = vigraCorner(inputArray) does Corner detection.
 D = vigraCorner(inputImage, options)  does the same with user options.
-options is a struct with possible fields: "method", "scale"
 
-"method":                Corner (default), Beaudet,Foerstner,Rohr
-                    Use appropriate Methods to detect corners.  (See vigra reference for more details)
-"scale":                 1.0(default),any floating point value
-                        scale parameter for the vigraCornerdetector
-
+inputImage - 2D input array
+options    - struct with following possible fields:
+   'method':  'Corner' (default, corenr response function according to Harris), 'Beaudet', 'Foerstner', 'Rohr'
+              Use corresponding method to detect corners (see vigra reference for more details).
+   'scale':   1.0 (default), any positive floating point value
+              scale parameter for corner feature computation
 
 Usage:
     opt = struct('method' ,value);

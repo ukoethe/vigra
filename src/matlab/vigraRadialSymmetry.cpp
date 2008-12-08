@@ -19,16 +19,16 @@ using namespace matlab;
 /*+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
 template <class T>
 struct data: public base_data<T>{
-	declScalarMinMax(double, scale, 1.0, 0.0, "inf");
-	declOut(double);
-	
-	
-	data(matlab::OutputArray outputs, matlab::InputArray inputs)
-	:			base_data<T>(inputs),
-				map(scale)
-	{
-		mapOut_SAME(double);
-	}
+    declScalarMinMax(double, scale, 1.0, 0.0, "inf");
+    declOut(double);
+    
+    
+    data(matlab::OutputArray outputs, matlab::InputArray inputs)
+    :           base_data<T>(inputs),
+                map(scale)
+    {
+        mapOut_SAME(double);
+    }
 };
 /*+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
 /* This function does all the work
@@ -37,15 +37,15 @@ struct data: public base_data<T>{
 
 struct vigraFunctor
 {
-	template <class T>
-	static void exec(matlab::OutputArray outputs, matlab::InputArray inputs){
-		//Options
-		data<T>  o(outputs, inputs);
+    template <class T>
+    static void exec(matlab::OutputArray outputs, matlab::InputArray inputs){
+        //Options
+        data<T>  o(outputs, inputs);
 
-		// contorPair maps 2 integers bijectively onto one dimension. (see Wikipedia Cantor pair Function) 
-		radialSymmetryTransform(srcImageRange(o.in), destImage(o.out), o.scale);
-		
-	}
+        // contorPair maps 2 integers bijectively onto one dimension. (see Wikipedia Cantor pair Function) 
+        radialSymmetryTransform(srcImageRange(o.in), destImage(o.out), o.scale);
+        
+    }
 };
 
 
@@ -56,24 +56,25 @@ struct vigraFunctor
 /* Supports (u)int[8|16|32|64], float and double.
 /*+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
 /** MATLAB 
-function D = vigraRadialSymmetry(inputArray)
-function D = vigraradialSymmetry(inputArray, options);
+function D = vigraRadialSymmetry(inputImage)
+function D = vigraradialSymmetry(inputImage, options);
 
-D = vigraCRadialSymmetry(inputArray) computes the Fast Radial Symmetry Transform using the default options. see vigra::RadialSymmetryTransform
-for more information.
+D = vigraRadialSymmetry(inputImage) computes the Fast Radial Symmetry Transform 
+            using default options, see vigra::RadialSymmetryTransform for more information.
 D = vigraRadialSymmetry(inputImage, options)  does the same with user options.
-options is a struct with possible fields: "method", "backgroundMode" and "backgroundPixel" and "norm"
 
-"scale": 				1.0(default),any floating point value
-						scale parameter for the vigraRadialSymmetry
+inputImage - 2D input array
+options    - a struct with following possible fields:
+    'scale':    1.0 (default), any positive floating point value
+                scale parameter for the vigraRadialSymmetry
 
 
 Usage:
-	opt = struct('method' ,value);
-	out = vigraRadialSymmetry(in, opt);
+    opt = struct('method' ,value);
+    out = vigraRadialSymmetry(in, opt);
 
 */
 void vigraMexFunction(matlab::OutputArray outputs, matlab::InputArray inputs){
-	// 
-	callMexFunctor<vigraFunctor>(outputs, inputs);
+    // 
+    callMexFunctor<vigraFunctor>(outputs, inputs);
 }

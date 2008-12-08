@@ -18,63 +18,60 @@ using namespace matlab;
 
 /*+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
 template <class T>
-struct data: public base_data<T>{
+struct data
+: public base_data<T>
+{
     declScalarMinMax(int, backgroundMode, 1, 0, 2);
-    declCharConstr(method, 4, MULT, MULT_SQUARED, IMAG_DIST_TRANS, INVERTEDCRAP, e);
+    declCharConstr3(method, MULT, MULT_SQUARED, IMAG_DIST_TRANS);
     declOut(double);
     
     //Only supported with MULT
     TinyVector<double, 3> pitch3D;
     //Only supported with IMAG_DIST_TRANS
-    declScalar(T, backgroundPixel, 0);
+    declScalar(T, backgroundValue, 0);
     declScalarMinMax(int, norm, 2, 0, 2);
     
     MultiArray<3, double> tmp3D;
     
     data(matlab::OutputArray outputs, matlab::InputArray inputs)
-    : base_data<T>(inputs), map(backgroundMode), map(method), map(backgroundPixel), map(norm),
-      pitch3D(1.0,1.0,1.0), tmp3D(this->in3D.shape())
+    : base_data<T>(inputs), map(backgroundMode), map(method), map(backgroundValue), map(norm),
+      pitch3D(1.0,1.0,1.0), tmp3D(base_data<T>::in3D.shape())
     {
         mapOut_SAME(double);
-        if(inputs.size() == 2)
+        if(this->options.isValid("pitch"))
         {
-            mxArray* pitchArr =mxGetField(inputs[1], 0, "pitch");
-            if(pitchArr != NULL && mxIsNumeric(pitchArr))
+            if(this->method == IMAG_DIST_TRANS)
+                mexErrMsgTxt("vigraDistance(): 'pitch' option not supported by method 'IMAG_DIST_TRANS'");
+            if(this->numOfDim == IMAG)
             {
-                if(this->numOfDim == IMAG){
-                    TinyVectorView<double, 2> temp = matlab::getVector<double,2>(pitchArr);
-                    pitch3D[0] = temp[0]>0? temp[0]:1.0;
-                    pitch3D[1] = temp[1]>0? temp[1]:1.0;
-                }else{
-                    TinyVectorView<double, 3> temp = matlab::getVector<double,3>(pitchArr);
-                    pitch3D[0] = temp[0]>0? temp[0]:1.0;
-                    pitch3D[1] = temp[1]>0? temp[1]:1.0;
-                    pitch3D[2] = temp[2]>0? temp[2]:1.0;
-                }
-                if(this->method != MULT){
-                    mexWarnMsgTxt("pitch option is only supported with the method MULT");
-                }
+                TinyVectorView<double, 2> temp = matlab::getVector<double,2>(this->options["pitch"]);
+                pitch3D[0] = temp[0]>0? temp[0]:1.0;
+                pitch3D[1] = temp[1]>0? temp[1]:1.0;
+            }
+            else
+            {
+                TinyVectorView<double, 3> temp = matlab::getVector<double,3>(this->options["pitch"]);
+                pitch3D[0] = temp[0]>0? temp[0]:1.0;
+                pitch3D[1] = temp[1]>0? temp[1]:1.0;
+                pitch3D[2] = temp[2]>0? temp[2]:1.0;
             }
         }
-        if(this->method == IMAG_DIST_TRANS){
-            backgroundMode = 0;
-            if(this->numOfDim == VOLUME){
-                this->method = MULT;
-                mexWarnMsgTxt("IMAG_DIST_TRANS only works with 2D Images using default: MULT");
-            }
+        if(this->method == IMAG_DIST_TRANS)
+        {
+            if(this->numOfDim == VOLUME)
+                mexErrMsgTxt("vigraDistance(): method 'IMAG_DIST_TRANS' requires 2D data.");
+            if(backgroundMode != 1)
+                mexErrMsgTxt("vigraDistance(): method 'IMAG_DIST_TRANS' requires 'backgroundMode' = 1.");
         }
-
+        else
+        {
+            if(backgroundValue != 0)
+                mexErrMsgTxt("vigraDistance(): methods 'MULT' and 'MULT_SQUARED' require 'backgroundValue' = 0.");
+            if(norm != 2)
+                mexErrMsgTxt("vigraDistance(): methods 'MULT' and 'MULT_SQUARED' require 'norm' = 2.");
+        }
     }
 };
-
-    struct signChangeFunctor
-    {
-        template <class PixelType>
-        PixelType operator()(PixelType const& v) const
-        {
-            return 0.0-v;
-        }
-    };
 
 /*+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
 /* This function does all the work
@@ -84,41 +81,44 @@ struct data: public base_data<T>{
 struct vigraFunctor
 {
     template <class T>
-    static void exec(matlab::OutputArray outputs, matlab::InputArray inputs){
+    static void exec(matlab::OutputArray outputs, matlab::InputArray inputs)
+    {
+        using namespace vigra::functor;
         //Options
         data<T>  o(outputs, inputs);
+        
+        bool computeSignedDist = (o.backgroundMode == 2);
 
         // contorPair maps 2 integers bijectively onto one dimension. (see Wikipedia Cantor pair Function) 
-        switch(cantorPair(o.backgroundMode == 2, o.method)){
+        switch(cantorPair(computeSignedDist, o.method))
+        {
             //In this case function pointers may have been more elegant.
-            case cP2_(0, MULT):
+            case cP2_(false, MULT):
                     separableMultiDistance(srcMultiArrayRange(o.in3D), destMultiArray(o.out3D), o.backgroundMode == 1, o.pitch3D);
                     break;
-            case cP2_(1, MULT):
-                separableMultiDistance(srcMultiArrayRange(o.in3D), destMultiArray(o.out3D), 0, o.pitch3D);
-                transformMultiArray(srcMultiArrayRange(o.out3D), destMultiArray(o.out3D), signChangeFunctor());
-                separableMultiDistance(srcMultiArrayRange(o.in3D), destMultiArray(o.tmp3D), 1, o.pitch3D);
+            case cP2_(true, MULT):
+                separableMultiDistSquared(srcMultiArrayRange(o.in3D), destMultiArray(o.out3D), 0, o.pitch3D);
+                separableMultiDistSquared(srcMultiArrayRange(o.in3D), destMultiArray(o.tmp3D), 1, o.pitch3D);
                 combineTwoMultiArrays(
                             srcMultiArrayRange(o.tmp3D), 
                             srcMultiArray(o.out3D), 
                             destMultiArray(o.out3D),  
-                            std::plus<double>());
+                            ifThenElse(Arg1() > Param(0.0), sqrt(Arg1())-Param(0.5), Param(0.5)-sqrt(Arg2())));
                 break;
             case cP2_(0, MULT_SQUARED):
                 separableMultiDistSquared(srcMultiArrayRange(o.in3D), destMultiArray(o.out3D), o.backgroundMode == 1);
                 break;
             case cP2_(1, MULT_SQUARED):
                 separableMultiDistSquared(srcMultiArrayRange(o.in3D), destMultiArray(o.out3D), 0);
-                transformMultiArray(srcMultiArrayRange(o.out3D), destMultiArray(o.out3D), signChangeFunctor());
                 separableMultiDistSquared(srcMultiArrayRange(o.in3D), destMultiArray(o.tmp3D), 1);
                 combineTwoMultiArrays(
                             srcMultiArrayRange(o.tmp3D), 
                             srcMultiArray(o.out3D), 
                             destMultiArray(o.out3D),  
-                            std::plus<double>());
+                            ifThenElse(Arg1() > Param(0.0), sq(sqrt(Arg1())-Param(0.5)), -sq(sqrt(Arg2())-Param(0.5))));
                 break;
             case cP2_(0, IMAG_DIST_TRANS):
-                distanceTransform(srcImageRange(o.in), destImage(o.out),o.backgroundPixel, o.norm);
+                distanceTransform(srcImageRange(o.in), destImage(o.out),o.backgroundValue, o.norm);
                 break;
             default:
                 mexErrMsgTxt("Precondition checking not complete - something went wrong");
@@ -138,30 +138,44 @@ struct vigraFunctor
 function D = vigraDistance(inputArray)
 function D = vigraDistance(inputArray, options);
 
-D = vigraDistance(inputArray) computes the Distancetransform using the default options.
+D = vigraDistance(inputArray) computes the distance transform using the default options.
 D = vigraDistance(inputImage, options)  does the same with user options.
-options is a struct with possible fields: "method", "backgroundMode" and "backgroundPixel" and "norm"
 
-"method":                 'MULT'(default), 'MULT_SQUARED', 'IMAG_DIST_TRANS'
-                        MULT and MULT_SQUARED are the faster and newer distance transform methods defined with VIGRA-Multiarrays
-                        (vigra::seperableMultiDist....).MULT_SQUARED returns the squared values of MULT. 
-                        IMAG_DIST_TRANS is defined with BasicImage and is slower. Use it only if  you explicitely need the backgroundPixel
-                        or norm option. (vigra::distanceTransform)
-"backgroundMode":         0 ,  1(default) , 2:     
-                        This option is only used with methods MULT and MULT_SQUARED
-                        If the parameter background is 1, then the squared distance of all background pixels to the nearest object is calculated. 
-                        Otherwise, the distance of all object pixels to the nearest background pixel is calculated.
-                        If the parameter background is 2, then the distance if background pixels to the nearest object will be negative valued and
-                        the distance of object pixels to the background pixels shall be positive
-"backgroundPixel:         0(default) , arb. value in grayscale range:         
-                        This option defines the background Pixel value. Only used with method = IMAG_DIST_TRANS
-"norm":                     2(default), 1 , 0.  
-                        Defines the norm used to calculate the distance (Only used with method = IMAG_DIST_TRANS)
-"pitch"                [1.0, 1.0]  (2D)or [1.0, 1.0, 1.0](3D) , arb 2D or 3D array.
-                        define a pitch if data has non-uniform resolution .
+inputArray  - a 2D or 3D array of numeric type
+options     - a struct with the following possible fields (default will be used 
+              if field is not present)
+    'method':          'MULT'(default), 'MULT_SQUARED', 'IMAG_DIST_TRANS'
+                       MULT and MULT_SQUARED are the faster and newer distance transform 
+                       methods defined with VIGRA-Multiarrays (vigra::seperableMultiDist....).
+                       MULT_SQUARED returns the squared values of MULT. 
+                       IMAG_DIST_TRANS is defined with BasicImage (vigra::distanceTransform) and
+                       less accurate. Use it only if you explicitely need the 'backgroundValue'
+                       or 'norm' options.
+    'backgroundValue': 0 (default) , arbitrary value (only supported by IMAG_DIST_TRANS)
+                       This option defines the background value. In MULT and MULT_SQUARED, the
+                       'backgroundValue' is always 0, but see option 'backgroundMode'.
+    'backgroundMode':  0 , 1 (default) , 2:     
+                       This option is only used with methods MULT and MULT_SQUARED.
+                       In method IMAG_DIST_TRANS, the distance of background points
+                         (according to 'backgroundValue' above) to the nearest 
+                         non-background is computed.
+                       If 'backgroundMode' is 1, then the (squared) distance of all background 
+                         points to the nearest object is calculated. 
+                       If 'backgroundMode' is 0, the (squared) distance of all object 
+                         points to the nearest background is calculated. 
+                       If 'backgroundMode' is 2, the signed (squared) distance of all points
+                         to the contour will be calculated, such that negative values are
+                         inside the objects, positive ones in the background. IMAG_DIST_TRANS
+    'norm':            2 (default, Euclidean distance), 1 (L1 distance), 0 (L-infinity distance).  
+                       Defines the norm used to calculate the distance.
+                       Only supported by method IMAG_DIST_TRANS
+    'pitch':           2D: [1.0, 1.0] (default), arbitrary int32-Array of length 2.
+                       3D: [1.0, 1.0, 1.0] (default), arbitrary int32-Array of length 3.
+                       Define the pixel distance if data has non-uniform resolution.
+                       Only supported by methods MULT and MULT_SQUARED.
 
 Usage:
-    opt = struct('method' ,'IMAGE_DIST_TRANS' , 'backgroundPixel', 10 , 'norm' , 0);
+    opt = struct('method' ,'IMAGE_DIST_TRANS' , 'backgroundValue', 10 , 'norm' , 0);
     out = vigraDistance(in, opt);
 
 */
