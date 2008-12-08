@@ -168,6 +168,7 @@ struct FunctorExpressionTest
     
     void testUnary()
     {
+        shouldEqual(exec(sq(Arg1()), 7.0) , vigra::sq(7.0)); 
         shouldEqual(exec(sqrt(Arg1()), 7.0) , VIGRA_CSTD::sqrt(7.0)); 
         shouldEqual(exec(exp(Arg1()), 4.0) , VIGRA_CSTD::exp(4.0)); 
         shouldEqual(exec(log(Arg1()), 4.0) , VIGRA_CSTD::log(4.0)); 

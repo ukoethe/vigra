@@ -177,7 +177,7 @@
     
     <DT><b><TT>exp():</TT></b><DD> creates a functor that takes the exponential of its 
         argument. Likewise, the other algebraic functions
-        (i.e. <TT>sqrt, exp, log, log10, sin, asin, cos, acos, tan, 
+        (i.e. <TT>sq, sqrt, exp, log, log10, sin, asin, cos, acos, tan, 
         atan, abs, floor, ceil, pow, atan2, fmod, min, max</TT>) 
         are overloaded.
     
@@ -1198,6 +1198,7 @@ ifThenElse(UnaryFunctor<EXPR1> const & e1,
 
 /************************************************************/
 
+MAKE_FUNCTOR_UNARY_FUNCTION(sq, vigra)
 MAKE_FUNCTOR_UNARY_FUNCTION(sqrt, std)
 MAKE_FUNCTOR_UNARY_FUNCTION(exp, std)
 MAKE_FUNCTOR_UNARY_FUNCTION(log, std)
