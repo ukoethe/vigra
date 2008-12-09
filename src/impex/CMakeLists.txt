@@ -35,3 +35,8 @@ ADD_LIBRARY(vigraimpex SHARED
     tiff.cxx
     viff.cxx
     void_vector.cxx)
+
+INSTALL(TARGETS vigraimpex
+  RUNTIME DESTINATION bin 
+  LIBRARY DESTINATION lib 
+  ARCHIVE DESTINATION lib)
