@@ -234,7 +234,7 @@ namespace vigra {
     {
         // cast the bands to the correct type
         typedef void_vector< UInt8 > vector_type;
-        vector_type & cbands = reinterpret_cast< vector_type & >(bands);
+        vector_type & cbands = static_cast< vector_type & >(bands);
 
         // read and store
         stream.read( reinterpret_cast< char * >(cbands.data()),
@@ -245,7 +245,7 @@ namespace vigra {
     {
         // cast the bands to the correct type
         typedef void_vector< UInt16 > vector_type;
-        vector_type & cbands = reinterpret_cast< vector_type & >(bands);
+        vector_type & cbands = static_cast< vector_type & >(bands);
 
         // read and store, need to swap bytes.
         byteorder bo( "big endian" );
@@ -257,7 +257,7 @@ namespace vigra {
     {
         // cast the bands to the correct type
         typedef void_vector< UInt32 > vector_type;
-        vector_type & cbands = reinterpret_cast< vector_type & >(bands);
+        vector_type & cbands = static_cast< vector_type & >(bands);
 
         byteorder bo( "big endian" );
         read_array( stream, bo, reinterpret_cast< UInt32 * >(cbands.data()),
