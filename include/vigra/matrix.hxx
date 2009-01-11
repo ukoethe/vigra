@@ -708,6 +708,28 @@ isSymmetric(MultiArrayView<2, T, C> const & m)
     return true;
 }
 
+
+    /** Compute the trace of a square matrix.
+
+    <b>\#include</b> \<<a href="matrix_8hxx-source.html">vigra/matrix.hxx</a>\> or<br>
+    <b>\#include</b> \<<a href="linear__algebra_8hxx-source.html">vigra/linear_algebra.hxx</a>\><br>
+        Namespaces: vigra and vigra::linalg
+     */
+template <class T, class C>
+typename NumericTraits<T>::Promote
+trace(MultiArrayView<2, T, C> const & m)
+{
+    typedef typename NumericTraits<T>::Promote SumType;
+    
+    const MultiArrayIndex size = rowCount(m);
+    vigra_precondition(size == columnCount(m), "linalg::trace(): Matrix must be square.");
+
+    SumType sum = NumericTraits<SumType>::zero();
+    for(MultiArrayIndex i = 0; i < size; ++i)
+        sum += m(i, i);
+    return sum;
+}
+
 #ifdef DOXYGEN // documentation only -- function is already defined in vigra/multi_array.hxx
 
     /** calculate the squared Frobenius norm of a matrix.

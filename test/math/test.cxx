@@ -1117,6 +1117,8 @@ struct LinalgTest
         for(unsigned int i=0, k=0; i<c; ++i)
             for(unsigned int j=0; j<c; ++j, ++k)
                 shouldEqual(a2(i,j), tref2[k]);
+        
+        shouldEqual(trace(a2), 3.0);
 
         Matrix id = vigra::identityMatrix<double>(r);
         shouldEqual(id.rowCount(), r);
@@ -1124,6 +1126,8 @@ struct LinalgTest
         for(unsigned int i=0, k=0; i<r; ++i)
             for(unsigned int j=0; j<r; ++j, ++k)
                 shouldEqual(id(i,j), idref[k]);
+
+        shouldEqual(trace(id), 3.0);
 
         Matrix d = diagonalMatrix(Matrix(r, 1, data));
         shouldEqual(d.rowCount(), r);
