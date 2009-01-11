@@ -687,6 +687,29 @@ columnVector(MultiArrayView<2, T, C> const & m, MultiArrayShape<2>::type first, 
     return m.subarray(first, Shape(end, first[1]+1));
 }
 
+    /** Create a sub vector view of the vector \a m starting at element \a first and 
+        ranging to row \a end (non-inclusive).
+        
+        Note: This function may only be called when either <tt>rowCount(m) == 1</tt> or
+        <tt>columnCount(m) == 1</tt>, i.e. when \a m really represents a vector. 
+        Otherwise, a PreconditionViolation exception is raised.
+
+    <b>\#include</b> \<<a href="matrix_8hxx-source.html">vigra/matrix.hxx</a>\> or<br>
+    <b>\#include</b> \<<a href="linear__algebra_8hxx-source.html">vigra/linear_algebra.hxx</a>\><br>
+        Namespaces: vigra and vigra::linalg
+     **/
+template <class T, class C>
+inline MultiArrayView <2, T, C>
+subVector(MultiArrayView<2, T, C> const & m, int first, int end)
+{
+    typedef typename MultiArrayView <2, T, C>::difference_type Shape;
+    if(columnCount(m) == 1)
+        return m.subarray(Shape(first, 0), Shape(end, 1));
+    vigra_precondition(rowCount(m) == 1, 
+                       "linalg::subVector(): Input must be a vector (1xN or Nx1).");
+    return m.subarray(Shape(0, first), Shape(1, end));
+}
+
     /** Check whether matrix \a m is symmetric.
 
     <b>\#include</b> \<<a href="matrix_8hxx-source.html">vigra/matrix.hxx</a>\> or<br>
@@ -2143,6 +2166,7 @@ using linalg::identityMatrix;
 using linalg::diagonalMatrix;
 using linalg::transpose;
 using linalg::pointWise;
+using linalg::trace;
 using linalg::dot;
 using linalg::cross;
 using linalg::outer;
@@ -2150,6 +2174,7 @@ using linalg::rowCount;
 using linalg::columnCount;
 using linalg::rowVector;
 using linalg::columnVector;
+using linalg::subVector;
 using linalg::isSymmetric;
 using linalg::joinHorizontally;
 using linalg::joinVertically;
@@ -2206,7 +2231,7 @@ operator<<(std::ostream & s, const vigra::MultiArrayView<2, T, C> &m)
     {
         for(MultiArrayIndex i = 0; i < cols; ++i)
         {
-            s << std::setw(7) << std::setprecision(4) << m(j, i) << " ";
+            s << m(j, i) << " ";
         }
         s << std::endl;
     }

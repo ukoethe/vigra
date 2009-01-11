@@ -41,6 +41,7 @@
 
 #include <typeinfo>
 #include <iostream>
+#include <iomanip>
 #include <algorithm>
 #include <sstream>
 #include <cstdlib>
@@ -905,7 +906,7 @@ struct LinalgTest
         double idref[] = {1.0, 0.0, 0.0,
                           0.0, 1.0, 0.0,
                           0.0, 0.0, 1.0};
-        std::string sref(" 1.0000  5.0000 \n 3.0000  2.0000 \n 4.0000  7.0000 \n");
+        std::string sref("1.0000 5.0000 \n3.0000 2.0000 \n4.0000 7.0000 \n");
         unsigned int r = 3, c = 2;
 
         Matrix a(r, c, data), zero(r, c);
@@ -929,7 +930,7 @@ struct LinalgTest
                 shouldEqual(one(i,j), 1.0);
 
         std::stringstream s;
-        s << a;
+        s << std::setprecision(4) << a;
         shouldEqual(s.str(), sref);
 
         for(unsigned int i=0, k=0; i<r; ++i)
@@ -1099,6 +1100,8 @@ struct LinalgTest
                 shouldEqual(ac(j,0), tref[k]);
                 shouldEqual(ac1(j,0), tref[k]);
             }
+            shouldEqual(ac, subVector(ac, 0, r));
+            shouldEqual(a.subarray(Shape(1, i), Shape(r-1, i+1)), subVector(ac, 1, r-1));
         }
 
         double sn = squaredNorm(columnVector(a, 0));
