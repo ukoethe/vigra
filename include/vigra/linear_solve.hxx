@@ -1183,8 +1183,7 @@ bool linearSolve(const MultiArrayView<2, T, C1> &A, const MultiArrayView<2, T, C
         Matrix<T> L(A.shape());
         if(!choleskyDecomposition(A, L))
             return false; // false if A wasn't symmetric positive definite
-        linearSolveLowerTriangular(L, b, res);
-        linearSolveUpperTriangular(transpose(L), res, res);
+        choleskySolve(L, b, res);
     }
     else if(method == "qr")
     {
