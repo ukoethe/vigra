@@ -1075,6 +1075,39 @@ bool linearSolveLowerTriangular(const MultiArrayView<2, T, C1> &l, const MultiAr
     return true;
 }
 
+
+    /** Solve a linear system when the Cholesky decomposition of the left hand side is given.
+
+        The square matrix \a L must be a lower-triangular matrix resulting from Cholesky
+        decomposition of some positive definite coefficient matrix.
+        
+        The column vectors of matrix \a b are the right-hand sides of the equation (several equations
+        with the same matrix \a L can thus be solved in one go). The result is returned
+        in \a x, whose columns contain the solutions for the correspoinding
+        columns of \a b. This implementation can be applied in-place, i.e. <tt>&b == &x</tt> is allowed.
+        The following size requirements apply:
+        
+        \code
+        rowCount(L) == columnCount(L);
+        rowCount(L) == rowCount(b);
+        columnCount(L) == rowCount(x);
+        columnCount(b) == columnCount(x);
+        \endcode
+
+    <b>\#include</b> \<<a href="linear__solve_8hxx-source.html">vigra/linear_solve.hxx</a>\> or<br>
+    <b>\#include</b> \<<a href="linear__algebra_8hxx-source.html">vigra/linear_algebra.hxx</a>\><br>
+        Namespaces: vigra and vigra::linalg
+     */
+template <class T, class C1, class C2, class C3>
+inline 
+void choleskySolve(MultiArrayView<2, T, C1> & L, MultiArrayView<2, T, C2> const & b, MultiArrayView<2, T, C3> & x)
+{
+    /* Solve L * y = b */
+    linearSolveLowerTriangular(L, b, x);
+    /* Solve L^T * x = y */
+    linearSolveUpperTriangular(transpose(L), x, x);
+}
+
     /** Solve a linear system.
 
         \a A is the coefficient matrix, and the column vectors
@@ -1195,6 +1228,7 @@ using linalg::inverse;
 using linalg::determinant;
 using linalg::logDeterminant;
 using linalg::linearSolve;
+using linalg::choleskySolve;
 using linalg::choleskyDecomposition;
 using linalg::qrDecomposition;
 using linalg::linearSolveUpperTriangular;
