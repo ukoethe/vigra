@@ -892,29 +892,26 @@ template <class T, class C1, class C2>
 bool choleskyDecomposition(MultiArrayView<2, T, C1> const & A,
                            MultiArrayView<2, T, C2> &L)
 {
-    typedef T Real;
-    
-	MultiArrayIndex n = columnCount(A);
-	
+	MultiArrayIndex n = columnCount(A);	
     vigra_precondition(rowCount(A) == n,
                        "choleskyDecomposition(): Input matrix must be square.");
     vigra_precondition(n == columnCount(L) && n == rowCount(L),
                        "choleskyDecomposition(): Output matrix must have same shape as input matrix.");
+    vigra_precondition(isSymmetric(A),
+                       "choleskyDecomposition(): Input matrix must be symmetric.");
 
     for (MultiArrayIndex j = 0; j < n; ++j) 
     {
-        Real d(0.0);
+        T d(0.0);
         for (MultiArrayIndex k = 0; k < j; ++k) 
 		{
-            Real s(0.0);
+            T s(0.0);
             for (MultiArrayIndex i = 0; i < k; ++i) 
 			{
                s += L(k, i)*L(j, i);
             }
             L(j, k) = s = (A(j, k) - s)/L(k, k);
             d = d + s*s;
-            vigra_precondition(A(k, j) == A(j, k),
-                       "choleskyDecomposition(): Input matrix must be symmetric.");
         }
         d = A(j, j) - d;
         if(d <= 0.0)
