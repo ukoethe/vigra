@@ -363,8 +363,8 @@ struct OptimizationTest {
 
             double cedata[] = {1.00346920730319, -2.67608891438430, 0.0168223926638857, -1.44324544697726};
 
-            double xrefdata[] = {0.119253152209488, 1.15958344103396, 0.147393347755256, 0.0, 0.728687417284916, 0.0981162438302217, 0.181052409796096, 0.753506621194137};
-
+            double xrefdata[] = {0.11925229791508, 1.15958300340908, 0.14739510825795, 0.00000000000000, 0.72868950990454, 0.09811723636230, 0.18105311441297, 0.75350474556599};
+     
             Matrix<double> G(8,8, Gdata), 
                            g(8,1, gdata), 
                            CE(4,8, CEdata), 
@@ -374,8 +374,19 @@ struct OptimizationTest {
                            xref(8,1, xrefdata);
                            
             quadraticProgramming(G, g,  CE, ce,  CI, ci, x);
-            shouldEqualSequenceTolerance(x.data(), x.data()+8, xrefdata, 1e-4);
+            shouldEqualSequenceTolerance(x.data(), x.data()+8, xrefdata, 1e-10);
         }
+		double epsilon = 1e-10;
+		for(int k=0; k<size; ++k)
+		{
+	        Matrix<double> result(50, 1), ref(50,1);
+	        Matrix<double> G = transpose(x[k])*x[k],
+	                       g = -transpose(x[k])*y[k];
+            double m = quadraticProgramming(G, g, Matrix<double>(), Matrix<double>(), 
+                                 identityMatrix<double>(50), Matrix<double>(50, 1), result);
+	        nonnegativeLeastSquares(x[k], y[k], ref);
+	        shouldEqualSequenceTolerance(ref.data(), ref.data()+50, result.data(), epsilon);
+	    }
     }
 };
 

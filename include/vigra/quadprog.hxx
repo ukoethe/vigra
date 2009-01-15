@@ -104,7 +104,7 @@ bool quadprogAddConstraint(MultiArrayView<2, T, C1> & R, MultiArrayView<2, T, C2
     for (i = 0; i < iq; i++)
         R(i,iq - 1) = d(i,0);
 #ifdef TRACE_SOLVER
-  std::cerr << iq << std::endl;
+  std::cerr << "add iq: " << iq << std::endl;
 #endif
   
     if (abs(d(iq - 1,0)) <= NumericTraits<T>::epsilon() * R_norm)
@@ -222,7 +222,7 @@ void quadprogDeleteConstraint(MultiArrayView<2, T, C1> & R, MultiArrayView<2, T,
 
      The problem is in the form:
 
-     min 0.5 * x G x + g x
+     min 0.5 * x' G x + g' x
      s.t.
          CE x == ce
          CI x >= ci
@@ -292,6 +292,7 @@ quadraticProgramming(MultiArrayView<2, T, C1> const & GG, MultiArrayView<2, T, C
     /* compute the inverse of the factorized matrix G^-1, this is the initial value for H */
     linearSolveLowerTriangular(G, identityMatrix<T>(n), transpose(J));
     c2 = trace(J);
+    T epsilon = NumericTraits<T>::epsilon() * sq(J.norm(0));
 #ifdef TRACE_SOLVER
     print_matrix("J", J, n);
 #endif
@@ -331,7 +332,7 @@ quadraticProgramming(MultiArrayView<2, T, C1> const & GG, MultiArrayView<2, T, C
         /* compute full step length t2: i.e., the minimum step in primal space s.t. the contraint 
            becomes feasible */
         t2 = 0.0;
-        if (abs(dot(z, z)) > NumericTraits<T>::epsilon()) // i.e. z != 0
+        if (abs(dot(z, z)) > epsilon) // i.e. z != 0
             t2 = (-dot(np, x) + ce(i,0)) / dot(z, np);
     
         x += t2 * z;    
@@ -363,7 +364,7 @@ l1:
         iai(ip,0) = -1;
     }
     
-    /* compute s(x) = CI^T * x - ci for all elements of K \ A */
+    /* compute s(x) = CI * x - ci for all elements of K \ A */
     ss = 0.0;
     psi = 0.0; /* this value will contain the sum of all infeasibilities */
     ip = 0; /* ip will be the index of the chosen violated constraint */
@@ -462,7 +463,7 @@ l2a:/* Step 2a: determine step direction */
     }
     /* Compute t2: full step length (minimum step in primal space 
        such that the constraint ip becomes feasible */
-    if (abs(dot(z, z))  > NumericTraits<T>::epsilon()) // i.e. z != 0
+    if (abs(dot(z, z))  > epsilon) // i.e. z != 0
         t2 = -s(ip,0) / dot(z, np);
     else
         t2 = inf; /* +inf */
