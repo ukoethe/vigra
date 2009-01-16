@@ -51,48 +51,9 @@ template <class T, class C1, class C2, class C3>
 bool quadprogAddConstraint(MultiArrayView<2, T, C1> & R, MultiArrayView<2, T, C2> & J, MultiArrayView<2, T, C3> & d, int& activeConstraintCount, double& R_norm)
 {
     typedef typename MultiArrayShape<2>::type Shape;
-    int n=rowCount(J);
-    double cc, ss, h, xny;
-    
-    /*  we have to find the Givens rotation which will reduce the element
-        d(j) to zero.
-        if it is already zero we don'step have to do anything, except of
-        decreasing j */  
-    for (int j = n - 1; j > activeConstraintCount; --j)
-    {
-        /*   The Givens rotation is done with the matrix (cc cs, cs -cc).
-             If cc is one, then element (j) of d is zero compared with element
-             (j - 1). Hence we don'step have to do anything. 
-             If cc is zero, then we just have to switch column (j) and column (j - 1) 
-             of J. Since we only switch columns in J, we have to be careful how we
-             update d depending on the sign of gs.
-             Otherwise we have to apply the Givens rotation to these columns.
-             The i - 1 element of d has to be updated to h. */
-        cc = d(j - 1,0);
-        ss = d(j,0);
-        h = hypot(cc, ss);
-        if (h == 0.0)
-            continue;
-        d(j,0) = 0.0;
-        ss = ss / h;
-        cc = cc / h;
-        if (cc < 0.0)
-        {
-            cc = -cc;
-            ss = -ss;
-            d(j - 1,0) = -h;
-        }
-        else
-            d(j - 1,0) = h;
-        xny = ss / (1.0 + cc);
-        for (int k = 0; k < n; k++)
-        {
-            double t1 = J(k,j - 1);
-            double t2 = J(k,j);
-            J(k,j - 1) = t1 * cc + t2 * ss;
-            J(k,j) = xny * (t1 + J(k,j - 1)) - t2;
-        }
-    }
+    int n=columnCount(J);
+    linalg::detail::qrGivensStepImpl(0, subVector(d, activeConstraintCount, n),
+                                     J.subarray(Shape(activeConstraintCount,0), Shape(n,n)));
     /* update the number of constraints added*/
     activeConstraintCount++;
     /* To update R we have to put the activeConstraintCount components of the d vector
@@ -111,9 +72,7 @@ template <class T, class C1, class C2, class C3>
 void quadprogDeleteConstraint(MultiArrayView<2, T, C1> & R, MultiArrayView<2, T, C2> & J, ArrayVector<int> & activeSet, MultiArrayView<2, T, C3> & u,  int me, int& activeConstraintCount, int l)
 {
     typedef typename MultiArrayShape<2>::type Shape;
-    int n=rowCount(R);
     int qq;
-    double cc, ss, h, xny, dualStep, primalStep;
   
     /* Find the index qq for active constraint l to be removed */
     for (int i = me; i < activeConstraintCount; i++)
@@ -128,15 +87,8 @@ void quadprogDeleteConstraint(MultiArrayView<2, T, C1> & R, MultiArrayView<2, T,
     {
         activeSet[i] = activeSet[i + 1];
         u(i,0) = u(i + 1,0);
-        for (int j = 0; j < n; j++)
-            R(j,i) = R(j,i + 1);
+        columnVector(R, i) = columnVector(R, i+1);
     }
-
-    activeSet[activeConstraintCount - 1] = activeSet[activeConstraintCount];
-    u(activeConstraintCount - 1,0) = u(activeConstraintCount,0);
-    activeSet[activeConstraintCount] = 0; 
-    u(activeConstraintCount,0) = 0.0;
-    columnVector(R, Shape(0, activeConstraintCount - 1), activeConstraintCount).init(NumericTraits<T>::zero());
 
     /* constraint has been fully removed */
     activeConstraintCount--;
@@ -144,41 +96,11 @@ void quadprogDeleteConstraint(MultiArrayView<2, T, C1> & R, MultiArrayView<2, T,
     if (activeConstraintCount == 0)
         return;
 
-    for (int j = qq; j < activeConstraintCount; j++)
-    {
-        cc = R(j,j);
-        ss = R(j + 1,j);
-        h = hypot(cc, ss);
-        if (h == 0.0)
-          continue;
-        cc = cc / h;
-        ss = ss / h;
-        R(j + 1,j) = 0.0;
-        if (cc < 0.0)
-        {
-            R(j,j) = -h;
-            cc = -cc;
-            ss = -ss;
-        }
-        else
-            R(j,j) = h;
-
-        xny = ss / (1.0 + cc);
-        for (int k = j + 1; k < activeConstraintCount; k++)
-        {
-            dualStep = R(j,k);
-            primalStep = R(j + 1,k);
-            R(j,k) = dualStep * cc + primalStep * ss;
-            R(j + 1,k) = xny * (dualStep + R(j,k)) - primalStep;
-        }
-        for (int k = 0; k < n; k++)
-        {
-            dualStep = J(k,j);
-            primalStep = J(k,j + 1);
-            J(k,j) = dualStep * cc + primalStep * ss;
-            J(k,j + 1) = xny * (J(k,j) + dualStep) - primalStep;
-        }
-    }
+    activeSet[activeConstraintCount] = activeSet[activeConstraintCount+1];
+    u(activeConstraintCount,0) = u(activeConstraintCount+1,0);
+    columnVector(R, activeConstraintCount).init(NumericTraits<T>::zero());
+    linalg::detail::qrGivensStepImpl(0, R.subarray(Shape(qq, qq), Shape(activeConstraintCount,activeConstraintCount)),
+                                        J.subarray(Shape(qq, qq), Shape(activeConstraintCount,activeConstraintCount)));
 }
 
 } // namespace detail
@@ -269,7 +191,7 @@ quadraticProgramming(MultiArrayView<2, T, C1> const & G, MultiArrayView<2, T, C2
         // find unconstrained minimizer of the quadratic form  0.5 * x G x + g' x
         choleskySolve(L, -g, x);
         // compute the inverse of the factorized matrix G^-1, this is the initial value for J
-        linearSolveLowerTriangular(L, transpose(J), transpose(J));
+        linearSolveLowerTriangular(L, J, J);
     }
     // current solution value
     T f_value = 0.5 * dot(g, x);
@@ -290,8 +212,8 @@ quadraticProgramming(MultiArrayView<2, T, C1> const & G, MultiArrayView<2, T, C2
     for (MultiArrayIndex i = 0; i < me; i++)
     {
         MultiArrayView<2, T, C3> np = rowVector(CE, i);
-        Matrix<T> d = transpose(np*J);
-        Matrix<T> z = J.subarray(Shape(0, activeConstraintCount), Shape(n,n))*subVector(d, activeConstraintCount, n);
+        Matrix<T> d = J*transpose(np);
+        Matrix<T> z = transpose(J).subarray(Shape(0, activeConstraintCount), Shape(n,n))*subVector(d, activeConstraintCount, n);
         linearSolveUpperTriangular(R.subarray(Shape(0, 0), Shape(activeConstraintCount,activeConstraintCount)), 
                                    subVector(d, 0, activeConstraintCount), 
                                    subVector(r, 0, activeConstraintCount));
@@ -312,7 +234,7 @@ quadraticProgramming(MultiArrayView<2, T, C1> const & G, MultiArrayView<2, T, C2
             "quadraticProgramming(): Equality constraints are linearly dependent.");
     }
   
-    /* Step 2: check for feasibility and determine a new S-pair */
+    /* Step 2: check for feasibility and determine an S-pair */
     // compute values of inequality constraints
     Matrix<T> s = CI * x - ci;
     int constraintToBeAdded = argMin(s);
@@ -330,8 +252,8 @@ quadraticProgramming(MultiArrayView<2, T, C1> const & G, MultiArrayView<2, T, C2
 
         /* Step 2a: determine step direction */
         /* compute step direction in the primal space (through J, see the paper) */
-        Matrix<T> d = transpose(np*J);
-        Matrix<T> z = J.subarray(Shape(0, activeConstraintCount), Shape(n,n))*subVector(d, activeConstraintCount, n);
+        Matrix<T> d = J*transpose(np);
+        Matrix<T> z = transpose(J).subarray(Shape(0, activeConstraintCount), Shape(n,n))*subVector(d, activeConstraintCount, n);
         /* compute negative of the step direction in the dual space */
         linearSolveUpperTriangular(R.subarray(Shape(0, 0), Shape(activeConstraintCount,activeConstraintCount)), 
                                    subVector(d, 0, activeConstraintCount), 
@@ -408,7 +330,6 @@ quadraticProgramming(MultiArrayView<2, T, C1> const & G, MultiArrayView<2, T, C2
         // compute values of inequality constraints
         s = CI * x - ci;
         ss = 0.0;
-        constraintToBeAdded;
         /* Step 2: check for feasibility and determine a new S-pair */
         for (int i = 0; i < mi; i++)
         {
