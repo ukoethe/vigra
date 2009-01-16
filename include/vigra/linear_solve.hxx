@@ -152,7 +152,7 @@ givensReflectionMatrix(T a, T b, Matrix<T> & g)
 // see Golub, van Loan: Algorithm 5.2.2 (p. 227) and Section 12.5.2 (p. 608)
 template <class T, class C1, class C2>
 bool 
-qrGivensStepImpl(MultiArrayIndex i, MultiArrayView<2, T, C1> &r, MultiArrayView<2, T, C2> &rhs)
+qrGivensStepImpl(MultiArrayIndex i, MultiArrayView<2, T, C1> r, MultiArrayView<2, T, C2> rhs)
 {
     typedef typename Matrix<T>::difference_type Shape;
     
