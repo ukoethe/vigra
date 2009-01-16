@@ -310,7 +310,7 @@ struct OptimizationTest {
                            xref(3,1, xrefdata);
 
             // Solution: x = [0 2 0]'
-            quadraticProgramming(G, g,  CE, ce,  CI, ci, x);
+            shouldEqualTolerance(quadraticProgramming(G, g, CE, ce, CI, ci, x), 6.4, 1e-14);
             shouldEqualSequenceTolerance(x.data(), x.data()+3, xrefdata, 1e-14);
         }
         {
@@ -342,7 +342,7 @@ struct OptimizationTest {
                            xref(3,1, xrefdata);
 
             // Solution: x = [1 0.5 -1]'
-            quadraticProgramming(G, g,  CE, ce,  CI, ci, x);
+            shouldEqualTolerance(quadraticProgramming(G, g, CE, ce, CI, ci, x), -22.625, 1e-14); 
             shouldEqualSequenceTolerance(x.data(), x.data()+3, xrefdata, 1e-14);
         }
         {
@@ -374,7 +374,7 @@ struct OptimizationTest {
                            ci(8,1), x(8,1),
                            xref(8,1, xrefdata);
                            
-            quadraticProgramming(G, g,  CE, ce,  CI, ci, x);
+            shouldEqualTolerance(quadraticProgramming(G, g, CE, ce, CI, ci, x), 5.96700441471631, 1e-10);
             shouldEqualSequenceTolerance(x.data(), x.data()+8, xrefdata, 1e-10);
         }
 		double epsilon = 1e-10;
@@ -386,6 +386,7 @@ struct OptimizationTest {
             double m = quadraticProgramming(G, g, Matrix<double>(), Matrix<double>(), 
                                  identityMatrix<double>(50), Matrix<double>(50, 1), result);
 	        nonnegativeLeastSquares(x[k], y[k], ref);
+	        shouldEqualTolerance(2.0*m, squaredNorm(x[k]*ref-y[k]) - squaredNorm(y[k]), epsilon);
 	        shouldEqualSequenceTolerance(ref.data(), ref.data()+50, result.data(), epsilon);
 	    }
     }

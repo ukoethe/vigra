@@ -48,59 +48,40 @@ namespace vigra {
 namespace detail {
 
 template <class T, class C1, class C2, class C3>
-bool quadprogAddConstraint(MultiArrayView<2, T, C1> & R, MultiArrayView<2, T, C2> & J, MultiArrayView<2, T, C3> & d, int& activeConstraintCount, double& R_norm)
+bool quadprogAddConstraint(MultiArrayView<2, T, C1> & R, MultiArrayView<2, T, C2> & J, MultiArrayView<2, T, C3> & d, 
+                           int activeConstraintCount, double& R_norm)
 {
     typedef typename MultiArrayShape<2>::type Shape;
     int n=columnCount(J);
     linalg::detail::qrGivensStepImpl(0, subVector(d, activeConstraintCount, n),
                                      J.subarray(Shape(activeConstraintCount,0), Shape(n,n)));
-    /* update the number of constraints added*/
-    activeConstraintCount++;
-    /* To update R we have to put the activeConstraintCount components of the d vector
-    into column activeConstraintCount - 1 of R
-    */
-    columnVector(R, Shape(0, activeConstraintCount - 1), activeConstraintCount) = subVector(d, 0, activeConstraintCount);
-  
-    if (abs(d(activeConstraintCount - 1,0)) <= NumericTraits<T>::epsilon() * R_norm)
-        // problem degenerate
+    if (abs(d(activeConstraintCount,0)) <= NumericTraits<T>::epsilon() * R_norm) // problem degenerate
         return false;
-    R_norm = std::max<T>(R_norm, abs(d(activeConstraintCount - 1,0)));
+    R_norm = std::max<T>(R_norm, abs(d(activeConstraintCount,0)));
+
+    ++activeConstraintCount;   
+    // add d as a new column to R
+    columnVector(R, Shape(0, activeConstraintCount - 1), activeConstraintCount) = subVector(d, 0, activeConstraintCount);  
     return true;
 }
 
 template <class T, class C1, class C2, class C3>
-void quadprogDeleteConstraint(MultiArrayView<2, T, C1> & R, MultiArrayView<2, T, C2> & J, ArrayVector<int> & activeSet, MultiArrayView<2, T, C3> & u,  int me, int& activeConstraintCount, int l)
+void quadprogDeleteConstraint(MultiArrayView<2, T, C1> & R, MultiArrayView<2, T, C2> & J, MultiArrayView<2, T, C3> & u, 
+                              int activeConstraintCount,  int constraintToBeRemoved)
 {
     typedef typename MultiArrayShape<2>::type Shape;
-    int qq;
-  
-    /* Find the index qq for active constraint l to be removed */
-    for (int i = me; i < activeConstraintCount; i++)
-        if (activeSet[i] == l)
-        {
-            qq = i;
-            break;
-        }
-      
-    /* remove the constraint from the active set and the duals */
-    for (int i = qq; i < activeConstraintCount - 1; i++)
-    {
-        activeSet[i] = activeSet[i + 1];
-        u(i,0) = u(i + 1,0);
-        columnVector(R, i) = columnVector(R, i+1);
-    }
+    
+    int newActiveConstraintCount = activeConstraintCount - 1;
 
-    /* constraint has been fully removed */
-    activeConstraintCount--;
-  
-    if (activeConstraintCount == 0)
+    if(constraintToBeRemoved == newActiveConstraintCount)
         return;
 
-    activeSet[activeConstraintCount] = activeSet[activeConstraintCount+1];
-    u(activeConstraintCount,0) = u(activeConstraintCount+1,0);
-    columnVector(R, activeConstraintCount).init(NumericTraits<T>::zero());
-    linalg::detail::qrGivensStepImpl(0, R.subarray(Shape(qq, qq), Shape(activeConstraintCount,activeConstraintCount)),
-                                        J.subarray(Shape(qq, qq), Shape(activeConstraintCount,activeConstraintCount)));
+    std::swap(u(constraintToBeRemoved,0), u(newActiveConstraintCount,0));
+    columnVector(R, constraintToBeRemoved).swapData(columnVector(R, newActiveConstraintCount));
+    linalg::detail::qrGivensStepImpl(0, R.subarray(Shape(constraintToBeRemoved, constraintToBeRemoved), 
+                                                   Shape(newActiveConstraintCount,newActiveConstraintCount)),
+                                        J.subarray(Shape(constraintToBeRemoved, 0), 
+                                                   Shape(newActiveConstraintCount,newActiveConstraintCount)));
 }
 
 } // namespace detail
@@ -115,7 +96,7 @@ void quadprogDeleteConstraint(MultiArrayView<2, T, C1> & R, MultiArrayView<2, T,
      by means of a dual method.
          
      <b>\#include</b> \<<a href="quadprog_8hxx-source.html">vigra/quadprog.hxx</a>\>
-         Namespaces: vigra and vigra::linalg
+         Namespaces: vigra
 
      <b> Declaration:</b>
 
@@ -132,31 +113,24 @@ void quadprogDeleteConstraint(MultiArrayView<2, T, C1> & R, MultiArrayView<2, T,
 
      The problem is in the form:
 
-     min 0.5 * x' G x + g' x
-     s.step.
-         CE x == ce
-         CI x >= ci
-                  
-     The matrix and vectors dimensions are as follows:
-         G: n * n
-            g: n
-                    
-            CE: me * n
-         ce: me
-                    
-          CI: mi * n
-       ci: mi
-
-         x: n
+     \f{eqnarray*}
+        \mbox{minimize } &\,& \frac{1}{2} \mbox{\bf x}'\,\mbox{\bf G}\, \mbox{\bf x} + \mbox{\bf g}'\,\mbox{\bf x} \\
+        \mbox{subject to} &\,& \mbox{\bf CE}\, \mbox{\bf x} = \mbox{\bf ce} \\
+         &\,& \mbox{\bf CI}\,\mbox{\bf x} \ge \mbox{\bf ci}
+     \f}            
+     The matrix and vector dimensions are as follows:
+     <ul>
+     <li> <b>G</b>: n * n, <b>g</b>: n
+     <li> <b>CE</b>: me * n, <b>ce</b>: me
+     <li> <b>CI</b>: mi * n, <b>ci</b>: mi
+     <li> <b>x</b>: n
+     </ul>
+     The function writes the optimal solution in the vector \a x and returns the cost of this solution. 
+     If the problem is infeasible, std::numeric_limits::infinity() is returned. In this case
+     the value of vector \a x is undefined.
      
-     The function will return the cost of the solution written in the x vector or
-     std::numeric_limits::infinity() if the problem is infeasible. In the latter case
-     the value of the x vector is not correct.
-     
-     References: D. Goldfarb, activeSet. Idnani. activeSet numerically stable dual method for solving
-                 strictly convex quadratic programs. Mathematical Programming 27 (1983) pp. 1-33.
-
-     Implementation based on work by Luca Di Gaspero and Angelo Furfaro.
+     References: D. Goldfarb, A. Idnani: <i>"A numerically stable dual method for solving
+                 strictly convex quadratic programs"</i>, Mathematical Programming 27:1-33, 1983.
    */
 template <class T, class C1, class C2, class C3, class C4, class C5, class C6, class C7>
 T 
@@ -166,13 +140,13 @@ quadraticProgramming(MultiArrayView<2, T, C1> const & G, MultiArrayView<2, T, C2
                MultiArrayView<2, T, C7> & x)
 {
     using namespace linalg;
-    using namespace functor;
     typedef typename MultiArrayShape<2>::type Shape;
     
     int n  = rowCount(g),
         me = rowCount(ce),
         mi = rowCount(ci),
         constraintCount = me + mi;
+        
     vigra_precondition(columnCount(G) == n && rowCount(G) == n,
         "quadraticProgramming(): Matrix shape mismatch between G and g.");
     vigra_precondition(rowCount(x) == n,
@@ -203,144 +177,143 @@ quadraticProgramming(MultiArrayView<2, T, C1> const & G, MultiArrayView<2, T, C2
     Matrix<T> R(n, n), r(constraintCount, 1), u(constraintCount,1);
     T R_norm = NumericTraits<T>::one();
     
-    ArrayVector<int> activeSet(constraintCount), A_old(constraintCount), iai(constraintCount);
-    for (int i = 0; i < mi; i++)
-        iai[i] = i;
-    
-    int activeConstraintCount = 0;
-    // add equality constraints to the active set
-    for (MultiArrayIndex i = 0; i < me; i++)
+    // incorporate equality constraints
+    for (int i=0; i < me; ++i)
     {
         MultiArrayView<2, T, C3> np = rowVector(CE, i);
         Matrix<T> d = J*transpose(np);
-        Matrix<T> z = transpose(J).subarray(Shape(0, activeConstraintCount), Shape(n,n))*subVector(d, activeConstraintCount, n);
-        linearSolveUpperTriangular(R.subarray(Shape(0, 0), Shape(activeConstraintCount,activeConstraintCount)), 
-                                   subVector(d, 0, activeConstraintCount), 
-                                   subVector(r, 0, activeConstraintCount));
-       /* compute full step length primalStep: i.e., the minimum step in primal space s.step. the contraint 
-           becomes feasible */
-        T primalStep = 0.0;
-        if (squaredNorm(z) > epsilonZ) // z != 0
-            primalStep = (-dot(np, x) + ce(i,0)) / dot(z, np);
+        Matrix<T> z = transpose(J).subarray(Shape(0, i), Shape(n,n))*subVector(d, i, n);
+        linearSolveUpperTriangular(R.subarray(Shape(0, 0), Shape(i,i)), 
+                                   subVector(d, 0, i), 
+                                   subVector(r, 0, i));
+        // compute step in primal space so that the constraint becomes satisfied
+        T step = (squaredNorm(z) <= epsilonZ) // i.e. z == 0
+                     ? 0.0 
+                     : (-dot(np, x) + ce(i,0)) / dot(z, np);
     
-        x += primalStep * z;    
-        u(activeConstraintCount,0) = primalStep;
-        subVector(u, 0, activeConstraintCount) -= primalStep * subVector(r, 0, activeConstraintCount);
+        x += step * z;    
+        u(i,0) = step;
+        subVector(u, 0, i) -= step * subVector(r, 0, i);
         
-        f_value += 0.5 * sq(primalStep) * dot(z, np);
-        activeSet[i] = -i - 1;
+        f_value += 0.5 * sq(step) * dot(z, np);
     
-        vigra_precondition(vigra::detail::quadprogAddConstraint(R, J, d, activeConstraintCount, R_norm),
+        vigra_precondition(vigra::detail::quadprogAddConstraint(R, J, d, i, R_norm),
             "quadraticProgramming(): Equality constraints are linearly dependent.");
     }
+    int activeConstraintCount = me;
   
-    /* Step 2: check for feasibility and determine an S-pair */
-    // compute values of inequality constraints
-    Matrix<T> s = CI * x - ci;
-    int constraintToBeAdded = argMin(s);
-    T ss = s(constraintToBeAdded, 0);
+    // determine optimum solution and corresponding active inequality constraints
+    ArrayVector<int> activeSet(mi);
+    for (int i = 0; i < mi; ++i)
+        activeSet[i] = i;
 
-    int iter = 0, maxIter = 10*mi;
+    int constraintToBeAdded;
+    T ss = 0.0;
+    for (int i = activeConstraintCount-me; i < mi; ++i)
+    {
+        T s = dot(rowVector(CI, activeSet[i]), x) - ci(activeSet[i], 0);
+        if (s < ss)
+        {
+            ss = s;
+            constraintToBeAdded = i;
+        }
+    }
+
+    int iter = 0, maxIter = 10*mi;    
     while(iter++ < maxIter)
     {        
         if (ss >= 0.0)       // all constraints are satisfied
             return f_value;  // => solved!
 
-        MultiArrayView<2, T, C5> np = rowVector(CI, constraintToBeAdded);
-        u(activeConstraintCount,0) = 0.0;
-        activeSet[activeConstraintCount] = constraintToBeAdded;
-
-        /* Step 2a: determine step direction */
-        /* compute step direction in the primal space (through J, see the paper) */
+        // determine step direction in the primal space (through J, see the paper)
+        MultiArrayView<2, T, C5> np = rowVector(CI, activeSet[constraintToBeAdded]);
         Matrix<T> d = J*transpose(np);
         Matrix<T> z = transpose(J).subarray(Shape(0, activeConstraintCount), Shape(n,n))*subVector(d, activeConstraintCount, n);
-        /* compute negative of the step direction in the dual space */
+        
+        // compute negative of the step direction in the dual space
         linearSolveUpperTriangular(R.subarray(Shape(0, 0), Shape(activeConstraintCount,activeConstraintCount)), 
                                    subVector(d, 0, activeConstraintCount), 
                                    subVector(r, 0, activeConstraintCount));
 
-        /* Step 2b: compute step length */
-        /* Compute primalStep (minimum step in primal space 
-           such that constraintToBeAdded becomes feasible */
+        // determine minimum step length in primal space such that activeSet[constraintToBeAdded] becomes feasible
         T primalStep = (squaredNorm(z) <= epsilonZ) // i.e. z == 0
                           ? inf
-                          : -s(constraintToBeAdded,0) / dot(z, np);
+                          : -ss / dot(z, np);
       
-        /* Compute dualStep (maximum step in dual space without violating dual feasibility) */
+        // determine maximum step length in dual space that doesn't violate dual feasibility
+        // and the corresponding index
         T dualStep = inf; 
         int constraintToBeRemoved;
-        /* find the index that achieves the minimum of u+(x) / r */
-        for (int k = me; k < activeConstraintCount; k++)
+        for (int k = me; k < activeConstraintCount; ++k)
         {
             if (r(k,0) > 0.0)
             {
                 if (u(k,0) / r(k,0) < dualStep)
                 {
                     dualStep = u(k,0) / r(k,0);
-                    constraintToBeRemoved = activeSet[k];
+                    constraintToBeRemoved = k;
                 }
             }
         }
         
-        /* the step is chosen as the minimum of dualStep and primalStep */
+        // the step is chosen as the minimum of dualStep and primalStep
         T step = std::min(dualStep, primalStep);
       
-        /* Step 2c: determine new S-pair and take step: */
+        // take step: and update matrizes
       
         // case (i): no step in primal or dual space possible
         if (step >= inf) // QPP is infeasible 
             return inf;
 
-        /* case (ii): step in dual space */
+        // case (ii): step in dual space
         if (primalStep >= inf)
         {
-            /* set u = u +  step * [-r 1) and drop constraintToBeRemoved from the active set */
             subVector(u, 0, activeConstraintCount) -= step * subVector(r, 0, activeConstraintCount);
-            u(activeConstraintCount,0) += step;
-            iai[constraintToBeRemoved] = constraintToBeRemoved;
-            vigra::detail::quadprogDeleteConstraint(R, J, activeSet, u, me, activeConstraintCount, constraintToBeRemoved);
+            vigra::detail::quadprogDeleteConstraint(R, J, u, activeConstraintCount, constraintToBeRemoved);
+            --activeConstraintCount;
+            if(constraintToBeRemoved != activeConstraintCount)
+                std::swap(activeSet[constraintToBeRemoved-me], activeSet[activeConstraintCount-me]);
             continue;
         }
       
-        /* case (iii): step in primal and dual space */
-      
+        // case (iii): step in primal and dual space      
         x += step * z;
-        /* update the solution value */
-        f_value += step * dot(z, np) * (0.5 * step + u(activeConstraintCount,0));
-        /* u = u + step * (-r 1) */
+        // update the solution value
+        f_value += 0.5 * sq(step) * dot(z, np);
+        // u = [u 1]' + step * [-r 1]
         subVector(u, 0, activeConstraintCount) -= step * subVector(r, 0, activeConstraintCount);
-        u(activeConstraintCount,0) += step;
+        u(activeConstraintCount,0) = step;
       
         if (step == primalStep)
         {
-            /* add constraintToBeAdded to the active set*/
+            // add constraintToBeAdded to the active set
             vigra::detail::quadprogAddConstraint(R, J, d, activeConstraintCount, R_norm);
-            iai[constraintToBeAdded] = -1;
+            std::swap(activeSet[constraintToBeAdded], activeSet[activeConstraintCount-me]);
+            ++activeConstraintCount;
         }
         else
         {
-            /* drop constraintToBeRemoved from the active set */
-            iai[constraintToBeRemoved] = constraintToBeRemoved;
-            vigra::detail::quadprogDeleteConstraint(R, J, activeSet, u, me, activeConstraintCount, constraintToBeRemoved);
+            // drop constraintToBeRemoved from the active set
+            vigra::detail::quadprogDeleteConstraint(R, J, u, activeConstraintCount, constraintToBeRemoved);
+            --activeConstraintCount;
+            if(constraintToBeRemoved != activeConstraintCount)
+                std::swap(activeSet[constraintToBeRemoved-me], activeSet[activeConstraintCount-me]);
         }
         
-        for (int i = me; i < activeConstraintCount; i++)
-            iai[activeSet[i]] = -1;
-
-        // compute values of inequality constraints
-        s = CI * x - ci;
+        // update values of inactive inequality constraints
         ss = 0.0;
-        /* Step 2: check for feasibility and determine a new S-pair */
-        for (int i = 0; i < mi; i++)
+        for (int i = activeConstraintCount-me; i < mi; ++i)
         {
-            if (s(i,0) < ss && iai[i] != -1)
+            // compute CI*x - ci with appropriate row permutation
+            T s = dot(rowVector(CI, activeSet[i]), x) - ci(activeSet[i], 0);
+            if (s < ss)
             {
-                ss = s(i,0);
+                ss = s;
                 constraintToBeAdded = i;
             }
         }
     }
-    return inf;
+    return inf; // too many iterations
 }
 
 //@}
