@@ -91,14 +91,17 @@ void quadprogDeleteConstraint(MultiArrayView<2, T, C1> & R, MultiArrayView<2, T,
 //@{
    /** Solve Quadratic Programming Problem.
 
-     The quadraticProgramming() function implements the algorithm of Goldfarb and Idnani 
-     for the solution of a (convex) Quadratic Programming problem
-     by means of a dual method.
+     The quadraticProgramming() function implements the algorithm described in
+     
+     D. Goldfarb, A. Idnani: <i>"A numerically stable dual method for solving
+                 strictly convex quadratic programs"</i>, Mathematical Programming 27:1-33, 1983. 
+     
+     for the solution of (convex) quadratic programming problems by means of a primal-dual method.
          
      <b>\#include</b> \<<a href="quadprog_8hxx-source.html">vigra/quadprog.hxx</a>\>
          Namespaces: vigra
 
-     <b> Declaration:</b>
+     <b>Declaration:</b>
 
      \code
      namespace vigra { 
@@ -111,26 +114,55 @@ void quadprogDeleteConstraint(MultiArrayView<2, T, C1> & R, MultiArrayView<2, T,
      }
      \endcode
 
-     The problem is in the form:
+     The problem must be specified in the form:
 
      \f{eqnarray*}
         \mbox{minimize } &\,& \frac{1}{2} \mbox{\bf x}'\,\mbox{\bf G}\, \mbox{\bf x} + \mbox{\bf g}'\,\mbox{\bf x} \\
-        \mbox{subject to} &\,& \mbox{\bf CE}\, \mbox{\bf x} = \mbox{\bf ce} \\
-         &\,& \mbox{\bf CI}\,\mbox{\bf x} \ge \mbox{\bf ci}
+        \mbox{subject to} &\,& \mbox{\bf C}_E\, \mbox{\bf x} = \mbox{\bf c}_e \\
+         &\,& \mbox{\bf C}_I\,\mbox{\bf x} \ge \mbox{\bf c}_i
      \f}            
      The matrix and vector dimensions are as follows:
      <ul>
-     <li> <b>G</b>: n * n, <b>g</b>: n
-     <li> <b>CE</b>: me * n, <b>ce</b>: me
-     <li> <b>CI</b>: mi * n, <b>ci</b>: mi
-     <li> <b>x</b>: n
+     <li> <b>G</b>: [n * n], <b>g</b>: [n * 1]
+     <li> <b>C</b><sub>E</sub>: [me * n], <b>c</b><sub>e</sub>: [me * 1]
+     <li> <b>C</b><sub>I</sub>: [mi * n], <b>c</b><sub>i</sub>: [mi * 1]
+     <li> <b>x</b>: [n * 1]
      </ul>
-     The function writes the optimal solution in the vector \a x and returns the cost of this solution. 
+     
+     The function writes the optimal solution into the vector \a x and returns the cost of this solution. 
      If the problem is infeasible, std::numeric_limits::infinity() is returned. In this case
      the value of vector \a x is undefined.
      
-     References: D. Goldfarb, A. Idnani: <i>"A numerically stable dual method for solving
-                 strictly convex quadratic programs"</i>, Mathematical Programming 27:1-33, 1983.
+     <b>Usage:</b>
+     
+     Minimize <tt> f = 0.5 * x'*G*x + g'*x </tt> subject to <tt> -1 &lt;= x &lt;= 1</tt>. 
+     The solution is <tt> x' = [1.0, 0.5, -1.0] </tt> with <tt> f = -22.625</tt>.
+     \code
+      double Gdata[] = {13.0, 12.0, -2.0,
+                        12.0, 17.0,  6.0,
+                        -2.0,  6.0, 12.0};
+
+      double gdata[] = {-22.0, -14.5, 13.0};
+
+      double CIdata[] = { 1.0,  0.0,  0.0,
+                          0.0,  1.0,  0.0,
+                          0.0,  0.0,  1.0,
+                         -1.0,  0.0,  0.0,
+                          0.0, -1.0,  0.0,
+                          0.0,  0.0, -1.0};
+                        
+      double cidata[] = {-1.0, -1.0, -1.0, -2.0, -1.0, -1.0, -1.0};
+
+      Matrix<double> G(3,3, Gdata), 
+                     g(3,1, gdata), 
+                     CE,             // empty since there are no equality constraints
+                     ce,             // likewise
+                     CI(7,3, CIdata), 
+                     ci(7,1, cidata), 
+                     x(3,1);
+                   
+    double f = quadraticProgramming(G, g, CE, ce, CI, ci, x);
+     \endcode
    */
 template <class T, class C1, class C2, class C3, class C4, class C5, class C6, class C7>
 T 
@@ -259,7 +291,7 @@ quadraticProgramming(MultiArrayView<2, T, C1> const & G, MultiArrayView<2, T, C2
         // the step is chosen as the minimum of dualStep and primalStep
         T step = std::min(dualStep, primalStep);
       
-        // take step: and update matrizes
+        // take step and update matrizes
       
         // case (i): no step in primal or dual space possible
         if (step >= inf) // QPP is infeasible 
