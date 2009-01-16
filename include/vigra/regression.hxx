@@ -575,7 +575,9 @@ unsigned int leastAngleRegressionMainLoop(LarsData<T, C1, C2> & d,
 
         // write the current solution
         ++currentSolutionCount;
-        activeSets.push_back(Permutation(d.columnPermutation.subarray(0, (unsigned int)d.activeSetSize)));
+        typename Array1::value_type tres(d.columnPermutation.begin(), d.columnPermutation.begin()+d.activeSetSize);
+        activeSets.push_back(typename Array1::value_type());
+        activeSets.back().swap(tres);
         
         if(lsq_solutions != 0)
         {
