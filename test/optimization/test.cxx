@@ -323,11 +323,12 @@ struct OptimizationTest {
             double CIdata[] = { 1.0,  0.0,  0.0,
                                 0.0,  1.0,  0.0,
                                 0.0,  0.0,  1.0,
+                                0.0,  0.0,  1.0,  // add a redundant constraint
                                -1.0,  0.0,  0.0,
                                 0.0, -1.0,  0.0,
                                 0.0,  0.0, -1.0};
                                 
-            double cidata[] = {-1.0, -1.0, -1.0, -1.0, -1.0, -1.0};
+            double cidata[] = {-1.0, -1.0, -1.0, -2.0, -1.0, -1.0, -1.0};
 
             double xrefdata[] = {1.0, 0.5, -1.0};
 
@@ -335,8 +336,8 @@ struct OptimizationTest {
                            g(3,1, gdata), 
                            CE, 
                            ce, 
-                           CI(6,3, CIdata), 
-                           ci(6,1, cidata), 
+                           CI(7,3, CIdata), 
+                           ci(7,1, cidata), 
                            x(3,1),
                            xref(3,1, xrefdata);
 
