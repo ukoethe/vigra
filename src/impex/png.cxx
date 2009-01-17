@@ -198,9 +198,9 @@ namespace vigra {
         // check if the file is a png file
         const unsigned int sig_size = 8;
         png_byte sig[sig_size];
-        std::fread( sig, sig_size, 1, file.get() );
+        std::size_t readCount = std::fread( sig, sig_size, 1, file.get() );
         const int no_png = png_sig_cmp( sig, 0, sig_size );
-        vigra_precondition( !no_png, "given file is not a png file.");
+        vigra_precondition( (readCount == 1) && !no_png, "given file is not a png file.");
 
         // create png read struct with user defined handlers
         png = png_create_read_struct( PNG_LIBPNG_VER_STRING, NULL,
@@ -591,7 +591,7 @@ namespace vigra {
 #if (PNG_LIBPNG_VER > 10008) && defined(PNG_WRITE_iCCP_SUPPORTED)
         // set icc profile
         if (iccProfile.size() > 0) {
-            png_set_iCCP(png, info, (char*)"icc", 0,
+            png_set_iCCP(png, info, const_cast<char*>("icc"), 0,
                          (char *)iccProfile.begin(), (png_uint_32)iccProfile.size());
         }
 #endif

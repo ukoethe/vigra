@@ -1014,6 +1014,7 @@ operator< (const Rational<IntType1> & l, const Rational<IntType2>& r)
     // Handle the easy cases. Take advantage of the fact
     // that the denominator is never negative.
     if(l.denominator() == zero)
+    {
         if(r.denominator() == zero)
             // -inf < inf, !(-inf < -inf), !(inf < -inf), !(inf < inf)
             return l.numerator() < r.numerator();
@@ -1021,6 +1022,7 @@ operator< (const Rational<IntType1> & l, const Rational<IntType2>& r)
             // -inf < -1, -inf < 0, -inf < 1
             // !(inf < -1), !(inf < 0), !(inf < 1)
             return l.numerator() < zero;
+    }
     if(r.denominator() == zero)
         // -1 < inf, 0 < inf, 1 < inf
         // !(-1 < -inf), !(0 < -inf), !(1 < -inf)

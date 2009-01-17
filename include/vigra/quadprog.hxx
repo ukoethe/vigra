@@ -24,7 +24,7 @@
 /*                                                                      */
 /*    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND    */
 /*    EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES   */
-/*    OF MERCHANTABILITY, FITNESS FOR activeSet PARTICULAR PURPOSE AND          */
+/*    OF MERCHANTABILITY, FITNESS FOR activeSet PARTICULAR PURPOSE AND  */
 /*    NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT       */
 /*    HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,      */
 /*    WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING      */
@@ -161,7 +161,7 @@ void quadprogDeleteConstraint(MultiArrayView<2, T, C1> & R, MultiArrayView<2, T,
                      ci(7,1, cidata), 
                      x(3,1);
                    
-    double f = quadraticProgramming(G, g, CE, ce, CI, ci, x);
+      double f = quadraticProgramming(G, g, CE, ce, CI, ci, x);
      \endcode
    */
 template <class T, class C1, class C2, class C3, class C4, class C5, class C6, class C7>

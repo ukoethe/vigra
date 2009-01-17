@@ -1130,7 +1130,7 @@ public:
     bool contains(Rect2D const &r) const
     {
         return r.isEmpty() ||
-            contains(r.upperLeft()) && contains(r.lowerRight()-Diff2D(1,1));
+            (contains(r.upperLeft()) && contains(r.lowerRight()-Diff2D(1,1)));
     }
 
         /** Return whether this rectangle overlaps with the given

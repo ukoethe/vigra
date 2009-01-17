@@ -314,7 +314,7 @@ struct GaborTests
 	}
 
 	template<class Iterator, class Accessor>
-	void checkImage(triple<Iterator, Iterator, Accessor> src, char *filename)
+	void checkImage(triple<Iterator, Iterator, Accessor> src, const char *filename)
 	{
 		if (initializing)
 		{

@@ -147,13 +147,27 @@ void VolumeImportInfo::importImpl(MultiArray <3, T, Allocator> &volume) const
         char oldCWD[2048];
 
 #ifdef _MSC_VER
-        _getcwd(oldCWD, 2048);
+        if(_getcwd(oldCWD, 2048) == 0)
+        {
+            perror("getcwd");
+            vigra_fail("VolumeImportInfo: Unable to query current directory (getcwd).");
+        }
         if(_chdir(path_.c_str()))
+        {
             perror("chdir");
+            vigra_fail("VolumeImportInfo: Unable to change to new directory (chdir).");
+        }
 #else
-        getcwd(oldCWD, 2048);
+        if(getcwd(oldCWD, 2048) == 0)
+        {
+            perror("getcwd");
+            vigra_fail("VolumeImportInfo: Unable to query current directory (getcwd).");
+        }
         if(chdir(path_.c_str()))
+        {
             perror("chdir");
+            vigra_fail("VolumeImportInfo: Unable to change to new directory (chdir).");
+        }
 #endif
 
         std::ifstream s(rawFilename_.c_str(), std::ios::binary);
@@ -161,9 +175,11 @@ void VolumeImportInfo::importImpl(MultiArray <3, T, Allocator> &volume) const
         s.read((char*)volume.begin(), shape_[0]*shape_[1]*shape_[2]*sizeof(T));
 
 #ifdef _MSC_VER
-        _chdir(oldCWD);
+        if(_chdir(oldCWD))
+            perror("chdir");
 #else
-        chdir(oldCWD);
+        if(chdir(oldCWD))
+            perror("chdir");
 #endif
 
         vigra_postcondition(
