@@ -121,7 +121,8 @@ void quadprogDeleteConstraint(MultiArrayView<2, T, C1> & R, MultiArrayView<2, T,
         \mbox{subject to} &\,& \mbox{\bf C}_E\, \mbox{\bf x} = \mbox{\bf c}_e \\
          &\,& \mbox{\bf C}_I\,\mbox{\bf x} \ge \mbox{\bf c}_i
      \f}            
-     The matrix and vector dimensions are as follows:
+     Matrix <b>G</b> G must be symmetric positive definite, and matrix <b>C</b><sub>E</sub> must have full row rank. 
+     Matrix and vector dimensions must be as follows:
      <ul>
      <li> <b>G</b>: [n * n], <b>g</b>: [n * 1]
      <li> <b>C</b><sub>E</sub>: [me * n], <b>c</b><sub>e</sub>: [me * 1]
@@ -151,7 +152,7 @@ void quadprogDeleteConstraint(MultiArrayView<2, T, C1> & R, MultiArrayView<2, T,
                           0.0, -1.0,  0.0,
                           0.0,  0.0, -1.0};
                         
-      double cidata[] = {-1.0, -1.0, -1.0, -2.0, -1.0, -1.0, -1.0};
+      double cidata[] = {-1.0, -1.0, -1.0, -1.0, -1.0, -1.0};
 
       Matrix<double> G(3,3, Gdata), 
                      g(3,1, gdata), 
@@ -293,18 +294,18 @@ quadraticProgramming(MultiArrayView<2, T, C1> const & G, MultiArrayView<2, T, C2
       
         // take step and update matrizes
       
-        // case (i): no step in primal or dual space possible
-        if (step >= inf) // QPP is infeasible 
-            return inf;
-
-        // case (ii): step in dual space
-        if (primalStep >= inf)
+        if (step == inf)
         {
+            // case (i): no step in primal or dual space possible
+            return inf; // QPP is infeasible 
+        }
+        if (primalStep == inf)
+        {
+            // case (ii): step in dual space
             subVector(u, 0, activeConstraintCount) -= step * subVector(r, 0, activeConstraintCount);
             vigra::detail::quadprogDeleteConstraint(R, J, u, activeConstraintCount, constraintToBeRemoved);
             --activeConstraintCount;
-            if(constraintToBeRemoved != activeConstraintCount)
-                std::swap(activeSet[constraintToBeRemoved-me], activeSet[activeConstraintCount-me]);
+            std::swap(activeSet[constraintToBeRemoved-me], activeSet[activeConstraintCount-me]);
             continue;
         }
       
@@ -328,8 +329,7 @@ quadraticProgramming(MultiArrayView<2, T, C1> const & G, MultiArrayView<2, T, C2
             // drop constraintToBeRemoved from the active set
             vigra::detail::quadprogDeleteConstraint(R, J, u, activeConstraintCount, constraintToBeRemoved);
             --activeConstraintCount;
-            if(constraintToBeRemoved != activeConstraintCount)
-                std::swap(activeSet[constraintToBeRemoved-me], activeSet[activeConstraintCount-me]);
+            std::swap(activeSet[constraintToBeRemoved-me], activeSet[activeConstraintCount-me]);
         }
         
         // update values of inactive inequality constraints
