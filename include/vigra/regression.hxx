@@ -901,8 +901,9 @@ nonnegativeLeastSquares(MultiArrayView<2, T, C1> const & A,
     leastAngleRegression(A, b, activeSets, results, 
                          LeastAngleRegressionOptions().leastSquaresSolutions(false).nnlasso());
     x.init(NumericTraits<T>::zero());
-    for(unsigned int k=0; k<activeSets.back().size(); ++k)
-        x(activeSets.back()[k],0) = results.back()[k];
+    if(activeSets.size() > 0)
+        for(unsigned int k=0; k<activeSets.back().size(); ++k)
+            x(activeSets.back()[k],0) = results.back()[k];
 }
 
 
