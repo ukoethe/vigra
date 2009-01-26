@@ -1248,6 +1248,49 @@ createShortScalarTiffImage(ImageIterator upperleft, ImageIterator lowerright,
 
 template <class ImageIterator, class Accessor>
 void
+createUShortScalarTiffImage(ImageIterator upperleft, ImageIterator lowerright, 
+                                 Accessor a, TiffImage * tiff)
+{
+    int w = lowerright.x - upperleft.x;
+    int h = lowerright.y - upperleft.y;
+    
+    TIFFSetField(tiff, TIFFTAG_IMAGEWIDTH, w);
+    TIFFSetField(tiff, TIFFTAG_IMAGELENGTH, h);
+    TIFFSetField(tiff, TIFFTAG_BITSPERSAMPLE, 16);
+    TIFFSetField(tiff, TIFFTAG_SAMPLESPERPIXEL, 1);
+    TIFFSetField(tiff, TIFFTAG_PLANARCONFIG, PLANARCONFIG_CONTIG);
+    TIFFSetField(tiff, TIFFTAG_SAMPLEFORMAT, SAMPLEFORMAT_UINT);
+    TIFFSetField(tiff, TIFFTAG_PHOTOMETRIC, PHOTOMETRIC_MINISBLACK);
+    
+    int bufsize = TIFFScanlineSize(tiff);
+    tdata_t * buf = new tdata_t[bufsize];
+    
+    ImageIterator ys(upperleft);
+    
+    try
+    {
+        for(int y=0; y<h; ++y, ++ys.y)
+        {
+            uint16 * p = (uint16 *)buf;
+            ImageIterator xs(ys);
+            
+            for(int x=0; x<w; ++x, ++xs.x)
+            {
+                p[x] = a(xs);
+            }
+            TIFFWriteScanline(tiff, buf, y);
+        }
+    }
+    catch(...)
+    {
+        delete[] buf;
+        throw;
+    }
+    delete[] buf;
+}
+
+template <class ImageIterator, class Accessor>
+void
 createIScalarTiffImage(ImageIterator upperleft, ImageIterator lowerright, 
                                  Accessor a, TiffImage * tiff)
 {
@@ -1396,6 +1439,18 @@ struct CreateTiffImage<short>
                       Accessor a, TiffImage * tiff)
     {
         createShortScalarTiffImage(upperleft, lowerright, a, tiff);
+    }
+};
+
+template <>
+struct CreateTiffImage<unsigned short>
+{
+    template <class ImageIterator, class Accessor>
+    static void
+    exec(ImageIterator upperleft, ImageIterator lowerright, 
+                      Accessor a, TiffImage * tiff)
+    {
+        createUShortScalarTiffImage(upperleft, lowerright, a, tiff);
     }
 };
 
