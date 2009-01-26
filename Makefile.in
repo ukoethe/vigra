@@ -46,10 +46,10 @@ test::
 	@cd test ; $(MAKE) ; cd ..
 
 doc::
-	cd docsrc; $(MAKE) VIGRA_VERSION=$(VIGRA_VERSION)
+	cd $(vigra_srcdir)/docsrc; $(MAKE) VIGRA_VERSION=$(VIGRA_VERSION)
 
 docclean::
-	cd docsrc; $(MAKE) -i clean
+	cd $(vigra_srcdir)/docsrc; $(MAKE) -i clean
 
 clean::
 	@cd src ; $(MAKE) clean ; cd ..

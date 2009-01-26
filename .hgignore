@@ -1,5 +1,35 @@
+^config\.(status|log|cache)$
+^libtool$
+^lib$
+^bin$
+^build
+^WinSetup$
+^test/.*/test$
+^test/testSuccess$
+^config/Makefile.include$
+^config/vigra-config$
+^config/(aclocal.m4$|autom4te.cache)
+^docsrc/(vigra/.*\.html|Doxyfile)$
+^doc/vigra/.*\.html$
+^doc/vigra/doxygen\.(css|gif|png)$
+^doc/vigra/(tabs|vigra)\.css$
+^doc/vigra/(tab_.|lenna_(color|gray))\.gif$
+^doc/vigra/form.*\.(gif|png)$
+^doc/vigra/formula.repository$
+^doc/vigra/classvigra_1_1.*\.(gif|png)$
+^doc/vigra/LICENSE.txt$
+^test/multiarray/(impex/)?test[0-3]\.(tif|png)$
+^test/impex/res\.
+^test/impex/resrgb.gif$
+^test/syntax/test\.cxx$
+^test/multiconvolution/speedtest$
+^src/examples/(convert|subimage|invert|invert_explicitly|resize|smooth|profile|palette|pyramid|edge|watershed|voronoi)$
+^src/impex/libvigraimpex
+^src/impex/(impex\.layout|Makefile\.win)$
+
 syntax: glob
 
+*~
 *.mex
 *.mexw32
 *.mexglx
@@ -7,6 +37,9 @@ syntax: glob
 *.obj
 Release
 Debug
+.libs
+.deps
+Makefile
 *.exe
 *.ilk
 *.pdb
@@ -14,4 +47,6 @@ Debug
 *.lib
 *.dll
 *.ncb
-build-gcc/*
+*.[do]
+*.l[doa]
+*.loT

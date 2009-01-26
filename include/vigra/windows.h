@@ -30,21 +30,27 @@
 /*    HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,      */
 /*    WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING      */
 /*    FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR     */
-/*    OTHER DEALINGS IN THE SOFTWARE.                                   */                
+/*    OTHER DEALINGS IN THE SOFTWARE.                                   */
 /*                                                                      */
 /************************************************************************/
- 
+
 #ifndef VIGRA_WINDOWS_H
 #define VIGRA_WINDOWS_H
 
-// prevent the global namespace to become polluted with 
+// prevent the global namespace to become polluted with
 // badly named Windows macros
 
 #if defined(_WIN32)
 # define VC_EXTRALEAN
-# define NOMINMAX
+# ifndef NOMINMAX
+#  define NOMINMAX
+#  define _VIGRA_UNDEFINE_NOMINMAX
+# endif
 # include <windows.h>
-# undef NOMINMAX
+# ifdef _VIGRA_UNDEFINE_NOMINMAX
+#  undef NOMINMAX
+#  undef _VIGRA_UNDEFINE_NOMINMAX
+# endif
 # ifdef DIFFERENCE
 #  undef DIFFERENCE
 # endif
