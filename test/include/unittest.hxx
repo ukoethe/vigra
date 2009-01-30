@@ -46,7 +46,7 @@
 #include <exception>          // for exception, bad_exception
 #include <stdexcept>
 #include <iostream>
-#include <limits.h>
+#include <limits>
 #include <cfloat>
 #include <cmath>
 #include "vigra/config.hxx"

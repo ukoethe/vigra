@@ -38,7 +38,7 @@
 #define VIGRA_METAPROGRAMMING_HXX
 
 #include "config.hxx"
-#include <limits.h>
+#include <limits>
 
 namespace vigra {
 

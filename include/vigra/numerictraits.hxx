@@ -38,7 +38,7 @@
 #ifndef VIGRA_NUMERICTRAITS_HXX
 #define VIGRA_NUMERICTRAITS_HXX
 
-#include <limits.h>
+#include <limits>
 #include <cfloat>
 #include <complex>
 #include "metaprogramming.hxx"
