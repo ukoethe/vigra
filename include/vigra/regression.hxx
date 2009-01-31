@@ -340,7 +340,7 @@ ridgeRegressionSeries(MultiArrayView<2, T, C1> const & A,
             xt(k,0) = xl(k,0) * s(k,0) / (sq(s(k,0)) + lambda[i]);
         columnVector(x, i) = v*xt;
     }
-    return (rank < n);
+    return (rank == n);
 }
 
 /** \brief Pass options to leastAngleRegression().
