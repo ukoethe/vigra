@@ -38,6 +38,7 @@
 #ifndef VIGRA_NUMERICTRAITS_HXX
 #define VIGRA_NUMERICTRAITS_HXX
 
+#include <climits>
 #include <limits>
 #include <cfloat>
 #include <complex>
