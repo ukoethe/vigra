@@ -46,9 +46,6 @@
     <b>\#include</b> \<<a href="functorexpression_8hxx-source.html">vigra/functorexpression.hxx</a>\><br>
     Namespace: vigra::functor
     
-    <b> Note:</b> This functionality is not available under Microsoft Visual C++, 
-    because support for partial template specialization is required.
-
     <b> Motivation</b>
     
     Many generic algorithms are made more flexible by means of functors
@@ -140,9 +137,6 @@
     but instead produce a functor which will later calculate the result.
     This technique has the big advantage that the familiar operator notation
     can be used, while all the flexibility of generic programming is preserved.
-    Unfortunately, it requires partial template specialization, so these capabilities
-    are not available on compilers that dont support this C++ feature
-    (in particular, on Microsoft Visual C++).
     
     The above problem "apply <TT>exp(-beta*v)</TT> to every pixel" will be solved
     like this:
