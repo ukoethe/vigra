@@ -7,7 +7,7 @@
 /*        http://kogs-www.informatik.uni-hamburg.de/~koethe/vigra/      */
 /*    Please direct questions, bug reports, and contributions to        */
 /*        koethe@informatik.uni-hamburg.de          or                  */
-/*        vigra@kogs1.informatik.uni-hamburg.de                         */
+/*        vigra@informatik.uni-hamburg.de                               */
 /*                                                                      */
 /*    Permission is hereby granted, free of charge, to any person       */
 /*    obtaining a copy of this software and associated documentation    */
