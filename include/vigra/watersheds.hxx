@@ -102,8 +102,8 @@ unsigned int watershedLabeling(SrcIterator upperlefts,
     ++xt.x;
     for(x = 1; x != w; ++x, ++xs.x, ++xt.x)
     {
-        if((*xs & Neighborhood::directionBit(Neighborhood::West)) ||
-           (xs[Neighborhood::west()] & Neighborhood::directionBit(Neighborhood::East)))
+        if((sa(xs) & Neighborhood::directionBit(Neighborhood::West)) ||
+           (sa(xs, Neighborhood::west()) & Neighborhood::directionBit(Neighborhood::East)))
         {
             *xt = xt[Neighborhood::west()];
         }
@@ -131,7 +131,7 @@ unsigned int watershedLabeling(SrcIterator upperlefts,
             *xt = x + w*y; // default: new region
             for(; nc != nce; ++nc)
             {
-                if((*xs & nc.directionBit()) || (xs[*nc] & nc.oppositeDirectionBit()))
+                if((sa(xs) & nc.directionBit()) || (sa(xs, *nc) & nc.oppositeDirectionBit()))
                 {
                     int neighborLabel = xt[*nc];
                     // find the root label of a label tree
