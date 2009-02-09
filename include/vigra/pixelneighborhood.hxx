@@ -30,7 +30,7 @@
 /*    HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,      */
 /*    WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING      */
 /*    FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR     */
-/*    OTHER DEALINGS IN THE SOFTWARE.                                   */                
+/*    OTHER DEALINGS IN THE SOFTWARE.                                   */
 /*                                                                      */
 /************************************************************************/
 
@@ -87,7 +87,7 @@ enum AtImageBorder
         FrontRightBorder  = FrontBorder  | RightBorder,   //17
         RearLeftBorder    = RearBorder   | LeftBorder,    //34
         RearRightBorder   = RearBorder   | RightBorder,   //33
-        
+
         TopRightFrontBorder    = TopBorder    | RightBorder | FrontBorder,    //21
         TopLeftFrontBorder     = TopBorder    | LeftBorder  | FrontBorder,    //22
         BottomLeftFrontBorder  = BottomBorder | LeftBorder  | FrontBorder,    //26
@@ -168,7 +168,7 @@ class NeighborCode
   public:
 
     typedef Diff2D difference_type;
-    
+
         /** Freeman direction codes for the 4-neighborhood.
             <tt>East = 0</tt>, <tt>North = 1</tt> etc.
             <tt>DirectionCount</tt> may be used for portable loop termination conditions.
@@ -188,7 +188,7 @@ class NeighborCode
         CausalLast  = West,      ///< &nbsp;
         AntiCausalFirst = South, ///< &nbsp;
         AntiCausalLast  = East,   ///< &nbsp;
-   
+
         InitialDirection = East,
         OppositeDirPrefix = 1,
         OppositeOffset = West
@@ -399,7 +399,7 @@ class NeighborCode
   public:
 
     typedef Diff2D difference_type;
-    
+
         /** Freeman direction codes for the 8-neighborhood.
             <tt>East = 0</tt>, <tt>North = 1</tt> etc.
             <tt>DirectionCount</tt> may be used for portable loop termination conditions.
@@ -423,7 +423,7 @@ class NeighborCode
         CausalLast  = West,          ///< &nbsp;
         AntiCausalFirst = SouthWest, ///< &nbsp;
         AntiCausalLast  = East,       ///< &nbsp;
-   
+
         InitialDirection = East,
         OppositeDirPrefix = 1,
         OppositeOffset = West

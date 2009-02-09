@@ -30,7 +30,7 @@
 /*    HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,      */
 /*    WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING      */
 /*    FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR     */
-/*    OTHER DEALINGS IN THE SOFTWARE.                                   */                
+/*    OTHER DEALINGS IN THE SOFTWARE.                                   */
 /*                                                                      */
 /************************************************************************/
 
@@ -41,7 +41,7 @@
 #include "pixelneighborhood.hxx"
 
 namespace vigra {
-    
+
 /** \addtogroup VoxelNeighborhood Utilities to manage voxel neighborhoods
 
     6- and 26-neighborhood definitions and circulators.
@@ -54,7 +54,7 @@ namespace vigra {
 
     /// 3-dimensional difference vector
     typedef vigra::TinyVector<int, 3> Diff3D;
-   
+
 /********************************************************/
 /*                                                      */
 /*                      AtVolumeBorder                  */
@@ -63,7 +63,7 @@ namespace vigra {
 
 /** \brief Encode whether a voxel is near the volume border.
 
-        //    This enum is used with \ref isAtVolumeBorder() and 
+        //    This enum is used with \ref isAtVolumeBorder() and
         //    \ref vigra::RestrictedNeighborhoodCirculator.
 
         //<b>\#include</b> \<<a href="voxelneighborhood_8hxx-source.html">vigra/voxelneighborhood.hxx</a>\><br>
@@ -75,62 +75,62 @@ typedef AtImageBorder AtVolumeBorder;
 
 /** \brief Find out whether a voxel is at the volume border.
 
-    This function checks if \a x == 0 or \a x == \a width - 1 and 
+    This function checks if \a x == 0 or \a x == \a width - 1 and
     \a y == 0 or \a y == \a height - 1 and so on and returns the appropriate value
     of \ref vigra::AtVolumeBorder, or zero when the voxel is not at te volume border.
     The behavior of the function is undefined if (x,y,z) is not inside the volume.
 */
 inline AtVolumeBorder isAtVolumeBorder(int x, int y, int z, int width, int height, int depth)
 {
-    return static_cast<AtVolumeBorder>((x == 0 
+    return static_cast<AtVolumeBorder>((x == 0
                                          ? LeftBorder
                                          : x == width-1
                                              ? RightBorder
                                              : NotAtBorder) |
-                                       (y == 0 
+                                       (y == 0
                                          ? TopBorder
                                          : y == height-1
                                              ? BottomBorder
                                              : NotAtBorder) |
-                                       (z == 0 
+                                       (z == 0
                                          ? FrontBorder
                                          : z == depth-1
                                              ? RearBorder
                                              : NotAtBorder));
 };
 /** \brief Find out whether a voxel is at a scan-order relevant volume border.
-    This function checks if \a x == 0 or \a y == 0 or \a z == \a 0 and returns the 
+    This function checks if \a x == 0 or \a y == 0 or \a z == \a 0 and returns the
         appropriate value of \ref vigra::AtVolumeBorder, or zero when the voxel is
         not at te volume border.
     The behavior of the function is undefined if (x,y,z) is not inside the volume.
 */
 inline AtVolumeBorder isAtVolumeBorderCausal(int x, int y, int z, int width, int height, int depth)
 {
-    return static_cast<AtVolumeBorder>((x == 0 
+    return static_cast<AtVolumeBorder>((x == 0
                                          ? LeftBorder
                                          : NotAtBorder) |
-                                       (y == 0 
+                                       (y == 0
                                          ? TopBorder
                                          : NotAtBorder) |
-                                       (z == 0 
+                                       (z == 0
                                          ? FrontBorder
                                          : NotAtBorder));
 };
 /** TODO: Write new comment \brief Find out whether a voxel is at a scan-order relevant volume border.
-    This function checks if \a x == 0 or \a y == 0 or \a z == \a 0 and returns the 
+    This function checks if \a x == 0 or \a y == 0 or \a z == \a 0 and returns the
         appropriate value of \ref vigra::AtVolumeBorder, or zero when the voxel is
         not at te volume border.
     The behavior of the function is undefined if (x,y,z) is not inside the volume.
 */
 inline AtVolumeBorder isAtVolumeBorderAntiCausal(int x, int y, int z, int width, int height, int depth)
 {
-    return static_cast<AtVolumeBorder>((x == width-1 
+    return static_cast<AtVolumeBorder>((x == width-1
                                          ? RightBorder
                                          : NotAtBorder) |
-                                       (y == height-1 
+                                       (y == height-1
                                          ? BottomBorder
                                          : NotAtBorder) |
-                                       (z == depth-1 
+                                       (z == depth-1
                                          ? RearBorder
                                          : NotAtBorder));
 };
@@ -150,20 +150,20 @@ namespace Neighborhood3DSix
 class NeighborCode3D
 {
     public:
-    
+
     typedef Diff3D difference_type;
-    
+
     /** provides enumeration of all directions.
         DirectionCount may be used for portable loop termination conditions.
     */
     enum Direction {
-        Error = -1,    
-        InFront= 0,         
-        North,          
-        West ,      
+        Error = -1,
+        InFront= 0,
+        North,
+        West ,
         Behind,
         South,
-        East,         
+        East,
         DirectionCount,
         CausalFirst = InFront,
         CausalLast  = West,
@@ -175,13 +175,13 @@ class NeighborCode3D
         OppositeOffset = 3
     };
 
-    static unsigned int directionBit(Direction d) 
+    static unsigned int directionBit(Direction d)
     {
         static unsigned int b[] = { 1 << (InFront + 1),
-                                    1 << (North + 1), 
-                                    1 << (West + 1), 
+                                    1 << (North + 1),
+                                    1 << (West + 1),
                                     1 << (Behind + 1),
-                                    1 << (South + 1), 
+                                    1 << (South + 1),
                                     1 << (East + 1)
                                   };
         return b[d];
@@ -192,14 +192,14 @@ class NeighborCode3D
     */
     static unsigned int nearBorderDirectionCount(AtVolumeBorder b)
     {
-        static unsigned int c[] = { 6, 5, 5, 0, 5, 4, 4, 0, 5, 4, 
+        static unsigned int c[] = { 6, 5, 5, 0, 5, 4, 4, 0, 5, 4,
                                     4, 0, 0, 0, 0, 0, 5, 4, 4, 0,
                                     4, 3, 3, 0, 4, 3, 3, 0, 0, 0,
                                     0, 0, 5, 4, 4, 0, 4, 3, 3, 0,
                                     4, 3, 3};
         return c[b];
     }
-    
+
     /** The valid direction codes when the center is at the volume border.
         \a index must be in the range <tt>0...nearBorderDirectionCount(b)-1</tt>.
     */
@@ -209,50 +209,50 @@ class NeighborCode3D
                 { InFront, North, West, Behind, South, East},   // 0 - NotAtBorder
                 { InFront, North, West, Behind, South, Error},  // 1 - AtRightBorder
                 { InFront, North, Behind, South, East, Error},  // 2 - AtLeftBorder
-                { Error, Error, Error, Error, Error, Error},    
-                { InFront, West, Behind, South, East, Error},   // 4 - AtTopBorder    
+                { Error, Error, Error, Error, Error, Error},
+                { InFront, West, Behind, South, East, Error},   // 4 - AtTopBorder
                 { InFront, West, Behind, South, Error, Error},  // 5 - AtTopRightBorder
                 { InFront, Behind, South, East, Error, Error},  // 6 - AtTopLeftBorder
-                { Error, Error, Error, Error, Error, Error},    
+                { Error, Error, Error, Error, Error, Error},
                 { InFront, North, West, Behind, East, Error},   // 8 - AtBottomBorder
                 { InFront, North, West, Behind, Error, Error},  // 9 - AtBottomRightBorder
                 { InFront, North, Behind, East, Error, Error},  //10- AtBottomLeftBorder
-                { Error, Error, Error, Error, Error, Error},    
-                { Error, Error, Error, Error, Error, Error},    
-                { Error, Error, Error, Error, Error, Error},    
-                { Error, Error, Error, Error, Error, Error},    
-                { Error, Error, Error, Error, Error, Error},    
+                { Error, Error, Error, Error, Error, Error},
+                { Error, Error, Error, Error, Error, Error},
+                { Error, Error, Error, Error, Error, Error},
+                { Error, Error, Error, Error, Error, Error},
+                { Error, Error, Error, Error, Error, Error},
                 { North, West, Behind, South, East, Error},     //16 - AtFrontBorder
                 { North, West, Behind, South, Error, Error},    //17 - AtFrontRightBorder
                 { North, Behind, South, East, Error, Error},    //18 - AtFrontLeftBorder
-                { Error, Error, Error, Error, Error, Error},    
+                { Error, Error, Error, Error, Error, Error},
                 { West, Behind, South, East, Error,  Error},    //20 - AtTopFrontBorder
                 { West, Behind, South, Error, Error, Error},    //21 - AtTopRightFrontBorder
                 { Behind, South, East, Error, Error,  Error},   //22 - AtTopLeftFrontBorder
-                { Error, Error, Error, Error, Error, Error},    
+                { Error, Error, Error, Error, Error, Error},
                 { North, West, Behind, East, Error, Error},     //24 - AtBottomFrontBorder
                 { North, West, Behind, Error, Error, Error},    //25 - AtBottomRightFrontBorder
                 { North, Behind, East, Error, Error, Error},    //26 - AtBottomLeftFrontBorder
-                { Error, Error, Error, Error, Error, Error},    
-                { Error, Error, Error, Error, Error, Error},    
-                { Error, Error, Error, Error, Error, Error},    
-                { Error, Error, Error, Error, Error, Error},    
-                { Error, Error, Error, Error, Error, Error},    
+                { Error, Error, Error, Error, Error, Error},
+                { Error, Error, Error, Error, Error, Error},
+                { Error, Error, Error, Error, Error, Error},
+                { Error, Error, Error, Error, Error, Error},
+                { Error, Error, Error, Error, Error, Error},
                 { InFront, North, West, South, East,Error},     //32 - AtRearBorder
                 { InFront, North, West, South, Error, Error},   //33 - AtRearRightBorder
                 { InFront, North, South, East, Error, Error},   //34 - AtRearLeftBorder
-                { Error, Error, Error, Error, Error, Error},    
-                { InFront, West, South, East, Error, Error},    //36 - AtTopRearBorder    
-                { InFront, West, South, Error, Error, Error},   //37 - AtTopRightRearBorder    
+                { Error, Error, Error, Error, Error, Error},
+                { InFront, West, South, East, Error, Error},    //36 - AtTopRearBorder
+                { InFront, West, South, Error, Error, Error},   //37 - AtTopRightRearBorder
                 { InFront, South, East, Error, Error, Error},   //38 - AtTopLeftRearBorder
-                { Error, Error, Error, Error, Error, Error},    
+                { Error, Error, Error, Error, Error, Error},
                 { InFront, North, West, East, Error, Error},    //40 - AtBottomRearBorder
                 { InFront, North, West, Error, Error, Error},   //41 - AtBottomRightRearBorder
                 { InFront, North, East, Error, Error, Error}    //42 - AtBottomLeftRearBorder
                };
         return c[b][index];
     }
-        
+
     /** The valid direction three codes in anti causal direction (means: look back in scanline
         direction)when the center is at the volume border.
         Should be used with isAtVolumeBorderCausal to determine the Directions, as this
@@ -265,50 +265,50 @@ class NeighborCode3D
             { InFront, North, West},                    // 0 - NotAtBorder -----> should never be used
             { InFront, North, West},                    // 1 - AtRightBorder -----> should never be used
             { InFront, North, Error},                   // 2 - AtLeftBorder
-            { Error, Error, Error},    
-            { InFront, West, Error},                    // 4 - AtTopBorder    
+            { Error, Error, Error},
+            { InFront, West, Error},                    // 4 - AtTopBorder
             { InFront, West, Error},                    // 5 - AtTopRightBorder
             { InFront, Error,Error},                    // 6 - AtTopLeftBorder
-            { Error, Error, Error},    
+            { Error, Error, Error},
             { InFront, North, West},                    // 8 - AtBottomBorder -----> should never be used
             { InFront, North, West},                    // 9 - AtBottomRightBorder -----> should never be used
             { InFront, North, Error},                   //10- AtBottomLeftBorder
-            { Error, Error, Error},    
-            { Error, Error, Error},    
-            { Error, Error, Error},    
-            { Error, Error, Error},    
-            { Error, Error, Error},    
+            { Error, Error, Error},
+            { Error, Error, Error},
+            { Error, Error, Error},
+            { Error, Error, Error},
+            { Error, Error, Error},
             { North, West, Error},                      //16 - AtFrontBorder
             { North, West, Error},                      //17 - AtFrontRightBorder
             { North, Error, Error},                     //18 - AtFrontLeftBorder
-            { Error, Error, Error},    
+            { Error, Error, Error},
             { West, Error, Error},                      //20 - AtTopFrontBorder
             { West, Error, Error},                      //21 - AtTopRightFrontBorder
             { Error, Error,  Error},                    //22 - AtTopLeftFrontBorder
-            { Error, Error, Error},    
+            { Error, Error, Error},
             { North, West, Error},                      //24 - AtBottomFrontBorder
             { North, West, Error},                      //25 - AtBottomRightFrontBorder
             { North, Error, Error},                     //26 - AtBottomLeftFrontBorder
-            { Error, Error, Error},    
-            { Error, Error, Error},    
-            { Error, Error, Error},    
-            { Error, Error, Error},    
-            { Error, Error, Error},                      
+            { Error, Error, Error},
+            { Error, Error, Error},
+            { Error, Error, Error},
+            { Error, Error, Error},
+            { Error, Error, Error},
             { InFront, North, West},                    //32 - AtRearBorder -----> should never be used
             { InFront, North, West},                    //33 - AtRearRightBorder -----> should never be used
             { InFront, North, Error},                   //34 - AtRearLeftBorder
-            { Error, Error, Error},    
-            { InFront, West, Error},                    //36 - AtTopRearBorder    
-            { InFront, West, Error},                    //37 - AtTopRightRearBorder    
+            { Error, Error, Error},
+            { InFront, West, Error},                    //36 - AtTopRearBorder
+            { InFront, West, Error},                    //37 - AtTopRightRearBorder
             { InFront, Error, Error},                   //38 - AtTopLeftRearBorder
-            { Error, Error, Error},    
+            { Error, Error, Error},
             { InFront, North, West},                    //40 - AtBottomRearBorder -----> should never be used
             { InFront, North, West},                    //41 - AtBottomRightRearBorder -----> should never be used
             { InFront, North, Error}                    //42 - AtBottomLeftRearBorder
         };
         return c[b][index];
     }
-    
+
     /** transform direction code into corresponding Diff3D offset.
         (note: there is no bounds checking on the code you pass.)
     */
@@ -332,16 +332,16 @@ class NeighborCode3D
 
     /**  Equivalent to <tt>diff(code)[dim]</tt> */
     static int diff(Direction code, int dim) { return diff(code)[dim]; }
-   
+
     /** Get the relative offset from one neighbor to the other.
         For example, <tt>relativeDiff(East, West) == multi_differencetype(-2,0,0)</tt>.
         (note: there is no bounds checking on the code you pass.)
     */
     static Diff3D const & relativeDiff(Direction fromCode, Direction toCode)
     {
-      static Diff3D d[6][6] = 
-          {    
-                //     InFront      -      North         -           West     -         Behind     -      South        -        East       
+      static Diff3D d[6][6] =
+          {
+                //     InFront      -      North         -           West     -         Behind     -      South        -        East
                 { Diff3D( 0, 0, 0), Diff3D(0, -1, 1), Diff3D(-1, 0, 1), Diff3D( 0, 0, 2), Diff3D( 0, 1, 1),  Diff3D( 1, 0, 1)}, //InFront
                 { Diff3D( 0, 1,-1), Diff3D( 0, 0, 0), Diff3D(-1, 1, 0), Diff3D( 0, 1, 1), Diff3D( 0, 2, 0),  Diff3D( 1, 1, 0)}, //North
                 { Diff3D( 1, 0,-1), Diff3D( 1,-1, 0), Diff3D( 0, 0, 0), Diff3D( 1, 0, 1), Diff3D( 1, 1, 0),  Diff3D( 2, 0, 0)}, //West
@@ -367,14 +367,14 @@ class NeighborCode3D
     static int dY(Direction code) { return diff(code)[1]; }
     /**  Z-component of diff() */
     static int dZ(Direction code) { return diff(code)[2]; }
-    
+
     /**  X-component of diff() */
     static int dX(int code) { return diff(code)[0]; }
     /**  Y-component of diff() */
     static int dY(int code) { return diff(code)[1]; }
     /**  Z-component of diff() */
     static int dZ(int code) { return diff(code)[2]; }
-    
+
 
     /** transform Diff3D offset into corresponding direction code.
         The code <tt>Direction::Error</tt> will be returned if <tt>diff</tt>
@@ -395,7 +395,7 @@ class NeighborCode3D
                             default:
                                 return Error;
                         }
-                                
+
                     case 1:
                         return (diff[2] == 0) ? South : Error;
                     case -1:
@@ -411,7 +411,7 @@ class NeighborCode3D
         }
         return Error;
     }
-  
+
     /** Check whether a code refers to a diagonal direction.
         Useful if you want to abstract the differences between 6- and 26-neighborhood.
         Always <tt>false</tt> for 6-neighborhood.
@@ -449,7 +449,7 @@ static const Direction DirectionCount = NeighborCode3D::DirectionCount;     /**<
 
 
 }//namespace Neighborhood3DSix
-    
+
 /** Export \ref vigra::Neighborhood3DSix::NeighborCode3D into the scope of namespace vigra.
 */
 typedef Neighborhood3DSix::NeighborCode3D NeighborCode3DSix;
@@ -470,7 +470,7 @@ class NeighborCode3D
     public:
 
     typedef Diff3D difference_type;
-    
+
    /** provides enumeration of all directions.
        DirectionCount may be used for portable loop termination conditions.
      */
@@ -485,7 +485,7 @@ class NeighborCode3D
             InFrontSouthWest,
             InFrontSouth,
             InFrontSouthEast,
-        
+
             NorthWest,
             North,
             NorthEast,
@@ -516,9 +516,9 @@ class NeighborCode3D
             OppositeOffset = 25
     };
 
-    static unsigned int directionBit(Direction d) 
+    static unsigned int directionBit(Direction d)
     {
-        static unsigned int b[] = { 
+        static unsigned int b[] = {
                 1 <<    (InFrontNorthWest+1),
                 1 <<    (InFrontNorth+1),
                 1 <<  (InFrontNorthEast+1),
@@ -556,14 +556,14 @@ class NeighborCode3D
     */
     static unsigned int nearBorderDirectionCount(AtVolumeBorder b)
     {
-        static unsigned int c[] = { 26, 17, 17,  0, 17, 11, 11,  0, 17, 11, 
+        static unsigned int c[] = { 26, 17, 17,  0, 17, 11, 11,  0, 17, 11,
                                     11,  0,  0,  0,  0,  0, 17, 11, 11,  0,
                                     11,  7,  7,  0, 11,  7,  7,  0,  0,  0,
                                      0,  0, 17, 11, 11,  0, 11,  7,  7,  0,
                                     11,  7,  7};
         return c[b];
     }
-    
+
     /** The valid direction codes when the center is at the volume border.
         \a index must be in the range <tt>0...nearBorderDirectionCount(b)-1</tt>.
     */
@@ -574,448 +574,448 @@ class NeighborCode3D
                    {    InFrontNorthWest,   InFrontNorth,   InFrontNorthEast,
                         InFrontWest,        InFront,        InFrontEast,
                         InFrontSouthWest,   InFrontSouth,   InFrontSouthEast,
-      
+
                         NorthWest, North, NorthEast,
                         West,             East,
-                        SouthWest, South, SouthEast, 
+                        SouthWest, South, SouthEast,
 
                         BehindNorthWest, BehindNorth, BehindNorthEast,
                         BehindWest,      Behind,      BehindEast,
-                        BehindSouthWest, BehindSouth, BehindSouthEast},    
+                        BehindSouthWest, BehindSouth, BehindSouthEast},
                     //1 - AtRightBorder
                     {   InFrontNorthWest, InFrontNorth, /*InFrontNorthEast,*/
                         InFrontWest,      InFront,      /*InFrontEast,*/
                         InFrontSouthWest, InFrontSouth, /*InFrontSouthEast,*/
-      
+
                         NorthWest, North, /*NorthEast,*/
                         West,             /*East,*/
-                        SouthWest, South, /*SouthEast,*/ 
+                        SouthWest, South, /*SouthEast,*/
 
                         BehindNorthWest, BehindNorth, /*BehindNorthEast,*/
                         BehindWest,      Behind,      /*BehindEast,*/
-                        BehindSouthWest, BehindSouth, /*BehindSouthEast,*/ 
-                        Error, Error, Error, Error, Error, Error, Error, Error, Error},    
+                        BehindSouthWest, BehindSouth, /*BehindSouthEast,*/
+                        Error, Error, Error, Error, Error, Error, Error, Error, Error},
                     //2 - AtLeftBorder
                     {   /*InFrontNorthWest,*/   InFrontNorth, InFrontNorthEast,
                         /*InFrontWest,*/       InFront,      InFrontEast,
                         /*InFrontSouthWest,*/   InFrontSouth, InFrontSouthEast,
-                  
+
                         /*NorthWest,*/ North, NorthEast,
                         /*West,*/            East,
-                        /*SouthWest,*/ South, SouthEast, 
+                        /*SouthWest,*/ South, SouthEast,
 
                         /*BehindNorthWest,*/ BehindNorth, BehindNorthEast,
                         /*BehindWest,*/     Behind,      BehindEast,
-                        /*BehindSouthWest,*/ BehindSouth, BehindSouthEast, 
+                        /*BehindSouthWest,*/ BehindSouth, BehindSouthEast,
                         Error, Error, Error, Error, Error, Error, Error, Error, Error},
                     //3 - Nothin'
                     {   Error, Error, Error, Error, Error, Error, Error, Error, Error,
-                        Error, Error, Error, Error,        Error, Error, Error, Error, 
-                        Error, Error, Error, Error, Error, Error, Error, Error, Error},    
-                    //4 - AtTopBorder    
+                        Error, Error, Error, Error,        Error, Error, Error, Error,
+                        Error, Error, Error, Error, Error, Error, Error, Error, Error},
+                    //4 - AtTopBorder
                     {   /*InFrontNorthWest, InFrontNorth, InFrontNorthEast,*/
                         InFrontWest,        InFront,      InFrontEast,
                         InFrontSouthWest, InFrontSouth,   InFrontSouthEast,
-                  
+
                         /*NorthWest, North, NorthEast,*/
                         West,             East,
-                        SouthWest, South, SouthEast, 
+                        SouthWest, South, SouthEast,
 
                         /*BehindNorthWest, BehindNorth, BehindNorthEast,*/
                         BehindWest,                 Behind,                 BehindEast,
-                        BehindSouthWest, BehindSouth, BehindSouthEast, 
-                        Error, Error, Error, Error, Error, Error, Error, Error, Error},    
+                        BehindSouthWest, BehindSouth, BehindSouthEast,
+                        Error, Error, Error, Error, Error, Error, Error, Error, Error},
                     //5 - AtTopRightBorder
                     {   /*InFrontNorthWest, InFrontNorth,   InFrontNorthEast,*/
                         InFrontWest,        InFront,        /*InFrontEast,*/
                         InFrontSouthWest, InFrontSouth,     /*InFrontSouthEast,*/
-      
+
                         /*NorthWest, North, NorthEast,*/
                         West,             /*East,*/
-                        SouthWest, South, /*SouthEast,*/ 
+                        SouthWest, South, /*SouthEast,*/
 
                         /*BehindNorthWest, BehindNorth, BehindNorthEast,*/
                         BehindWest,        Behind,      /*BehindEast,*/
-                        BehindSouthWest, BehindSouth,   /*BehindSouthEast,*/ 
+                        BehindSouthWest, BehindSouth,   /*BehindSouthEast,*/
                         Error, Error, Error, Error, Error, Error, Error, Error, Error,
-                        Error, Error, Error, Error, Error, Error},    
+                        Error, Error, Error, Error, Error, Error},
                     //6 - AtTopLeftBorder
                     {   /*InFrontNorthWest,     InFrontNorth,   InFrontNorthEast,*/
                         /*InFrontWest,*/        InFront,        InFrontEast,
                         /*InFrontSouthWest,*/   InFrontSouth,   InFrontSouthEast,
-       
+
                         /*NorthWest,    North,  NorthEast,*/
                         /*West,*/               East,
-                        /*SouthWest,*/  South,  SouthEast, 
+                        /*SouthWest,*/  South,  SouthEast,
 
                         /*BehindNorthWest,      BehindNorth, BehindNorthEast,*/
                         /*BehindWest, */        Behind,      BehindEast,
-                        /*BehindSouthWest,*/    BehindSouth, BehindSouthEast, 
+                        /*BehindSouthWest,*/    BehindSouth, BehindSouthEast,
                         Error, Error, Error, Error, Error, Error, Error, Error, Error,
                         Error, Error, Error, Error, Error, Error},
                     //7 - Nothin'
                     {   Error, Error, Error, Error, Error, Error, Error, Error, Error,
-                        Error, Error, Error, Error, Error, Error, Error, Error, 
-                        Error, Error, Error, Error, Error, Error, Error, Error, Error},    
+                        Error, Error, Error, Error, Error, Error, Error, Error,
+                        Error, Error, Error, Error, Error, Error, Error, Error, Error},
                     //8 - AtBottomBorder
                     {   InFrontNorthWest, InFrontNorth,    InFrontNorthEast,
                         InFrontWest,      InFront,         InFrontEast,
                         /*InFrontSouthWest, InFrontSouth, InFrontSouthEast,*/
-                  
+
                         NorthWest,      North,  NorthEast,
                         West,                   East,
                         /*SouthWest,    South,  SouthEast,*/
 
                         BehindNorthWest,    BehindNorth, BehindNorthEast,
                         BehindWest,         Behind,      BehindEast,
-                        /*BehindSouthWest,  BehindSouth, BehindSouthEast*/ 
-                        Error, Error, Error, Error, Error, Error, Error, Error, Error},                    
+                        /*BehindSouthWest,  BehindSouth, BehindSouthEast*/
+                        Error, Error, Error, Error, Error, Error, Error, Error, Error},
                     //9 - AtBottomRightBorder
                     {   InFrontNorthWest, InFrontNorth,    /*InFrontNorthEast,*/
                         InFrontWest,      InFront,         /*InFrontEast,*/
                         /*InFrontSouthWest, InFrontSouth,  InFrontSouthEast,*/
-      
+
                         NorthWest, North,   /*NorthEast,*/
                         West,               /*East,*/
                         /*SouthWest, South, SouthEast,*/
 
                         BehindNorthWest, BehindNorth,   /*BehindNorthEast,*/
                         BehindWest,      Behind,        /*BehindEast,*/
-                        /*BehindSouthWest, BehindSouth, BehindSouthEast*/ 
+                        /*BehindSouthWest, BehindSouth, BehindSouthEast*/
                         Error, Error, Error, Error, Error, Error, Error, Error, Error,
-                        Error, Error, Error, Error, Error, Error},        
+                        Error, Error, Error, Error, Error, Error},
                     //10 - AtBottomLeftBorder
                     {   /*InFrontNorthWest,*/   InFrontNorth,   InFrontNorthEast,
                         /*InFrontWest,*/        InFront,        InFrontEast,
                         /*InFrontSouthWest,     InFrontSouth,   InFrontSouthEast,*/
-      
+
                         /*NorthWest,*/  North,  NorthEast,
                         /*West,*/               East,
                         /*SouthWest,    South,  SouthEast,*/
 
                         /*BehindNorthWest,*/ BehindNorth,   BehindNorthEast,
                         /*BehindWest,*/      Behind,        BehindEast,
-                        /*BehindSouthWest, BehindSouth,     BehindSouthEast*/ 
+                        /*BehindSouthWest, BehindSouth,     BehindSouthEast*/
                         Error, Error, Error, Error, Error, Error, Error, Error, Error,
                         Error, Error, Error, Error, Error, Error},
                     //11 - Nothin'
                     {   Error, Error, Error, Error, Error, Error, Error, Error, Error,
-                        Error, Error, Error, Error, Error, Error, Error, Error, 
-                        Error, Error, Error, Error, Error, Error, Error, Error, Error},    
+                        Error, Error, Error, Error, Error, Error, Error, Error,
+                        Error, Error, Error, Error, Error, Error, Error, Error, Error},
                     //12 - Nothin'
                     {   Error, Error, Error, Error, Error, Error, Error, Error, Error,
-                        Error, Error, Error, Error, Error, Error, Error, Error, 
-                        Error, Error, Error, Error, Error, Error, Error, Error, Error},    
+                        Error, Error, Error, Error, Error, Error, Error, Error,
+                        Error, Error, Error, Error, Error, Error, Error, Error, Error},
                     //13 - Nothin'
                     {   Error, Error, Error, Error, Error, Error, Error, Error, Error,
-                        Error, Error, Error, Error, Error, Error, Error, Error, 
-                        Error, Error, Error, Error, Error, Error, Error, Error, Error},    
+                        Error, Error, Error, Error, Error, Error, Error, Error,
+                        Error, Error, Error, Error, Error, Error, Error, Error, Error},
                     //14 - Nothin'
                     {   Error, Error, Error, Error, Error, Error, Error, Error, Error,
-                        Error, Error, Error, Error, Error, Error, Error, Error, 
-                        Error, Error, Error, Error, Error, Error, Error, Error, Error},    
+                        Error, Error, Error, Error, Error, Error, Error, Error,
+                        Error, Error, Error, Error, Error, Error, Error, Error, Error},
                     //15 - Nothin'
                     {   Error, Error, Error, Error, Error, Error, Error, Error, Error,
-                        Error, Error, Error, Error, Error, Error, Error, Error, 
-                        Error, Error, Error, Error, Error, Error, Error, Error, Error},    
+                        Error, Error, Error, Error, Error, Error, Error, Error,
+                        Error, Error, Error, Error, Error, Error, Error, Error, Error},
                     //16 - AtFrontBorder
                     {   /*InFrontNorthWest, InFrontNorth,    InFrontNorthEast,
                         InFrontWest,        InFront,         InFrontEast,
                         InFrontSouthWest, InFrontSouth, InFrontSouthEast,*/
-      
+
                         NorthWest, North, NorthEast,
                         West,             East,
-                        SouthWest, South, SouthEast, 
+                        SouthWest, South, SouthEast,
 
                         BehindNorthWest, BehindNorth, BehindNorthEast,
                         BehindWest,      Behind,      BehindEast,
-                        BehindSouthWest, BehindSouth, BehindSouthEast, 
-                        Error, Error, Error, Error, Error, Error, Error, Error, Error},    
+                        BehindSouthWest, BehindSouth, BehindSouthEast,
+                        Error, Error, Error, Error, Error, Error, Error, Error, Error},
                     //17 - AtFrontRightBorder
                     {   /*InFrontNorthWest, InFrontNorth,    InFrontNorthEast,
                         InFrontWest,              InFront,                 InFrontEast,
                         InFrontSouthWest, InFrontSouth, InFrontSouthEast,*/
-      
+
                         NorthWest, North, /*NorthEast,*/
                         West,             /*East,*/
-                        SouthWest, South, /*SouthEast,*/ 
+                        SouthWest, South, /*SouthEast,*/
 
                         BehindNorthWest, BehindNorth, /*BehindNorthEast,*/
                         BehindWest,      Behind,      /*BehindEast,*/
-                        BehindSouthWest, BehindSouth, /*BehindSouthEast,*/ 
+                        BehindSouthWest, BehindSouth, /*BehindSouthEast,*/
                         Error, Error, Error, Error, Error, Error, Error, Error, Error,
-                        Error, Error, Error, Error, Error, Error},    
+                        Error, Error, Error, Error, Error, Error},
                     //18 - AtFrontLeftBorder
                     {   /*InFrontNorthWest, InFrontNorth,   InFrontNorthEast,
                         InFrontWest,        InFront,        InFrontEast,
                         InFrontSouthWest,   InFrontSouth,   InFrontSouthEast,*/
-      
+
                         /*NorthWest,*/ North, NorthEast,
                         /*West,*/             East,
-                        /*SouthWest,*/ South, SouthEast, 
+                        /*SouthWest,*/ South, SouthEast,
 
                         /*BehindNorthWest,*/ BehindNorth, BehindNorthEast,
                         /*BehindWest,*/      Behind,      BehindEast,
-                        /*BehindSouthWest,*/ BehindSouth, BehindSouthEast, 
+                        /*BehindSouthWest,*/ BehindSouth, BehindSouthEast,
                         Error, Error, Error, Error, Error, Error, Error, Error, Error,
-                        Error, Error, Error, Error, Error, Error},    
+                        Error, Error, Error, Error, Error, Error},
                     //19 - Nothin'
                     {   Error, Error, Error, Error, Error, Error, Error, Error, Error,
-                        Error, Error, Error, Error, Error, Error, Error, Error, 
+                        Error, Error, Error, Error, Error, Error, Error, Error,
                         Error, Error, Error, Error, Error, Error, Error, Error, Error},
                     //20 - AtTopFrontBorder
                     {   /*InFrontNorthWest, InFrontNorth,   InFrontNorthEast,
                         InFrontWest,        InFront,        InFrontEast,
                         InFrontSouthWest,   InFrontSouth,   InFrontSouthEast,*/
-      
+
                         /*NorthWest,    North,  NorthEast,*/
                         West,                   East,
-                        SouthWest,      South,  SouthEast, 
+                        SouthWest,      South,  SouthEast,
 
                         /*BehindNorthWest,  BehindNorth,    BehindNorthEast,*/
                         BehindWest,         Behind,         BehindEast,
-                        BehindSouthWest,    BehindSouth,    BehindSouthEast, 
+                        BehindSouthWest,    BehindSouth,    BehindSouthEast,
                         Error, Error, Error, Error, Error, Error, Error, Error, Error,
-                        Error, Error, Error, Error, Error, Error},    
+                        Error, Error, Error, Error, Error, Error},
                     //21 - AtTopRightFrontBorder
                     {   /*InFrontNorthWest, InFrontNorth,  InFrontNorthEast,
                         InFrontWest,        InFront,       InFrontEast,
                         InFrontSouthWest,   InFrontSouth,  InFrontSouthEast,*/
-      
+
                         /*NorthWest, North, NorthEast,*/
                         West,               /*East,*/
-                        SouthWest,   South, /*SouthEast,*/ 
+                        SouthWest,   South, /*SouthEast,*/
 
                         /*BehindNorthWest, BehindNorth, BehindNorthEast,*/
                         BehindWest,        Behind,      /*BehindEast,*/
-                        BehindSouthWest, BehindSouth,   /*BehindSouthEast,*/ 
+                        BehindSouthWest, BehindSouth,   /*BehindSouthEast,*/
                         Error, Error, Error, Error, Error, Error, Error, Error, Error,
                         Error, Error, Error, Error, Error, Error,
-                        Error, Error, Error, Error},    
+                        Error, Error, Error, Error},
                     //22 - AtTopLeftFrontBorder
                     {   /*InFrontNorthWest, InFrontNorth,   InFrontNorthEast,
                         InFrontWest,        InFront,        InFrontEast,
                         InFrontSouthWest,   InFrontSouth,   InFrontSouthEast,*/
-      
+
                         /*NorthWest,    North, NorthEast,*/
                         /*West,*/              East,
-                        /*SouthWest,*/  South, SouthEast, 
+                        /*SouthWest,*/  South, SouthEast,
 
                         /*BehindNorthWest,      BehindNorth, BehindNorthEast,*/
                         /*BehindWest,*/         Behind,      BehindEast,
-                        /*BehindSouthWest,*/    BehindSouth, BehindSouthEast, 
+                        /*BehindSouthWest,*/    BehindSouth, BehindSouthEast,
                         Error, Error, Error, Error, Error, Error, Error, Error, Error,
                         Error, Error, Error, Error, Error, Error,
-                        Error, Error, Error, Error},    
+                        Error, Error, Error, Error},
                     //23 - Nothin'
                     {   Error, Error, Error, Error, Error, Error, Error, Error, Error,
-                        Error, Error, Error, Error, Error, Error, Error, Error, 
+                        Error, Error, Error, Error, Error, Error, Error, Error,
                         Error, Error, Error, Error, Error, Error, Error, Error, Error},
                     //24 - AtBottomFrontBorder
                     {   /*InFrontNorthWest, InFrontNorth, InFrontNorthEast,
                         InFrontWest,        InFront,      InFrontEast,
                         InFrontSouthWest,   InFrontSouth, InFrontSouthEast,*/
-      
+
                         NorthWest,      North, NorthEast,
                         West,                  East,
                         /*SouthWest,    South, SouthEast,*/
 
                         BehindNorthWest,    BehindNorth, BehindNorthEast,
                         BehindWest,         Behind,      BehindEast,
-                        /*BehindSouthWest,  BehindSouth, BehindSouthEast*/ 
+                        /*BehindSouthWest,  BehindSouth, BehindSouthEast*/
                         Error, Error, Error, Error, Error, Error, Error, Error, Error,
-                        Error, Error, Error, Error, Error, Error},    
+                        Error, Error, Error, Error, Error, Error},
                     //25 - AtBottomRightFrontBorder
                     {   /*InFrontNorthWest, InFrontNorth,    InFrontNorthEast,
                         InFrontWest,        InFront,         InFrontEast,
                         InFrontSouthWest, InFrontSouth, InFrontSouthEast,*/
-      
+
                         NorthWest,      North,  /*NorthEast,*/
                         West,                   /* East,*/
                         /*SouthWest,    South,  SouthEast,*/
 
                         BehindNorthWest,    BehindNorth, /*BehindNorthEast,*/
                         BehindWest,         Behind,      /*BehindEast,*/
-                        /*BehindSouthWest,  BehindSouth, BehindSouthEast*/ 
+                        /*BehindSouthWest,  BehindSouth, BehindSouthEast*/
                         Error, Error, Error, Error, Error, Error, Error, Error, Error,
                         Error, Error, Error, Error, Error, Error,
-                        Error, Error, Error, Error},    
+                        Error, Error, Error, Error},
                     //26 - AtBottomLeftFrontBorder
                     { /*InFrontNorthWest, InFrontNorth, InFrontNorthEast,
                         InFrontWest,      InFront,      InFrontEast,
                         InFrontSouthWest, InFrontSouth, InFrontSouthEast,*/
-      
+
                         /*NorthWest,*/ North, NorthEast,
                         /*West,*/             East,
                         /*SouthWest,   South, SouthEast,*/
 
                         /*BehindNorthWest,*/ BehindNorth, BehindNorthEast,
                         /*BehindWest,*/      Behind,      BehindEast,
-                        /*BehindSouthWest,   BehindSouth, BehindSouthEast*/ 
+                        /*BehindSouthWest,   BehindSouth, BehindSouthEast*/
                         Error, Error, Error, Error, Error, Error, Error, Error, Error,
                         Error, Error, Error, Error, Error, Error,
-                        Error, Error, Error, Error},    
+                        Error, Error, Error, Error},
                     //27 - Nothin'
                     {   Error, Error, Error, Error, Error, Error, Error, Error, Error,
-                        Error, Error, Error, Error, Error, Error, Error, Error, 
-                        Error, Error, Error, Error, Error, Error, Error, Error, Error},    
+                        Error, Error, Error, Error, Error, Error, Error, Error,
+                        Error, Error, Error, Error, Error, Error, Error, Error, Error},
                     //28 - Nothin'
                     {   Error, Error, Error, Error, Error, Error, Error, Error, Error,
-                        Error, Error, Error, Error, Error, Error, Error, Error, 
-                        Error, Error, Error, Error, Error, Error, Error, Error, Error},    
+                        Error, Error, Error, Error, Error, Error, Error, Error,
+                        Error, Error, Error, Error, Error, Error, Error, Error, Error},
                     //29 - Nothin'
                     {   Error, Error, Error, Error, Error, Error, Error, Error, Error,
-                        Error, Error, Error, Error, Error, Error, Error, Error, 
-                        Error, Error, Error, Error, Error, Error, Error, Error, Error},    
+                        Error, Error, Error, Error, Error, Error, Error, Error,
+                        Error, Error, Error, Error, Error, Error, Error, Error, Error},
                     //30 - Nothin'
                     {   Error, Error, Error, Error, Error, Error, Error, Error, Error,
-                        Error, Error, Error, Error, Error, Error, Error, Error, 
-                        Error, Error, Error, Error, Error, Error, Error, Error, Error},    
+                        Error, Error, Error, Error, Error, Error, Error, Error,
+                        Error, Error, Error, Error, Error, Error, Error, Error, Error},
                     //31 - Nothin'
                     {   Error, Error, Error, Error, Error, Error, Error, Error, Error,
-                        Error, Error, Error, Error, Error, Error, Error, Error, 
+                        Error, Error, Error, Error, Error, Error, Error, Error,
                         Error, Error, Error, Error, Error, Error, Error, Error, Error},
                     //32 - AtRearBorder
                     {   InFrontNorthWest, InFrontNorth, InFrontNorthEast,
                         InFrontWest,      InFront,      InFrontEast,
                         InFrontSouthWest, InFrontSouth, InFrontSouthEast,
-      
+
                         NorthWest, North, NorthEast,
                         West,             East,
-                        SouthWest, South, SouthEast, 
+                        SouthWest, South, SouthEast,
 
                         /*BehindNorthWest, BehindNorth, BehindNorthEast,
                         BehindWest,        Behind,      BehindEast,
-                        BehindSouthWest,   BehindSouth, BehindSouthEast,*/ 
-                        Error, Error, Error, Error, Error, Error, Error, Error, Error},    
+                        BehindSouthWest,   BehindSouth, BehindSouthEast,*/
+                        Error, Error, Error, Error, Error, Error, Error, Error, Error},
                     //33 - AtRearRightBorder
                     {   InFrontNorthWest, InFrontNorth, /*InFrontNorthEast,*/
                         InFrontWest,      InFront,      /*InFrontEast,*/
                         InFrontSouthWest, InFrontSouth, /*InFrontSouthEast,*/
-      
+
                         NorthWest, North, /*NorthEast,*/
                         West,             /*East,*/
                         SouthWest, South, /*SouthEast,*/
 
                         /*BehindNorthWest, BehindNorth, BehindNorthEast,
                         BehindWest,        Behind,      BehindEast,
-                        BehindSouthWest,   BehindSouth, BehindSouthEast,*/ 
+                        BehindSouthWest,   BehindSouth, BehindSouthEast,*/
                         Error, Error, Error, Error, Error, Error, Error, Error, Error,
-                        Error, Error, Error, Error, Error, Error},    
+                        Error, Error, Error, Error, Error, Error},
                     //34 - AtRearLeftBorder
                     {   /*InFrontNorthWest,*/ InFrontNorth, InFrontNorthEast,
                         /*InFrontWest,*/      InFront,      InFrontEast,
                         /*InFrontSouthWest,*/ InFrontSouth, InFrontSouthEast,
-      
+
                         /*NorthWest,*/ North, NorthEast,
                         /*West,*/             East,
-                        /*SouthWest,*/ South, SouthEast, 
+                        /*SouthWest,*/ South, SouthEast,
 
                         /*BehindNorthWest, BehindNorth,   BehindNorthEast,
                         BehindWest,        Behind,        BehindEast,
-                        BehindSouthWest,   BehindSouth,   BehindSouthEast,*/ 
+                        BehindSouthWest,   BehindSouth,   BehindSouthEast,*/
                         Error, Error, Error, Error, Error, Error, Error, Error, Error,
-                        Error, Error, Error, Error, Error, Error},        
+                        Error, Error, Error, Error, Error, Error},
                     //35 - Nothin'
                     {   Error, Error, Error, Error, Error, Error, Error, Error, Error,
-                        Error, Error, Error, Error, Error, Error, Error, Error, 
+                        Error, Error, Error, Error, Error, Error, Error, Error,
                         Error, Error, Error, Error, Error, Error, Error, Error, Error},
                     //36 - AtTopRearBorder
                     {   /*InFrontNorthWest, InFrontNorth,   InFrontNorthEast,*/
                         InFrontWest,        InFront,        InFrontEast,
                         InFrontSouthWest,   InFrontSouth,   InFrontSouthEast,
-      
+
                         /*NorthWest,    North, NorthEast,*/
                         West,                  East,
-                        SouthWest,      South, SouthEast, 
+                        SouthWest,      South, SouthEast,
 
                         /*BehindNorthWest, BehindNorth,   BehindNorthEast,
                         BehindWest,        Behind,        BehindEast,
-                        BehindSouthWest,   BehindSouth,   BehindSouthEast,*/ 
+                        BehindSouthWest,   BehindSouth,   BehindSouthEast,*/
                         Error, Error, Error, Error, Error, Error, Error, Error, Error,
-                        Error, Error, Error, Error, Error, Error},            
-                    //37 - AtTopRightRearBorder    
+                        Error, Error, Error, Error, Error, Error},
+                    //37 - AtTopRightRearBorder
                     {   /*InFrontNorthWest, InFrontNorth,   InFrontNorthEast,*/
                         InFrontWest,        InFront,        /*InFrontEast,*/
                         InFrontSouthWest,   InFrontSouth,   /*InFrontSouthEast,*/
-      
+
                         /*NorthWest, North, NorthEast,*/
                         West,               /*East,*/
-                        SouthWest,   South, /*SouthEast,*/ 
+                        SouthWest,   South, /*SouthEast,*/
 
                         /*BehindNorthWest,  BehindNorth, BehindNorthEast,
                         BehindWest,         Behind,      BehindEast,
-                        BehindSouthWest,    BehindSouth, BehindSouthEast,*/ 
+                        BehindSouthWest,    BehindSouth, BehindSouthEast,*/
                         Error, Error, Error, Error, Error, Error, Error, Error, Error,
                         Error, Error, Error, Error, Error, Error,
-                        Error, Error, Error, Error},    
+                        Error, Error, Error, Error},
                     //38 - AtTopLeftRearBorder
                     {   /*InFrontNorthWest,     InFrontNorth,    InFrontNorthEast,*/
                         /*InFrontWest,*/        InFront,         InFrontEast,
                         /*InFrontSouthWest,*/   InFrontSouth,   InFrontSouthEast,
-      
+
                         /*NorthWest,    North,  NorthEast,*/
                         /*West,*/               East,
-                        /*SouthWest,*/  South,  SouthEast, 
+                        /*SouthWest,*/  South,  SouthEast,
 
                         /*BehindNorthWest,  BehindNorth,    BehindNorthEast,
                         BehindWest,         Behind,         BehindEast,
-                        BehindSouthWest,    BehindSouth,    BehindSouthEast,*/ 
+                        BehindSouthWest,    BehindSouth,    BehindSouthEast,*/
                         Error, Error, Error, Error, Error, Error, Error, Error, Error,
                         Error, Error, Error, Error, Error, Error,
-                        Error, Error, Error, Error},    
+                        Error, Error, Error, Error},
                     //39 - Nothin'
                     {   Error, Error, Error, Error, Error, Error, Error, Error, Error,
-                        Error, Error, Error, Error, Error, Error, Error, Error, 
+                        Error, Error, Error, Error, Error, Error, Error, Error,
                         Error, Error, Error, Error, Error, Error, Error, Error, Error},
                     //40 - AtBottomRearBorder
                     {   InFrontNorthWest,   InFrontNorth,   InFrontNorthEast,
                         InFrontWest,        InFront,        InFrontEast,
                         /*InFrontSouthWest, InFrontSouth,   InFrontSouthEast,*/
-      
+
                         NorthWest,      North, NorthEast,
                         West,                  East,
-                        /*SouthWest,    South, SouthEast,*/ 
+                        /*SouthWest,    South, SouthEast,*/
 
                         /*BehindNorthWest,  BehindNorth, BehindNorthEast,
                         BehindWest,         Behind,      BehindEast,
-                        BehindSouthWest,    BehindSouth, BehindSouthEast,*/ 
+                        BehindSouthWest,    BehindSouth, BehindSouthEast,*/
                         Error, Error, Error, Error, Error, Error, Error, Error, Error,
-                        Error, Error, Error, Error, Error, Error},    
+                        Error, Error, Error, Error, Error, Error},
                     //41 - AtBottomRightRearBorder
                     {   InFrontNorthWest,   InFrontNorth, /*InFrontNorthEast,*/
                         InFrontWest,        InFront,      /*InFrontEast,*/
                         /*InFrontSouthWest, InFrontSouth, InFrontSouthEast,*/
-      
+
                         NorthWest,   North, /*NorthEast,*/
                         West,               /*East,*/
-                        /*SouthWest, South, SouthEast,*/ 
+                        /*SouthWest, South, SouthEast,*/
 
                         /*BehindNorthWest, BehindNorth, BehindNorthEast,
                         BehindWest,        Behind,      BehindEast,
-                        BehindSouthWest,   BehindSouth, BehindSouthEast,*/ 
+                        BehindSouthWest,   BehindSouth, BehindSouthEast,*/
                         Error, Error, Error, Error, Error, Error, Error, Error, Error,
                         Error, Error, Error, Error, Error, Error,
-                        Error, Error, Error, Error},    
+                        Error, Error, Error, Error},
                     //42 - AtBottomLeftRearBorder
                     {   /*InFrontNorthWest,*/   InFrontNorth,   InFrontNorthEast,
                         /*InFrontWest,*/        InFront,        InFrontEast,
                         /*InFrontSouthWest,     InFrontSouth,   InFrontSouthEast,*/
-      
+
                         /*NorthWest,*/  North,  NorthEast,
                         /*West,*/               East,
-                        /*SouthWest,    South,  SouthEast,*/ 
+                        /*SouthWest,    South,  SouthEast,*/
 
                         /*BehindNorthWest,  BehindNorth, BehindNorthEast,
                         BehindWest,         Behind,      BehindEast,
-                        BehindSouthWest,    BehindSouth, BehindSouthEast,*/ 
+                        BehindSouthWest,    BehindSouth, BehindSouthEast,*/
                         Error, Error, Error, Error, Error, Error, Error, Error, Error,
                         Error, Error, Error, Error, Error, Error,
-                        Error, Error, Error, Error}    
+                        Error, Error, Error, Error}
                };
         return c[b][index];
     }
-        
+
     /** The valid direction three codes in anti causal direction (means: look back in scanline
         direction)when the center is at the volume border.
             Should be used with isAtVolumeBorderCausal to determine the Directions, as this
@@ -1029,240 +1029,240 @@ class NeighborCode3D
                                 { InFrontNorthWest, InFrontNorth,    InFrontNorthEast,
                                   InFrontWest,      InFront,         InFrontEast,
                                   InFrontSouthWest, InFrontSouth,    InFrontSouthEast,
-                  
+
                                   NorthWest,        North,           NorthEast,
-                                  West},                    
+                                  West},
             //1 - AtRightBorder -----> should never be used
                                 { InFrontNorthWest, InFrontNorth,    InFrontNorthEast,
                                   InFrontWest,      InFront,         InFrontEast,
                                   InFrontSouthWest, InFrontSouth,    InFrontSouthEast,
-                  
+
                                   NorthWest,        North,           NorthEast,
-                                  West},    
+                                  West},
             //2 - AtLeftBorder
                                 { /*InFrontNorthWest,*/ InFrontNorth,InFrontNorthEast,
                                   /*InFrontWest,*/  InFront,         InFrontEast,
                                   /*InFrontSouthWest,*/InFrontSouth, InFrontSouthEast,
-                  
+
                                   /*NorthWest,*/    North,           NorthEast,
                                   /*West*/
-                                  Error, Error, Error, Error, Error},    
+                                  Error, Error, Error, Error, Error},
             //3 - Nothin'
-                                { Error, Error, Error, Error, Error, Error, Error, Error, Error, Error, Error, Error, Error},    
+                                { Error, Error, Error, Error, Error, Error, Error, Error, Error, Error, Error, Error, Error},
             //4 - AtTopBorder
                                 { /*InFrontNorthWest,InFrontNorth,   InFrontNorthEast,*/
                                   InFrontWest,       InFront,        InFrontEast,
                                   InFrontSouthWest,  InFrontSouth,   InFrontSouthEast,
-                  
+
                                   /*NorthWest,       North,          NorthEast,*/
                                   West,
-                                  Error, Error, Error, Error, Error, Error},    
+                                  Error, Error, Error, Error, Error, Error},
             //5 - AtTopRightBorder
                                 { /*InFrontNorthWest,InFrontNorth,   InFrontNorthEast,*/
                                   InFrontWest,       InFront,        /*InFrontEast,*/
                                   InFrontSouthWest,  InFrontSouth,   /*InFrontSouthEast,*/
-                  
+
                                   /*NorthWest, North, NorthEast,*/
                                   West,
-                                  Error, Error, Error, Error, Error, Error, Error, Error},    
+                                  Error, Error, Error, Error, Error, Error, Error, Error},
             //6 - AtTopLeftBorder
                                 { /*InFrontNorthWest,InFrontNorth,    InFrontNorthEast,*/
                                   /*InFrontWest,*/   InFront,         InFrontEast,
                                   /*InFrontSouthWest,*/InFrontSouth,  InFrontSouthEast,
-                  
+
                                   /*NorthWest,       North,           NorthEast,*/
                                   /*West,*/
                                   Error, Error, Error, Error, Error, Error, Error, Error, Error},
             //7 - Nothin'
-                                { Error, Error, Error, Error, Error, Error, Error, Error, Error, Error, Error, Error, Error},    
+                                { Error, Error, Error, Error, Error, Error, Error, Error, Error, Error, Error, Error, Error},
             //8 - AtBottomBorder -----> should never be used
                                 { InFrontNorthWest,  InFrontNorth,    InFrontNorthEast,
                                   InFrontWest,       InFront,         InFrontEast,
                                   InFrontSouthWest,  InFrontSouth,    InFrontSouthEast,
-                  
+
                                   NorthWest,         North,           NorthEast,
-                                  West},    
+                                  West},
             //9 - AtBottomRightBorder -----> should never be used
                                 { InFrontNorthWest, InFrontNorth,    InFrontNorthEast,
                                   InFrontWest,      InFront,         InFrontEast,
                                   InFrontSouthWest, InFrontSouth,    InFrontSouthEast,
-                  
+
                                   NorthWest,        North,           NorthEast,
-                                  West},    
+                                  West},
             //10 - AtBottomLeftBorder
                                 { /*InFrontNorthWest,*/InFrontNorth, InFrontNorthEast,
                                   /*InFrontWest,*/  InFront,         InFrontEast,
                                   /*InFrontSouthWest,*/InFrontSouth, InFrontSouthEast,
-                  
+
                                   /*NorthWest,*/    North,           NorthEast,
                                   /*West*/
-                                  Error, Error, Error, Error, Error},    
+                                  Error, Error, Error, Error, Error},
             //11 - Nothin'
-                                { Error, Error, Error, Error, Error, Error, Error, Error, Error, Error, Error, Error, Error},    
+                                { Error, Error, Error, Error, Error, Error, Error, Error, Error, Error, Error, Error, Error},
             //12 - Nothin'
-                                { Error, Error, Error, Error, Error, Error, Error, Error, Error, Error, Error, Error, Error},    
+                                { Error, Error, Error, Error, Error, Error, Error, Error, Error, Error, Error, Error, Error},
             //13 - Nothin'
-                                { Error, Error, Error, Error, Error, Error, Error, Error, Error, Error, Error, Error, Error},    
+                                { Error, Error, Error, Error, Error, Error, Error, Error, Error, Error, Error, Error, Error},
             //14 - Nothin'
-                                { Error, Error, Error, Error, Error, Error, Error, Error, Error, Error, Error, Error, Error},    
+                                { Error, Error, Error, Error, Error, Error, Error, Error, Error, Error, Error, Error, Error},
             //15 - Nothin'
-                                { Error, Error, Error, Error, Error, Error, Error, Error, Error, Error, Error, Error, Error},    
+                                { Error, Error, Error, Error, Error, Error, Error, Error, Error, Error, Error, Error, Error},
             //16 - AtFrontBorder
                                 { /*InFrontNorthWest,InFrontNorth,   InFrontNorthEast,
                                   InFrontWest,      InFront,         InFrontEast,
                                   InFrontSouthWest, InFrontSouth,    InFrontSouthEast,*/
-                  
+
                                   NorthWest,        North,           NorthEast,
                                   West,
-                                  Error, Error, Error, Error, Error, Error, Error, Error, Error},    
+                                  Error, Error, Error, Error, Error, Error, Error, Error, Error},
             //17 - AtFrontRightBorder
                                 { /*InFrontNorthWest,InFrontNorth,   InFrontNorthEast,
                                   InFrontWest,      InFront,         InFrontEast,
                                   InFrontSouthWest, InFrontSouth,    InFrontSouthEast,*/
-                  
+
                                   NorthWest,        North,           /*NorthEast,*/
                                   West,
-                                  Error, Error, Error, Error, Error, Error, Error, Error, Error, Error},    
+                                  Error, Error, Error, Error, Error, Error, Error, Error, Error, Error},
             //18 - AtFrontLeftBorder
                                 { /*InFrontNorthWest,InFrontNorth,   InFrontNorthEast,
                                   InFrontWest,      InFront,         InFrontEast,
                                   InFrontSouthWest, InFrontSouth,    InFrontSouthEast,*/
-                  
+
                                   /*NorthWest,*/    North,           NorthEast,
                                   /*West,*/
-                                  Error, Error, Error, Error, Error, Error, Error, Error, Error, Error, Error},    
+                                  Error, Error, Error, Error, Error, Error, Error, Error, Error, Error, Error},
             //19 - Nothin'
-                                { Error, Error, Error, Error, Error, Error, Error, Error, Error, Error, Error, Error, Error},    
+                                { Error, Error, Error, Error, Error, Error, Error, Error, Error, Error, Error, Error, Error},
             //20 - AtTopFrontBorder
                                 { /*InFrontNorthWest,InFrontNorth,   InFrontNorthEast,
                                   InFrontWest,      InFront,         InFrontEast,
                                   InFrontSouthWest, InFrontSouth,    InFrontSouthEast,*/
-                  
+
                                   /*NorthWest, North, NorthEast,*/
                                   West,
-                                  Error, Error, Error, Error, Error, Error, Error, Error, Error, Error, Error, Error},    
+                                  Error, Error, Error, Error, Error, Error, Error, Error, Error, Error, Error, Error},
             //21 - AtTopRightFrontBorder
                                 { /*InFrontNorthWest, InFrontNorth,  InFrontNorthEast,
                                   InFrontWest,        InFront,       InFrontEast,
                                   InFrontSouthWest,   InFrontSouth,  InFrontSouthEast,*/
-                  
+
                                   /*NorthWest,        North,         NorthEast,*/
                                   West,
-                                  Error, Error, Error, Error, Error, Error, Error, Error, Error, Error, Error, Error},    
+                                  Error, Error, Error, Error, Error, Error, Error, Error, Error, Error, Error, Error},
             //22 - AtTopLeftFrontBorder
-                                { Error, Error, Error, Error, Error, Error, Error, Error, Error, Error, Error, Error, Error},    
+                                { Error, Error, Error, Error, Error, Error, Error, Error, Error, Error, Error, Error, Error},
             //23 - Nothin
-                                { Error, Error, Error, Error, Error, Error, Error, Error, Error, Error, Error, Error, Error},    
+                                { Error, Error, Error, Error, Error, Error, Error, Error, Error, Error, Error, Error, Error},
             //24 - AtBottomFrontBorder
                                 { /*InFrontNorthWest, InFrontNorth,  InFrontNorthEast,
                                   InFrontWest,        InFront,       InFrontEast,
                                   InFrontSouthWest,   InFrontSouth,  InFrontSouthEast,*/
-                  
+
                                   NorthWest,          North,         NorthEast,
                                   West,
-                                  Error, Error, Error, Error, Error, Error, Error, Error, Error},    
+                                  Error, Error, Error, Error, Error, Error, Error, Error, Error},
             //25 - AtBottomRightFrontBorder
                                 { /*InFrontNorthWest, InFrontNorth,  InFrontNorthEast,
                                   InFrontWest,        InFront,       InFrontEast,
                                   InFrontSouthWest,   InFrontSouth,  InFrontSouthEast,*/
-                  
+
                                   NorthWest,          North,         /*NorthEast,*/
                                   West,
-                                  Error, Error, Error, Error, Error, Error, Error, Error, Error, Error},    
+                                  Error, Error, Error, Error, Error, Error, Error, Error, Error, Error},
             //26 - AtBottomLeftFrontBorder
                                 { /*InFrontNorthWest, InFrontNorth,  InFrontNorthEast,
                                   InFrontWest,        InFront,       InFrontEast,
                                   InFrontSouthWest,   InFrontSouth,  InFrontSouthEast,*/
-                  
+
                                   /*NorthWest,*/      North,         NorthEast,
                                   West,
-                                  Error, Error, Error, Error, Error, Error, Error, Error, Error, Error},    
+                                  Error, Error, Error, Error, Error, Error, Error, Error, Error, Error},
             //27 - Nothin
-                                { Error, Error, Error, Error, Error, Error, Error, Error, Error, Error, Error, Error, Error},    
+                                { Error, Error, Error, Error, Error, Error, Error, Error, Error, Error, Error, Error, Error},
             //28 - Nothin
-                                { Error, Error, Error, Error, Error, Error, Error, Error, Error, Error, Error, Error, Error},    
+                                { Error, Error, Error, Error, Error, Error, Error, Error, Error, Error, Error, Error, Error},
             //29 - Nothin
-                                { Error, Error, Error, Error, Error, Error, Error, Error, Error, Error, Error, Error, Error},    
+                                { Error, Error, Error, Error, Error, Error, Error, Error, Error, Error, Error, Error, Error},
             //30 - Nothin
-                                { Error, Error, Error, Error, Error, Error, Error, Error, Error, Error, Error, Error, Error},    
+                                { Error, Error, Error, Error, Error, Error, Error, Error, Error, Error, Error, Error, Error},
             //31 - Nothin
-                                { Error, Error, Error, Error, Error, Error, Error, Error, Error, Error, Error, Error, Error},    
+                                { Error, Error, Error, Error, Error, Error, Error, Error, Error, Error, Error, Error, Error},
             //32 - AtRearBorder -----> should never be used
                                 { InFrontNorthWest,   InFrontNorth,  InFrontNorthEast,
                                   InFrontWest,        InFront,       InFrontEast,
                                   InFrontSouthWest,   InFrontSouth,  InFrontSouthEast,
-                  
+
                                   NorthWest,          North,         NorthEast,
-                                  West},    
+                                  West},
             //33 - AtRearRightBorder -----> should never be used
                                 { InFrontNorthWest,   InFrontNorth,  InFrontNorthEast,
                                   InFrontWest,        InFront,       InFrontEast,
                                   InFrontSouthWest,   InFrontSouth,  InFrontSouthEast,
-                  
+
                                   NorthWest,          North,         NorthEast,
-                                  West},    
+                                  West},
             //34 - AtRearLeftBorder
                                 { /*InFrontNorthWest,*/InFrontNorth, InFrontNorthEast,
                                   /*InFrontWest,*/    InFront,       InFrontEast,
                                   /*InFrontSouthWest,*/InFrontSouth, InFrontSouthEast,
-                  
+
                                   /*NorthWest,*/      North,         NorthEast,
                                   /*West*/
-                                  Error, Error, Error, Error, Error},    
+                                  Error, Error, Error, Error, Error},
             //35 - Nothin
-                                { Error, Error, Error, Error, Error, Error, Error, Error, Error, Error, Error, Error, Error},    
-            //36 - AtTopRearBorder    
+                                { Error, Error, Error, Error, Error, Error, Error, Error, Error, Error, Error, Error, Error},
+            //36 - AtTopRearBorder
                                 { /*InFrontNorthWest, InFrontNorth,  InFrontNorthEast,*/
                                   InFrontWest,        InFront,       InFrontEast,
                                   InFrontSouthWest,   InFrontSouth,  InFrontSouthEast,
-                  
+
                                   /*NorthWest,        North,         NorthEast,*/
                                   West,
-                                  Error, Error, Error, Error, Error, Error},    
-            //37 - AtTopRightRearBorder        
+                                  Error, Error, Error, Error, Error, Error},
+            //37 - AtTopRightRearBorder
                                 { /*InFrontNorthWest, InFrontNorth,  InFrontNorthEast,*/
                                   InFrontWest,        InFront,       /*InFrontEast,*/
                                   InFrontSouthWest,   InFrontSouth,  /*InFrontSouthEast,*/
-                  
+
                                   /*NorthWest,        North,         NorthEast,*/
                                   West,
                                   Error, Error, Error, Error, Error, Error, Error, Error},
-            //38 - AtTopLeftRearBorder    
+            //38 - AtTopLeftRearBorder
                                 { /*InFrontNorthWest, InFrontNorth,  InFrontNorthEast,*/
                                   /*InFrontWest,*/    InFront,       InFrontEast,
                                   /*InFrontSouthWest,*/InFrontSouth, InFrontSouthEast,
-                  
+
                                   /*NorthWest, North, NorthEast,*/
                                   /*West,*/
                                   Error, Error, Error, Error, Error, Error, Error, Error, Error},
             //39 - Nothin
-                                { Error, Error, Error, Error, Error, Error, Error, Error, Error, Error, Error, Error, Error},    
+                                { Error, Error, Error, Error, Error, Error, Error, Error, Error, Error, Error, Error, Error},
             //40 - AtBottomRearBorder -----> should never be used
                                 { InFrontNorthWest,   InFrontNorth,  InFrontNorthEast,
                                   InFrontWest,        InFront,       InFrontEast,
                                   InFrontSouthWest,   InFrontSouth,  InFrontSouthEast,
-                  
+
                                   NorthWest,          North,         NorthEast,
-                                  West},    
+                                  West},
             //41 - AtBottomRightRearBorder -----> should never be used
                                 { InFrontNorthWest,  InFrontNorth,   InFrontNorthEast,
                                   InFrontWest,       InFront,        InFrontEast,
                                   InFrontSouthWest,  InFrontSouth,   InFrontSouthEast,
-                  
+
                                   NorthWest,         North,          NorthEast,
-                                  West},    
+                                  West},
             //42 - AtBottomLeftRearBorder
                                 { /*InFrontNorthWest,*/InFrontNorth, InFrontNorthEast,
                                   /*InFrontWest,*/   InFront,        InFrontEast,
                                   /*InFrontSouthWest,InFrontSouth,   InFrontSouthEast,*/
-                  
+
                                   /*NorthWest,*/     North,          NorthEast,
                                   /*West*/
-                                  Error, Error, Error, Error, Error, Error, Error}    
+                                  Error, Error, Error, Error, Error, Error, Error}
         };
         return c[b][index];
     }
-    
+
     /** transform direction code into corresponding Diff3D offset.
         (note: there is no bounds checking on the code you pass.)
     */
@@ -1307,7 +1307,7 @@ class NeighborCode3D
 
     /**  Equivalent to <tt>diff(code)[dim]</tt> */
     static int diff(Direction code, int dim) { return diff(code)[dim]; }
-   
+
     /** Get the relative offset from one neighbor to the other.
     For example, <tt>relativeDiff(East, West) == multi_differencetype(-2,0,0)</tt>.
     (note: there is no bounds checking on the code you pass.)
@@ -1318,15 +1318,15 @@ class NeighborCode3D
         //static allocatable memory on the stack
         /*
             static Diff3D d[][] = {
-                //   InFront-NW    ---     InFront-N   ---     InFront-NE  ---    Infront-W    ---     InFront     ---   InFront-E     ---   InFront-SW    ---      InFront-S  ---   InFront-SE    ---    NorthWest   ---       North      ---    NorthEast    ---      West      ---       East       ---    SouthWest    ---    South        ---     SouthEast  ---     Behind-NW    ---     Behind-N    ---      Behind-NE  ---     Behind-W    ---      Behind     ---    Behind-E     ---    Behind-SW    ---      Behind-S   ---    Behind-SE  
-                {    Diff3D( 0,  0,  0),    Diff3D( 1,  0,  0),    Diff3D( 2,  0,  0),    Diff3D( 0,  1,  0),    Diff3D( 1,  1,  0),    Diff3D( 2,  1,  0),    Diff3D( 0,  2,  0),    Diff3D( 1,  2,  0),    Diff3D( 2, 2,  0),    Diff3D( 0,  0,  1),    Diff3D( 1,  0,  1),    Diff3D( 2,  0,  1),    Diff3D( 0,  1,  1),    Diff3D( 2,  1,  1),    Diff3D( 0,  2,  1),    Diff3D( 1,  2,  1),    Diff3D( 2,  2,  1),    Diff3D( 0,  0,  2),    Diff3D( 1,  0,  2),    Diff3D( 2,  0,  2),    Diff3D( 0,  1,  2),    Diff3D( 1,  1,  2), Diff3D( 2,  1,  2),    Diff3D( 0,  2,  2),    Diff3D( 1,  2,  2),    Diff3D( 2,  2,  2)    },    //InFront-NW  
-                {    Diff3D(-1,  0,  0),    Diff3D( 0,  0,  0),    Diff3D( 1,  0,  0),    Diff3D(-1,  1,  0),    Diff3D( 0,  1,  0),    Diff3D( 1,  1,  0),    Diff3D(-1,  2,  0),    Diff3D( 0,  2,  0),    Diff3D( 1, 2,  0),    Diff3D(-1,  0,  1),    Diff3D( 0,  0,  1),    Diff3D( 1,  0,  1),    Diff3D(-1,  1,  1),    Diff3D( 1,  1,  1),    Diff3D(-1,  2,  1),    Diff3D( 0,  2,  1),    Diff3D( 1,  2,  1),    Diff3D(-1,  0,  2),    Diff3D( 0,  0,  2),    Diff3D( 1,  0,  2),    Diff3D(-1,  1,  2),    Diff3D( 0,  1,  2), Diff3D( 1,  1,  2),    Diff3D(-1,  2,  2),    Diff3D( 0,  2,  2),    Diff3D( 1,  2,  2)    },    //InFront-N  
+                //   InFront-NW    ---     InFront-N   ---     InFront-NE  ---    Infront-W    ---     InFront     ---   InFront-E     ---   InFront-SW    ---      InFront-S  ---   InFront-SE    ---    NorthWest   ---       North      ---    NorthEast    ---      West      ---       East       ---    SouthWest    ---    South        ---     SouthEast  ---     Behind-NW    ---     Behind-N    ---      Behind-NE  ---     Behind-W    ---      Behind     ---    Behind-E     ---    Behind-SW    ---      Behind-S   ---    Behind-SE
+                {    Diff3D( 0,  0,  0),    Diff3D( 1,  0,  0),    Diff3D( 2,  0,  0),    Diff3D( 0,  1,  0),    Diff3D( 1,  1,  0),    Diff3D( 2,  1,  0),    Diff3D( 0,  2,  0),    Diff3D( 1,  2,  0),    Diff3D( 2, 2,  0),    Diff3D( 0,  0,  1),    Diff3D( 1,  0,  1),    Diff3D( 2,  0,  1),    Diff3D( 0,  1,  1),    Diff3D( 2,  1,  1),    Diff3D( 0,  2,  1),    Diff3D( 1,  2,  1),    Diff3D( 2,  2,  1),    Diff3D( 0,  0,  2),    Diff3D( 1,  0,  2),    Diff3D( 2,  0,  2),    Diff3D( 0,  1,  2),    Diff3D( 1,  1,  2), Diff3D( 2,  1,  2),    Diff3D( 0,  2,  2),    Diff3D( 1,  2,  2),    Diff3D( 2,  2,  2)    },    //InFront-NW
+                {    Diff3D(-1,  0,  0),    Diff3D( 0,  0,  0),    Diff3D( 1,  0,  0),    Diff3D(-1,  1,  0),    Diff3D( 0,  1,  0),    Diff3D( 1,  1,  0),    Diff3D(-1,  2,  0),    Diff3D( 0,  2,  0),    Diff3D( 1, 2,  0),    Diff3D(-1,  0,  1),    Diff3D( 0,  0,  1),    Diff3D( 1,  0,  1),    Diff3D(-1,  1,  1),    Diff3D( 1,  1,  1),    Diff3D(-1,  2,  1),    Diff3D( 0,  2,  1),    Diff3D( 1,  2,  1),    Diff3D(-1,  0,  2),    Diff3D( 0,  0,  2),    Diff3D( 1,  0,  2),    Diff3D(-1,  1,  2),    Diff3D( 0,  1,  2), Diff3D( 1,  1,  2),    Diff3D(-1,  2,  2),    Diff3D( 0,  2,  2),    Diff3D( 1,  2,  2)    },    //InFront-N
                 {    Diff3D(-2,  0,  0),    Diff3D(-1,  0,  0),    Diff3D( 0,  0,  0),    Diff3D(-2,  1,  0),    Diff3D(-1,  1,  0),    Diff3D( 0,  1,  0),    Diff3D(-2,  2,  0),    Diff3D(-1,  2,  0),    Diff3D( 0, 2,  0),    Diff3D(-2,  0,  1),    Diff3D(-1,  0,  1),    Diff3D( 0,  0,  1),    Diff3D(-2,  1,  1),    Diff3D( 0,  1,  1),    Diff3D(-2,  2,  1),    Diff3D(-1,  2,  1),    Diff3D( 0,  2,  1),    Diff3D(-2,  0,  2),    Diff3D(-1,  0,  2),    Diff3D( 0,  0,  2),    Diff3D(-2,  1,  2),    Diff3D(-1,  1,  2), Diff3D( 0,  1,  2),    Diff3D(-2,  2,  2),    Diff3D(-1,  2,  2),    Diff3D( 0,  2,  2)    },    //InFront-NE
                 {    Diff3D(0,  -1,  0),    Diff3D( 1, -1,  0),    Diff3D( 2, -1,  0),    Diff3D( 0,  0,  0),    Diff3D( 1,  0,  0),    Diff3D( 2,  0,  0),    Diff3D( 0,  1,  0),    Diff3D( 1,  1,  0),    Diff3D( 2, 1,  0),    Diff3D( 0, -1,  1),    Diff3D( 1, -1,  1),    Diff3D( 2, -1,  1),    Diff3D( 0,  0,  1),    Diff3D( 2,  0,  1),    Diff3D( 0,  1,  1),    Diff3D( 1,  1,  1),    Diff3D( 2,  1,  1),    Diff3D( 0, -1,  2),    Diff3D( 1, -1,  2),    Diff3D( 2, -1,  2),    Diff3D( 0,  0,  2),    Diff3D( 1,  0,  2), Diff3D( 2,  0,  2),    Diff3D( 0,  1,  2),    Diff3D( 1,  1,  2),    Diff3D( 2,  1,  2)    },    //Infront-W
                 {    Diff3D(-1, -1,  0),    Diff3D( 0, -1,  0),    Diff3D( 1, -1,  0),    Diff3D(-1,  0,  0),    Diff3D( 0,  0,  0),    Diff3D( 1,  0,  0),    Diff3D(-1,  1,  0),    Diff3D( 0,  1,  0),    Diff3D( 1, 1,  0),    Diff3D(-1, -1,  1),    Diff3D( 0, -1,  1),    Diff3D( 1, -1,  1),    Diff3D(-1,  0,  1),    Diff3D( 1,  0,  1),    Diff3D(-1,  1,  1),    Diff3D( 0,  1,  1),    Diff3D( 1,  1,  1),    Diff3D(-1, -1,  2),    Diff3D( 0, -1,  2),    Diff3D( 1, -1,  2),    Diff3D(-1,  0,  2),    Diff3D( 0,  0,  2), Diff3D( 1,  0,  2),    Diff3D(-1,  1,  2),    Diff3D( 0,  1,  2),    Diff3D( 1,  1,  2)    },    //InFront
                 {    Diff3D(-2, -1,  0),    Diff3D(-1, -1,  0),    Diff3D( 0, -1,  0),    Diff3D(-2,  0,  0),    Diff3D(-1,  0,  0),    Diff3D( 0,  0,  0),    Diff3D(-2,  1,  0),    Diff3D(-1,  1,  0),    Diff3D( 0, 1,  0),    Diff3D(-2, -1,  1),    Diff3D(-1, -1,  1),    Diff3D( 0, -1,  1),    Diff3D(-2,  0,  1),    Diff3D( 0,  0,  1),    Diff3D(-2,  1,  1),    Diff3D(-1,  1,  1),    Diff3D( 0,  1,  1),    Diff3D(-2, -1,  2),    Diff3D(-1, -1,  2),    Diff3D( 0, -1,  2),    Diff3D(-2,  0,  2),    Diff3D(-1,  0,  2), Diff3D( 0,  0,  2),    Diff3D(-2,  1,  2),    Diff3D(-1,  1,  2),    Diff3D( 0,  1,  2)    },    //InFront-E
                 {    Diff3D( 0, -2,  0),    Diff3D( 1, -2,  0),    Diff3D( 2, -2,  0),    Diff3D( 0, -1,  0),    Diff3D( 1, -1,  0),    Diff3D( 2, -1,  0),    Diff3D( 0,  0,  0),    Diff3D( 1,  0,  0),    Diff3D( 2, 0,  0),    Diff3D( 0, -2,  1),    Diff3D( 1, -2,  1),    Diff3D( 2, -2,  1),    Diff3D( 0, -1,  1),    Diff3D( 2, -1,  1),    Diff3D( 0,  0,  1),    Diff3D( 1,  0,  1),    Diff3D( 2,  0,  1),    Diff3D( 0, -2,  2),    Diff3D( 1, -2,  2),    Diff3D( 2, -2,  2),    Diff3D( 0, -1,  2),    Diff3D( 1, -1,  2), Diff3D( 2, -1,  2),    Diff3D( 0,  0,  2),    Diff3D( 1,  0,  2),    Diff3D( 2,  0,  2)    },    //InFront-SW
-                {    Diff3D(-1, -2,  0),    Diff3D( 0, -2,  0),    Diff3D( 1, -2,  0),    Diff3D(-1, -1,  0),    Diff3D( 0, -1,  0),    Diff3D( 1, -1,  0),    Diff3D(-1,  0,  0),    Diff3D( 0,  0,  0),    Diff3D( 1, 0,  0),    Diff3D(-1, -2,  1),    Diff3D( 0, -2,  1),    Diff3D( 1, -2,  1),    Diff3D(-1, -1,  1),    Diff3D( 1, -1,  1),    Diff3D(-1,  0,  1),    Diff3D( 0,  0,  1),    Diff3D( 1,  0,  1),    Diff3D(-1, -2,  2),    Diff3D( 0, -2,  2),    Diff3D( 1, -2,  2),    Diff3D(-1, -1,  2),    Diff3D( 0, -1,  2), Diff3D( 1, -1,  2),    Diff3D(-1,  0,  2),    Diff3D( 0,  0,  2),    Diff3D( 1,  0,  2)    },    //InFront-S 
+                {    Diff3D(-1, -2,  0),    Diff3D( 0, -2,  0),    Diff3D( 1, -2,  0),    Diff3D(-1, -1,  0),    Diff3D( 0, -1,  0),    Diff3D( 1, -1,  0),    Diff3D(-1,  0,  0),    Diff3D( 0,  0,  0),    Diff3D( 1, 0,  0),    Diff3D(-1, -2,  1),    Diff3D( 0, -2,  1),    Diff3D( 1, -2,  1),    Diff3D(-1, -1,  1),    Diff3D( 1, -1,  1),    Diff3D(-1,  0,  1),    Diff3D( 0,  0,  1),    Diff3D( 1,  0,  1),    Diff3D(-1, -2,  2),    Diff3D( 0, -2,  2),    Diff3D( 1, -2,  2),    Diff3D(-1, -1,  2),    Diff3D( 0, -1,  2), Diff3D( 1, -1,  2),    Diff3D(-1,  0,  2),    Diff3D( 0,  0,  2),    Diff3D( 1,  0,  2)    },    //InFront-S
                 {    Diff3D(-2, -2,  0),    Diff3D(-1, -2,  0),    Diff3D( 0, -2,  0),    Diff3D(-2, -1,  0),    Diff3D(-1, -1,  0),    Diff3D( 0, -1,  0),    Diff3D(-2,  0,  0),    Diff3D(-1,  0,  0),    Diff3D( 0, 0,  0),    Diff3D(-2, -2,  1),    Diff3D(-1, -2,  1),    Diff3D( 0, -2,  1),    Diff3D(-2, -1,  1),    Diff3D( 0, -1,  1),    Diff3D(-2,  0,  1),    Diff3D(-1,  0,  1),    Diff3D( 0,  0,  1),    Diff3D(-2, -2,  2),    Diff3D(-1, -2,  2),    Diff3D( 0, -2,  2),    Diff3D(-2, -1,  2),    Diff3D(-1, -1,  2), Diff3D( 0, -1,  2),    Diff3D(-2,  0,  2),    Diff3D(-1,  0,  2),    Diff3D( 0,  0,  2)    },    //InFront-SE
                 {    Diff3D( 0,  0, -1),    Diff3D( 1,  0, -1),    Diff3D( 2,  0, -1),    Diff3D( 0,  1, -1),    Diff3D( 1,  1, -1),    Diff3D( 2,  1, -1),    Diff3D( 0,  2, -1),    Diff3D( 1,  2, -1),    Diff3D( 2, 2, -1),    Diff3D( 0,  0,  0),    Diff3D( 1,  0,  0),    Diff3D( 2,  0,  0),    Diff3D( 0,  1,  0),    Diff3D( 2,  1,  0),    Diff3D( 0,  2,  0),    Diff3D( 1,  2,  0),    Diff3D( 2,  2,  0),    Diff3D( 0,  0,  1),    Diff3D( 1,  0,  1),    Diff3D( 2,  0,  1),    Diff3D( 0,  1,  1),    Diff3D( 1,  1,  1), Diff3D( 2,  1,  1),    Diff3D( 0,  2,  1),    Diff3D( 1,  2,  1),    Diff3D( 2,  2,  1)    },    //NorthWest
                 {    Diff3D(-1,  0, -1),    Diff3D( 0,  0, -1),    Diff3D( 1,  0, -1),    Diff3D(-1,  1, -1),    Diff3D( 0,  1, -1),    Diff3D( 1,  1, -1),    Diff3D(-1,  2, -1),    Diff3D( 0,  2, -1),    Diff3D( 1, 2, -1),    Diff3D(-1,  0,  0),    Diff3D( 0,  0,  0),    Diff3D( 1,  0,  0),    Diff3D(-1,  1,  0),    Diff3D( 1,  1,  0),    Diff3D(-1,  2,  0),    Diff3D( 0,  2,  0),    Diff3D( 1,  2,  0),    Diff3D(-1,  0,  1),    Diff3D( 0,  0,  1),    Diff3D( 1,  0,  1),    Diff3D(-1,  1,  1),    Diff3D( 0,  1,  1), Diff3D( 1,  1,  1),    Diff3D(-1,  2,  1),    Diff3D( 0,  2,  1),    Diff3D( 1,  2,  1)    },    //North
@@ -1358,21 +1358,21 @@ class NeighborCode3D
     {
         return relativeDiff(static_cast<Direction>(fromCode), static_cast<Direction>(toCode));
     }
-    
+
     /**  X-component of diff() */
     static int dX(Direction code) { return diff(code)[0]; }
     /**  Y-component of diff() */
     static int dY(Direction code) { return diff(code)[1]; }
     /**  Z-component of diff() */
     static int dZ(Direction code) { return diff(code)[2]; }
-    
+
     /**  X-component of diff() */
     static int dX(int code) { return diff(code)[0]; }
     /**  Y-component of diff() */
     static int dY(int code) { return diff(code)[1]; }
     /**  Z-component of diff() */
     static int dZ(int code) { return diff(code)[2]; }
-    
+
     /** transform 6-neighborhood code into 26-neighborhood code.
      */
     static Direction code(Neighborhood3DSix::Direction d)
@@ -1437,13 +1437,13 @@ class NeighborCode3D
                             case -1: return InFront;          // (  0,  0, -1)
                             case  1: return Behind;           // (  0,  0,  1)
                         }
-                    case  1: 
+                    case  1:
                         switch(diff[2]){
                             case -1: return InFrontSouth;     // (  0,  1, -1)
                             case  0: return South;            // (  0,  1,  0)
                             case  1: return BehindSouth;      // (  0,  1,  1)
                         }
-                }                    
+                }
             case  1:
                 switch(diff[1]){
                     case -1:
@@ -1468,7 +1468,7 @@ class NeighborCode3D
         }
         return Error; // better safe than sorry
     }
-  
+
     /** Check whether a code refers to a diagonal direction.
         Useful if you want to abstract the differences between 6- and 26-neighborhood.
         Always <tt>false</tt> for 6-neighborhood.
@@ -1490,7 +1490,7 @@ class NeighborCode3D
     static Diff3D const & frontBottomLeft()     { return diff(InFrontSouthWest); }    /**<  Offset to the front-bottom-left neighbor */
     static Diff3D const & frontBottom()         { return diff(InFrontSouth); }        /**<  Offset to the front-bottom neighbor */
     static Diff3D const & frontBottomRight()    { return diff(InFrontSouthEast); }    /**<  Offset to the front-bottom-right neighbor */
-    
+
     static Diff3D const & topLeft()             { return diff(NorthWest); }           /**<  Offset to the top-left neighbor */
     static Diff3D const & top()                 { return diff(North); }               /**<  Offset to the top neighbor */
     static Diff3D const & topRight()            { return diff(NorthEast); }           /**<  Offset to the top-right neighbor */
@@ -1521,7 +1521,7 @@ class NeighborCode3D
     static Diff3D const & infrontSouthWest()    { return diff(InFrontSouthWest); }    /**<  Offset to the infront-south-west neighbor */
     static Diff3D const & infrontSouth()        { return diff(InFrontSouth); }        /**<  Offset to the infront-south neighbor */
     static Diff3D const & infrontSouthEast()    { return diff(InFrontSouthEast); }    /**<  Offset to the infront-south-east neighbor */
-    
+
     static Diff3D const & northWest()           { return diff(NorthWest); }            /**<  Offset to the north-west neighbor */
     static Diff3D const & north()               { return diff(North); }                /**<  Offset to the north neighbor */
     static Diff3D const & northEast()           { return diff(NorthEast); }            /**<  Offset to the north-east neighbor */
@@ -1579,7 +1579,7 @@ static const Direction BehindSouthEast    = NeighborCode3D::BehindSouthEast;    
 static const Direction DirectionCount     = NeighborCode3D::DirectionCount;       /**<  Export NeighborCode3D::DirectionCount to namespace Neighborhood3DTwentySix */
 
 }//namespace Neighborhood3DTwentySix
-    
+
 /** Export \ref vigra::Neighborhood3DTwentySix::NeighborCode3D into the scope of namespace vigra.
  */
 typedef Neighborhood3DTwentySix::NeighborCode3D NeighborCode3DTwentySix;
