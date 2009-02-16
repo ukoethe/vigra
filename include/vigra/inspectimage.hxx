@@ -280,7 +280,7 @@ inspectImage(triple<ImageIterator, ImageIterator, Accessor> img,
     vigra::BImage mask(100, 100);
 
     // init functor
-    vigra::FindMinMax<vigra::BImage::PixelType> minmax();
+    vigra::FindMinMax<vigra::BImage::PixelType> minmax;
 
     vigra::inspectImageIf(srcImageRange(img),
                           maskImage(mask), minmax);
