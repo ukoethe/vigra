@@ -314,10 +314,10 @@ tridiagonalMatrixEigensystem(MultiArrayView<2, T, C1> &de, MultiArrayView<2, T, 
     for(unsigned int i = 0; i < n-1; ++i)
     {
         int k = i;
-        T p = abs(d(i));
+        T p = d(i);
         for(unsigned int j = i+1; j < n; ++j)
         {
-            T p1 = abs(d(j));
+            T p1 = d(j);
             if(p < p1)
             {
                 k = j;
