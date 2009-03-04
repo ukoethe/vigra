@@ -1713,6 +1713,33 @@ struct LinalgTest
         }
     }
 
+    void testSymmetricEigensystemAnalytic()
+    {
+        double epsilon = 1e-8;
+
+        int size = 2;
+        for(unsigned int i = 0; i < iterations; ++i)
+        {
+            Matrix a = random_symmetric_matrix (size);
+            Matrix ew(size, 1), ewref(size, 1);
+            Matrix ev(size, size);
+            symmetricEigensystem(a, ewref, ev);
+            vigra::symmetric2x2Eigenvalues(a(0,0), a(0,1), a(1,1), ew(0,0), ew(1,0));
+            shouldEqualSequenceTolerance(ew.data(), ew.data()+size, ewref.data(), epsilon);
+        }
+
+        size = 3;
+        for(unsigned int i = 0; i < iterations; ++i)
+        {
+            Matrix a = random_symmetric_matrix (size);
+            Matrix ew(size, 1), ewref(size, 1);
+            Matrix ev(size, size);
+            symmetricEigensystem(a, ewref, ev);
+            vigra::symmetric3x3Eigenvalues(a(0,0), a(0,1), a(0,2), a(1,1), a(1,2), a(2,2), ew(0,0), ew(1,0), ew(2,0));
+            shouldEqualSequenceTolerance(ew.data(), ew.data()+size, ewref.data(), epsilon);
+        }
+    }
+
     void testNonsymmetricEigensystem()
     {
         double epsilon = 1e-8;
@@ -2043,6 +2070,7 @@ struct MathTestSuite
         add( testCase(&LinalgTest::testInverse));
         add( testCase(&LinalgTest::testSymmetricEigensystem));
         add( testCase(&LinalgTest::testNonsymmetricEigensystem));
+        add( testCase(&LinalgTest::testSymmetricEigensystemAnalytic));
         add( testCase(&LinalgTest::testDeterminant));
         add( testCase(&LinalgTest::testSVD));
 

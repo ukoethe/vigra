@@ -620,6 +620,68 @@ Iterator argMaxIf(Iterator first, Iterator last, UnaryFunctor condition)
     return best;
 }
 
+    /*! Compute the eigenvalues of a 2x2 real symmetric matrix.
+    
+        This uses the analytical eigenvalue formula 
+        \f[
+           \lambda_{1,2} = \frac{1}{2}\left(a_{00} + a_{11} \pm \sqrt{(a_{00} - a_{11})^2 + 4 a_{01}^2}\right)
+        \f]
+
+        <b>\#include</b> \<<a href="mathutil_8hxx-source.html">vigra/mathutil.hxx</a>\><br>
+        Namespace: vigra
+    */
+template <class T>
+void symmetric2x2Eigenvalues(T a00, T a01, T a11, T & r0, T & r1)
+{
+    double d  = std::sqrt(sq(a00 - a11) + 4.0*sq(a01));
+    r0 = 0.5*(a00 + a11 + d);
+    r1 = 0.5*(a00 + a11 - d);
+    if(r0 < r1)
+        std::swap(r0, r1);
+}
+
+    /*! Compute the eigenvalues of a 3x3 real symmetric matrix.
+    
+        This uses a numerically stable version of the analytical eigenvalue formula according to
+        <p>
+        David Eberly: <a href="http://www.geometrictools.com/Documentation/EigenSymmetric3x3.pdf">
+        <em>"Eigensystems for 3 × 3 Symmetric Matrices (Revisited)"</em></a>, Geometric Tools Documentation, 2006
+
+
+        <b>\#include</b> \<<a href="mathutil_8hxx-source.html">vigra/mathutil.hxx</a>\><br>
+        Namespace: vigra
+    */
+template <class T>
+void symmetric3x3Eigenvalues(T a00, T a01, T a02, T a11, T a12, T a22,
+                             T & r0, T & r1, T & r2)
+{
+    static double inv3 = 1.0 / 3.0, root3 = std::sqrt(3.0);
+    
+    double c0 = a00*a11*a22 + 2.0*a01*a02*a12 - a00*a12*a12 - a11*a02*a02 - a22*a01*a01;
+    double c1 = a00*a11 - a01*a01 + a00*a22 - a02*a02 + a11*a22 - a12*a12;
+    double c2 = a00 + a11 + a22;
+    double c2Div3 = c2*inv3;
+    double aDiv3 = (c1 - c2*c2Div3)*inv3;
+    if (aDiv3 > 0.0) 
+        aDiv3 = 0.0;
+    double mbDiv2 = 0.5*(c0 + c2Div3*(2.0*c2Div3*c2Div3 - c1));
+    double q = mbDiv2*mbDiv2 + aDiv3*aDiv3*aDiv3;
+    if (q > 0.0) 
+        q = 0.0;
+    double magnitude = std::sqrt(-aDiv3);
+    double angle = std::atan2(std::sqrt(-q),mbDiv2)*inv3;
+    double cs = std::cos(angle);
+    double sn = std::sin(angle);
+    r0 = c2Div3 + 2.0*magnitude*cs;
+    r1 = c2Div3 - magnitude*(cs + root3*sn);
+    r2 = c2Div3 - magnitude*(cs - root3*sn);
+    if(r0 < r1)
+        std::swap(r0, r1);
+    if(r0 < r2)
+        std::swap(r0, r2);
+    if(r1 < r2)
+        std::swap(r1, r2);
+}
 
 namespace detail {
 
