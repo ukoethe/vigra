@@ -140,7 +140,7 @@ struct RandomState<TT800>
     UInt32 get() const
     {
         if(current_ == N)
-            generateNumbers();
+            generateNumbers<void>();
             
         UInt32 y = state_[current_++];
         y ^= (y << 7) & 0x2b5b2500; 
@@ -148,6 +148,7 @@ struct RandomState<TT800>
         return y ^ (y >> 16);
     }
     
+    template <class DUMMY>
     void generateNumbers() const;
 
     void seedImpl(RandomSeedTag)
@@ -167,6 +168,7 @@ struct RandomState<TT800>
     }
 };
 
+template <class DUMMY>
 void RandomState<TT800>::generateNumbers() const
 {
     UInt32 mag01[2]= { 0x0, 0x8ebfd028 };
@@ -202,7 +204,7 @@ struct RandomState<MT19937>
     UInt32 get() const
     {
         if(current_ == N)
-            generateNumbers();
+            generateNumbers<void>();
             
         UInt32 x = state_[current_++];
         x ^= (x >> 11);
@@ -211,6 +213,7 @@ struct RandomState<MT19937>
         return x ^ (x >> 18);
     }
     
+    template <class DUMMY>
     void generateNumbers() const;
 
     static UInt32 twiddle(UInt32 u, UInt32 v) 
@@ -222,13 +225,13 @@ struct RandomState<MT19937>
     void seedImpl(RandomSeedTag)
     {
         seed(RandomSeed, *this);
-        generateNumbers();
+        generateNumbers<void>();
     }
 
     void seedImpl(UInt32 theSeed)
     {
         seed(theSeed, *this);
-        generateNumbers();
+        generateNumbers<void>();
     }
     
     template<class Iterator>
@@ -236,10 +239,11 @@ struct RandomState<MT19937>
     {
         seed(19650218U, *this);
         seed(init, length, *this);
-        generateNumbers();
+        generateNumbers<void>();
     }
 };
 
+template <class DUMMY>
 void RandomState<MT19937>::generateNumbers() const
 {
     for (unsigned int i = 0; i < (N - M); ++i)

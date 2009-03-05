@@ -403,7 +403,24 @@ class DecisionTree
         return argMax(weights, weights+classCount_) - weights;
     }
     
-    void depth(int & maxDep, int & interiorCount, int & leafCount, int k = 0, int d = 1) const;
+    void depth(int & maxDep, int & interiorCount, int & leafCount, int k = 0, int d = 1) const
+    {
+        DecisionTreeNodeProxy<TreeInt> node(tree_, k);
+        ++interiorCount;
+        ++d;
+        for(int l=0; l<2; ++l)
+        {
+            int child = node.child(l);
+            if(child > 0)
+                depth(maxDep, interiorCount, leafCount, child, d);
+            else 
+            {
+                ++leafCount;
+                if(maxDep < d)
+                    maxDep = d;
+            }
+        }
+    }
     
     void printStatistics(std::ostream & o) const
     {
@@ -431,26 +448,6 @@ class DecisionTree
         }
     }
 };
-
-void DecisionTree::depth(int & maxDep, int & interiorCount, int & leafCount, int k, int d) const
-{
-    DecisionTreeNodeProxy<TreeInt> node(tree_, k);
-    ++interiorCount;
-    ++d;
-    for(int l=0; l<2; ++l)
-    {
-        int child = node.child(l);
-        if(child > 0)
-            depth(maxDep, interiorCount, leafCount, child, d);
-        else 
-        {
-            ++leafCount;
-            if(maxDep < d)
-                maxDep = d;
-        }
-    }
-}
-    
 
 
 template <class U, class C, class Iterator, class Options, class Random>
