@@ -12,7 +12,7 @@
 //this could be a typedef but if you want outType to be the same type as inType then you can just 
 //set outType to T
 
-#define vigraFunctor vigraWatershed
+
 
 using namespace vigra;
 using namespace matlab;
@@ -27,6 +27,7 @@ struct data
     declScalar2D3D(int, conn, 4, 6);
     declCharConstr2(crack, completeGrow, keepContours);
     declOut(Int32);
+    declScalar(double, CostThreshold, -1.0) 
     
     enum method_enum {UNION, SEED};
     method_enum method;
@@ -37,7 +38,10 @@ struct data
     
     data(matlab::OutputArray outputs, matlab::InputArray inputs)
     :           base_data<T>(inputs),
-                map(conn), map(crack), method(UNION),
+                initOption(conn), 
+				initOption(crack),
+				initOption(CostThreshold) 
+				method(UNION),
                 SRGcrack(crack == completeGrow
                              ? vigra::CompleteGrow
                              : vigra::KeepContours)
@@ -68,7 +72,7 @@ struct data
                 mexErrMsgTxt("vigraWatershed(): Connectivity for 3D union find must be 6 or 26.");
         }
 
-        mapOut_SAME(Int32);
+        initOut_SAME(Int32);
     }
 };
 /*+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
@@ -135,7 +139,7 @@ struct vigraFunctor
                 seededRegionGrowing3D(  srcMultiArrayRange(o.in3D),
                                         srcMultiArray(o.seed3D),
                                         destMultiArray(o.out3D),
-                                        gradstat, o.SRGcrack);
+                                        gradstat,o.CostThreshold o.SRGcrack);
                 break;
             }       
             default:
@@ -183,12 +187,13 @@ options    - is a struct with the following possible fields
     'crack':    'completeGrow' (default), 'keepContours' (only supported by seeded region growing)
                 Choose whether to keep watershed pixels or not. While using union find, 
                 only the default value can be used.
+    'CostThreshold':  -1.0 (default) - any double value.
+		If, at any point in the algorithm, the cost of the current candidate exceeds the optional 
+		max_cost value (which defaults to -1), region growing is aborted, and all voxels not yet 
+		assigned to a region remain unlabeled.
 Usage:
     opt = struct('fieldname' ,'value',....);
     out = vigraWatershed(in, opt);
 */
-void vigraMexFunction(matlab::OutputArray outputs, matlab::InputArray inputs){
-    // 
-    callMexFunctor<vigraFunctor>(outputs, inputs);
-}
+
 
