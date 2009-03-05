@@ -387,23 +387,23 @@ getShape(mxArray const * t)
     return TinyVector<MultiArrayIndex, SIZE>(res);
 }
 
-template <class T, unsigned int SIZE>
-TinyVectorView<T, SIZE>
-getVector(mxArray const * t)
-{
-    if(!ValueType<T>::check(t))
-    {
-        std::string msg = std::string("Input array must have type ") + 
-                          ValueType<T>::typeName() + ".";
-        mexErrMsgTxt(msg.c_str());
-    }
-    if(SIZE != mxGetNumberOfElements(t))
-    {
-        mexErrMsgTxt("getVector(): Input array has wrong number of elements.");
-    }
+// template <class T, unsigned int SIZE>
+// TinyVectorView<T, SIZE>
+// getVector(mxArray const * t)
+// {
+    // if(!ValueType<T>::check(t))
+    // {
+        // std::string msg = std::string("Input array must have type ") + 
+                          // ValueType<T>::typeName() + ".";
+        // mexErrMsgTxt(msg.c_str());
+    // }
+    // if(SIZE != mxGetNumberOfElements(t))
+    // {
+        // mexErrMsgTxt("getVector(): Input array has wrong number of elements.");
+    // }
     
-    return TinyVectorView<T, SIZE>((T *)mxGetData(t));
-}
+    // return TinyVectorView<T, SIZE>((T *)mxGetData(t));
+// }
 
 
 template <unsigned int DIM, class T>
@@ -752,9 +752,11 @@ struct base_data
     ConstStructArray options;
 
     base_data(matlab::InputArray inputs, int options_index = -1)
+	//optionsIndex: helper integer only in the scope of the next dunction called.
     : optionsIndex(options_index < 0
                        ? inputs.size() + options_index
                        : options_index),
+	//initialise options with right field of inputs if it exists and is a struct
       options(inputs.isValid(optionsIndex) && mxIsStruct(inputs[optionsIndex])
                  ? inputs[optionsIndex] 
                  : 0)
@@ -898,25 +900,25 @@ struct base_data
     MultiArrayView<3,type> out3D;
     
 // Some Macros for commonly used output declarations
-#define mapOut_SAME(outType);\
+#define initOut_SAME(outType);\
     out3D = matlab::createMultiArray<3,outType>(this->in3D.shape(), outputs[0]);\
     if(this->numOfDim == 2)\
         out = matlab::getImage<outType>(outputs[0]);
 
-#define mapOut_SIZE(outType,w,h,d);\
+#define initOut_SIZE(outType,w,h,d);\
     out3D = matlab::createMultiArray<3,outType>(MultiArrayShape<3>::type(w, h, d), outputs[0]);\
     if(this->numOfDim == 2)\
         out = matlab::getImage<outType>(outputs[0]);
 
-#define mapOut_2D(outType,w,h);\
+#define initOut_2D(outType,w,h);\
     out3D = matlab::createMultiArray<3,outType>(MultiArrayShape<3>::type(w, h, 1), outputs[0]);\
     out = matlab::getImage<outType>(outputs[0]);
 
-#define mapOut_3D(outType,w,h,d)\
+#define initOut_3D(outType,w,h,d)\
     out3D = matlab::createMultiArray<3,outType>(MultiArrayShape<3>::type(w, h, d), outputs[0]);\
 
 //Simplify Member Initialisors 
-#define map(name) name(get_##name())
+#define initOption(name) name(get_##name())
 
 //Wrapper classes to STL-Map for use as a sparse array.
 
@@ -1029,7 +1031,7 @@ void mexFunction(int nlhs, mxArray *plhs[],
     vigra::matlab::InputArray inputs(nrhs, prhs);
     vigra::matlab::OutputArray outputs(nlhs, plhs);
     
-    vigraMexFunction(outputs, inputs);
+    callMexFunctor<vigraFunctor>(outputs, inputs);
   }
   catch(std::exception & e)
   {
