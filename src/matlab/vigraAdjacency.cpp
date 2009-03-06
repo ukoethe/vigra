@@ -14,8 +14,6 @@
 //this could be a typedef but if you want inType to be the same type as inType then you can just 
 //set inType to T
 
-#define vigraFunctor vigraAdjacency
-
 using namespace vigra;
 using namespace matlab;
 
@@ -33,7 +31,7 @@ struct data: public base_data<T>
 
     data(matlab::OutputArray outputs, matlab::InputArray inputs)
     :           base_data<T>(inputs),
-                map(hasWatershedPixel)
+                initOption(hasWatershedPixel)
     {
         FindMinMax<T> minmax;
         inspectMultiArray(srcMultiArrayRange(in3D), minmax);
@@ -313,7 +311,3 @@ Usage:
     out = vigraAdjacency(in, opt);
 
 */
-void vigraMexFunction(matlab::OutputArray outputs, matlab::InputArray inputs){
-    // 
-    callMexAllIntFunctor<vigraFunctor>(outputs, inputs);
-}
