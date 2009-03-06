@@ -9,7 +9,7 @@
 //this could be a typedef but if you want outType to be the same type as inType then you can just 
 //set outType to T
 
-#define vigraFunctor vigraCorner
+
 
 using namespace vigra;
 using namespace matlab;
@@ -26,11 +26,12 @@ struct data: public base_data<T>{
     
     data(matlab::OutputArray outputs, matlab::InputArray inputs)
     :            base_data<T>(inputs),
-                 map(scale), map(method)
+                 initOption(scale), 
+				 initOption(method)
     {
         if(this->numOfDim != 2)
             mexErrMsgTxt("vigraCorner only operates on 2D Images");
-        mapOut_SAME(double);
+        initOut_SAME(double);
     }
 };
 /*+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
@@ -92,8 +93,3 @@ Usage:
     out = vigraCorner(in, opt);
 
 */
-void vigraMexFunction(matlab::OutputArray outputs, matlab::InputArray inputs){
-    // 
-    callMexFunctor<vigraFunctor>(outputs, inputs);
-}
-

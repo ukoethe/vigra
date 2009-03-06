@@ -9,7 +9,7 @@
 //this could be a typedef but if you want outType to be the same type as inType then you can just 
 //set outType to T
 
-#define vigraFunctor vigraDistance
+
 
 using namespace vigra;
 using namespace matlab;
@@ -34,23 +34,27 @@ struct data
     MultiArray<3, double> tmp3D;
     
     data(matlab::OutputArray outputs, matlab::InputArray inputs)
-    : base_data<T>(inputs), map(backgroundMode), map(method), map(backgroundValue), map(norm),
+    : 	base_data<T>(inputs), 
+		initOption(backgroundMode), 
+		initOption(method), 
+		initOption(backgroundValue), 
+		initOption(norm),
       pitch3D(1.0,1.0,1.0), tmp3D(base_data<T>::in3D.shape())
     {
-        mapOut_SAME(double);
+        initOut_SAME(double);
         if(this->options.isValid("pitch"))
         {
             if(this->method == IMAG_DIST_TRANS)
                 mexErrMsgTxt("vigraDistance(): 'pitch' option not supported by method 'IMAG_DIST_TRANS'");
             if(this->numOfDim == IMAG)
             {
-                TinyVectorView<double, 2> temp = matlab::getVector<double,2>(this->options["pitch"]);
+                TinyVectorView<double, 2> temp = matlab::getTinyVector<2,double>(this->options["pitch"]);
                 pitch3D[0] = temp[0]>0? temp[0]:1.0;
                 pitch3D[1] = temp[1]>0? temp[1]:1.0;
             }
             else
             {
-                TinyVectorView<double, 3> temp = matlab::getVector<double,3>(this->options["pitch"]);
+                TinyVectorView<double, 3> temp = matlab::getTinyVector<3,double>(this->options["pitch"]);
                 pitch3D[0] = temp[0]>0? temp[0]:1.0;
                 pitch3D[1] = temp[1]>0? temp[1]:1.0;
                 pitch3D[2] = temp[2]>0? temp[2]:1.0;
@@ -179,7 +183,4 @@ Usage:
     out = vigraDistance(in, opt);
 
 */
-void vigraMexFunction(matlab::OutputArray outputs, matlab::InputArray inputs){
-    // 
-    callMexFunctor<vigraFunctor>(outputs, inputs);
-}
+

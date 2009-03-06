@@ -9,7 +9,7 @@
 //this could be a typedef but if you want outType to be the same type as inType then you can just 
 //set outType to T
 
-#define vigraFunctor vigraResize3
+
 
 using namespace vigra;
 using namespace matlab;
@@ -31,8 +31,8 @@ struct data
     
     data(matlab::OutputArray outputs, matlab::InputArray inputs)
     :           base_data<T>(inputs),
-                map(method),
-                map(splineOrder)
+                initOption(method),
+                initOption(splineOrder)
     {
         typedef MultiArrayShape<2>::type Shape;
         
@@ -42,7 +42,7 @@ struct data
         Shape newShape = newShapeGiven
                              ? matlab::getShape<2>(inputs[1])
                              : Shape(in3D.shape(0)*2-1, in3D.shape(1)*2-1);
-        mapOut_3D(T, newShape[0], newShape[1], in3D.shape(2));
+        initOut_3D(T, newShape[0], newShape[1], in3D.shape(2));
     }
 };
 
@@ -117,7 +117,3 @@ D = vigraResize2(inputImage, [200 300], options)  # does the same with user opti
             this option is only used for method 'BSpline'
         method - 'BSpline' (default), 'Coscot' or 'CatmullRom'
 */
-void vigraMexFunction(matlab::OutputArray outputs, matlab::InputArray inputs){
-    // 
-    callMexFunctor<vigraFunctor>(outputs, inputs);
-}

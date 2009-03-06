@@ -10,7 +10,6 @@
 //this could be a typedef but if you want outType to be the same type as inType then you can just 
 //set outType to T
 
-#define vigraFunctor vigraConnectedComponents
 
 using namespace vigra;
 using namespace matlab;
@@ -43,14 +42,15 @@ struct data: public base_data<T>{
     
     data(matlab::OutputArray outputs, matlab::InputArray inputs)
     :           base_data<T>(inputs),
-                map(backgroundValue), map(conn)
+                initOption(backgroundValue), 
+				initOption(conn)
     {
         
         if(this->numOfDim == IMAG && conn != 8 && conn !=4)
             mexErrMsgTxt("vigraConnectedComponents(): Connectivity for 2D images must be 4 or 8");
         if(this->numOfDim == VOLUME && conn != 26 && conn !=6)
              mexErrMsgTxt("vigraConnectedComponents(): Connectivity for 3D volumes must be 6 or 26");
-        mapOut_SAME(double);
+        initOut_SAME(double);
     }
 };
 /*+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
@@ -134,8 +134,3 @@ Usage:
     out = vigraConnectedComponents(in, opt);
 
 */
-void vigraMexFunction(matlab::OutputArray outputs, matlab::InputArray inputs){
-    // 
-    callMexFunctor<vigraFunctor>(outputs, inputs);
-}
-
