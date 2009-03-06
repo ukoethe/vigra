@@ -319,7 +319,7 @@ DecisionTreeAxisSplitFunctor::findBestSplit(MultiArrayView<2, U, C> const & feat
 	// split using the best feature
     sorter.setColumn(bestSplitColumn);
     std::sort(indices, indices+exampleCount, sorter);
- 
+
     for(int k=0; k<2; ++k)
     {
         bestTotalCounts[k] = std::accumulate(bestCounts[k].begin(), bestCounts[k].end(), 0.0);
@@ -715,7 +715,7 @@ class RandomForest
     //This is esp. For the CrosValidator Class
     template<class ClassLabelIterator>
     RandomForest(ClassLabelIterator cl, ClassLabelIterator cend,
-                  RandomForestOptions const & options = RandomForestOptions())
+                  RandomForestOptions const & options )
     : classes_(cl, cend),
       trees_(options.treeCount , detail::DecisionTree(classes_.size())),
       columnCount_(0),
