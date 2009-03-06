@@ -102,7 +102,7 @@ VIGRA_MATLAB_VALUETYPE_UTIL(UInt64, Uint64, mxUINT64_CLASS, uint64)
 
 #undef VIGRA_MATLAB_VALUETYPE_UTIL
 
-// TODO: 
+// TODO:
 //    * handle rgb images
 //    * handle complex matrices
 //    * handle sparse matrices
@@ -111,9 +111,9 @@ class InputArray
 {
     int size_;
     const mxArray ** data_;
-      
+
   public:
-  
+
     typedef const mxArray * value_type;
     typedef value_type & reference;
     typedef value_type const & const_reference;
@@ -126,7 +126,7 @@ class InputArray
     : size_(size),
       data_(data)
     {}
-      
+
     const_reference operator[]( difference_type i ) const
     {
         if(!isValid(i))
@@ -143,19 +143,19 @@ class InputArray
     {
         return i >= 0 && i < size_;
     }
-    
+
     bool isEmpty(difference_type i){
         return mxIsEmpty(data_[i]);
-    } 
+    }
 };
 
 class OutputArray
 {
     int size_;
     mxArray ** data_;
-      
+
   public:
-  
+
     typedef mxArray * value_type;
     typedef value_type & reference;
     typedef value_type const & const_reference;
@@ -168,7 +168,7 @@ class OutputArray
     : size_(size),
       data_(data)
     {}
-      
+
     reference operator[]( difference_type i )
     {
         if(!isValid(i))
@@ -192,11 +192,11 @@ class OutputArray
     {
         return i >= 0 && i < size_;
     }
-    
+
     bool isEmpty(difference_type i){
         return mxIsEmpty(data_[i]);
     }
-      
+
 };
 
 class ConstCellArray
@@ -204,25 +204,25 @@ class ConstCellArray
   protected:
     mxArray * matPointer_;
     int size_;
-      
+
   public:
-  
+
     struct Proxy
     {
         mxArray * matPointer_;
         int index_;
-        
+
         Proxy(mxArray * matPointer, int index)
         : matPointer_(matPointer),
           index_(index)
         {}
-        
+
         operator const mxArray *() const
         {
             return mxGetCell(matPointer_, index_);
         }
     };
-  
+
     ConstCellArray(const mxArray * matPointer)
     : matPointer_(const_cast<mxArray *>(matPointer)),
       size_(0)
@@ -248,39 +248,39 @@ class ConstCellArray
     {
         return i >= 0 && i < size_;
     }
-      
+
 };
 
 class CellArray
 : public ConstCellArray
 {
   public:
-  
+
     struct Proxy
     : public ConstCellArray::Proxy
     {
         Proxy(mxArray * matPointer, int index)
         : ConstCellArray::Proxy(matPointer, index)
         {}
-        
+
         void operator=(mxArray * v)
         {
             mxDestroyArray(mxGetCell(matPointer_, index_));
             mxSetCell(matPointer_, index_, v);
         }
     };
-  
+
     CellArray(const mxArray * matPointer)
     : ConstCellArray(matPointer)
     {}
-      
+
     Proxy operator[](int i)
     {
         if(!isValid(i))
             mexErrMsgTxt("CellArray::operator[]: Index out of range.");
         return Proxy(matPointer_, i);
     }
-      
+
     ConstCellArray::Proxy operator[](int i) const
     {
         if(!isValid(i))
@@ -293,44 +293,44 @@ class ConstStructArray
 {
   protected:
     mxArray * matPointer_;
-      
+
   public:
-  
+
     struct Proxy
     {
         mxArray * matPointer_;
         int index_;
-        
+
         Proxy(mxArray * matPointer, int index)
         : matPointer_(matPointer),
           index_(index)
         {}
-        
+
         operator const mxArray *() const
         {
             return mxGetFieldByNumber(matPointer_, 0, index_);
         }
     };
-  
+
     ConstStructArray(const mxArray * matPointer = 0)
     : matPointer_(const_cast<mxArray *>(matPointer))
     {
         if(matPointer != 0 && !mxIsStruct(matPointer))
             mexErrMsgTxt("StructArray(mxArray *): Argument must be a Matlab struct array.");
     }
-      
+
     Proxy operator[](const char * field_name) const
     {
         if(matPointer_ == 0)
             mexErrMsgTxt("StructArray::operator[]: Cannot access uninitialized struct array.");
 
-        int i = mxGetFieldNumber(matPointer_, field_name);        
+        int i = mxGetFieldNumber(matPointer_, field_name);
         if(i == -1)
             mexErrMsgTxt("StructArray::operator[]: Unknown field name.");
-            
+
         return Proxy(matPointer_, i);
     }
-      
+
     Proxy operator[](std::string field_name) const
     {
         return operator[](field_name.c_str());
@@ -358,7 +358,7 @@ getTinyVector(mxArray const * t)
 {
     if(!ValueType<T>::check(t))
     {
-        std::string msg = std::string("Input array must have type ") + 
+        std::string msg = std::string("Input array must have type ") +
                           ValueType<T>::typeName() + ".";
         mexErrMsgTxt(msg.c_str());
     }
@@ -366,7 +366,7 @@ getTinyVector(mxArray const * t)
     {
         mexErrMsgTxt("getTinyVector(): Input array has wrong number of elements.");
     }
-    
+
     return TinyVectorView<T, SIZE>((T *)mxGetData(t));
 }
 
@@ -393,7 +393,7 @@ getShape(mxArray const * t)
 // {
     // if(!ValueType<T>::check(t))
     // {
-        // std::string msg = std::string("Input array must have type ") + 
+        // std::string msg = std::string("Input array must have type ") +
                           // ValueType<T>::typeName() + ".";
         // mexErrMsgTxt(msg.c_str());
     // }
@@ -401,7 +401,7 @@ getShape(mxArray const * t)
     // {
         // mexErrMsgTxt("getVector(): Input array has wrong number of elements.");
     // }
-    
+
     // return TinyVectorView<T, SIZE>((T *)mxGetData(t));
 // }
 
@@ -414,11 +414,11 @@ getMultiArray(mxArray const * t)
 
     if(!ValueType<T>::check(t))
     {
-        std::string msg = std::string("getMultiArray(): Input array must have type ") + 
+        std::string msg = std::string("getMultiArray(): Input array must have type ") +
                           ValueType<T>::typeName() + ".";
         mexErrMsgTxt(msg.c_str());
     }
-    
+
     Shape shape;
     if(DIM > 1)
     {
@@ -440,7 +440,7 @@ getMultiArray(mxArray const * t)
     else
     {
         shape[0] = static_cast<typename Shape::value_type>(mxGetNumberOfElements(t));
-    }        
+    }
     return MultiArrayView<DIM, T>(shape, (T *)mxGetData(t));
 }
 
@@ -451,8 +451,8 @@ createMultiArray(typename MultiArrayShape<DIM>::type const & shape, mxArray * & 
     mwSize matlabShape[DIM];
     for(int k=0; k<DIM; ++k)
         matlabShape[k] = static_cast<mwSize>(shape[k]);
-    t = mxCreateNumericArray(DIM, matlabShape, ValueType<T>::classID, mxREAL);   
-    
+    t = mxCreateNumericArray(DIM, matlabShape, ValueType<T>::classID, mxREAL);
+
     return MultiArrayView<DIM, T>(shape, (T *)mxGetData(t));
 }
 
@@ -463,8 +463,8 @@ createMultiArray(typename MultiArrayShape<DIM>::type const & shape, CellArray::P
     mwSize matlabShape[DIM];
     for(int k=0; k<DIM; ++k)
         matlabShape[k] = static_cast<mwSize>(shape[k]);
-    t = mxCreateNumericArray(DIM, matlabShape, ValueType<T>::classID, mxREAL);   
-    
+    t = mxCreateNumericArray(DIM, matlabShape, ValueType<T>::classID, mxREAL);
+
     return MultiArrayView<DIM, T>(shape, (T *)mxGetData(t));
 }
 
@@ -497,18 +497,18 @@ getMatrix(mxArray const * t)
 
     if(!ValueType<T>::check(t))
     {
-        std::string msg = std::string("getMatrix(): Input matrix must have type ") + 
+        std::string msg = std::string("getMatrix(): Input matrix must have type ") +
                           ValueType<T>::typeName() + ".";
         mexErrMsgTxt(msg.c_str());
     }
 
     if(2 != mxGetNumberOfDimensions(t))
         mexErrMsgTxt("getMatrix(): Input matrix must have 2 dimensions.");
-        
+
     const mwSize * matlabShape = mxGetDimensions(t);
     Shape shape(static_cast<MultiArrayIndex>(matlabShape[0]),
                 static_cast<MultiArrayIndex>(matlabShape[1]));
-        
+
     return MultiArrayView<2, T>(shape, (T *)mxGetData(t));
 }
 
@@ -519,8 +519,8 @@ createMatrix(mwSize rowCount, mwSize columnCount, mxArray * & t)
     typedef typename MultiArrayView<2, T>::difference_type Shape;
 
     Shape shape(rowCount, columnCount);
-    t = mxCreateNumericMatrix(rowCount, columnCount, ValueType<T>::classID, mxREAL);  
-    
+    t = mxCreateNumericMatrix(rowCount, columnCount, ValueType<T>::classID, mxREAL);
+
     return MultiArrayView<2, T>(shape, (T *)mxGetData(t));
 }
 
@@ -531,8 +531,8 @@ createMatrix(mwSize rowCount, mwSize columnCount, CellArray::Proxy t)
     typedef typename MultiArrayView<2, T>::difference_type Shape;
 
     Shape shape(rowCount, columnCount);
-    t = mxCreateNumericMatrix(rowCount, columnCount, ValueType<T>::classID, mxREAL);  
-    
+    t = mxCreateNumericMatrix(rowCount, columnCount, ValueType<T>::classID, mxREAL);
+
     return MultiArrayView<2, T>(shape, (T *)mxGetData(t));
 }
 
@@ -542,14 +542,14 @@ getImage(mxArray const * t)
 {
     if(!ValueType<T>::check(t))
     {
-        std::string msg = std::string("getImage(): Input matrix must have type ") + 
+        std::string msg = std::string("getImage(): Input matrix must have type ") +
                           ValueType<T>::typeName() + ".";
         mexErrMsgTxt(msg.c_str());
     }
 
     if(2 != mxGetNumberOfDimensions(t))
         mexErrMsgTxt("getImage(): Input matrix must have 2 dimensions.");
-        
+
     const mwSize * matlabShape = mxGetDimensions(t);
     return BasicImageView<T>((T *)mxGetData(t), static_cast<int>(matlabShape[0]),
                                                 static_cast<int>(matlabShape[1]));
@@ -559,8 +559,8 @@ template <class T>
 BasicImageView<T>
 createImage(mwSize width, mwSize height, mxArray * & t)
 {
-    t = mxCreateNumericMatrix(width, height, ValueType<T>::classID, mxREAL);  
-    
+    t = mxCreateNumericMatrix(width, height, ValueType<T>::classID, mxREAL);
+
     return BasicImageView<T>((T *)mxGetData(t), width, height);
 }
 
@@ -568,8 +568,8 @@ template <class T>
 BasicImageView<T>
 createImage(mwSize width, mwSize height, CellArray::Proxy t)
 {
-    t = mxCreateNumericMatrix(width, height, ValueType<T>::classID, mxREAL);  
-    
+    t = mxCreateNumericMatrix(width, height, ValueType<T>::classID, mxREAL);
+
     return BasicImageView<T>((T *)mxGetData(t), width, height);
 }
 
@@ -583,8 +583,8 @@ inline CellArray
 createCellArray(mwSize size, mxArray * & t)
 {
     mwSize matSize[] = { size };
-    t = mxCreateCellArray(1, matSize);  
-    
+    t = mxCreateCellArray(1, matSize);
+
     return CellArray(t);
 }
 
@@ -592,8 +592,8 @@ inline CellArray
 createCellArray(mwSize size, CellArray::Proxy t)
 {
     mwSize matSize[] = { size };
-    t = mxCreateCellArray(1, matSize);  
-    
+    t = mxCreateCellArray(1, matSize);
+
     return CellArray(t);
 }
 
@@ -623,7 +623,7 @@ createScalar(T v)
     return m;
 }
 
-inline std::string 
+inline std::string
 getString(mxArray const * t)
 {
     if(mxIsEmpty(t))
@@ -632,7 +632,7 @@ getString(mxArray const * t)
         mexErrMsgTxt("getString(): argument is not a string.");
     int size = mxGetNumberOfElements(t) + 1;
     ArrayVector<char> buf(size);
-    mxGetString(t, buf.begin(), size);    
+    mxGetString(t, buf.begin(), size);
     return std::string(buf.begin());
 }
 
@@ -735,11 +735,11 @@ inline bool is_in_range(T in, T min, std::string max)
     return (in >= min);
 }
 
-//enumeration - for GCC 
+//enumeration - for GCC
 enum DataDimension {IMAG = 2, VOLUME = 3};
 
 /*+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
-/* The Optons struct contains all the necassary working data and 
+/* The Optons struct contains all the necassary working data and
 /* options for the vigraFunc. This is the minimal struct
 /* Add fields as necessary
 /*+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
@@ -758,15 +758,15 @@ struct base_data
                        : options_index),
 	//initialise options with right field of inputs if it exists and is a struct
       options(inputs.isValid(optionsIndex) && mxIsStruct(inputs[optionsIndex])
-                 ? inputs[optionsIndex] 
+                 ? inputs[optionsIndex]
                  : 0)
     {
         numOfDim = mxGetNumberOfDimensions(inputs[0]);
-        if(numOfDim > 3)  
+        if(numOfDim > 3)
              mexErrMsgTxt("Input image must have 2 or 3 dimensions");
-        if(inputs.isEmpty(0)) 
+        if(inputs.isEmpty(0))
              mexErrMsgTxt("Input image is empty!");
-             
+
         // always initialise a MultiArrayView ...
         in3D = matlab::getMultiArray<3, T>(inputs[0]);
         // ... but an image can only be constructed for 2D data
@@ -816,7 +816,7 @@ struct base_data
             mexErrMsgTxt("option '" #name "' must be a numeric value.");\
         return matlab::getScalar<type>(name);\
     }
-    
+
 #define declScalarMinMax(type, name, default,min, max) \
     type name;\
     type get_##name()\
@@ -856,7 +856,7 @@ struct base_data
 #define declCharConstr2(title, name1_default, name2);\
     enum title##Enum {name1_default = 1, name2 = 2};\
     declCharConstr(title, 2, name1_default, name2, name3, name4, name5)
-    
+
 #define declCharConstr3(title, name1_default, name2, name3);\
     enum title##Enum {name1_default = 1, name2 = 2, name3 = 3};\
     declCharConstr(title, 3, name1_default, name2, name3, name4, name5)
@@ -868,6 +868,18 @@ struct base_data
 #define declCharConstr5(title, name1_default, name2, name3, name4, name5);\
     enum title##Enum {name1_default = 1, name2 = 2, name3 = 3, name4 = 4, name5 = 5};\
     declCharConstr(title, 5, name1_default, name2, name3, name4, name5)
+
+#define declMultiArrayDim(dim, name, type);\
+        MultiArrayView<dim,type>  name;\
+        MultiArrayView<dim,type> get_##name()\
+        {\
+            if(!this->options.isValid(#name))\
+                mexErrMsgTxt("Matrix '" #name "' must contain data");\
+            const mxArray* name = this->options[#name];\
+            if(!mxIsNumeric(name))\
+                mexErrMsgTxt("option '" #name "' must be a numeric value.");\
+            return matlab::getMultiArray<dim, type>(name);\
+        }
 
 
 #if 0 // currently unused
@@ -892,13 +904,15 @@ struct base_data
                          ? matlab::getMultiArray<3, T><type>(name)\
                          : bla;\
         }
+
+
 #endif /* #if 0 */
 
 
 #define declOut(type);\
     BasicImageView<type>  out;\
     MultiArrayView<3,type> out3D;
-    
+
 // Some Macros for commonly used output declarations
 #define initOut_SAME(outType);\
     out3D = matlab::createMultiArray<3,outType>(this->in3D.shape(), outputs[0]);\
@@ -917,7 +931,7 @@ struct base_data
 #define initOut_3D(outType,w,h,d)\
     out3D = matlab::createMultiArray<3,outType>(MultiArrayShape<3>::type(w, h, d), outputs[0]);\
 
-//Simplify Member Initialisors 
+//Simplify Member Initialisors
 #define initOption(name) name(get_##name())
 
 //Wrapper classes to STL-Map for use as a sparse array.
@@ -936,10 +950,10 @@ struct ShapeCmp {
 template<class T>
 class SparseArray
 {
-    
+
     std::map<TinyVector<int,2>, T,ShapeCmp> data;
     int width, length;
-    
+
     public:
     void assign(int i = 1, int j = 1){
         width = j;
@@ -949,8 +963,8 @@ class SparseArray
         width = j;
         length = i;
     }
-    
-    //Any better idea? i would like to unify the get and operator() functions. 
+
+    //Any better idea? i would like to unify the get and operator() functions.
     // Problem is that  operator() always passes a reference or creates one.
     T& operator()(int i, int j){
         TinyVector<int,2> newShapew(i, j);
@@ -958,25 +972,25 @@ class SparseArray
         TinyVector<int,2> newShape;
         return data[newShapew];
     }
-    
+
     const T get(int i, int j){
         TinyVector<int,2> newShape(i, j);
         if(data.find(newShape) == data.end()) return 0;
         else return data.find(newShape)->second;
     }
-    
+
     //see dokumentation of mxCreateSparse and the mxGet functions to understand this.
     void mapToMxArray(mxArray * & in){
 
         int len = data.size();
-        in = mxCreateSparse(width, length, len, mxREAL);        
+        in = mxCreateSparse(width, length, len, mxREAL);
         int* jc = mxGetJc(in);
         int* ir = mxGetIr(in);
         double* pr = mxGetPr(in);
         if(len == 0){
             jc[0] = 1;
             return;
-        }        
+        }
         typename std::map<TinyVector<int,2>, T, ShapeCmp>::iterator iter;
         TinyVector<int,2> newShape;
         int ii = 0;
@@ -991,12 +1005,12 @@ class SparseArray
                 jc[jj] = ii;
                 jj++;
             }
-            
+
             ii++;
         }
         jc[jj] = len;
     }
-    
+
 };
 
 } // namespace matlab
@@ -1004,7 +1018,7 @@ class SparseArray
 struct MeshGridAccessor
 {
     typedef TinyVector<Diff2D::MoveX, 2> value_type;
-    
+
     template <class ITERATOR>
     value_type operator()(ITERATOR const & i) const
     {
@@ -1012,26 +1026,28 @@ struct MeshGridAccessor
     }
 };
 
-inline 
+inline
 triple<Diff2D, Diff2D, MeshGridAccessor>
 meshGrid(Diff2D ul, Diff2D lr)
 {
     return triple<Diff2D, Diff2D, MeshGridAccessor>(ul, lr, MeshGridAccessor());
 }
 
-} // namespace vigra 
+} // namespace vigra
 
 void vigraMexFunction(vigra::matlab::OutputArray, vigra::matlab::InputArray);
 
-void mexFunction(int nlhs, mxArray *plhs[], 
+class vigraFunctor;
+
+void mexFunction(int nlhs, mxArray *plhs[],
                  int nrhs, const mxArray *prhs[])
 {
-  try 
+  try
   {
     vigra::matlab::InputArray inputs(nrhs, prhs);
     vigra::matlab::OutputArray outputs(nlhs, plhs);
-    
-    callMexFunctor<vigraFunctor>(outputs, inputs);
+
+    vigra::matlab::callMexFunctor<vigraFunctor>(outputs, inputs);
   }
   catch(std::exception & e)
   {
