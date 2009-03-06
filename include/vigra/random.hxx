@@ -589,7 +589,7 @@ template <class Engine = RandomTT800>
 class UniformIntRandomFunctor
 {
     UInt32 lower_, difference_, factor_;
-    Engine & generator_;
+    Engine const & generator_;
     bool useLowBits_;
 
   public:
@@ -602,7 +602,7 @@ class UniformIntRandomFunctor
             
             That is, the generated numbers satisfy 0 &lt;= i &lt; 2<sup>32</sup>.
         */
-    explicit UniformIntRandomFunctor(Engine & generator = Engine::global() )
+    explicit UniformIntRandomFunctor(Engine const & generator = Engine::global() )
     : lower_(0), difference_(0xffffffff), factor_(1),
       generator_(generator),
       useLowBits_(true)
@@ -618,7 +618,7 @@ class UniformIntRandomFunctor
             but is necessary for simpler linear congruential generators.
         */
     UniformIntRandomFunctor(UInt32 lower, UInt32 upper, 
-                            Engine & generator = Engine::global(),
+                            Engine const & generator = Engine::global(),
                             bool useLowBits = true)
     : lower_(lower), difference_(upper-lower), 
       factor_(Engine::factorForUniformInt(difference_ + 1)),
@@ -695,7 +695,7 @@ template <class Engine = RandomTT800>
 class UniformRandomFunctor
 {
     double offset_, scale_;
-    Engine & generator_;
+    Engine const & generator_;
 
   public:
   
@@ -706,7 +706,7 @@ class UniformRandomFunctor
             
             That is, the generated numbers satisfy 0.0 &lt;= i &lt;= 1.0.
         */
-    UniformRandomFunctor(Engine & generator = Engine::global())
+    UniformRandomFunctor(Engine const & generator = Engine::global())
     : offset_(0.0),
       scale_(1.0),
       generator_(generator)
@@ -766,7 +766,7 @@ template <class Engine = RandomTT800>
 class NormalRandomFunctor
 {
     double mean_, stddev_;
-    Engine & generator_;
+    Engine const & generator_;
 
   public:
   
@@ -777,7 +777,7 @@ class NormalRandomFunctor
             
             That is, mean is 0.0 and standard deviation is 1.0.
         */
-    NormalRandomFunctor(Engine & generator = Engine::global())
+    NormalRandomFunctor(Engine const & generator = Engine::global())
     : mean_(0.0),
       stddev_(1.0),
       generator_(generator)
