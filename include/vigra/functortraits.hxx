@@ -43,21 +43,40 @@
 
 namespace vigra {
 
+struct InitializerTag {};
+struct UnaryFunctorTag {};
+struct BinaryFunctorTag {};
+struct TernaryFunctorTag {};
+struct UnaryAnalyserTag {};
+struct BinaryAnalyserTag {};
+struct TernaryAnalyserTag {};
+
+struct UnaryReduceFunctorTag
+: public InitializerTag, public UnaryAnalyserTag
+{};
+
+struct BinaryReduceFunctorTag
+: public InitializerTag, public BinaryAnalyserTag
+{};
+
+typedef UnaryFunctorTag UnaryExpandFunctorTag;
+typedef BinaryFunctorTag BinaryExpandFunctorTag;
+
 template <class T>
 class FunctorTraitsBase
 {
   public:
     typedef T type;
     
-    typedef VigraFalseType isInitializer;
-    
-    typedef VigraFalseType isUnaryFunctor;
-    typedef VigraFalseType isBinaryFunctor;
-    typedef VigraFalseType isTernaryFunctor;
-    
-    typedef VigraFalseType isUnaryAnalyser;
-    typedef VigraFalseType isBinaryAnalyser;
-    typedef VigraFalseType isTernaryAnalyser;
+    typedef typename IsDerivedFrom<T, InitializerTag>::result isInitializer;
+
+    typedef typename IsDerivedFrom<T, UnaryFunctorTag>::result isUnaryFunctor;
+    typedef typename IsDerivedFrom<T, BinaryFunctorTag>::result isBinaryFunctor;
+    typedef typename IsDerivedFrom<T, TernaryFunctorTag>::result isTernaryFunctor;
+
+    typedef typename IsDerivedFrom<T, UnaryAnalyserTag>::result isUnaryAnalyser;
+    typedef typename IsDerivedFrom<T, BinaryAnalyserTag>::result isBinaryAnalyser;
+    typedef typename IsDerivedFrom<T, TernaryAnalyserTag>::result isTernaryAnalyser;
 };
 
 
@@ -87,8 +106,23 @@ class FunctorTraitsBase
     };
     \endcode
 
-    Where the dots are either <tt>VigraTrueType</tt> or <tt>VigraFalseType</tt>
+    where the dots are either <tt>VigraTrueType</tt> or <tt>VigraFalseType</tt>
     depending on whether the functor supports the respective functionality or not.
+    Note that these traits are automatically defined correctly when your functor is derived 
+    from the appropriate functor tag classes: 
+    
+    \code
+    struct InitializerTag {};
+    struct UnaryFunctorTag {};
+    struct BinaryFunctorTag {};
+    struct TernaryFunctorTag {};
+    struct UnaryAnalyserTag {};
+    struct BinaryAnalyserTag {};
+    struct TernaryAnalyserTag {};
+    struct UnaryReduceFunctorTag : public InitializerTag, public UnaryAnalyserTag {};
+    struct BinaryReduceFunctorTag : public InitializerTag, public BinaryAnalyserTag {};
+    \endcode
+    
     If a functor <tt>f</tt> is a model of these categories, it supports the following
     calls (<tt>v</tt> is a variable such that the result type of the functor
     calls can be converted into <tt>v</tt>'s type, and <tt>a1, a2, a3</tt> are

@@ -96,6 +96,8 @@
              <BR>&nbsp;&nbsp;&nbsp;<em>Iterators for multi-dimensional arrays</em>
         <LI> \ref DataAccessors
              <BR>&nbsp;&nbsp;&nbsp;<em>Requirements for data accessors</em>
+        <LI> \ref FunctorTraits
+             <BR>&nbsp;&nbsp;&nbsp;<em>Requirements for functor traits</em>
         <LI> \ref CrackEdgeImage
         </UL>
     </DL>

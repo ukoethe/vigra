@@ -715,6 +715,10 @@ transformMultiArrayImpl(SrcIterator s, SrcShape const & sshape, SrcAccessor src,
                                vigra::FindAverage<float>() );
 
     \endcode
+    
+    Note that the functor must define the appropriate traits described below in order to be 
+    recognized as a reduce functor. This is most easily achieved by deriving from 
+    <tt>UnaryReduceFunctorTag</tt> (see \ref vigra::FunctorTraits).
 
     <b> Required Interface:</b>
 
@@ -739,8 +743,10 @@ transformMultiArrayImpl(SrcIterator s, SrcShape const & sshape, SrcAccessor src,
     meta functions <tt>FunctorTraits<FUNCTOR>::isUnaryAnalyser</tt> and
     <tt>FunctorTraits<FUNCTOR>::isInitializer</tt> which must both yield 
     <tt>VigraTrueType</tt>. Make sure that your functor correctly defines 
-    <tt>FunctorTraits</tt> because otherwise reduce mode will not work. In addition,
-    the functor must be copy constructible in order to start each reduction
+    <tt>FunctorTraits</tt> because otherwise reduce mode will not work. 
+    This is most easily achieved by deriving the functor from 
+    <tt>UnaryReduceFunctorTag</tt> (see \ref vigra::FunctorTraits).
+    In addition, the functor must be copy constructible in order to start each reduction
     with a fresh functor.
     
     \code
@@ -1155,6 +1161,10 @@ combineTwoMultiArraysImpl(
 
     \endcode
 
+    Note that the functor must define the appropriate traits described below in order to be 
+    recognized as a reduce functor. This is most easily achieved by deriving from 
+    <tt>BinaryReduceFunctorTag</tt> (see \ref vigra::FunctorTraits).
+
     <b> Required Interface:</b>
     
     In standard and expand mode, the functor must be a model of BinaryFunction
@@ -1183,8 +1193,10 @@ combineTwoMultiArraysImpl(
     meta functions <tt>FunctorTraits<FUNCTOR>::isBinaryAnalyser</tt> and
     <tt>FunctorTraits<FUNCTOR>::isInitializer</tt> which must both yield 
     <tt>VigraTrueType</tt>. Make sure that your functor correctly defines 
-    <tt>FunctorTraits</tt> because otherwise reduce mode will not work. In addition,
-    the functor must be copy constructible in order to start each reduction
+    <tt>FunctorTraits</tt> because otherwise reduce mode will not work. 
+    This is most easily achieved by deriving the functor from 
+    <tt>BinaryReduceFunctorTag</tt> (see \ref vigra::FunctorTraits).
+    In addition, the functor must be copy constructible in order to start each reduction
     with a fresh functor.
     
     \code
