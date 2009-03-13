@@ -39,8 +39,11 @@
 #include "vigra/multi_impex.hxx"
 #include "vigra/basicimageview.hxx"
 #include "vigra/navigator.hxx"
+#include "vigra/multi_pointoperators.hxx"
+#include "vigra/functorexpression.hxx"
 
 using namespace vigra;
+using namespace vigra::functor;
 
 class MultiArrayDataTest
 {
@@ -773,14 +776,14 @@ struct MultiImpexTest
 };
 
 template <class IMAGE>
-struct ImageTest
+struct ImageViewTest
 {
     typedef typename IMAGE::value_type value_type;
     typedef MultiArray<2, value_type> MA;
     typedef BasicImageView<value_type> Image;
     static typename Image::value_type data[];
 
-    ImageTest()
+    ImageViewTest()
     : ma(TinyVector<int, 2>(3,3)),
       img(makeBasicImageView(ma))
     {
@@ -972,20 +975,20 @@ struct ImageTest
     Image img;
 };
 
-typedef ImageTest<vigra::BImage> BImageTest;
+typedef ImageViewTest<vigra::BImage> BImageViewTest;
 
 template <>
-unsigned char BImageTest::data[] = {1,2,3,4,5,6,7,8,9};
+unsigned char BImageViewTest::data[] = {1,2,3,4,5,6,7,8,9};
 
-typedef ImageTest<vigra::DImage> DImageTest;
+typedef ImageViewTest<vigra::DImage> DImageViewTest;
 
 template <>
-double DImageTest::data[] = {1.1,2.2,3.3,4.4,5.5,6.6,7.7,8.8,9.9};
+double DImageViewTest::data[] = {1.1,2.2,3.3,4.4,5.5,6.6,7.7,8.8,9.9};
 
-typedef ImageTest<vigra::BRGBImage> BRGBImageTest;
+typedef ImageViewTest<vigra::BRGBImage> BRGBImageViewTest;
 typedef vigra::RGBValue<unsigned char> BRGB;
 template <>
-BRGB BRGBImageTest::data[] = {
+BRGB BRGBImageViewTest::data[] = {
     BRGB(1,1,1),
     BRGB(2,2,2),
     BRGB(3,3,3),
@@ -997,10 +1000,10 @@ BRGB BRGBImageTest::data[] = {
     BRGB(9,9,9)
 };
 
-typedef ImageTest<vigra::FRGBImage> FRGBImageTest;
+typedef ImageViewTest<vigra::FRGBImage> FRGBImageViewTest;
 typedef vigra::RGBValue<float> FRGB;
 template <>
-FRGB FRGBImageTest::data[] = {
+FRGB FRGBImageViewTest::data[] = {
     FRGB(1.1f, 1.1f, 1.1f),
     FRGB(2.2f, 2.2f, 2.2f),
     FRGB(3.3f, 3.3f, 3.3f),
@@ -1012,25 +1015,436 @@ FRGB FRGBImageTest::data[] = {
     FRGB(9.9f, 9.9f, 9.9f)
 };
 
+struct MultiArrayPointoperatorsTest
+{
 
-struct ImageTestSuite
+    typedef float PixelType;
+    typedef MultiArray<3,PixelType> Image3D;
+    typedef MultiArrayView<3,PixelType> View3D;
+    typedef Image3D::difference_type Size3;
+
+    Image3D img;
+
+    MultiArrayPointoperatorsTest()
+    : img(Size3(5,4,3))
+    {
+        int i;
+        PixelType c = 0.1f;
+        for(i=0; i<img.elementCount(); ++i, ++c)
+            img.data()[i] = c;
+    }
+
+    void testInit()
+    {
+        Image3D res(img.shape());
+        const Image3D::value_type ini = 1.1f;
+        should(res.shape() == Size3(5,4,3));
+
+        initMultiArray(destMultiArrayRange(res), ini);
+        
+        int x,y,z;
+        for(z=0; z<img.shape(2); ++z)
+            for(y=0; y<img.shape(1); ++y)
+                for(x=0; x<img.shape(0); ++x)
+                    shouldEqual(res(x,y,z), ini);
+    }
+
+    void testCopy()
+    {
+        Image3D res(img.shape());
+        
+        initMultiArray(destMultiArrayRange(res), 0.0);
+        
+        copyMultiArray(srcMultiArrayRange(img), destMultiArray(res));
+        
+        int x,y,z;
+        for(z=0; z<img.shape(2); ++z)
+            for(y=0; y<img.shape(1); ++y)
+                for(x=0; x<img.shape(0); ++x)
+                    shouldEqual(res(x,y,z), img(x,y,z));
+    }
+
+    void testCopyOuterExpansion()
+    {
+        Image3D res(img.shape());
+        
+        initMultiArray(destMultiArrayRange(res), 0.0);
+        
+        View3D view = img.subarray(Size3(0,0,0), Size3(5,1,1));
+        
+        copyMultiArray(srcMultiArrayRange(view), destMultiArrayRange(res));
+        
+        int x,y,z;
+        for(z=0; z<img.shape(2); ++z)
+            for(y=0; y<img.shape(1); ++y)
+                for(x=0; x<img.shape(0); ++x)
+                    shouldEqual(res(x,y,z), img(x,0,0));
+    }
+
+    void testCopyInnerExpansion()
+    {
+        Image3D res(img.shape());
+        
+        initMultiArray(destMultiArrayRange(res), 0.0);
+        
+        View3D view = img.subarray(Size3(0,0,0), Size3(1,1,3));
+        
+        copyMultiArray(srcMultiArrayRange(view), destMultiArrayRange(res));
+        
+        int x,y,z;
+        for(z=0; z<img.shape(2); ++z)
+            for(y=0; y<img.shape(1); ++y)
+                for(x=0; x<img.shape(0); ++x)
+                    shouldEqual(res(x,y,z), img(0,0,z));
+    }
+
+    void testTransform()
+    {
+        Image3D res(img.shape());
+        
+        initMultiArray(destMultiArrayRange(res), 0.0);
+        
+        transformMultiArray(srcMultiArrayRange(img), destMultiArray(res),
+                            Arg1() + Arg1());
+        
+        int x,y,z;
+        for(z=0; z<img.shape(2); ++z)
+            for(y=0; y<img.shape(1); ++y)
+                for(x=0; x<img.shape(0); ++x)
+                    shouldEqual(res(x,y,z), 2.0*img(x,y,z));
+    }
+
+    void testTransformOuterExpand()
+    {
+        Image3D res(img.shape());
+        
+        initMultiArray(destMultiArrayRange(res), 0.0);
+        
+        View3D view = img.subarray(Size3(0,0,0), Size3(5,1,1));
+        
+        transformMultiArray(srcMultiArrayRange(view), destMultiArrayRange(res),
+                            Arg1() + Arg1());
+        
+        int x,y,z;
+        for(z=0; z<img.shape(2); ++z)
+            for(y=0; y<img.shape(1); ++y)
+                for(x=0; x<img.shape(0); ++x)
+                    shouldEqual(res(x,y,z), 2.0*img(x,0,0));
+    }
+
+    void testTransformInnerExpand()
+    {
+        Image3D res(img.shape());
+        
+        initMultiArray(destMultiArrayRange(res), 0.0);
+        
+        View3D view = img.subarray(Size3(0,0,0), Size3(1,1,3));
+        
+        transformMultiArray(srcMultiArrayRange(view), destMultiArrayRange(res),
+                            Arg1() + Arg1());
+        
+        int x,y,z;
+        for(z=0; z<img.shape(2); ++z)
+            for(y=0; y<img.shape(1); ++y)
+                for(x=0; x<img.shape(0); ++x)
+                    shouldEqual(res(x,y,z), 2.0*img(0,0,z));
+    }
+
+    void testTransformOuterReduce()
+    {
+        Image3D res(Size3(5,1,1));
+        
+        initMultiArray(destMultiArrayRange(res), 0.0);
+        
+        transformMultiArray(srcMultiArrayRange(img), destMultiArrayRange(res),
+                            reduceFunctor(Arg1() + Arg2(), 0.0));
+        
+        int x,y,z;
+        for(x=0; x<img.shape(0); ++x)
+        {
+            double sum = 0.0;
+            for(y=0; y<img.shape(1); ++y)
+                for(z=0; z<img.shape(2); ++z)
+                    sum += img(x,y,z);
+            shouldEqual(res(x,0,0), sum);
+        }
+    }
+
+    void testTransformInnerReduce()
+    {
+        Image3D res(Size3(1,1,3));
+        
+        initMultiArray(destMultiArrayRange(res), 0.0);
+        
+        transformMultiArray(srcMultiArrayRange(img), destMultiArrayRange(res),
+                            reduceFunctor(Arg1() + Arg2(), 0.0));
+        
+        int x,y,z;
+        for(z=0; z<img.shape(2); ++z)
+        {
+            double sum = 0.0;
+            for(y=0; y<img.shape(1); ++y)
+                for(x=0; x<img.shape(0); ++x)
+                    sum += img(x,y,z);
+            shouldEqual(res(0,0,z), sum);
+        }
+    }
+
+    void testCombine2()
+    {
+        Image3D res(img.shape());
+        
+        initMultiArray(destMultiArrayRange(res), 0.0);
+        
+        combineTwoMultiArrays(srcMultiArrayRange(img), srcMultiArray(img), 
+                              destMultiArray(res),
+                              Arg1() + Arg2());
+        
+        int x,y,z;
+        for(z=0; z<img.shape(2); ++z)
+            for(y=0; y<img.shape(1); ++y)
+                for(x=0; x<img.shape(0); ++x)
+                    shouldEqual(res(x,y,z), 2.0*img(x,y,z));
+    }
+
+    void testCombine2OuterExpand()
+    {
+        Image3D res(img.shape());
+        
+        initMultiArray(destMultiArrayRange(res), 0.0);
+        
+        View3D view = img.subarray(Size3(0,0,0), Size3(5,1,1));
+        combineTwoMultiArrays(srcMultiArrayRange(view), srcMultiArrayRange(img), 
+                              destMultiArrayRange(res),
+                              Arg1() + Param(2.0)*Arg2());       
+        int x,y,z;
+        for(z=0; z<img.shape(2); ++z)
+            for(y=0; y<img.shape(1); ++y)
+                for(x=0; x<img.shape(0); ++x)
+                    shouldEqual(res(x,y,z), 2.0*img(x,y,z) + img(x,0,0));
+
+        combineTwoMultiArrays(srcMultiArrayRange(img), srcMultiArrayRange(view), 
+                              destMultiArrayRange(res),
+                              Arg1() + Param(2.0)*Arg2());       
+        for(z=0; z<img.shape(2); ++z)
+            for(y=0; y<img.shape(1); ++y)
+                for(x=0; x<img.shape(0); ++x)
+                    shouldEqual(res(x,y,z), img(x,y,z) + 2.0*img(x,0,0));
+
+        combineTwoMultiArrays(srcMultiArrayRange(view), srcMultiArrayRange(view), 
+                              destMultiArrayRange(res),
+                              Arg1() + Param(2.0)*Arg2());       
+        for(z=0; z<img.shape(2); ++z)
+            for(y=0; y<img.shape(1); ++y)
+                for(x=0; x<img.shape(0); ++x)
+                    shouldEqual(res(x,y,z), 3.0*img(x,0,0));
+    }
+
+    void testCombine2InnerExpand()
+    {
+        Image3D res(img.shape());
+        
+        initMultiArray(destMultiArrayRange(res), 0.0);
+        
+        View3D view = img.subarray(Size3(0,0,0), Size3(1,1,3));
+        combineTwoMultiArrays(srcMultiArrayRange(view), srcMultiArrayRange(img), 
+                              destMultiArrayRange(res),
+                              Arg1() + Param(2.0)*Arg2());       
+        int x,y,z;
+        for(z=0; z<img.shape(2); ++z)
+            for(y=0; y<img.shape(1); ++y)
+                for(x=0; x<img.shape(0); ++x)
+                    shouldEqual(res(x,y,z), 2.0*img(x,y,z) + img(0,0,z));
+
+        combineTwoMultiArrays(srcMultiArrayRange(img), srcMultiArrayRange(view), 
+                              destMultiArrayRange(res),
+                              Arg1() + Param(2.0)*Arg2());       
+        for(z=0; z<img.shape(2); ++z)
+            for(y=0; y<img.shape(1); ++y)
+                for(x=0; x<img.shape(0); ++x)
+                    shouldEqual(res(x,y,z), img(x,y,z) + 2.0*img(0,0,z));
+
+        combineTwoMultiArrays(srcMultiArrayRange(view), srcMultiArrayRange(view), 
+                              destMultiArrayRange(res),
+                              Arg1() + Param(2.0)*Arg2());       
+        for(z=0; z<img.shape(2); ++z)
+            for(y=0; y<img.shape(1); ++y)
+                for(x=0; x<img.shape(0); ++x)
+                    shouldEqual(res(x,y,z), 3.0*img(0,0,z));
+    }
+
+    void testCombine2OuterReduce()
+    {
+        Image3D res(Size3(5,1,1));
+        
+        initMultiArray(destMultiArrayRange(res), 0.0);
+        
+        combineTwoMultiArrays(srcMultiArrayRange(img), srcMultiArrayRange(img), 
+                              destMultiArrayRange(res),
+                              reduceFunctor(Arg1() + Arg2() + Arg3(), 0.0));
+        
+        int x,y,z;
+        for(x=0; x<img.shape(0); ++x)
+        {
+            double sum = 0.0;
+            for(y=0; y<img.shape(1); ++y)
+                for(z=0; z<img.shape(2); ++z)
+                    sum += img(x,y,z);
+            shouldEqual(res(x,0,0), 2.0*sum);
+        }
+    }
+
+    void testCombine2InnerReduce()
+    {
+        Image3D res(Size3(1,1,3));
+        
+        initMultiArray(destMultiArrayRange(res), 0.0);
+        
+        combineTwoMultiArrays(srcMultiArrayRange(img), srcMultiArrayRange(img), 
+                              destMultiArrayRange(res),
+                              reduceFunctor(Arg1() + Arg2() + Arg3(), 0.0));
+        
+        int x,y,z;
+        for(z=0; z<img.shape(2); ++z)
+        {
+            double sum = 0.0;
+            for(y=0; y<img.shape(1); ++y)
+                for(x=0; x<img.shape(0); ++x)
+                    sum += img(x,y,z);
+            shouldEqual(res(0,0,z), 2.0*sum);
+        }
+    }
+
+    void testCombine3()
+    {
+        Image3D res(img.shape());
+        
+        initMultiArray(destMultiArrayRange(res), 0.0);
+        
+        combineThreeMultiArrays(srcMultiArrayRange(img), 
+                                srcMultiArray(img), srcMultiArray(img), 
+                                destMultiArray(res),
+                                Arg1() + Arg2() + Arg3());
+        
+        int x,y,z;
+        for(z=0; z<img.shape(2); ++z)
+            for(y=0; y<img.shape(1); ++y)
+                for(x=0; x<img.shape(0); ++x)
+                    shouldEqual(res(x,y,z), 3.0*img(x,y,z));
+    }
+    
+    void testInitMultiArrayBorder(){
+        typedef vigra::MultiArray<1,int> IntLine;
+        typedef vigra::MultiArray<2,int> IntImage;
+        typedef vigra::MultiArray<3,int> IntVolume;
+        
+        const int desired_vol[] ={  0, 0, 0, 0, 0, 0,
+                                    0, 0, 0, 0, 0, 0,
+                                    0, 0, 0, 0, 0, 0,
+                                    0, 0, 0, 0, 0, 0,
+                                    0, 0, 0, 0, 0, 0,
+                                    0, 0, 0, 0, 0, 0,
+
+                                    0, 0, 0, 0, 0, 0,
+                                    0, 0, 0, 0, 0, 0,
+                                    0, 0, 0, 0, 0, 0,
+                                    0, 0, 0, 0, 0, 0,
+                                    0, 0, 0, 0, 0, 0,
+                                    0, 0, 0, 0, 0, 0,
+
+                                    0, 0, 0, 0, 0, 0,
+                                    0, 0, 0, 0, 0, 0,
+                                    0, 0, 5, 5, 0, 0,
+                                    0, 0, 5, 5, 0, 0,
+                                    0, 0, 0, 0, 0, 0,
+                                    0, 0, 0, 0, 0, 0,
+
+                                    0, 0, 0, 0, 0, 0,
+                                    0, 0, 0, 0, 0, 0,
+                                    0, 0, 5, 5, 0, 0,
+                                    0, 0, 5, 5, 0, 0,
+                                    0, 0, 0, 0, 0, 0,
+                                    0, 0, 0, 0, 0, 0,
+
+                                    0, 0, 0, 0, 0, 0,
+                                    0, 0, 0, 0, 0, 0,
+                                    0, 0, 0, 0, 0, 0,
+                                    0, 0, 0, 0, 0, 0,
+                                    0, 0, 0, 0, 0, 0,
+                                    0, 0, 0, 0, 0, 0,
+
+                                    0, 0, 0, 0, 0, 0,
+                                    0, 0, 0, 0, 0, 0,
+                                    0, 0, 0, 0, 0, 0,
+                                    0, 0, 0, 0, 0, 0,
+                                    0, 0, 0, 0, 0, 0,
+                                    0, 0, 0, 0, 0, 0};
+
+        const int desired_img[] ={  0, 0, 0, 0, 0, 0,
+                                    0, 5, 5, 5, 5, 0,
+                                    0, 5, 5, 5, 5, 0,
+                                    0, 5, 5, 5, 5, 0,
+                                    0, 5, 5, 5, 5, 0,
+                                    0, 0, 0, 0, 0, 0};
+
+        const int desired_lin[] ={  0, 0, 0, 5, 0, 0, 0 };
+
+        const int desired_vol2[] ={  0, 0,
+                                     0, 0,
+
+                                     0, 0, 
+                                     0, 0};
+
+        IntVolume vol(IntVolume::difference_type(6,6,6));
+        
+        for(IntVolume::iterator iter=vol.begin(); iter!=vol.end(); ++iter)
+            *iter=5;
+        initMultiArrayBorder(destMultiArrayRange(vol),2,0);
+        shouldEqualSequence(vol.begin(), vol.end(), desired_vol);
+
+        IntImage img(IntImage::difference_type(6,6));
+        
+        for(IntImage::iterator iter=img.begin(); iter!=img.end(); ++iter)
+            *iter=5;
+        initMultiArrayBorder(destMultiArrayRange(img),1,0);
+        shouldEqualSequence(img.begin(), img.end(), desired_img);
+
+        IntLine lin(IntLine::difference_type(7));
+        
+        for(IntLine::iterator iter=lin.begin(); iter!=lin.end(); ++iter)
+            *iter=5;
+        initMultiArrayBorder(destMultiArrayRange(lin),3,0);
+        shouldEqualSequence(lin.begin(), lin.end(), desired_lin);
+
+        IntVolume vol2(IntVolume::difference_type(2,2,2));
+        
+        for(IntVolume::iterator iter=vol2.begin(); iter!=vol2.end(); ++iter)
+            *iter=5;
+        initMultiArrayBorder(destMultiArrayRange(vol2),9,0);
+        shouldEqualSequence(vol2.begin(), vol2.end(), desired_vol2);
+
+    }
+};
+
+
+struct ImageViewTestSuite
 : public vigra::test_suite
 {
-    ImageTestSuite()
-    : vigra::test_suite("ImageTestSuite")
+    ImageViewTestSuite()
+    : vigra::test_suite("ImageViewTestSuite")
     {
-        add( testCase( &BImageTest::testBasicImageIterator));
-        add( testCase( &BImageTest::testImageIterator));
-        add( testCase( &BImageTest::copyImage));
-        add( testCase( &DImageTest::testBasicImageIterator));
-        add( testCase( &DImageTest::testImageIterator));
-        add( testCase( &DImageTest::copyImage));
-        add( testCase( &BRGBImageTest::testBasicImageIterator));
-        add( testCase( &BRGBImageTest::testImageIterator));
-        add( testCase( &BRGBImageTest::copyImage));
-        add( testCase( &FRGBImageTest::testBasicImageIterator));
-        add( testCase( &FRGBImageTest::testImageIterator));
-        add( testCase( &FRGBImageTest::copyImage));
+        add( testCase( &BImageViewTest::testBasicImageIterator));
+        add( testCase( &BImageViewTest::testImageIterator));
+        add( testCase( &BImageViewTest::copyImage));
+        add( testCase( &DImageViewTest::testBasicImageIterator));
+        add( testCase( &DImageViewTest::testImageIterator));
+        add( testCase( &DImageViewTest::copyImage));
+        add( testCase( &BRGBImageViewTest::testBasicImageIterator));
+        add( testCase( &BRGBImageViewTest::testImageIterator));
+        add( testCase( &BRGBImageViewTest::copyImage));
+        add( testCase( &FRGBImageViewTest::testBasicImageIterator));
+        add( testCase( &FRGBImageViewTest::testImageIterator));
+        add( testCase( &FRGBImageViewTest::copyImage));
     }
 };
 
@@ -1082,6 +1496,32 @@ struct MultiArrayDataTestSuite
     }
 };
 
+struct MultiArrayPointOperatorsTestSuite
+: public vigra::test_suite
+{
+  MultiArrayPointOperatorsTestSuite()
+    : vigra::test_suite("MultiArrayPointOperatorsTestSuite")
+    {
+        // add( testCase( &MultiArrayTest::test_default_ctor ) );
+        add( testCase( &MultiArrayPointoperatorsTest::testInit ) );
+        add( testCase( &MultiArrayPointoperatorsTest::testCopy ) );
+        add( testCase( &MultiArrayPointoperatorsTest::testCopyOuterExpansion ) );
+        add( testCase( &MultiArrayPointoperatorsTest::testCopyInnerExpansion ) );
+        add( testCase( &MultiArrayPointoperatorsTest::testTransform ) );
+        add( testCase( &MultiArrayPointoperatorsTest::testTransformOuterExpand ) );
+        add( testCase( &MultiArrayPointoperatorsTest::testTransformInnerExpand ) );
+        add( testCase( &MultiArrayPointoperatorsTest::testTransformOuterReduce ) );
+        add( testCase( &MultiArrayPointoperatorsTest::testTransformInnerReduce ) );
+        add( testCase( &MultiArrayPointoperatorsTest::testCombine2 ) );
+        add( testCase( &MultiArrayPointoperatorsTest::testCombine2OuterExpand ) );
+        add( testCase( &MultiArrayPointoperatorsTest::testCombine2InnerExpand ) );
+        add( testCase( &MultiArrayPointoperatorsTest::testCombine2OuterReduce ) );
+        add( testCase( &MultiArrayPointoperatorsTest::testCombine2InnerReduce ) );
+        add( testCase( &MultiArrayPointoperatorsTest::testCombine3 ) );
+        add( testCase( &MultiArrayPointoperatorsTest::testInitMultiArrayBorder ) );
+    }
+}; // struct MultiArrayPointOperatorsTestSuite
+
 
 int main(int argc, char ** argv)
 {
@@ -1096,10 +1536,15 @@ int main(int argc, char ** argv)
     std::cout << test1a.report() << std::endl;
 
     // run the image testsuite
-    ImageTestSuite test2;
+    ImageViewTestSuite test2;
     failed += test2.run(vigra::testsToBeExecuted(argc, argv));
     std::cout << test2.report() << std::endl;
 
+    // run the multi-array point operator test suite
+    MultiArrayPointOperatorsTestSuite test3;
+    failed += test3.run(vigra::testsToBeExecuted(argc, argv));
+    std::cout << test3.report() << std::endl;
+    
     return (failed != 0);
 }
 
