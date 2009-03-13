@@ -805,6 +805,108 @@ class FunctorTraits<FindMinMax<VALUETYPE> >
 
 /********************************************************/
 /*                                                      */
+/*                      FindSum                         */
+/*                                                      */
+/********************************************************/
+
+/** \brief  Find the sum of the pixel values in an image or ROI.
+
+    This Functor can also be used in conjunction with
+    \ref ArrayOfRegionStatistics to find the sum of all regions in
+    a labeled image, and with the reduce mode of transformMultiArray().
+
+    <b> Traits defined:</b>
+
+    <tt>FunctorTraits::isUnaryAnalyser</tt> and <tt>FunctorTraits::isInitializer</tt>
+    are true (<tt>VigraTrueType</tt>)
+
+    <b> Usage:</b>
+
+        <b>\#include</b> \<<a href="inspectimage_8hxx-source.html">vigra/inspectimage.hxx</a>\><br>
+        Namespace: vigra
+
+    \code
+    vigra::BImage img;
+
+    vigra::FindSum<vigra::BImage::PixelType> sum;   // init functor
+
+    vigra::inspectImage(srcImageRange(img), sum);
+
+    cout << "Sum: " << sum();
+
+    \endcode
+
+    <b> Required Interface:</b>
+
+    \code
+    VALUETYPE v1, v2(v1);
+
+    v1 += v2;
+    \endcode
+
+*/
+template <class VALUETYPE>
+class FindSum
+: public UnaryReduceFunctorTag
+{
+   public:
+
+        /** the functor's argument type
+        */
+    typedef VALUETYPE argument_type;
+
+        /** the functor's result type
+        */
+    typedef typename NumericTraits<VALUETYPE>::Promote result_type;
+
+        /** init sum
+        */
+    FindSum()
+    : sum_(NumericTraits<result_type>::zero())
+    {}
+
+        /** (re-)init sum
+        */
+    void reset()
+    {
+        sum_ = NumericTraits<result_type>::zero();
+    }
+
+        /** update sum
+        */
+    void operator()(argument_type const & v)
+    {
+        sum_ += v;
+    }
+
+        /** merge two statistics
+        */
+    void operator()(FindSum const & v)
+    {
+        sum_   += v.sum_;
+    }
+
+        /** return current sum
+        */
+    result_type sum() const
+    {
+        return sum_;
+    }
+
+        /** return current sum
+        */
+    result_type operator()() const
+    {
+        return sum_;
+    }
+
+    result_type sum_;
+};
+
+
+
+/********************************************************/
+/*                                                      */
 /*                    FindAverage                       */
 /*                                                      */
 /********************************************************/
