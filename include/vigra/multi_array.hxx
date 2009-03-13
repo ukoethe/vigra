@@ -1061,6 +1061,38 @@ public:
     MultiArrayView <N-1, T, StridedArrayTag>
     bindAt (difference_type_1 m, difference_type_1 d) const;
 
+        /** Add a singleton dimension (dimension of legth 1).
+        
+            Singleton dimensions don't change the size of the data, but introduce
+            a new index that can only take the value 0. This is mainly useful for
+            the 'reduce mode' of transformMultiArray() and combineTwoMultiArrays(),
+            because these functions require the source and destination arrays to
+            have the same number of dimensions.
+            
+            The range of \a i must be <tt>0 <= i <= N</tt>. The new dimension will become 
+            the i'th index, and the old indices from i upwards will shift one 
+            place to the right.
+
+            <b>Usage:</b>
+            
+            Suppose we want have a 2D array and want to create a 1D array that contains 
+            the row average of the first array.  
+            \code
+            typedef MultiArrayShape<2>::type Shape2;
+            MultiArray<2, double> original(Shape2(40, 30));
+
+            typedef MultiArrayShape<1>::type Shape1;
+            MultiArray<1, double> rowAverages(Shape1(30));
+
+            // temporarily add a singleton dimension to the destination array
+            transformMultiArray(srcMultiArrayRange(original),
+                                destMultiArrayRange(rowAverages.insertSingletonDimension(0)),
+                                FindAverage<double>());
+            \endcode
+         */
+    MultiArrayView <N+1, T, C>
+    insertSingletonDimension (difference_type_1 i) const;
+
         /** create a rectangular subarray that spans between the
             points p and q, where p is in the subarray, q not.
 
@@ -1560,6 +1592,24 @@ MultiArrayView <N, T, C>::bindAt (difference_type_1 n, difference_type_1 d) cons
     }
     return MultiArrayView <N-1, T, StridedArrayTag>
         (shape, stride, m_ptr + d * m_stride[n]);
+}
+
+template <unsigned int N, class T, class C>
+MultiArrayView <N + 1, T, C>
+MultiArrayView <N, T, C>::insertSingletonDimension (difference_type_1 i) const
+{
+    vigra_precondition (
+        0 <= i && i <= static_cast <difference_type_1> (N),
+        "MultiArrayView <N, T, C>::insertSingletonDimension(): index out of range.");
+    TinyVector <MultiArrayIndex, N+1> shape, stride;
+    std::copy (m_shape.begin (), m_shape.begin () + i, shape.begin ());
+    std::copy (m_shape.begin () + i, m_shape.end (), shape.begin () + i + 1);
+    std::copy (m_stride.begin (), m_stride.begin () + i, stride.begin ());
+    std::copy (m_stride.begin () + i, m_stride.end (), stride.begin () + i + 1);
+    shape[i] = 1;
+    stride[i] = 1;
+    
+    return MultiArrayView <N+1, T, C>(shape, stride, m_ptr);
 }
 
 template <unsigned int N, class T, class C>

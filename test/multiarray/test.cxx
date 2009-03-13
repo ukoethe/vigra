@@ -144,6 +144,24 @@ public:
         shouldEqual ((array (0, 1)), 104);
     }
 
+    void test_singletonDimension ()
+    {
+        MultiArrayView <4, scalar_type, UnstridedArrayTag> a0 = array3.insertSingletonDimension(0);
+        shouldEqual ((a0 [TinyVector <int, 4> (0, 4, 0, 0)]), 4);
+        shouldEqual ((a0 [TinyVector <int, 4> (0, 4, 1, 0)]), 14);
+        shouldEqual ((a0 [TinyVector <int, 4> (0, 4, 0, 1)]), 104);
+
+        MultiArrayView <4, scalar_type, UnstridedArrayTag> a1 = array3.insertSingletonDimension(1);
+        shouldEqual ((a1 [TinyVector <int, 4> (4, 0, 0, 0)]), 4);
+        shouldEqual ((a1 [TinyVector <int, 4> (4, 0, 1, 0)]), 14);
+        shouldEqual ((a1 [TinyVector <int, 4> (4, 0, 0, 1)]), 104);
+
+        MultiArrayView <4, scalar_type, UnstridedArrayTag> a3 = array3.insertSingletonDimension(3);
+        shouldEqual ((a3 [TinyVector <int, 4> (4, 0, 0, 0)]), 4);
+        shouldEqual ((a3 [TinyVector <int, 4> (4, 1, 0, 0)]), 14);
+        shouldEqual ((a3 [TinyVector <int, 4> (4, 0, 1, 0)]), 104);
+    }
+
     // subarray tests
     void test_subarray ()
     {
@@ -1022,6 +1040,8 @@ struct MultiArrayPointoperatorsTest
     typedef MultiArray<3,PixelType> Image3D;
     typedef MultiArrayView<3,PixelType> View3D;
     typedef Image3D::difference_type Size3;
+    typedef MultiArray<1,PixelType> Image1D;
+    typedef Image1D::difference_type Size1;
 
     Image3D img;
 
@@ -1168,6 +1188,13 @@ struct MultiArrayPointoperatorsTest
                     sum += img(x,y,z);
             shouldEqual(res(x,0,0), sum);
         }
+        
+        Image1D res1(Size1(5));
+        MultiArrayView<3,PixelType> res3 = res1.insertSingletonDimension(1).insertSingletonDimension(2);
+        transformMultiArray(srcMultiArrayRange(img), 
+                            destMultiArrayRange(res3),
+                            FindSum<PixelType>());
+        shouldEqualSequenceTolerance(res1.data(), res1.data()+5, res.data(), 1e-7);       
     }
 
     void testTransformInnerReduce()
@@ -1188,6 +1215,13 @@ struct MultiArrayPointoperatorsTest
                     sum += img(x,y,z);
             shouldEqual(res(0,0,z), sum);
         }
+        
+        Image1D res1(Size1(3));
+        MultiArrayView<3,PixelType> res3 = res1.insertSingletonDimension(0).insertSingletonDimension(0);
+        transformMultiArray(srcMultiArrayRange(img), 
+                            destMultiArrayRange(res3),
+                            FindSum<PixelType>());
+        shouldEqualSequenceTolerance(res1.data(), res1.data()+3, res.data(), 1e-6);       
     }
 
     void testCombine2()
@@ -1488,6 +1522,7 @@ struct MultiArrayDataTestSuite
         add( testCase( &MultiArrayDataTest::test_bindAt ) );
         add( testCase( &MultiArrayDataTest::test_bind ) );
         add( testCase( &MultiArrayDataTest::test_bind0 ) );
+        add( testCase( &MultiArrayDataTest::test_singletonDimension ) );
         add( testCase( &MultiArrayDataTest::testPermute ) );
         add( testCase( &MultiArrayDataTest::testNorm ) );
         add( testCase( &MultiArrayDataTest::testScanOrderAccess ) );
@@ -1502,7 +1537,6 @@ struct MultiArrayPointOperatorsTestSuite
   MultiArrayPointOperatorsTestSuite()
     : vigra::test_suite("MultiArrayPointOperatorsTestSuite")
     {
-        // add( testCase( &MultiArrayTest::test_default_ctor ) );
         add( testCase( &MultiArrayPointoperatorsTest::testInit ) );
         add( testCase( &MultiArrayPointoperatorsTest::testCopy ) );
         add( testCase( &MultiArrayPointoperatorsTest::testCopyOuterExpansion ) );
