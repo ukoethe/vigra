@@ -27,7 +27,7 @@ using namespace matlab;
 /*+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
 
 
-#define RN_DEBUG
+//#define RN_DEBUG
 #define cP2_(a, b) cP<(int)a, b>::value
 template <class T>
 void vigraMain(matlab::OutputArray outputs, matlab::InputArray inputs){
