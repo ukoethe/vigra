@@ -43,8 +43,9 @@
 #include "sized_int.hxx"
 #include "matrix.hxx"
 #include <map>
-
 #include <time.h>
+#include <sstream>
+#include <iostream>
 
 namespace vigra {
 
@@ -102,101 +103,67 @@ VIGRA_MATLAB_VALUETYPE_UTIL(UInt64, Uint64, mxUINT64_CLASS, uint64)
 
 #undef VIGRA_MATLAB_VALUETYPE_UTIL
 
-// TODO:
-//    * handle rgb images
-//    * handle complex matrices
-//    * handle sparse matrices
-
-class InputArray
+class ConstStructArray
 {
-    int size_;
-    const mxArray ** data_;
+  protected:
+    mxArray * matPointer_;
 
   public:
 
-    typedef const mxArray * value_type;
-    typedef value_type & reference;
-    typedef value_type const & const_reference;
-    typedef value_type * pointer;
-    typedef value_type const * const_pointer;
-    typedef int size_type;
-    typedef int difference_type;
-
-    InputArray(size_type size, pointer data)
-    : size_(size),
-      data_(data)
-    {}
-
-    const_reference operator[]( difference_type i ) const
+    struct Proxy
     {
-        if(!isValid(i))
-            mexErrMsgTxt("Too few input arguments.");
-        return data_[i];
-    }
+        mxArray * matPointer_;
+        int index_;
 
-    size_type size() const
+        Proxy(mxArray * matPointer, int index)
+        : matPointer_(matPointer),
+          index_(index)
+        {}
+
+        operator const mxArray *() const
+        {
+            return mxGetFieldByNumber(matPointer_, 0, index_);
+        }
+    };
+
+    ConstStructArray(const mxArray * matPointer = 0)
+    : matPointer_(const_cast<mxArray *>(matPointer))
     {
-        return size_;
+        if(matPointer != 0 && !mxIsStruct(matPointer))
+            mexErrMsgTxt("StructArray(mxArray *): Argument must be a Matlab struct array.");
     }
 
-    bool isValid( difference_type i ) const
+    Proxy operator[](const char * field_name) const
     {
-        return i >= 0 && i < size_;
+        if(matPointer_ == 0)
+            mexErrMsgTxt("StructArray::operator[]: Cannot access uninitialized struct array.");
+
+        int i = mxGetFieldNumber(matPointer_, field_name);
+        if(i == -1)
+            mexErrMsgTxt("StructArray::operator[]: Unknown field name.");
+
+        return Proxy(matPointer_, i);
     }
 
-    bool isEmpty(difference_type i){
-        return mxIsEmpty(data_[i]);
-    }
-};
-
-class OutputArray
-{
-    int size_;
-    mxArray ** data_;
-
-  public:
-
-    typedef mxArray * value_type;
-    typedef value_type & reference;
-    typedef value_type const & const_reference;
-    typedef value_type * pointer;
-    typedef value_type const * const_pointer;
-    typedef int size_type;
-    typedef int difference_type;
-
-    OutputArray(size_type size, pointer data)
-    : size_(size),
-      data_(data)
-    {}
-
-    reference operator[]( difference_type i )
+    Proxy operator[](std::string field_name) const
     {
-        if(!isValid(i))
-            mexErrMsgTxt("Too few output arguments.");
-        return data_[i];
+        return operator[](field_name.c_str());
     }
 
-    const_reference operator[]( difference_type i ) const
+    bool isValid() const
     {
-        if(!isValid(i))
-            mexErrMsgTxt("Too few output arguments.");
-        return data_[i];
+        return matPointer_ != 0;
     }
 
-    size_type size() const
+    bool isValid(const char * field_name) const
     {
-        return size_;
+        return isValid() && mxGetFieldNumber(matPointer_, field_name) != -1;
     }
 
-    bool isValid( difference_type i ) const
+    bool isValid(std::string field_name) const
     {
-        return i >= 0 && i < size_;
+        return isValid(field_name.c_str());
     }
-
-    bool isEmpty(difference_type i){
-        return mxIsEmpty(data_[i]);
-    }
-
 };
 
 class ConstCellArray
@@ -289,70 +256,11 @@ class CellArray
     }
 };
 
-class ConstStructArray
-{
-  protected:
-    mxArray * matPointer_;
 
-  public:
 
-    struct Proxy
-    {
-        mxArray * matPointer_;
-        int index_;
 
-        Proxy(mxArray * matPointer, int index)
-        : matPointer_(matPointer),
-          index_(index)
-        {}
 
-        operator const mxArray *() const
-        {
-            return mxGetFieldByNumber(matPointer_, 0, index_);
-        }
-    };
-
-    ConstStructArray(const mxArray * matPointer = 0)
-    : matPointer_(const_cast<mxArray *>(matPointer))
-    {
-        if(matPointer != 0 && !mxIsStruct(matPointer))
-            mexErrMsgTxt("StructArray(mxArray *): Argument must be a Matlab struct array.");
-    }
-
-    Proxy operator[](const char * field_name) const
-    {
-        if(matPointer_ == 0)
-            mexErrMsgTxt("StructArray::operator[]: Cannot access uninitialized struct array.");
-
-        int i = mxGetFieldNumber(matPointer_, field_name);
-        if(i == -1)
-            mexErrMsgTxt("StructArray::operator[]: Unknown field name.");
-
-        return Proxy(matPointer_, i);
-    }
-
-    Proxy operator[](std::string field_name) const
-    {
-        return operator[](field_name.c_str());
-    }
-
-    bool isValid() const
-    {
-        return matPointer_ != 0;
-    }
-
-    bool isValid(const char * field_name) const
-    {
-        return isValid() && mxGetFieldNumber(matPointer_, field_name) != -1;
-    }
-
-    bool isValid(std::string field_name) const
-    {
-        return isValid(field_name.c_str());
-    }
-};
-
-template <unsigned int SIZE, class T>
+template <class T, unsigned int SIZE>
 TinyVectorView<T, SIZE>
 getTinyVector(mxArray const * t)
 {
@@ -636,66 +544,378 @@ getString(mxArray const * t)
     return std::string(buf.begin());
 }
 
+
+class Required
+{};
+
+template<class T>
+struct OptionalImpl
+{
+    T val;
+    OptionalImpl(T v): val(v) {}
+
+};
+
+struct OptionalImplVoid
+{
+};
+
+OptionalImplVoid Optional()
+{
+    return OptionalImplVoid();
+}
+
+template<class T>
+OptionalImpl<T> Optional(T in)
+{
+    return OptionalImpl<T>(in);
+}
+
+
+
+
+
+// TODO:
+//    * handle rgb images
+//    * handle complex matrices
+//    * handle sparse matrices
+
+class InputArray
+{
+    int size_;
+    const mxArray ** data_;
+
+    std::string createErrMsg(std::string name)
+    {
+        std::ostringstream s1;
+        s1  << "Required Input In Optionstruct: '" << name \
+            <<"' has not been supplied!"<< std::endl;
+        return s1.str();
+    }
+    std::string createErrMsg(int pos)
+    {
+        std::ostringstream s1;
+        s1  <<"Required Input In Signature of Function at position: '"\
+            << pos << "' has not been supplied"<<std::endl;
+        return s1.str();
+    }
+
+
+  public:
+    ConstStructArray options_;
+
+    /* Local Typedefs */
+    typedef const mxArray * value_type;
+    typedef value_type & reference;
+    typedef value_type const & const_reference;
+    typedef value_type * pointer;
+    typedef value_type const * const_pointer;
+    typedef int size_type;
+    typedef int difference_type;
+
+    /*Constructor*/
+    InputArray(size_type size, pointer data)
+    : size_(size),
+      data_(data),
+      options_(this->isValid(size-1) && mxIsStruct((*this)[size-1])
+                 ? (*this)[size-1]
+                 : 0)
+    {}
+
+    /*Operators*/
+    const_reference operator[]( difference_type i ) const
+    {
+        if(!isValid(i))
+            mexErrMsgTxt("Too few input arguments.");
+        return data_[i];
+    }
+
+    value_type operator[]( std::string name) const
+    {
+        std::string errMsg = "Not Found " + name +" in OptionStruct or OptionStruct not set";
+        if(!isValid(name))
+            mexErrMsgTxt(errMsg.c_str());
+        return options_[name];
+    }
+
+
+    /*Some More Helper Func*/
+    size_type size() const
+    {
+        return size_;
+    }
+
+    bool isValid( difference_type i ) const
+    {
+        return i >= 0 && i < size_;
+    }
+
+    bool isValid(std::string name) const
+    {
+        return options_.isValid(name);
+    }
+
+    bool isEmpty(difference_type i){
+        return mxIsEmpty(data_[i]);
+    }
+
+    bool isEmpty(std::string name){
+        return mxIsEmpty(options_[name]);
+    }
+
+    template <class T, class U, class Place>
+    T errorOrDefault(OptionalImpl<U> const & o, Place NameOrPos = Place()){ return o.val; }
+
+    template <class T, class Place>
+    T errorOrDefault(Required r, Place NameOrPos = Place())
+    {
+        mexErrMsgTxt(createErrMsg(NameOrPos).c_str());
+        return T();
+    }
+
+    /*getter Func*/
+
+    /*Scalar Type*/
+    template <class T,class place, class ReqType>
+    T getScalar(place posOrName, ReqType req)
+    {
+        if(!isValid(posOrName)|| isEmpty(posOrName))
+        {
+            return errorOrDefault<T>(req, posOrName);
+        }
+        else
+        {
+            return matlab::getScalar<T>((*this)[posOrName]);
+        }
+    }
+
+
+    template <class T, class place, class reqClass, class minClass, class maxClass>
+    T getScalarMinMax(place posOrName, reqClass req, minClass min_, maxClass max_)
+    {
+        T temp = this->getScalar<T>(posOrName, req);
+        if (!is_in_range(temp, min_, max_))
+            mexErrMsgTxt("Value Out of bound");
+        else
+            return temp;
+
+    }
+
+    template <class place, class reqClass>
+    bool getBool(place posOrName, reqClass req)
+    {
+        return this->getScalarMinMax<bool>(posOrName, req, 0, 1);
+    }
+
+    /*Array Type*/
+    template <unsigned int N, class T, class place, class reqClass>
+    MultiArrayView<N,T> getMultiArray(place posOrName, reqClass req)
+    {
+        if(!isValid(posOrName) || isEmpty(posOrName))
+        {
+            return errorOrDefault< MultiArrayView<N,T> >(req, posOrName);
+        }
+        else
+        {
+            value_type temp = (*this)[posOrName];
+            return matlab::getMultiArray<N,T>(temp);
+        }
+    }
+
+    template < class T, class place, class reqClass>
+    BasicImageView<T> getMultiArray(place posOrName, reqClass req)
+    {
+        if(!isValid(posOrName) || isEmpty(posOrName))
+        {
+            return errorOrDefault<BasicImageView<T> >(req, posOrName);
+        }
+        else
+        {
+            value_type temp = (*this)[posOrName];
+            return matlab::getImage<T>(temp);
+        }
+    }
+
+    template<class T,unsigned int sze, class place, class reqClass>
+    TinyVectorView< T, sze> getTinyVector(place posOrName, reqClass req)
+    {
+        if(!isValid(posOrName) || isEmpty(posOrName))
+        {
+            return errorOrDefault<TinyVectorView< T, sze> >(req, posOrName);
+        }
+        else
+        {
+            value_type temp = (*this)[posOrName];
+            return matlab::getTinyVector< T, sze>(temp);
+        }
+    }
+
+    template< unsigned int sze, class place, class reqClass>
+    TinyVectorView<MultiArrayIndex, sze> getShape(place posOrName, reqClass req)
+    {
+        if(!isValid(posOrName) || isEmpty(posOrName))
+        {
+            return errorOrDefault<TinyVectorView<MultiArrayIndex, sze> >(req, posOrName);
+        }
+        else
+        {
+            value_type temp = (*this)[posOrName];
+            return matlab::getShape<sze>(temp);
+        }
+    }
+
+    template<class place, class reqClass>
+    ConstCellArray getCellArray(place posOrName, reqClass req)
+    {
+        if(!isValid(posOrName) || isEmpty(posOrName))
+        {
+            return errorOrDefault<ConstCellArray>(req, posOrName);
+        }
+        else
+        {
+            value_type temp = (*this)[posOrName];
+            return matlab::getCellArray(temp);
+        }
+    }
+
+};
+
+class OutputArray
+{
+    int size_;
+    mxArray ** data_;
+    std::string createErrMsgOut(int pos)
+    {
+        std::ostringstream s1;
+        s1  <<"Required Output at position: '"\
+            << pos << "' has not been supplied"<<std::endl;
+        return s1.str();
+    }
+  public:
+
+    typedef mxArray * value_type;
+    typedef value_type & reference;
+    typedef value_type const & const_reference;
+    typedef value_type * pointer;
+    typedef value_type const * const_pointer;
+    typedef int size_type;
+    typedef int difference_type;
+
+    OutputArray(size_type size, pointer data)
+    : size_(size),
+      data_(data)
+    {}
+
+    reference operator[]( difference_type i )
+    {
+        if(!isValid(i))
+            mexErrMsgTxt("Too few output arguments.");
+        return data_[i];
+    }
+
+    const_reference operator[]( difference_type i ) const
+    {
+        if(!isValid(i))
+            mexErrMsgTxt("Too few output arguments.");
+        return data_[i];
+    }
+
+    size_type size() const
+    {
+        return size_;
+    }
+
+    bool isValid( difference_type i ) const
+    {
+        return i >= 0 && i < size_;
+    }
+
+    bool isEmpty(difference_type i){
+        return mxIsEmpty(data_[i]);
+    }
+
+    template <class T>
+    T errorOrDefault(OptionalImplVoid const & o, int Pos){ return T(); }
+
+    template <class T>
+    T errorOrDefault(Required r, int Pos)
+    {
+        mexErrMsgTxt(createErrMsgOut(Pos).c_str());
+        return T();
+    }
+
+    template <class T>
+    T errorOrDefaultP(OptionalImplVoid const & o, int Pos){ return 0; }
+
+    template <class T>
+    T errorOrDefaultP(Required r, int Pos)
+    {
+        mexErrMsgTxt(createErrMsgOut(Pos).c_str());
+        return T();
+    }
+
+    /* creating func */
+    template <unsigned int DIM, class T, class ReqType>
+    MultiArrayView<DIM, T> createMultiArray(int pos,ReqType req,
+                                            const TinyVector<int, DIM>  & shape)
+    {
+        if(!isValid(pos))
+            return errorOrDefault<MultiArrayView<DIM, T> >(req, pos);
+        return matlab::createMultiArray<DIM, T>(shape, (*this)[pos]);
+    }
+
+    template <class T, class ReqType>
+    BasicImageView<T> createImage(int pos, ReqType req,
+                                    mwSize width, mwSize height)
+    {
+        if(!isValid(pos))
+            return errorOrDefault<BasicImageView<T> >(req, pos);
+        return matlab::createImage<T>(width, height, (*this)[pos]);
+    }
+
+    template <class T, class ReqType>
+    BasicImageView<T> createImage(  int pos, ReqType req,
+                                    typename MultiArrayShape<2>::type const & shape)
+    {
+        return createImage<T>(pos, req, shape[1], shape[0]);
+    }
+
+    template <class T, class ReqType>
+    T* createScalar(int pos, ReqType req)
+    {
+        if(!isValid(pos))
+            return errorOrDefaultP<T>(req, pos);
+        BasicImageView<T> temp = matlab::createImage<T>(1, 1, pos);
+        return &temp[0];
+    }
+
+    template <class T, class ReqType>
+    void createScalar(int pos, ReqType req, T val)
+    {
+        if(!isValid(pos))
+            errorOrDefault<T>(req, pos);
+        BasicImageView<T> temp = matlab::createImage<T>(1, 1, pos);
+        temp[0] = val;
+    }
+
+    template <class ReqType>
+    ConstCellArray createCellArray(int pos, ReqType req, mwSize sze)
+    {
+        if(!isValid(pos))
+            return errorOrDefault<ConstCellArray>(req, pos);
+        return matlab::createCellArray(sze, (*this)[pos]);
+    }
+
+};
+
+
+
 /***********************************
 Rahuls code starts here
 ************************************+*/
 using namespace vigra;
 
-template <class Functor>
-void callMexFunctor(matlab::OutputArray outputs, matlab::InputArray inputs)
-{
-    mxClassID inClass = mxGetClassID(inputs[0]);
-    switch(inClass){
-        case mxDOUBLE_CLASS:
-            Functor::template exec<double>(outputs, inputs);    break;
-        case mxSINGLE_CLASS:
-            Functor::template exec<float>(outputs, inputs);     break;
-        case mxINT8_CLASS:
-            Functor::template exec<Int8>(outputs, inputs);      break;
-        case mxINT16_CLASS:
-            Functor::template exec<Int16>(outputs, inputs);     break;
-        case mxINT32_CLASS:
-            Functor::template exec<Int32>(outputs, inputs);     break;
-        case mxINT64_CLASS:
-            Functor::template exec<Int64>(outputs, inputs);     break;
-        case mxUINT8_CLASS:
-            Functor::template exec<UInt8>(outputs, inputs);     break;
-        case mxUINT16_CLASS:
-            Functor::template exec<UInt16>(outputs, inputs);    break;
-        case mxUINT32_CLASS:
-            Functor::template exec<UInt32>(outputs, inputs);    break;
-        case mxUINT64_CLASS:
-            Functor::template exec<UInt64>(outputs, inputs);    break;
-        default:
-            mexErrMsgTxt("Input image must have type 'uint8'-16-32-64', 'int8-16-32-64' 'single' or 'double'.");
-    }
-}
 
-template <class Functor>
-void callMexAllIntFunctor(matlab::OutputArray outputs, matlab::InputArray inputs)
-{
-    mxClassID inClass = mxGetClassID(inputs[0]);
-    switch(inClass){
-        case mxINT8_CLASS:
-            Functor::template exec<Int8>(outputs, inputs);      break;
-        case mxINT16_CLASS:
-            Functor::template exec<Int16>(outputs, inputs);     break;
-        case mxINT32_CLASS:
-            Functor::template exec<Int32>(outputs, inputs);     break;
-        case mxINT64_CLASS:
-            Functor::template exec<Int64>(outputs, inputs);     break;
-        case mxUINT8_CLASS:
-            Functor::template exec<UInt8>(outputs, inputs);     break;
-        case mxUINT16_CLASS:
-            Functor::template exec<UInt16>(outputs, inputs);    break;
-        case mxUINT32_CLASS:
-            Functor::template exec<UInt32>(outputs, inputs);    break;
-        case mxUINT64_CLASS:
-            Functor::template exec<UInt64>(outputs, inputs);    break;
-        default:
-            mexErrMsgTxt("Input image must have type 'uint8'-16-32-64', 'int8-16-32-64' 'single' or 'double'.");
-    }
-}
 /*++++++++++++++++++++++++++HELPERFUNC+++++++++++++++++++++++++++++++*/
 /* This is used for better readibility of the test cases            .
 /* Nothing to be done here.
@@ -735,204 +955,7 @@ inline bool is_in_range(T in, T min, std::string max)
     return (in >= min);
 }
 
-//enumeration - for GCC
-enum DataDimension {IMAG = 2, VOLUME = 3};
 
-/*+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
-/* The Optons struct contains all the necassary working data and
-/* options for the vigraFunc. This is the minimal struct
-/* Add fields as necessary
-/*+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
-template <class T>
-struct base_data
-{
-    int optionsIndex, numOfDim;
-    BasicImageView<T>  in;
-    MultiArrayView<3,T> in3D;
-    ConstStructArray options;
-
-    base_data(matlab::InputArray inputs, int options_index = -1)
-	//optionsIndex: helper integer only in the scope of the next dunction called.
-    : optionsIndex(options_index < 0
-                       ? inputs.size() + options_index
-                       : options_index),
-	//initialise options with right field of inputs if it exists and is a struct
-      options(inputs.isValid(optionsIndex) && mxIsStruct(inputs[optionsIndex])
-                 ? inputs[optionsIndex]
-                 : 0)
-    {
-        numOfDim = mxGetNumberOfDimensions(inputs[0]);
-        if(numOfDim > 3)
-             mexErrMsgTxt("Input image must have 2 or 3 dimensions");
-        if(inputs.isEmpty(0))
-             mexErrMsgTxt("Input image is empty!");
-
-        // always initialise a MultiArrayView ...
-        in3D = matlab::getMultiArray<3, T>(inputs[0]);
-        // ... but an image can only be constructed for 2D data
-        if(numOfDim == 2)
-            in = matlab::getImage<T>(inputs[0]);
-    }
-};
-
-/*++++++++++++++++++++++++++HARDCORE-MACROS++++++++++++++++++++++++++++*/
-
-//Definition of Membervariables and assignment functions
-#define declBool(name, default) \
-    bool name;\
-    bool get_##name()\
-    {\
-        if(!this->options.isValid(#name))\
-            return default;\
-        const mxArray* name = this->options[#name];\
-        if(!mxIsNumeric(name))\
-            mexErrMsgTxt("option '" #name "' must be a boolean value.");\
-        int res = matlab::getScalar<int>(name);\
-        if(res != 0 && res != 1)\
-            mexErrMsgTxt("option '" #name "' must be a boolean value.");\
-        return res != 0;\
-    }
-
-#define declScalar(type, name, default) \
-    type name;\
-    type get_##name()\
-    {\
-        if(!this->options.isValid(#name))\
-            return default;\
-        const mxArray* name = this->options[#name];\
-        if(!mxIsNumeric(name))\
-            mexErrMsgTxt("option '" #name "' must be a numeric value.");\
-        return matlab::getScalar<type>(name);\
-    }
-
-#define declScalar2D3D(type, name, default2D, default3D) \
-    type name;\
-    type get_##name()\
-    {\
-        if(!this->options.isValid(#name))\
-            return this->numOfDim == 2? default2D : default3D;\
-        const mxArray* name = this->options[#name];\
-        if(!mxIsNumeric(name))\
-            mexErrMsgTxt("option '" #name "' must be a numeric value.");\
-        return matlab::getScalar<type>(name);\
-    }
-
-#define declScalarMinMax(type, name, default,min, max) \
-    type name;\
-    type get_##name()\
-    {\
-        if(!this->options.isValid(#name))\
-            return default;\
-        const mxArray* name = this->options[#name];\
-        if(!mxIsNumeric(name))\
-            mexErrMsgTxt("option '" #name "' must be a numeric value.");\
-        type out = matlab::getScalar<type>(name);\
-        if(!is_in_range<type>(out,min,max))\
-            mexErrMsgTxt("option '"#name"' out of range ["#min" ... "#max"].");\
-        return out;\
-    }
-
-#define declCharConstr(title, number, name1_default, name2, name3, name4, name5)\
-    title##Enum title;\
-    title##Enum get_##title()\
-    {\
-        std::map<std::string, title##Enum> title##_str;\
-        if(number > 0) title##_str[#name1_default] = name1_default;\
-        if(number > 1) title##_str[#name2] = name2;\
-        if(number > 2) title##_str[#name3] = (title##Enum)3;\
-        if(number > 3) title##_str[#name4] = (title##Enum)4;\
-        if(number > 4) title##_str[#name5] = (title##Enum)5;\
-        if(!this->options.isValid(#title))\
-            return name1_default;\
-        const mxArray* name = this->options[#title];\
-        if(!mxIsChar(name))\
-            mexErrMsgTxt("option '" #title "' must be a string.");\
-        std::string namex = matlab::getString(this->options[matlab::getString(name)]); \
-        if(title##_str.count(namex) == 0)\
-            mexErrMsgTxt("option '" #title "' contains invalid string.");\
-        return title##_str[namex];\
-    }
-
-#define declCharConstr2(title, name1_default, name2);\
-    enum title##Enum {name1_default = 1, name2 = 2};\
-    declCharConstr(title, 2, name1_default, name2, name3, name4, name5)
-
-#define declCharConstr3(title, name1_default, name2, name3);\
-    enum title##Enum {name1_default = 1, name2 = 2, name3 = 3};\
-    declCharConstr(title, 3, name1_default, name2, name3, name4, name5)
-
-#define declCharConstr4(title, name1_default, name2, name3, name4);\
-    enum title##Enum {name1_default = 1, name2 = 2, name3 = 3, name4 = 4};\
-    declCharConstr(title, 4, name1_default, name2, name3, name4, name5)
-
-#define declCharConstr5(title, name1_default, name2, name3, name4, name5);\
-    enum title##Enum {name1_default = 1, name2 = 2, name3 = 3, name4 = 4, name5 = 5};\
-    declCharConstr(title, 5, name1_default, name2, name3, name4, name5)
-
-#define declMultiArrayDim(dim, name, type);\
-        MultiArrayView<dim,type>  name;\
-        MultiArrayView<dim,type> get_##name()\
-        {\
-            if(!this->options.isValid(#name))\
-                mexErrMsgTxt("Matrix '" #name "' must contain data");\
-            const mxArray* name = this->options[#name];\
-            if(!mxIsNumeric(name))\
-                mexErrMsgTxt("option '" #name "' must be a numeric value.");\
-            return matlab::getMultiArray<dim, type>(name);\
-        }
-
-
-#if 0 // currently unused
-#define declImage(name, type);\
-        BasicImageView<type>  name;\
-        BasicImageView<type> get_##name(mxArray *opt)\
-        {\
-            mxArray* nameArr =mxGetField(opt, 0, #name);\
-            BasicImageView<type> bla;\
-            return (name!=NULL&&mxIsNumeric(name))\
-                         ? matlab::getImage<type>(name)\
-                         : bla;\
-        }
-
-#define declMultiArray(name, type);\
-        MultiArrayView<3,type>  name;\
-        MultiArrayView<3,type> get_##name(mxArray *opt)\
-        {\
-            mxArray* nameArr =mxGetField(opt, 0, #name);\
-            MultiArrayView<3,type> bla;\
-            return (name!=NULL&&mxIsNumeric(name))\
-                         ? matlab::getMultiArray<3, T><type>(name)\
-                         : bla;\
-        }
-
-
-#endif /* #if 0 */
-
-
-#define declOut(type);\
-    BasicImageView<type>  out;\
-    MultiArrayView<3,type> out3D;
-
-// Some Macros for commonly used output declarations
-#define initOut_SAME(outType);\
-    out3D = matlab::createMultiArray<3,outType>(this->in3D.shape(), outputs[0]);\
-    if(this->numOfDim == 2)\
-        out = matlab::getImage<outType>(outputs[0]);
-
-#define initOut_SIZE(outType,w,h,d);\
-    out3D = matlab::createMultiArray<3,outType>(MultiArrayShape<3>::type(w, h, d), outputs[0]);\
-    if(this->numOfDim == 2)\
-        out = matlab::getImage<outType>(outputs[0]);
-
-#define initOut_2D(outType,w,h);\
-    out3D = matlab::createMultiArray<3,outType>(MultiArrayShape<3>::type(w, h, 1), outputs[0]);\
-    out = matlab::getImage<outType>(outputs[0]);
-
-#define initOut_3D(outType,w,h,d)\
-    out3D = matlab::createMultiArray<3,outType>(MultiArrayShape<3>::type(w, h, d), outputs[0]);\
-
-//Simplify Member Initialisors
-#define initOption(name) name(get_##name())
 
 //Wrapper classes to STL-Map for use as a sparse array.
 
@@ -1039,6 +1062,8 @@ void vigraMexFunction(vigra::matlab::OutputArray, vigra::matlab::InputArray);
 
 class vigraFunctor;
 
+#ifndef DO_NOT_USE_VIGRA_MEX_FUNCTION
+
 void mexFunction(int nlhs, mxArray *plhs[],
                  int nrhs, const mxArray *prhs[])
 {
@@ -1047,12 +1072,56 @@ void mexFunction(int nlhs, mxArray *plhs[],
     vigra::matlab::InputArray inputs(nrhs, prhs);
     vigra::matlab::OutputArray outputs(nlhs, plhs);
 
-    vigra::matlab::callMexFunctor<vigraFunctor>(outputs, inputs);
+    vigraMexFunction(outputs, inputs);
   }
   catch(std::exception & e)
   {
     mexErrMsgTxt(e.what());
   }
 }
+
+#endif /*DO_NOT_USE_VIGRA_MEX_FUNCTION*/
+
+//Character Valued options
+#define LOAD_ENUM_OPTION(title, number, name1_default, name2, name3, name4, name5)\
+    title##Enum title;\
+    {\
+        std::map<std::string, int> title##_str;\
+        if(number > 0) title##_str[#name1_default] = 1;\
+        if(number > 1) title##_str[#name2] = 2;\
+        if(number > 2) title##_str[#name3] = 3;\
+        if(number > 3) title##_str[#name4] = 4;\
+        if(number > 4) title##_str[#name5] = 5;\
+        if(!inputs.options_.isValid(#title))\
+        {\
+            title =  name1_default;\
+        }\
+        else\
+        {\
+            const mxArray* name = inputs.options_[#title];\
+            if(!mxIsChar(name))\
+                mexErrMsgTxt("option '" #title "' must be a string.");\
+            std::string namex = matlab::getString(inputs.options_[#title]); \
+            if(title##_str.count(namex) == 0)\
+                mexErrMsgTxt("option '" #title "' contains invalid string.");\
+            title = (title##Enum)title##_str[namex];\
+        }\
+    };
+
+#define LOAD_ENUM_OPTION2(title, name1_default, name2);\
+    enum title##Enum {name1_default = 1, name2 = 2};\
+    LOAD_ENUM_OPTION(title, 2, name1_default, name2, name3, name4, name5);
+
+#define LOAD_ENUM_OPTION3(title, name1_default, name2, name3);\
+    enum title##Enum {name1_default = 1, name2 = 2, name3 = 3};\
+    LOAD_ENUM_OPTION(title, 3, name1_default, name2, name3, name4, name5);
+
+#define LOAD_ENUM_OPTION4(title, name1_default, name2, name3, name4);\
+    enum title##Enum {name1_default = 1, name2 = 2, name3 = 3, name4 = 4};\
+    LOAD_ENUM_OPTION(title, 4, name1_default, name2, name3, name4, name5);
+
+#define LOAD_ENUM_OPTION5(title, name1_default, name2, name3, name4, name5);\
+    enum title##Enum {name1_default = 1, name2 = 2, name3 = 3, name4 = 4, name5 = 5};\
+    LOAD_ENUM_OPTION(title, 5, name1_default, name2, name3, name4, name5);
 
 #endif // VIGRA_MATLAB_HXX

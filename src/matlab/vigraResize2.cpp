@@ -1,12 +1,13 @@
 /*++++++++++++++++++++INCLUDES+and+Definitions++++++++++++++++++++++++*/
 
 #include <vigra/matlab.hxx>
+#include <vigra/matlab_FLEXTYPE.hxx>
 #include <string>
 #include <vigra/resizeimage.hxx>
+#include <iostream>
 
 
-
-//this could be a typedef but if you want outType to be the same type as inType then you can just 
+//this could be a typedef but if you want outType to be the same type as inType then you can just
 //set outType to T
 
 
@@ -19,86 +20,117 @@ using namespace matlab;
 /*+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
 //This is not using base_data as base class. because input is 4D.
 
-template <class T>
-struct data
-: public base_data<T>
-{
-    declCharConstr3(method, BSpline, CatmullRom, Coscot);
-    declScalarMinMax(int, splineOrder, 3, 0, 5);
-    declOut(T);
-    
-    using base_data<T>::in3D;
-    
-    data(matlab::OutputArray outputs, matlab::InputArray inputs)
-    :           base_data<T>(inputs),
-                initOption(method),
-                initOption(splineOrder)
-    {
-        typedef MultiArrayShape<2>::type Shape;
-        
-        // check if newShape was given
-        bool newShapeGiven = inputs.size() == 3 ||
-                             (inputs.size() == 2 && !this->options.isValid());                                
-        Shape newShape = newShapeGiven
-                             ? matlab::getShape<2>(inputs[1])
-                             : Shape(in3D.shape(0)*2-1, in3D.shape(1)*2-1);
-        initOut_3D(T, newShape[0], newShape[1], in3D.shape(2));
-    }
-};
+
 
 /*+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
 /* This function does all the work
 /*+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
 
-#define cP2_(a, b) cP<data<T>::a, b>::value
-struct vigraFunctor
-{
-    template <class T>
-    static void exec(matlab::OutputArray outputs, matlab::InputArray inputs){
-        //Options
-        data<T>  o(outputs, inputs);
 
-        // contorPair maps 2 integers bijectively onto one dimension. (see Wikipedia Cantor pair Function) 
+#define RN_DEBUG
+#define cP2_(a, b) cP<(int)a, b>::value
+template <class T>
+void vigraMain(matlab::OutputArray outputs, matlab::InputArray inputs){
+    //Options
 
-        for(int k=0; k<o.in3D.shape(3); ++k)
+    MultiArrayView<3,T>         in3D        = inputs.getMultiArray<3,T>(0, Required());
+
+    LOAD_ENUM_OPTION3(method, BSpline,Catmull, Coscot);
+
+    int                         splineOrder = (method == BSpline)?
+                                          inputs.getScalarMinMax<int>("splineOrder", Optional(3),0, 5)
+                                        : 0;
+
+    TinyVector<double, 2>       defaultShape(2* (in3D.shape(0)), 2*(in3D.shape(1)));
+    TinyVectorView<double, 2>   newShape  = inputs.getTinyVector<double, 2> ( 1, Optional(defaultShape));
+    MultiArrayShape<3>::type    newShape3      (newShape[0], newShape[1], in3D.shape(2));
+
+
+    MultiArrayView<3,T> out3D           = outputs.createMultiArray      <3,T>   (0, Required(), newShape3);
+    // contorPair maps 2 integers bijectively onto one dimension. (see Wikipedia Cantor pair Function)
+
+    for(int k=0; k<in3D.shape(2); ++k)
+    {
+
+        BasicImageView<T> ink = makeBasicImageView(in3D.bindOuter(k));
+        BasicImageView<T> outk = makeBasicImageView(out3D.bindOuter(k));
+
+        switch(cantorPair(method, splineOrder))
         {
-            BasicImageView<T> ink = makeBasicImageView(o.in3D.bindOuter(k));    
-            BasicImageView<T> outk = makeBasicImageView(o.out3D.bindOuter(k));    
-            switch(cantorPair(o.method, o.splineOrder))
-            {
-            case cP2_(BSpline, 0):
-                resizeImageNoInterpolation(srcImageRange(ink), destImageRange(outk));
-                break;
-            case cP2_(BSpline, 1):
-                resizeImageLinearInterpolation(srcImageRange(ink), destImageRange(outk));
-                break;
-            case cP2_(BSpline, 2):
-                resizeImageSplineInterpolation(srcImageRange(ink), destImageRange(outk), BSpline<2>());
-                break;
-            case cP2_(BSpline, 3):
-                resizeImageSplineInterpolation(srcImageRange(ink), destImageRange(outk), BSpline<3>());
-                break;
-            case cP2_(BSpline, 4):
-                resizeImageSplineInterpolation(srcImageRange(ink), destImageRange(outk), BSpline<4>());
-                break;
-            case cP2_(BSpline, 5):
-                resizeImageSplineInterpolation(srcImageRange(ink), destImageRange(outk), BSpline<5>());
-                break;
-            case cP2_(CatmullRom, 0):
-                resizeImageCatmullRomInterpolation(srcImageRange(ink), destImageRange(outk));
-                break;
-            case cP2_(Coscot, 0):
-                resizeImageCoscotInterpolation(srcImageRange(ink), destImageRange(outk));
-                break;          
-            default:
-                mexErrMsgTxt("Something went wrong");
-            }
+        case cP2_(BSpline, 0):
+            #ifdef RN_DEBUG
+            mexWarnMsgTxt("BSpline 0");
+            #endif
+            resizeImageNoInterpolation(srcImageRange(ink), destImageRange(outk));
+            break;
+        case cP2_(BSpline, 1):
+            #ifdef RN_DEBUG
+            mexWarnMsgTxt("BSpline 1");
+            #endif
+            resizeImageLinearInterpolation(srcImageRange(ink), destImageRange(outk));
+            break;
+        case cP2_(BSpline, 2):
+            #ifdef RN_DEBUG
+            mexWarnMsgTxt("BSpline 2");
+            #endif
+            resizeImageSplineInterpolation(srcImageRange(ink), destImageRange(outk), vigra::BSpline<2>());
+            break;
+        case cP2_(BSpline, 3):
+            #ifdef RN_DEBUG
+            mexWarnMsgTxt("BSpline 3");
+            #endif
+            resizeImageSplineInterpolation(srcImageRange(ink), destImageRange(outk), vigra::BSpline<3>());
+            break;
+        case cP2_(BSpline, 4):
+            #ifdef RN_DEBUG
+            mexWarnMsgTxt("BSpline 4");
+            #endif
+            resizeImageSplineInterpolation(srcImageRange(ink), destImageRange(outk), vigra::BSpline<4>());
+            break;
+        case cP2_(BSpline, 5):
+            #ifdef RN_DEBUG
+            mexWarnMsgTxt("BSpline 5");
+            #endif
+            resizeImageSplineInterpolation(srcImageRange(ink), destImageRange(outk), vigra::BSpline<5>());
+            break;
+        case cP2_(Catmull, 0):
+            #ifdef RN_DEBUG
+            mexWarnMsgTxt("Catmull 0");
+            #endif
+            resizeImageCatmullRomInterpolation(srcImageRange(ink), destImageRange(outk));
+            break;
+        case cP2_(Coscot, 0):
+            #ifdef RN_DEBUG
+            mexWarnMsgTxt("Coscot 0");
+            #endif
+            resizeImageCoscotInterpolation(srcImageRange(ink), destImageRange(outk));
+            break;
+        default:
+            mexErrMsgTxt("Something went wrong");
         }
-        
     }
-};
 
-/** MATLAB 
+}
+
+void vigraMexFunction(vigra::matlab::OutputArray outputs, vigra::matlab::InputArray inputs)
+{
+    /*
+    FLEXIBLE_TYPE_START(0, in);
+        ALLOW_D;
+    FLEXIBLE_TYPE_END;
+    */
+
+    mxClassID inClass;
+    FLEX_TYPE(inClass, 0, in);
+    switch(inClass)
+    {
+        ALLOW_D
+        DEFAULT_ERROR;
+    }
+}
+
+
+/** MATLAB
 function resized = vigraResize2(original)
 function resized = vigraResize2(original, newShape)
 function resized = vigraResize2(original, options)
@@ -107,12 +139,12 @@ function resized = vigraResize2(original, newShape, options)
 D = vigraResize2(inputImage)   # resizes original image data with default options.
 D = vigraResize2(inputImage, [200 300], options)  # does the same with user options.
 
-    original    - Array with original 2D image data 
+    original    - Array with original 2D image data
                     (gray scale or multi-band/RGB, numeric type)
     newShape    - int32-Array of length 2 that gives the new shape
                     (default: 2*size(original)-1 )
     options
-        splineOrder - order of interpolation 
+        splineOrder - order of interpolation
             (0 <= splineOrder <= 5, default: 3, i.e. cubic splines)
             this option is only used for method 'BSpline'
         method - 'BSpline' (default), 'Coscot' or 'CatmullRom'
