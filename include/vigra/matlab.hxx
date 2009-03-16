@@ -44,8 +44,8 @@
 #include "matrix.hxx"
 #include <map>
 #include <time.h>
-#include <sstream>
-#include <iostream>
+//#include <sstream>
+//#include <iostream>
 
 namespace vigra {
 
@@ -560,6 +560,7 @@ struct OptionalImplVoid
 {
 };
 
+
 OptionalImplVoid Optional()
 {
     return OptionalImplVoid();
@@ -571,6 +572,22 @@ OptionalImpl<T> Optional(T in)
     return OptionalImpl<T>(in);
 }
 
+template<class T>
+OptionalImpl<T> Optional(T in, T in2, int dimVar)
+{
+    return (dimVar == 2)? in: in2;
+}
+
+struct VarChecker
+{
+    bool isSet;
+    VarChecker():isSet(true) {};
+};
+
+VarChecker* Optional(VarChecker& in)
+{
+    return &in;
+}
 
 
 
@@ -587,17 +604,16 @@ class InputArray
 
     std::string createErrMsg(std::string name)
     {
-        std::ostringstream s1;
-        s1  << "Required Input In Optionstruct: '" << name \
-            <<"' has not been supplied!"<< std::endl;
-        return s1.str();
+        std::string s1;
+        s1 =  "Required Input In Optionstruct: '" + name + "' has not been supplied!";
+        return s1;
     }
     std::string createErrMsg(int pos)
     {
-        std::ostringstream s1;
-        s1  <<"Required Input In Signature of Function at position: '"\
-            << pos << "' has not been supplied"<<std::endl;
-        return s1.str();
+        char tmp[10] = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9'};
+        std::string oi(1, tmp[pos%10]);
+        std::string s1  = "Required Input In Signature of Function at position: '"+ oi+"' has not been supplied";
+        return s1;
     }
 
 
@@ -667,9 +683,17 @@ class InputArray
     T errorOrDefault(OptionalImpl<U> const & o, Place NameOrPos = Place()){ return o.val; }
 
     template <class T, class Place>
+    T errorOrDefault(VarChecker* e, Place NameOrPos = Place())
+    {
+        e->isSet = false;
+        return static_cast<T>(0);
+    }
+
+    template <class T, class Place>
     T errorOrDefault(Required r, Place NameOrPos = Place())
     {
-        mexErrMsgTxt(createErrMsg(NameOrPos).c_str());
+        std::string a = createErrMsg(NameOrPos);
+        mexErrMsgTxt( a.c_str());
         return T();
     }
 
@@ -723,7 +747,7 @@ class InputArray
     }
 
     template < class T, class place, class reqClass>
-    BasicImageView<T> getMultiArray(place posOrName, reqClass req)
+    BasicImageView<T> getImage(place posOrName, reqClass req)
     {
         if(!isValid(posOrName) || isEmpty(posOrName))
         {
@@ -764,6 +788,20 @@ class InputArray
         }
     }
 
+
+    template< class place, class reqClass>
+    int getDimOfInput(place posOrName, reqClass req)
+    {
+        if(!isValid(posOrName) || isEmpty(posOrName))
+        {
+            return errorOrDefault<int>(req, posOrName);
+        }
+        else
+        {
+            return mxGetNumberOfDimensions((*this)[posOrName]);
+        }
+    }
+
     template<class place, class reqClass>
     ConstCellArray getCellArray(place posOrName, reqClass req)
     {
@@ -786,10 +824,10 @@ class OutputArray
     mxArray ** data_;
     std::string createErrMsgOut(int pos)
     {
-        std::ostringstream s1;
-        s1  <<"Required Output at position: '"\
-            << pos << "' has not been supplied"<<std::endl;
-        return s1.str();
+        char tmp[10] = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9'};
+        std::string oi(1, tmp[pos%10]);
+        std::string s1 =  "Required Output at position: '" + oi + "' has not been supplied";
+        return s1;
     }
   public:
 
@@ -885,7 +923,7 @@ class OutputArray
     {
         if(!isValid(pos))
             return errorOrDefaultP<T>(req, pos);
-        BasicImageView<T> temp = matlab::createImage<T>(1, 1, pos);
+        BasicImageView<T> temp = matlab::createImage<T>(1, 1, (*this)[pos]);
         return &temp[0];
     }
 
@@ -893,9 +931,12 @@ class OutputArray
     void createScalar(int pos, ReqType req, T val)
     {
         if(!isValid(pos))
+        {
             errorOrDefault<T>(req, pos);
-        BasicImageView<T> temp = matlab::createImage<T>(1, 1, pos);
-        temp[0] = val;
+            return;
+        }
+        BasicImageView<T> temp = matlab::createImage<T>(1, 1, (*this)[pos]);
+        temp(0,0) = val;
     }
 
     template <class ReqType>
@@ -905,7 +946,6 @@ class OutputArray
             return errorOrDefault<ConstCellArray>(req, pos);
         return matlab::createCellArray(sze, (*this)[pos]);
     }
-
 };
 
 
@@ -1123,5 +1163,9 @@ void mexFunction(int nlhs, mxArray *plhs[],
 #define LOAD_ENUM_OPTION5(title, name1_default, name2, name3, name4, name5);\
     enum title##Enum {name1_default = 1, name2 = 2, name3 = 3, name4 = 4, name5 = 5};\
     LOAD_ENUM_OPTION(title, 5, name1_default, name2, name3, name4, name5);
+
+
+
+enum DataDimension {IMAG = 2, VOLUME = 3};
 
 #endif // VIGRA_MATLAB_HXX
