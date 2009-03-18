@@ -7,4 +7,7 @@ vigraResize2		    	:	2D Spline Interpolated Resize	Imported, Not tested
 vigraResize3		    	:	3D Spline Interpolated Resize	Imported, Not tested
 vigraAdjacency	        	:	Create Adjacency Matrix	     	Imported, Not tested
 vigraConnectedComponents	:	Calculate Connected Comp.    	Imported, Not tested
-vigraCorner		        	:	2D Corner Detector           	Imported, Not tested
+vigraCorner		       	:	2D Corner Detector           	Imported, Not tested
+vigralearnRF		       	:	Learn a random forest          	Imported, Not tested
+vigraPredictProbabiliesRF	:	predict Probabilites of RF      Imported, Not tested
+vigraPredictLabelsRF      	:	predict Labels RF           	Imported, Not tested

@@ -6,6 +6,41 @@
 using namespace vigra;
 using namespace matlab;
 
+
+
+void vigraMain(matlab::OutputArray outputs, matlab::InputArray inputs){
+    /* INPUT */
+    if (inputs.size() != 2)
+        mexErrMsgTxt("Two inputs required.");
+
+    // get RF object
+    std::auto_ptr<RandomForest<double> > rf =
+                  matlab::importRandomForest<double>(matlab::getCellArray(inputs[0]));
+
+    // get feature matrix
+    MultiArrayView<2, double> features = inputs.getMultiArray<2, double> ( 1, v_required());
+    if(rf->featureCount() != columnCount(features))
+        mexErrMsgTxt("Feature array has wrong number of columns.");
+
+    /* OUTPUT */
+    MultiArrayView<2, double> probs = outputs.createMultiArray<2, double>(0, v_required(),
+                                                                TinyVector<UInt32, 2>(rowCount(features), rf->labelCount()));
+
+    rf->predictLabels(features, probs);
+
+}
+
+
+
+
+/***************************************************************************************************
+**         VIGRA GATEWAY                                                                          **
+****************************************************************************************************/
+inline void vigraMexFunction(vigra::matlab::OutputArray outputs, vigra::matlab::InputArray inputs)
+{
+    vigraMain(outputs, inputs);
+};
+
 /** MATLAB
 function labels = predictLabelsRF(RF, features)
 
@@ -15,29 +50,4 @@ Use a previously trained random forest classifier to predict labels for the give
 
     labels    - M x 1 matrix holding the predicted labels
 */
-struct vigraFunctor
-{
-    template <class T>
-    static void exec(matlab::OutputArray outputs, matlab::InputArray inputs){
-        /* INPUT */
-        if (inputs.size() != 2)
-            mexErrMsgTxt("Two inputs required.");
-        if (outputs.size() > 1)
-            mexErrMsgTxt("Too many output arguments");
 
-        // get RF object
-        std::auto_ptr<RandomForest<double> > rf =
-                      matlab::importRandomForest<double>(matlab::getCellArray(inputs[0]));
-
-        // get feature matrix
-        MultiArrayView<2, double> features = matlab::getMatrix<double>(inputs[1]);
-        if(rf->featureCount() != columnCount(features))
-            mexErrMsgTxt("Feature array has wrong number of columns.");
-
-        /* OUTPUT */
-        MultiArrayView<2, double> labels =
-               matlab::createMatrix<double>(rowCount(features), 1, outputs[0]);
-
-        rf->predictLabels(features, labels);
-    }
-};

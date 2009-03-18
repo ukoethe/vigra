@@ -5,76 +5,72 @@
 #include <vigra/cornerdetection.hxx>
 
 
-
-//this could be a typedef but if you want outType to be the same type as inType then you can just 
-//set outType to T
-
-
-
 using namespace vigra;
 using namespace matlab;
 
-/*+++++++++++++++++++User data structure+++++++++++++++++++++++++++++*/
 
-/*+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
+
+
+
 template <class T>
-struct data: public base_data<T>{
-    declScalarMinMax(double, scale, 1.0, 0.0, "inf");
-    declCharConstr4(method, Corner, Beaudet, Foerstner,Rohr);
-    declOut(double);
-    
-    
-    data(matlab::OutputArray outputs, matlab::InputArray inputs)
-    :            base_data<T>(inputs),
-                 initOption(scale), 
-				 initOption(method)
-    {
-        if(this->numOfDim != 2)
-            mexErrMsgTxt("vigraCorner only operates on 2D Images");
-        initOut_SAME(double);
+void vigraMain(matlab::OutputArray outputs, matlab::InputArray inputs){
+    /***************************************************************************************************
+    **              INIT PART                                                                         **
+    ****************************************************************************************************/
+    BasicImageView<T>   in      =   inputs.getImage<T>(0, v_required());
+    double              scale   =   inputs.getScalarMinMax<double>(1, v_default(1.0), 0.0, "inf");
+
+    VIGRA_CREATE_ENUM_AND_STD_MAP4(Methods,MapName, Corner, Foerstner, Rohr, Beaudet);
+    Methods             method  =   (Methods)inputs.getEnum(2,  v_default((int)Corner), MapName);
+
+    BasicImageView<double> out  =   outputs.createImage<double>(0, v_required(), in.width(), in.height());
+
+    /***************************************************************************************************
+    **              CODE PART                                                                         **
+    ****************************************************************************************************/
+    switch(method){
+        case Corner:
+            cornerResponseFunction (srcImageRange(in), destImage(out), scale);
+            break;
+        case Foerstner:
+            foerstnerCornerDetector (srcImageRange(in), destImage(out), scale);
+            break;
+        case Rohr:
+            rohrCornerDetector (srcImageRange(in), destImage(out), scale);
+            break;
+        case Beaudet:
+            beaudetCornerDetector (srcImageRange(in), destImage(out), scale);
+            break;
+        default:
+            mexErrMsgTxt("Some Error occured");
     }
-};
-/*+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
-/* This function does all the work
-/*+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
+
+}
 
 
-struct vigraFunctor
+
+/***************************************************************************************************
+**         VIGRA GATEWAY                                                                          **
+****************************************************************************************************/
+void vigraMexFunction(vigra::matlab::OutputArray outputs, vigra::matlab::InputArray inputs)
 {
-    template <class T>
-    static void exec(matlab::OutputArray outputs, matlab::InputArray inputs){
-        //Options
-        data<T>  o(outputs, inputs);
-
-        // contorPair maps 2 integers bijectively onto one dimension. (see Wikipedia Cantor pair Function) 
-        switch(o.method){
-            case data<T>::Corner:
-                cornerResponseFunction (srcImageRange(o.in), destImage(o.out), o.scale);
-                break;
-            case data<T>::Foerstner:
-                foerstnerCornerDetector (srcImageRange(o.in), destImage(o.out), o.scale);
-                break;
-            case data<T>::Rohr:
-                rohrCornerDetector (srcImageRange(o.in), destImage(o.out), o.scale);
-                break;
-            case data<T>::Beaudet:
-                beaudetCornerDetector (srcImageRange(o.in), destImage(o.out), o.scale);
-                break;
-            default:
-                mexErrMsgTxt("Some Error occured");
-        }
-        
+    /*
+    FLEXIBLE_TYPE_START(0, in);
+        ALLOW_D;
+    FLEXIBLE_TYPE_END;
+    */
+    //Add classes as you feel
+    mxClassID inClass;
+    FLEX_TYPE(inClass, 0, in);
+    switch(inClass)
+    {
+        ALLOW_D
+        DEFAULT_ERROR;
     }
-};
+}
 
 
-/*+++++++++++++++++++++++MexEntryFunc++++++++++++++++++++++++++++++++*/
-/* Gatewayfunction - see matlab.hxx for details.
-/* if a certain class is NOT supported - you will have to copy the 
-/* body of the callMexFunctor function and edit it here.
-/* Supports (u)int[8|16|32|64], float and double.
-/*+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
-/** MATLAB 
+/** MATLAB
 function D = vigraCorner(inputImage)
 function D = vigraCorner(inputImage, options);
 

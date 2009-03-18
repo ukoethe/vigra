@@ -1,165 +1,170 @@
 /*++++++++++++++++++++INCLUDES+and+Definitions++++++++++++++++++++++++*/
 
-#include <string>
+
+#include <vigra/matlab.hxx>
+
 #include <vigra/watersheds.hxx>
 #include <vigra/watersheds3d.hxx>
-#include <vigra/matlab.hxx>
+
 #include <vigra/seededregiongrowing.hxx>
 #include <vigra/seededregiongrowing3d.hxx>
-
-
-
-//this could be a typedef but if you want outType to be the same type as inType then you can just
-//set outType to T
 
 
 
 using namespace vigra;
 using namespace matlab;
 
-/*+++++++++++++++++++User data structure+++++++++++++++++++++++++++++*/
 
-/*+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
+//#define RN_DEBUG
+#define cP3_(a, b , c) cP3<a, b, c>::value
 template <class T>
-struct data
-: public base_data<T>
+void vigraMain(matlab::OutputArray outputs, matlab::InputArray inputs){
+    /***************************************************************************************************
+    **              INIT PART                                                                         **
+    ****************************************************************************************************/
+    //Change these as for your needs.
+    typedef UInt32 outType;
+    typedef double seedType;
+
+    //Load Input Image
+    MultiArrayView<3,T>         in3D        = inputs.getMultiArray<3,T>(0, v_required());
+    BasicImageView<T>           in          = makeBasicImageView(in3D.bindOuter(0));
+    int                         numOfDim    = inputs.getDimOfInput(0, v_required());
+
+    //Load seed if provided
+    enum Methods{UNION = 0, SEED = 1} ;
+    Methods                            method       = UNION;
+    MultiArrayView<3,seedType>         seed3D       = inputs.getMultiArray<3,seedType>("seeds", v_optional());
+    BasicImageView<seedType>           seed         = makeBasicImageView(seed3D.bindOuter(0));
+    if(seed3D.data()!= 0 && !(seed3D.shape() == in3D.shape()))
+        mexErrMsgTxt("Seed Array and Input Array Dimension/ Number of Value Mismatch");
+    if(seed3D.data()!= 0 )  method = SEED;
+
+
+    //Get right connectivity options
+    int                         v2Dconn[2]      = {8, 4};
+    int                         v3Dconn[2]      = {26, 6};
+    int                         connectivity    = (method == UNION)?
+                                inputs.getScalarVals2D3D<int>("conn", v_default(8,26,numOfDim),
+                                                                                    v2Dconn, v2Dconn+2,
+                                                                                    v3Dconn, v3Dconn+2,
+                                                                                    numOfDim)
+                            :   inputs.getScalarVals2D3D<int>("conn", v_default(4,6,numOfDim),
+                                                                                    v2Dconn+1, v2Dconn+2,
+                                                                                    v3Dconn+1, v3Dconn+2,
+                                                                                    numOfDim);
+    //Get Crack options
+    VIGRA_CREATE_ENUM_AND_STD_MAP2(Crack,CrackMap, completeGrow, keepContours);
+    Crack                       crack           = (Crack)inputs.getEnum("crack", v_default((int)completeGrow), CrackMap);
+    SRGType                     SRGcrack        = (crack == completeGrow)? vigra::CompleteGrow : vigra::KeepContours;
+
+
+    double                      CostThreshold   =  inputs.getScalar<double>("CostThreshold", v_default(-1.0));
+
+    //Allocate space for outputArray.
+    MultiArrayView<3,outType>   out3D           = outputs.createMultiArray      <3,outType>   (0, v_required(), in3D.shape());
+    BasicImageView<outType>     out(out3D.data(), in3D.shape(0), in3D.shape(1));
+    // contorPair maps 2 integers bijectively onto one dimension. (see Wikipedia Cantor pair Function)
+
+    int max_region_label = -1;
+
+
+    /***************************************************************************************************
+    **              CODE PART                                                                         **
+    ****************************************************************************************************/
+    // contorPair maps 2 integers bijectively onto one dimension. (see Wikipedia Cantor pair Function)
+    switch(cantorPair(method, numOfDim, connectivity)){
+        //cP is the templated version o f the cantorPair function first value is Dimension of Inputimage, second the connectivity setting
+        //Code is basically the code on the VIGRA-reference page
+        case cP3_(UNION, IMAG, 8):
+            #ifdef RN_DEBUG
+            mexWarnMsgTxt("UNION IMAG 8");
+            #endif
+            max_region_label = watersheds(srcImageRange(in), destImage(out));
+
+            break;
+        case cP3_(UNION, IMAG, 4):
+            #ifdef RN_DEBUG
+            mexWarnMsgTxt("UNION IMAG 4");
+            #endif
+            max_region_label = watersheds(srcImageRange(in), destImage(out), FourNeighborCode());
+
+            break;
+        case cP3_(UNION, VOLUME, 26):
+            #ifdef RN_DEBUG
+            mexWarnMsgTxt("UNION VOLUME 26");
+            #endif
+            max_region_label = watersheds3DTwentySix(srcMultiArrayRange(in3D), destMultiArray(out3D));
+
+            break;
+        case cP3_(UNION, VOLUME, 6):
+            #ifdef RN_DEBUG
+            mexWarnMsgTxt("UNION VOLUME 6");
+            #endif
+            max_region_label = watersheds3DSix(srcMultiArrayRange(in3D), destMultiArray(out3D));
+
+            break;
+        case cP3_(SEED, IMAG, 4):
+        {
+            #ifdef RN_DEBUG
+            mexWarnMsgTxt("SEED IMAG 4");
+            #endif
+            //find maximimum of seed Image
+            FindMinMax<seedType> minmax;   // init functor
+            inspectImage(srcImageRange(seed), minmax);
+            max_region_label = minmax.max;
+
+            ArrayOfRegionStatistics<vigra::SeedRgDirectValueFunctor<seedType> >
+                                            gradstat(max_region_label);
+
+            seededRegionGrowing(    srcImageRange(in),
+                                    srcImage(seed),
+                                    destImage(out),
+                                    gradstat,SRGcrack );
+            break;
+        }
+        case cP3_(SEED, VOLUME, 6):
+        {
+            #ifdef RN_DEBUG
+            mexWarnMsgTxt("SEED VOLUME 6");
+            #endif
+            FindMinMax<seedType> minmax;
+            inspectMultiArray(srcMultiArrayRange(seed3D), minmax);
+            max_region_label = minmax.max;
+
+            ArrayOfRegionStatistics<vigra::SeedRgDirectValueFunctor<seedType> >
+                                            gradstat(max_region_label);
+
+            seededRegionGrowing3D(  srcMultiArrayRange(in3D),
+                                    srcMultiArray(seed3D),
+                                    destMultiArray(out3D),
+                                    gradstat,CostThreshold, SRGcrack);
+            break;
+        }
+        default:
+            mexErrMsgTxt("Something went horribily wrong - Internal error");
+    }
+    outputs.createScalar(1,v_optional(), max_region_label);
+}
+
+
+void vigraMexFunction(vigra::matlab::OutputArray outputs, vigra::matlab::InputArray inputs)
 {
-    declScalar2D3D(int, conn, 4, 6);
-    declCharConstr2(crack, completeGrow, keepContours);
-    declOut(Int32);
-    declScalar(double, CostThreshold, -1.0);
+    /*
+    FLEXIBLE_TYPE_START(0, in);
+        ALLOW_D;
+    FLEXIBLE_TYPE_END;
+    */
 
-    enum method_enum {UNION, SEED};
-    method_enum method;
-
-    SRGType SRGcrack;
-    BasicImageView<T>  seed;
-    MultiArrayView<3,T> seed3D;
-
-    data(matlab::OutputArray outputs, matlab::InputArray inputs)
-    :           base_data<T>(inputs),
-                initOption(conn),
-				initOption(crack),
-				initOption(CostThreshold),
-				method(UNION),
-                SRGcrack(crack == completeGrow
-                             ? vigra::CompleteGrow
-                             : vigra::KeepContours)
+    mxClassID inClass;
+    FLEX_TYPE(inClass, 0, in);
+    switch(inClass)
     {
-        if(this->options.isValid("seeds"))
-        {
-            method = SEED;
-            if(this->numOfDim == IMAG)
-            {
-                if(conn != 4)
-                    mexErrMsgTxt("vigraWatershed(): Connectivity for 2D seeded region growing must be 4.");
-
-                seed = matlab::getImage<T>(this->options["seeds"]);
-            }
-            if(this->numOfDim == VOLUME && conn != 6)
-                mexErrMsgTxt("vigraWatershed(): Connectivity for 3D seeded region growing must be 6.");
-
-            seed3D = matlab::getMultiArray<3, T>(this->options["seeds"]);
-            if(seed3D.shape() != this->in3D.shape())
-                mexErrMsgTxt("igraWatershed(): Seed and input array dimension mismatch.");
-        }
-        else
-        {
-            method = UNION;
-            if(this->numOfDim == IMAG && conn != 4 && conn != 8)
-                mexErrMsgTxt("vigraWatershed(): Connectivity for 2D union find must be 4 or 8.");
-            if(this->numOfDim == VOLUME && conn != 6 && conn != 26)
-                mexErrMsgTxt("vigraWatershed(): Connectivity for 3D union find must be 6 or 26.");
-        }
-        if(CostThreshold != -1.0 && method == SEED)
-        {
-            this->numOfDim = VOLUME;
-            conn = 6;
-        }
-        initOut_SAME(Int32);
+        ALLOW_UINT_8;
+        DEFAULT_ERROR;
     }
-};
-/*+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
-/* This function does all the work
-/*+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
+}
 
-#define cP3_(a, b , c) cP3<data<T>::a, b, c>::value
-struct vigraFunctor
-{
-    template <class T>
-    static void exec(matlab::OutputArray outputs, matlab::InputArray inputs){
-        //Options
-        data<T>  o(outputs, inputs);
-
-        // contorPair maps 2 integers bijectively onto one dimension. (see Wikipedia Cantor pair Function)
-        int max_region_label = -1;
-        // contorPair maps 2 integers bijectively onto one dimension. (see Wikipedia Cantor pair Function)
-        switch(cantorPair(o.method, o.numOfDim, o.conn)){
-            //cP is the templated version o f the cantorPair function first value is Dimension of Inputimage, second the connectivity setting
-            //Code is basically the code on the VIGRA-reference page
-            case cP3_(UNION, IMAG, 8):
-                max_region_label = watersheds(srcImageRange(o.in), destImage(o.out));
-
-                break;
-            case cP3_(UNION, IMAG, 4):
-                max_region_label = watersheds(srcImageRange(o.in), destImage(o.out), FourNeighborCode());
-
-                break;
-            case cP3_(UNION, VOLUME, 26):
-                max_region_label = watersheds3DTwentySix(srcMultiArrayRange(o.in3D), destMultiArray(o.out3D));
-
-                break;
-            case cP3_(UNION, VOLUME, 6):
-                max_region_label = watersheds3DSix(srcMultiArrayRange(o.in3D), destMultiArray(o.out3D));
-
-                break;
-            case cP3_(SEED, IMAG, 4):
-            {
-                //find maximimum of seed Image
-                FindMinMax<T> minmax;   // init functor
-                inspectImage(srcImageRange(o.seed), minmax);
-                max_region_label = minmax.max;
-
-                ArrayOfRegionStatistics<vigra::SeedRgDirectValueFunctor<T> >
-                                                gradstat(max_region_label);
-
-                seededRegionGrowing(    srcImageRange(o.in),
-                                        srcImage(o.seed),
-                                        destImage(o.out),
-                                        gradstat,o.SRGcrack );
-                break;
-            }
-            case cP3_(SEED, VOLUME, 6):
-            {
-                mexWarnMsgTxt("SEED IMAG 4");
-                FindMinMax<T> minmax;
-                inspectMultiArray(srcMultiArrayRange(o.seed3D), minmax);
-                max_region_label = minmax.max;
-
-                ArrayOfRegionStatistics<vigra::SeedRgDirectValueFunctor<T> >
-                                                gradstat(max_region_label);
-
-                seededRegionGrowing3D(  srcMultiArrayRange(o.in3D),
-                                        srcMultiArray(o.seed3D),
-                                        destMultiArray(o.out3D),
-                                        gradstat,o.CostThreshold, o.SRGcrack);
-                break;
-            }
-            default:
-                mexErrMsgTxt("Something went wrong");
-        }
-
-
-    }
-};
-
-
-/*+++++++++++++++++++++++MexEntryFunc++++++++++++++++++++++++++++++++*/
-/* Gatewayfunction - see matlab.hxx for details.
-/* if a certain class is NOT supported - you will have to copy the
-/* body of the callMexFunctor function and edit it here.
-/* Supports (u)int[8|16|32|64], float and double.
-/*+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
 /** MATLAB
 function L = vigraWatershed(inputArray)
 function L = vigraWatershed(inputArray, options);

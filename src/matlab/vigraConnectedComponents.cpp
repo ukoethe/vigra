@@ -25,27 +25,43 @@ using namespace matlab;
 #define cP3_(a, b , c) cP3<a, b, c>::value
 template <class T>
 void vigraMain(matlab::OutputArray outputs, matlab::InputArray inputs){
-    //Options
 
-    MultiArrayView<3,T>         in3D        = inputs.getMultiArray<3,T>(0, Required());
-    BasicImageView<T>           in        = makeBasicImageView(in3D.bindOuter(0));
-    int                         numOfDim = inputs.getDimOfInput(0, Required());
-    int                         connectivity =  inputs.getScalar<int>("conn", Optional(8,26,numOfDim));
-    {
+    /***************************************************************************************************
+    **              INIT PART                                                                         **
+    ****************************************************************************************************/
+    MultiArrayView<3,T>     in3D        =       inputs.getMultiArray<3,T>(0, Required());
+    BasicImageView<T>       in          =       makeBasicImageView(in3D.bindOuter(0));
+    int                     numOfDim    =       inputs.getDimOfInput(0, Required());
+
+    int                     v2Dconn[2]  =       {8, 4};
+    int                     v3Dconn[2]  =       {26, 6};
+    int                     connectivity=       inputs.getScalarVals2D3D<int>("conn", v_default(8,26,numOfDim),
+                                                                                    v2Dconn, v2Dconn+2,
+                                                                                    v3Dconn, v3Dconn+2,
+                                                                                    numOfDim);
+    /*{
         if(numOfDim == 2 && connectivity!= 8 && connectivity != 4)
             mexErrMsgTxt("Connectivity for 2D data must be 8 or 4");
         else if(numOfDim == 3 && connectivity!= 26 && connectivity != 6)
             mexErrMsgTxt("Connectivity for 3D data must be 26 or 6");
-    }
-    VarChecker  hasBackground;
-    T                           backgroundValue = inputs.getScalar<T>("backgroundValue", Optional(hasBackground));
-    MultiArrayView<3,T> out3D           = outputs.createMultiArray      <3,T>   (0, Required(), in3D.shape());
-    BasicImageView<T> out(out3D.data(), in3D.shape(0), in3D.shape(1));
-
-    int max_region_label = 0;
+    }*/
 
 
-    switch(cantorPair(hasBackground.isSet , numOfDim, connectivity)){
+    bool                    hasBackground;
+    T                       backgroundValue = inputs.getScalar<T>("backgroundValue", v_optional(hasBackground));
+
+    MultiArrayView<3,T>     out3D           = outputs.createMultiArray      <3,T>   (0, v_required(), in3D.shape());
+    BasicImageView<T>       out(out3D.data(), in3D.shape(0), in3D.shape(1));
+
+    int                     max_region_label = (hasBackground == true)? 1: 0;
+
+    /***************************************************************************************************
+    **              CODE PART                                                                         **
+    ****************************************************************************************************/
+    #ifdef RN_DEBUG
+    mexPrintf("---%d---%d---%d---", max_region_label, numOfDim, connectivity);
+    #endif
+    switch(cantorPair(hasBackground , numOfDim, connectivity)){
         //cP is the templated version o f the cantorPair function first value is Dimension of Inputimage, second the connectivity setting
         //Code is basically the code on the VIGRA-reference page
         case cP3_(0, IMAG, 8):
@@ -102,8 +118,14 @@ void vigraMain(matlab::OutputArray outputs, matlab::InputArray inputs){
             mexErrMsgTxt("Something went wrong");
     }
 
-    outputs.createScalar<int> (1, Optional(), max_region_label);
+    outputs.createScalar<int> (1, v_optional(), max_region_label);
 }
+
+
+
+/***************************************************************************************************
+**           VIGRA GATEWAY                                                                        **
+****************************************************************************************************/
 void vigraMexFunction(vigra::matlab::OutputArray outputs, vigra::matlab::InputArray inputs)
 {
     /*

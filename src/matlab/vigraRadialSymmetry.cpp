@@ -1,64 +1,62 @@
 /*++++++++++++++++++++INCLUDES+and+Definitions++++++++++++++++++++++++*/
 
 #include <vigra/matlab.hxx>
-#include <string>
+
 #include <vigra/symmetry.hxx>
 
 
-
-//this could be a typedef but if you want outType to be the same type as inType then you can just 
-//set outType to T
 
 
 using namespace vigra;
 using namespace matlab;
 
-/*+++++++++++++++++++User data structure+++++++++++++++++++++++++++++*/
 
-/*+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
+
+
+
 template <class T>
-struct data: public base_data<T>{
-    declScalarMinMax(double, scale, 1.0, 0.0, "inf");
-    declOut(double);
-    
-    
-    data(matlab::OutputArray outputs, matlab::InputArray inputs)
-    :           base_data<T>(inputs),
-                initOption(scale)
-    {
-        initOut_SAME(double);
-    }
-};
-/*+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
-/* This function does all the work
-/*+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
+void vigraMain(matlab::OutputArray outputs, matlab::InputArray inputs){
+    /***************************************************************************************************
+    **              INIT PART                                                                         **
+    ****************************************************************************************************/
+    BasicImageView<T>   in      =   inputs.getImage<T>(0, v_required());
+    double              scale   =   inputs.getScalarMinMax<double>(1, v_default(1.0), 0.0, "inf");
+
+    BasicImageView<double> out  =   outputs.createImage<double>(0, v_required(), in.width(), in.height());
+
+    /***************************************************************************************************
+    **              CODE PART                                                                         **
+    ****************************************************************************************************/
+    radialSymmetryTransform(srcImageRange(in), destImage(out), scale);
+
+}
 
 
-struct vigraFunctor
+
+/***************************************************************************************************
+**         VIGRA GATEWAY                                                                          **
+****************************************************************************************************/
+void vigraMexFunction(vigra::matlab::OutputArray outputs, vigra::matlab::InputArray inputs)
 {
-    template <class T>
-    static void exec(matlab::OutputArray outputs, matlab::InputArray inputs){
-        //Options
-        data<T>  o(outputs, inputs);
-
-        // contorPair maps 2 integers bijectively onto one dimension. (see Wikipedia Cantor pair Function) 
-        radialSymmetryTransform(srcImageRange(o.in), destImage(o.out), o.scale);
-        
+    /*
+    FLEXIBLE_TYPE_START(0, in);
+        ALLOW_D;
+    FLEXIBLE_TYPE_END;
+    */
+    //Add classes as you feel
+    mxClassID inClass;
+    FLEX_TYPE(inClass, 0, in);
+    switch(inClass)
+    {
+        ALLOW_D
+        DEFAULT_ERROR;
     }
-};
-
-
-/*+++++++++++++++++++++++MexEntryFunc++++++++++++++++++++++++++++++++*/
-/* Gatewayfunction - see matlab.hxx for details.
-/* if a certain class is NOT supported - you will have to copy the 
-/* body of the callMexFunctor function and edit it here.
-/* Supports (u)int[8|16|32|64], float and double.
-/*+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
-/** MATLAB 
+}
+/** MATLAB
 function D = vigraRadialSymmetry(inputImage)
 function D = vigraradialSymmetry(inputImage, options);
 
-D = vigraRadialSymmetry(inputImage) computes the Fast Radial Symmetry Transform 
+D = vigraRadialSymmetry(inputImage) computes the Fast Radial Symmetry Transform
             using default options, see vigra::RadialSymmetryTransform for more information.
 D = vigraRadialSymmetry(inputImage, options)  does the same with user options.
 

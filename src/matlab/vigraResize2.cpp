@@ -1,14 +1,8 @@
 /*++++++++++++++++++++INCLUDES+and+Definitions++++++++++++++++++++++++*/
 
 #include <vigra/matlab.hxx>
-#include <vigra/matlab_FLEXTYPE.hxx>
-#include <string>
+
 #include <vigra/resizeimage.hxx>
-#include <iostream>
-
-
-//this could be a typedef but if you want outType to be the same type as inType then you can just
-//set outType to T
 
 
 
@@ -31,24 +25,34 @@ using namespace matlab;
 #define cP2_(a, b) cP<(int)a, b>::value
 template <class T>
 void vigraMain(matlab::OutputArray outputs, matlab::InputArray inputs){
-    //Options
+    /***************************************************************************************************
+    **              INIT PART                                                                         **
+    ****************************************************************************************************/
+    //Load input Image
+    MultiArrayView<3,T>         in3D        = inputs.getMultiArray<3,T>(0, v_required());
 
-    MultiArrayView<3,T>         in3D        = inputs.getMultiArray<3,T>(0, Required());
+    //Load Method Option
+    VIGRA_CREATE_ENUM_AND_STD_MAP3(Methods,MapName, BSpline, Catmull, Coscot)
+    Methods method = (Methods)inputs.getEnum("method", v_default((int)BSpline), MapName );
 
-    LOAD_ENUM_OPTION3(method, BSpline,Catmull, Coscot);
 
+    //Load spline Order option
     int                         splineOrder = (method == BSpline)?
-                                          inputs.getScalarMinMax<int>("splineOrder", Optional(3),0, 5)
+                                          inputs.getScalarMinMax<int>("splineOrder", v_default(3),0, 5)
                                         : 0;
-
-    TinyVector<double, 2>       defaultShape(2* (in3D.shape(0)), 2*(in3D.shape(1)));
-    TinyVectorView<double, 2>   newShape  = inputs.getTinyVector<double, 2> ( 1, Optional(defaultShape));
+    //Load new Shape
+    TinyVector<double, 2>       defaultShape(2*in3D.shape(0) -1, 2*in3D.shape(1)-1);
+    TinyVectorView<double, 2>   newShape  = inputs.getTinyVector<double, 2> ( 1, v_default(defaultShape));
     MultiArrayShape<3>::type    newShape3      (newShape[0], newShape[1], in3D.shape(2));
 
 
-    MultiArrayView<3,T> out3D           = outputs.createMultiArray      <3,T>   (0, Required(), newShape3);
-    // contorPair maps 2 integers bijectively onto one dimension. (see Wikipedia Cantor pair Function)
+    //Allocate Memory for output
+    MultiArrayView<3,T>         out3D     = outputs.createMultiArray<3,T>   (0, v_required(), newShape3);
 
+    /***************************************************************************************************
+    **              CODE PART                                                                         **
+    ****************************************************************************************************/
+    // cantorPair maps 2 integers bijectively onto one dimension. (see Wikipedia Cantor pair Function)
     for(int k=0; k<in3D.shape(2); ++k)
     {
 
@@ -106,12 +110,16 @@ void vigraMain(matlab::OutputArray outputs, matlab::InputArray inputs){
             resizeImageCoscotInterpolation(srcImageRange(ink), destImageRange(outk));
             break;
         default:
-            mexErrMsgTxt("Something went wrong");
+            mexErrMsgTxt("Internal Error");
         }
     }
 
 }
 
+
+/***************************************************************************************************
+**           VIGRA GATEWAY                                                                        **
+****************************************************************************************************/
 void vigraMexFunction(vigra::matlab::OutputArray outputs, vigra::matlab::InputArray inputs)
 {
     /*
@@ -119,7 +127,7 @@ void vigraMexFunction(vigra::matlab::OutputArray outputs, vigra::matlab::InputAr
         ALLOW_D;
     FLEXIBLE_TYPE_END;
     */
-
+    //Add classes as you feel
     mxClassID inClass;
     FLEX_TYPE(inClass, 0, in);
     switch(inClass)
@@ -133,7 +141,6 @@ void vigraMexFunction(vigra::matlab::OutputArray outputs, vigra::matlab::InputAr
 /** MATLAB
 function resized = vigraResize2(original)
 function resized = vigraResize2(original, newShape)
-function resized = vigraResize2(original, options)
 function resized = vigraResize2(original, newShape, options)
 
 D = vigraResize2(inputImage)   # resizes original image data with default options.
@@ -141,11 +148,11 @@ D = vigraResize2(inputImage, [200 300], options)  # does the same with user opti
 
     original    - Array with original 2D image data
                     (gray scale or multi-band/RGB, numeric type)
-    newShape    - int32-Array of length 2 that gives the new shape
+    newShape    - standard Array of length 2 that gives the new shape
                     (default: 2*size(original)-1 )
     options
         splineOrder - order of interpolation
             (0 <= splineOrder <= 5, default: 3, i.e. cubic splines)
             this option is only used for method 'BSpline'
-        method - 'BSpline' (default), 'Coscot' or 'CatmullRom'
+        method - 'BSpline' (default), 'Coscot' or 'Catmull'
 */
