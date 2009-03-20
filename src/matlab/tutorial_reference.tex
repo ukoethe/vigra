@@ -1,0 +1,336 @@
+\documentclass[a4paper,10pt]{article}
+
+\usepackage[margin=4cm]{geometry}
+\usepackage{color}
+\usepackage{listings}
+\definecolor{darkgreen}{rgb}{0,0.5,0}
+\lstset{language=C++,
+	basicstyle=\scriptsize\sffamily,
+	tabsize=4,
+        keywordstyle=\color{blue}\bfseries,
+        identifierstyle=\color{black}, 
+	commentstyle =\color{darkgreen},
+        showstringspaces=false,
+        numbers=left,
+	frame=left}
+
+% Title Page
+\title{How to use the C++ Interface to Matlab}
+\author{Rahul Nair}
+
+
+\begin{document}
+\maketitle
+
+
+
+\section{Before we start (Things worth knowing)}
+Matlab always employs Copy on demand. In assignments of the for a = b as well as when arguments are passed to functions.Only references or pointers are passed. Only if subsequently the assigned array is changed, matlab will copy the data.
+
+This also applies to mex functions. Matlab does not copy the data but only provides pointers to the memory, where the data is managed. Note that copy on demand is not enforced while using mexFunctions. So it is (as of version 2008) quite possible to manipulate data passed as function parameters in place. (Though most probably not really recommended, as this is not default matlab behaviour)
+
+
+To avoid copying large amount of data while using the C++ Interface, but still having the comfort of using Classes and Objects, VIGRA provides View classes. These are basically enhanced pointers to external memory providing methods that work on it.
+
+It would be advisible to have a look at the functions already written as much of the following will most probably be
+easier to understand.
+
+\section{The Gateway function}
+The mexFunction(...) gateway is replaced by the vigraMexFunction(...) gateway. The mexFunction still exists - but is in matlab.hxx. It only creates the InputArray and OutputArray objects and subsequently calls vigraMexFunction(...)
+
+\textbf{Note:} if for some reason you do not want to use a custom mexFunction it is possible to override default behavior by \verb+#define+ CUSTOM\_MEX\_FUNCTION before \verb+#include+ matlab.hxx
+
+The two main classes needed for using the interface are vigra::matlab::InputArray and vigra::matlab::OutputArray.
+These two classes take the plhs prhs and nlhs nrhs parameters of the classical mexFunction and provide methods that simplify access of data.
+
+The job of the vigraMexFunction is to call the right template-instance of the \verb+vigraMain<>(..)+ function. 
+Typechecking of the inputs etc should be done here.
+
+
+	
+	Note: vigra contains typedefs of kind UInt8 ... UInt64, Int8 ... Int64
+\begin{lstlisting}[caption={The first parameter of the Function can be of type double or of type UInt8  }]
+void vigraMexFunction(	vigra::matlab::OutputArray outputs, 
+                        vigra::matlab::InputArray inputs)
+{
+	switch(inputs.typeOf(0)) 
+	//switch on the type of the first parameter
+	//calls mxClassID to get the a number corresponding to the type
+	{
+	case mxUINT8_CLASS:
+		vigraMain<UInt8>(outputs, inputs);     break;
+	case mxDOUBLE_CLASS:
+		vigraMain<double>(outputs, inputs);     break;
+	default:
+		mexErrMsgTxt("Type of input at position 0 not supported");
+	}
+}
+\end{lstlisting}
+\begin{lstlisting}[caption={Using Macros - This only works if vigraMain takes only one template parameter.}]
+void vigraMexFunction(vigra::matlab::OutputArray outputs, 
+                      vigra::matlab::InputArray inputs)
+{
+	switch(inputs.typeOf("someOption")) 
+	//switch on the type of the field "someOption" of the options 
+	//struct.
+	//calls mxClassID to get the a number corresponding to the type
+	{
+		ALLOW_UINT_16_64	//switch cases for int16 to int64
+		ALLOW_INT_8_32		//switch cases for int8 to int32
+		ALLOW_FD		//allow float and double
+		default:
+			mexErrMsgTxt("Type of input at position 0 not supported");
+	}
+}
+\end{lstlisting}
+
+\section{The vigraMain function}
+The \verb+vigraMain(...)+ function contains the C++ code that actually has to be 
+run. First the View objects should look at the right data. Also space should 
+be allocated for the output arrays.
+
+\begin{lstlisting}[caption={Examples}]
+1.
+/*Make a View of Type T (the template type of vigraMain) and let it look at the 
+first parameter supplied. v_required() indicates that an mexErrMsgTxt() is thrown 
+if no argument is supplied at position 0 (or an empty array)*/
+BasicImageView<T>   in      =   inputs.getImage<T>(0, v_required());
+
+2.
+/*Second Argument is Scalar and copied into "scale" v_default(1.0) indicates that 
+if no argument is supplied the default value 1.0 is used. the last two arguments 
+are the range constraints on scale a mexErrMsgTxt is thrown if the value is out 
+of bounds*/
+double scale   =   inputs.getScalarMinMax<double>(1, v_default(1.0), 0.0, "inf");
+
+3.
+//Create an Image of type double at output position 0 with the size of in
+BasicImageView<double> out  =   
+	outputs.createImage<double>(0, v_required(), in.width(), in.height());
+
+4.
+/*Same thing as 2. without constraints. v_optional() indicates that this variable 
+does not have a default value. v_optional(bool check) sets check to true if the 
+variable has been set, false otherwise.*/
+bool	hasBackground;
+T	backgroundValue = 
+		inputs.getScalar<T>("backgroundValue", v_optional(hasBackground));	
+
+5.
+/*creates a scalar at the secon output if second output has been asked for 
+(v_optional()) and copies max_region_label into it*/
+outputs.createScalar<int> (1, v_optional(), max_region_label);
+\end{lstlisting}
+
+After space is allocated and the Views point to the right memory - the actual code can be executed.
+
+\section{matlab::InputArray and matlab::OutputArray}
+These are wrapper classes for plhs nlhs, prhs nrhs respectively. \textbf{InputArray checks 
+whether the last mxArray* in prhs is a matlab struct array} - If yes it is an
+options struct and loaded. What followes is a listing of public methods and attributes
+
+\textbf{Place posOrName} denotes an object of type std::string or an int. If it is std::string
+the options struct is searched for a field with name posOrNum. if it is an then 
+the argument at the given position is used. 
+
+\textbf{ReqType} is one of the objects described in the next section.
+
+\textbf{Note:} If you are not using matlab::InputArray or matlab::OutputArray, still you may use
+the non-member get and create functions  which take a mxArray* as first parameter. 
+Note that these functions do not check for constraints or whether the mxArray* is pointing to any
+memory. Look into matlab.hxx for further details.
+
+\begin{lstlisting}[caption={matlab::InputArray}]
+	matlab::ConstStructArray options_ 
+		/*The options Struct. See Documentation of ConstStructArray for more 
+		information.*/
+	mxArray* & operator[](Place posOrName)
+		/*Access reference to the mxArray* at certain place.*/
+	size_type size()
+		/*returns nrhs*/
+	bool isValid(Place posOrName)
+		/*returns true if a Argument was supplied at place posOrNum.*/
+	bool isEmpty(Place posOrName)
+		/*return true if Array at place posOrNum is empty.*/
+	mxClassID typeOf(place posOrName)
+		/*return type of mxArray* at place posOrNum;*/
+
+	template <class T,class place, class ReqType>
+	T getScalar(place posOrName, ReqType req)
+		/*get Scalar value at place posOrName. */
+    
+	template<class T, class place, class reqClass, 
+                                       class minClass, class maxClass>
+	T getScalarMinMax(place posOrName, reqClass req, 
+                                           minClass min_, maxClass max_)
+		/*get Scalar value constrained by range defined by min_ and max_
+		min_ and max_ can also be "inf"*/
+	
+	template <class T, class place, class reqClass, class iteratorType>
+	T getScalarVals(place posOrName, reqClass req, 
+                                         iteratorType begin_, iteratorType end_)
+		/*get Scalar value constrained by the values in the iterator range 
+		given by begin_ and end_*/
+
+	template <class T, class place, class reqClass, class iteratorType>
+	T getScalarVals2D3D(place posOrName, reqClass req, 
+                                       iteratorType begin2D_, iteratorType end2D_,
+		                       iteratorType begin3D_, iteratorType end3D_,
+		                                                        int dimVar)
+		/*get Scalar value constrained by range begin2D_, end2D_ in cas dimVar 
+		is 2 else constrained by range begin3D_, end3D_*/
+
+	template <class place, class reqClass>
+	bool getBool(place posOrName, reqClass req)
+		/*get logical value.*/
+
+
+	template <unsigned int N, class T, class place, class reqClass>
+	MultiArrayView<N,T> getMultiArray(place posOrName, reqClass req)
+		/*get MultiArrayView with dim N and Type T*/
+	
+	template < class T, class place, class reqClass>
+	BasicImageView<T> getImage(place posOrName, reqClass req)
+		/*get BasicImageView with Type T*/
+
+	template<class T,unsigned int sze, class place, class reqClass>
+	TinyVectorView< T, sze> getTinyVector(place posOrName, reqClass req)
+		/*get TinyVectorView of Type T and size sze*/
+
+	template< unsigned int sze, class place, class reqClass>
+	TinyVectorView<MultiArrayIndex, sze> getShape(place posOrName, reqClass req)
+		/*get MutliarrayShape size sze*/
+
+	template< class place, class reqClass>
+	int getDimOfInput(place posOrName, reqClass req)
+		/*get Dimension of Input at place posOrName*/
+
+	template<class place, class reqClass>
+	ConstCellArray getCellArray(place posOrName, reqClass req)
+		/*get a Object of type ConstCellArray*/
+\end{lstlisting}
+\begin{lstlisting}[caption={matlab::OutputArray}]
+	mxArray* & operator[](int pos)
+		Access reference to the mxArray* at certain place.
+	size_type size()
+		returns nlhs
+	bool isValid(int pos)
+		returns true if a Output was required at position pos.
+	bool isEmpty(int pos)
+		return true if Array at place posOrNum is empty.	
+
+	template <unsigned int DIM, class T, class ReqType>
+	MultiArrayView<DIM, T> createMultiArray(int pos,ReqType req,
+                                            const TinyVector<int, DIM>  & shape)
+		/*create MultiArrayView of dimension Dim and type T and allocate 
+		enough space for shape*/
+
+	template <class T, class ReqType>
+	BasicImageView<T> createImage(int pos, ReqType req,
+                                    mwSize width, mwSize height)
+
+	template <class T, class ReqType>
+	BasicImageView<T> createImage(  int pos, ReqType req,
+                                  typename MultiArrayShape<2>::type const & shape)
+
+	template <class T, class ReqType>
+	T* createScalar(int pos, ReqType req)
+		/*allocate memory for a scalar and return pointer to it.*/
+
+	template <class T, class ReqType>
+	void createScalar(int pos, ReqType req, T val)
+		/*allocate memory for a scalar and copy val into it.*/
+
+	template <class ReqType>
+	ConstCellArray createCellArray(int pos, ReqType req, mwSize sze)
+\end{lstlisting}
+
+\section{The Required/Optional/Default objects}
+The createType and getType functions always take an object of type Required, 
+\verb+DefaultImpl<T>+,  \verb+DefaultImplVoid+ or \verb+bool+ as second argument 
+Use the factory methods \verb+v_required()+, \verb+v_default()+ and 
+\verb+v_optional+ to create these objects:
+
+\begin{lstlisting}[caption={Behavior of the get/set functions with the factory objects}]
+	v_required(void)
+		/*generates an error message if the argument was not supplied.*/
+	v_optional()
+		/*does nothing. If argument was not supplied default 
+		constructor is called.*/
+	v_optional(bool flag)
+		/*same as above. Only that flag is set if argument was supplied. 
+		flag is false otherwise.*/
+	
+	/*Additionally when in use with the get method:*/
+	
+	v_default(defaultVal)
+		/*returns defaultVal if no argument supplied.*/
+	v_default(defaultVal2D, defaultVal3D, dimSwitch)
+		/*if dimSwitch == 2 use defaultVal2D else use defaultVal3D*/
+\end{lstlisting}
+
+\textbf{Note:} 	If you need to know whether an Object was set even if you used \\*\verb+v_default(defaultval)+
+	Explicitly create the \verb+DefaultImpl<T>+ object (Only if using the first method):
+
+\begin{lstlisting}[caption={Finding out whether a default object was set}]	
+//create a default MultiArray
+MultiArray<3, T> in(SomeShape);
+//Create defaultImpl object
+DefaultImpl<typename MultiArrayView<3,T> > 
+				defaultMultiArrayView(MultiArrayView<3,T>(in));
+MultiArrayView<3,T> Arg = 
+		 inputs.getMultiArray<3,T>(0,v_default(defaultMultiArrayView));
+
+//first way of checking whether Argument  was supplied:
+if(defaultMultiArrayView.garbage == true) 
+	std::cout << "it has been set";
+
+/*second way of checking whether Argument was supplied- only works with the 
+View classes, not with scalars:*/
+if(in.data() == Arg.data()) 
+	std::cout << "it has not been set";
+\end{lstlisting}
+
+\section{other classes}
+The ConstStructArray object is used to store the options.
+It should not be necessary to manipulate the ConstStructArray directly.
+\begin{lstlisting}[caption = {ConstStructArray (Options)}
+	ConstStructArray(mxArray* matPointer)
+		/*Constructor.*/
+	operator[](std::string fieldName)
+		/*access mxArray* which is stored in the StructArray with 
+		fieldName.*/
+	isValid()
+		/*is true if ConstStructArray points to a valid matPointer*/
+	isValid(std::string)
+		/*true if field with name specified in string exists*/
+\end{lstlisting}
+
+
+	This is just some experimental code but quite handy if you have make 
+	and handle sparse arrays. Basically just a wrapper class to a stl::map;
+\begin{lstlisting}[caption = {Sparse array}]
+    template<class T>
+    class SparseArray
+    private:
+        std::map<TinyVector<int,2>, T,ShapeCmp> data;
+        int width, length;
+    public:
+        SparseArray(int i = 1 , int j = 1)
+	    //calls assign;
+        void assign(int i = 1, int j = 1)
+	    /*set intrinsic size of the SparseArray - only needed when using map
+	    To MxArray.*/
+
+    	T& operator()(int i, int j){
+    	const T get(int i, int j){
+	    //get and set element;
+	    //Any better idea? i would like to unify the get and operator() 
+	    //functions.
+	    // Problem is that  operator() always passes a reference or creates 
+	    //one.
+
+	void mapToMxArray(mxArray * & in)
+	    //Creates a sparse mxArray and copies data into it.
+\end{lstlisting}
+\end{document}          
