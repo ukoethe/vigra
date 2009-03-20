@@ -60,12 +60,13 @@ void vigraMexFunction(vigra::matlab::OutputArray outputs, vigra::matlab::InputAr
     FLEXIBLE_TYPE_END;
     */
     //Add classes as you feel
-    mxClassID inClass;
-    FLEX_TYPE(inClass, 0, in);
-    switch(inClass)
+    switch(inputs.typeOf(0))
     {
-        ALLOW_D
-        DEFAULT_ERROR;
+        ALLOW_FD
+	ALLOW_UINT_8_64
+	ALLOW_INT_8_64
+        default:
+	    mexErrMsgTxt("Type of input 0 not supported");
     }
 }
 

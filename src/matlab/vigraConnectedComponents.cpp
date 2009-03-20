@@ -13,13 +13,7 @@
 using namespace vigra;
 using namespace matlab;
 
-/*+++++++++++++++++++User data structure+++++++++++++++++++++++++++++*/
 
-/*+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
-
-/*+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
-/* This function does all the work
-/*+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
 
 //#define RN_DEBUG
 #define cP3_(a, b , c) cP3<a, b, c>::value
@@ -76,13 +70,13 @@ void vigraMain(matlab::OutputArray outputs, matlab::InputArray inputs){
             #endif
             max_region_label = labelImage(srcImageRange(in), destImage(out), false);
             break;
-        case cP3_(0, VOLUME, 26):
+        case cP3_(0, VOLUME, 6):
             #ifdef RN_DEBUG
             mexWarnMsgTxt("0, VOLUME, 26");
             #endif
             max_region_label = labelVolumeSix(srcMultiArrayRange(in3D), destMultiArray(out3D));
             break;
-        case cP3_(0, VOLUME, 6):
+        case cP3_(0, VOLUME, 26):
             #ifdef RN_DEBUG
             mexWarnMsgTxt("0, VOLUME, 6");
             #endif
@@ -134,12 +128,15 @@ void vigraMexFunction(vigra::matlab::OutputArray outputs, vigra::matlab::InputAr
     FLEXIBLE_TYPE_END;
     */
 
-    mxClassID inClass;
-    FLEX_TYPE(inClass, 0, in);
-    switch(inClass)
+    //mxClassID inClass;
+    //FLEX_TYPE(inClass, 0, in);
+    switch(inputs.typeOf(0))
     {
-        ALLOW_D
-        DEFAULT_ERROR;
+        ALLOW_FD
+	ALLOW_UINT_8_64
+	ALLOW_INT_8_64
+        default:
+	    mexErrMsgTxt("Type of input 0 not supported");
     }
 }
 

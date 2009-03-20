@@ -125,6 +125,8 @@
         case mxINT64_CLASS:\
             vigraMain<Int64>(outputs, inputs);    break;
 
+#define ALLOW_INT_8_64 ALLOW_INT;
+#define ALLOW_UINT_8_64 ALLOW_UINT;
 
 #define ALLOW_INT_8\
         case mxINT8_CLASS:\

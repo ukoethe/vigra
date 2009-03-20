@@ -703,7 +703,11 @@ class InputArray
         return mxIsEmpty(options_[name]);
     }
 
-
+    template<class place>
+    mxClassID typeOf(place posOrName)
+    {
+        return mxGetClassID((*this)[posOrName]);
+    }
 
     /*Action to take if value not set*/
     template <class T, class U, class Place>

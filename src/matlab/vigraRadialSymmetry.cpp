@@ -1,17 +1,12 @@
-/*++++++++++++++++++++INCLUDES+and+Definitions++++++++++++++++++++++++*/
+/***************************************************************************************************
+**         INCLUDES AND DEFS                                                                      **
+****************************************************************************************************/
 
 #include <vigra/matlab.hxx>
-
 #include <vigra/symmetry.hxx>
-
-
-
 
 using namespace vigra;
 using namespace matlab;
-
-
-
 
 
 template <class T>
@@ -31,8 +26,6 @@ void vigraMain(matlab::OutputArray outputs, matlab::InputArray inputs){
 
 }
 
-
-
 /***************************************************************************************************
 **         VIGRA GATEWAY                                                                          **
 ****************************************************************************************************/
@@ -44,12 +37,12 @@ void vigraMexFunction(vigra::matlab::OutputArray outputs, vigra::matlab::InputAr
     FLEXIBLE_TYPE_END;
     */
     //Add classes as you feel
-    mxClassID inClass;
-    FLEX_TYPE(inClass, 0, in);
-    switch(inClass)
+
+    switch(inputs.typeOf(0))
     {
         ALLOW_D
-        DEFAULT_ERROR;
+        default:
+	    mexErrMsgTxt("Type of input at position 0 not supported");
     }
 }
 /** MATLAB

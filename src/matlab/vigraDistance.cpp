@@ -13,16 +13,7 @@
 using namespace vigra;
 using namespace matlab;
 
-/*+++++++++++++++++++User data structure+++++++++++++++++++++++++++++*/
 
-/*+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
-//This is not using base_data as base class. because input is 4D.
-
-
-
-/*+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
-/* This function does all the work
-/*+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
 
 
 //#define RN_DEBUG
@@ -79,7 +70,7 @@ void vigraMain(matlab::OutputArray outputs, matlab::InputArray inputs){
 
     //Allocate Memory for output
     typedef double outType;
-    MultiArrayView<3,outType>   out3D       = outputs.createMultiArray      <3,T>   (0, v_required(), in3D.shape());
+    MultiArrayView<3,outType>   out3D       = outputs.createMultiArray      <3,outType>   (0, v_required(), in3D.shape());
     BasicImageView<outType>     out(out3D.data(), in3D.shape(0), in3D.shape(1));
 
     MultiArray<3, outType>      tmp3D(in3D.shape());
@@ -139,12 +130,13 @@ void vigraMexFunction(vigra::matlab::OutputArray outputs, vigra::matlab::InputAr
     FLEXIBLE_TYPE_END;
     */
     //Add classes as you feel
-    mxClassID inClass;
-    FLEX_TYPE(inClass, 0, in);
-    switch(inClass)
+    switch(inputs.typeOf(0))
     {
-        ALLOW_D
-        DEFAULT_ERROR;
+        ALLOW_FD
+	ALLOW_UINT_8_64
+	ALLOW_INT_8_64
+        default:
+	    mexErrMsgTxt("Type of input 0 not supported");
     }
 }
 
