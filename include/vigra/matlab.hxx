@@ -191,13 +191,16 @@ class ConstCellArray
         }
     };
 
-    ConstCellArray(const mxArray * matPointer)
+    ConstCellArray(const mxArray * matPointer = 0)
     : matPointer_(const_cast<mxArray *>(matPointer)),
       size_(0)
     {
-        if(!mxIsCell(matPointer))
+        if(matPointer != 0 && !mxIsCell(matPointer))
             mexErrMsgTxt("CellArray(mxArray *): Argument must be a Matlab cell array.");
-        size_ = mxGetNumberOfElements(matPointer);
+        if(matPointer != 0)
+            size_ = mxGetNumberOfElements(matPointer);
+        else
+            size_ = -1;
     }
 
     Proxy operator[](int i) const
@@ -313,6 +316,7 @@ getShape(mxArray const * t)
 
     // return TinyVectorView<T, SIZE>((T *)mxGetData(t));
 // }
+
 
 
 template <unsigned int DIM, class T>
@@ -518,7 +522,7 @@ getScalar(mxArray const * t)
 {
     if(mxIsEmpty(t))
         mexErrMsgTxt("getScalar() on empty input.");
-    if(!mxIsNumeric(t))
+    if(!mxIsNumeric(t) && !mxIsLogical(t))
         mexErrMsgTxt("getScalar(): argument is not numeric.");
     return static_cast<T>(mxGetScalar(t));
 }
@@ -547,7 +551,7 @@ getString(mxArray const * t)
 
 
 
-
+class CompileTimeError;
 
 class Required
 {
@@ -902,8 +906,8 @@ class InputArray
         }
     }
 
-    template<class place, class reqClass>
-    ConstCellArray getCellArray(place posOrName, reqClass req)
+    template<class reqClass>
+    ConstCellArray getCellArray(int posOrName, reqClass req)
     {
         if(!isValid(posOrName) || isEmpty(posOrName))
         {
@@ -915,6 +919,12 @@ class InputArray
             value_type temp = (*this)[posOrName];
             return matlab::getCellArray(temp);
         }
+    }
+
+    template<class reqClass>
+    ConstCellArray getCellArray(std::string posOrName, reqClass req)
+    {
+        CompileTimeError ERROR__Const_Cell_Array_May_Not_Be_In_Option_Struct;
     }
 
 };
@@ -1023,10 +1033,10 @@ class OutputArray
     T* createScalar(int pos, ReqType req)
     {
         if(!isValid(pos))
-            return errorOrDefault<T>(req, pos);
+            return errorOrDefault<T*>(req, pos);
         (*req) = true;
         BasicImageView<T> temp = matlab::createImage<T>(1, 1, (*this)[pos]);
-        return &temp[0];
+        return &temp(0,0);
     }
 
     template <class T, class ReqType>

@@ -206,8 +206,9 @@ memory. Look into matlab.hxx for further details.
 		/*get Dimension of Input at place posOrName*/
 
 	template<class place, class reqClass>
-	ConstCellArray getCellArray(place posOrName, reqClass req)
-		/*get a Object of type ConstCellArray*/
+	ConstCellArray getCellArray(int pos, reqClass req)
+		/*get a Object of type ConstCellArray
+		  NOTE: CellArray may not be in the struct!!!*/
 \end{lstlisting}
 \begin{lstlisting}[caption={matlab::OutputArray}]
 	mxArray* & operator[](int pos)
@@ -290,6 +291,11 @@ View classes, not with scalars:*/
 if(in.data() == Arg.data()) 
 	std::cout << "it has not been set";
 \end{lstlisting}
+\section{Build and Test scripts}
+Use \verb+buildVigraExtensions+ and \verb+testVigraExtensions+ to build all mex files and to test the 
+matlab.hxx interface.
+
+\textbf{Note:} for testing the vigraTestXXX functions must be compiled!
 
 \section{other classes}
 The ConstStructArray object is used to store the options.
