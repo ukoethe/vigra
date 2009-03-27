@@ -650,7 +650,8 @@ class RandomForestOptions
     RandomForestOptions & weights(WeightIterator weights, unsigned int classCount)
     {
         class_weights.clear();
-        class_weights.insert(weights, classCount);
+        if(weights != 0)
+            class_weights.insert(weights, classCount);
         return *this;
     }
 
