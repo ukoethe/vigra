@@ -319,6 +319,7 @@ getShape(mxArray const * t)
 
 
 
+
 template <unsigned int DIM, class T>
 MultiArrayView<DIM, T>
 getMultiArray(mxArray const * t)
@@ -549,7 +550,7 @@ getString(mxArray const * t)
     return std::string(buf.begin());
 }
 
-
+class CompileTimeError;
 
 class CompileTimeError;
 
@@ -919,6 +920,12 @@ class InputArray
             value_type temp = (*this)[posOrName];
             return matlab::getCellArray(temp);
         }
+    }
+
+    template<class reqClass>
+    ConstCellArray getCellArray(std::string posOrName, reqClass req)
+    {
+        CompileTimeError ERROR__Const_Cell_Array_May_Not_Be_In_Option_Struct;
     }
 
     template<class reqClass>

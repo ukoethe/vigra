@@ -269,6 +269,11 @@ Use the factory methods \verb+v_required()+, \verb+v_default()+ and
 	v_default(defaultVal2D, defaultVal3D, dimSwitch)
 		/*if dimSwitch == 2 use defaultVal2D else use defaultVal3D*/
 \end{lstlisting}
+\section{Build and Test scripts}
+Use \verb+buildVigraExtensions+ and \verb+testVigraExtensions+ to build all mex files and to test the 
+matlab.hxx interface.
+
+\textbf{Note:} for testing the vigraTestXXX functions must be compiled!
 
 \textbf{Note:} 	If you need to know whether an Object was set even if you used \\*\verb+v_default(defaultval)+
 	Explicitly create the \verb+DefaultImpl<T>+ object (Only if using the first method):
