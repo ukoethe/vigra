@@ -155,6 +155,16 @@ memory. Look into matlab.hxx for further details.
 	mxClassID typeOf(place posOrName)
 		/*return type of mxArray* at place posOrNum;*/
 
+    template <class Place, class ReqType>
+    int getEnum(Place posOrName, ReqType req, std::map<std::string, int> const & converter)
+		/*get String and convert into Enumerationtype
+		 See Note after the listing for usage*/
+
+	template <class T,class place, class ReqType>
+	T getString(place posOrName, ReqType req)
+		/*get String at place posOrName. */
+
+
 	template <class T,class place, class ReqType>
 	T getScalar(place posOrName, ReqType req)
 		/*get Scalar value at place posOrName. */
@@ -210,6 +220,19 @@ memory. Look into matlab.hxx for further details.
 		/*get a Object of type ConstCellArray
 		  NOTE: CellArray may not be in the struct!!!*/
 \end{lstlisting}
+
+\subsection{Using the getEnum method}
+\begin{lstlisting}
+VIGRA_CREATE_ENUM_AND_STD_MAP4(Methods,MapName, Corner, Foerstner, Rohr, Beaudet);
+Methods  method  =   (Methods)inputs.getEnum(2,  v_default((int)Corner), MapName);
+\end{lstlisting}
+The first command is a macro. It creates an enumeration Type Methods with entries
+Corner, Foerstner, Rohr and Beaudet. Also it creates a std::map MapName that maps the 
+corresponding strings to the enumeration values.
+the method variable is then initialized with the getEnum method. 
+Note the casts needed. 
+
+
 \begin{lstlisting}[caption={matlab::OutputArray}]
 	mxArray* & operator[](int pos)
 		Access reference to the mxArray* at certain place.
