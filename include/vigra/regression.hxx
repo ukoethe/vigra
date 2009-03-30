@@ -375,6 +375,29 @@ class LeastAngleRegressionOptions
         return *this;
     }
 
+        /** Set the mode of the algorithm.
+
+            Mode must be one of "lars", "lasso", "nnlasso". The function just calls
+            the member function of the corresponding name to set the mode.
+
+            Default: "lasso"
+        */
+    LeastAngleRegressionOptions & setMode(std::string mode)
+    {
+        for(unsigned int k=0; k<mode.size(); ++k)
+            mode[k] = (std::string::value_type)tolower(mode[k]);
+        if(mode == "lars")
+            this->lars();
+        else if(mode == "lasso")
+            this->lasso();
+        else if(mode == "nnlasso")
+            this->nnlasso();
+        else
+            vigra_fail("LeastAngleRegressionOptions.setMode(): Invalid mode.");
+        return *this;
+    }
+
+
         /** Use the plain LARS algorithm.
 
             Default: inactive
@@ -819,7 +842,7 @@ leastAngleRegressionImpl(MultiArrayView<2, T, C1> const & A, MultiArrayView<2, T
 	    {
 		    // transform the sparse solution into a dense vector
 		    denseSolution.init(0.0); // ensure that inactive variables are zero
-		    for (unsigned int i = 0; i < activeSets[k].size(); ++i) {
+		    for (unsigned int i = 0; i < activeSets[k].size(); ++i)
 		    {
 			    // set the values of the active variables;
 			    // activeSets[k][i] is the true index of the i-th variable in the active set
