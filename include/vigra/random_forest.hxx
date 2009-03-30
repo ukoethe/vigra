@@ -536,7 +536,8 @@ class RandomForestOptions
       training_set_size(0),
       sample_with_replacement(true),
       sample_classes_individually(false),
-      treeCount(255)
+      treeCount(255),
+      oob_data()
     {}
 
         /** Number of features considered in each node.
@@ -655,6 +656,13 @@ class RandomForestOptions
         return *this;
     }
 
+    RandomForestOptions & oobData(MultiArrayView<2, UInt8>& data)
+    {
+        oob_data =data;
+        return *this;
+    }
+
+    MultiArrayView<2, UInt8> oob_data;
     ArrayVector<double> class_weights;
     double training_set_proportion;
     unsigned int mtry, min_split_node_size, training_set_size;
@@ -939,15 +947,34 @@ RandomForest<ClassLabelType>::learn(MultiArrayView<2, U, C1> const & features,
         trees_[k].learn(features, intLabels,
                         trainingSet.begin(), trainingSet.size(),
                         options_.featuresPerNode(mtry), randint);
+//        for(unsigned int l=0; l<m; ++l)
+//        {
+//            if(!usedIndices[l])
+//            {
+//                ++oobCount[l];
+//                if(trees_[k].predictLabel(rowVector(features, l)) != intLabels[l])
+//                    ++oobErrorCount[l];
+//            }
+//        }
+
         for(unsigned int l=0; l<m; ++l)
         {
             if(!usedIndices[l])
             {
                 ++oobCount[l];
                 if(trees_[k].predictLabel(rowVector(features, l)) != intLabels[l])
+				{
                     ++oobErrorCount[l];
+                    if(options_.oob_data.data() != 0)
+                        options_.oob_data(l, k) = 2;
+				}
+				else if(options_.oob_data.data() != 0)
+				{
+					options_.oob_data(l, k) = 1;
+				}
             }
         }
+        // TODO: default value for oob_data
         // TODO: implement variable importance
         //if(!options_.sample_with_replacement){
         //std::cerr << "done\n";

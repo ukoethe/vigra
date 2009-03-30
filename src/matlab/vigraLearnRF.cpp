@@ -29,6 +29,9 @@ void vigraMain(matlab::OutputArray outputs, matlab::InputArray inputs){
     MultiArrayView<2, inputType>  labels = inputs.getMultiArray<2, inputType>(1, v_required());
     MultiArrayView<2, inputType>  features = inputs.getMultiArray<2, inputType>(0, v_required());
     MultiArrayView<1, inputType>  weights = inputs.getMultiArray<1, inputType>("weights", v_optional());
+    MultiArrayView<2, UInt8> oob_data =
+                        outputs.createMultiArray<2, UInt8>(2, v_optional(),
+                                                            MultiArrayShape<2>::type(features.shape(0), treeCount));
     /***************************************************************************************************
     **              CODE PART                                                                         **
     ****************************************************************************************************/
@@ -45,8 +48,9 @@ void vigraMain(matlab::OutputArray outputs, matlab::InputArray inputs){
                                             .trainingSetSizeAbsolute(training_set_size)\
                                             .sampleWithReplacement(sample_with_replacement)\
                                             .sampleClassesIndividually(sample_classes_individually)\
-                                            .setTreeCount(treeCount)
-                                            .weights(weights.data(), labelSet.size())
+                                            .setTreeCount(treeCount)\
+                                            .weights(weights.data(), labelSet.size())\
+                                            .oobData(oob_data)
                             );
     double oobError = rf.learn(features, labels);
 
