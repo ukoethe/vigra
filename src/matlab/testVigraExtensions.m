@@ -62,6 +62,10 @@ function testVigraExtensions()
     numSuccess = numSuccess + test_enum();
     numTest = numTest +1;
     
+    disp('Testing: String');
+    numSuccess = numSuccess + test_string();
+    numTest = numTest +1;
+    
     disp([num2str(numSuccess) ' of ' num2str(numTest) ' Tests successful.']);
 return    
 
@@ -636,4 +640,29 @@ function success = test_v_optional_out()
         disp('                                                             Fail');
     end
     disp(' ');     
+return
+
+
+function success = test_string()
+    success = true;
+    a = vigraTestString();
+    b = vigraTestString('user');
+    
+    if a ~= 1
+        disp('...Error -default String not loaded');
+        success = false;
+    end
+
+        
+    if b ~= 2
+        disp('...Error -user supplied string not loaded');
+        success = false;
+    end
+ 
+    if success
+        disp('                                                             Success');
+    else
+        disp('                                                             Fail');
+    end    
+    disp(' ');
 return

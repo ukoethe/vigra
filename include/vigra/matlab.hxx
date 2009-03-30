@@ -761,6 +761,21 @@ class InputArray
     }
 
 
+    /*String Type*/
+    template <class place, class ReqType>
+    std::string getString(place posOrName, ReqType req)
+    {
+        if(!isValid(posOrName)|| isEmpty(posOrName))
+        {
+            return errorOrDefault<std::string>(req, posOrName);
+        }
+        else
+        {
+            (*req) = true;
+            return matlab::getString((*this)[posOrName]);
+        }
+    }
+
     /*Scalar Type*/
     template <class T,class place, class ReqType>
     T getScalar(place posOrName, ReqType req)
@@ -798,6 +813,8 @@ class InputArray
         }
             mexErrMsgTxt("Value not allowed");
     }
+
+
 
     template <class T, class place, class reqClass, class iteratorType>
     T getScalarVals2D3D(place posOrName, reqClass req, iteratorType begin2D_, iteratorType end2D_,
