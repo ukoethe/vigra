@@ -69,3 +69,35 @@ inline void vigraMexFunction(vigra::matlab::OutputArray outputs, vigra::matlab::
 {
     vigraMain(outputs, inputs);
 }
+
+
+/** MATLAB
+RF = vigraLearnRF(features, labels) Trains a randomForest with Default TreeCount and options
+RF = vigraLearnRF(features, labels, treeCount)  does the same treeCount number of trees and default options.
+RF = vigraLearnRF(features, labels, treeCount, options)  does the same with user options.
+[RF oob] = vigraLearnRF(...)                Outputs the oob error estimate
+[RF oob oob_data] = vigraLearnRF(...)       Outputs additional oob data.
+
+features    - A Nxp Matrix with N samples containing p features
+labels      - A Nx1 Matrix with the corresponding Training labels
+treeCount   - default: 255. An Integral Scalar Value > 0 - Number of Trees to be used in the Random Forest.
+options     - a struct with the following possible fields (default will be used
+              if field is not present)
+    'sample_with_replacement'       logical, default : true
+    'sample_classes_individually'   logical, default : false
+    'min_split_node_size'           Scalar, default: 1.0 - controls size pruning of the tree while training.
+    'mtry'                          Scalar, default: floor(sqrt(number of features))
+
+    'training_set_size'             Scalar, default: Not used
+    'training_set_proportion'       Scalar, default: 1.0
+                                    The last two options exclude each other. if training_set_size always overrides
+                                    training_set_proportional, if set.
+                                    Controls the number of samples drawn to train an individual tree.
+    'weights'
+                                    Array containing training weights for each class. The size of the array is
+                                    not checked so you may get wierd errors if you do not enforce the size constraints.
+
+oob_data    - A NxNumberOfTrees Matrix. oob_data(i, j) = 0 if ith sample was not in the test set for the jth tree
+                                                       = 1 if ith sample was correctly classified in jth tree
+                                                       = 2 if ith sample was misclassified int jth tree
+*/
