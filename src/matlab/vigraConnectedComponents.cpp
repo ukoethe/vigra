@@ -23,10 +23,10 @@ void vigraMain(matlab::OutputArray outputs, matlab::InputArray inputs){
     /***************************************************************************************************
     **              INIT PART                                                                         **
     ***************************************************************************************************/
-    typedef UInt32 OutputType
-    MultiArrayView<3,T>     in3D        =       inputs.getMultiArray<3,T>(0, Required());
+    typedef UInt32 OutputType;
+    MultiArrayView<3,T>     in3D        =       inputs.getMultiArray<3,T>(0, v_required());
     BasicImageView<T>       in          =       makeBasicImageView(in3D.bindOuter(0));
-    int                     numOfDim    =       inputs.getDimOfInput(0, Required());
+    int                     numOfDim    =       inputs.getDimOfInput(0, v_required());
 
     int                     v2Dconn[2]  =       {8, 4};
     int                     v3Dconn[2]  =       {26, 6};
@@ -45,8 +45,8 @@ void vigraMain(matlab::OutputArray outputs, matlab::InputArray inputs){
     bool                    hasBackground;
     T                       backgroundValue = inputs.getScalar<T>("backgroundValue", v_optional(hasBackground));
 
-    MultiArrayView<3,outputType>     out3D           = outputs.createMultiArray      <3,outputType>   (0, v_required(), in3D.shape());
-    BasicImageView<outputType>       out(out3D.data(), in3D.shape(0), in3D.shape(1));
+    MultiArrayView<3,OutputType>     out3D           = outputs.createMultiArray      <3,OutputType>   (0, v_required(), in3D.shape());
+    BasicImageView<OutputType>       out(out3D.data(), in3D.shape(0), in3D.shape(1));
 
     int                     max_region_label = (hasBackground == true)? 1: 0;
 
