@@ -81,7 +81,7 @@ if strcmp( TARGET, 'all' )
             end
             % create the associated .m documentation file
             if strcmp(OUTDIR, '.') ~= 0   % we are in the source directory
-               continue;                  % do not care about documentation
+               %continue;                  % do not care about documentation
             end
             
             m_filename = [functionName '.m' ];
