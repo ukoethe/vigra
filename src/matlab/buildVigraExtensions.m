@@ -1,4 +1,4 @@
-% [ Copyright © 2007 Ullrich Koethe - All rights reserved ]
+% [ Copyright ï¿½ 2007 Ullrich Koethe - All rights reserved ]
 %
 % Based on make.m by Andrea Tagliasacchi
 %
@@ -18,7 +18,10 @@ function buildVigraExtensions(OUTDIR, TARGET)
 
 if nargin == 0
 	OUTDIR = '.';
+elseif isempty(OUTDIR)
+    OUTDIR = '.';
 end
+
 if nargin < 2
 	TARGET = 'all';
 end
@@ -74,18 +77,15 @@ if strcmp( TARGET, 'all' )
         if isempty( mex_file ) || ( cpp_file.datenum > mex_file.datenum )
 			% compile
 			disp(['compiling: ' cpp_filename ] );
-			if isOctave
+            if isOctave
                 eval(['mex -I../../include -o ' mex_filename ' ' cpp_filename]);
             else
                 eval(['mex -O -I../../include -outdir ''' OUTDIR ''' ' cpp_filename]);
             end
-            % create the associated .m documentation file
-            if strcmp(OUTDIR, '.') ~= 0   % we are in the source directory
-               %continue;                  % do not care about documentation
-            end
+    
             
             m_filename = [functionName '.m' ];
-            if isempty(dir(['./' m_filename])) == 0  % file exists
+            if isempty(dir(['./' m_filename])) == 0 && strcmp(OUTDIR, '.') ~= 0 % file exists
                 disp(['copying: ' m_filename]);
                 copyfile(['./' m_filename], [OUTDIR '/' m_filename]);  % => copy it
             else  % build documentation from C++ comment
@@ -102,11 +102,13 @@ if strcmp( TARGET, 'all' )
                     disp(['No comment found, cannot create documentation for ' m_filename]);
                     continue;      % cannot create documentation
                 end
+
                 [match func] = regexp(comment{1}{1}, ['(^\s*function [^\n]*' functionName '[^\n]*)'], 'lineanchors', 'match', 'tokens');
                 if isempty(match)  % 'function' line not found
                     disp(['No MATLAB function found, cannot create documentation for ' m_filename]);
                     continue;      % cannot create documentation
                 end
+
                 m_file = func{1}{1};
                 lines = regexp(comment{1}{1}, '[^\n]*\n', 'match');
                 for k=1:length(lines)
@@ -119,9 +121,9 @@ if strcmp( TARGET, 'all' )
                 fprintf(f, '%s', m_file);
                 fclose(f);
             end
-		else
+        else
 			continue;
-		end
+        end
 	end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -136,6 +138,9 @@ elseif strcmp( TARGET, 'clean')
         mex_filename = [OUTDIR '/' mex_files(i).name];
         disp(['deleting ' mex_filename]);
         delete( mex_filename );
+        m_filename = strrep(mex_filename, mexext, 'm');
+        disp(['deleting ' m_filename]);
+        delete( m_filename );       
     end
 end
 	
