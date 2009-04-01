@@ -5,7 +5,7 @@
 #include <vigra/matlab.hxx>
 #include <vigra/symmetry.hxx>
 #include <vigra/regression.hxx>
-#include <vigra/multi_pointoperators.hxx>
+//#include <vigra/multi_pointoperators.hxx>
 
 using namespace vigra;
 using namespace matlab;
@@ -19,12 +19,12 @@ void vigraMain(matlab::OutputArray outputs, matlab::InputArray inputs){
     typedef double OutputType;
 
     //A and b are references to input memory. changing them causes input changed.
-    MultiArrayView<2, T>   A_copy    =   inputs.getMultiArray<2, T>(0, v_required());
-    MultiArrayView<2, T>   b_copy    =   inputs.getMultiArray<2, T>(1, v_required());
+    //MultiArrayView<2, T>   A_copy    =   inputs.getMultiArray<2, T>(0, v_required());
+    //MultiArrayView<2, T>   b_copy    =   inputs.getMultiArray<2, T>(1, v_required());
     MultiArray<2, T>   A    =   inputs.getMultiArray<2, T>(0, v_required());
     MultiArray<2, T>   b    =   inputs.getMultiArray<2, T>(1, v_required());
-    vigra::copyMultiArray(srcMultiArrayRange(A), destMultiArray(A_copy));
-    vigra::copyMultiArray(srcMultiArrayRange(b), destMultiArray(b_copy));
+    //vigra::copyMultiArray(srcMultiArrayRange(A), destMultiArray(A_copy));
+    //vigra::copyMultiArray(srcMultiArrayRange(b), destMultiArray(b_copy));
 
     int max_solution_count      =   inputs.getScalarMinMax<int>("max_solution_count",v_default(0), 0, "inf");
     std::string mode            =   inputs.getString("mode", v_default(std::string("lasso")));
