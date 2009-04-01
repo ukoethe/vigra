@@ -409,6 +409,23 @@ class DecisionTree
         return argMax(weights, weights+classCount_) - weights;
     }
 
+    template <class U, class C>
+    int
+    leafID(MultiArrayView<2, U, C> const & features) const
+    {
+        int nodeindex = 0;
+        for(;;)
+        {
+            DecisionTreeNodeProxy<TreeInt> node(tree_, nodeindex);
+            nodeindex = split.decideAtNode(features, node.decisionColumns(),
+                                       terminalWeights_.begin() + node.decisionWeightsIndex())
+                                ? node.child(0)
+                                : node.child(1);
+            if(nodeindex <= 0)
+                return -nodeindex;
+        }
+    }
+
     void depth(int & maxDep, int & interiorCount, int & leafCount, int k = 0, int d = 1) const
     {
         DecisionTreeNodeProxy<TreeInt> node(tree_, k);
@@ -806,6 +823,10 @@ class RandomForest
     template <class U, class C1, class T, class C2>
     void predictProbabilities(MultiArrayView<2, U, C1> const & features,
                               MultiArrayView<2, T, C2> & prob) const;
+
+    template <class U, class C1, class T, class C2>
+    void predictNodes(MultiArrayView<2, U, C1> const & features,
+                                                   MultiArrayView<2, T, C2> & NodeIDs) const;
 };
 
 template <class ClassLabelType>
@@ -1080,6 +1101,29 @@ RandomForest<ClassLabelType>::predictProbabilities(MultiArrayView<2, U, C1> cons
 	//Normalise votes in each row by total VoteCount (totalWeight
         for(unsigned int l=0; l<classes_.size(); ++l)
                 prob(row, l) /= totalWeight;
+    }
+}
+
+
+template <class ClassLabelType>
+template <class U, class C1, class T, class C2>
+void
+RandomForest<ClassLabelType>::predictNodes(MultiArrayView<2, U, C1> const & features,
+                                                   MultiArrayView<2, T, C2> & NodeIDs) const
+{
+    vigra_precondition(columnCount(features) >= featureCount(),
+      "RandomForest::getNodesRF(): Too few columns in feature matrix.");
+    vigra_precondition(rowCount(features) <= rowCount(NodeIDs),
+      "RandomForest::getNodesRF(): Too few rows in NodeIds matrix");
+    vigra_precondition(columnCount(NodeIDs) >= treeCount(),
+      "RandomForest::getNodesRF(): Too few columns in NodeIds matrix.");
+    NodeIDs.init(0);
+    for(unsigned int k=0; k<trees_.size(); ++k)
+    {
+        for(int row=0; row < rowCount(features); ++row)
+        {
+            NodeIDs(row,k) = trees_[k].leafID(rowVector(features, row));
+        }
     }
 }
 

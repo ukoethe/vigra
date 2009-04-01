@@ -42,12 +42,12 @@ inline void vigraMexFunction(vigra::matlab::OutputArray outputs, vigra::matlab::
 };
 
 /** MATLAB
-function labels = predictLabelsRF(RF, features)
+function labels = vigraPredictLabelsRF(RF, features)
 
 Use a previously trained random forest classifier to predict labels for the given data
     RF        - MATLAB cell array representing the random forest classifier
     features  - M x N matrix, where M is the number of samples, N the number of features
 
     labels    - M x 1 matrix holding the predicted labels
-*/
 
+*/

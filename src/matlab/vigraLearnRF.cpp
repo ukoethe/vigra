@@ -72,11 +72,11 @@ inline void vigraMexFunction(vigra::matlab::OutputArray outputs, vigra::matlab::
 
 
 /** MATLAB
-RF = vigraLearnRF(features, labels) Trains a randomForest with Default TreeCount and options
-RF = vigraLearnRF(features, labels, treeCount)  does the same treeCount number of trees and default options.
-RF = vigraLearnRF(features, labels, treeCount, options)  does the same with user options.
-[RF oob] = vigraLearnRF(...)                Outputs the oob error estimate
-[RF oob oob_data] = vigraLearnRF(...)       Outputs additional oob data.
+function RF = vigraLearnRF(features, labels) Trains a randomForest with Default TreeCount and options
+function RF = vigraLearnRF(features, labels, treeCount)  does the same treeCount number of trees and default options.
+function RF = vigraLearnRF(features, labels, treeCount, options)  does the same with user options.
+function [RF oob] = vigraLearnRF(...)                Outputs the oob error estimate
+function [RF oob oob_data] = vigraLearnRF(...)       Outputs additional oob data.
 
 features    - A Nxp Matrix with N samples containing p features
 labels      - A Nx1 Matrix with the corresponding Training labels
