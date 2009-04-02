@@ -44,13 +44,13 @@ void vigraMain(matlab::OutputArray outputs, matlab::InputArray inputs){
  //   Methods1 method2 = inputs.getEnum<Methods1>("method1", Optional(BSpline11));
 
 
-    int                         splineOrder = (method == BSpline)?
+    Int32                        splineOrder = (method == BSpline)?
                                           inputs.getScalarMinMax<int>("splineOrder", v_default(3),0, 5)
                                         : 0;
 
     TinyVector<double, 3>       defaultShape(2*in4D.shape(0) -1, 2*in4D.shape(1)-1, 2*in4D.shape(2)-1);
     TinyVectorView<double, 3>   newShape  = inputs.getTinyVector<double, 3> ( 1, v_default(defaultShape));
-    MultiArrayShape<4>::type    newShape4      (newShape[0], newShape[1], newShape[2], in4D.shape(3));
+    MultiArrayShape<4>::type    newShape4      (Int32(newShape[0]), Int32(newShape[1]), Int32(newShape[2]), in4D.shape(3));
 
 
     MultiArrayView<4,T> out4D           = outputs.createMultiArray      <4,T>   (0, v_required(), newShape4);

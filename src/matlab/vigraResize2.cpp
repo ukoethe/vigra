@@ -37,13 +37,13 @@ void vigraMain(matlab::OutputArray outputs, matlab::InputArray inputs){
 
 
     //Load spline Order option
-    int                         splineOrder = (method == BSpline)?
+    Int32                         splineOrder = (method == BSpline)?
                                           inputs.getScalarMinMax<int>("splineOrder", v_default(3),0, 5)
                                         : 0;
     //Load new Shape
     TinyVector<double, 2>       defaultShape(2*in3D.shape(0) -1, 2*in3D.shape(1)-1);
     TinyVectorView<double, 2>   newShape  = inputs.getTinyVector<double, 2> ( 1, v_default(defaultShape));
-    MultiArrayShape<3>::type    newShape3      (newShape[0], newShape[1], in3D.shape(2));
+    MultiArrayShape<3>::type    newShape3      (Int32(newShape[0]), Int32(newShape[1]), in3D.shape(2));
 
 
     //Allocate Memory for output

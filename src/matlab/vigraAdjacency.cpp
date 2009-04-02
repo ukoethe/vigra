@@ -171,7 +171,7 @@ static void vigraMain(matlab::OutputArray outputs, matlab::InputArray inputs)
 
                         if(cellimage::cellConfigurations[(int)BitField] == cellimage::CellTypeLine){
                             if(regions.size() == 2){
-                                std::set<T>::const_iterator iter = regions.begin();
+                                typename std::set<T>::const_iterator iter = regions.begin();
                                 adj_matrix(*iter-1,*(iter++)-1)++;
                             }
                         }
@@ -232,7 +232,7 @@ static void vigraMain(matlab::OutputArray outputs, matlab::InputArray inputs)
 
                         if(regions.size() == 2)
                             {
-                                std::set<T>::const_iterator iter = regions.begin();
+                                typename std::set<T>::const_iterator iter = regions.begin();
                                 adj_matrix(*iter-1,*(iter++)-1)++;
                             }
                         }
