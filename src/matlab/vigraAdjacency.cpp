@@ -38,7 +38,7 @@ static void vigraMain(matlab::OutputArray outputs, matlab::InputArray inputs)
     {
         FindMinMax<T> minmax;
         inspectMultiArray(srcMultiArrayRange(in3D), minmax);
-        max_region_label = minmax.max;
+        max_region_label = static_cast<UInt32>(minmax.max);
         adj_matrix.assign(max_region_label, max_region_label);
     }
 
@@ -156,7 +156,7 @@ static void vigraMain(matlab::OutputArray outputs, matlab::InputArray inputs)
                         NeighborhoodCirculator<typename BasicImageView<T>::Iterator, EightNeighborCode>
                                                             end(circulator);
                         unsigned char BitField = 0;
-                        std::set<int> regions;
+                        std::set<T> regions;
 
                         do{
                             if(*circulator == 0){
@@ -171,7 +171,7 @@ static void vigraMain(matlab::OutputArray outputs, matlab::InputArray inputs)
 
                         if(cellimage::cellConfigurations[(int)BitField] == cellimage::CellTypeLine){
                             if(regions.size() == 2){
-                                std::set<int>::const_iterator iter = regions.begin();
+                                std::set<T>::const_iterator iter = regions.begin();
                                 adj_matrix(*iter-1,*(iter++)-1)++;
                             }
                         }
@@ -210,7 +210,7 @@ static void vigraMain(matlab::OutputArray outputs, matlab::InputArray inputs)
             1,  1,  -1,
             0,  1,  0,
             0,  -1, 0}  ;
-            std::set<int> regions;
+            std::set<T> regions;
             MultiArrayShape<3>::type sze = in3D.shape();
             for(int ii = 1; ii < sze[0]-1; ii++)
             {
@@ -232,7 +232,7 @@ static void vigraMain(matlab::OutputArray outputs, matlab::InputArray inputs)
 
                         if(regions.size() == 2)
                             {
-                                std::set<int>::const_iterator iter = regions.begin();
+                                std::set<T>::const_iterator iter = regions.begin();
                                 adj_matrix(*iter-1,*(iter++)-1)++;
                             }
                         }
