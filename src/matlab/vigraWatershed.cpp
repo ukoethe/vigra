@@ -24,12 +24,12 @@ void vigraMain(matlab::OutputArray outputs, matlab::InputArray inputs){
     ****************************************************************************************************/
     //Change these as for your needs.
     typedef UInt32 outType;
-    typedef double seedType;
+    typedef UInt32 seedType;
 
     //Load Input Image
     MultiArrayView<3,T>         in3D        = inputs.getMultiArray<3,T>(0, v_required());
     BasicImageView<T>           in          = makeBasicImageView(in3D.bindOuter(0));
-    int                         numOfDim    = inputs.getDimOfInput(0, v_required());
+    Int32                       numOfDim    = inputs.getDimOfInput(0, v_required());
 
     //Load seed if provided
     enum Methods{UNION = 0, SEED = 1} ;
@@ -42,9 +42,9 @@ void vigraMain(matlab::OutputArray outputs, matlab::InputArray inputs){
 
 
     //Get right connectivity options
-    int                         v2Dconn[2]      = {8, 4};
-    int                         v3Dconn[2]      = {26, 6};
-    int                         connectivity    = (method == UNION)?
+    Int32                         v2Dconn[2]      = {8, 4};
+    Int32                         v3Dconn[2]      = {26, 6};
+    Int32                         connectivity    = (method == UNION)?
                                 inputs.getScalarVals2D3D<int>("conn", v_default(8,26,numOfDim),
                                                                                     v2Dconn, v2Dconn+2,
                                                                                     v3Dconn, v3Dconn+2,
@@ -54,9 +54,9 @@ void vigraMain(matlab::OutputArray outputs, matlab::InputArray inputs){
                                                                                     v3Dconn+1, v3Dconn+2,
                                                                                     numOfDim);
     //Get Crack options
-    VIGRA_CREATE_ENUM_AND_STD_MAP2(Crack,CrackMap, completeGrow, keepContours);
-    Crack                       crack           = (Crack)inputs.getEnum("crack", v_default((int)completeGrow), CrackMap);
-    SRGType                     SRGcrack        = (crack == completeGrow)? vigra::CompleteGrow : vigra::KeepContours;
+    VIGRA_CREATE_ENUM_AND_STD_MAP2(Crack,CrackMap, complete_grow, keep_contours);
+    Crack                       crack           = (Crack)inputs.getEnum("crack", v_default(UInt32(complete_grow)), CrackMap);
+    SRGType                     SRGcrack        = (crack == complete_grow)? vigra::CompleteGrow : vigra::KeepContours;
 
 
     double                      CostThreshold   =  inputs.getScalar<double>("CostThreshold", v_default(-1.0));
@@ -66,7 +66,7 @@ void vigraMain(matlab::OutputArray outputs, matlab::InputArray inputs){
     BasicImageView<outType>     out(out3D.data(), in3D.shape(0), in3D.shape(1));
     // contorPair maps 2 integers bijectively onto one dimension. (see Wikipedia Cantor pair Function)
 
-    int max_region_label = -1;
+    UInt32 max_region_label = 0;
 
 
     /***************************************************************************************************
@@ -112,7 +112,7 @@ void vigraMain(matlab::OutputArray outputs, matlab::InputArray inputs){
             //find maximimum of seed Image
             FindMinMax<seedType> minmax;   // init functor
             inspectImage(srcImageRange(seed), minmax);
-            max_region_label = minmax.max;
+            max_region_label = static_cast<UInt32>(minmax.max);
 
             ArrayOfRegionStatistics<vigra::SeedRgDirectValueFunctor<seedType> >
                                             gradstat(max_region_label);
@@ -130,7 +130,7 @@ void vigraMain(matlab::OutputArray outputs, matlab::InputArray inputs){
             #endif
             FindMinMax<seedType> minmax;
             inspectMultiArray(srcMultiArrayRange(seed3D), minmax);
-            max_region_label = minmax.max;
+            max_region_label = static_cast<UInt32>(minmax.max);
 
             ArrayOfRegionStatistics<vigra::SeedRgDirectValueFunctor<seedType> >
                                             gradstat(max_region_label);

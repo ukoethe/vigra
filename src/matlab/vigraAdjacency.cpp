@@ -31,9 +31,9 @@ static void vigraMain(matlab::OutputArray outputs, matlab::InputArray inputs)
     int                         numOfDim    = inputs.getDimOfInput(0, v_required());
 
 
-    SparseArray<int>            adj_matrix;
+    SparseArray<Int32>            adj_matrix;
     bool                        IsSet_maxRegion;
-    T                           max_region_label    = inputs.getScalar<T> ("max_region_label", v_optional(IsSet_maxRegion));
+    UInt32                          max_region_label    = inputs.getScalar<UInt32> ("max_region_label", v_optional(IsSet_maxRegion));
     if(!IsSet_maxRegion)
     {
         FindMinMax<T> minmax;

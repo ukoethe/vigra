@@ -1166,14 +1166,20 @@ class SparseArray
 
     //Any better idea? i would like to unify the get and operator() functions.
     // Problem is that  operator() always passes a reference or creates one.
-    T& operator()(int i, int j){
+    template<class indexType>
+    T& operator()(indexType i_, indexType j_){
+        Int32 i = static_cast<Int32>(i_);
+        Int32 j = static_cast<Int32>(j_);
         TinyVector<int,2> newShapew(i, j);
         typename std::map<TinyVector<int,2>, T, ShapeCmp>::iterator iter;
         TinyVector<int,2> newShape;
         return data[newShapew];
     }
 
-    const T get(int i, int j){
+    template<class indexType>
+    const T get(indexType i_, indexType j_){
+        Int32 i = static_cast<Int32>(i_);
+        Int32 j = static_cast<Int32>(j_);
         TinyVector<int,2> newShape(i, j);
         if(data.find(newShape) == data.end()) return 0;
         else return data.find(newShape)->second;
