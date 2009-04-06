@@ -1,5 +1,6 @@
 /*++++++++++++++++++++INCLUDES+and+Definitions++++++++++++++++++++++++*/
 
+#define VIGRA_CHECK_BOUNDS
 #include <vigra/matlab.hxx>
 #include <vigra/labelimage.hxx>
 #include <vigra/labelvolume.hxx>
