@@ -49,6 +49,14 @@
 #include "metaprogramming.hxx"
 #include "mathutil.hxx"
 
+// Bounds checking Macro used if VIGRA_CHECK_BOUNDS is defined.
+#ifdef VIGRA_CHECK_BOUNDS
+#define VIGRA_ASSERT_INSIDE(diff) \
+  vigra_precondition(this->isInside(diff), "Index out of bounds")
+#else
+#define VIGRA_ASSERT_INSIDE(diff)
+#endif
+
 namespace vigra
 {
 
@@ -792,6 +800,7 @@ public:
          */
     reference operator[] (const difference_type &d)
     {
+        VIGRA_ASSERT_INSIDE(d);
         return m_ptr [dot (d, m_stride)];
     }
 
@@ -799,6 +808,7 @@ public:
          */
     const_reference operator[] (const difference_type &d) const
     {
+        VIGRA_ASSERT_INSIDE(d);
         return m_ptr [dot (d, m_stride)];
     }
 
@@ -817,6 +827,7 @@ public:
          */
     reference operator[](difference_type_1 d)
     {
+        VIGRA_ASSERT_INSIDE(scanOrderIndexToCoordinate(d));
         return m_ptr [detail::ScanOrderToOffset<actual_dimension>::exec(d, m_shape, m_stride)];
     }
 
@@ -827,6 +838,7 @@ public:
          */
     const_reference operator[](difference_type_1 d) const
     {
+        VIGRA_ASSERT_INSIDE(scanOrderIndexToCoordinate(d));
         return m_ptr [detail::ScanOrderToOffset<actual_dimension>::exec(d, m_shape, m_stride)];
     }
 
@@ -850,6 +862,7 @@ public:
          */
     reference operator() (difference_type_1 x)
     {
+        VIGRA_ASSERT_INSIDE(difference_type(x));
         return m_ptr [detail::CoordinatesToOffest<C>::exec(m_stride, x)];
     }
 
@@ -857,6 +870,7 @@ public:
          */
     reference operator() (difference_type_1 x, difference_type_1 y)
     {
+        VIGRA_ASSERT_INSIDE(difference_type(x, y));
         return m_ptr [detail::CoordinatesToOffest<C>::exec(m_stride, x, y)];
     }
 
@@ -864,6 +878,7 @@ public:
          */
     reference operator() (difference_type_1 x, difference_type_1 y, difference_type_1 z)
     {
+        VIGRA_ASSERT_INSIDE(difference_type(x, y, z));
         return m_ptr [m_stride[0]*x + m_stride[1]*y + m_stride[2]*z];
     }
 
@@ -872,6 +887,7 @@ public:
     reference operator() (difference_type_1 x, difference_type_1 y,
                           difference_type_1 z, difference_type_1 u)
     {
+        VIGRA_ASSERT_INSIDE(difference_type(x, y, z, u));
         return m_ptr [m_stride[0]*x + m_stride[1]*y + m_stride[2]*z + m_stride[3]*u];
     }
 
@@ -880,6 +896,7 @@ public:
     reference operator() (difference_type_1 x, difference_type_1 y, difference_type_1 z,
                           difference_type_1 u, difference_type_1 v)
     {
+        VIGRA_ASSERT_INSIDE(difference_type(x, y,z, u,v));
         return m_ptr [m_stride[0]*x + m_stride[1]*y + m_stride[2]*z + m_stride[3]*u + m_stride[4]*v];
     }
 
@@ -887,6 +904,7 @@ public:
          */
     const_reference operator() (difference_type_1 x) const
     {
+        VIGRA_ASSERT_INSIDE(difference_type(x));
         return m_ptr [detail::CoordinatesToOffest<C>::exec(m_stride, x)];
     }
 
@@ -894,6 +912,7 @@ public:
          */
     const_reference operator() (difference_type_1 x, difference_type_1 y) const
     {
+        VIGRA_ASSERT_INSIDE(difference_type(x, y));
         return m_ptr [detail::CoordinatesToOffest<C>::exec(m_stride, x, y)];
     }
 
@@ -901,6 +920,7 @@ public:
          */
     const_reference operator() (difference_type_1 x, difference_type_1 y, difference_type_1 z) const
     {
+        VIGRA_ASSERT_INSIDE(difference_type(x,y,z));
         return m_ptr [m_stride[0]*x + m_stride[1]*y + m_stride[2]*z];
     }
 
@@ -909,6 +929,7 @@ public:
     const_reference operator() (difference_type_1 x, difference_type_1 y,
                                 difference_type_1 z, difference_type_1 u) const
     {
+        VIGRA_ASSERT_INSIDE(difference_type(x,y,z,u));
         return m_ptr [m_stride[0]*x + m_stride[1]*y + m_stride[2]*z + m_stride[3]*u];
     }
 
@@ -917,6 +938,7 @@ public:
     const_reference operator() (difference_type_1 x, difference_type_1 y, difference_type_1 z,
                                 difference_type_1 u, difference_type_1 v) const
     {
+        VIGRA_ASSERT_INSIDE(difference_type(x,y,z,u,v));
         return m_ptr [m_stride[0]*x + m_stride[1]*y + m_stride[2]*z + m_stride[3]*u + m_stride[4]*v];
     }
 
@@ -2585,5 +2607,5 @@ makeRGBImageView (MultiArray<3, T> const &array)
 //@}
 
 } // namespace vigra
-
+#undef VIGRA_ASSERT_INSIDE
 #endif // VIGRA_MULTI_ARRAY_HXX

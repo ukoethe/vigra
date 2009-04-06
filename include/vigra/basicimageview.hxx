@@ -30,7 +30,7 @@
 /*    HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,      */
 /*    WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING      */
 /*    FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR     */
-/*    OTHER DEALINGS IN THE SOFTWARE.                                   */                
+/*    OTHER DEALINGS IN THE SOFTWARE.                                   */
 /*                                                                      */
 /************************************************************************/
 
@@ -39,6 +39,15 @@
 
 #include "imageiterator.hxx"
 #include "initimage.hxx"
+
+// Bounds checking Macro used if VIGRA_CHECK_BOUNDS is defined.
+#ifdef VIGRA_CHECK_BOUNDS
+#define VIGRA_ASSERT_INSIDE(diff) \
+  vigra_precondition(this->isInside(diff), "Index out of bounds")
+#else
+#define VIGRA_ASSERT_INSIDE(diff)
+#endif
+
 
 namespace vigra {
 
@@ -54,11 +63,11 @@ namespace vigra {
     This class provides the same interface as \ref vigra::BasicImage
     (with the exception of <tt>resize()</tt>) but the image's
     memory is provided from the outside instead of allocated internally.
-    
-    A <tt>BasicImageView</tt> can also be created from a 
+
+    A <tt>BasicImageView</tt> can also be created from a
     \ref vigra::MultiArrayView with the appropriate shape -- see
     \ref MultiArrayToImage.
-    
+
     <b>\#include</b> \<<a href="basicimageview_8hxx-source.html">vigra/basicimageview.hxx</a>\>
 
     Namespace: vigra
@@ -214,7 +223,7 @@ class BasicImageView
         return height_;
     }
 
-        /** stride of Image. 
+        /** stride of Image.
             Memory offset between the start of two successive rows.
         */
     int stride() const
@@ -242,6 +251,7 @@ class BasicImageView
         */
     reference operator[](difference_type const & d)
     {
+        VIGRA_ASSERT_INSIDE(d);
         return data_[d.y*stride_ + d.x];
     }
 
@@ -250,6 +260,7 @@ class BasicImageView
         */
     const_reference operator[](difference_type const & d) const
     {
+        VIGRA_ASSERT_INSIDE(difference_type(d));
         return data_[d.y*stride_ + d.x];
     }
 
@@ -258,6 +269,7 @@ class BasicImageView
         */
     reference operator()(int dx, int dy)
     {
+        VIGRA_ASSERT_INSIDE(difference_type(dx,dy));
         return data_[dy*stride_ + dx];
     }
 
@@ -266,6 +278,7 @@ class BasicImageView
         */
     const_reference operator()(int dx, int dy) const
     {
+        VIGRA_ASSERT_INSIDE(difference_type(dx, dy));
         return data_[dy*stride_ + dx];
     }
 
@@ -275,6 +288,7 @@ class BasicImageView
         */
     pointer operator[](int dy)
     {
+        VIGRA_ASSERT_INSIDE(difference_type(0, dy));
         return data_ + dy*stride_;
     }
 
@@ -284,6 +298,7 @@ class BasicImageView
         */
     const_pointer operator[](int dy) const
     {
+        VIGRA_ASSERT_INSIDE(difference_type(0,dy));
         return data_ + dy*stride_;
     }
 
@@ -408,7 +423,7 @@ class BasicImageView
 
         /** init 1D random access const iterator pointing to first pixel of column \a x
         */
-    const_column_iterator columnBegin(int x) const 
+    const_column_iterator columnBegin(int x) const
     {
         typedef typename const_column_iterator::BaseType Iter;
         return const_column_iterator(Iter(data_ + x, stride_));
@@ -416,7 +431,7 @@ class BasicImageView
 
         /** init 1D random access const iterator pointing past the end of column \a x
         */
-    const_column_iterator columnEnd(int x) const 
+    const_column_iterator columnEnd(int x) const
     {
         return columnBegin(x) + height();
     }
@@ -472,8 +487,8 @@ inline triple<typename BasicImageView<PixelType>::const_traverser,
               typename BasicImageView<PixelType>::const_traverser, Accessor>
 srcImageRange(BasicImageView<PixelType> const & img, Rect2D const & roi, Accessor a)
 {
-    vigra_precondition(roi.left() >= 0 && roi.top() >= 0 && 
-                       roi.right() <= img.width() && roi.bottom() <= img.height(), 
+    vigra_precondition(roi.left() >= 0 && roi.top() >= 0 &&
+                       roi.right() <= img.width() && roi.bottom() <= img.height(),
                        "srcImageRange(): ROI rectangle outside image.");
     return triple<typename BasicImageView<PixelType>::const_traverser,
                   typename BasicImageView<PixelType>::const_traverser,
@@ -494,7 +509,7 @@ template <class PixelType, class Accessor>
 inline pair<typename BasicImageView<PixelType>::const_traverser, Accessor>
 srcImage(BasicImageView<PixelType> const & img, Point2D const & ul, Accessor a)
 {
-    vigra_precondition(img.isInside(ul), 
+    vigra_precondition(img.isInside(ul),
                        "srcImage(): ROI rectangle outside image.");
     return pair<typename BasicImageView<PixelType>::const_traverser,
                 Accessor>(img.upperLeft() + ul, a);
@@ -517,8 +532,8 @@ inline triple<typename BasicImageView<PixelType>::traverser,
               typename BasicImageView<PixelType>::traverser, Accessor>
 destImageRange(BasicImageView<PixelType> & img, Rect2D const & roi, Accessor a)
 {
-    vigra_precondition(roi.left() >= 0 && roi.top() >= 0 && 
-                       roi.right() <= img.width() && roi.bottom() <= img.height(), 
+    vigra_precondition(roi.left() >= 0 && roi.top() >= 0 &&
+                       roi.right() <= img.width() && roi.bottom() <= img.height(),
                        "destImageRange(): ROI rectangle outside image.");
     return triple<typename BasicImageView<PixelType>::traverser,
                   typename BasicImageView<PixelType>::traverser,
@@ -539,7 +554,7 @@ template <class PixelType, class Accessor>
 inline pair<typename BasicImageView<PixelType>::traverser, Accessor>
 destImage(BasicImageView<PixelType> & img, Point2D const & ul, Accessor a)
 {
-    vigra_precondition(img.isInside(ul), 
+    vigra_precondition(img.isInside(ul),
                        "destImage(): ROI rectangle outside image.");
     return pair<typename BasicImageView<PixelType>::traverser,
                 Accessor>(img.upperLeft() + ul, a);
@@ -557,7 +572,7 @@ template <class PixelType, class Accessor>
 inline pair<typename BasicImageView<PixelType>::const_traverser, Accessor>
 maskImage(BasicImageView<PixelType> const & img, Point2D const & ul, Accessor a)
 {
-    vigra_precondition(img.isInside(ul), 
+    vigra_precondition(img.isInside(ul),
                        "maskImage(): ROI rectangle outside image.");
     return pair<typename BasicImageView<PixelType>::const_traverser,
                 Accessor>(img.upperLeft() + ul, a);
@@ -584,8 +599,8 @@ inline triple<typename BasicImageView<PixelType>::const_traverser,
               typename BasicImageView<PixelType>::ConstAccessor>
 srcImageRange(BasicImageView<PixelType> const & img, Rect2D const & roi)
 {
-    vigra_precondition(roi.left() >= 0 && roi.top() >= 0 && 
-                       roi.right() <= img.width() && roi.bottom() <= img.height(), 
+    vigra_precondition(roi.left() >= 0 && roi.top() >= 0 &&
+                       roi.right() <= img.width() && roi.bottom() <= img.height(),
                        "srcImageRange(): ROI rectangle outside image.");
     return triple<typename BasicImageView<PixelType>::const_traverser,
                   typename BasicImageView<PixelType>::const_traverser,
@@ -609,7 +624,7 @@ inline pair< typename BasicImageView<PixelType>::const_traverser,
              typename BasicImageView<PixelType>::ConstAccessor>
 srcImage(BasicImageView<PixelType> const & img, Point2D const & ul)
 {
-    vigra_precondition(img.isInside(ul), 
+    vigra_precondition(img.isInside(ul),
                        "srcImage(): ROI rectangle outside image.");
     return pair<typename BasicImageView<PixelType>::const_traverser,
                 typename BasicImageView<PixelType>::ConstAccessor>(img.upperLeft() + ul,
@@ -635,8 +650,8 @@ inline triple< typename BasicImageView<PixelType>::traverser,
                typename BasicImageView<PixelType>::Accessor>
 destImageRange(BasicImageView<PixelType> & img, Rect2D const & roi)
 {
-    vigra_precondition(roi.left() >= 0 && roi.top() >= 0 && 
-                       roi.right() <= img.width() && roi.bottom() <= img.height(), 
+    vigra_precondition(roi.left() >= 0 && roi.top() >= 0 &&
+                       roi.right() <= img.width() && roi.bottom() <= img.height(),
                        "destImageRange(): ROI rectangle outside image.");
     return triple<typename BasicImageView<PixelType>::traverser,
                   typename BasicImageView<PixelType>::traverser,
@@ -660,7 +675,7 @@ inline pair< typename BasicImageView<PixelType>::traverser,
              typename BasicImageView<PixelType>::Accessor>
 destImage(BasicImageView<PixelType> & img, Point2D const & ul)
 {
-    vigra_precondition(img.isInside(ul), 
+    vigra_precondition(img.isInside(ul),
                        "destImage(): ROI rectangle outside image.");
     return pair<typename BasicImageView<PixelType>::traverser,
                 typename BasicImageView<PixelType>::Accessor>(img.upperLeft() + ul,
@@ -682,7 +697,7 @@ inline pair< typename BasicImageView<PixelType>::const_traverser,
              typename BasicImageView<PixelType>::ConstAccessor>
 maskImage(BasicImageView<PixelType> const & img, Point2D const & ul)
 {
-    vigra_precondition(img.isInside(ul), 
+    vigra_precondition(img.isInside(ul),
                        "maskImage(): ROI rectangle outside image.");
     return pair<typename BasicImageView<PixelType>::const_traverser,
                 typename BasicImageView<PixelType>::ConstAccessor>(img.upperLeft() + ul,
@@ -690,5 +705,5 @@ maskImage(BasicImageView<PixelType> const & img, Point2D const & ul)
 }
 
 } // namespace vigra
-
+#undef VIGRA_ASSERT_INSIDE
 #endif /* VIGRA_BASICIMAGEVIEW_HXX */

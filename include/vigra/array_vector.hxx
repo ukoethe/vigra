@@ -43,6 +43,14 @@
 #include <algorithm>
 #include <iosfwd>
 
+#ifdef VIGRA_CHECK_BOUNDS
+#define VIGRA_ASSERT_INSIDE(diff) \
+  vigra_precondition(diff >= 0, "Index out of bounds");\
+  vigra_precondition((unsigned int)diff < size_, "Index out of bounds");
+#else
+#define VIGRA_ASSERT_INSIDE(diff)
+#endif
+
 namespace vigra
 {
 
@@ -109,20 +117,20 @@ public:
     {}
 
         /** Copy assignment. There are 3 cases:
-                    
+
             <ul>
-            <li> When this <tt>ArrayVectorView</tt> does not point to valid data 
+            <li> When this <tt>ArrayVectorView</tt> does not point to valid data
                  (e.g. after default construction), it becomes a copy of \a rhs.
-            <li> When the shapes of the two arrays match, the array contents 
+            <li> When the shapes of the two arrays match, the array contents
                  (not the pointers) are copied.
             <li> Otherwise, a <tt>PreconditionViolation</tt> exception is thrown.
             </ul>
         */
     ArrayVectorView & operator=( ArrayVectorView const & rhs );
 
-        /** Copy assignment. 
-            When the shapes of the two arrays match, the array contents 
-            (not the pointers) are copied. Otherwise, a <tt>PreconditionViolation</tt> 
+        /** Copy assignment.
+            When the shapes of the two arrays match, the array contents
+            (not the pointers) are copied. Otherwise, a <tt>PreconditionViolation</tt>
             exception is thrown.
         */
     template <class U>
@@ -140,9 +148,9 @@ public:
         std::fill(begin(), end(), initial);
     }
 
-        /** Copy array elements. 
-            When the shapes of the two arrays match, the array contents 
-            (not the pointers) are copied. Otherwise, a <tt>PreconditionViolation</tt> 
+        /** Copy array elements.
+            When the shapes of the two arrays match, the array contents
+            (not the pointers) are copied. Otherwise, a <tt>PreconditionViolation</tt>
             exception is thrown.
         */
     void copy( this_type const & rhs )
@@ -151,9 +159,9 @@ public:
             copyImpl(rhs);
     }
 
-        /** Copy array elements. 
-            When the shapes of the two arrays match, the array contents 
-            (not the pointers) are copied. Otherwise, a <tt>PreconditionViolation</tt> 
+        /** Copy array elements.
+            When the shapes of the two arrays match, the array contents
+            (not the pointers) are copied. Otherwise, a <tt>PreconditionViolation</tt>
             exception is thrown.
         */
     template <class U>
@@ -162,9 +170,9 @@ public:
         copyImpl(rhs);
     }
 
-        /** Swap array elements. 
-            When the shapes of the two arrays match, the array contents 
-            (not the pointers) are swapped. Otherwise, a <tt>PreconditionViolation</tt> 
+        /** Swap array elements.
+            When the shapes of the two arrays match, the array contents
+            (not the pointers) are swapped. Otherwise, a <tt>PreconditionViolation</tt>
             exception is thrown.
         */
     void swapData(this_type rhs)
@@ -173,9 +181,9 @@ public:
             swapDataImpl(rhs);
     }
 
-        /** Swap array elements. 
-            When the shapes of the two arrays match, the array contents 
-            (not the pointers) are swapped. Otherwise, a <tt>PreconditionViolation</tt> 
+        /** Swap array elements.
+            When the shapes of the two arrays match, the array contents
+            (not the pointers) are swapped. Otherwise, a <tt>PreconditionViolation</tt>
             exception is thrown.
         */
     template <class U>
@@ -183,10 +191,10 @@ public:
     {
         swapDataImpl(rhs);
     }
-    
-        /** Construct <tt>ArrayVectorView</tt> refering to a subarray. 
-            \a begin and \a end must be a valid sub-range of the current array. 
-            Otherwise, a <tt>PreconditionViolation</tt> 
+
+        /** Construct <tt>ArrayVectorView</tt> refering to a subarray.
+            \a begin and \a end must be a valid sub-range of the current array.
+            Otherwise, a <tt>PreconditionViolation</tt>
             exception is thrown.
         */
     this_type subarray (size_type begin, size_type end) const
@@ -195,7 +203,7 @@ public:
               "ArrayVectorView::subarray(): Limits out of range.");
         return this_type(end-begin, data_ + begin);
     }
-    
+
         /** Get contained const pointer to the data.
         */
     inline const_pointer data() const
@@ -298,6 +306,7 @@ public:
         */
     reference operator[]( difference_type i )
     {
+        VIGRA_ASSERT_INSIDE(i);
         return data()[i];
     }
 
@@ -305,6 +314,7 @@ public:
         */
     const_reference operator[]( difference_type i ) const
     {
+        VIGRA_ASSERT_INSIDE(i);
         return data()[i];
     }
 
@@ -328,7 +338,7 @@ public:
     template <class U>
     bool operator==(ArrayVectorView<U> const & rhs) const;
 
-        /** check whether two arrays are not elementwise equal. 
+        /** check whether two arrays are not elementwise equal.
             Also returns <tt>true</tt> if the two arrays have different sizes.
          */
     template <class U>
@@ -363,7 +373,7 @@ ArrayVectorView<T> & ArrayVectorView<T>::operator=( ArrayVectorView<T> const & r
 {
     if(data_ == 0)
     {
-        size_ = rhs.size_;    
+        size_ = rhs.size_;
         data_ = rhs.data_;
     }
     else if(data_ != rhs.data_)
@@ -380,11 +390,11 @@ bool ArrayVectorView<T>::operator==(ArrayVectorView<U> const & rhs) const
     for(unsigned int k=0; k<size(); ++k)
         if(data_[k] != rhs[k])
             return false;
-    return true; 
+    return true;
 }
 
 template <class T>
-void 
+void
 ArrayVectorView <T>::copyImpl(const ArrayVectorView & rhs)
 {
     vigra_precondition (size() == rhs.size(),
@@ -402,7 +412,7 @@ ArrayVectorView <T>::copyImpl(const ArrayVectorView & rhs)
 
 template <class T>
 template <class U>
-void 
+void
 ArrayVectorView <T>::copyImpl(const ArrayVectorView <U>& rhs)
 {
     vigra_precondition (size() == rhs.size(),
@@ -412,7 +422,7 @@ ArrayVectorView <T>::copyImpl(const ArrayVectorView <U>& rhs)
 
 template <class T>
 template <class U>
-void 
+void
 ArrayVectorView <T>::swapDataImpl(const ArrayVectorView <U>& rhs)
 {
     vigra_precondition (size () == rhs.size() (),
@@ -448,19 +458,19 @@ ArrayVectorView <T>::swapDataImpl(const ArrayVectorView <U>& rhs)
     to algorithms that expect raw memory. This is especially important
     when lagacy or C code has to be called, but it is also useful for certain
     optimizations.
-    
-    Moreover, <tt>ArrayVector</tt> is derived from <tt>ArrayVectorView</tt> so that one 
+
+    Moreover, <tt>ArrayVector</tt> is derived from <tt>ArrayVectorView</tt> so that one
     can create views of the array (in particular, subarrays). This implies another
     important difference to <tt>std::vector</tt>: the indexing operator
     (<tt>ArrayVector::operator[]</tt>) takes <tt>signed</tt> indices. In this way,
     an <tt>ArrayVectorView</tt> can be used with negative indices:
-    
+
     \code
     ArrayVector<int> data(100);
     ArrayVectorView<int> view = data.subarray(50, 100);
-    
+
     view[-50] = 1; // valid access
-    \endcode  
+    \endcode
 
     Refer to the documentation of <tt>std::vector</tt> for a detailed
     description of <tt>ArrayVector</tt> functionality.
@@ -795,7 +805,7 @@ ArrayVector<T, Alloc>::erase(iterator p, iterator q)
 }
 
 template <class T, class Alloc>
-inline void 
+inline void
 ArrayVector<T, Alloc>::reserve( size_type new_capacity )
 {
     if(new_capacity <= capacity_)
@@ -809,7 +819,7 @@ ArrayVector<T, Alloc>::reserve( size_type new_capacity )
 }
 
 template <class T, class Alloc>
-inline void 
+inline void
 ArrayVector<T, Alloc>::reserve()
 {
     if(capacity_ == 0)
@@ -819,7 +829,7 @@ ArrayVector<T, Alloc>::reserve()
 }
 
 template <class T, class Alloc>
-inline void 
+inline void
 ArrayVector<T, Alloc>::resize( size_type new_size, value_type const & initial)
 {
     if(new_size < this->size_)
@@ -831,7 +841,7 @@ ArrayVector<T, Alloc>::resize( size_type new_size, value_type const & initial)
 }
 
 template <class T, class Alloc>
-inline void 
+inline void
 ArrayVector<T, Alloc>::swap(this_type & rhs)
 {
     std::swap(this->size_, rhs.size_);
@@ -840,7 +850,7 @@ ArrayVector<T, Alloc>::swap(this_type & rhs)
 }
 
 template <class T, class Alloc>
-inline void 
+inline void
 ArrayVector<T, Alloc>::deallocate(pointer data, size_type size)
 {
     if(data)
@@ -878,5 +888,5 @@ ostream & operator<<(ostream & s, vigra::ArrayVectorView<T> const & a)
 
 } // namespace std
 
-
+#undef VIGRA_ASSERT_INSIDE
 #endif /* VIGRA_ARRAY_VECTOR_HXX */
