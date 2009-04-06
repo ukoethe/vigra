@@ -15,7 +15,7 @@ using namespace matlab;
 
 
 
-//#define RN_DEBUG
+#define RN_DEBUG
 #define cP3_(a, b , c) cP3<a, b, c>::value
 template <class T>
 void vigraMain(matlab::OutputArray outputs, matlab::InputArray inputs){
@@ -25,12 +25,13 @@ void vigraMain(matlab::OutputArray outputs, matlab::InputArray inputs){
     ***************************************************************************************************/
     typedef UInt32 OutputType;
     MultiArrayView<3,T>     in3D        =       inputs.getMultiArray<3,T>(0, v_required());
+    MultiArrayView<3,OutputType>     out3D        =       inputs.getMultiArray<3,OutputType>("output", v_required());
     BasicImageView<T>       in          =       makeBasicImageView(in3D.bindOuter(0));
-    int                     numOfDim    =       inputs.getDimOfInput(0, v_required());
+    Int32                     numOfDim    =       inputs.getDimOfInput(0, v_required());
 
-    int                     v2Dconn[2]  =       {8, 4};
-    int                     v3Dconn[2]  =       {26, 6};
-    int                     connectivity=       inputs.getScalarVals2D3D<int>("conn", v_default(8,26,numOfDim),
+    Int32                     v2Dconn[2]  =       {8, 4};
+    Int32                     v3Dconn[2]  =       {26, 6};
+    Int32                     connectivity=       inputs.getScalarVals2D3D<Int32>("conn", v_default(8,26,numOfDim),
                                                                                     v2Dconn, v2Dconn+2,
                                                                                     v3Dconn, v3Dconn+2,
                                                                                     numOfDim);
@@ -45,10 +46,10 @@ void vigraMain(matlab::OutputArray outputs, matlab::InputArray inputs){
     bool                    hasBackground;
     T                       backgroundValue = inputs.getScalar<T>("backgroundValue", v_optional(hasBackground));
 
-    MultiArrayView<3,OutputType>     out3D           = outputs.createMultiArray      <3,OutputType>   (0, v_required(), in3D.shape());
+    //MultiArrayView<3,OutputType>     out3D           = outputs.createMultiArray      <3,OutputType>   (0, v_required(), in3D.shape());
     BasicImageView<OutputType>       out(out3D.data(), in3D.shape(0), in3D.shape(1));
 
-    int                     max_region_label = (hasBackground == true)? 1: 0;
+    Int32                     max_region_label = (hasBackground == true)? 1: 0;
 
     /***************************************************************************************************
     **              CODE PART                                                                         **
@@ -108,11 +109,17 @@ void vigraMain(matlab::OutputArray outputs, matlab::InputArray inputs){
             #endif
             max_region_label = labelVolumeWithBackground(srcMultiArrayRange(in3D), destMultiArray(out3D),
                                                                                         NeighborCode3DTwentySix(), backgroundValue);
+            #ifdef RN_DEBUG
+            mexWarnMsgTxt("DONE");
+            #endif
             break;
         default:
             mexErrMsgTxt("Something went wrong");
     }
 
+    #ifdef RN_DEBUG
+    mexWarnMsgTxt("Out of Switch");
+    #endif
     outputs.createScalar<int> (1, v_optional(), max_region_label);
 }
 
