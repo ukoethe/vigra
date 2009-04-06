@@ -30,7 +30,7 @@
 /*    HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,      */
 /*    WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING      */
 /*    FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR     */
-/*    OTHER DEALINGS IN THE SOFTWARE.                                   */                
+/*    OTHER DEALINGS IN THE SOFTWARE.                                   */
 /*                                                                      */
 /************************************************************************/
 
@@ -46,6 +46,14 @@
 #include "numerictraits.hxx"
 #include "mathutil.hxx"
 #include "diff2d.hxx"
+
+#ifdef VIGRA_CHECK_BOUNDS
+#define VIGRA_ASSERT_INSIDE(diff) \
+  vigra_precondition(diff >= 0, "Index out of bounds");\
+  vigra_precondition(diff < SIZE, "Index out of bounds");
+#else
+#define VIGRA_ASSERT_INSIDE(diff)
+#endif
 
 namespace vigra {
 
@@ -516,7 +524,7 @@ class TinyVectorBase
         */
     NormType magnitude() const
     {
-         return sqrt(static_cast<typename 
+         return sqrt(static_cast<typename
               SquareRootTraits<SquaredNormType>::SquareRootArgument>(squaredMagnitude()));
     }
 
@@ -529,11 +537,19 @@ class TinyVectorBase
 
         /** Access component by index.
         */
-    reference operator[](difference_type i) { return data_[i]; }
+    reference operator[](difference_type i)
+    {
+        VIGRA_ASSERT_INSIDE(i);
+        return data_[i];
+    }
 
         /** Get component by index.
         */
-    const_reference operator[](difference_type i) const { return data_[i]; }
+    const_reference operator[](difference_type i) const
+    {
+        VIGRA_ASSERT_INSIDE(i);
+        return data_[i];
+    }
 
         /** Get random access iterator to begin of vector.
         */
@@ -663,6 +679,20 @@ class TinyVector
         BaseType::data_[3] = i4;
     }
 
+        /** Construction with explicit values.
+            Call only if SIZE == 5
+        */
+    TinyVector(value_type const & i1, value_type const & i2,
+               value_type const & i3, value_type const & i4,
+               value_type const & i5)
+    : BaseType()
+    {
+        BaseType::data_[0] = i1;
+        BaseType::data_[1] = i2;
+        BaseType::data_[2] = i3;
+        BaseType::data_[3] = i4;
+        BaseType::data_[4] = i5;
+    }
        /** Default constructor (initializes all components with zero)
         */
     TinyVector()
@@ -1368,5 +1398,5 @@ squaredNorm(TinyVector<V, SIZE> const & t)
 
 
 } // namespace vigra
-
+#undef VIGRA_ASSERT_INSIDE
 #endif // VIGRA_TINYVECTOR_HXX
