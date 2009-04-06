@@ -85,7 +85,7 @@ if strcmp( TARGET, 'all' )
     
             
             m_filename = [functionName '.m' ];
-            if isempty(dir(['./' m_filename])) == 0 || strcmp(OUTDIR, '.')  == 0 % file exists
+            if 0 %isempty(dir(['./' m_filename])) == 0 || strcmp(OUTDIR, '.')  == 0 % file exists
                 disp(['copying: ' m_filename]);
                 copyfile(['./' m_filename], [OUTDIR '/' m_filename]);  % => copy it
             else  % build documentation from C++ comment
