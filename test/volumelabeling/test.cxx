@@ -130,8 +130,9 @@ struct VolumeLabelingTest
     void labelingSixTest1()
     {
         IntVolume res(vol1);
-
-        should(2 == labelVolumeSix(srcMultiArrayRange(vol1), destMultiArray(res)));
+        
+        unsigned int maxLabel = labelVolumeSix(srcMultiArrayRange(vol1), destMultiArray(res));
+        should(2 == maxLabel);
 
         IntVolume::iterator i1 = vol1.begin();
         IntVolume::iterator i1end = vol1.end();
@@ -207,7 +208,8 @@ struct VolumeLabelingTest
     {
         IntVolume res(vol5);
 
-        should(4 == labelVolumeWithBackground(srcMultiArrayRange(vol5), destMultiArray(res), NeighborCode3DSix(), 0));
+        unsigned int maxLabel = labelVolumeWithBackground(srcMultiArrayRange(vol5), destMultiArray(res), NeighborCode3DSix(), 0);
+        should(4 == maxLabel);
 
         static const int out5[] = { 0, 0, 0, 0, 0,    0, 1, 1, 1, 0,    0, 1, 1, 1, 0,    0, 1, 1, 1, 0,    0, 0, 0, 0, 0,
                                     2, 2, 0, 2, 2,    2, 1, 0, 1, 2,    2, 2, 0, 2, 2,    2, 1, 0, 1, 2,    2, 2, 0, 2, 2,

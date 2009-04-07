@@ -40,6 +40,7 @@
 
 #include "voxelneighborhood.hxx"
 #include "multi_array.hxx"
+#include "array_vector.hxx"
 
 namespace vigra{
 
@@ -205,37 +206,17 @@ unsigned int labelVolume(SrcIterator s_Iter, SrcShape srcShape, SrcAccessor sa,
 
     //basically needed for iteration and border-checks
     int w = srcShape[0], h = srcShape[1], d = srcShape[2];
-    int x,y,z, i;
-        
-    //declare and define Iterators for all three dims at src
-    SrcIterator zs = s_Iter;
-    SrcIterator ys(zs);
-    SrcIterator xs(ys);
+    int x,y,z;       
         
     // temporary image to store region labels
-    typedef vigra::MultiArray<3,int> LabelVolume;
-    typedef LabelVolume::traverser LabelTraverser;
-    
-    LabelVolume labelvolume(srcShape);
+    ArrayVector<unsigned int> label;
+    label.push_back(0); // back() always contains the next unassigned label
         
     //Declare traversers for all three dims at target
-    LabelTraverser zt = labelvolume.traverser_begin();
-    LabelTraverser yt(zt);
-    LabelTraverser xt(yt);
+    SrcIterator zs = s_Iter;
+    DestIterator zd = d_Iter;
 
-    // Kovalevsky's clever idea to use
-    // image iterator and scan order iterator simultaneously
-    // memory order indicates label
-    LabelVolume::iterator label = labelvolume.begin();
-    
     // initialize the neighborhood traversers
-
-#if 0
-    NeighborOffsetTraverser<Neighborhood3D> nc(Neighborhood3D::CausalFirst);
-    NeighborOffsetTraverser<Neighborhood3D> nce(Neighborhood3D::CausalLast);
-#endif /* #if 0 */
-
-    NeighborOffsetCirculator<Neighborhood3D> nc(Neighborhood3D::CausalFirst);
     NeighborOffsetCirculator<Neighborhood3D> nce(Neighborhood3D::CausalLast);
     ++nce;
     // pass 1: scan image from upper left front to lower right back
@@ -251,41 +232,34 @@ unsigned int labelVolume(SrcIterator s_Iter, SrcShape srcShape, SrcAccessor sa,
     // tree is distinguished by pointing to itself (it contains its
     // own scan order address). This condition is enforced whenever a
     // new region is found or two regions are merged
-    i=0;
-    for(z = 0; z != d; ++z, ++zs.dim2(), ++zt.dim2())
+    for(z = 0; z != d; ++z, ++zs.dim2(), ++zd.dim2())
     {
-        ys = zs;
-        yt = zt;
+        SrcIterator ys(zs);
+        DestIterator yd(zd);
 
-        for(y = 0; y != h; ++y, ++ys.dim1(), ++yt.dim1())
+        for(y = 0; y != h; ++y, ++ys.dim1(), ++yd.dim1())
         {
-            xs = ys;
-            xt = yt;
+            SrcIterator xs(ys);
+            DestIterator xd(yd);
 
-            for(x = 0; x != w; ++x, ++xs.dim0(), ++xt.dim0(), ++i)
+            for(x = 0; x != w; ++x, ++xs.dim0(), ++xd.dim0())
             {
-                *xt = i; // default: new region    
+                unsigned int currentLabel = label.back(); // default: start a new region    
 
-                //queck whether there is a special borde threatment to be used or not
+                //queck whether there is a special border treatment to be used or not
                 AtVolumeBorder atBorder = isAtVolumeBorderCausal(x,y,z,w,h,z);
                     
                 //We are not at the border!
                 if(atBorder == NotAtBorder)
                 {
-                    
-
-#if 0
-                    nc = NeighborOffsetTraverser<Neighborhood3D>(Neighborhood3D::CausalFirst);
-#endif /* #if 0 */
-
-                    nc = NeighborOffsetCirculator<Neighborhood3D>(Neighborhood3D::CausalFirst);
+                    NeighborOffsetCirculator<Neighborhood3D> nc(Neighborhood3D::CausalFirst);
                 
                     do
                     {            
                         // if colors are equal
-                        if(equal(*xs, xs[*nc]))
+                        if(equal(sa(xs), sa(xs, *nc)))
                         {
-                            int neighborLabel = xt[*nc];
+                            unsigned int neighborLabel = label[da(xd,*nc)];
 
                             // find the root label of a label tree
                             while(neighborLabel != label[neighborLabel])
@@ -293,35 +267,30 @@ unsigned int labelVolume(SrcIterator s_Iter, SrcShape srcShape, SrcAccessor sa,
                                 neighborLabel = label[neighborLabel];
                             }
 
-                            if(neighborLabel < *xt) // always keep the smallest among the possible neighbor labels
+                            if(neighborLabel < currentLabel) // always keep the smallest among the possible neighbor labels
                             {
-                                label[*xt] = neighborLabel;
-                                *xt = neighborLabel;
+                                label[currentLabel] = neighborLabel;
+                                currentLabel = neighborLabel;
                             }
                             else
                             {
-                                label[neighborLabel] = *xt;
+                                label[neighborLabel] = currentLabel;
                             }
                         }
                         ++nc;
-                    }while(nc!=nce);
-                }
-                //we are at a border - handle this!!
-                else
+                    }
+                    while(nc!=nce);
+                }               
+                else //we are at a border - handle this!!
                 {
-
-#if 0
-                    nc = NeighborOffsetTraverser<Neighborhood3D>(Neighborhood3D::nearBorderDirectionsCausal(atBorder,0));
-#endif /* #if 0 */
-
-                    nc = NeighborOffsetCirculator<Neighborhood3D>(Neighborhood3D::nearBorderDirectionsCausal(atBorder,0));
+                    NeighborOffsetCirculator<Neighborhood3D> nc(Neighborhood3D::nearBorderDirectionsCausal(atBorder,0));
                     int j=0;
                     while(nc.direction() != Neighborhood3D::Error)
                     {
                         //   colors equal???
-                        if(equal(*xs, xs[*nc]))
+                        if(equal(sa(xs), sa(xs, *nc)))
                         {
-                            int neighborLabel = xt[*nc];
+                            unsigned int neighborLabel = label[da(xd,*nc)];
 
                             // find the root label of a label tree
                             while(neighborLabel != label[neighborLabel])
@@ -329,31 +298,54 @@ unsigned int labelVolume(SrcIterator s_Iter, SrcShape srcShape, SrcAccessor sa,
                                 neighborLabel = label[neighborLabel];
                             }
 
-                            if(neighborLabel < *xt) // always keep the smallest among the possible neighbor labels
+                            if(neighborLabel < currentLabel) // always keep the smallest among the possible neighbor labels
                             {
-                                label[*xt] = neighborLabel;
-                                *xt = neighborLabel;
+                                label[currentLabel] = neighborLabel;
+                                currentLabel = neighborLabel;
                             }
                             else
                             {
-                                label[neighborLabel] = *xt;
+                                label[neighborLabel] = currentLabel;
                             }
                         }
                         nc.turnTo(Neighborhood3D::nearBorderDirectionsCausal(atBorder,++j));
                     }
                 }
+                if(currentLabel == label.size()-1)
+                {
+                    // indeed a new region
+                    vigra_invariant(currentLabel < (unsigned int)NumericTraits<typename DestAccessor::value_type>::max(),
+                                    "labelVolume(): Need more labels than can be represented in the destination voxel type.");
+                    // create new back entry
+                    label.push_back(label.size());
+                }
+                else
+                {
+                    // no new label => reset the back entry of the label array
+                    label.back() = label.size()-1;
+                }
+                da.set(currentLabel, xd);
             }
+        }
+    }
+    
+    // compress trees
+    unsigned int count = 0; 
+    for(unsigned int i=0; i<label.size()-1; ++i)
+    {
+        if(label[i] == i)
+        {
+                label[i] = count++;
+        }
+        else
+        {
+                label[i] = label[label[i]]; 
         }
     }
 
     // pass 2: assign one label to each region (tree)
     // so that labels form a consecutive sequence 1, 2, ...
-    DestIterator zd = d_Iter;
-
-    unsigned int count = 0; 
-
-    i= 0;
-
+    zd = d_Iter;
     for(z=0; z != d; ++z, ++zd.dim2())
     {
         DestIterator yd(zd);
@@ -362,17 +354,9 @@ unsigned int labelVolume(SrcIterator s_Iter, SrcShape srcShape, SrcAccessor sa,
         {
             DestIterator xd(yd);
 
-            for(x = 0; x != w; ++x, ++xd.dim0(), ++i)
+            for(x = 0; x != w; ++x, ++xd.dim0())
             {
-                if(label[i] == i)
-                {
-                        label[i] = count++;
-                }
-                else
-                {
-                        label[i] = label[label[i]]; // compress trees
-                }
-                da.set(label[i]+1, xd);
+                da.set(label[(unsigned int)da(xd)]+1, xd);
             }
         }
     }
@@ -556,162 +540,142 @@ unsigned int labelVolumeWithBackground(SrcIterator s_Iter, SrcShape srcShape, Sr
 
     //basically needed for iteration and border-checks
     int w = srcShape[0], h = srcShape[1], d = srcShape[2];
-    int x,y,z, i;
-        
-    //declare and define Iterators for all three dims at src
-    SrcIterator zs = s_Iter;
-    SrcIterator ys(zs);
-    SrcIterator xs(ys);
+    int x,y,z;
         
     // temporary image to store region labels
-    typedef vigra::MultiArray<3,int> LabelVolume;
-    typedef LabelVolume::traverser LabelTraverser;
-    
-    LabelVolume labelvolume(srcShape);
+    ArrayVector<unsigned int> label;
+    label.push_back(0); // 0 is always the background label
+    label.push_back(1); // back() always contains the next unassigned label
         
     //Declare traversers for all three dims at target
-    LabelTraverser zt = labelvolume.traverser_begin();
-    LabelTraverser yt(zt);
-    LabelTraverser xt(yt);
+    SrcIterator zs = s_Iter;
+    DestIterator zd = d_Iter;
 
-    // Kovalevsky's clever idea to use
-    // image iterator and scan order iterator simultaneously
-    // memory order indicates label
-    LabelVolume::iterator label = labelvolume.begin();
-    
-    // initialize the neighborhood traversers
-
-#if 0
-    NeighborOffsetTraverser<Neighborhood3D> nc(Neighborhood3D::CausalFirst);
-    NeighborOffsetTraverser<Neighborhood3D> nce(Neighborhood3D::CausalLast);
-#endif /* #if 0 */
-
-    NeighborOffsetCirculator<Neighborhood3D> nc(Neighborhood3D::CausalFirst);
     NeighborOffsetCirculator<Neighborhood3D> nce(Neighborhood3D::CausalLast);
     ++nce;
     // pass 1: scan image from upper left front to lower right back
     // to find connected components
 
-    // Each component will be represented by a tree of pixels. Each
-    // pixel contains the scan order address of its parent in the
-    // tree.  In order for pass 2 to work correctly, the parent must
-    // always have a smaller scan order address than the child.
-    // Therefore, we can merge trees only at their roots, because the
-    // root of the combined tree must have the smallest scan order
-    // address among all the tree's pixels/ nodes.  The root of each
-    // tree is distinguished by pointing to itself (it contains its
-    // own scan order address). This condition is enforced whenever a
-    // new region is found or two regions are merged
-    i=0;
-    int backgroundAddress=-1;
-    for(z = 0; z != d; ++z, ++zs.dim2(), ++zt.dim2())
+    for(z = 0; z != d; ++z, ++zs.dim2(), ++zd.dim2())
     {
-        ys = zs;
-        yt = zt;
+        SrcIterator ys(zs);
+        DestIterator yd(zd);
 
-        for(y = 0; y != h; ++y, ++ys.dim1(), ++yt.dim1())
+        for(y = 0; y != h; ++y, ++ys.dim1(), ++yd.dim1())
         {
-            xs = ys;
-            xt = yt;
+            SrcIterator xs(ys);
+            DestIterator xd(yd);
 
-            for(x = 0; x != w; ++x, ++xs.dim0(), ++xt.dim0(), ++i)
+            for(x = 0; x != w; ++x, ++xs.dim0(), ++xd.dim0())
             {
-                if(equal(*xs, backgroundValue)){
-                        if(backgroundAddress==-1) backgroundAddress = i;
-                        label[i]=backgroundAddress;
+                if(equal(sa(xs), backgroundValue))
+                {
+                    da.set(0, xd);
+                    continue;
                 }
-                else{
-                    *xt = i; // default: new region    
+                
+                unsigned int currentLabel = label.back(); // default: start a new region    
 
-                    //queck whether there is a special borde threatment to be used or not
-                    AtVolumeBorder atBorder = isAtVolumeBorderCausal(x,y,z,w,h,z);
-                        
-                    //We are not at the border!
-                    if(atBorder == NotAtBorder)
-                    {
-                                
-
-#if 0
-                        nc = NeighborOffsetTraverser<Neighborhood3D>(Neighborhood3D::CausalFirst);
-#endif /* #if 0 */
-
-                        nc = NeighborOffsetCirculator<Neighborhood3D>(Neighborhood3D::CausalFirst);
+                //queck whether there is a special border treatment to be used or not
+                AtVolumeBorder atBorder = isAtVolumeBorderCausal(x,y,z,w,h,z);
                     
-                        do
-                        {            
-                            // if colors are equal
-                            if(equal(*xs, xs[*nc]))
-                            {
-                                int neighborLabel = xt[*nc];
-
-                                // find the root label of a label tree
-                                while(neighborLabel != label[neighborLabel])
-                                {
-                                    neighborLabel = label[neighborLabel];
-                                }
-
-                                if(neighborLabel < *xt) // always keep the smallest among the possible neighbor labels
-                                {
-                                    label[*xt] = neighborLabel;
-                                    *xt = neighborLabel;
-                                }
-                                else
-                                {
-                                    label[neighborLabel] = *xt;
-                                }
-                            }
-                            ++nc;
-                        }while(nc!=nce);
-                    }
-                    //we are at a border - handle this!!
-                    else
-                    {
-
-#if 0
-                        nc = NeighborOffsetTraverser<Neighborhood3D>(Neighborhood3D::nearBorderDirectionsCausal(atBorder,0));
-#endif /* #if 0 */
-
-                        nc = NeighborOffsetCirculator<Neighborhood3D>(Neighborhood3D::nearBorderDirectionsCausal(atBorder,0));
-                        int j=0;
-                        while(nc.direction() != Neighborhood3D::Error)
+                //We are not at the border!
+                if(atBorder == NotAtBorder)
+                {
+                    NeighborOffsetCirculator<Neighborhood3D> nc(Neighborhood3D::CausalFirst);
+                
+                    do
+                    {            
+                        // if colors are equal
+                        if(equal(sa(xs), sa(xs, *nc)))
                         {
-                            //   colors equal???
-                            if(equal(*xs, xs[*nc]))
+                            unsigned int neighborLabel = label[da(xd,*nc)];
+
+                            // find the root label of a label tree
+                            while(neighborLabel != label[neighborLabel])
                             {
-                                int neighborLabel = xt[*nc];
-
-                                // find the root label of a label tree
-                                while(neighborLabel != label[neighborLabel])
-                                {
-                                    neighborLabel = label[neighborLabel];
-                                }
-
-                                if(neighborLabel < *xt) // always keep the smallest among the possible neighbor labels
-                                {
-                                    label[*xt] = neighborLabel;
-                                    *xt = neighborLabel;
-                                }
-                                else
-                                {
-                                    label[neighborLabel] = *xt;
-                                }
+                                neighborLabel = label[neighborLabel];
                             }
-                            nc.turnTo(Neighborhood3D::nearBorderDirectionsCausal(atBorder,++j));
+
+                            if(neighborLabel < currentLabel) // always keep the smallest among the possible neighbor labels
+                            {
+                                label[currentLabel] = neighborLabel;
+                                currentLabel = neighborLabel;
+                            }
+                            else
+                            {
+                                label[neighborLabel] = currentLabel;
+                            }
                         }
+                        ++nc;
+                    }
+                    while(nc!=nce);
+                }               
+                else //we are at a border - handle this!!
+                {
+                    NeighborOffsetCirculator<Neighborhood3D> nc(Neighborhood3D::nearBorderDirectionsCausal(atBorder,0));
+                    int j=0;
+                    while(nc.direction() != Neighborhood3D::Error)
+                    {
+                        //   colors equal???
+                        if(equal(sa(xs), sa(xs, *nc)))
+                        {
+                            unsigned int neighborLabel = label[da(xd,*nc)];
+
+                            // find the root label of a label tree
+                            while(neighborLabel != label[neighborLabel])
+                            {
+                                neighborLabel = label[neighborLabel];
+                            }
+
+                            if(neighborLabel < currentLabel) // always keep the smallest among the possible neighbor labels
+                            {
+                                label[currentLabel] = neighborLabel;
+                                currentLabel = neighborLabel;
+                            }
+                            else
+                            {
+                                label[neighborLabel] = currentLabel;
+                            }
+                        }
+                        nc.turnTo(Neighborhood3D::nearBorderDirectionsCausal(atBorder,++j));
                     }
                 }
+                if(currentLabel == label.size()-1)
+                {
+                    // indeed a new region
+                    vigra_invariant(currentLabel < (unsigned int)NumericTraits<typename DestAccessor::value_type>::max(),
+                                    "labelVolume(): Need more labels than can be represented in the destination voxel type.");
+                    // create new back entry
+                    label.push_back(label.size());
+                }
+                else
+                {
+                    // no new label => reset the back entry of the label array
+                    label.back() = label.size()-1;
+                }
+                da.set(currentLabel, xd);
             }
+        }
+    }
+    
+    // compress trees
+    unsigned int count = 0; 
+    for(unsigned int i=0; i<label.size()-1; ++i)
+    {
+        if(label[i] == i)
+        {
+                label[i] = count++;
+        }
+        else
+        {
+                label[i] = label[label[i]]; 
         }
     }
 
     // pass 2: assign one label to each region (tree)
     // so that labels form a consecutive sequence 1, 2, ...
-    DestIterator zd = d_Iter;
-
-    unsigned int count = 0; 
-
-    i= 0;
-
+    zd = d_Iter;
     for(z=0; z != d; ++z, ++zd.dim2())
     {
         DestIterator yd(zd);
@@ -720,26 +684,13 @@ unsigned int labelVolumeWithBackground(SrcIterator s_Iter, SrcShape srcShape, Sr
         {
             DestIterator xd(yd);
 
-            for(x = 0; x != w; ++x, ++xd.dim0(), ++i)
+            for(x = 0; x != w; ++x, ++xd.dim0())
             {
-                if(label[i] == backgroundAddress){
-                    label[i]=0;
-                    continue;
-                }
-                
-                if(label[i] == i)
-                {
-                    label[i] = count++;
-                }
-                else
-                {
-                    label[i] = label[label[i]]; // compress trees
-                }
-                da.set(label[i]+1, xd);
+                da.set(label[(unsigned int)da(xd)], xd);
             }
         }
     }
-    return count;
+    return count-1;
 }
 
 //@}
