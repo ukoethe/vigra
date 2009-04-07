@@ -48,6 +48,20 @@
 //#include <sstream>
 //#include <iostream>
 
+
+
+// Bounds checking Macro used if VIGRA_CHECK_BOUNDS is defined.
+#ifdef RN_DEBUG
+    #include <iostream>
+    #define VIGRA_CERR(message) \
+      std::cerr<< #message << std::endl;
+    #define VIGRA_WARN_MSG_TXT(message) \
+      mexWarnMsgTxt(#message);
+#else
+    #define VIGRA_CERR(message)
+    #define VIGRA_WARN_MSG_TXT(message)
+#endif
+
 namespace vigra {
 
 typedef enum {

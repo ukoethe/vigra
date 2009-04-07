@@ -1,6 +1,6 @@
 /*++++++++++++++++++++INCLUDES+and+Definitions++++++++++++++++++++++++*/
 
-#define VIGRA_CHECK_BOUNDS
+//#define VIGRA_CHECK_BOUNDS
 #include <vigra/matlab.hxx>
 #include <vigra/labelimage.hxx>
 #include <vigra/labelvolume.hxx>
@@ -16,7 +16,7 @@ using namespace matlab;
 
 
 
-#define RN_DEBUG
+//#define RN_DEBUG
 #define cP3_(a, b , c) cP3<a, b, c>::value
 template <class T>
 void vigraMain(matlab::OutputArray outputs, matlab::InputArray inputs){
@@ -26,7 +26,6 @@ void vigraMain(matlab::OutputArray outputs, matlab::InputArray inputs){
     ***************************************************************************************************/
     typedef UInt32 OutputType;
     MultiArrayView<3,T>     in3D        =       inputs.getMultiArray<3,T>(0, v_required());
-    MultiArrayView<3,OutputType>     out3D        =       inputs.getMultiArray<3,OutputType>("output", v_required());
     BasicImageView<T>       in          =       makeBasicImageView(in3D.bindOuter(0));
     Int32                     numOfDim    =       inputs.getDimOfInput(0, v_required());
 
@@ -47,7 +46,7 @@ void vigraMain(matlab::OutputArray outputs, matlab::InputArray inputs){
     bool                    hasBackground;
     T                       backgroundValue = inputs.getScalar<T>("backgroundValue", v_optional(hasBackground));
 
-    //MultiArrayView<3,OutputType>     out3D           = outputs.createMultiArray      <3,OutputType>   (0, v_required(), in3D.shape());
+    MultiArrayView<3,OutputType>     out3D           = outputs.createMultiArray      <3,OutputType>   (0, v_required(), in3D.shape());
     BasicImageView<OutputType>       out(out3D.data(), in3D.shape(0), in3D.shape(1));
 
     Int32                     max_region_label = (hasBackground == true)? 1: 0;
@@ -102,14 +101,14 @@ void vigraMain(matlab::OutputArray outputs, matlab::InputArray inputs){
             mexWarnMsgTxt("1, VOLUME, 26");
             #endif
             max_region_label = labelVolumeWithBackground(srcMultiArrayRange(in3D), destMultiArray(out3D),
-                                                                                        NeighborCode3DSix(), backgroundValue);
+                                                                                        NeighborCode3DTwentySix(), backgroundValue);
             break;
         case cP3_(1, VOLUME, 6):
             #ifdef RN_DEBUG
             mexWarnMsgTxt("1, VOLUME, 6");
             #endif
             max_region_label = labelVolumeWithBackground(srcMultiArrayRange(in3D), destMultiArray(out3D),
-                                                                                        NeighborCode3DTwentySix(), backgroundValue);
+                                                                                        NeighborCode3DSix(), backgroundValue);
             #ifdef RN_DEBUG
             mexWarnMsgTxt("DONE");
             #endif
@@ -118,9 +117,6 @@ void vigraMain(matlab::OutputArray outputs, matlab::InputArray inputs){
             mexErrMsgTxt("Something went wrong");
     }
 
-    #ifdef RN_DEBUG
-    mexWarnMsgTxt("Out of Switch");
-    #endif
     outputs.createScalar<int> (1, v_optional(), max_region_label);
 }
 
