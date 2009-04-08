@@ -553,8 +553,7 @@ class RandomForestOptions
       training_set_size(0),
       sample_with_replacement(true),
       sample_classes_individually(false),
-      treeCount(255),
-      oob_data()
+      treeCount(255)
     {}
 
         /** Number of features considered in each node.
@@ -839,7 +838,7 @@ RandomForest<ClassLabelType>::learn(MultiArrayView<2, U, C1> const & features,
     unsigned int classCount = classes_.size();
     unsigned int m = rowCount(features);
     unsigned int n = columnCount(features);
-    vigra_precondition(m == labels.size(),
+    vigra_precondition((unsigned int)(m) == (unsigned int)labels.size(),
       "RandomForest::learn(): Label array has wrong size.");
 
     vigra_precondition(options_.training_set_size <= m || options_.sample_with_replacement,
@@ -1000,8 +999,9 @@ RandomForest<ClassLabelType>::learn(MultiArrayView<2, U, C1> const & features,
         //if(!options_.sample_with_replacement){
         //std::cerr << "done\n";
         //trees_[k].print(std::cerr);
+        #ifdef VIGRA_RF_VERBOSE
         trees_[k].printStatistics(std::cerr);
-
+        #endif
     }
     double oobError = 0.0;
     int totalOobCount = 0;
