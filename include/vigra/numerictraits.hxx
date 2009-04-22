@@ -1326,6 +1326,12 @@ struct RequiresExplicitCast<float> {
     static float cast(UInt32 v)
         { return (float)v; }
 
+    static float cast(Int64 v)
+        { return (float)v; }
+
+    static float cast(UInt64 v)
+        { return (float)v; }
+
     static float cast(double v)
         { return (float)v; }
 
@@ -1339,6 +1345,12 @@ struct RequiresExplicitCast<float> {
 
 template <>
 struct RequiresExplicitCast<double> {
+    static double cast(Int64 v)
+        { return (double)v; }
+
+    static double cast(UInt64 v)
+        { return (double)v; }
+
     template <class U>
     static U cast(U v)
         { return v; }
