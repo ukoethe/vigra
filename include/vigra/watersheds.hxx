@@ -30,7 +30,7 @@
 /*    HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,      */
 /*    WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING      */
 /*    FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR     */
-/*    OTHER DEALINGS IN THE SOFTWARE.                                   */                
+/*    OTHER DEALINGS IN THE SOFTWARE.                                   */
 /*                                                                      */
 /************************************************************************/
 
@@ -62,10 +62,10 @@ unsigned int watershedLabeling(SrcIterator upperlefts,
     SrcIterator xs(ys);
     DestIterator yd(upperleftd);
     DestIterator xd(yd);
-        
+
     // temporary image to store region labels
     detail::UnionFindArray<LabelType> labels;
-    
+
     // initialize the neighborhood circulators
     NeighborOffsetCirculator<Neighborhood> ncstart(Neighborhood::CausalFirst);
     NeighborOffsetCirculator<Neighborhood> ncstartBorder(Neighborhood::North);
@@ -88,13 +88,13 @@ unsigned int watershedLabeling(SrcIterator upperlefts,
     // own scan order address). This condition is enforced whenever a
     // new region is found or two regions are merged
     da.set(labels.finalizeLabel(labels.nextFreeLabel()), xd);
-    
+
     ++xs.x;
     ++xd.x;
     for(x = 1; x != w; ++x, ++xs.x, ++xd.x)
     {
-        if((*xs & Neighborhood::directionBit(Neighborhood::West)) ||
-           (xs[Neighborhood::west()] & Neighborhood::directionBit(Neighborhood::East)))
+        if((sa(xs) & Neighborhood::directionBit(Neighborhood::West)) ||
+           (sa(xs, Neighborhood::west()) & Neighborhood::directionBit(Neighborhood::East)))
         {
             da.set(da(xd, Neighborhood::west()), xd);
         }
@@ -103,7 +103,7 @@ unsigned int watershedLabeling(SrcIterator upperlefts,
             da.set(labels.finalizeLabel(labels.nextFreeLabel()), xd);
         }
     }
-    
+
     ++ys.y;
     ++yd.y;
     for(y = 1; y != h; ++y, ++ys.y, ++yd.y)
@@ -116,13 +116,13 @@ unsigned int watershedLabeling(SrcIterator upperlefts,
             NeighborOffsetCirculator<Neighborhood> nc(x == w-1
                                                         ? ncstartBorder
                                                         : ncstart);
-            NeighborOffsetCirculator<Neighborhood> nce(x == 0 
-                                                         ? ncendBorder 
+            NeighborOffsetCirculator<Neighborhood> nce(x == 0
+                                                         ? ncendBorder
                                                          : ncend);
             LabelType currentLabel = labels.nextFreeLabel();
             for(; nc != nce; ++nc)
             {
-                if((*xs & nc.directionBit()) || (xs[*nc] & nc.oppositeDirectionBit()))
+                if((sa(xs) & nc.directionBit()) || (sa(xs, *nc) & nc.oppositeDirectionBit()))
                 {
                     currentLabel = labels.makeUnion(da(xd,*nc), currentLabel);
                 }
@@ -151,7 +151,7 @@ unsigned int watershedLabeling(SrcIterator upperlefts,
 template <class SrcIterator, class SrcAccessor,
           class DestIterator, class DestAccessor>
 void prepareWatersheds(SrcIterator upperlefts, SrcIterator lowerrights, SrcAccessor sa,
-                      DestIterator upperleftd, DestAccessor da, 
+                      DestIterator upperleftd, DestAccessor da,
                       FourNeighborCode)
 {
     int w = lowerrights.x - upperlefts.x;
@@ -208,7 +208,7 @@ void prepareWatersheds(SrcIterator upperlefts, SrcIterator lowerrights, SrcAcces
 template <class SrcIterator, class SrcAccessor,
           class DestIterator, class DestAccessor>
 void prepareWatersheds(SrcIterator upperlefts, SrcIterator lowerrights, SrcAccessor sa,
-                      DestIterator upperleftd, DestAccessor da, 
+                      DestIterator upperleftd, DestAccessor da,
                       EightNeighborCode)
 {
     int w = lowerrights.x - upperlefts.x;
@@ -236,9 +236,9 @@ void prepareWatersheds(SrcIterator upperlefts, SrcIterator lowerrights, SrcAcces
             if(atBorder == NotAtBorder)
             {
                 // handle diagonal and principal neighbors separately
-                // so that principal neighbors are preferred when there are 
+                // so that principal neighbors are preferred when there are
                 // candidates with equal strength
-                NeighborhoodCirculator<SrcIterator, EightNeighborCode>  
+                NeighborhoodCirculator<SrcIterator, EightNeighborCode>
                                       c(xs, EightNeighborCode::NorthEast);
                 for(int i = 0; i < 4; ++i, c += 2)
                 {
@@ -260,9 +260,9 @@ void prepareWatersheds(SrcIterator upperlefts, SrcIterator lowerrights, SrcAcces
             }
             else
             {
-                RestrictedNeighborhoodCirculator<SrcIterator, EightNeighborCode>  
+                RestrictedNeighborhoodCirculator<SrcIterator, EightNeighborCode>
                              c(xs, atBorder), cend(c);
-                do 
+                do
                 {
                     if(!c.isDiagonal())
                         continue;
@@ -273,7 +273,7 @@ void prepareWatersheds(SrcIterator upperlefts, SrcIterator lowerrights, SrcAcces
                     }
                 }
                 while(++c != cend);
-                do 
+                do
                 {
                     if(c.isDiagonal())
                         continue;
@@ -311,16 +311,16 @@ void prepareWatersheds(SrcIterator upperlefts, SrcIterator lowerrights, SrcAcces
 
     The source image is a boundary indicator such as the gradient magnitude
     of the trace of the \ref boundaryTensor(). Local minima of the boundary indicator
-    are used as region seeds, and all other pixels are recursively assigned to the same 
-    region as their lowest neighbor. Pass \ref vigra::EightNeighborCode or 
-    \ref vigra::FourNeighborCode to determine the neighborhood where pixel values 
+    are used as region seeds, and all other pixels are recursively assigned to the same
+    region as their lowest neighbor. Pass \ref vigra::EightNeighborCode or
+    \ref vigra::FourNeighborCode to determine the neighborhood where pixel values
     are compared. The pixel type of the input image must be <tt>LessThanComparable</tt>.
-    The function uses accessors. 
-    
+    The function uses accessors.
+
     Note that VIGRA provides an alternative implementaion of the watershed transform via
-    \ref seededRegionGrowing(). It is slower, but handles plateaus better 
+    \ref seededRegionGrowing(). It is slower, but handles plateaus better
     and allows to keep a one pixel wide boundary between regions.
-    
+
     <b> Declarations:</b>
 
     pass arguments explicitly:
@@ -329,9 +329,9 @@ void prepareWatersheds(SrcIterator upperlefts, SrcIterator lowerrights, SrcAcces
         template <class SrcIterator, class SrcAccessor,
                   class DestIterator, class DestAccessor,
                   class Neighborhood = EightNeighborCode>
-        unsigned int 
+        unsigned int
         watersheds(SrcIterator upperlefts, SrcIterator lowerrights, SrcAccessor sa,
-                   DestIterator upperleftd, DestAccessor da, 
+                   DestIterator upperleftd, DestAccessor da,
                    Neighborhood neighborhood = EightNeighborCode())
     }
     \endcode
@@ -342,9 +342,9 @@ void prepareWatersheds(SrcIterator upperlefts, SrcIterator lowerrights, SrcAcces
         template <class SrcIterator, class SrcAccessor,
                   class DestIterator, class DestAccessor,
                   class Neighborhood = EightNeighborCode>
-        unsigned int 
+        unsigned int
         watersheds(triple<SrcIterator, SrcIterator, SrcAccessor> src,
-                   pair<DestIterator, DestAccessor> dest, 
+                   pair<DestIterator, DestAccessor> dest,
                    Neighborhood neighborhood = EightNeighborCode())
     }
     \endcode
@@ -359,12 +359,12 @@ void prepareWatersheds(SrcIterator upperlefts, SrcIterator lowerrights, SrcAcces
     \code
     vigra::BImage in(w,h);
     ... // read input data
-    
+
     vigra::FImage gradx(x,y), grady(x,y), gradMag(x,y);
     gaussianGradient(srcImageRange(src), destImage(gradx), destImage(grady), 3.0);
     combineTwoImages(srcImageRange(gradx), srcImage(grady), destImage(gradMag),
                      vigra::MagnitudeFunctor<float>());
-    
+
     // the pixel type of the destination image must be large enough to hold
     // numbers up to 'max_region_label' to prevent overflow
     vigra::IImage labeling(x,y);
@@ -380,7 +380,7 @@ void prepareWatersheds(SrcIterator upperlefts, SrcIterator lowerrights, SrcAcces
 
     SrcAccessor src_accessor;
     DestAccessor dest_accessor;
-    
+
     // compare src values
     src_accessor(src_upperleft) <= src_accessor(src_upperleft)
 
@@ -394,14 +394,14 @@ doxygen_overloaded_function(template <...> unsigned int watersheds)
 template <class SrcIterator, class SrcAccessor,
           class DestIterator, class DestAccessor,
           class Neighborhood>
-unsigned int 
+unsigned int
 watersheds(SrcIterator upperlefts, SrcIterator lowerrights, SrcAccessor sa,
            DestIterator upperleftd, DestAccessor da, Neighborhood neighborhood)
 {
     SImage orientationImage(lowerrights - upperlefts);
     SImage::traverser yo = orientationImage.upperLeft();
 
-    prepareWatersheds(upperlefts, lowerrights, sa, 
+    prepareWatersheds(upperlefts, lowerrights, sa,
                      orientationImage.upperLeft(), orientationImage.accessor(), neighborhood);
     return watershedLabeling(orientationImage.upperLeft(), orientationImage.lowerRight(), orientationImage.accessor(),
                              upperleftd, da, neighborhood);
@@ -409,7 +409,7 @@ watersheds(SrcIterator upperlefts, SrcIterator lowerrights, SrcAccessor sa,
 
 template <class SrcIterator, class SrcAccessor,
           class DestIterator, class DestAccessor>
-inline unsigned int 
+inline unsigned int
 watersheds(SrcIterator upperlefts, SrcIterator lowerrights, SrcAccessor sa,
            DestIterator upperleftd, DestAccessor da)
 {
@@ -419,7 +419,7 @@ watersheds(SrcIterator upperlefts, SrcIterator lowerrights, SrcAccessor sa,
 template <class SrcIterator, class SrcAccessor,
           class DestIterator, class DestAccessor,
           class Neighborhood>
-inline unsigned int 
+inline unsigned int
 watersheds(triple<SrcIterator, SrcIterator, SrcAccessor> src,
            pair<DestIterator, DestAccessor> dest, Neighborhood neighborhood)
 {
@@ -428,7 +428,7 @@ watersheds(triple<SrcIterator, SrcIterator, SrcAccessor> src,
 
 template <class SrcIterator, class SrcAccessor,
           class DestIterator, class DestAccessor>
-inline unsigned int 
+inline unsigned int
 watersheds(triple<SrcIterator, SrcIterator, SrcAccessor> src,
            pair<DestIterator, DestAccessor> dest)
 {

@@ -1272,6 +1272,46 @@ public:
         return *this;
     }
 
+       /** Scale this rectangle by the given factor.
+        * To be specific, both upperLeft() and lowerRight() are
+        * multiplicated by `factor`.
+        */
+    Rect2D & operator*=(int factor)
+    {
+        upperLeft_ *= factor;
+        lowerRight_ *= factor;
+        return *this;
+    }
+
+       /** Scale this rectangle by the given factor.
+        * To be specific, both upperLeft() and lowerRight() are
+        * multiplicated by `factor`.
+        */
+    Rect2D & operator*=(double factor)
+    {
+        upperLeft_ *= factor;
+        lowerRight_ *= factor;
+        return *this;
+    }
+
+       /** Return rectangle scaled by the given factor.
+        * To be specific, both upperLeft() and lowerRight() are
+        * multiplicated by `factor`.
+        */
+    Rect2D operator*(int factor) const
+    {
+        return Rect2D(*this)*=factor;
+    }
+
+       /** Return rectangle scaled by the given factor.
+        * To be specific, both upperLeft() and lowerRight() are
+        * multiplicated by `factor`.
+        */
+    Rect2D operator*(double factor) const
+    {
+        return Rect2D(*this)*=factor;
+    }
+
         /** Intersects this rectangle with the given one. The result
          * is the maximal rectangle contained in both original ones.
          * Intersecting with an empty rectangle will yield again an

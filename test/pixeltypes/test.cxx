@@ -559,6 +559,15 @@ struct Rect2DTest
         emptyRect.setSize(bigRect.size());
         should(bigRect == emptyRect);
     }
+
+    void testScaling()
+    {
+        shouldEqual((rect1_1 * 4).size(), Size2D(4, 4));
+        shouldEqual((rect1_1 * 4).lowerRight(), Size2D(8, 8));
+        Rect2D r2(rect1_1);
+        r2 *= 5;
+        shouldEqual(rect1_1 * 5, r2);
+    }
 };
 
 struct Rect2DTestSuite
@@ -573,6 +582,7 @@ struct Rect2DTestSuite
         add(testCase(&Rect2DTest::testIntersection));
         add(testCase(&Rect2DTest::testUnion));
         add(testCase(&Rect2DTest::testSizes));
+        add(testCase(&Rect2DTest::testScaling));
     }
 };
 
