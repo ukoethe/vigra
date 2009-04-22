@@ -42,6 +42,8 @@
 #include <functional>
 #include "utilities.hxx"
 #include "stdimage.hxx"
+#include "union_find.hxx"
+#include "sized_int.hxx"
 
 namespace vigra {
 
@@ -161,6 +163,8 @@ unsigned int labelImage(SrcIterator upperlefts,
                         DestIterator upperleftd, DestAccessor da,
                         bool eight_neighbors, EqualityFunctor equal)
 {
+    typedef typename DestAccessor::value_type LabelType;
+    
     int w = lowerrights.x - upperlefts.x;
     int h = lowerrights.y - upperlefts.y;
     int x,y,i;
@@ -175,18 +179,10 @@ unsigned int labelImage(SrcIterator upperlefts,
     static const int left = 0, /* unused:  topleft = 1, */ top = 2, topright = 3;
     int step = eight_neighbors ? 1 : 2;
 
-    SrcIterator ys(upperlefts);
-    SrcIterator xs(ys);
-
-    // temporary image to store region labels
-    IImage labelimage(w, h);
-
-    IImage::Iterator yt = labelimage.upperLeft();
-    IImage::Iterator xt(yt);
-
-    // Kovalevsky's clever idea to use
-    // image iterator and scan order iterator simultaneously
-    IImage::ScanOrderIterator label = labelimage.begin();
+    SrcIterator ys = upperlefts;
+    DestIterator yd = upperleftd;
+    
+    detail::UnionFindArray<LabelType>  label;    
 
     // pass 1: scan image from upper left to lower right
     // to find connected components
@@ -203,14 +199,14 @@ unsigned int labelImage(SrcIterator upperlefts,
     // new region is found or two regions are merged
 
 
-    for(y = 0; y != h; ++y, ++ys.y, ++yt.y)
+    for(y = 0; y != h; ++y, ++ys.y, ++yd.y)
     {
-        xs = ys;
-        xt = yt;
+        SrcIterator xs = ys;
+        DestIterator xd = yd;
 
         int endNeighbor = (y == 0) ? left : (eight_neighbors ? topright : top);
 
-        for(x = 0; x != w; ++x, ++xs.x, ++xt.x)
+        for(x = 0; x != w; ++x, ++xs.x, ++xd.x)
         {
             int beginNeighbor = (x == 0) ? top : left;
             if(x == w-1 && endNeighbor == topright) endNeighbor = top;
@@ -219,76 +215,39 @@ unsigned int labelImage(SrcIterator upperlefts,
             {
                 if(equal(sa(xs), sa(xs, neighbor[i])))
                 {
-                    int neighborLabel = xt[neighbor[i]];
+                    LabelType neighborLabel = label.find(da(xd,neighbor[i]));
 
                     for(int j=i+2; j<=endNeighbor; j+=step)
                     {
                         if(equal(sa(xs), sa(xs, neighbor[j])))
                         {
-                            int neighborLabel1 = xt[neighbor[j]];
-
-                            if(neighborLabel != neighborLabel1)
-                            {
-                                // find roots of the region trees
-                                while(neighborLabel != label[neighborLabel])
-                                {
-                                    neighborLabel = label[neighborLabel];
-                                }
-                                while(neighborLabel1 != label[neighborLabel1])
-                                {
-                                    neighborLabel1 = label[neighborLabel1];
-                                }
-
-                                // merge the trees
-                                if(neighborLabel1 < neighborLabel)
-                                {
-                                    label[neighborLabel] = neighborLabel1;
-                                    neighborLabel = neighborLabel1;
-                                }
-                                else if(neighborLabel < neighborLabel1)
-                                {
-                                    label[neighborLabel1] = neighborLabel;
-                                }
-                            }
+                            neighborLabel = label.makeUnion(da(xd, neighbor[j]), neighborLabel);
                             break;
                         }
                     }
-                    *xt = neighborLabel;
+                    da.set(neighborLabel, xd);
                     break;
                 }
 
             }
             if(i > endNeighbor)
             {
-                // new region
-                // The initial label of a new region equals the
-                // scan order address of it's first pixel.
-                // This is essential for correct operation of the algorithm.
-                *xt = x + y*w;
+                da.set(label.makeNewLabel(), xd);
             }
         }
     }
 
     // pass 2: assign one label to each region (tree)
     // so that labels form a consecutive sequence 1, 2, ...
-    DestIterator yd(upperleftd);
-
-    unsigned int count = 0;
-    i = 0;
+    unsigned int count = label.makeContiguous();    
+    
+    yd = upperleftd;
     for(y=0; y != h; ++y, ++yd.y)
     {
-        DestIterator xd(yd);
-        for(x = 0; x != w; ++x, ++xd.x, ++i)
+        typename DestIterator::row_iterator xd = yd.rowIterator();
+        for(x = 0; x != w; ++x, ++xd)
         {
-            if(label[i] == i)
-            {
-                label[i] = ++count;
-            }
-            else
-            {
-                label[i] = label[label[i]];
-            }
-            da.set(label[i], xd);
+            da.set(label[da(xd)], xd);
         }
     }
     return count;
@@ -447,7 +406,7 @@ unsigned int labelImage(triple<SrcIterator, SrcIterator, SrcAccessor> src,
 
 */
 doxygen_overloaded_function(template <...> unsigned int labelImageWithBackground)
-
+    
 template <class SrcIterator, class SrcAccessor,
           class DestIterator, class DestAccessor,
           class ValueType, class EqualityFunctor>
@@ -474,12 +433,13 @@ unsigned int labelImageWithBackground(
 
     SrcIterator ys(upperlefts);
     SrcIterator xs(ys);
-
+    
     // temporary image to store region labels
-    IImage labelimage(w, h);
-    IImage::ScanOrderIterator label = labelimage.begin();
-    IImage::Iterator yt = labelimage.upperLeft();
-    IImage::Iterator  xt(yt);
+    typedef BasicImage<IntBiggest> TmpImage;
+    TmpImage labelimage(w, h);
+    TmpImage::ScanOrderIterator label = labelimage.begin();
+    TmpImage::Iterator yt = labelimage.upperLeft();
+    TmpImage::Iterator  xt(yt);
 
     // pass 1: scan image from upper left to lower right
     // find connected components
@@ -506,13 +466,13 @@ unsigned int labelImageWithBackground(
                 {
                     if(equal(sa(xs), sa(xs, neighbor[i])))
                     {
-                        int neighborLabel = xt[neighbor[i]];
+                        IntBiggest neighborLabel = xt[neighbor[i]];
 
                         for(int j=i+2; j<=endNeighbor; j+=step)
                         {
                             if(equal(sa(xs), sa(xs, neighbor[j])))
                             {
-                                int neighborLabel1 = xt[neighbor[j]];
+                                IntBiggest neighborLabel1 = xt[neighbor[j]];
 
                                 if(neighborLabel != neighborLabel1)
                                 {
@@ -583,6 +543,7 @@ unsigned int labelImageWithBackground(
 
     return count;
 }
+
 template <class SrcIterator, class SrcAccessor,
           class DestIterator, class DestAccessor,
           class ValueType, class EqualityFunctor>

@@ -52,25 +52,19 @@ unsigned int watershedLabeling(SrcIterator upperlefts,
                         DestIterator upperleftd, DestAccessor da,
                         Neighborhood neighborhood)
 {
+    typedef typename DestAccessor::value_type LabelType;
+    
     int w = lowerrights.x - upperlefts.x;
     int h = lowerrights.y - upperlefts.y;
-    int x,y,i;
+    int x,y;
 
     SrcIterator ys(upperlefts);
     SrcIterator xs(ys);
-
+    DestIterator yd(upperleftd);
+    DestIterator xd(yd);
+        
     // temporary image to store region labels
-    typedef IImage LabelImage;
-    typedef LabelImage::traverser LabelTraverser;
-    
-    LabelImage labelimage(w, h);
-
-    LabelTraverser yt = labelimage.upperLeft();
-    LabelTraverser xt(yt);
-
-    // Kovalevsky's clever idea to use
-    // image iterator and scan order iterator simultaneously
-    LabelImage::ScanOrderIterator label = labelimage.begin();
+    detail::UnionFindArray<LabelType> labels;
     
     // initialize the neighborhood circulators
     NeighborOffsetCirculator<Neighborhood> ncstart(Neighborhood::CausalFirst);
@@ -93,34 +87,31 @@ unsigned int watershedLabeling(SrcIterator upperlefts,
     // tree is distinguished by pointing to itself (it contains its
     // own scan order address). This condition is enforced whenever a
     // new region is found or two regions are merged
-    xs = ys;
-    xt = yt;
-    
-    *xt = 0;
+    da.set(labels.finalizeLabel(labels.nextFreeLabel()), xd);
     
     ++xs.x;
-    ++xt.x;
-    for(x = 1; x != w; ++x, ++xs.x, ++xt.x)
+    ++xd.x;
+    for(x = 1; x != w; ++x, ++xs.x, ++xd.x)
     {
         if((*xs & Neighborhood::directionBit(Neighborhood::West)) ||
            (xs[Neighborhood::west()] & Neighborhood::directionBit(Neighborhood::East)))
         {
-            *xt = xt[Neighborhood::west()];
+            da.set(da(xd, Neighborhood::west()), xd);
         }
         else
         {
-            *xt = x;
+            da.set(labels.finalizeLabel(labels.nextFreeLabel()), xd);
         }
     }
     
     ++ys.y;
-    ++yt.y;
-    for(y = 1; y != h; ++y, ++ys.y, ++yt.y)
+    ++yd.y;
+    for(y = 1; y != h; ++y, ++ys.y, ++yd.y)
     {
         xs = ys;
-        xt = yt;
+        xd = yd;
 
-        for(x = 0; x != w; ++x, ++xs.x, ++xt.x)
+        for(x = 0; x != w; ++x, ++xs.x, ++xd.x)
         {
             NeighborOffsetCirculator<Neighborhood> nc(x == w-1
                                                         ? ncstartBorder
@@ -128,55 +119,34 @@ unsigned int watershedLabeling(SrcIterator upperlefts,
             NeighborOffsetCirculator<Neighborhood> nce(x == 0 
                                                          ? ncendBorder 
                                                          : ncend);
-            *xt = x + w*y; // default: new region            
+            LabelType currentLabel = labels.nextFreeLabel();
             for(; nc != nce; ++nc)
             {
                 if((*xs & nc.directionBit()) || (xs[*nc] & nc.oppositeDirectionBit()))
                 {
-                    int neighborLabel = xt[*nc];
-                    // find the root label of a label tree
-                    while(neighborLabel != label[neighborLabel])
-                    {
-                        neighborLabel = label[neighborLabel];
-                    }
-                    if(neighborLabel < *xt) // always keep the smallest among the possible labels
-                    {
-                        label[*xt] = neighborLabel;
-                        *xt = neighborLabel;
-                    }
-                    else
-                    {
-                        label[neighborLabel] = *xt;
-                    }
+                    currentLabel = labels.makeUnion(da(xd,*nc), currentLabel);
                 }
             }
+            da.set(labels.finalizeLabel(currentLabel), xd);
         }
     }
 
+    unsigned int count = labels.makeContiguous();
+    
     // pass 2: assign one label to each region (tree)
     // so that labels form a consecutive sequence 1, 2, ...
-    DestIterator yd(upperleftd);
-
-    unsigned int count = 0;
-    i = 0;
+    yd = upperleftd;
     for(y=0; y != h; ++y, ++yd.y)
     {
         DestIterator xd(yd);
-        for(x = 0; x != w; ++x, ++xd.x, ++i)
+        for(x = 0; x != w; ++x, ++xd.x)
         {
-            if(label[i] == i)
-            {
-                label[i] = ++count;
-            }
-            else
-            {
-                label[i] = label[label[i]];
-            }
-            da.set(label[i], xd);
+            da.set(labels[da(xd)], xd);
         }
     }
     return count;
 }
+
 
 template <class SrcIterator, class SrcAccessor,
           class DestIterator, class DestAccessor>

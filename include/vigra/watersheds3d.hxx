@@ -39,6 +39,7 @@
 
 #include "voxelneighborhood.hxx"
 #include "multi_array.hxx"
+#include "union_find.hxx"
 
 namespace vigra
 {
@@ -81,10 +82,6 @@ int preparewatersheds3D( SrcIterator s_Iter, SrcShape srcShape, SrcAccessor sa,
                 typename SrcAccessor::value_type my_v = v;
                 if(atBorder == NotAtBorder)
                 {
-#if 0
-                    NeighborhoodTraverser<SrcIterator, Neighborhood3D>  c(xs), cend(c);
-#endif /* #if 0 */
-
                     NeighborhoodCirculator<SrcIterator, Neighborhood3D>  c(xs), cend(c);
                     
                     do {
@@ -102,10 +99,6 @@ int preparewatersheds3D( SrcIterator s_Iter, SrcShape srcShape, SrcAccessor sa,
                 }
                 else
                 {
-#if 0
-                    RestrictedNeighborhoodTraverser<SrcIterator, Neighborhood3D>  c(xs, atBorder), cend(c);
-#endif /* #if 0 */
-
                     RestrictedNeighborhoodCirculator<SrcIterator, Neighborhood3D>  c(xs, atBorder), cend(c);
                     do {
                         if(sa(c) < v)
@@ -135,38 +128,20 @@ unsigned int watershedLabeling3D( SrcIterator s_Iter, SrcShape srcShape, SrcAcce
                                   DestIterator d_Iter, DestAccessor da,
                                   Neighborhood3D)
 {
+    typedef typename DestAccessor::value_type LabelType;
+    
     //basically needed for iteration and border-checks
     int w = srcShape[0], h = srcShape[1], d = srcShape[2];
-    int x,y,z, i;
+    int x,y,z;
         
     //declare and define Iterators for all three dims at src
     SrcIterator zs = s_Iter;
-    SrcIterator ys(zs);
-    SrcIterator xs(ys);
+    DestIterator zd = d_Iter;
         
     // temporary image to store region labels
-    typedef vigra::MultiArray<3,int> LabelVolume;
-    typedef LabelVolume::traverser LabelTraverser;
-    
-    LabelVolume labelvolume(srcShape);
-        
-    //Declare traversers for all three dims at target
-    LabelTraverser zt = labelvolume.traverser_begin();
-    LabelTraverser yt(zt);
-    LabelTraverser xt(yt);
-
-    // Kovalevsky's clever idea to use
-    // image iterator and scan order iterator simultaneously
-    // memory order indicates label
-    LabelVolume::iterator label = labelvolume.begin();
+    detail::UnionFindArray<LabelType> labels;
     
     // initialize the neighborhood traversers
-
-#if 0
-    NeighborOffsetTraverser<Neighborhood3D> nc(Neighborhood3D::CausalFirst);
-    NeighborOffsetTraverser<Neighborhood3D> nce(Neighborhood3D::CausalLast);
-#endif /* #if 0 */
-
     NeighborOffsetCirculator<Neighborhood3D> nc(Neighborhood3D::CausalFirst);
     NeighborOffsetCirculator<Neighborhood3D> nce(Neighborhood3D::CausalLast);
     ++nce;
@@ -183,20 +158,19 @@ unsigned int watershedLabeling3D( SrcIterator s_Iter, SrcShape srcShape, SrcAcce
     // tree is distinguished by pointing to itself (it contains its
     // own scan order address). This condition is enforced whenever a
     // new region is found or two regions are merged
-    i=0;
-    for(z = 0; z != d; ++z, ++zs.dim2(), ++zt.dim2())
+    for(z = 0; z != d; ++z, ++zs.dim2(), ++zd.dim2())
     {
-        ys = zs;
-        yt = zt;
+        SrcIterator ys = zs;
+        DestIterator yd = zd;
 
-        for(y = 0; y != h; ++y, ++ys.dim1(), ++yt.dim1())
+        for(y = 0; y != h; ++y, ++ys.dim1(), ++yd.dim1())
         {
-            xs = ys;
-            xt = yt;
+            SrcIterator xs = ys;
+            DestIterator xd = yd;
 
-            for(x = 0; x != w; ++x, ++xs.dim0(), ++xt.dim0(), ++i)
+            for(x = 0; x != w; ++x, ++xs.dim0(), ++xd.dim0())
             {
-                *xt = i; // default: new region    
+                LabelType currentLabel = labels.nextFreeLabel(); // default: new region    
 
                 //queck whether there is a special borde threatment to be used or not
                 AtVolumeBorder atBorder = isAtVolumeBorderCausal(x,y,z,w,h,z);
@@ -204,10 +178,6 @@ unsigned int watershedLabeling3D( SrcIterator s_Iter, SrcShape srcShape, SrcAcce
                 //We are not at the border!
                 if(atBorder == NotAtBorder)
                 {
-
-#if 0
-                    nc = NeighborOffsetTraverser<Neighborhood3D>(Neighborhood3D::CausalFirst);
-#endif /* #if 0 */
 
                     nc = NeighborOffsetCirculator<Neighborhood3D>(Neighborhood3D::CausalFirst);
                 
@@ -217,23 +187,7 @@ unsigned int watershedLabeling3D( SrcIterator s_Iter, SrcShape srcShape, SrcAcce
                         // = Direction of voxel           towards us?
                         if((*xs & nc.directionBit()) || (xs[*nc] & nc.oppositeDirectionBit()))
                         {
-                            int neighborLabel = xt[*nc];
-
-                            // find the root label of a label tree
-                            while(neighborLabel != label[neighborLabel])
-                            {
-                                neighborLabel = label[neighborLabel];
-                            }
-
-                            if(neighborLabel < *xt) // always keep the smallest among the possible neighbor labels
-                            {
-                                label[*xt] = neighborLabel;
-                                *xt = neighborLabel;
-                            }
-                            else
-                            {
-                                label[neighborLabel] = *xt;
-                            }
+                            currentLabel = labels.makeUnion(da(xd,*nc), currentLabel);
                         }
                         ++nc;
                     }while(nc!=nce);
@@ -241,11 +195,6 @@ unsigned int watershedLabeling3D( SrcIterator s_Iter, SrcShape srcShape, SrcAcce
                 //we are at a border - handle this!!
                 else
                 {
-
-#if 0
-                    nc = NeighborOffsetTraverser<Neighborhood3D>(Neighborhood3D::nearBorderDirectionsCausal(atBorder,0));
-#endif /* #if 0 */
-
                     nc = NeighborOffsetCirculator<Neighborhood3D>(Neighborhood3D::nearBorderDirectionsCausal(atBorder,0));
                     int j=0;
                     while(nc.direction() != Neighborhood3D::Error)
@@ -254,39 +203,21 @@ unsigned int watershedLabeling3D( SrcIterator s_Iter, SrcShape srcShape, SrcAcce
                         // = Direction of voxel           towards us?
                         if((*xs & nc.directionBit()) || (xs[*nc] & nc.oppositeDirectionBit()))
                         {
-                            int neighborLabel = xt[*nc];
-
-                            // find the root label of a label tree
-                            while(neighborLabel != label[neighborLabel])
-                            {
-                                neighborLabel = label[neighborLabel];
-                            }
-
-                            if(neighborLabel < *xt) // always keep the smallest among the possible neighbor labels
-                            {
-                                label[*xt] = neighborLabel;
-                                *xt = neighborLabel;
-                            }
-                            else
-                            {
-                                label[neighborLabel] = *xt;
-                            }
+                            currentLabel = labels.makeUnion(da(xd,*nc), currentLabel);
                         }
                         nc.turnTo(Neighborhood3D::nearBorderDirectionsCausal(atBorder,++j));
                     }
                 }
+                da.set(labels.finalizeLabel(currentLabel), xd);
             }
         }
     }
 
+    unsigned int count = labels.makeContiguous();
+    
     // pass 2: assign one label to each region (tree)
     // so that labels form a consecutive sequence 1, 2, ...
-    DestIterator zd = d_Iter;
-
-    unsigned int count = 0; 
-
-    i= 0;
-
+    zd = d_Iter;
     for(z=0; z != d; ++z, ++zd.dim2())
     {
         DestIterator yd(zd);
@@ -295,17 +226,9 @@ unsigned int watershedLabeling3D( SrcIterator s_Iter, SrcShape srcShape, SrcAcce
         {
             DestIterator xd(yd);
 
-            for(x = 0; x != w; ++x, ++xd.dim0(), ++i)
+            for(x = 0; x != w; ++x, ++xd.dim0())
             {
-                if(label[i] == i)
-                {
-                    label[i] = count++;
-                }
-                else
-                {
-                    label[i] = label[label[i]]; // compress trees
-                }
-                da.set(label[i]+1, xd);
+                da.set(labels[da(xd)], xd);
             }
         }
     }
