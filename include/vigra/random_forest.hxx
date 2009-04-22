@@ -867,7 +867,7 @@ RandomForest<ClassLabelType>::learn(MultiArrayView<2, U, C1> const & features,
                         ++usedIndices[trainingSet.back()];
                     }
                 }
-                first = lc;
+                first += lc;
             }
         }
         else
