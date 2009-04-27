@@ -528,6 +528,8 @@ ImageImportInfo::ImageImportInfo( const char * filename )
     m_num_bands = decoder->getNumBands();
     m_num_extra_bands = decoder->getNumExtraBands();
     m_pos = decoder->getPosition();
+    m_x_res = decoder->getXResolution();
+    m_y_res = decoder->getYResolution();
 
     m_icc_profile = decoder->getICCProfile();
 
