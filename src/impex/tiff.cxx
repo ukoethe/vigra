@@ -621,6 +621,16 @@ namespace vigra {
         return pimpl->position;
     }
 
+    float TIFFDecoder::getXResolution() const
+    {
+        return pimpl->x_resolution;
+    }
+
+    float TIFFDecoder::getYResolution() const
+    {
+        return pimpl->y_resolution;
+    }
+
     std::string TIFFDecoder::getPixelType() const
     {
         return pimpl->pixeltype;
