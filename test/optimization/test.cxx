@@ -99,7 +99,7 @@ struct OptimizationTest {
     void testLSQ()
     {
         double epsilon = 1e-10;
-        char * methods[3] = { "QR", "SVD", "NE" };
+        const char * methods[3] = { "QR", "SVD", "NE" };
 
         for(int m=0; m<3; ++m)
         {
@@ -123,7 +123,7 @@ struct OptimizationTest {
         double epsilon = 1e-10;
         Matrix<double> weights(100, 1, w);
 
-        char * methods[3] = { "QR", "SVD", "NE" };
+        const char * methods[3] = { "QR", "SVD", "NE" };
 
         for(int m=0; m<3; ++m)
         {
@@ -284,11 +284,11 @@ struct OptimizationTest {
             double Gdata[] = { 2.1, 0.0, 1.0,
                                0.0, 2.2, 0.0,
                                1.0, 0.0, 3.1};
-                               
+
             double gdata[] = {6.0, 1.0, 1.0};
-            
+
             double CEdata[] = {1.0, 2.0, -1.0};
-                
+
             double cedata[] = {4.0};
 
             double CIdata[] = { 1.0,  0.0, 0.0,
@@ -297,15 +297,15 @@ struct OptimizationTest {
                                -1.0, -1.0, 0.0};
 
             double cidata[] = {0.0, 0.0, 0.0, -10.0};
-            
+
             double xrefdata[] = {0.0, 2.0, 0.0};
 
-            Matrix<double> G(3,3, Gdata), 
-                           g(3,1, gdata), 
-                           CE(1,3, CEdata), 
-                           ce(1,1, cedata), 
-                           CI(4,3, CIdata), 
-                           ci(4,1, cidata), 
+            Matrix<double> G(3,3, Gdata),
+                           g(3,1, gdata),
+                           CE(1,3, CEdata),
+                           ce(1,1, cedata),
+                           CI(4,3, CIdata),
+                           ci(4,1, cidata),
                            x(3,1),
                            xref(3,1, xrefdata);
 
@@ -317,7 +317,7 @@ struct OptimizationTest {
             double Gdata[] = {13.0, 12.0, -2.0,
                               12.0, 17.0,  6.0,
                               -2.0,  6.0, 12.0};
-            
+
             double gdata[] = {-22.0, -14.5, 13.0};
 
             double CIdata[] = { 1.0,  0.0,  0.0,
@@ -327,22 +327,22 @@ struct OptimizationTest {
                                -1.0,  0.0,  0.0,
                                 0.0, -1.0,  0.0,
                                 0.0,  0.0, -1.0};
-                                
+
             double cidata[] = {-1.0, -1.0, -1.0, -2.0, -1.0, -1.0, -1.0};
 
             double xrefdata[] = {1.0, 0.5, -1.0};
 
-            Matrix<double> G(3,3, Gdata), 
-                           g(3,1, gdata), 
-                           CE, 
-                           ce, 
-                           CI(7,3, CIdata), 
-                           ci(7,1, cidata), 
+            Matrix<double> G(3,3, Gdata),
+                           g(3,1, gdata),
+                           CE,
+                           ce,
+                           CI(7,3, CIdata),
+                           ci(7,1, cidata),
                            x(3,1),
                            xref(3,1, xrefdata);
 
             // Solution: x = [1 0.5 -1]'
-            shouldEqualTolerance(quadraticProgramming(G, g, CE, ce, CI, ci, x), -22.625, 1e-14); 
+            shouldEqualTolerance(quadraticProgramming(G, g, CE, ce, CI, ci, x), -22.625, 1e-14);
             shouldEqualSequenceTolerance(x.data(), x.data()+3, xrefdata, 1e-14);
         }
         {
@@ -365,15 +365,15 @@ struct OptimizationTest {
             double cedata[] = {1.00346920730319, -2.67608891438430, 0.0168223926638857, -1.44324544697726};
 
             double xrefdata[] = {0.11925229791508, 1.15958300340908, 0.14739510825795, 0.00000000000000, 0.72868950990454, 0.09811723636230, 0.18105311441297, 0.75350474556599};
-     
-            Matrix<double> G(8,8, Gdata), 
-                           g(8,1, gdata), 
-                           CE(4,8, CEdata), 
-                           ce(4,1, cedata), 
-                           CI(identityMatrix<double>(8)), 
+
+            Matrix<double> G(8,8, Gdata),
+                           g(8,1, gdata),
+                           CE(4,8, CEdata),
+                           ce(4,1, cedata),
+                           CI(identityMatrix<double>(8)),
                            ci(8,1), x(8,1),
                            xref(8,1, xrefdata);
-                           
+
             shouldEqualTolerance(quadraticProgramming(G, g, CE, ce, CI, ci, x), 5.96700441471631, 1e-10);
             shouldEqualSequenceTolerance(x.data(), x.data()+8, xrefdata, 1e-10);
         }
@@ -383,7 +383,7 @@ struct OptimizationTest {
 	        Matrix<double> result(50, 1), ref(50,1);
 	        Matrix<double> G = transpose(x[k])*x[k],
 	                       g = -transpose(x[k])*y[k];
-            double m = quadraticProgramming(G, g, Matrix<double>(), Matrix<double>(), 
+            double m = quadraticProgramming(G, g, Matrix<double>(), Matrix<double>(),
                                  identityMatrix<double>(50), Matrix<double>(50, 1), result);
 	        nonnegativeLeastSquares(x[k], y[k], ref);
 	        shouldEqualTolerance(2.0*m, squaredNorm(x[k]*ref-y[k]) - squaredNorm(y[k]), epsilon);

@@ -164,6 +164,15 @@ namespace vigra
             return vigra::Diff2D();
         }
 
+        virtual float getXResolution() const
+        {
+            return 0.0f;
+        }
+        virtual float getYResolution() const
+        {
+            return 0.0f;
+        }
+
         virtual unsigned int getOffset() const = 0;
 
         virtual const void * currentScanlineOfBand( unsigned int ) const = 0;

@@ -81,6 +81,8 @@ namespace vigra {
 
         unsigned int getNumExtraBands() const;
         Diff2D getPosition() const;
+        float getXResolution() const;
+        float getYResolution() const;
 
         const void * currentScanlineOfBand( unsigned int ) const;
         void nextScanline();
