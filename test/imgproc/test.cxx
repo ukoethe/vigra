@@ -394,6 +394,32 @@ struct ImageFunctionsTest
         shouldEqual(f(), 49.5);
     }
 
+    void meshGridTest()
+    {
+        // create an image whose values are equal to each pixel's distance from the image center    
+        int width = 5, height = 7;
+        int xc = width/2, yc = height/2;
+        
+        DImage dist(width, height);
+        Point2D upperLeft(-xc, -yc);
+        
+        using namespace vigra::functor;
+        transformImage(meshGrid(upperLeft, upperLeft+dist.size()), 
+                       destImage(dist), 
+                       norm(Arg1()));
+        for(int y=0; y<height; ++y)
+            for(int x=0; x<width; ++x)
+                shouldEqualTolerance(dist(x,y), vigra::hypot(x-xc, y-yc), 1e-14);
+        dist.init(0.0);
+        transformImage(meshGrid(Rect2D(upperLeft, upperLeft+dist.size())), 
+                       destImage(dist), 
+                       norm(Arg1()));
+        for(int y=0; y<height; ++y)
+            for(int x=0; x<width; ++x)
+                shouldEqualTolerance(dist(x,y), vigra::hypot(x-xc, y-yc), 1e-14);
+    }
+
+
     void findBoundingRectangleTest()
     {
         vigra::FindBoundingRectangle findRect;
@@ -1580,6 +1606,7 @@ struct ImageFunctionsTestSuite
         add( testCase( &ImageFunctionsTest::findAverageWeightedTest));
         add( testCase( &ImageFunctionsTest::findAverageAndVarianceTest));
         add( testCase( &ImageFunctionsTest::reduceFunctorTest));
+        add( testCase( &ImageFunctionsTest::meshGridTest));
         add( testCase( &ImageFunctionsTest::findBoundingRectangleTest));
         add( testCase( &ImageFunctionsTest::lastValueFunctorTest));
         add( testCase( &ImageFunctionsTest::arrayOfRegionStatisticsTest));

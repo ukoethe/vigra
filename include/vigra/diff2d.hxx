@@ -458,7 +458,6 @@ struct IteratorTraits<Diff2D >
 
 };
 
-
 /********************************************************/
 /*                                                      */
 /*                      Size2D                          */
@@ -1324,6 +1323,86 @@ public:
         return result;
     }
 };
+
+
+/** Accessor for turning iteration over Diff2D into a mesh grid.
+
+    The mesh grid concept is adapted from MATLAB. It is a two banded image
+    (i.e. with 2D vector pixel type) whose first band contains the x-coordinates
+    of the current pixel, and whose second band contains the y-coordinates.
+    See \ref meshGrid() for more detailed documentation.    
+*/
+struct MeshGridAccessor
+{
+        /** the value_type of a mesh grid is a 2D vector
+        */
+    typedef TinyVector<Diff2D::MoveX, 2> value_type;
+
+        /** read the current data item
+        */
+    template <class ITERATOR>
+    value_type operator()(ITERATOR const & i) const
+    {
+        return value_type(i->x, i->y);
+    }
+
+        /** read the data item at an offset (can be 1D or 2D or higher order difference).
+        */
+    template <class ITERATOR, class DIFFERENCE>
+    value_type operator()(ITERATOR const & i, DIFFERENCE const & diff) const
+    {
+        return value_type(i->x+diff.x, i->y+diff.y);
+    }
+};
+
+/** Create a mesh grid for the specified rectangle.
+
+    The mesh grid concept is adapted from MATLAB. It is a two banded image
+    (i.e. with 2D vector pixel type) whose first band contains the x-coordinates
+    of the current pixel, and whose second band contains the y-coordinates.
+    If \a upperLeft is not the point (0,0), the mesh grid is translated relative to 
+    the pixel indices.
+    
+    <b> Declarations:</b>
+
+    \code
+    triple<Diff2D, Diff2D, MeshGridAccessor>
+    meshGrid(Diff2D upperLeft, Diff2D lowerRight);
+    
+    triple<Diff2D, Diff2D, MeshGridAccessor>
+    meshGrid(Rect2D const & r);
+
+    \endcode
+    
+    <b>Usage:</b>
+    
+    \code
+    // create an image whose values are equal to each pixel's distance from the image center    
+    int width = 5, height = 7;
+    int xc = width/2, yc = height/2; // the image center
+    
+    FImage dist(width, height);
+    Point2D upperLeft(-xc, -yc);
+    
+    using namespace vigra::functor;
+    transformImage(meshGrid(upperLeft, upperLeft+dist.size()), 
+                   destImage(dist), 
+                   norm(Arg1()));
+    \endcode
+*/
+inline
+triple<Diff2D, Diff2D, MeshGridAccessor>
+meshGrid(Diff2D upperLeft, Diff2D lowerRight)
+{
+    return triple<Diff2D, Diff2D, MeshGridAccessor>(upperLeft, lowerRight, MeshGridAccessor());
+}
+
+inline
+triple<Diff2D, Diff2D, MeshGridAccessor>
+meshGrid(Rect2D const & r)
+{
+    return triple<Diff2D, Diff2D, MeshGridAccessor>(r.upperLeft(), r.lowerRight(), MeshGridAccessor());
+}
 
 /********************************************************/
 /*                                                      */
