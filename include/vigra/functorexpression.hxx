@@ -1107,7 +1107,7 @@ ifThenElse(UnaryFunctor<EXPR1> const & e1,
 /*                                                          */
 /************************************************************/
 
-#define MAKE_FUNCTOR_UNARY_FUNCTION(function, namespc) \
+#define MAKE_FUNCTOR_UNARY_FUNCTION(function, namespc, traitsClass, traitsValue) \
     using ::namespc::function; \
     template <class EXPR> \
     struct Functor_##function; \
@@ -1116,28 +1116,28 @@ ifThenElse(UnaryFunctor<EXPR1> const & e1,
     struct ResultTraits0<Functor_##function<EXPR> > \
     { \
         typedef typename ResultTraits0<EXPR>::Res R1; \
-        typedef typename NumericTraits<R1>::RealPromote Res; \
+        typedef typename traitsClass<R1>::traitsValue Res; \
     }; \
     \
     template <class EXPR, class T1> \
     struct ResultTraits1<Functor_##function<EXPR>, T1> \
     { \
         typedef typename ResultTraits1<EXPR, T1>::Res R1; \
-        typedef typename NumericTraits<R1>::RealPromote Res; \
+        typedef typename traitsClass<R1>::traitsValue Res; \
     }; \
     \
     template <class EXPR, class T1, class T2> \
     struct ResultTraits2<Functor_##function<EXPR>, T1, T2> \
     { \
         typedef typename ResultTraits2<EXPR, T1, T2>::Res R1; \
-        typedef typename NumericTraits<R1>::RealPromote Res; \
+        typedef typename traitsClass<R1>::traitsValue Res; \
     }; \
     \
     template <class EXPR, class T1, class T2, class T3> \
     struct ResultTraits3<Functor_##function<EXPR>, T1, T2, T3> \
     { \
         typedef typename ResultTraits3<EXPR, T1, T2, T3>::Res R1; \
-        typedef typename NumericTraits<R1>::RealPromote Res; \
+        typedef typename traitsClass<R1>::traitsValue Res; \
     }; \
     \
     template <class EXPR> \
@@ -1192,22 +1192,22 @@ ifThenElse(UnaryFunctor<EXPR1> const & e1,
 
 /************************************************************/
 
-MAKE_FUNCTOR_UNARY_FUNCTION(sq, vigra)
-MAKE_FUNCTOR_UNARY_FUNCTION(sqrt, std)
-MAKE_FUNCTOR_UNARY_FUNCTION(exp, std)
-MAKE_FUNCTOR_UNARY_FUNCTION(log, std)
-MAKE_FUNCTOR_UNARY_FUNCTION(log10, std)
-MAKE_FUNCTOR_UNARY_FUNCTION(sin, std)
-MAKE_FUNCTOR_UNARY_FUNCTION(asin, std)
-MAKE_FUNCTOR_UNARY_FUNCTION(cos, std)
-MAKE_FUNCTOR_UNARY_FUNCTION(acos, std)
-MAKE_FUNCTOR_UNARY_FUNCTION(tan, std)
-MAKE_FUNCTOR_UNARY_FUNCTION(atan, std)
-MAKE_FUNCTOR_UNARY_FUNCTION(floor, std)
-MAKE_FUNCTOR_UNARY_FUNCTION(ceil, std)
-MAKE_FUNCTOR_UNARY_FUNCTION(abs, vigra)
-//MAKE_FUNCTOR_UNARY_FUNCTION(norm, vigra)
-//MAKE_FUNCTOR_UNARY_FUNCTION(squaredNorm, vigra)
+MAKE_FUNCTOR_UNARY_FUNCTION(sq, vigra, NumericTraits, RealPromote)
+MAKE_FUNCTOR_UNARY_FUNCTION(sqrt, std, NumericTraits, RealPromote)
+MAKE_FUNCTOR_UNARY_FUNCTION(exp, std, NumericTraits, RealPromote)
+MAKE_FUNCTOR_UNARY_FUNCTION(log, std, NumericTraits, RealPromote)
+MAKE_FUNCTOR_UNARY_FUNCTION(log10, std, NumericTraits, RealPromote)
+MAKE_FUNCTOR_UNARY_FUNCTION(sin, std, NumericTraits, RealPromote)
+MAKE_FUNCTOR_UNARY_FUNCTION(asin, std, NumericTraits, RealPromote)
+MAKE_FUNCTOR_UNARY_FUNCTION(cos, std, NumericTraits, RealPromote)
+MAKE_FUNCTOR_UNARY_FUNCTION(acos, std, NumericTraits, RealPromote)
+MAKE_FUNCTOR_UNARY_FUNCTION(tan, std, NumericTraits, RealPromote)
+MAKE_FUNCTOR_UNARY_FUNCTION(atan, std, NumericTraits, RealPromote)
+MAKE_FUNCTOR_UNARY_FUNCTION(floor, std, NumericTraits, RealPromote)
+MAKE_FUNCTOR_UNARY_FUNCTION(ceil, std, NumericTraits, RealPromote)
+MAKE_FUNCTOR_UNARY_FUNCTION(abs, vigra, NumericTraits, RealPromote)
+MAKE_FUNCTOR_UNARY_FUNCTION(norm, vigra, NormTraits, NormType)
+MAKE_FUNCTOR_UNARY_FUNCTION(squaredNorm, vigra, NormTraits, SquaredNormType)
 
 #undef MAKE_FUNCTOR_UNARY_FUNCTION
 
