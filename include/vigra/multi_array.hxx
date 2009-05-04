@@ -694,8 +694,10 @@ public:
       m_ptr (ptr)
     {}
 
-        /** construct from shape, strides (offset of a sample to the next)
-            for every dimension) and pointer
+        /** Construct from shape, strides (offset of a sample to the
+            next) for every dimension, and pointer.  (Note that
+            strides are not given in bytes, but in offsets of the
+            respective pointer type.)
          */
     MultiArrayView (const difference_type &shape,
                     const difference_type &stride,
@@ -1062,21 +1064,21 @@ public:
     bindAt (difference_type_1 m, difference_type_1 d) const;
 
         /** Add a singleton dimension (dimension of legth 1).
-        
+
             Singleton dimensions don't change the size of the data, but introduce
             a new index that can only take the value 0. This is mainly useful for
             the 'reduce mode' of transformMultiArray() and combineTwoMultiArrays(),
             because these functions require the source and destination arrays to
             have the same number of dimensions.
-            
-            The range of \a i must be <tt>0 <= i <= N</tt>. The new dimension will become 
-            the i'th index, and the old indices from i upwards will shift one 
+
+            The range of \a i must be <tt>0 <= i <= N</tt>. The new dimension will become
+            the i'th index, and the old indices from i upwards will shift one
             place to the right.
 
             <b>Usage:</b>
-            
-            Suppose we want have a 2D array and want to create a 1D array that contains 
-            the row average of the first array.  
+
+            Suppose we want have a 2D array and want to create a 1D array that contains
+            the row average of the first array.
             \code
             typedef MultiArrayShape<2>::type Shape2;
             MultiArray<2, double> original(Shape2(40, 30));
@@ -1608,7 +1610,7 @@ MultiArrayView <N, T, C>::insertSingletonDimension (difference_type_1 i) const
     std::copy (m_stride.begin () + i, m_stride.end (), stride.begin () + i + 1);
     shape[i] = 1;
     stride[i] = 1;
-    
+
     return MultiArrayView <N+1, T, C>(shape, stride, m_ptr);
 }
 
