@@ -631,13 +631,13 @@ Iterator argMaxIf(Iterator first, Iterator last, UnaryFunctor condition)
         Namespace: vigra
     */
 template <class T>
-void symmetric2x2Eigenvalues(T a00, T a01, T a11, T & r0, T & r1)
+void symmetric2x2Eigenvalues(T a00, T a01, T a11, T * r0, T * r1)
 {
     double d  = std::sqrt(sq(a00 - a11) + 4.0*sq(a01));
-    r0 = 0.5*(a00 + a11 + d);
-    r1 = 0.5*(a00 + a11 - d);
-    if(r0 < r1)
-        std::swap(r0, r1);
+    *r0 = 0.5*(a00 + a11 + d);
+    *r1 = 0.5*(a00 + a11 - d);
+    if(*r0 < *r1)
+        std::swap(*r0, *r1);
 }
 
     /*! Compute the eigenvalues of a 3x3 real symmetric matrix.
@@ -653,7 +653,7 @@ void symmetric2x2Eigenvalues(T a00, T a01, T a11, T & r0, T & r1)
     */
 template <class T>
 void symmetric3x3Eigenvalues(T a00, T a01, T a02, T a11, T a12, T a22,
-                             T & r0, T & r1, T & r2)
+                             T * r0, T * r1, T * r2)
 {
     static double inv3 = 1.0 / 3.0, root3 = std::sqrt(3.0);
     
@@ -672,15 +672,15 @@ void symmetric3x3Eigenvalues(T a00, T a01, T a02, T a11, T a12, T a22,
     double angle = std::atan2(std::sqrt(-q),mbDiv2)*inv3;
     double cs = std::cos(angle);
     double sn = std::sin(angle);
-    r0 = c2Div3 + 2.0*magnitude*cs;
-    r1 = c2Div3 - magnitude*(cs + root3*sn);
-    r2 = c2Div3 - magnitude*(cs - root3*sn);
-    if(r0 < r1)
-        std::swap(r0, r1);
-    if(r0 < r2)
-        std::swap(r0, r2);
-    if(r1 < r2)
-        std::swap(r1, r2);
+    *r0 = c2Div3 + 2.0*magnitude*cs;
+    *r1 = c2Div3 - magnitude*(cs + root3*sn);
+    *r2 = c2Div3 - magnitude*(cs - root3*sn);
+    if(*r0 < *r1)
+        std::swap(*r0, *r1);
+    if(*r0 < *r2)
+        std::swap(*r0, *r2);
+    if(*r1 < *r2)
+        std::swap(*r1, *r2);
 }
 
 namespace detail {

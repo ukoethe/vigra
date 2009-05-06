@@ -1724,7 +1724,10 @@ struct LinalgTest
             Matrix ew(size, 1), ewref(size, 1);
             Matrix ev(size, size);
             symmetricEigensystem(a, ewref, ev);
-            vigra::symmetric2x2Eigenvalues(a(0,0), a(0,1), a(1,1), ew(0,0), ew(1,0));
+            vigra::symmetric2x2Eigenvalues(
+                a(0,0), a(0,1),
+                a(1,1),
+                &ew(0,0), &ew(1,0));
             shouldEqualSequenceTolerance(ew.data(), ew.data()+size, ewref.data(), epsilon);
         }
 
@@ -1735,7 +1738,11 @@ struct LinalgTest
             Matrix ew(size, 1), ewref(size, 1);
             Matrix ev(size, size);
             symmetricEigensystem(a, ewref, ev);
-            vigra::symmetric3x3Eigenvalues(a(0,0), a(0,1), a(0,2), a(1,1), a(1,2), a(2,2), ew(0,0), ew(1,0), ew(2,0));
+            vigra::symmetric3x3Eigenvalues<double>(
+                a(0,0), a(0,1), a(0,2),
+                a(1,1), a(1,2),
+                a(2,2),
+                &ew(0,0), &ew(1,0), &ew(2,0));
             shouldEqualSequenceTolerance(ew.data(), ew.data()+size, ewref.data(), epsilon);
         }
     }
