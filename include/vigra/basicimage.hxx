@@ -1071,6 +1071,9 @@ BasicImage<PIXELTYPE, Alloc>::resize(int width, int height, value_type const & d
     vigra_precondition((width >= 0) && (height >= 0),
          "BasicImage::resize(int width, int height, value_type const &): "
          "width and height must be >= 0.\n");
+    vigra_precondition(width * height >= 0,
+         "BasicImage::resize(int width, int height, value_type const &): "
+         "width * height too large (integer overflow -> negative).\n");
 
     if (width_ != width || height_ != height)  // change size?
     {
