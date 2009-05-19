@@ -2,19 +2,19 @@ include ../config/Makefile.include
 
 all:: impex
 
-install:: 
-	@cd impex ; $(MAKE) install ; cd ..
+install::
+	@cd impex ; $(MAKE) install
 
 impex::
-	@cd impex ; $(MAKE) all ; cd ..
+	@cd impex ; $(MAKE) all
 
 examples::
-	@cd examples ; $(MAKE) CXX=$(CXX) all ; cd ..
+	@cd examples ; $(MAKE) CXX=$(CXX) all
 
 clean::
-	@cd impex ; $(MAKE) clean ; cd ..
-	@cd examples ; $(MAKE) clean ; cd ..
+	@cd impex ; $(MAKE) clean
+	@cd examples ; $(MAKE) clean
 
 distclean::
-	@cd impex ; $(MAKE) distclean ; cd ..
-	@cd examples ; $(MAKE) distclean ; cd ..
+	@cd impex ; $(MAKE) distclean
+	@cd examples ; $(MAKE) distclean

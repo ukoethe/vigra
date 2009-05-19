@@ -5,12 +5,12 @@ endif
 endif
 
 all::
-	@cd src ; $(MAKE) all ; cd ..
+	@cd src ; $(MAKE) all
 
 install:: install-exec install-includes install-docs
 
 install-exec:
-	@cd src ; $(MAKE) install ; cd ..
+	@cd src ; $(MAKE) install
 	$(INSTALL_MKDIR) $(bindir)
 	$(INSTALL_SCRIPT) $(vigra_builddir)/config/vigra-config $(bindir)
 
@@ -38,12 +38,12 @@ install-docs:
         fi
 
 examples::
-	@cd src ; $(MAKE) examples ; cd ..
+	@cd src ; $(MAKE) examples
 
 check:: test
 
 test::
-	@cd test ; $(MAKE) ; cd ..
+	@cd test ; $(MAKE)
 
 doc::
 	cd $(vigra_srcdir)/docsrc; $(MAKE) VIGRA_VERSION=$(VIGRA_VERSION)
@@ -52,8 +52,8 @@ docclean::
 	cd $(vigra_srcdir)/docsrc; $(MAKE) -i clean
 
 clean::
-	@cd src ; $(MAKE) clean ; cd ..
-	@cd test ; $(MAKE) clean ; cd ..
+	@cd src ; $(MAKE) clean
+	@cd test ; $(MAKE) clean
 	rm -f a.exe a.out
 
 
