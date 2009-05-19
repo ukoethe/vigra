@@ -70,7 +70,14 @@ public:
         for (unsigned int i = 0; i < 1000; ++i)
             array3.data () [i] = i;
     }
-    
+
+    void testHasData ()
+    {
+        should(array3.hasData());
+        array3_type empty;
+        should(!empty.hasData());
+    }
+
     void testEquality ()
     {
         typedef difference3_type Shape;
@@ -1514,6 +1521,7 @@ struct MultiArrayDataTestSuite
     MultiArrayDataTestSuite()
     : vigra::test_suite("MultiArrayDataTestSuite")
     {
+        add( testCase( &MultiArrayDataTest::testHasData ) );
         add( testCase( &MultiArrayDataTest::testEquality ) );
         add( testCase( &MultiArrayDataTest::test_subarray ) );
         add( testCase( &MultiArrayDataTest::test_stridearray ) );

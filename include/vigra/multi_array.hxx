@@ -680,7 +680,8 @@ protected:
 
 public:
 
-        /** default constructor: create an empty image of size 0.
+        /** default constructor: create an invalid view,
+         * i.e. hasData() returns false and size() is zero.
          */
     MultiArrayView ()
         : m_shape (diff_zero_t(0)), m_stride (diff_zero_t(0)), m_ptr (0)
@@ -1299,6 +1300,16 @@ public:
     pointer data () const
     {
         return m_ptr;
+    }
+
+        /**
+         * returns true iff this view refers to valid data,
+         * i.e. data() is not a NULL pointer.  (this is false after
+         * default construction.)
+         */
+    bool hasData () const
+    {
+        return m_ptr != 0;
     }
 
         /** returns the N-dimensional MultiIterator pointing
