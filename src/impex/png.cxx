@@ -309,8 +309,8 @@ namespace vigra {
         }
 
         // read resolution
-        x_resolution = png_get_x_pixels_per_meter( png, info ) * 0.0254;
-        y_resolution = png_get_y_pixels_per_meter( png, info ) * 0.0254;
+        x_resolution = png_get_x_pixels_per_meter( png, info ) * 0.0254f;
+        y_resolution = png_get_y_pixels_per_meter( png, info ) * 0.0254f;
 
         // read offset
         position.x = png_get_x_offset_pixels( png, info );
