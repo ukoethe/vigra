@@ -851,34 +851,22 @@ struct ImageFunctionsTest
 
     void resizeNoInterpolationTest()
     {
-        Image img1(5,5);
+        Image img1(5,5), img3(5,5);
 
         resizeImageNoInterpolation(srcImageRange(img), destImageRange(img1));
-
+        
         Image::ScanOrderIterator i1 = img1.begin();
         Image::Accessor acc = img.accessor();
 
         should(acc(i1) == 1.1);
         ++i1;
-        should(acc(i1) == 1.1);
-        ++i1;
         should(acc(i1) == 2.2);
         ++i1;
         should(acc(i1) == 2.2);
         ++i1;
         should(acc(i1) == 3.3);
         ++i1;
-        should(acc(i1) == 1.1);
-        ++i1;
-        should(acc(i1) == 1.1);
-        ++i1;
-        should(acc(i1) == 2.2);
-        ++i1;
-        should(acc(i1) == 2.2);
-        ++i1;
         should(acc(i1) == 3.3);
-        ++i1;
-        should(acc(i1) == 4.4);
         ++i1;
         should(acc(i1) == 4.4);
         ++i1;
@@ -888,7 +876,7 @@ struct ImageFunctionsTest
         ++i1;
         should(acc(i1) == 6.6);
         ++i1;
-        should(acc(i1) == 4.4);
+        should(acc(i1) == 6.6);
         ++i1;
         should(acc(i1) == 4.4);
         ++i1;
@@ -898,13 +886,25 @@ struct ImageFunctionsTest
         ++i1;
         should(acc(i1) == 6.6);
         ++i1;
-        should(acc(i1) == 7.7);
+        should(acc(i1) == 6.6);
         ++i1;
         should(acc(i1) == 7.7);
         ++i1;
         should(acc(i1) == 8.8);
         ++i1;
         should(acc(i1) == 8.8);
+        ++i1;
+        should(acc(i1) == 9.9);
+        ++i1;
+        should(acc(i1) == 9.9);
+        ++i1;
+        should(acc(i1) == 7.7);
+        ++i1;
+        should(acc(i1) == 8.8);
+        ++i1;
+        should(acc(i1) == 8.8);
+        ++i1;
+        should(acc(i1) == 9.9);
         ++i1;
         should(acc(i1) == 9.9);
 
@@ -920,6 +920,9 @@ struct ImageFunctionsTest
         {
             should(acc(i) == acc(i2));
         }
+
+        resizeImageSplineInterpolation(srcImageRange(img), destImageRange(img3), BSpline<0>());
+        shouldEqualSequence(img1.begin(), img1.end(), img3.begin());
     }
 
     void resizeLinearInterpolationTest()
@@ -1368,14 +1371,14 @@ struct SplineImageViewTest
         shouldEqual(view.image().width(), 0);
         shouldEqual(viewi.image().width(), img.width());
 
-        for(int y=0; y<reference.height()-1; ++y)
+        for(int y=0; y<reference.height(); ++y)
         {
-            for(int x=0; x<reference.width()-1; ++x)
+            for(int x=0; x<reference.width(); ++x)
             {
                 double dx = (double)x / 2.0;
                 double dy = (double)y / 2.0;
-                shouldEqualTolerance(view(dx, dy), reference(x+1, y+1), 1e-4);
-                shouldEqualTolerance(view.unchecked(dx, dy, 0, 0), reference(x+1, y+1), 1e-4);
+                shouldEqualTolerance(view(dx, dy), reference(x, y), 1e-4);
+                shouldEqualTolerance(view.unchecked(dx, dy, 0, 0), reference(x, y), 1e-4);
                 FixedPoint<10, 1> fx(dx), fy(dy);
                 shouldEqual(viewi.unchecked(fx, fy, 0, 0), viewi.unchecked(dx, dy, 0, 0));
             }
