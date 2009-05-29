@@ -2209,6 +2209,10 @@ struct NormTraits<linalg::TemporaryMatrix<T, ALLOC> >
     typedef typename BaseType::NormType          NormType;
 };
 
+} // namespace vigra
+
+namespace std {
+
 /** \addtogroup LinearAlgebraFunctions
  */
 //@{
@@ -2220,26 +2224,29 @@ struct NormTraits<linalg::TemporaryMatrix<T, ALLOC> >
         Namespace: std
      */
 template <class T, class C>
-std::ostream &
-operator<<(std::ostream & s, const vigra::MultiArrayView<2, T, C> &m)
+ostream &
+operator<<(ostream & s, const vigra::MultiArrayView<2, T, C> &m)
 {
-    const MultiArrayIndex rows = vigra::linalg::rowCount(m);
-    const MultiArrayIndex cols = vigra::linalg::columnCount(m);
-    std::ios::fmtflags flags =
-        s.setf(std::ios::right | std::ios::fixed, std::ios::adjustfield | std::ios::floatfield);
-    for(MultiArrayIndex j = 0; j < rows; ++j)
+    const vigra::MultiArrayIndex rows = vigra::linalg::rowCount(m);
+    const vigra::MultiArrayIndex cols = vigra::linalg::columnCount(m);
+    ios::fmtflags flags = s.setf(ios::right | ios::fixed, ios::adjustfield | ios::floatfield);
+    for(vigra::MultiArrayIndex j = 0; j < rows; ++j)
     {
-        for(MultiArrayIndex i = 0; i < cols; ++i)
+        for(vigra::MultiArrayIndex i = 0; i < cols; ++i)
         {
             s << m(j, i) << " ";
         }
-        s << std::endl;
+        s << endl;
     }
     s.setf(flags);
     return s;
 }
 
 //@}
+
+} // namespace std
+
+namespace vigra {
 
 namespace linalg {
 
