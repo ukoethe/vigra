@@ -167,27 +167,18 @@ resizeLineNoInterpolation(SrcIterator i1, SrcIterator iend, SrcAccessor as,
     int wold = iend - i1;
     int wnew = idend - id;
 
-    if((wold <= 1) || (wnew <= 1)) return; // oder error ?
-
-    ad.set(as(i1), id);
-    ++id;
-
-    --iend, --idend;
-    ad.set(as(iend), idend);
-
+    if(wnew == 1)
+    {
+        ad.set(as(i1), id);
+        return;
+    }
+    
     double dx = (double)(wold - 1) / (wnew - 1);
-    double x = dx;
-
+    double x = 0.5;
     for(; id != idend; ++id, x += dx)
     {
-    if(x >= 1.0)
-    {
-        int xx = (int)x;
-        i1 += xx;
-        x -= (double)xx;
-    }
-
-    ad.set(as(i1), id);
+        int ix = (int)x;
+        ad.set(as(i1, ix), id);
     }
 }
 
