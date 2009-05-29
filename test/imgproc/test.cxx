@@ -1517,6 +1517,14 @@ struct GeometricTransformsTest
         for(int y = 0; y < 10; ++y)
             for(int x = 0; x < 10; ++x)
                 shouldEqual(img(x,y), res1(w-x-1, y));
+
+        double xfactor = 3.0;
+        double yfactor = 2.0;
+        Image res3((int)(w*xfactor), (int)(h*yfactor));
+        resampleImage(srcImageRange(img), destImage(res3), xfactor, yfactor);
+        for(int y = 0; y < 10; ++y)
+            for(int x = 0; x < 10; ++x)
+                shouldEqual(img(x,y), res3(int(x*xfactor), int(y*yfactor)));
     }
 
     void testAffineMatrix()

@@ -585,6 +585,9 @@ inline int sizeForResamplingFactor(int oldsize, double factor)
     does not replicate the last pixel in every row/column in order to make it compatible
     with the other functions of the <tt>resizeImage...</tt> family.
     
+    The function can be called with different resampling factors for x and y, or
+    with a single factor to be used for both directions.
+
     It should also be noted that resampleImage() is implemented so that an enlargement followed
     by the corresponding shrinking reproduces the original image. The function uses accessors. 
     
@@ -598,6 +601,12 @@ inline int sizeForResamplingFactor(int oldsize, double factor)
         void 
         resampleImage(SrcIterator is, SrcIterator iend, SrcAccessor sa,
                       DestIterator id, DestAccessor ad, double factor);
+                      
+        template <class SrcIterator, class SrcAccessor,
+                  class DestIterator, class DestAccessor>
+        void 
+        resampleImage(SrcIterator is, SrcIterator iend, SrcAccessor sa,
+                      DestIterator id, DestAccessor ad, double xfactor, double yfactor);
     }
     \endcode
     
@@ -609,6 +618,12 @@ inline int sizeForResamplingFactor(int oldsize, double factor)
         inline void 
         resampleImage(triple<SrcImageIterator, SrcImageIterator, SrcAccessor> src,
                       pair<DestImageIterator, DestAccessor> dest, double factor);
+                      
+        template <class SrcImageIterator, class SrcAccessor,
+              class DestImageIterator, class DestAccessor>
+        inline void 
+        resampleImage(triple<SrcImageIterator, SrcImageIterator, SrcAccessor> src,
+                      pair<DestImageIterator, DestAccessor> dest, double xfactor, double yfactor);
     }
     \endcode
     
@@ -651,7 +666,7 @@ template <class SrcIterator, class SrcAccessor,
           class DestIterator, class DestAccessor>
 void 
 resampleImage(SrcIterator is, SrcIterator iend, SrcAccessor sa,
-              DestIterator id, DestAccessor ad, double factor)
+              DestIterator id, DestAccessor ad, double xfactor, double yfactor)
 {
     int width_old = iend.x - is.x;
     int height_old = iend.y - is.y;
@@ -660,8 +675,8 @@ resampleImage(SrcIterator is, SrcIterator iend, SrcAccessor sa,
     //aus 6x6 grossem Bild wird eins 18x18 grosses gemacht bei Vergroesserungsfaktor 3.1
     //umgekehrt damit wir vom 18x18 zu 6x6 (und nicht 5x5) bei Vergroesserung von 1/3.1
     //muss das kleinste Integer das groesser als 18/3.1 ist genommen werden.
-    int height_new = sizeForResamplingFactor(height_old, factor);
-    int width_new = sizeForResamplingFactor(width_old, factor);
+    int height_new = sizeForResamplingFactor(height_old, yfactor);
+    int width_new = sizeForResamplingFactor(width_old, xfactor);
     
     vigra_precondition((width_old > 1) && (height_old > 1),
                  "resampleImage(): "
@@ -684,7 +699,7 @@ resampleImage(SrcIterator is, SrcIterator iend, SrcAccessor sa,
     {
         typename SrcIterator::column_iterator c1 = is.columnIterator();
         typename TmpImageIterator::column_iterator ct = yt.columnIterator();
-        resampleLine(c1, c1 + height_old, sa, ct, tmp.accessor(), factor);
+        resampleLine(c1, c1 + height_old, sa, ct, tmp.accessor(), yfactor);
     }
 
     yt = tmp.upperLeft();
@@ -693,9 +708,18 @@ resampleImage(SrcIterator is, SrcIterator iend, SrcAccessor sa,
     {
         typename DestIterator::row_iterator rd = id.rowIterator();
         typename TmpImageIterator::row_iterator rt = yt.rowIterator();
-        resampleLine(rt, rt + width_old, tmp.accessor(), rd, ad, factor);
+        resampleLine(rt, rt + width_old, tmp.accessor(), rd, ad, xfactor);
     }
 
+}
+
+template <class SrcIterator, class SrcAccessor,
+          class DestIterator, class DestAccessor>
+void 
+resampleImage(SrcIterator is, SrcIterator iend, SrcAccessor sa,
+              DestIterator id, DestAccessor ad, double factor)
+{
+  resampleImage(is, iend, sa, id, ad, factor, factor);
 }
 
 template <class SrcImageIterator, class SrcAccessor,
@@ -704,7 +728,16 @@ inline void
 resampleImage(triple<SrcImageIterator, SrcImageIterator, SrcAccessor> src,
               pair<DestImageIterator, DestAccessor> dest, double factor)
 {
-    resampleImage(src.first, src.second, src.third, dest.first, dest.second, factor);
+  resampleImage(src.first, src.second, src.third, dest.first, dest.second, factor);
+}
+
+template <class SrcImageIterator, class SrcAccessor,
+          class DestImageIterator, class DestAccessor>
+inline void 
+resampleImage(triple<SrcImageIterator, SrcImageIterator, SrcAccessor> src,
+              pair<DestImageIterator, DestAccessor> dest, double xfactor, double yfactor)
+{
+  resampleImage(src.first, src.second, src.third, dest.first, dest.second, xfactor, yfactor);
 }
 
 //@}
