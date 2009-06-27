@@ -2323,6 +2323,133 @@ destMultiArray( MultiArrayView<N,T,C> & array, Accessor a )
         ( array.traverser_begin(), a );
 }
 
+/********************************************************************/
+
+template <class PixelType, class Accessor>
+inline triple<ConstStridedImageIterator<PixelType>,
+              ConstStridedImageIterator<PixelType>, Accessor>
+srcImageRange(const MultiArrayView<2, PixelType, StridedArrayTag> & img, Accessor a)
+{
+    ConstStridedImageIterator<PixelType>
+        ul(img.data(), 1, img.stride(0), img.stride(1));
+    return triple<ConstStridedImageIterator<PixelType>,
+                  ConstStridedImageIterator<PixelType>,
+                  Accessor>(
+                      ul, ul + Size2D(img.shape(0), img.shape(1)), a);
+}
+
+template <class PixelType, class Accessor>
+inline pair<ConstStridedImageIterator<PixelType>, Accessor>
+srcImage(const MultiArrayView<2, PixelType, StridedArrayTag> & img, Accessor a)
+{
+    ConstStridedImageIterator<PixelType>
+        ul(img.data(), 1, img.stride(0), img.stride(1));
+    return pair<ConstStridedImageIterator<PixelType>, Accessor>
+        (ul, a);
+}
+
+template <class PixelType, class Accessor>
+inline triple<StridedImageIterator<PixelType>,
+              StridedImageIterator<PixelType>, Accessor>
+destImageRange(MultiArrayView<2, PixelType, StridedArrayTag> & img, Accessor a)
+{
+    StridedImageIterator<PixelType>
+        ul(img.data(), 1, img.stride(0), img.stride(1));
+    return triple<StridedImageIterator<PixelType>,
+                  StridedImageIterator<PixelType>,
+                  Accessor>(
+                      ul, ul + Size2D(img.shape(0), img.shape(1)), a);
+}
+
+template <class PixelType, class Accessor>
+inline pair<StridedImageIterator<PixelType>, Accessor>
+destImage(MultiArrayView<2, PixelType, StridedArrayTag> & img, Accessor a)
+{
+    StridedImageIterator<PixelType>
+        ul(img.data(), 1, img.stride(0), img.stride(1));
+    return pair<StridedImageIterator<PixelType>, Accessor>
+        (ul, a);
+}
+
+template <class PixelType, class Accessor>
+inline pair<StridedImageIterator<PixelType>, Accessor>
+maskImage(MultiArrayView<2, PixelType, StridedArrayTag> & img, Accessor a)
+{
+    StridedImageIterator<PixelType>
+        ul(img.data(), 1, img.stride(0), img.stride(1));
+    return pair<StridedImageIterator<PixelType>, Accessor>
+        (ul, a);
+}
+
+// -------------------------------------------------------------------
+
+template <class PixelType>
+inline triple<ConstStridedImageIterator<PixelType>,
+              ConstStridedImageIterator<PixelType>,
+              typename AccessorTraits<PixelType>::default_const_accessor>
+srcImageRange(const MultiArrayView<2, PixelType, StridedArrayTag> & img)
+{
+    ConstStridedImageIterator<PixelType>
+        ul(img.data(), 1, img.stride(0), img.stride(1));
+    typedef typename AccessorTraits<PixelType>::default_const_accessor Accessor;
+    return triple<ConstStridedImageIterator<PixelType>,
+                  ConstStridedImageIterator<PixelType>,
+                  Accessor>
+        (ul, ul + Size2D(img.shape(0), img.shape(1)), Accessor());
+}
+
+template <class PixelType>
+inline pair< ConstStridedImageIterator<PixelType>,
+             typename AccessorTraits<PixelType>::default_const_accessor>
+srcImage(const MultiArrayView<2, PixelType, StridedArrayTag> & img)
+{
+    ConstStridedImageIterator<PixelType>
+        ul(img.data(), 1, img.stride(0), img.stride(1));
+    typedef typename AccessorTraits<PixelType>::default_const_accessor Accessor;
+    return pair<ConstStridedImageIterator<PixelType>,
+                Accessor>
+        (ul, Accessor());
+}
+
+template <class PixelType>
+inline triple< StridedImageIterator<PixelType>,
+               StridedImageIterator<PixelType>,
+               typename AccessorTraits<PixelType>::default_accessor>
+destImageRange(MultiArrayView<2, PixelType, StridedArrayTag> & img)
+{
+    StridedImageIterator<PixelType>
+        ul(img.data(), 1, img.stride(0), img.stride(1));
+    typedef typename AccessorTraits<PixelType>::default_accessor Accessor;
+    return triple<StridedImageIterator<PixelType>,
+                  StridedImageIterator<PixelType>,
+                  Accessor>
+        (ul, ul + Size2D(img.shape(0), img.shape(1)), Accessor());
+}
+
+template <class PixelType>
+inline pair< StridedImageIterator<PixelType>,
+             typename AccessorTraits<PixelType>::default_accessor>
+destImage(MultiArrayView<2, PixelType, StridedArrayTag> & img)
+{
+    StridedImageIterator<PixelType>
+        ul(img.data(), 1, img.stride(0), img.stride(1));
+    typedef typename AccessorTraits<PixelType>::default_accessor Accessor;
+    return pair<StridedImageIterator<PixelType>, Accessor>
+        (ul, Accessor());
+}
+
+template <class PixelType>
+inline pair< StridedImageIterator<PixelType>,
+             typename AccessorTraits<PixelType>::default_accessor>
+maskImage(MultiArrayView<2, PixelType, StridedArrayTag> & img)
+{
+    StridedImageIterator<PixelType>
+        ul(img.data(), 1, img.stride(0), img.stride(1));
+    typedef typename AccessorTraits<PixelType>::default_accessor Accessor;
+    return pair<StridedImageIterator<PixelType>, Accessor>
+        (ul, Accessor());
+}
+
 /********************************************************/
 /*                                                      */
 /*                  makeBasicImageView                  */
