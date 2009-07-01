@@ -41,6 +41,7 @@
 #include "mathutil.hxx"
 #include "stdimage.hxx"
 #include "pixelneighborhood.hxx"
+#include "union_find.hxx"
 
 namespace vigra {
 
