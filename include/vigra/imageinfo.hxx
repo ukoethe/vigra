@@ -427,7 +427,23 @@ class ImageImportInfo
          **/
     VIGRA_EXPORT const char * getPixelType() const;
 
-        /// deprecated: use getPixelType()
+        /** Query the pixel type of the image.
+
+            Same as getPixelType(), but the result is returned as a 
+            ImageImportInfo::PixelType enum. This is useful to implement
+            a switch() on the pixel type.
+
+            Possible values are:
+            <DL>
+            <DT>UINT8<DD> 8-bit unsigned integer (unsigned char)
+            <DT>INT16<DD> 16-bit signed integer (short)
+            <DT>UINT16<DD> 16-bit unsigned integer (unsigned short)
+            <DT>INT32<DD> 32-bit signed integer (long)
+            <DT>UINT32<DD> 32-bit unsigned integer (unsigned long)
+            <DT>FLOAT<DD> 32-bit floating point (float)
+            <DT>DOUBLE<DD> 64-bit floating point (double)
+            </DL>
+         **/
     VIGRA_EXPORT PixelType pixelType() const;
 
         /** Returns true if the image has 1 byte per pixel (gray) or
