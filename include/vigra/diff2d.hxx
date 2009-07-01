@@ -45,7 +45,9 @@
 #include "iteratoradapter.hxx"
 #include "tuple.hxx"
 
+
 namespace vigra {
+
 
 template <class Diff>
 class Diff2DConstRowIteratorPolicy
@@ -1325,85 +1327,6 @@ public:
 };
 
 
-/** Accessor for turning iteration over Diff2D into a mesh grid.
-
-    The mesh grid concept is adapted from MATLAB. It is a two banded image
-    (i.e. with 2D vector pixel type) whose first band contains the x-coordinates
-    of the current pixel, and whose second band contains the y-coordinates.
-    See \ref meshGrid() for more detailed documentation.    
-*/
-struct MeshGridAccessor
-{
-        /** the value_type of a mesh grid is a 2D vector
-        */
-    typedef TinyVector<Diff2D::MoveX, 2> value_type;
-
-        /** read the current data item
-        */
-    template <class ITERATOR>
-    value_type operator()(ITERATOR const & i) const
-    {
-        return value_type(i->x, i->y);
-    }
-
-        /** read the data item at an offset (can be 1D or 2D or higher order difference).
-        */
-    template <class ITERATOR, class DIFFERENCE>
-    value_type operator()(ITERATOR const & i, DIFFERENCE const & diff) const
-    {
-        return value_type(i->x+diff.x, i->y+diff.y);
-    }
-};
-
-/** Create a mesh grid for the specified rectangle.
-
-    The mesh grid concept is adapted from MATLAB. It is a two banded image
-    (i.e. with 2D vector pixel type) whose first band contains the x-coordinates
-    of the current pixel, and whose second band contains the y-coordinates.
-    If \a upperLeft is not the point (0,0), the mesh grid is translated relative to 
-    the pixel indices.
-    
-    <b> Declarations:</b>
-
-    \code
-    triple<Diff2D, Diff2D, MeshGridAccessor>
-    meshGrid(Diff2D upperLeft, Diff2D lowerRight);
-    
-    triple<Diff2D, Diff2D, MeshGridAccessor>
-    meshGrid(Rect2D const & r);
-
-    \endcode
-    
-    <b>Usage:</b>
-    
-    \code
-    // create an image whose values are equal to each pixel's distance from the image center    
-    int width = 5, height = 7;
-    int xc = width/2, yc = height/2; // the image center
-    
-    FImage dist(width, height);
-    Point2D upperLeft(-xc, -yc);
-    
-    using namespace vigra::functor;
-    transformImage(meshGrid(upperLeft, upperLeft+dist.size()), 
-                   destImage(dist), 
-                   norm(Arg1()));
-    \endcode
-*/
-inline
-triple<Diff2D, Diff2D, MeshGridAccessor>
-meshGrid(Diff2D upperLeft, Diff2D lowerRight)
-{
-    return triple<Diff2D, Diff2D, MeshGridAccessor>(upperLeft, lowerRight, MeshGridAccessor());
-}
-
-inline
-triple<Diff2D, Diff2D, MeshGridAccessor>
-meshGrid(Rect2D const & r)
-{
-    return triple<Diff2D, Diff2D, MeshGridAccessor>(r.upperLeft(), r.lowerRight(), MeshGridAccessor());
-}
-
 /********************************************************/
 /*                                                      */
 /*                      Dist2D                          */
@@ -1460,12 +1383,16 @@ class Dist2D
 
 //@}
 
+} // namespace vigra
+
+namespace std {
+
 /**
  * Output a \ref vigra::Diff2D as a tuple.
  * Example Diff2D(-12, 13) -> "(-12, 13)"
  */
 inline
-std::ostream & operator<<(std::ostream & o, vigra::Diff2D const & d)
+ostream & operator<<(ostream & o, vigra::Diff2D const & d)
 {
     o << '(' << d.x << ", " << d.y << ')';
     return o;
@@ -1476,7 +1403,7 @@ std::ostream & operator<<(std::ostream & o, vigra::Diff2D const & d)
  * Example Size2D(100, 200) -> "(100x200)"
  */
 inline
-std::ostream &operator <<(std::ostream &s, vigra::Size2D const &d)
+ostream &operator <<(ostream &s, vigra::Size2D const &d)
 {
     s << '(' << d.x << 'x' << d.y << ')';
     return s;
@@ -1487,13 +1414,13 @@ std::ostream &operator <<(std::ostream &s, vigra::Size2D const &d)
  * Example Rect2D(10, 10, 30, 20) -> "[(10, 10) to (30, 20) = (20x10)]"
  */
 inline
-std::ostream &operator <<(std::ostream &s, vigra::Rect2D const &r)
+ostream &operator <<(ostream &s, vigra::Rect2D const &r)
 {
     s << "[" << r.upperLeft() << " to " << r.lowerRight()
       << " = " << r.size() << "]";
     return s;
 }
 
-} // namespace vigra
+} // namespace std
 
 #endif // VIGRA_DIFF2D_HXX
