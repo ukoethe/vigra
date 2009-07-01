@@ -227,7 +227,7 @@ namespace vigra
 
         // extract ICC profile
         JOCTET *iccBuf;
-        UInt32 iccLen;
+        unsigned int iccLen;
         if (read_icc_profile(&info, &iccBuf, &iccLen)) {
             iccProfileLength = iccLen;
             iccProfilePtr = iccBuf;

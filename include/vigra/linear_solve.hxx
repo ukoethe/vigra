@@ -724,7 +724,7 @@ bool inverse(const MultiArrayView<2, T, C1> &v, MultiArrayView<2, T, C2> &res)
     vigra_precondition(n == rowCount(res) && rowCount(v) == columnCount(res),
        "inverse(): shape of output matrix must be the transpose of the input matrix' shape.");
 
-    Matrix<T> q(v.shape()), r(n, n);
+    Matrix<T> r(v.shape()), q(n, n);
     if(!qrDecomposition(v, q, r))
         return false; // a didn't have full rank
     linearSolveUpperTriangular(r, transpose(q), res); 

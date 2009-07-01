@@ -1320,6 +1320,12 @@ VIGRA_SPECIALIZED_CAST(unsigned long)
 
 template <>
 struct RequiresExplicitCast<float> {
+    static float cast(int v)
+        { return (float)v; }
+
+    static float cast(unsigned int v)
+        { return (float)v; }
+
     static float cast(Int32 v)
         { return (float)v; }
 

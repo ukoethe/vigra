@@ -94,15 +94,15 @@ struct SelectBiggestIntegerType<Int_type_not_supported_on_this_platform>
 
 typedef IntTypeList<signed char, 
         IntTypeList<signed short,
-        IntTypeList<signed int,
         IntTypeList<signed long,
         IntTypeList<signed long long,
+        IntTypeList<signed int,
         Int_type_not_supported_on_this_platform > > > > > SignedIntTypes;
 typedef IntTypeList<unsigned char, 
         IntTypeList<unsigned short,
-        IntTypeList<unsigned int,
         IntTypeList<unsigned long,
         IntTypeList<unsigned long long,
+        IntTypeList<unsigned int,
         Int_type_not_supported_on_this_platform > > > > > UnsignedIntTypes;
 
 } // namespace detail

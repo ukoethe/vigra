@@ -328,7 +328,7 @@ struct FunctionsTest
 
     void testSpecialIntegerFunctions()
     {
-        for(int i = 0; i < 1024; ++i)
+        for(vigra::Int32 i = 0; i < 1024; ++i)
         {
             shouldEqual(vigra::sqrti(i), (vigra::Int32)vigra::floor(vigra::sqrt((double)i)));
         }
