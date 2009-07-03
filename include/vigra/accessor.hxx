@@ -776,6 +776,11 @@ class VectorAccessor
         */
     typedef typename VECTOR::value_type component_type;
 
+        /** the vector element accessor associated with this vector accessor
+            (see \ref VectorElementAccessor)
+        */
+    typedef VectorElementAccessor<VectorAccessor<VECTOR> > ElementAccessor;
+
         /** Read the component data at given vector index
             at given iterator position
         */
