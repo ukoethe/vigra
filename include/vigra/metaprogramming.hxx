@@ -190,15 +190,19 @@ struct Not;
 template <>
 struct Not<VigraTrueType>
 {
-    typedef VigraFalseType result;
-    static const bool boolResult = false;
+    typedef VigraFalseType result;        // deprecated
+    static const bool boolResult = false; // deprecated
+    typedef VigraFalseType type;
+    static const bool value = false;
 };
 
 template <>
 struct Not<VigraFalseType>
 {
-    typedef VigraTrueType result;
-    static const bool boolResult = true;
+    typedef VigraTrueType result;        // deprecated
+    static const bool boolResult = true; // deprecated
+    typedef VigraTrueType type;
+    static const bool value = true;
 };
 
 template <class L, class R>
@@ -207,29 +211,37 @@ struct And;
 template <>
 struct And<VigraFalseType, VigraFalseType>
 {
-    typedef VigraFalseType result;
-    static const bool boolResult = false;
+    typedef VigraFalseType result;        // deprecated
+    static const bool boolResult = false; // deprecated
+    typedef VigraFalseType type;
+    static const bool value = false;
 };
 
 template <>
 struct And<VigraFalseType, VigraTrueType>
 {
-    typedef VigraFalseType result;
-    static const bool boolResult = false;
+    typedef VigraFalseType result;        // deprecated
+    static const bool boolResult = false; // deprecated
+    typedef VigraFalseType type;
+    static const bool value = false;
 };
 
 template <>
 struct And<VigraTrueType, VigraFalseType>
 {
-    typedef VigraFalseType result;
-    static const bool boolResult = false;
+    typedef VigraFalseType result;        // deprecated
+    static const bool boolResult = false; // deprecated
+    typedef VigraFalseType type;
+    static const bool value = false;
 };
 
 template <>
 struct And<VigraTrueType, VigraTrueType>
 {
-    typedef VigraTrueType result;
-    static const bool boolResult = true;
+    typedef VigraTrueType result;        // deprecated
+    static const bool boolResult = true; // deprecated
+    typedef VigraTrueType type;
+    static const bool value = true;
 };
 
 template <class L, class R>
@@ -238,29 +250,37 @@ struct Or;
 template <>
 struct Or<VigraFalseType, VigraFalseType>
 {
-    typedef VigraFalseType result;
-    static const bool boolResult = false;
+    typedef VigraFalseType result;        // deprecated
+    static const bool boolResult = false; // deprecated
+    typedef VigraFalseType type;
+    static const bool value = false;
 };
 
 template <>
 struct Or<VigraTrueType, VigraFalseType>
 {
-    typedef VigraTrueType result;
-    static const bool boolResult = true;
+    typedef VigraTrueType result;        // deprecated
+    static const bool boolResult = true; // deprecated
+    typedef VigraTrueType type;
+    static const bool value = true;
 };
 
 template <>
 struct Or<VigraFalseType, VigraTrueType>
 {
-    typedef VigraTrueType result;
-    static const bool boolResult = true;
+    typedef VigraTrueType result;        // deprecated
+    static const bool boolResult = true; // deprecated
+    typedef VigraTrueType type;
+    static const bool value = true;
 };
 
 template <>
 struct Or<VigraTrueType, VigraTrueType>
 {
-    typedef VigraTrueType result;
-    static const bool boolResult = true;
+    typedef VigraTrueType result;        // deprecated
+    static const bool boolResult = true; // deprecated
+    typedef VigraTrueType type;
+    static const bool value = true;
 };
 
 #ifndef NO_PARTIAL_TEMPLATE_SPECIALIZATION
@@ -298,16 +318,22 @@ struct IfBool<false, TRUECASE, FALSECASE>
 template <class L, class R>
 struct IsSameType
 {
-    typedef VigraFalseType result;
-    static const bool boolResult = false;
+    typedef VigraFalseType result;        // deprecated
+    static const bool boolResult = false; // deprecated
+    typedef VigraFalseType type;
+    static const bool value = false;
 };
 
 template <class T>
 struct IsSameType<T, T>
 {
-    typedef VigraTrueType result;
-    static const bool boolResult = true;
+    typedef VigraTrueType result;        // deprecated
+    static const bool boolResult = true; // deprecated
+    typedef VigraTrueType type;
+    static const bool value = true;
 };
+
+#endif // NO_PARTIAL_TEMPLATE_SPECIALIZATION
 
 template <class DERIVED, class BASE>
 struct IsDerivedFrom
@@ -320,13 +346,32 @@ struct IsDerivedFrom
     
     enum { resultSize = sizeof(*testIsDerivedFrom((DERIVED const *)0)) };
     
-    static const bool boolResult = (resultSize == 2);
+    static const bool value = (resultSize == 2);
     typedef typename 
-        IfBool<boolResult, VigraTrueType, VigraFalseType>::type
-        result;
+        IfBool<value, VigraTrueType, VigraFalseType>::type
+        type;
+
+    static const bool boolResult = value; // deprecated
+    typedef type result;                  // deprecated
 };
 
-#endif // NO_PARTIAL_TEMPLATE_SPECIALIZATION
+template <class T>
+struct has_result_type
+{
+    typedef char falseResult[1];
+    typedef char trueResult[2];
+    
+    static falseResult * test(...);
+    template <class U>
+    static trueResult * test(U *, typename U::result_type * = 0);
+    
+    enum { resultSize = sizeof(*test((T*)0)) };
+    
+    static const bool value = (resultSize == 2);
+    typedef typename 
+        IfBool<value, VigraTrueType, VigraFalseType>::type
+        type;
+};
 
 } // namespace vigra
 
