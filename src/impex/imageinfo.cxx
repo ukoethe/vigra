@@ -349,7 +349,7 @@ ImageExportInfo & ImageExportInfo::setForcedRangeMapping(double fromMin, double 
 
 bool ImageExportInfo::hasForcedRangeMapping() const
 {
-    return fromMax_ > fromMin_;
+    return (fromMax_ > fromMin_) || (toMax_ > toMin_);
 }
 
 double ImageExportInfo::getFromMin() const
