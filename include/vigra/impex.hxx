@@ -468,8 +468,59 @@ doxygen_overloaded_function(template <...> void importImage)
         // MIHAL no default constructor available for cachedfileimages
         SrcRowIterator xs = ys.rowIterator();
 
-		if (num_bands == 4) {
-            // Speedup for this particular case
+            // Speedup for the common cases
+		switch (num_bands) 
+		{
+		  case 2:
+		  {
+            unsigned int offset = enc->getOffset();
+            DstValueType * scanline0;
+            DstValueType * scanline1;
+            for( size_type y = 0; y < height; ++y, ++ys.y ) {
+                xs = ys.rowIterator();
+                scanline0 = static_cast< DstValueType * >
+                        (enc->currentScanlineOfBand(0));
+                scanline1 = static_cast< DstValueType * >
+                        (enc->currentScanlineOfBand(1));
+                for( size_type x = 0; x < width; ++x, ++xs) {
+                    *scanline0 = detail::RequiresExplicitCast<DstValueType>::cast(a.getComponent( xs, 0));
+                    *scanline1 = detail::RequiresExplicitCast<DstValueType>::cast(a.getComponent( xs, 1));
+                    scanline0 += offset;
+                    scanline1 += offset;
+                }
+                enc->nextScanline();
+                
+            }
+            break;
+          }
+          case 3:
+          {
+            unsigned int offset = enc->getOffset();
+            DstValueType * scanline0;
+            DstValueType * scanline1;
+            DstValueType * scanline2;
+            for( size_type y = 0; y < height; ++y, ++ys.y ) {
+                xs = ys.rowIterator();
+                scanline0 = static_cast< DstValueType * >
+                        (enc->currentScanlineOfBand(0));
+                scanline1 = static_cast< DstValueType * >
+                        (enc->currentScanlineOfBand(1));
+                scanline2 = static_cast< DstValueType * >
+                        (enc->currentScanlineOfBand(2));
+                for( size_type x = 0; x < width; ++x, ++xs) {
+                    *scanline0 = detail::RequiresExplicitCast<DstValueType>::cast(a.getComponent( xs, 0));
+                    *scanline1 = detail::RequiresExplicitCast<DstValueType>::cast(a.getComponent( xs, 1));
+                    *scanline2 = detail::RequiresExplicitCast<DstValueType>::cast(a.getComponent( xs, 2));
+                    scanline0 += offset;
+                    scanline1 += offset;
+                    scanline2 += offset;
+                }
+                enc->nextScanline();
+            }
+            break;
+          }
+          case 4:
+          {
             unsigned int offset = enc->getOffset();
             DstValueType * scanline0;
             DstValueType * scanline1;
@@ -486,12 +537,6 @@ doxygen_overloaded_function(template <...> void importImage)
                 scanline3 = static_cast< DstValueType * >
                         (enc->currentScanlineOfBand(3));
                 for( size_type x = 0; x < width; ++x, ++xs) {
-/*
-                    *scanline0 = a.template getComponent<SrcRowIterator, 0>( xs );
-                    *scanline1 = a.template getComponent<SrcRowIterator, 1>( xs );
-                    *scanline2 = a.template getComponent<SrcRowIterator, 2>( xs );
-                    *scanline3 = a.template getComponent<SrcRowIterator, 3>( xs );
-*/
                     *scanline0 = detail::RequiresExplicitCast<DstValueType>::cast(a.getComponent( xs, 0));
                     *scanline1 = detail::RequiresExplicitCast<DstValueType>::cast(a.getComponent( xs, 1));
                     *scanline2 = detail::RequiresExplicitCast<DstValueType>::cast(a.getComponent( xs, 2));
@@ -503,21 +548,24 @@ doxygen_overloaded_function(template <...> void importImage)
                 }
                 enc->nextScanline();
             }
-        }
-        else {
+            break;
+          }
+          default:
+          {
 			// General case
-        for( size_type y = 0; y < height; ++y, ++ys.y ) {
-            for( size_type b = 0; b < num_bands; ++b ) {
-                xs = ys.rowIterator();
-                scanline = static_cast< DstValueType * >
-                    (enc->currentScanlineOfBand(b));
-                for( size_type x = 0; x < width; ++x, ++xs ) {
-                    *scanline = detail::RequiresExplicitCast<DstValueType>::cast(a.getComponent( xs, b ));
-                    scanline += enc->getOffset();
+            for( size_type y = 0; y < height; ++y, ++ys.y ) {
+                for( size_type b = 0; b < num_bands; ++b ) {
+                    xs = ys.rowIterator();
+                    scanline = static_cast< DstValueType * >
+                        (enc->currentScanlineOfBand(b));
+                    for( size_type x = 0; x < width; ++x, ++xs ) {
+                        *scanline = detail::RequiresExplicitCast<DstValueType>::cast(a.getComponent( xs, b ));
+                        scanline += enc->getOffset();
+                    }
                 }
+                enc->nextScanline();
             }
-            enc->nextScanline();
-        }
+          }
 		}
     } // write_bands()
 
@@ -620,12 +668,10 @@ namespace detail {
                            T zero)
     {
         double fromMin, fromMax, toMin, toMax;
-        if(info.hasForcedRangeMapping())
+        if(info.getFromMin() < info.getFromMax())
         {
             fromMin = info.getFromMin();
             fromMax = info.getFromMax();
-            toMin = info.getToMin();
-            toMax = info.getToMax();
         }
         else
         {
@@ -635,9 +681,21 @@ namespace detail {
             
             fromMin = (double)minmax.min;
             fromMax = (double)minmax.max;
+            if(fromMax <= fromMin)
+                fromMax = fromMin + 1.0;
+       }
+        
+        if(info.getToMin() < info.getToMax())
+        {
+            toMin = info.getToMin();
+            toMax = info.getToMax();
+        }
+        else
+        {
             toMin = (double)NumericTraits<T>::min();
             toMax = (double)NumericTraits<T>::max();
         }
+        
         double scale = (toMax - toMin) / (fromMax - fromMin);
         double offset = (toMin / scale) - fromMin;
         BasicImage<T> image(slr-sul);
@@ -669,31 +727,40 @@ namespace detail {
         vigra_precondition(isBandNumberSupported(enc->getFileType(), bands),
            "exportImage(): file format does not support requested number of bands (color channels)");
 
-        typedef typename SrcAccessor::value_type SrcValue;
+        typedef typename SrcAccessor::ElementAccessor SrcElementAccessor;
+        typedef typename SrcElementAccessor::value_type SrcComponent;
         double fromMin, fromMax, toMin, toMax;
-        if(info.hasForcedRangeMapping())
+        if(info.getFromMin() < info.getFromMax())
         {
             fromMin = info.getFromMin();
             fromMax = info.getFromMax();
+        }
+        else
+        {
+            FindMinMax<SrcComponent> minmax;
+            for(unsigned int i=0; i<bands; ++i)
+            {
+                SrcElementAccessor band(i, sget);
+                inspectImage( sul, slr, band, minmax );
+            }
+
+            fromMin = (double)minmax.min;
+            fromMax = (double)minmax.max;
+            if(fromMax <= fromMin)
+                fromMax = fromMin + 1.0;
+        }
+        
+        if(info.getToMin() < info.getToMax())
+        {
             toMin = info.getToMin();
             toMax = info.getToMax();
         }
         else
         {
-            typedef typename SrcValue::value_type SrcComponent;
-
-            FindMinMax<SrcComponent> minmax;
-            for(unsigned int i=0; i<bands; ++i)
-            {
-                VectorComponentValueAccessor<SrcValue> band(i);
-                inspectImage( sul, slr, band, minmax );
-            }
-            
-            fromMin = (double)minmax.min;
-            fromMax = (double)minmax.max;
             toMin = (double)NumericTraits<T>::min();
             toMax = (double)NumericTraits<T>::max();
         }
+
         double scale = (toMax - toMin) / (fromMax - fromMin);
         double offset = (toMin / scale) - fromMin;
         int w = slr.x - sul.x;
@@ -705,7 +772,7 @@ namespace detail {
         for(unsigned int i=0; i<bands; ++i)
         {
             BasicImageView<T> subImage = makeBasicImageView(array.bindOuter(i));
-            VectorComponentValueAccessor<SrcValue> band(i);
+            SrcElementAccessor band(i, sget);
             transformImage( sul, slr, band, subImage.upperLeft(), subImage.accessor(),
                             linearIntensityTransform( scale, offset ) );
         }
