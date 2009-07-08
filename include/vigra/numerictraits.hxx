@@ -1326,16 +1326,16 @@ struct RequiresExplicitCast<float> {
     static float cast(unsigned int v)
         { return (float)v; }
 
-    static float cast(Int32 v)
+    static float cast(long v)
         { return (float)v; }
 
-    static float cast(UInt32 v)
+    static float cast(unsigned long v)
         { return (float)v; }
 
-    static float cast(Int64 v)
+    static float cast(long long v)
         { return (float)v; }
 
-    static float cast(UInt64 v)
+    static float cast(unsigned long long v)
         { return (float)v; }
 
     static float cast(double v)
