@@ -1,3 +1,38 @@
+/************************************************************************/
+/*                                                                      */
+/*        Copyright 2008-2009 by Rahul Nair and Ullrich Koethe          */
+/*                                                                      */
+/*    This file is part of the VIGRA computer vision library.           */
+/*    The VIGRA Website is                                              */
+/*        http://kogs-www.informatik.uni-hamburg.de/~koethe/vigra/      */
+/*    Please direct questions, bug reports, and contributions to        */
+/*        ullrich.koethe@iwr.uni-heidelberg.de    or                    */
+/*        vigra@informatik.uni-hamburg.de                               */
+/*                                                                      */
+/*    Permission is hereby granted, free of charge, to any person       */
+/*    obtaining a copy of this software and associated documentation    */
+/*    files (the "Software"), to deal in the Software without           */
+/*    restriction, including without limitation the rights to use,      */
+/*    copy, modify, merge, publish, distribute, sublicense, and/or      */
+/*    sell copies of the Software, and to permit persons to whom the    */
+/*    Software is furnished to do so, subject to the following          */
+/*    conditions:                                                       */
+/*                                                                      */
+/*    The above copyright notice and this permission notice shall be    */
+/*    included in all copies or substantial portions of the             */
+/*    Software.                                                         */
+/*                                                                      */
+/*    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND    */
+/*    EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES   */
+/*    OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND          */
+/*    NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT       */
+/*    HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,      */
+/*    WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING      */
+/*    FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR     */
+/*    OTHER DEALINGS IN THE SOFTWARE.                                   */
+/*                                                                      */
+/************************************************************************/
+
 /*++++++++++++++++++++INCLUDES+and+Definitions++++++++++++++++++++++++*/
 
 #include <string>
@@ -53,12 +88,12 @@ static void vigraMain(matlab::OutputArray outputs, matlab::InputArray inputs)
     {
         //in case <XX, 0 (crackedges)> the Pixel/Voxel underneath,
         //    on the right (and behind) are considered for neighborhood.
-        //in case<IMAG, 1>  the cell configuration around current pixel is compared to
+        //in case<IMAGE, 1>  the cell configuration around current pixel is compared to
         //    the ones in cellconfigurations.h (Configuration are Freeman coded (see PhD thesis, Chap 5.7)
         // if current configuration is of Type Line then adjacent pixels are considered as neighbors.
         // in case<VOLUME, 1> the number of adjacent regions are counted. the regions are considered
         //    adjacent if only two such regions exist
-        case cP2_(IMAG, 0):
+        case cP2_(IMAGE, 0):
         {
 
             ImageIterator<T> upleft = in.upperLeft();
@@ -142,7 +177,7 @@ static void vigraMain(matlab::OutputArray outputs, matlab::InputArray inputs)
             }
             break;
         }
-        case cP2_(IMAG, 1):
+        case cP2_(IMAGE, 1):
         {
             ImageIterator<T> upleft = in.upperLeft();
             ImageIterator<T> downright = in.lowerRight();
@@ -261,21 +296,13 @@ static void vigraMain(matlab::OutputArray outputs, matlab::InputArray inputs)
 ****************************************************************************************************/
 void vigraMexFunction(vigra::matlab::OutputArray outputs, vigra::matlab::InputArray inputs)
 {
-    /*
-    FLEXIBLE_TYPE_START(0, in);
-        ALLOW_D;
-    FLEXIBLE_TYPE_END;
-    */
-    //Add classes as you feel
-    //mxClassID inClass;
-    //FLEX_TYPE(inClass, 0, in);
     switch(inputs.typeOf(0))
     {
         ALLOW_FD
-	ALLOW_UINT_8_64
-	ALLOW_INT_8_64
+        ALLOW_UINT_8_64
+        ALLOW_INT_8_64
         default:
-	    mexErrMsgTxt("Type of input 0 not supported");
+            mexErrMsgTxt("Type of input 0 not supported");
     }
 }
 /** MATLAB

@@ -1,3 +1,38 @@
+/************************************************************************/
+/*                                                                      */
+/*        Copyright 2008-2009 by Rahul Nair and Ullrich Koethe          */
+/*                                                                      */
+/*    This file is part of the VIGRA computer vision library.           */
+/*    The VIGRA Website is                                              */
+/*        http://kogs-www.informatik.uni-hamburg.de/~koethe/vigra/      */
+/*    Please direct questions, bug reports, and contributions to        */
+/*        ullrich.koethe@iwr.uni-heidelberg.de    or                    */
+/*        vigra@informatik.uni-hamburg.de                               */
+/*                                                                      */
+/*    Permission is hereby granted, free of charge, to any person       */
+/*    obtaining a copy of this software and associated documentation    */
+/*    files (the "Software"), to deal in the Software without           */
+/*    restriction, including without limitation the rights to use,      */
+/*    copy, modify, merge, publish, distribute, sublicense, and/or      */
+/*    sell copies of the Software, and to permit persons to whom the    */
+/*    Software is furnished to do so, subject to the following          */
+/*    conditions:                                                       */
+/*                                                                      */
+/*    The above copyright notice and this permission notice shall be    */
+/*    included in all copies or substantial portions of the             */
+/*    Software.                                                         */
+/*                                                                      */
+/*    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND    */
+/*    EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES   */
+/*    OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND          */
+/*    NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT       */
+/*    HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,      */
+/*    WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING      */
+/*    FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR     */
+/*    OTHER DEALINGS IN THE SOFTWARE.                                   */
+/*                                                                      */
+/************************************************************************/
+
 
 
 #include <vigra/matlab.hxx>
@@ -38,8 +73,8 @@ void vigraMain(matlab::OutputArray outputs, matlab::InputArray inputs){
 
     MultiArrayView<4,T>         in4D        = inputs.getMultiArray<4,T>(0, v_required());
 
-    VIGRA_CREATE_ENUM_AND_STD_MAP2(Methods,MapName, BSpline, Catmull)
-    Methods method = (Methods)inputs.getEnum("method", v_default((int)BSpline), MapName );
+    VIGRA_CREATE_ENUM_AND_STD_MAP2(MapName, BSpline, Catmull)
+    int method = inputs.getEnum("method", v_default(BSpline), MapName );
 
  //   Methods1 method2 = inputs.getEnum<Methods1>("method1", Optional(BSpline11));
 
@@ -98,18 +133,12 @@ void vigraMain(matlab::OutputArray outputs, matlab::InputArray inputs){
 ****************************************************************************************************/
 void vigraMexFunction(vigra::matlab::OutputArray outputs, vigra::matlab::InputArray inputs)
 {
-    /*
-    FLEXIBLE_TYPE_START(0, in);
-        ALLOW_D;
-    FLEXIBLE_TYPE_END;
-    */
-
-    mxClassID inClass;
-    FLEX_TYPE(inClass, 0, in);
-    switch(inClass)
+    //Add classes as you feel
+    switch(inputs.typeOf(0))
     {
         ALLOW_D
-        DEFAULT_ERROR;
+        default:
+            mexErrMsgTxt("Type of input 0 not supported");
     }
 }
 

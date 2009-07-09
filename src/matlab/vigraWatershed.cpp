@@ -1,3 +1,38 @@
+/************************************************************************/
+/*                                                                      */
+/*        Copyright 2008-2009 by Rahul Nair and Ullrich Koethe          */
+/*                                                                      */
+/*    This file is part of the VIGRA computer vision library.           */
+/*    The VIGRA Website is                                              */
+/*        http://kogs-www.informatik.uni-hamburg.de/~koethe/vigra/      */
+/*    Please direct questions, bug reports, and contributions to        */
+/*        ullrich.koethe@iwr.uni-heidelberg.de    or                    */
+/*        vigra@informatik.uni-hamburg.de                               */
+/*                                                                      */
+/*    Permission is hereby granted, free of charge, to any person       */
+/*    obtaining a copy of this software and associated documentation    */
+/*    files (the "Software"), to deal in the Software without           */
+/*    restriction, including without limitation the rights to use,      */
+/*    copy, modify, merge, publish, distribute, sublicense, and/or      */
+/*    sell copies of the Software, and to permit persons to whom the    */
+/*    Software is furnished to do so, subject to the following          */
+/*    conditions:                                                       */
+/*                                                                      */
+/*    The above copyright notice and this permission notice shall be    */
+/*    included in all copies or substantial portions of the             */
+/*    Software.                                                         */
+/*                                                                      */
+/*    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND    */
+/*    EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES   */
+/*    OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND          */
+/*    NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT       */
+/*    HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,      */
+/*    WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING      */
+/*    FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR     */
+/*    OTHER DEALINGS IN THE SOFTWARE.                                   */
+/*                                                                      */
+/************************************************************************/
+
 /*++++++++++++++++++++INCLUDES+and+Definitions++++++++++++++++++++++++*/
 
 
@@ -42,20 +77,22 @@ void vigraMain(matlab::OutputArray outputs, matlab::InputArray inputs){
 
 
     //Get right connectivity options
-    Int32                         v2Dconn[2]      = {8, 4};
-    Int32                         v3Dconn[2]      = {26, 6};
-    Int32                         connectivity    = (method == UNION)?
-                                inputs.getScalarVals2D3D<int>("conn", v_default(8,26,numOfDim),
-                                                                                    v2Dconn, v2Dconn+2,
-                                                                                    v3Dconn, v3Dconn+2,
-                                                                                    numOfDim)
-                            :   inputs.getScalarVals2D3D<int>("conn", v_default(4,6,numOfDim),
-                                                                                    v2Dconn+1, v2Dconn+2,
-                                                                                    v3Dconn+1, v3Dconn+2,
-                                                                                    numOfDim);
+    Int32  v2Dconn[2]   = {8, 4};
+    Int32  v3Dconn[2]   = {26, 6};
+    Int32  connectivity = (method == UNION)
+                            ? inputs.getScalarVals2D3D<int>("conn",
+                                                            numOfDim == 2 ? v_default(8) : v_default(26),
+                                                            v2Dconn, v2Dconn+2,
+                                                            v3Dconn, v3Dconn+2,
+                                                            numOfDim)
+                            : inputs.getScalarVals2D3D<int>("conn",
+                                                             numOfDim == 2 ? v_default(4) : v_default(6),
+                                                            v2Dconn+1, v2Dconn+2,
+                                                            v3Dconn+1, v3Dconn+2,
+                                                            numOfDim);
     //Get Crack options
-    VIGRA_CREATE_ENUM_AND_STD_MAP2(Crack,CrackMap, complete_grow, keep_contours);
-    Crack                       crack           = (Crack)inputs.getEnum("crack", v_default(UInt32(complete_grow)), CrackMap);
+    VIGRA_CREATE_ENUM_AND_STD_MAP2(CrackMap, complete_grow, keep_contours);
+    int                         crack           = inputs.getEnum("crack", v_default(complete_grow), CrackMap);
     SRGType                     SRGcrack        = (crack == complete_grow)? vigra::CompleteGrow : vigra::KeepContours;
 
 
@@ -76,16 +113,16 @@ void vigraMain(matlab::OutputArray outputs, matlab::InputArray inputs){
     switch(cantorPair(method, numOfDim, connectivity)){
         //cP is the templated version o f the cantorPair function first value is Dimension of Inputimage, second the connectivity setting
         //Code is basically the code on the VIGRA-reference page
-        case cP3_(UNION, IMAG, 8):
+        case cP3_(UNION, IMAGE, 8):
             #ifdef RN_DEBUG
-            mexWarnMsgTxt("UNION IMAG 8");
+            mexWarnMsgTxt("UNION IMAGE 8");
             #endif
             max_region_label = watersheds(srcImageRange(in), destImage(out));
 
             break;
-        case cP3_(UNION, IMAG, 4):
+        case cP3_(UNION, IMAGE, 4):
             #ifdef RN_DEBUG
-            mexWarnMsgTxt("UNION IMAG 4");
+            mexWarnMsgTxt("UNION IMAGE 4");
             #endif
             max_region_label = watersheds(srcImageRange(in), destImage(out), FourNeighborCode());
 
@@ -104,10 +141,10 @@ void vigraMain(matlab::OutputArray outputs, matlab::InputArray inputs){
             max_region_label = watersheds3DSix(srcMultiArrayRange(in3D), destMultiArray(out3D));
 
             break;
-        case cP3_(SEED, IMAG, 4):
+        case cP3_(SEED, IMAGE, 4):
         {
             #ifdef RN_DEBUG
-            mexWarnMsgTxt("SEED IMAG 4");
+            mexWarnMsgTxt("SEED IMAGE 4");
             #endif
             //find maximimum of seed Image
             FindMinMax<seedType> minmax;   // init functor
@@ -150,18 +187,14 @@ void vigraMain(matlab::OutputArray outputs, matlab::InputArray inputs){
 
 void vigraMexFunction(vigra::matlab::OutputArray outputs, vigra::matlab::InputArray inputs)
 {
-    /*
-    FLEXIBLE_TYPE_START(0, in);
-        ALLOW_D;
-    FLEXIBLE_TYPE_END;
-    */
-
-    mxClassID inClass;
-    FLEX_TYPE(inClass, 0, in);
-    switch(inClass)
+    //Add classes as you feel
+    switch(inputs.typeOf(0))
     {
-        ALLOW_UINT_8;
-        DEFAULT_ERROR;
+        ALLOW_FD;
+        ALLOW_UINT;
+	ALLOW_INT;
+        default:
+            mexErrMsgTxt("Type of input 0 not supported");
     }
 }
 
@@ -192,13 +225,13 @@ options    - is a struct with the following possible fields
     'conn':     2D: 4 (default),  8 (only supported by the union find algorithm)
                 3D: 6 (default), 26 (only supported by the union find algorithm)
                 While using seeded region growing, only the default values can be used.
-    'crack':    'completeGrow' (default), 'keepContours' (only supported by seeded region growing and 3D Volumes)
+    'crack':    'completeGrow' (default), 'keepContours' (only supported by seeded region growing and 2D Images)
                 Choose whether to keep watershed pixels or not. While using union find,
                 only the default value can be used.
     'CostThreshold':  -1.0 (default) - any double value.
-		If, at any point in the algorithm, the cost of the current candidate exceeds the optional
-		max_cost value (which defaults to -1), region growing is aborted, and all voxels not yet
-		assigned to a region remain unlabeled.
+                If, at any point in the algorithm, the cost of the current candidate exceeds the optional
+                max_cost value (which defaults to -1), region growing is aborted, and all voxels not yet
+                assigned to a region remain unlabeled.
 Usage:
     opt = struct('fieldname' ,'value',....);
     out = vigraWatershed(in, opt);

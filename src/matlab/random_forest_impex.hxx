@@ -94,11 +94,11 @@ exportRandomForest(RandomForest<T> const & rf, CellArray cells)
 
     // write array of possible class labels
     MultiArrayView<1, double> classLabels = createArray<double>(rf.labelCount(), cells[1]);
-    for(unsigned int k =0; k<rf.labelCount(); ++k)
+    for(int k =0; k<rf.labelCount(); ++k)
         classLabels(k) = rf.classes_[k];
 
     // for all decision trees
-    for(unsigned int k=0; k<rf.treeCount(); ++k)
+    for(int k=0; k<rf.treeCount(); ++k)
     {
         // write int tree array
         MultiArrayView<1, Int32> tree =

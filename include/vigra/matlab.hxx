@@ -45,43 +45,8 @@
 #include <map>
 #include <time.h>
 #include "matlab_FLEXTYPE.hxx"
-//#include <sstream>
-//#include <iostream>
-
-
-
-// Bounds checking Macro used if VIGRA_CHECK_BOUNDS is defined.
-#ifdef RN_DEBUG
-    #include <iostream>
-    #define VIGRA_CERR(message) \
-      std::cerr<< #message << std::endl;
-    #define VIGRA_WARN_MSG_TXT(message) \
-      mexWarnMsgTxt(#message);
-#else
-    #define VIGRA_CERR(message)
-    #define VIGRA_WARN_MSG_TXT(message)
-#endif
 
 namespace vigra {
-
-typedef enum {
-        vUNKNOWN,
-        vCELL,
-        vSTRUCT,
-        vLOGICAL,
-        vCHAR,
-        vDOUBLE,
-        vSINGLE,
-        vINT8,
-        vUINT8,
-        vINT16,
-        vUINT16,
-        vINT32,
-        vUINT32,
-        vINT64,
-        vUINT64,
-        vFUNCTION
-} vClassID;
 
 namespace matlab {
 
@@ -108,13 +73,33 @@ struct ValueType<type> \
 VIGRA_MATLAB_VALUETYPE_UTIL(double, Double, mxDOUBLE_CLASS, double)
 VIGRA_MATLAB_VALUETYPE_UTIL(float, Single, mxSINGLE_CLASS, single)
 VIGRA_MATLAB_VALUETYPE_UTIL(Int8,  Int8, mxINT8_CLASS, int8)
-VIGRA_MATLAB_VALUETYPE_UTIL(Int16, Int16, mxINT16_CLASS, int16)
-VIGRA_MATLAB_VALUETYPE_UTIL(Int32, Int32, mxINT32_CLASS, int32)
-VIGRA_MATLAB_VALUETYPE_UTIL(Int64, Int64, mxINT64_CLASS, int64)
 VIGRA_MATLAB_VALUETYPE_UTIL(UInt8,  Uint8, mxUINT8_CLASS, uint8)
+VIGRA_MATLAB_VALUETYPE_UTIL(Int16, Int16, mxINT16_CLASS, int16)
 VIGRA_MATLAB_VALUETYPE_UTIL(UInt16, Uint16, mxUINT16_CLASS, uint16)
-VIGRA_MATLAB_VALUETYPE_UTIL(UInt32, Uint32, mxUINT32_CLASS, uint32)
-VIGRA_MATLAB_VALUETYPE_UTIL(UInt64, Uint64, mxUINT64_CLASS, uint64)
+
+#if VIGRA_BITSOF_INT == 32
+VIGRA_MATLAB_VALUETYPE_UTIL(int, Int32, mxINT32_CLASS, int32)
+VIGRA_MATLAB_VALUETYPE_UTIL(unsigned int, Uint32, mxUINT32_CLASS, uint32)
+#elif VIGRA_BITSOF_INT == 64
+VIGRA_MATLAB_VALUETYPE_UTIL(int, Int64, mxINT64_CLASS, int64)
+VIGRA_MATLAB_VALUETYPE_UTIL(unsigned int, Uint64, mxUINT64_CLASS, uint64)
+#endif
+
+#if VIGRA_BITSOF_LONG == 32
+VIGRA_MATLAB_VALUETYPE_UTIL(long, Int32, mxINT32_CLASS, int32)
+VIGRA_MATLAB_VALUETYPE_UTIL(unsigned long, Uint32, mxUINT32_CLASS, uint32)
+#elif VIGRA_BITSOF_LONG == 64
+VIGRA_MATLAB_VALUETYPE_UTIL(long, Int64, mxINT64_CLASS, int64)
+VIGRA_MATLAB_VALUETYPE_UTIL(unsigned long, Uint64, mxUINT64_CLASS, uint64)
+#endif
+
+#if VIGRA_BITSOF_LONG_LONG == 32
+VIGRA_MATLAB_VALUETYPE_UTIL(long long, Int32, mxINT32_CLASS, int32)
+VIGRA_MATLAB_VALUETYPE_UTIL(unsigned long long, Uint32, mxUINT32_CLASS, uint32)
+#elif VIGRA_BITSOF_LONG_LONG == 64
+VIGRA_MATLAB_VALUETYPE_UTIL(long long, Int64, mxINT64_CLASS, int64)
+VIGRA_MATLAB_VALUETYPE_UTIL(unsigned long long, Uint64, mxUINT64_CLASS, uint64)
+#endif
 
 #undef VIGRA_MATLAB_VALUETYPE_UTIL
 
@@ -297,7 +282,7 @@ getTinyVector(mxArray const * t)
 }
 
 template <unsigned int SIZE>
-TinyVector<MultiArrayIndex, SIZE>
+typename MultiArrayShape<SIZE>::type
 getShape(mxArray const * t)
 {
     if(!ValueType<Int32>::check(t))
@@ -310,29 +295,8 @@ getShape(mxArray const * t)
         mexErrMsgTxt("getShape(): Input array has wrong number of elements.");
     }
     TinyVectorView<Int32, SIZE> res((MultiArrayIndex *)mxGetData(t));
-    return TinyVector<MultiArrayIndex, SIZE>(res);
+    return typename MultiArrayShape<SIZE>::type(res);
 }
-
-// template <class T, unsigned int SIZE>
-// TinyVectorView<T, SIZE>
-// getVector(mxArray const * t)
-// {
-    // if(!ValueType<T>::check(t))
-    // {
-        // std::string msg = std::string("Input array must have type ") +
-                          // ValueType<T>::typeName() + ".";
-        // mexErrMsgTxt(msg.c_str());
-    // }
-    // if(SIZE != mxGetNumberOfElements(t))
-    // {
-        // mexErrMsgTxt("getVector(): Input array has wrong number of elements.");
-    // }
-
-    // return TinyVectorView<T, SIZE>((T *)mxGetData(t));
-// }
-
-
-
 
 template <unsigned int DIM, class T>
 MultiArrayView<DIM, T>
@@ -356,11 +320,11 @@ getMultiArray(mxArray const * t)
             mexErrMsgTxt("getMultiArray(): Input array has too many dimensions.");
         }
         const mwSize * matlabShape = mxGetDimensions(t);
-        for(unsigned int k=0; k<mdim; ++k)
+        for(int k=0; k<mdim; ++k)
         {
             shape[k] = static_cast<typename Shape::value_type>(matlabShape[k]);
         }
-        for(unsigned int k=mdim; k<DIM; ++k)
+        for(int k=mdim; k<DIM; ++k)
         {
             shape[k] = 1;
         }
@@ -564,76 +528,89 @@ getString(mxArray const * t)
     return std::string(buf.begin());
 }
 
-class CompileTimeError;
+
 
 class CompileTimeError;
+
+namespace detail {
 
 class Required
 {
-    bool garbage;
-    public:
-    bool& operator*()
-    {
-        return garbage;
-    }
+  public:
+    void argumentWasProvided() const { /* empty because required arguments are always provided */ }
 };
-
-Required v_required()
-{
-    return Required();
-}
 
 
 template<class T>
-struct DefaultImpl
+class DefaultImpl
 {
-    bool garbage;
-    T val;
-    DefaultImpl(T v): val(v) {}
-    bool& operator*()
+  public:
+
+    T defaultValue_;
+    mutable bool * argumentWasProvided_;
+
+    DefaultImpl(T v, bool * argFlag = 0)
+    : defaultValue_(v),
+      argumentWasProvided_(argFlag)
     {
-        return garbage;
+        if(argumentWasProvided_ != 0)
+            *argumentWasProvided_ = false;
     }
 
-};
-
-template<class T>
-DefaultImpl<T> v_default(T in)
-{
-    return DefaultImpl<T>(in);
-}
-
-template<class T>
-DefaultImpl<T> v_default(T in, T in2, int dimVar)
-{
-    return (dimVar == 2)? DefaultImpl<T>(in): DefaultImpl<T>(in2);
-}
-
-
-struct OptionalImplVoid
-{
-    bool garbage;
-    public:
-    bool& operator*()
+    void argumentWasProvided() const
     {
-        return garbage;
+        if(argumentWasProvided_ != 0)
+            *argumentWasProvided_ = true;
     }
 };
 
-OptionalImplVoid v_optional()
+class OptionalImpl
 {
-    return OptionalImplVoid();
+  public:
+    mutable bool * argumentWasProvided_;
+
+    OptionalImpl(bool * argFlag = 0)
+    : argumentWasProvided_(argFlag)
+    {
+        if(argumentWasProvided_ != 0)
+            *argumentWasProvided_ = false;
+    }
+
+    void argumentWasProvided() const
+    {
+        if(argumentWasProvided_ != 0)
+            *argumentWasProvided_ = true;
+    }
+};
+
+} // namespace detail
+
+inline detail::Required v_required()
+{
+    return detail::Required();
 }
 
-bool* v_optional(bool& VarChecker)
+template<class T>
+inline detail::DefaultImpl<T> v_default(T in)
 {
-    return &VarChecker;
+    return detail::DefaultImpl<T>(in);
 }
 
+template<class T>
+inline detail::DefaultImpl<T> v_default(T in, bool & argFlag)
+{
+    return detail::DefaultImpl<T>(in, &argFlag);
+}
 
+inline detail::OptionalImpl v_optional()
+{
+    return detail::OptionalImpl();
+}
 
-
-
+inline detail::OptionalImpl v_optional(bool& argFlag)
+{
+    return detail::OptionalImpl(&argFlag);
+}
 
 // TODO:
 //    * handle rgb images
@@ -648,14 +625,14 @@ class InputArray
     std::string createErrMsg(std::string name)
     {
         std::string s1;
-        s1 =  "Required Input In Optionstruct: '" + name + "' has not been supplied!";
+        s1 =  "Required input '" + name + "' not found in option struct!";
         return s1;
     }
     std::string createErrMsg(int pos)
     {
         char tmp[10] = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9'};
         std::string oi(1, tmp[pos%10]);
-        std::string s1  = "Required Input In Signature of Function at position: '"+ oi+"' has not been supplied";
+        std::string s1  = "Required input in signature of function at position: '"+ oi+"' has not been supplied";
         return s1;
     }
 
@@ -676,8 +653,8 @@ class InputArray
     InputArray(size_type size, pointer data)
     : size_(size),
       data_(data),
-      options_(this->isValid(size-1) && mxIsStruct((*this)[size-1])
-                 ? (*this)[size-1]
+      options_(isValid(size-1) && mxIsStruct(data_[size-1])
+                 ? data_[size-1]
                  : 0)
     {}
 
@@ -714,124 +691,131 @@ class InputArray
         return options_.isValid(name);
     }
 
-    bool isEmpty(difference_type i){
+    bool isEmpty(difference_type i) const
+    {
         return mxIsEmpty(data_[i]);
     }
 
-    bool isEmpty(std::string name){
+    bool isEmpty(std::string name) const
+    {
         return mxIsEmpty(options_[name]);
     }
 
-    template<class place>
-    mxClassID typeOf(place posOrName)
+    bool hasData(difference_type i) const
+    {
+        return isValid(i) && !isEmpty(i);
+    }
+
+    bool hasData(std::string name) const
+    {
+        return isValid(name) && !isEmpty(name);
+    }
+
+    template<class Place>
+    mxClassID typeOf(Place posOrName)
     {
         return mxGetClassID((*this)[posOrName]);
     }
 
     /*Action to take if value not set*/
     template <class T, class U, class Place>
-    T errorOrDefault(DefaultImpl<U> const & o, Place NameOrPos = Place())
+    T errorOrDefault(detail::DefaultImpl<U> const & o, Place posOrName)
     {
-        return o.val;
+        return o.defaultValue_;
     }
 
     template <class T, class Place>
-    T errorOrDefault(bool* e, Place NameOrPos = Place())
-    {
-        (*e) = false;
-        return T();
-    }
-
-    template <class T, class Place>
-    T errorOrDefault(OptionalImplVoid, Place NameOrPos = Place())
+    T errorOrDefault(detail::OptionalImpl, Place posOrName)
     {
         return T();
     }
 
     template <class T, class Place>
-    T errorOrDefault(Required r, Place NameOrPos = Place())
+    T errorOrDefault(detail::Required r, Place posOrName)
     {
-        std::string a = createErrMsg(NameOrPos);
+        std::string a = createErrMsg(posOrName);
         mexErrMsgTxt( a.c_str());
         return T();
     }
 
     /*getter Func*/
-
-
-
     template <class Place, class ReqType>
     int getEnum(Place posOrName, ReqType req, std::map<std::string, int> const & converter)
     {
-        if(!isValid(posOrName)|| isEmpty(posOrName))
+        if(!hasData(posOrName))
         {
             return errorOrDefault<int>(req, posOrName);
         }
-        typename std::map<std::string, int>::const_iterator m = converter.find(matlab::getString((*this)[posOrName]));
+        std::string enumAsString = matlab::getString((*this)[posOrName]);
+        typename std::map<std::string, int>::const_iterator m = converter.find(enumAsString);
         if(m == converter.end())
-            return errorOrDefault<int>(req, posOrName);
-        (*req) = true;
+        {
+            std::string msg = std::string("Unknown option: ") + enumAsString + ".";
+            mexErrMsgTxt(msg.c_str());
+        }
+
+        req.argumentWasProvided();
         return (*m).second;
     }
 
 
     /*String Type*/
-    template <class place, class ReqType>
-    std::string getString(place posOrName, ReqType req)
+    template <class Place, class ReqType>
+    std::string getString(Place posOrName, ReqType req)
     {
-        if(!isValid(posOrName)|| isEmpty(posOrName))
+        if(!hasData(posOrName))
         {
             return errorOrDefault<std::string>(req, posOrName);
         }
         else
         {
-            (*req) = true;
+            req.argumentWasProvided();
             return matlab::getString((*this)[posOrName]);
         }
     }
 
     /*Scalar Type*/
-    template <class T,class place, class ReqType>
-    T getScalar(place posOrName, ReqType req)
+    template <class T,class Place, class ReqType>
+    T getScalar(Place posOrName, ReqType req)
     {
-        if(!isValid(posOrName)|| isEmpty(posOrName))
+        if(!hasData(posOrName))
         {
             return errorOrDefault<T>(req, posOrName);
         }
         else
         {
-            (*req) = true;
+            req.argumentWasProvided();
             return matlab::getScalar<T>((*this)[posOrName]);
         }
     }
 
 
-    template <class T, class place, class reqClass, class minClass, class maxClass>
-    T getScalarMinMax(place posOrName, reqClass req, minClass min_, maxClass max_)
+    template <class T, class Place, class ReqType, class minClass, class maxClass>
+    T getScalarMinMax(Place posOrName, ReqType req, minClass min_, maxClass max_)
     {
         T temp = this->getScalar<T>(posOrName, req);
         if (!is_in_range(temp, min_, max_))
-            mexErrMsgTxt("Value Out of bound");
+            mexErrMsgTxt("Value out of bounds.");
         else
             return temp;
 
     }
 
-    template <class T, class place, class reqClass, class iteratorType>
-    T getScalarVals(place posOrName, reqClass req, iteratorType begin_, iteratorType end_)
+    template <class T, class Place, class ReqType, class iteratorType>
+    T getScalarVals(Place posOrName, ReqType req, iteratorType begin_, iteratorType end_)
     {
         T temp = this->getScalar<T>(posOrName, req);
         for(iteratorType iter = begin_; iter != end_; ++iter)
         {
             if((*iter) == temp) return temp;
         }
-            mexErrMsgTxt("Value not allowed");
+        mexErrMsgTxt("Value not allowed");
     }
 
 
 
-    template <class T, class place, class reqClass, class iteratorType>
-    T getScalarVals2D3D(place posOrName, reqClass req, iteratorType begin2D_, iteratorType end2D_,
+    template <class T, class Place, class ReqType, class iteratorType>
+    T getScalarVals2D3D(Place posOrName, ReqType req, iteratorType begin2D_, iteratorType end2D_,
                                                      iteratorType begin3D_, iteratorType end3D_,
                                                      int dimVar)
     {
@@ -856,111 +840,105 @@ class InputArray
         mexErrMsgTxt("Value not allowed");
     }
 
-    template <class place, class reqClass>
-    bool getBool(place posOrName, reqClass req)
+    template <class Place, class ReqType>
+    bool getBool(Place posOrName, ReqType req)
     {
-        return 1 == this->getScalarMinMax<int>(posOrName, req, 0, 1);
+        return this->getScalarMinMax<int>(posOrName, req, 0, 1) != 0;
     }
 
     /*Array Type*/
-    template <unsigned int N, class T, class place, class reqClass>
-    MultiArrayView<N,T> getMultiArray(place posOrName, reqClass req)
+    template <unsigned int N, class T, class Place, class ReqType>
+    MultiArrayView<N,T> getMultiArray(Place posOrName, ReqType req)
     {
-        if(!isValid(posOrName) || isEmpty(posOrName))
+        if(!hasData(posOrName))
         {
             return errorOrDefault< MultiArrayView<N,T> >(req, posOrName);
         }
         else
         {
-            (*req) = true;
+            req.argumentWasProvided();
             value_type temp = (*this)[posOrName];
             return matlab::getMultiArray<N,T>(temp);
         }
     }
 
-    template < class T, class place, class reqClass>
-    BasicImageView<T> getImage(place posOrName, reqClass req)
+    template < class T, class Place, class ReqType>
+    BasicImageView<T> getImage(Place posOrName, ReqType req)
     {
-        if(!isValid(posOrName) || isEmpty(posOrName))
+        if(!hasData(posOrName))
         {
             return errorOrDefault<BasicImageView<T> >(req, posOrName);
         }
         else
         {
-            (*req) = true;
+            req.argumentWasProvided();
             value_type temp = (*this)[posOrName];
             return matlab::getImage<T>(temp);
         }
     }
 
-    template<class T,unsigned int sze, class place, class reqClass>
-    TinyVectorView< T, sze> getTinyVector(place posOrName, reqClass req)
+    template<class T,unsigned int sze, class Place, class ReqType>
+    TinyVectorView< T, sze> getTinyVector(Place posOrName, ReqType req)
     {
-        if(!isValid(posOrName) || isEmpty(posOrName))
+        if(!hasData(posOrName))
         {
             return errorOrDefault<TinyVectorView< T, sze> >(req, posOrName);
         }
         else
         {
-            (*req) = true;
+            req.argumentWasProvided();
             value_type temp = (*this)[posOrName];
             return matlab::getTinyVector< T, sze>(temp);
         }
     }
 
-    template< unsigned int sze, class place, class reqClass>
-    TinyVectorView<MultiArrayIndex, sze> getShape(place posOrName, reqClass req)
+    template< unsigned int sze, class Place, class ReqType>
+    TinyVectorView<MultiArrayIndex, sze> getShape(Place posOrName, ReqType req)
     {
-        if(!isValid(posOrName) || isEmpty(posOrName))
+        if(!hasData(posOrName))
         {
             return errorOrDefault<TinyVectorView<MultiArrayIndex, sze> >(req, posOrName);
         }
         else
         {
-            (*req) = true;
+            req.argumentWasProvided();
             value_type temp = (*this)[posOrName];
             return matlab::getShape<sze>(temp);
         }
     }
 
 
-    template< class place, class reqClass>
-    int getDimOfInput(place posOrName, reqClass req)
+    template< class Place, class ReqType>
+    int getDimOfInput(Place posOrName, ReqType req)
     {
-        if(!isValid(posOrName) || isEmpty(posOrName))
+        if(!hasData(posOrName))
         {
             return errorOrDefault<int>(req, posOrName);
         }
         else
         {
-            (*req) = true;
+            req.argumentWasProvided();
             return mxGetNumberOfDimensions((*this)[posOrName]);
         }
     }
 
-    template<class reqClass>
-    ConstCellArray getCellArray(int posOrName, reqClass req)
+    template<class ReqType>
+    ConstCellArray getCellArray(int posOrName, ReqType req)
     {
-        if(!isValid(posOrName) || isEmpty(posOrName))
+        if(!hasData(posOrName))
         {
             return errorOrDefault<ConstCellArray>(req, posOrName);
         }
         else
         {
-            (*req) = true;
+            req.argumentWasProvided();
             value_type temp = (*this)[posOrName];
             return matlab::getCellArray(temp);
         }
     }
 
-    template<class reqClass>
-    ConstCellArray getCellArray(std::string posOrName, reqClass req)
-    {
-        CompileTimeError ERROR__Const_Cell_Array_May_Not_Be_In_Option_Struct;
-    }
-
-    template<class reqClass>
-    ConstCellArray getCellArray(std::string posOrName, reqClass req)
+    template<class ReqType>
+    ConstCellArray getCellArray(std::string posOrName, ReqType req)
     {
         CompileTimeError ERROR__Const_Cell_Array_May_Not_Be_In_Option_Struct;
     }
@@ -1022,20 +1000,15 @@ class OutputArray
     }
 
     template <class T>
-    T errorOrDefault(OptionalImplVoid const & o, int Pos){ return T(); }
-
-    template <class T>
-    T errorOrDefault(Required r, int Pos)
+    T errorOrDefault(detail::OptionalImpl const & o, int Pos)
     {
-        mexErrMsgTxt(createErrMsgOut(Pos).c_str());
         return T();
     }
 
-
-    template <class T, class Place>
-    T errorOrDefault(bool* e, Place NameOrPos = Place())
+    template <class T>
+    T errorOrDefault(detail::Required r, int Pos)
     {
-        (*e) = false;
+        mexErrMsgTxt(createErrMsgOut(Pos).c_str());
         return T();
     }
 
@@ -1046,7 +1019,7 @@ class OutputArray
     {
         if(!isValid(pos))
             return errorOrDefault<MultiArrayView<DIM, T> >(req, pos);
-        (*req) = true;
+        req.argumentWasProvided();
         return matlab::createMultiArray<DIM, T>(shape, (*this)[pos]);
     }
 
@@ -1056,7 +1029,7 @@ class OutputArray
     {
         if(!isValid(pos))
             return errorOrDefault<BasicImageView<T> >(req, pos);
-        (*req) = true;
+        req.argumentWasProvided();
         return matlab::createImage<T>(width, height, (*this)[pos]);
     }
 
@@ -1072,7 +1045,7 @@ class OutputArray
     {
         if(!isValid(pos))
             return errorOrDefault<T*>(req, pos);
-        (*req) = true;
+        req.argumentWasProvided();
         BasicImageView<T> temp = matlab::createImage<T>(1, 1, (*this)[pos]);
         return &temp(0,0);
     }
@@ -1085,7 +1058,7 @@ class OutputArray
             errorOrDefault<T>(req, pos);
             return;
         }
-        (*req) = true;
+        req.argumentWasProvided();
         BasicImageView<T> temp = matlab::createImage<T>(1, 1, (*this)[pos]);
         temp(0,0) = val;
     }
@@ -1233,31 +1206,13 @@ class SparseArray
 
 };
 
+enum DataDimension {IMAGE = 2, VOLUME = 3};
+
 } // namespace matlab
-
-struct MeshGridAccessor
-{
-    typedef TinyVector<Diff2D::MoveX, 2> value_type;
-
-    template <class ITERATOR>
-    value_type operator()(ITERATOR const & i) const
-    {
-        return value_type(i->x, i->y);
-    }
-};
-
-inline
-triple<Diff2D, Diff2D, MeshGridAccessor>
-meshGrid(Diff2D ul, Diff2D lr)
-{
-    return triple<Diff2D, Diff2D, MeshGridAccessor>(ul, lr, MeshGridAccessor());
-}
 
 } // namespace vigra
 
 void vigraMexFunction(vigra::matlab::OutputArray, vigra::matlab::InputArray);
-
-class vigraFunctor;
 
 #ifndef VIGRA_CUSTOM_MEXFUNCTION
 
@@ -1285,40 +1240,55 @@ void mexFunction(int nlhs, mxArray *plhs[],
 #endif /*CUSTOM_MEXFUNCTION*/
 
 
-#define VIGRA_CREATE_ENUM_AND_STD_MAP2(name, mapName, item1, item2) \
-    enum name { item1 =1, item2}; \
+#define VIGRA_CREATE_ENUM_AND_STD_MAP2(mapName, item1, item2) \
+    const int item1 = 1;\
+    const int item2 = 2;\
     std::map<std::string,int>  mapName;\
     mapName[#item1] = (int)item1;\
     mapName[#item2] = (int)item2;\
 
 
-#define VIGRA_CREATE_ENUM_AND_STD_MAP3(name, mapName, item1, item2, item3) \
-    enum name { item1 =1, item2, item3 }; \
+#define VIGRA_CREATE_ENUM_AND_STD_MAP3(mapName, item1, item2, item3) \
+    const int item1 = 1;\
+    const int item2 = 2;\
+    const int item3 = 3;\
     std::map<std::string,int>  mapName;\
     mapName[#item1] = (int)item1;\
     mapName[#item2] = (int)item2;\
     mapName[#item3] = (int)item3;\
 
 
-#define VIGRA_CREATE_ENUM_AND_STD_MAP4(name, mapName, item1, item2, item3, item4) \
-    enum name { item1 =1, item2, item3, item4}; \
+#define VIGRA_CREATE_ENUM_AND_STD_MAP4(mapName, item1, item2, item3, item4) \
+    const int item1 = 1;\
+    const int item2 = 2;\
+    const int item3 = 3;\
+    const int item4 = 4;\
     std::map<std::string,int>  mapName;\
     mapName[#item1] = (int)item1;\
     mapName[#item2] = (int)item2;\
     mapName[#item3] = (int)item3;\
     mapName[#item4] = (int)item4;\
 
-#define VIGRA_CREATE_ENUM_AND_STD_MAP5(name, mapName, item1, item2, item3, item4, item5) \
-    enum name { item1 = 1, item2, item3 ,item4,  item5}; \
-    std::map<std::string, name>  mapName;\
+#define VIGRA_CREATE_ENUM_AND_STD_MAP5(mapName, item1, item2, item3, item4, item5) \
+    const int item1 = 1;\
+    const int item2 = 2;\
+    const int item3 = 3;\
+    const int item4 = 4;\
+    const int item5 = 5;\
+    std::map<std::string, int>  mapName;\
     mapName[#item1] = (int)item1;\
     mapName[#item2] = (int)item2;\
     mapName[#item3] = (int)item3;\
     mapName[#item4] = (int)item4;\
     mapName[#item5] = (int)item5;\
 
-#define VIGRA_CREATE_ENUM_AND_STD_MAP6(name, mapName, item1, item2, item3, item4, item5, item6) \
-    enum name { item1 =1, item2, item3 , item4, item5, item6}; \
+#define VIGRA_CREATE_ENUM_AND_STD_MAP6(mapName, item1, item2, item3, item4, item5, item6) \
+    const int item1 = 1;\
+    const int item2 = 2;\
+    const int item3 = 3;\
+    const int item4 = 4;\
+    const int item5 = 5;\
+    const int item6 = 6;\
     std::map<std::string,int>  mapName;\
     mapName[#item1] = (int)item1;\
     mapName[#item2] = (int)item2;\
@@ -1326,53 +1296,5 @@ void mexFunction(int nlhs, mxArray *plhs[],
     mapName[#item4] = (int)item4;\
     mapName[#item5] = (int)item5;\
     mapName[#item6] = (int)item6;\
-
-
-
-/*Character Valued options depreciated
-#define LOAD_ENUM_OPTION(title, number, name1_default, name2, name3, name4, name5)\
-    title##Enum title;\
-    {\
-        std::map<std::string, int> title##_str;\
-        if(number > 0) title##_str[#name1_default] = 1;\
-        if(number > 1) title##_str[#name2] = 2;\
-        if(number > 2) title##_str[#name3] = 3;\
-        if(number > 3) title##_str[#name4] = 4;\
-        if(number > 4) title##_str[#name5] = 5;\
-        if(!inputs.options_.isValid(#title))\
-        {\
-            title =  name1_default;\
-        }\
-        else\
-        {\
-            const mxArray* name = inputs.options_[#title];\
-            if(!mxIsChar(name))\
-                mexErrMsgTxt("option '" #title "' must be a string.");\
-            std::string namex = matlab::getString(inputs.options_[#title]); \
-            if(title##_str.count(namex) == 0)\
-                mexErrMsgTxt("option '" #title "' contains invalid string.");\
-            title = (title##Enum)title##_str[namex];\
-        }\
-    };
-
-#define LOAD_ENUM_OPTION2(title, name1_default, name2);\
-    enum title##Enum {name1_default = 1, name2 = 2};\
-    LOAD_ENUM_OPTION(title, 2, name1_default, name2, name3, name4, name5);
-
-#define LOAD_ENUM_OPTION3(title, name1_default, name2, name3);\
-    enum title##Enum {name1_default = 1, name2 = 2, name3 = 3};\
-    LOAD_ENUM_OPTION(title, 3, name1_default, name2, name3, name4, name5);
-
-#define LOAD_ENUM_OPTION4(title, name1_default, name2, name3, name4);\
-    enum title##Enum {name1_default = 1, name2 = 2, name3 = 3, name4 = 4};\
-    LOAD_ENUM_OPTION(title, 4, name1_default, name2, name3, name4, name5);
-
-#define LOAD_ENUM_OPTION5(title, name1_default, name2, name3, name4, name5);\
-    enum title##Enum {name1_default = 1, name2 = 2, name3 = 3, name4 = 4, name5 = 5};\
-    LOAD_ENUM_OPTION(title, 5, name1_default, name2, name3, name4, name5);
-
-
-*/
-enum DataDimension {IMAG = 2, VOLUME = 3};
 
 #endif // VIGRA_MATLAB_HXX

@@ -1,19 +1,21 @@
-% [ Copyright � 2007 Ullrich Koethe - All rights reserved ]
+% buildVigraExtensions(OUTDIR, TARGET)
 %
-% Based on make.m by Andrea Tagliasacchi
+% Makefile that compiles the VIGRA MEX functions and installs them into the specified 
+% OUTDIR, along with corresponding documentation.
+% Afterward installation, you may call
 %
-% SYNOPSIS
-%	- buildVigraExtensions(OUTDIR, TARGET)
-%	
-% DESCRIPTION
-%	- MAKEFILE that compiles all the VIGRA MEX functions in the specified OUTDIR
+%    help vigraIndex
 % 
-% INPUT
-%   - OUTDIR: directory to put compiled files to 
-%   - TARGET: 
+% to get a list of the installed functions.
+% 
+% Arguments
+%   - OUTDIR: directory for compiled files (default '.', i.e. this directory)
+%   - TARGET (default: 'all'): 
 %	  - 'all':    builds all the files in the folder
 %	  - 'clean':  remove all mex compiled files from the folder
 %
+% Special command to compile the unit tests (don't call this directly -- use testVigraExtensions()):
+%    buildVigraExtensions('test-routines', 'test')
 function buildVigraExtensions(OUTDIR, TARGET)
 
 if nargin == 0
@@ -36,6 +38,7 @@ end
 %          MAKE ALL            %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 if strcmp( TARGET, 'all' )
+    SRCDIR = '.';
 
     if isdir(OUTDIR) == 0
          disp([OUTDIR ' does not exist. Creating.']);
@@ -48,10 +51,19 @@ if strcmp( TARGET, 'all' )
         disp(['Appending ' pwd ' to path']);
         path(path, pwd);
         cd(currentPath);
+        copyfile('vigraIndex.m', OUTDIR);
     end
-    
+end
+
+if strcmp( TARGET, 'test' )
+    SRCDIR = OUTDIR;
+end
+
+if strcmp( TARGET, 'all' ) || strcmp( TARGET, 'test' )
+
     % by default source files have .cpp extension
-	cpp_files = dir('./*.cpp');
+	include_dir = '../../include';
+    cpp_files = dir([SRCDIR '/*.cpp']);
 	for i=1:length( cpp_files )
 		
 		% extract name
@@ -78,17 +90,14 @@ if strcmp( TARGET, 'all' )
 			% compile
 			disp(['compiling: ' cpp_filename ] );
             if isOctave
-                eval(['mex -I../../include -o ' mex_filename ' ' cpp_filename]);
+                eval(['mex -I' include_dir ' -o ' mex_filename ' ' SRCDIR '/' cpp_filename]);
             else
-                eval(['mex -O -I../../include -outdir ''' OUTDIR ''' ' cpp_filename]);
+                eval(['mex -O -I' include_dir ' -outdir ''' OUTDIR ''' ' SRCDIR '/' cpp_filename]);
             end
     
             
             m_filename = [functionName '.m' ];
-            if 0 %isempty(dir(['./' m_filename])) == 0 || strcmp(OUTDIR, '.')  == 0 % file exists
-                disp(['copying: ' m_filename]);
-                copyfile(['./' m_filename], [OUTDIR '/' m_filename]);  % => copy it
-            else  % build documentation from C++ comment
+            if strcmp( TARGET, 'all' ) % build documentation from C++ comment
                 text = '';
                 f = fopen(cpp_filename);
                 line = fgetl(f);
@@ -135,13 +144,53 @@ elseif strcmp( TARGET, 'clean')
     
     % delete those files one by one and notify deletion
 	for i=1:length( mex_files )
+        mex_function = strrep(mex_files(i).name, ['.' mexext], '');
+        clear( mex_function);
         mex_filename = [OUTDIR '/' mex_files(i).name];
         disp(['deleting ' mex_filename]);
         delete( mex_filename );
         m_filename = strrep(mex_filename, mexext, 'm');
-        disp(['deleting ' m_filename]);
-        delete( m_filename );       
+        if ~isempty(dir( m_filename ) )
+            disp(['deleting ' m_filename]);
+            delete( m_filename ); 
+        end     
     end
 end
-	
+
 disp('Make done!');
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Copyright 2003-2008 by Ullrich Koethe    
+%  Based on make.m by Andrea Tagliasacchi
+%                                                                
+% This file is part of the VIGRA computer vision library.        
+% The VIGRA Website is                                           
+%     http://kogs-www.informatik.uni-hamburg.de/~koethe/vigra/   
+% Please direct questions, bug reports, and contributions to     
+%     ullrich.koethe@iwr.uni-heidelberg.de    or                 
+%     vigra@informatik.uni-hamburg.de                            
+%                                                                
+% Permission is hereby granted, free of charge, to any person    
+% obtaining a copy of this software and associated documentation 
+% files (the "Software"), to deal in the Software without        
+% restriction, including without limitation the rights to use,   
+% copy, modify, merge, publish, distribute, sublicense, and/or   
+% sell copies of the Software, and to permit persons to whom the 
+% Software is furnished to do so, subject to the following       
+% conditions:                                                    
+%                                                                
+% The above copyright notice and this permission notice shall be 
+% included in all copies or substantial portions of the          
+% Software.                                                      
+%                                                                
+% THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND 
+% EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
+% OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND       
+% NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT    
+% HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,   
+% WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING   
+% FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR  
+% OTHER DEALINGS IN THE SOFTWARE.                                
+% 
+

@@ -1,4 +1,15 @@
 function testVigraExtensions()
+% unit tests for the VIGRA-MATLAB gateway ($VIGRA/include/vigra/matlab.hxx) 
+%
+% call testVigraExtensions() in the source directory to compile and run tests
+%
+   disp('Compiling VIGRA test programms...');
+    buildVigraExtensions('test-routines', 'test')
+    
+    disp('Done. Running tests...');
+    currentPath = pwd;
+    cd('test-routines');
+    
     numSuccess = 0;
     numTest = 0;
     
@@ -67,6 +78,7 @@ function testVigraExtensions()
     numTest = numTest +1;
     
     disp([num2str(numSuccess) ' of ' num2str(numTest) ' Tests successful.']);
+    cd(currentPath);
 return    
 
 function success = test_copy_impl(handle)
@@ -501,7 +513,7 @@ return
 
 
 function success = test_v_default_in()
-    [a b c] = vigraTestDefault();
+    [a b c d] = vigraTestDefault();
     success = true;
     if a ~= 2
         success = false;
@@ -518,7 +530,12 @@ function success = test_v_default_in()
         disp('...Error - Wrong default Array');
     end
     
-    [a b c] = vigraTestDefault(3);
+    if d ~= 0
+        success = false;
+        disp('...Error - Did not detection that optional input was not given');
+    end
+
+    [a b c d] = vigraTestDefault(3);
     if a ~= 3
         success = false;
         disp('...Error - Wrong set value for first input');
@@ -534,7 +551,12 @@ function success = test_v_default_in()
         disp('...Error - Wrong default Array');
     end
     
-    [a b c] = vigraTestDefault(3, 7, ones(3,2));
+    if d ~= 1
+        success = false;
+        disp('...Error - Did not detection that optional input was given');
+    end
+
+    [a b c d] = vigraTestDefault(3, 7, ones(3,2));
     if a ~= 3
         success = false;
         disp('...Error - Wrong set value for first input');
@@ -549,6 +571,11 @@ function success = test_v_default_in()
         success = false;
         disp('...Error - Wrong default Array');
     end    
+    
+    if d ~= 1
+        success = false;
+        disp('...Error - Did not detection that optional input was given');
+    end
 
 
     if success
@@ -563,7 +590,7 @@ return
 function success = test_v_optional_in()
     success = false(2,1);
     try
-        [a b]  = vigraTestOptional(3, ones(3,3));
+        [a b d]  = vigraTestOptional(3, ones(3,3));
         success(1) = true;
         if a~= 3
             success(2) = false;
@@ -574,12 +601,17 @@ function success = test_v_optional_in()
             success(2) = false;
             disp('...Error - Error wrong value for Array input when Optional Parameter not supplied')
         end                
+
+        if d ~= 1
+            success = false;
+            disp('...Error - Did not detection that optional input was given');
+        end
     catch
         disp('...Error - Exception Thrown when Optional Parameter supplied');
     end
     
     try
-        [a b] = vigraTestOptional();
+        [a b d] = vigraTestOptional();
         success(2) = true;
         if a~= 2
             success(2) = false;
@@ -590,6 +622,11 @@ function success = test_v_optional_in()
             success(2) = false;
             disp('...Error - Error wrong value for Array input when Optional Parameter not supplied')
         end        
+
+        if d ~= 0
+            success = false;
+            disp('...Error - Did not detection that optional input was not given');
+        end
     catch
         disp('...Error - Exception thrown when Optional Parameter not supplied');
     end
@@ -666,3 +703,38 @@ function success = test_string()
     end    
     disp(' ');
 return
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% 
+%  Copyright 2003-2008 by Rahul Nair and Ullrich Koethe    
+%                                                                
+% This file is part of the VIGRA computer vision library.        
+% The VIGRA Website is                                           
+%     http://kogs-www.informatik.uni-hamburg.de/~koethe/vigra/   
+% Please direct questions, bug reports, and contributions to     
+%     ullrich.koethe@iwr.uni-heidelberg.de    or                 
+%     vigra@informatik.uni-hamburg.de                            
+%                                                                
+% Permission is hereby granted, free of charge, to any person    
+% obtaining a copy of this software and associated documentation 
+% files (the "Software"), to deal in the Software without        
+% restriction, including without limitation the rights to use,   
+% copy, modify, merge, publish, distribute, sublicense, and/or   
+% sell copies of the Software, and to permit persons to whom the 
+% Software is furnished to do so, subject to the following       
+% conditions:                                                    
+%                                                                
+% The above copyright notice and this permission notice shall be 
+% included in all copies or substantial portions of the          
+% Software.                                                      
+%                                                                
+% THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND 
+% EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
+% OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND       
+% NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT    
+% HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,   
+% WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING   
+% FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR  
+% OTHER DEALINGS IN THE SOFTWARE.                                
+% 
+
