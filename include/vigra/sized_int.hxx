@@ -39,6 +39,55 @@
 #define VIGRA_SIZED_INT_HXX
 
 #include "metaprogramming.hxx"
+#include <limits>
+
+#if   SHRT_MAX  == 0x7FL
+# define VIGRA_BITSOF_SHORT 8
+#elif SHRT_MAX  == 0x7FFFL
+# define VIGRA_BITSOF_SHORT 16
+#elif SHRT_MAX  == 0x7FFFFFFFL
+# define VIGRA_BITSOF_SHORT 32
+#elif SHRT_MAX  > 0xFFFFFFFFL
+# define VIGRA_BITSOF_SHORT 64
+#else
+# define VIGRA_BITSOF_SHORT -1
+#endif
+
+#if   INT_MAX  == 0x7FL
+# define VIGRA_BITSOF_INT 8
+#elif INT_MAX  == 0x7FFFL
+# define VIGRA_BITSOF_INT 16
+#elif INT_MAX  == 0x7FFFFFFFL
+# define VIGRA_BITSOF_INT 32
+#elif INT_MAX  > 0xFFFFFFFFL
+# define VIGRA_BITSOF_INT 64
+#else
+# define VIGRA_BITSOF_INT -1
+#endif
+
+#if   LONG_MAX  == 0x7FL
+# define VIGRA_BITSOF_LONG 8
+#elif LONG_MAX  == 0x7FFFL
+# define VIGRA_BITSOF_LONG 16
+#elif LONG_MAX  == 0x7FFFFFFFL
+# define VIGRA_BITSOF_LONG 32
+#elif LONG_MAX  > 0xFFFFFFFFL
+# define VIGRA_BITSOF_LONG 64
+#else
+# define VIGRA_BITSOF_LONG -1
+#endif
+
+#if   LLONG_MAX  == 0x7FL
+# define VIGRA_BITSOF_LONG_LONG 8
+#elif LLONG_MAX  == 0x7FFFL
+# define VIGRA_BITSOF_LONG_LONG 16
+#elif LLONG_MAX  == 0x7FFFFFFFL
+# define VIGRA_BITSOF_LONG_LONG 32
+#elif LLONG_MAX  > 0xFFFFFFFFL
+# define VIGRA_BITSOF_LONG_LONG 64
+#else
+# define VIGRA_BITSOF_LONG_LONG -1
+#endif
 
 namespace vigra {
 
@@ -94,15 +143,15 @@ struct SelectBiggestIntegerType<Int_type_not_supported_on_this_platform>
 
 typedef IntTypeList<signed char, 
         IntTypeList<signed short,
+        IntTypeList<signed int,
         IntTypeList<signed long,
         IntTypeList<signed long long,
-        IntTypeList<signed int,
         Int_type_not_supported_on_this_platform > > > > > SignedIntTypes;
 typedef IntTypeList<unsigned char, 
         IntTypeList<unsigned short,
+        IntTypeList<unsigned int,
         IntTypeList<unsigned long,
         IntTypeList<unsigned long long,
-        IntTypeList<unsigned int,
         Int_type_not_supported_on_this_platform > > > > > UnsignedIntTypes;
 
 } // namespace detail
