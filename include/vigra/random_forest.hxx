@@ -170,7 +170,7 @@ struct DecisionTreeNodeProxy
 
 struct DecisionTreeAxisSplitFunctor
 {
-    ArrayVector<int> splitColumns;
+    ArrayVector<Int32> splitColumns;
     ArrayVector<double> classCounts, currentCounts[2], bestCounts[2], classWeights;
     double threshold;
     double totalCounts[2], bestTotalCounts[2];
@@ -210,7 +210,7 @@ struct DecisionTreeAxisSplitFunctor
 
     int sizeofNode() const { return 4; }
 
-    int writeSplitParameters(ArrayVector<int> & tree,
+    int writeSplitParameters(ArrayVector<Int32> & tree,
                                 ArrayVector<double> &terminalWeights)
     {
         int currentWeightIndex = terminalWeights.size();
