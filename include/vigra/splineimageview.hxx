@@ -389,6 +389,12 @@ class SplineImageView
     size_type size() const
         { return size_type(w_, h_); }
 
+        /** The shape of the image.
+            Same as size(), except for the return type.
+        */
+    TinyVector<unsigned int, 2> shape() const
+        { return TinyVector<unsigned int, 2>(w_, h_); }
+
         /** The internal image holding the spline coefficients.
         */
     InternalImage const & image() const
@@ -638,14 +644,14 @@ void SplineImageView<ORDER, VALUETYPE>::derivCoefficients(double t,
 template <int ORDER, class VALUETYPE>
 VALUETYPE SplineImageView<ORDER, VALUETYPE>::convolve() const
 {
-    InternalValue sum;
-    sum = ky_[0]*detail::SplineImageViewUnrollLoop2<ORDER, InternalValue>::exec(kx_, image_.rowBegin(iy_[0]), ix_);
+    double sum;
+    sum = ky_[0]*detail::SplineImageViewUnrollLoop2<ORDER, double>::exec(kx_, image_.rowBegin(iy_[0]), ix_);
 
     for(int j=1; j<ksize_; ++j)
     {
-        sum += ky_[j]*detail::SplineImageViewUnrollLoop2<ORDER, InternalValue>::exec(kx_, image_.rowBegin(iy_[j]), ix_);
+        sum += ky_[j]*detail::SplineImageViewUnrollLoop2<ORDER, double>::exec(kx_, image_.rowBegin(iy_[j]), ix_);
     }
-    return NumericTraits<VALUETYPE>::fromRealPromote(sum);
+    return detail::RequiresExplicitCast<VALUETYPE>::cast(sum);
 }
 
 template <int ORDER, class VALUETYPE>
@@ -654,7 +660,7 @@ void
 SplineImageView<ORDER, VALUETYPE>::coefficientArray(double x, double y, Array & res) const
 {
     typename Spline::WeightMatrix & weights = Spline::weights();
-    InternalValue tmp[ksize_][ksize_];
+    double tmp[ksize_][ksize_];
 
     calculateIndices(x, y);
     for(int j=0; j<ksize_; ++j)
@@ -710,31 +716,31 @@ VALUETYPE SplineImageView<ORDER, VALUETYPE>::g2(double x, double y) const
 template <int ORDER, class VALUETYPE>
 VALUETYPE SplineImageView<ORDER, VALUETYPE>::g2x(double x, double y) const
 {
-    return 2.0*(dx(x,y) * dxx(x,y) + dy(x,y) * dxy(x,y));
+    return VALUETYPE(2.0)*(dx(x,y) * dxx(x,y) + dy(x,y) * dxy(x,y));
 }
 
 template <int ORDER, class VALUETYPE>
 VALUETYPE SplineImageView<ORDER, VALUETYPE>::g2y(double x, double y) const
 {
-    return 2.0*(dx(x,y) * dxy(x,y) + dy(x,y) * dyy(x,y));
+    return VALUETYPE(2.0)*(dx(x,y) * dxy(x,y) + dy(x,y) * dyy(x,y));
 }
 
 template <int ORDER, class VALUETYPE>
 VALUETYPE SplineImageView<ORDER, VALUETYPE>::g2xx(double x, double y) const
 {
-    return 2.0*(sq(dxx(x,y)) + dx(x,y) * dx3(x,y) + sq(dxy(x,y)) + dy(x,y) * dxxy(x,y));
+    return VALUETYPE(2.0)*(sq(dxx(x,y)) + dx(x,y) * dx3(x,y) + sq(dxy(x,y)) + dy(x,y) * dxxy(x,y));
 }
 
 template <int ORDER, class VALUETYPE>
 VALUETYPE SplineImageView<ORDER, VALUETYPE>::g2yy(double x, double y) const
 {
-    return 2.0*(sq(dxy(x,y)) + dx(x,y) * dxyy(x,y) + sq(dyy(x,y)) + dy(x,y) * dy3(x,y));
+    return VALUETYPE(2.0)*(sq(dxy(x,y)) + dx(x,y) * dxyy(x,y) + sq(dyy(x,y)) + dy(x,y) * dy3(x,y));
 }
 
 template <int ORDER, class VALUETYPE>
 VALUETYPE SplineImageView<ORDER, VALUETYPE>::g2xy(double x, double y) const
 {
-    return 2.0*(dx(x,y) * dxxy(x,y) + dy(x,y) * dxyy(x,y) + dxy(x,y) * (dxx(x,y) + dyy(x,y)));
+    return VALUETYPE(2.0)*(dx(x,y) * dxxy(x,y) + dy(x,y) * dxyy(x,y) + dxy(x,y) * (dxx(x,y) + dyy(x,y)));
 }
 
 /********************************************************/
@@ -943,6 +949,9 @@ class SplineImageView0Base
     size_type size() const
         { return size_type(w_, h_); }
 
+    TinyVector<unsigned int, 2> shape() const
+        { return TinyVector<unsigned int, 2>(w_, h_); }
+
     template <class Array>
     void coefficientArray(double x, double y, Array & res) const
     {
@@ -967,7 +976,7 @@ class SplineImageView0Base
 
     bool isValid(double x, double y) const
     {
-        return x < 2.0*w_-2.0 && x > -w_+1.0 && y < 2.0*h_-2.0 && y > -h_+1.0;
+        return x < 2.0*w_-2.0 && x > 1.0-w_ && y < 2.0*h_-2.0 && y > 1.0-h_;
     }
 
     bool sameFacet(double x0, double y0, double x1, double y1) const
@@ -1332,11 +1341,11 @@ class SplineImageView1Base
               switch(dy)
               {
                 case 0:
-                    return NumericTraits<value_type>::fromRealPromote(
+                    return detail::RequiresExplicitCast<value_type>::cast(
                                (1.0-ty)*((1.0-tx)*internalIndexer_(ix,iy) + tx*internalIndexer_(ix+1,iy)) +
                                 ty *((1.0-tx)*internalIndexer_(ix,iy+1) + tx*internalIndexer_(ix+1,iy+1)));
                 case 1:
-                    return NumericTraits<value_type>::fromRealPromote(
+                    return detail::RequiresExplicitCast<value_type>::cast(
                                ((1.0-tx)*internalIndexer_(ix,iy+1) + tx*internalIndexer_(ix+1,iy+1)) -
                                ((1.0-tx)*internalIndexer_(ix,iy) + tx*internalIndexer_(ix+1,iy)));
                 default:
@@ -1346,7 +1355,7 @@ class SplineImageView1Base
               switch(dy)
               {
                 case 0:
-                    return NumericTraits<value_type>::fromRealPromote(
+                    return detail::RequiresExplicitCast<value_type>::cast(
                                (1.0-ty)*(internalIndexer_(ix+1,iy) - internalIndexer_(ix,iy)) +
                                 ty *(internalIndexer_(ix+1,iy+1) - internalIndexer_(ix,iy+1)));
                 case 1:
@@ -1508,6 +1517,9 @@ class SplineImageView1Base
 
     size_type size() const
         { return size_type(w_, h_); }
+
+    TinyVector<unsigned int, 2> shape() const
+        { return TinyVector<unsigned int, 2>(w_, h_); }
 
     template <class Array>
     void coefficientArray(double x, double y, Array & res) const;

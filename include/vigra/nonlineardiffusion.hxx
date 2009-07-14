@@ -103,9 +103,8 @@ void internalNonlinearDiffusionAOSStep(
 
     std::vector<WeightType> lower(d),
                             diag(d),
-                            upper(d);
-
-    std::vector<DestType> res(d);
+                            upper(d),
+                            res(d);
 
     int x,y;
     

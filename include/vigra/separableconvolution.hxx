@@ -65,8 +65,9 @@ void internalConvolveLineWrap(SrcIterator is, SrcIterator iend, SrcAccessor sa,
   //    int w = iend - is;
     int w = std::distance( is, iend );
 
-    typedef typename NumericTraits<typename
-                      SrcAccessor::value_type>::RealPromote SumType;
+    typedef typename PromoteTraits<
+            typename SrcAccessor::value_type,
+            typename KernelAccessor::value_type>::Promote SumType;
 
     SrcIterator ibegin = is;
 
@@ -119,8 +120,8 @@ void internalConvolveLineWrap(SrcIterator is, SrcIterator iend, SrcAccessor sa,
             }
         }
 
-        da.set(NumericTraits<typename
-                      DestAccessor::value_type>::fromRealPromote(sum), id);
+        da.set(detail::RequiresExplicitCast<typename
+                      DestAccessor::value_type>::cast(sum), id);
     }
 }
 
@@ -142,8 +143,9 @@ void internalConvolveLineClip(SrcIterator is, SrcIterator iend, SrcAccessor sa,
   //    int w = iend - is;
     int w = std::distance( is, iend );
 
-    typedef typename NumericTraits<typename
-                      SrcAccessor::value_type>::RealPromote SumType;
+    typedef typename PromoteTraits<
+            typename SrcAccessor::value_type,
+            typename KernelAccessor::value_type>::Promote SumType;
 
     SrcIterator ibegin = is;
 
@@ -201,8 +203,8 @@ void internalConvolveLineClip(SrcIterator is, SrcIterator iend, SrcAccessor sa,
             }
         }
 
-        da.set(NumericTraits<typename
-                      DestAccessor::value_type>::fromRealPromote(sum), id);
+        da.set(detail::RequiresExplicitCast<typename
+                      DestAccessor::value_type>::cast(sum), id);
     }
 }
 
@@ -223,8 +225,9 @@ void internalConvolveLineReflect(SrcIterator is, SrcIterator iend, SrcAccessor s
   //    int w = iend - is;
     int w = std::distance( is, iend );
 
-    typedef typename NumericTraits<typename
-                      SrcAccessor::value_type>::RealPromote SumType;
+    typedef typename PromoteTraits<
+            typename SrcAccessor::value_type,
+            typename KernelAccessor::value_type>::Promote SumType;
 
     SrcIterator ibegin = is;
 
@@ -276,8 +279,8 @@ void internalConvolveLineReflect(SrcIterator is, SrcIterator iend, SrcAccessor s
             }
         }
 
-        da.set(NumericTraits<typename
-                      DestAccessor::value_type>::fromRealPromote(sum), id);
+        da.set(detail::RequiresExplicitCast<typename
+                      DestAccessor::value_type>::cast(sum), id);
     }
 }
 
@@ -298,8 +301,9 @@ void internalConvolveLineRepeat(SrcIterator is, SrcIterator iend, SrcAccessor sa
   //    int w = iend - is;
     int w = std::distance( is, iend );
 
-    typedef typename NumericTraits<typename
-                      SrcAccessor::value_type>::RealPromote SumType;
+    typedef typename PromoteTraits<
+            typename SrcAccessor::value_type,
+            typename KernelAccessor::value_type>::Promote SumType;
 
     SrcIterator ibegin = is;
 
@@ -351,8 +355,8 @@ void internalConvolveLineRepeat(SrcIterator is, SrcIterator iend, SrcAccessor sa
             }
         }
 
-        da.set(NumericTraits<typename
-                      DestAccessor::value_type>::fromRealPromote(sum), id);
+        da.set(detail::RequiresExplicitCast<typename
+                      DestAccessor::value_type>::cast(sum), id);
     }
 }
 
@@ -373,8 +377,9 @@ void internalConvolveLineAvoid(SrcIterator is, SrcIterator iend, SrcAccessor sa,
   //    int w = iend - is;
     int w = std::distance( is, iend );
 
-    typedef typename NumericTraits<typename
-                      SrcAccessor::value_type>::RealPromote SumType;
+    typedef typename PromoteTraits<
+            typename SrcAccessor::value_type,
+            typename KernelAccessor::value_type>::Promote SumType;
 
     is += kright;
     id += kright;
@@ -391,8 +396,8 @@ void internalConvolveLineAvoid(SrcIterator is, SrcIterator iend, SrcAccessor sa,
             sum += ka(ik) * sa(iss);
         }
 
-        da.set(NumericTraits<typename
-                      DestAccessor::value_type>::fromRealPromote(sum), id);
+        da.set(detail::RequiresExplicitCast<typename
+                      DestAccessor::value_type>::cast(sum), id);
     }
 }
 

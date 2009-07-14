@@ -419,8 +419,8 @@ gradientBasedTransform(SrcImageIterator srcul, SrcImageIterator srclr, SrcAccess
     static const Diff2D top(0,-1);
     static const Diff2D bottom(0,1);
 
-    typename NumericTraits<typename SrcAccessor::value_type>::RealPromote
-             diffx, diffy;
+    typedef typename NumericTraits<typename SrcAccessor::value_type>::RealPromote TmpType;
+    TmpType diffx, diffy;
 
     SrcImageIterator sx = sy;
     DestImageIterator dx = dy;
@@ -431,7 +431,7 @@ gradientBasedTransform(SrcImageIterator srcul, SrcImageIterator srclr, SrcAccess
 
     for(x=2, ++sx.x, ++dx.x; x<w; ++x, ++sx.x, ++dx.x)
     {
-        diffx = (sa(sx, left) - sa(sx, right)) / 2.0;
+        diffx = (sa(sx, left) - sa(sx, right)) / TmpType(2.0);
         diffy = sa(sx) - sa(sx, bottom);
         da.set(grad(diffx, diffy), dx);
     }
@@ -449,18 +449,18 @@ gradientBasedTransform(SrcImageIterator srcul, SrcImageIterator srclr, SrcAccess
         dx = dy;
 
         diffx = sa(sx) - sa(sx, right);
-        diffy = (sa(sx, top) - sa(sx, bottom)) / 2.0;
+        diffy = (sa(sx, top) - sa(sx, bottom)) / TmpType(2.0);
         da.set(grad(diffx, diffy), dx);
 
         for(x=2, ++sx.x, ++dx.x; x<w; ++x, ++sx.x, ++dx.x)
         {
-            diffx = (sa(sx, left) - sa(sx, right)) / 2.0;
-            diffy = (sa(sx, top) - sa(sx, bottom)) / 2.0;
+            diffx = (sa(sx, left) - sa(sx, right)) / TmpType(2.0);
+            diffy = (sa(sx, top) - sa(sx, bottom)) / TmpType(2.0);
             da.set(grad(diffx, diffy), dx);
         }
 
         diffx = sa(sx, left) - sa(sx);
-        diffy = (sa(sx, top) - sa(sx, bottom)) / 2.0;
+        diffy = (sa(sx, top) - sa(sx, bottom)) / TmpType(2.0);
         da.set(grad(diffx, diffy), dx);
     }
 
@@ -473,7 +473,7 @@ gradientBasedTransform(SrcImageIterator srcul, SrcImageIterator srclr, SrcAccess
 
     for(x=2, ++sx.x, ++dx.x; x<w; ++x, ++sx.x, ++dx.x)
     {
-        diffx = (sa(sx, left) - sa(sx, right)) / 2.0;
+        diffx = (sa(sx, left) - sa(sx, right)) / TmpType(2.0);
         diffy = sa(sx, top) - sa(sx);
         da.set(grad(diffx, diffy), dx);
     }
