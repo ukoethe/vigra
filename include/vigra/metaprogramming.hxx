@@ -333,6 +333,20 @@ struct IsSameType<T, T>
     static const bool value = true;
 };
 
+template <class L, class R>
+struct IsDifferentType
+{
+    typedef VigraTrueType type;
+    static const bool value = true;
+};
+
+template <class T>
+struct IsDifferentType<T, T>
+{
+    typedef VigraFalseType type;
+    static const bool value = false;
+};
+
 #endif // NO_PARTIAL_TEMPLATE_SPECIALIZATION
 
 template <class DERIVED, class BASE>
@@ -354,6 +368,33 @@ struct IsDerivedFrom
     static const bool boolResult = value; // deprecated
     typedef type result;                  // deprecated
 };
+
+template <class T>
+struct UnqualifiedType
+{
+    typedef T type;
+};
+
+template <class T>
+struct UnqualifiedType<T &>
+: public UnqualifiedType<T>
+{};
+
+template <class T>
+struct UnqualifiedType<T const &>
+: public UnqualifiedType<T>
+{};
+
+template <class T>
+struct UnqualifiedType<T *>
+: public UnqualifiedType<T>
+{};
+
+template <class T>
+struct UnqualifiedType<T const *>
+: public UnqualifiedType<T>
+{};
+
 
 template <class T>
 struct has_result_type
