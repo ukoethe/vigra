@@ -379,9 +379,9 @@ unsigned int watersheds3D( SrcIterator s_Iter, SrcShape srcShape, SrcAccessor sa
         
         vigra::MultiArray<3,int> orientationVolume(srcShape);
 
-        int local_min_count= preparewatersheds3D( s_Iter, srcShape, sa, 
-                                                  destMultiArray(orientationVolume).first, destMultiArray(orientationVolume).second,
-                                                  neighborhood3D);
+        preparewatersheds3D( s_Iter, srcShape, sa, 
+                             destMultiArray(orientationVolume).first, destMultiArray(orientationVolume).second,
+                             neighborhood3D);
      
         return watershedLabeling3D( srcMultiArray(orientationVolume).first, srcShape, srcMultiArray(orientationVolume).second,
                                     d_Iter, da,
@@ -391,9 +391,9 @@ unsigned int watersheds3D( SrcIterator s_Iter, SrcShape srcShape, SrcAccessor sa
                 
         vigra::MultiArray<3,unsigned char> orientationVolume(srcShape);
 
-        int local_min_count= preparewatersheds3D( s_Iter, srcShape, sa, 
-                                                  destMultiArray(orientationVolume).first, destMultiArray(orientationVolume).second,
-                                                  neighborhood3D);
+        preparewatersheds3D( s_Iter, srcShape, sa, 
+                              destMultiArray(orientationVolume).first, destMultiArray(orientationVolume).second,
+                              neighborhood3D);
      
         return watershedLabeling3D( srcMultiArray(orientationVolume).first, srcShape, srcMultiArray(orientationVolume).second,
                                     d_Iter, da,

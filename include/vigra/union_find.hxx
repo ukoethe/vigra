@@ -89,7 +89,7 @@ class UnionFindArray
     
     T finalizeLabel(T label)
     {
-        if(label == labels_.size()-1)
+        if(label == (T)labels_.size()-1)
         {
             // indeed a new region
             vigra_invariant(label < NumericTraits<T>::max(),

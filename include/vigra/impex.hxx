@@ -109,7 +109,7 @@ namespace vigra
         const size_type height = dec->getHeight();
         const size_type num_bands = dec->getNumBands();
 
-        vigra_precondition(num_bands == a.size(ys),
+        vigra_precondition(num_bands == (size_type)a.size(ys),
            "importImage(): number of bands (color channels) in file and destination image differ.");
 
         SrcValueType const * scanline;
