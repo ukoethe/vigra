@@ -44,6 +44,39 @@
 #include "tuple.hxx"
 #include "diff2d.hxx"
 #include "mathutil.hxx"
+#include <string>
+#include <sstream>
+
+namespace vigra {
+
+#define VIGRA_AS_STRING(T) \
+inline std::string asString(T t) \
+{ \
+    std::stringstream s; \
+    s << t; \
+    return s.str(); \
+}
+
+VIGRA_AS_STRING(bool)
+VIGRA_AS_STRING(signed char)
+VIGRA_AS_STRING(unsigned char)
+VIGRA_AS_STRING(signed short)
+VIGRA_AS_STRING(unsigned short)
+VIGRA_AS_STRING(signed long)
+VIGRA_AS_STRING(unsigned long)
+VIGRA_AS_STRING(signed long long)
+VIGRA_AS_STRING(unsigned long long)
+VIGRA_AS_STRING(signed int)
+VIGRA_AS_STRING(unsigned int)
+VIGRA_AS_STRING(float)
+VIGRA_AS_STRING(double)
+VIGRA_AS_STRING(long double)
+VIGRA_AS_STRING(void *)
+
+#undef VIGRA_AS_STRING
+
+
+} // namespace std
 
 /*! \page Utilities Utilities
     Basic helper functionality needed throughout.
