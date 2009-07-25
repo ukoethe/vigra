@@ -2011,7 +2011,7 @@ public:
         return *this;
     }
 
-        /** change the shape and allocate new memory.<br>
+        /** Allocate new memory with the given shape and initialize with zeros.<br>
             <em>Note:</em> this operation invalidates all dependent objects
             (array views and iterators)
          */
@@ -2020,7 +2020,7 @@ public:
         reshape (shape, NumericTraits <T>::zero ());
     }
 
-        /** change the shape, allocate new memory and initialize it
+        /** Allocate new memory with the given shape and initialize it
             with the given value.<br>
             <em>Note:</em> this operation invalidates all dependent objects
             (array views and iterators)
