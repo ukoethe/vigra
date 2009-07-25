@@ -483,7 +483,7 @@ class ArrayVector
 : public ArrayVectorView<T>
 {
     typedef ArrayVector<T, Alloc> this_type;
-    enum { minimumCapacity = 2 };
+    enum { minimumCapacity = 2, resizeFactor = 2 };
 
 public:
     typedef ArrayVectorView<T> view_type;
@@ -722,12 +722,13 @@ ArrayVector<T, Alloc>::insert(iterator p, size_type n, value_type const & v)
     size_type new_size = this->size() + n;
     if(new_size >= capacity_)
     {
-        pointer new_data = reserve_raw(new_size);
+        size_type new_capacity = std::max(new_size, resizeFactor*capacity_);
+        pointer new_data = reserve_raw(new_capacity);
         std::uninitialized_copy(this->begin(), p, new_data);
         std::uninitialized_fill(new_data + pos, new_data + pos + n, v);
         std::uninitialized_copy(p, this->end(), new_data + pos + n);
         deallocate(this->data_, this->size_);
-        capacity_ = new_size;
+        capacity_ = new_capacity;
         this->data_ = new_data;
     }
     else if(pos + n >= this->size_)
@@ -758,12 +759,13 @@ ArrayVector<T, Alloc>::insert(iterator p, InputIterator i, InputIterator iend)
     size_type new_size = this->size() + n;
     if(new_size >= capacity_)
     {
-        pointer new_data = reserve_raw(new_size);
+        size_type new_capacity = std::max(new_size, resizeFactor*capacity_);
+        pointer new_data = reserve_raw(new_capacity);
         std::uninitialized_copy(this->begin(), p, new_data);
         std::uninitialized_copy(i, iend, new_data + pos);
         std::uninitialized_copy(p, this->end(), new_data + pos + n);
         deallocate(this->data_, this->size_);
-        capacity_ = new_size;
+        capacity_ = new_capacity;
         this->data_ = new_data;
     }
     else if(pos + n >= this->size_)
@@ -825,7 +827,7 @@ ArrayVector<T, Alloc>::reserve()
     if(capacity_ == 0)
         reserve(minimumCapacity);
     else if(this->size_ == capacity_)
-        reserve(2*capacity_);
+        reserve(resizeFactor*capacity_);
 }
 
 template <class T, class Alloc>
