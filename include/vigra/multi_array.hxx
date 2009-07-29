@@ -1161,6 +1161,28 @@ public:
         return MultiArrayView <N, T, StridedArrayTag>(shape, m_stride * s, m_ptr);
     }
 
+        /** transpose a 2-dimensional array. Use only if N==2.
+
+            <b>Usage:</b><br>
+            \code
+            typedef MultiArray<2, double>::difference_type Shape;
+            MultiArray<2, double> array(10, 20);
+
+            MultiArray<2, double, StridedArrayTag> transposed = array.transpose();
+
+            for(int i=0; i<array.shape(0), ++i)
+                for(int j=0; j<array.shape(1); ++j)
+                    assert(array(i, j) == transposed(j, i));
+            \endcode
+        */
+    MultiArrayView <2, T, StridedArrayTag>
+    transpose () const
+    {
+        difference_type shape(m_shape[1], m_shape[0]),
+                        stride(m_stride[1], m_stride[0]);
+        return MultiArrayView <2, T, StridedArrayTag>(shape, stride, m_ptr);
+    }
+
         /** permute the dimensions of the array.
             The function exchanges the meaning of the dimensions without copying the data.
             In case of a 2-dimensional array, this is simply array transposition. In higher dimensions,
@@ -1192,28 +1214,12 @@ public:
         */
     MultiArrayView <N, T, StridedArrayTag>
     permuteStridesDescending() const;
-
-        /** transpose a 2-dimensional array. Use only if N==2.
-
-            <b>Usage:</b><br>
-            \code
-            typedef MultiArray<2, double>::difference_type Shape;
-            MultiArray<2, double> array(10, 20);
-
-            MultiArray<2, double, StridedArrayTag> transposed = array.transpose();
-
-            for(int i=0; i<array.shape(0), ++i)
-                for(int j=0; j<array.shape(1); ++j)
-                    assert(array(i, j) == transposed(j, i));
-            \endcode
+    
+        /** Compute the ordering of the given strides.
+            The result is describes the current permutation of the axes relative 
+            to the standard ascending stride order.
         */
-    MultiArrayView <2, T, StridedArrayTag>
-    transpose () const
-    {
-        difference_type shape(m_shape[1], m_shape[0]),
-                        stride(m_stride[1], m_stride[0]);
-        return MultiArrayView <2, T, StridedArrayTag>(shape, stride, m_ptr);
-    }
+    static difference_type strideOrdering(difference_type strides);
 
         /** number of the elements in the array.
          */
@@ -1512,10 +1518,10 @@ MultiArrayView <N, T, C>::permuteDimensions (const difference_type &s) const
 }
 
 template <unsigned int N, class T, class C>
-MultiArrayView <N, T, StridedArrayTag>
-MultiArrayView <N, T, C>::permuteStridesAscending() const
+typename MultiArrayView <N, T, C>::difference_type 
+MultiArrayView <N, T, C>::strideOrdering(difference_type stride)
 {
-    difference_type stride(m_stride), permutation;
+    difference_type permutation;
     for(MultiArrayIndex k=0; k<N; ++k)
         permutation[k] = k;
     for(MultiArrayIndex k=0; k<N-1; ++k)
@@ -1532,6 +1538,19 @@ MultiArrayView <N, T, C>::permuteStridesAscending() const
             std::swap(permutation[k], permutation[smallest]);
         }
     }
+    difference_type ordering;
+    for(MultiArrayIndex k=0; k<N; ++k)
+        ordering[permutation[k]] = k;
+    return ordering;
+}
+
+template <unsigned int N, class T, class C>
+MultiArrayView <N, T, StridedArrayTag>
+MultiArrayView <N, T, C>::permuteStridesAscending() const
+{
+    difference_type ordering(strideOrdering(m_stride)), permutation;
+    for(MultiArrayIndex k=0; k<N; ++k)
+        permutation[ordering[k]] = k;
     return permuteDimensions(permutation);
 }
 
@@ -1539,23 +1558,9 @@ template <unsigned int N, class T, class C>
 MultiArrayView <N, T, StridedArrayTag>
 MultiArrayView <N, T, C>::permuteStridesDescending() const
 {
-    difference_type stride(m_stride), permutation;
+    difference_type ordering(strideOrdering(m_stride)), permutation;
     for(MultiArrayIndex k=0; k<N; ++k)
-        permutation[k] = k;
-    for(MultiArrayIndex k=0; k<N-1; ++k)
-    {
-        MultiArrayIndex largest = k;
-        for(MultiArrayIndex j=k+1; j<N; ++j)
-        {
-            if(stride[largest] < stride[j])
-                largest = j;
-        }
-        if(largest != k)
-        {
-            std::swap(stride[k], stride[largest]);
-            std::swap(permutation[k], permutation[largest]);
-        }
-    }
+        permutation[ordering[N-1-k]] = k;
     return permuteDimensions(permutation);
 }
 
