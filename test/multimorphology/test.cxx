@@ -38,6 +38,8 @@
 #include "unittest.hxx"
 #include "vigra/stdimage.hxx"
 #include "vigra/multi_morphology.hxx"
+#include "vigra/linear_algebra.hxx"
+#include "vigra/matrix.hxx"
 
 using namespace vigra;
 
@@ -225,6 +227,49 @@ struct MultiMorphologyTest
         
         shouldEqualSequence(res.begin(), res.end(), res_cmp.begin());
     }
+
+    void grayDilationTest2D()
+    {
+        typedef vigra::MultiArray<2,float> FloatImage;
+        FloatImage in(img), res(img), res_cmp(img);
+
+        //dilation on original image
+        multiGrayscaleDilation(srcMultiArrayRange(in), destMultiArray(res), 1);
+
+        //create comparable result = result+2 for every pixel
+        for(FloatImage::iterator iter=res.begin(); iter!=res.end(); ++iter){
+            *iter+=2.9f;
+        }
+
+        //create compare image = img+2 for every pixel
+        for(FloatImage::iterator iter=in.begin(); iter!=in.end(); ++iter){
+            *iter+=2.9f;
+        }
+        //dilation on compare image (image+2)
+        multiGrayscaleDilation(srcMultiArrayRange(in), destMultiArray(res_cmp), 1);
+
+        shouldEqualSequence(res.begin(), res.end(), res_cmp.begin());
+    }
+
+    void grayErosionAndDilationTest2D()
+    {
+        typedef vigra::MultiArray<2, float> FloatImage;
+        FloatImage in(img), di_res(img), er_res(img);
+
+        //erosion on original image
+        multiGrayscaleErosion(srcMultiArrayRange(in),destMultiArray(er_res),1);
+        //dilation on original inverted image
+        for(FloatImage::iterator iter=in.begin(); iter!=in.end(); ++iter){
+            *iter*=-1.0f;
+        }
+        multiGrayscaleDilation(srcMultiArrayRange(in),destMultiArray(di_res),1);
+        //Invert dilation res
+        for(FloatImage::iterator iter=di_res.begin(); iter!=di_res.end(); ++iter){
+            *iter*=-1.0f;
+        }
+
+        shouldEqualSequence(di_res.begin(),di_res.end(), er_res.begin());
+    }
     
     IntImage img, img2, lin;
     IntVolume vol;
@@ -242,6 +287,8 @@ struct MorphologyTestSuite
         add( testCase( &MultiMorphologyTest::binaryErosionTest1D));
         add( testCase( &MultiMorphologyTest::binaryErosionTest3D));
         add( testCase( &MultiMorphologyTest::grayErosionTest2D));
+        add( testCase( &MultiMorphologyTest::grayDilationTest2D));
+        add( testCase( &MultiMorphologyTest::grayErosionAndDilationTest2D));
     }
 };
 
