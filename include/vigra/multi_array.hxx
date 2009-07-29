@@ -1215,6 +1215,15 @@ public:
     MultiArrayView <N, T, StridedArrayTag>
     permuteStridesDescending() const;
     
+        /** Compute the ordering of the strides in this array.
+            The result is describes the current permutation of the axes relative 
+            to the standard ascending stride order.
+        */
+    difference_type strideOrdering() const
+    {
+        return strideOrdering(m_stride);
+    }
+    
         /** Compute the ordering of the given strides.
             The result is describes the current permutation of the axes relative 
             to the standard ascending stride order.
