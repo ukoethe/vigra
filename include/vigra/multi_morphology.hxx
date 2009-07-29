@@ -511,13 +511,15 @@ void multiGrayscaleDilation( SrcIterator s, SrcShape const & shape, SrcAccessor 
     
     using namespace vigra::functor;
 
+    ArrayVector<double> sigmas(shape.size(), sigma);
+
     // Allocate a new temporary array if the distances squared wouldn't fit
     if(-N*MaxDim*MaxDim < MinValue || N*MaxDim*MaxDim > MaxValue)
     {
         MultiArray<SrcShape::static_size, TmpType> tmpArray(shape);
 
         detail::internalSeparableMultiArrayDistTmp( s, shape, src, tmpArray.traverser_begin(),
-            typename AccessorTraits<TmpType>::default_accessor(), sigma, true );
+            typename AccessorTraits<TmpType>::default_accessor(), sigmas, true );
         
         transformMultiArray( tmpArray.traverser_begin(), shape,
                 typename AccessorTraits<TmpType>::default_accessor(), d, dest,
@@ -526,7 +528,7 @@ void multiGrayscaleDilation( SrcIterator s, SrcShape const & shape, SrcAccessor 
     }
     else
     {
-        detail::internalSeparableMultiArrayDistTmp( s, shape, src, d, dest, sigma, true );
+        detail::internalSeparableMultiArrayDistTmp( s, shape, src, d, dest, sigmas, true );
     }
 
 }
