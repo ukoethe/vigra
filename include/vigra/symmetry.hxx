@@ -199,7 +199,7 @@ radialSymmetryTransform(SrcIterator sul, SrcIterator slr, SrcAccessor as,
             if(xx >= 0 && xx < w && yy >= 0 && yy < h)
             {
                 orientationCounter(xx, yy) += 1;
-                magnitudeAccumulator(xx, yy) += magnitude;
+                magnitudeAccumulator(xx, yy) += detail::RequiresExplicitCast<TmpType>::cast(magnitude);
             }
 
             xx = x - dx;
@@ -208,7 +208,7 @@ radialSymmetryTransform(SrcIterator sul, SrcIterator slr, SrcAccessor as,
             if(xx >= 0 && xx < w && yy >= 0 && yy < h)
             {
                 orientationCounter(xx, yy) -= 1;
-                magnitudeAccumulator(xx, yy) -= magnitude;
+                magnitudeAccumulator(xx, yy) -= detail::RequiresExplicitCast<TmpType>::cast(magnitude);
             }
         }
     }
@@ -237,7 +237,7 @@ radialSymmetryTransform(SrcIterator sul, SrcIterator slr, SrcAccessor as,
         for(int x = 0; x<w; ++x)
         {
             double o = (double)orientationCounter(x, y) / maxOrientation;
-            magnitudeAccumulator(x, y) = o * o * magnitudeAccumulator(x, y) / maxMagnitude;
+            magnitudeAccumulator(x, y) = detail::RequiresExplicitCast<TmpType>::cast(o * o * magnitudeAccumulator(x, y) / maxMagnitude);
         }
     }
 

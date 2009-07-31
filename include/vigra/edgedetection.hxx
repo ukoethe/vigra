@@ -219,8 +219,8 @@ void differenceOfExponentialEdgeImage(
     static const Diff2D bottom(0, 1);
 
 
-    TMPTYPE thresh = (gradient_threshold * gradient_threshold) *
-                     NumericTraits<TMPTYPE>::one();
+    TMPTYPE thresh = detail::RequiresExplicitCast<TMPTYPE>::cast((gradient_threshold * gradient_threshold) *
+                     NumericTraits<TMPTYPE>::one());
     TMPTYPE zero = NumericTraits<TMPTYPE>::zero();
 
     for(y=0; y<h-1; ++y, ++iy.y, ++ty.y, ++dy.y)
@@ -508,8 +508,8 @@ void differenceOfExponentialCrackEdgeImage(
     typename TMPIMG::Iterator ty = tmp.upperLeft();
     DestIterator              dy = dul;
 
-    TMPTYPE thresh = (gradient_threshold * gradient_threshold) *
-                     NumericTraits<TMPTYPE>::one();
+    TMPTYPE thresh = detail::RequiresExplicitCast<TMPTYPE>::cast((gradient_threshold * gradient_threshold) *
+                     NumericTraits<TMPTYPE>::one());
 
     // find zero crossings above threshold
     for(y=0; y<h-1; ++y, ++iy.y, ++ty.y, dy.y+=2)
@@ -1238,7 +1238,7 @@ void internalCannyFindEdgels(Image1 const & gx,
                 Edgel edgel;
 
                 // local maximum => quadratic interpolation of sub-pixel location
-                PixelType del = (m1 - m3) / 2.0 / (m1 + m3 - 2.0*mag);
+                PixelType del = detail::RequiresExplicitCast<PixelType>::cast((m1 - m3) / 2.0 / (m1 + m3 - 2.0*mag));
                 edgel.x = Edgel::value_type(x + dx*del);
                 edgel.y = Edgel::value_type(y + dy*del);
                 edgel.strength = Edgel::value_type(mag);

@@ -56,7 +56,7 @@ struct CornerResponseFunctor
     result_type operator()(argument_type a1, 
                         argument_type a2, argument_type a3) const
     {
-        return (a1*a2 - a3*a3) - 0.04 * (a1 + a2) * (a1 + a2);
+      return detail::RequiresExplicitCast<result_type>::cast((a1*a2 - a3*a3) - 0.04 * (a1 + a2) * (a1 + a2));
     }
 };
 

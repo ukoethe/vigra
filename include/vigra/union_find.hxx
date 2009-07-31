@@ -95,12 +95,12 @@ class UnionFindArray
             vigra_invariant(label < NumericTraits<T>::max(),
                     "connected components: Need more labels than can be represented in the destination type.");
             // create new back entry
-            labels_.push_back(labels_.size());
+            labels_.push_back((T)labels_.size());
         }
         else
         {
             // no new label => reset the back entry of the label array
-            labels_.back() = labels_.size()-1;
+            labels_.back() = (T)labels_.size()-1;
         }
         return label;
     }
@@ -110,7 +110,7 @@ class UnionFindArray
         T label = labels_.back();
         vigra_invariant(label < NumericTraits<T>::max(),
           "connected components: Need more labels than can be represented in the destination type.");
-        labels_.push_back(labels_.size());
+        labels_.push_back((T)labels_.size());
         return label;
     }
     
@@ -122,7 +122,7 @@ class UnionFindArray
         {
             if(labels_[i] == i)
             {
-                    labels_[i] = count++;
+                    labels_[i] = (T)count++;
             }
             else
             {
