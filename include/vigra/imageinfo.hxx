@@ -56,6 +56,7 @@
 #include "diff2d.hxx"
 #include "codec.hxx"
 #include "array_vector.hxx"
+#include "multi_iterator.hxx"
 
 namespace vigra
 {
@@ -327,7 +328,6 @@ class ImageExportInfo
 // return an encoder for a given ImageExportInfo object
 VIGRA_EXPORT std::auto_ptr<Encoder> encoder( const ImageExportInfo & info );
 
-
 /********************************************************/
 /*                                                      */
 /*                   ImageImportInfo                    */
@@ -403,6 +403,10 @@ class ImageImportInfo
         /** Get size of the image.
          **/
     VIGRA_EXPORT Size2D size() const;
+
+        /** Get size of the image in a form compatible to MultiArray.
+         **/
+	VIGRA_EXPORT MultiArrayShape<2>::type shape() const;
 
         /** Returns true if the image is gray scale.
          **/

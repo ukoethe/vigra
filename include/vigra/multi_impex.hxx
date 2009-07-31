@@ -92,6 +92,18 @@ class VolumeImportInfo
 
     VIGRA_EXPORT ShapeType shape() const;
 
+        /** Get width of the volume.
+         **/
+    VIGRA_EXPORT MultiArrayIndex width() const;
+
+        /** Get height of the volume.
+         **/
+    VIGRA_EXPORT MultiArrayIndex height() const;
+
+        /** Get depth of the volume.
+         **/
+    VIGRA_EXPORT MultiArrayIndex depth() const;
+
         /**
          * resolution() contains the alignment and resolution of the
          * volume.  resolution()[0] is the x increment in a left-handed
@@ -107,9 +119,41 @@ class VolumeImportInfo
          */
     VIGRA_EXPORT Resolution resolution() const;
 
+        /** Query the pixel type of the image.
+
+            Possible values are:
+            <DL>
+            <DT>"UINT8"<DD> 8-bit unsigned integer (unsigned char)
+            <DT>"INT16"<DD> 16-bit signed integer (short)
+            <DT>"UINT16"<DD> 16-bit unsigned integer (unsigned short)
+            <DT>"INT32"<DD> 32-bit signed integer (long)
+            <DT>"UINT32"<DD> 32-bit unsigned integer (unsigned long)
+            <DT>"FLOAT"<DD> 32-bit floating point (float)
+            <DT>"DOUBLE"<DD> 64-bit floating point (double)
+            </DL>
+         **/
+    VIGRA_EXPORT const char * getPixelType() const;
+
+        /** Query the pixel type of the image.
+
+            Same as getPixelType(), but the result is returned as a 
+            ImageImportInfo::PixelType enum. This is useful to implement
+            a switch() on the pixel type.
+
+            Possible values are:
+            <DL>
+            <DT>UINT8<DD> 8-bit unsigned integer (unsigned char)
+            <DT>INT16<DD> 16-bit signed integer (short)
+            <DT>UINT16<DD> 16-bit unsigned integer (unsigned short)
+            <DT>INT32<DD> 32-bit signed integer (long)
+            <DT>UINT32<DD> 32-bit unsigned integer (unsigned long)
+            <DT>FLOAT<DD> 32-bit floating point (float)
+            <DT>DOUBLE<DD> 64-bit floating point (double)
+            </DL>
+         **/
     VIGRA_EXPORT PixelType pixelType() const;
 
-    VIGRA_EXPORT int numBands() const;
+    VIGRA_EXPORT MultiArrayIndex numBands() const;
     VIGRA_EXPORT bool isGrayscale() const;
     VIGRA_EXPORT bool isColor() const;
 
@@ -118,28 +162,57 @@ class VolumeImportInfo
 
     VIGRA_EXPORT const std::string &description() const;
 
-    template <class T, class Allocator>
-    void importImpl(MultiArray <3, T, Allocator> &volume) const;
+    template <class T, class Stride>
+    void importImpl(MultiArrayView <3, T, Stride> &volume) const;
 
   protected:
     void getVolumeInfoFromFirstSlice(const std::string &filename);
 
     size_type shape_;
     Resolution resolution_;
-    PixelType pixelType_;
+    //PixelType pixelType_;
     int numBands_;
 
-    std::string path_, name_, description_;
+    std::string path_, name_, description_, pixelType_;
 
     std::string rawFilename_;
     std::string baseName_, extension_;
     std::vector<std::string> numbers_;
 };
 
-template <class T, class Allocator>
-void VolumeImportInfo::importImpl(MultiArray <3, T, Allocator> &volume) const
+namespace detail {
+
+template <class DestIterator, class Shape, class T>
+inline void
+readVolumeImpl(DestIterator d, Shape const & shape, std::ifstream & s, ArrayVector<T> & buffer, MetaInt<0>)
 {
-    volume.reshape(this->shape());
+    s.read((char*)buffer.begin(), shape[0]*sizeof(T));
+
+    DestIterator dend = d + shape[0];
+	int k = 0;
+    for(; d < dend; ++d, k++)
+    {
+        *d = buffer[k];
+    }
+}
+
+template <class DestIterator, class Shape, class T, int N>
+void
+readVolumeImpl(DestIterator d, Shape const & shape, std::ifstream & s, ArrayVector<T> & buffer, MetaInt<N>)
+{
+    DestIterator dend = d + shape[N];
+    for(; d < dend; ++d)
+    {
+        readVolumeImpl(d.begin(), shape, s, buffer, MetaInt<N-1>());
+    }
+}
+
+} // namespace detail
+
+template <class T, class Stride>
+void VolumeImportInfo::importImpl(MultiArrayView <3, T, Stride> &volume) const
+{
+	vigra_precondition(this->shape() == volume.shape(), "importVolume(): Volume must be shaped according to VolumeImportInfo.");
 
     if(rawFilename_.size())
     {
@@ -171,8 +244,13 @@ void VolumeImportInfo::importImpl(MultiArray <3, T, Allocator> &volume) const
 #endif
 
         std::ifstream s(rawFilename_.c_str(), std::ios::binary);
-        vigra_precondition(s.good(), "RAW file could not be opened");
-        s.read((char*)volume.begin(), shape_[0]*shape_[1]*shape_[2]*sizeof(T));
+	    vigra_precondition(s.good(), "RAW file could not be opened");
+
+		ArrayVector<T> buffer(shape_[0]);
+		detail::readVolumeImpl(volume.traverser_begin(), shape_, s, buffer, vigra::MetaInt<2>());
+
+        //vigra_precondition(s.good(), "RAW file could not be opened");
+        //s.read((char*)volume.data(), shape_[0]*shape_[1]*shape_[2]*sizeof(T));
 
 #ifdef _MSC_VER
         if(_chdir(oldCWD))
@@ -196,10 +274,9 @@ void VolumeImportInfo::importImpl(MultiArray <3, T, Allocator> &volume) const
             ImageImportInfo info (name.c_str ());
 
             // generate a basic image view to the current layer
-            MultiArrayView <2, T> array_view (volume.bindOuter (i));
-            BasicImageView <T> view = makeBasicImageView (array_view);
-            vigra_precondition(view.size() == info.size(),
-                "importVolume(): image size mismatch.");
+            MultiArrayView <2, T, Stride> view (volume.bindOuter (i));
+            vigra_precondition(view.shape() == info.shape(),
+                "importVolume(): the images have inconsistent sizes.");
 
             importImage (info, destImage(view));
         }
@@ -239,6 +316,7 @@ void importVolume (MultiArray <3, T, Allocator> & volume,
                    const std::string &name_ext)
 {
     VolumeImportInfo info(name_base, name_ext);
+	volume.reshape(info.shape());
 
     info.importImpl(volume);
 }
@@ -286,6 +364,7 @@ void importVolume(MultiArray <3, T, Allocator> &volume,
                   const std::string &filename)
 {
     VolumeImportInfo info(filename);
+	volume.reshape(info.shape());
 
     info.importImpl(volume);
 }
@@ -303,8 +382,8 @@ void importVolume(MultiArray <3, T, Allocator> &volume,
 
     Namespace: vigra
 */
-template <class T, class Allocator>
-void importVolume(VolumeImportInfo const & info, MultiArray <3, T, Allocator> &volume)
+template <class T, class Stride>
+void importVolume(VolumeImportInfo const & info, MultiArrayView <3, T, Stride> &volume)
 {
     info.importImpl(volume);
 }
