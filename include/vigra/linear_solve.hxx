@@ -958,7 +958,7 @@ bool qrDecomposition(MultiArrayView<2, T, C1> const & a,
     MultiArrayView<2,T, StridedArrayTag> tq = transpose(q);
     r = a;
     ArrayVector<MultiArrayIndex> noPivoting; // intentionally empty
-    return (detail::qrTransformToUpperTriangular(r, tq, noPivoting, epsilon) == std::min(m,n));
+    return ((MultiArrayIndex)detail::qrTransformToUpperTriangular(r, tq, noPivoting, epsilon) == std::min(m,n));
 }
 
     /** Deprecated, use \ref linearSolveUpperTriangular().

@@ -556,7 +556,7 @@ const char * ImageImportInfo::getPixelType() const
 
 ImageImportInfo::PixelType ImageImportInfo::pixelType() const
 {
-   const std::string pixeltype=getPixelType();
+	const std::string pixeltype=ImageImportInfo::getPixelType();
    if (pixeltype == "UINT8")
      return UINT8;
    if (pixeltype == "INT16")
@@ -598,6 +598,11 @@ int ImageImportInfo::numExtraBands() const
 Size2D ImageImportInfo::size() const
 {
     return Size2D( m_width, m_height );
+}
+
+MultiArrayShape<2>::type ImageImportInfo::shape() const
+{
+	return MultiArrayShape<2>::type( m_width, m_height );
 }
 
 bool ImageImportInfo::isGrayscale() const
@@ -797,10 +802,36 @@ void VolumeImportInfo::getVolumeInfoFromFirstSlice(const std::string &filename)
 
 VolumeImportInfo::ShapeType VolumeImportInfo::shape() const { return shape_; }
 VolumeImportInfo::Resolution VolumeImportInfo::resolution() const { return resolution_; }
-VolumeImportInfo::PixelType VolumeImportInfo::pixelType() const { return pixelType_; }
-int VolumeImportInfo::numBands() const { return numBands_; }
+VolumeImportInfo::PixelType VolumeImportInfo::pixelType() const
+{
+	const std::string pixeltype=VolumeImportInfo::getPixelType();
+   if (pixeltype == "UINT8")
+	   return ImageImportInfo::UINT8;
+   if (pixeltype == "INT16")
+     return ImageImportInfo::INT16;
+   if (pixeltype == "UINT16")
+     return ImageImportInfo::UINT16;
+   if (pixeltype == "INT32")
+     return ImageImportInfo::INT32;
+   if (pixeltype == "UINT32")
+     return ImageImportInfo::UINT32;
+   if (pixeltype == "FLOAT")
+     return ImageImportInfo::FLOAT;
+   if (pixeltype == "DOUBLE")
+     return ImageImportInfo::DOUBLE;
+   vigra_fail( "internal error: unknown pixel type" );
+   return VolumeImportInfo::PixelType();
+}
+const char * VolumeImportInfo::getPixelType() const
+{
+    return pixelType_.c_str();
+}
+MultiArrayIndex VolumeImportInfo::numBands() const { return numBands_; }
 bool VolumeImportInfo::isGrayscale() const { return numBands_ == 1; }
 bool VolumeImportInfo::isColor() const { return numBands_ > 1; }
+MultiArrayIndex VolumeImportInfo::width() const { return shape_[0]; }
+MultiArrayIndex VolumeImportInfo::height() const { return shape_[1]; }
+MultiArrayIndex VolumeImportInfo::depth() const { return shape_[2]; }
 const std::string & VolumeImportInfo::name() const { return name_; }
 const std::string & VolumeImportInfo::description() const { return description_; }
 

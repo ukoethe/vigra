@@ -209,7 +209,7 @@ public:
         shouldEqual (array (1,1,1), 222);
     }
 
-    // permuteIndices tests
+    // permute and transpose tests
     void testPermute ()
     {   
         array3.reshape(difference3_type(3,5,7));
@@ -223,9 +223,25 @@ public:
                     ref(m,k,l) = array3(k,l,m);
 
         MultiArrayView <3, scalar_type, StridedArrayTag>
-                array = array3.permuteDimensions (difference3_type (2, 0, 1));        
-        shouldEqual(ref.shape(), array.shape());
-        should(ref == array);
+                parray = array3.permuteDimensions (difference3_type (2, 0, 1));        
+        shouldEqual(ref.shape(), parray.shape());
+        should(ref == parray);
+
+        MultiArrayView <3, scalar_type, StridedArrayTag>
+                parray_ascending = parray.permuteStridesAscending();        
+        shouldEqual(array3.shape(), parray_ascending.shape());
+        should(array3 == parray_ascending);
+
+        array3_type ref_descending(difference3_type(array3.shape(2), array3.shape(1), array3.shape(0)));
+        for(int k=0; k<array3.shape(0); ++k)
+            for(int l=0; l<array3.shape(1); ++l)
+                for(int m=0; m<array3.shape(2); ++m)
+                    ref_descending(m,l,k) = array3(k,l,m);
+
+        MultiArrayView <3, scalar_type, StridedArrayTag>
+                parray_descending = array3.permuteStridesDescending();        
+        shouldEqual(ref_descending.shape(), parray_descending.shape());
+        should(ref_descending == parray_descending);
 
         array2_type ref2(difference2_type(array3.shape(1), array3.shape(0)));
         for(int k=0; k<array3.shape(0); ++k)
