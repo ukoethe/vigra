@@ -769,6 +769,159 @@ VolumeImportInfo::VolumeImportInfo(const std::string &filename)
     }
 }
 
+// class VolumeExportInfo
+
+VolumeExportInfo::VolumeExportInfo( const char * name_base, const char * name_ext ) : m_filename_base(name_base),
+      m_filename_ext(name_ext), m_x_res(0), m_y_res(0), m_z_res(0), 
+      fromMin_(0.0), fromMax_(0.0), toMin_(0.0), toMax_(0.0)
+{
+}
+
+VolumeExportInfo::~VolumeExportInfo()
+{
+}
+
+VolumeExportInfo & VolumeExportInfo::setFileType( const char * filetype )
+{
+    m_filetype = filetype;
+    return *this;
+}
+
+VolumeExportInfo & VolumeExportInfo::setForcedRangeMapping(double fromMin, double fromMax,
+                                                     double toMin, double toMax) 
+{
+    fromMin_ = fromMin;
+    fromMax_ = fromMax;
+    toMin_ = toMin;
+    toMax_ = toMax;
+    return *this;
+}
+
+bool VolumeExportInfo::hasForcedRangeMapping() const
+{
+    return (fromMax_ > fromMin_) || (toMax_ > toMin_);
+}
+
+double VolumeExportInfo::getFromMin() const
+{
+    return fromMin_;
+}
+
+double VolumeExportInfo::getFromMax() const
+{
+    return fromMax_;
+}
+
+double VolumeExportInfo::getToMin() const
+{
+    return toMin_;
+}
+
+double VolumeExportInfo::getToMax() const
+{
+    return toMax_;
+}
+
+VolumeExportInfo & VolumeExportInfo::setCompression( const char * comp )
+{
+    m_comp = comp;
+    return *this;
+}
+
+VolumeExportInfo & VolumeExportInfo::setFileNameExt(const char * name_ext)
+{
+    m_filename_ext = name_ext;
+    return *this;
+}
+
+const char * VolumeExportInfo::getFileNameExt() const
+{
+    return m_filename_ext.c_str();
+}
+
+VolumeExportInfo & VolumeExportInfo::setFileNameBase(const char * name_base)
+{
+    m_filename_base = name_base;
+    return *this;
+}
+
+const char * VolumeExportInfo::getFileNameBase() const
+{
+    return m_filename_base.c_str();
+}
+
+const char * VolumeExportInfo::getFileType() const
+{
+    return m_filetype.c_str();
+}
+
+VolumeExportInfo & VolumeExportInfo::setPixelType( const char * s )
+{
+    m_pixeltype = s;
+    return *this;
+}
+
+const char * VolumeExportInfo::getPixelType() const
+{
+    return m_pixeltype.c_str();
+}
+
+const char * VolumeExportInfo::getCompression() const
+{
+    return m_comp.c_str();
+}
+
+float VolumeExportInfo::getXResolution() const
+{
+    return m_x_res;
+}
+
+float VolumeExportInfo::getYResolution() const
+{
+    return m_y_res;
+}
+
+VolumeExportInfo & VolumeExportInfo::setXResolution( float val )
+{
+    m_x_res = val;
+    return *this;
+}
+
+VolumeExportInfo & VolumeExportInfo::setYResolution( float val )
+{
+    m_y_res = val;
+    return *this;
+}
+
+VolumeExportInfo & VolumeExportInfo::setZResolution( float val )
+{
+    m_z_res = val;
+    return *this;
+}
+
+VolumeExportInfo & VolumeExportInfo::setPosition(const vigra::Diff2D & pos)
+{
+    m_pos = pos;
+    return *this;
+}
+
+vigra::Diff2D VolumeExportInfo::getPosition() const
+{
+    return m_pos;
+}
+
+const VolumeExportInfo::ICCProfile & VolumeExportInfo::getICCProfile() const
+{
+    return m_icc_profile;
+}
+
+VolumeExportInfo & VolumeExportInfo::setICCProfile(
+    const VolumeExportInfo::ICCProfile &profile)
+{
+    m_icc_profile = profile;
+    return *this;
+}
+
 VolumeImportInfo::VolumeImportInfo(const std::string &baseName, const std::string &extension)
 : shape_(0, 0, 0),
   resolution_(1.f, 1.f, 1.f),
