@@ -270,6 +270,16 @@ struct MultiMorphologyTest
 
         shouldEqualSequence(di_res.begin(),di_res.end(), er_res.begin());
     }
+
+    void grayClosingTest2D()
+    {
+        typedef vigra::MultiArray<2,UInt8> UInt8Image;
+        UInt8Image in(img), tmp(img), res(img);
+
+        //erosion on original image
+        multiGrayscaleErosion(srcMultiArrayRange(in), destMultiArray(tmp),2);
+        multiGrayscaleDilation(srcMultiArrayRange(tmp), destMultiArray(res),2);
+    }
     
     IntImage img, img2, lin;
     IntVolume vol;
@@ -289,6 +299,7 @@ struct MorphologyTestSuite
         add( testCase( &MultiMorphologyTest::grayErosionTest2D));
         add( testCase( &MultiMorphologyTest::grayDilationTest2D));
         add( testCase( &MultiMorphologyTest::grayErosionAndDilationTest2D));
+        add( testCase( &MultiMorphologyTest::grayClosingTest2D));
     }
 };
 
