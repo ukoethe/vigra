@@ -180,6 +180,219 @@ class VolumeImportInfo
     std::vector<std::string> numbers_;
 };
 
+/********************************************************/
+/*                                                      */
+/*                   VolumeExportInfo                    */
+/*                                                      */
+/********************************************************/
+
+/** \brief Argument object for the function exportVolume().
+
+    See \ref exportVolume() for usage example. This object must be used
+    to define the properties of a volume to be written to disk.
+
+    <b>\#include</b> \<<a href="imageinfo_8hxx-source.html">vigra/imageinfo.hxx</a>\><br>
+    Namespace: vigra
+**/
+class VolumeExportInfo
+{
+  public:
+        /** Construct VolumeExportInfo object.
+
+            The volume will be stored in a by-slice manner, where the number of slices 
+			equals the depth of the volume. The file names will be enumerated like
+			<tt>name_base+"000"+name_ext</tt>, <tt>name_base+"001"+name_ext</tt> etc.
+			(the actual number of zeros depends on the depth). If the target image type
+			does not support the source voxel type, all slices will be mapped 
+			simultaneously to the appropriate target range.
+            The file type will be guessed from the extension unless overridden
+            by \ref setFileType(). Recognized extensions: '.bmp', '.gif',
+            '.jpeg', '.jpg', '.p7', '.png', '.pbm', '.pgm', '.pnm', '.ppm', '.ras',
+            '.tif', '.tiff', '.xv', '.hdr'.
+            JPEG support requires libjpeg, PNG support requires libpng, and
+            TIFF support requires libtiff.
+         **/
+    VIGRA_EXPORT VolumeExportInfo( const char * name_base, const char * name_ext );
+    VIGRA_EXPORT ~VolumeExportInfo();
+
+        /** Set volume file name base.
+
+		**/
+    VIGRA_EXPORT VolumeExportInfo & setFileNameBase(const char * name_base);
+        /** Set volume file name extension.
+
+            The file type will be guessed from the extension unless overridden
+            by \ref setFileType(). Recognized extensions: '.bmp', '.gif',
+            '.jpeg', '.jpg', '.p7', '.png', '.pbm', '.pgm', '.pnm', '.ppm', '.ras',
+            '.tif', '.tiff', '.xv', '.hdr'.
+            JPEG support requires libjpeg, PNG support requires libpng, and
+            TIFF support requires libtiff.
+		**/
+    VIGRA_EXPORT VolumeExportInfo & setFileNameExt(const char * name_ext);
+    VIGRA_EXPORT const char * getFileNameBase() const;
+    VIGRA_EXPORT const char * getFileNameExt() const;
+
+        /** Store volume as given file type.
+
+            This will override any type guessed
+            from the file name's extension. Recognized file types:
+
+            <DL>
+            <DT>"BMP"<DD> Microsoft Windows bitmap image file.
+            <DT>"GIF"<DD> CompuServe graphics interchange format; 8-bit color.
+            <DT>"JPEG"<DD> Joint Photographic Experts Group JFIF format;
+            compressed 24-bit color (only available if libjpeg is installed).
+            <DT>"PNG"<DD> Portable Network Graphic
+            (only available if libpng is installed).
+            <DT>"PBM"<DD> Portable bitmap format (black and white).
+            <DT>"PGM"<DD> Portable graymap format (gray scale).
+            <DT>"PNM"<DD> Portable anymap.
+            <DT>"PPM"<DD> Portable pixmap format (color).
+            <DT>"SUN"<DD> SUN Rasterfile.
+            <DT>"TIFF"<DD> Tagged Image File Format.
+            (only available if libtiff is installed.)
+            <DT>"VIFF"<DD> Khoros Visualization image file.
+            </DL>
+
+            With the exception of TIFF, VIFF, PNG, and PNM all file types store
+            1 byte (gray scale and mapped RGB) or 3 bytes (RGB) per
+            pixel.
+
+            PNG can store UInt8 and UInt16 values, and supports 1 and 3 channel
+            images. One additional alpha channel is also supported.
+
+            PNM can store 1 and 3 channel images with UInt8, UInt16 and UInt32
+            values in each channel.
+
+            TIFF and VIFF are aditionally able to store short and long
+            integers (2 or 4 bytes) and real values (32 bit float and
+            64 bit double) without conversion. So you will need to use
+            TIFF or VIFF if you need to store images with high
+            accuracy (the appropriate type to write is automatically
+            derived from the image type to be exported). However, many
+            other programs using TIFF (e.g. ImageMagick) have not
+            implemented support for those pixel types.  So don't be
+            surprised if the generated TIFF is not readable in some
+            cases.  If this happens, export the image as 'unsigned
+            char' or 'RGBValue\<unsigned char\>' by calling
+            \ref ImageExportInfo::setPixelType().
+
+            Support to reading and writing ICC color profiles is
+            provided for TIFF, JPEG, and PNG images.
+         **/
+    VIGRA_EXPORT VolumeExportInfo & setFileType( const char * );
+    VIGRA_EXPORT const char * getFileType() const;
+
+        /** Set compression type.
+
+            Recognized strings: "" (no compression), "LZW",
+            "RunLength", "1" ... "100". A number is interpreted as the
+            compression quality for JPEG compression. JPEG compression is
+            supported by the JPEG and TIFF formats. "LZW" is only available
+            if libtiff was installed with LZW enabled. By default, libtiff came
+            with LZW disabled due to Unisys patent enforcement. In this case,
+            VIGRA stores the image uncompressed.
+
+                Valid Compression for TIFF files:
+                  JPEG    jpeg compression, call setQuality as well!
+                  RLE     runlength compression
+                  LZW     lzw compression
+                  DEFLATE deflate compression
+         **/
+    VIGRA_EXPORT VolumeExportInfo & setCompression( const char * );
+    VIGRA_EXPORT const char * getCompression() const;
+
+        /** Set the pixel type of the volume file(s). Possible values are:
+            <DL>
+            <DT>"UINT8"<DD> 8-bit unsigned integer (unsigned char)
+            <DT>"INT16"<DD> 16-bit signed integer (short)
+            <DT>"UINT16"<DD> 16-bit unsigned integer (unsigned short)
+            <DT>"INT32"<DD> 32-bit signed integer (long)
+            <DT>"UINT32"<DD> 32-bit unsigned integer (unsigned long)
+            <DT>"FLOAT"<DD> 32-bit floating point (float)
+            <DT>"DOUBLE"<DD> 64-bit floating point (double)
+            </DL>
+         **/
+    VIGRA_EXPORT VolumeExportInfo & setPixelType( const char * );
+
+        /** Get the pixel type of the images in the volume. Possible values are:
+            <DL>
+            <DT>"UINT8"<DD> 8-bit unsigned integer (unsigned char)
+            <DT>"INT16"<DD> 16-bit signed integer (short)
+            <DT>"INT32"<DD> 32-bit signed integer (long)
+            <DT>"FLOAT"<DD> 32-bit floating point (float)
+            <DT>"DOUBLE"<DD> 64-bit floating point (double)
+            </DL>
+         **/
+    VIGRA_EXPORT const char * getPixelType() const;
+    
+    VIGRA_EXPORT VolumeExportInfo & setForcedRangeMapping(double fromMin, double fromMax,
+                                                     double toMin, double toMax);    
+    VIGRA_EXPORT bool hasForcedRangeMapping() const;
+    VIGRA_EXPORT double getFromMin() const;
+    VIGRA_EXPORT double getFromMax() const;
+    VIGRA_EXPORT double getToMin() const;
+    VIGRA_EXPORT double getToMax() const;
+    
+        /** Set the volume resolution in horizontal direction
+         **/
+    VIGRA_EXPORT VolumeExportInfo & setXResolution( float );
+    VIGRA_EXPORT float getXResolution() const;
+
+        /** Set the image resolution in vertical direction
+         **/
+    VIGRA_EXPORT VolumeExportInfo & setYResolution( float );
+    VIGRA_EXPORT float getYResolution() const;
+
+        /** Set the image resolution in depth direction
+         **/
+    VIGRA_EXPORT VolumeExportInfo & setZResolution( float );
+    VIGRA_EXPORT float getZResolution() const;
+
+		/** Set the position of the upper Left corner on a global
+            canvas.
+
+            Currently only supported by TIFF and PNG files.
+
+            The offset is encoded in the XPosition and YPosition TIFF tags.
+
+            @param pos     position of the upper left corner in pixels
+                           (must be >= 0)
+         **/
+	// FIXME: mhanselm: we might want to support 3D positions
+    VIGRA_EXPORT VolumeExportInfo & setPosition(const Diff2D & pos);
+
+        /** Get the position of the upper left corner on
+            a global canvas.
+         **/
+	// FIXME: mhanselm: we might want to support 3D positions
+    VIGRA_EXPORT Diff2D getPosition() const;
+
+        /**
+          ICC profiles (handled as raw data so far).
+          see getICCProfile()/setICCProfile()
+         **/
+    typedef ArrayVector<unsigned char> ICCProfile;
+
+        /** Returns a reference to the ICC profile.
+         */
+    VIGRA_EXPORT const ICCProfile & getICCProfile() const;
+
+        /** Sets the ICC profile.
+            ICC profiles are currently supported by TIFF, PNG and JPEG images.
+            (Otherwise, the profile data is silently ignored.)
+         **/
+    VIGRA_EXPORT VolumeExportInfo & setICCProfile(const ICCProfile & profile);
+
+  private:
+	float m_x_res, m_y_res, m_z_res;
+
+	std::string m_filetype, m_filename_base, m_filename_ext, m_pixeltype, m_comp;
+    Diff2D m_pos;
+    ICCProfile m_icc_profile;
+    double fromMin_, fromMax_, toMin_, toMax_;
+};
+
 namespace detail {
 
 template <class DestIterator, class Shape, class T>
@@ -482,11 +695,12 @@ void setRangeMapping(MultiArrayView <3, T, Tag> const & volume,
 */
 template <class T, class Tag>
 void exportVolume (MultiArrayView <3, T, Tag> const & volume,
-                   const std::string &name_base,
-                   const std::string &name_ext)
+                   const VolumeExportInfo & volinfo)
 {
-    std::string name = name_base + name_ext;
+	std::string name = std::string(volinfo.getFileNameBase()) + std::string(volinfo.getFileNameExt());
     ImageExportInfo info(name.c_str());
+	info.setCompression(volinfo.getCompression());
+	info.setPixelType(volinfo.getPixelType());
     detail::setRangeMapping(volume, info, typename NumericTraits<T>::isScalar());
 
     const unsigned int depth = volume.shape (2);
@@ -499,15 +713,10 @@ void exportVolume (MultiArrayView <3, T, Tag> const & volume,
         stream << std::setfill ('0') << std::setw (numlen) << i;
         std::string name_num;
         stream >> name_num;
-        std::string name = name_base + name_num + name_ext;
+        std::string name = std::string(volinfo.getFileNameBase()) + name_num + std::string(volinfo.getFileNameExt());
 
-        if(i == 0)
-        {
-        }
-
-        // generate a basic image view to the current layer
-        MultiArrayView <2, T, Tag> array_view (volume.bindOuter (i));
-        BasicImageView <T> view = makeBasicImageView (array_view);
+        MultiArrayView <2, T, Tag> view (volume.bindOuter (i));
+        //MultiArrayView <3, T, Tag> view (volume.bindAt (2, i));
 
         // export the image
         info.setFileName(name.c_str ());
