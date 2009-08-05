@@ -252,7 +252,7 @@ void tensorEigenRepresentation(SrcIterator sul, SrcIterator slr, SrcAccessor src
                NumericTraits<typename SrcAccessor::component_type>::RealPromote TmpType;
             TmpType d1 = src.getComponent(s,0) + src.getComponent(s,2);
             TmpType d2 = src.getComponent(s,0) - src.getComponent(s,2);
-            TmpType d3 = 2.0 * src.getComponent(s,1);
+            TmpType d3 = TmpType(2.0) * src.getComponent(s,1);
             TmpType d4 = VIGRA_CSTD::sqrt(sq(d2) + sq(d3));
             
             dest.setComponent(0.5 * (d1 + d4), d, 0); // large EV

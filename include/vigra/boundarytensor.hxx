@@ -265,7 +265,7 @@ evenPolarFilters(SrcIterator supperleft, SrcIterator slowerright, SrcAccessor sr
         {
             for(; tr != trend; ++tr, ++d)
             {
-                TmpType v = 0.5*sq((*tr)[0]-(*tr)[2]) + 2.0*sq((*tr)[1]);
+                TmpType v = detail::RequiresExplicitCast<TmpType>::cast(0.5*sq((*tr)[0]-(*tr)[2]) + 2.0*sq((*tr)[1]));
                 dest.setComponent(v, d, 0);
                 dest.setComponent(0, d, 1);
                 dest.setComponent(v, d, 2);
