@@ -1,4 +1,9 @@
 #include "vigra/hdf5impex.hxx"
+#include "vigra/numpy_array.hxx"
+#include "vigra/numpy_array_converters.hxx"
+#include <iostream>
+#include <cstring>
+#include <cstdio>
 
 using namespace vigra;
 
@@ -134,9 +139,9 @@ int main (void)
 
 		out_file.close();
 
-		H5File out_file2( "Z:\\Ilastik\\vigranumpy\\vigranumpy.new\\src\\testfile2.hdf5", H5F_ACC_RDWR );
+		H5File out_file2( "Z:\\Ilastik\\vigranumpy\\vigranumpy.new\\src\\testfile.hdf5", H5F_ACC_RDWR );
 		bool b4 = writeToHDF5File(out_file2, "giraffe3", out_data3);
-		std::cout<<"Reading (new)... Success="<<b4<<std::endl;
+		std::cout<<"Writing(new)... Success="<<b4<<std::endl;
 		out_file2.close();
 
 		/*
@@ -160,16 +165,27 @@ int main (void)
 		std::cout<<"Size set 3: "<<in_data3.shape()<<std::endl;
 		std::cout<<comment<<std::endl;
 
-		std::cout<<"Reading (old)... Success="<<b5*b6*b7<<std::endl;
+		std::cout<<"Reading(old)... Success="<<b5*b6*b7<<std::endl;
 
-	    HDF5ImportInfo infoHDF5("Z:\\Ilastik\\vigranumpy\\vigranumpy.new\\src\\testfile.hdf5", "giraffe");
+		in_file.close();
+		
+		HDF5ImportInfo infoHDF5("Z:\\Ilastik\\vigranumpy\\vigranumpy.new\\src\\testfile.hdf5", "giraffe");
         MultiArray<2,int> in_data4(MultiArrayShape<2>::type(infoHDF5.shapeOfDimension(0), infoHDF5.shapeOfDimension(1)));
         bool b8 = loadFromHDF5File(infoHDF5, in_data4);
 		std::cout<<"Size set 4: "<<in_data4.shape()<<std::endl;
 
-		std::cout<<"Reading (new)... Success="<<b8<<std::endl;
+		std::cout<<"Reading(new1)... Success="<<b8<<std::endl;
 
-		in_file.close();
+		/*
+	    HDF5ImportInfo infoHDF5b("Z:\\Ilastik\\vigranumpy\\vigranumpy.new\\src\\testfile.hdf5", "my_data");
+		std::cout<<"test1"<<std::endl;
+        MultiArray<2, RGBValue<double> > in_data5(MultiArrayShape<2>::type(infoHDF5b.shapeOfDimension(0), infoHDF5b.shapeOfDimension(1)));
+		std::cout<<"test2"<<std::endl;
+        bool b9 = loadFromHDF5File(infoHDF5b, in_data5);
+		std::cout<<"Size set 5: "<<in_data5.shape()<<std::endl;
+
+		std::cout<<"Reading(new2)... Success="<<b9<<std::endl;
+		*/
 
 		ImageExportInfo info2("Z:\\Ilastik\\vigranumpy\\vigranumpy.new\\src\\giraffentest.jpg");
 		exportImage(srcImageRange(in_data3), info2);
