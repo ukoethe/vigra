@@ -15,7 +15,7 @@
 #endif  // H5_NO_STD
 #endif
 
-#include "H5Cpp.h"
+#include <H5Cpp.h>
 #ifndef H5std_string
 #define H5std_string std::string
 #endif
@@ -24,9 +24,9 @@
     using namespace H5;
 #endif
 
-#include "vigra/impex.hxx"
-#include "vigra/multi_array.hxx"
-#include "vigra/multi_impex.hxx"
+#include "impex.hxx"
+#include "multi_array.hxx"
+#include "multi_impex.hxx"
 #include <boost/xpressive/xpressive.hpp>
 
 using namespace boost::xpressive;
@@ -145,8 +145,17 @@ template<>
 DataType GetH5DataType<double>()
 {return PredType::NATIVE_DOUBLE;}
 
+
 template<unsigned int N, class T>
-bool loadFromHDF5File(H5File &file, const char* data_set_name, MultiArray<N, T> & array, H5std_string& comment = H5std_string(""))
+bool loadFromHDF5File(H5File &file, const char* data_set_name, MultiArray<N, T> & array)
+{
+   H5std_string comment("");
+   return loadFromHDF5File(file, data_set_name, array, comment );
+}
+
+
+template<unsigned int N, class T>
+bool loadFromHDF5File(H5File &file, const char* data_set_name, MultiArray<N, T> & array, H5std_string& comment) 
 {
 	try {
         Exception::dontPrint();
@@ -186,8 +195,16 @@ bool loadFromHDF5File(H5File &file, const char* data_set_name, MultiArray<N, T> 
     }
 }
 
+
 template<unsigned int N, class T, class Tag>
-bool loadFromHDF5File(const HDF5ImportInfo &info, MultiArrayView<N, T, Tag> & array, H5std_string& comment = H5std_string(""))
+bool loadFromHDF5File(const HDF5ImportInfo &info, MultiArrayView<N, T, Tag> & array) 
+{
+   H5std_string comment("");
+   return loadFromHDF5File(info, array, comment);
+}
+
+template<unsigned int N, class T, class Tag>
+bool loadFromHDF5File(const HDF5ImportInfo &info, MultiArrayView<N, T, Tag> & array, H5std_string& comment) 
 {
 	DataSet dset = info.getDatasetHandle();
 	H5File file = info.getH5FileHandle();
@@ -209,7 +226,7 @@ bool loadFromHDF5File(const HDF5ImportInfo &info, MultiArrayView<N, T, Tag> & ar
 
 bool createAllGroups(H5File &file, const char* data_set_name)
 {
-	sregex re = sregex::compile("[A-Za-z0-9_.,ÄäÖöÜüß#\\-\\+]+[\\/]{1}"); // find groups (the last token ensures that a dataset is not considered a group)
+	sregex re = sregex::compile("[A-Za-z0-9_.,ï¿½ï¿½ï¿½ï¿½\\-\\+]+[\\/]{1}"); // find groups (the last token ensures that a dataset is not considered a group)
 
 	// iterate over all subdirectories/groups:
 	std::string data_set_name_str(data_set_name);
