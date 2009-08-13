@@ -226,7 +226,7 @@ bool loadFromHDF5File(const HDF5ImportInfo &info, MultiArrayView<N, T, Tag> & ar
 
 bool createAllGroups(H5File &file, const char* data_set_name)
 {
-	sregex re = sregex::compile("[A-Za-z0-9_.,ï¿½ï¿½ï¿½ï¿½\\-\\+]+[\\/]{1}"); // find groups (the last token ensures that a dataset is not considered a group)
+	sregex re = sregex::compile("[A-Za-z0-9_\\.,ÄäÖöÜüß\\-\\+\\']+[\\/]{1}"); // find groups (the last token ensures that a dataset is not considered a group)
 
 	Exception::dontPrint();
 
