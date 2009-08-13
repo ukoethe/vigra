@@ -122,7 +122,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				AdditionalIncludeDirectories="..\..\include;..\..\include\external;&quot;Z:\Ilastik\vigra-dependencies\dependencies\lib&quot;;Z:\Ilastik\hdf5\include;&quot;Z:\Ilastik\hdf5-dependencies\include&quot;;C:\Programme\boost\boost_1_35_0"
+				AdditionalIncludeDirectories="..\..\include;..\..\include\external;&quot;Z:\Ilastik\vigra-dependencies\dependencies\lib&quot;;Z:\Ilastik\hdf5\include;&quot;Z:\Ilastik\hdf5-dependencies\include&quot;;C:\Programme\boost\boost_1_35_0;&quot;Z:\vigra\hdf5-dependencies\include&quot;;Z:\vigra\hdf5\include;&quot;C:\Program Files\boost\boost_1_35_0&quot;"
 				PreprocessorDefinitions="VIGRA_DLL;HasJPEG;HasTIFF;HasPNG;WIN32;NDEBUG;_WINDOWS;_CRT_SECURE_NO_DEPRECATE;_SECURE_SCL=0;;_HDF5USEDLL_;HDF5CPP_USEDLL"
 				RuntimeLibrary="2"
 				UsePrecompiledHeader="0"
@@ -144,7 +144,7 @@
 				AdditionalDependencies="libtiff_i.lib libjpeg.lib libpng.lib zlib.lib szlibdll.lib zlib1.lib hdf5dll.lib hdf5_hldll.lib hdf5_cppdll.lib hdf5_hl_cppdll.lib boost_regex-vc80-mt-1_35.lib"
 				OutputFile="$(OutDir)/vigraimpex.dll"
 				LinkIncremental="1"
-				AdditionalLibraryDirectories="Z:\vigra\libs\dependencies\lib"
+				AdditionalLibraryDirectories="Z:\vigra\libs\dependencies\lib;z:\vigra\vigra\src\impex;C:\Python25\libs;&quot;C:\Program Files\boost\boost_1_35_0\lib&quot;;Z:\vigra\hdf5\lib;&quot;Z:\vigra\hdf5-dependencies\lib&quot;;&quot;Z:\vigra\hdf5-dependencies\dll&quot;;Z:\vigra\hdf5\dll"
 				GenerateDebugInformation="true"
 				SubSystem="2"
 				OptimizeReferences="2"
