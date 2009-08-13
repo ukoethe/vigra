@@ -813,8 +813,8 @@ VolumeImportInfo::VolumeImportInfo(const std::string &filename)
 
     do
     {
-        numEndIt = std::find_if(numBeginIt, filename.rend(), &isdigit);
-        numBeginIt = std::find_if(numEndIt, filename.rend(), not1(std::ptr_fun(&isdigit)));
+        numEndIt = std::find_if(numBeginIt, filename.rend(),(int (*)(int)) &isdigit);
+        numBeginIt = std::find_if(numEndIt, filename.rend(), not1(std::ptr_fun((int (*)(int))&isdigit)));
 
         if(numEndIt != filename.rend())
         {

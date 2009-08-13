@@ -16,6 +16,9 @@
 #endif
 
 #include "H5Cpp.h"
+#ifndef H5std_string
+#define H5std_string std::string
+#endif
 
 #ifndef H5_NO_NAMESPACE
     using namespace H5;
@@ -190,7 +193,8 @@ bool loadFromHDF5File(const HDF5ImportInfo &info, MultiArrayView<N, T, Tag> & ar
 	H5File file = info.getH5FileHandle();
 
 	//Get dimensions size
-	MultiArrayShape<N>::type shape;
+        typedef typename MultiArrayShape<N>::type shape_type;
+	shape_type shape;
 	for(int i=0; i<info.numDimensions(); ++i)
 		shape[i] = info.shapeOfDimension(i);
 
@@ -205,7 +209,7 @@ bool loadFromHDF5File(const HDF5ImportInfo &info, MultiArrayView<N, T, Tag> & ar
 
 bool createAllGroups(H5File &file, const char* data_set_name)
 {
-	sregex re = sregex::compile("[A-Za-z0-9_.,ƒд÷ц№ья#\-\+]+[\/]{1}"); // find groups (the last token ensures that a dataset is not considered a group)
+	sregex re = sregex::compile("[A-Za-z0-9_.,ƒд÷ц№ья#\\-\\+]+[\\/]{1}"); // find groups (the last token ensures that a dataset is not considered a group)
 
 	// iterate over all subdirectories/groups:
 	std::string data_set_name_str(data_set_name);
