@@ -62,6 +62,7 @@
 #include "vigra/imageinfo.hxx"
 #include "codecmanager.hxx"
 #include "vigra/multi_impex.hxx"
+#include "vigra/hdf5impex.hxx"
 
 #if defined(_WIN32)
 #  include "vigra/windows.h"
@@ -648,127 +649,6 @@ std::auto_ptr<Decoder> decoder( const ImageImportInfo & info )
     return getDecoder( std::string( info.getFileName() ), filetype );
 }
 
-VolumeImportInfo::VolumeImportInfo(const std::string &filename)
-: shape_(0, 0, 0),
-  resolution_(1.f, 1.f, 1.f),
-  numBands_(0)
-{
-    // first try image sequence loading
-    std::string::const_reverse_iterator
-        numBeginIt(filename.rbegin()), numEndIt(numBeginIt);
-
-    do
-    {
-        numEndIt = std::find_if(numBeginIt, filename.rend(), &isdigit);
-        numBeginIt = std::find_if(numEndIt, filename.rend(), not1(std::ptr_fun(&isdigit)));
-
-        if(numEndIt != filename.rend())
-        {
-            std::string
-                baseName(filename.begin(),
-                         filename.begin() + (filename.rend()-numBeginIt)),
-                extension(filename.begin() + (filename.rend()-numEndIt),
-                          filename.end());
-
-            std::vector<std::string> numbers;
-
-            findImageSequence(baseName, extension, numbers);
-            if(numbers.size() > 0)
-            {
-                getVolumeInfoFromFirstSlice(baseName + numbers[0] + extension);
-                splitPathFromFilename(baseName, path_, name_);
-                baseName_ = baseName;
-                extension_ = extension;
-                shape_[2] = numbers.size();
-                std::swap(numbers, numbers_);
-
-                break;
-            }
-        }
-    }
-    while(numEndIt != filename.rend());
-
-    // no numbered images found, try .info file loading
-    if(!numbers_.size())
-    {
-        std::ifstream stream(filename.c_str());
-
-        while(stream.good())
-        {
-            char rawline[1024];
-            stream.getline(rawline, 1024);
-
-            // split off comments starting with '#':
-            std::string line, comment;
-            if(!detail::splitString(rawline, '#', line, comment))
-                line = rawline;
-
-            std::string key, value;
-            if(detail::splitString(line, '=', key, value))
-            {
-                key = detail::trimString(key);
-                value = detail::trimString(value);
-
-                if(key == "width")
-                    shape_[0] = atoi(value.c_str());
-                else if(key == "height")
-                    shape_[1] = atoi(value.c_str());
-                else if(key == "depth")
-                    shape_[2] = atoi(value.c_str());
-                else if(key == "datatype")
-                {
-                    // FUTURE: store bit depth / signedness
-                    if((value == "UNSIGNED_CHAR") || (value == "UNSIGNED_BYTE"))
-                        numBands_ = 1;
-                    else
-                    {
-                        std::cerr << "Unknown datatype '" << value << "'!\n";
-                        break;
-                    }
-                }
-                else if(key == "description")
-                    description_ = value;
-                else if(key == "name")
-                    name_ = value;
-                else if(key == "filename")
-                    rawFilename_ = value;
-                else
-                {
-                    std::cerr << "WARNING: Unknown key '" << key
-                              << "' (value '" << value << "') in info file!\n";
-                }
-            }
-            else
-            {
-                if(line[0]) // non-empty line?
-                    std::cerr << "WARNING: could not parse line '" << line << "'!\n";
-            }
-        }
-
-        if((shape_[0]*shape_[1]*shape_[2] > 0) && (rawFilename_.size() > 0))
-        {
-            if(!numBands_)
-                numBands_ = 1; // default to UNSIGNED_CHAR datatype
-
-            baseName_ = filename;
-            if(name_.size() > 0)
-            {
-                std::string nameDummy;
-                splitPathFromFilename(baseName_, path_, nameDummy);
-            }
-            else
-            {
-                splitPathFromFilename(baseName_, path_, name_);
-            }
-            return;
-        }
-
-        std::string message("VolumeImportInfo(): Unable to load volume '");
-        message += filename + "'.";
-        vigra_fail(message.c_str());
-    }
-}
-
 // class VolumeExportInfo
 
 VolumeExportInfo::VolumeExportInfo( const char * name_base, const char * name_ext ) : m_filename_base(name_base),
@@ -922,6 +802,127 @@ VolumeExportInfo & VolumeExportInfo::setICCProfile(
     return *this;
 }
 
+VolumeImportInfo::VolumeImportInfo(const std::string &filename)
+: shape_(0, 0, 0),
+  resolution_(1.f, 1.f, 1.f),
+  numBands_(0)
+{
+    // first try image sequence loading
+    std::string::const_reverse_iterator
+        numBeginIt(filename.rbegin()), numEndIt(numBeginIt);
+
+    do
+    {
+        numEndIt = std::find_if(numBeginIt, filename.rend(), &isdigit);
+        numBeginIt = std::find_if(numEndIt, filename.rend(), not1(std::ptr_fun(&isdigit)));
+
+        if(numEndIt != filename.rend())
+        {
+            std::string
+                baseName(filename.begin(),
+                         filename.begin() + (filename.rend()-numBeginIt)),
+                extension(filename.begin() + (filename.rend()-numEndIt),
+                          filename.end());
+
+            std::vector<std::string> numbers;
+
+            findImageSequence(baseName, extension, numbers);
+            if(numbers.size() > 0)
+            {
+                getVolumeInfoFromFirstSlice(baseName + numbers[0] + extension);
+                splitPathFromFilename(baseName, path_, name_);
+                baseName_ = baseName;
+                extension_ = extension;
+                shape_[2] = numbers.size();
+                std::swap(numbers, numbers_);
+
+                break;
+            }
+        }
+    }
+    while(numEndIt != filename.rend());
+
+    // no numbered images found, try .info file loading
+    if(!numbers_.size())
+    {
+        std::ifstream stream(filename.c_str());
+
+        while(stream.good())
+        {
+            char rawline[1024];
+            stream.getline(rawline, 1024);
+
+            // split off comments starting with '#':
+            std::string line, comment;
+            if(!detail::splitString(rawline, '#', line, comment))
+                line = rawline;
+
+            std::string key, value;
+            if(detail::splitString(line, '=', key, value))
+            {
+                key = detail::trimString(key);
+                value = detail::trimString(value);
+
+                if(key == "width")
+                    shape_[0] = atoi(value.c_str());
+                else if(key == "height")
+                    shape_[1] = atoi(value.c_str());
+                else if(key == "depth")
+                    shape_[2] = atoi(value.c_str());
+                else if(key == "datatype")
+                {
+                    // FUTURE: store bit depth / signedness
+                    if((value == "UNSIGNED_CHAR") || (value == "UNSIGNED_BYTE"))
+                        numBands_ = 1;
+                    else
+                    {
+                        std::cerr << "Unknown datatype '" << value << "'!\n";
+                        break;
+                    }
+                }
+                else if(key == "description")
+                    description_ = value;
+                else if(key == "name")
+                    name_ = value;
+                else if(key == "filename")
+                    rawFilename_ = value;
+                else
+                {
+                    std::cerr << "WARNING: Unknown key '" << key
+                              << "' (value '" << value << "') in info file!\n";
+                }
+            }
+            else
+            {
+                if(line[0]) // non-empty line?
+                    std::cerr << "WARNING: could not parse line '" << line << "'!\n";
+            }
+        }
+
+        if((shape_[0]*shape_[1]*shape_[2] > 0) && (rawFilename_.size() > 0))
+        {
+            if(!numBands_)
+                numBands_ = 1; // default to UNSIGNED_CHAR datatype
+
+            baseName_ = filename;
+            if(name_.size() > 0)
+            {
+                std::string nameDummy;
+                splitPathFromFilename(baseName_, path_, nameDummy);
+            }
+            else
+            {
+                splitPathFromFilename(baseName_, path_, name_);
+            }
+            return;
+        }
+
+        std::string message("VolumeImportInfo(): Unable to load volume '");
+        message += filename + "'.";
+        vigra_fail(message.c_str());
+    }
+}
+
 VolumeImportInfo::VolumeImportInfo(const std::string &baseName, const std::string &extension)
 : shape_(0, 0, 0),
   resolution_(1.f, 1.f, 1.f),
@@ -987,5 +988,91 @@ MultiArrayIndex VolumeImportInfo::height() const { return shape_[1]; }
 MultiArrayIndex VolumeImportInfo::depth() const { return shape_[2]; }
 const std::string & VolumeImportInfo::name() const { return name_; }
 const std::string & VolumeImportInfo::description() const { return description_; }
+
+HDF5ImportInfo::HDF5ImportInfo(const std::string &filename, const std::string &datasetname)
+{
+	try {
+        /*
+         * Turn off the auto-printing when failure occurs so that we can
+         * handle the errors appropriately
+         */
+        Exception::dontPrint();
+
+		m_file = H5File( filename, H5F_ACC_RDONLY );
+
+		DataSet dset = m_file.openDataSet(datasetname);
+
+		m_filename = filename;
+		m_datasetname = datasetname;
+		m_dimensions = dset.getSpace().getSimpleExtentNdims();
+		m_dataset = dset;
+
+		vigra_precondition( m_dimensions>=2, "Number of dimensions is lower than 2. Not an image!" );
+
+		if(dset.getTypeClass()==GetH5DataType<float>().getClass())
+			m_pixeltype = "FLOAT";
+		if(dset.getTypeClass()==GetH5DataType<UInt8>().getClass())
+			m_pixeltype = "UINT8";
+		if(dset.getTypeClass()==GetH5DataType<Int8>().getClass())
+			m_pixeltype = "INT8";
+		if(dset.getTypeClass()==GetH5DataType<UInt16>().getClass())
+			m_pixeltype = "UINT16";
+		if(dset.getTypeClass()==GetH5DataType<Int16>().getClass())
+			m_pixeltype = "INT16";
+		if(dset.getTypeClass()==GetH5DataType<UInt32>().getClass())
+			m_pixeltype = "UINT32";
+		if(dset.getTypeClass()==GetH5DataType<Int32>().getClass())
+			m_pixeltype = "INT32";
+		if(dset.getTypeClass()==GetH5DataType<double>().getClass())
+			m_pixeltype = "DOUBLE";
+
+		m_dims = ArrayVector<int>(m_dimensions);
+		hsize_t* size = new hsize_t[m_dimensions];
+		dset.getSpace().getSimpleExtentDims(size, NULL);
+		for(int i=0; i<m_dimensions; ++i)
+			m_dims[i] = size[i];
+		delete size;
+
+    }
+    catch( GroupIException not_found_error )
+    {
+		vigra_precondition( false, "Dataset not found in HDF5 file." );
+    }
+}
+
+HDF5ImportInfo::~HDF5ImportInfo()
+{
+}
+
+HDF5ImportInfo::PixelType HDF5ImportInfo::pixelType() const
+{
+   const std::string pixeltype=HDF5ImportInfo::getPixelType();
+   if (pixeltype == "UINT8")
+	   return HDF5ImportInfo::UINT8;
+   if (pixeltype == "INT16")
+     return HDF5ImportInfo::INT16;
+   if (pixeltype == "UINT16")
+     return HDF5ImportInfo::UINT16;
+   if (pixeltype == "INT32")
+     return HDF5ImportInfo::INT32;
+   if (pixeltype == "UINT32")
+     return HDF5ImportInfo::UINT32;
+   if (pixeltype == "FLOAT")
+     return HDF5ImportInfo::FLOAT;
+   if (pixeltype == "DOUBLE")
+     return HDF5ImportInfo::DOUBLE;
+   vigra_fail( "internal error: unknown pixel type" );
+   return HDF5ImportInfo::PixelType();
+}
+const char * HDF5ImportInfo::getPixelType() const
+{
+    return m_pixeltype.c_str();
+}
+MultiArrayIndex HDF5ImportInfo::shapeOfDimension(const int dim) const { return m_dims[dim]; };
+MultiArrayIndex HDF5ImportInfo::numDimensions() const { return m_dimensions; }
+const std::string & HDF5ImportInfo::getDatasetName() const { return m_datasetname; }
+const std::string & HDF5ImportInfo::getFileName() const { return m_filename; }
+const H5File& HDF5ImportInfo::getH5FileHandle() const { return m_file; }
+const DataSet& HDF5ImportInfo::getDatasetHandle() const { return m_dataset; }
 
 } // namespace vigra
