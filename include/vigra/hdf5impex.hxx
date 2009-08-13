@@ -228,6 +228,8 @@ bool createAllGroups(H5File &file, const char* data_set_name)
 {
 	sregex re = sregex::compile("[A-Za-z0-9_.,����\\-\\+]+[\\/]{1}"); // find groups (the last token ensures that a dataset is not considered a group)
 
+	Exception::dontPrint();
+
 	// iterate over all subdirectories/groups:
 	std::string data_set_name_str(data_set_name);
 	//std::cout << "input string is: " << data_set_name_str << std::endl;
@@ -238,7 +240,13 @@ bool createAllGroups(H5File &file, const char* data_set_name)
 	{
 		group = group + *begin++; // subgroups
 		//std::cout << "extracted: [" << group << "]" << std::endl;
-		file.createGroup( group );
+		try {
+			file.createGroup( group );
+		} catch (Exception e) {
+			// do nothing, happens if group already exists
+			//FIXME what is the right exception to catch here?
+			//std::cout << e.getDetailMsg() << std::endl;
+		}
 	}
 	return true;
 }
@@ -246,6 +254,8 @@ bool createAllGroups(H5File &file, const char* data_set_name)
 template<unsigned int N, class T, class Tag>
 bool writeToHDF5File(H5File &file, const char* data_set_name, const MultiArrayView<N, T, Tag> & array, const char* comment = "")
 {
+	Exception::dontPrint();
+
 	/*
 	* Define the size of the array and create the data space for fixed
 	* size dataset.
@@ -270,6 +280,15 @@ bool writeToHDF5File(H5File &file, const char* data_set_name, const MultiArrayVi
 	* Create a new dataset within the file using defined dataspace and
 	* datatype and default dataset creation properties.
 	*/
+	// delete the dataset if it already exists
+	// in HDF5 the data is not really created but unlinked (similar to file systems)
+    try {  // attempt to unlink the dataset
+       file.unlink( data_set_name );
+    }
+    catch( FileIException unlink_error )
+    {
+		// do nothing, apperently there was nothing to unlink!
+    }
 	DataSet dataset = file.createDataSet( data_set_name, datatype, dataspace );
 
 	/*
