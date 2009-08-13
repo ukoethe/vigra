@@ -107,6 +107,8 @@ VIGRA_DECLARE_PACKAGE(jpeg, [support import/export of jpeg images], yes)
 VIGRA_DECLARE_PACKAGE(png,  [support import/export of png images], yes)
 VIGRA_DECLARE_PACKAGE(zlib, [zlib compression library (required for libpng)], yes)
 VIGRA_DECLARE_PACKAGE(fftw, [support fast Fourier transforms (fftw3 required!)], yes)
+VIGRA_DECLARE_PACKAGE(hdf5, [support hdf5 filesystem], yes)
+
 
 # AC_ARG_WITH(python, [
 # --with-python:  Build the VIGRA Python bindings (default: no).
@@ -225,6 +227,19 @@ if test $with_fftw = "yes"; then
     FFTW_INCLUDES="$with_fftw_I"
 else
     AC_MSG_WARN(  Configuring without fftw support)
+fi
+
+dnl-------------------------------------------------------------------
+dnl           hdf5 package configurations
+dnl-------------------------------------------------------------------
+
+VIGRA_FIND_PACKAGE(hdf5, hdf5, H5Cpp.h)
+if test "$with_hdf5" = "yes"; then
+    HDF5_LIB="$with_hdf5_L $with_hdf5_l"
+    IMPEX_DEPLIBS="$HDF5_LIB $IMPEX_DEPLIBS"
+    LIBCPPFLAGS="-DHasHDF5 $with_hdf5_I $LIBCPPFLAGS"
+else
+    AC_MSG_WARN(  Configuring without hdf5 support)
 fi
 
 dnl-------------------------------------------------------------------
@@ -428,6 +443,7 @@ echo "TIFF   support enabled (--with-tiff): $with_tiff"
 echo "JPEG   support enabled (--with-jpeg): $with_jpeg"
 echo "PNG    support enabled (--with-png):  $with_png"
 echo "FFTW   support enabled (--with-fftw): $with_fftw"
+echo "HDF5   support enabled (--with-hdf5): $with_hdf5"
 #echo "Python support enabled (--with-python): $with_python"
 echo ""
 echopath "The vigra sources are taken from $vigra_srcdir."
