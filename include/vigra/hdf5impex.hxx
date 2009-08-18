@@ -210,7 +210,7 @@ bool loadFromHDF5File(const HDF5ImportInfo &info, MultiArrayView<N, T, Tag> & ar
 	H5File file = info.getH5FileHandle();
 
 	//Get dimensions size
-        typedef typename MultiArrayShape<N>::type shape_type;
+    typedef typename MultiArrayShape<N>::type shape_type;
 	shape_type shape;
 	for(int i=0; i<info.numDimensions(); ++i)
 		shape[i] = info.shapeOfDimension(i);
@@ -218,6 +218,7 @@ bool loadFromHDF5File(const HDF5ImportInfo &info, MultiArrayView<N, T, Tag> & ar
 	vigra_precondition(shape == array.shape(), "loadFromHDF5File(): array must be shaped according to HDF5ImportInfo.");
 
 	//Get the data
+	//FIXME test if contiguous or use unstrided array tag
 	dset.read(array.data(), GetH5DataType<T>());
 	comment = file.getComment(info.getDatasetName());
 	return true;
@@ -295,6 +296,7 @@ bool writeToHDF5File(H5File &file, const char* data_set_name, const MultiArrayVi
 	* Write the data to the dataset using default memory space, file
 	* space, and transfer properties.
 	*/
+	// FIXME: contiguous? or unstrided array tag only!
 	dataset.write( array.data(), GetH5DataType<T>() );
 
 	/*

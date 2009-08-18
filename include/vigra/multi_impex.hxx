@@ -720,7 +720,7 @@ void exportVolume (MultiArrayView <3, T, Tag> const & volume,
 
         // export the image
         info.setFileName(name.c_str ());
-        exportImage(srcImageRange(view), info);
+        exportImage(srcImageRange(view), info); 
     }
 }
 
