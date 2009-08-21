@@ -19959,8 +19959,6 @@ ac_compiler_gnu=$ac_cv_cxx_compiler_gnu
     # tiff is the package, tiff.h the include name, "$with_tiffinc" the path
     if test "x"$with_tiffinc"" != "x" ; then
         CPPFLAGS="-I"$with_tiffinc" $SAVECPPFLAGS"
-        { echo "$as_me:$LINENO: result: cppflags=$CPPFLAGS" >&5
-echo "${ECHO_T}cppflags=$CPPFLAGS" >&6; }
         cat >conftest.$ac_ext <<_ACEOF
 /* confdefs.h.  */
 _ACEOF
@@ -20006,8 +20004,6 @@ fi
 
 rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
     else
-         { echo "$as_me:$LINENO: result: cppflags:$CPPFLAGS" >&5
-echo "${ECHO_T}cppflags:$CPPFLAGS" >&6; }
          cat >conftest.$ac_ext <<_ACEOF
 /* confdefs.h.  */
 _ACEOF
@@ -20065,9 +20061,121 @@ ac_compiler_gnu=$ac_cv_c_compiler_gnu
     else
         # otherwise check whether the library is found without explicit path
         # specification (e.g. because it is in /usr/lib)
-#if test "x$with_[tiff]inc" = "x" ; then
-#            VIGRA_FIND_INCLUDE_EXPLICIT(tiff, tiff.h, "")
-#        fi
+        if test "x$with_tiffinc" = "x" ; then
+
+    # save the state
+    SAVECPPFLAGS="$CPPFLAGS"
+
+    ac_ext=cpp
+ac_cpp='$CXXCPP $CPPFLAGS'
+ac_compile='$CXX -c $CXXFLAGS $CPPFLAGS conftest.$ac_ext >&5'
+ac_link='$CXX -o conftest$ac_exeext $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
+ac_compiler_gnu=$ac_cv_cxx_compiler_gnu
+
+
+    # tiff is the package, tiff.h the include name, "" the path
+    if test "x""" != "x" ; then
+        CPPFLAGS="-I"" $SAVECPPFLAGS"
+        cat >conftest.$ac_ext <<_ACEOF
+/* confdefs.h.  */
+_ACEOF
+cat confdefs.h >>conftest.$ac_ext
+cat >>conftest.$ac_ext <<_ACEOF
+/* end confdefs.h.  */
+#include <stdio.h>  /* for jpeglib.h */
+                 #include <tiff.h>
+
+int
+main ()
+{
+
+  ;
+  return 0;
+}
+_ACEOF
+rm -f conftest.$ac_objext
+if { (ac_try="$ac_compile"
+case "(($ac_try" in
+  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
+  *) ac_try_echo=$ac_try;;
+esac
+eval "echo \"\$as_me:$LINENO: $ac_try_echo\"") >&5
+  (eval "$ac_compile") 2>conftest.er1
+  ac_status=$?
+  grep -v '^ *+' conftest.er1 >conftest.err
+  rm -f conftest.er1
+  cat conftest.err >&5
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); } && {
+	 test -z "$ac_cxx_werror_flag" ||
+	 test ! -s conftest.err
+       } && test -s conftest.$ac_objext; then
+  with_tiffinc=""""
+             with_tiff_I="$CPPFLAGS"
+else
+  echo "$as_me: failed program was:" >&5
+sed 's/^/| /' conftest.$ac_ext >&5
+
+	with_tiffinc=""
+fi
+
+rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
+    else
+         cat >conftest.$ac_ext <<_ACEOF
+/* confdefs.h.  */
+_ACEOF
+cat confdefs.h >>conftest.$ac_ext
+cat >>conftest.$ac_ext <<_ACEOF
+/* end confdefs.h.  */
+#include <stdio.h>  /* for jpeglib.h */
+                 #include <tiff.h>
+
+int
+main ()
+{
+
+  ;
+  return 0;
+}
+_ACEOF
+rm -f conftest.$ac_objext
+if { (ac_try="$ac_compile"
+case "(($ac_try" in
+  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
+  *) ac_try_echo=$ac_try;;
+esac
+eval "echo \"\$as_me:$LINENO: $ac_try_echo\"") >&5
+  (eval "$ac_compile") 2>conftest.er1
+  ac_status=$?
+  grep -v '^ *+' conftest.er1 >conftest.err
+  rm -f conftest.er1
+  cat conftest.err >&5
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); } && {
+	 test -z "$ac_cxx_werror_flag" ||
+	 test ! -s conftest.err
+       } && test -s conftest.$ac_objext; then
+  with_tiffinc="in default path"
+             with_tiff_I="$CPPFLAGS"
+else
+  echo "$as_me: failed program was:" >&5
+sed 's/^/| /' conftest.$ac_ext >&5
+
+	with_tiffinc=""
+fi
+
+rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
+    fi
+    # restore the state
+    ac_ext=c
+ac_cpp='$CPP $CPPFLAGS'
+ac_compile='$CC -c $CFLAGS $CPPFLAGS conftest.$ac_ext >&5'
+ac_link='$CC -o conftest$ac_exeext $CFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
+ac_compiler_gnu=$ac_cv_c_compiler_gnu
+
+    CPPFLAGS="$SAVECPPFLAGS"
+
+        fi
         # if this didn't work check whether the library path is in the
         # same tree as the library path, or among the directories in the
         # original $CPPFLAGS or a few standard directories
@@ -20101,8 +20209,6 @@ ac_compiler_gnu=$ac_cv_cxx_compiler_gnu
     # tiff is the package, tiff.h the include name, "$i$PATHPOSTFIX" the path
     if test "x"$i$PATHPOSTFIX"" != "x" ; then
         CPPFLAGS="-I"$i$PATHPOSTFIX" $SAVECPPFLAGS"
-        { echo "$as_me:$LINENO: result: cppflags=$CPPFLAGS" >&5
-echo "${ECHO_T}cppflags=$CPPFLAGS" >&6; }
         cat >conftest.$ac_ext <<_ACEOF
 /* confdefs.h.  */
 _ACEOF
@@ -20148,8 +20254,6 @@ fi
 
 rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
     else
-         { echo "$as_me:$LINENO: result: cppflags:$CPPFLAGS" >&5
-echo "${ECHO_T}cppflags:$CPPFLAGS" >&6; }
          cat >conftest.$ac_ext <<_ACEOF
 /* confdefs.h.  */
 _ACEOF
@@ -20206,126 +20310,6 @@ ac_compiler_gnu=$ac_cv_c_compiler_gnu
 
                 if test "x$with_tiffinc" != "x" ; then break; fi
             done
-        fi
-
-        if test "x$with_tiffinc" = "x" ; then
-
-    # save the state
-    SAVECPPFLAGS="$CPPFLAGS"
-
-    ac_ext=cpp
-ac_cpp='$CXXCPP $CPPFLAGS'
-ac_compile='$CXX -c $CXXFLAGS $CPPFLAGS conftest.$ac_ext >&5'
-ac_link='$CXX -o conftest$ac_exeext $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
-ac_compiler_gnu=$ac_cv_cxx_compiler_gnu
-
-
-    # tiff is the package, tiff.h the include name, "" the path
-    if test "x""" != "x" ; then
-        CPPFLAGS="-I"" $SAVECPPFLAGS"
-        { echo "$as_me:$LINENO: result: cppflags=$CPPFLAGS" >&5
-echo "${ECHO_T}cppflags=$CPPFLAGS" >&6; }
-        cat >conftest.$ac_ext <<_ACEOF
-/* confdefs.h.  */
-_ACEOF
-cat confdefs.h >>conftest.$ac_ext
-cat >>conftest.$ac_ext <<_ACEOF
-/* end confdefs.h.  */
-#include <stdio.h>  /* for jpeglib.h */
-                 #include <tiff.h>
-
-int
-main ()
-{
-
-  ;
-  return 0;
-}
-_ACEOF
-rm -f conftest.$ac_objext
-if { (ac_try="$ac_compile"
-case "(($ac_try" in
-  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
-  *) ac_try_echo=$ac_try;;
-esac
-eval "echo \"\$as_me:$LINENO: $ac_try_echo\"") >&5
-  (eval "$ac_compile") 2>conftest.er1
-  ac_status=$?
-  grep -v '^ *+' conftest.er1 >conftest.err
-  rm -f conftest.er1
-  cat conftest.err >&5
-  echo "$as_me:$LINENO: \$? = $ac_status" >&5
-  (exit $ac_status); } && {
-	 test -z "$ac_cxx_werror_flag" ||
-	 test ! -s conftest.err
-       } && test -s conftest.$ac_objext; then
-  with_tiffinc=""""
-             with_tiff_I="$CPPFLAGS"
-else
-  echo "$as_me: failed program was:" >&5
-sed 's/^/| /' conftest.$ac_ext >&5
-
-	with_tiffinc=""
-fi
-
-rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
-    else
-         { echo "$as_me:$LINENO: result: cppflags:$CPPFLAGS" >&5
-echo "${ECHO_T}cppflags:$CPPFLAGS" >&6; }
-         cat >conftest.$ac_ext <<_ACEOF
-/* confdefs.h.  */
-_ACEOF
-cat confdefs.h >>conftest.$ac_ext
-cat >>conftest.$ac_ext <<_ACEOF
-/* end confdefs.h.  */
-#include <stdio.h>  /* for jpeglib.h */
-                 #include <tiff.h>
-
-int
-main ()
-{
-
-  ;
-  return 0;
-}
-_ACEOF
-rm -f conftest.$ac_objext
-if { (ac_try="$ac_compile"
-case "(($ac_try" in
-  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
-  *) ac_try_echo=$ac_try;;
-esac
-eval "echo \"\$as_me:$LINENO: $ac_try_echo\"") >&5
-  (eval "$ac_compile") 2>conftest.er1
-  ac_status=$?
-  grep -v '^ *+' conftest.er1 >conftest.err
-  rm -f conftest.er1
-  cat conftest.err >&5
-  echo "$as_me:$LINENO: \$? = $ac_status" >&5
-  (exit $ac_status); } && {
-	 test -z "$ac_cxx_werror_flag" ||
-	 test ! -s conftest.err
-       } && test -s conftest.$ac_objext; then
-  with_tiffinc="in default path"
-             with_tiff_I="$CPPFLAGS"
-else
-  echo "$as_me: failed program was:" >&5
-sed 's/^/| /' conftest.$ac_ext >&5
-
-	with_tiffinc=""
-fi
-
-rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
-    fi
-    # restore the state
-    ac_ext=c
-ac_cpp='$CPP $CPPFLAGS'
-ac_compile='$CC -c $CFLAGS $CPPFLAGS conftest.$ac_ext >&5'
-ac_link='$CC -o conftest$ac_exeext $CFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
-ac_compiler_gnu=$ac_cv_c_compiler_gnu
-
-    CPPFLAGS="$SAVECPPFLAGS"
-
         fi
     fi
 
@@ -20774,8 +20758,6 @@ ac_compiler_gnu=$ac_cv_cxx_compiler_gnu
     # jpeg is the package, jpeglib.h the include name, "$with_jpeginc" the path
     if test "x"$with_jpeginc"" != "x" ; then
         CPPFLAGS="-I"$with_jpeginc" $SAVECPPFLAGS"
-        { echo "$as_me:$LINENO: result: cppflags=$CPPFLAGS" >&5
-echo "${ECHO_T}cppflags=$CPPFLAGS" >&6; }
         cat >conftest.$ac_ext <<_ACEOF
 /* confdefs.h.  */
 _ACEOF
@@ -20821,8 +20803,6 @@ fi
 
 rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
     else
-         { echo "$as_me:$LINENO: result: cppflags:$CPPFLAGS" >&5
-echo "${ECHO_T}cppflags:$CPPFLAGS" >&6; }
          cat >conftest.$ac_ext <<_ACEOF
 /* confdefs.h.  */
 _ACEOF
@@ -20880,9 +20860,121 @@ ac_compiler_gnu=$ac_cv_c_compiler_gnu
     else
         # otherwise check whether the library is found without explicit path
         # specification (e.g. because it is in /usr/lib)
-#if test "x$with_[jpeg]inc" = "x" ; then
-#            VIGRA_FIND_INCLUDE_EXPLICIT(jpeg, jpeglib.h, "")
-#        fi
+        if test "x$with_jpeginc" = "x" ; then
+
+    # save the state
+    SAVECPPFLAGS="$CPPFLAGS"
+
+    ac_ext=cpp
+ac_cpp='$CXXCPP $CPPFLAGS'
+ac_compile='$CXX -c $CXXFLAGS $CPPFLAGS conftest.$ac_ext >&5'
+ac_link='$CXX -o conftest$ac_exeext $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
+ac_compiler_gnu=$ac_cv_cxx_compiler_gnu
+
+
+    # jpeg is the package, jpeglib.h the include name, "" the path
+    if test "x""" != "x" ; then
+        CPPFLAGS="-I"" $SAVECPPFLAGS"
+        cat >conftest.$ac_ext <<_ACEOF
+/* confdefs.h.  */
+_ACEOF
+cat confdefs.h >>conftest.$ac_ext
+cat >>conftest.$ac_ext <<_ACEOF
+/* end confdefs.h.  */
+#include <stdio.h>  /* for jpeglib.h */
+                 #include <jpeglib.h>
+
+int
+main ()
+{
+
+  ;
+  return 0;
+}
+_ACEOF
+rm -f conftest.$ac_objext
+if { (ac_try="$ac_compile"
+case "(($ac_try" in
+  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
+  *) ac_try_echo=$ac_try;;
+esac
+eval "echo \"\$as_me:$LINENO: $ac_try_echo\"") >&5
+  (eval "$ac_compile") 2>conftest.er1
+  ac_status=$?
+  grep -v '^ *+' conftest.er1 >conftest.err
+  rm -f conftest.er1
+  cat conftest.err >&5
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); } && {
+	 test -z "$ac_cxx_werror_flag" ||
+	 test ! -s conftest.err
+       } && test -s conftest.$ac_objext; then
+  with_jpeginc=""""
+             with_jpeg_I="$CPPFLAGS"
+else
+  echo "$as_me: failed program was:" >&5
+sed 's/^/| /' conftest.$ac_ext >&5
+
+	with_jpeginc=""
+fi
+
+rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
+    else
+         cat >conftest.$ac_ext <<_ACEOF
+/* confdefs.h.  */
+_ACEOF
+cat confdefs.h >>conftest.$ac_ext
+cat >>conftest.$ac_ext <<_ACEOF
+/* end confdefs.h.  */
+#include <stdio.h>  /* for jpeglib.h */
+                 #include <jpeglib.h>
+
+int
+main ()
+{
+
+  ;
+  return 0;
+}
+_ACEOF
+rm -f conftest.$ac_objext
+if { (ac_try="$ac_compile"
+case "(($ac_try" in
+  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
+  *) ac_try_echo=$ac_try;;
+esac
+eval "echo \"\$as_me:$LINENO: $ac_try_echo\"") >&5
+  (eval "$ac_compile") 2>conftest.er1
+  ac_status=$?
+  grep -v '^ *+' conftest.er1 >conftest.err
+  rm -f conftest.er1
+  cat conftest.err >&5
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); } && {
+	 test -z "$ac_cxx_werror_flag" ||
+	 test ! -s conftest.err
+       } && test -s conftest.$ac_objext; then
+  with_jpeginc="in default path"
+             with_jpeg_I="$CPPFLAGS"
+else
+  echo "$as_me: failed program was:" >&5
+sed 's/^/| /' conftest.$ac_ext >&5
+
+	with_jpeginc=""
+fi
+
+rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
+    fi
+    # restore the state
+    ac_ext=c
+ac_cpp='$CPP $CPPFLAGS'
+ac_compile='$CC -c $CFLAGS $CPPFLAGS conftest.$ac_ext >&5'
+ac_link='$CC -o conftest$ac_exeext $CFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
+ac_compiler_gnu=$ac_cv_c_compiler_gnu
+
+    CPPFLAGS="$SAVECPPFLAGS"
+
+        fi
         # if this didn't work check whether the library path is in the
         # same tree as the library path, or among the directories in the
         # original $CPPFLAGS or a few standard directories
@@ -20916,8 +21008,6 @@ ac_compiler_gnu=$ac_cv_cxx_compiler_gnu
     # jpeg is the package, jpeglib.h the include name, "$i$PATHPOSTFIX" the path
     if test "x"$i$PATHPOSTFIX"" != "x" ; then
         CPPFLAGS="-I"$i$PATHPOSTFIX" $SAVECPPFLAGS"
-        { echo "$as_me:$LINENO: result: cppflags=$CPPFLAGS" >&5
-echo "${ECHO_T}cppflags=$CPPFLAGS" >&6; }
         cat >conftest.$ac_ext <<_ACEOF
 /* confdefs.h.  */
 _ACEOF
@@ -20963,8 +21053,6 @@ fi
 
 rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
     else
-         { echo "$as_me:$LINENO: result: cppflags:$CPPFLAGS" >&5
-echo "${ECHO_T}cppflags:$CPPFLAGS" >&6; }
          cat >conftest.$ac_ext <<_ACEOF
 /* confdefs.h.  */
 _ACEOF
@@ -21021,126 +21109,6 @@ ac_compiler_gnu=$ac_cv_c_compiler_gnu
 
                 if test "x$with_jpeginc" != "x" ; then break; fi
             done
-        fi
-
-        if test "x$with_jpeginc" = "x" ; then
-
-    # save the state
-    SAVECPPFLAGS="$CPPFLAGS"
-
-    ac_ext=cpp
-ac_cpp='$CXXCPP $CPPFLAGS'
-ac_compile='$CXX -c $CXXFLAGS $CPPFLAGS conftest.$ac_ext >&5'
-ac_link='$CXX -o conftest$ac_exeext $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
-ac_compiler_gnu=$ac_cv_cxx_compiler_gnu
-
-
-    # jpeg is the package, jpeglib.h the include name, "" the path
-    if test "x""" != "x" ; then
-        CPPFLAGS="-I"" $SAVECPPFLAGS"
-        { echo "$as_me:$LINENO: result: cppflags=$CPPFLAGS" >&5
-echo "${ECHO_T}cppflags=$CPPFLAGS" >&6; }
-        cat >conftest.$ac_ext <<_ACEOF
-/* confdefs.h.  */
-_ACEOF
-cat confdefs.h >>conftest.$ac_ext
-cat >>conftest.$ac_ext <<_ACEOF
-/* end confdefs.h.  */
-#include <stdio.h>  /* for jpeglib.h */
-                 #include <jpeglib.h>
-
-int
-main ()
-{
-
-  ;
-  return 0;
-}
-_ACEOF
-rm -f conftest.$ac_objext
-if { (ac_try="$ac_compile"
-case "(($ac_try" in
-  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
-  *) ac_try_echo=$ac_try;;
-esac
-eval "echo \"\$as_me:$LINENO: $ac_try_echo\"") >&5
-  (eval "$ac_compile") 2>conftest.er1
-  ac_status=$?
-  grep -v '^ *+' conftest.er1 >conftest.err
-  rm -f conftest.er1
-  cat conftest.err >&5
-  echo "$as_me:$LINENO: \$? = $ac_status" >&5
-  (exit $ac_status); } && {
-	 test -z "$ac_cxx_werror_flag" ||
-	 test ! -s conftest.err
-       } && test -s conftest.$ac_objext; then
-  with_jpeginc=""""
-             with_jpeg_I="$CPPFLAGS"
-else
-  echo "$as_me: failed program was:" >&5
-sed 's/^/| /' conftest.$ac_ext >&5
-
-	with_jpeginc=""
-fi
-
-rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
-    else
-         { echo "$as_me:$LINENO: result: cppflags:$CPPFLAGS" >&5
-echo "${ECHO_T}cppflags:$CPPFLAGS" >&6; }
-         cat >conftest.$ac_ext <<_ACEOF
-/* confdefs.h.  */
-_ACEOF
-cat confdefs.h >>conftest.$ac_ext
-cat >>conftest.$ac_ext <<_ACEOF
-/* end confdefs.h.  */
-#include <stdio.h>  /* for jpeglib.h */
-                 #include <jpeglib.h>
-
-int
-main ()
-{
-
-  ;
-  return 0;
-}
-_ACEOF
-rm -f conftest.$ac_objext
-if { (ac_try="$ac_compile"
-case "(($ac_try" in
-  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
-  *) ac_try_echo=$ac_try;;
-esac
-eval "echo \"\$as_me:$LINENO: $ac_try_echo\"") >&5
-  (eval "$ac_compile") 2>conftest.er1
-  ac_status=$?
-  grep -v '^ *+' conftest.er1 >conftest.err
-  rm -f conftest.er1
-  cat conftest.err >&5
-  echo "$as_me:$LINENO: \$? = $ac_status" >&5
-  (exit $ac_status); } && {
-	 test -z "$ac_cxx_werror_flag" ||
-	 test ! -s conftest.err
-       } && test -s conftest.$ac_objext; then
-  with_jpeginc="in default path"
-             with_jpeg_I="$CPPFLAGS"
-else
-  echo "$as_me: failed program was:" >&5
-sed 's/^/| /' conftest.$ac_ext >&5
-
-	with_jpeginc=""
-fi
-
-rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
-    fi
-    # restore the state
-    ac_ext=c
-ac_cpp='$CPP $CPPFLAGS'
-ac_compile='$CC -c $CFLAGS $CPPFLAGS conftest.$ac_ext >&5'
-ac_link='$CC -o conftest$ac_exeext $CFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
-ac_compiler_gnu=$ac_cv_c_compiler_gnu
-
-    CPPFLAGS="$SAVECPPFLAGS"
-
         fi
     fi
 
@@ -21800,8 +21768,6 @@ ac_compiler_gnu=$ac_cv_cxx_compiler_gnu
     # zlib is the package, zlib.h the include name, "$with_zlibinc" the path
     if test "x"$with_zlibinc"" != "x" ; then
         CPPFLAGS="-I"$with_zlibinc" $SAVECPPFLAGS"
-        { echo "$as_me:$LINENO: result: cppflags=$CPPFLAGS" >&5
-echo "${ECHO_T}cppflags=$CPPFLAGS" >&6; }
         cat >conftest.$ac_ext <<_ACEOF
 /* confdefs.h.  */
 _ACEOF
@@ -21847,8 +21813,6 @@ fi
 
 rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
     else
-         { echo "$as_me:$LINENO: result: cppflags:$CPPFLAGS" >&5
-echo "${ECHO_T}cppflags:$CPPFLAGS" >&6; }
          cat >conftest.$ac_ext <<_ACEOF
 /* confdefs.h.  */
 _ACEOF
@@ -21906,9 +21870,121 @@ ac_compiler_gnu=$ac_cv_c_compiler_gnu
     else
         # otherwise check whether the library is found without explicit path
         # specification (e.g. because it is in /usr/lib)
-#if test "x$with_[zlib]inc" = "x" ; then
-#            VIGRA_FIND_INCLUDE_EXPLICIT(zlib, zlib.h, "")
-#        fi
+        if test "x$with_zlibinc" = "x" ; then
+
+    # save the state
+    SAVECPPFLAGS="$CPPFLAGS"
+
+    ac_ext=cpp
+ac_cpp='$CXXCPP $CPPFLAGS'
+ac_compile='$CXX -c $CXXFLAGS $CPPFLAGS conftest.$ac_ext >&5'
+ac_link='$CXX -o conftest$ac_exeext $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
+ac_compiler_gnu=$ac_cv_cxx_compiler_gnu
+
+
+    # zlib is the package, zlib.h the include name, "" the path
+    if test "x""" != "x" ; then
+        CPPFLAGS="-I"" $SAVECPPFLAGS"
+        cat >conftest.$ac_ext <<_ACEOF
+/* confdefs.h.  */
+_ACEOF
+cat confdefs.h >>conftest.$ac_ext
+cat >>conftest.$ac_ext <<_ACEOF
+/* end confdefs.h.  */
+#include <stdio.h>  /* for jpeglib.h */
+                 #include <zlib.h>
+
+int
+main ()
+{
+
+  ;
+  return 0;
+}
+_ACEOF
+rm -f conftest.$ac_objext
+if { (ac_try="$ac_compile"
+case "(($ac_try" in
+  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
+  *) ac_try_echo=$ac_try;;
+esac
+eval "echo \"\$as_me:$LINENO: $ac_try_echo\"") >&5
+  (eval "$ac_compile") 2>conftest.er1
+  ac_status=$?
+  grep -v '^ *+' conftest.er1 >conftest.err
+  rm -f conftest.er1
+  cat conftest.err >&5
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); } && {
+	 test -z "$ac_cxx_werror_flag" ||
+	 test ! -s conftest.err
+       } && test -s conftest.$ac_objext; then
+  with_zlibinc=""""
+             with_zlib_I="$CPPFLAGS"
+else
+  echo "$as_me: failed program was:" >&5
+sed 's/^/| /' conftest.$ac_ext >&5
+
+	with_zlibinc=""
+fi
+
+rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
+    else
+         cat >conftest.$ac_ext <<_ACEOF
+/* confdefs.h.  */
+_ACEOF
+cat confdefs.h >>conftest.$ac_ext
+cat >>conftest.$ac_ext <<_ACEOF
+/* end confdefs.h.  */
+#include <stdio.h>  /* for jpeglib.h */
+                 #include <zlib.h>
+
+int
+main ()
+{
+
+  ;
+  return 0;
+}
+_ACEOF
+rm -f conftest.$ac_objext
+if { (ac_try="$ac_compile"
+case "(($ac_try" in
+  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
+  *) ac_try_echo=$ac_try;;
+esac
+eval "echo \"\$as_me:$LINENO: $ac_try_echo\"") >&5
+  (eval "$ac_compile") 2>conftest.er1
+  ac_status=$?
+  grep -v '^ *+' conftest.er1 >conftest.err
+  rm -f conftest.er1
+  cat conftest.err >&5
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); } && {
+	 test -z "$ac_cxx_werror_flag" ||
+	 test ! -s conftest.err
+       } && test -s conftest.$ac_objext; then
+  with_zlibinc="in default path"
+             with_zlib_I="$CPPFLAGS"
+else
+  echo "$as_me: failed program was:" >&5
+sed 's/^/| /' conftest.$ac_ext >&5
+
+	with_zlibinc=""
+fi
+
+rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
+    fi
+    # restore the state
+    ac_ext=c
+ac_cpp='$CPP $CPPFLAGS'
+ac_compile='$CC -c $CFLAGS $CPPFLAGS conftest.$ac_ext >&5'
+ac_link='$CC -o conftest$ac_exeext $CFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
+ac_compiler_gnu=$ac_cv_c_compiler_gnu
+
+    CPPFLAGS="$SAVECPPFLAGS"
+
+        fi
         # if this didn't work check whether the library path is in the
         # same tree as the library path, or among the directories in the
         # original $CPPFLAGS or a few standard directories
@@ -21942,8 +22018,6 @@ ac_compiler_gnu=$ac_cv_cxx_compiler_gnu
     # zlib is the package, zlib.h the include name, "$i$PATHPOSTFIX" the path
     if test "x"$i$PATHPOSTFIX"" != "x" ; then
         CPPFLAGS="-I"$i$PATHPOSTFIX" $SAVECPPFLAGS"
-        { echo "$as_me:$LINENO: result: cppflags=$CPPFLAGS" >&5
-echo "${ECHO_T}cppflags=$CPPFLAGS" >&6; }
         cat >conftest.$ac_ext <<_ACEOF
 /* confdefs.h.  */
 _ACEOF
@@ -21989,8 +22063,6 @@ fi
 
 rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
     else
-         { echo "$as_me:$LINENO: result: cppflags:$CPPFLAGS" >&5
-echo "${ECHO_T}cppflags:$CPPFLAGS" >&6; }
          cat >conftest.$ac_ext <<_ACEOF
 /* confdefs.h.  */
 _ACEOF
@@ -22047,126 +22119,6 @@ ac_compiler_gnu=$ac_cv_c_compiler_gnu
 
                 if test "x$with_zlibinc" != "x" ; then break; fi
             done
-        fi
-
-        if test "x$with_zlibinc" = "x" ; then
-
-    # save the state
-    SAVECPPFLAGS="$CPPFLAGS"
-
-    ac_ext=cpp
-ac_cpp='$CXXCPP $CPPFLAGS'
-ac_compile='$CXX -c $CXXFLAGS $CPPFLAGS conftest.$ac_ext >&5'
-ac_link='$CXX -o conftest$ac_exeext $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
-ac_compiler_gnu=$ac_cv_cxx_compiler_gnu
-
-
-    # zlib is the package, zlib.h the include name, "" the path
-    if test "x""" != "x" ; then
-        CPPFLAGS="-I"" $SAVECPPFLAGS"
-        { echo "$as_me:$LINENO: result: cppflags=$CPPFLAGS" >&5
-echo "${ECHO_T}cppflags=$CPPFLAGS" >&6; }
-        cat >conftest.$ac_ext <<_ACEOF
-/* confdefs.h.  */
-_ACEOF
-cat confdefs.h >>conftest.$ac_ext
-cat >>conftest.$ac_ext <<_ACEOF
-/* end confdefs.h.  */
-#include <stdio.h>  /* for jpeglib.h */
-                 #include <zlib.h>
-
-int
-main ()
-{
-
-  ;
-  return 0;
-}
-_ACEOF
-rm -f conftest.$ac_objext
-if { (ac_try="$ac_compile"
-case "(($ac_try" in
-  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
-  *) ac_try_echo=$ac_try;;
-esac
-eval "echo \"\$as_me:$LINENO: $ac_try_echo\"") >&5
-  (eval "$ac_compile") 2>conftest.er1
-  ac_status=$?
-  grep -v '^ *+' conftest.er1 >conftest.err
-  rm -f conftest.er1
-  cat conftest.err >&5
-  echo "$as_me:$LINENO: \$? = $ac_status" >&5
-  (exit $ac_status); } && {
-	 test -z "$ac_cxx_werror_flag" ||
-	 test ! -s conftest.err
-       } && test -s conftest.$ac_objext; then
-  with_zlibinc=""""
-             with_zlib_I="$CPPFLAGS"
-else
-  echo "$as_me: failed program was:" >&5
-sed 's/^/| /' conftest.$ac_ext >&5
-
-	with_zlibinc=""
-fi
-
-rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
-    else
-         { echo "$as_me:$LINENO: result: cppflags:$CPPFLAGS" >&5
-echo "${ECHO_T}cppflags:$CPPFLAGS" >&6; }
-         cat >conftest.$ac_ext <<_ACEOF
-/* confdefs.h.  */
-_ACEOF
-cat confdefs.h >>conftest.$ac_ext
-cat >>conftest.$ac_ext <<_ACEOF
-/* end confdefs.h.  */
-#include <stdio.h>  /* for jpeglib.h */
-                 #include <zlib.h>
-
-int
-main ()
-{
-
-  ;
-  return 0;
-}
-_ACEOF
-rm -f conftest.$ac_objext
-if { (ac_try="$ac_compile"
-case "(($ac_try" in
-  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
-  *) ac_try_echo=$ac_try;;
-esac
-eval "echo \"\$as_me:$LINENO: $ac_try_echo\"") >&5
-  (eval "$ac_compile") 2>conftest.er1
-  ac_status=$?
-  grep -v '^ *+' conftest.er1 >conftest.err
-  rm -f conftest.er1
-  cat conftest.err >&5
-  echo "$as_me:$LINENO: \$? = $ac_status" >&5
-  (exit $ac_status); } && {
-	 test -z "$ac_cxx_werror_flag" ||
-	 test ! -s conftest.err
-       } && test -s conftest.$ac_objext; then
-  with_zlibinc="in default path"
-             with_zlib_I="$CPPFLAGS"
-else
-  echo "$as_me: failed program was:" >&5
-sed 's/^/| /' conftest.$ac_ext >&5
-
-	with_zlibinc=""
-fi
-
-rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
-    fi
-    # restore the state
-    ac_ext=c
-ac_cpp='$CPP $CPPFLAGS'
-ac_compile='$CC -c $CFLAGS $CPPFLAGS conftest.$ac_ext >&5'
-ac_link='$CC -o conftest$ac_exeext $CFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
-ac_compiler_gnu=$ac_cv_c_compiler_gnu
-
-    CPPFLAGS="$SAVECPPFLAGS"
-
         fi
     fi
 
@@ -22613,8 +22565,6 @@ ac_compiler_gnu=$ac_cv_cxx_compiler_gnu
     # png is the package, png.h the include name, "$with_pnginc" the path
     if test "x"$with_pnginc"" != "x" ; then
         CPPFLAGS="-I"$with_pnginc" $SAVECPPFLAGS"
-        { echo "$as_me:$LINENO: result: cppflags=$CPPFLAGS" >&5
-echo "${ECHO_T}cppflags=$CPPFLAGS" >&6; }
         cat >conftest.$ac_ext <<_ACEOF
 /* confdefs.h.  */
 _ACEOF
@@ -22660,8 +22610,6 @@ fi
 
 rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
     else
-         { echo "$as_me:$LINENO: result: cppflags:$CPPFLAGS" >&5
-echo "${ECHO_T}cppflags:$CPPFLAGS" >&6; }
          cat >conftest.$ac_ext <<_ACEOF
 /* confdefs.h.  */
 _ACEOF
@@ -22719,9 +22667,121 @@ ac_compiler_gnu=$ac_cv_c_compiler_gnu
     else
         # otherwise check whether the library is found without explicit path
         # specification (e.g. because it is in /usr/lib)
-#if test "x$with_[png]inc" = "x" ; then
-#            VIGRA_FIND_INCLUDE_EXPLICIT(png, png.h, "")
-#        fi
+        if test "x$with_pnginc" = "x" ; then
+
+    # save the state
+    SAVECPPFLAGS="$CPPFLAGS"
+
+    ac_ext=cpp
+ac_cpp='$CXXCPP $CPPFLAGS'
+ac_compile='$CXX -c $CXXFLAGS $CPPFLAGS conftest.$ac_ext >&5'
+ac_link='$CXX -o conftest$ac_exeext $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
+ac_compiler_gnu=$ac_cv_cxx_compiler_gnu
+
+
+    # png is the package, png.h the include name, "" the path
+    if test "x""" != "x" ; then
+        CPPFLAGS="-I"" $SAVECPPFLAGS"
+        cat >conftest.$ac_ext <<_ACEOF
+/* confdefs.h.  */
+_ACEOF
+cat confdefs.h >>conftest.$ac_ext
+cat >>conftest.$ac_ext <<_ACEOF
+/* end confdefs.h.  */
+#include <stdio.h>  /* for jpeglib.h */
+                 #include <png.h>
+
+int
+main ()
+{
+
+  ;
+  return 0;
+}
+_ACEOF
+rm -f conftest.$ac_objext
+if { (ac_try="$ac_compile"
+case "(($ac_try" in
+  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
+  *) ac_try_echo=$ac_try;;
+esac
+eval "echo \"\$as_me:$LINENO: $ac_try_echo\"") >&5
+  (eval "$ac_compile") 2>conftest.er1
+  ac_status=$?
+  grep -v '^ *+' conftest.er1 >conftest.err
+  rm -f conftest.er1
+  cat conftest.err >&5
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); } && {
+	 test -z "$ac_cxx_werror_flag" ||
+	 test ! -s conftest.err
+       } && test -s conftest.$ac_objext; then
+  with_pnginc=""""
+             with_png_I="$CPPFLAGS"
+else
+  echo "$as_me: failed program was:" >&5
+sed 's/^/| /' conftest.$ac_ext >&5
+
+	with_pnginc=""
+fi
+
+rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
+    else
+         cat >conftest.$ac_ext <<_ACEOF
+/* confdefs.h.  */
+_ACEOF
+cat confdefs.h >>conftest.$ac_ext
+cat >>conftest.$ac_ext <<_ACEOF
+/* end confdefs.h.  */
+#include <stdio.h>  /* for jpeglib.h */
+                 #include <png.h>
+
+int
+main ()
+{
+
+  ;
+  return 0;
+}
+_ACEOF
+rm -f conftest.$ac_objext
+if { (ac_try="$ac_compile"
+case "(($ac_try" in
+  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
+  *) ac_try_echo=$ac_try;;
+esac
+eval "echo \"\$as_me:$LINENO: $ac_try_echo\"") >&5
+  (eval "$ac_compile") 2>conftest.er1
+  ac_status=$?
+  grep -v '^ *+' conftest.er1 >conftest.err
+  rm -f conftest.er1
+  cat conftest.err >&5
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); } && {
+	 test -z "$ac_cxx_werror_flag" ||
+	 test ! -s conftest.err
+       } && test -s conftest.$ac_objext; then
+  with_pnginc="in default path"
+             with_png_I="$CPPFLAGS"
+else
+  echo "$as_me: failed program was:" >&5
+sed 's/^/| /' conftest.$ac_ext >&5
+
+	with_pnginc=""
+fi
+
+rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
+    fi
+    # restore the state
+    ac_ext=c
+ac_cpp='$CPP $CPPFLAGS'
+ac_compile='$CC -c $CFLAGS $CPPFLAGS conftest.$ac_ext >&5'
+ac_link='$CC -o conftest$ac_exeext $CFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
+ac_compiler_gnu=$ac_cv_c_compiler_gnu
+
+    CPPFLAGS="$SAVECPPFLAGS"
+
+        fi
         # if this didn't work check whether the library path is in the
         # same tree as the library path, or among the directories in the
         # original $CPPFLAGS or a few standard directories
@@ -22755,8 +22815,6 @@ ac_compiler_gnu=$ac_cv_cxx_compiler_gnu
     # png is the package, png.h the include name, "$i$PATHPOSTFIX" the path
     if test "x"$i$PATHPOSTFIX"" != "x" ; then
         CPPFLAGS="-I"$i$PATHPOSTFIX" $SAVECPPFLAGS"
-        { echo "$as_me:$LINENO: result: cppflags=$CPPFLAGS" >&5
-echo "${ECHO_T}cppflags=$CPPFLAGS" >&6; }
         cat >conftest.$ac_ext <<_ACEOF
 /* confdefs.h.  */
 _ACEOF
@@ -22802,8 +22860,6 @@ fi
 
 rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
     else
-         { echo "$as_me:$LINENO: result: cppflags:$CPPFLAGS" >&5
-echo "${ECHO_T}cppflags:$CPPFLAGS" >&6; }
          cat >conftest.$ac_ext <<_ACEOF
 /* confdefs.h.  */
 _ACEOF
@@ -22860,126 +22916,6 @@ ac_compiler_gnu=$ac_cv_c_compiler_gnu
 
                 if test "x$with_pnginc" != "x" ; then break; fi
             done
-        fi
-
-        if test "x$with_pnginc" = "x" ; then
-
-    # save the state
-    SAVECPPFLAGS="$CPPFLAGS"
-
-    ac_ext=cpp
-ac_cpp='$CXXCPP $CPPFLAGS'
-ac_compile='$CXX -c $CXXFLAGS $CPPFLAGS conftest.$ac_ext >&5'
-ac_link='$CXX -o conftest$ac_exeext $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
-ac_compiler_gnu=$ac_cv_cxx_compiler_gnu
-
-
-    # png is the package, png.h the include name, "" the path
-    if test "x""" != "x" ; then
-        CPPFLAGS="-I"" $SAVECPPFLAGS"
-        { echo "$as_me:$LINENO: result: cppflags=$CPPFLAGS" >&5
-echo "${ECHO_T}cppflags=$CPPFLAGS" >&6; }
-        cat >conftest.$ac_ext <<_ACEOF
-/* confdefs.h.  */
-_ACEOF
-cat confdefs.h >>conftest.$ac_ext
-cat >>conftest.$ac_ext <<_ACEOF
-/* end confdefs.h.  */
-#include <stdio.h>  /* for jpeglib.h */
-                 #include <png.h>
-
-int
-main ()
-{
-
-  ;
-  return 0;
-}
-_ACEOF
-rm -f conftest.$ac_objext
-if { (ac_try="$ac_compile"
-case "(($ac_try" in
-  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
-  *) ac_try_echo=$ac_try;;
-esac
-eval "echo \"\$as_me:$LINENO: $ac_try_echo\"") >&5
-  (eval "$ac_compile") 2>conftest.er1
-  ac_status=$?
-  grep -v '^ *+' conftest.er1 >conftest.err
-  rm -f conftest.er1
-  cat conftest.err >&5
-  echo "$as_me:$LINENO: \$? = $ac_status" >&5
-  (exit $ac_status); } && {
-	 test -z "$ac_cxx_werror_flag" ||
-	 test ! -s conftest.err
-       } && test -s conftest.$ac_objext; then
-  with_pnginc=""""
-             with_png_I="$CPPFLAGS"
-else
-  echo "$as_me: failed program was:" >&5
-sed 's/^/| /' conftest.$ac_ext >&5
-
-	with_pnginc=""
-fi
-
-rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
-    else
-         { echo "$as_me:$LINENO: result: cppflags:$CPPFLAGS" >&5
-echo "${ECHO_T}cppflags:$CPPFLAGS" >&6; }
-         cat >conftest.$ac_ext <<_ACEOF
-/* confdefs.h.  */
-_ACEOF
-cat confdefs.h >>conftest.$ac_ext
-cat >>conftest.$ac_ext <<_ACEOF
-/* end confdefs.h.  */
-#include <stdio.h>  /* for jpeglib.h */
-                 #include <png.h>
-
-int
-main ()
-{
-
-  ;
-  return 0;
-}
-_ACEOF
-rm -f conftest.$ac_objext
-if { (ac_try="$ac_compile"
-case "(($ac_try" in
-  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
-  *) ac_try_echo=$ac_try;;
-esac
-eval "echo \"\$as_me:$LINENO: $ac_try_echo\"") >&5
-  (eval "$ac_compile") 2>conftest.er1
-  ac_status=$?
-  grep -v '^ *+' conftest.er1 >conftest.err
-  rm -f conftest.er1
-  cat conftest.err >&5
-  echo "$as_me:$LINENO: \$? = $ac_status" >&5
-  (exit $ac_status); } && {
-	 test -z "$ac_cxx_werror_flag" ||
-	 test ! -s conftest.err
-       } && test -s conftest.$ac_objext; then
-  with_pnginc="in default path"
-             with_png_I="$CPPFLAGS"
-else
-  echo "$as_me: failed program was:" >&5
-sed 's/^/| /' conftest.$ac_ext >&5
-
-	with_pnginc=""
-fi
-
-rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
-    fi
-    # restore the state
-    ac_ext=c
-ac_cpp='$CPP $CPPFLAGS'
-ac_compile='$CC -c $CFLAGS $CPPFLAGS conftest.$ac_ext >&5'
-ac_link='$CC -o conftest$ac_exeext $CFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
-ac_compiler_gnu=$ac_cv_c_compiler_gnu
-
-    CPPFLAGS="$SAVECPPFLAGS"
-
         fi
     fi
 
@@ -23527,8 +23463,6 @@ ac_compiler_gnu=$ac_cv_cxx_compiler_gnu
     # fftw is the package, fftw3.h the include name, "$with_fftwinc" the path
     if test "x"$with_fftwinc"" != "x" ; then
         CPPFLAGS="-I"$with_fftwinc" $SAVECPPFLAGS"
-        { echo "$as_me:$LINENO: result: cppflags=$CPPFLAGS" >&5
-echo "${ECHO_T}cppflags=$CPPFLAGS" >&6; }
         cat >conftest.$ac_ext <<_ACEOF
 /* confdefs.h.  */
 _ACEOF
@@ -23574,8 +23508,6 @@ fi
 
 rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
     else
-         { echo "$as_me:$LINENO: result: cppflags:$CPPFLAGS" >&5
-echo "${ECHO_T}cppflags:$CPPFLAGS" >&6; }
          cat >conftest.$ac_ext <<_ACEOF
 /* confdefs.h.  */
 _ACEOF
@@ -23633,9 +23565,121 @@ ac_compiler_gnu=$ac_cv_c_compiler_gnu
     else
         # otherwise check whether the library is found without explicit path
         # specification (e.g. because it is in /usr/lib)
-#if test "x$with_[fftw]inc" = "x" ; then
-#            VIGRA_FIND_INCLUDE_EXPLICIT(fftw, fftw3.h, "")
-#        fi
+        if test "x$with_fftwinc" = "x" ; then
+
+    # save the state
+    SAVECPPFLAGS="$CPPFLAGS"
+
+    ac_ext=cpp
+ac_cpp='$CXXCPP $CPPFLAGS'
+ac_compile='$CXX -c $CXXFLAGS $CPPFLAGS conftest.$ac_ext >&5'
+ac_link='$CXX -o conftest$ac_exeext $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
+ac_compiler_gnu=$ac_cv_cxx_compiler_gnu
+
+
+    # fftw is the package, fftw3.h the include name, "" the path
+    if test "x""" != "x" ; then
+        CPPFLAGS="-I"" $SAVECPPFLAGS"
+        cat >conftest.$ac_ext <<_ACEOF
+/* confdefs.h.  */
+_ACEOF
+cat confdefs.h >>conftest.$ac_ext
+cat >>conftest.$ac_ext <<_ACEOF
+/* end confdefs.h.  */
+#include <stdio.h>  /* for jpeglib.h */
+                 #include <fftw3.h>
+
+int
+main ()
+{
+
+  ;
+  return 0;
+}
+_ACEOF
+rm -f conftest.$ac_objext
+if { (ac_try="$ac_compile"
+case "(($ac_try" in
+  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
+  *) ac_try_echo=$ac_try;;
+esac
+eval "echo \"\$as_me:$LINENO: $ac_try_echo\"") >&5
+  (eval "$ac_compile") 2>conftest.er1
+  ac_status=$?
+  grep -v '^ *+' conftest.er1 >conftest.err
+  rm -f conftest.er1
+  cat conftest.err >&5
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); } && {
+	 test -z "$ac_cxx_werror_flag" ||
+	 test ! -s conftest.err
+       } && test -s conftest.$ac_objext; then
+  with_fftwinc=""""
+             with_fftw_I="$CPPFLAGS"
+else
+  echo "$as_me: failed program was:" >&5
+sed 's/^/| /' conftest.$ac_ext >&5
+
+	with_fftwinc=""
+fi
+
+rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
+    else
+         cat >conftest.$ac_ext <<_ACEOF
+/* confdefs.h.  */
+_ACEOF
+cat confdefs.h >>conftest.$ac_ext
+cat >>conftest.$ac_ext <<_ACEOF
+/* end confdefs.h.  */
+#include <stdio.h>  /* for jpeglib.h */
+                 #include <fftw3.h>
+
+int
+main ()
+{
+
+  ;
+  return 0;
+}
+_ACEOF
+rm -f conftest.$ac_objext
+if { (ac_try="$ac_compile"
+case "(($ac_try" in
+  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
+  *) ac_try_echo=$ac_try;;
+esac
+eval "echo \"\$as_me:$LINENO: $ac_try_echo\"") >&5
+  (eval "$ac_compile") 2>conftest.er1
+  ac_status=$?
+  grep -v '^ *+' conftest.er1 >conftest.err
+  rm -f conftest.er1
+  cat conftest.err >&5
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); } && {
+	 test -z "$ac_cxx_werror_flag" ||
+	 test ! -s conftest.err
+       } && test -s conftest.$ac_objext; then
+  with_fftwinc="in default path"
+             with_fftw_I="$CPPFLAGS"
+else
+  echo "$as_me: failed program was:" >&5
+sed 's/^/| /' conftest.$ac_ext >&5
+
+	with_fftwinc=""
+fi
+
+rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
+    fi
+    # restore the state
+    ac_ext=c
+ac_cpp='$CPP $CPPFLAGS'
+ac_compile='$CC -c $CFLAGS $CPPFLAGS conftest.$ac_ext >&5'
+ac_link='$CC -o conftest$ac_exeext $CFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
+ac_compiler_gnu=$ac_cv_c_compiler_gnu
+
+    CPPFLAGS="$SAVECPPFLAGS"
+
+        fi
         # if this didn't work check whether the library path is in the
         # same tree as the library path, or among the directories in the
         # original $CPPFLAGS or a few standard directories
@@ -23669,8 +23713,6 @@ ac_compiler_gnu=$ac_cv_cxx_compiler_gnu
     # fftw is the package, fftw3.h the include name, "$i$PATHPOSTFIX" the path
     if test "x"$i$PATHPOSTFIX"" != "x" ; then
         CPPFLAGS="-I"$i$PATHPOSTFIX" $SAVECPPFLAGS"
-        { echo "$as_me:$LINENO: result: cppflags=$CPPFLAGS" >&5
-echo "${ECHO_T}cppflags=$CPPFLAGS" >&6; }
         cat >conftest.$ac_ext <<_ACEOF
 /* confdefs.h.  */
 _ACEOF
@@ -23716,8 +23758,6 @@ fi
 
 rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
     else
-         { echo "$as_me:$LINENO: result: cppflags:$CPPFLAGS" >&5
-echo "${ECHO_T}cppflags:$CPPFLAGS" >&6; }
          cat >conftest.$ac_ext <<_ACEOF
 /* confdefs.h.  */
 _ACEOF
@@ -23774,126 +23814,6 @@ ac_compiler_gnu=$ac_cv_c_compiler_gnu
 
                 if test "x$with_fftwinc" != "x" ; then break; fi
             done
-        fi
-
-        if test "x$with_fftwinc" = "x" ; then
-
-    # save the state
-    SAVECPPFLAGS="$CPPFLAGS"
-
-    ac_ext=cpp
-ac_cpp='$CXXCPP $CPPFLAGS'
-ac_compile='$CXX -c $CXXFLAGS $CPPFLAGS conftest.$ac_ext >&5'
-ac_link='$CXX -o conftest$ac_exeext $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
-ac_compiler_gnu=$ac_cv_cxx_compiler_gnu
-
-
-    # fftw is the package, fftw3.h the include name, "" the path
-    if test "x""" != "x" ; then
-        CPPFLAGS="-I"" $SAVECPPFLAGS"
-        { echo "$as_me:$LINENO: result: cppflags=$CPPFLAGS" >&5
-echo "${ECHO_T}cppflags=$CPPFLAGS" >&6; }
-        cat >conftest.$ac_ext <<_ACEOF
-/* confdefs.h.  */
-_ACEOF
-cat confdefs.h >>conftest.$ac_ext
-cat >>conftest.$ac_ext <<_ACEOF
-/* end confdefs.h.  */
-#include <stdio.h>  /* for jpeglib.h */
-                 #include <fftw3.h>
-
-int
-main ()
-{
-
-  ;
-  return 0;
-}
-_ACEOF
-rm -f conftest.$ac_objext
-if { (ac_try="$ac_compile"
-case "(($ac_try" in
-  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
-  *) ac_try_echo=$ac_try;;
-esac
-eval "echo \"\$as_me:$LINENO: $ac_try_echo\"") >&5
-  (eval "$ac_compile") 2>conftest.er1
-  ac_status=$?
-  grep -v '^ *+' conftest.er1 >conftest.err
-  rm -f conftest.er1
-  cat conftest.err >&5
-  echo "$as_me:$LINENO: \$? = $ac_status" >&5
-  (exit $ac_status); } && {
-	 test -z "$ac_cxx_werror_flag" ||
-	 test ! -s conftest.err
-       } && test -s conftest.$ac_objext; then
-  with_fftwinc=""""
-             with_fftw_I="$CPPFLAGS"
-else
-  echo "$as_me: failed program was:" >&5
-sed 's/^/| /' conftest.$ac_ext >&5
-
-	with_fftwinc=""
-fi
-
-rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
-    else
-         { echo "$as_me:$LINENO: result: cppflags:$CPPFLAGS" >&5
-echo "${ECHO_T}cppflags:$CPPFLAGS" >&6; }
-         cat >conftest.$ac_ext <<_ACEOF
-/* confdefs.h.  */
-_ACEOF
-cat confdefs.h >>conftest.$ac_ext
-cat >>conftest.$ac_ext <<_ACEOF
-/* end confdefs.h.  */
-#include <stdio.h>  /* for jpeglib.h */
-                 #include <fftw3.h>
-
-int
-main ()
-{
-
-  ;
-  return 0;
-}
-_ACEOF
-rm -f conftest.$ac_objext
-if { (ac_try="$ac_compile"
-case "(($ac_try" in
-  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
-  *) ac_try_echo=$ac_try;;
-esac
-eval "echo \"\$as_me:$LINENO: $ac_try_echo\"") >&5
-  (eval "$ac_compile") 2>conftest.er1
-  ac_status=$?
-  grep -v '^ *+' conftest.er1 >conftest.err
-  rm -f conftest.er1
-  cat conftest.err >&5
-  echo "$as_me:$LINENO: \$? = $ac_status" >&5
-  (exit $ac_status); } && {
-	 test -z "$ac_cxx_werror_flag" ||
-	 test ! -s conftest.err
-       } && test -s conftest.$ac_objext; then
-  with_fftwinc="in default path"
-             with_fftw_I="$CPPFLAGS"
-else
-  echo "$as_me: failed program was:" >&5
-sed 's/^/| /' conftest.$ac_ext >&5
-
-	with_fftwinc=""
-fi
-
-rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
-    fi
-    # restore the state
-    ac_ext=c
-ac_cpp='$CPP $CPPFLAGS'
-ac_compile='$CC -c $CFLAGS $CPPFLAGS conftest.$ac_ext >&5'
-ac_link='$CC -o conftest$ac_exeext $CFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
-ac_compiler_gnu=$ac_cv_c_compiler_gnu
-
-    CPPFLAGS="$SAVECPPFLAGS"
-
         fi
     fi
 
@@ -24322,8 +24242,8 @@ echo "${ECHO_T}$with_hdf5lib" >&6; }
 
         if test ${with_hdf5:-""} != "no"; then
 
-    { echo "$as_me:$LINENO: checking for H5Cpp.h " >&5
-echo $ECHO_N "checking for H5Cpp.h ... $ECHO_C" >&6; }
+    { echo "$as_me:$LINENO: checking for hdf5.h " >&5
+echo $ECHO_N "checking for hdf5.h ... $ECHO_C" >&6; }
 
     # first check whether we got an explicit path
     if test "x$with_hdf5" = "xexplicit" -a "x$with_hdf5inc" != "x"; then
@@ -24338,11 +24258,9 @@ ac_link='$CXX -o conftest$ac_exeext $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ex
 ac_compiler_gnu=$ac_cv_cxx_compiler_gnu
 
 
-    # hdf5 is the package, H5Cpp.h the include name, "$with_hdf5inc" the path
+    # hdf5 is the package, hdf5.h the include name, "$with_hdf5inc" the path
     if test "x"$with_hdf5inc"" != "x" ; then
         CPPFLAGS="-I"$with_hdf5inc" $SAVECPPFLAGS"
-        { echo "$as_me:$LINENO: result: cppflags=$CPPFLAGS" >&5
-echo "${ECHO_T}cppflags=$CPPFLAGS" >&6; }
         cat >conftest.$ac_ext <<_ACEOF
 /* confdefs.h.  */
 _ACEOF
@@ -24350,7 +24268,7 @@ cat confdefs.h >>conftest.$ac_ext
 cat >>conftest.$ac_ext <<_ACEOF
 /* end confdefs.h.  */
 #include <stdio.h>  /* for jpeglib.h */
-                 #include <H5Cpp.h>
+                 #include <hdf5.h>
 
 int
 main ()
@@ -24388,8 +24306,6 @@ fi
 
 rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
     else
-         { echo "$as_me:$LINENO: result: cppflags:$CPPFLAGS" >&5
-echo "${ECHO_T}cppflags:$CPPFLAGS" >&6; }
          cat >conftest.$ac_ext <<_ACEOF
 /* confdefs.h.  */
 _ACEOF
@@ -24397,7 +24313,7 @@ cat confdefs.h >>conftest.$ac_ext
 cat >>conftest.$ac_ext <<_ACEOF
 /* end confdefs.h.  */
 #include <stdio.h>  /* for jpeglib.h */
-                 #include <H5Cpp.h>
+                 #include <hdf5.h>
 
 int
 main ()
@@ -24447,9 +24363,121 @@ ac_compiler_gnu=$ac_cv_c_compiler_gnu
     else
         # otherwise check whether the library is found without explicit path
         # specification (e.g. because it is in /usr/lib)
-#if test "x$with_[hdf5]inc" = "x" ; then
-#            VIGRA_FIND_INCLUDE_EXPLICIT(hdf5, H5Cpp.h, "")
-#        fi
+        if test "x$with_hdf5inc" = "x" ; then
+
+    # save the state
+    SAVECPPFLAGS="$CPPFLAGS"
+
+    ac_ext=cpp
+ac_cpp='$CXXCPP $CPPFLAGS'
+ac_compile='$CXX -c $CXXFLAGS $CPPFLAGS conftest.$ac_ext >&5'
+ac_link='$CXX -o conftest$ac_exeext $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
+ac_compiler_gnu=$ac_cv_cxx_compiler_gnu
+
+
+    # hdf5 is the package, hdf5.h the include name, "" the path
+    if test "x""" != "x" ; then
+        CPPFLAGS="-I"" $SAVECPPFLAGS"
+        cat >conftest.$ac_ext <<_ACEOF
+/* confdefs.h.  */
+_ACEOF
+cat confdefs.h >>conftest.$ac_ext
+cat >>conftest.$ac_ext <<_ACEOF
+/* end confdefs.h.  */
+#include <stdio.h>  /* for jpeglib.h */
+                 #include <hdf5.h>
+
+int
+main ()
+{
+
+  ;
+  return 0;
+}
+_ACEOF
+rm -f conftest.$ac_objext
+if { (ac_try="$ac_compile"
+case "(($ac_try" in
+  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
+  *) ac_try_echo=$ac_try;;
+esac
+eval "echo \"\$as_me:$LINENO: $ac_try_echo\"") >&5
+  (eval "$ac_compile") 2>conftest.er1
+  ac_status=$?
+  grep -v '^ *+' conftest.er1 >conftest.err
+  rm -f conftest.er1
+  cat conftest.err >&5
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); } && {
+	 test -z "$ac_cxx_werror_flag" ||
+	 test ! -s conftest.err
+       } && test -s conftest.$ac_objext; then
+  with_hdf5inc=""""
+             with_hdf5_I="$CPPFLAGS"
+else
+  echo "$as_me: failed program was:" >&5
+sed 's/^/| /' conftest.$ac_ext >&5
+
+	with_hdf5inc=""
+fi
+
+rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
+    else
+         cat >conftest.$ac_ext <<_ACEOF
+/* confdefs.h.  */
+_ACEOF
+cat confdefs.h >>conftest.$ac_ext
+cat >>conftest.$ac_ext <<_ACEOF
+/* end confdefs.h.  */
+#include <stdio.h>  /* for jpeglib.h */
+                 #include <hdf5.h>
+
+int
+main ()
+{
+
+  ;
+  return 0;
+}
+_ACEOF
+rm -f conftest.$ac_objext
+if { (ac_try="$ac_compile"
+case "(($ac_try" in
+  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
+  *) ac_try_echo=$ac_try;;
+esac
+eval "echo \"\$as_me:$LINENO: $ac_try_echo\"") >&5
+  (eval "$ac_compile") 2>conftest.er1
+  ac_status=$?
+  grep -v '^ *+' conftest.er1 >conftest.err
+  rm -f conftest.er1
+  cat conftest.err >&5
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); } && {
+	 test -z "$ac_cxx_werror_flag" ||
+	 test ! -s conftest.err
+       } && test -s conftest.$ac_objext; then
+  with_hdf5inc="in default path"
+             with_hdf5_I="$CPPFLAGS"
+else
+  echo "$as_me: failed program was:" >&5
+sed 's/^/| /' conftest.$ac_ext >&5
+
+	with_hdf5inc=""
+fi
+
+rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
+    fi
+    # restore the state
+    ac_ext=c
+ac_cpp='$CPP $CPPFLAGS'
+ac_compile='$CC -c $CFLAGS $CPPFLAGS conftest.$ac_ext >&5'
+ac_link='$CC -o conftest$ac_exeext $CFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
+ac_compiler_gnu=$ac_cv_c_compiler_gnu
+
+    CPPFLAGS="$SAVECPPFLAGS"
+
+        fi
         # if this didn't work check whether the library path is in the
         # same tree as the library path, or among the directories in the
         # original $CPPFLAGS or a few standard directories
@@ -24480,11 +24508,9 @@ ac_link='$CXX -o conftest$ac_exeext $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ex
 ac_compiler_gnu=$ac_cv_cxx_compiler_gnu
 
 
-    # hdf5 is the package, H5Cpp.h the include name, "$i$PATHPOSTFIX" the path
+    # hdf5 is the package, hdf5.h the include name, "$i$PATHPOSTFIX" the path
     if test "x"$i$PATHPOSTFIX"" != "x" ; then
         CPPFLAGS="-I"$i$PATHPOSTFIX" $SAVECPPFLAGS"
-        { echo "$as_me:$LINENO: result: cppflags=$CPPFLAGS" >&5
-echo "${ECHO_T}cppflags=$CPPFLAGS" >&6; }
         cat >conftest.$ac_ext <<_ACEOF
 /* confdefs.h.  */
 _ACEOF
@@ -24492,7 +24518,7 @@ cat confdefs.h >>conftest.$ac_ext
 cat >>conftest.$ac_ext <<_ACEOF
 /* end confdefs.h.  */
 #include <stdio.h>  /* for jpeglib.h */
-                 #include <H5Cpp.h>
+                 #include <hdf5.h>
 
 int
 main ()
@@ -24530,8 +24556,6 @@ fi
 
 rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
     else
-         { echo "$as_me:$LINENO: result: cppflags:$CPPFLAGS" >&5
-echo "${ECHO_T}cppflags:$CPPFLAGS" >&6; }
          cat >conftest.$ac_ext <<_ACEOF
 /* confdefs.h.  */
 _ACEOF
@@ -24539,7 +24563,7 @@ cat confdefs.h >>conftest.$ac_ext
 cat >>conftest.$ac_ext <<_ACEOF
 /* end confdefs.h.  */
 #include <stdio.h>  /* for jpeglib.h */
-                 #include <H5Cpp.h>
+                 #include <hdf5.h>
 
 int
 main ()
@@ -24589,126 +24613,6 @@ ac_compiler_gnu=$ac_cv_c_compiler_gnu
                 if test "x$with_hdf5inc" != "x" ; then break; fi
             done
         fi
-
-        if test "x$with_hdf5inc" = "x" ; then
-
-    # save the state
-    SAVECPPFLAGS="$CPPFLAGS"
-
-    ac_ext=cpp
-ac_cpp='$CXXCPP $CPPFLAGS'
-ac_compile='$CXX -c $CXXFLAGS $CPPFLAGS conftest.$ac_ext >&5'
-ac_link='$CXX -o conftest$ac_exeext $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
-ac_compiler_gnu=$ac_cv_cxx_compiler_gnu
-
-
-    # hdf5 is the package, H5Cpp.h the include name, "" the path
-    if test "x""" != "x" ; then
-        CPPFLAGS="-I"" $SAVECPPFLAGS"
-        { echo "$as_me:$LINENO: result: cppflags=$CPPFLAGS" >&5
-echo "${ECHO_T}cppflags=$CPPFLAGS" >&6; }
-        cat >conftest.$ac_ext <<_ACEOF
-/* confdefs.h.  */
-_ACEOF
-cat confdefs.h >>conftest.$ac_ext
-cat >>conftest.$ac_ext <<_ACEOF
-/* end confdefs.h.  */
-#include <stdio.h>  /* for jpeglib.h */
-                 #include <H5Cpp.h>
-
-int
-main ()
-{
-
-  ;
-  return 0;
-}
-_ACEOF
-rm -f conftest.$ac_objext
-if { (ac_try="$ac_compile"
-case "(($ac_try" in
-  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
-  *) ac_try_echo=$ac_try;;
-esac
-eval "echo \"\$as_me:$LINENO: $ac_try_echo\"") >&5
-  (eval "$ac_compile") 2>conftest.er1
-  ac_status=$?
-  grep -v '^ *+' conftest.er1 >conftest.err
-  rm -f conftest.er1
-  cat conftest.err >&5
-  echo "$as_me:$LINENO: \$? = $ac_status" >&5
-  (exit $ac_status); } && {
-	 test -z "$ac_cxx_werror_flag" ||
-	 test ! -s conftest.err
-       } && test -s conftest.$ac_objext; then
-  with_hdf5inc=""""
-             with_hdf5_I="$CPPFLAGS"
-else
-  echo "$as_me: failed program was:" >&5
-sed 's/^/| /' conftest.$ac_ext >&5
-
-	with_hdf5inc=""
-fi
-
-rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
-    else
-         { echo "$as_me:$LINENO: result: cppflags:$CPPFLAGS" >&5
-echo "${ECHO_T}cppflags:$CPPFLAGS" >&6; }
-         cat >conftest.$ac_ext <<_ACEOF
-/* confdefs.h.  */
-_ACEOF
-cat confdefs.h >>conftest.$ac_ext
-cat >>conftest.$ac_ext <<_ACEOF
-/* end confdefs.h.  */
-#include <stdio.h>  /* for jpeglib.h */
-                 #include <H5Cpp.h>
-
-int
-main ()
-{
-
-  ;
-  return 0;
-}
-_ACEOF
-rm -f conftest.$ac_objext
-if { (ac_try="$ac_compile"
-case "(($ac_try" in
-  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
-  *) ac_try_echo=$ac_try;;
-esac
-eval "echo \"\$as_me:$LINENO: $ac_try_echo\"") >&5
-  (eval "$ac_compile") 2>conftest.er1
-  ac_status=$?
-  grep -v '^ *+' conftest.er1 >conftest.err
-  rm -f conftest.er1
-  cat conftest.err >&5
-  echo "$as_me:$LINENO: \$? = $ac_status" >&5
-  (exit $ac_status); } && {
-	 test -z "$ac_cxx_werror_flag" ||
-	 test ! -s conftest.err
-       } && test -s conftest.$ac_objext; then
-  with_hdf5inc="in default path"
-             with_hdf5_I="$CPPFLAGS"
-else
-  echo "$as_me: failed program was:" >&5
-sed 's/^/| /' conftest.$ac_ext >&5
-
-	with_hdf5inc=""
-fi
-
-rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
-    fi
-    # restore the state
-    ac_ext=c
-ac_cpp='$CPP $CPPFLAGS'
-ac_compile='$CC -c $CFLAGS $CPPFLAGS conftest.$ac_ext >&5'
-ac_link='$CC -o conftest$ac_exeext $CFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
-ac_compiler_gnu=$ac_cv_c_compiler_gnu
-
-    CPPFLAGS="$SAVECPPFLAGS"
-
-        fi
     fi
 
     # report the results back
@@ -24733,7 +24637,7 @@ echo "${ECHO_T}$with_hdf5inc" >&6; }
 
 
 if test "$with_hdf5" = "yes"; then
-    HDF5_LIB="$with_hdf5_L $with_hdf5_l"
+    HDF5_LIB="$with_hdf5_L $with_hdf5_l -lhdf5_hl"
     IMPEX_DEPLIBS="$HDF5_LIB $IMPEX_DEPLIBS"
     LIBCPPFLAGS="-DHasHDF5 $with_hdf5_I $LIBCPPFLAGS"
 else
@@ -24956,8 +24860,6 @@ ac_compiler_gnu=$ac_cv_cxx_compiler_gnu
     # boostpython is the package, boost/python/converter/registry.hpp the include name, "$with_boostpythoninc" the path
     if test "x"$with_boostpythoninc"" != "x" ; then
         CPPFLAGS="-I"$with_boostpythoninc" $SAVECPPFLAGS"
-        { echo "$as_me:$LINENO: result: cppflags=$CPPFLAGS" >&5
-echo "${ECHO_T}cppflags=$CPPFLAGS" >&6; }
         cat >conftest.$ac_ext <<_ACEOF
 /* confdefs.h.  */
 _ACEOF
@@ -25003,8 +24905,6 @@ fi
 
 rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
     else
-         { echo "$as_me:$LINENO: result: cppflags:$CPPFLAGS" >&5
-echo "${ECHO_T}cppflags:$CPPFLAGS" >&6; }
          cat >conftest.$ac_ext <<_ACEOF
 /* confdefs.h.  */
 _ACEOF
@@ -25062,9 +24962,121 @@ ac_compiler_gnu=$ac_cv_c_compiler_gnu
     else
         # otherwise check whether the library is found without explicit path
         # specification (e.g. because it is in /usr/lib)
-#if test "x$with_[boostpython]inc" = "x" ; then
-#            VIGRA_FIND_INCLUDE_EXPLICIT(boostpython, boost/python/converter/registry.hpp, "")
-#        fi
+        if test "x$with_boostpythoninc" = "x" ; then
+
+    # save the state
+    SAVECPPFLAGS="$CPPFLAGS"
+
+    ac_ext=cpp
+ac_cpp='$CXXCPP $CPPFLAGS'
+ac_compile='$CXX -c $CXXFLAGS $CPPFLAGS conftest.$ac_ext >&5'
+ac_link='$CXX -o conftest$ac_exeext $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
+ac_compiler_gnu=$ac_cv_cxx_compiler_gnu
+
+
+    # boostpython is the package, boost/python/converter/registry.hpp the include name, "" the path
+    if test "x""" != "x" ; then
+        CPPFLAGS="-I"" $SAVECPPFLAGS"
+        cat >conftest.$ac_ext <<_ACEOF
+/* confdefs.h.  */
+_ACEOF
+cat confdefs.h >>conftest.$ac_ext
+cat >>conftest.$ac_ext <<_ACEOF
+/* end confdefs.h.  */
+#include <stdio.h>  /* for jpeglib.h */
+                 #include <boost/python/converter/registry.hpp>
+
+int
+main ()
+{
+
+  ;
+  return 0;
+}
+_ACEOF
+rm -f conftest.$ac_objext
+if { (ac_try="$ac_compile"
+case "(($ac_try" in
+  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
+  *) ac_try_echo=$ac_try;;
+esac
+eval "echo \"\$as_me:$LINENO: $ac_try_echo\"") >&5
+  (eval "$ac_compile") 2>conftest.er1
+  ac_status=$?
+  grep -v '^ *+' conftest.er1 >conftest.err
+  rm -f conftest.er1
+  cat conftest.err >&5
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); } && {
+	 test -z "$ac_cxx_werror_flag" ||
+	 test ! -s conftest.err
+       } && test -s conftest.$ac_objext; then
+  with_boostpythoninc=""""
+             with_boostpython_I="$CPPFLAGS"
+else
+  echo "$as_me: failed program was:" >&5
+sed 's/^/| /' conftest.$ac_ext >&5
+
+	with_boostpythoninc=""
+fi
+
+rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
+    else
+         cat >conftest.$ac_ext <<_ACEOF
+/* confdefs.h.  */
+_ACEOF
+cat confdefs.h >>conftest.$ac_ext
+cat >>conftest.$ac_ext <<_ACEOF
+/* end confdefs.h.  */
+#include <stdio.h>  /* for jpeglib.h */
+                 #include <boost/python/converter/registry.hpp>
+
+int
+main ()
+{
+
+  ;
+  return 0;
+}
+_ACEOF
+rm -f conftest.$ac_objext
+if { (ac_try="$ac_compile"
+case "(($ac_try" in
+  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
+  *) ac_try_echo=$ac_try;;
+esac
+eval "echo \"\$as_me:$LINENO: $ac_try_echo\"") >&5
+  (eval "$ac_compile") 2>conftest.er1
+  ac_status=$?
+  grep -v '^ *+' conftest.er1 >conftest.err
+  rm -f conftest.er1
+  cat conftest.err >&5
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); } && {
+	 test -z "$ac_cxx_werror_flag" ||
+	 test ! -s conftest.err
+       } && test -s conftest.$ac_objext; then
+  with_boostpythoninc="in default path"
+             with_boostpython_I="$CPPFLAGS"
+else
+  echo "$as_me: failed program was:" >&5
+sed 's/^/| /' conftest.$ac_ext >&5
+
+	with_boostpythoninc=""
+fi
+
+rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
+    fi
+    # restore the state
+    ac_ext=c
+ac_cpp='$CPP $CPPFLAGS'
+ac_compile='$CC -c $CFLAGS $CPPFLAGS conftest.$ac_ext >&5'
+ac_link='$CC -o conftest$ac_exeext $CFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
+ac_compiler_gnu=$ac_cv_c_compiler_gnu
+
+    CPPFLAGS="$SAVECPPFLAGS"
+
+        fi
         # if this didn't work check whether the library path is in the
         # same tree as the library path, or among the directories in the
         # original $CPPFLAGS or a few standard directories
@@ -25098,8 +25110,6 @@ ac_compiler_gnu=$ac_cv_cxx_compiler_gnu
     # boostpython is the package, boost/python/converter/registry.hpp the include name, "$i$PATHPOSTFIX" the path
     if test "x"$i$PATHPOSTFIX"" != "x" ; then
         CPPFLAGS="-I"$i$PATHPOSTFIX" $SAVECPPFLAGS"
-        { echo "$as_me:$LINENO: result: cppflags=$CPPFLAGS" >&5
-echo "${ECHO_T}cppflags=$CPPFLAGS" >&6; }
         cat >conftest.$ac_ext <<_ACEOF
 /* confdefs.h.  */
 _ACEOF
@@ -25145,8 +25155,6 @@ fi
 
 rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
     else
-         { echo "$as_me:$LINENO: result: cppflags:$CPPFLAGS" >&5
-echo "${ECHO_T}cppflags:$CPPFLAGS" >&6; }
          cat >conftest.$ac_ext <<_ACEOF
 /* confdefs.h.  */
 _ACEOF
@@ -25203,126 +25211,6 @@ ac_compiler_gnu=$ac_cv_c_compiler_gnu
 
                 if test "x$with_boostpythoninc" != "x" ; then break; fi
             done
-        fi
-
-        if test "x$with_boostpythoninc" = "x" ; then
-
-    # save the state
-    SAVECPPFLAGS="$CPPFLAGS"
-
-    ac_ext=cpp
-ac_cpp='$CXXCPP $CPPFLAGS'
-ac_compile='$CXX -c $CXXFLAGS $CPPFLAGS conftest.$ac_ext >&5'
-ac_link='$CXX -o conftest$ac_exeext $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
-ac_compiler_gnu=$ac_cv_cxx_compiler_gnu
-
-
-    # boostpython is the package, boost/python/converter/registry.hpp the include name, "" the path
-    if test "x""" != "x" ; then
-        CPPFLAGS="-I"" $SAVECPPFLAGS"
-        { echo "$as_me:$LINENO: result: cppflags=$CPPFLAGS" >&5
-echo "${ECHO_T}cppflags=$CPPFLAGS" >&6; }
-        cat >conftest.$ac_ext <<_ACEOF
-/* confdefs.h.  */
-_ACEOF
-cat confdefs.h >>conftest.$ac_ext
-cat >>conftest.$ac_ext <<_ACEOF
-/* end confdefs.h.  */
-#include <stdio.h>  /* for jpeglib.h */
-                 #include <boost/python/converter/registry.hpp>
-
-int
-main ()
-{
-
-  ;
-  return 0;
-}
-_ACEOF
-rm -f conftest.$ac_objext
-if { (ac_try="$ac_compile"
-case "(($ac_try" in
-  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
-  *) ac_try_echo=$ac_try;;
-esac
-eval "echo \"\$as_me:$LINENO: $ac_try_echo\"") >&5
-  (eval "$ac_compile") 2>conftest.er1
-  ac_status=$?
-  grep -v '^ *+' conftest.er1 >conftest.err
-  rm -f conftest.er1
-  cat conftest.err >&5
-  echo "$as_me:$LINENO: \$? = $ac_status" >&5
-  (exit $ac_status); } && {
-	 test -z "$ac_cxx_werror_flag" ||
-	 test ! -s conftest.err
-       } && test -s conftest.$ac_objext; then
-  with_boostpythoninc=""""
-             with_boostpython_I="$CPPFLAGS"
-else
-  echo "$as_me: failed program was:" >&5
-sed 's/^/| /' conftest.$ac_ext >&5
-
-	with_boostpythoninc=""
-fi
-
-rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
-    else
-         { echo "$as_me:$LINENO: result: cppflags:$CPPFLAGS" >&5
-echo "${ECHO_T}cppflags:$CPPFLAGS" >&6; }
-         cat >conftest.$ac_ext <<_ACEOF
-/* confdefs.h.  */
-_ACEOF
-cat confdefs.h >>conftest.$ac_ext
-cat >>conftest.$ac_ext <<_ACEOF
-/* end confdefs.h.  */
-#include <stdio.h>  /* for jpeglib.h */
-                 #include <boost/python/converter/registry.hpp>
-
-int
-main ()
-{
-
-  ;
-  return 0;
-}
-_ACEOF
-rm -f conftest.$ac_objext
-if { (ac_try="$ac_compile"
-case "(($ac_try" in
-  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
-  *) ac_try_echo=$ac_try;;
-esac
-eval "echo \"\$as_me:$LINENO: $ac_try_echo\"") >&5
-  (eval "$ac_compile") 2>conftest.er1
-  ac_status=$?
-  grep -v '^ *+' conftest.er1 >conftest.err
-  rm -f conftest.er1
-  cat conftest.err >&5
-  echo "$as_me:$LINENO: \$? = $ac_status" >&5
-  (exit $ac_status); } && {
-	 test -z "$ac_cxx_werror_flag" ||
-	 test ! -s conftest.err
-       } && test -s conftest.$ac_objext; then
-  with_boostpythoninc="in default path"
-             with_boostpython_I="$CPPFLAGS"
-else
-  echo "$as_me: failed program was:" >&5
-sed 's/^/| /' conftest.$ac_ext >&5
-
-	with_boostpythoninc=""
-fi
-
-rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
-    fi
-    # restore the state
-    ac_ext=c
-ac_cpp='$CPP $CPPFLAGS'
-ac_compile='$CC -c $CFLAGS $CPPFLAGS conftest.$ac_ext >&5'
-ac_link='$CC -o conftest$ac_exeext $CFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
-ac_compiler_gnu=$ac_cv_c_compiler_gnu
-
-    CPPFLAGS="$SAVECPPFLAGS"
-
         fi
     fi
 

@@ -233,9 +233,9 @@ dnl-------------------------------------------------------------------
 dnl           hdf5 package configurations
 dnl-------------------------------------------------------------------
 
-VIGRA_FIND_PACKAGE(hdf5, hdf5, H5Cpp.h)
+VIGRA_FIND_PACKAGE(hdf5, hdf5, hdf5.h)
 if test "$with_hdf5" = "yes"; then
-    HDF5_LIB="$with_hdf5_L $with_hdf5_l"
+    HDF5_LIB="$with_hdf5_L $with_hdf5_l -lhdf5_hl"
     IMPEX_DEPLIBS="$HDF5_LIB $IMPEX_DEPLIBS"
     LIBCPPFLAGS="-DHasHDF5 $with_hdf5_I $LIBCPPFLAGS"
 else

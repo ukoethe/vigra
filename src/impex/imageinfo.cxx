@@ -989,6 +989,8 @@ MultiArrayIndex VolumeImportInfo::depth() const { return shape_[2]; }
 const std::string & VolumeImportInfo::name() const { return name_; }
 const std::string & VolumeImportInfo::description() const { return description_; }
 
+#ifdef HasHDF5
+
 HDF5ImportInfo::HDF5ImportInfo(const std::string &filename, const std::string &path)
 : m_file(0),
   m_dataset(0),
@@ -1175,5 +1177,7 @@ const std::string & HDF5ImportInfo::getDatasetName() const { return m_datasetnam
 const std::string & HDF5ImportInfo::getFileName() const { return m_filename; }
 hid_t HDF5ImportInfo::getH5FileHandle() const { return m_file; }
 hid_t HDF5ImportInfo::getDatasetHandle() const { return m_dataset; }
+
+#endif // HasHDF5
 
 } // namespace vigra
