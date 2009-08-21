@@ -991,16 +991,17 @@ const std::string & VolumeImportInfo::description() const { return description_;
 
 HDF5ImportInfo::HDF5ImportInfo(const std::string &filename, const std::string &datasetname)
 {
-	try {
+	try 
+	{
         /*
          * Turn off the auto-printing when failure occurs so that we can
          * handle the errors appropriately
          */
-        Exception::dontPrint();
+        H5::Exception::dontPrint();
 
-		m_file = H5File( filename, H5F_ACC_RDONLY );
+		m_file = H5::H5File( filename, H5F_ACC_RDONLY );
 
-		DataSet dset = m_file.openDataSet(datasetname);
+		H5::DataSet dset = m_file.openDataSet(datasetname);
 
 		m_filename = filename;
 		m_datasetname = datasetname;
@@ -1026,18 +1027,10 @@ HDF5ImportInfo::HDF5ImportInfo(const std::string &filename, const std::string &d
 		if(dset.getTypeClass()==GetH5DataType<double>().getClass())
 			m_pixeltype = "DOUBLE";
 
-#if 0
-    m_dims = ArrayVector<int>(m_dimensions);
-		hsize_t* size = new hsize_t[m_dimensions];
-		dset.getSpace().getSimpleExtentDims(size, NULL);
-		for(int i=0; i<m_dimensions; ++i)
-			m_dims[i] = size[i];
-		delete size;
-#endif
-    m_dims.resize(m_dimensions);
+        m_dims.resize(m_dimensions);
 		dset.getSpace().getSimpleExtentDims(m_dims.begin(), NULL);
     }
-    catch( GroupIException not_found_error )
+    catch( H5::GroupIException & )
     {
 		vigra_precondition( false, "Dataset not found in HDF5 file." );
     }
@@ -1075,7 +1068,7 @@ MultiArrayIndex HDF5ImportInfo::shapeOfDimension(const int dim) const { return (
 MultiArrayIndex HDF5ImportInfo::numDimensions() const { return m_dimensions; }
 const std::string & HDF5ImportInfo::getDatasetName() const { return m_datasetname; }
 const std::string & HDF5ImportInfo::getFileName() const { return m_filename; }
-const H5File& HDF5ImportInfo::getH5FileHandle() const { return m_file; }
-const DataSet& HDF5ImportInfo::getDatasetHandle() const { return m_dataset; }
+const H5::H5File& HDF5ImportInfo::getH5FileHandle() const { return m_file; }
+const H5::DataSet& HDF5ImportInfo::getDatasetHandle() const { return m_dataset; }
 
 } // namespace vigra
