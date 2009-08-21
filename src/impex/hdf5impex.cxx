@@ -1,72 +1,170 @@
 #include "vigra/hdf5impex.hxx"
-#include "vigra/numpy_array.hxx"
-#include "vigra/numpy_array_converters.hxx"
+#include "vigra/multi_array.hxx"
 #include <iostream>
 #include <cstring>
 #include <cstdio>
 
-using namespace vigra;
+namespace vigra {
 
-HDF5ImportInfo::HDF5ImportInfo(const std::string &filename, const std::string &datasetname)
+HDF5ImportInfo::HDF5ImportInfo(const std::string &filename, const std::string &path)
+: m_file(0),
+  m_dataset(0),
+  m_filename(filename),
+  m_datasetname(path)
 {
-	try {
-        /*
-         * Turn off the auto-printing when failure occurs so that we can
-         * handle the errors appropriately
-         */
-        Exception::dontPrint();
+	std::string path_name(path), group_name, data_set_name, message;
+    hid_t group = 0, dspace = 0, dtype = 0, native_type = 0;
 
-		m_file = H5File( filename, H5F_ACC_RDONLY );
-
-		DataSet dset = m_file.openDataSet(datasetname);
-
-		m_filename = filename;
-		m_datasetname = datasetname;
-		m_dimensions = dset.getSpace().getSimpleExtentNdims();
-		m_dataset = dset;
-
-		vigra_precondition( m_dimensions>=2, "Number of dimensions is lower than 2. Not an image!" );
-
-		if(dset.getTypeClass()==GetH5DataType<float>().getClass())
-			m_pixeltype = "FLOAT";
-		if(dset.getTypeClass()==GetH5DataType<UInt8>().getClass())
-			m_pixeltype = "UINT8";
-		if(dset.getTypeClass()==GetH5DataType<Int8>().getClass())
-			m_pixeltype = "INT8";
-		if(dset.getTypeClass()==GetH5DataType<UInt16>().getClass())
-			m_pixeltype = "UINT16";
-		if(dset.getTypeClass()==GetH5DataType<Int16>().getClass())
-			m_pixeltype = "INT16";
-		if(dset.getTypeClass()==GetH5DataType<UInt32>().getClass())
-			m_pixeltype = "UINT32";
-		if(dset.getTypeClass()==GetH5DataType<Int32>().getClass())
-			m_pixeltype = "INT32";
-		if(dset.getTypeClass()==GetH5DataType<double>().getClass())
-			m_pixeltype = "DOUBLE";
-
-		m_dims = ArrayVector<int>(m_dimensions);
-		hsize_t* size = new hsize_t[m_dimensions];
-		dset.getSpace().getSimpleExtentDims(size, NULL);
-		for(int i=0; i<m_dimensions; ++i)
-			m_dims[i] = size[i];
-		delete size;
-
-    }
-    catch( GroupIException not_found_error )
+    m_file = H5Fopen( filename.c_str(), H5F_ACC_RDONLY, H5P_DEFAULT);
+    if(m_file < 0)
     {
-		vigra_precondition( false, "Dataset not found in HDF5 file." );
+        message = std::string("HDF5ImportInfo(): Unable to open file '") + filename + "'.";
+        goto cleanup;
+    }
+    
+	std::string::size_type delimiter = path_name.rfind('/');
+	if(delimiter == std::string::npos)
+	{
+	    data_set_name = path_name;
+	}
+	else
+	{
+	    group_name = std::string(path_name.begin(), path_name.begin()+delimiter);
+	    data_set_name = std::string(path_name.begin()+delimiter+1, path_name.end());
+	}
+	
+	if(group_name != "")
+	{
+#if H5_VERS_MINOR <= 6
+	    group = H5Gopen(m_file, group_name.c_str());
+#else
+	    group = H5Gopen(m_file, group_name.c_str(), H5P_DEFAULT);
+#endif
+	    if(group < 0)
+	    {
+	        message = std::string("HDF5ImportInfo(): Unable to open group '") + group_name + "'.";
+	        goto cleanup;
+	    }
+	}
+	else
+	{
+	    group = m_file;
+	}
+	
+#if H5_VERS_MINOR <= 6
+    m_dataset = H5Dopen(group, data_set_name.c_str());
+#else
+    m_dataset = H5Dopen(group, data_set_name.c_str(), H5P_DEFAULT);
+#endif
+    if(m_dataset < 0)
+    {
+        message = std::string("HDF5ImportInfo(): Unable to open data set '") + path + "'.";
+        goto cleanup;
+    }
+    
+    dspace = H5Dget_space(m_dataset);
+    if(dspace < 0)
+    {
+        message = "HDF5ImportInfo(): Unable to open data space.";
+        goto cleanup;
+    }
+    
+    m_dimensions = H5Sget_simple_extent_ndims(dspace);
+    if(m_dimensions < 2)
+    {
+        message = "HDF5ImportInfo(): Number of dimensions is lower than 2. Not an image!" ;
+        goto cleanup;
+    }
+    
+    m_dims.resize(m_dimensions);
+    H5Sget_simple_extent_dims(dspace, m_dims.begin(), 0);
+    
+    dtype = H5Dget_type(m_dataset);
+    if(dtype < 0)
+    {
+        message = "HDF5ImportInfo(): Unable to retrieve data type" ;
+        goto cleanup;
+    }
+    native_type = H5Tget_native_type(dtype, H5T_DIR_ASCEND);
+    if(native_type < 0)
+    {
+        message = "HDF5ImportInfo(): Unable to retrieve data type" ;
+        goto cleanup;
+    }
+
+    if(H5Tequal(native_type, H5T_NATIVE_LLONG) && sizeof(long long) == 4)
+        m_pixeltype = "INT32";
+    if(H5Tequal(native_type, H5T_NATIVE_LLONG) && sizeof(long long) == 8)
+        m_pixeltype = "INT64";
+    if(H5Tequal(native_type, H5T_NATIVE_LONG) && sizeof(long) == 4)
+        m_pixeltype = "INT32";
+    if(H5Tequal(native_type, H5T_NATIVE_LONG) && sizeof(long) == 8)
+        m_pixeltype = "INT64";
+    if(H5Tequal(native_type, H5T_NATIVE_INT) && sizeof(int) == 4)
+        m_pixeltype = "INT32";
+    if(H5Tequal(native_type, H5T_NATIVE_INT) && sizeof(int) == 8)
+        m_pixeltype = "INT64";
+    if(H5Tequal(native_type, H5T_NATIVE_SHORT))
+        m_pixeltype = "INT16";
+    if(H5Tequal(native_type, H5T_NATIVE_CHAR))
+        m_pixeltype = "INT8";
+
+    if(H5Tequal(native_type, H5T_NATIVE_ULLONG) && sizeof(unsigned long long) == 4)
+        m_pixeltype = "UINT32";
+    if(H5Tequal(native_type, H5T_NATIVE_ULLONG) && sizeof(unsigned long long) == 8)
+        m_pixeltype = "UINT64";
+    if(H5Tequal(native_type, H5T_NATIVE_ULONG) && sizeof(unsigned long) == 4)
+        m_pixeltype = "UINT32";
+    if(H5Tequal(native_type, H5T_NATIVE_ULONG) && sizeof(unsigned long) == 8)
+        m_pixeltype = "UINT64";
+    if(H5Tequal(native_type, H5T_NATIVE_UINT) && sizeof(unsigned int) == 4)
+        m_pixeltype = "UINT32";
+    if(H5Tequal(native_type, H5T_NATIVE_UINT) && sizeof(unsigned int) == 8)
+        m_pixeltype = "UINT64";
+    if(H5Tequal(native_type, H5T_NATIVE_USHORT))
+        m_pixeltype = "UINT16";
+    if(H5Tequal(native_type, H5T_NATIVE_UCHAR))
+        m_pixeltype = "UINT8";
+
+    if(H5Tequal(native_type, H5T_NATIVE_LDOUBLE))
+        m_pixeltype = "LDOUBLE";
+    if(H5Tequal(native_type, H5T_NATIVE_DOUBLE))
+        m_pixeltype = "DOUBLE";
+    if(H5Tequal(native_type, H5T_NATIVE_FLOAT))
+        m_pixeltype = "FLOAT";
+                
+  cleanup:
+    if(native_type)
+        H5Tclose(native_type);
+    if(dtype)
+        H5Tclose(dtype);
+    if(dspace)
+        H5Sclose(dspace);
+    if(group_name != "" && group)
+        H5Gclose(group);
+    if(message != "")
+    {
+        if(m_dataset)
+            H5Dclose(m_dataset);
+        if(m_file)
+            H5Fclose(m_file);
+        vigra_postcondition(false, message.c_str());
     }
 }
 
 HDF5ImportInfo::~HDF5ImportInfo()
 {
+    if(m_dataset)
+        H5Dclose(m_dataset);
+    if(m_file)
+        H5Fclose(m_file);
 }
 
 HDF5ImportInfo::PixelType HDF5ImportInfo::pixelType() const
 {
    const std::string pixeltype=HDF5ImportInfo::getPixelType();
    if (pixeltype == "UINT8")
-	   return HDF5ImportInfo::UINT8;
+       return HDF5ImportInfo::UINT8;
    if (pixeltype == "INT16")
      return HDF5ImportInfo::INT16;
    if (pixeltype == "UINT16")
@@ -82,16 +180,22 @@ HDF5ImportInfo::PixelType HDF5ImportInfo::pixelType() const
    vigra_fail( "internal error: unknown pixel type" );
    return HDF5ImportInfo::PixelType();
 }
+
 const char * HDF5ImportInfo::getPixelType() const
 {
     return m_pixeltype.c_str();
 }
-MultiArrayIndex HDF5ImportInfo::shapeOfDimension(const int dim) const { return m_dims[dim]; };
+
+MultiArrayIndex HDF5ImportInfo::shapeOfDimension(const int dim) const { return (MultiArrayIndex)m_dims[dim]; };
 MultiArrayIndex HDF5ImportInfo::numDimensions() const { return m_dimensions; }
 const std::string & HDF5ImportInfo::getDatasetName() const { return m_datasetname; }
 const std::string & HDF5ImportInfo::getFileName() const { return m_filename; }
-const H5File& HDF5ImportInfo::getH5FileHandle() const { return m_file; }
-const DataSet& HDF5ImportInfo::getDatasetHandle() const { return m_dataset; }
+hid_t HDF5ImportInfo::getH5FileHandle() const { return m_file; }
+hid_t HDF5ImportInfo::getDatasetHandle() const { return m_dataset; }
+
+} // namespace vigra
+
+using namespace vigra;
 
 
 int main (void)
@@ -101,6 +205,7 @@ int main (void)
      */
     try
     {
+#if 0
         /*
          * Turn off the auto-printing when failure occurs so that we can
          * handle the errors appropriately
@@ -210,6 +315,41 @@ int main (void)
    catch( DataSpaceIException error )
    {
         error.printError();
+        return -1;
+   }
+#endif
+    hid_t file = H5Fcreate( "test.h5", H5F_ACC_TRUNC, H5P_DEFAULT, H5P_DEFAULT);
+    MultiArray<3, double> a(MultiArrayShape<3>::type(3,4,5));
+    for(int k=0; k<a.size(); ++k)
+        a[k] = k;
+    writeToHDF5File(file, "array", a);
+    MultiArray<3, int> aa(MultiArrayShape<3>::type(4,3,2));
+    for(int k=0; k<aa.size(); ++k)
+        aa[k] = k+100;
+    writeToHDF5File(file, "l1/l2/array2", aa);
+    H5Fclose(file);
+    
+    MultiArray<3, int> b;
+    {
+        HDF5ImportInfo info("test.h5", "array");
+        loadFromHDF5File(info, b);
+        std::cerr << "data type in group 'array': " << info.getPixelType() << "\n";
+        std::cerr << "shape in group 'array': " << info.shape() << "\n";
+        std::cerr << b(1,0,0) << "\n";
+    }
+    {
+        HDF5ImportInfo info("test.h5", "l1/l2/array2");
+        loadFromHDF5File(info, b);
+        std::cerr << "data type in group 'l1/l2/array2': " << info.getPixelType() << "\n";
+        std::cerr << "shape in group 'l1/l2/array2': " << info.shape() << "\n";
+        std::cerr << b(1,0,0) << "\n";
+    }    
+   }  // end of try block
+
+   // catch failure caused by the H5File operations
+   catch( std::exception & e )
+   {
+        std::cerr << e.what() << "\n";
         return -1;
    }
 

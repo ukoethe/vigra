@@ -38,11 +38,13 @@
 #define VIGRA_HDF5IMPEX_HXX
 
 #include <string>
-#include <H5Cpp.h>
-#ifndef H5std_string
-#define H5std_string std::string
-#endif
+#include <hdf5.h>
 
+#if H5_VERS_MINOR <= 6
+# include <H5LT.h>
+#else
+# include <hdf5_hl.h>
+#endif
 #include "impex.hxx"
 #include "multi_array.hxx"
 #include "multi_impex.hxx"
@@ -75,11 +77,16 @@ class HDF5ImportInfo
 
     VIGRA_EXPORT const std::string& getDatasetName() const;
 
-	VIGRA_EXPORT const H5::H5File& getH5FileHandle() const;
+	VIGRA_EXPORT hid_t getH5FileHandle() const;
 
-	VIGRA_EXPORT const H5::DataSet& getDatasetHandle() const;
+	VIGRA_EXPORT hid_t getDatasetHandle() const;
 
 	VIGRA_EXPORT MultiArrayIndex numDimensions() const;
+
+	VIGRA_EXPORT ArrayVector<hsize_t> const & shape() const
+	{
+	    return m_dims;
+	}
 
 	VIGRA_EXPORT MultiArrayIndex shapeOfDimension(const int dim) const;
 
@@ -121,189 +128,154 @@ class HDF5ImportInfo
     VIGRA_EXPORT PixelType pixelType() const;
 
   private:
-    H5::H5File m_file;
-	H5::DataSet m_dataset;
+    hid_t m_file;
+	hid_t m_dataset;
     std::string m_filename, m_datasetname, m_pixeltype;
-    MultiArrayIndex m_dimensions;
+    int m_dimensions;
 	ArrayVector<hsize_t> m_dims;
 };
 
 template<class type>
-inline H5::DataType GetH5DataType()
+inline hid_t GetH5DataType()
 {return 0;}
 
 #define VIGRA_H5_DATATYPE(type, h5type) \
 template<> \
-inline H5::DataType GetH5DataType<type>() \
-{return H5::PredType::h5type;}
+inline hid_t GetH5DataType<type>() \
+{return h5type;}
 
-VIGRA_H5_DATATYPE(Int8, NATIVE_INT8)
-VIGRA_H5_DATATYPE(Int16, NATIVE_INT16)
-VIGRA_H5_DATATYPE(Int32, NATIVE_INT32)
-VIGRA_H5_DATATYPE(Int64, NATIVE_INT64)
-VIGRA_H5_DATATYPE(UInt8, NATIVE_UINT8)
-VIGRA_H5_DATATYPE(UInt16, NATIVE_UINT16)
-VIGRA_H5_DATATYPE(UInt32, NATIVE_UINT32)
-VIGRA_H5_DATATYPE(UInt64, NATIVE_UINT64)
-VIGRA_H5_DATATYPE(float, NATIVE_FLOAT)
-VIGRA_H5_DATATYPE(double, NATIVE_DOUBLE)
+VIGRA_H5_DATATYPE(Int8, H5T_NATIVE_INT8)
+VIGRA_H5_DATATYPE(Int16, H5T_NATIVE_INT16)
+VIGRA_H5_DATATYPE(Int32, H5T_NATIVE_INT32)
+VIGRA_H5_DATATYPE(Int64, H5T_NATIVE_INT64)
+VIGRA_H5_DATATYPE(UInt8, H5T_NATIVE_UINT8)
+VIGRA_H5_DATATYPE(UInt16, H5T_NATIVE_UINT16)
+VIGRA_H5_DATATYPE(UInt32, H5T_NATIVE_UINT32)
+VIGRA_H5_DATATYPE(UInt64, H5T_NATIVE_UINT64)
+VIGRA_H5_DATATYPE(float, H5T_NATIVE_FLOAT)
+VIGRA_H5_DATATYPE(double, H5T_NATIVE_DOUBLE)
+VIGRA_H5_DATATYPE(long double, H5T_NATIVE_LDOUBLE)
 
 #undef VIGRA_H5_DATATYPE
 
-template<unsigned int N, class T>
-bool loadFromHDF5File(H5::H5File &file, const char* data_set_name, MultiArray<N, T> & array)
-{
-   H5std_string comment("");
-   return loadFromHDF5File(file, data_set_name, array, comment );
-}
-
-
-template<unsigned int N, class T>
-bool loadFromHDF5File(H5::H5File &file, const char* data_set_name, MultiArray<N, T> & array, H5std_string& comment) 
-{
-	try {
-        H5::Exception::dontPrint();
-
-		H5::DataSet dset = file.openDataSet(data_set_name);
-
-		//Check type
-		if(dset.getTypeClass()!=GetH5DataType<T>().getClass())
-		{
-			vigra_precondition( false, "Data type in file does not match expected type." );
-			return false;
-		}
-		//Check dimensions
-		if(dset.getSpace().getSimpleExtentNdims()!=N)
-		{
-			vigra_precondition( false, "Number of dimensions in file does not match expected number." );
-			return false;
-		}
-		//Get dimensions size
-		hsize_t size[N];
-		dset.getSpace().getSimpleExtentDims(size, NULL);
-
-	    typename MultiArrayShape<N>::type shape;
-	    std::copy(size, size+N, shape.begin());
-		array.reshape(shape);
-
-		//Get the data
-		dset.read(array.data(), GetH5DataType<T>());
-		comment = file.getComment(data_set_name);
-		return true;
-    }
-    catch( GroupIException not_found_error )
-    {
-		vigra_precondition( false, "Dataset not found in HDF5 file." );
-		return false;
-    }
-}
-
-
 template<unsigned int N, class T, class Tag>
-bool loadFromHDF5File(const HDF5ImportInfo &info, MultiArrayView<N, T, Tag> & array) 
+void loadFromHDF5File(const HDF5ImportInfo &info, MultiArrayView<N, T, Tag> array) 
 {
-   H5std_string comment("");
-   return loadFromHDF5File(info, array, comment);
-}
+	vigra_precondition(N == info.numDimensions(), 
+	     "loadFromHDF5File(): Array dimension disagrees with HDF5ImportInfo.numDimensions().");
 
-template<unsigned int N, class T, class Tag>
-bool loadFromHDF5File(const HDF5ImportInfo &info, MultiArrayView<N, T, Tag> & array, H5std_string& comment) 
-{
-	H5::DataSet dset = info.getDatasetHandle();
-	H5::H5File file = info.getH5FileHandle();
+    typename MultiArrayShape<N>::type shape;
+    for(int k=0; k<N; ++k)
+        shape[k] = info.shapeOfDimension(k);
 
-	//Get dimensions size
-    typedef typename MultiArrayShape<N>::type shape_type;
-	shape_type shape;
-	for(int i=0; i<info.numDimensions(); ++i)
-		shape[i] = info.shapeOfDimension(i);
-
-	vigra_precondition(shape == array.shape(), "loadFromHDF5File(): array must be shaped according to HDF5ImportInfo.");
+	vigra_precondition(shape == array.shape(), 
+	     "loadFromHDF5File(): Array shape disagrees with HDF5ImportInfo.");
 
 	//Get the data
 	//FIXME test if contiguous or use unstrided array tag
-	dset.read(array.data(), GetH5DataType<T>());
-	comment = file.getComment(info.getDatasetName());
-	return true;
+	vigra_postcondition(H5Dread(info.getDatasetHandle(), GetH5DataType<T>(), H5S_ALL, H5S_ALL, H5P_DEFAULT, array.data()) >= 0,
+	       "loadFromHDF5File(): Unable to transfer data.");
 }
 
-inline bool createAllGroups(H5::H5File &file, const char* data_set_name)
+template<unsigned int N, class T, class Alloc>
+void loadFromHDF5File(HDF5ImportInfo const & info, MultiArray<N, T, Alloc> & array) 
 {
-	H5::Exception::dontPrint();
+    typedef typename MultiArray<N, T, Alloc>::view_type View;
 
-	// iterate over all subdirectories/groups:
-	std::string name(data_set_name);
-	std::string::size_type begin = 0, end = name.find('/');
+    typename MultiArrayShape<N>::type shape;
+    for(int k=0; k<N; ++k)
+        shape[k] = info.shapeOfDimension(k);
+        
+	array.reshape(shape);
+
+	return loadFromHDF5File(info, static_cast<View>(array));
+}
+
+inline hid_t createAllGroups(hid_t parent, std::string group_name)
+{
+	std::string::size_type begin = 0, end = group_name.find('/');
 	while (end != std::string::npos)
 	{
-		std::string group(name.begin()+begin, name.begin()+end);
-		//std::cout << "extracted: [" << group << "]" << std::endl;
-		try {
-			file.createGroup( group );
-		} catch (H5::Exception &) {
-			// do nothing, happens if group already exists
-			//FIXME what is the right exception to catch here?
-			//std::cout << e.getDetailMsg() << std::endl;
-		}
+		std::string group(group_name.begin()+begin, group_name.begin()+end);
+#if H5_VERS_MINOR <= 6
+        parent = H5Gcreate(parent, group.c_str(), H5P_DEFAULT);
+#else
+        parent = H5Gcreate(parent, group.c_str(), H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
+#endif
+        if(parent < 0)
+            return parent;
 		begin = end + 1;
-		end = name.find('/', begin);
+		end = group_name.find('/', begin);
 	}
-	return true;
+	std::string group(group_name.begin()+begin, group_name.end());
+#if H5_VERS_MINOR <= 6
+    return H5Gcreate(parent, group.c_str(), H5P_DEFAULT);
+#else
+    return H5Gcreate(parent, group.c_str(), H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
+#endif
 }
 
-template<unsigned int N, class T, class Tag>
-bool writeToHDF5File(H5::H5File &file, const char* data_set_name, const MultiArrayView<N, T, Tag> & array, const char* comment = "")
-{
-	H5::Exception::dontPrint();
 
-	/*
-	* Define the size of the array and create the data space for fixed
-	* size dataset.
-	*/
+
+template<unsigned int N, class T, class Tag>
+void writeToHDF5File(hid_t file, const char* path, const MultiArrayView<N, T, Tag> & array, const char* comment = "")
+{
+	std::string path_name(path), group_name, data_set_name, message;
+	std::string::size_type delimiter = path_name.rfind('/');
+	
+	if(delimiter == std::string::npos)
+	{
+	    data_set_name = path_name;
+	}
+	else
+	{
+	    group_name = std::string(path_name.begin(), path_name.begin()+delimiter);
+	    data_set_name = std::string(path_name.begin()+delimiter+1, path_name.end());
+	}
+	
+	hid_t group = 0, dataset = 0;
+	if(group_name != "")
+	{
+	    group = createAllGroups(file, group_name);
+	    if(group < 0)
+	    {
+	        message = "writeToHDF5File(): Unable to open group.";
+	        goto cleanup;
+	    }
+	}
+	else
+	{
+	    group = file;
+	}
+	
 	hsize_t shape[N];              // dataset dimensions
 	for(int i=0;i<N;++i)
 		shape[i] = array.shape(i);
-	H5::DataSpace dataspace( N, shape );
 
-	/*
-	* Define datatype for the data in the file.
-	*/
-	H5::DataType datatype( GetH5DataType<T>() );
-	//datatype.setOrder( H5T_ORDER_LE );
-
-	/*
-	* Make sure that all the groups in the file path exist
-	*/
-	createAllGroups(file, data_set_name);
-
-	/*
-	* Create a new dataset within the file using defined dataspace and
-	* datatype and default dataset creation properties.
-	*/
-	// delete the dataset if it already exists
-	// in HDF5 the data is not really created but unlinked (similar to file systems)
-    try {  // attempt to unlink the dataset
-       file.unlink( data_set_name );
-    }
-    catch( H5::FileIException & unlink_error )
+#if H5_VERS_MINOR > 6
+    if(H5LTfind_dataset(group, data_set_name.c_str()))
     {
-		// do nothing, apperently there was nothing to unlink!
+        if(H5Ldelete( group, data_set_name.c_str(), H5P_DEFAULT ) < 0)
+        {
+            message = "writeToHDF5File(): Unable to delete existing data.";
+            goto cleanup;
+        }
     }
-	H5::DataSet dataset = file.createDataSet( data_set_name, datatype, dataspace );
-
-	/*
-	* Write the data to the dataset using default memory space, file
-	* space, and transfer properties.
-	*/
-	// FIXME: contiguous? or unstrided array tag only!
-	dataset.write( array.data(), GetH5DataType<T>() );
-
-	/*
-	* Write the comment
-	*/
-	file.setComment( data_set_name, comment);
-
-	return true;
+#endif
+    dataset = H5LTmake_dataset(group, data_set_name.c_str(), N, shape, GetH5DataType<T>(), array.data());
+    if(dataset < 0)
+    {
+        message = "writeToHDF5File(): Unable to write data set.";
+        goto cleanup;
+    }
+    
+  cleanup:
+    if(group_name != "" && group)
+        H5Gclose(group);
+    if(dataset)
+        H5Dclose(dataset);
+    if(message != "")
+        vigra_postcondition(false, message.c_str());
 }
 
 } // namespace vigra
