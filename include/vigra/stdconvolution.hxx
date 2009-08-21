@@ -57,9 +57,9 @@ void internalPixelEvaluationByClip(int x, int y, int w, int h, SrcIterator xs,
                                    KSumType norm)
 {
     typedef typename
-        NumericTraits<typename SrcAccessor::value_type>::RealPromote SumType;
-    typedef
-        NumericTraits<typename DestAccessor::value_type> DestTraits;
+        PromoteTraits<typename SrcAccessor::value_type,
+                      typename KernelAccessor::value_type>::Promote SumType;
+    typedef typename DestAccessor::value_type DestType;
 
     // calculate width and height of the kernel
     int kernel_width = klr.x - kul.x + 1;
@@ -97,8 +97,7 @@ void internalPixelEvaluationByClip(int x, int y, int w, int h, SrcIterator xs,
     }
 
     //                      store average in destination pixel
-    dest_acc.set(DestTraits::fromRealPromote((norm / ksum) * sum), xd);
-
+    dest_acc.set(detail::RequiresExplicitCast<DestType>::cast((norm / ksum) * sum), xd);
 }
 
 
@@ -484,8 +483,7 @@ void convolveImage(SrcIterator src_ul, SrcIterator src_lr, SrcAccessor src_acc,
                       typename KernelAccessor::value_type>::Promote SumType;
     typedef typename
         NumericTraits<typename KernelAccessor::value_type>::RealPromote KernelSumType;
-    typedef
-        NumericTraits<typename DestAccessor::value_type> DestTraits;
+    typedef typename DestAccessor::value_type DestType;
 
     // calculate width and height of the image
     int w = src_lr.x - src_ul.x;
@@ -551,7 +549,7 @@ void convolveImage(SrcIterator src_ul, SrcIterator src_lr, SrcAccessor src_acc,
             }
 
             // store convolution result in destination pixel
-            dest_acc.set(DestTraits::fromRealPromote(sum), xd);
+            dest_acc.set(detail::RequiresExplicitCast<DestType>::cast(sum), xd);
         }
     }
 
@@ -646,7 +644,7 @@ void convolveImage(SrcIterator src_ul, SrcIterator src_lr, SrcAccessor src_acc,
                 }
 
                 // store convolution result in destination pixel
-                dest_acc.set(DestTraits::fromRealPromote(sum), xd);
+                dest_acc.set(detail::RequiresExplicitCast<DestType>::cast(sum), xd);
 
 //                internalPixelEvaluationByWrapReflectRepeat(x, y, w, h, xs, src_acc, xd, dest_acc, ki, kul, klr, ak, border);
             }
