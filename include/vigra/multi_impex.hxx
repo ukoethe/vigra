@@ -716,12 +716,22 @@ void exportVolume (MultiArrayView <3, T, Tag> const & volume,
         std::string name = std::string(volinfo.getFileNameBase()) + name_num + std::string(volinfo.getFileNameExt());
 
         MultiArrayView <2, T, Tag> view (volume.bindOuter (i));
-        //MultiArrayView <3, T, Tag> view (volume.bindAt (2, i));
 
         // export the image
         info.setFileName(name.c_str ());
         exportImage(srcImageRange(view), info); 
     }
+}
+
+// for backward compatibility
+template <class T, class Tag>
+inline 
+void exportVolume (MultiArrayView <3, T, Tag> const & volume,
+                   const std::string &name_base,
+                   const std::string &name_ext)
+{
+    VolumeExportInfo volinfo(name_base.c_str(), name_ext.c_str());
+    exportVolume(volume, volinfo);
 }
 
 //@}
