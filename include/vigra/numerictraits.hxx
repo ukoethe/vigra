@@ -1319,6 +1319,15 @@ VIGRA_SPECIALIZED_CAST(long)
 VIGRA_SPECIALIZED_CAST(unsigned long)
 
 template <>
+struct RequiresExplicitCast<bool> {
+    template <class U>
+    static bool cast(U v)
+    { return v == NumericTraits<U>::zero()
+                ? false
+                : true; }
+};
+
+template <>
 struct RequiresExplicitCast<float> {
     static float cast(int v)
         { return (float)v; }
