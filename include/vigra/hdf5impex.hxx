@@ -108,7 +108,7 @@ class HDF5ImportInfo
 	DataSet m_dataset;
     std::string m_filename, m_datasetname, m_pixeltype;
     MultiArrayIndex m_dimensions;
-	ArrayVector<int> m_dims;
+	ArrayVector<hsize_t> m_dims;
 };
 
 template<class type>
