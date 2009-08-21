@@ -1026,13 +1026,16 @@ HDF5ImportInfo::HDF5ImportInfo(const std::string &filename, const std::string &d
 		if(dset.getTypeClass()==GetH5DataType<double>().getClass())
 			m_pixeltype = "DOUBLE";
 
-		m_dims = ArrayVector<int>(m_dimensions);
+#if 0
+    m_dims = ArrayVector<int>(m_dimensions);
 		hsize_t* size = new hsize_t[m_dimensions];
 		dset.getSpace().getSimpleExtentDims(size, NULL);
 		for(int i=0; i<m_dimensions; ++i)
 			m_dims[i] = size[i];
 		delete size;
-
+#endif
+    m_dims.resize(m_dimensions);
+		dset.getSpace().getSimpleExtentDims(m_dims.begin(), NULL);
     }
     catch( GroupIException not_found_error )
     {
@@ -1068,7 +1071,7 @@ const char * HDF5ImportInfo::getPixelType() const
 {
     return m_pixeltype.c_str();
 }
-MultiArrayIndex HDF5ImportInfo::shapeOfDimension(const int dim) const { return m_dims[dim]; };
+MultiArrayIndex HDF5ImportInfo::shapeOfDimension(const int dim) const { return (MultiArrayIndex)m_dims[dim]; };
 MultiArrayIndex HDF5ImportInfo::numDimensions() const { return m_dimensions; }
 const std::string & HDF5ImportInfo::getDatasetName() const { return m_datasetname; }
 const std::string & HDF5ImportInfo::getFileName() const { return m_filename; }
