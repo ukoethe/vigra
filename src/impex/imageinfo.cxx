@@ -999,6 +999,7 @@ HDF5ImportInfo::HDF5ImportInfo(const std::string &filename, const std::string &p
 {
 	std::string path_name(path), group_name, data_set_name, message;
     hid_t group = 0, dspace = 0, dtype = 0, native_type = 0;
+	std::string::size_type delimiter = path_name.rfind('/');
 
     m_file = H5Fopen( filename.c_str(), H5F_ACC_RDONLY, H5P_DEFAULT);
     if(m_file < 0)
@@ -1007,7 +1008,6 @@ HDF5ImportInfo::HDF5ImportInfo(const std::string &filename, const std::string &p
         goto cleanup;
     }
     
-	std::string::size_type delimiter = path_name.rfind('/');
 	if(delimiter == std::string::npos)
 	{
 	    data_set_name = path_name;
