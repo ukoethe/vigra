@@ -644,12 +644,13 @@ void SplineImageView<ORDER, VALUETYPE>::derivCoefficients(double t,
 template <int ORDER, class VALUETYPE>
 VALUETYPE SplineImageView<ORDER, VALUETYPE>::convolve() const
 {
-    double sum;
-    sum = ky_[0]*detail::SplineImageViewUnrollLoop2<ORDER, double>::exec(kx_, image_.rowBegin(iy_[0]), ix_);
+    typedef typename NumericTraits<VALUETYPE>::RealPromote RealPromote;
+    RealPromote sum;
+    sum = ky_[0]*detail::SplineImageViewUnrollLoop2<ORDER, RealPromote>::exec(kx_, image_.rowBegin(iy_[0]), ix_);
 
     for(int j=1; j<ksize_; ++j)
     {
-        sum += ky_[j]*detail::SplineImageViewUnrollLoop2<ORDER, double>::exec(kx_, image_.rowBegin(iy_[j]), ix_);
+        sum += ky_[j]*detail::SplineImageViewUnrollLoop2<ORDER, RealPromote>::exec(kx_, image_.rowBegin(iy_[j]), ix_);
     }
     return detail::RequiresExplicitCast<VALUETYPE>::cast(sum);
 }

@@ -1,6 +1,6 @@
 /************************************************************************/
 /*                                                                      */
-/*                  Copyright 1998-2003 by Hans Meine                   */
+/*                   Copyright 2009 by Ullrich Köthe                    */
 /*       Cognitive Systems Group, University of Hamburg, Germany        */
 /*                                                                      */
 /*    This file is part of the VIGRA computer vision library.           */
@@ -38,7 +38,7 @@
 #define VIGRA_MESHGRID_HXX
 
 #include "tinyvector.hxx"
-#include "diff2D.hxx"
+#include "diff2d.hxx"
 
 namespace vigra{
 /** \addtogroup RangesAndPoints Two-dimensional Ranges and Points

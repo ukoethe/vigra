@@ -855,7 +855,7 @@ struct ImageFunctionsTest
         Image img1(5,5), img3(5,5);
 
         resizeImageNoInterpolation(srcImageRange(img), destImageRange(img1));
-        
+
         Image::ScanOrderIterator i1 = img1.begin();
         Image::Accessor acc = img.accessor();
 
@@ -1460,6 +1460,15 @@ struct SplineImageViewTest
         }
         catch(vigra::PreconditionViolation) {}
     }
+
+    void testVectorSIV()
+    {
+        // (compile-time only test for now)
+        BRGBImage rgb(20, 10);
+        SplineImageView<N, TinyVector<float, 3> > view(srcImageRange(rgb));
+        (void)view(4.5, 1.3);
+    }
+
 };
 
 struct GeometricTransformsTest
@@ -1666,6 +1675,7 @@ struct ImageFunctionsTestSuite
         add( testCase( &SplineImageViewTest<5>::testCoefficientArray));
         add( testCase( &SplineImageViewTest<5>::testImageResize));
         add( testCase( &SplineImageViewTest<5>::testOutside));
+        add( testCase( &SplineImageViewTest<5>::testVectorSIV));
 
         add( testCase( &GeometricTransformsTest::testSimpleGeometry));
         add( testCase( &GeometricTransformsTest::testAffineMatrix));

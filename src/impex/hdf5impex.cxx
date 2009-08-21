@@ -13,6 +13,7 @@ HDF5ImportInfo::HDF5ImportInfo(const std::string &filename, const std::string &p
   m_datasetname(path)
 {
 	std::string path_name(path), group_name, data_set_name, message;
+	std::string::size_type delimiter = path_name.rfind('/');
     hid_t group = 0, dspace = 0, dtype = 0, native_type = 0;
 
     m_file = H5Fopen( filename.c_str(), H5F_ACC_RDONLY, H5P_DEFAULT);
@@ -22,7 +23,6 @@ HDF5ImportInfo::HDF5ImportInfo(const std::string &filename, const std::string &p
         goto cleanup;
     }
     
-	std::string::size_type delimiter = path_name.rfind('/');
 	if(delimiter == std::string::npos)
 	{
 	    data_set_name = path_name;
@@ -329,8 +329,8 @@ int main (void)
     writeToHDF5File(file, "l1/l2/array2", aa);
     H5Fclose(file);
     
-    MultiArray<3, int> b;
     {
+        MultiArray<3, double> b;
         HDF5ImportInfo info("test.h5", "array");
         loadFromHDF5File(info, b);
         std::cerr << "data type in group 'array': " << info.getPixelType() << "\n";
@@ -338,6 +338,7 @@ int main (void)
         std::cerr << b(1,0,0) << "\n";
     }
     {
+        MultiArray<3, int> b;
         HDF5ImportInfo info("test.h5", "l1/l2/array2");
         loadFromHDF5File(info, b);
         std::cerr << "data type in group 'l1/l2/array2': " << info.getPixelType() << "\n";
