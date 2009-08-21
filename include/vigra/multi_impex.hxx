@@ -200,11 +200,11 @@ class VolumeExportInfo
         /** Construct VolumeExportInfo object.
 
             The volume will be stored in a by-slice manner, where the number of slices 
-			equals the depth of the volume. The file names will be enumerated like
-			<tt>name_base+"000"+name_ext</tt>, <tt>name_base+"001"+name_ext</tt> etc.
-			(the actual number of zeros depends on the depth). If the target image type
-			does not support the source voxel type, all slices will be mapped 
-			simultaneously to the appropriate target range.
+            equals the depth of the volume. The file names will be enumerated like
+            <tt>name_base+"000"+name_ext</tt>, <tt>name_base+"001"+name_ext</tt> etc.
+            (the actual number of zeros depends on the depth). If the target image type
+            does not support the source voxel type, all slices will be mapped 
+            simultaneously to the appropriate target range.
             The file type will be guessed from the extension unless overridden
             by \ref setFileType(). Recognized extensions: '.bmp', '.gif',
             '.jpeg', '.jpg', '.p7', '.png', '.pbm', '.pgm', '.pnm', '.ppm', '.ras',
@@ -217,7 +217,7 @@ class VolumeExportInfo
 
         /** Set volume file name base.
 
-		**/
+        **/
     VIGRA_EXPORT VolumeExportInfo & setFileNameBase(const char * name_base);
         /** Set volume file name extension.
 
@@ -227,7 +227,7 @@ class VolumeExportInfo
             '.tif', '.tiff', '.xv', '.hdr'.
             JPEG support requires libjpeg, PNG support requires libpng, and
             TIFF support requires libtiff.
-		**/
+        **/
     VIGRA_EXPORT VolumeExportInfo & setFileNameExt(const char * name_ext);
     VIGRA_EXPORT const char * getFileNameBase() const;
     VIGRA_EXPORT const char * getFileNameExt() const;
@@ -349,7 +349,7 @@ class VolumeExportInfo
     VIGRA_EXPORT VolumeExportInfo & setZResolution( float );
     VIGRA_EXPORT float getZResolution() const;
 
-		/** Set the position of the upper Left corner on a global
+        /** Set the position of the upper Left corner on a global
             canvas.
 
             Currently only supported by TIFF and PNG files.
@@ -359,13 +359,13 @@ class VolumeExportInfo
             @param pos     position of the upper left corner in pixels
                            (must be >= 0)
          **/
-	// FIXME: mhanselm: we might want to support 3D positions
+    // FIXME: mhanselm: we might want to support 3D positions
     VIGRA_EXPORT VolumeExportInfo & setPosition(const Diff2D & pos);
 
         /** Get the position of the upper left corner on
             a global canvas.
          **/
-	// FIXME: mhanselm: we might want to support 3D positions
+    // FIXME: mhanselm: we might want to support 3D positions
     VIGRA_EXPORT Diff2D getPosition() const;
 
         /**
@@ -385,9 +385,9 @@ class VolumeExportInfo
     VIGRA_EXPORT VolumeExportInfo & setICCProfile(const ICCProfile & profile);
 
   private:
-	float m_x_res, m_y_res, m_z_res;
+    float m_x_res, m_y_res, m_z_res;
 
-	std::string m_filetype, m_filename_base, m_filename_ext, m_pixeltype, m_comp;
+    std::string m_filetype, m_filename_base, m_filename_ext, m_pixeltype, m_comp;
     Diff2D m_pos;
     ICCProfile m_icc_profile;
     double fromMin_, fromMax_, toMin_, toMax_;
@@ -402,7 +402,7 @@ readVolumeImpl(DestIterator d, Shape const & shape, std::ifstream & s, ArrayVect
     s.read((char*)buffer.begin(), shape[0]*sizeof(T));
 
     DestIterator dend = d + shape[0];
-	int k = 0;
+    int k = 0;
     for(; d < dend; ++d, k++)
     {
         *d = buffer[k];
@@ -425,7 +425,7 @@ readVolumeImpl(DestIterator d, Shape const & shape, std::ifstream & s, ArrayVect
 template <class T, class Stride>
 void VolumeImportInfo::importImpl(MultiArrayView <3, T, Stride> &volume) const
 {
-	vigra_precondition(this->shape() == volume.shape(), "importVolume(): Volume must be shaped according to VolumeImportInfo.");
+    vigra_precondition(this->shape() == volume.shape(), "importVolume(): Volume must be shaped according to VolumeImportInfo.");
 
     if(rawFilename_.size())
     {
@@ -457,10 +457,10 @@ void VolumeImportInfo::importImpl(MultiArrayView <3, T, Stride> &volume) const
 #endif
 
         std::ifstream s(rawFilename_.c_str(), std::ios::binary);
-	    vigra_precondition(s.good(), "RAW file could not be opened");
+        vigra_precondition(s.good(), "RAW file could not be opened");
 
-		ArrayVector<T> buffer(shape_[0]);
-		detail::readVolumeImpl(volume.traverser_begin(), shape_, s, buffer, vigra::MetaInt<2>());
+        ArrayVector<T> buffer(shape_[0]);
+        detail::readVolumeImpl(volume.traverser_begin(), shape_, s, buffer, vigra::MetaInt<2>());
 
         //vigra_precondition(s.good(), "RAW file could not be opened");
         //s.read((char*)volume.data(), shape_[0]*shape_[1]*shape_[2]*sizeof(T));
@@ -529,7 +529,7 @@ void importVolume (MultiArray <3, T, Allocator> & volume,
                    const std::string &name_ext)
 {
     VolumeImportInfo info(name_base, name_ext);
-	volume.reshape(info.shape());
+    volume.reshape(info.shape());
 
     info.importImpl(volume);
 }
@@ -577,7 +577,7 @@ void importVolume(MultiArray <3, T, Allocator> &volume,
                   const std::string &filename)
 {
     VolumeImportInfo info(filename);
-	volume.reshape(info.shape());
+    volume.reshape(info.shape());
 
     info.importImpl(volume);
 }
@@ -609,8 +609,8 @@ void setRangeMapping(std::string const & pixeltype,
 {
     if(pixeltype == "UINT8")
         info.setForcedRangeMapping(minmax.min, minmax.max,
-                                   (double)NumericTraits<Int8>::min(),
-                                   (double)NumericTraits<Int8>::max());
+                                   (double)NumericTraits<UInt8>::min(),
+                                   (double)NumericTraits<UInt8>::max());
     else if(pixeltype == "INT16")
         info.setForcedRangeMapping(minmax.min, minmax.max,
                                    (double)NumericTraits<Int16>::min(),
@@ -697,10 +697,10 @@ template <class T, class Tag>
 void exportVolume (MultiArrayView <3, T, Tag> const & volume,
                    const VolumeExportInfo & volinfo)
 {
-	std::string name = std::string(volinfo.getFileNameBase()) + std::string(volinfo.getFileNameExt());
+    std::string name = std::string(volinfo.getFileNameBase()) + std::string(volinfo.getFileNameExt());
     ImageExportInfo info(name.c_str());
-	info.setCompression(volinfo.getCompression());
-	info.setPixelType(volinfo.getPixelType());
+    info.setCompression(volinfo.getCompression());
+    info.setPixelType(volinfo.getPixelType());
     detail::setRangeMapping(volume, info, typename NumericTraits<T>::isScalar());
 
     const unsigned int depth = volume.shape (2);
