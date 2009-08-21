@@ -131,9 +131,9 @@ void
 multiBinaryErosion( SrcIterator s, SrcShape const & shape, SrcAccessor src,
                              DestIterator d, DestAccessor dest, double radius)
 {
-    typedef typename NumericTraits<typename DestAccessor::value_type>::ValueType DestType;
-    typedef typename NumericTraits<typename DestAccessor::value_type>::Promote TmpType;
-    DestType MaxValue = NumericTraits<DestType>::max();
+    typedef typename DestAccessor::value_type DestType;
+    typedef typename NumericTraits<DestType>::Promote TmpType;
+    TmpType MaxValue = NumericTraits<DestType>::toPromote(NumericTraits<DestType>::max());
     double radius2 = radius * radius;
     enum { N = 1 + SrcIterator::level };
     
@@ -255,9 +255,9 @@ void
 multiBinaryDilation( SrcIterator s, SrcShape const & shape, SrcAccessor src,
                              DestIterator d, DestAccessor dest, double radius)
 {
-    typedef typename NumericTraits<typename DestAccessor::value_type>::ValueType DestType;
-    typedef typename NumericTraits<typename DestAccessor::value_type>::Promote TmpType;
-    DestType MaxValue = NumericTraits<DestType>::max();
+    typedef typename DestAccessor::value_type DestType;
+    typedef typename NumericTraits<DestType>::Promote TmpType;
+    TmpType MaxValue = NumericTraits<DestType>::toPromote(NumericTraits<DestType>::max());
     double radius2 = radius * radius;
     enum { N = 1 + SrcIterator::level };
     

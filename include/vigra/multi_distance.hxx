@@ -351,7 +351,7 @@ void separableMultiDistSquared( SrcIterator s, SrcShape const & shape, SrcAccess
             
     using namespace vigra::functor;
    
-    if(dmax > NumericTraits<DestType>::max() || pixelPitchIsReal) // need a temporary array to avoid overflows
+    if(dmax > NumericTraits<DestType>::toPromote(NumericTraits<DestType>::max()) || pixelPitchIsReal) // need a temporary array to avoid overflows
     {
         // Threshold the values so all objects have infinity value in the beginning
         double maxDist = dmax;
