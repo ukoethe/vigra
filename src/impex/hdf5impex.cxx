@@ -7,22 +7,16 @@
 namespace vigra {
 
 HDF5ImportInfo::HDF5ImportInfo(const std::string &filename, const std::string &path)
-: m_file(0),
-  m_dataset(0),
-  m_filename(filename),
+: m_filename(filename),
   m_datasetname(path)
 {
 	std::string path_name(path), group_name, data_set_name, message;
-	std::string::size_type delimiter = path_name.rfind('/');
-    hid_t group = 0, dspace = 0, dtype = 0, native_type = 0;
 
-    m_file = H5Fopen( filename.c_str(), H5F_ACC_RDONLY, H5P_DEFAULT);
-    if(m_file < 0)
-    {
-        message = std::string("HDF5ImportInfo(): Unable to open file '") + filename + "'.";
-        goto cleanup;
-    }
+    message = std::string("HDF5ImportInfo(): Unable to open file '") + filename + "'.";
+    m_file = HDF5Handle(H5Fopen( filename.c_str(), H5F_ACC_RDONLY, H5P_DEFAULT),
+                        &H5Fclose, message.c_str());
     
+	std::string::size_type delimiter = path_name.rfind('/');
 	if(delimiter == std::string::npos)
 	{
 	    data_set_name = path_name;
@@ -33,64 +27,44 @@ HDF5ImportInfo::HDF5ImportInfo(const std::string &filename, const std::string &p
 	    data_set_name = std::string(path_name.begin()+delimiter+1, path_name.end());
 	}
 	
+	HDF5Handle group;
 	if(group_name != "")
 	{
+        message = std::string("HDF5ImportInfo(): Unable to open group '") + group_name + "'.";
 #if H5_VERS_MINOR <= 6
-	    group = H5Gopen(m_file, group_name.c_str());
+	    group = HDF5Handle(H5Gopen(m_file, group_name.c_str()),
+	                       &H5Gclose, message.c_str());
 #else
-	    group = H5Gopen(m_file, group_name.c_str(), H5P_DEFAULT);
+	    group = HDF5Handle(H5Gopen(m_file, group_name.c_str(), H5P_DEFAULT),
+	                       &H5Gclose, message.c_str());
 #endif
-	    if(group < 0)
-	    {
-	        message = std::string("HDF5ImportInfo(): Unable to open group '") + group_name + "'.";
-	        goto cleanup;
-	    }
 	}
 	else
 	{
-	    group = m_file;
+	    group = HDF5Handle(m_file, 0, "");
 	}
 	
-#if H5_VERS_MINOR <= 6
-    m_dataset = H5Dopen(group, data_set_name.c_str());
+	message = std::string("HDF5ImportInfo(): Unable to open data set '") + path + "'.";
+#if (H5_VERS_MAJOR == 1 && H5_VERS_MINOR <= 6)
+    m_dataset = HDF5Handle(H5Dopen(group, data_set_name.c_str()),
+	                       &H5Dclose, message.c_str());
 #else
-    m_dataset = H5Dopen(group, data_set_name.c_str(), H5P_DEFAULT);
+    m_dataset = HDF5Handle(H5Dopen(group, data_set_name.c_str(), H5P_DEFAULT),
+	                       &H5Dclose, message.c_str());
 #endif
-    if(m_dataset < 0)
-    {
-        message = std::string("HDF5ImportInfo(): Unable to open data set '") + path + "'.";
-        goto cleanup;
-    }
     
-    dspace = H5Dget_space(m_dataset);
-    if(dspace < 0)
-    {
-        message = "HDF5ImportInfo(): Unable to open data space.";
-        goto cleanup;
-    }
+    HDF5Handle dspace(H5Dget_space(m_dataset), &H5Sclose, "HDF5ImportInfo(): Unable to open data space.");
     
     m_dimensions = H5Sget_simple_extent_ndims(dspace);
-    if(m_dimensions < 2)
-    {
-        message = "HDF5ImportInfo(): Number of dimensions is lower than 2. Not an image!" ;
-        goto cleanup;
-    }
+    vigra_precondition(m_dimensions >= 2,
+             "HDF5ImportInfo(): Number of dimensions is lower than 2. Not an image!");
     
     m_dims.resize(m_dimensions);
     H5Sget_simple_extent_dims(dspace, m_dims.begin(), 0);
     
-    dtype = H5Dget_type(m_dataset);
-    if(dtype < 0)
-    {
-        message = "HDF5ImportInfo(): Unable to retrieve data type" ;
-        goto cleanup;
-    }
-    native_type = H5Tget_native_type(dtype, H5T_DIR_ASCEND);
-    if(native_type < 0)
-    {
-        message = "HDF5ImportInfo(): Unable to retrieve data type" ;
-        goto cleanup;
-    }
+    HDF5Handle dtype(H5Dget_type(m_dataset), &H5Tclose, "HDF5ImportInfo(): Unable to retrieve data type");
+
+    HDF5Handle native_type(H5Tget_native_type(dtype, H5T_DIR_ASCEND), &H5Tclose, "HDF5ImportInfo(): Unable to retrieve data type");
 
     if(H5Tequal(native_type, H5T_NATIVE_LLONG) && sizeof(long long) == 4)
         m_pixeltype = "INT32";
@@ -132,32 +106,6 @@ HDF5ImportInfo::HDF5ImportInfo(const std::string &filename, const std::string &p
         m_pixeltype = "DOUBLE";
     if(H5Tequal(native_type, H5T_NATIVE_FLOAT))
         m_pixeltype = "FLOAT";
-                
-  cleanup:
-    if(native_type)
-        H5Tclose(native_type);
-    if(dtype)
-        H5Tclose(dtype);
-    if(dspace)
-        H5Sclose(dspace);
-    if(group_name != "" && group)
-        H5Gclose(group);
-    if(message != "")
-    {
-        if(m_dataset)
-            H5Dclose(m_dataset);
-        if(m_file)
-            H5Fclose(m_file);
-        vigra_postcondition(false, message.c_str());
-    }
-}
-
-HDF5ImportInfo::~HDF5ImportInfo()
-{
-    if(m_dataset)
-        H5Dclose(m_dataset);
-    if(m_file)
-        H5Fclose(m_file);
 }
 
 HDF5ImportInfo::PixelType HDF5ImportInfo::pixelType() const
@@ -190,8 +138,8 @@ MultiArrayIndex HDF5ImportInfo::shapeOfDimension(const int dim) const { return (
 MultiArrayIndex HDF5ImportInfo::numDimensions() const { return m_dimensions; }
 const std::string & HDF5ImportInfo::getDatasetName() const { return m_datasetname; }
 const std::string & HDF5ImportInfo::getFileName() const { return m_filename; }
-hid_t HDF5ImportInfo::getH5FileHandle() const { return m_file; }
-hid_t HDF5ImportInfo::getDatasetHandle() const { return m_dataset; }
+hid_t HDF5ImportInfo::getH5FileHandle() const { return m_file.get(); }
+hid_t HDF5ImportInfo::getDatasetHandle() const { return m_dataset.get(); }
 
 } // namespace vigra
 
@@ -338,7 +286,7 @@ int main (void)
         std::cerr << b(1,0,0) << "\n";
     }
     {
-        MultiArray<3, int> b;
+        MultiArray<3, float> b;
         HDF5ImportInfo info("test.h5", "l1/l2/array2");
         loadFromHDF5File(info, b);
         std::cerr << "data type in group 'l1/l2/array2': " << info.getPixelType() << "\n";

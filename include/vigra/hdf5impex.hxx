@@ -40,16 +40,106 @@
 #include <string>
 #include <hdf5.h>
 
-#if H5_VERS_MINOR <= 6
+#if (H5_VERS_MAJOR == 1 && H5_VERS_MINOR <= 6)
 # include <H5LT.h>
 #else
 # include <hdf5_hl.h>
 #endif
+
 #include "impex.hxx"
 #include "multi_array.hxx"
 #include "multi_impex.hxx"
 
 namespace vigra {
+
+class HDF5Handle
+{
+public:
+    typedef herr_t (*Destructor)(hid_t);
+    
+private:
+    hid_t handle_;
+    Destructor destructor_;
+    
+public:
+
+    HDF5Handle()
+    : handle_( 0 ),
+      destructor_(0)
+    {}
+
+    HDF5Handle(hid_t h, Destructor destructor, const char * error_message)
+    : handle_( h ),
+      destructor_(destructor)
+    {
+        if(handle_ < 0)
+            vigra_fail(error_message);
+    }
+
+    HDF5Handle(HDF5Handle const & h)
+    : handle_( h.handle_ ),
+      destructor_(h.destructor_)
+    {
+        const_cast<HDF5Handle &>(h).handle_ = 0;
+    }
+    
+    HDF5Handle & operator=(HDF5Handle const & h)
+    {
+        if(h.handle_ != handle_)
+        {
+            close();
+            handle_ = h.handle_;
+            destructor_ = h.destructor_;
+            const_cast<HDF5Handle &>(h).handle_ = 0;
+        }
+        return *this;
+    }
+
+    ~HDF5Handle()
+    {
+        close();
+    }
+    
+    herr_t close()
+    {
+        herr_t res = 1;
+        if(handle_ && destructor_)
+            res = (*destructor_)(handle_);
+        handle_ = 0;
+        return res;
+    }
+
+    hid_t get() const
+    {
+        return handle_;
+    }
+
+    operator hid_t() const
+    {
+        return handle_;
+    }
+
+    bool operator==(HDF5Handle const & h) const
+    {
+        return handle_ == h.handle_;
+    }
+
+    bool operator==(hid_t h) const
+    {
+        return handle_ == h;
+    }
+
+    bool operator!=(HDF5Handle const & h) const
+    {
+        return handle_ != h.handle_;
+    }
+
+    bool operator!=(hid_t h) const
+    {
+        return handle_ != h;
+    }
+};
+
 
 /********************************************************/
 /*                                                      */
@@ -71,7 +161,6 @@ class HDF5ImportInfo
 			are set accordingly.
          **/
 	VIGRA_EXPORT HDF5ImportInfo( const std::string &filename, const std::string &datasetname );
-    VIGRA_EXPORT ~HDF5ImportInfo();
 
     VIGRA_EXPORT const std::string& getFileName() const;
 
@@ -128,20 +217,21 @@ class HDF5ImportInfo
     VIGRA_EXPORT PixelType pixelType() const;
 
   private:
-    hid_t m_file;
-	hid_t m_dataset;
+    HDF5Handle m_file, m_dataset;
     std::string m_filename, m_datasetname, m_pixeltype;
     int m_dimensions;
 	ArrayVector<hsize_t> m_dims;
 };
 
+namespace detail {
+
 template<class type>
-inline hid_t GetH5DataType()
+inline hid_t getH5DataType()
 {return 0;}
 
 #define VIGRA_H5_DATATYPE(type, h5type) \
 template<> \
-inline hid_t GetH5DataType<type>() \
+inline hid_t getH5DataType<type>() \
 {return h5type;}
 
 VIGRA_H5_DATATYPE(Int8, H5T_NATIVE_INT8)
@@ -158,6 +248,8 @@ VIGRA_H5_DATATYPE(long double, H5T_NATIVE_LDOUBLE)
 
 #undef VIGRA_H5_DATATYPE
 
+} // namespace detail
+
 template<unsigned int N, class T, class Tag>
 void loadFromHDF5File(const HDF5ImportInfo &info, MultiArrayView<N, T, Tag> array) 
 {
@@ -173,7 +265,7 @@ void loadFromHDF5File(const HDF5ImportInfo &info, MultiArrayView<N, T, Tag> arra
 
 	//Get the data
 	//FIXME test if contiguous or use unstrided array tag
-	vigra_postcondition(H5Dread(info.getDatasetHandle(), GetH5DataType<T>(), H5S_ALL, H5S_ALL, H5P_DEFAULT, array.data()) >= 0,
+	vigra_postcondition(H5Dread(info.getDatasetHandle(), detail::getH5DataType<T>(), H5S_ALL, H5S_ALL, H5P_DEFAULT, array.data()) >= 0,
 	       "loadFromHDF5File(): Unable to transfer data.");
 }
 
@@ -197,7 +289,9 @@ inline hid_t createAllGroups(hid_t parent, std::string group_name)
 	while (end != std::string::npos)
 	{
 		std::string group(group_name.begin()+begin, group_name.begin()+end);
-#if H5_VERS_MINOR <= 6
+		// FIXME: handle relative and absolute paths correctly
+		// FIXME: handle already existing groups
+#if (H5_VERS_MAJOR == 1 && H5_VERS_MINOR <= 6)
         parent = H5Gcreate(parent, group.c_str(), H5P_DEFAULT);
 #else
         parent = H5Gcreate(parent, group.c_str(), H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
@@ -208,7 +302,7 @@ inline hid_t createAllGroups(hid_t parent, std::string group_name)
 		end = group_name.find('/', begin);
 	}
 	std::string group(group_name.begin()+begin, group_name.end());
-#if H5_VERS_MINOR <= 6
+#if (H5_VERS_MAJOR == 1 && H5_VERS_MINOR <= 6)
     return H5Gcreate(parent, group.c_str(), H5P_DEFAULT);
 #else
     return H5Gcreate(parent, group.c_str(), H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
@@ -233,49 +327,31 @@ void writeToHDF5File(hid_t file, const char* path, const MultiArrayView<N, T, Ta
 	    data_set_name = std::string(path_name.begin()+delimiter+1, path_name.end());
 	}
 	
-	hid_t group = 0, dataset = 0;
+	HDF5Handle group;
 	if(group_name != "")
 	{
-	    group = createAllGroups(file, group_name);
-	    if(group < 0)
-	    {
-	        message = "writeToHDF5File(): Unable to open group.";
-	        goto cleanup;
-	    }
+	    group = HDF5Handle(createAllGroups(file, group_name), &H5Gclose, "writeToHDF5File(): Unable to open group.");
 	}
 	else
 	{
-	    group = file;
+	    group = HDF5Handle(file, 0, "");
 	}
 	
 	hsize_t shape[N];              // dataset dimensions
 	for(int i=0;i<N;++i)
 		shape[i] = array.shape(i);
 
-#if H5_VERS_MINOR > 6
+#if (H5_VERS_MAJOR == 1 && H5_VERS_MINOR > 6)
     if(H5LTfind_dataset(group, data_set_name.c_str()))
     {
         if(H5Ldelete( group, data_set_name.c_str(), H5P_DEFAULT ) < 0)
         {
-            message = "writeToHDF5File(): Unable to delete existing data.";
-            goto cleanup;
+            vigra_postcondition(false, "writeToHDF5File(): Unable to delete existing data.");
         }
     }
 #endif
-    dataset = H5LTmake_dataset(group, data_set_name.c_str(), N, shape, GetH5DataType<T>(), array.data());
-    if(dataset < 0)
-    {
-        message = "writeToHDF5File(): Unable to write data set.";
-        goto cleanup;
-    }
-    
-  cleanup:
-    if(group_name != "" && group)
-        H5Gclose(group);
-    if(dataset)
-        H5Dclose(dataset);
-    if(message != "")
-        vigra_postcondition(false, message.c_str());
+    HDF5Handle dataset(H5LTmake_dataset(group, data_set_name.c_str(), N, shape, detail::getH5DataType<T>(), array.data()),
+                       &H5Dclose, "writeToHDF5File(): Unable to write data set.");
 }
 
 } // namespace vigra
