@@ -1,6 +1,6 @@
 /************************************************************************/
 /*                                                                      */
-/*                   Copyright 2009 by Ullrich Köthe                    */
+/*                  Copyright 2009 by Ullrich Koethe                    */
 /*       Cognitive Systems Group, University of Hamburg, Germany        */
 /*                                                                      */
 /*    This file is part of the VIGRA computer vision library.           */
