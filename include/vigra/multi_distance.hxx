@@ -375,7 +375,7 @@ void separableMultiDistSquared( SrcIterator s, SrcShape const & shape, SrcAccess
     else        // work directly on the destination array    
     {
         // Threshold the values so all objects have infinity value in the beginning
-        int maxDist = int(std::ceil(dmax));
+        DestType maxDist = DestType(std::ceil(dmax));
         if(background == true)
             transformMultiArray( s, shape, src, d, dest,
                                  ifThenElse( Arg1() == Param(0), Param(maxDist), Param(0) ));

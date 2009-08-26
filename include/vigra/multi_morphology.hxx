@@ -53,6 +53,86 @@
 namespace vigra
 {
 
+namespace detail {
+
+// this class simplfies the design, but more importantly, it makes sure
+// that the in-place code doesn't get compiled for boolean arrays 
+// (were it would never executed anyway -- see the specializations below)
+template <class DestType, class TmpType>
+struct MultiBinaryMorphologyImpl
+{
+    template <class SrcIterator, class SrcShape, class SrcAccessor,
+              class DestIterator, class DestAccessor>
+    static void
+    exec( SrcIterator s, SrcShape const & shape, SrcAccessor src,
+          DestIterator d, DestAccessor dest, 
+          double radius, bool dilation)
+    {
+        using namespace vigra::functor;
+        typename AccessorTraits<TmpType>::default_accessor ta;
+        
+        // Allocate a new temporary array if the distances squared wouldn't fit
+        MultiArray<SrcShape::static_size, TmpType> tmpArray(shape);
+            
+        separableMultiDistSquared(s, shape, src, tmpArray.traverser_begin(), ta, dilation );
+            
+        // threshold everything less than radius away from the edge
+        TmpType radius2 = radius * radius;
+        DestType foreground = dilation 
+                                 ? NumericTraits<DestType>::zero()
+                                 : NumericTraits<DestType>::one(),
+                 background = dilation 
+                                 ? NumericTraits<DestType>::one()
+                                 : NumericTraits<DestType>::zero();
+        transformMultiArray( tmpArray.traverser_begin(), shape, ta, d, dest, 
+                             ifThenElse( Arg1() > Param(radius2),
+                                         Param(foreground), Param(background) ) );
+    }
+};
+
+template <class DestType>
+struct MultiBinaryMorphologyImpl<DestType, DestType>
+{
+    template <class SrcIterator, class SrcShape, class SrcAccessor,
+              class DestIterator, class DestAccessor>
+    static void
+    exec( SrcIterator s, SrcShape const & shape, SrcAccessor src,
+          DestIterator d, DestAccessor dest, 
+          double radius, bool dilation)
+    {
+        using namespace vigra::functor;
+
+        separableMultiDistSquared( s, shape, src, d, dest, dilation );
+        
+        // threshold everything less than radius away from the edge
+        DestType radius2 = detail::RequiresExplicitCast<DestType>::cast(radius * radius);
+        DestType foreground = dilation 
+                                 ? NumericTraits<DestType>::zero()
+                                 : NumericTraits<DestType>::one(),
+                 background = dilation 
+                                 ? NumericTraits<DestType>::one()
+                                 : NumericTraits<DestType>::zero();
+        transformMultiArray( d, shape, dest, d, dest, 
+                             ifThenElse( Arg1() > Param(radius2),
+                                         Param(foreground), Param(background) ) );
+    }
+};
+
+template <>
+struct MultiBinaryMorphologyImpl<bool, bool>
+{
+    template <class SrcIterator, class SrcShape, class SrcAccessor,
+              class DestIterator, class DestAccessor>
+    static void
+    exec( SrcIterator s, SrcShape const & shape, SrcAccessor src,
+          DestIterator d, DestAccessor dest, double radius, bool dilation)
+    {
+        vigra_fail("multiBinaryMorphology(): Internal error (this function should never be called).");
+    }
+};
+
+} // namespace detail
+
 /** \addtogroup MultiArrayMorphology Morphological operators for multi-dimensional arrays.
 
     These functions perform morphological operations on an arbitrary
@@ -70,15 +150,16 @@ namespace vigra
 /** \brief Binary erosion on multi-dimensional arrays.
 
     This function applies a flat circular erosion operator with a given radius. The
-    operation is isotropic.
-    The input is a binary multi-dimensional array where non-zero pixels represent 
-    foreground and zero pixels represent background.
+    operation is isotropic. The input is intepreted as a binary multi-dimensional 
+    array where non-zero pixels represent foreground and zero pixels represent 
+    background. In the output, foregound is always represented by ones 
+    (i.e. NumericTrais<typename DestAccessor::value_type>::one()).
     
     This function may work in-place, which means that <tt>siter == diter</tt> is allowed.
-    A full-sized internal array is only allocated if working on the destination
-    array directly would cause overflow errors (i.e. if
-    <tt> typeid(typename DestAccessor::value_type) < N * M*M</tt>, where M is the
-    size of the largest dimension of the array.
+    A temporary internal array is only allocated if working on the destination
+    array directly would cause overflow errors (that is if
+    <tt> NumericTraits<typename DestAccessor::value_type>::max() < squaredNorm(shape)</tt>, 
+    i.e. the squared length of the image diagonal doesn't fit into the destination type).
            
     <b> Declarations:</b>
 
@@ -132,44 +213,18 @@ multiBinaryErosion( SrcIterator s, SrcShape const & shape, SrcAccessor src,
                              DestIterator d, DestAccessor dest, double radius)
 {
     typedef typename DestAccessor::value_type DestType;
-    typedef typename NumericTraits<DestType>::Promote TmpType;
-    TmpType MaxValue = NumericTraits<DestType>::toPromote(NumericTraits<DestType>::max());
-    double radius2 = radius * radius;
-    enum { N = 1 + SrcIterator::level };
+    typedef Int32 TmpType;
     
-    int MaxDim = 0; 
-    for( int i=0; i<N; i++)
-        if(MaxDim < shape[i]) MaxDim = shape[i];
-   
-    using namespace vigra::functor;
+    double dmax = squaredNorm(shape);
 
     // Get the distance squared transform of the image
-    if(N*MaxDim*MaxDim > MaxValue)
+    if(dmax > NumericTraits<DestType>::toRealPromote(NumericTraits<DestType>::max()))
     {
-        // Allocate a new temporary array if the distances squared wouldn't fit
-        MultiArray<SrcShape::static_size, TmpType> tmpArray(shape);
-        //detail::internalSeparableMultiArrayDistTmp( s, shape, src, tmpArray.traverser_begin(),
-        //    typename AccessorTraits<TmpType>::default_accessor()/*, false*/ );
-        
-        separableMultiDistSquared(s, shape, src, tmpArray.traverser_begin(),
-                typename AccessorTraits<TmpType>::default_accessor(), false );
-        
-        // threshold everything less than radius away from the edge
-        // std::cerr << "Thresholding!!!!!" << std::endl;
-        transformMultiArray( tmpArray.traverser_begin(), shape, 
-            typename AccessorTraits<TmpType>::default_accessor(), d, dest, 
-            ifThenElse( Arg1() > Param(radius2),
-                Param(MaxValue), Param(0) ) );
+        detail::MultiBinaryMorphologyImpl<DestType, TmpType>::exec(s, shape, src, d, dest, radius, false);
     }
     else    // work directly on the destination array
     {
-        //detail::internalSeparableMultiArrayDistTmp( s, shape, src, d, dest/*, false*/ );
-        separableMultiDistSquared( s, shape, src, d, dest, false );
-        
-        // threshold everything less than radius away from the edge
-        transformMultiArray( d, shape, dest, d, dest, 
-            ifThenElse( Arg1() > Param(radius2),
-                Param(MaxValue), Param(0) ) );
+        detail::MultiBinaryMorphologyImpl<DestType, DestType>::exec(s, shape, src, d, dest, radius, false);
     }
 }
 
@@ -194,15 +249,16 @@ void multiBinaryErosion(
 /** \brief Binary dilation on multi-dimensional arrays.
 
     This function applies a flat circular dilation operator with a given radius. The
-    operation is isotropic.
-    The input is a binary multi-dimensional array where non-zero pixels represent
-    foreground and zero pixels represent background.
+    operation is isotropic. The input is intepreted as a binary multi-dimensional 
+    array where non-zero pixels represent foreground and zero pixels represent 
+    background. In the output, foregound is always represented by ones 
+    (i.e. NumericTrais<typename DestAccessor::value_type>::one()).
     
     This function may work in-place, which means that <tt>siter == diter</tt> is allowed.
-    A full-sized internal array is only allocated if working on the destination
-    array directly would cause overflow errors (i.e. if
-    <tt> typeid(typename DestAccessor::value_type) < N * M*M</tt>, where M is the
-    size of the largest dimension of the array.
+    A temporary internal array is only allocated if working on the destination
+    array directly would cause overflow errors (that is if
+    <tt> NumericTraits<typename DestAccessor::value_type>::max() < squaredNorm(shape)</tt>, 
+    i.e. the squared length of the image diagonal doesn't fit into the destination type).
            
     <b> Declarations:</b>
 
@@ -256,43 +312,18 @@ multiBinaryDilation( SrcIterator s, SrcShape const & shape, SrcAccessor src,
                              DestIterator d, DestAccessor dest, double radius)
 {
     typedef typename DestAccessor::value_type DestType;
-    typedef typename NumericTraits<DestType>::Promote TmpType;
-    TmpType MaxValue = NumericTraits<DestType>::toPromote(NumericTraits<DestType>::max());
-    double radius2 = radius * radius;
-    enum { N = 1 + SrcIterator::level };
+    typedef Int32 TmpType;
     
-    int MaxDim = 0; 
-    for( int i=0; i<N; i++)
-        if(MaxDim < shape[i]) MaxDim = shape[i];
-   
-    using namespace vigra::functor;
+    double dmax = squaredNorm(shape);
 
     // Get the distance squared transform of the image
-    if(N*MaxDim*MaxDim > MaxValue)
+    if(dmax > NumericTraits<DestType>::toRealPromote(NumericTraits<DestType>::max()))
     {
-        // Allocate a new temporary array if the distances squared wouldn't fit
-        MultiArray<SrcShape::static_size, TmpType> tmpArray(shape);
-        //detail::internalSeparableMultiArrayDistTmp( s, shape, src, tmpArray.traverser_begin(),
-        //    typename AccessorTraits<TmpType>::default_accessor(), true );
-        
-        separableMultiDistSquared(s, shape, src, tmpArray.traverser_begin(),
-            typename AccessorTraits<TmpType>::default_accessor(), true );
-      
-        // threshold everything less than radius away from the edge
-        transformMultiArray( tmpArray.traverser_begin(), shape, 
-            typename AccessorTraits<TmpType>::default_accessor(), d, dest, 
-            ifThenElse( Arg1() > Param(radius2),
-                Param(0), Param(MaxValue) ) );
+        detail::MultiBinaryMorphologyImpl<DestType, TmpType>::exec(s, shape, src, d, dest, radius, true);
     }
     else    // work directly on the destination array
     {
-        //detail::internalSeparableMultiArrayDistTmp( s, shape, src, d, dest, true );
-        separableMultiDistSquared( s, shape, src, d, dest, true );
-        
-        // threshold everything less than radius away from the edge
-        transformMultiArray( d, shape, dest, d, dest, 
-            ifThenElse( Arg1() > Param(radius2),
-                Param(0), Param(MaxValue) ) );
+        detail::MultiBinaryMorphologyImpl<DestType, DestType>::exec(s, shape, src, d, dest, radius, true);
     }
 }
 

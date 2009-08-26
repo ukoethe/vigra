@@ -123,16 +123,16 @@ struct MultiMorphologyTest
     void binaryErosionTest()
     {
         IntImage res(img);
-        int maxValue = NumericTraits<int>::max();
+        int foreground = NumericTraits<int>::one();
         
         static const int desired[] = {
-                   0, 0, 0, maxValue, 0, 0, 0,
-                   0, 0, 0, maxValue, 0, 0, 0,
-                   0, 0, 0, maxValue, 0, 0, 0,
-                   0, 0, 0, maxValue, 0, 0, 0,
-                   0, 0, 0, maxValue, 0, 0, 0,
-                   0, 0, 0, maxValue, 0, 0, 0,
-                   0, 0, 0, maxValue, 0, 0, 0};
+                   0, 0, 0, foreground, 0, 0, 0,
+                   0, 0, 0, foreground, 0, 0, 0,
+                   0, 0, 0, foreground, 0, 0, 0,
+                   0, 0, 0, foreground, 0, 0, 0,
+                   0, 0, 0, foreground, 0, 0, 0,
+                   0, 0, 0, foreground, 0, 0, 0,
+                   0, 0, 0, foreground, 0, 0, 0};
         
         multiBinaryErosion(srcMultiArrayRange(img), destMultiArray(res), 2);
         shouldEqualSequence(res.begin(), res.end(), desired);
@@ -141,16 +141,16 @@ struct MultiMorphologyTest
     void binaryErosionTest2()
     {
         IntImage res(img2);
-        int maxValue = NumericTraits<int>::max();
+        int foreground = NumericTraits<int>::one();
         
         static const int desired[] = {
-                   0, 0, 0, maxValue, maxValue, maxValue, maxValue,
-                   0, 0, 0, maxValue, maxValue, maxValue, maxValue,
-                   0, 0, 0, maxValue, maxValue, maxValue, maxValue,
-                   0, 0, 0, maxValue, maxValue, maxValue, maxValue,
-                   0, 0, 0, maxValue, maxValue, maxValue, maxValue,
-                   0, 0, 0, maxValue, maxValue, maxValue, maxValue,
-                   0, 0, 0, maxValue, maxValue, maxValue, maxValue};
+                   0, 0, 0, foreground, foreground, foreground, foreground,
+                   0, 0, 0, foreground, foreground, foreground, foreground,
+                   0, 0, 0, foreground, foreground, foreground, foreground,
+                   0, 0, 0, foreground, foreground, foreground, foreground,
+                   0, 0, 0, foreground, foreground, foreground, foreground,
+                   0, 0, 0, foreground, foreground, foreground, foreground,
+                   0, 0, 0, foreground, foreground, foreground, foreground};
 
         multiBinaryErosion(srcMultiArrayRange(img2), destMultiArray(res), 2);
         shouldEqualSequence(res.begin(), res.end(), desired);
@@ -159,9 +159,9 @@ struct MultiMorphologyTest
     void binaryErosionTest1D()
     {
         IntImage res(lin);
-        int maxValue = NumericTraits<int>::max();
+        int foreground = NumericTraits<int>::one();
         
-        static const int desired[] = {0, 0, 0, maxValue, 0, 0, 0};
+        static const int desired[] = {0, 0, 0, foreground, 0, 0, 0};
         multiBinaryErosion(srcMultiArrayRange(lin), destMultiArray(res), 2);
         shouldEqualSequence(res.begin(), res.end(), desired);
     }
@@ -169,7 +169,7 @@ struct MultiMorphologyTest
     void binaryErosionTest3D()
     {
         IntVolume res(vol);
-        int m = NumericTraits<int>::max();
+        int f = NumericTraits<int>::one();
         
         static const int desired[] = {  0, 0, 0, 0, 0, 
                                         0, 0, 0, 0, 0,  
@@ -185,7 +185,7 @@ struct MultiMorphologyTest
 
                                         0, 0, 0, 0, 0, 
                                         0, 0, 0, 0, 0,  
-                                        0, 0, m, 0, 0,  
+                                        0, 0, f, 0, 0,  
                                         0, 0, 0, 0, 0,  
                                         0, 0, 0, 0, 0,
 
