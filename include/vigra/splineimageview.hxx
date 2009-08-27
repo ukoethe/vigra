@@ -551,7 +551,7 @@ struct SplineImageViewUnrollLoop2
     static ValueType
     exec(Array1 k, RowIterator r, Array2 x)
     {
-        return k[i] * r[x[i]] + SplineImageViewUnrollLoop2<i-1, ValueType>::exec(k, r, x);
+        return ValueType(k[i] * r[x[i]]) + SplineImageViewUnrollLoop2<i-1, ValueType>::exec(k, r, x);
     }
 };
 
@@ -562,7 +562,7 @@ struct SplineImageViewUnrollLoop2<0, ValueType>
     static ValueType
     exec(Array1 k, RowIterator r, Array2 x)
     {
-        return k[0] * r[x[0]];
+        return ValueType(k[0] * r[x[0]]);
     }
 };
 
@@ -646,11 +646,13 @@ VALUETYPE SplineImageView<ORDER, VALUETYPE>::convolve() const
 {
     typedef typename NumericTraits<VALUETYPE>::RealPromote RealPromote;
     RealPromote sum;
-    sum = ky_[0]*detail::SplineImageViewUnrollLoop2<ORDER, RealPromote>::exec(kx_, image_.rowBegin(iy_[0]), ix_);
+    sum = RealPromote(
+      ky_[0]*detail::SplineImageViewUnrollLoop2<ORDER, RealPromote>::exec(kx_, image_.rowBegin(iy_[0]), ix_));
 
     for(int j=1; j<ksize_; ++j)
     {
-        sum += ky_[j]*detail::SplineImageViewUnrollLoop2<ORDER, RealPromote>::exec(kx_, image_.rowBegin(iy_[j]), ix_);
+        sum += RealPromote(
+          ky_[j]*detail::SplineImageViewUnrollLoop2<ORDER, RealPromote>::exec(kx_, image_.rowBegin(iy_[j]), ix_));
     }
     return detail::RequiresExplicitCast<VALUETYPE>::cast(sum);
 }
