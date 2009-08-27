@@ -69,23 +69,24 @@ struct MultiBinaryMorphologyImpl
           double radius, bool dilation)
     {
         using namespace vigra::functor;
-        typename AccessorTraits<TmpType>::default_accessor ta;
         
         // Allocate a new temporary array if the distances squared wouldn't fit
         MultiArray<SrcShape::static_size, TmpType> tmpArray(shape);
             
-        separableMultiDistSquared(s, shape, src, tmpArray.traverser_begin(), ta, dilation );
+        separableMultiDistSquared(s, shape, src, 
+                                  tmpArray.traverser_begin(), typename AccessorTraits<TmpType>::default_accessor(), dilation );
             
         // threshold everything less than radius away from the edge
-        TmpType radius2 = radius * radius;
+        double radius2 = radius * radius;
         DestType foreground = dilation 
                                  ? NumericTraits<DestType>::zero()
                                  : NumericTraits<DestType>::one(),
                  background = dilation 
                                  ? NumericTraits<DestType>::one()
                                  : NumericTraits<DestType>::zero();
-        transformMultiArray( tmpArray.traverser_begin(), shape, ta, d, dest, 
-                             ifThenElse( Arg1() > Param(radius2),
+        transformMultiArray( tmpArray.traverser_begin(), shape, StandardValueAccessor<double>(), 
+                             d, dest, 
+                             ifThenElse( Arg1() >= Param(radius2),
                                          Param(foreground), Param(background) ) );
     }
 };
