@@ -179,10 +179,7 @@ class HDF5ImportInfo
 
 	VIGRA_EXPORT MultiArrayIndex shapeOfDimension(const int dim) const;
 
-	/** Get the file type of the image associated with this
-            info object.
-
-        /** Query the pixel type of the sataset.
+        /** Query the pixel type of the dataset.
 
             Possible values are:
             <DL>
@@ -256,9 +253,7 @@ void loadFromHDF5File(const HDF5ImportInfo &info, MultiArrayView<N, T, Tag> arra
 	vigra_precondition(N == info.numDimensions(), 
 	     "loadFromHDF5File(): Array dimension disagrees with HDF5ImportInfo.numDimensions().");
 
-    typename MultiArrayShape<N>::type shape;
-    for(int k=0; k<N; ++k)
-        shape[k] = info.shapeOfDimension(k);
+    typename MultiArrayShape<N>::type shape(info.shape().begin());
 
 	vigra_precondition(shape == array.shape(), 
 	     "loadFromHDF5File(): Array shape disagrees with HDF5ImportInfo.");
