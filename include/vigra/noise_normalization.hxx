@@ -579,7 +579,7 @@ void noiseVarianceListMedianCut(Vector1 const & noise, Vector2 & clusters,
     while(clusters.size() <= maxClusterCount)
     {
         // find biggest cluster
-        unsigned int kMax;
+        unsigned int kMax = 0;
         double diffMax = 0.0;
         for(unsigned int k=0; k < clusters.size(); ++k)
         {

@@ -1535,7 +1535,7 @@ MultiArrayView <N, T, C>::strideOrdering(difference_type stride)
         permutation[k] = k;
     for(unsigned int k=0; k<N-1; ++k)
     {
-        MultiArrayIndex smallest = k;
+        unsigned int smallest = k;
         for(unsigned int j=k+1; j<N; ++j)
         {
             if(stride[j] < stride[smallest])
