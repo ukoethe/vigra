@@ -253,7 +253,8 @@ void loadFromHDF5File(const HDF5ImportInfo &info, MultiArrayView<N, T, Tag> arra
 	vigra_precondition(N == info.numDimensions(), 
 	     "loadFromHDF5File(): Array dimension disagrees with HDF5ImportInfo.numDimensions().");
 
-    typename MultiArrayShape<N>::type shape(info.shape().begin());
+    typename MultiArrayShape<N>::type shape;
+    std::copy(info.shape().begin(), info.shape().end(), shape.begin());
 
 	vigra_precondition(shape == array.shape(), 
 	     "loadFromHDF5File(): Array shape disagrees with HDF5ImportInfo.");
