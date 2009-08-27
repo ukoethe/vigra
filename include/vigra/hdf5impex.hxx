@@ -338,8 +338,7 @@ void writeToHDF5File(hid_t file, const char* path, const MultiArrayView<N, T, Ta
 	}
 	
 	hsize_t shape[N];              // dataset dimensions
-	for(int i=0;i<N;++i)
-		shape[i] = array.shape(i);
+	std::copy(array.shape().begin(), array.shape().end(), shape);
 
 #if (H5_VERS_MAJOR == 1 && H5_VERS_MINOR > 6)
     if(H5LTfind_dataset(group, data_set_name.c_str()))
