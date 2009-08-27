@@ -608,29 +608,29 @@ void setRangeMapping(std::string const & pixeltype,
                      FindMinMax<T> const & minmax, ImageExportInfo & info)
 {
     if(pixeltype == "UINT8")
-        info.setForcedRangeMapping(minmax.min, minmax.max,
+        info.setForcedRangeMapping((double)minmax.min, (double)minmax.max,
                                    (double)NumericTraits<UInt8>::min(),
                                    (double)NumericTraits<UInt8>::max());
     else if(pixeltype == "INT16")
-        info.setForcedRangeMapping(minmax.min, minmax.max,
+        info.setForcedRangeMapping((double)minmax.min, (double)minmax.max,
                                    (double)NumericTraits<Int16>::min(),
                                    (double)NumericTraits<Int16>::max());
     else if(pixeltype == "UINT16")
-        info.setForcedRangeMapping(minmax.min, minmax.max,
+        info.setForcedRangeMapping((double)minmax.min, (double)minmax.max,
                                    (double)NumericTraits<UInt16>::min(),
                                    (double)NumericTraits<UInt16>::max());
     else if(pixeltype == "INT32")
-        info.setForcedRangeMapping(minmax.min, minmax.max,
+        info.setForcedRangeMapping((double)minmax.min, (double)minmax.max,
                                    (double)NumericTraits<Int32>::min(),
                                    (double)NumericTraits<Int32>::max());
     else if(pixeltype == "UINT32")
-        info.setForcedRangeMapping(minmax.min, minmax.max,
+        info.setForcedRangeMapping((double)minmax.min, (double)minmax.max,
                                    (double)NumericTraits<UInt32>::min(),
                                    (double)NumericTraits<UInt32>::max());
     else if(pixeltype == "FLOAT")
-        info.setForcedRangeMapping(minmax.min, minmax.max, 0.0, 1.0);
+        info.setForcedRangeMapping((double)minmax.min, (double)minmax.max, 0.0, 1.0);
     else if(pixeltype == "DOUBLE")
-        info.setForcedRangeMapping(minmax.min, minmax.max, 0.0, 1.0);
+        info.setForcedRangeMapping((double)minmax.min, (double)minmax.max, 0.0, 1.0);
 }
 
 template <class T, class Tag>
