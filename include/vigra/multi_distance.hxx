@@ -337,9 +337,12 @@ void separableMultiDistSquared( SrcIterator s, SrcShape const & shape, SrcAccess
 {
     int N = shape.size();
 
+    typedef typename SrcAccessor::value_type SrcType;
     typedef typename DestAccessor::value_type DestType;
     typedef typename NumericTraits<DestType>::RealPromote Real;
-    
+
+    SrcType zero = NumericTraits<SrcType>::zero();
+
     double dmax = 0.0;
     bool pixelPitchIsReal = false;
     for( int k=0; k<N; ++k)
@@ -351,19 +354,20 @@ void separableMultiDistSquared( SrcIterator s, SrcShape const & shape, SrcAccess
             
     using namespace vigra::functor;
    
-    if(dmax > NumericTraits<DestType>::toPromote(NumericTraits<DestType>::max()) || pixelPitchIsReal) // need a temporary array to avoid overflows
+    if(dmax > NumericTraits<DestType>::toRealPromote(NumericTraits<DestType>::max()) 
+       || pixelPitchIsReal) // need a temporary array to avoid overflows
     {
         // Threshold the values so all objects have infinity value in the beginning
-        double maxDist = dmax;
+        Real maxDist = (Real)dmax, rzero = (Real)0.0;
         MultiArray<SrcShape::static_size, Real> tmpArray(shape);
         if(background == true)
             transformMultiArray( s, shape, src, 
                                  tmpArray.traverser_begin(), typename AccessorTraits<Real>::default_accessor(),
-                                 ifThenElse( Arg1() == Param(0), Param(maxDist), Param(0) ));
+                                 ifThenElse( Arg1() == Param(zero), Param(maxDist), Param(rzero) ));
         else
             transformMultiArray( s, shape, src, 
                                  tmpArray.traverser_begin(), typename AccessorTraits<Real>::default_accessor(),
-                                 ifThenElse( Arg1() != Param(0), Param(maxDist), Param(0) ));
+                                 ifThenElse( Arg1() != Param(zero), Param(maxDist), Param(rzero) ));
         
         detail::internalSeparableMultiArrayDistTmp( tmpArray.traverser_begin(), 
                 shape, typename AccessorTraits<Real>::default_accessor(),
@@ -375,13 +379,13 @@ void separableMultiDistSquared( SrcIterator s, SrcShape const & shape, SrcAccess
     else        // work directly on the destination array    
     {
         // Threshold the values so all objects have infinity value in the beginning
-        DestType maxDist = DestType(std::ceil(dmax));
+        DestType maxDist = DestType(std::ceil(dmax)), rzero = (DestType)0;
         if(background == true)
             transformMultiArray( s, shape, src, d, dest,
-                                 ifThenElse( Arg1() == Param(0), Param(maxDist), Param(0) ));
+                                 ifThenElse( Arg1() == Param(zero), Param(maxDist), Param(rzero) ));
         else
             transformMultiArray( s, shape, src, d, dest, 
-                                 ifThenElse( Arg1() != Param(0), Param(maxDist), Param(0) ));
+                                 ifThenElse( Arg1() != Param(zero), Param(maxDist), Param(rzero) ));
      
         detail::internalSeparableMultiArrayDistTmp( d, shape, dest, d, dest, pixelPitch);
     }
