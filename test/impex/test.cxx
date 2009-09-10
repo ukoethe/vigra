@@ -41,6 +41,8 @@
 #include "vigra/stdimage.hxx"
 #include "vigra/impex.hxx"
 #include "unittest.hxx"
+#include "vigra/hdf5impex.hxx"
+#include "vigra/multi_array.hxx"
 
 using namespace vigra;
 
@@ -1217,6 +1219,197 @@ public:
     }
 };
 
+class HDF5ExportImportTest
+{
+
+public:
+
+    HDF5ExportImportTest()
+    {}
+
+	void testUnstridedHDF5ExportImport()
+	{
+		// export and import data from and to unstrided array
+
+		char hdf5File[] = "testfile1.hdf5";
+
+		// data 1: int data in 2 dimensions (partly negative)
+		MultiArray<2,int> out_data_1(MultiArrayShape<2>::type(10, 11));
+        // ...initialize the array to the test data
+        for (int i = 0; i < 110; ++i)
+            out_data_1.data () [i] = i - 55;
+		//std::cout << "Test (0,0), (0,1), (1,0): " << out_data_1(0,0) << " " << out_data_1(0,1) << " " << out_data_1(1,0) << " " << std::endl;
+
+		// data 2: double data in 4 dimensions (partly negative)
+		MultiArray<4,double> out_data_2(MultiArrayShape<4>::type(10, 2, 3, 4));
+        // ...initialize the array to the test data
+        for (int i = 0; i < 240; ++i)
+            out_data_2.data () [i] = i + (std::rand() / (double)RAND_MAX) - 120;
+
+		// export
+		hid_t out_file_1 = H5Fcreate(hdf5File, H5F_ACC_TRUNC, H5P_DEFAULT, H5P_DEFAULT);
+		//C++: H5File out_file_1("testfile.hdf5", H5F_ACC_TRUNC);
+		// ...data 1
+		char hdf5group_1[] = "group/subgroup/subsubgroup/data1";
+		writeToHDF5File(out_file_1, hdf5group_1, out_data_1);
+		// ...data 2
+		char hdf5group_2[] = "group/subgroup/data2";
+		writeToHDF5File(out_file_1, hdf5group_2, out_data_2);
+		H5Fclose(out_file_1);
+		//C++: out_file_1.close();
+
+		// import
+		// ...data 1
+		HDF5ImportInfo infoHDF5_1(hdf5File, hdf5group_1);
+        MultiArray<2,int> in_data_1(MultiArrayShape<2>::type(infoHDF5_1.shapeOfDimension(0), infoHDF5_1.shapeOfDimension(1)));
+        loadFromHDF5File(infoHDF5_1, in_data_1);
+		// ...data 2
+		HDF5ImportInfo infoHDF5_2(hdf5File, hdf5group_2);
+        MultiArray<4,double> in_data_2(MultiArrayShape<4>::type(infoHDF5_2.shapeOfDimension(0), infoHDF5_2.shapeOfDimension(1), infoHDF5_2.shapeOfDimension(2), infoHDF5_2.shapeOfDimension(3)));
+		loadFromHDF5File(infoHDF5_2, in_data_2);
+
+		// compare content
+		// ...data 1
+		should (in_data_1 == out_data_1);
+		// ...data 2
+		should (in_data_2 == out_data_2);
+	}
+
+
+	void testStridedHDF5ExportImport()
+	{
+		// export and import data from and to strided arrays
+
+		char hdf5File[] = "testfile2.hdf5";
+
+		// int data in 2 dimensions (partly negative)
+		MultiArray<3,int> out_data_3(MultiArrayShape<3>::type(2, 3, 4));
+        // initialize the array to the test data
+        for (int i = 0; i < 24; ++i)
+            out_data_3.data () [i] = i;
+		MultiArrayView<2,int,StridedArrayTag> out_data_4(out_data_3.bindInner(1));
+
+		// export
+		hid_t out_file_2 = H5Fcreate(hdf5File, H5F_ACC_TRUNC, H5P_DEFAULT, H5P_DEFAULT);
+		//C++: H5File out_file_2("testfile2.hdf5", H5F_ACC_TRUNC);
+		char hdf5group_4[] = "group/subgroup/data4";
+		//std::cout << "data (0,0),(0,1),(1,0): " << out_data_4(0,0) << " " << out_data_4(0,1) << " " << out_data_4(1,0) << std::endl;
+		writeToHDF5File(out_file_2, hdf5group_4, out_data_4);
+		H5Fclose(out_file_2);
+		//C++: out_file_2.close();
+
+		// import test 1: copy data to unstrided array
+		HDF5ImportInfo infoHDF5_4(hdf5File, hdf5group_4);
+        MultiArray<2,int> in_data_4(MultiArrayShape<2>::type(infoHDF5_4.shapeOfDimension(0), infoHDF5_4.shapeOfDimension(1)));
+        loadFromHDF5File(infoHDF5_4, in_data_4);
+		// compare content
+		should (in_data_4 == out_data_4);
+
+		// import test 2: copy data to strided array
+		HDF5ImportInfo infoHDF5_5(hdf5File, hdf5group_4);
+        MultiArray<3,int> in_data_5a(MultiArrayShape<3>::type(3, infoHDF5_4.shapeOfDimension(0), infoHDF5_4.shapeOfDimension(1)));
+		in_data_5a.init(42);
+		MultiArrayView<2,int,StridedArrayTag> in_data_5b(in_data_5a.bindInner(0));
+        loadFromHDF5File(infoHDF5_5, in_data_5b);
+		// compare content
+		should (in_data_5b == out_data_4);
+	}
+
+	void testAppendHDF5ExportImport()
+	{
+		// write data to file, close file, open file, write more data, compare
+
+		char hdf5File[] = "testfile3.hdf5";
+
+		// data 1: int data in 2 dimensions (partly negative)
+		MultiArray<2,int> out_data_1(MultiArrayShape<2>::type(10, 11));
+        // ...initialize the array to the test data
+        for (int i = 0; i < 110; ++i)
+            out_data_1.data () [i] = i - 55;
+		//std::cout << "Test (0,0), (0,1), (1,0): " << out_data_1(0,0) << " " << out_data_1(0,1) << " " << out_data_1(1,0) << " " << std::endl;
+
+		// data 2: double data in 4 dimensions (partly negative)
+		MultiArray<4,double> out_data_2(MultiArrayShape<4>::type(10, 2, 3, 4));
+        // ...initialize the array to the test data
+        for (int i = 0; i < 240; ++i)
+            out_data_2.data () [i] = i + (std::rand() / (double)RAND_MAX) - 120;
+
+		// export
+		hid_t out_file_1 = H5Fcreate(hdf5File, H5F_ACC_TRUNC, H5P_DEFAULT, H5P_DEFAULT);
+		// ...data 1
+		char hdf5group_1[] = "group/subgroup/subsubgroup/data1";
+		writeToHDF5File(out_file_1, hdf5group_1, out_data_1);
+		H5Fclose(out_file_1);
+
+		// append to existing file
+		hid_t out_file_2 = H5Fopen(hdf5File, H5F_ACC_RDWR, H5P_DEFAULT);
+		// ...data 2
+		char hdf5group_2[] = "group/subgroup/data2";
+		writeToHDF5File(out_file_2, hdf5group_2, out_data_2);
+		H5Fclose(out_file_2);
+
+		// import
+		// ...data 1
+		HDF5ImportInfo infoHDF5_1(hdf5File, hdf5group_1);
+        MultiArray<2,int> in_data_1(MultiArrayShape<2>::type(infoHDF5_1.shapeOfDimension(0), infoHDF5_1.shapeOfDimension(1)));
+        loadFromHDF5File(infoHDF5_1, in_data_1);
+		// ...data 2
+		HDF5ImportInfo infoHDF5_2(hdf5File, hdf5group_2);
+        MultiArray<4,double> in_data_2(MultiArrayShape<4>::type(infoHDF5_2.shapeOfDimension(0), infoHDF5_2.shapeOfDimension(1), infoHDF5_2.shapeOfDimension(2), infoHDF5_2.shapeOfDimension(3)));
+		loadFromHDF5File(infoHDF5_2, in_data_2);
+
+		// compare content
+		// ...data 1
+		should (in_data_1 == out_data_1);
+		// ...data 2
+		should (in_data_2 == out_data_2);
+	}
+
+	void testOverwriteHDF5ExportImport()
+	{
+		// write data to file, close file, open file, overwrite data, compare
+
+		char hdf5File[] = "testfile4.hdf5";
+
+		// data 1: int data in 2 dimensions (partly negative)
+		MultiArray<2,int> out_data_1(MultiArrayShape<2>::type(10, 11));
+        // ...initialize the array to the test data
+        for (int i = 0; i < 110; ++i)
+            out_data_1.data () [i] = i - 55;
+		//std::cout << "Test (0,0), (0,1), (1,0): " << out_data_1(0,0) << " " << out_data_1(0,1) << " " << out_data_1(1,0) << " " << std::endl;
+
+		// data 2: double data in 4 dimensions (partly negative)
+		MultiArray<4,double> out_data_2(MultiArrayShape<4>::type(10, 2, 3, 4));
+        // ...initialize the array to the test data
+        for (int i = 0; i < 240; ++i)
+            out_data_2.data () [i] = i + (std::rand() / (double)RAND_MAX) - 120;
+
+		// export
+		hid_t out_file_1 = H5Fcreate(hdf5File, H5F_ACC_TRUNC, H5P_DEFAULT, H5P_DEFAULT);
+		// ...data 1
+		char hdf5group_1[] = "group/subgroup/data1";
+		writeToHDF5File(out_file_1, hdf5group_1, out_data_1);
+		H5Fclose(out_file_1);
+
+		// overwrite in existing file
+		// ...data 2
+		hid_t out_file_2 = H5Fopen(hdf5File, H5F_ACC_RDWR, H5P_DEFAULT);
+		char hdf5group_2[] = "group/subgroup/data1";
+		writeToHDF5File(out_file_2, hdf5group_1, out_data_2);
+		H5Fclose(out_file_2);
+
+		// import
+		HDF5ImportInfo infoHDF5_2(hdf5File, hdf5group_2);
+        MultiArray<4,double> in_data_2(MultiArrayShape<4>::type(infoHDF5_2.shapeOfDimension(0), infoHDF5_2.shapeOfDimension(1), infoHDF5_2.shapeOfDimension(2), infoHDF5_2.shapeOfDimension(3)));
+		loadFromHDF5File(infoHDF5_2, in_data_2);
+
+		// compare content
+		should (in_data_2 == out_data_2);
+	}
+
+};
+
+
 struct ImageImportExportTestSuite : public vigra::test_suite
 {
     ImageImportExportTestSuite()
@@ -1283,7 +1476,7 @@ struct ImageImportExportTestSuite : public vigra::test_suite
         add(testCase(&FloatRGBImageExportImportTest::testVIFF));
         add(testCase(&FloatRGBImageExportImportTest::testHDR));
 
-        // failure tests
+		// failure tests
         add(testCase(&ImageExportImportFailureTest::testGIFExport));
         add(testCase(&ImageExportImportFailureTest::testGIFImport));
         add(testCase(&ImageExportImportFailureTest::testJPEGExport));
@@ -1303,11 +1496,29 @@ struct ImageImportExportTestSuite : public vigra::test_suite
     }
 };
 
+struct HDF5ImportExportTestSuite : public vigra::test_suite
+{
+    HDF5ImportExportTestSuite()
+        : vigra::test_suite("HDF5ImportExportTestSuite")
+    {
+		// general tests
+        add(testCase(&HDF5ExportImportTest::testUnstridedHDF5ExportImport));
+        add(testCase(&HDF5ExportImportTest::testStridedHDF5ExportImport));
+        add(testCase(&HDF5ExportImportTest::testAppendHDF5ExportImport));
+        add(testCase(&HDF5ExportImportTest::testOverwriteHDF5ExportImport));
+	}
+};
+
+
 int main (int argc, char ** argv)
 {
     ImageImportExportTestSuite test;
     const int failed = test.run(vigra::testsToBeExecuted(argc, argv));
     std::cout << test.report() << std::endl;
 
-    return failed != 0;
+    HDF5ImportExportTestSuite test2;
+    const int failed2 = test2.run(vigra::testsToBeExecuted(argc, argv));
+    std::cout << test2.report() << std::endl;
+
+	return failed*failed2 != 0;
 }
