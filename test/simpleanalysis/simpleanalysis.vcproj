@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="8,00"
+	Version="8.00"
 	Name="simpleanalysis"
 	ProjectGUID="{00F39EC9-F0F8-494F-9E10-DC885E0EC5CA}"
 	>
@@ -171,7 +171,7 @@
 				OutputFile="simpleanalysis.exe"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
-				AdditionalLibraryDirectories="..\..\lib;..\..\src\impex"
+				AdditionalLibraryDirectories="..\..\lib;..\..\src\impex;&quot;..\..\..\vigra-dependencies\dependencies\lib&quot;"
 				ProgramDatabaseFile=".\Release/simpleanalysis.pdb"
 				SubSystem="1"
 			/>

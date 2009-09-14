@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="8,00"
+	Version="8.00"
 	Name="imgproc"
 	ProjectGUID="{8CBD8C9A-281F-4138-9AD6-DA43E687B8B4}"
 	>
@@ -76,7 +76,7 @@
 				OutputFile="imgproc.exe"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
-				AdditionalLibraryDirectories="..\..\src\impex"
+				AdditionalLibraryDirectories="..\..\src\impex;&quot;..\..\..\vigra-dependencies\dependencies\lib&quot;"
 				ProgramDatabaseFile=".\Release/imgproc.pdb"
 				SubSystem="1"
 			/>

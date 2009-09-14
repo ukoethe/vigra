@@ -1,21 +1,12 @@
 Microsoft Visual Studio Solution File, Format Version 9.00
 # Visual Studio 2005
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "convolution", "convolution\convolution.vcproj", "{DF27C171-3209-4A26-9E45-4A60DDB7C408}"
-	ProjectSection(ProjectDependencies) = postProject
-		{E7937DF7-5628-4D5F-86EE-D787083408A8} = {E7937DF7-5628-4D5F-86EE-D787083408A8}
-	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "error", "error\error.vcproj", "{09EC74B8-969C-4BDC-ABBC-CC3526EF65DE}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "image", "image\image.vcproj", "{CBBA1213-D17F-4626-9205-4F01109021F4}"
-	ProjectSection(ProjectDependencies) = postProject
-		{E7937DF7-5628-4D5F-86EE-D787083408A8} = {E7937DF7-5628-4D5F-86EE-D787083408A8}
-	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "imgproc", "imgproc\imgproc.vcproj", "{8CBD8C9A-281F-4138-9AD6-DA43E687B8B4}"
-	ProjectSection(ProjectDependencies) = postProject
-		{E7937DF7-5628-4D5F-86EE-D787083408A8} = {E7937DF7-5628-4D5F-86EE-D787083408A8}
-	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "morphology", "morphology\morphology.vcproj", "{82238335-B5DA-433B-950C-257AFFC2916C}"
 EndProject
@@ -28,9 +19,6 @@ EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "imagehierarchy", "imagehierarchy\imagehierarchy.vcproj", "{03F6A35C-E906-4616-B0B2-EF5A72A2FA09}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "multiarray", "multiarray\multiarray.vcproj", "{3545E46C-E9CC-4C7F-8922-3C2857D63A92}"
-	ProjectSection(ProjectDependencies) = postProject
-		{E7937DF7-5628-4D5F-86EE-D787083408A8} = {E7937DF7-5628-4D5F-86EE-D787083408A8}
-	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "functorexpression", "functorexpression\functorexpression.vcproj", "{A6A639A6-6360-4D53-A1DE-43137FFC0F8D}"
 EndProject
@@ -39,25 +27,14 @@ EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "multiconvolution", "multiconvolution\multiconvolution.vcproj", "{DAC857D9-D650-48C2-8AAB-25E1B714DA45}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "tensorimaging", "tensorimaging\tensorimaging.vcproj", "{0F057AD0-4971-4EC0-A2AE-F249290F88E4}"
-	ProjectSection(ProjectDependencies) = postProject
-		{E7937DF7-5628-4D5F-86EE-D787083408A8} = {E7937DF7-5628-4D5F-86EE-D787083408A8}
-	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "syntax", "syntax\syntax.vcproj", "{4FAFF206-B048-4048-A2E1-00E93C6D2606}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "utilities", "utilities\utilities.vcproj", "{3C75D96D-AF80-48D7-9A8A-27FF5D2F6051}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "fourier", "fourier\fourier.vcproj", "{F50BA3E6-22F6-42B4-8E0E-15FB88B4E8F7}"
-	ProjectSection(ProjectDependencies) = postProject
-		{E7937DF7-5628-4D5F-86EE-D787083408A8} = {E7937DF7-5628-4D5F-86EE-D787083408A8}
-	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "impextest", "impex\impextest.vcproj", "{A31505E2-3628-4504-B683-E1D1E935726B}"
-	ProjectSection(ProjectDependencies) = postProject
-		{E7937DF7-5628-4D5F-86EE-D787083408A8} = {E7937DF7-5628-4D5F-86EE-D787083408A8}
-	EndProjectSection
-EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "vigraimpex_dll", "..\src\impex\vigraimpex_dll.vcproj", "{E7937DF7-5628-4D5F-86EE-D787083408A8}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "voxelneighborhood", "voxelneighborhood\voxelneighborhood.vcproj", "{C9681857-7D05-4886-85E3-F980EC015403}"
 EndProject
@@ -72,6 +49,8 @@ EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "seededRegionGrowing3d", "seededRegionGrowing3d\seededregiongrowing3d.vcproj", "{95AF3C6F-616A-445B-B7F2-15C121F986C6}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "optimization", "optimization\optimization.vcproj", "{C02EDE56-985B-44E6-8022-765F160B6FF4}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "vigraimpex_dll", "Z:\Ilastik\vigra\src\impex\vigraimpex_dll_mhanselm.vcproj", "{E7937DF7-5628-4D5F-86EE-D787083408A8}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -145,10 +124,6 @@ Global
 		{A31505E2-3628-4504-B683-E1D1E935726B}.Debug|Win32.Build.0 = Debug|Win32
 		{A31505E2-3628-4504-B683-E1D1E935726B}.Release|Win32.ActiveCfg = Release|Win32
 		{A31505E2-3628-4504-B683-E1D1E935726B}.Release|Win32.Build.0 = Release|Win32
-		{E7937DF7-5628-4D5F-86EE-D787083408A8}.Debug|Win32.ActiveCfg = Debug|Win32
-		{E7937DF7-5628-4D5F-86EE-D787083408A8}.Debug|Win32.Build.0 = Debug|Win32
-		{E7937DF7-5628-4D5F-86EE-D787083408A8}.Release|Win32.ActiveCfg = Release|Win32
-		{E7937DF7-5628-4D5F-86EE-D787083408A8}.Release|Win32.Build.0 = Release|Win32
 		{C9681857-7D05-4886-85E3-F980EC015403}.Debug|Win32.ActiveCfg = Debug|Win32
 		{C9681857-7D05-4886-85E3-F980EC015403}.Debug|Win32.Build.0 = Debug|Win32
 		{C9681857-7D05-4886-85E3-F980EC015403}.Release|Win32.ActiveCfg = Release|Win32
@@ -174,6 +149,10 @@ Global
 		{C02EDE56-985B-44E6-8022-765F160B6FF4}.Debug|Win32.Build.0 = Debug|Win32
 		{C02EDE56-985B-44E6-8022-765F160B6FF4}.Release|Win32.ActiveCfg = Release|Win32
 		{C02EDE56-985B-44E6-8022-765F160B6FF4}.Release|Win32.Build.0 = Release|Win32
+		{E7937DF7-5628-4D5F-86EE-D787083408A8}.Debug|Win32.ActiveCfg = Debug|Win32
+		{E7937DF7-5628-4D5F-86EE-D787083408A8}.Debug|Win32.Build.0 = Debug|Win32
+		{E7937DF7-5628-4D5F-86EE-D787083408A8}.Release|Win32.ActiveCfg = Release|Win32
+		{E7937DF7-5628-4D5F-86EE-D787083408A8}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
