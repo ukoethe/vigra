@@ -989,24 +989,20 @@ MultiArrayIndex VolumeImportInfo::depth() const { return shape_[2]; }
 const std::string & VolumeImportInfo::name() const { return name_; }
 const std::string & VolumeImportInfo::description() const { return description_; }
 
-HDF5ImportInfo::HDF5ImportInfo(const char* filename, const char* path)
+HDF5ImportInfo::HDF5ImportInfo(const char* filePath, const char* pathInFile)
 {
-	//std::cout << "filename: " << filename << std::endl;
-	m_file_handle = H5Fopen(filename, H5F_ACC_RDONLY, H5P_DEFAULT);
+	m_file_handle = H5Fopen(filePath, H5F_ACC_RDONLY, H5P_DEFAULT);
 	vigra_postcondition(m_file_handle > 0, "HDF5ImportInfo(): Unable to open file.");
-	//H5File( filename, H5F_ACC_RDONLY );
 
-	//std::cout << "dataset found=" << H5LTfind_dataset(m_file_handle, "/group/subgroup/subsubgroup/data1") << std::endl;
-	//hid_t gid = H5Gopen (m_file_handle, "/group", H5P_DEFAULT);
 #if (H5_VERS_MAJOR == 1 && H5_VERS_MINOR <= 6)
-	m_dataset_handle = H5Dopen(m_file_handle, path);
+	m_dataset_handle = H5Dopen(m_file_handle, pathInFile);
 #else
-	m_dataset_handle = H5Dopen(m_file_handle, path, H5P_DEFAULT);
+	m_dataset_handle = H5Dopen(m_file_handle, pathInFile, H5P_DEFAULT);
 #endif
 	vigra_postcondition(m_dataset_handle > 0, "HDF5ImportInfo(): Unable to open dataset.");
 	//DataSet dset = m_file.openDataSet(datasetname);
-	m_filename = filename;
-	m_path = path;
+	m_filename = filePath;
+	m_path = pathInFile;
 	hid_t dataspace_handle = H5Dget_space(m_dataset_handle);
 	vigra_postcondition(dataspace_handle > 0, "HDF5ImportInfo(): could not access dataset dataspace."); 
 	m_dimensions = H5Sget_simple_extent_ndims(dataspace_handle);
@@ -1079,8 +1075,8 @@ const char * HDF5ImportInfo::getPixelType() const
 }
 MultiArrayIndex HDF5ImportInfo::shapeOfDimension(const int dim) const { return m_dims[dim]; };
 MultiArrayIndex HDF5ImportInfo::numDimensions() const { return m_dimensions; }
-const std::string & HDF5ImportInfo::getPath() const { return m_path; }
-const std::string & HDF5ImportInfo::getFileName() const { return m_filename; }
+const std::string & HDF5ImportInfo::getPathInFile() const { return m_path; }
+const std::string & HDF5ImportInfo::getFilePath() const { return m_filename; }
 const hid_t HDF5ImportInfo::getH5FileHandle() const { return m_file_handle; }
 const hid_t HDF5ImportInfo::getDatasetHandle() const { return m_dataset_handle; }
 

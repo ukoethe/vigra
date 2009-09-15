@@ -160,13 +160,13 @@ class HDF5ImportInfo
             The dataset in the given HDF5 file is accessed and the properties 
 			are set accordingly.
          **/
-	VIGRA_EXPORT HDF5ImportInfo( const char* filename, const char* path );
+	VIGRA_EXPORT HDF5ImportInfo( const char* filePath, const char* pathInFile );
 
 	VIGRA_EXPORT ~HDF5ImportInfo();
 
-    VIGRA_EXPORT const std::string& getFileName() const;
+    VIGRA_EXPORT const std::string& getFilePath() const;
 
-    VIGRA_EXPORT const std::string& getPath() const;
+    VIGRA_EXPORT const std::string& getPathInFile() const;
 
 	VIGRA_EXPORT const hid_t getH5FileHandle() const;
 
@@ -357,9 +357,24 @@ void loadFromHDF5File(const HDF5ImportInfo &info, MultiArrayView<N, T, Tag> arra
 		ArrayVector<T> buffer(shape[0]);
 		detail::readHDF5Impl(array.traverser_begin(), shape, info.getDatasetHandle(), buffer, counter, elements, vigra::MetaInt<N-1>());
 	} else {
+		/*
 		MultiArrayView<N, T, StridedArrayTag> arrayTransposed = array.permuteStridesDescending();
 		ArrayVector<T> buffer(arrayTransposed.shape(0));
 		detail::readHDF5Impl(arrayTransposed.traverser_begin(), arrayTransposed.shape(), info.getDatasetHandle(), buffer, counter, elements, vigra::MetaInt<N-1>());
+		*/
+		vigra::TinyVector<int,N> strideNew;
+		vigra::TinyVector<int,N> shapeNew;
+		for(unsigned int k=0; k<N; ++k)
+		{
+			//std::cout << "StrideOld[" << k << "]=" << array.stride(k) << std::endl;
+			strideNew[k] = array.stride(N-1-k);
+			shapeNew[k] = array.shape(N-1-k);
+			//std::cout << "StrideNew[" << k << "]=" << strideNew[k] << std::endl;
+			//std::cout << "ShapeNew[" << k << "]=" << shapeNew[k] << std::endl;
+		}
+		MultiArrayView<N, T, StridedArrayTag> arrayNew (shapeNew, strideNew, array.data());
+		ArrayVector<T> buffer(arrayNew.shape(0));
+		detail::readHDF5Impl(arrayNew.traverser_begin(), arrayNew.shape(), info.getDatasetHandle(), buffer, counter, elements, vigra::MetaInt<N-1>());
 	}
 
 	/*vigra_postcondition(H5Dread(info.getDatasetHandle(), detail::getH5DataType<T>(), H5S_ALL, H5S_ALL, H5P_DEFAULT, array.data()) >= 0,
@@ -472,10 +487,32 @@ writeHDF5Impl(DestIterator d, Shape const & shape, hid_t file_id, hid_t dataset_
 
 
 template<unsigned int N, class T, class Tag>
-void writeToHDF5File(hid_t file, const char* path, const MultiArrayView<N, T, Tag> & array, const bool rowMajorOrder = false)
+void writeToHDF5File(const char* filePath, const char* pathInFile, const MultiArrayView<N, T, Tag> & array, const bool rowMajorOrder = false)
 {
-	//std::cout << "file=" << file << ", path=" << path << std::endl;
-	std::string path_name(path), group_name, data_set_name, message;
+	/*
+	std::cout << "Values (0,0), (0,1), (1,0): " << array(0,0) << " " << array(0,1) << " " << array(1,0) << " " << std::endl;
+	std::cout << "Shape  (0), (1): " << array.shape(0) << " " << array.shape(1) << " " << std::endl;
+	std::cout << "Stride (0), (1): " << array.stride(0) << " " << array.stride(1) << " " << std::endl;
+	*/
+
+	// check if file already exists
+	hid_t file_id;
+	FILE * pFile;
+    pFile = fopen ( filePath, "r" );
+    if ( pFile == NULL )
+	{
+		// if not, create the file
+		file_id = H5Fcreate(filePath, H5F_ACC_TRUNC, H5P_DEFAULT, H5P_DEFAULT);
+        vigra_precondition(file_id >= 0, "writeToHDF5File(): output file could not be created.");
+	} else {
+		fclose( pFile );
+		// open the file
+		file_id = H5Fopen(filePath, H5F_ACC_RDWR, H5P_DEFAULT);
+		vigra_postcondition(file_id >= 0, "writeToHDF5File(): unable to open output file.");
+	}
+	delete pFile;
+
+	std::string path_name(pathInFile), group_name, data_set_name, message;
 	std::string::size_type delimiter = path_name.rfind('/');
 	
 	if(delimiter == std::string::npos)
@@ -491,13 +528,12 @@ void writeToHDF5File(hid_t file, const char* path, const MultiArrayView<N, T, Ta
 	HDF5Handle group;
 	if(group_name != "")
 	{
-	    group = HDF5Handle(createAllGroups(file, group_name), &H5Gclose, "writeToHDF5File(): Unable to create and open group.");
+	    group = HDF5Handle(createAllGroups(file_id, group_name), &H5Gclose, "writeToHDF5File(): Unable to create and open group.");
 	}
 	else
 	{
-	    group = HDF5Handle(file, 0, "");
+	    group = HDF5Handle(file_id, 0, "");
 	}
-	//std::cout << "all groups created...last id=" << group << std::endl;
 
 	hsize_t shape[N];
     for(unsigned int k=0; k<N; ++k)
@@ -525,171 +561,37 @@ void writeToHDF5File(hid_t file, const char* path, const MultiArrayView<N, T, Ta
 #endif
 	vigra_postcondition(dataset_handle > 0, "writeToHDF5File(): unable to create dataset.");
 	
-	//std::cout << "dataspace_handle: " << dataspace_handle << std::endl;
-	//std::cout << "dataset_handle: " << dataset_handle << std::endl;
-
 	// Write the data to the HDF5 dataset
 	//dataset.write( array.data(), GetH5DataType<T>() ); // old version without support for strided arrays
 	int elements = 1;
 	for(int i=0;i<N;++i)
-		elements *= shape[i];
+		elements *= (int)shape[i];
 	int counter = 0;
 
 	if(rowMajorOrder)
 	{
-		ArrayVector<T> buffer(shape[0]);
-		detail::writeHDF5Impl(array.traverser_begin(), shape, file, dataset_handle, buffer, counter, elements, vigra::MetaInt<N-1>());
+		ArrayVector<T> buffer((int)shape[0]);
+		detail::writeHDF5Impl(array.traverser_begin(), shape, file_id, dataset_handle, buffer, counter, elements, vigra::MetaInt<N-1>());
 	} else {
-		MultiArrayView<N, T, StridedArrayTag> arrayTransposed = array.permuteStridesDescending();
-		ArrayVector<T> buffer(arrayTransposed.shape(0));
-		detail::writeHDF5Impl(arrayTransposed.traverser_begin(), arrayTransposed.shape(), file, dataset_handle, buffer, counter, elements, vigra::MetaInt<N-1>());
+		// for column major order we have to reverse the shape and strides before calling the write function
+		vigra::TinyVector<int,N> strideNew;
+		vigra::TinyVector<int,N> shapeNew;
+		for(unsigned int k=0; k<N; ++k)
+		{
+			strideNew[k] = array.stride(N-1-k);
+			shapeNew[k] = array.shape(N-1-k);
+			//std::cout << "StrideNew[" << k << "]=" << strideNew[k] << std::endl;
+			//std::cout << "ShapeNew[" << k << "]=" << shapeNew[k] << std::endl;
+		}
+		MultiArrayView<N, T, StridedArrayTag> arrayNew (shapeNew, strideNew, array.data());
+		ArrayVector<T> buffer((int)arrayNew.shape(0));
+		detail::writeHDF5Impl(arrayNew.traverser_begin(), arrayNew.shape(), file_id, dataset_handle, buffer, counter, elements, vigra::MetaInt<N-1>());
 	}
 	H5Dclose(dataset_handle);
 	H5Sclose(dataspace_handle);
 
-	/*
-	hsize_t shape[N];              // dataset dimensions
-	std::copy(array.shape().begin(), array.shape().end(), shape);
-	*/
-
-	/*
-#if (H5_VERS_MAJOR == 1 && H5_VERS_MINOR > 6)
-    if(H5LTfind_dataset(group, data_set_name.c_str()))
-    {
-        if(H5Ldelete( group, data_set_name.c_str(), H5P_DEFAULT ) < 0)
-        {
-            vigra_postcondition(false, "writeToHDF5File(): Unable to delete existing data.");
-        }
-    }
-#endif
-    HDF5Handle dataset(H5LTmake_dataset(group, data_set_name.c_str(), N, shape, detail::getH5DataType<T>(), array.data()),
-                       &H5Dclose, "writeToHDF5File(): Unable to write data set.");
-	*/
-
-	H5Fflush(file, H5F_SCOPE_GLOBAL);
-}
-
-template<unsigned int N, class T, class Tag>
-void writeToHDF5File2(hid_t file, const char* path, const MultiArrayView<N, T, Tag> & array)
-{
-	// test function that does the export in one pass (not in row-wise fashion)
-
-	//std::cout << "file=" << file << ", path=" << path << std::endl;
-	std::string path_name(path), group_name, data_set_name, message;
-	std::string::size_type delimiter = path_name.rfind('/');
-	
-	if(delimiter == std::string::npos)
-	{
-	    data_set_name = path_name;
-	}
-	else
-	{
-	    group_name = std::string(path_name.begin(), path_name.begin()+delimiter);
-	    data_set_name = std::string(path_name.begin()+delimiter+1, path_name.end());
-	}
-
-	HDF5Handle group;
-	if(group_name != "")
-	{
-	    group = HDF5Handle(createAllGroups(file, group_name), &H5Gclose, "writeToHDF5File2(): Unable to create and open group.");
-	}
-	else
-	{
-	    group = HDF5Handle(file, 0, "");
-	}
-	hsize_t shape[N];
-    for(unsigned int k=0; k<N; ++k)
-        shape[k] = array.shape(k);
-
-	// create dataspace
-	hid_t dataspace_handle = H5Screate_simple(N, shape, NULL);
-	vigra_postcondition(dataspace_handle >= 0, "writeToHDF5File2(): unable to create dataspace.");
-	// delete existing data and create new dataset
-    if(H5LTfind_dataset(group, data_set_name.c_str()))
-    {
-		//std::cout << "dataset already exists" << std::endl;
-        if(H5Ldelete(group, data_set_name.c_str(), H5P_DEFAULT ) < 0)
-        {
-            vigra_postcondition(false, "writeToHDF5File2(): Unable to delete existing data.");
-        }
-	} /*else {
-		std::cout << "dataset does not exist so far" << std::endl;
-	}*/
-	
-#if (H5_VERS_MAJOR == 1 && H5_VERS_MINOR <= 6)
-	hid_t dataset_handle = H5Dcreate(group, data_set_name.c_str(), detail::getH5DataType<T>(), dataspace_handle, H5P_DEFAULT);
-#else
-	hid_t dataset_handle = H5Dcreate(group, data_set_name.c_str(), detail::getH5DataType<T>(), dataspace_handle, H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
-#endif
-	vigra_postcondition(dataset_handle > 0, "writeToHDF5File2(): unable to create dataset.");
-
-	hid_t mid1;
-	hid_t mid2;
-
-	// select hyperslab in HDF5 file
-	hsize_t shapeHDF5[N];
-	hsize_t strideHDF5[N];
-	hsize_t startHDF5[N];
-	hsize_t blockHDF5[N];
-	hsize_t countHDF5[N];
-	for(unsigned int k=0; k<N; ++k)
-	{
-		shapeHDF5[k] = shape[k];
-		startHDF5[k] = 0;
-		strideHDF5[k] = 1;
-		blockHDF5[k] = 1;
-		countHDF5[k] = shape[k];
-	}
-
-	mid1 = H5Screate_simple(N, shapeHDF5, NULL); 
-    H5Sselect_hyperslab(mid1, H5S_SELECT_SET, startHDF5, strideHDF5, countHDF5, blockHDF5);
-	// select hyperslab in input data object
-	// artificial data object with correct layout
-	hsize_t shapeData[N];
-	hsize_t startData[N];
-	hsize_t blockData[N];
-	hsize_t countData[N];
-	for(unsigned int k=0; k<N; ++k)
-	{
-		shapeData[k] = shape[k];
-		startData[k] = 0;
-		blockData[k] = 1;
-		countData[k] = shape[k];
-	}
-	for(unsigned int k=N-1; k>0; --k)
-		shapeData[k-1] *= array.stride(k)/(array.stride(k-1)*shape[k-1]);
-	shapeData[0] *= array.stride(0);
-	hsize_t strideData[N];
-	int prod = 1;
-	for(unsigned int k=0; k<N; ++k)
-	{
-		strideData[k] = array.stride(k) / prod;
-		prod *= shapeData[k];
-		//std::cout << "stride " << k << ": " << strideData[k] << ", " << std::endl;
-		//std::cout << "shape " << k << ": " << shapeData[k] << ", " << std::endl;
-	}
-
-	// interchange dimensions 0 and 1 to correctly select data in column-major order
-	hid_t temp;
-	temp = countData[0];
-	countData[0] = countData[1];
-	countData[1] = temp;
-	temp = strideData[0];
-	strideData[0] = strideData[1];
-	strideData[1] = temp;
-	temp = shapeData[0];
-	shapeData[0] = shapeData[1];
-	shapeData[1] = temp;
-
-	mid2 = H5Screate_simple(N, shapeData, NULL);
-    H5Sselect_hyperslab(mid2, H5S_SELECT_SET, startData, strideData, countData, blockData);
-
-	H5Dwrite(dataset_handle, detail::getH5DataType<T>(), mid2, mid1, H5P_DEFAULT, array.data());
-
-	H5Dclose(dataset_handle);
-	H5Sclose(dataspace_handle);
-
-	H5Fflush(file, H5F_SCOPE_GLOBAL); 
+	H5Fflush(file_id, H5F_SCOPE_GLOBAL);
+	H5Fclose(file_id);
 }
 
 
