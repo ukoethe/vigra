@@ -506,11 +506,11 @@ void writeToHDF5File(const char* filePath, const char* pathInFile, const MultiAr
         vigra_precondition(file_id >= 0, "writeToHDF5File(): output file could not be created.");
 	} else {
 		fclose( pFile );
+		pFile = 0;
 		// open the file
 		file_id = H5Fopen(filePath, H5F_ACC_RDWR, H5P_DEFAULT);
 		vigra_postcondition(file_id >= 0, "writeToHDF5File(): unable to open output file.");
 	}
-	delete pFile;
 
 	std::string path_name(pathInFile), group_name, data_set_name, message;
 	std::string::size_type delimiter = path_name.rfind('/');
