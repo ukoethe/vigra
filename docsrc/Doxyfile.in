@@ -31,7 +31,7 @@ PROJECT_NAME           = VIGRA
 # This could be handy for archiving the generated documentation or 
 # if some version control system is used.
 
-PROJECT_NUMBER         = 
+PROJECT_NUMBER         = @vigra_version@
 
 # The OUTPUT_DIRECTORY tag is used to specify the (relative or absolute) 
 # base path where the generated documentation will be put. 
@@ -188,7 +188,7 @@ TAB_SIZE               = 4
 
 ALIASES                = configured_docdir="\@docdir\@"
 ALIASES                += stl_link="\"http://www.sgi.com/tech/stl/\""
-ALIASES                += vigra_version=
+ALIASES                += vigra_version=@vigra_version@
 
 # Set the OPTIMIZE_OUTPUT_FOR_C tag to YES if your project consists of C 
 # sources only. Doxygen will then generate output that is more tailored for C. 
@@ -737,7 +737,7 @@ GENERATE_HTML          = YES
 # If a relative path is entered the value of OUTPUT_DIRECTORY will be 
 # put in front of it. If left blank `html' will be used as the default path.
 
-HTML_OUTPUT            = ../doc/vigra
+HTML_OUTPUT            = @DOCDIR@
 
 # The HTML_FILE_EXTENSION tag can be used to specify the file extension for 
 # each generated HTML page (for example: .htm,.php,.asp). If it is left blank 
