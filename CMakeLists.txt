@@ -1,6 +1,7 @@
 cmake_minimum_required(VERSION 2.6)
 
 PROJECT(vigra)
+SET(vigra_version 1.6.0)
 
 ENABLE_TESTING()
 
@@ -29,6 +30,9 @@ FIND_PACKAGE(PNG)
 ADD_SUBDIRECTORY(src)
 ADD_SUBDIRECTORY(test)
 ADD_SUBDIRECTORY(docsrc)
+
+INSTALL(DIRECTORY ${vigra_SOURCE_DIR}/include/vigra DESTINATION include)
+INSTALL(DIRECTORY ${vigra_SOURCE_DIR}/doc/vigra DESTINATION doc)
 
 MESSAGE( STATUS "Using TIFF libraries: ${TIFF_LIBRARIES}" )
 MESSAGE( STATUS "Using JPEG libraries: ${JPEG_LIBRARIES}" )
