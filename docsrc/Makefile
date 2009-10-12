@@ -24,6 +24,7 @@ doxygen::
 post::
 	python makeFunctionIndex.py $(DOCDIR)
 	python post-doxy-1.5.6.py $(DOCDIR) $(VIGRA_VERSION)
+	cp -r ./documents $(DOCDIR)
 	cp $(DOCDIR)/index.html $(DOCDIR)/index.html.in
 	cp ../src/examples/lenna*.gif $(DOCDIR)
 
