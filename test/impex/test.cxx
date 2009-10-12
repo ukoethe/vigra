@@ -74,11 +74,7 @@ public:
     void testIsImage()
     {
         should(isImage("lenna.xv"));
-#ifdef _MSC_VER
-        should(!isImage("impex.vcproj"));
-#else
-        should(!isImage("Makefile"));
-#endif
+        should(!isImage("no-image.txt"));
     }
 
     void testFile (const char *filename);

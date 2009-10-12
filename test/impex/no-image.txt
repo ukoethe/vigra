@@ -1,0 +1,1 @@
+dummy file to test that impex recognizes that this is not an image
