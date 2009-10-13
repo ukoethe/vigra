@@ -9,7 +9,7 @@
 #   them as arguments to the test program, as ADD_TEST() would do)
 # * installs a post-build event that runs the test automatically after linking (Visual Studio only)
 #
-INCLUDE(TestOrDelete RESULT_VARIABLE TEST_OR_DELETE)
+INCLUDE(testOrDelete RESULT_VARIABLE TEST_OR_DELETE)
 
 IF (CMAKE_GENERATOR MATCHES "Visual Studio")
    STRING(REGEX REPLACE "\\.cmake$" ".bat" TEST_OR_DELETE ${TEST_OR_DELETE})
