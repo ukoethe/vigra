@@ -362,13 +362,13 @@ namespace vigra {
         vigra_precondition( stream.get() == XV_IMAGE_VER_NUM,
                             "file format version unsupported" );
 
-        // check the endianess
+        // check the endianness
         const char machine_dep = stream.get();
         if ( machine_dep == VFF_DEP_BIGENDIAN )
             bo.set("big endian");
         else if ( machine_dep == VFF_DEP_LITENDIAN )
             bo.set("little endian");
-        else vigra_fail( "endianess unsupported" );
+        else vigra_fail( "endianness unsupported" );
 
         // skip the comments
         stream.seekg( 0x208, std::ios::beg );
