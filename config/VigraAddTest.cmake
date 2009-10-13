@@ -1,5 +1,6 @@
-# - Enhanced version of ADD_TEST
-# Usage of this module as follows:
+# Enhanced version of ADD_TEST
+#
+# Usage of this module:
 #
 #     VIGRA_ADD_TEST(target [test_data1 test_data2 ...])
 #
@@ -11,20 +12,20 @@
 INCLUDE(TestOrDelete RESULT_VARIABLE TEST_OR_DELETE)
 
 IF (CMAKE_GENERATOR MATCHES "Visual Studio")
-   STRING(REGEX REPLACE "\\.cmake" ".bat" TEST_OR_DELETE ${TEST_OR_DELETE})
+   STRING(REGEX REPLACE "\\.cmake$" ".bat" TEST_OR_DELETE ${TEST_OR_DELETE})
+ELSE ()
+   STRING(REGEX REPLACE "\\.cmake$" ".sh" TEST_OR_DELETE ${TEST_OR_DELETE})
 ENDIF ()
 
 MACRO(VIGRA_ADD_TEST target)
-    ADD_TEST(${target} ${target})
+    ADD_DEPENDENCIES(test ${target})
     GET_TARGET_PROPERTY(${target}_executable ${target} LOCATION)
-    IF (CMAKE_GENERATOR MATCHES "Visual Studio")
-        STRING(REGEX REPLACE "/" "\\\\" ${target}_executable ${${target}_executable})
-        add_custom_command(
-            TARGET ${target}
-            POST_BUILD
-            COMMAND ${TEST_OR_DELETE} ARGS ${${target}_executable}
-            COMMENT "Running tests")
-    ENDIF()
+    file(TO_NATIVE_PATH ${${target}_executable} ${target}_executable)
+    add_custom_command(
+        TARGET ${target}
+        POST_BUILD
+        COMMAND ${TEST_OR_DELETE} ARGS ${${target}_executable}
+        COMMENT "Running tests")
     FOREACH(test_data ${ARGN})
       add_custom_command(
         TARGET ${target}

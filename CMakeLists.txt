@@ -1,9 +1,9 @@
 cmake_minimum_required(VERSION 2.6)
 
 PROJECT(vigra)
-SET(vigra_version 1.6.0)
+SET(vigra_version 1.7.0)
 
-ENABLE_TESTING()
+ADD_CUSTOM_TARGET(test)
 
 INCLUDE_DIRECTORIES(${vigra_SOURCE_DIR}/include)
 
@@ -25,7 +25,8 @@ FIND_PACKAGE(PNG)
 
 #FIND_PACKAGE(HDF5)
 
-#FIND_PACKAGE(FFTW)
+SET(FFTW3_NAMES libfftw3-3)
+FIND_PACKAGE(FFTW3)
 
 ADD_SUBDIRECTORY(src)
 ADD_SUBDIRECTORY(test)
@@ -38,4 +39,4 @@ MESSAGE( STATUS "Using TIFF libraries: ${TIFF_LIBRARIES}" )
 MESSAGE( STATUS "Using JPEG libraries: ${JPEG_LIBRARIES}" )
 MESSAGE( STATUS "Using PNG  libraries: ${PNG_LIBRARIES}" )
 MESSAGE( STATUS "Using HDF5 libraries: ${HDF5_LIBRARIES}" )
-MESSAGE( STATUS "Using FFTW libraries: ${FFTW_LIBRARIES}" )
+MESSAGE( STATUS "Using FFTW libraries: ${FFTW3_LIBRARIES}" )
