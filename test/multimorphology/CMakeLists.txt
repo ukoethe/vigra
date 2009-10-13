@@ -1,0 +1,5 @@
+ADD_EXECUTABLE(test_multimorphology test.cxx)
+
+TARGET_LINK_LIBRARIES(test_multimorphology vigraimpex)
+
+VIGRA_ADD_TEST(test_multimorphology)

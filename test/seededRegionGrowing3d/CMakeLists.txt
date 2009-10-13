@@ -1,0 +1,5 @@
+ADD_EXECUTABLE(test_seededRegionGrowing3d test.cxx)
+
+TARGET_LINK_LIBRARIES(test_seededRegionGrowing3d vigraimpex)
+
+VIGRA_ADD_TEST(test_seededRegionGrowing3d)

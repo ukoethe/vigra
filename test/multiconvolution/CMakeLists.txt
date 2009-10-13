@@ -1,0 +1,7 @@
+ADD_EXECUTABLE(test_multiconvolution test.cxx)
+
+VIGRA_ADD_TEST(test_multiconvolution)
+
+ADD_EXECUTABLE(test_multiconvolution_speed speedtest.cxx)
+
+VIGRA_ADD_TEST(test_multiconvolution_speed)
