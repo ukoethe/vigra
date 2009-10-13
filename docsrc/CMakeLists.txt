@@ -9,20 +9,6 @@ add_custom_target (doc doxygen
                        WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} 
                        COMMENT "Generating documentation")
 
-IF(WIN32)
-    file(TO_NATIVE_PATH ${DOCDIR} NATIVE_DOCDIR)
-    SET(DELETE_COMMAND del /F /S /Q)
-ELSE()
-    SET(NATIVE_DOCDIR ${DOCDIR})
-    SET(DELETE_COMMAND rm -rf)
-ENDIF()
-
-add_custom_command(
-        TARGET doc
-        PRE_BUILD
-        COMMAND ${DELETE_COMMAND} ARGS ${NATIVE_DOCDIR}
-        COMMENT "Removing old doc files")
-
 add_custom_command(
         TARGET doc
         POST_BUILD
