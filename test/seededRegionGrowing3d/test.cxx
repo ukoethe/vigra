@@ -291,11 +291,11 @@ struct SeededRegionGrowing3DTest
 
 
 
-struct SimpleAnalysisTestSuite
+struct SeededRegionGrowing3DTestSuite
 : public vigra::test_suite
 {
-    SimpleAnalysisTestSuite()
-    : vigra::test_suite("SimpleAnalysisTestSuite")
+    SeededRegionGrowing3DTestSuite()
+    : vigra::test_suite("SeededRegionGrowing3DTestSuite")
     {
         add( testCase( &SeededRegionGrowing3DTest::voronoiTest));
         add( testCase( &SeededRegionGrowing3DTest::voronoiTestWithBorder));
@@ -305,7 +305,7 @@ struct SimpleAnalysisTestSuite
 
 int main(int argc, char ** argv)
 {
-    SimpleAnalysisTestSuite test;
+    SeededRegionGrowing3DTestSuite test;
 
     int failed = test.run(vigra::testsToBeExecuted(argc, argv));
 
