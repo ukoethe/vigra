@@ -2,12 +2,16 @@
 #
 # Usage of this module:
 #
-#     VIGRA_ADD_TEST(target [source1 source2 ...])
+#     VIGRA_ADD_TEST(target [[SOURCES] source1 source2 ...] [LIBRARIES lib1 lib2 ...])
+#     VIGRA_COPY_TEST_DATA(datafile1 datafile2 ...)
 #
-# This macro calls ADD_TEST(${target} ${target}) and additionally
-# * copies the given test data files into the target directory (instead of interpreting
-#   them as arguments to the test program, as ADD_TEST() would do)
-# * installs a post-build event that runs the test automatically after linking (Visual Studio only)
+# The function VIGRA_ADD_TEST
+# * creates a new executable for 'target', using the given sources and libraries
+# * makes the global target 'test' depend on the new 'target'
+# * installs a post-build event that runs the test automatically after linking
+#
+# The function VIGRA_COPY_TEST_DATA copies the given files from the current source directory
+# to the corresponding binary directory.
 #
 INCLUDE(testOrDelete RESULT_VARIABLE TEST_OR_DELETE)
 
