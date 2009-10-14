@@ -687,13 +687,10 @@ struct ImageFunctionsTest
         BImage img1(3,3);
 
         transformImage(srcImageRange(img), destImage(img1),
-					   linearRangeMapping(1.0, 10.0, 0, 255));
+					   linearRangeMapping(1.0, 10.0, 0, 250));
 
-#if defined(__i386__)
-        int res[] = {3, 34, 65, 96, 127, 159, 190, 221, 252 };
-#else
-        int res[] = {3, 34, 65, 96, 128, 159, 190, 221, 252 };
-#endif
+        int res[] = {3, 33, 64, 94, 125, 156, 186, 217, 247 };
+
         shouldEqualSequence(img1.begin(), img1.end(), res);
 
         BRGBImage img2(3,3);
