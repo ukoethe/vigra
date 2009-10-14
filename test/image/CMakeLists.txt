@@ -1,5 +1,3 @@
-ADD_EXECUTABLE(test_image test.cxx)
+VIGRA_ADD_TEST(test_image test.cxx LIBRARIES vigraimpex)
 
-TARGET_LINK_LIBRARIES(test_image vigraimpex)
-
-VIGRA_ADD_TEST(test_image lenna.xv)
+VIGRA_COPY_TEST_DATA(lenna.xv)

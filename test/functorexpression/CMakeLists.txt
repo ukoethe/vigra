@@ -1,3 +1,1 @@
-ADD_EXECUTABLE(test_functorexpression test.cxx)
-
-VIGRA_ADD_TEST(test_functorexpression)
+VIGRA_ADD_TEST(test_functorexpression test.cxx)

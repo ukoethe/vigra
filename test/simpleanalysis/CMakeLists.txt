@@ -1,7 +1,5 @@
 INCLUDE_DIRECTORIES(${FFTW3_INCLUDE_DIR})
 
-ADD_EXECUTABLE(test_simpleanalysis test.cxx)
+VIGRA_ADD_TEST(test_simpleanalysis test.cxx LIBRARIES vigraimpex ${FFTW3_LIBRARIES})
 
-TARGET_LINK_LIBRARIES(test_simpleanalysis vigraimpex ${FFTW3_LIBRARIES})
-
-VIGRA_ADD_TEST(test_simpleanalysis noiseNormalizationTest.xv slantedEdgeMTF.xv lenna128.xv)
+VIGRA_COPY_TEST_DATA(noiseNormalizationTest.xv slantedEdgeMTF.xv lenna128.xv)

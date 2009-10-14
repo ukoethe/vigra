@@ -40,3 +40,4 @@ MESSAGE( STATUS "Using JPEG libraries: ${JPEG_LIBRARIES}" )
 MESSAGE( STATUS "Using PNG  libraries: ${PNG_LIBRARIES}" )
 MESSAGE( STATUS "Using HDF5 libraries: ${HDF5_LIBRARIES}" )
 MESSAGE( STATUS "Using FFTW libraries: ${FFTW3_LIBRARIES}" )
+

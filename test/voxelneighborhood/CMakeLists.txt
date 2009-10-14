@@ -1,5 +1,1 @@
-ADD_EXECUTABLE(test_voxelneighborhood test.cxx)
-
-TARGET_LINK_LIBRARIES(test_voxelneighborhood vigraimpex)
-
-VIGRA_ADD_TEST(test_voxelneighborhood)
+VIGRA_ADD_TEST(test_voxelneighborhood test.cxx LIBRARIES vigraimpex)
