@@ -49,10 +49,13 @@
 #include "vigra/symmetry.hxx"
 #include "vigra/watersheds.hxx"
 #include "vigra/noise_normalization.hxx"
-#include "vigra/slanted_edge_mtf.hxx"
 #include "vigra/affinegeometry.hxx"
 #include "vigra/affine_registration.hxx"
 #include "vigra/impex.hxx"
+
+#ifdef HasFFTW3
+# include "vigra/slanted_edge_mtf.hxx"
+#endif
 
 using namespace vigra;
 
@@ -1532,6 +1535,7 @@ struct NoiseNormalizationTest
     }
 };
 
+#ifdef HasFFTW3
 struct SlantedEdgeMTFTest
 {
     typedef vigra::DImage Image;
@@ -1583,6 +1587,7 @@ struct SlantedEdgeMTFTest
         shouldEqualTolerance(mtfFitGaussian(res), 0.5, 1e-2);
     }
 };
+#endif // HasFFTW3
 
 struct AffineRegistrationTest
 {
@@ -1731,11 +1736,13 @@ struct SimpleAnalysisTestSuite
         add( testCase( &NoiseNormalizationTest::testNonparametricNoiseNormalizationU8));
         add( testCase( &NoiseNormalizationTest::testParametricNoiseNormalizationRGB));
         add( testCase( &NoiseNormalizationTest::testNonparametricNoiseNormalizationRGB));
-        add( testCase( &SlantedEdgeMTFTest::testSlantedEdgeMTF));
         add( testCase( &AffineRegistrationTest::testCorrespondingPoints));
         add( testCase( &AffineRegistrationTest::testTranslationRegistration));
         add( testCase( &AffineRegistrationTest::testSimilarityRegistration));
         add( testCase( &AffineRegistrationTest::testAffineRegistration));
+#ifdef HasFFTW3
+        add( testCase( &SlantedEdgeMTFTest::testSlantedEdgeMTF));
+#endif // HasFFTW3
     }
 };
 
