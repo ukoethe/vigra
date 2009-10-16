@@ -3,16 +3,34 @@ cmake_minimum_required(VERSION 2.6)
 PROJECT(vigra)
 SET(vigra_version 1.7.0)
 
+
+ADD_CUSTOM_TARGET(check)
+
+#ENABLE_TESTING()
 ADD_CUSTOM_TARGET(test)
+ADD_DEPENDENCIES(test check)
+
+if (WIN32 AND ${CMAKE_C_COMPILER} MATCHES gcc.exe)
+    SET(IS_CYGWIN 1)
+else()
+    SET(IS_CYGWIN 0)
+endif()
 
 INCLUDE_DIRECTORIES(${vigra_SOURCE_DIR}/include)
 
 SET(CMAKE_MODULE_PATH  ${CMAKE_MODULE_PATH}  ${vigra_SOURCE_DIR}/config)
 
+SET(CMAKE_INCLUDE_PATH $ENV{HOME}/include
+    CACHE PATH "additional include search path (used by Find... macros)")
+SET(CMAKE_LIBRARY_PATH $ENV{HOME}/lib
+    CACHE PATH "additional library search path (used by Find... macros)")
+
 IF (CMAKE_GENERATOR MATCHES "Visual Studio")
     ADD_DEFINITIONS(-D_CRT_SECURE_NO_DEPRECATE -D_SECURE_SCL=0)
-    SET(CMAKE_INCLUDE_PATH ${CMAKE_INCLUDE_PATH} ${vigra_SOURCE_DIR}/include/external)
-    SET(CMAKE_LIBRARY_PATH ${CMAKE_LIBRARY_PATH} ${vigra_SOURCE_DIR}/lib)
+    SET(CMAKE_INCLUDE_PATH ${vigra_SOURCE_DIR}/include/external ${CMAKE_INCLUDE_PATH}
+        CACHE PATH "additional include search path (used by Find... macros)")
+    SET(CMAKE_LIBRARY_PATH ${vigra_SOURCE_DIR}/lib ${CMAKE_LIBRARY_PATH}
+        CACHE PATH "additional library search path (used by Find... macros)")
 ENDIF (CMAKE_GENERATOR MATCHES "Visual Studio")
 
 SET(TIFF_NAMES libtiff_i)
@@ -26,7 +44,7 @@ FIND_PACKAGE(PNG)
 SET(FFTW3_NAMES libfftw3-3)
 FIND_PACKAGE(FFTW3)
 
-#FIND_PACKAGE(HDF5)
+FIND_PACKAGE(HDF5)
 
 FIND_PACKAGE(Doxygen)
 

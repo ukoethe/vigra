@@ -59,10 +59,14 @@
 #include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
+#include "vigra/array_vector.hxx"
 #include "vigra/imageinfo.hxx"
 #include "codecmanager.hxx"
 #include "vigra/multi_impex.hxx"
-#include "vigra/hdf5impex.hxx"
+
+#ifdef HasHDF5
+# include "vigra/hdf5impex.hxx"
+#endif
 
 #if defined(_WIN32)
 #  include "vigra/windows.h"
@@ -115,10 +119,10 @@ std::string trimString(const std::string &s)
 void splitPathFromFilename(const std::string &pathAndName,
                            std::string &path, std::string &name)
 {
-	// on Windows, both '/' and '\' are valid path separators
-	// note: std::basic_string.rfind() may return 'unsigned int', so explicitely cast to 'int'
-	int split = std::max(static_cast<int>(pathAndName.rfind('/')), static_cast<int>(pathAndName.rfind('\\')));
-	if(split == static_cast<int>(std::string::npos))
+    // on Windows, both '/' and '\' are valid path separators
+    // note: std::basic_string.rfind() may return 'unsigned int', so explicitely cast to 'int'
+    int split = std::max(static_cast<int>(pathAndName.rfind('/')), static_cast<int>(pathAndName.rfind('\\')));
+    if(split == static_cast<int>(std::string::npos))
     {
         path = ".";
         name = pathAndName;
@@ -147,7 +151,7 @@ VIGRA_EXPORT void findImageSequence(const std::string &name_base,
     WIN32_FIND_DATA FileData;
 
     std::string path, base;
-	splitPathFromFilename(name_base, path, base);
+    splitPathFromFilename(name_base, path, base);
 
     std::vector<std::string> result;
     char numbuf[21], extbuf[1024];
@@ -221,7 +225,7 @@ void findImageSequence(const std::string &name_base,
 {
     // find out how many images we have
     std::string path, base;
-	splitPathFromFilename(name_base, path, base);
+    splitPathFromFilename(name_base, path, base);
 
     DIR * dir = opendir(path.c_str());
     if(!dir)
@@ -557,7 +561,7 @@ const char * ImageImportInfo::getPixelType() const
 
 ImageImportInfo::PixelType ImageImportInfo::pixelType() const
 {
-	const std::string pixeltype=ImageImportInfo::getPixelType();
+    const std::string pixeltype=ImageImportInfo::getPixelType();
    if (pixeltype == "UINT8")
      return UINT8;
    if (pixeltype == "INT16")
@@ -603,7 +607,7 @@ Size2D ImageImportInfo::size() const
 
 MultiArrayShape<2>::type ImageImportInfo::shape() const
 {
-	return MultiArrayShape<2>::type( m_width, m_height );
+    return MultiArrayShape<2>::type( m_width, m_height );
 }
 
 bool ImageImportInfo::isGrayscale() const
@@ -651,9 +655,10 @@ std::auto_ptr<Decoder> decoder( const ImageImportInfo & info )
 
 // class VolumeExportInfo
 
-VolumeExportInfo::VolumeExportInfo( const char * name_base, const char * name_ext ) : m_filename_base(name_base),
-      m_filename_ext(name_ext), m_x_res(0), m_y_res(0), m_z_res(0), 
-      fromMin_(0.0), fromMax_(0.0), toMin_(0.0), toMax_(0.0)
+VolumeExportInfo::VolumeExportInfo( const char * name_base, const char * name_ext ) 
+: m_filename_base(name_base),
+  m_filename_ext(name_ext), m_x_res(0), m_y_res(0), m_z_res(0), 
+  fromMin_(0.0), fromMax_(0.0), toMin_(0.0), toMax_(0.0)
 {
 }
 
@@ -958,9 +963,9 @@ VolumeImportInfo::ShapeType VolumeImportInfo::shape() const { return shape_; }
 VolumeImportInfo::Resolution VolumeImportInfo::resolution() const { return resolution_; }
 VolumeImportInfo::PixelType VolumeImportInfo::pixelType() const
 {
-	const std::string pixeltype=VolumeImportInfo::getPixelType();
+    const std::string pixeltype=VolumeImportInfo::getPixelType();
    if (pixeltype == "UINT8")
-	   return ImageImportInfo::UINT8;
+       return ImageImportInfo::UINT8;
    if (pixeltype == "INT16")
      return ImageImportInfo::INT16;
    if (pixeltype == "UINT16")
@@ -989,71 +994,68 @@ MultiArrayIndex VolumeImportInfo::depth() const { return shape_[2]; }
 const std::string & VolumeImportInfo::name() const { return name_; }
 const std::string & VolumeImportInfo::description() const { return description_; }
 
+#ifdef HasHDF5
+
 HDF5ImportInfo::HDF5ImportInfo(const char* filePath, const char* pathInFile)
 {
-	m_file_handle = H5Fopen(filePath, H5F_ACC_RDONLY, H5P_DEFAULT);
-	vigra_postcondition(m_file_handle > 0, "HDF5ImportInfo(): Unable to open file.");
+    m_file_handle = HDF5Handle(H5Fopen(filePath, H5F_ACC_RDONLY, H5P_DEFAULT),
+                               &H5Fclose, "HDF5ImportInfo(): Unable to open file.");
 
 #if (H5_VERS_MAJOR == 1 && H5_VERS_MINOR <= 6)
-	m_dataset_handle = H5Dopen(m_file_handle, pathInFile);
+    m_dataset_handle = HDF5Handle(H5Dopen(m_file_handle, pathInFile),
+                                  &H5Dclose, "HDF5ImportInfo(): Unable to open dataset.");
 #else
-	m_dataset_handle = H5Dopen(m_file_handle, pathInFile, H5P_DEFAULT);
+    m_dataset_handle = HDF5Handle(H5Dopen(m_file_handle, pathInFile, H5P_DEFAULT),
+                                  &H5Dclose, "HDF5ImportInfo(): Unable to open dataset.");
 #endif
-	vigra_postcondition(m_dataset_handle > 0, "HDF5ImportInfo(): Unable to open dataset.");
-	//DataSet dset = m_file.openDataSet(datasetname);
-	m_filename = filePath;
-	m_path = pathInFile;
-	hid_t dataspace_handle = H5Dget_space(m_dataset_handle);
-	vigra_postcondition(dataspace_handle > 0, "HDF5ImportInfo(): could not access dataset dataspace."); 
-	m_dimensions = H5Sget_simple_extent_ndims(dataspace_handle);
-	//m_dimensions = dset.getSpace().getSimpleExtentNdims();
 
-	vigra_precondition( m_dimensions>=2, "HDF5ImportInfo(): Number of dimensions is lower than 2. Not an image!" );
+    //DataSet dset = m_file.openDataSet(datasetname);
+    m_filename = filePath;
+    m_path = pathInFile;
+    HDF5Handle dataspace_handle(H5Dget_space(m_dataset_handle),
+                                &H5Sclose, "HDF5ImportInfo(): could not access dataset dataspace.");
+    m_dimensions = H5Sget_simple_extent_ndims(dataspace_handle);
+    //m_dimensions = dset.getSpace().getSimpleExtentNdims();
 
-	hid_t datatype = H5Dget_type(m_dataset_handle);
-	H5T_class_t dataclass = H5Tget_class(datatype);
-	if(dataclass==detail::getH5DataType<float>())
-		m_pixeltype = "FLOAT";
-	if(dataclass==detail::getH5DataType<UInt8>())
-		m_pixeltype = "UINT8";
-	if(dataclass==detail::getH5DataType<Int8>())
-		m_pixeltype = "INT8";
-	if(dataclass==detail::getH5DataType<UInt16>())
-		m_pixeltype = "UINT16";
-	if(dataclass==detail::getH5DataType<Int16>())
-		m_pixeltype = "INT16";
-	if(dataclass==detail::getH5DataType<UInt32>())
-		m_pixeltype = "UINT32";
-	if(dataclass==detail::getH5DataType<Int32>())
-		m_pixeltype = "INT32";
-	if(dataclass==detail::getH5DataType<double>())
-		m_pixeltype = "DOUBLE";
+    vigra_precondition( m_dimensions>=2, "HDF5ImportInfo(): Number of dimensions is lower than 2. Not an image!" );
 
-	m_dims = ArrayVector<int>(m_dimensions);
-	hsize_t* size = new hsize_t[m_dimensions];
-	hsize_t* maxdims = new hsize_t[m_dimensions];
-	H5Sget_simple_extent_dims(dataspace_handle, size, maxdims);
-	//dset.getSpace().getSimpleExtentDims(size, NULL);
-	for(int i=0; i<m_dimensions; ++i)
-		m_dims[i] = size[i];
-	delete size;
-	delete maxdims;
+    hid_t datatype = H5Dget_type(m_dataset_handle);
+    H5T_class_t dataclass = H5Tget_class(datatype);
+    if(dataclass==detail::getH5DataType<float>())
+        m_pixeltype = "FLOAT";
+    if(dataclass==detail::getH5DataType<UInt8>())
+        m_pixeltype = "UINT8";
+    if(dataclass==detail::getH5DataType<Int8>())
+        m_pixeltype = "INT8";
+    if(dataclass==detail::getH5DataType<UInt16>())
+        m_pixeltype = "UINT16";
+    if(dataclass==detail::getH5DataType<Int16>())
+        m_pixeltype = "INT16";
+    if(dataclass==detail::getH5DataType<UInt32>())
+        m_pixeltype = "UINT32";
+    if(dataclass==detail::getH5DataType<Int32>())
+        m_pixeltype = "INT32";
+    if(dataclass==detail::getH5DataType<double>())
+        m_pixeltype = "DOUBLE";
 
-	H5Sclose(dataspace_handle);
+    m_dims.resize(m_dimensions);
+    ArrayVector<hsize_t> size(m_dimensions);
+    ArrayVector<hsize_t> maxdims(m_dimensions);
+    H5Sget_simple_extent_dims(dataspace_handle, size.data(), maxdims.data());
+    //dset.getSpace().getSimpleExtentDims(size, NULL);
+    for(int i=0; i<m_dimensions; ++i)
+        m_dims[i] = size[i];
 }
 
 HDF5ImportInfo::~HDF5ImportInfo()
-{
-	H5Dclose(m_dataset_handle);
-	H5Fclose(m_file_handle);
-}
+{}
 
 
 HDF5ImportInfo::PixelType HDF5ImportInfo::pixelType() const
 {
    const std::string pixeltype=HDF5ImportInfo::getPixelType();
    if (pixeltype == "UINT8")
-	   return HDF5ImportInfo::UINT8;
+       return HDF5ImportInfo::UINT8;
    if (pixeltype == "INT16")
      return HDF5ImportInfo::INT16;
    if (pixeltype == "UINT16")
@@ -1079,5 +1081,8 @@ const std::string & HDF5ImportInfo::getPathInFile() const { return m_path; }
 const std::string & HDF5ImportInfo::getFilePath() const { return m_filename; }
 const hid_t HDF5ImportInfo::getH5FileHandle() const { return m_file_handle; }
 const hid_t HDF5ImportInfo::getDatasetHandle() const { return m_dataset_handle; }
+
+
+#endif // HasHDF5
 
 } // namespace vigra
