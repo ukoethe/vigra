@@ -70,11 +70,6 @@
 
     VIGRA is subject to this <a href="LICENSE.txt">LICENSE</a>.
 
-
-    \section Documentation Documentation
-
-    The documentation can be found in \@docdir\@, the start file is
-    \@docdir\@/index.html (this file).<br>
     You can also subscribe to the <a href="http://kogs.informatik.uni-hamburg.de/mailman/listinfo/vigra">VIGRA Mailing List</a> to get instant information about new releases, discuss VIGRA's features and development, and ask the experts for help.
 
 
