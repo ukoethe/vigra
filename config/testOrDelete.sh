@@ -1,4 +1,8 @@
-if test "x$2" != "x" ; then
-    PATH=$2${PATH} ;
-fi
-$1 || { rm $1; exit 1; }
+PROG=$1
+shift
+until [ -z "$1" ]  # Until all parameters used up . . .
+do
+   PATH=$1:${PATH}
+   shift
+done
+$PROG || { rm $PROG; exit 1; }

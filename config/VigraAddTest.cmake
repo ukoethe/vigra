@@ -7,7 +7,7 @@
 #
 # The function VIGRA_ADD_TEST
 # * creates a new executable for 'target', using the given sources and libraries
-# * makes the global target 'test' depend on the new 'target'
+# * makes the global target 'test' depend on the new 'target' (target 'test' must already exist)
 # * installs a post-build event that runs the test automatically after linking
 #
 # The function VIGRA_COPY_TEST_DATA copies the given files from the current source directory
@@ -20,12 +20,6 @@ IF (CMAKE_GENERATOR MATCHES "Visual Studio")
 ELSE ()
    STRING(REGEX REPLACE "\\.cmake$" ".sh" TEST_OR_DELETE ${TEST_OR_DELETE})
 ENDIF ()
-
-if (WIN32 AND ${CMAKE_C_COMPILER} MATCHES gcc.exe)
-    SET(IS_CYGWIN 1)
-else()
-    SET(IS_CYGWIN 0)
-endif()
 
 FUNCTION(VIGRA_ADD_TEST target)
     # parse the args
@@ -42,7 +36,8 @@ FUNCTION(VIGRA_ADD_TEST target)
     
     # configure the target
     ADD_EXECUTABLE(${target} ${SOURCES})
-    ADD_DEPENDENCIES(test ${target})
+    ADD_DEPENDENCIES(check ${target})
+    #ADD_TEST(${target} ${target})
     if(DEFINED LIBRARIES)
         TARGET_LINK_LIBRARIES(${target} ${LIBRARIES})
     endif()
@@ -51,14 +46,16 @@ FUNCTION(VIGRA_ADD_TEST target)
     GET_TARGET_PROPERTY(${target}_executable ${target} LOCATION)
     file(TO_NATIVE_PATH ${${target}_executable} ${target}_executable)
     
-    # cygwin: set the DLL path (not needed for other platforms
+    # Windows: set the DLL path
     set(path "")
-    if(IS_CYGWIN)
+    if(WIN32)
         FOREACH(lib ${LIBRARIES})
             GET_TARGET_PROPERTY(p ${lib} LOCATION)
-            STRING(REGEX REPLACE "/[^/]*$" "" p ${p})
+            STRING(REGEX REPLACE "/[^/]*$" "" p ${p}) # get path prefix
+            file(TO_NATIVE_PATH ${p} p)
             if(NOT ${p} MATCHES "NOTFOUND")
-                set(path "${path}${p}:")
+                set(path  ${path} ${p})
+#                set_tests_properties(${target} PROPERTIES ENVIRONMENT "PATH=${path}:$PATH")
             endif()
         ENDFOREACH(lib)
     endif()
@@ -67,7 +64,7 @@ FUNCTION(VIGRA_ADD_TEST target)
     add_custom_command(
         TARGET ${target}
         POST_BUILD
-        COMMAND ${TEST_OR_DELETE} ARGS ${${target}_executable} ${path} 
+        COMMAND ${TEST_OR_DELETE} ARGS ${${target}_executable} ${path}
         COMMENT "Running tests")
 ENDFUNCTION(VIGRA_ADD_TEST)
 
