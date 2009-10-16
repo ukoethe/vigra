@@ -41,6 +41,7 @@
 #include "vigra/stdimage.hxx"
 #include "vigra/impex.hxx"
 #include "unittest.hxx"
+#include "vigra/multi_array.hxx"
 
 using namespace vigra;
 
@@ -1279,7 +1280,7 @@ struct ImageImportExportTestSuite : public vigra::test_suite
         add(testCase(&FloatRGBImageExportImportTest::testVIFF));
         add(testCase(&FloatRGBImageExportImportTest::testHDR));
 
-        // failure tests
+		// failure tests
         add(testCase(&ImageExportImportFailureTest::testGIFExport));
         add(testCase(&ImageExportImportFailureTest::testGIFImport));
         add(testCase(&ImageExportImportFailureTest::testJPEGExport));
@@ -1299,11 +1300,12 @@ struct ImageImportExportTestSuite : public vigra::test_suite
     }
 };
 
+
 int main (int argc, char ** argv)
 {
     ImageImportExportTestSuite test;
     const int failed = test.run(vigra::testsToBeExecuted(argc, argv));
     std::cout << test.report() << std::endl;
 
-    return failed != 0;
+	return failed != 0;
 }

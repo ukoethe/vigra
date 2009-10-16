@@ -2,8 +2,8 @@
 <VisualStudioProject
 	ProjectType="Visual C++"
 	Version="8.00"
-	Name="imgproc"
-	ProjectGUID="{8CBD8C9A-281F-4138-9AD6-DA43E687B8B4}"
+	Name="hdf5impextest"
+	ProjectGUID="{A31505E2-3628-4504-B683-E1D1E935726B}"
 	>
 	<Platforms>
 		<Platform
@@ -13,100 +13,6 @@
 	<ToolFiles>
 	</ToolFiles>
 	<Configurations>
-		<Configuration
-			Name="Release|Win32"
-			OutputDirectory=".\Release"
-			IntermediateDirectory=".\Release"
-			ConfigurationType="1"
-			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
-			UseOfMFC="0"
-			ATLMinimizesCRunTimeLibraryUsage="false"
-			CharacterSet="2"
-			>
-			<Tool
-				Name="VCPreBuildEventTool"
-				Description="Removing ..\testSuccess"
-				CommandLine="IF EXIST ..\testSuccess del ..\testSuccess"
-			/>
-			<Tool
-				Name="VCCustomBuildTool"
-			/>
-			<Tool
-				Name="VCXMLDataGeneratorTool"
-			/>
-			<Tool
-				Name="VCWebServiceProxyGeneratorTool"
-			/>
-			<Tool
-				Name="VCMIDLTool"
-				TypeLibraryName=".\Release/imgproc.tlb"
-			/>
-			<Tool
-				Name="VCCLCompilerTool"
-				InlineFunctionExpansion="0"
-				AdditionalIncludeDirectories="..\..\include;..\include"
-				PreprocessorDefinitions="WIN32,_CONSOLE;_CRT_SECURE_NO_DEPRECATE;_SECURE_SCL=0"
-				StringPooling="true"
-				RuntimeLibrary="2"
-				EnableFunctionLevelLinking="true"
-				UsePrecompiledHeader="0"
-				PrecompiledHeaderFile=".\Release/imgproc.pch"
-				AssemblerListingLocation=".\Release/"
-				ObjectFile=".\Release/"
-				ProgramDataBaseFileName=".\Release/"
-				WarningLevel="3"
-				SuppressStartupBanner="true"
-				CompileAs="0"
-			/>
-			<Tool
-				Name="VCManagedResourceCompilerTool"
-			/>
-			<Tool
-				Name="VCResourceCompilerTool"
-				PreprocessorDefinitions="NDEBUG"
-				Culture="1031"
-			/>
-			<Tool
-				Name="VCPreLinkEventTool"
-			/>
-			<Tool
-				Name="VCLinkerTool"
-				AdditionalOptions="/MACHINE:I386"
-				AdditionalDependencies="vigraimpex.dll.lib"
-				OutputFile="imgproc.exe"
-				LinkIncremental="1"
-				SuppressStartupBanner="true"
-				AdditionalLibraryDirectories="..\..\src\impex;&quot;..\..\..\vigra-dependencies\dependencies\lib&quot;"
-				ProgramDatabaseFile=".\Release/imgproc.pdb"
-				SubSystem="1"
-			/>
-			<Tool
-				Name="VCALinkTool"
-			/>
-			<Tool
-				Name="VCManifestTool"
-			/>
-			<Tool
-				Name="VCXDCMakeTool"
-			/>
-			<Tool
-				Name="VCBscMakeTool"
-			/>
-			<Tool
-				Name="VCFxCopTool"
-			/>
-			<Tool
-				Name="VCAppVerifierTool"
-			/>
-			<Tool
-				Name="VCWebDeploymentTool"
-			/>
-			<Tool
-				Name="VCPostBuildEventTool"
-				Description="Running tests"
-				CommandLine="..\testOrDelete imgproc.exe ..\testSuccess"
-			/>
-		</Configuration>
 		<Configuration
 			Name="Debug|Win32"
 			OutputDirectory=".\Debug"
@@ -133,7 +39,7 @@
 			/>
 			<Tool
 				Name="VCMIDLTool"
-				TypeLibraryName=".\Debug/imgproc.tlb"
+				TypeLibraryName=".\Debug/hdf5impex.tlb"
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
@@ -142,7 +48,7 @@
 				PreprocessorDefinitions="WIN32,_DEBUG,_CONSOLE;_CRT_SECURE_NO_DEPRECATE;_SECURE_SCL=0"
 				RuntimeLibrary="3"
 				UsePrecompiledHeader="0"
-				PrecompiledHeaderFile=".\Debug/imgproc.pch"
+				PrecompiledHeaderFile=".\Debug/hdf5impex.pch"
 				AssemblerListingLocation=".\Debug/"
 				ObjectFile=".\Debug/"
 				ProgramDataBaseFileName=".\Debug/"
@@ -166,12 +72,12 @@
 				Name="VCLinkerTool"
 				AdditionalOptions="/MACHINE:I386"
 				AdditionalDependencies="vigraimpex_debug.dll.lib"
-				OutputFile="./imgproc_debug.exe"
+				OutputFile="./impex_debug.exe"
 				LinkIncremental="2"
 				SuppressStartupBanner="true"
 				AdditionalLibraryDirectories="..\..\src\impex"
 				GenerateDebugInformation="true"
-				ProgramDatabaseFile=".\Debug/imgproc.pdb"
+				ProgramDatabaseFile=".\Debug/hdf5impex.pdb"
 				SubSystem="1"
 			/>
 			<Tool
@@ -198,7 +104,101 @@
 			<Tool
 				Name="VCPostBuildEventTool"
 				Description="Running tests"
-				CommandLine="..\testOrDelete imgproc_debug.exe ..\testSuccess"
+				CommandLine="..\testOrDelete hdf5impex_debug.exe ..\testSuccess"
+			/>
+		</Configuration>
+		<Configuration
+			Name="Release|Win32"
+			OutputDirectory=".\Release"
+			IntermediateDirectory=".\Release"
+			ConfigurationType="1"
+			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
+			UseOfMFC="0"
+			ATLMinimizesCRunTimeLibraryUsage="false"
+			CharacterSet="2"
+			>
+			<Tool
+				Name="VCPreBuildEventTool"
+				Description="Removing ..\testSuccess"
+				CommandLine="IF EXIST ..\testSuccess del ..\testSuccess"
+			/>
+			<Tool
+				Name="VCCustomBuildTool"
+			/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"
+			/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"
+			/>
+			<Tool
+				Name="VCMIDLTool"
+				TypeLibraryName=".\Release/hdf5impex.tlb"
+			/>
+			<Tool
+				Name="VCCLCompilerTool"
+				InlineFunctionExpansion="1"
+				AdditionalIncludeDirectories="..\..\include;..\include;Z:\Ilastik\hdf5\include;C:\Programme\boost\boost_1_35_0;C:\Programme\boost\boost_1_35_0\lib;&quot;Z:\Ilastik\hdf5-dependencies\include&quot;"
+				PreprocessorDefinitions="WIN32;NDEBUG;_CONSOLE;_CRT_SECURE_NO_DEPRECATE;_SECURE_SCL=0;VIGRA_DLL;_HDF5USEDLL_;HDF5CPP_USEDLL"
+				StringPooling="true"
+				RuntimeLibrary="2"
+				EnableFunctionLevelLinking="true"
+				UsePrecompiledHeader="0"
+				PrecompiledHeaderFile=".\Release/hdf5impex.pch"
+				AssemblerListingLocation=".\Release/"
+				ObjectFile=".\Release/"
+				ProgramDataBaseFileName=".\Release/"
+				WarningLevel="3"
+				SuppressStartupBanner="true"
+				CompileAs="0"
+			/>
+			<Tool
+				Name="VCManagedResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCResourceCompilerTool"
+				PreprocessorDefinitions="NDEBUG"
+				Culture="1031"
+			/>
+			<Tool
+				Name="VCPreLinkEventTool"
+			/>
+			<Tool
+				Name="VCLinkerTool"
+				AdditionalOptions="/MACHINE:I386"
+				AdditionalDependencies="boost_python-vc80-mt-1_35.lib vigraimpex.dll.lib szlibdll.lib zlib1.lib hdf5dll.lib hdf5_hldll.lib hdf5_cppdll.lib hdf5_hl_cppdll.lib boost_regex-vc80-mt-1_35.lib"
+				OutputFile="hdf5impex.exe"
+				LinkIncremental="1"
+				SuppressStartupBanner="true"
+				AdditionalLibraryDirectories="..\..\src\impex;Z:\Ilastik\hdf5\lib;Z:\Ilastik\hdf5\dll;&quot;Z:\Ilastik\hdf5-dependencies\lib&quot;;&quot;Z:\Ilastik\hdf5-dependencies\dll&quot;;C:\Programme\boost\boost_1_35_0\lib"
+				ProgramDatabaseFile=".\Release/hdf5impex.pdb"
+				SubSystem="1"
+			/>
+			<Tool
+				Name="VCALinkTool"
+			/>
+			<Tool
+				Name="VCManifestTool"
+			/>
+			<Tool
+				Name="VCXDCMakeTool"
+			/>
+			<Tool
+				Name="VCBscMakeTool"
+			/>
+			<Tool
+				Name="VCFxCopTool"
+			/>
+			<Tool
+				Name="VCAppVerifierTool"
+			/>
+			<Tool
+				Name="VCWebDeploymentTool"
+			/>
+			<Tool
+				Name="VCPostBuildEventTool"
+				Description="Running tests"
+				CommandLine="..\testOrDelete impex.exe ..\testSuccess"
 			/>
 		</Configuration>
 	</Configurations>
