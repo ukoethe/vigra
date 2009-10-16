@@ -130,9 +130,14 @@ int main(int argc, char ** argv)
               }
               case 3:
               {
-                // apply nonlinear diffusion to color image
-                nonlinearDiffusion(srcImageRange(in), destImage(out),
-                   vigra::DiffusivityFunctor<float>(edge_threshold), scale);
+                // apply nonlinear diffusion to color image, one band at a time
+                VectorComponentValueAccessor<vigra::BRGBImage::value_type> bandAccessor(0);
+                for(int band = 0; band<3; ++band)
+                {
+                    bandAccessor.setIndex(band);
+                    nonlinearDiffusion(srcImageRange(in, bandAccessor), destImage(out, bandAccessor),
+                           vigra::DiffusivityFunctor<float>(edge_threshold), scale);
+                }
                 break;
               }
               default:
