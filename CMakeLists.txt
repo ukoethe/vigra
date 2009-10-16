@@ -3,14 +3,13 @@ cmake_minimum_required(VERSION 2.6)
 PROJECT(vigra)
 SET(vigra_version 1.7.0)
 
-
 ADD_CUSTOM_TARGET(check)
 
 #ENABLE_TESTING()
 ADD_CUSTOM_TARGET(test)
 ADD_DEPENDENCIES(test check)
 
-if (WIN32 AND ${CMAKE_C_COMPILER} MATCHES gcc.exe)
+if (WIN32 AND ${CMAKE_C_COMPILER} MATCHES /bin/gcc.exe)
     SET(IS_CYGWIN 1)
 else()
     SET(IS_CYGWIN 0)
@@ -20,34 +19,21 @@ INCLUDE_DIRECTORIES(${vigra_SOURCE_DIR}/include)
 
 SET(CMAKE_MODULE_PATH  ${CMAKE_MODULE_PATH}  ${vigra_SOURCE_DIR}/config)
 
-SET(CMAKE_INCLUDE_PATH $ENV{HOME}/include
-    CACHE PATH "additional include search path (used by Find... macros)")
-SET(CMAKE_LIBRARY_PATH $ENV{HOME}/lib
-    CACHE PATH "additional library search path (used by Find... macros)")
+SET(DEPENDENCY_SEARCH_PREFIX ""
+    CACHE PATH "additional search prefix (used by Find... macros)")
 
 IF (CMAKE_GENERATOR MATCHES "Visual Studio")
     ADD_DEFINITIONS(-D_CRT_SECURE_NO_DEPRECATE -D_SECURE_SCL=0)
-    SET(CMAKE_INCLUDE_PATH ${vigra_SOURCE_DIR}/include/external ${CMAKE_INCLUDE_PATH}
-        CACHE PATH "additional include search path (used by Find... macros)")
-    SET(CMAKE_LIBRARY_PATH ${vigra_SOURCE_DIR}/lib ${CMAKE_LIBRARY_PATH}
-        CACHE PATH "additional library search path (used by Find... macros)")
 ENDIF (CMAKE_GENERATOR MATCHES "Visual Studio")
 
-SET(TIFF_NAMES libtiff_i)
-FIND_PACKAGE(TIFF)
-
-SET(JPEG_NAMES libjpeg)
-FIND_PACKAGE(JPEG)
-
-FIND_PACKAGE(PNG)
-
-SET(FFTW3_NAMES libfftw3-3)
-FIND_PACKAGE(FFTW3)
-
-FIND_PACKAGE(HDF5)
+INCLUDE(VigraFindPackage)
+VIGRA_FIND_PACKAGE(TIFF libtiff_i)
+VIGRA_FIND_PACKAGE(JPEG libjpeg)
+VIGRA_FIND_PACKAGE(PNG)
+VIGRA_FIND_PACKAGE(FFTW3 libfftw3-3)
+VIGRA_FIND_PACKAGE(HDF5)
 
 FIND_PACKAGE(Doxygen)
-
 FIND_PACKAGE(PythonInterp)
 
 ADD_SUBDIRECTORY(src)
@@ -93,7 +79,7 @@ ELSE()
   MESSAGE( STATUS "  PNG libraries not found (PNG support disabled)" )
 ENDIF()
 
-IF(TIFF_FOUND)
+IF(FFTW3_FOUND)
   MESSAGE( STATUS "  Using FFTW libraries: ${FFTW3_LIBRARIES}" )
 ELSE()
   MESSAGE( STATUS "  FFTW libraries not found (FFTW support disabled)" )
@@ -103,6 +89,11 @@ IF(HDF5_FOUND)
   MESSAGE( STATUS "  Using HDF5 libraries: ${HDF5_LIBRARIES}" )
 ELSE()
   MESSAGE( STATUS "  HDF5 libraries not found (HDF5 support disabled)" )
+ENDIF()
+
+IF(NOT TIFF_FOUND OR NOT JPEG_FOUND OR NOT PNG_FOUND OR NOT FFTW3_FOUND OR NOT HDF5_FOUND)
+  MESSAGE( STATUS "" )
+  MESSAGE( STATUS "Consider setting DEPENDENCY_SEARCH_PREFIX to find missing libraries" )
 ENDIF()
 
 MESSAGE( STATUS "---------------------------------------------------------" )
