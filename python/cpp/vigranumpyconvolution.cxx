@@ -39,11 +39,11 @@
 #include <vigra/numpy_array.hxx>
 #include <vigra/numpy_array_converters.hxx>
 #include <vigra/convolution.hxx>
-#include <vigra/vigranumpykernel.hxx>
 #include <vigra/nonlineardiffusion.hxx>
 #include <vigra/resampling_convolution.hxx>
 #include <vigra/recursiveconvolution.hxx>
 #include <vigra/splineimageview.hxx>
+#include "vigranumpykernel.hxx"
 
 namespace python = boost::python;
 
