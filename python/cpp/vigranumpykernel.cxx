@@ -40,9 +40,9 @@
 #include <vigra/numpy_array_converters.hxx>
 #include <vigra/separableconvolution.hxx>
 #include <vigra/stdconvolution.hxx>
-#include <vigra/vigranumpykernel.hxx>
 #include <set>
 #include "tuples.hpp"
+#include "vigranumpykernel.hxx"
 
 #include <cmath>
 
