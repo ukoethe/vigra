@@ -339,7 +339,7 @@ name##MultiArrayData(SrcIterator s, Shape const & shape, DestIterator d, MetaInt
     SrcIterator send = s + shape[0]; \
     for(; s < send; ++s, ++d) \
     { \
-        *d op *s; \
+        *d op detail::RequiresExplicitCast<typename DestIterator::value_type>::cast(*s); \
     } \
 } \
  \
@@ -361,7 +361,7 @@ name##ScalarMultiArrayData(DestIterator d, Shape const & shape, T const & init, 
     DestIterator dend = d + shape[0]; \
     for(; d < dend; ++d) \
     { \
-        *d op init; \
+        *d op detail::RequiresExplicitCast<typename DestIterator::value_type>::cast(init); \
     } \
 } \
  \
@@ -683,8 +683,14 @@ protected:
     template <class U, class CN>
     void swapDataImpl(MultiArrayView <N, U, CN> rhs);
 
+    template <class CN>
+    bool arraysOverlap(const MultiArrayView <N, T, CN>& rhs) const;
+
     template <class U, class CN>
-    bool arraysOverlap(const MultiArrayView <N, U, CN>& rhs) const;
+    bool arraysOverlap(const MultiArrayView <N, U, CN>& rhs) const
+    {
+        return false;
+    }
 
 public:
 
@@ -1422,15 +1428,15 @@ MultiArrayView <N, T, C>::operator=(MultiArrayView<N, T, C> const & rhs)
 }
 
 template <unsigned int N, class T, class C>
-template <class U, class CN>
+template <class CN>
 bool
-MultiArrayView <N, T, C>::arraysOverlap(const MultiArrayView <N, U, CN>& rhs) const
+MultiArrayView <N, T, C>::arraysOverlap(const MultiArrayView <N, T, CN>& rhs) const
 {
     vigra_precondition (shape () == rhs.shape (),
         "MultiArrayView::arraysOverlap(): shape mismatch.");
     const_pointer first_element = this->m_ptr,
                   last_element = first_element + dot(this->m_shape - difference_type(1), this->m_stride);
-    typename MultiArrayView <N, U, CN>::const_pointer
+    typename MultiArrayView <N, T, CN>::const_pointer
            rhs_first_element = rhs.data(),
            rhs_last_element = rhs_first_element + dot(rhs.shape() - difference_type(1), rhs.stride());
     return !(last_element < rhs_first_element || rhs_last_element < first_element);

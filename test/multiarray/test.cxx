@@ -615,6 +615,14 @@ public:
         shouldEqual (a3.shape (2), 50);
         shouldEqual(a3(0,0), 0);
     }
+	
+	void test_copy_int_float()
+	{
+		MultiArray<2, float> a(MultiArrayShape<2>::type(2,2));
+		a.init(3);
+		MultiArray<2, unsigned short> b(a.shape());
+		b = a;
+	}
 
     void test_subarray ()
     {
@@ -1529,8 +1537,10 @@ struct MultiArrayTestSuite
         add( testCase( &MultiArrayTest::test_reshape) );
         add( testCase( &MultiArrayTest::test_subarray ) );
         add( testCase( &MultiArrayTest::test_stridearray ) );
+        add( testCase( &MultiArrayTest::test_copy_int_float ) );
+
         add( testCase( &MultiImpexTest::testImpex ) );
-    }
+	}
 };
 
 struct MultiArrayDataTestSuite
