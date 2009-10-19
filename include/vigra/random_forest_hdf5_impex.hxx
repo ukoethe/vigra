@@ -36,10 +36,9 @@
 
 #ifndef VIGRA_RANDOM_FOREST_IMPEX_HXX
 #define VIGRA_RANDOM_FOREST_IMPEX_HXX
-#include "vigra/windows.h"
-#include <vigra/random_forest.hxx>
-#include <hdf5.h>
-#include <hdf5_hl.h>
+
+#include "random_forest.hxx"
+#include "hdf5impex.hxx"
 #include <cstdio>
 
 namespace vigra {
@@ -48,12 +47,12 @@ template <class T>
 std::auto_ptr<RandomForest<T> >
 importHDF5RandomForest(hid_t parent_id)
 {
-    hid_t       group_id;
     hsize_t     size;
     char        name[100];
 
-    group_id = H5Gopen (parent_id, "RandomForest", H5P_DEFAULT);
-    vigra_postcondition(group_id >= 0, "importHDF5RandomForest(): Unable to open 'RandomForest' group - wrong file contents.");
+    HDF5Handle group_id(H5Gopen (parent_id, "RandomForest", H5P_DEFAULT),
+                        &H5Gclose, 
+                        "importHDF5RandomForest(): Unable to open 'RandomForest' group - wrong file contents.");
     
     int labelCount;
     vigra_postcondition(H5LTread_dataset_int (group_id, "labelCount", &labelCount) >= 0,
@@ -90,9 +89,6 @@ importHDF5RandomForest(hid_t parent_id)
                 "importHDF5RandomForest(): Unable to read weight array.");
     }
     
-    vigra_postcondition(H5Gclose(group_id) >= 0,
-                    "importHDF5RandomForest(): Unable to close group.");
-    
     return std::auto_ptr<RandomForest<T> >(
                            new RandomForest<T>(labelSet.begin(), labelSet.end(), 
                                treeCount, featureCount, trees.begin(), weights.begin()));
@@ -102,15 +98,11 @@ template <class T>
 std::auto_ptr<RandomForest<T> >
 importHDF5RandomForest(const char* filename)
 {
-    hid_t       file_id;
-
-    file_id = H5Fopen (filename, H5F_ACC_RDONLY, H5P_DEFAULT);
-    vigra_postcondition(file_id >= 0, "importHDF5RandomForest(): Unable to open file.");
+    HDF5Handle file_id(H5Fopen (filename, H5F_ACC_RDONLY, H5P_DEFAULT),
+                       &H5Fclose, 
+                       "importHDF5RandomForest(): Unable to open file.");
 
     std::auto_ptr<RandomForest<T> > res(importHDF5RandomForest<T>(file_id));
-
-    vigra_postcondition(H5Fclose(file_id) >= 0,
-                    "importHDF5RandomForest(): Unable to close file.");
     
     return res;
 }
@@ -118,12 +110,12 @@ importHDF5RandomForest(const char* filename)
 template <class T>
 void exportHDF5RandomForest(RandomForest<T> const & rf, hid_t parent_id)
 {
-    hid_t   group_id;
     hsize_t size = 1;
     char    name[100];
 
-    group_id = H5Gcreate(parent_id, "/RandomForest", H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
-    vigra_postcondition(group_id >= 0, "exportHDF5RandomForest(): Unable to open 'RandomForest' group.");
+    HDF5Handle group_id(H5Gcreate(parent_id, "/RandomForest", H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT),
+                        &H5Gclose,
+                        "exportHDF5RandomForest(): Unable to open 'RandomForest' group.");
        
     int labelCount = rf.labelCount();
     vigra_postcondition(H5LTmake_dataset (group_id, "labelCount", 1, &size, H5T_NATIVE_UINT, &labelCount) >= 0,
@@ -154,22 +146,17 @@ void exportHDF5RandomForest(RandomForest<T> const & rf, hid_t parent_id)
         vigra_postcondition(H5LTmake_dataset (group_id, name, 1, &size, H5T_NATIVE_DOUBLE, rf.trees_[k].terminalWeights_.begin()) >= 0,
                         "exportHDF5RandomForest(): Unable to write weight array.");
     }
-    vigra_postcondition(H5Gclose(group_id) >= 0,
-                    "exportHDF5RandomForest(): Unable to close group.");
 }
 
 template <class T>
 void exportHDF5RandomForest(RandomForest<T> const & rf, const char * filename)
 {
-    hid_t   file_id;
 
-    file_id = H5Fcreate(filename, H5F_ACC_TRUNC, H5P_DEFAULT, H5P_DEFAULT);
-    vigra_postcondition(file_id >= 0, "exportHDF5RandomForest(): Unable to open file.");
+    HDF5Handle file_id(H5Fcreate(filename, H5F_ACC_TRUNC, H5P_DEFAULT, H5P_DEFAULT),
+                      &H5Fclose,
+                      "exportHDF5RandomForest(): Unable to open file.");
        
     exportHDF5RandomForest(rf, file_id);
-
-    vigra_postcondition(H5Fclose(file_id) >= 0,
-                    "exportHDF5RandomForest(): Unable to close file.");
 }
 
 } // namespace vigra

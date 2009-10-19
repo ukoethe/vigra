@@ -36,7 +36,33 @@ VIGRA_FIND_PACKAGE(HDF5)
 FIND_PACKAGE(Doxygen)
 FIND_PACKAGE(PythonInterp)
 
+IF(PYTHONINTERP_FOUND)
+    SET(BOOST_INCLUDEDIR $ENV{HOME}/include/boost_1_34_1)
+    SET(BOOST_LIBRARYDIR $ENV{HOME}/lib)
+    FIND_PACKAGE( Boost COMPONENTS python )
+    
+    MESSAGE( STATUS "Boost_FOUND: ${Boost_FOUND}" )
+    MESSAGE( STATUS "Using BOOST_PYTHON libraries: ${Boost_PYTHON_LIBRARIES}" )
+    FIND_PACKAGE(PythonLibs)
+    
+    execute_process ( COMMAND ${PYTHON_EXECUTABLE} -c 
+                     "from distutils.sysconfig import *; print get_python_lib()"
+                      OUTPUT_VARIABLE PYTHON_SITE_PACKAGES OUTPUT_STRIP_TRAILING_WHITESPACE)
+    FILE(TO_CMAKE_PATH ${PYTHON_SITE_PACKAGES} PYTHON_SITE_PACKAGES)
+    SET(VIGRA_NUMPY_INSTALL_DIR ${PYTHON_SITE_PACKAGES}/vigra)
+
+    execute_process ( COMMAND ${PYTHON_EXECUTABLE} -c 
+                     "from numpy.distutils.misc_util import *; print ' '.join(get_numpy_include_dirs())" 
+                      OUTPUT_VARIABLE PYTHON_NUMPY_INCLUDE_DIR OUTPUT_STRIP_TRAILING_WHITESPACE)
+    FILE(TO_CMAKE_PATH ${PYTHON_NUMPY_INCLUDE_DIR} PYTHON_NUMPY_INCLUDE_DIR)
+
+    execute_process ( COMMAND ${PYTHON_EXECUTABLE} -c 
+                     "import sys; print sys.platform" 
+                      OUTPUT_VARIABLE PYTHON_PLATFORM OUTPUT_STRIP_TRAILING_WHITESPACE)
+ENDIF()
+
 ADD_SUBDIRECTORY(src)
+ADD_SUBDIRECTORY(python)
 ADD_SUBDIRECTORY(test)
 ADD_SUBDIRECTORY(docsrc)
 
