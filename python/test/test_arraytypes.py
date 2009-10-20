@@ -1,6 +1,8 @@
 # run with a simple 'nosetests' in this directory
 # (and nose installed, i.e. 'easy_install nose')
 
+execfile('set_paths.py')
+
 import arraytypes, ufunc, numpy, copy, sys
 import vigranumpytest as vt
 from nose.tools import assert_equal, raises

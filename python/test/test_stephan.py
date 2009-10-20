@@ -1,3 +1,5 @@
+execfile('set_paths.py')
+
 import sys
 
 from nose.tools import assert_equal, raises

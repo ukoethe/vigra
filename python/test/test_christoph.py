@@ -1,5 +1,4 @@
-import sys
-sys.path.append("Z:/vigra/vigranumpy/vigranumpy.new/src")
+execfile('set_paths.py')
 
 from nose.tools import assert_equal, raises, assert_raises
 import numpy as np

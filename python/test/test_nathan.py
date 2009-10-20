@@ -1,3 +1,5 @@
+execfile('set_paths.py')
+
 from nose.tools import assert_equal, raises
 import numpy as np
 import vigranumpycmodule as vm
