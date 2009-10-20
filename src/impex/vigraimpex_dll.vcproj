@@ -122,7 +122,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				AdditionalIncludeDirectories="..\..\include;..\..\include\external;..\..\include\external\hdf5"
+				AdditionalIncludeDirectories="..\..\include;C:\ukoethe\include"
 				PreprocessorDefinitions="VIGRA_DLL;HasJPEG;HasTIFF;HasPNG;HasHDF5;WIN32;NDEBUG;_WINDOWS;_CRT_SECURE_NO_DEPRECATE;_SECURE_SCL=0;_HDF5USEDLL_;HDF5CPP_USEDLL"
 				RuntimeLibrary="2"
 				UsePrecompiledHeader="0"

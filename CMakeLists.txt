@@ -27,39 +27,16 @@ IF (CMAKE_GENERATOR MATCHES "Visual Studio")
 ENDIF (CMAKE_GENERATOR MATCHES "Visual Studio")
 
 INCLUDE(VigraFindPackage)
-VIGRA_FIND_PACKAGE(TIFF libtiff_i)
-VIGRA_FIND_PACKAGE(JPEG libjpeg)
+VIGRA_FIND_PACKAGE(TIFF NAMES libtiff_i)
+VIGRA_FIND_PACKAGE(JPEG NAMES libjpeg)
 VIGRA_FIND_PACKAGE(PNG)
-VIGRA_FIND_PACKAGE(FFTW3 libfftw3-3)
+VIGRA_FIND_PACKAGE(FFTW3 NAMES libfftw3-3)
 VIGRA_FIND_PACKAGE(HDF5)
 
 FIND_PACKAGE(Doxygen)
 FIND_PACKAGE(PythonInterp)
 
-IF(PYTHONINTERP_FOUND)
-    SET(BOOST_INCLUDEDIR $ENV{HOME}/include/boost_1_34_1)
-    SET(BOOST_LIBRARYDIR $ENV{HOME}/lib)
-    FIND_PACKAGE( Boost COMPONENTS python )
-    
-    MESSAGE( STATUS "Boost_FOUND: ${Boost_FOUND}" )
-    MESSAGE( STATUS "Using BOOST_PYTHON libraries: ${Boost_PYTHON_LIBRARIES}" )
-    FIND_PACKAGE(PythonLibs)
-    
-    execute_process ( COMMAND ${PYTHON_EXECUTABLE} -c 
-                     "from distutils.sysconfig import *; print get_python_lib()"
-                      OUTPUT_VARIABLE PYTHON_SITE_PACKAGES OUTPUT_STRIP_TRAILING_WHITESPACE)
-    FILE(TO_CMAKE_PATH ${PYTHON_SITE_PACKAGES} PYTHON_SITE_PACKAGES)
-    SET(VIGRA_NUMPY_INSTALL_DIR ${PYTHON_SITE_PACKAGES}/vigra)
-
-    execute_process ( COMMAND ${PYTHON_EXECUTABLE} -c 
-                     "from numpy.distutils.misc_util import *; print ' '.join(get_numpy_include_dirs())" 
-                      OUTPUT_VARIABLE PYTHON_NUMPY_INCLUDE_DIR OUTPUT_STRIP_TRAILING_WHITESPACE)
-    FILE(TO_CMAKE_PATH ${PYTHON_NUMPY_INCLUDE_DIR} PYTHON_NUMPY_INCLUDE_DIR)
-
-    execute_process ( COMMAND ${PYTHON_EXECUTABLE} -c 
-                     "import sys; print sys.platform" 
-                      OUTPUT_VARIABLE PYTHON_PLATFORM OUTPUT_STRIP_TRAILING_WHITESPACE)
-ENDIF()
+VIGRA_FIND_PACKAGE( VIGRANUMPY_DEPENDENCIES )
 
 ADD_SUBDIRECTORY(src)
 ADD_SUBDIRECTORY(python)
@@ -80,6 +57,10 @@ IF (CMAKE_GENERATOR MATCHES "Visual Studio")
 else()
   MESSAGE( STATUS "  binaries  will be installed at: ${CMAKE_INSTALL_PREFIX}/bin")
 endif()
+
+IF(VIGRANUMPY_DEPENDENCIES_FOUND)
+  MESSAGE( STATUS "  vigranumpy will be installed at ${VIGRA_NUMPY_INSTALL_DIR}" )
+ENDIF()
 
 IF(DOXYGEN_FOUND AND PYTHONINTERP_FOUND)
   MESSAGE( STATUS "  manuals   will be installed at: ${CMAKE_INSTALL_PREFIX}/doc/vigra/index.html")
@@ -117,7 +98,14 @@ ELSE()
   MESSAGE( STATUS "  HDF5 libraries not found (HDF5 support disabled)" )
 ENDIF()
 
-IF(NOT TIFF_FOUND OR NOT JPEG_FOUND OR NOT PNG_FOUND OR NOT FFTW3_FOUND OR NOT HDF5_FOUND)
+IF(VIGRANUMPY_DEPENDENCIES_FOUND)
+  MESSAGE( STATUS "  Using Python libraries: ${VIGRANUMPY_LIBRARIES}" )
+ELSE()
+  MESSAGE( STATUS "  Vigranumpy dependencies not found (vigranumpy disabled)" )
+ENDIF()
+
+IF(NOT TIFF_FOUND OR NOT JPEG_FOUND OR NOT PNG_FOUND OR NOT FFTW3_FOUND OR 
+   NOT HDF5_FOUND OR NOT VIGRANUMPY_DEPENDENCIES_FOUND)
   MESSAGE( STATUS "" )
   MESSAGE( STATUS "Consider setting DEPENDENCY_SEARCH_PREFIX to find missing libraries" )
 ENDIF()
