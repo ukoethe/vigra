@@ -37,21 +37,3 @@ ADD_DEPENDENCIES(vigranumpy vigranumpycmodule)
 IF(HDF5_FOUND)
     TARGET_LINK_LIBRARIES(vigranumpycmodule ${HDF5_LIBRARIES})
 ENDIF(HDF5_FOUND)
-
-IF(FFTW3_FOUND)
-    INCLUDE_DIRECTORIES(${FFTW3_INCLUDE_DIR})
-    ADD_LIBRARY(vigranumpyfourier SHARED
-                vigranumpyfourier.cxx)
-    TARGET_LINK_LIBRARIES(vigranumpyfourier ${FFTW3_LIBRARIES} ${VIGRANUMPY_LIBRARIES} vigranumpycmodule)
-    ADD_DEPENDENCIES(vigranumpy vigranumpyfourier)
-    
-    IF(PYTHON_PLATFORM MATCHES "^win32$")
-        SET_TARGET_PROPERTIES(vigranumpyfourier PROPERTIES PREFIX "" SUFFIX  ".pyd")
-        INSTALL(TARGETS vigranumpyfourier
-                RUNTIME DESTINATION ${VIGRA_NUMPY_INSTALL_DIR})
-    ELSE()
-        SET_TARGET_PROPERTIES(vigranumpyfourier PROPERTIES PREFIX "")
-        INSTALL(TARGETS vigranumpyfourier
-                LIBRARY DESTINATION ${VIGRA_NUMPY_INSTALL_DIR}/vigra)
-    ENDIF()
-ENDIF(FFTW3_FOUND)
