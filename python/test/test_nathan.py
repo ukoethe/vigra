@@ -1,3 +1,5 @@
+import sys
+print >> sys.stderr, "executing test file", __file__
 execfile('set_paths.py')
 
 from nose.tools import assert_equal, raises
