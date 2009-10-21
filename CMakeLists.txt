@@ -3,6 +3,10 @@ cmake_minimum_required(VERSION 2.6)
 PROJECT(vigra)
 SET(vigra_version 1.7.0)
 
+SET(CMAKE_MODULE_PATH  ${CMAKE_MODULE_PATH}  ${vigra_SOURCE_DIR}/config)
+
+include(VigraSetDefaults)
+
 ADD_CUSTOM_TARGET(check)
 
 #ENABLE_TESTING()
@@ -16,8 +20,6 @@ else()
 endif()
 
 INCLUDE_DIRECTORIES(${vigra_SOURCE_DIR}/include)
-
-SET(CMAKE_MODULE_PATH  ${CMAKE_MODULE_PATH}  ${vigra_SOURCE_DIR}/config)
 
 SET(DEPENDENCY_SEARCH_PREFIX ""
     CACHE PATH "additional search prefix (used by Find... macros)")
