@@ -881,7 +881,7 @@ namespace std {
 template <class T>
 ostream & operator<<(ostream & s, vigra::ArrayVectorView<T> const & a)
 {
-    for(unsigned int k=0; k<a.size()-1; ++k)
+    for(int k=0; k<(int)a.size()-1; ++k)
         s << a[k] << ", ";
     if(a.size())
             s << a.back();
