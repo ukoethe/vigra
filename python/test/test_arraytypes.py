@@ -2,7 +2,7 @@
 # (and nose installed, i.e. 'easy_install nose')
 
 import sys
-print >> sys.stderr, "executing test file", __file__
+print >> sys.stderr, "\nexecuting test file", __file__
 execfile('set_paths.py')
 
 import arraytypes, ufunc, numpy, copy
