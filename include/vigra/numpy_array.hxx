@@ -397,7 +397,7 @@ constructNumpyArrayImpl(PyTypeObject * type, ArrayVector<npy_intp> const & shape
     
     // create the shape object with optional channel dimension
     ArrayVector<npy_intp> pshape(shapeSize);
-    std::copy(shape.begin(), shape.begin()+shapeSize, pshape.begin());
+    std::copy(shape.begin(), shape.begin()+std::min(shape.size(), pshape.size()), pshape.begin());
     if(shapeSize > spatialDimensions)
         pshape[spatialDimensions] = channels;
 
@@ -429,7 +429,7 @@ constructNumpyArrayImpl(PyTypeObject * type, ArrayVector<npy_intp> const & shape
             // adjust the ordering when the channel dimension has been dropped because channel == 1
             for(unsigned int k=0; k<shapeSize-1; ++k)
                 pstride[k] = strideOrdering[k] + 1;
-            pstride[shapeSize] = 0;
+            pstride[shapeSize-1] = 0;
             pstride.swap(strideOrdering);
         }
     }
