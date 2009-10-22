@@ -35,9 +35,9 @@ FUNCTION(VIGRA_ADD_TEST target)
     endforeach(i)
     
     # configure the target
-    ADD_EXECUTABLE(${target} ${SOURCES})
+    ADD_EXECUTABLE(${target} EXCLUDE_FROM_ALL ${SOURCES})
     ADD_DEPENDENCIES(check ${target})
-    #ADD_TEST(${target} ${target})
+    ADD_TEST(${target} ${target})
     if(DEFINED LIBRARIES)
         TARGET_LINK_LIBRARIES(${target} ${LIBRARIES})
     endif()

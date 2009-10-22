@@ -29,7 +29,7 @@ IF(PYTHONINTERP_FOUND)
                      "import sys; print sys.platform" 
                       OUTPUT_VARIABLE PYTHON_PLATFORM OUTPUT_STRIP_TRAILING_WHITESPACE)
 
-    # handle the QUIETLY and REQUIRED arguments and set FFTW3_FOUND to TRUE if 
+    # handle the QUIETLY and REQUIRED arguments and set VIGRANUMPY_DEPENDENCIES_FOUND to TRUE if 
     # all listed variables are TRUE
     INCLUDE(FindPackageHandleStandardArgs)
     FIND_PACKAGE_HANDLE_STANDARD_ARGS(VIGRANUMPY_DEPENDENCIES DEFAULT_MSG 
