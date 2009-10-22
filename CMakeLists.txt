@@ -138,7 +138,7 @@ ELSE()
 ENDIF()
 
 IF(WITH_VIGRANUMPY AND VIGRANUMPY_DEPENDENCIES_FOUND)
-  MESSAGE( STATUS "  vigranumpy will be installed at ${VIGRA_NUMPY_INSTALL_DIR}" )
+  MESSAGE( STATUS "  vigranumpy will be installed at ${VIGRANUMPY_INSTALL_DIR}" )
 ELSE()
   MESSAGE( STATUS "  vigranumpy will NOT be installed" )
 ENDIF()

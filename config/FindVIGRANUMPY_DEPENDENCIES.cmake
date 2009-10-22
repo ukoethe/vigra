@@ -7,12 +7,14 @@ IF(PYTHONINTERP_FOUND)
 
     FIND_PACKAGE(PythonLibs)
 
-    execute_process ( COMMAND ${PYTHON_EXECUTABLE} -c 
-                     "from distutils.sysconfig import *; print get_python_lib()"
-                      OUTPUT_VARIABLE PYTHON_SITE_PACKAGES OUTPUT_STRIP_TRAILING_WHITESPACE)
-    FILE(TO_CMAKE_PATH ${PYTHON_SITE_PACKAGES} PYTHON_SITE_PACKAGES)
-    SET(VIGRA_NUMPY_INSTALL_DIR ${PYTHON_SITE_PACKAGES}
-        CACHE PATH "where to install the vigra Python module")
+    IF(NOT DEFINED VIGRANUMPY_INSTALL_DIR OR VIGRANUMPY_INSTALL_DIR MATCHES "^$")
+        execute_process ( COMMAND ${PYTHON_EXECUTABLE} -c 
+                         "from distutils.sysconfig import *; print get_python_lib()"
+                          OUTPUT_VARIABLE PYTHON_SITE_PACKAGES OUTPUT_STRIP_TRAILING_WHITESPACE)
+        FILE(TO_CMAKE_PATH ${PYTHON_SITE_PACKAGES} VIGRANUMPY_INSTALL_DIR)
+    ENDIF()
+    SET(VIGRANUMPY_INSTALL_DIR ${VIGRANUMPY_INSTALL_DIR}
+        CACHE PATH "where to install the VIGRA Python package" FORCE)
 
     execute_process ( COMMAND ${PYTHON_EXECUTABLE} -c 
                      "from numpy.distutils.misc_util import *; print ' '.join(get_numpy_include_dirs())" 
@@ -34,7 +36,7 @@ IF(PYTHONINTERP_FOUND)
     INCLUDE(FindPackageHandleStandardArgs)
     FIND_PACKAGE_HANDLE_STANDARD_ARGS(VIGRANUMPY_DEPENDENCIES DEFAULT_MSG 
                          PYTHONINTERP_FOUND PYTHONLIBS_FOUND
-                         Boost_PYTHON_FOUND PYTHON_NUMPY_INCLUDE_DIR PYTHON_SITE_PACKAGES)
+                         Boost_PYTHON_FOUND PYTHON_NUMPY_INCLUDE_DIR VIGRANUMPY_INSTALL_DIR)
 
     SET(VIGRANUMPY_INCLUDE_DIR ${PYTHON_INCLUDE_PATH} ${Boost_INCLUDE_DIR} ${PYTHON_NUMPY_INCLUDE_DIR}
         CACHE PATH "include directories needed by VIGRA Python bindings")
