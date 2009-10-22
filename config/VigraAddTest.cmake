@@ -35,7 +35,11 @@ FUNCTION(VIGRA_ADD_TEST target)
     endforeach(i)
     
     # configure the target
-    ADD_EXECUTABLE(${target} EXCLUDE_FROM_ALL ${SOURCES})
+    IF(AUTOBUILD_TESTS)
+        ADD_EXECUTABLE(${target} ${SOURCES})
+    ELSE()
+        ADD_EXECUTABLE(${target} EXCLUDE_FROM_ALL ${SOURCES})
+    ENDIF()
     ADD_DEPENDENCIES(check ${target})
     ADD_TEST(${target} ${target})
     if(DEFINED LIBRARIES)
@@ -61,11 +65,13 @@ FUNCTION(VIGRA_ADD_TEST target)
     endif()
     
     # register the test execution command
-    add_custom_command(
-        TARGET ${target}
-        POST_BUILD
-        COMMAND ${TEST_OR_DELETE} ARGS ${${target}_executable} ${path}
-        COMMENT "Running tests")
+    IF(AUTOEXEC_TESTS)
+        add_custom_command(
+            TARGET ${target}
+            POST_BUILD
+            COMMAND ${TEST_OR_DELETE} ARGS ${${target}_executable} ${path}
+            COMMENT "Running tests")
+    ENDIF()
 ENDFUNCTION(VIGRA_ADD_TEST)
 
 MACRO(VIGRA_COPY_TEST_DATA)
