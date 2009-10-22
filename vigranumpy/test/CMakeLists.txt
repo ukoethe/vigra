@@ -40,15 +40,19 @@ configure_file(${CMAKE_CURRENT_SOURCE_DIR}/set_paths.py
                @ONLY)
 
 IF(AUTOEXEC_TESTS)
-    IF (MSVC)
-        SET(TEST_ARGS . $(OutDir))
-    ELSE()
-        SET(TEST_ARGS .)
-    ENDIF()
+    IF(NOSETESTS_EXECUTABLE)
+        IF (MSVC)
+            SET(TEST_ARGS . $(OutDir))
+        ELSE()
+            SET(TEST_ARGS .)
+        ENDIF()
 
-    add_custom_command(
-        TARGET vigranumpytest
-        POST_BUILD
-        COMMAND nosetests ARGS ${TEST_ARGS}
-        COMMENT "Running tests")
+        add_custom_command(
+            TARGET vigranumpytest
+            POST_BUILD
+            COMMAND ${NOSETESTS_EXECUTABLE} ARGS ${TEST_ARGS}
+            COMMENT "Running tests")
+    ELSE()
+        MESSAGE(STATUS "  vigranumpy tests will NOT be executed (nosetests missing)")
+    ENDIF()
 ENDIF()

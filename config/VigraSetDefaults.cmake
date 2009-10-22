@@ -14,28 +14,28 @@ IF(NOT DEFINED WITH_VIGRANUMPY)
     SET(WITH_VIGRANUMPY "ON")
 ENDIF()
 SET(WITH_VIGRANUMPY ${WITH_VIGRANUMPY}
-    CACHE BOOL "Build VIGRA Python bindings"
+    CACHE BOOL "Build VIGRA Python bindings ?"
     FORCE)
     
 IF(NOT DEFINED DEPENDENCY_SEARCH_PREFIX)
     SET(DEPENDENCY_SEARCH_PREFIX "")
 ENDIF()    
 SET(DEPENDENCY_SEARCH_PREFIX ${DEPENDENCY_SEARCH_PREFIX}
-    CACHE PATH "Additional search prefixes (used by Find... macros)"
+    CACHE PATH "Additional search prefixes (used by Find... macros)."
     FORCE)
 
 IF(NOT DEFINED AUTOEXEC_TESTS)
     SET(AUTOEXEC_TESTS "ON")
 ENDIF()    
 SET(AUTOEXEC_TESTS ${AUTOEXEC_TESTS}
-    CACHE BOOL "Automatically run tests after compilation."
+    CACHE BOOL "Automatically execute each test after compilation ?"
     FORCE)
 
 IF(NOT DEFINED AUTOBUILD_TESTS)
     SET(AUTOBUILD_TESTS "OFF")
 ENDIF()    
 SET(AUTOBUILD_TESTS ${AUTOBUILD_TESTS}
-    CACHE BOOL "Include test compilation in target 'all' (resp. 'ALL_BUILD')."
+    CACHE BOOL "Include test compilation in target 'all' (resp. 'ALL_BUILD') ?"
     FORCE)
 
 IF(NOT VIGRA_DEFAULTS_INIT)

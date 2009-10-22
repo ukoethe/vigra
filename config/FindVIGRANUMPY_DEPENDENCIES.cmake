@@ -16,6 +16,7 @@ IF(PYTHONINTERP_FOUND)
     SET(VIGRANUMPY_INSTALL_DIR ${VIGRANUMPY_INSTALL_DIR}
         CACHE PATH "where to install the VIGRA Python package" FORCE)
 
+    MESSAGE(STATUS "Searching for numpy")
     execute_process ( COMMAND ${PYTHON_EXECUTABLE} -c 
                      "from numpy.distutils.misc_util import *; print ' '.join(get_numpy_include_dirs())" 
                       RESULT_VARIABLE PYTHON_NUMPY_NOT_FOUND
@@ -31,6 +32,17 @@ IF(PYTHONINTERP_FOUND)
                      "import sys; print sys.platform" 
                       OUTPUT_VARIABLE PYTHON_PLATFORM OUTPUT_STRIP_TRAILING_WHITESPACE)
 
+    MESSAGE(STATUS "Searching for nosetests")
+    STRING(REGEX REPLACE "/[^/]*$" "" NOSETESTS_SEARCH_DIR ${PYTHON_EXECUTABLE})
+    SET(NOSETESTS_SEARCH_DIR ${NOSETESTS_SEARCH_DIR} ${NOSETESTS_SEARCH_DIR}/Scripts)
+    find_program(NOSETESTS_EXECUTABLE nosetests
+                 PATHS ${NOSETESTS_SEARCH_DIR} ENV PATH
+                 DOC "nosetests program (required for Python testing)")
+                 
+    IF(NOT NOSETESTS_EXECUTABLE)
+        MESSAGE(STATUS "Could NOT find nosetests executable")
+    ENDIF()
+    
     # handle the QUIETLY and REQUIRED arguments and set VIGRANUMPY_DEPENDENCIES_FOUND to TRUE if 
     # all listed variables are TRUE
     INCLUDE(FindPackageHandleStandardArgs)
