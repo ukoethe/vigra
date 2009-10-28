@@ -1,6 +1,6 @@
 /************************************************************************/
 /*                                                                      */
-/*                  Copyright 2008 by Ullrich Koethe                    */
+/*        Copyright 2008-2009 by  Ullrich Koethe and Rahul Nair         */
 /*                                                                      */
 /*    This file is part of the VIGRA computer vision library.           */
 /*    The VIGRA Website is                                              */
@@ -39,775 +39,441 @@
 
 #include <algorithm>
 #include <map>
+#include <set>
 #include <numeric>
 #include <iostream>
-#include "vigra/mathutil.hxx"
-#include "vigra/array_vector.hxx"
-#include "vigra/sized_int.hxx"
-#include "vigra/matrix.hxx"
-#include "vigra/random.hxx"
-#include "vigra/functorexpression.hxx"
-
-
+#include "mathutil.hxx"
+#include "array_vector.hxx"
+#include "sized_int.hxx"
+#include "matrix.hxx"
+#include "random.hxx"
+#include "functorexpression.hxx"
+#include "random_forest/rf_common.hxx"
+#include "random_forest/rf_nodeproxy.hxx"
+#include "random_forest/rf_split.hxx"
+#include "random_forest/rf_decisionTree.hxx"
+#include "random_forest/rf_visitors.hxx"
+#include "random_forest/rf_region.hxx"
+#include "random_forest/rf_sampling.hxx"
+#include "random_forest/rf_preprocessing.hxx"
 namespace vigra
 {
 
 namespace detail
 {
 
-template<class DataMatrix>
-class RandomForestFeatureSorter
+/** todo - remove and make the labels parameter in the sampling options
+ * const*/
+class staticMultiArrayViewHelper
 {
-    DataMatrix const & data_;
-    MultiArrayIndex sortColumn_;
-
-  public:
-
-    RandomForestFeatureSorter(DataMatrix const & data, MultiArrayIndex sortColumn)
-    : data_(data),
-      sortColumn_(sortColumn)
-    {}
-
-    void setColumn(MultiArrayIndex sortColumn)
-    {
-        sortColumn_ = sortColumn;
-    }
-
-    bool operator()(MultiArrayIndex l, MultiArrayIndex r) const
-    {
-        return data_(l, sortColumn_) < data_(r, sortColumn_);
-    }
+    public:
+        static vigra::MultiArrayView<2, Int32> array;
+    public:
+        friend SamplingOptions
+        createSamplingOptions(vigra::RandomForestOptions& RF_opt,
+							  vigra::MultiArrayView<2, int> & labels);
 };
 
-template<class LabelArray>
-class RandomForestLabelSorter
+
+/** sampling option factory function
+ */
+SamplingOptions make_sampler_opt ( RF_Traits::Options_t		& RF_opt,
+                                   MultiArrayView<2, Int32> & labels
+										= staticMultiArrayViewHelper::array)
 {
-    LabelArray const & labels_;
+    SamplingOptions return_opt;
+    return_opt.sample_with_replacement = RF_opt.sample_with_replacement_;
+    if(labels.data() != 0)
+    {
+        if(RF_opt.stratification_method_ == RF_EQUAL)
+            return_opt
+				.sampleClassesIndividually(
+					ArrayVectorView<int>(labels.size(),
+										 labels.data()));
+        else if(RF_opt.stratification_method_ == RF_PROPORTIONAL)
+            return_opt
+				.sampleStratified(
+					ArrayVectorView<int>(labels.size(),
+										 labels.data()));
+    }
+    return return_opt;
+}
+}//namespace detail
+
+/** \brief Random Forest class
+
+This class implements the Random Forest Classifier as first described
+in
+
+    L Breiman: "<em>Random Forests</em>",  - Machine learning,
+    2001 - Springer
+
+The template parameter are as follows
+\code
+    ClassLabelType: Type of the Class Labels used for classification
+                    or regression.
+
+    SplitFunctor:   Type of Functor used to calculate the split of the
+                    CART trees. see available \ref SplitFunctors
+
+    EarlyStoppingPredicate: Type of Predicate used for early stopping
+                            see available \ref Early Stopping Predicates
+
+\endcode
+    <b> Usage:</b>
+
+    <b>\#include</b> vigra/random_forest_refactored.hxx<br>
+    Namespace: vigra
+
+
+    \code
+        using namespace vigra;
+
+        //Create Label and Feature Matrix with 1000 samples,
+		//40 feautures and 2 classes
+        int featureCount = 40;
+        int classCount =  2;
+        int sampleCount = 1000;
+        MultiArray<2,double> features =
+			createSomeFeatures(sampleCount, featureCount);
+        MultiArray<2, UInt32> labels  =
+			createSomeLabels(sampleCount, classCount);
+        RandomForestn<int> rf(
+			vigra::RandomForestOptions(featureCount,classCount));
+
+        double oobError = rf.learn(  data.features(ii), labels(ii) );
+
+    \endcode
+
+*/
+template <class PreprocessorTag = ClassificationTag>
+class RandomForest
+{
+
+  public:
+	//public typedefs
+	typedef RF_Traits::Options_t 			Options_t;
+	typedef	RF_Traits::DecisionTree_t 		DecisionTree_t;
+	typedef RF_Traits::ProblemSpec_t 		ProblemSpec_t;
+	typedef RF_Traits::Default_Split_t 		Default_Split_t;
+	typedef	RF_Traits::Default_Stop_t 		Default_Stop_t;
+	typedef	RF_Traits::Default_Visitor_t 	Default_Visitor_t;
+  protected:
+	/**\brief helper function used to choose the right
+	 * value of split, early stopping and visitor
+	 */
+
+
 
   public:
 
-    RandomForestLabelSorter(LabelArray const & labels)
-    : labels_(labels)
-    {}
+	//problem independent data.
+	Options_t			 			options_;
+	//problem dependent data members - is only set if
+	//a copy constructor, some sort of import
+	//function or the learn function is called
+    ArrayVector<DecisionTree_t>
+	   								trees_;
+	ProblemSpec_t 					ext_param_;
 
-    bool operator()(MultiArrayIndex l, MultiArrayIndex r) const
-    {
-        return labels_[l] < labels_[r];
-    }
-};
-
-template <class CountArray>
-class RandomForestClassCounter
-{
-    ArrayVector<int> const & labels_;
-    CountArray & counts_;
-
-  public:
-
-    RandomForestClassCounter(ArrayVector<int> const & labels, CountArray & counts)
-    : labels_(labels),
-      counts_(counts)
-    {
-        reset();
-    }
 
     void reset()
     {
-        counts_.init(0);
+        ext_param_.clear();
+        trees_.clear();
     }
-
-    void operator()(MultiArrayIndex l) const
-    {
-        ++counts_[labels_[l]];
-    }
-};
-
-struct DecisionTreeCountNonzeroFunctor
-{
-    double operator()(double old, double other) const
-    {
-        if(other != 0.0)
-            ++old;
-        return old;
-    }
-};
-
-struct DecisionTreeNode
-{
-    DecisionTreeNode(int t, MultiArrayIndex bestColumn)
-    : thresholdIndex(t), splitColumn(bestColumn)
-    {}
-
-    int children[2];
-    int thresholdIndex;
-    Int32 splitColumn;
-};
-
-template <class INT>
-struct DecisionTreeNodeProxy
-{
-    DecisionTreeNodeProxy(ArrayVector<INT> const & tree, INT n)
-    : node(const_cast<ArrayVector<INT> &>(tree).begin()+n)
-    {}
-
-    INT & child(INT l) const
-    {
-        return node[l];
-    }
-
-    INT & decisionWeightsIndex() const
-    {
-        return node[2];
-    }
-
-    typename ArrayVector<INT>::iterator decisionColumns() const
-    {
-        return node+3;
-    }
-
-    mutable typename ArrayVector<INT>::iterator node;
-};
-
-struct DecisionTreeAxisSplitFunctor
-{
-    ArrayVector<Int32> splitColumns;
-    ArrayVector<double> classCounts, currentCounts[2], bestCounts[2], classWeights;
-    double threshold;
-    double totalCounts[2], bestTotalCounts[2];
-    int mtry, classCount, bestSplitColumn;
-    bool pure[2], isWeighted;
-
-    void init(int mtry, int cols, int classCount, ArrayVector<double> const & weights)
-    {
-        this->mtry = mtry;
-        splitColumns.resize(cols);
-        for(int k=0; k<cols; ++k)
-            splitColumns[k] = k;
-
-        this->classCount = classCount;
-        classCounts.resize(classCount);
-        currentCounts[0].resize(classCount);
-        currentCounts[1].resize(classCount);
-        bestCounts[0].resize(classCount);
-        bestCounts[1].resize(classCount);
-
-        isWeighted = weights.size() > 0;
-        if(isWeighted)
-            classWeights = weights;
-        else
-            classWeights.resize(classCount, 1.0);
-    }
-
-    bool isPure(int k) const
-    {
-        return pure[k];
-    }
-
-    unsigned int totalCount(int k) const
-    {
-        return (unsigned int)bestTotalCounts[k];
-    }
-
-    int sizeofNode() const { return 4; }
-
-    int writeSplitParameters(ArrayVector<Int32> & tree,
-                                ArrayVector<double> &terminalWeights)
-    {
-        int currentWeightIndex = terminalWeights.size();
-        terminalWeights.push_back(threshold);
-
-        int currentNodeIndex = tree.size();
-        tree.push_back(-1);  // left child
-        tree.push_back(-1);  // right child
-        tree.push_back(currentWeightIndex);
-        tree.push_back(bestSplitColumn);
-
-        return currentNodeIndex;
-    }
-
-    void writeWeights(int l, ArrayVector<double> &terminalWeights)
-    {
-        for(int k=0; k<classCount; ++k)
-            terminalWeights.push_back(isWeighted
-                                           ? bestCounts[l][k]
-                                           : bestCounts[l][k] / totalCount(l));
-    }
-
-    template <class U, class C, class AxesIterator, class WeightIterator>
-    bool decideAtNode(MultiArrayView<2, U, C> const & features,
-                      AxesIterator a, WeightIterator w) const
-    {
-        return (features(0, *a) < *w);
-    }
-
-    template <class U, class C, class IndexIterator, class Random>
-    IndexIterator findBestSplit(MultiArrayView<2, U, C> const & features,
-                                ArrayVector<int> const & labels,
-                                IndexIterator indices, int exampleCount,
-                                Random & randint);
-
-};
-
-
-template <class U, class C, class IndexIterator, class Random>
-IndexIterator
-DecisionTreeAxisSplitFunctor::findBestSplit(MultiArrayView<2, U, C> const & features,
-                                            ArrayVector<int> const & labels,
-                                            IndexIterator indices, int exampleCount,
-                                            Random & randint)
-{
-    // select columns to be tried for split
-    for(int k=0; k<mtry; ++k)
-        std::swap(splitColumns[k], splitColumns[k+randint(columnCount(features)-k)]);
-
-    RandomForestFeatureSorter<MultiArrayView<2, U, C> > sorter(features, 0);
-    RandomForestClassCounter<ArrayVector<double> > counter(labels, classCounts);
-    std::for_each(indices, indices+exampleCount, counter);
-
-	// find the best gini index
-    double minGini = NumericTraits<double>::max();
-    IndexIterator bestSplit;
-    for(int k=0; k<mtry; ++k)
-    {
-        sorter.setColumn(splitColumns[k]);
-        std::sort(indices, indices+exampleCount, sorter);
-
-        currentCounts[0].init(0);
-        std::transform(classCounts.begin(), classCounts.end(), classWeights.begin(),
-                       currentCounts[1].begin(), std::multiplies<double>());
-        totalCounts[0] = 0;
-        totalCounts[1] = std::accumulate(currentCounts[1].begin(), currentCounts[1].end(), 0.0);
-        for(int m = 0; m < exampleCount-1; ++m)
-        {
-            int label = labels[indices[m]];
-            double w = classWeights[label];
-            currentCounts[0][label] += w;
-            totalCounts[0] += w;
-            currentCounts[1][label] -= w;
-			totalCounts[1] -= w;
-
-			if (m < exampleCount-2 &&
-                features(indices[m], splitColumns[k]) == features(indices[m+1], splitColumns[k]))
-				continue ;
-
-            double gini = 0.0;
-            if(classCount == 2)
-            {
-                gini = currentCounts[0][0]*currentCounts[0][1] / totalCounts[0] +
-                       currentCounts[1][0]*currentCounts[1][1] / totalCounts[1];
-            }
-            else
-            {
-                for(int l=0; l<classCount; ++l)
-                    gini += currentCounts[0][l]*(1.0 - currentCounts[0][l] / totalCounts[0]) +
-                            currentCounts[1][l]*(1.0 - currentCounts[1][l] / totalCounts[1]);
-            }
-            if(gini < minGini)
-            {
-                minGini = gini;
-                bestSplit = indices+m;
-                bestSplitColumn = splitColumns[k];
-                bestCounts[0] = currentCounts[0];
-                bestCounts[1] = currentCounts[1];
-            }
-        }
-
-
-
-    }
-        //std::cerr << minGini << " " << bestSplitColumn << std::endl;
-	// split using the best feature
-    sorter.setColumn(bestSplitColumn);
-    std::sort(indices, indices+exampleCount, sorter);
-
-    for(int k=0; k<2; ++k)
-    {
-        bestTotalCounts[k] = std::accumulate(bestCounts[k].begin(), bestCounts[k].end(), 0.0);
-    }
-
-    threshold = (features(bestSplit[0], bestSplitColumn) + features(bestSplit[1], bestSplitColumn)) / 2.0;
-    ++bestSplit;
-
-    counter.reset();
-    std::for_each(indices, bestSplit, counter);
-    pure[0] = 1.0 == std::accumulate(classCounts.begin(), classCounts.end(), 0.0, DecisionTreeCountNonzeroFunctor());
-    counter.reset();
-    std::for_each(bestSplit, indices+exampleCount, counter);
-    pure[1] = 1.0 == std::accumulate(classCounts.begin(), classCounts.end(), 0.0, DecisionTreeCountNonzeroFunctor());
-
-    return bestSplit;
-}
-
-enum  { DecisionTreeNoParent = -1 };
-
-template <class Iterator>
-struct DecisionTreeStackEntry
-{
-    DecisionTreeStackEntry(Iterator i, int c,
-                           int lp = DecisionTreeNoParent, int rp = DecisionTreeNoParent)
-    : indices(i), exampleCount(c),
-      leftParent(lp), rightParent(rp)
-    {}
-
-    Iterator indices;
-    int exampleCount, leftParent, rightParent;
-};
-
-class DecisionTree
-{
-  public:
-    typedef Int32 TreeInt;
-    ArrayVector<TreeInt>  tree_;
-    ArrayVector<double> terminalWeights_;
-    unsigned int classCount_;
-    DecisionTreeAxisSplitFunctor split;
 
   public:
 
-
-    DecisionTree(unsigned int classCount)
-    : classCount_(classCount)
+	/** \name Contructors
+	 * Note: No copy Constructor specified as no pointers are manipulated
+	 * in this class
+	 */
+	/*\{*/
+	/**\brief default constructor
+	 *
+	 * \param options 	general options to the Random Forest. Must be of Type
+	 * 				  	Options_t
+	 */
+    RandomForest(Options_t const & options = Options_t())
+    :
+		options_(options)
     {}
 
-    void reset(unsigned int classCount = 0)
-    {
-        if(classCount)
-            classCount_ = classCount;
-        tree_.clear();
-        terminalWeights_.clear();
-    }
-
-    template <class U, class C, class Iterator, class Options, class Random>
-    void learn(MultiArrayView<2, U, C> const & features,
-               ArrayVector<int> const & labels,
-               Iterator indices, int exampleCount,
-               Options const & options,
-               Random & randint);
-
-    template <class U, class C>
-    ArrayVector<double>::const_iterator
-    predict(MultiArrayView<2, U, C> const & features) const
-    {
-        int nodeindex = 0;
-        for(;;)
-        {
-            DecisionTreeNodeProxy<TreeInt> node(tree_, nodeindex);
-            nodeindex = split.decideAtNode(features, node.decisionColumns(),
-                                       terminalWeights_.begin() + node.decisionWeightsIndex())
-                                ? node.child(0)
-                                : node.child(1);
-            if(nodeindex <= 0)
-                return terminalWeights_.begin() + (-nodeindex);
-        }
-    }
-
-    template <class U, class C>
-    int
-    predictLabel(MultiArrayView<2, U, C> const & features) const
-    {
-        ArrayVector<double>::const_iterator weights = predict(features);
-        return argMax(weights, weights+classCount_) - weights;
-    }
-
-    template <class U, class C>
-    int
-    leafID(MultiArrayView<2, U, C> const & features) const
-    {
-        int nodeindex = 0;
-        for(;;)
-        {
-            DecisionTreeNodeProxy<TreeInt> node(tree_, nodeindex);
-            nodeindex = split.decideAtNode(features, node.decisionColumns(),
-                                       terminalWeights_.begin() + node.decisionWeightsIndex())
-                                ? node.child(0)
-                                : node.child(1);
-            if(nodeindex <= 0)
-                return -nodeindex;
-        }
-    }
-
-    void depth(int & maxDep, int & interiorCount, int & leafCount, int k = 0, int d = 1) const
-    {
-        DecisionTreeNodeProxy<TreeInt> node(tree_, k);
-        ++interiorCount;
-        ++d;
-        for(int l=0; l<2; ++l)
-        {
-            int child = node.child(l);
-            if(child > 0)
-                depth(maxDep, interiorCount, leafCount, child, d);
-            else
-            {
-                ++leafCount;
-                if(maxDep < d)
-                    maxDep = d;
-            }
-        }
-    }
-
-    void printStatistics(std::ostream & o) const
-    {
-        int maxDep = 0, interiorCount = 0, leafCount = 0;
-        depth(maxDep, interiorCount, leafCount);
-
-        o << "interior nodes: " << interiorCount <<
-             ", terminal nodes: " << leafCount <<
-             ", depth: " << maxDep << "\n";
-    }
-
-    void print(std::ostream & o, int k = 0, std::string s = "") const
-    {
-        DecisionTreeNodeProxy<TreeInt> node(tree_, k);
-        o << s << (*node.decisionColumns()) << " " << terminalWeights_[node.decisionWeightsIndex()] << "\n";
-
-        for(int l=0; l<2; ++l)
-        {
-            int child = node.child(l);
-            if(child <= 0)
-                o << s << " weights " << terminalWeights_[-child] << " "
-                                      << terminalWeights_[-child+1] << "\n";
-            else
-                print(o, child, s+" ");
-        }
-    }
-};
-
-
-template <class U, class C, class Iterator, class Options, class Random>
-void DecisionTree::learn(MultiArrayView<2, U, C> const & features,
-                          ArrayVector<int> const & labels,
-                          Iterator indices, int exampleCount,
-                          Options const & options,
-                          Random & randint)
-{
-    ArrayVector<double> const & classLoss = options.class_weights;
-
-    vigra_precondition(classLoss.size() == 0 || classLoss.size() == classCount_,
-        "DecisionTree2::learn(): class weights array has wrong size.");
-
-    reset();
-
-    unsigned int mtry = options.mtry;
-    MultiArrayIndex cols = columnCount(features);
-
-    split.init(mtry, cols, classCount_, classLoss);
-
-    typedef DecisionTreeStackEntry<Iterator> Entry;
-    ArrayVector<Entry> stack;
-    stack.push_back(Entry(indices, exampleCount));
-
-    while(!stack.empty())
-    {
-//        std::cerr << "*";
-        indices = stack.back().indices;
-        exampleCount = stack.back().exampleCount;
-        int leftParent  = stack.back().leftParent,
-            rightParent = stack.back().rightParent;
-
-        stack.pop_back();
-
-        Iterator bestSplit = split.findBestSplit(features, labels, indices, exampleCount, randint);
-
-
-        int currentNode = split.writeSplitParameters(tree_, terminalWeights_);
-
-        if(leftParent != DecisionTreeNoParent)
-            DecisionTreeNodeProxy<TreeInt>(tree_, leftParent).child(0) = currentNode;
-        if(rightParent != DecisionTreeNoParent)
-            DecisionTreeNodeProxy<TreeInt>(tree_, rightParent).child(1) = currentNode;
-        leftParent = currentNode;
-        rightParent = DecisionTreeNoParent;
-
-        for(int l=0; l<2; ++l)
-        {
-
-            if(!split.isPure(l) && split.totalCount(l) >= options.min_split_node_size)
-            {
-                // sample is still large enough and not yet perfectly separated => split
-                stack.push_back(Entry(indices, split.totalCount(l), leftParent, rightParent));
-            }
-            else
-            {
-                DecisionTreeNodeProxy<TreeInt>(tree_, currentNode).child(l) = -(TreeInt)terminalWeights_.size();
-
-                split.writeWeights(l, terminalWeights_);
-            }
-            std::swap(leftParent, rightParent);
-            indices = bestSplit;
-        }
-    }
-//    std::cerr << "\n";
-}
-
-} // namespace detail
-
-class RandomForestOptions
-{
-  public:
-        /** Initialize all options with default values.
-        */
-    RandomForestOptions()
-    : training_set_proportion(1.0),
-      mtry(0),
-      min_split_node_size(1),
-      training_set_size(0),
-      sample_with_replacement(true),
-      sample_classes_individually(false),
-      treeCount(255)
-    {}
-
-        /** Number of features considered in each node.
-
-            If \a n is 0 (the default), the number of features tried in every node
-            is determined by the square root of the total number of features.
-            According to Breiman, this quantity should slways be optimized by means
-            of the out-of-bag error.<br>
-            Default: 0 (use <tt>sqrt(columnCount(featureMatrix))</tt>)
-        */
-    RandomForestOptions & featuresPerNode(unsigned int n)
-    {
-        mtry = n;
-        return *this;
-    }
-
-        /** How to sample the subset of the training data for each tree.
-
-            Each tree is only trained with a subset of the entire training data.
-            If \a r is <tt>true</tt>, this subset is sampled from the entire training set with
-            replacement.<br>
-            Default: true (use sampling with replacement)</tt>)
-        */
-    RandomForestOptions & sampleWithReplacement(bool r)
-    {
-        sample_with_replacement = r;
-        return *this;
-    }
-
-    RandomForestOptions & setTreeCount(unsigned int cnt)
-    {
-        treeCount = cnt;
-        return *this;
-    }
-        /** Proportion of training examples used for each tree.
-
-            If \a p is 1.0 (the default), and samples are drawn with replacement,
-            the training set of each tree will contain as many examples as the entire
-            training set, but some are drawn multiply and others not at all. On average,
-            each tree is actually trained on about 65% of the examples in the full
-            training set. Changing the proportion makes mainly sense when
-            sampleWithReplacement() is set to <tt>false</tt>. trainingSetSizeProportional() gets
-            overridden by trainingSetSizeAbsolute().<br>
-            Default: 1.0
-        */
-    RandomForestOptions & trainingSetSizeProportional(double p)
-    {
-        vigra_precondition(p >= 0.0 && p <= 1.0,
-            "RandomForestOptions::trainingSetSizeProportional(): proportion must be in [0, 1].");
-        if(training_set_size == 0) // otherwise, absolute size gets priority
-            training_set_proportion = p;
-        return *this;
-    }
-
-        /** Size of the training set for each tree.
-
-            If this option is set, it overrides the proportion set by
-            trainingSetSizeProportional(). When classes are sampled individually,
-            the number of examples is divided by the number of classes (rounded upwards)
-            to determine the number of examples drawn from every class.<br>
-            Default: <tt>0</tt> (determine size by proportion)
-        */
-    RandomForestOptions & trainingSetSizeAbsolute(unsigned int s)
-    {
-        training_set_size = s;
-        if(s > 0)
-            training_set_proportion = 0.0;
-        return *this;
-    }
-
-        /** Are the classes sampled individually?
-
-            If \a s is <tt>false</tt> (the default), the training set for each tree is sampled
-            without considering class labels. Otherwise, samples are drawn from each
-            class independently. The latter is especially useful in connection
-            with the specification of an absolute training set size: then, the same number of
-            examples is drawn from every class. This can be used as a counter-measure when the
-            classes are very unbalanced in size.<br>
-            Default: <tt>false</tt>
-        */
-    RandomForestOptions & sampleClassesIndividually(bool s)
-    {
-        sample_classes_individually = s;
-        return *this;
-    }
-
-        /** Number of examples required for a node to be split.
-
-            When the number of examples in a node is below this number, the node is not
-            split even if class separation is not yet perfect. Instead, the node returns
-            the proportion of each class (among the remaining examples) during the
-            prediction phase.<br>
-            Default: 1 (complete growing)
-        */
-    RandomForestOptions & minSplitNodeSize(unsigned int n)
-    {
-        if(n == 0)
-            n = 1;
-        min_split_node_size = n;
-        return *this;
-    }
-
-        /** Use a weighted random forest.
-
-            This is usually used to penalize the errors for the minority class.
-            Weights must be convertible to <tt>double</tt>, and the array of weights
-            must contain as many entries as there are classes.<br>
-            Default: do not use weights
-        */
-    template <class WeightIterator>
-    RandomForestOptions & weights(WeightIterator weights, unsigned int classCount)
-    {
-        class_weights.clear();
-        if(weights != 0)
-            class_weights.insert(weights, classCount);
-        return *this;
-    }
-
-    RandomForestOptions & oobData(MultiArrayView<2, UInt8>& data)
-    {
-        oob_data =data;
-        return *this;
-    }
-
-    MultiArrayView<2, UInt8> oob_data;
-    ArrayVector<double> class_weights;
-    double training_set_proportion;
-    unsigned int mtry, min_split_node_size, training_set_size;
-    bool sample_with_replacement, sample_classes_individually;
-    unsigned int treeCount;
-};
-
-/*****************************************************************/
-/*                                                               */
-/*                          RandomForest                         */
-/*                                                               */
-/*****************************************************************/
-
-template <class ClassLabelType>
-class RandomForest
-{
-  public:
-    ArrayVector<ClassLabelType> classes_;
-    ArrayVector<detail::DecisionTree> trees_;
-    MultiArrayIndex columnCount_;
-    RandomForestOptions options_;
-
-  public:
-
-	//First two constructors are straight forward.
-	//they take either the iterators to an Array of Classlabels or the values
-    template<class ClassLabelIterator>
-    RandomForest(ClassLabelIterator cl, ClassLabelIterator cend,
-                  unsigned int treeCount = 255,
-                  RandomForestOptions const & options = RandomForestOptions())
-    : classes_(cl, cend),
-      trees_(treeCount, detail::DecisionTree(classes_.size())),
-      columnCount_(0),
-      options_(options)
-    {
-        vigra_precondition(options.training_set_proportion == 0.0 ||
-                           options.training_set_size == 0,
-            "RandomForestOptions: absolute and proprtional training set sizes "
-            "cannot be specified at the same time.");
-        vigra_precondition(classes_.size() > 1,
-            "RandomForestOptions::weights(): need at least two classes.");
-        vigra_precondition(options.class_weights.size() == 0 || options.class_weights.size() == classes_.size(),
-            "RandomForestOptions::weights(): wrong number of classes.");
-    }
-
-    RandomForest(ClassLabelType const & c1, ClassLabelType const & c2,
-                  unsigned int treeCount = 255,
-                  RandomForestOptions const & options = RandomForestOptions())
-    : classes_(2),
-      trees_(treeCount, detail::DecisionTree(2)),
-      columnCount_(0),
-      options_(options)
-    {
-        vigra_precondition(options.class_weights.size() == 0 || options.class_weights.size() == 2,
-            "RandomForestOptions::weights(): wrong number of classes.");
-        classes_[0] = c1;
-        classes_[1] = c2;
-    }
-    //This is esp. For the CrosValidator Class
-    template<class ClassLabelIterator>
-    RandomForest(ClassLabelIterator cl, ClassLabelIterator cend,
-                  RandomForestOptions const & options )
-    : classes_(cl, cend),
-      trees_(options.treeCount , detail::DecisionTree(classes_.size())),
-      columnCount_(0),
-      options_(options)
-    {
-
-        vigra_precondition(options.training_set_proportion == 0.0 ||
-                           options.training_set_size == 0,
-            "RandomForestOptions: absolute and proprtional training set sizes "
-            "cannot be specified at the same time.");
-        vigra_precondition(classes_.size() > 1,
-            "RandomForestOptions::weights(): need at least two classes.");
-        vigra_precondition(options.class_weights.size() == 0 || options.class_weights.size() == classes_.size(),
-            "RandomForestOptions::weights(): wrong number of classes.");
-    }
-
-	//Not understood yet
-	//Does not use the options object but the columnCount object.
-    template<class ClassLabelIterator, class TreeIterator, class WeightIterator>
-    RandomForest(ClassLabelIterator cl, ClassLabelIterator cend,
-                  unsigned int treeCount, unsigned int columnCount,
-                  TreeIterator trees, WeightIterator weights)
-    : classes_(cl, cend),
-      trees_(treeCount, detail::DecisionTree(classes_.size())),
-      columnCount_(columnCount)
+	/**\brief Create RF from external source
+	 *
+	 * \param ext_param Extrinsic parameters that specify the problem e.g.
+	 * 					ClassCount, featureCount etc.
+	 * \param tree_top	Iterator to a Container where the topology_ data
+	 * 					of the trees are stored.
+	 * \param tree_par  iterator to a Container where the parameters_ data
+	 * 					of the trees are stored.
+	 * \param options  	(optional) specify options used to train the original
+	 * 					Random forest. This parameter is not used anywhere
+	 * 					during prediction and thus is optional.
+	 *
+	 * TODO:
+	 * Note: This constructor may be replaced by a Constructor using
+	 * NodeProxy iterators to encapsulate the underlying data type.
+	 */
+    template<class TreeIterator, class WeightIterator>
+    RandomForest(size_t 				treeCount,
+                  TreeIterator 			trees,
+				  WeightIterator 		weights,
+				  ProblemSpec_t const & problem_spec,
+				  Options_t const & 	options = Options_t())
+    :
+		trees_(treeCount, DecisionTree(problem_spec)),
+      	ext_param_(problem_spec),
+		options_(options)
     {
         for(unsigned int k=0; k<treeCount; ++k, ++trees, ++weights)
         {
-            trees_[k].tree_ = *trees;
-            trees_[k].terminalWeights_ = *weights;
+            trees_[k].topology_ = *trees;
+            trees_[k].parameters_ = *weights;
         }
     }
 
-    int featureCount() const
+	/*\}*/
+
+
+	/** \name Data Access
+	 * data access interface - usage of member objects is deprecated
+	 * (I like the word deprecated)
+	 */
+
+	/*\{*/
+
+
+	/**\brief return external parameters for viewing
+	 * \return ProblemSpec_t
+	 */
+	ProblemSpec_t const & ext_param() const
     {
-        vigra_precondition(columnCount_ > 0,
-           "RandomForest::featureCount(): Random forest has not been trained yet.");
-        return columnCount_;
+        vigra_precondition(ext_param_.used() == true,
+           "RandomForest::ext_param(): "
+		   "Random forest has not been trained yet.");
+        return ext_param_;
     }
 
-    int labelCount() const
+	/**\brief set external parameters
+	 *
+	 *  \param in external parameters to be set
+	 *
+	 * set external parameters explicitly if Random Forest has not been
+	 * trained the preprocessor will either ignore filling values set this
+	 * way or will throw an exception if values specified manually do not
+	 * match the value calculated during the preparation step.
+	 * \sa Option_t::presupplied_ext_param member for further details.
+	 */
+	void set_ext_param(ProblemSpec_t const & in)
+	{
+		vigra_precondition(ext_param_.used() == false,
+			"RandomForest::set_ext_param():"
+			"Random forest has been trained! Call reset()"
+			"before specifying new extrinsic parameters.");
+	}
+
+	/**\brief access random forest options
+	 *
+	 * \return random forest options
+	 */
+	Options_t & options()
+	{
+		return options;
+	}
+
+
+	/**\brief access const random forest options
+	 *
+	 * \return const Option_t
+	 */
+	Options_t const & options() const
+	{
+		return options_;
+	}
+
+	/**\brief access const trees
+	 */
+	DecisionTree_t const & tree(size_t index) const
+	{
+		return trees_[index];
+	}
+
+	/**\brief access trees
+	 */
+	DecisionTree_t & tree(size_t index)
+	{
+		return trees_[index];
+	}
+
+	/*\}*/
+
+
+	/**\name Learning
+	 * Following functions differ in the degree of customization
+	 * allowed
+	 */
+	/*\{*/
+	/**\brief learn on data with custom config and random number generator
+     *
+	 * \param features 	a N x M matrix containing N samples with M
+	 * 					features
+	 * \param response 	a N x D matrix containing the corresponding
+	 * 					response. Current split functors assume D to
+	 * 					be 1 and ignore any additional columns.
+	 * 					This is not enforced to allow future support
+	 * 					for uncertain labels, label independent strata etc.
+	 * 					The Preprocessor specified during construction
+	 * 					should be able to handle features and labels
+	 * 					features and the labels.
+	 * 	\sa    	SplitFunctor, Preprocessing
+	 *
+	 * \param visitor 	visitor which is to be applied after each split,
+	 * 					tree and at the end. Use RF_Default for using
+	 * 					default value.
+	 * \sa 		visitor
+	 * \param split		split functor to be used to calculate each split
+	 * 					use RF_Default() for using default value.
+	 * \param stop
+	 * 					predicate to be used to calculate each split
+	 * 					use RF_Default() for using default value.
+	 * \param random	RandomNumberGenerator to be used. Use
+	 * 					RF_Default() to use default value.
+	 * \return			double value specified by the first Visitor with
+	 * 					a return_me tag or a negative value if no such
+	 * 					visitor exists.
+	 *\todo add links to the standard functors
+	 *
+	 */
+	template <class U, class C1,
+			 class U2,class C2,
+			 class Split_t,
+			 class Stop_t,
+			 class Visitor_t,
+			 class Random_t>
+	double learn(		MultiArrayView<2, U, C1> const  & 	features,
+						MultiArrayView<2, U2,C2> const  & 	response,
+						Split_t 						&	split,
+						Stop_t 							&	stop,
+						Visitor_t 						&	visitor,
+						Random_t 				 const 	&	random);
+
+	/**\brief learn on data with custom config
+     *
+	 * \param features 	a N x M matrix containing N samples with M
+	 * 					features
+	 * \param labels 	a N x D matrix containing the corresponding
+	 * 					N labels. Current split functors assume D to
+	 * 					be 1 and ignore any additional columns.
+	 * 					this is not enforced to allow future support
+	 * 					for uncertain labels.
+	 * \param visitor 	visitor which is to be applied after each split,
+	 * 					tree and at the end. Use RF_Default for using
+	 * 					default value.
+	 * \param split		split functor to be used to calculate each split
+	 * 					use rf_default() for using default value.
+	 * \param earlystopping
+	 * 					predicate to be used to calculate each split
+	 * 					use RF_Default() for using default value.
+	 * \param random	RandomNumberGenerator to be used. Use
+	 * 					RF_Default() to use default value.
+	 * \return			double value specified by the first Visitor with
+	 * 					a return_me tag or a negative value if no such
+	 * 					visitor exists.
+	 *\todo add links to the standard functors
+	 *
+	 *	default values is described in the simpler learn() function.
+	 */
+	template <class U, class C1,
+			 class U2,class C2,
+			 class Split_t,
+			 class Stop_t,
+			 class Visitor_t>
+	double learn(		MultiArrayView<2, U, C1> const  & 	features,
+						MultiArrayView<2, U2,C2> const  & 	response,
+						Split_t 						&	split,
+						Stop_t 							&	stop,
+						Visitor_t 						&	visitor)
+
+	{
+        RandomNumberGenerator<> rnd = RandomNumberGenerator<>(RandomSeed);
+		return learn(features, response,
+					 visitor, split, stop,
+					 rnd);
+	}
+
+
+
+	/**\brief learn on data with default configuration
+	 *
+	 * \param features 	a N x M matrix containing N samples with M
+	 * 					features
+	 * \param labels 	a N x D matrix containing the corresponding
+	 * 					N labels. Current split functors assume D to
+	 * 					be 1 and ignore any additional columns.
+	 * 					this is not enforced to allow future support
+	 * 					for uncertain labels.
+	 * \return 			out of bag error estimate.
+	 *
+	 * learning is done with:
+	 *
+	 *\todo add links to the standard functors
+
+	 * - Randomly seeded random number generator
+	 * - default gini split functor as described by Breiman
+	 * - default The standard early stopping criterion
+	 * - the oob visitor, whose value is returned.
+	 */
+    template <class U, class C1, class U2,class C2>
+    double learn(   MultiArrayView<2, U, C1> const  & features,
+                    MultiArrayView<2, U2,C2> const  & labels)
     {
-        return classes_.size();
+        return learn(features, labels, rf_default(), rf_default(), rf_default());
     }
 
-    int treeCount() const
-    {
-        return trees_.size();
-    }
 
-    // loss == 0.0 means unweighted random forest
-    template <class U, class C, class Array, class Random>
-    double learn(MultiArrayView<2, U, C> const & features, Array const & labels,
-               Random const& random);
+	/*\}*/
 
-    template <class U, class C, class Array>
-    double learn(MultiArrayView<2, U, C> const & features, Array const & labels)
-    {
-        return learn(features, labels, RandomTT800::global());
-    }
 
+
+	/**\name prediction
+	 */
+	/*\{*/
+	/** predict a label given a feature.
+	 *
+	 * \param features: a 1 by featureCount matrix containing
+	 *        data point to be predicted (this only works in
+	 *        classification setting)
+	 * \return double value representing class. You can use the
+	 *         predictLabels() function together with the
+	 *         rf.external_parameter().class_type_ attribute
+	 *         to avoid conversion.
+	 */
     template <class U, class C>
-    ClassLabelType predictLabel(MultiArrayView<2, U, C> const & features) const;
+    double predictLabel(MultiArrayView<2, U, C>const & features);
 
+	/** predict a label with features and class priors
+	 *
+	 * \param features: same as above.
+	 * \param priors:   iterator to prior weighting of classes
+	 * \return sam as above.
+	 */
+    template <class U, class C, class Iterator>
+    double predictLabel(MultiArrayView<2, U, C> const & features,
+                                Iterator priors) ;
+
+	/** predict multiple labels with given features
+	 *
+	 * \param features: a n by featureCount matrix containing
+	 *        data point to be predicted (this only works in
+	 *        classification setting)
+	 * \param labels: a n by 1 matrix passed by reference to store
+     *        output.
+	 */
     template <class U, class C1, class T, class C2>
-    void predictLabels(MultiArrayView<2, U, C1> const & features,
-                       MultiArrayView<2, T, C2> & labels) const
+    void predictLabels(MultiArrayView<2, U, C1>const & features,
+                       MultiArrayView<2, T, C2> & labels)
     {
         vigra_precondition(features.shape(0) == labels.shape(0),
             "RandomForest::predictLabels(): Label array has wrong size.");
@@ -815,257 +481,191 @@ class RandomForest
             labels(k,0) = predictLabel(rowVector(features, k));
     }
 
-    template <class U, class C, class Iterator>
-    ClassLabelType predictLabel(MultiArrayView<2, U, C> const & features,
-                                Iterator priors) const;
 
+    /** predict the class probabilities for multiple labels
+     *
+     *  \param features same as above
+     *  \param prob a n x class_count_ matrix. passed by reference to
+     *  save class probabilities
+     */
     template <class U, class C1, class T, class C2>
-    void predictProbabilities(MultiArrayView<2, U, C1> const & features,
-                              MultiArrayView<2, T, C2> & prob) const;
+    void predictProbabilities(MultiArrayView<2, U, C1>const & 	features,
+                              MultiArrayView<2, T, C2> & 		prob) ;
 
-    template <class U, class C1, class T, class C2>
-    void predictNodes(MultiArrayView<2, U, C1> const & features,
-                                                   MultiArrayView<2, T, C2> & NodeIDs) const;
+
+
+	/*\}*/
+
 };
 
-template <class ClassLabelType>
-template <class U, class C1, class Array, class Random>
-double
-RandomForest<ClassLabelType>::learn(MultiArrayView<2, U, C1> const & features,
-                                             Array const & labels,
-                                             Random const& random)
+
+template <class PreprocessorTag>
+template <class U, class C1,
+		 class U2,class C2,
+		 class Split_t,
+		 class Stop_t,
+		 class Visitor_t,
+		 class Random_t>
+double RandomForest<PreprocessorTag>::
+					 learn( MultiArrayView<2, U, C1> const  & 	features,
+							MultiArrayView<2, U2,C2> const  & 	response,
+							Split_t 						&	split,
+							Stop_t 							&	stop,
+							Visitor_t 						&	visitor,
+							Random_t 				 const 	&	random)
 {
-    unsigned int classCount = classes_.size();
-    unsigned int m = rowCount(features);
-    unsigned int n = columnCount(features);
-    vigra_precondition((unsigned int)(m) == (unsigned int)labels.size(),
-      "RandomForest::learn(): Label array has wrong size.");
+	//typedefs
+	typedef typename Split_t::StackEntry_t 			StackEntry_t;
+    typedef 		 UniformIntRandomFunctor<Random_t>
+													RandFunctor_t;
 
-    vigra_precondition(options_.training_set_size <= m || options_.sample_with_replacement,
-       "RandomForest::learn(): Requested training set size exceeds total number of examples.");
+    // See rf_preprocessing.hxx for more info on this
+    typedef Processor<PreprocessorTag, U, C1, U2, C2> Preprocessor_t;
 
-    MultiArrayIndex mtry = (options_.mtry == 0)
-                                ? int(std::floor(std::sqrt(double(n)) + 0.5))
-                                : options_.mtry;
+	// default values and initialization
+	// Value Chooser chooses second argument as value if first argument
+	// is of type RF_DEFAULT. (thanks to template specialisation)
+	detail::Value_Chooser<Stop_t, Default_Stop_t>
+                        choose_stop     (stop,      Default_Stop_t(options_));
+	detail::Value_Chooser<Split_t, Default_Split_t>
+                        choose_split    (split,     Default_Split_t());
+	detail::Value_Chooser<Visitor_t, Default_Visitor_t>
+                        choose_visitor  (visitor,   Default_Visitor_t());
 
-    vigra_precondition(mtry <= (MultiArrayIndex)n,
-       "RandomForest::learn(): mtry must be less than number of features.");
+    // Make stl compatible random functor.
+    RandFunctor_t			randint		( random);
 
-    MultiArrayIndex msamples = options_.training_set_size;
-    if(options_.sample_classes_individually)
-        msamples = int(std::ceil(double(msamples) / classCount));
 
-    ArrayVector<int> intLabels(m), classExampleCounts(classCount);
+	// Preprocess the data to get something the split functor can work
+	// with. Also fill the ext_param structure by preprocessing
+	// option parameters that could only be completely evaluated
+	// when the training data is known.
+	Preprocessor_t preprocessor( 	features, response,
+                                    options_, ext_param_);
 
-	// verify the input labels
-    int minClassCount;
+    // Give the Split functor information about the data.
+    choose_split.value() . set_external_parameters(ext_param_);
+    choose_stop.value()  . set_external_parameters(ext_param_);
+
+
+	//initialize trees.
+	trees_.resize(options_.tree_count_	, DecisionTree_t(ext_param_));
+
+	/**\todo 	replace this crappy class out. It uses function pointers.
+	 * 			and is making code slower according to me
+	 */
+    Sampler<RandFunctor_t >	sampler(ext_param().row_count_,
+									ext_param().actual_msample_,
+								   	detail::make_sampler_opt(options_,
+                                                     preprocessor.strata()),
+								    randint);
+
+	// THE MAIN EFFING RF LOOP - YEAY DUDE!
+    for(size_t ii = 0; ii < trees_.size(); ++ii)
     {
-        typedef std::map<ClassLabelType, int > LabelChecker;
-        typedef typename LabelChecker::iterator LabelCheckerIterator;
-        LabelChecker labelChecker;
-        for(unsigned int k=0; k<classCount; ++k)
-            labelChecker[classes_[k]] = k;
+		//initialize First region/node/stack entry
+        sampler
+			.sample();
 
-        for(unsigned int k=0; k<m; ++k)
-        {
-            LabelCheckerIterator found = labelChecker.find(labels[k]);
-            vigra_precondition(found != labelChecker.end(),
-                "RandomForest::learn(): Unknown class label encountered.");
-            intLabels[k] = found->second;
-            ++classExampleCounts[intLabels[k]];
-        }
-        minClassCount = *argMin(classExampleCounts.begin(), classExampleCounts.end());
-        vigra_precondition(minClassCount > 0,
-             "RandomForest::learn(): At least one class is missing in the training set.");
-        if(msamples > 0 && options_.sample_classes_individually &&
-                          !options_.sample_with_replacement)
-        {
-            vigra_precondition(msamples <= minClassCount,
-                "RandomForest::learn(): Too few examples in smallest class to reach "
-                "requested training set size.");
-        }
-    }
-    columnCount_ = n;
-    ArrayVector<int> indices(m);
-    for(unsigned int k=0; k<m; ++k)
-        indices[k] = k;
+		StackEntry_t
+			first_stack_entry( 	sampler.used_indices().begin(),
+					   			sampler.used_indices().end(),
+					   			ext_param_.class_count_);
+        first_stack_entry
+			.set_oob_range(		sampler.unused_indices().begin(),
+								sampler.unused_indices().end());
+		trees_[ii]
+			.learn(				preprocessor.features(),
+					   			preprocessor.response(),
+                        		first_stack_entry,
+                				choose_split.value(),
+								choose_stop.value(),
+								choose_visitor.value(),
+								randint);
+		choose_visitor.value()
+			.visit_after_tree(	*this,
+                                preprocessor,
+								sampler,
+								first_stack_entry,
+								ii);
+	}
 
-    if(options_.sample_classes_individually)
-    {
-        detail::RandomForestLabelSorter<ArrayVector<int> > sorter(intLabels);
-        std::sort(indices.begin(), indices.end(), sorter);
-    }
+	choose_visitor.value().visit_at_end(*this, preprocessor);
 
-    ArrayVector<int> usedIndices(m), oobCount(m), oobErrorCount(m);
-
-    UniformIntRandomFunctor<Random> randint(0, m-1, random);
-    //std::cerr << "Learning a RF \n";
-    for(unsigned int k=0; k<trees_.size(); ++k)
-    {
-       //std::cerr << "Learning tree " << k << " ...\n";
-
-        ArrayVector<int> trainingSet;
-        usedIndices.init(0);
-
-        if(options_.sample_classes_individually)
-        {
-            int first = 0;
-            for(unsigned int l=0; l<classCount; ++l)
-            {
-                int lc = classExampleCounts[l];
-                int lsamples = (msamples == 0)
-                                   ? int(std::ceil(options_.training_set_proportion*lc))
-                                   : msamples;
-
-                if(options_.sample_with_replacement)
-                {
-                    for(int ll=0; ll<lsamples; ++ll)
-                    {
-                        trainingSet.push_back(indices[first+randint(lc)]);
-                        ++usedIndices[trainingSet.back()];
-                    }
-                }
-                else
-                {
-                    for(int ll=0; ll<lsamples; ++ll)
-                    {
-                        std::swap(indices[first+ll], indices[first+ll+randint(lc-ll)]);
-                        trainingSet.push_back(indices[first+ll]);
-                        ++usedIndices[trainingSet.back()];
-                    }
-                    //std::sort(indices.begin(), indices.begin()+lsamples);
-                }
-                first += lc;
-            }
-        }
-        else
-        {
-            if(msamples == 0)
-                msamples = int(std::ceil(options_.training_set_proportion*m));
-
-            if(options_.sample_with_replacement)
-            {
-                for(int l=0; l<msamples; ++l)
-                {
-                    trainingSet.push_back(indices[randint(m)]);
-                    ++usedIndices[trainingSet.back()];
-                }
-            }
-            else
-            {
-                for(int l=0; l<msamples; ++l)
-                {
-                    std::swap(indices[l], indices[l+randint(m-l)/*oikas*/]);
-                    trainingSet.push_back(indices[l]);
-                    ++usedIndices[trainingSet.back()];
-                }
-
-
-            }
-
-        }
-        trees_[k].learn(features, intLabels,
-                        trainingSet.begin(), trainingSet.size(),
-                        options_.featuresPerNode(mtry), randint);
-//        for(unsigned int l=0; l<m; ++l)
-//        {
-//            if(!usedIndices[l])
-//            {
-//                ++oobCount[l];
-//                if(trees_[k].predictLabel(rowVector(features, l)) != intLabels[l])
-//                    ++oobErrorCount[l];
-//            }
-//        }
-
-        for(unsigned int l=0; l<m; ++l)
-        {
-            if(!usedIndices[l])
-            {
-                ++oobCount[l];
-                if(trees_[k].predictLabel(rowVector(features, l)) != intLabels[l])
-				{
-                    ++oobErrorCount[l];
-                    if(options_.oob_data.data() != 0)
-                        options_.oob_data(l, k) = 2;
-				}
-				else if(options_.oob_data.data() != 0)
-				{
-					options_.oob_data(l, k) = 1;
-				}
-            }
-        }
-        // TODO: default value for oob_data
-        // TODO: implement variable importance
-        //if(!options_.sample_with_replacement){
-        //std::cerr << "done\n";
-        //trees_[k].print(std::cerr);
-        #ifdef VIGRA_RF_VERBOSE
-        trees_[k].printStatistics(std::cerr);
-        #endif
-    }
-    double oobError = 0.0;
-    int totalOobCount = 0;
-    for(unsigned int l=0; l<m; ++l)
-        if(oobCount[l])
-        {
-            oobError += double(oobErrorCount[l]) / oobCount[l];
-            ++totalOobCount;
-        }
-    return oobError / totalOobCount;
+	return 	choose_visitor.value().return_val();
 }
 
-template <class ClassLabelType>
+
+
+
+
+
+
+template <class Tag>
 template <class U, class C>
-ClassLabelType
-RandomForest<ClassLabelType>::predictLabel(MultiArrayView<2, U, C> const & features) const
+double RandomForest<Tag>
+    ::predictLabel(MultiArrayView<2, U, C> const & features)
 {
-    vigra_precondition(columnCount(features) >= featureCount(),
-        "RandomForest::predictLabel(): Too few columns in feature matrix.");
+    vigra_precondition(columnCount(features) >= ext_param.column_count_,
+        "RandomForestn::predictLabel():"
+            " Too few columns in feature matrix.");
     vigra_precondition(rowCount(features) == 1,
-        "RandomForest::predictLabel(): Feature matrix must have a single row.");
-    Matrix<double> prob(1, classes_.size());
+        "RandomForestn::predictLabel():"
+            " Feature matrix must have a singlerow.");
+    Matrix<double>  prob(1, ext_param_.class_count_);
+    double          d;
     predictProbabilities(features, prob);
-    return classes_[argMax(prob)];
+    ext_param_.to_classlabel(argMax(prob), d);
+    return d;
 }
 
 
 //Same thing as above with priors for each label !!!
-template <class ClassLabelType>
+template <class PreprocessorTag>
 template <class U, class C, class Iterator>
-ClassLabelType
-RandomForest<ClassLabelType>::predictLabel(MultiArrayView<2, U, C> const & features,
-                                           Iterator priors) const
+double RandomForest<PreprocessorTag>
+    ::predictLabel( MultiArrayView<2, U, C> const & features,
+                    Iterator                        priors)
 {
     using namespace functor;
-    vigra_precondition(columnCount(features) >= featureCount(),
-        "RandomForest::predictLabel(): Too few columns in feature matrix.");
+    vigra_precondition(columnCount(features) >= ext_param_.column_count_,
+        "RandomForestn::predictLabel(): Too few columns in feature matrix.");
     vigra_precondition(rowCount(features) == 1,
-        "RandomForest::predictLabel(): Feature matrix must have a single row.");
-    Matrix<double> prob(1,classes_.size());
+        "RandomForestn::predictLabel():"
+        " Feature matrix must have a single row.");
+    Matrix<double>  prob(1,ext_param_.class_count_);
     predictProbabilities(features, prob);
-    std::transform(prob.begin(), prob.end(), priors, prob.begin(), Arg1()*Arg2());
-    return classes_[argMax(prob)];
+    std::transform( prob.begin(), prob.end(),
+                    priors, prob.begin(),
+                    Arg1()*Arg2());
+    double          d;
+    ext_param_.to_classlabel(argMax(prob), d);
+    return d;
 }
 
-template <class ClassLabelType>
+template <class PreprocessorTag>
 template <class U, class C1, class T, class C2>
-void
-RandomForest<ClassLabelType>::predictProbabilities(MultiArrayView<2, U, C1> const & features,
-                                                   MultiArrayView<2, T, C2> & prob) const
+void RandomForest<PreprocessorTag>
+    ::predictProbabilities(MultiArrayView<2, U, C1>const &  features,
+                           MultiArrayView<2, T, C2> &       prob)
 {
 
 	//Features are n xp
 	//prob is n x NumOfLabel probability for each feature in each class
 
     vigra_precondition(rowCount(features) == rowCount(prob),
-      "RandomForest::predictProbabilities(): Feature matrix and probability matrix size mismatch.");
+      "RandomForestn::predictProbabilities():"
+        " Feature matrix and probability matrix size mismatch.");
 
 	// num of features must be bigger than num of features in Random forest training
 	// but why bigger?
-    vigra_precondition(columnCount(features) >= featureCount(),
-      "RandomForest::predictProbabilities(): Too few columns in feature matrix.");
-    vigra_precondition(columnCount(prob) == (MultiArrayIndex)labelCount(),
-      "RandomForest::predictProbabilities(): Probability matrix must have as many columns as there are classes.");
+    vigra_precondition( columnCount(features) >= ext_param_.column_count_,
+      "RandomForestn::predictProbabilities():"
+        " Too few columns in feature matrix.");
+    vigra_precondition( columnCount(prob)
+                        == (MultiArrayIndex)ext_param_.class_count_,
+      "RandomForestn::predictProbabilities():"
+      " Probability matrix must have as many columns as there are classes.");
 
 	//Classify for each row.
     for(int row=0; row < rowCount(features); ++row)
@@ -1080,17 +680,17 @@ RandomForest<ClassLabelType>::predictProbabilities(MultiArrayView<2, U, C1> cons
 
 	//Set each VoteCount = 0 - prob(row,l) contains vote counts until
 	//further normalisation
-        for(unsigned int l=0; l<classes_.size(); ++l)
+        for(unsigned int l=0; l<ext_param_.class_count_; ++l)
             prob(row, l) = 0.0;
 
 	//Let each tree classify...
-        for(unsigned int k=0; k<trees_.size(); ++k)
+        for(unsigned int k=0; k<options_.tree_count_; ++k)
         {
 		//get weights predicted by single tree
             weights = trees_[k].predict(rowVector(features, row));
 
 		//update votecount.
-            for(unsigned int l=0; l<classes_.size(); ++l)
+            for(unsigned int l=0; l<ext_param_.class_count_; ++l)
             {
                 prob(row, l) += weights[l];
                 //every weight in totalWeight.
@@ -1099,33 +699,12 @@ RandomForest<ClassLabelType>::predictProbabilities(MultiArrayView<2, U, C1> cons
         }
 
 	//Normalise votes in each row by total VoteCount (totalWeight
-        for(unsigned int l=0; l<classes_.size(); ++l)
+        for(unsigned int l=0; l<ext_param_.class_count_; ++l)
                 prob(row, l) /= totalWeight;
     }
+
 }
 
-
-template <class ClassLabelType>
-template <class U, class C1, class T, class C2>
-void
-RandomForest<ClassLabelType>::predictNodes(MultiArrayView<2, U, C1> const & features,
-                                                   MultiArrayView<2, T, C2> & NodeIDs) const
-{
-    vigra_precondition(columnCount(features) >= featureCount(),
-      "RandomForest::getNodesRF(): Too few columns in feature matrix.");
-    vigra_precondition(rowCount(features) <= rowCount(NodeIDs),
-      "RandomForest::getNodesRF(): Too few rows in NodeIds matrix");
-    vigra_precondition(columnCount(NodeIDs) >= treeCount(),
-      "RandomForest::getNodesRF(): Too few columns in NodeIds matrix.");
-    NodeIDs.init(0);
-    for(unsigned int k=0; k<trees_.size(); ++k)
-    {
-        for(int row=0; row < rowCount(features); ++row)
-        {
-            NodeIDs(row,k) = trees_[k].leafID(rowVector(features, row));
-        }
-    }
-}
 
 } // namespace vigra
 

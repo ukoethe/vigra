@@ -1,0 +1,618 @@
+
+
+Tree Number: 0 finished.
+
+minGini: 0 - 0
+Region.size: 4
+LeftChild.size: 1
+LeftChild.ClassCounts: 0 1 
+RightChild.size: 3
+RightChild.ClassCounts: 3 0 
+
+
+
+Tree Number: 1 finished.
+
+minGini: 0 - 0
+Region.size: 4
+LeftChild.size: 1
+LeftChild.ClassCounts: 1 0 
+RightChild.size: 3
+RightChild.ClassCounts: 0 3 
+
+
+
+Tree Number: 2 finished.
+
+minGini: 0 - 0
+Region.size: 4
+LeftChild.size: 2
+LeftChild.ClassCounts: 0 2 
+RightChild.size: 2
+RightChild.ClassCounts: 2 0 
+
+
+
+Tree Number: 3 finished.
+
+minGini: 0 - 0
+Region.size: 4
+LeftChild.size: 2
+LeftChild.ClassCounts: 2 0 
+RightChild.size: 2
+RightChild.ClassCounts: 0 2 
+
+
+
+Tree Number: 4 finished.
+
+minGini: 0 - 0
+Region.size: 4
+LeftChild.size: 3
+LeftChild.ClassCounts: 0 3 
+RightChild.size: 1
+RightChild.ClassCounts: 1 0 
+
+
+
+Tree Number: 5 finished.
+
+minGini: 0 - 0
+Region.size: 4
+LeftChild.size: 3
+LeftChild.ClassCounts: 3 0 
+RightChild.size: 1
+RightChild.ClassCounts: 0 1 
+
+
+
+Tree Number: 6 finished.
+
+minGini: 0 - 1
+Region.size: 4
+LeftChild.size: 1
+LeftChild.ClassCounts: 0 1 
+RightChild.size: 3
+RightChild.ClassCounts: 3 0 
+
+
+
+Tree Number: 7 finished.
+
+minGini: 0 - 1
+Region.size: 4
+LeftChild.size: 1
+LeftChild.ClassCounts: 1 0 
+RightChild.size: 3
+RightChild.ClassCounts: 0 3 
+
+
+
+Tree Number: 8 finished.
+
+minGini: 0 - 1
+Region.size: 4
+LeftChild.size: 2
+LeftChild.ClassCounts: 0 2 
+RightChild.size: 2
+RightChild.ClassCounts: 2 0 
+
+
+
+Tree Number: 9 finished.
+
+minGini: 0 - 1
+Region.size: 4
+LeftChild.size: 2
+LeftChild.ClassCounts: 2 0 
+RightChild.size: 2
+RightChild.ClassCounts: 0 2 
+
+
+
+Tree Number: 10 finished.
+
+minGini: 0 - 1
+Region.size: 4
+LeftChild.size: 3
+LeftChild.ClassCounts: 0 3 
+RightChild.size: 1
+RightChild.ClassCounts: 1 0 
+
+
+
+Tree Number: 11 finished.
+
+minGini: 0 - 1
+Region.size: 4
+LeftChild.size: 3
+LeftChild.ClassCounts: 3 0 
+RightChild.size: 1
+RightChild.ClassCounts: 0 1 
+
+
+
+Tree Number: 12 finished.
+
+minGini: 0.5 - 0
+Region.size: 4
+LeftChild.size: 2
+LeftChild.ClassCounts: 0 2 
+RightChild.size: 2
+RightChild.ClassCounts: 1 1 
+
+minGini: 0 - 1
+Region.size: 2
+LeftChild.size: 1
+LeftChild.ClassCounts: 0 1 
+RightChild.size: 1
+RightChild.ClassCounts: 1 0 
+
+
+
+Tree Number: 13 finished.
+
+minGini: 0.5 - 0
+Region.size: 4
+LeftChild.size: 2
+LeftChild.ClassCounts: 1 1 
+RightChild.size: 2
+RightChild.ClassCounts: 0 2 
+
+minGini: 0 - 1
+Region.size: 2
+LeftChild.size: 1
+LeftChild.ClassCounts: 1 0 
+RightChild.size: 1
+RightChild.ClassCounts: 0 1 
+
+
+
+Tree Number: 14 finished.
+
+minGini: 0.5 - 0
+Region.size: 4
+LeftChild.size: 2
+LeftChild.ClassCounts: 1 1 
+RightChild.size: 2
+RightChild.ClassCounts: 2 0 
+
+minGini: 0 - 1
+Region.size: 2
+LeftChild.size: 1
+LeftChild.ClassCounts: 1 0 
+RightChild.size: 1
+RightChild.ClassCounts: 0 1 
+
+
+
+Tree Number: 15 finished.
+
+minGini: 0.5 - 0
+Region.size: 4
+LeftChild.size: 2
+LeftChild.ClassCounts: 2 0 
+RightChild.size: 2
+RightChild.ClassCounts: 1 1 
+
+minGini: 0 - 1
+Region.size: 2
+LeftChild.size: 1
+LeftChild.ClassCounts: 0 1 
+RightChild.size: 1
+RightChild.ClassCounts: 1 0 
+
+
+
+Tree Number: 16 finished.
+
+minGini: 0.5 - 1
+Region.size: 4
+LeftChild.size: 2
+LeftChild.ClassCounts: 0 2 
+RightChild.size: 2
+RightChild.ClassCounts: 1 1 
+
+minGini: 0 - 0
+Region.size: 2
+LeftChild.size: 1
+LeftChild.ClassCounts: 0 1 
+RightChild.size: 1
+RightChild.ClassCounts: 1 0 
+
+
+
+Tree Number: 17 finished.
+
+minGini: 0.5 - 1
+Region.size: 4
+LeftChild.size: 2
+LeftChild.ClassCounts: 1 1 
+RightChild.size: 2
+RightChild.ClassCounts: 0 2 
+
+minGini: 0 - 0
+Region.size: 2
+LeftChild.size: 1
+LeftChild.ClassCounts: 1 0 
+RightChild.size: 1
+RightChild.ClassCounts: 0 1 
+
+
+
+Tree Number: 18 finished.
+
+minGini: 0.5 - 1
+Region.size: 4
+LeftChild.size: 2
+LeftChild.ClassCounts: 1 1 
+RightChild.size: 2
+RightChild.ClassCounts: 2 0 
+
+minGini: 0 - 0
+Region.size: 2
+LeftChild.size: 1
+LeftChild.ClassCounts: 1 0 
+RightChild.size: 1
+RightChild.ClassCounts: 0 1 
+
+
+
+Tree Number: 19 finished.
+
+minGini: 0.5 - 1
+Region.size: 4
+LeftChild.size: 2
+LeftChild.ClassCounts: 2 0 
+RightChild.size: 2
+RightChild.ClassCounts: 1 1 
+
+minGini: 0 - 0
+Region.size: 2
+LeftChild.size: 1
+LeftChild.ClassCounts: 0 1 
+RightChild.size: 1
+RightChild.ClassCounts: 1 0 
+
+
+
+Tree Number: 20 finished.
+
+minGini: 0.666667 - 0
+Region.size: 4
+LeftChild.size: 1
+LeftChild.ClassCounts: 0 1 
+RightChild.size: 3
+RightChild.ClassCounts: 1 2 
+
+minGini: 0 - 1
+Region.size: 3
+LeftChild.size: 2
+LeftChild.ClassCounts: 0 2 
+RightChild.size: 1
+RightChild.ClassCounts: 1 0 
+
+
+
+Tree Number: 21 finished.
+
+minGini: 0.666667 - 0
+Region.size: 4
+LeftChild.size: 1
+LeftChild.ClassCounts: 0 1 
+RightChild.size: 3
+RightChild.ClassCounts: 2 1 
+
+minGini: 0 - 1
+Region.size: 3
+LeftChild.size: 1
+LeftChild.ClassCounts: 0 1 
+RightChild.size: 2
+RightChild.ClassCounts: 2 0 
+
+
+
+Tree Number: 22 finished.
+
+minGini: 0.666667 - 0
+Region.size: 4
+LeftChild.size: 1
+LeftChild.ClassCounts: 1 0 
+RightChild.size: 3
+RightChild.ClassCounts: 1 2 
+
+minGini: 0 - 1
+Region.size: 3
+LeftChild.size: 2
+LeftChild.ClassCounts: 0 2 
+RightChild.size: 1
+RightChild.ClassCounts: 1 0 
+
+
+
+Tree Number: 23 finished.
+
+minGini: 0.666667 - 0
+Region.size: 4
+LeftChild.size: 1
+LeftChild.ClassCounts: 1 0 
+RightChild.size: 3
+RightChild.ClassCounts: 2 1 
+
+minGini: 0 - 1
+Region.size: 3
+LeftChild.size: 1
+LeftChild.ClassCounts: 0 1 
+RightChild.size: 2
+RightChild.ClassCounts: 2 0 
+
+
+
+Tree Number: 24 finished.
+
+minGini: 0.666667 - 0
+Region.size: 4
+LeftChild.size: 3
+LeftChild.ClassCounts: 1 2 
+RightChild.size: 1
+RightChild.ClassCounts: 0 1 
+
+minGini: 0 - 1
+Region.size: 3
+LeftChild.size: 1
+LeftChild.ClassCounts: 1 0 
+RightChild.size: 2
+RightChild.ClassCounts: 0 2 
+
+
+
+Tree Number: 25 finished.
+
+minGini: 0.666667 - 0
+Region.size: 4
+LeftChild.size: 3
+LeftChild.ClassCounts: 1 2 
+RightChild.size: 1
+RightChild.ClassCounts: 1 0 
+
+minGini: 0 - 1
+Region.size: 3
+LeftChild.size: 1
+LeftChild.ClassCounts: 1 0 
+RightChild.size: 2
+RightChild.ClassCounts: 0 2 
+
+
+
+Tree Number: 26 finished.
+
+minGini: 0.666667 - 0
+Region.size: 4
+LeftChild.size: 3
+LeftChild.ClassCounts: 2 1 
+RightChild.size: 1
+RightChild.ClassCounts: 0 1 
+
+minGini: 0 - 1
+Region.size: 3
+LeftChild.size: 2
+LeftChild.ClassCounts: 2 0 
+RightChild.size: 1
+RightChild.ClassCounts: 0 1 
+
+
+
+Tree Number: 27 finished.
+
+minGini: 0.666667 - 0
+Region.size: 4
+LeftChild.size: 3
+LeftChild.ClassCounts: 2 1 
+RightChild.size: 1
+RightChild.ClassCounts: 1 0 
+
+minGini: 0 - 1
+Region.size: 3
+LeftChild.size: 2
+LeftChild.ClassCounts: 2 0 
+RightChild.size: 1
+RightChild.ClassCounts: 0 1 
+
+
+
+Tree Number: 28 finished.
+
+minGini: 0.666667 - 1
+Region.size: 4
+LeftChild.size: 1
+LeftChild.ClassCounts: 0 1 
+RightChild.size: 3
+RightChild.ClassCounts: 1 2 
+
+minGini: 0 - 0
+Region.size: 3
+LeftChild.size: 2
+LeftChild.ClassCounts: 0 2 
+RightChild.size: 1
+RightChild.ClassCounts: 1 0 
+
+
+
+Tree Number: 29 finished.
+
+minGini: 0.666667 - 1
+Region.size: 4
+LeftChild.size: 1
+LeftChild.ClassCounts: 0 1 
+RightChild.size: 3
+RightChild.ClassCounts: 2 1 
+
+minGini: 0 - 0
+Region.size: 3
+LeftChild.size: 1
+LeftChild.ClassCounts: 0 1 
+RightChild.size: 2
+RightChild.ClassCounts: 2 0 
+
+
+
+Tree Number: 30 finished.
+
+minGini: 0.666667 - 1
+Region.size: 4
+LeftChild.size: 1
+LeftChild.ClassCounts: 1 0 
+RightChild.size: 3
+RightChild.ClassCounts: 1 2 
+
+minGini: 0 - 0
+Region.size: 3
+LeftChild.size: 2
+LeftChild.ClassCounts: 0 2 
+RightChild.size: 1
+RightChild.ClassCounts: 1 0 
+
+
+
+Tree Number: 31 finished.
+
+minGini: 0.666667 - 1
+Region.size: 4
+LeftChild.size: 1
+LeftChild.ClassCounts: 1 0 
+RightChild.size: 3
+RightChild.ClassCounts: 2 1 
+
+minGini: 0 - 0
+Region.size: 3
+LeftChild.size: 1
+LeftChild.ClassCounts: 0 1 
+RightChild.size: 2
+RightChild.ClassCounts: 2 0 
+
+
+
+Tree Number: 32 finished.
+
+minGini: 0.666667 - 1
+Region.size: 4
+LeftChild.size: 3
+LeftChild.ClassCounts: 1 2 
+RightChild.size: 1
+RightChild.ClassCounts: 0 1 
+
+minGini: 0 - 0
+Region.size: 3
+LeftChild.size: 1
+LeftChild.ClassCounts: 1 0 
+RightChild.size: 2
+RightChild.ClassCounts: 0 2 
+
+
+
+Tree Number: 33 finished.
+
+minGini: 0.666667 - 1
+Region.size: 4
+LeftChild.size: 3
+LeftChild.ClassCounts: 1 2 
+RightChild.size: 1
+RightChild.ClassCounts: 1 0 
+
+minGini: 0 - 0
+Region.size: 3
+LeftChild.size: 1
+LeftChild.ClassCounts: 1 0 
+RightChild.size: 2
+RightChild.ClassCounts: 0 2 
+
+
+
+Tree Number: 34 finished.
+
+minGini: 0.666667 - 1
+Region.size: 4
+LeftChild.size: 3
+LeftChild.ClassCounts: 2 1 
+RightChild.size: 1
+RightChild.ClassCounts: 0 1 
+
+minGini: 0 - 0
+Region.size: 3
+LeftChild.size: 2
+LeftChild.ClassCounts: 2 0 
+RightChild.size: 1
+RightChild.ClassCounts: 0 1 
+
+
+
+Tree Number: 35 finished.
+
+minGini: 0.666667 - 1
+Region.size: 4
+LeftChild.size: 3
+LeftChild.ClassCounts: 2 1 
+RightChild.size: 1
+RightChild.ClassCounts: 1 0 
+
+minGini: 0 - 0
+Region.size: 3
+LeftChild.size: 2
+LeftChild.ClassCounts: 2 0 
+RightChild.size: 1
+RightChild.ClassCounts: 0 1 
+
+
+
+Tree Number: 36 finished.
+
+minGini: 1 - 0
+Region.size: 4
+LeftChild.size: 2
+LeftChild.ClassCounts: 1 1 
+RightChild.size: 2
+RightChild.ClassCounts: 1 1 
+
+minGini: 0 - 1
+Region.size: 2
+LeftChild.size: 1
+LeftChild.ClassCounts: 0 1 
+RightChild.size: 1
+RightChild.ClassCounts: 1 0 
+
+minGini: 0 - 1
+Region.size: 2
+LeftChild.size: 1
+LeftChild.ClassCounts: 1 0 
+RightChild.size: 1
+RightChild.ClassCounts: 0 1 
+
+
+
+Tree Number: 37 finished.
+
+minGini: 1 - 1
+Region.size: 4
+LeftChild.size: 2
+LeftChild.ClassCounts: 1 1 
+RightChild.size: 2
+RightChild.ClassCounts: 1 1 
+
+minGini: 0 - 0
+Region.size: 2
+LeftChild.size: 1
+LeftChild.ClassCounts: 0 1 
+RightChild.size: 1
+RightChild.ClassCounts: 1 0 
+
+minGini: 0 - 0
+Region.size: 2
+LeftChild.size: 1
+LeftChild.ClassCounts: 1 0 
+RightChild.size: 1
+RightChild.ClassCounts: 0 1 
+
+
+
+Tree Number: 38 finished.
+
