@@ -38,7 +38,7 @@
 
 #include <vigra/numpy_array.hxx>
 #include <vigra/numpy_array_converters.hxx>
-#include <vigra/random_forest.hxx>
+#include <vigra/random_forest_deprec.hxx>
 #include <set>
 #include <cmath>
 
