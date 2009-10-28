@@ -227,8 +227,9 @@ struct ClassifierTest
 
         }
         std::cerr << "DONE!\n";
+		system("ls");
         std::cerr << "RFsetTest(): Comparing with Working Version:";
-            diffOnfiles("./data/oldsetTest.log", "setTest.log");
+            diffOnfiles("data/oldsetTest.log", "setTest.log");
         std::cerr << "DONE!\n\n";
     }
 

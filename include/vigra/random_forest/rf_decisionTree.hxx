@@ -49,8 +49,8 @@
 #include "vigra/functorexpression.hxx"
 #include <vector>
 
-#include "vigra/rf_common.hxx"
-#include "vigra/rf_nodeproxy.hxx"
+#include "rf_common.hxx"
+#include "rf_nodeproxy.hxx"
 namespace vigra
 {
 
