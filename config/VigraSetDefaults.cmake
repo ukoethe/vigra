@@ -1,15 +1,3 @@
-if (WIN32 AND ${CMAKE_C_COMPILER} MATCHES /bin/gcc.exe)
-    SET(CYGWIN 1)
-else()
-    SET(CYGWIN 0)
-endif()
-
-IF (CMAKE_GENERATOR MATCHES "Visual Studio")
-    SET(MSVC 1)
-ELSE()
-    SET(MSVC 0)
-ENDIF ()
-
 IF(NOT DEFINED WITH_VIGRANUMPY)
     SET(WITH_VIGRANUMPY "ON")
 ENDIF()
@@ -35,7 +23,7 @@ IF(NOT DEFINED AUTOBUILD_TESTS)
     SET(AUTOBUILD_TESTS "OFF")
 ENDIF()    
 SET(AUTOBUILD_TESTS ${AUTOBUILD_TESTS}
-    CACHE BOOL "Include test compilation in target 'all' (resp. 'ALL_BUILD') ?"
+    CACHE BOOL "Compile tests as part of target 'all' (resp. 'ALL_BUILD') ?"
     FORCE)
 
 IF(NOT VIGRA_DEFAULTS_INIT)
