@@ -53,8 +53,9 @@ namespace vigra
 
 
 template <class Iter>
-struct DT_Region
+class DT_Region
 {
+  public:
     typedef Iter IndexIterator;
     // tree specific stuff
     enum  ParentTag
@@ -72,7 +73,7 @@ struct DT_Region
     ArrayVector<double> weightedClassCounts_;
     bool classCountsIsValid, weightedClassCountsIsValid;
     IndexIterator            begin_, end_;
-    size_t                   size_, oob_size_;
+    int                   size_, oob_size_;
     IndexIterator            oob_begin_, oob_end_;
 
 
@@ -102,14 +103,14 @@ struct DT_Region
     {
         int num = 0;
 
-        for(size_t ii = 0; ii < classCounts().size(); ++ii)
+        for(int ii = 0; ii < (int)classCounts().size(); ++ii)
         {
             num += classCounts()[ii] > 0;
         }
         return num <= 1;
     }
 
-    int&  operator[](size_t i)
+    int&  operator[](int i)
     {
         return *(begin_+i);
     }
@@ -149,13 +150,13 @@ struct DT_Region
     void classCounts(ArrayVector<Int32> in);
 
     DT_Region( IndexIterator i, IndexIterator e,
-                        size_t classCount,
+                        int classCount,
                         Int32 lp = DecisionTreeNoParent,
                         Int32 rp = DecisionTreeNoParent)
     :
         leftParent(lp),
         rightParent(rp),
-        classCounts_(classCount, 0),
+        classCounts_(classCount, 0u),
         classCountsIsValid(false),
         begin_(i),
         end_(e),

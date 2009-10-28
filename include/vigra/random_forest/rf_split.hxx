@@ -92,14 +92,14 @@ class SplitBase
         return node_;
     }
 
-    size_t classCount()
+    int classCount()
     {
-        return size_t(t_data[1]);
+        return int(t_data[1]);
     }
 
-    size_t featureCount()
+    int featureCount()
     {
-        return size_t(t_data[0]);
+        return int(t_data[0]);
     }
 
     /** resets internal data. Should always be called before
@@ -155,7 +155,7 @@ class SplitBase
         }
 
         double bla = std::accumulate(ret.prob_begin(), ret.prob_end(), 0.0);
-        for(size_t ii = 0; ii < ret.prob_size(); ++ii)
+        for(int ii = 0; ii < ret.prob_size(); ++ii)
             ret.prob_begin()[ii] = ret.prob_begin()[ii]/bla ;
         return e_ConstProbNode;
     }
@@ -204,12 +204,12 @@ class SortSamplesByHyperplane
     bool operator()(MultiArrayIndex l, MultiArrayIndex r) const
     {
         double result_l = -1 * node_.intercept();
-        for(size_t ii = 0; ii < node_.columns_size(); ++ii)
+        for(int ii = 0; ii < node_.columns_size(); ++ii)
         {
             result_l += rowVector(data_, l)[ii] * node_.weights()[ii];
         }
         double result_r = -1 * node_.intercept();
-        for(size_t ii = 0; ii < node_.columns_size(); ++ii)
+        for(int ii = 0; ii < node_.columns_size(); ++ii)
         {
             result_r += rowVector(data_, r)[ii] * node_.weights()[ii];
         }
@@ -218,7 +218,7 @@ class SortSamplesByHyperplane
     double operator[](MultiArrayIndex l) const
     {
         double result_l = -1 * node_.intercept();
-        for(size_t ii = 0; ii < node_.columns_size(); ++ii)
+        for(int ii = 0; ii < node_.columns_size(); ++ii)
         {
             result_l += rowVector(data_, l)[ii] * node_.weights()[ii];
         }
@@ -262,7 +262,7 @@ class BestGiniFunctor
     public:
 
     ArrayVector<double>         classWeights_;
-    size_t                      classCount;
+    int                      classCount;
     ArrayVector<Int32>          currentCounts[2];
     ArrayVector<Int32>          bestCurrentCounts[2];
     double                      totalCounts[2];
@@ -286,7 +286,7 @@ class BestGiniFunctor
     /** Initialize with the number of classes in unweighted
         case
     **/
-    BestGiniFunctor(size_t classCount_)
+    BestGiniFunctor(int classCount_)
     :
         classWeights_(ArrayVector<double>(classCount_, 1.0)),
         classCount(classCount_)
@@ -297,7 +297,7 @@ class BestGiniFunctor
         bestCurrentCounts[1].resize(classCount);
     }
 
-    BestGiniFunctor(size_t classCount_, ArrayVector<double>const & classWeights)
+    BestGiniFunctor(int classCount_, ArrayVector<double>const & classWeights)
     :
         classWeights_(ArrayVector<double>(classCount_, 1.0)),
         classCount(classCount_)
@@ -332,7 +332,7 @@ class BestGiniFunctor
                                                         0.0);
         minGini                 = NumericTraits<double>::max();
 
-        for(ptrdiff_t m = 0; m < region.size()-1; ++m)
+        for(int m = 0; m < region.size()-1; ++m)
         {
 
             int label = labels[region[m]];
@@ -353,7 +353,7 @@ class BestGiniFunctor
             }
             else
             {
-                for(size_t l=0; l<classCount; ++l)
+                for(int l=0; l<classCount; ++l)
                 {
                     double w    = classWeights_[l];
                     gini += w*( double(currentCounts[0][l])*(1.0 - w * double(currentCounts[0][l]) / totalCounts[0]) +
@@ -380,7 +380,7 @@ class BestGiniFunctor
 template<class Region>
 double calculateGini(Region region, ArrayVector<double> classWeights_ = ArrayVector<double>())
 {
-    size_t classCount
+    int classCount
             = region.classCounts.size();
     if(classWeights_.size() == 0 )
         classWeights_.resize(classCount, 1.0);
@@ -401,7 +401,7 @@ double calculateGini(Region region, ArrayVector<double> classWeights_ = ArrayVec
     }
     else
     {
-        for(size_t l=0; l<classCount; ++l)
+        for(int l=0; l<classCount; ++l)
         {
             double w
                 = region.classWeights_[l];
@@ -426,16 +426,16 @@ class GiniSplit: public SplitBase
     ArrayVector<Int32> splitColumns;
     BestGiniFunctor bgfunc;
     double minGini;
-    size_t bestSplitColumn;
+    int bestSplitColumn;
 
     void set_external_parameters(RF_Traits::ProblemSpec_t const & in)
     {
         SB::set_external_parameters(in);
         bgfunc = BestGiniFunctor( ext_param_.class_count_, ext_param_.class_weights_);
-        size_t featureCount_ = ext_param_.column_count_;
+        int featureCount_ = ext_param_.column_count_;
 
         splitColumns.resize(featureCount_);
-        for(size_t k=0; k<featureCount_; ++k)
+        for(int k=0; k<featureCount_; ++k)
             splitColumns[k] = k;
     }
 
@@ -482,9 +482,9 @@ class GiniSplit: public SplitBase
         minGini = NumericTraits<double>::max();
         IndexIterator           bestSplit = IndexIterator();
         //ArrayVector<double> &   classWeights = SB::opt_.classWeights;
-        size_t num2try = features.shape(1);
+        int num2try = features.shape(1);
 
-        for(size_t k=0; k<num2try; ++k)
+        for(int k=0; k<num2try; ++k)
         {
 
             sorter.setColumn(splitColumns[k]);
@@ -509,7 +509,7 @@ class GiniSplit: public SplitBase
 
                 childRegions[0].classCountsIsValid = true;
                 childRegions[1].classCountsIsValid = true;
-                num2try = std::max(size_t(k), SB::ext_param_.actual_mtry_);
+                num2try = std::max(int(k), SB::ext_param_.actual_mtry_);
             }
         }
 
@@ -546,7 +546,7 @@ class OObGiniSplit: public GiniSplit<Options>
 
     typedef GiniSplit<Options> SB; //BaseType
 
-    OObGiniSplit(size_t featureCount_, size_t classCount_, Options opt)
+    OObGiniSplit(int featureCount_, int classCount_, Options opt)
         :   SB(featureCount_, classCount_, opt)
     {
     }
@@ -566,7 +566,7 @@ class OObGiniSplit: public GiniSplit<Options>
         std::transform(oobClassCounts.begin(), oobClassCounts.end(), SB::opt_.classWeights.begin(),
                        ret.prob_begin(), std::multiplies<double>());
         double bla = std::accumulate(ret.prob_begin(), ret.prob_end(), 0.0);
-        for(size_t ii = 0; ii < ret.prob_size(); ++ii)
+        for(int ii = 0; ii < ret.prob_size(); ++ii)
             ret.prob_begin()[ii] = ret.prob_begin()[ii]/bla ;
         return e_ConstProbNode;
     }
@@ -641,8 +641,8 @@ class UninformedSplit: public SplitBase
     ArrayVector<Int32> splitColumns;
     BestGiniFunctor bgfunc;
     double minGini;
-    size_t bestSplitColumn;
-    UninformedSplit(size_t featureCount_, size_t classCount_, Options opt)
+    int bestSplitColumn;
+    UninformedSplit(int featureCount_, int classCount_, Options opt)
         :   SplitBase<Options>(featureCount_, classCount_, opt),
             bgfunc(classCount_, SB::opt_.classWeights)
     {
@@ -650,7 +650,7 @@ class UninformedSplit: public SplitBase
             SB::opt_.mtry = int(std::floor(std::sqrt(double(featureCount_)) + 0.5));
         SB::opt_.classWeights.resize(classCount_, 1.0);
         splitColumns.resize(featureCount_);
-        for(size_t k=0; k<featureCount_; ++k)
+        for(int k=0; k<featureCount_; ++k)
             splitColumns[k] = k;
     }
 
@@ -697,9 +697,9 @@ class UninformedSplit: public SplitBase
         minGini = NumericTraits<double>::max();
         IndexIterator           bestSplit = IndexIterator();
         //ArrayVector<double> &   classWeights = SB::opt_.classWeights;
-        size_t num2try = features.shape(1);
+        int num2try = features.shape(1);
 
-        for(size_t k=0; k<num2try; ++k)
+        for(int k=0; k<num2try; ++k)
         {
 
             sorter.setColumn(splitColumns[k]);
@@ -724,7 +724,7 @@ class UninformedSplit: public SplitBase
 
                 childRegions[0].classCountsIsValid = true;
                 childRegions[1].classCountsIsValid = true;
-                num2try = std::max(size_t(k), SB::opt_.mtry);
+                num2try = std::max(int(k), SB::opt_.mtry);
             }
         }
 
@@ -743,7 +743,7 @@ class UninformedSplit: public SplitBase
                                  0.0);
         if((calculateGini(region, SB::opt_.classWeights) - minGini)/totalCountss < 0.05)
         {
-            bestSplit = region.begin() + ptrdiff_t(region.size()/2);
+            bestSplit = region.begin() + int(region.size()/2);
         }
         Node<i_ThresholdNode>   node(SB::t_data, SB::p_data);
         SB::node_ = node;
@@ -773,8 +773,8 @@ class TotallyUninformedSplit: public SplitBase<Options>
     ArrayVector<Int32> splitColumns;
     BestGiniFunctor bgfunc;
     double minGini;
-    size_t bestSplitColumn;
-    TotallyUninformedSplit(size_t featureCount_, size_t classCount_, Options opt)
+    int bestSplitColumn;
+    TotallyUninformedSplit(int featureCount_, int classCount_, Options opt)
         :   SplitBase<Options>(featureCount_, classCount_, opt),
             bgfunc(classCount_, SB::opt_.classWeights)
     {
@@ -782,7 +782,7 @@ class TotallyUninformedSplit: public SplitBase<Options>
             SB::opt_.mtry = int(std::floor(std::sqrt(double(featureCount_)) + 0.5));
         SB::opt_.classWeights.resize(classCount_, 1.0);
         splitColumns.resize(featureCount_);
-        for(size_t k=0; k<featureCount_; ++k)
+        for(int k=0; k<featureCount_; ++k)
             splitColumns[k] = k;
     }
 
@@ -829,15 +829,15 @@ class TotallyUninformedSplit: public SplitBase<Options>
         minGini = NumericTraits<double>::max();
         IndexIterator           bestSplit = IndexIterator();
         //ArrayVector<double> &   classWeights = SB::opt_.classWeights;
-        size_t num2try = features.shape(1);
+        int num2try = features.shape(1);
 
-        for(size_t k=0; k<1; ++k)
+        for(int k=0; k<1; ++k)
         {
 
             sorter.setColumn(splitColumns[k]);
             bestSplitColumn = splitColumns[k];
             std::sort(region.begin(), region.end(), sorter);
-            bestSplit = region.begin() + ptrdiff_t(region.size()/2);
+            bestSplit = region.begin() + int(region.size()/2);
         }
 
         Node<i_ThresholdNode>   node(SB::t_data, SB::p_data);
@@ -870,8 +870,8 @@ class HyperplaneSplit: public SplitBase<Options>
     ArrayVector<Int32> splitColumns;
     BestGiniFunctor bgfunc;
     double minGini;
-    size_t bestSplitColumn;
-    HyperplaneSplit(size_t featureCount_, size_t classCount_, Options opt)
+    int bestSplitColumn;
+    HyperplaneSplit(int featureCount_, int classCount_, Options opt)
         :   SplitBase<Options>(featureCount_, classCount_, opt),
             bgfunc(classCount_, SB::opt_.classWeights)
     {
@@ -879,7 +879,7 @@ class HyperplaneSplit: public SplitBase<Options>
             SB::opt_.mtry = int(std::floor(std::sqrt(double(featureCount_)) + 0.5));
         SB::opt_.classWeights.resize(classCount_, 1.0);
         splitColumns.resize(featureCount_);
-        for(size_t k=0; k<featureCount_; ++k)
+        for(int k=0; k<featureCount_; ++k)
             splitColumns[k] = k;
     }
 
@@ -926,11 +926,11 @@ class HyperplaneSplit: public SplitBase<Options>
         minGini = NumericTraits<double>::max();
         IndexIterator           bestSplit = IndexIterator();
         //ArrayVector<double> &   classWeights = SB::opt_.classWeights;
-        size_t num2try = features.shape(1);
+        int num2try = features.shape(1);
         ArrayVectorView<Int32>  	labelView(region.size(), &region[0]);
 
         MultiArray<2, T> ww(MultiArrayShape<2>::type(features.shape(1)+1,1));
-        size_t num = HoKashyap( features,
+        int num = HoKashyap( features,
                                 labels,
                                 ww,
                                 1,
@@ -955,7 +955,7 @@ class HyperplaneSplit: public SplitBase<Options>
             return i_HyperplaneNode;
         }
 
-        for(size_t k=0; k<num2try; ++k)
+        for(int k=0; k<num2try; ++k)
         {
 
             sorter.setColumn(splitColumns[k]);
@@ -980,7 +980,7 @@ class HyperplaneSplit: public SplitBase<Options>
 
                 childRegions[0].classCountsIsValid = true;
                 childRegions[1].classCountsIsValid = true;
-                num2try = std::max(size_t(k), SB::opt_.mtry);
+                num2try = std::max(int(k), SB::opt_.mtry);
             }
         }
 

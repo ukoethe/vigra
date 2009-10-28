@@ -65,8 +65,8 @@ void swap(FieldProxy<T> & rhs, FieldProxy<T> & lhs)
 //    std::vector<FieldProxy<double> >    original_column;
 //                                                            //Vector of "Pointers" pointing to original
 //                                                            //data (see FieldProxy)
-//    std::vector<size_t>                 indices_of_oobData;
-//    std::vector<size_t>::iterator       iter;
+//    std::vector<int>                 indices_of_oobData;
+//    std::vector<int>::iterator       iter;
 //                                                            //Vector containing the indices of the oob
 //                                                            //data of current tree and iterator
 //    vigra::ArrayVector<double>          oob_error(classCount);
@@ -81,11 +81,11 @@ void swap(FieldProxy<T> & rhs, FieldProxy<T> & lhs)
 //            //copy backup back and find the original ooberror
 //            copy backup back -> oroignal oob error is calculated in the RF.learn function;
 //    **/
-//    for(size_t ii = 0; ii < treeCount; ++ii)
+//    for(int ii = 0; ii < treeCount; ++ii)
 //    {
 //        //Find indices of the oob Data of current tree.
 //        indices_of_oobData.clear();
-//        for(size_t jj = 0; jj < sampleCount; ++jj)
+//        for(int jj = 0; jj < sampleCount; ++jj)
 //            if(rf.options_.oob_data(jj, ii) != 0)
 //                indices_of_oobData.push_back(jj);
 //
@@ -101,7 +101,7 @@ void swap(FieldProxy<T> & rhs, FieldProxy<T> & lhs)
 //        }
 //
 //        //Find the variable importance for each variable
-//        for(size_t kk_feat = 0; kk_feat < rf.columnCount_; ++kk_feat)
+//        for(int kk_feat = 0; kk_feat < rf.columnCount_; ++kk_feat)
 //        {
 //            //make backup of orinal column
 //            backup_column.clear();
@@ -114,7 +114,7 @@ void swap(FieldProxy<T> & rhs, FieldProxy<T> & lhs)
 //            }
 //
 //            // TODO do this multiple time for stability (is this a good idea?)
-//            for(size_t gg = 0; gg < permutationCount; ++gg)
+//            for(int gg = 0; gg < permutationCount; ++gg)
 //            {
 //                std::random_shuffle(original_column.begin(), original_column.end(), rand_int);
 //                // Check misclassification rate.
@@ -133,7 +133,7 @@ void swap(FieldProxy<T> & rhs, FieldProxy<T> & lhs)
 //            //normalise;
 //            imp_array(kk_feat, classCount) = imp_array(kk_feat, classCount)/permutationCount;
 //            imp_array(kk_feat, classCount) = (imp_array(kk_feat, classCount) - oob_error[classCount])/oob_error[classCount];
-//            for(size_t gg_class = 0; gg_class < classCount; ++gg_class)
+//            for(int gg_class = 0; gg_class < classCount; ++gg_class)
 //            {
 //                imp_array(kk_feat,gg_class) = imp_array(kk_feat, gg_class)/permutationCount;
 //                imp_array(kk_feat,gg_class)  = (imp_array(kk_feat, gg_class) - oob_error[gg_class])/oob_error[gg_class];

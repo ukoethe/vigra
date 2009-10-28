@@ -48,7 +48,7 @@ public:
 class EarlyStoppStd
 {
     public:
-	size_t min_split_node_size_;
+	int min_split_node_size_;
 
 	template<class Opt>
 	EarlyStoppStd(Opt opt)
@@ -163,14 +163,15 @@ enum RF_OptionTag   { RF_EQUAL,
  */
 
 
-struct RandomForestOptions
+class RandomForestOptions
 {
+  public:
 	/**\name sampling options*/
 	/*\{*/
 	// look at the member access functions for documentation
 	double 	training_set_proportion_;
-	size_t 	training_set_size_;
-   	size_t (*training_set_func_)(size_t);
+	int 	training_set_size_;
+   	int (*training_set_func_)(int);
 	RF_OptionTag
 		training_set_calc_switch_;
 
@@ -186,12 +187,12 @@ struct RandomForestOptions
 	 */
 	/*\{*/
 	RF_OptionTag 	mtry_switch_;
-	size_t 	mtry_;
-   	size_t (*mtry_func_)(size_t) ;
+	int 	mtry_;
+   	int (*mtry_func_)(int) ;
 
 
-	size_t tree_count_;
-	size_t min_split_node_size_;
+	int tree_count_;
+	int min_split_node_size_;
 	/*\}*/
 
 	/** create a RandomForestOptions object with default initialisation.
@@ -263,7 +264,7 @@ struct RandomForestOptions
 
 	/** directly specify the number of samples per tree
 	 */
-	RandomForestOptions & samples_per_tree(size_t in)
+	RandomForestOptions & samples_per_tree(int in)
 	{
 		training_set_size_ = in;
 		training_set_calc_switch_ = RF_CONST;
@@ -276,7 +277,7 @@ struct RandomForestOptions
 	 * \param in function pointer that takes the number of rows in the
 	 * 			 learning data and outputs the number samples per tree.
 	 */
-	RandomForestOptions & samples_per_tree(size_t (*in)(size_t))
+	RandomForestOptions & samples_per_tree(int (*in)(int))
 	{
 		training_set_func_ = in;
 		training_set_calc_switch_ = RF_FUNCTION;
@@ -302,7 +303,7 @@ struct RandomForestOptions
 
 	/** set mtry to a constant value
 	 */
-	RandomForestOptions & features_per_node(size_t in)
+	RandomForestOptions & features_per_node(int in)
 	{
 		mtry_ = in;
 		mtry_switch_ = RF_CONST;
@@ -311,10 +312,10 @@ struct RandomForestOptions
 
 	/** use a external function to calculate mtry
 	 *
-	 * \param in function pointer that takes size_t (number of columns
-	 * 			 of the and outputs size_t (mtry)
+	 * \param in function pointer that takes int (number of columns
+	 * 			 of the and outputs int (mtry)
 	 */
-	RandomForestOptions & features_per_node(size_t(*in)(size_t))
+	RandomForestOptions & features_per_node(int(*in)(int))
 	{
 		mtry_func_ = in;
 		mtry_switch_ = RF_FUNCTION;
@@ -325,7 +326,7 @@ struct RandomForestOptions
 	 *
 	 * <br> Default: 255.
 	 */
-	RandomForestOptions & tree_count(size_t in)
+	RandomForestOptions & tree_count(int in)
 	{
 		tree_count_ = in;
 		return *this;
@@ -339,7 +340,7 @@ struct RandomForestOptions
 	 * 	(among the remaining examples) during the prediction phase.
 	 * 	<br> Default: 1 (complete growing)
 	 */
-	RandomForestOptions & min_split_node_size(size_t in)
+	RandomForestOptions & min_split_node_size(int in)
 	{
 		min_split_node_size_ = in;
 		return *this;
@@ -394,7 +395,7 @@ private:\
 		return typee_##_t;\
 	}\
 public:\
-	void to_classlabel(size_t index, typee_  & out) const\
+	void to_classlabel(int index, typee_  & out) const\
 	{\
 		out = typee_(typee_##_classes_[index]);\
 	}\
@@ -415,12 +416,12 @@ private:
 
 public:
 
-	size_t 		column_count_;
-	size_t 		class_count_;
-    size_t      row_count_;
+	int 		column_count_;
+	int 		class_count_;
+    int      row_count_;
 
-	size_t 		actual_mtry_;
-	size_t 		actual_msample_;
+	int 		actual_mtry_;
+	int 		actual_msample_;
 
 	Problem_t 	problem_type_;
 	Types_t 	class_type_;
@@ -444,7 +445,7 @@ public:
 	{}
 
 
-	ProblemSpec & column_count(size_t in)
+	ProblemSpec & column_count(int in)
 	{
 		column_count_ = in;
 		return *this;

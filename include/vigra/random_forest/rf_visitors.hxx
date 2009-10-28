@@ -144,12 +144,12 @@ class TestVisitor: public VisitorBase<Next>
             fout   << "Region.size: "      << parent.size() << std::endl;
             fout   << "LeftChild.size: "  << leftChild.size() << std::endl;
             fout   << "LeftChild.ClassCounts: ";
-            for(size_t ii = 0; ii < split.classCount(); ++ii)
+            for(int ii = 0; ii < split.classCount(); ++ii)
                 fout << leftChild.classCounts()[ii] << " " ;
             fout   << std::endl;
             fout   << "RightChild.size: "   << rightChild.size() << std::endl;
             fout   << "RightChild.ClassCounts: ";
-            for(size_t ii = 0; ii < split.classCount(); ++ii)
+            for(int ii = 0; ii < split.classCount(); ++ii)
                 fout << rightChild.classCounts()[ii] << " " ;
             fout   << std::endl;
             fout   << std::endl;
@@ -198,12 +198,12 @@ class SetTestVisitor: public VisitorBase<Next>
             sout   << "Region.size: "      << parent.size() << std::endl;
             sout   << "LeftChild.size: "  << leftChild.size() << std::endl;
             sout   << "LeftChild.ClassCounts: ";
-            for(size_t ii = 0; ii < split.classCount(); ++ii)
+            for(int ii = 0; ii < split.classCount(); ++ii)
                 sout << leftChild.classCounts()[ii] << " " ;
             sout   << std::endl;
             sout   << "RightChild.size: "   << rightChild.size() << std::endl;
             sout   << "RightChild.ClassCounts: ";
-            for(size_t ii = 0; ii < split.classCount(); ++ii)
+            for(int ii = 0; ii < split.classCount(); ++ii)
                 sout << rightChild.classCounts()[ii] << " " ;
             sout   << std::endl;
             sout   << std::endl;
@@ -271,7 +271,7 @@ class AllOutputVisitor: public VisitorBase<Next>
             fout << std::endl;
             fout   << "LeftChild.size: "  << leftChild.size() << std::endl;
             fout   << "LeftChild.ClassCounts: ";
-            for(size_t ii = 0; ii < split.classCount(); ++ii)
+            for(int ii = 0; ii < split.classCount(); ++ii)
                 fout << leftChild.classCounts()[ii] << " " ;
             fout   << std::endl;
             for(int ii = 0 ; ii < leftChild.size(); ++ii)
@@ -282,7 +282,7 @@ class AllOutputVisitor: public VisitorBase<Next>
             fout << std::endl;
             fout   << "RightChild.size: "   << rightChild.size() << std::endl;
             fout   << "RightChild.ClassCounts: ";
-            for(size_t ii = 0; ii < split.classCount(); ++ii)
+            for(int ii = 0; ii < split.classCount(); ++ii)
                 fout << rightChild.classCounts()[ii] << " " ;
             fout   << std::endl;
             for(int ii = 0 ; ii < rightChild.size(); ++ii)
@@ -343,7 +343,7 @@ public:
             oobErrorCount.resize(rf.ext_param_.row_count_, 0);
         }
 
-        for(size_t l = 0; l < rf.ext_param_.row_count_; ++l)
+        for(int l = 0; l < rf.ext_param_.row_count_; ++l)
         {
 
             if(!sm.is_used()[l])
@@ -361,7 +361,7 @@ public:
     template<class RF, class PR>
     void visit_at_end(RF & rf, PR & pr)
     {
-        for(unsigned int l=0; l<rf.ext_param_.row_count_; ++l)
+        for(int l=0; l < (int)rf.ext_param_.row_count_; ++l)
         if(oobCount[l])
         {
             oobError += double(oobErrorCount[l]) / oobCount[l];
@@ -403,7 +403,7 @@ class oobVisitor: public VisitorBase<Next>
     }
 
     void visitAfterTree(    ArrayVector<DecisionTree> trees,
-                            size_t k                        )
+                            int k                        )
     {
 
     }
@@ -440,7 +440,7 @@ class rankingVisitor: public VisitorBase<Next>
     }
 
     void visitAfterTree(    ArrayVector<DecisionTree> trees,
-                            size_t k                        )
+                            int k                        )
     {
 
     }
@@ -477,7 +477,7 @@ class isInformativeVisitor: public VisitorBase<Next>
     }
 
     void visitAfterTree(    ArrayVector<DecisionTree> trees,
-                            size_t k                        )
+                            int k                        )
     {
 
     }
@@ -514,7 +514,7 @@ class nodeToStackMappingVisitor: public VisitorBase<Next>
     }
 
     void visitAfterTree(    ArrayVector<DecisionTree> trees,
-                            size_t k                        )
+                            int k                        )
     {
 
     }
@@ -551,7 +551,7 @@ class variableVisitor: public VisitorBase<Next>
     }
 
     void visitAfterTree(    ArrayVector<DecisionTree> trees,
-                            size_t k                        )
+                            int k                        )
     {
 
     }

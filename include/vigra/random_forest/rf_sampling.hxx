@@ -146,7 +146,7 @@ class Sampler
     private:
         bool unused_indices_set;
         typedef std::map<IndexType, vigra::ArrayVector< IndexType> > StrataIndicesType;
-        typedef std::map<IndexType, size_t> StrataSizesType;
+        typedef std::map<IndexType, int> StrataSizesType;
         StrataIndicesType     strata_indices_;
         StrataSizesType       strata_sizes_;
         IndexArrayType        internal_used_indices_;
@@ -159,7 +159,7 @@ class Sampler
         void sample_stratified_w_rep()
         {
 
-            is_used_.init(0);
+            is_used_.init(false);
 
             //Go thru each strata
             StrataIndicesType::iterator iter;
@@ -168,8 +168,8 @@ class Sampler
             {
                 // do sampling with replacement in each strata and copy
                 // data.
-                size_t sze = iter->second.size();
-                for(unsigned int ii = 0; ii < strata_sizes_[iter->first]; ++ii)
+                int sze = iter->second.size();
+                for(int ii = 0; ii < (int)strata_sizes_[iter->first]; ++ii)
                 {
                     used_indices_[jj] = iter->second[randint(sze)];
                     is_used_[used_indices_[jj] ] = 1;
@@ -183,7 +183,7 @@ class Sampler
 
 
             // reset is_used
-            is_used_.init(0);
+            is_used_.init(false);
 
             //Go thru each strata
             StrataIndicesType::iterator iter;
@@ -192,7 +192,7 @@ class Sampler
             {
                 // do sampling without replacement in each strata and copy
                 // data.
-                for(unsigned int ii = 0; ii < strata_sizes_[iter->first]; ++ii)
+                for(int ii = 0; ii < (int)strata_sizes_[iter->first]; ++ii)
                 {
 
 
@@ -209,8 +209,8 @@ class Sampler
         void sample_w_rep()
         {
 
-            is_used_.init(0);
-            for(unsigned int ii = 0; ii < num_of_samples; ++ii)
+            is_used_.init(false);
+            for(int ii = 0; ii < num_of_samples; ++ii)
             {
                 used_indices_[ii] = randint(max_index);
                 is_used_[used_indices_[ii] ] = true;
@@ -219,8 +219,8 @@ class Sampler
         void sample_wo_rep()
         {
 
-            is_used_.init(0);
-            for(unsigned int ii = 0; ii < num_of_samples; ++ii)
+            is_used_.init(false);
+            for(int ii = 0; ii < num_of_samples; ++ii)
             {
                 std::swap(used_indices_[ii], used_indices_[ii+ randint(max_index - ii)]);
                 is_used_[used_indices_[ii] ] = true;
@@ -231,7 +231,7 @@ class Sampler
 
     SamplingOptions options_;
 
-    IndexType const & operator[](size_t in)
+    IndexType const & operator[](int in)
     {
         return used_indices_[in];
     }
@@ -250,7 +250,7 @@ class Sampler
         else
         {
             unused_indices_.clear();
-            for(size_t ii = 0; ii < is_used().size(); ++ii)
+            for(int ii = 0; ii < (int)is_used().size(); ++ii)
             {
                 if(is_used_[ii])
                     unused_indices_.push_back(ii);
@@ -270,8 +270,8 @@ class Sampler
         return IsUsedArrayViewType(is_used_);
     }
 
-    size_t num_of_samples;
-    size_t max_index;
+    int num_of_samples;
+    int max_index;
 
     inline void sample(  )
     {
@@ -279,12 +279,12 @@ class Sampler
         (this->*sampling_func_ptr_)();
     }
 
-    size_t numOfSamples()
+    int numOfSamples()
     {
         return num_of_samples;
     }
 
-    size_t numOfSamples(size_t n)
+    int numOfSamples(int n)
     {
         num_of_samples = n;
         if(!options_.sample_with_replacement && ((*options_.strata).data() != 0) && options_.use_internal_mem)
@@ -297,8 +297,8 @@ class Sampler
         return num_of_samples;
     }
 
-    void init(  size_t numOfSamples ,
-                size_t maxIndex     ,
+    void init(  int numOfSamples ,
+                int maxIndex     ,
                 SamplingOptions const & opt)
     {
         unused_indices_set = false;
@@ -322,7 +322,7 @@ class Sampler
 
 
             // Set up the data struct used.
-            for(unsigned int ii = 0; ii < maxIndex; ++ii)
+            for(int ii = 0; ii < maxIndex; ++ii)
             {
 
                 strata_indices_[(*(options_.strata))[ii]].push_back(ii);
@@ -337,14 +337,14 @@ class Sampler
                 {
                     // Set the size of the strata to be sampled to the fixed proportion of num_of_samples
                     // This value is the same for all strata
-                    strata_sizes_[iter->first] = ceil(double(num_of_samples) / strata_indices_.size());
+                    strata_sizes_[iter->first] = (int)ceil(double(num_of_samples) / strata_indices_.size());
                     total_size += strata_sizes_[iter->first];
                 }
-                size_t cut_off = std::abs(int(total_size - num_of_samples));
+                int cut_off = std::abs(int(total_size - num_of_samples));
                 if(cut_off != 0)
                 {
                     StrataIndicesType::iterator end_iter = strata_indices_.begin();
-                    for(unsigned int ii = 0; ii < cut_off; ++ii)
+                    for(int ii = 0; ii < cut_off; ++ii)
                     {
                         ++end_iter;
                     }
@@ -365,13 +365,13 @@ class Sampler
                 {
                     // Set the size of the strata to be sampled to be proportional of the size of the strata
                     // This value is different for each strata
-                    strata_sizes_[iter->first] = ceil((double(iter->second.size())/double(max_index)) * num_of_samples );
+                    strata_sizes_[iter->first] = (int)ceil((double(iter->second.size())/double(max_index)) * num_of_samples );
                     total_size += strata_sizes_[iter->first];
                 }
-                size_t cut_off = std::abs(int(total_size - num_of_samples));
+                int cut_off = std::abs(int(total_size - num_of_samples));
                 if(cut_off != 0)
                 {
-                    for(unsigned int ii = 0; ii < cut_off; ++ii)
+                    for(int ii = 0; ii < cut_off; ++ii)
                     {
                         StrataIndicesType::iterator curmax = strata_indices_.begin();
                         for(iter = strata_indices_.begin(); iter != strata_indices_.end(); ++iter)
@@ -396,7 +396,7 @@ class Sampler
                 StrataSizesType::iterator iter;
                 for(iter = strata_sizes_.begin(); iter != strata_sizes_.end(); ++iter)
                 {
-                    vigra_precondition(iter->second <= strata_indices_[iter->first].size(),
+                    vigra_precondition(iter->second <= (int)strata_indices_[iter->first].size(),
                                                 "Not enough samples to sample classes individually //stratified and\
                                                     without replacement");
                 }
@@ -430,7 +430,7 @@ class Sampler
                 {
                     internal_used_indices_.resize(max_index);
                     used_indices_ = internal_used_indices_;
-                    for(unsigned int ii = 0; ii < max_index; ++ii)
+                    for(int ii = 0; ii < max_index; ++ii)
                     {
                         used_indices_[ii] = ii;
                     }
@@ -446,14 +446,14 @@ class Sampler
         }
     }
 
-    inline Sampler(size_t numOfSamples,size_t maxIndex, SamplingOptions const & opt, Random & rnd)
+    inline Sampler(int numOfSamples,int maxIndex, SamplingOptions const & opt, Random & rnd)
     :
         randint(rnd)
     {
         init(numOfSamples,maxIndex, opt);
     }
 
-    inline Sampler(size_t numOfSamples, size_t maxIndex, SamplingOptions const & opt)
+    inline Sampler(int numOfSamples, int maxIndex, SamplingOptions const & opt)
     {
          init(numOfSamples,maxIndex, opt);
     }

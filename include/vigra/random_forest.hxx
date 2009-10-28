@@ -217,7 +217,7 @@ class RandomForest
 	 * NodeProxy iterators to encapsulate the underlying data type.
 	 */
     template<class TreeIterator, class WeightIterator>
-    RandomForest(size_t 				treeCount,
+    RandomForest(int 				treeCount,
                   TreeIterator 			trees,
 				  WeightIterator 		weights,
 				  ProblemSpec_t const & problem_spec,
@@ -295,14 +295,14 @@ class RandomForest
 
 	/**\brief access const trees
 	 */
-	DecisionTree_t const & tree(size_t index) const
+	DecisionTree_t const & tree(int index) const
 	{
 		return trees_[index];
 	}
 
 	/**\brief access trees
 	 */
-	DecisionTree_t & tree(size_t index)
+	DecisionTree_t & tree(int index)
 	{
 		return trees_[index];
 	}
@@ -561,7 +561,7 @@ double RandomForest<PreprocessorTag>::
 								    randint);
 
 	// THE MAIN EFFING RF LOOP - YEAY DUDE!
-    for(size_t ii = 0; ii < trees_.size(); ++ii)
+    for(int ii = 0; ii < (int)trees_.size(); ++ii)
     {
 		//initialize First region/node/stack entry
         sampler

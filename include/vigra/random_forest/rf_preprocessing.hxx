@@ -64,7 +64,7 @@ namespace detail
             case RF_LOG:
                 // this is in Breimans original paper
                 ext_param.actual_mtry_ =
-                    int(1+(std::log(ext_param.column_count_)/std::log(2)));
+                    int(1+(std::log(double(ext_param.column_count_))/std::log(2.0)));
                 break;
             case RF_FUNCTION:
                 ext_param.actual_mtry_ =
@@ -83,8 +83,8 @@ namespace detail
                 break;
             case RF_PROPORTIONAL:
                 ext_param.actual_msample_ =
-                    std::ceil(  options.training_set_proportion_ *
-                                ext_param.row_count_);
+                    (int)std::ceil(  options.training_set_proportion_ *
+                                     ext_param.row_count_);
                     break;
             case RF_FUNCTION:
                 ext_param.actual_msample_ =
@@ -141,7 +141,7 @@ class Processor<ClassificationTag, T1, C1, T2, C2>
         // set class weights
         if(ext_param.class_weights_.size() == 0)
         {
-            ArrayVector<T2> tmp(ext_param.class_count_, 1.0);
+            ArrayVector<T2> tmp((std::size_t)ext_param.class_count_, NumericTraits<T2>::one());
             ext_param.class_weights(tmp.begin(), tmp.end());
         }
 
@@ -190,7 +190,7 @@ public:
 	RF_Traits::ProblemSpec_t const &
 								ext_param_;
 	// will only be filled if needed
-	MultiArray<2, size_t> 	 	strata_;
+	MultiArray<2, int> 	 	strata_;
 	bool strata_filled;
 
 	Processor(	MultiArrayView<2, T1, C1> 	feats,
@@ -216,7 +216,7 @@ public:
 		return response_;
 	}
 
-	MultiArrayView<2, size_t> & strata()
+	MultiArrayView<2, int> & strata()
 	{
 		if(strata_filled)
 		{

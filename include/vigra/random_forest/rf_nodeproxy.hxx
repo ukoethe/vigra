@@ -90,18 +90,18 @@ class NodeBase
 
 
     mutable Topology_type                   topology_;
-    size_t                                  topology_size_;
+    int                                  topology_size_;
 
     mutable Parameter_type                  parameters_;
-    size_t                                  parameter_size_ ;
+    int                                  parameter_size_ ;
 
     /** if numColumns = 0 then xrange is used as split axis
     **/
     static T_Container_type                 xrange;
 
         // Tree Parameters
-    size_t                                  featureCount_;
-    size_t                                  classCount_;
+    int                                  featureCount_;
+    int                                  classCount_;
 
         // Node Parameters
     bool                                    hasData_;
@@ -146,7 +146,7 @@ class NodeBase
             return column_data()+1;
     }
 
-    size_t      columns_size()
+    int      columns_size()
     {
         if(*column_data() == AllColumns)
             return featureCount_;
@@ -168,7 +168,7 @@ class NodeBase
     {
         return topology_begin() + topology_size();
     }
-    size_t          topology_size()
+    int          topology_size()
     {
         return topology_size_;
     }
@@ -183,7 +183,7 @@ class NodeBase
         return parameters_begin() + parameters_size();
     }
 
-    size_t          parameters_size()
+    int          parameters_size()
     {
         return parameter_size_;
     }
@@ -214,12 +214,12 @@ class NodeBase
                     classCount_(topology[1]),
                     hasData_(true)
     {
-        while(xrange.size() <  featureCount_)
+        while((int)xrange.size() <  featureCount_)
             xrange.push_back(xrange.size());
     }
 
-    NodeBase(   size_t                      tLen,
-                size_t                      pLen,
+    NodeBase(   int                      tLen,
+                int                      pLen,
                 T_Container_type    &  topology,
                 P_Container_type    &  parameter,
                 INT                         n)
@@ -232,13 +232,13 @@ class NodeBase
                     classCount_(topology[1]),
                     hasData_(true)
     {
-        while(xrange.size() <  featureCount_)
+        while((int)xrange.size() <  featureCount_)
             xrange.push_back(xrange.size());
     }
         /** create new Node at end of vector+
         **/
-    NodeBase(   size_t                      tLen,
-                size_t                      pLen,
+    NodeBase(   int                      tLen,
+                int                      pLen,
                 T_Container_type   &        topology,
                 P_Container_type   &        parameter)
     :
@@ -248,11 +248,11 @@ class NodeBase
                     classCount_(topology[1]),
                     hasData_(true)
     {
-        while(xrange.size() <  featureCount_)
+        while((int)xrange.size() <  featureCount_)
             xrange.push_back(xrange.size());
 
-        size_t n = topology.size();
-        for(size_t ii = 0; ii < tLen; ++ii)
+        int n = topology.size();
+        for(int ii = 0; ii < tLen; ++ii)
             topology.push_back(0);
         //topology.resize (n  + tLen);
 
@@ -262,7 +262,7 @@ class NodeBase
         parameter_addr()    =   parameter.size();
 
         //parameter.resize(parameter.size() + pLen);
-        for(size_t ii = 0; ii < pLen; ++ii)
+        for(int ii = 0; ii < pLen; ++ii)
             parameter.push_back(0);
 
         parameters_          =   parameter.begin()+ parameter_addr();
@@ -283,16 +283,16 @@ class NodeBase
                     classCount_(topology[1]),
                     hasData_(true)
     {
-        while(xrange.size() <  featureCount_)
+        while((int)xrange.size() <  featureCount_)
             xrange.push_back(xrange.size());
 
-        size_t n            = topology.size();
-        for(size_t ii = 0; ii < toCopy.topology_size(); ++ii)
+        int n            = topology.size();
+        for(int ii = 0; ii < toCopy.topology_size(); ++ii)
             topology.push_back(toCopy.topology_begin()[ii]);
 //        topology.insert(topology.end(), toCopy.topology_begin(), toCopy.topology_end());
         topology_           =   topology.begin()+ n;
         parameter_addr()    =   parameter.size();
-        for(size_t ii = 0; ii < toCopy.parameters_size(); ++ii)
+        for(int ii = 0; ii < toCopy.parameters_size(); ++ii)
             parameter.push_back(toCopy.parameters_begin()[ii]);
 //        parameter.insert(parameter.end(), toCopy.parameters_begin(), toCopy.parameters_end());
         parameters_          =   parameter.begin()+ parameter_addr();
@@ -358,7 +358,7 @@ class Node<i_HyperplaneNode>
 
         /**constructors **/
 
-    Node(           size_t                      nCol,
+    Node(           int                      nCol,
                     BT::T_Container_type    &   topology,
                     BT::P_Container_type    &   split_param)
                 :   BT(nCol + 5,nCol + 2,topology, split_param)
@@ -368,7 +368,7 @@ class Node<i_HyperplaneNode>
 
     Node(           BT::T_Container_type    &   topology,
                     BT::P_Container_type    &   split_param,
-                    size_t                  n             )
+                    int                  n             )
                 :   NodeBase(5 , 2,topology, split_param, n)
     {
         //TODO : is there a more elegant way to do this?
@@ -395,7 +395,7 @@ class Node<i_HyperplaneNode>
     BT::INT next(MultiArrayView<2,U,C> const & feature)
     {
         double result = -1 * intercept();
-        for(size_t ii = 0; ii < BT::columns_size(); ++ii)
+        for(int ii = 0; ii < BT::columns_size(); ++ii)
         {
             result +=feature[BT::columns_begin()[ii]] * weights()[ii];
         }
@@ -416,7 +416,7 @@ class Node<i_HypersphereNode>
 
         /**constructors **/
 
-    Node(           size_t                      nCol,
+    Node(           int                      nCol,
                     BT::T_Container_type    &   topology,
                     BT::P_Container_type    &   param)
                 :   NodeBase(nCol + 5,nCol + 1,topology, param)
@@ -426,7 +426,7 @@ class Node<i_HypersphereNode>
 
     Node(           BT::T_Container_type    &   topology,
                     BT::P_Container_type    &   param,
-                    size_t                  n             )
+                    int                  n             )
                 :   NodeBase(5, 1,topology, param, n)
     {
         BT::topology_size_ += BT::column_data()[0]== AllColumns ?
@@ -450,7 +450,7 @@ class Node<i_HypersphereNode>
     BT::INT next(MultiArrayView<2,U,C> const & feature)
     {
         double result = -1 * squaredRadius();
-        for(size_t ii = 0; ii < BT::columns_size(); ++ii)
+        for(int ii = 0; ii < BT::columns_size(); ++ii)
         {
             result += (feature[BT::columns_begin()[ii]] - center()[ii])*
                       (feature[BT::columns_begin()[ii]] - center()[ii]);
@@ -494,7 +494,7 @@ class Node<e_ConstProbNode>
 
     Node(           BT::T_Container_type    &   topology,
                     BT::P_Container_type    &   param,
-                    size_t                  n             )
+                    int                  n             )
                 :   BT(2, topology[1]+1,topology, param, n)
     { }
     BT::Parameter_type prob_begin()
@@ -505,7 +505,7 @@ class Node<e_ConstProbNode>
     {
         return prob_begin() + prob_size();
     }
-    size_t prob_size()
+    int prob_size()
     {
         return BT::classCount_;
     }
