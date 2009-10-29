@@ -47,11 +47,12 @@ class StopVisiting
 {
     public:
 
-    template<class Split, class Region>
-    void visitAfterSplit(   Split   const & splitFunctor,
-                            Region  const & parent,
-                            Region  const & leftChild,
-                            Region  const & rightChild)
+    template<class Tree, class Split, class Region>
+    void visit_after_split( Tree 	      & tree, 
+						   	Split    	  & split,
+                            Region        & parent,
+                            Region        & leftChild,
+                            Region        & rightChild)
     {}
 
     template<class RF, class PR, class SM, class ST>
@@ -61,7 +62,16 @@ class StopVisiting
     template<class RF, class PR>
     void visit_at_end(RF & rf, PR & pr)
     {}
+	template<class TR, class IntT, class TopT>
+	void visit_external_node(TR & tr, IntT index, TopT node_t)
+	{
 
+	}
+	template<class TR, class IntT, class TopT>
+	void visit_internal_node(TR & tr, IntT index, TopT node_t)
+	{
+
+	}
     double return_val()
     {
         return 0.0;
@@ -82,13 +92,14 @@ class VisitorBase
     : next(a)
     {}
 
-    template<class Split, class Region>
-    void visitAfterSplit(   Split   const & splitFunctor,
-                            Region  const & parent,
-                            Region  const & leftChild,
-                            Region  const & rightChild)
+    template<class Tree, class Split, class Region>
+    void visit_after_split( Tree 	      & tree, 
+						   	Split         & split,
+                            Region        & parent,
+                            Region        & leftChild,
+                            Region        & rightChild)
     {
-        next.visitAfterSplit(splitFunctor, parent, leftChild, rightChild);
+        next.visit_after_split(tree, split, parent, leftChild, rightChild);
     }
 
     template<class RF, class PR, class SM, class ST>
@@ -102,6 +113,17 @@ class VisitorBase
     {
         next.visit_at_end(rf, pr);
     }
+	
+	template<class TR, class IntT, class TopT>
+	void visit_external_node(TR & tr, IntT index, TopT node_t)
+	{
+		next.visit_external_node();
+	}
+	template<class TR, class IntT, class TopT>
+	void visit_internal_node(TR & tr, IntT index, TopT node_t)
+	{
+		next.visit_internal_node();
+	}
 
     double return_val()
     {
@@ -127,11 +149,12 @@ class TestVisitor: public VisitorBase<Next>
     {    }
 
     //TODO split must be const
-    template<class Split, class Region>
-    void visitAfterSplit(   Split    & split,
-                            Region   & parent,
-                            Region & leftChild,
-                            Region & rightChild)
+    template<class Tree, class Split, class Region>
+    void visit_after_split( Tree 	      & tree, 
+						   	Split         & split,
+                            Region        & parent,
+                            Region        & leftChild,
+                            Region        & rightChild)
     {
         if(split.createNode().typeID() == i_ThresholdNode)
         {
@@ -154,13 +177,14 @@ class TestVisitor: public VisitorBase<Next>
             fout   << std::endl;
             fout   << std::endl;
         }
-        BT::next.visitAfterSplit(split, parent, leftChild, rightChild);
+        BT::visit_after_split(tree, split, parent, leftChild, rightChild);
     }
 
     template<class RF, class PR, class SM, class ST>
     void visit_after_tree(    RF& rf, PR & pr,  SM & sm, ST & st, int index)
     {
         fout << std::endl << std::endl << "Tree Number: " << index << " finished." << std::endl << std::endl;
+		BT::visit_after_tree(rf, pr, sm, st, index);
     }
 
     ~TestVisitor()
@@ -185,12 +209,12 @@ class SetTestVisitor: public VisitorBase<Next>
         BT(next_)
     {    }
 
-    //TODO split must be const
-    template<class Split, class Region>
-    void visitAfterSplit(   Split    & split,
-                            Region   & parent,
-                            Region & leftChild,
-                            Region & rightChild)
+    template<class Tree, class Split, class Region>
+    void visit_after_split( Tree 	      & tree, 
+						   	Split         & split,
+                            Region        & parent,
+                            Region        & leftChild,
+                            Region        & rightChild)
     {
         if(split.createNode().typeID() == i_ThresholdNode)
         {
@@ -208,7 +232,7 @@ class SetTestVisitor: public VisitorBase<Next>
             sout   << std::endl;
             sout   << std::endl;
         }
-        BT::next.visitAfterSplit(split, parent, leftChild, rightChild);
+        BT::visit_after_split(tree, split, parent, leftChild, rightChild);
     }
 
     template<class RF, class PR, class SM, class ST>
@@ -216,6 +240,7 @@ class SetTestVisitor: public VisitorBase<Next>
     {
         treesset.insert(sout.str());
         sout.str(std::string());
+		BT::visit_after_tree(rf, pr, sm, st, index);
     }
 
     template<class RF, class PR>
@@ -231,8 +256,8 @@ class SetTestVisitor: public VisitorBase<Next>
             ++k;
         }
         fout.close();
-    }
-
+        BT::visit_at_end(rf, pr);
+	}
 };
 
 template <class T1, class C1, class T2, class C2, class Next = StopVisiting>
@@ -252,11 +277,12 @@ class AllOutputVisitor: public VisitorBase<Next>
     {    }
 
     //TODO split must be const
-    template<class Split, class Region>
-    void visitAfterSplit(   Split    & split,
-                            Region   & parent,
-                            Region & leftChild,
-                            Region & rightChild)
+    template<class Tree, class Split, class Region>
+    void visit_after_split( Tree 	      & tree, 
+						   	Split         & split,
+                            Region        & parent,
+                            Region        & leftChild,
+                            Region        & rightChild)
     {
         if(split.createNode().typeID() == i_ThresholdNode)
         {
@@ -292,14 +318,15 @@ class AllOutputVisitor: public VisitorBase<Next>
             }
             fout   << std::endl;
         }
-        BT::next.visitAfterSplit(split, parent, leftChild, rightChild);
+        BT::visit_after_split(tree, split, parent, leftChild, rightChild);
     }
 
     template<class RF, class PR, class SM, class ST>
     void visit_after_tree(    RF& rf, PR & pr,  SM & sm, ST & st, int index)
     {
         fout << std::endl << std::endl << "Tree Number: " << index << " finished." << std::endl << std::endl;
-    }
+		BT::visit_after_tree(rf, pr, sm, st, index);
+	}
 
     void setDataSource(MultiArrayView<2, T1, C1> * feat, MultiArrayView<2, T2, C2> * label)
     {
@@ -367,7 +394,7 @@ public:
             oobError += double(oobErrorCount[l]) / oobCount[l];
             ++totalOobCount;
         }
-        BT::next.visit_at_end(rf, pr);
+        BT::visit_at_end(rf, pr);
     }
 
     double return_val()
@@ -393,13 +420,13 @@ class oobVisitor: public VisitorBase<Next>
 
     //TODO split must be const
     template<class Split, class Region>
-    void visitAfterSplit(   Split    & split,
+    void visit_after_split(   Split    & split,
                             Region   & parent,
                             Region & leftChild,
                             Region & rightChild)
     {
 
-        BT::next.visitAfterSplit(split, parent, leftChild, rightChild);
+        BT::next.visit_after_split(split, parent, leftChild, rightChild);
     }
 
     void visitAfterTree(    ArrayVector<DecisionTree> trees,
@@ -430,13 +457,13 @@ class rankingVisitor: public VisitorBase<Next>
 
     //TODO split must be const
     template<class Split, class Region>
-    void visitAfterSplit(   Split    & split,
+    void visit_after_split(   Split    & split,
                             Region   & parent,
                             Region & leftChild,
                             Region & rightChild)
     {
 
-        BT::next.visitAfterSplit(split, parent, leftChild, rightChild);
+        BT::next.visit_after_split(split, parent, leftChild, rightChild);
     }
 
     void visitAfterTree(    ArrayVector<DecisionTree> trees,
@@ -467,13 +494,13 @@ class isInformativeVisitor: public VisitorBase<Next>
 
     //TODO split must be const
     template<class Split, class Region>
-    void visitAfterSplit(   Split    & split,
+    void visit_after_split(   Split    & split,
                             Region   & parent,
                             Region & leftChild,
                             Region & rightChild)
     {
 
-        BT::next.visitAfterSplit(split, parent, leftChild, rightChild);
+        BT::next.visit_after_split(split, parent, leftChild, rightChild);
     }
 
     void visitAfterTree(    ArrayVector<DecisionTree> trees,
@@ -504,13 +531,13 @@ class nodeToStackMappingVisitor: public VisitorBase<Next>
 
     //TODO split must be const
     template<class Split, class Region>
-    void visitAfterSplit(   Split    & split,
+    void visit_after_split(   Split    & split,
                             Region   & parent,
                             Region & leftChild,
                             Region & rightChild)
     {
 
-        BT::next.visitAfterSplit(split, parent, leftChild, rightChild);
+        BT::next.visit_after_split(split, parent, leftChild, rightChild);
     }
 
     void visitAfterTree(    ArrayVector<DecisionTree> trees,
@@ -541,13 +568,13 @@ class variableVisitor: public VisitorBase<Next>
 
     //TODO split must be const
     template<class Split, class Region>
-    void visitAfterSplit(   Split    & split,
+    void visit_after_split(   Split    & split,
                             Region   & parent,
                             Region & leftChild,
                             Region & rightChild)
     {
 
-        BT::next.visitAfterSplit(split, parent, leftChild, rightChild);
+        BT::next.visit_after_split(split, parent, leftChild, rightChild);
     }
 
     void visitAfterTree(    ArrayVector<DecisionTree> trees,

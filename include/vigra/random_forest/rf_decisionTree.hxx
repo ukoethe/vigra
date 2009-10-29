@@ -54,10 +54,34 @@
 namespace vigra
 {
 
-
+namespace detail
+{
+/** decisiontree classifier. 
+ * todo FINALLY DECIDE TO USE CAMEL CASE OR UNDERSCORES !!!!!!
+ *
+ * This class is actually meant to be used in conjunction with the 
+ * Random Forest Classifier 
+ * - My suggestion would be to use the RandomForest classifier with 
+ *   following parameters instead of directly using this 
+ *   class (Preprocessing default values etc is handled in there):
+ *
+ * \code
+ * 		RandomForest decisionTree(RF_Traits::Options_t()
+ * 									.features_per_node(RF_ALL)
+ * 									.tree_count(1)			  );
+ * \endcode
+ * 
+ * \todo remove the classCount and featurecount from the topology
+ * 		 array. Pass ext_param_ to the nodes!
+ * \todo Use relative addressing of nodes?
+ */
 class DecisionTree
 {
+	/**\todo make private?*/
   public:
+	
+	/** value type of container array. use whenever referencing it
+	 */
     typedef Int32 TreeInt;
 
     ArrayVector<TreeInt>  topology_;
@@ -69,13 +93,15 @@ class DecisionTree
 
   public:
 
+	/** \Brief Create tree with parameters */
     DecisionTree(RF_Traits::ProblemSpec_t ext_param)
     :
         ext_param_(ext_param),
         classCount_(ext_param.class_count_)
     {}
 
-    //clears all memory used.
+    /**clears all memory used.
+	 */
     void reset(unsigned int classCount = 0)
     {
         if(classCount)
@@ -85,24 +111,29 @@ class DecisionTree
     }
 
 
-    // learn functions
+    /** learn a Tree
+	 *
+	 * \tparam 	StackEntry_t The Stackentry containing Node/StackEntry_t 
+	 * 			Information used during learing. Each Split functor has a 
+	 * 			Stack entry associated with it (Split_t::StackEntry_t)
+	 * \sa RandomForest::learn()
+	 */
     template <  class U, class C,
                 class U2, class C2,
-                class Region,
-                class EarlyStopingPredicate,
-                class SplitFunctor,
-                class Visitor,
-                class Random >
+                class StackEntry_t,
+                class Stop_t,
+                class Split_t,
+                class Visitor_t,
+                class Random_t >
     void learn(     MultiArrayView<2, U, C> const      & features,
                     MultiArrayView<2, U2, C2> const    & labels,
-                    Region const &                      region,
-                    SplitFunctor                        split,
-                    EarlyStopingPredicate               earlyStoppingCriterion,
-                    Visitor &                           visitor,
-                    Random &                            randint);
+                    StackEntry_t const &                 stack_entry,
+                    Split_t                        		 split,
+                    Stop_t              				 stop,
+                    Visitor_t &                          visitor,
+                    Random_t &                           randint);
 
-    // TODO isLeafNode() function does not really belong to DecisionTreeClass - rather
-    // to nodeTags enum ... but defining a struct makes longer typing time
+    /** is a node a Leaf Node? */
     inline bool isLeafNode(TreeInt in)
     {
         return (in & LeafNodeTag) == LeafNodeTag;
@@ -112,10 +143,10 @@ class DecisionTree
     // goToLeaf is used for predict, leafID and searchDepth functions
     template<class U, class C>
     TreeInt getToLeaf(MultiArrayView<2, U, C> const & features)
-    {
-        TreeInt index = 2;
+	{
+		TreeInt index = 2;
         while(!isLeafNode(topology_[index]))
-        {
+		{
 
             switch(topology_[index])
             {
@@ -150,7 +181,7 @@ class DecisionTree
 
 
 
-    //TODO Add the traversing visitors
+    
 
     template <class U, class C>
     ArrayVector<double>::iterator
@@ -169,16 +200,18 @@ class DecisionTree
 //                }
                 return Node<e_ConstProbNode>(topology_, parameters_,nodeindex).prob_begin();
             }
-                break;
+            	break;
 
             case e_LogRegProbNode:
                 // TODO: uncomment this once class below is complete
                 //return ExteriorNode<e_LogRegProbNode>(topology_, parameters_,nodeindex).getProbabilities();
-            default:
+			default:
                 vigra_fail("DecisionTree::predict() : encountered unknown Node Type");
         }
         return ArrayVector<double>::iterator();
     }
+
+
 
     template <class U, class C>
     Int32 predictLabel(MultiArrayView<2, U, C> const & features)
@@ -187,36 +220,24 @@ class DecisionTree
         return argMax(weights, weights+classCount_) - weights;
     }
 
-    //todo get depth functor
-    /*template <class U, class C>
-    Int32 search_depth(MultiArrayView<2, U, C> const & features) const
-    {
-        GetDepthFunctor func;
-        getToLeaf(features, func);
-        return func.depth;
-    }*/
-
-
-
-    // TODO reimplement print and printStatistics with treeiterator.
 
 };
 
 
 template <  class U, class C,
             class U2, class C2,
-            class Region,
-            class EarlyStopingPredicate,
-            class SplitFunctor,
-            class Visitor,
-            class Random>
-void DecisionTree::learn(   MultiArrayView<2, U, C> const     & features,
-                            MultiArrayView<2, U2, C2> const             & labels,
-                            Region const &                      region,
-                            SplitFunctor                        split,
-                            EarlyStopingPredicate               earlyStoppingCriterion,
-                            Visitor &                           visitor,
-                            Random &                            randint)
+            class StackEntry_t,
+            class Stop_t,
+            class Split_t,
+            class Visitor_t,
+            class Random_t>
+void DecisionTree::learn(   MultiArrayView<2, U, C> const     	& features,
+                            MultiArrayView<2, U2, C2> const   	& labels,
+                            StackEntry_t const &                  stack_entry,
+                            Split_t                        		  split,
+                            Stop_t               				  stop,
+                            Visitor_t &                           visitor,
+                            Random_t &                            randint)
 {
     this->reset();
     topology_.reserve(256);
@@ -225,59 +246,79 @@ void DecisionTree::learn(   MultiArrayView<2, U, C> const     & features,
     topology_.push_back(classCount_);
 
 
-    std::vector<Region> stack;
+    std::vector<StackEntry_t> stack;
     stack.reserve(128);
-    ArrayVector<Region> childStatistics(2, region);
-    stack.push_back(region);
+    ArrayVector<StackEntry_t> child_stack_entry(2, stack_entry);
+    stack.push_back(stack_entry);
 
 
     while(!stack.empty())
     {
 
         // Take an element of the stack.
-        Region top = stack.back();
+        StackEntry_t top = stack.back();
         stack.pop_back();
 
         // Make sure no data from the last round has remained in Pipeline;
-        childStatistics[0].reset();
-        childStatistics[1].reset();
+        child_stack_entry[0].reset();
+        child_stack_entry[1].reset();
         split.reset();
-        //Either the StoppingCriterion decides that the split should produce a Terminal Node
-        //Or the Split itself decides what kind of node to make
 
 
-        Int32 NodeID;
-        if(earlyStoppingCriterion(top))
-            NodeID = split.makeTerminalNode(features, labels, top, randint);
+
+        //Either the StoppingCriterion decides that the split should 
+		//produce a Terminal Node or the Split itself decides what 
+		//kind of node to make
+        TreeInt NodeID;
+        if(stop(top))
+            NodeID = split.makeTerminalNode(features, 
+											labels, 
+											top, 
+											randint);
         else
-            NodeID = split.findBestSplit(features, labels, top, childStatistics, randint);
+            NodeID = split.findBestSplit(features, 
+										 labels, 
+										 top, 
+										 child_stack_entry, 
+										 randint);
 
-
-        // TODO visitor
-        visitor.visitAfterSplit(split, top, childStatistics[0], childStatistics[1]);
+		// do some visiting yawn - just added this comment as eye candy
+		// (looks odd otherwise with my syntax highlighting....
+        visitor.visit_after_split(*this, split, top, 
+								  child_stack_entry[0], 
+								  child_stack_entry[1]);
 
         // Update the Child entries of the parent
         // Using InteriorNodeBase because exact parameter form not needed.
-
-
-        if(top.leftParent != Region::DecisionTreeNoParent)
-            NodeBase(topology_, parameters_, top.leftParent).child(0) = topology_.size();
-        else if(top.rightParent != Region::DecisionTreeNoParent)
-            NodeBase(topology_, parameters_, top.rightParent).child(1) = topology_.size();
+		// look at the Node base before getting scared.
+        if(top.leftParent != StackEntry_t::DecisionTreeNoParent)
+            NodeBase(topology_, 
+					 parameters_, 
+					 top.leftParent).child(0) = topology_.size();
+        else if(top.rightParent != StackEntry_t::DecisionTreeNoParent)
+            NodeBase(topology_, 
+					 parameters_, 
+					 top.rightParent).child(1) = topology_.size();
 
         // Supply the split functor with the Node type it requires.
-        childStatistics[0].leftParent = topology_.size();
-        childStatistics[1].rightParent = topology_.size();
-
+		// set the address to which the children of this node should point 
+		// to and push back children onto stack
+       	child_stack_entry[0].leftParent = topology_.size();
+     	child_stack_entry[1].rightParent = topology_.size();    
+		
         NodeBase(split.createNode(), topology_, parameters_ );
-        if(!isLeafNode(NodeID))
+
+		if(!isLeafNode(NodeID))
         {
-            stack.push_back(childStatistics[0]);
-            stack.push_back(childStatistics[1]);
+
+			stack.push_back(child_stack_entry[0]);
+            stack.push_back(child_stack_entry[1]);
         }
+
     }
 }
 
+} //namespace detail
 
 } //namespace vigra
 
