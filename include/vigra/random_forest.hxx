@@ -75,7 +75,7 @@ class staticMultiArrayViewHelper
 };
 
 
-/** sampling option factory function
+/**\brief sampling option factory function
  */
 SamplingOptions make_sampler_opt ( RF_Traits::Options_t		& RF_opt,
                                    MultiArrayView<2, Int32> & labels
@@ -100,51 +100,17 @@ SamplingOptions make_sampler_opt ( RF_Traits::Options_t		& RF_opt,
 }
 }//namespace detail
 
-/** \brief Random Forest class
-
-This class implements the Random Forest Classifier as first described
-in
-
-    L Breiman: "<em>Random Forests</em>",  - Machine learning,
-    2001 - Springer
-
-The template parameter are as follows
-\code
-    ClassLabelType: Type of the Class Labels used for classification
-                    or regression.
-
-    SplitFunctor:   Type of Functor used to calculate the split of the
-                    CART trees. see available \ref SplitFunctors
-
-    EarlyStoppingPredicate: Type of Predicate used for early stopping
-                            see available \ref Early Stopping Predicates
-
-\endcode
-    <b> Usage:</b>
-
-    <b>\#include</b> vigra/random_forest_refactored.hxx<br>
-    Namespace: vigra
-
-
-    \code
-        using namespace vigra;
-
-        //Create Label and Feature Matrix with 1000 samples,
-		//40 feautures and 2 classes
-        int featureCount = 40;
-        int classCount =  2;
-        int sampleCount = 1000;
-        MultiArray<2,double> features =
-			createSomeFeatures(sampleCount, featureCount);
-        MultiArray<2, UInt32> labels  =
-			createSomeLabels(sampleCount, classCount);
-        RandomForestn<int> rf(
-			vigra::RandomForestOptions(featureCount,classCount));
-
-        double oobError = rf.learn(  data.features(ii), labels(ii) );
-
-    \endcode
-
+/** Random Forest class
+ *
+ * \tparam <PrprocessorTag = ClassificationTag> Class used to preprocess
+ * 			the input while learning and predicting. Currently Available:
+ * 			ClassificationTag and RegressionTag. It is recommended to use
+ * 			Splitfunctor::Preprocessor_t while using custom splitfunctors
+ * 			as they may need the data to be in a different format. 
+ * 			\sa Preprocessor, How to make a Split Functor
+ *
+ * 
+ *
 */
 template <class PreprocessorTag = ClassificationTag>
 class RandomForest
@@ -194,10 +160,47 @@ class RandomForest
 	 *
 	 * \param options 	general options to the Random Forest. Must be of Type
 	 * 				  	Options_t
+	 * \param ext_param problem specific values that can be supplied 
+	 * 					additionally. (class weights , labels etc)
+	 * \sa 	ProblemSpec_t
+	 *
+	 *
+	 * simple usage for classification (regression is not yet supported):
+	 * \code
+	 * 		typedef xxx	feature_t \\ replace xxx wit whichever type
+	 * 		typedef yyy label_t	  \\ meme chose. 
+	 * 		MultiArrayView<2, feature_t> f = get_some_features();
+	 * 		MultiArrayView<2, label_t>   l = get_some_labels)(
+	 * 		RandomForest<> rf()
+	 * 		double oob_error = rf.learn(f, l);
+	 *		
+	 *		MultiArrayView<2, feature_t> pf = get_some_unknown_features();
+	 *		MultiArrayView<2, label_t> prediction 
+	 *										= allocate_space_for_response();
+	 *		MultiArrayView<2, double> prob  = allocate_space_for_probability();
+	 *		
+	 *		rf.predict_labels(pf, prediction);
+	 *		rf.predict_probabilities(pf, prob);
+	 *
+	 * \endcode
+	 *
+	 * Classification Random Forest specific:
+	 * The Random Forest remembers the LabelType (without specifying it as a 
+	 * template parameter during construction):
+	 * - Only numeral and native C types (IntX, UIntX, float, double)
+	 * 	 are suppported as label type.
+	 * - Types are automatically converted to the right type give in the 
+	 *   predict function - This may cause problems if the original type
+	 *   was double - and you were stu... unvigilant enough to name the 
+	 *   labels	3.4 , 3.2 etc.
+	 *   This conversion is only done once during construction and causes
+	 *   no type casting overhead during prediction.
 	 */
-    RandomForest(Options_t const & options = Options_t())
+    RandomForest(Options_t const & options = Options_t(), 
+				 ProblemSpec_t const & ext_param = ProblemSpec_t())
     :
-		options_(options)
+		options_(options),
+		ext_param_(ext_param)
     {}
 
 	/**\brief Create RF from external source
@@ -223,7 +226,7 @@ class RandomForest
 				  ProblemSpec_t const & problem_spec,
 				  Options_t const & 	options = Options_t())
     :
-		trees_(treeCount, DecisionTree(problem_spec)),
+		trees_(treeCount, DecisionTree_t(problem_spec)),
       	ext_param_(problem_spec),
 		options_(options)
     {
@@ -440,7 +443,7 @@ class RandomForest
 	/**\name prediction
 	 */
 	/*\{*/
-	/** predict a label given a feature.
+	/** \brief predict a label given a feature.
 	 *
 	 * \param features: a 1 by featureCount matrix containing
 	 *        data point to be predicted (this only works in
@@ -448,12 +451,12 @@ class RandomForest
 	 * \return double value representing class. You can use the
 	 *         predictLabels() function together with the
 	 *         rf.external_parameter().class_type_ attribute
-	 *         to avoid conversion.
+	 *         to get back the same type used during learning. 
 	 */
     template <class U, class C>
     double predictLabel(MultiArrayView<2, U, C>const & features);
 
-	/** predict a label with features and class priors
+	/** \brief predict a label with features and class priors
 	 *
 	 * \param features: same as above.
 	 * \param priors:   iterator to prior weighting of classes
@@ -463,7 +466,7 @@ class RandomForest
     double predictLabel(MultiArrayView<2, U, C> const & features,
                                 Iterator priors) ;
 
-	/** predict multiple labels with given features
+	/** \brief predict multiple labels with given features
 	 *
 	 * \param features: a n by featureCount matrix containing
 	 *        data point to be predicted (this only works in
@@ -482,7 +485,7 @@ class RandomForest
     }
 
 
-    /** predict the class probabilities for multiple labels
+    /** \brief predict the class probabilities for multiple labels
      *
      *  \param features same as above
      *  \param prob a n x class_count_ matrix. passed by reference to
@@ -509,7 +512,7 @@ template <class U, class C1,
 double RandomForest<PreprocessorTag>::
 					 learn( MultiArrayView<2, U, C1> const  & 	features,
 							MultiArrayView<2, U2,C2> const  & 	response,
-							Split_t 						&	split,
+							Split_t 					    &	split,
 							Stop_t 							&	stop,
 							Visitor_t 						&	visitor,
 							Random_t 				 const 	&	random)
@@ -524,7 +527,8 @@ double RandomForest<PreprocessorTag>::
 
 	// default values and initialization
 	// Value Chooser chooses second argument as value if first argument
-	// is of type RF_DEFAULT. (thanks to template specialisation)
+	// is of type RF_DEFAULT. (thanks to template magic - don't care about
+	// it - just smile and wave.
 	detail::Value_Chooser<Stop_t, Default_Stop_t>
                         choose_stop     (stop,      Default_Stop_t(options_));
 	detail::Value_Chooser<Split_t, Default_Split_t>
