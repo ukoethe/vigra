@@ -87,17 +87,17 @@ class SplitBase
         t_data.push_back(in.class_count_);
     }
 
-    NodeBase & createNode()
+    NodeBase & createNode() 
     {
         return node_;
     }
 
-    int classCount()
+    int classCount() const
     {
         return int(t_data[1]);
     }
 
-    int featureCount()
+    int featureCount() const
     {
         return int(t_data[0]);
     }

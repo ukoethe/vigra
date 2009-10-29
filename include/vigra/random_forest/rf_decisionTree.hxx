@@ -139,49 +139,92 @@ class DecisionTree
         return (in & LeafNodeTag) == LeafNodeTag;
     }
 
-    // TODO if DoNothingClass is not wegoptimiert then two version of this function have to be defined.
-    // goToLeaf is used for predict, leafID and searchDepth functions
-    template<class U, class C>
-    TreeInt getToLeaf(MultiArrayView<2, U, C> const & features)
-	{
-		TreeInt index = 2;
+	/** data driven traversal from root to leaf
+	 *
+	 * traverse through tree with data given in features. Use Visitors to 
+	 * collect statistics along the way. 
+	 */
+    template<class U, class C, class Visitor_t>
+    TreeInt getToLeaf(MultiArrayView<2, U, C> const & features, 
+					  Visitor_t  & visitor)
+    {
+        TreeInt index = 2;
         while(!isLeafNode(topology_[index]))
-		{
-
+        {
+			visitor.visit_internal_node(*this, index, topology_[index]);
             switch(topology_[index])
             {
                 case i_ThresholdNode:
                 {
-                    Node<i_ThresholdNode> node(topology_, parameters_, index);
+                    Node<i_ThresholdNode> 
+								node(topology_, parameters_, index);
                     index = node.next(features);
                     break;
                 }
                 case i_HyperplaneNode:
                 {
-                    Node<i_HyperplaneNode> node(topology_, parameters_, index);
+                    Node<i_HyperplaneNode> 
+								node(topology_, parameters_, index);
                     index = node.next(features);
                     break;
                 }
                 case i_HypersphereNode:
                 {
-                    Node<i_HypersphereNode> node(topology_, parameters_, index);
+                    Node<i_HypersphereNode> 
+								node(topology_, parameters_, index);
                     index = node.next(features);
                     break;
                 }
+#if 0 
+				// for quick prototyping! has to be implemented.
+				case i_VirtualNode:
+				{
+					Node<i_VirtualNode> 
+								node(topology_, parameters, index);
+					index = node.next(features);
+				}
+#endif
                 default:
-                    vigra_fail("DecisionTree::getToLeaf() : encountered unknown Node Type");
+					std::cerr << topology_[index]<<  " = ";
+                    vigra_fail("DecisionTree::getToLeaf():"
+							   "encountered unknown internal Node Type");
             }
         }
+		visitor.visit_external_node(*this, index, topology_[index]);
         return index;
     }
+	/** traverse tree to get statistics
+	 *
+	 * Tree is traversed in order the Nodes are in memory (i.e. if no 
+	 * relearning//pruning scheme is utilized this will be pre order)
+	 */
+	template<class Visitor_t>
+	void traverse_mem_order(Visitor_t visitor)
+	{
+		TreeInt index = 2;
+		Int32 ii = 0;
+		while(index < topology_.size())
+		{
+			if(isLeafNode(topology_[index]))
+			{
+				visitor
+					.visit_external_node(*this, index, topology_[index]);
+			}
+			else
+			{
+				visitor
+					._internal_node(*this, index, topology_[index]);
+			}
+		}
+	}
+	/** same thing as above, without any visitors */
+	template<class U, class C>
+    TreeInt getToLeaf(MultiArrayView<2, U, C> const & features)
+	{
+		RF_Traits::StopVisiting_t stop;
+		return getToLeaf(features, stop);
+	}
 
-    //template< class DoAtNodeFunctor, class DoAtLeafFunctor>
-    //void TraverseTree(DoAtNodeFunctor doAtNode, DoAtLeafFunctor doAtLeaf);
-    //TODO tree traversing iterator <- do we really need this?
-
-
-
-    
 
     template <class U, class C>
     ArrayVector<double>::iterator
@@ -191,22 +234,21 @@ class DecisionTree
         switch(topology_[nodeindex])
         {
             case e_ConstProbNode:
-            {
-//                Node<e_ConstProbNode> da(topology_, parameters_,nodeindex);
-////                std::cout << ">>>>>>>>>>>>>>>>>>>>PROB: " << Node<e_ConstProbNode>(topology_, parameters_,nodeindex).prob_begin()[0] << " " << Node<e_ConstProbNode>(topology_, parameters_,nodeindex).prob_begin()[1] << std::endl;
-//                for(int ii = 0; ii < da.parameters_size(); ++ii)
-//                {
-//                    std::cout << da.parameters_begin()[ii];
-//                }
-                return Node<e_ConstProbNode>(topology_, parameters_,nodeindex).prob_begin();
-            }
+                return Node<e_ConstProbNode>(topology_, 
+											 parameters_,
+											 nodeindex).prob_begin();
             	break;
-
+#if 0 
+			//first make the Logistic regression stuff...
             case e_LogRegProbNode:
-                // TODO: uncomment this once class below is complete
-                //return ExteriorNode<e_LogRegProbNode>(topology_, parameters_,nodeindex).getProbabilities();
+                return Node<e_LogRegProbNode>(topology_, 
+											  parameters_,
+											  nodeindex).prob_begin();
+#endif            
 			default:
-                vigra_fail("DecisionTree::predict() : encountered unknown Node Type");
+				std::cerr <<  topology_[nodeindex];
+                vigra_fail("DecisionTree::predict() :"
+						   " encountered unknown external Node Type");
         }
         return ArrayVector<double>::iterator();
     }
@@ -219,7 +261,6 @@ class DecisionTree
         ArrayVector<double>::const_iterator weights = predict(features);
         return argMax(weights, weights+classCount_) - weights;
     }
-
 
 };
 
@@ -263,7 +304,6 @@ void DecisionTree::learn(   MultiArrayView<2, U, C> const     	& features,
         child_stack_entry[0].reset();
         child_stack_entry[1].reset();
         split.reset();
-
 
 
         //Either the StoppingCriterion decides that the split should 
@@ -315,6 +355,8 @@ void DecisionTree::learn(   MultiArrayView<2, U, C> const     	& features,
             stack.push_back(child_stack_entry[1]);
         }
 
+		//copy the newly created node form the split functor to the
+		//decision tree.
     }
 }
 
