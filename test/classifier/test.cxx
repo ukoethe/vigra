@@ -46,6 +46,7 @@
 #include <vector>
 //#include "data/RF_results.hxx"
 #include "data/RF_data.hxx"
+#include "test_visitors.hxx"
 
 #if CROSSVAL
 #include <vigra/crossvalidation.hxx>

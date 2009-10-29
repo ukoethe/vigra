@@ -296,7 +296,7 @@ void DecisionTree::learn(   MultiArrayView<2, U, C> const     	& features,
     while(!stack.empty())
     {
 
-        // Take an element of the stack.
+        // Take an element of the stack. Obvious ain't it?
         StackEntry_t top = stack.back();
         stack.pop_back();
 
@@ -306,7 +306,7 @@ void DecisionTree::learn(   MultiArrayView<2, U, C> const     	& features,
         split.reset();
 
 
-        //Either the StoppingCriterion decides that the split should 
+        //Either the Stopping criterion decides that the split should 
 		//produce a Terminal Node or the Split itself decides what 
 		//kind of node to make
         TreeInt NodeID;
@@ -328,6 +328,7 @@ void DecisionTree::learn(   MultiArrayView<2, U, C> const     	& features,
 								  child_stack_entry[0], 
 								  child_stack_entry[1]);
 
+
         // Update the Child entries of the parent
         // Using InteriorNodeBase because exact parameter form not needed.
 		// look at the Node base before getting scared.
@@ -340,23 +341,22 @@ void DecisionTree::learn(   MultiArrayView<2, U, C> const     	& features,
 					 parameters_, 
 					 top.rightParent).child(1) = topology_.size();
 
+
         // Supply the split functor with the Node type it requires.
 		// set the address to which the children of this node should point 
 		// to and push back children onto stack
-       	child_stack_entry[0].leftParent = topology_.size();
-     	child_stack_entry[1].rightParent = topology_.size();    
-		
-        NodeBase(split.createNode(), topology_, parameters_ );
-
 		if(!isLeafNode(NodeID))
         {
 
+       		child_stack_entry[0].leftParent = topology_.size();
+	     	child_stack_entry[1].rightParent = topology_.size();    
 			stack.push_back(child_stack_entry[0]);
             stack.push_back(child_stack_entry[1]);
         }
 
 		//copy the newly created node form the split functor to the
 		//decision tree.
+        NodeBase(split.createNode(), topology_, parameters_ );
     }
 }
 

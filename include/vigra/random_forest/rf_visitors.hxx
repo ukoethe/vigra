@@ -35,18 +35,16 @@
 #ifndef RF_VISITORS_HXX
 #define RF_VISITORS_HXX
 
-#include <fstream>
-#include <sstream>
 namespace vigra
 {
 template<class Tag>
 class RandomForest;
 
-
+/** Last Visitor that should be called to stop the recursion.
+ */
 class StopVisiting
 {
     public:
-
     template<class Tree, class Split, class Region>
     void visit_after_split( Tree 	      & tree, 
 						   	Split    	  & split,
@@ -54,42 +52,38 @@ class StopVisiting
                             Region        & leftChild,
                             Region        & rightChild)
     {}
-
     template<class RF, class PR, class SM, class ST>
     void visit_after_tree(    RF& rf, PR & pr,  SM & sm, ST & st, int index)
     {}
-
     template<class RF, class PR>
     void visit_at_end(RF & rf, PR & pr)
     {}
 	template<class TR, class IntT, class TopT>
 	void visit_external_node(TR & tr, IntT index, TopT node_t)
-	{
-
-	}
+	{}
 	template<class TR, class IntT, class TopT>
 	void visit_internal_node(TR & tr, IntT index, TopT node_t)
-	{
-
-	}
+	{}
     double return_val()
     {
-        return 0.0;
-    }
+		return -1.0;
+	}
 };
 
+
+/** Base Class from which all Visitors derive
+ */
 template <class Next>
 class VisitorBase
 {
     public:
-    StopVisiting a;
-    Next & next;
-    VisitorBase(Next & next_)
-    : next(next_)
+    StopVisiting	a;
+    Next & 			next;
+
+    VisitorBase(Next & next_) : next(next_)
     {}
 
-    VisitorBase()
-    : next(a)
+    VisitorBase() : next(a)
     {}
 
     template<class Tree, class Split, class Region>
@@ -103,7 +97,7 @@ class VisitorBase
     }
 
     template<class RF, class PR, class SM, class ST>
-    void visit_after_tree(    RF& rf, PR & pr,  SM & sm, ST & st, int index)
+    void visit_after_tree(RF& rf, PR & pr,  SM & sm, ST & st, int index)
     {
         next.visit_after_tree(rf, pr, sm, st, index);
     }
@@ -133,22 +127,43 @@ class VisitorBase
 
 
 
+
+/** Template to make new visitors 
+ *
+ * if you don't need a function just delete it. - The base class will take 
+ * care of the rest. - leave the constructors
+ *
+ */
+#define Visitor_Template Your_Name_Here
 template <class Next = StopVisiting>
-class TestVisitor: public VisitorBase<Next>
+class Visitor_Template : public VisitorBase<Next>
 {
-    typedef VisitorBase<Next> BT;
-
-
-
     public:
-    std::ofstream fout;
-    TestVisitor(Next & next_, std::string output = std::string("RandomForestNodeTest.log"))
-    :
-        BT(next_),
-        fout(output.c_str())
-    {    }
+	typedef VisitorBase<Next> Base_t;
 
-    //TODO split must be const
+	/** construct with next visitor object add options or whatever. Just see
+	 * to it that the base constructor is called - otherwise -kabumm
+	 */
+    Visitor_Template(Next & next_) : Base_t(next_)
+    {}
+
+	/** construct as last visitor in the chain - use this constructor only
+	 * if Next is of type StopVisiting
+	 */
+    Visitor_Template() : Base_t()
+    {}
+
+	/** do something after the the Split has decided how to process the Region
+	 * (Stack entry)
+	 *
+	 * \param tree 		reference to the tree that is currently being learned
+	 * \param split 	reference to the split object
+	 * \param parent 	current stack entry  which was used to decide the split
+	 * \param leftChild	left stack entry that will be pushed
+	 * \param rightChild
+	 * 					right stack entry that will be pushed.
+	 * \sa RF_Traits::StackEntry_t
+	 */
     template<class Tree, class Split, class Region>
     void visit_after_split( Tree 	      & tree, 
 						   	Split         & split,
@@ -156,191 +171,97 @@ class TestVisitor: public VisitorBase<Next>
                             Region        & leftChild,
                             Region        & rightChild)
     {
-        if(split.createNode().typeID() == i_ThresholdNode)
-        {
-            std::ostringstream s1;
-            s1.precision(10);
-            s1.setf(std::ios::fixed,std::ios::floatfield);
-            s1 << split.minGini;
-            fout   << "minGini: " << s1.str().substr(0, s1.str().size()-4) << " - " << split.bestSplitColumn << std::endl;
-//            fout   << "Threshold: " << *(split.node_.parameters_begin() +1) << std::endl;
-            fout   << "Region.size: "      << parent.size() << std::endl;
-            fout   << "LeftChild.size: "  << leftChild.size() << std::endl;
-            fout   << "LeftChild.ClassCounts: ";
-            for(int ii = 0; ii < split.classCount(); ++ii)
-                fout << leftChild.classCounts()[ii] << " " ;
-            fout   << std::endl;
-            fout   << "RightChild.size: "   << rightChild.size() << std::endl;
-            fout   << "RightChild.ClassCounts: ";
-            for(int ii = 0; ii < split.classCount(); ++ii)
-                fout << rightChild.classCounts()[ii] << " " ;
-            fout   << std::endl;
-            fout   << std::endl;
-        }
-        BT::visit_after_split(tree, split, parent, leftChild, rightChild);
+		Base_t::visit_after_split(tree, split, 
+								  parent, leftChild, rightChild);
     }
 
+	/** do something after each tree has been learned
+	 *
+	 * \param rf 		reference to the random forest object that called this
+	 * 					visitor
+	 * \param pr 		reference to the preprocessor that processed the input
+	 * \param sm		reference to the sampler object
+	 * \param st		reference to the first stack entry
+	 * \param index 	index of current tree
+	 */
     template<class RF, class PR, class SM, class ST>
-    void visit_after_tree(    RF& rf, PR & pr,  SM & sm, ST & st, int index)
+    void visit_after_tree(RF& rf, PR & pr,  SM & sm, ST & st, int index)
     {
-        fout << std::endl << std::endl << "Tree Number: " << index << " finished." << std::endl << std::endl;
-		BT::visit_after_tree(rf, pr, sm, st, index);
+		Base_t::visit_after_tree(rf, pr, sm, st, index);
     }
-
-    ~TestVisitor()
-    {
-        fout.close();
-    }
-};
-
-template <class Next = StopVisiting>
-class SetTestVisitor: public VisitorBase<Next>
-{
-    typedef VisitorBase<Next> BT;
-
-
-
-    public:
-    std::ostringstream sout;
-    std::set<std::string> treesset;
-
-    SetTestVisitor(Next & next_)
-    :
-        BT(next_)
-    {    }
-
-    template<class Tree, class Split, class Region>
-    void visit_after_split( Tree 	      & tree, 
-						   	Split         & split,
-                            Region        & parent,
-                            Region        & leftChild,
-                            Region        & rightChild)
-    {
-        if(split.createNode().typeID() == i_ThresholdNode)
-        {
-            sout   << "minGini: " << split.minGini << " - " << split.bestSplitColumn << std::endl;
-            sout   << "Region.size: "      << parent.size() << std::endl;
-            sout   << "LeftChild.size: "  << leftChild.size() << std::endl;
-            sout   << "LeftChild.ClassCounts: ";
-            for(int ii = 0; ii < split.classCount(); ++ii)
-                sout << leftChild.classCounts()[ii] << " " ;
-            sout   << std::endl;
-            sout   << "RightChild.size: "   << rightChild.size() << std::endl;
-            sout   << "RightChild.ClassCounts: ";
-            for(int ii = 0; ii < split.classCount(); ++ii)
-                sout << rightChild.classCounts()[ii] << " " ;
-            sout   << std::endl;
-            sout   << std::endl;
-        }
-        BT::visit_after_split(tree, split, parent, leftChild, rightChild);
-    }
-
-    template<class RF, class PR, class SM, class ST>
-    void visit_after_tree(    RF& rf, PR & pr,  SM & sm, ST & st, int index)
-    {
-        treesset.insert(sout.str());
-        sout.str(std::string());
-		BT::visit_after_tree(rf, pr, sm, st, index);
-    }
-
+	
+	/** do something after all trees have been learned
+	 *
+	 * \param rf		reference to the random forest object that called this
+	 * 					visitor
+	 * \param pr		reference to the preprocessor that processed the input
+	 */
     template<class RF, class PR>
     void visit_at_end(RF & rf, PR & pr)
     {
-        std::ofstream fout("setTest.log");
-        std::set<std::string>::iterator iter;
-        int k = 0;
-        for(iter = treesset.begin(); iter != treesset.end(); ++iter)
-        {
-            fout << *iter;
-            fout << std::endl << std::endl << "Tree Number: " << k << " finished." << std::endl << std::endl;
-            ++k;
-        }
-        fout.close();
-        BT::visit_at_end(rf, pr);
-	}
-};
-
-template <class T1, class C1, class T2, class C2, class Next = StopVisiting>
-class AllOutputVisitor: public VisitorBase<Next>
-{
-    typedef VisitorBase<Next> BT;
-    MultiArrayView<2, T1, C1> * features;
-    MultiArrayView<2, T2, C2> * labels;
-
-
-    public:
-    std::ofstream fout;
-    AllOutputVisitor(Next & next_, std::string output = std::string("RandomForestNodeTest.log"))
-    :
-        BT(next_),
-        fout(output.c_str())
-    {    }
-
-    //TODO split must be const
-    template<class Tree, class Split, class Region>
-    void visit_after_split( Tree 	      & tree, 
-						   	Split         & split,
-                            Region        & parent,
-                            Region        & leftChild,
-                            Region        & rightChild)
-    {
-        if(split.createNode().typeID() == i_ThresholdNode)
-        {
-            fout   << "minGini: " << split.minGini << " - " << split.bestSplitColumn << std::endl;
-            fout   << "Threshold: " << *(split.node_.parameters_begin() +1) << std::endl;
-            fout   << "Region.size: "      << parent.size() << std::endl;
-            for(int ii = 0 ; ii < parent.size(); ++ii)
-            {
-                fout << "(" << parent[ii] << ", " << (*labels)[parent[ii]] << ", " << (*features)(parent[ii],split.bestSplitColumn) << ") ";
-                if(ii%4 == 0)fout << std::endl;
-            }
-            fout << std::endl;
-            fout   << "LeftChild.size: "  << leftChild.size() << std::endl;
-            fout   << "LeftChild.ClassCounts: ";
-            for(int ii = 0; ii < split.classCount(); ++ii)
-                fout << leftChild.classCounts()[ii] << " " ;
-            fout   << std::endl;
-            for(int ii = 0 ; ii < leftChild.size(); ++ii)
-            {
-                fout << "(" << leftChild[ii] << ", " << (*labels)[leftChild[ii]] << ", " << (*features)(leftChild[ii],split.bestSplitColumn) << ") ";
-                if(ii%4 == 0)fout << std::endl;
-            }
-            fout << std::endl;
-            fout   << "RightChild.size: "   << rightChild.size() << std::endl;
-            fout   << "RightChild.ClassCounts: ";
-            for(int ii = 0; ii < split.classCount(); ++ii)
-                fout << rightChild.classCounts()[ii] << " " ;
-            fout   << std::endl;
-            for(int ii = 0 ; ii < rightChild.size(); ++ii)
-            {
-            fout << "(" << rightChild[ii] << ", " << (*labels)[rightChild[ii]] << ", " << (*features)(rightChild[ii],split.bestSplitColumn) << ") ";
-                if(ii%4 == 0)fout << std::endl;
-            }
-            fout   << std::endl;
-        }
-        BT::visit_after_split(tree, split, parent, leftChild, rightChild);
+		Base_t::visit_at_end(rf, pr);
     }
-
-    template<class RF, class PR, class SM, class ST>
-    void visit_after_tree(    RF& rf, PR & pr,  SM & sm, ST & st, int index)
-    {
-        fout << std::endl << std::endl << "Tree Number: " << index << " finished." << std::endl << std::endl;
-		BT::visit_after_tree(rf, pr, sm, st, index);
+	
+	/** do some thing while traversing tree after it has been learned 
+	 * 	(external nodes)
+	 *
+	 * \param tr 		reference to the tree object that called this visitor
+	 * \param index		index in the topology_ array we currently are at
+	 * \param node_tag	type of node we have (will be e_.... - )
+	 * \sa 	NodeTags;
+	 *
+	 * you can create the node by using a switch on node_tag and using the 
+	 * corresponding Node objects. Or - if you do not care about the type 
+	 * use the Nodebase class.
+	 */
+	template<class TR, class IntT, class TopT>
+	void visit_external_node(TR & tr, IntT index, TopT node_t)
+	{
+		Base_t::visit_external_node();
 	}
 
-    void setDataSource(MultiArrayView<2, T1, C1> * feat, MultiArrayView<2, T2, C2> * label)
-    {
-        features = feat;
-        labels = label;
-    }
+	/** do something when visiting a internal node after it has been learned
+	 *
+	 * \sa visit_external_node
+	 */
+	template<class TR, class IntT, class TopT>
+	void visit_internal_node(TR & tr, IntT index, TopT node_t)
+	{
+		Base_t::visit_internal_node();
+	}
 
-
-    ~AllOutputVisitor()
+	/** return a double value.  The value of the first 
+	 * visitor encountered that has a return value is returned with the
+	 * RandomForest::learn() method - or -1.0 if no return value visitor
+	 * existed. This functionality basically only exists so that the 
+	 * OOB - visitor can return the oob error rate like in the old version 
+	 * of the random forest.
+	 */
+    double return_val()
     {
-        fout.close();
+		// if nothing to return just ignore this func
+		// return do_some_foo();
+		return Base_t::return_val();
     }
 };
+#undef Visitor_Template
 
+
+
+//////////////////////////////////////////////////////////////////////////////
+// Visitors of communal interest. Do not spam this file with stuff          //
+// nobody wants.												 	        //
+//////////////////////////////////////////////////////////////////////////////
+
+
+
+
+
+/** Visitor that calculates the oob error of the random forest. 
+ * this is the default visitor used. 
+ *
+ * To bored to comment each line of this class - trust me it works.
+ */
 template <class Next = StopVisiting>
 class OOB_Visitor:public VisitorBase<Next>
 {
@@ -360,34 +281,41 @@ public:
       totalOobCount(0)
     {}
 
-
+	/** does the basic calculation per tree*/
     template<class RF, class PR, class SM, class ST>
     void visit_after_tree(    RF& rf, PR & pr,  SM & sm, ST & st, int index)
     {
+		//do the first time called.
         if(oobCount.size() != rf.ext_param_.row_count_)
         {
             oobCount.resize(rf.ext_param_.row_count_, 0);
             oobErrorCount.resize(rf.ext_param_.row_count_, 0);
         }
-
+		// go through the samples
         for(int l = 0; l < rf.ext_param_.row_count_; ++l)
         {
-
+			// if the lth sample is oob...
             if(!sm.is_used()[l])
             {
-//                std::cout << "Predicting Label: " << l << std::endl;
                 ++oobCount[l];
-                if(rf.tree(index).predictLabel(rowVector(pr.features(), l)) != pr.response()(l,0))
+                if(		rf.tree(index)
+							.predictLabel(rowVector(pr.features(), l)) 
+					!= 	pr.response()(l,0))
+				{
                     ++oobErrorCount[l];
+				}
             }
 
         }
         BT::next.visit_after_tree(rf, pr, sm, st, index);
     }
 
+	/** Does the normalisation
+	 */
     template<class RF, class PR>
     void visit_at_end(RF & rf, PR & pr)
     {
+		// do some normalisation
         for(int l=0; l < (int)rf.ext_param_.row_count_; ++l)
         if(oobCount[l])
         {
@@ -396,7 +324,8 @@ public:
         }
         BT::visit_at_end(rf, pr);
     }
-
+	
+	//returns value of the learn function. 
     double return_val()
     {
         return oobError/totalOobCount;
@@ -404,191 +333,5 @@ public:
 };
 
 
-#if 0
-template <class Next = StopVisiting>
-class oobVisitor: public VisitorBase<Next>
-{
-    typedef VisitorBase<Next> BT;
-
-
-
-    public:
-    oobVisitor(Next & next_)
-    :
-        BT(next_)
-    {    }
-
-    //TODO split must be const
-    template<class Split, class Region>
-    void visit_after_split(   Split    & split,
-                            Region   & parent,
-                            Region & leftChild,
-                            Region & rightChild)
-    {
-
-        BT::next.visit_after_split(split, parent, leftChild, rightChild);
-    }
-
-    void visitAfterTree(    ArrayVector<DecisionTree> trees,
-                            int k                        )
-    {
-
-    }
-
-    void visitAtEnd()
-    {
-
-    }
-
-};
-
-template <class Next = StopVisiting>
-class rankingVisitor: public VisitorBase<Next>
-{
-    typedef VisitorBase<Next> BT;
-
-
-
-    public:
-    oobVisitor(Next & next_)
-    :
-        BT(next_)
-    {    }
-
-    //TODO split must be const
-    template<class Split, class Region>
-    void visit_after_split(   Split    & split,
-                            Region   & parent,
-                            Region & leftChild,
-                            Region & rightChild)
-    {
-
-        BT::next.visit_after_split(split, parent, leftChild, rightChild);
-    }
-
-    void visitAfterTree(    ArrayVector<DecisionTree> trees,
-                            int k                        )
-    {
-
-    }
-
-    void visitAtEnd()
-    {
-
-    }
-
-};
-
-template <class Next = StopVisiting>
-class isInformativeVisitor: public VisitorBase<Next>
-{
-    typedef VisitorBase<Next> BT;
-
-
-
-    public:
-    oobVisitor(Next & next_)
-    :
-        BT(next_)
-    {    }
-
-    //TODO split must be const
-    template<class Split, class Region>
-    void visit_after_split(   Split    & split,
-                            Region   & parent,
-                            Region & leftChild,
-                            Region & rightChild)
-    {
-
-        BT::next.visit_after_split(split, parent, leftChild, rightChild);
-    }
-
-    void visitAfterTree(    ArrayVector<DecisionTree> trees,
-                            int k                        )
-    {
-
-    }
-
-    void visitAtEnd()
-    {
-
-    }
-
-};
-
-template <class Next = StopVisiting>
-class nodeToStackMappingVisitor: public VisitorBase<Next>
-{
-    typedef VisitorBase<Next> BT;
-
-
-
-    public:
-    oobVisitor(Next & next_)
-    :
-        BT(next_)
-    {    }
-
-    //TODO split must be const
-    template<class Split, class Region>
-    void visit_after_split(   Split    & split,
-                            Region   & parent,
-                            Region & leftChild,
-                            Region & rightChild)
-    {
-
-        BT::next.visit_after_split(split, parent, leftChild, rightChild);
-    }
-
-    void visitAfterTree(    ArrayVector<DecisionTree> trees,
-                            int k                        )
-    {
-
-    }
-
-    void visitAtEnd()
-    {
-
-    }
-
-};
-
-template <class Next = StopVisiting>
-class variableVisitor: public VisitorBase<Next>
-{
-    typedef VisitorBase<Next> BT;
-
-
-
-    public:
-    oobVisitor(Next & next_)
-    :
-        BT(next_)
-    {    }
-
-    //TODO split must be const
-    template<class Split, class Region>
-    void visit_after_split(   Split    & split,
-                            Region   & parent,
-                            Region & leftChild,
-                            Region & rightChild)
-    {
-
-        BT::next.visit_after_split(split, parent, leftChild, rightChild);
-    }
-
-    void visitAfterTree(    ArrayVector<DecisionTree> trees,
-                            int k                        )
-    {
-
-    }
-
-    void visitAtEnd()
-    {
-
-    }
-
-};
-#endif // unmaked visitors
 } // namespace vigra
 #endif // RF_VISITORS_HXX
