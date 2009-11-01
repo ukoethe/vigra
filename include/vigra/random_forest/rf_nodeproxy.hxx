@@ -76,6 +76,12 @@ enum NodeTags
         Int32   Array:  TypeID, ParameterAddr, Child0, Child1, [ColumnData]0_
         double  Array:  NodeWeight, [Parameters]1_
 
+		TODO: Throw away the crappy iterators and use vigra::ArrayVectorView
+			 it is not like anybody else is going to use this NodeBase class
+			 is it?
+
+		TODO: use the RF_Traits::ProblemSpec_t to specify the external 
+			 parameters instead of the options.
 */
 
 
@@ -85,48 +91,55 @@ class NodeBase
     typedef Int32                               INT;
     typedef ArrayVector<INT>                    T_Container_type;
     typedef ArrayVector<double>                 P_Container_type;
-    typedef T_Container_type::iterator     Topology_type;
-    typedef P_Container_type::iterator     Parameter_type;
+    typedef T_Container_type::iterator     		Topology_type;
+    typedef P_Container_type::iterator     		Parameter_type;
 
 
-    mutable Topology_type                   topology_;
-    int                                  topology_size_;
+    mutable Topology_type                   	topology_;
+    int                                  		topology_size_;
 
-    mutable Parameter_type                  parameters_;
-    int                                  parameter_size_ ;
+    mutable Parameter_type                  	parameters_;
+    int                                  		parameter_size_ ;
 
     /** if numColumns = 0 then xrange is used as split axis
     **/
-    static T_Container_type                 xrange;
+    static T_Container_type                 	xrange;
 
         // Tree Parameters
-    int                                  featureCount_;
-    int                                  classCount_;
+    int                                  		featureCount_;
+    int                                  		classCount_;
 
         // Node Parameters
-    bool                                    hasData_;
+    bool                                    	hasData_;
 
 
 
 
-        /**     Getters
-        **/
-
+	/** get Node Weight
+	 */
     double &      weights()
     {
             return parameters_begin()[0];
     }
 
+	/** has the data been set?
+	 * todo: throw this out - bad design
+	 */
     bool          data()
     {
         return hasData_;
     }
 
+	/** get the node type id
+	 * \sa NodeTags
+	 */
     INT&          typeID()
     {
         return topology_[0];
     }
 
+	/** Where in the parameter_ array are the weights?
+	 */
     INT&          parameter_addr()
     {
         return topology_[1];
@@ -138,6 +151,9 @@ class NodeBase
         return topology_ + 4 ;
     }
 
+	/** get the start iterator to the columns
+	 *  - once again - throw out - static members are crap.
+	 */
     Topology_type columns_begin()
     {
         if(*column_data() == AllColumns)
@@ -146,6 +162,8 @@ class NodeBase
             return column_data()+1;
     }
 
+	/** how many columns?
+	 */
     int      columns_size()
     {
         if(*column_data() == AllColumns)
@@ -154,12 +172,17 @@ class NodeBase
             return *column_data();;
     }
 
+	/** end iterator to the columns
+	 */
     Topology_type  columns_end()
     {
         return columns_begin() + columns_size();
     }
 
-    /** Topology Range **/
+    /** Topology Range - gives access to the raw Topo memory
+	 * the size_ member was added as a result of premature 
+	 * optimisation.
+	 */ 
     Topology_type &  topology_begin()
     {
         return topology_;
@@ -188,20 +211,23 @@ class NodeBase
         return parameter_size_;
     }
 
+
+	/** where are the child nodes?
+	 */
     INT &           child(Int32 l)
     {
         return topology_begin()[2+l];
     }
 
-        /** Default Constructor**/
+    /** Default Constructor**/
     NodeBase()
     :
                     hasData_(false)
     {}
 
-        /** create ReadOnly Node at position n
-        **/
-    //TODO: switch parameter ordering - to spare a constructor.
+    /** create ReadOnly Base Node at position n (actual length is unknown)
+	 * only common features i.e. children etc are accessible.
+     */
     NodeBase(   T_Container_type    &  topology,
                 P_Container_type    &  parameter,
                 INT                         n)
@@ -218,6 +244,8 @@ class NodeBase
             xrange.push_back(xrange.size());
     }
 
+	/** create ReadOnly node with known length (the parameter range is valid)
+	 */
     NodeBase(   int                      tLen,
                 int                      pLen,
                 T_Container_type    &  topology,
@@ -235,8 +263,10 @@ class NodeBase
         while((int)xrange.size() <  featureCount_)
             xrange.push_back(xrange.size());
     }
-        /** create new Node at end of vector+
-        **/
+   /** create new Node at end of vector
+	* \param tLen number of integers needed in the topolog vector
+	* \param plen number of parameters needed (this includes the node
+	* 			weight)*/
     NodeBase(   int                      tLen,
                 int                      pLen,
                 T_Container_type   &        topology,
@@ -270,9 +300,13 @@ class NodeBase
     }
 
 
-        /** PseudoCopy Constructor  - Since each Node views on different data
-            there can't be a real copy constructor (unless both objects should
-            point to the same underlying data.                                  **/
+  /** PseudoCopy Constructor  - 
+   *
+   * Copy Node to the end of a container. 
+   * Since each Node views on different data there can't be a real 
+   * copy constructor (unless both objects should point to the 
+   * same underlying data.                                  
+   */
     NodeBase(   NodeBase              &    toCopy,
                 T_Container_type      &    topology,
                 P_Container_type     &    parameter)

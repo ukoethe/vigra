@@ -61,7 +61,7 @@ namespace detail
 }
 detail::RF_DEFAULT&     rf_default();
 template <class T>
-    class               DT_Region;
+    class               DT_StackEntry;
 
 /**\brief Traits Class for the Random Forest
  *
@@ -116,6 +116,7 @@ namespace detail
 /**\brief singleton default tag class -
  *
  *  use the rf_default() factory function to use the tag.
+ *  \sa RandomForest<>::learn();
  */
 class RF_DEFAULT
 {
@@ -128,13 +129,14 @@ class RF_DEFAULT
 		/** ok workaround for automatic choice of the decisiontree
 		 * stackentry.
 		 */
-    	typedef DT_Region<ArrayVectorView<Int32>::iterator>
+    	typedef DT_StackEntry<ArrayVectorView<Int32>::iterator>
 					StackEntry_t;
 };
 
 /**\brief chooses between default type and type supplied
  * 
- * used in RandomForest.learn()
+ * This is an internal class and you shouldn't really care about it.
+ * Just pass on used in RandomForest.learn()
  * Usage:
  *\code
  * 		// example: use container type supplied by user or ArrayVector if 
@@ -190,7 +192,7 @@ class Value_Chooser<detail::RF_DEFAULT, C>
 
 
 /**\brief factory function to return a RF_DEFAULT tag
- *
+ * \sa RandomForest<>::learn()
  */
 detail::RF_DEFAULT& rf_default()
 {
@@ -199,7 +201,7 @@ detail::RF_DEFAULT& rf_default()
 };
 
 /** tags used with the RandomForestOptions class
- *
+ * \sa RF_Traits::Option_t
  */
 enum RF_OptionTag   { RF_EQUAL,
 					  RF_PROPORTIONAL,
@@ -208,7 +210,8 @@ enum RF_OptionTag   { RF_EQUAL,
 					  RF_FUNCTION,
 					  RF_LOG,
 					  RF_SQRT,
-					  RF_CONST};
+					  RF_CONST,
+					  RF_ALL};
 
 
 /**\brief Options object for the random forest
@@ -353,13 +356,14 @@ class RandomForestOptions
 	 *
 	 * Use one of the built in mappings to calculate mtry from the number
 	 * of columns in the input feature data.
-	 * \param in possible values: RF_LOG or RF_SQRT
+	 * \param in possible values: RF_LOG, RF_SQRT or RF_ALL
 	 * 			 <br> default: RF_SQRT.
 	 */
 	RandomForestOptions & features_per_node(RF_OptionTag in)
 	{
 		vigra_precondition(in == RF_LOG ||
-						   in == RF_SQRT,
+						   in == RF_SQRT||
+						   in == RF_ALL,
 						   "RandomForestOptions()::features_per_node():"
 						   "input must be of type RF_LOG or RF_SQRT");
 		mtry_switch_ = in;

@@ -42,13 +42,32 @@
 namespace vigra
 {
 
-
+/** Class used while preprocessing  (currently used only during learn)
+ *
+ * This class is internally used by the Random Forest learn function. 
+ * Different split functors may need to process the data in different manners
+ * (i.e., regression labels that should not be touched and classification 
+ * labels that must be converted into a integral format)
+ *
+ * This Class only exists in specialized versions, where the Tag class is 
+ * fixed. 
+ *
+ * The Tag class is determined by Splitfunctor::Preprocessor_t . Currently
+ * it can either be ClassificationTag or RegressionTag.  look At the 
+ * RegressionTag specialisation for the basic interface if you ever happen
+ * to care.... - or need some sort of vague new preprocessor.  
+ * new preprocessor ( Soft labels or whatever)
+ */
 template<class Tag, class T1, class C1, class T2, class C2>
-class Processor
-{};
+class Processor;
 
 namespace detail
 {
+
+	/** Common helper function used in all Processors. 
+	 * This function analyses the options struct and calculates the real 
+	 * values needed for the current problem (data)
+	 */
 	void fill_external_parameters(RF_Traits::Options_t & options,
 								  RF_Traits::ProblemSpec_t & ext_param)
 	{
@@ -64,12 +83,16 @@ namespace detail
             case RF_LOG:
                 // this is in Breimans original paper
                 ext_param.actual_mtry_ =
-                    int(1+(std::log(double(ext_param.column_count_))/std::log(2.0)));
+                    int(1+(std::log(double(ext_param.column_count_))
+						   /std::log(2.0)));
                 break;
             case RF_FUNCTION:
                 ext_param.actual_mtry_ =
                     options.mtry_func_(ext_param.column_count_);
                 break;
+			case RF_ALL:
+				ext_param.actual_mtry_ = ext_param.column_count_;
+				break;
             default:
                 ext_param.actual_mtry_ =
                     options.mtry_;
@@ -98,19 +121,30 @@ namespace detail
 	}
 }
 
+
+
+/** Preprocessor used during Classification
+ *
+ * This class converts the labels int Integral labels which are used by the 
+ * standard split functor to address memory in the node objects.
+ */
 template<class T1, class C1, class T2, class C2>
 class Processor<ClassificationTag, T1, C1, T2, C2>
 {
     public:
 	typedef Int32 LabelInt;
 	MultiArrayView<2, T1, C1>const & 	features_;
-	MultiArray<2, LabelInt> 	intLabels_;
-	MultiArrayView<2, LabelInt> 	strata_;
+	MultiArray<2, LabelInt> 			intLabels_;
+	MultiArrayView<2, LabelInt> 		strata_;
 
-    Processor(MultiArrayView<2, T1, C1>const & features,   MultiArrayView<2, T2, C2>const & response,
-              RF_Traits::Options_t &options,         RF_Traits::ProblemSpec_t &ext_param)
-    :features_( features)
+    Processor(MultiArrayView<2, T1, C1>const & features,   
+			  MultiArrayView<2, T2, C2>const & response,
+              RF_Traits::Options_t &options,         
+			  RF_Traits::ProblemSpec_t &ext_param)
+    :
+		features_( features) // do not touch the features. 
     {
+		// set some of the problem specific parameters 
         ext_param.column_count_  = features.shape(1);
         ext_param.row_count_     = features.shape(0);
         ext_param.problem_type_  = RF_Traits::ProblemSpec_t::CLASSIFICATION;
@@ -120,14 +154,19 @@ class Processor<ClassificationTag, T1, C1, T2, C2>
         //get the class labels
         if(ext_param.class_count_ == 0)
         {
-            std::map<T2, LabelInt > labelToInt;
-            ArrayVector<T2>         classes_;
+			// fill up a map with the current labels and then create the 
+			// integral labels.
+            std::map<T2, LabelInt > 		labelToInt;
+            ArrayVector<T2>         		classes_;
             for(MultiArrayIndex k = 0; k < features.shape(0); ++k)
             {
-                typename std::map<T2, LabelInt >::iterator lit = labelToInt.find(response(k, 0));
+                typename std::map<T2, LabelInt >::iterator 
+						lit = labelToInt.find(response(k, 0));
                 if(lit == labelToInt.end())
                 {
-                    intLabels_(k, 0) = labelToInt[response(k,0)] = classes_.size();
+                    intLabels_(k, 0) 
+						= labelToInt[response(k,0)] 
+						= classes_.size();
                     classes_.push_back(response(k,0));
                 }
                 else
@@ -141,7 +180,9 @@ class Processor<ClassificationTag, T1, C1, T2, C2>
         // set class weights
         if(ext_param.class_weights_.size() == 0)
         {
-            ArrayVector<T2> tmp((std::size_t)ext_param.class_count_, NumericTraits<T2>::one());
+            ArrayVector<T2> 
+				tmp((std::size_t)ext_param.class_count_, 
+					NumericTraits<T2>::one());
             ext_param.class_weights(tmp.begin(), tmp.end());
         }
 
@@ -153,21 +194,29 @@ class Processor<ClassificationTag, T1, C1, T2, C2>
 
     }
 
+	/** Access the processed features
+	 */
 	MultiArrayView<2, T1, C1>const & features()
 	{
 		return features_;
 	}
 
+	/** Access processed labels
+	 */
 	MultiArrayView<2, LabelInt>& response()
 	{
 		return intLabels_;
 	}
 
+	/** Access processed strata
+	 */
 	MultiArrayView<2, LabelInt>&  strata()
 	{
 		return intLabels_;
 	}
 
+	/** Access strata fraction sized - not used currently
+	 */
 	ArrayVectorView< double> strata_prob()
 	{
 		return ArrayVectorView< double>();
@@ -176,14 +225,14 @@ class Processor<ClassificationTag, T1, C1, T2, C2>
 
 
 
-
+/** Regression Preprocessor - This basically does not do anything with the
+ * data.
+ */
 template<class T1, class C1, class T2, class C2>
 class Processor<RegressionTag, T1, C1, T2, C2>
 {
 public:
-	typedef T1 		Feature_t;
-	typedef T2 		Response_t;
-
+	// only views are created - no data copied.
 	MultiArrayView<2, T1, C1> 	features_;
 	MultiArrayView<2, T2, C2> 	response_;
 	RF_Traits::Options_t const & options_;
@@ -193,6 +242,7 @@ public:
 	MultiArray<2, int> 	 	strata_;
 	bool strata_filled;
 
+	// copy the views.
 	Processor(	MultiArrayView<2, T1, C1> 	feats,
 				MultiArrayView<2, T2, C2> 	response,
 				RF_Traits::Options_t			options,
@@ -206,27 +256,24 @@ public:
 		detail::fill_external_parameters(options, ext_param);
 	}
 
+	/** access preprocessed features
+	 */
 	MultiArrayView<2, T1, C1> & features()
 	{
 		return features_;
 	}
 
+	/** access preprocessed response
+	 */
 	MultiArrayView<2, T2, C2> & response()
 	{
 		return response_;
 	}
 
+	/** acess strata - this is not used currently
+	 */
 	MultiArrayView<2, int> & strata()
-	{
-		if(strata_filled)
-		{
-			return strata_;
-		}
-		else
-		{
-			//
-		}
-	}
+	{}
 };
 }
 #endif //VIGRA_RF_PREPROCESSING_HXX

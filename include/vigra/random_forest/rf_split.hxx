@@ -65,16 +65,16 @@ class SplitBase
 {
   public:
 
-    typedef ClassificationTag   RF_Tag;
-    typedef DT_Region<ArrayVectorView<Int32>::iterator>
-                                StackEntry_t;
+    typedef ClassificationTag   		RF_Tag;
+    typedef DT_StackEntry<ArrayVectorView<Int32>::iterator>
+                                		StackEntry_t;
 
-    RF_Traits::ProblemSpec_t ext_param_;
+    RF_Traits::ProblemSpec_t 			ext_param_;
 
-    NodeBase::T_Container_type t_data;
-    NodeBase::P_Container_type p_data;
+    NodeBase::T_Container_type 			t_data;
+    NodeBase::P_Container_type 			p_data;
 
-    NodeBase node_;
+    NodeBase 							node_;
 
     /** returns the DecisionTree Node created by
         \ref findBestSplit or \ref makeTerminalNode.
@@ -173,7 +173,8 @@ class SortSamplesByDimensions
 
   public:
 
-    SortSamplesByDimensions(DataMatrix const & data, MultiArrayIndex sortColumn)
+    SortSamplesByDimensions(DataMatrix const & data, 
+							MultiArrayIndex sortColumn)
     : data_(data),
       sortColumn_(sortColumn)
     {}
@@ -197,45 +198,52 @@ class SortSamplesByHyperplane
 
   public:
 
-    SortSamplesByHyperplane(DataMatrix const & data, Node<i_HyperplaneNode>const & node)
-    : data_(data), node_()
+    SortSamplesByHyperplane(DataMatrix 				const & data, 
+							Node<i_HyperplaneNode>	const & node)
+    : 		
+			data_(data), 
+			node_()
     {}
 
-    bool operator()(MultiArrayIndex l, MultiArrayIndex r) const
-    {
-        double result_l = -1 * node_.intercept();
-        for(int ii = 0; ii < node_.columns_size(); ++ii)
-        {
-            result_l += rowVector(data_, l)[ii] * node_.weights()[ii];
-        }
-        double result_r = -1 * node_.intercept();
-        for(int ii = 0; ii < node_.columns_size(); ++ii)
-        {
-            result_r += rowVector(data_, r)[ii] * node_.weights()[ii];
-        }
-        return result_l < result_r;
-    }
+	/** calculate the distance of a sample point to a hyperplane
+	 */
     double operator[](MultiArrayIndex l) const
     {
         double result_l = -1 * node_.intercept();
         for(int ii = 0; ii < node_.columns_size(); ++ii)
         {
-            result_l += rowVector(data_, l)[ii] * node_.weights()[ii];
+            result_l += 	rowVector(data_, l)[node_.columns_begin()[ii]] 
+						* 	node_.weights()[ii];
         }
         return result_l;
     }
+
+    bool operator()(MultiArrayIndex l, MultiArrayIndex r) const
+    {
+        return (*this)[l]  < (*this)[r];
+    }
+
 };
 
-
-template <class T2, class C2, class CountArray>
+/** makes a Class Histogram given indices in a labels_ array
+ *  usage: 
+ *  	MultiArrayView<2, T2, C2> labels = makeSomeLabels()
+ *  	ArrayVector<int> hist(numberOfLabels(labels), 0);
+ *  	RandomForestClassCounter<T2, C2, ArrayVector> counter(labels, hist);
+ *
+ *  	Container<int> indices = getSomeIndices()
+ *  	std::for_each(indices, counter);
+ */
+template <class DataSource, class CountArray>
 class RandomForestClassCounter
 {
-    MultiArrayView<2, T2, C2>  const & labels_;
-    CountArray &  counts_;
+    DataSource  const & 	labels_;
+    CountArray        &  	counts_;
 
   public:
 
-    RandomForestClassCounter(MultiArrayView<2, T2, C2>  const & labels, CountArray & counts)
+    RandomForestClassCounter(DataSource  const & labels, 
+							 CountArray & counts)
     : labels_(labels),
       counts_(counts)
     {
@@ -262,7 +270,7 @@ class BestGiniFunctor
     public:
 
     ArrayVector<double>         classWeights_;
-    int                      classCount;
+    int                      	classCount;
     ArrayVector<Int32>          currentCounts[2];
     ArrayVector<Int32>          bestCurrentCounts[2];
     double                      totalCounts[2];
@@ -303,34 +311,38 @@ class BestGiniFunctor
         classCount(classCount_)
     {
         if(classWeights.size() == classCount)
-            std::copy(classWeights.begin(), classWeights.end(), classWeights_.begin());
+            std::copy(classWeights.begin(), 
+					  classWeights.end(), 
+					  classWeights_.begin());
         currentCounts[0].resize(classCount);
         currentCounts[1].resize(classCount);
         bestCurrentCounts[0].resize(classCount);
         bestCurrentCounts[1].resize(classCount);
     }
-    /** Calculates the best possible split of Region given the labels in labels and the features i
-        featureColumn
-    */
+    /** Calculates the best possible split of Region given the labels 
+	 * in labels and the features in featureColumn
+     */
     template<class T, class C, class T2,class C2, class Region>
-    typename Region::IndexIterator operator()(  MultiArrayView<2, T, C>     const & featureColumn,
-                                                MultiArrayView<2, T2, C2>   const & labels,
-                                                Region &                            region      )
+    typename Region::IndexIterator 
+			operator()(  MultiArrayView<2, T, C>     const & featureColumn,
+                         MultiArrayView<2, T2, C2>   const & labels,
+                         Region &                            region      )
     {
         typedef typename Region::IndexIterator Iterator;
-        Iterator bestSplit      = Iterator();
+        Iterator 
+			bestSplit  = Iterator();
 
         currentCounts[0].init(0);
         std::copy(  region.classCounts().begin(),
                     region.classCounts().end(),
                     currentCounts[1].begin());
 
-        totalCounts[0]          = totalCounts[1] = 0;
-        totalCounts[1]          = std::inner_product(   currentCounts[1].begin(),
-                                                        currentCounts[1].end(),
-                                                        classWeights_.begin(),
-                                                        0.0);
-        minGini                 = NumericTraits<double>::max();
+        totalCounts[0] = totalCounts[1] = 0;
+        totalCounts[1] = std::inner_product(currentCounts[1].begin(),
+                                            currentCounts[1].end(),
+                                            classWeights_.begin(),
+                                            0.0);
+        minGini        = NumericTraits<double>::max();
 
         for(int m = 0; m < region.size()-1; ++m)
         {
@@ -348,16 +360,28 @@ class BestGiniFunctor
             if(classCount == 2)
             {
                 double w = classWeights_[0] *classWeights_[1];
-                gini = w *(double(currentCounts[0][0]*currentCounts[0][1]) / totalCounts[0] +
-                                  double(currentCounts[1][0]*currentCounts[1][1]) / totalCounts[1]);
+                gini 	 = w *  (double(  currentCounts[0][0]
+								  	    * currentCounts[0][1]) 
+								 / totalCounts[0] 
+							   + double(  currentCounts[1][0]
+										* currentCounts[1][1]) 
+							     / totalCounts[1]);
             }
             else
             {
                 for(int l=0; l<classCount; ++l)
                 {
                     double w    = classWeights_[l];
-                    gini += w*( double(currentCounts[0][l])*(1.0 - w * double(currentCounts[0][l]) / totalCounts[0]) +
-                                double(currentCounts[1][l])*(1.0 - w * double(currentCounts[1][l]) / totalCounts[1]));
+                    gini += w * (  double(currentCounts[0][l]) 
+								 * (1.0 - w
+								        * double(currentCounts[0][l])
+								   		/ totalCounts[0]) 
+
+							    +  double(currentCounts[1][l])
+								 * (1.0 - w 
+										* double(currentCounts[1][l]) 
+										/ totalCounts[1])
+								 );
                 }
             }
 
@@ -377,8 +401,178 @@ class BestGiniFunctor
     }
 };
 
+namespace detail
+{
+	template<int N>
+	class ConstArr
+	{
+		static const double val = N;
+	public:
+		double operator[](size_t in)
+		{
+			return val;
+		}
+	};
+}
+
+class GiniCriterion
+{
+	template<class Array>
+	double operator()(Array const & hist, Int32 total) const
+	{
+		return (*this)(hist, detail::ConstArr<1>(), total);
+	}
+
+	template<class Array, class Array2>
+	double operator()(Array 	const & hist, 
+					  Array2 	const & weights, 
+					  double 			total = 1.0) const
+	{
+
+		int 	class_count 	= hist.size();
+		double 	gini			= 0;
+		if(class_count == 2)
+		{
+			double w 			= weights[0] * weights[1];
+			gini 				= w * (hist[0] * hist[1] / total);
+		}
+		else
+		{
+			for(int ii = 0; ii < class_count; ++ii)
+			{
+				double w 		= weights[ii];
+				gini    	   += w*( hist[ii]*( 1.0 - w * hist[ii]/total ) );
+			}
+		}
+	}
+};
+
+template<class DataSource, class ImpurityFunctor = GiniCriterion>
+class Impurity
+{
+protected:
+	typedef	ArrayVector<double>					Weight_t;
+	typedef ArrayVector<double>					Hist_t;
+
+	ImpurityFunctor 			const & 		impurity_;
+	DataSource 					const & 		data_;
+	Weight_t					const &	 		class_weights_;
+	Hist_t										class_histogram_;
+	double 										total_counts_;
+	RandomForestClassCounter<DataSource,
+							 Hist_t		>		counter_;
+	Hist_t										tmp_;
+	RandomForestClassCounter<DataSource,
+							 Hist_t		>		tmp_counter_;
+public:
+	
+	/** construct with data, class count, weights, and impurity functor
+	 * 	 
+	 * \param data 	a Linear array containing the class correspondence of 
+	 * 				each instance (The label vector) 
+	 * 				- should support operator[]
+	 *
+	 * \param class_count
+	 * 				number of classes.
+	 * \param class_weights 
+	 * 				(optional) how to weight the class histogram from which
+	 * 				impurity is calculated
+	 * \param impurity
+	 * 				(optional) supply a Impurity function that was not default
+	 * 				constucted.
+	 */
+	Impurity(DataSource 	 const & data,
+			 Int32 					 class_count, 
+			 Weight_t		 const & class_weights 	= Weight_t(),
+			 ImpurityFunctor const & impurity 		= ImpurityFunctor())
+	: 
+		impurity_(impurity), 
+		data_(data),
+		class_weights_(class_weights),
+		class_histogram_(class_count, 0),
+		counter_(data, class_histogram_),
+		tmp_(class_count, 0),
+		tmp_counter_(data, tmp_)
+	{}
+
+	/** calculate the impurity given Class histogram.
+	 */
+	template<class Counts>
+	double calculate_impurity(Counts const & counts)
+   	{
+		std::copy(counts.begin(), counts.end(), class_histogram_.begin());
+		return impurity_(class_histogram_, class_weights_, total_counts_);
+	}
+
+	/** calculate the impurity given indices to the data array
+	 */
+	template<class Iter>
+	double calculate_impurity(Iter const & begin, Iter const & end)
+   	{
+		std::for_each(begin, end, counter_);
+		return impurity_(class_histogram_, class_weights_, total_counts_);
+	}
+	
+	
+	
+	/** remove instances and calculate impurity
+	 * Note: Impurity does not remember the instances used while 
+	 * 		 calculating the impurity. The class counts of the removed
+	 * 		 instances are calculated and then the 
+	 * 		 decrement_impurity(class_counts) is called.
+	 *
+	 * \param begin, end: begin and end iterators to the indices of data
+	 * 					  elements that should be removed.
+	 */
+	template<class Counts>
+	double decrement_impurity(Counts const & counts_)
+   	{
+		std::transform(class_histogram_.begin(), class_histogram_.end(),
+					   counts_.begin(), 		 class_histogram_.begin(),
+					   std::minus<double>());
+		return impurity_(class_histogram_, class_weights_, total_counts_);
+	}
+	
+	template<class Iter>
+	double decrement_impurity(Iter const & begin, Iter const & end)
+   	{
+		tmp_counter_.reset();
+		std::for_each(begin, end, tmp_counter_);
+		return decrement_impurity(tmp_);
+	}
+
+
+
+
+
+	/** add instances and calculate impurity
+	 */
+	template<class Counts>
+	double increment_impurity(Counts const & counts_)
+   	{
+		std::transform(class_histogram_.begin(), class_histogram_.end(),
+					   counts_.begin(), 		 class_histogram_.begin(),
+					   std::plus<double>());
+		return impurity_(class_histogram_, class_weights_, total_counts_);
+	}
+
+	template<class Iter>
+	double increment_impurity(Iter const & begin, Iter const & end)
+   	{
+		tmp_counter_.reset();
+		std::for_each(begin, end, tmp_counter_);
+		return increment_impurity(tmp_);
+	}
+};
+
+
+/** calculate the gini of a region - Only use if you want to calculate 
+ * the gini only once.
+ */
 template<class Region>
-double calculateGini(Region region, ArrayVector<double> classWeights_ = ArrayVector<double>())
+double calculate_gini(Region region, 
+					 ArrayVector<double> classWeights_ 
+					 				= ArrayVector<double>())
 {
     int classCount
             = region.classCounts.size();
@@ -452,7 +646,7 @@ class GiniSplit: public SplitBase
             // if the region is pure than just make a terminal Node.
         if(!region.classCountsIsValid)
         {
-            RandomForestClassCounter<T2, C2, ArrayVector<Int32> >
+            RandomForestClassCounter<MultiArrayView<2,T2, C2>, ArrayVector<Int32> >
                                     counter(labels,region.classCounts());
             std::for_each(  region.begin(), region.end(), counter);
             region.classCountsIsValid = true;
@@ -471,7 +665,7 @@ class GiniSplit: public SplitBase
 
 
         sampler.sample();
-            // This Thing sorts a vector by a given dimension in the multi array
+            // This Thing sor:ts a vector by a given dimension in the multi array
             //features
 
         SortSamplesByDimensions<MultiArrayView<2, T, C> >
