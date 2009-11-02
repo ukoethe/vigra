@@ -36,7 +36,6 @@
 #define HDF5 0
 #define CROSSVAL 0
 
-
 #include <iostream>
 #include <fstream>
 #include <functional>
@@ -260,10 +259,10 @@ struct ClassifierTest
 	{
 		double pina_var_imp[] = 
 		{
-			0.000385, 0.034253, 0.000136, 0.001073, 0.000675, 0.014583, 0.002525, 0.006668, 
-			0.017150, 0.040236, 0.003841, 0.003642, 0.005052, 0.015148, 0.005153, 0.019979, 
-			0.017535, 0.074489, 0.003977, 0.004715, 0.005728, 0.029731, 0.007678, 0.026647, 
-			13.743281, 48.682308, 15.098506, 10.868249, 11.145719, 29.414823, 22.270783, 23.060834
+			0.000555, 0.034199, 0.000093, 0.001263, 0.000669, 0.014896, 0.002777, 0.007323, 
+			0.017263, 0.040776, 0.003548, 0.003463, 0.005085, 0.015100, 0.005815, 0.019693, 
+			0.017818, 0.074975, 0.003641, 0.004726, 0.005754, 0.029996, 0.008591, 0.027016, 
+			13.743281, 48.682308, 15.098506, 10.868249, 11.145719, 29.414823, 22.270783, 23.060834 
 		};
 
 		vigra::MultiArrayView<2, double> p_imp(MultiArrayShape<2>::type(8, 4), pina_var_imp);
@@ -282,7 +281,6 @@ struct ClassifierTest
 
                 vigra::RandomForest<>
 					RF2(vigra::RandomForestOptions().tree_count(255));
-                std::cerr << p_imp;
                 RF2.learn(  data.features(ii),
                             data.labels(ii),
 							rf_default(),
@@ -290,11 +288,6 @@ struct ClassifierTest
 						   	oop_var_imp,
                             vigra::RandomMT19937(1));
 
-                std::cerr << oop_var_imp.variable_importance_;
-				oop_var_imp.variable_importance_ -= p_imp;
-				for(int jj = 0; jj < p_imp.shape(0);  ++jj)
-					for(int gg = 0; gg < p_imp.shape(1); ++gg)
-						shouldEqualTolerance(oop_var_imp.variable_importance_(ii, jj), 0.0,0.001);
                 RF2.learn(  data.features(ii),
                             data.labels(ii),
 							rf_default(),
@@ -302,15 +295,22 @@ struct ClassifierTest
 						   	ip_var_imp,
                             vigra::RandomMT19937(1));
 
-				std::cerr << ip_var_imp.variable_importance_;
+#if 0 
+				std::cerr << p_imp << std::endl << std::endl;
+				std::cerr << ip_var_imp.variable_importance_  << std::endl << std::endl;
+				std::cerr << oop_var_imp.variable_importance_ << std::endl << std::endl;
+
+#endif
+
 				ip_var_imp.variable_importance_ -= p_imp;
-
-
-
+				oop_var_imp.variable_importance_ -= p_imp;
 
 				for(int jj = 0; jj < p_imp.shape(0);  ++jj)
 					for(int gg = 0; gg < p_imp.shape(1); ++gg)
-						shouldEqualTolerance(ip_var_imp.variable_importance_(ii, jj), 0.0,0.001);
+						shouldEqualTolerance(oop_var_imp.variable_importance_(ii, jj), 0.0,0.0001);
+				for(int jj = 0; jj < p_imp.shape(0);  ++jj)
+					for(int gg = 0; gg < p_imp.shape(1); ++gg)
+						shouldEqualTolerance(ip_var_imp.variable_importance_(ii, jj), 0.0,0.0001);
 				std::cerr << std::endl;
                 std::cerr << "[";
                 for(int ss = 0; ss < ii+1; ++ss)

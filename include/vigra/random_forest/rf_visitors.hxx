@@ -69,8 +69,79 @@ class StopVisiting
 		return -1.0;
 	}
 };
+#if 0
+/** non intrusive implementation of the static visitor lists
+ */
+template <class Visitor, class Next = StopVisiting>
+class VisitorNode
+{
+    public:
+	
+    StopVisiting	stop_;
+    Next & 			next_;
+	Visitor 		visitor_;	
+    VisitorBase(Visitor & visitor, Next & next) 
+	: 
+		nexti_(next), visitor_(visitor)
+    {}
 
+    VisitorBase(Visitor &  visitor) 
+	: 
+		next(stop_), visitor_(visitor)
+    {}
 
+    template<class Tree, class Split, class Region>
+    void visit_after_split( Tree 	      & tree, 
+						   	Split         & split,
+                            Region        & parent,
+                            Region        & leftChild,
+                            Region        & rightChild)
+    {
+		if(visitor_.is_active())
+			visitor_.visit_after_split(tree, split, 
+									   parent, leftChild, rightChild);
+        next_.visit_after_split(tree, split, parent, leftChild, rightChild);
+    }
+
+    template<class RF, class PR, class SM, class ST>
+    void visit_after_tree(RF& rf, PR & pr,  SM & sm, ST & st, int index)
+    {
+		if(visitor_.is_active())
+        	visitor_.visit_after_tree(rf, pr, sm, st, index);
+        next_.visit_after_tree(rf, pr, sm, st, index);
+    }
+
+    template<class RF, class PR>
+    void visit_at_end(RF & rf, PR & pr)
+    {
+		if(visitor_.is_active())
+        	visitor_.visit_at_end(rf, pr);
+        next_.visit_at_end(rf, pr);
+    }
+	
+	template<class TR, class IntT, class TopT>
+	void visit_external_node(TR & tr, IntT & index, TopT & node_t)
+	{
+		if(visitor_.is_active())
+			visitor_.visit_external_node(tr, index, node_t);
+		next_.visit_external_node(tr, index, node_t);
+	}
+	template<class TR, class IntT, class TopT>
+	void visit_internal_node(TR & tr, IntT & index, TopT & node_t)
+	{
+		if(visitor_.is_active())
+			visitor_.visit_internal_node(tr, index, node_t);
+		next_.visit_internal_node(tr, index, node_t);
+	}
+
+    double return_val()
+    {
+		if(visitor_.is_active() && visitor_.has_value())
+			return visitor_.return_val();
+		return next_.return_val();
+    }
+};
+#endif 
 /** Base Class from which all Visitors derive
  */
 template <class Next>
@@ -489,7 +560,12 @@ class VariableImportanceVisitor : public VisitorBase<Next>
 
 
 		// More Initialising Foo
+#ifdef CLASSIFIER_TEST
+		RandomMT19937			random(1);
+#endif
+#ifndef CLASSIFIER_TEST
 		RandomMT19937  			random(RandomSeed);
+#endif
 		UniformIntRandomFunctor<RandomMT19937> 	
 								randint(random);
 
@@ -590,7 +666,12 @@ class VariableImportanceVisitor : public VisitorBase<Next>
 								original_column;
 
 		// Random foo
+#ifdef CLASSIFIER_TEST
+		RandomMT19937			random(1);
+#endif
+#ifndef CLASSIFIER_TEST
 		RandomMT19937  			random(RandomSeed);
+#endif
 		UniformIntRandomFunctor<RandomMT19937> 	
 								randint(random);
 
