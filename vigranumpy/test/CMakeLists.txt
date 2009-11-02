@@ -51,7 +51,7 @@ IF(AUTOEXEC_TESTS)
             TARGET vigranumpytest
             POST_BUILD
             COMMAND ${NOSETESTS_EXECUTABLE} ARGS ${TEST_ARGS}
-            COMMENT "Running tests")
+            COMMENT "Running vigranumpy tests")
     ELSE()
         MESSAGE(STATUS "  vigranumpy tests will NOT be executed (nosetests missing)")
     ENDIF()

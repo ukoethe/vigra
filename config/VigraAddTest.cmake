@@ -70,7 +70,7 @@ FUNCTION(VIGRA_ADD_TEST target)
             TARGET ${target}
             POST_BUILD
             COMMAND ${TEST_OR_DELETE} ARGS ${${target}_executable} ${path}
-            COMMENT "Running tests")
+            COMMENT "Running ${target}")
     ENDIF()
 ENDFUNCTION(VIGRA_ADD_TEST)
 

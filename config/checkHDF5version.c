@@ -1,12 +1,9 @@
 #include <hdf5.h>
 
+#if (H5_VERS_MAJOR < MIN_MAJOR) || \
+   ((H5_VERS_MAJOR == MIN_MAJOR) && (H5_VERS_MINOR < MIN_MINOR))
+#error "insufficient HDF5 version"
+#endif
+
 int main()
-{
-    if(H5_VERS_MAJOR > MIN_MAJOR)
-        return 0;
-   
-    if(H5_VERS_MAJOR == MIN_MAJOR && H5_VERS_MINOR >= MIN_MINOR)
-        return 0;
-      
-    return 1;
-}
+{}
