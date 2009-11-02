@@ -282,13 +282,15 @@ struct ClassifierTest
 
                 vigra::RandomForest<>
 					RF2(vigra::RandomForestOptions().tree_count(255));
-
+                std::cerr << p_imp;
                 RF2.learn(  data.features(ii),
                             data.labels(ii),
 							rf_default(),
 							rf_default(),
 						   	oop_var_imp,
                             vigra::RandomMT19937(1));
+
+                std::cerr << oop_var_imp.variable_importance_;
 				oop_var_imp.variable_importance_ -= p_imp;
 				for(int jj = 0; jj < p_imp.shape(0);  ++jj)
 					for(int gg = 0; gg < p_imp.shape(1); ++gg)
@@ -299,9 +301,13 @@ struct ClassifierTest
 							rf_default(),
 						   	ip_var_imp,
                             vigra::RandomMT19937(1));
+
+				std::cerr << ip_var_imp.variable_importance_;
 				ip_var_imp.variable_importance_ -= p_imp;
 
-				
+
+
+
 				for(int jj = 0; jj < p_imp.shape(0);  ++jj)
 					for(int gg = 0; gg < p_imp.shape(1); ++gg)
 						shouldEqualTolerance(ip_var_imp.variable_importance_(ii, jj), 0.0,0.001);
