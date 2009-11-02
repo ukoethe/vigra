@@ -40,7 +40,7 @@ configure_file(${CMAKE_CURRENT_SOURCE_DIR}/set_paths.py
                @ONLY)
 
 IF(AUTOEXEC_TESTS)
-    IF(NOSETESTS_EXECUTABLE)
+    IF(NOT PYTHON_NOSETESTS_NOT_FOUND)
         IF (MSVC)
             SET(TEST_ARGS -c "\"import" "nose\;" "nose.main()\"" . $(OutDir))
         ELSE()
