@@ -333,5 +333,371 @@ public:
 };
 
 
+
+/** FieldProxy class 
+ *
+ * This helper class is there to be able to make non contiguous data 
+ * appear as contiguous data for usage with stl algorithm.
+ *
+ * The idea is to make an array of pointers to the desired memory 
+ * (e.g.: each pointer points to some arbitrary point in a multiArray)
+ * 
+ * Instead of having to use the *x syntax the assignment and the cast to 
+ * the underlying data type and swap of FieldProxy were overloaded.
+ *
+ * so when random_shuffle permutes the elements in an Array of FieldProxys
+ * not the FieldProxy objects but the values the are pointing to are 
+ * permuted
+ */
+template<class T>
+struct FieldProxy
+{
+
+    T* something;
+    FieldProxy(T& in): something(&in){};
+
+    FieldProxy(): something(0){};
+    FieldProxy& operator= (const T rhs)
+    {
+        *something = rhs;
+        return *this;
+    }
+    FieldProxy& operator= (const FieldProxy rhs)
+    {
+        *something = *(rhs.something);
+        return *this;
+    }
+
+    operator T() const
+    {
+        return *something;
+    }
+
+
+};
+
+/** really don't know why swap must be defined explicitly but fine
+ *	has been tested and works. 
+ */
+template<class T>
+void swap(FieldProxy<T> & rhs, FieldProxy<T> & lhs)
+{
+    T temp= *(lhs.something);
+    *(lhs.something) = *(rhs.something);
+    *(rhs.something) = temp;
+}
+/** calculate variable importance while learning.
+ */
+
+template <class Next = StopVisiting>
+class VariableImportanceVisitor : public VisitorBase<Next>
+{
+    public:
+	typedef VisitorBase<Next> 	Base_t;
+
+	/** This Array has the same entries as the R - random forest variable
+	 *  importance
+	 */
+	MultiArray<2, double> 		variable_importance_;
+	int 						repetition_count_;
+	bool						in_place_;
+	/** construct with next visitor object add options or whatever. Just see
+	 * to it that the base constructor is called - otherwise -kabumm
+	 */
+    VariableImportanceVisitor(Next & next_, 
+							  int rep_cnt = 10, 
+							  bool in_pl = false) 
+	: 	Base_t(next_),
+		repetition_count_(rep_cnt),
+		in_place_(in_pl)
+    {}
+
+	/** construct as last visitor in the chain - use this constructor only
+	 * if Next is of type StopVisiting
+	 */
+    VariableImportanceVisitor(int repetition_count = 10, 
+							  bool  in_place = false) 
+	: 	Base_t(),
+		repetition_count_(repetition_count),
+		in_place_(in_place)
+    {}
+
+	/** calculates impurity decrease based variable importance after every
+	 * split.  
+	 */
+    template<class Tree, class Split, class Region>
+    void visit_after_split( Tree 	      & tree, 
+						   	Split         & split,
+                            Region        & parent,
+                            Region        & leftChild,
+                            Region        & rightChild)
+    {
+		//resize to right size when called the first time
+		
+		Int32 const  class_count = tree.ext_param_.class_count_;
+		Int32 const  column_count = tree.ext_param_.column_count_;
+		if(variable_importance_.size() == 0)
+		{
+			
+			variable_importance_
+				.reshape(MultiArrayShape<2>::type(column_count, 
+												 class_count+2));
+		}
+
+		if(split.createNode().typeID() == i_ThresholdNode)
+		{
+			Node<i_ThresholdNode> node(split.createNode());
+			variable_importance_(node.column(),class_count+1) 
+				+= split.giniDecrease;
+		}
+		Base_t::visit_after_split(tree, split, 
+								  parent, leftChild, rightChild);
+
+
+    }
+
+	/** copies oob samples and calculates the permutation based var imp
+	 * 	with the new arrays.
+	 */
+    template<class RF, class PR, class SM, class ST>
+    void after_tree_oop_impl(RF& rf, PR & pr,  SM & sm, ST & st, int index)
+    {
+		typedef MultiArrayShape<2>::type Shp_t;
+		Int32 					column_count = rf.ext_param_.column_count_;
+	   	Int32 					class_count  = rf.ext_param_.class_count_;	
+
+
+		//find the oob indices of current tree. 
+		ArrayVector<Int32> 		oob_indices;
+		for(int ii = 0; ii < rf.ext_param_.row_count_; ++ii)
+			if(!sm.is_used()[ii])
+				oob_indices.push_back(ii);
+		//Copy the oob samples. This is done twice to be able to restore
+		//a column after permutation.
+		MultiArray<2, double> oob_samples(Shp_t(oob_indices.size(),
+												column_count));
+		MultiArray<2, double> oob_labels(Shp_t(oob_indices.size(),
+											   column_count));
+
+		for(int ii = 0; ii < oob_indices.size(); ++ii)
+		{
+			rowVector(oob_samples, ii) = rowVector(pr.features(),
+												   oob_indices[ii]);
+			oob_labels[ii] 			   = pr.response()(oob_indices[ii], 0); 
+		}
+		MultiArray<2, double> perm_oob_samples = oob_samples;	
+
+
+		// More Initialising Foo
+		RandomMT19937  			random(RandomSeed);
+		UniformIntRandomFunctor<RandomMT19937> 	
+								randint(random);
+
+
+		//make some space for the results
+		MultiArray<2, double>
+					oob_right(Shp_t(1, class_count + 1)); 
+		MultiArray<2, double>
+					perm_oob_right (Shp_t(1, class_count + 1)); 
+			
+		
+		// get the oob success rate with the original samples
+		for(int jj = 0; jj < oob_indices.size(); ++jj)
+		{
+			if(rf.tree(index).predictLabel(rowVector(oob_samples, jj)) 
+				== 	oob_labels[jj])
+			{
+				//per class
+				++oob_right[oob_labels[jj]];
+				//total
+				++oob_right[class_count];
+			}
+		}
+		
+		//get the oob rate after permuting the ii'th dimension.
+		for(int ii = 0; ii < column_count; ++ii)
+		{
+			perm_oob_right.init(0.0);
+			// the whole thing is repeated repetition_count_ times to 
+			// stabilize the result
+			for(int rr = 0; rr < repetition_count_; ++rr)
+			{
+				//permute dimension. 
+				std::random_shuffle(columnVector(perm_oob_samples, ii).data(), 
+									columnVector(perm_oob_samples, ii).data()
+													   	 + oob_indices.size(),
+									randint);
+
+				//get the oob sucess rate after permuting
+				for(int jj = 0; jj < oob_indices.size(); ++jj)
+				{
+					if(rf.tree(index)
+					   	 	.predictLabel(rowVector(perm_oob_samples, jj)) 
+						== 	oob_labels[jj])
+					{
+						//per class
+						++perm_oob_right[oob_labels[jj]];
+						//total
+						++perm_oob_right[class_count];
+					}
+				}
+			}
+
+
+			//normalise and add to the variable_importance array.
+			perm_oob_right 	/= 	repetition_count_;
+			perm_oob_right -=oob_right;
+			perm_oob_right *= -1;
+			perm_oob_right 		/= 	oob_indices.size();
+			variable_importance_
+				.subarray(Shp_t(ii,0), 
+						  Shp_t(ii+1,class_count+1)) += perm_oob_right;
+			//copy back permuted dimension
+			columnVector(perm_oob_samples, ii) = columnVector(oob_samples, ii);
+		}
+    }
+
+
+	/** same thing as above, using less additional system memory. 
+	 * (Only an Array of size oob_sample_count x 1 is created.
+	 *  - apposed to oob_sample_count x feature_count in the other method.
+	 * 
+	 * \sa FieldProxy
+	 */
+    template<class RF, class PR, class SM, class ST>
+    void after_tree_ip_impl(RF& rf, PR & pr,  SM & sm, ST & st, int index)
+    {
+		typedef MultiArrayShape<2>::type Shp_t;
+		Int32 					column_count = rf.ext_param_.column_count_;
+	   	Int32 					class_count  = rf.ext_param_.class_count_;	
+		
+		// remove the const cast on the features (yep , I know what I am 
+		// doing here.) data is not destroyed.
+		typename PR::Feature_t & features 
+			= const_cast<typename PR::Feature_t &>(pr.features());
+
+		//find the oob indices of current tree. 
+		ArrayVector<Int32> 		oob_indices;
+		ArrayVector<Int32>::iterator
+								iter;
+		for(int ii = 0; ii < rf.ext_param_.row_count_; ++ii)
+			if(!sm.is_used()[ii])
+				oob_indices.push_back(ii);
+
+		//create space to back up a column		
+    	std::vector<double> 	backup_column;
+    	std::vector<FieldProxy<typename PR::Feature_t::value_type> >    
+								original_column;
+
+		// Random foo
+		RandomMT19937  			random(RandomSeed);
+		UniformIntRandomFunctor<RandomMT19937> 	
+								randint(random);
+
+
+		//make some space for the results
+		MultiArray<2, double>
+					oob_right(Shp_t(1, class_count + 1)); 
+		MultiArray<2, double>
+					perm_oob_right (Shp_t(1, class_count + 1)); 
+			
+		
+		// get the oob success rate with the original samples
+		for(iter = oob_indices.begin(); 
+			iter != oob_indices.end(); 
+			++iter)
+		{
+			if(rf.tree(index)
+			   		.predictLabel(rowVector(features, *iter)) 
+				== 	pr.response()(*iter, 0))
+			{
+				//per class
+				++oob_right[pr.response()(*iter,0)];
+				//total
+				++oob_right[class_count];
+			}
+		}
+		//get the oob rate after permuting the ii'th dimension.
+		for(int ii = 0; ii < column_count; ++ii)
+		{
+			perm_oob_right.init(0.0); 
+            //make backup of orinal column
+            backup_column.clear();
+            original_column.clear();
+			for(iter = oob_indices.begin(); 
+				iter != oob_indices.end(); 
+				++iter)
+            {
+                backup_column.push_back(features(*iter,ii));
+                original_column.push_back(features(*iter,ii));
+            }
+			
+			//get the oob rate after permuting the ii'th dimension.
+			for(int rr = 0; rr < repetition_count_; ++rr)
+			{				
+				//permute dimension. 
+				std::random_shuffle(original_column.begin(),
+									original_column.end(),
+									randint);
+
+				//get the oob sucess rate after permuting
+				for(iter = oob_indices.begin(); 
+					iter != oob_indices.end(); 
+					++iter)
+				{
+					if(rf.tree(index)
+					   	 	.predictLabel(rowVector(features, *iter)) 
+						== 	pr.response()(*iter, 0))
+					{
+						//per class
+						++perm_oob_right[pr.response()(*iter, 0)];
+						//total
+						++perm_oob_right[class_count];
+					}
+				}
+			}
+			
+			
+			//normalise and add to the variable_importance array.
+			perm_oob_right 	/= 	repetition_count_;
+			perm_oob_right -=oob_right;
+			perm_oob_right *= -1;
+			perm_oob_right 		/= 	oob_indices.size();
+			variable_importance_
+				.subarray(Shp_t(ii,0), 
+						  Shp_t(ii+1,class_count+1)) += perm_oob_right;
+			//copy back permuted dimension
+            std::copy(backup_column.begin(), 
+					  backup_column.end(), 
+					  original_column.begin());
+		}
+    }
+
+	/** calculate permutation based impurity after every tree has been 
+	 * learned  default behaviour is that this happens out of place.
+	 * If you have very big data sets and want to avoid copying of data 
+	 * set the in_place_ flag to true. 
+	 */
+	template<class RF, class PR, class SM, class ST>
+    void visit_after_tree(RF& rf, PR & pr,  SM & sm, ST & st, int index)
+    {
+		if(in_place_)
+			after_tree_ip_impl(rf, pr, sm, st, index);
+		else
+			after_tree_oop_impl(rf, pr, sm, st, index);
+
+		Base_t::visit_after_tree(rf, pr, sm, st, index);
+    }
+
+	/** Normalise variable importance after the number of trees is known.
+	 */
+    template<class RF, class PR>
+    void visit_at_end(RF & rf, PR & pr)
+    {
+		variable_importance_ /= rf.trees_.size();
+		Base_t::visit_at_end(rf, pr);
+    }
+};
+
 } // namespace vigra
 #endif // RF_VISITORS_HXX

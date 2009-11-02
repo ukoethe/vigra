@@ -517,6 +517,7 @@ double RandomForest<PreprocessorTag>::
 							Visitor_t 						&	visitor,
 							Random_t 				 const 	&	random)
 {
+	this->reset();
 	//typedefs
 	typedef typename Split_t::StackEntry_t 			StackEntry_t;
     typedef 		 UniformIntRandomFunctor<Random_t>
@@ -524,7 +525,7 @@ double RandomForest<PreprocessorTag>::
 
     // See rf_preprocessing.hxx for more info on this
     typedef Processor<PreprocessorTag, U, C1, U2, C2> Preprocessor_t;
-
+	
 	// default values and initialization
 	// Value Chooser chooses second argument as value if first argument
 	// is of type RF_DEFAULT. (thanks to template magic - don't care about

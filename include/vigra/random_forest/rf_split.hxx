@@ -275,7 +275,7 @@ class BestGiniFunctor
     ArrayVector<Int32>          bestCurrentCounts[2];
     double                      totalCounts[2];
     double                      minGini;
-
+	double						totalGini; 
     BestGiniFunctor()
     {}
     /** Initialize with A Class Weight Array
@@ -344,6 +344,26 @@ class BestGiniFunctor
                                             0.0);
         minGini        = NumericTraits<double>::max();
 
+		totalGini = 0.0;
+		if(classCount == 2)
+		{
+			double w = classWeights_[0] *classWeights_[1];
+			totalGini 	 =w* double(  currentCounts[1][0]
+									* currentCounts[1][1]) 
+						   / totalCounts[1];
+		}
+		else
+		{
+			for(int l=0; l<classCount; ++l)
+			{
+				double w    = classWeights_[l];
+				totalGini += w * double(currentCounts[1][l])
+							   * (1.0 - w 
+									* double(currentCounts[1][l]) 
+									/ totalCounts[1]);
+			}
+		}
+
         for(int m = 0; m < region.size()-1; ++m)
         {
 
@@ -396,7 +416,6 @@ class BestGiniFunctor
             }
 
         }
-
         return bestSplit;
     }
 };
@@ -414,6 +433,8 @@ namespace detail
 		}
 	};
 }
+
+
 
 class GiniCriterion
 {
@@ -616,7 +637,7 @@ class GiniSplit: public SplitBase
 
     typedef SplitBase SB;
 
-
+	double						giniDecrease;
     ArrayVector<Int32> splitColumns;
     BestGiniFunctor bgfunc;
     double minGini;
@@ -696,8 +717,8 @@ class GiniSplit: public SplitBase
                                                                 childRegions[1].classCounts().begin());
 //                childRegions[0].classCounts() = bgfunc.bestCurrentCounts[0];
 //                childRegions[1].classCounts() = bgfunc.bestCurrentCounts[1];
-
-                minGini         = bgfunc.minGini;
+				giniDecrease 	= bgfunc.totalGini - bgfunc.minGini; 
+				minGini         = bgfunc.minGini;
                 bestSplit       = curSplit;
                 bestSplitColumn   = splitColumns[k];
 

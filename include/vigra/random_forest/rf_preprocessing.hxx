@@ -133,6 +133,8 @@ class Processor<ClassificationTag, T1, C1, T2, C2>
 {
     public:
 	typedef Int32 LabelInt;
+	typedef	MultiArrayView<2, T1, C1> Feature_t;
+	typedef MultiArrayView<2,LabelInt> Label_t;
 	MultiArrayView<2, T1, C1>const & 	features_;
 	MultiArray<2, LabelInt> 			intLabels_;
 	MultiArrayView<2, LabelInt> 		strata_;

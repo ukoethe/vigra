@@ -263,6 +263,26 @@ class NodeBase
         while((int)xrange.size() <  featureCount_)
             xrange.push_back(xrange.size());
     }
+	/** create ReadOnly node with known length 
+	 * from existing Node
+	 */
+    NodeBase(   int                      tLen,
+                int                      pLen,
+				NodeBase &				 node)
+    :
+                    topology_   (node.topology_),
+                    topology_size_(tLen),
+                    parameters_  (node.parameters_),
+                    parameter_size_(pLen),
+                    featureCount_(node.featureCount_),
+                    classCount_(node.classCount_),
+                    hasData_(true)
+    {
+        while((int)xrange.size() <  featureCount_)
+            xrange.push_back(xrange.size());
+    }
+
+
    /** create new Node at end of vector
 	* \param tLen number of integers needed in the topolog vector
 	* \param plen number of parameters needed (this includes the node
@@ -364,6 +384,10 @@ class Node<i_ThresholdNode>
                 :   BT(5,2,topology, param, n)
     {}
 
+	Node( BT & node_)
+		:	BT(5, 2, node_) 
+	{}
+
     double& threshold()
     {
         return BT::parameters_begin()[1];
@@ -411,6 +435,16 @@ class Node<i_HyperplaneNode>
                                     :   BT::column_data()[0];
         BT::parameter_size_ += BT::columns_size();
     }
+
+	Node( BT & node_)
+		:	BT(5, 2, node_) 
+	{
+        //TODO : is there a more elegant way to do this?
+        BT::topology_size_ += BT::column_data()[0]== AllColumns ?
+                                        0
+                                    :   BT::column_data()[0];
+        BT::parameter_size_ += BT::columns_size();
+	}
 
 
     double& intercept()
@@ -469,7 +503,18 @@ class Node<i_HypersphereNode>
         BT::parameter_size_ += BT::columns_size();
     }
 
-    double& squaredRadius()
+	Node( BT & node_)
+		:	BT(5, 1, node_) 
+	{
+	    BT::topology_size_ += BT::column_data()[0]== AllColumns ?
+                                        0
+                                    :   BT::column_data()[0];
+        BT::parameter_size_ += BT::columns_size();
+
+	}
+
+
+	double& squaredRadius()
     {
         return BT::parameters_begin()[1];
     }
@@ -531,6 +576,11 @@ class Node<e_ConstProbNode>
                     int                  n             )
                 :   BT(2, topology[1]+1,topology, param, n)
     { }
+
+
+	Node( BT & node_)
+		:	BT(2, node_.classCount_ +1, node_) 
+	{}
     BT::Parameter_type prob_begin()
     {
         return BT::parameters_begin()+1;
