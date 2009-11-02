@@ -42,9 +42,9 @@ configure_file(${CMAKE_CURRENT_SOURCE_DIR}/set_paths.py
 IF(AUTOEXEC_TESTS)
     IF(NOSETESTS_EXECUTABLE)
         IF (MSVC)
-            SET(TEST_ARGS -c "\"import nose\; nose.main()\"" . $(OutDir))
+            SET(TEST_ARGS -c "\"import" "nose\;" "nose.main()\"" . $(OutDir))
         ELSE()
-            SET(TEST_ARGS -c "\"import nose\; nose.main()\"" .)
+            SET(TEST_ARGS -c "\"import" "nose\;" "nose.main()\"" .)
         ENDIF()
 
         add_custom_command(
