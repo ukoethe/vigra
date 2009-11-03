@@ -36,7 +36,6 @@
 #define HDF5 0
 #define CROSSVAL 0
 
-
 #include <iostream>
 #include <fstream>
 #include <functional>
@@ -46,6 +45,7 @@
 #include <vector>
 //#include "data/RF_results.hxx"
 #include "data/RF_data.hxx"
+#include "test_visitors.hxx"
 
 #if CROSSVAL
 #include <vigra/crossvalidation.hxx>
@@ -227,7 +227,6 @@ struct ClassifierTest
 
         }
         std::cerr << "DONE!\n";
-		system("ls");
         std::cerr << "RFsetTest(): Comparing with Working Version:";
             diffOnfiles("data/oldsetTest.log", "setTest.log");
         std::cerr << "DONE!\n\n";
@@ -255,6 +254,78 @@ struct ClassifierTest
         shouldEqualTolerance(oob, 0.5, 0.01);
         std::cerr << "DONE!\n\n";
     }
+
+	void RFvariableImportanceTest()
+	{
+		double pina_var_imp[] = 
+		{
+			0.000555, 0.034199, 0.000093, 0.001263, 0.000669, 0.014896, 0.002777, 0.007323, 
+			0.017263, 0.040776, 0.003548, 0.003463, 0.005085, 0.015100, 0.005815, 0.019693, 
+			0.017818, 0.074975, 0.003641, 0.004726, 0.005754, 0.029996, 0.008591, 0.027016, 
+			13.743281, 48.682308, 15.098506, 10.868249, 11.145719, 29.414823, 22.270783, 23.060834 
+		};
+
+		vigra::MultiArrayView<2, double> p_imp(MultiArrayShape<2>::type(8, 4), pina_var_imp);
+		vigra::MultiArray<2, double> zero(p_imp.shape(), 0.0);
+        //Create Test output by Random Forest
+        {
+            std::cerr << "RFvariableImportanceTest(): "
+							"Learning on Datasets\n";
+
+			int ii = data.size() - 3; // this is the pina_indians dataset
+            {
+            	vigra::VariableImportanceVisitor<> 
+					oop_var_imp;
+				vigra::VariableImportanceVisitor<>
+					ip_var_imp(10, true);
+
+                vigra::RandomForest<>
+					RF2(vigra::RandomForestOptions().tree_count(255));
+                RF2.learn(  data.features(ii),
+                            data.labels(ii),
+							rf_default(),
+							rf_default(),
+						   	oop_var_imp,
+                            vigra::RandomMT19937(1));
+
+                RF2.learn(  data.features(ii),
+                            data.labels(ii),
+							rf_default(),
+							rf_default(),
+						   	ip_var_imp,
+                            vigra::RandomMT19937(1));
+
+#if 0 
+				std::cerr << p_imp << std::endl << std::endl;
+				std::cerr << ip_var_imp.variable_importance_  << std::endl << std::endl;
+				std::cerr << oop_var_imp.variable_importance_ << std::endl << std::endl;
+
+#endif
+
+				ip_var_imp.variable_importance_ -= p_imp;
+				oop_var_imp.variable_importance_ -= p_imp;
+
+				for(int jj = 0; jj < p_imp.shape(0);  ++jj)
+					for(int gg = 0; gg < p_imp.shape(1); ++gg)
+						shouldEqualTolerance(oop_var_imp.variable_importance_(ii, jj), 0.0,0.0001);
+				for(int jj = 0; jj < p_imp.shape(0);  ++jj)
+					for(int gg = 0; gg < p_imp.shape(1); ++gg)
+						shouldEqualTolerance(ip_var_imp.variable_importance_(ii, jj), 0.0,0.0001);
+				std::cerr << std::endl;
+                std::cerr << "[";
+                for(int ss = 0; ss < ii+1; ++ss)
+                    std::cerr << "#";
+                for(int ss = ii+1; ss < data.size(); ++ss)
+                    std::cerr << " ";
+                std::cerr << "] " << data.names(ii);
+                std::cerr << "\n";
+            }
+        }
+        std::cerr << std::endl;
+        //Cheap diff on old and new Classifier.
+        std::cerr << "DONE!\n\n";
+	}
+
 };
 
 
@@ -268,6 +339,8 @@ struct ClassifierTestSuite
         add( testCase( &ClassifierTest::RFsetTest));
         add( testCase( &ClassifierTest::RFoobTest));
         add( testCase( &ClassifierTest::RFnoiseTest));
+        add( testCase( &ClassifierTest::RFvariableImportanceTest));
+
     }
 };
 

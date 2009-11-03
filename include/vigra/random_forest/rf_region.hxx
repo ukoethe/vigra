@@ -51,9 +51,11 @@ namespace vigra
 {
 
 
-
+/** Standard Stackentry used to Build a Tree. Contains Information 
+ * About the current region being split
+ */
 template <class Iter>
-class DT_Region
+class DT_StackEntry
 {
   public:
     typedef Iter IndexIterator;
@@ -63,19 +65,24 @@ class DT_Region
         DecisionTreeNoParent = -1
     };
 
-
-    Int32 leftParent, rightParent;
-    ArrayVector<Int32> rule;
+	/** Address of left and Right parent in the topology container
+	 */
+    Int32 									leftParent;
+	Int32									rightParent;
+	/** rule associated with current node
+	 */
+    ArrayVector<std::pair<Int32, double> > 	rule;
 
 
     // RegionSpecificStuff
-    ArrayVector<Int32>  classCounts_;
-    ArrayVector<double> weightedClassCounts_;
-    bool classCountsIsValid, weightedClassCountsIsValid;
-    IndexIterator            begin_, end_;
-    int                   size_, oob_size_;
-    IndexIterator            oob_begin_, oob_end_;
-
+    ArrayVector<Int32>  					classCounts_;
+    ArrayVector<double> 					weightedClassCounts_;
+	bool 									classCountsIsValid;
+	bool									weightedClassCountsIsValid;
+	IndexIterator            				begin_,  end_;
+    int                   					size_; 
+	IndexIterator            				oob_begin_, oob_end_;
+	int										oob_size_;
 
     Int32 depth()
     {
@@ -99,6 +106,7 @@ class DT_Region
     {
         classCountsIsValid = false;
     }
+
     bool  isPure()
     {
         int num = 0;
@@ -114,6 +122,7 @@ class DT_Region
     {
         return *(begin_+i);
     }
+
     IndexIterator & begin()
     {
         return begin_;
@@ -149,7 +158,7 @@ class DT_Region
 
     void classCounts(ArrayVector<Int32> in);
 
-    DT_Region( IndexIterator i, IndexIterator e,
+    DT_StackEntry( IndexIterator i, IndexIterator e,
                         int classCount,
                         Int32 lp = DecisionTreeNoParent,
                         Int32 rp = DecisionTreeNoParent)
@@ -163,10 +172,13 @@ class DT_Region
         size_(e-i)
     {}
 
+	
     Int32 size()const
     {
         return size_;
     }
+
+
     Int32 oob_size()const
     {
         return oob_size_;
