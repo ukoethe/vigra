@@ -13,12 +13,12 @@
 # The function VIGRA_COPY_TEST_DATA copies the given files from the current source directory
 # to the corresponding binary directory.
 #
-INCLUDE(testOrDelete RESULT_VARIABLE TEST_OR_DELETE)
+INCLUDE(vigra_run_test RESULT_VARIABLE VIGRA_RUN_TEST)
 
 IF (MSVC OR MINGW)
-   STRING(REGEX REPLACE "\\.cmake$" ".bat" TEST_OR_DELETE ${TEST_OR_DELETE})
+   STRING(REGEX REPLACE "\\.cmake$" ".bat" VIGRA_RUN_TEST ${VIGRA_RUN_TEST})
 ELSE ()
-   STRING(REGEX REPLACE "\\.cmake$" ".sh" TEST_OR_DELETE ${TEST_OR_DELETE})
+   STRING(REGEX REPLACE "\\.cmake$" ".sh" VIGRA_RUN_TEST ${VIGRA_RUN_TEST})
 ENDIF ()
 
 FUNCTION(VIGRA_ADD_TEST target)
@@ -46,7 +46,6 @@ FUNCTION(VIGRA_ADD_TEST target)
         ADD_EXECUTABLE(${target} EXCLUDE_FROM_ALL ${SOURCES})
     ENDIF()
     ADD_DEPENDENCIES(check ${target})
-    ADD_TEST(${target} ${target})
     if(DEFINED LIBRARIES)
         TARGET_LINK_LIBRARIES(${target} ${LIBRARIES})
     endif()
@@ -82,9 +81,20 @@ FUNCTION(VIGRA_ADD_TEST target)
         add_custom_command(
             TARGET ${target}
             POST_BUILD
-            COMMAND ${TEST_OR_DELETE} ARGS ${${target}_executable} ${path}
+            COMMAND ${VIGRA_RUN_TEST} ARGS ${${target}_executable} ${path}
             COMMENT "Running tests")
     ENDIF()
+
+    IF(CYGWIN)
+        ADD_TEST(${target} ${VIGRA_RUN_TEST} ${${target}_executable} ${path})
+    ELSEIF(MINGW)
+        STRING(REGEX REPLACE "\\\\" "\\\\\\\\" ${target}_executable ${${target}_executable})
+        STRING(REGEX REPLACE "\\\\" "\\\\\\\\" path "${path}")
+        ADD_TEST(${target} ${VIGRA_RUN_TEST} ${${target}_executable} ${path})
+    ELSE()
+        ADD_TEST(${target} ${target})
+    ENDIF()
+
 ENDFUNCTION(VIGRA_ADD_TEST)
 
 MACRO(VIGRA_COPY_TEST_DATA)
