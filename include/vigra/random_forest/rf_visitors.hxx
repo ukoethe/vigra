@@ -446,12 +446,15 @@ struct FieldProxy
 
 
 };
+} //namespace vigra
 
+namespace std
+{
 /** really don't know why swap must be defined explicitly but fine
  *	has been tested and works. 
  */
 template<class T>
-void swap(FieldProxy<T> & rhs, FieldProxy<T> & lhs)
+void swap(vigra::FieldProxy<T> & rhs, vigra::FieldProxy<T> & lhs)
 {
     T temp= *(lhs.something);
     *(lhs.something) = *(rhs.something);
@@ -460,6 +463,9 @@ void swap(FieldProxy<T> & rhs, FieldProxy<T> & lhs)
 /** calculate variable importance while learning.
  */
 
+}// namespace std
+namespace vigra
+{
 template <class Next = StopVisiting>
 class VariableImportanceVisitor : public VisitorBase<Next>
 {
