@@ -48,7 +48,11 @@ FUNCTION(VIGRA_ADD_TEST target)
     
     # find the test executable
     GET_TARGET_PROPERTY(${target}_executable ${target} LOCATION)
-    file(TO_NATIVE_PATH ${${target}_executable} ${target}_executable)
+    IF(MINGW)
+        STRING(REGEX REPLACE "/" "\\\\" ${target}_executable ${${target}_executable})
+    ELSE()
+        file(TO_NATIVE_PATH ${${target}_executable} ${target}_executable)
+    ENDIF()
     
     # Windows: set the DLL path
     set(path "")
@@ -56,7 +60,11 @@ FUNCTION(VIGRA_ADD_TEST target)
         FOREACH(lib ${LIBRARIES})
             GET_TARGET_PROPERTY(p ${lib} LOCATION)
             STRING(REGEX REPLACE "/[^/]*$" "" p ${p}) # get path prefix
-            file(TO_NATIVE_PATH ${p} p)
+            IF(MINGW)
+                STRING(REGEX REPLACE "/" "\\\\" p ${p})
+            ELSE()
+                file(TO_NATIVE_PATH ${p} p)
+            ENDIF()
             if(NOT ${p} MATCHES "NOTFOUND")
                 set(path  ${path} ${p})
 #                set_tests_properties(${target} PROPERTIES ENVIRONMENT "PATH=${path}:$PATH")
@@ -70,7 +78,7 @@ FUNCTION(VIGRA_ADD_TEST target)
             TARGET ${target}
             POST_BUILD
             COMMAND ${TEST_OR_DELETE} ARGS ${${target}_executable} ${path}
-            COMMENT "Running ${target}")
+            COMMENT "Running tests")
     ENDIF()
 ENDFUNCTION(VIGRA_ADD_TEST)
 
