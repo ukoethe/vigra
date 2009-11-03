@@ -668,8 +668,6 @@ class VariableImportanceVisitor : public VisitorBase<Next>
 
 		//create space to back up a column		
     	std::vector<double> 	backup_column;
-    	std::vector<FieldProxy<typename PR::Feature_t::value_type> >    
-								original_column;
 
 		// Random foo
 #ifdef CLASSIFIER_TEST
@@ -710,22 +708,21 @@ class VariableImportanceVisitor : public VisitorBase<Next>
 			perm_oob_right.init(0.0); 
             //make backup of orinal column
             backup_column.clear();
-            original_column.clear();
 			for(iter = oob_indices.begin(); 
 				iter != oob_indices.end(); 
 				++iter)
             {
                 backup_column.push_back(features(*iter,ii));
-                original_column.push_back(features(*iter,ii));
             }
 			
 			//get the oob rate after permuting the ii'th dimension.
 			for(int rr = 0; rr < repetition_count_; ++rr)
 			{				
 				//permute dimension. 
-				std::random_shuffle(original_column.begin(),
-									original_column.end(),
-									randint);
+                int n = oob_indices.size();
+				for(int jj = 1; jj < n; ++jj)
+                    std::swap(features(oob_indices[jj], ii), 
+                              features(oob_indices[randint(jj+1)], ii));
 
 				//get the oob sucess rate after permuting
 				for(iter = oob_indices.begin(); 
@@ -754,9 +751,8 @@ class VariableImportanceVisitor : public VisitorBase<Next>
 				.subarray(Shp_t(ii,0), 
 						  Shp_t(ii+1,class_count+1)) += perm_oob_right;
 			//copy back permuted dimension
-            std::copy(backup_column.begin(), 
-					  backup_column.end(), 
-					  original_column.begin());
+            for(int jj = 0; jj < oob_indices.size(); ++jj)
+                features(oob_indices[jj], ii) = backup_column[jj];
 		}
     }
 
