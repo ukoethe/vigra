@@ -34,6 +34,11 @@ FUNCTION(VIGRA_ADD_TEST target)
         endif()
     endforeach(i)
     
+    FILE(WRITE ${CMAKE_CURRENT_BINARY_DIR}/testsuccess.cxx 
+         "// auto-generated dummy file to force re-execution of failed tests
+")
+    SET(SOURCES ${SOURCES} ${CMAKE_CURRENT_BINARY_DIR}/testsuccess.cxx)
+    
     # configure the target
     IF(AUTOBUILD_TESTS)
         ADD_EXECUTABLE(${target} ${SOURCES})

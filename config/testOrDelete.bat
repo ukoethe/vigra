@@ -8,6 +8,6 @@ if [%1] NEQ [] (
 %PROG%
 echo off
 if %ERRORLEVEL%==1 (
-    del %PROG%
+    copy testsuccess.cxx,,+ > NUL
     exit 1 
 )
