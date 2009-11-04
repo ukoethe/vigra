@@ -21,17 +21,6 @@ ENDIF ()
 
 ##################################################
 #
-#     setup testing environment
-#
-##################################################
-
-ADD_CUSTOM_TARGET(check)
-ADD_CUSTOM_TARGET(ctest COMMAND ${CMAKE_CTEST_COMMAND})
-
-ENABLE_TESTING()
-
-##################################################
-#
 #     search for dependencies
 #
 ##################################################
@@ -49,6 +38,21 @@ FIND_PACKAGE(PythonInterp)
 IF(WITH_VIGRANUMPY)
     VIGRA_FIND_PACKAGE( VIGRANUMPY_DEPENDENCIES )
 ENDIF()
+
+IF(WITH_VALGRIND)
+    FIND_PROGRAM(VALGRIND_EXECUTABLE valgrind)
+ENDIF()
+
+##################################################
+#
+#     setup testing environment
+#
+##################################################
+
+ADD_CUSTOM_TARGET(check)
+ADD_CUSTOM_TARGET(ctest COMMAND ${CMAKE_CTEST_COMMAND})
+
+ENABLE_TESTING()
 
 ##################################################
 #

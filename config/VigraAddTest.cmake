@@ -111,6 +111,11 @@ FUNCTION(VIGRA_ADD_TEST target)
     ENDIF()
     
     ADD_TEST(${target} ${VIGRA_RUN_TEST} ${VIGRA_CONFIGURATION})
+    
+    IF(VALGRIND_EXECUTABLE)
+        ADD_TEST(${target}_valgrind 
+                ${VALGRIND_EXECUTABLE} --error-exitcode=1 ${${target}_executable})
+    ENDIF()
 
 ENDFUNCTION(VIGRA_ADD_TEST)
 
