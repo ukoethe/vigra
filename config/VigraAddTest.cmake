@@ -92,6 +92,7 @@ FUNCTION(VIGRA_ADD_TEST target)
         CONFIGURE_FILE(${CMAKE_SOURCE_DIR}/config/run_test.sh.in
                        ${VIGRA_RUN_TEST}
                        @ONLY)
+        EXECUTE_PROCESS(COMMAND chmod u+x ${VIGRA_RUN_TEST} OUTPUT_QUIET ERROR_QUIET)
     ENDIF()
     
     # register the test execution command
