@@ -592,7 +592,7 @@ template <class U, class C>
 double RandomForest<Tag>
     ::predictLabel(MultiArrayView<2, U, C> const & features)
 {
-    vigra_precondition(columnCount(features) >= ext_param.column_count_,
+    vigra_precondition(columnCount(features) >= ext_param_.column_count_,
         "RandomForestn::predictLabel():"
             " Too few columns in feature matrix.");
     vigra_precondition(rowCount(features) == 1,

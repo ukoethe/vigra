@@ -133,7 +133,6 @@ struct ClassifierTest
 							rf_default(),
 						   	create_visitor(testVisitor),
                             vigra::RandomMT19937(1));
-
                 testVisitor.fout <<  data.names(ii) << std::endl;
                 std::cerr << "[";
                 for(int ss = 0; ss < ii+1; ++ss)
@@ -142,6 +141,13 @@ struct ClassifierTest
                     std::cerr << " ";
                 std::cerr << "] " << data.names(ii);
                 std::cerr << "\n";
+
+				shouldEqual(data.features(ii).shape(0),
+						    RF2.ext_param_.row_count_);
+				shouldEqual(data.features(ii).shape(1),
+							RF2.ext_param_.column_count_);
+				shouldEqual(data.ClassIter(ii).size(), 
+							RF2.ext_param_.class_count_);
             }
         }
         std::cerr << std::endl;
@@ -152,7 +158,77 @@ struct ClassifierTest
     }
 
 
+	void RFresponseTest()
+	{
+		int ii = 3; 
+		// learn on glass data set and predict: 
+		// this is interesting because there is no label with number 4
+		// in this dataset.
+		
+		// check whether agglomeration of probabilities is done properlyy
+		vigra::RandomForest<>
+			RF(vigra::RandomForestOptions().tree_count(2)); 
 
+		RF.learn( data.features(ii),
+				  data.labels(ii),
+				  rf_default(),
+				  rf_default(),
+				  rf_default(),
+				  vigra::RandomMT19937(1));
+
+		typedef MultiArrayShape<2>::type Shp;
+		MultiArray<2, double> response(Shp(data.features(ii).shape(0),
+									   data.ClassIter(ii).size()));
+		RF.predictProbabilities(data.features(ii), response);
+		for(int jj = 0; jj < response.shape(0); ++jj)
+		{
+			typedef ArrayVector<double>::iterator Iter;
+			ArrayVector<double> tmp(data.ClassIter(ii).size(), 0.0);
+			Iter a = RF.tree(0).predict(rowVector(data.features(ii),jj));
+			double totalWeight = 0.0;
+			std::transform(tmp.begin(), tmp.end(), 
+						   a, tmp.begin(), std::plus<double>());
+			totalWeight = std::accumulate(a, a + data.ClassIter(ii).size(),
+										  totalWeight);
+			a = RF.tree(1).predict(rowVector(data.features(ii),jj));
+			std::transform(tmp.begin(), tmp.end(), 
+						   a, tmp.begin(), std::plus<double>());
+			totalWeight = std::accumulate(a, a + data.ClassIter(ii).size(),
+										  totalWeight);
+			std::transform(tmp.begin(), tmp.end(),tmp.begin(), 
+						   std::bind2nd(std::divides<double>(), totalWeight));
+			MultiArrayView<2, double> 
+				should_resp(Shp(1, data.ClassIter(ii).size()), tmp.data());
+
+			shouldEqual(rowVector(response, jj), should_resp);
+		}
+
+		// to check whether labels are being currectly converted we use the
+		// property of the random forest to almost surely have 0 prediction
+		// error on the training data. with enough trees.
+		vigra::RandomForest<>
+			RF2(vigra::RandomForestOptions().tree_count(255)); 
+
+		RF2.learn( data.features(ii),
+				  data.labels(ii),
+				  rf_default(),
+				  rf_default(),
+				  rf_default(),
+				  vigra::RandomMT19937(1));
+		MultiArray<2, double> dble_labels(Shp(data.features(ii).shape(0),
+											  1));
+		MultiArray<2, Int32>  int_labels(Shp(data.features(ii).shape(0),
+											 1));
+
+		RF2.predictLabels(data.features(ii), dble_labels);
+	    RF2.predictLabels(data.features(ii), int_labels);
+	
+		for(int jj = 0; jj< data.features(ii).shape(0); ++jj)
+		{
+			shouldEqualTolerance(dble_labels[jj], data.labels(ii)[jj], 0.01);
+			shouldEqualTolerance(int_labels[jj], data.labels(ii)[jj], 0.01);
+		}
+	}
 
 /** Learns The Refactored Random Forest with 100 trees 10 times and
  * 	calulates the mean oob error. The distribution of the oob error
@@ -317,7 +393,7 @@ struct ClassifierTestSuite
         add( testCase( &ClassifierTest::RFoobTest));
         add( testCase( &ClassifierTest::RFnoiseTest));
         add( testCase( &ClassifierTest::RFvariableImportanceTest));
-
+        add( testCase( &ClassifierTest::RFresponseTest));
     }
 };
 
