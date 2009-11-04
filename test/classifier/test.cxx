@@ -160,7 +160,7 @@ struct ClassifierTest
 
 	void RFresponseTest()
 	{
-		int ii = 3; 
+		int ii = 2; 
 		// learn on glass data set and predict: 
 		// this is interesting because there is no label with number 4
 		// in this dataset.
