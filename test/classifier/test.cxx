@@ -307,10 +307,10 @@ struct ClassifierTest
 
 				for(int jj = 0; jj < p_imp.shape(0);  ++jj)
 					for(int gg = 0; gg < p_imp.shape(1); ++gg)
-						shouldEqualTolerance(oop_var_imp.variable_importance_(ii, jj), 0.0,0.0001);
+						shouldEqualTolerance(oop_var_imp.variable_importance_(jj, gg), 0.0,0.0001);
 				for(int jj = 0; jj < p_imp.shape(0);  ++jj)
 					for(int gg = 0; gg < p_imp.shape(1); ++gg)
-						shouldEqualTolerance(ip_var_imp.variable_importance_(ii, jj), 0.0,0.0001);
+						shouldEqualTolerance(ip_var_imp.variable_importance_(jj, gg), 0.0,0.0001);
 				std::cerr << std::endl;
                 std::cerr << "[";
                 for(int ss = 0; ss < ii+1; ++ss)
