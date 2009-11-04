@@ -41,18 +41,13 @@
 namespace vigra
 {
 
-template <class Next = StopVisiting>
-class TestVisitor: public VisitorBase<Next>
+class TestVisitor: public VisitorBase
 {
-    typedef VisitorBase<Next> BT;
-
-
 
     public:
     std::ofstream fout;
-    TestVisitor(Next & next_, std::string output = std::string("RandomForestNodeTest.log"))
+    TestVisitor(std::string output = std::string("RandomForestNodeTest.log"))
     :
-        BT(next_),
         fout(output.c_str())
     {    }
 
@@ -85,14 +80,12 @@ class TestVisitor: public VisitorBase<Next>
             fout   << std::endl;
             fout   << std::endl;
         }
-        BT::visit_after_split(tree, split, parent, leftChild, rightChild);
     }
 
     template<class RF, class PR, class SM, class ST>
     void visit_after_tree(    RF& rf, PR & pr,  SM & sm, ST & st, int index)
     {
         fout << std::endl << std::endl << "Tree Number: " << index << " finished." << std::endl << std::endl;
-		BT::visit_after_tree(rf, pr, sm, st, index);
     }
 
     ~TestVisitor()
@@ -101,21 +94,12 @@ class TestVisitor: public VisitorBase<Next>
     }
 };
 
-template <class Next = StopVisiting>
-class SetTestVisitor: public VisitorBase<Next>
+class SetTestVisitor: public VisitorBase
 {
-    typedef VisitorBase<Next> BT;
-
-
-
     public:
     std::ostringstream sout;
     std::set<std::string> treesset;
 
-    SetTestVisitor(Next & next_)
-    :
-        BT(next_)
-    {    }
 
     template<class Tree, class Split, class Region>
     void visit_after_split( Tree 	      & tree, 
@@ -140,7 +124,6 @@ class SetTestVisitor: public VisitorBase<Next>
             sout   << std::endl;
             sout   << std::endl;
         }
-        BT::visit_after_split(tree, split, parent, leftChild, rightChild);
     }
 
     template<class RF, class PR, class SM, class ST>
@@ -148,7 +131,6 @@ class SetTestVisitor: public VisitorBase<Next>
     {
         treesset.insert(sout.str());
         sout.str(std::string());
-		BT::visit_after_tree(rf, pr, sm, st, index);
     }
 
     template<class RF, class PR>
@@ -164,23 +146,20 @@ class SetTestVisitor: public VisitorBase<Next>
             ++k;
         }
         fout.close();
-        BT::visit_at_end(rf, pr);
 	}
 };
 
-template <class T1, class C1, class T2, class C2, class Next = StopVisiting>
-class AllOutputVisitor: public VisitorBase<Next>
+template <class T1, class C1, class T2, class C2>
+class AllOutputVisitor: public VisitorBase
 {
-    typedef VisitorBase<Next> BT;
     MultiArrayView<2, T1, C1> * features;
     MultiArrayView<2, T2, C2> * labels;
 
 
     public:
     std::ofstream fout;
-    AllOutputVisitor(Next & next_, std::string output = std::string("RandomForestNodeTest.log"))
+    AllOutputVisitor(std::string output = std::string("RandomForestNodeTest.log"))
     :
-        BT(next_),
         fout(output.c_str())
     {    }
 
@@ -226,14 +205,12 @@ class AllOutputVisitor: public VisitorBase<Next>
             }
             fout   << std::endl;
         }
-        BT::visit_after_split(tree, split, parent, leftChild, rightChild);
     }
 
     template<class RF, class PR, class SM, class ST>
     void visit_after_tree(    RF& rf, PR & pr,  SM & sm, ST & st, int index)
     {
         fout << std::endl << std::endl << "Tree Number: " << index << " finished." << std::endl << std::endl;
-		BT::visit_after_tree(rf, pr, sm, st, index);
 	}
 
     void setDataSource(MultiArrayView<2, T1, C1> * feat, MultiArrayView<2, T2, C2> * label)

@@ -119,8 +119,7 @@ struct ClassifierTest
     {
         //Create Test output by Random Forest
         {
-            vigra::StopVisiting stop;
-            vigra::TestVisitor<StopVisiting> testVisitor(stop);
+            vigra::TestVisitor testVisitor;
             std::cerr << "RFdefaultTest(): Learning on Datasets\n";
             for(int ii = 0; ii < data.size() ; ii++)
             {
@@ -132,7 +131,7 @@ struct ClassifierTest
                             data.labels(ii),
 							rf_default(),
 							rf_default(),
-						   	testVisitor,
+						   	detail::create_visitor(testVisitor),
                             vigra::RandomMT19937(1));
 
                 testVisitor.fout <<  data.names(ii) << std::endl;
@@ -215,14 +214,13 @@ struct ClassifierTest
         int    labels[] = {1, 0, 0, 1};
         std::cerr << "RFsetTest(): Learning 1200 Trees on XOR problem. ";
         {
-            vigra::StopVisiting stop;
-            vigra::SetTestVisitor<StopVisiting> testVisitor(stop);
+            vigra::SetTestVisitor testVisitor;
             vigra::RandomForest<> RF2(vigra::RandomForestOptions().tree_count(1200));
             RF2.learn(  MultiArrayView<2, double>(MultiArrayShape<2>::type(4,2), features),
                         MultiArrayView<2, int>(MultiArrayShape<2>::type(4,1), labels),
 						rf_default(),
 						rf_default(),
-						testVisitor,
+						detail::create_visitor(testVisitor),
                         vigra::RandomTT800::global());
 
         }
@@ -274,10 +272,7 @@ struct ClassifierTest
 
 			int ii = data.size() - 3; // this is the pina_indians dataset
             {
-            	vigra::VariableImportanceVisitor<> 
-					oop_var_imp;
-				vigra::VariableImportanceVisitor<>
-					ip_var_imp(10, true);
+            	vigra::VariableImportanceVisitor var_imp;
 
                 vigra::RandomForest<>
 					RF2(vigra::RandomForestOptions().tree_count(255));
@@ -285,32 +280,15 @@ struct ClassifierTest
                             data.labels(ii),
 							rf_default(),
 							rf_default(),
-						   	oop_var_imp,
+						    detail::create_visitor(var_imp),
                             vigra::RandomMT19937(1));
-
-                RF2.learn(  data.features(ii),
-                            data.labels(ii),
-							rf_default(),
-							rf_default(),
-						   	ip_var_imp,
-                            vigra::RandomMT19937(1));
-
-#if 0 
-				std::cerr << p_imp << std::endl << std::endl;
-				std::cerr << ip_var_imp.variable_importance_  << std::endl << std::endl;
-				std::cerr << oop_var_imp.variable_importance_ << std::endl << std::endl;
-
-#endif
-
-				ip_var_imp.variable_importance_ -= p_imp;
-				oop_var_imp.variable_importance_ -= p_imp;
-
+				
+				var_imp.variable_importance_ -= p_imp;
 				for(int jj = 0; jj < p_imp.shape(0);  ++jj)
 					for(int gg = 0; gg < p_imp.shape(1); ++gg)
-						shouldEqualTolerance(oop_var_imp.variable_importance_(ii, jj), 0.0,0.0001);
-				for(int jj = 0; jj < p_imp.shape(0);  ++jj)
-					for(int gg = 0; gg < p_imp.shape(1); ++gg)
-						shouldEqualTolerance(ip_var_imp.variable_importance_(ii, jj), 0.0,0.0001);
+						shouldEqualTolerance(var_imp
+											   .variable_importance_(jj, gg)
+											 , 0.0,0.0001);
 				std::cerr << std::endl;
                 std::cerr << "[";
                 for(int ss = 0; ss < ii+1; ++ss)
@@ -322,7 +300,6 @@ struct ClassifierTest
             }
         }
         std::cerr << std::endl;
-        //Cheap diff on old and new Classifier.
         std::cerr << "DONE!\n\n";
 	}
 

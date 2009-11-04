@@ -37,8 +37,6 @@
 
 namespace vigra
 {
-template<class Tag>
-class RandomForest;
 
 /** Last Visitor that should be called to stop the recursion.
  */
@@ -55,6 +53,10 @@ class StopVisiting
     template<class RF, class PR, class SM, class ST>
     void visit_after_tree(    RF& rf, PR & pr,  SM & sm, ST & st, int index)
     {}
+	
+    template<class RF>
+    void visit_at_beginning(RF & rf)
+    {}
     template<class RF, class PR>
     void visit_at_end(RF & rf, PR & pr)
     {}
@@ -64,13 +66,16 @@ class StopVisiting
 	template<class TR, class IntT, class TopT>
 	void visit_internal_node(TR & tr, IntT index, TopT node_t)
 	{}
-    double return_val()
+	double return_val()
     {
 		return -1.0;
 	}
 };
-#if 0
-/** non intrusive implementation of the static visitor lists
+#if 1
+/** Container elements of the statically linked Visitor list.
+ *
+ * use the create_visitor() factory functions to create visitors up to size 10;
+ *
  */
 template <class Visitor, class Next = StopVisiting>
 class VisitorNode
@@ -79,15 +84,15 @@ class VisitorNode
 	
     StopVisiting	stop_;
     Next & 			next_;
-	Visitor 		visitor_;	
-    VisitorBase(Visitor & visitor, Next & next) 
+	Visitor &		visitor_;	
+    VisitorNode(Visitor & visitor, Next & next) 
 	: 
-		nexti_(next), visitor_(visitor)
+		next_(next), visitor_(visitor)
     {}
 
-    VisitorBase(Visitor &  visitor) 
+    VisitorNode(Visitor &  visitor) 
 	: 
-		next(stop_), visitor_(visitor)
+		next_(stop_), visitor_(visitor)
     {}
 
     template<class Tree, class Split, class Region>
@@ -111,6 +116,13 @@ class VisitorNode
         next_.visit_after_tree(rf, pr, sm, st, index);
     }
 
+    template<class RF>
+    void visit_at_beginning(RF & rf)
+    {
+		if(visitor_.is_active())
+        	visitor_.visit_at_beginning(rf);
+        next_.visit_at_beginning(rf);
+	}
     template<class RF, class PR>
     void visit_at_end(RF & rf, PR & pr)
     {
@@ -141,89 +153,241 @@ class VisitorNode
 		return next_.return_val();
     }
 };
+namespace detail
+{
+template<class A>
+VisitorNode<A>
+create_visitor(A & a)
+{
+   typedef VisitorNode<A> _0_t;
+   _0_t _0(a);
+   return _0;
+}
+
+
+template<class A, class B>
+VisitorNode<A, VisitorNode<B> >
+create_visitor(A & a, B & b)
+{
+   typedef VisitorNode<B> _1_t;
+   _1_t _1(b);
+   typedef VisitorNode<A, _1_t> _0_t;
+   _0_t _0(a, _1);
+   return _0;
+}
+
+
+template<class A, class B, class C>
+VisitorNode<A, VisitorNode<B, VisitorNode<C> > >
+create_visitor(A & a, B & b, C & c)
+{
+   typedef VisitorNode<C> _2_t;
+   _2_t _2(c);
+   typedef VisitorNode<B, _2_t> _1_t;
+   _1_t _1(b, _2);
+   typedef VisitorNode<A, _1_t> _0_t;
+   _0_t _0(a, _1);
+   return _0;
+}
+
+
+template<class A, class B, class C, class D>
+VisitorNode<A, VisitorNode<B, VisitorNode<C, 
+    VisitorNode<D> > > >
+create_visitor(A & a, B & b, C & c, D & d)
+{
+   typedef VisitorNode<D> _3_t;
+   _3_t _3(d);
+   typedef VisitorNode<C, _3_t> _2_t;
+   _2_t _2(c, _3);
+   typedef VisitorNode<B, _2_t> _1_t;
+   _1_t _1(b, _2);
+   typedef VisitorNode<A, _1_t> _0_t;
+   _0_t _0(a, _1);
+   return _0;
+}
+
+
+template<class A, class B, class C, class D, class E>
+VisitorNode<A, VisitorNode<B, VisitorNode<C, 
+    VisitorNode<D, VisitorNode<E> > > > >
+create_visitor(A & a, B & b, C & c, 
+               D & d, E & e)
+{
+   typedef VisitorNode<E> _4_t;
+   _4_t _4(e);
+   typedef VisitorNode<D, _4_t> _3_t;
+   _3_t _3(d, _4);
+   typedef VisitorNode<C, _3_t> _2_t;
+   _2_t _2(c, _3);
+   typedef VisitorNode<B, _2_t> _1_t;
+   _1_t _1(b, _2);
+   typedef VisitorNode<A, _1_t> _0_t;
+   _0_t _0(a, _1);
+   return _0;
+}
+
+
+template<class A, class B, class C, class D, class E,
+		 class F>
+VisitorNode<A, VisitorNode<B, VisitorNode<C, 
+    VisitorNode<D, VisitorNode<E, VisitorNode<F> > > > > >
+create_visitor(A & a, B & b, C & c, 
+               D & d, E & e, F & f)
+{
+   typedef VisitorNode<F> _5_t;
+   _5_t _5(f);
+   typedef VisitorNode<E, _5_t> _4_t;
+   _4_t _4(e, _5);
+   typedef VisitorNode<D, _4_t> _3_t;
+   _3_t _3(d, _4);
+   typedef VisitorNode<C, _3_t> _2_t;
+   _2_t _2(c, _3);
+   typedef VisitorNode<B, _2_t> _1_t;
+   _1_t _1(b, _2);
+   typedef VisitorNode<A, _1_t> _0_t;
+   _0_t _0(a, _1);
+   return _0;
+}
+
+
+template<class A, class B, class C, class D, class E,
+		 class F, class G>
+VisitorNode<A, VisitorNode<B, VisitorNode<C, 
+    VisitorNode<D, VisitorNode<E, VisitorNode<F, 
+    VisitorNode<G> > > > > > >
+create_visitor(A & a, B & b, C & c, 
+               D & d, E & e, F & f, G & g)
+{
+   typedef VisitorNode<G> _6_t;
+   _6_t _6(g);
+   typedef VisitorNode<F, _6_t> _5_t;
+   _5_t _5(f, _6);
+   typedef VisitorNode<E, _5_t> _4_t;
+   _4_t _4(e, _5);
+   typedef VisitorNode<D, _4_t> _3_t;
+   _3_t _3(d, _4);
+   typedef VisitorNode<C, _3_t> _2_t;
+   _2_t _2(c, _3);
+   typedef VisitorNode<B, _2_t> _1_t;
+   _1_t _1(b, _2);
+   typedef VisitorNode<A, _1_t> _0_t;
+   _0_t _0(a, _1);
+   return _0;
+}
+
+
+template<class A, class B, class C, class D, class E,
+		 class F, class G, class H>
+VisitorNode<A, VisitorNode<B, VisitorNode<C, 
+    VisitorNode<D, VisitorNode<E, VisitorNode<F, 
+    VisitorNode<G, VisitorNode<H> > > > > > > >
+create_visitor(A & a, B & b, C & c, 
+               D & d, E & e, F & f, 
+               G & g, H & h)
+{
+   typedef VisitorNode<H> _7_t;
+   _7_t _7(h);
+   typedef VisitorNode<G, _7_t> _6_t;
+   _6_t _6(g, _7);
+   typedef VisitorNode<F, _6_t> _5_t;
+   _5_t _5(f, _6);
+   typedef VisitorNode<E, _5_t> _4_t;
+   _4_t _4(e, _5);
+   typedef VisitorNode<D, _4_t> _3_t;
+   _3_t _3(d, _4);
+   typedef VisitorNode<C, _3_t> _2_t;
+   _2_t _2(c, _3);
+   typedef VisitorNode<B, _2_t> _1_t;
+   _1_t _1(b, _2);
+   typedef VisitorNode<A, _1_t> _0_t;
+   _0_t _0(a, _1);
+   return _0;
+}
+
+
+template<class A, class B, class C, class D, class E,
+		 class F, class G, class H, class I>
+VisitorNode<A, VisitorNode<B, VisitorNode<C, 
+    VisitorNode<D, VisitorNode<E, VisitorNode<F, 
+    VisitorNode<G, VisitorNode<H, VisitorNode<I> > > > > > > > >
+create_visitor(A & a, B & b, C & c, 
+               D & d, E & e, F & f, 
+               G & g, H & h, I & i)
+{
+   typedef VisitorNode<I> _8_t;
+   _8_t _8(i);
+   typedef VisitorNode<H, _8_t> _7_t;
+   _7_t _7(h, _8);
+   typedef VisitorNode<G, _7_t> _6_t;
+   _6_t _6(g, _7);
+   typedef VisitorNode<F, _6_t> _5_t;
+   _5_t _5(f, _6);
+   typedef VisitorNode<E, _5_t> _4_t;
+   _4_t _4(e, _5);
+   typedef VisitorNode<D, _4_t> _3_t;
+   _3_t _3(d, _4);
+   typedef VisitorNode<C, _3_t> _2_t;
+   _2_t _2(c, _3);
+   typedef VisitorNode<B, _2_t> _1_t;
+   _1_t _1(b, _2);
+   typedef VisitorNode<A, _1_t> _0_t;
+   _0_t _0(a, _1);
+   return _0;
+}
+
+template<class A, class B, class C, class D, class E,
+		 class F, class G, class H, class I, class J>
+VisitorNode<A, VisitorNode<B, VisitorNode<C, 
+    VisitorNode<D, VisitorNode<E, VisitorNode<F, 
+    VisitorNode<G, VisitorNode<H, VisitorNode<I,
+	VisitorNode<J> > > > > > > > > >
+create_visitor(A & a, B & b, C & c, 
+               D & d, E & e, F & f, 
+               G & g, H & h, I & i,
+			   J & j)
+{
+   typedef VisitorNode<J> _9_t;
+   _9_t _9(j);
+   typedef VisitorNode<I, _9_t> _8_t;
+   _8_t _8(i, _9);
+   typedef VisitorNode<H, _8_t> _7_t;
+   _7_t _7(h, _8);
+   typedef VisitorNode<G, _7_t> _6_t;
+   _6_t _6(g, _7);
+   typedef VisitorNode<F, _6_t> _5_t;
+   _5_t _5(f, _6);
+   typedef VisitorNode<E, _5_t> _4_t;
+   _4_t _4(e, _5);
+   typedef VisitorNode<D, _4_t> _3_t;
+   _3_t _3(d, _4);
+   typedef VisitorNode<C, _3_t> _2_t;
+   _2_t _2(c, _3);
+   typedef VisitorNode<B, _2_t> _1_t;
+   _1_t _1(b, _2);
+   typedef VisitorNode<A, _1_t> _0_t;
+   _0_t _0(a, _1);
+   return _0;
+}
+
+}
 #endif 
 /** Base Class from which all Visitors derive
  */
-template <class Next>
 class VisitorBase
 {
     public:
-    StopVisiting	a;
-    Next & 			next;
-
-    VisitorBase(Next & next_) : next(next_)
-    {}
-
-    VisitorBase() : next(a)
-    {}
-
-    template<class Tree, class Split, class Region>
-    void visit_after_split( Tree 	      & tree, 
-						   	Split         & split,
-                            Region        & parent,
-                            Region        & leftChild,
-                            Region        & rightChild)
-    {
-        next.visit_after_split(tree, split, parent, leftChild, rightChild);
-    }
-
-    template<class RF, class PR, class SM, class ST>
-    void visit_after_tree(RF& rf, PR & pr,  SM & sm, ST & st, int index)
-    {
-        next.visit_after_tree(rf, pr, sm, st, index);
-    }
-
-    template<class RF, class PR>
-    void visit_at_end(RF & rf, PR & pr)
-    {
-        next.visit_at_end(rf, pr);
-    }
 	
-	template<class TR, class IntT, class TopT>
-	void visit_external_node(TR & tr, IntT index, TopT node_t)
+	bool is_active()
 	{
-		next.visit_external_node();
-	}
-	template<class TR, class IntT, class TopT>
-	void visit_internal_node(TR & tr, IntT index, TopT node_t)
-	{
-		next.visit_internal_node();
+		return true;
 	}
 
-    double return_val()
-    {
-        return next.return_val();
-    }
-};
-
-
-
-
-/** Template to make new visitors 
- *
- * if you don't need a function just delete it. - The base class will take 
- * care of the rest. - leave the constructors
- *
- */
-#define Visitor_Template Your_Name_Here
-template <class Next = StopVisiting>
-class Visitor_Template : public VisitorBase<Next>
-{
-    public:
-	typedef VisitorBase<Next> Base_t;
-
-	/** construct with next visitor object add options or whatever. Just see
-	 * to it that the base constructor is called - otherwise -kabumm
-	 */
-    Visitor_Template(Next & next_) : Base_t(next_)
-    {}
-
-	/** construct as last visitor in the chain - use this constructor only
-	 * if Next is of type StopVisiting
-	 */
-    Visitor_Template() : Base_t()
-    {}
-
+	bool has_value()
+	{
+		return false;
+	}
+	
 	/** do something after the the Split has decided how to process the Region
 	 * (Stack entry)
 	 *
@@ -241,11 +405,8 @@ class Visitor_Template : public VisitorBase<Next>
                             Region        & parent,
                             Region        & leftChild,
                             Region        & rightChild)
-    {
-		Base_t::visit_after_split(tree, split, 
-								  parent, leftChild, rightChild);
-    }
-
+    {}
+	
 	/** do something after each tree has been learned
 	 *
 	 * \param rf 		reference to the random forest object that called this
@@ -257,9 +418,7 @@ class Visitor_Template : public VisitorBase<Next>
 	 */
     template<class RF, class PR, class SM, class ST>
     void visit_after_tree(RF& rf, PR & pr,  SM & sm, ST & st, int index)
-    {
-		Base_t::visit_after_tree(rf, pr, sm, st, index);
-    }
+    {}
 	
 	/** do something after all trees have been learned
 	 *
@@ -269,10 +428,11 @@ class Visitor_Template : public VisitorBase<Next>
 	 */
     template<class RF, class PR>
     void visit_at_end(RF & rf, PR & pr)
-    {
-		Base_t::visit_at_end(rf, pr);
-    }
+    {}
 	
+    template<class RF>
+    void visit_at_beginning(RF & rf)
+    {}
 	/** do some thing while traversing tree after it has been learned 
 	 * 	(external nodes)
 	 *
@@ -287,19 +447,15 @@ class Visitor_Template : public VisitorBase<Next>
 	 */
 	template<class TR, class IntT, class TopT>
 	void visit_external_node(TR & tr, IntT index, TopT node_t)
-	{
-		Base_t::visit_external_node();
-	}
-
+	{}
+	
 	/** do something when visiting a internal node after it has been learned
 	 *
 	 * \sa visit_external_node
 	 */
 	template<class TR, class IntT, class TopT>
 	void visit_internal_node(TR & tr, IntT index, TopT node_t)
-	{
-		Base_t::visit_internal_node();
-	}
+	{}
 
 	/** return a double value.  The value of the first 
 	 * visitor encountered that has a return value is returned with the
@@ -309,13 +465,9 @@ class Visitor_Template : public VisitorBase<Next>
 	 * of the random forest.
 	 */
     double return_val()
-    {
-		// if nothing to return just ignore this func
-		// return do_some_foo();
-		return Base_t::return_val();
-    }
+    {}
 };
-#undef Visitor_Template
+
 
 
 
@@ -333,11 +485,9 @@ class Visitor_Template : public VisitorBase<Next>
  *
  * To bored to comment each line of this class - trust me it works.
  */
-template <class Next = StopVisiting>
-class OOB_Visitor:public VisitorBase<Next>
+class OOB_Visitor:public VisitorBase
 {
 public:
-    typedef VisitorBase<Next> BT;
     double oobError;
     int totalOobCount;
     ArrayVector<int> oobCount,oobErrorCount;
@@ -346,12 +496,12 @@ public:
     : oobError(0.0),
       totalOobCount(0)
     {}
-    OOB_Visitor(Next & next_)
-    : BT(next_),
-        oobError(0.0),
-      totalOobCount(0)
-    {}
 
+
+	bool has_value()
+	{
+		return true;
+	}
 	/** does the basic calculation per tree*/
     template<class RF, class PR, class SM, class ST>
     void visit_after_tree(    RF& rf, PR & pr,  SM & sm, ST & st, int index)
@@ -378,7 +528,6 @@ public:
             }
 
         }
-        BT::next.visit_after_tree(rf, pr, sm, st, index);
     }
 
 	/** Does the normalisation
@@ -393,7 +542,6 @@ public:
             oobError += double(oobErrorCount[l]) / oobCount[l];
             ++totalOobCount;
         }
-        BT::visit_at_end(rf, pr);
     }
 	
 	//returns value of the learn function. 
@@ -404,73 +552,11 @@ public:
 };
 
 
-
-/** FieldProxy class 
- *
- * This helper class is there to be able to make non contiguous data 
- * appear as contiguous data for usage with stl algorithm.
- *
- * The idea is to make an array of pointers to the desired memory 
- * (e.g.: each pointer points to some arbitrary point in a multiArray)
- * 
- * Instead of having to use the *x syntax the assignment and the cast to 
- * the underlying data type and swap of FieldProxy were overloaded.
- *
- * so when random_shuffle permutes the elements in an Array of FieldProxys
- * not the FieldProxy objects but the values the are pointing to are 
- * permuted
- */
-template<class T>
-struct FieldProxy
-{
-
-    T* something;
-    FieldProxy(T& in): something(&in){};
-
-    FieldProxy(): something(0){};
-    FieldProxy& operator= (const T rhs)
-    {
-        *something = rhs;
-        return *this;
-    }
-    FieldProxy& operator= (const FieldProxy rhs)
-    {
-        *something = *(rhs.something);
-        return *this;
-    }
-
-    operator T() const
-    {
-        return *something;
-    }
-
-
-};
-} //namespace vigra
-
-namespace std
-{
-/** really don't know why swap must be defined explicitly but fine
- *	has been tested and works. 
- */
-template<class T>
-void swap(vigra::FieldProxy<T> & rhs, vigra::FieldProxy<T> & lhs)
-{
-    T temp= *(lhs.something);
-    *(lhs.something) = *(rhs.something);
-    *(rhs.something) = temp;
-}
 /** calculate variable importance while learning.
  */
-
-}// namespace std
-namespace vigra
-{
-template <class Next = StopVisiting>
-class VariableImportanceVisitor : public VisitorBase<Next>
+class VariableImportanceVisitor : public VisitorBase
 {
     public:
-	typedef VisitorBase<Next> 	Base_t;
 
 	/** This Array has the same entries as the R - random forest variable
 	 *  importance
@@ -478,25 +564,10 @@ class VariableImportanceVisitor : public VisitorBase<Next>
 	MultiArray<2, double> 		variable_importance_;
 	int 						repetition_count_;
 	bool						in_place_;
-	/** construct with next visitor object add options or whatever. Just see
-	 * to it that the base constructor is called - otherwise -kabumm
-	 */
-    VariableImportanceVisitor(Next & next_, 
-							  int rep_cnt = 10, 
-							  bool in_pl = false) 
-	: 	Base_t(next_),
-		repetition_count_(rep_cnt),
-		in_place_(in_pl)
-    {}
 
-	/** construct as last visitor in the chain - use this constructor only
-	 * if Next is of type StopVisiting
-	 */
-    VariableImportanceVisitor(int repetition_count = 10, 
-							  bool  in_place = false) 
-	: 	Base_t(),
-		repetition_count_(repetition_count),
-		in_place_(in_place)
+	VariableImportanceVisitor(int rep_cnt = 10) 
+	:   repetition_count_(rep_cnt)
+
     {}
 
 	/** calculates impurity decrease based variable importance after every
@@ -527,120 +598,9 @@ class VariableImportanceVisitor : public VisitorBase<Next>
 			variable_importance_(node.column(),class_count+1) 
 				+= split.giniDecrease;
 		}
-		Base_t::visit_after_split(tree, split, 
-								  parent, leftChild, rightChild);
-
-
     }
 
-	/** copies oob samples and calculates the permutation based var imp
-	 * 	with the new arrays.
-	 */
-    template<class RF, class PR, class SM, class ST>
-    void after_tree_oop_impl(RF& rf, PR & pr,  SM & sm, ST & st, int index)
-    {
-		typedef MultiArrayShape<2>::type Shp_t;
-		Int32 					column_count = rf.ext_param_.column_count_;
-	   	Int32 					class_count  = rf.ext_param_.class_count_;	
-
-
-		//find the oob indices of current tree. 
-		ArrayVector<Int32> 		oob_indices;
-		for(int ii = 0; ii < rf.ext_param_.row_count_; ++ii)
-			if(!sm.is_used()[ii])
-				oob_indices.push_back(ii);
-		//Copy the oob samples. This is done twice to be able to restore
-		//a column after permutation.
-		MultiArray<2, double> oob_samples(Shp_t(oob_indices.size(),
-												column_count));
-		MultiArray<2, double> oob_labels(Shp_t(oob_indices.size(),
-											   column_count));
-
-		for(int ii = 0; ii < oob_indices.size(); ++ii)
-		{
-			rowVector(oob_samples, ii) = rowVector(pr.features(),
-												   oob_indices[ii]);
-			oob_labels[ii] 			   = pr.response()(oob_indices[ii], 0); 
-		}
-		MultiArray<2, double> perm_oob_samples = oob_samples;	
-
-
-		// More Initialising Foo
-#ifdef CLASSIFIER_TEST
-		RandomMT19937			random(1);
-#endif
-#ifndef CLASSIFIER_TEST
-		RandomMT19937  			random(RandomSeed);
-#endif
-		UniformIntRandomFunctor<RandomMT19937> 	
-								randint(random);
-
-
-		//make some space for the results
-		MultiArray<2, double>
-					oob_right(Shp_t(1, class_count + 1)); 
-		MultiArray<2, double>
-					perm_oob_right (Shp_t(1, class_count + 1)); 
-			
-		
-		// get the oob success rate with the original samples
-		for(int jj = 0; jj < oob_indices.size(); ++jj)
-		{
-			if(rf.tree(index).predictLabel(rowVector(oob_samples, jj)) 
-				== 	oob_labels[jj])
-			{
-				//per class
-				++oob_right[oob_labels[jj]];
-				//total
-				++oob_right[class_count];
-			}
-		}
-		
-		//get the oob rate after permuting the ii'th dimension.
-		for(int ii = 0; ii < column_count; ++ii)
-		{
-			perm_oob_right.init(0.0);
-			// the whole thing is repeated repetition_count_ times to 
-			// stabilize the result
-			for(int rr = 0; rr < repetition_count_; ++rr)
-			{
-				//permute dimension. 
-				std::random_shuffle(columnVector(perm_oob_samples, ii).data(), 
-									columnVector(perm_oob_samples, ii).data()
-													   	 + oob_indices.size(),
-									randint);
-
-				//get the oob sucess rate after permuting
-				for(int jj = 0; jj < oob_indices.size(); ++jj)
-				{
-					if(rf.tree(index)
-					   	 	.predictLabel(rowVector(perm_oob_samples, jj)) 
-						== 	oob_labels[jj])
-					{
-						//per class
-						++perm_oob_right[oob_labels[jj]];
-						//total
-						++perm_oob_right[class_count];
-					}
-				}
-			}
-
-
-			//normalise and add to the variable_importance array.
-			perm_oob_right 	/= 	repetition_count_;
-			perm_oob_right -=oob_right;
-			perm_oob_right *= -1;
-			perm_oob_right 		/= 	oob_indices.size();
-			variable_importance_
-				.subarray(Shp_t(ii,0), 
-						  Shp_t(ii+1,class_count+1)) += perm_oob_right;
-			//copy back permuted dimension
-			columnVector(perm_oob_samples, ii) = columnVector(oob_samples, ii);
-		}
-    }
-
-
-	/** same thing as above, using less additional system memory. 
+	/**compute permutation based var imp. 
 	 * (Only an Array of size oob_sample_count x 1 is created.
 	 *  - apposed to oob_sample_count x feature_count in the other method.
 	 * 
@@ -672,8 +632,7 @@ class VariableImportanceVisitor : public VisitorBase<Next>
 		// Random foo
 #ifdef CLASSIFIER_TEST
 		RandomMT19937			random(1);
-#endif
-#ifndef CLASSIFIER_TEST
+#else 
 		RandomMT19937  			random(RandomSeed);
 #endif
 		UniformIntRandomFunctor<RandomMT19937> 	
@@ -764,12 +723,7 @@ class VariableImportanceVisitor : public VisitorBase<Next>
 	template<class RF, class PR, class SM, class ST>
     void visit_after_tree(RF& rf, PR & pr,  SM & sm, ST & st, int index)
     {
-		if(in_place_)
 			after_tree_ip_impl(rf, pr, sm, st, index);
-		else
-			after_tree_oop_impl(rf, pr, sm, st, index);
-
-		Base_t::visit_after_tree(rf, pr, sm, st, index);
     }
 
 	/** Normalise variable importance after the number of trees is known.
@@ -778,7 +732,6 @@ class VariableImportanceVisitor : public VisitorBase<Next>
     void visit_at_end(RF & rf, PR & pr)
     {
 		variable_importance_ /= rf.trees_.size();
-		Base_t::visit_at_end(rf, pr);
     }
 };
 

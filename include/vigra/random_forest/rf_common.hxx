@@ -47,8 +47,7 @@ struct                  RegressionTag{};
 
 class                   GiniSplit;
 class                   StopVisiting;
-template<class T>
-    class               OOB_Visitor;
+class	                OOB_Visitor;
 class                   RandomForestOptions;
 class                   ProblemSpec;
 template<class Tag>
@@ -70,14 +69,14 @@ template <class T>
  */
 class RF_Traits
 {
-public:
+	public:
 	typedef RandomForestOptions 	Options_t;
 	typedef	detail::DecisionTree   	DecisionTree_t;
 	typedef ProblemSpec				ProblemSpec_t;
 	typedef ClassificationTag		Preprocessor_t;
 	typedef GiniSplit	            Default_Split_t;
 	typedef EarlyStoppStd           Default_Stop_t;
-	typedef OOB_Visitor<StopVisiting>
+	typedef StopVisiting
 									Default_Visitor_t;
 	typedef StopVisiting			StopVisiting_t;
 
@@ -159,30 +158,24 @@ class RF_DEFAULT
 template<class T, class C>
 class Value_Chooser
 {
-    public:
-    T & value_;
-    Value_Chooser(T &val, C  default_val)
-    :   value_(val)
-    {}
-    T& value()
-    {
-        return value_;
-    }
+public:
+	typedef T type;
+	static T & choose(T & t, C & c)
+	{
+		return t; 
+	}
 };
 
 template<class C>
 class Value_Chooser<detail::RF_DEFAULT, C>
 {
-    public:
-  C  value_;
-  Value_Chooser(detail::RF_DEFAULT val, C default_val)
-  :     value_(default_val)
-  {}
-
-  C& value()
-  {
-      return value_;
-  }
+public:
+	typedef C type;
+	
+	static C & choose(detail::RF_DEFAULT & t, C & c)
+	{
+		return c; 
+	}
 };
 
 

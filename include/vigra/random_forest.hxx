@@ -357,9 +357,9 @@ class RandomForest
 			 class Random_t>
 	double learn(		MultiArrayView<2, U, C1> const  & 	features,
 						MultiArrayView<2, U2,C2> const  & 	response,
-						Split_t 						&	split,
-						Stop_t 							&	stop,
-						Visitor_t 						&	visitor,
+						Split_t 							split,
+						Stop_t 								stop,
+						Visitor_t 							visitor,
 						Random_t 				 const 	&	random);
 
 	/**\brief learn on data with custom config
@@ -395,9 +395,9 @@ class RandomForest
 			 class Visitor_t>
 	double learn(		MultiArrayView<2, U, C1> const  & 	features,
 						MultiArrayView<2, U2,C2> const  & 	response,
-						Split_t 						&	split,
-						Stop_t 							&	stop,
-						Visitor_t 						&	visitor)
+						Split_t 							split,
+						Stop_t 								stop,
+						Visitor_t 							visitor)
 
 	{
         RandomNumberGenerator<> rnd = RandomNumberGenerator<>(RandomSeed);
@@ -512,9 +512,9 @@ template <class U, class C1,
 double RandomForest<PreprocessorTag>::
 					 learn( MultiArrayView<2, U, C1> const  & 	features,
 							MultiArrayView<2, U2,C2> const  & 	response,
-							Split_t 					    &	split,
-							Stop_t 							&	stop,
-							Visitor_t 						&	visitor,
+							Split_t 					    	split_,
+							Stop_t 								stop_,
+							Visitor_t 							visitor_,
 							Random_t 				 const 	&	random)
 {
 	this->reset();
@@ -530,12 +530,19 @@ double RandomForest<PreprocessorTag>::
 	// Value Chooser chooses second argument as value if first argument
 	// is of type RF_DEFAULT. (thanks to template magic - don't care about
 	// it - just smile and wave.
-	detail::Value_Chooser<Stop_t, Default_Stop_t>
-                        choose_stop     (stop,      Default_Stop_t(options_));
-	detail::Value_Chooser<Split_t, Default_Split_t>
-                        choose_split    (split,     Default_Split_t());
-	detail::Value_Chooser<Visitor_t, Default_Visitor_t>
-                        choose_visitor  (visitor,   Default_Visitor_t());
+	
+	#define RF_CHOOSER(type_) detail::Value_Chooser<type_, Default_##type_>	
+	Default_Stop_t default_stop(options_);
+	typename RF_CHOOSER(Stop_t)::type stop
+			= RF_CHOOSER(Stop_t)::choose(stop_, default_stop); 
+	Default_Split_t default_split;
+	typename RF_CHOOSER(Split_t)::type split 
+			= RF_CHOOSER(Split_t)::choose(split_, default_split); 
+	StopVisiting stopvisiting;
+	OOB_Visitor	 oob;
+	VisitorNode<OOB_Visitor, typename RF_CHOOSER(Visitor_t)::type>
+		visitor(oob, RF_CHOOSER(Visitor_t)::choose(visitor_, stopvisiting));
+	#undef RF_CHOOSER
 
     // Make stl compatible random functor.
     RandFunctor_t			randint		( random);
@@ -549,8 +556,8 @@ double RandomForest<PreprocessorTag>::
                                     options_, ext_param_);
 
     // Give the Split functor information about the data.
-    choose_split.value() . set_external_parameters(ext_param_);
-    choose_stop.value()  . set_external_parameters(ext_param_);
+    split.set_external_parameters(ext_param_);
+    stop.set_external_parameters(ext_param_);
 
 
 	//initialize trees.
@@ -564,7 +571,7 @@ double RandomForest<PreprocessorTag>::
 								   	detail::make_sampler_opt(options_,
                                                      preprocessor.strata()),
 								    randint);
-
+	visitor.visit_at_beginning(*this);
 	// THE MAIN EFFING RF LOOP - YEAY DUDE!
     for(int ii = 0; ii < (int)trees_.size(); ++ii)
     {
@@ -583,11 +590,11 @@ double RandomForest<PreprocessorTag>::
 			.learn(				preprocessor.features(),
 					   			preprocessor.response(),
                         		first_stack_entry,
-                				choose_split.value(),
-								choose_stop.value(),
-								choose_visitor.value(),
+                				split,
+								stop,
+								visitor,
 								randint);
-		choose_visitor.value()
+		visitor
 			.visit_after_tree(	*this,
                                 preprocessor,
 								sampler,
@@ -595,9 +602,9 @@ double RandomForest<PreprocessorTag>::
 								ii);
 	}
 
-	choose_visitor.value().visit_at_end(*this, preprocessor);
+	visitor.visit_at_end(*this, preprocessor);
 
-	return 	choose_visitor.value().return_val();
+	return 	visitor.return_val();
 }
 
 
