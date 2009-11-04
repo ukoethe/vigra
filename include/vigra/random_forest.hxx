@@ -343,10 +343,9 @@ class RandomForest
 	 * 					use RF_Default() for using default value.
 	 * \param random	RandomNumberGenerator to be used. Use
 	 * 					RF_Default() to use default value.
-	 * \return			double value specified by the first Visitor with
-	 * 					a return_me tag or a negative value if no such
-	 * 					visitor exists.
-	 *\todo add links to the standard functors
+	 * \return			oob_error.
+	 *
+	 *\sa OOB_Visitor, VariableImportanceVisitor 
 	 *
 	 */
 	template <class U, class C1,
@@ -362,32 +361,6 @@ class RandomForest
 						Visitor_t 							visitor,
 						Random_t 				 const 	&	random);
 
-	/**\brief learn on data with custom config
-     *
-	 * \param features 	a N x M matrix containing N samples with M
-	 * 					features
-	 * \param labels 	a N x D matrix containing the corresponding
-	 * 					N labels. Current split functors assume D to
-	 * 					be 1 and ignore any additional columns.
-	 * 					this is not enforced to allow future support
-	 * 					for uncertain labels.
-	 * \param visitor 	visitor which is to be applied after each split,
-	 * 					tree and at the end. Use RF_Default for using
-	 * 					default value.
-	 * \param split		split functor to be used to calculate each split
-	 * 					use rf_default() for using default value.
-	 * \param earlystopping
-	 * 					predicate to be used to calculate each split
-	 * 					use RF_Default() for using default value.
-	 * \param random	RandomNumberGenerator to be used. Use
-	 * 					RF_Default() to use default value.
-	 * \return			double value specified by the first Visitor with
-	 * 					a return_me tag or a negative value if no such
-	 * 					visitor exists.
-	 *\todo add links to the standard functors
-	 *
-	 *	default values is described in the simpler learn() function.
-	 */
 	template <class U, class C1,
 			 class U2,class C2,
 			 class Split_t,
@@ -421,8 +394,8 @@ class RandomForest
 	 *
 	 * learning is done with:
 	 *
-	 *\todo add links to the standard functors
-
+	 * \sa GiniSplit, EarlyStoppingStd, OOB_Visitor
+	 *
 	 * - Randomly seeded random number generator
 	 * - default gini split functor as described by Breiman
 	 * - default The standard early stopping criterion
@@ -517,6 +490,7 @@ double RandomForest<PreprocessorTag>::
 							Visitor_t 							visitor_,
 							Random_t 				 const 	&	random)
 {
+	using namespace rf;
 	this->reset();
 	//typedefs
 	typedef typename Split_t::StackEntry_t 			StackEntry_t;

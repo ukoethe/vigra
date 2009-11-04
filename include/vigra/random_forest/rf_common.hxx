@@ -46,7 +46,10 @@ struct                  ClassificationTag{};
 struct                  RegressionTag{};
 
 class                   GiniSplit;
-class                   StopVisiting;
+namespace rf
+{
+	class                   StopVisiting;
+}
 class	                OOB_Visitor;
 class                   RandomForestOptions;
 class                   ProblemSpec;
@@ -76,9 +79,9 @@ class RF_Traits
 	typedef ClassificationTag		Preprocessor_t;
 	typedef GiniSplit	            Default_Split_t;
 	typedef EarlyStoppStd           Default_Stop_t;
-	typedef StopVisiting
+	typedef rf::StopVisiting
 									Default_Visitor_t;
-	typedef StopVisiting			StopVisiting_t;
+	typedef rf::StopVisiting			StopVisiting_t;
 
 };
 

@@ -38,40 +38,126 @@
 namespace vigra
 {
 
-/** Last Visitor that should be called to stop the recursion.
+	
+	
+/** Base Class from which all Visitors derive
  */
-class StopVisiting
+class VisitorBase
 {
     public:
+	
+	bool is_active()
+	{
+		return true;
+	}
+
+	bool has_value()
+	{
+		return false;
+	}
+	
+	/** do something after the the Split has decided how to process the Region
+	 * (Stack entry)
+	 *
+	 * \param tree 		reference to the tree that is currently being learned
+	 * \param split 	reference to the split object
+	 * \param parent 	current stack entry  which was used to decide the split
+	 * \param leftChild	left stack entry that will be pushed
+	 * \param rightChild
+	 * 					right stack entry that will be pushed.
+	 * \sa RF_Traits::StackEntry_t
+	 */
     template<class Tree, class Split, class Region>
     void visit_after_split( Tree 	      & tree, 
-						   	Split    	  & split,
+						   	Split         & split,
                             Region        & parent,
                             Region        & leftChild,
                             Region        & rightChild)
     {}
+	
+	/** do something after each tree has been learned
+	 *
+	 * \param rf 		reference to the random forest object that called this
+	 * 					visitor
+	 * \param pr 		reference to the preprocessor that processed the input
+	 * \param sm		reference to the sampler object
+	 * \param st		reference to the first stack entry
+	 * \param index 	index of current tree
+	 */
     template<class RF, class PR, class SM, class ST>
-    void visit_after_tree(    RF& rf, PR & pr,  SM & sm, ST & st, int index)
+    void visit_after_tree(RF& rf, PR & pr,  SM & sm, ST & st, int index)
     {}
 	
-    template<class RF>
-    void visit_at_beginning(RF & rf)
-    {}
+	/** do something after all trees have been learned
+	 *
+	 * \param rf		reference to the random forest object that called this
+	 * 					visitor
+	 * \param pr		reference to the preprocessor that processed the input
+	 */
     template<class RF, class PR>
     void visit_at_end(RF & rf, PR & pr)
     {}
+	
+	/** do something before learning starts 
+	 *
+	 * \param rf		reference to the random forest object that called this
+	 * 					visitor
+	 */
+    template<class RF>
+    void visit_at_beginning(RF & rf)
+    {}
+	/** do some thing while traversing tree after it has been learned 
+	 * 	(external nodes)
+	 *
+	 * \param tr 		reference to the tree object that called this visitor
+	 * \param index		index in the topology_ array we currently are at
+	 * \param node_tag	type of node we have (will be e_.... - )
+	 * \sa 	NodeTags;
+	 *
+	 * you can create the node by using a switch on node_tag and using the 
+	 * corresponding Node objects. Or - if you do not care about the type 
+	 * use the Nodebase class.
+	 */
 	template<class TR, class IntT, class TopT>
 	void visit_external_node(TR & tr, IntT index, TopT node_t)
 	{}
+	
+	/** do something when visiting a internal node after it has been learned
+	 *
+	 * \sa visit_external_node
+	 */
 	template<class TR, class IntT, class TopT>
 	void visit_internal_node(TR & tr, IntT index, TopT node_t)
 	{}
+
+	/** return a double value.  The value of the first 
+	 * visitor encountered that has a return value is returned with the
+	 * RandomForest::learn() method - or -1.0 if no return value visitor
+	 * existed. This functionality basically only exists so that the 
+	 * OOB - visitor can return the oob error rate like in the old version 
+	 * of the random forest.
+	 */
+    double return_val()
+    {}
+};
+
+namespace rf
+{
+
+/** Last Visitor that should be called to stop the recursion.
+ */
+class StopVisiting: public VisitorBase
+{
+    public:
+	bool has_value()
+	{
+		return true;
+	}
 	double return_val()
     {
 		return -1.0;
 	}
 };
-#if 1
 /** Container elements of the statically linked Visitor list.
  *
  * use the create_visitor() factory functions to create visitors up to size 10;
@@ -153,76 +239,80 @@ class VisitorNode
 		return next_.return_val();
     }
 };
-namespace detail
-{
+
+} //namespace rf
+
+//////////////////////////////////////////////////////////////////////////////
+//  Visitor Factory function up to 10 visitors								//
+//////////////////////////////////////////////////////////////////////////////
 template<class A>
-VisitorNode<A>
+rf::VisitorNode<A>
 create_visitor(A & a)
 {
-   typedef VisitorNode<A> _0_t;
+   typedef rf::VisitorNode<A> _0_t;
    _0_t _0(a);
    return _0;
 }
 
 
 template<class A, class B>
-VisitorNode<A, VisitorNode<B> >
+rf::VisitorNode<A, rf::VisitorNode<B> >
 create_visitor(A & a, B & b)
 {
-   typedef VisitorNode<B> _1_t;
+   typedef rf::VisitorNode<B> _1_t;
    _1_t _1(b);
-   typedef VisitorNode<A, _1_t> _0_t;
+   typedef rf::VisitorNode<A, _1_t> _0_t;
    _0_t _0(a, _1);
    return _0;
 }
 
 
 template<class A, class B, class C>
-VisitorNode<A, VisitorNode<B, VisitorNode<C> > >
+rf::VisitorNode<A, rf::VisitorNode<B, rf::VisitorNode<C> > >
 create_visitor(A & a, B & b, C & c)
 {
-   typedef VisitorNode<C> _2_t;
+   typedef rf::VisitorNode<C> _2_t;
    _2_t _2(c);
-   typedef VisitorNode<B, _2_t> _1_t;
+   typedef rf::VisitorNode<B, _2_t> _1_t;
    _1_t _1(b, _2);
-   typedef VisitorNode<A, _1_t> _0_t;
+   typedef rf::VisitorNode<A, _1_t> _0_t;
    _0_t _0(a, _1);
    return _0;
 }
 
 
 template<class A, class B, class C, class D>
-VisitorNode<A, VisitorNode<B, VisitorNode<C, 
-    VisitorNode<D> > > >
+rf::VisitorNode<A, rf::VisitorNode<B, rf::VisitorNode<C, 
+    rf::VisitorNode<D> > > >
 create_visitor(A & a, B & b, C & c, D & d)
 {
-   typedef VisitorNode<D> _3_t;
+   typedef rf::VisitorNode<D> _3_t;
    _3_t _3(d);
-   typedef VisitorNode<C, _3_t> _2_t;
+   typedef rf::VisitorNode<C, _3_t> _2_t;
    _2_t _2(c, _3);
-   typedef VisitorNode<B, _2_t> _1_t;
+   typedef rf::VisitorNode<B, _2_t> _1_t;
    _1_t _1(b, _2);
-   typedef VisitorNode<A, _1_t> _0_t;
+   typedef rf::VisitorNode<A, _1_t> _0_t;
    _0_t _0(a, _1);
    return _0;
 }
 
 
 template<class A, class B, class C, class D, class E>
-VisitorNode<A, VisitorNode<B, VisitorNode<C, 
-    VisitorNode<D, VisitorNode<E> > > > >
+rf::VisitorNode<A, rf::VisitorNode<B, rf::VisitorNode<C, 
+    rf::VisitorNode<D, rf::VisitorNode<E> > > > >
 create_visitor(A & a, B & b, C & c, 
                D & d, E & e)
 {
-   typedef VisitorNode<E> _4_t;
+   typedef rf::VisitorNode<E> _4_t;
    _4_t _4(e);
-   typedef VisitorNode<D, _4_t> _3_t;
+   typedef rf::VisitorNode<D, _4_t> _3_t;
    _3_t _3(d, _4);
-   typedef VisitorNode<C, _3_t> _2_t;
+   typedef rf::VisitorNode<C, _3_t> _2_t;
    _2_t _2(c, _3);
-   typedef VisitorNode<B, _2_t> _1_t;
+   typedef rf::VisitorNode<B, _2_t> _1_t;
    _1_t _1(b, _2);
-   typedef VisitorNode<A, _1_t> _0_t;
+   typedef rf::VisitorNode<A, _1_t> _0_t;
    _0_t _0(a, _1);
    return _0;
 }
@@ -230,22 +320,22 @@ create_visitor(A & a, B & b, C & c,
 
 template<class A, class B, class C, class D, class E,
 		 class F>
-VisitorNode<A, VisitorNode<B, VisitorNode<C, 
-    VisitorNode<D, VisitorNode<E, VisitorNode<F> > > > > >
+rf::VisitorNode<A, rf::VisitorNode<B, rf::VisitorNode<C, 
+    rf::VisitorNode<D, rf::VisitorNode<E, rf::VisitorNode<F> > > > > >
 create_visitor(A & a, B & b, C & c, 
                D & d, E & e, F & f)
 {
-   typedef VisitorNode<F> _5_t;
+   typedef rf::VisitorNode<F> _5_t;
    _5_t _5(f);
-   typedef VisitorNode<E, _5_t> _4_t;
+   typedef rf::VisitorNode<E, _5_t> _4_t;
    _4_t _4(e, _5);
-   typedef VisitorNode<D, _4_t> _3_t;
+   typedef rf::VisitorNode<D, _4_t> _3_t;
    _3_t _3(d, _4);
-   typedef VisitorNode<C, _3_t> _2_t;
+   typedef rf::VisitorNode<C, _3_t> _2_t;
    _2_t _2(c, _3);
-   typedef VisitorNode<B, _2_t> _1_t;
+   typedef rf::VisitorNode<B, _2_t> _1_t;
    _1_t _1(b, _2);
-   typedef VisitorNode<A, _1_t> _0_t;
+   typedef rf::VisitorNode<A, _1_t> _0_t;
    _0_t _0(a, _1);
    return _0;
 }
@@ -253,25 +343,25 @@ create_visitor(A & a, B & b, C & c,
 
 template<class A, class B, class C, class D, class E,
 		 class F, class G>
-VisitorNode<A, VisitorNode<B, VisitorNode<C, 
-    VisitorNode<D, VisitorNode<E, VisitorNode<F, 
-    VisitorNode<G> > > > > > >
+rf::VisitorNode<A, rf::VisitorNode<B, rf::VisitorNode<C, 
+    rf::VisitorNode<D, rf::VisitorNode<E, rf::VisitorNode<F, 
+    rf::VisitorNode<G> > > > > > >
 create_visitor(A & a, B & b, C & c, 
                D & d, E & e, F & f, G & g)
 {
-   typedef VisitorNode<G> _6_t;
+   typedef rf::VisitorNode<G> _6_t;
    _6_t _6(g);
-   typedef VisitorNode<F, _6_t> _5_t;
+   typedef rf::VisitorNode<F, _6_t> _5_t;
    _5_t _5(f, _6);
-   typedef VisitorNode<E, _5_t> _4_t;
+   typedef rf::VisitorNode<E, _5_t> _4_t;
    _4_t _4(e, _5);
-   typedef VisitorNode<D, _4_t> _3_t;
+   typedef rf::VisitorNode<D, _4_t> _3_t;
    _3_t _3(d, _4);
-   typedef VisitorNode<C, _3_t> _2_t;
+   typedef rf::VisitorNode<C, _3_t> _2_t;
    _2_t _2(c, _3);
-   typedef VisitorNode<B, _2_t> _1_t;
+   typedef rf::VisitorNode<B, _2_t> _1_t;
    _1_t _1(b, _2);
-   typedef VisitorNode<A, _1_t> _0_t;
+   typedef rf::VisitorNode<A, _1_t> _0_t;
    _0_t _0(a, _1);
    return _0;
 }
@@ -279,28 +369,28 @@ create_visitor(A & a, B & b, C & c,
 
 template<class A, class B, class C, class D, class E,
 		 class F, class G, class H>
-VisitorNode<A, VisitorNode<B, VisitorNode<C, 
-    VisitorNode<D, VisitorNode<E, VisitorNode<F, 
-    VisitorNode<G, VisitorNode<H> > > > > > > >
+rf::VisitorNode<A, rf::VisitorNode<B, rf::VisitorNode<C, 
+    rf::VisitorNode<D, rf::VisitorNode<E, rf::VisitorNode<F, 
+    rf::VisitorNode<G, rf::VisitorNode<H> > > > > > > >
 create_visitor(A & a, B & b, C & c, 
                D & d, E & e, F & f, 
                G & g, H & h)
 {
-   typedef VisitorNode<H> _7_t;
+   typedef rf::VisitorNode<H> _7_t;
    _7_t _7(h);
-   typedef VisitorNode<G, _7_t> _6_t;
+   typedef rf::VisitorNode<G, _7_t> _6_t;
    _6_t _6(g, _7);
-   typedef VisitorNode<F, _6_t> _5_t;
+   typedef rf::VisitorNode<F, _6_t> _5_t;
    _5_t _5(f, _6);
-   typedef VisitorNode<E, _5_t> _4_t;
+   typedef rf::VisitorNode<E, _5_t> _4_t;
    _4_t _4(e, _5);
-   typedef VisitorNode<D, _4_t> _3_t;
+   typedef rf::VisitorNode<D, _4_t> _3_t;
    _3_t _3(d, _4);
-   typedef VisitorNode<C, _3_t> _2_t;
+   typedef rf::VisitorNode<C, _3_t> _2_t;
    _2_t _2(c, _3);
-   typedef VisitorNode<B, _2_t> _1_t;
+   typedef rf::VisitorNode<B, _2_t> _1_t;
    _1_t _1(b, _2);
-   typedef VisitorNode<A, _1_t> _0_t;
+   typedef rf::VisitorNode<A, _1_t> _0_t;
    _0_t _0(a, _1);
    return _0;
 }
@@ -308,168 +398,67 @@ create_visitor(A & a, B & b, C & c,
 
 template<class A, class B, class C, class D, class E,
 		 class F, class G, class H, class I>
-VisitorNode<A, VisitorNode<B, VisitorNode<C, 
-    VisitorNode<D, VisitorNode<E, VisitorNode<F, 
-    VisitorNode<G, VisitorNode<H, VisitorNode<I> > > > > > > > >
+rf::VisitorNode<A, rf::VisitorNode<B, rf::VisitorNode<C, 
+    rf::VisitorNode<D, rf::VisitorNode<E, rf::VisitorNode<F, 
+    rf::VisitorNode<G, rf::VisitorNode<H, rf::VisitorNode<I> > > > > > > > >
 create_visitor(A & a, B & b, C & c, 
                D & d, E & e, F & f, 
                G & g, H & h, I & i)
 {
-   typedef VisitorNode<I> _8_t;
+   typedef rf::VisitorNode<I> _8_t;
    _8_t _8(i);
-   typedef VisitorNode<H, _8_t> _7_t;
+   typedef rf::VisitorNode<H, _8_t> _7_t;
    _7_t _7(h, _8);
-   typedef VisitorNode<G, _7_t> _6_t;
+   typedef rf::VisitorNode<G, _7_t> _6_t;
    _6_t _6(g, _7);
-   typedef VisitorNode<F, _6_t> _5_t;
+   typedef rf::VisitorNode<F, _6_t> _5_t;
    _5_t _5(f, _6);
-   typedef VisitorNode<E, _5_t> _4_t;
+   typedef rf::VisitorNode<E, _5_t> _4_t;
    _4_t _4(e, _5);
-   typedef VisitorNode<D, _4_t> _3_t;
+   typedef rf::VisitorNode<D, _4_t> _3_t;
    _3_t _3(d, _4);
-   typedef VisitorNode<C, _3_t> _2_t;
+   typedef rf::VisitorNode<C, _3_t> _2_t;
    _2_t _2(c, _3);
-   typedef VisitorNode<B, _2_t> _1_t;
+   typedef rf::VisitorNode<B, _2_t> _1_t;
    _1_t _1(b, _2);
-   typedef VisitorNode<A, _1_t> _0_t;
+   typedef rf::VisitorNode<A, _1_t> _0_t;
    _0_t _0(a, _1);
    return _0;
 }
 
 template<class A, class B, class C, class D, class E,
 		 class F, class G, class H, class I, class J>
-VisitorNode<A, VisitorNode<B, VisitorNode<C, 
-    VisitorNode<D, VisitorNode<E, VisitorNode<F, 
-    VisitorNode<G, VisitorNode<H, VisitorNode<I,
-	VisitorNode<J> > > > > > > > > >
+rf::VisitorNode<A, rf::VisitorNode<B, rf::VisitorNode<C, 
+    rf::VisitorNode<D, rf::VisitorNode<E, rf::VisitorNode<F, 
+    rf::VisitorNode<G, rf::VisitorNode<H, rf::VisitorNode<I,
+	rf::VisitorNode<J> > > > > > > > > >
 create_visitor(A & a, B & b, C & c, 
                D & d, E & e, F & f, 
                G & g, H & h, I & i,
 			   J & j)
 {
-   typedef VisitorNode<J> _9_t;
+   typedef rf::VisitorNode<J> _9_t;
    _9_t _9(j);
-   typedef VisitorNode<I, _9_t> _8_t;
+   typedef rf::VisitorNode<I, _9_t> _8_t;
    _8_t _8(i, _9);
-   typedef VisitorNode<H, _8_t> _7_t;
+   typedef rf::VisitorNode<H, _8_t> _7_t;
    _7_t _7(h, _8);
-   typedef VisitorNode<G, _7_t> _6_t;
+   typedef rf::VisitorNode<G, _7_t> _6_t;
    _6_t _6(g, _7);
-   typedef VisitorNode<F, _6_t> _5_t;
+   typedef rf::VisitorNode<F, _6_t> _5_t;
    _5_t _5(f, _6);
-   typedef VisitorNode<E, _5_t> _4_t;
+   typedef rf::VisitorNode<E, _5_t> _4_t;
    _4_t _4(e, _5);
-   typedef VisitorNode<D, _4_t> _3_t;
+   typedef rf::VisitorNode<D, _4_t> _3_t;
    _3_t _3(d, _4);
-   typedef VisitorNode<C, _3_t> _2_t;
+   typedef rf::VisitorNode<C, _3_t> _2_t;
    _2_t _2(c, _3);
-   typedef VisitorNode<B, _2_t> _1_t;
+   typedef rf::VisitorNode<B, _2_t> _1_t;
    _1_t _1(b, _2);
-   typedef VisitorNode<A, _1_t> _0_t;
+   typedef rf::VisitorNode<A, _1_t> _0_t;
    _0_t _0(a, _1);
    return _0;
 }
-
-}
-#endif 
-/** Base Class from which all Visitors derive
- */
-class VisitorBase
-{
-    public:
-	
-	bool is_active()
-	{
-		return true;
-	}
-
-	bool has_value()
-	{
-		return false;
-	}
-	
-	/** do something after the the Split has decided how to process the Region
-	 * (Stack entry)
-	 *
-	 * \param tree 		reference to the tree that is currently being learned
-	 * \param split 	reference to the split object
-	 * \param parent 	current stack entry  which was used to decide the split
-	 * \param leftChild	left stack entry that will be pushed
-	 * \param rightChild
-	 * 					right stack entry that will be pushed.
-	 * \sa RF_Traits::StackEntry_t
-	 */
-    template<class Tree, class Split, class Region>
-    void visit_after_split( Tree 	      & tree, 
-						   	Split         & split,
-                            Region        & parent,
-                            Region        & leftChild,
-                            Region        & rightChild)
-    {}
-	
-	/** do something after each tree has been learned
-	 *
-	 * \param rf 		reference to the random forest object that called this
-	 * 					visitor
-	 * \param pr 		reference to the preprocessor that processed the input
-	 * \param sm		reference to the sampler object
-	 * \param st		reference to the first stack entry
-	 * \param index 	index of current tree
-	 */
-    template<class RF, class PR, class SM, class ST>
-    void visit_after_tree(RF& rf, PR & pr,  SM & sm, ST & st, int index)
-    {}
-	
-	/** do something after all trees have been learned
-	 *
-	 * \param rf		reference to the random forest object that called this
-	 * 					visitor
-	 * \param pr		reference to the preprocessor that processed the input
-	 */
-    template<class RF, class PR>
-    void visit_at_end(RF & rf, PR & pr)
-    {}
-	
-    template<class RF>
-    void visit_at_beginning(RF & rf)
-    {}
-	/** do some thing while traversing tree after it has been learned 
-	 * 	(external nodes)
-	 *
-	 * \param tr 		reference to the tree object that called this visitor
-	 * \param index		index in the topology_ array we currently are at
-	 * \param node_tag	type of node we have (will be e_.... - )
-	 * \sa 	NodeTags;
-	 *
-	 * you can create the node by using a switch on node_tag and using the 
-	 * corresponding Node objects. Or - if you do not care about the type 
-	 * use the Nodebase class.
-	 */
-	template<class TR, class IntT, class TopT>
-	void visit_external_node(TR & tr, IntT index, TopT node_t)
-	{}
-	
-	/** do something when visiting a internal node after it has been learned
-	 *
-	 * \sa visit_external_node
-	 */
-	template<class TR, class IntT, class TopT>
-	void visit_internal_node(TR & tr, IntT index, TopT node_t)
-	{}
-
-	/** return a double value.  The value of the first 
-	 * visitor encountered that has a return value is returned with the
-	 * RandomForest::learn() method - or -1.0 if no return value visitor
-	 * existed. This functionality basically only exists so that the 
-	 * OOB - visitor can return the oob error rate like in the old version 
-	 * of the random forest.
-	 */
-    double return_val()
-    {}
-};
-
-
-
 
 //////////////////////////////////////////////////////////////////////////////
 // Visitors of communal interest. Do not spam this file with stuff          //

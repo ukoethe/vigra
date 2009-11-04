@@ -131,7 +131,7 @@ struct ClassifierTest
                             data.labels(ii),
 							rf_default(),
 							rf_default(),
-						   	detail::create_visitor(testVisitor),
+						   	create_visitor(testVisitor),
                             vigra::RandomMT19937(1));
 
                 testVisitor.fout <<  data.names(ii) << std::endl;
@@ -220,7 +220,7 @@ struct ClassifierTest
                         MultiArrayView<2, int>(MultiArrayShape<2>::type(4,1), labels),
 						rf_default(),
 						rf_default(),
-						detail::create_visitor(testVisitor),
+						create_visitor(testVisitor),
                         vigra::RandomTT800::global());
 
         }
@@ -280,7 +280,7 @@ struct ClassifierTest
                             data.labels(ii),
 							rf_default(),
 							rf_default(),
-						    detail::create_visitor(var_imp),
+						    create_visitor(var_imp),
                             vigra::RandomMT19937(1));
 				
 				var_imp.variable_importance_ -= p_imp;
