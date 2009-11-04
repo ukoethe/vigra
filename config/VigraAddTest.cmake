@@ -13,13 +13,17 @@
 # The function VIGRA_COPY_TEST_DATA copies the given files from the current source directory
 # to the corresponding binary directory.
 #
-INCLUDE(vigra_run_test RESULT_VARIABLE VIGRA_RUN_TEST)
-
-IF (MSVC OR MINGW)
-   STRING(REGEX REPLACE "\\.cmake$" ".bat" VIGRA_RUN_TEST ${VIGRA_RUN_TEST})
-ELSE ()
-   STRING(REGEX REPLACE "\\.cmake$" ".sh" VIGRA_RUN_TEST ${VIGRA_RUN_TEST})
-ENDIF ()
+MACRO(VIGRA_NATIVE_PATH out in)
+    file(TO_CMAKE_PATH "${in}" ${out})
+    IF(NOT CMAKE_CFG_INTDIR STREQUAL ".")
+        STRING(REGEX REPLACE "\\$\\([^\\)]*\\)" "%CONFIGURATION%" ${out} "${${out}}")
+    ENDIF()
+    IF(MINGW)
+        STRING(REGEX REPLACE "/" "\\\\" ${out} "${${out}}")
+    ELSE()
+        file(TO_NATIVE_PATH "${${out}}" ${out})
+    ENDIF()
+ENDMACRO(VIGRA_NATIVE_PATH)
 
 FUNCTION(VIGRA_ADD_TEST target)
     # parse the args
@@ -48,55 +52,64 @@ FUNCTION(VIGRA_ADD_TEST target)
     ELSE()
         ADD_EXECUTABLE(${target} EXCLUDE_FROM_ALL ${SOURCES})
     ENDIF()
+    
     ADD_DEPENDENCIES(check ${target})
+    ADD_DEPENDENCIES(ctest ${target})
     if(DEFINED LIBRARIES)
         TARGET_LINK_LIBRARIES(${target} ${LIBRARIES})
     endif()
     
     # find the test executable
     GET_TARGET_PROPERTY(${target}_executable ${target} LOCATION)
-    IF(MINGW)
-        STRING(REGEX REPLACE "/" "\\\\" ${target}_executable "${${target}_executable}")
-    ELSE()
-        file(TO_NATIVE_PATH ${${target}_executable} ${target}_executable)
-    ENDIF()
+    VIGRA_NATIVE_PATH(VIGRA_TEST_EXECUTABLE ${${target}_executable})
     
     # Windows: set the DLL path
-    set(path "")
+    set(VIGRA_PATH "")
     if(WIN32)
+        IF(CYGWIN)
+            SET(PATHSEP ":")
+        ELSE()
+            SET(PATHSEP ";")
+        ENDIF()
         FOREACH(lib ${LIBRARIES})
             GET_TARGET_PROPERTY(p ${lib} LOCATION)
-            STRING(REGEX REPLACE "/[^/]*$" "" p ${p}) # get path prefix
-            IF(MINGW)
-                STRING(REGEX REPLACE "/" "\\\\" p "${p}")
-            ELSE()
-                file(TO_NATIVE_PATH ${p} p)
-            ENDIF()
-            if(NOT ${p} MATCHES "NOTFOUND")
-                set(path  "${path}" "${p}")
-#                set_tests_properties(${target} PROPERTIES ENVIRONMENT "PATH=${path}:$PATH")
-            endif()
+            if(p)
+                GET_FILENAME_COMPONENT(p ${p} PATH)
+                VIGRA_NATIVE_PATH(p ${p})
+                SET(VIGRA_PATH  "${p}${PATHSEP}${VIGRA_PATH}")
+           endif()
         ENDFOREACH(lib)
     endif()
     
+    VIGRA_NATIVE_PATH(VIGRA_CURRENT_BINARY_DIR ${CMAKE_CURRENT_BINARY_DIR})
+    IF(MSVC OR MINGW)
+        SET(VIGRA_RUN_TEST "${CMAKE_CURRENT_BINARY_DIR}/run_${target}.bat")
+        CONFIGURE_FILE(${CMAKE_SOURCE_DIR}/config/run_test.bat.in
+                       ${VIGRA_RUN_TEST}
+                       @ONLY)
+    ELSE()
+        SET(VIGRA_RUN_TEST "${CMAKE_CURRENT_BINARY_DIR}/run_${target}.sh")
+        CONFIGURE_FILE(${CMAKE_SOURCE_DIR}/config/run_test.sh.in
+                       ${VIGRA_RUN_TEST}
+                       @ONLY)
+    ENDIF()
+    
     # register the test execution command
+    IF(NOT CMAKE_CFG_INTDIR STREQUAL ".")
+        SET(VIGRA_CONFIGURATION ${CMAKE_CFG_INTDIR})
+    ELSE()
+        SET(VIGRA_CONFIGURATION)
+    ENDIF()
+    
     IF(AUTOEXEC_TESTS)
         add_custom_command(
             TARGET ${target}
             POST_BUILD
-            COMMAND ${VIGRA_RUN_TEST} ARGS ${${target}_executable} ${path}
-            COMMENT "Running tests")
+            COMMAND ${VIGRA_RUN_TEST} ARGS ${VIGRA_CONFIGURATION}
+            COMMENT "Running ${target}")
     ENDIF()
-
-    IF(CYGWIN)
-        ADD_TEST(${target} ${VIGRA_RUN_TEST} ${${target}_executable} ${path})
-    ELSEIF(MINGW)
-        STRING(REGEX REPLACE "\\\\" "\\\\\\\\" ${target}_executable "${${target}_executable}")
-        STRING(REGEX REPLACE "\\\\" "\\\\\\\\" path "${path}")
-        ADD_TEST(${target} ${VIGRA_RUN_TEST} ${${target}_executable} ${path})
-    ELSE()
-        ADD_TEST(${target} ${target})
-    ENDIF()
+    
+    ADD_TEST(${target} ${VIGRA_RUN_TEST} ${VIGRA_CONFIGURATION})
 
 ENDFUNCTION(VIGRA_ADD_TEST)
 

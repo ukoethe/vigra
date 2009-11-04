@@ -26,6 +26,7 @@ ENDIF ()
 ##################################################
 
 ADD_CUSTOM_TARGET(check)
+ADD_CUSTOM_TARGET(ctest COMMAND ${CMAKE_CTEST_COMMAND})
 
 ENABLE_TESTING()
 
