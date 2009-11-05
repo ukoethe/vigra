@@ -86,7 +86,7 @@ exportRandomForest(RandomForest<T> const & rf, CellArray cells)
 
 
     int optCount = rf.options_.serialized_size();
-    MultiArrayView<1, UInt32> opt = createArray<UInt32>(optCount, cells[0]);
+    MultiArrayView<1, UInt32> opt = createArray<UInt32>(optCount, cells[1]);
 	rf.options_.serialize(opt.data(), opt.data() + optCount);
 
     // for all decision trees
