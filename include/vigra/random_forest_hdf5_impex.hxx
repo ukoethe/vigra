@@ -34,8 +34,8 @@
 /************************************************************************/
 
 
-#ifndef VIGRA_RANDOM_FOREST_IMPEX_HXX
-#define VIGRA_RANDOM_FOREST_IMPEX_HXX
+#ifndef VIGRA_RANDOM_FOREST_IMPEX_HDF5_HXX
+#define VIGRA_RANDOM_FOREST_IMPEX_HDF5_HXX
 
 #include "random_forest.hxx"
 #include "hdf5impex.hxx"
@@ -328,5 +328,5 @@ int get_number_of_digits(int in)
 } // namespace vigra
 
 
-#endif // VIGRA_RANDOM_FOREST_IMPEX_HXX
+#endif // VIGRA_RANDOM_FOREST_HDF5_IMPEX_HXX
 
