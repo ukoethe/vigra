@@ -89,10 +89,13 @@ if strcmp( TARGET, 'all' ) || strcmp( TARGET, 'test' )
         if isempty( mex_file ) || ( cpp_file.datenum > mex_file.datenum )
 			% compile
 			disp(['compiling: ' cpp_filename ] );
-            if isOctave
-                eval(['mex -I' include_dir ' -o ' mex_filename ' ' SRCDIR '/' cpp_filename]);
-            else
-                eval(['mex -O -I' include_dir ' -outdir ''' OUTDIR ''' ' SRCDIR '/' cpp_filename]);
+            try
+                if isOctave
+                    eval(['mex -I' include_dir ' -o ' mex_filename ' ' SRCDIR '/' cpp_filename]);
+                else
+                    eval(['mex -O -I' include_dir ' -outdir ''' OUTDIR ''' ' SRCDIR '/' cpp_filename]);
+                end
+            catch ME
             end
     
             

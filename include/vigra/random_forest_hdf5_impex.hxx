@@ -40,6 +40,7 @@
 #include "random_forest.hxx"
 #include "hdf5impex.hxx"
 #include <cstdio>
+#include <string>
 
 namespace vigra 
 {
@@ -249,14 +250,18 @@ int get_number_of_digits(int in)
 		//save trees
 		for(int ii = 0; ii < rf.options_.tree_count_; ++ii)
 		{
-			std::stringstream sout; 
+			char buffer [50];
+			std::sprintf(buffer, "%d", ii); 
+			std::string zeros_b = "";
 			int bb = get_number_of_digits(ii); 
-			sout << pathname << "Tree_"; 
 			for(int gg = 0; gg < a - bb; ++ gg)
-				sout << 0;
-			sout << ii << "/";
-			std::string topo_name_  = sout.str() + std::string("topology");
-			std::string param_name_ = sout.str() + std::string("parameters");
+				zeros_b = zeros_b + "0";
+			char a[100] = "Tree_";
+			std::strcat(a, zeros_b.c_str());
+			std::strcat(a, buffer);
+			std::strcat(a, "/");
+			std::string topo_name_  = pathname +a + std::string("topology");
+			std::string param_name_ = pathname +a + std::string("parameters");
 			MultiArrayView<2, Int32> topology(Shp(rf.tree(ii).topology_.size(), 1),
 											  rf.tree(ii).topology_.data());
 			MultiArrayView<2, double> param(Shp(rf.tree(ii).parameters_.size(), 1),
