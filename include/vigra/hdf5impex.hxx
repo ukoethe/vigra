@@ -153,7 +153,9 @@ Namespace: vigra
 class HDF5ImportInfo
 {
   public:
-    enum PixelType { UINT8, INT16, UINT16, INT32, UINT32, FLOAT, DOUBLE };
+    enum PixelType { UINT8, UINT16, UINT32, UINT64, 
+	   				 INT8, INT16, INT32, INT64,
+					 FLOAT, DOUBLE };
 
         /** Construct HDF5ImageImportInfo object.
 

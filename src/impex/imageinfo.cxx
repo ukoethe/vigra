@@ -1019,24 +1019,43 @@ HDF5ImportInfo::HDF5ImportInfo(const char* filePath, const char* pathInFile)
 
     vigra_precondition( m_dimensions>=2, "HDF5ImportInfo(): Number of dimensions is lower than 2. Not an image!" );
 
-    hid_t datatype = H5Dget_type(m_dataset_handle);
-    H5T_class_t dataclass = H5Tget_class(datatype);
-    if(dataclass==detail::getH5DataType<float>())
-        m_pixeltype = "FLOAT";
-    if(dataclass==detail::getH5DataType<UInt8>())
-        m_pixeltype = "UINT8";
-    if(dataclass==detail::getH5DataType<Int8>())
-        m_pixeltype = "INT8";
-    if(dataclass==detail::getH5DataType<UInt16>())
-        m_pixeltype = "UINT16";
-    if(dataclass==detail::getH5DataType<Int16>())
-        m_pixeltype = "INT16";
-    if(dataclass==detail::getH5DataType<UInt32>())
-        m_pixeltype = "UINT32";
-    if(dataclass==detail::getH5DataType<Int32>())
-        m_pixeltype = "INT32";
-    if(dataclass==detail::getH5DataType<double>())
-        m_pixeltype = "DOUBLE";
+	hid_t datatype = H5Dget_type(m_dataset_handle);
+	H5T_class_t dataclass = H5Tget_class(datatype);
+	size_t datasize  = H5Tget_size(datatype);
+	H5T_sign_t datasign  = H5Tget_sign(datatype);
+
+	if(dataclass == H5T_FLOAT)
+	{
+		if(datasize == 4)
+			m_pixeltype = "FLOAT";
+		else if(datasize == 8)
+			m_pixeltype = "DOUBLE";
+	}
+	else if(dataclass == H5T_INTEGER)	
+	{
+		if(datasign == H5T_SGN_NONE)
+		{
+			if(datasize ==  1)
+				m_pixeltype = "UINT8";
+			else if(datasize == 2)
+				m_pixeltype = "UINT16";
+			else if(datasize == 4)
+				m_pixeltype = "UINT32";
+			else if(datasize == 8)
+				m_pixeltype = "UINT64";
+		}
+		else
+		{
+			if(datasize ==  1)
+				m_pixeltype = "INT8";
+			else if(datasize == 2)
+				m_pixeltype = "INT16";
+			else if(datasize == 4)
+				m_pixeltype = "INT32";
+			else if(datasize == 8)
+				m_pixeltype = "INT64";
+		}
+	}
 
     m_dims.resize(m_dimensions);
     ArrayVector<hsize_t> size(m_dimensions);
@@ -1056,14 +1075,20 @@ HDF5ImportInfo::PixelType HDF5ImportInfo::pixelType() const
    const std::string pixeltype=HDF5ImportInfo::getPixelType();
    if (pixeltype == "UINT8")
        return HDF5ImportInfo::UINT8;
-   if (pixeltype == "INT16")
-     return HDF5ImportInfo::INT16;
    if (pixeltype == "UINT16")
      return HDF5ImportInfo::UINT16;
-   if (pixeltype == "INT32")
-     return HDF5ImportInfo::INT32;
    if (pixeltype == "UINT32")
      return HDF5ImportInfo::UINT32;
+   if (pixeltype == "UINT64")
+     return HDF5ImportInfo::UINT64;
+   if (pixeltype == "INT8")
+       return HDF5ImportInfo::INT8;
+   if (pixeltype == "INT16")
+     return HDF5ImportInfo::INT16;
+   if (pixeltype == "INT32")
+     return HDF5ImportInfo::INT32;
+   if (pixeltype == "INT64")
+     return HDF5ImportInfo::INT64;
    if (pixeltype == "FLOAT")
      return HDF5ImportInfo::FLOAT;
    if (pixeltype == "DOUBLE")
