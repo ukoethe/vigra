@@ -788,11 +788,16 @@ struct MultiImpexTest
     
     void testImpex()
     {
-        exportVolume(array, VolumeExportInfo("test", ".tif"));
+#if defined(HasTIFF)
+        const char * ext1 = ".tif";
+#else
+        const char * ext1 = ".xv";
+#endif
+        exportVolume(array, VolumeExportInfo("test", ext1));
         
         Array result;
         
-        VolumeImportInfo import_info("test", ".tif");
+        VolumeImportInfo import_info("test", ext1);
         result.reshape(import_info.shape());
         importVolume(import_info, result);
         
@@ -802,9 +807,14 @@ struct MultiImpexTest
         shouldEqual(result(0,1,2), 3);
         shouldEqual(result(0,1,3), 4);
 
-        exportVolume(array, std::string("impex/test"), std::string(".png"));
+#if defined(HasPNG)
+        const char * ext2 = ".png";
+#else
+        const char * ext2 = ".pnm";
+#endif
+        exportVolume(array, std::string("impex/test"), std::string(ext2));
         
-        importVolume(result, std::string("impex/test"), std::string(".png"));
+        importVolume(result, std::string("impex/test"), std::string(ext2));
         
         shouldEqual(result.shape(), Shape(2,3,4));
         shouldEqual(result(0,1,0), 1);
@@ -813,9 +823,9 @@ struct MultiImpexTest
         shouldEqual(result(0,1,3), 4);
 
 #ifdef _WIN32
-        exportVolume(array, VolumeExportInfo("impex\\test", ".png"));
+        exportVolume(array, VolumeExportInfo("impex\\test", ext2));
         
-        importVolume(result, std::string("impex\\test"), std::string(".png"));
+        importVolume(result, std::string("impex\\test"), std::string(ext2));
         
         shouldEqual(result.shape(), Shape(2,3,4));
         shouldEqual(result(0,1,0), 1);
