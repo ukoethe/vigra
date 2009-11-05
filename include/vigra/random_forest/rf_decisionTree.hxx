@@ -91,7 +91,6 @@ class DecisionTree
 
 
   public:
-
 	/** \Brief Create tree with parameters */
     DecisionTree(RF_Traits::ProblemSpec_t ext_param)
     :

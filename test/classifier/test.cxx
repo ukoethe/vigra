@@ -41,6 +41,7 @@
 #include <functional>
 #include <cmath>
 #include <vigra/random_forest.hxx>
+#include <vigra/random_forest_hdf5_impex.hxx>
 #include <unittest.hxx>
 #include <vector>
 //#include "data/RF_results.hxx"
@@ -157,7 +158,9 @@ struct ClassifierTest
         std::cerr << "DONE!\n\n";
     }
 
-
+	/** checks whether the agglomeration of data and conversion from internal
+	 * to external labels is working 
+	 */
 	void RFresponseTest()
 	{
 		int ii = 2; 
@@ -379,6 +382,48 @@ struct ClassifierTest
         std::cerr << "DONE!\n\n";
 	}
 
+#if HasHDF5
+	/** checks whether hdf5 import export is working
+	 */
+    void HDF5ImpexTest()
+    {
+
+            for(int ii = 0; ii <data.size() ; ii++)
+            {
+				std::cerr << "Running HDF5 Impex Test\n";
+				vigra::RandomForest<> RF(vigra::RandomForestOptions()
+											 .tree_count(100));
+
+				 RF.learn(data.features(ii), data.labels(ii));
+				 rf_export_HDF5(RF, data.names(ii) + "_rf.hdf5");
+
+				 vigra::RandomForest<> RF2;
+				 rf_import_HDF5(RF2,data.names(ii) + "_rf.hdf5");
+
+				 should(RF.ext_param_== RF2.ext_param_);
+				 shouldEqual(RF.trees_.size(), RF2.trees_.size());
+				 for(int jj = 0; jj < RF.trees_.size(); ++jj)
+				 {
+
+					 should(RF.trees_[jj].topology_ == 
+							RF2.trees_[jj].topology_);
+
+					 should(RF.trees_[jj].parameters_ ==
+							RF2.trees_[jj].parameters_);
+
+				 }
+				 should(RF.options_ ==  RF2.options_);
+                 std::cerr << "[";
+                 for(int ss = 0; ss < ii+1; ++ss)
+                     std::cerr << "#";
+                 for(int ss = ii+1; ss < data.size(); ++ss)
+                     std::cerr << " ";
+                 std::cerr << "] " << data.names(ii);
+                 std::cerr << "\n";
+            }
+            std::cerr << "done!\n";
+    }
+#endif
 };
 
 
@@ -394,6 +439,9 @@ struct ClassifierTestSuite
         add( testCase( &ClassifierTest::RFnoiseTest));
         add( testCase( &ClassifierTest::RFvariableImportanceTest));
         add( testCase( &ClassifierTest::RFresponseTest));
+#if HasHDF5
+		add( testCase( &ClassifierTest::HDF5ImpexTest));
+#endif
     }
 };
 

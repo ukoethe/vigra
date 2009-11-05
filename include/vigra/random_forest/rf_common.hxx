@@ -263,6 +263,27 @@ class RandomForestOptions
 	}
 	
 
+	bool operator==(RandomForestOptions & son_of_crap) const
+	{
+		bool result = true;
+		#define COMPARE(field) result = result && (this->field == son_of_crap.field); 
+		COMPARE(training_set_proportion_);
+		COMPARE(training_set_size_);
+		COMPARE(training_set_calc_switch_);
+		COMPARE(sample_with_replacement_);
+		COMPARE(stratification_method_);
+		COMPARE(mtry_switch_);
+		COMPARE(mtry_);
+		COMPARE(tree_count_);
+		COMPARE(min_split_node_size_);
+		#undef COMPARE
+
+		return result;
+	}
+	bool operator!=(RandomForestOptions & i_hate_you_) const
+	{
+		return !(*this == i_hate_you_);
+	}
 	template<class Iter>
 	void unserialize(Iter const & begin, Iter const & end)
 	{
@@ -522,7 +543,7 @@ private:
    // todo it would be an alternative to just save all class types as
    // strings or doubles - whatever.
 #define make_dlh(typee_)\
-private:\
+public:\
 	ArrayVector<typee_>			typee_##_classes_;\
 	Types_t type_of(typee_ in)\
 	{\
@@ -533,7 +554,7 @@ public:\
 	{\
 		out = typee_(typee_##_classes_[index]);\
 	}\
-private:
+public:
 
 	make_dlh(UInt8);
 	make_dlh(UInt16);
@@ -560,7 +581,37 @@ public:
 	Problem_t 	problem_type_;
 	Types_t 	class_type_;
 
+	bool operator==(ProblemSpec & son_of_crap)
+	{
+		bool result = true;
+		#define COMPARE(field) result = result && (this->field == son_of_crap.field);
+		COMPARE(column_count_);
+		COMPARE(class_count_);
+		COMPARE(row_count_);
+		COMPARE(actual_mtry_);
+		COMPARE(actual_msample_);
+		COMPARE(problem_type_);
+		COMPARE(class_type_);
+		COMPARE(is_weighted);
+		COMPARE(class_weights_);
+		COMPARE(UInt8_classes_);
+		COMPARE(UInt16_classes_);
+		COMPARE(UInt32_classes_);
+		COMPARE(UInt64_classes_);
+		COMPARE(Int8_classes_);
+		COMPARE(Int16_classes_);
+		COMPARE(Int32_classes_);
+		COMPARE(Int64_classes_);
+		COMPARE(float_classes_);
+		COMPARE(double_classes_);
+		#undef COMPARE
 
+		return result;
+	}
+	bool operator!=(ProblemSpec & i_hate_you_)
+	{
+		return !(*this == i_hate_you_);
+	}
 
 	ArrayVector<double> 		class_weights_;
 	bool is_weighted;
@@ -634,6 +685,34 @@ public:
 		#undef PUSH
 	}
 
+	void make_from_map(std::map<std::string, MultiArray<2, double> > & in)
+	{
+		typedef MultiArrayShape<2>::type Shp; 
+		#define PULL(item_, type_) item_ = type_(in[#item_](0,0)); 
+		PULL(column_count_,int);
+		PULL(class_count_, int);
+		PULL(row_count_, int);
+		PULL(actual_mtry_,int);
+		PULL(actual_msample_, int);
+		PULL(problem_type_, Problem_t);
+		PULL(class_type_, Types_t);
+		PULL(is_weighted, bool);
+		#undef PUSH
+	}
+	void make_map(std::map<std::string, MultiArray<2, double> > & in) const
+	{
+		typedef MultiArrayShape<2>::type Shp; 
+		#define PUSH(item_) in[#item_] = MultiArray<2, double>(Shp(1,1), double(item_)); 
+		PUSH(column_count_);
+		PUSH(class_count_)
+		PUSH(row_count_);
+		PUSH(actual_mtry_);
+		PUSH(actual_msample_);
+		PUSH(problem_type_);
+		PUSH(class_type_);
+		PUSH(is_weighted);
+		#undef PUSH
+	}
 	
 	size_t serialized_size() const
 	{
