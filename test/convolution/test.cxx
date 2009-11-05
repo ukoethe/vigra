@@ -580,9 +580,19 @@ struct ConvolutionTest
     void separableConvolutionTest()
     {
         vigra::Kernel1D<double> binom;
-        binom.initBinomial(1);
+        binom.initBinomial(2);
         
         vigra::Kernel1D<double>::Iterator center = binom.center();
+        
+        should(center[0] == 0.375);
+        should(center[-1] == 0.25);
+        should(center[1] == 0.25);
+        should(center[-2] == 0.0625);
+        should(center[2] == 0.0625);
+        
+        binom.initBinomial(1);
+        
+        center = binom.center();
         
         should(center[0] == 0.5);
         should(center[-1] == 0.25);

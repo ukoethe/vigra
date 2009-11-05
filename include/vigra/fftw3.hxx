@@ -1207,13 +1207,13 @@ fourierTransformImpl(FFTWComplexImage::const_traverser sul,
     fftw_complex * destPtr = (fftw_complex *)(&*dul);
 
     // test for right memory layout (fftw expects a 2*width*height floats array)
-    if (&(*(sul + Diff2D(w, 0))) != &(*(sul + Diff2D(0, 1))))
+    if (h > 1 && &(*(sul + Diff2D(w, 0))) != &(*(sul + Diff2D(0, 1))))
     {
         sworkImage.resize(w, h);
         copyImage(srcIterRange(sul, slr, src), destImage(sworkImage));
         srcPtr = (fftw_complex *)(&(*sworkImage.upperLeft()));
     }
-    if (&(*(dul + Diff2D(w, 0))) != &(*(dul + Diff2D(0, 1))))
+    if (h > 1 && &(*(dul + Diff2D(w, 0))) != &(*(dul + Diff2D(0, 1))))
     {
         dworkImage.resize(w, h);
         destPtr = (fftw_complex *)(&(*dworkImage.upperLeft()));
@@ -1223,7 +1223,7 @@ fourierTransformImpl(FFTWComplexImage::const_traverser sul,
     fftw_execute(plan);
     fftw_destroy_plan(plan);
 
-    if (&(*(dul + Diff2D(w, 0))) != &(*(dul + Diff2D(0, 1))))
+    if (h > 1 && &(*(dul + Diff2D(w, 0))) != &(*(dul + Diff2D(0, 1))))
     {
         copyImage(srcImageRange(dworkImage), destIter(dul, dest));
     }

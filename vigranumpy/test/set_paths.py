@@ -1,7 +1,7 @@
 import sys, os
 
 if len(sys.argv) == 3:
-    outdir = '\\' + sys.argv[-1]
+    outdir = os.sep + sys.argv[-1]
 else:
     outdir = ''
 

@@ -45,6 +45,22 @@
 
 using namespace vigra;
 
+template <class Image>
+void failCodec(Image const & img, ImageExportInfo const & info)
+{
+    try {
+        exportImage (srcImageRange (img), info);
+        failTest( "Failed to throw exception." );
+    }
+    catch( vigra::PreconditionViolation & e )
+    {
+        std::string expected = "\nPrecondition violation!\n";
+        expected += "did not find a matching codec for the given file extension";
+        const bool rc = std::strncmp( expected.c_str(), e.what(), expected.length() ) == 0;
+        should(rc);
+    }
+}
+
 class ByteImageExportImportTest
 {
     typedef vigra::BImage Image;
@@ -68,8 +84,34 @@ public:
         const std::string formats = impexListFormats();
         const std::string extensions = impexListExtensions();
 
-        shouldEqual(formats, "BMP GIF HDR JPEG PNG PNM SUN TIFF VIFF");
-        shouldEqual(extensions, "bmp gif hdr jpeg jpg pbm pgm png pnm ppm ras tif tiff xv");
+        const char * refFormats = "BMP GIF HDR "
+#if defined(HasJPEG)
+        "JPEG "
+#endif
+#if defined(HasPNG)
+        "PNG "
+#endif
+        "PNM SUN "
+#if defined(HasTIFF)
+        "TIFF "
+#endif
+        "VIFF";
+        shouldEqual(formats, refFormats);
+
+        const char * refExtensions = "bmp gif hdr "
+#if defined(HasJPEG)
+        "jpeg jpg "
+#endif
+        "pbm pgm "
+#if defined(HasPNG)
+        "png "
+#endif
+        "pnm ppm ras "
+#if defined(HasTIFF)
+        "tif tiff "
+#endif
+        "xv";
+        shouldEqual(extensions, refExtensions);
     }
 
     void testIsImage()
@@ -110,6 +152,9 @@ public:
     void testJPEG ()
     {
         vigra::ImageExportInfo exportinfo ("res.jpg");
+#if !defined(HasJPEG)
+        failCodec(img, exportinfo);
+#else
         exportinfo.setCompression ("100");
         exportImage (srcImageRange (img), exportinfo);
 
@@ -133,11 +178,15 @@ public:
             sum += std::abs (acc (i) - acc (i1));
 
         should (sum / (info.width () * info.height ()) < 0.1);
+#endif
     }
 
     void testTIFF ()
     {
         vigra::ImageExportInfo exportinfo ("res.tif");
+#if !defined(HasTIFF)
+        failCodec(img, exportinfo);
+#else
         exportinfo.setCompression ("LZW");
         exportImage (srcImageRange (img), exportinfo);
 
@@ -158,6 +207,7 @@ public:
 
         for (; i != img.end (); ++i, ++i1)
             should (acc (i) == acc (i1));
+#endif
     }
 
     void testBMP ()
@@ -203,7 +253,11 @@ public:
 
     void testPNG ()
     {
+#if !defined(HasPNG)
+        failCodec(img, vigra::ImageExportInfo("res.png"));
+#else
         testFile ("res.png");
+#endif
     }
 
     void testSUN ()
@@ -319,6 +373,9 @@ public:
 
     void testJPEG ()
     {
+#if !defined(HasJPEG)
+        failCodec(img, vigra::ImageExportInfo ("res.jpg").setCompression ("100"));
+#else
         exportImage (srcImageRange (img),
                      vigra::ImageExportInfo ("res.jpg").setCompression ("100"));
 
@@ -343,10 +400,14 @@ public:
                 sum += (acc (i) - acc (i1)).magnitude ();
             }
         should (sum / (info.width () * info.height ()) < 2.0);
+#endif
     }
 
     void testTIFF ()
     {
+#if !defined(HasTIFF)
+        failCodec(img, vigra::ImageExportInfo ("res.tif").setCompression ("LZW"));
+#else
         exportImage (srcImageRange (img),
                      vigra::ImageExportInfo ("res.tif").
                      setCompression ("LZW"));
@@ -370,6 +431,7 @@ public:
             {
                 should (acc (i) == acc (i1));
             }
+#endif
     }
 
     void testBMP ()
@@ -415,7 +477,11 @@ public:
 
     void testPNG ()
     {
+#if !defined(HasPNG)
+        failCodec(img, vigra::ImageExportInfo("res.png"));
+#else
         testFile ("res.png");
+#endif
     }
 
     void testSUN ()
@@ -572,6 +638,9 @@ public:
 
     void testJPEG ()
     {
+#if !defined(HasJPEG)
+        failCodec(img, vigra::ImageExportInfo ("res.jpg").setCompression ("100"));
+#else
         exportImage (srcImageRange (img),
                      vigra::ImageExportInfo ("res.jpg").setCompression ("100"));
 
@@ -594,10 +663,14 @@ public:
         for (; i != reread.end (); ++i, ++i1)
             sum += std::abs (acc (i) - acc (i1));
         should (sum / (info.width () * info.height ()) < 0.1);
+#endif
     }
 
     void testTIFF ()
     {
+#if !defined(HasTIFF)
+        failCodec(img, vigra::ImageExportInfo ("res.tif").setCompression ("LZW"));
+#else
         exportImage (srcImageRange (img),
                      vigra::ImageExportInfo ("res.tif").setCompression ("LZW"));
 
@@ -617,10 +690,14 @@ public:
         Image::Accessor acc = img.accessor ();
 
         shouldEqualSequence(i, img.end(), i1);
+#endif
     }
 
     void testTIFFForcedRange ()
     {
+#if !defined(HasTIFF)
+        failCodec(img, vigra::ImageExportInfo ("res.tif").setForcedRangeMapping(0, 255, 1, 2));
+#else
         exportImage (srcImageRange (img),
                      vigra::ImageExportInfo ("res.tif").setForcedRangeMapping(0, 255, 1, 2));
 
@@ -641,6 +718,7 @@ public:
 
         for (; i != img.end (); ++i, ++i1)
             shouldEqualTolerance(acc (i) / 255.0, acc (i1) - 1.0, 1e-12);
+#endif
     }
 
     void testBMP ()
@@ -746,6 +824,9 @@ public:
 
     void testJPEG ()
     {
+#if !defined(HasJPEG)
+        failCodec(img, vigra::ImageExportInfo ("res.jpg").setCompression ("100"));
+#else
         exportImage (srcImageRange (img),
                      vigra::ImageExportInfo ("res.jpg").setCompression ("100"));
 
@@ -768,10 +849,14 @@ public:
         for (; i != reread.end (); ++i, ++i1)
             sum += (acc (i) - acc (i1)).magnitude ();
         should (sum / (info.width () * info.height ()) < 2.0f);
+#endif
     }
 
     void testTIFF ()
     {
+#if !defined(HasTIFF)
+        failCodec(img, vigra::ImageExportInfo ("res.tif"));
+#else
         exportImage (srcImageRange (img),
                      vigra::ImageExportInfo ("res.tif"));
 
@@ -792,10 +877,14 @@ public:
 
         for (; i != img.end (); ++i, ++i1)
             shouldEqual (acc (i), acc (i1));
+#endif
     }
 
     void testTIFFForcedRange ()
     {
+#if !defined(HasTIFF)
+        failCodec(img, vigra::ImageExportInfo ("res.tif").setForcedRangeMapping(0, 255, 1, 2));
+#else
         exportImage (srcImageRange (img),
                      vigra::ImageExportInfo ("res.tif").setForcedRangeMapping(0,255,1,2));
 
@@ -820,6 +909,7 @@ public:
             shouldEqualTolerance(acc.green(i)/255.0f, acc.green(i1)-1.0f, 1e-4);
             shouldEqualTolerance(acc.blue(i)/255.0f, acc.blue(i1)-1.0f, 1e-4);
         }
+#endif
     }
 
     void testBMP ()
@@ -958,7 +1048,8 @@ public:
         }
     }
 
-    void failingTest (char const * filename)
+    void failingTest (char const * filename, 
+                      char const * message = "exportImage(): file format does not support requested number of bands (color channels)")
     {
         try
         {
@@ -968,7 +1059,7 @@ public:
         catch( vigra::PreconditionViolation & e )
         {
             std::string expected = "\nPrecondition violation!\n";
-            expected += "exportImage(): file format does not support requested number of bands (color channels)";
+            expected += message;
             const bool rc = std::strncmp( expected.c_str(), e.what(), expected.length() ) == 0;
             should(rc);
         }
@@ -976,7 +1067,11 @@ public:
 
     void testJPEG ()
     {
+#if !defined(HasJPEG)
+        failingTest("res.jpg", "did not find a matching codec for the given file extension");
+#else
         failingTest("res.jpg");
+#endif
     }
 
     void testGIF ()
@@ -1023,6 +1118,9 @@ public:
 
     void testTIFF ()
     {
+#if !defined(HasTIFF)
+        failCodec(img, vigra::ImageExportInfo ("res.tif"));
+#else
         exportImage (srcImageRange (img),
                      vigra::ImageExportInfo ("res.tif"));
 
@@ -1041,10 +1139,14 @@ public:
 
         for (; i != img.end (); ++i, ++i1)
             shouldEqual (acc (i), acc (i1));
+#endif
     }
 
     void testPNG ()
     {
+#if !defined(HasPNG)
+        failCodec(img, vigra::ImageExportInfo("res.png"));
+#else
         exportImage (srcImageRange (img),
                      vigra::ImageExportInfo ("res.png"));
 
@@ -1065,6 +1167,7 @@ public:
         {
             should ((acc (i)- acc (i1)).magnitude() <= 1.0);
         }
+#endif
     }
 };
 
@@ -1095,7 +1198,11 @@ public:
 
     void testJPEGExport()
     {
+#if !defined(HasJPEG)
+        testExport("jpg", "did not find a matching codec for the given file extension");
+#else
         testExport("jpg");
+#endif
     }
 
     void testJPEGImport()
@@ -1107,7 +1214,11 @@ public:
 
     void testTIFFExport()
     {
+#if !defined(HasTIFF)
+        testExport("tiff", "did not find a matching codec for the given file extension");
+#else
         testExport("tiff");
+#endif
     }
 
     void testTIFFImport()
@@ -1155,7 +1266,11 @@ public:
 
     void testPNGExport()
     {
+#if !defined(HasPNG)
+        testExport("png", "did not find a matching codec for the given file extension");
+#else
         testExport("png");
+#endif
     }
 
     void testPNGImport()
@@ -1195,7 +1310,8 @@ public:
         }
     }
 
-    void testExport( const char * fext )
+    void testExport( const char * fext ,
+                     const char * message = 0)
     {
         std::string fname = "intentionalFailure/foo.";
         fname += fext;
@@ -1205,9 +1321,16 @@ public:
         }
         catch( vigra::PreconditionViolation & e ) {
             std::string expected = "\nPrecondition violation!\n";
-            expected += "Unable to open file '";
-            expected += fname;
-            expected += "'.";
+            if(message)
+            {
+                expected += message;
+            }
+            else
+            {
+                expected += "Unable to open file '";
+                expected += fname;
+                expected += "'.";
+            }
             const bool rc = std::strncmp( expected.c_str(), e.what(), expected.length() ) == 0;
             should(rc);
         }
@@ -1249,8 +1372,10 @@ struct ImageImportExportTestSuite : public vigra::test_suite
         add(testCase(&ByteRGBImageExportImportTest::testVIFF1));
         add(testCase(&ByteRGBImageExportImportTest::testVIFF2));
 
+#if defined(HasPNG)
         // 16-bit PNG
         add(testCase(&PNGInt16Test::testByteOrder));
+#endif
 
         // grayscale float images
         add(testCase(&FloatImageExportImportTest::testGIF));

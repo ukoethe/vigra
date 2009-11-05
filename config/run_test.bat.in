@@ -1,0 +1,11 @@
+@echo off
+if [%1] NEQ [] (
+    set CONFIGURATION=%1
+)
+set PATH=@VIGRA_PATH@%PATH%
+cd @VIGRA_CURRENT_BINARY_DIR@
+@VIGRA_TEST_EXECUTABLE@
+if %ERRORLEVEL%==1 (
+    copy /b testsuccess.cxx+,, > NUL
+    exit 1 
+)
