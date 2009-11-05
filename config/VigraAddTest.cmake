@@ -112,9 +112,17 @@ FUNCTION(VIGRA_ADD_TEST target)
     
     ADD_TEST(${target} ${VIGRA_RUN_TEST} ${VIGRA_CONFIGURATION})
     
-    IF(VALGRIND_EXECUTABLE)
+    IF(WITH_VALGRIND AND VALGRIND_EXECUTABLE)
+        IF(VALGRIND_SUPPRESSION_FILE)
+            SET(VALGRIND_SUPPRESSION "--suppressions=${VALGRIND_SUPPRESSION_FILE}")
+        ELSE()
+            SET(VALGRIND_SUPPRESSION)
+        ENDIF()
         ADD_TEST(${target}_valgrind 
-                ${VALGRIND_EXECUTABLE} --error-exitcode=1 ${${target}_executable})
+                ${VALGRIND_EXECUTABLE} 
+                ${VALGRIND_SUPPRESSION} 
+                --error-exitcode=1 
+                ${${target}_executable})
     ENDIF()
 
 ENDFUNCTION(VIGRA_ADD_TEST)

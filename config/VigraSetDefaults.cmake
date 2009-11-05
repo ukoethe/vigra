@@ -41,6 +41,12 @@ IF(NOT VIGRA_DEFAULTS_INIT)
             CACHE STRING "Choose the type of build, options are None Release Debug RelWithDebInfo MinSizeRel." FORCE)
     ENDIF ()
     
+    IF(NOT DEFINED VALGRIND_SUPPRESSION_FILE)
+        SET(VALGRIND_SUPPRESSION_FILE ""
+            CACHE FILEPATH "File containing valgrind error suppression rules."
+            FORCE)
+    ENDIF()
+
 #    # initial compiler flags can be set here, this is only
 #    # executed once in the first configure run.
 #    IF(CMAKE_COMPILER_IS_GNUCXX)
