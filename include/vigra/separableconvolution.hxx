@@ -1901,28 +1901,19 @@ Kernel1D<ARITHTYPE>::initBinomial(int radius,
               "Kernel1D::initBinomial(): Radius must be > 0.");
 
     // allocate the kernel
-    InternalVector kernel((unsigned int)radius*2+1, NumericTraits<ARITHTYPE>::zero());
+    InternalVector(radius*2+1).swap(kernel_);
+    typename InternalVector::iterator x = kernel_.begin() + radius;
 
-    int i,j;
     // fill kernel
-    typename InternalVector::iterator x = kernel.begin() + radius;
-    x[radius] = 1.0;
-
-    for(j=radius-1; j>=-radius; --j)
+    x[radius] = norm;
+    for(int j=radius-1; j>=-radius; --j)
     {
-        for(i=j; i<radius; ++i)
+        x[j] = 0.5 * x[j+1];
+        for(int i=j+1; i<radius; ++i)
         {
-            x[i] = (x[i] + x[i+1]) / 2.0;
+            x[i] = 0.5 * (x[i] + x[i+1]);
         }
-        x[radius] /= 2.0;
-    }
-
-    // normalize
-    InternalVector().swap(kernel_);
-
-    for(i=0; i<radius*2+1; ++i)
-    {
-        kernel_.push_back(kernel[i] * norm);
+        x[radius] *= 0.5;
     }
 
     left_ = -radius;
