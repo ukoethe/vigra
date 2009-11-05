@@ -151,7 +151,9 @@ class VisitorBase
 	 * of the random forest.
 	 */
     double return_val()
-    {}
+    {
+		return -1.0;
+	}
 };
 
 namespace rf
