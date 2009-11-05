@@ -39,7 +39,6 @@
 #include <vigra/random.hxx>
 #include <map>
 #include <math.h>
-#include <iostream>
 #include <memory>
 namespace vigra
 {

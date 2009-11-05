@@ -39,7 +39,6 @@
 #include <algorithm>
 #include <map>
 #include <numeric>
-#include <iostream>
 #include "vigra/mathutil.hxx"
 #include "vigra/array_vector.hxx"
 #include "vigra/sized_int.hxx"

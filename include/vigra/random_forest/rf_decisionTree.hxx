@@ -39,7 +39,6 @@
 #include <algorithm>
 #include <map>
 #include <numeric>
-#include <iostream>
 #include "vigra/multi_array.hxx"
 #include "vigra/mathutil.hxx"
 #include "vigra/array_vector.hxx"
@@ -185,7 +184,6 @@ class DecisionTree
 				}
 #endif
                 default:
-					std::cerr << topology_[index]<<  " = ";
                     vigra_fail("DecisionTree::getToLeaf():"
 							   "encountered unknown internal Node Type");
             }
@@ -246,7 +244,6 @@ class DecisionTree
 											  nodeindex).prob_begin();
 #endif            
 			default:
-				std::cerr <<  topology_[nodeindex];
                 vigra_fail("DecisionTree::predict() :"
 						   " encountered unknown external Node Type");
         }

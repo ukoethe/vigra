@@ -37,7 +37,6 @@
 #include <algorithm>
 #include <map>
 #include <numeric>
-#include <iostream>
 #include "../mathutil.hxx"
 #include "../array_vector.hxx"
 #include "../sized_int.hxx"
