@@ -257,6 +257,70 @@ class RandomForestOptions
 	int min_split_node_size_;
 	/*\}*/
 
+	size_t serialized_size() const
+	{
+		return 11;
+	}
+	
+
+	template<class Iter>
+	void unserialize(Iter const & begin, Iter const & end)
+	{
+		Iter iter = begin;
+		vigra_precondition(end - begin == 11, 
+						   "RandomForestOptions::unserialize():"
+						   "wrong number of parameters");
+		#define PULL(item_, type_) item_ = type_(*iter); ++iter;
+		PULL(training_set_proportion_, double);
+		PULL(training_set_size_, int);
+		++iter; //PULL(training_set_func_, double);
+		PULL(training_set_calc_switch_, RF_OptionTag);
+		PULL(sample_with_replacement_, bool);
+		PULL(stratification_method_, RF_OptionTag);
+		PULL(mtry_switch_, RF_OptionTag);
+		PULL(mtry_, int);
+		++iter; //PULL(mtry_func_, double);
+		PULL(tree_count_, int);
+		PULL(min_split_node_size_, int);
+		#undef PULL
+	}
+	template<class Iter>
+	void serialize(Iter const &  begin, Iter const & end) const
+	{
+		Iter iter = begin;
+		vigra_precondition(end - begin == 11, 
+						   "RandomForestOptions::serialize():"
+						   "wrong number of parameters");
+		#define PUSH(item_) *iter = double(item_); ++iter;
+		PUSH(training_set_proportion_);
+		PUSH(training_set_size_);
+		if(training_set_func_ != 0)
+		{
+			PUSH(1);
+		}
+		else
+		{
+			PUSH(0);
+		}
+		PUSH(training_set_calc_switch_);
+		PUSH(sample_with_replacement_);
+		PUSH(stratification_method_);
+		PUSH(mtry_switch_);
+		PUSH(mtry_);
+		if(mtry_func_ != 0)
+		{
+			PUSH(1);
+		}
+		else
+		{
+			PUSH(0);
+		}
+		PUSH(tree_count_);
+		PUSH(min_split_node_size_);
+		#undef PUSH
+	}
+
+
 	/**\brief create a RandomForestOptions object with default initialisation.
 	 *
 	 * look at the other member functions for more information on default
@@ -488,7 +552,7 @@ public:
 
 	int 		column_count_;
 	int 		class_count_;
-    int      row_count_;
+    int      	row_count_;
 
 	int 		actual_mtry_;
 	int 		actual_msample_;
@@ -501,6 +565,80 @@ public:
 	ArrayVector<double> 		class_weights_;
 	bool is_weighted;
 
+	template<class Iter>
+	void unserialize(Iter const & begin, Iter const & end)
+	{
+		Iter iter = begin;
+		vigra_precondition(end - begin >= 8, 
+						   "ProblemSpec::unserialize():"
+						   "wrong number of parameters");
+		#define PULL(item_, type_) item_ = type_(*iter); ++iter;
+		PULL(column_count_,int);
+		PULL(class_count_, int);
+
+		vigra_precondition(end - begin >= 8 + class_count_, 
+						   "ProblemSpec::unserialize(): 1");
+		PULL(row_count_, int);
+		PULL(actual_mtry_,int);
+		PULL(actual_msample_, int);
+		PULL(problem_type_, Problem_t);
+		PULL(class_type_, Types_t);
+		PULL(is_weighted, bool);
+		if(is_weighted)
+		{
+			vigra_precondition(end - begin == 8 + 2*class_count_, 
+							   "ProblemSpec::unserialize(): 2");
+			class_weights_.insert(class_weights_.end(),
+								  iter, 
+								  iter + class_count_);
+			iter += class_count_; 
+		}
+		UInt8_classes_.insert(UInt8_classes_.end(), iter, end);
+		UInt16_classes_.insert(UInt16_classes_.end(), iter, end);
+		UInt32_classes_.insert(UInt32_classes_.end(), iter, end);
+		UInt64_classes_.insert(UInt64_classes_.end(), iter, end);
+		Int8_classes_.insert(Int8_classes_.end(), iter, end);
+		Int16_classes_.insert(Int16_classes_.end(), iter, end);
+		Int32_classes_.insert(Int32_classes_.end(), iter, end);
+		Int64_classes_.insert(Int64_classes_.end(), iter, end);
+		double_classes_.insert(double_classes_.end(), iter, end);
+		float_classes_.insert(float_classes_.end(), iter, end);
+		#undef PULL
+	}
+	template<class Iter>
+	void serialize(Iter const & begin, Iter const & end) const
+	{
+		Iter iter = begin;
+		vigra_precondition(end - begin == serialized_size(), 
+						   "RandomForestOptions::serialize():"
+						   "wrong number of parameters");
+		#define PUSH(item_) *iter = double(item_); ++iter;
+		PUSH(column_count_);
+		PUSH(class_count_)
+		PUSH(row_count_);
+		PUSH(actual_mtry_);
+		PUSH(actual_msample_);
+		PUSH(problem_type_);
+		PUSH(class_type_);
+		PUSH(is_weighted);
+		if(is_weighted)
+		{
+			std::copy(class_weights_.begin(),
+					  class_weights_.end(),
+					  iter);
+			iter += class_count_; 
+		}
+		std::copy(double_classes_.begin(),
+				  double_classes_.end(),
+				  iter);
+		#undef PUSH
+	}
+
+	
+	size_t serialized_size() const
+	{
+		return 8 + class_count_ *int(is_weighted+1);
+	}
 	/**\brief set default values (-> values not set)
 	 */
 	ProblemSpec()

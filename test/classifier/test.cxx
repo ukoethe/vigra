@@ -129,9 +129,9 @@ struct ClassifierTest
 
                 RF2.learn(  data.features(ii),
                             data.labels(ii),
-							rf_default(),
-							rf_default(),
 						   	create_visitor(testVisitor),
+							rf_default(),
+							rf_default(),
                             vigra::RandomMT19937(1));
                 testVisitor.fout <<  data.names(ii) << std::endl;
                 std::cerr << "[";
@@ -294,9 +294,9 @@ struct ClassifierTest
             vigra::RandomForest<> RF2(vigra::RandomForestOptions().tree_count(1200));
             RF2.learn(  MultiArrayView<2, double>(MultiArrayShape<2>::type(4,2), features),
                         MultiArrayView<2, int>(MultiArrayShape<2>::type(4,1), labels),
-						rf_default(),
-						rf_default(),
 						create_visitor(testVisitor),
+						rf_default(),
+						rf_default(),
                         vigra::RandomTT800::global());
 
         }
@@ -354,9 +354,9 @@ struct ClassifierTest
 					RF2(vigra::RandomForestOptions().tree_count(255));
                 RF2.learn(  data.features(ii),
                             data.labels(ii),
-							rf_default(),
-							rf_default(),
 						    create_visitor(var_imp),
+							rf_default(),
+							rf_default(),
                             vigra::RandomMT19937(1));
 				
 				var_imp.variable_importance_ -= p_imp;

@@ -45,40 +45,34 @@
 namespace vigra {
 namespace matlab {
 
-template <class T>
-std::auto_ptr<RandomForest<T> >
-importRandomForest(ConstCellArray cells)
+template<class T>
+void importRandomForest(vigra::RandomForest<T> &rf,ConstCellArray cells)
 {
     // read RF parameters
-    MultiArrayView<1, UInt32> parameters = getArray<UInt32>(cells[0]);
-    if(parameters.size() != 3)
-        mexErrMsgTxt("Parameter array must have size 3.");
-    UInt32 labelCount = parameters(0);
-    UInt32 numberOfFeatures = parameters(1);
-    UInt32 Ntree = parameters(2);
+    MultiArrayView<1, UInt32> e_param = getArray<UInt32>(cells[0]);
+	rf.ext_param_.unserialize(e_param.data(), e_param.data()+ e_param.size());
 
-    // read array of possible class labels
-    MultiArrayView<1, double> classLabels = getArray<double>(cells[1]);
-    if(labelCount != classLabels.size())
-        mexErrMsgTxt("Class label array has wrong size.");
+    MultiArrayView<1, UInt32> opt = getArray<UInt32>(cells[1]);
+	rf.options_.unserialize(opt.data(), opt.data()+ opt.size());
 
-    ArrayVector<ArrayVector<Int32> >  trees;
-    ArrayVector<ArrayVector<double> > weights;
 
+	rf.trees_.resize(rf.options_.tree_count_, rf.ext_param_);
     // for all decision trees
-    for(UInt32 k=0; k<Ntree; ++k)
+    for(UInt32 k=0; k<rf.options_.tree_count_; ++k)
     {
+		
         // read int tree array
         MultiArrayView<1, Int32> tree = getArray<Int32>(cells[2*k+2]);
-        trees.push_back(ArrayVector<Int32>(tree.traverser_begin(), tree.traverser_end()));
+        rf.tree(k).topology_.resize(tree.size());
+		std::copy(tree.traverser_begin(), tree.traverser_end(),
+				  rf.tree(k).topology_.begin());
 
-        // read double weight/threshold array
+		
         MultiArrayView<1, double> weight = getArray<double>(cells[2*k+3]);
-        weights.push_back(ArrayVector<double>(weight.traverser_begin(), weight.traverser_end()));
+        rf.tree(k).parameters_.resize(weight.size());
+		std::copy(weight.traverser_begin(), weight.traverser_end(),
+				  rf.tree(k).parameters_.begin());
     }
-    return std::auto_ptr<RandomForest<T> >(
-                           new RandomForest<T>(classLabels.traverser_begin(), classLabels.traverser_end(),
-                               Ntree, numberOfFeatures, trees.begin(), weights.begin()));
 }
 
 template <class T>
@@ -86,31 +80,31 @@ void
 exportRandomForest(RandomForest<T> const & rf, CellArray cells)
 {
     // write RF parameters
-    int parameterCount = 3;
+    int parameterCount = rf.ext_param_.serialized_size();
     MultiArrayView<1, UInt32> parameters = createArray<UInt32>(parameterCount, cells[0]);
-    parameters(0) = rf.labelCount();
-    parameters(1) = rf.featureCount();
-    parameters(2) = rf.treeCount();
+	rf.ext_param_.serialize(parameters.data(), parameters.data()+parameterCount);
 
-    // write array of possible class labels
-    MultiArrayView<1, double> classLabels = createArray<double>(rf.labelCount(), cells[1]);
-    for(int k =0; k<rf.labelCount(); ++k)
-        classLabels(k) = rf.classes_[k];
+
+    int optCount = rf.options_.serialized_size();
+    MultiArrayView<1, UInt32> opt = createArray<UInt32>(optCount, cells[0]);
+	rf.options_.serialize(opt.data(), opt.data() + optCount);
 
     // for all decision trees
-    for(int k=0; k<rf.treeCount(); ++k)
+    for(int k=0; k<rf.options_.tree_count_; ++k)
     {
-        // write int tree array
+        // write int topology array
         MultiArrayView<1, Int32> tree =
-            createArray<Int32>(rf.trees_[k].tree_.size(), cells[2*k+2]);
-        for(unsigned int i =0; i<rf.trees_[k].tree_.size(); ++i)
-            tree(i) = rf.trees_[k].tree_[i];
+            createArray<Int32>(rf.tree(k).topology_.size(), cells[2*k+2]);
+		std::copy(rf.tree(k).topology_.begin(),
+				  rf.tree(k).topology_.end(),
+				  tree.data());
 
-        // write double weight/threshold array
+        // write double parameters array
         MultiArrayView<1, double> weights =
-            createArray<double>(rf.trees_[k].terminalWeights_.size(), cells[2*k+3]);
-        for(unsigned int i =0; i<rf.trees_[k].terminalWeights_.size(); ++i)
-            weights(i) = rf.trees_[k].terminalWeights_[i];
+            createArray<double>(rf.tree(k).parameters_.size(), cells[2*k+3]);
+		std::copy(rf.tree(k).parameters_.begin(),
+				  rf.tree(k).parameters_.end(),
+				  weights.data());
     }
 }
 

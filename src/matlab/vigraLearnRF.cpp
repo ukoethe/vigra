@@ -52,47 +52,89 @@ void vigraMain(matlab::OutputArray outputs, matlab::InputArray inputs){
     **              INIT PART                                                                         **
     ****************************************************************************************************/
     typedef double inputType;
+	vigra::RandomForestOptions 	options;
+	vigra::ProblemSpec 			ext_param;
+    options.sample_with_replacement(inputs.getBool("sample_with_replacement", 
+												   v_default(true)));
+	
+    if(inputs.getBool("sample_classes_individually", v_default(false)));
+		options.use_stratification(vigra::RF_EQUAL);
+    options.min_split_node_size(inputs
+			.getScalarMinMax<double>("min_split_node_size",
+									 v_default(1.0), 
+									 0.0, "inf"));
+	options.tree_count(inputs
+		 	.getScalarMinMax<double>(2,v_default(255.0), 0.0, "inf"));
 
-    bool sample_with_replacement = inputs.getBool("sample_with_replacement", v_default(true));
-    bool sample_classes_individually = inputs.getBool("sample_classes_individually", v_default(false));
-    UInt32 min_split_node_size = UInt32(inputs.getScalarMinMax<double>("min_split_node_size",v_default(1.0), 0.0, "inf"));
-    UInt32 treeCount = UInt32(inputs.getScalarMinMax<double>(2,v_default(255.0), 0.0, "inf"))/*treeCount*/;
-    UInt32 mtry = UInt32(inputs.getScalar<double>("mtry",v_default(0)));
-    UInt32 training_set_size = UInt32(inputs.getScalar<double>("training_set_size",v_default(0)));
-    double training_set_proportion = inputs.getScalarMinMax<double>("training_set_proportion",v_default(1.0), 0.0, 1.0);
+	if(inputs.hasData("mtry"))
+	{
+		if(inputs.typeOf("mtry") == mxCHAR_CLASS)
+		{
+			std::map<std::string, int> map_;
+				map_["RF_LOG"] 	= int(RF_LOG);
+				map_["RF_SQRT"] = int(RF_SQRT);
+				map_["RF_ALL"]	= int(RF_ALL);
+    		RF_OptionTag method  = RF_OptionTag(inputs.getEnum("mtry", v_default(RF_LOG), map_));
+		}
+		else
+		{
+			options
+				.features_per_node(int(inputs.getScalar<double>("mtry",v_default(0))));
+		}
+	}
 
-    MultiArrayView<2, inputType>  labels = inputs.getMultiArray<2, inputType>(1, v_required());
-    MultiArrayView<2, inputType>  features = inputs.getMultiArray<2, inputType>(0, v_required());
-    MultiArrayView<1, inputType>  weights = inputs.getMultiArray<1, inputType>("weights", v_optional());
-    MultiArrayView<2, UInt8> oob_data =
-                        outputs.createMultiArray<2, UInt8>(2, v_optional(),
-                                                            MultiArrayShape<2>::type(features.shape(0), treeCount));
-    /***************************************************************************************************
+    double training_set_size 
+		= inputs.getScalar<double>("training_set_size",v_default(0));
+	if(training_set_size != 0)
+	{
+		options.samples_per_tree(int(training_set_size));
+	}
+	else
+	{
+		options.samples_per_tree(inputs
+			.getScalarMinMax<double>("training_set_proportion",
+									 v_default(1.0), 0.0, 1.0));
+	}
+
+    MultiArrayView<2, inputType>  labels 
+		= inputs.getMultiArray<2, inputType>(1, v_required());
+    MultiArrayView<2, inputType>  features 
+		= inputs.getMultiArray<2, inputType>(0, v_required());
+    MultiArrayView<1, inputType>  weights 
+		= inputs.getMultiArray<1, inputType>("weights", v_optional());
+
+	if(weights.size() != 0)
+		ext_param.class_weights(weights.data(), weights.data() + weights.size());
+
+    double var_imp_rep
+		= inputs.getScalar<double>("importance_repetition",v_default(10));
+	
+	VariableImportanceVisitor var_imp(var_imp_rep);
+
+	if(!outputs.isValid(2))
+		var_imp.deactivate();
+
+
+	/***************************************************************************************************
     **              CODE PART                                                                         **
     ****************************************************************************************************/
-    std::set<double> labelSet;
-    for(int i=0; i<labels.size(); ++i)
-        labelSet.insert(labels[i]);
 
+    RandomForest<> rf(options, ext_param);
+	
+    double oobError = rf.learn(features, 
+							   labels,
+							   vigra::create_visitor(var_imp));
 
-    RandomForest<double> rf(labelSet.begin(), labelSet.end(),
-                                            vigra::RandomForestOptions()\
-                                            .trainingSetSizeProportional(training_set_proportion)\
-                                            .featuresPerNode(mtry)\
-                                            .minSplitNodeSize(min_split_node_size)\
-                                            .trainingSetSizeAbsolute(training_set_size)\
-                                            .sampleWithReplacement(sample_with_replacement)\
-                                            .sampleClassesIndividually(sample_classes_individually)\
-                                            .setTreeCount(treeCount)\
-                                            .weights(weights.data(), labelSet.size())\
-                                            .oobData(oob_data)
-                            );
-    double oobError = rf.learn(features, labels);
-
-    matlab::exportRandomForest(rf, matlab::createCellArray(2*treeCount+2, outputs[0]));
+    matlab::exportRandomForest(rf, matlab::createCellArray(2*options.tree_count_+2, outputs[0]));
 
     outputs.createScalar<double> (1, v_optional(), oobError);
-
+	MultiArrayView<2, double> vari 
+		= outputs.createMultiArray<2, double>(2, v_optional(), 
+							MultiArrayShape<2>::type(var_imp
+													  .variable_importance_
+													  .shape()));
+	if(vari.size() != 0)
+		vari = var_imp.variable_importance_;
 }
 
 
@@ -111,7 +153,7 @@ function RF = vigraLearnRF(features, labels) Trains a randomForest with Default 
 function RF = vigraLearnRF(features, labels, treeCount)  does the same treeCount number of trees and default options.
 function RF = vigraLearnRF(features, labels, treeCount, options)  does the same with user options.
 function [RF oob] = vigraLearnRF(...)                Outputs the oob error estimate
-function [RF oob oob_data] = vigraLearnRF(...)       Outputs additional oob data.
+function [RF oob var_imp] = vigraLearnRF(...)       Outputs variable importance.
 
 features    - A Nxp Matrix with N samples containing p features
 labels      - A Nx1 Matrix with the corresponding Training labels
@@ -121,7 +163,11 @@ options     - a struct with the following possible fields (default will be used
     'sample_with_replacement'       logical, default : true
     'sample_classes_individually'   logical, default : false
     'min_split_node_size'           Scalar, default: 1.0 - controls size pruning of the tree while training.
-    'mtry'                          Scalar, default: floor(sqrt(number of features))
+    'mtry'                          Scalar or String, 
+									default: floor(sqrt(number of features)) ('RF_SQRT')
+									if a Scalar value is specified it is taken as the 
+									absolute value. Otherwise use one of the Tokens
+									'RF_SQRT', 'RF_LOG' or 'RF_ALL'
 
     'training_set_size'             Scalar, default: Not used
     'training_set_proportion'       Scalar, default: 1.0
@@ -131,7 +177,13 @@ options     - a struct with the following possible fields (default will be used
     'weights'
                                     Array containing training weights for each class. The size of the array is
                                     not checked so you may get wierd errors if you do not enforce the size constraints.
+var_imp		- A FeatureCount x ClassCount +2 Matrix. 
+									The last column is the variable importance based on mean decrease in impurity
+									over all trees the end -1 column is the permutation based variable importance
+									Columns 1 - ClassCount are the class wise permutation based variable importance
+									scores.
 
+//not yet supported
 oob_data    - A NxNumberOfTrees Matrix. oob_data(i, j) = 0 if ith sample was not in the test set for the jth tree
                                                        = 1 if ith sample was correctly classified in jth tree
                                                        = 2 if ith sample was misclassified int jth tree

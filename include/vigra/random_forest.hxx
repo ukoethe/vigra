@@ -41,7 +41,6 @@
 #include <map>
 #include <set>
 #include <numeric>
-#include <iostream>
 #include "mathutil.hxx"
 #include "array_vector.hxx"
 #include "sized_int.hxx"
@@ -356,9 +355,9 @@ class RandomForest
 			 class Random_t>
 	double learn(		MultiArrayView<2, U, C1> const  & 	features,
 						MultiArrayView<2, U2,C2> const  & 	response,
+						Visitor_t 							visitor,
 						Split_t 							split,
 						Stop_t 								stop,
-						Visitor_t 							visitor,
 						Random_t 				 const 	&	random);
 
 	template <class U, class C1,
@@ -368,9 +367,9 @@ class RandomForest
 			 class Visitor_t>
 	double learn(		MultiArrayView<2, U, C1> const  & 	features,
 						MultiArrayView<2, U2,C2> const  & 	response,
+						Visitor_t 							visitor,
 						Split_t 							split,
-						Stop_t 								stop,
-						Visitor_t 							visitor)
+						Stop_t 								stop)
 
 	{
         RandomNumberGenerator<> rnd = RandomNumberGenerator<>(RandomSeed);
@@ -401,14 +400,42 @@ class RandomForest
 	 * - default The standard early stopping criterion
 	 * - the oob visitor, whose value is returned.
 	 */
-    template <class U, class C1, class U2,class C2>
+    template <class U, class C1, class U2,class C2, class Visitor_t>
+    double learn(   MultiArrayView<2, U, C1> const  & features,
+                    MultiArrayView<2, U2,C2> const  & labels,
+					Visitor_t 						  visitor)
+    {
+        return learn(features, 
+					 labels, 
+					 visitor, 
+					 rf_default(), 
+					 rf_default());
+    }
+
+	template <class U, class C1, class U2,class C2, 
+			  class Visitor_t, class Split_t>
+    double learn(   MultiArrayView<2, U, C1> const  & features,
+                    MultiArrayView<2, U2,C2> const  & labels,
+					Visitor_t						  visitor,
+					Split_t							  split)
+    {
+        return learn(features, 
+					 labels, 
+					 visitor, 
+					 split, 
+					 rf_default());
+    }
+
+	template <class U, class C1, class U2,class C2>
     double learn(   MultiArrayView<2, U, C1> const  & features,
                     MultiArrayView<2, U2,C2> const  & labels)
     {
-        return learn(features, labels, rf_default(), rf_default(), rf_default());
+        return learn(features, 
+					 labels, 
+					 rf_default(), 
+					 rf_default(), 
+					 rf_default());
     }
-
-
 	/*\}*/
 
 
@@ -485,9 +512,9 @@ template <class U, class C1,
 double RandomForest<PreprocessorTag>::
 					 learn( MultiArrayView<2, U, C1> const  & 	features,
 							MultiArrayView<2, U2,C2> const  & 	response,
+							Visitor_t 							visitor_,
 							Split_t 					    	split_,
 							Stop_t 								stop_,
-							Visitor_t 							visitor_,
 							Random_t 				 const 	&	random)
 {
 	using namespace rf;

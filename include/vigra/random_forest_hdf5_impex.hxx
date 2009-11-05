@@ -1,6 +1,6 @@
 /************************************************************************/
 /*                                                                      */
-/*                  Copyright 2008 by Ullrich Koethe                    */
+/*       Copyright 2009 by Rahul Nair and  Ullrich Koethe               */
 /*                                                                      */
 /*    This file is part of the VIGRA computer vision library.           */
 /*    The VIGRA Website is                                              */
@@ -41,123 +41,102 @@
 #include "hdf5impex.hxx"
 #include <cstdio>
 
-namespace vigra {
-
-template <class T>
-std::auto_ptr<RandomForest<T> >
-importHDF5RandomForest(hid_t parent_id)
-{
-    hsize_t     size;
-    char        name[100];
-
-    HDF5Handle group_id(H5Gopen (parent_id, "RandomForest", H5P_DEFAULT),
-                        &H5Gclose, 
-                        "importHDF5RandomForest(): Unable to open 'RandomForest' group - wrong file contents.");
-    
-    int labelCount;
-    vigra_postcondition(H5LTread_dataset_int (group_id, "labelCount", &labelCount) >= 0,
-                        "importHDF5RandomForest(): Unable to read labelCount.");
-    int featureCount;
-    vigra_postcondition(H5LTread_dataset_int (group_id, "featureCount", &featureCount) >= 0,
-                        "importHDF5RandomForest(): Unable to read featureCount.");
-    int treeCount;
-    vigra_postcondition(H5LTread_dataset_int (group_id, "treeCount", &treeCount) >= 0,
-                        "importHDF5RandomForest(): Unable to read treeCount.");
-                        
-    ArrayVector<double> labelSet(labelCount);
-    vigra_postcondition(H5LTread_dataset_double (group_id, "labelSet", labelSet.begin()) >= 0,
-                        "importHDF5RandomForest(): Unable to read labelSet.");
-
-    ArrayVector<ArrayVector<Int32> >  trees;
-    ArrayVector<ArrayVector<double> > weights;
-    
-    // for all decision trees
-    for(Int32 k=1; k <= treeCount; ++k)
-    {
-        std::sprintf(name, "tree%04d", k);
-        vigra_postcondition(H5LTget_dataset_info(group_id, name, &size, NULL, NULL) >= 0,
-                "importHDF5RandomForest(): Unable to read tree array size.");
-        trees.push_back(ArrayVector<Int32>((ArrayVector<Int32>::size_type)size));
-        vigra_postcondition(H5LTread_dataset_int (group_id, name, trees.back().begin()) >= 0,
-                "importHDF5RandomForest(): Unable to read tree array.");
-
-        std::sprintf(name, "weights%04d", k);
-        vigra_postcondition(H5LTget_dataset_info(group_id, name, &size, NULL, NULL) >= 0,
-                "importHDF5RandomForest(): Unable to read weight array size.");
-        weights.push_back(ArrayVector<double>((ArrayVector<double>::size_type)size));
-        vigra_postcondition(H5LTread_dataset_double (group_id, name, weights.back().begin()) >= 0,
-                "importHDF5RandomForest(): Unable to read weight array.");
-    }
-    
-    return std::auto_ptr<RandomForest<T> >(
-                           new RandomForest<T>(labelSet.begin(), labelSet.end(), 
-                               treeCount, featureCount, trees.begin(), weights.begin()));
-}
-
-template <class T>
-std::auto_ptr<RandomForest<T> >
-importHDF5RandomForest(const char* filename)
-{
-    HDF5Handle file_id(H5Fopen (filename, H5F_ACC_RDONLY, H5P_DEFAULT),
-                       &H5Fclose, 
-                       "importHDF5RandomForest(): Unable to open file.");
-
-    std::auto_ptr<RandomForest<T> > res(importHDF5RandomForest<T>(file_id));
-    
-    return res;
-}
-
-template <class T>
-void exportHDF5RandomForest(RandomForest<T> const & rf, hid_t parent_id)
-{
-    hsize_t size = 1;
-    char    name[100];
-
-    HDF5Handle group_id(H5Gcreate(parent_id, "/RandomForest", H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT),
-                        &H5Gclose,
-                        "exportHDF5RandomForest(): Unable to open 'RandomForest' group.");
-       
-    int labelCount = rf.labelCount();
-    vigra_postcondition(H5LTmake_dataset (group_id, "labelCount", 1, &size, H5T_NATIVE_UINT, &labelCount) >= 0,
-                        "exportHDF5RandomForest(): Unable to write labelCount.");
-
-    int featureCount = rf.featureCount();
-    vigra_postcondition(H5LTmake_dataset (group_id, "featureCount", 1, &size, H5T_NATIVE_UINT, &featureCount) >= 0,
-                        "exportHDF5RandomForest(): Unable to write featureCount.");
-
-    int treeCount = rf.treeCount();
-    vigra_postcondition(H5LTmake_dataset (group_id, "treeCount", 1, &size, H5T_NATIVE_UINT, &treeCount) >= 0,
-                        "exportHDF5RandomForest(): Unable to write treeCount.");
-
-    size = labelCount;
-    vigra_postcondition(H5LTmake_dataset (group_id, "labelSet", 1, &size, H5T_NATIVE_DOUBLE, rf.classes_.begin()) >= 0,
-                        "exportHDF5RandomForest(): Unable to write labelSet.");
-
-    // for all decision trees
-    for(Int32 k=0; k < treeCount; ++k)
-    {
-        std::sprintf(name, "tree%04d", k+1);
-        size = rf.trees_[k].tree_.size();
-        vigra_postcondition(H5LTmake_dataset (group_id, name, 1, &size, H5T_NATIVE_INT, rf.trees_[k].tree_.begin()) >= 0,
-                        "exportHDF5RandomForest(): Unable to write tree array.");
-
-        std::sprintf(name, "weights%04d", k+1);
-        size = rf.trees_[k].terminalWeights_.size();
-        vigra_postcondition(H5LTmake_dataset (group_id, name, 1, &size, H5T_NATIVE_DOUBLE, rf.trees_[k].terminalWeights_.begin()) >= 0,
-                        "exportHDF5RandomForest(): Unable to write weight array.");
-    }
-}
-
-template <class T>
-void exportHDF5RandomForest(RandomForest<T> const & rf, const char * filename)
+namespace vigra 
 {
 
-    HDF5Handle file_id(H5Fcreate(filename, H5F_ACC_TRUNC, H5P_DEFAULT, H5P_DEFAULT),
-                      &H5Fclose,
-                      "exportHDF5RandomForest(): Unable to open file.");
-       
-    exportHDF5RandomForest(rf, file_id);
-}
+	template<class T>
+	void importRF_HDF5(RandomForest<T> &rf, 
+					   std::string filename, 
+					   std::string pathname = "")
+	{
+		typedef MultiArrayShape<2, T> Shp; 	
+		// get serialized options_ if they are there
+		
+		// get ext_param
+		std::string name = pathname + std::string("_options");
+		HDF5ImportInfo info(filename, name); 
+
+		// get all folders , if they start with _ ignore, else make trees. 
+	}
+
+	template<class T>
+	void exportRF_HDF5(RandomForest<T> &rf, 
+					   std::string filename, 
+					   std::string pathname= "")
+	{ 
+		typedef MultiArrayShape<2, T> Shp;
+		//save trees
+		for(int ii = 0; ii < rf.options_.tree_count_; ++ii)
+		{
+			std::stringstream sout; 
+			sout << pathname << "Tree_" << ii;
+			std::string topo_name_  = sout.str() + std::string("topology");
+			std::string param_name_ = sout.str() + std::string("parameters");
+			MultiArrayView<2, Int32> topology(Shp(rf.tree(ii).topology_.size(), 1),
+											  rf.tree(ii).topology_.data());
+			MultiArrayView<2, double> param(Shp(rf.tree(ii).parameters_size(), 1),
+											rf.tree(ii).parameters_.data());
+			writeToHDF5File(filename.c_str(), topo_name_.c_str(),  topology);
+			writeToHDF5File(filename.c_str(), param_name_.c_str(), param);
+		}
+
+		//save serialized options
+		MultiArray<2, double> serialized_options_(Shp(rf.options_.serialized_size(), 1));
+		rf.options_.serialize(serialized_options_.begin(),
+							  serialized_options_.end()); 
+		std::string opt_name = pathname + std::string("_options");
+		writeToHDF5File(filename.c_str(), opt_name.c_str(), serialized_options);
+
+		//external parameters are save in _ext_param - unlike options they 
+		//are not serialized
+		
+		//save class weights
+		if(rf.ext_param_.is_weighted)
+			MultiArrayView<2, double> class_weights(Shp(rf.ext_param_.class_weights_.size(), 1), 
+													rf.ext_param_.class_weights_.data());
+		std::string weights_name = pathname + std::string("/_ext_param/weights");
+		writeToHDF5File(filename.c_str(), weights_name, class_weights);
+
+		//save class Labels
+		switch(class_type_)
+		{
+			#define SOME_CASE(type_) \
+			class type_##_t:\
+			{\
+				MultiArrayView<2, type_> labels(Shp(type_##_classes_.size(), 1), \
+												type_##_classes_);\
+				std::string label_name = pathname + std::string("/_ext_param/labels"); \
+				writeToHDF5File(filename.c_str(), label_name, labels);\
+				break;\
+			}
+			SOME_CASE(UInt8);
+			SOME_CASE(UInt16);
+			SOME_CASE(UInt32);
+			SOME_CASE(UInt64);
+			SOME_CASE(Int8);
+			SOME_CASE(Int16);
+			SOME_CASE(Int32);
+			SOME_CASE(Int64);
+			SOME_CASE(double);
+			SOME_CASE(float);
+			class UNKNOWN:
+				break;
+			default:
+				VIGRA_ERROR("exportRF_HDF5(): unknown class type"); 
+		}
+
+		//save other stuff
+		
+		std::map<string, double> serialized_param;
+		rf.ext_param_.make_map(serialized_param);
+		std::map<string, double>::iterator iter;
+		for(iter = serialized_param.begin(); iter != serialized_param.end(); ++iter)
+		{
+			std::string name = pathname + std::string("/_ext_param") + iter->first;
+			writeToHDF5File(filename.c_str(), name, iter->second);
+		}
+	}
+
 
 } // namespace vigra
 

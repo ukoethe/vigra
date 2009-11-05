@@ -45,15 +45,28 @@ namespace vigra
 class VisitorBase
 {
     public:
-	
+	bool active_;	
 	bool is_active()
 	{
-		return true;
+		return active_;
 	}
 
 	bool has_value()
 	{
 		return false;
+	}
+
+	VisitorBase()
+		: active_(true)
+	{}
+
+	void deactivate()
+	{
+		active_ = false;
+	}
+	void activate()
+	{
+		active_ = true;
 	}
 	
 	/** do something after the the Split has decided how to process the Region
