@@ -160,7 +160,8 @@ elseif strcmp( TARGET, 'clean')
     end
 end
 
-disp('Make done!');
+disp('Make done! Files that did not compile may need additional mex flags.');
+disp('type help vigraFunction to find out the custom flags needed');
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
