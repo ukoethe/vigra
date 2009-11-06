@@ -169,6 +169,7 @@ struct ClassifierTest
 		// in this dataset.
 		
 		// check whether agglomeration of probabilities is done properlyy
+	    std::cerr << "RFresponseTest(): Learning on Datasets\n";
 		vigra::RandomForest<>
 			RF(vigra::RandomForestOptions().tree_count(2)); 
 
@@ -231,6 +232,7 @@ struct ClassifierTest
 			shouldEqualTolerance(dble_labels[jj], data.labels(ii)[jj], 0.01);
 			shouldEqualTolerance(int_labels[jj], data.labels(ii)[jj], 0.01);
 		}
+		std::cerr << "done \n";
 	}
 
 /** Learns The Refactored Random Forest with 100 trees 10 times and
@@ -435,10 +437,12 @@ struct ClassifierTestSuite
     : vigra::test_suite("ClassifierTestSuite")
     {
         add( testCase( &ClassifierTest::RFdefaultTest));
+#ifndef FAST
         add( testCase( &ClassifierTest::RFsetTest));
         add( testCase( &ClassifierTest::RFoobTest));
         add( testCase( &ClassifierTest::RFnoiseTest));
         add( testCase( &ClassifierTest::RFvariableImportanceTest));
+#endif
         add( testCase( &ClassifierTest::RFresponseTest));
 #if HasHDF5
 		add( testCase( &ClassifierTest::HDF5ImpexTest));

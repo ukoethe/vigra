@@ -533,7 +533,7 @@ public:
 			   	 Int8_t, Int16_t, Int32_t, Int64_t,
 			     double_t, float_t, UNKNOWN};
 
-private:
+public:
    // dirty little helper functions -
    // I really see no reason to keep the class label type as a template
    // parameter just because of the predict function.
@@ -593,6 +593,7 @@ public:
 		COMPARE(problem_type_);
 		COMPARE(class_type_);
 		COMPARE(is_weighted);
+		COMPARE(used_);
 		COMPARE(class_weights_);
 		COMPARE(UInt8_classes_);
 		COMPARE(UInt16_classes_);
@@ -616,18 +617,22 @@ public:
 	ArrayVector<double> 		class_weights_;
 	bool is_weighted;
 
+	size_t serialized_size() const
+	{
+		return 9 + class_count_ *int(is_weighted+1);
+	}
 	template<class Iter>
 	void unserialize(Iter const & begin, Iter const & end)
 	{
 		Iter iter = begin;
-		vigra_precondition(end - begin >= 8, 
+		vigra_precondition(end - begin >= 9, 
 						   "ProblemSpec::unserialize():"
 						   "wrong number of parameters");
 		#define PULL(item_, type_) item_ = type_(*iter); ++iter;
 		PULL(column_count_,int);
 		PULL(class_count_, int);
 
-		vigra_precondition(end - begin >= 8 + class_count_, 
+		vigra_precondition(end - begin >= 9 + class_count_, 
 						   "ProblemSpec::unserialize(): 1");
 		PULL(row_count_, int);
 		PULL(actual_mtry_,int);
@@ -635,9 +640,10 @@ public:
 		PULL(problem_type_, Problem_t);
 		PULL(class_type_, Types_t);
 		PULL(is_weighted, bool);
+		PULL(used_, bool);
 		if(is_weighted)
 		{
-			vigra_precondition(end - begin == 8 + 2*class_count_, 
+			vigra_precondition(end - begin == 9 + 2*class_count_, 
 							   "ProblemSpec::unserialize(): 2");
 			class_weights_.insert(class_weights_.end(),
 								  iter, 
@@ -672,6 +678,7 @@ public:
 		PUSH(problem_type_);
 		PUSH(class_type_);
 		PUSH(is_weighted);
+		PUSH(used_)
 		if(is_weighted)
 		{
 			std::copy(class_weights_.begin(),
@@ -697,6 +704,7 @@ public:
 		PULL(problem_type_, Problem_t);
 		PULL(class_type_, Types_t);
 		PULL(is_weighted, bool);
+		PULL(used_, bool);
 		class_weights_ = in["class_weights_"];
 		#undef PUSH
 	}
@@ -712,14 +720,11 @@ public:
 		PUSH(problem_type_);
 		PUSH(class_type_);
 		PUSH(is_weighted);
+		PUSH(used_);
 		in["class_weights_"] = class_weights_;
 		#undef PUSH
 	}
 	
-	size_t serialized_size() const
-	{
-		return 8 + class_count_ *int(is_weighted+1);
-	}
 	/**\brief set default values (-> values not set)
 	 */
 	ProblemSpec()
@@ -730,7 +735,8 @@ public:
 		actual_msample_(0),
 		problem_type_(CHECKLATER),
 		class_type_(UNKNOWN),
-		is_weighted(false)
+		is_weighted(false),
+		used_(false)
 	{}
 
 

@@ -43,9 +43,11 @@
 #include <hdf5.h>
 
 #if (H5_VERS_MAJOR == 1 && H5_VERS_MINOR <= 6)
-# include <H5LT.h>
+	#define H5Gcreate(a,b,c,d,e) H5Gcreate(a,b, 1);
+	#define H5Gopen(a,b,c) H5Gopen(a,b)
+	# include <H5LT.h>
 #else
-# include <hdf5_hl.h>
+	# include <hdf5_hl.h>
 #endif
 
 namespace vigra 
@@ -66,28 +68,45 @@ namespace detail
  * 					insert(). valuetype of cont must be
  * 					std::string
  */
+
 template<class Container>
 bool find_groups_hdf5(hid_t grp_id, Container &cont)
 {
 	
 	//get group info
-
+#if (H5_VERS_MAJOR == 1 && H5_VERS_MINOR <= 6)
+	hsize_t size;
+	H5Gget_num_objs(grp_id, &size);
+#else
+	hsize_t size;
 	H5G_info_t ginfo;
 	herr_t 		status;	
 	status = H5Gget_info (grp_id , &ginfo);
 	if(status < 0)
 		std::runtime_error("find_groups_hdf5():"
 						   "problem while getting group info");
-
-	for(hsize_t ii = 0; ii < ginfo.nlinks; ++ii)
+	size = ginfo.nlinks;
+#endif
+	for(hsize_t ii = 0; ii < size; ++ii)
 	{
-
+#if (H5_VERS_MAJOR == 1 && H5_VERS_MINOR <= 6)
+		ssize_t buffer_size = 
+				H5Gget_objname_by_idx(grp_id, 
+									  ii, NULL, 0 ) + 1;
+#else
 		ssize_t buffer_size =
 				H5Lget_name_by_idx(grp_id, ".",
 								   H5_INDEX_NAME,
 								   H5_ITER_INC,
 								   ii, 0, 0, H5P_DEFAULT)+1;
+#endif
 		char* buffer = new char[buffer_size];
+#if (H5_VERS_MAJOR == 1 && H5_VERS_MINOR <= 6)
+		buffer_size = 
+				H5Gget_objname_by_idx(grp_id, 
+									  ii, buffer, 
+									  (size_t)buffer_size );
+#else
 		buffer_size =
 				H5Lget_name_by_idx(grp_id, ".",
 								   H5_INDEX_NAME,
@@ -95,6 +114,7 @@ bool find_groups_hdf5(hid_t grp_id, Container &cont)
 								   ii, buffer,
 								   (size_t)buffer_size,
 								   H5P_DEFAULT);
+#endif
 		cont.insert(cont.end(), std::string(buffer));
 		delete [] buffer;
 	}
@@ -183,12 +203,17 @@ void write_hdf5_2_array(hid_t & id,
 						std::string    const & name, 
 						T  type) 
 {	
+	// The last three values of get_dataset_info can be NULL
+	// my EFFING FOOT! that is valid for HDF5 1.8 but not for
+	// 1.6 - but documented the other way around AAARRHGHGHH
 	hsize_t size; 
+	H5T_class_t a; 
+	size_t b;
 	vigra_postcondition(H5LTget_dataset_info(id, 
 											 name.c_str(), 
 											 &size, 
-											 NULL, 
-											 NULL) >= 0,
+											 &a, 
+											 &b) >= 0,
 						"write_hdf5_2_array(): "
 						"Unable to locate dataset");
 	arr.resize(size);
@@ -480,9 +505,11 @@ bool rf_import_HDF5(RandomForest<T> &rf,
 		problemspec_import_HDF5(group_id, rf.ext_param_, "_ext_param");
 	// TREE SAVING TIME
 	// get all groups in base path
+	
 	std::set<std::string> tree_set;
 	std::set<std::string>::iterator iter; 
 	find_groups_hdf5(filename, pathname, tree_set);
+	
 	for(iter = tree_set.begin(); iter != tree_set.end(); ++iter)
 	{
 		if((*iter)[0] != '_')
@@ -491,7 +518,7 @@ bool rf_import_HDF5(RandomForest<T> &rf,
 			dt_import_HDF5(group_id, rf.trees_.back(), *iter); 
 		}
 	}
-
+	
 	//clean up the mess
 	if(pathname != "")
 		H5Gclose(group_id);
