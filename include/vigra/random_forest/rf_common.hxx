@@ -685,10 +685,10 @@ public:
 		#undef PUSH
 	}
 
-	void make_from_map(std::map<std::string, MultiArray<2, double> > & in)
+	void make_from_map(std::map<std::string, ArrayVector<double> > & in)
 	{
 		typedef MultiArrayShape<2>::type Shp; 
-		#define PULL(item_, type_) item_ = type_(in[#item_](0,0)); 
+		#define PULL(item_, type_) item_ = type_(in[#item_][0]); 
 		PULL(column_count_,int);
 		PULL(class_count_, int);
 		PULL(row_count_, int);
@@ -697,12 +697,13 @@ public:
 		PULL(problem_type_, Problem_t);
 		PULL(class_type_, Types_t);
 		PULL(is_weighted, bool);
+		class_weights_ = in["class_weights_"];
 		#undef PUSH
 	}
-	void make_map(std::map<std::string, MultiArray<2, double> > & in) const
+	void make_map(std::map<std::string, ArrayVector<double> > & in) const
 	{
 		typedef MultiArrayShape<2>::type Shp; 
-		#define PUSH(item_) in[#item_] = MultiArray<2, double>(Shp(1,1), double(item_)); 
+		#define PUSH(item_) in[#item_] = ArrayVector<double>(1, double(item_)); 
 		PUSH(column_count_);
 		PUSH(class_count_)
 		PUSH(row_count_);
@@ -711,6 +712,7 @@ public:
 		PUSH(problem_type_);
 		PUSH(class_type_);
 		PUSH(is_weighted);
+		in["class_weights_"] = class_weights_;
 		#undef PUSH
 	}
 	

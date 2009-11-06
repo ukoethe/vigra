@@ -391,6 +391,8 @@ struct ClassifierTest
             for(int ii = 0; ii <data.size() ; ii++)
             {
 				std::cerr << "Running HDF5 Impex Test\n";
+				std::string filename = data.names(ii) + "_rf.hdf5";
+				std::remove(filename.c_str());
 				vigra::RandomForest<> RF(vigra::RandomForestOptions()
 											 .tree_count(100));
 
@@ -401,10 +403,10 @@ struct ClassifierTest
 				 rf_import_HDF5(RF2,data.names(ii) + "_rf.hdf5");
 
 				 should(RF.ext_param_== RF2.ext_param_);
+				 should(RF.options_ ==  RF2.options_);
 				 shouldEqual(RF.trees_.size(), RF2.trees_.size());
 				 for(int jj = 0; jj < RF.trees_.size(); ++jj)
 				 {
-
 					 should(RF.trees_[jj].topology_ == 
 							RF2.trees_[jj].topology_);
 
@@ -412,7 +414,6 @@ struct ClassifierTest
 							RF2.trees_[jj].parameters_);
 
 				 }
-				 should(RF.options_ ==  RF2.options_);
                  std::cerr << "[";
                  for(int ss = 0; ss < ii+1; ++ss)
                      std::cerr << "#";

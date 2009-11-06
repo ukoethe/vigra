@@ -280,7 +280,7 @@ class RandomForest
 	 *
 	 * \return random forest options
 	 */
-	Options_t & options()
+	Options_t & set_options()
 	{
 		return options;
 	}
