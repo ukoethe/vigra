@@ -5,4 +5,4 @@ do
    PATH=$1:${PATH}
    shift
 done
-$PROG || { rm $PROG; exit 1; }
+$PROG || { rm touch testsuccess.cxx; exit 1; }

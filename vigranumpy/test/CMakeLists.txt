@@ -24,7 +24,7 @@ VIGRA_COPY_TEST_DATA(${TEST_SCRIPTS})
 
 MACRO(DEPENDENCY_PATH variable target)
     GET_TARGET_PROPERTY(${variable} ${target} LOCATION)
-    STRING(REGEX REPLACE "(/\\$\\(OutDir\\)/[^/]*|/[^/]*)$" "" ${variable} ${${variable}}) # get path prefix
+    STRING(REGEX REPLACE "(/\\$\\([^\\)]*\\)/[^/]*|/[^/]*)$" "" ${variable} ${${variable}}) # get path prefix
     FILE(TO_NATIVE_PATH ${${variable}} ${variable})
 ENDMACRO(DEPENDENCY_PATH)
 
@@ -41,10 +41,10 @@ configure_file(${CMAKE_CURRENT_SOURCE_DIR}/set_paths.py
 
 IF(AUTOEXEC_TESTS)
     IF(NOT PYTHON_NOSETESTS_NOT_FOUND)
-        IF (MSVC)
-            SET(TEST_ARGS -c "\"import" "nose\;" "nose.main()\"" . $(OutDir))
-        ELSE()
+        IF (CMAKE_CFG_INTDIR STREQUAL ".")
             SET(TEST_ARGS -c "\"import" "nose\;" "nose.main()\"" .)
+        ELSE()
+            SET(TEST_ARGS -c "\"import" "nose\;" "nose.main()\"" . ${CMAKE_CFG_INTDIR})
         ENDIF()
 
         add_custom_command(

@@ -1,4 +1,5 @@
 set PROG=%1
+echo %PROG%
 :extend_path
 shift
 if [%1] NEQ [] (
@@ -8,6 +9,6 @@ if [%1] NEQ [] (
 %PROG%
 echo off
 if %ERRORLEVEL%==1 (
-    del %PROG%
+    copy /b testsuccess.cxx+,, > NUL
     exit 1 
 )

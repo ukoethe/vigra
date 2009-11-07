@@ -654,6 +654,15 @@ equal_impl(Left left, Right right, const char * message, const char * file, int 
     should_impl(left == right, buf.str().c_str(), file, line);
 }
 
+template <class Left, class Right>
+void
+equal_impl(Left * left, Right * right, const char * message, const char * file, int line)
+{
+    detail::errstream buf;
+    buf << message << " [" << (void*)left << " != " << (void*)right << "]";
+    should_impl(left == right, buf.str().c_str(), file, line);
+}
+
 inline void
 equal_impl(double left, double right, const char * message, const char * file, int line)
 {

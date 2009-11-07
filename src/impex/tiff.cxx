@@ -449,7 +449,7 @@ namespace vigra {
                 unitLength = 1.0f/2.54f;
                 break;
             default:
-                vigra_fail("Unkown resolution unit");
+                vigra_fail("Unknown resolution unit");
             }
         }
 

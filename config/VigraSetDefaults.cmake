@@ -5,6 +5,13 @@ SET(WITH_VIGRANUMPY ${WITH_VIGRANUMPY}
     CACHE BOOL "Build VIGRA Python bindings ?"
     FORCE)
     
+IF(NOT DEFINED WITH_VALGRIND)
+    SET(WITH_VALGRIND "OFF")
+ENDIF()
+SET(WITH_VALGRIND ${WITH_VALGRIND}
+    CACHE BOOL "Perform valgrind memory testing upon 'make ctest' ?"
+    FORCE)
+    
 IF(NOT DEFINED DEPENDENCY_SEARCH_PREFIX)
     SET(DEPENDENCY_SEARCH_PREFIX "")
 ENDIF()    
@@ -34,6 +41,12 @@ IF(NOT VIGRA_DEFAULTS_INIT)
             CACHE STRING "Choose the type of build, options are None Release Debug RelWithDebInfo MinSizeRel." FORCE)
     ENDIF ()
     
+    IF(NOT DEFINED VALGRIND_SUPPRESSION_FILE)
+        SET(VALGRIND_SUPPRESSION_FILE ""
+            CACHE FILEPATH "File containing valgrind error suppression rules."
+            FORCE)
+    ENDIF()
+
 #    # initial compiler flags can be set here, this is only
 #    # executed once in the first configure run.
 #    IF(CMAKE_COMPILER_IS_GNUCXX)
