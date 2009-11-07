@@ -68,6 +68,11 @@ inline void vigraMexFunction(vigra::matlab::OutputArray outputs, vigra::matlab::
     vigraMain(outputs, inputs);
 };
 
+
+/**ADDITIONAL_BUILD_FLAGS
+-lhdf5 -lhdf5_hl
+*/
+
 /** MATLAB
 function rf = vigraImporthdf5RF( filename, groupname);
 
@@ -79,7 +84,7 @@ Import a previously trained Random Forest from  a hdf5 file
    groupname    - optional: name of group which shoud be used as the base
    					path
 to compile: 
- mex vigraImporthdf5RF.cpp -I../../include -I$HOME/usr/include 
-              -L$HOME/usr/lib -lhdf5 -lhdf5_hl -lvigraimpex
- change directories and flags as wanted
+mex vigraExporthdf5RF.cpp -I../../include -lhdf5 -lhdf5_hl
+
+hdf5 1.6.x or hdf5 1.8.x must be installed. 
 */

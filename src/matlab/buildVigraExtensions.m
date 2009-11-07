@@ -87,13 +87,31 @@ if strcmp( TARGET, 'all' ) || strcmp( TARGET, 'test' )
             end
         end
         if isempty( mex_file ) || ( cpp_file.datenum > mex_file.datenum )
+
+			text1 = '';
+			f = fopen(cpp_filename);
+			line1 = fgetl(f);
+			while ischar(line1)
+				text1 = sprintf('%s\n%s', text1, line1);
+				line1 = fgetl(f);
+			end
+			fclose(f);
+			[match1 comment1] = regexp(text1, '/\*\*\s*ADDITIONAL_BUILD_FLAGS\s*(.*?)\*/', 'match', 'tokens', 'ignorecase');
+			if isempty(match1)
+				flags = '';
+			else
+                lines = regexp(comment1{1}{1}, '^(.*?)$', 'lineanchors', 'match');
+				flags = lines{1};
+			end
 			% compile
 			disp(['compiling: ' cpp_filename ] );
             try
                 if isOctave
-                    eval(['mex -I' include_dir ' -o ' mex_filename ' ' SRCDIR '/' cpp_filename]);
+					disp(['mex -I' include_dir ' -o ' mex_filename ' ' flags ' ' SRCDIR '/' cpp_filename]);
+                    eval(['mex -I' include_dir ' -o ' mex_filename ' ' flags ' ' SRCDIR '/' cpp_filename]);
                 else
-                    eval(['mex -O -I' include_dir ' -outdir ''' OUTDIR ''' ' SRCDIR '/' cpp_filename]);
+                    disp(['mex -O ' flags ' -I' include_dir ' -outdir ''' OUTDIR ''' ' SRCDIR '/' cpp_filename]);
+                    eval(['mex -O ' flags ' -I' include_dir ' -outdir ''' OUTDIR ''' ' SRCDIR '/' cpp_filename]);
                 end
             catch ME
             end
@@ -160,8 +178,7 @@ elseif strcmp( TARGET, 'clean')
     end
 end
 
-disp('Make done! Files that did not compile may need additional mex flags.');
-disp('type help vigraFunction to find out the custom flags needed');
+disp('Make done!');
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
