@@ -41,6 +41,10 @@
 #include <hdf5.h>
 
 #if (H5_VERS_MAJOR == 1 && H5_VERS_MINOR <= 6)
+#define H5Gopen(a, b, c) H5Gopen(a, b)
+#define H5Gcreate(a, b, c, d, e) H5Gcreate(a, b, 1)
+#define H5Dopen(a, b, c) H5Dopen(a, b)
+#define H5Dcreate(a, b, c, d, e, f, g) H5Dcreate(a, b, c, d, f)
 # include <H5LT.h>
 #else
 # include <hdf5_hl.h>
@@ -393,7 +397,7 @@ inline hid_t createAllGroups(hid_t parent, std::string group_name)
         std::string group(group_name.begin()+begin, group_name.begin()+end);
         //std::cout << "createAllGroups(1): " << group.c_str() << std::endl;
         // FIXME: also handle relative paths correctly
-        if(H5Lexists(parent, group.c_str(), H5P_DEFAULT) == false)
+        if(H5LTfind_dataset(parent, group.c_str()) == 0)
         {
             //std::cout << "180 release, exists=false" << std::endl;
             //std::cout << "parent_a=" << parent << std::endl;
@@ -412,7 +416,7 @@ inline hid_t createAllGroups(hid_t parent, std::string group_name)
     }
     std::string group(group_name.begin()+begin, group_name.end());
     //std::cout << "createAllGroups(2): " << group.c_str() << std::endl;
-    if(H5Lexists(parent, group.c_str(), H5P_DEFAULT) == false)
+    if(H5LTfind_dataset(parent, group.c_str()) == 0)
     {
         //std::cout << "parent_a=" << parent << std::endl;
         parent = H5Gcreate(parent, group.c_str(), H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
@@ -525,10 +529,17 @@ void writeToHDF5File(const char* filePath, const char* pathInFile, const MultiAr
     if(H5LTfind_dataset(group, data_set_name.c_str()))
     {
         //std::cout << "dataset already exists" << std::endl;
-        if(H5Ldelete(group, data_set_name.c_str(), H5P_DEFAULT ) < 0)
+#if (H5_VERS_MAJOR == 1 && H5_VERS_MINOR <= 6)
+		if(H5Gunlink(group, data_set_name.c_str()) < 0)
         {
             vigra_postcondition(false, "writeToHDF5File(): Unable to delete existing data.");
         }
+#else
+		if(H5Ldelete(group, data_set_name.c_str(), H5P_DEFAULT ) < 0)
+        {
+            vigra_postcondition(false, "writeToHDF5File(): Unable to delete existing data.");
+        }
+#endif
     } /*else {
         std::cout << "dataset does not exist so far" << std::endl;
     }*/
