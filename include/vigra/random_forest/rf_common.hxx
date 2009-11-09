@@ -52,7 +52,10 @@ namespace rf
 }
 class	                OOB_Visitor;
 class                   RandomForestOptions;
+
+template<class T>
 class                   ProblemSpec;
+
 template<class Tag>
     class               RandomForest;
 class 					EarlyStoppStd;
@@ -75,7 +78,7 @@ class RF_Traits
 	public:
 	typedef RandomForestOptions 	Options_t;
 	typedef	detail::DecisionTree   	DecisionTree_t;
-	typedef ProblemSpec				ProblemSpec_t;
+	typedef ProblemSpec<double>		ProblemSpec_t;
 	typedef ClassificationTag		Preprocessor_t;
 	typedef GiniSplit	            Default_Split_t;
 	typedef EarlyStoppStd           Default_Stop_t;
@@ -512,6 +515,7 @@ class RandomForestOptions
  * if needed usage is similar to that of RandomForestOptions
  */
 
+template<class LabelType>
 class ProblemSpec
 {
 
@@ -522,105 +526,101 @@ public:
 	 */
 	enum Problem_t{REGRESSION, CLASSIFICATION, CHECKLATER};
 
-	/** \brief allowed types
-	 *
-	 * depending on the class label type the class labels
-	 * will be internally stored as double, Int64 or std::string
-	 */
+	typedef LabelType		Label_t;
+	ArrayVector<Label_t>	classes;
 
-	enum Types_t
-				{UInt8_t, UInt16_t, UInt32_t, UInt64_t,
-			   	 Int8_t, Int16_t, Int32_t, Int64_t,
-			     double_t, float_t, UNKNOWN};
+	int 					column_count_;
+	int 					class_count_;
+    int      				row_count_;
 
-public:
-   // dirty little helper functions -
-   // I really see no reason to keep the class label type as a template
-   // parameter just because of the predict function.
-   // As numClasses << 100 this solution will not cause much overhead I
-   // guess.
-   //
-   // todo it would be an alternative to just save all class types as
-   // strings or doubles - whatever.
-#define make_dlh(typee_)\
-public:\
-	ArrayVector<typee_>			typee_##_classes_;\
-	Types_t type_of(typee_ in)\
-	{\
-		return typee_##_t;\
-	}\
-public:\
-	void to_classlabel(int index, typee_  & out) const\
-	{\
-		out = typee_(typee_##_classes_[index]);\
-	}\
-public:
+	int 					actual_mtry_;
+	int 					actual_msample_;
 
-	make_dlh(UInt8);
-	make_dlh(UInt16);
-	make_dlh(UInt32);
-	make_dlh(UInt64);
-	make_dlh(Int8);
-	make_dlh(Int16);
-	make_dlh(Int32);
-	make_dlh(Int64);
-	make_dlh(double);
-	make_dlh(float);
+	Problem_t 				problem_type_;
+	
+	ArrayVector<double> 	class_weights_;
+	bool 					is_weighted;
 
-#undef make_dlh
 
-public:
+	template<class T> 
+	void to_classlabel(int index, T & out) const
+	{
+		out = T(classes[index]);
+	}
 
-	int 		column_count_;
-	int 		class_count_;
-    int      	row_count_;
+	#define EQUALS(field) field(rhs.field)
+	template<class T>
+	ProblemSpec(ProblemSpec<T> const & rhs)
+	: 
+		EQUALS(column_count_),
+		EQUALS(class_count_),
+		EQUALS(row_count_),
+		EQUALS(actual_mtry_),
+		EQUALS(actual_msample_),
+		EQUALS(problem_type_),
+		EQUALS(is_weighted),
+		EQUALS(used_),
+		EQUALS(class_weights_)
+	{
+		std::back_insert_iterator<ArrayVector<Label_t> >
+						iter;
+		std::copy(classes.begin(), classes.end(), iter); 
+	}
+	#undef EQUALS
 
-	int 		actual_mtry_;
-	int 		actual_msample_;
 
-	Problem_t 	problem_type_;
-	Types_t 	class_type_;
+	template<class T>
+	Label_t & operator=(ProblemSpec<T> const & rhs)
+	{
+		#define EQUALS(field) (this->field == rhs.field);
+		EQUALS(column_count_);
+		EQUALS(class_count_);
+		EQUALS(row_count_);
+		EQUALS(actual_mtry_);
+		EQUALS(actual_msample_);
+		EQUALS(problem_type_);
+		EQUALS(is_weighted);
+		EQUALS(used_);
+		EQUALS(class_weights_);
+		#undef EQUALS
 
-	bool operator==(ProblemSpec & son_of_crap)
+		std::back_insert_iterator<ArrayVector<Label_t> >
+						iter;
+		std::copy(classes.begin(), classes.end(), iter); 
+		return *this;
+	}
+
+	template<class T>
+	bool operator==(ProblemSpec<T> const & rhs)
 	{
 		bool result = true;
-		#define COMPARE(field) result = result && (this->field == son_of_crap.field);
+		#define COMPARE(field) result = result && (this->field == rhs.field);
 		COMPARE(column_count_);
 		COMPARE(class_count_);
 		COMPARE(row_count_);
 		COMPARE(actual_mtry_);
 		COMPARE(actual_msample_);
 		COMPARE(problem_type_);
-		COMPARE(class_type_);
 		COMPARE(is_weighted);
 		COMPARE(used_);
 		COMPARE(class_weights_);
-		COMPARE(UInt8_classes_);
-		COMPARE(UInt16_classes_);
-		COMPARE(UInt32_classes_);
-		COMPARE(UInt64_classes_);
-		COMPARE(Int8_classes_);
-		COMPARE(Int16_classes_);
-		COMPARE(Int32_classes_);
-		COMPARE(Int64_classes_);
-		COMPARE(float_classes_);
-		COMPARE(double_classes_);
+		COMPARE(classes);
 		#undef COMPARE
-
 		return result;
 	}
-	bool operator!=(ProblemSpec & i_hate_you_)
+
+	bool operator!=(ProblemSpec & rhs)
 	{
-		return !(*this == i_hate_you_);
+		return !(*this == rhs);
 	}
 
-	ArrayVector<double> 		class_weights_;
-	bool is_weighted;
 
 	size_t serialized_size() const
 	{
 		return 9 + class_count_ *int(is_weighted+1);
 	}
+
+
 	template<class Iter>
 	void unserialize(Iter const & begin, Iter const & end)
 	{
@@ -638,7 +638,6 @@ public:
 		PULL(actual_mtry_,int);
 		PULL(actual_msample_, int);
 		PULL(problem_type_, Problem_t);
-		PULL(class_type_, Types_t);
 		PULL(is_weighted, bool);
 		PULL(used_, bool);
 		if(is_weighted)
@@ -650,18 +649,11 @@ public:
 								  iter + class_count_);
 			iter += class_count_; 
 		}
-		UInt8_classes_.insert(UInt8_classes_.end(), iter, end);
-		UInt16_classes_.insert(UInt16_classes_.end(), iter, end);
-		UInt32_classes_.insert(UInt32_classes_.end(), iter, end);
-		UInt64_classes_.insert(UInt64_classes_.end(), iter, end);
-		Int8_classes_.insert(Int8_classes_.end(), iter, end);
-		Int16_classes_.insert(Int16_classes_.end(), iter, end);
-		Int32_classes_.insert(Int32_classes_.end(), iter, end);
-		Int64_classes_.insert(Int64_classes_.end(), iter, end);
-		double_classes_.insert(double_classes_.end(), iter, end);
-		float_classes_.insert(float_classes_.end(), iter, end);
+		classes.insert(classes.end(), iter, end);
 		#undef PULL
 	}
+
+
 	template<class Iter>
 	void serialize(Iter const & begin, Iter const & end) const
 	{
@@ -676,7 +668,6 @@ public:
 		PUSH(actual_mtry_);
 		PUSH(actual_msample_);
 		PUSH(problem_type_);
-		PUSH(class_type_);
 		PUSH(is_weighted);
 		PUSH(used_)
 		if(is_weighted)
@@ -686,8 +677,8 @@ public:
 					  iter);
 			iter += class_count_; 
 		}
-		std::copy(double_classes_.begin(),
-				  double_classes_.end(),
+		std::copy(classes.begin(),
+				  classes.end(),
 				  iter);
 		#undef PUSH
 	}
@@ -702,7 +693,6 @@ public:
 		PULL(actual_mtry_,int);
 		PULL(actual_msample_, int);
 		PULL(problem_type_, Problem_t);
-		PULL(class_type_, Types_t);
 		PULL(is_weighted, bool);
 		PULL(used_, bool);
 		class_weights_ = in["class_weights_"];
@@ -718,7 +708,6 @@ public:
 		PUSH(actual_mtry_);
 		PUSH(actual_msample_);
 		PUSH(problem_type_);
-		PUSH(class_type_);
 		PUSH(is_weighted);
 		PUSH(used_);
 		in["class_weights_"] = class_weights_;
@@ -734,7 +723,6 @@ public:
 		actual_mtry_(0),
 		actual_msample_(0),
 		problem_type_(CHECKLATER),
-		class_type_(UNKNOWN),
 		is_weighted(false),
 		used_(false)
 	{}
@@ -753,20 +741,7 @@ public:
 	template<class C_Iter>
 	ProblemSpec & classes_(C_Iter begin, C_Iter end)
 	{
-		for(C_Iter iter = begin; iter!= end; ++iter)
-		{
-			UInt8_classes_.push_back(UInt8(*iter));
-			UInt16_classes_.push_back(UInt16(*iter));
-			UInt32_classes_.push_back(UInt32(*iter));
-			UInt64_classes_.push_back(UInt64(*iter));
-			Int8_classes_.push_back(Int8(*iter));
-			Int16_classes_.push_back(Int16(*iter));
-			Int32_classes_.push_back(Int32(*iter));
-			Int64_classes_.push_back(Int64(*iter));
-			double_classes_.push_back(double(*iter));
-			float_classes_.push_back(float(*iter));
-		}
-		class_type_ = type_of(*begin);
+		classes.insert(classes.end(), begin, end);
 		class_count_ = end-begin;
 		return *this;
 	}
@@ -779,10 +754,7 @@ public:
 	template<class W_Iter>
 	ProblemSpec & class_weights(W_Iter begin, W_Iter end)
 	{
-		for(W_Iter iter = begin; iter!= end; ++iter)
-		{
-			class_weights_.push_back(*iter);
-		}
+		class_weights_.insert(class_weights_.end(), begin, end);
 		is_weighted = true;
 		return *this;
 	}
@@ -792,23 +764,13 @@ public:
 	void clear()
 	{
 		used_ = false; 
-		UInt8_classes_.clear();
-		UInt16_classes_.clear();
-		UInt32_classes_.clear();
-		UInt64_classes_.clear();
-		Int8_classes_.clear();
-		Int16_classes_.clear();
-		Int32_classes_.clear();
-		Int64_classes_.clear();
-		double_classes_.clear();
-		float_classes_.clear();
+		classes.clear();
 		class_weights_.clear();
 		column_count_ = 0 ;
 		class_count_ = 0;
 		actual_mtry_ = 0;
 		actual_msample_ = 0;
 		problem_type_ = CHECKLATER;
-		class_type_ = UNKNOWN;
 		is_weighted = false;
 
 	}

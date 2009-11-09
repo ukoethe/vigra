@@ -249,8 +249,84 @@ void options_export_HDF5(hid_t & group_id,
 					  name, H5T_NATIVE_DOUBLE); 
 }
 
+struct MyT
+{
+	enum type { INT8,  INT16,  INT32,  INT64, 
+				  UINT8, UINT16, UINT32, UINT64,
+				  FLOAT, DOUBLE, OTHER};
+};
+
+
+
+#define create_type_of(TYPE, ENUM) \
+MyT::type type_of(TYPE in)\
+{\
+	return MyT::ENUM; \
+}
+create_type_of(Int8, INT8);
+create_type_of(Int16, INT16);
+create_type_of(Int32, INT32);
+create_type_of(Int64, INT64);
+create_type_of(UInt8, UINT8);
+create_type_of(UInt16, UINT16);
+create_type_of(UInt32, UINT32);
+create_type_of(UInt64, UINT64);
+create_type_of(float, FLOAT);
+create_type_of(double, DOUBLE);
+#undef create_type_of
+
+MyT::type type_of_hid_t(hid_t group_id, std::string name)
+{
+	hid_t m_dataset_handle = 
+		H5Dopen(group_id, name.c_str(), H5P_DEFAULT);
+	hid_t datatype = H5Dget_type(m_dataset_handle);
+	H5T_class_t dataclass = H5Tget_class(datatype);
+	size_t datasize  = H5Tget_size(datatype);
+	H5T_sign_t datasign  = H5Tget_sign(datatype);
+	MyT::type result; 
+	if(dataclass == H5T_FLOAT)
+	{
+		if(datasize == 4)
+			result = MyT::FLOAT;
+		else if(datasize == 8)
+			result = MyT::DOUBLE;
+	}
+	else if(dataclass == H5T_INTEGER)	
+	{
+		if(datasign == H5T_SGN_NONE)
+		{
+			if(datasize ==  1)
+				result = MyT::UINT8;
+			else if(datasize == 2)
+				result = MyT::UINT16;
+			else if(datasize == 4)
+				result = MyT::UINT32;
+			else if(datasize == 8)
+				result = MyT::UINT64;
+		}
+		else
+		{
+			if(datasize ==  1)
+				result = MyT::INT8;
+			else if(datasize == 2)
+				result = MyT::INT16;
+			else if(datasize == 4)
+				result = MyT::INT32;
+			else if(datasize == 8)
+				result = MyT::INT64;
+		}
+	}
+	else
+	{
+		result = MyT::OTHER;
+	}
+	H5Tclose(datatype);
+	H5Dclose(m_dataset_handle);
+}
+
+
 void problemspec_import_HDF5(hid_t & group_id, 
-							 ProblemSpec  & param, 
+							 RF_Traits::ProblemSpec_t  & param, 
 							 std::string name)
 {
 	hid_t param_id = H5Gopen (group_id, 
@@ -279,26 +355,26 @@ void problemspec_import_HDF5(hid_t & group_id,
 	}
 	param.make_from_map(ext_map);
 	//load_class_labels
-	switch(param.class_type_)
+	switch(type_of_hid_t(param_id,"labels" ))
 	{
-		#define SOME_CASE(type_, hdf5_type_) \
-		case ProblemSpec::type_##_t:\
+		#define SOME_CASE(type_, enum_) \
+	  case MyT::enum_ :\
 		{\
 			ArrayVector<type_> tmp;\
-			write_hdf5_2_array(param_id, tmp, "labels", hdf5_type_);\
+			write_hdf5_2_array(param_id, tmp, "labels", H5T_NATIVE_##enum_);\
 			param.classes_(tmp.begin(), tmp.end());\
 		}\
 			break;
-		SOME_CASE(UInt8, 	H5T_NATIVE_UINT8);
-		SOME_CASE(UInt16, 	H5T_NATIVE_UINT16);
-		SOME_CASE(UInt32, 	H5T_NATIVE_UINT32);
-		SOME_CASE(UInt64, 	H5T_NATIVE_UINT64);
-		SOME_CASE(Int8,  	H5T_NATIVE_INT8);
-		SOME_CASE(Int16, 	H5T_NATIVE_INT16);
-		SOME_CASE(Int32, 	H5T_NATIVE_INT32);
-		SOME_CASE(Int64, 	H5T_NATIVE_INT64);
-		SOME_CASE(double, 	H5T_NATIVE_DOUBLE);
-		SOME_CASE(float, 	H5T_NATIVE_FLOAT);
+		SOME_CASE(UInt8, 	UINT8);
+		SOME_CASE(UInt16, 	UINT16);
+		SOME_CASE(UInt32, 	UINT32);
+		SOME_CASE(UInt64, 	UINT64);
+		SOME_CASE(Int8,  	INT8);
+		SOME_CASE(Int16, 	INT16);
+		SOME_CASE(Int32, 	INT32);
+		SOME_CASE(Int64, 	INT64);
+		SOME_CASE(double, 	DOUBLE);
+		SOME_CASE(float, 	FLOAT);
 		default:
 			std::runtime_error("exportRF_HDF5(): unknown class type"); 
 		#undef SOME_CASE
@@ -307,7 +383,7 @@ void problemspec_import_HDF5(hid_t & group_id,
 }
 
 void problemspec_export_HDF5(hid_t & group_id, 
-							 ProblemSpec const & param, 
+							 RF_Traits::ProblemSpec_t const & param, 
 							 std::string name)
 {
 	hsize_t		size = 1;
@@ -327,24 +403,22 @@ void problemspec_export_HDF5(hid_t & group_id,
 		write_array_2_hdf5(param_id, iter->second, iter->first, H5T_NATIVE_DOUBLE);
 	
 	//save class_labels
-	switch(param.class_type_)
+	switch(type_of(param.classes[0]))
 	{
-		#define SOME_CASE(type_, hdf5_type_) \
-		case ProblemSpec::type_##_t:\
-			write_array_2_hdf5(param_id, param.type_##_classes_, "labels", hdf5_type_);\
+		#define SOME_CASE(type) \
+		case MyT::type:\
+			write_array_2_hdf5(param_id, param.classes, "labels", H5T_NATIVE_##type);\
 			break;
-		SOME_CASE(UInt8, 	H5T_NATIVE_UINT8);
-		SOME_CASE(UInt16, 	H5T_NATIVE_UINT16);
-		SOME_CASE(UInt32, 	H5T_NATIVE_UINT32);
-		SOME_CASE(UInt64, 	H5T_NATIVE_UINT64);
-		SOME_CASE(Int8,  	H5T_NATIVE_INT8);
-		SOME_CASE(Int16, 	H5T_NATIVE_INT16);
-		SOME_CASE(Int32, 	H5T_NATIVE_INT32);
-		SOME_CASE(Int64, 	H5T_NATIVE_INT64);
-		SOME_CASE(double, 	H5T_NATIVE_DOUBLE);
-		SOME_CASE(float, 	H5T_NATIVE_FLOAT);
-		case ProblemSpec::UNKNOWN:
-			break;
+		SOME_CASE(UINT8);
+		SOME_CASE(UINT16);
+		SOME_CASE(UINT32);
+		SOME_CASE(UINT64);
+		SOME_CASE(INT8);
+		SOME_CASE(INT16);
+		SOME_CASE(INT32);
+		SOME_CASE(INT64);
+		SOME_CASE(DOUBLE);
+		SOME_CASE(FLOAT);
 		default:
 			std::runtime_error("exportRF_HDF5(): unknown class type"); 
 		#undef SOME_CASE
