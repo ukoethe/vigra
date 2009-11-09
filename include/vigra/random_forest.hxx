@@ -111,7 +111,7 @@ SamplingOptions make_sampler_opt ( RF_Traits::Options_t		& RF_opt,
  * 
  *
 */
-template <class PreprocessorTag = ClassificationTag>
+template <class LabelType , class PreprocessorTag >
 class RandomForest
 {
 
@@ -119,7 +119,7 @@ class RandomForest
 	//public typedefs
 	typedef RF_Traits::Options_t 			Options_t;
 	typedef	RF_Traits::DecisionTree_t 		DecisionTree_t;
-	typedef RF_Traits::ProblemSpec_t 		ProblemSpec_t;
+	typedef ProblemSpec<LabelType> 		ProblemSpec_t;
 	typedef RF_Traits::Default_Split_t 		Default_Split_t;
 	typedef	RF_Traits::Default_Stop_t 		Default_Stop_t;
 	typedef	RF_Traits::Default_Visitor_t 	Default_Visitor_t;
@@ -454,7 +454,7 @@ class RandomForest
 	 *         to get back the same type used during learning. 
 	 */
     template <class U, class C>
-    double predictLabel(MultiArrayView<2, U, C>const & features);
+    LabelType predictLabel(MultiArrayView<2, U, C>const & features);
 
 	/** \brief predict a label with features and class priors
 	 *
@@ -463,7 +463,7 @@ class RandomForest
 	 * \return sam as above.
 	 */
     template <class U, class C, class Iterator>
-    double predictLabel(MultiArrayView<2, U, C> const & features,
+    LabelType predictLabel(MultiArrayView<2, U, C> const & features,
                                 Iterator priors) ;
 
 	/** \brief predict multiple labels with given features
@@ -502,14 +502,14 @@ class RandomForest
 };
 
 
-template <class PreprocessorTag>
+template <class LabelType, class PreprocessorTag>
 template <class U, class C1,
 		 class U2,class C2,
 		 class Split_t,
 		 class Stop_t,
 		 class Visitor_t,
 		 class Random_t>
-double RandomForest<PreprocessorTag>::
+double RandomForest<LabelType, PreprocessorTag>::
 					 learn( MultiArrayView<2, U, C1> const  & 	features,
 							MultiArrayView<2, U2,C2> const  & 	response,
 							Visitor_t 							visitor_,
@@ -525,7 +525,7 @@ double RandomForest<PreprocessorTag>::
 													RandFunctor_t;
 
     // See rf_preprocessing.hxx for more info on this
-    typedef Processor<PreprocessorTag, U, C1, U2, C2> Preprocessor_t;
+    typedef Processor<PreprocessorTag,LabelType, U, C1, U2, C2> Preprocessor_t;
 	
 	// default values and initialization
 	// Value Chooser chooses second argument as value if first argument
@@ -614,9 +614,9 @@ double RandomForest<PreprocessorTag>::
 
 
 
-template <class Tag>
+template <class LabelType, class Tag>
 template <class U, class C>
-double RandomForest<Tag>
+LabelType RandomForest<LabelType, Tag>
     ::predictLabel(MultiArrayView<2, U, C> const & features)
 {
     vigra_precondition(columnCount(features) >= ext_param_.column_count_,
@@ -634,9 +634,9 @@ double RandomForest<Tag>
 
 
 //Same thing as above with priors for each label !!!
-template <class PreprocessorTag>
+template <class LabelType, class PreprocessorTag>
 template <class U, class C, class Iterator>
-double RandomForest<PreprocessorTag>
+LabelType RandomForest<LabelType, PreprocessorTag>
     ::predictLabel( MultiArrayView<2, U, C> const & features,
                     Iterator                        priors)
 {
@@ -656,9 +656,9 @@ double RandomForest<PreprocessorTag>
     return d;
 }
 
-template <class PreprocessorTag>
+template <class LabelType, class PreprocessorTag>
 template <class U, class C1, class T, class C2>
-void RandomForest<PreprocessorTag>
+void RandomForest<LabelType, PreprocessorTag>
     ::predictProbabilities(MultiArrayView<2, U, C1>const &  features,
                            MultiArrayView<2, T, C2> &       prob)
 {

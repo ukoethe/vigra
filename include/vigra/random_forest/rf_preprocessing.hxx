@@ -58,7 +58,7 @@ namespace vigra
  * to care.... - or need some sort of vague new preprocessor.  
  * new preprocessor ( Soft labels or whatever)
  */
-template<class Tag, class T1, class C1, class T2, class C2>
+template<class Tag, class LabelType, class T1, class C1, class T2, class C2>
 class Processor;
 
 namespace detail
@@ -68,8 +68,9 @@ namespace detail
 	 * This function analyses the options struct and calculates the real 
 	 * values needed for the current problem (data)
 	 */
+	template<class T>
 	void fill_external_parameters(RF_Traits::Options_t & options,
-								  RF_Traits::ProblemSpec_t & ext_param)
+								  ProblemSpec<T> & ext_param)
 	{
 	    // set correct value for mtry
 	    switch(options.mtry_switch_)
@@ -128,8 +129,8 @@ namespace detail
  * This class converts the labels int Integral labels which are used by the 
  * standard split functor to address memory in the node objects.
  */
-template<class T1, class C1, class T2, class C2>
-class Processor<ClassificationTag, T1, C1, T2, C2>
+template<class LabelType, class T1, class C1, class T2, class C2>
+class Processor<ClassificationTag, LabelType, T1, C1, T2, C2>
 {
     public:
 	typedef Int32 LabelInt;
@@ -139,17 +140,18 @@ class Processor<ClassificationTag, T1, C1, T2, C2>
 	MultiArray<2, LabelInt> 			intLabels_;
 	MultiArrayView<2, LabelInt> 		strata_;
 
+	template<class T>
     Processor(MultiArrayView<2, T1, C1>const & features,   
 			  MultiArrayView<2, T2, C2>const & response,
               RF_Traits::Options_t &options,         
-			  RF_Traits::ProblemSpec_t &ext_param)
+			  ProblemSpec<T> &ext_param)
     :
 		features_( features) // do not touch the features. 
     {
 		// set some of the problem specific parameters 
         ext_param.column_count_  = features.shape(1);
         ext_param.row_count_     = features.shape(0);
-        ext_param.problem_type_  = RF_Traits::ProblemSpec_t::CLASSIFICATION;
+        ext_param.problem_type_  = ProblemSpec<T>::CLASSIFICATION;
         ext_param.used_          = true;
         intLabels_.reshape(response.shape());
 
@@ -230,25 +232,26 @@ class Processor<ClassificationTag, T1, C1, T2, C2>
 /** Regression Preprocessor - This basically does not do anything with the
  * data.
  */
-template<class T1, class C1, class T2, class C2>
-class Processor<RegressionTag, T1, C1, T2, C2>
+template<class LabelType, class T1, class C1, class T2, class C2>
+class Processor<RegressionTag,LabelType, T1, C1, T2, C2>
 {
 public:
 	// only views are created - no data copied.
 	MultiArrayView<2, T1, C1> 	features_;
 	MultiArrayView<2, T2, C2> 	response_;
 	RF_Traits::Options_t const & options_;
-	RF_Traits::ProblemSpec_t const &
+	ProblemSpec<LabelType> const &
 								ext_param_;
 	// will only be filled if needed
 	MultiArray<2, int> 	 	strata_;
 	bool strata_filled;
 
 	// copy the views.
+	template<class T>
 	Processor(	MultiArrayView<2, T1, C1> 	feats,
 				MultiArrayView<2, T2, C2> 	response,
 				RF_Traits::Options_t			options,
-				RF_Traits::ProblemSpec_t	ext_param)
+				ProblemSpec<T>	ext_param)
 	:
 		features_(feats),
 		response_(response),

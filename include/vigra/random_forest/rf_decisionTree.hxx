@@ -86,13 +86,13 @@ class DecisionTree
     ArrayVector<TreeInt>  topology_;
     ArrayVector<double>   parameters_;
 
-    RF_Traits::ProblemSpec_t ext_param_;
+    ProblemSpec<> ext_param_;
     unsigned int classCount_;
 
 
   public:
 	/** \Brief Create tree with parameters */
-    DecisionTree(RF_Traits::ProblemSpec_t ext_param)
+    DecisionTree(ProblemSpec<> ext_param)
     :
         ext_param_(ext_param),
         classCount_(ext_param.class_count_)

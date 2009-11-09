@@ -68,7 +68,7 @@ class SplitBase
     typedef DT_StackEntry<ArrayVectorView<Int32>::iterator>
                                 		StackEntry_t;
 
-    RF_Traits::ProblemSpec_t 			ext_param_;
+    ProblemSpec<> 			ext_param_;
 
     NodeBase::T_Container_type 			t_data;
     NodeBase::P_Container_type 			p_data;
@@ -79,7 +79,8 @@ class SplitBase
         \ref findBestSplit or \ref makeTerminalNode.
     **/
 
-    void set_external_parameters(RF_Traits::ProblemSpec_t const & in)
+	template<class T>
+    void set_external_parameters(ProblemSpec<T> const & in)
     {
         ext_param_ = in;
         t_data.push_back(in.column_count_);
@@ -642,7 +643,8 @@ class GiniSplit: public SplitBase
     double minGini;
     int bestSplitColumn;
 
-    void set_external_parameters(RF_Traits::ProblemSpec_t const & in)
+	template<class T>
+    void set_external_parameters(ProblemSpec<T> const & in)
     {
         SB::set_external_parameters(in);
         bgfunc = BestGiniFunctor( ext_param_.class_count_, ext_param_.class_weights_);

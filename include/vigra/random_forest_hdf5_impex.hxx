@@ -324,9 +324,9 @@ MyT::type type_of_hid_t(hid_t group_id, std::string name)
 	H5Dclose(m_dataset_handle);
 }
 
-
+template<class T>
 void problemspec_import_HDF5(hid_t & group_id, 
-							 RF_Traits::ProblemSpec_t  & param, 
+							 ProblemSpec<T>  & param, 
 							 std::string name)
 {
 	hid_t param_id = H5Gopen (group_id, 
@@ -382,8 +382,9 @@ void problemspec_import_HDF5(hid_t & group_id,
 	H5Gclose(param_id);
 }
 
+template<class T>
 void problemspec_export_HDF5(hid_t & group_id, 
-							 RF_Traits::ProblemSpec_t const & param, 
+							 ProblemSpec<T> const & param, 
 							 std::string name)
 {
 	hsize_t		size = 1;

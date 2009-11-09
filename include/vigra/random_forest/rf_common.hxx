@@ -53,10 +53,10 @@ namespace rf
 class	                OOB_Visitor;
 class                   RandomForestOptions;
 
-template<class T>
+template<class T= double>
 class                   ProblemSpec;
 
-template<class Tag>
+template<class LabelT = double, class Tag = ClassificationTag>
     class               RandomForest;
 class 					EarlyStoppStd;
 namespace detail
@@ -78,7 +78,6 @@ class RF_Traits
 	public:
 	typedef RandomForestOptions 	Options_t;
 	typedef	detail::DecisionTree   	DecisionTree_t;
-	typedef ProblemSpec<double>		ProblemSpec_t;
 	typedef ClassificationTag		Preprocessor_t;
 	typedef GiniSplit	            Default_Split_t;
 	typedef EarlyStoppStd           Default_Stop_t;
@@ -87,6 +86,7 @@ class RF_Traits
 	typedef rf::StopVisiting			StopVisiting_t;
 
 };
+
 
 /**\brief Standard early stopping criterion
  *
@@ -102,7 +102,8 @@ class EarlyStoppStd
 	:	min_split_node_size_(opt.min_split_node_size_)
 	{}
 
-	void set_external_parameters(RF_Traits::ProblemSpec_t &prob)
+	template<class T>
+	void set_external_parameters(ProblemSpec<T> &prob)
 	{}
 
     template<class Region>
