@@ -111,6 +111,12 @@ class EarlyStoppStd
     {
         return region.size() < min_split_node_size_;
     }
+
+	template<class WeightIter, class T>
+	bool after_prediction(WeightIter iter, ProblemSpec<T> ext_param, int k, int tree_count)
+	{
+		return false; 
+	}
 };
 
 

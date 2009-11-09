@@ -490,11 +490,26 @@ class RandomForest
      *  \param features same as above
      *  \param prob a n x class_count_ matrix. passed by reference to
      *  save class probabilities
+	 *  \param stop earlystopping criterion 
+	 *  \sa EarlyStopping
+     */
+    template <class U, class C1, class T, class C2, class Stop>
+    void predictProbabilities(MultiArrayView<2, U, C1>const & 	features,
+                              MultiArrayView<2, T, C2> & 		prob,
+							  Stop								stop) ;
+
+    /** \brief predict the class probabilities for multiple labels
+     *
+     *  \param features same as above
+     *  \param prob a n x class_count_ matrix. passed by reference to
+     *  save class probabilities
      */
     template <class U, class C1, class T, class C2>
     void predictProbabilities(MultiArrayView<2, U, C1>const & 	features,
-                              MultiArrayView<2, T, C2> & 		prob) ;
-
+                              MultiArrayView<2, T, C2> & 		prob)
+	{
+		predictProbabilities(features, prob, RF_Traits::Default_Stop_t(options_)); 
+	}	
 
 
 	/*\}*/
@@ -657,10 +672,11 @@ LabelType RandomForest<LabelType, PreprocessorTag>
 }
 
 template <class LabelType, class PreprocessorTag>
-template <class U, class C1, class T, class C2>
+template <class U, class C1, class T, class C2, class Earlystopping>
 void RandomForest<LabelType, PreprocessorTag>
     ::predictProbabilities(MultiArrayView<2, U, C1>const &  features,
-                           MultiArrayView<2, T, C2> &       prob)
+                           MultiArrayView<2, T, C2> &       prob,
+						   Earlystopping 					stop)
 {
 
 	//Features are n xp
@@ -707,9 +723,14 @@ void RandomForest<LabelType, PreprocessorTag>
             {
                 prob(row, l) += weights[l];
                 //every weight in totalWeight.
-		totalWeight += weights[l];
+				totalWeight += weights[l];
             }
-        }
+			if(stop.after_prediction(weights, 
+									 ext_param_, 
+									 k, 
+									 options_.tree_count_))
+				break;
+		}
 
 	//Normalise votes in each row by total VoteCount (totalWeight
         for(unsigned int l=0; l<ext_param_.class_count_; ++l)
