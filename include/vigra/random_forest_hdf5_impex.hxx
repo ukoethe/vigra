@@ -45,6 +45,7 @@
 #if (H5_VERS_MAJOR == 1 && H5_VERS_MINOR <= 6)
 	#define H5Gcreate(a,b,c,d,e) H5Gcreate(a,b, 1);
 	#define H5Gopen(a,b,c) H5Gopen(a,b)
+	#define H5Dopen(a,b,c) H5Dopen(a,b)
 	# include <H5LT.h>
 #else
 	# include <hdf5_hl.h>
@@ -251,9 +252,9 @@ void options_export_HDF5(hid_t & group_id,
 
 struct MyT
 {
-	enum type { INT8,  INT16,  INT32,  INT64, 
-				  UINT8, UINT16, UINT32, UINT64,
-				  FLOAT, DOUBLE, OTHER};
+	enum type { INT8 = 1,  INT16 = 2,  INT32 =3,  INT64=4, 
+				  UINT8 = 5, UINT16 = 6, UINT32= 7, UINT64= 8,
+				  FLOAT = 9, DOUBLE = 10, OTHER = 3294};
 };
 
 
@@ -278,7 +279,7 @@ create_type_of(double, DOUBLE);
 MyT::type type_of_hid_t(hid_t group_id, std::string name)
 {
 	hid_t m_dataset_handle = 
-		H5Dopen(group_id, name.c_str(), H5P_DEFAULT);
+	H5Dopen(group_id, name.c_str(), H5P_DEFAULT);
 	hid_t datatype = H5Dget_type(m_dataset_handle);
 	H5T_class_t dataclass = H5Tget_class(datatype);
 	size_t datasize  = H5Tget_size(datatype);
@@ -322,6 +323,7 @@ MyT::type type_of_hid_t(hid_t group_id, std::string name)
 	}
 	H5Tclose(datatype);
 	H5Dclose(m_dataset_handle);
+	return result;
 }
 
 template<class T>
@@ -334,7 +336,7 @@ void problemspec_import_HDF5(hid_t & group_id,
 							  H5P_DEFAULT);
 
 	vigra_postcondition(param_id >= 0, 
-						"problemspec_export_HDF5():"
+						"problemspec_import_HDF5():"
 						" Unable to open external parameters");
 
 	//get a map containing all the double fields

@@ -1001,13 +1001,10 @@ HDF5ImportInfo::HDF5ImportInfo(const char* filePath, const char* pathInFile)
     m_file_handle = HDF5Handle(H5Fopen(filePath, H5F_ACC_RDONLY, H5P_DEFAULT),
                                &H5Fclose, "HDF5ImportInfo(): Unable to open file.");
 
-#if (H5_VERS_MAJOR == 1 && H5_VERS_MINOR <= 6)
-    m_dataset_handle = HDF5Handle(H5Dopen(m_file_handle, pathInFile),
-                                  &H5Dclose, "HDF5ImportInfo(): Unable to open dataset.");
-#else
+
     m_dataset_handle = HDF5Handle(H5Dopen(m_file_handle, pathInFile, H5P_DEFAULT),
                                   &H5Dclose, "HDF5ImportInfo(): Unable to open dataset.");
-#endif
+
 
     //DataSet dset = m_file.openDataSet(datasetname);
     m_filename = filePath;

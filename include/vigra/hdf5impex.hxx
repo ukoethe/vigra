@@ -544,13 +544,8 @@ void writeToHDF5File(const char* filePath, const char* pathInFile, const MultiAr
         std::cout << "dataset does not exist so far" << std::endl;
     }*/
     
-#if (H5_VERS_MAJOR == 1 && H5_VERS_MINOR <= 6)
-    HDF5Handle dataset_handle(H5Dcreate(group, data_set_name.c_str(), detail::getH5DataType<T>(), dataspace_handle, H5P_DEFAULT),
-                              &H5Dclose, "writeToHDF5File(): unable to create dataset.");
-#else
     HDF5Handle dataset_handle(H5Dcreate(group, data_set_name.c_str(), detail::getH5DataType<T>(), dataspace_handle, H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT),
                               &H5Dclose, "writeToHDF5File(): unable to create dataset.");
-#endif
     
     // Write the data to the HDF5 dataset
     //dataset.write( array.data(), GetH5DataType<T>() ); // old version without support for strided arrays
