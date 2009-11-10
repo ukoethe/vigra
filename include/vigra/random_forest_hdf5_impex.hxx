@@ -92,7 +92,7 @@ bool find_groups_hdf5(hid_t grp_id, Container &cont)
 #if (H5_VERS_MAJOR == 1 && H5_VERS_MINOR <= 6)
 		buffer_size = 
 				H5Gget_objname_by_idx(grp_id, 
-									  ii, buffer,data(), 
+									  ii, buffer.data(), 
 									  (size_t)buffer_size );
 #else
 		buffer_size =
@@ -139,7 +139,7 @@ bool find_groups_hdf5(std::string filename,
 	return res; 
 }
 
-int get_number_of_digits(int in)
+inline int get_number_of_digits(int in)
 {
 	int num = 0;
 	int i = 1; 
@@ -153,7 +153,7 @@ int get_number_of_digits(int in)
 	return num; 
 }
 
-std::string make_padded_number(int number, int max_number)
+inline std::string make_padded_number(int number, int max_number)
 {
 	int max_digit_ct = get_number_of_digits(max_number);
 	char buffer [50];
@@ -216,7 +216,7 @@ void write_hdf5_2_array(hid_t & id,
 }
 
 
-void options_import_HDF5(hid_t & group_id,
+inline void options_import_HDF5(hid_t & group_id,
 						 RandomForestOptions & opt, 
 						 std::string name)
 {
@@ -227,7 +227,7 @@ void options_import_HDF5(hid_t & group_id,
 				  	serialized_options.end());
 }
 
-void options_export_HDF5(hid_t & group_id,
+inline void options_export_HDF5(hid_t & group_id,
 						 RandomForestOptions const & opt, 
 						 std::string name)
 {
@@ -249,7 +249,7 @@ struct MyT
 
 
 #define create_type_of(TYPE, ENUM) \
-MyT::type type_of(TYPE in)\
+inline MyT::type type_of(TYPE in)\
 {\
 	return MyT::ENUM; \
 }
@@ -265,7 +265,7 @@ create_type_of(float, FLOAT);
 create_type_of(double, DOUBLE);
 #undef create_type_of
 
-MyT::type type_of_hid_t(hid_t group_id, std::string name)
+inline MyT::type type_of_hid_t(hid_t group_id, std::string name)
 {
 	hid_t m_dataset_handle = 
 	H5Dopen(group_id, name.c_str(), H5P_DEFAULT);
@@ -418,9 +418,9 @@ void problemspec_export_HDF5(hid_t & group_id,
 	H5Gclose(param_id);
 }
 
-void dt_import_HDF5(hid_t & group_id,
-				RF_Traits::DecisionTree_t & tree,
-					std::string name)
+inline void dt_import_HDF5(	hid_t & group_id,
+			 				RF_Traits::DecisionTree_t & tree,
+							std::string name)
 {
 	//check if ext_param was written and write it if not
    	if(tree.ext_param_.actual_msample_ == 0)
@@ -444,9 +444,9 @@ void dt_import_HDF5(hid_t & group_id,
 }
 
 
-void dt_export_HDF5(hid_t & group_id,
-				RF_Traits::DecisionTree_t const & tree,
-					std::string name)
+inline void dt_export_HDF5(	hid_t & group_id,
+							RF_Traits::DecisionTree_t const & tree,
+							std::string name)
 {
 	//check if ext_param was written and write it if not
 	hid_t e_id = H5Gopen (group_id, 
