@@ -425,11 +425,10 @@ namespace detail
 	template<int N>
 	class ConstArr
 	{
-		static const double val = N;
 	public:
-		double operator[](size_t in)
+		double operator[](size_t) const
 		{
-			return val;
+			return (double)N;
 		}
 	};
 }

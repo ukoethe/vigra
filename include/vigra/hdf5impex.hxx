@@ -41,10 +41,18 @@
 #include <hdf5.h>
 
 #if (H5_VERS_MAJOR == 1 && H5_VERS_MINOR <= 6)
-#define H5Gopen(a, b, c) H5Gopen(a, b)
-#define H5Gcreate(a, b, c, d, e) H5Gcreate(a, b, 1)
-#define H5Dopen(a, b, c) H5Dopen(a, b)
-#define H5Dcreate(a, b, c, d, e, f, g) H5Dcreate(a, b, c, d, f)
+# ifndef H5Gopen
+#   define H5Gopen(a, b, c) H5Gopen(a, b)
+# endif
+# ifndef H5Gcreate
+#  define H5Gcreate(a, b, c, d, e) H5Gcreate(a, b, 1)
+# endif
+# ifndef H5Dopen
+#  define H5Dopen(a, b, c) H5Dopen(a, b)
+# endif
+# ifndef H5Dcreate
+#  define H5Dcreate(a, b, c, d, e, f, g) H5Dcreate(a, b, c, d, f)
+# endif
 # include <H5LT.h>
 #else
 # include <hdf5_hl.h>

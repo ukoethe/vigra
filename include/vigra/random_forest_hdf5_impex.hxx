@@ -38,25 +38,12 @@
 #define VIGRA_RANDOM_FOREST_IMPEX_HDF5_HXX
 
 #include "random_forest.hxx"
+#include "hdf5impex.hxx"
 #include <cstdio>
 #include <string>
-#include <hdf5.h>
-
-#if (H5_VERS_MAJOR == 1 && H5_VERS_MINOR <= 6)
-	#define H5Gcreate(a,b,c,d,e) H5Gcreate(a,b, 1);
-	#define H5Gopen(a,b,c) H5Gopen(a,b)
-	#define H5Dopen(a,b,c) H5Dopen(a,b)
-	# include <H5LT.h>
-#else
-	# include <hdf5_hl.h>
-#endif
 
 namespace vigra 
 {
-
-	
-
-
 
 namespace detail
 {
@@ -101,25 +88,24 @@ bool find_groups_hdf5(hid_t grp_id, Container &cont)
 								   H5_ITER_INC,
 								   ii, 0, 0, H5P_DEFAULT)+1;
 #endif
-		char* buffer = new char[buffer_size];
+		ArrayVector<char> buffer(buffer_size);
 #if (H5_VERS_MAJOR == 1 && H5_VERS_MINOR <= 6)
 		buffer_size = 
 				H5Gget_objname_by_idx(grp_id, 
-									  ii, buffer, 
+									  ii, buffer,data(), 
 									  (size_t)buffer_size );
 #else
 		buffer_size =
 				H5Lget_name_by_idx(grp_id, ".",
 								   H5_INDEX_NAME,
 								   H5_ITER_INC,
-								   ii, buffer,
+								   ii, buffer.data(),
 								   (size_t)buffer_size,
 								   H5P_DEFAULT);
 #endif
-		cont.insert(cont.end(), std::string(buffer));
-		delete [] buffer;
+		cont.insert(cont.end(), std::string(buffer.data()));
 	}
-	return 1;
+	return true;
 }
 
 
@@ -136,17 +122,20 @@ bool find_groups_hdf5(std::string filename,
 		return 0;
 	}
 	//open the file
-	hid_t file_id =  H5Fopen(filename.c_str(),
-				  			 H5F_ACC_RDONLY,
-				  			 H5P_DEFAULT);
-	hid_t grp_id = groupname == "" ?
-		file_id
-		:H5Gopen(file_id, groupname.c_str(), H5P_DEFAULT);
+	HDF5Handle file_id(H5Fopen(filename.c_str(), H5F_ACC_RDONLY, H5P_DEFAULT),
+                       &H5Fclose, "Unable to open HDF5 file");
+	HDF5Handle grp_id;
+    if(groupname == "")
+    {
+        grp_id = HDF5Handle(file_id, 0, "");
+    }
+    else
+    {
+		grp_id = HDF5Handle(H5Gopen(file_id, groupname.c_str(), H5P_DEFAULT),
+                            &H5Gclose, "Unable to open group");
 
-	bool res =  find_groups_hdf5(grp_id, cont); 
-	if(groupname != "")
-		H5Gclose(grp_id);
-	H5Fclose(file_id);
+	}
+    bool res =  find_groups_hdf5(grp_id, cont); 
 	return res; 
 }
 

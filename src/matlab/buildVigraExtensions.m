@@ -1,4 +1,4 @@
-% buildVigraExtensions(OUTDIR, TARGET)
+% buildVigraExtensions(OUTDIR, TARGET, options)
 %
 % Makefile that compiles the VIGRA MEX functions and installs them into the specified 
 % OUTDIR, along with corresponding documentation.
@@ -12,20 +12,27 @@
 %   - OUTDIR: directory for compiled files (default '.', i.e. this directory)
 %   - TARGET (default: 'all'): 
 %	  - 'all':    builds all the files in the folder
+%	  - 'test':   see below
 %	  - 'clean':  remove all mex compiled files from the folder
+%   - options:    struct('flags', 'additional compile flags') 
+%                 (if needed, see comments in the failing files for help)
 %
 % Special command to compile the unit tests (don't call this directly -- use testVigraExtensions()):
 %    buildVigraExtensions('test-routines', 'test')
-function buildVigraExtensions(OUTDIR, TARGET)
+function buildVigraExtensions(OUTDIR, TARGET, options)
 
-if nargin == 0
+if nargin == 0 || isempty(OUTDIR)
 	OUTDIR = '.';
-elseif isempty(OUTDIR)
-    OUTDIR = '.';
 end
 
-if nargin < 2
+if nargin <= 1 || isempty(TARGET)
 	TARGET = 'all';
+end
+
+if nargin <= 2 || isempty(options)
+	flags = '';
+else
+    flags = options.flags;
 end
 
 if exist('octave_config_info')
@@ -96,24 +103,26 @@ if strcmp( TARGET, 'all' ) || strcmp( TARGET, 'test' )
 				line1 = fgetl(f);
 			end
 			fclose(f);
-			[match1 comment1] = regexp(text1, '/\*\*\s*ADDITIONAL_BUILD_FLAGS\s*(.*?)\*/', 'match', 'tokens', 'ignorecase');
-			if isempty(match1)
-				flags = '';
-			else
-                lines = regexp(comment1{1}{1}, '^(.*?)$', 'lineanchors', 'match');
-				flags = lines{1};
-			end
+			if strcmp(flags, '')
+                [match1 comment1] = regexp(text1, '/\*\*\s*ADDITIONAL_BUILD_FLAGS\s*(.*?)\*/', 'match', 'tokens', 'ignorecase');
+    			if ~isempty(match1)
+                    lines = regexp(comment1{1}{1}, '^(.*?)$', 'lineanchors', 'match');
+                    flags = lines{1};
+                end
+            end
 			% compile
 			disp(['compiling: ' cpp_filename ] );
             try
                 if isOctave
-					disp(['mex -I' include_dir ' -o ' mex_filename ' ' flags ' ' SRCDIR '/' cpp_filename]);
-                    eval(['mex -I' include_dir ' -o ' mex_filename ' ' flags ' ' SRCDIR '/' cpp_filename]);
+					disp(['mex -I' include_dir ' ' flags ' -o ' mex_filename ' ' SRCDIR '/' cpp_filename]);
+                    eval(['mex -I' include_dir ' ' flags ' -o ' mex_filename ' ' SRCDIR '/' cpp_filename]);
                 else
-                    disp(['mex -O ' flags ' -I' include_dir ' -outdir ''' OUTDIR ''' ' SRCDIR '/' cpp_filename]);
-                    eval(['mex -O ' flags ' -I' include_dir ' -outdir ''' OUTDIR ''' ' SRCDIR '/' cpp_filename]);
+                    disp(['mex -O -I' include_dir ' ' flags ' -outdir ''' OUTDIR ''' ' SRCDIR '/' cpp_filename]);
+                    eval(['mex -O -I' include_dir ' ' flags ' -outdir ''' OUTDIR ''' ' SRCDIR '/' cpp_filename]);
                 end
             catch ME
+                disp(['Call ''help ' functionName ''' to see possible compiler flags.'])
+                disp(' ')
             end
     
             

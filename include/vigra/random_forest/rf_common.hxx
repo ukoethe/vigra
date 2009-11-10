@@ -305,10 +305,10 @@ class RandomForestOptions
 		PULL(training_set_proportion_, double);
 		PULL(training_set_size_, int);
 		++iter; //PULL(training_set_func_, double);
-		PULL(training_set_calc_switch_, RF_OptionTag);
+		PULL(training_set_calc_switch_, (RF_OptionTag)int);
 		PULL(sample_with_replacement_, bool);
-		PULL(stratification_method_, RF_OptionTag);
-		PULL(mtry_switch_, RF_OptionTag);
+		PULL(stratification_method_, (RF_OptionTag)int);
+		PULL(mtry_switch_, (RF_OptionTag)int);
 		PULL(mtry_, int);
 		++iter; //PULL(mtry_func_, double);
 		PULL(tree_count_, int);
@@ -699,7 +699,7 @@ public:
 		PULL(row_count_, int);
 		PULL(actual_mtry_,int);
 		PULL(actual_msample_, int);
-		PULL(problem_type_, Problem_t);
+		PULL(problem_type_, (Problem_t)int);
 		PULL(is_weighted, bool);
 		PULL(used_, bool);
 		class_weights_ = in["class_weights_"];
