@@ -96,7 +96,8 @@ if strcmp( TARGET, 'all' ) || strcmp( TARGET, 'test' )
         if isempty( mex_file ) || ( cpp_file.datenum > mex_file.datenum )
 
 			text1 = '';
-			f = fopen(cpp_filename);
+            disp(cpp_filename)
+			f = fopen([SRCDIR '/' cpp_filename]);
 			line1 = fgetl(f);
 			while ischar(line1)
 				text1 = sprintf('%s\n%s', text1, line1);
