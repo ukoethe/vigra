@@ -53,7 +53,7 @@ void vigraMain(matlab::OutputArray outputs, matlab::InputArray inputs){
     ****************************************************************************************************/
     typedef double inputType;
 	vigra::RandomForestOptions 	options;
-	vigra::ProblemSpec 			ext_param;
+	vigra::ProblemSpec<double>	ext_param;
     options.sample_with_replacement(inputs.getBool("sample_with_replacement", 
 												   v_default(true)));
 	

@@ -546,7 +546,7 @@ public:
 	Problem_t 				problem_type_;
 	
 	ArrayVector<double> 	class_weights_;
-	bool 					is_weighted;
+	int 					is_weighted;
 
 
 	template<class T> 
@@ -624,7 +624,7 @@ public:
 
 	size_t serialized_size() const
 	{
-		return 9 + class_count_ *int(is_weighted+1);
+		return 8 + class_count_ *int(is_weighted+1);
 	}
 
 
@@ -632,24 +632,24 @@ public:
 	void unserialize(Iter const & begin, Iter const & end)
 	{
 		Iter iter = begin;
-		vigra_precondition(end - begin >= 9, 
+		vigra_precondition(end - begin >= 8, 
 						   "ProblemSpec::unserialize():"
 						   "wrong number of parameters");
 		#define PULL(item_, type_) item_ = type_(*iter); ++iter;
 		PULL(column_count_,int);
 		PULL(class_count_, int);
 
-		vigra_precondition(end - begin >= 9 + class_count_, 
+		vigra_precondition(end - begin >= 8 + class_count_, 
 						   "ProblemSpec::unserialize(): 1");
 		PULL(row_count_, int);
 		PULL(actual_mtry_,int);
 		PULL(actual_msample_, int);
 		PULL(problem_type_, Problem_t);
-		PULL(is_weighted, bool);
-		PULL(used_, bool);
+		PULL(is_weighted, int);
+		PULL(used_, int);
 		if(is_weighted)
 		{
-			vigra_precondition(end - begin == 9 + 2*class_count_, 
+			vigra_precondition(end - begin == 8 + 2*class_count_, 
 							   "ProblemSpec::unserialize(): 2");
 			class_weights_.insert(class_weights_.end(),
 								  iter, 
@@ -700,8 +700,8 @@ public:
 		PULL(actual_mtry_,int);
 		PULL(actual_msample_, int);
 		PULL(problem_type_, (Problem_t)int);
-		PULL(is_weighted, bool);
-		PULL(used_, bool);
+		PULL(is_weighted, int);
+		PULL(used_, int);
 		class_weights_ = in["class_weights_"];
 		#undef PUSH
 	}
@@ -782,10 +782,10 @@ public:
 
 	}
 
-	bool used_;
+	int used_;
 	bool used() const
 	{
-    	return used_;
+    	return used_ != 0;
 	}
 };
 
