@@ -41,7 +41,6 @@
 #include <functional>
 #include <cmath>
 #include <vigra/random_forest.hxx>
-#include <vigra/random_forest_hdf5_impex.hxx>
 #include <unittest.hxx>
 #include <vector>
 //#include "data/RF_results.hxx"
@@ -55,10 +54,14 @@
 
 #include <stdlib.h>
 
-#if HDF5
-#include <vigra/dataset4.hxx>
-#include "vigra/hdf5impex.hxx"
+#ifdef HasHDF5
+# include <vigra/hdf5impex.hxx>
+# include <vigra/random_forest_hdf5_impex.hxx>
+# if HDF5
+#  include "vigra/dataset4.hxx"
+# endif
 #endif
+
 using namespace vigra;
 
 
@@ -384,7 +387,7 @@ struct ClassifierTest
         std::cerr << "DONE!\n\n";
 	}
 
-#if HasHDF5
+#ifdef HasHDF5
 	/** checks whether hdf5 import export is working
 	 */
     void HDF5ImpexTest()
@@ -444,7 +447,7 @@ struct ClassifierTestSuite
         add( testCase( &ClassifierTest::RFvariableImportanceTest));
 #endif
         add( testCase( &ClassifierTest::RFresponseTest));
-#if HasHDF5
+#ifdef HasHDF5
 		add( testCase( &ClassifierTest::HDF5ImpexTest));
 #endif
     }
