@@ -407,7 +407,7 @@ struct ClassifierTest
 				 should(RF.ext_param_== RF2.ext_param_);
 				 should(RF.options_ ==  RF2.options_);
 				 shouldEqual(RF.trees_.size(), RF2.trees_.size());
-				 for(int jj = 0; jj < RF.trees_.size(); ++jj)
+				 for(int jj = 0; jj < int(RF.trees_.size()); ++jj)
 				 {
 					 should(RF.trees_[jj].topology_ == 
 							RF2.trees_[jj].topology_);

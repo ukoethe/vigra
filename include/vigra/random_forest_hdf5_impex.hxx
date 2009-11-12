@@ -231,7 +231,6 @@ inline void options_export_HDF5(hid_t & group_id,
 						 RandomForestOptions const & opt, 
 						 std::string name)
 {
-	hsize_t size = opt.serialized_size();
 	ArrayVector<double> serialized_options(opt.serialized_size());
 	opt.serialize(serialized_options.begin(),
 				  serialized_options.end());
@@ -273,7 +272,7 @@ inline MyT::type type_of_hid_t(hid_t group_id, std::string name)
 	H5T_class_t dataclass = H5Tget_class(datatype);
 	size_t datasize  = H5Tget_size(datatype);
 	H5T_sign_t datasign  = H5Tget_sign(datatype);
-	MyT::type result; 
+	MyT::type result = MyT::OTHER; 
 	if(dataclass == H5T_FLOAT)
 	{
 		if(datasize == 4)
@@ -305,10 +304,6 @@ inline MyT::type type_of_hid_t(hid_t group_id, std::string name)
 			else if(datasize == 8)
 				result = MyT::INT64;
 		}
-	}
-	else
-	{
-		result = MyT::OTHER;
 	}
 	H5Tclose(datatype);
 	H5Dclose(m_dataset_handle);
@@ -378,7 +373,6 @@ void problemspec_export_HDF5(hid_t & group_id,
 							 ProblemSpec<T> const & param, 
 							 std::string name)
 {
-	hsize_t		size = 1;
 	hid_t param_id = H5Gcreate(group_id, name.c_str(), 
 								   		H5P_DEFAULT, 
 							   			H5P_DEFAULT, 

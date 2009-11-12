@@ -709,17 +709,17 @@ void RandomForest<LabelType, PreprocessorTag>
 
 	//Set each VoteCount = 0 - prob(row,l) contains vote counts until
 	//further normalisation
-        for(unsigned int l=0; l<ext_param_.class_count_; ++l)
+        for(int l=0; l<ext_param_.class_count_; ++l)
             prob(row, l) = 0.0;
 
 	//Let each tree classify...
-        for(unsigned int k=0; k<options_.tree_count_; ++k)
+        for(int k=0; k<options_.tree_count_; ++k)
         {
 		//get weights predicted by single tree
             weights = trees_[k].predict(rowVector(features, row));
 
 		//update votecount.
-            for(unsigned int l=0; l<ext_param_.class_count_; ++l)
+            for(int l=0; l<ext_param_.class_count_; ++l)
             {
                 prob(row, l) += weights[l];
                 //every weight in totalWeight.
@@ -733,7 +733,7 @@ void RandomForest<LabelType, PreprocessorTag>
 		}
 
 	//Normalise votes in each row by total VoteCount (totalWeight
-        for(unsigned int l=0; l<ext_param_.class_count_; ++l)
+        for(int l=0; l<ext_param_.class_count_; ++l)
                 prob(row, l) /= totalWeight;
     }
 

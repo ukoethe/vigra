@@ -259,6 +259,7 @@ public:
 		ext_param_(ext_param)
 	{
 		detail::fill_external_parameters(options, ext_param);
+		strata_ = MultiArray<2, int> (MultiArrayShape<2>::type(response_.shape(0), 1));
 	}
 
 	/** access preprocessed features
@@ -278,7 +279,9 @@ public:
 	/** acess strata - this is not used currently
 	 */
 	MultiArrayView<2, int> & strata()
-	{}
+	{
+		return strata_;
+	}
 };
 }
 #endif //VIGRA_RF_PREPROCESSING_HXX

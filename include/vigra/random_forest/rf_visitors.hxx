@@ -511,7 +511,7 @@ public:
     void visit_after_tree(    RF& rf, PR & pr,  SM & sm, ST & st, int index)
     {
 		//do the first time called.
-        if(oobCount.size() != rf.ext_param_.row_count_)
+        if(int(oobCount.size()) != rf.ext_param_.row_count_)
         {
             oobCount.resize(rf.ext_param_.row_count_, 0);
             oobErrorCount.resize(rf.ext_param_.row_count_, 0);
@@ -600,7 +600,7 @@ class VariableImportanceVisitor : public VisitorBase
 		{
 			Node<i_ThresholdNode> node(split.createNode());
 			variable_importance_(node.column(),class_count+1) 
-				+= split.giniDecrease;
+				+= split.region_gini_ - split.minGini();
 		}
     }
 
@@ -714,7 +714,7 @@ class VariableImportanceVisitor : public VisitorBase
 				.subarray(Shp_t(ii,0), 
 						  Shp_t(ii+1,class_count+1)) += perm_oob_right;
 			//copy back permuted dimension
-            for(int jj = 0; jj < oob_indices.size(); ++jj)
+            for(int jj = 0; jj < int(oob_indices.size()); ++jj)
                 features(oob_indices[jj], ii) = backup_column[jj];
 		}
     }

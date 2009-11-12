@@ -64,8 +64,8 @@ class TestVisitor: public VisitorBase
             std::ostringstream s1;
             s1.precision(10);
             s1.setf(std::ios::fixed,std::ios::floatfield);
-            s1 << split.minGini;
-            fout   << "minGini: " << s1.str().substr(0, s1.str().size()-4) << " - " << split.bestSplitColumn << std::endl;
+            s1 << split.minGini();
+            fout   << "minGini: " << s1.str().substr(0, s1.str().size()-4) << " - " << split.bestSplitColumn() << std::endl;
 //            fout   << "Threshold: " << *(split.node_.parameters_begin() +1) << std::endl;
             fout   << "Region.size: "      << parent.size() << std::endl;
             fout   << "LeftChild.size: "  << leftChild.size() << std::endl;
@@ -110,7 +110,7 @@ class SetTestVisitor: public VisitorBase
     {
         if(split.createNode().typeID() == i_ThresholdNode)
         {
-            sout   << "minGini: " << split.minGini << " - " << split.bestSplitColumn << std::endl;
+            sout   << "minGini: " << split.minGini() << " - " << split.bestSplitColumn() << std::endl;
             sout   << "Region.size: "      << parent.size() << std::endl;
             sout   << "LeftChild.size: "  << leftChild.size() << std::endl;
             sout   << "LeftChild.ClassCounts: ";

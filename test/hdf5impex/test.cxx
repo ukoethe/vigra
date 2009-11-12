@@ -82,7 +82,9 @@ public:
 		MultiArray<4,double> out_data_2(MultiArrayShape<4>::type(10, 2, 3, 4));
         // ...initialize the array to the test data
         for (int i = 0; i < 240; ++i)
-            out_data_2.data () [i] = i + (std::rand() / (double)RAND_MAX) - 120;
+		{
+            out_data_2.data () [i] = i;
+		}
 
 		// export
 		// ...data 1
