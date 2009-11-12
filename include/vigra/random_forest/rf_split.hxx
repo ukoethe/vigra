@@ -170,13 +170,15 @@ class SortSamplesByDimensions
 {
     DataMatrix const & data_;
     MultiArrayIndex sortColumn_;
-
+	double thresVal_;
   public:
 
     SortSamplesByDimensions(DataMatrix const & data, 
-							MultiArrayIndex sortColumn)
+							MultiArrayIndex sortColumn,
+							double thresVal = 0.0)
     : data_(data),
-      sortColumn_(sortColumn)
+      sortColumn_(sortColumn),
+	  thresVal_(thresVal)
     {}
 
     void setColumn(MultiArrayIndex sortColumn)
@@ -187,6 +189,10 @@ class SortSamplesByDimensions
     bool operator()(MultiArrayIndex l, MultiArrayIndex r) const
     {
         return data_(l, sortColumn_) < data_(r, sortColumn_);
+    }
+    bool operator()(MultiArrayIndex l) const
+    {
+        return data_(l, sortColumn_) < thresVal_;
     }
 };
 
@@ -507,6 +513,7 @@ public:
 	ArrayVector<double>		bestCurrentCounts[2];
 	double 					min_gini_;
 	ptrdiff_t 				min_index_;
+	double					min_threshold_;
 
 
     BestGiniOfColumn(int classCount = 0)
@@ -587,8 +594,9 @@ public:
 			{
 				bestCurrentCounts[0] = left.class_histogram_;
 				bestCurrentCounts[1] = right.class_histogram_;
-				min_gini_ = gini < min_gini_? gini : min_gini_;
-				min_index_ = next - begin ; 
+				min_gini_ 		= gini < min_gini_? gini : min_gini_;
+				min_index_ 		= next - begin +1 ;
+				min_threshold_	= (column[*next] + column[*(next +1)])/2;
 			}
 			iter = next +1 ;
 			next = std::adjacent_find(iter, end, comp);
@@ -611,6 +619,7 @@ class GiniSplit: public SplitBase
 	double 						region_gini_;
     ArrayVector<double> 		min_gini_;
 	ArrayVector<ptrdiff_t>		min_indices_;
+	ArrayVector<double>			min_thresholds_;
 
     int 						bestSplitIndex;
 
@@ -635,6 +644,7 @@ class GiniSplit: public SplitBase
             splitColumns[k] = k;
 		min_gini_.resize(featureCount_);
 		min_indices_.resize(featureCount_);
+		min_thresholds_.resize(featureCount_);
     }
 
 
@@ -660,12 +670,11 @@ class GiniSplit: public SplitBase
 
 		// Is the region pure already?
         region_gini_ = GiniCriterion::impurity(region.classCounts(),
-											  region.size());
+											   region.size());
 		if(region_gini_ == 0)
             return  makeTerminalNode(features, labels, region, randint);
 
-		// select columns to be tried for split first mtry entries in
-		// splitColumns
+		// select columns  to be tried.
 		for(int ii = 0; ii < SB::ext_param_.actual_mtry_; ++ii)
             std::swap(splitColumns[ii], 
 					  splitColumns[ii+ randint(features.shape(1) - ii)]);
@@ -684,6 +693,7 @@ class GiniSplit: public SplitBase
 			
 			min_gini_[k]			= bgfunc.min_gini_; 
 			min_indices_[k] 		= bgfunc.min_index_;
+			min_thresholds_[k]		= bgfunc.min_threshold_;
 
             if(		bgfunc.min_gini_ < current_min_gini
 			   &&  !closeAtTolerance(bgfunc.min_gini_, current_min_gini))
@@ -698,31 +708,25 @@ class GiniSplit: public SplitBase
                 num2try = std::max(int(k), SB::ext_param_.actual_mtry_);
             }
         }
+
 		// did not find any suitable split
         if(closeAtTolerance(current_min_gini, NumericTraits<double>::max()))
             return  makeTerminalNode(features, labels, region, randint);
-
-		// just get some info
-		int 			bestSplitColumn = splitColumns[bestSplitIndex];
-        IndexIterator	bestSplit = region.begin()  + min_indices_[bestSplitIndex];
 		
-		// sort samples according to best split dimension.
-        SortSamplesByDimensions<MultiArrayView<2, T, C> > sorter(features, bestSplitColumn);
-        std::sort(region.begin(), region.end(), sorter);
-
 		//create a Node for output
         Node<i_ThresholdNode>   node(SB::t_data, SB::p_data);
         SB::node_ = node;
-        //fix threshold value and update childRegions
-
-        node.threshold() = (    features(bestSplit[0], bestSplitColumn)
-                            +   features(bestSplit[1], bestSplitColumn)) 
-							/ 	2.0;
-
-        node.column() = bestSplitColumn;
-        ++bestSplit;
+        node.threshold() 	= min_thresholds_[bestSplitIndex];
+		node.column() 		= splitColumns[bestSplitIndex];
+		
+		// partition the range according to the best dimension 
+        SortSamplesByDimensions<MultiArrayView<2, T, C> > 
+			sorter(features, node.column(), node.threshold());
+        std::partition(region.begin(), region.end(), sorter);
 
         // Save the ranges of the child stack entries.
+        IndexIterator bestSplit = 	region.begin()  + 
+									min_indices_[bestSplitIndex];
         childRegions[0].setRange(   region.begin()  , bestSplit       );
         childRegions[1].setRange(   bestSplit       , region.end()    );
 
