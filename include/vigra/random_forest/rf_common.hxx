@@ -45,7 +45,11 @@ namespace vigra
 struct                  ClassificationTag{};
 struct                  RegressionTag{};
 
-class                   GiniSplit;
+class BestGiniOfColumn;
+template<class T>
+class ThresholdSplit;
+
+typedef  ThresholdSplit<BestGiniOfColumn> GiniSplit;
 namespace rf
 {
 	class                   StopVisiting;

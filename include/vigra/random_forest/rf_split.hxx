@@ -606,7 +606,8 @@ public:
 };
 
 
-class GiniSplit: public SplitBase
+template<class ColumnDecisionFunctor>
+class ThresholdSplit: public SplitBase
 {
   public:
 
@@ -614,7 +615,7 @@ class GiniSplit: public SplitBase
     typedef SplitBase SB;
     
 	ArrayVector<Int32> 			splitColumns;
-    BestGiniOfColumn 			bgfunc;
+	ColumnDecisionFunctor		bgfunc;
 
 	double 						region_gini_;
     ArrayVector<double> 		min_gini_;
@@ -636,8 +637,8 @@ class GiniSplit: public SplitBase
     void set_external_parameters(ProblemSpec<T> const & in)
     {
         SB::set_external_parameters(in);        
-		bgfunc = BestGiniOfColumn( ext_param_.class_count_, 
-								  ext_param_.class_weights_);
+		bgfunc = ColumnDecisionFunctor( ext_param_.class_count_, 
+				 				  		ext_param_.class_weights_);
         int featureCount_ = ext_param_.column_count_;
         splitColumns.resize(featureCount_);
         for(int k=0; k<featureCount_; ++k)
@@ -733,6 +734,8 @@ class GiniSplit: public SplitBase
         return i_ThresholdNode;
     }
 };
+
+typedef  ThresholdSplit<BestGiniOfColumn> GiniSplit;
 
 } //namespace vigra
 #endif // VIGRA_RANDOM_FOREST_SPLIT_HXX
