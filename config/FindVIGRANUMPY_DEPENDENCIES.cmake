@@ -6,6 +6,22 @@ IF(PYTHONINTERP_FOUND)
     VIGRA_FIND_PACKAGE( Boost COMPONENTS python )
 
     FIND_PACKAGE(PythonLibs)
+    IF(NOT PYTHONLIBS_FOUND)
+        # fallback when standard search does not work
+        execute_process ( COMMAND ${PYTHON_EXECUTABLE} -c 
+                         "import sys; skip = 2 if sys.platform.startswith('win') else 1; print 'python' + sys.version[0:3:skip]"
+                          OUTPUT_VARIABLE PYTHON_LIBRARY_NAME OUTPUT_STRIP_TRAILING_WHITESPACE)
+        execute_process ( COMMAND ${PYTHON_EXECUTABLE} -c 
+                         "import sys; print sys.exec_prefix"
+                          OUTPUT_VARIABLE PYTHON_PREFIX OUTPUT_STRIP_TRAILING_WHITESPACE)
+        FIND_LIBRARY(PYTHON_LIBRARIES ${PYTHON_LIBRARY_NAME} "${PYTHON_PREFIX}/libs")
+        execute_process ( COMMAND ${PYTHON_EXECUTABLE} -c
+                        "from distutils.sysconfig import *; print get_python_inc()"
+                         OUTPUT_VARIABLE PYTHON_INCLUDE_DIRS OUTPUT_STRIP_TRAILING_WHITESPACE)
+        IF(PYTHON_LIBRARIES AND PYTHON_INCLUDE_DIRS)
+           SET(PYTHONLIBS_FOUND TRUE)
+        ENDIF()
+    ENDIF()
 
     ######################################################################
     #
@@ -74,8 +90,16 @@ IF(PYTHONINTERP_FOUND)
                          PYTHONINTERP_FOUND PYTHONLIBS_FOUND
                          Boost_PYTHON_FOUND PYTHON_NUMPY_INCLUDE_DIR VIGRANUMPY_INSTALL_DIR)
 
-    SET(VIGRANUMPY_INCLUDE_DIR ${PYTHON_INCLUDE_PATH} ${Boost_INCLUDE_DIR} ${PYTHON_NUMPY_INCLUDE_DIR}
-        CACHE PATH "include directories needed by VIGRA Python bindings")
-    SET(VIGRANUMPY_LIBRARIES ${PYTHON_LIBRARY} ${Boost_PYTHON_LIBRARIES}
-        CACHE FILEPATH "libraries needed by VIGRA Python bindings")
+    IF(NOT VIGRANUMPY_INCLUDE_DIRS OR VIGRANUMPY_INCLUDE_DIRS MATCHES "-NOTFOUND")
+        SET(VIGRANUMPY_INCLUDE_DIRS ${PYTHON_INCLUDE_DIRS} ${Boost_INCLUDE_DIR} ${PYTHON_NUMPY_INCLUDE_DIR})
+    ENDIF()    
+    SET(VIGRANUMPY_INCLUDE_DIRS ${VIGRANUMPY_INCLUDE_DIRS}
+        CACHE PATH "include directories needed by VIGRA Python bindings"
+        FORCE)
+    IF(NOT VIGRANUMPY_LIBRARIES OR VIGRANUMPY_LIBRARIES MATCHES "-NOTFOUND")
+        SET(VIGRANUMPY_LIBRARIES ${PYTHON_LIBRARIES} ${Boost_PYTHON_LIBRARIES})
+    ENDIF()    
+    SET(VIGRANUMPY_LIBRARIES ${VIGRANUMPY_LIBRARIES}
+        CACHE FILEPATH "libraries needed by VIGRA Python bindings"
+        FORCE)
 ENDIF()
