@@ -49,6 +49,11 @@
 
 namespace vigra {
 
+/** Convert a value to a string. Available for integral and floating point types
+    and void *.
+*/
+doxygen_overloaded_function(template <class T> std::string asString(T t))
+
 #define VIGRA_AS_STRING(T) \
 inline std::string asString(T t) \
 { \
