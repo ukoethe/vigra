@@ -102,45 +102,27 @@ int main(int argc, char** argv)
 		}
 	}
 	{
-	map<int, ArrayVector<double> >::iterator iter;
-	for(iter = num_vecs.begin(); iter != num_vecs.end(); ++iter)
-	{
-		MultiArrayView<2, double> stuff(MultiArrayShape<2>::type((iter->second).size(),1), 
-										(iter->second).data());
-		ostringstream sout;
-		sout << src_name << "/" << iter->first;
-		writeToHDF5File(hdf5_name.c_str(), sout.str().c_str(), stuff);
-	}
-	}
-	{
-	map<int, ArrayVector<string> >::iterator iter;
-	for(iter = str_vecs.begin(); iter != str_vecs.end(); ++iter)
-	{
-		int max_size = 0;
-		for(int ii = 0; ii < int(iter->second.size()); ++ii)
-			max_size = int(iter->second[ii].size()) > max_size? 
-								iter->second[ii].size() : max_size;
-		MultiArray<2, char> stuff(MultiArrayShape<2>::type((iter->second).size(),max_size), ' ');
-		for(int ii = 0; ii < int(iter->second.size()); ++ii)
+		map<int, ArrayVector<double> >::iterator iter;
+		for(iter = num_vecs.begin(); iter != num_vecs.end(); ++iter)
 		{
-			for(int jj = 0; jj < int(iter->second[ii].size()); ++jj)
-			{
-				stuff(ii, jj) = iter->second[ii][jj];
-			}
+			MultiArrayView<2, double> stuff(MultiArrayShape<2>::type((iter->second).size(),1), 
+											(iter->second).data());
+			ostringstream sout;
+			sout << src_name << "/" << iter->first;
+			writeToHDF5File(hdf5_name.c_str(), sout.str().c_str(), stuff);
 		}
-		for(int ii = 0; ii < stuff.shape(0); ++ii)
-		{
-			for(int jj = 0; jj < stuff.shape(1); ++jj)
-			{
-				std::cerr << stuff(ii, jj);	
-			}
-			std::cerr << std::endl;
-		}
-		ostringstream sout;
-		sout << src_name << "/" << iter->first;
-		std::cerr << sout.str().c_str() <<std::endl;
-		writeToHDF5File(hdf5_name.c_str(), sout.str().c_str(), stuff);
 	}
+	{
+		map<int, ArrayVector<string> >::iterator iter;
+		for(iter = str_vecs.begin(); iter != str_vecs.end(); ++iter)
+		{
+			MultiArrayView<1, std::string> stuff(MultiArrayShape<1>::type((iter->second).size()), 
+											(iter->second).data());
+			ostringstream sout;
+			sout << src_name << "/" << iter->first;
+			std::cerr << sout.str().c_str() <<std::endl;
+			writeToHDF5File(hdf5_name.c_str(), sout.str().c_str(), stuff);
+		}
 	}
 	return 0;
 }
