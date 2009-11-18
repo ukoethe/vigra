@@ -65,22 +65,22 @@ namespace detail
  *   class (Preprocessing default values etc is handled in there):
  *
  * \code
- * 		RandomForest decisionTree(RF_Traits::Options_t()
- * 									.features_per_node(RF_ALL)
- * 									.tree_count(1)			  );
+ *      RandomForest decisionTree(RF_Traits::Options_t()
+ *                                  .features_per_node(RF_ALL)
+ *                                  .tree_count(1)            );
  * \endcode
  * 
  * \todo remove the classCount and featurecount from the topology
- * 		 array. Pass ext_param_ to the nodes!
+ *       array. Pass ext_param_ to the nodes!
  * \todo Use relative addressing of nodes?
  */
 class DecisionTree
 {
-	/**\todo make private?*/
+    /**\todo make private?*/
   public:
-	
-	/** value type of container array. use whenever referencing it
-	 */
+    
+    /** value type of container array. use whenever referencing it
+     */
     typedef Int32 TreeInt;
 
     ArrayVector<TreeInt>  topology_;
@@ -91,7 +91,7 @@ class DecisionTree
 
 
   public:
-	/** \Brief Create tree with parameters */
+    /** \Brief Create tree with parameters */
     DecisionTree(ProblemSpec<> ext_param)
     :
         ext_param_(ext_param),
@@ -99,7 +99,7 @@ class DecisionTree
     {}
 
     /**clears all memory used.
-	 */
+     */
     void reset(unsigned int classCount = 0)
     {
         if(classCount)
@@ -110,12 +110,12 @@ class DecisionTree
 
 
     /** learn a Tree
-	 *
-	 * \tparam 	StackEntry_t The Stackentry containing Node/StackEntry_t 
-	 * 			Information used during learing. Each Split functor has a 
-	 * 			Stack entry associated with it (Split_t::StackEntry_t)
-	 * \sa RandomForest::learn()
-	 */
+     *
+     * \tparam  StackEntry_t The Stackentry containing Node/StackEntry_t 
+     *          Information used during learing. Each Split functor has a 
+     *          Stack entry associated with it (Split_t::StackEntry_t)
+     * \sa RandomForest::learn()
+     */
     template <  class U, class C,
                 class U2, class C2,
                 class StackEntry_t,
@@ -126,8 +126,8 @@ class DecisionTree
     void learn(     MultiArrayView<2, U, C> const      & features,
                     MultiArrayView<2, U2, C2> const    & labels,
                     StackEntry_t const &                 stack_entry,
-                    Split_t                        		 split,
-                    Stop_t              				 stop,
+                    Split_t                              split,
+                    Stop_t                               stop,
                     Visitor_t &                          visitor,
                     Random_t &                           randint);
 
@@ -137,90 +137,90 @@ class DecisionTree
         return (in & LeafNodeTag) == LeafNodeTag;
     }
 
-	/** data driven traversal from root to leaf
-	 *
-	 * traverse through tree with data given in features. Use Visitors to 
-	 * collect statistics along the way. 
-	 */
+    /** data driven traversal from root to leaf
+     *
+     * traverse through tree with data given in features. Use Visitors to 
+     * collect statistics along the way. 
+     */
     template<class U, class C, class Visitor_t>
     TreeInt getToLeaf(MultiArrayView<2, U, C> const & features, 
-					  Visitor_t  & visitor)
+                      Visitor_t  & visitor)
     {
         TreeInt index = 2;
         while(!isLeafNode(topology_[index]))
         {
-			visitor.visit_internal_node(*this, index, topology_[index]);
+            visitor.visit_internal_node(*this, index, topology_[index]);
             switch(topology_[index])
             {
                 case i_ThresholdNode:
                 {
                     Node<i_ThresholdNode> 
-								node(topology_, parameters_, index);
+                                node(topology_, parameters_, index);
                     index = node.next(features);
                     break;
                 }
                 case i_HyperplaneNode:
                 {
                     Node<i_HyperplaneNode> 
-								node(topology_, parameters_, index);
+                                node(topology_, parameters_, index);
                     index = node.next(features);
                     break;
                 }
                 case i_HypersphereNode:
                 {
                     Node<i_HypersphereNode> 
-								node(topology_, parameters_, index);
+                                node(topology_, parameters_, index);
                     index = node.next(features);
                     break;
                 }
 #if 0 
-				// for quick prototyping! has to be implemented.
-				case i_VirtualNode:
-				{
-					Node<i_VirtualNode> 
-								node(topology_, parameters, index);
-					index = node.next(features);
-				}
+                // for quick prototyping! has to be implemented.
+                case i_VirtualNode:
+                {
+                    Node<i_VirtualNode> 
+                                node(topology_, parameters, index);
+                    index = node.next(features);
+                }
 #endif
                 default:
                     vigra_fail("DecisionTree::getToLeaf():"
-							   "encountered unknown internal Node Type");
+                               "encountered unknown internal Node Type");
             }
         }
-		visitor.visit_external_node(*this, index, topology_[index]);
+        visitor.visit_external_node(*this, index, topology_[index]);
         return index;
     }
-	/** traverse tree to get statistics
-	 *
-	 * Tree is traversed in order the Nodes are in memory (i.e. if no 
-	 * relearning//pruning scheme is utilized this will be pre order)
-	 */
-	template<class Visitor_t>
-	void traverse_mem_order(Visitor_t visitor)
-	{
-		TreeInt index = 2;
-		Int32 ii = 0;
-		while(index < topology_.size())
-		{
-			if(isLeafNode(topology_[index]))
-			{
-				visitor
-					.visit_external_node(*this, index, topology_[index]);
-			}
-			else
-			{
-				visitor
-					._internal_node(*this, index, topology_[index]);
-			}
-		}
-	}
-	/** same thing as above, without any visitors */
-	template<class U, class C>
+    /** traverse tree to get statistics
+     *
+     * Tree is traversed in order the Nodes are in memory (i.e. if no 
+     * relearning//pruning scheme is utilized this will be pre order)
+     */
+    template<class Visitor_t>
+    void traverse_mem_order(Visitor_t visitor)
+    {
+        TreeInt index = 2;
+        Int32 ii = 0;
+        while(index < topology_.size())
+        {
+            if(isLeafNode(topology_[index]))
+            {
+                visitor
+                    .visit_external_node(*this, index, topology_[index]);
+            }
+            else
+            {
+                visitor
+                    ._internal_node(*this, index, topology_[index]);
+            }
+        }
+    }
+    /** same thing as above, without any visitors */
+    template<class U, class C>
     TreeInt getToLeaf(MultiArrayView<2, U, C> const & features)
-	{
-		RF_Traits::StopVisiting_t stop;
-		return getToLeaf(features, stop);
-	}
+    {
+        RF_Traits::StopVisiting_t stop;
+        return getToLeaf(features, stop);
+    }
 
 
     template <class U, class C>
@@ -232,19 +232,19 @@ class DecisionTree
         {
             case e_ConstProbNode:
                 return Node<e_ConstProbNode>(topology_, 
-											 parameters_,
-											 nodeindex).prob_begin();
-            	break;
+                                             parameters_,
+                                             nodeindex).prob_begin();
+                break;
 #if 0 
-			//first make the Logistic regression stuff...
+            //first make the Logistic regression stuff...
             case e_LogRegProbNode:
                 return Node<e_LogRegProbNode>(topology_, 
-											  parameters_,
-											  nodeindex).prob_begin();
+                                              parameters_,
+                                              nodeindex).prob_begin();
 #endif            
-			default:
+            default:
                 vigra_fail("DecisionTree::predict() :"
-						   " encountered unknown external Node Type");
+                           " encountered unknown external Node Type");
         }
         return ArrayVector<double>::iterator();
     }
@@ -268,11 +268,11 @@ template <  class U, class C,
             class Split_t,
             class Visitor_t,
             class Random_t>
-void DecisionTree::learn(   MultiArrayView<2, U, C> const     	& features,
-                            MultiArrayView<2, U2, C2> const   	& labels,
+void DecisionTree::learn(   MultiArrayView<2, U, C> const       & features,
+                            MultiArrayView<2, U2, C2> const     & labels,
                             StackEntry_t const &                  stack_entry,
-                            Split_t                        		  split,
-                            Stop_t               				  stop,
+                            Split_t                               split,
+                            Stop_t                                stop,
                             Visitor_t &                           visitor,
                             Random_t &                            randint)
 {
@@ -303,54 +303,54 @@ void DecisionTree::learn(   MultiArrayView<2, U, C> const     	& features,
 
 
         //Either the Stopping criterion decides that the split should 
-		//produce a Terminal Node or the Split itself decides what 
-		//kind of node to make
+        //produce a Terminal Node or the Split itself decides what 
+        //kind of node to make
         TreeInt NodeID;
         if(stop(top))
             NodeID = split.makeTerminalNode(features, 
-											labels, 
-											top, 
-											randint);
+                                            labels, 
+                                            top, 
+                                            randint);
         else
             NodeID = split.findBestSplit(features, 
-										 labels, 
-										 top, 
-										 child_stack_entry, 
-										 randint);
+                                         labels, 
+                                         top, 
+                                         child_stack_entry, 
+                                         randint);
 
-		// do some visiting yawn - just added this comment as eye candy
-		// (looks odd otherwise with my syntax highlighting....
+        // do some visiting yawn - just added this comment as eye candy
+        // (looks odd otherwise with my syntax highlighting....
         visitor.visit_after_split(*this, split, top, 
-								  child_stack_entry[0], 
-								  child_stack_entry[1]);
+                                  child_stack_entry[0], 
+                                  child_stack_entry[1]);
 
 
         // Update the Child entries of the parent
         // Using InteriorNodeBase because exact parameter form not needed.
-		// look at the Node base before getting scared.
+        // look at the Node base before getting scared.
         if(top.leftParent != StackEntry_t::DecisionTreeNoParent)
             NodeBase(topology_, 
-					 parameters_, 
-					 top.leftParent).child(0) = topology_.size();
+                     parameters_, 
+                     top.leftParent).child(0) = topology_.size();
         else if(top.rightParent != StackEntry_t::DecisionTreeNoParent)
             NodeBase(topology_, 
-					 parameters_, 
-					 top.rightParent).child(1) = topology_.size();
+                     parameters_, 
+                     top.rightParent).child(1) = topology_.size();
 
 
         // Supply the split functor with the Node type it requires.
-		// set the address to which the children of this node should point 
-		// to and push back children onto stack
-		if(!isLeafNode(NodeID))
+        // set the address to which the children of this node should point 
+        // to and push back children onto stack
+        if(!isLeafNode(NodeID))
         {
-       		child_stack_entry[0].leftParent = topology_.size();
-	     	child_stack_entry[1].rightParent = topology_.size();    
-			stack.push_back(child_stack_entry[0]);
+            child_stack_entry[0].leftParent = topology_.size();
+            child_stack_entry[1].rightParent = topology_.size();    
+            stack.push_back(child_stack_entry[0]);
             stack.push_back(child_stack_entry[1]);
         }
 
-		//copy the newly created node form the split functor to the
-		//decision tree.
+        //copy the newly created node form the split functor to the
+        //decision tree.
         NodeBase(split.createNode(), topology_, parameters_ );
     }
 }
