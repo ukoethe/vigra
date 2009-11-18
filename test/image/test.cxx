@@ -267,7 +267,14 @@ struct ImageTest
     {
         Image img1(img.width(), img.height(), data);
         
+        shouldEqual(img1.width(), img.width());
+        shouldEqual(img1.height(), img.height());
         shouldEqualSequence(img.begin(), img.end(), img1.begin());
+        
+        Image img2(img.width(), img.height(), SkipInitialization);
+        
+        shouldEqual(img2.width(), img.width());
+        shouldEqual(img2.height(), img.height());
     }
 
     void copyImage()
