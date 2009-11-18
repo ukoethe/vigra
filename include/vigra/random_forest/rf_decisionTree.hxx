@@ -343,7 +343,6 @@ void DecisionTree::learn(   MultiArrayView<2, U, C> const     	& features,
 		// to and push back children onto stack
 		if(!isLeafNode(NodeID))
         {
-
        		child_stack_entry[0].leftParent = topology_.size();
 	     	child_stack_entry[1].rightParent = topology_.size();    
 			stack.push_back(child_stack_entry[0]);
