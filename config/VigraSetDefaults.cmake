@@ -1,3 +1,11 @@
+
+IF(NOT DEFINED DOCDIR)
+    SET(DOCDIR ${vigra_SOURCE_DIR}/doc/vigra)
+ENDIF()
+SET(DOCDIR ${DOCDIR}
+    CACHE PATH "Output path of created documentation html files."
+    FORCE)
+
 IF(NOT DEFINED WITH_VIGRANUMPY)
     SET(WITH_VIGRANUMPY "ON")
 ENDIF()
@@ -38,7 +46,8 @@ IF(NOT VIGRA_DEFAULTS_INIT)
 
     IF (NOT MSVC AND NOT CMAKE_BUILD_TYPE)
         SET(CMAKE_BUILD_TYPE "Release"
-            CACHE STRING "Choose the type of build, options are None Release Debug RelWithDebInfo MinSizeRel." FORCE)
+            CACHE STRING "Choose the type of build, options are None Release Debug RelWithDebInfo MinSizeRel."
+            FORCE)
     ENDIF ()
     
     IF(NOT DEFINED VALGRIND_SUPPRESSION_FILE)
@@ -46,7 +55,7 @@ IF(NOT VIGRA_DEFAULTS_INIT)
             CACHE FILEPATH "File containing valgrind error suppression rules."
             FORCE)
     ENDIF()
-
+    
 #    # initial compiler flags can be set here, this is only
 #    # executed once in the first configure run.
 #    IF(CMAKE_COMPILER_IS_GNUCXX)
