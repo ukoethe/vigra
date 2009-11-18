@@ -313,6 +313,9 @@ namespace detail
 }
 
 
+
+
+
 /** Functor to calculate the gini impurity
  */
 class GiniCriterion
@@ -624,11 +627,11 @@ class ThresholdSplit: public SplitBase
 
     int 						bestSplitIndex;
 
-	double minGini()
+	double minGini() const
 	{
 		return min_gini_[bestSplitIndex];
 	}
-	int bestSplitColumn()
+	int bestSplitColumn() const
 	{
 		return splitColumns[bestSplitIndex];
 	}
@@ -723,11 +726,10 @@ class ThresholdSplit: public SplitBase
 		// partition the range according to the best dimension 
         SortSamplesByDimensions<MultiArrayView<2, T, C> > 
 			sorter(features, node.column(), node.threshold());
-        std::partition(region.begin(), region.end(), sorter);
+		IndexIterator bestSplit =
+			std::partition(region.begin(), region.end(), sorter);
 
         // Save the ranges of the child stack entries.
-        IndexIterator bestSplit = 	region.begin()  + 
-									min_indices_[bestSplitIndex];
         childRegions[0].setRange(   region.begin()  , bestSplit       );
         childRegions[1].setRange(   bestSplit       , region.end()    );
 
