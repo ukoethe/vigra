@@ -240,13 +240,17 @@ namespace detail {
 
 template<class type>
 inline hid_t getH5DataType()
-{return 0;}
+{
+	std::runtime_error("getH5DataType(): invalid type");
+	return 0;
+}
 
 #define VIGRA_H5_DATATYPE(type, h5type) \
 template<> \
 inline hid_t getH5DataType<type>() \
-{return h5type;}
-
+{   std::cerr << #h5type << std::endl; \
+	return h5type;}
+VIGRA_H5_DATATYPE(char, H5T_NATIVE_CHAR)
 VIGRA_H5_DATATYPE(Int8, H5T_NATIVE_INT8)
 VIGRA_H5_DATATYPE(Int16, H5T_NATIVE_INT16)
 VIGRA_H5_DATATYPE(Int32, H5T_NATIVE_INT32)
@@ -551,14 +555,15 @@ void writeToHDF5File(const char* filePath, const char* pathInFile, const MultiAr
     } /*else {
         std::cout << "dataset does not exist so far" << std::endl;
     }*/
-    
+   	detail::getH5DataType<char>();
+   	detail::getH5DataType<Int8>();
     HDF5Handle dataset_handle(H5Dcreate(group, data_set_name.c_str(), detail::getH5DataType<T>(), dataspace_handle, H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT),
                               &H5Dclose, "writeToHDF5File(): unable to create dataset.");
     
     // Write the data to the HDF5 dataset
     //dataset.write( array.data(), GetH5DataType<T>() ); // old version without support for strided arrays
     int elements = 1;
-    for(int i=0;i<N;++i)
+    for(int i=0;i<int(N);++i)
         elements *= (int)shape[i];
     int counter = 0;
 
