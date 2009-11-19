@@ -277,10 +277,10 @@ class RandomForestOptions
     }
     
 
-    bool operator==(RandomForestOptions & son_of_crap) const
+    bool operator==(RandomForestOptions & rhs) const
     {
         bool result = true;
-        #define COMPARE(field) result = result && (this->field == son_of_crap.field); 
+        #define COMPARE(field) result = result && (this->field == rhs.field); 
         COMPARE(training_set_proportion_);
         COMPARE(training_set_size_);
         COMPARE(training_set_calc_switch_);
@@ -294,9 +294,9 @@ class RandomForestOptions
 
         return result;
     }
-    bool operator!=(RandomForestOptions & i_hate_you_) const
+    bool operator!=(RandomForestOptions & rhs_) const
     {
-        return !(*this == i_hate_you_);
+        return !(*this == rhs_);
     }
     template<class Iter>
     void unserialize(Iter const & begin, Iter const & end)
@@ -579,11 +579,33 @@ public:
     }
     #undef EQUALS
 
+    // for some reason the function below does not match
+    // the default copy constructor
+    template<class T>
+    ProblemSpec & operator=(ProblemSpec const & rhs)
+    {
+        #define EQUALS(field) (this->field = rhs.field);
+        EQUALS(column_count_);
+        EQUALS(class_count_);
+        EQUALS(row_count_);
+        EQUALS(actual_mtry_);
+        EQUALS(actual_msample_);
+        EQUALS(problem_type_);
+        EQUALS(is_weighted);
+        EQUALS(used_);
+        EQUALS(class_weights_);
+        #undef EQUALS
+
+        std::back_insert_iterator<ArrayVector<Label_t> >
+                        iter;
+        std::copy(classes.begin(), classes.end(), iter); 
+        return *this;
+    }
 
     template<class T>
-    Label_t & operator=(ProblemSpec<T> const & rhs)
+    ProblemSpec<Label_t> & operator=(ProblemSpec<T> const & rhs)
     {
-        #define EQUALS(field) (this->field == rhs.field);
+        #define EQUALS(field) (this->field = rhs.field);
         EQUALS(column_count_);
         EQUALS(class_count_);
         EQUALS(row_count_);

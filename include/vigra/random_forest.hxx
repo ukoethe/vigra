@@ -587,7 +587,7 @@ double RandomForest<LabelType, PreprocessorTag>::
                                     detail::make_sampler_opt(options_,
                                                      preprocessor.strata()),
                                     randint);
-    visitor.visit_at_beginning(*this);
+    visitor.visit_at_beginning(*this, preprocessor);
     // THE MAIN EFFING RF LOOP - YEAY DUDE!
     for(int ii = 0; ii < (int)trees_.size(); ++ii)
     {

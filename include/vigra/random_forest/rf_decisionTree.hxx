@@ -322,7 +322,9 @@ void DecisionTree::learn(   MultiArrayView<2, U, C> const       & features,
         // (looks odd otherwise with my syntax highlighting....
         visitor.visit_after_split(*this, split, top, 
                                   child_stack_entry[0], 
-                                  child_stack_entry[1]);
+                                  child_stack_entry[1],
+                                  features, 
+                                  labels);
 
 
         // Update the Child entries of the parent

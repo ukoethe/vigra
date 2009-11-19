@@ -52,12 +52,14 @@ class TestVisitor: public VisitorBase
     {    }
 
     //TODO split must be const
-    template<class Tree, class Split, class Region>
-    void visit_after_split( Tree 	      & tree, 
-						   	Split         & split,
+    template<class Tree, class Split, class Region, class Feature_t, class Label_t>
+    void visit_after_split( Tree          & tree, 
+                            Split         & split,
                             Region        & parent,
                             Region        & leftChild,
-                            Region        & rightChild)
+                            Region        & rightChild,
+                            Feature_t     & features,
+                            Label_t       & labels)
     {
         if(split.createNode().typeID() == i_ThresholdNode)
         {
@@ -101,12 +103,14 @@ class SetTestVisitor: public VisitorBase
     std::set<std::string> treesset;
 
 
-    template<class Tree, class Split, class Region>
-    void visit_after_split( Tree 	      & tree, 
-						   	Split         & split,
+    template<class Tree, class Split, class Region, class Feature_t, class Label_t>
+    void visit_after_split( Tree          & tree, 
+                            Split         & split,
                             Region        & parent,
                             Region        & leftChild,
-                            Region        & rightChild)
+                            Region        & rightChild,
+                            Feature_t     & features,
+                            Label_t       & labels)
     {
         if(split.createNode().typeID() == i_ThresholdNode)
         {
@@ -164,12 +168,14 @@ class AllOutputVisitor: public VisitorBase
     {    }
 
     //TODO split must be const
-    template<class Tree, class Split, class Region>
-    void visit_after_split( Tree 	      & tree, 
-						   	Split         & split,
+    template<class Tree, class Split, class Region, class Feature_t, class Label_t>
+    void visit_after_split( Tree          & tree, 
+                            Split         & split,
                             Region        & parent,
                             Region        & leftChild,
-                            Region        & rightChild)
+                            Region        & rightChild,
+                            Feature_t     & features,
+                            Label_t       & labels)
     {
         if(split.createNode().typeID() == i_ThresholdNode)
         {

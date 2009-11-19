@@ -227,8 +227,8 @@ class VisitorNode
     void visit_at_beginning(RF & rf, PR & pr)
     {
         if(visitor_.is_active())
-            visitor_.visit_at_beginning(rf);
-        next_.visit_at_beginning(rf);
+            visitor_.visit_at_beginning(rf, pr);
+        next_.visit_at_beginning(rf, pr);
     }
     template<class RF, class PR>
     void visit_at_end(RF & rf, PR & pr)
