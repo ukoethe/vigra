@@ -553,6 +553,7 @@ public:
 
     Problem_t               problem_type_;
     
+    int used_;
     ArrayVector<double>     class_weights_;
     int                     is_weighted;
 
@@ -573,9 +574,9 @@ public:
         EQUALS(actual_mtry_),
         EQUALS(actual_msample_),
         EQUALS(problem_type_),
-        EQUALS(is_weighted),
         EQUALS(used_),
-        EQUALS(class_weights_)
+        EQUALS(class_weights_),
+        EQUALS(is_weighted)
     {
         std::back_insert_iterator<ArrayVector<Label_t> >
                         iter(classes);
@@ -595,11 +596,11 @@ public:
         EQUALS(actual_mtry_);
         EQUALS(actual_msample_);
         EQUALS(problem_type_);
-        EQUALS(is_weighted);
         EQUALS(used_);
         EQUALS(class_weights_);
+        EQUALS(is_weighted);
         std::back_insert_iterator<ArrayVector<Label_t> >
-                        iter;
+                        iter(classes);
         std::copy(classes.begin(), classes.end(), iter); 
         return *this;
     }
@@ -613,11 +614,11 @@ public:
         EQUALS(actual_mtry_);
         EQUALS(actual_msample_);
         EQUALS(problem_type_);
-        EQUALS(is_weighted);
         EQUALS(used_);
         EQUALS(class_weights_);
+        EQUALS(is_weighted);
         std::back_insert_iterator<ArrayVector<Label_t> >
-                        iter;
+                        iter(classes);
         std::copy(classes.begin(), classes.end(), iter); 
         return *this;
     }
@@ -756,8 +757,8 @@ public:
         actual_mtry_(0),
         actual_msample_(0),
         problem_type_(CHECKLATER),
-        is_weighted(false),
-        used_(false)
+        used_(false),
+        is_weighted(false)
     {}
 
 
@@ -808,7 +809,6 @@ public:
 
     }
 
-    int used_;
     bool used() const
     {
         return used_ != 0;
