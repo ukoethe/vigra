@@ -92,7 +92,8 @@ class DecisionTree
 
   public:
     /** \Brief Create tree with parameters */
-    DecisionTree(ProblemSpec<> ext_param)
+    template<class T>
+    DecisionTree(ProblemSpec<T> ext_param)
     :
         ext_param_(ext_param),
         classCount_(ext_param.class_count_)

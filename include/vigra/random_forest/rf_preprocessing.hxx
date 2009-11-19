@@ -151,7 +151,7 @@ class Processor<ClassificationTag, LabelType, T1, C1, T2, C2>
 		// set some of the problem specific parameters 
         ext_param.column_count_  = features.shape(1);
         ext_param.row_count_     = features.shape(0);
-        ext_param.problem_type_  = ProblemSpec<T>::CLASSIFICATION;
+        ext_param.problem_type_  = CLASSIFICATION;
         ext_param.used_          = true;
         intLabels_.reshape(response.shape());
 

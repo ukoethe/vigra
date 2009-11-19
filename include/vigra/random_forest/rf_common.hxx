@@ -516,6 +516,11 @@ class RandomForestOptions
 };
 
 
+/** \brief problem types 
+ */
+enum Problem_t{REGRESSION, CLASSIFICATION, CHECKLATER};
+
+
 /** \brief problem specification class for the random forest.
  *
  * This class contains all the problem specific parameters the random
@@ -535,7 +540,6 @@ public:
 
     /** \brief  problem class
      */
-    enum Problem_t{REGRESSION, CLASSIFICATION, CHECKLATER};
 
     typedef LabelType       Label_t;
     ArrayVector<Label_t>    classes;
@@ -574,17 +578,17 @@ public:
         EQUALS(class_weights_)
     {
         std::back_insert_iterator<ArrayVector<Label_t> >
-                        iter;
+                        iter(classes);
         std::copy(classes.begin(), classes.end(), iter); 
     }
     #undef EQUALS
 
     // for some reason the function below does not match
     // the default copy constructor
+    #define EQUALS(field) (this->field = rhs.field);
     template<class T>
     ProblemSpec & operator=(ProblemSpec const & rhs)
     {
-        #define EQUALS(field) (this->field = rhs.field);
         EQUALS(column_count_);
         EQUALS(class_count_);
         EQUALS(row_count_);
@@ -594,8 +598,6 @@ public:
         EQUALS(is_weighted);
         EQUALS(used_);
         EQUALS(class_weights_);
-        #undef EQUALS
-
         std::back_insert_iterator<ArrayVector<Label_t> >
                         iter;
         std::copy(classes.begin(), classes.end(), iter); 
@@ -605,7 +607,6 @@ public:
     template<class T>
     ProblemSpec<Label_t> & operator=(ProblemSpec<T> const & rhs)
     {
-        #define EQUALS(field) (this->field = rhs.field);
         EQUALS(column_count_);
         EQUALS(class_count_);
         EQUALS(row_count_);
@@ -615,13 +616,12 @@ public:
         EQUALS(is_weighted);
         EQUALS(used_);
         EQUALS(class_weights_);
-        #undef EQUALS
-
         std::back_insert_iterator<ArrayVector<Label_t> >
                         iter;
         std::copy(classes.begin(), classes.end(), iter); 
         return *this;
     }
+    #undef EQUALS
 
     template<class T>
     bool operator==(ProblemSpec<T> const & rhs)

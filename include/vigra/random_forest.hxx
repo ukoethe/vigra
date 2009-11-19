@@ -310,7 +310,20 @@ class RandomForest
     }
 
     /*\}*/
+    int column_count()
+    {
+      return ext_param_.column_count_;
+    }
 
+    int class_count()
+    {
+      return ext_param_.class_count_;
+    }
+
+    int tree_count()
+    {
+      return options_.tree_count_;
+    }
 
     /**\name Learning
      * Following functions differ in the degree of customization
