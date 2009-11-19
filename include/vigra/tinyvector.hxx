@@ -44,6 +44,7 @@
 #include "config.hxx"
 #include "error.hxx"
 #include "numerictraits.hxx"
+#include "memory.hxx"
 #include "mathutil.hxx"
 #include "diff2d.hxx"
 
@@ -1108,6 +1109,22 @@ struct PromoteTraits<double, TinyVectorView<T, SIZE> >
 {
     typedef TinyVector<typename NumericTraits<T>::RealPromote, SIZE> Promote;
 };
+
+template<class T, int SIZE>
+struct CanSkipInitialization<TinyVectorView<T, SIZE> >
+{
+    typedef typename CanSkipInitialization<T>::type type;
+    static const bool value = type::asBool;
+};
+
+template<class T, int SIZE>
+struct CanSkipInitialization<TinyVector<T, SIZE> >
+{
+    typedef typename CanSkipInitialization<T>::type type;
+    static const bool value = type::asBool;
+};
+
+
 
 #else // NO_PARTIAL_TEMPLATE_SPECIALIZATION
 

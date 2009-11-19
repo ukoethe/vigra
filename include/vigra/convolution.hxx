@@ -263,7 +263,7 @@ void convolveImage(SrcIterator supperleft,
     typedef typename
         NumericTraits<typename SrcAccessor::value_type>::RealPromote
         TmpType;
-    BasicImage<TmpType> tmp(slowerright - supperleft);
+    BasicImage<TmpType> tmp(slowerright - supperleft, SkipInitialization);
 
     separableConvolveX(srcIterRange(supperleft, slowerright, sa),
                        destImage(tmp), kernel1d(kx));
@@ -468,7 +468,7 @@ void gaussianSharpening(SrcIterator src_ul, SrcIterator src_lr, SrcAccessor src_
 
     typedef typename NumericTraits<typename SrcAccessor::value_type>::RealPromote ValueType;
 
-    BasicImage<ValueType> tmp(src_lr - src_ul);
+    BasicImage<ValueType> tmp(src_lr - src_ul, SkipInitialization);
 
     gaussianSmoothing(src_ul, src_lr, src_acc, tmp.upperLeft(), tmp.accessor(), scale);
 
@@ -570,7 +570,7 @@ void gaussianSmoothing(SrcIterator supperleft,
     typedef typename
         NumericTraits<typename SrcAccessor::value_type>::RealPromote
         TmpType;
-    BasicImage<TmpType> tmp(slowerright - supperleft);
+    BasicImage<TmpType> tmp(slowerright - supperleft, SkipInitialization);
 
     Kernel1D<double> smooth;
     smooth.initGaussian(scale);
@@ -687,7 +687,7 @@ void gaussianGradient(SrcIterator supperleft,
     typedef typename
         NumericTraits<typename SrcAccessor::value_type>::RealPromote
         TmpType;
-    BasicImage<TmpType> tmp(slowerright - supperleft);
+    BasicImage<TmpType> tmp(slowerright - supperleft, SkipInitialization);
 
     Kernel1D<double> smooth, grad;
     smooth.initGaussian(scale);
@@ -799,7 +799,7 @@ void gaussianGradientMagnitude(SrcIterator sul,
                                double scale)
 {
     typedef typename NumericTraits<typename SrcAccessor::value_type>::RealPromote TmpType;
-    BasicImage<TmpType> gradx(slr-sul), grady(slr-sul);
+    BasicImage<TmpType> gradx(slr-sul, SkipInitialization), grady(slr-sul, SkipInitialization);
 
     gaussianGradient(srcIterRange(sul, slr, src),
                      destImage(gradx), destImage(grady), scale);
@@ -885,9 +885,9 @@ void laplacianOfGaussian(SrcIterator supperleft,
     typedef typename
         NumericTraits<typename SrcAccessor::value_type>::RealPromote
         TmpType;
-    BasicImage<TmpType> tmp(slowerright - supperleft),
-                        tmpx(slowerright - supperleft),
-                        tmpy(slowerright - supperleft);
+    BasicImage<TmpType> tmp(slowerright - supperleft, SkipInitialization),
+                        tmpx(slowerright - supperleft, SkipInitialization),
+                        tmpy(slowerright - supperleft, SkipInitialization);
 
     Kernel1D<double> smooth, deriv;
     smooth.initGaussian(scale);
@@ -1012,7 +1012,7 @@ void hessianMatrixOfGaussian(SrcIterator supperleft,
     typedef typename
         NumericTraits<typename SrcAccessor::value_type>::RealPromote
         TmpType;
-    BasicImage<TmpType> tmp(slowerright - supperleft);
+    BasicImage<TmpType> tmp(slowerright - supperleft, SkipInitialization);
 
     Kernel1D<double> smooth, deriv1, deriv2;
     smooth.initGaussian(scale);
@@ -1177,9 +1177,9 @@ void structureTensor(SrcIterator supperleft,
     typedef typename
         NumericTraits<typename SrcAccessor::value_type>::RealPromote
         TmpType;
-    BasicImage<TmpType> tmp(slowerright - supperleft),
-                        tmpx(slowerright - supperleft),
-                        tmpy(slowerright - supperleft);
+    BasicImage<TmpType> tmp(slowerright - supperleft, SkipInitialization),
+                        tmpx(slowerright - supperleft, SkipInitialization),
+                        tmpy(slowerright - supperleft, SkipInitialization);
 
     gaussianGradient(srcIterRange(supperleft, slowerright, sa),
            destImage(tmpx), destImage(tmpy), inner_scale);
@@ -1249,7 +1249,7 @@ void structureTensor(SrcIterator supperleft,
                     inner_scale, outer_scale,
                     VigraTrueType() /* isScalar */);
                     
-    BasicImage<typename DestAccessor::value_type> st(slowerright - supperleft);
+    BasicImage<typename DestAccessor::value_type> st(slowerright - supperleft, SkipInitialization);
     for(int k=1; k < bands; ++k)
     {
         structureTensor(supperleft, slowerright, SA(k, src),

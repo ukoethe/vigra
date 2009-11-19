@@ -454,6 +454,21 @@ struct PromoteTraits<double, FFTWComplex>
     typedef FFTWComplex Promote;
 };
 
+template<class T>
+struct CanSkipInitialization<std::complex<T> >
+{
+    typedef typename CanSkipInitialization<T>::type type;
+    static const bool value = type::asBool;
+};
+
+template<>
+struct CanSkipInitialization<FFTWComplex>
+{
+    typedef CanSkipInitialization<fftw_real>::type type;
+    static const bool value = type::asBool;
+};
+
+
 
 /********************************************************/
 /*                                                      */

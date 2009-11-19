@@ -414,6 +414,24 @@ struct has_result_type
         type;
 };
 
+template <class T>
+struct has_value_type
+{
+    typedef char falseResult[1];
+    typedef char trueResult[2];
+    
+    static falseResult * test(...);
+    template <class U>
+    static trueResult * test(U *, typename U::value_type * = 0);
+    
+    enum { resultSize = sizeof(*test((T*)0)) };
+    
+    static const bool value = (resultSize == 2);
+    typedef typename 
+        IfBool<value, VigraTrueType, VigraFalseType>::type
+        type;
+};
+
 } // namespace vigra
 
 #endif /* VIGRA_METAPROGRAMMING_HXX */
