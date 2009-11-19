@@ -248,8 +248,7 @@ inline hid_t getH5DataType()
 #define VIGRA_H5_DATATYPE(type, h5type) \
 template<> \
 inline hid_t getH5DataType<type>() \
-{   std::cerr << #h5type << std::endl; \
-	return h5type;}
+{ return h5type;}
 VIGRA_H5_DATATYPE(char, H5T_NATIVE_CHAR)
 VIGRA_H5_DATATYPE(Int8, H5T_NATIVE_INT8)
 VIGRA_H5_DATATYPE(Int16, H5T_NATIVE_INT16)
