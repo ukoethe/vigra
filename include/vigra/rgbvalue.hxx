@@ -509,6 +509,14 @@ struct PromoteTraits<double, RGBValue<T, R, G, B> >
     typedef RGBValue<typename NumericTraits<T>::RealPromote, R, G, B> Promote;
 };
 
+template<class T, unsigned int R, unsigned int G, unsigned int B>
+struct CanSkipInitialization<RGBValue<T, R, G, B> >
+{
+    typedef typename CanSkipInitialization<T>::type type;
+    static const bool value = type::asBool;
+};
+
+
 #else // NO_PARTIAL_TEMPLATE_SPECIALIZATION
 
 #define RGBVALUE_NUMTRAITS(T) \

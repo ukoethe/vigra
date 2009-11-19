@@ -39,7 +39,18 @@
 
 #include "metaprogramming.hxx"
 
-namespace vigra { namespace detail {
+namespace vigra { 
+
+enum SkipInitializationTag { SkipInitialization};
+
+template<class T>
+struct CanSkipInitialization
+{
+    typedef typename TypeTraits<T>::isBuiltinType type;
+    static const bool value = type::asBool;
+};
+
+namespace detail {
 
 template <class T>
 inline void destroy_n(T * /* p */, std::ptrdiff_t /* n */, VigraTrueType /* isPOD */)

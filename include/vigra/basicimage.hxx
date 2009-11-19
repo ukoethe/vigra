@@ -42,6 +42,7 @@
 #include "utilities.hxx"
 #include "iteratortraits.hxx"
 #include "accessor.hxx"
+#include "memory.hxx"
 
 // Bounds checking Macro used if VIGRA_CHECK_BOUNDS is defined.
 #ifdef VIGRA_CHECK_BOUNDS
@@ -651,6 +652,24 @@ class BasicImage
         resize(width, height, d);
     }
 
+        /** construct image of size width*height and try to skip initialization
+            of the memory (see BasicImage::resize for details).
+            Use the specified allocator.
+        */
+    BasicImage(int width, int height, SkipInitializationTag, Alloc const & alloc = Alloc())
+    : data_(0),
+      width_(0),
+      height_(0),
+      allocator_(alloc),
+      pallocator_(alloc)
+    {
+        vigra_precondition((width >= 0) && (height >= 0),
+             "BasicImage::BasicImage(int width, int height, value_type const & ): "
+             "width and height must be >= 0.\n");
+
+        resize(width, height, SkipInitialization);
+    }
+
         /** construct image of size size.x x size.y and initialize
         every pixel with given data (use this constructor, if
         value_type doesn't have a default constructor). Use the specified allocator.
@@ -667,6 +686,23 @@ class BasicImage
              "size.x and size.y must be >= 0.\n");
 
         resize(size.x, size.y, d);
+    }
+
+        /** construct image of size size.x x size.y and try to skip initialization
+            of the memory (see BasicImage::resize for details). Use the specified allocator.
+        */
+    explicit BasicImage(difference_type const & size, SkipInitializationTag, Alloc const & alloc = Alloc())
+    : data_(0),
+      width_(0),
+      height_(0),
+      allocator_(alloc),
+      pallocator_(alloc)
+    {
+        vigra_precondition((size.x >= 0) && (size.y >= 0),
+             "BasicImage::BasicImage(Diff2D const & size, value_type const & v): "
+             "size.x and size.y must be >= 0.\n");
+
+        resize(size.x, size.y, SkipInitialization);
     }
 
 
@@ -760,7 +796,27 @@ class BasicImage
             constructor, dimensions must not be negative,
             old data are kept if new size matches old size)
         */
-    void resize(int width, int height, value_type const & d);
+    void resize(int width, int height, value_type const & d)
+    {
+        resizeImpl(width, height, d, false);
+    }
+
+        /** reset image to specified size and skip initialization
+            if possible (use this if <tt>value_type</tt> is a built-in type 
+            or <tt>TinyVector&lt;builtin&gt&</tt> and the data is 
+            immediately overridden afterwards). If <tt>value_type</tt> requires
+            initialization, <tt>SkipInitialization</tt> is ignored.
+            
+            Usage:
+            \code
+            image.resize(new_width, new_height, SkipInitialization);
+            \endcode
+        */
+    void resize(int width, int height, SkipInitializationTag)
+    {
+        resizeImpl(width, height, NumericTraits<value_type>::zero(), 
+                   CanSkipInitialization<value_type>::value);
+    }
 
         /** resize image to given size and initialize by copying data
             from the C-style arra \a data.
@@ -1021,6 +1077,8 @@ class BasicImage
   private:
 
     void deallocate();
+    void resizeImpl(int width, int height, value_type const & d, bool skipInit);
+
 
     value_type ** initLineStartArray(value_type * data, int width, int height);
 
@@ -1080,7 +1138,7 @@ BasicImage<PIXELTYPE, Alloc>::init(value_type const & pixel)
 
 template <class PIXELTYPE, class Alloc>
 void
-BasicImage<PIXELTYPE, Alloc>::resize(int width, int height, value_type const & d)
+BasicImage<PIXELTYPE, Alloc>::resizeImpl(int width, int height, value_type const & d, bool skipInit)
 {
     vigra_precondition((width >= 0) && (height >= 0),
          "BasicImage::resize(int width, int height, value_type const &): "
@@ -1098,14 +1156,16 @@ BasicImage<PIXELTYPE, Alloc>::resize(int width, int height, value_type const & d
             if (width*height != width_*height_) // different sizes, must reallocate
             {
                 newdata = allocator_.allocate(typename Alloc::size_type(width*height));
-                std::uninitialized_fill_n(newdata, width*height, d);
+                if(!skipInit)
+                    std::uninitialized_fill_n(newdata, width*height, d);
                 newlines = initLineStartArray(newdata, width, height);
                 deallocate();
             }
             else // need only to reshape
             {
                 newdata = data_;
-                std::fill_n(newdata, width*height, d);
+                if(!skipInit)
+                    std::fill_n(newdata, width*height, d);
                 newlines = initLineStartArray(newdata, width, height);
                 pallocator_.deallocate(lines_, typename Alloc::size_type(height_));
             }
@@ -1120,7 +1180,7 @@ BasicImage<PIXELTYPE, Alloc>::resize(int width, int height, value_type const & d
         width_ = width;
         height_ = height;
     }
-    else if(width*height > 0) // keep size, re-init data
+    else if(width*height > 0 && !skipInit) // keep size, re-init data
     {
         std::fill_n(data_, width*height, d);
     }
