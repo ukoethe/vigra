@@ -80,12 +80,14 @@ class VisitorBase
      *                  right stack entry that will be pushed.
      * \sa RF_Traits::StackEntry_t
      */
-    template<class Tree, class Split, class Region>
+    template<class Tree, class Split, class Region, class Feature_t, class Label_t>
     void visit_after_split( Tree          & tree, 
                             Split         & split,
                             Region        & parent,
                             Region        & leftChild,
-                            Region        & rightChild)
+                            Region        & rightChild,
+                            Feature_t     & features,
+                            Label_t       & labels)
     {}
     
     /** do something after each tree has been learned
@@ -108,7 +110,7 @@ class VisitorBase
      * \param pr        reference to the preprocessor that processed the input
      */
     template<class RF, class PR>
-    void visit_at_end(RF & rf, PR & pr)
+    void visit_at_end(RF const & rf, PR const & pr)
     {}
     
     /** do something before learning starts 
@@ -116,8 +118,8 @@ class VisitorBase
      * \param rf        reference to the random forest object that called this
      *                  visitor
      */
-    template<class RF>
-    void visit_at_beginning(RF & rf)
+    template<class RF, class PR>
+    void visit_at_beginning(RF const & rf, PR const & pr)
     {}
     /** do some thing while traversing tree after it has been learned 
      *  (external nodes)
@@ -196,17 +198,21 @@ class VisitorNode
         next_(stop_), visitor_(visitor)
     {}
 
-    template<class Tree, class Split, class Region>
+    template<class Tree, class Split, class Region, class Feature_t, class Label_t>
     void visit_after_split( Tree          & tree, 
                             Split         & split,
                             Region        & parent,
                             Region        & leftChild,
-                            Region        & rightChild)
+                            Region        & rightChild,
+                            Feature_t     & features,
+                            Label_t       & labels)
     {
         if(visitor_.is_active())
             visitor_.visit_after_split(tree, split, 
-                                       parent, leftChild, rightChild);
-        next_.visit_after_split(tree, split, parent, leftChild, rightChild);
+                                       parent, leftChild, rightChild,
+                                       features, labels);
+        next_.visit_after_split(tree, split, parent, leftChild, rightChild,
+                                features, labels);
     }
 
     template<class RF, class PR, class SM, class ST>
@@ -217,8 +223,8 @@ class VisitorNode
         next_.visit_after_tree(rf, pr, sm, st, index);
     }
 
-    template<class RF>
-    void visit_at_beginning(RF & rf)
+    template<class RF, class PR>
+    void visit_at_beginning(RF & rf, PR & pr)
     {
         if(visitor_.is_active())
             visitor_.visit_at_beginning(rf);
@@ -577,12 +583,14 @@ class VariableImportanceVisitor : public VisitorBase
     /** calculates impurity decrease based variable importance after every
      * split.  
      */
-    template<class Tree, class Split, class Region>
+    template<class Tree, class Split, class Region, class Feature_t, class Label_t>
     void visit_after_split( Tree          & tree, 
                             Split         & split,
                             Region        & parent,
                             Region        & leftChild,
-                            Region        & rightChild)
+                            Region        & rightChild,
+                            Feature_t     & features,
+                            Label_t       & labels)
     {
         //resize to right size when called the first time
         
