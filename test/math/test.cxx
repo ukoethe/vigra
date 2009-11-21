@@ -333,6 +333,14 @@ struct FunctionsTest
             shouldEqual(vigra::sqrti(i), (vigra::Int32)vigra::floor(vigra::sqrt((double)i)));
         }
 
+        shouldEqual(vigra::roundi(0.0), 0);
+        shouldEqual(vigra::roundi(1.0), 1);
+        shouldEqual(vigra::roundi(1.1), 1);
+        shouldEqual(vigra::roundi(1.6), 2);
+        shouldEqual(vigra::roundi(-1.0), -1);
+        shouldEqual(vigra::roundi(-1.1), -1);
+        shouldEqual(vigra::roundi(-1.6), -2);
+
         vigra::UInt32 roundPower2[] = {0, 1, 2, 3, 4, 5, 7, 8, 9, 15, 16, 0xffff, 0x7fffffff, 0x80000000, 0x80000001, 0xffffffff};
         vigra::UInt32 floorResult[] = {0, 1, 2, 2, 4, 4, 4, 8, 8, 8, 16, 0x8000, 0x40000000, 0x80000000, 0x80000000, 0x80000000};
         vigra::UInt32 ceilResult[] = {0, 1, 2, 4, 4, 8, 8, 8, 16, 16, 16, 0x10000, 0x80000000, 0x80000000, 0, 0};

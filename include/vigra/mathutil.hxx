@@ -140,6 +140,22 @@ inline long double round(long double t)
                 : ceil(t - 0.5);
 }
 
+
+    /*! Round and cast to integer.
+
+        Rounds to the nearest integer like round(), but casts the result to 
+        <tt>int</tt> (this will be faster and is usually needed anyway).
+
+        <b>\#include</b> \<<a href="mathutil_8hxx-source.html">vigra/mathutil.hxx</a>\><br>
+        Namespace: vigra
+    */
+inline int roundi(double t)
+{
+     return t >= 0.0
+                ? int(t + 0.5)
+                : int(t - 0.5);
+}
+
     /*! Round up to the nearest power of 2.
 
         Efficient algorithm for finding the smallest power of 2 which is not smaller than \a x
