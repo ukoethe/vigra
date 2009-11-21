@@ -39,6 +39,7 @@
 
 #include "error.hxx"
 #include "memory.hxx"
+#include "numerictraits.hxx"
 #include <memory>
 #include <algorithm>
 #include <iosfwd>
@@ -518,44 +519,43 @@ public:
     }
 
     explicit ArrayVector( size_type size, Alloc const & alloc = Alloc())
-    : view_type(size, 0),
-      capacity_(size),
-      alloc_(alloc)
+    : alloc_(alloc)
     {
-        this->data_ = reserve_raw(capacity_);
-        if(this->size_ > 0)
-           std::uninitialized_fill(this->data_, this->data_+this->size_, value_type());
+        initImpl(size, value_type(), VigraTrueType());
     }
 
     ArrayVector( size_type size, value_type const & initial, Alloc const & alloc = Alloc())
-    : view_type(size, 0),
-      capacity_(size),
-      alloc_(alloc)
+    : alloc_(alloc)
     {
-        this->data_ = reserve_raw(capacity_);
-        if(this->size_ > 0)
-            std::uninitialized_fill(this->data_, this->data_+this->size_, initial);
+        initImpl(size, initial, VigraTrueType());
     }
 
 
     ArrayVector( this_type const & rhs )
-    : view_type(rhs.size(), 0),
-      capacity_(rhs.capacity_),
-      alloc_(rhs.alloc_)
+    : alloc_(rhs.alloc_)
     {
-        this->data_ = reserve_raw(capacity_);
-        if(this->size_ > 0)
-            std::uninitialized_copy(rhs.data_, rhs.data_+rhs.size_, this->data_);
+        initImpl(rhs.begin(), rhs.end(), VigraFalseType());
     }
 
     template <class U>
-    explicit ArrayVector( ArrayVectorView<U> const & rhs, Alloc const & alloc = Alloc() );
+    explicit ArrayVector( ArrayVectorView<U> const & rhs, Alloc const & alloc = Alloc() )
+    : alloc_(alloc)
+    {
+        initImpl(rhs.begin(), rhs.end(), VigraFalseType());
+    }
 
     template <class InputIterator>
-    ArrayVector(InputIterator i, InputIterator end);
+    ArrayVector(InputIterator i, InputIterator end)
+    {
+        initImpl(i, end, typename NumericTraits<InputIterator>::isIntegral());
+    }
 
     template <class InputIterator>
-    ArrayVector(InputIterator i, InputIterator end, Alloc const & alloc);
+    ArrayVector(InputIterator i, InputIterator end, Alloc const & alloc)
+    : alloc_(alloc)
+    {
+        initImpl(i, end, typename NumericTraits<InputIterator>::isIntegral());
+    }
 
     this_type & operator=( this_type const & rhs )
     {
@@ -619,44 +619,21 @@ public:
     void deallocate(pointer data, size_type size);
 
     pointer reserve_raw(size_type capacity);
+    
+    void initImpl( size_type size, value_type const & initial, VigraTrueType /*isIntegral*/);
+
+    template <class Iter>
+    void initImpl( Iter i, Iter end, VigraFalseType /*isIntegral*/);
+    
+    template <class Iter>
+    void initImpl( Iter i, Iter end, Error_NumericTraits_not_specialized_for_this_case)
+    {
+        initImpl(i, end, VigraFalseType());
+    }
 
     size_type capacity_;
     Alloc alloc_;
 };
-
-template <class T, class Alloc>
-template <class U>
-ArrayVector<T, Alloc>::ArrayVector( ArrayVectorView<U> const & rhs, Alloc const & alloc )
-: view_type(rhs.size(), 0),
-  capacity_(rhs.size()),
-  alloc_(alloc)
-{
-    this->data_ = reserve_raw(capacity_);
-    if(this->size_ > 0)
-        std::uninitialized_copy(rhs.data(), rhs.data()+rhs.size(), this->data_);
-}
-
-template <class T, class Alloc>
-template <class InputIterator>
-ArrayVector<T, Alloc>::ArrayVector(InputIterator i, InputIterator end)
-: view_type(std::distance(i, end), 0),
-  capacity_(view_type::size_),
-  alloc_()
-{
-    this->data_ = reserve_raw(capacity_);
-    std::uninitialized_copy(i, end, this->data_);
-}
-
-template <class T, class Alloc>
-template <class InputIterator>
-ArrayVector<T, Alloc>::ArrayVector(InputIterator i, InputIterator end, Alloc const & alloc)
-: view_type(std::distance(i, end), 0),
-  capacity_(view_type::size_),
-  alloc_(alloc)
-{
-    this->data_ = reserve_raw(capacity_);
-    std::uninitialized_copy(i, end, this->data_);
-}
 
 template <class T, class Alloc>
 template <class U>
@@ -840,6 +817,29 @@ ArrayVector<T, Alloc>::resize( size_type new_size, value_type const & initial)
     {
         insert(this->end(), new_size - this->size(), initial);
     }
+}
+
+template <class T, class Alloc>
+inline void
+ArrayVector<T, Alloc>::initImpl( size_type size, value_type const & initial, VigraTrueType /*isIntegral*/)
+{
+    this->size_ = size;
+    capacity_ = size;
+    this->data_ = reserve_raw(capacity_);
+    if(this->size_ > 0)
+        std::uninitialized_fill(this->data_, this->data_+this->size_, initial);
+}
+
+template <class T, class Alloc>
+template <class Iter>
+inline void
+ArrayVector<T, Alloc>::initImpl( Iter i, Iter end, VigraFalseType /*isIntegral*/)
+{
+    this->size_ = std::distance(i, end);
+    capacity_ = this->size_;
+    this->data_ = reserve_raw(capacity_);
+    if(this->size_ > 0)
+        std::uninitialized_copy(i, end, this->data_);
 }
 
 template <class T, class Alloc>

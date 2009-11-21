@@ -215,6 +215,12 @@ struct ArrayVectorTest
         shouldEqual(vector_.size(), 5);
         shouldEqualSequence(vector_.begin(), vector_.end(), data);
     }
+
+    void testAmbiguousConstructor()
+    {
+        ArrayVector<ptrdiff_t> a(2, ptrdiff_t(1));
+        ArrayVector<ptrdiff_t> b(a.begin(), a.end());
+    }
 };
 
 struct SizedIntTest
@@ -240,6 +246,7 @@ struct UtilitiesTestSuite
     {
         add( testCase( &ArrayVectorTest::testAccessor));
         add( testCase( &ArrayVectorTest::testBackInsertion));
+        add( testCase( &ArrayVectorTest::testAmbiguousConstructor));
         add( testCase( &SizedIntTest::testSizedInt));
     }
 };
