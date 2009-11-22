@@ -856,6 +856,190 @@ struct FixedPointTest
     }
 };
 
+struct FixedPoint16Test
+{
+    void testConstruction()
+    {
+        shouldEqual((vigra::FixedPoint16<3>(3).value), 3 << 12);
+        shouldEqual((vigra::FixedPoint16<3>(-3).value), -3 << 12);
+        shouldEqual((-vigra::FixedPoint16<3>(3).value), -3 << 12);
+
+        shouldEqual((vigra::FixedPoint16<8>(3).value), 3 << 7);
+
+        shouldEqual((vigra::FixedPoint16<3>(3.5).value), 7 << 11);
+        shouldEqual((vigra::FixedPoint16<3>(-3.5).value), -(7 << 11));
+        shouldEqual((-vigra::FixedPoint16<3>(3.5).value), -(7 << 11));
+
+        shouldEqual((vigra::NumericTraits<vigra::FixedPoint16<4> >::zero()).value, 0);
+        shouldEqual((vigra::NumericTraits<vigra::FixedPoint16<4> >::one()).value, 1 << 11);
+        shouldEqual((vigra::NumericTraits<vigra::FixedPoint16<4> >::max()).value, (1 << 15) - 1);
+        shouldEqual((vigra::NumericTraits<vigra::FixedPoint16<4> >::min()).value, -(1 << 15));
+
+        shouldEqual((vigra::FixedPoint16<1, vigra::FPOverflowSaturate>(3.75).value), (1 << 15)-1);
+        shouldEqual((vigra::FixedPoint16<1, vigra::FPOverflowSaturate>(-3.75).value), -(1 << 15));
+        try { vigra::FixedPoint16<1, vigra::FPOverflowError>(3.75); failTest("No exception thrown"); } 
+        catch(vigra::PreconditionViolation &) {}
+        try { vigra::FixedPoint16<1, vigra::FPOverflowError>(-3.75); failTest("No exception thrown"); } 
+        catch(vigra::PreconditionViolation &) {}
+
+        vigra::FixedPoint16<4> v(3.75);
+        shouldEqual((v.value), 15 << 9);
+        shouldEqual(((-v).value), -15 << 9);
+        shouldEqual((vigra::FixedPoint16<4>(v).value), 15 << 9);
+        shouldEqual((vigra::FixedPoint16<6>(v).value), 15 << 7);
+        shouldEqual((vigra::FixedPoint16<13>(v).value), 15);
+        shouldEqual((vigra::FixedPoint16<15>(v).value), 4);
+
+        shouldEqual((vigra::FixedPoint16<4>(-v).value), -15 << 9);
+        shouldEqual((vigra::FixedPoint16<6>(-v).value), -15 << 7);
+        shouldEqual((vigra::FixedPoint16<13>(-v).value), -15);
+        shouldEqual((vigra::FixedPoint16<15>(-v).value), -4);
+
+        shouldEqual(vigra::fixed_point_cast<double>(v), 3.75);
+        shouldEqual(frac(v), vigra::FixedPoint16<4>(0.75));
+        shouldEqual(dual_frac(v), vigra::FixedPoint16<4>(0.25));
+        shouldEqual(frac(-v), vigra::FixedPoint16<4>(0.25));
+        shouldEqual(dual_frac(-v), vigra::FixedPoint16<4>(0.75));
+        shouldEqual(vigra::floor(v), 3);
+        shouldEqual(vigra::ceil(v), 4);
+        shouldEqual(vigra::floor(-v), -4);
+        shouldEqual(vigra::ceil(-v), -3);
+        shouldEqual(round(v), 4);
+        shouldEqual(round(-v), -4);
+        shouldEqual(vigra::abs(v), v);
+        shouldEqual(vigra::abs(-v), v);
+        shouldEqual(vigra::norm(-v), v);
+        shouldEqual(vigra::squaredNorm(-v), v*v);
+
+        vigra::FixedPoint16<2> v1;
+        shouldEqual((v1 = v).value, 15 << 11);
+        shouldEqual((v1 = -v).value, -15 << 11);
+
+        vigra::FixedPoint16<15> v2;
+        shouldEqual((v2 = v).value, 4);
+        shouldEqual((v2 = -v).value, -4);
+    }
+
+    void testComparison()
+    {
+        vigra::FixedPoint16<4> v1(3.75), v2(4);
+        vigra::FixedPoint16<2> v3(3.75);
+        should(v1 == v1);
+        should(v1 == v3);
+        should(!(v1 != v1));
+        should(!(v1 != v3));
+        should(v1 <= v1);
+        should(v1 <= v3);
+        should(!(v1 < v1));
+        should(!(v1 < v3));
+        should(v1 >= v1);
+        should(v1 >= v3);
+        should(!(v1 > v1));
+        should(!(v1 > v3));
+
+        should(v2 != v1);
+        should(v2 != v3);
+        should(!(v2 == v1));
+        should(!(v2 == v3));
+        should(!(v2 <= v1));
+        should(!(v2 <= v3));
+        should(!(v2 < v1));
+        should(!(v2 < v3));
+        should(v2 >= v1);
+        should(v2 >= v3);
+        should(v2 > v1);
+        should(v2 > v3);
+    }
+
+    void testArithmetic()
+    {
+        typedef vigra::FixedPoint16<1> FP1;
+        typedef vigra::FixedPoint16<2> FP2;
+        typedef vigra::FixedPoint16<7> FP7;
+        typedef vigra::FixedPoint16<8> FP8;
+        typedef vigra::FixedPoint16<13> FP13;
+        FP1 t1(0.75), t2(0.25);
+        signed char v1 = 1, v2 = 2, v4 = 4, v8 = 8;
+
+        should((FP1(t1) += t1) == (FP1(1.5)));
+        should((FP1(t1) -= t1) == (FP1(0.0)));
+        should((vigra::FixedPoint16<2>(t1) *= t1) == (FP1(9.0 / 16.0)));
+
+        should(--t1 == (FP1(-0.25)));
+        should(t1 == (FP1(-0.25)));
+        should(++t1 == (FP1(0.75)));
+        should(t1 == (FP1(0.75)));
+        should(t1++ == (FP1(0.75)));
+        should(t1 == (FP1(1.75)));
+        should(t1-- == (FP1(1.75)));
+        should(t1 == (FP1(0.75)));
+
+        shouldEqual((t1 * FP7(v1)).value, 3 << 6);
+        shouldEqual((t2 * FP7(v1)).value, 1 << 6);
+        shouldEqual((-t1 * FP7(v1)).value, -3 << 6);
+        shouldEqual((-t2 * FP7(v1)).value, -1 << 6);
+        shouldEqual((t1 * -FP7(v1)).value, -3 << 6);
+        shouldEqual((t2 * -FP7(v1)).value, -1 << 6);
+
+        shouldEqual((vigra::FixedPoint16<2, vigra::FPOverflowSaturate>(t1*FP7(v8)).value), (1 << 15)-1);
+        shouldEqual((vigra::FixedPoint16<2, vigra::FPOverflowSaturate>(t1*FP7(-v8)).value), -(1 << 15));
+        try { vigra::FixedPoint16<2, vigra::FPOverflowError>(t1*FP7(v8)); failTest("No exception thrown"); } 
+        catch(vigra::PreconditionViolation &) {}
+        try { vigra::FixedPoint16<2, vigra::FPOverflowError>(t1*FP7(-v8)); failTest("No exception thrown"); } 
+        catch(vigra::PreconditionViolation &) {}
+
+        shouldEqual((FP13(t1 * FP7(v1))).value, 3);
+        shouldEqual((FP13(t2 * FP7(v1))).value, 1);
+        shouldEqual((FP13(-t1 * FP7(v1))).value, -3);
+        shouldEqual((FP13(-t2 * FP7(v1))).value, -1);
+
+        shouldEqual((t1 * FP7(v4) + t2 * FP7(v8)).value, 5 << 8);
+        shouldEqual((t1 * FP7(v1) + t2 * FP7(v2)).value, 5 << 6);
+
+        shouldEqual(vigra::floor(t1 * FP7(v1) + t2 * FP7(v2)), 1);
+        shouldEqual(vigra::ceil(t1 * FP7(v1) + t2 * FP7(v2)), 2);
+        shouldEqual(round(t1 * FP7(v1) + t2 * FP7(v2)), 1);
+        shouldEqual(vigra::floor(t1 * FP7(v4) + t2 * FP7(v8)), 5);
+        shouldEqual(vigra::ceil(t1 * FP7(v4) + t2 * FP7(v8)), 5);
+        shouldEqual(round(t1 * FP7(v4) + t2 * FP7(v8)), 5);
+
+        shouldEqual(vigra::floor(t1 * -FP7(v1) - t2 * FP7(v2)), -2);
+        shouldEqual(vigra::ceil(t1 * -FP7(v1) - t2 * FP7(v2)), -1);
+        shouldEqual(round(t1 * -FP7(v1) - t2 * FP7(v2)), -1);
+        shouldEqual(vigra::floor(t1 * -FP7(v4) - t2 * FP7(v8)), -5);
+        shouldEqual(vigra::ceil(t1 * -FP7(v4) - t2 * FP7(v8)), -5);
+        shouldEqual(round(t1 * -FP7(v4) - t2 * FP7(v8)), -5);
+
+        double d1 = 1.0 / 3.0, d2 = 1.0 / 7.0;
+        FP1 r1(d1), r2(d2);
+        FP2 r3;
+        add(r1, r2, r3);
+        shouldEqual(r3.value, FP2(d1 + d2).value);
+        sub(r1, r2, r3);
+        shouldEqual(r3.value, FP2(d1 - d2).value);
+        mul(r1, r2, r3);
+        shouldEqual(r3.value >> 2, FP2(d1 * d2).value >> 2);
+
+        shouldEqual(vigra::sqrt(FP7(4)).value, 1 << 12);
+        shouldEqual(vigra::sqrt(FP8(4)).value, 1 << 12);
+        shouldEqual(vigra::fixed_point_cast<double>(vigra::sqrt(FP7(4))), 2.0);
+        shouldEqual(vigra::fixed_point_cast<double>(vigra::sqrt(FP2(2.25))), 1.5);
+        shouldEqual(vigra::fixed_point_cast<double>(vigra::sqrt(FP8(6.25))), 2.5);
+
+        for(int i = 0; i < 1024; ++i)
+        {
+            vigra::FixedPoint16<11> fv1(i, vigra::FPNoShift);
+            vigra::FixedPoint16<10> fv2(i, vigra::FPNoShift);
+            vigra::FixedPoint16<9>  fv3(i, vigra::FPNoShift);
+            vigra::FixedPoint16<8>  fv4(i, vigra::FPNoShift);
+            shouldEqual(vigra::fixed_point_cast<double>(vigra::sqrt(fv1)), vigra::floor(vigra::sqrt((double)(i << 14))) / 512.0);
+            shouldEqual(vigra::fixed_point_cast<double>(vigra::sqrt(fv2)), vigra::floor(vigra::sqrt((double)(i << 15))) / 1024.0);
+            shouldEqual(vigra::fixed_point_cast<double>(vigra::sqrt(fv3)), vigra::floor(vigra::sqrt((double)(i << 14))) / 1024.0);
+            shouldEqual(vigra::fixed_point_cast<double>(vigra::sqrt(fv4)), vigra::floor(vigra::sqrt((double)(i << 15))) / 2048.0);
+        }
+    }
+};
+
 struct LinalgTest
 {
     typedef vigra::Matrix<double> Matrix;
@@ -2092,6 +2276,9 @@ struct MathTestSuite
         add( testCase(&FixedPointTest::testConstruction));
         add( testCase(&FixedPointTest::testComparison));
         add( testCase(&FixedPointTest::testArithmetic));
+        add( testCase(&FixedPoint16Test::testConstruction));
+        add( testCase(&FixedPoint16Test::testComparison));
+        add( testCase(&FixedPoint16Test::testArithmetic));
 
         add( testCase(&RandomTest::testTT800));
         add( testCase(&RandomTest::testMT19937));
