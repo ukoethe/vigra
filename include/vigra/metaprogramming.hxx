@@ -50,6 +50,20 @@ class MetaInt
     enum { value = N };
 };
 
+template <int N1, int N2>
+class MetaMax
+{
+  public:
+    enum { value = N1 < N2 ? N2 : N1 };
+};
+
+template <int N1, int N2>
+class MetaMin
+{
+  public:
+    enum { value = N1 < N2 ? N1 : N2 };
+};
+
 struct VigraTrueType
 {
    enum { asBool = true };
