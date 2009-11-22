@@ -1062,11 +1062,16 @@ struct FixedPoint16Test
             shouldEqual(vigra::fixed_point_cast<double>(vigra::sqrt(fv4)), vigra::floor(vigra::sqrt((double)(i << 15))) / 2048.0);
         }
 
+        shouldEqual(vigra::atan2(FP1(0), FP1(1)), FP2(0));
+        shouldEqual(vigra::atan2(FP1(0), FP1(-1)), FP2(M_PI));
+        shouldEqual(vigra::atan2(FP1(1), FP1(0)), FP2(0.5*M_PI));
+        shouldEqual(vigra::atan2(FP1(-1), FP1(0)), FP2(-0.5*M_PI));
+        
         for(int i = -179; i < 180; ++i)
         {
             double angle = M_PI*i/180.0;
             double c = std::cos(angle), s = std::sin(angle);
-            vigra::FixedPoint16<2> a = vigra::atan2(FP1(s), FP1(c));
+            FP2 a = vigra::atan2(FP1(s), FP1(c));
             should(vigra::abs(i-vigra::fixed_point_cast<double>(a)/M_PI*180.0) < 0.5);
             a = vigra::atan2(FP15(30000.0*s), FP15(30000.0*c));
             should(vigra::abs(i-vigra::fixed_point_cast<double>(a)/M_PI*180.0) < 0.5);
