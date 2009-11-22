@@ -1108,8 +1108,8 @@ struct FP16DivImpl
     
     The template wraps an <tt>Int16</tt> and uses <tt>IntBits</tt> to
     represent the integral part of a number, and <tt>15 - IntBits</tt>
-    for the fractional part. (The 16th bit is reserved because FixedPoint16 
-    is a signed type). Results of expression with mixed types will preserve
+    for the fractional part. The 16th bit is reserved because FixedPoint16 
+    is a signed type. Results of expressions with mixed types will preserve
     larger number of <tt>IntBits</tt> of the results, in order to minimize
     the possibility for overflow. Nonetheless, overflow can occur, and the 
     template parameter <tt>OverflowHandling</tt> determines how this will be
@@ -1125,6 +1125,11 @@ struct FP16DivImpl
     <DT>FPOverflowError<DD> Throw <tt>PreconditionViolation</tt> upon overflow. This is useful for 
                             debugging.
     </DL>
+    
+    The implementation relies on Int32-arithmetic and requires that the right-shift operator
+    preserves signedness. Although not enforced by the C++ standard, this is implemented
+    by most of today's processors. This property is checked by a 
+    VIGRA_STATIC_ASSERT(FixedPoint_error__Right_shift_operator_has_unsupported_semantics).
 
     <tt>FixedPoint16</tt> implements the required interface of an
     \ref AlgebraicRing and the required numeric and
