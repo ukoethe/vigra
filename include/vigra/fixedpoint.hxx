@@ -824,23 +824,13 @@ class FixedPoint16;
     \ref AlgebraicRing. They are implemented in terms of the traits of the basic types by
     partial template specialization:
 
-    \code
-
-    template <unsigned IntBits1, unsigned FracBits1, unsigned IntBits2, unsigned FracBits2>
-    class FixedPoint16Traits<FixedPoint16<IntBits1, FracBits1>, FixedPoint16<IntBits2, FracBits2> >
-    {
-        typedef FixedPoint16<PlusMinusIntBits, MaxFracBits>               PlusType;
-        typedef FixedPoint16<PlusMinusIntBits, MaxFracBits>               MinusType;
-        typedef FixedPoint16<IntBits1 + IntBits2, FracBits1 + FracBits2>  MultipliesType;
-    };
-
     template <unsigned IntBits, unsigned FracBits>
     struct NumericTraits<FixedPoint16<IntBits, FracBits> >
     {
         typedef FixedPoint16<IntBits, FracBits> Type;
-            // Promote undefined because it depends on the layout, use FixedPoint16Traits
-            // RealPromote in AlgebraicRing -- multiplication with double is not supported.
-            // ComplexPromote in AlgebraicRing -- multiplication with double is not supported.
+        typedef Type                            Promote;
+            // RealPromote undefined -- multiplication with double is not supported.
+            // ComplexPromote undefined -- multiplication with double is not supported.
         typedef Type ValueType;
 
         typedef VigraFalseType isIntegral;
@@ -852,31 +842,28 @@ class FixedPoint16;
         ... // etc.
     };
 
-    template <unsigned IntBits, unsigned FracBits>
-    struct SquareRootTraits<FixedPoint16<IntBits, FracBits> >
+    template <int IntBits1, FPOverflowHandling OverflowHandling, int IntBits2>
+    struct PromoteTraits<FixedPoint16<IntBits1, OverflowHandling>,
+                         FixedPoint16<IntBits2, OverflowHandling> >
     {
-        typedef FixedPoint16<IntBits, FracBits>      Type;
-        typedef FixedPoint16<SRIntBits, SRFracBits>  SquareRootResult;
-        typedef Type                               SquareRootArgument;
-    };
-    
-    template <unsigned IntBits, unsigned FracBits>
-    struct NormTraits<FixedPoint16<IntBits, FracBits> >
-    {
-        typedef FixedPoint16<IntBits, FracBits>         Type;
-        typedef typename 
-            FixedPoint16Traits<FixedPoint16<IntBits, FracBits>, FixedPoint16<IntBits, FracBits> >::MultipliesType
-                                                      SquaredNormType;
-        typedef Type                                  NormType;
+        typedef FixedPoint16<MetaMax<IntBits1, IntBits2>::value, OverflowHandling> Promote;
+        ... // etc.
     };
 
-    template <unsigned IntBits1, unsigned FracBits1, unsigned IntBits2, unsigned FracBits2>
-    struct PromoteTraits<FixedPoint16<IntBits1, FracBits1>,
-                         FixedPoint16<IntBits2, FracBits2> >
+    template <int IntBits, FPOverflowHandling OverflowHandling>
+    struct NormTraits<FixedPoint16<IntBits, OverflowHandling> >
     {
-        typedef typename 
-            FixedPoint16Traits<FixedPoint16<IntBits1, FracBits1>, FixedPoint16<IntBits2, FracBits2> >::PlusType 
-            Promote;
+        typedef FixedPoint16<IntBits, OverflowHandling>     Type;
+        typedef typename PromoteTraits<Type, Type>::Promote SquaredNormType;
+        typedef Type                                        NormType;
+    };
+
+    template <int IntBits, FPOverflowHandling OverflowHandling>
+    struct SquareRootTraits<FixedPoint16<IntBits, OverflowHandling> >
+    {
+        typedef FixedPoint16<IntBits, OverflowHandling>            Type;
+        typedef FixedPoint16<(IntBits + 1) / 2, OverflowHandling>  SquareRootResult;
+        typedef Type                                               SquareRootArgument;
     };
     \endcode
 
@@ -888,9 +875,9 @@ template <int IntBits, FPOverflowHandling OverflowHandling>
 struct NumericTraits<FixedPoint16<IntBits, OverflowHandling> >
 {
     typedef FixedPoint16<IntBits, OverflowHandling> Type;
-    typedef FixedPoint16<IntBits, OverflowHandling> Promote;
-    typedef FixedPoint16<IntBits, OverflowHandling> RealPromote;
-        //typedef std::complex<RealPromote> ComplexPromote;
+    typedef Type                                    Promote;
+        // RealPromote undefined -- multiplication with double is not supported.
+        // ComplexPromote undefined -- multiplication with double is not supported.
     typedef Type ValueType;
 
     typedef VigraFalseType isIntegral;
@@ -906,35 +893,43 @@ struct NumericTraits<FixedPoint16<IntBits, OverflowHandling> >
     static Type smallestPositive() { return Type(1, FPNoShift); }
     static Type max() { return Type( Type::MAX, FPNoShift); }
     static Type min() { return Type( Type::MIN, FPNoShift); }
-};
 
-#if 0
-template <int IntBits, unsigned FracBits>
-struct NormTraits<FixedPoint16<IntBits, FracBits> >
-{
-    typedef FixedPoint16<IntBits, FracBits>         Type;
-    typedef typename 
-        FixedPoint16Traits<FixedPoint16<IntBits, FracBits>, FixedPoint16<IntBits, FracBits> >::MultipliesType
-                                                  SquaredNormType;
-    typedef Type                                  NormType;
+    static Promote toPromote(Type v) { return v; }
+    static Type fromPromote(Promote v) { return v; }; 
 };
-#endif
 
 template <int IntBits1, FPOverflowHandling OverflowHandling, int IntBits2>
 struct PromoteTraits<FixedPoint16<IntBits1, OverflowHandling>,
                      FixedPoint16<IntBits2, OverflowHandling> >
 {
     typedef FixedPoint16<MetaMax<IntBits1, IntBits2>::value, OverflowHandling> Promote;
+    static Promote toPromote(FixedPoint16<IntBits1, OverflowHandling> v) { return Promote(v); }
+    static Promote toPromote(FixedPoint16<IntBits2, OverflowHandling> v) { return Promote(v); }
+};
+
+template <int IntBits, FPOverflowHandling OverflowHandling>
+struct PromoteTraits<FixedPoint16<IntBits, OverflowHandling>,
+                     FixedPoint16<IntBits, OverflowHandling> >
+{
+    typedef FixedPoint16<IntBits, OverflowHandling> Promote;
+    static Promote toPromote(FixedPoint16<IntBits, OverflowHandling> v) { return v; }
+};
+
+template <int IntBits, FPOverflowHandling OverflowHandling>
+struct NormTraits<FixedPoint16<IntBits, OverflowHandling> >
+{
+    typedef FixedPoint16<IntBits, OverflowHandling>     Type;
+    typedef typename PromoteTraits<Type, Type>::Promote SquaredNormType;
+    typedef Type                                        NormType;
 };
 
 template <int IntBits, FPOverflowHandling OverflowHandling>
 struct SquareRootTraits<FixedPoint16<IntBits, OverflowHandling> >
 {
-    typedef FixedPoint16<IntBits, OverflowHandling>      Type;
+    typedef FixedPoint16<IntBits, OverflowHandling>            Type;
     typedef FixedPoint16<(IntBits + 1) / 2, OverflowHandling>  SquareRootResult;
-    typedef Type                               SquareRootArgument;
+    typedef Type                                               SquareRootArgument;
 };
-
 
 #ifndef DOXYGEN
 
@@ -944,8 +939,6 @@ struct FixedPoint_error__Right_shift_operator_has_unsupported_semantics
 {};
 
 #endif /* DOXYGEN */
-
-
 
 template <bool Predicate>
 struct FixedPoint16_assignment_error__Target_object_has_too_few_integer_bits
@@ -1049,8 +1042,9 @@ struct FP16AddImpl
     static inline Int32 exec(Int32 t1, Int32 t2)
     {
        return FP16OverflowHandling<OverflowHandling>::exec(
-              FP16Align<MinIntBits, IntBitsOut, true>::exec(
-              FP16Align<IntBits1, MinIntBits, false>::exec(t1) + FP16Align<IntBits2, MinIntBits, false>::exec(t2)));
+                  FP16Align<MinIntBits, IntBitsOut, /*Round*/ true>::exec(
+                      FP16Align<IntBits1, MinIntBits, /*Round*/ false>::exec(t1) + 
+                      FP16Align<IntBits2, MinIntBits, /*Round*/ false>::exec(t2)));
     }
 };
 
@@ -1062,8 +1056,9 @@ struct FP16SubImpl
     static inline Int32 exec(Int32 t1, Int32 t2)
     {
        return FP16OverflowHandling<OverflowHandling>::exec(
-              FP16Align<MinIntBits, IntBitsOut, true>::exec(
-              FP16Align<IntBits1, MinIntBits, false>::exec(t1) - FP16Align<IntBits2, MinIntBits, false>::exec(t2)));
+                  FP16Align<MinIntBits, IntBitsOut, /*Round*/ true>::exec(
+                      FP16Align<IntBits1, MinIntBits, /*Round*/ false>::exec(t1) - 
+                      FP16Align<IntBits2, MinIntBits, /*Round*/ false>::exec(t2)));
     }
 };
 
@@ -1074,27 +1069,22 @@ struct FP16MulImpl
     static inline Int32 exec(Int32 t1, Int32 t2)
     {
         return FP16OverflowHandling<OverflowHandling>::exec(
-                       FP16Align<IntBits1+IntBits2, IntBitsOut+15, /*Round*/ true>::exec(t1*t2));
+                   FP16Align<IntBits1+IntBits2, IntBitsOut+15, /*Round*/ true>::exec(t1*t2));
     }
 };
 
-template <bool MustRound>
-struct FP16AssignWithRound;
-
-template <>
-struct FP16AssignWithRound<false>
+template <int IntBits1, int IntBits2, int IntBitsOut, 
+          FPOverflowHandling OverflowHandling >
+struct FP16DivImpl
 {
-    template <int N>
-    static inline Int32 exec(Int32 v) { return v << (-N); }
-};
-
-template <>
-struct FP16AssignWithRound<true>
-{
-    template <int N>
-    static inline Int32 exec(Int32 v)
+    static inline Int32 exec(Int32 t1, Int32 t2)
     {
-        return (v + (1 << (N - 1))) >> (N);
+        if(t2 == 0)
+            return (t1 >= 0)
+                       ?  (1 << 15) - 1
+                       : -(1 << 15);
+        return FP16OverflowHandling<OverflowHandling>::exec(
+                   FP16Align<IntBits1-IntBits2, IntBitsOut+1, /*Round*/ true>::exec((t1<<16)/t2));
     }
 };
 
@@ -1106,38 +1096,45 @@ struct FP16AssignWithRound<true>
 /*                                                      */
 /********************************************************/
 
-/** Template for fixed point arithmetic.
+/** Template for 16-bit signed fixed point arithmetic.
 
     Fixed point arithmetic is used when computations with fractional accuracy
     must be made at the highest speed possible (e.g. in the inner loop
     of a volume rendering routine). The speed-up relative to floating
     point arithmetic can be dramatic, especially when one can avoid
-    conversions between integer anfloating point numbers (these are 
+    conversions between integer and floating point numbers (these are 
     very expensive because integer and floating point arithmetic
     resides in different pipelines). 
     
-    The template wraps an <tt>int</tt> and uses <tt>IntBits</tt> to
-    represent the integral part of a number, and <tt>FractionalBits</tt>
-    for the fractional part, where <tt>IntBits + FractionalBits < 32</tt>.
-    (The 32rd bit is reserved because FixedPoint16 is a signed type).
-    These numbers will be automatically allocated in an intelligent way
-    in the result of an arithmetic operation. For example, when two 
-    fixed point numbers are multiplied, the required number of integer
-    bits in the result is the sum of the number of integer bits of the
-    arguments, but only when so many bits are avaiable. This is figured out
-    by means of FixedPoint16Traits, and a compile-time error is raised
-    when no suitable representation can be found. The idea is that the right
-    thing happens automatically as often as possible.
+    The template wraps an <tt>Int16</tt> and uses <tt>IntBits</tt> to
+    represent the integral part of a number, and <tt>15 - IntBits</tt>
+    for the fractional part. (The 16th bit is reserved because FixedPoint16 
+    is a signed type). Results of expression with mixed types will preserve
+    larger number of <tt>IntBits</tt> of the results, in order to minimize
+    the possibility for overflow. Nonetheless, overflow can occur, and the 
+    template parameter <tt>OverflowHandling</tt> determines how this will be
+    handled:
+    
+    <DL>
+    <DT>FPOverflowIgnore<DD> (default) Ignore overflow, i.e. use the usual modulo behavior of the
+                             built-in integer types.
+                       
+    <DT>FPOverflowSaturate<DD> Use the largest or smallest representable number (depending on sign)
+                               in case of overflow.
+
+    <DT>FPOverflowError<DD> Throw <tt>PreconditionViolation</tt> upon overflow. This is useful for 
+                            debugging.
+    </DL>
 
     <tt>FixedPoint16</tt> implements the required interface of an
     \ref AlgebraicRing and the required numeric and
     promotion traits. In addition, it supports functions <tt>add</tt>, 
-    <tt>sub</tt>, and <tt>mul</tt>, where a particular layout of the result can
-    be enforced. 
+    <tt>sub</tt>, <tt>mul</tt>, and <tt>div</tt>, where a particular layout 
+    of the result can be enforced. 
     
-    <tt>unsigned char, signed char, unsigned short, signed short, int</tt> can be
-    transformed into a FixedPoint16 with appropriate layout by means of the factory
-    function <tt>fixedPoint()</tt>.
+    Built-in numeric types can be converted into <tt>FixedPoint16</tt> by the 
+    appropriate constructors, and from <tt>FixedPoint16</tt> by means of
+    <tt>fixed_point_cast&lt;TargetType&gt;(fixedPoint)</tt>.
 
     <b>See also:</b>
     <ul>
@@ -1162,7 +1159,7 @@ public:
     static const Int32 FRACTIONAL_MASK = (1u << FRACTIONAL_BITS) - 1;
     static const Int32 INT_MASK        = 0xffffffffu ^ FRACTIONAL_MASK;
 
-    Int32 value;
+    Int16 value;
 
     FixedPoint16()
     : value(0)
@@ -1171,6 +1168,7 @@ public:
     }
 
         /** Construct from an int (fractional part will become zero).
+            Possible overflow is handled according to the taget type's <tt>OverflowHandling</tt>.
         */
     explicit FixedPoint16(Int32 v)
     : value(detail::FP16OverflowHandling<OverflowHandling>::exec(v << FRACTIONAL_BITS))
@@ -1186,9 +1184,9 @@ public:
         VIGRA_STATIC_ASSERT((FixedPoint_error__Right_shift_operator_has_unsupported_semantics<((-1 >> 8) == -1)>));
     }
 
-        /** Construct from an double and round the fractional part to 
-            <tt>FractionalBits</tt> accuracy. A PreconditionViolation exception is raised when
-            the integer part is too small to represent the number.
+        /** Construct from a double and round the fractional part to 
+            <tt>FRACTIONAL_BITS</tt> accuracy. Possible overflow is handled according 
+            to the taget type's <tt>OverflowHandling</tt>.
         */
     explicit FixedPoint16(double rhs)
     : value(detail::FP16OverflowHandling<OverflowHandling>::exec(roundi(rhs * ONE)))
@@ -1204,8 +1202,8 @@ public:
         VIGRA_STATIC_ASSERT((FixedPoint_error__Right_shift_operator_has_unsupported_semantics<((-1 >> 8) == -1)>));
     }
 
-        /** Construct from a FixedPoint16 with different layout. It rounds as appropriate and raises
-            a compile-time error when the target type has too few integer bits.
+        /** Construct from a FixedPoint16 with different layout. It rounds as appropriate and 
+            handles possible overflow according to the taget type's <tt>OverflowHandling</tt>.
         */
     template <int IntBits2, FPOverflowHandling OverflowHandling2>
     FixedPoint16(const FixedPoint16<IntBits2, OverflowHandling2> &other)
@@ -1216,8 +1214,7 @@ public:
     }
 
         /** Assignment from int. The fractional part will become zero.  
-            A PreconditionViolation exception is raised when
-            the integer part is too small to represent the number.
+            Possible overflow is handled according to the taget type's <tt>OverflowHandling</tt>.
         */
     FixedPoint16 &operator=(Int32 rhs)
     {
@@ -1225,9 +1222,8 @@ public:
         return *this;
     }
 
-        /** Assignment form double. The fractional part is rounded, and a 
-            PreconditionViolation exception is raised when
-            the integer part is too small to represent the number.
+        /** Assignment form double. The fractional part is rounded, and possible overflow is 
+            handled according to the taget type's <tt>OverflowHandling</tt>.
         */
     FixedPoint16 &operator=(double rhs)
     {
@@ -1243,14 +1239,21 @@ public:
         return *this;
     }
 
-        /** Assignment from a FixedPoint16 with different layout. It rounds as appropriate and raises
-            a compile-time error when the target type has too few integer bits.
+        /** Assignment from a FixedPoint16 with different layout. It rounds as appropriate, and possible overflow is 
+            handled according to the taget type's <tt>OverflowHandling</tt>.
         */
     template <int IntBits2>
     FixedPoint16 & operator=(const FixedPoint16<IntBits2, OverflowHandling> &other)
     {
         value = detail::FP16OverflowHandling<OverflowHandling>::exec(
                 detail::FP16Align<IntBits2, IntBits, /*Round*/true>::exec(other.value));
+        return *this;
+    }
+
+        /** Unary plus.
+        */
+    FixedPoint16 operator+() const
+    {
         return *this;
     }
 
@@ -1295,8 +1298,8 @@ public:
         return old;
     }
 
-        /** Add-assignment from a FixedPoint16 with different layout. It rounds as appropriate and raises
-            a compile-time error when the target type has too few integer bits.
+        /** Add-assignment from a FixedPoint16 with different layout. It rounds as appropriate, and possible overflow is 
+            handled according to the taget type's <tt>OverflowHandling</tt>.
         */
     template <int IntBits2>
     FixedPoint16 & operator+=(const FixedPoint16<IntBits2, OverflowHandling> &other)
@@ -1305,8 +1308,8 @@ public:
         return *this;
     }
 
-        /** Subtract-assignment from a FixedPoint16 with different layout. It rounds as appropriate and raises
-            a compile-time error when the target type has too few integer bits.
+        /** Subtract-assignment from a FixedPoint16 with different layout. It rounds as appropriate, and possible overflow is 
+            handled according to the taget type's <tt>OverflowHandling</tt>.
         */
     template <int IntBits2>
     FixedPoint16 & operator-=(const FixedPoint16<IntBits2, OverflowHandling> &other)
@@ -1315,13 +1318,23 @@ public:
         return *this;
     }
     
-        /** Multiply-assignment from a FixedPoint16 with different layout. It rounds as appropriate and raises
-            a compile-time error when the target type has too few integer bits.
+        /** Multiply-assignment from a FixedPoint16 with different layout. It rounds as appropriate, and possible overflow is 
+            handled according to the taget type's <tt>OverflowHandling</tt>.
         */
     template <int IntBits2>
     FixedPoint16 & operator*=(const FixedPoint16<IntBits2, OverflowHandling> &other)
     {
         value = detail::FP16MulImpl<IntBits, IntBits2, IntBits, OverflowHandling>::exec(value, other.value);
+        return *this;
+    }
+    
+        /** Divide-assignment from a FixedPoint16 with different layout. It rounds as appropriate, and possible overflow is 
+            handled according to the taget type's <tt>OverflowHandling</tt>.
+        */
+    template <int IntBits2>
+    FixedPoint16 & operator/=(const FixedPoint16<IntBits2, OverflowHandling> &other)
+    {
+        value = detail::FP16DivImpl<IntBits, IntBits2, IntBits, OverflowHandling>::exec(value, other.value);
         return *this;
     }
 };
@@ -1477,11 +1490,13 @@ operator+(FixedPoint16<IntBits1, OverflowHandling> l, FixedPoint16<IntBits2, Ove
 
     /// addition with enforced result type.
 template <int IntBits1, FPOverflowHandling OverflowHandling, int IntBits2, int IntBits3>
-inline void
+inline 
+FixedPoint16<IntBits3, OverflowHandling> &
 add(FixedPoint16<IntBits1, OverflowHandling> l, FixedPoint16<IntBits2, OverflowHandling> r,
     FixedPoint16<IntBits3, OverflowHandling> & result)
 {
     result.value = detail::FP16AddImpl<IntBits1, IntBits2, IntBits3, OverflowHandling>::exec(l.value, r.value);
+    return result;
 }
 
     /// subtraction with automatic determination of the appropriate result type.
@@ -1498,11 +1513,12 @@ operator-(FixedPoint16<IntBits1, OverflowHandling> l, FixedPoint16<IntBits2, Ove
 
     /// subtraction with enforced result type.
 template <int IntBits1, FPOverflowHandling OverflowHandling, int IntBits2, int IntBits3>
-inline void
+inline FixedPoint16<IntBits3, OverflowHandling> &
 sub(FixedPoint16<IntBits1, OverflowHandling> l, FixedPoint16<IntBits2, OverflowHandling> r,
     FixedPoint16<IntBits3, OverflowHandling> & result)
 {
     result.value = detail::FP16SubImpl<IntBits1, IntBits2, IntBits3, OverflowHandling>::exec(l.value, r.value);
+    return result;
 }
 
     /// multiplication with automatic determination of the appropriate result type.
@@ -1519,11 +1535,36 @@ operator*(FixedPoint16<IntBits1, OverflowHandling> l, FixedPoint16<IntBits2, Ove
 
     /// multiplication with enforced result type.
 template <int IntBits1, FPOverflowHandling OverflowHandling, int IntBits2, int IntBits3>
-inline void
+inline 
+FixedPoint16<IntBits3, OverflowHandling> &
 mul(FixedPoint16<IntBits1, OverflowHandling> l, FixedPoint16<IntBits2, OverflowHandling> r,
     FixedPoint16<IntBits3, OverflowHandling> & result)
 {
     result.value = detail::FP16MulImpl<IntBits1, IntBits2, IntBits3, OverflowHandling>::exec(l.value, r.value);
+    return result;
+}
+
+    /// division with automatic determination of the appropriate result type.
+template <int IntBits1, FPOverflowHandling OverflowHandling, int IntBits2>
+inline
+typename PromoteTraits<FixedPoint16<IntBits1, OverflowHandling>, FixedPoint16<IntBits2, OverflowHandling> >::Promote
+operator/(FixedPoint16<IntBits1, OverflowHandling> l, FixedPoint16<IntBits2, OverflowHandling> r)
+{
+    typedef typename
+        PromoteTraits<FixedPoint16<IntBits1, OverflowHandling>, FixedPoint16<IntBits2, OverflowHandling> >::Promote
+        Result;
+    return Result(detail::FP16DivImpl<IntBits1, IntBits2, Result::INT_BITS, OverflowHandling>::exec(l.value, r.value), FPNoShift);
+}
+
+    /// division with enforced result type.
+template <int IntBits1, FPOverflowHandling OverflowHandling, int IntBits2, int IntBits3>
+inline 
+FixedPoint16<IntBits3, OverflowHandling> &
+div(FixedPoint16<IntBits1, OverflowHandling> l, FixedPoint16<IntBits2, OverflowHandling> r,
+    FixedPoint16<IntBits3, OverflowHandling> & result)
+{
+    result.value = detail::FP16DivImpl<IntBits1, IntBits2, IntBits3, OverflowHandling>::exec(l.value, r.value);
+    return result;
 }
 
     /// square root.
@@ -1534,6 +1575,57 @@ sqrt(FixedPoint16<IntBits, OverflowHandling> v)
     typedef typename SquareRootTraits<FixedPoint16<IntBits, OverflowHandling> >::SquareRootResult Result;
     enum { Shift = 15 + IntBits - 2*Result::INT_BITS };
     return Result(sqrti(v.value << Shift), FPNoShift);
+}
+
+    /// Arctangent. Accuracy better than 1/2 degree.
+template <int IntBits, FPOverflowHandling OverflowHandling>
+FixedPoint16<2, OverflowHandling>
+atan2(FixedPoint16<IntBits, OverflowHandling> y, FixedPoint16<IntBits, OverflowHandling> x)
+{
+    enum { ResIntBits = 2 };
+    typedef FixedPoint16<ResIntBits, OverflowHandling> FP;
+    static const FP zero(0), pi(M_PI), pi_2(0.5 * M_PI), mpi_2(-0.5 * M_PI); 
+    static const Int32 Pi_4  = roundi(0.25 * M_PI * (1 << 15)), // 15 frac bits
+                       Pi3_4 = roundi(0.75 * M_PI * (1 << 15)),
+                       c1    = roundi(0.20375927386953321 * (1 << 15)), 
+                       c2    = roundi(-0.9784500501924335 * (1 << 30)); 
+    // coefficients c1 and c2 minimize
+    //
+    // NIntegrate[(c1 r^3 + c2 r + Pi/4 - a)^2 /. r -> (Cos[a] - Sin[a])/(Cos[a] + Sin[a]), {a, 0, Pi/2}]
+    //
+    // Thanks to Jim Shima, http://www.dspguru.com/comp.dsp/tricks/alg/fxdatan2.htm
+
+    if(x.value > 0)
+    {
+        if(y.value == 0)
+            return zero;
+        Int32 abs_y = abs(y.value);
+        Int32 r = ((x.value - abs_y) << 15) / (x.value + abs_y); // 15 frac bits
+        Int32 angle = Pi_4 + (r*((c2 + c1 * (sq(r) >> 15)) >> 15) >> 15);
+        return (y.value > 0)
+                   ? FP(detail::FP16Align<0, ResIntBits, true>::exec( angle), FPNoShift)
+                   : FP(detail::FP16Align<0, ResIntBits, true>::exec(-angle), FPNoShift);
+    }
+    
+    if(x.value < 0)
+    {
+        if(y.value == 0)
+            return pi;
+        Int32 abs_y = abs(y.value);
+        Int32 r = ((x.value + abs_y) << 15) / (abs_y - x.value); // 15 frac bits
+        Int32 angle = Pi3_4 + (r*((c2 + c1 * (sq(r) >> 15)) >> 15) >> 15);
+        return (y.value > 0)
+                   ? FP(detail::FP16Align<0, ResIntBits, true>::exec( angle), FPNoShift)
+                   : FP(detail::FP16Align<0, ResIntBits, true>::exec(-angle), FPNoShift);
+    }
+
+    // x == 0
+    if(y.value > 0)
+        return pi_2;
+    if(y.value < 0)
+        return mpi_2;
+    // y == 0
+    return zero;
 }
 
     /// absolute value.
@@ -1547,7 +1639,7 @@ abs(FixedPoint16<IntBits, OverflowHandling> v)
     /// squared norm (same as v*v).
 template <int IntBits, FPOverflowHandling OverflowHandling>
 inline
-typename PromoteTraits<FixedPoint16<IntBits, OverflowHandling>, FixedPoint16<IntBits, OverflowHandling> >::Promote
+typename NormTraits<FixedPoint16<IntBits, OverflowHandling> >::SquaredNormType
 squaredNorm(FixedPoint16<IntBits, OverflowHandling> v)
 {
     return v*v;
@@ -1555,7 +1647,8 @@ squaredNorm(FixedPoint16<IntBits, OverflowHandling> v)
 
     /// norm (same as abs).
 template <int IntBits, FPOverflowHandling OverflowHandling>
-inline FixedPoint16<IntBits, OverflowHandling>
+inline 
+typename NormTraits<FixedPoint16<IntBits, OverflowHandling> >::NormType
 norm(FixedPoint16<IntBits, OverflowHandling> const & v)
 {
     return abs(v);
@@ -1571,7 +1664,7 @@ frac(FixedPoint16<IntBits, OverflowHandling> v)
            FPNoShift);
 }
 
-    /// dual fractional part: (difference between ciel of v and v)
+    /// dual fractional part. (1 - frac(v))
 template <int IntBits, FPOverflowHandling OverflowHandling>
 inline FixedPoint16<IntBits, OverflowHandling>
 dual_frac(FixedPoint16<IntBits, OverflowHandling> v)
@@ -1607,6 +1700,7 @@ round(FixedPoint16<IntBits, OverflowHandling> v)
                       FixedPoint16<IntBits, OverflowHandling>::FRACTIONAL_BITS);
 }
 
+    /// rounding to the nearest integer.
 template <int IntBits, FPOverflowHandling OverflowHandling>
 inline Int32
 roundi(FixedPoint16<IntBits, OverflowHandling> v)

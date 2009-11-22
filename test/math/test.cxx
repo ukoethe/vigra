@@ -896,6 +896,7 @@ struct FixedPoint16Test
         shouldEqual((vigra::FixedPoint16<15>(-v).value), -4);
 
         shouldEqual(vigra::fixed_point_cast<double>(v), 3.75);
+        shouldEqual(vigra::fixed_point_cast<double>(-v), -3.75);
         shouldEqual(frac(v), vigra::FixedPoint16<4>(0.75));
         shouldEqual(dual_frac(v), vigra::FixedPoint16<4>(0.25));
         shouldEqual(frac(-v), vigra::FixedPoint16<4>(0.25));
@@ -958,21 +959,36 @@ struct FixedPoint16Test
         typedef vigra::FixedPoint16<7> FP7;
         typedef vigra::FixedPoint16<8> FP8;
         typedef vigra::FixedPoint16<13> FP13;
-        FP1 t1(0.75), t2(0.25);
+        typedef vigra::FixedPoint16<15> FP15;
+        
+        FP1 t0(0), t1(0.75), t2(0.25);
         signed char v1 = 1, v2 = 2, v4 = 4, v8 = 8;
 
-        should((FP1(t1) += t1) == (FP1(1.5)));
-        should((FP1(t1) -= t1) == (FP1(0.0)));
-        should((vigra::FixedPoint16<2>(t1) *= t1) == (FP1(9.0 / 16.0)));
+        shouldEqual(FP1(t1) += t1, FP1(1.5));
+        shouldEqual(FP1(t1) -= t1, FP1(0.0));
+        shouldEqual(FP1(t1) -= t2, FP1(0.5));
+        shouldEqual(FP2(t1) *= t1, FP1(9.0 / 16.0));
+        shouldEqual(FP2(t1) /= t2, FP2(3));
+        shouldEqual(FP2(t1) /= t0, vigra::NumericTraits<FP2>::max());
+        shouldEqual(FP2(-t1) /= t0, vigra::NumericTraits<FP2>::min());
+        
+        FP2 res;
+        shouldEqual(add(t1, t1, res), FP2(1.5));
+        shouldEqual(sub(t1, t1, res), FP2(0));
+        shouldEqual(sub(t1, t2, res), FP2(0.5));
+        shouldEqual(mul(t1, t1, res), FP2(9.0 / 16.0));
+        shouldEqual(div(t1, t2, res), FP2(3));
+        shouldEqual(div(t1, t0, res), vigra::NumericTraits<FP2>::max());
+        shouldEqual(div(-t1, t0, res), vigra::NumericTraits<FP2>::min());
 
-        should(--t1 == (FP1(-0.25)));
-        should(t1 == (FP1(-0.25)));
-        should(++t1 == (FP1(0.75)));
-        should(t1 == (FP1(0.75)));
-        should(t1++ == (FP1(0.75)));
-        should(t1 == (FP1(1.75)));
-        should(t1-- == (FP1(1.75)));
-        should(t1 == (FP1(0.75)));
+        shouldEqual(--t1, FP1(-0.25));
+        shouldEqual(t1, FP1(-0.25));
+        shouldEqual(++t1, FP1(0.75));
+        shouldEqual(t1, FP1(0.75));
+        shouldEqual(t1++, FP1(0.75));
+        shouldEqual(t1, FP1(1.75));
+        shouldEqual(t1--, FP1(1.75));
+        shouldEqual(t1, FP1(0.75));
 
         shouldEqual((t1 * FP7(v1)).value, 3 << 6);
         shouldEqual((t2 * FP7(v1)).value, 1 << 6);
@@ -995,6 +1011,14 @@ struct FixedPoint16Test
 
         shouldEqual((t1 * FP7(v4) + t2 * FP7(v8)).value, 5 << 8);
         shouldEqual((t1 * FP7(v1) + t2 * FP7(v2)).value, 5 << 6);
+
+        shouldEqual(FP7(6) / FP7(3), FP7(2));
+        shouldEqual(FP7(0.75) / FP7(0.25), FP7(3));
+        shouldEqual(FP7(12) / FP7(48), FP7(0.25));
+        shouldEqual(FP1(0.25) / FP7(2), FP7(0.125));
+        shouldEqual(FP7(10) / FP1(0.25), FP7(40));
+        shouldEqual(FP7(10) / t0, vigra::NumericTraits<FP7>::max());
+        shouldEqual(FP7(-10) / t0, vigra::NumericTraits<FP7>::min());
 
         shouldEqual(vigra::floor(t1 * FP7(v1) + t2 * FP7(v2)), 1);
         shouldEqual(vigra::ceil(t1 * FP7(v1) + t2 * FP7(v2)), 2);
@@ -1036,6 +1060,16 @@ struct FixedPoint16Test
             shouldEqual(vigra::fixed_point_cast<double>(vigra::sqrt(fv2)), vigra::floor(vigra::sqrt((double)(i << 15))) / 1024.0);
             shouldEqual(vigra::fixed_point_cast<double>(vigra::sqrt(fv3)), vigra::floor(vigra::sqrt((double)(i << 14))) / 1024.0);
             shouldEqual(vigra::fixed_point_cast<double>(vigra::sqrt(fv4)), vigra::floor(vigra::sqrt((double)(i << 15))) / 2048.0);
+        }
+
+        for(int i = -179; i < 180; ++i)
+        {
+            double angle = M_PI*i/180.0;
+            double c = std::cos(angle), s = std::sin(angle);
+            vigra::FixedPoint16<2> a = vigra::atan2(FP1(s), FP1(c));
+            should(vigra::abs(i-vigra::fixed_point_cast<double>(a)/M_PI*180.0) < 0.5);
+            a = vigra::atan2(FP15(30000.0*s), FP15(30000.0*c));
+            should(vigra::abs(i-vigra::fixed_point_cast<double>(a)/M_PI*180.0) < 0.5);
         }
     }
 };
