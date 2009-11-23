@@ -1072,9 +1072,9 @@ struct FixedPoint16Test
             double angle = M_PI*i/180.0;
             double c = std::cos(angle), s = std::sin(angle);
             FP2 a = vigra::atan2(FP1(s), FP1(c));
-            should(vigra::abs(i-vigra::fixed_point_cast<double>(a)/M_PI*180.0) < 0.5);
+            should(vigra::abs(i-vigra::fixed_point_cast<double>(a)/M_PI*180.0) < 0.3);
             a = vigra::atan2(FP15(30000.0*s), FP15(30000.0*c));
-            should(vigra::abs(i-vigra::fixed_point_cast<double>(a)/M_PI*180.0) < 0.5);
+            should(vigra::abs(i-vigra::fixed_point_cast<double>(a)/M_PI*180.0) < 0.3);
         }
     }
 };

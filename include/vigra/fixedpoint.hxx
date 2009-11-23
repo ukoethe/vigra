@@ -1582,7 +1582,9 @@ sqrt(FixedPoint16<IntBits, OverflowHandling> v)
     return Result(sqrti(v.value << Shift), FPNoShift);
 }
 
-    /// Arctangent. Accuracy better than 1/2 degree.
+using std::atan2;
+
+    /// Arctangent. Accuracy better than 1/3 degree (9 significant bits).
 template <int IntBits, FPOverflowHandling OverflowHandling>
 FixedPoint16<2, OverflowHandling>
 atan2(FixedPoint16<IntBits, OverflowHandling> y, FixedPoint16<IntBits, OverflowHandling> x)
@@ -1592,45 +1594,43 @@ atan2(FixedPoint16<IntBits, OverflowHandling> y, FixedPoint16<IntBits, OverflowH
     static const FP zero(0), pi(M_PI), pi_2(0.5 * M_PI), mpi_2(-0.5 * M_PI); 
     static const Int32 Pi_4  = roundi(0.25 * M_PI * (1 << 15)), // 15 frac bits
                        Pi3_4 = roundi(0.75 * M_PI * (1 << 15)),
-                       c1    = roundi(0.20375927386953321 * (1 << 15)), 
-                       c2    = roundi(-0.9784500501924335 * (1 << 30)); 
+                       c1    = roundi(0.19826763260224867 * (1 << 15)), 
+                       c2    = roundi(-0.9757748231899761 * (1 << 30)); 
     // coefficients c1 and c2 minimize
     //
-    // NIntegrate[(c1 r^3 + c2 r + Pi/4 - a)^2 /. r -> (Cos[a] - Sin[a])/(Cos[a] + Sin[a]), {a, 0, Pi/2}]
+    // NIntegrate[(c1 r^3 + c2 r + Pi/4 - a)^4 /. r -> (Cos[a] - Sin[a])/(Cos[a] + Sin[a]), {a, 0, Pi/2}]
     //
     // Thanks to Jim Shima, http://www.dspguru.com/comp.dsp/tricks/alg/fxdatan2.htm
 
+    if(x.value == 0)
+        return (y.value > 0)
+                   ? pi_2
+                   : (y.value < 0)
+                         ? mpi_2
+                         : zero;
+                         
+    Int32 abs_y = abs(y.value);
+    Int32 r, angle;
     if(x.value > 0)
     {
         if(y.value == 0)
             return zero;
-        Int32 abs_y = abs(y.value);
-        Int32 r = ((x.value - abs_y) << 15) / (x.value + abs_y); // 15 frac bits
-        Int32 angle = Pi_4 + (r*((c2 + c1 * (sq(r) >> 15)) >> 15) >> 15);
-        return (y.value > 0)
-                   ? FP(detail::FP16Align<0, ResIntBits, true>::exec( angle), FPNoShift)
-                   : FP(detail::FP16Align<0, ResIntBits, true>::exec(-angle), FPNoShift);
+        r = ((x.value - abs_y) << 15) / (x.value + abs_y); // 15 frac bits
+        angle = Pi_4;
     }
-    
-    if(x.value < 0)
+    else
     {
         if(y.value == 0)
             return pi;
-        Int32 abs_y = abs(y.value);
-        Int32 r = ((x.value + abs_y) << 15) / (abs_y - x.value); // 15 frac bits
-        Int32 angle = Pi3_4 + (r*((c2 + c1 * (sq(r) >> 15)) >> 15) >> 15);
-        return (y.value > 0)
-                   ? FP(detail::FP16Align<0, ResIntBits, true>::exec( angle), FPNoShift)
-                   : FP(detail::FP16Align<0, ResIntBits, true>::exec(-angle), FPNoShift);
+        r = ((x.value + abs_y) << 15) / (abs_y - x.value); // 15 frac bits
+        angle = Pi3_4;
     }
+    
+    angle += r*((c2 + c1 * (sq(r) >> 15)) >> 15) >> 15;
 
-    // x == 0
-    if(y.value > 0)
-        return pi_2;
-    if(y.value < 0)
-        return mpi_2;
-    // y == 0
-    return zero;
+    return (y.value > 0)
+               ? FP(detail::FP16Align<0, ResIntBits, true>::exec( angle), FPNoShift)
+               : FP(detail::FP16Align<0, ResIntBits, true>::exec(-angle), FPNoShift);
 }
 
     /// absolute value.
