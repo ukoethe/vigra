@@ -238,6 +238,78 @@ struct SizedIntTest
     }
 };
 
+struct MetaprogrammingTest
+{
+    struct TrueResult {};
+    struct FalseResult {};
+    
+    struct Derived 
+    : public TrueResult 
+    {
+        typedef TrueResult result_type;
+        typedef TrueResult value_type;
+    };
+    
+    void testInt()
+    {
+        shouldEqual(MetaInt<1>::value, 1);
+        shouldEqual((MetaMax<1,2>::value), 2);
+        shouldEqual((MetaMin<1,2>::value), 1);
+    }
+ 
+    void testLogic()
+    {
+        shouldEqual(VigraTrueType::value, true);
+        shouldEqual(VigraFalseType::value, false);        
+        should(typeid(Not<VigraFalseType>::type) == typeid(VigraTrueType));
+        should(typeid(Not<VigraTrueType>::type) == typeid(VigraFalseType));
+        should(typeid(And<VigraTrueType, VigraTrueType>::type) == typeid(VigraTrueType));
+        should(typeid(And<VigraTrueType, VigraFalseType>::type) == typeid(VigraFalseType));
+        should(typeid(And<VigraFalseType, VigraTrueType>::type) == typeid(VigraFalseType));
+        should(typeid(And<VigraFalseType, VigraFalseType>::type) == typeid(VigraFalseType));
+        should(typeid(Or<VigraTrueType, VigraTrueType>::type) == typeid(VigraTrueType));
+        should(typeid(Or<VigraTrueType, VigraFalseType>::type) == typeid(VigraTrueType));
+        should(typeid(Or<VigraFalseType, VigraTrueType>::type) == typeid(VigraTrueType));
+        should(typeid(Or<VigraFalseType, VigraFalseType>::type) == typeid(VigraFalseType));
+        should(typeid(If<VigraTrueType, TrueResult, FalseResult>::type) == typeid(TrueResult));
+        should(typeid(If<VigraFalseType, TrueResult, FalseResult>::type) == typeid(FalseResult));
+        should(typeid(IfBool<true, TrueResult, FalseResult>::type) == typeid(TrueResult));
+        should(typeid(IfBool<false, TrueResult, FalseResult>::type) == typeid(FalseResult));
+    }
+ 
+    void testTypeTools()
+    {
+        should(typeid(IsSameType<TrueResult, TrueResult>::type) == typeid(VigraTrueType));
+        should(typeid(IsSameType<TrueResult, FalseResult>::type) == typeid(VigraFalseType));
+        should(typeid(IsDifferentType<TrueResult, TrueResult>::type) == typeid(VigraFalseType));
+        should(typeid(IsDifferentType<TrueResult, FalseResult>::type) == typeid(VigraTrueType));
+        should(typeid(IsConvertibleTo<int, double>::type) == typeid(VigraTrueType));
+        should(typeid(IsConvertibleTo<int, FalseResult>::type) == typeid(VigraFalseType));
+        should(typeid(IsDerivedFrom<Derived, TrueResult>::type) == typeid(VigraTrueType));
+        should(typeid(IsDerivedFrom<Derived, FalseResult>::type) == typeid(VigraFalseType));
+        should(typeid(has_result_type<Derived>::type) == typeid(VigraTrueType));
+        should(typeid(has_result_type<FalseResult>::type) == typeid(VigraFalseType));
+        should(typeid(has_value_type<Derived>::type) == typeid(VigraTrueType));
+        should(typeid(has_value_type<FalseResult>::type) == typeid(VigraFalseType));
+
+        should(typeid(IsIterator<std::reverse_iterator<int*> >::type) == typeid(VigraTrueType));
+        should(typeid(IsIterator<int*>::type) == typeid(VigraTrueType));
+        should(typeid(IsIterator<int const*>::type) == typeid(VigraTrueType));
+        should(typeid(IsIterator<FalseResult>::type) == typeid(VigraFalseType));
+
+        should(typeid(UnqualifiedType<int>::type) == typeid(int));
+        should(typeid(UnqualifiedType<const int>::type) == typeid(int));
+        should(typeid(UnqualifiedType<int*>::type) == typeid(int));
+        should(typeid(UnqualifiedType<const int*>::type) == typeid(int));
+        should(typeid(UnqualifiedType<int&>::type) == typeid(int));
+        should(typeid(UnqualifiedType<const int&>::type) == typeid(int));
+        should(typeid(UnqualifiedType<int**>::type) == typeid(int));
+        should(typeid(UnqualifiedType<const int**>::type) == typeid(int));
+        should(typeid(UnqualifiedType<int*&>::type) == typeid(int));
+        should(typeid(UnqualifiedType<const int*&>::type) == typeid(int));
+    }
+};
+
 struct UtilitiesTestSuite
 : public vigra::test_suite
 {
@@ -248,6 +320,9 @@ struct UtilitiesTestSuite
         add( testCase( &ArrayVectorTest::testBackInsertion));
         add( testCase( &ArrayVectorTest::testAmbiguousConstructor));
         add( testCase( &SizedIntTest::testSizedInt));
+        add( testCase( &MetaprogrammingTest::testInt));
+        add( testCase( &MetaprogrammingTest::testLogic));
+        add( testCase( &MetaprogrammingTest::testTypeTools));
     }
 };
 
