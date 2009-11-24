@@ -650,8 +650,8 @@ template <class T>
 void symmetric2x2Eigenvalues(T a00, T a01, T a11, T * r0, T * r1)
 {
     double d  = std::sqrt(sq(a00 - a11) + 4.0*sq(a01));
-    *r0 = 0.5*(a00 + a11 + d);
-    *r1 = 0.5*(a00 + a11 - d);
+    *r0 = static_cast<T>(0.5*(a00 + a11 + d));
+    *r1 = static_cast<T>(0.5*(a00 + a11 - d));
     if(*r0 < *r1)
         std::swap(*r0, *r1);
 }
@@ -688,9 +688,9 @@ void symmetric3x3Eigenvalues(T a00, T a01, T a02, T a11, T a12, T a22,
     double angle = std::atan2(std::sqrt(-q),mbDiv2)*inv3;
     double cs = std::cos(angle);
     double sn = std::sin(angle);
-    *r0 = c2Div3 + 2.0*magnitude*cs;
-    *r1 = c2Div3 - magnitude*(cs + root3*sn);
-    *r2 = c2Div3 - magnitude*(cs - root3*sn);
+    *r0 = static_cast<T>(c2Div3 + 2.0*magnitude*cs);
+    *r1 = static_cast<T>(c2Div3 - magnitude*(cs + root3*sn));
+    *r2 = static_cast<T>(c2Div3 - magnitude*(cs - root3*sn));
     if(*r0 < *r1)
         std::swap(*r0, *r1);
     if(*r0 < *r2)
