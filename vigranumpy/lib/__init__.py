@@ -9,13 +9,12 @@ except:
 # auto-generate code for  additional Kernel generators:
 for k in dir(Kernel1D):
    if not k.startswith('init'): continue;
-   code = '''#@staticmethod
+   code = '''@staticmethod
 def %sKernel(*args):
       k = Kernel1D()
       k.%s(*args)
       return k
-      %sKernel.__doc__ = Kernel1D.%s.__doc__
-      Kernel1D.%sKernel=%sKernel
+Kernel1D.%sKernel=%sKernel
+Kernel1D.%sKernel.__doc__ = Kernel1D.%s.__doc__
 ''' % (k,k,k,k,k,k)
    exec code
-   print code
