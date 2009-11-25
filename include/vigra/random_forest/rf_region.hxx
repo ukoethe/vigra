@@ -64,24 +64,24 @@ class DT_StackEntry
         DecisionTreeNoParent = -1
     };
 
-	/** Address of left and Right parent in the topology container
-	 */
-    Int32 									leftParent;
-	Int32									rightParent;
-	/** rule associated with current node
-	 */
-    ArrayVector<std::pair<Int32, double> > 	rule;
+    /** Address of left and Right parent in the topology container
+     */
+    Int32                                   leftParent;
+    Int32                                   rightParent;
+    /** rule associated with current node
+     */
+    ArrayVector<std::pair<Int32, double> >  rule;
 
 
     // RegionSpecificStuff
-    ArrayVector<Int32>  					classCounts_;
-    ArrayVector<double> 					weightedClassCounts_;
-	bool 									classCountsIsValid;
-	bool									weightedClassCountsIsValid;
-	IndexIterator            				begin_,  end_;
-    int                   					size_; 
-	IndexIterator            				oob_begin_, oob_end_;
-	int										oob_size_;
+    ArrayVector<Int32>                      classCounts_;
+    ArrayVector<double>                     weightedClassCounts_;
+    bool                                    classCountsIsValid;
+    bool                                    weightedClassCountsIsValid;
+    IndexIterator                           begin_,  end_;
+    int                                     size_; 
+    IndexIterator                           oob_begin_, oob_end_;
+    int                                     oob_size_;
 
     Int32 depth()
     {
@@ -171,7 +171,7 @@ class DT_StackEntry
         size_(e-i)
     {}
 
-	
+    
     Int32 size()const
     {
         return size_;

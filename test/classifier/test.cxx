@@ -130,6 +130,15 @@ struct ClassifierTest
 
                 vigra::RandomForest<>
 					RF2(vigra::RandomForestOptions().tree_count(32));
+                vigra::RandomForest<int>
+                    RF3(vigra::RandomForestOptions().tree_count(5));
+
+                RF3.learn(  data.features(ii),
+                            data.labels(ii),
+						   	rf_default(),
+							rf_default(),
+							rf_default(),
+                            vigra::RandomMT19937(1));
 
                 RF2.learn(  data.features(ii),
                             data.labels(ii),
@@ -137,6 +146,7 @@ struct ClassifierTest
 							rf_default(),
 							rf_default(),
                             vigra::RandomMT19937(1));
+
                 testVisitor.fout <<  data.names(ii) << std::endl;
                 std::cerr << "[";
                 for(int ss = 0; ss < ii+1; ++ss)
@@ -145,8 +155,12 @@ struct ClassifierTest
                     std::cerr << " ";
                 std::cerr << "] " << data.names(ii);
                 std::cerr << "\n";
-
-				shouldEqual(data.features(ii).shape(0),
+                
+                // just to ensure that using other label classes does 
+                // not destroy anything
+                shouldEqual(RF2.tree(0).topology_, RF3.tree(0).topology_);
+				
+                shouldEqual(data.features(ii).shape(0),
 						    RF2.ext_param_.row_count_);
 				shouldEqual(data.features(ii).shape(1),
 							RF2.ext_param_.column_count_);
@@ -410,7 +424,7 @@ struct ClassifierTest
 				 should(RF.ext_param_== RF2.ext_param_);
 				 should(RF.options_ ==  RF2.options_);
 				 shouldEqual(RF.trees_.size(), RF2.trees_.size());
-				 for(int jj = 0; jj < RF.trees_.size(); ++jj)
+				 for(int jj = 0; jj < int(RF.trees_.size()); ++jj)
 				 {
 					 should(RF.trees_[jj].topology_ == 
 							RF2.trees_[jj].topology_);
