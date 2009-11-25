@@ -403,11 +403,15 @@ inline hid_t createAllGroups(hid_t parent, std::string group_name)
 {
     //std::cout << group_name << std::endl;
     std::string::size_type begin = 0, end = group_name.find('/');
+    int a = 0;
     while (end != std::string::npos)
     {
         std::string group(group_name.begin()+begin, group_name.begin()+end);
         //std::cout << "createAllGroups(1): " << group.c_str() << std::endl;
         // FIXME: also handle relative paths correctly
+        
+        hid_t to_close = parent;
+
         if(H5LTfind_dataset(parent, group.c_str()) == 0)
         {
             //std::cout << "180 release, exists=false" << std::endl;
@@ -420,6 +424,9 @@ inline hid_t createAllGroups(hid_t parent, std::string group_name)
             parent = H5Gopen(parent, group.c_str(), H5P_DEFAULT);
             //std::cout << "parent_b=" << parent << ", " << group.c_str() << std::endl;
         }
+        if(a > 0)
+            H5Gclose(to_close); 
+        ++a;
         if(parent < 0)
             return parent;
         begin = end + 1;
