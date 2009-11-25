@@ -1167,7 +1167,8 @@ public:
         return MultiArrayView <N, T, StridedArrayTag>(shape, m_stride * s, m_ptr);
     }
 
-        /** transpose a 2-dimensional array. Use only if N==2.
+        /** Transpose an array. If N==2, this implements the usual matrix transposition.
+            For N > 2, it reverses the order of the indices.
 
             <b>Usage:</b><br>
             \code
@@ -1181,12 +1182,12 @@ public:
                     assert(array(i, j) == transposed(j, i));
             \endcode
         */
-    MultiArrayView <2, T, StridedArrayTag>
+    MultiArrayView <N, T, StridedArrayTag>
     transpose () const
     {
-        difference_type shape(m_shape[1], m_shape[0]),
-                        stride(m_stride[1], m_stride[0]);
-        return MultiArrayView <2, T, StridedArrayTag>(shape, stride, m_ptr);
+        difference_type shape(m_shape.begin(), difference_type::ReverseCopy),
+                        stride(m_stride.begin(), difference_type::ReverseCopy);
+        return MultiArrayView <N, T, StridedArrayTag>(shape, stride, m_ptr);
     }
 
         /** permute the dimensions of the array.
