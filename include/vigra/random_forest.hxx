@@ -55,6 +55,7 @@
 #include "random_forest/rf_region.hxx"
 #include "random_forest/rf_sampling.hxx"
 #include "random_forest/rf_preprocessing.hxx"
+#include "random_forest/rf_earlystopping.hxx"
 namespace vigra
 {
 
@@ -709,6 +710,7 @@ void RandomForest<LabelType, PreprocessorTag>
       "RandomForestn::predictProbabilities():"
       " Probability matrix must have as many columns as there are classes.");
 
+    stop.set_external_parameters(ext_param_);
     //Classify for each row.
     for(int row=0; row < rowCount(features); ++row)
     {
@@ -732,16 +734,19 @@ void RandomForest<LabelType, PreprocessorTag>
             weights = trees_[k].predict(rowVector(features, row));
 
         //update votecount.
+            int weighted = options_.predict_weighted_;
             for(int l=0; l<ext_param_.class_count_; ++l)
             {
-                prob(row, l) += weights[l];
+                double cur_w = weights[l] * (weighted * (*(weights-1))
+                                           + (1-weighted));
+                prob(row, l) += cur_w;
                 //every weight in totalWeight.
-                totalWeight += weights[l];
+                totalWeight += cur_w;
             }
             if(stop.after_prediction(weights, 
-                                     ext_param_, 
-                                     k, 
-                                     options_.tree_count_))
+                                     k,
+                                     rowVector(prob, row),
+                                     totalWeight))
                 break;
         }
 

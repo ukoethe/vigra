@@ -224,6 +224,10 @@ struct ClassifierTest
 			shouldEqual(rowVector(response, jj), should_resp);
 		}
 
+		RF.predictProbabilities(data.features(ii), response,StopAfterTree(1));
+		RF.predictProbabilities(data.features(ii), response,StopIfMargin(0.5));
+		RF.predictProbabilities(data.features(ii), response,StopAfterVoteCount(0.5));
+		RF.predictProbabilities(data.features(ii), response,StopIfConverging(0.5));
 		// to check whether labels are being currectly converted we use the
 		// property of the random forest to almost surely have 0 prediction
 		// error on the training data. with enough trees.

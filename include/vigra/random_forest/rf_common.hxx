@@ -107,7 +107,7 @@ class EarlyStoppStd
     {}
 
     template<class T>
-    void set_external_parameters(ProblemSpec<T> &prob)
+    void set_external_parameters(ProblemSpec<T> &prob, int tree_count = 0, bool is_weighted = false)
     {}
 
     template<class Region>
@@ -116,8 +116,8 @@ class EarlyStoppStd
         return region.size() < min_split_node_size_;
     }
 
-    template<class WeightIter, class T>
-    bool after_prediction(WeightIter iter, ProblemSpec<T> ext_param, int k, int tree_count)
+    template<class WeightIter, class T, class C>
+    bool after_prediction(WeightIter iter,  int k, MultiArrayView<2, T, C> prob, double totalCt)
     {
         return false; 
     }
@@ -266,14 +266,14 @@ class RandomForestOptions
     int     mtry_;
     int (*mtry_func_)(int) ;
 
-
+    bool predict_weighted_; 
     int tree_count_;
     int min_split_node_size_;
     /*\}*/
 
     size_t serialized_size() const
     {
-        return 11;
+        return 12;
     }
     
 
@@ -290,6 +290,7 @@ class RandomForestOptions
         COMPARE(mtry_);
         COMPARE(tree_count_);
         COMPARE(min_split_node_size_);
+        COMPARE(predict_weighted_);
         #undef COMPARE
 
         return result;
@@ -302,7 +303,7 @@ class RandomForestOptions
     void unserialize(Iter const & begin, Iter const & end)
     {
         Iter iter = begin;
-        vigra_precondition(end - begin == 11, 
+        vigra_precondition(end - begin == serialized_size(), 
                            "RandomForestOptions::unserialize():"
                            "wrong number of parameters");
         #define PULL(item_, type_) item_ = type_(*iter); ++iter;
@@ -317,13 +318,14 @@ class RandomForestOptions
         ++iter; //PULL(mtry_func_, double);
         PULL(tree_count_, int);
         PULL(min_split_node_size_, int);
+        PULL(predict_weighted_, bool);
         #undef PULL
     }
     template<class Iter>
     void serialize(Iter const &  begin, Iter const & end) const
     {
         Iter iter = begin;
-        vigra_precondition(end - begin == 11, 
+        vigra_precondition(end - begin == serialized_size(), 
                            "RandomForestOptions::serialize():"
                            "wrong number of parameters");
         #define PUSH(item_) *iter = double(item_); ++iter;
@@ -352,6 +354,7 @@ class RandomForestOptions
         }
         PUSH(tree_count_);
         PUSH(min_split_node_size_);
+        PUSH(predict_weighted_);
         #undef PUSH
     }
 
@@ -373,7 +376,8 @@ class RandomForestOptions
         mtry_(0),
         mtry_func_(0),
         tree_count_(256),
-        min_split_node_size_(1)
+        min_split_node_size_(1),
+        predict_weighted_(false)
     {}
 
     /**\brief specify stratification strategy
@@ -444,6 +448,14 @@ class RandomForestOptions
     {
         training_set_func_ = in;
         training_set_calc_switch_ = RF_FUNCTION;
+        return *this;
+    }
+    
+    /**\brief weight each tree with number of samples in that node
+     */
+    RandomForestOptions & predict_weighted()
+    {
+        predict_weighted_ = true;
         return *this;
     }
 
