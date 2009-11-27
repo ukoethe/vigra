@@ -52,6 +52,9 @@ def test_gaussianSharpening():
     res = vm.gaussianSharpening(img_scalar_f)
     
 def test_convolution():
+    krnl = vm.Kernel1D.initGaussianKernel(0.5)
+
+    
     k2_ = vm.Kernel2D()
     k2_.initWithFactoryKernel(vm.Kernel2D.kernelDisk(10))
     
