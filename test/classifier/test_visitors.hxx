@@ -52,20 +52,22 @@ class TestVisitor: public VisitorBase
     {    }
 
     //TODO split must be const
-    template<class Tree, class Split, class Region>
-    void visit_after_split( Tree 	      & tree, 
-						   	Split         & split,
+    template<class Tree, class Split, class Region, class Feature_t, class Label_t>
+    void visit_after_split( Tree          & tree, 
+                            Split         & split,
                             Region        & parent,
                             Region        & leftChild,
-                            Region        & rightChild)
+                            Region        & rightChild,
+                            Feature_t     & features,
+                            Label_t       & labels)
     {
         if(split.createNode().typeID() == i_ThresholdNode)
         {
             std::ostringstream s1;
             s1.precision(10);
             s1.setf(std::ios::fixed,std::ios::floatfield);
-            s1 << split.minGini;
-            fout   << "minGini: " << s1.str().substr(0, s1.str().size()-4) << " - " << split.bestSplitColumn << std::endl;
+            s1 << split.minGini();
+            fout   << "minGini: " << s1.str().substr(0, s1.str().size()-4) << " - " << split.bestSplitColumn() << std::endl;
 //            fout   << "Threshold: " << *(split.node_.parameters_begin() +1) << std::endl;
             fout   << "Region.size: "      << parent.size() << std::endl;
             fout   << "LeftChild.size: "  << leftChild.size() << std::endl;
@@ -101,16 +103,18 @@ class SetTestVisitor: public VisitorBase
     std::set<std::string> treesset;
 
 
-    template<class Tree, class Split, class Region>
-    void visit_after_split( Tree 	      & tree, 
-						   	Split         & split,
+    template<class Tree, class Split, class Region, class Feature_t, class Label_t>
+    void visit_after_split( Tree          & tree, 
+                            Split         & split,
                             Region        & parent,
                             Region        & leftChild,
-                            Region        & rightChild)
+                            Region        & rightChild,
+                            Feature_t     & features,
+                            Label_t       & labels)
     {
         if(split.createNode().typeID() == i_ThresholdNode)
         {
-            sout   << "minGini: " << split.minGini << " - " << split.bestSplitColumn << std::endl;
+            sout   << "minGini: " << split.minGini() << " - " << split.bestSplitColumn() << std::endl;
             sout   << "Region.size: "      << parent.size() << std::endl;
             sout   << "LeftChild.size: "  << leftChild.size() << std::endl;
             sout   << "LeftChild.ClassCounts: ";
@@ -164,12 +168,14 @@ class AllOutputVisitor: public VisitorBase
     {    }
 
     //TODO split must be const
-    template<class Tree, class Split, class Region>
-    void visit_after_split( Tree 	      & tree, 
-						   	Split         & split,
+    template<class Tree, class Split, class Region, class Feature_t, class Label_t>
+    void visit_after_split( Tree          & tree, 
+                            Split         & split,
                             Region        & parent,
                             Region        & leftChild,
-                            Region        & rightChild)
+                            Region        & rightChild,
+                            Feature_t     & features,
+                            Label_t       & labels)
     {
         if(split.createNode().typeID() == i_ThresholdNode)
         {

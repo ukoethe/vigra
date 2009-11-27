@@ -151,7 +151,7 @@ class Processor<ClassificationTag, LabelType, T1, C1, T2, C2>
 		// set some of the problem specific parameters 
         ext_param.column_count_  = features.shape(1);
         ext_param.row_count_     = features.shape(0);
-        ext_param.problem_type_  = ProblemSpec<T>::CLASSIFICATION;
+        ext_param.problem_type_  = CLASSIFICATION;
         ext_param.used_          = true;
         intLabels_.reshape(response.shape());
 
@@ -259,6 +259,7 @@ public:
 		ext_param_(ext_param)
 	{
 		detail::fill_external_parameters(options, ext_param);
+		strata_ = MultiArray<2, int> (MultiArrayShape<2>::type(response_.shape(0), 1));
 	}
 
 	/** access preprocessed features
@@ -278,7 +279,9 @@ public:
 	/** acess strata - this is not used currently
 	 */
 	MultiArrayView<2, int> & strata()
-	{}
+	{
+		return strata_;
+	}
 };
 }
 #endif //VIGRA_RF_PREPROCESSING_HXX

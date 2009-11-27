@@ -288,6 +288,7 @@ class FoerstnerKernelBase
     typedef double ResultType;
     typedef double WeightType;
     typedef DVector2Image::value_type VectorType;
+    typedef VectorType::value_type    ValueType;
   
     FoerstnerKernelBase(double scale, bool ringShaped = false)
     : radius_((int)(3.0*scale+0.5)),
@@ -305,7 +306,7 @@ class FoerstnerKernelBase
                 double d = VIGRA_CSTD::sqrt(d2);
                 vectors_(x+radius_,y+radius_) = d != 0.0 ?
                                                   VectorType(x/d, -y/d) :
-                                                  VectorType(0, 0);
+                                                  VectorType(ValueType(0), ValueType(0));
                 weights_(x+radius_,y+radius_) = ringShaped ? 
                                        norm * d2 * VIGRA_CSTD::exp(d2 * s2) :
                                        norm * VIGRA_CSTD::exp(d2 * s2);

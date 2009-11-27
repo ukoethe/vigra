@@ -43,7 +43,9 @@
 #include <iosfwd>   // ostream
 #include "config.hxx"
 #include "error.hxx"
+#include "metaprogramming.hxx"
 #include "numerictraits.hxx"
+#include "memory.hxx"
 #include "mathutil.hxx"
 #include "diff2d.hxx"
 
@@ -97,6 +99,13 @@ struct ExecLoop
     {
         for(int i=0; i<LEVEL; ++i)
             left[i] = detail::RequiresExplicitCast<T1>::cast(right[i]);
+    }
+
+    template <class T1, class T2>
+    static void reverseAssign(T1 * left, T2 const * right)
+    {
+        for(int i=0; i<LEVEL; ++i)
+            left[i] = right[-i];
     }
 
     template <class T1, class T2>
@@ -242,6 +251,13 @@ template <int LEVEL>
 struct UnrollLoop
 {
     template <class T1, class T2>
+    static void reverseAssign(T1 * left, T2 const * right)
+    {
+        *left = *right;
+        UnrollLoop<LEVEL-1>::reverseAssign(left+1, right-1);
+    }
+
+    template <class T1, class T2>
     static void assignCast(T1 * left, T2 const * right)
     {
         *left = detail::RequiresExplicitCast<T1>::cast(*right);
@@ -304,6 +320,8 @@ template <>
 struct UnrollLoop<0>
 {
     template <class T1, class T2>
+    static void reverseAssign(T1, T2) {}
+    template <class T1, class T2>
     static void assignCast(T1, T2) {}
     template <class T1, class T2>
     static void assign(T1, T2) {}
@@ -337,31 +355,11 @@ struct UnrollLoop<0>
     static bool notEqual(T1, T2) { return false; }
 };
 
-template <bool PREDICATE>
-struct TinyVectorIf
-{
-    template <class T, class F>
-    struct res
-    {
-        typedef T type;
-    };
-};
-
-template <>
-struct TinyVectorIf<false>
-{
-    template <class T, class F>
-    struct res
-    {
-        typedef F type;
-    };
-};
-
 template <int SIZE>
 struct LoopType
 {
-    typedef typename TinyVectorIf<SIZE < 5>::
-            template res<UnrollLoop<SIZE>, ExecLoop<SIZE> >::type type;
+    typedef typename IfBool<(SIZE < 5), UnrollLoop<SIZE>, ExecLoop<SIZE> >::type type;
+
 };
 
 struct DontInit {};
@@ -576,6 +574,7 @@ class TinyVectorBase
 
 
   protected:
+  
     DATA data_;
 };
 
@@ -627,6 +626,8 @@ class TinyVector
     typedef typename BaseType::scalar_multiplier scalar_multiplier;
     typedef typename BaseType::SquaredNormType SquaredNormType;
     typedef typename BaseType::NormType NormType;
+    
+    enum ReverseCopyTag { ReverseCopy };
 
         /** Construction with constant value
         */
@@ -711,10 +712,30 @@ class TinyVector
 
         /** Constructor from C array.
         */
-    explicit TinyVector(const_pointer data)
+    explicit TinyVector(const_pointer data, const_pointer /*is ignored*/ = 0 )
     : BaseType()
     {
         Loop::assign(BaseType::data_, data);
+    }
+
+        /** Constructor by reverse copy from C array.
+            
+            Usage:
+            \code
+            TinyVector<int, 3> v(1,2,3);
+            TinyVector<int, 3> reverse(v.begin(), TinyVector<int, 3>::ReverseCopy);
+            \endcode
+        */
+    explicit TinyVector(const_pointer data, ReverseCopyTag)
+    : BaseType()
+    {
+        Loop::reverseAssign(BaseType::data_, data+SIZE-1);
+    }
+
+    explicit TinyVector(const_pointer data, const_pointer /*is ignored*/, ReverseCopyTag)
+    : BaseType()
+    {
+        Loop::reverseAssign(BaseType::data_, data+SIZE-1);
     }
 
         /** Copy assignment.
@@ -736,6 +757,15 @@ class TinyVector
 
         /** Copy with type conversion.
         */
+    template <class U>
+    TinyVector(TinyVector<U, SIZE> const & r)
+    : BaseType()
+    {
+        Loop::assignCast(BaseType::data_, r.begin());
+    }
+
+        /** Copy with type conversion.
+        */
     template <class U, class DATA, class DERIVED>
     TinyVector(TinyVectorBase<U, SIZE, DATA, DERIVED> const & r)
     : BaseType()
@@ -751,6 +781,10 @@ class TinyVector
         Loop::assignCast(BaseType::data_, r.begin());
         return *this;
     }
+
+    explicit TinyVector(SkipInitializationTag)
+    : BaseType()
+    {}
 
     explicit TinyVector(detail::DontInit)
     : BaseType()
@@ -1108,6 +1142,22 @@ struct PromoteTraits<double, TinyVectorView<T, SIZE> >
 {
     typedef TinyVector<typename NumericTraits<T>::RealPromote, SIZE> Promote;
 };
+
+template<class T, int SIZE>
+struct CanSkipInitialization<TinyVectorView<T, SIZE> >
+{
+    typedef typename CanSkipInitialization<T>::type type;
+    static const bool value = type::asBool;
+};
+
+template<class T, int SIZE>
+struct CanSkipInitialization<TinyVector<T, SIZE> >
+{
+    typedef typename CanSkipInitialization<T>::type type;
+    static const bool value = type::asBool;
+};
+
+
 
 #else // NO_PARTIAL_TEMPLATE_SPECIALIZATION
 

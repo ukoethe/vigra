@@ -47,17 +47,31 @@ template <int N>
 class MetaInt
 {
   public:
-    enum { value = N };
+    static const int value = N;
+};
+
+template <int N1, int N2>
+class MetaMax
+{
+  public:
+    static const int value = N1 < N2 ? N2 : N1;
+};
+
+template <int N1, int N2>
+class MetaMin
+{
+  public:
+    static const int value = N1 < N2 ? N1 : N2;
 };
 
 struct VigraTrueType
 {
-   enum { asBool = true };
+   static const bool asBool = true, value = true;
 };
 
 struct VigraFalseType
 {
-    enum { asBool = false };
+    static const bool asBool = false, value = false;
 };
 
 /**  \addtogroup MultiArrayTags Multi-dimensional Array Tags
@@ -349,6 +363,25 @@ struct IsDifferentType<T, T>
 
 #endif // NO_PARTIAL_TEMPLATE_SPECIALIZATION
 
+template <class From, class To>
+struct IsConvertibleTo
+{
+    typedef char falseResult[1];
+    typedef char trueResult[2];
+    
+    static From const & check();
+    
+    static falseResult * testIsConvertible(...);
+    static trueResult * testIsConvertible(To const &);
+    
+    enum { resultSize = sizeof(*testIsConvertible(check())) };
+    
+    static const bool value = (resultSize == 2);
+    typedef typename 
+        IfBool<value, VigraTrueType, VigraFalseType>::type
+        type;
+};
+
 template <class DERIVED, class BASE>
 struct IsDerivedFrom
 {
@@ -371,6 +404,12 @@ struct IsDerivedFrom
 
 template <class T>
 struct UnqualifiedType
+{
+    typedef T type;
+};
+
+template <class T>
+struct UnqualifiedType<T const>
 {
     typedef T type;
 };
@@ -412,6 +451,56 @@ struct has_result_type
     typedef typename 
         IfBool<value, VigraTrueType, VigraFalseType>::type
         type;
+};
+
+template <class T>
+struct has_value_type
+{
+    typedef char falseResult[1];
+    typedef char trueResult[2];
+    
+    static falseResult * test(...);
+    template <class U>
+    static trueResult * test(U *, typename U::value_type * = 0);
+    
+    enum { resultSize = sizeof(*test((T*)0)) };
+    
+    static const bool value = (resultSize == 2);
+    typedef typename 
+        IfBool<value, VigraTrueType, VigraFalseType>::type
+        type;
+};
+
+template <class T>
+struct IsIterator
+{
+    typedef char falseResult[1];
+    typedef char trueResult[2];
+    
+    static falseResult * test(...);
+    template <class U>
+    static trueResult * test(U *, typename U::iterator_category * = 0);
+    
+    enum { resultSize = sizeof(*test((T*)0)) };
+    
+    static const bool value = (resultSize == 2);
+    typedef typename 
+        IfBool<value, VigraTrueType, VigraFalseType>::type
+        type;
+};
+
+template <class T>
+struct IsIterator<T*>
+{
+    static const bool value = true;
+    typedef VigraTrueType type;
+};
+
+template <class T>
+struct IsIterator<T const *>
+{
+    static const bool value = true;
+    typedef VigraTrueType type;
 };
 
 } // namespace vigra

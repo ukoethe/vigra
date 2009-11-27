@@ -1054,12 +1054,13 @@ HDF5ImportInfo::HDF5ImportInfo(const char* filePath, const char* pathInFile)
 		}
 	}
 
-    m_dims.resize(m_dimensions);
-    ArrayVector<hsize_t> size(m_dimensions);
-    ArrayVector<hsize_t> maxdims(m_dimensions);
+    ArrayVector<hsize_t>::size_type ndims = ArrayVector<hsize_t>::size_type(m_dimensions);
+    m_dims.resize(ndims);
+    ArrayVector<hsize_t> size(ndims);
+    ArrayVector<hsize_t> maxdims(ndims);
     H5Sget_simple_extent_dims(dataspace_handle, size.data(), maxdims.data());
     //dset.getSpace().getSimpleExtentDims(size, NULL);
-    for(int i=0; i<m_dimensions; ++i)
+    for(ArrayVector<hsize_t>::size_type i=0; i<ndims; ++i)
         m_dims[i] = size[i];
 }
 
@@ -1097,8 +1098,8 @@ const char * HDF5ImportInfo::getPixelType() const
 {
     return m_pixeltype.c_str();
 }
-MultiArrayIndex HDF5ImportInfo::shapeOfDimension(const int dim) const { return m_dims[dim]; };
-MultiArrayIndex HDF5ImportInfo::numDimensions() const { return m_dimensions; }
+MultiArrayIndex HDF5ImportInfo::shapeOfDimension(const int dim) const { return MultiArrayIndex(m_dims[dim]); };
+MultiArrayIndex HDF5ImportInfo::numDimensions() const { return MultiArrayIndex(m_dimensions); }
 const std::string & HDF5ImportInfo::getPathInFile() const { return m_path; }
 const std::string & HDF5ImportInfo::getFilePath() const { return m_filename; }
 const hid_t HDF5ImportInfo::getH5FileHandle() const { return m_file_handle; }

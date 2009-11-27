@@ -1,6 +1,6 @@
 /************************************************************************/
 /*                                                                      */
-/*               Copyright 1998-2002 by Ullrich Koethe                  */
+/*               Copyright 2008-2009 by Ullrich Koethe                  */
 /*       Cognitive Systems Group, University of Hamburg, Germany        */
 /*                                                                      */
 /*    This file is part of the VIGRA computer vision library.           */
@@ -35,71 +35,108 @@
 /************************************************************************/
 
 
-#ifndef VIGRA_BASICS_HXX
-#define VIGRA_BASICS_HXX
+#ifndef VIGRA_TIMING_HXX
+#define VIGRA_TIMING_HXX
 
-#include "config.hxx"
-#include "error.hxx"
-#include "metaprogramming.hxx"
-#include "tuple.hxx"
-#include "diff2d.hxx"
-#include "mathutil.hxx"
-#include <string>
+#ifndef NDEBUG
+
 #include <sstream>
 
-namespace vigra {
+// usage:
+// void time_it()
+// {
+//     USETICTOC;
+//     TIC;
+//      ...
+//     std::cerr << TOC << " for time_it\n";
+// }
 
-/** Convert a value to a string. Available for integral and floating point types
-    and void *.
-*/
-doxygen_overloaded_function(template <class T> std::string asString(T t))
+#ifdef WIN32
 
-#define VIGRA_AS_STRING(T) \
-inline std::string asString(T t) \
-{ \
-    std::stringstream s; \
-    s << t; \
-    return s.str(); \
-}
+    #include "windows.h"
 
-VIGRA_AS_STRING(bool)
-VIGRA_AS_STRING(signed char)
-VIGRA_AS_STRING(unsigned char)
-VIGRA_AS_STRING(signed short)
-VIGRA_AS_STRING(unsigned short)
-VIGRA_AS_STRING(signed long)
-VIGRA_AS_STRING(unsigned long)
-VIGRA_AS_STRING(signed long long)
-VIGRA_AS_STRING(unsigned long long)
-VIGRA_AS_STRING(signed int)
-VIGRA_AS_STRING(unsigned int)
-VIGRA_AS_STRING(float)
-VIGRA_AS_STRING(double)
-VIGRA_AS_STRING(long double)
-VIGRA_AS_STRING(void *)
+    namespace {
 
-#undef VIGRA_AS_STRING
+    inline double queryTimerUnit()
+    {
+        LARGE_INTEGER frequency;
+        QueryPerformanceFrequency(&frequency);
+        return 1000.0 / frequency.QuadPart;
+    }
 
+    inline std::string tic_toc_diff(LARGE_INTEGER const & tic)
+    {
+        LARGE_INTEGER toc;
+        QueryPerformanceCounter(&toc);
+        static double unit = queryTimerUnit();
+        std::stringstream s;
+        s << ((toc.QuadPart - tic.QuadPart) * unit) << " msec";
+        return s.str();
+    }
 
-} // namespace std
+    } // unnamed namespace
 
-/*! \page Utilities Utilities
-    Basic helper functionality needed throughout.
+    #define USETICTOC LARGE_INTEGER tic_timer
+    #define TIC QueryPerformanceCounter(&tic_timer)
+    #define TOC tic_toc_diff(tic_timer)
 
-    <UL style="list-style-image:url(documents/bullet.gif)">
-    <LI> \ref vigra::ArrayVector
-         <BR>&nbsp;&nbsp;&nbsp;<em>replacement for std::vector</em>
-    <LI> \ref RangesAndPoints
-         <BR>&nbsp;&nbsp;&nbsp;<em>2-dimensional positions, extents, and rectangles</em>
-    <LI> \ref PixelNeighborhood
-         <BR>&nbsp;&nbsp;&nbsp;<em>4- and 8-neighborhood definitions and circulators</em>
-    <LI> \ref vigra::IteratorAdaptor
-         <BR>&nbsp;&nbsp;&nbsp;<em>Quickly create STL-compatible 1D iterator adaptors</em>
-    <LI> \ref TupleTypes
-         <BR>&nbsp;&nbsp;&nbsp;<em>pair, triple, tuple4, tuple5</em>
-    <LI> \ref MathConstants
-         <BR>&nbsp;&nbsp;&nbsp;<em>M_PI, M_SQRT2</em>
-    </UL>
-*/
+#else
 
-#endif // VIGRA_BASICS_HXX
+    #if defined(VIGRA_HIRES_TIMING) && !defined(__CYGWIN__)
+        // requires linking against librt
+    
+        #include <time.h>
+
+        namespace {
+
+        inline std::string tic_toc_diff(timespec const & tic)
+        {
+            timespec toc;
+            clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &toc);
+            std::stringstream s;
+            s << ((toc.tv_sec*1000.0 + toc.tv_nsec/1000000.0) -
+                  (tic.tv_sec*1000.0 + tic.tv_nsec/1000000.0)) << " msec";
+            return s.str();
+        }
+
+        } // unnamed namespace
+
+        #define USETICTOC timespec tic_timer
+        #define TIC clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &tic_timer)
+        #define TOC tic_toc_diff(tic_timer)
+
+    #else
+    
+        #include <sys/time.h>
+
+        namespace {
+
+        inline std::string tic_toc_diff(timeval const & tic)
+        {
+            timeval toc;
+            gettimeofday(&toc, NULL);
+            std::stringstream s;
+            s << ((toc.tv_sec*1000.0 + toc.tv_usec/1000.0) -
+                  (tic.tv_sec*1000.0 + tic.tv_usec/1000.0)) << " msec";
+            return s.str();
+        }
+
+        } // unnamed namespace
+
+        #define USETICTOC timeval tic_timer
+        #define TIC gettimeofday(&tic_timer, NULL)
+        #define TOC tic_toc_diff(tic_timer)
+
+    #endif // VIGRA_HIRES_TIMING
+
+#endif // WIN32
+
+#else // NDEBUG
+
+#define USETICTOC 
+#define TIC 
+#define TOC
+
+#endif // NDEBUG
+
+#endif // VIGRA_TIMING_HXX

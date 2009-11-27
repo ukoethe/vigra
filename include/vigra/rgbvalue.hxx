@@ -153,6 +153,15 @@ class RGBValue
         */
     typedef typename Base::NormType NormType;
 
+    typedef typename Base::reference reference;
+    typedef typename Base::const_reference const_reference;
+    typedef typename Base::pointer pointer;
+    typedef typename Base::const_pointer const_pointer;
+    typedef typename Base::size_type size_type;
+    typedef typename Base::difference_type difference_type;
+    typedef typename Base::scalar_multiplier scalar_multiplier;
+    typedef typename Base::ReverseCopyTag ReverseCopyTag;
+
         /** Color index positions
         */
     enum
@@ -174,17 +183,26 @@ class RGBValue
 
         /** Construct gray value
         */
-    RGBValue(value_type gray)
+    RGBValue(value_type const & gray)
     : Base(gray, gray, gray)
     {
         VIGRA_STATIC_ASSERT((RGBValue_bad_color_indices<RED_IDX, GREEN_IDX, BLUE_IDX>));
     }
 
-        /** Construct from another sequence (must have length 3!)
+        /** Construct from another sequence. (end is ignored since the sequence must have length 3 anyway.)
         */
     template <class Iterator>
     RGBValue(Iterator i, Iterator end)
     : Base(i[0], i[1], i[2])
+    {
+        VIGRA_STATIC_ASSERT((RGBValue_bad_color_indices<RED_IDX, GREEN_IDX, BLUE_IDX>));
+    }
+
+        /** Construct by reverse copying from another sequence. (end is ignored since the sequence must have length 3 anyway.)
+        */
+    template <class Iterator>
+    RGBValue(Iterator i, Iterator end, ReverseCopyTag)
+    : Base(i[2], i[1], i[0])
     {
         VIGRA_STATIC_ASSERT((RGBValue_bad_color_indices<RED_IDX, GREEN_IDX, BLUE_IDX>));
     }
@@ -200,7 +218,7 @@ class RGBValue
 #if !defined(TEMPLATE_COPY_CONSTRUCTOR_BUG)
 
     RGBValue(RGBValue const & r)
-    : Base(r)
+    : Base((Base const &)r)
     {
         VIGRA_STATIC_ASSERT((RGBValue_bad_color_indices<RED_IDX, GREEN_IDX, BLUE_IDX>));
     }
@@ -508,6 +526,14 @@ struct PromoteTraits<double, RGBValue<T, R, G, B> >
 {
     typedef RGBValue<typename NumericTraits<T>::RealPromote, R, G, B> Promote;
 };
+
+template<class T, unsigned int R, unsigned int G, unsigned int B>
+struct CanSkipInitialization<RGBValue<T, R, G, B> >
+{
+    typedef typename CanSkipInitialization<T>::type type;
+    static const bool value = type::asBool;
+};
+
 
 #else // NO_PARTIAL_TEMPLATE_SPECIALIZATION
 
