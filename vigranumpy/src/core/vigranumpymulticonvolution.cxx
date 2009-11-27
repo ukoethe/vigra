@@ -274,12 +274,13 @@ void defineMultiConvolutionFunctions()
     def("separableConvolve3D",
         // also multiband
         registerConverters(&pythonSeparableConvolveND<float,4>),
-        (arg("volume"), arg("kernel1D"), arg("out")=python::object()) );
+        (arg("volume"), arg("kernel1D"), arg("out")=python::object()), "apply one 1D kernel to all dimensions" );
 
     def("separableConvolve3D",
         // also multiband
         registerConverters(&pythonSeparableConvolve_3_3D<float>),
-        (arg("volume"), arg("kernel1D"), arg("kernel1D"), arg("kernel1D"), arg("out")=python::object()) );
+        (arg("volume"), arg("kernel1D"), arg("kernel1D"), arg("kernel1D"), arg("out")=python::object()), "apply one kernel for every dimension of the data. The first kernel in this sequence is applied to the innermost dimension (e.g. the x-dimension of an image), while the last is applied to the outermost dimension (e.g. the z-dimension in a 3D image)."
+       );
     }
 
 } // namespace vigra
