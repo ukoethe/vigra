@@ -136,11 +136,11 @@ struct TinyVectorTest
         should(equalIter(bv3.begin(), bv3.end(), bv.begin()));
         should(equalVector(bv3, bv));
 
-        BV bv4(bv3.begin(), bv3.end());
+        BV bv4(bv3.begin());
         should(equalIter(bv3.begin(), bv3.end(), bv4.begin()));
         should(equalVector(bv3, bv4));
 
-        BV bv5(bv3.begin(), bv3.end(), BV::ReverseCopy);
+        BV bv5(bv3.begin(), BV::ReverseCopy);
         should(equalIter(bv3.begin(), bv3.end(), 
                          std::reverse_iterator<typename BV::iterator>(bv5.end())));
 
