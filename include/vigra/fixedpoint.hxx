@@ -1582,6 +1582,10 @@ sqrt(FixedPoint16<IntBits, OverflowHandling> v)
     return Result(sqrti(v.value << Shift), FPNoShift);
 }
 
+#ifndef VIGRA_NO_HYPOT
+    using ::hypot;
+#endif
+
     /// Length of hypothenuse. 
 template <int IntBits, FPOverflowHandling OverflowHandling>
 inline FixedPoint16<IntBits, OverflowHandling>

@@ -37,6 +37,10 @@
 #ifndef VIGRA_MATHUTIL_HXX
 #define VIGRA_MATHUTIL_HXX
 
+#ifdef _MSC_VER
+# pragma warning (disable: 4996) // hypot/_hypot confusion
+#endif
+
 #include <cmath>
 #include <cstdlib>
 #include "config.hxx"
@@ -384,7 +388,7 @@ inline UInt32 sqrti(UInt32 v)
     return detail::IntSquareRoot<UInt32>::exec(v);
 }
 
-#ifndef VIGRA_HAS_HYPOT
+#ifdef VIGRA_NO_HYPOT
     /*! Compute the Euclidean distance (length of the hypothenuse of a right-angled triangle).
 
         The  hypot()  function  returns  the  sqrt(a*a  +  b*b).
@@ -801,7 +805,7 @@ inline double ellipticIntegralE(double x, double k)
     return s*(detail::ellipticRF(c2, 1.0-k, 1.0) - k/3.0*detail::ellipticRD(c2, 1.0-k, 1.0));
 }
 
-#ifndef VIGRA_HAS_ERF 
+#if _MSC_VER
 
 namespace detail {
 
@@ -843,7 +847,7 @@ inline double erf(double x)
 
 #else
 
-using VIGRA_CSTD::erf;
+using ::erf;
 
 #endif
 
