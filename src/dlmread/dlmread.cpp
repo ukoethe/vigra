@@ -4,10 +4,9 @@
 #include <sstream>
 #include <map>
 #include <stdexcept>
-#include <vigra/hdf5impex.hxx>
 #include <vigra/array_vector.hxx>
 #include <tclap/CmdLine.h>
-#include <vigra/hdf5impex.hxx>
+#include "../../include/vigra/hdf5impex.hxx"
 #include <set>
 using namespace std;
 using namespace vigra;
@@ -17,10 +16,6 @@ void ARFF2HDF5(std::string arff, std::string hdf5)
 {
 }
 
-template<class In>
-void writeHDF5attr(std::string filename, std::string path, In in)
-{
-}
 
 void tokenize(std::string  str, ArrayVector<std::string> & in, std::string delim = ",")
 {
@@ -44,22 +39,23 @@ void writeColAttr(std::string name, std::string path, MultiArrayView<2, T, C> ar
     {
     ArrayVector<std::string> col_type;
     if(in)
-        col_type.push_back("RESPONSE");
-    else
         col_type.push_back("INPUT");
-	writeHDF5attr(name, path+".type", col_type);
+    else
+        col_type.push_back("RESPONSE");
+    writeHDF5Attr(name, path+".type", col_type);
 	std::set<T> a;
 	if(type == CATEGORICAL)
 	{
         for(int ii = 0 ; ii < ar.size() ; ++ii)
 		    a.insert(ar[ii]);
 		ArrayVector<T> cat(a.begin(), a.end());
-		writeHDF5attr(name, path+".domain", cat);
+        writeHDF5Attr(name, path+".domain", cat);
     }
 	else
 	{
 		ArrayVector<std::string> cat(1, "NUMERAL");
-		writeHDF5attr(name, path+".domain", cat);
+        writeHDF5Attr(name, path+".domain", cat);
+
 	}
     }
 }
@@ -83,9 +79,9 @@ void processCSVname(std::string in,
 	else
 		in_ = false; 
 
-	if(tokens.size() < 3)
+	if(tokens.size() < 3 || tokens[2] == "")
 		type = IFSTRING;
-	else if(tokens[2] == "ORDINAL" || tokens[2] == "")
+	else if(tokens[2] == "ORDINAL")
 		type = ORDINAL;
 	else 
 		type = CATEGORICAL;
@@ -266,8 +262,8 @@ void CSV2HDF5(std::string csv,
 			}
 			else
 			{
-				//writeToHDF5File(hdf5.c_str(), (path + r_name).c_str(), strArr.subarray(Shp(0, beg),
-				//											   Shp(info.rowCount_, end)));
+				writeToHDF5File(hdf5.c_str(), (path +"/"+ r_name).c_str(), strArr.subarray(Shp(0, beg - info.doubleCount_),
+															   Shp(info.rowCount_, end - info.doubleCount_)));
 				if(type == IFSTRING)
 					type = CATEGORICAL;
 				if( in_ == INOUT && first)
@@ -279,7 +275,7 @@ void CSV2HDF5(std::string csv,
 					in_ = IN;
 
 				writeColAttr(hdf5, 
-							 path+ r_name, 
+							  path+"/"+ r_name, 
 							 strArr.subarray(Shp(0, beg -info.doubleCount_), Shp(info.rowCount_, end- info.doubleCount_)),
 							 type, 
 							 in_);
