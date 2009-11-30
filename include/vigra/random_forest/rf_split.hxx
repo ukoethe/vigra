@@ -746,7 +746,7 @@ class ThresholdSplit: public SplitBase
                 childRegions[1].classCountsIsValid = true;
 
                 bestSplitIndex   = k;
-                num2try = std::max(int(k), SB::ext_param_.actual_mtry_);
+                num2try = SB::ext_param_.actual_mtry_;
             }
         }
 

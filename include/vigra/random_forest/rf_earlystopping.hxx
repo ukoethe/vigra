@@ -5,17 +5,15 @@
 
 namespace vigra
 {
-/**Stop predicting after a set number of trees
- */
-class StopAfterTree
+
+class StopBase
 {
-public:
-    int max_tree_;
+protected:
     ProblemSpec<> ext_param_;
     int tree_count_ ;
     bool is_weighted_;
 
-
+public:
     template<class T>
     void set_external_parameters(ProblemSpec<T> &prob, int tree_count = 0, bool is_weighted = false)
     {
@@ -23,7 +21,17 @@ public:
         is_weighted_ = is_weighted;
         tree_count_ = tree_count;
     }
+};
 
+
+/**Stop predicting after a set number of trees
+ */
+class StopAfterTree : public StopBase
+{
+public:
+    int max_tree_;
+    typedef StopBase SB;
+    
     StopAfterTree(int max_tree)
     :
         max_tree_(max_tree)
@@ -39,26 +47,15 @@ public:
 };
 
 /** Stop predicting after a certain amount of votes exceed certain proportion.
- *  case unweighted voting: stop if the leading class exceeds proportion * tree_count_ 
- *  case weighted votion: stop if the leading class exceeds proportion * msample_ * tree_count_ ;
+ *  case unweighted voting: stop if the leading class exceeds proportion * SB::tree_count_ 
+ *  case weighted votion: stop if the leading class exceeds proportion * msample_ * SB::tree_count_ ;
  *                          (maximal number of votes possible in both cases)
  */
-class StopAfterVoteCount
+class StopAfterVoteCount : public StopBase
 {
 public:
     double proportion_;
-    ProblemSpec<> ext_param_;
-    int tree_count_ ;
-    bool is_weighted_;
-
-
-    template<class T>
-    void set_external_parameters(ProblemSpec<T> &prob, int tree_count = 0, bool is_weighted = false)
-    {
-        ext_param_ = prob; 
-        is_weighted_ = is_weighted;
-        tree_count_ = tree_count;
-    }
+    typedef StopBase SB;
 
     StopAfterVoteCount(double proportion)
     :
@@ -68,14 +65,14 @@ public:
     template<class WeightIter, class T, class C>
     bool after_prediction(WeightIter iter,  int k, MultiArrayView<2, T, C> prob, double totalCt)
     {
-        if(is_weighted_)
+        if(SB::is_weighted_)
         {
-            if(prob[argMax(prob)] > proportion_ *ext_param_.actual_msample_* tree_count_)
+            if(prob[argMax(prob)] > proportion_ *SB::ext_param_.actual_msample_* SB::tree_count_)
                 return true;
         }
         else
         {
-            if(prob[argMax(prob)] > proportion_ * tree_count_)
+            if(prob[argMax(prob)] > proportion_ * SB::tree_count_)
                 return true;
         }
         return false;
@@ -84,25 +81,15 @@ public:
 };
 
 
-/** Stop predicting if the 2norm of the probabilities does not change after num trees */
-class StopIfConverging
+/** Stop predicting if the 2norm of the probabilities does not change*/
+class StopIfConverging : public StopBase
+
 {
 public:
     double thresh_;
     int num_;
     ArrayVector<double> deviation;
-    ProblemSpec<> ext_param_;
-    int tree_count_ ;
-    bool is_weighted_;
-
-
-    template<class T>
-    void set_external_parameters(ProblemSpec<T> &prob, int tree_count = 0, bool is_weighted = false)
-    {
-        ext_param_ = prob; 
-        is_weighted_ = is_weighted;
-        tree_count_ = tree_count;
-    }
+    typedef StopBase SB;
 
     StopIfConverging(double thresh, int num = 10)
     :
@@ -135,26 +122,15 @@ public:
 
 
 /** Stop predicting if the margin prob(leading class) - prob(second class) exceeds a proportion
- *  case unweighted voting: stop if margin exceeds proportion * tree_count_ 
- *  case weighted votion: stop if margin exceeds proportion * msample_ * tree_count_ ;
+ *  case unweighted voting: stop if margin exceeds proportion * SB::tree_count_ 
+ *  case weighted votion: stop if margin exceeds proportion * msample_ * SB::tree_count_ ;
  *                          (maximal number of votes possible in both cases)
  */
-class StopIfMargin
+class StopIfMargin : public StopBase  
 {
 public:
     double proportion_;
-    ProblemSpec<> ext_param_;
-    int tree_count_ ;
-    bool is_weighted_;
-
-
-    template<class T>
-    void set_external_parameters(ProblemSpec<T> &prob, int tree_count = 0, bool is_weighted = false)
-    {
-        ext_param_ = prob; 
-        is_weighted_ = is_weighted;
-        tree_count_ = tree_count;
-    }
+    typedef StopBase SB;
 
     StopIfMargin(double proportion)
     :
@@ -169,14 +145,14 @@ public:
         double b = prob[argMax(prob)];
         prob[argMax(prob)] = a; 
         double margin = a - b;
-        if(is_weighted_)
+        if(SB::is_weighted_)
         {
-            if(margin > proportion_ *ext_param_.actual_msample_ * tree_count_)
+            if(margin > proportion_ *SB::ext_param_.actual_msample_ * SB::tree_count_)
                 return true;
         }
         else
         {
-            if(prob[argMax(prob)] > proportion_ * tree_count_)
+            if(prob[argMax(prob)] > proportion_ * SB::tree_count_)
                 return true;
         }
         return false;
