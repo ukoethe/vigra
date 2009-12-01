@@ -11,12 +11,16 @@
 using namespace std;
 using namespace vigra;
 
-enum IDS_ {NUMERAL, LITERAL, ORDINAL, CATEGORICAL, IFSTRING, IN, INOUT, OUT};
+/** various enums used
+ */
+enum IDS_ {NUMERAL, LITERAL, ORDINAL, NOMINAL, IFSTRING, INPUT, OUTPUT,TAG, DUNNO};
 void ARFF2HDF5(std::string arff, std::string hdf5)
 {
 }
 
 
+/** tokenize a string given delimiter string
+ */
 void tokenize(std::string  str, ArrayVector<std::string> & in, std::string delim = ",")
 {
     if(str.size() < delim.size() || str.rfind(delim) != str.size() - delim.size())
@@ -32,74 +36,123 @@ void tokenize(std::string  str, ArrayVector<std::string> & in, std::string delim
         }
     }
 }
-template <class T, class C>
-void writeColAttr(std::string name, std::string path, MultiArrayView<2, T, C> ar, IDS_ type, bool in)
+
+bool isInteger(std::string a)
 {
-    if(ar.size() > 0)
-    {
+    return false;
+}
+bool isInteger(double a)
+{
+    return double(int(a)) == a;
+}
+/** write the attributes of a dataset column
+ */
+template <class T, class C>
+void writeColAttr(std::string filename, 
+                  std::string path, 
+                  MultiArrayView<2, T, C> ar, 
+                  IDS_ type, 
+                  IDS_ in, 
+                  int number)
+{
+    //write precedence number
+    ArrayVector<int> order(size_t(1), number);
+    writeHDF5Attr(filename, path + ".order" , order);
+
+    //write column type
     ArrayVector<std::string> col_type;
-    if(in)
+    if(in == INPUT)
         col_type.push_back("INPUT");
+    else if (in == OUTPUT)
+        col_type.push_back("OUTPUT");
     else
-        col_type.push_back("RESPONSE");
-    writeHDF5Attr(name, path+".type", col_type);
-	std::set<T> a;
-	if(type == CATEGORICAL)
+    {
+		ArrayVector<std::string> tmp(1, "na");
+        writeHDF5Attr(filename, path+".scale", tmp);
+        writeHDF5Attr(filename, path+".domain", tmp);
+        col_type.push_back("TAGS");
+        writeHDF5Attr(filename, path+".type", col_type);
+        return;
+    }
+    writeHDF5Attr(filename, path+".type", col_type);
+
+    //write domain and scale of the columns
+	if(type == NOMINAL)
 	{
+		ArrayVector<std::string> scale(1, "NOMINAL");
+        writeHDF5Attr(filename, path+".scale", scale);
+
+	    std::set<T> a;
         for(int ii = 0 ; ii < ar.size() ; ++ii)
 		    a.insert(ar[ii]);
 		ArrayVector<T> cat(a.begin(), a.end());
-        writeHDF5Attr(name, path+".domain", cat);
+        writeHDF5Attr(filename, path+".domain", cat);
     }
 	else
 	{
-		ArrayVector<std::string> cat(1, "NUMERAL");
-        writeHDF5Attr(name, path+".domain", cat);
+		ArrayVector<std::string> scale(1, "ORDINAL");
+        writeHDF5Attr(filename, path+".scale", scale);
 
+        bool isInt = true;
+        for(int ii = 0; ii < ar.size(); ++ii)
+            isInt = isInt && isInteger(ar[ii]);
+        ArrayVector<std::string> domain;
+        if(isInt)
+            domain.push_back("INTEGER");
+        else
+            domain.push_back("REAL");
+        writeHDF5Attr(filename, path + ".domain", domain);
 	}
-    }
 }
 
 
-
+/** processes the name string delivered by cmd
+ */
 void processCSVname(std::string in, 
-					std::string& name, 
+					std::string& name,
+                    int last_col_index,
 					int & beg, 
 					int & end, 
 					IDS_ & type,
-					bool & in_)
+					IDS_ & in_)
 {
 	ArrayVector<std::string>  tokens;
 	tokenize(in, tokens, "::");
+    
+    name = tokens[0];
+    type = DUNNO;
+    in_  = DUNNO;
+    beg  = last_col_index + 1;
+    end  = beg ;
 
-	if(tokens.size() < 4)
-		in_ = true;
-	else if(tokens[3] == "IN")
-		in_ = true;
-	else
-		in_ = false; 
-
-	if(tokens.size() < 3 || tokens[2] == "")
-		type = IFSTRING;
-	else if(tokens[2] == "ORDINAL")
-		type = ORDINAL;
-	else 
-		type = CATEGORICAL;
-
-	if(tokens.size() < 2)
-		end = -1;
-	else
-	{
-		ArrayVector<std::string>  tokensloc;
-		tokenize(tokens[1], tokensloc, ":");
-		beg = atoi(tokensloc[0].c_str());
-		if(tokensloc.size() < 2)
-			end = beg +1;
-		else
-			end = atoi(tokensloc[1].c_str());
-	}
-	name = tokens[0];
-
+    for(int ii = 1; ii < int(tokens.size()); ++ii)
+    {
+        if      (tokens[ii] == "IN")
+            in_ = INPUT;
+        else if (tokens[ii] == "OUT")
+            in_ = OUTPUT;
+        else if (tokens[ii] == "TAG")
+            in_ = TAG;
+        else if (tokens[ii] == "NOMINAL")
+            type = NOMINAL;
+        else if (tokens[ii] == "ORDINAL")
+            type = ORDINAL;
+        else
+        { 
+            double tmp;
+            std::istringstream sin(tokens[ii]);
+            sin >> tmp;
+            if(sin.fail() && tokens[ii].find(":") == string::npos)
+                std::runtime_error("could not parse name");
+		    ArrayVector<std::string>  tokensloc;
+		    tokenize(tokens[ii], tokensloc, ":");
+	    	beg = atoi(tokensloc[0].c_str());
+		    if(tokensloc.size() < 2)
+			    end = beg;
+		    else
+			    end = atoi(tokensloc[1].c_str());
+        }
+    }
 }
 
 
@@ -109,6 +162,7 @@ struct DlmInfo
 	std::string 				csvFile;
 
 	ArrayVector<IDS_>			type_;
+    ArrayVector<int>            offsets_;
     std::string					delim_;
 
 	int							doubleCount_;
@@ -154,11 +208,13 @@ struct DlmInfo
 			if(sin.fail())
 			{
 				type_.push_back(LITERAL);
+                offsets_.push_back(stringCount_);
 				++stringCount_;
 			}
 			else
 			{
 				type_.push_back(NUMERAL);
+                offsets_.push_back(doubleCount_);
 				++doubleCount_;
 			}
 		}
@@ -173,11 +229,16 @@ struct DlmInfo
 	}
 };
 
+/**read a delimmited table into a double matrix and an optional
+ * string matrix
+ */
 template<class T, class C1, class C2>
 void dlmread(DlmInfo & info, 
 			 MultiArrayView<2, T, C1> & dblMult, 
-			 MultiArrayView<2, std::string, C2> strMult = MultiArrayView<2, std::string, C2>())
+			 MultiArrayView<2, std::string, C2> strMult 
+                        = MultiArrayView<2, std::string, C2>())
 {
+    //precondtion checking
 	if(info.stringCount_ != 0)
 	vigra_precondition(dblMult.shape(0) == strMult.shape(0),
 					   "row Mismatch");
@@ -193,6 +254,8 @@ void dlmread(DlmInfo & info,
 	ifstream 	fin(info.csvFile.c_str(), ios::in);
 	int			count = 0;
 	std::string line;
+
+
 	//get the first line!
 	while(count < info.h_count_ && !getline(fin, line).eof())
 		++count;
@@ -232,70 +295,127 @@ void CSV2HDF5(std::string csv,
               std::string delim = ",")
 {
 	typedef MultiArrayShape<2>::type Shp;
-	
+
+	//get information for the seperated file and read
 	DlmInfo info(csv,delim, headerCt, trailerCt);
 	MultiArray<2, double> dblArr(Shp(info.rowCount_, info.doubleCount_));
 	MultiArray<2, string> strArr(Shp(info.rowCount_, info.stringCount_), "");
 	dlmread(info, dblArr, strArr);
-    int beg, end;
+
+
+
+    int beg = 0, end = 0, last_end = -1, last_beg = 0;
 	std::string r_name;
-	IDS_ type;
-	bool in_, first = true;
+	IDS_ type, in_;
+    bool first_string_column = true;
+    //user has supplied column data.
 	if(names.size() != 0)
 	{
 		for(int ii = 0; ii < int(names.size()); ++ii)
 		{
-			processCSVname(names[ii], r_name, beg, end, type, in_);
-			if(end <= dblArr.shape(1))
+			processCSVname(names[ii], r_name, last_end, beg, end, type, in_);
+            last_end = end;
+            last_beg = beg; 
+            end = end - beg;
+            beg = info.offsets_[beg];
+            end = beg + end + 1;
+            std::string col_path = path + "/" + r_name;
+			if(info.type_[last_beg] == NUMERAL)
 			{
-				writeToHDF5File(hdf5.c_str(), (path +"/"+ r_name).c_str(), dblArr.subarray(Shp(0, beg),
-															   Shp(info.rowCount_, end)));
-				if(type == IFSTRING)
+				writeToHDF5File(hdf5.c_str(), 
+                                col_path.c_str(), 
+                                dblArr.subarray(Shp(0, beg),
+									            Shp(info.rowCount_, end)));
+				if(type == DUNNO)
 					type = ORDINAL;
-				if(in_ == INOUT)
-					in_ = IN;
-				writeColAttr(hdf5, 
-							 path+"/"+ r_name, 
-							 dblArr.subarray(Shp(0, beg), Shp(info.rowCount_, end)),
+				if(in_ == DUNNO)
+					in_ = INPUT;
+				writeColAttr(hdf5.c_str(), 
+							 col_path.c_str(),
+							 dblArr.subarray(Shp(0, beg), 
+                                             Shp(info.rowCount_, end)),
 							 type, 
-							 in_);
+							 in_,
+                             ii);
 			}
 			else
 			{
-				writeToHDF5File(hdf5.c_str(), (path +"/"+ r_name).c_str(), strArr.subarray(Shp(0, beg - info.doubleCount_),
-															   Shp(info.rowCount_, end - info.doubleCount_)));
-				if(type == IFSTRING)
-					type = CATEGORICAL;
-				if( in_ == INOUT && first)
+                if(end - beg == 1)
+				    writeToHDF5File(hdf5.c_str(), 
+                                    col_path.c_str(), 
+                                    strArr.subarray(Shp(0, beg),
+								    				Shp(info.rowCount_, end)).bindOuter(0));
+                else
+				    writeToHDF5File(hdf5.c_str(), 
+                                    col_path.c_str(), 
+                                    strArr.subarray(Shp(0, beg),
+							    					Shp(info.rowCount_, end)));
+				if(type == DUNNO)
+					type = NOMINAL;
+				if( in_ == DUNNO && first_string_column)
 				{
-					in_ = OUT;
-					first = false;
+					in_ = OUTPUT;
+					first_string_column = false;
 				}
-				else if( in_ == INOUT)
-					in_ = IN;
+				else if(in_ == DUNNO)
+					in_ = TAG;
 
-				writeColAttr(hdf5, 
-							  path+"/"+ r_name, 
-							 strArr.subarray(Shp(0, beg -info.doubleCount_), Shp(info.rowCount_, end- info.doubleCount_)),
+				writeColAttr(hdf5.c_str(), 
+							 col_path.c_str(), 
+							 strArr.subarray(Shp(0, beg), 
+                                             Shp(info.rowCount_, end)),
 							 type, 
-							 in_);
+							 in_,
+                             ii);
 			}
 		}
 	}
 	else
 	{
-		writeToHDF5File(hdf5.c_str(), (path+"doubleCols").c_str(), dblArr);
-		writeColAttr(hdf5, path + "doubleCols",dblArr, ORDINAL, IN);
-		writeToHDF5File(hdf5.c_str(), (path+"stringCols").c_str(), strArr);
-		writeColAttr(hdf5, path + "doubleCols",strArr, CATEGORICAL, IN);
+		writeToHDF5File(hdf5.c_str(), 
+                        (path+"doubleCols").c_str(), 
+                        dblArr);
+		writeColAttr(hdf5, 
+                     path + "doubleCols",
+                     dblArr, 
+                     ORDINAL, 
+                     INPUT,
+                     0);
+		writeToHDF5File(hdf5.c_str(), 
+                        (path+"stringCols").c_str(), 
+                        strArr);
+		writeColAttr(hdf5, 
+                     path + "stringCols",
+                     strArr, 
+                     DUNNO, 
+                     TAG,
+                     1);
 	}
+}
+
+
+void INFO2HDF5(std::string info, 
+              std::string hdf5, 
+              std::string name)
+{
+
+	ifstream 	fin(info.c_str(), ios::in);
+	std::string line;
+    MultiArray<1, std::string> text_file(MultiArrayShape<1>::type(1), "");
+
+	//get the first line!
+	while(!getline(fin, line).eof())
+		text_file[0] = text_file[0] +"\n" + line;
+
+    name = "_" + name;
+    writeToHDF5File(hdf5.c_str(), name.c_str(),  text_file);
 }
 int main(int argc, char** argv)
 {
     TCLAP::CmdLine cmd("Command description message", ' ', "0.9");
     TCLAP::SwitchArg isARFF("","isARFF","input is ARFF file", cmd, false);
-    TCLAP::SwitchArg isCSV("","isCSV","input is CSV file", cmd, true);
-    
+    TCLAP::SwitchArg isCSV("","isCSV","input is CSV file", cmd, false);
+    TCLAP::SwitchArg isINFO("","isINFO","input is txt information", cmd, false);
     TCLAP::ValueArg<std::string> input("i","input","inputfile", true,"a.in",    "string");   
     cmd.add(input);
     TCLAP::ValueArg<std::string> output("o","output","outputfile", true,"a.hdf5","string");   
@@ -312,10 +432,13 @@ int main(int argc, char** argv)
     cmd.add(names); 
     cmd.parse( argc, argv );
 
+    bool iscsv = isCSV.getValue();
+    if(iscsv == false && !isARFF.getValue() && !isINFO.getValue())
+        iscsv = true;
 
 	if(isARFF.getValue())
 		ARFF2HDF5(input.getValue(), output.getValue());
-	else if(isCSV.getValue())
+	else if(iscsv)
 		CSV2HDF5(input.getValue(), 
                  output.getValue(),
                  src.getValue(),
@@ -323,5 +446,9 @@ int main(int argc, char** argv)
                  header.getValue(), 
                  footer.getValue(), 
                  delim.getValue());
+    else if(isINFO.getValue())
+        INFO2HDF5(input.getValue(),
+                  output.getValue(),
+                  src.getValue());
 	return 0;
 }

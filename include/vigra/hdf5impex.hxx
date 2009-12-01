@@ -427,10 +427,12 @@ inline hid_t openGroup(hid_t parent, std::string group_name)
 
 inline hid_t createGroup(hid_t parent, std::string group_name)
 {
-    //std::cout << group_name << std::endl;
     size_t last_slash = group_name.find_last_of('/'); 
-    if (last_slash == std::string::npos || last_slash != group_name.size() - 1)
+    if (last_slash == std::string::npos)
         group_name = group_name + '/';
+    if(group_name == "/")
+        return H5Gopen(parent, group_name.c_str(), H5P_DEFAULT);
+    
     std::string::size_type begin = 0, end = group_name.find('/');
     int ii =  0;
     while (end != std::string::npos)
@@ -534,7 +536,8 @@ writeHDF5Impl(DestIterator d, Shape const & shape, hid_t file_id, hid_t dataset_
 
 } // namespace detail
 
-
+/** write a MultiArrayView to hdf5 file
+ */
 template<unsigned int N, class T, class Tag>
 void writeToHDF5File(const char* filePath, const char* pathInFile, const MultiArrayView<N, T, Tag> & array, const bool rowMajorOrder = false)
 {
@@ -614,6 +617,7 @@ void writeToHDF5File(const char* filePath, const char* pathInFile, const MultiAr
     }
     H5Fflush(file_id, H5F_SCOPE_GLOBAL);
 }
+
 namespace detail
 {
 struct MaxSizeFnc
@@ -632,6 +636,10 @@ struct MaxSizeFnc
     }
 };
 }
+
+
+/** write a string MultiArray array to pathInFile in the hdf5 file filePath
+ */
 template<unsigned int N, class Tag>
 void writeToHDF5File(const char* filePath, 
                      const char* pathInFile, 
@@ -656,7 +664,6 @@ void writeToHDF5File(const char* filePath,
         group_name = std::string(path_name.begin(), path_name.begin()+delimiter);
         data_set_name = std::string(path_name.begin()+delimiter+1, path_name.end());
     }
-    std::cerr << group_name << " " << data_set_name << std::endl;
     // create all groups
     HDF5Handle group(createGroup(file_id, group_name), &H5Gclose, 
                      "writeToHDF5File(): Unable to create and open group. str ver");
@@ -686,12 +693,16 @@ void writeToHDF5File(const char* filePath,
     std::string buf ="";
     for(int ii = 0; ii < array.size(); ++ii)
     {
-        buf = buf + array[ii] + std::string(max_size.size - array[ii].size(), ' ');
+        buf = buf + array[ii] + std::string(max_size.size - array[ii].size(), '\0');
     }
     H5Dwrite (dataset_handle, atype, H5S_ALL, H5S_ALL, H5P_DEFAULT, buf.c_str());
     H5Fflush(file_id, H5F_SCOPE_GLOBAL);
 }
 
+
+/** write a numeric MultiArray as a attribute of location identifier loc
+ * with name name
+ */
 template<size_t N, class T, class C>
 void writeHDF5Attr(hid_t loc, 
                    const char* name, 
@@ -718,10 +729,15 @@ void writeHDF5Attr(hid_t loc,
     //copy data - since attributes are small - who cares!
     ArrayVector<T> buffer;
     for(int ii = 0; ii < array.size(); ++ii)
-        buffer[ii] = array[ii];
+        buffer.push_back(array[ii]);
     H5Awrite(attr, detail::getH5DataType<T>(), buffer.data());
 }
 
+
+
+/** write a String MultiArray as a attribute of location identifier
+ *  loc with name name
+ */
 template<size_t N, class C>
 void writeHDF5Attr(hid_t loc, 
                    const char* name, 
@@ -762,6 +778,8 @@ void writeHDF5Attr(hid_t loc,
     H5Awrite(attr, atype, buf.c_str());
 }
 
+/** write an ArrayVectorView as an attribute with name to a location identifier
+ */
 template<class T>
 inline void writeHDF5Attr(  hid_t loc,
                             const char* name,
@@ -772,8 +790,15 @@ inline void writeHDF5Attr(  hid_t loc,
                                        array.data()));
 }
 
+/** write an Attribute given a file and a path in the file.
+ *  the path in the file should have the format 
+ *  [attribute] or /[subgroups/]dataset.attribute or
+ *  /[subgroups/]group.attribute.
+ *  The attribute is written to the root group, a dataset or a subgroup
+ *  respectively
+ */
 template<class Arr>
-inline void writeHDF5Attr( std::string filePath,
+inline void writeHDF5Attr(  std::string filePath,
                             std::string pathInFile,
                             Arr  & ar)
 {
@@ -815,7 +840,6 @@ inline void writeHDF5Attr( std::string filePath,
     {
         HDF5Handle dset(H5Dopen(group, data_set_name.c_str(), H5P_DEFAULT), &H5Dclose,
                         "writeHDF5Attr():unable to open dataset");
-
         writeHDF5Attr(hid_t(dset), attr_name.c_str(), ar);
     }
     else
