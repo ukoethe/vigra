@@ -454,7 +454,7 @@ template <class DestIterator, class Shape, class T>
 inline void
 writeHDF5Impl(DestIterator d, Shape const & shape, hid_t file_id, hid_t dataset_id, ArrayVector<T> & buffer, int & counter, const int elements, MetaInt<0>)
 {
-    DestIterator dend = d + shape[0];
+    DestIterator dend = d + (typename DestIterator::difference_type)shape[0];
     int k = 0;
     for(; d < dend; ++d, k++)
     {
@@ -476,7 +476,7 @@ template <class DestIterator, class Shape, class T, int N>
 void
 writeHDF5Impl(DestIterator d, Shape const & shape, hid_t file_id, hid_t dataset_id, ArrayVector<T> & buffer, int & counter, const int elements, MetaInt<N>)
 {
-    DestIterator dend = d + shape[N];
+    DestIterator dend = d + (typename DestIterator::difference_type)shape[N];
     for(; d < dend; ++d)
     {
         writeHDF5Impl(d.begin(), shape, file_id, dataset_id, buffer, counter, elements, MetaInt<N-1>());

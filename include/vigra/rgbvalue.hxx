@@ -181,28 +181,27 @@ class RGBValue
         VIGRA_STATIC_ASSERT((RGBValue_bad_color_indices<RED_IDX, GREEN_IDX, BLUE_IDX>));
     }
 
-        /** Construct gray value
+        /** Construct gray value.
         */
-    RGBValue(value_type const & gray)
+    RGBValue(value_type gray)
     : Base(gray, gray, gray)
     {
         VIGRA_STATIC_ASSERT((RGBValue_bad_color_indices<RED_IDX, GREEN_IDX, BLUE_IDX>));
     }
 
-        /** Construct from another sequence. (end is ignored since the sequence must have length 3 anyway.)
+        /** Copy from raw memory. The order is preserved,
+            irrespective of how the color indices are specified.
         */
-    template <class Iterator>
-    RGBValue(Iterator i, Iterator end)
-    : Base(i[0], i[1], i[2])
+    explicit RGBValue(const_pointer i)
+    : Base(i)
     {
         VIGRA_STATIC_ASSERT((RGBValue_bad_color_indices<RED_IDX, GREEN_IDX, BLUE_IDX>));
     }
 
-        /** Construct by reverse copying from another sequence. (end is ignored since the sequence must have length 3 anyway.)
+        /** Construct by reverse copying from raw memory.
         */
-    template <class Iterator>
-    RGBValue(Iterator i, Iterator end, ReverseCopyTag)
-    : Base(i[2], i[1], i[0])
+    RGBValue(const_pointer i, ReverseCopyTag reverse)
+    : Base(i, reverse)
     {
         VIGRA_STATIC_ASSERT((RGBValue_bad_color_indices<RED_IDX, GREEN_IDX, BLUE_IDX>));
     }

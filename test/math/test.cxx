@@ -1046,6 +1046,8 @@ struct FixedPoint16Test
 
         shouldEqual(vigra::sqrt(FP7(4)).value, 1 << 12);
         shouldEqual(vigra::sqrt(FP8(4)).value, 1 << 12);
+        shouldEqual(vigra::hypot(FP8(3), FP8(4)), FP8(5));
+        shouldEqual(vigra::hypot(FP8(-3), FP8(-4)), FP8(5));
         shouldEqual(vigra::fixed_point_cast<double>(vigra::sqrt(FP7(4))), 2.0);
         shouldEqual(vigra::fixed_point_cast<double>(vigra::sqrt(FP2(2.25))), 1.5);
         shouldEqual(vigra::fixed_point_cast<double>(vigra::sqrt(FP8(6.25))), 2.5);
