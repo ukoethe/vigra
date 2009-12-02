@@ -1092,15 +1092,15 @@ RandomForest<ClassLabelType>::predictProbabilities(MultiArrayView<2, U, C1> cons
 		//update votecount.
             for(unsigned int l=0; l<classes_.size(); ++l)
             {
-                prob(row, l) += weights[l];
+                prob(row, l) += detail::RequiresExplicitCast<T>::cast(weights[l]);
                 //every weight in totalWeight.
-		totalWeight += weights[l];
+                totalWeight += weights[l];
             }
         }
 
 	//Normalise votes in each row by total VoteCount (totalWeight
         for(unsigned int l=0; l<classes_.size(); ++l)
-                prob(row, l) /= totalWeight;
+                prob(row, l) /= detail::RequiresExplicitCast<T>::cast(totalWeight);
     }
 }
 

@@ -149,7 +149,6 @@ NumpyAnyArray laplacianOfGaussian2D(NumpyArray<3, Multiband<PixelType> > image,
 }
 VIGRA_PYTHON_MULTITYPE_FUNCTOR(pylaplacianOfGaussian2D, laplacianOfGaussian2D)
 
-//TODO: Multiband??
 template <class PixelType>
 NumpyAnyArray hessianMatrixOfGaussian2D(NumpyArray<2, Singleband<PixelType> > image, double scale,
 		//NumpyArray<2, TinyVector<PixelType, 3> > res = python::object())

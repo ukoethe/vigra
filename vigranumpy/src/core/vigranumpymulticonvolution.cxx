@@ -141,7 +141,7 @@ NumpyAnyArray pythonSeparableConvolve_3_3D(NumpyArray<4, Multiband<VoxelType> > 
                                           NumpyArray<4, Multiband<VoxelType> > res=python::object())
 {
     res.reshapeIfEmpty(volume.shape(), "separableConvolve_3_3D(): Output array has wrong shape.");
-    ArrayVector< Kernel > kernels(3);
+    ArrayVector< Kernel > kernels;
     kernels.push_back(kernel0);
     kernels.push_back(kernel1);
     kernels.push_back(kernel2);
