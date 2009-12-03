@@ -17,44 +17,57 @@ class classproperty(object):
 
 def _array_docstring_(name, shape, compat):
     return '''
-Constructor:
-    vigra.%(name)s(obj, dtype=numpy.float32, order='V', 
-                        init = True, value = None)
+    Constructor:
+    
+    .. method:: %(name)s(obj, dtype=numpy.float32, order='V', init = True, value = None)
+
+        :param obj: a data or shape object (see below)
+        :param dtype: desired element type
+        :param order: desired memory layout (see below)
+        :param init: True: initialize the image with zeros; False: do not initialize the image
+        :type init: boolean
+        :param value: initialize the image with this value (overrides init)
+        :type value: convertible to dtype
  
-    * If obj is a vigra.%(name)s or a subclass, a copy of obj with the
-      given dtype and order is created, and obj's class is transferred.
-    * If obj is a numpy.ndarray with compatible shape, a copy
-      of obj with the given dtype, order and class vigra.%(name)s is 
-      created.
-    * If obj is a sequence, it is interpreted as a shape. When
-      the shape is compatible, a new vigra.%(name)s with the given
-      dtype and order is created.
-    * Otherwise, or if the shape is not compatible, an exception
-      is raised.
-    If value is not None, the array is initialized with this value
-    (if it is convertible to the array's dtype). Otherwise, the array
-    is initialized with zeros, unless init is False.
+        **obj** may be one of the following 
+
+        * If obj is a vigra.%(name)s or a subclass, a copy of obj with the
+          given dtype and order is created, and obj's class is transferred.
+        * If obj is a numpy.ndarray with compatible shape, a copy
+          of obj with the given dtype, order and class vigra.%(name)s is 
+          created.
+        * If obj is a sequence, it is interpreted as a shape. When
+          the shape is compatible, a new vigra.%(name)s with the given
+          dtype and order is created.
+        * Otherwise, or if the shape is not compatible, an exception
+          is raised.
+      
 %(shape)s
       
-    order can be 'C' (C order), 'F' (Fortran order), 'V' (vector-valued 
-    order), and 'A'. 
+        **order** can be 'C' (C order), 'F' (Fortran order), 'V' (vector-valued 
+        order), and 'A'. 
+
+          'C' and 'F' order:
+              have the usual numpy meaning
+
+          'V' order:
+              is an interleaved memory layout that simulates vector-
+              valued pixels or voxels: while the spatial dimensions are arranged
+              as in Fortran order, the major memory-aligned dimension is the 
+              channel (i.e. last) dimension. Arrays in 'V'-order are compatible
+              with vector-valued NumpyArrays. For example, an RGBImage((4,3), uint8)
+              has strides (3, 12, 1) and is compatible with 
+              NumpyArray<2, RGBValue<UInt8>, UnstridedArrayTag>. 
+
+          'A' order:
+              defaults to 'V' when a new array is created, and means 
+              'preserve order' when an existing array is copied. 
     
-    'V' order is an interleaved memory layout that simulates vector-
-    valued pixels or voxels: while the spatial dimensions are arranged
-    as in Fortran order, the major memory-aligned dimension is the 
-    channel (i.e. last) dimension. Arrays in 'V'-order are compatible
-    with vector-valued NumpyArrays. For example, an RGBImage((4,3), uint8)
-    has strides (3, 12, 1) and is compatible with 
-    NumpyArray<2, RGBValue<UInt8>, UnstridedArrayTag>. 
-    
-    'A' defaults to 'V' when a new array is created, and means 
-    'preserve order' when an existing array is copied. 
-    
-    In particular, the following compatibility rules apply (Note that 
-    compatibility with 'UnstridedArrayTag' implies compatibility with 
-    'StridedArrayTag'. Due to their loop order, VIGRA algorithms are 
-    generally more efficient when the memory layout is compatible with
-    'UnstridedArrayTag'. T is the array's dtype.):
+        In particular, the following compatibility rules apply (Note that 
+        compatibility with 'UnstridedArrayTag' implies compatibility with 
+        'StridedArrayTag'. Due to their loop order, VIGRA algorithms are 
+        generally more efficient when the memory layout is compatible with
+        'UnstridedArrayTag'. T is the array's dtype.):
 %(compat)s
     ''' % {'name': name, 'shape': shape, 'compat': compat}
 
@@ -248,45 +261,55 @@ this class via its subclasses!
 
 class Image(_VigraArray):
     __doc__ = _array_docstring_('Image', '''
-    A shape is compatible when it has two dimensions (width, height)
-    or three dimensions (width, height, channels).''', """
-    * 'C': NumpyArray<2, T, StridedArrayTag> (if channels=1),
-           NumpyArray<3, T, StridedArrayTag>,
-           NumpyArray<4, T, StridedArrayTag> (if channels>1),
-           NumpyArray<2, TinyVector<T, M>, StridedArrayTag> (if channels=M),
-           NumpyArray<2, RGBValue<T>, StridedArrayTag> (if channels=3),
-           NumpyArray<2, Singleband<T>, StridedArrayTag> (if channels=1),
-           NumpyArray<3, Multiband<T>, StridedArrayTag>
-    * 'F': NumpyArray<2, T, UnstridedArrayTag> (if channels=1),
-           NumpyArray<3, T, UnstridedArrayTag>,
-           NumpyArray<4, T, UnstridedArrayTag> (if channels>1),
-           NumpyArray<2, Singleband<T>, UnstridedArrayTag> (if channels=1),
-           NumpyArray<3, Multiband<T>, UnstridedArrayTag>
-    * 'V': NumpyArray<2, T, UnstridedArrayTag> (if channels=1),
-           NumpyArray<3, T, UnstridedArrayTag> (if channels=1),
-           NumpyArray<3, T, StridedArrayTag> (if channels>1),
-           NumpyArray<4, T, StridedArrayTag> (if channels>1),
-           NumpyArray<2, Singleband<T>, UnstridedArrayTag> (if channels=1),
-           NumpyArray<2, TinyVector<T, M>, UnstridedArrayTag> (if channels=M),
-           NumpyArray<2, RGBValue<T>, UnstridedArrayTag> (if channels=3),
-           NumpyArray<3, Multiband<T>, UnstridedArrayTag> (if channels=1),
-           NumpyArray<3, Multiband<T>, StridedArrayTag> (if channels>1)""")
+        A shape is compatible when it has two dimensions (width, height)
+        or three dimensions (width, height, channels).''', """
+
+          'C':
+             | NumpyArray<2, T, StridedArrayTag> (if channels=1),
+             | NumpyArray<3, T, StridedArrayTag>,
+             | NumpyArray<4, T, StridedArrayTag> (if channels>1),
+             | NumpyArray<2, TinyVector<T, M>, StridedArrayTag> (if channels=M),
+             | NumpyArray<2, RGBValue<T>, StridedArrayTag> (if channels=3),
+             | NumpyArray<2, Singleband<T>, StridedArrayTag> (if channels=1),
+             | NumpyArray<3, Multiband<T>, StridedArrayTag>
+          'F':
+             | NumpyArray<2, T, UnstridedArrayTag> (if channels=1),
+             | NumpyArray<3, T, UnstridedArrayTag>,
+             | NumpyArray<4, T, UnstridedArrayTag> (if channels>1),
+             | NumpyArray<2, Singleband<T>, UnstridedArrayTag> (if channels=1),
+             | NumpyArray<3, Multiband<T>, UnstridedArrayTag>
+          'V':
+             | NumpyArray<2, T, UnstridedArrayTag> (if channels=1),
+             | NumpyArray<3, T, UnstridedArrayTag> (if channels=1),
+             | NumpyArray<3, T, StridedArrayTag> (if channels>1),
+             | NumpyArray<4, T, StridedArrayTag> (if channels>1),
+             | NumpyArray<2, Singleband<T>, UnstridedArrayTag> (if channels=1),
+             | NumpyArray<2, TinyVector<T, M>, UnstridedArrayTag> (if channels=M),
+             | NumpyArray<2, RGBValue<T>, UnstridedArrayTag> (if channels=3),
+             | NumpyArray<3, Multiband<T>, UnstridedArrayTag> (if channels=1),
+             | NumpyArray<3, Multiband<T>, StridedArrayTag> (if channels>1)
+           
+""")
             
     def write(self, filename, export_type = '', compression = ''):
-        "consult 'help(vigra.writeImage)' for detailed documentation"
+        "consult :func:`vigra.writeImage` for detailed documentation"
         import vigranumpycmodule as vn
         vn.writeImage(self, filename, export_type, compression)
 
-    @classproperty
-    def spatialDimensions(cls): return 2
-
     @property
     def width(self):
+        """the image's width"""
         return self.shape[0]
     
     @property
     def height(self):
+        "the image's height"
         return self.shape[1]
+
+    @classproperty
+    def spatialDimensions(cls): 
+        "number of spatial dimensions (useful for distinguishing RGBImage and ScalarVolume)"
+        return 2
 
 class ScalarImage(Image):
     __doc__ = _array_docstring_('ScalarImage', '''
