@@ -427,8 +427,7 @@ inline hid_t openGroup(hid_t parent, std::string group_name)
 
 inline hid_t createGroup(hid_t parent, std::string group_name)
 {
-    size_t last_slash = group_name.find_last_of('/'); 
-    if (last_slash == std::string::npos)
+    if(group_name.size() == 0 ||*group_name.rbegin() != '/')
         group_name = group_name + '/';
     if(group_name == "/")
         return H5Gopen(parent, group_name.c_str(), H5P_DEFAULT);

@@ -18,11 +18,32 @@ void ARFF2HDF5(std::string arff, std::string hdf5)
 {
 }
 
+std::string stripstr(std::string in)
+{
+    std::string out = "";
+    for(int ii = 0; ii < int(in.size()); ++ii)
+    {
+        if(out.size() == 0  && (in[ii] == ' ' || in [ii] == '\t'))
+            continue;
+        else if(*out.rbegin() == ' ' && (in[ii] == ' ' || in [ii] == '\t'))
+            continue;
+        else if(in[ii] == '\t' || in[ii] == ' ')
+            out = out + ' ';
+        else
+            out = out + in[ii];
+    }
+    return out;
+}
 
 /** tokenize a string given delimiter string
  */
 void tokenize(std::string  str, ArrayVector<std::string> & in, std::string delim = ",")
 {
+    if(delim == "w")
+    {
+        str = stripstr(str);
+        delim = " ";
+    }
     if(str.size() < delim.size() || str.rfind(delim) != str.size() - delim.size())
         str = str+delim;
 
@@ -137,13 +158,15 @@ void processCSVname(std::string in,
             type = NOMINAL;
         else if (tokens[ii] == "ORDINAL")
             type = ORDINAL;
+        else if (tokens[ii] == "all")
+            beg = -1;
         else
         { 
             double tmp;
             std::istringstream sin(tokens[ii]);
             sin >> tmp;
             if(sin.fail() && tokens[ii].find(":") == string::npos)
-                std::runtime_error("could not parse name");
+                throw std::runtime_error("could not parse name");
 		    ArrayVector<std::string>  tokensloc;
 		    tokenize(tokens[ii], tokensloc, ":");
 	    	beg = atoi(tokensloc[0].c_str());
@@ -218,10 +241,18 @@ struct DlmInfo
 				++doubleCount_;
 			}
 		}
+        bool found_blank_line = false;
 		while(!getline(fin, line).eof())
+        {
+            if(stripstr(line) == "")
+            {
+                found_blank_line = true;
+                break;
+            }
 			++count;
-        if(line == "")
-            t_count_ = count - trailercount +1;
+        }
+        if(found_blank_line)
+            t_count_ = count;
         else
 		    t_count_ = count - trailercount;
 		rowCount_ = t_count_ - h_count_;
@@ -292,14 +323,17 @@ void CSV2HDF5(std::string csv,
               std::vector<string> const & names, 
               int headerCt = 0, 
               int trailerCt = 0,
+              
               std::string delim = ",")
 {
 	typedef MultiArrayShape<2>::type Shp;
 
 	//get information for the seperated file and read
+    std::cerr << "getting file info" <<std::endl;
 	DlmInfo info(csv,delim, headerCt, trailerCt);
 	MultiArray<2, double> dblArr(Shp(info.rowCount_, info.doubleCount_));
 	MultiArray<2, string> strArr(Shp(info.rowCount_, info.stringCount_), "");
+    std::cerr << "loading text file "<<info.doubleCount_ <<" "<< info.rowCount_<< " " <<  info.stringCount_ << std::endl;
 	dlmread(info, dblArr, strArr);
 
 
@@ -308,17 +342,27 @@ void CSV2HDF5(std::string csv,
 	std::string r_name;
 	IDS_ type, in_;
     bool first_string_column = true;
+
     //user has supplied column data.
 	if(names.size() != 0)
 	{
 		for(int ii = 0; ii < int(names.size()); ++ii)
 		{
+            std::cerr << "writing " << names[ii] << std::endl;
 			processCSVname(names[ii], r_name, last_end, beg, end, type, in_);
-            last_end = end;
-            last_beg = beg; 
-            end = end - beg;
-            beg = info.offsets_[beg];
-            end = beg + end + 1;
+            if(beg == -1)
+            {
+                beg = 0;
+                end = dblArr.shape(1);
+            }
+            else
+            {
+                last_end = end;
+                last_beg = beg; 
+                end = end - beg;
+                beg = info.offsets_[beg];
+                end = beg + end + 1;
+            }
             std::string col_path = path + "/" + r_name;
 			if(info.type_[last_beg] == NUMERAL)
 			{
@@ -368,28 +412,35 @@ void CSV2HDF5(std::string csv,
 							 in_,
                              ii);
 			}
+        std::cerr << "done " << names[ii] << std::endl;
 		}
 	}
 	else
 	{
+        if(dblArr.size() > 0)
+        {
 		writeToHDF5File(hdf5.c_str(), 
-                        (path+"doubleCols").c_str(), 
+                        (path+"/doubleCols").c_str(), 
                         dblArr);
 		writeColAttr(hdf5, 
-                     path + "doubleCols",
+                     path + "/doubleCols",
                      dblArr, 
                      ORDINAL, 
                      INPUT,
                      0);
+        }
+        if(strArr.size() > 0)
+        {
 		writeToHDF5File(hdf5.c_str(), 
-                        (path+"stringCols").c_str(), 
+                        (path+"/stringCols").c_str(), 
                         strArr);
 		writeColAttr(hdf5, 
-                     path + "stringCols",
+                     path + "/stringCols",
                      strArr, 
                      DUNNO, 
                      TAG,
                      1);
+        }
 	}
 }
 
@@ -415,6 +466,7 @@ int main(int argc, char** argv)
     TCLAP::CmdLine cmd("Command description message", ' ', "0.9");
     TCLAP::SwitchArg isARFF("","isARFF","input is ARFF file", cmd, false);
     TCLAP::SwitchArg isCSV("","isCSV","input is CSV file", cmd, false);
+    TCLAP::SwitchArg isSparse("","isSparse","input is Sparse csv file", cmd, false);
     TCLAP::SwitchArg isINFO("","isINFO","input is txt information", cmd, false);
     TCLAP::ValueArg<std::string> input("i","input","inputfile", true,"a.in",    "string");   
     cmd.add(input);
@@ -431,13 +483,22 @@ int main(int argc, char** argv)
     TCLAP::MultiArg<std::string> names("n", "names", "column names", false, "string");
     cmd.add(names); 
     cmd.parse( argc, argv );
-
     bool iscsv = isCSV.getValue();
     if(iscsv == false && !isARFF.getValue() && !isINFO.getValue())
         iscsv = true;
-
+    
+    ifstream fin(input.getValue().c_str());
+    if(fin.fail())
+    {
+        throw std::runtime_error("could not find inputfile");
+    }
+    else
+        fin.close();
+    std::cerr<< "loading file :" << input.getValue() <<std::endl;
 	if(isARFF.getValue())
 		ARFF2HDF5(input.getValue(), output.getValue());
+    if(isSparse.getValue())
+        std::cerr << "Sparse Matrix representation currently not supported" <<std::endl;
 	else if(iscsv)
 		CSV2HDF5(input.getValue(), 
                  output.getValue(),
