@@ -10,9 +10,10 @@ Contents:
 
 .. toctree::
    :maxdepth: 2
-
+   
 Image and Volume Data Structures
 --------------------------------
+
 .. autoclass:: vigra.Image
    :show-inheritance:
    :members:
@@ -26,9 +27,13 @@ Image and Volume Data Structures
       number of spatial dimensions (always 2 for images). This is useful for 
       distinguishing RGBImage from ScalarVolume in overload resolution.
 
+-------------
+
 .. autoclass:: vigra.ScalarImage
    :show-inheritance:
    :members:
+
+-------------
 
 .. autoclass:: vigra.RGBImage
    :show-inheritance:
