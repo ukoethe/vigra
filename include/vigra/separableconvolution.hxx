@@ -993,6 +993,17 @@ class Kernel1D
       norm_(k.norm_)
     {}
 
+        /** Construct from kernel with different element type, e.g. double => FixedPoint16.
+        */
+    template <class U>
+    Kernel1D(Kernel1D<U> const & k)
+    : kernel_(k.center()+k.left(), k.center()+k.right()+1),
+      left_(k.left()),
+      right_(k.right()),
+      border_treatment_(k.borderTreatment()),
+      norm_(k.norm())
+    {}
+    
         /** Copy assignment.
         */
     Kernel1D & operator=(Kernel1D const & k)
