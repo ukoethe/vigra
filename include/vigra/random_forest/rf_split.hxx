@@ -59,12 +59,37 @@ class CompileTimeError;
 /** Base Class for all SplitFunctors used with the \ref RandomForestn class
     defines the interface used while learning a tree.
 **/
+namespace detail
+{
+    template<class Tag>
+    class Normalise
+    {
+    public:
+        template<class Iter>
+        static void exec(Iter begin, Iter  end)
+        {}
+    };
 
+    template<>
+    class Normalise<ClassificationTag>
+    {
+    public:
+        template<class Iter>
+        static void exec (Iter begin, Iter end)
+        {
+            double bla = std::accumulate(begin, end, 0.0);
+            for(int ii = 0; ii < end - begin; ++ii)
+                begin[ii] = begin[ii]/bla ;
+        }
+    };
+}
+
+template<class Tag>
 class SplitBase
 {
   public:
 
-    typedef ClassificationTag           RF_Tag;
+    typedef Tag           RF_Tag;
     typedef DT_StackEntry<ArrayVectorView<Int32>::iterator>
                                         StackEntry_t;
 
@@ -135,8 +160,8 @@ class SplitBase
     template<class T, class C, class T2,class C2, class Region, class Random>
     int makeTerminalNode(MultiArrayView<2, T, C> features,
                       MultiArrayView<2, T2, C2>  labels,
-                      Region & region,
-                      Random randint)
+                      Region &                   region,
+                      Random                     randint)
     {
         Node<e_ConstProbNode> ret(t_data, p_data);
         node_ = ret;
@@ -153,11 +178,8 @@ class SplitBase
                             ext_param_.class_weights_.begin(),
                             ret.prob_begin(), std::multiplies<double>());
         }
-
-        double bla = std::accumulate(ret.prob_begin(), ret.prob_end(), 0.0);
-        for(int ii = 0; ii < ret.prob_size(); ++ii)
-            ret.prob_begin()[ii] = ret.prob_begin()[ii]/bla ;
-        ret.weights() = bla;  
+        detail::Normalise<RF_Tag>::exec(ret.prob_begin(), ret.prob_end());
+        ret.weights() = region.size();  
         return e_ConstProbNode;
     }
 
@@ -378,7 +400,7 @@ public:
 
 
 template <class DataSource, class Impurity= GiniCriterion>
-class LineSearchLoss
+class ImpurityLoss
 {
 
     DataSource  const &         labels_;
@@ -390,7 +412,7 @@ class LineSearchLoss
   public:
 
     template<class T>
-    LineSearchLoss(DataSource  const & labels, 
+    ImpurityLoss(DataSource  const & labels, 
                                 ProblemSpec<T> const & ext_)
     : labels_(labels),
       counts_(ext_.class_count_, 0.0),
@@ -552,6 +574,26 @@ class RegressionForestCounter
         count_ = 0; 
     }
 };
+
+template<class Tag, class Datatyp>
+struct LossTraits;
+
+struct LSQLoss
+{};
+
+template<class Datatype>
+struct LossTraits<GiniCriterion, Datatype>
+{
+    typedef ImpurityLoss<Datatype, GiniCriterion> type;
+};
+
+template<class Datatype>
+struct LossTraits<LSQLoss, Datatype>
+{
+    typedef RegressionForestCounter<Datatype> type;
+};
+
+template<class LineSearchLossTag>
 class BestGiniOfColumn
 {
 public:
@@ -613,11 +655,10 @@ public:
     {
         std::sort(begin, end, 
                   SortSamplesByDimensions<DataSourceF_t>(column, 0));
-
-        LineSearchLoss<DataSource_t> 
-            left(labels, ext_param_);
-        LineSearchLoss<DataSource_t> 
-            right(labels, ext_param_);
+        typedef typename 
+            LossTraits<LineSearchLossTag, DataSource_t>::type LineSearchLoss;
+        LineSearchLoss left(labels, ext_param_);
+        LineSearchLoss right(labels, ext_param_);
 
         right.init(begin, end, region_response);
 
@@ -645,16 +686,30 @@ public:
         }
 
     }
+
+    template<class DataSource_t, class Iter, class Array>
+    double loss_of_region(DataSource_t const & labels,
+                          Iter & begin, 
+                          Iter & end, 
+                          Array const & region_response) const
+    {
+        typedef typename 
+            LossTraits<LineSearchLossTag, DataSource_t>::type LineSearchLoss;
+        LineSearchLoss region_loss(labels, ext_param_);
+        return 
+            region_loss.init(begin, end, region_response);
+    }
+
 };
 
 
-template<class ColumnDecisionFunctor>
-class ThresholdSplit: public SplitBase
+template<class ColumnDecisionFunctor, class Tag>
+class ThresholdSplit: public SplitBase<Tag>
 {
   public:
 
 
-    typedef SplitBase SB;
+    typedef SplitBase<Tag> SB;
     
     ArrayVector<Int32>          splitColumns;
     ColumnDecisionFunctor       bgfunc;
@@ -679,8 +734,8 @@ class ThresholdSplit: public SplitBase
     void set_external_parameters(ProblemSpec<T> const & in)
     {
         SB::set_external_parameters(in);        
-        bgfunc = ColumnDecisionFunctor( ext_param_);
-        int featureCount_ = ext_param_.column_count_;
+        bgfunc = ColumnDecisionFunctor( SB::ext_param_);
+        int featureCount_ = SB::ext_param_.column_count_;
         splitColumns.resize(featureCount_);
         for(int k=0; k<featureCount_; ++k)
             splitColumns[k] = k;
@@ -711,9 +766,11 @@ class ThresholdSplit: public SplitBase
         }
 
         // Is the region pure already?
-        region_gini_ = GiniCriterion::impurity(region.classCounts(),
-                                               region.size());
-        if(region_gini_ == 0)
+        region_gini_ = bgfunc.loss_of_region(labels,
+                                             region.begin(), 
+                                             region.end(),
+                                             region.classCounts());
+        if(region_gini_ <= SB::ext_param_.precision_)
             return  makeTerminalNode(features, labels, region, randint);
 
         // select columns  to be tried.
@@ -778,7 +835,8 @@ class ThresholdSplit: public SplitBase
     }
 };
 
-typedef  ThresholdSplit<BestGiniOfColumn> GiniSplit;
+typedef  ThresholdSplit<BestGiniOfColumn<GiniCriterion> >                 GiniSplit;
+typedef  ThresholdSplit<BestGiniOfColumn<LSQLoss>, RegressionTag>         RegressionSplit;
 
 } //namespace vigra
 #endif // VIGRA_RANDOM_FOREST_SPLIT_HXX

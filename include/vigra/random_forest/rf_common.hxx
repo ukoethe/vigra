@@ -44,12 +44,13 @@ namespace vigra
 // TODO : DECIDE WHETHER THIS IS A GOOD IDEA
 struct                  ClassificationTag{};
 struct                  RegressionTag{};
-
-class BestGiniOfColumn;
+class GiniCriterion;
 template<class T>
+class BestGiniOfColumn;
+template<class T, class U = ClassificationTag>
 class ThresholdSplit;
 
-typedef  ThresholdSplit<BestGiniOfColumn> GiniSplit;
+typedef  ThresholdSplit<BestGiniOfColumn<GiniCriterion> > GiniSplit;
 namespace rf
 {
     class                   StopVisiting;
@@ -568,8 +569,9 @@ public:
     int used_;
     ArrayVector<double>     class_weights_;
     int                     is_weighted;
-
-
+    double                  precision_;
+    
+        
     template<class T> 
     void to_classlabel(int index, T & out) const
     {
@@ -588,7 +590,8 @@ public:
         EQUALS(problem_type_),
         EQUALS(used_),
         EQUALS(class_weights_),
-        EQUALS(is_weighted)
+        EQUALS(is_weighted),
+        EQUALS(precision_)
     {
         std::back_insert_iterator<ArrayVector<Label_t> >
                         iter(classes);
@@ -611,6 +614,7 @@ public:
         EQUALS(used_);
         EQUALS(class_weights_);
         EQUALS(is_weighted);
+        EQUALS(precision_);
         std::back_insert_iterator<ArrayVector<Label_t> >
                         iter(classes);
         std::copy(classes.begin(), classes.end(), iter); 
@@ -629,6 +633,7 @@ public:
         EQUALS(used_);
         EQUALS(class_weights_);
         EQUALS(is_weighted);
+        EQUALS(precision_);
         std::back_insert_iterator<ArrayVector<Label_t> >
                         iter(classes);
         std::copy(classes.begin(), classes.end(), iter); 
@@ -648,6 +653,7 @@ public:
         COMPARE(actual_msample_);
         COMPARE(problem_type_);
         COMPARE(is_weighted);
+        COMPARE(precision_);
         COMPARE(used_);
         COMPARE(class_weights_);
         COMPARE(classes);
@@ -663,7 +669,7 @@ public:
 
     size_t serialized_size() const
     {
-        return 8 + class_count_ *int(is_weighted+1);
+        return 9 + class_count_ *int(is_weighted+1);
     }
 
 
@@ -671,14 +677,14 @@ public:
     void unserialize(Iter const & begin, Iter const & end)
     {
         Iter iter = begin;
-        vigra_precondition(end - begin >= 8, 
+        vigra_precondition(end - begin >= 9, 
                            "ProblemSpec::unserialize():"
                            "wrong number of parameters");
         #define PULL(item_, type_) item_ = type_(*iter); ++iter;
         PULL(column_count_,int);
         PULL(class_count_, int);
 
-        vigra_precondition(end - begin >= 8 + class_count_, 
+        vigra_precondition(end - begin >= 9 + class_count_, 
                            "ProblemSpec::unserialize(): 1");
         PULL(row_count_, int);
         PULL(actual_mtry_,int);
@@ -686,9 +692,10 @@ public:
         PULL(problem_type_, Problem_t);
         PULL(is_weighted, int);
         PULL(used_, int);
+        PULL(precision_, double);
         if(is_weighted)
         {
-            vigra_precondition(end - begin == 8 + 2*class_count_, 
+            vigra_precondition(end - begin == 9 + 2*class_count_, 
                                "ProblemSpec::unserialize(): 2");
             class_weights_.insert(class_weights_.end(),
                                   iter, 
@@ -715,7 +722,8 @@ public:
         PUSH(actual_msample_);
         PUSH(problem_type_);
         PUSH(is_weighted);
-        PUSH(used_)
+        PUSH(used_);
+        PUSH(precision_);
         if(is_weighted)
         {
             std::copy(class_weights_.begin(),
@@ -741,6 +749,7 @@ public:
         PULL(problem_type_, (Problem_t)int);
         PULL(is_weighted, int);
         PULL(used_, int);
+        PULL(precision_, double);
         class_weights_ = in["class_weights_"];
         #undef PUSH
     }
@@ -756,6 +765,7 @@ public:
         PUSH(problem_type_);
         PUSH(is_weighted);
         PUSH(used_);
+        PUSH(precision_);
         in["class_weights_"] = class_weights_;
         #undef PUSH
     }
@@ -770,7 +780,8 @@ public:
         actual_msample_(0),
         problem_type_(CHECKLATER),
         used_(false),
-        is_weighted(false)
+        is_weighted(false),
+        precision_(0.0)
     {}
 
 
@@ -818,6 +829,7 @@ public:
         actual_msample_ = 0;
         problem_type_ = CHECKLATER;
         is_weighted = false;
+        precision_   = 0.0;
 
     }
 
