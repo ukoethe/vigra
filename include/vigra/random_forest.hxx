@@ -40,6 +40,7 @@
 #include <algorithm>
 #include <map>
 #include <set>
+#include <list>
 #include <numeric>
 #include "mathutil.hxx"
 #include "array_vector.hxx"
@@ -140,6 +141,8 @@ class RandomForest
     ArrayVector<DecisionTree_t>
                                     trees_;
     ProblemSpec_t                   ext_param_;
+
+    OnlineLearnVisitor              online_visitor_;
 
 
     void reset()
@@ -391,6 +394,20 @@ class RandomForest
                      rnd);
     }
 
+    template<class U,class C1,
+        class U2, class C2,
+        class Split_t,
+        class Stop_t,
+        class Visitor_t,
+        class Random_t>
+    double onlineLearn(MultiArrayView<2,U,C1> const & features,
+                       MultiArrayView<2,U2,C2> const & response,
+                       int new_start_index,
+                       Visitor_t visitor_,
+                       Split_t split_,
+                       Stop_t stop_,
+                       Random_t & random);
+
 
 
     /**\brief learn on data with default configuration
@@ -531,6 +548,114 @@ class RandomForest
 
 
 template <class LabelType, class PreprocessorTag>
+template<class U,class C1,
+    class U2, class C2,
+    class Split_t,
+    class Stop_t,
+    class Visitor_t,
+    class Random_t>
+double RandomForest<LabelType, PreprocessorTag>::onlineLearn(
+                                                             MultiArrayView<2,U,C1> const & features,
+                                                             MultiArrayView<2,U2,C2> const & response,
+                                                             int new_start_index,
+                                                             Visitor_t visitor_,
+                                                             Split_t split_,
+                                                             Stop_t stop_,
+                                                             Random_t & random)
+{
+    using namespace rf;
+    //typedefs
+    typedef typename Split_t::StackEntry_t StackEntry_t;
+    typedef Processor<PreprocessorTag,LabelType,U,C1,U2,C2> Preprocessor_t;
+    typedef          UniformIntRandomFunctor<Random_t>
+                                                    RandFunctor_t;
+    // default values and initialization
+    // Value Chooser chooses second argument as value if first argument
+    // is of type RF_DEFAULT. (thanks to template magic - don't care about
+    // it - just smile and wave.
+    
+    #define RF_CHOOSER(type_) detail::Value_Chooser<type_, Default_##type_> 
+    Default_Stop_t default_stop(options_);
+    typename RF_CHOOSER(Stop_t)::type stop
+            = RF_CHOOSER(Stop_t)::choose(stop_, default_stop); 
+    Default_Split_t default_split;
+    typename RF_CHOOSER(Split_t)::type split 
+            = RF_CHOOSER(Split_t)::choose(split_, default_split); 
+    StopVisiting stopvisiting;
+    OOB_Visitor  oob;
+    typedef  VisitorNode<OnlineLearnVisitor, typename RF_CHOOSER(Visitor_t)::type> IntermedVis; 
+    IntermedVis
+        inter(online_visitor_, RF_CHOOSER(Visitor_t)::choose(visitor_, stopvisiting));
+    VisitorNode<OOB_Visitor, IntermedVis>
+        visitor(oob,inter);
+    #undef RF_CHOOSER
+
+    // Preprocess the data to get something the split functor can work
+    // with. Also fill the ext_param structure by preprocessing
+    // option parameters that could only be completely evaluated
+    // when the training data is known.
+    Preprocessor_t preprocessor(    features, response,
+                                    options_, ext_param_);
+
+    // Make stl compatible random functor.
+    RandFunctor_t           randint     ( random);
+
+    // Give the Split functor information about the data.
+    split.set_external_parameters(ext_param_);
+    stop.set_external_parameters(ext_param_);
+
+
+    //Create poisson samples
+    PoissonSampler<> poisson_sampler(1.0,new_start_index,ext_param().row_count_,RandomTT800());
+
+    visitor.visit_at_beginning(*this, preprocessor);
+    // THE MAIN EFFING RF LOOP - YEAY DUDE!
+    for(int ii = 0; ii < (int)trees_.size(); ++ii)
+    {
+        poisson_sampler.sample();
+        std::list<std::pair<int,int> > leaf_parents;
+        //Get all the leaf nodes for that sample
+        for(int s=0;s<poisson_sampler.numOfSamples();++s)
+        {
+            int leaf=trees_[ii].getToLeaf(rowVector(features,poisson_sampler[s]),online_visitor_);
+            //Add to the list for that leaf
+            online_visitor_.add_to_index_list(ii,leaf,poisson_sampler[s]);
+            //Store parent
+            leaf_parents.push_back(std::make_pair(leaf,online_visitor_.last_node_id));
+        }
+        std::list<std::pair<int,int> >::iterator leaf_iterator;
+        for(leaf_iterator=leaf_parents.begin();leaf_iterator!=leaf_parents.end();++leaf_iterator)
+        {
+            int leaf=leaf_iterator->first;
+            int parent=leaf_iterator->second;
+            int lin_index=online_visitor_.exterior_to_index[std::make_pair(ii,leaf)];
+            StackEntry_t stack_entry(online_visitor_.index_lists[lin_index].begin(),online_visitor_.index_lists[lin_index].end());
+            if(NodeBase(trees_[ii].topology_,tree[ii].parameters_,parent).child(0)==leaf)
+            {
+                stack_entry.leftParent=leaf;
+            }
+            else
+            {
+                vigra_assert(NodeBase(tree[ii].topology_,trees[ii].paramters_,parent).child(1)==leaf,"last_node_it seems to be wrong");
+                stack_entry.rightParent=leaf;
+            }
+            trees_[ii].continueLearn(preprocessor.features(),preprocessor.response(),stack_entry,split,stop,visitor,randint,leaf);
+        }
+
+        /*visitor
+            .visit_after_tree(  *this,
+                                preprocessor,
+                                poisson_sampler,
+                                stack_entry,
+                                ii);*/
+    }
+
+    visitor.visit_at_end(*this, preprocessor);
+
+    return  visitor.return_val();
+}
+
+template <class LabelType, class PreprocessorTag>
 template <class U, class C1,
          class U2,class C2,
          class Split_t,
@@ -569,9 +694,13 @@ double RandomForest<LabelType, PreprocessorTag>::
             = RF_CHOOSER(Split_t)::choose(split_, default_split); 
     StopVisiting stopvisiting;
     OOB_Visitor  oob;
-    VisitorNode<OOB_Visitor, typename RF_CHOOSER(Visitor_t)::type>
-        visitor(oob, RF_CHOOSER(Visitor_t)::choose(visitor_, stopvisiting));
+    typedef  VisitorNode<OnlineLearnVisitor, typename RF_CHOOSER(Visitor_t)::type> IntermedVis; 
+    IntermedVis
+        inter(online_visitor_, RF_CHOOSER(Visitor_t)::choose(visitor_, stopvisiting));
+    VisitorNode<OOB_Visitor, IntermedVis>
+        visitor(oob,inter);
     #undef RF_CHOOSER
+    online_visitor_.enabled=options_.prepare_online_learning_;
 
     // Make stl compatible random functor.
     RandFunctor_t           randint     ( random);
@@ -600,6 +729,7 @@ double RandomForest<LabelType, PreprocessorTag>::
                                     detail::make_sampler_opt(options_,
                                                      preprocessor.strata()),
                                     randint);
+
     visitor.visit_at_beginning(*this, preprocessor);
     // THE MAIN EFFING RF LOOP - YEAY DUDE!
     for(int ii = 0; ii < (int)trees_.size(); ++ii)
@@ -637,8 +767,24 @@ double RandomForest<LabelType, PreprocessorTag>::
 }
 
 
-
-
+/*
+template <class LabelType, class PreprocessorTag>
+template <class U,class C1,
+         class U2,class C2,
+         class Split_t,
+         class Stop_t,
+         class Visitor_t,
+         class Random_t>
+double RandomForest<LabelType, PreprocessorTag>::
+                    onlineLearn( MultiArrayView<2, U, C1> const & features,
+                                 MultiArrayView<2, U2, C2> const & response,
+                                 Visitor_t visitor_,
+                                 Split_t split_,
+                                 Stop_t stop_,
+                                 Random_t const & random)
+{
+}
+*/
 
 
 

@@ -459,5 +459,59 @@ class Sampler
 
 };
 
+template<class Random =RandomTT800 >
+class PoissonSampler
+{
+    Random  randfloat;
+    typedef Int32                               IndexType;
+    typedef vigra::ArrayVector     <IndexType>  IndexArrayType;
+    IndexArrayType        used_indices_;
+    double lambda;
+    int minIndex;
+    int maxIndex;
+    inline PoissonSampler(double lambda,IndexType minIndex,IndexType maxIndex,Random & rnd)
+        : randfloat(rnd)
+    {
+        this->lambda=lambda;
+        this->minIndex=minIndex;
+        this->maxIndex=maxIndex;
+    }
+
+    inline void sample(  )
+    {
+        IndexType i;
+        for(i=minIndex;i<maxIndex;++i)
+        {
+            //from http://en.wikipedia.org/wiki/Poisson_distribution
+            int k=0;
+            double p=1;
+            double L=exp(-lambda);
+            do
+            {
+                ++k;
+                p*=randfloat.uniform53();
+
+            }while(p>L);
+            --k;
+            //Insert i this many time
+            while(k>0)
+            {
+                used_indices_.push_back(i);
+                --k;
+            }
+        }
+    }
+
+    IndexType const & operator[](int in)
+    {
+        return used_indices_[in];
+    }
+    int numOfSamples()
+    {
+        return used_indices_.size();
+    }
+
+};
+
 } /*end of namespace rn*/
 #endif /*RN_SAMPLER_HXX*/

@@ -493,6 +493,7 @@ create_visitor(A & a, B & b, C & c,
 class OnlineLearnVisitor: public VisitorBase
 {
 public:
+    bool enabled;
     //Current tree id
     int tree_id;
     //Last node id for finding parent
@@ -502,16 +503,20 @@ public:
     {
         ArrayVector<Int32> leftCounts;
         ArrayVector<Int32> rightCounts;
+        double gap_left;
+        double gap_right;
     };
 
-    vector<MarginalDistribution> mag_distributions;
+    std::vector<MarginalDistribution> mag_distributions;
 
-    vector<IndexList> index_lists;
+    typedef std::vector<int> IndexList;
+
+    std::vector<IndexList> index_lists;
 
     //map for linear index of mag_distiributions
-    map<pair<int,int>,int> interior_to_index;
+    std::map<pair<int,int>,int> interior_to_index;
     //map for linear index of index_lists
-    map<pair<int,int>,int> exterior_to_index;
+    std::map<pair<int,int>,int> exterior_to_index;
 
 	/** simply increase the tree cound
 	 */
@@ -527,35 +532,48 @@ public:
         tree_id=0;
         //Save pr.features;
     }
-    template<class Tree, class Split, class Region>
+    template<class Tree, class Split, class Region, class Feature_t, class Label_t>
     void visit_after_split( Tree 	      & tree, 
 			    Split         & split,
                             Region        & parent,
                             Region        & leftChild,
-                            Region        & rightChild)
+                            Region        & rightChild,
+                            Feature_t     & features,
+                            Label_t       & labels)
     {
+        if(!enabled)
+            return;
         int linear_index;
-        int addr=splt.createNode().parameter_addr();
+        int addr=split.createNode().parameter_addr();
         if(split.createNode().typeID() == i_ThresholdNode)
         {
             //Store marginal distribution
             linear_index=mag_distributions.size();
-            interior_to_index[pair<tree_id,addr>]=linear_index;
-            mag_distibutions.push_back(MarginalDistribution());
-            mag_distibutions.last().leftCounts=leftChild.classCounts_;
-            mag_distibutions.last().rightCounts=rightChild.classCounts_;
+            interior_to_index[std::make_pair(tree_id,addr)]=linear_index;
+            mag_distributions.push_back(MarginalDistribution());
+            mag_distributions.back().leftCounts=leftChild.classCounts_;
+            mag_distributions.back().rightCounts=rightChild.classCounts_;
+            //Store the gap
+            mag_distributions.back().gap_left=features(split.bestSplitColumn(),leftChild[leftChild.size()-1]);
+            mag_distributions.back().gap_right=features(split.bestSplitColumn(),rightChild[0]);
         }
         else
         {
             //Store index list
             linear_index=index_lists.size();
-            exterior_to_index[pair<tree_id,addr>]=linear_index;
+            exterior_to_index[std::make_pair(tree_id,addr)]=linear_index;
             index_lists.push_back(IndexList());
-            index_lists.last().resize(parent.size_);
-            copy(parent.begin_,parent.end_,index_lists.last().begin());
+            index_lists.back().resize(parent.size_);
+            copy(parent.begin_,parent.end_,index_lists.back().begin());
         }
     }
-    /** do something when visiting a internal node after it has been learned
+    void add_to_index_list(int tree,int node,int index)
+    {
+        if(!enabled)
+            return;
+        index_lists[exterior_to_index[std::make_pair(tree,node)]].push_back(index);
+    }
+    /** do something when visiting a internal node during getToLeaf
      *
      * remember as last node id, for finding the parent of the last external node
      */
@@ -564,6 +582,10 @@ public:
         {
             last_node_id=index;
         }
+    /** do something when visiting a extern node during getToLeaf
+     * 
+     * Store the new index!
+     */
 };
 
 

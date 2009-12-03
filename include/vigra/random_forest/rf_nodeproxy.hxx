@@ -182,30 +182,30 @@ class NodeBase
      * the size_ member was added as a result of premature 
      * optimisation.
      */ 
-    Topology_type &  topology_begin()
+    Topology_type &  topology_begin() const
     {
         return topology_;
     }
-    Topology_type   topology_end()
+    Topology_type   topology_end() const
     {
         return topology_begin() + topology_size();
     }
-    int          topology_size()
+    int          topology_size() const
     {
         return topology_size_;
     }
 
     /** Parameter Range **/
-    Parameter_type  parameters_begin()
+    Parameter_type  parameters_begin() const
     {
         return parameters_;
     }
-    Parameter_type  parameters_end()
+    Parameter_type  parameters_end() const
     {
         return parameters_begin() + parameters_size();
     }
 
-    int          parameters_size()
+    int          parameters_size() const
     {
         return parameter_size_;
     }
@@ -223,6 +223,14 @@ class NodeBase
     :
                     hasData_(false)
     {}
+    void copy(const NodeBase& o)
+    {
+        vigra_precondition(topology_size_==o.topology_size_,"Cannot copy nodes of different sizes");
+        vigra_precondition(featureCount_==o.featureCount_,"Cannot copy nodes with different feature count");
+        vigra_precondition(classCount_==o.classCount_,"Cannot copy nodes with different class counts");
+        std::copy(o.topology_begin(), o.topology_end(), topology_);
+        std::copy(o.parameters_begin(),o.parameters_end(), parameters_);
+    }
 
     /** create ReadOnly Base Node at position n (actual length is unknown)
      * only common features i.e. children etc are accessible.
