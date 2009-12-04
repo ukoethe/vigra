@@ -1,5 +1,5 @@
 IF(PYTHON_SPHINX)
-    SET(VIGRANUMPY_DOC_DIR ${vigra_SOURCE_DIR}/vigranumpy/doc)
+    SET(VIGRANUMPY_DOCDIR ${vigra_SOURCE_DIR}/vigranumpy/doc)
     
     FILE(MAKE_DIRECTORY ${VIGRANUMPY_DOCDIR})
 
