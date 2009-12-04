@@ -133,16 +133,16 @@ class VisitorBase
      * corresponding Node objects. Or - if you do not care about the type 
      * use the Nodebase class.
      */
-    template<class TR, class IntT, class TopT>
-    void visit_external_node(TR & tr, IntT index, TopT node_t)
+    template<class TR, class IntT, class TopT,class Feat>
+    void visit_external_node(TR & tr, IntT index, TopT node_t,Feat & features)
     {}
     
     /** do something when visiting a internal node after it has been learned
      *
      * \sa visit_external_node
      */
-    template<class TR, class IntT, class TopT>
-    void visit_internal_node(TR & tr, IntT index, TopT node_t)
+    template<class TR, class IntT, class TopT,class Feat>
+    void visit_internal_node(TR & tr, IntT index, TopT node_t,Feat & features)
     {}
 
     /** return a double value.  The value of the first 
@@ -238,19 +238,19 @@ class VisitorNode
         next_.visit_at_end(rf, pr);
     }
     
-    template<class TR, class IntT, class TopT>
-    void visit_external_node(TR & tr, IntT & index, TopT & node_t)
+    template<class TR, class IntT, class TopT,class Feat>
+    void visit_external_node(TR & tr, IntT & index, TopT & node_t,Feat & features)
     {
         if(visitor_.is_active())
-            visitor_.visit_external_node(tr, index, node_t);
-        next_.visit_external_node(tr, index, node_t);
+            visitor_.visit_external_node(tr, index, node_t,features);
+        next_.visit_external_node(tr, index, node_t,features);
     }
-    template<class TR, class IntT, class TopT>
-    void visit_internal_node(TR & tr, IntT & index, TopT & node_t)
+    template<class TR, class IntT, class TopT,class Feat>
+    void visit_internal_node(TR & tr, IntT & index, TopT & node_t,Feat & features)
     {
         if(visitor_.is_active())
-            visitor_.visit_internal_node(tr, index, node_t);
-        next_.visit_internal_node(tr, index, node_t);
+            visitor_.visit_internal_node(tr, index, node_t,features);
+        next_.visit_internal_node(tr, index, node_t,features);
     }
 
     double return_val()
@@ -493,23 +493,26 @@ create_visitor(A & a, B & b, C & c,
 class OnlineLearnVisitor: public VisitorBase
 {
 public:
-    bool enabled;
     //Current tree id
     int tree_id;
     //Last node id for finding parent
     int last_node_id;
+    //Need to now the label for interior node visiting
+    vigra::Int32 current_label;
     //marginal distribution for interior nodes
     struct MarginalDistribution
     {
         ArrayVector<Int32> leftCounts;
+        Int32 leftTotalCounts;
         ArrayVector<Int32> rightCounts;
+        Int32 rightTotalCounts;
         double gap_left;
         double gap_right;
     };
 
     std::vector<MarginalDistribution> mag_distributions;
 
-    typedef std::vector<int> IndexList;
+    typedef ArrayVector<vigra::Int32> IndexList;
 
     std::vector<IndexList> index_lists;
 
@@ -541,8 +544,6 @@ public:
                             Feature_t     & features,
                             Label_t       & labels)
     {
-        if(!enabled)
-            return;
         int linear_index;
         int addr=split.createNode().parameter_addr();
         if(split.createNode().typeID() == i_ThresholdNode)
@@ -551,8 +552,12 @@ public:
             linear_index=mag_distributions.size();
             interior_to_index[std::make_pair(tree_id,addr)]=linear_index;
             mag_distributions.push_back(MarginalDistribution());
+
             mag_distributions.back().leftCounts=leftChild.classCounts_;
             mag_distributions.back().rightCounts=rightChild.classCounts_;
+
+            mag_distributions.back().leftTotalCounts=leftChild.size_;
+            mag_distributions.back().rightTotalCounts=rightChild.size_;
             //Store the gap
             mag_distributions.back().gap_left=features(split.bestSplitColumn(),leftChild[leftChild.size()-1]);
             mag_distributions.back().gap_right=features(split.bestSplitColumn(),rightChild[0]);
@@ -564,23 +569,62 @@ public:
             exterior_to_index[std::make_pair(tree_id,addr)]=linear_index;
             index_lists.push_back(IndexList());
             index_lists.back().resize(parent.size_);
-            copy(parent.begin_,parent.end_,index_lists.back().begin());
+            std::copy(parent.begin_,parent.end_,index_lists.back().begin());
         }
     }
     void add_to_index_list(int tree,int node,int index)
     {
-        if(!enabled)
+        if(!this->active_)
             return;
         index_lists[exterior_to_index[std::make_pair(tree,node)]].push_back(index);
+    }
+    void move_exterior_node(int src_tree,int src_index,int dst_tree,int dst_index)
+    {
+        if(!this->active_)
+            return;
+        exterior_to_index[std::make_pair(dst_tree,dst_index)]=exterior_to_index[std::make_pair(src_tree,src_index)];
+        exterior_to_index.erase(std::make_pair(src_tree,src_index));
     }
     /** do something when visiting a internal node during getToLeaf
      *
      * remember as last node id, for finding the parent of the last external node
+     * also: adjust class counts and borders
      */
-    template<class TR, class IntT, class TopT>
-        void visit_internal_node(TR & tr, IntT index, TopT node_t)
+    template<class TR, class IntT, class TopT,class Feat>
+        void visit_internal_node(TR & tr, IntT index, TopT node_t,Feat & features)
         {
             last_node_id=index;
+            vigra_assert(node_t==i_ThresholdNode,"We can only visit threshold nodes");
+            //Check if we are in the gap
+            double value=features(0, Node<i_ThresholdNode>(tr.topology_,tr.parameters_,index).column());
+            MarginalDistribution &m=mag_distributions[interior_to_index[std::make_pair(tree_id,index)]];
+            if(value>m.gap_left && value<m.gap_right)
+            {
+                //Check which site we want to go
+                if(m.leftCounts[current_label]/double(m.leftTotalCounts)>m.rightCounts[current_label]/double(m.rightTotalCounts))
+                {
+                    //We want to go left
+                    Node<i_ThresholdNode>(tr.topology_,tr.parameters_,index).threshold()=(m.gap_right-value)/2.0;
+                    m.gap_left=value;
+                }
+                else
+                {
+                    //We want to go right
+                    Node<i_ThresholdNode>(tr.topology_,tr.parameters_,index).threshold()=(value-m.gap_left)/2.0;
+                    m.gap_right=value;
+                }
+            }
+            //Adjust class counts
+            if(value>Node<i_ThresholdNode>(tr.topology_,tr.parameters_,index).threshold())
+            {
+                ++m.rightTotalCounts;
+                ++m.rightCounts[current_label];
+            }
+            else
+            {
+                ++m.leftTotalCounts;
+                ++m.rightCounts[current_label];
+            }
         }
     /** do something when visiting a extern node during getToLeaf
      * 

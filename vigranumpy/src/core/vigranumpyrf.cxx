@@ -46,6 +46,8 @@
 # include <vigra/random_forest_hdf5_impex.hxx>
 #endif
 
+#define RandomForest RandomForest_Deprec
+
 namespace python = boost::python;
 namespace vigra
 {
@@ -136,3 +138,4 @@ void defineRandomForest()
 }
 
 } // namespace vigra
+#undef RandomForest 

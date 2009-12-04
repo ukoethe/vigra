@@ -19,7 +19,8 @@ ADD_LIBRARY(vigranumpycmodule SHARED
     vigranumpyconvolution.cxx
     vigranumpymulticonvolution.cxx
     vigranumpyfilters.cxx
-    vigranumpyrf.cxx)
+    vigranumpyrf.cxx
+    vigranumpyrf_new.cxx)
 
 IF(PYTHON_PLATFORM MATCHES "^win32$")
     SET_TARGET_PROPERTIES(vigranumpycmodule PROPERTIES PREFIX "" SUFFIX  ".pyd")

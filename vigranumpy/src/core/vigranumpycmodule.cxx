@@ -52,6 +52,7 @@ void defineMultiAnalysisFunctions();
 void defineMultiConvolutionFunctions();
 void defineFilters2D();
 void defineRandomForest();
+void defineRandomForest_new();
 void defineKernels();
 
 void test(NumpyArray<2, float> array)
@@ -77,6 +78,7 @@ BOOST_PYTHON_MODULE_INIT(vigranumpycmodule)
     defineMultiConvolutionFunctions();
     defineFilters2D();
     defineRandomForest();
+    defineRandomForest_new();
     defineKernels();
     
     def("test", registerConverters(&test));

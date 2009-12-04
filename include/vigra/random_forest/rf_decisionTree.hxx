@@ -166,7 +166,7 @@ class DecisionTree
         TreeInt index = 2;
         while(!isLeafNode(topology_[index]))
         {
-            visitor.visit_internal_node(*this, index, topology_[index]);
+            visitor.visit_internal_node(*this, index, topology_[index],features);
             switch(topology_[index])
             {
                 case i_ThresholdNode:
@@ -204,7 +204,7 @@ class DecisionTree
                                "encountered unknown internal Node Type");
             }
         }
-        visitor.visit_external_node(*this, index, topology_[index]);
+        visitor.visit_external_node(*this, index, topology_[index],features);
         return index;
     }
     /** traverse tree to get statistics
@@ -395,8 +395,8 @@ void DecisionTree::continueLearn(   MultiArrayView<2, U, C> const       & featur
     }
     if(garbaged_child!=-1)
     {
-        std::cerr<<"garbed_child"<<garbaged_child<<std::endl;
-        NodeBase(topology_,parameters_,garbaged_child).copy(NodeBase(topology_,parameters_,last_node_pos));
+        Node<e_ConstProbNode>(topology_,parameters_,garbaged_child).copy(Node<e_ConstProbNode>(topology_,parameters_,last_node_pos));
+
         int last_parameter_size = split.createNode().parameters_size();
         topology_.resize(last_node_pos);
         parameters_.resize(parameters_.size() - last_parameter_size);

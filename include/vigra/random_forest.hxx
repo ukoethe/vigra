@@ -394,6 +394,7 @@ class RandomForest
                      rnd);
     }
 
+    
     template<class U,class C1,
         class U2, class C2,
         class Split_t,
@@ -407,6 +408,20 @@ class RandomForest
                        Split_t split_,
                        Stop_t stop_,
                        Random_t & random);
+
+    template <class U, class C1, class U2,class C2>
+    double onlineLearn(   MultiArrayView<2, U, C1> const  & features,
+                    MultiArrayView<2, U2,C2> const  & labels,int new_start_index)
+    {
+        RandomNumberGenerator<> rnd = RandomNumberGenerator<>(RandomSeed);
+        return onlineLearn(features, 
+                     labels, 
+                     new_start_index,
+                     rf_default(), 
+                     rf_default(), 
+                     rf_default(),
+                     rnd);
+    }
 
 
 
@@ -563,6 +578,8 @@ double RandomForest<LabelType, PreprocessorTag>::onlineLearn(
                                                              Stop_t stop_,
                                                              Random_t & random)
 {
+    online_visitor_.activate();
+
     using namespace rf;
     //typedefs
     typedef typename Split_t::StackEntry_t StackEntry_t;
@@ -606,40 +623,51 @@ double RandomForest<LabelType, PreprocessorTag>::onlineLearn(
 
 
     //Create poisson samples
-    PoissonSampler<> poisson_sampler(1.0,new_start_index,ext_param().row_count_,RandomTT800());
+    PoissonSampler<RandomTT800> poisson_sampler(1.0,vigra::Int32(new_start_index),vigra::Int32(ext_param().row_count_));
 
     visitor.visit_at_beginning(*this, preprocessor);
     // THE MAIN EFFING RF LOOP - YEAY DUDE!
     for(int ii = 0; ii < (int)trees_.size(); ++ii)
     {
+        online_visitor_.tree_id=ii;
         poisson_sampler.sample();
-        std::list<std::pair<int,int> > leaf_parents;
+        std::map<int,int> leaf_parents;
+        leaf_parents.clear();
         //Get all the leaf nodes for that sample
         for(int s=0;s<poisson_sampler.numOfSamples();++s)
         {
-            int leaf=trees_[ii].getToLeaf(rowVector(features,poisson_sampler[s]),online_visitor_);
+            int sample=poisson_sampler[s];
+            online_visitor_.current_label=preprocessor.response()(sample,0);
+            int leaf=trees_[ii].getToLeaf(rowVector(features,sample),online_visitor_);
             //Add to the list for that leaf
             online_visitor_.add_to_index_list(ii,leaf,poisson_sampler[s]);
+            //TODO: Class count?
             //Store parent
-            leaf_parents.push_back(std::make_pair(leaf,online_visitor_.last_node_id));
+            leaf_parents[leaf]=online_visitor_.last_node_id;
         }
-        std::list<std::pair<int,int> >::iterator leaf_iterator;
+
+        std::map<int,int>::iterator leaf_iterator;
         for(leaf_iterator=leaf_parents.begin();leaf_iterator!=leaf_parents.end();++leaf_iterator)
         {
             int leaf=leaf_iterator->first;
             int parent=leaf_iterator->second;
             int lin_index=online_visitor_.exterior_to_index[std::make_pair(ii,leaf)];
-            StackEntry_t stack_entry(online_visitor_.index_lists[lin_index].begin(),online_visitor_.index_lists[lin_index].end());
-            if(NodeBase(trees_[ii].topology_,tree[ii].parameters_,parent).child(0)==leaf)
+            StackEntry_t stack_entry(online_visitor_.index_lists[lin_index].begin(),
+                                     online_visitor_.index_lists[lin_index].end(),
+                                     ext_param_.class_count_);
+            if(NodeBase(trees_[ii].topology_,trees_[ii].parameters_,parent).child(0)==leaf)
             {
                 stack_entry.leftParent=leaf;
             }
             else
             {
-                vigra_assert(NodeBase(tree[ii].topology_,trees[ii].paramters_,parent).child(1)==leaf,"last_node_it seems to be wrong");
+                vigra_assert(NodeBase(trees_[ii].topology_,trees_[ii].parameters_,parent).child(1)==leaf,"last_node_id seems to be wrong");
                 stack_entry.rightParent=leaf;
             }
-            trees_[ii].continueLearn(preprocessor.features(),preprocessor.response(),stack_entry,split,stop,visitor,randint,leaf);
+            //trees_[ii].continueLearn(preprocessor.features(),preprocessor.response(),stack_entry,split,stop,visitor,randint,leaf);
+            trees_[ii].continueLearn(preprocessor.features(),preprocessor.response(),stack_entry,split,stop,visitor,randint,-1);
+            //Now, the last one moved onto leaf
+            //online_visitor_.move_exterior_node(ii,trees_[ii].topology_.size(),ii,leaf);
         }
 
         /*visitor
@@ -651,6 +679,7 @@ double RandomForest<LabelType, PreprocessorTag>::onlineLearn(
     }
 
     visitor.visit_at_end(*this, preprocessor);
+    online_visitor_.deactivate();
 
     return  visitor.return_val();
 }
@@ -700,7 +729,11 @@ double RandomForest<LabelType, PreprocessorTag>::
     VisitorNode<OOB_Visitor, IntermedVis>
         visitor(oob,inter);
     #undef RF_CHOOSER
-    online_visitor_.enabled=options_.prepare_online_learning_;
+    if(options_.prepare_online_learning_)
+        online_visitor_.activate();
+    else
+        online_visitor_.deactivate();
+
 
     // Make stl compatible random functor.
     RandFunctor_t           randint     ( random);
@@ -762,29 +795,11 @@ double RandomForest<LabelType, PreprocessorTag>::
     }
 
     visitor.visit_at_end(*this, preprocessor);
+    online_visitor_.deactivate();
 
     return  visitor.return_val();
 }
 
-
-/*
-template <class LabelType, class PreprocessorTag>
-template <class U,class C1,
-         class U2,class C2,
-         class Split_t,
-         class Stop_t,
-         class Visitor_t,
-         class Random_t>
-double RandomForest<LabelType, PreprocessorTag>::
-                    onlineLearn( MultiArrayView<2, U, C1> const & features,
-                                 MultiArrayView<2, U2, C2> const & response,
-                                 Visitor_t visitor_,
-                                 Split_t split_,
-                                 Stop_t stop_,
-                                 Random_t const & random)
-{
-}
-*/
 
 
 

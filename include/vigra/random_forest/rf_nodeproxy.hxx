@@ -228,6 +228,7 @@ class NodeBase
         vigra_precondition(topology_size_==o.topology_size_,"Cannot copy nodes of different sizes");
         vigra_precondition(featureCount_==o.featureCount_,"Cannot copy nodes with different feature count");
         vigra_precondition(classCount_==o.classCount_,"Cannot copy nodes with different class counts");
+        vigra_precondition(parameters_size() ==o.parameters_size(),"Cannot copy nodes with different paremater sizes");
         std::copy(o.topology_begin(), o.topology_end(), topology_);
         std::copy(o.parameters_begin(),o.parameters_end(), parameters_);
     }

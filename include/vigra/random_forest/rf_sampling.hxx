@@ -462,6 +462,7 @@ class Sampler
 template<class Random =RandomTT800 >
 class PoissonSampler
 {
+public:
     Random  randfloat;
     typedef Int32                               IndexType;
     typedef vigra::ArrayVector     <IndexType>  IndexArrayType;
@@ -469,8 +470,8 @@ class PoissonSampler
     double lambda;
     int minIndex;
     int maxIndex;
-    inline PoissonSampler(double lambda,IndexType minIndex,IndexType maxIndex,Random & rnd)
-        : randfloat(rnd)
+    inline PoissonSampler(double lambda,IndexType minIndex,IndexType maxIndex)
+        : randfloat()
     {
         this->lambda=lambda;
         this->minIndex=minIndex;
@@ -479,6 +480,7 @@ class PoissonSampler
 
     inline void sample(  )
     {
+        used_indices_.clear();
         IndexType i;
         for(i=minIndex;i<maxIndex;++i)
         {
