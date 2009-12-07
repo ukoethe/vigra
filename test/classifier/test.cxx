@@ -45,6 +45,7 @@
 #include <functional>
 #include <cmath>
 #include <vigra/random_forest.hxx>
+#include <vigra/random_forest_deprec.hxx>
 #include <unittest.hxx>
 #include <vector>
 //#include "data/RF_results.hxx"
@@ -200,7 +201,7 @@ struct ClassifierTest
 				  rf_default(),
 				  rf_default(),
 				  vigra::RandomMT19937(1));
-
+        
 		typedef MultiArrayShape<2>::type Shp;
 		MultiArray<2, double> response(Shp(data.features(ii).shape(0),
 									   data.ClassIter(ii).size()));
