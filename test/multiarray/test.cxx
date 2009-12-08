@@ -1016,10 +1016,10 @@ struct ImageViewTest
             should(acc(i) == acc(i1));
         }
 
-        img.init(0);
+        img.init(NumericTraits<Value>::zero());
         for(; i != img.end(); ++i)
         {
-            should(acc(i) == Value(0));
+            should(acc(i) == Value(NumericTraits<Value>::zero()));
         }
         img(1,1) = Value(200);
         img1 = img;

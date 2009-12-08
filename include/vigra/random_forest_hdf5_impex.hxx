@@ -206,7 +206,7 @@ void write_hdf5_2_array(hid_t & id,
 											 &b) >= 0,
 						"write_hdf5_2_array(): "
 						"Unable to locate dataset");
-	arr.resize(size);
+	arr.resize((typename ArrayVector<U>::size_type)size);
 	vigra_postcondition(H5LTread_dataset (id, 
 										  name.c_str(),
 										  type, 

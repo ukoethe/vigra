@@ -34,8 +34,8 @@
 /************************************************************************/
 
 
-#ifndef VIGRA_RANDOM_FOREST_HXX
-#define VIGRA_RANDOM_FOREST_HXX
+#ifndef VIGRA_RANDOM_FOREST_DEPREC_HXX
+#define VIGRA_RANDOM_FOREST_DEPREC_HXX
 
 #include <algorithm>
 #include <map>
@@ -48,6 +48,11 @@
 #include "vigra/random.hxx"
 #include "vigra/functorexpression.hxx"
 
+//defines to have concurrent random_forests running;
+
+#define RandomForest RandomForestDeprec
+#define DecisionTree DecisionTreeDeprec
+#define RandomForestOptions RandomForestOptionsDeprec
 
 namespace vigra
 {
@@ -1092,15 +1097,15 @@ RandomForest<ClassLabelType>::predictProbabilities(MultiArrayView<2, U, C1> cons
 		//update votecount.
             for(unsigned int l=0; l<classes_.size(); ++l)
             {
-                prob(row, l) += weights[l];
+                prob(row, l) += detail::RequiresExplicitCast<T>::cast(weights[l]);
                 //every weight in totalWeight.
-		totalWeight += weights[l];
+                totalWeight += weights[l];
             }
         }
 
 	//Normalise votes in each row by total VoteCount (totalWeight
         for(unsigned int l=0; l<classes_.size(); ++l)
-                prob(row, l) /= totalWeight;
+                prob(row, l) /= detail::RequiresExplicitCast<T>::cast(totalWeight);
     }
 }
 
@@ -1129,4 +1134,8 @@ RandomForest<ClassLabelType>::predictNodes(MultiArrayView<2, U, C1> const & feat
 
 } // namespace vigra
 
-#endif // VIGRA_RANDOM_FOREST_HXX
+#undef  RandomForest
+#undef  DecisionTree
+#undef  RandomForestOptions
+
+#endif // VIGRA_RANDOM_FOREST_DEPREC_HXX

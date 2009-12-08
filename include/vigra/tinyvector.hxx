@@ -466,6 +466,13 @@ class TinyVectorBase
         Loop::assignCast(data_, i);
     }
 
+        /** Initialize with constant value
+        */
+    void init(value_type initial)
+    {
+        Loop::assignScalar(data_, initial);
+    }
+
         /** Component-wise add-assignment
         */
     template <class T1, class D1, class D2>
@@ -571,7 +578,6 @@ class TinyVectorBase
     pointer data() { return data_; }
 
     const_pointer data() const { return data_; }
-
 
   protected:
   
@@ -712,7 +718,7 @@ class TinyVector
 
         /** Constructor from C array.
         */
-    explicit TinyVector(const_pointer data, const_pointer /*is ignored*/ = 0 )
+    explicit TinyVector(const_pointer data)
     : BaseType()
     {
         Loop::assign(BaseType::data_, data);
@@ -727,12 +733,6 @@ class TinyVector
             \endcode
         */
     explicit TinyVector(const_pointer data, ReverseCopyTag)
-    : BaseType()
-    {
-        Loop::reverseAssign(BaseType::data_, data+SIZE-1);
-    }
-
-    explicit TinyVector(const_pointer data, const_pointer /*is ignored*/, ReverseCopyTag)
     : BaseType()
     {
         Loop::reverseAssign(BaseType::data_, data+SIZE-1);

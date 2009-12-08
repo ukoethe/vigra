@@ -312,7 +312,7 @@ class RandomForestOptions
         PULL(training_set_size_, int);
         ++iter; //PULL(training_set_func_, double);
         PULL(training_set_calc_switch_, (RF_OptionTag)int);
-        PULL(sample_with_replacement_, bool);
+        PULL(sample_with_replacement_, 0 != );
         PULL(stratification_method_, (RF_OptionTag)int);
         PULL(mtry_switch_, (RF_OptionTag)int);
         PULL(mtry_, int);
@@ -798,8 +798,10 @@ public:
     template<class C_Iter>
     ProblemSpec & classes_(C_Iter begin, C_Iter end)
     {
-        classes.insert(classes.end(), begin, end);
-        class_count_ = end-begin;
+        int size = end-begin;
+        for(int k=0; k<size; ++k, ++begin)
+            classes.push_back(detail::RequiresExplicitCast<LabelType>::cast(*begin));
+        class_count_ = size;
         return *this;
     }
 

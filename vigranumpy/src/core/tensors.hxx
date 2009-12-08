@@ -155,7 +155,7 @@ void structureTensor(MultiArrayView<N, T, C1> const & in,
 			{
 				for(int j=i; j<N; ++j, ++b)
 				{
-					st(x, y, b) = gradient(x, y, i)*gradient(x, y, j);
+					st(x, y, b) = detail::RequiresExplicitCast<T>::cast(gradient(x, y, i)*gradient(x, y, j));
 				}
 			}
 		}
