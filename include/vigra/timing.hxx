@@ -38,7 +38,7 @@
 #ifndef VIGRA_TIMING_HXX
 #define VIGRA_TIMING_HXX
 
-#ifndef NDEBUG
+#ifndef VIGRA_NO_TIMING
 
 #include <sstream>
 
