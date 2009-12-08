@@ -1,9 +1,29 @@
 import copy
 import numpy
 import ufunc
+import sys
 
 from numpy import int8, uint8, int16, uint16, int32, uint32, int64, uint64
 from numpy import float32, float64, longdouble, complex64, complex128, clongdouble
+
+def qimage2array(q):
+    '''Create a view to the given array with the appropriate type.
+
+       q.format() must be QImage.Format_Indexed8, QImage.Format_RGB32, or 
+       QImage.Format_ARGB32, and you will get ScalarImage, RGBImage, or
+       Vector4Image respectively, all with dtype=uint8. The channels in
+       a Vector4Image will be ordered as [alpha, red, green, blue].
+    '''
+    import PyQt4.QtGui as qt
+    import qimage2ndarray
+    if q.format() == qt.QImage.Format_Indexed8:
+        width, height = q.width(), q.height()
+        return qimage2ndarray.byte_view(q).swapaxes(0,1).reshape((width, height)).view(ScalarImage)
+    if q.format() == qt.QImage.Format_RGB32:
+        return qimage2ndarray.rgb_view(q).swapaxes(0,1).view(RGBImage)
+    if q.format() == qt.QImage.Format_ARGB32:
+        return qimage2ndarray.byte_view(q, 'big').swapaxes(0,1).view(Vector4Image)
+    raise RuntimeError("qimage2array(): q.format() must be Format_Indexed8, Format_RGB32, or Format_ARGB32")
 
 class classproperty(object):
     def __get__(self, instance, cls):
@@ -296,6 +316,68 @@ class Image(_VigraArray):
         import vigranumpycmodule as vn
         vn.writeImage(self, filename, export_type, compression)
 
+    def qimage(self, normalize = True):
+        '''
+        Convert this image to a Qt QImage (mainly for display purposes).
+        The present image must have 1 or 3 channels, and the resulting
+        QImage will have QImage.Format_Indexed8 or QImage.Format_RGB32
+        respectively.
+        
+	    The parameter `normalize` can be used to normalize an image's
+	    value range to 0..255:
+
+	    `normalize` = (nmin, nmax):
+	      scale & clip image values from nmin..nmax to 0..255
+
+	    `normalize` = nmax:
+	      lets nmin default to zero, i.e. scale & clip the range 0..nmax
+	      to 0..255
+
+	    `normalize` = True: (default)
+	      scale the image's actual range min()..max() to 0..255
+
+	    `normalize` = False:
+	      don't scale the image's values
+           
+        '''
+        import PyQt4.QtGui as qt
+        import qimage2ndarray
+
+        if self.channels not in [1,3]:
+            raise RuntimeError("Image.qimage(): channels == 1 or channels == 3 required.")
+        
+        if normalize is None or normalize is False:
+            nmin, nmax = 0.0, 255.0
+        elif normalize is True:
+            nmin, nmax = float(self.min()), float(self.max())
+        else:
+            try:
+                nmax = float(normalize)
+                nmin = 0.0
+            except:
+                nmin, nmax = map(float, normalize)
+        if nmax < nmin:
+            raise RuntimeError("Image.qimage(): invalid normalization (nmax < nmin).")
+        
+        if self.channels == 1:
+            q = qt.QImage(self.width, self.height, qt.QImage.Format_Indexed8)
+            for i in range(256):
+                q.setColor(i, qt.QColor(i,i,i).rgba())
+            if nmax == nmin:
+                q.fill(0)
+            else:
+                # FIXME: use proper rounding
+                ufunc.multiply(self - nmin, 255.0 / (nmax - nmin),
+                               qimage2ndarray.byte_view(q).swapaxes(0,1).reshape(self.shape))
+        else:
+            q = qt.QImage(self.width, self.height, qt.QImage.Format_RGB32)
+            if nmax == nmin:
+                q.fill(0)
+            else:
+                ufunc.multiply(self - nmin, 255.0 / (nmax - nmin),
+                               qimage2ndarray.rgb_view(q).swapaxes(0,1))
+        return q
+        
     @property
     def width(self):
         """the image's width"""
@@ -326,7 +408,7 @@ class ScalarImage(Image):
     * 'V': like 'F'""")
 
     channels = classproperty(lambda cls: 1, Image.bands)
-    
+        
 class Vector2Image(Image):
     __doc__ = _array_docstring_('Vector2Image', '''
     A shape is compatible when it has two dimensions (width, height)
@@ -530,7 +612,7 @@ class RGBVolume(Vector3Volume):
            NumpyArray<3, TinyVector<T, 3>, UnstridedArrayTag>,
            NumpyArray<4, Multiband<T>, StridedArrayTag>""")
 
-def registerArrayTypes():
+def _registerArrayTypes():
     from vigranumpycmodule import registerPythonArrayType
     
     def checkImage(obj):
@@ -551,4 +633,4 @@ def registerArrayTypes():
     registerPythonArrayType("NumpyArray<3, TinyVector<*, 4> >", Vector4Volume, checkVolume)
     registerPythonArrayType("NumpyArray<4, Multiband<*> >", Volume, checkVolume)
 
-registerArrayTypes()
+_registerArrayTypes()
