@@ -125,11 +125,10 @@ class RandomForest
     typedef RF_Traits::Default_Stop_t       Default_Stop_t;
     typedef RF_Traits::Default_Visitor_t    Default_Visitor_t;
   protected:
-    /**\brief helper function used to choose the right
-     * value of split, early stopping and visitor
-     */
 
-
+    /** optimisation for predictLabels
+     * */
+    MultiArray<2, double> garbage_prediction_;
 
   public:
 
@@ -654,10 +653,11 @@ LabelType RandomForest<LabelType, Tag>
     vigra_precondition(rowCount(features) == 1,
         "RandomForestn::predictLabel():"
             " Feature matrix must have a singlerow.");
-    Matrix<double>  prob(1, ext_param_.class_count_);
+    typedef MultiArrayShape<2>::type Shp;
+    garbage_prediction_.reshape(Shp(1, ext_param_.class_count_), 0.0);
     double          d;
-    predictProbabilities(features, prob);
-    ext_param_.to_classlabel(argMax(prob), d);
+    predictProbabilities(features, garbage_prediction_);
+    ext_param_.to_classlabel(argMax(garbage_prediction_), d);
     return d;
 }
 

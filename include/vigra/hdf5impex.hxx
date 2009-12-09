@@ -699,6 +699,7 @@ void writeToHDF5File(const char* filePath,
 }
 
 
+#if (H5_VERS_MAJOR == 1 && H5_VERS_MINOR == 8)
 /** write a numeric MultiArray as a attribute of location identifier loc
  * with name name
  */
@@ -847,7 +848,7 @@ inline void writeHDF5Attr(  std::string filePath,
     }
 
 }
-
+#endif
 } // namespace vigra
 
 #endif // VIGRA_HDF5IMPEX_HXX
