@@ -526,7 +526,7 @@ class RandomForest
         vigra_precondition(features.shape(0) == labels.shape(0),
             "RandomForest::predictLabels(): Label array has wrong size.");
         for(int k=0; k<features.shape(0); ++k)
-            labels(k,0) = predictLabel(rowVector(features, k));
+            labels(k,0) = detail::RequiresExplicitCast<T>::cast(predictLabel(rowVector(features, k)));
     }
 
 

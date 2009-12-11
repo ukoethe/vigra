@@ -37,6 +37,10 @@
 #ifndef VIGRA_MATHUTIL_HXX
 #define VIGRA_MATHUTIL_HXX
 
+#ifdef _MSC_VER
+# pragma warning (disable: 4996) // hypot/_hypot confusion
+#endif
+
 #include <cmath>
 #include <cstdlib>
 #include "config.hxx"
@@ -138,6 +142,22 @@ inline long double round(long double t)
      return t >= 0.0
                 ? floor(t + 0.5)
                 : ceil(t - 0.5);
+}
+
+
+    /*! Round and cast to integer.
+
+        Rounds to the nearest integer like round(), but casts the result to 
+        <tt>int</tt> (this will be faster and is usually needed anyway).
+
+        <b>\#include</b> \<<a href="mathutil_8hxx-source.html">vigra/mathutil.hxx</a>\><br>
+        Namespace: vigra
+    */
+inline int roundi(double t)
+{
+     return t >= 0.0
+                ? int(t + 0.5)
+                : int(t - 0.5);
 }
 
     /*! Round up to the nearest power of 2.
@@ -368,7 +388,7 @@ inline UInt32 sqrti(UInt32 v)
     return detail::IntSquareRoot<UInt32>::exec(v);
 }
 
-#ifndef VIGRA_HAS_HYPOT
+#ifdef VIGRA_NO_HYPOT
     /*! Compute the Euclidean distance (length of the hypothenuse of a right-angled triangle).
 
         The  hypot()  function  returns  the  sqrt(a*a  +  b*b).
@@ -634,8 +654,8 @@ template <class T>
 void symmetric2x2Eigenvalues(T a00, T a01, T a11, T * r0, T * r1)
 {
     double d  = std::sqrt(sq(a00 - a11) + 4.0*sq(a01));
-    *r0 = 0.5*(a00 + a11 + d);
-    *r1 = 0.5*(a00 + a11 - d);
+    *r0 = static_cast<T>(0.5*(a00 + a11 + d));
+    *r1 = static_cast<T>(0.5*(a00 + a11 - d));
     if(*r0 < *r1)
         std::swap(*r0, *r1);
 }
@@ -672,9 +692,9 @@ void symmetric3x3Eigenvalues(T a00, T a01, T a02, T a11, T a12, T a22,
     double angle = std::atan2(std::sqrt(-q),mbDiv2)*inv3;
     double cs = std::cos(angle);
     double sn = std::sin(angle);
-    *r0 = c2Div3 + 2.0*magnitude*cs;
-    *r1 = c2Div3 - magnitude*(cs + root3*sn);
-    *r2 = c2Div3 - magnitude*(cs - root3*sn);
+    *r0 = static_cast<T>(c2Div3 + 2.0*magnitude*cs);
+    *r1 = static_cast<T>(c2Div3 - magnitude*(cs + root3*sn));
+    *r2 = static_cast<T>(c2Div3 - magnitude*(cs - root3*sn));
     if(*r0 < *r1)
         std::swap(*r0, *r1);
     if(*r0 < *r2)
@@ -785,7 +805,7 @@ inline double ellipticIntegralE(double x, double k)
     return s*(detail::ellipticRF(c2, 1.0-k, 1.0) - k/3.0*detail::ellipticRD(c2, 1.0-k, 1.0));
 }
 
-#ifndef VIGRA_HAS_ERF 
+#if _MSC_VER
 
 namespace detail {
 
@@ -827,7 +847,7 @@ inline double erf(double x)
 
 #else
 
-using VIGRA_CSTD::erf;
+using ::erf;
 
 #endif
 

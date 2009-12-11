@@ -153,6 +153,15 @@ class RGBValue
         */
     typedef typename Base::NormType NormType;
 
+    typedef typename Base::reference reference;
+    typedef typename Base::const_reference const_reference;
+    typedef typename Base::pointer pointer;
+    typedef typename Base::const_pointer const_pointer;
+    typedef typename Base::size_type size_type;
+    typedef typename Base::difference_type difference_type;
+    typedef typename Base::scalar_multiplier scalar_multiplier;
+    typedef typename Base::ReverseCopyTag ReverseCopyTag;
+
         /** Color index positions
         */
     enum
@@ -172,7 +181,7 @@ class RGBValue
         VIGRA_STATIC_ASSERT((RGBValue_bad_color_indices<RED_IDX, GREEN_IDX, BLUE_IDX>));
     }
 
-        /** Construct gray value
+        /** Construct gray value.
         */
     RGBValue(value_type gray)
     : Base(gray, gray, gray)
@@ -180,11 +189,19 @@ class RGBValue
         VIGRA_STATIC_ASSERT((RGBValue_bad_color_indices<RED_IDX, GREEN_IDX, BLUE_IDX>));
     }
 
-        /** Construct from another sequence (must have length 3!)
+        /** Copy from raw memory. The order is preserved,
+            irrespective of how the color indices are specified.
         */
-    template <class Iterator>
-    RGBValue(Iterator i, Iterator end)
-    : Base(i[0], i[1], i[2])
+    explicit RGBValue(const_pointer i)
+    : Base(i)
+    {
+        VIGRA_STATIC_ASSERT((RGBValue_bad_color_indices<RED_IDX, GREEN_IDX, BLUE_IDX>));
+    }
+
+        /** Construct by reverse copying from raw memory.
+        */
+    RGBValue(const_pointer i, ReverseCopyTag reverse)
+    : Base(i, reverse)
     {
         VIGRA_STATIC_ASSERT((RGBValue_bad_color_indices<RED_IDX, GREEN_IDX, BLUE_IDX>));
     }
@@ -200,7 +217,7 @@ class RGBValue
 #if !defined(TEMPLATE_COPY_CONSTRUCTOR_BUG)
 
     RGBValue(RGBValue const & r)
-    : Base(r)
+    : Base((Base const &)r)
     {
         VIGRA_STATIC_ASSERT((RGBValue_bad_color_indices<RED_IDX, GREEN_IDX, BLUE_IDX>));
     }

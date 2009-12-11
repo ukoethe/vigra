@@ -736,7 +736,11 @@ class ThresholdSplit: public SplitBase
 
         // Save the ranges of the child stack entries.
         childRegions[0].setRange(   region.begin()  , bestSplit       );
+        childRegions[0].rule = region.rule;
+        childRegions[0].rule.push_back(std::make_pair(1, 1.0));
         childRegions[1].setRange(   bestSplit       , region.end()    );
+        childRegions[1].rule = region.rule;
+        childRegions[1].rule.push_back(std::make_pair(1, 1.0));
 
         return i_ThresholdNode;
     }

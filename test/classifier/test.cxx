@@ -36,6 +36,10 @@
 #define HDF5 0
 #define CROSSVAL 0
 
+#ifdef _MSC_VER
+# pragma warning (disable : 4244)
+#endif
+
 #include <iostream>
 #include <fstream>
 #include <functional>

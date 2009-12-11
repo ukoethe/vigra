@@ -333,6 +333,14 @@ struct FunctionsTest
             shouldEqual(vigra::sqrti(i), (vigra::Int32)vigra::floor(vigra::sqrt((double)i)));
         }
 
+        shouldEqual(vigra::roundi(0.0), 0);
+        shouldEqual(vigra::roundi(1.0), 1);
+        shouldEqual(vigra::roundi(1.1), 1);
+        shouldEqual(vigra::roundi(1.6), 2);
+        shouldEqual(vigra::roundi(-1.0), -1);
+        shouldEqual(vigra::roundi(-1.1), -1);
+        shouldEqual(vigra::roundi(-1.6), -2);
+
         vigra::UInt32 roundPower2[] = {0, 1, 2, 3, 4, 5, 7, 8, 9, 15, 16, 0xffff, 0x7fffffff, 0x80000000, 0x80000001, 0xffffffff};
         vigra::UInt32 floorResult[] = {0, 1, 2, 2, 4, 4, 4, 8, 8, 8, 16, 0x8000, 0x40000000, 0x80000000, 0x80000000, 0x80000000};
         vigra::UInt32 ceilResult[] = {0, 1, 2, 4, 4, 8, 8, 8, 16, 16, 16, 0x10000, 0x80000000, 0x80000000, 0, 0};
@@ -848,19 +856,244 @@ struct FixedPointTest
     }
 };
 
+struct FixedPoint16Test
+{
+    void testConstruction()
+    {
+        shouldEqual((vigra::FixedPoint16<3>(3).value), 3 << 12);
+        shouldEqual((vigra::FixedPoint16<3>(-3).value), -3 << 12);
+        shouldEqual((-vigra::FixedPoint16<3>(3).value), -3 << 12);
+
+        shouldEqual((vigra::FixedPoint16<8>(3).value), 3 << 7);
+
+        shouldEqual((vigra::FixedPoint16<3>(3.5).value), 7 << 11);
+        shouldEqual((vigra::FixedPoint16<3>(-3.5).value), -(7 << 11));
+        shouldEqual((-vigra::FixedPoint16<3>(3.5).value), -(7 << 11));
+
+        shouldEqual((vigra::NumericTraits<vigra::FixedPoint16<4> >::zero()).value, 0);
+        shouldEqual((vigra::NumericTraits<vigra::FixedPoint16<4> >::one()).value, 1 << 11);
+        shouldEqual((vigra::NumericTraits<vigra::FixedPoint16<4> >::max()).value, (1 << 15) - 1);
+        shouldEqual((vigra::NumericTraits<vigra::FixedPoint16<4> >::min()).value, -(1 << 15));
+
+        shouldEqual((vigra::FixedPoint16<1, vigra::FPOverflowSaturate>(3.75).value), (1 << 15)-1);
+        shouldEqual((vigra::FixedPoint16<1, vigra::FPOverflowSaturate>(-3.75).value), -(1 << 15));
+        try { vigra::FixedPoint16<1, vigra::FPOverflowError>(3.75); failTest("No exception thrown"); } 
+        catch(vigra::PreconditionViolation &) {}
+        try { vigra::FixedPoint16<1, vigra::FPOverflowError>(-3.75); failTest("No exception thrown"); } 
+        catch(vigra::PreconditionViolation &) {}
+
+        vigra::FixedPoint16<4> v(3.75);
+        shouldEqual((v.value), 15 << 9);
+        shouldEqual(((-v).value), -15 << 9);
+        shouldEqual((vigra::FixedPoint16<4>(v).value), 15 << 9);
+        shouldEqual((vigra::FixedPoint16<6>(v).value), 15 << 7);
+        shouldEqual((vigra::FixedPoint16<13>(v).value), 15);
+        shouldEqual((vigra::FixedPoint16<15>(v).value), 4);
+
+        shouldEqual((vigra::FixedPoint16<4>(-v).value), -15 << 9);
+        shouldEqual((vigra::FixedPoint16<6>(-v).value), -15 << 7);
+        shouldEqual((vigra::FixedPoint16<13>(-v).value), -15);
+        shouldEqual((vigra::FixedPoint16<15>(-v).value), -4);
+
+        shouldEqual(vigra::fixed_point_cast<double>(v), 3.75);
+        shouldEqual(vigra::fixed_point_cast<double>(-v), -3.75);
+        shouldEqual(frac(v), vigra::FixedPoint16<4>(0.75));
+        shouldEqual(dual_frac(v), vigra::FixedPoint16<4>(0.25));
+        shouldEqual(frac(-v), vigra::FixedPoint16<4>(0.25));
+        shouldEqual(dual_frac(-v), vigra::FixedPoint16<4>(0.75));
+        shouldEqual(vigra::floor(v), 3);
+        shouldEqual(vigra::ceil(v), 4);
+        shouldEqual(vigra::floor(-v), -4);
+        shouldEqual(vigra::ceil(-v), -3);
+        shouldEqual(round(v), 4);
+        shouldEqual(round(-v), -4);
+        shouldEqual(vigra::abs(v), v);
+        shouldEqual(vigra::abs(-v), v);
+        shouldEqual(vigra::norm(-v), v);
+        shouldEqual(vigra::squaredNorm(-v), v*v);
+
+        vigra::FixedPoint16<2> v1;
+        shouldEqual((v1 = v).value, 15 << 11);
+        shouldEqual((v1 = -v).value, -15 << 11);
+
+        vigra::FixedPoint16<15> v2;
+        shouldEqual((v2 = v).value, 4);
+        shouldEqual((v2 = -v).value, -4);
+    }
+
+    void testComparison()
+    {
+        vigra::FixedPoint16<4> v1(3.75), v2(4);
+        vigra::FixedPoint16<2> v3(3.75);
+        should(v1 == v1);
+        should(v1 == v3);
+        should(!(v1 != v1));
+        should(!(v1 != v3));
+        should(v1 <= v1);
+        should(v1 <= v3);
+        should(!(v1 < v1));
+        should(!(v1 < v3));
+        should(v1 >= v1);
+        should(v1 >= v3);
+        should(!(v1 > v1));
+        should(!(v1 > v3));
+
+        should(v2 != v1);
+        should(v2 != v3);
+        should(!(v2 == v1));
+        should(!(v2 == v3));
+        should(!(v2 <= v1));
+        should(!(v2 <= v3));
+        should(!(v2 < v1));
+        should(!(v2 < v3));
+        should(v2 >= v1);
+        should(v2 >= v3);
+        should(v2 > v1);
+        should(v2 > v3);
+    }
+
+    void testArithmetic()
+    {
+        typedef vigra::FixedPoint16<1> FP1;
+        typedef vigra::FixedPoint16<2> FP2;
+        typedef vigra::FixedPoint16<7> FP7;
+        typedef vigra::FixedPoint16<8> FP8;
+        typedef vigra::FixedPoint16<13> FP13;
+        typedef vigra::FixedPoint16<15> FP15;
+        
+        FP1 t0(0), t1(0.75), t2(0.25);
+        signed char v1 = 1, v2 = 2, v4 = 4, v8 = 8;
+
+        shouldEqual(FP1(t1) += t1, FP1(1.5));
+        shouldEqual(FP1(t1) -= t1, FP1(0.0));
+        shouldEqual(FP1(t1) -= t2, FP1(0.5));
+        shouldEqual(FP2(t1) *= t1, FP1(9.0 / 16.0));
+        shouldEqual(FP2(t1) /= t2, FP2(3));
+        shouldEqual(FP2(t1) /= t0, vigra::NumericTraits<FP2>::max());
+        shouldEqual(FP2(-t1) /= t0, vigra::NumericTraits<FP2>::min());
+        
+        FP2 res;
+        shouldEqual(add(t1, t1, res), FP2(1.5));
+        shouldEqual(sub(t1, t1, res), FP2(0));
+        shouldEqual(sub(t1, t2, res), FP2(0.5));
+        shouldEqual(mul(t1, t1, res), FP2(9.0 / 16.0));
+        shouldEqual(div(t1, t2, res), FP2(3));
+        shouldEqual(div(t1, t0, res), vigra::NumericTraits<FP2>::max());
+        shouldEqual(div(-t1, t0, res), vigra::NumericTraits<FP2>::min());
+
+        shouldEqual(--t1, FP1(-0.25));
+        shouldEqual(t1, FP1(-0.25));
+        shouldEqual(++t1, FP1(0.75));
+        shouldEqual(t1, FP1(0.75));
+        shouldEqual(t1++, FP1(0.75));
+        shouldEqual(t1, FP1(1.75));
+        shouldEqual(t1--, FP1(1.75));
+        shouldEqual(t1, FP1(0.75));
+
+        shouldEqual((t1 * FP7(v1)).value, 3 << 6);
+        shouldEqual((t2 * FP7(v1)).value, 1 << 6);
+        shouldEqual((-t1 * FP7(v1)).value, -3 << 6);
+        shouldEqual((-t2 * FP7(v1)).value, -1 << 6);
+        shouldEqual((t1 * -FP7(v1)).value, -3 << 6);
+        shouldEqual((t2 * -FP7(v1)).value, -1 << 6);
+
+        shouldEqual((vigra::FixedPoint16<2, vigra::FPOverflowSaturate>(t1*FP7(v8)).value), (1 << 15)-1);
+        shouldEqual((vigra::FixedPoint16<2, vigra::FPOverflowSaturate>(t1*FP7(-v8)).value), -(1 << 15));
+        try { vigra::FixedPoint16<2, vigra::FPOverflowError>(t1*FP7(v8)); failTest("No exception thrown"); } 
+        catch(vigra::PreconditionViolation &) {}
+        try { vigra::FixedPoint16<2, vigra::FPOverflowError>(t1*FP7(-v8)); failTest("No exception thrown"); } 
+        catch(vigra::PreconditionViolation &) {}
+
+        shouldEqual((FP13(t1 * FP7(v1))).value, 3);
+        shouldEqual((FP13(t2 * FP7(v1))).value, 1);
+        shouldEqual((FP13(-t1 * FP7(v1))).value, -3);
+        shouldEqual((FP13(-t2 * FP7(v1))).value, -1);
+
+        shouldEqual((t1 * FP7(v4) + t2 * FP7(v8)).value, 5 << 8);
+        shouldEqual((t1 * FP7(v1) + t2 * FP7(v2)).value, 5 << 6);
+
+        shouldEqual(FP7(6) / FP7(3), FP7(2));
+        shouldEqual(FP7(0.75) / FP7(0.25), FP7(3));
+        shouldEqual(FP7(12) / FP7(48), FP7(0.25));
+        shouldEqual(FP1(0.25) / FP7(2), FP7(0.125));
+        shouldEqual(FP7(10) / FP1(0.25), FP7(40));
+        shouldEqual(FP7(10) / t0, vigra::NumericTraits<FP7>::max());
+        shouldEqual(FP7(-10) / t0, vigra::NumericTraits<FP7>::min());
+
+        shouldEqual(vigra::floor(t1 * FP7(v1) + t2 * FP7(v2)), 1);
+        shouldEqual(vigra::ceil(t1 * FP7(v1) + t2 * FP7(v2)), 2);
+        shouldEqual(round(t1 * FP7(v1) + t2 * FP7(v2)), 1);
+        shouldEqual(vigra::floor(t1 * FP7(v4) + t2 * FP7(v8)), 5);
+        shouldEqual(vigra::ceil(t1 * FP7(v4) + t2 * FP7(v8)), 5);
+        shouldEqual(round(t1 * FP7(v4) + t2 * FP7(v8)), 5);
+
+        shouldEqual(vigra::floor(t1 * -FP7(v1) - t2 * FP7(v2)), -2);
+        shouldEqual(vigra::ceil(t1 * -FP7(v1) - t2 * FP7(v2)), -1);
+        shouldEqual(round(t1 * -FP7(v1) - t2 * FP7(v2)), -1);
+        shouldEqual(vigra::floor(t1 * -FP7(v4) - t2 * FP7(v8)), -5);
+        shouldEqual(vigra::ceil(t1 * -FP7(v4) - t2 * FP7(v8)), -5);
+        shouldEqual(round(t1 * -FP7(v4) - t2 * FP7(v8)), -5);
+
+        double d1 = 1.0 / 3.0, d2 = 1.0 / 7.0;
+        FP1 r1(d1), r2(d2);
+        FP2 r3;
+        add(r1, r2, r3);
+        shouldEqual(r3.value, FP2(d1 + d2).value);
+        sub(r1, r2, r3);
+        shouldEqual(r3.value, FP2(d1 - d2).value);
+        mul(r1, r2, r3);
+        shouldEqual(r3.value >> 2, FP2(d1 * d2).value >> 2);
+
+        shouldEqual(vigra::sqrt(FP7(4)).value, 1 << 12);
+        shouldEqual(vigra::sqrt(FP8(4)).value, 1 << 12);
+        shouldEqual(vigra::hypot(FP8(3), FP8(4)), FP8(5));
+        shouldEqual(vigra::hypot(FP8(-3), FP8(-4)), FP8(5));
+        shouldEqual(vigra::fixed_point_cast<double>(vigra::sqrt(FP7(4))), 2.0);
+        shouldEqual(vigra::fixed_point_cast<double>(vigra::sqrt(FP2(2.25))), 1.5);
+        shouldEqual(vigra::fixed_point_cast<double>(vigra::sqrt(FP8(6.25))), 2.5);
+
+        for(int i = 0; i < 1024; ++i)
+        {
+            vigra::FixedPoint16<11> fv1(i, vigra::FPNoShift);
+            vigra::FixedPoint16<10> fv2(i, vigra::FPNoShift);
+            vigra::FixedPoint16<9>  fv3(i, vigra::FPNoShift);
+            vigra::FixedPoint16<8>  fv4(i, vigra::FPNoShift);
+            shouldEqual(vigra::fixed_point_cast<double>(vigra::sqrt(fv1)), vigra::floor(vigra::sqrt((double)(i << 14))) / 512.0);
+            shouldEqual(vigra::fixed_point_cast<double>(vigra::sqrt(fv2)), vigra::floor(vigra::sqrt((double)(i << 15))) / 1024.0);
+            shouldEqual(vigra::fixed_point_cast<double>(vigra::sqrt(fv3)), vigra::floor(vigra::sqrt((double)(i << 14))) / 1024.0);
+            shouldEqual(vigra::fixed_point_cast<double>(vigra::sqrt(fv4)), vigra::floor(vigra::sqrt((double)(i << 15))) / 2048.0);
+        }
+
+        shouldEqual(vigra::atan2(FP1(0), FP1(1)), FP2(0));
+        shouldEqual(vigra::atan2(FP1(0), FP1(-1)), FP2(M_PI));
+        shouldEqual(vigra::atan2(FP1(1), FP1(0)), FP2(0.5*M_PI));
+        shouldEqual(vigra::atan2(FP1(-1), FP1(0)), FP2(-0.5*M_PI));
+        
+        for(int i = -179; i < 180; ++i)
+        {
+            double angle = M_PI*i/180.0;
+            double c = std::cos(angle), s = std::sin(angle);
+            FP2 a = vigra::atan2(FP1(s), FP1(c));
+            should(vigra::abs(i-vigra::fixed_point_cast<double>(a)/M_PI*180.0) < 0.3);
+            a = vigra::atan2(FP15(30000.0*s), FP15(30000.0*c));
+            should(vigra::abs(i-vigra::fixed_point_cast<double>(a)/M_PI*180.0) < 0.3);
+        }
+    }
+};
+
 struct LinalgTest
 {
     typedef vigra::Matrix<double> Matrix;
     typedef Matrix::difference_type Shape;
 
     unsigned int size, iterations;
+    vigra::RandomMT19937 random_;
 
     LinalgTest()
     : size(50),
-      iterations(5)
-    {
-        std::srand (0xdeadbeef);
-    }
+      iterations(5),
+      random_(23098349)
+    {}
 
     void testOStreamShifting()
     {
@@ -870,13 +1103,13 @@ struct LinalgTest
         out << "Testing.." << a << 42 << std::endl;
     }
 
-    static double random_double ()
+    double random_double ()
     {
-        double ret = 2.0 * static_cast <double> (std::rand ()) / RAND_MAX - 1.0;
+        double ret = 2.0 * random_.uniform53() - 1.0;
         return ret;
     }
 
-    static Matrix random_matrix(unsigned int rows, unsigned int cols)
+    Matrix random_matrix(unsigned int rows, unsigned int cols)
     {
         Matrix ret (rows, cols);
         for (unsigned int i = 0; i < rows; ++i)
@@ -885,7 +1118,7 @@ struct LinalgTest
         return ret;
     }
 
-    static Matrix random_symmetric_matrix(unsigned int rows)
+    Matrix random_symmetric_matrix(unsigned int rows)
     {
         Matrix ret (rows, rows);
         for (unsigned int i = 0; i < rows; ++i)
@@ -1204,11 +1437,7 @@ struct LinalgTest
 
     void testColumnAndRowStatistics()
     {
-#if defined(__GNUC__)
-        double epsilon = 1e-11, epsilon2 = 1e-8;
-#else
-        double epsilon = 1e-13, epsilon2 = 1e-10;
-#endif
+        double epsilon = 1e-11;
 
         Matrix rowMean(size, 1), columnMean(1, size);
         Matrix rowStdDev(size, 1), columnStdDev(1, size);
@@ -1271,8 +1500,8 @@ struct LinalgTest
             rowCovarianceRef /= (size-1);
             columnCovarianceRef /= (size-1);
 
-            shouldEqualSequenceTolerance(rowCovariance.data(), rowCovariance.data()+size*size, rowCovarianceRef.data(), epsilon2);
-            shouldEqualSequenceTolerance(columnCovariance.data(), columnCovariance.data()+size*size, columnCovarianceRef.data(), epsilon2);
+            shouldEqualSequenceTolerance(rowCovariance.data(), rowCovariance.data()+size*size, rowCovarianceRef.data(), epsilon);
+            shouldEqualSequenceTolerance(columnCovariance.data(), columnCovariance.data()+size*size, columnCovarianceRef.data(), epsilon);
         }
     }
 
@@ -1282,11 +1511,7 @@ struct LinalgTest
         using vigra::UnitVariance;
         using vigra::UnitNorm;
 
-#if defined(__GNUC__) && __GNUC__ == 3
-        double epsilon = 1e-11, epsilon2 = 1e-8;
-#else
-        double epsilon = 1e-13, epsilon2 = 1e-10;
-#endif
+        double epsilon = 1e-11;
 
         Matrix rowMean(size, 1), columnMean(1, size);
         Matrix rowStdDev(size, 1), columnStdDev(1, size);
@@ -1327,7 +1552,7 @@ struct LinalgTest
             prepareColumns(a, columnPrepared, columnOffset, columnScaling, UnitVariance);
             columnStatistics(columnPrepared, columnMeanPrepared, columnStdDevPrepared, columnNormPrepared);
             columnMeanPrepared /= columnScaling;
-            shouldEqualSequenceTolerance(columnMean.data(), columnMean.data()+size, columnMeanPrepared.data(), epsilon2);
+            shouldEqualSequenceTolerance(columnMean.data(), columnMean.data()+size, columnMeanPrepared.data(), epsilon);
             shouldEqualSequenceTolerance(oneColRef.data(), oneColRef.data()+size, columnStdDevPrepared.data(), epsilon);
 
             ap = columnPrepared / pointWise(repeatMatrix(columnScaling, size, 1)) + repeatMatrix(columnOffset, size, 1);
@@ -1347,7 +1572,7 @@ struct LinalgTest
             shouldEqualSequenceTolerance(oneColRef.data(), oneColRef.data()+size, columnNormPrepared.data(), epsilon);
 
             ap = columnPrepared / pointWise(repeatMatrix(columnScaling, size, 1)) + repeatMatrix(columnOffset, size, 1);
-            shouldEqualSequenceTolerance(a.data(), a.data()+size*size, ap.data(), epsilon2);
+            shouldEqualSequenceTolerance(a.data(), a.data()+size*size, ap.data(), epsilon);
 
             rowStatistics(a, rowMean, rowStdDev, rowNorm);
 
@@ -1389,7 +1614,7 @@ struct LinalgTest
             shouldEqualSequenceTolerance(oneRowRef.data(), oneRowRef.data()+size, rowNormPrepared.data(), epsilon);
 
             ap = rowPrepared / pointWise(repeatMatrix(rowScaling, 1, size)) + repeatMatrix(rowOffset, 1, size);
-            shouldEqualSequenceTolerance(a.data(), a.data()+size*size, ap.data(), epsilon2);
+            shouldEqualSequenceTolerance(a.data(), a.data()+size*size, ap.data(), epsilon);
         }
 
         {
@@ -1415,7 +1640,7 @@ struct LinalgTest
 
     void testCholesky()
     {
-        double epsilon = 1e-10;
+        double epsilon = 1e-11;
         Matrix idref = vigra::identityMatrix<double>(size);
 
         for(unsigned int i = 0; i < iterations; ++i)
@@ -1431,7 +1656,7 @@ struct LinalgTest
 
     void testQR()
     {
-        double epsilon = 1e-10;
+        double epsilon = 1e-11;
         Matrix idref = vigra::identityMatrix<double>(size);
 
         for(unsigned int i = 0; i < iterations; ++i)
@@ -1449,11 +1674,7 @@ struct LinalgTest
 
     void testLinearSolve()
     {
-#if defined(__GNUC__)
-        double epsilon = 1e-8;
-#else
-        double epsilon = 1e-10;
-#endif
+        double epsilon = 1e-11;
         int size = 50;
 
         for(unsigned int i = 0; i < iterations; ++i)
@@ -1475,9 +1696,10 @@ struct LinalgTest
             shouldEqualSequenceTolerance(ax.data(), ax.data()+size, b.data(), epsilon);
 
             Matrix c = transpose(a) * a; // make a symmetric positive definite matrix
-            should(linearSolve (c, b, x, "Cholesky"));
+            Matrix d = transpose(a) * b; 
+            should(linearSolve (c, d, x, "Cholesky"));
             ax = c * x;
-            shouldEqualSequenceTolerance(ax.data(), ax.data()+size, b.data(), epsilon);
+            shouldEqualSequenceTolerance(ax.data(), ax.data()+size, d.data(), epsilon);
         }
     }
 
@@ -1548,11 +1770,7 @@ struct LinalgTest
 
     void testOverdetermined()
     {
-#if defined(__GNUC__)
         double epsilon = 1e-11;
-#else
-        double epsilon = 1e-12;
-#endif
 
         unsigned int n = 5;
         unsigned int size = 1000;
@@ -1598,11 +1816,7 @@ struct LinalgTest
 
     void testIncrementalLinearSolve()
     {
-#if defined(__GNUC__) && __GNUC__ == 3
-        double epsilon = 1e-8;
-#else
-        double epsilon = 1e-10;
-#endif
+        double epsilon = 1e-11;
         int size = 50;
 
         for(unsigned int i = 0; i < iterations; ++i)
@@ -1628,7 +1842,7 @@ struct LinalgTest
 
                 for(int k=0; k<size; ++k)
                 {
-                    int i = rand() % size, j = rand() % size;
+                    int i = random_.uniformInt(size), j = random_.uniformInt(size);
                     if(i==j) continue;
 
                     vigra::linalg::detail::upperTriangularCyclicShiftColumns(i, j, r, qtb, permutation);
@@ -1654,7 +1868,7 @@ struct LinalgTest
 
                 for(int k=0; k<size; ++k)
                 {
-                    int i = rand() % size, j = rand() % size;
+                    int i = random_.uniformInt(size), j = random_.uniformInt(size);
                     vigra::linalg::detail::upperTriangularSwapColumns(i, j, r, qtb, permutation);
                 }
                 should(vigra::linalg::linearSolveUpperTriangular(r, qtb, px));
@@ -1667,7 +1881,7 @@ struct LinalgTest
 
     void testInverse()
     {
-        double epsilon = 1e-10;
+        double epsilon = 1e-11;
         Matrix idref = vigra::identityMatrix<double>(size);
 
         for(unsigned int i = 0; i < iterations; ++i)
@@ -1807,7 +2021,7 @@ struct LinalgTest
         Matrix a(m, n);
         for(int i1= 0; i1 < m; i1++)
             for(int i2= 0; i2 < n; i2++)
-                a(i1, i2)= ((float)std::rand()-RAND_MAX/2.0)/10000.0;
+                a(i1, i2)= random_double();
 	    Matrix u(m, n);
 	    Matrix v(n, n);
 	    Matrix S(n, 1);
@@ -1815,11 +2029,8 @@ struct LinalgTest
 	    unsigned int rank = singularValueDecomposition(a, u, S, v);
 	    shouldEqual(rank, n);
 
-#if defined(__GNUC__)
-        double eps = 1e-9;
-#else
-        double eps = 1e-10;
-#endif
+        double eps = 1e-11;
+
    	    shouldEqualToleranceMessage(norm(a-u*diagonalMatrix(S)*transpose(v)), 0.0, eps, VIGRA_TOLERANCE_MESSAGE);
 	    shouldEqualToleranceMessage(norm(vigra::identityMatrix<double>(4) - transpose(u)*u), 0.0, eps, VIGRA_TOLERANCE_MESSAGE);
 	    shouldEqualToleranceMessage(norm(vigra::identityMatrix<double>(4) - transpose(v)*v), 0.0, eps, VIGRA_TOLERANCE_MESSAGE);
@@ -2084,6 +2295,9 @@ struct MathTestSuite
         add( testCase(&FixedPointTest::testConstruction));
         add( testCase(&FixedPointTest::testComparison));
         add( testCase(&FixedPointTest::testArithmetic));
+        add( testCase(&FixedPoint16Test::testConstruction));
+        add( testCase(&FixedPoint16Test::testComparison));
+        add( testCase(&FixedPoint16Test::testArithmetic));
 
         add( testCase(&RandomTest::testTT800));
         add( testCase(&RandomTest::testMT19937));

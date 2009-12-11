@@ -76,6 +76,19 @@ IF(PYTHONINTERP_FOUND)
 
     ######################################################################
     #
+    #      check if sphinx documentation generator is installed
+    #
+    ######################################################################
+    find_program ( PYTHON_SPHINX sphinx-build "${PYTHON_PREFIX}/Scripts")
+
+    IF(NOT PYTHON_SPHINX)
+        MESSAGE(STATUS "Could NOT find sphinx documentation generator")
+    ELSE()
+        MESSAGE(STATUS "Searching for sphinx documentation generator: ok")
+    ENDIF()
+
+    ######################################################################
+    #
     #      find Python platform
     #
     ######################################################################

@@ -36,6 +36,7 @@
 
 #include <iostream>
 #include <sstream>
+#include <iterator>
 #include "unittest.hxx"
 
 #include "vigra/accessor.hxx"
@@ -127,10 +128,21 @@ struct TinyVectorTest
 
         should(!equalVector(bv3, fv3));
         should(!equalVector(iv3, fv3));
-
+        
+        BV bv0((typename BV::value_type)0);
+        shouldEqual(bv0, BV(0,0,0));
+        
         BV bv(fv3);
         should(equalIter(bv3.begin(), bv3.end(), bv.begin()));
         should(equalVector(bv3, bv));
+
+        BV bv4(bv3.begin());
+        should(equalIter(bv3.begin(), bv3.end(), bv4.begin()));
+        should(equalVector(bv3, bv4));
+
+        BV bv5(bv3.begin(), BV::ReverseCopy);
+        should(equalIter(bv3.begin(), bv3.end(), 
+                         std::reverse_iterator<typename BV::iterator>(bv5.end())));
 
         FV fv(iv3);
         should(equalIter(iv3.begin(), iv3.end(), fv.begin()));
