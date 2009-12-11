@@ -87,7 +87,7 @@ class SplitBase
         t_data.push_back(in.class_count_);
     }
 
-    NodeBase & createNode() 
+    NodeBase & createNode()
     {
         return node_;
     }
@@ -626,6 +626,11 @@ class ThresholdSplit: public SplitBase
     ArrayVector<double>         min_thresholds_;
 
     int                         bestSplitIndex;
+    
+    double threshold()
+    {
+        return min_thresholds_[bestSplitIndex];
+    }
 
     double minGini() const
     {

@@ -104,6 +104,7 @@ class DT_StackEntry
     void reset()
     {
         classCountsIsValid = false;
+        leftParent=rightParent=DecisionTreeNoParent;
     }
 
     bool  isPure()

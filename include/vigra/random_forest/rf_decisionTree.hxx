@@ -36,6 +36,7 @@
 #ifndef VIGRA_RANDOM_FOREST_DT_HXX
 #define VIGRA_RANDOM_FOREST_DT_HXX
 
+
 #include <algorithm>
 #include <map>
 #include <numeric>
@@ -301,7 +302,6 @@ void DecisionTree::learn(   MultiArrayView<2, U, C> const       & features,
     continueLearn(features,labels,stack_entry,split,stop,visitor,randint);
 }
 
-
 template <  class U, class C,
             class U2, class C2,
             class StackEntry_t,
@@ -328,7 +328,6 @@ void DecisionTree::continueLearn(   MultiArrayView<2, U, C> const       & featur
 
     while(!stack.empty())
     {
-
         // Take an element of the stack. Obvious ain't it?
         top = stack.back();
         stack.pop_back();
@@ -355,6 +354,7 @@ void DecisionTree::continueLearn(   MultiArrayView<2, U, C> const       & featur
                                          child_stack_entry, 
                                          randint);
 
+
         // do some visiting yawn - just added this comment as eye candy
         // (looks odd otherwise with my syntax highlighting....
         visitor.visit_after_split(*this, split, top, 
@@ -363,19 +363,22 @@ void DecisionTree::continueLearn(   MultiArrayView<2, U, C> const       & featur
                                   features, 
                                   labels);
 
-
         // Update the Child entries of the parent
         // Using InteriorNodeBase because exact parameter form not needed.
         // look at the Node base before getting scared.
         last_node_pos = topology_.size();
         if(top.leftParent != StackEntry_t::DecisionTreeNoParent)
+        {
             NodeBase(topology_, 
                      parameters_, 
                      top.leftParent).child(0) = last_node_pos;
+        }
         else if(top.rightParent != StackEntry_t::DecisionTreeNoParent)
+        {
             NodeBase(topology_, 
                      parameters_, 
                      top.rightParent).child(1) = last_node_pos;
+        }
 
 
         // Supply the split functor with the Node type it requires.
@@ -385,6 +388,8 @@ void DecisionTree::continueLearn(   MultiArrayView<2, U, C> const       & featur
         {
             child_stack_entry[0].leftParent = topology_.size();
             child_stack_entry[1].rightParent = topology_.size();    
+            child_stack_entry[0].rightParent = -1;
+            child_stack_entry[1].leftParent = -1;    
             stack.push_back(child_stack_entry[0]);
             stack.push_back(child_stack_entry[1]);
         }
@@ -397,7 +402,7 @@ void DecisionTree::continueLearn(   MultiArrayView<2, U, C> const       & featur
     {
         Node<e_ConstProbNode>(topology_,parameters_,garbaged_child).copy(Node<e_ConstProbNode>(topology_,parameters_,last_node_pos));
 
-        int last_parameter_size = split.createNode().parameters_size();
+        int last_parameter_size = Node<e_ConstProbNode>(topology_,parameters_,garbaged_child).parameters_size();
         topology_.resize(last_node_pos);
         parameters_.resize(parameters_.size() - last_parameter_size);
     

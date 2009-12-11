@@ -536,18 +536,20 @@ public:
         //Save pr.features;
     }
     template<class Tree, class Split, class Region, class Feature_t, class Label_t>
-    void visit_after_split( Tree 	      & tree, 
+    void visit_after_split( Tree  	      & tree, 
 			    Split         & split,
-                            Region        & parent,
+                            Region       & parent,
                             Region        & leftChild,
                             Region        & rightChild,
                             Feature_t     & features,
                             Label_t       & labels)
     {
         int linear_index;
-        int addr=split.createNode().parameter_addr();
+        int addr=tree.topology_.size();
         if(split.createNode().typeID() == i_ThresholdNode)
         {
+#define ADJUST_THRESHOLD_NODES
+            #ifdef ADJUST_THRESHOLD_NODES
             //Store marginal distribution
             linear_index=mag_distributions.size();
             interior_to_index[std::make_pair(tree_id,addr)]=linear_index;
@@ -559,16 +561,35 @@ public:
             mag_distributions.back().leftTotalCounts=leftChild.size_;
             mag_distributions.back().rightTotalCounts=rightChild.size_;
             //Store the gap
-            mag_distributions.back().gap_left=features(split.bestSplitColumn(),leftChild[leftChild.size()-1]);
-            mag_distributions.back().gap_right=features(split.bestSplitColumn(),rightChild[0]);
+            double gap_left,gap_right;
+            int i;
+            gap_left=features(leftChild[0],split.bestSplitColumn());
+            for(i=1;i<leftChild.size();++i)
+                if(features(leftChild[i],split.bestSplitColumn())>gap_left)
+                    gap_left=features(leftChild[i],split.bestSplitColumn());
+            gap_right=features(rightChild[0],split.bestSplitColumn());
+            for(i=1;i<rightChild.size();++i)
+                if(features(rightChild[i],split.bestSplitColumn())<gap_right)
+                    gap_right=features(rightChild[i],split.bestSplitColumn());
+            mag_distributions.back().gap_left=gap_left;
+            mag_distributions.back().gap_right=gap_right;
+            assert(mag_distributions.back().gap_left<=mag_distributions.back().gap_right);
+            double t=split.threshold();
+            assert(mag_distributions.back().gap_left<=t);
+            assert(mag_distributions.back().gap_right>=t);
+#endif
+            
         }
         else
         {
             //Store index list
             linear_index=index_lists.size();
             exterior_to_index[std::make_pair(tree_id,addr)]=linear_index;
+
             index_lists.push_back(IndexList());
-            index_lists.back().resize(parent.size_);
+
+            index_lists.back().resize(parent.size_,0);
+            ArrayVector<Int32>::iterator i_i=index_lists.back().begin();
             std::copy(parent.begin_,parent.end_,index_lists.back().begin());
         }
     }
@@ -576,6 +597,7 @@ public:
     {
         if(!this->active_)
             return;
+        assert(index_lists.size()>exterior_to_index[std::make_pair(tree,node)]);
         index_lists[exterior_to_index[std::make_pair(tree,node)]].push_back(index);
     }
     void move_exterior_node(int src_tree,int src_index,int dst_tree,int dst_index)
@@ -594,25 +616,30 @@ public:
         void visit_internal_node(TR & tr, IntT index, TopT node_t,Feat & features)
         {
             last_node_id=index;
+#ifdef ADJUST_THRESHOLD_NODES
             vigra_assert(node_t==i_ThresholdNode,"We can only visit threshold nodes");
             //Check if we are in the gap
             double value=features(0, Node<i_ThresholdNode>(tr.topology_,tr.parameters_,index).column());
             MarginalDistribution &m=mag_distributions[interior_to_index[std::make_pair(tree_id,index)]];
+            assert(m.gap_left<=m.gap_right);
+            assert(m.gap_left<=Node<i_ThresholdNode>(tr.topology_,tr.parameters_,index).threshold());
+            assert(m.gap_right>=Node<i_ThresholdNode>(tr.topology_,tr.parameters_,index).threshold());
             if(value>m.gap_left && value<m.gap_right)
             {
                 //Check which site we want to go
                 if(m.leftCounts[current_label]/double(m.leftTotalCounts)>m.rightCounts[current_label]/double(m.rightTotalCounts))
                 {
                     //We want to go left
-                    Node<i_ThresholdNode>(tr.topology_,tr.parameters_,index).threshold()=(m.gap_right-value)/2.0;
                     m.gap_left=value;
                 }
                 else
                 {
                     //We want to go right
-                    Node<i_ThresholdNode>(tr.topology_,tr.parameters_,index).threshold()=(value-m.gap_left)/2.0;
                     m.gap_right=value;
                 }
+                Node<i_ThresholdNode>(tr.topology_,tr.parameters_,index).threshold()=(m.gap_right+m.gap_left)/2.0;
+                assert(m.gap_left<=value);
+                assert(m.gap_right>=value);
             }
             //Adjust class counts
             if(value>Node<i_ThresholdNode>(tr.topology_,tr.parameters_,index).threshold())
@@ -625,6 +652,7 @@ public:
                 ++m.leftTotalCounts;
                 ++m.rightCounts[current_label];
             }
+#endif
         }
     /** do something when visiting a extern node during getToLeaf
      * 
@@ -690,11 +718,13 @@ public:
     {
         // do some normalisation
         for(int l=0; l < (int)rf.ext_param_.row_count_; ++l)
-        if(oobCount[l])
         {
-            oobError += double(oobErrorCount[l]) / oobCount[l];
-            ++totalOobCount;
-        }
+            if(oobCount[l])
+            {
+                oobError += double(oobErrorCount[l]) / oobCount[l];
+                ++totalOobCount;
+            }
+        } 
     }
     
     //returns value of the learn function. 

@@ -611,6 +611,7 @@ double RandomForest<LabelType, PreprocessorTag>::onlineLearn(
     // with. Also fill the ext_param structure by preprocessing
     // option parameters that could only be completely evaluated
     // when the training data is known.
+    ext_param_.class_count_=0;
     Preprocessor_t preprocessor(    features, response,
                                     options_, ext_param_);
 
@@ -625,10 +626,13 @@ double RandomForest<LabelType, PreprocessorTag>::onlineLearn(
     //Create poisson samples
     PoissonSampler<RandomTT800> poisson_sampler(1.0,vigra::Int32(new_start_index),vigra::Int32(ext_param().row_count_));
 
-    visitor.visit_at_beginning(*this, preprocessor);
+    //TODO: visitors for online learning
+    //visitor.visit_at_beginning(*this, preprocessor);
+
     // THE MAIN EFFING RF LOOP - YEAY DUDE!
     for(int ii = 0; ii < (int)trees_.size(); ++ii)
     {
+        std::cout<<"Looking at tree "<<ii<<std::endl;
         online_visitor_.tree_id=ii;
         poisson_sampler.sample();
         std::map<int,int> leaf_parents;
@@ -638,13 +642,20 @@ double RandomForest<LabelType, PreprocessorTag>::onlineLearn(
         {
             int sample=poisson_sampler[s];
             online_visitor_.current_label=preprocessor.response()(sample,0);
+            online_visitor_.last_node_id=StackEntry_t::DecisionTreeNoParent;
             int leaf=trees_[ii].getToLeaf(rowVector(features,sample),online_visitor_);
+
+
             //Add to the list for that leaf
-            online_visitor_.add_to_index_list(ii,leaf,poisson_sampler[s]);
+            online_visitor_.add_to_index_list(ii,leaf,sample);
             //TODO: Class count?
             //Store parent
-            leaf_parents[leaf]=online_visitor_.last_node_id;
+            if(Node<e_ConstProbNode>(trees_[ii].topology_,trees_[ii].parameters_,leaf).prob_begin()[preprocessor.response()(sample,0)]!=1.0)
+            {
+                leaf_parents[leaf]=online_visitor_.last_node_id;
+            }
         }
+
 
         std::map<int,int>::iterator leaf_iterator;
         for(leaf_iterator=leaf_parents.begin();leaf_iterator!=leaf_parents.end();++leaf_iterator)
@@ -652,22 +663,31 @@ double RandomForest<LabelType, PreprocessorTag>::onlineLearn(
             int leaf=leaf_iterator->first;
             int parent=leaf_iterator->second;
             int lin_index=online_visitor_.exterior_to_index[std::make_pair(ii,leaf)];
-            StackEntry_t stack_entry(online_visitor_.index_lists[lin_index].begin(),
-                                     online_visitor_.index_lists[lin_index].end(),
+            ArrayVector<Int32> indeces;
+            indeces.clear();
+            indeces.swap(online_visitor_.index_lists[lin_index]);
+            StackEntry_t stack_entry(indeces.begin(),
+                                     indeces.end(),
                                      ext_param_.class_count_);
-            if(NodeBase(trees_[ii].topology_,trees_[ii].parameters_,parent).child(0)==leaf)
+
+
+            if(parent!=-1)
             {
-                stack_entry.leftParent=leaf;
-            }
-            else
-            {
-                vigra_assert(NodeBase(trees_[ii].topology_,trees_[ii].parameters_,parent).child(1)==leaf,"last_node_id seems to be wrong");
-                stack_entry.rightParent=leaf;
+                if(NodeBase(trees_[ii].topology_,trees_[ii].parameters_,parent).child(0)==leaf)
+                {
+                    stack_entry.leftParent=parent;
+                }
+                else
+                {
+                    vigra_assert(NodeBase(trees_[ii].topology_,trees_[ii].parameters_,parent).child(1)==leaf,"last_node_id seems to be wrong");
+                    stack_entry.rightParent=parent;
+                }
             }
             //trees_[ii].continueLearn(preprocessor.features(),preprocessor.response(),stack_entry,split,stop,visitor,randint,leaf);
             trees_[ii].continueLearn(preprocessor.features(),preprocessor.response(),stack_entry,split,stop,visitor,randint,-1);
             //Now, the last one moved onto leaf
-            //online_visitor_.move_exterior_node(ii,trees_[ii].topology_.size(),ii,leaf);
+            online_visitor_.move_exterior_node(ii,trees_[ii].topology_.size(),ii,leaf);
+            //Now it should be classified correctly!
         }
 
         /*visitor
@@ -678,7 +698,7 @@ double RandomForest<LabelType, PreprocessorTag>::onlineLearn(
                                 ii);*/
     }
 
-    visitor.visit_at_end(*this, preprocessor);
+    //visitor.visit_at_end(*this, preprocessor);
     online_visitor_.deactivate();
 
     return  visitor.return_val();
@@ -767,6 +787,7 @@ double RandomForest<LabelType, PreprocessorTag>::
     // THE MAIN EFFING RF LOOP - YEAY DUDE!
     for(int ii = 0; ii < (int)trees_.size(); ++ii)
     {
+        std::cout<<"Learning tree "<<ii<<std::endl;
         //initialize First region/node/stack entry
         sampler
             .sample();
