@@ -1,12 +1,14 @@
-import math, os
-import PyQt4
+import math, os, numpy,PyQt4
+
 import PyQt4.QtCore as qcore
 import PyQt4.QtGui  as qt
 from PyQt4.QtCore import SIGNAL
+
 from VigraQt import OverlayViewer, ImageCursor
-import vigra.vigranumpycmodule
 import quickdialog
 
+import vigra.vigranumpycmodule
+import vigra.ufunc
 
 class ImageWindow(qt.QFrame):
     def __init__(self, image, normalize = True, title = None,
@@ -194,6 +196,7 @@ class ImageWindow(qt.QFrame):
             d = quickdialog.QuickDialog(self,"Enter Expression")
             d.expression = quickdialog.OptionalStringInput(d, "Execute 'lambda x: ")
             d.expression.setText(self._savedExpression)
+            d.expression.variable.setFocus()
             d.addSpacing(10)
             d.norm = quickdialog.CheckBox(d, "Normalize intensity to range 0...255")
             d.norm.setChecked(self._normalized)
@@ -226,6 +229,8 @@ class ImageWindow(qt.QFrame):
             self._savedExpression = "x"
             image = self.image
         else:
+            for f in vigra.ufunc.__all__:
+                exec 'from vigra.ufunc import %s' % f
             x = self.image
             image = eval(self._savedExpression)
 
@@ -351,6 +356,8 @@ class ImageGrid(qt.QFrame):
         self.layout = qt.QGridLayout(self)
         
     def addViewer(self, viewer, x, y):
+        if isinstance(viewer, vigra.arraytypes.Image):
+            viewer = ImageWindow(viewer)
         self.layout.addWidget(viewer, y, x)
         self.cursorAction.viewers.append(viewer)
         if self.cursorAction.isChecked():
