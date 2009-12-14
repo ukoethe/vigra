@@ -180,6 +180,17 @@ class Processor<ClassificationTag, LabelType, T1, C1, T2, C2>
             }
             ext_param.classes_(classes_.begin(), classes_.end());
         }
+        else
+        {
+            for(MultiArrayIndex k = 0; k < features.shape(0); ++k)
+            {
+                if(std::find(ext_param.classes.begin(), ext_param.classes.end(), response(k,0)) == ext_param.classes.end())
+                    throw std::runtime_error("unknown label type");
+                else
+                    intLabels_(k, 0) = std::find(ext_param.classes.begin(), ext_param.classes.end(), response(k,0))
+                                        - ext_param.classes.begin();
+            }
+        }
 
         // set class weights
         if(ext_param.class_weights_.size() == 0)
