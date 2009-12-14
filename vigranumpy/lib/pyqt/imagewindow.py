@@ -283,6 +283,7 @@ class CaptionImageViewer(qt.QFrame):
         self.viewer =ImageViewer(image, normalize, title, parent = self) 
         self.setWindowTitle(self.viewer.windowTitle())
 
+        self._captionCoords = 0,0
         self._xplaces = int(math.log10(image.width) + 1.0)
         self._yplaces = int(math.log10(image.height) + 1.0)
         self._valueplaces = image.bands()*5
@@ -301,14 +302,16 @@ class CaptionImageViewer(qt.QFrame):
         self.connect(self.viewer, SIGNAL('mouseOver(int, int)'), self.updateCaption)
         self.connect(self.viewer.cursorAction, SIGNAL('triggered()'), self._toggleCaptionSignals)
 
-        self.updateCaption(0,0)
+        self.updateCaption()
 
-    def updateCaption(self, x, y):
-        x = int(round(x))
-        y = int(round(y))
+    def updateCaption(self, x=None, y=None):
+        x = int(round(x)) if x is not None else self._captionCoords[0]
+        y = int(round(y)) if y is not None else self._captionCoords[1]
         if x < 0 or x >= self.viewer.image.width or \
            y < 0 or y >= self.viewer.image.height:
             return
+            
+        self._captionCoords = x,y
 
         label = str(x).rjust(self._xplaces) + " x " + str(y).rjust(self._yplaces) +\
                 " = " + str(self.viewer.image[x,y]).ljust(self._valueplaces)
@@ -333,6 +336,7 @@ class CaptionImageViewer(qt.QFrame):
         is not given (or None), the normalized state is not changed."""
         
         self.viewer.setImage(image, normalize)
+        self.updateCaption()
 
 class CursorAction(qt.QAction):
     def trigger(self):
@@ -365,7 +369,7 @@ class ImageWindow(qt.QFrame):
            If an image already exists at this position, it is replaced.
         '''
         if self.layout.itemAtPosition(y, x):
-            self.layout.itemAtPosition(y, x).widget().replaceImage(image)
+            self.layout.itemAtPosition(y, x).widget().setImage(image)
         else:
             viewer = CaptionImageViewer(image, normalize, title, parent = self)
             self.layout.addWidget(viewer, y, x)
@@ -383,11 +387,11 @@ class ImageWindow(qt.QFrame):
         qcore.QCoreApplication.processEvents()
         self.adjustSize()
 
-def showImage(image, normalize = True):
+def showImage(image, normalize = True, title = None):
     if isinstance(image, str):
         image = vigra.vigranumpycmodule.readImage(image)
     v = ImageWindow()
-    v.setImage(image, normalize=normalize)
+    v.setImage(image, normalize=normalize, title=title)
     v.show()
     return v
 
