@@ -824,11 +824,11 @@ class FixedPoint16;
     \ref AlgebraicRing. They are implemented in terms of the traits of the basic types by
     partial template specialization:
 
-    template <unsigned IntBits, unsigned FracBits>
-    struct NumericTraits<FixedPoint16<IntBits, FracBits> >
+    template <int IntBits, FPOverflowHandling OverflowHandling>
+    struct NumericTraits<FixedPoint16<IntBits, OverflowHandling> >
     {
-        typedef FixedPoint16<IntBits, FracBits> Type;
-        typedef Type                            Promote;
+        typedef FixedPoint16<IntBits, OverflowHandling> Type;
+        typedef Type                                    Promote;
             // RealPromote undefined -- multiplication with double is not supported.
             // ComplexPromote undefined -- multiplication with double is not supported.
         typedef Type ValueType;
@@ -1007,6 +1007,11 @@ struct FP16OverflowHandling
     {
         return v;
     }
+    
+    static inline Int32 exec(UInt32 v)
+    {
+        return v;
+    }
 };
 
 template <>
@@ -1020,6 +1025,12 @@ struct FP16OverflowHandling<FPOverflowSaturate>
             return -(1 << 15);
         return v;
     }
+    static inline Int32 exec(UInt32 v)
+    {
+        if(v >= 1 << 15)
+            return (1 << 15) - 1;
+        return v;
+    }
 };
 
 template <>
@@ -1028,6 +1039,12 @@ struct FP16OverflowHandling<FPOverflowError>
     static inline Int32 exec(Int32 v)
     {
         vigra_precondition(v < (1 << 15) && v >= -(1 << 15),
+             "FixedPoint16: Operation overflows.");
+        return v;
+    }
+    static inline Int32 exec(UInt32 v)
+    {
+        vigra_precondition(v < (1 << 15),
              "FixedPoint16: Operation overflows.");
         return v;
     }
@@ -1095,6 +1112,9 @@ struct FP16DivImpl
 /*                      FixedPoint16                    */
 /*                                                      */
 /********************************************************/
+
+template <class TARGET, int IntBits, FPOverflowHandling OverflowHandling>
+TARGET fixed_point_cast(FixedPoint16<IntBits, OverflowHandling> v);
 
 /** Template for 16-bit signed fixed point arithmetic.
 
@@ -1253,6 +1273,20 @@ public:
         value = detail::FP16OverflowHandling<OverflowHandling>::exec(
                 detail::FP16Align<IntBits2, IntBits, /*Round*/true>::exec(other.value));
         return *this;
+    }
+
+        /** Conversion to float
+        */
+    operator float() const
+    {
+        return fixed_point_cast<float>(*this);
+    }
+
+        /** Conversion to double
+        */
+    operator double() const
+    {
+        return fixed_point_cast<double>(*this);
     }
 
         /** Unary plus.
@@ -1591,8 +1625,11 @@ template <int IntBits, FPOverflowHandling OverflowHandling>
 inline FixedPoint16<IntBits, OverflowHandling>
 hypot(FixedPoint16<IntBits, OverflowHandling> v1, FixedPoint16<IntBits, OverflowHandling> v2)
 {
-    UInt32 l = abs(v1.value), r = abs(v2.value);
-    return FixedPoint16<IntBits, OverflowHandling>((Int32)sqrti(sq(l) + sq(r)), FPNoShift);
+    UInt32 l = abs(v1.value), r = abs(v2.value);   
+    // sq(l) + sq(r) <= 2**31, so overflow handling after sqrti is sufficient
+    return FixedPoint16<IntBits, OverflowHandling>(
+                   detail::FP16OverflowHandling<OverflowHandling>::exec(sqrti(sq(l) + sq(r))), 
+                   FPNoShift);
 }
 
 using std::atan2;
