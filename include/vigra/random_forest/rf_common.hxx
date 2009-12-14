@@ -595,7 +595,7 @@ public:
     {
         std::back_insert_iterator<ArrayVector<Label_t> >
                         iter(classes);
-        std::copy(classes.begin(), classes.end(), iter); 
+        std::copy(rhs.classes.begin(), rhs.classes.end(), iter); 
     }
     #undef EQUALS
 
@@ -617,7 +617,7 @@ public:
         EQUALS(precision_);
         std::back_insert_iterator<ArrayVector<Label_t> >
                         iter(classes);
-        std::copy(classes.begin(), classes.end(), iter); 
+        std::copy(rhs.classes.begin(), rhs.classes.end(), iter); 
         return *this;
     }
 
@@ -636,7 +636,7 @@ public:
         EQUALS(precision_);
         std::back_insert_iterator<ArrayVector<Label_t> >
                         iter(classes);
-        std::copy(classes.begin(), classes.end(), iter); 
+        std::copy(rhs.classes.begin(), rhs.classes.end(), iter); 
         return *this;
     }
     #undef EQUALS

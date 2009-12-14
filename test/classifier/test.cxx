@@ -132,11 +132,10 @@ struct ClassifierTest
             std::cerr << "RFdefaultTest(): Learning on Datasets\n";
             for(int ii = 0; ii < data.size() ; ii++)
             {
-
                 vigra::RandomForest<>
 					RF2(vigra::RandomForestOptions().tree_count(32));
                 vigra::RandomForest<int>
-                    RF3(vigra::RandomForestOptions().tree_count(5));
+                    RF3(vigra::RandomForestOptions().tree_count(5), vigra::ProblemSpec<int>().classes_(data.ClassIter(ii).begin(), data.ClassIter(ii).end()));
 
                 RF3.learn(  data.features(ii),
                             data.labels(ii),

@@ -200,8 +200,8 @@ class RandomForest
     :
         options_(options),
         ext_param_(ext_param)
-    {}
-
+    {
+    }
     /**\brief Create RF from external source
      *
      * \param ext_param Extrinsic parameters that specify the problem e.g.
@@ -546,7 +546,7 @@ double RandomForest<LabelType, PreprocessorTag>::
                             Random_t                 const  &   random)
 {
     using namespace rf;
-    this->reset();
+    //this->reset();
     //typedefs
     typedef typename Split_t::StackEntry_t          StackEntry_t;
     typedef          UniformIntRandomFunctor<Random_t>
