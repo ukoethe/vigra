@@ -15,7 +15,7 @@ protected:
 
 public:
     template<class T>
-    void set_external_parameters(ProblemSpec<T> &prob, int tree_count = 0, bool is_weighted = false)
+    void set_external_parameters(ProblemSpec<T> const  &prob, int tree_count = 0, bool is_weighted = false)
     {
         ext_param_ = prob; 
         is_weighted_ = is_weighted;

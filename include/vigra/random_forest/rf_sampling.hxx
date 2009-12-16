@@ -251,7 +251,7 @@ class Sampler
             unused_indices_.clear();
             for(int ii = 0; ii < (int)is_used().size(); ++ii)
             {
-                if(is_used_[ii])
+                if(!is_used_[ii])
                     unused_indices_.push_back(ii);
             }
             unused_indices_set = true;

@@ -128,7 +128,7 @@ class RandomForest
 
     /** optimisation for predictLabels
      * */
-    MultiArray<2, double> garbage_prediction_;
+    mutable MultiArray<2, double> garbage_prediction_;
 
   public:
 
@@ -200,8 +200,8 @@ class RandomForest
     :
         options_(options),
         ext_param_(ext_param)
-    {
-    }
+    {}
+
     /**\brief Create RF from external source
      *
      * \param ext_param Extrinsic parameters that specify the problem e.g.
@@ -310,17 +310,17 @@ class RandomForest
     }
 
     /*\}*/
-    int column_count()
+    int column_count() const
     {
       return ext_param_.column_count_;
     }
 
-    int class_count()
+    int class_count() const
     {
       return ext_param_.class_count_;
     }
 
-    int tree_count()
+    int tree_count() const
     {
       return options_.tree_count_;
     }
@@ -467,7 +467,7 @@ class RandomForest
      *         to get back the same type used during learning. 
      */
     template <class U, class C>
-    LabelType predictLabel(MultiArrayView<2, U, C>const & features);
+    LabelType predictLabel(MultiArrayView<2, U, C>const & features) const;
 
     /** \brief predict a label with features and class priors
      *
@@ -477,7 +477,7 @@ class RandomForest
      */
     template <class U, class C, class Iterator>
     LabelType predictLabel(MultiArrayView<2, U, C> const & features,
-                                Iterator priors) ;
+                                Iterator priors) const;
 
     /** \brief predict multiple labels with given features
      *
@@ -489,7 +489,7 @@ class RandomForest
      */
     template <class U, class C1, class T, class C2>
     void predictLabels(MultiArrayView<2, U, C1>const & features,
-                       MultiArrayView<2, T, C2> & labels)
+                       MultiArrayView<2, T, C2> & labels) const
     {
         vigra_precondition(features.shape(0) == labels.shape(0),
             "RandomForest::predictLabels(): Label array has wrong size.");
@@ -509,7 +509,7 @@ class RandomForest
     template <class U, class C1, class T, class C2, class Stop>
     void predictProbabilities(MultiArrayView<2, U, C1>const &   features,
                               MultiArrayView<2, T, C2> &        prob,
-                              Stop                              stop) ;
+                              Stop                              stop) const;
 
     /** \brief predict the class probabilities for multiple labels
      *
@@ -519,7 +519,7 @@ class RandomForest
      */
     template <class U, class C1, class T, class C2>
     void predictProbabilities(MultiArrayView<2, U, C1>const &   features,
-                              MultiArrayView<2, T, C2> &        prob)
+                              MultiArrayView<2, T, C2> &        prob)  const
     {
         predictProbabilities(features, prob, RF_Traits::Default_Stop_t(options_)); 
     }   
@@ -645,7 +645,7 @@ double RandomForest<LabelType, PreprocessorTag>::
 template <class LabelType, class Tag>
 template <class U, class C>
 LabelType RandomForest<LabelType, Tag>
-    ::predictLabel(MultiArrayView<2, U, C> const & features)
+    ::predictLabel(MultiArrayView<2, U, C> const & features) const
 {
     vigra_precondition(columnCount(features) >= ext_param_.column_count_,
         "RandomForestn::predictLabel():"
@@ -667,7 +667,7 @@ template <class LabelType, class PreprocessorTag>
 template <class U, class C, class Iterator>
 LabelType RandomForest<LabelType, PreprocessorTag>
     ::predictLabel( MultiArrayView<2, U, C> const & features,
-                    Iterator                        priors)
+                    Iterator                        priors) const
 {
     using namespace functor;
     vigra_precondition(columnCount(features) >= ext_param_.column_count_,
@@ -690,12 +690,11 @@ template <class U, class C1, class T, class C2, class Earlystopping>
 void RandomForest<LabelType, PreprocessorTag>
     ::predictProbabilities(MultiArrayView<2, U, C1>const &  features,
                            MultiArrayView<2, T, C2> &       prob,
-                           Earlystopping                    stop)
+                           Earlystopping                    stop) const
 {
 
     //Features are n xp
     //prob is n x NumOfLabel probability for each feature in each class
-
     vigra_precondition(rowCount(features) == rowCount(prob),
       "RandomForestn::predictProbabilities():"
         " Feature matrix and probability matrix size mismatch.");
@@ -711,21 +710,15 @@ void RandomForest<LabelType, PreprocessorTag>
       " Probability matrix must have as many columns as there are classes.");
 
     stop.set_external_parameters(ext_param_);
+    prob.init(NumericTraits<T>::zero());
+    
     //Classify for each row.
     for(int row=0; row < rowCount(features); ++row)
     {
-    //contains the weights returned by a single tree???
-    //thought that one tree has only one vote???
-    //Pruning???
         ArrayVector<double>::const_iterator weights;
 
         //totalWeight == totalVoteCount!
     double totalWeight = 0.0;
-
-    //Set each VoteCount = 0 - prob(row,l) contains vote counts until
-    //further normalisation
-        for(int l=0; l<ext_param_.class_count_; ++l)
-            prob(row, l) = 0.0;
 
     //Let each tree classify...
         for(int k=0; k<options_.tree_count_; ++k)
@@ -751,8 +744,8 @@ void RandomForest<LabelType, PreprocessorTag>
         }
 
     //Normalise votes in each row by total VoteCount (totalWeight
-        for(int l=0; l<ext_param_.class_count_; ++l)
-                prob(row, l) /= totalWeight;
+        for(int l=0; l< ext_param_.class_count_; ++l)
+                prob(row, l) /= detail::RequiresExplicitCast<T>::cast(totalWeight);
     }
 
 }

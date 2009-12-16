@@ -121,10 +121,15 @@ class NodeBase
             return parameters_begin()[0];
     }
 
+    double const &      weights() const
+    {
+            return parameters_begin()[0];
+    }
+
     /** has the data been set?
      * todo: throw this out - bad design
      */
-    bool          data()
+    bool          data() const
     {
         return hasData_;
     }
@@ -137,15 +142,25 @@ class NodeBase
         return topology_[0];
     }
 
+    INT const &          typeID() const
+    {
+        return topology_[0];
+    }
+
     /** Where in the parameter_ array are the weights?
      */
-    INT&          parameter_addr()
+    INT &          parameter_addr()
+    {
+        return topology_[1];
+    }
+
+    INT const &    parameter_addr() const
     {
         return topology_[1];
     }
 
     /** Column Range **/
-    Topology_type  column_data()
+    Topology_type  column_data() const
     {
         return topology_ + 4 ;
     }
@@ -153,17 +168,14 @@ class NodeBase
     /** get the start iterator to the columns
      *  - once again - throw out - static members are crap.
      */
-    Topology_type columns_begin()
+    Topology_type columns_begin() const
     {
-        if(*column_data() == AllColumns)
-            return NodeBase::xrange.begin();
-        else
             return column_data()+1;
     }
 
     /** how many columns?
      */
-    int      columns_size()
+    int      columns_size() const
     {
         if(*column_data() == AllColumns)
             return featureCount_;
@@ -173,7 +185,7 @@ class NodeBase
 
     /** end iterator to the columns
      */
-    Topology_type  columns_end()
+    Topology_type  columns_end() const
     {
         return columns_begin() + columns_size();
     }
@@ -182,30 +194,30 @@ class NodeBase
      * the size_ member was added as a result of premature 
      * optimisation.
      */ 
-    Topology_type &  topology_begin()
+    Topology_type   topology_begin() const
     {
         return topology_;
     }
-    Topology_type   topology_end()
+    Topology_type   topology_end() const
     {
         return topology_begin() + topology_size();
     }
-    int          topology_size()
+    int          topology_size() const
     {
         return topology_size_;
     }
 
     /** Parameter Range **/
-    Parameter_type  parameters_begin()
+    Parameter_type  parameters_begin() const
     {
         return parameters_;
     }
-    Parameter_type  parameters_end()
+    Parameter_type  parameters_end() const
     {
         return parameters_begin() + parameters_size();
     }
 
-    int          parameters_size()
+    int          parameters_size() const
     {
         return parameter_size_;
     }
@@ -214,6 +226,13 @@ class NodeBase
     /** where are the child nodes?
      */
     INT &           child(Int32 l)
+    {
+        return topology_begin()[2+l];
+    }
+
+    /** where are the child nodes?
+     */
+    INT const  &           child(Int32 l) const
     {
         return topology_begin()[2+l];
     }
@@ -227,40 +246,40 @@ class NodeBase
     /** create ReadOnly Base Node at position n (actual length is unknown)
      * only common features i.e. children etc are accessible.
      */
-    NodeBase(   T_Container_type    &  topology,
-                P_Container_type    &  parameter,
+    NodeBase(   T_Container_type const   &  topology,
+                P_Container_type const   &  parameter,
                 INT                         n)
     :
-                    topology_   (topology.begin()+ n),
+                    topology_   (const_cast<Topology_type>(topology.begin()+ n)),
                     topology_size_(4),
-                    parameters_  (parameter.begin() + parameter_addr()),
+                    parameters_  (const_cast<Parameter_type>(parameter.begin() + parameter_addr())),
                     parameter_size_(1),
                     featureCount_(topology[0]),
                     classCount_(topology[1]),
                     hasData_(true)
     {
-        while((int)xrange.size() <  featureCount_)
-            xrange.push_back(xrange.size());
+        /*while((int)xrange.size() <  featureCount_)
+            xrange.push_back(xrange.size());*/
     }
 
     /** create ReadOnly node with known length (the parameter range is valid)
      */
     NodeBase(   int                      tLen,
                 int                      pLen,
-                T_Container_type    &  topology,
-                P_Container_type    &  parameter,
+                T_Container_type const & topology,
+                P_Container_type const & parameter,
                 INT                         n)
     :
-                    topology_   (topology.begin()+ n),
+                    topology_   (const_cast<Topology_type>(topology.begin()+ n)),
                     topology_size_(tLen),
-                    parameters_  (parameter.begin() + parameter_addr()),
+                    parameters_  (const_cast<Parameter_type>(parameter.begin() + parameter_addr())),
                     parameter_size_(pLen),
                     featureCount_(topology[0]),
                     classCount_(topology[1]),
                     hasData_(true)
     {
-        while((int)xrange.size() <  featureCount_)
-            xrange.push_back(xrange.size());
+        /*while((int)xrange.size() <  featureCount_)
+            xrange.push_back(xrange.size());*/
     }
     /** create ReadOnly node with known length 
      * from existing Node
@@ -277,8 +296,8 @@ class NodeBase
                     classCount_(node.classCount_),
                     hasData_(true)
     {
-        while((int)xrange.size() <  featureCount_)
-            xrange.push_back(xrange.size());
+        /*while((int)xrange.size() <  featureCount_)
+            xrange.push_back(xrange.size());*/
     }
 
 
@@ -297,8 +316,8 @@ class NodeBase
                     classCount_(topology[1]),
                     hasData_(true)
     {
-        while((int)xrange.size() <  featureCount_)
-            xrange.push_back(xrange.size());
+        /*while((int)xrange.size() <  featureCount_)
+            xrange.push_back(xrange.size());*/
 
         int n = topology.size();
         for(int ii = 0; ii < tLen; ++ii)
@@ -326,7 +345,7 @@ class NodeBase
    * copy constructor (unless both objects should point to the 
    * same underlying data.                                  
    */
-    NodeBase(   NodeBase              &    toCopy,
+    NodeBase(   NodeBase      const  &    toCopy,
                 T_Container_type      &    topology,
                 P_Container_type     &    parameter)
     :
@@ -336,8 +355,8 @@ class NodeBase
                     classCount_(topology[1]),
                     hasData_(true)
     {
-        while((int)xrange.size() <  featureCount_)
-            xrange.push_back(xrange.size());
+        /*while((int)xrange.size() <  featureCount_)
+            xrange.push_back(xrange.size());*/
 
         int n            = topology.size();
         for(int ii = 0; ii < toCopy.topology_size(); ++ii)
@@ -377,8 +396,8 @@ class Node<i_ThresholdNode>
         BT::typeID() = i_ThresholdNode;
     }
 
-    Node(   BT::T_Container_type     &   topology,
-                    BT::P_Container_type     &   param,
+    Node(   BT::T_Container_type const     &   topology,
+            BT::P_Container_type const     &   param,
                     INT                   n             )
                 :   BT(5,2,topology, param, n)
     {}
@@ -392,13 +411,22 @@ class Node<i_ThresholdNode>
         return BT::parameters_begin()[1];
     }
 
+    double const & threshold() const
+    {
+        return BT::parameters_begin()[1];
+    }
+
     BT::INT& column()
+    {
+        return BT::column_data()[0];
+    }
+    BT::INT const & column() const
     {
         return BT::column_data()[0];
     }
 
     template<class U, class C>
-    BT::INT& next(MultiArrayView<2,U,C> const & feature)
+    BT::INT  next(MultiArrayView<2,U,C> const & feature) const
     {
         return (feature(0, column()) < threshold())? child(0):child(1);
     }
@@ -423,8 +451,8 @@ class Node<i_HyperplaneNode>
         BT::typeID() = i_HyperplaneNode;
     }
 
-    Node(           BT::T_Container_type    &   topology,
-                    BT::P_Container_type    &   split_param,
+    Node(           BT::T_Container_type  const  &   topology,
+                    BT::P_Container_type  const  &   split_param,
                     int                  n             )
                 :   NodeBase(5 , 2,topology, split_param, n)
     {
@@ -446,11 +474,19 @@ class Node<i_HyperplaneNode>
     }
 
 
+    double const & intercept() const
+    {
+        return BT::parameters_begin()[1];
+    }
     double& intercept()
     {
         return BT::parameters_begin()[1];
     }
 
+    BT::Parameter_type weights() const
+    {
+        return BT::parameters_begin()+2;
+    }
 
     BT::Parameter_type weights()
     {
@@ -459,12 +495,22 @@ class Node<i_HyperplaneNode>
 
 
     template<class U, class C>
-    BT::INT next(MultiArrayView<2,U,C> const & feature)
+    BT::INT next(MultiArrayView<2,U,C> const & feature) const
     {
         double result = -1 * intercept();
-        for(int ii = 0; ii < BT::columns_size(); ++ii)
+        if(*(BT::column_data()) == AllColumns)
         {
-            result +=feature[BT::columns_begin()[ii]] * weights()[ii];
+            for(int ii = 0; ii < BT::columns_size(); ++ii)
+            {
+                result +=feature[ii] * weights()[ii];
+            }
+        }
+        else
+        {
+            for(int ii = 0; ii < BT::columns_size(); ++ii)
+            {
+                result +=feature[BT::columns_begin()[ii]] * weights()[ii];
+            }
         }
         return result < 0 ? BT::child(0)
                           : BT::child(1);
@@ -491,8 +537,8 @@ class Node<i_HypersphereNode>
         BT::typeID() = i_HypersphereNode;
     }
 
-    Node(           BT::T_Container_type    &   topology,
-                    BT::P_Container_type    &   param,
+    Node(           BT::T_Container_type  const  &   topology,
+                    BT::P_Container_type  const  &  param,
                     int                  n             )
                 :   NodeBase(5, 1,topology, param, n)
     {
@@ -512,12 +558,20 @@ class Node<i_HypersphereNode>
 
     }
 
+    double const & squaredRadius() const
+    {
+        return BT::parameters_begin()[1];
+    }
 
     double& squaredRadius()
     {
         return BT::parameters_begin()[1];
     }
 
+    BT::Parameter_type center() const
+    {
+        return BT::parameters_begin()+2;
+    }
 
     BT::Parameter_type center()
     {
@@ -525,13 +579,24 @@ class Node<i_HypersphereNode>
     }
 
     template<class U, class C>
-    BT::INT next(MultiArrayView<2,U,C> const & feature)
+    BT::INT next(MultiArrayView<2,U,C> const & feature) const
     {
         double result = -1 * squaredRadius();
-        for(int ii = 0; ii < BT::columns_size(); ++ii)
+        if(*(BT::column_data()) == AllColumns)
         {
-            result += (feature[BT::columns_begin()[ii]] - center()[ii])*
-                      (feature[BT::columns_begin()[ii]] - center()[ii]);
+            for(int ii = 0; ii < BT::columns_size(); ++ii)
+            {
+                result += (feature[ii] - center()[ii])*
+                          (feature[ii] - center()[ii]);
+            }
+        }
+        else
+        {
+            for(int ii = 0; ii < BT::columns_size(); ++ii)
+            {
+                result += (feature[BT::columns_begin()[ii]] - center()[ii])*
+                          (feature[BT::columns_begin()[ii]] - center()[ii]);
+            }
         }
         return result < 0 ? BT::child(0)
                           : BT::child(1);
@@ -570,8 +635,8 @@ class Node<e_ConstProbNode>
     }
 
 
-    Node(           BT::T_Container_type    &   topology,
-                    BT::P_Container_type    &   param,
+    Node(           BT::T_Container_type const &   topology,
+                    BT::P_Container_type const &   param,
                     int                  n             )
                 :   BT(2, topology[1]+1,topology, param, n)
     { }
@@ -580,15 +645,15 @@ class Node<e_ConstProbNode>
     Node( BT & node_)
         :   BT(2, node_.classCount_ +1, node_) 
     {}
-    BT::Parameter_type prob_begin()
+    BT::Parameter_type  prob_begin() const
     {
         return BT::parameters_begin()+1;
     }
-    BT::Parameter_type prob_end()
+    BT::Parameter_type  prob_end() const
     {
         return prob_begin() + prob_size();
     }
-    int prob_size()
+    int prob_size() const
     {
         return BT::classCount_;
     }

@@ -108,7 +108,7 @@ class EarlyStoppStd
     {}
 
     template<class T>
-    void set_external_parameters(ProblemSpec<T> &prob, int tree_count = 0, bool is_weighted = false)
+    void set_external_parameters(ProblemSpec<T>const  &prob, int tree_count = 0, bool is_weighted = false)
     {}
 
     template<class Region>
