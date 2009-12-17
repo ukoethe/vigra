@@ -1087,13 +1087,13 @@ struct LinalgTest
     typedef Matrix::difference_type Shape;
 
     unsigned int size, iterations;
+    vigra::RandomMT19937 random_;
 
     LinalgTest()
     : size(50),
-      iterations(5)
-    {
-        std::srand (0xdeadbeef);
-    }
+      iterations(5),
+      random_(23098349)
+    {}
 
     void testOStreamShifting()
     {
@@ -1103,13 +1103,13 @@ struct LinalgTest
         out << "Testing.." << a << 42 << std::endl;
     }
 
-    static double random_double ()
+    double random_double ()
     {
-        double ret = 2.0 * static_cast <double> (std::rand ()) / RAND_MAX - 1.0;
+        double ret = 2.0 * random_.uniform53() - 1.0;
         return ret;
     }
 
-    static Matrix random_matrix(unsigned int rows, unsigned int cols)
+    Matrix random_matrix(unsigned int rows, unsigned int cols)
     {
         Matrix ret (rows, cols);
         for (unsigned int i = 0; i < rows; ++i)
@@ -1118,7 +1118,7 @@ struct LinalgTest
         return ret;
     }
 
-    static Matrix random_symmetric_matrix(unsigned int rows)
+    Matrix random_symmetric_matrix(unsigned int rows)
     {
         Matrix ret (rows, rows);
         for (unsigned int i = 0; i < rows; ++i)
@@ -1437,11 +1437,7 @@ struct LinalgTest
 
     void testColumnAndRowStatistics()
     {
-#if defined(__GNUC__)
-        double epsilon = 1e-11, epsilon2 = 1e-8;
-#else
-        double epsilon = 1e-13, epsilon2 = 1e-10;
-#endif
+        double epsilon = 1e-11;
 
         Matrix rowMean(size, 1), columnMean(1, size);
         Matrix rowStdDev(size, 1), columnStdDev(1, size);
@@ -1504,8 +1500,8 @@ struct LinalgTest
             rowCovarianceRef /= (size-1);
             columnCovarianceRef /= (size-1);
 
-            shouldEqualSequenceTolerance(rowCovariance.data(), rowCovariance.data()+size*size, rowCovarianceRef.data(), epsilon2);
-            shouldEqualSequenceTolerance(columnCovariance.data(), columnCovariance.data()+size*size, columnCovarianceRef.data(), epsilon2);
+            shouldEqualSequenceTolerance(rowCovariance.data(), rowCovariance.data()+size*size, rowCovarianceRef.data(), epsilon);
+            shouldEqualSequenceTolerance(columnCovariance.data(), columnCovariance.data()+size*size, columnCovarianceRef.data(), epsilon);
         }
     }
 
@@ -1515,11 +1511,7 @@ struct LinalgTest
         using vigra::UnitVariance;
         using vigra::UnitNorm;
 
-#if defined(__GNUC__) && __GNUC__ == 3
-        double epsilon = 1e-11, epsilon2 = 1e-8;
-#else
-        double epsilon = 1e-13, epsilon2 = 1e-10;
-#endif
+        double epsilon = 1e-11;
 
         Matrix rowMean(size, 1), columnMean(1, size);
         Matrix rowStdDev(size, 1), columnStdDev(1, size);
@@ -1560,7 +1552,7 @@ struct LinalgTest
             prepareColumns(a, columnPrepared, columnOffset, columnScaling, UnitVariance);
             columnStatistics(columnPrepared, columnMeanPrepared, columnStdDevPrepared, columnNormPrepared);
             columnMeanPrepared /= columnScaling;
-            shouldEqualSequenceTolerance(columnMean.data(), columnMean.data()+size, columnMeanPrepared.data(), epsilon2);
+            shouldEqualSequenceTolerance(columnMean.data(), columnMean.data()+size, columnMeanPrepared.data(), epsilon);
             shouldEqualSequenceTolerance(oneColRef.data(), oneColRef.data()+size, columnStdDevPrepared.data(), epsilon);
 
             ap = columnPrepared / pointWise(repeatMatrix(columnScaling, size, 1)) + repeatMatrix(columnOffset, size, 1);
@@ -1580,7 +1572,7 @@ struct LinalgTest
             shouldEqualSequenceTolerance(oneColRef.data(), oneColRef.data()+size, columnNormPrepared.data(), epsilon);
 
             ap = columnPrepared / pointWise(repeatMatrix(columnScaling, size, 1)) + repeatMatrix(columnOffset, size, 1);
-            shouldEqualSequenceTolerance(a.data(), a.data()+size*size, ap.data(), epsilon2);
+            shouldEqualSequenceTolerance(a.data(), a.data()+size*size, ap.data(), epsilon);
 
             rowStatistics(a, rowMean, rowStdDev, rowNorm);
 
@@ -1622,7 +1614,7 @@ struct LinalgTest
             shouldEqualSequenceTolerance(oneRowRef.data(), oneRowRef.data()+size, rowNormPrepared.data(), epsilon);
 
             ap = rowPrepared / pointWise(repeatMatrix(rowScaling, 1, size)) + repeatMatrix(rowOffset, 1, size);
-            shouldEqualSequenceTolerance(a.data(), a.data()+size*size, ap.data(), epsilon2);
+            shouldEqualSequenceTolerance(a.data(), a.data()+size*size, ap.data(), epsilon);
         }
 
         {
@@ -1648,7 +1640,7 @@ struct LinalgTest
 
     void testCholesky()
     {
-        double epsilon = 1e-10;
+        double epsilon = 1e-11;
         Matrix idref = vigra::identityMatrix<double>(size);
 
         for(unsigned int i = 0; i < iterations; ++i)
@@ -1664,7 +1656,7 @@ struct LinalgTest
 
     void testQR()
     {
-        double epsilon = 1e-10;
+        double epsilon = 1e-11;
         Matrix idref = vigra::identityMatrix<double>(size);
 
         for(unsigned int i = 0; i < iterations; ++i)
@@ -1682,11 +1674,7 @@ struct LinalgTest
 
     void testLinearSolve()
     {
-#if defined(__GNUC__)
-        double epsilon = 1e-8;
-#else
-        double epsilon = 1e-10;
-#endif
+        double epsilon = 1e-11;
         int size = 50;
 
         for(unsigned int i = 0; i < iterations; ++i)
@@ -1708,9 +1696,10 @@ struct LinalgTest
             shouldEqualSequenceTolerance(ax.data(), ax.data()+size, b.data(), epsilon);
 
             Matrix c = transpose(a) * a; // make a symmetric positive definite matrix
-            should(linearSolve (c, b, x, "Cholesky"));
+            Matrix d = transpose(a) * b; 
+            should(linearSolve (c, d, x, "Cholesky"));
             ax = c * x;
-            shouldEqualSequenceTolerance(ax.data(), ax.data()+size, b.data(), epsilon);
+            shouldEqualSequenceTolerance(ax.data(), ax.data()+size, d.data(), epsilon);
         }
     }
 
@@ -1781,11 +1770,7 @@ struct LinalgTest
 
     void testOverdetermined()
     {
-#if defined(__GNUC__)
         double epsilon = 1e-11;
-#else
-        double epsilon = 1e-12;
-#endif
 
         unsigned int n = 5;
         unsigned int size = 1000;
@@ -1831,11 +1816,7 @@ struct LinalgTest
 
     void testIncrementalLinearSolve()
     {
-#if defined(__GNUC__) && __GNUC__ == 3
-        double epsilon = 1e-8;
-#else
-        double epsilon = 1e-10;
-#endif
+        double epsilon = 1e-11;
         int size = 50;
 
         for(unsigned int i = 0; i < iterations; ++i)
@@ -1861,7 +1842,7 @@ struct LinalgTest
 
                 for(int k=0; k<size; ++k)
                 {
-                    int i = rand() % size, j = rand() % size;
+                    int i = random_.uniformInt(size), j = random_.uniformInt(size);
                     if(i==j) continue;
 
                     vigra::linalg::detail::upperTriangularCyclicShiftColumns(i, j, r, qtb, permutation);
@@ -1887,7 +1868,7 @@ struct LinalgTest
 
                 for(int k=0; k<size; ++k)
                 {
-                    int i = rand() % size, j = rand() % size;
+                    int i = random_.uniformInt(size), j = random_.uniformInt(size);
                     vigra::linalg::detail::upperTriangularSwapColumns(i, j, r, qtb, permutation);
                 }
                 should(vigra::linalg::linearSolveUpperTriangular(r, qtb, px));
@@ -1900,7 +1881,7 @@ struct LinalgTest
 
     void testInverse()
     {
-        double epsilon = 1e-10;
+        double epsilon = 1e-11;
         Matrix idref = vigra::identityMatrix<double>(size);
 
         for(unsigned int i = 0; i < iterations; ++i)
@@ -2040,7 +2021,7 @@ struct LinalgTest
         Matrix a(m, n);
         for(int i1= 0; i1 < m; i1++)
             for(int i2= 0; i2 < n; i2++)
-                a(i1, i2)= ((float)std::rand()-RAND_MAX/2.0)/10000.0;
+                a(i1, i2)= random_double();
 	    Matrix u(m, n);
 	    Matrix v(n, n);
 	    Matrix S(n, 1);
@@ -2048,11 +2029,8 @@ struct LinalgTest
 	    unsigned int rank = singularValueDecomposition(a, u, S, v);
 	    shouldEqual(rank, n);
 
-#if defined(__GNUC__)
-        double eps = 1e-9;
-#else
-        double eps = 1e-10;
-#endif
+        double eps = 1e-11;
+
    	    shouldEqualToleranceMessage(norm(a-u*diagonalMatrix(S)*transpose(v)), 0.0, eps, VIGRA_TOLERANCE_MESSAGE);
 	    shouldEqualToleranceMessage(norm(vigra::identityMatrix<double>(4) - transpose(u)*u), 0.0, eps, VIGRA_TOLERANCE_MESSAGE);
 	    shouldEqualToleranceMessage(norm(vigra::identityMatrix<double>(4) - transpose(v)*v), 0.0, eps, VIGRA_TOLERANCE_MESSAGE);

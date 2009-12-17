@@ -56,6 +56,14 @@ ENABLE_TESTING()
 
 ##################################################
 #
+#     setup documentation generator
+#
+##################################################
+
+ADD_CUSTOM_TARGET(doc)
+
+##################################################
+#
 #     subdirectories
 #
 ##################################################
@@ -75,7 +83,6 @@ ENDIF()
 ##################################################
 
 INSTALL(DIRECTORY ${vigra_SOURCE_DIR}/include/vigra DESTINATION include)
-INSTALL(DIRECTORY ${vigra_SOURCE_DIR}/doc/vigra DESTINATION doc)
 
 ##################################################
 #
