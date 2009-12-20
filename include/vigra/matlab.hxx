@@ -315,7 +315,7 @@ getMultiArray(mxArray const * t)
     if(DIM > 1)
     {
         int mdim = mxGetNumberOfDimensions(t);
-        if(DIM < mdim)
+        if(static_cast<int>(DIM) < mdim)
         {
             mexErrMsgTxt("getMultiArray(): Input array has too many dimensions.");
         }
@@ -324,7 +324,7 @@ getMultiArray(mxArray const * t)
         {
             shape[k] = static_cast<typename Shape::value_type>(matlabShape[k]);
         }
-        for(int k=mdim; k<DIM; ++k)
+        for(int k=mdim; k<static_cast<int>(DIM); ++k)
         {
             shape[k] = 1;
         }
@@ -341,7 +341,7 @@ MultiArrayView<DIM, T>
 createMultiArray(typename MultiArrayShape<DIM>::type const & shape, mxArray * & t)
 {
     mwSize matlabShape[DIM];
-    for(int k=0; k<DIM; ++k)
+    for(int k=0; k<static_cast<int>(DIM); ++k)
         matlabShape[k] = static_cast<mwSize>(shape[k]);
     t = mxCreateNumericArray(DIM, matlabShape, ValueType<T>::classID, mxREAL);
 
@@ -796,9 +796,8 @@ class InputArray
         T temp = this->getScalar<T>(posOrName, req);
         if (!is_in_range(temp, min_, max_))
             mexErrMsgTxt("Value out of bounds.");
-        else
-            return temp;
 
+        return temp;
     }
 
     template <class T, class Place, class ReqType, class iteratorType>
@@ -941,6 +940,7 @@ class InputArray
     ConstCellArray getCellArray(std::string posOrName, ReqType req)
     {
         CompileTimeError ERROR__Const_Cell_Array_May_Not_Be_In_Option_Struct;
+        return ConstCellArray();
     }
 
 };
@@ -1080,10 +1080,10 @@ Rahuls code starts here
 using namespace vigra;
 
 
-/*++++++++++++++++++++++++++HELPERFUNC+++++++++++++++++++++++++++++++*/
-/* This is used for better readibility of the test cases            .
-/* Nothing to be done here.
-/*+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
+/*++++++++++++++++++++++++++HELPERFUNC+++++++++++++++++++++++++++++++
+ * This is used for better readibility of the test cases            .
+ * Nothing to be done here.
+ *+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
 int cantorPair(int x, int y){
         return (int)(((x+y)*(x+y+1))/2+y);
 }
