@@ -354,7 +354,6 @@ void DecisionTree::continueLearn(   MultiArrayView<2, U, C> const       & featur
                                          child_stack_entry, 
                                          randint);
 
-
         // do some visiting yawn - just added this comment as eye candy
         // (looks odd otherwise with my syntax highlighting....
         visitor.visit_after_split(*this, split, top, 
@@ -389,7 +388,7 @@ void DecisionTree::continueLearn(   MultiArrayView<2, U, C> const       & featur
             child_stack_entry[0].leftParent = topology_.size();
             child_stack_entry[1].rightParent = topology_.size();    
             child_stack_entry[0].rightParent = -1;
-            child_stack_entry[1].leftParent = -1;    
+            child_stack_entry[1].leftParent = -1;
             stack.push_back(child_stack_entry[0]);
             stack.push_back(child_stack_entry[1]);
         }

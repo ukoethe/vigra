@@ -742,6 +742,11 @@ class ThresholdSplit: public SplitBase
         childRegions[1].rule = region.rule;
         childRegions[1].rule.push_back(std::make_pair(1, 1.0));
 
+        assert(bestSplit!=region.end());
+        assert(bestSplit!=region.begin());
+        assert(childRegions[0].size()!=0);
+        assert(childRegions[1].size()!=0);
+
         return i_ThresholdNode;
     }
 };
