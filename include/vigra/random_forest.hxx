@@ -632,7 +632,6 @@ double RandomForest<LabelType, PreprocessorTag>::onlineLearn(
     // THE MAIN EFFING RF LOOP - YEAY DUDE!
     for(int ii = 0; ii < (int)trees_.size(); ++ii)
     {
-        std::cout<<"Looking at tree "<<ii<<std::endl;
         online_visitor_.tree_id=ii;
         poisson_sampler.sample();
         std::map<int,int> leaf_parents;
@@ -787,7 +786,6 @@ double RandomForest<LabelType, PreprocessorTag>::
     // THE MAIN EFFING RF LOOP - YEAY DUDE!
     for(int ii = 0; ii < (int)trees_.size(); ++ii)
     {
-        std::cout<<"Learning tree "<<ii<<std::endl;
         //initialize First region/node/stack entry
         sampler
             .sample();

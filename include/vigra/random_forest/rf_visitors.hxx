@@ -573,10 +573,6 @@ public:
                     gap_right=features(rightChild[i],split.bestSplitColumn());
             mag_distributions.back().gap_left=gap_left;
             mag_distributions.back().gap_right=gap_right;
-            assert(mag_distributions.back().gap_left<=mag_distributions.back().gap_right);
-            double t=split.threshold();
-            assert(mag_distributions.back().gap_left<=t);
-            assert(mag_distributions.back().gap_right>=t);
 #endif
             
         }
@@ -597,7 +593,6 @@ public:
     {
         if(!this->active_)
             return;
-        assert(index_lists.size()>exterior_to_index[std::make_pair(tree,node)]);
         index_lists[exterior_to_index[std::make_pair(tree,node)]].push_back(index);
     }
     void move_exterior_node(int src_tree,int src_index,int dst_tree,int dst_index)
@@ -621,9 +616,6 @@ public:
             //Check if we are in the gap
             double value=features(0, Node<i_ThresholdNode>(tr.topology_,tr.parameters_,index).column());
             MarginalDistribution &m=mag_distributions[interior_to_index[std::make_pair(tree_id,index)]];
-            assert(m.gap_left<=m.gap_right);
-            assert(m.gap_left<=Node<i_ThresholdNode>(tr.topology_,tr.parameters_,index).threshold());
-            assert(m.gap_right>=Node<i_ThresholdNode>(tr.topology_,tr.parameters_,index).threshold());
             if(value>m.gap_left && value<m.gap_right)
             {
                 //Check which site we want to go
@@ -638,8 +630,6 @@ public:
                     m.gap_right=value;
                 }
                 Node<i_ThresholdNode>(tr.topology_,tr.parameters_,index).threshold()=(m.gap_right+m.gap_left)/2.0;
-                assert(m.gap_left<=value);
-                assert(m.gap_right>=value);
             }
             //Adjust class counts
             if(value>Node<i_ThresholdNode>(tr.topology_,tr.parameters_,index).threshold())

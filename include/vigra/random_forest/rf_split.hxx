@@ -599,7 +599,7 @@ public:
                 bestCurrentCounts[1] = right.class_histogram_;
                 min_gini_       = gini < min_gini_? gini : min_gini_;
                 min_index_      = next - begin +1 ;
-                min_threshold_  = (column[*next] + column[*(next +1)])/2;
+                min_threshold_  = (double(column[*next]) + double(column[*(next +1)]))/2.0;
             }
             iter = next +1 ;
             next = std::adjacent_find(iter, end, comp);
@@ -741,11 +741,6 @@ class ThresholdSplit: public SplitBase
         childRegions[1].setRange(   bestSplit       , region.end()    );
         childRegions[1].rule = region.rule;
         childRegions[1].rule.push_back(std::make_pair(1, 1.0));
-
-        assert(bestSplit!=region.end());
-        assert(bestSplit!=region.begin());
-        assert(childRegions[0].size()!=0);
-        assert(childRegions[1].size()!=0);
 
         return i_ThresholdNode;
     }
