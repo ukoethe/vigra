@@ -41,6 +41,8 @@
 #include <vigra/random_forest_deprec.hxx>
 #include <set>
 #include <cmath>
+#include <stdio.h>
+#include <time.h>
 
 #ifdef HasHDF5
 # include <vigra/random_forest_hdf5_impex.hxx>

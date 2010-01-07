@@ -685,8 +685,10 @@ class ThresholdSplit: public SplitBase
 
         // select columns  to be tried.
         for(int ii = 0; ii < SB::ext_param_.actual_mtry_; ++ii)
+        {
             std::swap(splitColumns[ii], 
                       splitColumns[ii+ randint(features.shape(1) - ii)]);
+        }
 
         // find the best gini index
         bestSplitIndex              = 0;
