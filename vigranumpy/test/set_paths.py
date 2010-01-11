@@ -5,7 +5,7 @@ if len(sys.argv) == 3:
 else:
     outdir = ''
 
-os.environ['PATH'] = os.pathsep.join([r'@VIGRAIMPEX_PATH@%s' % outdir, os.environ['PATH']])
-sys.path.insert(0, r'@VIGRANUMPYCMODULE_PATH@%s' % outdir)
-sys.path.insert(0, r'@VIGRANUMPYTEST_PATH@%s' % outdir)
-sys.path.insert(0, r'@VIGRANUMPYSCRIPTS_PATH@')
+os.environ['PATH'] = os.pathsep.join([r'Z:\Ilastik\vigra\src\impex%s' % outdir, os.environ['PATH']])
+sys.path.insert(0, r'Z:\Ilastik\vigra\vigranumpy\src\core%s' % outdir)
+sys.path.insert(0, r'Z:\Ilastik\vigra\vigranumpy\test%s' % outdir)
+sys.path.insert(0, r'Z:\Ilastik\vigra\vigranumpy\test\..\lib')
