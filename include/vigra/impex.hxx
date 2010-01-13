@@ -295,7 +295,11 @@ doxygen_overloaded_function(template <...> void importScalarImage)
     template < class ImageIterator, class Accessor >
     void importScalarImage( const ImageImportInfo & info, ImageIterator iter, Accessor a )
     {
+        #if HAVE_UNIQUE_PTR
+        std::unique_ptr<Decoder> dec = decoder(info);
+        #else
         std::auto_ptr<Decoder> dec = decoder(info);
+        #endif
         std::string pixeltype = dec->getPixelType();
 
         if ( pixeltype == "UINT8" )
@@ -1047,7 +1051,11 @@ doxygen_overloaded_function(template <...> void exportImage)
     {
         typedef typename SrcAccessor::value_type SrcValueType;
         std::string pixeltype = info.getPixelType();
+        #ifdef HAVE_UNIQUE_PTR
+        std::unique_ptr<Encoder> enc = encoder(info);
+        #else
         std::auto_ptr<Encoder> enc = encoder(info);
+        #endif
         bool downcast = negotiatePixelType(enc->getFileType(),
                            TypeAsString<SrcValueType>::result(), pixeltype);
         enc->setPixelType(pixeltype);

@@ -37,6 +37,7 @@
 #ifndef VIGRA_RANDOM_FOREST_HXX
 #define VIGRA_RANDOM_FOREST_HXX
 
+#include <iostream>
 #include <algorithm>
 #include <map>
 #include <set>
@@ -692,7 +693,6 @@ void RandomForest<LabelType, PreprocessorTag>
                            MultiArrayView<2, T, C2> &       prob,
                            Earlystopping                    stop) const
 {
-
     //Features are n xp
     //prob is n x NumOfLabel probability for each feature in each class
     vigra_precondition(rowCount(features) == rowCount(prob),
