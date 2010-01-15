@@ -804,7 +804,7 @@ NumpyAnyArray pythonEigHessian2d(NumpyArray<2,Singleband<PixelType> > image, dou
     //reshape if empty
     res.reshapeIfEmpty(MultiArrayShape<3>::type(image.shape(0),image.shape(1),2));
 
-    MultiArray<3,PixelType> hessian(MultiArrayShape<3>::type(image.shape(0),image.shape(1),2));
+    MultiArray<3,PixelType> hessian(MultiArrayShape<3>::type(image.shape(0),image.shape(1),3));
 
     hessianOfGaussian(image, hessian, scale);
 
