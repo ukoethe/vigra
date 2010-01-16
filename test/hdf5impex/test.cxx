@@ -301,6 +301,76 @@ public:
 		should (in_data_2 == out_data_2);
 	}
 
+
+    void testReadWritingStringDataset()
+    {
+
+        // dataset data
+        typedef MultiArrayShape<2>::type Shp;
+        MultiArray<2, std::string> dset(Shp(2,2), std::string());
+        MultiArray<2, std::string> loaded(Shp(2,2), std::string());
+        dset(0,0) = "cracker";
+        dset(1,1) = "jack";
+        //create a HDF5file;
+        std::string filename = "strTest.h5";
+        std::string pathname = "group/subgroup/dset";
+        writeToHDF5File(filename.c_str(), pathname.c_str(), dset);
+
+		HDF5ImportInfo info(filename.c_str(), pathname.c_str());
+        loadFromHDF5File(info, loaded);
+        should(dset == loaded);
+        shouldEqual(info.numDimensions(), 2);
+        shouldEqual(info.shapeOfDimension(0), 2);
+        shouldEqual(info.shapeOfDimension(1), 2);
+    }
+
+#if (H5_VERS_MAJOR == 1 && H5_VERS_MINOR == 8)
+    void testReadWritingNumericalAttribute()
+    {
+        //attribute data
+        ArrayVector<double> attr(10);
+        for(int ii = 0; ii < 10; ++ii)
+            attr[ii] = ii;
+
+        // dataset data
+        typedef MultiArrayShape<2>::type Shp;
+        MultiArray<2, double> dset(Shp(2,2));
+        //create a HDF5file;
+        writeToHDF5File("attrTest2.h5", "group/subgroup/dset", dset);
+
+        //write attribute
+        writeHDF5Attr("attrTest2.h5", "group/subgroup/dset.attr", attr);
+
+        //load attribute
+        ArrayVector<double> loaded;
+        loadHDF5Attr("attrTest2.h5", "group/subgroup/dset.attr", loaded);
+
+        shouldEqual(attr, loaded);
+    }
+
+    void testReadWritingStringAttribute()
+    {
+        //attribute data
+        ArrayVector<std::string> attr(10);
+        for(int ii = 0; ii < 10; ++ii)
+            attr[ii] = "Cralemahallebadekapp";
+
+        // dataset data
+        typedef MultiArrayShape<2>::type Shp;
+        MultiArray<2, double> dset(Shp(2,2));
+        //create a HDF5file;
+        writeToHDF5File("attrTest1.h5", "group/subgroup/dset", dset);
+
+        //write attribute
+        writeHDF5Attr("attrTest1.h5", "group/subgroup/dset.attr", attr);
+
+        //load attribute
+        ArrayVector<std::string> loaded;
+        loadHDF5Attr("attrTest1.h5", "group/subgroup/dset.attr", loaded);
+
+        shouldEqual(attr, loaded);
+    }
+#endif
 };
 
 struct HDF5ImportExportTestSuite : public vigra::test_suite
@@ -320,6 +390,10 @@ struct HDF5ImportExportTestSuite : public vigra::test_suite
         add(testCase(&HDF5ExportImportTest::testStridedHDF5ExportImport2_columnMajor));
         add(testCase(&HDF5ExportImportTest::testAppendNewDataToHDF5_columnMajor));
         add(testCase(&HDF5ExportImportTest::testOverwriteExistingDataInHDF5_columnMajor));
+        // attributes and string datasets
+        add(testCase(&HDF5ExportImportTest::testReadWritingStringDataset));
+        add(testCase(&HDF5ExportImportTest::testReadWritingNumericalAttribute));
+        add(testCase(&HDF5ExportImportTest::testReadWritingStringAttribute));
 	}
 };
 

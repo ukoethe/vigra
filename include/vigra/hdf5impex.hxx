@@ -67,6 +67,13 @@
 
 namespace vigra {
 
+/** Handle to automatically to a hid_t object. takes care of deallocation
+ * once the hid_t is not needed anymore. 
+ *
+ * contains an implicit cast to hid_t - this means it can be used exactly like
+ * a hid_t otherwise.
+ * */
+
 class HDF5Handle
 {
 public:
@@ -82,7 +89,15 @@ public:
     : handle_( 0 ),
       destructor_(0)
     {}
-
+    
+    /** create a HDF5 handle. 
+     * \param hid_t returned by a H5X...() method (e.g. H5Acreate() or 
+     *          H5Dcreate etc.
+     * \param destructor function pointer to the right deallocation method
+     *          (e.g. H5Ddelete, H5Adelete,  H5Tdelete etc...
+     * \param error_message runtime exception string to be thrown if the 
+     *        allocation or deallocation of memory pointed to by hid_t 
+     */
     HDF5Handle(hid_t h, Destructor destructor, const char * error_message)
     : handle_( h ),
       destructor_(destructor)
@@ -128,7 +143,9 @@ public:
     {
         return handle_;
     }
-
+    
+    /** Implicit cast to hid_t
+     */
     operator hid_t() const
     {
         return handle_;
@@ -264,6 +281,7 @@ VIGRA_H5_DATATYPE(UInt64, H5T_NATIVE_UINT64)
 VIGRA_H5_DATATYPE(float, H5T_NATIVE_FLOAT)
 VIGRA_H5_DATATYPE(double, H5T_NATIVE_DOUBLE)
 VIGRA_H5_DATATYPE(long double, H5T_NATIVE_LDOUBLE)
+VIGRA_H5_DATATYPE(std::string, H5T_C_S1)
 
 #undef VIGRA_H5_DATATYPE
 
@@ -354,54 +372,145 @@ readHDF5Impl(DestIterator d, Shape const & shape, hid_t dataset_id, ArrayVector<
 } // namespace detail
 
 template<unsigned int N, class T, class Tag>
-void loadFromHDF5File(const HDF5ImportInfo &info, MultiArrayView<N, T, Tag> array, const bool rowMajorOrder = false) 
+void loadFromHDF5File(const HDF5ImportInfo &info, 
+                      MultiArrayView<N, T, Tag> array, 
+                      const bool rowMajorOrder = false) 
 {
-    //std::cout << N << " vs. " << info.numDimensions() << std::endl;
-    vigra_precondition((N == info.numDimensions()),// || (N == 1 + info.numDimensions())),
-        "loadFromHDF5File(): Array dimension disagrees with HDF5ImportInfo.numDimensions().");
+
 
     typename MultiArrayShape<N>::type shape;
     for(unsigned int k=0; k<N; ++k)
         shape[k] = (MultiArrayIndex)info.shapeOfDimension(k);
-
-    vigra_precondition(shape == array.shape(), 
-         "loadFromHDF5File(): Array shape disagrees with HDF5ImportInfo.");
-
-    //Get the data
-    int counter = 0;
+    
     int elements = 1;
     for(int i=0;i<N;++i)
         elements *= shape[i];
+    
+    vigra_precondition((array.size() == elements),
+        "loadFromHDF5File(): Array size disagrees with number of elements in"
+        "HDF5 Dataset");
+    vigra_precondition((array.shape(0) == shape[0]),
+        "loadFromHDF5File(): size of first dimension does not agree with "
+        "HDF5 Dataset");
+    
+    // commented out as we only have to ensure that the number of elements 
+    // are the same. Remove comment block if this is ok.
+    // vigra_precondition((N == info.numDimensions()),
+    //    "loadFromHDF5File(): Array dimension disagrees with HDF5ImportInfo.numDimensions().");
+    // vigra_precondition(shape == array.shape(), 
+    //     "loadFromHDF5File(): Array shape disagrees with HDF5ImportInfo.");
+
+    //Get the data
+    int counter = 0;
     if(rowMajorOrder)
     {
         ArrayVector<T> buffer(shape[0]);
-        detail::readHDF5Impl(array.traverser_begin(), shape, info.getDatasetHandle(), buffer, counter, elements, vigra::MetaInt<N-1>());
+        detail::readHDF5Impl(array.traverser_begin(), 
+                             shape, 
+                             info.getDatasetHandle(), 
+                             buffer, 
+                             counter, 
+                             elements, 
+                             vigra::MetaInt<N-1>());
     } else {
-        /*
-        MultiArrayView<N, T, StridedArrayTag> arrayTransposed = array.permuteStridesDescending();
-        ArrayVector<T> buffer(arrayTransposed.shape(0));
-        detail::readHDF5Impl(arrayTransposed.traverser_begin(), arrayTransposed.shape(), info.getDatasetHandle(), buffer, counter, elements, vigra::MetaInt<N-1>());
-        */
         vigra::TinyVector<int,N> strideNew;
         vigra::TinyVector<int,N> shapeNew;
         for(unsigned int k=0; k<N; ++k)
         {
-            //std::cout << "StrideOld[" << k << "]=" << array.stride(k) << std::endl;
             strideNew[k] = array.stride(N-1-k);
             shapeNew[k] = array.shape(N-1-k);
-            //std::cout << "StrideNew[" << k << "]=" << strideNew[k] << std::endl;
-            //std::cout << "ShapeNew[" << k << "]=" << shapeNew[k] << std::endl;
         }
-        MultiArrayView<N, T, StridedArrayTag> arrayNew (shapeNew, strideNew, array.data());
+        MultiArrayView<N, T, StridedArrayTag> arrayNew (shapeNew, 
+                                                        strideNew, 
+                                                        array.data());
         ArrayVector<T> buffer(arrayNew.shape(0));
-        detail::readHDF5Impl(arrayNew.traverser_begin(), arrayNew.shape(), info.getDatasetHandle(), buffer, counter, elements, vigra::MetaInt<N-1>());
+        detail::readHDF5Impl(arrayNew.traverser_begin(), 
+                             arrayNew.shape(), 
+                             info.getDatasetHandle(), 
+                             buffer, 
+                             counter, 
+                             elements, 
+                             vigra::MetaInt<N-1>());
     }
 
-    /*vigra_postcondition(H5Dread(info.getDatasetHandle(), detail::getH5DataType<T>(), H5S_ALL, H5S_ALL, H5P_DEFAULT, array.data()) >= 0,
-           "loadFromHDF5File(): Unable to transfer data.");
-    */
 }
 
+/** Overloaded load method for loading string multiArrays
+ */
+template<unsigned int N, class Tag>
+void loadFromHDF5File(const HDF5ImportInfo &info, 
+                      MultiArrayView<N, std::string, Tag> array, 
+                      const bool rowMajorOrder = false) 
+{
+    typename MultiArrayShape<N>::type shape;
+    for(unsigned int k=0; k<N; ++k)
+        shape[k] = (MultiArrayIndex)info.shapeOfDimension(k);
+
+    int elements = 1;
+    for(int i=0;i<N;++i)
+        elements *= shape[i];
+    vigra_precondition((array.size() == elements),
+        "loadFromHDF5File(): Array size disagrees with number of elements in"
+        "HDF5 Dataset");
+    vigra_precondition((array.shape(0) == shape[0]),
+        "loadFromHDF5File(): size of first dimension does not agree with "
+        "HDF5 Dataset");
+    
+    // commented out as we only have to ensure that the number of elements 
+    // are the same. Remove comment block if this is ok.
+    // vigra_precondition((N == info.numDimensions()),
+    //    "loadFromHDF5File(): Array dimension disagrees with HDF5ImportInfo.numDimensions().");
+    // vigra_precondition(shape == array.shape(), 
+    //     "loadFromHDF5File(): Array shape disagrees with HDF5ImportInfo.");
+
+    HDF5Handle 
+        dataspace_handle(H5Dget_space(info.getDatasetHandle()),
+                     &H5Sclose, 
+                     "writeToHDF5File(): unable to create dataspace.");
+
+    HDF5Handle 
+        datatype_handle(H5Dget_type(info.getDatasetHandle()),
+                     &H5Tclose, 
+                     "writeToHDF5File(): unable to create dataspace.");
+
+    //TODO add precondition to check whether this is really a string type
+    // not checking it will not make the method crash but will produce wierd
+    // results when you try to open a numeric array.
+    hssize_t type_size = H5Tget_size(datatype_handle);
+    hssize_t size = H5Sget_simple_extent_npoints(dataspace_handle);
+
+    char buffer[type_size * size];
+    H5Dread(info.getDatasetHandle(), 
+            datatype_handle, 
+            H5S_ALL, 
+            H5S_ALL, 
+            H5P_DEFAULT, 
+            buffer); 
+    char* iter = buffer;
+    if(rowMajorOrder)
+    {
+        for(int ii = 0; ii < array.size();++ii)
+        {
+            array[ii] = std::string(iter, type_size);
+            while(array[ii].find('\0') != std::string::npos)
+                array[ii].erase(array[ii].find('\0'), 1);
+            iter += type_size;
+        }
+    } else {
+       
+        for(int ii = 0; ii < array.size();++ii)
+        {
+            array.transpose()[ii] = std::string(iter, type_size);
+            while(array.transpose()[ii].find('\0') != std::string::npos)
+                array.transpose()[ii].erase(array.transpose()[ii].find('\0'), 1);
+            iter += type_size;
+        }
+    }
+
+}
+
+/** recursively open a group  given by a path string
+ */
 inline hid_t openGroup(hid_t parent, std::string group_name)
 {
     //std::cout << group_name << std::endl;
@@ -425,6 +534,8 @@ inline hid_t openGroup(hid_t parent, std::string group_name)
     return parent; 
 }
 
+/** recursively create a path of groups given a path string
+ */
 inline hid_t createGroup(hid_t parent, std::string group_name)
 {
     if(group_name.size() == 0 ||*group_name.rbegin() != '/')
@@ -455,6 +566,8 @@ inline hid_t createGroup(hid_t parent, std::string group_name)
     return parent; 
 }
 
+/** delete a Dataset
+ */
 inline void deleteDataset(hid_t parent, std::string dataset_name)
 {
     // delete existing data and create new dataset
@@ -475,6 +588,10 @@ inline void deleteDataset(hid_t parent, std::string dataset_name)
     } 
 }
 
+/** create a HDF5 file if it doesn't exist. 
+ *  default behavior: append to existing file if it exists.
+ *  if append_ = false: overwrite existing file
+ */
 inline hid_t createFile(std::string filePath, bool append_ = true)
 {
     FILE * pFile;
@@ -698,8 +815,125 @@ void writeToHDF5File(const char* filePath,
     H5Fflush(file_id, H5F_SCOPE_GLOBAL);
 }
 
-
+// The creation and reading of HDF5 attributes is currently only supported 
+// with HDF5 1.8 onwards. This is because I have no clue how to open an
+// attribute by name with the earlier version. 
 #if (H5_VERS_MAJOR == 1 && H5_VERS_MINOR == 8)
+
+/** Quick and dirty hack for loading arrays valued attributes without the 
+ *  tedious usage of an info object. Down side is that you have to know the
+ *  name and type of the attribute
+ */ 
+template<class T>
+bool loadHDF5Attr(hid_t loc, const char* name, ArrayVector<T> & array)
+{
+        if(H5Aexists(loc, name) == 0)
+            return false;
+
+        HDF5Handle attr(H5Aopen_by_name(loc,".", name, H5P_DEFAULT, H5P_DEFAULT), 
+                        &H5Aclose,
+                        "loadHDF5Attr: unable to create Attribute");
+        HDF5Handle 
+            dataspace_handle(H5Aget_space(attr),
+                         &H5Sclose, 
+                         "writeToHDF5File(): unable to create dataspace.");
+        hssize_t size = H5Sget_simple_extent_npoints(dataspace_handle);
+        
+        array.resize(size);
+        H5Aread(attr, detail::getH5DataType<T>(), array.data());
+        return true;
+}
+/** loads a string valued array of attributes
+ */
+bool loadHDF5Attr(hid_t loc, const char* name, ArrayVector<std::string> & array)
+{
+        if(H5Aexists(loc, name) == 0)
+            return false;
+
+        HDF5Handle attr(H5Aopen_by_name(loc,".", name, H5P_DEFAULT, H5P_DEFAULT), 
+                        &H5Aclose,
+                        "loadHDF5Attr: unable to create Attribute");
+        HDF5Handle 
+            dataspace_handle(H5Aget_space(attr),
+                         &H5Sclose, 
+                         "writeToHDF5File(): unable to create dataspace.");
+
+        HDF5Handle 
+            datatype_handle(H5Aget_type(attr),
+                         &H5Tclose, 
+                         "writeToHDF5File(): unable to create dataspace.");
+        hssize_t type_size = H5Tget_size(datatype_handle);
+        hssize_t size = H5Sget_simple_extent_npoints(dataspace_handle);
+
+        char buffer[type_size * size];
+        H5Aread(attr, datatype_handle, buffer);
+        char* iter = buffer;
+        for(int ii = 0; ii < size; ++ii)
+        {
+            array.push_back(std::string(iter, type_size));
+            while(array.back().find('\0') != std::string::npos)
+                array.back().erase(array[ii].find('\0'), 1);
+            iter+= type_size; 
+        }
+        return true;
+}
+
+/** load given file and path in file. gorups are delimited by / and the 
+ * attribute by .
+ * eg /group/subgroup/dataset.attribute. Why for lords sake couldn't the guys
+ * at HDF5 implemented it this way as well?
+ */
+template<class T>
+bool loadHDF5Attr(const char* filePath, const char* pathInFile, ArrayVector<T> & array)
+{
+    std::string path_name(pathInFile), group_name, data_set_name, message, attr_name;
+    std::string::size_type delimiter = path_name.rfind('/');
+    
+    //create or open file
+    HDF5Handle file_id(createFile(filePath), &H5Fclose, 
+                       "writeToHDF5File(): unable to open output file.");
+
+    // get the groupname and the filename
+    if(delimiter == std::string::npos)
+    {
+        group_name    = "/";
+        data_set_name = path_name;
+    }
+
+    else
+    {
+        group_name = std::string(path_name.begin(), path_name.begin()+delimiter);
+        data_set_name = std::string(path_name.begin()+delimiter+1, path_name.end());
+    }
+    delimiter = data_set_name.rfind('.');
+    if(delimiter == std::string::npos)
+    {
+        attr_name = path_name;
+        data_set_name = "/";
+    }
+    else
+    {
+        attr_name = std::string(data_set_name.begin()+delimiter+1, data_set_name.end());
+        data_set_name = std::string(data_set_name.begin(), data_set_name.begin()+delimiter);
+    }
+    
+    HDF5Handle group(openGroup(file_id, group_name), &H5Gclose, 
+                     "writeToHDF5File(): Unable to create and open group. attr ver");
+
+    if(data_set_name != "/")
+    {
+        HDF5Handle dset(H5Dopen(group, data_set_name.c_str(), H5P_DEFAULT), &H5Dclose,
+                        "writeHDF5Attr():unable to open dataset");
+        loadHDF5Attr(hid_t(dset), attr_name.c_str(), array);
+    }
+    else
+    {
+        loadHDF5Attr(hid_t(group), attr_name.c_str(), array);
+    }
+
+}
+
+
 /** write a numeric MultiArray as a attribute of location identifier loc
  * with name name
  */
@@ -798,8 +1032,8 @@ inline void writeHDF5Attr(  hid_t loc,
  *  respectively
  */
 template<class Arr>
-inline void writeHDF5Attr(  std::string filePath,
-                            std::string pathInFile,
+inline void writeHDF5Attr(  const char* filePath,
+                            const char* pathInFile,
                             Arr  & ar)
 {
     std::string path_name(pathInFile), group_name, data_set_name, message, attr_name;
