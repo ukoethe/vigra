@@ -39,6 +39,7 @@
 
 #include <string>
 #include <hdf5.h>
+#include <numeric>
 
 #if (H5_VERS_MAJOR == 1 && H5_VERS_MINOR <= 6)
 # ifndef H5Gopen
@@ -382,15 +383,13 @@ void loadFromHDF5File(const HDF5ImportInfo &info,
     for(unsigned int k=0; k<N; ++k)
         shape[k] = (MultiArrayIndex)info.shapeOfDimension(k);
     
-    int elements = 1;
-    for(int i=0;i<N;++i)
-        elements *= shape[i];
+    int elements = std::accumulate(info.shape().begin(), 
+                                   info.shape().end(),
+                                   1,
+                                   std::multiplies<int>());
     
     vigra_precondition((array.size() == elements),
         "loadFromHDF5File(): Array size disagrees with number of elements in"
-        "HDF5 Dataset");
-    vigra_precondition((array.shape(0) == shape[0]),
-        "loadFromHDF5File(): size of first dimension does not agree with "
         "HDF5 Dataset");
     
     // commented out as we only have to ensure that the number of elements 
@@ -399,6 +398,44 @@ void loadFromHDF5File(const HDF5ImportInfo &info,
     //    "loadFromHDF5File(): Array dimension disagrees with HDF5ImportInfo.numDimensions().");
     // vigra_precondition(shape == array.shape(), 
     //     "loadFromHDF5File(): Array shape disagrees with HDF5ImportInfo.");
+
+    hid_t dataset = info.getDatasetHandle();
+    hid_t cparms = H5Dget_create_plist (dataset);
+    if (H5D_CHUNKED == H5Pget_layout (cparms))
+    {    
+        hsize_t      dimsr[N];
+        for(int ii = 0; ii < N;++ii)
+            dimsr[ii] = array.shape(ii);
+        HDF5Handle filespace(H5Dget_space (dataset), H5Sclose, "space error");
+        HDF5Handle memspace(H5Screate_simple (N,dimsr,NULL), H5Sclose, "second space error");
+
+        if(rowMajorOrder)
+        {
+            H5Dread (dataset, detail::getH5DataType<T>(), memspace, filespace,
+                              H5P_DEFAULT, array.data());
+        }
+        else
+        {
+            ArrayVector<T> buffer(elements);
+            H5Dread (dataset, detail::getH5DataType<T>(), memspace, filespace,
+                              H5P_DEFAULT, buffer.data());
+            vigra::TinyVector<int,N> strideNew;
+            vigra::TinyVector<int,N> shapeNew;
+            for(unsigned int k=0; k<N; ++k)
+            {
+                strideNew[k] = array.stride(N-1-k);
+                shapeNew[k] = array.shape(N-1-k);
+            }
+            MultiArrayView<N, T, StridedArrayTag> arrayNew (shapeNew, 
+                                                            strideNew, 
+                                                            array.data());
+            for(int ii = 0; ii < elements; ++ii)
+                arrayNew[ii] = buffer[ii];
+        }
+       return;
+    }
+    H5Pclose (cparms);
+
 
     //Get the data
     int counter = 0;
@@ -446,14 +483,13 @@ void loadFromHDF5File(const HDF5ImportInfo &info,
     for(unsigned int k=0; k<N; ++k)
         shape[k] = (MultiArrayIndex)info.shapeOfDimension(k);
 
-    int elements = 1;
-    for(int i=0;i<N;++i)
-        elements *= shape[i];
+    int elements = std::accumulate(info.shape().begin(), 
+                                   info.shape().end(),
+                                   1,
+                                   std::multiplies<int>());
+    std::cerr << array.size() << " " << elements << std::endl;
     vigra_precondition((array.size() == elements),
         "loadFromHDF5File(): Array size disagrees with number of elements in"
-        "HDF5 Dataset");
-    vigra_precondition((array.shape(0) == shape[0]),
-        "loadFromHDF5File(): size of first dimension does not agree with "
         "HDF5 Dataset");
     
     // commented out as we only have to ensure that the number of elements 
@@ -466,12 +502,12 @@ void loadFromHDF5File(const HDF5ImportInfo &info,
     HDF5Handle 
         dataspace_handle(H5Dget_space(info.getDatasetHandle()),
                      &H5Sclose, 
-                     "writeToHDF5File(): unable to create dataspace.");
+                     "loadToHDF5File(): unable to create dataspace.");
 
     HDF5Handle 
         datatype_handle(H5Dget_type(info.getDatasetHandle()),
                      &H5Tclose, 
-                     "writeToHDF5File(): unable to create dataspace.");
+                     "loadToHDF5File(): unable to create dataspace.");
 
     //TODO add precondition to check whether this is really a string type
     // not checking it will not make the method crash but will produce wierd
@@ -514,6 +550,10 @@ void loadFromHDF5File(const HDF5ImportInfo &info,
 inline hid_t openGroup(hid_t parent, std::string group_name)
 {
     //std::cout << group_name << std::endl;
+    if(group_name == "/")
+        return H5Gopen(parent, group_name.c_str(), H5P_DEFAULT);
+    if(group_name[0] == '/')
+        group_name.erase(0,1);
     size_t last_slash = group_name.find_last_of('/'); 
     if (last_slash == std::string::npos || last_slash != group_name.size() - 1)
         group_name = group_name + '/';
@@ -577,12 +617,12 @@ inline void deleteDataset(hid_t parent, std::string dataset_name)
 #if (H5_VERS_MAJOR == 1 && H5_VERS_MINOR <= 6)
 		if(H5Gunlink(parent, dataset_name.c_str()) < 0)
         {
-            vigra_postcondition(false, "writeToHDF5File(): Unable to delete existing data.");
+            vigra_postcondition(false, "deleteDataset(): Unable to delete existing data.");
         }
 #else
 		if(H5Ldelete(parent, dataset_name.c_str(), H5P_DEFAULT ) < 0)
         {
-            vigra_postcondition(false, "writeToHDF5File(): Unable to delete existing data.");
+            vigra_postcondition(false, "deleteDataset(): Unable to delete existing data.");
         }
 #endif
     } 
@@ -837,6 +877,12 @@ bool loadHDF5Attr(hid_t loc, const char* name, ArrayVector<T> & array)
             dataspace_handle(H5Aget_space(attr),
                          &H5Sclose, 
                          "writeToHDF5File(): unable to create dataspace.");
+        HDF5Handle 
+            datatype_handle(H5Aget_type(attr),
+                         &H5Tclose, 
+                         "writeToHDF5File(): unable to create dataspace.");
+        if((H5Tget_class(datatype_handle) == H5T_STRING))
+            return false;
         hssize_t size = H5Sget_simple_extent_npoints(dataspace_handle);
         
         array.resize(size);
@@ -862,6 +908,8 @@ bool loadHDF5Attr(hid_t loc, const char* name, ArrayVector<std::string> & array)
             datatype_handle(H5Aget_type(attr),
                          &H5Tclose, 
                          "writeToHDF5File(): unable to create dataspace.");
+        if(!(H5Tget_class(datatype_handle) == H5T_STRING))
+            return false;
         hssize_t type_size = H5Tget_size(datatype_handle);
         hssize_t size = H5Sget_simple_extent_npoints(dataspace_handle);
 
@@ -891,7 +939,7 @@ bool loadHDF5Attr(const char* filePath, const char* pathInFile, ArrayVector<T> &
     
     //create or open file
     HDF5Handle file_id(createFile(filePath), &H5Fclose, 
-                       "writeToHDF5File(): unable to open output file.");
+                       "loadHDF5Attr(): unable to open output file.");
 
     // get the groupname and the filename
     if(delimiter == std::string::npos)
@@ -916,19 +964,18 @@ bool loadHDF5Attr(const char* filePath, const char* pathInFile, ArrayVector<T> &
         attr_name = std::string(data_set_name.begin()+delimiter+1, data_set_name.end());
         data_set_name = std::string(data_set_name.begin(), data_set_name.begin()+delimiter);
     }
-    
     HDF5Handle group(openGroup(file_id, group_name), &H5Gclose, 
-                     "writeToHDF5File(): Unable to create and open group. attr ver");
+                     "loadHDF5Attr(): Unable to create and open group. attr ver");
 
     if(data_set_name != "/")
     {
         HDF5Handle dset(H5Dopen(group, data_set_name.c_str(), H5P_DEFAULT), &H5Dclose,
-                        "writeHDF5Attr():unable to open dataset");
-        loadHDF5Attr(hid_t(dset), attr_name.c_str(), array);
+                        "loadHDF5Attr():unable to open dataset");
+        return loadHDF5Attr(hid_t(dset), attr_name.c_str(), array);
     }
     else
     {
-        loadHDF5Attr(hid_t(group), attr_name.c_str(), array);
+        return loadHDF5Attr(hid_t(group), attr_name.c_str(), array);
     }
 
 }
@@ -1041,7 +1088,7 @@ inline void writeHDF5Attr(  const char* filePath,
     
     //create or open file
     HDF5Handle file_id(createFile(filePath), &H5Fclose, 
-                       "writeToHDF5File(): unable to open output file.");
+                       "writeHDF5Attr(): unable to open output file.");
 
     // get the groupname and the filename
     if(delimiter == std::string::npos)
@@ -1068,7 +1115,7 @@ inline void writeHDF5Attr(  const char* filePath,
     }
     
     HDF5Handle group(openGroup(file_id, group_name), &H5Gclose, 
-                     "writeToHDF5File(): Unable to create and open group. attr ver");
+                     "writeHDF5Attr(): Unable to create and open group. attr ver");
 
     if(data_set_name != "/")
     {
