@@ -125,6 +125,7 @@ class RandomForest
     typedef RF_Traits::Default_Split_t      Default_Split_t;
     typedef RF_Traits::Default_Stop_t       Default_Stop_t;
     typedef RF_Traits::Default_Visitor_t    Default_Visitor_t;
+    typedef LabelType                       LabelT; 
   protected:
 
     /** optimisation for predictLabels
@@ -522,7 +523,7 @@ class RandomForest
     void predictProbabilities(MultiArrayView<2, U, C1>const &   features,
                               MultiArrayView<2, T, C2> &        prob)  const
     {
-        predictProbabilities(features, prob, RF_Traits::Default_Stop_t(options_)); 
+        predictProbabilities(features, prob, rf_default()); 
     }   
 
 
@@ -656,7 +657,7 @@ LabelType RandomForest<LabelType, Tag>
             " Feature matrix must have a singlerow.");
     typedef MultiArrayShape<2>::type Shp;
     garbage_prediction_.reshape(Shp(1, ext_param_.class_count_), 0.0);
-    double          d;
+    LabelType          d;
     predictProbabilities(features, garbage_prediction_);
     ext_param_.to_classlabel(argMax(garbage_prediction_), d);
     return d;
@@ -681,17 +682,17 @@ LabelType RandomForest<LabelType, PreprocessorTag>
     std::transform( prob.begin(), prob.end(),
                     priors, prob.begin(),
                     Arg1()*Arg2());
-    double          d;
+    LabelType          d;
     ext_param_.to_classlabel(argMax(prob), d);
     return d;
 }
 
 template <class LabelType, class PreprocessorTag>
-template <class U, class C1, class T, class C2, class Earlystopping>
+template <class U, class C1, class T, class C2, class Stop_t>
 void RandomForest<LabelType, PreprocessorTag>
     ::predictProbabilities(MultiArrayView<2, U, C1>const &  features,
                            MultiArrayView<2, T, C2> &       prob,
-                           Earlystopping                    stop) const
+                           Stop_t                           stop_) const
 {
     //Features are n xp
     //prob is n x NumOfLabel probability for each feature in each class
@@ -709,6 +710,11 @@ void RandomForest<LabelType, PreprocessorTag>
       "RandomForestn::predictProbabilities():"
       " Probability matrix must have as many columns as there are classes.");
 
+    #define RF_CHOOSER(type_) detail::Value_Chooser<type_, Default_##type_> 
+    Default_Stop_t default_stop(options_);
+    typename RF_CHOOSER(Stop_t)::type stop
+            = RF_CHOOSER(Stop_t)::choose(stop_, default_stop); 
+    #undef RF_CHOOSER 
     stop.set_external_parameters(ext_param_);
     prob.init(NumericTraits<T>::zero());
     
