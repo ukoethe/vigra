@@ -70,6 +70,7 @@ public:
 		// export and import data from and to unstrided array
 
 		char hdf5File[] = "testfile1.hdf5";
+        std::remove(hdf5File);
 
 		// data 1: int data in 2 dimensions (partly negative)
 		MultiArray<2,int> out_data_1(MultiArrayShape<2>::type(10, 11));
@@ -126,6 +127,7 @@ public:
 		// export data from strided arrays and import to unstrided arrays
 
 		char hdf5File[] = "testfile2.hdf5";
+        std::remove(hdf5File);
 
 		// int data in 2 dimensions (partly negative)
 		MultiArray<3,int> out_data_3(MultiArrayShape<3>::type(2, 3, 4));
@@ -171,6 +173,7 @@ public:
 		// export data from unstrided arrays and import to strided arrays
 
 		char hdf5File[] = "testfile3.hdf5";
+        std::remove(hdf5File);
 
 		// int data in 2 dimensions (partly negative)
 		MultiArray<3,int> out_data_6(MultiArrayShape<3>::type(2, 3, 4));
@@ -207,6 +210,7 @@ public:
 		// write data to file, close file, open file, write more data, compare
 
 		char hdf5File[] = "testfile4.hdf5";
+        std::remove(hdf5File);
 
 		// data 1: int data in 2 dimensions (partly negative)
 		MultiArray<2,int> out_data_1(MultiArrayShape<2>::type(10, 11));
@@ -263,6 +267,7 @@ public:
 		// write data to file, close file, open file, overwrite data, compare
 
 		char hdf5File[] = "testfile5.hdf5";
+        std::remove(hdf5File);
 
 		// data 1: int data in 2 dimensions (partly negative)
 		MultiArray<2,int> out_data_1(MultiArrayShape<2>::type(10, 11));

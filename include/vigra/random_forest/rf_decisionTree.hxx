@@ -133,7 +133,7 @@ class DecisionTree
                     Random_t &                           randint);
 
     /** is a node a Leaf Node? */
-    inline bool isLeafNode(TreeInt in)
+    inline bool isLeafNode(TreeInt in) const
     {
         return (in & LeafNodeTag) == LeafNodeTag;
     }
@@ -145,7 +145,7 @@ class DecisionTree
      */
     template<class U, class C, class Visitor_t>
     TreeInt getToLeaf(MultiArrayView<2, U, C> const & features, 
-                      Visitor_t  & visitor)
+                      Visitor_t  & visitor) const
     {
         TreeInt index = 2;
         while(!isLeafNode(topology_[index]))
@@ -197,7 +197,7 @@ class DecisionTree
      * relearning//pruning scheme is utilized this will be pre order)
      */
     template<class Visitor_t>
-    void traverse_mem_order(Visitor_t visitor)
+    void traverse_mem_order(Visitor_t visitor) const
     {
         TreeInt index = 2;
         Int32 ii = 0;
@@ -217,7 +217,7 @@ class DecisionTree
     }
     /** same thing as above, without any visitors */
     template<class U, class C>
-    TreeInt getToLeaf(MultiArrayView<2, U, C> const & features)
+    TreeInt getToLeaf(MultiArrayView<2, U, C> const & features) const
     {
         RF_Traits::StopVisiting_t stop;
         return getToLeaf(features, stop);
@@ -226,7 +226,7 @@ class DecisionTree
 
     template <class U, class C>
     ArrayVector<double>::iterator
-    predict(MultiArrayView<2, U, C> const & features)
+    predict(MultiArrayView<2, U, C> const & features) const
     {
         TreeInt nodeindex = getToLeaf(features);
         switch(topology_[nodeindex])
@@ -253,7 +253,7 @@ class DecisionTree
 
 
     template <class U, class C>
-    Int32 predictLabel(MultiArrayView<2, U, C> const & features)
+    Int32 predictLabel(MultiArrayView<2, U, C> const & features) const
     {
         ArrayVector<double>::const_iterator weights = predict(features);
         return argMax(weights, weights+classCount_) - weights;
