@@ -201,7 +201,10 @@ void defineMultiAnalysisFunctions()
     using namespace python;
 
     multidef("watersheds", pywatersheds3D< UInt8, float >(),
-      (arg("volume"), arg("neighborhood")=6, arg("out")=python::object()));
+      (arg("volume"), arg("neighborhood")=6, arg("out")=python::object()),
+      "Region Segmentation by means of the watershed algorithm.\n"
+      "\n"
+      "For details see watersheds_ in the vigra C++ documentation.");
 
 /*
     def("seededRegionGrowing3D",
@@ -214,26 +217,41 @@ void defineMultiAnalysisFunctions()
         registerConverters(&pythonSeededRegionGrowingSeeded3D<float>),
         (arg("volume"), arg("seedVolume"),
         arg("srgType")=CompleteGrow,
-        arg("out")=python::object()));
+        arg("out")=python::object()),
+        "Three-dimensional Region Segmentation by means of Seeded Region Growing.\n"
+        "\n"
+        "For details see seededRegionGrowing3D_ in the vigra C++ documentation.");
 
 
     def("labelVolume3D",
         registerConverters(&pythonLabelVolume3D<Int32>),
         (arg("volume"), 
         arg("neighborhood3D")=6,
-        arg("out")=python::object()));
+        arg("out")=python::object()),
+        "Find the connected components of a segmented volume.\n"
+        "\n"
+        "For details see labelVolume_ in the vigra C++ documentation.");
 
     def("labelVolumeWithBackground3D",
         registerConverters(&pythonLabelVolumeWithBackground3D<Int32>),
         (arg("volume"), 
          arg("neighborhood")=6, 
          arg("background_value")=0,
-         arg("out")=python::object()));
+         arg("out")=python::object()),
+        "Find the connected components of a segmented volume, excluding the background from labeling.\n"
+        "\n"
+        "For details see labelVolmeWithBackground_ in the vigra C++ documentation.");
 
     def("distanceTransform3D",
         registerConverters(&pythonDistanceTransform3D<Int32>),
         (arg("array"), arg("background"),
-         arg("out")=python::object()));
+         arg("out")=python::object()),
+        "For all background pixels, calculate the distance to the nearest object or contour."
+        "The label of the pixels to be considered background in the source image is passed in the parameter 'background'."
+        "Source pixels with other labels will be considered objects."
+        "In the destination image, all pixels corresponding to background will be assigned the their distance value, all pixels corresponding to objects will be assigned 0.'n'"
+        "\n"
+        "For more details see distanceTranform_ in the vigra C++ documentation.");
 }
 
 } // namespace vigra

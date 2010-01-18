@@ -1,5 +1,5 @@
 IF(PYTHON_SPHINX)
-    SET(VIGRANUMPY_DOCDIR ${vigra_SOURCE_DIR}/vigranumpy/doc)
+    #SET(VIGRANUMPY_DOCDIR ${vigra_SOURCE_DIR}/vigranumpy/doc)
     
     FILE(MAKE_DIRECTORY ${VIGRANUMPY_DOCDIR})
 
@@ -14,8 +14,7 @@ IF(PYTHON_SPHINX)
     endif()
     ADD_DEPENDENCIES(doc doc_python)
 
-    INSTALL(DIRECTORY ${VIGRANUMPY_DOCDIR} 
-            DESTINATION ${VIGRANUMPY_INSTALL_DIR}/vigra)
+    INSTALL(DIRECTORY ${VIGRANUMPY_DOCDIR}/ DESTINATION doc/vigranumpy)
 
 ELSE()
     add_custom_target (doc_python 

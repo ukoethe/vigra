@@ -875,7 +875,7 @@ void defineFilters2D()
         (arg("image"), arg("orientation")=ROTATE_CW,arg("out")=object()),
         "Rotate an image by a multiple of 90 degrees.\n"
         "\n"
-        "The \"orientation\" parameter (which must be one of CLOCKWUSE, COUNTER_CLOCKWISE and UPSIDE_DOWN\n"
+        "The \"orientation\" parameter (which must be one of CLOCKWISE, COUNTER_CLOCKWISE and UPSIDE_DOWN\n"
         "indicates the rotation direction. The \"out\" parameter must, if given, have the according dimensions.\n"
         "This function also works for multiband images, it is then executed on every band.\n"
         );
@@ -889,7 +889,7 @@ void defineFilters2D()
         (arg("image"), arg("factor"),arg("out")=object()),
         "Resample an image by the factor \"factor\""
         "\n"
-        "For details, see the vigra documentation, resampleImage.\n"
+        "For details, see the vigra documentation, resampleImage_.\n"
         "The \"out\" parameter must have, if given, the according dimensions.\n"
         "This function also works for multiband images, it is then executed on every band.\n"
         );
@@ -899,7 +899,7 @@ void defineFilters2D()
         (arg("image"), arg("destSize")=object(), arg("out")=object()),
         "Resize image by repeating the nearest pixel values.\n"
         "\n"
-        "For details see vigra documentation.\n"
+        "For details see vigra documentation resizeImageNoInterpolation_.\n"
         "The dimensions of the output image is taken either from \"destSize\" or \"out\".\n"
         "If both are given, they must agree on the output dimensions.\n"
         "This function also works for multiband images, it is then executed on every band.\n"
@@ -910,9 +910,9 @@ void defineFilters2D()
         registerConverters(&pythonResizeImageLinearInterpolation<float>),               // also multiband>
         (arg("image"), arg("destSize")=object(), arg("out")=object()),
         "Resize image using linear interpolation.\n"
-        "The function uses the standard separable bilinear interpolation algorithm to obtain a good compromize between quality and speed.\n"
+        "The function uses the standard separable bilinear interpolation algorithm to obtain a good compromise between quality and speed.\n"
         "\n" 
-        "For details see vigra documentation.\n"
+        "For details see vigra documentation resizeImageLinearInterpolation_.\n"
         "The dimensions of the output image is taken either from \"destSize\" or \"out\".\n"
         "If both are given, they must agree on the output dimensions.\n"
         "This function also works for multiband images, it is then executed on every band.\n"
@@ -923,7 +923,7 @@ void defineFilters2D()
         (arg("image"), arg("destSize")=object(), arg("splineOrder") = 3, arg("out") = object()),
         "Resize image using B-spline interpolation.\n"
         "\n"
-        "For details see vigra documentation.\n"
+        "For details see vigra documentation resizeImageSplineInterpolation_.\n"
         "The spline order is given in the parameter \"splineOrder\".\n"
         "The dimensions of the output image is taken either from \"destSize\" or \"out\".\n"
         "If both are given, they must agree on the output dimensions.\n"
@@ -935,7 +935,7 @@ void defineFilters2D()
         (arg("image"), arg("destSize")=object(), arg("out")=object()),
         "Resize image using the Catmull/Rom interpolation function.\n"
         "\n" 
-        "For details see vigra documentation.\n"
+        "For details see vigra documentation resizeImageCatmullRomInterpolation_.\n"
         "The dimensions of the output image is taken either from \"destSize\" or \"out\".\n"
         "If both are given, they must agree on the output dimensions.\n"
         "This function also works for multiband images, it is then executed on every band.\n"
@@ -946,7 +946,7 @@ void defineFilters2D()
         (arg("image"), arg("destSize")=object(), arg("out")=object()),
         "Resize image using the Coscot interpolation function.\n" 
         "\n" 
-        "For details see vigra documentation.\n"
+        "For details see vigra documentation resizeImageCoscotInterpolation_.\n"
         "The dimensions of the output image is taken either from \"destSize\" or \"out\".\n"
         "If both are given, they must agree on the output dimensions.\n"
         "This function also works for multiband images, it is then executed on every band.\n"
@@ -955,12 +955,12 @@ void defineFilters2D()
     def("discRankOrderFilter",
         registerConverters(&pythonDiscRankOrderFilter<UInt8>),
         (arg("image"), arg("radius"), arg("rank"), arg("out")=object()),
-        "Apply rank order filter with disc structuring function to the image.\n"
+        "Apply rank order filter with disc structuring function to the image.\n\n"
         "The pixel values of the source image  must be in the range 0...255. Radius must be >= 0.\n"
         "Rank must be in the range 0.0 <= rank <= 1.0. The filter acts as a minimum filter if rank = 0.0, as a median\n"
         "if rank = 0.5, and as a maximum filter if rank = 1.0.\n"
         "\n" 
-        "For details see vigra documentation.\n"
+        "For details see vigra documentation discRankOrderFilter_ .\n"
         "This function also works for multiband images, it is then executed on every band.\n"
        );
     def("discRankOrderFilter",
@@ -970,8 +970,8 @@ void defineFilters2D()
     def("discErosion",
         registerConverters(&pythonDiscErosion<bool>),
         (arg("image"), arg("radius"), arg("out")=object()),
-        "Apply erosion (minimum) filter with disc of given radius to image.\n"
-        "This is an abbreviation for the rank order filter with rank = 0.0. See discRankOrderFilter for more information.\n"
+        "Apply erosion (minimum) filter with disc of given radius to image.\n\n"
+        "This is an abbreviation for the rank order filter with rank = 0.0. See discRankOrderFilter_ for more information.\n"
         "This function also works for multiband images, it is then executed on every band.\n"
         );
     def("discErosion",
@@ -981,8 +981,8 @@ void defineFilters2D()
     def("discDilation",
         registerConverters(&pythonDiscDilation<bool>),
         (arg("image"), arg("radius"), arg("out")=object()),
-        "Apply dilation (maximum) filter with disc of given radius to image.\n"
-        "This is an abbreviation for the rank order filter with rank = 1.0. See discRankOrderFilter for more information.\n"
+        "Apply dilation (maximum) filter with disc of given radius to image.\n\n"
+        "This is an abbreviation for the rank order filter with rank = 1.0. See discRankOrderFilter_ for more information.\n"
         "This function also works for multiband images, it is then executed on every band.\n"
        );
     def("discDilation",
@@ -992,8 +992,8 @@ void defineFilters2D()
     def("discMedian",
         registerConverters(&pythonDiscMedian<bool>),
         (arg("image"), arg("radius"), arg("out")=object()),
-        "Apply median filter with disc of given radius to image.\n"
-        "This is an abbreviation for the rank order filter with rank = 0.5. See discRankOrderFilter for more information.\n"
+        "Apply median filter with disc of given radius to image.\n\n"
+        "This is an abbreviation for the rank order filter with rank = 0.5. See discRankOrderFilter_ for more information.\n"
         "This function also works for multiband images, it is then executed on every band.\n"
         );
     def("discMedian",
@@ -1003,8 +1003,8 @@ void defineFilters2D()
     def("discOpening",
         registerConverters(&pythonDiscOpening<bool>),
         (arg("image"), arg("radius"), arg("out")=object()),
-        "Apply a opening filter with disc of given radius to image.\n"
-        "This is an abbreviation for applying an erosion and a dilation filter in sequence.\n"
+        "Apply a opening filter with disc of given radius to image.\n\n"
+        "This is an abbreviation for applying an erosion and a dilation filter in sequence. See discRankOrderFilter_ for more information\n"
         "This function also works for multiband images, it is then executed on every band.\n"
        );
     def("discOpening",
@@ -1013,14 +1013,15 @@ void defineFilters2D()
 
     def("discClosing",
         registerConverters(&pythonDiscClosing<bool>),
-        (arg("image"), arg("radius"), arg("out")=object()));
+        (arg("image"), arg("radius"), arg("out")=object()),
+        "Apply a closing filter with disc of given radius to image.\n\n"
+        "This is an abbreviation for applying a dilation and an erosion  filter in sequence.\n"
+        "See discRankOrderFilter_ in the vigra C++ documentation for more information\n"
+        "This function also works for multiband images, it is then executed on every band.\n"
+       );
     def("discClosing",
         registerConverters(&pythonDiscClosing<UInt8>),
-        (arg("image"), arg("radius"), arg("out")=object()),
-        "Apply a closing filter with disc of given radius to image.\n"
-        "This is an abbreviation for applying a dilation and an erosion  filter in sequence.\n"
-        "This function also works for multiband images, it is then executed on every band.\n"
-        );
+        (arg("image"), arg("radius"), arg("out")=object()));
 
     def("multiBinaryErosion",
         registerConverters(&pythonMultiBinaryErosion<4>),
@@ -1030,7 +1031,7 @@ void defineFilters2D()
        "This function applies a flat circular erosion operator with a given radius. The operation is isotropic.\n"
        "The input is a binary multi-dimensional array where non-zero pixels represent foreground and zero pixels represent background.\n"
        "\n"
-       "For details see vigra documentation.\n"
+       "For details see vigra documentation multiBinaryErosion_.\n"
        "This function also works for multiband arrays, it is then executed on every band.\n"
         );
     def("multiBinaryDilation",
@@ -1041,7 +1042,7 @@ void defineFilters2D()
        "This function applies a flat circular dilation operator with a given radius. The operation is isotropic.\n"
        "The input is a binary multi-dimensional array where non-zero pixels represent foreground and zero pixels represent background.\n"
        "\n"
-       "For details see vigra documentation.\n"
+       "For details see vigra documentation multiBinaryDilation_.\n"
        "This function also works for multiband arrays, it is then executed on every band.\n");
     
     def("multiBinaryOpening",
@@ -1053,7 +1054,7 @@ void defineFilters2D()
         "The operation is isotropic.\n"
         "The input is a binary multi-dimensional array where non-zero pixels represent foreground and zero pixels represent background.\n"
         "\n"
-        "For details see vigra documentation (multiBanariyDilation and multiBinaryErosion).\n"
+        "For details see vigra documentation (multiBanariyDilation_ and multiBinaryErosion_).\n"
         "This function also works for multiband arrays, it is then executed on every band.\n");
     def("multiBinaryClosing",
         registerConverters(&pythonMultiBinaryClosing<4>),
@@ -1064,7 +1065,7 @@ void defineFilters2D()
         "The operation is isotropic.\n"
         "The input is a binary multi-dimensional array where non-zero pixels represent foreground and zero pixels represent background.\n"
         "\n"
-        "For details see vigra documentation (multiBanariyDilation and multiBinaryErosion).\n"
+        "For details see vigra documentation (multiBanariyDilation_ and multiBinaryErosion_).\n"
         "This function also works for multiband arrays, it is then executed on every band.\n");
     
     def("multiGrayscaleErosion",
@@ -1075,7 +1076,7 @@ void defineFilters2D()
         "This function applies a parabolic erosion operator with a given spread (sigma) on a grayscale array.\n"
         "The operation is isotropic. The input is a grayscale multi-dimensional array.\n"
         "\n"
-        "For details see vigra documentation.\n"
+        "For details see vigra documentation multiGrayscaleErosion_.\n"
         "This function also works for multiband arrays, it is then executed on every band.\n");
     def("multiGrayscaleDilation",
         registerConverters(&pythonMultiGrayscaleDilation<4,UInt8>),
@@ -1085,7 +1086,7 @@ void defineFilters2D()
         "This function applies a parabolic dilation operator with a given spread (sigma) on a grayscale array.\n"
         "The operation is isotropic. The input is a grayscale multi-dimensional array.\n"
         "\n"
-        "For details see vigra documentation.\n"
+        "For details see vigra documentation multiGrayscaleDilation_.\n"
         "This function also works for multiband arrays, it is then executed on every band.\n");
     def("multiGrayscaleErosion",
         registerConverters(&pythonMultiGrayscaleErosion<4,float>),
@@ -1103,7 +1104,7 @@ void defineFilters2D()
         "on a grayscale array.\n"
         "The operation is isotropic. The input is a grayscale multi-dimensional array.\n"
         "\n"
-        "For details see vigra documentation.\n"
+        "For details see vigra documentation multiGrayscaleDilation_ and multiGrayscaleErosion_.\n"
         "This function also works for multiband arrays, it is then executed on every band.\n");
     def("multiGrayscaleClosing",
         registerConverters(&pythonMultiGrayscaleClosing<4,UInt8>),
@@ -1114,7 +1115,7 @@ void defineFilters2D()
         "on a grayscale array.\n"
         "The operation is isotropic. The input is a grayscale multi-dimensional array.\n"
         "\n"
-        "For details see vigra documentation.\n"
+        "For details see vigra documentation multiGrayscaleDilation_ and multiGrayscaleErosion_.\n"
         "This function also works for multiband arrays, it is then executed on every band.\n");
     def("multiGrayscaleOpening",
         registerConverters(&pythonMultiGrayscaleOpening<4,float>),
@@ -1137,7 +1138,7 @@ void defineFilters2D()
         "the rank order.\n"
         "If the mask has only one band, it is used for every image band. If the mask has the same number of bands, as the image\n"
         "the bands are used for the according images.\n"
-        "For details see vigra documentation.\n"
+        "For details see vigra documentation discRankOrderFilterWithMask_.\n"
         "This function also works for multiband images, it is then executed on every band.\n"
         );
     
@@ -1156,7 +1157,7 @@ void defineFilters2D()
         "Returns an array with the means in the first column and the variances in the second column.\n"
         "Since the length of the resulting array is not known beforhand, it can not be written into an preallocated array\n"
         "(the \"out\" argument in most other vigra python functions.\n"
-        "For details see the vigra documentation."
+        "For details see the vigra documentation noiseVarianceEstimation_."
         );
 
     def("noiseVarianceClustering",
@@ -1172,7 +1173,7 @@ void defineFilters2D()
         "\n"
         "Since the length of the resulting array is not known beforhand, it can not be written into an preallocated array\n"
         "(the \"out\" argument in most other vigra python functions.\n"
-        "For details see the vigra documentation."
+        "For details see the vigra documentation noiseVarianceClustering_."
         );
 
     def("nonparametricNoiseNormalization",
@@ -1182,7 +1183,7 @@ void defineFilters2D()
         arg("noiseEstimationQuantile")=1.5,
         arg("noiseVarianceInitialGuess")=10.0, arg("out")=object()),
         "Noise normalization by means of an estimated non-parametric noise model.\n"
-        "For details see the vigra documentation.");
+        "For details see the vigra documentation nonparametricNoiseNormalization_.");
 
     def("quadraticNoiseNormalizationEstimated",
         registerConverters(&pythonQuadraticNoiseNormalizationEstimated<float>),    // also multiband

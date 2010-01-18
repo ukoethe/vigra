@@ -1,4 +1,11 @@
 
+IF(NOT DEFINED VIGRANUMPY_DOCDIR)
+    SET(VIGRANUMPY_DOCDIR ${vigra_SOURCE_DIR}/vigranumpy/doc/html)
+ENDIF()
+
+SET(VIGRANUMPY_DOCDIR ${VIGRANUMPY_DOCDIR}
+    CACHE PATH "Output path of created documentation html files (vigranumpy)." FORCE)
+
 IF(NOT DEFINED DOCDIR)
     SET(DOCDIR ${vigra_SOURCE_DIR}/doc/vigra)
 ENDIF()

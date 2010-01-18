@@ -257,24 +257,39 @@ void defineMultiConvolutionFunctions()
 
     def("gaussianSmoothing3D",
         registerConverters(&pythonGaussianSmoothingND<float,4>),               // also multiband
-        (arg("volume"), arg("sigma"), arg("out")=python::object()) );
+        (arg("volume"), arg("sigma"), arg("out")=python::object()),
+        "Perform isotropic Gaussian convolution (for a 3D image).\n"
+        "\n"
+        "For details see gaussianSmoothing_ in the vigra C++ documentation.");
 
     def("gaussianGradient3D",
     	registerConverters(&pythonGaussianGradientND<float,4>),               // also multiband?
-    	(arg("volume"), arg("sigma"), arg("out")=python::object()) );
+    	(arg("volume"), arg("sigma"), arg("out")=python::object()),
+        "Calculate the gradient vector by means of a 1st derivatives of Gaussian filter (for a 3D image).\n"
+        "\n"
+        "For details see gaussianGradient_ in the vigra C++ documentation.");
 
     def("symmetricGradient3D",
         registerConverters(&pythonSymmetricGradientND<float,4>),                // also multiband?
-        (arg("volume"), arg("out")=python::object()) );
+        (arg("volume"), arg("out")=python::object()),
+        "Calculate gradient of a 3-dimensional images using symmetric difference filters."
+        "\n"
+        "For details see ymmetricGradientMultiArray_ in the vigra C++ documentation.");
 
     def("convolveOneDimension3D",
     	registerConverters(&pythonConvolveOneDimensionND<float,4>),				// also multiband
-    	(arg("volume"), arg("dim"), arg("kernel1D"), arg("out")=python::object()) );
+    	(arg("volume"), arg("dim"), arg("kernel1D"), arg("out")=python::object()),
+        "Convolution along a single dimension of a 3-dimensional arrays.\n"
+        "\n"
+        "For details see convolveMultiArrayOneDimension_ in the vigra C++ documentation.");
 
     def("separableConvolve3D",
         // also multiband
         registerConverters(&pythonSeparableConvolveND<float,4>),
-        (arg("volume"), arg("kernel1D"), arg("out")=python::object()), "apply one 1D kernel to all dimensions" );
+        (arg("volume"), arg("kernel1D"), arg("out")=python::object()),
+        "apply one 1D kernel to all dimensions.\n"
+        "\n"
+        "For details see separableConvolveMultiArray_ in the vigra C++ documentation.");
 
     def("separableConvolve3D",
         // also multiband
