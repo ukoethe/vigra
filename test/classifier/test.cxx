@@ -45,6 +45,7 @@
 #include <functional>
 #include <cmath>
 #include <vigra/random_forest.hxx>
+#include <vigra/random_forest_deprec.hxx>
 #include <unittest.hxx>
 #include <vector>
 //#include "data/RF_results.hxx"
@@ -131,11 +132,10 @@ struct ClassifierTest
             std::cerr << "RFdefaultTest(): Learning on Datasets\n";
             for(int ii = 0; ii < data.size() ; ii++)
             {
-
                 vigra::RandomForest<>
 					RF2(vigra::RandomForestOptions().tree_count(32));
                 vigra::RandomForest<int>
-                    RF3(vigra::RandomForestOptions().tree_count(5));
+                    RF3(vigra::RandomForestOptions().tree_count(5), vigra::ProblemSpec<int>().classes_(data.ClassIter(ii).begin(), data.ClassIter(ii).end()));
 
                 RF3.learn(  data.features(ii),
                             data.labels(ii),
@@ -200,7 +200,7 @@ struct ClassifierTest
 				  rf_default(),
 				  rf_default(),
 				  vigra::RandomMT19937(1));
-
+        
 		typedef MultiArrayShape<2>::type Shp;
 		MultiArray<2, double> response(Shp(data.features(ii).shape(0),
 									   data.ClassIter(ii).size()));
@@ -228,6 +228,10 @@ struct ClassifierTest
 			shouldEqual(rowVector(response, jj), should_resp);
 		}
 
+		RF.predictProbabilities(data.features(ii), response,StopAfterTree(1));
+		RF.predictProbabilities(data.features(ii), response,StopIfMargin(0.5));
+		RF.predictProbabilities(data.features(ii), response,StopAfterVoteCount(0.5));
+		RF.predictProbabilities(data.features(ii), response,StopIfConverging(0.5));
 		// to check whether labels are being currectly converted we use the
 		// property of the random forest to almost surely have 0 prediction
 		// error on the training data. with enough trees.
@@ -359,8 +363,8 @@ struct ClassifierTest
 	{
 		double pina_var_imp[] = 
 		{
-			0.000555, 0.034199, 0.000093, 0.001263, 0.000669, 0.014896, 0.002777, 0.007323, 
 			0.017263, 0.040776, 0.003548, 0.003463, 0.005085, 0.015100, 0.005815, 0.019693, 
+			0.000555, 0.034199, 0.000093, 0.001263, 0.000669, 0.014896, 0.002777, 0.007323, 
 			0.017818, 0.074975, 0.003641, 0.004726, 0.005754, 0.029996, 0.008591, 0.027016, 
 			13.743281, 48.682308, 15.098506, 10.868249, 11.145719, 29.414823, 22.270783, 23.060834 
 		};

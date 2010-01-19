@@ -46,6 +46,10 @@
 # include <vigra/random_forest_hdf5_impex.hxx>
 #endif
 
+#define RandomForest RandomForestDeprec
+#define DecisionTree DecisionTreeDeprec
+#define RandomForestOptions RandomForestOptionsDeprec
+
 namespace python = boost::python;
 namespace vigra
 {
