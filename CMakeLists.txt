@@ -86,6 +86,13 @@ INSTALL(DIRECTORY ${vigra_SOURCE_DIR}/include/vigra DESTINATION include)
 
 ##################################################
 #
+#     enable CPack package generation
+#
+##################################################
+INCLUDE(CPackConfig)
+
+##################################################
+#
 #     status output
 #
 ##################################################
@@ -150,7 +157,7 @@ ELSE()
 ENDIF()
 
 IF(WITH_VIGRANUMPY AND VIGRANUMPY_DEPENDENCIES_FOUND)
-  MESSAGE( STATUS "  vigranumpy will be installed at ${VIGRANUMPY_INSTALL_DIR}" )
+  MESSAGE( STATUS "  vigranumpy will be installed at ${CMAKE_INSTALL_PREFIX}/${VIGRANUMPY_INSTALL_DIR}" )
 ELSE()
   MESSAGE( STATUS "  vigranumpy will NOT be installed" )
 ENDIF()
