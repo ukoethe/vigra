@@ -2,10 +2,9 @@ IF(DOXYGEN_FOUND AND PYTHONINTERP_FOUND)
 
     FILE(MAKE_DIRECTORY ${DOCDIR})
 
-    CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/Doxyfile.in ${CMAKE_CURRENT_SOURCE_DIR}/Doxyfile @ONLY)
+    CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/Doxyfile.in ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile @ONLY)
 
-    add_custom_target (doc_cpp doxygen  
-                               WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} 
+    add_custom_target (doc_cpp ${DOXYGEN_EXECUTABLE}  
                                COMMENT "Generating documentation")
 
     ADD_DEPENDENCIES(doc doc_cpp)
