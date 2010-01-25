@@ -144,7 +144,7 @@ else()
 endif()
 
 IF(DOXYGEN_FOUND AND PYTHONINTERP_FOUND)
-  MESSAGE( STATUS "  manuals will be installed at: ${CMAKE_INSTALL_PREFIX}/doc/vigra/index.html")
+  MESSAGE( STATUS "  manuals will be installed at: ${CMAKE_INSTALL_PREFIX}/${DOCINSTALL}/index.html")
 ELSE()
   MESSAGE( STATUS "  manuals cannot be generated (Doxygen or Python not found)")
 ENDIF()

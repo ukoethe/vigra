@@ -5,6 +5,12 @@ ENDIF()
 SET(DOCDIR ${DOCDIR}
     CACHE PATH "Output path of created documentation html files."
     FORCE)
+IF(NOT DEFINED DOCINSTALL)
+	SET(DOCINSTALL "doc/vigra")
+ENDIF()
+SET(DOCINSTALL ${DOCINSTALL}
+	CACHE STRING "where to install the documentation (relative to install prefix)"
+	FORCE)
 
 IF(NOT DEFINED WITH_VIGRANUMPY)
     SET(WITH_VIGRANUMPY "ON")
