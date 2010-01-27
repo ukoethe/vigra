@@ -616,6 +616,8 @@ linearSolveQRReplace(MultiArrayView<2, T, C1> &A, MultiArrayView<2, T, C2> &b,
     MultiArrayIndex m = rowCount(A);
     MultiArrayIndex rhsCount = columnCount(res);
     MultiArrayIndex rank = std::min(m,n);
+    Shape ul(MultiArrayIndex(0), MultiArrayIndex(0));
+
     
     vigra_precondition(rhsCount == columnCount(b),
            "linearSolveQR(): RHS and solution must have the same number of columns.");
@@ -633,24 +635,23 @@ linearSolveQRReplace(MultiArrayView<2, T, C1> &A, MultiArrayView<2, T, C2> &b,
         MultiArrayView<2, T, StridedArrayTag> ht = transpose(householderMatrix);
         rank = (MultiArrayIndex)detail::qrTransformToLowerTriangular(A, b, ht, epsilon);
         res.subarray(Shape(rank,0), Shape(n, rhsCount)).init(NumericTraits<T>::zero());
-
         if(rank < m)
         {
             // system is also rank-deficient => compute minimum norm least squares solution
-            MultiArrayView<2, T, C1> Asub = A.subarray(Shape(0,0), Shape(m,rank));
+            MultiArrayView<2, T, C1> Asub = A.subarray(ul, Shape(m,rank));
             detail::qrTransformToUpperTriangular(Asub, b, epsilon);
-            linearSolveUpperTriangular(A.subarray(Shape(0,0), Shape(rank,rank)), 
-                                       b.subarray(Shape(0,0), Shape(rank,rhsCount)), 
-                                       res.subarray(Shape(0,0), Shape(rank, rhsCount)));
+            linearSolveUpperTriangular(A.subarray(ul, Shape(rank,rank)), 
+                                       b.subarray(ul, Shape(rank,rhsCount)), 
+                                       res.subarray(ul, Shape(rank, rhsCount)));
         }
         else
         {
             // system has full rank => compute minimum norm solution
-            linearSolveLowerTriangular(A.subarray(Shape(0,0), Shape(rank,rank)), 
-                                       b.subarray(Shape(0,0), Shape(rank, rhsCount)), 
-                                       res.subarray(Shape(0,0), Shape(rank, rhsCount)));
+            linearSolveLowerTriangular(A.subarray(ul, Shape(rank,rank)), 
+                                       b.subarray(ul, Shape(rank, rhsCount)), 
+                                       res.subarray(ul, Shape(rank, rhsCount)));
         }
-        detail::applyHouseholderColumnReflections(householderMatrix.subarray(Shape(0,0), Shape(n, rank)), res);
+        detail::applyHouseholderColumnReflections(householderMatrix.subarray(ul, Shape(n, rank)), res);
     }
     else
     {
@@ -667,18 +668,18 @@ linearSolveQRReplace(MultiArrayView<2, T, C1> &A, MultiArrayView<2, T, C2> &b,
             // system is rank-deficient => compute minimum norm solution
             Matrix<T> householderMatrix(n, rank);
             MultiArrayView<2, T, StridedArrayTag> ht = transpose(householderMatrix);
-            MultiArrayView<2, T, C1> Asub = A.subarray(Shape(0,0), Shape(rank,n));
+            MultiArrayView<2, T, C1> Asub = A.subarray(ul, Shape(rank,n));
             detail::qrTransformToLowerTriangular(Asub, ht, epsilon);
-            linearSolveLowerTriangular(A.subarray(Shape(0,0), Shape(rank,rank)), 
-                                       b.subarray(Shape(0,0), Shape(rank, rhsCount)), 
-                                       permutedSolution.subarray(Shape(0,0), Shape(rank, rhsCount)));
+            linearSolveLowerTriangular(A.subarray(ul, Shape(rank,rank)), 
+                                       b.subarray(ul, Shape(rank, rhsCount)), 
+                                       permutedSolution.subarray(ul, Shape(rank, rhsCount)));
             detail::applyHouseholderColumnReflections(householderMatrix, permutedSolution);
         }
         else
         {
             // system has full rank => compute exact or least squares solution
-            linearSolveUpperTriangular(A.subarray(Shape(0,0), Shape(rank,rank)), 
-                                       b.subarray(Shape(0,0), Shape(rank,rhsCount)), 
+            linearSolveUpperTriangular(A.subarray(ul, Shape(rank,rank)), 
+                                       b.subarray(ul, Shape(rank,rhsCount)), 
                                        permutedSolution);
         }
         detail::inverseRowPermutation(permutedSolution, res, permutation);
