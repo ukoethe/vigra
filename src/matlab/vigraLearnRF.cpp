@@ -57,7 +57,7 @@ void vigraMain(matlab::OutputArray outputs, matlab::InputArray inputs){
     options.sample_with_replacement(inputs.getBool("sample_with_replacement", 
 												   v_default(true)));
 	
-    if(inputs.getBool("sample_classes_individually", v_default(false)));
+    if(inputs.getBool("sample_classes_individually", v_default(false)))
 		options.use_stratification(vigra::RF_EQUAL);
     options.min_split_node_size(inputs
 			.getScalarMinMax<double>("min_split_node_size",
