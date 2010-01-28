@@ -3,9 +3,9 @@ print >> sys.stderr, "\nexecuting test file", __file__
 execfile('set_paths.py')
 
 from nose.tools import assert_equal, raises
-import numpy as np
-import vigranumpycmodule as vm
-import arraytypes as at
+from vigra import numpy as np
+from vigra import vigranumpycmodule as vm
+from vigra import arraytypes as at
 
 img_rgb_f = at.RGBImage(np.random.rand(100,200,3)*255,dtype=np.float32)
 img_scalar_f = at.ScalarImage(np.random.rand(100,200)*255,dtype=np.float32)
@@ -52,6 +52,9 @@ def test_gaussianSharpening():
     res = vm.gaussianSharpening(img_scalar_f)
     
 def test_convolution():
+    krnl = vm.Kernel1D.initGaussianKernel(0.5)
+
+    
     k2_ = vm.Kernel2D()
     k2_.initWithFactoryKernel(vm.Kernel2D.kernelDisk(10))
     
@@ -62,3 +65,19 @@ def test_convolution():
     k2=vm.Kernel2D()
     k2.initSetExplicitly((-1,-1),(1,1),np.array([[0,1,2],[1,2,3],[2,3,4]],dtype=np.float64))
     res = vm.convolveImage(img_scalar_f, k2)
+
+
+def test_multiconvolution():
+   vol = vol_scalar_f
+   k=vm.Kernel1D()
+   k.initGaussian(0.5)
+   a=vm.convolveOneDimension3D(vol, 0, k)
+   a=vm.convolveOneDimension3D(a, 1, k)
+   a=vm.convolveOneDimension3D(a, 2, k)
+         
+   b=vm.separableConvolve3D(vol, k)
+     
+   c=vm.separableConvolve3D(vol, k, k, k)
+   checkAboutSame(a, b)
+   checkAboutSame(a, c)
+    

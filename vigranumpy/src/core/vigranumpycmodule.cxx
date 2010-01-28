@@ -46,13 +46,17 @@ namespace vigra {
 
 void registerNumpyArrayConverters();
 void defineImpexFunctions();
-void defineAnalysisFunctions();
 void defineConvolutionFunctions();
-void defineMultiAnalysisFunctions();
 void defineMultiConvolutionFunctions();
 void defineFilters2D();
 void defineRandomForest();
 void defineKernels();
+void defineImageTransformations();
+void defineNoise();
+void defineSegmentation();
+void defineEdgedetection();
+void defineTensor();
+void defineMorphology();
 
 void test(NumpyArray<2, float> array)
 {
@@ -71,13 +75,17 @@ BOOST_PYTHON_MODULE_INIT(vigranumpycmodule)
     import_array();
     registerNumpyArrayConverters();
     defineImpexFunctions();
-    defineAnalysisFunctions();
+    defineImageTransformations();
     defineConvolutionFunctions();
-    defineMultiAnalysisFunctions();
     defineMultiConvolutionFunctions();
     defineFilters2D();
     defineRandomForest();
     defineKernels();
+    defineNoise();
+    defineSegmentation();
+    defineEdgedetection();
+    defineTensor();
+    defineMorphology();
     
     def("test", registerConverters(&test));
 }

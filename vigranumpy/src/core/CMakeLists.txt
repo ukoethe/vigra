@@ -11,15 +11,20 @@ ENDIF(HDF5_FOUND)
 
 ADD_LIBRARY(vigranumpycmodule SHARED
     vigranumpycmodule.cxx
-    vigranumpyanalysis.cxx
+    vigranumpytensor.cxx
     vigranumpyimpex.cxx
     vigranumpykernel.cxx
     vigranumpyconverters.cxx
-    vigranumpymultianalysis.cxx
     vigranumpyconvolution.cxx
     vigranumpymulticonvolution.cxx
     vigranumpyfilters.cxx
-    vigranumpyrf.cxx)
+    vigranumpyrf.cxx
+    vigranumpyimagetransformation.cxx
+    vigranumpynoise.cxx
+    vigranumpysegmentation.cxx
+    vigranumpyedgedetection.cxx
+    vigranumpytensor.cxx
+    vigranumpymorphology.cxx)
 
 IF(PYTHON_PLATFORM MATCHES "^win32$")
     SET_TARGET_PROPERTIES(vigranumpycmodule PROPERTIES PREFIX "" SUFFIX  ".pyd")
