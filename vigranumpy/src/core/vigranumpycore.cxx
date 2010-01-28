@@ -33,7 +33,7 @@
 /*                                                                      */
 /************************************************************************/
 
-#define PY_ARRAY_UNIQUE_SYMBOL vigranumpycmodule_PyArray_API
+#define PY_ARRAY_UNIQUE_SYMBOL vigranumpycore_PyArray_API
 #include <iostream>
 #include <Python.h>
 #include <boost/python.hpp>
@@ -59,7 +59,7 @@ void test(NumpyArray<2, float> array)
 using namespace boost::python;
 using namespace vigra;
 
-BOOST_PYTHON_MODULE_INIT(vigranumpycmodule)
+BOOST_PYTHON_MODULE_INIT(vigranumpycore)
 {
     import_array();
     registerNumpyArrayConverters();

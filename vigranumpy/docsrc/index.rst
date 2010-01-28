@@ -39,11 +39,58 @@ Image and Volume Data Structures
    :show-inheritance:
    :members:
 
-Image Processing and Analysis Functions
+Core Image Processing and Analysis Functions
 ---------------------------------------
 
 .. automodule:: vigra
    :members:
+
+Common Filters
+--------------
+.. automodule:: vigra.filters
+   :members:
+
+Convolution Functions
+---------------------
+.. automodule:: vigra.convolution
+   :members:
+
+Basic Morphological Operations
+------------------------------
+.. automodule:: vigra.morphology
+   :members:
+
+Tensor Image Processing
+-----------------------
+.. automodule:: vigra.tensor
+   :members:
+
+Region Segmentation Algorithms
+------------------------------
+.. automodule:: vigra.segmentation
+   :members:
+
+Noise Normalization
+-------------------
+.. automodule:: vigra.noise
+   :members:
+
+Edge and Corner Detection
+-------------------------
+.. automodule:: vigra.edgedetection
+   :members:
+
+Classification Functions
+------------------------
+
+.. automodule:: vigra.classification
+   :members:
+
+Import and export Functions
+---------------------------
+.. automodule:: vigra.impex
+   :members:
+
 
 Indices and tables
 ==================
