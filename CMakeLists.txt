@@ -68,6 +68,7 @@ ADD_CUSTOM_TARGET(doc)
 #
 ##################################################
 
+INCLUDE_DIRECTORIES(${PROJECT_BINARY_DIR}/include)
 ADD_SUBDIRECTORY(src)
 ADD_SUBDIRECTORY(test)
 ADD_SUBDIRECTORY(docsrc)
@@ -82,7 +83,8 @@ ENDIF()
 #
 ##################################################
 
-INSTALL(DIRECTORY ${vigra_SOURCE_DIR}/include/vigra DESTINATION include)
+INSTALL(DIRECTORY ${PROJECT_SOURCE_DIR}/include/vigra DESTINATION include)
+INSTALL(DIRECTORY ${PROJECT_BINARY_DIR}/include/vigra DESTINATION include)
 
 ##################################################
 #
@@ -90,6 +92,11 @@ INSTALL(DIRECTORY ${vigra_SOURCE_DIR}/include/vigra DESTINATION include)
 #
 ##################################################
 INCLUDE(CPackConfig)
+
+# configure version header
+CONFIGURE_FILE(${PROJECT_SOURCE_DIR}/config/configVersion.hxx.in
+		${PROJECT_BINARY_DIR}/include/vigra/configVersion.hxx
+		@ONLY)
 
 ##################################################
 #
