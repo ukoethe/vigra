@@ -33,8 +33,8 @@
 /*                                                                      */
 /************************************************************************/
 
-#define PY_ARRAY_UNIQUE_SYMBOL vigranumpycmodule_PyArray_API
-#define NO_IMPORT_ARRAY
+#define PY_ARRAY_UNIQUE_SYMBOL vigranumpymorphology_PyArray_API
+//#define NO_IMPORT_ARRAY
 
 #include <vigra/numpy_array.hxx>
 #include <vigra/numpy_array_converters.hxx>
@@ -495,3 +495,11 @@ void defineMorphology()
 
 } // namespace vigra
 
+using namespace vigra;
+using namespace boost::python;
+
+BOOST_PYTHON_MODULE_INIT(morphology)
+{
+    import_vigranumpy();
+    defineMorphology();
+}

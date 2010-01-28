@@ -33,8 +33,8 @@
 /*                                                                      */
 /************************************************************************/
 
-#define PY_ARRAY_UNIQUE_SYMBOL vigranumpycmodule_PyArray_API
-#define NO_IMPORT_ARRAY
+#define PY_ARRAY_UNIQUE_SYMBOL vigranumpyimpex_PyArray_API
+//#define NO_IMPORT_ARRAY
 #include <iostream>
 #include <cstring>
 #include <cstdio>
@@ -607,3 +607,11 @@ void defineImpexFunctions()
 
 } // namespace vigra
 
+using namespace vigra;
+using namespace boost::python;
+
+BOOST_PYTHON_MODULE_INIT(impex)
+{
+    import_vigranumpy();
+    defineImpexFunctions();
+}

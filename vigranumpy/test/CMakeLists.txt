@@ -15,9 +15,9 @@ ADD_DEPENDENCIES(check vigranumpytest)
 SET(TEST_SCRIPTS
     test_arraytypes.py
     test_impex.py
-    test_christoph.py
-    test_nathan.py
-    test_stephan.py)
+    test1.py
+    test2.py
+    test3.py)
 
 INCLUDE(VigraAddTest)
 VIGRA_COPY_TEST_DATA(${TEST_SCRIPTS})

@@ -11,33 +11,98 @@ ENDIF(HDF5_FOUND)
 
 ADD_LIBRARY(vigranumpycmodule SHARED
     vigranumpycmodule.cxx
-    vigranumpytensor.cxx
-    vigranumpyimpex.cxx
-    vigranumpykernel.cxx
-    vigranumpyconverters.cxx
-    vigranumpyconvolution.cxx
-    vigranumpymulticonvolution.cxx
-    vigranumpyfilters.cxx
-    vigranumpyrf.cxx
     vigranumpyimagetransformation.cxx
-    vigranumpynoise.cxx
-    vigranumpysegmentation.cxx
-    vigranumpyedgedetection.cxx
-    vigranumpytensor.cxx
+    vigranumpyconverters.cxx)
+ADD_LIBRARY(convolution SHARED
+    vigranumpykernel.cxx
+    vigranumpyconvolution.cxx
+    vigranumpymulticonvolution.cxx)
+ADD_LIBRARY(tensor SHARED
+    vigranumpytensor.cxx)
+ADD_LIBRARY(impex SHARED
+    vigranumpyimpex.cxx)
+ADD_LIBRARY(filters SHARED
+    vigranumpyfilters.cxx)
+ADD_LIBRARY(noise SHARED
+    vigranumpynoise.cxx)
+ADD_LIBRARY(segmentation SHARED
+    vigranumpysegmentation.cxx)
+ADD_LIBRARY(morphology SHARED
     vigranumpymorphology.cxx)
+ADD_LIBRARY(edgedetection SHARED
+    vigranumpyedgedetection.cxx)
+ADD_LIBRARY(classification SHARED
+    vigranumpyrf.cxx)
+
+
+TARGET_LINK_LIBRARIES(convolution ${VIGRANUMPY_LIBRARIES} vigranumpycmodule)
+TARGET_LINK_LIBRARIES(tensor ${VIGRANUMPY_LIBRARIES} vigranumpycmodule)
+TARGET_LINK_LIBRARIES(impex ${VIGRANUMPY_LIBRARIES} vigranumpycmodule)
+TARGET_LINK_LIBRARIES(filters ${VIGRANUMPY_LIBRARIES} vigranumpycmodule)
+TARGET_LINK_LIBRARIES(noise ${VIGRANUMPY_LIBRARIES} vigranumpycmodule)
+TARGET_LINK_LIBRARIES(segmentation ${VIGRANUMPY_LIBRARIES} vigranumpycmodule)
+TARGET_LINK_LIBRARIES(morphology ${VIGRANUMPY_LIBRARIES} vigranumpycmodule)
+TARGET_LINK_LIBRARIES(edgedetection ${VIGRANUMPY_LIBRARIES} vigranumpycmodule)
+TARGET_LINK_LIBRARIES(classification ${VIGRANUMPY_LIBRARIES} vigranumpycmodule)
+
 
 IF(PYTHON_PLATFORM MATCHES "^win32$")
     SET_TARGET_PROPERTIES(vigranumpycmodule PROPERTIES PREFIX "" SUFFIX  ".pyd")
-    INSTALL(TARGETS vigranumpycmodule
-            RUNTIME DESTINATION ${VIGRANUMPY_INSTALL_DIR}/vigra)
+    SET_TARGET_PROPERTIES(convolution PROPERTIES PREFIX "" SUFFIX  ".pyd")
+    SET_TARGET_PROPERTIES(tensor PROPERTIES PREFIX "" SUFFIX  ".pyd")
+    SET_TARGET_PROPERTIES(impex PROPERTIES PREFIX "" SUFFIX  ".pyd")
+    SET_TARGET_PROPERTIES(filters PROPERTIES PREFIX "" SUFFIX  ".pyd")
+    SET_TARGET_PROPERTIES(noise PROPERTIES PREFIX "" SUFFIX  ".pyd")
+    SET_TARGET_PROPERTIES(segmentation PROPERTIES PREFIX "" SUFFIX  ".pyd")
+    SET_TARGET_PROPERTIES(morphology PROPERTIES PREFIX "" SUFFIX  ".pyd")
+    SET_TARGET_PROPERTIES(edgedetection PROPERTIES PREFIX "" SUFFIX  ".pyd")
+    SET_TARGET_PROPERTIES(classification PROPERTIES PREFIX "" SUFFIX  ".pyd")
+    INSTALL(TARGETS vigranumpycmodule RUNTIME DESTINATION ${VIGRANUMPY_INSTALL_DIR}/vigra)
+    INSTALL(TARGETS convolution RUNTIME DESTINATION ${VIGRANUMPY_INSTALL_DIR}/vigra)
+    INSTALL(TARGETS tensor RUNTIME DESTINATION ${VIGRANUMPY_INSTALL_DIR}/vigra)
+    INSTALL(TARGETS impex RUNTIME DESTINATION ${VIGRANUMPY_INSTALL_DIR}/vigra)
+    INSTALL(TARGETS filters RUNTIME DESTINATION ${VIGRANUMPY_INSTALL_DIR}/vigra)
+    INSTALL(TARGETS noise RUNTIME DESTINATION ${VIGRANUMPY_INSTALL_DIR}/vigra)
+    INSTALL(TARGETS segmentation RUNTIME DESTINATION ${VIGRANUMPY_INSTALL_DIR}/vigra)
+    INSTALL(TARGETS morphology RUNTIME DESTINATION ${VIGRANUMPY_INSTALL_DIR}/vigra)
+    INSTALL(TARGETS edgedetection RUNTIME DESTINATION ${VIGRANUMPY_INSTALL_DIR}/vigra)
+    INSTALL(TARGETS classification RUNTIME DESTINATION ${VIGRANUMPY_INSTALL_DIR}/vigra)
 ELSE()
     SET_TARGET_PROPERTIES(vigranumpycmodule PROPERTIES PREFIX "")
+    SET_TARGET_PROPERTIES(convolution PROPERTIES PREFIX "")
+    SET_TARGET_PROPERTIES(tensor PROPERTIES PREFIX "")
+    SET_TARGET_PROPERTIES(impex PROPERTIES PREFIX "")
+    SET_TARGET_PROPERTIES(filters PROPERTIES PREFIX "")
+    SET_TARGET_PROPERTIES(noise PROPERTIES PREFIX "")
+    SET_TARGET_PROPERTIES(segmentation PROPERTIES PREFIX "")
+    SET_TARGET_PROPERTIES(morphology PROPERTIES PREFIX "")
+    SET_TARGET_PROPERTIES(edgedetection PROPERTIES PREFIX "")
+    SET_TARGET_PROPERTIES(classification PROPERTIES PREFIX "")
     INSTALL(TARGETS vigranumpycmodule
             LIBRARY DESTINATION ${VIGRANUMPY_INSTALL_DIR}/vigra)
+    INSTALL(TARGETS convolution LIBRARY DESTINATION ${VIGRANUMPY_INSTALL_DIR}/vigra)
+    INSTALL(TARGETS tensor LIBRARY DESTINATION ${VIGRANUMPY_INSTALL_DIR}/vigra)
+    INSTALL(TARGETS impex LIBRARY DESTINATION ${VIGRANUMPY_INSTALL_DIR}/vigra)
+    INSTALL(TARGETS filters LIBRARY DESTINATION ${VIGRANUMPY_INSTALL_DIR}/vigra)
+    INSTALL(TARGETS noise LIBRARY DESTINATION ${VIGRANUMPY_INSTALL_DIR}/vigra)
+    INSTALL(TARGETS segmentation LIBRARY DESTINATION ${VIGRANUMPY_INSTALL_DIR}/vigra)
+    INSTALL(TARGETS morphology LIBRARY DESTINATION ${VIGRANUMPY_INSTALL_DIR}/vigra)
+    INSTALL(TARGETS edgedetection LIBRARY DESTINATION ${VIGRANUMPY_INSTALL_DIR}/vigra)
+    INSTALL(TARGETS classification LIBRARY DESTINATION ${VIGRANUMPY_INSTALL_DIR}/vigra)
 ENDIF()
 
 TARGET_LINK_LIBRARIES(vigranumpycmodule ${VIGRANUMPY_LIBRARIES} vigraimpex)
+TARGET_LINK_LIBRARIES(impex ${VIGRANUMPY_LIBRARIES} vigraimpex)
 ADD_DEPENDENCIES(vigranumpy vigranumpycmodule)
+ADD_DEPENDENCIES(vigranumpy convolution)
+ADD_DEPENDENCIES(vigranumpy tensor)
+ADD_DEPENDENCIES(vigranumpy impex)
+ADD_DEPENDENCIES(vigranumpy filters)
+ADD_DEPENDENCIES(vigranumpy noise)
+ADD_DEPENDENCIES(vigranumpy segmentation)
+ADD_DEPENDENCIES(vigranumpy morphology)
+ADD_DEPENDENCIES(vigranumpy edgedetection)
+ADD_DEPENDENCIES(vigranumpy classification)
 
 IF(HDF5_FOUND)
     TARGET_LINK_LIBRARIES(vigranumpycmodule ${HDF5_LIBRARIES})
