@@ -33,8 +33,8 @@
 /*                                                                      */
 /************************************************************************/
 
-#define PY_ARRAY_UNIQUE_SYMBOL vigranumpycmodule_PyArray_API
-#define NO_IMPORT_ARRAY
+#define PY_ARRAY_UNIQUE_SYMBOL vigranumpyfilters_PyArray_API
+//#define NO_IMPORT_ARRAY
 
 #include <vigra/numpy_array.hxx>
 #include <vigra/numpy_array_converters.hxx>
@@ -230,3 +230,11 @@ void defineFilters2D()
 
 } // namespace vigra
 
+using namespace vigra;
+using namespace boost::python;
+
+BOOST_PYTHON_MODULE_INIT(filters)
+{
+    import_vigranumpy();
+    defineFilters2D();
+}
