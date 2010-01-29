@@ -1,25 +1,36 @@
 IF(PYTHON_SPHINX)
-    #SET(VIGRANUMPY_DOCDIR ${vigra_SOURCE_DIR}/vigranumpy/doc)
+	# vigranumpy documentation generation using sphinx
+	SET(VIGRANUMPY_DOCDIR ${DOCDIR}/vigranumpy)
+	SET(SPHINX_OPTS ${SPHINX_OPTS} CACHE STRING
+		"options passed to sphinx during vigranumpy doc generation"
+		FORCE)
+	IF(NOT DEFINED SPHINX_PAPER)
+		SET(SPHINX_PAPER a4)
+	ENDIF()
+	SET(SPHINX_PAPER ${SPHINX_PAPER} CACHE STRING
+		"Papersize for sphinx documentation generation (a4, letter)"
+		FORCE)
+	SET(SPHINX_ALLOPTS
+		-d ${VIGRANUMPY_DOCDIR}/doctrees
+		-D latex_paper_size=${SPHINX_PAPER}
+		${SPHINX_OPTS})
     
-    FILE(MAKE_DIRECTORY ${VIGRANUMPY_DOCDIR})
+	ADD_CUSTOM_TARGET (doc_python
+		COMMAND ${CMAKE_COMMAND} -E
+			make_directory ${VIGRANUMPY_DOCDIR}
+		COMMAND ${PYTHON_SPHINX} -b html
+			${SPHINX_ALLOPTS}
+			${CMAKE_CURRENT_SOURCE_DIR}
+			${VIGRANUMPY_DOCDIR}/html
+		COMMENT "Generating vigranumpy documentation")
 
-    if(MSVC OR MINGW)
-        add_custom_target (doc_python ${CMAKE_CURRENT_SOURCE_DIR}/make.bat html 
-                               WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} 
-                               COMMENT "Generating vigranumpy documentation")
-    else()
-        add_custom_target (doc_python make html
-                               WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} 
-                               COMMENT "Generating vigranumpy documentation")
-    endif()
-    ADD_DEPENDENCIES(doc doc_python)
+ELSE(PYTHON_SPHINX)
+	# no vigranumpy documentation if sphinx not available
+	ADD_CUSTOM_TARGET (doc_python 
+		${CMAKE_COMMAND} -E echo
+		"Cannot generate Python documentation for vigranumpy. "
+		"(sphinx-build not found)")
 
-    INSTALL(DIRECTORY ${VIGRANUMPY_DOCDIR}/ DESTINATION doc/vigranumpy)
+ENDIF(PYTHON_SPHINX)
 
-ELSE()
-    add_custom_target (doc_python 
-       echo "Cannot generate Python documentation (sphinx-build not found)")
-
-    ADD_DEPENDENCIES(doc doc_python)
-
-ENDIF()
+ADD_DEPENDENCIES(doc doc_python)

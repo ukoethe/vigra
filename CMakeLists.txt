@@ -158,13 +158,21 @@ else()
 endif()
 
 IF(DOXYGEN_FOUND AND PYTHONINTERP_FOUND)
-  MESSAGE( STATUS "  manuals will be installed at: ${CMAKE_INSTALL_PREFIX}/${DOCINSTALL}/index.html")
+  MESSAGE( STATUS "  vigra manuals will be installed at: "
+    "${CMAKE_INSTALL_PREFIX}/${DOCINSTALL}/vigra/index.html")
 ELSE()
-  MESSAGE( STATUS "  manuals cannot be generated (Doxygen or Python not found)")
+  MESSAGE( STATUS "  vigra manuals cannot be generated (Doxygen or Python not found)")
 ENDIF()
 
 IF(WITH_VIGRANUMPY AND VIGRANUMPY_DEPENDENCIES_FOUND)
   MESSAGE( STATUS "  vigranumpy will be installed at ${CMAKE_INSTALL_PREFIX}/${VIGRANUMPY_INSTALL_DIR}" )
+  IF(PYTHON_SPHINX)
+    MESSAGE( STATUS "  vigranumpy manuals will be installed at: "
+      "${CMAKE_INSTALL_PREFIX}/${DOCINSTALL}/vigranumpy/html/index.html")
+  ELSE(PYTHON_SPHINX)
+    MESSAGE( STATUS "  vigranumpy manuals cannot be generated "
+      "(Sphinx missing)")
+  ENDIF(PYTHON_SPHINX)
 ELSE()
   MESSAGE( STATUS "  vigranumpy will NOT be installed" )
 ENDIF()
