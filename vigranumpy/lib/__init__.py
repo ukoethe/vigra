@@ -1,4 +1,4 @@
-from vigranumpycmodule import *
+from vigranumpycore import *
 from arraytypes import *
 import convolution
 import tensor
