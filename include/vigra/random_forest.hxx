@@ -56,6 +56,7 @@
 #include "random_forest/rf_region.hxx"
 #include "random_forest/rf_sampling.hxx"
 #include "random_forest/rf_preprocessing.hxx"
+#include "random_forest/rf_online_prediction_set.hxx"
 namespace vigra
 {
 
@@ -496,6 +497,8 @@ class RandomForest
      * \return double value representing class. You can use the
      *         predictLabels() function together with the
      *         rf.external_parameter().class_type_ attribute
+     *         this->start=start;
+     *         this->end=end;
      *         to get back the same type used during learning. 
      */
     template <class U, class C>
@@ -542,6 +545,9 @@ class RandomForest
     void predictProbabilities(MultiArrayView<2, U, C1>const &   features,
                               MultiArrayView<2, T, C2> &        prob,
                               Stop                              stop) ;
+    template <class T1,class T2, class C>
+    void predictProbabilities(OnlinePredictionSet<T1> &  predictionSet,
+                               MultiArrayView<2, T2, C> &       prob);
 
     /** \brief predict the class probabilities for multiple labels
      *
@@ -862,6 +868,144 @@ LabelType RandomForest<LabelType, PreprocessorTag>
     double          d;
     ext_param_.to_classlabel(argMax(prob), d);
     return d;
+}
+
+template<class LabelType,class PreprocessorTag>
+template <class T1,class T2, class C>
+void RandomForest<LabelType,PreprocessorTag>
+    ::predictProbabilities(OnlinePredictionSet<T1> &  predictionSet,
+                          MultiArrayView<2, T2, C> &       prob)
+{
+    //Features are n xp
+    //prob is n x NumOfLabel probaility for each feature in each class
+    
+    vigra_precondition(rowCount(predictionSet.features) == rowCount(prob),
+                       "RandomFroest::predictProbabilities():"
+                       " Feature matrix and probability matrix size misnmatch.");
+    // num of features must be bigger than num of features in Random forest training
+    // but why bigger?
+    vigra_precondition( columnCount(predictionSet.features) >= ext_param_.column_count_,
+      "RandomForestn::predictProbabilities():"
+        " Too few columns in feature matrix.");
+    vigra_precondition( columnCount(prob)
+                        == (MultiArrayIndex)ext_param_.class_count_,
+      "RandomForestn::predictProbabilities():"
+      " Probability matrix must have as many columns as there are classes.");
+    prob.init(0.0);
+    //store total weights
+    std::vector<T1> totalWeights(predictionSet.indices[0].size(),0.0);
+    //Go through all trees
+    int set_id=-1;
+    for(int k=0; k<options_.tree_count_; ++k)
+    {
+        set_id=(set_id+1) % predictionSet.indices[0].size();
+        typedef std::set<SampleRange<T1> > my_set;
+        typedef typename my_set::iterator set_it;
+        //typedef std::set<std::pair<int,SampleRange<T1> > >::iterator set_it;
+        //Build a stack with all the ranges we have
+        std::vector<std::pair<int,set_it> > stack;
+        stack.clear();
+        set_it i;
+        for(i=predictionSet.ranges[set_id].begin();i!=predictionSet.ranges[set_id].end();++i)
+            stack.push_back(std::pair<int,set_it>(2,i));
+        //get weights predicted by single tree
+        while(!stack.empty())
+        {
+            set_it range=stack.back().second;
+            int index=stack.back().first;
+            stack.pop_back();
+
+            if(trees_[k].isLeafNode(trees_[k].topology_[index]))
+            {
+                ArrayVector<double>::iterator weights=Node<e_ConstProbNode>(trees_[k].topology_,
+                                                                            trees_[k].parameters_,
+                                                                            index).prob_begin();
+                for(int i=range->start;i!=range->end;++i)
+                {
+                    //update votecount.
+                    for(int l=0; l<ext_param_.class_count_; ++l)
+                    {
+                        prob(predictionSet.indices[set_id][i], l) += weights[l];
+                        //every weight in totalWeight.
+                        totalWeights[predictionSet.indices[set_id][i]] += weights[l];
+                    }
+                }
+            }
+
+            else
+            {
+                if(trees_[k].topology_[index]!=i_ThresholdNode)
+                {
+                    throw std::runtime_error("predicting with online prediction sets is only supported for RFs with threshold nodes");
+                }
+                Node<i_ThresholdNode> node(trees_[k].topology_,trees_[k].parameters_,index);
+                if(range->min_boundaries[node.column()]>=node.threshold())
+                {
+                    //Everything goes to right child
+                    stack.push_back(std::pair<int,set_it>(node.child(1),range));
+                    continue;
+                }
+                if(range->max_boundaries[node.column()]<node.threshold())
+                {
+                    //Everything goes to the left child
+                    stack.push_back(std::pair<int,set_it>(node.child(0),range));
+                    continue;
+                }
+                //We have to split at this node
+                SampleRange<T1> new_range=*range;
+                new_range.min_boundaries[node.column()]=FLT_MAX;
+                range->max_boundaries[node.column()]=-FLT_MAX;
+                new_range.start=new_range.end=range->end;
+                int i=range->start;
+                while(i!=range->end)
+                {
+                    //Decide for range->indices[i]
+                    if(predictionSet.features(predictionSet.indices[set_id][i],node.column())>=node.threshold())
+                    {
+                        new_range.min_boundaries[node.column()]=std::min(new_range.min_boundaries[node.column()],
+                                                                    predictionSet.features(predictionSet.indices[set_id][i],node.column()));
+                        --range->end;
+                        --new_range.start;
+                        std::swap(predictionSet.indices[set_id][i],predictionSet.indices[set_id][range->end]);
+
+                    }
+                    else
+                    {
+                        range->max_boundaries[node.column()]=std::max(range->max_boundaries[node.column()],
+                                                                 predictionSet.features(predictionSet.indices[set_id][i],node.column()));
+                        ++i;
+                    }
+                }
+                //The old one ...
+                if(range->start==range->end)
+                {
+                    predictionSet.ranges[set_id].erase(range);
+                }
+                else
+                {
+                    stack.push_back(std::pair<int,set_it>(node.child(0),range));
+                }
+                //And the new one ...
+                if(new_range.start!=new_range.end)
+                {
+                    std::pair<set_it,bool> new_it=predictionSet.ranges[set_id].insert(new_range);
+                    stack.push_back(std::pair<int,set_it>(node.child(1),new_it.first));
+                }
+            }
+        }
+    }
+    for(int i=0;i<totalWeights.size();++i)
+    {
+        double test=0.0;
+        //Normalise votes in each row by total VoteCount (totalWeight
+        for(int l=0; l<ext_param_.class_count_; ++l)
+        {
+            test+=prob(i,l);
+            prob(i, l) /= totalWeights[i];
+        }
+        assert(test==totalWeights[i]);
+        assert(totalWeights[i]>0.0);
+    }
 }
 
 template <class LabelType, class PreprocessorTag>
