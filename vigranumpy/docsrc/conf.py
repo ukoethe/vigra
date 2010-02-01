@@ -192,3 +192,12 @@ latex_documents = [
 
 # If false, no module index is generated.
 #latex_use_modindex = True
+
+rst_epilog=""""""
+replace_file=open("./c_api_replaces")
+for l in replace_file:
+	replacement=l.split(":")
+	rst_epilog+="""
+	.. _%s: ../../doc/vigra/%s
+"""% (replacement[0],replacement[1])
+

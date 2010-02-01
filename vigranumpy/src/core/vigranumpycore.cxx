@@ -33,7 +33,7 @@
 /*                                                                      */
 /************************************************************************/
 
-#define PY_ARRAY_UNIQUE_SYMBOL vigranumpycmodule_PyArray_API
+#define PY_ARRAY_UNIQUE_SYMBOL vigranumpycore_PyArray_API
 #include <iostream>
 #include <Python.h>
 #include <boost/python.hpp>
@@ -45,15 +45,7 @@ NUMPY_ARRAY_INITIALIZE_REGISTRY
 namespace vigra {
 
 void registerNumpyArrayConverters();
-void defineImpexFunctions();
-void defineAnalysisFunctions();
-void defineConvolutionFunctions();
-void defineMultiAnalysisFunctions();
-void defineMultiConvolutionFunctions();
-void defineFilters2D();
-void defineRandomForest();
-void defineRandomForest_new();
-void defineKernels();
+void defineImageTransformations();
 
 void test(NumpyArray<2, float> array)
 {
@@ -67,19 +59,11 @@ void test(NumpyArray<2, float> array)
 using namespace boost::python;
 using namespace vigra;
 
-BOOST_PYTHON_MODULE_INIT(vigranumpycmodule)
+BOOST_PYTHON_MODULE_INIT(vigranumpycore)
 {
     import_array();
     registerNumpyArrayConverters();
-    defineImpexFunctions();
-    defineAnalysisFunctions();
-    defineConvolutionFunctions();
-    defineMultiAnalysisFunctions();
-    defineMultiConvolutionFunctions();
-    defineFilters2D();
-    defineRandomForest();
-    defineRandomForest_new();
-    defineKernels();
+    defineImageTransformations();
     
     def("test", registerConverters(&test));
 }

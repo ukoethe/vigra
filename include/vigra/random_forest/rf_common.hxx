@@ -318,6 +318,7 @@ class RandomForestOptions
         ++iter; //PULL(mtry_func_, double);
         PULL(tree_count_, int);
         PULL(min_split_node_size_, int);
+        PULL(predict_weighted_, bool);
         #undef PULL
     }
     template<class Iter>

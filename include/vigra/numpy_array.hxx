@@ -1790,7 +1790,7 @@ inline void import_vigranumpy()
 {
     if(_import_array() < 0)
         pythonToCppException(0);
-    python_ptr module(PyImport_ImportModule("vigra.vigranumpycmodule"), python_ptr::keep_count);
+    python_ptr module(PyImport_ImportModule("vigra.vigranumpycore"), python_ptr::keep_count);
     pythonToCppException(module);
 }
 

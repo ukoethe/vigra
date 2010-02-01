@@ -33,9 +33,12 @@
 /*                                                                      */
 /************************************************************************/
 
-#define PY_ARRAY_UNIQUE_SYMBOL vigranumpycmodule_PyArray_API
+#define PY_ARRAY_UNIQUE_SYMBOL vigranumpyconvolution_PyArray_API
 #define NO_IMPORT_ARRAY
 
+#include <iostream>
+#include <Python.h>
+#include <boost/python.hpp>
 #include <vigra/numpy_array.hxx>
 #include <vigra/numpy_array_converters.hxx>
 #include <vigra/separableconvolution.hxx>
@@ -250,4 +253,7 @@ namespace vigra
 	{
 		defineKernels<KernelValueType>();
 	}
-}
+
+	//void registerNumpyArrayConverters();
+} // namespace vigra
+
