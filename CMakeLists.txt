@@ -68,6 +68,7 @@ ADD_CUSTOM_TARGET(doc)
 #
 ##################################################
 
+INCLUDE_DIRECTORIES(${PROJECT_BINARY_DIR}/include)
 ADD_SUBDIRECTORY(src)
 ADD_SUBDIRECTORY(test)
 ADD_SUBDIRECTORY(docsrc)
@@ -82,7 +83,8 @@ ENDIF()
 #
 ##################################################
 
-INSTALL(DIRECTORY ${vigra_SOURCE_DIR}/include/vigra DESTINATION include)
+INSTALL(DIRECTORY ${PROJECT_SOURCE_DIR}/include/vigra DESTINATION include)
+INSTALL(DIRECTORY ${PROJECT_BINARY_DIR}/include/vigra DESTINATION include)
 
 ##################################################
 #
@@ -90,6 +92,11 @@ INSTALL(DIRECTORY ${vigra_SOURCE_DIR}/include/vigra DESTINATION include)
 #
 ##################################################
 INCLUDE(CPackConfig)
+
+# configure version header
+CONFIGURE_FILE(${PROJECT_SOURCE_DIR}/config/configVersion.hxx.in
+		${PROJECT_BINARY_DIR}/include/vigra/configVersion.hxx
+		@ONLY)
 
 ##################################################
 #
@@ -151,13 +158,21 @@ else()
 endif()
 
 IF(DOXYGEN_FOUND AND PYTHONINTERP_FOUND)
-  MESSAGE( STATUS "  manuals will be installed at: ${CMAKE_INSTALL_PREFIX}/${DOCINSTALL}/index.html")
+  MESSAGE( STATUS "  vigra manuals will be installed at: "
+    "${CMAKE_INSTALL_PREFIX}/${DOCINSTALL}/vigra/index.html")
 ELSE()
-  MESSAGE( STATUS "  manuals cannot be generated (Doxygen or Python not found)")
+  MESSAGE( STATUS "  vigra manuals cannot be generated (Doxygen or Python not found)")
 ENDIF()
 
 IF(WITH_VIGRANUMPY AND VIGRANUMPY_DEPENDENCIES_FOUND)
   MESSAGE( STATUS "  vigranumpy will be installed at ${CMAKE_INSTALL_PREFIX}/${VIGRANUMPY_INSTALL_DIR}" )
+  IF(PYTHON_SPHINX)
+    MESSAGE( STATUS "  vigranumpy manuals will be installed at: "
+      "${CMAKE_INSTALL_PREFIX}/${DOCINSTALL}/vigranumpy/html/index.html")
+  ELSE(PYTHON_SPHINX)
+    MESSAGE( STATUS "  vigranumpy manuals cannot be generated "
+      "(Sphinx missing)")
+  ENDIF(PYTHON_SPHINX)
 ELSE()
   MESSAGE( STATUS "  vigranumpy will NOT be installed" )
 ENDIF()
