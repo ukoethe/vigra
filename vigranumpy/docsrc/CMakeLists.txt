@@ -1,5 +1,6 @@
 IF(PYTHON_SPHINX)
 	# vigranumpy documentation generation using sphinx
+	MESSAGE(STATUS ${VIGRANUMPY_DOCDIR})
 	SET(VIGRANUMPY_DOCDIR ${DOCDIR}/vigranumpy)
 	SET(SPHINX_OPTS ${SPHINX_OPTS} CACHE STRING
 		"options passed to sphinx during vigranumpy doc generation"
@@ -25,7 +26,7 @@ IF(PYTHON_SPHINX)
 		COMMAND ${PYTHON_SPHINX} -b html
 			${SPHINX_ALLOPTS}
 			${CMAKE_CURRENT_SOURCE_DIR}
-			${VIGRANUMPY_DOCDIR}/html
+			${VIGRANUMPY_DOCDIR}
 		COMMENT "Generating vigranumpy documentation")
 
 ELSE(PYTHON_SPHINX)
