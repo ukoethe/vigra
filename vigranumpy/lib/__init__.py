@@ -30,3 +30,10 @@ convolution.%sKernel.__doc__ = convolution.Kernel1D.%s.__doc__
       exec code
 
 genKernelFactories()
+selfdict = globals()
+def searchfor(searchstring):
+   for attr in selfdict.keys():
+      contents = dir(selfdict[attr])
+      for cont in contents:
+         if ( cont.upper().find(searchstring.upper()) ) >= 0:
+            print attr+"."+cont
