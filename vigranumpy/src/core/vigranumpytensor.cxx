@@ -37,13 +37,8 @@
 //#define NO_IMPORT_ARRAY
 #include <vigra/numpy_array.hxx>
 #include <vigra/numpy_array_converters.hxx>
-#include <vigra/localminmax.hxx>
-#include <vigra/labelimage.hxx>
-#include <vigra/gradient_energy_tensor.hxx>
 #include <vigra/orientedtensorfilters.hxx>
 #include <vigra/tensorutilities.hxx>
-#include <vigra/watersheds.hxx>
-#include <vigra/seededregiongrowing.hxx>
 #include <vigra/boundarytensor.hxx>
 
 #include <cmath>

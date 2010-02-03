@@ -39,19 +39,9 @@
 #include <vigra/numpy_array_converters.hxx>
 #include <vigra/localminmax.hxx>
 #include <vigra/labelimage.hxx>
-#include <vigra/distancetransform.hxx>
-#include <vigra/symmetry.hxx>
-#include <vigra/cornerdetection.hxx>
-#include <vigra/edgedetection.hxx>
-#include <vigra/gradient_energy_tensor.hxx>
-#include <vigra/orientedtensorfilters.hxx>
-#include <vigra/tensorutilities.hxx>
 #include <vigra/watersheds.hxx>
 #include <vigra/seededregiongrowing.hxx>
-#include <vigra/boundarytensor.hxx>
 #include <vigra/labelvolume.hxx>
-#include <vigra/multi_distance.hxx>
-#include <vigra/multi_array.hxx>
 #include <vigra/watersheds3d.hxx>
 #include <vigra/seededregiongrowing3d.hxx>
 

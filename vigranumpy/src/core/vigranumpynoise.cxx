@@ -39,14 +39,7 @@
 
 #include <vigra/numpy_array.hxx>
 #include <vigra/numpy_array_converters.hxx>
-#include <vigra/affinegeometry.hxx>
-#include <vigra/basicgeometry.hxx>
-#include <vigra/resizeimage.hxx>
-#include <vigra/splines.hxx>
-#include <vigra/flatmorphology.hxx>
 #include <vigra/noise_normalization.hxx>
-#include <vigra/multi_morphology.hxx>
-#include <vigra/multi_resize.hxx>
 
 #include <cmath>
 
