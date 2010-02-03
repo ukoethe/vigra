@@ -34,30 +34,27 @@
 /************************************************************************/
 
 #define PY_ARRAY_UNIQUE_SYMBOL vigranumpyclassification_PyArray_API
-//#define NO_IMPORT_ARRAY
+#define NO_IMPORT_ARRAY
 
 #include <vigra/numpy_array.hxx>
 #include <vigra/numpy_array_converters.hxx>
-#include <vigra/random_forest_deprec.hxx>
+#include <vigra/random_forest.hxx>
 #include <set>
 #include <cmath>
+#include "tuples.hpp"
+
 
 #ifdef HasHDF5
 # include <vigra/random_forest_hdf5_impex.hxx>
 #endif
 
-#define RandomForest RandomForestDeprec
-#define DecisionTree DecisionTreeDeprec
-#define RandomForestOptions RandomForestOptionsDeprec
-
 namespace python = boost::python;
 namespace vigra
 {
 
-template<class LabelType,class FeatureType>
+template<class LabelType, class FeatureType>
 RandomForest<LabelType>*
-pythonConstructRandomForest(NumpyArray<2,FeatureType> trainData,NumpyArray<1,LabelType> trainLabels,
-							int treeCount,
+pythonConstructRandomForest(int treeCount,
 							int mtry,
 							int min_split_node_size,
 							int training_set_size,
@@ -67,62 +64,101 @@ pythonConstructRandomForest(NumpyArray<2,FeatureType> trainData,NumpyArray<1,Lab
 
 {
 	RandomForestOptions options;
-	options.featuresPerNode(mtry).sampleWithReplacement(sample_with_replacement).setTreeCount(treeCount)
-		.trainingSetSizeProportional(training_set_proportions).trainingSetSizeAbsolute(training_set_size)
-		.sampleClassesIndividually(sample_classes_individually).minSplitNodeSize(min_split_node_size);
-	std::set<LabelType> uniqueLabels(trainLabels.data(),trainLabels.data()+trainLabels.size());
+	options.features_per_node(mtry).sample_with_replacement(sample_with_replacement).tree_count(treeCount)
+	.min_split_node_size(min_split_node_size);
 
-	RandomForest<LabelType>* rf=new RandomForest<LabelType>(uniqueLabels.begin(),uniqueLabels.end(),treeCount,options);
-	rf->learn(trainData,trainLabels);
+
+	if(training_set_size != 0)
+		options.samples_per_tree(training_set_size);
+	else
+		options.samples_per_tree(training_set_proportions);
+
+	if(sample_classes_individually)
+		options.use_stratification(RF_EQUAL);
+
+	RandomForest<LabelType>* rf = new RandomForest<LabelType>(options);
 
 	return rf;
 }
+
+template<class LabelType, class FeatureType>
+boost::tuples::tuple<double, NumpyArray<2,double> >
+pythonLearnRandomForestWithFeatureSelection(RandomForest<LabelType>* rf, NumpyArray<2,FeatureType> trainData, NumpyArray<2,LabelType> trainLabels)
+{
+  VariableImportanceVisitor var_imp;
+   
+  double oob = rf->learn(trainData, trainLabels, create_visitor(var_imp));
+  std::cout << "out of bag: " << oob << std::endl;
+  
+  NumpyArray<2, double> varImp(MultiArrayShape<2>::type(var_imp.variable_importance_.shape(0),var_imp.variable_importance_.shape(1))); 
+  
+  for (int x=0;x<varImp.shape(0);x++)
+    for (int y=0;y<varImp.shape(1);y++)
+      varImp(x,y)= var_imp.variable_importance_(x,y);
+
+  return boost::tuples::tuple<double, NumpyArray<2, double> >(oob, varImp);
+}
+
+template<class LabelType, class FeatureType>
+double
+pythonLearnRandomForest(RandomForest<LabelType>* rf, NumpyArray<2,FeatureType> trainData, NumpyArray<2,LabelType> trainLabels)
+{
+  double oob = rf->learn(trainData, trainLabels);
+  std::cout << "out of bag: " << oob << std::endl;
+
+  return oob;
+}
+
+
+
 
 template<class LabelType,class FeatureType>
 NumpyAnyArray pythonRFPredictLabels(RandomForest<LabelType>* rf,NumpyArray<2,FeatureType> testData,NumpyArray<2,LabelType> res)
 {
 	//construct result
 	res.reshapeIfEmpty(MultiArrayShape<2>::type(testData.shape(0),1),"Output array has wrong dimensions.");
-	rf->predictLabels(testData,res);
+  rf->predictLabels(testData,res);
 	return res;
 }
 
 template<class LabelType, class FeatureType>
-NumpyAnyArray pythonRFPredictProbabilities(RandomForest<LabelType>* rf,NumpyArray<2,FeatureType> testData,NumpyArray<2,float> res)
+NumpyAnyArray pythonRFPredictProbabilities(RandomForest<LabelType>* rf,NumpyArray<2,FeatureType> testData, NumpyArray<2,float> res)
 {
 	//construct result
-	res.reshapeIfEmpty(MultiArrayShape<2>::type(testData.shape(0),rf->labelCount()),"Output array has wrong dimensions.");
+	res.reshapeIfEmpty(MultiArrayShape<2>::type(testData.shape(0),rf->ext_param_.class_count_),"Output array has wrong dimensions.");
 	rf->predictProbabilities(testData,res);
 	return res;
 }
 
-void defineRandomForest()
+void defineRandomForest_new()
 {
 	using namespace python;
 
-	class_<RandomForest<UInt32> > rfclass("RandomForest",python::no_init);
-	rfclass
+  typedef boost::tuples::tuple<double, NumpyArray<2,double> > trainReturn;
+  boost::python::register_tuple< trainReturn >();
+
+	class_<RandomForest<UInt32> > rfclass_new("RandomForest_new",python::no_init);
+	rfclass_new
 		.def("__init__",python::make_constructor(registerConverters(&pythonConstructRandomForest<UInt32,float>),
 												 boost::python::default_call_policies(),
-												 ( arg("trainData"), arg("trainLabels"),
-												   arg("treeCount")=255,
+												 ( arg("treeCount")=255,
 												   arg("mtry")=0,
 												   arg("min_split_node_size")=1,
 												   arg("training_set_size")=0,
 												   arg("training_set_proportions")=1.0,
 												   arg("sample_with_replacement")=true,
 												   arg("sample_classes_individually")=false)),
-			 "Construct and train a random Forest using \"trainData\" and \"trainLabels\".\n"
+			 "Constructs a random Forest \n"
 			 "\"treeCount\" constrols the number of trees, that are created.\n"
 			 "See the vigra documentation for the meaning af the rest of the paremeters.")
 		.def("featureCount",
-			 &RandomForest<UInt32>::featureCount,
+    &RandomForest<UInt32>::column_count,
 			 "Returns the number of features the RandomForest works with.")
 		.def("labelCount",
-			 &RandomForest<UInt32>::labelCount,
+    &RandomForest<UInt32>::class_count,
 			 "Returns the number of labels, the RanfomForest knows.")
 		.def("treeCount",
-			 &RandomForest<UInt32>::treeCount,
+			 &RandomForest<UInt32>::tree_count,
 			 "Returns the \"treeCount\", that was set when constructing the RandomForest.")
 		.def("predictLabels",
 			 registerConverters(&pythonRFPredictLabels<UInt32,float>),
@@ -134,20 +170,22 @@ void defineRandomForest()
 			 (arg("testData"), arg("out")=object()),
 			 "Predict probabilities for different classes on \"testData\"."
 			 "The output is an array containing a probability for every test sample and class.")
+    .def("learnRF",
+			 registerConverters(&pythonLearnRandomForest<UInt32,float>),
+			 (arg("trainData"), arg("trainLabels")),
+			 "Trains a random Forest using \"trainData\" and \"trainLabels\".\n"
+			 "and returns the OOB. See the vigra documentation for the meaning af the rest of the paremeters.")
+    .def("learnRFWithFeatureSelection",
+			 registerConverters(&pythonLearnRandomForestWithFeatureSelection<UInt32,float>),
+			 (arg("trainData"), arg("trainLabels")),
+			 "Train a random Forest using \"trainData\" and \"trainLabels\".\n"
+			 "and returns the OOB and the Variable importance"
+			 "See the vigra documentation for the meaning af the rest of the paremeters.")
+
 /*			.def("writeHDF5")
 		.def("readHDF5")*/
 		;
 }
-void defineRandomForest_new();
+
 } // namespace vigra
 
-
-using namespace vigra;
-using namespace boost::python;
-
-BOOST_PYTHON_MODULE_INIT(classification)
-{
-    import_vigranumpy();
-    defineRandomForest();
-    defineRandomForest_new();
-}
