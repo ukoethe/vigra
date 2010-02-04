@@ -1060,8 +1060,11 @@ HDF5ImportInfo::HDF5ImportInfo(const char* filePath, const char* pathInFile)
     ArrayVector<hsize_t> maxdims(ndims);
     H5Sget_simple_extent_dims(dataspace_handle, size.data(), maxdims.data());
     //dset.getSpace().getSimpleExtentDims(size, NULL);
-    for(ArrayVector<hsize_t>::size_type i=0; i<ndims; ++i)
-        m_dims[i] = size[i];
+	// invert the dimensions to guarantee c-order
+	for(ArrayVector<hsize_t>::size_type i=0; i<ndims; i++) {
+        m_dims[i] = size[ndims-1-i];
+		//std::cout << "m_dims[" << i << "]=" << m_dims[i] << std::endl;
+	}
 }
 
 HDF5ImportInfo::~HDF5ImportInfo()
