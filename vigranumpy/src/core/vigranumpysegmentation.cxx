@@ -55,7 +55,7 @@ namespace vigra
 template < class PixelType >
 NumpyAnyArray pythonWatersheds2D(NumpyArray<2, Singleband<PixelType> > image,
                            int neighborhood = 8,
-                           NumpyArray<2, Singleband<Int32> > res=python::object())
+                           NumpyArray<2, Singleband<npy_int32> > res=python::object())
 {
     vigra_precondition(neighborhood == 4 || neighborhood == 8,
        "watersheds2D(image, neighborhood): neighborhood must be 4 or 8.");
@@ -81,15 +81,15 @@ NumpyAnyArray pythonWatersheds2D(NumpyArray<2, Singleband<PixelType> > image,
 VIGRA_PYTHON_MULTITYPE_FUNCTOR(pywatersheds2D, pythonWatersheds2D)
 
 
-template < class PixelType,  typename DestPixelType >
+template < class PixelType,  typename LabelType >
 NumpyAnyArray pythonSeededRegionGrowing2D(NumpyArray<2, Singleband<PixelType> > image,
                                     SRGType srgType=CompleteGrow, 
-                                    NumpyArray<2, Singleband<DestPixelType> > res=python::object())
+                                    NumpyArray<2, Singleband<LabelType> > res=python::object())
 {
     res.reshapeIfEmpty(MultiArrayShape<2>::type(image.shape(0), image.shape(1)), "seededRegionGrowing2D(): Output array has wrong shape.");
-    //NumpyArray<2, Singleband<DestPixelType> > labels(image.shape());
+    //NumpyArray<2, Singleband<LabelType> > labels(image.shape());
     extendedLocalMinima(srcImageRange(image), destImage(res));
-    DestPixelType max_region_label =
+    LabelType max_region_label =
         labelImageWithBackground(srcImageRange(res),
         destImage(res), false, 0);
     ArrayOfRegionStatistics< SeedRgDirectValueFunctor< PixelType > >
@@ -101,18 +101,18 @@ NumpyAnyArray pythonSeededRegionGrowing2D(NumpyArray<2, Singleband<PixelType> > 
 
 
 
-template < class PixelType, typename DestPixelType >
+template < class PixelType, typename LabelType >
 NumpyAnyArray pythonSeededRegionGrowingSeeded2D(NumpyArray<2, Singleband<PixelType> > image, 
-                                          NumpyArray<2, Singleband<Int32> > seeds,
+                                          NumpyArray<2, Singleband<LabelType> > seeds,
                                           SRGType srgType=CompleteGrow,
-                                          NumpyArray<2, Singleband<DestPixelType> > res=python::object())
+                                          NumpyArray<2, Singleband<LabelType> > res=python::object())
 {
     vigra_precondition(image.shape() == seeds.shape(),
          "seededRegionGrowing(): magnitude and seed images must have the same "
          "size.");
     res.reshapeIfEmpty(image.shape(), "seededRegionGrowingSeeded2D(): Output array has wrong shape.");
     
-    FindMinMax< DestPixelType > minmax;
+    FindMinMax< LabelType > minmax;
     inspectImage(srcImageRange(seeds), minmax);
  
     ArrayOfRegionStatistics< SeedRgDirectValueFunctor< PixelType > >
@@ -291,7 +291,7 @@ NumpyAnyArray pythonLabelImageWithBackground2D(NumpyArray<2, Singleband<PixelTyp
 template < class PixelType >
 NumpyAnyArray pythonWatersheds3D(NumpyArray<3, Singleband<PixelType> > volume,
                            int neighborhood = 6,
-                           NumpyArray<3, Singleband<Int32> > res=python::object())
+                           NumpyArray<3, Singleband<npy_int32> > res=python::object())
 {
     vigra_precondition(neighborhood == 6 || neighborhood == 26,
        "watersheds3D(volume, neighborhood): neighborhood must be 6 or 26.");
@@ -316,7 +316,7 @@ VIGRA_PYTHON_MULTITYPE_FUNCTOR(pywatersheds3D, pythonWatersheds3D)
 template < class VoxelType >
 NumpyAnyArray pythonSeededRegionGrowing3D(NumpyArray<3, Singleband<VoxelType> > volume,
                                     SRGType keepContours,
-                                    NumpyArray<3, Singleband<Int32> > res=python::object())
+                                    NumpyArray<3, Singleband<npy_int32> > res=python::object())
 {
     res.reshapeIfEmpty(volume.shape(), "seededRegionGrowing3D(): Output array has wrong shape.");    
     extendedLocalMinima(srcMultiArrayRange(volume), destMultiArray(res));
@@ -335,16 +335,16 @@ NumpyAnyArray pythonSeededRegionGrowing3D(NumpyArray<3, Singleband<VoxelType> > 
 
 template < class VoxelType >
 NumpyAnyArray pythonSeededRegionGrowingSeeded3D(NumpyArray<3, Singleband<VoxelType> > volume,
-                                          NumpyArray<3, Singleband<Int32> > seeds,
+                                          NumpyArray<3, Singleband<npy_int32> > seeds,
                                           SRGType srgType=CompleteGrow,
-                                          NumpyArray<3, Singleband<Int32> > res=python::object())
+                                          NumpyArray<3, Singleband<npy_int32> > res=python::object())
 {
     vigra_precondition(volume.shape() == seeds.shape(),
          "seededRegionGrowingSeeded3D(): magnitude and seed volumes must have the same "
          "size.");
     res.reshapeIfEmpty(seeds.shape(), "seededRegionGrowingSeeded3D(): Output array has wrong shape.");    
 
-    FindMinMax< Int32 > minmax;
+    FindMinMax< npy_int32 > minmax;
     inspectMultiArray(srcMultiArrayRange(seeds), minmax);
     // create a statistics functor for region growing
     ArrayOfRegionStatistics< SeedRgDirectValueFunctor< VoxelType > >
@@ -420,7 +420,7 @@ void defineSegmentation()
       (arg("image"), arg("neighborhood") = 8, arg("out")=python::object()));
 
     def("seededRegionGrowingSeeded2D",
-        registerConverters(&pythonSeededRegionGrowingSeeded2D<float, Int32>),
+        registerConverters(&pythonSeededRegionGrowingSeeded2D<float, npy_int32>),
         (arg("image"), 
          arg("seeds"), 
          arg("srgType")=CompleteGrow,
@@ -435,16 +435,17 @@ void defineSegmentation()
         "\n"
         "For details see seededRegionGrowing_ in the vigra C++ documentation."
         );
+/*  FIXME: int64 is unsupported by the C++ code (hard-coded int)
     def("seededRegionGrowingSeeded2D",
-        registerConverters(&pythonSeededRegionGrowingSeeded2D<float, Int64>),
+        registerConverters(&pythonSeededRegionGrowingSeeded2D<float, npy_uint64>),
         (arg("image"), 
          arg("seeds"), 
          arg("srgType")=CompleteGrow,
          arg("out")=python::object()));
-    
+*/    
     
     def("seededRegionGrowing2D",
-        registerConverters(&pythonSeededRegionGrowing2D<float, Int32>),
+        registerConverters(&pythonSeededRegionGrowing2D<float, npy_int32>),
         (arg("image"),
          arg("srgType")=CompleteGrow,
          arg("out")=python::object()),
@@ -458,12 +459,13 @@ void defineSegmentation()
         "\n"
         "For details see seededRegionGrowing_ in the vigra C++ documentation."
         );
+/*  FIXME: int64 is unsupported by the C++ code (hard-coded int)
     def("seededRegionGrowing2D",
-        registerConverters(&pythonSeededRegionGrowing2D<float, Int64>),
+        registerConverters(&pythonSeededRegionGrowing2D<float, npy_int64>),
         (arg("image"),
          arg("srgType")=CompleteGrow,
          arg("out")));
-
+*/
     def("localMinima2D",
         registerConverters(&pythonLocalMinima2D<float>),
         (arg("image"), 
@@ -541,7 +543,7 @@ void defineSegmentation()
 
 
     def("labelVolume3D",
-        registerConverters(&pythonLabelVolume3D<Int32>),
+        registerConverters(&pythonLabelVolume3D<npy_int32>),
         (arg("volume"), 
         arg("neighborhood3D")=6,
         arg("out")=python::object()),
@@ -550,7 +552,7 @@ void defineSegmentation()
         "For details see labelVolume_ in the vigra C++ documentation.");
 
     def("labelVolumeWithBackground3D",
-        registerConverters(&pythonLabelVolumeWithBackground3D<Int32>),
+        registerConverters(&pythonLabelVolumeWithBackground3D<npy_int32>),
         (arg("volume"), 
          arg("neighborhood")=6, 
          arg("background_value")=0,

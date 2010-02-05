@@ -177,7 +177,7 @@ void defineFilters2D()
        );
 
     def("distanceTransform3D",
-        registerConverters(&pythonDistanceTransform3D<Int32>),
+        registerConverters(&pythonDistanceTransform3D<npy_int32>),
         (arg("array"), arg("background"),
          arg("out")=python::object()),
         "For all background pixels, calculate the distance to the nearest object or contour."
@@ -194,7 +194,7 @@ void defineFilters2D()
         "For details see rieszTransformOfLOG_ in the vigra C++ documentation.");
 
     def("distanceTransform2D",
-        registerConverters(&pythonDistanceTransform2D<Int32,float>),
+        registerConverters(&pythonDistanceTransform2D<npy_int32, float>),
         (arg("image"), 
          arg("background")=0, 
          arg("norm")=2,

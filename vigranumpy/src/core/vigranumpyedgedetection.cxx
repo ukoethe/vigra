@@ -281,26 +281,26 @@ void defineEdgedetection()
         "For details see differenceOfExponentialCrackEdgeImage_ in the vigra C++ documentation.");
 
     def("removeShortEdges",
-        registerConverters(&pythonRemoveShortEdges<Int32,Int32>),
+        registerConverters(&pythonRemoveShortEdges<npy_int32, npy_int32>),
         (arg("image"), arg("minEdgeLength"), arg("nonEdgeMarker"),arg("out")=python::object()),
         "Remove short edges from an edge image.\n\n"
         "For details see removeShortEdges_ in the vigra C++ documentation.");
 
     def("beautifyCrackEdgeImage",
-        registerConverters(&pythonBeautifyCrackEdgeImage<Int32>),
+        registerConverters(&pythonBeautifyCrackEdgeImage<npy_int32>),
         (arg("image"), arg("edgeMarker"), arg("backgroundMarker"),arg("out")=python::object()),
         "Beautify crack edge image for visualization.\n\n"
         "For details see beautifyCrackEdgeImage_ in the vigra C++ documentation.");
 
     def("closeGapsInCrackEdgeImage",
-        registerConverters(&pythonCloseGapsInCrackEdgeImage<Int32>),
+        registerConverters(&pythonCloseGapsInCrackEdgeImage<npy_int32>),
         (arg("image"), arg("edgeMarker"),arg("out")=python::object()),
         "Close one-pixel wide gaps in a cell grid edge image.\n\n"
         "For details see closeGapsInCrackEdgeImage_ in the vigra C++ documentation.");
 
 
     def("regionImageToEdgeImage",
-        registerConverters(&pythonRegionImageToEdgeImage2D<Int32>),
+        registerConverters(&pythonRegionImageToEdgeImage2D<npy_int32>),
         (arg("image"), 
          arg("edgeLabel") = 0,
          arg("out")=python::object()),
@@ -308,19 +308,19 @@ void defineEdgedetection()
         "For details see regionImageToEdgeImage_ in the vigra C++ documentation.");
 
     def("regionImageToEdgeImage",
-        registerConverters(&pythonRegionImageToEdgeImage2D<Int64>),
+        registerConverters(&pythonRegionImageToEdgeImage2D<npy_int64>),
         (arg("image"), 
          arg("edgeLabel") = 0,
          arg("out")=python::object()));
 
     def("regionImageToCrackEdgeImage",
-         registerConverters(&pythonRegionImageToCrackEdgeImage2D<Int64>),
+         registerConverters(&pythonRegionImageToCrackEdgeImage2D<npy_int64>),
          (arg("image"), 
           arg("edgeLabel") = 0, 
           arg("out")=python::object()));
 
     def("regionImageToCrackEdgeImage",
-         registerConverters(&pythonRegionImageToCrackEdgeImage2D<Int32>),
+         registerConverters(&pythonRegionImageToCrackEdgeImage2D<npy_int32>),
          (arg("image"), 
           arg("edgeLabel") = 0, 
           arg("out")=python::object()),
