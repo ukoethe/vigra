@@ -32,7 +32,9 @@ ADD_LIBRARY(morphology SHARED
 ADD_LIBRARY(edgedetection SHARED
     vigranumpyedgedetection.cxx)
 ADD_LIBRARY(classification SHARED
-    vigranumpyrf.cxx)
+    vigranumpyrf.cxx
+    vigranumpyrf_new.cxx)
+
 
 
 TARGET_LINK_LIBRARIES(convolution ${VIGRANUMPY_LIBRARIES} vigranumpycore)
