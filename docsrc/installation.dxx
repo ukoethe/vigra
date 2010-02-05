@@ -1,106 +1,52 @@
 /** \page Installation Installation
 
-    VIGRA can be downloaded from <b><a href="http://kogs-www.informatik.uni-hamburg.de/~koethe/vigra/vigra\vigra_version.tar.gz">http://kogs-www.informatik.uni-hamburg.de/~koethe/vigra/vigra\vigra_version.tar.gz</a></b>.
+    VIGRA can be downloaded from <a href="http://hci.iwr.uni-heidelberg.de/vigra/">http://hci.iwr.uni-heidelberg.de/vigra/</a>. It should work with any standard conforming C++ compiler on both 32-bit and 64-bit machines.
     
-    VIGRA is known to work with the following compilers:
+    VIGRA is mainly a header library, i.e. much of its functionality can be accessed by simply copying the include files to a convenient location. A more involved build process is necessary for image file import and export, for the VIGRA Python bindings, and for the test suite and examples. VIGRA can take advantage of the following external libraries:
     
     <ul>
-    <li> <a href="http://gcc.gnu.org/">GNU g++ 3 and newer</a> 
-    <li> Microsoft Visual C++ 7.1 (aka C++.net 2003) and newer
+    <li> <a href="http://www.ijg.org/">libjpeg</a>, <a href="http://www.libtiff.org/">libtiff</a>,
+         <a href="http://www.libpng.org/">libpng</a> for reading and writing JPEG, TIFF, and PNG 
+         images.
+    <li> <a href="http://www.hdfgroup.org/HDF5/">HDF5</a> for reading and writing HDF5 files (storage of MultiArray and RandomForest)
+    <li> <a href="http://www.fftw.org/">libfftw</a> for fast Fourier transforms
+    <li> <a href="http://www.python.org/">Python</a>, <a href="http://www.boost.org/">boost_python</a>, and <a href="http://numpy.scipy.org/">numpy</a> for the VIGRA Python bindings.
     </ul>
 
-    VIGRA is known NOT to work with the following compilers:
-
-    <ul>
-    <li> GNU g++ 2.9.2 and earlier
-    <li> support for Microsoft Visual C++ 6.0 has largely been dropped, but some of 
-         VIGRA should still work with this compiler
-    </ul>
-
-    VIGRA should work with any standard conforming C++ compiler.
-
-    <h3> Unix:</h3>
+    These dependencies are optional - the functionality will simply be unavailable if the libraries cannot be found.
     
-    <ul>
-    <li> uncompress and unpack the source distribution
-    <li> run <tt>configure</tt>:
+    VIGRA installation is based on <a href="http://www.cmake.org/">cmake</a>. In order to configure the build and installation process, execute the following on the command line:
+
     
     \code
-    > cd <vigra_path>       
-    > ./configure --prefix=/your/install/path --exec-prefix=/your/bin/install/path  \
-                  --with-cc=gcc --with-cxx=g++ \
-                  --with-jpeg=/path/to/libjpeg/installation \
-                  --with-tiff=/path/to/libtiff/installation \
-                  --with-png=/path/to/libpng/installation \
-                  --with-zlib=/path/to/zlib/installation \
-                  --with-fftw=/path/to/libfftw/installation
-    \endcode    
-    
-    Of course, the flags given to <tt>configure</tt> may vary for your build.
-    In particular, if you drop <tt>--with-jpeg</tt>, <tt>--with-tiff</tt>, or
-    <tt>--with-fftw</tt>, VIGRA will be build without support for these libraries.
-    Invoke <tt>configure --help</tt> for a complete list of options, default settings
-    and explanations. 
-    
-    On a LINUX system, it is often possible to run configure without any options.
-
-    You can also create a dedicated build directory, e.g. to facilitate parallel installations on multiple platforms. You must cd into this directory and run configure with the appropriate relative or absolute path. 
-    
-    <li> build the library, execute the tests, and compile the \ref Examples :
-    
-    \code
-    > make
-    > make test
-    > make install
-    > make examples
+    > mkdir <vigra_build_path>       
+    > cd <vigra_build_path>       
+    > cmake [options] <vigra_source_path>
+    > make          # build (Linux/Unix and MinGW only)
+    > make check    # compile and run tests (optional, Linux/Unix and MinGW only)
+    > make doc      # generate documentation (Linux/Unix and MinGW only)
+    > make install  # install (Linux/Unix and MinGW only)
+    > make examples # build examples (optional, Linux/Unix and MinGW only)
     \endcode
     
-    Besides <tt>/your/bin/install/path/lib/libvigraimpex.a</tt> and the 
-    html-documentation, this also installs
-    a programm <tt>/your/bin/install/path/bin/vigra-config</tt>. This programm supports
-    the compilation of software which depends on VIGRA by returning the neccessary 
-    compiler and linker settings. For example,
+    If you use Microsoft Visual C++, you just execute cmake (not make) which creates a solution file '<vigra_build_path>/vigra.sln'. This file must be opened in Visual Studio, and the projects 'ALL_BUILD', 'check', 'doc', 'INSTALL', and 'examples' should be generated. <b>Important note</b>: If you include <b>"windows.h"</b> in your projects: there are some name clashes with VIGRA -- always include <b>"vigra/windows.h"</b> instead.
     
-    \code
-    > vigra-config --cppflags
-    -I/your/install/path/include -I/path/to/libfftw/include
-    \endcode
+    cmake [options] customize installation directories and guide cmake in its search for the VIGRA dependencies. On a Linux system, it is often possible to configure without any options. The most commonly used options are:
     
-    Call <tt>vigra-config --help</tt> for a complete list of options. You may also look
-    at <tt>&lt;vigra_path&gt;/src/examples/Makefile</tt> for a usage example.
-    
-    </ul>
+    <DL>
+    <DT> -DCMAKE_INSTALL_PREFIX=&lt;path&gt;
+         <DD> where to install VIGRA (binaries will be installed in &lt;path&gt;/bin, libraries in 
+         &lt;path&gt;/lib, headers in &lt;path&gt;/include/vigra, and documentation in 
+         &lt;path&gt;/doc/vigra and &lt;path&gt;/doc/vigranumpy, default is platform dependent)
+    <DT> -DDEPENDENCY_SEARCH_PREFIX=&lt;path1&gt;[;&lt;path2&gt;...]
+         <DD> where to look for VIGRA dependencies (for every given path, cmake will search for 
+         libraries in &lt;path&gt;/lib and for headers in &lt;path&gt;/include)
+    <DT> -DDOCDIR=&lt;path&gt;
+         <DD> where to generate VIGRA decumentation (default: &lt;vigra_source_path&gt;/doc)
+    <DT> -DWITH_VIGRANUMPY=1
+         <DD> build VIGRA Python bindings (default: 1). Pass -DWITH_VIGRANUMPY=0 to suppress 
+         vigranumpy.
+    </DL>
 
-    <h3> Windows: <small>(Microsoft Visual C++ 7.1, Visual Studio 2003 and 
-                 Microsoft Visual C++ 8.0, Visual Studio 2005)</small></h3>
-    
-    <ul>
-    <li> Uncompress and unpack the source distribution, or run the binary installer <b><a href="http://kogs-www.informatik.uni-hamburg.de/~koethe/vigra/Setup-Vigra-\vigra_version.exe">Setup-Vigra-\vigra_version.exe</a></b>.
-
-    <li> Go into the directory <TT>[some path]/vigra/src/</TT>
-
-    <li> Load the workspace <TT>vigra.sln</TT> into Visual Studio
-
-    <li> Specify in the project settings if and where JPEG, TIFF, PNG, and FFTW libraries are installed: 
-    <ul>
-    <li>If you installed VIGRA using Setup-Vigra-1.6.0.exe: Settings should work out of the box. The installer comes with pre-compiled versions of these libraries which are invoked by the pre-defined settings.
-    <li>If you have installed these libraries independently of VIGRA: Open the preferences dialog for the project <tt>vigraimpex_dll</tt> and update the paths to the include and library files for <a href="http://www.ijg.org/">libjpeg</a>,     <a href="http://www.libtiff.org/">libtiff</a>,
-    <a href="http://www.libpng.org/">libpng</a>,
-    and <a href="http://www.fftw.org/">libfftw</a>
-    <li>If you don't need the functionality provided by these libraries: Remove the <TT>HasJPEG</TT>, <TT>HasTIFF</TT>, and <TT>HasPNG</TT> preprocessor flags and
-     the entries referring to these libs in the linker dependencies of the "vigraimpex_dll" project.
-    </ul>
-    
-    <li> Build the workspace (that is, the library <TT>vigraimpex.dll</TT> and the \ref Examples) and move
-         <TT>[some path]/vigra/src/impex/vigraimpex.dll</TT> to a directory where Windows finds it 
-         (or add the appropriate path to the Windows PATH environment variable).
-
-    <li> The \ref Examples can now be invoked from the command line (DOS prompt).
-
-    <li> The VIGRA test suite can be similarly compiled and executed by loading the solution <TT>[some path]/vigra/test/test.sln</TT>.
-
-    <li> <b>Important note</b>: If you include <b>"windows.h"</b> in your projects: there are some name clashes with VIGRA -- always include <b>"vigra/windows.h"</b> instead.
-    </ul>
-
-    
+    More fine-grained customization (e.g. specification of explicit paths for all dependencies, customization of compiler flags) is possible by editing the file &lt;vigra_build_path&gt;/CMakeCache.txt. This is best done by means of the interactive programs <b>ccmake</b> or <b>cmake-gui</b>. Consult the <a href="http://www.cmake.org/cmake/help/documentation.html>cmake documentation</a> for more detailed help.
 */
