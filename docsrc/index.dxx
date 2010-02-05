@@ -28,6 +28,8 @@
         <BR>&nbsp;&nbsp;&nbsp;<em>Segmentation and feature extraction algorithms</em>
     <LI> \ref Examples
         <BR>&nbsp;&nbsp;&nbsp;<em>Demonstration programs for VIGRA's usage </em>
+    <LI> <a href="../vigranumpy">vigranumpy</a>
+        <BR>&nbsp;&nbsp;&nbsp;<em>VIGRA Python bindings</em>
     <LI> \ref CreditsChangelog
         <BR>&nbsp;&nbsp;&nbsp;<em>Who contributed what?</em>
     </UL>
