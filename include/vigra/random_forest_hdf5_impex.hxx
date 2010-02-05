@@ -252,16 +252,16 @@ inline MyT::type type_of(TYPE in)\
 {\
 	return MyT::ENUM; \
 }
-create_type_of(Int8, INT8);
-create_type_of(Int16, INT16);
-create_type_of(Int32, INT32);
-create_type_of(Int64, INT64);
-create_type_of(UInt8, UINT8);
-create_type_of(UInt16, UINT16);
-create_type_of(UInt32, UINT32);
-create_type_of(UInt64, UINT64);
-create_type_of(float, FLOAT);
-create_type_of(double, DOUBLE);
+create_type_of(Int8, INT8)
+create_type_of(Int16, INT16)
+create_type_of(Int32, INT32)
+create_type_of(Int64, INT64)
+create_type_of(UInt8, UINT8)
+create_type_of(UInt16, UINT16)
+create_type_of(UInt32, UINT32)
+create_type_of(UInt64, UINT64)
+create_type_of(float, FLOAT)
+create_type_of(double, DOUBLE)
 #undef create_type_of
 
 inline MyT::type type_of_hid_t(hid_t group_id, std::string name)

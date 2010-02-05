@@ -1013,8 +1013,9 @@ HDF5ImportInfo::HDF5ImportInfo(const char* filePath, const char* pathInFile)
                                 &H5Sclose, "HDF5ImportInfo(): could not access dataset dataspace.");
     m_dimensions = H5Sget_simple_extent_ndims(dataspace_handle);
     //m_dimensions = dset.getSpace().getSimpleExtentNdims();
-
-    vigra_precondition( m_dimensions>=2, "HDF5ImportInfo(): Number of dimensions is lower than 2. Not an image!" );
+    
+    //why?
+    //vigra_precondition( m_dimensions>=2, "HDF5ImportInfo(): Number of dimensions is lower than 2. Not an image!" );
 
 	hid_t datatype = H5Dget_type(m_dataset_handle);
 	H5T_class_t dataclass = H5Tget_class(datatype);

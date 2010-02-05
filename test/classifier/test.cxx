@@ -409,6 +409,31 @@ struct ClassifierTest
         std::cerr << "DONE!\n\n";
 	}
 
+    void RFwrongLabelTest()
+    {
+        double rawfeatures [] = 
+        {
+            0, 1, 1, 1, 1,
+            0, 1, 1, 1, 1, 
+        };
+        double rawlabels [] =
+        {
+            0, 1, 1, 0, 0
+        };
+        typedef MultiArrayShape<2>::type Shp;
+        MultiArrayView<2, double> features(Shp(5, 2), rawfeatures);
+        MultiArrayView<2, double> labels(Shp(5, 1), rawlabels);
+       
+        RandomForest<> rf(RandomForestOptions().tree_count(10).sample_with_replacement(false));
+        rf.learn(features, labels);
+
+        MultiArray<2, double> prob(Shp(1, 2));
+        rf.predictProbabilities(rowVector(features, 2), prob);
+
+        shouldEqual(prob[0], prob[1]);
+        shouldEqual(prob[1], 0.5);
+
+    }
 #ifdef HasHDF5
 	/** checks whether hdf5 import export is working
 	 */
@@ -467,6 +492,7 @@ struct ClassifierTestSuite
         add( testCase( &ClassifierTest::RFoobTest));
         add( testCase( &ClassifierTest::RFnoiseTest));
         add( testCase( &ClassifierTest::RFvariableImportanceTest));
+        add( testCase( &ClassifierTest::RFwrongLabelTest));
 #endif
         add( testCase( &ClassifierTest::RFresponseTest));
 #ifdef HasHDF5
