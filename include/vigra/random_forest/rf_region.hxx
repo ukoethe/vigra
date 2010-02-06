@@ -103,12 +103,8 @@ class DT_StackEntry
 
     void reset()
     {
-        begin_      = end_      = IndexIterator();
-        oob_begin_  = oob_end_  = IndexIterator();
-        size_       = oob_size_ = 0;
-        leftParent  = DecisionTreeNoParent;
-        rightParent = DecisionTreeNoParent;
         classCountsIsValid = false;
+        leftParent=rightParent=DecisionTreeNoParent;
     }
 
     bool  isPure()

@@ -38,12 +38,10 @@
 #ifndef VIGRA_TIMING_HXX
 #define VIGRA_TIMING_HXX
 
-#ifndef VIGRA_NO_TIMING
+#ifndef NDEBUG
 
 #include <sstream>
-#ifdef MULTI_TICTOC
-    #include <vector>
-#endif
+
 // usage:
 // void time_it()
 // {
@@ -66,46 +64,21 @@
         return 1000.0 / frequency.QuadPart;
     }
 
-    inline double tic_toc_diff_num(LARGE_INTEGER const & tic)
+    inline std::string tic_toc_diff(LARGE_INTEGER const & tic)
     {
         LARGE_INTEGER toc;
         QueryPerformanceCounter(&toc);
         static double unit = queryTimerUnit();
-        return ((toc.QuadPart - tic.QuadPart) * unit);
-    }
-
-    inline std::string tic_toc_diff_string(timeval const & tic)
-    {
-        double diff = tic_toc_diff_num(tic); 
         std::stringstream s;
-        s << diff << " msec";
+        s << ((toc.QuadPart - tic.QuadPart) * unit) << " msec";
         return s.str();
     }
 
-    inline void tic_toc_diff(timeval const & tic)
-    {
-        std::cerr << tic_toc_diff_string(tic) <<std::endl;
-    }
-
     } // unnamed namespace
-    
-#ifndef MULTI_TICTOC
-    #define USETICTOC LARGE_INTEGER tic_timer;
-    #define TIC QueryPerformanceCounter(&tic_timer);
-    #define TOC  tic_toc_diff       (tic_timer);
-    #define TOCN tic_toc_diff_num   (tic_timer);
-    #define TOCS tic_toc_diff_string(tic_timer);
-#else
-    #define USETICTOC std::vector<LARGE_INTEGER> tic_timer;
-    #define TIC tic_timer.push_back(LARGE_INTEGER());\
-                QueryPerformanceCounter(&(tic_timer.back()));
-    #define TOC  tic_toc_diff       (tic_timer.back());\
-                 tic_timer.pop_back();
-    #define TOCN tic_toc_diff_num   (tic_timer.back());\
-                 tic_timer.pop_back();
-    #define TOCS tic_toc_diff_string(tic_timer.back());\
-                 tic_timer.pop_back();
-#endif
+
+    #define USETICTOC LARGE_INTEGER tic_timer
+    #define TIC QueryPerformanceCounter(&tic_timer)
+    #define TOC tic_toc_diff(tic_timer)
 
 #else
 
@@ -116,106 +89,54 @@
 
         namespace {
 
-        inline double tic_toc_diff_num(timespec const & tic)
+        inline std::string tic_toc_diff(timespec const & tic)
         {
             timespec toc;
             clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &toc);
-            return ((toc.tv_sec*1000.0 + toc.tv_nsec/1000000.0) -
-                  (tic.tv_sec*1000.0 + tic.tv_nsec/1000000.0));
-        }
-
-        inline std::string tic_toc_diff_string(timeval const & tic)
-        {
-            double diff = tic_toc_diff_num(tic); 
             std::stringstream s;
-            s << diff << " msec";
+            s << ((toc.tv_sec*1000.0 + toc.tv_nsec/1000000.0) -
+                  (tic.tv_sec*1000.0 + tic.tv_nsec/1000000.0)) << " msec";
             return s.str();
         }
 
-        inline void tic_toc_diff(timeval const & tic)
-        {
-            std::cerr << tic_toc_diff_string(tic) << std::endl;
-        }
         } // unnamed namespace
 
-#ifndef MULTI_TICTOC
-        #define USETICTOC timespec tic_timer;
-        #define TIC clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &tic_timer);
-        #define TOC  tic_toc_diff       (tic_timer);
-        #define TOCN tic_toc_diff_num   (tic_timer);
-        #define TOCS tic_toc_diff_string(tic_timer);
-#else
+        #define USETICTOC timespec tic_timer
+        #define TIC clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &tic_timer)
+        #define TOC tic_toc_diff(tic_timer)
 
-        #define USETICTOC std::vector<timespec> tic_timer;
-        #define TIC tic_timer.push_back(timespec());\
-                    clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &(tic_timer.back()));
-        #define TOC  tic_toc_diff       (tic_timer.back());\
-                     tic_timer.pop_back();
-        #define TOCN tic_toc_diff_num   (tic_timer.back());\
-                     tic_timer.pop_back();
-        #define TOCS tic_toc_diff_string(tic_timer.back());\
-                     tic_timer.pop_back();
-#endif
     #else
     
         #include <sys/time.h>
 
         namespace {
 
-        inline double tic_toc_diff_num(timeval const & tic)
+        inline std::string tic_toc_diff(timeval const & tic)
         {
             timeval toc;
             gettimeofday(&toc, NULL);
-            return  ((toc.tv_sec*1000.0 + toc.tv_usec/1000.0) -
-                        (tic.tv_sec*1000.0 + tic.tv_usec/1000.0));
-        }
-        inline std::string tic_toc_diff_string(timeval const & tic)
-        {
-            double diff = tic_toc_diff_num(tic); 
             std::stringstream s;
-            s << diff << " msec";
+            s << ((toc.tv_sec*1000.0 + toc.tv_usec/1000.0) -
+                  (tic.tv_sec*1000.0 + tic.tv_usec/1000.0)) << " msec";
             return s.str();
-        }
-        inline void tic_toc_diff(timeval const & tic)
-        {
-            std::cerr << tic_toc_diff_string(tic)<< std::endl;
         }
 
         } // unnamed namespace
 
-#ifndef MULTI_TICTOC
-        #define USETICTOC timeval tic_timer;
-        #define TIC  gettimeofday       (&tic_timer, NULL);
-        #define TOC  tic_toc_diff       (tic_timer);
-        #define TOCN tic_toc_diff_num   (tic_timer);
-        #define TOCS tic_toc_diff_string(tic_timer);
-#else
-
-        #define USETICTOC std::vector<timeval> tic_timer;
-        #define TIC tic_timer.push_back(timeval());\
-                    gettimeofday(&(tic_timer.back()), NULL);
-        #define TOC  tic_toc_diff       (tic_timer.back());\
-                     tic_timer.pop_back();
-        #define TOCN tic_toc_diff_num   (tic_timer.back());\
-                     tic_timer.pop_back();
-        #define TOCS tic_toc_diff_string(tic_timer.back());\
-                     tic_timer.pop_back();
-#endif
+        #define USETICTOC timeval tic_timer
+        #define TIC gettimeofday(&tic_timer, NULL)
+        #define TOC tic_toc_diff(tic_timer)
 
     #endif // VIGRA_HIRES_TIMING
 
 #endif // WIN32
 
-
-
-
 #else // NDEBUG
 
 #define USETICTOC 
-#define TIC
+#define TIC 
 #define TOC
-#define TOCN
-#define TICS
+
 #endif // NDEBUG
 
 #endif // VIGRA_TIMING_HXX

@@ -251,7 +251,7 @@ class Sampler
             unused_indices_.clear();
             for(int ii = 0; ii < (int)is_used().size(); ++ii)
             {
-                if(!is_used_[ii])
+                if(is_used_[ii])
                     unused_indices_.push_back(ii);
             }
             unused_indices_set = true;
@@ -455,6 +455,62 @@ class Sampler
     inline Sampler(int numOfSamples, int maxIndex, SamplingOptions const & opt)
     {
          init(numOfSamples,maxIndex, opt);
+    }
+
+};
+
+template<class Random =RandomTT800 >
+class PoissonSampler
+{
+public:
+    Random  randfloat;
+    typedef Int32                               IndexType;
+    typedef vigra::ArrayVector     <IndexType>  IndexArrayType;
+    IndexArrayType        used_indices_;
+    double lambda;
+    int minIndex;
+    int maxIndex;
+    inline PoissonSampler(double lambda,IndexType minIndex,IndexType maxIndex)
+        : randfloat()
+    {
+        this->lambda=lambda;
+        this->minIndex=minIndex;
+        this->maxIndex=maxIndex;
+    }
+
+    inline void sample(  )
+    {
+        used_indices_.clear();
+        IndexType i;
+        for(i=minIndex;i<maxIndex;++i)
+        {
+            //from http://en.wikipedia.org/wiki/Poisson_distribution
+            int k=0;
+            double p=1;
+            double L=exp(-lambda);
+            do
+            {
+                ++k;
+                p*=randfloat.uniform53();
+
+            }while(p>L);
+            --k;
+            //Insert i this many time
+            while(k>0)
+            {
+                used_indices_.push_back(i);
+                --k;
+            }
+        }
+    }
+
+    IndexType const & operator[](int in)
+    {
+        return used_indices_[in];
+    }
+    int numOfSamples()
+    {
+        return used_indices_.size();
     }
 
 };

@@ -246,6 +246,7 @@ class RandomForestOptions
     /**\name sampling options*/
     /*\{*/
     // look at the member access functions for documentation
+    bool prepare_online_learning_;
     double  training_set_proportion_;
     int     training_set_size_;
     int (*training_set_func_)(int);
@@ -378,7 +379,8 @@ class RandomForestOptions
         mtry_func_(0),
         predict_weighted_(false),
         tree_count_(256),
-        min_split_node_size_(1)
+        min_split_node_size_(1),
+        prepare_online_learning_(false)
     {}
 
     /**\brief specify stratification strategy
@@ -402,6 +404,12 @@ class RandomForestOptions
                            "input must be RF_EQUAL, RF_PROPORTIONAL,"
                            "RF_EXTERNAL or RF_NONE");
         stratification_method_ = in;
+        return *this;
+    }
+
+    RandomForestOptions & prepare_online_learning(bool in)
+    {
+        prepare_online_learning_=in;
         return *this;
     }
 

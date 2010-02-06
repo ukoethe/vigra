@@ -34,8 +34,8 @@
 /************************************************************************/
 
 
-#ifndef VIGRA_RANDOM_FOREST_DEPREC_HXX
-#define VIGRA_RANDOM_FOREST_DEPREC_HXX
+#ifndef VIGRA_RANDOM_FOREST_HXX
+#define VIGRA_RANDOM_FOREST_HXX
 
 #include <algorithm>
 #include <map>
@@ -48,11 +48,8 @@
 #include "vigra/random.hxx"
 #include "vigra/functorexpression.hxx"
 
-//defines to have current random_forests running;
-
 #define RandomForest RandomForestDeprec
-#define DecisionTree DecisionTreeDeprec
-#define RandomForestOptions RandomForestOptionsDeprec
+#define DecisionTree DecisionTreeeDeprec
 
 namespace vigra
 {
@@ -1134,8 +1131,8 @@ RandomForest<ClassLabelType>::predictNodes(MultiArrayView<2, U, C1> const & feat
 
 } // namespace vigra
 
-#undef  RandomForest
-#undef  DecisionTree
-#undef  RandomForestOptions
+#undef RandomForest
+#undef DecisionTreee_Deprec
 
-#endif // VIGRA_RANDOM_FOREST_DEPREC_HXX
+#endif // VIGRA_RANDOM_FOREST_HXX
+

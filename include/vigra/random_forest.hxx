@@ -41,6 +41,7 @@
 #include <algorithm>
 #include <map>
 #include <set>
+#include <list>
 #include <numeric>
 #include "mathutil.hxx"
 #include "array_vector.hxx"
@@ -56,6 +57,7 @@
 #include "random_forest/rf_region.hxx"
 #include "random_forest/rf_sampling.hxx"
 #include "random_forest/rf_preprocessing.hxx"
+#include "random_forest/rf_online_prediction_set.hxx"
 #include "random_forest/rf_earlystopping.hxx"
 namespace vigra
 {
@@ -142,6 +144,8 @@ class RandomForest
     ArrayVector<DecisionTree_t>
                                     trees_;
     ProblemSpec_t                   ext_param_;
+
+    OnlineLearnVisitor              online_visitor_;
 
 
     void reset()
@@ -393,6 +397,35 @@ class RandomForest
                      rnd);
     }
 
+    
+    template<class U,class C1,
+        class U2, class C2,
+        class Split_t,
+        class Stop_t,
+        class Visitor_t,
+        class Random_t>
+    double onlineLearn(MultiArrayView<2,U,C1> const & features,
+                       MultiArrayView<2,U2,C2> const & response,
+                       int new_start_index,
+                       Visitor_t visitor_,
+                       Split_t split_,
+                       Stop_t stop_,
+                       Random_t & random);
+
+    template <class U, class C1, class U2,class C2>
+    double onlineLearn(   MultiArrayView<2, U, C1> const  & features,
+                    MultiArrayView<2, U2,C2> const  & labels,int new_start_index)
+    {
+        RandomNumberGenerator<> rnd = RandomNumberGenerator<>(RandomSeed);
+        return onlineLearn(features, 
+                     labels, 
+                     new_start_index,
+                     rf_default(), 
+                     rf_default(), 
+                     rf_default(),
+                     rnd);
+    }
+
 
 
     /**\brief learn on data with default configuration
@@ -512,6 +545,9 @@ class RandomForest
     void predictProbabilities(MultiArrayView<2, U, C1>const &   features,
                               MultiArrayView<2, T, C2> &        prob,
                               Stop                              stop) const;
+    template <class T1,class T2, class C>
+    void predictProbabilities(OnlinePredictionSet<T1> &  predictionSet,
+                               MultiArrayView<2, T2, C> &       prob);
 
     /** \brief predict the class probabilities for multiple labels
      *
@@ -531,6 +567,147 @@ class RandomForest
 
 };
 
+
+template <class LabelType, class PreprocessorTag>
+template<class U,class C1,
+    class U2, class C2,
+    class Split_t,
+    class Stop_t,
+    class Visitor_t,
+    class Random_t>
+double RandomForest<LabelType, PreprocessorTag>::onlineLearn(
+                                                             MultiArrayView<2,U,C1> const & features,
+                                                             MultiArrayView<2,U2,C2> const & response,
+                                                             int new_start_index,
+                                                             Visitor_t visitor_,
+                                                             Split_t split_,
+                                                             Stop_t stop_,
+                                                             Random_t & random)
+{
+    online_visitor_.activate();
+
+    using namespace rf;
+    //typedefs
+    typedef typename Split_t::StackEntry_t StackEntry_t;
+    typedef Processor<PreprocessorTag,LabelType,U,C1,U2,C2> Preprocessor_t;
+    typedef          UniformIntRandomFunctor<Random_t>
+                                                    RandFunctor_t;
+    // default values and initialization
+    // Value Chooser chooses second argument as value if first argument
+    // is of type RF_DEFAULT. (thanks to template magic - don't care about
+    // it - just smile and wave.
+    
+    #define RF_CHOOSER(type_) detail::Value_Chooser<type_, Default_##type_> 
+    Default_Stop_t default_stop(options_);
+    typename RF_CHOOSER(Stop_t)::type stop
+            = RF_CHOOSER(Stop_t)::choose(stop_, default_stop); 
+    Default_Split_t default_split;
+    typename RF_CHOOSER(Split_t)::type split 
+            = RF_CHOOSER(Split_t)::choose(split_, default_split); 
+    StopVisiting stopvisiting;
+    OOB_Visitor  oob;
+    typedef  VisitorNode<OnlineLearnVisitor, typename RF_CHOOSER(Visitor_t)::type> IntermedVis; 
+    IntermedVis
+        inter(online_visitor_, RF_CHOOSER(Visitor_t)::choose(visitor_, stopvisiting));
+    VisitorNode<OOB_Visitor, IntermedVis>
+        visitor(oob,inter);
+    #undef RF_CHOOSER
+
+    // Preprocess the data to get something the split functor can work
+    // with. Also fill the ext_param structure by preprocessing
+    // option parameters that could only be completely evaluated
+    // when the training data is known.
+    ext_param_.class_count_=0;
+    Preprocessor_t preprocessor(    features, response,
+                                    options_, ext_param_);
+
+    // Make stl compatible random functor.
+    RandFunctor_t           randint     ( random);
+
+    // Give the Split functor information about the data.
+    split.set_external_parameters(ext_param_);
+    stop.set_external_parameters(ext_param_);
+
+
+    //Create poisson samples
+    PoissonSampler<RandomTT800> poisson_sampler(1.0,vigra::Int32(new_start_index),vigra::Int32(ext_param().row_count_));
+
+    //TODO: visitors for online learning
+    //visitor.visit_at_beginning(*this, preprocessor);
+
+    // THE MAIN EFFING RF LOOP - YEAY DUDE!
+    for(int ii = 0; ii < (int)trees_.size(); ++ii)
+    {
+        online_visitor_.tree_id=ii;
+        poisson_sampler.sample();
+        std::map<int,int> leaf_parents;
+        leaf_parents.clear();
+        //Get all the leaf nodes for that sample
+        for(int s=0;s<poisson_sampler.numOfSamples();++s)
+        {
+            int sample=poisson_sampler[s];
+            online_visitor_.current_label=preprocessor.response()(sample,0);
+            online_visitor_.last_node_id=StackEntry_t::DecisionTreeNoParent;
+            int leaf=trees_[ii].getToLeaf(rowVector(features,sample),online_visitor_);
+
+
+            //Add to the list for that leaf
+            online_visitor_.add_to_index_list(ii,leaf,sample);
+            //TODO: Class count?
+            //Store parent
+            if(Node<e_ConstProbNode>(trees_[ii].topology_,trees_[ii].parameters_,leaf).prob_begin()[preprocessor.response()(sample,0)]!=1.0)
+            {
+                leaf_parents[leaf]=online_visitor_.last_node_id;
+            }
+        }
+
+
+        std::map<int,int>::iterator leaf_iterator;
+        for(leaf_iterator=leaf_parents.begin();leaf_iterator!=leaf_parents.end();++leaf_iterator)
+        {
+            int leaf=leaf_iterator->first;
+            int parent=leaf_iterator->second;
+            int lin_index=online_visitor_.exterior_to_index[std::make_pair(ii,leaf)];
+            ArrayVector<Int32> indeces;
+            indeces.clear();
+            indeces.swap(online_visitor_.index_lists[lin_index]);
+            StackEntry_t stack_entry(indeces.begin(),
+                                     indeces.end(),
+                                     ext_param_.class_count_);
+
+
+            if(parent!=-1)
+            {
+                if(NodeBase(trees_[ii].topology_,trees_[ii].parameters_,parent).child(0)==leaf)
+                {
+                    stack_entry.leftParent=parent;
+                }
+                else
+                {
+                    vigra_assert(NodeBase(trees_[ii].topology_,trees_[ii].parameters_,parent).child(1)==leaf,"last_node_id seems to be wrong");
+                    stack_entry.rightParent=parent;
+                }
+            }
+            //trees_[ii].continueLearn(preprocessor.features(),preprocessor.response(),stack_entry,split,stop,visitor,randint,leaf);
+            trees_[ii].continueLearn(preprocessor.features(),preprocessor.response(),stack_entry,split,stop,visitor,randint,-1);
+            //Now, the last one moved onto leaf
+            online_visitor_.move_exterior_node(ii,trees_[ii].topology_.size(),ii,leaf);
+            //Now it should be classified correctly!
+        }
+
+        /*visitor
+            .visit_after_tree(  *this,
+                                preprocessor,
+                                poisson_sampler,
+                                stack_entry,
+                                ii);*/
+    }
+
+    //visitor.visit_at_end(*this, preprocessor);
+    online_visitor_.deactivate();
+
+    return  visitor.return_val();
+}
 
 template <class LabelType, class PreprocessorTag>
 template <class U, class C1,
@@ -571,9 +748,17 @@ double RandomForest<LabelType, PreprocessorTag>::
             = RF_CHOOSER(Split_t)::choose(split_, default_split); 
     StopVisiting stopvisiting;
     OOB_Visitor  oob;
-    VisitorNode<OOB_Visitor, typename RF_CHOOSER(Visitor_t)::type>
-        visitor(oob, RF_CHOOSER(Visitor_t)::choose(visitor_, stopvisiting));
+    typedef  VisitorNode<OnlineLearnVisitor, typename RF_CHOOSER(Visitor_t)::type> IntermedVis; 
+    IntermedVis
+        inter(online_visitor_, RF_CHOOSER(Visitor_t)::choose(visitor_, stopvisiting));
+    VisitorNode<OOB_Visitor, IntermedVis>
+        visitor(oob,inter);
     #undef RF_CHOOSER
+    if(options_.prepare_online_learning_)
+        online_visitor_.activate();
+    else
+        online_visitor_.deactivate();
+
 
     // Make stl compatible random functor.
     RandFunctor_t           randint     ( random);
@@ -602,6 +787,7 @@ double RandomForest<LabelType, PreprocessorTag>::
                                     detail::make_sampler_opt(options_,
                                                      preprocessor.strata()),
                                     randint);
+
     visitor.visit_at_beginning(*this, preprocessor);
     // THE MAIN EFFING RF LOOP - YEAY DUDE!
     for(int ii = 0; ii < (int)trees_.size(); ++ii)
@@ -634,12 +820,10 @@ double RandomForest<LabelType, PreprocessorTag>::
     }
 
     visitor.visit_at_end(*this, preprocessor);
+    online_visitor_.deactivate();
 
     return  visitor.return_val();
 }
-
-
-
 
 
 
@@ -687,6 +871,144 @@ LabelType RandomForest<LabelType, PreprocessorTag>
     return d;
 }
 
+template<class LabelType,class PreprocessorTag>
+template <class T1,class T2, class C>
+void RandomForest<LabelType,PreprocessorTag>
+    ::predictProbabilities(OnlinePredictionSet<T1> &  predictionSet,
+                          MultiArrayView<2, T2, C> &       prob)
+{
+    //Features are n xp
+    //prob is n x NumOfLabel probaility for each feature in each class
+    
+    vigra_precondition(rowCount(predictionSet.features) == rowCount(prob),
+                       "RandomFroest::predictProbabilities():"
+                       " Feature matrix and probability matrix size misnmatch.");
+    // num of features must be bigger than num of features in Random forest training
+    // but why bigger?
+    vigra_precondition( columnCount(predictionSet.features) >= ext_param_.column_count_,
+      "RandomForestn::predictProbabilities():"
+        " Too few columns in feature matrix.");
+    vigra_precondition( columnCount(prob)
+                        == (MultiArrayIndex)ext_param_.class_count_,
+      "RandomForestn::predictProbabilities():"
+      " Probability matrix must have as many columns as there are classes.");
+    prob.init(0.0);
+    //store total weights
+    std::vector<T1> totalWeights(predictionSet.indices[0].size(),0.0);
+    //Go through all trees
+    int set_id=-1;
+    for(int k=0; k<options_.tree_count_; ++k)
+    {
+        set_id=(set_id+1) % predictionSet.indices[0].size();
+        typedef std::set<SampleRange<T1> > my_set;
+        typedef typename my_set::iterator set_it;
+        //typedef std::set<std::pair<int,SampleRange<T1> > >::iterator set_it;
+        //Build a stack with all the ranges we have
+        std::vector<std::pair<int,set_it> > stack;
+        stack.clear();
+        set_it i;
+        for(i=predictionSet.ranges[set_id].begin();i!=predictionSet.ranges[set_id].end();++i)
+            stack.push_back(std::pair<int,set_it>(2,i));
+        //get weights predicted by single tree
+        while(!stack.empty())
+        {
+            set_it range=stack.back().second;
+            int index=stack.back().first;
+            stack.pop_back();
+
+            if(trees_[k].isLeafNode(trees_[k].topology_[index]))
+            {
+                ArrayVector<double>::iterator weights=Node<e_ConstProbNode>(trees_[k].topology_,
+                                                                            trees_[k].parameters_,
+                                                                            index).prob_begin();
+                for(int i=range->start;i!=range->end;++i)
+                {
+                    //update votecount.
+                    for(int l=0; l<ext_param_.class_count_; ++l)
+                    {
+                        prob(predictionSet.indices[set_id][i], l) += weights[l];
+                        //every weight in totalWeight.
+                        totalWeights[predictionSet.indices[set_id][i]] += weights[l];
+                    }
+                }
+            }
+
+            else
+            {
+                if(trees_[k].topology_[index]!=i_ThresholdNode)
+                {
+                    throw std::runtime_error("predicting with online prediction sets is only supported for RFs with threshold nodes");
+                }
+                Node<i_ThresholdNode> node(trees_[k].topology_,trees_[k].parameters_,index);
+                if(range->min_boundaries[node.column()]>=node.threshold())
+                {
+                    //Everything goes to right child
+                    stack.push_back(std::pair<int,set_it>(node.child(1),range));
+                    continue;
+                }
+                if(range->max_boundaries[node.column()]<node.threshold())
+                {
+                    //Everything goes to the left child
+                    stack.push_back(std::pair<int,set_it>(node.child(0),range));
+                    continue;
+                }
+                //We have to split at this node
+                SampleRange<T1> new_range=*range;
+                new_range.min_boundaries[node.column()]=FLT_MAX;
+                range->max_boundaries[node.column()]=-FLT_MAX;
+                new_range.start=new_range.end=range->end;
+                int i=range->start;
+                while(i!=range->end)
+                {
+                    //Decide for range->indices[i]
+                    if(predictionSet.features(predictionSet.indices[set_id][i],node.column())>=node.threshold())
+                    {
+                        new_range.min_boundaries[node.column()]=std::min(new_range.min_boundaries[node.column()],
+                                                                    predictionSet.features(predictionSet.indices[set_id][i],node.column()));
+                        --range->end;
+                        --new_range.start;
+                        std::swap(predictionSet.indices[set_id][i],predictionSet.indices[set_id][range->end]);
+
+                    }
+                    else
+                    {
+                        range->max_boundaries[node.column()]=std::max(range->max_boundaries[node.column()],
+                                                                 predictionSet.features(predictionSet.indices[set_id][i],node.column()));
+                        ++i;
+                    }
+                }
+                //The old one ...
+                if(range->start==range->end)
+                {
+                    predictionSet.ranges[set_id].erase(range);
+                }
+                else
+                {
+                    stack.push_back(std::pair<int,set_it>(node.child(0),range));
+                }
+                //And the new one ...
+                if(new_range.start!=new_range.end)
+                {
+                    std::pair<set_it,bool> new_it=predictionSet.ranges[set_id].insert(new_range);
+                    stack.push_back(std::pair<int,set_it>(node.child(1),new_it.first));
+                }
+            }
+        }
+    }
+    for(int i=0;i<totalWeights.size();++i)
+    {
+        double test=0.0;
+        //Normalise votes in each row by total VoteCount (totalWeight
+        for(int l=0; l<ext_param_.class_count_; ++l)
+        {
+            test+=prob(i,l);
+            prob(i, l) /= totalWeights[i];
+        }
+        assert(test==totalWeights[i]);
+        assert(totalWeights[i]>0.0);
+    }
+}
+
 template <class LabelType, class PreprocessorTag>
 template <class U, class C1, class T, class C2, class Stop_t>
 void RandomForest<LabelType, PreprocessorTag>
@@ -696,6 +1018,7 @@ void RandomForest<LabelType, PreprocessorTag>
 {
     //Features are n xp
     //prob is n x NumOfLabel probability for each feature in each class
+
     vigra_precondition(rowCount(features) == rowCount(prob),
       "RandomForestn::predictProbabilities():"
         " Feature matrix and probability matrix size mismatch.");

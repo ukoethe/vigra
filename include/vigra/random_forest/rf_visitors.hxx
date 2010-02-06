@@ -112,7 +112,7 @@ class VisitorBase
     template<class RF, class PR>
     void visit_at_end(RF const & rf, PR const & pr)
     {}
-    
+	
     /** do something before learning starts 
      *
      * \param rf        reference to the random forest object that called this
@@ -133,16 +133,16 @@ class VisitorBase
      * corresponding Node objects. Or - if you do not care about the type 
      * use the Nodebase class.
      */
-    template<class TR, class IntT, class TopT>
-    void visit_external_node(TR & tr, IntT index, TopT node_t)
+    template<class TR, class IntT, class TopT,class Feat>
+    void visit_external_node(TR & tr, IntT index, TopT node_t,Feat & features)
     {}
     
     /** do something when visiting a internal node after it has been learned
      *
      * \sa visit_external_node
      */
-    template<class TR, class IntT, class TopT>
-    void visit_internal_node(TR & tr, IntT index, TopT node_t)
+    template<class TR, class IntT, class TopT,class Feat>
+    void visit_internal_node(TR & tr, IntT index, TopT node_t,Feat & features)
     {}
 
     /** return a double value.  The value of the first 
@@ -238,19 +238,19 @@ class VisitorNode
         next_.visit_at_end(rf, pr);
     }
     
-    template<class TR, class IntT, class TopT>
-    void visit_external_node(TR & tr, IntT & index, TopT & node_t)
+    template<class TR, class IntT, class TopT,class Feat>
+    void visit_external_node(TR & tr, IntT & index, TopT & node_t,Feat & features)
     {
         if(visitor_.is_active())
-            visitor_.visit_external_node(tr, index, node_t);
-        next_.visit_external_node(tr, index, node_t);
+            visitor_.visit_external_node(tr, index, node_t,features);
+        next_.visit_external_node(tr, index, node_t,features);
     }
-    template<class TR, class IntT, class TopT>
-    void visit_internal_node(TR & tr, IntT & index, TopT & node_t)
+    template<class TR, class IntT, class TopT,class Feat>
+    void visit_internal_node(TR & tr, IntT & index, TopT & node_t,Feat & features)
     {
         if(visitor_.is_active())
-            visitor_.visit_internal_node(tr, index, node_t);
-        next_.visit_internal_node(tr, index, node_t);
+            visitor_.visit_internal_node(tr, index, node_t,features);
+        next_.visit_internal_node(tr, index, node_t,features);
     }
 
     double return_val()
@@ -487,7 +487,168 @@ create_visitor(A & a, B & b, C & c,
 //////////////////////////////////////////////////////////////////////////////
 
 
+/** Vistior to gain information, later needed for online learning.
+ */
 
+class OnlineLearnVisitor: public VisitorBase
+{
+public:
+    //Current tree id
+    int tree_id;
+    //Last node id for finding parent
+    int last_node_id;
+    //Need to now the label for interior node visiting
+    vigra::Int32 current_label;
+    //marginal distribution for interior nodes
+    struct MarginalDistribution
+    {
+        ArrayVector<Int32> leftCounts;
+        Int32 leftTotalCounts;
+        ArrayVector<Int32> rightCounts;
+        Int32 rightTotalCounts;
+        double gap_left;
+        double gap_right;
+    };
+
+    std::vector<MarginalDistribution> mag_distributions;
+
+    typedef ArrayVector<vigra::Int32> IndexList;
+
+    std::vector<IndexList> index_lists;
+
+    //map for linear index of mag_distiributions
+    std::map<pair<int,int>,int> interior_to_index;
+    //map for linear index of index_lists
+    std::map<pair<int,int>,int> exterior_to_index;
+
+	/** simply increase the tree cound
+	 */
+    template<class RF, class PR, class SM, class ST>
+    void visit_after_tree(RF& rf, PR & pr,  SM & sm, ST & st, int index)
+    {
+        tree_id++;
+    }
+	
+    template<class RF,class PR>
+    void visit_at_beginning(RF & rf,const PR & pr)
+    {
+        tree_id=0;
+        //Save pr.features;
+    }
+    template<class Tree, class Split, class Region, class Feature_t, class Label_t>
+    void visit_after_split( Tree  	      & tree, 
+			    Split         & split,
+                            Region       & parent,
+                            Region        & leftChild,
+                            Region        & rightChild,
+                            Feature_t     & features,
+                            Label_t       & labels)
+    {
+        int linear_index;
+        int addr=tree.topology_.size();
+        if(split.createNode().typeID() == i_ThresholdNode)
+        {
+#define ADJUST_THRESHOLD_NODES
+            #ifdef ADJUST_THRESHOLD_NODES
+            //Store marginal distribution
+            linear_index=mag_distributions.size();
+            interior_to_index[std::make_pair(tree_id,addr)]=linear_index;
+            mag_distributions.push_back(MarginalDistribution());
+
+            mag_distributions.back().leftCounts=leftChild.classCounts_;
+            mag_distributions.back().rightCounts=rightChild.classCounts_;
+
+            mag_distributions.back().leftTotalCounts=leftChild.size_;
+            mag_distributions.back().rightTotalCounts=rightChild.size_;
+            //Store the gap
+            double gap_left,gap_right;
+            int i;
+            gap_left=features(leftChild[0],split.bestSplitColumn());
+            for(i=1;i<leftChild.size();++i)
+                if(features(leftChild[i],split.bestSplitColumn())>gap_left)
+                    gap_left=features(leftChild[i],split.bestSplitColumn());
+            gap_right=features(rightChild[0],split.bestSplitColumn());
+            for(i=1;i<rightChild.size();++i)
+                if(features(rightChild[i],split.bestSplitColumn())<gap_right)
+                    gap_right=features(rightChild[i],split.bestSplitColumn());
+            mag_distributions.back().gap_left=gap_left;
+            mag_distributions.back().gap_right=gap_right;
+#endif
+            
+        }
+        else
+        {
+            //Store index list
+            linear_index=index_lists.size();
+            exterior_to_index[std::make_pair(tree_id,addr)]=linear_index;
+
+            index_lists.push_back(IndexList());
+
+            index_lists.back().resize(parent.size_,0);
+            ArrayVector<Int32>::iterator i_i=index_lists.back().begin();
+            std::copy(parent.begin_,parent.end_,index_lists.back().begin());
+        }
+    }
+    void add_to_index_list(int tree,int node,int index)
+    {
+        if(!this->active_)
+            return;
+        index_lists[exterior_to_index[std::make_pair(tree,node)]].push_back(index);
+    }
+    void move_exterior_node(int src_tree,int src_index,int dst_tree,int dst_index)
+    {
+        if(!this->active_)
+            return;
+        exterior_to_index[std::make_pair(dst_tree,dst_index)]=exterior_to_index[std::make_pair(src_tree,src_index)];
+        exterior_to_index.erase(std::make_pair(src_tree,src_index));
+    }
+    /** do something when visiting a internal node during getToLeaf
+     *
+     * remember as last node id, for finding the parent of the last external node
+     * also: adjust class counts and borders
+     */
+    template<class TR, class IntT, class TopT,class Feat>
+        void visit_internal_node(TR & tr, IntT index, TopT node_t,Feat & features)
+        {
+            last_node_id=index;
+#ifdef ADJUST_THRESHOLD_NODES
+            vigra_assert(node_t==i_ThresholdNode,"We can only visit threshold nodes");
+            //Check if we are in the gap
+            double value=features(0, Node<i_ThresholdNode>(tr.topology_,tr.parameters_,index).column());
+            MarginalDistribution &m=mag_distributions[interior_to_index[std::make_pair(tree_id,index)]];
+            if(value>m.gap_left && value<m.gap_right)
+            {
+                //Check which site we want to go
+                if(m.leftCounts[current_label]/double(m.leftTotalCounts)>m.rightCounts[current_label]/double(m.rightTotalCounts))
+                {
+                    //We want to go left
+                    m.gap_left=value;
+                }
+                else
+                {
+                    //We want to go right
+                    m.gap_right=value;
+                }
+                Node<i_ThresholdNode>(tr.topology_,tr.parameters_,index).threshold()=(m.gap_right+m.gap_left)/2.0;
+            }
+            //Adjust class counts
+            if(value>Node<i_ThresholdNode>(tr.topology_,tr.parameters_,index).threshold())
+            {
+                ++m.rightTotalCounts;
+                ++m.rightCounts[current_label];
+            }
+            else
+            {
+                ++m.leftTotalCounts;
+                ++m.rightCounts[current_label];
+            }
+#endif
+        }
+    /** do something when visiting a extern node during getToLeaf
+     * 
+     * Store the new index!
+     */
+};
 
 
 /** Visitor that calculates the oob error of the random forest. 
@@ -547,11 +708,13 @@ public:
     {
         // do some normalisation
         for(int l=0; l < (int)rf.ext_param_.row_count_; ++l)
-        if(oobCount[l])
         {
-            oobError += double(oobErrorCount[l]) / oobCount[l];
-            ++totalOobCount;
-        }
+            if(oobCount[l])
+            {
+                oobError += double(oobErrorCount[l]) / oobCount[l];
+                ++totalOobCount;
+            }
+        } 
     }
     
     //returns value of the learn function. 

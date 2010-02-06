@@ -144,9 +144,9 @@ RightChild.ClassCounts: 1 1
 minGini: 0 - 1
 Region.size: 2
 LeftChild.size: 1
-LeftChild.ClassCounts: 1 0 
+LeftChild.ClassCounts: 0 1 
 RightChild.size: 1
-RightChild.ClassCounts: 0 1 
+RightChild.ClassCounts: 1 0 
 
 
 
@@ -162,9 +162,9 @@ RightChild.ClassCounts: 0 2
 minGini: 0 - 1
 Region.size: 2
 LeftChild.size: 1
-LeftChild.ClassCounts: 0 1 
+LeftChild.ClassCounts: 1 0 
 RightChild.size: 1
-RightChild.ClassCounts: 1 0 
+RightChild.ClassCounts: 0 1 
 
 
 
@@ -180,9 +180,9 @@ RightChild.ClassCounts: 2 0
 minGini: 0 - 1
 Region.size: 2
 LeftChild.size: 1
-LeftChild.ClassCounts: 0 1 
+LeftChild.ClassCounts: 1 0 
 RightChild.size: 1
-RightChild.ClassCounts: 1 0 
+RightChild.ClassCounts: 0 1 
 
 
 
@@ -198,9 +198,9 @@ RightChild.ClassCounts: 1 1
 minGini: 0 - 1
 Region.size: 2
 LeftChild.size: 1
-LeftChild.ClassCounts: 1 0 
+LeftChild.ClassCounts: 0 1 
 RightChild.size: 1
-RightChild.ClassCounts: 0 1 
+RightChild.ClassCounts: 1 0 
 
 
 
@@ -216,9 +216,9 @@ RightChild.ClassCounts: 1 1
 minGini: 0 - 0
 Region.size: 2
 LeftChild.size: 1
-LeftChild.ClassCounts: 1 0 
+LeftChild.ClassCounts: 0 1 
 RightChild.size: 1
-RightChild.ClassCounts: 0 1 
+RightChild.ClassCounts: 1 0 
 
 
 
@@ -234,9 +234,9 @@ RightChild.ClassCounts: 0 2
 minGini: 0 - 0
 Region.size: 2
 LeftChild.size: 1
-LeftChild.ClassCounts: 0 1 
+LeftChild.ClassCounts: 1 0 
 RightChild.size: 1
-RightChild.ClassCounts: 1 0 
+RightChild.ClassCounts: 0 1 
 
 
 
@@ -252,9 +252,9 @@ RightChild.ClassCounts: 2 0
 minGini: 0 - 0
 Region.size: 2
 LeftChild.size: 1
-LeftChild.ClassCounts: 0 1 
+LeftChild.ClassCounts: 1 0 
 RightChild.size: 1
-RightChild.ClassCounts: 1 0 
+RightChild.ClassCounts: 0 1 
 
 
 
@@ -270,9 +270,9 @@ RightChild.ClassCounts: 1 1
 minGini: 0 - 0
 Region.size: 2
 LeftChild.size: 1
-LeftChild.ClassCounts: 1 0 
+LeftChild.ClassCounts: 0 1 
 RightChild.size: 1
-RightChild.ClassCounts: 0 1 
+RightChild.ClassCounts: 1 0 
 
 
 
@@ -287,10 +287,10 @@ RightChild.ClassCounts: 1 2
 
 minGini: 0 - 1
 Region.size: 3
-LeftChild.size: 1
-LeftChild.ClassCounts: 1 0 
-RightChild.size: 2
-RightChild.ClassCounts: 0 2 
+LeftChild.size: 2
+LeftChild.ClassCounts: 0 2 
+RightChild.size: 1
+RightChild.ClassCounts: 1 0 
 
 
 
@@ -305,10 +305,10 @@ RightChild.ClassCounts: 2 1
 
 minGini: 0 - 1
 Region.size: 3
-LeftChild.size: 2
-LeftChild.ClassCounts: 2 0 
-RightChild.size: 1
-RightChild.ClassCounts: 0 1 
+LeftChild.size: 1
+LeftChild.ClassCounts: 0 1 
+RightChild.size: 2
+RightChild.ClassCounts: 2 0 
 
 
 
@@ -323,10 +323,10 @@ RightChild.ClassCounts: 1 2
 
 minGini: 0 - 1
 Region.size: 3
-LeftChild.size: 1
-LeftChild.ClassCounts: 1 0 
-RightChild.size: 2
-RightChild.ClassCounts: 0 2 
+LeftChild.size: 2
+LeftChild.ClassCounts: 0 2 
+RightChild.size: 1
+RightChild.ClassCounts: 1 0 
 
 
 
@@ -341,10 +341,10 @@ RightChild.ClassCounts: 2 1
 
 minGini: 0 - 1
 Region.size: 3
-LeftChild.size: 2
-LeftChild.ClassCounts: 2 0 
-RightChild.size: 1
-RightChild.ClassCounts: 0 1 
+LeftChild.size: 1
+LeftChild.ClassCounts: 0 1 
+RightChild.size: 2
+RightChild.ClassCounts: 2 0 
 
 
 
@@ -359,10 +359,10 @@ RightChild.ClassCounts: 0 1
 
 minGini: 0 - 1
 Region.size: 3
-LeftChild.size: 2
-LeftChild.ClassCounts: 0 2 
-RightChild.size: 1
-RightChild.ClassCounts: 1 0 
+LeftChild.size: 1
+LeftChild.ClassCounts: 1 0 
+RightChild.size: 2
+RightChild.ClassCounts: 0 2 
 
 
 
@@ -377,10 +377,10 @@ RightChild.ClassCounts: 1 0
 
 minGini: 0 - 1
 Region.size: 3
-LeftChild.size: 2
-LeftChild.ClassCounts: 0 2 
-RightChild.size: 1
-RightChild.ClassCounts: 1 0 
+LeftChild.size: 1
+LeftChild.ClassCounts: 1 0 
+RightChild.size: 2
+RightChild.ClassCounts: 0 2 
 
 
 
@@ -395,10 +395,10 @@ RightChild.ClassCounts: 0 1
 
 minGini: 0 - 1
 Region.size: 3
-LeftChild.size: 1
-LeftChild.ClassCounts: 0 1 
-RightChild.size: 2
-RightChild.ClassCounts: 2 0 
+LeftChild.size: 2
+LeftChild.ClassCounts: 2 0 
+RightChild.size: 1
+RightChild.ClassCounts: 0 1 
 
 
 
@@ -413,10 +413,10 @@ RightChild.ClassCounts: 1 0
 
 minGini: 0 - 1
 Region.size: 3
-LeftChild.size: 1
-LeftChild.ClassCounts: 0 1 
-RightChild.size: 2
-RightChild.ClassCounts: 2 0 
+LeftChild.size: 2
+LeftChild.ClassCounts: 2 0 
+RightChild.size: 1
+RightChild.ClassCounts: 0 1 
 
 
 
@@ -431,10 +431,10 @@ RightChild.ClassCounts: 1 2
 
 minGini: 0 - 0
 Region.size: 3
-LeftChild.size: 1
-LeftChild.ClassCounts: 1 0 
-RightChild.size: 2
-RightChild.ClassCounts: 0 2 
+LeftChild.size: 2
+LeftChild.ClassCounts: 0 2 
+RightChild.size: 1
+RightChild.ClassCounts: 1 0 
 
 
 
@@ -449,10 +449,10 @@ RightChild.ClassCounts: 2 1
 
 minGini: 0 - 0
 Region.size: 3
-LeftChild.size: 2
-LeftChild.ClassCounts: 2 0 
-RightChild.size: 1
-RightChild.ClassCounts: 0 1 
+LeftChild.size: 1
+LeftChild.ClassCounts: 0 1 
+RightChild.size: 2
+RightChild.ClassCounts: 2 0 
 
 
 
@@ -467,10 +467,10 @@ RightChild.ClassCounts: 1 2
 
 minGini: 0 - 0
 Region.size: 3
-LeftChild.size: 1
-LeftChild.ClassCounts: 1 0 
-RightChild.size: 2
-RightChild.ClassCounts: 0 2 
+LeftChild.size: 2
+LeftChild.ClassCounts: 0 2 
+RightChild.size: 1
+RightChild.ClassCounts: 1 0 
 
 
 
@@ -485,10 +485,10 @@ RightChild.ClassCounts: 2 1
 
 minGini: 0 - 0
 Region.size: 3
-LeftChild.size: 2
-LeftChild.ClassCounts: 2 0 
-RightChild.size: 1
-RightChild.ClassCounts: 0 1 
+LeftChild.size: 1
+LeftChild.ClassCounts: 0 1 
+RightChild.size: 2
+RightChild.ClassCounts: 2 0 
 
 
 
@@ -503,10 +503,10 @@ RightChild.ClassCounts: 0 1
 
 minGini: 0 - 0
 Region.size: 3
-LeftChild.size: 2
-LeftChild.ClassCounts: 0 2 
-RightChild.size: 1
-RightChild.ClassCounts: 1 0 
+LeftChild.size: 1
+LeftChild.ClassCounts: 1 0 
+RightChild.size: 2
+RightChild.ClassCounts: 0 2 
 
 
 
@@ -521,10 +521,10 @@ RightChild.ClassCounts: 1 0
 
 minGini: 0 - 0
 Region.size: 3
-LeftChild.size: 2
-LeftChild.ClassCounts: 0 2 
-RightChild.size: 1
-RightChild.ClassCounts: 1 0 
+LeftChild.size: 1
+LeftChild.ClassCounts: 1 0 
+RightChild.size: 2
+RightChild.ClassCounts: 0 2 
 
 
 
@@ -539,10 +539,10 @@ RightChild.ClassCounts: 0 1
 
 minGini: 0 - 0
 Region.size: 3
-LeftChild.size: 1
-LeftChild.ClassCounts: 0 1 
-RightChild.size: 2
-RightChild.ClassCounts: 2 0 
+LeftChild.size: 2
+LeftChild.ClassCounts: 2 0 
+RightChild.size: 1
+RightChild.ClassCounts: 0 1 
 
 
 
@@ -557,10 +557,10 @@ RightChild.ClassCounts: 1 0
 
 minGini: 0 - 0
 Region.size: 3
-LeftChild.size: 1
-LeftChild.ClassCounts: 0 1 
-RightChild.size: 2
-RightChild.ClassCounts: 2 0 
+LeftChild.size: 2
+LeftChild.ClassCounts: 2 0 
+RightChild.size: 1
+RightChild.ClassCounts: 0 1 
 
 
 
@@ -576,16 +576,16 @@ RightChild.ClassCounts: 1 1
 minGini: 0 - 1
 Region.size: 2
 LeftChild.size: 1
-LeftChild.ClassCounts: 1 0 
+LeftChild.ClassCounts: 0 1 
 RightChild.size: 1
-RightChild.ClassCounts: 0 1 
+RightChild.ClassCounts: 1 0 
 
 minGini: 0 - 1
 Region.size: 2
 LeftChild.size: 1
-LeftChild.ClassCounts: 0 1 
+LeftChild.ClassCounts: 1 0 
 RightChild.size: 1
-RightChild.ClassCounts: 1 0 
+RightChild.ClassCounts: 0 1 
 
 
 
@@ -601,16 +601,16 @@ RightChild.ClassCounts: 1 1
 minGini: 0 - 0
 Region.size: 2
 LeftChild.size: 1
-LeftChild.ClassCounts: 1 0 
+LeftChild.ClassCounts: 0 1 
 RightChild.size: 1
-RightChild.ClassCounts: 0 1 
+RightChild.ClassCounts: 1 0 
 
 minGini: 0 - 0
 Region.size: 2
 LeftChild.size: 1
-LeftChild.ClassCounts: 0 1 
+LeftChild.ClassCounts: 1 0 
 RightChild.size: 1
-RightChild.ClassCounts: 1 0 
+RightChild.ClassCounts: 0 1 
 
 
 

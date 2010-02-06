@@ -160,20 +160,27 @@ class Processor<ClassificationTag, LabelType, T1, C1, T2, C2>
         {
 			// fill up a map with the current labels and then create the 
 			// integral labels.
-            std::set<T2>             		labelToInt;
+            std::map<T2, LabelInt > 		labelToInt;
+            ArrayVector<T2>         		classes_;
             for(MultiArrayIndex k = 0; k < features.shape(0); ++k)
-                labelToInt.insert(response(k,0));
-            std::vector<T2> tmp_(labelToInt.begin(), labelToInt.end());
-            ext_param.classes_(tmp_.begin(), tmp_.end());
+            {
+                typename std::map<T2, LabelInt >::iterator 
+						lit = labelToInt.find(response(k, 0));
+                if(lit == labelToInt.end())
+                {
+                    intLabels_(k, 0) 
+						= labelToInt[response(k,0)] 
+						= classes_.size();
+                    classes_.push_back(response(k,0));
+                }
+                else
+                {
+                    intLabels_(k, 0) = lit->second;
+                }
+            }
+            ext_param.classes_(classes_.begin(), classes_.end());
         }
-        for(MultiArrayIndex k = 0; k < features.shape(0); ++k)
-        {
-            if(std::find(ext_param.classes.begin(), ext_param.classes.end(), response(k,0)) == ext_param.classes.end())
-                throw std::runtime_error("unknown label type");
-            else
-                intLabels_(k, 0) = std::find(ext_param.classes.begin(), ext_param.classes.end(), response(k,0))
-                                    - ext_param.classes.begin();
-        }
+
         // set class weights
         if(ext_param.class_weights_.size() == 0)
         {
