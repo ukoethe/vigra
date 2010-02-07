@@ -426,6 +426,32 @@ class RandomForest
                      rnd);
     }
 
+    template<class U,class C1,
+        class U2, class C2,
+        class Split_t,
+        class Stop_t,
+        class Visitor_t,
+        class Random_t>
+    void reLearnTree(MultiArrayView<2,U,C1> const & features,
+                     MultiArrayView<2,U2,C2> const & response,
+                     Visitor_t visitor_,
+                     Split_t split_,
+                     Stop_t stop_,
+                     Random_t & random);
+
+    template<class U, class C1, class U2, class C2>
+    void reLearnTree(MultiArrayView<2, U, C1> const & features,
+                     MultiArrayView<2, U2, C2> const & labels)
+    {
+        RandomNumberGenerator<> rnd = RandomNumberGenerator<>(RandomSeed);
+        reLearnTree(features,
+                    labels,
+                    rf_default(),
+                    rf_default(),
+                    rf_default(),
+                    rnd);
+    }
+
 
 
     /**\brief learn on data with default configuration
@@ -575,8 +601,7 @@ template<class U,class C1,
     class Stop_t,
     class Visitor_t,
     class Random_t>
-double RandomForest<LabelType, PreprocessorTag>::onlineLearn(
-                                                             MultiArrayView<2,U,C1> const & features,
+double RandomForest<LabelType, PreprocessorTag>::onlineLearn(MultiArrayView<2,U,C1> const & features,
                                                              MultiArrayView<2,U2,C2> const & response,
                                                              int new_start_index,
                                                              Visitor_t visitor_,
@@ -667,10 +692,10 @@ double RandomForest<LabelType, PreprocessorTag>::onlineLearn(
         {
             int leaf=leaf_iterator->first;
             int parent=leaf_iterator->second;
-            int lin_index=online_visitor_.exterior_to_index[std::make_pair(ii,leaf)];
+            int lin_index=online_visitor_.trees_online_information[ii].exterior_to_index[leaf];
             ArrayVector<Int32> indeces;
             indeces.clear();
-            indeces.swap(online_visitor_.index_lists[lin_index]);
+            indeces.swap(online_visitor_.trees_online_information[ii].index_lists[lin_index]);
             StackEntry_t stack_entry(indeces.begin(),
                                      indeces.end(),
                                      ext_param_.class_count_);
@@ -707,6 +732,110 @@ double RandomForest<LabelType, PreprocessorTag>::onlineLearn(
     online_visitor_.deactivate();
 
     return  visitor.return_val();
+}
+
+template<class LabelType, class PreprocessorTag>
+template<class U,class C1,
+    class U2, class C2,
+    class Split_t,
+    class Stop_t,
+    class Visitor_t,
+    class Random_t>
+void RandomForest<LabelType, PreprocessorTag>::reLearnTree(MultiArrayView<2,U,C1> const & features,
+                 MultiArrayView<2,U2,C2> const & response,
+                 Visitor_t visitor_,
+                 Split_t split_,
+                 Stop_t stop_,
+                 Random_t & random)
+{
+    using namespace rf;
+    //We store as a local variable, beacause there is no global interest ?!?
+    static int next_relearn_tree=-1;
+    next_relearn_tree=(next_relearn_tree+1) % trees_.size();
+    typedef typename Split_t::StackEntry_t          StackEntry_t;
+    typedef          UniformIntRandomFunctor<Random_t>
+                                                    RandFunctor_t;
+
+    // See rf_preprocessing.hxx for more info on this
+    typedef Processor<PreprocessorTag,LabelType, U, C1, U2, C2> Preprocessor_t;
+    
+    // default values and initialization
+    // Value Chooser chooses second argument as value if first argument
+    // is of type RF_DEFAULT. (thanks to template magic - don't care about
+    // it - just smile and wave.
+    
+    #define RF_CHOOSER(type_) detail::Value_Chooser<type_, Default_##type_> 
+    Default_Stop_t default_stop(options_);
+    typename RF_CHOOSER(Stop_t)::type stop
+            = RF_CHOOSER(Stop_t)::choose(stop_, default_stop); 
+    Default_Split_t default_split;
+    typename RF_CHOOSER(Split_t)::type split 
+            = RF_CHOOSER(Split_t)::choose(split_, default_split); 
+    StopVisiting stopvisiting;
+    OOB_Visitor  oob;
+    typedef  VisitorNode<OnlineLearnVisitor, typename RF_CHOOSER(Visitor_t)::type> IntermedVis; 
+    IntermedVis
+        inter(online_visitor_, RF_CHOOSER(Visitor_t)::choose(visitor_, stopvisiting));
+    VisitorNode<OOB_Visitor, IntermedVis>
+        visitor(oob,inter);
+    #undef RF_CHOOSER
+    vigra_precondition(options_.prepare_online_learning_,"reLearnTree: Re learning trees only makes sense, if online learning is enabled");
+    online_visitor_.activate();
+
+    // Make stl compatible random functor.
+    RandFunctor_t           randint     ( random);
+
+    // Preprocess the data to get something the split functor can work
+    // with. Also fill the ext_param structure by preprocessing
+    // option parameters that could only be completely evaluated
+    // when the training data is known.
+    Preprocessor_t preprocessor(    features, response,
+                                    options_, ext_param_);
+
+    // Give the Split functor information about the data.
+    split.set_external_parameters(ext_param_);
+    stop.set_external_parameters(ext_param_);
+
+    /**\todo    replace this crappy class out. It uses function pointers.
+     *          and is making code slower according to me.
+     *          Comment from Nathan: This is copied from Rahul, so me=Rahul
+     */
+    Sampler<RandFunctor_t > sampler(ext_param().row_count_,
+                                    ext_param().actual_msample_,
+                                    detail::make_sampler_opt(options_,
+                                                     preprocessor.strata()),
+                                    randint);
+
+    //initialize First region/node/stack entry
+    sampler
+        .sample();
+
+    StackEntry_t
+        first_stack_entry(  sampler.used_indices().begin(),
+                            sampler.used_indices().end(),
+                            ext_param_.class_count_);
+    first_stack_entry
+        .set_oob_range(     sampler.unused_indices().begin(),
+                            sampler.unused_indices().end());
+    online_visitor_.reset_tree(next_relearn_tree);
+    online_visitor_.tree_id=next_relearn_tree;
+    trees_[next_relearn_tree].reset();
+    trees_[next_relearn_tree]
+        .learn( preprocessor.features(),
+                preprocessor.response(),
+                first_stack_entry,
+                split,
+                stop,
+                visitor,
+                randint);
+    visitor
+        .visit_after_tree(  *this,
+                            preprocessor,
+                            sampler,
+                            first_stack_entry,
+                            next_relearn_tree);
+
+    online_visitor_.deactivate();
 }
 
 template <class LabelType, class PreprocessorTag>

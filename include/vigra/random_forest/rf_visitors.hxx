@@ -509,32 +509,49 @@ public:
         double gap_left;
         double gap_right;
     };
-
-    std::vector<MarginalDistribution> mag_distributions;
-
     typedef ArrayVector<vigra::Int32> IndexList;
 
-    std::vector<IndexList> index_lists;
+    //All information for one tree
+    struct TreeOnlineInformation
+    {
+        std::vector<MarginalDistribution> mag_distributions;
+        std::vector<IndexList> index_lists;
+        //map for linear index of mag_distiributions
+        std::map<int,int> interior_to_index;
+        //map for linear index of index_lists
+        std::map<int,int> exterior_to_index;
+    };
 
-    //map for linear index of mag_distiributions
-    std::map<pair<int,int>,int> interior_to_index;
-    //map for linear index of index_lists
-    std::map<pair<int,int>,int> exterior_to_index;
+    //All trees
+    std::vector<TreeOnlineInformation> trees_online_information;
 
-	/** simply increase the tree cound
-	 */
+    /** Initilize, set the number of trees
+     */
+    template<class RF,class PR>
+    void visit_at_beginning(RF & rf,const PR & pr)
+    {
+        tree_id=0;
+        trees_online_information.resize(rf.options_.tree_count_);
+    }
+
+    /** Reset a tree
+     */
+    void reset_tree(int tree_id)
+    {
+        trees_online_information[tree_id].mag_distributions.clear();
+        trees_online_information[tree_id].index_lists.clear();
+        trees_online_information[tree_id].interior_to_index.clear();
+        trees_online_information[tree_id].exterior_to_index.clear();
+    }
+
+    /** simply increase the tree count
+    */
     template<class RF, class PR, class SM, class ST>
     void visit_after_tree(RF& rf, PR & pr,  SM & sm, ST & st, int index)
     {
         tree_id++;
     }
 	
-    template<class RF,class PR>
-    void visit_at_beginning(RF & rf,const PR & pr)
-    {
-        tree_id=0;
-        //Save pr.features;
-    }
     template<class Tree, class Split, class Region, class Feature_t, class Label_t>
     void visit_after_split( Tree  	      & tree, 
 			    Split         & split,
@@ -551,15 +568,15 @@ public:
 #define ADJUST_THRESHOLD_NODES
             #ifdef ADJUST_THRESHOLD_NODES
             //Store marginal distribution
-            linear_index=mag_distributions.size();
-            interior_to_index[std::make_pair(tree_id,addr)]=linear_index;
-            mag_distributions.push_back(MarginalDistribution());
+            linear_index=trees_online_information[tree_id].mag_distributions.size();
+            trees_online_information[tree_id].interior_to_index[addr]=linear_index;
+            trees_online_information[tree_id].mag_distributions.push_back(MarginalDistribution());
 
-            mag_distributions.back().leftCounts=leftChild.classCounts_;
-            mag_distributions.back().rightCounts=rightChild.classCounts_;
+            trees_online_information[tree_id].mag_distributions.back().leftCounts=leftChild.classCounts_;
+            trees_online_information[tree_id].mag_distributions.back().rightCounts=rightChild.classCounts_;
 
-            mag_distributions.back().leftTotalCounts=leftChild.size_;
-            mag_distributions.back().rightTotalCounts=rightChild.size_;
+            trees_online_information[tree_id].mag_distributions.back().leftTotalCounts=leftChild.size_;
+            trees_online_information[tree_id].mag_distributions.back().rightTotalCounts=rightChild.size_;
             //Store the gap
             double gap_left,gap_right;
             int i;
@@ -571,36 +588,36 @@ public:
             for(i=1;i<rightChild.size();++i)
                 if(features(rightChild[i],split.bestSplitColumn())<gap_right)
                     gap_right=features(rightChild[i],split.bestSplitColumn());
-            mag_distributions.back().gap_left=gap_left;
-            mag_distributions.back().gap_right=gap_right;
+            trees_online_information[tree_id].mag_distributions.back().gap_left=gap_left;
+            trees_online_information[tree_id].mag_distributions.back().gap_right=gap_right;
 #endif
             
         }
         else
         {
             //Store index list
-            linear_index=index_lists.size();
-            exterior_to_index[std::make_pair(tree_id,addr)]=linear_index;
+            linear_index=trees_online_information[tree_id].index_lists.size();
+            trees_online_information[tree_id].exterior_to_index[addr]=linear_index;
 
-            index_lists.push_back(IndexList());
+            trees_online_information[tree_id].index_lists.push_back(IndexList());
 
-            index_lists.back().resize(parent.size_,0);
-            ArrayVector<Int32>::iterator i_i=index_lists.back().begin();
-            std::copy(parent.begin_,parent.end_,index_lists.back().begin());
+            trees_online_information[tree_id].index_lists.back().resize(parent.size_,0);
+            std::copy(parent.begin_,parent.end_,trees_online_information[tree_id].index_lists.back().begin());
         }
     }
     void add_to_index_list(int tree,int node,int index)
     {
         if(!this->active_)
             return;
-        index_lists[exterior_to_index[std::make_pair(tree,node)]].push_back(index);
+        TreeOnlineInformation &ti=trees_online_information[tree];
+        ti.index_lists[ti.exterior_to_index[node]].push_back(index);
     }
     void move_exterior_node(int src_tree,int src_index,int dst_tree,int dst_index)
     {
         if(!this->active_)
             return;
-        exterior_to_index[std::make_pair(dst_tree,dst_index)]=exterior_to_index[std::make_pair(src_tree,src_index)];
-        exterior_to_index.erase(std::make_pair(src_tree,src_index));
+        trees_online_information[dst_tree].exterior_to_index[dst_index]=trees_online_information[src_tree].exterior_to_index[src_index];
+        trees_online_information[src_tree].exterior_to_index.erase(src_index);
     }
     /** do something when visiting a internal node during getToLeaf
      *
@@ -615,7 +632,8 @@ public:
             vigra_assert(node_t==i_ThresholdNode,"We can only visit threshold nodes");
             //Check if we are in the gap
             double value=features(0, Node<i_ThresholdNode>(tr.topology_,tr.parameters_,index).column());
-            MarginalDistribution &m=mag_distributions[interior_to_index[std::make_pair(tree_id,index)]];
+            TreeOnlineInformation &ti=trees_online_information[tree_id];
+            MarginalDistribution &m=ti.mag_distributions[ti.interior_to_index[index]];
             if(value>m.gap_left && value<m.gap_right)
             {
                 //Check which site we want to go
