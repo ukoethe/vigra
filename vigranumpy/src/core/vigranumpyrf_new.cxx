@@ -125,6 +125,14 @@ void pythonRFOnlineLearn(RandomForest<LabelType>* rf,NumpyArray<2,FeatureType> t
 }
 
 template<class LabelType,class FeatureType>
+void pythonRFReLearnTree(RandomForest<LabelType>* rf,NumpyArray<2,FeatureType> trainData,NumpyArray<2,LabelType> trainLabels,OnlinePredictionSet<FeatureType>& predSet)
+{
+	Py_BEGIN_ALLOW_THREADS
+	rf->reLearnTree(trainData,trainLabels,predSet);
+	Py_END_ALLOW_THREADS
+}
+
+template<class LabelType,class FeatureType>
 NumpyAnyArray pythonRFPredictLabels(RandomForest<LabelType>* rf,NumpyArray<2,FeatureType> testData,NumpyArray<2,LabelType> res)
 {
 	//construct result
@@ -217,6 +225,11 @@ void defineRandomForest_new()
 			 (arg("trainData"), arg("trainLabels")),
 			 "Trains a random Forest using \"trainData\" and \"trainLabels\".\n"
 			 "and returns the OOB. See the vigra documentation for the meaning af the rest of the paremeters.")
+    .def("reLearnTree",
+			 registerConverters(&pythonRFReLearnTree<UInt32,float>),
+			 (arg("trainData"), arg("trainLabels")),
+			 "Re-learn one tree of the forest using \"trainData\" and \"trainLabels\".\n"
+			 "and returns the OOB. This might be helpful in an online learning setup to improve the classifier.")
     .def("learnRFWithFeatureSelection",
 			 registerConverters(&pythonLearnRandomForestWithFeatureSelection<UInt32,float>),
 			 (arg("trainData"), arg("trainLabels")),

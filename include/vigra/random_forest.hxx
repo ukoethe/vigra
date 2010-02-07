@@ -434,6 +434,7 @@ class RandomForest
         class Random_t>
     void reLearnTree(MultiArrayView<2,U,C1> const & features,
                      MultiArrayView<2,U2,C2> const & response,
+                     OnlinePredictionSet<U>& predSet,
                      Visitor_t visitor_,
                      Split_t split_,
                      Stop_t stop_,
@@ -441,11 +442,13 @@ class RandomForest
 
     template<class U, class C1, class U2, class C2>
     void reLearnTree(MultiArrayView<2, U, C1> const & features,
-                     MultiArrayView<2, U2, C2> const & labels)
+                     MultiArrayView<2, U2, C2> const & labels,
+                     OnlinePredictionSet<U>& predSet)
     {
         RandomNumberGenerator<> rnd = RandomNumberGenerator<>(RandomSeed);
         reLearnTree(features,
                     labels,
+                    predSet,
                     rf_default(),
                     rf_default(),
                     rf_default(),
@@ -743,6 +746,7 @@ template<class U,class C1,
     class Random_t>
 void RandomForest<LabelType, PreprocessorTag>::reLearnTree(MultiArrayView<2,U,C1> const & features,
                  MultiArrayView<2,U2,C2> const & response,
+                 OnlinePredictionSet<U>& predSet,
                  Visitor_t visitor_,
                  Split_t split_,
                  Stop_t stop_,
@@ -757,6 +761,7 @@ void RandomForest<LabelType, PreprocessorTag>::reLearnTree(MultiArrayView<2,U,C1
                                                     RandFunctor_t;
 
     // See rf_preprocessing.hxx for more info on this
+    ext_param_.class_count_=0;
     typedef Processor<PreprocessorTag,LabelType, U, C1, U2, C2> Preprocessor_t;
     
     // default values and initialization
@@ -819,6 +824,7 @@ void RandomForest<LabelType, PreprocessorTag>::reLearnTree(MultiArrayView<2,U,C1
                             sampler.unused_indices().end());
     online_visitor_.reset_tree(next_relearn_tree);
     online_visitor_.tree_id=next_relearn_tree;
+    predSet.reset_tree(next_relearn_tree);
     trees_[next_relearn_tree].reset();
     trees_[next_relearn_tree]
         .learn( preprocessor.features(),

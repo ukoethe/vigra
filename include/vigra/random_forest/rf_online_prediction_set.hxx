@@ -41,6 +41,13 @@ public:
         set_init.insert(SampleRange<T>(0,init.size(),features.shape(1)));
         ranges.resize(num_sets,set_init);
     }
+    void reset_tree(int index)
+    {
+        index=index % ranges.size();
+        std::set<SampleRange<T> > set_init;
+        set_init.insert(SampleRange<T>(0,features.shape(0),features.shape(1)));
+        ranges[index]=set_init;
+    }
     std::vector<std::set<SampleRange<T> > > ranges;
     std::vector<std::vector<int> > indices;
     MultiArray<2,T> features;
