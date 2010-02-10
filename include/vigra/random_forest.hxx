@@ -434,7 +434,7 @@ class RandomForest
         class Random_t>
     void reLearnTree(MultiArrayView<2,U,C1> const & features,
                      MultiArrayView<2,U2,C2> const & response,
-                     OnlinePredictionSet<U>& predSet,
+                     int treeId,
                      Visitor_t visitor_,
                      Split_t split_,
                      Stop_t stop_,
@@ -443,12 +443,12 @@ class RandomForest
     template<class U, class C1, class U2, class C2>
     void reLearnTree(MultiArrayView<2, U, C1> const & features,
                      MultiArrayView<2, U2, C2> const & labels,
-                     OnlinePredictionSet<U>& predSet)
+                     int treeId)
     {
         RandomNumberGenerator<> rnd = RandomNumberGenerator<>(RandomSeed);
         reLearnTree(features,
                     labels,
-                    predSet,
+                    treeId,
                     rf_default(),
                     rf_default(),
                     rf_default(),
@@ -746,7 +746,7 @@ template<class U,class C1,
     class Random_t>
 void RandomForest<LabelType, PreprocessorTag>::reLearnTree(MultiArrayView<2,U,C1> const & features,
                  MultiArrayView<2,U2,C2> const & response,
-                 OnlinePredictionSet<U>& predSet,
+                 int treeId,
                  Visitor_t visitor_,
                  Split_t split_,
                  Stop_t stop_,
@@ -754,8 +754,6 @@ void RandomForest<LabelType, PreprocessorTag>::reLearnTree(MultiArrayView<2,U,C1
 {
     using namespace rf;
     //We store as a local variable, beacause there is no global interest ?!?
-    static int next_relearn_tree=-1;
-    next_relearn_tree=(next_relearn_tree+1) % trees_.size();
     typedef typename Split_t::StackEntry_t          StackEntry_t;
     typedef          UniformIntRandomFunctor<Random_t>
                                                     RandFunctor_t;
@@ -822,11 +820,10 @@ void RandomForest<LabelType, PreprocessorTag>::reLearnTree(MultiArrayView<2,U,C1
     first_stack_entry
         .set_oob_range(     sampler.unused_indices().begin(),
                             sampler.unused_indices().end());
-    online_visitor_.reset_tree(next_relearn_tree);
-    online_visitor_.tree_id=next_relearn_tree;
-    predSet.reset_tree(next_relearn_tree);
-    trees_[next_relearn_tree].reset();
-    trees_[next_relearn_tree]
+    online_visitor_.reset_tree(treeId);
+    online_visitor_.tree_id=treeId;
+    trees_[treeId].reset();
+    trees_[treeId]
         .learn( preprocessor.features(),
                 preprocessor.response(),
                 first_stack_entry,
@@ -839,7 +836,7 @@ void RandomForest<LabelType, PreprocessorTag>::reLearnTree(MultiArrayView<2,U,C1
                             preprocessor,
                             sampler,
                             first_stack_entry,
-                            next_relearn_tree);
+                            treeId);
 
     online_visitor_.deactivate();
 }

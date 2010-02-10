@@ -125,10 +125,10 @@ void pythonRFOnlineLearn(RandomForest<LabelType>* rf,NumpyArray<2,FeatureType> t
 }
 
 template<class LabelType,class FeatureType>
-void pythonRFReLearnTree(RandomForest<LabelType>* rf,NumpyArray<2,FeatureType> trainData,NumpyArray<2,LabelType> trainLabels,OnlinePredictionSet<FeatureType>& predSet)
+void pythonRFReLearnTree(RandomForest<LabelType>* rf,NumpyArray<2,FeatureType> trainData,NumpyArray<2,LabelType> trainLabels,int treeId)
 {
 	Py_BEGIN_ALLOW_THREADS
-	rf->reLearnTree(trainData,trainLabels,predSet);
+	rf->reLearnTree(trainData,trainLabels,treeId);
 	Py_END_ALLOW_THREADS
 }
 
@@ -175,7 +175,10 @@ void defineRandomForest_new()
 	pred_set_class.def("__init__",python::make_constructor(registerConverters(&pythonConstructOnlinePredictioSet<float>),
 														   boost::python::default_call_policies(),
 														   ( arg("features"))),
-														   "docu");
+														   "docu")
+		.def("invalidateTree",&OnlinePredictionSet<float>::reset_tree,
+			 (arg("treeId")),
+			 "doku");
 
 	enum_<RF_OptionTag>("RF_MTRY_SWITCH")
 		.value("RF_MTRY_LOG",RF_LOG)
