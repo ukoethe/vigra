@@ -9,7 +9,7 @@ from numpy import float32, float64, longdouble, complex64, complex128, clongdoub
 def qimage2array(q):
     '''Create a view to the given array with the appropriate type.
 
-       q.format() must be QImage.Format_Indexed8, QImage.Format_RGB32, or 
+       q.format() must be QImage.Format_Indexed8, QImage.Format_RGB32, or
        QImage.Format_ARGB32, and you will get ScalarImage, RGBImage, or
        Vector4Image respectively, all with dtype=uint8. The channels in
        a Vector4Image will be ordered as [alpha, red, green, blue].
@@ -49,12 +49,12 @@ def _array_docstring_(name, shape, compat):
         :param value: initialize the image with this value (overrides init)
         :type value: convertible to dtype
  
-        **obj** may be one of the following 
+        **obj** may be one of the following
 
         * If obj is a vigra.%(name)s or a subclass, a copy of obj with the
           given dtype and order is created, and obj's class is transferred.
         * If obj is a numpy.ndarray with compatible shape, a copy
-          of obj with the given dtype, order and class vigra.%(name)s is 
+          of obj with the given dtype, order and class vigra.%(name)s is
           created.
         * If obj is a sequence, it is interpreted as a shape. When
           the shape is compatible, a new vigra.%(name)s with the given
@@ -64,8 +64,8 @@ def _array_docstring_(name, shape, compat):
       
 %(shape)s
       
-        **order** can be 'C' (C order), 'F' (Fortran order), 'V' (vector-valued 
-        order), and 'A'. 
+        **order** can be 'C' (C order), 'F' (Fortran order), 'V' (vector-valued
+        order), and 'A'.
 
           'C' and 'F' order:
               have the usual numpy meaning
@@ -73,19 +73,19 @@ def _array_docstring_(name, shape, compat):
           'V' order:
               is an interleaved memory layout that simulates vector-
               valued pixels or voxels: while the spatial dimensions are arranged
-              as in Fortran order, the major memory-aligned dimension is the 
+              as in Fortran order, the major memory-aligned dimension is the
               channel (i.e. last) dimension. Arrays in 'V'-order are compatible
               with vector-valued NumpyArrays. For example, an RGBImage((4,3), uint8)
-              has strides (3, 12, 1) and is compatible with 
-              NumpyArray<2, RGBValue<UInt8>, UnstridedArrayTag>. 
+              has strides (3, 12, 1) and is compatible with
+              NumpyArray<2, RGBValue<UInt8>, UnstridedArrayTag>.
 
           'A' order:
-              defaults to 'V' when a new array is created, and means 
-              'preserve order' when an existing array is copied. 
+              defaults to 'V' when a new array is created, and means
+              'preserve order' when an existing array is copied.
     
-        In particular, the following compatibility rules apply (Note that 
-        compatibility with 'UnstridedArrayTag' implies compatibility with 
-        'StridedArrayTag'. Due to their loop order, VIGRA algorithms are 
+        In particular, the following compatibility rules apply (Note that
+        compatibility with 'UnstridedArrayTag' implies compatibility with
+        'StridedArrayTag'. Due to their loop order, VIGRA algorithms are
         generally more efficient when the memory layout is compatible with
         'UnstridedArrayTag'. T is the array's dtype.):
 %(compat)s
@@ -94,12 +94,12 @@ def _array_docstring_(name, shape, compat):
 ##################################################################
 
 class _VigraArray(numpy.ndarray):
-    '''
+    """
 This base class ensures that arrays created in Python are
 compatible with the memory layout requirements of
 VIGRA's NumpyArray family of C++ views. Do always use
 this class via its subclasses!
-    '''
+    """
     def __new__(cls, obj, dtype=numpy.float32, order='V', init = True, value = None):
         from vigranumpycore import constructNumpyArray
         if value is not None:
@@ -389,7 +389,7 @@ class Image(_VigraArray):
         return self.shape[1]
 
     @classproperty
-    def spatialDimensions(cls): 
+    def spatialDimensions(cls):
         "number of spatial dimensions (useful for distinguishing RGBImage and ScalarVolume)"
         return 2
 
@@ -485,7 +485,7 @@ class RGBImage(Vector3Image):
 
 class Volume(_VigraArray):
     __doc__ = _array_docstring_('Volume', '''
-    A shape is compatible when it has three dimensions (width, height, 
+    A shape is compatible when it has three dimensions (width, height,
     depth) or four dimensions (width, height, depth, channels).''', """
     * 'C': NumpyArray<3, T, StridedArrayTag> (if channels=1),
            NumpyArray<4, T, StridedArrayTag>,
@@ -523,7 +523,7 @@ class Volume(_VigraArray):
 
 class ScalarVolume(Volume):
     __doc__ = _array_docstring_('ScalarVolume', '''
-    A shape is compatible when it has three dimensions (width, height, 
+    A shape is compatible when it has three dimensions (width, height,
     depth) or four dimensions (width, height, depth, 1).''', """
     * 'C': NumpyArray<3, T, StridedArrayTag>,
            NumpyArray<4, T, StridedArrayTag>,
@@ -539,7 +539,7 @@ class ScalarVolume(Volume):
 
 class Vector2Volume(Volume):
     __doc__ = _array_docstring_('Vector2Volume', '''
-    A shape is compatible when it has three dimensions (width, height, 
+    A shape is compatible when it has three dimensions (width, height,
     depth) or four dimensions (width, height, depth, 2).''', """
     * 'C': NumpyArray<4, T, StridedArrayTag>,
            NumpyArray<3, TinyVector<T, 2>, StridedArrayTag>,
@@ -554,7 +554,7 @@ class Vector2Volume(Volume):
 
 class Vector3Volume(Volume):
     __doc__ = _array_docstring_('Vector3Volume', '''
-    A shape is compatible when it has three dimensions (width, height, 
+    A shape is compatible when it has three dimensions (width, height,
     depth) or four dimensions (width, height, depth, 3).''', """
     * 'C': NumpyArray<4, T, StridedArrayTag>,
            NumpyArray<3, TinyVector<T, 3>, StridedArrayTag>,
@@ -569,7 +569,7 @@ class Vector3Volume(Volume):
 
 class Vector4Volume(Volume):
     __doc__ = _array_docstring_('Vector4Volume', '''
-    A shape is compatible when it has three dimensions (width, height, 
+    A shape is compatible when it has three dimensions (width, height,
     depth) or four dimensions (width, height, depth, 4).''', """
     * 'C': NumpyArray<4, T, StridedArrayTag>,
            NumpyArray<3, TinyVector<T, 4>, StridedArrayTag>,
@@ -584,7 +584,7 @@ class Vector4Volume(Volume):
     
 class Vector6Volume(Volume):
     __doc__ = _array_docstring_('Vector4Volume', '''
-    A shape is compatible when it has three dimensions (width, height, 
+    A shape is compatible when it has three dimensions (width, height,
     depth) or four dimensions (width, height, depth, 6).''', """
     * 'C': NumpyArray<4, T, StridedArrayTag>,
            NumpyArray<3, TinyVector<T, 6>, StridedArrayTag>,
@@ -599,7 +599,7 @@ class Vector6Volume(Volume):
     
 class RGBVolume(Vector3Volume):
     __doc__ = _array_docstring_('RGBVolume', '''
-    A shape is compatible when it has three dimensions (width, height, 
+    A shape is compatible when it has three dimensions (width, height,
     depth) or four dimensions (width, height, depth, 3).''', """
     * 'C': NumpyArray<4, T, StridedArrayTag>,
            NumpyArray<3, RGBValue<T>, StridedArrayTag>,
