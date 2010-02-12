@@ -410,11 +410,12 @@ class RandomForest
                        Visitor_t visitor_,
                        Split_t split_,
                        Stop_t stop_,
-                       Random_t & random);
+                       Random_t & random,
+                       bool adjust_thresholds=false);
 
     template <class U, class C1, class U2,class C2>
     double onlineLearn(   MultiArrayView<2, U, C1> const  & features,
-                    MultiArrayView<2, U2,C2> const  & labels,int new_start_index)
+                    MultiArrayView<2, U2,C2> const  & labels,int new_start_index,bool adjust_thresholds=false)
     {
         RandomNumberGenerator<> rnd = RandomNumberGenerator<>(RandomSeed);
         return onlineLearn(features, 
@@ -423,7 +424,8 @@ class RandomForest
                      rf_default(), 
                      rf_default(), 
                      rf_default(),
-                     rnd);
+                     rnd,
+                     adjust_thresholds);
     }
 
     template<class U,class C1,
@@ -610,9 +612,11 @@ double RandomForest<LabelType, PreprocessorTag>::onlineLearn(MultiArrayView<2,U,
                                                              Visitor_t visitor_,
                                                              Split_t split_,
                                                              Stop_t stop_,
-                                                             Random_t & random)
+                                                             Random_t & random,
+                                                             bool adjust_thresholds)
 {
     online_visitor_.activate();
+    online_visitor_.adjust_thresholds=adjust_thresholds;
 
     using namespace rf;
     //typedefs

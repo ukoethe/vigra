@@ -493,6 +493,8 @@ create_visitor(A & a, B & b, C & c,
 class OnlineLearnVisitor: public VisitorBase
 {
 public:
+    //Set if we adjust thresholds
+    bool adjust_thresholds;
     //Current tree id
     int tree_id;
     //Last node id for finding parent
@@ -565,33 +567,32 @@ public:
         int addr=tree.topology_.size();
         if(split.createNode().typeID() == i_ThresholdNode)
         {
-#define ADJUST_THRESHOLD_NODES
-            #ifdef ADJUST_THRESHOLD_NODES
-            //Store marginal distribution
-            linear_index=trees_online_information[tree_id].mag_distributions.size();
-            trees_online_information[tree_id].interior_to_index[addr]=linear_index;
-            trees_online_information[tree_id].mag_distributions.push_back(MarginalDistribution());
+            if(adjust_thresholds)
+            {
+                //Store marginal distribution
+                linear_index=trees_online_information[tree_id].mag_distributions.size();
+                trees_online_information[tree_id].interior_to_index[addr]=linear_index;
+                trees_online_information[tree_id].mag_distributions.push_back(MarginalDistribution());
 
-            trees_online_information[tree_id].mag_distributions.back().leftCounts=leftChild.classCounts_;
-            trees_online_information[tree_id].mag_distributions.back().rightCounts=rightChild.classCounts_;
+                trees_online_information[tree_id].mag_distributions.back().leftCounts=leftChild.classCounts_;
+                trees_online_information[tree_id].mag_distributions.back().rightCounts=rightChild.classCounts_;
 
-            trees_online_information[tree_id].mag_distributions.back().leftTotalCounts=leftChild.size_;
-            trees_online_information[tree_id].mag_distributions.back().rightTotalCounts=rightChild.size_;
-            //Store the gap
-            double gap_left,gap_right;
-            int i;
-            gap_left=features(leftChild[0],split.bestSplitColumn());
-            for(i=1;i<leftChild.size();++i)
-                if(features(leftChild[i],split.bestSplitColumn())>gap_left)
-                    gap_left=features(leftChild[i],split.bestSplitColumn());
-            gap_right=features(rightChild[0],split.bestSplitColumn());
-            for(i=1;i<rightChild.size();++i)
-                if(features(rightChild[i],split.bestSplitColumn())<gap_right)
-                    gap_right=features(rightChild[i],split.bestSplitColumn());
-            trees_online_information[tree_id].mag_distributions.back().gap_left=gap_left;
-            trees_online_information[tree_id].mag_distributions.back().gap_right=gap_right;
-#endif
-            
+                trees_online_information[tree_id].mag_distributions.back().leftTotalCounts=leftChild.size_;
+                trees_online_information[tree_id].mag_distributions.back().rightTotalCounts=rightChild.size_;
+                //Store the gap
+                double gap_left,gap_right;
+                int i;
+                gap_left=features(leftChild[0],split.bestSplitColumn());
+                for(i=1;i<leftChild.size();++i)
+                    if(features(leftChild[i],split.bestSplitColumn())>gap_left)
+                        gap_left=features(leftChild[i],split.bestSplitColumn());
+                gap_right=features(rightChild[0],split.bestSplitColumn());
+                for(i=1;i<rightChild.size();++i)
+                    if(features(rightChild[i],split.bestSplitColumn())<gap_right)
+                        gap_right=features(rightChild[i],split.bestSplitColumn());
+                trees_online_information[tree_id].mag_distributions.back().gap_left=gap_left;
+                trees_online_information[tree_id].mag_distributions.back().gap_right=gap_right;
+            }
         }
         else
         {
@@ -628,39 +629,40 @@ public:
         void visit_internal_node(TR & tr, IntT index, TopT node_t,Feat & features)
         {
             last_node_id=index;
-#ifdef ADJUST_THRESHOLD_NODES
-            vigra_assert(node_t==i_ThresholdNode,"We can only visit threshold nodes");
-            //Check if we are in the gap
-            double value=features(0, Node<i_ThresholdNode>(tr.topology_,tr.parameters_,index).column());
-            TreeOnlineInformation &ti=trees_online_information[tree_id];
-            MarginalDistribution &m=ti.mag_distributions[ti.interior_to_index[index]];
-            if(value>m.gap_left && value<m.gap_right)
+            if(adjust_thresholds)
             {
-                //Check which site we want to go
-                if(m.leftCounts[current_label]/double(m.leftTotalCounts)>m.rightCounts[current_label]/double(m.rightTotalCounts))
+                vigra_assert(node_t==i_ThresholdNode,"We can only visit threshold nodes");
+                //Check if we are in the gap
+                double value=features(0, Node<i_ThresholdNode>(tr.topology_,tr.parameters_,index).column());
+                TreeOnlineInformation &ti=trees_online_information[tree_id];
+                MarginalDistribution &m=ti.mag_distributions[ti.interior_to_index[index]];
+                if(value>m.gap_left && value<m.gap_right)
                 {
-                    //We want to go left
-                    m.gap_left=value;
+                    //Check which site we want to go
+                    if(m.leftCounts[current_label]/double(m.leftTotalCounts)>m.rightCounts[current_label]/double(m.rightTotalCounts))
+                    {
+                        //We want to go left
+                        m.gap_left=value;
+                    }
+                    else
+                    {
+                        //We want to go right
+                        m.gap_right=value;
+                    }
+                    Node<i_ThresholdNode>(tr.topology_,tr.parameters_,index).threshold()=(m.gap_right+m.gap_left)/2.0;
+                }
+                //Adjust class counts
+                if(value>Node<i_ThresholdNode>(tr.topology_,tr.parameters_,index).threshold())
+                {
+                    ++m.rightTotalCounts;
+                    ++m.rightCounts[current_label];
                 }
                 else
                 {
-                    //We want to go right
-                    m.gap_right=value;
+                    ++m.leftTotalCounts;
+                    ++m.rightCounts[current_label];
                 }
-                Node<i_ThresholdNode>(tr.topology_,tr.parameters_,index).threshold()=(m.gap_right+m.gap_left)/2.0;
             }
-            //Adjust class counts
-            if(value>Node<i_ThresholdNode>(tr.topology_,tr.parameters_,index).threshold())
-            {
-                ++m.rightTotalCounts;
-                ++m.rightCounts[current_label];
-            }
-            else
-            {
-                ++m.leftTotalCounts;
-                ++m.rightCounts[current_label];
-            }
-#endif
         }
     /** do something when visiting a extern node during getToLeaf
      * 

@@ -117,10 +117,10 @@ pythonLearnRandomForest(RandomForest<LabelType>* rf, NumpyArray<2,FeatureType> t
 }
 
 template<class LabelType,class FeatureType>
-void pythonRFOnlineLearn(RandomForest<LabelType>* rf,NumpyArray<2,FeatureType> trainData,NumpyArray<2,LabelType> trainLabels,int startIndex)
+void pythonRFOnlineLearn(RandomForest<LabelType>* rf,NumpyArray<2,FeatureType> trainData,NumpyArray<2,LabelType> trainLabels,int startIndex,bool adjust_thresholds)
 {
 	Py_BEGIN_ALLOW_THREADS
-	rf->onlineLearn(trainData,trainLabels,startIndex);
+	rf->onlineLearn(trainData,trainLabels,startIndex,adjust_thresholds);
 	Py_END_ALLOW_THREADS
 }
 
