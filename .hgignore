@@ -26,6 +26,9 @@
 ^src/examples/(convert|subimage|invert|invert_explicitly|resize|smooth|profile|palette|pyramid|edge|watershed|voronoi)$
 ^src/impex/libvigraimpex
 ^src/impex/(impex\.layout|Makefile\.win)$
+^CMakeCache\.txt$
+CMakeFiles/
+\.cmake$
 
 syntax: glob
 
@@ -47,6 +50,7 @@ Makefile
 *.lib
 *.dll
 *.ncb
+*.so
 *.[do]
 *.l[doa]
 *.loT
