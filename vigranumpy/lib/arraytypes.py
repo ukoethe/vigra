@@ -53,9 +53,14 @@ def _array_docstring_(name, shape, compat):
 
         * If obj is a vigra.%(name)s or a subclass, a copy of obj with the
           given dtype and order is created, and obj's class is transferred.
-        * If obj is a numpy.ndarray with compatible shape, a copy
-          of obj with the given dtype, order and class vigra.%(name)s is 
-          created.
+        * If obj is another subtype of numpy.ndarray with compatible shape, 
+          a *transposed* copy of obj with the given dtype, order and class 
+          vigra.%(name)s is created. Transposition changes the order of the 
+          spatial dimensions from (x,y) or (z,y,x) to (x,y) and (x,y,z) 
+          respectively. The channel dimension is assumed to be the last 
+          dimension and remains in that position. (Use numpy.rollaxis()
+          to adjust the input if necessary.)
+          transform [y,x] indexing order into VIGRA's [x,y] convention.)
         * If obj is a sequence, it is interpreted as a shape. When
           the shape is compatible, a new vigra.%(name)s with the given
           dtype and order is created.
@@ -102,6 +107,8 @@ this class via its subclasses!
     '''
     def __new__(cls, obj, dtype=numpy.float32, order='V', init = True, value = None):
         from vigranumpycore import constructNumpyArray
+        if isinstance(obj, numpy.ndarray) and not isinstance(obj, _VigraArray):
+            obj = obj.swapaxes(0, cls.spatialDimensions-1)
         if value is not None:
             res = constructNumpyArray(cls, obj, cls.spatialDimensions, cls.channels, dtype, order, False)
             res[...] = value
@@ -135,8 +142,8 @@ this class via its subclasses!
         result.__dict__ = copy.deepcopy(self.__dict__, memo)
         return result
     
-    def flatten(self):
-        return self.view(numpy.ndarray).T.flatten()
+    def flatten(self, order = 'C'):
+        return self.view(numpy.ndarray).swapaxes(0, self.spatialDimensions-1).flatten(order)
     
     def __str__(self, separator = ' ', precision=2, suppress_small=True):
         return numpy.array2string(self.T, separator = separator, precision=precision, suppress_small=suppress_small)
@@ -155,7 +162,7 @@ this class via its subclasses!
     
     @property
     def flat(self):
-        return self.view(numpy.ndarray).T.flat
+        return self.view(numpy.ndarray).swapaxes(0, self.spatialDimensions-1).flat
     
     __array_priority__ = 10.0
     
@@ -315,6 +322,30 @@ class Image(_VigraArray):
         "consult :func:`vigra.writeImage` for detailed documentation"
         import vigranumpycore as vn
         vn.writeImage(self, filename, export_type, compression)
+
+    def show(self, normalize = True):
+        '''
+        Display this image in a vigra.pyqt.ImageWindow.
+        
+	    The parameter `normalize` can be used to normalize an image's
+	    value range to 0..255:
+
+	    `normalize` = (nmin, nmax):
+	      scale & clip image values from nmin..nmax to 0..255
+
+	    `normalize` = nmax:
+	      lets nmin default to zero, i.e. scale & clip the range 0..nmax
+	      to 0..255
+
+	    `normalize` = True: (default)
+	      scale the image's actual range min()..max() to 0..255
+
+	    `normalize` = False:
+	      don't scale the image's values
+           
+        '''
+        from pyqt.imagewindow import showImage
+        return showImage(self, normalize)
 
     def qimage(self, normalize = True):
         '''
