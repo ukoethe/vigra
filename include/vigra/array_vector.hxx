@@ -533,7 +533,7 @@ public:
 
 
     ArrayVector( this_type const & rhs )
-    : alloc_(rhs.alloc_)
+    : view_type(rhs), alloc_(rhs.alloc_)
     {
         initImpl(rhs.begin(), rhs.end(), VigraFalseType());
     }
