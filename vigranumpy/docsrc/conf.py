@@ -13,7 +13,7 @@
 
 import sys, os
 
-new_path=os.getcwd()+r'/../src'
+new_path=os.getcwd()+r'/..'
 sys.path.insert(0,new_path)
 print new_path
 

@@ -11,9 +11,9 @@ import edgedetection
 import classification
 
 try:
-    from vigranumpyfourier import *
+    import fourier
 except:
-    print "vigranumpyfourier not found"
+    print "vigra.fourier not found"
 
 # auto-generate code for  additional Kernel generators:
 def genKernelFactories():
