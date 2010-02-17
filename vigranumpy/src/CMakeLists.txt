@@ -1,4 +1,57 @@
-ADD_SUBDIRECTORY(core vigra)
+FUNCTION(VIGRA_ADD_NUMPY_MODULE target)
+    set(TARGET_NAME vigranumpy_${target})
+    if(target MATCHES "^core$")
+        set(LIBRARY_NAME vigranumpycore)
+    else()
+        set(LIBRARY_NAME ${target})
+    endif()
+    
+    # parse the args
+    set(v SOURCES)
+    foreach(i ${ARGN})
+        if(${i} MATCHES "^SOURCES$")
+            set(v SOURCES)
+        elseif(${i} MATCHES "^LIBRARIES$")
+            set(v LIBRARIES)
+        else()
+            set(${v} ${${v}} ${i})
+        endif()
+    endforeach(i)
+    
+    ADD_LIBRARY(${TARGET_NAME} SHARED ${SOURCES})    
+    ADD_DEPENDENCIES(vigranumpy ${TARGET_NAME})
+    if(DEFINED LIBRARIES)
+        TARGET_LINK_LIBRARIES(${TARGET_NAME} ${LIBRARIES})
+    else()
+        TARGET_LINK_LIBRARIES(${TARGET_NAME} ${VIGRANUMPY_LIBRARIES} vigranumpy_core)
+    endif()
+    
+    IF(PYTHON_PLATFORM MATCHES "^win32$")
+        SET_TARGET_PROPERTIES(${TARGET_NAME} PROPERTIES OUTPUT_NAME "${LIBRARY_NAME}" 
+                                                           PREFIX "" SUFFIX  ".pyd")
+        INSTALL(TARGETS ${TARGET_NAME} RUNTIME DESTINATION ${VIGRANUMPY_INSTALL_DIR}/vigra)
+    ELSE()
+        SET_TARGET_PROPERTIES(${TARGET_NAME} PROPERTIES OUTPUT_NAME "${LIBRARY_NAME}" 
+                                                           PREFIX "")
+        INSTALL(TARGETS ${TARGET_NAME}
+                 LIBRARY DESTINATION ${VIGRANUMPY_INSTALL_DIR}/vigra)
+    ENDIF()
+    
+    GET_TARGET_PROPERTY(loc ${TARGET_NAME} LOCATION)
+    ADD_CUSTOM_COMMAND(
+        TARGET ${TARGET_NAME}
+        POST_BUILD
+        COMMAND ${CMAKE_COMMAND}
+        ARGS -E copy_if_different ${loc} ${vigranumpy_tmp_dir}/)
+ENDFUNCTION(VIGRA_ADD_NUMPY_MODULE)
+
+###############################################################################
+
+IF(MSVC OR MINGW)
+    ADD_DEFINITIONS(-DVIGRA_DLL)
+ENDIF ()
+
+ADD_SUBDIRECTORY(core)
 
 IF(FFTW3_FOUND)
     ADD_SUBDIRECTORY(fourier)
@@ -6,32 +59,4 @@ ELSE()
     MESSAGE(STATUS "vigranumpy fourier module will not be built (fftw3 missing)")
 ENDIF(FFTW3_FOUND)
 
-ADD_CUSTOM_TARGET(build_dir_vigranumpy)
-ADD_DEPENDENCIES(build_dir_vigranumpy vigranumpy)
-
-SET(tmp_vigranumpy_dir ${CMAKE_BINARY_DIR}/vigranumpy/src/vigra)
-
-#copy rest file into build-vigra module
-SET(LIB_FILES __init__.py arraytypes.py ufunc.py)
-FOREACH(lib_file ${LIB_FILES})
-    ADD_CUSTOM_COMMAND(
-        TARGET build_dir_vigranumpy
-        PRE_BUILD
-        COMMAND ${CMAKE_COMMAND}
-        ARGS -E copy_if_different
-        ${PROJECT_SOURCE_DIR}/vigranumpy/lib/${lib_file} ${tmp_vigranumpy_dir}/${lib_file}
-        )
-ENDFOREACH(lib_file)
-
-#copy vigranumpy files into build-vigra module
-SET(MODULE_TARGETS vigranumpycore convolution segmentation edgedetection
-    morphology classification tensor impex filters noise)
-
-FOREACH(module ${MODULE_TARGETS})
-    GET_TARGET_PROPERTY(loc ${module} LOCATION)
-    ADD_CUSTOM_COMMAND(
-        TARGET build_dir_vigranumpy
-        PRE_BUILD
-        COMMAND ${CMAKE_COMMAND}
-        ARGS -E copy_if_different ${loc} ${tmp_vigranumpy_dir}/)
-ENDFOREACH(module)
+ADD_SUBDIRECTORY(experiments EXCLUDE_FROM_ALL)

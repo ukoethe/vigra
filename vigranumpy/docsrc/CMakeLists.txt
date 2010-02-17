@@ -38,6 +38,6 @@ ELSE(PYTHON_SPHINX)
 
 ENDIF(PYTHON_SPHINX)
 
-ADD_DEPENDENCIES(doc_python build_dir_vigranumpy)
+ADD_DEPENDENCIES(doc_python vigranumpy)
 ADD_DEPENDENCIES(doc_python doc_cpp)
 ADD_DEPENDENCIES(doc doc_python)
