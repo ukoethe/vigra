@@ -41,6 +41,7 @@
 #include <vigra/matlab.hxx>
 #include <vigra/random_forest.hxx>
 #include "random_forest_impex.hxx"
+#include "RandomForestProgressVisitor.hxx"
 
 
 using namespace vigra;
@@ -51,13 +52,14 @@ void vigraMain(matlab::OutputArray outputs, matlab::InputArray inputs){
     /***************************************************************************************************
     **              INIT PART                                                                         **
     ****************************************************************************************************/
-    typedef double inputType;
+    typedef float inputType;
+    typedef UInt8 inputLType;
 	vigra::RandomForestOptions 	options;
-	vigra::ProblemSpec<double>	ext_param;
+	vigra::ProblemSpec<inputLType>	ext_param;
     options.sample_with_replacement(inputs.getBool("sample_with_replacement", 
 												   v_default(true)));
 	
-    if(inputs.getBool("sample_classes_individually", v_default(false)));
+    if(inputs.getBool("sample_classes_individually", v_default(false)))
 		options.use_stratification(vigra::RF_EQUAL);
     options.min_split_node_size(inputs
 			.getScalarMinMax<double>("min_split_node_size",
@@ -96,8 +98,8 @@ void vigraMain(matlab::OutputArray outputs, matlab::InputArray inputs){
 									 v_default(1.0), 0.0, 1.0));
 	}
 
-    MultiArrayView<2, inputType>  labels 
-		= inputs.getMultiArray<2, inputType>(1, v_required());
+    MultiArrayView<2, inputLType>  labels 
+		= inputs.getMultiArray<2, inputLType>(1, v_required());
     MultiArrayView<2, inputType>  features 
 		= inputs.getMultiArray<2, inputType>(0, v_required());
     MultiArrayView<1, inputType>  weights 
@@ -110,7 +112,7 @@ void vigraMain(matlab::OutputArray outputs, matlab::InputArray inputs){
 		= inputs.getScalar<double>("importance_repetition",v_default(10));
 	
 	VariableImportanceVisitor var_imp(var_imp_rep);
-
+    RandomForestProgressVisitor progress;
 	if(!outputs.isValid(2))
 		var_imp.deactivate();
 
@@ -119,11 +121,10 @@ void vigraMain(matlab::OutputArray outputs, matlab::InputArray inputs){
     **              CODE PART                                                                         **
     ****************************************************************************************************/
 
-    RandomForest<> rf(options, ext_param);
-	
+    RandomForest<inputLType> rf(options, ext_param);    
     double oobError = rf.learn(features, 
 							   labels,
-							   vigra::create_visitor(var_imp));
+							   vigra::create_visitor(var_imp, progress));
 
     matlab::exportRandomForest(rf, matlab::createCellArray(2*options.tree_count_+2, outputs[0]));
 

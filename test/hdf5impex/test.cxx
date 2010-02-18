@@ -301,6 +301,24 @@ public:
 		should (in_data_2 == out_data_2);
 	}
 
+    void testReadWritingColumnMajorDefault()
+    {
+
+        // dataset data
+        typedef MultiArrayShape<2>::type Shp;
+        MultiArray<2, int> dset(Shp(2,5));
+        MultiArray<2, int> loaded(Shp(2,5));
+        dset(0,0) = 1;
+        dset(1,0) = 1;
+        //create a HDF5file;
+        std::string filename = "colDefaultTest.h5";
+        std::string pathname = "group/subgroup/dset";
+        writeToHDF5File(filename.c_str(), pathname.c_str(), dset, true);
+
+		HDF5ImportInfo info(filename.c_str(), pathname.c_str());
+        loadFromHDF5File(info, loaded);
+        should(dset == loaded);
+    }
 
     void testReadWritingStringDataset()
     {
@@ -378,22 +396,26 @@ struct HDF5ImportExportTestSuite : public vigra::test_suite
     HDF5ImportExportTestSuite()
         : vigra::test_suite("HDF5ImportExportTestSuite")
     {
+        
 		// row major order (C)
         add(testCase(&HDF5ExportImportTest::testUnstridedHDF5ExportImport_rowMajor));
         add(testCase(&HDF5ExportImportTest::testStridedHDF5ExportImport1_rowMajor));
         add(testCase(&HDF5ExportImportTest::testStridedHDF5ExportImport2_rowMajor));
         add(testCase(&HDF5ExportImportTest::testAppendNewDataToHDF5_rowMajor));
         add(testCase(&HDF5ExportImportTest::testOverwriteExistingDataInHDF5_rowMajor));
-		// column major order (VIGRA)
+	//column major order (VIGRA)
         add(testCase(&HDF5ExportImportTest::testUnstridedHDF5ExportImport_columnMajor));
         add(testCase(&HDF5ExportImportTest::testStridedHDF5ExportImport1_columnMajor));
         add(testCase(&HDF5ExportImportTest::testStridedHDF5ExportImport2_columnMajor));
         add(testCase(&HDF5ExportImportTest::testAppendNewDataToHDF5_columnMajor));
         add(testCase(&HDF5ExportImportTest::testOverwriteExistingDataInHDF5_columnMajor));
         // attributes and string datasets
+        
         add(testCase(&HDF5ExportImportTest::testReadWritingStringDataset));
         add(testCase(&HDF5ExportImportTest::testReadWritingNumericalAttribute));
         add(testCase(&HDF5ExportImportTest::testReadWritingStringAttribute));
+        add(testCase(&HDF5ExportImportTest::testReadWritingColumnMajorDefault));
+        
 	}
 };
 
