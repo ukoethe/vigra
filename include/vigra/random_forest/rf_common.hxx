@@ -577,7 +577,31 @@ public:
     {
         out = T(classes[index]);
     }
+    template<class T> 
+    int to_classIndex(T index) const
+    {
+        return std::find(classes.begin(), classes.end(), index) - classes.begin();
+    }
 
+    #define EQUALS(field) field(rhs.field)
+    ProblemSpec(ProblemSpec const & rhs)
+    : 
+        EQUALS(column_count_),
+        EQUALS(class_count_),
+        EQUALS(row_count_),
+        EQUALS(actual_mtry_),
+        EQUALS(actual_msample_),
+        EQUALS(problem_type_),
+        EQUALS(used_),
+        EQUALS(class_weights_),
+        EQUALS(is_weighted),
+        EQUALS(precision_)
+    {
+        std::back_insert_iterator<ArrayVector<Label_t> >
+                        iter(classes);
+        std::copy(rhs.classes.begin(), rhs.classes.end(), iter); 
+    }
+    #undef EQUALS
     #define EQUALS(field) field(rhs.field)
     template<class T>
     ProblemSpec(ProblemSpec<T> const & rhs)
@@ -602,7 +626,6 @@ public:
     // for some reason the function below does not match
     // the default copy constructor
     #define EQUALS(field) (this->field = rhs.field);
-    template<class T>
     ProblemSpec & operator=(ProblemSpec const & rhs)
     {
         EQUALS(column_count_);
@@ -612,9 +635,13 @@ public:
         EQUALS(actual_msample_);
         EQUALS(problem_type_);
         EQUALS(used_);
-        EQUALS(class_weights_);
         EQUALS(is_weighted);
         EQUALS(precision_);
+        class_weights_.clear();
+        std::back_insert_iterator<ArrayVector<double> >
+                        iter2(class_weights_);
+        std::copy(rhs.class_weights_.begin(), rhs.class_weights_.end(), iter2); 
+        classes.clear();
         std::back_insert_iterator<ArrayVector<Label_t> >
                         iter(classes);
         std::copy(rhs.classes.begin(), rhs.classes.end(), iter); 
@@ -631,9 +658,13 @@ public:
         EQUALS(actual_msample_);
         EQUALS(problem_type_);
         EQUALS(used_);
-        EQUALS(class_weights_);
         EQUALS(is_weighted);
         EQUALS(precision_);
+        class_weights_.clear();
+        std::back_insert_iterator<ArrayVector<double> >
+                        iter2(class_weights_);
+        std::copy(rhs.class_weights_.begin(), rhs.class_weights_.end(), iter2); 
+        classes.clear();
         std::back_insert_iterator<ArrayVector<Label_t> >
                         iter(classes);
         std::copy(rhs.classes.begin(), rhs.classes.end(), iter); 

@@ -35,6 +35,8 @@
 #ifndef RF_VISITORS_HXX
 #define RF_VISITORS_HXX
 
+#include "vigra/hdf5impex.hxx"
+
 namespace vigra
 {
 
@@ -134,7 +136,7 @@ class VisitorBase
      * use the Nodebase class.
      */
     template<class TR, class IntT, class TopT>
-    void visit_external_node(TR & tr, IntT index, TopT node_t)
+    void visit_external_node(TR & tr, IntT index, TopT node_t, double weight)
     {}
     
     /** do something when visiting a internal node after it has been learned
@@ -142,7 +144,7 @@ class VisitorBase
      * \sa visit_external_node
      */
     template<class TR, class IntT, class TopT>
-    void visit_internal_node(TR & tr, IntT index, TopT node_t)
+    void visit_internal_node(TR & tr, IntT index, TopT node_t, double weight)
     {}
 
     /** return a double value.  The value of the first 
@@ -186,7 +188,7 @@ class VisitorNode
     public:
     
     StopVisiting    stop_;
-    Next &          next_;
+    Next            next_;
     Visitor &       visitor_;   
     VisitorNode(Visitor & visitor, Next & next) 
     : 
@@ -239,18 +241,18 @@ class VisitorNode
     }
     
     template<class TR, class IntT, class TopT>
-    void visit_external_node(TR & tr, IntT & index, TopT & node_t)
+    void visit_external_node(TR & tr, IntT & index, TopT & node_t , double weight)
     {
         if(visitor_.is_active())
-            visitor_.visit_external_node(tr, index, node_t);
-        next_.visit_external_node(tr, index, node_t);
+            visitor_.visit_external_node(tr, index, node_t, weight);
+        next_.visit_external_node(tr, index, node_t, weight);
     }
     template<class TR, class IntT, class TopT>
-    void visit_internal_node(TR & tr, IntT & index, TopT & node_t)
+    void visit_internal_node(TR & tr, IntT & index, TopT & node_t, double weight)
     {
         if(visitor_.is_active())
-            visitor_.visit_internal_node(tr, index, node_t);
-        next_.visit_internal_node(tr, index, node_t);
+            visitor_.visit_internal_node(tr, index, node_t, weight);
+        next_.visit_internal_node(tr, index, node_t, weight);
     }
 
     double return_val()
@@ -574,6 +576,16 @@ class VariableImportanceVisitor : public VisitorBase
     MultiArray<2, double>       variable_importance_;
     int                         repetition_count_;
     bool                        in_place_;
+
+#ifdef HasHDF5
+    void save(std::string filename, std::string prefix)
+    {
+        prefix = "variable_importance_" + prefix;
+        writeToHDF5File(filename.c_str(), 
+                        prefix.c_str(), 
+                        variable_importance_);
+    }
+#endif
 
     VariableImportanceVisitor(int rep_cnt = 10) 
     :   repetition_count_(rep_cnt)

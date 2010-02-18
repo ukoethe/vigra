@@ -150,7 +150,7 @@ class DecisionTree
         TreeInt index = 2;
         while(!isLeafNode(topology_[index]))
         {
-            visitor.visit_internal_node(*this, index, topology_[index]);
+            visitor.visit_internal_node(*this, index, topology_[index], 1);
             switch(topology_[index])
             {
                 case i_ThresholdNode:
@@ -188,7 +188,7 @@ class DecisionTree
                                "encountered unknown internal Node Type");
             }
         }
-        visitor.visit_external_node(*this, index, topology_[index]);
+        visitor.visit_external_node(*this, index, topology_[index], 0);
         return index;
     }
     /** traverse tree to get statistics
@@ -215,6 +215,54 @@ class DecisionTree
             }
         }
     }
+
+    template<class Visitor_t>
+    void traverse_post_order(Visitor_t visitor,  TreeInt start = 2) const
+    {
+        typedef TinyVector<double, 2> Entry; 
+        std::vector<Entry > stack;
+        std::vector<double> result_stack;
+        stack.push_back(Entry(2, 0));
+        int addr; 
+        while(!stack.empty())
+        {
+            addr = stack.back()[0];
+            NodeBase node(topology_, parameters_, stack.back()[0]);
+            if(stack.back()[1] == 1)
+            {
+                stack.pop_back();
+                double leftRes = result_stack.back();
+                double rightRes = result_stack.back();
+                result_stack.pop_back();
+                result_stack.pop_back();
+                result_stack.push_back(rightRes+ leftRes);
+                visitor.visit_internal_node(*this, 
+                                            addr, 
+                                            node.typeID(), 
+                                            rightRes+leftRes);
+            }
+            else
+            {
+                if(isLeafNode(node.typeID()))
+                {
+                    visitor.visit_external_node(*this, 
+                                                addr, 
+                                                node.typeID(), 
+                                                node.weights());
+                    stack.pop_back();
+                    result_stack.push_back(node.weights());
+                }
+                else
+                {
+                    stack.back()[1] = 1; 
+                    stack.push_back(Entry(node.child(0), 0));
+                    stack.push_back(Entry(node.child(1), 0));
+                }
+                    
+            }
+        }
+    }
+
     /** same thing as above, without any visitors */
     template<class U, class C>
     TreeInt getToLeaf(MultiArrayView<2, U, C> const & features) const
