@@ -142,7 +142,7 @@ class RandomForest
     ArrayVector<DecisionTree_t>
                                     trees_;
     ProblemSpec_t                   ext_param_;
-
+    mutable ArrayVector<int>                tree_indices_;
 
     void reset()
     {
@@ -201,8 +201,12 @@ class RandomForest
                  ProblemSpec_t const & ext_param = ProblemSpec_t())
     :
         options_(options),
-        ext_param_(ext_param)
-    {}
+        ext_param_(ext_param),
+        tree_indices_(options.tree_count_,0)
+    {
+        for(int ii = 0 ; ii < int(tree_indices_.size()); ++ii)
+            tree_indices_[ii] = ii;
+    }
 
     /**\brief Create RF from external source
      *
@@ -468,18 +472,23 @@ class RandomForest
      *         rf.external_parameter().class_type_ attribute
      *         to get back the same type used during learning. 
      */
-    template <class U, class C>
-    LabelType predictLabel(MultiArrayView<2, U, C>const & features) const;
+    template <class U, class C, class Stop>
+    LabelType predictLabel(MultiArrayView<2, U, C>const & features, Stop & stop) const;
 
+    template <class U, class C>
+    LabelType predictLabel(MultiArrayView<2, U, C>const & features)
+    {
+        return predictLabel(features, rf_default()); 
+    } 
     /** \brief predict a label with features and class priors
      *
      * \param features: same as above.
      * \param priors:   iterator to prior weighting of classes
      * \return sam as above.
      */
-    template <class U, class C, class Iterator>
+    template <class U, class C>
     LabelType predictLabel(MultiArrayView<2, U, C> const & features,
-                                Iterator priors) const;
+                                ArrayVectorView<double> prior) const;
 
     /** \brief predict multiple labels with given features
      *
@@ -496,10 +505,19 @@ class RandomForest
         vigra_precondition(features.shape(0) == labels.shape(0),
             "RandomForest::predictLabels(): Label array has wrong size.");
         for(int k=0; k<features.shape(0); ++k)
-            labels(k,0) = detail::RequiresExplicitCast<T>::cast(predictLabel(rowVector(features, k)));
+            labels(k,0) = detail::RequiresExplicitCast<T>::cast(predictLabel(rowVector(features, k), rf_default()));
     }
 
-
+    template <class U, class C1, class T, class C2, class Stop>
+    void predictLabels(MultiArrayView<2, U, C1>const & features,
+                       MultiArrayView<2, T, C2> & labels,
+                       Stop                     & stop) const
+    {
+        vigra_precondition(features.shape(0) == labels.shape(0),
+            "RandomForest::predictLabels(): Label array has wrong size.");
+        for(int k=0; k<features.shape(0); ++k)
+            labels(k,0) = detail::RequiresExplicitCast<T>::cast(predictLabel(rowVector(features, k), stop));
+    }
     /** \brief predict the class probabilities for multiple labels
      *
      *  \param features same as above
@@ -511,7 +529,7 @@ class RandomForest
     template <class U, class C1, class T, class C2, class Stop>
     void predictProbabilities(MultiArrayView<2, U, C1>const &   features,
                               MultiArrayView<2, T, C2> &        prob,
-                              Stop                              stop) const;
+                              Stop                     &        stop) const;
 
     /** \brief predict the class probabilities for multiple labels
      *
@@ -597,19 +615,19 @@ double RandomForest<LabelType, PreprocessorTag>::
     /**\todo    replace this crappy class out. It uses function pointers.
      *          and is making code slower according to me
      */
-    Sampler<RandFunctor_t > sampler(ext_param().row_count_,
-                                    ext_param().actual_msample_,
+    Sampler<RandFunctor_t > sampler(ext_param().actual_msample_,
+                                    ext_param().row_count_,
                                     detail::make_sampler_opt(options_,
                                                      preprocessor.strata()),
                                     randint);
     visitor.visit_at_beginning(*this, preprocessor);
     // THE MAIN EFFING RF LOOP - YEAY DUDE!
+    
     for(int ii = 0; ii < (int)trees_.size(); ++ii)
     {
         //initialize First region/node/stack entry
         sampler
-            .sample();
-
+            .sample();  
         StackEntry_t
             first_stack_entry(  sampler.used_indices().begin(),
                                 sampler.used_indices().end(),
@@ -645,9 +663,9 @@ double RandomForest<LabelType, PreprocessorTag>::
 
 
 template <class LabelType, class Tag>
-template <class U, class C>
+template <class U, class C, class Stop>
 LabelType RandomForest<LabelType, Tag>
-    ::predictLabel(MultiArrayView<2, U, C> const & features) const
+    ::predictLabel(MultiArrayView<2, U, C> const & features, Stop & stop) const
 {
     vigra_precondition(columnCount(features) >= ext_param_.column_count_,
         "RandomForestn::predictLabel():"
@@ -658,7 +676,7 @@ LabelType RandomForest<LabelType, Tag>
     typedef MultiArrayShape<2>::type Shp;
     garbage_prediction_.reshape(Shp(1, ext_param_.class_count_), 0.0);
     LabelType          d;
-    predictProbabilities(features, garbage_prediction_);
+    predictProbabilities(features, garbage_prediction_, stop);
     ext_param_.to_classlabel(argMax(garbage_prediction_), d);
     return d;
 }
@@ -666,10 +684,10 @@ LabelType RandomForest<LabelType, Tag>
 
 //Same thing as above with priors for each label !!!
 template <class LabelType, class PreprocessorTag>
-template <class U, class C, class Iterator>
+template <class U, class C>
 LabelType RandomForest<LabelType, PreprocessorTag>
     ::predictLabel( MultiArrayView<2, U, C> const & features,
-                    Iterator                        priors) const
+                    ArrayVectorView<double> priors) const
 {
     using namespace functor;
     vigra_precondition(columnCount(features) >= ext_param_.column_count_,
@@ -680,7 +698,7 @@ LabelType RandomForest<LabelType, PreprocessorTag>
     Matrix<double>  prob(1,ext_param_.class_count_);
     predictProbabilities(features, prob);
     std::transform( prob.begin(), prob.end(),
-                    priors, prob.begin(),
+                    priors.begin(), prob.begin(),
                     Arg1()*Arg2());
     LabelType          d;
     ext_param_.to_classlabel(argMax(prob), d);
@@ -692,7 +710,7 @@ template <class U, class C1, class T, class C2, class Stop_t>
 void RandomForest<LabelType, PreprocessorTag>
     ::predictProbabilities(MultiArrayView<2, U, C1>const &  features,
                            MultiArrayView<2, T, C2> &       prob,
-                           Stop_t                           stop_) const
+                           Stop_t                   &       stop_) const
 {
     //Features are n xp
     //prob is n x NumOfLabel probability for each feature in each class
@@ -712,12 +730,16 @@ void RandomForest<LabelType, PreprocessorTag>
 
     #define RF_CHOOSER(type_) detail::Value_Chooser<type_, Default_##type_> 
     Default_Stop_t default_stop(options_);
-    typename RF_CHOOSER(Stop_t)::type stop
+    typename RF_CHOOSER(Stop_t)::type & stop
             = RF_CHOOSER(Stop_t)::choose(stop_, default_stop); 
     #undef RF_CHOOSER 
-    stop.set_external_parameters(ext_param_);
+    stop.set_external_parameters(ext_param_, tree_count());
     prob.init(NumericTraits<T>::zero());
-    
+    if(tree_indices_.size() != 0)
+    {
+       std::random_shuffle(tree_indices_.begin(),
+                           tree_indices_.end()); 
+    }
     //Classify for each row.
     for(int row=0; row < rowCount(features); ++row)
     {
@@ -730,7 +752,7 @@ void RandomForest<LabelType, PreprocessorTag>
         for(int k=0; k<options_.tree_count_; ++k)
         {
         //get weights predicted by single tree
-            weights = trees_[k].predict(rowVector(features, row));
+            weights = trees_[tree_indices_[k]].predict(rowVector(features, row));
 
         //update votecount.
             int weighted = options_.predict_weighted_;
@@ -746,12 +768,16 @@ void RandomForest<LabelType, PreprocessorTag>
                                      k,
                                      rowVector(prob, row),
                                      totalWeight))
+            {
                 break;
+            }
         }
 
     //Normalise votes in each row by total VoteCount (totalWeight
         for(int l=0; l< ext_param_.class_count_; ++l)
-                prob(row, l) /= detail::RequiresExplicitCast<T>::cast(totalWeight);
+        {
+            prob(row, l) /= detail::RequiresExplicitCast<T>::cast(totalWeight);
+        }
     }
 
 }
