@@ -620,7 +620,14 @@ public:
         bestCurrentCounts[0].resize(ext.class_count_);
         bestCurrentCounts[1].resize(ext.class_count_);
     }
-  
+    template<class T> 
+    void set_external_parameters(ProblemSpec<T> const & ext)
+    {
+        class_weights_ = ext.class_weights_; 
+        ext_param_ = ext;
+        bestCurrentCounts[0].resize(ext.class_count_);
+        bestCurrentCounts[1].resize(ext.class_count_);
+    }
     /** calculate the best gini split along a Feature Column
      * \param column, the feature vector - has to support the [] operator
      * \param labels, the label vector 
@@ -742,7 +749,7 @@ class ThresholdSplit: public SplitBase<Tag>
     void set_external_parameters(ProblemSpec<T> const & in)
     {
         SB::set_external_parameters(in);        
-        bgfunc = ColumnDecisionFunctor( SB::ext_param_);
+        bgfunc.set_external_parameters( SB::ext_param_);
         int featureCount_ = SB::ext_param_.column_count_;
         splitColumns.resize(featureCount_);
         for(int k=0; k<featureCount_; ++k)

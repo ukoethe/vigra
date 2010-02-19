@@ -52,8 +52,8 @@ void vigraMain(matlab::OutputArray outputs, matlab::InputArray inputs){
     /***************************************************************************************************
     **              INIT PART                                                                         **
     ****************************************************************************************************/
-    typedef float inputType;
-    typedef UInt8 inputLType;
+    typedef double inputType;
+    typedef double inputLType;
 	vigra::RandomForestOptions 	options;
 	vigra::ProblemSpec<inputLType>	ext_param;
     options.sample_with_replacement(inputs.getBool("sample_with_replacement", 

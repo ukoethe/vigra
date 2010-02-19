@@ -1079,7 +1079,9 @@ void writeToHDF5File(const char* filePath, const char* pathInFile, const MultiAr
     ArrayVector<int> is_rowmajor(1, rowMajorOrder); 
     std::string groupis = pathInFile;
     groupis += ".reverse-shape";
+#if (H5_VERS_MAJOR == 1 && H5_VERS_MINOR == 8)
     writeHDF5Attr(filePath, groupis.c_str(), is_rowmajor);
+#endif
 }
 
 
@@ -1147,7 +1149,9 @@ void writeToHDF5File(const char* filePath,
     ArrayVector<int> is_rowmajor(1, rowMajorOrder); 
     std::string groupis = pathInFile;
     groupis += ".reverse-shape";
+#if (H5_VERS_MAJOR == 1 && H5_VERS_MINOR == 8)
     writeHDF5Attr(filePath, groupis.c_str(), is_rowmajor);
+#endif
 }
 
 } // namespace vigra
