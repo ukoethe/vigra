@@ -35,15 +35,8 @@ def getFunctionList(namespaceList):
             # the rightmost hyperlink contains the function name and link address
             f = f[f.rfind('<a class="el" href='):]
             functionList += re.findall(r'<a class="el" href="([^"]+)">([^<]+)$', f)
-    return functionList
 
-def addHeading(index, initial):    
-    index = index + '<p><a name="index_' + initial + \
-    '"><table class="function_index"><tr><th> ' + initial.upper() + \
-    ' </th><td align="right" width="100%">VIGRA_NAVIGATOR_PLACEHOLDER</td></tr></table><p>\n'
-    return index
-    
-def generateFunctionIndex(functionList):
+    # add special documentation for argument object factories
     for k in ['srcImageRange', 'srcImage', 'destImageRange', 'destImage', 'maskImage']:
         functionList.append(('group__ImageIterators.html#ImageBasedArgumentObjectFactories', k))
     for k in ['srcMultiArrayRange', 'srcMultiArray', 'destMultiArrayRange', 'destMultiArray']:
@@ -52,11 +45,43 @@ def generateFunctionIndex(functionList):
         functionList.append(('group__ImageIterators.html#IteratorBasedArgumentObjectFactories', k))
 
     functionList.sort(lambda a,b: cmp(a[1], b[1]))
+    
+    functionList = disambiguateOverloadedFunctions(functionList)
 
+    return functionList
+
+def addHeading(index, initial):    
+    index = index + '<p><a name="index_' + initial + \
+    '"><table class="function_index"><tr><th> ' + initial.upper() + \
+    ' </th><td align="right" width="100%">VIGRA_NAVIGATOR_PLACEHOLDER</td></tr></table><p>\n'
+    return index
+
+def disambiguateOverloadedFunctions(functionList):
+    for i in xrange(len(functionList)):
+        overloaded = False
+        functionName = functionList[i][1]
+        if i > 0:
+            lastFunctionName = functionList[i-1][1]
+            if functionName == lastFunctionName:
+                overloaded = True
+        if i < len(functionList) - 1:
+            nextFunctionName = functionList[i+1][1]
+            if functionName == nextFunctionName:
+                overloaded = True
+        if overloaded:
+            # disambiguate overloaded functions by their group or namespace
+            link = functionList[i][0]
+            group = re.sub(r'(group__|namespacevigra_1_1)([^\.]+)\.html.*', r'\2', link)
+        else:
+            group = ""
+        functionList[i] = functionList[i] + (group,)
+    
+    return functionList
+    
+def generateFunctionIndex(functionList):
     index = ""
     initials = []
     for i in range(len(functionList)):
-        overloaded = None
         functionName = functionList[i][1]
         link = functionList[i][0]
         initial = functionName[0]
@@ -65,24 +90,14 @@ def generateFunctionIndex(functionList):
             if initial != lastInitial:
                 initials.append(initial)
                 index = addHeading(index, initial)
-
-            lastFunctionName = functionList[i-1][1]
-            if functionName == lastFunctionName:
-                overloaded = 1
         else:
             initials.append(initial)
             index = addHeading(index, initial)
             
-        if i < len(functionList) - 1:
-            nextFunctionName = functionList[i+1][1]
-            if functionName == nextFunctionName:
-                overloaded = 1
-
         index = index + '<a href="'+ link + '">' + functionName + '</a>()'
-        if overloaded:
-            # disambiguate overloaded functions by their group or namespace
-            group = re.sub(r'(group__|namespacevigra_1_1)([^\.]+)\.html.*', r'\2', link)
-            index = index + ' [' + group + ']'
+        overloadDisambiguation = functionList[i][2]
+        if overloadDisambiguation != "":
+            index = index + ' [' + overloadDisambiguation + ']'
         index = index + '<br>\n'
 
     navigator = '['
@@ -109,10 +124,14 @@ def generateFunctionIndex(functionList):
 namespaceList = getNamespaceList()
 functionList = getFunctionList(namespaceList)
 generateFunctionIndex(functionList)
+
 #export functions list to c_api_replaces
 replaces=open("../vigranumpy/docsrc/c_api_replaces","w")
 for i in range(len(functionList)):
     functionName = functionList[i][1]
+    overloadDisambiguation = functionList[i][2]
+    if overloadDisambiguation != "":
+        functionName = overloadDisambiguation +'.' + functionName
     link = functionList[i][0]
     replaces.write(functionName+":"+link+"\n")
 
