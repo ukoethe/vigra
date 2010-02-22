@@ -176,9 +176,11 @@ void defineRandomForest_new()
 														   boost::python::default_call_policies(),
 														   ( arg("features"))),
 														   "docu")
-		.def("invalidateTree",&OnlinePredictionSet<float>::reset_tree,
-			 (arg("treeId")),
-			 "doku");
+	 .def("get_worsed_tree",&OnlinePreditionSet<float>::get_worsed_tree,
+	       "doku")
+	.def("invalidateTree",&OnlinePredictionSet<float>::reset_tree,
+	     (arg("treeId")),
+	     "doku");
 
 	enum_<RF_OptionTag>("RF_MTRY_SWITCH")
 		.value("RF_MTRY_LOG",RF_LOG)
@@ -230,7 +232,7 @@ void defineRandomForest_new()
 			 "and returns the OOB. See the vigra documentation for the meaning af the rest of the paremeters.")
     .def("reLearnTree",
 			 registerConverters(&pythonRFReLearnTree<UInt32,float>),
-			 (arg("trainData"), arg("trainLabels")),
+	 (arg("trainData"), arg("trainLabels"), arg("treeId")),
 			 "Re-learn one tree of the forest using \"trainData\" and \"trainLabels\".\n"
 			 "and returns the OOB. This might be helpful in an online learning setup to improve the classifier.")
     .def("learnRFWithFeatureSelection",

@@ -40,6 +40,19 @@ public:
         std::set<SampleRange<T> > set_init;
         set_init.insert(SampleRange<T>(0,init.size(),features.shape(1)));
         ranges.resize(num_sets,set_init);
+	cumulativePredTime.resize(num_sets,0);
+    }
+    int get_worsed_tree()
+    {
+        int result=0;
+	for(int i=0;i<cumulativePredTime.size();++i)
+	{
+	    if(cumulativePredTime[i]>cumulativePredTime[result])
+	    {
+	        result=i;
+	    }
+	}
+	return result;
     }
     void reset_tree(int index)
     {
@@ -47,9 +60,11 @@ public:
         std::set<SampleRange<T> > set_init;
         set_init.insert(SampleRange<T>(0,features.shape(0),features.shape(1)));
         ranges[index]=set_init;
+	cumulativePredTime[index]=0;
     }
     std::vector<std::set<SampleRange<T> > > ranges;
     std::vector<std::vector<int> > indices;
+    std::vector<int> cumulativePredTime;
     MultiArray<2,T> features;
 };
 

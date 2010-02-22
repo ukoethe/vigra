@@ -1046,11 +1046,13 @@ void RandomForest<LabelType,PreprocessorTag>
         for(i=predictionSet.ranges[set_id].begin();i!=predictionSet.ranges[set_id].end();++i)
             stack.push_back(std::pair<int,set_it>(2,i));
         //get weights predicted by single tree
+	int num_decisions=0;
         while(!stack.empty())
         {
             set_it range=stack.back().second;
             int index=stack.back().first;
             stack.pop_back();
+	    ++num_decisions;
 
             if(trees_[k].isLeafNode(trees_[k].topology_[index]))
             {
@@ -1130,6 +1132,7 @@ void RandomForest<LabelType,PreprocessorTag>
                 }
             }
         }
+	predictionSet.cumulativePredTime[k]=num_decisions;
     }
     for(int i=0;i<totalWeights.size();++i)
     {
