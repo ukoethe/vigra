@@ -303,8 +303,11 @@ class NodeBase
 
    /** create new Node at end of vector
     * \param tLen number of integers needed in the topolog vector
-    * \param plen number of parameters needed (this includes the node
-    *           weight)*/
+    * \param pLen number of parameters needed (this includes the node
+    *           weight)
+    * \param topology reference to Topology array of decision tree.
+    * \param parameter reference to Parameter array of decision tree.
+    **/
     NodeBase(   int                      tLen,
                 int                      pLen,
                 T_Container_type   &        topology,

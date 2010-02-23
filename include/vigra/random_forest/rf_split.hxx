@@ -56,9 +56,6 @@ namespace vigra
 class CompileTimeError;
 
 
-/** Base Class for all SplitFunctors used with the \ref RandomForestn class
-    defines the interface used while learning a tree.
-**/
 namespace detail
 {
     template<class Tag>
@@ -84,6 +81,10 @@ namespace detail
     };
 }
 
+
+/** Base Class for all SplitFunctors used with the \ref RandomForest class
+    defines the interface used while learning a tree.
+**/
 template<class Tag>
 class SplitBase
 {

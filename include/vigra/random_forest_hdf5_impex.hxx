@@ -48,15 +48,14 @@ namespace vigra
 namespace detail
 {
 
+
 /** shallow search the hdf5 group for containing elements
  * returns negative value if unsuccessful
- * \param filename name of hdf5 file
- * \param groupname path in hdf5 file
+ * \param grp_id    hid_t containing path to group.
  * \param cont		reference to container that supports
  * 					insert(). valuetype of cont must be
  * 					std::string
  */
-
 template<class Container>
 bool find_groups_hdf5(hid_t grp_id, Container &cont)
 {
@@ -109,6 +108,14 @@ bool find_groups_hdf5(hid_t grp_id, Container &cont)
 }
 
 
+/** shallow search the hdf5 group for containing elements
+ * returns negative value if unsuccessful
+ * \param filename name of hdf5 file
+ * \param groupname path in hdf5 file
+ * \param cont		reference to container that supports
+ * 					insert(). valuetype of cont must be
+ * 					std::string
+ */
 template<class Container>
 bool find_groups_hdf5(std::string filename, 
 							  std::string groupname, 

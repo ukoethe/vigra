@@ -580,7 +580,7 @@ class RandomForestOptions
             Each tree is only trained with a subset of the entire training data.
             If \a r is <tt>true</tt>, this subset is sampled from the entire training set with
             replacement.<br>
-            Default: true (use sampling with replacement)</tt>)
+            Default: <tt>true</tt> (use sampling with replacement))
         */
     RandomForestOptions & sampleWithReplacement(bool r)
     {

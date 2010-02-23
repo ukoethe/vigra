@@ -55,8 +55,8 @@ namespace vigra
 
 namespace detail
 {
+ // todo FINALLY DECIDE TO USE CAMEL CASE OR UNDERSCORES !!!!!!
 /** decisiontree classifier. 
- * todo FINALLY DECIDE TO USE CAMEL CASE OR UNDERSCORES !!!!!!
  *
  * This class is actually meant to be used in conjunction with the 
  * Random Forest Classifier 
@@ -91,7 +91,7 @@ class DecisionTree
 
 
   public:
-    /** \Brief Create tree with parameters */
+    /** \brief Create tree with parameters */
     template<class T>
     DecisionTree(ProblemSpec<T> ext_param)
     :

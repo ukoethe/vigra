@@ -80,6 +80,8 @@ class VisitorBase
      * \param leftChild left stack entry that will be pushed
      * \param rightChild
      *                  right stack entry that will be pushed.
+     * \param features  features matrix
+     * \param labels    label matrix
      * \sa RF_Traits::StackEntry_t
      */
     template<class Tree, class Split, class Region, class Feature_t, class Label_t>
@@ -119,6 +121,7 @@ class VisitorBase
      *
      * \param rf        reference to the random forest object that called this
      *                  visitor
+     * \param pr        reference to the Processor class used.
      */
     template<class RF, class PR>
     void visit_at_beginning(RF const & rf, PR const & pr)
@@ -128,7 +131,8 @@ class VisitorBase
      *
      * \param tr        reference to the tree object that called this visitor
      * \param index     index in the topology_ array we currently are at
-     * \param node_tag  type of node we have (will be e_.... - )
+     * \param node_t    type of node we have (will be e_.... - )
+     * \param weight    Node weight of current node. 
      * \sa  NodeTags;
      *
      * you can create the node by using a switch on node_tag and using the 

@@ -168,7 +168,7 @@ class RandomForest
      *
      * simple usage for classification (regression is not yet supported):
      * \code
-     *      typedef xxx feature_t \\ replace xxx wit whichever type
+     *      typedef xxx feature_t \\ replace xxx with whichever type
      *      typedef yyy label_t   \\ meme chose. 
      *      MultiArrayView<2, feature_t> f = get_some_features();
      *      MultiArrayView<2, label_t>   l = get_some_labels)(
@@ -185,17 +185,7 @@ class RandomForest
      *
      * \endcode
      *
-     * Classification Random Forest specific:
-     * The Random Forest remembers the LabelType (without specifying it as a 
-     * template parameter during construction):
-     * - Only numeral and native C types (IntX, UIntX, float, double)
-     *   are suppported as label type.
-     * - Types are automatically converted to the right type give in the 
-     *   predict function - This may cause problems if the original type
-     *   was double - and you were stu... unvigilant enough to name the 
-     *   labels 3.4 , 3.2 etc.
-     *   This conversion is only done once during construction and causes
-     *   no type casting overhead during prediction.
+     * - Default Response/Label type is double
      */
     RandomForest(Options_t const & options = Options_t(), 
                  ProblemSpec_t const & ext_param = ProblemSpec_t())
@@ -209,13 +199,14 @@ class RandomForest
     }
 
     /**\brief Create RF from external source
-     *
-     * \param ext_param Extrinsic parameters that specify the problem e.g.
+     * \param treeCount Number of trees to add.
+     * \param trees     Iterator to a Container where the topology_ data
+     *                  of the trees are stored.
+     * \param weights  iterator to a Container where the parameters_ data
+     *                  of the trees are stored.
+     * \param problem_spec 
+     *                  Extrinsic parameters that specify the problem e.g.
      *                  ClassCount, featureCount etc.
-     * \param tree_top  Iterator to a Container where the topology_ data
-     *                  of the trees are stored.
-     * \param tree_par  iterator to a Container where the parameters_ data
-     *                  of the trees are stored.
      * \param options   (optional) specify options used to train the original
      *                  Random forest. This parameter is not used anywhere
      *                  during prediction and thus is optional.
@@ -268,10 +259,11 @@ class RandomForest
      *
      *  \param in external parameters to be set
      *
-     * set external parameters explicitly if Random Forest has not been
-     * trained the preprocessor will either ignore filling values set this
-     * way or will throw an exception if values specified manually do not
-     * match the value calculated during the preparation step.
+     * set external parameters explicitly. 
+     * If Random Forest has not been trained the preprocessor will 
+     * either ignore filling values set this way or will throw an exception 
+     * if values specified manually do not match the value calculated 
+     & during the preparation step.
      * \sa Option_t::presupplied_ext_param member for further details.
      */
     void set_ext_param(ProblemSpec_t const & in)
@@ -355,12 +347,12 @@ class RandomForest
      *                  default value.
      * \sa      visitor
      * \param split     split functor to be used to calculate each split
-     *                  use RF_Default() for using default value.
+     *                  use rf_default() for using default value.
      * \param stop
      *                  predicate to be used to calculate each split
-     *                  use RF_Default() for using default value.
+     *                  use rf_default() for using default value.
      * \param random    RandomNumberGenerator to be used. Use
-     *                  RF_Default() to use default value.
+     *                  rf_default() to use default value.
      * \return          oob_error.
      *
      *\sa OOB_Visitor, VariableImportanceVisitor 
@@ -399,26 +391,6 @@ class RandomForest
 
 
 
-    /**\brief learn on data with default configuration
-     *
-     * \param features  a N x M matrix containing N samples with M
-     *                  features
-     * \param labels    a N x D matrix containing the corresponding
-     *                  N labels. Current split functors assume D to
-     *                  be 1 and ignore any additional columns.
-     *                  this is not enforced to allow future support
-     *                  for uncertain labels.
-     * \return          out of bag error estimate.
-     *
-     * learning is done with:
-     *
-     * \sa GiniSplit, EarlyStoppingStd, OOB_Visitor
-     *
-     * - Randomly seeded random number generator
-     * - default gini split functor as described by Breiman
-     * - default The standard early stopping criterion
-     * - the oob visitor, whose value is returned.
-     */
     template <class U, class C1, class U2,class C2, class Visitor_t>
     double learn(   MultiArrayView<2, U, C1> const  & features,
                     MultiArrayView<2, U2,C2> const  & labels,
@@ -445,6 +417,26 @@ class RandomForest
                      rf_default());
     }
 
+    /**\brief learn on data with default configuration
+     *
+     * \param features  a N x M matrix containing N samples with M
+     *                  features
+     * \param labels    a N x D matrix containing the corresponding
+     *                  N labels. Current split functors assume D to
+     *                  be 1 and ignore any additional columns.
+     *                  this is not enforced to allow future support
+     *                  for uncertain labels.
+     * \return          out of bag error estimate.
+     *
+     * learning is done with:
+     *
+     * \sa GiniSplit, EarlyStoppingStd, OOB_Visitor
+     *
+     * - Randomly seeded random number generator
+     * - default gini split functor as described by Breiman
+     * - default The standard early stopping criterion
+     * - the oob visitor, whose value is returned.
+     */
     template <class U, class C1, class U2,class C2>
     double learn(   MultiArrayView<2, U, C1> const  & features,
                     MultiArrayView<2, U2,C2> const  & labels)
@@ -467,6 +459,7 @@ class RandomForest
      * \param features: a 1 by featureCount matrix containing
      *        data point to be predicted (this only works in
      *        classification setting)
+     * \param stop: early stopping critierion
      * \return double value representing class. You can use the
      *         predictLabels() function together with the
      *         rf.external_parameter().class_type_ attribute
@@ -483,7 +476,7 @@ class RandomForest
     /** \brief predict a label with features and class priors
      *
      * \param features: same as above.
-     * \param priors:   iterator to prior weighting of classes
+     * \param prior:   iterator to prior weighting of classes
      * \return sam as above.
      */
     template <class U, class C>
