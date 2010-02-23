@@ -1,11 +1,7 @@
-INCLUDE_DIRECTORIES(${VIGRANUMPY_INCLUDE_DIRS})
-
 IF(HDF5_FOUND)
-    ADD_DEFINITIONS(${HDF5_CPPFLAGS})
-    INCLUDE_DIRECTORIES(${HDF5_INCLUDE_DIR})
-    SET(VIGRANUMPY_CORE_LIBRARIES ${VIGRANUMPY_LIBRARIES} vigraimpex ${HDF5_LIBRARIES})
+    SET(VIGRANUMPY_IMPEX_LIBRARIES vigraimpex ${HDF5_LIBRARIES})
 ELSE()
-    SET(VIGRANUMPY_CORE_LIBRARIES ${VIGRANUMPY_LIBRARIES} vigraimpex)
+    SET(VIGRANUMPY_IMPEX_LIBRARIES vigraimpex)
 ENDIF(HDF5_FOUND)
 
 VIGRA_ADD_NUMPY_MODULE(core 
@@ -13,40 +9,50 @@ VIGRA_ADD_NUMPY_MODULE(core
     vigranumpycore.cxx
     vigranumpyimagetransformation.cxx
     vigranumpyconverters.cxx
-  LIBRARIES
-    ${VIGRANUMPY_CORE_LIBRARIES})
+  VIGRANUMPY)
 
 VIGRA_ADD_NUMPY_MODULE(impex 
   SOURCES
     vigranumpyimpex.cxx
   LIBRARIES   
-    vigraimpex ${VIGRANUMPY_LIBRARIES} vigranumpy_core)   
+    ${VIGRANUMPY_IMPEX_LIBRARIES}
+  VIGRANUMPY)   
      
 VIGRA_ADD_NUMPY_MODULE(convolution 
   SOURCES
     vigranumpykernel.cxx
     vigranumpyconvolution.cxx
-    vigranumpymulticonvolution.cxx)
+    vigranumpymulticonvolution.cxx
+  VIGRANUMPY)
    
 VIGRA_ADD_NUMPY_MODULE(tensor SOURCES
-    vigranumpytensor.cxx)
+    vigranumpytensor.cxx
+  VIGRANUMPY)
    
 VIGRA_ADD_NUMPY_MODULE(filters SOURCES
-    vigranumpyfilters.cxx)
+    vigranumpyfilters.cxx
+  VIGRANUMPY)
    
 VIGRA_ADD_NUMPY_MODULE(noise SOURCES
-    vigranumpynoise.cxx)
+    vigranumpynoise.cxx
+  VIGRANUMPY)
    
 VIGRA_ADD_NUMPY_MODULE(segmentation SOURCES
-    vigranumpysegmentation.cxx)
+    vigranumpysegmentation.cxx
+  VIGRANUMPY)
    
 VIGRA_ADD_NUMPY_MODULE(morphology SOURCES
-    vigranumpymorphology.cxx)
+    vigranumpymorphology.cxx
+  VIGRANUMPY)
    
 VIGRA_ADD_NUMPY_MODULE(edgedetection SOURCES
-    vigranumpyedgedetection.cxx)
+    vigranumpyedgedetection.cxx
+  VIGRANUMPY)
    
 VIGRA_ADD_NUMPY_MODULE(classification SOURCES
     vigranumpyrf.cxx
-    vigranumpyrf_new.cxx)
+    vigranumpyrf_new.cxx
+  LIBRARIES   
+    ${VIGRANUMPY_IMPEX_LIBRARIES}
+  VIGRANUMPY)
 

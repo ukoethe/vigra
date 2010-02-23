@@ -17,7 +17,7 @@ ELSE()
 ENDIF()
 
 TARGET_LINK_LIBRARIES(vigranumpytest ${VIGRANUMPY_LIBRARIES} vigranumpy_core)
-ADD_DEPENDENCIES(check vigranumpytest)
+ADD_DEPENDENCIES(check_python vigranumpytest)
 ADD_DEPENDENCIES(vigranumpytest vigranumpy)
 
 SET(TEST_SCRIPTS

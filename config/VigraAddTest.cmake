@@ -53,7 +53,7 @@ FUNCTION(VIGRA_ADD_TEST target)
         ADD_EXECUTABLE(${target} EXCLUDE_FROM_ALL ${SOURCES})
     ENDIF()
     
-    ADD_DEPENDENCIES(check ${target})
+    ADD_DEPENDENCIES(check_cpp ${target})
     ADD_DEPENDENCIES(ctest ${target})
     if(DEFINED LIBRARIES)
         TARGET_LINK_LIBRARIES(${target} ${LIBRARIES})

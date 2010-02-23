@@ -52,6 +52,14 @@ ENDIF()
 ADD_CUSTOM_TARGET(check)
 ADD_CUSTOM_TARGET(ctest COMMAND ${CMAKE_CTEST_COMMAND})
 
+ADD_CUSTOM_TARGET(check_cpp)
+ADD_DEPENDENCIES(check check_cpp)
+
+IF(WITH_VIGRANUMPY)
+    ADD_CUSTOM_TARGET(check_python)
+    ADD_DEPENDENCIES(check check_python)
+ENDIF()
+
 ENABLE_TESTING()
 
 ##################################################
@@ -61,6 +69,14 @@ ENABLE_TESTING()
 ##################################################
 
 ADD_CUSTOM_TARGET(doc)
+
+##################################################
+#
+#     setup private experimentation target
+#
+##################################################
+
+ADD_CUSTOM_TARGET(experiments)
 
 ##################################################
 #

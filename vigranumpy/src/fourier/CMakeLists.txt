@@ -4,4 +4,5 @@ VIGRA_ADD_NUMPY_MODULE(fourier
   SOURCES
     vigranumpyfourier.cxx
   LIBRARIES   
-    ${FFTW3_LIBRARIES} ${VIGRANUMPY_LIBRARIES} vigranumpy_core)   
+    ${FFTW3_LIBRARIES}
+  VIGRANUMPY)   
