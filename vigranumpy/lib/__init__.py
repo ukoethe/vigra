@@ -1,8 +1,8 @@
-from vigranumpycore import *
-from arraytypes import *
+import vigranumpycore
+import arraytypes
+import impex
 import convolution
 import tensor
-import impex
 import filters
 import noise
 import segmentation
@@ -13,7 +13,11 @@ import classification
 try:
     import fourier
 except:
-    print "vigra.fourier not found"
+    print "WARNING: Unable to load module 'vigra.fourier'"
+
+from vigranumpycore import *
+from arraytypes import *
+from impex import *
 
 # auto-generate code for  additional Kernel generators:
 def genKernelFactories():
