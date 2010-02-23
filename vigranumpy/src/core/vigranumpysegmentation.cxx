@@ -559,7 +559,7 @@ void defineSegmentation()
          arg("out")=python::object()),
         "Find the connected components of a segmented volume, excluding the background from labeling.\n"
         "\n"
-        "For details see labelVolmeWithBackground_ in the vigra C++ documentation.");
+        "For details see labelVolumeWithBackground_ in the vigra C++ documentation.");
 }
 
 } // namespace vigra

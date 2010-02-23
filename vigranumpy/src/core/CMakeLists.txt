@@ -4,6 +4,8 @@ ELSE()
     SET(VIGRANUMPY_IMPEX_LIBRARIES vigraimpex)
 ENDIF(HDF5_FOUND)
 
+# note special treatment of target vigranumpy_core: 
+# module name is automatically changed into vigranumpycore
 VIGRA_ADD_NUMPY_MODULE(core 
   SOURCES 
     vigranumpycore.cxx

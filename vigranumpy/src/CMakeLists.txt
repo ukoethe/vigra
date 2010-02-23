@@ -59,7 +59,7 @@ FUNCTION(VIGRA_ADD_NUMPY_MODULE target)
         TARGET_LINK_LIBRARIES(${TARGET_NAME} ${LIBRARIES})
     endif()
     
-    if(target MATCHES "^core$")
+    if(LIBRARY_NAME MATCHES "^vigranumpycore$")
         TARGET_LINK_LIBRARIES(${TARGET_NAME} ${VIGRANUMPY_LIBRARIES})
     else()
         TARGET_LINK_LIBRARIES(${TARGET_NAME} ${VIGRANUMPY_LIBRARIES} vigranumpy_core)

@@ -18,6 +18,7 @@ ENDIF()
 
 TARGET_LINK_LIBRARIES(vigranumpytest ${VIGRANUMPY_LIBRARIES} vigranumpy_core)
 ADD_DEPENDENCIES(check_python vigranumpytest)
+ADD_DEPENDENCIES(ctest vigranumpytest)
 ADD_DEPENDENCIES(vigranumpytest vigranumpy)
 
 SET(TEST_SCRIPTS
@@ -29,7 +30,6 @@ SET(TEST_SCRIPTS
 
 INCLUDE(VigraAddTest)
 VIGRA_COPY_TEST_DATA(${TEST_SCRIPTS})
-
 
 MACRO(DEPENDENCY_PATH variable target)
     GET_TARGET_PROPERTY(${variable} ${target} LOCATION)

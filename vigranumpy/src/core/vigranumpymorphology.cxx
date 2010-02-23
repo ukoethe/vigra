@@ -310,7 +310,7 @@ void defineMorphology()
         registerConverters(&pythonDiscErosion<bool>),
         (arg("image"), arg("radius"), arg("out")=object()),
         "Apply erosion (minimum) filter with disc of given radius to image.\n\n"
-        "This is an abbreviation for the rank order filter with rank = 0.0. See discRankOrderFilter_ for more information.\n"
+        "This is an abbreviation for the rank order filter with rank = 0.0. See discErosion_ for more information.\n"
         "This function also works for multiband images, it is then executed on every band.\n"
         );
     def("discErosion",
@@ -321,7 +321,7 @@ void defineMorphology()
         registerConverters(&pythonDiscDilation<bool>),
         (arg("image"), arg("radius"), arg("out")=object()),
         "Apply dilation (maximum) filter with disc of given radius to image.\n\n"
-        "This is an abbreviation for the rank order filter with rank = 1.0. See discRankOrderFilter_ for more information.\n"
+        "This is an abbreviation for the rank order filter with rank = 1.0. See discDilation_ for more information.\n"
         "This function also works for multiband images, it is then executed on every band.\n"
        );
     def("discDilation",
@@ -332,7 +332,7 @@ void defineMorphology()
         registerConverters(&pythonDiscMedian<bool>),
         (arg("image"), arg("radius"), arg("out")=object()),
         "Apply median filter with disc of given radius to image.\n\n"
-        "This is an abbreviation for the rank order filter with rank = 0.5. See discRankOrderFilter_ for more information.\n"
+        "This is an abbreviation for the rank order filter with rank = 0.5. See discMedian_ for more information.\n"
         "This function also works for multiband images, it is then executed on every band.\n"
         );
     def("discMedian",
@@ -355,7 +355,7 @@ void defineMorphology()
         (arg("image"), arg("radius"), arg("out")=object()),
         "Apply a closing filter with disc of given radius to image.\n\n"
         "This is an abbreviation for applying a dilation and an erosion  filter in sequence.\n"
-        "See discRankOrderFilter_ in the vigra C++ documentation for more information\n"
+        "See discRankOrderFilter_ for more information\n"
         "This function also works for multiband images, it is then executed on every band.\n"
        );
     def("discClosing",
