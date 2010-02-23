@@ -177,12 +177,12 @@ class NeighborCode3D
 
     static unsigned int directionBit(Direction d)
     {
-        static unsigned int b[] = { 1 << (InFront + 1),
-                                    1 << (North + 1),
-                                    1 << (West + 1),
-                                    1 << (Behind + 1),
-                                    1 << (South + 1),
-                                    1 << (East + 1)
+        static unsigned int b[] = { 1 << InFront,
+                                    1 << North,
+                                    1 << West,
+                                    1 << Behind,
+                                    1 << South,
+                                    1 << East
                                   };
         return b[d];
     };
@@ -519,37 +519,38 @@ class NeighborCode3D
     static unsigned int directionBit(Direction d)
     {
         static unsigned int b[] = {
-                1 <<    (InFrontNorthWest+1),
-                1 <<    (InFrontNorth+1),
-                1 <<  (InFrontNorthEast+1),
-                1 <<  (InFrontWest+1),
-                1 <<  (InFront+1),
-                1 <<  (InFrontEast+1),
-                1 <<  (InFrontSouthWest+1),
-                1 <<  (InFrontSouth+1),
-                1 <<  (InFrontSouthEast+1),
+                1 <<  InFrontNorthWest,
+                1 <<  InFrontNorth,
+                1 <<  InFrontNorthEast,
+                1 <<  InFrontWest,
+                1 <<  InFront,
+                1 <<  InFrontEast,
+                1 <<  InFrontSouthWest,
+                1 <<  InFrontSouth,
+                1 <<  InFrontSouthEast,
 
-                1 <<  (NorthWest+1),
-                1 <<  (North+1),
-                1 <<  (NorthEast+1),
-                1 <<  (West+1),
-                1 <<  (East+1),
-                1 <<  (SouthWest+1),
-                1 <<  (South+1),
-                1 <<  (SouthEast+1),
+                1 <<  NorthWest,
+                1 <<  North,
+                1 <<  NorthEast,
+                1 <<  West,
+                1 <<  East,
+                1 <<  SouthWest,
+                1 <<  South,
+                1 <<  SouthEast,
 
-                1 <<  (BehindNorthWest+1),
-                1 <<  (BehindNorth+1),
-                1 <<  (BehindNorthEast+1),
-                1 <<  (BehindWest+1),
-                1 <<  (Behind+1),
-                1 <<  (BehindEast+1),
-                1 <<  (BehindSouthWest+1),
-                1 <<  (BehindSouth+1),
-                1 <<  (BehindSouthEast+1)
+                1 <<  BehindNorthWest,
+                1 <<  BehindNorth,
+                1 <<  BehindNorthEast,
+                1 <<  BehindWest,
+                1 <<  Behind,
+                1 <<  BehindEast,
+                1 <<  BehindSouthWest,
+                1 <<  BehindSouth,
+                1 <<  BehindSouthEast
             };
         return b[d];
     };
+
 
 
     /** The number of valid neighbors if the current center is at the volume border.

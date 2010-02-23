@@ -196,10 +196,10 @@ class NeighborCode
 
     static unsigned int directionBit(Direction d)
     {
-        static unsigned int b[] = {1 << (East + 1),
-                                   1 << (North + 1),
-                                   1 << (West + 1),
-                                   1 << (South + 1)};
+        static unsigned int b[] = {1 << East,
+                                   1 << North,
+                                   1 << West,
+                                   1 << South };
         return b[d];
     };
 
@@ -338,6 +338,7 @@ class NeighborCode
     */
 typedef NeighborCode::Direction Direction;
 
+static const Direction Error          = NeighborCode::Error;          /**<  Export NeighborCode::Error to namespace FourNeighborhood */
 static const Direction East           = NeighborCode::East;           /**<  Export NeighborCode::East to namespace FourNeighborhood */
 static const Direction North          = NeighborCode::North;          /**<  Export NeighborCode::North to namespace FourNeighborhood */
 static const Direction West           = NeighborCode::West;           /**<  Export NeighborCode::West to namespace FourNeighborhood */
@@ -431,14 +432,14 @@ class NeighborCode
 
     static unsigned int directionBit(Direction d)
     {
-        static unsigned int b[] = {1 << (East + 1),
-                                   1 << (NorthEast + 1),
-                                   1 << (North + 1),
-                                   1 << (NorthWest + 1),
-                                   1 << (West + 1),
-                                   1 << (SouthWest + 1),
-                                   1 << (South + 1),
-                                   1 << (SouthEast + 1)};
+        static unsigned int b[] = {1 << East,
+                                   1 << NorthEast,
+                                   1 << North,
+                                   1 << NorthWest,
+                                   1 << West,
+                                   1 << SouthWest,
+                                   1 << South,
+                                   1 << SouthEast};
         return b[d];
     };
 
