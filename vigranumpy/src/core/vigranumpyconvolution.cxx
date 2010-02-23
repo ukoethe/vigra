@@ -965,7 +965,7 @@ void defineConvolutionFunctions()
                           (arg("image"), arg("scale") = 1.0, arg("out") = python::object()),
                           "Filter image with the Laplacian of Gaussian operator at the given scale.\n"
                           "\n"
-                          "For details see laplacianOfGaussian in the vigra C++ documentation.");
+                          "For details see laplacianOfGaussian_ in the vigra C++ documentation.");
 
     def("hessianMatrixOfGaussian", registerConverters(&hessianMatrixOfGaussian2D<float>),
       (arg("image"), arg("scale")=1.0, arg("out") = python::object()),
@@ -984,7 +984,7 @@ void defineConvolutionFunctions()
               (arg("image"), arg("kernel")=python::object(), arg("out") = python::object()),
               "Perform 2D non-separable convolution, with and without ROI mask.\n"
               "\n"
-              "For details see convolveImage_ in the vigra C++ documentation.");
+              "For details see StandardConvolution.convolveImage_ in the vigra C++ documentation.");
 
     /*def("recursiveFilterLineFirstOrder", registerConverters(&pythonRecursiveFilterLineFirstOrder<float>),
                   (arg("image"), arg("b1")=1.0, arg("borderTreatment") = BORDER_TREATMENT_REPEAT,
