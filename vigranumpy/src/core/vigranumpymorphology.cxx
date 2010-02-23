@@ -393,7 +393,7 @@ void defineMorphology()
         "The operation is isotropic.\n"
         "The input is a binary multi-dimensional array where non-zero pixels represent foreground and zero pixels represent background.\n"
         "\n"
-        "For details see vigra documentation (multiBanariyDilation_ and multiBinaryErosion_).\n"
+        "For details see vigra documentation (multiBinaryDilation_ and multiBinaryErosion_).\n"
         "This function also works for multiband arrays, it is then executed on every band.\n");
     def("multiBinaryClosing",
         registerConverters(&pythonMultiBinaryClosing<4>),
@@ -404,7 +404,7 @@ void defineMorphology()
         "The operation is isotropic.\n"
         "The input is a binary multi-dimensional array where non-zero pixels represent foreground and zero pixels represent background.\n"
         "\n"
-        "For details see vigra documentation (multiBanariyDilation_ and multiBinaryErosion_).\n"
+        "For details see vigra documentation (multiBinaryDilation_ and multiBinaryErosion_).\n"
         "This function also works for multiband arrays, it is then executed on every band.\n");
     
     def("multiGrayscaleErosion",

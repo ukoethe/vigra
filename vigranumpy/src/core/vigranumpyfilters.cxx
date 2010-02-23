@@ -185,7 +185,7 @@ void defineFilters2D()
         "Source pixels with other labels will be considered objects."
         "In the destination image, all pixels corresponding to background will be assigned the their distance value, all pixels corresponding to objects will be assigned 0.'n'"
         "\n"
-        "For more details see distanceTranform_ in the vigra C++ documentation.");
+        "For more details see distanceTransform_ in the vigra C++ documentation.");
 
     def("rieszTransformOfLOG2D",
         registerConverters(&pythonRieszTransformOfLOG2D<float>),        // also multiband

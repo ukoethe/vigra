@@ -267,14 +267,14 @@ void defineMultiConvolutionFunctions()
     	(arg("volume"), arg("sigma"), arg("out")=python::object()),
         "Calculate the gradient vector by means of a 1st derivatives of Gaussian filter (for a 3D image).\n"
         "\n"
-        "For details see gaussianGradient_ in the vigra C++ documentation.");
+        "For details see gaussianGradientMultiArray_ in the vigra C++ documentation.");
 
     def("symmetricGradient3D",
         registerConverters(&pythonSymmetricGradientND<float,4>),                // also multiband?
         (arg("volume"), arg("out")=python::object()),
         "Calculate gradient of a 3-dimensional images using symmetric difference filters."
         "\n"
-        "For details see ymmetricGradientMultiArray_ in the vigra C++ documentation.");
+        "For details see symmetricGradientMultiArray_ in the vigra C++ documentation.");
 
     def("convolveOneDimension3D",
     	registerConverters(&pythonConvolveOneDimensionND<float,4>),				// also multiband
