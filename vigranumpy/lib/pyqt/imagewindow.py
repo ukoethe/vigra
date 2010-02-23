@@ -6,7 +6,7 @@ from PyQt4.QtCore import SIGNAL
 
 from VigraQt import OverlayViewer, ImageCursor
 import quickdialog
-import vigra.vigranumpycmodule
+import vigra.vigranumpycore
 import vigra.ufunc
 import weakref
 
@@ -193,7 +193,7 @@ class ImageViewer(OverlayViewer):
     def writeImage(self):
         d = quickdialog.QuickDialog(self,"Write Image")
 
-        imageFileExtensions = '*.' + ' *.'.join(vigra.vigranumpycmodule.impexListExtensions().split(' '))
+        imageFileExtensions = '*.' + ' *.'.join(vigra.vigranumpycore.impexListExtensions().split(' '))
         d.filedialog = quickdialog.OutputFile(
             d, "Output filename:", "Image Files ("+imageFileExtensions+")")
         d.filedialog.setFocus()
@@ -339,6 +339,11 @@ class CaptionImageViewer(qt.QFrame):
         self.updateCaption()
 
 class CursorAction(qt.QAction):
+    def __init__(self, name, parent):
+        qt.QAction.__init__(self, name, parent)
+        self.x, self.y = -1, -1
+        self.zoomLevel = 0
+
     def trigger(self):
         qt.QAction.trigger(self)
         for v in self.viewers:
@@ -347,9 +352,18 @@ class CursorAction(qt.QAction):
             v._toggleCaptionSignals()
 
     def broadcastPosition(self, pos):
+        if self.x ==  pos.x() and self.y == pos.y():
+            return
         self.x, self.y = pos.x(), pos.y()
         for v in self.viewers:
             v.viewer.imageCursor.setPosition(pos)
+
+    def broadcastZoom(self, level):
+        if self.zoomLevel == level:
+            return
+        self.zoomLevel = level
+        for v in self.viewers:
+            v.viewer.setZoomLevel(level)
           
 class ImageWindow(qt.QFrame):
     '''Display one or more images in a grid-like layout.
@@ -376,12 +390,15 @@ class ImageWindow(qt.QFrame):
             self.cursorAction.viewers.append(viewer)
             if len(self.cursorAction.viewers) == 1:
                 self.setWindowTitle(viewer.windowTitle())
-            if self.cursorAction.isChecked():
+            if self.cursorAction.x != -1:
                 viewer.viewer.imageCursor.setPosition(qcore.QPoint(self.cursorAction.x, self.cursorAction.y))
+            viewer.viewer.setZoomLevel(self.cursorAction.zoomLevel)
+            if self.cursorAction.isChecked():
                 viewer.viewer.cursorAction.trigger()
             self.disconnect(viewer.viewer.cursorAction, SIGNAL("triggered()"), viewer.viewer._toggleImageCursor)
             self.connect(viewer.viewer.cursorAction, SIGNAL("triggered()"), self.cursorAction.trigger)
             self.connect(viewer.viewer.imageCursor, SIGNAL("positionChanged(QPoint)"), self.cursorAction.broadcastPosition)
+            self.connect(viewer.viewer, SIGNAL("zoomLevelChanged(int)"), self.cursorAction.broadcastZoom)
         self.updateGeometry()
         # this call is necessary to update the sizeHint() before adjustSize() is called
         qcore.QCoreApplication.processEvents()
@@ -389,7 +406,7 @@ class ImageWindow(qt.QFrame):
 
 def showImage(image, normalize = True, title = None):
     if isinstance(image, str):
-        image = vigra.vigranumpycmodule.readImage(image)
+        image = vigra.vigranumpycore.readImage(image)
     v = ImageWindow()
     v.setImage(image, normalize=normalize, title=title)
     v.show()
