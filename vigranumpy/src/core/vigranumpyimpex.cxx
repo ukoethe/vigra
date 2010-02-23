@@ -33,8 +33,8 @@
 /*                                                                      */
 /************************************************************************/
 
-#define PY_ARRAY_UNIQUE_SYMBOL vigranumpycmodule_PyArray_API
-#define NO_IMPORT_ARRAY
+#define PY_ARRAY_UNIQUE_SYMBOL vigranumpyimpex_PyArray_API
+//#define NO_IMPORT_ARRAY
 #include <iostream>
 #include <cstring>
 #include <cstdio>
@@ -324,13 +324,15 @@ NumpyAnyArray readImageHDF5Impl(HDF5ImportInfo const & info)
       case 2:
       {
         NumpyArray<2, Singleband<T> > res(MultiArrayShape<2>::type(info.shapeOfDimension(0), info.shapeOfDimension(1)));
-		loadFromHDF5File(info, res, false);
+		//loadFromHDF5File(info, res, false);
+		readHDF5(info, res);
         return res;
       }
       default:
       {
         NumpyArray<3, Multiband<T> > res(MultiArrayShape<3>::type(info.shapeOfDimension(0), info.shapeOfDimension(1), info.shapeOfDimension(2)));
-        loadFromHDF5File(info, res, false);
+        //loadFromHDF5File(info, res, false);
+		readHDF5(info, res);
         return res;
       }
     }
@@ -384,9 +386,11 @@ void writeImageToHDF5(NumpyArray<3, Multiband<T> > const & image,
 	//std::cout << image.shape(2) << std::endl;
 	// if scalar image
 	if(image.shape(2) == 1)
-		writeToHDF5File(filePath, pathInFile, image.bindOuter(0), false);
+		//writeToHDF5File(filePath, pathInFile, image.bindOuter(0), false);
+		writeHDF5(filePath, pathInFile, image.bindOuter(0));
 	else
-		writeToHDF5File(filePath, pathInFile, image, false);
+		//writeToHDF5File(filePath, pathInFile, image, false);
+		writeHDF5(filePath, pathInFile, image);
 }
 
 VIGRA_PYTHON_MULTITYPE_FUNCTOR(pywriteImageToHDF5, writeImageToHDF5)
@@ -402,13 +406,15 @@ NumpyAnyArray readVolumeHDF5Impl(HDF5ImportInfo const & info)
       case 3:
       {
         NumpyArray<3, Singleband<T> > res(MultiArrayShape<3>::type(info.shapeOfDimension(0), info.shapeOfDimension(1), info.shapeOfDimension(2)));
-		loadFromHDF5File(info, res);
+		//loadFromHDF5File(info, res);
+		readHDF5(info, res);
         return res;
       }
       default:
       {
         NumpyArray<4, Multiband<T> > res(MultiArrayShape<4>::type(info.shapeOfDimension(0), info.shapeOfDimension(1), info.shapeOfDimension(2), info.shapeOfDimension(3)));
-        loadFromHDF5File(info, res);
+        //loadFromHDF5File(info, res);
+		readHDF5(info, res);
         return res;
       }
     }
@@ -461,9 +467,11 @@ void writeVolumeToHDF5(NumpyArray<4, Multiband<T> > const & volume,
 	// write the data
 	// if scalar volume
 	if(volume.shape(3) == 1)
-		writeToHDF5File(filePath, pathInFile, volume.bindOuter(0));
+		//writeToHDF5File(filePath, pathInFile, volume.bindOuter(0));
+		writeHDF5(filePath, pathInFile, volume.bindOuter(0));
 	else
-		writeToHDF5File(filePath, pathInFile, volume);
+		//writeToHDF5File(filePath, pathInFile, volume);
+		writeHDF5(filePath, pathInFile, volume);
 }
 
 VIGRA_PYTHON_MULTITYPE_FUNCTOR(pywriteVolumeToHDF5, writeVolumeToHDF5)
@@ -607,3 +615,11 @@ void defineImpexFunctions()
 
 } // namespace vigra
 
+using namespace vigra;
+using namespace boost::python;
+
+BOOST_PYTHON_MODULE_INIT(impex)
+{
+    import_vigranumpy();
+    defineImpexFunctions();
+}

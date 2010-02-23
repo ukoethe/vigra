@@ -5,7 +5,9 @@ import sys
 print >> sys.stderr, "\nexecuting test file", __file__
 execfile('set_paths.py')
 
-import arraytypes, ufunc, numpy, copy
+import vigra.arraytypes as arraytypes
+import vigra.ufunc as ufunc
+import numpy, copy
 import vigranumpytest as vt
 from nose.tools import assert_equal, raises
 

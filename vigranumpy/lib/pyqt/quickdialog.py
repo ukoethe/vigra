@@ -33,6 +33,9 @@ class FileDialog(qt.QFrame):
             
     def text(self):
         return str(qcore.QFile.encodeName(self.filename.text()))
+        
+    def setFocus(self):
+        self.filename.setFocus()
 
 class InputFile(FileDialog):
     def __init__(self, parent, label, filter):
@@ -89,7 +92,10 @@ class _OptionalValueInput(qt.QFrame):
         self._layout.addWidget(self.variable, 1)
         
         self.setLayout(self._layout)
-            
+                    
+    def setFocus(self):
+        self.variable.setFocus()
+        
     def setValue(self, text):
         self.variable.setText(str(self._text2Value(text)))
     
@@ -161,6 +167,9 @@ class OptionalStringInput(qt.QFrame):
         self._layout.addWidget(self.variable, 1)
         
         self.setLayout(self._layout)
+                    
+    def setFocus(self):
+        self.variable.setFocus()
             
     def setText(self, text):
         self.variable.setText(text)

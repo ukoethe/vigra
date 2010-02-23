@@ -33,8 +33,8 @@
 /*                                                                      */
 /************************************************************************/
 
-#define PY_ARRAY_UNIQUE_SYMBOL vigranumpycmodule_PyArray_API
-#define NO_IMPORT_ARRAY
+#define PY_ARRAY_UNIQUE_SYMBOL vigranumpyconvolution_PyArray_API
+//#define NO_IMPORT_ARRAY
 
 #include <vigra/numpy_array.hxx>
 #include <vigra/numpy_array_converters.hxx>
@@ -149,7 +149,6 @@ NumpyAnyArray laplacianOfGaussian2D(NumpyArray<3, Multiband<PixelType> > image,
 }
 VIGRA_PYTHON_MULTITYPE_FUNCTOR(pylaplacianOfGaussian2D, laplacianOfGaussian2D)
 
-//TODO: Multiband??
 template <class PixelType>
 NumpyAnyArray hessianMatrixOfGaussian2D(NumpyArray<2, Singleband<PixelType> > image, double scale,
 		//NumpyArray<2, TinyVector<PixelType, 3> > res = python::object())
@@ -931,33 +930,61 @@ void defineConvolutionFunctions()
     ;
 
     def("structureTensor", registerConverters(&structureTensor2D<float>),
-      (arg("image"), arg("innerScale")=1.0, arg("outerScale")=2.0, arg("out") = python::object()));
+      (arg("image"), arg("innerScale")=1.0, arg("outerScale")=2.0, arg("out") = python::object()),
+      "Calculate the Structure Tensor for each pixel of and image, using Gaussian (derivative) filters.\n"
+      "\n"
+      "For details see structureTensor_ in the vigra C++ documentation.");
     
     multidef("nonlinearDiffusion", pynonlinearDiffusion2D<float, UInt8>(),
-        (arg("image"), arg("edgeThreshold"), arg("scale")));
+        (arg("image"), arg("edgeThreshold"), arg("scale")),
+        "Perform edge-preserving smoothing at the given scale."
+        "\n\n"
+        "For details see nonlinearDiffusion_ in the vigra C++ documentation.");
 
     multidef("simpleSharpening", pysimpleSharpening2D<float>(),
-              (arg("image"), arg("sharpeningFactor")=1.0, arg("out") = python::object()));
+              (arg("image"), arg("sharpeningFactor")=1.0, arg("out") = python::object()),
+              "Perform simple sharpening function.\n"
+              "\n"
+              "For details see simpleSharpening_ in the vigra C++ documentation.");
 
     multidef("gaussianSharpening", pygaussianSharpening2D<float>(),
                   (arg("image"), arg("sharpeningFactor")=1.0, arg("scale")=1.0,
-                  arg("out") = python::object()));
+                  arg("out") = python::object()),
+                  "Perform sharpening function with gaussian filter."
+                  "\n\n"
+                  "For details see gaussianSharpening_ in the vigra C++ documentation.");
 
     multidef("gaussianGradientMagnitude", pygaussianGradientMagnitude2D<float>(),
-                      (arg("image"), arg("scale") = 1.0, arg("out") = python::object()));
+                      (arg("image"), arg("scale") = 1.0,
+                       arg("out") = python::object()),
+                      "Calculate the gradient magnitude by means of a 1st derivatives of Gaussian filter.\n"
+                      "\n"
+                      "For details see gaussianGradientMagnitude_ in the vigra C++ documentation.");
 
     multidef("laplacianOfGaussian", pylaplacianOfGaussian2D<float>(),
-                          (arg("image"), arg("scale") = 1.0, arg("out") = python::object()));
+                          (arg("image"), arg("scale") = 1.0, arg("out") = python::object()),
+                          "Filter image with the Laplacian of Gaussian operator at the given scale.\n"
+                          "\n"
+                          "For details see laplacianOfGaussian in the vigra C++ documentation.");
 
     def("hessianMatrixOfGaussian", registerConverters(&hessianMatrixOfGaussian2D<float>),
-      (arg("image"), arg("scale")=1.0, arg("out") = python::object()));
+      (arg("image"), arg("scale")=1.0, arg("out") = python::object()),
+      "Filter image with the 2nd derivatives of the Gaussian at the given scale to get the Hessian matrix.\n"
+      "\n"
+      "For details see hessianMatrixOfGaussian_ in the vigra C++ documentation.");
 
     def("resamplingGaussian", registerConverters(&resamplingGaussian2D<float>),
           (arg("image"), arg("sigma")=1.0, arg("derivativeOrder")=1,
-           arg("samplingRatioX")=1, arg("samplingRatioY")=1, arg("out") = python::object()));
+           arg("samplingRatioX")=1, arg("samplingRatioY")=1, arg("out") = python::object()),
+          "Resample image using a gaussian filter.\n"
+          "\n"
+          "This function utilize resamplingConvolveImage_ (see the vigra C++ documentation for details).");
 
     def("convolveImage", registerConverters(&pythonConvolveImage<float>),
-              (arg("image"), arg("kernel")=python::object(), arg("out") = python::object()));
+              (arg("image"), arg("kernel")=python::object(), arg("out") = python::object()),
+              "Perform 2D non-separable convolution, with and without ROI mask.\n"
+              "\n"
+              "For details see convolveImage_ in the vigra C++ documentation.");
 
     /*def("recursiveFilterLineFirstOrder", registerConverters(&pythonRecursiveFilterLineFirstOrder<float>),
                   (arg("image"), arg("b1")=1.0, arg("borderTreatment") = BORDER_TREATMENT_REPEAT,
@@ -1271,5 +1298,21 @@ void defineConvolutionFunctions()
 
 }
 
+void defineKernels();
+void defineMultiConvolutionFunctions();
+
+
 } // namespace vigra
 
+using namespace vigra;
+using namespace boost::python;
+
+BOOST_PYTHON_MODULE_INIT(convolution)
+{
+    //import_array();
+    //registerNumpyArrayConverters();
+	import_vigranumpy();
+    defineKernels();
+    defineConvolutionFunctions();
+    defineMultiConvolutionFunctions();
+}

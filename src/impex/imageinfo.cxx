@@ -997,19 +997,13 @@ const std::string & VolumeImportInfo::description() const { return description_;
 #ifdef HasHDF5
 
 HDF5ImportInfo::HDF5ImportInfo(const char* filePath, const char* pathInFile)
-    :is_rowmajor(false)
 {
     m_file_handle = HDF5Handle(H5Fopen(filePath, H5F_ACC_RDONLY, H5P_DEFAULT),
                                &H5Fclose, "HDF5ImportInfo(): Unable to open file.");
 
+
     m_dataset_handle = HDF5Handle(H5Dopen(m_file_handle, pathInFile, H5P_DEFAULT),
                                   &H5Dclose, "HDF5ImportInfo(): Unable to open dataset.");
-    ArrayVector<int> tmp; 
-    bool row_major = loadHDF5Attr(m_dataset_handle,"reverse-shape" , tmp);
-    if(row_major)
-    {
-        is_rowmajor = tmp[0] != 0;
-    }
 
 
     //DataSet dset = m_file.openDataSet(datasetname);
@@ -1067,10 +1061,11 @@ HDF5ImportInfo::HDF5ImportInfo(const char* filePath, const char* pathInFile)
     ArrayVector<hsize_t> maxdims(ndims);
     H5Sget_simple_extent_dims(dataspace_handle, size.data(), maxdims.data());
     //dset.getSpace().getSimpleExtentDims(size, NULL);
-    for(ArrayVector<hsize_t>::size_type i=0; i<ndims; ++i)
-        m_dims[i] = size[i];
-    if(is_rowmajor)
-    std::reverse(m_dims.begin(), m_dims.end());
+	// invert the dimensions to guarantee c-order
+	for(ArrayVector<hsize_t>::size_type i=0; i<ndims; i++) {
+        m_dims[i] = size[ndims-1-i];
+		//std::cout << "m_dims[" << i << "]=" << m_dims[i] << std::endl;
+	}
 }
 
 HDF5ImportInfo::~HDF5ImportInfo()

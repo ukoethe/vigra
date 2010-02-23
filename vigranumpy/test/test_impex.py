@@ -4,8 +4,8 @@ execfile('set_paths.py')
 
 from nose.tools import assert_equal, raises
 import numpy as np
-import vigranumpycmodule as vm
-import arraytypes as at
+import vigra.impex as im
+import vigra.arraytypes as at
 
 #in the hope, that functions are tested in C++, we basicly test return types
 
@@ -25,18 +25,18 @@ def checkUnequalData(i1,i2):
 def test_writeAndReadImageHDF5():
     # positive tests
     # write and read image
-    vm.writeImageToHDF5(image, "hdf5test.hd5", "group/subgroup/imgdata")
-    image_imp = vm.readImageFromHDF5("hdf5test.hd5", "group/subgroup/imgdata")
+    im.writeImageToHDF5(image, "hdf5test.hd5", "group/subgroup/imgdata")
+    image_imp = im.readImageFromHDF5("hdf5test.hd5", "group/subgroup/imgdata")
     checkEqualData(image,image_imp)
     # write and read scalar image
-    vm.writeImageToHDF5(scalar_image, "hdf5test.hd5", "group/subgroup/imgdata")
-    scalar_image_imp = vm.readImageFromHDF5("hdf5test.hd5", "group/subgroup/imgdata")
+    im.writeImageToHDF5(scalar_image, "hdf5test.hd5", "group/subgroup/imgdata")
+    scalar_image_imp = im.readImageFromHDF5("hdf5test.hd5", "group/subgroup/imgdata")
     checkEqualData(scalar_image,scalar_image_imp)
     # write multiple sets and check if they are all there afterwards
-    vm.writeImageToHDF5(image, "hdf5test.hd5", "group/subgroup/imgdata")
-    vm.writeImageToHDF5(image, "hdf5test.hd5", "group/subgroup/imgdata2")
-    image_imp1 = vm.readImageFromHDF5("hdf5test.hd5", "group/subgroup/imgdata")
-    image_imp2 = vm.readImageFromHDF5("hdf5test.hd5", "group/subgroup/imgdata2")
+    im.writeImageToHDF5(image, "hdf5test.hd5", "group/subgroup/imgdata")
+    im.writeImageToHDF5(image, "hdf5test.hd5", "group/subgroup/imgdata2")
+    image_imp1 = im.readImageFromHDF5("hdf5test.hd5", "group/subgroup/imgdata")
+    image_imp2 = im.readImageFromHDF5("hdf5test.hd5", "group/subgroup/imgdata2")
     checkEqualData(image,image_imp1)
     checkEqualData(image,image_imp2)
 
@@ -51,18 +51,18 @@ def test_writeAndReadImageHDF5():
 def test_writeAndReadVolumeHDF5():
     # positive tests
     # write and read volume
-    vm.writeVolumeToHDF5(volume256, "hdf5test.hd5", "group/subgroup/voldata")
-    volume256_imp = vm.readVolumeFromHDF5("hdf5test.hd5", "group/subgroup/voldata")
+    im.writeVolumeToHDF5(volume256, "hdf5test.hd5", "group/subgroup/voldata")
+    volume256_imp = im.readVolumeFromHDF5("hdf5test.hd5", "group/subgroup/voldata")
     checkEqualData(volume256,volume256_imp)
     # write and read binary volume
-    vm.writeVolumeToHDF5(volumeFloat, "hdf5test.hd5", "group/subgroup/voldata")
-    volumeFloat_imp = vm.readVolumeFromHDF5("hdf5test.hd5", "group/subgroup/voldata")
+    im.writeVolumeToHDF5(volumeFloat, "hdf5test.hd5", "group/subgroup/voldata")
+    volumeFloat_imp = im.readVolumeFromHDF5("hdf5test.hd5", "group/subgroup/voldata")
     checkEqualData(volumeFloat,volumeFloat_imp)
     # write multiple sets and check if they are all there afterwards
-    vm.writeVolumeToHDF5(volume256, "hdf5test.hd5", "group/subgroup/voldata")
-    vm.writeVolumeToHDF5(volume256, "hdf5test.hd5", "group/subgroup/voldata2")
-    volume256_imp1 = vm.readVolumeFromHDF5("hdf5test.hd5", "group/subgroup/voldata")
-    volume256_imp2 = vm.readVolumeFromHDF5("hdf5test.hd5", "group/subgroup/voldata2")
+    im.writeVolumeToHDF5(volume256, "hdf5test.hd5", "group/subgroup/voldata")
+    im.writeVolumeToHDF5(volume256, "hdf5test.hd5", "group/subgroup/voldata2")
+    volume256_imp1 = im.readVolumeFromHDF5("hdf5test.hd5", "group/subgroup/voldata")
+    volume256_imp2 = im.readVolumeFromHDF5("hdf5test.hd5", "group/subgroup/voldata2")
     checkEqualData(volume256,volume256_imp1)
     checkEqualData(volume256,volume256_imp2)
 

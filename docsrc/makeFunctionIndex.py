@@ -109,3 +109,10 @@ def generateFunctionIndex(functionList):
 namespaceList = getNamespaceList()
 functionList = getFunctionList(namespaceList)
 generateFunctionIndex(functionList)
+#export functions list to c_api_replaces
+replaces=open("../vigranumpy/docsrc/c_api_replaces","w")
+for i in range(len(functionList)):
+    functionName = functionList[i][1]
+    link = functionList[i][0]
+    replaces.write(functionName+":"+link+"\n")
+

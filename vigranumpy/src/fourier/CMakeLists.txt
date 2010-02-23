@@ -7,7 +7,8 @@ ENDIF ()
 ADD_LIBRARY(vigranumpyfourier SHARED
             vigranumpyfourier.cxx)
 
-TARGET_LINK_LIBRARIES(vigranumpyfourier ${FFTW3_LIBRARIES} ${VIGRANUMPY_LIBRARIES} vigranumpycmodule)
+TARGET_LINK_LIBRARIES(vigranumpyfourier ${FFTW3_LIBRARIES}
+    ${VIGRANUMPY_LIBRARIES} vigranumpycore)
 
 ADD_DEPENDENCIES(vigranumpy vigranumpyfourier)
 

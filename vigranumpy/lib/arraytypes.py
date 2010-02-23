@@ -101,7 +101,7 @@ VIGRA's NumpyArray family of C++ views. Do always use
 this class via its subclasses!
     '''
     def __new__(cls, obj, dtype=numpy.float32, order='V', init = True, value = None):
-        from vigranumpycmodule import constructNumpyArray
+        from vigranumpycore import constructNumpyArray
         if value is not None:
             res = constructNumpyArray(cls, obj, cls.spatialDimensions, cls.channels, dtype, order, False)
             res[...] = value
@@ -313,7 +313,7 @@ class Image(_VigraArray):
             
     def write(self, filename, export_type = '', compression = ''):
         "consult :func:`vigra.writeImage` for detailed documentation"
-        import vigranumpycmodule as vn
+        import vigranumpycore as vn
         vn.writeImage(self, filename, export_type, compression)
 
     def qimage(self, normalize = True):
@@ -613,7 +613,7 @@ class RGBVolume(Vector3Volume):
            NumpyArray<4, Multiband<T>, StridedArrayTag>""")
 
 def _registerArrayTypes():
-    from vigranumpycmodule import registerPythonArrayType
+    from vigranumpycore import registerPythonArrayType
     
     def checkImage(obj):
         return (type(obj) is numpy.ndarray) or (obj.spatialDimensions == 2)

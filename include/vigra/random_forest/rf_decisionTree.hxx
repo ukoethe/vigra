@@ -131,6 +131,22 @@ class DecisionTree
                     Stop_t                               stop,
                     Visitor_t &                          visitor,
                     Random_t &                           randint);
+    template <  class U, class C,
+             class U2, class C2,
+             class StackEntry_t,
+             class Stop_t,
+             class Split_t,
+             class Visitor_t,
+             class Random_t>
+    void continueLearn(   MultiArrayView<2, U, C> const       & features,
+                          MultiArrayView<2, U2, C2> const     & labels,
+                          StackEntry_t const &                  stack_entry,
+                          Split_t                               split,
+                          Stop_t                                stop,
+                          Visitor_t &                           visitor,
+                          Random_t &                            randint,
+                          //an index to which the last created exterior node will be moved (because it is not used anymore)
+                          int                                   garbaged_child=-1);
 
     /** is a node a Leaf Node? */
     inline bool isLeafNode(TreeInt in) const
@@ -150,7 +166,7 @@ class DecisionTree
         TreeInt index = 2;
         while(!isLeafNode(topology_[index]))
         {
-            visitor.visit_internal_node(*this, index, topology_[index], 1);
+            visitor.visit_internal_node(*this, index, topology_[index],features);
             switch(topology_[index])
             {
                 case i_ThresholdNode:
@@ -188,7 +204,7 @@ class DecisionTree
                                "encountered unknown internal Node Type");
             }
         }
-        visitor.visit_external_node(*this, index, topology_[index], 0);
+        visitor.visit_external_node(*this, index, topology_[index],features);
         return index;
     }
     /** traverse tree to get statistics
@@ -330,19 +346,38 @@ void DecisionTree::learn(   MultiArrayView<2, U, C> const       & features,
     parameters_.reserve(256);
     topology_.push_back(features.shape(1));
     topology_.push_back(classCount_);
+    continueLearn(features,labels,stack_entry,split,stop,visitor,randint);
+}
 
-
+template <  class U, class C,
+            class U2, class C2,
+            class StackEntry_t,
+            class Stop_t,
+            class Split_t,
+            class Visitor_t,
+            class Random_t>
+void DecisionTree::continueLearn(   MultiArrayView<2, U, C> const       & features,
+                            MultiArrayView<2, U2, C2> const     & labels,
+                            StackEntry_t const &                  stack_entry,
+                            Split_t                               split,
+                            Stop_t                                stop,
+                            Visitor_t &                           visitor,
+                            Random_t &                            randint,
+                            //an index to which the last created exterior node will be moved (because it is not used anymore)
+                            int                                   garbaged_child)
+{
     std::vector<StackEntry_t> stack;
     stack.reserve(128);
     ArrayVector<StackEntry_t> child_stack_entry(2, stack_entry);
     stack.push_back(stack_entry);
-
+    size_t last_node_pos = 0;
+    StackEntry_t top=stack.back();
 
     while(!stack.empty())
     {
 
         // Take an element of the stack. Obvious ain't it?
-        StackEntry_t top = stack.back();
+        top = stack.back();
         stack.pop_back();
 
         // Make sure no data from the last round has remained in Pipeline;
@@ -379,14 +414,19 @@ void DecisionTree::learn(   MultiArrayView<2, U, C> const       & features,
         // Update the Child entries of the parent
         // Using InteriorNodeBase because exact parameter form not needed.
         // look at the Node base before getting scared.
+        last_node_pos = topology_.size();
         if(top.leftParent != StackEntry_t::DecisionTreeNoParent)
+        {
             NodeBase(topology_, 
                      parameters_, 
-                     top.leftParent).child(0) = topology_.size();
+                     top.leftParent).child(0) = last_node_pos;
+        }
         else if(top.rightParent != StackEntry_t::DecisionTreeNoParent)
+        {
             NodeBase(topology_, 
                      parameters_, 
-                     top.rightParent).child(1) = topology_.size();
+                     top.rightParent).child(1) = last_node_pos;
+        }
 
 
         // Supply the split functor with the Node type it requires.
@@ -396,6 +436,8 @@ void DecisionTree::learn(   MultiArrayView<2, U, C> const       & features,
         {
             child_stack_entry[0].leftParent = topology_.size();
             child_stack_entry[1].rightParent = topology_.size();    
+            child_stack_entry[0].rightParent = -1;
+            child_stack_entry[1].leftParent = -1;
             stack.push_back(child_stack_entry[0]);
             stack.push_back(child_stack_entry[1]);
         }
@@ -403,6 +445,23 @@ void DecisionTree::learn(   MultiArrayView<2, U, C> const       & features,
         //copy the newly created node form the split functor to the
         //decision tree.
         NodeBase(split.createNode(), topology_, parameters_ );
+    }
+    if(garbaged_child!=-1)
+    {
+        Node<e_ConstProbNode>(topology_,parameters_,garbaged_child).copy(Node<e_ConstProbNode>(topology_,parameters_,last_node_pos));
+
+        int last_parameter_size = Node<e_ConstProbNode>(topology_,parameters_,garbaged_child).parameters_size();
+        topology_.resize(last_node_pos);
+        parameters_.resize(parameters_.size() - last_parameter_size);
+    
+        if(top.leftParent != StackEntry_t::DecisionTreeNoParent)
+            NodeBase(topology_, 
+                     parameters_, 
+                     top.leftParent).child(0) = garbaged_child;
+        else if(top.rightParent != StackEntry_t::DecisionTreeNoParent)
+            NodeBase(topology_, 
+                     parameters_, 
+                     top.rightParent).child(1) = garbaged_child;
     }
 }
 

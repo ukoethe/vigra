@@ -9,18 +9,28 @@ ELSE()
     SET_TARGET_PROPERTIES(vigranumpytest PROPERTIES PREFIX "")
 ENDIF()
 
-TARGET_LINK_LIBRARIES(vigranumpytest ${VIGRANUMPY_LIBRARIES} vigranumpycmodule)
+TARGET_LINK_LIBRARIES(vigranumpytest ${VIGRANUMPY_LIBRARIES} vigranumpycore)
 ADD_DEPENDENCIES(check vigranumpytest)
 
 SET(TEST_SCRIPTS
     test_arraytypes.py
     test_impex.py
-    test_christoph.py
-    test_nathan.py
-    test_stephan.py)
+    test1.py
+    test2.py
+    test3.py)
 
 INCLUDE(VigraAddTest)
 VIGRA_COPY_TEST_DATA(${TEST_SCRIPTS})
+
+MACRO(VIGRA_COPY_TEST_DATA)
+    FOREACH(test_data ${ARGN})
+        configure_file(${CMAKE_CURRENT_SOURCE_DIR}/${test_data} 
+                       ${CMAKE_CURRENT_BINARY_DIR}/${test_data}
+                       COPYONLY)
+    ENDFOREACH(test_data)
+ENDMACRO(VIGRA_COPY_TEST_DATA)
+
+ADD_DEPENDENCIES(vigranumpytest build_dir_vigranumpy)
 
 MACRO(DEPENDENCY_PATH variable target)
     GET_TARGET_PROPERTY(${variable} ${target} LOCATION)
@@ -29,7 +39,7 @@ MACRO(DEPENDENCY_PATH variable target)
 ENDMACRO(DEPENDENCY_PATH)
 
 DEPENDENCY_PATH(VIGRAIMPEX_PATH vigraimpex)
-DEPENDENCY_PATH(VIGRANUMPYCMODULE_PATH vigranumpycmodule)
+DEPENDENCY_PATH(VIGRANUMPYCMODULE_PATH vigranumpyore)
 DEPENDENCY_PATH(VIGRANUMPYTEST_PATH vigranumpytest)
 
 FILE(TO_CMAKE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/../lib VIGRANUMPYSCRIPTS_PATH)

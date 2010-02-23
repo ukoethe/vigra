@@ -33,98 +33,128 @@
 /*                                                                      */
 /************************************************************************/
 
-#define PY_ARRAY_UNIQUE_SYMBOL vigranumpycmodule_PyArray_API
+#define PY_ARRAY_UNIQUE_SYMBOL vigranumpyconvolution_PyArray_API
 #define NO_IMPORT_ARRAY
 
 #include <vigra/numpy_array.hxx>
 #include <vigra/numpy_array_converters.hxx>
 #include <vigra/multi_convolution.hxx>
 #include <vigra/multi_impex.hxx>
+#include "vigranumpykernel.hxx"
 
 namespace python = boost::python;
 
 namespace vigra
 {
 
+template < class VoxelType, int ndim >
+NumpyAnyArray pythonGaussianSmoothingND(NumpyArray<ndim, Multiband<VoxelType> > volume,
+                                          double sigma,
+                                          NumpyArray<ndim, Multiband<VoxelType> > res=python::object())
+{
+    res.reshapeIfEmpty(volume.shape(), "gaussianSmoothingND(): Output array has wrong shape.");
+    //gaussianSmoothMultiArray(srcMultiArrayRange(MultiArrayView<ndim, float, StridedArrayTag>(volume)),
+    		                 //destMultiArray((MultiArrayView<ndim, float, StridedArrayTag>&)res)), sigma);
+    for(int k=0;k<volume.shape(ndim-1);++k)
+    {
+    	MultiArrayView<ndim-1, VoxelType, StridedArrayTag> bvolume = volume.bindOuter(k);
+    	MultiArrayView<ndim-1, VoxelType, StridedArrayTag> bres = res.bindOuter(k);
+    	gaussianSmoothMultiArray(srcMultiArrayRange(bvolume), destMultiArray(bres), sigma);
+    }
+    return res;
+
+}
+
+template < class VoxelType, int ndim >
+NumpyAnyArray pythonGaussianGradientND(NumpyArray<ndim, Multiband<VoxelType> > volume,
+                                          double sigma,
+                                          NumpyArray<ndim, Multiband< TinyVector<VoxelType, ndim> > > res=python::object())
+{
+	vigra_precondition(typename NumericTraits< VoxelType >::isScalar().asBool,
+	        "Only single band arrays are supported.");
+    res.reshapeIfEmpty(volume.shape(), "gaussianGradientND(): Output array has wrong shape.");
+    for(int k=0;k<volume.shape(ndim-1);++k)
+    {
+        MultiArrayView<ndim-1, VoxelType, StridedArrayTag> bvolume = volume.bindOuter(k);
+        MultiArrayView<ndim-1, TinyVector<VoxelType, ndim>, StridedArrayTag> bres = res.bindOuter(k);
+        gaussianGradientMultiArray(srcMultiArrayRange(bvolume), destMultiArray(bres), sigma);
+    }
+    return res;
+}
+
+template < class VoxelType, int ndim >
+NumpyAnyArray pythonSymmetricGradientND(NumpyArray<ndim, Multiband<VoxelType> > volume,
+                                          double sigma,
+                                          NumpyArray<ndim, Multiband< TinyVector<VoxelType, ndim> > > res=python::object())
+{
+    vigra_precondition(typename NumericTraits< VoxelType >::isScalar().asBool,
+        "Only single band arrays are supported.");
+    res.reshapeIfEmpty(volume.shape(), "symmetricGradientND(): Output array has wrong shape.");
+    for(int k=0;k<volume.shape(ndim-1);++k)
+    {
+    	MultiArrayView<ndim-1, VoxelType, StridedArrayTag> bvolume = volume.bindOuter(k);
+    	MultiArrayView<ndim-1, TinyVector<VoxelType, ndim>, StridedArrayTag> bres = res.bindOuter(k);
+    	symmetricGradientMultiArray(srcMultiArrayRange(bvolume), destMultiArray(bres));
+    }
+    return res;
+}
+
+template < class VoxelType, int ndim >
+NumpyAnyArray pythonConvolveOneDimensionND(NumpyArray<ndim, Multiband<VoxelType> > volume,
+                                          int dim,
+                                          Kernel kernel,
+                                          NumpyArray<ndim, Multiband<VoxelType> > res=python::object())
+{
+    res.reshapeIfEmpty(volume.shape(), "convolveOneDimensionND(): Output array has wrong shape.");
+    for(int k=0;k<volume.shape(ndim-1);++k)
+	{
+    	MultiArrayView<ndim-1, VoxelType, StridedArrayTag> bvolume = volume.bindOuter(k);
+    	MultiArrayView<ndim-1, VoxelType, StridedArrayTag> bres = res.bindOuter(k);
+    	convolveMultiArrayOneDimension(srcMultiArrayRange(bvolume), destMultiArray(bres), dim, kernel);
+	}
+    return res;
+}
+
+template < class VoxelType, int ndim >
+NumpyAnyArray pythonSeparableConvolveND(NumpyArray<ndim, Multiband<VoxelType> > volume,
+                                          Kernel kernel,
+                                          NumpyArray<ndim, Multiband<VoxelType> > res=python::object())
+{
+    res.reshapeIfEmpty(volume.shape(), "separableConvolveND(): Output array has wrong shape.");
+    for(int k=0;k<volume.shape(ndim-1);++k)
+    {
+    	MultiArrayView<ndim-1, VoxelType, StridedArrayTag> bvolume = volume.bindOuter(k);
+    	MultiArrayView<ndim-1, VoxelType, StridedArrayTag> bres = res.bindOuter(k);
+    	separableConvolveMultiArray(srcMultiArrayRange(bvolume), destMultiArray(bres), kernel);
+    }
+    return res;
+}
+
+// Todo: more cases for separableConvolve.
+// what happens, if separableConvolveMultiArray gets called for data with dim > nkernels?
+
+template < class VoxelType >
+NumpyAnyArray pythonSeparableConvolve_3_3D(NumpyArray<4, Multiband<VoxelType> > volume,
+                                          Kernel kernel0,
+                                          Kernel kernel1,
+                                          Kernel kernel2,
+                                          NumpyArray<4, Multiband<VoxelType> > res=python::object())
+{
+    res.reshapeIfEmpty(volume.shape(), "separableConvolve_3_3D(): Output array has wrong shape.");
+    ArrayVector< Kernel > kernels;
+    kernels.push_back(kernel0);
+    kernels.push_back(kernel1);
+    kernels.push_back(kernel2);
+    for(int k=0;k<volume.shape(3);++k)
+	{
+    	MultiArrayView<3, VoxelType, StridedArrayTag> bvolume = volume.bindOuter(k);
+    	MultiArrayView<3, VoxelType, StridedArrayTag> bres = res.bindOuter(k);
+    	separableConvolveMultiArray(srcMultiArrayRange(bvolume), destMultiArray(bres), kernels.begin());
+	}
+    return res;
+}
+
 #if 0
-template < class VoxelType, int pyArrayTypeConstant, class Tag, int ndim >
-PyObject* gaussianSmoothing(MultiArrayView< ndim, VoxelType, Tag > const
-    & volume, double sigma)
-{
-    PyObject* array = createNumpyArray(volume.shape(), pyArrayTypeConstant,
-        typename NumericTraits< VoxelType >::isScalar());
-    MultiArrayView< ndim, VoxelType, UnstridedArrayTag >* arrayView =
-        createView< VoxelType, ndim >(array,
-        typename NumericTraits< VoxelType >::isScalar());
-    gaussianSmoothMultiArray(srcMultiArrayRange(volume),
-        destMultiArray(*arrayView), sigma);
-    delete arrayView;
-    return PyArray_Return((PyArrayObject*) array);
-}
-
-template < class VoxelType, int pyArrayTypeConstant, class Tag, int ndim >
-PyObject* gaussianGradient(MultiArrayView< ndim, VoxelType, Tag > const
-    & volume, double sigma)
-{
-    vigra_precondition(typename NumericTraits< VoxelType >::isScalar().asBool,
-        "Only single band arrays are supported.");
-    PyObject* array = createNumpyArray(volume.shape(), pyArrayTypeConstant,
-        typename NumericTraits< TinyVector< VoxelType, 3 > >::isScalar());
-    MultiArrayView< ndim,  TinyVector< VoxelType, 3 >, UnstridedArrayTag >*
-        arrayView = createView< TinyVector< VoxelType, 3 >, ndim >(array,
-        typename NumericTraits< TinyVector< VoxelType, 3 > >::isScalar());
-    gaussianGradientMultiArray(srcMultiArrayRange(volume),
-        destMultiArray(*arrayView), sigma);
-    delete arrayView;
-    return PyArray_Return((PyArrayObject*) array);
-}
-
-template < class VoxelType, int pyArrayTypeConstant, class Tag, int ndim >
-PyObject* symmetricGradient(MultiArrayView< ndim, VoxelType, Tag > const
-    & volume)
-{
-    vigra_precondition(typename NumericTraits< VoxelType >::isScalar().asBool,
-        "Only single band arrays are supported.");
-    PyObject* array = createNumpyArray(volume.shape(), pyArrayTypeConstant,
-        typename NumericTraits< TinyVector< VoxelType, 3 > >::isScalar());
-    MultiArrayView< ndim,  TinyVector< VoxelType, 3 >, UnstridedArrayTag >*
-        arrayView = createView< TinyVector< VoxelType, 3 >, ndim >(array,
-        typename NumericTraits< TinyVector< VoxelType, 3 > >::isScalar());
-    symmetricGradientMultiArray(srcMultiArrayRange(volume),
-        destMultiArray(*arrayView));
-    delete arrayView;
-    return PyArray_Return((PyArrayObject*) array);
-}
-
-template < class VoxelType, int pyArrayTypeConstant, class Tag, int ndim >
-PyObject* convolveOneDimension(MultiArrayView< ndim, VoxelType, Tag > const
-    & volume, int dim, Kernel const & kernel)
-{
-    PyObject* array = createNumpyArray(volume.shape(), pyArrayTypeConstant,
-        typename NumericTraits< VoxelType >::isScalar());
-    MultiArrayView< ndim, VoxelType, UnstridedArrayTag >* arrayView =
-        createView< VoxelType, ndim >(array,
-        typename NumericTraits< VoxelType >::isScalar());
-    convolveMultiArrayOneDimension(srcMultiArrayRange(volume),
-        destMultiArray(*arrayView), dim, kernel);
-    delete arrayView;
-    return PyArray_Return((PyArrayObject*) array);
-}
-
-template < class VoxelType, int pyArrayTypeConstant, class Tag, int ndim >
-PyObject* separableConvolve(MultiArrayView< ndim, VoxelType, Tag > const
-    & volume, Kernel const & kernel)
-{
-    PyObject* array = createNumpyArray(volume.shape(), pyArrayTypeConstant,
-        typename NumericTraits< VoxelType >::isScalar());
-    MultiArrayView< ndim, VoxelType, UnstridedArrayTag >* arrayView =
-        createView< VoxelType, ndim >(array,
-        typename NumericTraits< VoxelType >::isScalar());
-    separableConvolveMultiArray(srcMultiArrayRange(volume),
-        destMultiArray(*arrayView), kernel);
-    delete arrayView;
-    return PyArray_Return((PyArrayObject*) array);
-}
 
 template < class VoxelType, int pyArrayTypeConstant, class Tag >
 PyObject* separableConvolve2(MultiArrayView< 2, VoxelType, Tag > const
@@ -139,26 +169,6 @@ PyObject* separableConvolve2(MultiArrayView< 2, VoxelType, Tag > const
     ArrayVector< Kernel > kernels(2);
     kernels.push_back(kernel0);
     kernels.push_back(kernel1);
-    separableConvolveMultiArray(srcMultiArrayRange(volume),
-        destMultiArray(*arrayView), kernels.begin());
-    delete arrayView;
-    return PyArray_Return((PyArrayObject*) array);
-}
-
-template < class VoxelType, int pyArrayTypeConstant, class Tag >
-PyObject* separableConvolve3(MultiArrayView< 3, VoxelType, Tag > const
-    & volume, Kernel const & kernel0,
-    Kernel const & kernel1, Kernel const & kernel2)
-{
-    PyObject* array = createNumpyArray(volume.shape(), pyArrayTypeConstant,
-        typename NumericTraits< VoxelType >::isScalar());
-    MultiArrayView< 3, VoxelType, UnstridedArrayTag >* arrayView =
-        createView< VoxelType, 3 >(array,
-        typename NumericTraits< VoxelType >::isScalar());
-    ArrayVector< Kernel > kernels(3);
-    kernels.push_back(kernel0);
-    kernels.push_back(kernel1);
-    kernels.push_back(kernel2);
     separableConvolveMultiArray(srcMultiArrayRange(volume),
         destMultiArray(*arrayView), kernels.begin());
     delete arrayView;
@@ -246,29 +256,46 @@ void defineMultiConvolutionFunctions()
     using namespace python;
 
     def("gaussianSmoothing3D",
-        &DUMMY_FUNCTION,               // also multiband
-        (arg("volume"), arg("sigma")));
+        registerConverters(&pythonGaussianSmoothingND<float,4>),               // also multiband
+        (arg("volume"), arg("sigma"), arg("out")=python::object()),
+        "Perform isotropic Gaussian convolution (for a 3D image).\n"
+        "\n"
+        "For details see gaussianSmoothing_ in the vigra C++ documentation.");
 
     def("gaussianGradient3D",
-        &DUMMY_FUNCTION,               // also multiband?
-        (arg("volume"), arg("sigma")));
+    	registerConverters(&pythonGaussianGradientND<float,4>),               // also multiband?
+    	(arg("volume"), arg("sigma"), arg("out")=python::object()),
+        "Calculate the gradient vector by means of a 1st derivatives of Gaussian filter (for a 3D image).\n"
+        "\n"
+        "For details see gaussianGradient_ in the vigra C++ documentation.");
 
     def("symmetricGradient3D",
-        &DUMMY_FUNCTION,               // also multiband?
-        (arg("volume")));
+        registerConverters(&pythonSymmetricGradientND<float,4>),                // also multiband?
+        (arg("volume"), arg("out")=python::object()),
+        "Calculate gradient of a 3-dimensional images using symmetric difference filters."
+        "\n"
+        "For details see ymmetricGradientMultiArray_ in the vigra C++ documentation.");
 
     def("convolveOneDimension3D",
-        &DUMMY_FUNCTION,               // also multiband
-        (arg("volume"), arg("dim"), arg("kernel1D")));
+    	registerConverters(&pythonConvolveOneDimensionND<float,4>),				// also multiband
+    	(arg("volume"), arg("dim"), arg("kernel1D"), arg("out")=python::object()),
+        "Convolution along a single dimension of a 3-dimensional arrays.\n"
+        "\n"
+        "For details see convolveMultiArrayOneDimension_ in the vigra C++ documentation.");
 
     def("separableConvolve3D",
-        &DUMMY_FUNCTION,               // also multiband
-        (arg("volume"), arg("kernel1D")));
+        // also multiband
+        registerConverters(&pythonSeparableConvolveND<float,4>),
+        (arg("volume"), arg("kernel1D"), arg("out")=python::object()),
+        "apply one 1D kernel to all dimensions.\n"
+        "\n"
+        "For details see separableConvolveMultiArray_ in the vigra C++ documentation.");
 
     def("separableConvolve3D",
-        &DUMMY_FUNCTION,               // also multiband
-        (arg("volume"), arg("kernel1Ddim0"), arg("kernel1Ddim1"),
-        arg("kernel1Ddim2")));
-}
+        // also multiband
+        registerConverters(&pythonSeparableConvolve_3_3D<float>),
+        (arg("volume"), arg("kernel1D"), arg("kernel1D"), arg("kernel1D"), arg("out")=python::object()), "apply one kernel for every dimension of the data. The first kernel in this sequence is applied to the innermost dimension (e.g. the x-dimension of an image), while the last is applied to the outermost dimension (e.g. the z-dimension in a 3D image)."
+       );
+    }
 
 } // namespace vigra
