@@ -1237,8 +1237,8 @@ public:
             v = v * v;
             \endcode
         */
-    void initSeparable(Kernel1D<value_type> & kx,
-                       Kernel1D<value_type> & ky)
+    void initSeparable(Kernel1D<value_type> const & kx,
+                       Kernel1D<value_type> const & ky)
     {
         left_ = Diff2D(kx.left(), ky.left());
         right_ = Diff2D(kx.right(), ky.right());
@@ -1248,7 +1248,7 @@ public:
 
         norm_ = kx.norm() * ky.norm();
 
-        typedef typename Kernel1D<value_type>::Iterator KIter;
+        typedef typename Kernel1D<value_type>::const_iterator KIter;
         typename Kernel1D<value_type>::Accessor ka;
 
         KIter kiy = ky.center() + left_.y;
@@ -1326,6 +1326,22 @@ public:
         {
             norm_ += *i;
         }
+    }
+
+        /** Init as a 2D Gaussian function with given standard deviation and norm.
+         */    
+    void initGaussian(double std_dev, value_type norm)
+    {
+        Kernel1D<value_type> gauss;
+        gauss.initGaussian(std_dev, norm);
+        initSeparable(gauss, gauss);
+    }
+
+        /** Init as a 2D Gaussian function with given standard deviation and unit norm.
+         */
+    void initGaussian(double std_dev)
+    {
+        initGaussian(std_dev, NumericTraits<value_type>::one());
     }
 
         /** Init the 2D kernel as a circular averaging filter. The norm will be
