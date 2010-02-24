@@ -37,17 +37,15 @@ def checkAboutSame(i1,i2):
     difference=np.sum(np.abs(i1-i2))/float(np.size(i1))
     assert(difference<5)
 	
-def tttest_watersheds():
-	print >> sys.stderr, " asdfa sasf "
+def test_watersheds():
 	res = watersheds(img_scalar_f)
 	assert(res.shape==img_scalar_f.shape)
     
 def test_structureTensor():
-    print >> sys.stderr, "shape:"
-    print >> sys.stderr, img_rgb_f.shape
     res = structureTensor(img_scalar_f,1.0,2.0, out=img_3_f)
     res = structureTensor(img_scalar_f,1.0,2.0)
-    #assert(res.shape==img_scalar_f.shape)
+    res = structureTensor(img_rgb_f,1.0,2.0)
+    assert(res.shape==img_scalar_f.shape + (3,))
 	
 def test_simpleSharpening():
     res = simpleSharpening(img_scalar_f)
@@ -60,28 +58,28 @@ def test_convolution():
 
     
     k2_ = Kernel2D()
-    k2_.initWithFactoryKernel(Kernel2D.kernelDisk(10))
+    k2_.initDisk(10)
     
     #k3 = gaussianDerivativeKernel(sigma, order)
     #guassianDerivative(img, sx,ox,sy,oy,sz,oz)
     #guassianDerivative(img, (sx,sy, sz), (ox, oy,oz))
     
     k2=Kernel2D()
-    k2.initSetExplicitly((-1,-1),(1,1),np.array([[0,1,2],[1,2,3],[2,3,4]],dtype=np.float64))
-    res = convolveImage(img_scalar_f, k2)
+    k2.initExplicitly((-1,-1),(1,1),np.array([[0,1,2],[1,2,3],[2,3,4]],dtype=np.float64))
+    res = convolve2D(img_scalar_f, k2)
 
 
 def test_multiconvolution():
    vol = vol_scalar_f
    k=Kernel1D()
    k.initGaussian(0.5)
-   a=convolveOneDimension3D(vol, 0, k)
-   a=convolveOneDimension3D(a, 1, k)
-   a=convolveOneDimension3D(a, 2, k)
+   a=convolveOneDimension(vol, 0, k)
+   a=convolveOneDimension(a, 1, k)
+   a=convolveOneDimension(a, 2, k)
          
-   b=separableConvolve3D(vol, k)
+   b=separableConvolve(vol, k)
      
-   c=separableConvolve3D(vol, k, k, k)
+   c=separableConvolve(vol, (k, k, k))
    checkAboutSame(a, b)
    checkAboutSame(a, c)
     

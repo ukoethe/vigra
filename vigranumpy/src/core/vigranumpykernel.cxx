@@ -41,219 +41,415 @@
 #include <boost/python.hpp>
 #include <vigra/numpy_array.hxx>
 #include <vigra/numpy_array_converters.hxx>
-#include <vigra/separableconvolution.hxx>
-#include <vigra/stdconvolution.hxx>
-#include <set>
-#include "tuples.hpp"
 #include "vigranumpykernel.hxx"
 
-#include <cmath>
-
 namespace python = boost::python;
+
 namespace vigra
 {
-	template<class T>
-	void pythonInitSetExplicitlyKernel1D(Kernel1D<T> *k,int left,int right,NumpyArray<1,T> contents)
+
+template<class T>
+void pythonInitExplicitlyKernel1D(Kernel1D<T> *k, int left, int right, NumpyArray<1,T> contents)
+{
+	vigra_precondition(contents.size() == 1 || right-left+1 == contents.shape(0),
+	          "Kernel1D::initExplicitly(): 'contents' must contain as many elements as the kernel (or just one element).");
+	          
+	k->initExplicitly(left,right);
+	for(int i=left; i<=right; ++i)
 	{
-		vigra_precondition(right-left+1==contents.shape(0),"The distance between left and right must match the length of contents");
-		k->initExplicitly(left,right);
-		for(int ii=left;ii<=right;++ii)
-		{
-			(*k)[ii]=contents[ii-left];
-		}
+		(*k)[i] = (contents.size() == 1)
+		             ? contents(0)
+		             : contents(i-left);
 	}
-	template<class T>
-		T pythonGetItemKernel1D(Kernel1D<T> *k,int i)
-		{
-			return (*k)[i];
-		}
-	template<class T>
-		void pythonSetItemKernel1D(Kernel1D<T> *k,int i,T v)
-		{
-			(*k)[i]=v;
-		}
-	template<class T>
-		void pythonInitSetExplicitlyKernel2D(Kernel2D<T> *k,Point2D left,Point2D right,NumpyArray<2,T> contents)
-		{
-			vigra_precondition(right.x-left.x+1==contents.shape(0),"The distance between left and right must match the length of contents");
-			vigra_precondition(right.y-left.y+1==contents.shape(1),"The distance between left and right must match the length of contents");
-			k->initExplicitly(left,right);
-			int xx,yy;
-			for(xx=left.x;xx<=right.x;++xx)
-			{
-				for(yy=left.y;yy<=right.y;++yy)
-				{
-					(*k)(xx,yy)=contents(xx-left.x,yy-left.y);
-				}
-			}
-		}
-	template<class T>
-		void pythonInitWithFactoryKernel2D(Kernel2D<T> *k, boost::tuples::tuple< Point2D, Point2D, NumpyArray<2,T> > args)
-		{
-			//pythonInitSetExplicitlyKernel2D(k, args.get<0>(), args.get<1>(), args.get<2>() );
-			pythonInitSetExplicitlyKernel2D(k, boost::tuples::get<0>(args), boost::tuples::get<1>(args), boost::tuples::get<2>(args) );
-		}
-	template<class T>
-		static boost::tuples::tuple< Point2D, Point2D, NumpyArray<2,T> > kernelGaussian2D(int radius)
-		{
-			Kernel2D<T> k;
-			k.initDisk(radius);
-			Point2D ul = k.upperLeft();
-			Point2D lr = k.lowerRight();
-			NumpyArray<2,T> arr( MultiArrayShape<2>::type(k.width(), k.height()) );
+}
 
-			// hack: copy kernel array
-			for (int x=ul.x;x<=lr.x;x++)
-				for (int y=ul.y;y<=ul.y;y++)
-					arr(x,y)=k(x,y);
-			//return triple<Point2D, Point2D, NumpyArray<2,T> > (ul, lr, arr);
-			return boost::tuples::tuple< Point2D, Point2D, NumpyArray<2,T> > (ul, lr, arr);
-		}
-	template<class T>
-		static boost::tuples::tuple< Point2D, Point2D, NumpyArray<2,T> > kernelDisk2D(int radius)
-		{
-			Kernel2D<T> k;
-			k.initDisk(radius);
-			//return k
-			Point2D ul = k.upperLeft();
-			Point2D lr = k.lowerRight();
-			NumpyArray<2,T> arr( MultiArrayShape<2>::type(k.width(), k.height()) );
+#if 0 // alternative implementation
+template<class KernelValueType>
+void pythonInitExplicitlyKernel1D(Kernel1D<KernelValueType> & self, int left, int right,
+    python::object const & args)
+{
+    vigra_precondition(left <= 0, "left should be <= 0");
+    vigra_precondition(right >= 0, "right should be >= 0");
 
-			// hack: copy kernel array
-			for (int x=ul.x;x<=lr.x;x++)
-				for (int y=ul.y;y<=ul.y;y++)
-					arr(x,y)=k(x,y);
-			//return triple<Point2D, Point2D, NumpyArray<2,T> > (ul, lr, arr);
-			return boost::tuples::tuple< Point2D, Point2D, NumpyArray<2,T> > (ul, lr, arr);
-		}
-	template<class T>
-		T pythonGetItemKernel2D(Kernel2D<T> *k,Point2D p)
-		{
-			return(*k)(p.x,p.y);
-		}
-	template<class T>
-		void pythonSetItemKernel2D(Kernel2D<T> *k,Point2D p,T v)
-		{
-			(*k)(p.x,p.y)=v;
-		}
+    if(! PySequence_Check(args.ptr()))
+    {
+        KernelValueType value = python::extract<KernelValueType>(args);
+        self.initExplicitly(left, right) = value;
+    }
+    else
+    {
+        KernelValueType value = python::extract<KernelValueType>(args[0]);
+        Kernel::InitProxy ip = self.initExplicitly(left, right) = value;
+        if(python::len(args) != self.size())
+        {
+            std::stringstream str;
+            str << "Wrong number of init values. The number must be ";
+            str << self.size();
+            PyErr_SetString(PyExc_ValueError, str.str().c_str());
+            python::throw_error_already_set();
+        }
+        else
+        {
+            int size = self.size();
+            for(int i=1; i<size; ++i)
+            {
+                ip,(python::extract<KernelValueType>(args[i]));
+            }
+        }
+    }
+}
+#endif // #if 0
 
-	template<class T>
-	void defineKernels()
-	{
-		using namespace python;
+template<class T>
+T pythonGetItemKernel1D(Kernel1D<T> const & self, int position)
+{
+    if(self.left() <= position && self.right() >= position)
+    {
+        return self[position];
+    }
+    else
+    {
+        std::stringstream str;
+        str << "Bad position: " << position << "." << std::endl;
+        str << self.left() << " <= position <= " << self.right();
+        PyErr_SetString(PyExc_ValueError, str.str().c_str());
+        python::throw_error_already_set();
+        return 0;
+    }
+}
 
-		typedef boost::tuples::tuple< Point2D, Point2D, NumpyArray<2,T> > ktriplet;
-		boost::python::register_tuple< ktriplet >();
-		//boost::python::register_tuple< typename kTriplet<T>::Type >;
+template<class T>
+void pythonSetItemKernel1D(Kernel1D<T> & self, int position, T value)
+{
+    if(self.left() <= position && self.right() >= position)
+    {
+        self[position] = value;
+    }
+    else
+    {
+        std::stringstream str;
+        str << "Bad position: " << position << "." << std::endl;
+        str << self.left() << " <= position <= " << self.right();
+        PyErr_SetString(PyExc_ValueError, str.str().c_str());
+        python::throw_error_already_set();
+    }
+}
+	
+template<class T>
+void pythonInitExplicitlyKernel2D(Kernel2D<T> *k,
+                                  MultiArrayShape<2>::type upperleft, MultiArrayShape<2>::type lowerright,
+                                  NumpyArray<2,T> contents)
+{
+	vigra_precondition(contents.size() == 1 || 
+	                   lowerright - upperleft + MultiArrayShape<2>::type(1,1) == contents.shape(),
+	          "Kernel2D::initExplicitly(): 'contents' must contain as many elements as the kernel (or just one element).");
 
-		enum_<BorderTreatmentMode>("BorderTreatmentMode")
-			.value("BORDER_TREATMENT_AVOID",BORDER_TREATMENT_AVOID)
-			.value("BORDER_TREATMENT_CLIP",BORDER_TREATMENT_CLIP)
-			.value("BORDER_TREATMENT_REPEAT",BORDER_TREATMENT_REPEAT)
-			.value("BORDER_TREATMENT_REFLECT",BORDER_TREATMENT_REFLECT)
-			.value("BORDER_TREATMENT_WRAP",BORDER_TREATMENT_WRAP);
+    Point2D ul(upperleft[0], upperleft[1]), lr(lowerright[0], lowerright[1]);
+    
+    k->initExplicitly(ul, lr);
+    for(int y = ul.y; y <= lr.y; ++y)
+    {
+	    for(int x = ul.x; x <= lr.x; ++x)
+	    {
+		    (*k)(x,y) = (contents.size() == 1)
+		                   ? contents(0)
+		                   : contents(x-ul.x, y-ul.y);
+	    }
+    }
+}
 
-		class_<Kernel1D<T> > kernel1d("Kernel1D",init<>());
-		kernel1d
-			/*.def("setConst",
-				 (void (Kernel1D::*)(float))&Kernel1D<T>::operator=)*/
-			.def("initGaussian",
-				 (void (Kernel1D<T>::*)(double,T))&Kernel1D<T>::initGaussian,
-				 (arg("std_dev"), arg("norm")=1.0))
-			.def("initDiscreteGaussian",
-				 (void (Kernel1D<T>::*)(double,T))&Kernel1D<T>::initDiscreteGaussian,
-				 (arg("std_dev"),arg("norm")=1.0))
-			.def("initGaussianDerivative",
-				 (void (Kernel1D<T>::*)(double,int,T))&Kernel1D<T>::initGaussianDerivative,
-				 (arg("std_dev"),arg("order"),arg("norm")=1.0))
-			.def("initOptimalSmoothing3",
-				 &Kernel1D<T>::initOptimalSmoothing3)
-			.def("initOptimalFirstDerivativeSmoothing3",
-				 &Kernel1D<T>::initOptimalFirstDerivativeSmoothing3)
-			.def("initOptimalSecondDerivativeSmoothing3",
-				 &Kernel1D<T>::initOptimalSecondDerivativeSmoothing3)
-			.def("initOptimalSmoothing5",
-				 &Kernel1D<T>::initOptimalSmoothing5)
-			.def("initOptimalFirstDerivativeSmoothing5",
-				 &Kernel1D<T>::initOptimalFirstDerivativeSmoothing5)
-			.def("initOptimalSecondDerivativeSmoothing5",
-				 &Kernel1D<T>::initOptimalSecondDerivativeSmoothing5)
-			.def("initBurtFilter",
-				 &Kernel1D<T>::initBurtFilter,
-				 (arg("a")=0.04785))
-			.def("initBinomial",
-				 (void (Kernel1D<T>::*)(int,T))&Kernel1D<T>::initBinomial,
-				 (arg("radius"), arg("norm")=1.0))
-			.def("initAveraging",
-				 (void (Kernel1D<T>::*)(int,T))&Kernel1D<T>::initAveraging,
-				 (arg("radius"),arg("norm")=1.0))
-			.def("initSymmetricGradient",
-				 (void (Kernel1D<T>::*)(T))&Kernel1D<T>::initSymmetricGradient,
-				 (arg("norm")=1.0))
-			.def("initSymmetricDifference",
-				 (void (Kernel1D<T>::*)(T))&Kernel1D<T>::initSymmetricDifference,
-				 (arg("norm")=1.0))
-			.def("initSecondDifference3",
-				 &Kernel1D<T>::initSecondDifference3)
-			.def("initOptimalFirstDerivative5",
-				 &Kernel1D<T>::initOptimalFirstDerivative5)
-			.def("initOptimalSecondDerivative5",
-				 &Kernel1D<T>::initOptimalSecondDerivative5)
-			.def("initSetExplicitly",
-				 registerConverters(&pythonInitSetExplicitlyKernel1D<T>))
-			.def("__getitem__",
-				 &pythonGetItemKernel1D<T>)
-			.def("__setitem__",
-				 &pythonSetItemKernel1D<T>)
-			.def("left",
-				 &Kernel1D<T>::left)
-			.def("right",
-				 &Kernel1D<T>::right)
-			.def("size",
-				 &Kernel1D<T>::size)
-			.def("borderTreatment",
-				 &Kernel1D<T>::borderTreatment)
-			.def("setBorderTreatment",
-				 &Kernel1D<T>::setBorderTreatment)
-			.def("norm",
-				 &Kernel1D<T>::norm)
-			.def("normalize",
-				 (void (Kernel1D<T>::*)(T,unsigned int,double))&Kernel1D<T>::normalize,
-				 (arg("norm")=1.0,arg("derivativeOrder")=0,arg("offset")= 0.0))
-			;
+#if 0 // alternative implementation
+void py2DKernel_initExplicitly(TwoDKernel & self, int upperleftX,
+    int upperleftY, int lowerrightX, int lowerrightY,
+    python::object const & args)
+{
+    vigra_precondition(upperleftX <= 0 ,
+       "initExplicitly(): upperleftX must be <= 0.");
+    vigra_precondition(upperleftY <= 0 ,
+       "initExplicitly(): upperleftY must be <= 0.");
+    vigra_precondition(lowerrightX >= 0 ,
+       "initExplicitly(): lowerrightX must be >= 0.");
+    vigra_precondition(lowerrightY >= 0 ,
+       "initExplicitly(): lowerrightY must be >= 0.");
+    Diff2D upperleft(upperleftX, upperleftY);
+    Diff2D lowerright(lowerrightX, lowerrightY);
+    if(! PySequence_Check(args.ptr()))
+    {
+        KernelValueType value = python::extract<KernelValueType>(args);
+        self.initExplicitly(upperleft, lowerright) = value;
+    }
+    else
+    {
+        KernelValueType value = python::extract<KernelValueType>(args[0]);
+        TwoDKernel::InitProxy ip = self.initExplicitly(upperleft, lowerright) =
+            value;
+        if(python::len(args) != (self.width() * self.height()))
+        {
+            std::stringstream str;
+            str << "Wrong number of init values. The number must be ";
+            str << self.width() * self.height();
+            PyErr_SetString(PyExc_ValueError, str.str().c_str());
+            python::throw_error_already_set();
+        }
+        else
+        {
+            int size = self.width() * self.height();
+            for(int i=1; i<size; ++i)
+            {
+                ip,(python::extract<KernelValueType>(args[i]));
+            }
+        }
+    }
+}
+#endif
 
-		class_<Kernel2D<T> > kernel2d("Kernel2D",init<>());
-		kernel2d
-			.def("initSetExplicitly",
-				 registerConverters(&pythonInitSetExplicitlyKernel2D<T>))
-			.def("initWithFactoryKernel",
-				 registerConverters(&pythonInitWithFactoryKernel2D<T>))
-			.def("kernelGaussian", kernelGaussian2D<T>).staticmethod("kernelGaussian")
-			.def("kernelDisk", kernelDisk2D<T>).staticmethod("kernelDisk")
-			.def("initSeperable",
-				 (void (Kernel2D<T>::*)(Kernel1D<T>&,Kernel1D<T>&))&Kernel2D<T>::initSeparable)
-			.def("__setitem__",
-				 &pythonSetItemKernel2D<T>)
-			.def("__getitem__",
-				 &pythonGetItemKernel2D<T>)
-			.def("initDisk",
-				 &Kernel2D<T>::initDisk)
-			.def("width",
-				 &Kernel2D<T>::width)
-			.def("height",
-				 &Kernel2D<T>::height)
-			.def("norm",
-				 &Kernel2D<T>::norm)
-			.def("upperLeft",
-				 &Kernel2D<T>::upperLeft)
-			.def("lowerRight",
-				 &Kernel2D<T>::lowerRight);
-	}
-	void defineKernels()
-	{
-		defineKernels<KernelValueType>();
-	}
+template<class T>
+T pythonGetItemKernel2D(Kernel2D<T> const & self, MultiArrayShape<2>::type position)
+{
+    if(self.upperLeft().x <= position[0] && self.lowerRight().x >= position[0] &&
+       self.upperLeft().y <= position[1] && self.lowerRight().y >= position[1])
+    {
+        return self(position[0], position[1]);
+    }
+    else
+    {
+        std::stringstream str;
+        str << "Bad position: " << position << "." << std::endl;
+        str << self.upperLeft() << " <= position <= " << self.lowerRight();
+        PyErr_SetString(PyExc_ValueError, str.str().c_str());
+        python::throw_error_already_set();
+        return 0;
+    }
+}
 
-	//void registerNumpyArrayConverters();
+template<class T>
+void pythonSetItemKernel2D(Kernel2D<T> & self, MultiArrayShape<2>::type position, T value)
+{
+    if(self.upperLeft().x <= position[0] && self.lowerRight().x >= position[0] &&
+       self.upperLeft().y <= position[1] && self.lowerRight().y >= position[1])
+    {
+        self(position[0], position[1]) = value;
+    }
+    else
+    {
+        std::stringstream str;
+        str << "Bad position: " << position << "." << std::endl;
+        str << self.upperLeft() << " <= position <= " << self.lowerRight();
+        PyErr_SetString(PyExc_ValueError, str.str().c_str());
+        python::throw_error_already_set();
+    }
+}	
+
+template<class T>
+void defineKernels()
+{
+	using namespace python;
+
+	enum_<BorderTreatmentMode>("BorderTreatmentMode")
+		.value("BORDER_TREATMENT_AVOID",BORDER_TREATMENT_AVOID)
+		.value("BORDER_TREATMENT_CLIP",BORDER_TREATMENT_CLIP)
+		.value("BORDER_TREATMENT_REPEAT",BORDER_TREATMENT_REPEAT)
+		.value("BORDER_TREATMENT_REFLECT",BORDER_TREATMENT_REFLECT)
+		.value("BORDER_TREATMENT_WRAP",BORDER_TREATMENT_WRAP);
+
+	class_<Kernel1D<T> > kernel1d("Kernel1D",
+                                "Generic 1 dimensional convolution kernel.\n\n"
+                                "This kernel may be used for convolution of 1 dimensional signals or "
+                                "for separable convolution of multidimensional signals.\n\n"
+                                "The kernel's size is given by its left() and right() "
+                                "methods. The desired border treatment mode is returned by "
+                                "getBorderTreatment().\n\n"
+                                "The different init functions create a kernel with the specified "
+                                "properties.\n\n",
+                                init<>("Standard constructor (creates an identity kernel)."));
+	kernel1d
+        .def(init< Kernel1D<T> >(args("kernel"),
+            "Copy constructor."))
+		.def("initGaussian",
+			 (void (Kernel1D<T>::*)(double,T))&Kernel1D<T>::initGaussian,
+			 (arg("scale"), arg("norm")=1.0),
+                "Init kernel as a sampled Gaussian function. The radius of the kernel is "
+                "always 3*std_dev. 'norm' denotes the desired sum of all bins of the "
+                "kernel (i.e. the kernel is corrected for the normalization error "
+                "introduced by windowing the Gaussian to a finite interval). "
+                "However, if norm is 0.0, the kernel is normalized to 1 by the "
+                "analytic expression for the Gaussian, and no correction for the "
+                "windowing error is performed.")
+		.def("initDiscreteGaussian",
+			 (void (Kernel1D<T>::*)(double,T))&Kernel1D<T>::initDiscreteGaussian,
+			 (arg("scale"),arg("norm")=1.0),
+                "Init kernel as Lindeberg's discrete analog of the Gaussian function. "
+                "The radius of the kernel is always 3*std_dev. 'norm' denotes "
+                "the desired sum of all bins of the kernel.")
+		.def("initGaussianDerivative",
+			 (void (Kernel1D<T>::*)(double,int,T))&Kernel1D<T>::initGaussianDerivative,
+			 (arg("scale"),arg("order"),arg("norm")=1.0),
+                "Init kernel as a Gaussian derivative of order 'order'. The radius of "
+                "the kernel is always 3*std_dev + 0.5*order. 'norm' denotes "
+                "the norm of the kernel. Thus, the kernel will be corrected for "
+                "the error introduced by windowing the Gaussian to a finite "
+                "interval. However, if norm is 0.0, the kernel is normalized to 1 "
+                "by the analytic expression for the Gaussian derivative, and no "
+                "correction for the windowing error is performed.")
+		.def("initBurtFilter",
+			 &Kernel1D<T>::initBurtFilter,
+			 (arg("a")=0.04785),
+                "Init kernel as a 5-tap smoothing filter of the form \n"
+                "   [ a, 0.25, 0.5 - 2*a, 0.25, a]")
+		.def("initBinomial",
+			 (void (Kernel1D<T>::*)(int,T))&Kernel1D<T>::initBinomial,
+			 (arg("radius"), arg("norm")=1.0),
+                "Init kernel as a binomial filter with given radius (i.e. window size 2*radius+1). "
+                "'norm' denotes the sum of all bins of the kernel.")
+		.def("initAveraging",
+			 (void (Kernel1D<T>::*)(int,T))&Kernel1D<T>::initAveraging,
+			 (arg("radius"),arg("norm")=1.0),
+                "Init kernel as an averaging filter with given radius (i.e. window size 2*radius+1). "
+                "'norm' denotes the sum of all bins of the kernel.")
+		.def("initSymmetricDifference",
+			 (void (Kernel1D<T>::*)(T))&Kernel1D<T>::initSymmetricDifference,
+			 (arg("norm")=1.0),
+                "Init kernel as a symmetric difference filter of the form \n"
+                "   [ 0.5 * norm, 0.0 * norm, -0.5 * norm]")
+		.def("initSecondDifference3",
+			 &Kernel1D<T>::initSecondDifference3,
+                "Init kernel as a 3-tap second difference filter of the form \n"
+                "   [ 1, -2, 1]")
+		.def("initOptimalSmoothing3",
+			 &Kernel1D<T>::initOptimalSmoothing3)
+		.def("initOptimalFirstDerivativeSmoothing3",
+			 &Kernel1D<T>::initOptimalFirstDerivativeSmoothing3)
+		.def("initOptimalSecondDerivativeSmoothing3",
+			 &Kernel1D<T>::initOptimalSecondDerivativeSmoothing3)
+		.def("initOptimalSmoothing5",
+			 &Kernel1D<T>::initOptimalSmoothing5)
+		.def("initOptimalFirstDerivativeSmoothing5",
+			 &Kernel1D<T>::initOptimalFirstDerivativeSmoothing5)
+		.def("initOptimalSecondDerivativeSmoothing5",
+			 &Kernel1D<T>::initOptimalSecondDerivativeSmoothing5)
+		.def("initOptimalFirstDerivative5",
+			 &Kernel1D<T>::initOptimalFirstDerivative5)
+		.def("initOptimalSecondDerivative5",
+			 &Kernel1D<T>::initOptimalSecondDerivative5)
+		.def("initExplicitly",
+			 registerConverters(&pythonInitExplicitlyKernel1D<T>),
+			 (arg("left"), arg("right"), arg("contents")),
+                "Init the kernel with explicit values from 'contents', which must be a "
+                "1D numpy.ndarray. 'left' and 'right' are the boundaries of the kernel "
+                "(inclusive). If 'contents' contains the wrong number of values, a "
+                "run-time error results. It is, however, possible to give just one "
+                "initializer. This creates an averaging filter with the given constant. "
+                "The norm is set to the sum of the initializer values. ")
+		.def("__getitem__",
+			 &pythonGetItemKernel1D<T>)
+		.def("__setitem__",
+			 &pythonSetItemKernel1D<T>)
+		.def("left",
+			 &Kernel1D<T>::left,
+                "Left border of kernel (inclusive).")
+		.def("right",
+			 &Kernel1D<T>::right,
+                "Right border of kernel (inclusive).")
+		.def("size",
+			 &Kernel1D<T>::size,
+			    "Number of kernel elements (right() - left() + 1)")
+		.def("borderTreatment",
+			 &Kernel1D<T>::borderTreatment,
+                "Return current border treatment mode.")
+		.def("setBorderTreatment",
+			 &Kernel1D<T>::setBorderTreatment,
+			 args("borderTreatment"),
+                "Set border treatment mode.")
+		.def("norm",
+			 &Kernel1D<T>::norm,
+                "Return the norm of kernel.")
+		.def("normalize",
+			 (void (Kernel1D<T>::*)(T,unsigned int,double))&Kernel1D<T>::normalize,
+			 (arg("norm")=1.0,arg("derivativeOrder")=0,arg("offset")= 0.0),
+                "Set a new norm and normalize kernel, use the normalization "
+                "formula for the given derivativeOrder.")
+		;
+
+	class_<Kernel2D<T> > kernel2d("Kernel2D",
+	        "Generic 2 dimensional convolution kernel.\n\n"
+            "This kernel may be used for convolution of 2 dimensional signals.\n\n"
+            "The desired border treatment mode is returned by borderTreatment()."
+            "(Note that the 2D convolution functions don't currently support all "
+            "modes.)\n\n"
+            "The different init functions create a kernel with the specified "
+            "properties.\n\n",
+            init<>("Standard constructor (creates identity kernel)."));
+	kernel2d
+        .def(init< Kernel2D<T> >(args("kernel"),
+            "Copy constructor."))
+		.def("initExplicitly",
+			 registerConverters(&pythonInitExplicitlyKernel2D<T>),
+			 (arg("upperLeft"), arg("lowerRight"), arg("contents")),
+                "Init the kernel with explicit values from 'contents', which must be a "
+                "2D numpy.ndarray. 'upperLeft' and 'lowerRight' are the boundaries of the "
+                "kernel (inclusive), and  must be 2D tuples. "
+                "If 'contents' contains the wrong number of values, a run-time error "
+                "results. It is, however, possible to give just one initializer. "
+                "This creates an averaging filter with the given constant. "
+                "The norm is set to the sum of the initializer values. ")
+		.def("initSeparable",
+			 (void (Kernel2D<T>::*)(Kernel1D<T> const &,Kernel1D<T> const &))&Kernel2D<T>::initSeparable,
+			 (arg("kernelX"), arg("kernelY")),
+		        "Init the 2D kernel as the cartesian product of two 1D kernels of "
+                "type Kernel1D. The norm becomes the product of the two original "
+                "norms.")
+		.def("initGaussian",
+			 (void (Kernel2D<T>::*)(double, T))&Kernel2D<T>::initGaussian,
+			 (arg("scale"), arg("norm")=1.0),
+                "Init kernel as a sampled 2D Gaussian function. The radius of the kernel is "
+                "always 3*std_dev. 'norm' denotes the desired sum of all bins of the "
+                "kernel (i.e. the kernel is corrected for the normalization error "
+                "introduced by windowing the Gaussian to a finite interval). "
+                "However, if norm is 0.0, the kernel is normalized to 1 by the "
+                "analytic expression for the Gaussian, and no correction for the "
+                "windowing error is performed.")
+		.def("initDisk",
+			 &Kernel2D<T>::initDisk,
+			 args("radius"),
+                "Init the 2D kernel as a circular averaging filter. The norm will "
+                "be calculated as 1 / (number of non-zero kernel values).\n\n"
+                "Precondition:\n\n"
+                "   radius > 0")
+		.def("__setitem__",
+			 &pythonSetItemKernel2D<T>)
+		.def("__getitem__",
+			 &pythonGetItemKernel2D<T>)
+		.def("width",
+			 &Kernel2D<T>::width)
+		.def("height",
+			 &Kernel2D<T>::height)
+		.def("upperLeft",
+			 &Kernel2D<T>::upperLeft,
+                "Upper left border of kernel (inclusive).")
+		.def("lowerRight",
+			 &Kernel2D<T>::lowerRight,
+                "Lower right border of kernel (inclusive).")
+		.def("norm",
+			 &Kernel2D<T>::norm,
+			    "Return the norm of the kernel.")
+		.def("normalize",
+		    (void (Kernel2D<T>::*)(T))&Kernel2D<T>::normalize,
+			 (arg("norm")=1.0),
+			    "Set the kernel's norm and renormalize the values.")
+		.def("borderTreatment",
+			 &Kernel2D<T>::borderTreatment,
+                "Return current border treatment mode.")
+		.def("setBorderTreatment",
+			 &Kernel2D<T>::setBorderTreatment,
+			 args("borderTreatment"),
+                "Set border treatment mode.")
+	;
+}
+
+void defineKernels()
+{
+	defineKernels<KernelValueType>();
+}
+
 } // namespace vigra
 
