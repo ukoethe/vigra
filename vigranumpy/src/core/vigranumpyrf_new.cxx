@@ -41,7 +41,7 @@
 #include <vigra/random_forest.hxx>
 #include <set>
 #include <cmath>
-#include "tuples.hpp"
+#include <boost/python.hpp>
 
 
 #ifdef HasHDF5
@@ -82,8 +82,9 @@ pythonConstructRandomForest(int treeCount,
 }
 
 template<class LabelType, class FeatureType>
-boost::tuples::tuple<double, NumpyArray<2,double> >
-pythonLearnRandomForestWithFeatureSelection(RandomForest<LabelType>* rf, NumpyArray<2,FeatureType> trainData, NumpyArray<2,LabelType> trainLabels)
+python::tuple
+pythonLearnRandomForestWithFeatureSelection(RandomForest<LabelType>* rf, 
+                                            NumpyArray<2,FeatureType> trainData, NumpyArray<2,LabelType> trainLabels)
 {
   VariableImportanceVisitor var_imp;
    
@@ -96,7 +97,7 @@ pythonLearnRandomForestWithFeatureSelection(RandomForest<LabelType>* rf, NumpyAr
     for (int y=0;y<varImp.shape(1);y++)
       varImp(x,y)= var_imp.variable_importance_(x,y);
 
-  return boost::tuples::tuple<double, NumpyArray<2, double> >(oob, varImp);
+  return python::make_tuple(oob, varImp);
 }
 
 template<class LabelType, class FeatureType>
@@ -133,9 +134,6 @@ NumpyAnyArray pythonRFPredictProbabilities(RandomForest<LabelType>* rf,NumpyArra
 void defineRandomForest_new()
 {
 	using namespace python;
-
-  typedef boost::tuples::tuple<double, NumpyArray<2,double> > trainReturn;
-  boost::python::register_tuple< trainReturn >();
 
 	class_<RandomForest<UInt32> > rfclass_new("RandomForest_new",python::no_init);
 	rfclass_new
