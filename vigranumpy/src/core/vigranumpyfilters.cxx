@@ -156,16 +156,16 @@ void defineFilters2D()
     def("eigHessian2d",
         registerConverters(&pythonEigHessian2d<float>),
         (arg("image"), arg("scale"), arg("out")=object()),
-        "computes the eigenvalues of the Hessian in each pixel of an image.\n"
+        "computes the eigenvalues of the Hessian in each pixel of an image."
         "\n"
         "The 'scale' parameter gives the scale of 2nd derivative filter.\n"
        );
     def("eigStructureTensor2d",
         registerConverters(&pythonEigStructureTensor2d<float>),
         (arg("image"), arg("scale"), arg("out")=object()),
-        "computes the eigenvalues of the structure tensor in each pixel of an image.\n"
+        "computes the eigenvalues of the structure tensor in each pixel of an image."
         "\n"
-        "The innerScale parameter gives the scale of the gradient filter\n"
+        "The innerScale parameter gives the scale of the gradient filter."
         "The outerScale parameter gives the outer scale of the smoothing filter\n"
        );
     def("gaussianSmooth2d",
@@ -173,7 +173,7 @@ void defineFilters2D()
         (arg("image"), arg("scale"), arg("out")=object()),
         "computes the gradient magnitude in each pixel of an image.\n"
         "\n"
-        "The scale parameter gives the scale of the derivative filter"
+        "The scale parameter gives the scale of the derivative filter.\n"
        );
 
     def("distanceTransform3D",
@@ -181,17 +181,19 @@ void defineFilters2D()
         (arg("array"), arg("background"),
          arg("out")=python::object()),
         "For all background pixels, calculate the distance to the nearest object or contour."
-        "The label of the pixels to be considered background in the source image is passed in the parameter 'background'."
+        "The label of the pixels to be considered background in the source image is passed "
+        "in the parameter 'background'."
         "Source pixels with other labels will be considered objects."
-        "In the destination image, all pixels corresponding to background will be assigned the their distance value, all pixels corresponding to objects will be assigned 0.'n'"
+        "In the destination image, all pixels corresponding to background will be assigned "
+        "the their distance value, all pixels corresponding to objects will be assigned 0.\n"
         "\n"
-        "For more details see distanceTransform_ in the vigra C++ documentation.");
+        "For more details see separableMultiDistance_ in the vigra C++ documentation.\n");
 
     def("rieszTransformOfLOG2D",
         registerConverters(&pythonRieszTransformOfLOG2D<float>),        // also multiband
         (arg("image"), arg("scale"), arg("xorder"), arg("yorder"),arg("out")=python::object()),
         "Calculate Riesz transforms of the Laplacian of Gaussian.\n\n"
-        "For details see rieszTransformOfLOG_ in the vigra C++ documentation.");
+        "For details see rieszTransformOfLOG_ in the vigra C++ documentation.\n");
 
     def("distanceTransform2D",
         registerConverters(&pythonDistanceTransform2D<npy_int32, float>),
@@ -199,12 +201,14 @@ void defineFilters2D()
          arg("background")=0, 
          arg("norm")=2,
          arg("out")=python::object()),
-        "For all background pixels, calculate the distance to the nearest object or contour.\n"
-        "The label of the pixels to be considered background in the source image is passed in the parameter 'background'.\n"
-        "Source pixels with other labels will be considered objects.\n"
-        "In the destination image, all pixels corresponding to background will be assigned the their distance value, all pixels corresponding to objects will be assigned 0.\n\n"
+        "For all background pixels, calculate the distance to the nearest object or contour. "
+        "The label of the pixels to be considered background in the source image is passed "
+        "in the parameter 'background'. "
+        "Source pixels with other labels will be considered objects. "
+        "In the destination image, all pixels corresponding to background will be assigned "
+        "the their distance value, all pixels corresponding to objects will be assigned 0.\n\n"
         "The norm parameter gives the distance norm to use.\n\n"
-        "For details see distanceTransform_ in the vigra C++ documentation.");
+        "For details see distanceTransform_ in the vigra C++ documentation.\n");
     def("distanceTransform2D",
         registerConverters(&pythonDistanceTransform2D<UInt8,float>),
         (arg("image"), 
@@ -217,8 +221,9 @@ void defineFilters2D()
         (arg("image"), arg("scale"),arg("out")=python::object()),
         "Find centers of radial symmetry in an 2D image.\n\n"
         "This algorithm implements the Fast Radial Symmetry Transform according to "
-        "[G. Loy, A. Zelinsky: \"A Fast Radial Symmetry Transform for Detecting Points of Interest\", in: A. Heyden et al. (Eds.): Proc. of 7th European Conf. on Computer Vision, Part 1, pp. 358-368, Springer LNCS 2350, 2002]\n\n"
-        "For details see radialSymmetryTransform_ in the vigra C++ documentation.");
+        "[G. Loy, A. Zelinsky: \"A Fast Radial Symmetry Transform for Detecting Points of Interest\", "
+        "in: A. Heyden et al. (Eds.): Proc. of 7th European Conf. on Computer Vision, Part 1, pp. 358-368, Springer LNCS 2350, 2002]\n\n"
+        "For details see radialSymmetryTransform_ in the vigra C++ documentation.\n");
 }
 
 } // namespace vigra

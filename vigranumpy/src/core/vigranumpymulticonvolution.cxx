@@ -172,7 +172,7 @@ void defineMultiConvolutionFunctions()
         (arg("image"), arg("sigma"), arg("out")=python::object()),
         "Perform isotropic Gaussian smoothing at the given scale for a 2D or 3D scalar or multiband image.\n"
         "\n"
-        "For details see gaussianSmoothing_ in the vigra C++ documentation.");
+        "For details see gaussianSmoothing_ in the vigra C++ documentation.\n");
 
     def("gaussianSmoothing",
         registerConverters(&pythonGaussianSmoothingND<float,4>),               
@@ -184,7 +184,7 @@ void defineMultiConvolutionFunctions()
         "Calculate the gradient vector by means of a 1st derivative of "
         "Gaussian filter at the given scale for a 2D or 3D scalar image.\n"
         "\n"
-        "For details see gaussianGradientMultiArray_ in the vigra C++ documentation.");
+        "For details see gaussianGradientMultiArray_ in the vigra C++ documentation.\n");
 
     def("gaussianGradient",
     	registerConverters(&pythonGaussianGradientND<float,3>),
@@ -196,7 +196,7 @@ void defineMultiConvolutionFunctions()
         "Calculate the gradient magnitude by means of a 1st derivative of "
         "Gaussian filter at the given scale for a 2D or 3D scalar or multiband image.\n"
         "\n"
-        "For details see gaussianGradientMultiArray_ in the vigra C++ documentation.");
+        "For details see gaussianGradientMultiArray_ in the vigra C++ documentation.\n");
 
     def("gaussianGradientMagnitude",
     	registerConverters(&pythonGaussianGradientMagnitudeND<float,4>),
@@ -207,7 +207,7 @@ void defineMultiConvolutionFunctions()
         (arg("image"), arg("out")=python::object()),
         "Calculate gradient of a scalar 2D image or 3D volume using symmetric difference filters."
         "\n"
-        "For details see symmetricGradientMultiArray_ in the vigra C++ documentation.");
+        "For details see symmetricGradientMultiArray_ in the vigra C++ documentation.\n");
 
     def("symmetricGradient",
         registerConverters(&pythonSymmetricGradientND<float,3>), 
@@ -219,7 +219,7 @@ void defineMultiConvolutionFunctions()
         "Convolution along a single dimension of a 2D or 3D scalar or multiband image. "
         "'kernel' must be an instance of Kernel1D.\n"
         "\n"
-        "For details see convolveMultiArrayOneDimension_ in the vigra C++ documentation.");
+        "For details see convolveMultiArrayOneDimension_ in the vigra C++ documentation.\n");
 
     def("convolveOneDimension",
     	registerConverters(&pythonConvolveOneDimensionND<float,4>),
@@ -232,7 +232,7 @@ void defineMultiConvolutionFunctions()
         "one kernel for each spatial dimension. If only a single kernel is given, "
         "it is applied to all dimensions.\n"
         "\n"
-        "For details see separableConvolveMultiArray_ in the vigra C++ documentation.");
+        "For details see separableConvolveMultiArray_ in the vigra C++ documentation.\n");
 
     def("separableConvolve", registerConverters(&pythonSeparableConvolveND_1Kernel<float,4>),
         (arg("volume"), arg("kernel"), arg("out")=python::object()));

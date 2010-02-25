@@ -433,7 +433,8 @@ void defineImageTransformations()
         "The angle may be given in radiant (parameter radiant).\n"
         "The parameter splineOrder indicates the order of the splines used for interpolation.\n"
         "If the \"out\" parameter is given, the image is cropped for it's dimensions. If the \"out\"\n"
-        "parameter is not given, an output image with the same dimensions as the input image is created.\n" 
+        "parameter is not given, an output image with the same dimensions as the input image is created.\n\n"
+        "For more details, see GeometricTransformations.rotationMatrix2DRadians_ in the vigra C++ documentation.\n" 
         );
     def("rotateImageDegree",
         registerConverters(&pythonFreeRotateImageDegree<float>),
@@ -443,7 +444,8 @@ void defineImageTransformations()
         "The angle may be given in degree (parameter degree).\n"
         "The parameter splineOrder indicates the order of the splines used for interpolation.\n"
         "If the \"out\" parameter is given, the image is cropped for it's dimensions. If the \"out\"\n"
-        "parameter is not given, an output image with the same dimensions as the input image is created.\n" 
+        "parameter is not given, an output image with the same dimensions as the input image is created.\n\n"
+        "For more details, see GeometricTransformations.rotationMatrix2DDegrees_ in the vigra C++ documentation.\n"  
         );
     def("rotateImageSimple",
         registerConverters(&pythonFixedRotateImage<float>),
@@ -452,7 +454,8 @@ void defineImageTransformations()
         "\n"
         "The \"orientation\" parameter (which must be one of CLOCKWISE, COUNTER_CLOCKWISE and UPSIDE_DOWN\n"
         "indicates the rotation direction. The \"out\" parameter must, if given, have the according dimensions.\n"
-        "This function also works for multiband images, it is then executed on every band.\n"
+        "This function also works for multiband images, it is then executed on every band.\n\n"
+        "For more details, see rotateImage_ in the vigra C++ documentation.\n" 
         );
 
 //    def("rotateImageAboutCenter",
@@ -464,9 +467,9 @@ void defineImageTransformations()
         (arg("image"), arg("factor"),arg("out")=object()),
         "Resample an image by the factor \"factor\""
         "\n"
-        "For details, see the vigra documentation, resampleImage_.\n"
         "The \"out\" parameter must have, if given, the according dimensions.\n"
-        "This function also works for multiband images, it is then executed on every band.\n"
+        "This function also works for multiband images, it is then executed on every band.\n\n"
+        "For more details, see resampleImage_ in the vigra C++ documentation.\n" 
         );
 
     def("resizeImageNoInterpolation",
@@ -474,10 +477,10 @@ void defineImageTransformations()
         (arg("image"), arg("destSize")=object(), arg("out")=object()),
         "Resize image by repeating the nearest pixel values.\n"
         "\n"
-        "For details see vigra documentation resizeImageNoInterpolation_.\n"
         "The dimensions of the output image is taken either from \"destSize\" or \"out\".\n"
         "If both are given, they must agree on the output dimensions.\n"
-        "This function also works for multiband images, it is then executed on every band.\n"
+        "This function also works for multiband images, it is then executed on every band.\n\n"
+        "For more details, see resizeImageNoInterpolation_ in the vigra C++ documentation.\n"
         );
 
 
@@ -487,10 +490,10 @@ void defineImageTransformations()
         "Resize image using linear interpolation.\n"
         "The function uses the standard separable bilinear interpolation algorithm to obtain a good compromise between quality and speed.\n"
         "\n" 
-        "For details see vigra documentation resizeImageLinearInterpolation_.\n"
         "The dimensions of the output image is taken either from \"destSize\" or \"out\".\n"
         "If both are given, they must agree on the output dimensions.\n"
-        "This function also works for multiband images, it is then executed on every band.\n"
+        "This function also works for multiband images, it is then executed on every band.\n\n"
+        "For more details, see resizeImageLinearInterpolation_ in the vigra C++ documentation.\n"
         );
 
     def("resizeImageSplineInterpolation",
@@ -498,11 +501,11 @@ void defineImageTransformations()
         (arg("image"), arg("destSize")=object(), arg("splineOrder") = 3, arg("out") = object()),
         "Resize image using B-spline interpolation.\n"
         "\n"
-        "For details see vigra documentation resizeImageSplineInterpolation_.\n"
         "The spline order is given in the parameter \"splineOrder\".\n"
         "The dimensions of the output image is taken either from \"destSize\" or \"out\".\n"
         "If both are given, they must agree on the output dimensions.\n"
-        "This function also works for multiband images, it is then executed on every band.\n"
+        "This function also works for multiband images, it is then executed on every band.\n\n"
+        "For more details, see resizeImageSplineInterpolation_ in the vigra C++ documentation.\n"
        );
 
     def("resizeImageCatmullRomInterpolation",
@@ -510,10 +513,10 @@ void defineImageTransformations()
         (arg("image"), arg("destSize")=object(), arg("out")=object()),
         "Resize image using the Catmull/Rom interpolation function.\n"
         "\n" 
-        "For details see vigra documentation resizeImageCatmullRomInterpolation_.\n"
         "The dimensions of the output image is taken either from \"destSize\" or \"out\".\n"
         "If both are given, they must agree on the output dimensions.\n"
-        "This function also works for multiband images, it is then executed on every band.\n"
+        "This function also works for multiband images, it is then executed on every band.\n\n"
+        "For more details, see resizeImageCatmullRomInterpolation_ in the vigra C++ documentation.\n"
        );
 
     def("resizeImageCoscotInterpolation",
@@ -521,10 +524,10 @@ void defineImageTransformations()
         (arg("image"), arg("destSize")=object(), arg("out")=object()),
         "Resize image using the Coscot interpolation function.\n" 
         "\n" 
-        "For details see vigra documentation resizeImageCoscotInterpolation_.\n"
         "The dimensions of the output image is taken either from \"destSize\" or \"out\".\n"
         "If both are given, they must agree on the output dimensions.\n"
-        "This function also works for multiband images, it is then executed on every band.\n"
+        "This function also works for multiband images, it is then executed on every band.\n\n"
+        "For more details, see resizeImageCoscotInterpolation_ in the vigra C++ documentation.\n"
         );
 
 

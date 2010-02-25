@@ -502,51 +502,51 @@ void defineConvolutionFunctions()
       (arg("image"), arg("innerScale")=1.0, arg("outerScale")=2.0, arg("out") = python::object()),
       "Calculate the structure tensor for each pixel of an image, using Gaussian (derivative) filters at the given scales.\n"
       "\n"
-      "For details see structureTensor_ in the vigra C++ documentation.");
+      "For details see structureTensor_ in the vigra C++ documentation.\n");
     
     multidef("nonlinearDiffusion", pynonlinearDiffusion2D<float, UInt8>(),
         (arg("image"), arg("edgeThreshold"), arg("scale")),
         "Perform edge-preserving smoothing at the given scale."
         "\n\n"
-        "For details see nonlinearDiffusion_ in the vigra C++ documentation.");
+        "For details see nonlinearDiffusion_ in the vigra C++ documentation.\n");
 
     multidef("simpleSharpening", pysimpleSharpening2D<float>(),
               (arg("image"), arg("sharpeningFactor")=1.0, arg("out") = python::object()),
               "Perform simple sharpening function.\n"
               "\n"
-              "For details see simpleSharpening_ in the vigra C++ documentation.");
+              "For details see simpleSharpening_ in the vigra C++ documentation.\n");
 
     multidef("gaussianSharpening", pygaussianSharpening2D<float>(),
                   (arg("image"), arg("sharpeningFactor")=1.0, arg("scale")=1.0,
                   arg("out") = python::object()),
                   "Perform sharpening function with gaussian filter."
                   "\n\n"
-                  "For details see gaussianSharpening_ in the vigra C++ documentation.");
+                  "For details see gaussianSharpening_ in the vigra C++ documentation.\n");
 
     multidef("laplacianOfGaussian", pylaplacianOfGaussian2D<float>(),
                           (arg("image"), arg("scale") = 1.0, arg("out") = python::object()),
                           "Filter image with the Laplacian of Gaussian operator at the given scale.\n"
                           "\n"
-                          "For details see laplacianOfGaussian_ in the vigra C++ documentation.");
+                          "For details see laplacianOfGaussian_ in the vigra C++ documentation.\n");
 
     def("hessianMatrixOfGaussian", registerConverters(&hessianMatrixOfGaussian2D<float>),
       (arg("image"), arg("scale")=1.0, arg("out") = python::object()),
       "Filter image with the 2nd derivatives of the Gaussian at the given scale to get the Hessian matrix.\n"
       "\n"
-      "For details see hessianMatrixOfGaussian_ in the vigra C++ documentation.");
+      "For details see hessianMatrixOfGaussian_ in the vigra C++ documentation.\n");
 
     def("resamplingGaussian", registerConverters(&resamplingGaussian2D<float>),
           (arg("image"), arg("sigma")=1.0, arg("derivativeOrder")=1,
            arg("samplingRatioX")=1, arg("samplingRatioY")=1, arg("out") = python::object()),
           "Resample image using a gaussian filter.\n"
           "\n"
-          "This function utilize resamplingConvolveImage_ (see the vigra C++ documentation for details).");
+          "This function utilize resamplingConvolveImage_ (see the vigra C++ documentation for details).\n");
 
     def("convolve2D", registerConverters(&pythonConvolveImage<float>),
               (arg("image"), arg("kernel")=python::object(), arg("out") = python::object()),
               "Perform 2D convolution with a 2D kernel (useful if the kernel is non-separable).\n"
               "\n"
-              "For details see StandardConvolution.convolveImage_ in the vigra C++ documentation.");
+              "For details see StandardConvolution.convolveImage_ in the vigra C++ documentation.\n");
 
     def("recursiveFilter2D", registerConverters(&pythonRecursiveFilter1<float>),
               (arg("image"), arg("b"), arg("borderTreament") = BORDER_TREATMENT_REFLECT, arg("out") = python::object()),
@@ -554,7 +554,7 @@ void defineConvolutionFunctions()
               "parameter 'b' and given 'borderTreatment'. 'b' must be between -1 and 1.\n"
               "\n"
               "For details see recursiveFilterX_ and recursiveFilterY_ (which "
-              "this function calls in succession) in the vigra C++ documentation.");
+              "this function calls in succession) in the vigra C++ documentation.\n");
 
     def("recursiveFilter2D", registerConverters(&pythonRecursiveFilter2<float>),
               (arg("image"), arg("b1"), arg("b2"), arg("out") = python::object()),
@@ -562,14 +562,14 @@ void defineConvolutionFunctions()
               "parameters 'b1' and 'b2'. Border treatment is always BORDER_TREATMENT_REFLECT.\n"
               "\n"
               "For details see recursiveFilterX_ and recursiveFilterY_ (which "
-              "this function calls in succession) in the vigra C++ documentation.");
+              "this function calls in succession) in the vigra C++ documentation.\n");
 
     def("recursiveSmooth2D", registerConverters(&pythonRecursiveSmooth<float>),
               (arg("image"), arg("scale"), arg("borderTreament") = BORDER_TREATMENT_REFLECT, arg("out") = python::object()),
               "Calls recursiveFilter2D() with b = exp(-1/scale), which "
               "corresponds to smoothing with an exponential filter exp(-abs(x)/scale).\n"
               "\n"
-              "For details see recursiveSmoothLine_ in the vigra C++ documentation.");
+              "For details see recursiveSmoothLine_ in the vigra C++ documentation.\n");
 
     def("recursiveGradient2D", registerConverters(&pythonRecursiveSmooth<float>),
               (arg("image"), arg("scale"), arg("out") = python::object()),
@@ -577,7 +577,7 @@ void defineConvolutionFunctions()
               "at the given 'scale'. The output image (if given) must have two channels.\n"
               "\n"
               "For details see recursiveSmoothLine_ and recursiveFirstDerivativeLine_ (which "
-              "this function calls internally) in the vigra C++ documentation.");
+              "this function calls internally) in the vigra C++ documentation.\n");
 
     def("recursiveLaplacian2D", registerConverters(&pythonRecursiveLaplacian<float>),
               (arg("image"), arg("scale"), arg("out") = python::object()),
@@ -585,7 +585,7 @@ void defineConvolutionFunctions()
               "at the given 'scale'. The output image (if given) must have as many channels as the input.\n"
               "\n"
               "For details see recursiveSmoothLine_ and recursiveSecondDerivativeLine_ (which "
-              "this function calls internally) in the vigra C++ documentation.");
+              "this function calls internally) in the vigra C++ documentation.\n");
 
     defSplineView<SplineImageView<0, float> >("SplineImageView0");
     defSplineView<SplineImageView<1, float> >("SplineImageView1");

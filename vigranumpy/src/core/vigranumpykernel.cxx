@@ -49,15 +49,15 @@ namespace vigra
 {
 
 template<class T>
-void pythonInitExplicitlyKernel1D(Kernel1D<T> *k, int left, int right, NumpyArray<1,T> contents)
+void pythonInitExplicitlyKernel1D(Kernel1D<T> &k, int left, int right, NumpyArray<1,T> contents)
 {
 	vigra_precondition(contents.size() == 1 || right-left+1 == contents.shape(0),
 	          "Kernel1D::initExplicitly(): 'contents' must contain as many elements as the kernel (or just one element).");
 	          
-	k->initExplicitly(left,right);
+	k.initExplicitly(left,right);
 	for(int i=left; i<=right; ++i)
 	{
-		(*k)[i] = (contents.size() == 1)
+		k[i] = (contents.size() == 1)
 		             ? contents(0)
 		             : contents(i-left);
 	}
@@ -136,7 +136,7 @@ void pythonSetItemKernel1D(Kernel1D<T> & self, int position, T value)
 }
 	
 template<class T>
-void pythonInitExplicitlyKernel2D(Kernel2D<T> *k,
+void pythonInitExplicitlyKernel2D(Kernel2D<T> &k,
                                   MultiArrayShape<2>::type upperleft, MultiArrayShape<2>::type lowerright,
                                   NumpyArray<2,T> contents)
 {
@@ -146,12 +146,12 @@ void pythonInitExplicitlyKernel2D(Kernel2D<T> *k,
 
     Point2D ul(upperleft[0], upperleft[1]), lr(lowerright[0], lowerright[1]);
     
-    k->initExplicitly(ul, lr);
+    k.initExplicitly(ul, lr);
     for(int y = ul.y; y <= lr.y; ++y)
     {
 	    for(int x = ul.x; x <= lr.x; ++x)
 	    {
-		    (*k)(x,y) = (contents.size() == 1)
+		    k(x,y) = (contents.size() == 1)
 		                   ? contents(0)
 		                   : contents(x-ul.x, y-ul.y);
 	    }
@@ -261,10 +261,10 @@ void defineKernels()
                                 "getBorderTreatment().\n\n"
                                 "The different init functions create a kernel with the specified "
                                 "properties.\n\n",
-                                init<>("Standard constructor (creates an identity kernel)."));
+                                init<>("Standard constructor (creates an identity kernel).\n"));
 	kernel1d
         .def(init< Kernel1D<T> >(args("kernel"),
-            "Copy constructor."))
+            "Copy constructor.\n"))
 		.def("initGaussian",
 			 (void (Kernel1D<T>::*)(double,T))&Kernel1D<T>::initGaussian,
 			 (arg("scale"), arg("norm")=1.0),
@@ -274,13 +274,13 @@ void defineKernels()
                 "introduced by windowing the Gaussian to a finite interval). "
                 "However, if norm is 0.0, the kernel is normalized to 1 by the "
                 "analytic expression for the Gaussian, and no correction for the "
-                "windowing error is performed.")
+                "windowing error is performed.\n")
 		.def("initDiscreteGaussian",
 			 (void (Kernel1D<T>::*)(double,T))&Kernel1D<T>::initDiscreteGaussian,
 			 (arg("scale"),arg("norm")=1.0),
                 "Init kernel as Lindeberg's discrete analog of the Gaussian function. "
                 "The radius of the kernel is always 3*std_dev. 'norm' denotes "
-                "the desired sum of all bins of the kernel.")
+                "the desired sum of all bins of the kernel.\n")
 		.def("initGaussianDerivative",
 			 (void (Kernel1D<T>::*)(double,int,T))&Kernel1D<T>::initGaussianDerivative,
 			 (arg("scale"),arg("order"),arg("norm")=1.0),
@@ -290,31 +290,31 @@ void defineKernels()
                 "the error introduced by windowing the Gaussian to a finite "
                 "interval. However, if norm is 0.0, the kernel is normalized to 1 "
                 "by the analytic expression for the Gaussian derivative, and no "
-                "correction for the windowing error is performed.")
+                "correction for the windowing error is performed.\n")
 		.def("initBurtFilter",
 			 &Kernel1D<T>::initBurtFilter,
 			 (arg("a")=0.04785),
-                "Init kernel as a 5-tap smoothing filter of the form \n"
-                "   [ a, 0.25, 0.5 - 2*a, 0.25, a]")
+                "Init kernel as a 5-tap smoothing filter of the form::\n\n"
+                "   [ a, 0.25, 0.5 - 2*a, 0.25, a]\n")
 		.def("initBinomial",
 			 (void (Kernel1D<T>::*)(int,T))&Kernel1D<T>::initBinomial,
 			 (arg("radius"), arg("norm")=1.0),
                 "Init kernel as a binomial filter with given radius (i.e. window size 2*radius+1). "
-                "'norm' denotes the sum of all bins of the kernel.")
+                "'norm' denotes the sum of all bins of the kernel.\n")
 		.def("initAveraging",
 			 (void (Kernel1D<T>::*)(int,T))&Kernel1D<T>::initAveraging,
 			 (arg("radius"),arg("norm")=1.0),
                 "Init kernel as an averaging filter with given radius (i.e. window size 2*radius+1). "
-                "'norm' denotes the sum of all bins of the kernel.")
+                "'norm' denotes the sum of all bins of the kernel.\n")
 		.def("initSymmetricDifference",
 			 (void (Kernel1D<T>::*)(T))&Kernel1D<T>::initSymmetricDifference,
 			 (arg("norm")=1.0),
-                "Init kernel as a symmetric difference filter of the form \n"
-                "   [ 0.5 * norm, 0.0 * norm, -0.5 * norm]")
+                "Init kernel as a symmetric difference filter of the form::\n\n"
+                "   [ 0.5 * norm, 0.0 * norm, -0.5 * norm]\n")
 		.def("initSecondDifference3",
 			 &Kernel1D<T>::initSecondDifference3,
-                "Init kernel as a 3-tap second difference filter of the form \n"
-                "   [ 1, -2, 1]")
+                "Init kernel as a 3-tap second difference filter of the form::\n\n"
+                "   [ 1, -2, 1]\n")
 		.def("initOptimalSmoothing3",
 			 &Kernel1D<T>::initOptimalSmoothing3)
 		.def("initOptimalFirstDerivativeSmoothing3",
@@ -339,35 +339,35 @@ void defineKernels()
                 "(inclusive). If 'contents' contains the wrong number of values, a "
                 "run-time error results. It is, however, possible to give just one "
                 "initializer. This creates an averaging filter with the given constant. "
-                "The norm is set to the sum of the initializer values. ")
+                "The norm is set to the sum of the initializer values. \n")
 		.def("__getitem__",
 			 &pythonGetItemKernel1D<T>)
 		.def("__setitem__",
 			 &pythonSetItemKernel1D<T>)
 		.def("left",
 			 &Kernel1D<T>::left,
-                "Left border of kernel (inclusive).")
+                "Left border of kernel (inclusive).\n")
 		.def("right",
 			 &Kernel1D<T>::right,
-                "Right border of kernel (inclusive).")
+                "Right border of kernel (inclusive).\n")
 		.def("size",
 			 &Kernel1D<T>::size,
-			    "Number of kernel elements (right() - left() + 1)")
+			    "Number of kernel elements (right() - left() + 1).\n")
 		.def("borderTreatment",
 			 &Kernel1D<T>::borderTreatment,
-                "Return current border treatment mode.")
+                "Return current border treatment mode.\n")
 		.def("setBorderTreatment",
 			 &Kernel1D<T>::setBorderTreatment,
 			 args("borderTreatment"),
-                "Set border treatment mode.")
+                "Set border treatment mode.\n")
 		.def("norm",
 			 &Kernel1D<T>::norm,
-                "Return the norm of kernel.")
+                "Return the norm of kernel.\n")
 		.def("normalize",
 			 (void (Kernel1D<T>::*)(T,unsigned int,double))&Kernel1D<T>::normalize,
 			 (arg("norm")=1.0,arg("derivativeOrder")=0,arg("offset")= 0.0),
                 "Set a new norm and normalize kernel, use the normalization "
-                "formula for the given derivativeOrder.")
+                "formula for the given derivativeOrder.\n")
 		;
 
 	class_<Kernel2D<T> > kernel2d("Kernel2D",
@@ -378,10 +378,10 @@ void defineKernels()
             "modes.)\n\n"
             "The different init functions create a kernel with the specified "
             "properties.\n\n",
-            init<>("Standard constructor (creates identity kernel)."));
+            init<>("Standard constructor (creates identity kernel).\n"));
 	kernel2d
         .def(init< Kernel2D<T> >(args("kernel"),
-            "Copy constructor."))
+            "Copy constructor.\n"))
 		.def("initExplicitly",
 			 registerConverters(&pythonInitExplicitlyKernel2D<T>),
 			 (arg("upperLeft"), arg("lowerRight"), arg("contents")),
@@ -391,13 +391,13 @@ void defineKernels()
                 "If 'contents' contains the wrong number of values, a run-time error "
                 "results. It is, however, possible to give just one initializer. "
                 "This creates an averaging filter with the given constant. "
-                "The norm is set to the sum of the initializer values. ")
+                "The norm is set to the sum of the initializer values. \n")
 		.def("initSeparable",
 			 (void (Kernel2D<T>::*)(Kernel1D<T> const &,Kernel1D<T> const &))&Kernel2D<T>::initSeparable,
 			 (arg("kernelX"), arg("kernelY")),
 		        "Init the 2D kernel as the cartesian product of two 1D kernels of "
                 "type Kernel1D. The norm becomes the product of the two original "
-                "norms.")
+                "norms.\n")
 		.def("initGaussian",
 			 (void (Kernel2D<T>::*)(double, T))&Kernel2D<T>::initGaussian,
 			 (arg("scale"), arg("norm")=1.0),
@@ -407,42 +407,44 @@ void defineKernels()
                 "introduced by windowing the Gaussian to a finite interval). "
                 "However, if norm is 0.0, the kernel is normalized to 1 by the "
                 "analytic expression for the Gaussian, and no correction for the "
-                "windowing error is performed.")
+                "windowing error is performed.\n")
 		.def("initDisk",
 			 &Kernel2D<T>::initDisk,
 			 args("radius"),
                 "Init the 2D kernel as a circular averaging filter. The norm will "
                 "be calculated as 1 / (number of non-zero kernel values).\n\n"
-                "Precondition:\n\n"
-                "   radius > 0")
+                "Precondition::\n\n"
+                "   radius > 0\n")
 		.def("__setitem__",
 			 &pythonSetItemKernel2D<T>)
 		.def("__getitem__",
 			 &pythonGetItemKernel2D<T>)
 		.def("width",
-			 &Kernel2D<T>::width)
+			 &Kernel2D<T>::width,
+			    "Horizontal kernel size (lowerRight()[0] - upperLeft()[0] + 1).\n")
 		.def("height",
-			 &Kernel2D<T>::height)
+			 &Kernel2D<T>::height,
+			    "Vertical kernel size (lowerRight()[1] - upperLeft()[1] + 1).\n")
 		.def("upperLeft",
 			 &Kernel2D<T>::upperLeft,
-                "Upper left border of kernel (inclusive).")
+                "Upper left border of kernel (inclusive).\n")
 		.def("lowerRight",
 			 &Kernel2D<T>::lowerRight,
-                "Lower right border of kernel (inclusive).")
+                "Lower right border of kernel (inclusive).\n")
 		.def("norm",
 			 &Kernel2D<T>::norm,
-			    "Return the norm of the kernel.")
+			    "Return the norm of the kernel.\n")
 		.def("normalize",
 		    (void (Kernel2D<T>::*)(T))&Kernel2D<T>::normalize,
 			 (arg("norm")=1.0),
-			    "Set the kernel's norm and renormalize the values.")
+			    "Set the kernel's norm and renormalize the values.\n")
 		.def("borderTreatment",
 			 &Kernel2D<T>::borderTreatment,
-                "Return current border treatment mode.")
+                "Return current border treatment mode.\n")
 		.def("setBorderTreatment",
 			 &Kernel2D<T>::setBorderTreatment,
 			 args("borderTreatment"),
-                "Set border treatment mode.")
+                "Set border treatment mode.\n")
 	;
 }
 

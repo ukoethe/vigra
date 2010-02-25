@@ -205,8 +205,8 @@ void defineNoise()
         "\n"
         "Returns an array with the means in the first column and the variances in the second column.\n"
         "Since the length of the resulting array is not known beforhand, it can not be written into an preallocated array\n"
-        "(the \"out\" argument in most other vigra python functions.\n"
-        "For details see the vigra documentation noiseVarianceEstimation_."
+        "(the \"out\" argument in most other vigra python functions.\n\n"
+        "For details see the vigra documentation noiseVarianceEstimation_.\n"
         );
 
     def("noiseVarianceClustering",
@@ -220,9 +220,9 @@ void defineNoise()
         "which are then clustered using the median cut algorithm. Then the cluster centers (i.e. average variance vs. average intensity)\n"
         "are determined and returned in the result sequence.\n"
         "\n"
-        "Since the length of the resulting array is not known beforhand, it can not be written into an preallocated array\n"
-        "(the \"out\" argument in most other vigra python functions.\n"
-        "For details see the vigra documentation noiseVarianceClustering_."
+        "Since the length of the resulting array is not known beforhand, it cannot be written into an preallocated array\n"
+        "(the \"out\" argument in most other vigra python functions)\n.\n"
+        "For details see the vigra documentation noiseVarianceClustering_.\n"
         );
 
     def("nonparametricNoiseNormalization",
@@ -231,8 +231,8 @@ void defineNoise()
         arg("clusterCount")=10, arg("averagingQuantile")=0.8,
         arg("noiseEstimationQuantile")=1.5,
         arg("noiseVarianceInitialGuess")=10.0, arg("out")=object()),
-        "Noise normalization by means of an estimated non-parametric noise model.\n"
-        "For details see the vigra documentation nonparametricNoiseNormalization_.");
+        "Noise normalization by means of an estimated non-parametric noise model.\n\n"
+        "For details see nonparametricNoiseNormalization_ in the vigra C++ documentation.\n");
 
     def("quadraticNoiseNormalizationEstimated",
         registerConverters(&pythonQuadraticNoiseNormalizationEstimated<float>),    // also multiband
@@ -251,15 +251,15 @@ void defineNoise()
     def("quadraticNoiseNormalization",
         registerConverters(&pythonQuadraticNoiseNormalization<float>),    // also multiband
         (arg("image"), arg("a0"), arg("a1"), arg("a2"), arg("out")=object()),
-        "Noise normalization by means of an estimated quadratic noise model.\n"
-        "For details see the vigra documentation."
+        "Noise normalization by means of an estimated quadratic noise model.\n\n"
+        "For details see quadraticNoiseNormalization_ in the vigra C++ documentation.\n"
         );
 
     def("linearNoiseNormalization",
         registerConverters(&pythonLinearNoiseNormalization<float>),    // also multiband
         (arg("image"), arg("a0"), arg("a1"), arg("out")=object()),
-        "Noise normalization by means of an estimated linear noise model.\n"
-        "For details see the vigra documentaton."
+        "Noise normalization by means of an estimated linear noise model.\n\n"
+        "For details see linearNoiseNormalization_ in the vigra C++ documentation.\n"
        );
 }
 } // namespace vigra

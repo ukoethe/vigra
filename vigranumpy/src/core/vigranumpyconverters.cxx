@@ -384,17 +384,17 @@ void registerNumpyArrayConverters()
              "(e.g. during overload resolution) that have identical memory layout, but\n"
              "different semantics, such as a multiband image (two spatial dimensions and\n"
              "one spectral dimension) vs. a singleband volume (three spatial dimensions).\n\n"
-             "Usage:\n\n"
-             "class Image(numpy.ndarray):\n"
-             "   spatialDimensions = 2\n"
-             "class Volume(numpy.ndarray):\n"
-             "   spatialDimensions = 3\n\n"
-             "def checkImage(obj):\n"
-             "   return obj.spatialDimensions == 2\n"
-             "def checkVolume(obj):\n"
-             "   return obj.spatialDimensions == 3\n\n"
-             "registerPythonArrayType('NumpyArray<2, RGBValue<*> >', Image, checkImage)\n"
-             "registerPythonArrayType('NumpyArray<3, Singleband<*> >', Volume, checkVolume)\n");
+             "Usage::\n\n"
+             "   class Image(numpy.ndarray):\n"
+             "      spatialDimensions = 2\n"
+             "   class Volume(numpy.ndarray):\n"
+             "      spatialDimensions = 3\n\n"
+             "   def checkImage(obj):\n"
+             "      return obj.spatialDimensions == 2\n"
+             "   def checkVolume(obj):\n"
+             "      return obj.spatialDimensions == 3\n\n"
+             "   registerPythonArrayType('NumpyArray<2, RGBValue<*> >', Image, checkImage)\n"
+             "   registerPythonArrayType('NumpyArray<3, Singleband<*> >', Volume, checkVolume)\n\n");
     python::def("listExportedArrayKeys", &listExportedArrayKeys);
     python::def("constructNumpyArray", &constructNumpyArrayFromShape);
     python::def("constructNumpyArray", &constructNumpyArrayFromArray);

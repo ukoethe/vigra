@@ -295,12 +295,12 @@ void defineMorphology()
         registerConverters(&pythonDiscRankOrderFilter<UInt8>),
         (arg("image"), arg("radius"), arg("rank"), arg("out")=object()),
         "Apply rank order filter with disc structuring function to the image.\n\n"
-        "The pixel values of the source image  must be in the range 0...255. Radius must be >= 0.\n"
-        "Rank must be in the range 0.0 <= rank <= 1.0. The filter acts as a minimum filter if rank = 0.0, as a median\n"
-        "if rank = 0.5, and as a maximum filter if rank = 1.0.\n"
-        "\n" 
-        "For details see vigra documentation discRankOrderFilter_ .\n"
+        "The pixel values of the source image  must be in the range 0...255. Radius must be >= 0. "
+        "Rank must be in the range 0.0 <= rank <= 1.0. The filter acts as a minimum filter if rank = 0.0, as a median "
+        "if rank = 0.5, and as a maximum filter if rank = 1.0. "
         "This function also works for multiband images, it is then executed on every band.\n"
+        "\n" 
+        "For details see discRankOrderFilter_ in the C++ documentation.\n"
        );
     def("discRankOrderFilter",
         registerConverters(&pythonDiscRankOrderFilter<bool>),
@@ -310,8 +310,9 @@ void defineMorphology()
         registerConverters(&pythonDiscErosion<bool>),
         (arg("image"), arg("radius"), arg("out")=object()),
         "Apply erosion (minimum) filter with disc of given radius to image.\n\n"
-        "This is an abbreviation for the rank order filter with rank = 0.0. See discErosion_ for more information.\n"
-        "This function also works for multiband images, it is then executed on every band.\n"
+        "This is an abbreviation for the rank order filter with rank = 0.0. "
+        "This function also works for multiband images, it is then executed on every band.\n\n"
+        "See discErosion_ in the C++ documentation for more information.\n"
         );
     def("discErosion",
         registerConverters(&pythonDiscErosion<UInt8>),
@@ -321,8 +322,9 @@ void defineMorphology()
         registerConverters(&pythonDiscDilation<bool>),
         (arg("image"), arg("radius"), arg("out")=object()),
         "Apply dilation (maximum) filter with disc of given radius to image.\n\n"
-        "This is an abbreviation for the rank order filter with rank = 1.0. See discDilation_ for more information.\n"
-        "This function also works for multiband images, it is then executed on every band.\n"
+        "This is an abbreviation for the rank order filter with rank = 1.0. "
+        "This function also works for multiband images, it is then executed on every band.\n\n"
+        "See discDilation_ in the C++ documentation for more information.\n"
        );
     def("discDilation",
         registerConverters(&pythonDiscDilation<UInt8>),
@@ -332,8 +334,9 @@ void defineMorphology()
         registerConverters(&pythonDiscMedian<bool>),
         (arg("image"), arg("radius"), arg("out")=object()),
         "Apply median filter with disc of given radius to image.\n\n"
-        "This is an abbreviation for the rank order filter with rank = 0.5. See discMedian_ for more information.\n"
-        "This function also works for multiband images, it is then executed on every band.\n"
+        "This is an abbreviation for the rank order filter with rank = 0.5. "
+        "This function also works for multiband images, it is then executed on every band.\n\n"
+        "See discMedian_ in the C++ documentation for more information.\n"
         );
     def("discMedian",
         registerConverters(&pythonDiscMedian<UInt8>),
@@ -343,8 +346,9 @@ void defineMorphology()
         registerConverters(&pythonDiscOpening<bool>),
         (arg("image"), arg("radius"), arg("out")=object()),
         "Apply a opening filter with disc of given radius to image.\n\n"
-        "This is an abbreviation for applying an erosion and a dilation filter in sequence. See discRankOrderFilter_ for more information\n"
-        "This function also works for multiband images, it is then executed on every band.\n"
+        "This is an abbreviation for applying an erosion and a dilation filter in sequence. "
+        "This function also works for multiband images, it is then executed on every band.\n\n"
+        "See discRankOrderFilter_ in the C++ documentation for more information.\n"
        );
     def("discOpening",
         registerConverters(&pythonDiscOpening<UInt8>),
@@ -354,9 +358,9 @@ void defineMorphology()
         registerConverters(&pythonDiscClosing<bool>),
         (arg("image"), arg("radius"), arg("out")=object()),
         "Apply a closing filter with disc of given radius to image.\n\n"
-        "This is an abbreviation for applying a dilation and an erosion  filter in sequence.\n"
-        "See discRankOrderFilter_ for more information\n"
-        "This function also works for multiband images, it is then executed on every band.\n"
+        "This is an abbreviation for applying a dilation and an erosion  filter in sequence. "
+        "This function also works for multiband images, it is then executed on every band.\n\n"
+        "See discRankOrderFilter_ in the C++ documentation for more information.\n"
        );
     def("discClosing",
         registerConverters(&pythonDiscClosing<UInt8>),
@@ -367,66 +371,71 @@ void defineMorphology()
         (arg("image"), arg("radius"), arg("out")=object()),
        "Binary erosion on multi-dimensional arrays.\n"
        "\n"
-       "This function applies a flat circular erosion operator with a given radius. The operation is isotropic.\n"
-       "The input is a binary multi-dimensional array where non-zero pixels represent foreground and zero pixels represent background.\n"
-       "\n"
-       "For details see vigra documentation multiBinaryErosion_.\n"
+       "This function applies a flat circular erosion operator with a given radius. The operation is isotropic. "
+       "The input is a binary multi-dimensional array where non-zero pixels represent foreground and zero pixels represent background. "
        "This function also works for multiband arrays, it is then executed on every band.\n"
+       "\n"
+       "For details see multiBinaryErosion_ in the C++ documentation.\n"
         );
     def("multiBinaryDilation",
         registerConverters(&pythonMultiBinaryDilation<4>),
         (arg("image"), arg("radius"), arg("out")=object()),
        "Binary dilation on multi-dimensional arrays.\n"
        "\n"
-       "This function applies a flat circular dilation operator with a given radius. The operation is isotropic.\n"
-       "The input is a binary multi-dimensional array where non-zero pixels represent foreground and zero pixels represent background.\n"
+       "This function applies a flat circular dilation operator with a given radius. The operation is isotropic. "
+       "The input is a binary multi-dimensional array where non-zero pixels represent foreground and zero pixels represent background. "
+       "This function also works for multiband arrays, it is then executed on every band.\n"
        "\n"
-       "For details see vigra documentation multiBinaryDilation_.\n"
-       "This function also works for multiband arrays, it is then executed on every band.\n");
+       "For details see multiBinaryDilation_ in the C++ documentation.\n"
+       );
     
     def("multiBinaryOpening",
         registerConverters(&pythonMultiBinaryOpening<4>),
         (arg("image"), arg("radius"), arg("out")=object()),
         "Binary opening on multi-dimensional arrays.\n"
         "\n"
-        "This function applies a flat circular opening operator (sequential erosion and dilation) with a given radius.\n"
-        "The operation is isotropic.\n"
-        "The input is a binary multi-dimensional array where non-zero pixels represent foreground and zero pixels represent background.\n"
+        "This function applies a flat circular opening operator (sequential erosion and dilation) with a given radius. "
+        "The operation is isotropic. "
+        "The input is a binary multi-dimensional array where non-zero pixels represent foreground and zero pixels represent background. "
+        "This function also works for multiband arrays, it is then executed on every band.\n"
         "\n"
-        "For details see vigra documentation (multiBinaryDilation_ and multiBinaryErosion_).\n"
-        "This function also works for multiband arrays, it is then executed on every band.\n");
+        "For details see vigra C++ documentation (multiBinaryDilation_ and multiBinaryErosion_).\n"
+        );
     def("multiBinaryClosing",
         registerConverters(&pythonMultiBinaryClosing<4>),
         (arg("image"), arg("radius"), arg("out")=object()),
         "Binary closing on multi-dimensional arrays.\n"
         "\n"
-        "This function applies a flat circular opening operator (sequential dilation and erosion) with a given radius.\n"
-        "The operation is isotropic.\n"
-        "The input is a binary multi-dimensional array where non-zero pixels represent foreground and zero pixels represent background.\n"
+        "This function applies a flat circular opening operator (sequential dilation and erosion) with a given radius. "
+        "The operation is isotropic. "
+        "The input is a binary multi-dimensional array where non-zero pixels represent foreground and zero pixels represent background. "
+        "This function also works for multiband arrays, it is then executed on every band.\n"
         "\n"
-        "For details see vigra documentation (multiBinaryDilation_ and multiBinaryErosion_).\n"
-        "This function also works for multiband arrays, it is then executed on every band.\n");
+        "For details see vigra C++ documentation (multiBinaryDilation_ and multiBinaryErosion_).\n"
+        );
     
     def("multiGrayscaleErosion",
         registerConverters(&pythonMultiGrayscaleErosion<4,UInt8>),
         (arg("image"), arg("radius"), arg("out")=object()),
         "Parabolic grayscale erosion on multi-dimensional arrays.\n"
         "\n"
-        "This function applies a parabolic erosion operator with a given spread (sigma) on a grayscale array.\n"
-        "The operation is isotropic. The input is a grayscale multi-dimensional array.\n"
+        "This function applies a parabolic erosion operator with a given spread (sigma) on a grayscale array. "
+        "The operation is isotropic. The input is a grayscale multi-dimensional array. "
+        "This function also works for multiband arrays, it is then executed on every band.\n"
         "\n"
-        "For details see vigra documentation multiGrayscaleErosion_.\n"
-        "This function also works for multiband arrays, it is then executed on every band.\n");
+        "For details see multiGrayscaleErosion_ in the C++ documentation.\n"
+        );
     def("multiGrayscaleDilation",
         registerConverters(&pythonMultiGrayscaleDilation<4,UInt8>),
         (arg("image"), arg("radius"), arg("out")=object()),
         "Parabolic grayscale dilation on multi-dimensional arrays.\n"
         "\n"
-        "This function applies a parabolic dilation operator with a given spread (sigma) on a grayscale array.\n"
-        "The operation is isotropic. The input is a grayscale multi-dimensional array.\n"
+        "This function applies a parabolic dilation operator with a given spread (sigma) on a grayscale array. "
+        "The operation is isotropic. The input is a grayscale multi-dimensional array. "
+        "This function also works for multiband arrays, it is then executed on every band.\n"
         "\n"
-        "For details see vigra documentation multiGrayscaleDilation_.\n"
-        "This function also works for multiband arrays, it is then executed on every band.\n");
+        "For details see multiGrayscaleDilation_ in the C++ documentation.\n"
+        );
     def("multiGrayscaleErosion",
         registerConverters(&pythonMultiGrayscaleErosion<4,float>),
         (arg("image"), arg("sigma"), arg("out")=object()));
@@ -440,22 +449,24 @@ void defineMorphology()
         "Parabolic grayscale opening on multi-dimensional arrays.\n"
         "\n"
         "This function applies a parabolic opening (sequencial erosion and dilation) operator with a given spread (sigma)"
-        "on a grayscale array.\n"
-        "The operation is isotropic. The input is a grayscale multi-dimensional array.\n"
+        "on a grayscale array. "
+        "The operation is isotropic. The input is a grayscale multi-dimensional array. "
+        "This function also works for multiband arrays, it is then executed on every band.\n"
         "\n"
-        "For details see vigra documentation multiGrayscaleDilation_ and multiGrayscaleErosion_.\n"
-        "This function also works for multiband arrays, it is then executed on every band.\n");
+        "For details see multiGrayscaleDilation_ and multiGrayscaleErosion_ in the C++ documentation.\n"
+        );
     def("multiGrayscaleClosing",
         registerConverters(&pythonMultiGrayscaleClosing<4,UInt8>),
         (arg("image"), arg("radius"), arg("out")=object()),
         "Parabolic grayscale closing on multi-dimensional arrays.\n"
         "\n"
         "This function applies a parabolic closing (sequencial dilation and erosion) operator with a given spread (sigma)"
-        "on a grayscale array.\n"
-        "The operation is isotropic. The input is a grayscale multi-dimensional array.\n"
+        "on a grayscale array. "
+        "The operation is isotropic. The input is a grayscale multi-dimensional array. "
+        "This function also works for multiband arrays, it is then executed on every band.\n"
         "\n"
-        "For details see vigra documentation multiGrayscaleDilation_ and multiGrayscaleErosion_.\n"
-        "This function also works for multiband arrays, it is then executed on every band.\n");
+        "For details see multiGrayscaleDilation_ and multiGrayscaleErosion_ in the C++ documentation.\n"
+        );
     def("multiGrayscaleOpening",
         registerConverters(&pythonMultiGrayscaleOpening<4,float>),
         (arg("image"), arg("sigma"), arg("out")=object()));
@@ -468,17 +479,17 @@ void defineMorphology()
         (arg("image"), arg("mask"), arg("radius"), arg("rank"), arg("out")=object()),
         "Apply rank order filter with disc structuring function to the image using a mask.\n"
         "\n"
-        "The pixel values of the source image must be in the range 0...255. Radius must be >= 0.\n"
+        "The pixel values of the source image must be in the range 0...255. Radius must be >= 0."
         "Rank must be in the range 0.0 <= rank <= 1.0. The filter acts as a minimum filter if rank = 0.0,"
         "as a median if rank = 0.5, and as a maximum filter if rank = 1.0.\n"
         "\n"
-        "The mask is only applied to th input image, i.e. the function generates an output wherever the current disc contains\n"
-        "at least one pixel with mask value 'true'. Source pixels with mask value 'false' are ignored during the calculation of\n"
-        "the rank order.\n"
+        "The mask is only applied to the input image, i.e. the function generates an output wherever the current disc contains "
+        "at least one pixel with mask value 'true'. Source pixels with mask value 'false' are ignored during the calculation of "
+        "the rank order.\n\n"
+        "This function also works for multiband images, it is then executed on every band. "
         "If the mask has only one band, it is used for every image band. If the mask has the same number of bands, as the image\n"
-        "the bands are used for the according images.\n"
-        "For details see vigra documentation discRankOrderFilterWithMask_.\n"
-        "This function also works for multiband images, it is then executed on every band.\n"
+        "the bands are used for the corresponding image bands.\n\n"
+        "For details see discRankOrderFilterWithMask_ in the C++ documentation.\n"
         );
     
     def("discRankOrderFilterWithMask",
