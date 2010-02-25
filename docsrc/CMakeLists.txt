@@ -23,6 +23,9 @@ IF(DOXYGEN_FOUND AND PYTHONINTERP_FOUND)
 		COMMAND ${CMAKE_COMMAND} -E copy_directory
 			${CMAKE_CURRENT_SOURCE_DIR}/documents
 			${DOCDIR}/vigra/documents
+		COMMAND ${CMAKE_COMMAND} -E copy_if_different
+			${CMAKE_CURRENT_SOURCE_DIR}/../LICENSE.txt
+			${DOCDIR}/vigra/LICENSE.txt
 		COMMENT "Postprocessing html files")
 
 	INSTALL(DIRECTORY ${DOCDIR}/
