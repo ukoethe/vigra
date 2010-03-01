@@ -125,11 +125,14 @@ namespaceList = getNamespaceList()
 functionList = getFunctionList(namespaceList)
 generateFunctionIndex(functionList)
 
-#export functions list to c_api_replaces
-replaces=open("../vigranumpy/docsrc/c_api_replaces","w")
+# export function list to c_api_replaces.txt for crosslinking of vigranumpy documentation
+replaces=open("../vigranumpy/docsrc/c_api_replaces.txt","w")
 for i in range(len(functionList)):
     functionName = functionList[i][1]
     overloadDisambiguation = functionList[i][2]
+    if i >= 0 and functionName == functionList[i-1][1] and \
+                   overloadDisambiguation == functionList[i-1][2]:
+        continue
     if overloadDisambiguation != "":
         functionName = overloadDisambiguation +'.' + functionName
     link = functionList[i][0]

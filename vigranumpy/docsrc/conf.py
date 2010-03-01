@@ -198,10 +198,15 @@ latex_documents = [
 #latex_use_modindex = True
 
 rst_epilog=""""""
-replace_file=open("./c_api_replaces")
+replace_file=open("./c_api_replaces.txt")
 for l in replace_file:
-	replacement=l.split(":")
-	rst_epilog+="""
+    replacement=l.split(":")
+    k = replacement[0].rfind('.')
+    if k >= 0:        
+        rst_epilog += """
+	.. |%s| replace:: %s
+"""% (replacement[0],replacement[0][k+1:])
+    rst_epilog += """
 	.. _%s: ../../doc/vigra/%s
 """% (replacement[0],replacement[1])
 

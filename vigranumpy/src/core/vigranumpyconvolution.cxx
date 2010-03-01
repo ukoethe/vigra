@@ -546,7 +546,7 @@ void defineConvolutionFunctions()
               (arg("image"), arg("kernel")=python::object(), arg("out") = python::object()),
               "Perform 2D convolution with a 2D kernel (useful if the kernel is non-separable).\n"
               "\n"
-              "For details see StandardConvolution.convolveImage_ in the vigra C++ documentation.\n");
+              "For details see |StandardConvolution.convolveImage|_ in the vigra C++ documentation.\n");
 
     def("recursiveFilter2D", registerConverters(&pythonRecursiveFilter1<float>),
               (arg("image"), arg("b"), arg("borderTreament") = BORDER_TREATMENT_REFLECT, arg("out") = python::object()),

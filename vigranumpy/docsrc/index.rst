@@ -146,7 +146,7 @@ Common Filters
    :members:
 
 Convolution Functions
---------------------=
+---------------------
 
 .. automodule:: vigra.convolution
    :members:
@@ -158,7 +158,7 @@ Basic Morphological Operations
    :members:
 
 Tensor Image Processing
-----------------------=
+-----------------------
 
 .. automodule:: vigra.tensor
    :members:
@@ -170,13 +170,13 @@ Region Segmentation Algorithms
    :members:
 
 Noise Normalization
-------------------=
+-------------------
 
 .. automodule:: vigra.noise
    :members:
 
 Edge and Corner Detection
-------------------------=
+-------------------------
 
 .. automodule:: vigra.edgedetection
    :members:
