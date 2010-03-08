@@ -53,10 +53,10 @@ class UnionFindArray
     ArrayVector<T> labels_;
     
   public:
-    UnionFindArray()
+    UnionFindArray(T next_free_label = 1)
     {
-        labels_.push_back(0);
-        labels_.push_back(1);
+        for(T k=0; k <= next_free_label; ++k)
+            labels_.push_back(k);
     }
     
     T nextFreeLabel() const
@@ -64,11 +64,19 @@ class UnionFindArray
         return labels_.back();
     }
     
-    T find(T label) const
+    T find(T label)
     {
-        while(label != labels_[(IndexType)label])
-            label = labels_[(IndexType)label];
-        return label;
+        T root = label;
+        while(root != labels_[(IndexType)root])
+            root = labels_[(IndexType)root];
+        // path compression
+        while(label != root)
+        {
+            T next = labels_[(IndexType)label];
+            labels_[(IndexType)label] = root;
+            label = next;
+        }
+        return root;
     } 
     
     T makeUnion(T l1, T l2)
