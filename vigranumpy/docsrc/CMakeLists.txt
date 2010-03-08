@@ -2,6 +2,8 @@ IF(PYTHON_SPHINX)
 	# vigranumpy documentation generation using sphinx
 	MESSAGE(STATUS ${VIGRANUMPY_DOCDIR})
 	SET(VIGRANUMPY_DOCDIR ${DOCDIR}/vigranumpy)
+	FILE(MAKE_DIRECTORY ${VIGRANUMPY_DOCDIR})
+	
 	SET(SPHINX_OPTS ${SPHINX_OPTS} CACHE STRING
 		"options passed to sphinx during vigranumpy doc generation"
 		FORCE)
@@ -18,8 +20,6 @@ IF(PYTHON_SPHINX)
 		${SPHINX_OPTS})
     
 	ADD_CUSTOM_TARGET (doc_python
-		COMMAND ${CMAKE_COMMAND} -E make_directory
-			${VIGRANUMPY_DOCDIR}
 		COMMAND ${CMAKE_COMMAND} -E copy_if_different
 			${CMAKE_CURRENT_SOURCE_DIR}/conf.py
 			${CMAKE_CURRENT_BINARY_DIR}/conf.py
@@ -38,6 +38,6 @@ ELSE(PYTHON_SPHINX)
 
 ENDIF(PYTHON_SPHINX)
 
-ADD_DEPENDENCIES(doc_python build_dir_vigranumpy)
+ADD_DEPENDENCIES(doc_python vigranumpy)
 ADD_DEPENDENCIES(doc_python doc_cpp)
 ADD_DEPENDENCIES(doc doc_python)

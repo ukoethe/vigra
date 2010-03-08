@@ -48,5 +48,5 @@
          vigranumpy.
     </DL>
 
-    More fine-grained customization (e.g. specification of explicit paths for all dependencies, customization of compiler flags) is possible by editing the file &lt;vigra_build_path&gt;/CMakeCache.txt. This is best done by means of the interactive programs <b>ccmake</b> or <b>cmake-gui</b>. Consult the <a href="http://www.cmake.org/cmake/help/documentation.html>cmake documentation</a> for more detailed help.
+    More fine-grained customization (e.g. specification of explicit paths for all dependencies, customization of compiler flags) is possible by editing the file &lt;vigra_build_path&gt;/CMakeCache.txt. This is best done by means of the interactive programs <b>ccmake</b> or <b>cmake-gui</b>. Consult the <a href="http://www.cmake.org/cmake/help/documentation.html">cmake documentation</a> for more detailed help.
 */

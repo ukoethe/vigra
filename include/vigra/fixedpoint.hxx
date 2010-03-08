@@ -824,6 +824,7 @@ class FixedPoint16;
     \ref AlgebraicRing. They are implemented in terms of the traits of the basic types by
     partial template specialization:
 
+    \code
     template <int IntBits, FPOverflowHandling OverflowHandling>
     struct NumericTraits<FixedPoint16<IntBits, OverflowHandling> >
     {

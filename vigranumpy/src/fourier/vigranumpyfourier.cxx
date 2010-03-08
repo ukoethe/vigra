@@ -133,18 +133,23 @@ pythonFourierTransformR2C(NumpyAnyArray in, NumpyAnyArray res)
 using namespace boost::python;
 using namespace vigra;
 
-BOOST_PYTHON_MODULE_INIT(vigranumpyfourier)
+BOOST_PYTHON_MODULE_INIT(fourier)
 {
     import_vigranumpy();
     
     def("fourierTransform", registerConverters(&pythonFourierTransformR2C),
-        (arg("image"), arg("out") = object()));
+        (arg("image"), arg("out") = object()),
+        "Perform 2-dimensional or 3-dimensional Fourier transformation of a scalar or complex array."
+        "If the input array has multiple channels, each channel is transformed separately.\n"
+        );
     def("fourierTransform", registerConverters(&pythonFourierTransform<3, FFTW_FORWARD>),
         (arg("image"), arg("out") = object()));
     def("fourierTransform", registerConverters(&pythonFourierTransform<4, FFTW_FORWARD>),
         (arg("image"), arg("out") = object()));
     def("fourierTransformInverse", registerConverters(&pythonFourierTransform<3, FFTW_BACKWARD>),
-        (arg("image"), arg("out") = object()));
+        (arg("image"), arg("out") = object()),
+        "Perform 2-dimensional or 3-dimensional inverse Fourier transformation of a complex arrays."
+        "If the input array has multiple channels, each channel is transformed separately.\n");
     def("fourierTransformInverse", registerConverters(&pythonFourierTransform<4, FFTW_BACKWARD>),
         (arg("image"), arg("out") = object()));
 }

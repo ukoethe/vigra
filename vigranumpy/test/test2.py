@@ -111,17 +111,21 @@ def test_Noise():
     
 def test_Kernel1D():
     #we just test functions, that where not directly imported
-    k1=Kernel1D()
-    k1.initSetExplicitly(-3,3,np.array([-1,2,3,5,3,2,-1],dtype=np.float64))
-    assert(k1[-3]==-1)
-    assert(k1[3]==-1)
+    contents = np.array([-1,2,3,5,3,2,-1],dtype=np.float64)
+    k1 = Kernel1D()
+    k1.initExplicitly(-3,3, contents)
+    for k in xrange(-3, 4):
+        assert(k1[k]==contents[k+3])
     k1[-2]=5
     assert(k1[-2]==5)
 
 def test_Kernel2D():
+    contents = np.array([[0,1,2],[3,4,5],[6,7,8]],dtype=np.float64)
     k2=Kernel2D()
-    k2.initSetExplicitly((-1,-1),(1,1),np.array([[0,1,2],[1,2,3],[2,3,4]],dtype=np.float64))
-    assert(k2[(-1,0)]==1)
-    k2[(0,-1)]=-5
-    assert(k2[(0,-1)]==-5)
+    k2.initExplicitly((-1,-1),(1,1), contents)
+    for i in xrange(-1, 2):
+        for j in xrange(-1, 2):
+            assert(k2[i,j]==contents[i+1, j+1])
+    k2[0,-1]=-5
+    assert(k2[0,-1]==-5)
 

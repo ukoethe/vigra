@@ -47,13 +47,6 @@ namespace vigra {
 void registerNumpyArrayConverters();
 void defineImageTransformations();
 
-void test(NumpyArray<2, float> array)
-{
-    std::cerr << "hasData(): " << array.hasData() << "\n";
-    if(array.hasData())
-        std::cerr << "size: " << array.shape() << "\n";
-}
-
 } // namespace vigra
 
 using namespace boost::python;
@@ -64,6 +57,4 @@ BOOST_PYTHON_MODULE_INIT(vigranumpycore)
     import_array();
     registerNumpyArrayConverters();
     defineImageTransformations();
-    
-    def("test", registerConverters(&test));
 }

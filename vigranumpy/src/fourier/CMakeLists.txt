@@ -1,23 +1,8 @@
 INCLUDE_DIRECTORIES(${VIGRANUMPY_INCLUDE_DIRS} ${FFTW3_INCLUDE_DIR})
 
-IF(MSVC OR MINGW)
-    ADD_DEFINITIONS(-DVIGRA_DLL)
-ENDIF ()
-
-ADD_LIBRARY(vigranumpyfourier SHARED
-            vigranumpyfourier.cxx)
-
-TARGET_LINK_LIBRARIES(vigranumpyfourier ${FFTW3_LIBRARIES}
-    ${VIGRANUMPY_LIBRARIES} vigranumpycore)
-
-ADD_DEPENDENCIES(vigranumpy vigranumpyfourier)
-
-IF(PYTHON_PLATFORM MATCHES "^win32$")
-    SET_TARGET_PROPERTIES(vigranumpyfourier PROPERTIES PREFIX "" SUFFIX  ".pyd")
-    INSTALL(TARGETS vigranumpyfourier
-            RUNTIME DESTINATION ${VIGRANUMPY_INSTALL_DIR}/vigra)
-ELSE()
-    SET_TARGET_PROPERTIES(vigranumpyfourier PROPERTIES PREFIX "")
-    INSTALL(TARGETS vigranumpyfourier
-            LIBRARY DESTINATION ${VIGRANUMPY_INSTALL_DIR}/vigra)
-ENDIF()
+VIGRA_ADD_NUMPY_MODULE(fourier 
+  SOURCES
+    vigranumpyfourier.cxx
+  LIBRARIES   
+    ${FFTW3_LIBRARIES}
+  VIGRANUMPY)   

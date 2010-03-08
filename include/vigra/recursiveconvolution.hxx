@@ -330,20 +330,20 @@ void recursiveFilterLine(SrcIterator is, SrcIterator isend, SrcAccessor as,
     line[kernelw-1] = as(is);
     for(x = kernelw - 2; x > 0; --x, --is)
     {
-        line[x] = as(is) + b1 * line[x+1] + b2 * line[x+2];
+        line[x] = detail::RequiresExplicitCast<TempType>::cast(as(is) + b1 * line[x+1] + b2 * line[x+2]);
     }
-    line[0] = as(is) + b1 * line[1] + b2 * line[2];
+    line[0] = detail::RequiresExplicitCast<TempType>::cast(as(is) + b1 * line[1] + b2 * line[2]);
     ++is;
-    line[1] = as(is) + b1 * line[0] + b2 * line[1];
+    line[1] = detail::RequiresExplicitCast<TempType>::cast(as(is) + b1 * line[0] + b2 * line[1]);
     ++is;
     for(x=2; x < w; ++x, ++is)
     {
-        line[x] = as(is) + b1 * line[x-1] + b2 * line[x-2];
+        line[x] = detail::RequiresExplicitCast<TempType>::cast(as(is) + b1 * line[x-1] + b2 * line[x-2]);
     }
     line[w] = line[w-1];
 
-    line[w-1] = norm1 * (line[w-1] + b1 * line[w-2] + b2 * line[w-3]);
-    line[w-2] = norm1 * (line[w-2] + b1 * line[w] + b2 * line[w-2]);
+    line[w-1] = detail::RequiresExplicitCast<TempType>::cast(norm1 * (line[w-1] + b1 * line[w-2] + b2 * line[w-3]));
+    line[w-2] = detail::RequiresExplicitCast<TempType>::cast(norm1 * (line[w-2] + b1 * line[w] + b2 * line[w-2]));
     id += w-1;
     ad.set(line[w-1], id);
     --id;
@@ -351,7 +351,7 @@ void recursiveFilterLine(SrcIterator is, SrcIterator isend, SrcAccessor as,
     --id;
     for(x=w-3; x>=0; --x, --id, --is)
     {    
-        line[x] = norm2 * line[x] + b1 * line[x+1] + b2 * line[x+2];
+        line[x] = detail::RequiresExplicitCast<TempType>::cast(norm2 * line[x] + b1 * line[x+1] + b2 * line[x+2]);
         ad.set(line[x], id);
     }
 }
@@ -658,18 +658,18 @@ void recursiveSecondDerivativeLine(SrcIterator is, SrcIterator isend, SrcAccesso
     double b = VIGRA_CSTD::exp(-1.0/scale);
     double a = -2.0 / (1.0 - b);
     double norm = (1.0 - b) * (1.0 - b) * (1.0 - b) / (1.0 + b);
-    TempType old = (1.0 / (1.0 - b)) * as(is);
+    TempType old = detail::RequiresExplicitCast<TempType>::cast((1.0 / (1.0 - b)) * as(is));
 
     // left side of filter
     for(x=0; x<w; ++x, ++is)
     {
         line[x] = old;
-        old = as(is) + b * old;
+        old = detail::RequiresExplicitCast<TempType>::cast(as(is) + b * old);
     }
     
     // right side of the filter
     --is;
-    old = (1.0 / (1.0 - b)) * as(is);
+    old = detail::RequiresExplicitCast<TempType>::cast((1.0 / (1.0 - b)) * as(is));
     id += w;
     ++is;
     
@@ -678,9 +678,9 @@ void recursiveSecondDerivativeLine(SrcIterator is, SrcIterator isend, SrcAccesso
         --is;
         --id;
 
-        TempType f = old + a * as(is);
-        old = as(is) + b * old;
-        ad.set(DestTraits::fromRealPromote(norm * (line[x] + f)), id);
+        TempType f = detail::RequiresExplicitCast<TempType>::cast(old + a * as(is));
+        old = detail::RequiresExplicitCast<TempType>::cast(as(is) + b * old);
+        ad.set(DestTraits::fromRealPromote(detail::RequiresExplicitCast<TempType>::cast(norm * (line[x] + f))), id);
     }
 }
             

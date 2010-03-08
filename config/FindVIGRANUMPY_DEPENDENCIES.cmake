@@ -1,5 +1,7 @@
 # - Find VIGRANUMPY_DEPENDENCIES
 # 
+MESSAGE(STATUS "Checking VIGRANUMPY_DEPENDENCIES")
+
 FIND_PACKAGE(PythonInterp)
 
 IF(PYTHONINTERP_FOUND)
@@ -50,14 +52,23 @@ IF(PYTHONINTERP_FOUND)
     #      (usually below PYTHONDIR/Lib/site-packages/numpy)
     #
     ######################################################################
-    execute_process ( COMMAND ${PYTHON_EXECUTABLE} -c 
-                     "from numpy.distutils.misc_util import *; print ' '.join(get_numpy_include_dirs())" 
-                      RESULT_VARIABLE PYTHON_NUMPY_NOT_FOUND
-                      OUTPUT_VARIABLE PYTHON_NUMPY_INCLUDE_DIR OUTPUT_STRIP_TRAILING_WHITESPACE)
+    IF(NOT PYTHON_NUMPY_INCLUDE_DIR)
+        execute_process ( COMMAND ${PYTHON_EXECUTABLE} -c 
+                         "from numpy.distutils.misc_util import *; print ' '.join(get_numpy_include_dirs())" 
+                          RESULT_VARIABLE PYTHON_NUMPY_NOT_FOUND
+                          OUTPUT_VARIABLE PYTHON_NUMPY_INCLUDE_DIR 
+                          OUTPUT_STRIP_TRAILING_WHITESPACE)
+        IF(NOT PYTHON_NUMPY_NOT_FOUND)
+            FILE(TO_CMAKE_PATH ${PYTHON_NUMPY_INCLUDE_DIR} PYTHON_NUMPY_INCLUDE_DIR)
+        ELSE()
+            SET(PYTHON_NUMPY_INCLUDE_DIR "PYTHON_NUMPY_INCLUDE_DIR-NOTFOUND")
+        ENDIF()
+    ENDIF()
 
-    IF(NOT PYTHON_NUMPY_NOT_FOUND)
+    SET(PYTHON_NUMPY_INCLUDE_DIR ${PYTHON_NUMPY_INCLUDE_DIR}
+        CACHE PATH "Path to numpy include files" FORCE)
+    IF(PYTHON_NUMPY_INCLUDE_DIR)
         MESSAGE(STATUS "Searching for Python numpy: ok")
-        FILE(TO_CMAKE_PATH ${PYTHON_NUMPY_INCLUDE_DIR} PYTHON_NUMPY_INCLUDE_DIR)
     ELSE()
         MESSAGE(STATUS "Could NOT find Python numpy ('import numpy.distutils.misc_util' failed)")
     ENDIF()

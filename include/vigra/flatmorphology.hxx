@@ -336,7 +336,7 @@ discRankOrderFilter(SrcIterator upperleft1,
                 }
                 else
                 {
-                    /// search to the left 
+                    // search to the left 
                     for(i=rankpos-1; i>=0; i--)
                     {
                         leftsum-=hist[i];
@@ -907,7 +907,7 @@ discRankOrderFilterWithMask(SrcIterator upperleft1,
                     }
                     else
                     {
-                        /// search to the left 
+                        // search to the left 
                         for(i=rankpos-1; i>=0; i--)
                         {
                             leftsum-=hist[i];

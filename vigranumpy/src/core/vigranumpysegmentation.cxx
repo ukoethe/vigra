@@ -53,29 +53,31 @@ namespace vigra
 {
 
 template < class PixelType >
-NumpyAnyArray pythonWatersheds2D(NumpyArray<2, Singleband<PixelType> > image,
-                           int neighborhood = 8,
-                           NumpyArray<2, Singleband<npy_int32> > res=python::object())
+python::tuple 
+pythonWatersheds2D(NumpyArray<2, Singleband<PixelType> > image,
+                   int neighborhood = 8,
+                   NumpyArray<2, Singleband<npy_int32> > res=python::object())
 {
     vigra_precondition(neighborhood == 4 || neighborhood == 8,
        "watersheds2D(image, neighborhood): neighborhood must be 4 or 8.");
     res.reshapeIfEmpty(MultiArrayShape<2>::type(image.shape(0), image.shape(1)), "Watersheds(): Output array has wrong shape.");
+    unsigned int maxRegionLabel;
     switch (neighborhood)
     {
         case 4:
         {
-            watersheds(srcImageRange(image), destImage(res),
-                FourNeighborCode());
+            maxRegionLabel = watersheds(srcImageRange(image), destImage(res),
+                                        FourNeighborCode());
             break;
         }
         case 8:
         {
-            watersheds(srcImageRange(image), destImage(res),
-                EightNeighborCode());
+            maxRegionLabel = watersheds(srcImageRange(image), destImage(res),
+                                        EightNeighborCode());
             break;
         }
     }
-    return res;
+    return python::make_tuple(res, maxRegionLabel);
 }
 
 VIGRA_PYTHON_MULTITYPE_FUNCTOR(pywatersheds2D, pythonWatersheds2D)
@@ -289,27 +291,29 @@ NumpyAnyArray pythonLabelImageWithBackground2D(NumpyArray<2, Singleband<PixelTyp
 }
 
 template < class PixelType >
-NumpyAnyArray pythonWatersheds3D(NumpyArray<3, Singleband<PixelType> > volume,
-                           int neighborhood = 6,
-                           NumpyArray<3, Singleband<npy_int32> > res=python::object())
+python::tuple 
+pythonWatersheds3D(NumpyArray<3, Singleband<PixelType> > volume,
+                   int neighborhood = 6,
+                   NumpyArray<3, Singleband<npy_int32> > res=python::object())
 {
     vigra_precondition(neighborhood == 6 || neighborhood == 26,
        "watersheds3D(volume, neighborhood): neighborhood must be 6 or 26.");
     res.reshapeIfEmpty(volume.shape(), "Watersheds(): Output array has wrong shape.");  
+    unsigned int maxRegionLabel;
     switch (neighborhood)
     {
         case 6:
         {
-            watersheds3DSix(srcMultiArrayRange(volume), destMultiArray(res));
+            maxRegionLabel = watersheds3DSix(srcMultiArrayRange(volume), destMultiArray(res));
             break;
         }
         case 26:
         {
-            watersheds3DTwentySix(srcMultiArrayRange(volume), destMultiArray(res));
+            maxRegionLabel = watersheds3DTwentySix(srcMultiArrayRange(volume), destMultiArray(res));
             break;
         }
     }
-    return res;
+    return python::make_tuple(res, maxRegionLabel);
 }
 VIGRA_PYTHON_MULTITYPE_FUNCTOR(pywatersheds3D, pythonWatersheds3D)
 
@@ -416,9 +420,6 @@ void defineSegmentation()
         .value("CompleteGrowContours", vigra::KeepContours)
         ;
 
-    multidef("watersheds", pywatersheds2D< UInt8, float >(),
-      (arg("image"), arg("neighborhood") = 8, arg("out")=python::object()));
-
     def("seededRegionGrowingSeeded2D",
         registerConverters(&pythonSeededRegionGrowingSeeded2D<float, npy_int32>),
         (arg("image"), 
@@ -433,7 +434,7 @@ void defineSegmentation()
         "\n"
         "In differnece to seededReegionGrowing2D, the have to be provided in the seeds image\n"
         "\n"
-        "For details see seededRegionGrowing_ in the vigra C++ documentation."
+        "For details see seededRegionGrowing_ in the vigra C++ documentation.\n"
         );
 /*  FIXME: int64 is unsupported by the C++ code (hard-coded int)
     def("seededRegionGrowingSeeded2D",
@@ -455,9 +456,9 @@ void defineSegmentation()
         "R. Adams, L. Bischof: \"<em> Seeded Region Growing</em>\", IEEE Trans. on Pattern Analysis and Maschine Intelligence, vol 16, no 6, 1994, and\n"
         "Ullrich Koethe: Primary Image Segmentation, in: G. Sagerer, S. Posch, F. Kummert (eds.): Mustererkennung 1995, Proc. 17. DAGM-Symposium, Springer 1995\n"
         "\n"
-        "In differnece to seededReegionGrowing2DSeeded, the seeds are calculated by finding local minimax\n"
+        "In differnece to seededReegionGrowing2DSeeded, the seeds are calculated by finding local minima.\n"
         "\n"
-        "For details see seededRegionGrowing_ in the vigra C++ documentation."
+        "For details see seededRegionGrowing_ in the vigra C++ documentation.\n"
         );
 /*  FIXME: int64 is unsupported by the C++ code (hard-coded int)
     def("seededRegionGrowing2D",
@@ -473,7 +474,7 @@ void defineSegmentation()
          arg("neighborhood2D") = 8,
          arg("out")=python::object()),
         "Find local minima in an image.\n\n"
-        "For details see localMinima_ in the vigra C++ documentation.");
+        "For details see localMinima_ in the vigra C++ documentation.\n");
 
     def("extendedLocalMinima2D",
         registerConverters(&pythonExtendedLocalMinima2D<float>),
@@ -482,7 +483,7 @@ void defineSegmentation()
          arg("neighborhood2D") = 8,
          arg("out")=python::object()),
         "Find local minima in an image.\n\n"
-        "For details see extendedLocalMinima_ in the vigra C++ documentation."
+        "For details see extendedLocalMinima_ in the vigra C++ documentation.\n"
         );
 
     def("localMaxima2D",
@@ -492,7 +493,7 @@ void defineSegmentation()
          arg("neighborhood2D") = 8,
          arg("out")=python::object()),
         "Find local maxima in an image.\n\n"
-        "For details see localMinima_ in the vigra C++ documentation.");
+        "For details see localMinima_ in the vigra C++ documentation.\n");
 
     def("extendedLocalMaxima2D",
         registerConverters(&pythonExtendedLocalMaxima2D<float>),
@@ -501,14 +502,15 @@ void defineSegmentation()
          arg("neighborhood2D") = 8,
          arg("out")=python::object()),
         "Find local maxima in an image.\n\n"
-        "For details see localMinima_ in the vigra C++ documentation.");
+        "For details see localMinima_ in the vigra C++ documentation.\n");
 
     def("labelImage",
         registerConverters(&pythonLabelImage2D<float>),
         (arg("image"), 
         arg("neighborhood2D") = 4,
         arg("out")=python::object()),
-        "Find the connected components of a segmented image."  );
+        "Find the connected components of a segmented image.\n\n"
+        "For detailt see labelImage_ in the vigra C++ documentation.\n");
 
     def("labelImageWithBackground",
         registerConverters(&pythonLabelImageWithBackground2D<float>),
@@ -517,13 +519,19 @@ void defineSegmentation()
         arg("background_value") = 0,
         arg("out")=python::object()),
         "Find the connected components of a segmented image, excluding the background from labeling.\n\n"
-        "For detailt see labelImageWithBackground int the vigra C++ documentation.");
+        "For detailt see labelImageWithBackground_ in the vigra C++ documentation.\n");
+
+    multidef("watersheds", pywatersheds2D< UInt8, float >(),
+      (arg("image"), arg("neighborhood") = 8, arg("out")=python::object()),
+         "Compute the watersheds of a 2D or 3D image by means of the union-find algorithm. "
+         "'neighborhood' must be 4 or 8 for 2D images, and 6 or 26 for 3D images. "
+         "The function returns a Python tuple::\n\n"
+         "   (labelImage, maxRegionLabel)\n\n"
+         "For details see watersheds_ and watersheds3D_ in the vigra C++ documentation.\n"
+         );
 
     multidef("watersheds", pywatersheds3D< UInt8, float >(),
-      (arg("volume"), arg("neighborhood")=6, arg("out")=python::object()),
-      "Region Segmentation by means of the watershed algorithm.\n"
-      "\n"
-      "For details see watersheds_ in the vigra C++ documentation.");
+      (arg("volume"), arg("neighborhood")=6, arg("out")=python::object()));
 
 /*
     def("seededRegionGrowing3D",
@@ -539,7 +547,7 @@ void defineSegmentation()
         arg("out")=python::object()),
         "Three-dimensional Region Segmentation by means of Seeded Region Growing.\n"
         "\n"
-        "For details see seededRegionGrowing3D_ in the vigra C++ documentation.");
+        "For details see seededRegionGrowing3D_ in the vigra C++ documentation.\n");
 
 
     def("labelVolume3D",
@@ -549,7 +557,7 @@ void defineSegmentation()
         arg("out")=python::object()),
         "Find the connected components of a segmented volume.\n"
         "\n"
-        "For details see labelVolume_ in the vigra C++ documentation.");
+        "For details see labelVolume_ in the vigra C++ documentation.\n");
 
     def("labelVolumeWithBackground3D",
         registerConverters(&pythonLabelVolumeWithBackground3D<npy_int32>),
@@ -559,7 +567,7 @@ void defineSegmentation()
          arg("out")=python::object()),
         "Find the connected components of a segmented volume, excluding the background from labeling.\n"
         "\n"
-        "For details see labelVolmeWithBackground_ in the vigra C++ documentation.");
+        "For details see labelVolumeWithBackground_ in the vigra C++ documentation.\n");
 }
 
 } // namespace vigra
