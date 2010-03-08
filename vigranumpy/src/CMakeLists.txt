@@ -113,4 +113,6 @@ ELSE()
     MESSAGE(STATUS "vigranumpy fourier module will not be built (fftw3 missing)")
 ENDIF(FFTW3_FOUND)
 
-ADD_SUBDIRECTORY(experiments EXCLUDE_FROM_ALL)
+IF(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/experiments)
+	ADD_SUBDIRECTORY(experiments EXCLUDE_FROM_ALL)
+ENDIF()

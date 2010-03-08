@@ -1,6 +1,8 @@
 IF(PYTHON_SPHINX)
 	# vigranumpy documentation generation using sphinx
-	MESSAGE(STATUS ${VIGRANUMPY_DOCDIR})
+	IF(DEFINED VIGRANUMPY_DOCDIR)
+		MESSAGE(SEND_ERROR "VIGRANUMPY_DOCDIR already defined! Please delete from Cache.")
+	ENDIF()
 	SET(VIGRANUMPY_DOCDIR ${DOCDIR}/vigranumpy)
 	FILE(MAKE_DIRECTORY ${VIGRANUMPY_DOCDIR})
 	

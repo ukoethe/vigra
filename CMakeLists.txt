@@ -163,6 +163,10 @@ IF(WITH_VIGRANUMPY)
 ENDIF()
 
 MESSAGE( STATUS "---------------------------------------------------------" )
+IF(DOXYGEN_FOUND AND PYTHONINTERP_FOUND)
+	MESSAGE( STATUS "  Vigra docdir: ${DOCDIR}")
+	MESSAGE( STATUS "---------------------------------------------------------" )
+ENDIF()
 
 MESSAGE( STATUS "  includes will be installed at: ${CMAKE_INSTALL_PREFIX}/include")
 MESSAGE( STATUS "  libraries will be installed at: ${CMAKE_INSTALL_PREFIX}/lib")
