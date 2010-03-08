@@ -318,8 +318,8 @@ class Image(_VigraArray):
             
     def write(self, filename, export_type = '', compression = ''):
         "consult :func:`vigra.writeImage` for detailed documentation"
-        import vigranumpycore as vn
-        vn.writeImage(self, filename, export_type, compression)
+        import vigra.impex
+        vigra.impex.writeImage(self, filename, export_type, compression)
 
     def show(self, normalize = True):
         '''

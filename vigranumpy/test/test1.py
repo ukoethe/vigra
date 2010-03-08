@@ -41,10 +41,10 @@ def checkAboutSame(i1,i2):
 def test_watersheds():
 
 	res = watersheds(img_scalar_f)
-	checkShape(img_scalar_f,res)
+	checkShape(img_scalar_f,res[0])
 
 	res = watersheds(img_scalar_f,4)
-	checkShape(img_scalar_f,res)
+	checkShape(img_scalar_f,res[0])
 
 	watersheds(img_scalar_f,8,img_scalar_i)
 	checkShape(img_scalar_f,img_scalar_i)
@@ -54,10 +54,10 @@ def test_watersheds():
 	
 	# 3D
 	res = watersheds(vol_scalar_f,6)
-	checkShape(vol_scalar_f,res)
+	checkShape(vol_scalar_f,res[0])
 
 	watersheds(vol_scalar_f,26,vol_scalar_i)
-	checkShape(vol_scalar_f,res)
+	checkShape(vol_scalar_f,res[0])
 	
 	assert_raises(RuntimeError, watersheds, img_scalar_f, 17, img_scalar_i)
 

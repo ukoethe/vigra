@@ -39,7 +39,7 @@ def checkAboutSame(i1,i2):
 	
 def test_watersheds():
 	res = watersheds(img_scalar_f)
-	assert(res.shape==img_scalar_f.shape)
+	assert(res[0].shape==img_scalar_f.shape)
     
 def test_structureTensor():
     res = structureTensor(img_scalar_f,1.0,2.0, out=img_3_f)
