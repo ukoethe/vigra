@@ -392,9 +392,9 @@ struct RestrictedNeighborhoodCirculator3dTest
 
         //clear direction list and fill to compare
         directions.clear();
-        //directions.insert(Neighborhood3DSix::InFront); // insert "0"   \
+        //directions.insert(Neighborhood3DSix::InFront); // insert "0"   |
         //directions.insert(Neighborhood3DSix::North);   // insert "1"   |- border directions
-        //directions.insert(Neighborhood3DSix::West);    // insert "2"   /
+        //directions.insert(Neighborhood3DSix::West);    // insert "2"   |
         directions.insert(Neighborhood3DSix::Behind); // insert "3"
         directions.insert(Neighborhood3DSix::South);  // insert "4"
         directions.insert(Neighborhood3DSix::East);   // insert "5"
