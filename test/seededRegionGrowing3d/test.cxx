@@ -50,11 +50,11 @@ struct SeededRegionGrowing3DTest
 
     SeededRegionGrowing3DTest() :
             vol1(IntVolume::difference_type(5,5,5)),
-            distvol1(DoubleVolume::difference_type(5,5,5)),
-            distvol2(DoubleVolume::difference_type(4,4,4)),
             vol2(DoubleVolume::difference_type(4,4,4)),
-            vol3(IntVolume::difference_type(5,5,5))
-    {                        
+            vol3(IntVolume::difference_type(5,5,5)),
+            distvol1(DoubleVolume::difference_type(5,5,5)),
+            distvol2(DoubleVolume::difference_type(4,4,4))
+    {
         static const int in1[] = { 0, 0, 0, 0, 0, 
                                    0, 0, 0, 0, 0,  
                                    0, 0, 1, 0, 0,  
