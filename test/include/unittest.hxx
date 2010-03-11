@@ -550,7 +550,8 @@ FPT safe_fpt_division( FPT f1, FPT f2 )
         */
     return  ((f2 < 1) && (f1 > (f2 *    FloatTraits<FPT>::max()))) ? 
             FloatTraits<FPT>::max() :
-            (((f2 > 1) && (f1 < (f2 * FloatTraits<FPT>::smallestPositive())) || (f1 == 0)) ? 0 : f1/f2 );
+            ((((f2 > 1) && (f1 < (f2 * FloatTraits<FPT>::smallestPositive())))
+              || (f1 == 0)) ? 0 : f1/f2 );
         /*  Die Multiplikation mit max in 1.ten Bedingung und mit min in der 2.ten ist eine Absicherung gegen
         *   die Owerflow bzw Underflow ???
         */
