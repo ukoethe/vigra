@@ -63,7 +63,7 @@ enum NodeTags
     i_HyperplaneNode    = 1,
     i_HypersphereNode   = 2,
     e_ConstProbNode     = 0 | LeafNodeTag,
-    e_LogRegProbNode    = 1 | LeafNodeTag,
+    e_LogRegProbNode    = 1 | LeafNodeTag
 };
 
 /** NodeBase class.

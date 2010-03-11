@@ -83,7 +83,7 @@ NumpyAnyArray pythonGaussianGradientMagnitudeND(NumpyArray<ndim, Multiband<Voxel
     
     res.reshapeIfEmpty(volume.shape(), "gaussianGradientMagnitudeND(): Output array has wrong shape.");
     
-    MultiArrayShape<ndim-1>::type tmpShape(volume.shape().begin());
+    typename MultiArrayShape<ndim-1>::type tmpShape(volume.shape().begin());
     MultiArray<ndim-1, TinyVector<VoxelType, (int)(ndim-1)> > grad(tmpShape);
     for(int k=0; k<volume.shape(ndim-1); ++k)
     {

@@ -209,7 +209,7 @@ detail::RF_DEFAULT& rf_default()
 {
     static detail::RF_DEFAULT result;
     return result;
-};
+}
 
 /** tags used with the RandomForestOptions class
  * \sa RF_Traits::Option_t
@@ -376,9 +376,9 @@ class RandomForestOptions
         mtry_switch_(RF_SQRT),
         mtry_(0),
         mtry_func_(0),
+        predict_weighted_(false),
         tree_count_(256),
-        min_split_node_size_(1),
-        predict_weighted_(false)
+        min_split_node_size_(1)
     {}
 
     /**\brief specify stratification strategy

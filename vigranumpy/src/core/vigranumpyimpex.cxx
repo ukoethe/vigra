@@ -311,7 +311,7 @@ void writeVolume(NumpyArray<3, Multiband<T> > const & volume,
     exportVolume(volume, info);
 }
 
-VIGRA_PYTHON_MULTITYPE_FUNCTOR(pywriteVolume, writeVolume);
+VIGRA_PYTHON_MULTITYPE_FUNCTOR(pywriteVolume, writeVolume)
 
 namespace detail {
 template <class T>
