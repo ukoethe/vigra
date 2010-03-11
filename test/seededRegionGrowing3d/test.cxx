@@ -48,8 +48,12 @@ struct SeededRegionGrowing3DTest
     typedef vigra::MultiArray<3,int> IntVolume;
     typedef vigra::MultiArray<3,double> DoubleVolume;
 
-    SeededRegionGrowing3DTest()
-    : vol1(IntVolume::difference_type(5,5,5)),distvol1(DoubleVolume::difference_type(5,5,5)),distvol2(DoubleVolume::difference_type(4,4,4)),vol2(DoubleVolume::difference_type(4,4,4)),vol3(IntVolume::difference_type(5,5,5))
+    SeededRegionGrowing3DTest() :
+            vol1(IntVolume::difference_type(5,5,5)),
+            distvol1(DoubleVolume::difference_type(5,5,5)),
+            distvol2(DoubleVolume::difference_type(4,4,4)),
+            vol2(DoubleVolume::difference_type(4,4,4)),
+            vol3(IntVolume::difference_type(5,5,5))
     {                        
         static const int in1[] = { 0, 0, 0, 0, 0, 
                                    0, 0, 0, 0, 0,  
@@ -285,8 +289,11 @@ struct SeededRegionGrowing3DTest
         shouldEqualSequence(res.begin(), res.end(), vol3.begin());
     }
     
-    IntVolume vol1, vol3;
-    DoubleVolume vol2, distvol1, distvol2;
+    IntVolume    vol1;
+    DoubleVolume vol2;
+    IntVolume    vol3;
+    DoubleVolume distvol1;
+    DoubleVolume distvol2;
 };
 
 

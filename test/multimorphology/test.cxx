@@ -48,8 +48,11 @@ struct MultiMorphologyTest
     typedef vigra::MultiArray<3,int> IntVolume;
     typedef vigra::MultiArray<2,int> IntImage;
 
-    MultiMorphologyTest()
-    : img(IntImage::difference_type(7,7)), img2(IntImage::difference_type(7,7)), vol(IntVolume::difference_type(5,5,5)), lin(IntImage::difference_type(7,1))
+    MultiMorphologyTest() :
+        img(IntImage::difference_type(7,7)),
+        img2(IntImage::difference_type(7,7)),
+        lin(IntImage::difference_type(7,1)),
+        vol(IntVolume::difference_type(5,5,5))
     {
         static const unsigned char in[] = {
             0, 1, 1, 1, 1, 1, 0,

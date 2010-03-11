@@ -102,8 +102,9 @@ struct ImageTest
     value_type internalMemory[9];
     value_type * data;
 
-    ImageTest(IMAGE const & image)
-    : img(image), data(testData(value_type()))
+    ImageTest(IMAGE const & image) :
+            data(testData(value_type())),
+            img(image)
     {
         typename Image::Accessor acc = img.accessor();
         typename Image::iterator i = img.begin();

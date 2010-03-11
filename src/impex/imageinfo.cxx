@@ -655,10 +655,10 @@ std::auto_ptr<Decoder> decoder( const ImageImportInfo & info )
 
 // class VolumeExportInfo
 
-VolumeExportInfo::VolumeExportInfo( const char * name_base, const char * name_ext ) 
-: m_filename_base(name_base),
-  m_filename_ext(name_ext), m_x_res(0), m_y_res(0), m_z_res(0), 
-  fromMin_(0.0), fromMax_(0.0), toMin_(0.0), toMax_(0.0)
+VolumeExportInfo::VolumeExportInfo( const char * name_base, const char * name_ext ) :
+        m_x_res(0), m_y_res(0), m_z_res(0),
+        m_filename_base(name_base), m_filename_ext(name_ext),
+        fromMin_(0.0), fromMax_(0.0), toMin_(0.0), toMax_(0.0)
 {
 }
 
