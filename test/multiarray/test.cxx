@@ -281,7 +281,7 @@ public:
         shouldEqual(array3.subarray(first, last).norm(2, false), 0.0);
 
         shouldEqual(array3.squaredNorm(), squaredNorm(array3));
-        shouldEqual(array3.norm(), norm(array3));
+        shouldEqual(array3.norm(), vigra::norm(array3));
     }
     
     void testScanOrderAccess()

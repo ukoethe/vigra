@@ -1149,7 +1149,7 @@ struct LinalgTest
         shouldEqual(a.squaredNorm(), 104.0);
         shouldEqual(a.norm(), std::sqrt(104.0));
         shouldEqual(a.squaredNorm(), squaredNorm(a));
-        shouldEqual(a.norm(), norm(a));
+        shouldEqual(a.norm(), vigra::norm(a));
         shouldEqual(rowCount(a), r);
         shouldEqual(columnCount(a), c);
 
@@ -2022,19 +2022,19 @@ struct LinalgTest
         for(int i1= 0; i1 < m; i1++)
             for(int i2= 0; i2 < n; i2++)
                 a(i1, i2)= random_double();
-	    Matrix u(m, n);
-	    Matrix v(n, n);
-	    Matrix S(n, 1);
+        Matrix u(m, n);
+        Matrix v(n, n);
+        Matrix S(n, 1);
 
-	    unsigned int rank = singularValueDecomposition(a, u, S, v);
-	    shouldEqual(rank, n);
+        unsigned int rank = singularValueDecomposition(a, u, S, v);
+        shouldEqual(rank, n);
 
         double eps = 1e-11;
 
-   	    shouldEqualToleranceMessage(norm(a-u*diagonalMatrix(S)*transpose(v)), 0.0, eps, VIGRA_TOLERANCE_MESSAGE);
-	    shouldEqualToleranceMessage(norm(vigra::identityMatrix<double>(4) - transpose(u)*u), 0.0, eps, VIGRA_TOLERANCE_MESSAGE);
-	    shouldEqualToleranceMessage(norm(vigra::identityMatrix<double>(4) - transpose(v)*v), 0.0, eps, VIGRA_TOLERANCE_MESSAGE);
-	    shouldEqualToleranceMessage(norm(vigra::identityMatrix<double>(4) - v*transpose(v)), 0.0, eps, VIGRA_TOLERANCE_MESSAGE);
+        shouldEqualToleranceMessage(vigra::norm(a-u*diagonalMatrix(S)*transpose(v)), 0.0, eps, VIGRA_TOLERANCE_MESSAGE);
+        shouldEqualToleranceMessage(vigra::norm(vigra::identityMatrix<double>(4) - transpose(u)*u), 0.0, eps, VIGRA_TOLERANCE_MESSAGE);
+        shouldEqualToleranceMessage(vigra::norm(vigra::identityMatrix<double>(4) - transpose(v)*v), 0.0, eps, VIGRA_TOLERANCE_MESSAGE);
+        shouldEqualToleranceMessage(vigra::norm(vigra::identityMatrix<double>(4) - v*transpose(v)), 0.0, eps, VIGRA_TOLERANCE_MESSAGE);
     }
 };
 

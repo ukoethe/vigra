@@ -1101,7 +1101,7 @@ const char * HDF5ImportInfo::getPixelType() const
 {
     return m_pixeltype.c_str();
 }
-MultiArrayIndex HDF5ImportInfo::shapeOfDimension(const int dim) const { return MultiArrayIndex(m_dims[dim]); };
+MultiArrayIndex HDF5ImportInfo::shapeOfDimension(const int dim) const { return MultiArrayIndex(m_dims[dim]); }
 MultiArrayIndex HDF5ImportInfo::numDimensions() const { return MultiArrayIndex(m_dimensions); }
 const std::string & HDF5ImportInfo::getPathInFile() const { return m_path; }
 const std::string & HDF5ImportInfo::getFilePath() const { return m_filename; }

@@ -97,7 +97,7 @@ inline AtVolumeBorder isAtVolumeBorder(int x, int y, int z, int width, int heigh
                                          : z == depth-1
                                              ? RearBorder
                                              : NotAtBorder));
-};
+}
 /** \brief Find out whether a voxel is at a scan-order relevant volume border.
     This function checks if \a x == 0 or \a y == 0 or \a z == \a 0 and returns the
         appropriate value of \ref vigra::AtVolumeBorder, or zero when the voxel is
@@ -115,7 +115,7 @@ inline AtVolumeBorder isAtVolumeBorderCausal(int x, int y, int z, int width, int
                                        (z == 0
                                          ? FrontBorder
                                          : NotAtBorder));
-};
+}
 /** TODO: Write new comment \brief Find out whether a voxel is at a scan-order relevant volume border.
     This function checks if \a x == 0 or \a y == 0 or \a z == \a 0 and returns the
         appropriate value of \ref vigra::AtVolumeBorder, or zero when the voxel is
@@ -133,7 +133,7 @@ inline AtVolumeBorder isAtVolumeBorderAntiCausal(int x, int y, int z, int width,
                                        (z == depth-1
                                          ? RearBorder
                                          : NotAtBorder));
-};
+}
 
 /********************************************************/
 /*                                                      */

@@ -97,7 +97,7 @@ enum DataSetNames
     segmentation,
     /*shuttle,*/
     /*spambase,*/
-    wine,
+    wine
     //wpbc
     /*yeast*/
 };
