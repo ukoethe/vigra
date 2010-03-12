@@ -124,8 +124,10 @@ pythonFourierTransformR2C(NumpyAnyArray in, NumpyAnyArray res)
         return pythonFourierTransform<4, FFTW_FORWARD>(inc, out);
       }
       default:
-        vigra_fail("fourierTransform(): Can only handle 2 or 3 spatial dimensions.");
+        vigra_fail("fourierTransform(): "
+                   "Can only handle 2 or 3 spatial dimensions.");
     }
+    return res; // this will never be reached
 }
 
 } // namespace vigra
