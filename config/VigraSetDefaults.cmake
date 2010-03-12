@@ -75,25 +75,24 @@ IF(NOT VIGRA_DEFAULTS_INIT)
             FORCE)
     ENDIF()
     
-#    # initial compiler flags can be set here, this is only
-#    # executed once in the first configure run.
-#    IF(CMAKE_COMPILER_IS_GNUCXX)
-#        IF(NOT CMAKE_C_FLAGS)
-#            SET(CMAKE_C_FLAGS
-#                "-W -Wall"
-#                CACHE STRING
-#                "Flags used by the compiler during all build types."
-#                FORCE
-#            )
-#        ENDIF(NOT CMAKE_C_FLAGS)
-#        IF(NOT CMAKE_CXX_FLAGS)
-#            SET(CMAKE_CXX_FLAGS
-#                "-W -Wall"
-#                CACHE STRING
-#                "Flags used by the compiler during all build types."
-#                FORCE
-#            )
-#        ENDIF(NOT CMAKE_CXX_FLAGS)
-#    ENDIF(CMAKE_COMPILER_IS_GNUCXX)
+    # initial compiler flags can be set here, this is only
+    # executed once in the first configure run.
+    IF(CMAKE_COMPILER_IS_GNUCXX)
+        IF(NOT CMAKE_CXX_FLAGS)
+            SET(CMAKE_CXX_FLAGS "-W -Wall -Wextra -Wno-unused-parameter -Wno-ignored-qualifiers -Wno-sign-compare -Wno-unused-variable -Wno-type-limits")
+        ENDIF()
+        IF(NOT CMAKE_C_FLAGS)
+            SET(CMAKE_C_FLAGS "-W -Wall -Wextra -pedantic -std=c99 -Wno-sign-compare")
+        ENDIF()
+    ENDIF(CMAKE_COMPILER_IS_GNUCXX)
+
+    SET(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS} CACHE STRING
+        "Flags used by the compiler during all build types."
+        FORCE
+    )
+    SET(CMAKE_C_FLAGS ${CMAKE_C_FLAGS} CACHE STRING
+        "Flags used by the compiler during all build types."
+        FORCE
+    )
 ENDIF(NOT VIGRA_DEFAULTS_INIT)
 
