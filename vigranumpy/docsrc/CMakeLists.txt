@@ -4,8 +4,6 @@ IF(PYTHON_SPHINX)
 		MESSAGE(SEND_ERROR "VIGRANUMPY_DOCDIR already defined! Please delete from Cache.")
 	ENDIF()
 	SET(VIGRANUMPY_DOCDIR ${DOCDIR}/vigranumpy)
-	FILE(MAKE_DIRECTORY ${VIGRANUMPY_DOCDIR})
-	
 	SET(SPHINX_OPTS ${SPHINX_OPTS} CACHE STRING
 		"options passed to sphinx during vigranumpy doc generation"
 		FORCE)
@@ -22,6 +20,8 @@ IF(PYTHON_SPHINX)
 		${SPHINX_OPTS})
     
 	ADD_CUSTOM_TARGET (doc_python
+		COMMAND ${CMAKE_COMMAND} -E make_directory
+			${VIGRANUMPY_DOCDIR}
 		COMMAND ${CMAKE_COMMAND} -E copy_if_different
 			${CMAKE_CURRENT_SOURCE_DIR}/conf.py
 			${CMAKE_CURRENT_BINARY_DIR}/conf.py
