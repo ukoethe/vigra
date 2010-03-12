@@ -1096,7 +1096,12 @@ class NumpyAnyArray
         ArrayVector<npy_intp> permutation(M);
         for(int k=0; k<M; ++k)
             permutation[k] = M-1-k;
-        PyArray_Dims permute = { permutation.begin(), M };
+        // explicit cast to int is neede here to avoid gcc c++0x compilation
+        // error: narrowing conversion of ‘M’ from ‘vigra::MultiArrayIndex’
+        //        to ‘int’ inside { }
+        // int overflow should not occur here because PyArray_NDIM returns
+        // an integer which is converted to long in NumpyAnyArray::ndim()
+        PyArray_Dims permute = { permutation.begin(), (int) M };
         python_ptr array(PyArray_Transpose(pyArray(), &permute), python_ptr::keep_count);
         pythonToCppException(array);
         return NumpyAnyArray(array.ptr());
