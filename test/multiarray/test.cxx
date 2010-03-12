@@ -53,7 +53,7 @@ public:
     // the image is filled from start to beginning (memory-wise) with
     // ascending numbers.
 
-    typedef unsigned int scalar_type;
+    typedef int scalar_type;
     typedef MultiArray <2, scalar_type> array2_type;
     typedef MultiArray <3, scalar_type> array3_type;
     typedef MultiArrayView <3, scalar_type> array3_view_type;
@@ -67,7 +67,7 @@ public:
         : shape3 (10, 10, 10), array3 (shape3, 1)
     {
         // initialize the array to the test data
-        for (unsigned int i = 0; i < 1000; ++i)
+        for (int i = 0; i < 1000; ++i)
             array3.data () [i] = i;
     }
 

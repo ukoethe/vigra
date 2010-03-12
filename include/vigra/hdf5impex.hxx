@@ -185,9 +185,9 @@ class HDF5ImportInfo
 
     VIGRA_EXPORT const std::string& getPathInFile() const;
 
-    VIGRA_EXPORT const hid_t getH5FileHandle() const;
+    VIGRA_EXPORT hid_t getH5FileHandle() const;
 
-    VIGRA_EXPORT const hid_t getDatasetHandle() const;
+    VIGRA_EXPORT hid_t getDatasetHandle() const;
 
     VIGRA_EXPORT MultiArrayIndex numDimensions() const;
 
@@ -440,7 +440,7 @@ void readHDF5(const HDF5ImportInfo &info, MultiArrayView<N, T, StridedArrayTag> 
     //Get the data
     int counter = 0;
     int elements = numBandsOfType;
-    for(int i=0;i<N;++i)
+    for(unsigned int i=0;i<N;++i)
         elements *= shape[i];
     ArrayVector<T> buffer(shape[0]);
     detail::readHDF5Impl(array.traverser_begin(), shape, info.getDatasetHandle(), datatype, buffer, counter, elements, numBandsOfType, vigra::MetaInt<N-1>());
@@ -611,7 +611,7 @@ namespace detail {
 
 template <class DestIterator, class Shape, class T>
 inline void
-writeHDF5Impl(DestIterator d, Shape const & shape, const hid_t file_id, const hid_t dataset_id, const hid_t datatype, ArrayVector<T> & buffer, int & counter, const int elements, const int numBandsOfType, MetaInt<0>)
+writeHDF5Impl(DestIterator d, Shape const & shape, const hid_t dataset_id, const hid_t datatype, ArrayVector<T> & buffer, int & counter, const int elements, const int numBandsOfType, MetaInt<0>)
 {
     DestIterator dend = d + (typename DestIterator::difference_type)shape[0];
     int k = 0;
@@ -635,12 +635,12 @@ writeHDF5Impl(DestIterator d, Shape const & shape, const hid_t file_id, const hi
 
 template <class DestIterator, class Shape, class T, int N>
 void
-writeHDF5Impl(DestIterator d, Shape const & shape, const hid_t file_id, const hid_t dataset_id, const hid_t datatype, ArrayVector<T> & buffer, int & counter, const int elements, const int numBandsOfType, MetaInt<N>)
+writeHDF5Impl(DestIterator d, Shape const & shape, const hid_t dataset_id, const hid_t datatype, ArrayVector<T> & buffer, int & counter, const int elements, const int numBandsOfType, MetaInt<N>)
 {
 		DestIterator dend = d + (typename DestIterator::difference_type)shape[N];
 		for(; d < dend; ++d)
 		{
-			writeHDF5Impl(d.begin(), shape, file_id, dataset_id, datatype, buffer, counter, elements, numBandsOfType, MetaInt<N-1>());
+			writeHDF5Impl(d.begin(), shape, dataset_id, datatype, buffer, counter, elements, numBandsOfType, MetaInt<N-1>());
 		}
 }
 
@@ -725,7 +725,7 @@ void writeHDF5(const char* filePath, const char* pathInFile, const MultiArrayVie
     int counter = 0;
 
     ArrayVector<T> buffer((int)array.shape(0));
-	detail::writeHDF5Impl(array.traverser_begin(), shape, file_handle, dataset_handle, datatype, buffer, counter, elements, numBandsOfType, vigra::MetaInt<N-1>());
+	detail::writeHDF5Impl(array.traverser_begin(), shape, dataset_handle, datatype, buffer, counter, elements, numBandsOfType, vigra::MetaInt<N-1>());
 
 	H5Fflush(file_handle, H5F_SCOPE_GLOBAL);
 

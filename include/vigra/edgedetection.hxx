@@ -2118,9 +2118,6 @@ template <class SrcIterator, class SrcAccessor, class BackInsertable>
 void cannyEdgelList3x3(SrcIterator ul, SrcIterator lr, SrcAccessor src,
                         BackInsertable & edgels, double scale)
 {
-    int w = lr.x - ul.x;
-    int h = lr.y - ul.y;
-
     typedef typename NumericTraits<typename SrcAccessor::value_type>::RealPromote TmpType;
     BasicImage<TinyVector<TmpType, 2> > grad(lr-ul);
     gaussianGradient(srcIterRange(ul, lr, src), destImage(grad), scale);

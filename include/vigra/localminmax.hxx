@@ -64,7 +64,7 @@ template <class SrcIterator, class SrcAccessor,
 void
 localMinMax(SrcIterator sul, SrcIterator slr, SrcAccessor sa,
                 DestIterator dul, DestAccessor da,
-                DestValue marker, Neighborhood neighborhood,
+                DestValue marker, Neighborhood,
                 Compare compare)
 {
     int w = slr.x - sul.x - 2;

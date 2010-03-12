@@ -313,7 +313,7 @@ tridiagonalMatrixEigensystem(MultiArrayView<2, T, C1> &de, MultiArrayView<2, T, 
 
     for(unsigned int i = 0; i < n-1; ++i)
     {
-        int k = i;
+        unsigned int k = i;
         T p = d(i);
         for(unsigned int j = i+1; j < n; ++j)
         {
@@ -1126,6 +1126,9 @@ bool polynomialRootsEigenvalueMethod(POLYNOMIAL const & poly, VECTOR & roots)
         with a <tt>value_type</tt> compatible to the type <tt>POLYNOMIAL::Real</tt>) to which
         the roots are appended. The function calls \ref polynomialRootsEigenvalueMethod() and
         throws away all complex roots. It returns <tt>false</tt> if it fails to converge.
+        The parameter <tt>polishRoots</tt> is ignored (it is only here for syntax compatibility 
+        with polynomialRealRoots()).
+        
 
         <b>\#include</b> \<<a href="eigensystem_8hxx-source.html">vigra/eigensystem.hxx</a>\> or<br>
         <b>\#include</b> \<<a href="linear__algebra_8hxx-source.html">vigra/linear_algebra.hxx</a>\><br>
@@ -1134,7 +1137,7 @@ bool polynomialRootsEigenvalueMethod(POLYNOMIAL const & poly, VECTOR & roots)
         \see polynomialRealRoots(), vigra::Polynomial
      */
 template <class POLYNOMIAL, class VECTOR>
-bool polynomialRealRootsEigenvalueMethod(POLYNOMIAL const & p, VECTOR & roots, bool polishRoots)
+bool polynomialRealRootsEigenvalueMethod(POLYNOMIAL const & p, VECTOR & roots, bool /* polishRoots */)
 {
     typedef typename NumericTraits<typename VECTOR::value_type>::ComplexPromote Complex;
     ArrayVector<Complex> croots;

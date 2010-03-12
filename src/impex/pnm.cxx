@@ -565,8 +565,7 @@ namespace vigra {
         pimpl->components = bands;
     }
 
-    void PnmEncoder::setCompressionType( const std::string & comp,
-                                         int quality )
+    void PnmEncoder::setCompressionType( const std::string & comp, int /* quality */)
     {
         VIGRA_IMPEX_FINALIZED(pimpl->finalized);
         if ( comp == "ASCII" )

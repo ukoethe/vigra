@@ -130,21 +130,21 @@ namespace vigra
                     reversebytes(x[i]);
         }
 
-        void convert_to_host( char & x ) const {}
-        void convert_to_host( Int8 & x ) const {}
-        void convert_to_host( UInt8 & x ) const {}
+        void convert_to_host( char & ) const {}
+        void convert_to_host( Int8 & ) const {}
+        void convert_to_host( UInt8 & ) const {}
 
-        void convert_to_host( char * x , size_t) const {}
-        void convert_to_host( Int8 * x, size_t) const {}
-        void convert_to_host( UInt8 * x, size_t) const {}
+        void convert_to_host( char * , size_t) const {}
+        void convert_to_host( Int8 * , size_t) const {}
+        void convert_to_host( UInt8 * , size_t) const {}
 
-        void convert_from_host( char & x ) const {}
-        void convert_from_host( Int8 & x ) const {}
-        void convert_from_host( UInt8 & x ) const {}
+        void convert_from_host( char & ) const {}
+        void convert_from_host( Int8 & ) const {}
+        void convert_from_host( UInt8 & ) const {}
 
-        void convert_from_host( char * x , size_t) const {}
-        void convert_from_host( Int8 * x, size_t) const {}
-        void convert_from_host( UInt8 * x, size_t) const {}
+        void convert_from_host( char * , size_t) const {}
+        void convert_from_host( Int8 * , size_t) const {}
+        void convert_from_host( UInt8 * , size_t) const {}
     };
 
     template< class T >

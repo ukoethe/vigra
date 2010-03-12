@@ -104,7 +104,7 @@ inline AtVolumeBorder isAtVolumeBorder(int x, int y, int z, int width, int heigh
         not at te volume border.
     The behavior of the function is undefined if (x,y,z) is not inside the volume.
 */
-inline AtVolumeBorder isAtVolumeBorderCausal(int x, int y, int z, int width, int height, int depth)
+inline AtVolumeBorder isAtVolumeBorderCausal(int x, int y, int z, int /* width */, int /* height */, int /* depth */)
 {
     return static_cast<AtVolumeBorder>((x == 0
                                          ? LeftBorder

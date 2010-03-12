@@ -108,7 +108,7 @@ class EarlyStoppStd
     {}
 
     template<class T>
-    void set_external_parameters(ProblemSpec<T>const  &prob, int tree_count = 0, bool is_weighted = false)
+    void set_external_parameters(ProblemSpec<T>const  &, int /* tree_count */ = 0, bool /* is_weighted */ = false)
     {}
 
     template<class Region>
@@ -118,7 +118,7 @@ class EarlyStoppStd
     }
 
     template<class WeightIter, class T, class C>
-    bool after_prediction(WeightIter iter,  int k, MultiArrayView<2, T, C> prob, double totalCt)
+    bool after_prediction(WeightIter,  int /* k */, MultiArrayView<2, T, C> /* prob */, double /* totalCt */)
     {
         return false; 
     }
@@ -178,7 +178,7 @@ class Value_Chooser
 {
 public:
     typedef T type;
-    static T & choose(T & t, C & c)
+    static T & choose(T & t, C &)
     {
         return t; 
     }
@@ -190,7 +190,7 @@ class Value_Chooser<detail::RF_DEFAULT, C>
 public:
     typedef C type;
     
-    static C & choose(detail::RF_DEFAULT & t, C & c)
+    static C & choose(detail::RF_DEFAULT &, C & c)
     {
         return c; 
     }
@@ -272,7 +272,7 @@ class RandomForestOptions
     int min_split_node_size_;
     /*\}*/
 
-    size_t serialized_size() const
+    int serialized_size() const
     {
         return 12;
     }

@@ -546,7 +546,7 @@ struct ImageContainerTests
 		shouldEqual(ia2.size(), ia.size()-1);
 
 		ia.clear();
-		shouldEqual(ia.size(), 0);
+		shouldEqual(ia.size(), 0u);
 	}
 };
 

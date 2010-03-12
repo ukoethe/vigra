@@ -261,6 +261,9 @@ namespace vigra {
                         const void_vector<map_storage_type> & maps,
                         unsigned int map_bands, unsigned int map_width, unsigned int map_height )
     {
+        vigra_precondition(src_bands == 1u,
+               "map_multiband(): Source image must have one band.");
+        
         typedef colormap< storage_type, map_storage_type > colormap_type;
         const unsigned int num_pixels = src_width * src_height;
 
@@ -954,8 +957,7 @@ namespace vigra {
         pimpl->header.num_data_bands = static_cast<ViffHeader::field_type>(numBands);
     }
 
-    void ViffEncoder::setCompressionType( const std::string & comp,
-                                          int quality )
+    void ViffEncoder::setCompressionType( const std::string & /* comp */, int /* quality */)
     {
         VIGRA_IMPEX_FINALIZED(pimpl->finalized);
     }

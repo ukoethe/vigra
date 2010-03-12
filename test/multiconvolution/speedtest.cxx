@@ -364,13 +364,13 @@ struct MultiArraySepConvSpeedTest
 struct MultiArraySepConvSpeedTestSuite
 : public vigra::test_suite
 {
-  MultiArraySepConvSpeedTestSuite( int w, int h, int d )
+    MultiArraySepConvSpeedTestSuite()
     : vigra::test_suite("MultiArraySeparableConvolutionTestSuite")
     {
         add( testCase( &MultiArraySepConvSpeedTest::test3 ) );
-	add( testCase( &MultiArraySepConvSpeedTest::test1 ) );
-	add( testCase( &MultiArraySepConvSpeedTest::test2 ) );
-	add( testCase( &MultiArraySepConvSpeedTest::testCorrectness ) );
+        add( testCase( &MultiArraySepConvSpeedTest::test1 ) );
+        add( testCase( &MultiArraySepConvSpeedTest::test2 ) );
+        add( testCase( &MultiArraySepConvSpeedTest::testCorrectness ) );
     }
 };
 
@@ -379,13 +379,8 @@ struct MultiArraySepConvSpeedTestSuite
 
 int main()
 {
-  int width = 100;
-  int height = 90;
-  int depth = 80;
-
-
   // run the multi-array separable convolutiontestsuite
-  MultiArraySepConvSpeedTestSuite test1( width, height, depth );
+  MultiArraySepConvSpeedTestSuite test1;
   int failed = test1.run();
   std::cout << test1.report() << std::endl;
   return (failed != 0);

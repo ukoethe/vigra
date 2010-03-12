@@ -168,7 +168,7 @@ struct HighOrderPolynomialTest
         }
         vigra::ArrayVector<double> rroots;
         should(polynomialRealRoots(p, rroots));
-        shouldEqual(rroots.size(), 2);
+        shouldEqual(rroots.size(), 2u);
         shouldEqualTolerance(rroots[0], -1.0, epsilon);
         shouldEqualTolerance(rroots[1], 1.0, epsilon);
     }
@@ -282,21 +282,21 @@ struct FunctionsTest
                           g5(2.0, 5);
 
         double epsilon = 1e-15;
-        shouldEqual(g.derivativeOrder(), 0);
+        shouldEqual(g.derivativeOrder(), 0u);
         shouldEqual(g.sigma(), 1.0);
         shouldEqualTolerance(g(0.0), 0.3989422804014327, epsilon);
         shouldEqualTolerance(g(0.5), 0.35206532676429952, epsilon);
         shouldEqualTolerance(g(1.0), 0.24197072451914337, epsilon);
         shouldEqualTolerance(g(-1.0), 0.24197072451914337, epsilon);
 
-        shouldEqual(g1.derivativeOrder(), 1);
+        shouldEqual(g1.derivativeOrder(), 1u);
         shouldEqual(g1.sigma(), 2.0);
         shouldEqualTolerance(g1(0.0), 0, epsilon);
         shouldEqualTolerance(g1(0.5), -0.024166757300178077, epsilon);
         shouldEqualTolerance(g1(1.0), -0.044008165845537441, epsilon);
         shouldEqualTolerance(g1(-1.0), 0.044008165845537441, epsilon);
 
-        shouldEqual(g2.derivativeOrder(), 2);
+        shouldEqual(g2.derivativeOrder(), 2u);
         shouldEqual(g2.sigma(), 1.0);
         shouldEqualTolerance(g2(0.0), -0.3989422804014327, epsilon);
         shouldEqualTolerance(g2(0.5), -0.26404899507322466, epsilon);
@@ -305,7 +305,7 @@ struct FunctionsTest
         shouldEqualTolerance(g2(1.5), 0.16189699458236467, epsilon);
         shouldEqualTolerance(g2(-1.5), 0.16189699458236467, epsilon);
 
-        shouldEqual(g3.derivativeOrder(), 3);
+        shouldEqual(g3.derivativeOrder(), 3u);
         shouldEqual(g3.sigma(), 2.0);
         shouldEqualTolerance(g3(0.0), 0, epsilon);
         shouldEqualTolerance(g3(0.5), 0.017747462392318277, epsilon);

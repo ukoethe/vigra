@@ -478,8 +478,7 @@ namespace vigra {
         pimpl->components = numBands;
     }
 
-    void SunEncoder::setCompressionType( const std::string & comp,
-                                         int quality )
+    void SunEncoder::setCompressionType( const std::string & /* comp */, int /* quality */)
     {
         VIGRA_IMPEX_FINALIZED(pimpl->finalized);
     }

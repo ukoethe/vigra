@@ -1105,8 +1105,8 @@ MultiArrayIndex HDF5ImportInfo::shapeOfDimension(const int dim) const { return M
 MultiArrayIndex HDF5ImportInfo::numDimensions() const { return MultiArrayIndex(m_dimensions); }
 const std::string & HDF5ImportInfo::getPathInFile() const { return m_path; }
 const std::string & HDF5ImportInfo::getFilePath() const { return m_filename; }
-const hid_t HDF5ImportInfo::getH5FileHandle() const { return m_file_handle; }
-const hid_t HDF5ImportInfo::getDatasetHandle() const { return m_dataset_handle; }
+hid_t HDF5ImportInfo::getH5FileHandle() const { return m_file_handle; }
+hid_t HDF5ImportInfo::getDatasetHandle() const { return m_dataset_handle; }
 
 
 #endif // HasHDF5

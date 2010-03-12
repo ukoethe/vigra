@@ -1533,7 +1533,7 @@ template <class FilterImageIterator, class FilterAccessor,
 void applyFourierFilterImpl(
     FFTWComplexImage::const_traverser srcUpperLeft,
     FFTWComplexImage::const_traverser srcLowerRight,
-    FFTWComplexImage::ConstAccessor sa,
+    FFTWComplexImage::ConstAccessor,
     FilterImageIterator filterUpperLeft, FilterAccessor fa,
     DestImageIterator destUpperLeft, DestAccessor da)
 {

@@ -51,7 +51,7 @@ template <class SrcIterator, class SrcAccessor,
 unsigned int watershedLabeling(SrcIterator upperlefts,
                         SrcIterator lowerrights, SrcAccessor sa,
                         DestIterator upperleftd, DestAccessor da,
-                        Neighborhood neighborhood)
+                        Neighborhood)
 {
     typedef typename DestAccessor::value_type LabelType;
     

@@ -446,7 +446,7 @@ template <class SrcIterator, class SrcShape, class SrcAccessor,
           class DestIterator, class DestShape, class DestAccessor, 
           class Functor>
 void
-transformMultiArrayReduceImpl(SrcIterator s, SrcShape const & sshape, SrcAccessor src,
+transformMultiArrayReduceImpl(SrcIterator s, SrcShape const &, SrcAccessor src,
                DestIterator d, DestShape const & dshape, DestAccessor dest, 
                SrcShape const & reduceShape,
                Functor const & ff, MetaInt<0>)
@@ -831,7 +831,7 @@ template <class SrcIterator1, class SrcShape, class SrcAccessor1,
           class Functor>
 void
 combineTwoMultiArraysReduceImpl(
-               SrcIterator1 s1, SrcShape const & sshape, SrcAccessor1 src1,
+               SrcIterator1 s1, SrcShape const & , SrcAccessor1 src1,
                SrcIterator2 s2, SrcAccessor2 src2,
                DestIterator d,  DestShape const & dshape, DestAccessor dest, 
                SrcShape const & reduceShape,

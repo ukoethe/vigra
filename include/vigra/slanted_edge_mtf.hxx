@@ -275,8 +275,7 @@ void slantedEdgeShadingCorrection(Image & i, unsigned int edgeWidth)
     transformImage(srcImageRange(i), destImage(i), log(Arg1() + Param(1.0)));
 
     unsigned int w = i.width(),
-                 h = i.height(),
-                 s = edgeWidth*h;
+                 h = i.height();
 
     Matrix<double> m(3,3), r(3, 1), l(3, 1);
     for(unsigned int y = 0; y < h; ++y)

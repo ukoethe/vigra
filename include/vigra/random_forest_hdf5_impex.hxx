@@ -248,7 +248,7 @@ struct MyT
 
 
 #define create_type_of(TYPE, ENUM) \
-inline MyT::type type_of(TYPE in)\
+inline MyT::type type_of(TYPE)\
 {\
 	return MyT::ENUM; \
 }

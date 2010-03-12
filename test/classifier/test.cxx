@@ -72,7 +72,7 @@ using namespace vigra;
 
 struct UnaryRandomFunctor
 {
-    double operator()(double in)
+    double operator()(double)
     {
         return vigra::RandomTT800::global().uniform53();
     }

@@ -285,8 +285,7 @@ namespace vigra {
         }
     };
 
-    void HDREncoderImpl::setCompressionType( const std::string & comp,
-                                              int quality = -1 )
+    void HDREncoderImpl::setCompressionType( const std::string & /* comp */, int /* quality */)
     {
     }
 
@@ -346,8 +345,7 @@ namespace vigra {
         pimpl->samples_per_pixel = 3;
     }
 
-    void HDREncoder::setCompressionType( const std::string & comp,
-                                          int quality )
+    void HDREncoder::setCompressionType( const std::string & /* comp */, int /* quality */)
     {
     }
 
@@ -359,15 +357,15 @@ namespace vigra {
         pimpl->pixeltype = "FLOAT";
     }
 
-    void HDREncoder::setPosition( const vigra::Diff2D & pos )
+    void HDREncoder::setPosition( const vigra::Diff2D &)
     {
     }
 
-    void HDREncoder::setXResolution( float xres )
+    void HDREncoder::setXResolution( float )
     {
     }
 
-    void HDREncoder::setYResolution( float yres )
+    void HDREncoder::setYResolution( float )
     {
     }
 

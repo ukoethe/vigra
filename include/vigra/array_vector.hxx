@@ -200,8 +200,7 @@ public:
         */
     this_type subarray (size_type begin, size_type end) const
     {
-        vigra_precondition(
-                begin >= 0 && begin <= end && end <= size_,
+        vigra_precondition(begin <= end && end <= size_,
                 "ArrayVectorView::subarray(): Limits out of range.");
         return this_type(end-begin, data_ + begin);
     }

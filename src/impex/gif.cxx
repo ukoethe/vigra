@@ -1027,8 +1027,7 @@ namespace {
         pimpl->components = numBands;
     }
 
-    void GIFEncoder::setCompressionType( const std::string & comp,
-                                         int quality )
+    void GIFEncoder::setCompressionType( const std::string & /* comp */, int /* quality */)
     {
         VIGRA_IMPEX_FINALIZED(pimpl->finalized);
     }

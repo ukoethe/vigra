@@ -537,7 +537,7 @@ unsigned int leastAngleRegressionMainLoop(LarsData<T, C1, C2> & d,
         T C = abs(cLARS(cmaxIndex, 0));
 
         Matrix<T> ac(cols - d.activeSetSize, 1);
-        for(MultiArrayIndex k = 0, ka = d.activeSetSize; k<cols-d.activeSetSize; ++k)
+        for(MultiArrayIndex k = 0; k<cols-d.activeSetSize; ++k)
         {
             T rho = cLSQ(inactiveSet[k], 0), 
               cc  = C - sign(rho)*cLARS(inactiveSet[k], 0);
@@ -900,7 +900,7 @@ leastAngleRegressionImpl(MultiArrayView<2, T, C1> const & A, MultiArrayView<2, T
     using namespace vigra::functor;
 
     const MultiArrayIndex rows = rowCount(A);
-    const MultiArrayIndex cols = columnCount(A);
+
     vigra_precondition(rowCount(b) == rows && columnCount(b) == 1,
        "leastAngleRegression(): Shape mismatch between matrices A and b.");
 

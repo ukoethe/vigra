@@ -680,8 +680,7 @@ namespace vigra {
         pimpl->components = bands;
     }
 
-    void PngEncoder::setCompressionType( const std::string & comp,
-                                         int quality )
+    void PngEncoder::setCompressionType( const std::string & /* comp */, int /* quality */)
     {
         // nothing is settable => do nothing
     }

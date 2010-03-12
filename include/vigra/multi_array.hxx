@@ -687,7 +687,7 @@ protected:
     bool arraysOverlap(const MultiArrayView <N, T, CN>& rhs) const;
 
     template <class U, class CN>
-    bool arraysOverlap(const MultiArrayView <N, U, CN>& rhs) const
+    bool arraysOverlap(const MultiArrayView <N, U, CN>&) const
     {
         return false;
     }

@@ -1071,8 +1071,7 @@ void BmpEncoder::setNumBands( unsigned int bands )
     pimpl->grayscale = ( bands == 1 );
 }
 
-void BmpEncoder::setCompressionType( const std::string & comp,
-                                     int quality )
+void BmpEncoder::setCompressionType( const std::string & /* comp */, int /* quality */)
 {
     VIGRA_IMPEX_FINALIZED(pimpl->finalized);
 }

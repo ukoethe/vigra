@@ -38,7 +38,7 @@ public:
     {}
 
     template<class WeightIter, class T, class C>
-    bool after_prediction(WeightIter iter,  int k, MultiArrayView<2, T, C> prob, double totalCt)
+    bool after_prediction(WeightIter,  int k, MultiArrayView<2, T, C> const & /* prob */, double /* totalCt */)
     {
         if(k < max_tree_)
            return false;
@@ -63,7 +63,7 @@ public:
     {}
 
     template<class WeightIter, class T, class C>
-    bool after_prediction(WeightIter iter,  int k, MultiArrayView<2, T, C> prob, double totalCt)
+    bool after_prediction(WeightIter,  int /* k */, MultiArrayView<2, T, C> const & prob, double /* totalCt */)
     {
         if(SB::is_weighted_)
         {
@@ -98,7 +98,7 @@ public:
     {}
 
     template<class WeightIter, class T, class C>
-    bool after_prediction(WeightIter iter,  int k, MultiArrayView<2, T, C> prob, double totalCt)
+    bool after_prediction(WeightIter iter,  int /* k */, MultiArrayView<2, T, C> const & prob, double totalCt)
     {
 
         deviation.push_back(0);
@@ -138,7 +138,7 @@ public:
     {}
 
     template<class WeightIter, class T, class C>
-    bool after_prediction(WeightIter iter,  int k, MultiArrayView<2, T, C> prob, double totalCt)
+    bool after_prediction(WeightIter,  int /* k */, MultiArrayView<2, T, C> & prob, double /* totalCt */)
     {
         double a = prob[argMax(prob)];
         prob[argMax(prob)] = 0;

@@ -174,12 +174,12 @@ struct ArrayVectorTest
 
         SequenceAccessor<Vector> sqa;
         SequenceAccessor<const Vector> sqca;
-        shouldEqual(sqa.size(v), 3);
-        shouldEqual(sqa.size(v + 1), 3);
-        shouldEqual(sqa.size(v, 2), 3);
-        shouldEqual(sqca.size(cv), 3);
-        shouldEqual(sqca.size(cv + 1), 3);
-        shouldEqual(sqca.size(cv, 2), 3);
+        shouldEqual(sqa.size(v), 3u);
+        shouldEqual(sqa.size(v + 1), 3u);
+        shouldEqual(sqa.size(v, 2), 3u);
+        shouldEqual(sqca.size(cv), 3u);
+        shouldEqual(sqca.size(cv + 1), 3u);
+        shouldEqual(sqca.size(cv, 2), 3u);
         should(sqa.end(v) == v[0].end());
         should(sqa.end(v + 1) == v[1].end());
         should(sqa.end(v, 2) == v[2].end());
@@ -207,7 +207,7 @@ struct ArrayVectorTest
     {
         static value_type data[] = { 0, 1, 2, 3, 4 };
         
-        shouldEqual(vector_.size(), 0);
+        shouldEqual(vector_.size(), 0u);
         
         Accessor a;
         copyLine(data, data + 5, a, std::back_inserter(vector_), a);

@@ -185,7 +185,7 @@ unsigned int watershedLabeling3D( SrcIterator s_Iter, SrcShape srcShape, SrcAcce
                     {            
                         //   Direction of NTraversr       Neighbor's direction bit is pointing
                         // = Direction of voxel           towards us?
-                        if((*xs & nc.directionBit()) || (xs[*nc] & nc.oppositeDirectionBit()))
+                        if((sa(xs) & nc.directionBit()) || (sa(xs,*nc) & nc.oppositeDirectionBit()))
                         {
                             currentLabel = labels.makeUnion(da(xd,*nc), currentLabel);
                         }
@@ -201,7 +201,7 @@ unsigned int watershedLabeling3D( SrcIterator s_Iter, SrcShape srcShape, SrcAcce
                     {
                         //   Direction of NTraversr       Neighbor's direction bit is pointing
                         // = Direction of voxel           towards us?
-                        if((*xs & nc.directionBit()) || (xs[*nc] & nc.oppositeDirectionBit()))
+                        if((sa(xs) & nc.directionBit()) || (sa(xs,*nc) & nc.oppositeDirectionBit()))
                         {
                             currentLabel = labels.makeUnion(da(xd,*nc), currentLabel);
                         }
