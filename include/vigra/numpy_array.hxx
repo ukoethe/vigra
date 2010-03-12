@@ -1456,7 +1456,9 @@ class NumpyArray
          * (If the source object has no data, this one will have
          * no data, too.)
          */
-    NumpyArray(const NumpyArray &other, bool createCopy = false)
+    NumpyArray(const NumpyArray &other, bool createCopy = false) :
+            MultiArrayView<N, typename NumpyArrayTraits<N, T, Stride>::value_type, Stride>(other),
+            NumpyAnyArray(other, createCopy)
     {
         if(!other.hasData())
             return;
