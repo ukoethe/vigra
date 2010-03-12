@@ -341,7 +341,7 @@ but iterator performance will suffer significantly, as is experienced with
     /** Index type for a single dimension of a MultiArrayView or
         MultiArray.
     */
-typedef std::ptrdiff_t MultiArrayIndex;
+typedef int MultiArrayIndex;
 
     /** Traits class for the difference type of all MultiIterator, MultiArrayView, and
         MultiArray variants.
