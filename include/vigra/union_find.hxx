@@ -50,7 +50,7 @@ template <class T>
 class UnionFindArray
 {
     typedef typename ArrayVector<T>::difference_type IndexType;
-    ArrayVector<T> labels_;
+    mutable ArrayVector<T> labels_;
     
   public:
     UnionFindArray(T next_free_label = 1)
@@ -64,7 +64,7 @@ class UnionFindArray
         return labels_.back();
     }
     
-    T find(T label)
+    T find(T label) const
     {
         T root = label;
         while(root != labels_[(IndexType)root])
