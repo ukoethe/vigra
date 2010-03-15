@@ -416,7 +416,7 @@ using ::hypot;
 
     /*! The sign function.
 
-        Returns 1, 0, or -1 depending on the sign of \a t.
+        Returns 1, 0, or -1 depending on the sign of \a t, but with the same type as \a t.
 
         <b>\#include</b> \<<a href="mathutil_8hxx-source.html">vigra/mathutil.hxx</a>\><br>
         Namespace: vigra
@@ -429,6 +429,23 @@ inline T sign(T t)
                : t < NumericTraits<T>::zero()
                     ? -NumericTraits<T>::one()
                     : NumericTraits<T>::zero();
+}
+
+    /*! The integer sign function.
+
+        Returns 1, 0, or -1 depending on the sign of \a t, converted to int.
+
+        <b>\#include</b> \<<a href="mathutil_8hxx-source.html">vigra/mathutil.hxx</a>\><br>
+        Namespace: vigra
+    */
+template <class T>
+inline int signi(T t) 
+{ 
+    return t > NumericTraits<T>::zero()
+               ? 1
+               : t < NumericTraits<T>::zero()
+                    ? -1
+                    : 0;
 }
 
     /*! The binary sign function.
@@ -653,7 +670,7 @@ Iterator argMaxIf(Iterator first, Iterator last, UnaryFunctor condition)
 template <class T>
 void symmetric2x2Eigenvalues(T a00, T a01, T a11, T * r0, T * r1)
 {
-    double d  = std::sqrt(sq(a00 - a11) + 4.0*sq(a01));
+    double d  = hypot(a00 - a11, 2.0*a01);
     *r0 = static_cast<T>(0.5*(a00 + a11 + d));
     *r1 = static_cast<T>(0.5*(a00 + a11 - d));
     if(*r0 < *r1)
