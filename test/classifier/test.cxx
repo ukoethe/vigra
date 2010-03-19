@@ -227,11 +227,15 @@ struct ClassifierTest
 
 			shouldEqual(rowVector(response, jj), should_resp);
 		}
-
-		RF.predictProbabilities(data.features(ii), response,StopAfterTree(1));
-		RF.predictProbabilities(data.features(ii), response,StopIfMargin(0.5));
-		RF.predictProbabilities(data.features(ii), response,StopAfterVoteCount(0.5));
-		RF.predictProbabilities(data.features(ii), response,StopIfConverging(0.5));
+        
+        StopAfterTree stopAfterTree(1);
+        StopIfMargin  stopIfMargin(0.5);
+        StopAfterVoteCount stopAfterVoteCount(0.5);
+        StopIfConverging   stopIfConverging(0.5);
+		RF.predictProbabilities(data.features(ii), response,stopAfterTree);
+		RF.predictProbabilities(data.features(ii), response,stopIfMargin);
+		RF.predictProbabilities(data.features(ii), response,stopAfterVoteCount);
+		RF.predictProbabilities(data.features(ii), response,stopIfConverging);
 		// to check whether labels are being currectly converted we use the
 		// property of the random forest to almost surely have 0 prediction
 		// error on the training data. with enough trees.
@@ -336,6 +340,31 @@ struct ClassifierTest
         std::cerr << "DONE!\n\n";
     }
 
+    void RFonlineTest()
+    {
+        //xor dataset.
+        double features[] = {0, 0, 1, 1,
+                         0, 1, 0, 1};
+        int    labels[] = {1, 0, 0, 1};
+        double features2[] = {0.4, 0.4, 0.6, 0.6,
+                         0.4, 0.6, 0.4, 0.6};
+        int    labels2[] = {1, 0, 0, 1};
+        std::cerr << "RFsetTest(): Learning 1200 Trees on online problem. ";
+        {
+            vigra::SetTestVisitor testVisitor;
+            vigra::RandomForest<> RF2(vigra::RandomForestOptions().tree_count(1200).prepare_online_learning(true));
+            RF2.learn(  MultiArrayView<2, double>(MultiArrayShape<2>::type(4,2), features),
+                        MultiArrayView<2, int>(MultiArrayShape<2>::type(4,1), labels),
+						create_visitor(testVisitor),
+						rf_default(),
+						rf_default(),
+                        vigra::RandomTT800::global());
+            RF2.onlineLearn( MultiArrayView<2, double>(MultiArrayShape<2>::type(4,2), features),
+                        MultiArrayView<2, int>(MultiArrayShape<2>::type(4,1), labels),  4);
+
+        }
+        std::cerr << "DONE!\n";
+    }
 
 /**
         ClassifierTest::RFnoiseTest():
@@ -409,6 +438,31 @@ struct ClassifierTest
         std::cerr << "DONE!\n\n";
 	}
 
+    void RFwrongLabelTest()
+    {
+        double rawfeatures [] = 
+        {
+            0, 1, 1, 1, 1,
+            0, 1, 1, 1, 1, 
+        };
+        double rawlabels [] =
+        {
+            0, 1, 1, 0, 0
+        };
+        typedef MultiArrayShape<2>::type Shp;
+        MultiArrayView<2, double> features(Shp(5, 2), rawfeatures);
+        MultiArrayView<2, double> labels(Shp(5, 1), rawlabels);
+       
+        RandomForest<> rf(RandomForestOptions().tree_count(10).sample_with_replacement(false));
+        rf.learn(features, labels);
+
+        MultiArray<2, double> prob(Shp(1, 2));
+        rf.predictProbabilities(rowVector(features, 2), prob);
+
+        shouldEqual(prob[0], prob[1]);
+        shouldEqual(prob[1], 0.5);
+
+    }
 #ifdef HasHDF5
 	/** checks whether hdf5 import export is working
 	 */
@@ -464,9 +518,11 @@ struct ClassifierTestSuite
         add( testCase( &ClassifierTest::RFdefaultTest));
 #ifndef FAST
         add( testCase( &ClassifierTest::RFsetTest));
+        add( testCase( &ClassifierTest::RFonlineTest));
         add( testCase( &ClassifierTest::RFoobTest));
         add( testCase( &ClassifierTest::RFnoiseTest));
         add( testCase( &ClassifierTest::RFvariableImportanceTest));
+        add( testCase( &ClassifierTest::RFwrongLabelTest));
 #endif
         add( testCase( &ClassifierTest::RFresponseTest));
 #ifdef HasHDF5

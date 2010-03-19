@@ -246,6 +246,7 @@ class RandomForestOptions
     /**\name sampling options*/
     /*\{*/
     // look at the member access functions for documentation
+    bool prepare_online_learning_;
     double  training_set_proportion_;
     int     training_set_size_;
     int (*training_set_func_)(int);
@@ -304,7 +305,7 @@ class RandomForestOptions
     void unserialize(Iter const & begin, Iter const & end)
     {
         Iter iter = begin;
-        vigra_precondition(end - begin == serialized_size(), 
+        vigra_precondition(static_cast<size_t>(end - begin) == serialized_size(), 
                            "RandomForestOptions::unserialize():"
                            "wrong number of parameters");
         #define PULL(item_, type_) item_ = type_(*iter); ++iter;
@@ -326,7 +327,7 @@ class RandomForestOptions
     void serialize(Iter const &  begin, Iter const & end) const
     {
         Iter iter = begin;
-        vigra_precondition(end - begin == serialized_size(), 
+        vigra_precondition(static_cast<size_t>(end - begin) == serialized_size(), 
                            "RandomForestOptions::serialize():"
                            "wrong number of parameters");
         #define PUSH(item_) *iter = double(item_); ++iter;
@@ -378,7 +379,8 @@ class RandomForestOptions
         mtry_func_(0),
         predict_weighted_(false),
         tree_count_(256),
-        min_split_node_size_(1)
+        min_split_node_size_(1),
+        prepare_online_learning_(false)
     {}
 
     /**\brief specify stratification strategy
@@ -402,6 +404,12 @@ class RandomForestOptions
                            "input must be RF_EQUAL, RF_PROPORTIONAL,"
                            "RF_EXTERNAL or RF_NONE");
         stratification_method_ = in;
+        return *this;
+    }
+
+    RandomForestOptions & prepare_online_learning(bool in)
+    {
+        prepare_online_learning_=in;
         return *this;
     }
 
@@ -577,7 +585,31 @@ public:
     {
         out = T(classes[index]);
     }
+    template<class T> 
+    int to_classIndex(T index) const
+    {
+        return std::find(classes.begin(), classes.end(), index) - classes.begin();
+    }
 
+    #define EQUALS(field) field(rhs.field)
+    ProblemSpec(ProblemSpec const & rhs)
+    : 
+        EQUALS(column_count_),
+        EQUALS(class_count_),
+        EQUALS(row_count_),
+        EQUALS(actual_mtry_),
+        EQUALS(actual_msample_),
+        EQUALS(problem_type_),
+        EQUALS(used_),
+        EQUALS(class_weights_),
+        EQUALS(is_weighted),
+        EQUALS(precision_)
+    {
+        std::back_insert_iterator<ArrayVector<Label_t> >
+                        iter(classes);
+        std::copy(rhs.classes.begin(), rhs.classes.end(), iter); 
+    }
+    #undef EQUALS
     #define EQUALS(field) field(rhs.field)
     template<class T>
     ProblemSpec(ProblemSpec<T> const & rhs)
@@ -602,7 +634,6 @@ public:
     // for some reason the function below does not match
     // the default copy constructor
     #define EQUALS(field) (this->field = rhs.field);
-    template<class T>
     ProblemSpec & operator=(ProblemSpec const & rhs)
     {
         EQUALS(column_count_);
@@ -612,9 +643,13 @@ public:
         EQUALS(actual_msample_);
         EQUALS(problem_type_);
         EQUALS(used_);
-        EQUALS(class_weights_);
         EQUALS(is_weighted);
         EQUALS(precision_);
+        class_weights_.clear();
+        std::back_insert_iterator<ArrayVector<double> >
+                        iter2(class_weights_);
+        std::copy(rhs.class_weights_.begin(), rhs.class_weights_.end(), iter2); 
+        classes.clear();
         std::back_insert_iterator<ArrayVector<Label_t> >
                         iter(classes);
         std::copy(rhs.classes.begin(), rhs.classes.end(), iter); 
@@ -631,9 +666,13 @@ public:
         EQUALS(actual_msample_);
         EQUALS(problem_type_);
         EQUALS(used_);
-        EQUALS(class_weights_);
         EQUALS(is_weighted);
         EQUALS(precision_);
+        class_weights_.clear();
+        std::back_insert_iterator<ArrayVector<double> >
+                        iter2(class_weights_);
+        std::copy(rhs.class_weights_.begin(), rhs.class_weights_.end(), iter2); 
+        classes.clear();
         std::back_insert_iterator<ArrayVector<Label_t> >
                         iter(classes);
         std::copy(rhs.classes.begin(), rhs.classes.end(), iter); 

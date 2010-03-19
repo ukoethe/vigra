@@ -35,6 +35,8 @@
 #ifndef RF_VISITORS_HXX
 #define RF_VISITORS_HXX
 
+#include "vigra/hdf5impex.hxx"
+
 namespace vigra
 {
 
@@ -78,6 +80,8 @@ class VisitorBase
      * \param leftChild left stack entry that will be pushed
      * \param rightChild
      *                  right stack entry that will be pushed.
+     * \param features  features matrix
+     * \param labels    label matrix
      * \sa RF_Traits::StackEntry_t
      */
     template<class Tree, class Split, class Region, class Feature_t, class Label_t>
@@ -112,11 +116,12 @@ class VisitorBase
     template<class RF, class PR>
     void visit_at_end(RF const & rf, PR const & pr)
     {}
-    
+	
     /** do something before learning starts 
      *
      * \param rf        reference to the random forest object that called this
      *                  visitor
+     * \param pr        reference to the Processor class used.
      */
     template<class RF, class PR>
     void visit_at_beginning(RF const & rf, PR const & pr)
@@ -126,23 +131,24 @@ class VisitorBase
      *
      * \param tr        reference to the tree object that called this visitor
      * \param index     index in the topology_ array we currently are at
-     * \param node_tag  type of node we have (will be e_.... - )
+     * \param node_t    type of node we have (will be e_.... - )
+     * \param weight    Node weight of current node. 
      * \sa  NodeTags;
      *
      * you can create the node by using a switch on node_tag and using the 
      * corresponding Node objects. Or - if you do not care about the type 
      * use the Nodebase class.
      */
-    template<class TR, class IntT, class TopT>
-    void visit_external_node(TR & tr, IntT index, TopT node_t)
+    template<class TR, class IntT, class TopT,class Feat>
+    void visit_external_node(TR & tr, IntT index, TopT node_t,Feat & features)
     {}
     
     /** do something when visiting a internal node after it has been learned
      *
      * \sa visit_external_node
      */
-    template<class TR, class IntT, class TopT>
-    void visit_internal_node(TR & tr, IntT index, TopT node_t)
+    template<class TR, class IntT, class TopT,class Feat>
+    void visit_internal_node(TR & tr, IntT index, TopT node_t,Feat & features)
     {}
 
     /** return a double value.  The value of the first 
@@ -186,7 +192,7 @@ class VisitorNode
     public:
     
     StopVisiting    stop_;
-    Next &          next_;
+    Next            next_;
     Visitor &       visitor_;   
     VisitorNode(Visitor & visitor, Next & next) 
     : 
@@ -238,19 +244,19 @@ class VisitorNode
         next_.visit_at_end(rf, pr);
     }
     
-    template<class TR, class IntT, class TopT>
-    void visit_external_node(TR & tr, IntT & index, TopT & node_t)
+    template<class TR, class IntT, class TopT,class Feat>
+    void visit_external_node(TR & tr, IntT & index, TopT & node_t,Feat & features)
     {
         if(visitor_.is_active())
-            visitor_.visit_external_node(tr, index, node_t);
-        next_.visit_external_node(tr, index, node_t);
+            visitor_.visit_external_node(tr, index, node_t,features);
+        next_.visit_external_node(tr, index, node_t,features);
     }
-    template<class TR, class IntT, class TopT>
-    void visit_internal_node(TR & tr, IntT & index, TopT & node_t)
+    template<class TR, class IntT, class TopT,class Feat>
+    void visit_internal_node(TR & tr, IntT & index, TopT & node_t,Feat & features)
     {
         if(visitor_.is_active())
-            visitor_.visit_internal_node(tr, index, node_t);
-        next_.visit_internal_node(tr, index, node_t);
+            visitor_.visit_internal_node(tr, index, node_t,features);
+        next_.visit_internal_node(tr, index, node_t,features);
     }
 
     double return_val()
@@ -487,7 +493,188 @@ create_visitor(A & a, B & b, C & c,
 //////////////////////////////////////////////////////////////////////////////
 
 
+/** Vistior to gain information, later needed for online learning.
+ */
 
+class OnlineLearnVisitor: public VisitorBase
+{
+public:
+    //Set if we adjust thresholds
+    bool adjust_thresholds;
+    //Current tree id
+    int tree_id;
+    //Last node id for finding parent
+    int last_node_id;
+    //Need to now the label for interior node visiting
+    vigra::Int32 current_label;
+    //marginal distribution for interior nodes
+    struct MarginalDistribution
+    {
+        ArrayVector<Int32> leftCounts;
+        Int32 leftTotalCounts;
+        ArrayVector<Int32> rightCounts;
+        Int32 rightTotalCounts;
+        double gap_left;
+        double gap_right;
+    };
+    typedef ArrayVector<vigra::Int32> IndexList;
+
+    //All information for one tree
+    struct TreeOnlineInformation
+    {
+        std::vector<MarginalDistribution> mag_distributions;
+        std::vector<IndexList> index_lists;
+        //map for linear index of mag_distiributions
+        std::map<int,int> interior_to_index;
+        //map for linear index of index_lists
+        std::map<int,int> exterior_to_index;
+    };
+
+    //All trees
+    std::vector<TreeOnlineInformation> trees_online_information;
+
+    /** Initilize, set the number of trees
+     */
+    template<class RF,class PR>
+    void visit_at_beginning(RF & rf,const PR & pr)
+    {
+        tree_id=0;
+        trees_online_information.resize(rf.options_.tree_count_);
+    }
+
+    /** Reset a tree
+     */
+    void reset_tree(int tree_id)
+    {
+        trees_online_information[tree_id].mag_distributions.clear();
+        trees_online_information[tree_id].index_lists.clear();
+        trees_online_information[tree_id].interior_to_index.clear();
+        trees_online_information[tree_id].exterior_to_index.clear();
+    }
+
+    /** simply increase the tree count
+    */
+    template<class RF, class PR, class SM, class ST>
+    void visit_after_tree(RF& rf, PR & pr,  SM & sm, ST & st, int index)
+    {
+        tree_id++;
+    }
+	
+    template<class Tree, class Split, class Region, class Feature_t, class Label_t>
+    void visit_after_split( Tree  	      & tree, 
+			    Split         & split,
+                            Region       & parent,
+                            Region        & leftChild,
+                            Region        & rightChild,
+                            Feature_t     & features,
+                            Label_t       & labels)
+    {
+        int linear_index;
+        int addr=tree.topology_.size();
+        if(split.createNode().typeID() == i_ThresholdNode)
+        {
+            if(adjust_thresholds)
+            {
+                //Store marginal distribution
+                linear_index=trees_online_information[tree_id].mag_distributions.size();
+                trees_online_information[tree_id].interior_to_index[addr]=linear_index;
+                trees_online_information[tree_id].mag_distributions.push_back(MarginalDistribution());
+
+                trees_online_information[tree_id].mag_distributions.back().leftCounts=leftChild.classCounts_;
+                trees_online_information[tree_id].mag_distributions.back().rightCounts=rightChild.classCounts_;
+
+                trees_online_information[tree_id].mag_distributions.back().leftTotalCounts=leftChild.size_;
+                trees_online_information[tree_id].mag_distributions.back().rightTotalCounts=rightChild.size_;
+                //Store the gap
+                double gap_left,gap_right;
+                int i;
+                gap_left=features(leftChild[0],split.bestSplitColumn());
+                for(i=1;i<leftChild.size();++i)
+                    if(features(leftChild[i],split.bestSplitColumn())>gap_left)
+                        gap_left=features(leftChild[i],split.bestSplitColumn());
+                gap_right=features(rightChild[0],split.bestSplitColumn());
+                for(i=1;i<rightChild.size();++i)
+                    if(features(rightChild[i],split.bestSplitColumn())<gap_right)
+                        gap_right=features(rightChild[i],split.bestSplitColumn());
+                trees_online_information[tree_id].mag_distributions.back().gap_left=gap_left;
+                trees_online_information[tree_id].mag_distributions.back().gap_right=gap_right;
+            }
+        }
+        else
+        {
+            //Store index list
+            linear_index=trees_online_information[tree_id].index_lists.size();
+            trees_online_information[tree_id].exterior_to_index[addr]=linear_index;
+
+            trees_online_information[tree_id].index_lists.push_back(IndexList());
+
+            trees_online_information[tree_id].index_lists.back().resize(parent.size_,0);
+            std::copy(parent.begin_,parent.end_,trees_online_information[tree_id].index_lists.back().begin());
+        }
+    }
+    void add_to_index_list(int tree,int node,int index)
+    {
+        if(!this->active_)
+            return;
+        TreeOnlineInformation &ti=trees_online_information[tree];
+        ti.index_lists[ti.exterior_to_index[node]].push_back(index);
+    }
+    void move_exterior_node(int src_tree,int src_index,int dst_tree,int dst_index)
+    {
+        if(!this->active_)
+            return;
+        trees_online_information[dst_tree].exterior_to_index[dst_index]=trees_online_information[src_tree].exterior_to_index[src_index];
+        trees_online_information[src_tree].exterior_to_index.erase(src_index);
+    }
+    /** do something when visiting a internal node during getToLeaf
+     *
+     * remember as last node id, for finding the parent of the last external node
+     * also: adjust class counts and borders
+     */
+    template<class TR, class IntT, class TopT,class Feat>
+        void visit_internal_node(TR & tr, IntT index, TopT node_t,Feat & features)
+        {
+            last_node_id=index;
+            if(adjust_thresholds)
+            {
+                vigra_assert(node_t==i_ThresholdNode,"We can only visit threshold nodes");
+                //Check if we are in the gap
+                double value=features(0, Node<i_ThresholdNode>(tr.topology_,tr.parameters_,index).column());
+                TreeOnlineInformation &ti=trees_online_information[tree_id];
+                MarginalDistribution &m=ti.mag_distributions[ti.interior_to_index[index]];
+                if(value>m.gap_left && value<m.gap_right)
+                {
+                    //Check which site we want to go
+                    if(m.leftCounts[current_label]/double(m.leftTotalCounts)>m.rightCounts[current_label]/double(m.rightTotalCounts))
+                    {
+                        //We want to go left
+                        m.gap_left=value;
+                    }
+                    else
+                    {
+                        //We want to go right
+                        m.gap_right=value;
+                    }
+                    Node<i_ThresholdNode>(tr.topology_,tr.parameters_,index).threshold()=(m.gap_right+m.gap_left)/2.0;
+                }
+                //Adjust class counts
+                if(value>Node<i_ThresholdNode>(tr.topology_,tr.parameters_,index).threshold())
+                {
+                    ++m.rightTotalCounts;
+                    ++m.rightCounts[current_label];
+                }
+                else
+                {
+                    ++m.leftTotalCounts;
+                    ++m.rightCounts[current_label];
+                }
+            }
+        }
+    /** do something when visiting a extern node during getToLeaf
+     * 
+     * Store the new index!
+     */
+};
 
 
 /** Visitor that calculates the oob error of the random forest. 
@@ -547,11 +734,13 @@ public:
     {
         // do some normalisation
         for(int l=0; l < (int)rf.ext_param_.row_count_; ++l)
-        if(oobCount[l])
         {
-            oobError += double(oobErrorCount[l]) / oobCount[l];
-            ++totalOobCount;
-        }
+            if(oobCount[l])
+            {
+                oobError += double(oobErrorCount[l]) / oobCount[l];
+                ++totalOobCount;
+            }
+        } 
     }
     
     //returns value of the learn function. 
@@ -574,6 +763,16 @@ class VariableImportanceVisitor : public VisitorBase
     MultiArray<2, double>       variable_importance_;
     int                         repetition_count_;
     bool                        in_place_;
+
+#ifdef HasHDF5
+    void save(std::string filename, std::string prefix)
+    {
+        prefix = "variable_importance_" + prefix;
+        writeHDF5(filename.c_str(), 
+                        prefix.c_str(), 
+                        variable_importance_);
+    }
+#endif
 
     VariableImportanceVisitor(int rep_cnt = 10) 
     :   repetition_count_(rep_cnt)

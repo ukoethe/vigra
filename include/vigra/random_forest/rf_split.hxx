@@ -56,9 +56,6 @@ namespace vigra
 class CompileTimeError;
 
 
-/** Base Class for all SplitFunctors used with the \ref RandomForestn class
-    defines the interface used while learning a tree.
-**/
 namespace detail
 {
     template<class Tag>
@@ -84,6 +81,10 @@ namespace detail
     };
 }
 
+
+/** Base Class for all SplitFunctors used with the \ref RandomForest class
+    defines the interface used while learning a tree.
+**/
 template<class Tag>
 class SplitBase
 {
@@ -207,6 +208,10 @@ class SortSamplesByDimensions
     void setColumn(MultiArrayIndex sortColumn)
     {
         sortColumn_ = sortColumn;
+    }
+    void setThreshold(double value)
+    {
+        thresVal_ = value; 
     }
 
     bool operator()(MultiArrayIndex l, MultiArrayIndex r) const
@@ -616,7 +621,14 @@ public:
         bestCurrentCounts[0].resize(ext.class_count_);
         bestCurrentCounts[1].resize(ext.class_count_);
     }
-  
+    template<class T> 
+    void set_external_parameters(ProblemSpec<T> const & ext)
+    {
+        class_weights_ = ext.class_weights_; 
+        ext_param_ = ext;
+        bestCurrentCounts[0].resize(ext.class_count_);
+        bestCurrentCounts[1].resize(ext.class_count_);
+    }
     /** calculate the best gini split along a Feature Column
      * \param column, the feature vector - has to support the [] operator
      * \param labels, the label vector 
@@ -660,10 +672,11 @@ public:
         LineSearchLoss left(labels, ext_param_);
         LineSearchLoss right(labels, ext_param_);
 
-        right.init(begin, end, region_response);
+        
 
-        min_gini_ = NumericTraits<double>::max();
-
+        min_gini_ = right.init(begin, end, region_response);
+        min_threshold_ = *begin;
+        min_index_     = 0;
         DimensionNotEqual<DataSourceF_t> comp(column, 0); 
         
         I_Iter iter = begin;
@@ -702,7 +715,6 @@ public:
 
 };
 
-
 template<class ColumnDecisionFunctor, class Tag>
 class ThresholdSplit: public SplitBase<Tag>
 {
@@ -729,12 +741,16 @@ class ThresholdSplit: public SplitBase<Tag>
     {
         return splitColumns[bestSplitIndex];
     }
+    double bestSplitThreshold() const
+    {
+        return min_thresholds_[bestSplitIndex];
+    }
 
     template<class T>
     void set_external_parameters(ProblemSpec<T> const & in)
     {
         SB::set_external_parameters(in);        
-        bgfunc = ColumnDecisionFunctor( SB::ext_param_);
+        bgfunc.set_external_parameters( SB::ext_param_);
         int featureCount_ = SB::ext_param_.column_count_;
         splitColumns.resize(featureCount_);
         for(int k=0; k<featureCount_; ++k)
@@ -754,9 +770,15 @@ class ThresholdSplit: public SplitBase<Tag>
     {
 
         typedef typename Region::IndexIterator IndexIterator;
-        
+        if(region.size() == 0)
+        {
+           std::cerr << "SplitFunctor::findBestSplit(): stackentry with 0 examples encountered\n"
+                        "continuing learning process...."; 
+        }
         // calculate things that haven't been calculated yet. 
-        if(!region.classCountsIsValid)
+        
+        if(std::accumulate(region.classCounts().begin(),
+                           region.classCounts().end(), 0) != region.size())
         {
             RandomForestClassCounter<   MultiArrayView<2,T2, C2>, 
                                         ArrayVector<Int32> >
@@ -780,7 +802,7 @@ class ThresholdSplit: public SplitBase<Tag>
 
         // find the best gini index
         bestSplitIndex              = 0;
-        double  current_min_gini    = NumericTraits<double>::max();
+        double  current_min_gini    = region_gini_;
         int     num2try             = features.shape(1);
         for(int k=0; k<num2try; ++k)
         {
@@ -808,7 +830,7 @@ class ThresholdSplit: public SplitBase<Tag>
         }
 
         // did not find any suitable split
-        if(closeAtTolerance(current_min_gini, NumericTraits<double>::max()))
+        if(closeAtTolerance(current_min_gini, region_gini_))
             return  makeTerminalNode(features, labels, region, randint);
         
         //create a Node for output
@@ -822,7 +844,6 @@ class ThresholdSplit: public SplitBase<Tag>
             sorter(features, node.column(), node.threshold());
         IndexIterator bestSplit =
             std::partition(region.begin(), region.end(), sorter);
-
         // Save the ranges of the child stack entries.
         childRegions[0].setRange(   region.begin()  , bestSplit       );
         childRegions[0].rule = region.rule;

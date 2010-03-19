@@ -499,6 +499,26 @@ inline hid_t createGroup(hid_t parent, std::string group_name)
     return parent; 
 }
 
+inline void deleteDataset(hid_t parent, std::string dataset_name)
+{
+    // delete existing data and create new dataset
+    if(H5LTfind_dataset(parent, dataset_name.c_str()))
+    {
+        //std::cout << "dataset already exists" << std::endl;
+#if (H5_VERS_MAJOR == 1 && H5_VERS_MINOR <= 6)
+		if(H5Gunlink(parent, dataset_name.c_str()) < 0)
+        {
+            vigra_postcondition(false, "writeToHDF5File(): Unable to delete existing data.");
+        }
+#else
+		if(H5Ldelete(parent, dataset_name.c_str(), H5P_DEFAULT ) < 0)
+        {
+            vigra_postcondition(false, "createDataset(): Unable to delete existing data.");
+        }
+#endif
+    } 
+}
+
 inline hid_t createFile(std::string filePath, bool append_ = true)
 {
     FILE * pFile;
@@ -520,26 +540,6 @@ inline hid_t createFile(std::string filePath, bool append_ = true)
         file_id = H5Fcreate(filePath.c_str(), H5F_ACC_TRUNC, H5P_DEFAULT, H5P_DEFAULT);
     }
     return file_id; 
-}
-
-inline void deleteDataset(hid_t parent, std::string dataset_name)
-{
-    // delete existing data and create new dataset
-    if(H5LTfind_dataset(parent, dataset_name.c_str()))
-    {
-        //std::cout << "dataset already exists" << std::endl;
-#if (H5_VERS_MAJOR == 1 && H5_VERS_MINOR <= 6)
-		if(H5Gunlink(parent, dataset_name.c_str()) < 0)
-        {
-            vigra_postcondition(false, "writeToHDF5File(): Unable to delete existing data.");
-        }
-#else
-		if(H5Ldelete(parent, dataset_name.c_str(), H5P_DEFAULT ) < 0)
-        {
-            vigra_postcondition(false, "createDataset(): Unable to delete existing data.");
-        }
-#endif
-    } 
 }
 
 template<unsigned int N, class T, class Tag>
@@ -605,6 +605,7 @@ void createDataset(const char* filePath, const char* pathInFile, const MultiArra
                                         H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT),
                               &H5Dclose, "createDataset(): unable to create dataset.");
 }
+
 
 
 namespace detail {

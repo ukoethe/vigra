@@ -48,15 +48,14 @@ namespace vigra
 namespace detail
 {
 
+
 /** shallow search the hdf5 group for containing elements
  * returns negative value if unsuccessful
- * \param filename name of hdf5 file
- * \param groupname path in hdf5 file
+ * \param grp_id    hid_t containing path to group.
  * \param cont		reference to container that supports
  * 					insert(). valuetype of cont must be
  * 					std::string
  */
-
 template<class Container>
 bool find_groups_hdf5(hid_t grp_id, Container &cont)
 {
@@ -109,6 +108,14 @@ bool find_groups_hdf5(hid_t grp_id, Container &cont)
 }
 
 
+/** shallow search the hdf5 group for containing elements
+ * returns negative value if unsuccessful
+ * \param filename name of hdf5 file
+ * \param groupname path in hdf5 file
+ * \param cont		reference to container that supports
+ * 					insert(). valuetype of cont must be
+ * 					std::string
+ */
 template<class Container>
 bool find_groups_hdf5(std::string filename, 
 							  std::string groupname, 
@@ -496,6 +503,7 @@ bool rf_export_HDF5(RandomForest<T> &rf,
 												H5P_DEFAULT);
 	vigra_postcondition(file_id >= 0, 
 						"rf_export_HDF5(): Unable to open file.");
+    std::cerr << pathname.c_str();
     hid_t group_id = pathname== "" ?
 						file_id
 					:	H5Gcreate(file_id, pathname.c_str(), 
@@ -583,7 +591,9 @@ bool rf_import_HDF5(RandomForest<T> &rf,
 	if(pathname != "")
 		H5Gclose(group_id);
 	H5Fclose(file_id);
-
+    rf.tree_indices_.resize(rf.tree_count());
+    for(int ii = 0; ii < rf.tree_count(); ++ii)
+        rf.tree_indices_[ii] = ii; 
 	return 1;
 }
 } // namespace vigra

@@ -48,7 +48,6 @@
 
 #define RandomForest RandomForestDeprec
 #define DecisionTree DecisionTreeDeprec
-#define RandomForestOptions RandomForestOptionsDeprec
 
 namespace python = boost::python;
 namespace vigra

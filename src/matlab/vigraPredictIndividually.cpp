@@ -1,7 +1,6 @@
 /************************************************************************/
 /*                                                                      */
-/*               Copyright 2008-2009 by Ullrich Koethe                  */
-/*       Cognitive Systems Group, University of Hamburg, Germany        */
+/*        Copyright 2008-2009 by Rahul Nair and Ullrich Koethe          */
 /*                                                                      */
 /*    This file is part of the VIGRA computer vision library.           */
 /*    The VIGRA Website is                                              */
@@ -34,109 +33,64 @@
 /*                                                                      */
 /************************************************************************/
 
+#include <iostream>
+#include <set>
+#include <vigra/matlab.hxx>
+#include "random_forest_impex.hxx"
 
-#ifndef VIGRA_TIMING_HXX
-#define VIGRA_TIMING_HXX
+using namespace vigra;
+using namespace matlab;
 
-#ifndef NDEBUG
 
-#include <sstream>
 
-// usage:
-// void time_it()
-// {
-//     USETICTOC;
-//     TIC;
-//      ...
-//     std::cerr << TOC << " for time_it\n";
-// }
+void vigraMain(matlab::OutputArray outputs, matlab::InputArray inputs){
+    /* INPUT */
+    if (inputs.size() != 2)
+        mexErrMsgTxt("Two inputs required.");
 
-#ifdef WIN32
+    // get RF object
+   	RandomForest<> rf; 
+    matlab::importRandomForest(rf, matlab::getCellArray(inputs[0]));
 
-    #include "windows.h"
+    // get feature matrix
+    MultiArrayView<2, double> features = inputs.getMultiArray<2, double> ( 1, v_required());
+    if(rf.ext_param_.column_count_ != columnCount(features))
+        mexErrMsgTxt("Feature array has wrong number of columns.");
 
-    namespace {
+    /* OUTPUT */
+    MultiArrayView<3, double> probs = outputs.createMultiArray<3, double>(0, v_required(),
+                                                                MultiArrayShape<3>::type(rowCount(features), 
+																						 rf.ext_param_.class_count_, rf.tree_count()));
+    ArrayVector<double>::const_iterator weights;
 
-    inline double queryTimerUnit()
+    double totalWeight = 0.0;
+    for(int k=0; k< rf.tree_count(); ++k)
+    for(int ii = 0; ii < features.shape(0); ++ii)
     {
-        LARGE_INTEGER frequency;
-        QueryPerformanceFrequency(&frequency);
-        return 1000.0 / frequency.QuadPart;
+    //get weights predicted by single tree
+        weights = rf.trees_[k].predict(rowVector(features, ii));
+        for(int jj = 0; jj < rf.ext_param_.class_count_; ++jj)
+          probs(ii, jj, k) = weights[jj] * (*(weights-1)); 
     }
+}
 
-    inline std::string tic_toc_diff(LARGE_INTEGER const & tic)
-    {
-        LARGE_INTEGER toc;
-        QueryPerformanceCounter(&toc);
-        static double unit = queryTimerUnit();
-        std::stringstream s;
-        s << ((toc.QuadPart - tic.QuadPart) * unit) << " msec";
-        return s.str();
-    }
 
-    } // unnamed namespace
 
-    #define USETICTOC LARGE_INTEGER tic_timer
-    #define TIC QueryPerformanceCounter(&tic_timer)
-    #define TOC tic_toc_diff(tic_timer)
 
-#else
+/***************************************************************************************************
+**         VIGRA GATEWAY                                                                          **
+****************************************************************************************************/
+inline void vigraMexFunction(vigra::matlab::OutputArray outputs, vigra::matlab::InputArray inputs)
+{
+    vigraMain(outputs, inputs);
+}
+/** Matlab
+function probs = vigraPredictProbabilitiesRF(RF, features)
 
-    #if defined(VIGRA_HIRES_TIMING) && !defined(__CYGWIN__)
-        // requires linking against librt
-    
-        #include <time.h>
+Use a previously trained random forest classifier to predict labels for the given data
+    RF        - MATLAB cell array representing the random forest classifier
+    features  - M x N matrix, where M is the number of samples, N the number of features
 
-        namespace {
-
-        inline std::string tic_toc_diff(timespec const & tic)
-        {
-            timespec toc;
-            clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &toc);
-            std::stringstream s;
-            s << ((toc.tv_sec*1000.0 + toc.tv_nsec/1000000.0) -
-                  (tic.tv_sec*1000.0 + tic.tv_nsec/1000000.0)) << " msec";
-            return s.str();
-        }
-
-        } // unnamed namespace
-
-        #define USETICTOC timespec tic_timer
-        #define TIC clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &tic_timer)
-        #define TOC tic_toc_diff(tic_timer)
-
-    #else
-    
-        #include <sys/time.h>
-
-        namespace {
-
-        inline std::string tic_toc_diff(timeval const & tic)
-        {
-            timeval toc;
-            gettimeofday(&toc, NULL);
-            std::stringstream s;
-            s << ((toc.tv_sec*1000.0 + toc.tv_usec/1000.0) -
-                  (tic.tv_sec*1000.0 + tic.tv_usec/1000.0)) << " msec";
-            return s.str();
-        }
-
-        } // unnamed namespace
-
-        #define USETICTOC timeval tic_timer
-        #define TIC gettimeofday(&tic_timer, NULL)
-        #define TOC tic_toc_diff(tic_timer)
-
-    #endif // VIGRA_HIRES_TIMING
-
-#endif // WIN32
-
-#else // NDEBUG
-
-#define USETICTOC 
-#define TIC 
-#define TOC
-
-#endif // NDEBUG
-
-#endif // VIGRA_TIMING_HXX
+    probs     - M x L matrix holding the predicted probabilities for each of
+                the L possible labels
+*/
