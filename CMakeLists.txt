@@ -93,6 +93,11 @@ IF(WITH_VIGRANUMPY)
     ADD_SUBDIRECTORY(vigranumpy)
 ENDIF()
 
+IF(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/private)
+	ADD_SUBDIRECTORY(private EXCLUDE_FROM_ALL)
+ENDIF()
+
+
 ##################################################
 #
 #     global installation commands
@@ -164,7 +169,7 @@ ENDIF()
 
 MESSAGE( STATUS "---------------------------------------------------------" )
 IF(DOXYGEN_FOUND AND PYTHONINTERP_FOUND)
-	MESSAGE( STATUS "  Vigra docdir: ${DOCDIR}")
+	MESSAGE( STATUS "  manuals will be generated in: ${DOCDIR}")
 	MESSAGE( STATUS "---------------------------------------------------------" )
 ENDIF()
 

@@ -27,7 +27,8 @@
 ^src/impex/libvigraimpex
 ^src/impex/(impex\.layout|Makefile\.win)$
 ^CMakeCache\.txt$
-^vigranumpy/src/experiments$
+^private$
+^vigranumpy/private$
 CMakeFiles/
 \.cmake$
 
