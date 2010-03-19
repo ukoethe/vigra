@@ -1473,6 +1473,18 @@ class NumpyArray
             makeReferenceUnchecked(other.pyObject());
     }
 
+       /**
+         * Allocate new memory and copy data from a MultiArrayView.
+         */
+    explicit NumpyArray(const view_type &other)
+    {
+        if(!other.hasData())
+            return;
+        vigra_postcondition(makeReference(init(other.shape(), false)),
+                  "NumpyArray(view_type): Python constructor did not produce a compatible array.");
+        static_cast<view_type &>(*this) = other;
+    }
+
         /**
          * Construct a new array object, allocating an internal python
          * ndarray of the given shape (in fortran order), initialized
