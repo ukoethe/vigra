@@ -1430,6 +1430,9 @@ class NumpyArray
     }
 
   public:
+  
+    using view_type::init;
+    
         /**
          * Construct from a given PyObject pointer. When the given
          * python object is NULL, the internal python array will be
@@ -1515,7 +1518,7 @@ class NumpyArray
          * Constructor from NumpyAnyArray.
          * Equivalent to NumpyArray(other.pyObject())
          */
-    explicit NumpyArray(const NumpyAnyArray &other, bool createCopy = false)
+    NumpyArray(const NumpyAnyArray &other, bool createCopy = false)
     {
         if(!other.hasData())
             return;
