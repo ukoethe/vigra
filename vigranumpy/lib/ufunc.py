@@ -272,4 +272,4 @@ for k in numpy.__dict__.itervalues():
             exec k.__name__ + " = UnaryFunctionOut2(k)"
         if k.nin == 2:
             exec k.__name__ + " = BinaryFunction(k)"
-        exec '__all__.append(%s)' % k.__name__
+        __all__.append(k.__name__)
