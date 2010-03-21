@@ -21,16 +21,31 @@ from impex import *
 
 # auto-generate code for  additional Kernel generators:
 def genKernelFactories():
-   for k in dir(convolution.Kernel1D):
-      if not k.startswith('init'): continue
-      kn=k[4].lower()+k[5:] #remove init from beginning and start with lower case character
-      code = '''def %sKernel(*args):
+   for oldName in dir(convolution.Kernel1D):
+      if not oldName.startswith('init'): 
+        continue
+      #remove init from beginning and start with lower case character
+      newName = oldName[4].lower() + oldName[5:] + 'Kernel'
+      code = '''def %(newName)s(*args):
       k = convolution.Kernel1D()
-      k.%s(*args)
+      k.%(oldName)s(*args)
       return k
-convolution.%sKernel=%sKernel
-convolution.%sKernel.__doc__ = convolution.Kernel1D.%s.__doc__
-''' % (k,k,kn,k,kn,k)
+%(newName)s.__doc__ = convolution.Kernel1D.%(oldName)s.__doc__
+convolution.%(newName)s=%(newName)s
+''' % {'oldName': oldName, 'newName': newName}
+      exec code
+      
+   for oldName in dir(convolution.Kernel2D):
+      if not oldName.startswith('init'): 
+        continue
+      newName = oldName[4].lower() + oldName[5:] + 'Kernel2D'
+      code = '''def %(newName)s(*args):
+      k = convolution.Kernel2D()
+      k.%(oldName)s(*args)
+      return k
+%(newName)s.__doc__ = convolution.Kernel2D.%(oldName)s.__doc__
+convolution.%(newName)s=%(newName)s
+''' % {'oldName': oldName, 'newName': newName}
       exec code
 
 genKernelFactories()
