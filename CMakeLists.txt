@@ -168,10 +168,11 @@ IF(WITH_VIGRANUMPY)
 ENDIF()
 
 MESSAGE( STATUS "---------------------------------------------------------" )
+MESSAGE( STATUS "  binaries will be generated in: ${CMAKE_CURRENT_BINARY_DIR}")
 IF(DOXYGEN_FOUND AND PYTHONINTERP_FOUND)
 	MESSAGE( STATUS "  manuals will be generated in: ${DOCDIR}")
-	MESSAGE( STATUS "---------------------------------------------------------" )
 ENDIF()
+	MESSAGE( STATUS "---------------------------------------------------------" )
 
 MESSAGE( STATUS "  includes will be installed at: ${CMAKE_INSTALL_PREFIX}/include")
 MESSAGE( STATUS "  libraries will be installed at: ${CMAKE_INSTALL_PREFIX}/lib")

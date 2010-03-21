@@ -18,6 +18,7 @@ IF(PYTHON_SPHINX)
 		-D latex_paper_size=${SPHINX_PAPER}
 		-c ${CMAKE_CURRENT_BINARY_DIR}
 		${SPHINX_OPTS})
+    file(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/_static)
     
 	ADD_CUSTOM_TARGET (doc_python
 		COMMAND ${CMAKE_COMMAND} -E make_directory
