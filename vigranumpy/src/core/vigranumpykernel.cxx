@@ -255,12 +255,13 @@ void defineKernels()
 	class_<Kernel1D<T> > kernel1d("Kernel1D",
                                 "Generic 1 dimensional convolution kernel.\n\n"
                                 "This kernel may be used for convolution of 1 dimensional signals or "
-                                "for separable convolution of multidimensional signals.\n\n"
+                                "for separable convolution of multidimensional signals. "
                                 "The kernel's size is given by its left() and right() "
                                 "methods. The desired border treatment mode is returned by "
-                                "getBorderTreatment().\n\n"
+                                "getBorderTreatment(). "
                                 "The different init functions create a kernel with the specified "
-                                "properties.\n\n",
+                                "properties. "
+                                "For more details, see Kernel1D_ in the C++ documentation.\n\n",
                                 init<>("Standard constructor (creates an identity kernel).\n"));
 	kernel1d
         .def(init< Kernel1D<T> >(args("kernel"),
@@ -274,13 +275,17 @@ void defineKernels()
                 "introduced by windowing the Gaussian to a finite interval). "
                 "However, if norm is 0.0, the kernel is normalized to 1 by the "
                 "analytic expression for the Gaussian, and no correction for the "
-                "windowing error is performed.\n")
+                "windowing error is performed.\n\n"
+                "Kernel construction and initialization can be performed in one step "
+                "by calling the factory function 'gaussianKernel()'.\n\n")
 		.def("initDiscreteGaussian",
 			 (void (Kernel1D<T>::*)(double,T))&Kernel1D<T>::initDiscreteGaussian,
 			 (arg("scale"),arg("norm")=1.0),
                 "Init kernel as Lindeberg's discrete analog of the Gaussian function. "
                 "The radius of the kernel is always 3*std_dev. 'norm' denotes "
-                "the desired sum of all bins of the kernel.\n")
+                "the desired sum of all bins of the kernel.\n\n"
+                "Kernel construction and initialization can be performed in one step "
+                "by calling the factory function 'discreteGaussianKernel()'.\n\n")
 		.def("initGaussianDerivative",
 			 (void (Kernel1D<T>::*)(double,int,T))&Kernel1D<T>::initGaussianDerivative,
 			 (arg("scale"),arg("order"),arg("norm")=1.0),
@@ -290,31 +295,43 @@ void defineKernels()
                 "the error introduced by windowing the Gaussian to a finite "
                 "interval. However, if norm is 0.0, the kernel is normalized to 1 "
                 "by the analytic expression for the Gaussian derivative, and no "
-                "correction for the windowing error is performed.\n")
+                "correction for the windowing error is performed.\n\n"
+                "Kernel construction and initialization can be performed in one step "
+                "by calling the factory function 'gaussianDerivativeKernel()'.\n\n")
 		.def("initBurtFilter",
 			 &Kernel1D<T>::initBurtFilter,
 			 (arg("a")=0.04785),
                 "Init kernel as a 5-tap smoothing filter of the form::\n\n"
-                "   [ a, 0.25, 0.5 - 2*a, 0.25, a]\n")
+                "   [ a, 0.25, 0.5 - 2*a, 0.25, a]\n\n"
+                "Kernel construction and initialization can be performed in one step "
+                "by calling the factory function 'burtFilterKernel()'.\n\n")
 		.def("initBinomial",
 			 (void (Kernel1D<T>::*)(int,T))&Kernel1D<T>::initBinomial,
 			 (arg("radius"), arg("norm")=1.0),
                 "Init kernel as a binomial filter with given radius (i.e. window size 2*radius+1). "
-                "'norm' denotes the sum of all bins of the kernel.\n")
+                "'norm' denotes the sum of all bins of the kernel.\n\n"
+                "Kernel construction and initialization can be performed in one step "
+                "by calling the factory function 'binomialKernel()'.\n\n")
 		.def("initAveraging",
 			 (void (Kernel1D<T>::*)(int,T))&Kernel1D<T>::initAveraging,
 			 (arg("radius"),arg("norm")=1.0),
                 "Init kernel as an averaging filter with given radius (i.e. window size 2*radius+1). "
-                "'norm' denotes the sum of all bins of the kernel.\n")
+                "'norm' denotes the sum of all bins of the kernel.\n\n"
+                "Kernel construction and initialization can be performed in one step "
+                "by calling the factory function 'averagingKernel()'.\n\n")
 		.def("initSymmetricDifference",
 			 (void (Kernel1D<T>::*)(T))&Kernel1D<T>::initSymmetricDifference,
 			 (arg("norm")=1.0),
                 "Init kernel as a symmetric difference filter of the form::\n\n"
-                "   [ 0.5 * norm, 0.0 * norm, -0.5 * norm]\n")
+                "   [ 0.5 * norm, 0.0 * norm, -0.5 * norm]\n\n"
+                "Kernel construction and initialization can be performed in one step "
+                "by calling the factory function 'symmetricDifferenceKernel()'.\n\n")
 		.def("initSecondDifference3",
 			 &Kernel1D<T>::initSecondDifference3,
                 "Init kernel as a 3-tap second difference filter of the form::\n\n"
-                "   [ 1, -2, 1]\n")
+                "   [ 1, -2, 1]\n\n"
+                "Kernel construction and initialization can be performed in one step "
+                "by calling the factory function 'secondDifference3Kernel()'.\n\n")
 		.def("initOptimalSmoothing3",
 			 &Kernel1D<T>::initOptimalSmoothing3)
 		.def("initOptimalFirstDerivativeSmoothing3",
@@ -339,7 +356,9 @@ void defineKernels()
                 "(inclusive). If 'contents' contains the wrong number of values, a "
                 "run-time error results. It is, however, possible to give just one "
                 "initializer. This creates an averaging filter with the given constant. "
-                "The norm is set to the sum of the initializer values. \n")
+                "The norm is set to the sum of the initializer values. \n\n"
+                "Kernel construction and initialization can be performed in one step "
+                "by calling the factory function 'explicitlyKernel()'.\n\n")
 		.def("__getitem__",
 			 &pythonGetItemKernel1D<T>)
 		.def("__setitem__",
@@ -372,12 +391,13 @@ void defineKernels()
 
 	class_<Kernel2D<T> > kernel2d("Kernel2D",
 	        "Generic 2 dimensional convolution kernel.\n\n"
-            "This kernel may be used for convolution of 2 dimensional signals.\n\n"
+            "This kernel may be used for convolution of 2 dimensional signals. "
             "The desired border treatment mode is returned by borderTreatment()."
             "(Note that the 2D convolution functions don't currently support all "
-            "modes.)\n\n"
+            "modes.) "
             "The different init functions create a kernel with the specified "
-            "properties.\n\n",
+            "properties. "
+            "For more details, see Kernel2D_ in the C++ documentation.\n\n",
             init<>("Standard constructor (creates identity kernel).\n"));
 	kernel2d
         .def(init< Kernel2D<T> >(args("kernel"),
@@ -391,13 +411,17 @@ void defineKernels()
                 "If 'contents' contains the wrong number of values, a run-time error "
                 "results. It is, however, possible to give just one initializer. "
                 "This creates an averaging filter with the given constant. "
-                "The norm is set to the sum of the initializer values. \n")
+                "The norm is set to the sum of the initializer values. \n\n"
+                "Kernel construction and initialization can be performed in one step "
+                "by calling the factory function 'explicitlyKernel2D()'.\n\n")
 		.def("initSeparable",
 			 (void (Kernel2D<T>::*)(Kernel1D<T> const &,Kernel1D<T> const &))&Kernel2D<T>::initSeparable,
 			 (arg("kernelX"), arg("kernelY")),
 		        "Init the 2D kernel as the cartesian product of two 1D kernels of "
                 "type Kernel1D. The norm becomes the product of the two original "
-                "norms.\n")
+                "norms.\n\n"
+                "Kernel construction and initialization can be performed in one step "
+                "by calling the factory function 'separableKernel2D()'.\n\n")
 		.def("initGaussian",
 			 (void (Kernel2D<T>::*)(double, T))&Kernel2D<T>::initGaussian,
 			 (arg("scale"), arg("norm")=1.0),
@@ -407,14 +431,18 @@ void defineKernels()
                 "introduced by windowing the Gaussian to a finite interval). "
                 "However, if norm is 0.0, the kernel is normalized to 1 by the "
                 "analytic expression for the Gaussian, and no correction for the "
-                "windowing error is performed.\n")
+                "windowing error is performed.\n\n"
+                "Kernel construction and initialization can be performed in one step "
+                "by calling the factory function 'gaussianKernel2D()'.\n\n")
 		.def("initDisk",
 			 &Kernel2D<T>::initDisk,
 			 args("radius"),
                 "Init the 2D kernel as a circular averaging filter. The norm will "
                 "be calculated as 1 / (number of non-zero kernel values).\n\n"
                 "Precondition::\n\n"
-                "   radius > 0\n")
+                "   radius > 0\n\n"
+                "Kernel construction and initialization can be performed in one step "
+                "by calling the factory function 'diskKernel2D()'.\n\n")
 		.def("__setitem__",
 			 &pythonSetItemKernel2D<T>)
 		.def("__getitem__",

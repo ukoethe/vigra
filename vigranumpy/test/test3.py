@@ -66,7 +66,7 @@ def test_convolution():
     
     k2=Kernel2D()
     k2.initExplicitly((-1,-1),(1,1),np.array([[0,1,2],[1,2,3],[2,3,4]],dtype=np.float64))
-    res = convolve2D(img_scalar_f, k2)
+    res = convolve(img_scalar_f, k2)
 
 
 def test_multiconvolution():
@@ -77,9 +77,9 @@ def test_multiconvolution():
    a=convolveOneDimension(a, 1, k)
    a=convolveOneDimension(a, 2, k)
          
-   b=separableConvolve(vol, k)
+   b=convolve(vol, k)
      
-   c=separableConvolve(vol, (k, k, k))
+   c=convolve(vol, (k, k, k))
    checkAboutSame(a, b)
    checkAboutSame(a, c)
     

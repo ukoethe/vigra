@@ -167,9 +167,8 @@ NumpyAnyArray hessianMatrixOfGaussian2D(NumpyArray<2, Singleband<PixelType> > im
 
 template <class PixelType>
 NumpyAnyArray resamplingGaussian2D(NumpyArray<3, Multiband<PixelType> > image, 
-    double sigma, unsigned int derivativeOrder,
-    double samplingRatioX, double offsetX,
-    double samplingRatioY, double offsetY, 
+    double sigmax, unsigned int derivativeOrderX, double samplingRatioX, double offsetX,
+    double sigmay, unsigned int derivativeOrderY, double samplingRatioY, double offsetY, 
     NumpyArray<3, Multiband<PixelType> > res = python::object())
 {
     vigra_precondition(samplingRatioX > 0 ,
@@ -178,17 +177,20 @@ NumpyAnyArray resamplingGaussian2D(NumpyArray<3, Multiband<PixelType> > image,
        "resamplingGaussian(): samplingRatioY must be > 0.");
     Rational<int> xratio(samplingRatioX), yratio(samplingRatioY),
                   xoffset(offsetX), yoffset(offsetY);
-    Gaussian< double > smooth(sigma, derivativeOrder);
+    Gaussian< double > smoothx(sigmax, derivativeOrderX);
+    Gaussian< double > smoothy(sigmay, derivativeOrderY);
 
-	res.reshapeIfEmpty(MultiArrayShape<3>::type(rational_cast< int >(image.shape(0)*xratio), rational_cast< int >(image.shape(1)*yratio), 
-	                                            image.shape(2)), "resamplingGaussian2D(): Output array has wrong shape.");
+	res.reshapeIfEmpty(MultiArrayShape<3>::type(rational_cast< int >(image.shape(0)*xratio), 
+                                                rational_cast< int >(image.shape(1)*yratio), 
+	                                            image.shape(2)), 
+                       "resamplingGaussian2D(): Output array has wrong shape.");
 
 	for(int k=0; k<image.shape(2); ++k)
 	{
 	    MultiArrayView<2, PixelType, StridedArrayTag> bimage = image.bindOuter(k);
 	    MultiArrayView<2, PixelType, StridedArrayTag> bres = res.bindOuter(k);
 	    resamplingConvolveImage(srcImageRange(bimage), destImageRange(bres),
-	            smooth, xratio, xoffset, smooth, yratio, yoffset);
+	            smoothx, xratio, xoffset, smoothy, yratio, yoffset);
 	}
     return res;
 }
@@ -536,17 +538,21 @@ void defineConvolutionFunctions()
       "For details see hessianMatrixOfGaussian_ in the vigra C++ documentation.\n");
 
     def("resamplingGaussian", registerConverters(&resamplingGaussian2D<float>),
-          (arg("image"), arg("sigma")=1.0, arg("derivativeOrder")=1,
-           arg("samplingRatioX")=1, arg("samplingRatioY")=1, arg("out") = python::object()),
-          "Resample image using a gaussian filter.\n"
+          (arg("image"), 
+           arg("sigmaX")=1.0, arg("derivativeOrderX")=0, arg("samplingRatioX")=2.0, arg("offsetX")=0.0, 
+           arg("sigmaY")=1.0, arg("derivativeOrderY")=0, arg("samplingRatioY")=2.0, arg("offsetY")=0.0, 
+           arg("out") = python::object()),
+          "Resample image using a gaussian filter::\n\n"
+          "   resamplingGaussian(image,\n"
+          "                      sigmaX=1.0, derivativeOrderX=0, samplingRatioX=2.0, offsetX=0.0,\n"
+          "                      sigmaY=1.0, derivativeOrderY=0, samplingRatioY=2.0, offsetY=0.0,\n"
+          "                      out=None)\n"
           "\n"
-          "This function utilize resamplingConvolveImage_ (see the vigra C++ documentation for details).\n");
+          "This function utilizes resamplingConvolveImage_ with a Gaussianfilter\n"
+          "(see the vigra C++ documentation for details).\n\n");
 
-    def("convolve2D", registerConverters(&pythonConvolveImage<float>),
-              (arg("image"), arg("kernel")=python::object(), arg("out") = python::object()),
-              "Perform 2D convolution with a 2D kernel (useful if the kernel is non-separable).\n"
-              "\n"
-              "For details see |StandardConvolution.convolveImage|_ in the vigra C++ documentation.\n");
+    def("convolve", registerConverters(&pythonConvolveImage<float>),
+              (arg("image"), arg("kernel"), arg("out") = python::object()));
 
     def("recursiveFilter2D", registerConverters(&pythonRecursiveFilter1<float>),
               (arg("image"), arg("b"), arg("borderTreament") = BORDER_TREATMENT_REFLECT, arg("out") = python::object()),
