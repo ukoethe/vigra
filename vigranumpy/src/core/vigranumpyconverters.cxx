@@ -384,7 +384,8 @@ void registerNumpyArrayConverters()
              "(e.g. during overload resolution) that have identical memory layout, but\n"
              "different semantics, such as a multiband image (two spatial dimensions and\n"
              "one spectral dimension) vs. a singleband volume (three spatial dimensions).\n\n"
-             "Usage::\n\n"
+             "Usage (see vigra/arraytypes.py for a more realistic example)::\n"
+             "\n"
              "   class Image(numpy.ndarray):\n"
              "      spatialDimensions = 2\n"
              "   class Volume(numpy.ndarray):\n"
@@ -394,8 +395,12 @@ void registerNumpyArrayConverters()
              "   def checkVolume(obj):\n"
              "      return obj.spatialDimensions == 3\n\n"
              "   registerPythonArrayType('NumpyArray<2, RGBValue<*> >', Image, checkImage)\n"
-             "   registerPythonArrayType('NumpyArray<3, Singleband<*> >', Volume, checkVolume)\n\n");
-    python::def("listExportedArrayKeys", &listExportedArrayKeys);
+             "   registerPythonArrayType('NumpyArray<3, Singleband<*> >', Volume, checkVolume)\n"
+             "\n"
+             "The current mapping configuration can be obtained by calling :func:`~vigra.listExportedArrayKeys`.\n\n");
+    python::def("listExportedArrayKeys", &listExportedArrayKeys,
+        "List the currently active type mappings between C++ NumpyArray and Python array "
+        "types.  This provides status information for :func:`~vigra.registerPythonArrayType`.\n\n");
     python::def("constructNumpyArray", &constructNumpyArrayFromShape);
     python::def("constructNumpyArray", &constructNumpyArrayFromArray);
 }

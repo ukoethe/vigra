@@ -14,7 +14,7 @@ Vigranumpy Reference
 Introduction
 ------------
 
-Vigranumpy exports the functionality of the C++ image processing library `VIGRA <../vigra/index.html>`_ to Python. It is based on the popular `numpy <http://numpy.scipy.org/>`_ module and uses its ndarray data structure to represent image and volume data. Thus, it is fully interoperable with existing numpy functionality, including various tools for image display such as matplotlib. 
+Vigranumpy exports the functionality of the C++ image processing library `VIGRA <../vigra/index.html>`_ to Python. It is based on the popular `numpy <http://numpy.scipy.org/>`_ module and uses its ndarray data structure to represent image and volume data. Thus, it is fully interoperable with existing numpy functionality, including various tools for image display such as matplotlib. Since vigranumpy uses `boost_python <http://www.boost.org/doc/libs>`_, it is able to use function overloading (which plain Python does not support), so that calling syntax is largely uniform, regardless of the type and dimension of the input arguments.
 
 Basic calling syntax is similar to C++, with one important difference: Arguments for output images are optional. If no output image is provided, vigranumpy will allocate it as appropriate. In either case, the output image will be returned by the function, for example::
 
@@ -32,7 +32,7 @@ Another important property is vigranumpy's indexing convention. In order to be c
     value = scalarVolume[x, y, z]
     value = multibandVolume[x, y, z, channel]
 
-This convention differs from the `Python Imaging Library <http://www.pythonware.com/products/pil/>`_ and Matlab, where the spatial indices must be given in reverse order (e.g. scalarImage[y, x]). Either convention has advantages and disadvantages. In the end, we considered compatibility between the Python and C++ versions of VIGRA to be critical in order to prevent subtle errors when porting from one language to the other, so we went with the convention described.
+where x is the horizontal axis (increasing left to right), and y is the vertical axis (increasing top to bottom). This convention differs from the `Python Imaging Library <http://www.pythonware.com/products/pil/>`_ and Matlab, where the spatial indices must be given in reverse order (e.g. scalarImage[y, x]). Either convention has advantages and disadvantages. In the end, we considered compatibility between the Python and C++ versions of VIGRA to be critical in order to prevent subtle errors when porting from one language to the other, so we went with the convention described.
    
 Image and Volume Data Structures
 --------------------------------
@@ -44,25 +44,26 @@ happens to contain only three slices. In order to distinguish between arrays tha
 have the same structure but different interpretation, vigra.arraytypes provides the 
 following array classes::
 
-    Image
-        ScalarImage
-        Vector2Image
-        Vector3Image
-        Vector4Image
-        RGBImage
-    Volume
-        ScalarVolume
-        Vector2Volume
-        Vector3Volume
-        Vector4Volume
-        Vector6Volume
-        RGBVolume
+    numpy.ndarray
+        Image
+            ScalarImage
+            Vector2Image
+            Vector3Image
+                RGBImage
+            Vector4Image
+        Volume
+            ScalarVolume
+            Vector2Volume
+            Vector3Volume
+                RGBVolume
+            Vector4Volume
+            Vector6Volume
 
-with the obvious inheritance relationships. Below, we describe Image, ScalarImage, 
-and RGBImage in detail, the other classes work analogously. The new array classes 
-serve several purposes:
+where indentation encodes inheritance. Below, we describe :class:`~vigra.Image`, 
+:class:`~vigra.ScalarImage`, and :class:`~vigra.RGBImage` in detail, the other 
+classes work analogously. The new array classes serve several purposes:
 
-* The semantic interpretation improves code readability.
+* Semantic interpretation improves code readability.
 
 * vigra.arraytypes maximize compatibility with corresponding VIGRA C++ types. In
   particular, vigra.arraytype constructors ensure that arrays are created with 
@@ -80,17 +81,19 @@ serve several purposes:
     volume[x, y, z, channel]
   
   In particular, they overload '__str__' and '__repr__' (used in print), 'flatten', 
-  and 'imshow' (for matplotlib-based image display) so that they work in the 
+  and 'imshow' (for matplotlib-based image display) so that these functions work in the 
   expected way (i.e. images are printed in horizontal scan order and are displayed 
   upright). Note that other Python imaging modules (such as PIL) use a different
   indexing convention (namely image[y, x, channel]).
 
 * vigra.arraytypes and vigra.ufunc overload numpy.ufunc (i.e. basic mathematical 
-  functions for arrays) so that the memory layout of the input arrays is preserved 
-  in the result (whereas plain numpy.ufuncs always create C-order arrays, even if 
-  the inputs have Fortran-order). vigra.ufunc also implements array dtype coercion 
-  in a way that is more suitable for image processing than the original coercion. 
-  See :ref:`sec-dtype-coercion` for details.
+  functions for arrays). See :ref:`sec-dtype-coercion` for details.
+  
+Mapping between C++ types and Python types is controlled by the following two functions:
+
+.. autofunction:: vigra.registerPythonArrayType
+
+.. autofunction:: vigra.listExportedArrayKeys
 
 ----------------
 
@@ -125,13 +128,36 @@ serve several purposes:
 Type Coercion in Point Operators
 --------------------------------
 
-When an arithmetic or algebraic function is called for an image (or
-set of images), it is applied to each pixel separately. The value
-type of the results (i.e. the result array's 'dtype') is automatically
-determined by the function vigra.ufunc.Function.common_type according 
-to the following coercion rules:
+When an arithmetic or algebraic function is called on an image (or
+set of images), it is applied to each pixel separately. This is implemented
+by means of the module 
+`numpy.ufunc <http://docs.scipy.org/doc/numpy/reference/ufuncs.html#available-ufuncs>`_. 
+However, vigranumpy overloads the functions in numpy.ufunc in a way that makes 
+their behavior more suitable for image analysis. In particular, we changed two aspects:
+
+* The memory layout of the input arrays is preserved in the result arrays. 
+  In contrast, plain numpy.ufuncs always create C-order arrays, even if 
+  the inputs have a different order (e.g. as Fortran-order). 
+
+* The value types of result arrays (i.e. their 'dtype') are determined in a way 
+  that is more suitable for image processing than the original numpy conversion rules.  
+
+Array dtype conversion (aka coercion) is implemented by the function 
+vigra.ufunc.Function.common_type according to the following coercion rules:
 
 .. automethod::  vigra.ufunc.Function.common_type
+
+
+Import and Export Functions
+---------------------------
+
+The module vigra.impex defines read and write functions for image and volume data. Note
+that the contents of this module are automatically imported into the vigra module, so
+you may call 'vigra.readImage(...)' instead of 'vigra.impex.readImage(...)' etc.
+
+.. automodule:: vigra.impex
+   :members:
+
 
 Core Image Processing and Analysis Functions
 --------------------------------------------
@@ -185,12 +211,6 @@ Classification Functions
 ------------------------
 
 .. automodule:: vigra.classification
-   :members:
-
-Import and export Functions
----------------------------
-
-.. automodule:: vigra.impex
    :members:
 
 
