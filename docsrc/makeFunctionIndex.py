@@ -10,6 +10,12 @@ if len(sys.argv) != 2:
 
 path = str(sys.argv[1])
 
+def getClassList():
+    text = open(path + "/classes.html").read()
+    classList = re.findall(r'<a class="el" href="(class[^"]+\.html)">([^<&]+)*</a> \(<a class="el" href="namespace[^"]+">([^<]+)</a>\)', text)
+    classList.sort(lambda a,b: cmp(a[1], b[1]))
+    return classList
+
 def getNamespaceList():
     text = open(path + "/namespaces.html").read()
     return re.findall(r'<tr><td class="indexkey"><a class="el" href="([^"]+)">([^<]+)</a>', text)
@@ -121,20 +127,33 @@ def generateFunctionIndex(functionList):
 
     open(path + "/functionindex.html", 'w+').write(text)
 
+classList = getClassList()
 namespaceList = getNamespaceList()
 functionList = getFunctionList(namespaceList)
 generateFunctionIndex(functionList)
 
-# export function list to c_api_replaces.txt for crosslinking of vigranumpy documentation
+# Export class and function list to c_api_replaces.txt for 
+# crosslinking of vigranumpy documentation.
+# Note that '::' are not allowed in reStructuedText link names, 
+# so we have to use '.' instead.
 replaces=open("../vigranumpy/docsrc/c_api_replaces.txt","w")
 for i in range(len(functionList)):
     functionName = functionList[i][1]
     overloadDisambiguation = functionList[i][2]
-    if i >= 0 and functionName == functionList[i-1][1] and \
+    if i > 0 and functionName == functionList[i-1][1] and \
                    overloadDisambiguation == functionList[i-1][2]:
         continue
     if overloadDisambiguation != "":
         functionName = overloadDisambiguation +'.' + functionName
     link = functionList[i][0]
     replaces.write(functionName+":"+link+"\n")
-
+for i in range(len(classList)):
+    className = classList[i][1]
+    namespace = classList[i][2]
+    if (i > 0 and className == classList[i-1][1]) or \
+       (i < len(classList)-1 and className == classList[i+1][1]):
+        namespace = namespace.replace('::', '.')
+        className = namespace +'.' + className
+    link = classList[i][0]
+    replaces.write(className+":"+link+"\n")
+replaces.close()
