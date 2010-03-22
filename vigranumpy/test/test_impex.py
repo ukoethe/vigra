@@ -23,6 +23,9 @@ def checkUnequalData(i1,i2):
     assert(np.any(i1!=i2))
 
 def test_writeAndReadImageHDF5():
+    if not hasattr(im, 'writeImageToHDF5'):
+        return
+    
     # positive tests
     # write and read image
     im.writeImageToHDF5(image, "hdf5test.hd5", "group/subgroup/imgdata")
@@ -47,8 +50,28 @@ def test_writeAndReadImageHDF5():
     # write and read scalar image
     scalar_image_imp[1,1] = 100000
     checkUnequalData(scalar_image,scalar_image_imp)
+    
+    # check that we do the same as h5py
+    try:
+        import h5py
+    except:
+        return
+        
+    h5py_file = h5py.File('hdf5test.hd5', 'w')
+    h5py_file.create_dataset('imgdata', data=image.swapaxes(0, 1))
+    h5py_file.close() 
+    image_imp3 = im.readImageFromHDF5("hdf5test.hd5", "imgdata")
+    checkEqualData(image,image_imp3)
+        
+    im.writeImageToHDF5(image, "hdf5test.hd5", "group/subgroup/imgdata")
+    h5py_file = h5py.File('hdf5test.hd5', 'r')
+    image_imp4 = h5py_file['/group/subgroup/imgdata']
+    checkEqualData(image,image_imp4.value.swapaxes(0,1))
 
 def test_writeAndReadVolumeHDF5():
+    if not hasattr(im, 'writeVolumeToHDF5'):
+        return
+    
     # positive tests
     # write and read volume
     im.writeVolumeToHDF5(volume256, "hdf5test.hd5", "group/subgroup/voldata")
@@ -73,3 +96,20 @@ def test_writeAndReadVolumeHDF5():
     # write and read binary volume
     volumeFloat_imp[1,1,1] = 100000
     checkUnequalData(volumeFloat,volumeFloat_imp)
+    
+    # check that we do the same as h5py
+    try:
+        import h5py
+    except:
+        return
+        
+    h5py_file = h5py.File('hdf5test.hd5', 'w')
+    h5py_file.create_dataset('voldata', data=volumeFloat.swapaxes(0, 2))
+    h5py_file.close() 
+    volumeFloat_imp1 = im.readVolumeFromHDF5("hdf5test.hd5", "voldata")
+    checkEqualData(volumeFloat, volumeFloat_imp1)
+        
+    im.writeVolumeToHDF5(volumeFloat, "hdf5test.hd5", "group/subgroup/voldata")
+    h5py_file = h5py.File('hdf5test.hd5', 'r')
+    volumeFloat_imp2 = h5py_file['/group/subgroup/voldata']
+    checkEqualData(volumeFloat, volumeFloat_imp2.value.swapaxes(0,2))
