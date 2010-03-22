@@ -1,7 +1,11 @@
 SET(PYSOURCES
     __init__.py
     arraytypes.py
-    ufunc.py)
+    ufunc.py
+    pyqt/__init__.py
+    pyqt/imagewindow.py
+    pyqt/quickdialog.py
+    )
 
 INSTALL(FILES ${PYSOURCES} DESTINATION ${VIGRANUMPY_INSTALL_DIR}/vigra)
 
