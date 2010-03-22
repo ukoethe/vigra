@@ -200,7 +200,7 @@ public:
     {}
 
     template<class WeightIter, class T, class C>
-    bool after_prediction(WeightIter,  int k, MultiArrayView<2, T, C> & prob, double /* totalCt */)
+    bool after_prediction(WeightIter,  int k, MultiArrayView<2, T, C> prob, double /* totalCt */)
     {
         if(k == SB::tree_count_ -1)
         {

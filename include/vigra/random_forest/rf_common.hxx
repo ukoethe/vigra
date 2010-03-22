@@ -246,7 +246,6 @@ class RandomForestOptions
     /**\name sampling options*/
     /*\{*/
     // look at the member access functions for documentation
-    bool prepare_online_learning_;
     double  training_set_proportion_;
     int     training_set_size_;
     int (*training_set_func_)(int);
@@ -271,6 +270,7 @@ class RandomForestOptions
     bool predict_weighted_; 
     int tree_count_;
     int min_split_node_size_;
+    bool prepare_online_learning_;
     /*\}*/
 
     int serialized_size() const

@@ -1201,15 +1201,15 @@ void RandomForest<LabelType, PreprocessorTag>
         ArrayVector<double>::const_iterator weights;
 
         //totalWeight == totalVoteCount!
-    double totalWeight = 0.0;
+        double totalWeight = 0.0;
 
-    //Let each tree classify...
+        //Let each tree classify...
         for(int k=0; k<options_.tree_count_; ++k)
         {
-        //get weights predicted by single tree
+            //get weights predicted by single tree
             weights = trees_[tree_indices_[k]].predict(rowVector(features, row));
 
-        //update votecount.
+            //update votecount.
             int weighted = options_.predict_weighted_;
             for(int l=0; l<ext_param_.class_count_; ++l)
             {
@@ -1228,7 +1228,7 @@ void RandomForest<LabelType, PreprocessorTag>
             }
         }
 
-    //Normalise votes in each row by total VoteCount (totalWeight
+        //Normalise votes in each row by total VoteCount (totalWeight
         for(int l=0; l< ext_param_.class_count_; ++l)
         {
             prob(row, l) /= detail::RequiresExplicitCast<T>::cast(totalWeight);
