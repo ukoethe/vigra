@@ -679,7 +679,7 @@ void defineImpexFunctions()
        (arg("image"), arg("filepath"), arg("pathInFile"), arg("dtype") = ""),
         "Save an image to an HDF5 file::\n\n"
         "   writeImageToHDF5(image, filepath, pathInFile, dtype='')\n\n"
-        "When dtype is not given (the default), date are written in their native type.\n"
+        "Argument 'dtype' is currently ignored.\n"
         "The resulting HDF5 dataset should be identical to the one created by\n"
         "the Python module `h5py <http://h5py.alfven.org/>`_ as follows::\n\n"
         "   import vigra, h5py\n"
@@ -694,7 +694,7 @@ void defineImpexFunctions()
        (arg("volume"), arg("filepath"), arg("pathInFile"), arg("dtype") = ""),
         "Save a volume to an HDF5 file::\n\n"
         "   writeVolumeToHDF5(volume, filepath, pathInFile, dtype='')\n\n"
-        "When dtype is not given (the default), date are written in their native type.\n"
+        "Argument 'dtype' is currently ignored.\n"
         "The resulting HDF5 dataset should be identical to the one created by\n"
         "the Python module `h5py <http://h5py.alfven.org/>`_ as follows::\n\n"
         "   import vigra, h5py\n"
