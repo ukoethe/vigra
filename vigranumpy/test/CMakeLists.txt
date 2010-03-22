@@ -1,14 +1,32 @@
 INCLUDE_DIRECTORIES(${VIGRANUMPY_INCLUDE_DIRS})
 
-FILE(GLOB TESTSUCCESS_FOUND ${CMAKE_CURRENT_BINARY_DIR}/testsuccess.cxx)
+SET(TEST_SCRIPTS
+    test_arraytypes.py
+    test_impex.py
+    test1.py
+    test2.py
+    test3.py)
+
+# setup the file 'testsuccess.cxx' which will become out-of-date when the
+# last test failed or when the tests code changed, so that tests are re-executed
+SET(TEST_SUCCESS_FILE "${CMAKE_CURRENT_BINARY_DIR}/testsuccess.cxx")
+
+add_custom_command(
+    OUTPUT ${TEST_SUCCESS_FILE}
+    DEPENDS ${TEST_SCRIPTS}
+    COMMAND ${CMAKE_COMMAND}
+    ARGS -E touch ${TEST_SUCCESS_FILE})
+
+FILE(GLOB TESTSUCCESS_FOUND ${TEST_SUCCESS_FILE})
 IF(NOT TESTSUCCESS_FOUND)
-    FILE(WRITE ${CMAKE_CURRENT_BINARY_DIR}/testsuccess.cxx 
+    FILE(WRITE ${TEST_SUCCESS_FILE}
      "// auto-generated dummy file to force re-execution of failed tests
 ")
 ENDIF()
 
+# setup the test target
 ADD_LIBRARY(vigranumpytest SHARED EXCLUDE_FROM_ALL
-             vigranumpytest.cxx ${CMAKE_CURRENT_BINARY_DIR}/testsuccess.cxx)
+             vigranumpytest.cxx ${TEST_SUCCESS_FILE} ${TEST_SCRIPTS})
 
 IF(PYTHON_PLATFORM MATCHES "^win32$")
     SET_TARGET_PROPERTIES(vigranumpytest PROPERTIES PREFIX "" SUFFIX  ".pyd")
@@ -21,16 +39,8 @@ ADD_DEPENDENCIES(check_python vigranumpytest)
 ADD_DEPENDENCIES(ctest vigranumpytest)
 ADD_DEPENDENCIES(vigranumpytest vigranumpy)
 
-SET(TEST_SCRIPTS
-    test_arraytypes.py
-    test_impex.py
-    test1.py
-    test2.py
-    test3.py)
-
-INCLUDE(VigraAddTest)
-VIGRA_COPY_TEST_DATA(${TEST_SCRIPTS})
-
+# setup the file 'set_path.py' to ensure that tests are run against the binaries
+# which are currently being built, not against (possibly outdated) installed modules
 MACRO(DEPENDENCY_PATH variable target)
     GET_TARGET_PROPERTY(${variable} ${target} LOCATION)
     STRING(REGEX REPLACE "(/\\$\\([^\\)]*\\)/[^/]*|/[^/]*)$" "" ${variable} ${${variable}}) # get path prefix
@@ -49,11 +59,24 @@ configure_file(${CMAKE_CURRENT_SOURCE_DIR}/set_paths.py
 
 IF(AUTOEXEC_TESTS)
     IF(NOT PYTHON_NOSETESTS_NOT_FOUND)
+     
+        # copy the individual test scripts
+        FOREACH(test_script ${TEST_SCRIPTS})
+            ADD_CUSTOM_COMMAND(
+                TARGET vigranumpytest
+                POST_BUILD
+                COMMAND ${CMAKE_COMMAND}
+                ARGS -E copy_if_different
+                ${CMAKE_CURRENT_SOURCE_DIR}/${test_script} ${CMAKE_CURRENT_BINARY_DIR}/${test_script}
+                )
+        ENDFOREACH(test_script)
 
- 
         VIGRA_NATIVE_PATH(PYTHON_EXECUTABLE ${PYTHON_EXECUTABLE})
         
-        # Windows: set the DLL path
+        # Windows: Set the DLL path to the binaries currently being built
+        #          (so that binaries which are already installed are ignored)
+        #          This is not necessary on Linux, because the correct path
+        #          is hard-coded into the module by means of 'rpath'
         set(VIGRA_PATH "")
         if(WIN32)
             IF(CYGWIN)
@@ -71,6 +94,7 @@ IF(AUTOEXEC_TESTS)
             ENDFOREACH(lib)
         endif()
         
+        # Setup the test execution script
         VIGRA_NATIVE_PATH(VIGRA_CURRENT_BINARY_DIR ${CMAKE_CURRENT_BINARY_DIR})
         SET(VIGRA_TEST_EXECUTABLE "${PYTHON_EXECUTABLE} -c \"import nose; nose.main()\" .")        
         IF(MSVC OR MINGW)
@@ -86,14 +110,15 @@ IF(AUTOEXEC_TESTS)
                            @ONLY)
             EXECUTE_PROCESS(COMMAND chmod u+x ${VIGRA_RUN_TEST} OUTPUT_QUIET ERROR_QUIET)
         ENDIF()
-    
+
         # register the test execution command
+        # VIGRA_CONFIGURATION is 'release' or 'debug' on Windows, nothing on Linux
         IF(NOT CMAKE_CFG_INTDIR STREQUAL ".")
             SET(VIGRA_CONFIGURATION ${CMAKE_CFG_INTDIR})
         ELSE()
             SET(VIGRA_CONFIGURATION)
         ENDIF()
-        
+
         add_custom_command(
             TARGET vigranumpytest
             POST_BUILD
