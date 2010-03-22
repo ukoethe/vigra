@@ -325,20 +325,42 @@ NumpyAnyArray readImageHDF5Impl(HDF5ImportInfo const & info)
     {
       case 2:
       {
-        NumpyArray<2, Singleband<T> > res(MultiArrayShape<2>::type(info.shapeOfDimension(0), info.shapeOfDimension(1)));
-		//loadFromHDF5File(info, res, false);
+        NumpyArray<2, Singleband<T> > res(MultiArrayShape<2>::type(info.shapeOfDimension(0), 
+                                                                    info.shapeOfDimension(1)));
 		readHDF5(info, res);
         return res;
+      }
+      case 3:
+      {
+      
+        if(info.shapeOfDimension(0) == 3)
+        {
+            NumpyArray<2, RGBValue<T> > res(MultiArrayShape<2>::type(info.shapeOfDimension(1), 
+                                                                      info.shapeOfDimension(2)));
+            readHDF5(info, res);
+            return res;
+        }
+        else
+        {
+            NumpyArray<3, Multiband<T> > res(MultiArrayShape<3>::type(info.shapeOfDimension(0), 
+                                                                       info.shapeOfDimension(1), 
+                                                                       info.shapeOfDimension(2)));
+            readHDF5(info, res);
+            MultiArrayShape<3>::type permutation(1,2,0);
+            PyArray_Dims permute = { permutation.begin(), 3 };
+            python_ptr array(PyArray_Transpose(res.pyArray(), &permute), python_ptr::keep_count);
+            pythonToCppException(array);
+            return NumpyAnyArray(array.ptr());
+        }
       }
       default:
       {
-        NumpyArray<3, Multiband<T> > res(MultiArrayShape<3>::type(info.shapeOfDimension(0), info.shapeOfDimension(1), info.shapeOfDimension(2)));
-        //loadFromHDF5File(info, res, false);
-		readHDF5(info, res);
-        return res;
+        vigra_precondition(false, "readImageFromHDF5(filename, datasetname, import_type): dataset has wrong number of dimensions (must be 2 or 3).");
+        return NumpyAnyArray();
       }
     }
 }
+
 } // namespace detail
 
 NumpyAnyArray readImageFromHDF5(const char * filePath, const char * pathInFile, python::object import_type)
@@ -384,15 +406,17 @@ void writeImageToHDF5(NumpyArray<3, Multiband<T> > const & image,
                     const char * pathInFile, 
                     python::object export_type)  
 {
-	// write the data
-	//std::cout << image.shape(2) << std::endl;
+    // write the data
 	// if scalar image
 	if(image.shape(2) == 1)
-		//writeToHDF5File(filePath, pathInFile, image.bindOuter(0), false);
+    {
 		writeHDF5(filePath, pathInFile, image.bindOuter(0));
-	else
-		//writeToHDF5File(filePath, pathInFile, image, false);
-		writeHDF5(filePath, pathInFile, image);
+	}
+    else
+	{
+        MultiArrayShape<3>::type permute(2,0,1);
+		writeHDF5(filePath, pathInFile, image.permuteDimensions(permute));
+    }
 }
 
 VIGRA_PYTHON_MULTITYPE_FUNCTOR(pywriteImageToHDF5, writeImageToHDF5)
@@ -407,17 +431,29 @@ NumpyAnyArray readVolumeHDF5Impl(HDF5ImportInfo const & info)
     {
       case 3:
       {
-        NumpyArray<3, Singleband<T> > res(MultiArrayShape<3>::type(info.shapeOfDimension(0), info.shapeOfDimension(1), info.shapeOfDimension(2)));
-		//loadFromHDF5File(info, res);
+        NumpyArray<3, Singleband<T> > res(MultiArrayShape<3>::type(info.shapeOfDimension(0), 
+                                                                    info.shapeOfDimension(1), 
+                                                                    info.shapeOfDimension(2)));
 		readHDF5(info, res);
         return res;
       }
+      case 4:
+      {
+        NumpyArray<4, Multiband<T> > res(MultiArrayShape<4>::type(info.shapeOfDimension(0), 
+                                                                   info.shapeOfDimension(1), 
+                                                                   info.shapeOfDimension(2), 
+                                                                   info.shapeOfDimension(3)));
+		readHDF5(info, res);
+        MultiArrayShape<4>::type permutation(1,2,3,0);
+        PyArray_Dims permute = { permutation.begin(), 4 };
+        python_ptr array(PyArray_Transpose(res.pyArray(), &permute), python_ptr::keep_count);
+        pythonToCppException(array);
+        return NumpyAnyArray(array.ptr());
+      }
       default:
       {
-        NumpyArray<4, Multiband<T> > res(MultiArrayShape<4>::type(info.shapeOfDimension(0), info.shapeOfDimension(1), info.shapeOfDimension(2), info.shapeOfDimension(3)));
-        //loadFromHDF5File(info, res);
-		readHDF5(info, res);
-        return res;
+        vigra_precondition(false, "readVolumeFromHDF5(filename, datasetname, import_type): dataset has wrong number of dimensions (must be 3 or 4).");
+        return NumpyAnyArray();
       }
     }
 }
@@ -469,11 +505,14 @@ void writeVolumeToHDF5(NumpyArray<4, Multiband<T> > const & volume,
 	// write the data
 	// if scalar volume
 	if(volume.shape(3) == 1)
-		//writeToHDF5File(filePath, pathInFile, volume.bindOuter(0));
+    {
 		writeHDF5(filePath, pathInFile, volume.bindOuter(0));
-	else
-		//writeToHDF5File(filePath, pathInFile, volume);
-		writeHDF5(filePath, pathInFile, volume);
+	}
+    else
+    {
+        MultiArrayShape<4>::type permute(3,0,1,2);
+		writeHDF5(filePath, pathInFile, volume.permuteDimensions(permute));
+    }
 }
 
 VIGRA_PYTHON_MULTITYPE_FUNCTOR(pywriteVolumeToHDF5, writeVolumeToHDF5)
