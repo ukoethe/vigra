@@ -12,40 +12,32 @@ try:
 except:
     print "WARNING: Unable to load module 'vigra.fourier'"
 
-from vigranumpycore import *
+from vigranumpycore import registerPythonArrayType, listExportedArrayKeys
 from arraytypes import *
-from impex import *
+from impex import readImage, readImageFromHDF5, readVolume, readVolumeFromHDF5
 
 # auto-generate code for  additional Kernel generators:
-def genKernelFactories():
-   for oldName in dir(filters.Kernel1D):
+def _genKernelFactories(name):
+   for oldName in dir(eval('filters.'+name)):
       if not oldName.startswith('init'): 
         continue
       #remove init from beginning and start with lower case character
       newName = oldName[4].lower() + oldName[5:] + 'Kernel'
+      if name == 'Kernel2D':
+        newName += '2D'
       code = '''def %(newName)s(*args):
-      k = filters.Kernel1D()
+      k = filters.%(name)s()
       k.%(oldName)s(*args)
       return k
-%(newName)s.__doc__ = filters.Kernel1D.%(oldName)s.__doc__
+%(newName)s.__doc__ = filters.%(name)s.%(oldName)s.__doc__
 filters.%(newName)s=%(newName)s
-''' % {'oldName': oldName, 'newName': newName}
-      exec code
-      
-   for oldName in dir(filters.Kernel2D):
-      if not oldName.startswith('init'): 
-        continue
-      newName = oldName[4].lower() + oldName[5:] + 'Kernel2D'
-      code = '''def %(newName)s(*args):
-      k = filters.Kernel2D()
-      k.%(oldName)s(*args)
-      return k
-%(newName)s.__doc__ = filters.Kernel2D.%(oldName)s.__doc__
-filters.%(newName)s=%(newName)s
-''' % {'oldName': oldName, 'newName': newName}
+''' % {'oldName': oldName, 'newName': newName, 'name': name}
       exec code
 
-genKernelFactories()
+_genKernelFactories('Kernel1D')
+_genKernelFactories('Kernel2D')
+del _genKernelFactories
+
 selfdict = globals()
 def searchfor(searchstring):
    for attr in selfdict.keys():
