@@ -74,7 +74,7 @@ IF(AUTOEXEC_TESTS)
                 COMMAND ${CMAKE_COMMAND}
                 ARGS -E copy_if_different
                 ${CMAKE_CURRENT_SOURCE_DIR}/${test_script} ${CMAKE_CURRENT_BINARY_DIR}/${test_script}
-                )
+                COMMENT "Running vigranumpy tests")
         ENDFOREACH(test_script)
 
         VIGRA_NATIVE_PATH(PYTHON_EXECUTABLE ${PYTHON_EXECUTABLE})
