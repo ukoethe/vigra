@@ -33,8 +33,8 @@
 /*                                                                      */
 /************************************************************************/
 
-#define PY_ARRAY_UNIQUE_SYMBOL vigranumpycore_PyArray_API
-#define NO_IMPORT_ARRAY
+#define PY_ARRAY_UNIQUE_SYMBOL vigranumpysampling_PyArray_API
+//#define NO_IMPORT_ARRAY
 
 #include <vigra/numpy_array.hxx>
 #include <vigra/numpy_array_converters.hxx>
@@ -532,4 +532,16 @@ void defineImageTransformations()
 
 
 }
+
 } // namespace vigra
+
+
+using namespace vigra;
+using namespace boost::python;
+
+BOOST_PYTHON_MODULE_INIT(sampling)
+{
+    import_vigranumpy();
+    defineImageTransformations();
+}
+

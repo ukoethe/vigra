@@ -1,14 +1,11 @@
 import vigranumpycore
 import arraytypes
 import impex
-import convolution
-import tensor
 import filters
+import sampling
+import analysis
+import learning
 import noise
-import segmentation
-import morphology
-import edgedetection
-import classification
 
 try:
     import fourier
@@ -21,30 +18,30 @@ from impex import *
 
 # auto-generate code for  additional Kernel generators:
 def genKernelFactories():
-   for oldName in dir(convolution.Kernel1D):
+   for oldName in dir(filters.Kernel1D):
       if not oldName.startswith('init'): 
         continue
       #remove init from beginning and start with lower case character
       newName = oldName[4].lower() + oldName[5:] + 'Kernel'
       code = '''def %(newName)s(*args):
-      k = convolution.Kernel1D()
+      k = filters.Kernel1D()
       k.%(oldName)s(*args)
       return k
-%(newName)s.__doc__ = convolution.Kernel1D.%(oldName)s.__doc__
-convolution.%(newName)s=%(newName)s
+%(newName)s.__doc__ = filters.Kernel1D.%(oldName)s.__doc__
+filters.%(newName)s=%(newName)s
 ''' % {'oldName': oldName, 'newName': newName}
       exec code
       
-   for oldName in dir(convolution.Kernel2D):
+   for oldName in dir(filters.Kernel2D):
       if not oldName.startswith('init'): 
         continue
       newName = oldName[4].lower() + oldName[5:] + 'Kernel2D'
       code = '''def %(newName)s(*args):
-      k = convolution.Kernel2D()
+      k = filters.Kernel2D()
       k.%(oldName)s(*args)
       return k
-%(newName)s.__doc__ = convolution.Kernel2D.%(oldName)s.__doc__
-convolution.%(newName)s=%(newName)s
+%(newName)s.__doc__ = filters.Kernel2D.%(oldName)s.__doc__
+filters.%(newName)s=%(newName)s
 ''' % {'oldName': oldName, 'newName': newName}
       exec code
 
@@ -58,6 +55,10 @@ def searchfor(searchstring):
             print attr+"."+cont
 
 def imshow(image):
+    '''Display a scalar or RGB image by means of matplotlib.
+       If the image does not have one or three channels, an exception is raised.
+       The image will be automatically scaled to the range 0...255.
+    '''
     import matplotlib
     
     if image.ndim == 3:

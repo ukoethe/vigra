@@ -33,8 +33,8 @@
 /*                                                                      */
 /************************************************************************/
 
-#define PY_ARRAY_UNIQUE_SYMBOL vigranumpyconvolution_PyArray_API
-//#define NO_IMPORT_ARRAY
+#define PY_ARRAY_UNIQUE_SYMBOL vigranumpyfilters_PyArray_API
+#define NO_IMPORT_ARRAY
 
 #include <Python.h>
 #include <boost/python.hpp>
@@ -602,17 +602,4 @@ void defineConvolutionFunctions()
 
 }
 
-void defineKernels();
-void defineMultiConvolutionFunctions();
-
 } // namespace vigra
-
-using namespace vigra;
-
-BOOST_PYTHON_MODULE_INIT(convolution)
-{
-	import_vigranumpy();
-    defineKernels();
-    defineConvolutionFunctions();
-    defineMultiConvolutionFunctions();
-}

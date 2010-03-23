@@ -6,10 +6,8 @@ from nose.tools import assert_equal, raises
 from vigra import numpy as np
 from vigra import *
 from vigra import arraytypes as at
-from vigra.convolution import *
-from vigra.segmentation import *
 from vigra.filters import *
-from vigra.morphology import *
+from vigra.analysis import *
 
 img_rgb_f = at.RGBImage(np.random.rand(100,200,3)*255,dtype=np.float32)
 img_scalar_f = at.ScalarImage(np.random.rand(100,200)*255,dtype=np.float32)

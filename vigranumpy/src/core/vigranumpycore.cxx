@@ -34,6 +34,7 @@
 /************************************************************************/
 
 #define PY_ARRAY_UNIQUE_SYMBOL vigranumpycore_PyArray_API
+
 #include <iostream>
 #include <Python.h>
 #include <boost/python.hpp>
@@ -45,7 +46,6 @@ NUMPY_ARRAY_INITIALIZE_REGISTRY
 namespace vigra {
 
 void registerNumpyArrayConverters();
-void defineImageTransformations();
 
 } // namespace vigra
 
@@ -56,5 +56,4 @@ BOOST_PYTHON_MODULE_INIT(vigranumpycore)
 {
     import_array();
     registerNumpyArrayConverters();
-    defineImageTransformations();
 }

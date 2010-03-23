@@ -5,9 +5,9 @@ execfile('set_paths.py')
 from nose.tools import assert_equal, raises
 import numpy as np
 from vigra import *
-from vigra.convolution import *
+from vigra.filters import *
+from vigra.sampling import *
 from vigra.noise import *
-from vigra.morphology import *
 import vigra.arraytypes as at
 
 #in the hope, that functions are tested in C++, we basicly test return types

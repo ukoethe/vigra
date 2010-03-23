@@ -33,20 +33,16 @@
 /*                                                                      */
 /************************************************************************/
 
-#define PY_ARRAY_UNIQUE_SYMBOL vigranumpyclassification_PyArray_API
+#define PY_ARRAY_UNIQUE_SYMBOL vigranumpylearning_PyArray_API
 #define NO_IMPORT_ARRAY
 
 #include <vigra/numpy_array.hxx>
 #include <vigra/numpy_array_converters.hxx>
 #include <vigra/random_forest.hxx>
+# include <vigra/random_forest_hdf5_impex.hxx>
 #include <set>
 #include <cmath>
 #include <boost/python.hpp>
-
-
-#ifdef HasHDF5
-# include <vigra/random_forest_hdf5_impex.hxx>
-#endif
 
 namespace python = boost::python;
 namespace vigra

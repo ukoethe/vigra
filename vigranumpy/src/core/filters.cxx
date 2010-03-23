@@ -226,6 +226,12 @@ void defineFilters2D()
         "For details see radialSymmetryTransform_ in the vigra C++ documentation.\n");
 }
 
+void defineKernels();
+void defineConvolutionFunctions();
+void defineMultiConvolutionFunctions();
+void defineMorphology();
+void defineTensor();
+
 } // namespace vigra
 
 using namespace vigra;
@@ -235,4 +241,9 @@ BOOST_PYTHON_MODULE_INIT(filters)
 {
     import_vigranumpy();
     defineFilters2D();
+    defineKernels();
+    defineConvolutionFunctions();
+    defineMultiConvolutionFunctions();
+    defineMorphology();
+    defineTensor();
 }

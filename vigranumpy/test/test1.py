@@ -4,9 +4,7 @@ execfile('set_paths.py')
 
 from nose.tools import assert_equal, raises, assert_raises
 import numpy as np
-from vigra.segmentation import *
-from vigra.edgedetection import *
-from vigra.tensor import *
+from vigra.analysis import *
 from vigra.filters import *
 import vigra.arraytypes as at
 

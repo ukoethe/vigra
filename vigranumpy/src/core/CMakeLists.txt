@@ -9,52 +9,42 @@ ENDIF(HDF5_FOUND)
 VIGRA_ADD_NUMPY_MODULE(core 
   SOURCES 
     vigranumpycore.cxx
-    vigranumpyimagetransformation.cxx
-    vigranumpyconverters.cxx
+    converters.cxx
   VIGRANUMPY)
 
 VIGRA_ADD_NUMPY_MODULE(impex 
   SOURCES
-    vigranumpyimpex.cxx
+    impex.cxx
   LIBRARIES   
     ${VIGRANUMPY_IMPEX_LIBRARIES}
   VIGRANUMPY)   
      
-VIGRA_ADD_NUMPY_MODULE(convolution 
+VIGRA_ADD_NUMPY_MODULE(sampling 
   SOURCES
-    vigranumpykernel.cxx
-    vigranumpyconvolution.cxx
-    vigranumpymulticonvolution.cxx
-  VIGRANUMPY)
-   
-VIGRA_ADD_NUMPY_MODULE(tensor SOURCES
-    vigranumpytensor.cxx
+    sampling.cxx
   VIGRANUMPY)
    
 VIGRA_ADD_NUMPY_MODULE(filters SOURCES
-    vigranumpyfilters.cxx
+    kernel.cxx
+    convolution.cxx
+    vigranumpymulticonvolution.cxx
+    filters.cxx
+    tensors.cxx
+    morphology.cxx
   VIGRANUMPY)
    
-VIGRA_ADD_NUMPY_MODULE(noise SOURCES
-    vigranumpynoise.cxx
-  VIGRANUMPY)
-   
-VIGRA_ADD_NUMPY_MODULE(segmentation SOURCES
-    vigranumpysegmentation.cxx
-  VIGRANUMPY)
-   
-VIGRA_ADD_NUMPY_MODULE(morphology SOURCES
-    vigranumpymorphology.cxx
-  VIGRANUMPY)
-   
-VIGRA_ADD_NUMPY_MODULE(edgedetection SOURCES
+VIGRA_ADD_NUMPY_MODULE(analysis SOURCES
+    segmentation.cxx
     vigranumpyedgedetection.cxx
   VIGRANUMPY)
    
-VIGRA_ADD_NUMPY_MODULE(classification SOURCES
-    vigranumpyrf.cxx
-    vigranumpyrf_new.cxx
+VIGRA_ADD_NUMPY_MODULE(learning SOURCES
+    random_forest.cxx
+    random_forest_new.cxx
   LIBRARIES   
     ${VIGRANUMPY_IMPEX_LIBRARIES}
   VIGRANUMPY)
-
+   
+VIGRA_ADD_NUMPY_MODULE(noise SOURCES
+    noise.cxx
+  VIGRANUMPY)

@@ -49,7 +49,7 @@
 #include "vigra/functorexpression.hxx"
 
 #define RandomForest RandomForestDeprec
-#define DecisionTree DecisionTreeeDeprec
+#define DecisionTree DecisionTreeDeprec
 
 namespace vigra
 {
@@ -1132,7 +1132,7 @@ RandomForest<ClassLabelType>::predictNodes(MultiArrayView<2, U, C1> const & feat
 } // namespace vigra
 
 #undef RandomForest
-#undef DecisionTreee_Deprec
+#undef DecisionTree
 
 #endif // VIGRA_RANDOM_FOREST_HXX
 

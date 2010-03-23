@@ -33,7 +33,7 @@
 /*                                                                      */
 /************************************************************************/
 
-#define PY_ARRAY_UNIQUE_SYMBOL vigranumpyconvolution_PyArray_API
+#define PY_ARRAY_UNIQUE_SYMBOL vigranumpyfilters_PyArray_API
 #define NO_IMPORT_ARRAY
 
 #include <iostream>

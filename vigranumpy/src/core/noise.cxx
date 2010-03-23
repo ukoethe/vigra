@@ -262,6 +262,7 @@ void defineNoise()
         "For details see linearNoiseNormalization_ in the vigra C++ documentation.\n"
        );
 }
+
 } // namespace vigra
 
 using namespace vigra;

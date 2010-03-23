@@ -33,18 +33,15 @@
 /*                                                                      */
 /************************************************************************/
 
-#define PY_ARRAY_UNIQUE_SYMBOL vigranumpyclassification_PyArray_API
+#define PY_ARRAY_UNIQUE_SYMBOL vigranumpylearning_PyArray_API
 //#define NO_IMPORT_ARRAY
 
 #include <vigra/numpy_array.hxx>
 #include <vigra/numpy_array_converters.hxx>
 #include <vigra/random_forest_deprec.hxx>
+// # include <vigra/random_forest_hdf5_impex.hxx>
 #include <set>
 #include <cmath>
-
-#ifdef HasHDF5
-# include <vigra/random_forest_hdf5_impex.hxx>
-#endif
 
 #define RandomForest RandomForestDeprec
 #define DecisionTree DecisionTreeDeprec
@@ -137,14 +134,16 @@ void defineRandomForest()
 		.def("readHDF5")*/
 		;
 }
+
 void defineRandomForest_new();
+
 } // namespace vigra
 
 
 using namespace vigra;
 using namespace boost::python;
 
-BOOST_PYTHON_MODULE_INIT(classification)
+BOOST_PYTHON_MODULE_INIT(learning)
 {
     import_vigranumpy();
     defineRandomForest();

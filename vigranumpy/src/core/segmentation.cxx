@@ -33,8 +33,9 @@
 /*                                                                      */
 /************************************************************************/
 
-#define PY_ARRAY_UNIQUE_SYMBOL vigranumpysegmentation_PyArray_API
+#define PY_ARRAY_UNIQUE_SYMBOL vigranumpyanalysis_PyArray_API
 //#define NO_IMPORT_ARRAY
+
 #include <vigra/numpy_array.hxx>
 #include <vigra/numpy_array_converters.hxx>
 #include <vigra/localminmax.hxx>
@@ -570,13 +571,16 @@ void defineSegmentation()
         "For details see labelVolumeWithBackground_ in the vigra C++ documentation.\n");
 }
 
+void defineEdgedetection();
+
 } // namespace vigra
 
 using namespace vigra;
 using namespace boost::python;
 
-BOOST_PYTHON_MODULE_INIT(segmentation)
+BOOST_PYTHON_MODULE_INIT(analysis)
 {
     import_vigranumpy();
     defineSegmentation();
+    defineEdgedetection();
 }

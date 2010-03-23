@@ -1,5 +1,5 @@
-#ifndef VIGRANUMPYCONVOLUTION_HXX
-#define VIGRANUMPYCONVOLUTION_HXX
+#ifndef VIGRANUMPYKERNEL_HXX
+#define VIGRANUMPYKERNEL_HXX
 
 #include <vigra/separableconvolution.hxx>
 #include <vigra/stdconvolution.hxx>
@@ -13,4 +13,4 @@ typedef Kernel1D< KernelValueType > Kernel;
 
 } // namespace vigra
 
-#endif // VIGRANUMPYCONVOLUTION_HXX
+#endif // VIGRANUMPYKERNEL_HXX

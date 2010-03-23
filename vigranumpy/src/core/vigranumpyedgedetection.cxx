@@ -33,8 +33,9 @@
 /*                                                                      */
 /************************************************************************/
 
-#define PY_ARRAY_UNIQUE_SYMBOL vigranumpyedgedetection_PyArray_API
-//#define NO_IMPORT_ARRAY
+#define PY_ARRAY_UNIQUE_SYMBOL vigranumpyanalysis_PyArray_API
+#define NO_IMPORT_ARRAY
+
 #include <vigra/numpy_array.hxx>
 #include <vigra/numpy_array_converters.hxx>
 #include <vigra/cornerdetection.hxx>
@@ -330,12 +331,3 @@ void defineEdgedetection()
 }
 
 } // namespace vigra
-
-using namespace vigra;
-using namespace boost::python;
-
-BOOST_PYTHON_MODULE_INIT(edgedetection)
-{
-    import_vigranumpy();
-    defineEdgedetection();
-}

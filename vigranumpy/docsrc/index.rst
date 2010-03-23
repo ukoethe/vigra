@@ -110,6 +110,8 @@ Mapping between C++ types and Python types is controlled by the following two fu
       number of spatial dimensions (always 2 for images). This is useful for 
       distinguishing RGBImage from ScalarVolume in overload resolution.
 
+.. autofunction:: vigra.imshow
+
 -------------
 
 .. autoclass:: vigra.ScalarImage
@@ -125,15 +127,14 @@ Mapping between C++ types and Python types is controlled by the following two fu
 
 .. _sec-dtype-coercion:
 
-Type Coercion in Point Operators
---------------------------------
+Point Operators and Type Coercion
+---------------------------------
 
-When an arithmetic or algebraic function is called on an image (or
-set of images), it is applied to each pixel separately. This is implemented
-by means of the module 
+Vigra images and volumes support all arithmetic and algebraic functions defined in  
 `numpy.ufunc <http://docs.scipy.org/doc/numpy/reference/ufuncs.html#available-ufuncs>`_. 
-However, vigranumpy overloads the functions in numpy.ufunc in a way that makes 
-their behavior more suitable for image analysis. In particular, we changed two aspects:
+As usual, these operations are applied independently at each pixel.
+However, vigranumpy overloads numpy.ufunc in a way that makes operator behavior 
+more suitable for image analysis. In particular, we changed two aspects:
 
 * The memory layout of the input arrays is preserved in the result arrays. 
   In contrast, plain numpy.ufuncs always create C-order arrays, even if 
@@ -159,58 +160,55 @@ you may call 'vigra.readImage(...)' instead of 'vigra.impex.readImage(...)' etc.
    :members:
 
 
-Core Image Processing and Analysis Functions
---------------------------------------------
+Filters
+-------
 
-.. automodule:: vigra
-   :members:
-
-Common Filters
---------------
+The module vigra.filters provides operators that consider a window around each pixel, compute
+one or several numbers from the values in these windows, and store the results in the
+corresponding pixel of the output image. This includes convolution, non-linear diffusion, 
+morphological operators, feature detectors (such as the structure tensor) etc.
 
 .. automodule:: vigra.filters
    :members:
 
-Convolution Functions
----------------------
 
-.. automodule:: vigra.convolution
+Sampling
+--------
+
+The module vigra.sampling contains methods to change the number and/or location of
+the image sampling points, such as resizing, rotation, and interpolation.
+
+.. automodule:: vigra.sampling
    :members:
 
-Basic Morphological Operations
-------------------------------
 
-.. automodule:: vigra.morphology
+Image Analysis
+--------------
+
+The module vigra.analysis contains segmentation algorithms (e.g. watershed), edge and 
+corner detection, localization of maxima and minima etc.
+
+.. automodule:: vigra.analysis
    :members:
 
-Tensor Image Processing
------------------------
 
-.. automodule:: vigra.tensor
+Machine Learning
+----------------
+
+The module vigra.learning will eventually provide a wide range of machine learning 
+tools. Right now, it only contains an implementation of the random forest classifier.
+
+.. automodule:: vigra.learning
    :members:
 
-Region Segmentation Algorithms
-------------------------------
-
-.. automodule:: vigra.segmentation
-   :members:
 
 Noise Normalization
 -------------------
 
+The module vigra.noise provides noise estimation and normalization according to a
+method proposed by Förstner.
+
 .. automodule:: vigra.noise
-   :members:
-
-Edge and Corner Detection
--------------------------
-
-.. automodule:: vigra.edgedetection
-   :members:
-
-Classification Functions
-------------------------
-
-.. automodule:: vigra.classification
    :members:
 
 

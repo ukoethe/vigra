@@ -35,6 +35,7 @@
 
 #define PY_ARRAY_UNIQUE_SYMBOL vigranumpyimpex_PyArray_API
 //#define NO_IMPORT_ARRAY
+
 #include <iostream>
 #include <cstring>
 #include <cstdio>
