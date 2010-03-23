@@ -164,7 +164,7 @@ Filters
 -------
 
 The module vigra.filters provides operators that consider a window around each pixel, compute
-one or several numbers from the values in these windows, and store the results in the
+one or several numbers from the values in the window, and store the results in the
 corresponding pixel of the output image. This includes convolution, non-linear diffusion, 
 morphological operators, feature detectors (such as the structure tensor) etc.
 
@@ -180,6 +180,19 @@ the image sampling points, such as resizing, rotation, and interpolation.
 
 .. automodule:: vigra.sampling
    :members:
+   
+---------------------------------------------
+
+Spline image views implement an interpolated view for an image which can be accessed 
+at real-valued coordinates (in contrast to the plain image, which can only be
+accessed at integer coordinates). Below, we describe SplineImageView3, but the module 
+also defines SplineImageView0 ... SplineImageView5 (representing spline interpolation
+of the respective order) which work analogously. See SplineImageView_ 
+in the C++ documentation for mode detailed information.
+
+.. autoclass:: vigra.sampling.SplineImageView3
+   :members:
+.. automethod::  vigra.sampling.SplineImageView3.__init__
 
 
 Image Analysis
@@ -201,6 +214,13 @@ tools. Right now, it only contains an implementation of the random forest classi
 .. automodule:: vigra.learning
    :members:
 
+.. autoclass:: vigra.learning.RandomForest
+   :members:
+   
+For more information, refer to RandomForest_ in the C++ decomentation.
+
+.. autoclass:: vigra.learning.RandomForest_new
+   :members:
 
 Noise Normalization
 -------------------
