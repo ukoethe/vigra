@@ -645,15 +645,15 @@ void defineImpexFunctions()
         "   VIFF:\n"
         "       Khoros Visualization image file (pixel types: UINT8, INT16\n"
         "       INT32, FLOAT, DOUBLE with arbitrary many channels).\n\n");
-    def("impexListFormats", &impexListFormats, 
+    def("listFormats", &impexListFormats, 
         "Ask for the image file formats that vigra.impex understands::\n\n"
-        "    impexListFormats() -> string\n\n"
+        "    listFormats() -> string\n\n"
         "This function returns a string containing the supported image file "
         "formats for reading and writing with the functions :func:`readImage` and "
         ":func:`writeImage`.\n");
-    def("impexListExtensions", &impexListExtensions,
+    def("listExtensions", &impexListExtensions,
         "Ask for the image file extensions that vigra.impex understands::\n\n"
-        "    impexListExtensions() -> string\n\n"
+        "    listExtensions() -> string\n\n"
         "This function returns a string containing the supported image file "
         "extensions for reading and writing with the functions :func:`readImage` and "
         ":func:`writeImage`.\n");

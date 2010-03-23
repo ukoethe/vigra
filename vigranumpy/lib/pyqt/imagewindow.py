@@ -193,7 +193,7 @@ class ImageViewer(OverlayViewer):
     def writeImage(self):
         d = quickdialog.QuickDialog(self,"Write Image")
 
-        imageFileExtensions = '*.' + ' *.'.join(vigra.vigranumpycore.impexListExtensions().split(' '))
+        imageFileExtensions = '*.' + ' *.'.join(vigra.impex.listExtensions().split(' '))
         d.filedialog = quickdialog.OutputFile(
             d, "Output filename:", "Image Files ("+imageFileExtensions+")")
         d.filedialog.setFocus()
