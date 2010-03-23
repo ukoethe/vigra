@@ -194,7 +194,7 @@ void defineRandomForest_new()
 												   arg("sample_classes_individually")=false,
 												   arg("prepare_online_learning")=false)),
 			 "Constructs a random Forest \n"
-			 "\"treeCount\" constrols the number of trees, that are created.\n"
+			 "'treeCount' constrols the number of trees, that are created.\n"
 			 "See the vigra documentation for the meaning af the rest of the paremeters.")
 		.def("featureCount",
     &RandomForest<UInt32>::column_count,
@@ -204,16 +204,16 @@ void defineRandomForest_new()
 			 "Returns the number of labels, the RanfomForest knows.")
 		.def("treeCount",
 			 &RandomForest<UInt32>::tree_count,
-			 "Returns the \"treeCount\", that was set when constructing the RandomForest.")
+			 "Returns the 'treeCount', that was set when constructing the RandomForest.")
 		.def("predictLabels",
 			 registerConverters(&pythonRFPredictLabels<UInt32,float>),
 			 (arg("testData"), arg("out")=object()),
-			 "Predict labels on \"testData\"."
+			 "Predict labels on 'testData'."
 			 "The output is an array containing a labels for every test samples.")
 		.def("predictProbabilities",
 			 registerConverters(&pythonRFPredictProbabilities<UInt32,float>),
 			 (arg("testData"), arg("out")=object()),
-			 "Predict probabilities for different classes on \"testData\"."
+			 "Predict probabilities for different classes on 'testData'."
 			 "The output is an array containing a probability for every test sample and class.")
 		.def("predictProbabilities",
 			 registerConverters(&pythonRFPredictProbabilitiesOnlinePredSet<UInt32,float>),
@@ -222,17 +222,17 @@ void defineRandomForest_new()
     .def("learnRF",
 			 registerConverters(&pythonLearnRandomForest<UInt32,float>),
 			 (arg("trainData"), arg("trainLabels")),
-			 "Trains a random Forest using \"trainData\" and \"trainLabels\".\n"
+			 "Trains a random Forest using 'trainData' and 'trainLabels'.\n"
 			 "and returns the OOB. See the vigra documentation for the meaning af the rest of the paremeters.")
     .def("reLearnTree",
 			 registerConverters(&pythonRFReLearnTree<UInt32,float>),
 	 (arg("trainData"), arg("trainLabels"), arg("treeId")),
-			 "Re-learn one tree of the forest using \"trainData\" and \"trainLabels\".\n"
+			 "Re-learn one tree of the forest using 'trainData' and 'trainLabels'.\n"
 			 "and returns the OOB. This might be helpful in an online learning setup to improve the classifier.")
     .def("learnRFWithFeatureSelection",
 			 registerConverters(&pythonLearnRandomForestWithFeatureSelection<UInt32,float>),
 			 (arg("trainData"), arg("trainLabels")),
-			 "Train a random Forest using \"trainData\" and \"trainLabels\".\n"
+			 "Train a random Forest using 'trainData' and 'trainLabels'.\n"
 			 "and returns the OOB and the Variable importance"
 			 "See the vigra documentation for the meaning af the rest of the paremeters.")
 		.def("onlineLearn",

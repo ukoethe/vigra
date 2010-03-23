@@ -108,8 +108,8 @@ void defineRandomForest()
 												   arg("training_set_proportions")=1.0,
 												   arg("sample_with_replacement")=true,
 												   arg("sample_classes_individually")=false)),
-			 "Construct and train a random Forest using \"trainData\" and \"trainLabels\".\n"
-			 "\"treeCount\" constrols the number of trees, that are created.\n"
+			 "Construct and train a random Forest using 'trainData' and 'trainLabels'.\n"
+			 "'treeCount' constrols the number of trees, that are created.\n"
 			 "See the vigra documentation for the meaning af the rest of the paremeters.")
 		.def("featureCount",
 			 &RandomForest<UInt32>::featureCount,
@@ -119,16 +119,16 @@ void defineRandomForest()
 			 "Returns the number of labels, the RanfomForest knows.")
 		.def("treeCount",
 			 &RandomForest<UInt32>::treeCount,
-			 "Returns the \"treeCount\", that was set when constructing the RandomForest.")
+			 "Returns the 'treeCount', that was set when constructing the RandomForest.")
 		.def("predictLabels",
 			 registerConverters(&pythonRFPredictLabels<UInt32,float>),
 			 (arg("testData"), arg("out")=object()),
-			 "Predict labels on \"testData\"."
+			 "Predict labels on 'testData'."
 			 "The output is an array containing a labels for every test samples.")
 		.def("predictProbabilities",
 			 registerConverters(&pythonRFPredictProbabilities<UInt32,float>),
 			 (arg("testData"), arg("out")=object()),
-			 "Predict probabilities for different classes on \"testData\"."
+			 "Predict probabilities for different classes on 'testData'."
 			 "The output is an array containing a probability for every test sample and class.")
 /*			.def("writeHDF5")
 		.def("readHDF5")*/
