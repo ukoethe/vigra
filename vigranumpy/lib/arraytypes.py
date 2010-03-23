@@ -316,10 +316,15 @@ class Image(_VigraArray):
            
 """)
             
-    def write(self, filename, export_type = '', compression = ''):
-        "consult :func:`vigra.writeImage` for detailed documentation"
+    def write(self, filename, dtype = '', compression = ''):
+        "Write an image to a file. Consult :func:`vigra.impex.writeImage` for detailed documentation"
         import vigra.impex
-        vigra.impex.writeImage(self, filename, export_type, compression)
+        vigra.impex.writeImage(self, filename, dtype, compression)
+            
+    def writeHDF5(self, filename, pathInFile, dtype = ''):
+        "Write an image to a HDF5 file. Consult :func:`vigra.impex.writeImageToHDF5` for detailed documentation"
+        import vigra.impex
+        vigra.impex.writeImageToHDF5(self, filename, pathInFile, dtype)
 
     def show(self, normalize = True):
         '''
@@ -548,6 +553,16 @@ class Volume(_VigraArray):
              | NumpyArray<3, RGBValue<T>, UnstridedArrayTag> (if channels=3),
              | NumpyArray<4, Multiband<T>, UnstridedArrayTag> (if channels=1),
              | NumpyArray<4, Multiband<T>, StridedArrayTag> (if channels>1)""")
+            
+    def write(self, filename_base, filename_ext, dtype = '', compression = ''):
+        "Write a volume to a sequence of files. Consult :func:`vigra.impex.writeVolume` for detailed documentation.\n"
+        import vigra.impex
+        vigra.impex.writeVolume(self, filename_base, filename_ext, dtype, compression)
+            
+    def writeHDF5(self, filename, pathInFile, dtype = ''):
+        "Write a volume to a HDF5 file. Consult :func:`vigra.impex.writeVolumeToHDF5` for detailed documentation.\n"
+        import vigra.impex
+        vigra.impex.writeVolumeToHDF5(self, filename, pathInFile, dtype)
     
     @classproperty
     def spatialDimensions(cls): return 3
