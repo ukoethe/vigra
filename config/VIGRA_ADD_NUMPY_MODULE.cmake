@@ -53,6 +53,15 @@ FUNCTION(VIGRA_ADD_NUMPY_MODULE target)
     
     IF(PART_OF_VIGRANUMPY)
         ADD_DEPENDENCIES(vigranumpy ${TARGET_NAME})
+        
+        # Store dependencies as a custom target property, so that we can 
+        # later query them.
+        # TODO: Does cmake provide a standard way to query the dependencies? 
+        GET_TARGET_PROPERTY(VIGRANUMPY_DEPENDS vigranumpy VIGRA_DEPENDS)
+        IF(NOT VIGRANUMPY_DEPENDS)
+            set(VIGRANUMPY_DEPENDS "")
+        ENDIF()
+        SET_TARGET_PROPERTIES(vigranumpy PROPERTIES VIGRA_DEPENDS "${VIGRANUMPY_DEPENDS} ${TARGET_NAME}")
     ENDIF()
     
     if(DEFINED LIBRARIES)

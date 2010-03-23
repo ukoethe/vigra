@@ -11,9 +11,15 @@ SET(TEST_SCRIPTS
 # last test failed or when the tests code changed, so that tests are re-executed
 SET(TEST_SUCCESS_FILE "${CMAKE_CURRENT_BINARY_DIR}/testsuccess.cxx")
 
+# find the vigranumpy modules that we want to test, and make
+# 'testsuccess.cxx' depend on them
+# TODO: Does cmake provide a standard way to find those dependencies? 
+GET_TARGET_PROPERTY(VIGRANUMPY_DEPENDS vigranumpy VIGRA_DEPENDS)
+SEPARATE_ARGUMENTS(VIGRANUMPY_DEPENDS)
+
 add_custom_command(
     OUTPUT ${TEST_SUCCESS_FILE}
-    DEPENDS ${TEST_SCRIPTS}
+    DEPENDS ${TEST_SCRIPTS} ${VIGRANUMPY_DEPENDS}
     COMMAND ${CMAKE_COMMAND}
     ARGS -E touch ${TEST_SUCCESS_FILE})
 
