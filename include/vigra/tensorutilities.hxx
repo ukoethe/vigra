@@ -39,6 +39,7 @@
 
 #include <cmath>
 #include "utilities.hxx"
+#include "mathutil.hxx"
 
 namespace vigra {
 
@@ -60,11 +61,10 @@ namespace vigra {
     the output must contain vectors of length 3 which will represent the tensor components
     in the order t11, t12 (== t21 due to symmetry), t22.
     
-    <b>Note:</b> By default, this function negates the second component of the vector
-    in order to turn a left handed vector (the usual resul of convolution, 
-    e.g. a gradient filter, because <tt>y</tt> runs from top to bottom)
-    into a right handed tensor (as is required by all tensor function in VIGRA). This
-    behavior can be switched off by setting <tt>negateComponent2 = false</tt>.
+    <b>Note:</b> In order to account for the left-handedness of the image coordinate system,
+    the second tensor component (t12) can be negated by setting <tt>negateComponent2 = false</tt>.
+    Angles will then be interpreted counter-clockwise rather than clockwise. By default,
+    this behavior is switched off.
     
     <b> Declarations:</b>
 
@@ -75,7 +75,7 @@ namespace vigra {
                   class DestIterator, class DestAccessor>
         void vectorToTensor(SrcIterator sul, SrcIterator slr, SrcAccessor src,
                             DestIterator dul, DestAccessor dest,
-                            bool negateComponent2 = true);
+                            bool negateComponent2 = false);
     }
     \endcode
 
@@ -87,7 +87,7 @@ namespace vigra {
                   class DestIterator, class DestAccessor>
         void vectorToTensor(triple<SrcIterator, SrcIterator, SrcAccessor> s,
                             pair<DestIterator, DestAccessor> d,
-                            bool negateComponent2 = true);
+                            bool negateComponent2 = false);
     }
     \endcode
 
@@ -154,7 +154,7 @@ inline
 void vectorToTensor(SrcIterator sul, SrcIterator slr, SrcAccessor src,
                     DestIterator dul, DestAccessor dest)
 {
-    vectorToTensor(sul, slr, src, dul, dest, true);
+    vectorToTensor(sul, slr, src, dul, dest, false);
 }
 
 template <class SrcIterator, class SrcAccessor,
@@ -173,7 +173,7 @@ inline
 void vectorToTensor(triple<SrcIterator, SrcIterator, SrcAccessor> s,
                     pair<DestIterator, DestAccessor> d)
 {
-    vectorToTensor(s.first, s.second, s.third, d.first, d.second, true);
+    vectorToTensor(s.first, s.second, s.third, d.first, d.second, false);
 }
 
 /********************************************************/
@@ -186,10 +186,10 @@ void vectorToTensor(triple<SrcIterator, SrcIterator, SrcAccessor> s,
 
     This function turns a 3-band image representing the tensor components
     t11, t12 (== t21 due to symmetry), t22 into the a 3-band image holding the eigen
-    representation e1, e2, and angle, where e1 \> e2. The original tensor must be
-    defined in a right-handed coordinate system, and the angle of the tensor will
-    then be given in mathematical positive (counter-clockwise) orientation, starting
-    at the x-axis.
+    representation e1, e2, and angle, where e1 \> e2. When the tensor is
+    defined in a left-handed coordinate system (the default on images), the angle will
+    then be given in clockwise orientation, starting at the x-axis. Otherwise, it
+    will be given in counter-clockwise orientation.
     
     <b> Declarations:</b>
 
@@ -253,7 +253,7 @@ void tensorEigenRepresentation(SrcIterator sul, SrcIterator slr, SrcAccessor src
             TmpType d1 = src.getComponent(s,0) + src.getComponent(s,2);
             TmpType d2 = src.getComponent(s,0) - src.getComponent(s,2);
             TmpType d3 = TmpType(2.0) * src.getComponent(s,1);
-            TmpType d4 = VIGRA_CSTD::sqrt(sq(d2) + sq(d3));
+            TmpType d4 = (TmpType)hypot(d2, d3);
             
             dest.setComponent(0.5 * (d1 + d4), d, 0); // large EV
             dest.setComponent(0.5 * (d1 - d4), d, 1); // small EV
@@ -445,7 +445,7 @@ void tensorToEdgeCorner(SrcIterator sul, SrcIterator slr, SrcAccessor src,
             TmpType d1 = src.getComponent(s,0) + src.getComponent(s,2);
             TmpType d2 = src.getComponent(s,0) - src.getComponent(s,2);
             TmpType d3 = 2.0 * src.getComponent(s,1);
-            TmpType d4 = VIGRA_CSTD::sqrt(sq(d2) + sq(d3));
+            TmpType d4 = (TmpType)hypot(d2, d3);
             
             edge.setComponent(d4, e, 0); // edgeness = difference of EVs
             if(d2 == 0.0 && d3 == 0.0)

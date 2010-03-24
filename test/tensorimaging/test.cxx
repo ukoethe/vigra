@@ -77,7 +77,7 @@ struct TensorUtilityTest
             for(int x = 0; x < w; ++x)
             {
                 shouldEqual(img3(x,y)[0], x*x);
-                shouldEqual(img3(x,y)[1], -x*y);
+                shouldEqual(img3(x,y)[1], x*y);
                 shouldEqual(img3(x,y)[2], y*y);
             }
         }
@@ -102,7 +102,7 @@ struct TensorUtilityTest
                 else
                 {
                     shouldEqualTolerance(res(x,y)[2], 
-                                    VIGRA_CSTD::atan2((double)-y, (double)x), 1e-12);
+                                    VIGRA_CSTD::atan2((double)y, (double)x), 1e-12);
                 }
             }
         }

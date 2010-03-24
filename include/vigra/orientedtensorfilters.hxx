@@ -160,7 +160,7 @@ void hourGlassFilter(SrcIterator sul, SrcIterator slr, SrcAccessor src,
             double phi = 0.5 * VIGRA_CSTD::atan2(
                                      2.0*src.getComponent(s,1),
                                      (double)src.getComponent(s,0) - src.getComponent(s,2));
-            double u = -VIGRA_CSTD::sin(phi);
+            double u = VIGRA_CSTD::sin(phi);
             double v = VIGRA_CSTD::cos(phi);
 
             double x0 = x - radius < 0 ? -x : -radius;
@@ -241,7 +241,7 @@ void ellipticGaussian(SrcIterator sul, SrcIterator slr, SrcAccessor src,
             double sigmax2 = -0.5 / sq((sigmax - sigmin)*excentricity + sigmin);
             
             double phi = 0.5 * VIGRA_CSTD::atan2(d3, d2);
-            double u = -VIGRA_CSTD::sin(phi);
+            double u = VIGRA_CSTD::sin(phi);
             double v = VIGRA_CSTD::cos(phi);
 
             double x0 = x - radius < 0 ? -x : -radius;
