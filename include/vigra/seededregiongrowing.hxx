@@ -43,6 +43,7 @@
 #include "utilities.hxx"
 #include "stdimage.hxx"
 #include "stdimagefunctions.hxx"
+#include "pixelneighborhood.hxx"
 
 namespace vigra {
 
@@ -160,7 +161,7 @@ struct UnlabelWatersheds
 
 } // namespace detail
 
-enum SRGType { KeepContours, CompleteGrow, SRGWatershedLabel = -1 };
+enum SRGType { CompleteGrow = 0, KeepContours = 1, StopAtThreshold = 2, SRGWatershedLabel = -1 };
 
 /** \addtogroup SeededRegionGrowing Region Segmentation Algorithms
     Region growing, watersheds, and voronoi tesselation
@@ -191,8 +192,12 @@ enum SRGType { KeepContours, CompleteGrow, SRGWatershedLabel = -1 };
     Seed regions can be as large as you wish and as small as one pixel. If
     there are no candidates, the algorithm will simply copy the seed image
     into the output image. Otherwise it will aggregate the candidates into
-    the existing regions so that a cost function is minimized. This
-    works as follows:
+    the existing regions so that a cost function is minimized. 
+    Candidates are taken from the neighborhood of the already assigned pixels, 
+    where the type of neighborhood is determined by parameter <tt>neighborhood</tt>
+    which can take the values <tt>FourNeighborCode()</tt> (the default) 
+    or <tt>EightNeighborCode()</tt>. The algorithm basically works as follows 
+    (illustrated for 4-neighborhood, but 8-neighborhood works in the same way):
 
     <ol>
 
@@ -200,7 +205,7 @@ enum SRGType { KeepContours, CompleteGrow, SRGWatershedLabel = -1 };
     Calculate the cost for aggregating each candidate into its adajacent region
     and put the candidates into a priority queue.
 
-    <li> While( priority queue is not empty)
+    <li> While( priority queue is not empty and termination criterion is not fulfilled)
 
         <ol>
 
@@ -214,10 +219,15 @@ enum SRGType { KeepContours, CompleteGrow, SRGWatershedLabel = -1 };
 
     </ol>
 
-    If <tt>SRGType == CompleteGrow</tt> (the default), this algorithm
-    will produce a complete 4-connected tesselation of the image.
-    If <tt>SRGType == KeepContours</tt>, a one-pixel-wide border will be left
-    between the regions. The border pixels get label 0 (zero).
+    <tt>SRGType</tt> can take the following values:
+    
+    <DL>
+    <DT><tt>CompleteGrow</tt> <DD> produce a complete tesselation of the volume (default).
+    <DT><tt>KeepContours</tt> <DD> keep a 1-voxel wide unlabeled contour between all regions.
+    <DT><tt>StopAtThreshold</tt> <DD> stop when the boundary indicator values exceed the 
+                             threshold given by parameter <tt>max_cost</tt>.
+    <DT><tt>KeepContours | StopAtThreshold</tt> <DD> keep 1-voxel wide contour and stop at given <tt>max_cost</tt>.
+    </DL>
 
     The cost is determined jointly by the source image and the
     region statistics functor. The source image contains feature values for each
@@ -240,7 +250,10 @@ enum SRGType { KeepContours, CompleteGrow, SRGWatershedLabel = -1 };
     the original statistics.
 
     If a candidate could be merged into more than one regions with identical
-    cost, the algorithm will favour the nearest region.
+    cost, the algorithm will favour the nearest region. If <tt>StopAtThreshold</tt> is active, 
+    and the cost of the current candidate at any point in the algorithm exceeds the optional 
+    <tt>max_cost</tt> value (which defaults to <tt>NumericTraits<double>::max()</tt>), 
+    region growing is aborted, and all voxels not yet assigned to a region remain unlabeled.
 
     In some cases, the cost only depends on the feature value of the current
     pixel. Then the update operation will simply be a no-op, and the <TT>cost()</TT>
@@ -256,13 +269,15 @@ enum SRGType { KeepContours, CompleteGrow, SRGWatershedLabel = -1 };
         template <class SrcImageIterator, class SrcAccessor,
                   class SeedImageIterator, class SeedAccessor,
                   class DestImageIterator, class DestAccessor,
-                  class RegionStatisticsArray>
-        void seededRegionGrowing(SrcImageIterator srcul,
-                                 SrcImageIterator srclr, SrcAccessor as,
-                                 SeedImageIterator seedsul, SeedAccessor aseeds,
-                                 DestImageIterator destul, DestAccessor ad,
-                                 RegionStatisticsArray & stats,
-                                 SRGType srgType = CompleteGrow);
+                  class RegionStatisticsArray, class Neighborhood>
+        void 
+        seededRegionGrowing(SrcImageIterator srcul, SrcImageIterator srclr, SrcAccessor as,
+                            SeedImageIterator seedsul, SeedAccessor aseeds,
+                            DestImageIterator destul, DestAccessor ad,
+                            RegionStatisticsArray & stats,
+                            SRGType srgType = CompleteGrow,
+                            Neighborhood neighborhood = FourNeighborCode(),
+                            double max_cost = NumericTraits<double>::max());
     }
     \endcode
 
@@ -272,13 +287,15 @@ enum SRGType { KeepContours, CompleteGrow, SRGWatershedLabel = -1 };
         template <class SrcImageIterator, class SrcAccessor,
                   class SeedImageIterator, class SeedAccessor,
                   class DestImageIterator, class DestAccessor,
-                  class RegionStatisticsArray>
+                  class RegionStatisticsArray, class Neighborhood>
         void
-        seededRegionGrowing(triple<SrcImageIterator, SrcImageIterator, SrcAccessor> img1,
-                            pair<SeedImageIterator, SeedAccessor> img3,
-                            pair<DestImageIterator, DestAccessor> img4,
+        seededRegionGrowing(triple<SrcImageIterator, SrcImageIterator, SrcAccessor> src,
+                            pair<SeedImageIterator, SeedAccessor> seeds,
+                            pair<DestImageIterator, DestAccessor> dest,
                             RegionStatisticsArray & stats,
-                            SRGType srgType = CompleteGrow);
+                            SRGType srgType = CompleteGrow,
+                            Neighborhood neighborhood = FourNeighborCode(),
+                            double max_cost = NumericTraits<double>::max());
     }
     \endcode
 
@@ -349,13 +366,15 @@ doxygen_overloaded_function(template <...> void seededRegionGrowing)
 template <class SrcImageIterator, class SrcAccessor,
           class SeedImageIterator, class SeedAccessor,
           class DestImageIterator, class DestAccessor,
-          class RegionStatisticsArray>
+          class RegionStatisticsArray, class Neighborhood>
 void seededRegionGrowing(SrcImageIterator srcul,
                          SrcImageIterator srclr, SrcAccessor as,
                          SeedImageIterator seedsul, SeedAccessor aseeds,
                          DestImageIterator destul, DestAccessor ad,
                          RegionStatisticsArray & stats,
-                         const SRGType srgType)
+                         SRGType srgType,
+                         Neighborhood,
+                         double max_cost)
 {
     int w = srclr.x - srcul.x;
     int h = srclr.y - srcul.y;
@@ -385,9 +404,9 @@ void seededRegionGrowing(SrcImageIterator srcul,
     SeedRgPixelHeap pheap;
     int cneighbor;
 
-    static const Diff2D dist[] = { Diff2D(-1,0), Diff2D(0,-1),
-                                   Diff2D(1,0),  Diff2D(0,1) };
-
+    typedef Neighborhood::Direction Direction;
+    int directionCount = Neighborhood::DirectionCount;
+    
     Point2D pos(0,0);
     for(isy=srcul, iry=ir, pos.y=0; pos.y<h;
         ++pos.y, ++isy.y, ++iry.y)
@@ -398,15 +417,16 @@ void seededRegionGrowing(SrcImageIterator srcul,
             if(*irx == 0)
             {
                 // find candidate pixels for growing and fill heap
-                for(int i=0; i<4; i++)
+                for(int i=0; i<directionCount; i++)
                 {
-                    cneighbor = irx[dist[i]];
+                    // cneighbor = irx[dist[i]];
+                    cneighbor = irx[Neighborhood::diff((Direction)i)];
                     if(cneighbor > 0)
                     {
                         CostType cost = stats[cneighbor].cost(as(isx));
 
                         Pixel * pixel =
-                            allocator.create(pos, pos+dist[i], cost, count++, cneighbor);
+                            allocator.create(pos, pos+Neighborhood::diff((Direction)i), cost, count++, cneighbor);
                         pheap.push(pixel);
                     }
                 }
@@ -420,6 +440,9 @@ void seededRegionGrowing(SrcImageIterator srcul,
         Pixel * pixel = pheap.top();
         pheap.pop();
 
+        if((srgType & StopAtThreshold) != 0 && pixel->cost_ > max_cost)
+            break;
+
         Point2D pos = pixel->location_;
         Point2D nearest = pixel->nearest_;
         int lab = pixel->label_;
@@ -432,11 +455,11 @@ void seededRegionGrowing(SrcImageIterator srcul,
         if(*irx) // already labelled region / watershed?
             continue;
 
-        if(srgType == KeepContours)
+        if((srgType & KeepContours) != 0)
         {
-            for(int i=0; i<4; i++)
+            for(int i=0; i<directionCount; i++)
             {
-                cneighbor = irx[dist[i]];
+                cneighbor = irx[Neighborhood::diff((Direction)i)];
                 if((cneighbor>0) && (cneighbor != lab))
                 {
                     lab = SRGWatershedLabel;
@@ -447,21 +470,21 @@ void seededRegionGrowing(SrcImageIterator srcul,
 
         *irx = lab;
 
-        if((srgType != KeepContours) || (lab > 0))
+        if((srgType & KeepContours) == 0 || lab > 0)
         {
             // update statistics
             stats[*irx](as(isx));
 
             // search neighborhood
             // second pass: find new candidate pixels
-            for(int i=0; i<4; i++)
+            for(int i=0; i<directionCount; i++)
             {
-                if(irx[dist[i]] == 0)
+                if(irx[Neighborhood::diff((Direction)i)] == 0)
                 {
-                    CostType cost = stats[lab].cost(as(isx, dist[i]));
+                    CostType cost = stats[lab].cost(as(isx, Neighborhood::diff((Direction)i)));
 
                     Pixel * new_pixel =
-                        allocator.create(pos+dist[i], nearest, cost, count++, lab);
+                        allocator.create(pos+Neighborhood::diff((Direction)i), nearest, cost, count++, lab);
                     pheap.push(new_pixel);
                 }
             }
@@ -471,6 +494,45 @@ void seededRegionGrowing(SrcImageIterator srcul,
     // write result
     transformImage(ir, ir+Point2D(w,h), regions.accessor(), destul, ad,
                    detail::UnlabelWatersheds());
+}
+
+template <class SrcImageIterator, class SrcAccessor,
+          class SeedImageIterator, class SeedAccessor,
+          class DestImageIterator, class DestAccessor,
+          class RegionStatisticsArray, class Neighborhood>
+inline void
+seededRegionGrowing(SrcImageIterator srcul,
+                    SrcImageIterator srclr, SrcAccessor as,
+                    SeedImageIterator seedsul, SeedAccessor aseeds,
+                    DestImageIterator destul, DestAccessor ad,
+                    RegionStatisticsArray & stats,
+                    SRGType srgType,
+                    Neighborhood n)
+{
+    seededRegionGrowing(srcul, srclr, as,
+                        seedsul, aseeds,
+                        destul, ad,
+                        stats, srgType, n, NumericTraits<double>::max());
+}
+
+
+
+template <class SrcImageIterator, class SrcAccessor,
+          class SeedImageIterator, class SeedAccessor,
+          class DestImageIterator, class DestAccessor,
+          class RegionStatisticsArray>
+inline void
+seededRegionGrowing(SrcImageIterator srcul,
+                    SrcImageIterator srclr, SrcAccessor as,
+                    SeedImageIterator seedsul, SeedAccessor aseeds,
+                    DestImageIterator destul, DestAccessor ad,
+                    RegionStatisticsArray & stats,
+                    SRGType srgType)
+{
+    seededRegionGrowing(srcul, srclr, as,
+                        seedsul, aseeds,
+                        destul, ad,
+                        stats, srgType, FourNeighborCode());
 }
 
 template <class SrcImageIterator, class SrcAccessor,
@@ -493,6 +555,43 @@ seededRegionGrowing(SrcImageIterator srcul,
 template <class SrcImageIterator, class SrcAccessor,
           class SeedImageIterator, class SeedAccessor,
           class DestImageIterator, class DestAccessor,
+          class RegionStatisticsArray, class Neighborhood>
+inline void
+seededRegionGrowing(triple<SrcImageIterator, SrcImageIterator, SrcAccessor> img1,
+                    pair<SeedImageIterator, SeedAccessor> img3,
+                    pair<DestImageIterator, DestAccessor> img4,
+                    RegionStatisticsArray & stats,
+                    SRGType srgType, 
+                    Neighborhood n,
+                    double max_cost)
+{
+    seededRegionGrowing(img1.first, img1.second, img1.third,
+                        img3.first, img3.second,
+                        img4.first, img4.second,
+                        stats, srgType, n, max_cost);
+}
+
+template <class SrcImageIterator, class SrcAccessor,
+          class SeedImageIterator, class SeedAccessor,
+          class DestImageIterator, class DestAccessor,
+          class RegionStatisticsArray, class Neighborhood>
+inline void
+seededRegionGrowing(triple<SrcImageIterator, SrcImageIterator, SrcAccessor> img1,
+                    pair<SeedImageIterator, SeedAccessor> img3,
+                    pair<DestImageIterator, DestAccessor> img4,
+                    RegionStatisticsArray & stats,
+                    SRGType srgType, 
+                    Neighborhood n)
+{
+    seededRegionGrowing(img1.first, img1.second, img1.third,
+                        img3.first, img3.second,
+                        img4.first, img4.second,
+                        stats, srgType, n, NumericTraits<double>::max());
+}
+
+template <class SrcImageIterator, class SrcAccessor,
+          class SeedImageIterator, class SeedAccessor,
+          class DestImageIterator, class DestAccessor,
           class RegionStatisticsArray>
 inline void
 seededRegionGrowing(triple<SrcImageIterator, SrcImageIterator, SrcAccessor> img1,
@@ -504,7 +603,7 @@ seededRegionGrowing(triple<SrcImageIterator, SrcImageIterator, SrcAccessor> img1
     seededRegionGrowing(img1.first, img1.second, img1.third,
                         img3.first, img3.second,
                         img4.first, img4.second,
-                        stats, srgType);
+                        stats, srgType, FourNeighborCode());
 }
 
 template <class SrcImageIterator, class SrcAccessor,

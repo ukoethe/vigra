@@ -46,6 +46,7 @@
 #include "stdimagefunctions.hxx"
 #include "seededregiongrowing.hxx"
 #include "multi_pointoperators.hxx"
+#include "voxelneighborhood.hxx"
 
 namespace vigra {
 
@@ -182,8 +183,12 @@ public:
     Seed regions can be as large as you wish and as small as one voxel. If
     there are no candidates, the algorithm will simply copy the seed array
     into the output array. Otherwise it will aggregate the candidates into
-    the existing regions so that a cost function is minimized. This
-    works as follows:
+    the existing regions so that a cost function is minimized.
+    Candidates are taken from the neighborhood of the already assigned pixels, 
+    where the type of neighborhood is determined by parameter <tt>neighborhood</tt>
+    which can take the values <tt>NeighborCode3DSix()</tt> (the default) 
+    or <tt>NeighborCode3DTwentySix()</tt>. The algorithm basically works as follows 
+    (illustrated for 6-neighborhood, but 26-neighborhood works in the same way):
 
     <ol>
 
@@ -205,10 +210,15 @@ public:
 
     </ol>
 
-    If <tt>SRGType == CompleteGrow</tt> (the default), this algorithm will 
-    produce a complete 6-connected tesselation of the array.
-    Other grow types (such as keeping contours for watersheds) are currently not
-    supported 
+    <tt>SRGType</tt> can take the following values:
+    
+    <DL>
+    <DT><tt>CompleteGrow</tt> <DD> produce a complete tesselation of the volume (default).
+    <DT><tt>KeepContours</tt> <DD> keep a 1-voxel wide unlabeled contour between all regions.
+    <DT><tt>StopAtThreshold</tt> <DD> stop when the boundary indicator values exceed the 
+                             threshold given by parameter <tt>max_cost</tt>.
+    <DT><tt>KeepContours | StopAtThreshold</tt> <DD> keep 1-voxel wide contour and stop at given <tt>max_cost</tt>.
+    </DL>
 
     The cost is determined jointly by the source array and the
     region statistics functor. The source array contains feature values for each
@@ -230,10 +240,10 @@ public:
     the original statistics.
 
     If a candidate could be merged into more than one regions with identical
-    cost, the algorithm will favour the nearest region. If, at any point in the algorithm,
-    the cost of the current candidate exceeds the optional <tt>max_cost</tt> value (which defaults to
-    <tt>-1</tt>), region growing is aborted, and all voxels not yet assigned to a region 
-    remain unlabeled.
+    cost, the algorithm will favour the nearest region. If <tt>StopAtThreshold</tt> is active, 
+    and the cost of the current candidate at any point in the algorithm exceeds the optional 
+    <tt>max_cost</tt> value (which defaults to <tt>NumericTraits<double>::max()</tt>), 
+    region growing is aborted, and all voxels not yet assigned to a region remain unlabeled.
 
     In some cases, the cost only depends on the feature value of the current
     voxel. Then the update operation will simply be a no-op, and the <TT>cost()</TT>
@@ -245,57 +255,36 @@ public:
     pass arguments explicitly:
     \code
     namespace vigra {
-        template <class SrcImageIterator, class Diff_type, class SrcAccessor,
+        template <class SrcImageIterator, class Shape, class SrcAccessor,
                   class SeedImageIterator, class SeedAccessor,
                   class DestImageIterator, class DestAccessor,
-                  class RegionStatisticsArray, class CostThresholdType >
-        void seededRegionGrowing3D(SrcImageIterator srcul, Diff_type shape,
-                                 SrcAccessor as,
-                                 SeedImageIterator seedsul, SeedAccessor aseeds,
-                                 DestImageIterator destul, DestAccessor ad,
-                                 RegionStatisticsArray & stats, 
-                                 CostThresholdType max_cost = -1.0,
-                                 const SRGType srgType == CompleteGrow);
-
-        template <class SrcImageIterator, class Diff_type, class SrcAccessor,
-                  class SeedImageIterator, class SeedAccessor,
-                  class DestImageIterator, class DestAccessor,
-                  class RegionStatisticsArray>
-        void seededRegionGrowing3D(SrcImageIterator srcul, Diff_type shape,
-                                 SrcAccessor as,
-                                 SeedImageIterator seedsul, SeedAccessor aseeds,
-                                 DestImageIterator destul, DestAccessor ad,
-                                 RegionStatisticsArray & stats, 
-                                 const SRGType srgType == CompleteGrow);
-
-       }
+                  class RegionStatisticsArray, class Neighborhood>
+        void 
+        seededRegionGrowing3D(SrcImageIterator srcul, Shape shape, SrcAccessor as,
+                              SeedImageIterator seedsul, SeedAccessor aseeds,
+                              DestImageIterator destul, DestAccessor ad,
+                              RegionStatisticsArray & stats, 
+                              SRGType srgType = CompleteGrow,
+                              Neighborhood neighborhood = NeighborCode3DSix(),
+                              double max_cost = NumericTraits<double>::max());
+    }
     \endcode
 
     use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
-            template <class SrcImageIterator, class Shape, class SrcAccessor,
+        template <class SrcImageIterator, class Shape, class SrcAccessor,
                   class SeedImageIterator, class SeedAccessor,
                   class DestImageIterator, class DestAccessor,
-                  class RegionStatisticsArray, class CostThresholdType>
-            void
-            seededRegionGrowing3D(triple<SrcImageIterator, Shape, SrcAccessor> img1,
-                            pair<SeedImageIterator, SeedAccessor> img3,
-                            pair<DestImageIterator, DestAccessor> img4,
-                            RegionStatisticsArray & stats, 
-                            CostThresholdType max_cost = -1.0,
-                            const SRGType srgType == CompleteGrow);
-
-            template <class SrcImageIterator, class Shape, class SrcAccessor,
-                  class SeedImageIterator, class SeedAccessor,
-                  class DestImageIterator, class DestAccessor,
-                  class RegionStatisticsArray>
-            void
-            seededRegionGrowing3D(triple<SrcImageIterator, Shape, SrcAccessor> img1,
-                            pair<SeedImageIterator, SeedAccessor> img3,
-                            pair<DestImageIterator, DestAccessor> img4,
-                            RegionStatisticsArray & stats, 
-                            const SRGType srgType == CompleteGrow);
+                  class RegionStatisticsArray, class Neighborhood>
+        void
+        seededRegionGrowing3D(triple<SrcImageIterator, Shape, SrcAccessor> src,
+                              pair<SeedImageIterator, SeedAccessor> seeds,
+                              pair<DestImageIterator, DestAccessor> dest,
+                              RegionStatisticsArray & stats, 
+                              SRGType srgType = CompleteGrow,
+                              Neighborhood neighborhood = NeighborCode3DSix(), 
+                              double max_cost = NumericTraits<double>::max());
     }
     \endcode
 
@@ -305,13 +294,15 @@ doxygen_overloaded_function(template <...> void seededRegionGrowing3D)
 template <class SrcImageIterator, class Diff_type, class SrcAccessor,
           class SeedImageIterator, class SeedAccessor,
           class DestImageIterator, class DestAccessor,
-          class RegionStatisticsArray, class CostThresholdType>
-void seededRegionGrowing3D(SrcImageIterator srcul, Diff_type shape,
-                         SrcAccessor as,
-                         SeedImageIterator seedsul, SeedAccessor aseeds,
-                         DestImageIterator destul, DestAccessor ad,
-                         RegionStatisticsArray & stats, CostThresholdType max_cost, 
-                         const SRGType srgType)
+          class RegionStatisticsArray, class Neighborhood>
+void 
+seededRegionGrowing3D(SrcImageIterator srcul, Diff_type shape, SrcAccessor as,
+                      SeedImageIterator seedsul, SeedAccessor aseeds,
+                      DestImageIterator destul, DestAccessor ad,
+                      RegionStatisticsArray & stats, 
+                      SRGType srgType,
+                      Neighborhood,
+                      double max_cost)
 {
     SrcImageIterator srclr = srcul + shape;
     //int w = srclr.x - srcul.x;
@@ -325,7 +316,7 @@ void seededRegionGrowing3D(SrcImageIterator srcul, Diff_type shape,
     SrcImageIterator isy = srcul, isx = srcul, isz = srcul;  // iterators for the src image
 
     typedef typename RegionStatisticsArray::value_type RegionStatistics;
-    typedef typename PromoteTraits<typename RegionStatistics::cost_type, CostThresholdType>::Promote CostType;
+    typedef typename PromoteTraits<typename RegionStatistics::cost_type, double>::Promote CostType;
     typedef detail::SeedRgVoxel<CostType, Diff_type> Voxel;
 
     typename Voxel::Allocator allocator;
@@ -347,17 +338,22 @@ void seededRegionGrowing3D(SrcImageIterator srcul, Diff_type shape,
     //initImageBorder(destImageRange(regions), 1, SRGWatershedLabel);
     initMultiArrayBorder(destMultiArrayRange(regions), 1, SRGWatershedLabel); 
     
-    copyMultiArray(seedsul, Diff_type(w,h,d), aseeds, ir, AccessorTraits<int>::default_accessor()/* vigra::StandardValueAccessor<int>*/);
+    copyMultiArray(seedsul, Diff_type(w,h,d), aseeds, ir, AccessorTraits<int>::default_accessor());
 
     // allocate and init memory for the results
 
     SeedRgVoxelHeap pheap;
     int cneighbor;
 
+    #if 0
     static const Diff_type dist[] = { Diff_type(-1, 0, 0), Diff_type( 0,-1, 0),
                                       Diff_type( 1, 0, 0), Diff_type( 0, 1, 0),
                                       Diff_type( 0, 0,-1), Diff_type( 0, 0, 1) };
-    
+    #endif
+
+    typedef Neighborhood::Direction Direction;
+    int directionCount = Neighborhood::DirectionCount;
+
     Diff_type pos(0,0,0);
 
     for(isz=srcul, irz=ir, pos[2]=0; pos[2]<d;
@@ -378,15 +374,15 @@ void seededRegionGrowing3D(SrcImageIterator srcul, Diff_type shape,
                 if(*irx == 0)
                 {
                     // find candidate pixels for growing and fill heap
-                    for(int i=0; i<6; i++)
+                    for(int i=0; i<directionCount; i++)
                     {
-                        cneighbor = *(irx + dist[i]);
+                        cneighbor = *(irx + Neighborhood::diff((Direction)i));
                         if(cneighbor > 0)
                         {
                             CostType cost = stats[cneighbor].cost(as(isx));
 
                             Voxel * voxel =
-                                allocator.create(pos, pos+dist[i], cost, count++, cneighbor);
+                                allocator.create(pos, pos+Neighborhood::diff((Direction)i), cost, count++, cneighbor);
                             pheap.push(voxel);
                         }
                     }
@@ -401,7 +397,8 @@ void seededRegionGrowing3D(SrcImageIterator srcul, Diff_type shape,
         Voxel * voxel = pheap.top();
         pheap.pop();
 
-        if(max_cost > NumericTraits<CostThresholdType>::zero() && voxel->cost_ > max_cost) break;
+        if((srgType & StopAtThreshold) != 0 && voxel->cost_ > max_cost)
+            break;
 
         Diff_type pos = voxel->location_;
         Diff_type nearest = voxel->nearest_;
@@ -415,11 +412,11 @@ void seededRegionGrowing3D(SrcImageIterator srcul, Diff_type shape,
         if(*irx) // already labelled region / watershed?
             continue;
 
-        if(srgType == KeepContours)
+        if((srgType & KeepContours) != 0)
         {
-            for(int i=0; i<6; i++)
+            for(int i=0; i<directionCount; i++)
             {
-                cneighbor = * (irx + dist[i]);
+                cneighbor = * (irx + Neighborhood::diff((Direction)i));
                 if((cneighbor>0) && (cneighbor != lab))
                 {
                     lab = SRGWatershedLabel;
@@ -430,21 +427,21 @@ void seededRegionGrowing3D(SrcImageIterator srcul, Diff_type shape,
 
         *irx = lab;
 
-        if((srgType != KeepContours) || (lab > 0))
+        if((srgType & KeepContours) == 0 || lab > 0)
         {
             // update statistics
             stats[*irx](as(isx));
 
             // search neighborhood
             // second pass: find new candidate pixels
-            for(int i=0; i<6; i++)
+            for(int i=0; i<directionCount; i++)
             {
-                if(*(irx + dist[i]) == 0)
+                if(*(irx + Neighborhood::diff((Direction)i)) == 0)
                 {
-                    CostType cost = stats[lab].cost(as(isx, dist[i]));
+                    CostType cost = stats[lab].cost(as(isx, Neighborhood::diff((Direction)i)));
 
                     Voxel * new_voxel =
-                        allocator.create(pos+dist[i], nearest, cost, count++, lab);
+                        allocator.create(pos+Neighborhood::diff((Direction)i), nearest, cost, count++, lab);
                     pheap.push(new_voxel);
                 }
             }
@@ -452,149 +449,84 @@ void seededRegionGrowing3D(SrcImageIterator srcul, Diff_type shape,
     }
 
     // write result
-    transformMultiArray(ir, Diff_type(w,h,d), AccessorTraits<int>::default_accessor()/* regions.accessor()*/, destul, ad,
-                        detail::UnlabelWatersheds());
+    transformMultiArray(ir, Diff_type(w,h,d), AccessorTraits<int>::default_accessor(), 
+                        destul, ad, detail::UnlabelWatersheds());
 }
-/*
-template <class SrcImageIterator, class SrcAccessor,
-          class SeedImageIterator, class SeedAccessor,
-          class DestImageIterator, class DestAccessor,
-          class RegionStatisticsArray>
-inline void
-seededRegionGrowing3D(SrcImageIterator srcul,
-                    SrcImageIterator srclr, SrcAccessor as,
-                    SeedImageIterator seedsul, SeedAccessor aseeds,
-                    DestImageIterator destul, DestAccessor ad,
-                    RegionStatisticsArray & stats)
-{
-    seededRegionGrowing3D(srcul, srclr, as,
-                        seedsul, aseeds,
-                        destul, ad,
-                        stats, CompleteGrow);
-}*/
-/*
-template <class SrcImageIterator, class SrcAccessor,
-          class SeedImageIterator, class SeedAccessor,
-          class DestImageIterator, class DestAccessor,
-          class RegionStatisticsArray>
-inline void
-seededRegionGrowing3D(triple<SrcImageIterator, SrcImageIterator, SrcAccessor> img1,
-                    pair<SeedImageIterator, SeedAccessor> img3,
-                    pair<DestImageIterator, DestAccessor> img4,
-                    RegionStatisticsArray & stats,
-                    SRGType srgType)
-{
-    seededRegionGrowing3D(img1.first, img1.second, img1.third,
-                        img3.first, img3.second,
-                        img4.first, img4.second,
-                        stats, srgType);
-}
-
-template <class SrcImageIterator, class SrcAccessor,
-          class SeedImageIterator, class SeedAccessor,
-          class DestImageIterator, class DestAccessor,
-          class RegionStatisticsArray>
-inline void
-seededRegionGrowing3D(triple<SrcImageIterator, SrcImageIterator, SrcAccessor> img1,
-                    pair<SeedImageIterator, SeedAccessor> img3,
-                    pair<DestImageIterator, DestAccessor> img4,
-                    RegionStatisticsArray & stats)
-{
-    seededRegionGrowing3D(img1.first, img1.second, img1.third,
-                        img3.first, img3.second,
-                        img4.first, img4.second,
-                        stats, CompleteGrow);
-}
-*/
 
 template <class SrcImageIterator, class Diff_type, class SrcAccessor,
           class SeedImageIterator, class SeedAccessor,
           class DestImageIterator, class DestAccessor,
-          class RegionStatisticsArray, class CostThresholdType>
-void seededRegionGrowing3D(SrcImageIterator srcul, Diff_type shape,
-                         SrcAccessor as,
-                         SeedImageIterator seedsul, SeedAccessor aseeds,
-                         DestImageIterator destul, DestAccessor ad,
-                         RegionStatisticsArray & stats, CostThresholdType max_cost)
+          class RegionStatisticsArray, class Neighborhood >
+inline void
+seededRegionGrowing3D(SrcImageIterator srcul, Diff_type shape, SrcAccessor as,
+                      SeedImageIterator seedsul, SeedAccessor aseeds,
+                      DestImageIterator destul, DestAccessor ad,
+                      RegionStatisticsArray & stats, SRGType srgType, Neighborhood n)
 {
-    seededRegionGrowing3D( srcul, shape, as, seedsul, aseeds, destul, ad, stats, max_cost, CompleteGrow);
+    seededRegionGrowing3D( srcul, shape, as, seedsul, aseeds, 
+                           destul, ad, stats, srgType, n, NumericTraits<double>::max());
 }
 
 template <class SrcImageIterator, class Diff_type, class SrcAccessor,
           class SeedImageIterator, class SeedAccessor,
           class DestImageIterator, class DestAccessor,
           class RegionStatisticsArray >
-void seededRegionGrowing3D(SrcImageIterator srcul, Diff_type shape,
-                         SrcAccessor as,
-                         SeedImageIterator seedsul, SeedAccessor aseeds,
-                         DestImageIterator destul, DestAccessor ad,
-                         RegionStatisticsArray & stats)
+inline void
+seededRegionGrowing3D(SrcImageIterator srcul, Diff_type shape, SrcAccessor as,
+                      SeedImageIterator seedsul, SeedAccessor aseeds,
+                      DestImageIterator destul, DestAccessor ad,
+                      RegionStatisticsArray & stats, SRGType srgType)
 {
-    seededRegionGrowing3D( srcul, shape, as, seedsul, aseeds, destul, ad, stats, -1.0, CompleteGrow);
+    seededRegionGrowing3D( srcul, shape, as, seedsul, aseeds, 
+                           destul, ad, stats, srgType, NeighborCode3DSix());
 }
 
 template <class SrcImageIterator, class Diff_type, class SrcAccessor,
           class SeedImageIterator, class SeedAccessor,
           class DestImageIterator, class DestAccessor,
           class RegionStatisticsArray >
-void seededRegionGrowing3D(SrcImageIterator srcul, Diff_type shape,
-                         SrcAccessor as,
-                         SeedImageIterator seedsul, SeedAccessor aseeds,
-                         DestImageIterator destul, DestAccessor ad,
-                         RegionStatisticsArray & stats, SRGType srgType)
-{
-    seededRegionGrowing3D( srcul, shape, as, seedsul, aseeds, destul, ad, stats, -1.0, srgType);
-}
-
-
-
-template <class SrcImageIterator, class Shape, class SrcAccessor,
-          class SeedImageIterator, class SeedAccessor,
-          class DestImageIterator, class DestAccessor,
-          class RegionStatisticsArray>
 inline void
-seededRegionGrowing3D(triple<SrcImageIterator, Shape, SrcAccessor> img1,
-                    pair<SeedImageIterator, SeedAccessor> img3,
-                    pair<DestImageIterator, DestAccessor> img4,
-                    RegionStatisticsArray & stats, int max_cost)
+seededRegionGrowing3D(SrcImageIterator srcul, Diff_type shape, SrcAccessor as,
+                      SeedImageIterator seedsul, SeedAccessor aseeds,
+                      DestImageIterator destul, DestAccessor ad,
+                      RegionStatisticsArray & stats)
 {
-    seededRegionGrowing3D(img1.first, img1.second, img1.third,
-                        img3.first, img3.second,
-                        img4.first, img4.second,
-                        stats, max_cost, CompleteGrow);
+    seededRegionGrowing3D( srcul, shape, as, seedsul, aseeds, destul, ad, 
+                           stats, CompleteGrow);
 }
 
 template <class SrcImageIterator, class Shape, class SrcAccessor,
           class SeedImageIterator, class SeedAccessor,
           class DestImageIterator, class DestAccessor,
-          class RegionStatisticsArray, class CostThresholdType>
+          class RegionStatisticsArray, class Neighborhood>
 inline void
 seededRegionGrowing3D(triple<SrcImageIterator, Shape, SrcAccessor> img1,
-                    pair<SeedImageIterator, SeedAccessor> img3,
-                    pair<DestImageIterator, DestAccessor> img4,
-                    RegionStatisticsArray & stats, CostThresholdType max_cost, const SRGType srgType)
+                      pair<SeedImageIterator, SeedAccessor> img3,
+                      pair<DestImageIterator, DestAccessor> img4,
+                      RegionStatisticsArray & stats, 
+                      SRGType srgType, Neighborhood n, double max_cost)
 {
     seededRegionGrowing3D(img1.first, img1.second, img1.third,
-                        img3.first, img3.second,
-                        img4.first, img4.second,
-                        stats, max_cost, srgType);
+                          img3.first, img3.second,
+                          img4.first, img4.second,
+                          stats, srgType, n, max_cost);
 }
-
 
 template <class SrcImageIterator, class Shape, class SrcAccessor,
           class SeedImageIterator, class SeedAccessor,
           class DestImageIterator, class DestAccessor,
-          class RegionStatisticsArray>
+          class RegionStatisticsArray, class Neighborhood>
 inline void
 seededRegionGrowing3D(triple<SrcImageIterator, Shape, SrcAccessor> img1,
-                    pair<SeedImageIterator, SeedAccessor> img3,
-                    pair<DestImageIterator, DestAccessor> img4,
-                    RegionStatisticsArray & stats, const SRGType srgType)
+                      pair<SeedImageIterator, SeedAccessor> img3,
+                      pair<DestImageIterator, DestAccessor> img4,
+                      RegionStatisticsArray & stats, 
+                      SRGType srgType, Neighborhood n)
 {
     seededRegionGrowing3D(img1.first, img1.second, img1.third,
-                        img3.first, img3.second,
-                        img4.first, img4.second,
-                        stats, -1.0, srgType);
+                          img3.first, img3.second,
+                          img4.first, img4.second,
+                          stats, srgType, n, NumericTraits<double>::max());
 }
 
 template <class SrcImageIterator, class Shape, class SrcAccessor,
@@ -603,17 +535,31 @@ template <class SrcImageIterator, class Shape, class SrcAccessor,
           class RegionStatisticsArray>
 inline void
 seededRegionGrowing3D(triple<SrcImageIterator, Shape, SrcAccessor> img1,
-                    pair<SeedImageIterator, SeedAccessor> img3,
-                    pair<DestImageIterator, DestAccessor> img4,
-                    RegionStatisticsArray & stats)
+                      pair<SeedImageIterator, SeedAccessor> img3,
+                      pair<DestImageIterator, DestAccessor> img4,
+                      RegionStatisticsArray & stats, SRGType srgType)
 {
     seededRegionGrowing3D(img1.first, img1.second, img1.third,
-                        img3.first, img3.second,
-                        img4.first, img4.second,
-                        stats, -1.0, CompleteGrow);
+                          img3.first, img3.second,
+                          img4.first, img4.second,
+                          stats, srgType, NeighborCode3DSix());
 }
 
-
+template <class SrcImageIterator, class Shape, class SrcAccessor,
+          class SeedImageIterator, class SeedAccessor,
+          class DestImageIterator, class DestAccessor,
+          class RegionStatisticsArray>
+inline void
+seededRegionGrowing3D(triple<SrcImageIterator, Shape, SrcAccessor> img1,
+                      pair<SeedImageIterator, SeedAccessor> img3,
+                      pair<DestImageIterator, DestAccessor> img4,
+                      RegionStatisticsArray & stats)
+{
+    seededRegionGrowing3D(img1.first, img1.second, img1.third,
+                          img3.first, img3.second,
+                          img4.first, img4.second,
+                          stats);
+}
 
 } // namespace vigra
 
