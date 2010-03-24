@@ -291,7 +291,7 @@ convolveImage(triple<SrcIterator, SrcIterator, SrcAccessor> src,
 
 /** \brief Perform simple sharpening function.
 
-    This function use \ref convolveImage() with following filter:
+    This function uses \ref convolveImage() with the following filter:
     
     \code
     -sharpening_factor/16.0,    -sharpening_factor/8.0,    -sharpening_factor/16.0,
@@ -299,7 +299,7 @@ convolveImage(triple<SrcIterator, SrcIterator, SrcAccessor> src,
     -sharpening_factor/16.0,    -sharpening_factor/8.0,    -sharpening_factor/16.0;    
     \endcode
     
-    and use <TT>BORDER_TREATMENT_REFLECT</TT> as border treatment mode.
+    and uses <TT>BORDER_TREATMENT_REFLECT</TT> as border treatment mode.
 
     <b> Preconditions:</b>
     \code  
@@ -396,14 +396,12 @@ void simpleSharpening(triple<SrcIterator, SrcIterator, SrcAccessor> src,
 /** \brief Perform sharpening function with gaussian filter.
 
 
-    This function use the \ref gaussianSmoothing()
-    at first and scale the source image 
-    (\code src \endcode) with the \code scale \endcode
-    factor in an temporary image (\code tmp \endcode). At second the new 
-    pixel in the destination image will be with following
-    formel calculate:
+    This function uses \ref gaussianSmoothing() at the given scale to create a
+    temporary image 'smooth' and than blends the original and smoothed image 
+    according to the formula    
+
     \code
-    dest = (1 + sharpening_factor)*src - sharpening_factor*tmp
+    dest = (1 + sharpening_factor)*src - sharpening_factor*smooth
     \endcode
 
     <b> Preconditions:</b>
@@ -420,8 +418,8 @@ void simpleSharpening(triple<SrcIterator, SrcIterator, SrcAccessor> src,
       template <class SrcIterator, class SrcAccessor,
                 class DestIterator, class DestAccessor>
       void gaussianSharpening(SrcIterator src_ul, SrcIterator src_lr, SrcAccessor src_acc,
-                                DestIterator dest_ul, DestAccessor dest_acc, double sharpening_factor, 
-                              double scale)
+                              DestIterator dest_ul, DestAccessor dest_acc, 
+                              double sharpening_factor, double scale)
     }
     \endcode
 
@@ -432,8 +430,8 @@ void simpleSharpening(triple<SrcIterator, SrcIterator, SrcAccessor> src,
       template <class SrcIterator, class SrcAccessor,
                 class DestIterator, class DestAccessor>
       void gaussianSharpening(triple<SrcIterator, SrcIterator, SrcAccessor> src,
-                               pair<DestIterator, DestAccessor> dest, double sharpening_factor, 
-                              double scale)
+                               pair<DestIterator, DestAccessor> dest, 
+                               double sharpening_factor, double scale)
     }
     \endcode
 
