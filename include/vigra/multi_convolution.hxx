@@ -370,7 +370,7 @@ convolveMultiArrayOneDimension(SrcIterator s, SrcShape const & shape, SrcAccesso
     {
          // first copy source to temp for maximum cache efficiency
          copyLine( snav.begin(), snav.end(), src,
-		   tmp.begin(), typename AccessorTraits<TmpType>::default_accessor() );
+           tmp.begin(), typename AccessorTraits<TmpType>::default_accessor() );
 
          convolveLine( srcIterRange( tmp.begin(), tmp.end(), typename AccessorTraits<TmpType>::default_const_accessor()),
                        destIter( dnav.begin(), dest ),
@@ -457,8 +457,7 @@ void
 gaussianSmoothMultiArray( SrcIterator s, SrcShape const & shape, SrcAccessor src,
                    DestIterator d, DestAccessor dest, double sigma )
 {
-    typedef typename NumericTraits<typename DestAccessor::value_type>::RealPromote kernel_type;
-    Kernel1D<kernel_type> gauss;
+    Kernel1D<double> gauss;
     gauss.initGaussian( sigma );
 
     separableConvolveMultiArray( s, shape, src, d, dest, gauss);
@@ -536,7 +535,7 @@ gaussianSmoothMultiArray(triple<SrcIterator, SrcShape, SrcAccessor> const & sour
 
     <b> Required Interface:</b>
 
-    see \ref convolveImage(), in addition:
+    see \ref separableConvolveMultiArray(), in addition:
 
     \code
     int dimension = 0;
@@ -550,23 +549,34 @@ doxygen_overloaded_function(template <...> void gaussianGradientMultiArray)
 template <class SrcIterator, class SrcShape, class SrcAccessor,
           class DestIterator, class DestAccessor>
 void
-gaussianGradientMultiArray( SrcIterator si, SrcShape const & shape, SrcAccessor src,
-			    DestIterator di, DestAccessor dest, double sigma )
+gaussianGradientMultiArray(SrcIterator si, SrcShape const & shape, SrcAccessor src,
+                           DestIterator di, DestAccessor dest, double sigma )
 {
     typedef typename DestAccessor::value_type DestType;
-    typedef typename NumericTraits<typename DestType::value_type>::RealPromote kernel_type;
+    typedef typename DestType::value_type     DestValueType;
+    typedef typename NumericTraits<DestValueType>::RealPromote KernelType;
+   
+    static const int N = SrcShape::static_size;
 
-    Kernel1D<kernel_type> gauss, derivative;
+    for(int k=0; k<N; ++k)
+        if(shape[k] <=0)
+            return;
+
+    vigra_precondition(N == dest.size(di),
+        "gaussianGradientMultiArray(): Wrong number of channels in output array.");
+
+    vigra_precondition(sigma > 0.0, "gaussianGradientMultiArray(): Scale must be positive.");
+
+    Kernel1D<KernelType> gauss, derivative;
     gauss.initGaussian(sigma);
-    derivative.initGaussianDerivative(sigma, 1);
 
     typedef VectorElementAccessor<DestAccessor> ElementAccessor;
 
     // compute gradient components
-    for(unsigned int d = 0; d < shape.size(); ++d )
+    for(int d = 0; d < N; ++d )
     {
-        ArrayVector<Kernel1D<kernel_type> > kernels(shape.size(), gauss);
-        kernels[d] = derivative;
+        ArrayVector<Kernel1D<KernelType> > kernels(N, gauss);
+        kernels[d].initGaussianDerivative(sigma, 1);
         separableConvolveMultiArray( si, shape, src, di, ElementAccessor(d, dest), kernels.begin());
     }
 }
@@ -575,10 +585,10 @@ template <class SrcIterator, class SrcShape, class SrcAccessor,
           class DestIterator, class DestAccessor>
 inline void
 gaussianGradientMultiArray(triple<SrcIterator, SrcShape, SrcAccessor> const & source,
-                  pair<DestIterator, DestAccessor> const & dest, double sigma )
+                           pair<DestIterator, DestAccessor> const & dest, double sigma )
 {
     gaussianGradientMultiArray( source.first, source.second, source.third,
-                              dest.first, dest.second, sigma );
+                                dest.first, dest.second, sigma );
 }
 
 /********************************************************/
@@ -636,7 +646,7 @@ gaussianGradientMultiArray(triple<SrcIterator, SrcShape, SrcAccessor> const & so
 
     <b> Required Interface:</b>
 
-    see \ref convolveImage(), in addition:
+    see \ref convolveMultiArrayOneDimension(), in addition:
 
     \code
     int dimension = 0;
@@ -651,22 +661,32 @@ template <class SrcIterator, class SrcShape, class SrcAccessor,
           class DestIterator, class DestAccessor>
 void
 symmetricGradientMultiArray(SrcIterator si, SrcShape const & shape, SrcAccessor src,
-                   DestIterator di, DestAccessor dest)
+                            DestIterator di, DestAccessor dest)
 {
     typedef typename DestAccessor::value_type DestType;
-    typedef typename NumericTraits<typename DestType::value_type>::RealPromote kernel_type;
+    typedef typename DestType::value_type     DestValueType;
+    typedef typename NumericTraits<DestValueType>::RealPromote KernelType;
 
-    Kernel1D<kernel_type> filter;
+    static const int N = SrcShape::static_size;
+
+    for(int k=0; k<N; ++k)
+        if(shape[k] <=0)
+            return;
+
+    vigra_precondition(N == dest.size(di),
+        "symmetricGradientMultiArray(): Wrong number of channels in output array.");
+
+    Kernel1D<KernelType> filter;
     filter.initSymmetricGradient();
 
     typedef VectorElementAccessor<DestAccessor> ElementAccessor;
 
     // compute gradient components
-    for(unsigned int d = 0; d < shape.size(); ++d )
+    for(int d = 0; d < N; ++d )
     {
         convolveMultiArrayOneDimension(si, shape, src,
-				                       di, ElementAccessor(d, dest),
-				                       d, filter);
+                                       di, ElementAccessor(d, dest),
+                                       d, filter);
     }
 }
 
@@ -678,6 +698,394 @@ symmetricGradientMultiArray(triple<SrcIterator, SrcShape, SrcAccessor> const & s
 {
     symmetricGradientMultiArray(source.first, source.second, source.third,
                                 dest.first, dest.second);
+}
+
+
+/********************************************************/
+/*                                                      */
+/*            laplacianOfGaussianMultiArray             */
+/*                                                      */
+/********************************************************/
+
+/** \brief Calculate Laplacian of a N-dimensional arrays using Gaussian derivative filters.
+
+    This function computes the Laplacian the given N-dimensional
+    array with a sequence of second-derivative-of-Gaussian filters at the given
+    standard deviation <tt>sigma</tt>. Both source and destination arrays
+    are represented by iterators, shape objects and accessors. Both source and destination 
+    arrays must have scalar value_type. This function is implemented by calls to
+    \ref separableConvolveMultiArray() with the appropriate kernels, followed by summation.
+
+    <b> Declarations:</b>
+
+    pass arguments explicitly:
+    \code
+    namespace vigra {
+        template <class SrcIterator, class SrcShape, class SrcAccessor,
+                  class DestIterator, class DestAccessor>
+        void
+        laplacianOfGaussianMultiArray(SrcIterator siter, SrcShape const & shape, SrcAccessor src,
+                                      DestIterator diter, DestAccessor dest,
+                                      double sigma);
+    }
+    \endcode
+
+    use argument objects in conjunction with \ref ArgumentObjectFactories :
+    \code
+    namespace vigra {
+        template <class SrcIterator, class SrcShape, class SrcAccessor,
+                  class DestIterator, class DestAccessor>
+        void
+        laplacianOfGaussianMultiArray(triple<SrcIterator, SrcShape, SrcAccessor> const & source,
+                                      pair<DestIterator, DestAccessor> const & dest,
+                                      double sigma);
+    }
+    \endcode
+
+    <b> Usage:</b>
+
+    <b>\#include</b> \<<a href="multi__convolution_8hxx-source.html">vigra/multi_convolution.hxx</a>\>
+
+    \code
+    MultiArray<3, float> source(shape);
+    MultiArray<3, float> laplacian(shape);
+    ...
+    // compute Laplacian at scale sigma
+    laplacianOfGaussianMultiArray(srcMultiArrayRange(source), destMultiArray(laplacian), sigma);
+    \endcode
+
+    <b> Required Interface:</b>
+
+    see \ref separableConvolveMultiArray(), in addition:
+
+    \code
+    int dimension = 0;
+    VectorElementAccessor<DestAccessor> elementAccessor(0, dest);
+    \endcode
+
+    \see separableConvolveMultiArray()
+*/
+doxygen_overloaded_function(template <...> void laplacianOfGaussianMultiArray)
+
+template <class SrcIterator, class SrcShape, class SrcAccessor,
+          class DestIterator, class DestAccessor>
+void
+laplacianOfGaussianMultiArray(SrcIterator si, SrcShape const & shape, SrcAccessor src,
+                              DestIterator di, DestAccessor dest, double sigma )
+{ 
+    using namespace functor;
+    
+    typedef typename DestAccessor::value_type DestType;
+    typedef typename NumericTraits<DestType>::RealPromote KernelType;
+    typedef typename AccessorTraits<KernelType>::default_accessor DerivativeAccessor;
+
+    static const int N = SrcShape::static_size;
+    
+    vigra_precondition(sigma > 0.0, "laplacianOfGaussianMultiArray(): Scale must be positive.");
+
+    Kernel1D<KernelType> gauss;
+    gauss.initGaussian(sigma);
+    
+    MultiArray<N, KernelType> derivative(shape);
+
+    // compute 2nd derivatives and sum them up
+    for(int d = 0; d < N; ++d )
+    {
+        ArrayVector<Kernel1D<KernelType> > kernels(N, gauss);
+        kernels[d].initGaussianDerivative(sigma, 2);
+        if(d == 0)
+        {
+            separableConvolveMultiArray( si, shape, src, 
+                                         di, dest, kernels.begin());
+        }
+        else
+        {
+            separableConvolveMultiArray( si, shape, src, 
+                                         derivative.traverser_begin(), DerivativeAccessor(), 
+                                         kernels.begin());
+            combineTwoMultiArrays(di, shape, dest, derivative.traverser_begin(), DerivativeAccessor(), 
+                                  di, dest, Arg1() + Arg2());
+        }
+    }
+}
+
+template <class SrcIterator, class SrcShape, class SrcAccessor,
+          class DestIterator, class DestAccessor>
+inline void
+laplacianOfGaussianMultiArray(triple<SrcIterator, SrcShape, SrcAccessor> const & source,
+                            pair<DestIterator, DestAccessor> const & dest, double sigma )
+{
+    laplacianOfGaussianMultiArray( source.first, source.second, source.third,
+                                   dest.first, dest.second, sigma );
+}
+
+/********************************************************/
+/*                                                      */
+/*              hessianOfGaussianMultiArray             */
+/*                                                      */
+/********************************************************/
+
+/** \brief Calculate Hessian matrix of a N-dimensional arrays using Gaussian derivative filters.
+
+    This function computes the Hessian matrix the given scalar N-dimensional
+    array with a sequence of second-derivative-of-Gaussian filters at the given
+    standard deviation <tt>sigma</tt>. Both source and destination arrays
+    are represented by iterators, shape objects and accessors. The destination array must 
+    have a vector valued element type with N*(N+1)/2 elements (it represents the
+    upper triangular part of the symmetric Hessian matrix). This function is implemented by calls to
+    \ref separableConvolveMultiArray() with the appropriate kernels.
+
+    <b> Declarations:</b>
+
+    pass arguments explicitly:
+    \code
+    namespace vigra {
+        template <class SrcIterator, class SrcShape, class SrcAccessor,
+                  class DestIterator, class DestAccessor>
+        void
+        hessianOfGaussianMultiArray(SrcIterator siter, SrcShape const & shape, SrcAccessor src,
+                                    DestIterator diter, DestAccessor dest,
+                                    double sigma);
+    }
+    \endcode
+
+    use argument objects in conjunction with \ref ArgumentObjectFactories :
+    \code
+    namespace vigra {
+        template <class SrcIterator, class SrcShape, class SrcAccessor,
+                  class DestIterator, class DestAccessor>
+        void
+        hessianOfGaussianMultiArray(triple<SrcIterator, SrcShape, SrcAccessor> const & source,
+                                    pair<DestIterator, DestAccessor> const & dest,
+                                    double sigma);
+    }
+    \endcode
+
+    <b> Usage:</b>
+
+    <b>\#include</b> \<<a href="multi__convolution_8hxx-source.html">vigra/multi_convolution.hxx</a>\>
+
+    \code
+    MultiArray<3, float> source(shape);
+    MultiArray<3, TinyVector<float, 6> > dest(shape);
+    ...
+    // compute Hessian at scale sigma
+    hessianOfGaussianMultiArray(srcMultiArrayRange(source), destMultiArray(dest), sigma);
+    \endcode
+
+    <b> Required Interface:</b>
+
+    see \ref separableConvolveMultiArray(), in addition:
+
+    \code
+    int dimension = 0;
+    VectorElementAccessor<DestAccessor> elementAccessor(0, dest);
+    \endcode
+
+    \see separableConvolveMultiArray(), vectorToTensorMultiArray()
+*/
+doxygen_overloaded_function(template <...> void hessianOfGaussianMultiArray)
+
+template <class SrcIterator, class SrcShape, class SrcAccessor,
+          class DestIterator, class DestAccessor>
+void
+hessianOfGaussianMultiArray(SrcIterator si, SrcShape const & shape, SrcAccessor src,
+                            DestIterator di, DestAccessor dest, double sigma )
+{ 
+    typedef typename DestAccessor::value_type DestType;
+    typedef typename DestType::value_type     DestValueType;
+    typedef typename NumericTraits<DestValueType>::RealPromote KernelType;
+
+    static const int N = SrcShape::static_size;
+    static const int M = N*(N+1)/2;
+    
+    for(int k=0; k<N; ++k)
+        if(shape[k] <=0)
+            return;
+
+    vigra_precondition(M == dest.size(di),
+        "hessianOfGaussianMultiArray(): Wrong number of channels in output array.");
+
+    vigra_precondition(sigma > 0.0, "hessianOfGaussianMultiArray(): Scale must be positive.");
+
+    Kernel1D<KernelType> gauss;
+    gauss.initGaussian(sigma);
+
+    typedef VectorElementAccessor<DestAccessor> ElementAccessor;
+
+    // compute elements of the Hessian matrix
+    for(int b=0, i=0; i<N; ++i)
+    {
+        for(int j=i; j<N; ++j, ++b)
+        {
+            ArrayVector<Kernel1D<KernelType> > kernels(N, gauss);
+            if(i == j)
+            {
+                kernels[i].initGaussianDerivative(sigma, 2);
+            }
+            else
+            {
+                kernels[i].initGaussianDerivative(sigma, 1);
+                kernels[j].initGaussianDerivative(sigma, 1);
+            }
+            separableConvolveMultiArray(si, shape, src, di, ElementAccessor(b, dest),
+                                        kernels.begin());
+        }
+    }
+}
+
+template <class SrcIterator, class SrcShape, class SrcAccessor,
+          class DestIterator, class DestAccessor>
+inline void
+hessianOfGaussianMultiArray(triple<SrcIterator, SrcShape, SrcAccessor> const & source,
+                            pair<DestIterator, DestAccessor> const & dest, double sigma )
+{
+    hessianOfGaussianMultiArray( source.first, source.second, source.third,
+                                 dest.first, dest.second, sigma );
+}
+
+namespace detail {
+
+template<int N, class VectorType>
+struct StructurTensorFunctor
+{
+    typedef typename VectorType result_type;
+    typedef typename VectorType::value_type ValueType;
+    
+    template <class T>
+    VectorType operator()(T const & in) const
+    {
+        VectorType res;
+        for(int b=0, i=0; i<N; ++i)
+        {
+            for(int j=i; j<N; ++j, ++b)
+            {
+                res[b] = detail::RequiresExplicitCast<ValueType>::cast(in[i]*in[j]);
+            }
+        }
+        return res;
+    }
+};
+
+} // namespace detail
+
+/********************************************************/
+/*                                                      */
+/*               structureTensorMultiArray              */
+/*                                                      */
+/********************************************************/
+
+/** \brief Calculate th structure tensor of a multi-dimensional arrays.
+
+    This function computes the gradient (outer product) tensor for each element
+    of the given N-dimensional array with first-derivative-of-Gaussian filters at 
+    the given <tt>innerScale</tt>, followed by Gaussian smoothing at <tt>outerScale</tt>.
+    Both source and destination arrays are represented by iterators, shape objects and 
+    accessors. The destination array must have a vector valued pixel type with 
+    N*(N+1)/2 elements (it represents the upper triangular part of the symmetric 
+    structure tensor matrix). If the source array is also vector valued, the 
+    resulting structure tensor is the sum of the individual tensors for each channel.
+    This function is implemented by calls to
+    \ref separableConvolveMultiArray() with the appropriate kernels.
+
+    <b> Declarations:</b>
+
+    pass arguments explicitly:
+    \code
+    namespace vigra {
+        template <class SrcIterator, class SrcShape, class SrcAccessor,
+                  class DestIterator, class DestAccessor>
+        void
+        structureTensorMultiArray(SrcIterator siter, SrcShape const & shape, SrcAccessor src,
+                                  DestIterator diter, DestAccessor dest,
+                                  double innerScale, double outerScale);
+    }
+    \endcode
+
+    use argument objects in conjunction with \ref ArgumentObjectFactories :
+    \code
+    namespace vigra {
+        template <class SrcIterator, class SrcShape, class SrcAccessor,
+                  class DestIterator, class DestAccessor>
+        void
+        structureTensorMultiArray(triple<SrcIterator, SrcShape, SrcAccessor> const & source,
+                                  pair<DestIterator, DestAccessor> const & dest,
+                                  double innerScale, double outerScale);
+    }
+    \endcode
+
+    <b> Usage:</b>
+
+    <b>\#include</b> \<<a href="multi__convolution_8hxx-source.html">vigra/multi_convolution.hxx</a>\>
+
+    \code
+    MultiArray<3, RGBValue<float> > source(shape);
+    MultiArray<3, TinyVector<float, 6> > dest(shape);
+    ...
+    // compute structure tensor at scales innerScale and outerScale
+    structureTensorMultiArray(srcMultiArrayRange(source), destMultiArray(dest), innerScale, outerScale);
+    \endcode
+
+    <b> Required Interface:</b>
+
+    see \ref separableConvolveMultiArray(), in addition:
+
+    \code
+    int dimension = 0;
+    VectorElementAccessor<DestAccessor> elementAccessor(0, dest);
+    \endcode
+
+    \see separableConvolveMultiArray(), vectorToTensorMultiArray()
+*/
+doxygen_overloaded_function(template <...> void structureTensorMultiArray)
+
+template <class SrcIterator, class SrcShape, class SrcAccessor,
+          class DestIterator, class DestAccessor>
+void
+structureTensorMultiArray(SrcIterator si, SrcShape const & shape, SrcAccessor src,
+                          DestIterator di, DestAccessor dest, 
+                          double innerScale, double outerScale)
+{ 
+    static const int N = SrcShape::static_size;
+    static const int M = N*(N+1)/2;
+    
+    typedef typename DestAccessor::value_type DestType;
+    typedef typename DestType::value_type     DestValueType;
+    typedef typename NumericTraits<DestValueType>::RealPromote KernelType;
+    typedef TinyVector<KernelType, N> GradientVector;
+    typedef typename AccessorTraits<GradientVector>::default_accessor GradientAccessor;
+
+    for(int k=0; k<N; ++k)
+        if(shape[k] <=0)
+            return;
+
+    vigra_precondition(M == dest.size(di),
+        "structureTensorMultiArray(): Wrong number of channels in output array.");
+
+    vigra_precondition(innerScale > 0.0 && outerScale >= 0.0,
+         "structureTensorMultiArray(): Scale must be positive.");
+
+    MultiArray<N, GradientVector> gradient(shape);
+    gaussianGradientMultiArray(si, shape, src, 
+                               gradient.traverser_begin(), GradientAccessor(), 
+                               innerScale);
+
+    transformMultiArray(gradient.traverser_begin(), shape, GradientAccessor(), 
+                        di, dest, 
+                        detail::StructurTensorFunctor<N, DestType>());
+
+    gaussianSmoothMultiArray(di, shape, dest, di, dest, outerScale);
+}
+
+template <class SrcIterator, class SrcShape, class SrcAccessor,
+          class DestIterator, class DestAccessor>
+inline void
+structureTensorMultiArray(triple<SrcIterator, SrcShape, SrcAccessor> const & source,
+                          pair<DestIterator, DestAccessor> const & dest, 
+                          double innerScale, double outerScale)
+{
+    structureTensorMultiArray( source.first, source.second, source.third,
+                               dest.first, dest.second, innerScale, outerScale );
 }
 
 //@}
