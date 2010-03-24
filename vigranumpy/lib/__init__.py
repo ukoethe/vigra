@@ -105,3 +105,32 @@ def _genWatershedsUnionFind():
 
 _genWatershedsUnionFind()
 del _genWatershedsUnionFind
+
+# define tensor convenience functions
+def _genTensorConvenienceFunctions():
+    def hessianOfGaussianEigenvalues(image, scale, out = None):
+        '''Compute the eigenvalues of the Hessian of Gaussian at the given scale
+           for a scalar image or volume.
+           
+           Calls :func:`hessianOfGaussian` and :func:`tensorEigenvalues`.
+        '''
+
+        return filters.tensorEigenvalues(filters.hessianOfGaussian(image, scale), out=out)
+    
+    hessianOfGaussianEigenvalues.__module__ = 'vigra.filters'
+    filters.hessianOfGaussianEigenvalues = hessianOfGaussianEigenvalues
+
+    def structureTensorEigenvalues(image, innerScale, outerScale, out = None):
+        '''Compute the eigenvalues of the structure tensor at the given scales
+           for a scalar or multi-channel image or volume.
+           
+           Calls :func:`structureTensor` and :func:`tensorEigenvalues`.
+        '''
+
+        return filters.tensorEigenvalues(filters.structureTensor(image, innerScale, outerScale), out=out)
+    
+    structureTensorEigenvalues.__module__ = 'vigra.filters'
+    filters.structureTensorEigenvalues = structureTensorEigenvalues
+
+_genTensorConvenienceFunctions()
+del _genTensorConvenienceFunctions

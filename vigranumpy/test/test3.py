@@ -46,14 +46,13 @@ def test_structureTensor():
     assert(res.shape==img_scalar_f.shape + (3,))
 	
 def test_simpleSharpening():
-    res = simpleSharpening(img_scalar_f)
+    res = simpleSharpening2D(img_scalar_f)
     
 def test_gaussianSharpening():
-    res = gaussianSharpening(img_scalar_f)
+    res = gaussianSharpening2D(img_scalar_f)
     
 def test_convolution():
     krnl = gaussianKernel(0.5)
-
     
     k2_ = Kernel2D()
     k2_.initDisk(10)

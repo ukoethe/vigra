@@ -27,7 +27,6 @@ VIGRA_ADD_NUMPY_MODULE(sampling
 VIGRA_ADD_NUMPY_MODULE(filters SOURCES
     kernel.cxx
     convolution.cxx
-    vigranumpymulticonvolution.cxx
     filters.cxx
     tensors.cxx
     morphology.cxx

@@ -40,10 +40,8 @@
 #include <vigra/numpy_array.hxx>
 #include <vigra/numpy_array_converters.hxx>
 #include <vigra/noise_normalization.hxx>
+#include <vigra/mathutil.hxx>
 
-#include <cmath>
-
-#include "tensors.hxx"
 namespace python = boost::python;
 
 namespace vigra

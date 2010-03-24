@@ -104,7 +104,7 @@ def test_Region2Crack():
     checkShape(res,img_scalar_i)
     
 def test_transforms():
-    res = distanceTransform2D(img_scalar_i)
+    res = distanceTransform2D(img_scalar_f)
     checkShape(img_scalar_i, res)
     #print >> sys.stderr, res.dtype,
     checkType(res, np.float32)
@@ -179,7 +179,7 @@ def test_edges():
     assert(img_multi_f.shape[1] == res.shape[1])
     checkType(res, np.float32)
     
-    res = tensorTrace2D(img_multi_f)
+    res = tensorTrace(img_multi_f)
     assert(img_multi_f.shape[0]== res.shape[0])
     assert(img_multi_f.shape[1] == res.shape[1])
     checkType(res, np.float32)

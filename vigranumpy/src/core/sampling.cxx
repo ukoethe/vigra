@@ -42,13 +42,10 @@
 #include <vigra/basicgeometry.hxx>
 #include <vigra/resizeimage.hxx>
 #include <vigra/splines.hxx>
+#include <vigra/mathutil.hxx>
 #include <vigra/multi_resize.hxx>
 #include <vigra/splineimageview.hxx>
 #include <vigra/resampling_convolution.hxx>
-
-#include <cmath>
-
-#include "tensors.hxx"
 
 namespace python = boost::python;
 

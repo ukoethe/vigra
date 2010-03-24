@@ -40,8 +40,8 @@
 #include <vigra/numpy_array_converters.hxx>
 #include <vigra/flatmorphology.hxx>
 #include <vigra/multi_morphology.hxx>
-
-#include <cmath>
+#include <vigra/distancetransform.hxx>
+#include <vigra/multi_distance.hxx>
 
 namespace python = boost::python;
 
@@ -286,6 +286,30 @@ NumpyAnyArray pythonDiscRankOrderFilterWithMask(NumpyArray<3, Multiband<PixelTyp
     return res;
 }
 
+template < class PixelType, typename DestPixelType >
+NumpyAnyArray 
+pythonDistanceTransform2D(NumpyArray<2, Singleband<PixelType> > image,
+                          PixelType background, 
+                          int norm,
+                          NumpyArray<2, Singleband<DestPixelType> > res = python::object())
+{
+    res.reshapeIfEmpty(image.shape(), "distanceTransform2D(): Output array has wrong shape.");
+    
+    distanceTransform(srcImageRange(image), destImage(res), background, norm);
+    return res;
+}
+
+template < class VoxelType >
+NumpyAnyArray 
+pythonDistanceTransform3D(NumpyArray<3, Singleband<VoxelType> > volume, 
+                          bool background,
+                          NumpyArray<3, Singleband<VoxelType> > res=python::object())
+{
+    res.reshapeIfEmpty(volume.shape(), "distanceTransform3D(): Output array has wrong shape.");
+    
+    separableMultiDistance(srcMultiArrayRange(volume), destMultiArray(res), background);
+    return res;
+}
 
 void defineMorphology()
 {
@@ -496,6 +520,39 @@ void defineMorphology()
         registerConverters(&pythonDiscRankOrderFilterWithMask<UInt8>),
         (arg("image"), arg("mask"), arg("radius"), arg("rank"), arg("out")=object()));
 
+    def("distanceTransform2D",
+        registerConverters(&pythonDistanceTransform2D<float, float>),
+        (arg("image"), 
+         arg("background")=0, 
+         arg("norm")=2,
+         arg("out")=python::object()),
+        "For all background pixels, calculate the distance to the nearest object or contour. "
+        "The label of the pixels to be considered background in the source image is passed "
+        "in the parameter 'background'. "
+        "Source pixels with other labels will be considered objects. "
+        "In the destination image, all pixels corresponding to background will be assigned "
+        "the their distance value, all pixels corresponding to objects will be assigned 0.\n\n"
+        "The 'norm' parameter gives the distance norm to use.\n\n"
+        "For details see distanceTransform_ in the vigra C++ documentation.\n");
+
+        def("distanceTransform2D",
+        registerConverters(&pythonDistanceTransform2D<UInt8,float>),
+        (arg("image"), 
+         arg("background")=0, 
+         arg("norm")=2,
+         arg("out")=python::object()));
+
+    def("distanceTransform3D",
+        registerConverters(&pythonDistanceTransform3D<float>),
+        (arg("array"), arg("background"), arg("out")=python::object()),
+        "For all background voxels, calculate the distance to the nearest object or contour."
+        "The label of the voxels to be considered background in the source volume is passed "
+        "in the parameter 'background'. "
+        "Source voxels with other labels will be considered objects. "
+        "In the destination volume, all voxels corresponding to background will be assigned "
+        "their distance value, all voxels corresponding to objects will be assigned 0.\n"
+        "\n"
+        "For more details see separableMultiDistance_ in the vigra C++ documentation.\n");
 }
 
 } // namespace vigra

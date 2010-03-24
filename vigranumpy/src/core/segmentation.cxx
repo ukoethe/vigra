@@ -46,7 +46,9 @@
 #include <vigra/watersheds3d.hxx>
 #include <vigra/seededregiongrowing3d.hxx>
 
+#include <string>
 #include <cmath>
+#include <ctype.h> // tolower()
 
 namespace python = boost::python;
 
@@ -335,7 +337,7 @@ pythonWatersheds2D(NumpyArray<2, Singleband<PixelType> > image,
         }
         else
         {
-            FindMinMax< npy_int32 > minmax;
+            FindMinMax< npy_uint32 > minmax;
             inspectImage(srcImageRange(seeds), minmax);
             maxRegionLabel = minmax.max;
         }
@@ -412,12 +414,13 @@ pythonWatersheds3D(NumpyArray<3, Singleband<PixelType> > image,
         
         if(!haveSeeds)
         {
-            // determine local minima
+            maxRegionLabel = 0;
+            
+            // determine seeds
             // FIXME: implement localMinima() for volumes
             typedef NeighborCode3DTwentySix Neighborhood;
             typedef Neighborhood::Direction Direction;
             
-            MultiArray<3, UInt8> minima(image.shape());
             MultiArrayShape<3>::type p(0,0,0);
             
             for(p[2]=0; p[2]<image.shape(2); ++p[2])
@@ -447,17 +450,20 @@ pythonWatersheds3D(NumpyArray<3, Singleband<PixelType> > image,
                             }
                         }
                         if(minimumCount == totalCount)
-                            minima[p] = 1;
+                        {
+                            seeds[p] = ++maxRegionLabel;
+                        }
+                        else
+                        {
+                            seeds[p] = 0;
+                        }
                     }
                 }
             }
-
-            maxRegionLabel = labelVolumeWithBackground(srcMultiArrayRange(minima), destMultiArray(seeds), 
-                                                       NeighborCode3DSix(), 0);
         }
         else
         {
-            FindMinMax< npy_int32 > minmax;
+            FindMinMax< npy_uint32 > minmax;
             inspectMultiArray(srcMultiArrayRange(seeds), minmax);
             maxRegionLabel = minmax.max;
         }

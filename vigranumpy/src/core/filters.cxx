@@ -38,104 +38,30 @@
 
 #include <vigra/numpy_array.hxx>
 #include <vigra/numpy_array_converters.hxx>
-#include <vigra/boundarytensor.hxx>
-#include <vigra/distancetransform.hxx>
-#include <vigra/multi_distance.hxx>
+#include <vigra/nonlineardiffusion.hxx>
 #include <vigra/symmetry.hxx>
 
-#include <cmath>
-
-#include "tensors.hxx"
 namespace python = boost::python;
 
 namespace vigra
 {
-namespace { void DUMMY_FUNCTION(int, int, int, int, int, int, int, int, int, int) {} }
 
-
-template < class PixelType>
-NumpyAnyArray pythonEigHessian2d(NumpyArray<2,Singleband<PixelType> > image, double scale,
-                                 NumpyArray<3,Singleband<PixelType>  > res)
+template <class PixelType>
+NumpyAnyArray 
+pythonNonlinearDiffusion2D(NumpyArray<3, Multiband<PixelType> > image, 
+                           double edgeThreshold, double scale,
+                           NumpyArray<3, Multiband<float> > res=python::object())
 {
-    //reshape if empty
-    res.reshapeIfEmpty(MultiArrayShape<3>::type(image.shape(0),image.shape(1),2));
-
-    MultiArray<3,PixelType> hessian(MultiArrayShape<3>::type(image.shape(0),image.shape(1),3));
-
-    hessianOfGaussian(image, hessian, scale);
-
-    eigenValuesPerPixel(hessian,res);
-
+	res.reshapeIfEmpty(image.shape(), "nonlinearDiffusion2D(): Output array has wrong shape.");
+    for(int k=0; k<image.shape(2); ++k)
+    {
+        MultiArrayView<2, float, StridedArrayTag> bres = res.bindOuter(k);
+        nonlinearDiffusion(srcImageRange(image.bindOuter(k)), 
+                           destImage(bres), 
+                           DiffusivityFunctor< double >(edgeThreshold), scale);
+    }
     return res;
 }
-
-template<class PixelType>
-NumpyAnyArray pythonEigStructureTensor2d(NumpyArray<2,Singleband<PixelType> > image, double innerScale,double outerScale,
-                                         NumpyArray<3,Singleband<PixelType> > res)
-{
-    //reshape output
-    res.reshapeIfEmpty(MultiArrayShape<3>::type(image.shape(0),image.shape(1),2));
-
-    MultiArray<3,PixelType> st(MultiArrayShape<3>::type(image.shape(0),image.shape(1), 3));
-
-    structureTensor(image,st,innerScale,outerScale);
-
-    eigenValuesPerPixel(st,res);
-    return res;
-}
-
-template<class PixelType>
-NumpyAnyArray pythonGaussianSmooth2d(NumpyArray<2,Singleband<PixelType> > image, double scale,
-                                     NumpyArray<2,Singleband<PixelType> > res)
-{
-    //reshape output
-    res.reshapeIfEmpty(image.shape());
-
-    gaussianSmoothMultiArray(srcMultiArrayRange(image), destMultiArray(res), scale);
-   
-
-    return res;
-}
-
-template < class VoxelType >
-NumpyAnyArray pythonDistanceTransform3D(NumpyArray<3, Singleband<VoxelType> > volume, 
-                                  bool background,
-                                  NumpyArray<3, Singleband<VoxelType> > res=python::object())
-{
-    res.reshapeIfEmpty(volume.shape(), "distanceTransform3D(): Output array has wrong shape.");
-    
-    separableMultiDistance(srcMultiArrayRange(volume),
-        destMultiArray(res), background);
-    return res;
-}
-
-template < class PixelType>
-NumpyAnyArray pythonRieszTransformOfLOG2D(NumpyArray<2, Singleband<PixelType> > image,
-                                    double scale, unsigned int xorder,
-                                    unsigned int yorder,
-                                    NumpyArray<2, Singleband<PixelType> > res = python::object())
-{
-    res.reshapeIfEmpty(MultiArrayShape<2>::type(image.shape(0), image.shape(1)), "rieszTransformOfLOG2D(): Output array has wrong shape.");    
-    
-    rieszTransformOfLOG(srcImageRange(image), destImage(res),
-        scale, xorder, yorder);
-     
-    return res;
-}
-
-template < class PixelType, typename DestPixelType >
-NumpyAnyArray pythonDistanceTransform2D(NumpyArray<2, Singleband<PixelType> > image,
-                                  PixelType background, 
-                                  int norm,
-                                  NumpyArray<2, Singleband<DestPixelType> > res = python::object())
-{
-    res.reshapeIfEmpty(MultiArrayShape<2>::type(image.shape(0), image.shape(1)), "distanceTransform2D(): Output array has wrong shape.");
-    distanceTransform(srcImageRange(image), destImage(res), background,
-        norm);
-    return res;
-}
-
-
 
 template < class SrcPixelType >
 NumpyAnyArray pythonRadialSymmetryTransform2D(NumpyArray<2, Singleband<SrcPixelType> > image,
@@ -148,73 +74,16 @@ NumpyAnyArray pythonRadialSymmetryTransform2D(NumpyArray<2, Singleband<SrcPixelT
 }
 
 
-
 void defineFilters2D()
 {
     using namespace python;
-
-    def("eigHessian2d",
-        registerConverters(&pythonEigHessian2d<float>),
-        (arg("image"), arg("scale"), arg("out")=object()),
-        "computes the eigenvalues of the Hessian in each pixel of an image."
-        "\n"
-        "The 'scale' parameter gives the scale of 2nd derivative filter.\n"
-       );
-    def("eigStructureTensor2d",
-        registerConverters(&pythonEigStructureTensor2d<float>),
-        (arg("image"), arg("scale"), arg("out")=object()),
-        "computes the eigenvalues of the structure tensor in each pixel of an image."
-        "\n"
-        "The innerScale parameter gives the scale of the gradient filter."
-        "The outerScale parameter gives the outer scale of the smoothing filter\n"
-       );
-    def("gaussianSmooth2d",
-        registerConverters(&pythonGaussianSmooth2d<float>),
-        (arg("image"), arg("scale"), arg("out")=object()),
-        "computes the gradient magnitude in each pixel of an image.\n"
-        "\n"
-        "The scale parameter gives the scale of the derivative filter.\n"
-       );
-
-    def("distanceTransform3D",
-        registerConverters(&pythonDistanceTransform3D<npy_int32>),
-        (arg("array"), arg("background"),
-         arg("out")=python::object()),
-        "For all background pixels, calculate the distance to the nearest object or contour."
-        "The label of the pixels to be considered background in the source image is passed "
-        "in the parameter 'background'."
-        "Source pixels with other labels will be considered objects."
-        "In the destination image, all pixels corresponding to background will be assigned "
-        "the their distance value, all pixels corresponding to objects will be assigned 0.\n"
-        "\n"
-        "For more details see separableMultiDistance_ in the vigra C++ documentation.\n");
-
-    def("rieszTransformOfLOG2D",
-        registerConverters(&pythonRieszTransformOfLOG2D<float>),        // also multiband
-        (arg("image"), arg("scale"), arg("xorder"), arg("yorder"),arg("out")=python::object()),
-        "Calculate Riesz transforms of the Laplacian of Gaussian.\n\n"
-        "For details see rieszTransformOfLOG_ in the vigra C++ documentation.\n");
-
-    def("distanceTransform2D",
-        registerConverters(&pythonDistanceTransform2D<npy_int32, float>),
-        (arg("image"), 
-         arg("background")=0, 
-         arg("norm")=2,
-         arg("out")=python::object()),
-        "For all background pixels, calculate the distance to the nearest object or contour. "
-        "The label of the pixels to be considered background in the source image is passed "
-        "in the parameter 'background'. "
-        "Source pixels with other labels will be considered objects. "
-        "In the destination image, all pixels corresponding to background will be assigned "
-        "the their distance value, all pixels corresponding to objects will be assigned 0.\n\n"
-        "The norm parameter gives the distance norm to use.\n\n"
-        "For details see distanceTransform_ in the vigra C++ documentation.\n");
-    def("distanceTransform2D",
-        registerConverters(&pythonDistanceTransform2D<UInt8,float>),
-        (arg("image"), 
-         arg("background")=0, 
-         arg("norm")=2,
-         arg("out")=python::object()));
+    
+    def("nonlinearDiffusion", 
+        registerConverters(&pythonNonlinearDiffusion2D<float>),
+        (arg("image"), arg("edgeThreshold"), arg("scale")),
+        "Perform edge-preserving smoothing at the given scale."
+        "\n\n"
+        "For details see nonlinearDiffusion_ in the vigra C++ documentation.\n");
 
     def("radialSymmetryTransform2D",
         registerConverters(&pythonRadialSymmetryTransform2D<float>),
@@ -228,7 +97,6 @@ void defineFilters2D()
 
 void defineKernels();
 void defineConvolutionFunctions();
-void defineMultiConvolutionFunctions();
 void defineMorphology();
 void defineTensor();
 
@@ -243,7 +111,6 @@ BOOST_PYTHON_MODULE_INIT(filters)
     defineFilters2D();
     defineKernels();
     defineConvolutionFunctions();
-    defineMultiConvolutionFunctions();
     defineMorphology();
     defineTensor();
 }
