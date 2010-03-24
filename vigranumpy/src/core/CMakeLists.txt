@@ -1,8 +1,3 @@
-IF(HDF5_FOUND)
-    SET(VIGRANUMPY_IMPEX_LIBRARIES vigraimpex ${HDF5_LIBRARIES})
-ELSE()
-    SET(VIGRANUMPY_IMPEX_LIBRARIES vigraimpex)
-ENDIF(HDF5_FOUND)
 
 # note special treatment of target vigranumpy_core: 
 # module name is automatically changed into vigranumpycore
