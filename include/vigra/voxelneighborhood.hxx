@@ -98,6 +98,12 @@ inline AtVolumeBorder isAtVolumeBorder(int x, int y, int z, int width, int heigh
                                              ? RearBorder
                                              : NotAtBorder));
 }
+
+inline AtVolumeBorder isAtVolumeBorder(Diff3D const & p, Diff3D const & shape)
+{
+    return isAtVolumeBorder(p[0], p[1], p[2], shape[0], shape[1], shape[2]);
+}
+
 /** \brief Find out whether a voxel is at a scan-order relevant volume border.
     This function checks if \a x == 0 or \a y == 0 or \a z == \a 0 and returns the
         appropriate value of \ref vigra::AtVolumeBorder, or zero when the voxel is
