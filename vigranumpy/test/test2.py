@@ -53,26 +53,26 @@ def test_resample():
     
     
 def test_resize():
-    i2=resizeImageNoInterpolation(image,destSize=(image.shape[0]+10,image.shape[1]+10))
-    i2=resizeImageNoInterpolation(image,destSize=(image.shape[0],image.shape[1]))
+    i2=resizeImageNoInterpolation(image,shape=(image.shape[0]+10,image.shape[1]+10))
+    i2=resizeImageNoInterpolation(image,shape=(image.shape[0],image.shape[1]))
     checkAboutSame(i2,image)
 
-    i2=resizeImageCatmullRomInterpolation(image,destSize=(image.shape[0]+10,image.shape[1]+10))
-    i2=resizeImageCatmullRomInterpolation(image,destSize=(image.shape[0],image.shape[1]))
+    i2=resizeImageCatmullRomInterpolation(image,shape=(image.shape[0]+10,image.shape[1]+10))
+    i2=resizeImageCatmullRomInterpolation(image,shape=(image.shape[0],image.shape[1]))
     checkAboutSame(i2,image)
 
-    i2=resizeImageCoscotInterpolation( image,destSize=(image.shape[0]+10,image.shape[1]+10))
-    i2=resizeImageCoscotInterpolation( image,destSize=(image.shape[0],image.shape[1]))
+    i2=resizeImageCoscotInterpolation( image,shape=(image.shape[0]+10,image.shape[1]+10))
+    i2=resizeImageCoscotInterpolation( image,shape=(image.shape[0],image.shape[1]))
     checkAboutSame(i2,image)
 
-    i2=resizeImageLinearInterpolation( image,destSize=(image.shape[0]+10,image.shape[1]+10))
-    i2=resizeImageLinearInterpolation( image,destSize=(image.shape[0],image.shape[1]))
+    i2=resizeImageLinearInterpolation( image,shape=(image.shape[0]+10,image.shape[1]+10))
+    i2=resizeImageLinearInterpolation( image,shape=(image.shape[0],image.shape[1]))
     checkAboutSame(i2,image)
 
     i2=resizeImageSplineInterpolation(
-        image,destSize=(image.shape[0]+10,image.shape[1]+10),splineOrder=4)
+        image,shape=(image.shape[0]+10,image.shape[1]+10),order=4)
     i2=resizeImageSplineInterpolation(
-        image,destSize=(image.shape[0],image.shape[1]), splineOrder=4)
+        image,shape=(image.shape[0],image.shape[1]), order=4)
     checkAboutSame(i2,image)
 
 def test_2DMorphology():
