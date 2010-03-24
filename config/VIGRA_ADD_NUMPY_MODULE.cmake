@@ -96,7 +96,7 @@ FUNCTION(VIGRA_ADD_NUMPY_MODULE target)
         ADD_CUSTOM_COMMAND(
             TARGET ${TARGET_NAME}
             POST_BUILD
-            COMMAND ${CMAKE_COMMAND}
-            ARGS -E copy_if_different ${loc} ${vigranumpy_tmp_dir}/)
+            COMMAND ${CMAKE_COMMAND} ARGS -E copy_if_different ${loc} ${vigranumpy_tmp_dir}/
+            COMMENT "Copying module to temporary module directory")
     ENDIF()
 ENDFUNCTION(VIGRA_ADD_NUMPY_MODULE)
