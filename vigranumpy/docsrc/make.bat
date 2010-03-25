@@ -4,7 +4,8 @@ REM Command file for Sphinx documentation
 
 set SPHINXBUILD=sphinx-build
 set BUILDDIR=..\doc
-set ALLSPHINXOPTS=-d %BUILDDIR%/doctrees %SPHINXOPTS% .
+set ALLSPHINXOPTS=-d %BUILDDIR%/doctrees -D pngmath_dvipng_args=\['-D 1000'\, '-bg Transparent'\]
+%SPHINXOPTS% .
 if NOT "%PAPER%" == "" (
 	set ALLSPHINXOPTS=-D latex_paper_size=%PAPER% %ALLSPHINXOPTS%
 ) else (
