@@ -404,7 +404,7 @@ void seededRegionGrowing(SrcImageIterator srcul,
     SeedRgPixelHeap pheap;
     int cneighbor;
 
-    typedef Neighborhood::Direction Direction;
+    typedef typename Neighborhood::Direction Direction;
     int directionCount = Neighborhood::DirectionCount;
     
     Point2D pos(0,0);

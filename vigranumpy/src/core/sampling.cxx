@@ -561,6 +561,8 @@ template <class SplineView>
 python::class_<SplineView> &
 defSplineView(char const * name)
 {
+    using namespace python;
+    
     typedef typename SplineView::value_type Value;
     typedef typename SplineView::difference_type Shape;
     
