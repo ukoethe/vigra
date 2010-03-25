@@ -97,6 +97,8 @@ void vigraMain(matlab::OutputArray outputs, matlab::InputArray inputs){
 
 
     double                      CostThreshold   =  inputs.getScalar<double>("CostThreshold", v_default(-1.0));
+    if(CostThreshold >= 0.0)
+        SRGcrack = (SRGType)(SRGcrack | StopAtThreshold);
 
     //Allocate space for outputArray.
     MultiArrayView<3,outType>   out3D           = outputs.createMultiArray      <3,outType>   (0, v_required(), in3D.shape());
@@ -157,7 +159,7 @@ void vigraMain(matlab::OutputArray outputs, matlab::InputArray inputs){
             seededRegionGrowing(    srcImageRange(in),
                                     srcImage(seed),
                                     destImage(out),
-                                    gradstat,SRGcrack );
+                                    gradstat,SRGcrack, FourNeighborCode(), CostThreshold );
             break;
         }
         case cP3_(SEED, VOLUME, 6):
@@ -175,7 +177,7 @@ void vigraMain(matlab::OutputArray outputs, matlab::InputArray inputs){
             seededRegionGrowing3D(  srcMultiArrayRange(in3D),
                                     srcMultiArray(seed3D),
                                     destMultiArray(out3D),
-                                    gradstat,CostThreshold, SRGcrack);
+                                    gradstat, SRGcrack, NeighborCode3DSix(), CostThreshold);
             break;
         }
         default:
