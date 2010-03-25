@@ -622,7 +622,7 @@ writeHDF5Impl(DestIterator d, Shape const & shape, const hid_t dataset_id, const
         buffer[k] = *d; 
         //std::cout << buffer[k] << " ";
     }
-	std::cout << std::endl;
+	//std::cout << std::endl;
     HDF5Handle mid1, mid2;
 
     // select hyperslabs
