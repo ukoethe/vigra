@@ -914,13 +914,13 @@ normalizedConvolveImage(SrcIterator src_ul, SrcIterator src_lr, SrcAccessor src_
 
                     if(first)
                     {
-                        sum = ak(xk) * src_acc(xxs);
+                        sum = detail::RequiresExplicitCast<SumType>::cast(ak(xk) * src_acc(xxs));
                         ksum = ak(xk);
                         first = false;
                     }
                     else
                     {
-                        sum += ak(xk) * src_acc(xxs);
+                        sum = detail::RequiresExplicitCast<SumType>::cast(sum + ak(xk) * src_acc(xxs));
                         ksum += ak(xk);
                     }
                 }
@@ -929,7 +929,8 @@ normalizedConvolveImage(SrcIterator src_ul, SrcIterator src_lr, SrcAccessor src_
             if(!first &&
                ksum != NumericTraits<KSumType>::zero())
             {
-                dest_acc.set(DestTraits::fromRealPromote((norm / ksum) * sum), xd);
+                dest_acc.set(DestTraits::fromRealPromote(
+                             detail::RequiresExplicitCast<SumType>::cast((norm / ksum) * sum)), xd);
             }
         }
     }
