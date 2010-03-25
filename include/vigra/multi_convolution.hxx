@@ -47,6 +47,7 @@
 #include "navigator.hxx"
 #include "metaprogramming.hxx"
 #include "multi_pointoperators.hxx"
+#include "functorexpression.hxx"
 
 namespace vigra
 {
