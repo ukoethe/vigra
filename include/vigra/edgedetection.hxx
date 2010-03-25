@@ -47,10 +47,12 @@
 #include "stdimagefunctions.hxx"
 #include "recursiveconvolution.hxx"
 #include "separableconvolution.hxx"
+#include "convolution.hxx"
 #include "labelimage.hxx"
 #include "mathutil.hxx"
 #include "pixelneighborhood.hxx"
 #include "linear_solve.hxx"
+#include "functorexpression.hxx"
 
 
 namespace vigra {
@@ -1164,32 +1166,34 @@ class Edgel
     value_type strength;
 
         /**
-        The edgel's orientation. This is the angle
+        The edgel's orientation. This is the clockwise angle in radians
         between the x-axis and the edge, so that the bright side of the
-        edge is on the right. The angle is measured
-        counter-clockwise in radians like this:
-
+        edge is on the left when one looks along the orientation vector. 
+        The angle is measured clockwise because the y-axis increases 
+        downwards (left-handed coordinate system):
 
         \code
 
   edgel axis
-      \  (bright side)
- (dark \
- side)  \ /__
-         \\  \ orientation angle
-          \  |
+       \  
+  (dark \  (bright side)
+  side)  \ 
+          \ 
            +------------> x-axis
-           |
-           |
-           |
-           |
+           |\    |
+           | \ /_/  orientation angle
+           |  \\
+           |   \
+           |   
     y-axis V
         \endcode
 
         So, for example a vertical edge with its dark side on the left
         has orientation PI/2, and a horizontal edge with dark side on top
-        has orientation 0. Obviously, the edge's orientation changes
+        has orientation PI. Obviously, the edge's orientation changes
         by PI if the contrast is reversed.
+        
+        Note that this convention changed as of VIGRA version 1.7.0.
 
         */
     value_type orientation;
@@ -1203,24 +1207,28 @@ class Edgel
     {}
 };
 
-template <class Image1, class Image2, class BackInsertable>
-void internalCannyFindEdgels(Image1 const & gx,
-                             Image1 const & gy,
-                             Image2 const & magnitude,
+template <class SrcIterator, class SrcAccessor, 
+          class MagnitudeImage, class BackInsertable>
+void internalCannyFindEdgels(SrcIterator ul, SrcAccessor grad,
+                             MagnitudeImage const & magnitude,
                              BackInsertable & edgels)
 {
-    typedef typename Image1::value_type PixelType;
+    typedef typename SrcAccessor::value_type PixelType;
+    typedef typename PixelType::value_type ValueType;
+
     double t = 0.5 / VIGRA_CSTD::sin(M_PI/8.0);
 
-    for(int y=1; y<gx.height()-1; ++y)
+    ul += Diff2D(1,1);
+    for(int y=1; y<magnitude.height()-1; ++y, ++ul.y)
     {
-        for(int x=1; x<gx.width()-1; ++x)
+        SrcIterator ix = ul;
+        for(int x=1; x<magnitude.width()-1; ++x, ++ix.x)
         {
-            PixelType gradx = gx(x,y);
-            PixelType grady = gy(x,y);
             double mag = magnitude(x, y);
             if(mag == 0.0)
                    continue;
+            ValueType gradx = grad.getComponent(ix, 0);
+            ValueType grady = grad.getComponent(ix, 1);
 
             int dx = (int)VIGRA_CSTD::floor(gradx*t/mag + 0.5);
             int dy = (int)VIGRA_CSTD::floor(grady*t/mag + 0.5);
@@ -1230,19 +1238,19 @@ void internalCannyFindEdgels(Image1 const & gx,
                 y1 = y - dy,
                 y2 = y + dy;
 
-            PixelType m1 = magnitude(x1, y1);
-            PixelType m3 = magnitude(x2, y2);
+            double m1 = magnitude(x1, y1);
+            double m3 = magnitude(x2, y2);
 
             if(m1 < mag && m3 <= mag)
             {
                 Edgel edgel;
 
                 // local maximum => quadratic interpolation of sub-pixel location
-                PixelType del = detail::RequiresExplicitCast<PixelType>::cast((m1 - m3) / 2.0 / (m1 + m3 - 2.0*mag));
+                double del = 0.5 * (m1 - m3) / (m1 + m3 - 2.0*mag);
                 edgel.x = Edgel::value_type(x + dx*del);
                 edgel.y = Edgel::value_type(y + dy*del);
                 edgel.strength = Edgel::value_type(mag);
-                double orientation = VIGRA_CSTD::atan2(-grady, gradx) - M_PI * 1.5;
+                double orientation = VIGRA_CSTD::atan2(grady, gradx) + 0.5*M_PI;
                 if(orientation < 0.0)
                     orientation += 2.0*M_PI;
                 edgel.orientation = Edgel::value_type(orientation);
@@ -1259,17 +1267,20 @@ void internalCannyFindEdgels(Image1 const & gx,
 /********************************************************/
 
 /** \brief Simple implementation of Canny's edge detector.
+    
+    The function can be called in two modes: If you pass a 'scale', it is assumed that the 
+    original image is scalar, and the Gaussian gradient is internally computed at the
+    given 'scale'. If the function is called without scale parameter, it is assumed that
+    the given image already contains the gradient (i.e. its value_type must be 
+    a vector of length 2).
 
-    This operator first calculates the gradient vector for each
-    pixel of the image using first derivatives of a Gaussian at the
-    given scale. Then a very simple non-maxima supression is performed:
+    On the basis of the gradient image, a simple non-maxima supression is performed:
     for each 3x3 neighborhood, it is determined whether the center pixel has
     larger gradient magnitude than its two neighbors in gradient direction
     (where the direction is rounded into octands). If this is the case,
     a new \ref Edgel is appended to the given vector of <TT>edgels</TT>. The subpixel
-    edgel position is determined by fitting a parabola
-    to the three gradient magnitude values
-    mentioned above. The sub-pixel location of the parabola's tip
+    edgel position is determined by fitting a parabola to the three gradient 
+    magnitude values mentioned above. The sub-pixel location of the parabola's tip
     and the gradient magnitude and direction (from the pixel center)
     are written in the newly created edgel.
 
@@ -1278,15 +1289,30 @@ void internalCannyFindEdgels(Image1 const & gx,
     pass arguments explicitly:
     \code
     namespace vigra {
+        // compute edgels from a gradient image
         template <class SrcIterator, class SrcAccessor, class BackInsertable>
-        void cannyEdgelList(SrcIterator ul, SrcIterator lr, SrcAccessor src,
-                            BackInsertable & edgels, double scale);
+        void 
+        cannyEdgelList(SrcIterator ul, SrcIterator lr, SrcAccessor src,
+                       BackInsertable & edgels);
+
+        // compute edgels from a scaler image (determine gradient internally at 'scale')
+        template <class SrcIterator, class SrcAccessor, class BackInsertable>
+        void
+        cannyEdgelList(SrcIterator ul, SrcIterator lr, SrcAccessor src,
+                       BackInsertable & edgels, double scale);
     }
     \endcode
 
     use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
+        // compute edgels from a gradient image
+        template <class SrcIterator, class SrcAccessor, class BackInsertable>
+        void
+        cannyEdgelList(triple<SrcIterator, SrcIterator, SrcAccessor> src,
+                       BackInsertable & edgels);
+
+        // compute edgels from a scaler image (determine gradient internally at 'scale')
         template <class SrcIterator, class SrcAccessor, class BackInsertable>
         void
         cannyEdgelList(triple<SrcIterator, SrcIterator, SrcAccessor> src,
@@ -1333,36 +1359,15 @@ void internalCannyFindEdgels(Image1 const & gx,
 doxygen_overloaded_function(template <...> void cannyEdgelList)
 
 template <class SrcIterator, class SrcAccessor, class BackInsertable>
-void cannyEdgelList(SrcIterator ul, SrcIterator lr, SrcAccessor src,
-                        BackInsertable & edgels, double scale)
+void 
+cannyEdgelList(SrcIterator ul, SrcIterator lr, SrcAccessor src,
+               BackInsertable & edgels, double scale)
 {
-    int w = lr.x - ul.x;
-    int h = lr.y - ul.y;
+    typedef typename NumericTraits<typename SrcAccessor::value_type>::RealPromote TmpType;
+    BasicImage<TinyVector<TmpType, 2> > grad(lr-ul);
+    gaussianGradient(srcIterRange(ul, lr, src), destImage(grad), scale);
 
-    // calculate image gradients
-    typedef typename
-        NumericTraits<typename SrcAccessor::value_type>::RealPromote
-        TmpType;
-
-    BasicImage<TmpType> tmp(w,h), dx(w,h), dy(w,h);
-
-    Kernel1D<double> smooth, grad;
-
-    smooth.initGaussian(scale);
-    grad.initGaussianDerivative(scale, 1);
-
-    separableConvolveX(srcIterRange(ul, lr, src), destImage(tmp), kernel1d(grad));
-    separableConvolveY(srcImageRange(tmp), destImage(dx), kernel1d(smooth));
-
-    separableConvolveY(srcIterRange(ul, lr, src), destImage(tmp), kernel1d(grad));
-    separableConvolveX(srcImageRange(tmp), destImage(dy), kernel1d(smooth));
-
-    combineTwoImages(srcImageRange(dx), srcImage(dy), destImage(tmp),
-                     MagnitudeFunctor<TmpType>());
-
-
-    // find edgels
-    internalCannyFindEdgels(dx, dy, tmp, edgels);
+    cannyEdgelList(srcImageRange(grad), edgels);
 }
 
 template <class SrcIterator, class SrcAccessor, class BackInsertable>
@@ -1372,6 +1377,31 @@ cannyEdgelList(triple<SrcIterator, SrcIterator, SrcAccessor> src,
 {
     cannyEdgelList(src.first, src.second, src.third, edgels, scale);
 }
+
+template <class SrcIterator, class SrcAccessor, class BackInsertable>
+void 
+cannyEdgelList(SrcIterator ul, SrcIterator lr, SrcAccessor src,
+               BackInsertable & edgels)
+{
+    using namespace functor;
+    
+    typedef typename SrcAccessor::value_type SrcType;
+    typedef typename NumericTraits<typename SrcType::value_type>::RealPromote TmpType;
+    BasicImage<TmpType> magnitude(lr-ul);
+    transformImage(srcIterRange(ul, lr, src), destImage(magnitude), norm(Arg1()));
+
+    // find edgels
+    internalCannyFindEdgels(ul, src, magnitude, edgels);
+}
+
+template <class SrcIterator, class SrcAccessor, class BackInsertable>
+inline void
+cannyEdgelList(triple<SrcIterator, SrcIterator, SrcAccessor> src,
+               BackInsertable & edgels)
+{
+    cannyEdgelList(src.first, src.second, src.third, edgels);
+}
+
 
 /********************************************************/
 /*                                                      */
@@ -1979,23 +2009,26 @@ inline void cannyEdgeImageWithThinning(
 
 /********************************************************/
 
-template <class Image1, class Image2, class BackInsertable>
-void internalCannyFindEdgels3x3(Image1 const & grad,
-                                Image2 const & mask,
+template <class SrcIterator, class SrcAccessor, 
+          class MaskImage, class BackInsertable>
+void internalCannyFindEdgels3x3(SrcIterator ul, SrcAccessor grad,
+                                MaskImage const & mask,
                                 BackInsertable & edgels)
 {
-    typedef typename Image1::value_type PixelType;
+    typedef typename SrcAccessor::value_type PixelType;
     typedef typename PixelType::value_type ValueType;
 
-    for(int y=1; y<grad.height()-1; ++y)
+    ul += Diff2D(1,1);
+    for(int y=1; y<mask.height()-1; ++y, ++ul.y)
     {
-        for(int x=1; x<grad.width()-1; ++x)
+        SrcIterator ix = ul;
+        for(int x=1; x<mask.width()-1; ++x, ++ix.x)
         {
             if(!mask(x,y))
                 continue;
 
-            ValueType gradx = grad(x,y)[0];
-            ValueType grady = grad(x,y)[1];
+            ValueType gradx = grad.getComponent(ix, 0);
+            ValueType grady = grad.getComponent(ix, 1);
             double mag = hypot(gradx, grady);
             if(mag == 0.0)
                    continue;
@@ -2010,7 +2043,7 @@ void internalCannyFindEdgels3x3(Image1 const & grad,
                 for(int xx = -1; xx <= 1; ++xx)
                 {
                     double u = c*xx + s*yy;
-                    double v = norm(grad(x+xx, y+yy));
+                    double v = norm(grad(ix, Diff2D(xx, yy)));
                     l(1,0) = u;
                     l(2,0) = u*u;
                     ml += outer(l);
@@ -2029,7 +2062,7 @@ void internalCannyFindEdgels3x3(Image1 const & grad,
             edgel.x = Edgel::value_type(x + c*del);
             edgel.y = Edgel::value_type(y + s*del);
             edgel.strength = Edgel::value_type(mag);
-            double orientation = VIGRA_CSTD::atan2(-grady, gradx) - M_PI * 1.5;
+            double orientation = VIGRA_CSTD::atan2(grady, gradx) + 0.5*M_PI;
             if(orientation < 0.0)
                 orientation += 2.0*M_PI;
             edgel.orientation = Edgel::value_type(orientation);
@@ -2048,18 +2081,30 @@ void internalCannyFindEdgels3x3(Image1 const & grad,
 /** \brief Improved implementation of Canny's edge detector.
 
     This operator first computes pixels which are crossed by the edge using
-    cannyEdgeImageWithThinning(). The gradient magnitude in the 3x3 neighborhood of these
+    cannyEdgeImageWithThinning(). The gradient magnitudes in the 3x3 neighborhood of these
     pixels are then projected onto the normal of the edge (as determined
     by the gradient direction). The edgel's subpixel location is found by fitting a
     parabola through the 9 gradient values and determining the parabola's tip.
     A new \ref Edgel is appended to the given vector of <TT>edgels</TT>. Since the parabola
     is fitted to 9 points rather than 3 points as in cannyEdgelList(), the accuracy is higher.
+    
+    The function can be called in two modes: If you pass a 'scale', it is assumed that the 
+    original image is scalar, and the Gaussian gradient is internally computed at the
+    given 'scale'. If the function is called without scale parameter, it is assumed that
+    the given image already contains the gradient (i.e. its value_type must be 
+    a vector of length 2).
 
     <b> Declarations:</b>
 
     pass arguments explicitly:
     \code
     namespace vigra {
+        // compute edgels from a gradient image
+        template <class SrcIterator, class SrcAccessor, class BackInsertable>
+        void cannyEdgelList3x3(SrcIterator ul, SrcIterator lr, SrcAccessor src,
+                               BackInsertable & edgels);
+
+        // compute edgels from a scaler image (determine gradient internally at 'scale')
         template <class SrcIterator, class SrcAccessor, class BackInsertable>
         void cannyEdgelList3x3(SrcIterator ul, SrcIterator lr, SrcAccessor src,
                                BackInsertable & edgels, double scale);
@@ -2069,6 +2114,13 @@ void internalCannyFindEdgels3x3(Image1 const & grad,
     use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
+        // compute edgels from a gradient image
+        template <class SrcIterator, class SrcAccessor, class BackInsertable>
+        void
+        cannyEdgelList3x3(triple<SrcIterator, SrcIterator, SrcAccessor> src,
+                          BackInsertable & edgels);
+
+        // compute edgels from a scaler image (determine gradient internally at 'scale')
         template <class SrcIterator, class SrcAccessor, class BackInsertable>
         void
         cannyEdgelList3x3(triple<SrcIterator, SrcIterator, SrcAccessor> src,
@@ -2115,30 +2167,45 @@ void internalCannyFindEdgels3x3(Image1 const & grad,
 doxygen_overloaded_function(template <...> void cannyEdgelList3x3)
 
 template <class SrcIterator, class SrcAccessor, class BackInsertable>
-void cannyEdgelList3x3(SrcIterator ul, SrcIterator lr, SrcAccessor src,
-                        BackInsertable & edgels, double scale)
+void 
+cannyEdgelList3x3(SrcIterator ul, SrcIterator lr, SrcAccessor src,
+                  BackInsertable & edgels, double scale)
 {
     typedef typename NumericTraits<typename SrcAccessor::value_type>::RealPromote TmpType;
     BasicImage<TinyVector<TmpType, 2> > grad(lr-ul);
     gaussianGradient(srcIterRange(ul, lr, src), destImage(grad), scale);
 
-    UInt8Image edges(lr-ul);
-    cannyEdgeImageFromGradWithThinning(srcImageRange(grad), destImage(edges),
-                                       0.0, 1, false);
-
-    // find edgels
-    internalCannyFindEdgels3x3(grad, edges, edgels);
+    cannyEdgelList3x3(srcImageRange(grad), edgels);
 }
 
 template <class SrcIterator, class SrcAccessor, class BackInsertable>
 inline void
 cannyEdgelList3x3(triple<SrcIterator, SrcIterator, SrcAccessor> src,
-               BackInsertable & edgels, double scale)
+                  BackInsertable & edgels, double scale)
 {
     cannyEdgelList3x3(src.first, src.second, src.third, edgels, scale);
 }
 
+template <class SrcIterator, class SrcAccessor, class BackInsertable>
+void 
+cannyEdgelList3x3(SrcIterator ul, SrcIterator lr, SrcAccessor src,
+                  BackInsertable & edgels)
+{
+    UInt8Image edges(lr-ul);
+    cannyEdgeImageFromGradWithThinning(srcIterRange(ul, lr, src), destImage(edges),
+                                       0.0, 1, false);
 
+    // find edgels
+    internalCannyFindEdgels3x3(ul, src, edges, edgels);
+}
+
+template <class SrcIterator, class SrcAccessor, class BackInsertable>
+inline void
+cannyEdgelList3x3(triple<SrcIterator, SrcIterator, SrcAccessor> src,
+                  BackInsertable & edgels)
+{
+    cannyEdgelList3x3(src.first, src.second, src.third, edgels);
+}
 
 //@}
 

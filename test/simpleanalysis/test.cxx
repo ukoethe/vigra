@@ -587,8 +587,6 @@ struct EdgeDetectionTest
     {
         std::vector<vigra::Edgel> edgels;
         cannyEdgelList(srcImageRange(imgCanny), edgels, 1.0);
-        std::vector<vigra::Edgel> edgels3x3;
-        cannyEdgelList3x3(srcImageRange(imgCanny), edgels3x3, 1.0);
         int count = 0;
         for(unsigned int i=0; i<edgels.size(); ++i)
         {
@@ -596,7 +594,7 @@ struct EdgeDetectionTest
                 continue;  // ignore edgels that result from round off error during convolution
             ++count;
             should(edgels[i].x == edgels[i].y);
-            should(VIGRA_CSTD::fabs(edgels[i].orientation-M_PI*0.75) < 0.1);
+            should(VIGRA_CSTD::fabs(edgels[i].orientation-M_PI*0.25) < 0.1);
         }
         should(count == 75);
     }
@@ -612,7 +610,7 @@ struct EdgeDetectionTest
                 continue;  // ignore edgels that result from round off error during convolution
             ++count;
             should(edgels[i].x == edgels[i].y);
-            should(VIGRA_CSTD::fabs(edgels[i].orientation-M_PI*0.75) < 0.1);
+            should(VIGRA_CSTD::fabs(edgels[i].orientation-M_PI*0.25) < 0.1);
         }
         should(count == 38);
     }
