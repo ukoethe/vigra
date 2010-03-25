@@ -29,7 +29,8 @@ VIGRA_ADD_NUMPY_MODULE(filters SOURCES
    
 VIGRA_ADD_NUMPY_MODULE(analysis SOURCES
     segmentation.cxx
-    vigranumpyedgedetection.cxx
+    edgedetection.cxx
+    interestpoints.cxx
   VIGRANUMPY)
    
 VIGRA_ADD_NUMPY_MODULE(learning SOURCES
