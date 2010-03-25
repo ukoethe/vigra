@@ -136,6 +136,31 @@ pythonConvolveImage(NumpyArray<3, Multiband<PixelType> > image,
     return res;
 }
 
+template <class PixelType>
+NumpyAnyArray 
+pythonNormalizedConvolveImage(NumpyArray<3, Multiband<PixelType> > image,
+                              NumpyArray<3, Multiband<PixelType> > mask,
+                              TwoDKernel const & kernel, 
+                              NumpyArray<3, Multiband<PixelType> > res = python::object())
+{
+    vigra_precondition(mask.shape(2)==1 || mask.shape(2)==image.shape(2),
+               "normalizedConvolveImage(): mask image must either have 1 channel or as many as the input image");
+    vigra_precondition(mask.shape(0)==image.shape(0) && mask.shape(1)==image.shape(1),
+               "normalizedConvolveImage(): mask dimensions must be same as image dimensions");
+
+    res.reshapeIfEmpty(image.shape(), "normalizedConvolveImage(): Output array has wrong shape.");
+
+	for(int k=0;k<image.shape(2);++k)
+	{
+	    MultiArrayView<2, PixelType, StridedArrayTag> bimage = image.bindOuter(k);
+	    MultiArrayView<2, PixelType, StridedArrayTag> bmask = mask.bindOuter(mask.shape(2)==1?0:k);
+	    MultiArrayView<2, PixelType, StridedArrayTag> bres = res.bindOuter(k);
+	    normalizedConvolveImage(srcImageRange(bimage), srcImage(bmask), destImage(bres),
+	                            kernel2d(kernel));
+	}
+    return res;
+}
+
 template < class VoxelType, unsigned int ndim >
 NumpyAnyArray 
 pythonGaussianSmoothing(NumpyArray<ndim, Multiband<VoxelType> > volume,
@@ -359,7 +384,7 @@ void defineConvolutionFunctions()
         "  is performed (non-separable filtering). This is only applicable to 2D images.\n"
         "\n"
         "For details see separableConvolveMultiArray_ and "
-        "|StandardConvolution.convolveImage|_ in the vigra C++ documentation.\n\n");
+        "|StandardConvolution.convolveImage|_ in the vigra C++ documentation.\n");
 
     def("convolve", registerConverters(&pythonSeparableConvolveND_1Kernel<float,4>),
         (arg("volume"), arg("kernel"), arg("out")=python::object()));
@@ -371,7 +396,16 @@ void defineConvolutionFunctions()
         (arg("volume"), arg("kernels"), arg("out")=python::object()));
 
     def("convolve", registerConverters(&pythonConvolveImage<float>),
-              (arg("image"), arg("kernel"), arg("out") = python::object()));
+        (arg("image"), arg("kernel"), arg("out") = python::object()));
+
+    def("normalizedConvolveImage", registerConverters(&pythonNormalizedConvolveImage<float>),
+        (arg("image"), arg("mask"), arg("kernel"), arg("out") = python::object()),
+        "Perform normalized convolution of an image. If the image has multiple channels, "
+        "every channel is convolved independently. The 'mask' tells the algorithm "
+        "whether input pixels are valid (non-zero mask value) or not. Invalid pixels "
+        "are ignored in the convolution. The mask must have one channel (which is then "
+        "used for all channels input channels) or as many channels as the input image.\n\n"
+        "For details, see normalizedConvolveImage_ in the C++ documentation.\n");
 
     def("gaussianSmoothing",
         registerConverters(&pythonGaussianSmoothingIsotropic<float,3>),               

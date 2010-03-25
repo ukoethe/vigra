@@ -92,11 +92,11 @@ def test_3DMorphologyBinary():
     checkImages(i2,i3)
 
 def test_3DMorphologyGrayscale():
-    i2=multiGrayscaleErosion(volume256,radius=2)
-    i3=(256-multiGrayscaleDilation(256-volume256,radius=2))
+    i2=multiGrayscaleErosion(volume256,sigma=2)
+    i3=(256-multiGrayscaleDilation(256-volume256,sigma=2))
     checkImages(i2,i3)
-    i2=multiGrayscaleOpening(volume256,radius=2)
-    i3=(256-multiGrayscaleClosing(256-volume256,radius=2))
+    i2=multiGrayscaleOpening(volume256,sigma=2)
+    i3=(256-multiGrayscaleClosing(256-volume256,sigma=2))
     checkImages(i2,i3)
 
 def test_Noise():

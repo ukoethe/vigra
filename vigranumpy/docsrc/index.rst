@@ -58,10 +58,12 @@ following array classes::
                 RGBVolume
             Vector4Volume
             Vector6Volume
+    
+    ImagePyramid
 
 where indentation encodes inheritance. Below, we describe :class:`~vigra.Image`, 
-:class:`~vigra.ScalarImage`, and :class:`~vigra.RGBImage` in detail, the other 
-classes work analogously. The new array classes serve several purposes:
+:class:`~vigra.ScalarImage`, :class:`~vigra.RGBImage`, and  :class:`~vigra.ImagePyramid` 
+in detail, the other classes work analogously. The new array classes serve several purposes:
 
 * Semantic interpretation improves code readability.
 
@@ -121,6 +123,12 @@ Mapping between C++ types and Python types is controlled by the following two fu
 -------------
 
 .. autoclass:: vigra.RGBImage
+   :show-inheritance:
+   :members:
+
+-------------
+
+.. autoclass:: vigra.ImagePyramid
    :show-inheritance:
    :members:
    

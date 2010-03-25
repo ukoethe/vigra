@@ -13,8 +13,8 @@ img_scalar_f = at.ScalarImage(np.random.rand(100,200)*255,dtype=np.float32)
 img_multi_f = at.Vector3Image(np.random.rand(100,200,3)*255,dtype=np.float32)
  
 img_rgb_i = at.RGBImage(np.random.rand(100,200,3)*255,dtype=np.int32)
-img_scalar_i = at.ScalarImage(np.random.rand(100,200)*255,dtype=np.int32)
-img_scalar_i64 = at.ScalarImage(np.random.rand(199,199)*4095,dtype=np.int64)
+img_scalar_i = at.ScalarImage(np.random.rand(100,200)*255,dtype=np.uint32)
+img_scalar_i64 = at.ScalarImage(np.random.rand(199,199)*4095,dtype=np.uint64)
 img_scalar_ui8 = at.ScalarImage(np.random.rand(100,200)*255,dtype=np.uint8)
 img_multi_i = at.Vector3Image(np.random.rand(100,200,3)*255,dtype=np.int32)
 
@@ -98,7 +98,7 @@ def test_Region2Crack():
     checkType(res,res.dtype)
 
     regionImageToCrackEdgeImage(img_scalar_i64[0:100,0:100], 1, img_scalar_i64)
-    checkType(img_scalar_i64, np.int64)
+    checkType(img_scalar_i64, np.uint64)
     
     res = regionImageToEdgeImage(img_scalar_i)
     checkShape(res,img_scalar_i)
@@ -118,50 +118,50 @@ def test_transforms():
     checkType(res, np.float32)
 
 def test_cornerss():
-    res = cornerResponseFunction2D(img_scalar_f,1)
+    res = cornernessHarris(img_scalar_f,1)
     checkShape(img_scalar_f, res)
     checkType(res, np.float32)
     
-    res = foerstnerCornerDetector2D(img_scalar_f,2)
+    res = cornernessFoerstner(img_scalar_f,2)
     checkShape(img_scalar_f, res)
     checkType(res, np.float32)
     
-    res = rohrCornerDetector2D(img_scalar_f,0.5)
+    res = cornernessRohr(img_scalar_f,0.5)
     checkShape(img_scalar_f, res)
     checkType(res, np.float32)
     
-    res = beaudetCornerDetector2D(img_scalar_f,1)
+    res = cornernessBeaudet(img_scalar_f,1)
     checkShape(img_scalar_f, res)
     checkType(res, np.float32)
 
 def test_edges():    
     res = cannyEdgeImage(img_scalar_f, 1,128,255)
     checkShape(img_scalar_f, res)
-    checkType(res, np.float32)
+    checkType(res, np.uint8)
     
     res = cannyEdgeImageWithThinning(img_scalar_f, 1,128,255)
     checkShape(img_scalar_f, res)
-    checkType(res, np.float32)
+    checkType(res, np.uint8)
     
     res = shenCastanEdgeImage(img_scalar_f, 1,128,255)
     checkShape(img_scalar_f, res)
-    checkType(res, np.float32)
+    checkType(res, np.uint8)
     
     res = shenCastanCrackEdgeImage(img_scalar_f, 1,128,255)
     assert(img_scalar_f.shape[0]*2-1 == res.shape[0])
     assert(img_scalar_f.shape[1]*2-1 == res.shape[1])
     
-    res = removeShortEdges(img_scalar_i, 10, 0)
-    checkShape(img_scalar_f, res)
-    checkType(res, np.int32)
+    res = removeShortEdges(img_scalar_ui8, 10, 0)
+    checkShape(img_scalar_ui8, res)
+    checkType(res, np.uint8)
     
-    res = beautifyCrackEdgeImage(img_scalar_i,  1, 0)
-    checkShape(img_scalar_f, res)
-    checkType(res, np.int32)
+    res = beautifyCrackEdgeImage(img_scalar_ui8,  1, 0)
+    checkShape(img_scalar_ui8, res)
+    checkType(res, np.uint8)
     
-    res = closeGapsInCrackEdgeImage(img_scalar_i, 4)
-    checkShape(img_scalar_f, res)
-    checkType(res, np.int32)
+    res = closeGapsInCrackEdgeImage(img_scalar_ui8, 4)
+    checkShape(img_scalar_ui8, res)
+    checkType(res, np.uint8)
     
     res = boundaryTensor2D(img_scalar_f, 1)
     assert(img_scalar_f.shape[0]== res.shape[0])
