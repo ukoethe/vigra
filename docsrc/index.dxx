@@ -28,7 +28,9 @@
         <BR>&nbsp;&nbsp;&nbsp;<em>Segmentation and feature extraction algorithms</em>
     <LI> \ref Examples
         <BR>&nbsp;&nbsp;&nbsp;<em>Demonstration programs for VIGRA's usage </em>
-    <LI> <a href="../vigranumpy/index.html">vigranumpy</a>
+    <LI> \ref VigraMatlab
+        <BR>&nbsp;&nbsp;&nbsp;<em>VIGRA Matlab bindings</em>
+    <LI> <b><a href="../vigranumpy/index.html">vigranumpy</a></b>
         <BR>&nbsp;&nbsp;&nbsp;<em>VIGRA Python bindings</em>
     <LI> \ref CreditsChangelog
         <BR>&nbsp;&nbsp;&nbsp;<em>Who contributed what?</em>
@@ -507,6 +509,36 @@ of \ref AlgebraicField and \ref DivisionAlgebra.
 
 </ul>
 
+*/
+
+/** \page VigraMatlab Vigra Matlab
+
+    Matlab bindings (mex-files) for the most important VIGRA functions are located 
+    <tt>[vigra_src_dir]/src/matlab</tt>. To compile and install them, start Matlab, 
+    go into that directory and call the function buildVigraExtensions:
+    
+    \code
+    buildVigraExtensions('install_path')
+    \endcode
+    
+    If the compilation fails because includes or libraries are not found, you can 
+    provide additional search directories like this:
+    
+    \code
+    buildVigraExtensions('install_path', 'all', struct('flags', '-I/path/to/includes -L/path/to/libs'))
+    \endcode
+    
+    Additional compiler flags are specified likewise. After successful compilation, 
+    you can obtain a list of the available VIGRA functions by calling
+
+    \code
+    help vigraIndex
+    \endcode
+    
+    In the same way, you get documentation for the individual functions. More 
+    information about the glue code behind the bindings is available in 
+    <a href="documents/tutorial_reference.pdf">this report</a>.
+    
 */
 
 /** \namespace vigra

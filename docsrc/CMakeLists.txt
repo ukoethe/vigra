@@ -26,6 +26,9 @@ IF(DOXYGEN_FOUND AND PYTHONINTERP_FOUND)
 		COMMAND ${CMAKE_COMMAND} -E copy_if_different
 			${CMAKE_CURRENT_SOURCE_DIR}/../LICENSE.txt
 			${DOCDIR}/vigra/LICENSE.txt
+		COMMAND ${CMAKE_COMMAND} -E copy_if_different
+			${CMAKE_CURRENT_SOURCE_DIR}/../src/matlab/doc/tutorial_reference.pdf
+			${DOCDIR}/vigra/documents/tutorial_reference.pdf
 		COMMENT "Postprocessing html files")
 
 	INSTALL(DIRECTORY ${DOCDIR}/
