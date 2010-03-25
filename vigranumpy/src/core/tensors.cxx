@@ -353,7 +353,7 @@ void defineTensor()
         registerConverters(&pythonBoundaryTensor2D<float, float>),
         (arg("image"), arg("scale"),arg("out")=python::object()),
         "Calculate the boundary tensor for a scalar valued 2D image."
-        "For details see boundaryTensor_ in the vigra C++ documentation.");
+        "For details see boundaryTensor_ in the vigra C++ documentation.\n");
         
     /** Export of Kernel2D before
   def("gradientEnergyTensor2D",
@@ -366,7 +366,7 @@ void defineTensor()
         registerConverters(&pythonTensorEigenRepresentation2D<float,float>),
         (arg("image"),arg("out")=python::object()),
         "Calculate eigen representation of a symmetric 2x2 tensor.\n\n"
-        "For details see tensorEigenRepresentation_ in the vigra C++ documentation."
+        "For details see tensorEigenRepresentation_ in the vigra C++ documentation.\n"
         );
 
     def("vectorToTensor",
@@ -374,7 +374,7 @@ void defineTensor()
         (arg("image"),arg("out")=python::object()),
         "Turn a 2D or 3D vector valued image (e.g. the gradient image) into "
         "a tensor image by computing the outer product in every pixel.\n\n"
-        "For details see vectorToTensorMultiArray_ in the vigra C++ documentation.");
+        "For details see vectorToTensorMultiArray_ in the vigra C++ documentation.\n");
 
     def("vectorToTensor",
         registerConverters(&pythonVectorToTensor<float,3>),
@@ -384,7 +384,7 @@ void defineTensor()
         registerConverters(&pythonTensorTrace<float,2>),
         (arg("image"),arg("out")=python::object()),
         "Calculate the trace of a 2x2 or 3x3 tensor image.\n\n"
-        "For details see tensorTraceMultiArray_ in the vigra C++ documentation.");
+        "For details see tensorTraceMultiArray_ in the vigra C++ documentation.\n");
 
     def("tensorTrace",
         registerConverters(&pythonTensorTrace<float,3>),
@@ -394,7 +394,7 @@ void defineTensor()
         registerConverters(&pythonTensorDeterminant<float,2>),
         (arg("image"),arg("out")=python::object()),
         "Calculate the determinant of a 2x2 or 3x3 tensor image.\n\n"
-        "For details see tensorDeterminantMultiArray_ in the vigra C++ documentation.");
+        "For details see tensorDeterminantMultiArray_ in the vigra C++ documentation.\n");
 
     def("tensorDeterminant",
         registerConverters(&pythonTensorDeterminant<float,3>),
@@ -404,7 +404,7 @@ void defineTensor()
         registerConverters(&pythonTensorEigenvalues<float,2>),
         (arg("image"),arg("out")=python::object()),
         "Calculate the eigenvalues in each pixel/voxel of a 2x2 or 3x3 tensor image.\n\n"
-        "For details see tensorEigenvaluesMultiArray_ in the vigra C++ documentation.");
+        "For details see tensorEigenvaluesMultiArray_ in the vigra C++ documentation.\n");
 
     def("tensorEigenvalues",
         registerConverters(&pythonTensorEigenvalues<float,3>),
@@ -414,7 +414,7 @@ void defineTensor()
         registerConverters(&pythonHourGlassFilter2D<float,float>),
         (arg("image"), arg("sigma"), arg("rho"),arg("out")=python::object()),
         "Anisotropic tensor smoothing with the hourglass filter. \n\n"
-        "For details see hourGlassFilter_ in the vigra C++ documentation.");
+        "For details see hourGlassFilter_ in the vigra C++ documentation.\n");
  
  /* Wee, tons of errors here
     def("ellipticGaussian2D",

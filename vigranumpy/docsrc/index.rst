@@ -234,7 +234,7 @@ Noise Normalization
 -------------------
 
 The module vigra.noise provides noise estimation and normalization according to a
-method proposed by Förstner.
+method proposed by Foerstner.
 
 .. automodule:: vigra.noise
    :members:

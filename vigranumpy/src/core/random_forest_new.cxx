@@ -51,199 +51,231 @@ namespace vigra
 template<class FeatureType>
 OnlinePredictionSet<FeatureType>* pythonConstructOnlinePredictioSet(NumpyArray<2,FeatureType> features,int num_sets)
 {
-	return new OnlinePredictionSet<FeatureType>(features,num_sets);
+    return new OnlinePredictionSet<FeatureType>(features,num_sets);
 }
 
 template<class LabelType, class FeatureType>
 RandomForest<LabelType>*
 pythonConstructRandomForest(int treeCount,
-							int mtry,
-							int min_split_node_size,
-							int training_set_size,
-							float training_set_proportions,
-							bool sample_with_replacement,
-							bool sample_classes_individually,
-							bool prepare_online)
+                            int mtry,
+                            int min_split_node_size,
+                            int training_set_size,
+                            float training_set_proportions,
+                            bool sample_with_replacement,
+                            bool sample_classes_individually,
+                            bool prepare_online)
 
 {
-	RandomForestOptions options;
-	options.features_per_node(mtry).sample_with_replacement(sample_with_replacement).tree_count(treeCount).prepare_online_learning(prepare_online)
-	.min_split_node_size(min_split_node_size);
+    RandomForestOptions options;
+    options.features_per_node(mtry).sample_with_replacement(sample_with_replacement).tree_count(treeCount).prepare_online_learning(prepare_online)
+    .min_split_node_size(min_split_node_size);
 
 
-	if(training_set_size != 0)
-		options.samples_per_tree(training_set_size);
-	else
-		options.samples_per_tree(training_set_proportions);
+    if(training_set_size != 0)
+        options.samples_per_tree(training_set_size);
+    else
+        options.samples_per_tree(training_set_proportions);
 
-	if(sample_classes_individually)
-		options.use_stratification(RF_EQUAL);
+    if(sample_classes_individually)
+        options.use_stratification(RF_EQUAL);
 
-	RandomForest<LabelType>* rf = new RandomForest<LabelType>(options);
+    RandomForest<LabelType>* rf = new RandomForest<LabelType>(options);
 
-	return rf;
+    return rf;
 }
 
 template<class LabelType, class FeatureType>
 python::tuple
-pythonLearnRandomForestWithFeatureSelection(RandomForest<LabelType>* rf, 
-                                            NumpyArray<2,FeatureType> trainData, NumpyArray<2,LabelType> trainLabels)
+pythonLearnRandomForestWithFeatureSelection(RandomForest<LabelType> & rf, 
+                                            NumpyArray<2,FeatureType> trainData, 
+                                            NumpyArray<2,LabelType> trainLabels)
 {
-  VariableImportanceVisitor var_imp;
-   
-  double oob = rf->learn(trainData, trainLabels, create_visitor(var_imp));
-  std::cout << "out of bag: " << oob << std::endl;
-  
-  NumpyArray<2, double> varImp(MultiArrayShape<2>::type(var_imp.variable_importance_.shape(0),var_imp.variable_importance_.shape(1))); 
-  
-  for (int x=0;x<varImp.shape(0);x++)
-    for (int y=0;y<varImp.shape(1);y++)
-      varImp(x,y)= var_imp.variable_importance_(x,y);
+    VariableImportanceVisitor var_imp;
 
-  return python::make_tuple(oob, varImp);
+    double oob = rf.learn(trainData, trainLabels, create_visitor(var_imp));
+    std::cout << "out of bag: " << oob << std::endl;
+
+    NumpyArray<2, double> varImp(MultiArrayShape<2>::type(var_imp.variable_importance_.shape(0),
+                                                           var_imp.variable_importance_.shape(1))); 
+
+    for (int x=0;x<varImp.shape(0);x++)
+        for (int y=0;y<varImp.shape(1);y++)
+            varImp(x,y)= var_imp.variable_importance_(x,y);
+
+    return python::make_tuple(oob, varImp);
 }
 
 template<class LabelType, class FeatureType>
 double
-pythonLearnRandomForest(RandomForest<LabelType>* rf, NumpyArray<2,FeatureType> trainData, NumpyArray<2,LabelType> trainLabels)
+pythonLearnRandomForest(RandomForest<LabelType> & rf, 
+                        NumpyArray<2,FeatureType> trainData, 
+                        NumpyArray<2,LabelType> trainLabels)
 {
-  double oob = rf->learn(trainData, trainLabels);
+  double oob = rf.learn(trainData, trainLabels);
   std::cout << "out of bag: " << oob << std::endl;
 
   return oob;
 }
 
 template<class LabelType,class FeatureType>
-void pythonRFOnlineLearn(RandomForest<LabelType>* rf,NumpyArray<2,FeatureType> trainData,NumpyArray<2,LabelType> trainLabels,int startIndex,bool adjust_thresholds)
+void 
+pythonRFOnlineLearn(RandomForest<LabelType> & rf,
+                    NumpyArray<2,FeatureType> trainData,
+                    NumpyArray<2,LabelType> trainLabels,
+                    int startIndex,
+                    bool adjust_thresholds)
 {
-	Py_BEGIN_ALLOW_THREADS
-	rf->onlineLearn(trainData,trainLabels,startIndex,adjust_thresholds);
-	Py_END_ALLOW_THREADS
+    Py_BEGIN_ALLOW_THREADS
+    rf.onlineLearn(trainData, trainLabels, startIndex, adjust_thresholds);
+    Py_END_ALLOW_THREADS
 }
 
 template<class LabelType,class FeatureType>
-void pythonRFReLearnTree(RandomForest<LabelType>* rf,NumpyArray<2,FeatureType> trainData,NumpyArray<2,LabelType> trainLabels,int treeId)
+void 
+pythonRFReLearnTree(RandomForest<LabelType> & rf,
+                    NumpyArray<2,FeatureType> trainData,
+                    NumpyArray<2,LabelType> trainLabels,
+                    int treeId)
 {
-	Py_BEGIN_ALLOW_THREADS
-	rf->reLearnTree(trainData,trainLabels,treeId);
-	Py_END_ALLOW_THREADS
+    Py_BEGIN_ALLOW_THREADS
+    rf.reLearnTree(trainData,trainLabels,treeId);
+    Py_END_ALLOW_THREADS
 }
 
 template<class LabelType,class FeatureType>
-NumpyAnyArray pythonRFPredictLabels(RandomForest<LabelType>* rf,NumpyArray<2,FeatureType> testData,NumpyArray<2,LabelType> res)
+NumpyAnyArray 
+pythonRFPredictLabels(RandomForest<LabelType> const & rf,
+                      NumpyArray<2,FeatureType> testData,
+                      NumpyArray<2,LabelType> res)
 {
-	//construct result
-	res.reshapeIfEmpty(MultiArrayShape<2>::type(testData.shape(0),1),"Output array has wrong dimensions.");
-  rf->predictLabels(testData,res);
-	return res;
+    //construct result
+    res.reshapeIfEmpty(MultiArrayShape<2>::type(testData.shape(0),1),
+                       "Output array has wrong dimensions.");
+    rf.predictLabels(testData,res);
+    return res;
 }
 
 template<class LabelType, class FeatureType>
-NumpyAnyArray pythonRFPredictProbabilities(RandomForest<LabelType>* rf,NumpyArray<2,FeatureType> testData, NumpyArray<2,float> res)
+NumpyAnyArray 
+pythonRFPredictProbabilities(RandomForest<LabelType> & rf,
+                             NumpyArray<2,FeatureType> testData, 
+                             NumpyArray<2,float> res)
 {
-	//construct result
-	res.reshapeIfEmpty(MultiArrayShape<2>::type(testData.shape(0),rf->ext_param_.class_count_),"Output array has wrong dimensions.");
-	rf->predictProbabilities(testData,res);
-	return res;
+    //construct result
+    res.reshapeIfEmpty(MultiArrayShape<2>::type(testData.shape(0), rf.ext_param_.class_count_),
+                       "Output array has wrong dimensions.");
+    rf.predictProbabilities(testData,res);
+    return res;
 }
 
 template<class LabelType,class FeatureType>
-NumpyAnyArray pythonRFPredictProbabilitiesOnlinePredSet(RandomForest<LabelType>* rf,OnlinePredictionSet<FeatureType>& predSet,NumpyArray<2,float> res)
+NumpyAnyArray 
+pythonRFPredictProbabilitiesOnlinePredSet(RandomForest<LabelType> & rf,
+                                          OnlinePredictionSet<FeatureType> & predSet,
+                                          NumpyArray<2,float> res)
 {
-	//construct result
-	res.reshapeIfEmpty(MultiArrayShape<2>::type(predSet.features.shape(0),rf->ext_param_.class_count_),"Output array has wrong dimenstions.");
-	Py_BEGIN_ALLOW_THREADS
-	clock_t start=clock();
-	rf->predictProbabilities(predSet,res);
-	double duration=(clock()-start)/double(CLOCKS_PER_SEC);
-	std::cerr<<"Prediction Time: "<<duration<<std::endl;
-	Py_END_ALLOW_THREADS
-	return res;
+    //construct result
+    res.reshapeIfEmpty(MultiArrayShape<2>::type(predSet.features.shape(0),rf.ext_param_.class_count_),
+                       "Output array has wrong dimenstions.");
+    Py_BEGIN_ALLOW_THREADS
+    clock_t start=clock();
+    rf.predictProbabilities(predSet, res);
+    double duration=(clock()-start)/double(CLOCKS_PER_SEC);
+    std::cerr<<"Prediction Time: "<<duration<<std::endl;
+    Py_END_ALLOW_THREADS
+    return res;
 }
 
 void defineRandomForest_new()
 {
-	using namespace python;
+    using namespace python;
 
-	class_<OnlinePredictionSet<float> > pred_set_class("RF_OnlinePredictionSet",python::no_init);
-	pred_set_class.def("__init__",python::make_constructor(registerConverters(&pythonConstructOnlinePredictioSet<float>),
-														   boost::python::default_call_policies(),
-														   ( arg("features"))),
-														   "docu")
-	 .def("get_worsed_tree",&OnlinePredictionSet<float>::get_worsed_tree,
-	       "doku")
-	.def("invalidateTree",&OnlinePredictionSet<float>::reset_tree,
-	     (arg("treeId")),
-	     "doku");
+    class_<OnlinePredictionSet<float> > pred_set_class("RF_OnlinePredictionSet",python::no_init);
+    pred_set_class
+        .def("__init__",
+                python::make_constructor(registerConverters(&pythonConstructOnlinePredictioSet<float>),
+                                         boost::python::default_call_policies(),
+                                         (arg("features"))),
+                                         "docu")
 
-	enum_<RF_OptionTag>("RF_MTRY_SWITCH")
-		.value("RF_MTRY_LOG",RF_LOG)
-		.value("RF_MTRY_SQRT",RF_SQRT)
-		.value("RF_MTRY_ALL",RF_ALL);
+        .def("get_worsed_tree",&OnlinePredictionSet<float>::get_worsed_tree,
+           "doku")
+    
+        .def("invalidateTree",&OnlinePredictionSet<float>::reset_tree,
+         (arg("treeId")),
+         "doku")
+    ;
 
-	class_<RandomForest<UInt32> > rfclass_new("RandomForest_new",python::no_init);
-	rfclass_new
-		.def("__init__",python::make_constructor(registerConverters(&pythonConstructRandomForest<UInt32,float>),
-												 boost::python::default_call_policies(),
-												 ( arg("treeCount")=255,
-												   arg("mtry")=RF_SQRT,
-												   arg("min_split_node_size")=1,
-												   arg("training_set_size")=0,
-												   arg("training_set_proportions")=1.0,
-												   arg("sample_with_replacement")=true,
-												   arg("sample_classes_individually")=false,
-												   arg("prepare_online_learning")=false)),
-			 "Constructs a random Forest \n"
-			 "'treeCount' constrols the number of trees, that are created.\n"
-			 "See the vigra documentation for the meaning af the rest of the paremeters.")
-		.def("featureCount",
-    &RandomForest<UInt32>::column_count,
-			 "Returns the number of features the RandomForest works with.")
-		.def("labelCount",
-    &RandomForest<UInt32>::class_count,
-			 "Returns the number of labels, the RanfomForest knows.")
-		.def("treeCount",
-			 &RandomForest<UInt32>::tree_count,
-			 "Returns the 'treeCount', that was set when constructing the RandomForest.")
-		.def("predictLabels",
-			 registerConverters(&pythonRFPredictLabels<UInt32,float>),
-			 (arg("testData"), arg("out")=object()),
-			 "Predict labels on 'testData'."
-			 "The output is an array containing a labels for every test samples.")
-		.def("predictProbabilities",
-			 registerConverters(&pythonRFPredictProbabilities<UInt32,float>),
-			 (arg("testData"), arg("out")=object()),
-			 "Predict probabilities for different classes on 'testData'."
-			 "The output is an array containing a probability for every test sample and class.")
-		.def("predictProbabilities",
-			 registerConverters(&pythonRFPredictProbabilitiesOnlinePredSet<UInt32,float>),
-			 (arg("testData"), arg("out")=object()),
-			 "The output is an array containing a probability for every test sample and class.")
-    .def("learnRF",
-			 registerConverters(&pythonLearnRandomForest<UInt32,float>),
-			 (arg("trainData"), arg("trainLabels")),
-			 "Trains a random Forest using 'trainData' and 'trainLabels'.\n"
-			 "and returns the OOB. See the vigra documentation for the meaning af the rest of the paremeters.")
-    .def("reLearnTree",
-			 registerConverters(&pythonRFReLearnTree<UInt32,float>),
-	 (arg("trainData"), arg("trainLabels"), arg("treeId")),
-			 "Re-learn one tree of the forest using 'trainData' and 'trainLabels'.\n"
-			 "and returns the OOB. This might be helpful in an online learning setup to improve the classifier.")
-    .def("learnRFWithFeatureSelection",
-			 registerConverters(&pythonLearnRandomForestWithFeatureSelection<UInt32,float>),
-			 (arg("trainData"), arg("trainLabels")),
-			 "Train a random Forest using 'trainData' and 'trainLabels'.\n"
-			 "and returns the OOB and the Variable importance"
-			 "See the vigra documentation for the meaning af the rest of the paremeters.")
-		.def("onlineLearn",
-			 registerConverters(&pythonRFOnlineLearn<UInt32,float>),
-			 (arg("trainData"),arg("trainLabels"),arg("startIndex")),
-			 "Learn online, works only if forest has been created with prepare_online_learning=true\n"
-			 "Needs the old training data and the new appened, starting at startIndex")
+    enum_<RF_OptionTag>("RF_MTRY_SWITCH")
+        .value("RF_MTRY_LOG",RF_LOG)
+        .value("RF_MTRY_SQRT",RF_SQRT)
+        .value("RF_MTRY_ALL",RF_ALL);
 
-/*			.def("writeHDF5")
-		.def("readHDF5")*/
-		;
+    class_<RandomForest<UInt32> > rfclass_new("RandomForest_new",python::no_init);
+
+    rfclass_new
+        .def("__init__",python::make_constructor(registerConverters(&pythonConstructRandomForest<UInt32,float>),
+                                                 boost::python::default_call_policies(),
+                                                 ( arg("treeCount")=255,
+                                                   arg("mtry")=RF_SQRT,
+                                                   arg("min_split_node_size")=1,
+                                                   arg("training_set_size")=0,
+                                                   arg("training_set_proportions")=1.0,
+                                                   arg("sample_with_replacement")=true,
+                                                   arg("sample_classes_individually")=false,
+                                                   arg("prepare_online_learning")=false)),
+             "Constructs a RandomForest.\n\n"
+             "'treeCount' constrols the number of trees, that are created.\n\n"
+             "See RandomForest_ in the C++ documentation for the meaning af the rest of the paremeters.\n")
+        .def("featureCount",
+            &RandomForest<UInt32>::column_count,
+             "Returns the number of features the RandomForest works with.\n")
+        .def("labelCount",
+            &RandomForest<UInt32>::class_count,
+             "Returns the number of labels, the RandomForest knows.\n")
+        .def("treeCount",
+             &RandomForest<UInt32>::tree_count,
+             "Returns the 'treeCount', that was set when constructing the RandomForest.\n")
+        .def("predictLabels",
+             registerConverters(&pythonRFPredictLabels<UInt32,float>),
+             (arg("testData"), arg("out")=object()),
+             "Predict labels on 'testData'.\n\n"
+             "The output is an array containing a labels for every test samples.\n")
+        .def("predictProbabilities",
+             registerConverters(&pythonRFPredictProbabilities<UInt32,float>),
+             (arg("testData"), arg("out")=object()),
+             "Predict probabilities for different classes on 'testData'.\n\n"
+             "The output is an array containing a probability for every test sample and class.\n")
+        .def("predictProbabilities",
+             registerConverters(&pythonRFPredictProbabilitiesOnlinePredSet<UInt32,float>),
+             (arg("testData"), arg("out")=object()),
+             "The output is an array containing a probability for every test sample and class.\n")
+        .def("learnRF",
+             registerConverters(&pythonLearnRandomForest<UInt32,float>),
+             (arg("trainData"), arg("trainLabels")),
+             "Trains a random Forest using 'trainData' and 'trainLabels'.\n\n"
+             "and returns the OOB. See the vigra documentation for the meaning af the rest of the paremeters.\n")
+        .def("reLearnTree",
+             registerConverters(&pythonRFReLearnTree<UInt32,float>),
+            (arg("trainData"), arg("trainLabels"), arg("treeId")),
+             "Re-learn one tree of the forest using 'trainData' and 'trainLabels'.\n\n"
+             "and returns the OOB. This might be helpful in an online learning setup to improve the classifier.\n")
+        .def("learnRFWithFeatureSelection",
+             registerConverters(&pythonLearnRandomForestWithFeatureSelection<UInt32,float>),
+             (arg("trainData"), arg("trainLabels")),
+             "Train a random Forest using 'trainData' and 'trainLabels'.\n\n"
+             "and returns the OOB and the Variable importance"
+             "See the vigra documentation for the meaning af the rest of the paremeters.\n")
+        .def("onlineLearn",
+             registerConverters(&pythonRFOnlineLearn<UInt32,float>),
+             (arg("trainData"),arg("trainLabels"),arg("startIndex")),
+             "Learn online.\n\n"
+             "Works only if forest has been created with prepare_online_learning=true. "
+             "Needs the old training data and the new appened, starting at startIndex.\n\n")
+
+/*            .def("writeHDF5")
+        .def("readHDF5")*/
+        ;
 }
 
 } // namespace vigra
