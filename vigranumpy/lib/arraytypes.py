@@ -688,6 +688,176 @@ class RGBVolume(Vector3Volume):
              | NumpyArray<3, TinyVector<T, 3>, UnstridedArrayTag>,
              | NumpyArray<4, Multiband<T>, StridedArrayTag>""")
 
+
+#################################################################
+
+class ImagePyramid(list):
+    def __init__(self, lowestLevel, highestLevel, image, copyImageToLevel = 0):
+        ''' Create a new pyramid. 
+            The new pyramid levels range from 'lowestLevel' to 'highestLevel' (inclusive),
+            and the given 'image' is copied to 'copyImageToLevel'. The images at other 
+            levels are filled with zeros and sized so that the shape is reduced by half 
+            when going up (to higher levels), and doubled when going down. 
+        '''
+        list.__init__(self)
+        self._lowestLevel = 0
+        self._highestLevel = -1
+        self.resize(lowestLevel, highestLevel, image, copyImageToLevel)
+
+    @property
+    def lowestLevel(self):
+        '''The pyramids lowest level.'''
+        return self._lowestLevel
+    
+    @property
+    def highestLevel(self):
+        '''The pyramids highest level (inclusive).'''
+        return self._highestLevel
+    
+    def __getitem__(self, level):
+        '''Get the image at 'level'.'''
+        if level < self.lowestLevel or level > self.highestLevel:
+            raise RuntimeError("ImagePyramid[level]: level out of range.")
+        return list.__getitem__(self, level - self.lowestLevel)
+    
+    def __setitem__(self, level, image):
+        '''Copy the data of the given 'image' to the image at 'level'. '''
+        self[level][...] = image[...]
+
+    def clear(self):
+        '''Clear the pyramid (delete all images). '''
+        list.__delslice__(self, 0, len(self))
+        self._lowestLevel_ = 0
+        self._highestLevel_ = -1
+        
+    def reduce(self, fromLevel, toLevel, centerValue = 0.4):
+        '''Reduce the image at 'fromLevel' to 'toLevel', using the Burt smoothing filter
+           with the given 'centerValue'. fromLevel must be smaller than toLevel.
+           
+           For more details, see pyramidReduceBurtFilter_ in the C++ documentation.
+        '''
+        # FIXME: This should be implemented in C++
+        # FIXME: This should be implemented for arbitrary dimensions
+        import filters
+        
+        if fromLevel > toLevel:
+            raise RuntimeError("ImagePyramid::reduce(): fromLevel <= toLevel required.")
+        if fromLevel < self.lowestLevel  or toLevel > self.highestLevel:
+            raise RuntimeError("ImagePyramid::reduce(): fromLevel and toLevel must be " + \
+                                "between lowest and highest level (inclusive).")
+        smooth = filters.burtFilterKernel(0.25 - 0.5*centerValue)
+        for k in range(fromLevel, toLevel):
+            i = filters.convolve(self[k], smooth)
+            self[k+1] = i[::2,::2]
+
+    def expand(self, fromLevel, toLevel, centerValue = 0.4):
+        '''Reduce the image at 'fromLevel' to 'toLevel', using the Burt smoothing filter
+           with the given 'centerValue'. fromLevel must be larger than toLevel.
+           
+           For more details, see pyramidExpandBurtFilter_ in the C++ documentation.
+        '''
+        # FIXME: This should be implemented in C++
+        # FIXME: This should be implemented for arbitrary dimensions
+        import filters
+        
+        if fromLevel < toLevel:
+            raise RuntimeError("ImagePyramid::reduce(): fromLevel >= toLevel required.")
+        if toLevel < self.lowestLevel  or fromLevel > self.highestLevel:
+            raise RuntimeError("ImagePyramid::reduce(): fromLevel and toLevel must be " + \
+                                "between lowest and highest level (inclusive).")
+
+        smooth1 = filters.explicitlyKernel(-1, 1, numpy.array([0.5 - centerValue, 2.0*centerValue, 0.5 - centerValue]))
+        smooth2 = filters.explicitlyKernel(-1, 0, numpy.array([0.5, 0.5]));
+        for k in range(fromLevel, toLevel, -1):
+            filters.convolve(self[k], (smooth1, smooth1), out=self[k-1][::2,::2])
+            filters.convolve(self[k], (smooth1, smooth2), out=self[k-1][::2,1::2])
+            filters.convolve(self[k], (smooth2, smooth1), out=self[k-1][1::2,::2])
+            filters.convolve(self[k], (smooth2, smooth2), out=self[k-1][1::2,1::2])
+
+    def reduceLaplacian(self, fromLevel, toLevel, centerValue = 0.4):
+        '''Reduce the image at 'fromLevel' to 'toLevel', using the Burt smoothing filter
+           with the given 'centerValue', and compute Laplacian images for the levels
+           fromLevel ... toLevel-1. fromLevel must be smaller than toLevel.
+           
+           For more details, see pyramidReduceBurtLaplacian_ in the C++ documentation.
+        '''
+        # FIXME: This should be implemented in C++
+        # FIXME: This should be implemented for arbitrary dimensions
+        import filters
+        
+        if fromLevel > toLevel:
+            raise RuntimeError("ImagePyramid::reduce(): fromLevel <= toLevel required.")
+        if fromLevel < self.lowestLevel  or toLevel > self.highestLevel:
+            raise RuntimeError("ImagePyramid::reduce(): fromLevel and toLevel must be " + \
+                                "between lowest and highest level (inclusive).")
+        smooth = filters.burtFilterKernel(0.25 - 0.5*centerValue)
+        smooth1 = filters.explicitlyKernel(-1, 1, numpy.array([0.5 - centerValue, 2.0*centerValue, 0.5 - centerValue]))
+        smooth2 = filters.explicitlyKernel(-1, 0, numpy.array([0.5, 0.5]));
+        for k in range(fromLevel, toLevel):
+            i = filters.convolve(self[k], smooth)
+            self[k+1] = i[::2,::2]
+            filters.convolve(self[k+1], (smooth1, smooth1), out=i[::2,::2])
+            filters.convolve(self[k+1], (smooth1, smooth2), out=i[::2,1::2])
+            filters.convolve(self[k+1], (smooth2, smooth1), out=i[1::2,::2])
+            filters.convolve(self[k+1], (smooth2, smooth2), out=i[1::2,1::2])
+            self[k] = i - self[k]
+
+    def expandLaplacian(self, fromLevel, toLevel, centerValue = 0.4):
+        '''Expand the image at 'fromLevel' to 'toLevel', using the Burt smoothing filter
+           with the given 'centerValue', and reconstruct the images for the levels
+           fromLevel-1 ... toLevel from their Laplacian images. fromLevel must be larger than toLevel.
+           
+           For more details, see pyramidExpandBurtLaplacian_ in the C++ documentation.
+        '''
+        # FIXME: This should be implemented in C++
+        # FIXME: This should be implemented for arbitrary dimensions
+        import filters
+        
+        if fromLevel < toLevel:
+            raise RuntimeError("ImagePyramid::reduce(): fromLevel >= toLevel required.")
+        if toLevel < self.lowestLevel  or fromLevel > self.highestLevel:
+            raise RuntimeError("ImagePyramid::reduce(): fromLevel and toLevel must be " + \
+                                "between lowest and highest level (inclusive).")
+
+        smooth1 = filters.explicitlyKernel(-1, 1, numpy.array([0.5 - centerValue, 2.0*centerValue, 0.5 - centerValue]))
+        smooth2 = filters.explicitlyKernel(-1, 0, numpy.array([0.5, 0.5]));
+        for k in range(fromLevel, toLevel, -1):
+            i = self[k-1].__class__(self[k-1].shape, dtype = self[k-1].dtype)
+            filters.convolve(self[k], (smooth1, smooth1), out=i[::2,::2])
+            filters.convolve(self[k], (smooth1, smooth2), out=i[::2,1::2])
+            filters.convolve(self[k], (smooth2, smooth1), out=i[1::2,::2])
+            filters.convolve(self[k], (smooth2, smooth2), out=i[1::2,1::2])
+            self[k-1] = i - self[k-1]
+
+    def resize(self, lowestLevel, highestLevel, image, copyImageToLevel = 0):
+        ''' Resize the pyramid, throwing the previous contents away. 
+            The new pyramid levels range from 'lowestLevel' to 'highestLevel' (inclusive),
+            and the given 'image' is copied to 'copyImageToLevel'. The images at other 
+            levels are filled with zeros and sized so that the shape is reduced by half 
+            when going up (to higher levels), and doubled when going down. 
+        '''
+        if lowestLevel > highestLevel:
+            raise RuntimeError("ImagePyramid::resize(): lowestLevel <= highestLevel required.")
+        if lowestLevel > copyImageToLevel or copyImageToLevel > highestLevel:
+            raise RuntimeError("ImagePyramid::resize(): copyImageToLevel must be " + \
+                                "between lowest and highest level (inclusive).")
+            
+        self.clear()
+        
+        self.append(image.__class__(image, dtype=image.dtype))
+
+        for i in range(copyImageToLevel, highestLevel):
+            newShape = [int((k + 1) / 2) for k in list.__getitem__(self, -1).shape]
+            self.append(image.__class__(newShape, dtype=image.dtype))
+        for i in range(copyImageToLevel, lowestLevel, -1):
+            newShape = [2*k-1 for k in list.__getitem__(self, 0).shape]
+            self.insert(0, image.__class__(newShape, dtype=image.dtype))
+
+        self._lowestLevel = lowestLevel
+        self._highestLevel = highestLevel
+             
+#################################################################
+
 def _registerArrayTypes():
     from vigranumpycore import registerPythonArrayType
     
@@ -710,3 +880,4 @@ def _registerArrayTypes():
     registerPythonArrayType("NumpyArray<4, Multiband<*> >", Volume, checkVolume)
 
 _registerArrayTypes()
+del _registerArrayTypes
