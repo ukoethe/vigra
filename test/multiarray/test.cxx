@@ -40,7 +40,10 @@
 #include "vigra/basicimageview.hxx"
 #include "vigra/navigator.hxx"
 #include "vigra/multi_pointoperators.hxx"
+#include "vigra/tensorutilities.hxx"
+#include "vigra/multi_tensorutilities.hxx"
 #include "vigra/functorexpression.hxx"
+#include "vigra/random.hxx"
 
 using namespace vigra;
 using namespace vigra::functor;
@@ -1501,6 +1504,48 @@ struct MultiArrayPointoperatorsTest
         shouldEqualSequence(vol2.begin(), vol2.end(), desired_vol2);
 
     }
+    
+    void testTensorUtilities()
+    {
+        MultiArrayShape<2>::type shape(3,4);
+        int size = shape[0]*shape[1];
+        
+        MultiArray<2, TinyVector<double, 2> > vector(shape), rvector(shape);
+        MultiArray<2, TinyVector<double, 3> > tensor1(shape), tensor2(shape), rtensor(shape);
+        MultiArray<2, double > trace(shape), rtrace(shape);
+        MultiArray<2, double > determinant(shape), rdet(shape);
+        
+        for(int k=0; k<size; ++k)
+        {
+            for(int l=0; l<2; ++l)
+                vector[k][l] = randomMT19937().uniform();
+            for(int l=0; l<3; ++l)
+                tensor1[k][l] = randomMT19937().uniform();
+            rdet[k] = tensor1[k][0]*tensor1[k][2] - sq(tensor1[k][1]);
+        }
+        
+        vectorToTensor(srcImageRange(vector), destImage(rtensor));
+        vectorToTensorMultiArray(srcMultiArrayRange(vector), destMultiArray(tensor2));
+        shouldEqualSequence(tensor2.data(), tensor2.data()+size, rtensor.data());
+                
+        tensorTrace(srcImageRange(tensor1), destImage(rtrace));
+        tensorTraceMultiArray(srcMultiArrayRange(tensor1), destMultiArray(trace));
+        shouldEqualSequence(trace.data(), trace.data()+size, rtrace.data());
+                
+        tensorDeterminantMultiArray(srcMultiArrayRange(tensor1), destMultiArray(determinant));
+        shouldEqualSequence(determinant.data(), determinant.data()+size, rdet.data());
+                
+        tensorDeterminantMultiArray(srcMultiArrayRange(tensor2), destMultiArray(determinant));
+        shouldEqualTolerance(norm(determinant), 0.0, 1e-14);
+
+        tensorEigenRepresentation(srcImageRange(tensor1), destImage(rtensor));
+        tensorEigenvaluesMultiArray(srcMultiArrayRange(tensor1), destMultiArray(vector));
+        for(int k=0; k<size; ++k)
+        {
+            shouldEqualTolerance(vector[k][0], rtensor[k][0], 1e-14);
+            shouldEqualTolerance(vector[k][1], rtensor[k][1], 1e-14);
+        }
+    }
 };
 
 
@@ -1599,6 +1644,7 @@ struct MultiArrayPointOperatorsTestSuite
         add( testCase( &MultiArrayPointoperatorsTest::testCombine2InnerReduce ) );
         add( testCase( &MultiArrayPointoperatorsTest::testCombine3 ) );
         add( testCase( &MultiArrayPointoperatorsTest::testInitMultiArrayBorder ) );
+        add( testCase( &MultiArrayPointoperatorsTest::testTensorUtilities ) );
     }
 }; // struct MultiArrayPointOperatorsTestSuite
 

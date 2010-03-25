@@ -157,7 +157,7 @@ public:
     
     result_type exec(argument_type const & v, MetaInt<2>) const
     {
-        return v[0]*v[2] - result_type(2.0)*v[1];
+        return v[0]*v[2] - sq(v[1]);
     }
     
     result_type exec(argument_type const & v, MetaInt<3>) const
