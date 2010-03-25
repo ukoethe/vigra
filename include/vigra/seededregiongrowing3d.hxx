@@ -351,7 +351,7 @@ seededRegionGrowing3D(SrcImageIterator srcul, Diff_type shape, SrcAccessor as,
                                       Diff_type( 0, 0,-1), Diff_type( 0, 0, 1) };
     #endif
 
-    typedef Neighborhood::Direction Direction;
+    typedef typename Neighborhood::Direction Direction;
     int directionCount = Neighborhood::DirectionCount;
 
     Diff_type pos(0,0,0);

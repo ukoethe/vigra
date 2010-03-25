@@ -163,7 +163,7 @@ pythonStructureTensor(NumpyArray<N, Multiband<PixelType> > image,
 {
     using namespace vigra::functor;
     
-    res.reshapeIfEmpty(MultiArrayShape<N-1>::type(image.shape().begin()), 
+    res.reshapeIfEmpty(typename MultiArrayShape<N-1>::type(image.shape().begin()), 
                  "structureTensor(): Output array has wrong shape.");
     
     MultiArrayView<N-1, PixelType, StridedArrayTag> band = image.bindOuter(0);

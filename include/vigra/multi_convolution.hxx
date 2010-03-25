@@ -48,7 +48,6 @@
 #include "metaprogramming.hxx"
 #include "multi_pointoperators.hxx"
 
-
 namespace vigra
 {
 
@@ -170,7 +169,7 @@ internalSeparableConvolveMultiArrayTmp(
                                     DestIterator diter, DestAccessor dest,
                                     Kernel1D<T> const & kernel);
 
-        // apply each kernel from the sequence `kernels³ in turn
+        // apply each kernel from the sequence `kernelsï¿½ in turn
         template <class SrcIterator, class SrcShape, class SrcAccessor,
                   class DestIterator, class DestAccessor, class KernelIterator>
         void
@@ -191,7 +190,7 @@ internalSeparableConvolveMultiArrayTmp(
                                     pair<DestIterator, DestAccessor> const & dest,
                                     Kernel1D<T> const & kernel);
 
-        // apply each kernel from the sequence `kernels³ in turn
+        // apply each kernel from the sequence `kernelsï¿½ in turn
         template <class SrcIterator, class SrcShape, class SrcAccessor,
                   class DestIterator, class DestAccessor, class KernelIterator>
         void
@@ -443,7 +442,7 @@ convolveMultiArrayOneDimension(triple<SrcIterator, SrcShape, SrcAccessor> const 
     MultiArray<3, unsigned char> source(shape);
     MultiArray<3, float> dest(shape);
     ...
-    // perform isotropic Gaussian smoothing at scale `sigma³
+    // perform isotropic Gaussian smoothing at scale `sigmaï¿½
     gaussianSmoothMultiArray(srcMultiArrayRange(source), destMultiArray(dest), sigma);
     \endcode
 
@@ -804,7 +803,7 @@ laplacianOfGaussianMultiArray(SrcIterator si, SrcShape const & shape, SrcAccesso
                                          derivative.traverser_begin(), DerivativeAccessor(), 
                                          kernels.begin());
             combineTwoMultiArrays(di, shape, dest, derivative.traverser_begin(), DerivativeAccessor(), 
-                                  di, dest, Arg1() + Arg2());
+                                  di, dest, Arg1() + Arg2() );
         }
     }
 }
@@ -949,7 +948,7 @@ namespace detail {
 template<int N, class VectorType>
 struct StructurTensorFunctor
 {
-    typedef typename VectorType result_type;
+    typedef VectorType result_type;
     typedef typename VectorType::value_type ValueType;
     
     template <class T>

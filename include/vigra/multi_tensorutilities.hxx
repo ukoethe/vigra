@@ -92,8 +92,8 @@ public:
         return v[0] + v[3] + v[5];
     }
     
-    template <int N>
-    void exec(argument_type const & v, result_type & r, MetaInt<N>) const
+    template <int N2>
+    void exec(argument_type const & v, result_type & r, MetaInt<N2>) const
     {
         vigra_fail("tensorTraceMultiArray(): Sorry, can only handle dimensions up to 3.");
     }
@@ -127,8 +127,8 @@ public:
         symmetric3x3Eigenvalues(v[0], v[1], v[2], v[3], v[4], v[5], &r[0], &r[1], &r[2]);
     }
     
-    template <int N>
-    void exec(argument_type const & v, result_type & r, MetaInt<N>) const
+    template <int N2>
+    void exec(argument_type const & v, result_type & r, MetaInt<N2>) const
     {
         vigra_fail("tensorEigenvaluesMultiArray(): Sorry, can only handle dimensions up to 3.");
     }
@@ -167,8 +167,8 @@ public:
         return r0*r1*r2;
     }
     
-    template <int N>
-    void exec(argument_type const & v, result_type & r, MetaInt<N>) const
+    template <int N2>
+    void exec(argument_type const & v, result_type & r, MetaInt<N2>) const
     {
         vigra_fail("tensorDeterminantMultiArray(): Sorry, can only handle dimensions up to 3.");
     }
