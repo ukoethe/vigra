@@ -1,13 +1,21 @@
-import math, os, numpy,PyQt4
+import math, os, numpy, PyQt4
 
 import PyQt4.QtCore as qcore
 import PyQt4.QtGui  as qt
 from PyQt4.QtCore import SIGNAL
 
-from VigraQt import OverlayViewer, ImageCursor
-import quickdialog
-import vigra.vigranumpycore
+import vigra
 import vigra.ufunc
+
+try:
+    from VigraQt import OverlayViewer, ImageCursor
+except:
+    vigra._fallbackModule('VigraQt', 
+    '''    It can be obtained at 
+    http://kogs-www.informatik.uni-hamburg.de/~meine/software/vigraqt/.''')
+    from VigraQt import OverlayViewer, ImageCursor
+
+import quickdialog
 import weakref
 
 class ImageViewer(OverlayViewer):

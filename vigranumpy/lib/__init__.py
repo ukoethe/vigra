@@ -7,11 +7,36 @@ import analysis
 import learning
 import noise
 
+def _fallbackModule(moduleName, message):
+    '''This function installs a fallback module with the given 'moduleName'.
+       All function calls into this module raise an ImportError with the 
+       given 'message' that hopefully tells the user why the real module 
+       was not available.
+    '''       
+    import sys
+    moduleClass = vigranumpycore.__class__
+    class FallbackModule(moduleClass):
+        def __init__(self, name):
+            moduleClass.__init__(self, name)
+            self.__name__ = name
+        def __getattr__(self, name):
+            if name.startswith('__'):
+                return moduleClass.__getattribute__(self, name)
+            try:
+                return moduleClass.__getattribute__(self, name)
+            except AttributeError:
+                raise ImportError("""%s.%s: %s""" % (self.__name__, name, self.__doc__))
+
+    module = FallbackModule(moduleName)
+    sys.modules[moduleName] = module
+    module.__doc__ = """Module '%s' is not available.\n%s""" % (moduleName, message)
+
 try:
     import fourier
 except:
     print "WARNING: Unable to load module 'vigra.fourier'"
-
+    _fallbackModule('vigra.fourier', "   Probably, the fftw3 libraries could not be found during compilation or import.")
+    import fourier
 
 # import most frequently used functions    
 from vigranumpycore import registerPythonArrayType, listExportedArrayKeys
@@ -63,7 +88,7 @@ def imshow(image):
         raise RuntimeError("vigra.imshow(): ndim must be 2 or 3.")
 
         
-# auto-generate code for  additional Kernel generators:
+# auto-generate code for additional Kernel generators:
 def _genKernelFactories(name):
    for oldName in dir(eval('filters.'+name)):
       if not oldName.startswith('init'): 

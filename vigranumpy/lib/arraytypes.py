@@ -6,6 +6,14 @@ import sys
 from numpy import int8, uint8, int16, uint16, int32, uint32, int64, uint64
 from numpy import float32, float64, longdouble, complex64, complex128, clongdouble
 
+try:
+    import qimage2ndarray
+except:
+    vigra._fallbackModule('qimage2ndarray', 
+    '''    It can be obtained at 
+    http://pypi.python.org/pypi/qimage2ndarray/.''')
+    import qimage2ndarray
+
 def qimage2array(q):
     '''Create a view to the given array with the appropriate type.
 
