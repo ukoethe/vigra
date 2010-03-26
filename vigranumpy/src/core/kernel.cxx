@@ -262,10 +262,11 @@ void defineKernels()
                                 "The different init functions create a kernel with the specified "
                                 "properties. "
                                 "For more details, see Kernel1D_ in the C++ documentation.\n\n",
-                                init<>("Standard constructor (creates an identity kernel).\n"));
+                                init<>("Standard constructor::\n\n   Kernel1D()\n\nCreates an identity kernel.\n"));
 	kernel1d
         .def(init< Kernel1D<T> >(args("kernel"),
-            "Copy constructor.\n"))
+            "Copy constructor::\n\n"
+            "   Kernel1D(other_kernel)\n\n"))
 		.def("initGaussian",
 			 (void (Kernel1D<T>::*)(double,T))&Kernel1D<T>::initGaussian,
 			 (arg("scale"), arg("norm")=1.0),
@@ -398,10 +399,11 @@ void defineKernels()
             "The different init functions create a kernel with the specified "
             "properties. "
             "For more details, see Kernel2D_ in the C++ documentation.\n\n",
-            init<>("Standard constructor (creates identity kernel).\n"));
+            init<>("Standard constructor::\n\n   Kernel2D()\n\nCreates an identity kernel.\n"));
 	kernel2d
         .def(init< Kernel2D<T> >(args("kernel"),
-            "Copy constructor.\n"))
+            "Copy constructor::\n\n"
+            "   Kernel2D(other_kernel)\n\n"))
 		.def("initExplicitly",
 			 registerConverters(&pythonInitExplicitlyKernel2D<T>),
 			 (arg("upperLeft"), arg("lowerRight"), arg("contents")),

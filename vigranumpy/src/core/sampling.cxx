@@ -572,8 +572,8 @@ defSplineView(char const * name)
     static python::class_<SplineView> theclass(name, python::no_init);
     theclass
         .def("__init__", python::make_constructor(registerConverters(&pySplineView<SplineView, UInt8>)),
-             "Construct a SplineImageView for the given image.\n\n"
-             "SplineImageView(image, skipPrefilter = False) -> SplineImageView\n\n"
+             "Construct a SplineImageView for the given image::\n\n"
+             "    SplineImageView(image, skipPrefilter = False)\n\n"
              "Currently, 'image' can have dtype numpy.uint8, numpy.int32, and numpy.float32. "
              "If 'skipPrefilter' is True, image values are directly used as spline "
              "coefficients, so that the view performs approximation rather than interploation.\n\n")

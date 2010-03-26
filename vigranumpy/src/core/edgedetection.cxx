@@ -281,10 +281,13 @@ void defineEdgedetection()
 {
     using namespace python;
 
-    class_<Edgel>("Edgel", "Represent an Edgel at a particular subpixel position (x, y), having "
-                           "given 'strength' and 'orientation'.\n\n"
-                           "For details, see Edgel_ in the vigra C++ documentation.\n")
-       .def(init<float, float, float, float>())
+    class_<Edgel> edgel("Edgel", "Represent an Edgel at a particular subpixel position (x, y), having "
+                                  "given 'strength' and 'orientation'.\n\n"
+                                  "For details, see Edgel_ in the vigra C++ documentation.\n",
+                         init<>("Standard constructor::\n\n   Edgel()\n\n"));
+    edgel
+       .def(init<float, float, float, float>(args("x", "y", "strength", "orientation"), 
+            "Constructor::\n\n    Edgel(x, y, strength, orientation)\n\n"))
        .def_readwrite("x", &Edgel::x, "The edgel's x position.")
        .def_readwrite("y", &Edgel::y, "The edgel's y position.")
        .def_readwrite("strength", &Edgel::strength, "The edgel's strength.")
