@@ -14,15 +14,19 @@ Vigranumpy Reference
 Introduction
 ------------
 
-Vigranumpy exports the functionality of the C++ image processing library `VIGRA <../vigra/index.html>`_ to Python. It is based on the popular `numpy <http://numpy.scipy.org/>`_ module and uses its ndarray data structure to represent image and volume data. Thus, it is fully interoperable with existing numpy functionality, including various tools for image display such as matplotlib. Since vigranumpy uses `boost_python <http://www.boost.org/doc/libs>`_, it is able to use function overloading (which plain Python does not support), so that calling syntax is largely uniform, regardless of the type and dimension of the input arguments.
+Vigranumpy exports the functionality of the C++ image processing library `VIGRA <../vigra/index.html>`_ to Python. It can be invoked by importing the vigra module::
+
+    import vigra
+
+Vigranumpy is based on the popular `numpy <http://numpy.scipy.org/>`_ module and uses its ndarray data structure to represent image and volume data. Thus, it is fully interoperable with existing numpy functionality, including various tools for image display such as matplotlib. Since vigranumpy uses `boost_python <http://www.boost.org/doc/libs>`_, it is able to support function overloading (which plain Python does not provide), so that calling syntax is largely uniform, regardless of the type and dimension of the input arguments.
 
 Basic calling syntax is similar to C++, with one important difference: Arguments for output images are optional. If no output image is provided, vigranumpy will allocate it as appropriate. In either case, the output image will be returned by the function, for example::
 
     # allocate new result image
-    smoothImage = gaussianSmoothing(inputImage, scale)
+    smoothImage = vigra.gaussianSmoothing(inputImage, scale)
     
     # reuse and overwrite existing result image
-    smoothImage = gaussianSmoothing(inputImage, scale, out=smoothImage)
+    smoothImage = vigra.gaussianSmoothing(inputImage, scale, out=smoothImage)
 
 Another important property is vigranumpy's indexing convention. In order to be compatible with the index order of the VIGRA C++ version and many other libraries (e.g. `Qt <http://qt.nokia.com/>`_ and `Image Magick <http://www.imagemagick.org/>`_), and with standard mathematical notation, images are indexed in the following order::
 
@@ -32,7 +36,7 @@ Another important property is vigranumpy's indexing convention. In order to be c
     value = scalarVolume[x, y, z]
     value = multibandVolume[x, y, z, channel]
 
-where x is the horizontal axis (increasing left to right), and y is the vertical axis (increasing top to bottom). This convention differs from the `Python Imaging Library <http://www.pythonware.com/products/pil/>`_ and Matlab, where the spatial indices must be given in reverse order (e.g. scalarImage[y, x]). Either convention has advantages and disadvantages. In the end, we considered compatibility between the Python and C++ versions of VIGRA to be critical in order to prevent subtle errors when porting from one language to the other, so we went with the convention described.
+where x is the horizontal axis (increasing left to right), and y is the vertical axis (increasing top to bottom). This convention differs from the `Python Imaging Library <http://www.pythonware.com/products/pil/>`_ and Matlab, where the spatial indices must be given in reverse order (e.g. scalarImage[y, x]). Either convention has advantages and disadvantages. In the end, we considered compatibility between the Python and C++ versions of VIGRA to be a very critical feature in order to prevent subtle errors when porting from one language to the other, so we went with the convention described.
    
 Image and Volume Data Structures
 --------------------------------
