@@ -483,7 +483,7 @@ inline void dt_export_HDF5(	hid_t & group_id,
 } //namespace detail
 
 template<class T>
-bool rf_export_HDF5(RandomForest<T> &rf, 
+bool rf_export_HDF5(RandomForest<T> const &rf, 
 					std::string filename, 
 					std::string pathname = "",
 					bool overwriteflag = false)

@@ -39,9 +39,10 @@
 #include <vigra/numpy_array.hxx>
 #include <vigra/numpy_array_converters.hxx>
 #include <vigra/random_forest.hxx>
-# include <vigra/random_forest_hdf5_impex.hxx>
+#include <vigra/random_forest_hdf5_impex.hxx>
 #include <set>
 #include <cmath>
+#include <memory>
 #include <boost/python.hpp>
 
 namespace python = boost::python;
@@ -83,6 +84,19 @@ pythonConstructRandomForest(int treeCount,
 
     return rf;
 }
+
+template<class LabelType>
+RandomForest<LabelType> * 
+pythonImportRandomForestFromHDF5(std::string filename, 
+					             std::string pathname = "")
+{ 
+    std::auto_ptr<RandomForest<LabelType> > rf(new RandomForest<LabelType>);
+    
+    vigra_precondition(rf_import_HDF5(*rf, filename, pathname),
+           "RandomForest(): Unable to load from HDF5 file.");
+           
+    return rf.release();
+}					
 
 template<class LabelType, class FeatureType>
 python::tuple
@@ -224,9 +238,20 @@ void defineRandomForest_new()
                                                    arg("sample_with_replacement")=true,
                                                    arg("sample_classes_individually")=false,
                                                    arg("prepare_online_learning")=false)),
-             "Constructs a RandomForest.\n\n"
-             "'treeCount' constrols the number of trees, that are created.\n\n"
-             "See RandomForest_ in the C++ documentation for the meaning af the rest of the paremeters.\n")
+             "Constructor::\n\n"
+             "  RandomForest_new(treeCount = 255, mtry=RF_SQRT, min_split_node_size=1,\n"
+             "                   training_set_size=0, training_set_proportions=1.0,\n"
+             "                   sample_with_replacement=True, sample_classes_individually=False,\n"
+             "                   prepare_online_learning=False)\n\n"
+             "'treeCount' controls the number of trees that are created.\n\n"
+             "See RandomForest_ and RandomForestOptions_ in the C++ documentation "
+             "for the meaning of the other parameters.\n")
+        .def("__init__",python::make_constructor(&pythonImportRandomForestFromHDF5<UInt32>,
+                                                 boost::python::default_call_policies(),
+                                                 ( arg("filename"),
+                                                   arg("pathInFile")="")),
+             "Load from HDF5 file::\n\n"
+             "  RandomForest_new(filename, pathInFile)\n\n")
         .def("featureCount",
             &RandomForest<UInt32>::column_count,
              "Returns the number of features the RandomForest works with.\n")
@@ -272,9 +297,11 @@ void defineRandomForest_new()
              "Learn online.\n\n"
              "Works only if forest has been created with prepare_online_learning=true. "
              "Needs the old training data and the new appened, starting at startIndex.\n\n")
-
-/*            .def("writeHDF5")
-        .def("readHDF5")*/
+        .def("writeHDF5", &rf_export_HDF5<UInt32>,
+             (arg("filename"), arg("pathInFile")="", arg("overwriteflag")=false),
+             "Store the random forest in the given HDF5 file 'filname' under the internal\n"
+             "path 'pathInFile'. If a dataset already exists, 'overwriteflag' determines\n"
+             "if the old data are overwritten.\n")
         ;
 }
 

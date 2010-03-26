@@ -115,9 +115,15 @@ void defineRandomForest()
                                                    arg("training_set_proportions")=1.0,
                                                    arg("sample_with_replacement")=true,
                                                    arg("sample_classes_individually")=false)),
-             "Construct and train a RandomForest using 'trainData' and 'trainLabels'.\n"
-             "'treeCount' constrols the number of trees, that are created.\n"
-             "See RandomForest_ in the C++ documentation for the meaning of the rest of the paremeters.\n")
+             "Constructor::\n\n"
+             "  RandomForest(trainData, trainLabels,\n"
+             "               treeCount = 255, mtry=0, min_split_node_size=1,\n"
+             "                   training_set_size=0, training_set_proportions=1.0,\n"
+             "                   sample_with_replacement=True, sample_classes_individually=False,)\n\n"
+             "Construct and train a RandomForest using 'trainData' and 'trainLabels'. "
+             "'treeCount' controls the number of trees that are created.\n\n"
+             "See RandomForest_ and RandomForestOptions_ in the C++ documentation "
+             "for the meaning of the other parameters.\n")
         .def("featureCount",
              &RandomForest<UInt32>::featureCount,
              "Returns the number of features the RandomForest works with.\n")
