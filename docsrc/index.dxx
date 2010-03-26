@@ -528,8 +528,14 @@ of \ref AlgebraicField and \ref DivisionAlgebra.
     buildVigraExtensions('install_path', 'all', struct('flags', '-I/path/to/includes -L/path/to/libs'))
     \endcode
     
-    Additional compiler flags are specified likewise. After successful compilation, 
-    you can obtain a list of the available VIGRA functions by calling
+    Additional compiler flags are specified likewise. For example, on Windows we typically need
+    
+    \code
+    buildVigraExtensions('install_path', 'all', ...
+     struct('flags', '-I[HDF5PATH]/include -L[HDF5PATH]/lib -lhdf5dll -lhdf5_hldll -D_HDF5USEDLL_ -DHDF5CPP_USEDLL'))
+    \endcode
+   
+    After successful compilation, you can obtain a list of the available VIGRA functions by calling
 
     \code
     help vigraIndex
