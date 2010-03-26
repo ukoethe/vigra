@@ -7,7 +7,9 @@ cmake_minimum_required(VERSION 2.6)
 ##################################################
 
 PROJECT(vigra)
+SET(vigra_version_short 1.7)
 SET(vigra_version 1.7.0)
+SET(vigra_year 2010)
 
 SET(CMAKE_MODULE_PATH  ${CMAKE_MODULE_PATH}  ${vigra_SOURCE_DIR}/config)
 
