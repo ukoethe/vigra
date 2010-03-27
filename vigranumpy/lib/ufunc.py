@@ -262,6 +262,7 @@ class BinaryFunction(Function):
             out = o.transpose(inversePermutation) 
         return out
 
+        
 __all__ = []
 
 for k in numpy.__dict__.itervalues():
@@ -273,3 +274,22 @@ for k in numpy.__dict__.itervalues():
         if k.nin == 2:
             exec k.__name__ + " = BinaryFunction(k)"
         __all__.append(k.__name__)
+
+__all__.sort()
+
+__doc__ = '\nThe following mathematical functions are available in this module::\n\n'
+
+for k in range(0, len(__all__), 7):
+    __doc__ += '        ' + '   '.join(__all__[k:k+7]) + '\n'
+
+__doc__ += '''
+Some of these functions are also provided as member functions of the vigra array types::
+
+        __abs__   __add__   __and__   __div__   __divmod__   __eq__   __floordiv__
+        __ge__   __gt__   __invert__   __le__   __lshift__   __lt__   __mod__
+        __mul__   __ne__   __neg__   __or__   __pos__   __pow__   __radd__
+        __radd__   __rand__   __rdiv__   __rdivmod__   __rfloordiv__   __rlshift__
+        __rmod__   __rmul__   __ror__   __rpow__   __rrshift__   __rshift__
+        __rsub__   __rtruediv__   __rxor__   __sub__   __truediv__   __xor__
+
+'''
