@@ -48,34 +48,50 @@ namespace vigra {
 namespace detail
 {
 
-inline double gammaCorrection(double value, double gamma)
+template<class ValueType>
+inline ValueType gammaCorrection(double value, double gamma)
 {
-    return (value < 0.0) ? 
-            -VIGRA_CSTD::pow(-value, gamma) :
-            VIGRA_CSTD::pow(value, gamma);
+    typedef typename NumericTraits<ValueType>::RealPromote Promote;
+    return NumericTraits<ValueType>::fromRealPromote(
+              RequiresExplicitCast<Promote>::cast(
+                (value < 0.0) 
+                    ? -std::pow(-value, gamma) 
+                    : std::pow(value, gamma)));
 }
 
-inline double gammaCorrection(double value, double gamma, double norm)
+template<class ValueType>
+inline ValueType gammaCorrection(double value, double gamma, double norm)
 {
-    return (value < 0.0) ? 
-            -norm*VIGRA_CSTD::pow(-value/norm, gamma) :
-            norm*VIGRA_CSTD::pow(value/norm, gamma);
+    typedef typename NumericTraits<ValueType>::RealPromote Promote;
+    return NumericTraits<ValueType>::fromRealPromote(
+              RequiresExplicitCast<Promote>::cast(
+                (value < 0.0) 
+                    ? -norm*std::pow(-value/norm, gamma)
+                    : norm*std::pow(value/norm, gamma)));
 }
 
-inline double sRGBCorrection(double value, double norm)
+template<class ValueType>
+inline ValueType sRGBCorrection(double value, double norm)
 {
     value /= norm;
-    return (value <= 0.0031308) 
-               ? norm*12.92*value 
-               : norm*(1.055*VIGRA_CSTD::pow(value, 0.41666666666666667) - 0.055);
+    typedef typename NumericTraits<ValueType>::RealPromote Promote;
+    return NumericTraits<ValueType>::fromRealPromote(
+              RequiresExplicitCast<ValueType>::cast(
+                (value <= 0.0031308) 
+                    ? norm*12.92*value 
+                    : norm*(1.055*std::pow(value, 0.41666666666666667) - 0.055)));
 }
 
-inline double inverse_sRGBCorrection(double value, double norm)
+template<class ValueType>
+inline ValueType inverse_sRGBCorrection(double value, double norm)
 {
     value /= norm;
-    return (value <= 0.04045) 
-               ? norm*value / 12.92
-               : norm*VIGRA_CSTD::pow((value + 0.055)/1.055, 2.4);
+    typedef typename NumericTraits<ValueType>::RealPromote Promote;
+    return NumericTraits<ValueType>::fromRealPromote(
+             RequiresExplicitCast<ValueType>::cast(
+                (value <= 0.04045) 
+                    ? norm*value / 12.92
+                    : norm*VIGRA_CSTD::pow((value + 0.055)/1.055, 2.4)));
 }
 
 
@@ -268,11 +284,11 @@ class RGB2RGBPrimeFunctor
   
         /** the functor's result type
         */
-    typedef RGBValue<To> result_type;
+    typedef TinyVector<To, 3> result_type;
   
         /** \deprecated use argument_type and result_type
         */
-    typedef RGBValue<To> value_type;
+    typedef TinyVector<To, 3> value_type;
   
         /** the result component's promote type
         */
@@ -297,10 +313,10 @@ class RGB2RGBPrimeFunctor
     template <class V>
     result_type operator()(V const & rgb) const
     {
-        return RGBValue<To>(
-            NumericTraits<To>::fromRealPromote(detail::gammaCorrection(rgb[0], 0.45, max_)),
-            NumericTraits<To>::fromRealPromote(detail::gammaCorrection(rgb[1], 0.45, max_)),
-            NumericTraits<To>::fromRealPromote(detail::gammaCorrection(rgb[2], 0.45, max_)));
+        return TinyVector<To, 3>(
+            detail::gammaCorrection<To>(rgb[0], 0.45, max_),
+            detail::gammaCorrection<To>(rgb[1], 0.45, max_),
+            detail::gammaCorrection<To>(rgb[2], 0.45, max_));
     }
     
   private:
@@ -314,13 +330,13 @@ class RGB2RGBPrimeFunctor<unsigned char, unsigned char>
         
   public:
   
-    typedef RGBValue<unsigned char> value_type;
+    typedef TinyVector<unsigned char, 3> value_type;
     
     RGB2RGBPrimeFunctor()
     {
         for(int i=0; i<256; ++i)
         {
-            lut_[i] = NumericTraits<unsigned char>::fromRealPromote(detail::gammaCorrection(i, 0.45, 255.0));
+            lut_[i] = detail::gammaCorrection<unsigned char>(i, 0.45, 255.0);
         }
     }
     
@@ -328,14 +344,14 @@ class RGB2RGBPrimeFunctor<unsigned char, unsigned char>
     {
         for(int i=0; i<256; ++i)
         {
-            lut_[i] = NumericTraits<unsigned char>::fromRealPromote(detail::gammaCorrection(i, 0.45, max));
+            lut_[i] = detail::gammaCorrection<unsigned char>(i, 0.45, max);
         }
     }
     
     template <class V>
-    RGBValue<unsigned char> operator()(V const & rgb) const
+    TinyVector<unsigned char, 3> operator()(V const & rgb) const
     {
-        return RGBValue<unsigned char>(lut_[rgb[0]], lut_[rgb[1]], lut_[rgb[2]]);
+        return TinyVector<unsigned char, 3>(lut_[rgb[0]], lut_[rgb[1]], lut_[rgb[2]]);
     }
 };
 
@@ -382,11 +398,11 @@ class RGB2sRGBFunctor
   
         /** the functor's result type
         */
-    typedef RGBValue<To> result_type;
+    typedef TinyVector<To, 3> result_type;
   
         /** \deprecated use argument_type and result_type
         */
-    typedef RGBValue<To> value_type;
+    typedef TinyVector<To, 3> value_type;
   
         /** the result component's promote type
         */
@@ -411,10 +427,10 @@ class RGB2sRGBFunctor
     template <class V>
     result_type operator()(V const & rgb) const
     {
-        return RGBValue<To>(
-            NumericTraits<To>::fromRealPromote(detail::sRGBCorrection(rgb[0], max_)),
-            NumericTraits<To>::fromRealPromote(detail::sRGBCorrection(rgb[1], max_)),
-            NumericTraits<To>::fromRealPromote(detail::sRGBCorrection(rgb[2], max_)));
+        return TinyVector<To, 3>(
+            detail::sRGBCorrection<To>(rgb[0], max_),
+            detail::sRGBCorrection<To>(rgb[1], max_),
+            detail::sRGBCorrection<To>(rgb[2], max_));
     }
     
   private:
@@ -428,13 +444,13 @@ class RGB2sRGBFunctor<unsigned char, unsigned char>
         
   public:
   
-    typedef RGBValue<unsigned char> value_type;
+    typedef TinyVector<unsigned char, 3> value_type;
     
     RGB2sRGBFunctor()
     {
         for(int i=0; i<256; ++i)
         {
-            lut_[i] = NumericTraits<unsigned char>::fromRealPromote(detail::sRGBCorrection(i, 255.0));
+            lut_[i] = detail::sRGBCorrection<unsigned char>(i, 255.0);
         }
     }
     
@@ -442,14 +458,14 @@ class RGB2sRGBFunctor<unsigned char, unsigned char>
     {
         for(int i=0; i<256; ++i)
         {
-            lut_[i] = NumericTraits<unsigned char>::fromRealPromote(detail::sRGBCorrection(i, max));
+            lut_[i] = detail::sRGBCorrection<unsigned char>(i, max);
         }
     }
     
     template <class V>
-    RGBValue<unsigned char> operator()(V const & rgb) const
+    TinyVector<unsigned char, 3> operator()(V const & rgb) const
     {
-        return RGBValue<unsigned char>(lut_[rgb[0]], lut_[rgb[1]], lut_[rgb[2]]);
+        return TinyVector<unsigned char, 3>(lut_[rgb[0]], lut_[rgb[1]], lut_[rgb[2]]);
     }
 };
 
@@ -493,11 +509,11 @@ class RGBPrime2RGBFunctor
   
         /** the functor's result type
         */
-    typedef RGBValue<To> result_type;
+    typedef TinyVector<To, 3> result_type;
   
         /** \deprecated use argument_type and result_type
         */
-    typedef RGBValue<To> value_type;
+    typedef TinyVector<To, 3> value_type;
   
         /** the result component's promote type
         */
@@ -521,10 +537,10 @@ class RGBPrime2RGBFunctor
         */
     result_type operator()(argument_type const & rgb) const
     {
-        return RGBValue<To>(
-            NumericTraits<To>::fromRealPromote(detail::gammaCorrection(rgb[0], gamma_, max_)),
-            NumericTraits<To>::fromRealPromote(detail::gammaCorrection(rgb[1], gamma_, max_)),
-            NumericTraits<To>::fromRealPromote(detail::gammaCorrection(rgb[2], gamma_, max_)));
+        return TinyVector<To, 3>(
+            detail::gammaCorrection<To>(rgb[0], gamma_, max_),
+            detail::gammaCorrection<To>(rgb[1], gamma_, max_),
+            detail::gammaCorrection<To>(rgb[2], gamma_, max_));
     }
 
   private:
@@ -539,13 +555,13 @@ class RGBPrime2RGBFunctor<unsigned char, unsigned char>
         
   public:
   
-    typedef RGBValue<unsigned char> value_type;
+    typedef TinyVector<unsigned char, 3> value_type;
     
     RGBPrime2RGBFunctor()
     {
         for(int i=0; i<256; ++i)
         {
-            lut_[i] = NumericTraits<unsigned char>::fromRealPromote(detail::gammaCorrection(i, 1.0/0.45, 255.0));
+            lut_[i] = detail::gammaCorrection<unsigned char>(i, 1.0/0.45, 255.0);
         }
     }
     
@@ -553,14 +569,14 @@ class RGBPrime2RGBFunctor<unsigned char, unsigned char>
     {
         for(int i=0; i<256; ++i)
         {
-            lut_[i] = NumericTraits<unsigned char>::fromRealPromote(detail::gammaCorrection(i, 1.0/0.45, max));
+            lut_[i] = detail::gammaCorrection<unsigned char>(i, 1.0/0.45, max);
         }
     }
     
     template <class V>
-    RGBValue<unsigned char> operator()(V const & rgb) const
+    TinyVector<unsigned char, 3> operator()(V const & rgb) const
     {
-        return RGBValue<unsigned char>(lut_[rgb[0]], lut_[rgb[1]], lut_[rgb[2]]);
+        return TinyVector<unsigned char, 3>(lut_[rgb[0]], lut_[rgb[1]], lut_[rgb[2]]);
     }
 };
 
@@ -607,11 +623,11 @@ class sRGB2RGBFunctor
   
         /** the functor's result type
         */
-    typedef RGBValue<To> result_type;
+    typedef TinyVector<To, 3> result_type;
   
         /** \deprecated use argument_type and result_type
         */
-    typedef RGBValue<To> value_type;
+    typedef TinyVector<To, 3> value_type;
   
         /** the result component's promote type
         */
@@ -635,10 +651,10 @@ class sRGB2RGBFunctor
         */
     result_type operator()(argument_type const & rgb) const
     {
-        return RGBValue<To>(
-            NumericTraits<To>::fromRealPromote(detail::inverse_sRGBCorrection(rgb[0], max_)),
-            NumericTraits<To>::fromRealPromote(detail::inverse_sRGBCorrection(rgb[1], max_)),
-            NumericTraits<To>::fromRealPromote(detail::inverse_sRGBCorrection(rgb[2], max_)));
+        return TinyVector<To, 3>(
+            detail::inverse_sRGBCorrection<To>(rgb[0], max_),
+            detail::inverse_sRGBCorrection<To>(rgb[1], max_),
+            detail::inverse_sRGBCorrection<To>(rgb[2], max_));
     }
 
   private:
@@ -652,13 +668,13 @@ class sRGB2RGBFunctor<unsigned char, unsigned char>
         
   public:
   
-    typedef RGBValue<unsigned char> value_type;
+    typedef TinyVector<unsigned char, 3> value_type;
     
     sRGB2RGBFunctor()
     {
         for(int i=0; i<256; ++i)
         {
-            lut_[i] = NumericTraits<unsigned char>::fromRealPromote(detail::inverse_sRGBCorrection(i, 255.0));
+            lut_[i] = detail::inverse_sRGBCorrection<unsigned char>(i, 255.0);
         }
     }
     
@@ -666,14 +682,14 @@ class sRGB2RGBFunctor<unsigned char, unsigned char>
     {
         for(int i=0; i<256; ++i)
         {
-            lut_[i] = NumericTraits<unsigned char>::fromRealPromote(detail::inverse_sRGBCorrection(i, max));
+            lut_[i] = detail::inverse_sRGBCorrection<unsigned char>(i, max);
         }
     }
     
     template <class V>
-    RGBValue<unsigned char> operator()(V const & rgb) const
+    TinyVector<unsigned char, 3> operator()(V const & rgb) const
     {
-        return RGBValue<unsigned char>(lut_[rgb[0]], lut_[rgb[1]], lut_[rgb[2]]);
+        return TinyVector<unsigned char, 3>(lut_[rgb[0]], lut_[rgb[1]], lut_[rgb[2]]);
     }
 };
 
@@ -751,13 +767,14 @@ class RGB2XYZFunctor
         */
     result_type operator()(argument_type const & rgb) const
     {
+        typedef detail::RequiresExplicitCast<component_type> Convert;
         component_type red = rgb[0] / max_;
         component_type green = rgb[1] / max_;
         component_type blue = rgb[2] / max_;
         result_type result;
-        result[0] = 0.412453*red + 0.357580*green + 0.180423*blue;
-        result[1] = 0.212671*red + 0.715160*green + 0.072169*blue;
-        result[2] = 0.019334*red + 0.119193*green + 0.950227*blue;
+        result[0] = Convert::cast(0.412453*red + 0.357580*green + 0.180423*blue);
+        result[1] = Convert::cast(0.212671*red + 0.715160*green + 0.072169*blue);
+        result[2] = Convert::cast(0.019334*red + 0.119193*green + 0.950227*blue);
         return result;
     }
 
@@ -816,7 +833,7 @@ class RGBPrime2XYZFunctor
             The maximum value for each RGB component defaults to 255.
         */
     RGBPrime2XYZFunctor()
-    : max_(255.0), gamma_(1.0/ 0.45)
+    : max_(component_type(255.0)), gamma_(1.0/ 0.45)
     {}
     
         /** constructor
@@ -830,18 +847,20 @@ class RGBPrime2XYZFunctor
         */
     result_type operator()(argument_type const & rgb) const
     {
-        component_type red = detail::gammaCorrection(rgb[0]/max_, gamma_);
-        component_type green = detail::gammaCorrection(rgb[1]/max_, gamma_);
-        component_type blue = detail::gammaCorrection(rgb[2]/max_, gamma_);
+        typedef detail::RequiresExplicitCast<component_type> Convert;
+        component_type red = detail::gammaCorrection<component_type>(rgb[0]/max_, gamma_);
+        component_type green = detail::gammaCorrection<component_type>(rgb[1]/max_, gamma_);
+        component_type blue = detail::gammaCorrection<component_type>(rgb[2]/max_, gamma_);
         result_type result;
-        result[0] = 0.412453*red + 0.357580*green + 0.180423*blue;
-        result[1] = 0.212671*red + 0.715160*green + 0.072169*blue;
-        result[2] = 0.019334*red + 0.119193*green + 0.950227*blue;
+        result[0] = Convert::cast(0.412453*red + 0.357580*green + 0.180423*blue);
+        result[1] = Convert::cast(0.212671*red + 0.715160*green + 0.072169*blue);
+        result[2] = Convert::cast(0.019334*red + 0.119193*green + 0.950227*blue);
         return result;
     }
 
   private:
-    component_type max_, gamma_;
+    double gamma_;
+    component_type max_;
 };
 
 template <class T>
@@ -890,11 +909,11 @@ class XYZ2RGBFunctor
   
         /** the functor's result type
         */
-    typedef RGBValue<T> result_type;
+    typedef TinyVector<T, 3> result_type;
   
         /** \deprecated use argument_type and result_type
         */
-    typedef RGBValue<T> value_type;
+    typedef TinyVector<T, 3> value_type;
     
         /** default constructor.
             The maximum value for each RGB component defaults to 255.
@@ -915,9 +934,10 @@ class XYZ2RGBFunctor
     template <class V>
     result_type operator()(V const & xyz) const
     {
-        component_type red =    3.2404813432*xyz[0] - 1.5371515163*xyz[1] - 0.4985363262*xyz[2];
-        component_type green = -0.9692549500*xyz[0] + 1.8759900015*xyz[1] + 0.0415559266*xyz[2];
-        component_type blue =   0.0556466391*xyz[0] - 0.2040413384*xyz[1] + 1.0573110696*xyz[2];
+        typedef detail::RequiresExplicitCast<component_type> Convert;
+        component_type red   = Convert::cast( 3.2404813432*xyz[0] - 1.5371515163*xyz[1] - 0.4985363262*xyz[2]);
+        component_type green = Convert::cast(-0.9692549500*xyz[0] + 1.8759900015*xyz[1] + 0.0415559266*xyz[2]);
+        component_type blue  = Convert::cast( 0.0556466391*xyz[0] - 0.2040413384*xyz[1] + 1.0573110696*xyz[2]);
         return value_type(NumericTraits<T>::fromRealPromote(red * max_),
                           NumericTraits<T>::fromRealPromote(green * max_),
                           NumericTraits<T>::fromRealPromote(blue * max_));
@@ -955,7 +975,8 @@ class XYZ2RGBPrimeFunctor
 {
     typedef typename NumericTraits<T>::RealPromote component_type;
     
-    component_type max_, gamma_;
+    double gamma_;
+    component_type max_;
     
   public:
   
@@ -968,17 +989,17 @@ class XYZ2RGBPrimeFunctor
   
         /** the functor's result type
         */
-    typedef RGBValue<T> result_type;
+    typedef TinyVector<T, 3> result_type;
   
         /** \deprecated use argument_type and result_type
         */
-    typedef RGBValue<T> value_type;
+    typedef TinyVector<T, 3> value_type;
     
         /** default constructor.
             The maximum value for each RGB component defaults to 255.
         */
     XYZ2RGBPrimeFunctor()
-    : max_(255.0), gamma_(0.45)
+    : max_(component_type(255.0)), gamma_(0.45)
     {}
     
         /** constructor
@@ -993,12 +1014,13 @@ class XYZ2RGBPrimeFunctor
     template <class V>
     result_type operator()(V const & xyz) const
     {
-        component_type red =    3.2404813432*xyz[0] - 1.5371515163*xyz[1] - 0.4985363262*xyz[2];
-        component_type green = -0.9692549500*xyz[0] + 1.8759900015*xyz[1] + 0.0415559266*xyz[2];
-        component_type blue =   0.0556466391*xyz[0] - 0.2040413384*xyz[1] + 1.0573110696*xyz[2];
-        return value_type(NumericTraits<T>::fromRealPromote(detail::gammaCorrection(red, gamma_) * max_),
-                          NumericTraits<T>::fromRealPromote(detail::gammaCorrection(green, gamma_) * max_),
-                          NumericTraits<T>::fromRealPromote(detail::gammaCorrection(blue, gamma_) * max_));
+        typedef detail::RequiresExplicitCast<component_type> Convert;
+        component_type red   = Convert::cast( 3.2404813432*xyz[0] - 1.5371515163*xyz[1] - 0.4985363262*xyz[2]);
+        component_type green = Convert::cast(-0.9692549500*xyz[0] + 1.8759900015*xyz[1] + 0.0415559266*xyz[2]);
+        component_type blue  = Convert::cast( 0.0556466391*xyz[0] - 0.2040413384*xyz[1] + 1.0573110696*xyz[2]);
+        return value_type(NumericTraits<T>::fromRealPromote(detail::gammaCorrection<component_type>(red, gamma_) * max_),
+                          NumericTraits<T>::fromRealPromote(detail::gammaCorrection<component_type>(green, gamma_) * max_),
+                          NumericTraits<T>::fromRealPromote(detail::gammaCorrection<component_type>(blue, gamma_) * max_));
     }
 };
 
@@ -1082,15 +1104,17 @@ class XYZ2LuvFunctor
         }
         else
         {
-            component_type L = xyz[1] < epsilon_ ?
-                                  kappa_ * xyz[1] :
-                                  116.0 * VIGRA_CSTD::pow((double)xyz[1], gamma_) - 16.0;
-            component_type denom = xyz[0] + 15.0*xyz[1] + 3.0*xyz[2];
-            component_type uprime = 4.0 * xyz[0] / denom;
-            component_type vprime = 9.0 * xyz[1] / denom;
+            typedef detail::RequiresExplicitCast<component_type> Convert;
+            component_type L = Convert::cast(
+                                  xyz[1] < epsilon_
+                                      ? kappa_ * xyz[1]
+                                      : 116.0 * VIGRA_CSTD::pow((double)xyz[1], gamma_) - 16.0);
+            component_type denom = Convert::cast(xyz[0] + 15.0*xyz[1] + 3.0*xyz[2]);
+            component_type uprime = Convert::cast(4.0 * xyz[0] / denom);
+            component_type vprime = Convert::cast(9.0 * xyz[1] / denom);
             result[0] = L;
-            result[1] = 13.0*L*(uprime - 0.197839);
-            result[2] = 13.0*L*(vprime - 0.468342);
+            result[1] = Convert::cast(13.0*L*(uprime - 0.197839));
+            result[2] = Convert::cast(13.0*L*(vprime - 0.468342));
         }
         return result;
     }
@@ -1158,14 +1182,16 @@ class Luv2XYZFunctor
         }
         else
         {
-            component_type uprime = luv[1] / 13.0 / luv[0] + 0.197839;
-            component_type vprime = luv[2] / 13.0 / luv[0] + 0.468342;
+            typedef detail::RequiresExplicitCast<component_type> Convert;
+            component_type uprime = Convert::cast(luv[1] / 13.0 / luv[0] + 0.197839);
+            component_type vprime = Convert::cast(luv[2] / 13.0 / luv[0] + 0.468342);
 
-            result[1] = luv[0] < 8.0 ?
-                                  luv[0] * ikappa_ :
-                                  VIGRA_CSTD::pow((luv[0] + 16.0) / 116.0, gamma_);
-            result[0] = 9.0*uprime*result[1] / 4.0 / vprime;
-            result[2] = ((9.0 / vprime - 15.0)*result[1] - result[0])/ 3.0;
+            result[1] = Convert::cast(
+                            luv[0] < 8.0 
+                                ? luv[0] * ikappa_ 
+                                : VIGRA_CSTD::pow((luv[0] + 16.0) / 116.0, gamma_));
+            result[0] = Convert::cast(9.0*uprime*result[1] / 4.0 / vprime);
+            result[2] = Convert::cast(((9.0 / vprime - 15.0)*result[1] - result[0])/ 3.0);
         }
         return result;
     }
@@ -1244,16 +1270,18 @@ class XYZ2LabFunctor
     template <class V>
     result_type operator()(V const & xyz) const
     {
-        component_type xgamma = VIGRA_CSTD::pow(xyz[0] / 0.950456, gamma_);
-        component_type ygamma = VIGRA_CSTD::pow((double)xyz[1], gamma_);
-        component_type zgamma = VIGRA_CSTD::pow(xyz[2] / 1.088754, gamma_);
-        component_type L = xyz[1] < epsilon_ ?
-                              kappa_ * xyz[1] :
-                              116.0 * ygamma - 16.0;
+        typedef detail::RequiresExplicitCast<component_type> Convert;
+        component_type xgamma = Convert::cast(std::pow(xyz[0] / 0.950456, gamma_));
+        component_type ygamma = Convert::cast(std::pow((double)xyz[1], gamma_));
+        component_type zgamma = Convert::cast(std::pow(xyz[2] / 1.088754, gamma_));
+        component_type L = Convert::cast(
+                              xyz[1] < epsilon_ 
+                                  ? kappa_ * xyz[1] 
+                                  : 116.0 * ygamma - 16.0);
         result_type result;
         result[0] = L;
-        result[1] = 500.0*(xgamma - ygamma);
-        result[2] = 200.0*(ygamma - zgamma);
+        result[1] = Convert::cast(500.0*(xgamma - ygamma));
+        result[2] = Convert::cast(200.0*(ygamma - zgamma));
         return result;
     }
 
@@ -1313,12 +1341,14 @@ class Lab2XYZFunctor
     template <class V>
     result_type operator()(V const & lab) const
     {
-        component_type Y = lab[0] < 8.0 ?
-                              lab[0] * ikappa_ :
-                              VIGRA_CSTD::pow((lab[0] + 16.0) / 116.0, gamma_);
-        component_type ygamma = VIGRA_CSTD::pow((double)Y, 1.0 / gamma_);
-        component_type X = VIGRA_CSTD::pow(lab[1] / 500.0 + ygamma, gamma_) * 0.950456;
-        component_type Z = VIGRA_CSTD::pow(-lab[2] / 200.0 + ygamma, gamma_) * 1.088754;
+        typedef detail::RequiresExplicitCast<component_type> Convert;
+        component_type Y = Convert::cast(
+                              lab[0] < 8.0
+                                  ? lab[0] * ikappa_
+                                  : std::pow((lab[0] + 16.0) / 116.0, gamma_));
+        component_type ygamma = Convert::cast(std::pow((double)Y, 1.0 / gamma_));
+        component_type X = Convert::cast(std::pow(lab[1] / 500.0 + ygamma, gamma_) * 0.950456);
+        component_type Z = Convert::cast(std::pow(-lab[2] / 200.0 + ygamma, gamma_) * 1.088754);
         result_type result;
         result[0] = X;
         result[1] = Y;
@@ -2016,14 +2046,15 @@ class RGBPrime2YPrimePbPrFunctor
     template <class V>
     result_type operator()(V const & rgb) const
     {
+        typedef detail::RequiresExplicitCast<component_type> Convert;
         component_type red = rgb[0] / max_;
         component_type green = rgb[1] / max_;
         component_type blue = rgb[2] / max_;
         
         result_type result;
-        result[0] = 0.299*red + 0.587*green + 0.114*blue;
-        result[1] = -0.1687358916*red - 0.3312641084*green + 0.5*blue;
-        result[2] = 0.5*red - 0.4186875892*green - 0.0813124108*blue;
+        result[0] = Convert::cast(0.299*red + 0.587*green + 0.114*blue);
+        result[1] = Convert::cast(-0.1687358916*red - 0.3312641084*green + 0.5*blue);
+        result[2] = Convert::cast(0.5*red - 0.4186875892*green - 0.0813124108*blue);
         return result;
     }
 
@@ -2067,11 +2098,11 @@ class YPrimePbPr2RGBPrimeFunctor
   
         /** the functor's result type
         */
-    typedef RGBValue<T> result_type;
+    typedef TinyVector<T, 3> result_type;
   
         /** \deprecated use argument_type and result_type
         */
-    typedef RGBValue<T> value_type;
+    typedef TinyVector<T, 3> value_type;
     
         /** default constructor.
             The maximum value for each RGB component defaults to 255.
@@ -2092,9 +2123,10 @@ class YPrimePbPr2RGBPrimeFunctor
     template <class V>
     result_type operator()(V const & ypbpr) const
     {
-        component_type nred =   ypbpr[0] + 1.402*ypbpr[2];
-        component_type ngreen = ypbpr[0] - 0.3441362862*ypbpr[1] - 0.7141362862*ypbpr[2];
-        component_type nblue =  ypbpr[0] + 1.772*ypbpr[1];
+        typedef detail::RequiresExplicitCast<component_type> Convert;
+        component_type nred   = Convert::cast(ypbpr[0] + 1.402*ypbpr[2]);
+        component_type ngreen = Convert::cast(ypbpr[0] - 0.3441362862*ypbpr[1] - 0.7141362862*ypbpr[2]);
+        component_type nblue  = Convert::cast(ypbpr[0] + 1.772*ypbpr[1]);
         return result_type(NumericTraits<T>::fromRealPromote(nred * max_),
                            NumericTraits<T>::fromRealPromote(ngreen * max_),
                            NumericTraits<T>::fromRealPromote(nblue * max_));
@@ -2187,14 +2219,15 @@ class RGBPrime2YPrimeIQFunctor
     template <class V>
     result_type operator()(V const & rgb) const
     {
+        typedef detail::RequiresExplicitCast<component_type> Convert;
         component_type red = rgb[0] / max_;
         component_type green = rgb[1] / max_;
         component_type blue = rgb[2] / max_;
         
         result_type result;
-        result[0] = 0.299*red + 0.587*green + 0.114*blue;
-        result[1] = 0.596*red - 0.274*green - 0.322*blue;
-        result[2] = 0.212*red - 0.523*green + 0.311*blue;
+        result[0] = Convert::cast(0.299*red + 0.587*green + 0.114*blue);
+        result[1] = Convert::cast(0.596*red - 0.274*green - 0.322*blue);
+        result[2] = Convert::cast(0.212*red - 0.523*green + 0.311*blue);
         return result;
     }
 
@@ -2238,11 +2271,11 @@ class YPrimeIQ2RGBPrimeFunctor
   
         /** the functor's result type
         */
-    typedef RGBValue<T> result_type;
+    typedef TinyVector<T, 3> result_type;
   
         /** \deprecated use argument_type and result_type
         */
-    typedef RGBValue<T> value_type;
+    typedef TinyVector<T, 3> value_type;
     
         /** default constructor.
             The maximum value for each RGB component defaults to 255.
@@ -2263,9 +2296,10 @@ class YPrimeIQ2RGBPrimeFunctor
     template <class V>
     result_type operator()(V const & yiq) const
     {
-        component_type nred =   yiq[0] + 0.9548892043*yiq[1] + 0.6221039350*yiq[2];
-        component_type ngreen = yiq[0] - 0.2713547827*yiq[1] - 0.6475120259*yiq[2];
-        component_type nblue =  yiq[0] - 1.1072510054*yiq[1] + 1.7024603738*yiq[2];
+        typedef detail::RequiresExplicitCast<component_type> Convert;
+        component_type nred   = Convert::cast(yiq[0] + 0.9548892043*yiq[1] + 0.6221039350*yiq[2]);
+        component_type ngreen = Convert::cast(yiq[0] - 0.2713547827*yiq[1] - 0.6475120259*yiq[2]);
+        component_type nblue  = Convert::cast(yiq[0] - 1.1072510054*yiq[1] + 1.7024603738*yiq[2]);
         return result_type(NumericTraits<T>::fromRealPromote(nred * max_),
                            NumericTraits<T>::fromRealPromote(ngreen * max_),
                            NumericTraits<T>::fromRealPromote(nblue * max_));
@@ -2358,14 +2392,15 @@ class RGBPrime2YPrimeUVFunctor
     template <class V>
     result_type operator()(V const & rgb) const
     {
+        typedef detail::RequiresExplicitCast<component_type> Convert;
         component_type red = rgb[0] / max_;
         component_type green = rgb[1] / max_;
         component_type blue = rgb[2] / max_;
         
         result_type result;
-        result[0] = 0.299*red + 0.587*green + 0.114*blue;
-        result[1] = -0.1471376975*red - 0.2888623025*green + 0.436*blue;
-        result[2] = 0.6149122807*red - 0.5149122807*green - 0.100*blue;
+        result[0] = Convert::cast(0.299*red + 0.587*green + 0.114*blue);
+        result[1] = Convert::cast(-0.1471376975*red - 0.2888623025*green + 0.436*blue);
+        result[2] = Convert::cast(0.6149122807*red - 0.5149122807*green - 0.100*blue);
         return result;
     }
 
@@ -2409,11 +2444,11 @@ class YPrimeUV2RGBPrimeFunctor
   
         /** the functor's result type
         */
-    typedef RGBValue<T> result_type;
+    typedef TinyVector<T, 3> result_type;
   
         /** \deprecated use argument_type and result_type
         */
-    typedef RGBValue<T> value_type;
+    typedef TinyVector<T, 3> value_type;
     
         /** default constructor.
             The maximum value for each RGB component defaults to 255.
@@ -2434,9 +2469,10 @@ class YPrimeUV2RGBPrimeFunctor
     template <class V>
     result_type operator()(V const & yuv) const
     {
-        component_type nred =   yuv[0] + 1.140*yuv[2];
-        component_type ngreen = yuv[0] - 0.3946517044*yuv[1] - 0.580681431*yuv[2];
-        component_type nblue =  yuv[0] + 2.0321100920*yuv[1];
+        typedef detail::RequiresExplicitCast<component_type> Convert;
+        component_type nred   = Convert::cast(yuv[0] + 1.140*yuv[2]);
+        component_type ngreen = Convert::cast(yuv[0] - 0.3946517044*yuv[1] - 0.580681431*yuv[2]);
+        component_type nblue  = Convert::cast(yuv[0] + 2.0321100920*yuv[1]);
         return result_type(NumericTraits<T>::fromRealPromote(nred * max_),
                            NumericTraits<T>::fromRealPromote(ngreen * max_),
                            NumericTraits<T>::fromRealPromote(nblue * max_));
@@ -2519,14 +2555,15 @@ class RGBPrime2YPrimeCbCrFunctor
     template <class V>
     result_type operator()(V const & rgb) const
     {
+        typedef detail::RequiresExplicitCast<component_type> Convert;
         component_type red = rgb[0] / max_;
         component_type green = rgb[1] / max_;
         component_type blue = rgb[2] / max_;
         
         result_type result;
-        result[0] = 16.0 + 65.481*red + 128.553*green + 24.966*blue;
-        result[1] = 128.0 - 37.79683972*red - 74.20316028*green + 112.0*blue;
-        result[2] = 128.0 + 112.0*red - 93.78601998*green - 18.21398002*blue;
+        result[0] = Convert::cast(16.0 + 65.481*red + 128.553*green + 24.966*blue);
+        result[1] = Convert::cast(128.0 - 37.79683972*red - 74.20316028*green + 112.0*blue);
+        result[2] = Convert::cast(128.0 + 112.0*red - 93.78601998*green - 18.21398002*blue);
         return result;
     }
 
@@ -2570,11 +2607,11 @@ class YPrimeCbCr2RGBPrimeFunctor
   
         /** the functor's result type
         */
-    typedef RGBValue<T> result_type;
+    typedef TinyVector<T, 3> result_type;
   
         /** \deprecated use argument_type and result_type
         */
-    typedef RGBValue<T> value_type;
+    typedef TinyVector<T, 3> value_type;
     
         /** default constructor.
             The maximum value for each RGB component defaults to 255.
@@ -2595,13 +2632,14 @@ class YPrimeCbCr2RGBPrimeFunctor
     template <class V>
     result_type operator()(V const & ycbcr) const
     {
-        component_type y = ycbcr[0] - 16.0;
-        component_type cb = ycbcr[1] - 128.0;
-        component_type cr = ycbcr[2] - 128.0;
+        typedef detail::RequiresExplicitCast<component_type> Convert;
+        component_type y  = Convert::cast(ycbcr[0] - 16.0);
+        component_type cb = Convert::cast(ycbcr[1] - 128.0);
+        component_type cr = Convert::cast(ycbcr[2] - 128.0);
         
-        component_type nred =   0.00456621*y + 0.006258928571*cr;
-        component_type ngreen = 0.00456621*y - 0.001536322706*cb - 0.003188108420*cr;
-        component_type nblue =  0.00456621*y + 0.007910714286*cb;
+        component_type nred   = Convert::cast(0.00456621*y + 0.006258928571*cr);
+        component_type ngreen = Convert::cast(0.00456621*y - 0.001536322706*cb - 0.003188108420*cr);
+        component_type nblue  = Convert::cast(0.00456621*y + 0.007910714286*cb);
         return result_type(NumericTraits<T>::fromRealPromote(nred * max_),
                            NumericTraits<T>::fromRealPromote(ngreen * max_),
                            NumericTraits<T>::fromRealPromote(nblue * max_));
