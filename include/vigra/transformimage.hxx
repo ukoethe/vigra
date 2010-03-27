@@ -1245,9 +1245,9 @@ class GammaFunctor
             <TT>gamma</TT> values < 1 will increase brightness, > 1
             will decrease it (gamma == 1 means no change).
         */
-    GammaFunctor(promote_type gamma,
+    GammaFunctor(double gamma,
                  argument_type const & min, argument_type const & max)
-    : gamma_(gamma),
+    : gamma_((promote_type)gamma),
       min_(min),
       diff_(max - min),
       zero_(NumericTraits<promote_type>::zero()),
