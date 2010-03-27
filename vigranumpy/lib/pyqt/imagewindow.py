@@ -193,6 +193,9 @@ class ImageViewer(OverlayViewer):
         else:
             for f in vigra.ufunc.__all__:
                 exec 'from vigra.ufunc import %s' % f
+            for f in dir(vigra.colors):
+                if not f.startswith('__'):
+                    exec 'from vigra.colors import %s' % f
             x = self.image
             image = eval(self._savedExpression)
 
@@ -251,8 +254,10 @@ class ImageViewer(OverlayViewer):
                            "xpm": "XPM", \
                            "pnm": "PPM", \
                            "ppm": "PPM", \
+                           "png": "PNG", \
                            "jpg": "JPEG", \
-                           "jpeg": "JPEG"}
+                           "jpeg": "JPEG", \
+                           "tif": "TIF"}
 
                 _, ext = os.path.splitext(filename)
                 if not formats.has_key(ext[1:]):
@@ -261,8 +266,7 @@ class ImageViewer(OverlayViewer):
                                    "Displayed image with overlays can only be stored as\n"+f)
                 else:
                     pixmap = self.getContentsPixmap()
-                    # FIXME: the next fails when the extension has 4 characters
-                    pixmap.save(filename, formats[filename[-3:]])
+                    pixmap.save(filename, formats[ext[1:]])
                     return
 
     def contextMenuEvent(self, e):
