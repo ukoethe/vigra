@@ -1786,7 +1786,7 @@ void NumpyArray<N, T, Stride>::setupArrayView()
         if(pyArray()->nd < actual_dimension)
         {
             this->m_shape[dimension] = 1;
-            this->m_stride[dimension] = 0;
+            this->m_stride[dimension] = sizeof(value_type);
         }
         this->m_stride /= sizeof(value_type);
         this->m_ptr = reinterpret_cast<pointer>(pyArray()->data);
