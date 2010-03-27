@@ -5,6 +5,7 @@ import filters
 import sampling
 import analysis
 import learning
+import colors
 import noise
 
 def _fallbackModule(moduleName, message):

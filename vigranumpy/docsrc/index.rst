@@ -36,8 +36,15 @@ Another important property is vigranumpy's indexing convention. In order to be c
     value = scalarVolume[x, y, z]
     value = multibandVolume[x, y, z, channel]
 
-where x is the horizontal axis (increasing left to right), and y is the vertical axis (increasing top to bottom). This convention differs from the `Python Imaging Library <http://www.pythonware.com/products/pil/>`_ and Matlab, where the spatial indices must be given in reverse order (e.g. scalarImage[y, x]). Either convention has advantages and disadvantages. In the end, we considered compatibility between the Python and C++ versions of VIGRA to be a very critical feature in order to prevent subtle errors when porting from one language to the other, so we went with the convention described.
+where x is the horizontal axis (increasing left to right), and y is the vertical axis (increasing top to bottom). This convention differs from the `Python Imaging Library <http://www.pythonware.com/products/pil/>`_ and Matlab, where the spatial indices must be given in reverse order (e.g. scalarImage[y, x]). Either convention has advantages and disadvantages. In the end, we considered compatibility between the Python and C++ versions of VIGRA to be a very critical feature in order to prevent subtle errors when porting from one language to the other, so we went with the [x, y] order described. Note that this convention does *not* change the internal representation of the data in memory. It only changes the indexing order, so that one can switch between the different conventions by simply swapping axes, for example::
+
+    vigraImage  = array2D.swapaxes(0, 1).view(vigra.ScalarImage)
+    array2D     = vigraImage.swapaxes(0, 1).view(numpy.ndarray)
    
+    vigraVolume = array3D.swapaxes(0, 2).view(vigra.ScalarVolume)
+    array3D     = vigraVolume.swapaxes(0, 2).view(numpy.ndarray)
+
+    
 Image and Volume Data Structures
 --------------------------------
 
@@ -138,16 +145,31 @@ Mapping between C++ types and Python types is controlled by the following two fu
    :members:
    
 
+Import and Export Functions
+---------------------------
+
+The module vigra.impex defines read and write functions for image and volume data. Note
+that the contents of this module are automatically imported into the vigra module, so
+you may call 'vigra.readImage(...)' instead of 'vigra.impex.readImage(...)' etc.
+
+.. automodule:: vigra.impex
+   :members:
+
+
+   
 .. _sec-dtype-coercion:
 
-Point Operators and Type Coercion
----------------------------------
+Mathematical Functions and Type Coercion
+----------------------------------------
 
 Vigra images and volumes support all arithmetic and algebraic functions defined in  
 `numpy.ufunc <http://docs.scipy.org/doc/numpy/reference/ufuncs.html#available-ufuncs>`_. 
-As usual, these operations are applied independently at each pixel.
-However, vigranumpy overloads numpy.ufunc in a way that makes operator behavior 
-more suitable for image analysis. In particular, we changed two aspects:
+
+.. automodule:: vigra.ufunc
+
+As usual, these functions are applied independently at each pixel.
+Vigranumpy overloads the numpy-versions of these functions in order to make their
+behavior more suitable for image analysis. In particular, we changed two aspects:
 
 * The memory layout of the input arrays is preserved in the result arrays. 
   In contrast, plain numpy.ufuncs always create C-order arrays, even if 
@@ -159,17 +181,18 @@ more suitable for image analysis. In particular, we changed two aspects:
 Array dtype conversion (aka coercion) is implemented by the function 
 vigra.ufunc.Function.common_type according to the following coercion rules:
 
-.. automethod::  vigra.ufunc.Function.common_type
+.. automethod::  vigra.ufunc.Function.common_type(in_type, out_type)
 
 
-Import and Export Functions
----------------------------
+Color and Intensity Manipulation
+--------------------------------
 
-The module vigra.impex defines read and write functions for image and volume data. Note
-that the contents of this module are automatically imported into the vigra module, so
-you may call 'vigra.readImage(...)' instead of 'vigra.impex.readImage(...)' etc.
+The module vigra.colors provides functions to adjust image brightness and contrast, 
+and to transform between different color spaces. 
+See `Color Conversions <../vigra/group__ColorConversions.html>`_ in the C++ documentation
+for more information.
 
-.. automodule:: vigra.impex
+.. automodule:: vigra.colors
    :members:
 
 
@@ -247,13 +270,14 @@ tools. Right now, it only contains an implementation of the random forest classi
 .. autoclass:: vigra.learning.RandomForest
    :members:
    
-For more information, refer to RandomForest_ in the C++ decomentation.
+For more information, refer to RandomForest_ in the C++ documentation.
 
 .. autoclass:: vigra.learning.RandomForest_new
    :members:
 
-Noise Normalization
--------------------
+
+Noise Estimation and Normalization
+----------------------------------
 
 The module vigra.noise provides noise estimation and normalization according to a
 method proposed by Foerstner.
