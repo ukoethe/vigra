@@ -391,7 +391,7 @@ class ImageWindow(qt.QFrame):
            If an image already exists at this position, it is replaced.
         '''
         if self.layout.itemAtPosition(y, x):
-            self.layout.itemAtPosition(y, x).widget().setImage(image)
+            self.layout.itemAtPosition(y, x).widget().setImage(image, normalize)
         else:
             viewer = CaptionImageViewer(image, normalize, title, parent = self)
             self.layout.addWidget(viewer, y, x)
