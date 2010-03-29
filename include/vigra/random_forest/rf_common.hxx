@@ -43,18 +43,24 @@ namespace vigra
 // FORWARD DECLARATIONS
 // TODO : DECIDE WHETHER THIS IS A GOOD IDEA
 struct                  ClassificationTag{};
+
 struct                  RegressionTag{};
+
 class GiniCriterion;
+
 template<class T>
 class BestGiniOfColumn;
+
 template<class T, class U = ClassificationTag>
 class ThresholdSplit;
 
 typedef  ThresholdSplit<BestGiniOfColumn<GiniCriterion> > GiniSplit;
+
 namespace rf
 {
     class                   StopVisiting;
 }
+
 class                   OOB_Visitor;
 class                   RandomForestOptions;
 
@@ -62,16 +68,21 @@ template<class T= double>
 class                   ProblemSpec;
 
 template<class LabelT = double, class Tag = ClassificationTag>
-    class               RandomForest;
+class               RandomForest;
+
+
 class                   EarlyStoppStd;
+
 namespace detail
 {
     class               RF_DEFAULT;
     class               DecisionTree;
 }
+
 detail::RF_DEFAULT&     rf_default();
+
 template <class T>
-    class               DT_StackEntry;
+class               DT_StackEntry;
 
 /**\brief Traits Class for the Random Forest
  *
