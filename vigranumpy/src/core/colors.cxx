@@ -113,7 +113,7 @@ inline
 bool parseRange(python::object range, double * min, double * max,
                 const char * message)
 {
-    if(range.ptr() == Py_None)
+    if(!range)
     {
         return false;
     }
@@ -219,118 +219,37 @@ pythonGammaTransform(NumpyArray<N, Multiband<PixelType> > image,
     return res;
 }
 
+template < class SrcPixelType, class DestPixelType, unsigned int N>
+NumpyAnyArray 
+pythonLinearRangeMapping(NumpyArray<N, Multiband<SrcPixelType> > image,
+                         python::object oldRange,
+                         python::object newRange,
+                         NumpyArray<N, Multiband<DestPixelType> > res)
+{
+    res.reshapeIfEmpty(image.shape(),"linearRangeMapping(): Output images has wrong dimensions");
 
-#if 0
-def brightness(image, gamma, range=(0.0, 255.0), out=None):
-    '''Adjust the brightness of an image or volume. The function applies the formula
+    double oldMin = 0.0, oldMax = 0.0,
+           newMin = 0.0, newMax = 0.0;
+    if(!parseRange(oldRange, &oldMin, &oldMax, "linearRangeMapping(): Argument 'oldRange' is invalid."))
+    {
+        FindMinMax<SrcPixelType> minmax;
+        inspectMultiArray(srcMultiArrayRange(image), minmax);
+        oldMin = minmax.min;
+        oldMax = minmax.max;
+    }
+    if(!parseRange(newRange, &newMin, &newMax, "linearRangeMapping(): Argument 'newRange' is invalid."))
+    {
+        newMin = 0.0;
+        newMax = 255.0;
+    }
     
-        image + 0.25 * log(gamma) * (range[1] - range[0])
-        
-    to each element of the array. 'gamma' must be positive. Elements outside the 
-    given range are clipped at the range borders. If 'range' is None or "" or "auto", 
-    the range is set to the actual range of 'image'::
+    vigra_precondition(oldMin < oldMax && newMin < newMax,
+          "linearRangeMapping(): Range upper bound must be greater than lower bound.");
     
-        range = image.min(), image.max()
-    
-    '''
-    if gamma <= 0.0:
-        raise ValueError('brightness(): gamma must be positive.')
-    
-    if range is None or \
-       (type(range) is type("") and (range == "" or range.tolower() == 'auto')):
-        mi, ma = image.min(), image.max()
-    else:
-        mi, ma = range
-
-    diff = ma - mi
-    if diff <= 0.0:
-        raise ArgumentError("brightness(): Range upper bound must be greater than lower bound.")
-    
-    import math
-    gamma = diff*0.25*math.log(gamma) 
-
-    if out is None:
-        i = image + gamma
-    else:
-        i = add(image, gamma, out)
-    
-    i[i<mi] = mi
-    i[i>ma] = ma
-    
-    return i
-    
-        
-# FIXME: This should be implemented in C++
-def contrast(image, gamma, range=(0.0, 255.0), out=None):
-    '''Adjust the contrast of an image or volume. The function applies the formula
-    
-        gamma * image + (1.0 - gamma) * (range[1] - range[0]) / 2.0
-        
-    to each element of the array. 'gamma' must be positive. Elements outside the 
-    given range are clipped at the range borders. If 'range' is None or "" or "auto", 
-    the range is set to the actual range of 'image'::
-    
-        range = image.min(), image.max()
-    
-    '''
-    if gamma <= 0.0:
-        raise ValueError('contrast(): gamma must be positive.')
-
-    if range is None or \
-       (type(range) is type("") and (range == "" or range.tolower() == 'auto')):
-        mi, ma = image.min(), image.max()
-    else:
-        mi, ma = range
-
-    diff = (ma - mi) / 2,o
-    if diff <= 0.0:
-        raise ArgumentError("contrast(): Range upper bound must be greater than lower bound.")
-        
-    i = gamma * image
-
-    if out is None:
-        add(i, (1.0 - gamma) * diff, i)
-    else:
-        i = add(i, (1.0 - gamma) * diff, out)
-
-    i[i<mi] = mi
-    i[i>ma] = ma
-    
-    return i
-
-# FIXME: This should be implemented in C++
-def gammaCorrection(image, gamma, range=(0.0, 255.0), out=None):
-    '''Apply gamma correction an image or volume. The function applies the formula
-    
-        diff = range[1] - range[0]
-        power((image - range[0]) / diff, 1.0 / gamma) * diff + range[0]
-        
-    to each element of the array. 'gamma' must be positive. If 'range' is None 
-    or "" or "auto", the range is set to the actual range of 'image'::
-    
-        range = image.min(), image.max()
-    
-    '''
-    if gamma <= 0.0:
-        raise ValueError('gammaCorrection(): gamma must be positive.')
-    
-    if range is None or \
-       (type(range) is type("") and (range == "" or range.tolower() == 'auto')):
-        mi, ma = image.min(), image.max()
-    else:
-        mi, ma = range
-    diff = ma - mi
-    if diff <= 0.0:
-        raise ArgumentError("gammaCorrection(): Range upper bound must be greater than lower bound.")
-    i = image - mi
-    divide(i, diff, i)
-    power(i, 1.0/gamma, i)
-    multiply(i, diff, i)
-    if out is None:
-        return i + mi
-    else:
-        return add(i, mi, out)       
-#endif
+    transformMultiArray(srcMultiArrayRange(image), destMultiArray(res), 
+                        linearRangeMapping(oldMin, oldMax, newMin, newMax));
+    return res;
+}
 
 
 template < class PixelType, unsigned int N, class Functor >
@@ -362,7 +281,7 @@ void defineColors()
          (arg("image"), arg("factor"), arg("range")=make_tuple(0.0, 255.0), arg("out")=object()),
         "Adjust the brightness of an image or volume. The function applies the formula::\n"
         "\n"
-        "   image + 0.25 * log(factor) * (range[1] - range[0])\n"
+        "   out = image + 0.25 * log(factor) * (range[1] - range[0])\n"
         "\n"
         "to each element of the array. 'factor' and 'range[1] - range[0]' must be "
         "positive. Elements outside the given range are clipped at the range borders. "
@@ -380,7 +299,7 @@ void defineColors()
          (arg("image"), arg("factor"), arg("range")=make_tuple(0.0, 255.0), arg("out")=object()),
         "Adjust the contrast of an image or volume. The function applies the formula::\n"
         "\n"
-        "    factor * image + (1.0 - factor) * (range[1] - range[0]) / 2.0\n"
+        "    out = factor * image + (1.0 - factor) * (range[1] - range[0]) / 2.0\n"
         "\n"
         "to each element of the array. 'factor' and 'range[1] - range[0]' must be "
         "positive. Elements outside the given range are clipped at the range borders. "
@@ -393,13 +312,13 @@ void defineColors()
          registerConverters(&pythonContrastTransform<float, 4>),
          (arg("volume"), arg("factor"), arg("range")=make_tuple(0.0, 255.0), arg("out")=object()));
           
-    def("gamma_correction", 
+    def("gammaCorrection", 
          registerConverters(&pythonGammaTransform<float, 3>),
          (arg("image"), arg("factor"), arg("range")=make_tuple(0.0, 255.0), arg("out")=object()),
         "Adjust gamma correction to an image or volume. The function applies the formula::\n"
         "\n"
         "    diff = range[1] - range[0]\n"
-        "    pow((image - range[0]) / diff, 1.0 / gamma) * diff + range[0]\n"
+        "    out = pow((image - range[0]) / diff, 1.0 / gamma) * diff + range[0]\n"
         "\n"
         "to each element of the array. 'factor' and 'range[1] - range[0]' must be "
         "positive. Elements outside the given range are clipped at the range borders. "
@@ -408,9 +327,39 @@ void defineColors()
         "\n"
         "   range = image.min(), image.max()\n\n");
 
-    def("gamma_correction", 
+    def("gammaCorrection", 
          registerConverters(&pythonGammaTransform<float, 4>),
          (arg("volume"), arg("factor"), arg("range")=make_tuple(0.0, 255.0), arg("out")=object()));
+          
+    def("linearRangeMapping", 
+         registerConverters(&pythonLinearRangeMapping<float, UInt8, 3>),
+         (arg("image"), arg("oldRange")="auto", arg("newRange")=make_tuple(0.0, 255.0), arg("out")=object()),
+        "Convert the intensity range of an image or volume. The function applies a linear transformation "
+        "to the intensities such that the value oldRange[0] is mapped onto newRange[0], "
+        "and oldRange[1] is mapped onto newRange[1]. That is, the algorithm applies the formula::\n"
+        "\n"
+        "    oldDiff = oldRange[1] - oldRange[0]\n"
+        "    newDiff = newRange[1] - newRange[0]\n"
+        "    out = (image - oldRange[0]) / oldDiff * newDiff + newRange[0]\n"
+        "\n"
+        "to each element of the array. 'oldDiff' and 'newDiff' must be "
+        "positive. If 'oldRange' is None or \"\" or \"auto\" (the default), the range is set to " 
+        "the actual range of 'image'::\n"
+        "\n"
+        "   range = image.min(), image.max()\n\n"
+        "If 'newRange' is None or \"\" or \"auto\", it is set to (0, 255.0).\n");
+
+    def("linearRangeMapping", 
+         registerConverters(&pythonLinearRangeMapping<float, float, 3>),
+         (arg("image"), arg("oldRange")="auto", arg("newRange")=make_tuple(0.0, 255.0), arg("out")=object()));
+          
+    def("linearRangeMapping", 
+         registerConverters(&pythonLinearRangeMapping<float, UInt8, 4>),
+         (arg("volume"), arg("oldRange")="auto", arg("newRange")=make_tuple(0.0, 255.0), arg("out")=object()));
+          
+    def("linearRangeMapping", 
+         registerConverters(&pythonLinearRangeMapping<float, float, 4>),
+         (arg("volume"), arg("oldRange")="auto", arg("newRange")=make_tuple(0.0, 255.0), arg("out")=object()));
           
 
     exportColorTransform(RGB2sRGB);

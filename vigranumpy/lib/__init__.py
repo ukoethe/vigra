@@ -70,17 +70,14 @@ def imshow(image):
        If the image does not have one or three channels, an exception is raised.
        The image will be automatically scaled to the range 0...255.
     '''
-    import matplotlib
+    import matplotlib.pylab
     
     if image.ndim == 3:
         if image.shape[2] != 3:
             raise RuntimeError("vigra.imshow(): Multi channel image must have 3 channels.")
         if image.dtype != uint8:
-            mi, ma = image.min(), image.max()
-            if mi >= ma:
-                image = image.__class__(image.shape, dtype=uint8)
-            else:
-                image = (image - mi) / (ma - mi)
+            image = colors.linearRangeMapping(image, newRange=(0.0, 255.0),\
+                                              out=image.__class__(image.shape, dtype=uint8))
         return matplotlib.pyplot.imshow(image.swapaxes(0,1))
     elif image.ndim == 2:
         return matplotlib.pyplot.imshow(image.swapaxes(0,1), cmap=matplotlib.cm.gray, \

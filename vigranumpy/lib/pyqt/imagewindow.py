@@ -418,7 +418,7 @@ class ImageWindow(qt.QFrame):
 
 def showImage(image, normalize = True, title = None):
     if isinstance(image, str):
-        image = vigra.vigranumpycore.readImage(image)
+        image = vigra.impex.readImage(image)
     v = ImageWindow()
     v.setImage(image, normalize=normalize, title=title)
     v.show()
