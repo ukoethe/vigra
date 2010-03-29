@@ -1,3 +1,0 @@
-aborting:
-	@echo "You did not yet run configure, please do so before building!"
-	@exit 1
