@@ -39,7 +39,6 @@
 #include <set>
 #include <string>
 #include <vigra/matlab.hxx>
-#include <vigra/random_forest.hxx>
 #include "random_forest_impex.hxx"
 #include "RandomForestProgressVisitor.hxx"
 

@@ -528,7 +528,8 @@ of \ref AlgebraicField and \ref DivisionAlgebra.
     buildVigraExtensions('install_path', 'all', struct('flags', '-I/path/to/includes -L/path/to/libs'))
     \endcode
     
-    Additional compiler flags are specified likewise. For example, on Windows we typically need
+    Additional compiler flags are specified in the same way. Suggestions about typical settings on Linux and
+    Windows can be found in the individual .cpp files. For example, on Windows we usually need
     
     \code
     buildVigraExtensions('install_path', 'all', ...

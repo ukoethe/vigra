@@ -36,6 +36,8 @@
 #include <iostream>
 #include <set>
 #include <vigra/matlab.hxx>
+
+#define HasHDF5
 #include "random_forest_impex.hxx"
 #include <vigra/random_forest_hdf5_impex.hxx>
 
