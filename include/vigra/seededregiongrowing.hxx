@@ -1,6 +1,6 @@
 /************************************************************************/
 /*                                                                      */
-/*         Copyright 1998-2003 by Ullrich Koethe, Hans Meine            */
+/*         Copyright 1998-2010 by Ullrich Koethe, Hans Meine            */
 /*                                                                      */
 /*    This file is part of the VIGRA computer vision library.           */
 /*    The VIGRA Website is                                              */
