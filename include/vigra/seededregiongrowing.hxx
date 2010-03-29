@@ -1,11 +1,10 @@
 /************************************************************************/
 /*                                                                      */
 /*         Copyright 1998-2003 by Ullrich Koethe, Hans Meine            */
-/*       Cognitive Systems Group, University of Hamburg, Germany        */
 /*                                                                      */
 /*    This file is part of the VIGRA computer vision library.           */
 /*    The VIGRA Website is                                              */
-/*        http://kogs-www.informatik.uni-hamburg.de/~koethe/vigra/      */
+/*        http://hci.iwr.uni-heidelberg.de/vigra/                       */
 /*    Please direct questions, bug reports, and contributions to        */
 /*        ullrich.koethe@iwr.uni-heidelberg.de    or                    */
 /*        vigra@informatik.uni-hamburg.de                               */
@@ -182,7 +181,7 @@ enum SRGType { CompleteGrow = 0, KeepContours = 1, StopAtThreshold = 2, SRGWater
     Analysis and Maschine Intelligence, vol 16, no 6, 1994, and
 
     Ullrich K&ouml;the:
-    <em><a href="http://kogs-www.informatik.uni-hamburg.de/~koethe/papers/#primary">Primary Image Segmentation</a></em>,
+    <em><a href="http://hci.iwr.uni-heidelberg.de/people/ukoethe/papers/index.php#cite_primary_segmentation">Primary Image Segmentation</a></em>,
     in: G. Sagerer, S.
     Posch, F. Kummert (eds.): Mustererkennung 1995, Proc. 17. DAGM-Symposium,
     Springer 1995

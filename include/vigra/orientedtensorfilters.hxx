@@ -1,11 +1,10 @@
 /************************************************************************/
 /*                                                                      */
 /*               Copyright 2002-2004 by Ullrich Koethe                  */
-/*       Cognitive Systems Group, University of Hamburg, Germany        */
 /*                                                                      */
 /*    This file is part of the VIGRA computer vision library.           */
 /*    The VIGRA Website is                                              */
-/*        http://kogs-www.informatik.uni-hamburg.de/~koethe/vigra/      */
+/*        http://hci.iwr.uni-heidelberg.de/vigra/                       */
 /*    Please direct questions, bug reports, and contributions to        */
 /*        ullrich.koethe@iwr.uni-heidelberg.de    or                    */
 /*        vigra@informatik.uni-hamburg.de                               */
@@ -59,7 +58,7 @@ namespace vigra {
     This function implements anisotropic tensor smoothing by an
     hourglass-shaped filters as described in
     
-    U. K&ouml;the: <a href="http://kogs-www.informatik.uni-hamburg.de/~koethe/papers/abstracts/structureTensor.html">
+    U. K&ouml;the: <a href="http://hci.iwr.uni-heidelberg.de/people/ukoethe/papers/index.php#cite_structureTensor">
     <i>"Edge and Junction Detection with an Improved Structure Tensor"</i></a>, 
      in: Proc. of 25th DAGM Symposium, Magdeburg 2003, Lecture Notes in Computer Science 2781, 
      pp. 25-32, Heidelberg: Springer, 2003

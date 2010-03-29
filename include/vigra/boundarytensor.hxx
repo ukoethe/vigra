@@ -1,11 +1,10 @@
 /************************************************************************/
 /*                                                                      */
 /*               Copyright 1998-2004 by Ullrich Koethe                  */
-/*       Cognitive Systems Group, University of Hamburg, Germany        */
 /*                                                                      */
 /*    This file is part of the VIGRA computer vision library.           */
 /*    The VIGRA Website is                                              */
-/*        http://kogs-www.informatik.uni-hamburg.de/~koethe/vigra/      */
+/*        http://hci.iwr.uni-heidelberg.de/vigra/                       */
 /*    Please direct questions, bug reports, and contributions to        */
 /*        ullrich.koethe@iwr.uni-heidelberg.de    or                    */
 /*        vigra@informatik.uni-hamburg.de                               */
@@ -547,7 +546,7 @@ void rieszTransformOfLOG(triple<SrcIterator, SrcIterator, SrcAccessor> src,
     These functions calculate a spatial domain approximation of
     the boundary tensor as described in
 
-    U. K&ouml;the: <a href="http://kogs-www.informatik.uni-hamburg.de/~koethe/papers/abstracts/polarfilters.html">
+    U. K&ouml;the: <a href="http://hci.iwr.uni-heidelberg.de/people/ukoethe/papers/index.php#cite_polarfilters">
     <i>"Integrated Edge and Junction Detection with the Boundary Tensor"</i></a>,
      in: ICCV 03, Proc. of 9th Intl. Conf. on Computer Vision, Nice 2003, vol. 1,
      pp. 424-431, Los Alamitos: IEEE Computer Society, 2003
