@@ -107,7 +107,7 @@ IF(PYTHONINTERP_FOUND)
     #
     ######################################################################
     execute_process ( COMMAND ${PYTHON_EXECUTABLE} -c 
-                     "import sys; print sys.platform" 
+                     "import sys; p = sys.platform; print 'windows' if p.startswith('win') else p" 
                       OUTPUT_VARIABLE PYTHON_PLATFORM OUTPUT_STRIP_TRAILING_WHITESPACE)
 
     ######################################################################
