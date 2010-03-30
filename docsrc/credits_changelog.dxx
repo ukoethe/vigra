@@ -34,14 +34,65 @@
       implemented image analysis functionality for 3- and higher-dimensional data.
 
       <li> Pablo d'Angelo, Douglas Wilkins and other members of the  
-      (<a href="http://hugin.sourceforge.net">Hugin team</a>) contributed various extensions of the impex
+      <a href="http://hugin.sourceforge.net">Hugin team</a> contributed various extensions of the impex
       library (UINT16/UINT32 support, ICC profile support, HDR file type).
+
+      <li> Rahul Nair implemented the \ref vigra::RandomForest classifier and VIGRA Matlab bindings.
+      
+      <li> Michael Hanselmann implemented much of the HDF5 support.
+      
+      <li> Nathan Huesken and Christoph Sommer helped a lot in developing 
+           <a href="../vigranumpy/index.html">vigranumpy</a>, the VIGRA Python bindings.
+           
+      <li> Jens-Malte Gottfried contributed to the new cmake-based build system.
 
       <li> Numerous people reported bugs and made suggestions.
 </UL>
 
 Many thanks to all!
 <p>
+
+<b> Changes from Version 1.6.0 to 1.7.0</b>
+
+<UL>  
+      <li> Incompatible changes: 
+      <ul>
+           <li> Modified angle convention from counter-clockwise to clockwise
+                (see e.g. \ref vigra::Edgel). This fits better with the left-handed coordinate system 
+                 we use.
+            
+            <li> \ref symmetricEigensystem(): sort eigenvalues by decreasing value
+                 (was: decreasing abs value)
+      </ul>
+      
+      <li> Implemented a new build system on the basis of <a href="http://www.cmake.org/">cmake</a>.
+      
+      <li> Added \ref vigra::NumpyAnyArray and \ref vigra::NumpyArray, improved \ref vigra::MultiArrayView.
+      
+      <li> Added <b><a href="../vigranumpy/index.html">vigranumpy</a></b> (VIGRA Python bindings).
+      
+      <li> Added \ref VigraMatlab.
+      
+      <li> Added support for <a href="http://www.hdfgroup.org/HDF5/">HDF5</a> import/export of arrays
+           (see \ref HDF5).
+      
+      <li> Added \ref vigra::RandomForest classifier.
+          
+      <li> Added constrained optimization functions: \ref nonnegativeLeastSquares(), 
+           \ref quadraticProgramming(), \ref leastAngleRegression() (LASSO and non-negative LASSO).
+          
+      <li> Added \ref choleskySolve() and improved \ref choleskyDecomposition() (in-place capability).
+      
+      <li> Added \ref symmetric2x2Eigenvalues() and \ref symmetric3x3Eigenvalues() for
+           fast eigenvalue computation on small matrices.
+      
+      <li> Added \ref meshGrid().
+      
+      <li> Added \ref vigra::FixedPoint16.
+      
+      <li> Minor improvements and bug fixes in the code and documentation. 
+           
+</UL>
 
 <b> Changes from Version 1.5.0 to 1.6.0</b>
 
