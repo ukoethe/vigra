@@ -4,6 +4,9 @@ IF(VIGRANUMPY_DEPENDENCIES_FOUND)
 
     SET(vigranumpy_tmp_dir "${CMAKE_BINARY_DIR}/vigranumpy/vigra")
     FILE(MAKE_DIRECTORY ${vigranumpy_tmp_dir})
+    FILE(WRITE ${vigranumpy_tmp_dir}/__version__.py
+         "version = '${vigra_version}'
+")
 
     INCLUDE_DIRECTORIES(${VIGRANUMPY_INCLUDE_DIRS})
 
@@ -30,6 +33,21 @@ IF(VIGRANUMPY_DEPENDENCIES_FOUND)
         ADD_SUBDIRECTORY(private EXCLUDE_FROM_ALL)
     ENDIF()
     
+    IF(PYTHON_PLATFORM MATCHES "^windows$")
+        FILE(MAKE_DIRECTORY ${vigranumpy_tmp_dir}/dlls)    
+        GET_TARGET_PROPERTY(VIGRAIMPEX_LOCATION vigraimpex LOCATION)
+        file(RELATIVE_PATH VIGRAIMPEX_DOCDIR ${vigranumpy_tmp_dir} ${DOCDIR})
+        
+        CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/setup.py.in
+                        ${CMAKE_CURRENT_BINARY_DIR}/setup.py
+                        @ONLY)
+
+        add_custom_target(PACKAGE_VIGRANUMPY 
+                           COMMAND python setup.py bdist_wininst
+                           DEPENDS check
+                           WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
+                           COMMENT "Creating vigranumpy setup in ${CMAKE_CURRENT_BINARY_DIR}/dist")        
+    ENDIF()
 ENDIF()
 
 

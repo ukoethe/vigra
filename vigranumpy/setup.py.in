@@ -1,0 +1,34 @@
+import distutils, ctypes.util, shutil, os, sys
+from distutils.core import setup
+
+# copy the required DLLs to the directory $vigranumpy_tmp_dir/dlls
+dlls = ['@Boost_PYTHON_LIBRARY_RELEASE@',
+        'libtiff.dll',
+        '@FFTW3_LIBRARY@',
+        '@HDF5_Z_LIBRARY@',
+        '@HDF5_SZ_LIBRARY@',
+        '@HDF5_CORE_LIBRARY@',
+        '@HDF5_HL_LIBRARY@']
+
+for d in dlls:
+    if not d:
+        continue
+    dll = ctypes.util.find_library(os.path.splitext(os.path.basename(d))[0])
+    shutil.copy(dll, '@vigranumpy_tmp_dir@/dlls')
+vigraimpex_dll='@VIGRAIMPEX_LOCATION@'.replace('$(OutDir)', 'release')
+shutil.copy(vigraimpex_dll, '@vigranumpy_tmp_dir@/dlls')
+
+docdir = '@VIGRAIMPEX_DOCDIR@'    
+
+setup(name = 'vigranumpy',
+      description = 'VIGRA Computer Vision Library',
+      author = 'Ullrich Koethe',
+      author_email = 'ullrich.koethe@iwr.uni-heidelberg.de',
+      url = 'http://hci.iwr.uni-heidelberg.de/vigra/',
+      license = 'MIT',
+      version = '@vigra_version@',
+      packages = ['vigra', 'vigra.pyqt'],
+      package_dir = {'vigra': 'vigra', 'vigra.pyqt': 'vigra/pyqt'},
+      package_data = {'vigra': ['*.pyd', 'dlls/*.dll', 
+                  docdir+'/vigra/*.*', docdir+'/vigra/documents/*.*', 
+                  docdir+'/vigranumpy/*.*', docdir+'/vigranumpy/_static/*.*']})

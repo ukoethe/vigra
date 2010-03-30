@@ -33,6 +33,30 @@
 #                                                                      
 #######################################################################
 
+import sys, os
+
+_vigra_path = os.path.abspath(os.path.dirname(__file__))
+_vigra_doc_path = _vigra_path + '/doc/vigranumpy/index.html'
+
+if sys.platform.startswith('win'):
+    # On Windows, add subdirectory 'dlls' to the PATH in order to find 
+    # the DLLs vigranumpy depends upon. Since this directory appears
+    # at the end of PATH, already installed DLLs are always preferred.
+    _vigra_dll_path = _vigra_path + '/dlls'
+    if os.path.exists(_vigra_dll_path):
+        os.putenv('PATH', os.getenv('PATH') + os.pathsep + _vigra_dll_path)
+        
+__doc__ = '''VIGRA Computer Vision Library
+
+HTML documentation is available in 
+
+   %s
+
+Help on individual functions can be obtained via their doc strings
+as usual.
+''' % _vigra_doc_path
+ 
+from __version__ import version
 import vigranumpycore
 import arraytypes
 import impex
