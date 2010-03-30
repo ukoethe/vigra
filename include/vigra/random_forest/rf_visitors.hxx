@@ -35,7 +35,9 @@
 #ifndef RF_VISITORS_HXX
 #define RF_VISITORS_HXX
 
-#include "vigra/hdf5impex.hxx"
+#ifdef HasHDF5
+# include "vigra/hdf5impex.hxx"
+#endif // HasHDF5
 
 namespace vigra
 {
