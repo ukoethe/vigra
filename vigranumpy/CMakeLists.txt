@@ -43,6 +43,7 @@ IF(VIGRANUMPY_DEPENDENCIES_FOUND)
                         @ONLY)
 
         add_custom_target(PACKAGE_VIGRANUMPY 
+                           COMMAND ${CMAKE_COMMAND} -E copy_directory ${DOCDIR} ${vigranumpy_tmp_dir}/doc
                            COMMAND python setup.py bdist_wininst
                            DEPENDS check
                            WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}

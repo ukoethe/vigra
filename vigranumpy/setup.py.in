@@ -18,7 +18,7 @@ for d in dlls:
 vigraimpex_dll='@VIGRAIMPEX_LOCATION@'.replace('$(OutDir)', 'release')
 shutil.copy(vigraimpex_dll, '@vigranumpy_tmp_dir@/dlls')
 
-docdir = '@VIGRAIMPEX_DOCDIR@'    
+docdir = '@DOCDIR@'    
 
 setup(name = 'vigranumpy',
       description = 'VIGRA Computer Vision Library',
@@ -30,5 +30,5 @@ setup(name = 'vigranumpy',
       packages = ['vigra', 'vigra.pyqt'],
       package_dir = {'vigra': 'vigra', 'vigra.pyqt': 'vigra/pyqt'},
       package_data = {'vigra': ['*.pyd', 'dlls/*.dll', 
-                  docdir+'/vigra/*.*', docdir+'/vigra/documents/*.*', 
-                  docdir+'/vigranumpy/*.*', docdir+'/vigranumpy/_static/*.*']})
+                  'doc/vigra/*.*', 'doc/vigra/documents/*.*', 
+                  'doc/vigranumpy/*.*', 'doc/vigranumpy/_static/*.*']})
