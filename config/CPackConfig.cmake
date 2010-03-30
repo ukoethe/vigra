@@ -1,7 +1,7 @@
 # general information
 SET(CPACK_PACKAGE_VENDOR "Heidelberg Collaboratory for Image Processing")
 SET(CPACK_PACKAGE_DESCRIPTION_SUMMARY
-    "C++ computer vision library with emphasize on customizable algorithms and data structures"
+    "C++ computer vision library with emphasis on customizable algorithms and data structures"
 )
 
 # package version setup
