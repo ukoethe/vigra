@@ -54,6 +54,10 @@
 namespace vigra
 {
 
+/** \addtogroup MachineLearning 
+**/
+//@{
+
 namespace detail
 {
 
@@ -1128,6 +1132,8 @@ RandomForest<ClassLabelType>::predictNodes(MultiArrayView<2, U, C1> const & feat
         }
     }
 }
+
+//@}
 
 } // namespace vigra
 

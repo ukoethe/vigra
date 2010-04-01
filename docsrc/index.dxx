@@ -26,6 +26,8 @@
         <BR>&nbsp;&nbsp;&nbsp;<em>Point operators, image arithmetic, convolution, morphology</em>
     <LI> \ref ImageAnalysis
         <BR>&nbsp;&nbsp;&nbsp;<em>Segmentation and feature extraction algorithms</em>
+    <LI> \ref MachineLearning
+        <BR>&nbsp;&nbsp;&nbsp;<em>Classification algorithms</em>
     <LI> \ref Examples
         <BR>&nbsp;&nbsp;&nbsp;<em>Demonstration programs for VIGRA's usage </em>
     <LI> \ref VigraMatlab
@@ -116,7 +118,8 @@
         <LI> Grid Neighborhood Specification
              <BR>&nbsp;&nbsp;&nbsp;\ref PixelNeighborhood "2-dimensional" (4- and 8-neighborhood) and
                                    \ref VoxelNeighborhood "3-dimensional" (6- and 26-neighborhood)
-        <LI> \ref vigra::Rational, \ref vigra::TinyVector, \ref vigra::FFTWComplex<BR>&nbsp;&nbsp;&nbsp;<em>Number types</em>
+        <LI> \ref vigra::Rational, \ref vigra::TinyVector, \ref vigra::FFTWComplex, \ref vigra::FixedPoint16
+                <BR>&nbsp;&nbsp;&nbsp;<em>Number types</em>
         <LI> \ref RandomNumberGeneration
              <BR>&nbsp;&nbsp;&nbsp;<em>Mersenne twister class and random number functors</em>
         <LI> \ref Polynomials
@@ -143,6 +146,7 @@
         <LI> \ref FixedSizeInt
         <LI> \ref vigra::Rational
         <LI> \ref vigra::FixedPoint
+        <LI> \ref vigra::FixedPoint16
         </UL>
         <p>
     <DT>
@@ -234,6 +238,8 @@
          <BR>&nbsp;&nbsp;&nbsp;<em>3-dimensional image (i.e. volume) analysis</em>
     <LI> \ref VoxelNeighborhood
          <BR>&nbsp;&nbsp;&nbsp;<em>Easy access to the 6- and 26-neighbors of a voxel</em>
+    <LI> \ref vigra::NumpyArray and \ref vigra::NumpyAnyArray
+         <BR>&nbsp;&nbsp;&nbsp;<em>Provide the VIGRA multi array interface Python arrays</em>
     </UL>
 */
 
@@ -245,7 +251,10 @@
     <LI> \ref VigraImpex
          <BR>&nbsp;&nbsp;&nbsp;<em>VIGRA's highlevel image import/export interface</em>
     <LI> \ref VolumeImpex
-         <BR>&nbsp;&nbsp;&nbsp;<em>Import/export interface for volume data.</em>
+         <BR>&nbsp;&nbsp;&nbsp;<em>Import/export interface for volume data</em>
+    <LI> \ref VigraHDF5Impex 
+         <BR>&nbsp;&nbsp;&nbsp;<em>Import/export of images and arrays in 
+         <a href="http://www.hdfgroup.org/HDF5/">HDF5</a> format</em>
     <LI> \ref TIFFImpex
          <BR>&nbsp;&nbsp;&nbsp;<em>image import/export interface if you want to call libtiff functions directly</em>
     </UL>
@@ -255,19 +264,19 @@
     <b>If you already have an image data type in your system:</b>
 
     Then I recommend using VIGRA's algorithms directly on top of your data type.
-    To do this, you have to provide image iterators and accessors. In many cases,
-    the standard implementations \ref vigra::ImageIterator and
-    \ref vigra::StandardAccessor coming with VIGRA will be applicable. Otherwise,
-    you have to write your own versions which isn't very difficult (look at the code
-    of the above implementations for guidance).
+    To do this, you simply wrap your data in an \ref vigra::ImageIterator and/or 
+    \ref vigra::MultiArrayView (depending on the functions you want to call). If 
+    your data have some exotic properties, that prevent this solution from working,
+    you can still implement your own versions or subclasses of the interface classe,
+    which isn't very difficult.
 
-    Alternatively, you may use the Image Data Structures provided within VIGRA
+    Alternatively, you may use the data structures provided within VIGRA
     and convert your data type into one of them. Take a look at \ref tiffToScalarImage() and
     \ref createScalarTiffImage() to see how this might be done.
 
     <b>If you don't have an image data type in your system:</b>
 
-    Use the Image Data Structures provided within VIGRA and use one of the import/export facilities above.
+    Use the data structures provided within VIGRA and use one of the import/export facilities above.
 
 */
 

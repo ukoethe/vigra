@@ -62,10 +62,17 @@
 namespace vigra
 {
 
+/** \addtogroup MachineLearning Machine Learning
+
+    This module provides classification algorithms that map 
+    features to labels or label probablities.
+**/
+//@{
+
 namespace detail
 {
 
-/** todo - remove and make the labels parameter in the sampling options
+/* todo - remove and make the labels parameter in the sampling options
  * const*/
 class staticMultiArrayViewHelper
 {
@@ -78,7 +85,7 @@ class staticMultiArrayViewHelper
 };
 
 
-/**\brief sampling option factory function
+/* \brief sampling option factory function
  */
 SamplingOptions make_sampler_opt ( RF_Traits::Options_t     & RF_opt,
                                    MultiArrayView<2, Int32> & labels
@@ -1237,6 +1244,7 @@ void RandomForest<LabelType, PreprocessorTag>
 
 }
 
+//@}
 
 } // namespace vigra
 

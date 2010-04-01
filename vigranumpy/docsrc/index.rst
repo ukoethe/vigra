@@ -44,6 +44,9 @@ where x is the horizontal axis (increasing left to right), and y is the vertical
     vigraVolume = array3D.swapaxes(0, 2).view(vigra.ScalarVolume)
     array3D     = vigraVolume.swapaxes(0, 2).view(numpy.ndarray)
 
+In order to turn your own C++ VIGRA functions into Python modules, look at the VIGRA wrapper class
+NumpyArray_ and the source code of the existing vigranumpy modules.
+
     
 Image and Volume Data Structures
 --------------------------------

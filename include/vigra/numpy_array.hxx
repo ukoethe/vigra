@@ -1082,6 +1082,17 @@ struct NumpyArrayTraits<N, RGBValue<T>, UnstridedArrayTag>
 /*                                                      */
 /********************************************************/
 
+/** Wrapper class for a Python array.
+    
+    This class stores a reference-counted pointer to an Python numpy array object, 
+    i.e. an object where <tt>PyArray_Check(object)</tt> returns true (in Python, the
+    object is then a subclass of <tt>numpy.ndarray</tt>). This class is mainly used 
+    as a smart pointer to these arrays, but some basic access and conversion functions
+    are also provided.
+
+    <b>\#include</b> \<<a href="numpy__array_8hxx-source.html">vigra/numpy_array.hxx</a>\><br>
+    Namespace: vigra
+*/
 class NumpyAnyArray
 {
   protected:
@@ -1317,7 +1328,7 @@ class NumpyAnyArray
          /**
            Check whether this NumpyAnyArray actually points to a Python array.
          */
-   bool hasData() const
+    bool hasData() const
     {
         return pyArray_ != 0;
     }
@@ -1329,6 +1340,14 @@ class NumpyAnyArray
 /*                                                      */
 /********************************************************/
 
+/** Provide the MultiArrayView interface for a Python array.
+    
+    This class inherits from both \ref vigra::MultiArrayView and \ref vigra::NumpyAnyArray 
+    in order to support easy and save application of VIGRA functions to Python arrays.
+
+    <b>\#include</b> \<<a href="numpy__array_8hxx-source.html">vigra/numpy_array.hxx</a>\><br>
+    Namespace: vigra
+*/
 template <unsigned int N, class T, class Stride = StridedArrayTag>
 class NumpyArray
 : public MultiArrayView<N, typename NumpyArrayTraits<N, T, Stride>::value_type, Stride>,
