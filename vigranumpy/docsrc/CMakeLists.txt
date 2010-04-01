@@ -38,7 +38,7 @@ ELSE(PYTHON_SPHINX)
 	ADD_CUSTOM_TARGET (doc_python 
 		${CMAKE_COMMAND} -E echo
 		"Cannot generate Python documentation for vigranumpy. "
-		"(sphinx-build not found)")
+		"(sphinx-build not found)" VERBATIM)
 
 ENDIF(PYTHON_SPHINX)
 
