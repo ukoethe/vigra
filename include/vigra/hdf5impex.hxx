@@ -37,6 +37,16 @@
 #define VIGRA_HDF5IMPEX_HXX
 
 #include <string>
+#include <H5version.h>
+
+#if (H5_VERS_MAJOR == 1 && H5_VERS_MINOR >= 8 && defined(H5_USE_16_API_DEFAULT))
+# define H5Gcreate_vers 2
+# define H5Gopen_vers 2
+# define H5Dopen_vers 2
+# define H5Dcreate_vers 2
+# define H5Acreate_vers 2
+#endif
+
 #include <hdf5.h>
 
 #if (H5_VERS_MAJOR == 1 && H5_VERS_MINOR <= 6)
