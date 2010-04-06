@@ -121,6 +121,30 @@ CONFIGURE_FILE(${PROJECT_SOURCE_DIR}/config/configVersion.hxx.in
 		${PROJECT_BINARY_DIR}/include/vigra/configVersion.hxx
 		@ONLY)
 
+
+##################################################
+#
+#     enable other CMake projects to find Vigra 
+#
+##################################################
+
+# config file for CMake FIND_PACKAGE command (for using the build tree)
+CONFIGURE_FILE(${PROJECT_SOURCE_DIR}/config/VigraConfigBuild.cmake.in
+		${PROJECT_BINARY_DIR}/VigraConfig.cmake
+		@ONLY IMMEDIATE)
+
+# config file for CMake FIND_PACKAGE command
+CONFIGURE_FILE(${PROJECT_SOURCE_DIR}/config/VigraConfig.cmake.in
+		${PROJECT_BINARY_DIR}/lib/vigra/CMake/VigraConfig.cmake
+		@ONLY IMMEDIATE)
+
+
+# export targets:
+#export(TARGETS all FILE 
+INSTALL(EXPORT vigra-targets DESTINATION lib/vigra)
+INSTALL(FILES ${PROJECT_BINARY_DIR}/lib/vigra/CMake/VigraConfig.cmake DESTINATION lib/vigra)
+EXPORT(TARGETS vigraimpex FILE vigra-targets.cmake)
+
 ##################################################
 #
 #     status output
