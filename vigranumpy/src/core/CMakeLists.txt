@@ -34,8 +34,8 @@ VIGRA_ADD_NUMPY_MODULE(analysis SOURCES
   VIGRANUMPY)
    
 VIGRA_ADD_NUMPY_MODULE(learning SOURCES
+    random_forest_old.cxx
     random_forest.cxx
-    random_forest_new.cxx
   LIBRARIES   
     ${VIGRANUMPY_IMPEX_LIBRARIES}
   VIGRANUMPY)

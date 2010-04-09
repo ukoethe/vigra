@@ -83,7 +83,7 @@ bool find_groups_hdf5(hid_t grp_id, Container &cont)
 				H5Gget_objname_by_idx(grp_id, 
 									  ii, NULL, 0 ) + 1;
 #else
-		ssize_t buffer_size =
+		std::ptrdiff_t buffer_size =
 				H5Lget_name_by_idx(grp_id, ".",
 								   H5_INDEX_NAME,
 								   H5_ITER_INC,
