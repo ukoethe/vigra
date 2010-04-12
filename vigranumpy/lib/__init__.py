@@ -138,9 +138,9 @@ def imshow(image):
         if image.dtype != uint8:
             image = colors.linearRangeMapping(image, newRange=(0.0, 255.0),\
                                               out=image.__class__(image.shape, dtype=uint8))
-        return matplotlib.pyplot.imshow(image.swapaxes(0,1))
+        return matplotlib.pyplot.imshow(image.swapaxes(0,1).view(numpy.ndarray))
     elif image.ndim == 2:
-        return matplotlib.pyplot.imshow(image.swapaxes(0,1), cmap=matplotlib.cm.gray, \
+        return matplotlib.pyplot.imshow(image.swapaxes(0,1).view(numpy.ndarray), cmap=matplotlib.cm.gray, \
                                      norm=matplotlib.cm.colors.Normalize())
     else:
         raise RuntimeError("vigra.imshow(): ndim must be 2 or 3.")
