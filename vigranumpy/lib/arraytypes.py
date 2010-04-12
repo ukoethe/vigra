@@ -44,6 +44,7 @@ from numpy import float32, float64, longdouble, complex64, complex128, clongdoub
 try:
     import qimage2ndarray
 except:
+    import vigra
     vigra._fallbackModule('qimage2ndarray', 
     '''    It can be obtained at 
     http://pypi.python.org/pypi/qimage2ndarray/.''')

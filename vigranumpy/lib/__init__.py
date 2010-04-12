@@ -45,27 +45,6 @@ if sys.platform.startswith('win'):
     _vigra_dll_path = _vigra_path + '/dlls'
     if os.path.exists(_vigra_dll_path):
         os.putenv('PATH', os.getenv('PATH') + os.pathsep + _vigra_dll_path)
-        
-__doc__ = '''VIGRA Computer Vision Library
-
-HTML documentation is available in 
-
-   %s
-
-Help on individual functions can be obtained via their doc strings
-as usual.
-''' % _vigra_doc_path
- 
-from __version__ import version
-import vigranumpycore
-import arraytypes
-import impex
-import filters
-import sampling
-import analysis
-import learning
-import colors
-import noise
 
 def _fallbackModule(moduleName, message):
     '''This function installs a fallback module with the given 'moduleName'.
@@ -90,6 +69,28 @@ def _fallbackModule(moduleName, message):
     module = FallbackModule(moduleName)
     sys.modules[moduleName] = module
     module.__doc__ = """Module '%s' is not available.\n%s""" % (moduleName, message)
+
+        
+__doc__ = '''VIGRA Computer Vision Library
+
+HTML documentation is available in 
+
+   %s
+
+Help on individual functions can be obtained via their doc strings
+as usual.
+''' % _vigra_doc_path
+ 
+from __version__ import version
+import vigranumpycore
+import arraytypes
+import impex
+import filters
+import sampling
+import analysis
+import learning
+import colors
+import noise
 
 try:
     import fourier
