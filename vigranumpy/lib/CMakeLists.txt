@@ -1,10 +1,11 @@
+FILE(WRITE ${CMAKE_CURRENT_SOURCE_DIR}/__version__.py
+     "version = '${vigra_version}'
+")
 SET(PYSOURCES
     __init__.py
+    __version__.py
     arraytypes.py
     ufunc.py
-    pyqt/__init__.py
-    pyqt/imagewindow.py
-    pyqt/quickdialog.py
     )
 
 INSTALL(FILES ${PYSOURCES} DESTINATION ${VIGRANUMPY_INSTALL_DIR}/vigra)
@@ -20,3 +21,5 @@ FOREACH(lib_file ${PYSOURCES})
         ARGS -E copy_if_different ${CMAKE_CURRENT_SOURCE_DIR}/${lib_file} ${vigranumpy_tmp_dir}/${lib_file}
         COMMENT "Copying Python sources to temporary module directory")
 ENDFOREACH(lib_file)
+
+ADD_SUBDIRECTORY(pyqt)

@@ -4,9 +4,6 @@ IF(VIGRANUMPY_DEPENDENCIES_FOUND)
 
     SET(vigranumpy_tmp_dir "${CMAKE_BINARY_DIR}/vigranumpy/vigra")
     FILE(MAKE_DIRECTORY ${vigranumpy_tmp_dir})
-    FILE(WRITE ${vigranumpy_tmp_dir}/__version__.py
-         "version = '${vigra_version}'
-")
 
     INCLUDE_DIRECTORIES(${VIGRANUMPY_INCLUDE_DIRS})
 
