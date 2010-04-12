@@ -28,6 +28,7 @@ ADD_LIBRARY(vigraimpex SHARED
     codecmanager.cxx
     gif.cxx
     hdr.cxx
+    hdf5impex.cxx
     iccjpeg.c
     imageinfo.cxx
     jpeg.cxx
