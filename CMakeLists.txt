@@ -28,7 +28,7 @@ ENDIF ()
 ##################################################
 
 INCLUDE(VigraFindPackage)
-VIGRA_FIND_PACKAGE(TIFF NAMES libtiff_i)
+VIGRA_FIND_PACKAGE(TIFF NAMES libtiff)
 VIGRA_FIND_PACKAGE(JPEG NAMES libjpeg)
 VIGRA_FIND_PACKAGE(PNG)
 VIGRA_FIND_PACKAGE(FFTW3 NAMES libfftw3-3)

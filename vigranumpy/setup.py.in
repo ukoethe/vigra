@@ -3,7 +3,6 @@ from distutils.core import setup
 
 # copy the required DLLs to the directory $vigranumpy_tmp_dir/dlls
 dlls = ['@Boost_PYTHON_LIBRARY_RELEASE@',
-        'libtiff.dll',
         '@FFTW3_LIBRARY@',
         '@HDF5_Z_LIBRARY@',
         '@HDF5_SZ_LIBRARY@',
