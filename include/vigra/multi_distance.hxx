@@ -100,9 +100,13 @@ void distParabola(SrcIterator is, SrcIterator iend, SrcAccessor sa,
         {
             _stack.pop_back();
             if(_stack.empty())
+            {
                 _stack.push_back(Influence(sa(is), 0.0, current, w));
+            }
             else
+            {
                 continue; // try new top of stack without advancing current
+            }
         }
         else if(intersection < s.right)
         {
@@ -119,7 +123,7 @@ void distParabola(SrcIterator is, SrcIterator iend, SrcAccessor sa,
     typename std::vector<Influence>::iterator it = _stack.begin();
     for(current = 0.0; current < w; ++current, ++id)
     {
-        if( current >= it->right) 
+        while( current >= it->right) 
             ++it; 
         da.set(sigma2 * sq(current - it->center) + it->prevVal, id);
     }
@@ -128,7 +132,7 @@ void distParabola(SrcIterator is, SrcIterator iend, SrcAccessor sa,
 template <class SrcIterator, class SrcAccessor,
           class DestIterator, class DestAccessor>
 inline void distParabola(triple<SrcIterator, SrcIterator, SrcAccessor> src,
-                         pair<DestIterator, DestAccessor> dest, double sigma )
+                         pair<DestIterator, DestAccessor> dest, double sigma)
 {
     distParabola(src.first, src.second, src.third,
                  dest.first, dest.second, sigma);
@@ -190,6 +194,7 @@ void internalSeparableMultiArrayDistTmp(
         DNavigator dnav( di, shape, d );
 
         tmp.resize( shape[d] );
+        
 
         for( ; dnav.hasMore(); dnav++ )
         {
@@ -241,6 +246,9 @@ inline void internalSeparableMultiArrayDistTmp( SrcIterator si, SrcShape const &
 
 /** \brief Euclidean distance squared on multi-dimensional arrays.
 
+    The algorithm is taken from Donald Bailey: "An Efficient Euclidean Distance Transform",
+    Proc. IWCIA'04, Springer LNCS 3322, 2004.
+
     <b> Declarations:</b>
 
     pass arguments explicitly:
@@ -289,7 +297,7 @@ inline void internalSeparableMultiArrayDistTmp( SrcIterator si, SrcShape const &
     }
     \endcode
 
-    This function performs a squared Euclidean distance squared transform on the given
+    This function performs a squared Euclidean squared distance transform on the given
     multi-dimensional array. Both source and destination
     arrays are represented by iterators, shape objects and accessors.
     The destination array is required to already have the correct size.
@@ -302,7 +310,7 @@ inline void internalSeparableMultiArrayDistTmp( SrcIterator si, SrcShape const &
     
     Optionally, one can pass an array that specifies the pixel pitch in each direction. 
     This is necessary when the data have non-uniform resolution (as is common in confocal
-    micriscopy, for example). 
+    microscopy, for example). 
 
     This function may work in-place, which means that <tt>siter == diter</tt> is allowed.
     A full-sized internal array is only allocated if working on the destination
@@ -507,7 +515,9 @@ void separableMultiDistance( SrcIterator s, SrcShape const & shape, SrcAccessor 
     separableMultiDistSquared( s, shape, src, d, dest, background, pixelPitch);
     
     // Finally, calculate the square root of the distances
-    transformMultiArray( d, shape, dest, d, dest, (double(*)(double))&std::sqrt );
+    using namespace vigra::functor;
+   
+    transformMultiArray( d, shape, dest, d, dest, sqrt(Arg1()) );
 }
 
 template <class SrcIterator, class SrcShape, class SrcAccessor,
@@ -518,7 +528,9 @@ void separableMultiDistance( SrcIterator s, SrcShape const & shape, SrcAccessor 
     separableMultiDistSquared( s, shape, src, d, dest, background);
     
     // Finally, calculate the square root of the distances
-    transformMultiArray( d, shape, dest, d, dest, (double(*)(double))&std::sqrt );
+    using namespace vigra::functor;
+   
+    transformMultiArray( d, shape, dest, d, dest, sqrt(Arg1()) );
 }
 
 template <class SrcIterator, class SrcShape, class SrcAccessor,
