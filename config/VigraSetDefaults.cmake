@@ -24,6 +24,13 @@ SET(DOCINSTALL ${DOCINSTALL}
 	CACHE STRING "where to install the documentation (relative to install prefix)"
 	FORCE)
 
+IF(NOT DEFINED WITH_HDF5)
+    SET(WITH_HDF5 "ON")
+ENDIF()
+SET(WITH_HDF5 ${WITH_HDF5}
+    CACHE BOOL "Build HDF5 import/export ?"
+    FORCE)
+    
 IF(NOT DEFINED WITH_VIGRANUMPY)
     SET(WITH_VIGRANUMPY "ON")
 ENDIF()
