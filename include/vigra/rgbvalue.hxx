@@ -271,7 +271,7 @@ class RGBValue
         */
     RGBValue operator-() const
     {
-        return RGBValue(-red(), -green(), -blue());
+        return RGBValue(-(*this)[0], -(*this)[1], -(*this)[2]);
     }
 
         /** Access red component.
