@@ -60,6 +60,7 @@ IF(HDF5_FOUND)
 ENDIF(HDF5_FOUND)
 
 INSTALL(TARGETS vigraimpex
+        EXPORT vigra-targets
         RUNTIME DESTINATION bin 
         LIBRARY DESTINATION lib 
         ARCHIVE DESTINATION lib)
