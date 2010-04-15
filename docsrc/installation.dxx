@@ -49,4 +49,6 @@
     </DL>
 
     More fine-grained customization (e.g. specification of explicit paths for all dependencies, customization of compiler flags) is possible by editing the file &lt;vigra_build_path&gt;/CMakeCache.txt. This is best done by means of the interactive programs <b>ccmake</b> or <b>cmake-gui</b>. Consult the <a href="http://www.cmake.org/cmake/help/documentation.html">cmake documentation</a> for more detailed help.
+
+    For using VIGRA in another CMake-built project, you can use the CMake command FIND_PACKAGE(Vigra), which will set the CMake variables ${Vigra_INCLUDE_DIRS} with the correct include path, and import the binary targets (currently vigraimpex) to link against (e.g., TARGET_LINK_LIBRARIES(targetname vigraimpex)). For this mechanism to work, CMake reads a config file VigraConfig.cmake, which is installed along with the library in CMAKE_INSTALL_PREFIX/lib/vigra. Alternatively, you can point CMake (cache entry Vigra_DIR) to VIGRA's build directory, where a corresponding VigraConfig.cmake resides for using the build version directly without installation.
 */
