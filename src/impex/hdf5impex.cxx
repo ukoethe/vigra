@@ -33,6 +33,8 @@
 /*                                                                      */
 /************************************************************************/
 
+#ifdef HasHDF5
+
 #include "vigra/hdf5impex.hxx"
 #include "vigra/multi_array.hxx"
 #include <iostream>
@@ -40,8 +42,6 @@
 #include <cstdio>
 
 namespace vigra {
-
-#ifdef HasHDF5
 
 HDF5ImportInfo::HDF5ImportInfo(const char* filePath, const char* pathInFile)
 {
@@ -181,6 +181,6 @@ hid_t HDF5ImportInfo::getDatasetHandle() const
     return m_dataset_handle; 
 }
 
-#endif // HasHDF5
-
 } // namespace vigra
+
+#endif // HasHDF5

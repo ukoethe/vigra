@@ -41,7 +41,6 @@
 
 #include "vigra/multi_distance.hxx"
 #include "vigra/distancetransform.hxx"
-#include "vigra/hdf5impex.hxx"
 
 using namespace vigra;
 
