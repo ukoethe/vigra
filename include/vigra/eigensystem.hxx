@@ -58,7 +58,7 @@ template <class T, class C1, class C2>
 void
 housholderTridiagonalization(MultiArrayView<2, T, C1> &a, MultiArrayView<2, T, C2> &b)
 {
-    const unsigned int n = rowCount(a);
+    const MultiArrayIndex n = rowCount(a);
     vigra_precondition(n == columnCount(a),
         "housholderTridiagonalization(): matrix must be square.");
     vigra_precondition(n == rowCount(b) && 2 <= columnCount(b),
@@ -67,7 +67,7 @@ housholderTridiagonalization(MultiArrayView<2, T, C1> &a, MultiArrayView<2, T, C
     MultiArrayView<1, T, C2> d = b.bindOuter(0);
     MultiArrayView<1, T, C2> e = b.bindOuter(1);
 
-    for(unsigned int j = 0; j < n; ++j)
+    for(MultiArrayIndex j = 0; j < n; ++j)
     {
         d(j) = a(n-1, j);
     }
@@ -202,7 +202,7 @@ template <class T, class C1, class C2>
 bool
 tridiagonalMatrixEigensystem(MultiArrayView<2, T, C1> &de, MultiArrayView<2, T, C2> &z)
 {
-    const unsigned int n = rowCount(z);
+    MultiArrayIndex n = rowCount(z);
     vigra_precondition(n == columnCount(z),
         "tridiagonalMatrixEigensystem(): matrix must be square.");
     vigra_precondition(n == rowCount(de) && 2 <= columnCount(de),
@@ -211,7 +211,7 @@ tridiagonalMatrixEigensystem(MultiArrayView<2, T, C1> &de, MultiArrayView<2, T, 
     MultiArrayView<1, T, C2> d = de.bindOuter(0);
     MultiArrayView<1, T, C2> e = de.bindOuter(1);
 
-    for(unsigned int i = 1; i < n; i++) {
+    for(MultiArrayIndex i = 1; i < n; i++) {
        e(i-1) = e(i);
     }
     e(n-1) = 0.0;
@@ -219,7 +219,7 @@ tridiagonalMatrixEigensystem(MultiArrayView<2, T, C1> &de, MultiArrayView<2, T, 
     T f = 0.0;
     T tst1 = 0.0;
     T eps = VIGRA_CSTD::pow(2.0,-52.0);
-    for(unsigned int l = 0; l < n; ++l)
+    for(MultiArrayIndex l = 0; l < n; ++l)
     {
         // Find small subdiagonalMatrix element
 
@@ -986,7 +986,7 @@ bool hessenbergQrDecomposition(MultiArrayView<2, T, C1> & H, MultiArrayView<2, T
 
 } // namespace detail
 
-/** \addtogroup MatrixAlgebra 
+/** \addtogroup MatrixAlgebra
 */
 //@{
     /** Compute the eigensystem of a symmetric matrix.
@@ -1010,7 +1010,7 @@ symmetricEigensystem(MultiArrayView<2, T, C1> const & a,
 {
     vigra_precondition(isSymmetric(a),
         "symmetricEigensystem(): symmetric input matrix required.");
-    unsigned int acols = columnCount(a);
+    const MultiArrayIndex acols = columnCount(a);
     vigra_precondition(1 == columnCount(ew) && acols == rowCount(ew) &&
                        acols == columnCount(ev) && acols == rowCount(ev),
         "symmetricEigensystem(): matrix shape mismatch.");
@@ -1045,7 +1045,7 @@ bool
 nonsymmetricEigensystem(MultiArrayView<2, T, C1> const & a,
          MultiArrayView<2, std::complex<T>, C2> & ew, MultiArrayView<2, T, C3> & ev)
 {
-    unsigned int acols = columnCount(a);
+    const MultiArrayIndex acols = columnCount(a);
     vigra_precondition(acols == rowCount(a),
         "nonsymmetricEigensystem(): square input matrix required.");
     vigra_precondition(1 == columnCount(ew) && acols == rowCount(ew) &&
@@ -1058,7 +1058,7 @@ nonsymmetricEigensystem(MultiArrayView<2, T, C1> const & a,
     if(!detail::hessenbergQrDecomposition(H, ev, de))
         return false;
 
-    for(unsigned int i=0; i < acols; ++i)
+    for(MultiArrayIndex i = 0; i < acols; ++i)
     {
         ew(i,0) = std::complex<T>(de(i, 0), de(i, 1));
     }
