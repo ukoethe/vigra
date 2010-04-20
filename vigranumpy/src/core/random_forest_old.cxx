@@ -101,6 +101,8 @@ pythonRFPredictProbabilities(RandomForest<LabelType> const & rf,
 void defineRandomForestOld()
 {
     using namespace python;
+    
+    docstring_options doc_options(true, true, false);
 
     class_<RandomForest<UInt32> > rfclass("RandomForestOld",python::no_init);
     rfclass

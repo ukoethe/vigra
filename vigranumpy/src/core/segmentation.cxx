@@ -513,6 +513,8 @@ VIGRA_PYTHON_MULTITYPE_FUNCTOR(pywatersheds3D, pythonWatersheds3D)
 void defineSegmentation()
 {
     using namespace python;
+    
+    docstring_options doc_options(true, true, false);
 
     multidef("labelImage", pyLabelImage<npy_uint8, float>(),
         (arg("image"), 
@@ -618,7 +620,7 @@ void defineSegmentation()
        arg("terminate")=CompleteGrow,
        arg("max_cost")=0.0,
        arg("out")=python::object()),
-        "Compute the watersheds of a 2D or 3D image.\n"
+        "Compute the watersheds of a 2D image.\n"
         "\n"
         "   watersheds(image, neighborhood=4, seeds = None, methods = 'RegionGrowing', \n"
         "              terminate=CompleteGrow, threshold=0, out = None) -> (labelimage, max_ragion_label)\n"
@@ -665,13 +667,14 @@ void defineSegmentation()
          );
 
     multidef("watersheds", pywatersheds3D< npy_uint8, float >(),
-      (arg("image"), 
+      (arg("volume"), 
        arg("neighborhood") = 6, 
        arg("seeds")=python::object(), 
        arg("method")="RegionGrowing",
        arg("terminate")=CompleteGrow,
        arg("max_cost")=0.0,
-       arg("out")=python::object()));
+       arg("out")=python::object()),
+       "Likewise, compute watersheds of a volume.\n");
 }
 
 void defineEdgedetection();

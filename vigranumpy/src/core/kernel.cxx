@@ -244,6 +244,8 @@ template<class T>
 void defineKernels()
 {
 	using namespace python;
+    
+    docstring_options doc_options(true, true, false);
 
 	enum_<BorderTreatmentMode>("BorderTreatmentMode")
 		.value("BORDER_TREATMENT_AVOID",BORDER_TREATMENT_AVOID)

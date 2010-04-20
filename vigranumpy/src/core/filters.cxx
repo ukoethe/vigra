@@ -78,6 +78,8 @@ void defineFilters2D()
 {
     using namespace python;
     
+    docstring_options doc_options(true, true, false);
+    
     def("nonlinearDiffusion", 
         registerConverters(&pythonNonlinearDiffusion2D<float>),
         (arg("image"), arg("edgeThreshold"), arg("scale")),

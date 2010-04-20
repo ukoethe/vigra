@@ -280,17 +280,20 @@ void defineTensor()
 {
     using namespace python;
     
+    docstring_options doc_options(true, true, false);
+    
     def("gaussianGradient",
     	registerConverters(&pythonGaussianGradientND<float,2>),
     	(arg("image"), arg("sigma"), arg("out")=python::object()),
         "Calculate the gradient vector by means of a 1st derivative of "
-        "Gaussian filter at the given scale for a 2D or 3D scalar image.\n"
+        "Gaussian filter at the given scale for a 2D scalar image.\n"
         "\n"
         "For details see gaussianGradientMultiArray_ in the vigra C++ documentation.\n");
 
     def("gaussianGradient",
     	registerConverters(&pythonGaussianGradientND<float,3>),
-    	(arg("volume"), arg("sigma"), arg("out")=python::object()));
+    	(arg("volume"), arg("sigma"), arg("out")=python::object()),
+        "Likewise for a 3D scalar volume.\n");
 
     def("rieszTransformOfLOG2D",
         registerConverters(&pythonRieszTransformOfLOG2D<float>),
@@ -302,7 +305,7 @@ void defineTensor()
     	registerConverters(&pythonGaussianGradientMagnitude<float,3>),
     	(arg("image"), arg("sigma"), arg("accumulate")=true, arg("out")=python::object()),
         "Calculate the gradient magnitude by means of a 1st derivative of "
-        "Gaussian filter at the given scale for a 2D or 3D scalar or multiband image.\n"
+        "Gaussian filter at the given scale for a 2D scalar or multiband image.\n"
         "If 'accumulate' is True (the default), the gradients are accumulated (in the "
         "L2-norm sense) over all  channels of a multi-channel array. Otherwise, "
         "a separate gradient magnitude is computed for each channel.\n"
@@ -311,35 +314,38 @@ void defineTensor()
 
     def("gaussianGradientMagnitude",
     	registerConverters(&pythonGaussianGradientMagnitude<float,4>),
-    	(arg("volume"), arg("sigma"), arg("accumulate")=true, arg("out")=python::object()));
+    	(arg("volume"), arg("sigma"), arg("accumulate")=true, arg("out")=python::object()),
+        "Likewise for a 3D scalar or multiband volume.\n");
 
     def("symmetricGradient",
         registerConverters(&pythonSymmetricGradientND<float,2>),
         (arg("image"), arg("out")=python::object()),
-        "Calculate gradient of a scalar 2D image or 3D volume using symmetric difference filters."
+        "Calculate gradient of a scalar 2D image using symmetric difference filters."
         "\n"
         "For details see symmetricGradientMultiArray_ in the vigra C++ documentation.\n");
 
     def("symmetricGradient",
         registerConverters(&pythonSymmetricGradientND<float,3>), 
-        (arg("volume"), arg("out")=python::object()));
+        (arg("volume"), arg("out")=python::object()),
+        "Likewise for a 3D scalar volume.\n");
     
     def("hessianOfGaussian",
     	registerConverters(&pythonHessianOfGaussianND<float,2>),
     	(arg("image"), arg("sigma"), arg("out")=python::object()),
         "Calculate the Hessian matrix by means of a derivative of "
-        "Gaussian filters at the given scale for a 2D or 3D scalar image.\n"
+        "Gaussian filters at the given scale for a 2D scalar image.\n"
         "\n"
         "For details see hessianOfGaussianMultiArray_ in the vigra C++ documentation.\n");
 
     def("hessianOfGaussian",
     	registerConverters(&pythonHessianOfGaussianND<float,3>),
-    	(arg("volume"), arg("sigma"), arg("out")=python::object()));
+    	(arg("volume"), arg("sigma"), arg("out")=python::object()),
+        "Likewise for a 3D scalar volume.\n");
 
     def("structureTensor",
     	registerConverters(&pythonStructureTensor<float,3>),
     	(arg("image"), arg("innerScale"), arg("outerScale"), arg("out")=python::object()),
-        "Calculate the structure tensor of an image or volume by means of Gaussian "
+        "Calculate the structure tensor of an image by means of Gaussian "
         "(derivative) filters at the given scales. If the input has multiple channels, "
         "the structure tensors of each channel are added to get the result.\n"
         "\n"
@@ -347,7 +353,8 @@ void defineTensor()
 
     def("structureTensor",
     	registerConverters(&pythonStructureTensor<float,4>),
-    	(arg("volume"), arg("innerScale"), arg("outerScale"), arg("out")=python::object()));
+    	(arg("volume"), arg("innerScale"), arg("outerScale"), arg("out")=python::object()),
+        "Likewise for a 3D scalar or multiband volume.\n");
 
     def("boundaryTensor2D",
         registerConverters(&pythonBoundaryTensor2D<float, float>),
@@ -372,43 +379,47 @@ void defineTensor()
     def("vectorToTensor",
         registerConverters(&pythonVectorToTensor<float,2>),
         (arg("image"),arg("out")=python::object()),
-        "Turn a 2D or 3D vector valued image (e.g. the gradient image) into "
+        "Turn a 2D vector valued image (e.g. the gradient image) into "
         "a tensor image by computing the outer product in every pixel.\n\n"
         "For details see vectorToTensorMultiArray_ in the vigra C++ documentation.\n");
 
     def("vectorToTensor",
         registerConverters(&pythonVectorToTensor<float,3>),
-        (arg("volume"),arg("out")=python::object()));
+        (arg("volume"),arg("out")=python::object()),
+        "Likewise for a 3D vector-valued volume.\n");
 
     def("tensorTrace",
         registerConverters(&pythonTensorTrace<float,2>),
         (arg("image"),arg("out")=python::object()),
-        "Calculate the trace of a 2x2 or 3x3 tensor image.\n\n"
+        "Calculate the trace of a 2x2 tensor image.\n\n"
         "For details see tensorTraceMultiArray_ in the vigra C++ documentation.\n");
 
     def("tensorTrace",
         registerConverters(&pythonTensorTrace<float,3>),
-        (arg("volume"),arg("out")=python::object()));
+        (arg("volume"),arg("out")=python::object()),
+        "Likewise for a 3x3 tensor volume.\n");
 
     def("tensorDeterminant",
         registerConverters(&pythonTensorDeterminant<float,2>),
         (arg("image"),arg("out")=python::object()),
-        "Calculate the determinant of a 2x2 or 3x3 tensor image.\n\n"
+        "Calculate the determinant of a 2x2 tensor image.\n\n"
         "For details see tensorDeterminantMultiArray_ in the vigra C++ documentation.\n");
 
     def("tensorDeterminant",
         registerConverters(&pythonTensorDeterminant<float,3>),
-        (arg("volume"),arg("out")=python::object()));
+        (arg("volume"),arg("out")=python::object()),
+        "Likewise for a 3x3 tensor volume.\n");
 
     def("tensorEigenvalues",
         registerConverters(&pythonTensorEigenvalues<float,2>),
         (arg("image"),arg("out")=python::object()),
-        "Calculate the eigenvalues in each pixel/voxel of a 2x2 or 3x3 tensor image.\n\n"
+        "Calculate the eigenvalues in each pixel/voxel of a 2x2 tensor image.\n\n"
         "For details see tensorEigenvaluesMultiArray_ in the vigra C++ documentation.\n");
 
     def("tensorEigenvalues",
         registerConverters(&pythonTensorEigenvalues<float,3>),
-        (arg("volume"),arg("out")=python::object()));
+        (arg("volume"),arg("out")=python::object()),
+        "Likewise for a 3x3 tensor volume.\n");
 
     def("hourGlassFilter2D",
         registerConverters(&pythonHourGlassFilter2D<float,float>),

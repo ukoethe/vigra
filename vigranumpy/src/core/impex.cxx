@@ -524,7 +524,9 @@ void defineImpexFunctions()
 {
     using namespace python;
     
-  def("readVolume", &readVolume, (arg("filename"), arg("dtype") = "FLOAT"),
+    docstring_options doc_options(true, true, false);
+    
+    def("readVolume", &readVolume, (arg("filename"), arg("dtype") = "FLOAT"),
 		"Read a 3D volume from a directory::\n\n"
         "   readVolume(filename, dtype = 'FLOAT') -> Volume\n\n"
 		"If the volume is stored in a by-slice manner (e.g. one image per\n"

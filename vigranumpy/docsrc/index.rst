@@ -27,6 +27,8 @@ Basic calling syntax is similar to C++, with one important difference: Arguments
     
     # reuse and overwrite existing result image
     smoothImage = vigra.gaussianSmoothing(inputImage, scale, out=smoothImage)
+    
+Unless otherwise noted, all functions expect and create arrays with dtype=numpy.float32.
 
 Another important property is vigranumpy's indexing convention. In order to be compatible with the index order of the VIGRA C++ version and many other libraries (e.g. `Qt <http://qt.nokia.com/>`_ and `Image Magick <http://www.imagemagick.org/>`_), and with standard mathematical notation, images are indexed in the following order::
 
@@ -275,7 +277,7 @@ tools. Right now, it only contains an implementation of the random forest classi
    
 For more information, refer to RandomForest_ in the C++ documentation.
 
-.. autoclass:: vigra.learning.RandomForest_new
+.. autoclass:: vigra.learning.RandomForestOld
    :members:
 
 

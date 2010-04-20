@@ -281,6 +281,8 @@ void defineEdgedetection()
 {
     using namespace python;
 
+	docstring_options doc_options(true, true, false);
+
     class_<Edgel> edgel("Edgel", "Represent an Edgel at a particular subpixel position (x, y), having "
                                   "given 'strength' and 'orientation'.\n\n"
                                   "For details, see Edgel_ in the vigra C++ documentation.\n",
@@ -312,7 +314,8 @@ void defineEdgedetection()
 
     def("cannyEdgelList",  
         registerConverters(&pythonFindEdgels<float>),
-        args("image", "scale", "threshold"));
+        args("image", "scale", "threshold"),
+         "Compute edgels of a 2D scalar image, given the filter scale.\n");
 
     def("cannyEdgelList3x3", 
         registerConverters(&pythonFindEdgels3x3FromGrad<float>),
@@ -329,7 +332,8 @@ void defineEdgedetection()
 
     def("cannyEdgelList3x3",  
         registerConverters(&pythonFindEdgels3x3<float>),
-        args("image", "scale", "threshold"));
+        args("image", "scale", "threshold"),
+         "Compute edgels of a 2D scalar image, given the filter scale.\n");
 
     def("cannyEdgeImage",
         registerConverters(&pythonCannyEdgeImage<float, UInt8>),
@@ -379,28 +383,30 @@ void defineEdgedetection()
         (arg("image"), 
          arg("edgeLabel") = 0,
          arg("out")=python::object()),
-        "Transform a labeled image into an edge image.\n\n"
+        "Transform a labeled uint32 image into an edge image.\n\n"
         "For details see regionImageToEdgeImage_ in the vigra C++ documentation.\n");
 
     def("regionImageToEdgeImage",
         registerConverters(&pythonRegionImageToEdgeImage<npy_uint64>),
         (arg("image"), 
          arg("edgeLabel") = 0,
-         arg("out")=python::object()));
+         arg("out")=python::object()),
+         "Likewise for a uint64 image.\n");
 
     def("regionImageToCrackEdgeImage",
          registerConverters(&pythonRegionImageToCrackEdgeImage<npy_uint32>),
          (arg("image"), 
           arg("edgeLabel") = 0, 
           arg("out")=python::object()),
-         "Transform a labeled image into a crack edge image. \n\n"
+         "Transform a labeled uint32 image into a crack edge image. \n\n"
          "For details see regionImageToCrackEdgeImage_ in the vigra C++ documentation.\n");
 
     def("regionImageToCrackEdgeImage",
          registerConverters(&pythonRegionImageToCrackEdgeImage<npy_uint64>),
          (arg("image"), 
           arg("edgeLabel") = 0, 
-          arg("out")=python::object()));
+          arg("out")=python::object()),
+         "Likewise for a uint64 image.\n");
 
 }
 

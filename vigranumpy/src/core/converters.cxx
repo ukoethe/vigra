@@ -364,6 +364,8 @@ void registerNumpyArrayConverters()
     registerNumpyPoint2DConverter();
     NumpyAnyArrayConverter();
     
+    python::docstring_options doc_options(true, true, false);
+    
     python::def("registerPythonArrayType", &detail::registerPythonArrayType, 
              (python::arg("key"), python::arg("typeobj"), python::arg("typecheck") = python::object()), 
              "registerPythonArrayType(key, typeobj, typecheck = None)\n\n"
@@ -401,6 +403,8 @@ void registerNumpyArrayConverters()
     python::def("listExportedArrayKeys", &listExportedArrayKeys,
         "List the currently active type mappings between C++ NumpyArray and Python array "
         "types.  This provides status information for :func:`~vigra.registerPythonArrayType`.\n\n");
+    
+    doc_options.disable_all();
     python::def("constructNumpyArray", &constructNumpyArrayFromShape);
     python::def("constructNumpyArray", &constructNumpyArrayFromArray);
 }

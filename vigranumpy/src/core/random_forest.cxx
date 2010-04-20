@@ -203,6 +203,8 @@ pythonRFPredictProbabilitiesOnlinePredSet(RandomForest<LabelType> & rf,
 void defineRandomForest()
 {
     using namespace python;
+    
+    docstring_options doc_options(true, true, false);
 
     class_<OnlinePredictionSet<float> > pred_set_class("RF_OnlinePredictionSet",python::no_init);
     pred_set_class
@@ -225,7 +227,7 @@ void defineRandomForest()
         .value("RF_MTRY_SQRT",RF_SQRT)
         .value("RF_MTRY_ALL",RF_ALL);
 
-    class_<RandomForest<UInt32> > rfclass_new("RandomForest_new",python::no_init);
+    class_<RandomForest<UInt32> > rfclass_new("RandomForest",python::no_init);
 
     rfclass_new
         .def("__init__",python::make_constructor(registerConverters(&pythonConstructRandomForest<UInt32,float>),
