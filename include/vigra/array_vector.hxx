@@ -518,27 +518,31 @@ public:
     }
 
     explicit ArrayVector( size_type size, Alloc const & alloc = Alloc())
-    : alloc_(alloc)
+    : view_type(),
+      alloc_(alloc)
     {
         initImpl(size, value_type(), VigraTrueType());
     }
 
     ArrayVector( size_type size, value_type const & initial, Alloc const & alloc = Alloc())
-    : alloc_(alloc)
+    : view_type(),
+      alloc_(alloc)
     {
         initImpl(size, initial, VigraTrueType());
     }
 
 
     ArrayVector( this_type const & rhs )
-    : view_type(rhs), alloc_(rhs.alloc_)
+    : view_type(),
+      alloc_(rhs.alloc_)
     {
         initImpl(rhs.begin(), rhs.end(), VigraFalseType());
     }
 
     template <class U>
     explicit ArrayVector( ArrayVectorView<U> const & rhs, Alloc const & alloc = Alloc() )
-    : alloc_(alloc)
+    : view_type(),
+      alloc_(alloc)
     {
         initImpl(rhs.begin(), rhs.end(), VigraFalseType());
     }
@@ -618,12 +622,12 @@ public:
     void deallocate(pointer data, size_type size);
 
     pointer reserve_raw(size_type capacity);
-    
+
     void initImpl( size_type size, value_type const & initial, VigraTrueType /*isIntegral*/);
 
     template <class Iter>
     void initImpl( Iter i, Iter end, VigraFalseType /*isIntegral*/);
-    
+
     template <class Iter>
     void initImpl( Iter i, Iter end, Error_NumericTraits_not_specialized_for_this_case)
     {
