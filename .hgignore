@@ -29,6 +29,7 @@
 ^CMakeCache\.txt$
 ^private$
 ^vigranumpy/private$
+^vigranumpy/lib/__version__.py$
 CMakeFiles/
 \.cmake$
 
