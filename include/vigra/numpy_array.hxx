@@ -317,7 +317,7 @@ performCustomizedArrayTypecheck(PyObject * obj, std::string const & keyFull, std
     pythonToCppException(res);
     vigra_precondition(PyBool_Check(res),
            "NumpyArray conversion: registered typecheck function did not return a boolean.");
-    return res.get() == Py_True;
+    return (void*)res.get() == (void*)Py_True;
 }
 
 inline
