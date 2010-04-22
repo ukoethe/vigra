@@ -36,6 +36,7 @@
 #define PY_ARRAY_UNIQUE_SYMBOL vigranumpyimpex_PyArray_API
 //#define NO_IMPORT_ARRAY
 
+#include <Python.h>
 #include <iostream>
 #include <cstring>
 #include <cstdio>
@@ -43,7 +44,10 @@
 #include "vigra/impex.hxx"
 #include "vigra/multi_impex.hxx"
 #include <vigra/numpy_array_converters.hxx>
-#include "vigra/hdf5impex.hxx"
+
+#ifdef HasHDF5
+# include "vigra/hdf5impex.hxx"
+#endif
 
 namespace python = boost::python;
 
@@ -314,7 +318,7 @@ void writeVolume(NumpyArray<3, Multiband<T> > const & volume,
 
 VIGRA_PYTHON_MULTITYPE_FUNCTOR(pywriteVolume, writeVolume)
 
-#if HasHDF5
+#ifdef HasHDF5
 
 namespace detail {
 template <class T>
@@ -667,7 +671,7 @@ void defineImpexFunctions()
         "the \"magic strings\" of each recognized image format. If the "
         "image format is supported it returns True otherwise False.\n");
 
-#if HasHDF5
+#ifdef HasHDF5
 	def("readImageFromHDF5", &readImageFromHDF5, (arg("filepath"), arg("pathInFile"), arg("dtype") = "FLOAT"),
         "Read an image from a HDF5 file::\n\n"
         "   readImageFromHDF5(filepath, pathInFile, dtype='FLOAT') -> image\n\n"

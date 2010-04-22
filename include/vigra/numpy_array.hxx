@@ -36,6 +36,7 @@
 #ifndef VIGRA_NUMPY_ARRAY_HXX
 #define VIGRA_NUMPY_ARRAY_HXX
 
+#include <Python.h>
 #include <iostream>
 #include <algorithm>
 #include <complex>
@@ -46,7 +47,6 @@
 #include <vigra/array_vector.hxx>
 #include <vigra/sized_int.hxx>
 #include <vigra/python_utility.hxx>
-#include <Python.h>
 #include <numpy/arrayobject.h>
 
 int _import_array();
