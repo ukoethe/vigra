@@ -145,8 +145,8 @@ CONFIGURE_FILE(${PROJECT_SOURCE_DIR}/config/VigraConfig.cmake.in
 
 # export targets:
 #export(TARGETS all FILE 
-INSTALL(EXPORT vigra-targets DESTINATION lib/vigra)
-INSTALL(FILES ${PROJECT_BINARY_DIR}/lib/vigra/CMake/VigraConfig.cmake DESTINATION lib/vigra)
+INSTALL(EXPORT vigra-targets DESTINATION lib${LIBDIR_SUFFIX}/vigra)
+INSTALL(FILES ${PROJECT_BINARY_DIR}/lib/vigra/CMake/VigraConfig.cmake DESTINATION lib${LIBDIR_SUFFIX}/vigra)
 EXPORT(TARGETS vigraimpex FILE vigra-targets.cmake)
 
 ##################################################
@@ -205,7 +205,7 @@ ENDIF()
 	MESSAGE( STATUS "---------------------------------------------------------" )
 
 MESSAGE( STATUS "  includes will be installed at: ${CMAKE_INSTALL_PREFIX}/include")
-MESSAGE( STATUS "  libraries will be installed at: ${CMAKE_INSTALL_PREFIX}/lib")
+MESSAGE( STATUS "  libraries will be installed at: ${CMAKE_INSTALL_PREFIX}/lib${LIBDIR_SUFFIX}")
 
 IF (MSVC)
   MESSAGE( STATUS "  binaries and DLLs will be installed at: ${CMAKE_INSTALL_PREFIX}/bin")

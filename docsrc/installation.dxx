@@ -42,10 +42,17 @@
          <DD> where to look for VIGRA dependencies (for every given path, cmake will search for 
          libraries in &lt;path&gt;/lib and for headers in &lt;path&gt;/include)
     <DT> -DDOCDIR=&lt;path&gt;
-         <DD> where to generate VIGRA decumentation (default: &lt;vigra_source_path&gt;/doc)
+         <DD> where to generate VIGRA documentation (default: &lt;vigra_source_path&gt;/doc).
+         Note that this is not the documentation install directory (the latter can be changed
+         by -DDOCINSTALL=... and defaults to $CMAKE_INSTALL_PREFIX/doc).
     <DT> -DWITH_VIGRANUMPY=1
          <DD> build VIGRA Python bindings (default: 1). Pass -DWITH_VIGRANUMPY=0 to suppress 
          vigranumpy.
+    <DT> -DWITH_HDF5=1
+         <DD> build VIGRA with HDF5 support (default: 1). Pass -DDWITH_HDF5=0 to compile without HDF5.
+    <DT> -DLIBDIR_SUFFIX=64
+         <DD> define suffix of lib directory name (default: empty string, i.e. no suffix). Use 
+         -DLIBDIR_SUFFIX=64 when you want to install libraries in $CMAKE_INSTALL_PREFIX/lib64.
     </DL>
 
     More fine-grained customization (e.g. specification of explicit paths for all dependencies, customization of compiler flags) is possible by editing the file &lt;vigra_build_path&gt;/CMakeCache.txt. This is best done by means of the interactive programs <b>ccmake</b> or <b>cmake-gui</b>. Consult the <a href="http://www.cmake.org/cmake/help/documentation.html">cmake documentation</a> for more detailed help.

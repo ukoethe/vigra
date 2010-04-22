@@ -45,6 +45,13 @@ SET(WITH_VALGRIND ${WITH_VALGRIND}
     CACHE BOOL "Perform valgrind memory testing upon 'make ctest' ?"
     FORCE)
     
+IF(NOT DEFINED LIBDIR_SUFFIX)
+    SET(LIBDIR_SUFFIX "")
+ENDIF()
+SET(LIBDIR_SUFFIX ${LIBDIR_SUFFIX}
+    CACHE STRING "Define suffix of lib directory name (empty string or 32 or 64)." 
+    FORCE)
+    
 IF(NOT DEFINED DEPENDENCY_SEARCH_PREFIX)
     SET(DEPENDENCY_SEARCH_PREFIX "")
 ENDIF()    
