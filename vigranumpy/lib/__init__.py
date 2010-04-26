@@ -102,9 +102,13 @@ except:
 # import most frequently used functions    
 from vigranumpycore import registerPythonArrayType, listExportedArrayKeys
 from arraytypes import *
-from impex import readImage, readImageFromHDF5, readVolume, readVolumeFromHDF5
 from filters import convolve, gaussianSmoothing
 from sampling import resize
+from impex import readImage, readVolume
+try:
+    from impex import readImageFromHDF5, readVolumeFromHDF5
+except: 
+    pass
 
 # import enums
 CLOCKWISE = sampling.RotationDirection.CLOCKWISE
