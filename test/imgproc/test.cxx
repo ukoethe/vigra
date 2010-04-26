@@ -1506,20 +1506,20 @@ struct GeometricTransformsTest
         }
         catch(vigra::PreconditionViolation) {}
 
-        transposeImage(srcImageRange(img), destImage(res2), major);
+        transposeImage(srcImageRange(img), destImage(res2), vigra::major);
         for(int y = 0; y < 10; ++y)
             for(int x = 0; x < 10; ++x)
                 shouldEqual(img(x,y), res2(y, x));
-        transposeImage(srcImageRange(img), destImage(res2), minor);
+        transposeImage(srcImageRange(img), destImage(res2), vigra::minor);
         for(int y = 0; y < 10; ++y)
             for(int x = 0; x < 10; ++x)
                 shouldEqual(img(x,y), res2(h-y-1, w-x-1));
 
-        reflectImage(srcImageRange(img), destImage(res1), horizontal);
+        reflectImage(srcImageRange(img), destImage(res1), vigra::horizontal);
         for(int y = 0; y < 10; ++y)
             for(int x = 0; x < 10; ++x)
                 shouldEqual(img(x,y), res1(x, h-y-1));
-        reflectImage(srcImageRange(img), destImage(res1), vertical);
+        reflectImage(srcImageRange(img), destImage(res1), vigra::vertical);
         for(int y = 0; y < 10; ++y)
             for(int x = 0; x < 10; ++x)
                 shouldEqual(img(x,y), res1(w-x-1, y));
