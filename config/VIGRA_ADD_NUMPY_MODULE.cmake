@@ -77,6 +77,8 @@ FUNCTION(VIGRA_ADD_NUMPY_MODULE target)
     IF(PYTHON_PLATFORM MATCHES "^windows$")
         SET_TARGET_PROPERTIES(${TARGET_NAME} PROPERTIES OUTPUT_NAME "${LIBRARY_NAME}" 
                                                            PREFIX "" SUFFIX  ".pyd")
+    ELSEIF(MACOSX)
+        SET_TARGET_PROPERTIES(${TARGET_NAME} PROPERTIES OUTPUT_NAME "${LIBRARY_NAME}" PREFIX "" SUFFIX ".so")
     ELSE()
         SET_TARGET_PROPERTIES(${TARGET_NAME} PROPERTIES OUTPUT_NAME "${LIBRARY_NAME}" 
                                                            PREFIX "")
