@@ -148,7 +148,7 @@ template < class VoxelType, unsigned int N >
 NumpyAnyArray 
 pythonHessianOfGaussianND(NumpyArray<N, Singleband<VoxelType> > volume,
                           double sigma,
-                          NumpyArray<N, TinyVector<VoxelType, int(N*(N-1)/2)> > res=python::object())
+                          NumpyArray<N, TinyVector<VoxelType, int(N*(N+1)/2)> > res=python::object())
 {
     res.reshapeIfEmpty(volume.shape(), "hessianOfGaussian(): Output array has wrong shape.");
     hessianOfGaussianMultiArray(srcMultiArrayRange(volume), destMultiArray(res), sigma);
