@@ -58,7 +58,7 @@ template <unsigned int N, class T,
 <p>
 <UL style="list-style-image:url(documents/bullet.gif)">
 <LI> \ref vigra::MultiArrayShape
-     <BR>&nbsp;&nbsp;&nbsp;<em>Iterator for unstrided \ref vigra::MultiArrayView</em>
+     <BR>&nbsp;&nbsp;&nbsp;<em>Difference type for \ref vigra::MultiArrayView or \ref vigra::MultiIterator</em>
 <LI> \ref vigra::MultiIterator
      <BR>&nbsp;&nbsp;&nbsp;<em>Iterator for unstrided \ref vigra::MultiArrayView</em>
 <LI> \ref vigra::StridedMultiIterator
