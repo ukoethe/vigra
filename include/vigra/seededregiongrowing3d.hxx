@@ -396,14 +396,15 @@ seededRegionGrowing3D(SrcImageIterator srcul, Diff_type shape, SrcAccessor as,
         Voxel * voxel = pheap.top();
         pheap.pop();
 
-        if((srgType & StopAtThreshold) != 0 && voxel->cost_ > max_cost)
-            break;
-
         Diff_type pos = voxel->location_;
         Diff_type nearest = voxel->nearest_;
         int lab = voxel->label_;
+        CostType cost = voxel->cost_;
 
         allocator.dismiss(voxel);
+
+        if((srgType & StopAtThreshold) != 0 && cost > max_cost)
+            break;
 
         irx = ir + pos;
         isx = srcul + pos;
@@ -445,6 +446,13 @@ seededRegionGrowing3D(SrcImageIterator srcul, Diff_type shape, SrcAccessor as,
                 }
             }
         }
+    }
+    
+    // free temporary memory
+    while(pheap.size() != 0)
+    {
+        allocator.dismiss(pheap.top());
+        pheap.pop();
     }
 
     // write result

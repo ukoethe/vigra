@@ -320,7 +320,7 @@ pythonWatersheds2D(NumpyArray<2, Singleband<PixelType> > image,
         method[k] = (std::string::value_type)tolower(method[k]);
     
     bool haveSeeds = seeds.hasData();
-    unsigned int maxRegionLabel;
+    unsigned int maxRegionLabel = 0;
     
     if(method == "")
         method = "regiongrowing";
