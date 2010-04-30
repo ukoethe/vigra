@@ -23,6 +23,9 @@
 ^test/impex/resrgb.gif$
 ^test/syntax/test\.cxx$
 ^test/multiconvolution/speedtest$
+^test/([^/]+)/(run_test_.*\.(sh|bat)|testsuccess\.cxx)$
+^vigranumpy/test/(run_vigranumpytest\.sh|testsuccess\.cxx)$
+^include/vigra/configVersion\.hxx$
 ^src/examples/(convert|subimage|invert|invert_explicitly|resize|smooth|profile|palette|pyramid|edge|watershed|voronoi)$
 ^src/impex/libvigraimpex
 ^src/impex/(impex\.layout|Makefile\.win)$
@@ -31,7 +34,9 @@
 ^vigranumpy/private$
 ^vigranumpy/lib/__version__.py$
 CMakeFiles/
+^DartConfiguration.tcl$
 \.cmake$
+\.py[co]$
 
 syntax: glob
 
