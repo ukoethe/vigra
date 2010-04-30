@@ -107,12 +107,12 @@ IF(AUTOEXEC_TESTS)
         SET(VIGRA_TEST_EXECUTABLE "${PYTHON_EXECUTABLE} -c \"import nose; nose.main()\" .")        
         IF(MSVC OR MINGW)
             SET(VIGRA_TEST_EXECUTABLE "${VIGRA_TEST_EXECUTABLE} %CONFIGURATION%")
-            SET(VIGRA_RUN_TEST "${CMAKE_CURRENT_BINARY_DIR}/run_vigramumpytest.bat")
+            SET(VIGRA_RUN_TEST "${CMAKE_CURRENT_BINARY_DIR}/run_vigranumpytest.bat")
             CONFIGURE_FILE(${CMAKE_SOURCE_DIR}/config/run_test.bat.in
                             ${VIGRA_RUN_TEST}
                             @ONLY)
         ELSE()            
-            SET(VIGRA_RUN_TEST "${CMAKE_CURRENT_BINARY_DIR}/run_vigramumpytest.sh")
+            SET(VIGRA_RUN_TEST "${CMAKE_CURRENT_BINARY_DIR}/run_vigranumpytest.sh")
             CONFIGURE_FILE(${CMAKE_SOURCE_DIR}/config/run_test.sh.in
                             ${VIGRA_RUN_TEST}
                            @ONLY)
