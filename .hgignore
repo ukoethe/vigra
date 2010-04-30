@@ -22,9 +22,10 @@
 ^test/impex/res\.
 ^test/impex/resrgb.gif$
 ^test/syntax/test\.cxx$
-^test/multiconvolution/speedtest$
-^test/([^/]+)/(run_test_.*\.(sh|bat)|testsuccess\.cxx)$
+^test/(classifier|hdf5impex)/.*\.(log|hdf5)$
+^test/([^/]+)/(test_[a-z35RG]*(_speed)?|run_test_.*\.(sh|bat)|testsuccess\.cxx)$
 ^vigranumpy/test/(run_vigranumpytest\.sh|testsuccess\.cxx)$
+^vigranumpy/vigra$
 ^include/vigra/configVersion\.hxx$
 ^src/examples/(convert|subimage|invert|invert_explicitly|resize|smooth|profile|palette|pyramid|edge|watershed|voronoi)$
 ^src/impex/libvigraimpex
