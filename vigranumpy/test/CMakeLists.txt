@@ -61,7 +61,7 @@ DEPENDENCY_PATH(VIGRANUMPYTEST_PATH vigranumpytest)
 STRING(REGEX REPLACE "/vigra$" "" VIGRANUMPY_TMP_PATH ${vigranumpy_tmp_dir})
 FILE(TO_NATIVE_PATH "${VIGRANUMPY_TMP_PATH}" VIGRANUMPY_TMP_PATH)
 
-configure_file(${CMAKE_CURRENT_SOURCE_DIR}/set_paths.py 
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/set_paths.py.in
                 ${CMAKE_CURRENT_BINARY_DIR}/set_paths.py 
                 @ONLY)
 
