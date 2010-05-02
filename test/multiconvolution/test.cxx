@@ -370,7 +370,7 @@ struct MultiArraySeparableConvolutionTest
         laplacianOfGaussian(srcImageRange(src), destImage(rlaplacian), 2.0);
         laplacianOfGaussianMultiArray(srcMultiArrayRange(src), destMultiArray(laplacian), 2.0 );
 
-        shouldEqualSequence(laplacian.data(), laplacian.data()+size, rlaplacian.data());
+        shouldEqualSequenceTolerance(laplacian.data(), laplacian.data()+size, rlaplacian.data(), 1e-12);
     }
 
     void test_hessian()
@@ -392,7 +392,8 @@ struct MultiArraySeparableConvolutionTest
                                 2.0);
         hessianOfGaussianMultiArray(srcMultiArrayRange(src), destMultiArray(hessian), 2.0 );
 
-        shouldEqualSequence(hessian.data(), hessian.data()+size, rhessian.data());
+        TinyVector<double, 3> epsilon(1e-12, 1e-12, 1e-12);
+        shouldEqualSequenceTolerance(hessian.data(), hessian.data()+size, rhessian.data(), epsilon);
     }
 
     void test_structureTensor()
@@ -414,7 +415,8 @@ struct MultiArraySeparableConvolutionTest
                         1.5, 3.0);
         structureTensorMultiArray(srcMultiArrayRange(src), destMultiArray(st), 1.5, 3.0 );
 
-        shouldEqualSequence(st.data(), st.data()+size, rst.data());
+        TinyVector<double, 3> epsilon(1e-12, 1e-12, 1e-12);
+        shouldEqualSequenceTolerance(st.data(), st.data()+size, rst.data(), epsilon);
     }
 
     //--------------------------------------------

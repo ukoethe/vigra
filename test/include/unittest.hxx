@@ -641,7 +641,7 @@ sequence_equal_tolerance_impl(Iter1 i1, Iter1 end1, Iter2 i2, T epsilon, const c
     {
         detail::errstream buf;
         buf << "Sequence items differ at index " << counter;
-        tolerance_equal_impl(*i1, *i2, epsilon, buf.str().c_str(), file, line); 
+        tolerance_equal_impl(*i1, *i2, epsilon, buf.str().c_str(), file, line, typename FloatTraits<T>::ScalarOrVector()); 
     }
 }
 
