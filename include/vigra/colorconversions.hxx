@@ -329,6 +329,10 @@ class RGB2RGBPrimeFunctor<unsigned char, unsigned char>
         
   public:
   
+    typedef TinyVector<unsigned char, 3> argument_type;
+    
+    typedef TinyVector<unsigned char, 3> result_type;
+    
     typedef TinyVector<unsigned char, 3> value_type;
     
     RGB2RGBPrimeFunctor()
@@ -443,6 +447,10 @@ class RGB2sRGBFunctor<unsigned char, unsigned char>
         
   public:
   
+    typedef TinyVector<unsigned char, 3> argument_type;
+    
+    typedef TinyVector<unsigned char, 3> result_type;
+    
     typedef TinyVector<unsigned char, 3> value_type;
     
     RGB2sRGBFunctor()
@@ -554,6 +562,10 @@ class RGBPrime2RGBFunctor<unsigned char, unsigned char>
         
   public:
   
+    typedef TinyVector<unsigned char, 3> argument_type;
+    
+    typedef TinyVector<unsigned char, 3> result_type;
+    
     typedef TinyVector<unsigned char, 3> value_type;
     
     RGBPrime2RGBFunctor()
@@ -667,6 +679,10 @@ class sRGB2RGBFunctor<unsigned char, unsigned char>
         
   public:
   
+    typedef TinyVector<unsigned char, 3> argument_type;
+    
+    typedef TinyVector<unsigned char, 3> result_type;
+    
     typedef TinyVector<unsigned char, 3> value_type;
     
     sRGB2RGBFunctor()
