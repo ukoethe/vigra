@@ -31,8 +31,14 @@ IF(NOT TESTSUCCESS_FOUND)
 ENDIF()
 
 # setup the test target
-ADD_LIBRARY(vigranumpytest SHARED EXCLUDE_FROM_ALL
-             vigranumpytest.cxx ${TEST_SUCCESS_FILE} ${TEST_SCRIPTS})
+
+IF(AUTOBUILD_TESTS)
+  ADD_LIBRARY(vigranumpytest SHARED 
+               vigranumpytest.cxx ${TEST_SUCCESS_FILE} ${TEST_SCRIPTS})
+ELSE()
+  ADD_LIBRARY(vigranumpytest SHARED EXCLUDE_FROM_ALL
+               vigranumpytest.cxx ${TEST_SUCCESS_FILE} ${TEST_SCRIPTS})
+ENDIF()
 
 IF(PYTHON_PLATFORM MATCHES "^windows$")
     SET_TARGET_PROPERTIES(vigranumpytest PROPERTIES PREFIX "" SUFFIX  ".pyd")
@@ -65,8 +71,8 @@ configure_file(${CMAKE_CURRENT_SOURCE_DIR}/set_paths.py.in
                 ${CMAKE_CURRENT_BINARY_DIR}/set_paths.py 
                 @ONLY)
 
-IF(AUTOEXEC_TESTS)
-    IF(NOT PYTHON_NOSETESTS_NOT_FOUND)
+
+IF(NOT PYTHON_NOSETESTS_NOT_FOUND)
      
         # copy the individual test scripts
         FOREACH(test_script ${TEST_SCRIPTS})
@@ -127,13 +133,16 @@ IF(AUTOEXEC_TESTS)
             SET(VIGRA_CONFIGURATION)
         ENDIF()
 
-        add_custom_command(
+	IF(AUTOEXEC_TESTS)
+          add_custom_command(
             TARGET vigranumpytest
             POST_BUILD
             COMMAND ${VIGRA_RUN_TEST} ARGS ${VIGRA_CONFIGURATION}
             COMMENT "Running vigranumpy tests")
+	ENDIF()
 
-    ELSE()
+        ADD_TEST(vigranumpytest ${VIGRA_RUN_TEST} ${VIGRA_CONFIGURATION})
+
+ELSE()
         MESSAGE(STATUS "  vigranumpy tests will NOT be executed (nosetests missing)")
-    ENDIF()
 ENDIF()
