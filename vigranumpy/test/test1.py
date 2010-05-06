@@ -186,15 +186,15 @@ def test_edges():
     assert(img_scalar_f.shape[0]*2-1 == res.shape[0])
     assert(img_scalar_f.shape[1]*2-1 == res.shape[1])
     
+    res1 = beautifyCrackEdgeImage(res,  1, 0)
+    checkShape(res1, res)
+    checkType(res1, np.uint8)
+    
+    res1 = closeGapsInCrackEdgeImage(res, 4)
+    checkShape(res1, res)
+    checkType(res1, np.uint8)
+    
     res = removeShortEdges(img_scalar_ui8, 10, 0)
-    checkShape(img_scalar_ui8, res)
-    checkType(res, np.uint8)
-    
-    res = beautifyCrackEdgeImage(img_scalar_ui8,  1, 0)
-    checkShape(img_scalar_ui8, res)
-    checkType(res, np.uint8)
-    
-    res = closeGapsInCrackEdgeImage(img_scalar_ui8, 4)
     checkShape(img_scalar_ui8, res)
     checkType(res, np.uint8)
     
