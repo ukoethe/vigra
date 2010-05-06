@@ -734,8 +734,6 @@ noiseNormalizationImpl(SrcIterator sul, SrcIterator slr, SrcAccessor src,
     if(noiseData.size() < 10)
         return false;
 
-    std::sort(noiseData.begin(), noiseData.end(), SortNoiseByMean());
-
     ArrayVector<TinyVector<double, 2> > noiseClusters;
 
     noiseVarianceClusteringImpl(noiseData, noiseClusters,
