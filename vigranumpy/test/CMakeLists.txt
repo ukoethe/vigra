@@ -31,8 +31,14 @@ IF(NOT TESTSUCCESS_FOUND)
 ENDIF()
 
 # setup the test target
-ADD_LIBRARY(vigranumpytest SHARED EXCLUDE_FROM_ALL
-             vigranumpytest.cxx ${TEST_SUCCESS_FILE} ${TEST_SCRIPTS})
+
+IF(AUTOBUILD_TESTS)
+  ADD_LIBRARY(vigranumpytest SHARED 
+               vigranumpytest.cxx ${TEST_SUCCESS_FILE} ${TEST_SCRIPTS})
+ELSE()
+  ADD_LIBRARY(vigranumpytest SHARED EXCLUDE_FROM_ALL
+               vigranumpytest.cxx ${TEST_SUCCESS_FILE} ${TEST_SCRIPTS})
+ENDIF()
 
 IF(PYTHON_PLATFORM MATCHES "^windows$")
     SET_TARGET_PROPERTIES(vigranumpytest PROPERTIES PREFIX "" SUFFIX  ".pyd")
@@ -65,75 +71,80 @@ configure_file(${CMAKE_CURRENT_SOURCE_DIR}/set_paths.py.in
                 ${CMAKE_CURRENT_BINARY_DIR}/set_paths.py 
                 @ONLY)
 
-IF(AUTOEXEC_TESTS)
-    IF(NOT PYTHON_NOSETESTS_NOT_FOUND)
-     
-        # copy the individual test scripts
-        FOREACH(test_script ${TEST_SCRIPTS})
-            ADD_CUSTOM_COMMAND(
-                TARGET vigranumpytest
-                POST_BUILD
-                COMMAND ${CMAKE_COMMAND}
-                ARGS -E copy_if_different
-                ${CMAKE_CURRENT_SOURCE_DIR}/${test_script} ${CMAKE_CURRENT_BINARY_DIR}/${test_script}
-                COMMENT "Running vigranumpy tests")
-        ENDFOREACH(test_script)
 
-        VIGRA_NATIVE_PATH(PYTHON_EXECUTABLE ${PYTHON_EXECUTABLE})
-        
-        # Windows: Set the DLL path to the binaries currently being built
-        #          (so that binaries which are already installed are ignored)
-        #          This is not necessary on Linux, because the correct path
-        #          is hard-coded into the module by means of 'rpath'
-        set(VIGRA_PATH "")
-        if(WIN32)
-            IF(CYGWIN)
-                SET(PATHSEP ":")
-            ELSE()
-                SET(PATHSEP ";")
-            ENDIF()
-            FOREACH(lib ${LIBRARIES})
-                GET_TARGET_PROPERTY(p ${lib} LOCATION)
-                if(p)
-                    GET_FILENAME_COMPONENT(p ${p} PATH)
-                    VIGRA_NATIVE_PATH(p ${p})
-                    SET(VIGRA_PATH  "${p}${PATHSEP}${VIGRA_PATH}")
-               endif()
-            ENDFOREACH(lib)
-        endif()
-        
-        # Setup the test execution script
-        VIGRA_NATIVE_PATH(VIGRA_CURRENT_BINARY_DIR ${CMAKE_CURRENT_BINARY_DIR})
-        SET(VIGRA_TEST_EXECUTABLE "${PYTHON_EXECUTABLE} -c \"import nose; nose.main()\" .")        
-        IF(MSVC OR MINGW)
-            SET(VIGRA_TEST_EXECUTABLE "${VIGRA_TEST_EXECUTABLE} %CONFIGURATION%")
-            SET(VIGRA_RUN_TEST "${CMAKE_CURRENT_BINARY_DIR}/run_vigranumpytest.bat")
-            CONFIGURE_FILE(${CMAKE_SOURCE_DIR}/config/run_test.bat.in
-                            ${VIGRA_RUN_TEST}
-                            @ONLY)
-        ELSE()            
-            SET(VIGRA_RUN_TEST "${CMAKE_CURRENT_BINARY_DIR}/run_vigranumpytest.sh")
-            CONFIGURE_FILE(${CMAKE_SOURCE_DIR}/config/run_test.sh.in
-                            ${VIGRA_RUN_TEST}
-                           @ONLY)
-            EXECUTE_PROCESS(COMMAND chmod u+x ${VIGRA_RUN_TEST} OUTPUT_QUIET ERROR_QUIET)
-        ENDIF()
+IF(NOT PYTHON_NOSETESTS_NOT_FOUND)
+    # copy the individual test scripts
+    FOREACH(test_script ${TEST_SCRIPTS})
+        ADD_CUSTOM_COMMAND(
+            TARGET vigranumpytest
+            POST_BUILD
+            COMMAND ${CMAKE_COMMAND}
+            ARGS -E copy_if_different
+            ${CMAKE_CURRENT_SOURCE_DIR}/${test_script} ${CMAKE_CURRENT_BINARY_DIR}/${test_script}
+            COMMENT "Running vigranumpy tests")
+    ENDFOREACH(test_script)
 
-        # register the test execution command
-        # VIGRA_CONFIGURATION is 'release' or 'debug' on Windows, nothing on Linux
-        IF(NOT CMAKE_CFG_INTDIR STREQUAL ".")
-            SET(VIGRA_CONFIGURATION ${CMAKE_CFG_INTDIR})
+    VIGRA_NATIVE_PATH(PYTHON_EXECUTABLE ${PYTHON_EXECUTABLE})
+    
+    # Windows: Set the DLL path to the binaries currently being built
+    #          (so that binaries which are already installed are ignored)
+    #          This is not necessary on Linux, because the correct path
+    #          is hard-coded into the module by means of 'rpath'
+    set(VIGRA_PATH "")
+    if(WIN32)
+        IF(CYGWIN)
+            SET(PATHSEP ":")
         ELSE()
-            SET(VIGRA_CONFIGURATION)
+            SET(PATHSEP ";")
         ENDIF()
+        FOREACH(lib ${LIBRARIES})
+            GET_TARGET_PROPERTY(p ${lib} LOCATION)
+            if(p)
+                GET_FILENAME_COMPONENT(p ${p} PATH)
+                VIGRA_NATIVE_PATH(p ${p})
+                SET(VIGRA_PATH  "${p}${PATHSEP}${VIGRA_PATH}")
+           endif()
+        ENDFOREACH(lib)
+    endif()
+    
+    # Setup the test execution script
+    VIGRA_NATIVE_PATH(VIGRA_CURRENT_BINARY_DIR ${CMAKE_CURRENT_BINARY_DIR})
+    SET(VIGRA_TEST_EXECUTABLE "${PYTHON_EXECUTABLE} -c \"import nose; nose.main()\" .")        
+    IF(MSVC OR MINGW)
+        SET(VIGRA_TEST_EXECUTABLE "${VIGRA_TEST_EXECUTABLE} %CONFIGURATION%")
+        SET(VIGRA_RUN_TEST "${CMAKE_CURRENT_BINARY_DIR}/run_vigranumpytest.bat")
+        CONFIGURE_FILE(${CMAKE_SOURCE_DIR}/config/run_test.bat.in
+                        ${VIGRA_RUN_TEST}
+                        @ONLY)
+    ELSE()            
+        SET(VIGRA_RUN_TEST "${CMAKE_CURRENT_BINARY_DIR}/run_vigranumpytest.sh")
+        CONFIGURE_FILE(${CMAKE_SOURCE_DIR}/config/run_test.sh.in
+                        ${VIGRA_RUN_TEST}
+                       @ONLY)
+        EXECUTE_PROCESS(COMMAND chmod u+x ${VIGRA_RUN_TEST} OUTPUT_QUIET ERROR_QUIET)
+    ENDIF()
 
+    # register the test execution command
+    # VIGRA_CONFIGURATION is 'release' or 'debug' on Windows, nothing on Linux
+    # variable CMAKE_CFG_INTDIR contains a dot '.' for a Windows nmake build, or
+    #                           '$(OutDir)' for a VisualStudio build (OutDir will be
+    #                           set by VS at build time)
+    IF(NOT CMAKE_CFG_INTDIR STREQUAL ".")
+        SET(VIGRA_CONFIGURATION ${CMAKE_CFG_INTDIR})
+    ELSE()
+        SET(VIGRA_CONFIGURATION)
+    ENDIF()
+
+    IF(AUTOEXEC_TESTS)
         add_custom_command(
             TARGET vigranumpytest
             POST_BUILD
             COMMAND ${VIGRA_RUN_TEST} ARGS ${VIGRA_CONFIGURATION}
             COMMENT "Running vigranumpy tests")
-
-    ELSE()
-        MESSAGE(STATUS "  vigranumpy tests will NOT be executed (nosetests missing)")
     ENDIF()
+
+    ADD_TEST(vigranumpytest ${VIGRA_RUN_TEST} ${VIGRA_CONFIGURATION})
+
+ELSE()
+        MESSAGE(STATUS "  vigranumpy tests will NOT be executed (nosetests missing)")
 ENDIF()
