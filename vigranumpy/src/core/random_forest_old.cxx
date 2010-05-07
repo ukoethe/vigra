@@ -67,8 +67,11 @@ pythonConstructRandomForest(NumpyArray<2,FeatureType> trainData,NumpyArray<1,Lab
         .sampleClassesIndividually(sample_classes_individually).minSplitNodeSize(min_split_node_size);
     std::set<LabelType> uniqueLabels(trainLabels.data(),trainLabels.data()+trainLabels.size());
 
+	
     RandomForest<LabelType>* rf=new RandomForest<LabelType>(uniqueLabels.begin(),uniqueLabels.end(),treeCount,options);
+	Py_BEGIN_ALLOW_THREADS
     rf->learn(trainData,trainLabels);
+	Py_END_ALLOW_THREADS
 
     return rf;
 }
@@ -94,7 +97,9 @@ pythonRFPredictProbabilities(RandomForest<LabelType> const & rf,
     //construct result
     res.reshapeIfEmpty(MultiArrayShape<2>::type(testData.shape(0),rf.labelCount()),
                                                 "Output array has wrong dimensions.");
+	Py_BEGIN_ALLOW_THREADS
     rf.predictProbabilities(testData,res);
+	Py_END_ALLOW_THREADS
     return res;
 }
 

@@ -18,7 +18,7 @@
 /*    Software is furnished to do so, subject to the following          */
 /*    conditions:                                                       */
 /*                                                                      */
-/*    The above copyright notice and this permission notice shall be    */
+/*    The above copyrigfht notice and this permission notice shall be    */
 /*    included in all copies or substantial portions of the             */
 /*    Software.                                                         */
 /*                                                                      */
@@ -200,6 +200,7 @@ pythonRFPredictProbabilitiesOnlinePredSet(RandomForest<LabelType> & rf,
     return res;
 }
 
+
 void defineRandomForest()
 {
     using namespace python;
@@ -231,7 +232,7 @@ void defineRandomForest()
         .def("__init__",python::make_constructor(registerConverters(&pythonConstructRandomForest<UInt32,float>),
                                                  boost::python::default_call_policies(),
                                                  ( arg("treeCount")=255,
-                                                   arg("mtry")=RF_SQRT,
+                                                   arg("mtry")=RF_ALL,
                                                    arg("min_split_node_size")=1,
                                                    arg("training_set_size")=0,
                                                    arg("training_set_proportions")=1.0,

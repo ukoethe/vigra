@@ -55,7 +55,9 @@ NumpyAnyArray pythonGaussianGradientND(NumpyArray<ndim, Singleband<VoxelType> > 
                                        NumpyArray<ndim, TinyVector<VoxelType, (int)ndim> > res=python::object())
 {
     res.reshapeIfEmpty(volume.shape(), "gaussianGradient(): Output array has wrong shape.");
+	Py_BEGIN_ALLOW_THREADS
     gaussianGradientMultiArray(srcMultiArrayRange(volume), destMultiArray(res), sigma);
+	Py_END_ALLOW_THREADS
     return res;
 }
 
@@ -72,6 +74,7 @@ pythonGaussianGradientMagnitudeND(NumpyArray<ndim, Multiband<VoxelType> > volume
     res.reshapeIfEmpty(tmpShape, "gaussianGradientMagnitude(): Output array has wrong shape.");
     res.init(NumericTraits<VoxelType>::zero());
     MultiArray<ndim-1, TinyVector<VoxelType, (int)(ndim-1)> > grad(tmpShape);
+	Py_BEGIN_ALLOW_THREADS
     for(int k=0; k<volume.shape(ndim-1); ++k)
     {
         MultiArrayView<ndim-1, VoxelType, StridedArrayTag> bvolume = volume.bindOuter(k);
@@ -81,6 +84,7 @@ pythonGaussianGradientMagnitudeND(NumpyArray<ndim, Multiband<VoxelType> > volume
                               squaredNorm(Arg1())+Arg2());
     }
     transformMultiArray(srcMultiArrayRange(res), destMultiArray(res), sqrt(Arg1()));
+	Py_END_ALLOW_THREADS
     return res;
 }
 
@@ -112,6 +116,7 @@ pythonGaussianGradientMagnitudeND(NumpyArray<ndim, Multiband<VoxelType> > volume
     
     typename MultiArrayShape<ndim-1>::type tmpShape(volume.shape().begin());
     MultiArray<ndim-1, TinyVector<VoxelType, (int)(ndim-1)> > grad(tmpShape);
+	Py_BEGIN_ALLOW_THREADS
     for(int k=0; k<volume.shape(ndim-1); ++k)
     {
     	MultiArrayView<ndim-1, VoxelType, StridedArrayTag> bvolume = volume.bindOuter(k);
@@ -120,6 +125,7 @@ pythonGaussianGradientMagnitudeND(NumpyArray<ndim, Multiband<VoxelType> > volume
         gaussianGradientMultiArray(srcMultiArrayRange(bvolume), destMultiArray(grad), sigma);
         transformMultiArray(srcMultiArrayRange(grad), destMultiArray(bres), norm(Arg1()));
     }
+	Py_END_ALLOW_THREADS
     return res;
 }
 
@@ -151,7 +157,9 @@ pythonHessianOfGaussianND(NumpyArray<N, Singleband<VoxelType> > volume,
                           NumpyArray<N, TinyVector<VoxelType, int(N*(N+1)/2)> > res=python::object())
 {
     res.reshapeIfEmpty(volume.shape(), "hessianOfGaussian(): Output array has wrong shape.");
+	Py_BEGIN_ALLOW_THREADS
     hessianOfGaussianMultiArray(srcMultiArrayRange(volume), destMultiArray(res), sigma);
+	Py_END_ALLOW_THREADS
     return res;
 }
 
@@ -167,12 +175,15 @@ pythonStructureTensor(NumpyArray<N, Multiband<PixelType> > image,
                  "structureTensor(): Output array has wrong shape.");
     
     MultiArrayView<N-1, PixelType, StridedArrayTag> band = image.bindOuter(0);
+	Py_BEGIN_ALLOW_THREADS
     structureTensorMultiArray(srcMultiArrayRange(band), destMultiArray(res), 
                               innerScale, outerScale);
+	Py_END_ALLOW_THREADS
     
     if(image.shape(N-1) > 1)
     {
         MultiArray<N-1, TinyVector<PixelType, int(N*(N-1)/2)> > st(res.shape());
+		Py_BEGIN_ALLOW_THREADS
         for(int b=1; b<image.shape(N-1); ++b)
         {
             MultiArrayView<N-1, PixelType, StridedArrayTag> band = image.bindOuter(b);
@@ -181,6 +192,7 @@ pythonStructureTensor(NumpyArray<N, Multiband<PixelType> > image,
             combineTwoMultiArrays(srcMultiArrayRange(res), srcMultiArray(st), 
                                   destMultiArray(res), Arg1() + Arg2());
         }
+		Py_END_ALLOW_THREADS
     }
     return res;
 }
@@ -205,8 +217,9 @@ pythonTensorEigenRepresentation2D(NumpyArray<2, TinyVector<SrcPixelType, 3> >ima
                                   NumpyArray<2, TinyVector<DestPixelType, 3> > res = python::object())
 {
     res.reshapeIfEmpty(MultiArrayShape<2>::type(image.shape(0), image.shape(1)), "tensorEigenRepresentation2D(): Output array has wrong shape.");    
-    
+    Py_BEGIN_ALLOW_THREADS
     tensorEigenRepresentation(srcImageRange(image), destImage(res));
+	Py_END_ALLOW_THREADS
      
     return res;
 }
@@ -257,9 +270,9 @@ pythonTensorEigenvalues(NumpyArray<N, TinyVector<PixelType, int(N*(N+1)/2)> > im
                         NumpyArray<N, TinyVector<PixelType, int(N)> > res = python::object())
 {
     res.reshapeIfEmpty(image.shape(), "tensorEigenvalues(): Output array has wrong shape.");    
-    
+    Py_BEGIN_ALLOW_THREADS
     tensorEigenvaluesMultiArray(srcMultiArrayRange(image), destMultiArray(res));
-     
+    Py_END_ALLOW_THREADS 
     return res;
 }
 
