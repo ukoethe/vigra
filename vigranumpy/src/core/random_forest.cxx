@@ -191,12 +191,12 @@ pythonRFPredictProbabilitiesOnlinePredSet(RandomForest<LabelType> & rf,
     //construct result
     res.reshapeIfEmpty(MultiArrayShape<2>::type(predSet.features.shape(0),rf.ext_param_.class_count_),
                        "Output array has wrong dimenstions.");
-    Py_BEGIN_ALLOW_THREADS
     clock_t start=clock();
+	Py_BEGIN_ALLOW_THREADS
     rf.predictProbabilities(predSet, res);
+    Py_END_ALLOW_THREADS
     double duration=(clock()-start)/double(CLOCKS_PER_SEC);
     std::cerr<<"Prediction Time: "<<duration<<std::endl;
-    Py_END_ALLOW_THREADS
     return res;
 }
 
