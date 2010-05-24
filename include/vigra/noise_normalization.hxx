@@ -582,7 +582,16 @@ void noiseVarianceListMedianCut(Vector1 const & noise, Vector2 & clusters,
         double diffMax = 0.0;
         for(unsigned int k=0; k < clusters.size(); ++k)
         {
-            double diff = noise[clusters[k][1]-1][0] - noise[clusters[k][0]][0];
+            int k1 = clusters[k][0], k2 = clusters[k][1]-1;
+            std::string message("noiseVarianceListMedianCut(): internal error (");
+            message += std::string("k: ") + asString(k) + ", ";
+            message += std::string("k1: ") + asString(k1) + ", ";
+            message += std::string("k2: ") + asString(k2) + ", ";
+            message += std::string("noise.size(): ") + asString(noise.size()) + ", ";
+            message += std::string("clusters.size(): ") + asString(clusters.size()) + ").";
+            vigra_invariant(k1 >= 0 && k1 < (int)noise.size() && k2 >= 0 && k2 < (int)noise.size(), message.c_str());
+
+            double diff = noise[k2][0] - noise[k1][0];
             if(diff > diffMax)
             {
                 diffMax = diff;
