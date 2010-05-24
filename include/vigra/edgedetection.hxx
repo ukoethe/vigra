@@ -893,7 +893,7 @@ void closeGapsInCrackEdgeImage(
     int h = slr.y - sul.y;
     
     vigra_precondition(w % 2 == 1 && h % 2 == 1,
-        "closeGapsInCrackEdgeImage(): Input is not a chrack edge image (must have odd shape).");
+        "closeGapsInCrackEdgeImage(): Input is not a crack edge image (must have odd-numbered shape).");
         
     int w2 = w / 2, h2 = h / 2, x, y;
 
@@ -1110,7 +1110,7 @@ void beautifyCrackEdgeImage(
     int h = slr.y - sul.y;
     
     vigra_precondition(w % 2 == 1 && h % 2 == 1,
-        "beautifyCrackEdgeImage(): Input is not a chrack edge image (must have odd shape).");
+        "beautifyCrackEdgeImage(): Input is not a crack edge image (must have odd-numbered shape).");
         
     int w2 = w / 2, h2 = h / 2, x, y;
 
