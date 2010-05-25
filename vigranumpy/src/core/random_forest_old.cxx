@@ -69,10 +69,12 @@ pythonConstructRandomForest(NumpyArray<2,FeatureType> trainData,NumpyArray<1,Lab
 
 	
     RandomForest<LabelType>* rf=new RandomForest<LabelType>(uniqueLabels.begin(),uniqueLabels.end(),treeCount,options);
+	double oob;
 	Py_BEGIN_ALLOW_THREADS
-    rf->learn(trainData,trainLabels);
+    oob = rf->learn(trainData, trainLabels);
 	Py_END_ALLOW_THREADS
-
+	
+	std::cout << "Out-of-bag error " << oob << std::endl;
     return rf;
 }
 
