@@ -805,7 +805,8 @@ class RandomForest
     template <class U, class C, class Array>
     double learn(MultiArrayView<2, U, C> const & features, Array const & labels)
     {
-        return learn(features, labels, RandomTT800::global());
+		RandomNumberGenerator<> generator;
+        return learn(features, labels, generator);
     }
 
     template <class U, class C>

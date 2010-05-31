@@ -67,9 +67,9 @@ pythonConstructRandomForest(NumpyArray<2,FeatureType> trainData,NumpyArray<1,Lab
         .sampleClassesIndividually(sample_classes_individually).minSplitNodeSize(min_split_node_size);
     std::set<LabelType> uniqueLabels(trainLabels.data(),trainLabels.data()+trainLabels.size());
 
-	
-    RandomForest<LabelType>* rf=new RandomForest<LabelType>(uniqueLabels.begin(),uniqueLabels.end(),treeCount,options);
+	RandomForest<LabelType>* rf=new RandomForest<LabelType>(uniqueLabels.begin(),uniqueLabels.end(),treeCount,options);
 	double oob;
+
 	Py_BEGIN_ALLOW_THREADS
     oob = rf->learn(trainData, trainLabels);
 	Py_END_ALLOW_THREADS
