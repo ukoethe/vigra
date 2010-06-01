@@ -33,7 +33,6 @@
 /*                                                                      */
 /************************************************************************/
 
-
 #ifndef VIGRA_RANDOM_FOREST_HXX
 #define VIGRA_RANDOM_FOREST_HXX
 
@@ -41,6 +40,8 @@
 #include <map>
 #include <numeric>
 #include <iostream>
+#include <ctime>
+#include <cstdlib>
 #include "vigra/mathutil.hxx"
 #include "vigra/array_vector.hxx"
 #include "vigra/sized_int.hxx"
@@ -805,7 +806,9 @@ class RandomForest
     template <class U, class C, class Array>
     double learn(MultiArrayView<2, U, C> const & features, Array const & labels)
     {
-		RandomNumberGenerator<> generator;
+		srand((unsigned)time(0)); 
+		int seedInt = rand(); 
+		RandomNumberGenerator<> generator(seedInt);
         return learn(features, labels, generator);
     }
 
