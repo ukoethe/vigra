@@ -36,6 +36,7 @@
 #ifndef VIGRA_NUMPY_ARRAY_HXX
 #define VIGRA_NUMPY_ARRAY_HXX
 
+#include <Python.h>
 #include <iostream>
 #include <algorithm>
 #include <complex>
@@ -46,7 +47,6 @@
 #include <vigra/array_vector.hxx>
 #include <vigra/sized_int.hxx>
 #include <vigra/python_utility.hxx>
-#include <Python.h>
 #include <numpy/arrayobject.h>
 
 int _import_array();
@@ -317,7 +317,7 @@ performCustomizedArrayTypecheck(PyObject * obj, std::string const & keyFull, std
     pythonToCppException(res);
     vigra_precondition(PyBool_Check(res),
            "NumpyArray conversion: registered typecheck function did not return a boolean.");
-    return res.get() == Py_True;
+    return (void*)res.get() == (void*)Py_True;
 }
 
 inline
@@ -358,8 +358,8 @@ python_ptr constructNumpyArrayImpl(
 // strideOrdering will be ignored unless order == "A"
 // TODO: this function should receive some refactoring in order to make
 //       the rules clear from the code rather than from comments
-inline python_ptr 
-constructNumpyArrayImpl(PyTypeObject * type, ArrayVector<npy_intp> const & shape, 
+inline python_ptr
+constructNumpyArrayImpl(PyTypeObject * type, ArrayVector<npy_intp> const & shape,
                        unsigned int spatialDimensions, unsigned int channels,
                        NPY_TYPES typeCode, std::string order, bool init,
                        ArrayVector<npy_intp> strideOrdering = ArrayVector<npy_intp>())
@@ -368,12 +368,12 @@ constructNumpyArrayImpl(PyTypeObject * type, ArrayVector<npy_intp> const & shape
     vigra_precondition(shape.size() == spatialDimensions || shape.size() == spatialDimensions + 1,
            "constructNumpyArray(type, shape, ...): shape has wrong length.");
 
-    // if strideOrdering is given, it must have at least length spatialDimensions, 
+    // if strideOrdering is given, it must have at least length spatialDimensions,
     // but can also have a channel dimension
     vigra_precondition(strideOrdering.size() == 0 || strideOrdering.size() == spatialDimensions ||
                        strideOrdering.size() == spatialDimensions + 1,
            "constructNumpyArray(type, ..., strideOrdering): strideOrdering has wrong length.");
-        
+
     if(channels == 0) // if the requested number of channels is not given ...
     {
         // ... deduce it
@@ -389,21 +389,21 @@ constructNumpyArrayImpl(PyTypeObject * type, ArrayVector<npy_intp> const & shape
             vigra_precondition(channels == (unsigned int)shape[spatialDimensions],
                    "constructNumpyArray(type, ...): shape contradicts requested number of channels.");
     }
-    
+
     // if we have only one channel, no explicit channel dimension should be in the shape
     unsigned int shapeSize = channels == 1
                                   ? spatialDimensions
                                   : spatialDimensions + 1;
-    
+
     // create the shape object with optional channel dimension
     ArrayVector<npy_intp> pshape(shapeSize);
     std::copy(shape.begin(), shape.begin()+std::min(shape.size(), pshape.size()), pshape.begin());
     if(shapeSize > spatialDimensions)
         pshape[spatialDimensions] = channels;
 
-    // order "A" means "preserve order" when an array is copied, and 
+    // order "A" means "preserve order" when an array is copied, and
     // defaults to "V" when a new array is created without explicit strideOrdering
-    // 
+    //
     if(order == "A")
     {
         if(strideOrdering.size() == 0)
@@ -433,7 +433,7 @@ constructNumpyArrayImpl(PyTypeObject * type, ArrayVector<npy_intp> const & shape
             pstride.swap(strideOrdering);
         }
     }
-    
+
     // create the appropriate strideOrdering objects for the other memory orders
     // (when strideOrdering already contained data, it is ignored because order != "A")
     if(order == "C")
@@ -459,13 +459,21 @@ constructNumpyArrayImpl(PyTypeObject * type, ArrayVector<npy_intp> const & shape
     return constructNumpyArrayImpl(type, pshape, strideOrdering.begin(), typeCode, init);
 }
 
+template <class TINY_VECTOR>
 inline
 python_ptr constructNumpyArrayFromData(
-    PyTypeObject * type,
-    ArrayVector<npy_intp> const & shape, npy_intp *strides,
+    std::string const & typeKeyFull,
+    std::string const & typeKey,
+    TINY_VECTOR const & shape, npy_intp *strides,
     NPY_TYPES typeCode, void *data)
 {
-    python_ptr array(PyArray_New(type, shape.size(), (npy_intp *)shape.begin(), typeCode, strides, data, 0, NPY_WRITEABLE, 0),
+    ArrayVector<npy_intp> pyShape(shape.begin(), shape.end());
+
+    python_ptr type = detail::getArrayTypeObject(typeKeyFull);
+    if(type == 0)
+        type = detail::getArrayTypeObject(typeKey, &PyArray_Type);
+
+    python_ptr array(PyArray_New((PyTypeObject *)type.ptr(), shape.size(), pyShape.begin(), typeCode, strides, data, 0, NPY_WRITEABLE, 0),
                      python_ptr::keep_count);
     pythonToCppException(array);
 
@@ -610,7 +618,7 @@ struct NumpyArrayTraits<N, T, StridedArrayTag>
     typedef T value_type;
     typedef NumpyArrayValuetypeTraits<T> ValuetypeTraits;
     static NPY_TYPES const typeCode = ValuetypeTraits::typeCode;
-    
+
     enum { spatialDimensions = N, channels = 1 };
 
     static bool isArray(PyObject * obj)
@@ -646,7 +654,7 @@ struct NumpyArrayTraits<N, T, StridedArrayTag>
                                   T *data, TinyVector<U, N> const & stride)
     {
         TinyVector<npy_intp, N> npyStride(stride * sizeof(T));
-        return detail::constructNumpyArrayFromData(typeKeyFull(), typeKey(), shape, ValuetypeTraits::typeCode, data, npyStride.begin());
+        return detail::constructNumpyArrayFromData(typeKeyFull(), typeKey(), shape, npyStride.begin(), ValuetypeTraits::typeCode, data);
     }
 
     static std::string typeKey()
@@ -689,7 +697,7 @@ struct NumpyArrayTraits<N, T, UnstridedArrayTag>
                                   T *data, TinyVector<U, N> const & stride)
     {
         TinyVector<npy_intp, N> npyStride(stride * sizeof(T));
-        return detail::constructNumpyArrayFromData(typeKeyFull(), BaseType::typeKey(), shape, ValuetypeTraits::typeCode, data, npyStride.begin());
+        return detail::constructNumpyArrayFromData(typeKeyFull(), BaseType::typeKey(), shape, npyStride.begin(), ValuetypeTraits::typeCode, data);
     }
 
     static std::string typeKeyFull()
@@ -719,7 +727,7 @@ struct NumpyArrayTraits<N, Singleband<T>, StridedArrayTag>
                                   T *data, TinyVector<U, N> const & stride)
     {
         TinyVector<npy_intp, N> npyStride(stride * sizeof(T));
-        return detail::constructNumpyArrayFromData(typeKeyFull(), typeKey(), shape, ValuetypeTraits::typeCode, data, npyStride.begin());
+        return detail::constructNumpyArrayFromData(typeKeyFull(), typeKey(), shape, npyStride.begin(), ValuetypeTraits::typeCode, data);
     }
 
     static std::string typeKey()
@@ -761,7 +769,7 @@ struct NumpyArrayTraits<N, Singleband<T>, UnstridedArrayTag>
                                   T *data, TinyVector<U, N> const & stride)
     {
         TinyVector<npy_intp, N> npyStride(stride * sizeof(T));
-        return detail::constructNumpyArrayFromData(typeKeyFull(), BaseType::typeKey(), shape, ValuetypeTraits::typeCode, data, npyStride.begin());
+        return detail::constructNumpyArrayFromData(typeKeyFull(), BaseType::typeKey(), shape, npyStride.begin(), ValuetypeTraits::typeCode, data);
     }
 
     static std::string typeKeyFull()
@@ -804,7 +812,7 @@ struct NumpyArrayTraits<N, Multiband<T>, StridedArrayTag>
                                   T *data, TinyVector<U, N> const & stride)
     {
         TinyVector<npy_intp, N> npyStride(stride * sizeof(T));
-        return detail::constructNumpyArrayFromData(typeKeyFull(), typeKey(), shape, ValuetypeTraits::typeCode, data, npyStride.begin());
+        return detail::constructNumpyArrayFromData(typeKeyFull(), typeKey(), shape, npyStride.begin(), ValuetypeTraits::typeCode, data);
     }
 
     static std::string typeKey()
@@ -847,7 +855,7 @@ struct NumpyArrayTraits<N, Multiband<T>, UnstridedArrayTag>
                                   T *data, TinyVector<U, N> const & stride)
     {
         TinyVector<npy_intp, N> npyStride(stride * sizeof(T));
-        return detail::constructNumpyArrayFromData(typeKeyFull(), BaseType::typeKey(), shape, ValuetypeTraits::typeCode, data, npyStride.begin());
+        return detail::constructNumpyArrayFromData(typeKeyFull(), BaseType::typeKey(), shape, npyStride.begin(), ValuetypeTraits::typeCode, data);
     }
 
     static std::string typeKeyFull()
@@ -914,7 +922,7 @@ struct NumpyArrayTraits<N, TinyVector<T, M>, StridedArrayTag>
 
         return detail::constructNumpyArrayFromData(
             typeKeyFull(), typeKey(), npyShape,
-            ValuetypeTraits::typeCode, data, npyStride.begin());
+            npyStride.begin(), ValuetypeTraits::typeCode, data);
     }
 
     static std::string typeKey()
@@ -969,7 +977,7 @@ struct NumpyArrayTraits<N, TinyVector<T, M>, UnstridedArrayTag>
 
         return detail::constructNumpyArrayFromData(
             typeKeyFull(), BaseType::typeKey(), npyShape,
-            ValuetypeTraits::typeCode, data, npyStride.begin());
+            npyStride.begin(), ValuetypeTraits::typeCode, data);
     }
 
     static std::string typeKeyFull()
@@ -1011,7 +1019,7 @@ struct NumpyArrayTraits<N, RGBValue<T>, StridedArrayTag>
 
         return detail::constructNumpyArrayFromData(
             typeKeyFull(), typeKey(), npyShape,
-            ValuetypeTraits::typeCode, data, npyStride.begin());
+            npyStride.begin(), ValuetypeTraits::typeCode, data);
     }
 
     static std::string typeKey()
@@ -1065,7 +1073,7 @@ struct NumpyArrayTraits<N, RGBValue<T>, UnstridedArrayTag>
 
         return detail::constructNumpyArrayFromData(
             typeKeyFull(), BaseType::typeKey(), npyShape,
-            ValuetypeTraits::typeCode, data, npyStride.begin());
+            npyStride.begin(), ValuetypeTraits::typeCode, data);
     }
 
     static std::string typeKeyFull()
@@ -1083,10 +1091,10 @@ struct NumpyArrayTraits<N, RGBValue<T>, UnstridedArrayTag>
 /********************************************************/
 
 /** Wrapper class for a Python array.
-    
-    This class stores a reference-counted pointer to an Python numpy array object, 
+
+    This class stores a reference-counted pointer to an Python numpy array object,
     i.e. an object where <tt>PyArray_Check(object)</tt> returns true (in Python, the
-    object is then a subclass of <tt>numpy.ndarray</tt>). This class is mainly used 
+    object is then a subclass of <tt>numpy.ndarray</tt>). This class is mainly used
     as a smart pointer to these arrays, but some basic access and conversion functions
     are also provided.
 
@@ -1097,7 +1105,7 @@ class NumpyAnyArray
 {
   protected:
     python_ptr pyArray_;
-    
+
     // We want to apply broadcasting to the channel dimension.
     // Since only leading dimensions can be added during numpy
     // broadcasting, we permute the array accordingly.
@@ -1164,7 +1172,7 @@ class NumpyAnyArray
         /**
          * Assignment operator. If this is already a view with data
          * (i.e. hasData() is true) and the shapes match, the RHS
-         * array contents are copied via the C-equivalent of 
+         * array contents are copied via the C-equivalent of
          * 'self[...] = other[...]'. If the shapes don't matched,
          * broadcasting is tried on the trailing (i.e. channel)
          * dimension.
@@ -1341,8 +1349,8 @@ class NumpyAnyArray
 /********************************************************/
 
 /** Provide the MultiArrayView interface for a Python array.
-    
-    This class inherits from both \ref vigra::MultiArrayView and \ref vigra::NumpyAnyArray 
+
+    This class inherits from both \ref vigra::MultiArrayView and \ref vigra::NumpyAnyArray
     in order to support easy and save application of VIGRA functions to Python arrays.
 
     <b>\#include</b> \<<a href="numpy__array_8hxx-source.html">vigra/numpy_array.hxx</a>\><br>
@@ -1357,7 +1365,7 @@ class NumpyArray
     typedef NumpyArrayTraits<N, T, Stride> ArrayTraits;
     typedef typename ArrayTraits::dtype dtype;
     typedef T pseudo_value_type;
-    
+
     static NPY_TYPES const typeCode = ArrayTraits::typeCode;
 
         /** the view type associated with this array.
@@ -1422,7 +1430,7 @@ class NumpyArray
 
     // this function assumes that pyArray_ has already been set, and compatibility been checked
     void setupArrayView();
-    
+
     static python_ptr getArrayTypeObject()
     {
         python_ptr type = detail::getArrayTypeObject(ArrayTraits::typeKeyFull());
@@ -1430,28 +1438,28 @@ class NumpyArray
             type = detail::getArrayTypeObject(ArrayTraits::typeKey(), &PyArray_Type);
         return type;
     }
-       
+
     static python_ptr init(difference_type const & shape, bool init = true)
     {
         ArrayVector<npy_intp> pshape(shape.begin(), shape.end());
-        return detail::constructNumpyArrayImpl((PyTypeObject *)getArrayTypeObject().ptr(), pshape, 
+        return detail::constructNumpyArrayImpl((PyTypeObject *)getArrayTypeObject().ptr(), pshape,
                        ArrayTraits::spatialDimensions, ArrayTraits::channels,
                        typeCode, "V", init);
     }
 
     static python_ptr init(difference_type const & shape, difference_type const & strideOrdering, bool init = true)
     {
-        ArrayVector<npy_intp> pshape(shape.begin(), shape.end()), 
+        ArrayVector<npy_intp> pshape(shape.begin(), shape.end()),
                               pstrideOrdering(strideOrdering.begin(), strideOrdering.end());
-        return detail::constructNumpyArrayImpl((PyTypeObject *)getArrayTypeObject().ptr(), pshape, 
+        return detail::constructNumpyArrayImpl((PyTypeObject *)getArrayTypeObject().ptr(), pshape,
                        ArrayTraits::spatialDimensions, ArrayTraits::channels,
                        typeCode, "A", init, pstrideOrdering);
     }
 
   public:
-  
+
     using view_type::init;
-    
+
         /**
          * Construct from a given PyObject pointer. When the given
          * python object is NULL, the internal python array will be

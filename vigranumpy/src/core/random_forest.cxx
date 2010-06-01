@@ -39,7 +39,9 @@
 #include <vigra/numpy_array.hxx>
 #include <vigra/numpy_array_converters.hxx>
 #include <vigra/random_forest.hxx>
-#include <vigra/random_forest_hdf5_impex.hxx>
+#ifdef HasHDF5
+# include <vigra/random_forest_hdf5_impex.hxx>
+#endif
 #include <set>
 #include <cmath>
 #include <memory>
@@ -85,6 +87,7 @@ pythonConstructRandomForest(int treeCount,
     return rf;
 }
 
+#ifdef HasHDF5
 template<class LabelType>
 RandomForest<LabelType> * 
 pythonImportRandomForestFromHDF5(std::string filename, 
@@ -97,6 +100,7 @@ pythonImportRandomForestFromHDF5(std::string filename,
            
     return rf.release();
 }					
+#endif // HasHDF5
 
 template<class LabelType, class FeatureType>
 python::tuple
@@ -204,6 +208,8 @@ pythonRFPredictProbabilitiesOnlinePredSet(RandomForest<LabelType> & rf,
 void defineRandomForest()
 {
     using namespace python;
+    
+    docstring_options doc_options(true, true, false);
 
     class_<OnlinePredictionSet<float> > pred_set_class("RF_OnlinePredictionSet",python::no_init);
     pred_set_class
@@ -226,7 +232,7 @@ void defineRandomForest()
         .value("RF_MTRY_SQRT",RF_SQRT)
         .value("RF_MTRY_ALL",RF_ALL);
 
-    class_<RandomForest<UInt32> > rfclass_new("RandomForest_new",python::no_init);
+    class_<RandomForest<UInt32> > rfclass_new("RandomForest",python::no_init);
 
     rfclass_new
         .def("__init__",python::make_constructor(registerConverters(&pythonConstructRandomForest<UInt32,float>),
@@ -247,12 +253,14 @@ void defineRandomForest()
              "'treeCount' controls the number of trees that are created.\n\n"
              "See RandomForest_ and RandomForestOptions_ in the C++ documentation "
              "for the meaning of the other parameters.\n")
+#ifdef HasHDF5
         .def("__init__",python::make_constructor(&pythonImportRandomForestFromHDF5<UInt32>,
                                                  boost::python::default_call_policies(),
                                                  ( arg("filename"),
                                                    arg("pathInFile")="")),
              "Load from HDF5 file::\n\n"
              "  RandomForest(filename, pathInFile)\n\n")
+#endif // HasHDF5
         .def("featureCount",
             &RandomForest<UInt32>::column_count,
              "Returns the number of features the RandomForest works with.\n")
@@ -298,11 +306,13 @@ void defineRandomForest()
              "Learn online.\n\n"
              "Works only if forest has been created with prepare_online_learning=true. "
              "Needs the old training data and the new appened, starting at startIndex.\n\n")
+#ifdef HasHDF5
         .def("writeHDF5", &rf_export_HDF5<UInt32>,
              (arg("filename"), arg("pathInFile")="", arg("overwriteflag")=false),
              "Store the random forest in the given HDF5 file 'filname' under the internal\n"
              "path 'pathInFile'. If a dataset already exists, 'overwriteflag' determines\n"
              "if the old data are overwritten.\n")
+#endif // HasHDF5
         ;
 }
 

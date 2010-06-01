@@ -563,6 +563,8 @@ defSplineView(char const * name)
 {
     using namespace python;
     
+    docstring_options doc_options(true, true, false);
+    
     typedef typename SplineView::value_type Value;
     typedef typename SplineView::difference_type Shape;
     
@@ -729,6 +731,8 @@ defSplineView(char const * name)
 void defineSampling()
 {
     using namespace python;
+    
+    docstring_options doc_options(true, true, false);
 
     enum_<RotationDirection>("RotationDirection")
         .value("CLOCKWISE",ROTATE_CW)

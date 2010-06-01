@@ -36,6 +36,7 @@
 #define PY_ARRAY_UNIQUE_SYMBOL vigranumpyimpex_PyArray_API
 //#define NO_IMPORT_ARRAY
 
+#include <Python.h>
 #include <iostream>
 #include <cstring>
 #include <cstdio>
@@ -43,7 +44,10 @@
 #include "vigra/impex.hxx"
 #include "vigra/multi_impex.hxx"
 #include <vigra/numpy_array_converters.hxx>
-#include "vigra/hdf5impex.hxx"
+
+#ifdef HasHDF5
+# include "vigra/hdf5impex.hxx"
+#endif
 
 namespace python = boost::python;
 
@@ -200,7 +204,7 @@ NumpyAnyArray readVolumeImpl(VolumeImportInfo const & info)
     {
       case 1:
       {
-		NumpyArray<3, Singleband<T> > volume(info.shape());
+        NumpyArray<3, Singleband<T> > volume(info.shape());
         importVolume(info, volume);
         return volume;
       }
@@ -222,14 +226,14 @@ NumpyAnyArray readVolumeImpl(VolumeImportInfo const & info)
         importVolume(info, volume);
         return volume;
       }
-	  //FIXME not yet supported
+      //FIXME not yet supported
       /*default:
       {
         NumpyArray<4, Multiband<T> > volume(MultiArrayShape<4>::type(info.width(), info.height(), info.depth(), info.numBands()));
         importVolume(info, volume);
         return volume;
       }*/
-	  default:
+      default:
       {
         NumpyArray<3, RGBValue<T> > volume(info.shape());
         importVolume(info, volume);
@@ -243,7 +247,7 @@ NumpyAnyArray readVolumeImpl(VolumeImportInfo const & info)
 NumpyAnyArray readVolume(const char * filename, python::object import_type)
 {
     VolumeImportInfo info(filename);
-	std::string importType(info.getPixelType());
+    std::string importType(info.getPixelType());
 
     if(python::extract<std::string>(import_type).check())
     {
@@ -253,13 +257,13 @@ NumpyAnyArray readVolume(const char * filename, python::object import_type)
     }
     else if(python::extract<NPY_TYPES>(import_type).check())
     {
-		importType = detail::numpyTypeIdToImpexString(python::extract<NPY_TYPES>(import_type)());
+        importType = detail::numpyTypeIdToImpexString(python::extract<NPY_TYPES>(import_type)());
     }
     else if(import_type)
         vigra_precondition(false, "readVolume(filename, import_type): import_type must be a string or a numpy dtype.");
 
     if(importType == "FLOAT")
-		return detail::readVolumeImpl<float>(info);
+        return detail::readVolumeImpl<float>(info);
     if(importType == "UINT8")
         return detail::readVolumeImpl<UInt8>(info);
     if(importType == "INT16")
@@ -300,7 +304,7 @@ void writeVolume(NumpyArray<3, Multiband<T> > const & volume,
     }
     else if(python::extract<NPY_TYPES>(export_type).check())
     {
-		info.setPixelType(detail::numpyTypeIdToImpexString(python::extract<NPY_TYPES>(export_type)()).c_str());
+        info.setPixelType(detail::numpyTypeIdToImpexString(python::extract<NPY_TYPES>(export_type)()).c_str());
     }
     else if(export_type)
         vigra_precondition(false, "writeVolume(filename, export_type): export_type must be a string or a numpy dtype.");
@@ -314,7 +318,7 @@ void writeVolume(NumpyArray<3, Multiband<T> > const & volume,
 
 VIGRA_PYTHON_MULTITYPE_FUNCTOR(pywriteVolume, writeVolume)
 
-#if HasHDF5
+#ifdef HasHDF5
 
 namespace detail {
 template <class T>
@@ -328,7 +332,7 @@ NumpyAnyArray readImageHDF5Impl(HDF5ImportInfo const & info)
       {
         NumpyArray<2, Singleband<T> > res(MultiArrayShape<2>::type(info.shapeOfDimension(0), 
                                                                     info.shapeOfDimension(1)));
-		readHDF5(info, res);
+        readHDF5(info, res);
         return res;
       }
       case 3:
@@ -384,19 +388,19 @@ NumpyAnyArray readImageFromHDF5(const char * filePath, const char * pathInFile, 
 
     // FIXME: support all types, at least via a type cast at the end?
     if(importType == "FLOAT")
-        return detail::readImageHDF5Impl<float>(info);
+        return detail::readImageHDF5Impl<npy_float32>(info);
     if(importType == "UINT8")
-        return detail::readImageHDF5Impl<UInt8>(info);
+        return detail::readImageHDF5Impl<npy_uint8>(info);
     if(importType == "INT16")
-        return detail::readImageHDF5Impl<Int16>(info);
+        return detail::readImageHDF5Impl<npy_int16>(info);
     if(importType == "UINT16")
-        return detail::readImageHDF5Impl<UInt16>(info);
+        return detail::readImageHDF5Impl<npy_uint16>(info);
     if(importType == "INT32")
-        return detail::readImageHDF5Impl<Int32>(info);
+        return detail::readImageHDF5Impl<npy_int32>(info);
     if(importType == "UINT32")
-        return detail::readImageHDF5Impl<UInt32>(info);
+        return detail::readImageHDF5Impl<npy_uint32>(info);
     if(importType == "DOUBLE")
-        return detail::readImageHDF5Impl<double>(info);
+        return detail::readImageHDF5Impl<npy_float64>(info);
     vigra_fail("readImageFromHDF5(filePath, pathInFile, import_type): import_type specifies an unknown pixel type.");
     return NumpyAnyArray();
 }
@@ -408,15 +412,15 @@ void writeImageToHDF5(NumpyArray<3, Multiband<T> > const & image,
                     python::object export_type)  
 {
     // write the data
-	// if scalar image
-	if(image.shape(2) == 1)
+    // if scalar image
+    if(image.shape(2) == 1)
     {
-		writeHDF5(filePath, pathInFile, image.bindOuter(0));
-	}
+        writeHDF5(filePath, pathInFile, image.bindOuter(0));
+    }
     else
-	{
+    {
         MultiArrayShape<3>::type permute(2,0,1);
-		writeHDF5(filePath, pathInFile, image.permuteDimensions(permute));
+        writeHDF5(filePath, pathInFile, image.permuteDimensions(permute));
     }
 }
 
@@ -435,7 +439,7 @@ NumpyAnyArray readVolumeHDF5Impl(HDF5ImportInfo const & info)
         NumpyArray<3, Singleband<T> > res(MultiArrayShape<3>::type(info.shapeOfDimension(0), 
                                                                     info.shapeOfDimension(1), 
                                                                     info.shapeOfDimension(2)));
-		readHDF5(info, res);
+        readHDF5(info, res);
         return res;
       }
       case 4:
@@ -444,7 +448,7 @@ NumpyAnyArray readVolumeHDF5Impl(HDF5ImportInfo const & info)
                                                                    info.shapeOfDimension(1), 
                                                                    info.shapeOfDimension(2), 
                                                                    info.shapeOfDimension(3)));
-		readHDF5(info, res);
+        readHDF5(info, res);
         MultiArrayShape<4>::type permutation(1,2,3,0);
         PyArray_Dims permute = { permutation.begin(), 4 };
         python_ptr array(PyArray_Transpose(res.pyArray(), &permute), python_ptr::keep_count);
@@ -503,16 +507,16 @@ void writeVolumeToHDF5(NumpyArray<4, Multiband<T> > const & volume,
                     const char * pathInFile, 
                     python::object export_type) 
 {
-	// write the data
-	// if scalar volume
-	if(volume.shape(3) == 1)
+    // write the data
+    // if scalar volume
+    if(volume.shape(3) == 1)
     {
-		writeHDF5(filePath, pathInFile, volume.bindOuter(0));
-	}
+        writeHDF5(filePath, pathInFile, volume.bindOuter(0));
+    }
     else
     {
         MultiArrayShape<4>::type permute(3,0,1,2);
-		writeHDF5(filePath, pathInFile, volume.permuteDimensions(permute));
+        writeHDF5(filePath, pathInFile, volume.permuteDimensions(permute));
     }
 }
 
@@ -524,25 +528,27 @@ void defineImpexFunctions()
 {
     using namespace python;
     
-  def("readVolume", &readVolume, (arg("filename"), arg("dtype") = "FLOAT"),
-		"Read a 3D volume from a directory::\n\n"
+    docstring_options doc_options(true, true, false);
+    
+    def("readVolume", &readVolume, (arg("filename"), arg("dtype") = "FLOAT"),
+        "Read a 3D volume from a directory::\n\n"
         "   readVolume(filename, dtype = 'FLOAT') -> Volume\n\n"
-		"If the volume is stored in a by-slice manner (e.g. one image per\n"
-		"slice), the 'filename' can refer to an arbitrary image from the set.\n"
-		"readVolume() then assumes that the slices are enumerated like::\n\n"
-		"   name_base+[0-9]+name_ext\n\n"
+        "If the volume is stored in a by-slice manner (e.g. one image per\n"
+        "slice), the 'filename' can refer to an arbitrary image from the set.\n"
+        "readVolume() then assumes that the slices are enumerated like::\n\n"
+        "   name_base+[0-9]+name_ext\n\n"
         "where name_base, the index, and name_ext\n"
-		"are determined automatically. All slice files with the same name base\n"
-		"and extension are considered part of the same volume. Slice numbers\n"
-		"must be non-negative, but can otherwise start anywhere and need not\n"
-		"be successive. Slices will be read in ascending numerical (not\n"
-		"lexicographic) order. All slices must have the same size.\n"
+        "are determined automatically. All slice files with the same name base\n"
+        "and extension are considered part of the same volume. Slice numbers\n"
+        "must be non-negative, but can otherwise start anywhere and need not\n"
+        "be successive. Slices will be read in ascending numerical (not\n"
+        "lexicographic) order. All slices must have the same size.\n"
         "\n"
-		"Otherwise, readVolume() will try to read 'filename' as an info text\n"
-		"file with the following key-value pairs::\n"
+        "Otherwise, readVolume() will try to read 'filename' as an info text\n"
+        "file with the following key-value pairs::\n"
         "\n"
         "    name = [short descriptive name of the volume] (optional)\n"
-		"    filename = [absolute or relative path to raw voxel data file] (required)\n"
+        "    filename = [absolute or relative path to raw voxel data file] (required)\n"
         "    gradfile =  [abs. or rel. path to gradient data file] (currently ignored)\n"
         "    description =  [arbitrary description of the data set] (optional)\n"
         "    width = [positive integer] (required)\n"
@@ -554,10 +560,10 @@ void defineImpexFunctions()
         "When import_type is 'UINT8', 'INT16', 'UINT16', 'INT32', 'UINT32',\n"
         "'FLOAT', 'DOUBLE', or one of the corresponding numpy dtypes (numpy.uint8\n"
         "etc.), the returned volume will have the requested pixel type. For details\n"
-		"see the help for :func:`readImage`.\n");
+        "see the help for :func:`readImage`.\n");
     multidef("writeVolume", pywriteVolume<Int8, UInt64, Int64, UInt16, Int16, UInt32, Int32, double, float, UInt8>(), 
        (arg("volume"), arg("filename_base"), arg("filename_ext"), arg("dtype") = "", arg("compression") = ""),
-	   "Wrtie a volume as a sequence of images::\n\n"
+       "Wrtie a volume as a sequence of images::\n\n"
        "   writeVolume(volume, filename_base, filename_ext, dtype = '', compression = '')\n\n"
        "The resulting image sequence will be enumerated in the form::\n\n"
        "    filename_base+[0-9]+filename_ext\n\n"
@@ -665,18 +671,18 @@ void defineImpexFunctions()
         "the \"magic strings\" of each recognized image format. If the "
         "image format is supported it returns True otherwise False.\n");
 
-#if HasHDF5
-	def("readImageFromHDF5", &readImageFromHDF5, (arg("filepath"), arg("pathInFile"), arg("dtype") = "FLOAT"),
+#ifdef HasHDF5
+    def("readImageFromHDF5", &readImageFromHDF5, (arg("filepath"), arg("pathInFile"), arg("dtype") = "FLOAT"),
         "Read an image from a HDF5 file::\n\n"
         "   readImageFromHDF5(filepath, pathInFile, dtype='FLOAT') -> image\n\n"
         "If the file contains 3-dimensional data, the innermost (last)\n"
         "index is interpreted as a channel dimension.\n\n");
-	def("readVolumeFromHDF5", &readVolumeFromHDF5, (arg("filepath"), arg("pathInFile"), arg("dtype") = "FLOAT"),
+    def("readVolumeFromHDF5", &readVolumeFromHDF5, (arg("filepath"), arg("pathInFile"), arg("dtype") = "FLOAT"),
         "Read a volume from a file::\n\n"
         "   readVolumeFromHDF5(filepath, pathInFile, dtype='FLOAT') -> volume\n\n"
         "If the file contains 4-dimensional data, the innermost (last)\n"
         "index is interpreted as a channel dimension.\n\n");
-	multidef("writeImageToHDF5", pywriteImageToHDF5<Int8, UInt64, Int64, UInt16, Int16, UInt32, Int32, double, float, UInt8>(), 
+    multidef("writeImageToHDF5", pywriteImageToHDF5<Int8, UInt64, Int64, UInt16, Int16, UInt32, Int32, double, float, UInt8>(), 
        (arg("image"), arg("filepath"), arg("pathInFile"), arg("dtype") = ""),
         "Save an image to an HDF5 file::\n\n"
         "   writeImageToHDF5(image, filepath, pathInFile, dtype='')\n\n"

@@ -23,13 +23,20 @@ VIGRA Computer Vision Library, Version VERSION_VERSION_VERSION
 Installation
 ------------
 
-Installation instructions can be found in the file $VIGRA_PATH/doc/vigra/Installation.html
+Installation instructions can be found in the file 
+  $VIGRA_PATH/doc/vigra/Installation.html
+If the documentation has not yet been generated (e.g. when you build from a development 
+snapshot), you find these instructions in
+  $VIGRA_PATH/docsrc/installation.dxx
+or online at
+  http://hci.iwr.uni-heidelberg.de/vigra/doc/vigra/Installation.html
 
 Documentation
 -------------
 
 The documentation can be found in $VIGRA_PATH/doc/vigra/, the start file 
-is $VIGRA_PATH/doc/vigra/index.html.
+is $VIGRA_PATH/doc/vigra/index.html. Online documentation is at 
+http://hci.iwr.uni-heidelberg.de/vigra/doc/vigra/index.html
 
 Download
 --------
@@ -39,7 +46,7 @@ VIGRA can be downloaded at http://hci.iwr.uni-heidelberg.de/vigra/#download
 What is VIGRA
 -------------
 
-VIGRA is a computer vision library that puts its main emphasize on flexible algorithms, because algorithms represent the principle know-how of this field. The library was consequently built using generic programming as introduced by Stepanov and Musser and exemplified in the C++ Standard Template Library. By writing a few adapters (image iterators and accessors) you can use VIGRA's algorithms on top of your data structures, within your environment. Alternatively, you can also use the data structures provided within VIGRA, which can be easily adapted to a wide range of applications. VIGRA's flexibility comes almost for free: Since the design uses compile-time polymorphism (templates), performance of the compiled program approaches that of a traditional, hand tuned, inflexible, solution.
+VIGRA is a computer vision library that puts its main emphasis on flexible algorithms, because algorithms represent the principle know-how of this field. The library was consequently built using generic programming as introduced by Stepanov and Musser and exemplified in the C++ Standard Template Library. By writing a few adapters (image iterators and accessors) you can use VIGRA's algorithms on top of your data structures, within your environment. Alternatively, you can also use the data structures provided within VIGRA, which can be easily adapted to a wide range of applications. VIGRA's flexibility comes almost for free: Since the design uses compile-time polymorphism (templates), performance of the compiled program approaches that of a traditional, hand tuned, inflexible, solution.
 
 
 

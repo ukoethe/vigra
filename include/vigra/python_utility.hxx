@@ -36,8 +36,8 @@
 #ifndef VIGRA_PYTHON_UTILITY_HXX
 #define VIGRA_PYTHON_UTILITY_HXX
 
-#include <algorithm>
 #include <Python.h>
+#include <algorithm>
 #include "vigra/error.hxx"
 #include "vigra/tinyvector.hxx"
 

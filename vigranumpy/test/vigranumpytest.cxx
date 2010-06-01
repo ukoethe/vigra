@@ -65,6 +65,15 @@ testView(MultiArrayView<N, T, Stride> array)
     return array.shape();
 }
 
+// (right now, a compile-only test:)
+void testMakeReference()
+{
+    MultiArray<2, vigra::UInt8> cpp_memory(MultiArrayShape<2>::type(100, 100));
+
+    NumpyArray<2, npy_uint8, vigra::UnstridedArrayTag> python_view;
+    python_view.makeReference(cpp_memory);
+}
+
 } // namespace vigra
 
 using namespace boost::python;

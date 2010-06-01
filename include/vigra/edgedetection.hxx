@@ -889,9 +889,13 @@ void closeGapsInCrackEdgeImage(
                SrcIterator sul, SrcIterator slr, SrcAccessor sa,
            SrcValue edge_marker)
 {
-    int w = (slr.x - sul.x) / 2;
-    int h = (slr.y - sul.y) / 2;
-    int x, y;
+    int w = slr.x - sul.x;
+    int h = slr.y - sul.y;
+    
+    vigra_precondition(w % 2 == 1 && h % 2 == 1,
+        "closeGapsInCrackEdgeImage(): Input is not a crack edge image (must have odd-numbered shape).");
+        
+    int w2 = w / 2, h2 = h / 2, x, y;
 
     int count1, count2, count3;
 
@@ -915,11 +919,11 @@ void closeGapsInCrackEdgeImage(
     SrcIterator sx;
 
     // close 1-pixel wide gaps (x-direction)
-    for(y=0; y<h; ++y, sy.y+=2)
+    for(y=0; y<h2; ++y, sy.y+=2)
     {
         sx = sy + Diff2D(2,0);
 
-        for(x=2; x<w; ++x, sx.x+=2)
+        for(x=2; x<w2; ++x, sx.x+=2)
         {
             if(sa(sx) == edge_marker) continue;
 
@@ -954,11 +958,11 @@ void closeGapsInCrackEdgeImage(
     sy = sul + Diff2D(1,2);
 
     // close 1-pixel wide gaps (y-direction)
-    for(y=2; y<h; ++y, sy.y+=2)
+    for(y=2; y<h2; ++y, sy.y+=2)
     {
         sx = sy;
 
-        for(x=0; x<w; ++x, sx.x+=2)
+        for(x=0; x<w2; ++x, sx.x+=2)
         {
             if(sa(sx) == edge_marker) continue;
 
@@ -1102,9 +1106,13 @@ void beautifyCrackEdgeImage(
                SrcIterator sul, SrcIterator slr, SrcAccessor sa,
            SrcValue edge_marker, SrcValue background_marker)
 {
-    int w = (slr.x - sul.x) / 2;
-    int h = (slr.y - sul.y) / 2;
-    int x, y;
+    int w = slr.x - sul.x;
+    int h = slr.y - sul.y;
+    
+    vigra_precondition(w % 2 == 1 && h % 2 == 1,
+        "beautifyCrackEdgeImage(): Input is not a crack edge image (must have odd-numbered shape).");
+        
+    int w2 = w / 2, h2 = h / 2, x, y;
 
     SrcIterator sy = sul + Diff2D(1,1);
     SrcIterator sx;
@@ -1115,11 +1123,11 @@ void beautifyCrackEdgeImage(
     static const Diff2D top(0,-1);
 
     //  delete 0-cells at corners
-    for(y=0; y<h; ++y, sy.y+=2)
+    for(y=0; y<h2; ++y, sy.y+=2)
     {
         sx = sy;
 
-        for(x=0; x<w; ++x, sx.x+=2)
+        for(x=0; x<w2; ++x, sx.x+=2)
         {
             if(sa(sx) != edge_marker) continue;
 

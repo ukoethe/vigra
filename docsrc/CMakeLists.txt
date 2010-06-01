@@ -31,9 +31,6 @@ IF(DOXYGEN_FOUND AND PYTHONINTERP_FOUND)
 			${DOCDIR}/vigra/documents/tutorial_reference.pdf
 		COMMENT "Postprocessing html files")
 
-	INSTALL(DIRECTORY ${DOCDIR}/
-		DESTINATION ${DOCINSTALL}/)
-
 ELSE()
 	ADD_CUSTOM_TARGET (doc_cpp 
 		COMMAND ${CMAKE_COMMAND} -E echo
@@ -41,5 +38,16 @@ ELSE()
 			"(doxygen or Python not found)")
 
 ENDIF(DOXYGEN_FOUND AND PYTHONINTERP_FOUND)
+
+# create fallback index.html that simply refers to the online documentation
+file(MAKE_DIRECTORY ${DOCDIR}/vigra)
+file(GLOB INDEX_HTML_EXISTS ${DOCDIR}/vigra/index.html)
+if(NOT INDEX_HTML_EXISTS)
+    configure_file(index_fallback.html ${DOCDIR}/vigra/index.html COPYONLY)
+    configure_file(vigra.css ${DOCDIR}/vigra/vigra.css COPYONLY)
+endif()
+
+INSTALL(DIRECTORY ${DOCDIR}/
+         DESTINATION ${DOCINSTALL}/)
 
 ADD_DEPENDENCIES(doc doc_cpp)

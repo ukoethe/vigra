@@ -53,7 +53,7 @@ unsigned int watershedLabeling(SrcIterator upperlefts,
                         Neighborhood)
 {
     typedef typename DestAccessor::value_type LabelType;
-    
+
     int w = lowerrights.x - upperlefts.x;
     int h = lowerrights.y - upperlefts.y;
     int x,y;
@@ -132,7 +132,7 @@ unsigned int watershedLabeling(SrcIterator upperlefts,
     }
 
     unsigned int count = labels.makeContiguous();
-    
+
     // pass 2: assign one label to each region (tree)
     // so that labels form a consecutive sequence 1, 2, ...
     yd = upperleftd;
@@ -145,6 +145,17 @@ unsigned int watershedLabeling(SrcIterator upperlefts,
         }
     }
     return count;
+}
+
+template <class SrcIterator, class SrcAccessor,
+          class DestIterator, class DestAccessor,
+          class Neighborhood>
+unsigned int watershedLabeling(triple<SrcIterator, SrcIterator, SrcAccessor> src,
+                               pair<DestIterator, DestAccessor> dest,
+                               Neighborhood neighborhood)
+{
+    return watershedLabeling(src.first, src.second, src.third,
+                             dest.first, dest.second, neighborhood);
 }
 
 

@@ -316,7 +316,7 @@ class RandomForestOptions
     void unserialize(Iter const & begin, Iter const & end)
     {
         Iter iter = begin;
-        vigra_precondition(static_cast<size_t>(end - begin) == serialized_size(), 
+        vigra_precondition(static_cast<int>(end - begin) == serialized_size(), 
                            "RandomForestOptions::unserialize():"
                            "wrong number of parameters");
         #define PULL(item_, type_) item_ = type_(*iter); ++iter;
@@ -338,7 +338,7 @@ class RandomForestOptions
     void serialize(Iter const &  begin, Iter const & end) const
     {
         Iter iter = begin;
-        vigra_precondition(static_cast<size_t>(end - begin) == serialized_size(), 
+        vigra_precondition(static_cast<int>(end - begin) == serialized_size(), 
                            "RandomForestOptions::serialize():"
                            "wrong number of parameters");
         #define PUSH(item_) *iter = double(item_); ++iter;

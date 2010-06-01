@@ -298,7 +298,7 @@ getShape(mxArray const * t)
     return typename MultiArrayShape<SIZE>::type(res);
 }
 
-template <unsigned int DIM, class T>
+template <int DIM, class T>
 MultiArrayView<DIM, T>
 getMultiArray(mxArray const * t)
 {
@@ -336,7 +336,7 @@ getMultiArray(mxArray const * t)
     return MultiArrayView<DIM, T>(shape, (T *)mxGetData(t));
 }
 
-template <unsigned int DIM, class T>
+template <int DIM, class T>
 MultiArrayView<DIM, T>
 createMultiArray(typename MultiArrayShape<DIM>::type const & shape, mxArray * & t)
 {
@@ -348,7 +348,7 @@ createMultiArray(typename MultiArrayShape<DIM>::type const & shape, mxArray * & 
     return MultiArrayView<DIM, T>(shape, (T *)mxGetData(t));
 }
 
-template <unsigned int DIM, class T>
+template <int DIM, class T>
 MultiArrayView<DIM, T>
 createMultiArray(typename MultiArrayShape<DIM>::type const & shape, CellArray::Proxy t)
 {
@@ -796,9 +796,7 @@ class InputArray
         T temp = this->getScalar<T>(posOrName, req);
         if (!is_in_range(temp, min_, max_))
             mexErrMsgTxt("Value out of bounds.");
-        else
-            return temp;
-
+        return temp;
     }
 
     template <class T, class Place, class ReqType, class iteratorType>
@@ -941,6 +939,7 @@ class InputArray
     ConstCellArray getCellArray(std::string posOrName, ReqType req)
     {
         CompileTimeError ERROR__Const_Cell_Array_May_Not_Be_In_Option_Struct;
+        return ConstCellArray(); //avoid compiler warningg
     }
 
 };
@@ -1076,14 +1075,14 @@ class OutputArray
 
 /***********************************
 Rahuls code starts here
-************************************+*/
+************************************/
 using namespace vigra;
 
 
-/*++++++++++++++++++++++++++HELPERFUNC+++++++++++++++++++++++++++++++*/
-/* This is used for better readibility of the test cases            .
-/* Nothing to be done here.
-/*+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
+/*++++++++++++++++++++++++++HELPERFUNC+++++++++++++++++++++++++++++++*
+ * This is used for better readibility of the test cases            .
+ * Nothing to be done here.
+ *+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
 int cantorPair(int x, int y){
         return (int)(((x+y)*(x+y+1))/2+y);
 }

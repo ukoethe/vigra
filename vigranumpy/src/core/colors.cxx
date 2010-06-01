@@ -276,10 +276,12 @@ void defineColors()
 {
     using namespace python;
     
+    docstring_options doc_options(true, true, false);
+    
     def("brightness", 
          registerConverters(&pythonBrightnessTransform<float, 3>),
          (arg("image"), arg("factor"), arg("range")=make_tuple(0.0, 255.0), arg("out")=object()),
-        "Adjust the brightness of an image or volume. The function applies the formula::\n"
+        "Adjust the brightness of a 2D scalar or multiband image. The function applies the formula::\n"
         "\n"
         "   out = image + 0.25 * log(factor) * (range[1] - range[0])\n"
         "\n"
@@ -292,7 +294,8 @@ void defineColors()
 
     def("brightness", 
          registerConverters(&pythonBrightnessTransform<float, 4>),
-         (arg("volume"), arg("factor"), arg("range")=make_tuple(0.0, 255.0), arg("out")=object()));
+         (arg("volume"), arg("factor"), arg("range")=make_tuple(0.0, 255.0), arg("out")=object()),
+         "Likewise for a 3D scalar or multiband volume.\n");
          
     def("contrast", 
          registerConverters(&pythonContrastTransform<float, 3>),
@@ -310,7 +313,8 @@ void defineColors()
 
     def("contrast", 
          registerConverters(&pythonContrastTransform<float, 4>),
-         (arg("volume"), arg("factor"), arg("range")=make_tuple(0.0, 255.0), arg("out")=object()));
+         (arg("volume"), arg("factor"), arg("range")=make_tuple(0.0, 255.0), arg("out")=object()),
+         "Likewise for a 3D scalar or multiband volume.\n");
           
     def("gammaCorrection", 
          registerConverters(&pythonGammaTransform<float, 3>),
@@ -329,12 +333,13 @@ void defineColors()
 
     def("gammaCorrection", 
          registerConverters(&pythonGammaTransform<float, 4>),
-         (arg("volume"), arg("factor"), arg("range")=make_tuple(0.0, 255.0), arg("out")=object()));
+         (arg("volume"), arg("factor"), arg("range")=make_tuple(0.0, 255.0), arg("out")=object()),
+         "Likewise for a 3D scalar or multiband volume.\n");
           
     def("linearRangeMapping", 
          registerConverters(&pythonLinearRangeMapping<float, UInt8, 3>),
          (arg("image"), arg("oldRange")="auto", arg("newRange")=make_tuple(0.0, 255.0), arg("out")=object()),
-        "Convert the intensity range of an image or volume. The function applies a linear transformation "
+        "Convert the intensity range of a 2D scalar or multiband image. The function applies a linear transformation "
         "to the intensities such that the value oldRange[0] is mapped onto newRange[0], "
         "and oldRange[1] is mapped onto newRange[1]. That is, the algorithm applies the formula::\n"
         "\n"
@@ -347,19 +352,23 @@ void defineColors()
         "the actual range of 'image'::\n"
         "\n"
         "   range = image.min(), image.max()\n\n"
-        "If 'newRange' is None or \"\" or \"auto\", it is set to (0, 255.0).\n");
+        "If 'newRange' is None or \"\" or \"auto\", it is set to (0, 255.0). "
+        "If 'out' is explicitly passed, it must be a uin8 image.\n");
 
     def("linearRangeMapping", 
          registerConverters(&pythonLinearRangeMapping<float, float, 3>),
-         (arg("image"), arg("oldRange")="auto", arg("newRange")=make_tuple(0.0, 255.0), arg("out")=object()));
+         (arg("image"), arg("oldRange")="auto", arg("newRange")=make_tuple(0.0, 255.0), arg("out")=object()),
+         "Likewise, but 'out' is a float32 image.\n");
           
     def("linearRangeMapping", 
          registerConverters(&pythonLinearRangeMapping<float, UInt8, 4>),
-         (arg("volume"), arg("oldRange")="auto", arg("newRange")=make_tuple(0.0, 255.0), arg("out")=object()));
+         (arg("volume"), arg("oldRange")="auto", arg("newRange")=make_tuple(0.0, 255.0), arg("out")=object()),
+         "Likewise for a 3D scalar or multiband volume, when 'out' is a unit8 volume.\n");
           
     def("linearRangeMapping", 
          registerConverters(&pythonLinearRangeMapping<float, float, 4>),
-         (arg("volume"), arg("oldRange")="auto", arg("newRange")=make_tuple(0.0, 255.0), arg("out")=object()));
+         (arg("volume"), arg("oldRange")="auto", arg("newRange")=make_tuple(0.0, 255.0), arg("out")=object()),
+         "Likewise, but 'out' is a float32 volume.\n");
           
 
     exportColorTransform(RGB2sRGB);

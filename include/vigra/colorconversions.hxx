@@ -329,6 +329,10 @@ class RGB2RGBPrimeFunctor<unsigned char, unsigned char>
         
   public:
   
+    typedef TinyVector<unsigned char, 3> argument_type;
+    
+    typedef TinyVector<unsigned char, 3> result_type;
+    
     typedef TinyVector<unsigned char, 3> value_type;
     
     RGB2RGBPrimeFunctor()
@@ -443,6 +447,10 @@ class RGB2sRGBFunctor<unsigned char, unsigned char>
         
   public:
   
+    typedef TinyVector<unsigned char, 3> argument_type;
+    
+    typedef TinyVector<unsigned char, 3> result_type;
+    
     typedef TinyVector<unsigned char, 3> value_type;
     
     RGB2sRGBFunctor()
@@ -554,6 +562,10 @@ class RGBPrime2RGBFunctor<unsigned char, unsigned char>
         
   public:
   
+    typedef TinyVector<unsigned char, 3> argument_type;
+    
+    typedef TinyVector<unsigned char, 3> result_type;
+    
     typedef TinyVector<unsigned char, 3> value_type;
     
     RGBPrime2RGBFunctor()
@@ -667,6 +679,10 @@ class sRGB2RGBFunctor<unsigned char, unsigned char>
         
   public:
   
+    typedef TinyVector<unsigned char, 3> argument_type;
+    
+    typedef TinyVector<unsigned char, 3> result_type;
+    
     typedef TinyVector<unsigned char, 3> value_type;
     
     sRGB2RGBFunctor()
@@ -832,14 +848,14 @@ class RGBPrime2XYZFunctor
             The maximum value for each RGB component defaults to 255.
         */
     RGBPrime2XYZFunctor()
-    : max_(component_type(255.0)), gamma_(1.0/ 0.45)
+	: gamma_(1.0/ 0.45), max_(component_type(255.0))
     {}
     
         /** constructor
             \arg max - the maximum value for each RGB component
         */
     RGBPrime2XYZFunctor(component_type max)
-    : max_(max), gamma_(1.0/ 0.45)
+	: gamma_(1.0/ 0.45), max_(max)
     {}
     
         /** apply the transformation
@@ -998,14 +1014,14 @@ class XYZ2RGBPrimeFunctor
             The maximum value for each RGB component defaults to 255.
         */
     XYZ2RGBPrimeFunctor()
-    : max_(component_type(255.0)), gamma_(0.45)
+	: gamma_(0.45), max_(component_type(255.0))
     {}
     
         /** constructor
             \arg max - the maximum value for each RGB component
         */
     XYZ2RGBPrimeFunctor(component_type max)
-    : max_(max), gamma_(0.45)
+	: gamma_(0.45), max_(max)
     {}
     
         /** apply the transformation

@@ -4,8 +4,10 @@ if [%1] NEQ [] (
 )
 set PATH=@VIGRA_PATH@%PATH%
 cd @VIGRA_CURRENT_BINARY_DIR@
-@VIGRA_TEST_EXECUTABLE@
-if %ERRORLEVEL%==1 (
+
+cmd /c @VIGRA_TEST_EXECUTABLE@
+IF %ERRORLEVEL% NEQ 0 (
+    rem this is the Windows version of 'touch'
     copy /b testsuccess.cxx+,, > NUL
-    exit 1 
+    exit %ERRORLEVEL% 
 )

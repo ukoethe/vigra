@@ -139,19 +139,28 @@ BOOST_PYTHON_MODULE_INIT(fourier)
 {
     import_vigranumpy();
     
+    docstring_options doc_options(true, true, false);
+    
     def("fourierTransform", registerConverters(&pythonFourierTransformR2C),
         (arg("image"), arg("out") = object()),
-        "Perform 2-dimensional or 3-dimensional Fourier transformation of a scalar or complex array."
+        "Perform 2-dimensional or 3-dimensional Fourier transformation of a scalar float64 array."
         "If the input array has multiple channels, each channel is transformed separately.\n"
         );
+        
     def("fourierTransform", registerConverters(&pythonFourierTransform<3, FFTW_FORWARD>),
-        (arg("image"), arg("out") = object()));
+        (arg("image"), arg("out") = object()),
+        "Likewise for a 2D complex128 image.\n");
+        
     def("fourierTransform", registerConverters(&pythonFourierTransform<4, FFTW_FORWARD>),
-        (arg("image"), arg("out") = object()));
+        (arg("volume"), arg("out") = object()),
+        "Likewise for a 3D complex128 volume.\n");
+        
     def("fourierTransformInverse", registerConverters(&pythonFourierTransform<3, FFTW_BACKWARD>),
         (arg("image"), arg("out") = object()),
-        "Perform 2-dimensional or 3-dimensional inverse Fourier transformation of a complex arrays."
+        "Perform 2-dimensional inverse Fourier transformation of a complex array."
         "If the input array has multiple channels, each channel is transformed separately.\n");
+        
     def("fourierTransformInverse", registerConverters(&pythonFourierTransform<4, FFTW_BACKWARD>),
-        (arg("image"), arg("out") = object()));
+        (arg("volume"), arg("out") = object()),
+        "Likewise for a 3D complex128 volume.\n");
 }

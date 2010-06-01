@@ -24,6 +24,10 @@ SET(DOCINSTALL ${DOCINSTALL}
 	CACHE STRING "where to install the documentation (relative to install prefix)"
 	FORCE)
 
+IF(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
+    set(MACOSX TRUE)
+ENDIF()
+
 IF(NOT DEFINED WITH_HDF5)
     SET(WITH_HDF5 "ON")
 ENDIF()
@@ -43,6 +47,13 @@ IF(NOT DEFINED WITH_VALGRIND)
 ENDIF()
 SET(WITH_VALGRIND ${WITH_VALGRIND}
     CACHE BOOL "Perform valgrind memory testing upon 'make ctest' ?"
+    FORCE)
+    
+IF(NOT DEFINED LIBDIR_SUFFIX)
+    SET(LIBDIR_SUFFIX "")
+ENDIF()
+SET(LIBDIR_SUFFIX ${LIBDIR_SUFFIX}
+    CACHE STRING "Define suffix of lib directory name (empty string or 32 or 64)." 
     FORCE)
     
 IF(NOT DEFINED DEPENDENCY_SEARCH_PREFIX)
@@ -86,8 +97,10 @@ IF(NOT VIGRA_DEFAULTS_INIT)
     # executed once in the first configure run.
     IF(CMAKE_COMPILER_IS_GNUCXX)
         IF(NOT CMAKE_CXX_FLAGS)
-            if(NOT MINGW)
+            if(NOT MINGW AND NOT MACOSX)
                 SET(CMAKE_CXX_FLAGS "-W -Wall -Wextra -Wno-unused-parameter -Wno-sign-compare -Wno-unused-variable -Wno-ignored-qualifiers -Wno-type-limits")
+            elseif(MACOSX)
+                SET(CMAKE_CXX_FLAGS "-W -Wall -Wextra -Wno-unused-parameter -Wno-sign-compare -Wno-unused-variable")
             endif()
         ENDIF()
         IF(NOT CMAKE_C_FLAGS)

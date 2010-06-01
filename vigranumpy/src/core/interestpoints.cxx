@@ -124,6 +124,8 @@ pythonBoundaryTensorCornerDetector2D(NumpyArray<2, Singleband<PixelType> > image
 void defineInterestpoints()
 {
     using namespace python;
+    
+    docstring_options doc_options(true, true, false);
 
     def("cornernessHarris",
         registerConverters(&pythonCornerResponseFunction2D<float>),

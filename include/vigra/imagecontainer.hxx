@@ -253,7 +253,7 @@ public:
             corresponding image in the other ImageArray. (STL-Forward
             Container interface)
          */
-    bool operator ==(const ImageArray<ImageType> &other)
+    bool operator ==(const ImageArray<ImageType, Alloc> &other)
     {
         return (imageSize() == other.imageSize())
                 && (images_ == other.images_);

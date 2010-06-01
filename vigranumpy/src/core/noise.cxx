@@ -192,6 +192,8 @@ NumpyAnyArray pythonLinearNoiseNormalization(NumpyArray<3, Multiband<PixelType> 
 void defineNoise()
 {
     using namespace python;
+    
+    docstring_options doc_options(true, true, false);
 
     def("noiseVarianceEstimation",
         registerConverters(&pythonNoiseVarianceEstimation<float>),

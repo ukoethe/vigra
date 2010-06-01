@@ -44,7 +44,7 @@ mainHeadingReplacement = '''\\1
 <tr>
 %s<td width="100%%">\\3\\5
 </td>
-<td align=right><a href="http://kogs-www.informatik.uni-hamburg.de/~koethe/vigra/"><IMG border=0 ALT="VIGRA" SRC="documents/vigra.gif"></a></td></tr>
+<td align=right><a href="http://hci.iwr.uni-heidelberg.de/vigra/"><IMG border=0 ALT="VIGRA" SRC="documents/vigra.gif"></a></td></tr>
 </table><p>
 '''
 

@@ -402,7 +402,7 @@ void seededRegionGrowing(SrcImageIterator srcul,
 
     SeedRgPixelHeap pheap;
     int cneighbor;
-
+    
     typedef typename Neighborhood::Direction Direction;
     int directionCount = Neighborhood::DirectionCount;
     
@@ -432,21 +432,22 @@ void seededRegionGrowing(SrcImageIterator srcul,
             }
         }
     }
-
+    
     // perform region growing
     while(pheap.size() != 0)
     {
         Pixel * pixel = pheap.top();
         pheap.pop();
 
-        if((srgType & StopAtThreshold) != 0 && pixel->cost_ > max_cost)
-            break;
-
         Point2D pos = pixel->location_;
         Point2D nearest = pixel->nearest_;
         int lab = pixel->label_;
+        CostType cost = pixel->cost_;
 
         allocator.dismiss(pixel);
+
+        if((srgType & StopAtThreshold) != 0 && cost > max_cost)
+            break;
 
         irx = ir + pos;
         isx = srcul + pos;
@@ -488,6 +489,13 @@ void seededRegionGrowing(SrcImageIterator srcul,
                 }
             }
         }
+    }
+    
+    // free temporary memory
+    while(pheap.size() != 0)
+    {
+        allocator.dismiss(pheap.top());
+        pheap.pop();
     }
 
     // write result

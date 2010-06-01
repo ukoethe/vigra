@@ -1006,7 +1006,7 @@ public:
             MultiArray<3, double> array3(Shape(40, 30, 20));
 
             // get a 1D array by fixing index 1 to 12, and index 2 to 10
-            MultiArrayView <1, double> array1 = array3.bindOuter(TinyVector<int, 2>(12, 10));
+            MultiArrayView <1, double> array1 = array3.bindOuter(TinyVector<MultiArrayIndex, 2>(12, 10));
             \endcode
         */
     template <unsigned int M>
@@ -1023,7 +1023,7 @@ public:
             MultiArray<3, double> array3(Shape(40, 30, 20));
 
             // get a 1D array by fixing index 0 to 12, and index 1 to 10
-            MultiArrayView <1, double, StridedArrayTag> array1 = array3.bindInner(TinyVector<int, 2>(12, 10));
+            MultiArrayView <1, double, StridedArrayTag> array1 = array3.bindInner(TinyVector<MultiArrayIndex, 2>(12, 10));
             \endcode
         */
     template <unsigned int M>

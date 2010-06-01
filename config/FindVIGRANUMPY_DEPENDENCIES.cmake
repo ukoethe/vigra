@@ -36,7 +36,7 @@ IF(PYTHONINTERP_FOUND)
     ######################################################################
     IF(NOT DEFINED VIGRANUMPY_INSTALL_DIR OR VIGRANUMPY_INSTALL_DIR MATCHES "^$")
         execute_process ( COMMAND ${PYTHON_EXECUTABLE} -c 
-                         "from distutils.sysconfig import *; print get_python_lib()"
+                         "from distutils.sysconfig import *; print get_python_lib(1)"
                           OUTPUT_VARIABLE PYTHON_SITE_PACKAGES OUTPUT_STRIP_TRAILING_WHITESPACE)
         FILE(TO_CMAKE_PATH ${PYTHON_SITE_PACKAGES} VIGRANUMPY_INSTALL_DIR)
     ENDIF()

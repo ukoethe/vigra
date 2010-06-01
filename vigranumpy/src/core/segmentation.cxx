@@ -320,7 +320,7 @@ pythonWatersheds2D(NumpyArray<2, Singleband<PixelType> > image,
         method[k] = (std::string::value_type)tolower(method[k]);
     
     bool haveSeeds = seeds.hasData();
-    unsigned int maxRegionLabel;
+    unsigned int maxRegionLabel = 0;
     
     if(method == "")
         method = "regiongrowing";
@@ -513,6 +513,8 @@ VIGRA_PYTHON_MULTITYPE_FUNCTOR(pywatersheds3D, pythonWatersheds3D)
 void defineSegmentation()
 {
     using namespace python;
+    
+    docstring_options doc_options(true, true, false);
 
     multidef("labelImage", pyLabelImage<npy_uint8, float>(),
         (arg("image"), 
@@ -618,7 +620,7 @@ void defineSegmentation()
        arg("terminate")=CompleteGrow,
        arg("max_cost")=0.0,
        arg("out")=python::object()),
-        "Compute the watersheds of a 2D or 3D image.\n"
+        "Compute the watersheds of a 2D image.\n"
         "\n"
         "   watersheds(image, neighborhood=4, seeds = None, methods = 'RegionGrowing', \n"
         "              terminate=CompleteGrow, threshold=0, out = None) -> (labelimage, max_ragion_label)\n"
@@ -626,7 +628,7 @@ void defineSegmentation()
         "Parameters:\n\n"
         " image:\n"
         "    the image or volume containing the boundary indicator values "
-        "    (high values = high edgeness)\n"
+        "    (high values = high edgeness, dtype=numpy.uint8 or numpy.float32).\n"
         " neighborhood:\n"
         "    the pixel neighborhood to be used. Feasible values depend on the "
         "    dimension and method:\n\n"
@@ -635,7 +637,8 @@ void defineSegmentation()
         "      3-dimensional data:\n"
         "        6 (default) or 26\n\n"
         " seeds:\n"
-        "    a label image specifying region seeds, only supported by method 'RegionGrowing'\n" 
+        "    a label image specifying region seeds, only supported by method 'RegionGrowing' "
+        "    (with dtype=numpy.uint32).\n" 
         " method:\n"
         "    the algorithm to be used for watershed computation. Possible values:\n\n"
         "      'RegionGrowing':\n"
@@ -665,13 +668,14 @@ void defineSegmentation()
          );
 
     multidef("watersheds", pywatersheds3D< npy_uint8, float >(),
-      (arg("image"), 
+      (arg("volume"), 
        arg("neighborhood") = 6, 
        arg("seeds")=python::object(), 
        arg("method")="RegionGrowing",
        arg("terminate")=CompleteGrow,
        arg("max_cost")=0.0,
-       arg("out")=python::object()));
+       arg("out")=python::object()),
+       "Likewise, compute watersheds of a volume.\n");
 }
 
 void defineEdgedetection();

@@ -360,22 +360,25 @@ NumpyAnyArray pythonRecursiveLaplacian(NumpyArray<3, Multiband<PixelType> > imag
 void defineConvolutionFunctions()
 {
     using namespace python;
+    
+    docstring_options doc_options(true, true, false);
 
     def("convolveOneDimension",
     	registerConverters(&pythonConvolveOneDimensionND<float,3>),
     	(arg("image"), arg("dim"), arg("kernel"), arg("out")=python::object()),
-        "Convolution along a single dimension of a 2D or 3D scalar or multiband image. "
+        "Convolution along a single dimension of a 2D scalar or multiband image. "
         "'kernel' must be an instance of Kernel1D.\n"
         "\n"
         "For details see convolveMultiArrayOneDimension_ in the vigra C++ documentation.\n");
 
     def("convolveOneDimension",
     	registerConverters(&pythonConvolveOneDimensionND<float,4>),
-    	(arg("volume"), arg("dim"), arg("kernel"), arg("out")=python::object()));
+    	(arg("volume"), arg("dim"), arg("kernel"), arg("out")=python::object()), 
+        "Likewise for a 3D scalar or multiband volume.\n");
 
     def("convolve", registerConverters(&pythonSeparableConvolveND_1Kernel<float,3>),
         (arg("image"), arg("kernel"), arg("out")=python::object()),
-        "Convolve an image or volume with the given 'kernel' (or kernels).\n"
+        "Convolve an image with the given 'kernel' (or kernels).\n"
         "If the input has multiple channels, the filter is applied to each channel\n"
         "independently. The function can be used in 3 different ways:\n"
         "\n"
@@ -391,16 +394,20 @@ void defineConvolutionFunctions()
         "|StandardConvolution.convolveImage|_ in the vigra C++ documentation.\n");
 
     def("convolve", registerConverters(&pythonSeparableConvolveND_1Kernel<float,4>),
-        (arg("volume"), arg("kernel"), arg("out")=python::object()));
+        (arg("volume"), arg("kernel"), arg("out")=python::object()),
+        "Convolve a volume with the same 1D kernel along all dimensions.\n");
 
     def("convolve", registerConverters(&pythonSeparableConvolveND_NKernels<float,3>),
-        (arg("image"), arg("kernels"), arg("out")=python::object()));
+        (arg("image"), arg("kernels"), arg("out")=python::object()),
+        "Convolve an image with a different 1D kernel along each dimensions.\n");
 
     def("convolve", registerConverters(&pythonSeparableConvolveND_NKernels<float,4>),
-        (arg("volume"), arg("kernels"), arg("out")=python::object()));
+        (arg("volume"), arg("kernels"), arg("out")=python::object()),
+        "Convolve a volume with a different 1D kernel along each dimensions.\n");
 
     def("convolve", registerConverters(&pythonConvolveImage<float>),
-        (arg("image"), arg("kernel"), arg("out") = python::object()));
+        (arg("image"), arg("kernel"), arg("out") = python::object()),
+        "Convolve an image with a 2D kernel.\n");
 
     def("normalizedConvolveImage", registerConverters(&pythonNormalizedConvolveImage<float>),
         (arg("image"), arg("mask"), arg("kernel"), arg("out") = python::object()),
@@ -425,15 +432,18 @@ void defineConvolutionFunctions()
 
     def("gaussianSmoothing",
         registerConverters(&pythonGaussianSmoothing<float,3>),               
-        (arg("volume"), arg("sigma"), arg("out")=python::object()));
+        (arg("image"), arg("sigmas"), arg("out")=python::object()),
+        "Smooth image with an anisotropic Gaussian.\n");
 
     def("gaussianSmoothing",
         registerConverters(&pythonGaussianSmoothingIsotropic<float,4>),               
-        (arg("volume"), arg("sigma"), arg("out")=python::object()));
+        (arg("volume"), arg("sigma"), arg("out")=python::object()),
+        "Smooth volume with an isotropic Gaussian.\n");
 
     def("gaussianSmoothing",
         registerConverters(&pythonGaussianSmoothing<float,4>),
-        (arg("volume"), arg("sigma"), arg("out")=python::object()));
+        (arg("volume"), arg("sigmas"), arg("out")=python::object()),
+        "Smooth volume with an anisotropic Gaussian.\n");
 
     def("simpleSharpening2D", 
         registerConverters(&pythonSimpleSharpening2D<float>),
@@ -452,13 +462,14 @@ void defineConvolutionFunctions()
     def("laplacianOfGaussian", 
          registerConverters(&pythonLaplacianOfGaussian<float,3>),
          (arg("image"), arg("scale") = 1.0, arg("out") = python::object()),
-          "Filter scalar image or volume with the Laplacian of Gaussian operator at the given scale.\n"
+          "Filter scalar image with the Laplacian of Gaussian operator at the given scale.\n"
           "\n"
           "For details see laplacianOfGaussianMultiArray_ in the vigra C++ documentation.\n");
 
     def("laplacianOfGaussian", 
          registerConverters(&pythonLaplacianOfGaussian<float,4>),
-         (arg("volume"), arg("scale") = 1.0, arg("out") = python::object()));
+         (arg("volume"), arg("scale") = 1.0, arg("out") = python::object()),
+         "Likewise for a scalar volume.\n");
 
     def("recursiveFilter2D", registerConverters(&pythonRecursiveFilter1<float>),
               (arg("image"), arg("b"), arg("borderTreament") = BORDER_TREATMENT_REFLECT, arg("out") = python::object()),

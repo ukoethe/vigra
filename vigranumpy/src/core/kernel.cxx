@@ -36,8 +36,8 @@
 #define PY_ARRAY_UNIQUE_SYMBOL vigranumpyfilters_PyArray_API
 #define NO_IMPORT_ARRAY
 
-#include <iostream>
 #include <Python.h>
+#include <iostream>
 #include <boost/python.hpp>
 #include <vigra/numpy_array.hxx>
 #include <vigra/numpy_array_converters.hxx>
@@ -244,6 +244,8 @@ template<class T>
 void defineKernels()
 {
 	using namespace python;
+    
+    docstring_options doc_options(true, true, false);
 
 	enum_<BorderTreatmentMode>("BorderTreatmentMode")
 		.value("BORDER_TREATMENT_AVOID",BORDER_TREATMENT_AVOID)
