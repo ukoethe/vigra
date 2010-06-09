@@ -110,8 +110,10 @@ ENDIF()
 #
 ##################################################
 
-INSTALL(DIRECTORY ${PROJECT_SOURCE_DIR}/include/vigra DESTINATION include)
-INSTALL(DIRECTORY ${PROJECT_BINARY_DIR}/include/vigra DESTINATION include)
+INSTALL(DIRECTORY ${PROJECT_SOURCE_DIR}/include/vigra
+		DESTINATION include)
+INSTALL(DIRECTORY ${PROJECT_BINARY_DIR}/include/vigra
+		DESTINATION include)
 
 ##################################################
 #
@@ -128,7 +130,7 @@ CONFIGURE_FILE(${PROJECT_SOURCE_DIR}/config/configVersion.hxx.in
 
 ##################################################
 #
-#     enable other CMake projects to find Vigra 
+#     enable other CMake projects to find Vigra
 #
 ##################################################
 
@@ -142,11 +144,11 @@ CONFIGURE_FILE(${PROJECT_SOURCE_DIR}/config/VigraConfig.cmake.in
 		${PROJECT_BINARY_DIR}/lib/vigra/CMake/VigraConfig.cmake
 		@ONLY IMMEDIATE)
 
-
 # export targets:
-#export(TARGETS all FILE 
-INSTALL(EXPORT vigra-targets DESTINATION lib${LIBDIR_SUFFIX}/vigra)
-INSTALL(FILES ${PROJECT_BINARY_DIR}/lib/vigra/CMake/VigraConfig.cmake DESTINATION lib${LIBDIR_SUFFIX}/vigra)
+INSTALL(EXPORT vigra-targets
+		DESTINATION lib${LIBDIR_SUFFIX}/vigra)
+INSTALL(FILES ${PROJECT_BINARY_DIR}/lib/vigra/CMake/VigraConfig.cmake
+		DESTINATION lib${LIBDIR_SUFFIX}/vigra)
 EXPORT(TARGETS vigraimpex FILE vigra-targets.cmake)
 
 ##################################################
@@ -233,7 +235,7 @@ ELSE()
   MESSAGE( STATUS "  vigranumpy will NOT be installed" )
 ENDIF()
 
-IF(NOT TIFF_FOUND OR NOT JPEG_FOUND OR NOT PNG_FOUND OR NOT FFTW3_FOUND OR 
+IF(NOT TIFF_FOUND OR NOT JPEG_FOUND OR NOT PNG_FOUND OR NOT FFTW3_FOUND OR
    NOT HDF5_FOUND OR NOT VIGRANUMPY_DEPENDENCIES_FOUND)
   MESSAGE( STATUS "" )
   MESSAGE( STATUS "Consider setting DEPENDENCY_SEARCH_PREFIX to find missing libraries" )
