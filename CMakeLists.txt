@@ -127,6 +127,22 @@ CONFIGURE_FILE(${PROJECT_SOURCE_DIR}/config/configVersion.hxx.in
 		${PROJECT_BINARY_DIR}/include/vigra/configVersion.hxx
 		@ONLY)
 
+##################################################
+#
+#  enable other non-CMake projects to find Vigra
+#
+##################################################
+
+# vigra-config script for (non-CMake-based) third party packages
+CONFIGURE_FILE(${PROJECT_SOURCE_DIR}/config/vigra-config.in
+		${PROJECT_BINARY_DIR}/bin/vigra-config
+		@ONLY IMMEDIATE)
+INSTALL(FILES ${PROJECT_BINARY_DIR}/bin/vigra-config
+		DESTINATION bin
+		PERMISSIONS
+			OWNER_READ OWNER_WRITE OWNER_EXECUTE
+			GROUP_READ GROUP_EXECUTE
+			WORLD_READ WORLD_EXECUTE)
 
 ##################################################
 #

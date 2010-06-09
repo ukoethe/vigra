@@ -1,12 +1,9 @@
 #!/bin/sh
 # @configure_input@
 
-prefix="@prefix@"
-exec_prefix="@exec_prefix@"
-
 usage()
 {
-  if test -z '@FFTW_LIB@'; then
+  if test -z '@FFTW3_LIBRARY@'; then
     fftwstatus=" (not configured)"
     fftwflags=" (fftw not configured)"
   else
@@ -16,7 +13,7 @@ usage()
   cat <<EOF
 Usage: $0 [OPTIONS]
 Options:
-    [--version]      output version ("@MAJOR_VERSION@.@MINOR_VERSION@.@MICRO_VERSION@")
+    [--version]      output version ("@vigra_version@")
     [--target]       output platform this VIGRA library was configured for
     [--impex-lib]    output flags for linking libvigraimpex
     [--fftw-lib]     output flags for linking libfftw$fftwstatus
@@ -29,13 +26,6 @@ EOF
     exit $1
 }
 
-echopath()
-{
-    echo "$1" \
-    | sed "s,\$[({]exec_prefix[})],@exec_prefix@," \
-    | sed "s,\$[({]prefix[})],@prefix@,"
-}
-
 if test $# -eq 0; then
     echo "ERROR: no parameters given!" 1>&2
     usage 1 1>&2
@@ -46,36 +36,36 @@ try=false
 while test $# -gt 0; do
   case $1 in
     --version)
-      echo @MAJOR_VERSION@.@MINOR_VERSION@.@MICRO_VERSION@
+      echo @vigra_version@
       ;;
     --target|--platform)
-      echo @target@
+      echo @target@ # FIXME (remove?)
       ;;
     --cppflags|--cxxincludes|--cxxflags|--cincludes|--cflags)
-      echopath '@POSTINSTALLCPPFLAGS@'
+      echo '-I@CMAKE_INSTALL_PREFIX@/include'
       ;;
     --impex_lib|--impex-lib|--libs)
-      echopath '@IMPEX_LIB@'
+      echo '-L@CMAKE_INSTALL_PREFIX@/lib@LIBDIR_SUFFIX@ -limpex @vigraimpex_LIB_DEPENDS@' # FIXME (PREFIX/lib[64] missing, _LIB_DEPENDS formatting -> linker args)
       ;;
     --fftw_lib|--fftw-lib)
-      if test -z '@FFTW_LIB@'; then
+      if test -z '@FFTW3_LIBRARY@'; then
         echo "VIGRA was configured without fftw switches, libpath unknown!" 1>&2
       else
-        echopath '@FFTW_LIB@'
+        echo '@FFTW3_LIBRARY@' # FIXME (formatting -> linker args)
       fi
       ;;
-    --rfftw_lib|--rfftw-lib)
-      if test -z '@RFFTW_LIB@'; then
+    --rfftw_lib|--rfftw-lib) # FIXME (currently not configured, remove?)
+      if test -z '@RFFTW3_LIBRARY@'; then
         echo "VIGRA was configured without fftw switches, libpath unknown!" 1>&2
       else
-        echopath '@RFFTW_LIB@'
+        echo '@RFFTW3_LIBRARY@'
       fi
       ;;
     --include_path|--include-path|--includepath)
-      echopath '@VIGRA_INCPATH@'
+      echo '@CMAKE_INSTALL_PREFIX@/include'
       ;;
     --docdir)
-      echopath '@docdir@'
+      echo '@DOCDIR@'
       ;;
     --help|-h|-?)
       usage 0 1>&2
