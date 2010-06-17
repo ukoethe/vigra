@@ -348,7 +348,323 @@ public:
 		should (in_data_2 == out_data_2);
 	}
 
+    void testHDF5FileDataAccess()
+    {
+        //write some data and read it again. Only spot test general functionality.
+
+        std::string file_name( "testfile_HDF5File_data_access.hdf5");
+
+        // data 1: int data in 2 dimensions (partly negative)
+        MultiArray<2,int> out_data_1(MultiArrayShape<2>::type(10, 11));
+        // ...initialize the array to the test data
+        for (int i = 0; i < 110; ++i)
+            out_data_1.data () [i] = i - 55;
+
+        // data 2: double data in 4 dimensions (partly negative)
+        MultiArray<4,double> out_data_2(MultiArrayShape<4>::type(10, 2, 3, 4));
+        // ...initialize the array to the test data
+        for (int i = 0; i < 240; ++i)
+            out_data_2.data () [i] = i + (std::rand() / (double)RAND_MAX) - 120;
+
+        // data 3: 2+1D multi array
+        MultiArray< 2, TinyVector<double, 4> > out_data_3(MultiArrayShape<2>::type(5, 8));
+        // ...initialize the array to the test data
+        for (int i = 0; i < 40; ++i)
+            out_data_3.data () [i] = TinyVector<double, 4>(i + 0.1, i + 0.2, i + 0.3, i + 0.4);
+
+        // data 4: RGB values
+        MultiArray< 2, RGBValue<double> > out_data_4(MultiArrayShape<2>::type(5, 8));
+        // ...initialize the array to the test data
+        for (int i = 0; i < 40; ++i)
+            out_data_4.data () [i] = RGBValue<double>(i + 0.1, i + 0.2, i + 0.3);
+
+        //create a file
+        HDF5File file (file_name, HDF5File::New);
+
+        //write one dataset in each group level
+        file.write("/dataset",out_data_1);
+        file.write("/group/dataset",out_data_2);
+        file.write("/group/subgroup1/dataset",out_data_3);
+        file.write("/dataset_rgb",out_data_4);
+
+
+        //create a new dataset
+        MultiArrayShape<3>::type shape (50,50,50);
+        unsigned char init = 42;
+        file.createDataset<3,unsigned char>("/newset", shape, init );
+
+
+        // check if data is really written
+
+        MultiArray<2,int> in_data_1 (MultiArrayShape<2>::type(10, 11));
+        file.read("dataset",in_data_1);
+
+        MultiArray<4,double> in_data_2 (MultiArrayShape<4>::type(10, 2, 3, 4));
+        file.read("/group/dataset",in_data_2);
+
+        MultiArray< 2, TinyVector<double, 4> > in_data_3 (MultiArrayShape<2>::type(5,8));
+        file.read("/group/subgroup1/dataset",in_data_3);
+
+        MultiArray< 2, RGBValue<double> > in_data_4(MultiArrayShape<2>::type(5,8));
+        file.read("/dataset_rgb", in_data_4);
+
+        MultiArray< 3, unsigned char > in_data_5 (shape);
+        file.read("/newset",in_data_5);
+
+        // compare content
+        // ...data 1
+        should (in_data_1 == out_data_1);
+
+        // ...data 2
+        should (in_data_2 == out_data_2);
+        // ...data 3
+        should (in_data_3 == out_data_3);
+        // ...data 4
+        should (in_data_4 == out_data_4);
+        // ...data 5
+        should (in_data_5(1,2,3) == init);
+
+        // overwrite existing dataset
+        file.write("/dataset",out_data_2);
+        file.flush_to_disk();
+
+        MultiArray<4,double> in_data_overwrite (MultiArrayShape<4>::type(10, 2, 3, 4));
+        file.read("/dataset",in_data_overwrite);
+
+        should(in_data_overwrite == out_data_2);
+
+    }
+
+
+    void testHDF5FileBlockAccess()
+    {
+        // Create 3D dataset
+        MultiArray< 3, double > out_data(MultiArrayShape<3>::type(10, 10, 10));
+        // ...initialize the array to the test data
+        for (int i = 0; i < 10; ++i){
+            for (int j = 0; j < 10; ++j){
+                for (int k = 0; k < 10; ++k){
+                    out_data (i,j,k) = 100*i+10*j+k;
+                }
+            }
+        }
+
+
+        std::string file_name( "testfile_HDF5File_block_access.hdf5");
+
+        //create a file and write data
+        HDF5File file (file_name, HDF5File::New);
+
+        file.write("/dataset",out_data);
+        file.flush_to_disk();
+
+
+        int sz = 10;
+        MultiArray< 3, double > in_data(MultiArrayShape<3>::type(sz, sz, sz));
+        MultiArrayShape<3>::type block_offset (0,0,0);
+        MultiArrayShape<3>::type block_shape (sz,sz,sz);
+
+        file.readBlock("/dataset", block_offset, block_shape, in_data);
+
+        should(in_data == out_data);
+
+        sz = 4;
+        MultiArray< 3, double > in_data_2(MultiArrayShape<3>::type(sz, sz, sz));
+        MultiArrayShape<3>::type block_offset_2 (2,2,2);
+        MultiArrayShape<3>::type block_shape_2 (sz,sz,sz);
+
+        file.readBlock("/dataset", block_offset_2, block_shape_2, in_data_2);
+
+        shouldEqual(in_data_2(0,0,0), out_data(2,2,2));
+        shouldEqual(in_data_2(1,0,0), out_data(3,2,2));
+        shouldEqual(in_data_2(0,2,0), out_data(2,4,2));
+        shouldEqual(in_data_2(0,0,3), out_data(2,2,5));
+
+        // write the data to different position
+        MultiArrayShape<3>::type block_offset_3 (6,2,2);
+        file.writeBlock("/dataset", block_offset_3, in_data_2 );
+        file.flush_to_disk();
+
+        // now read it again and compare
+        MultiArray< 3, double > in_data_3(MultiArrayShape<3>::type(sz, sz, sz));
+        file.readBlock("/dataset", block_offset_3, block_shape_2, in_data_3);
+
+        should(in_data_2 == in_data_3);
+
+    }
+
+
+    void testHDF5FileChunks()
+    {
+        //write some data and read it again. Only spot test general functionality.
+
+        std::string file_name( "testfile_HDF5File_chunks.hdf5");
+
+        // data 1: int data in 2 dimensions (partly negative)
+        MultiArray<2,int> out_data_1(MultiArrayShape<2>::type(10, 11));
+        // ...initialize the array to the test data
+        for (int i = 0; i < 110; ++i)
+            out_data_1.data () [i] = i - 55;
+
+        // data 2: double data in 4 dimensions (partly negative)
+        MultiArray<4,double> out_data_2(MultiArrayShape<4>::type(10, 2, 3, 4));
+        // ...initialize the array to the test data
+        for (int i = 0; i < 240; ++i)
+            out_data_2.data () [i] = i + (std::rand() / (double)RAND_MAX) - 120;
+
+        // data 3: 2+1D multi array
+        MultiArray< 2, TinyVector<double, 4> > out_data_3(MultiArrayShape<2>::type(5, 8));
+        // ...initialize the array to the test data
+        for (int i = 0; i < 40; ++i)
+            out_data_3.data () [i] = TinyVector<double, 4>(i + 0.1, i + 0.2, i + 0.3, i + 0.4);
+
+        // data 4: RGB values
+        MultiArray< 2, RGBValue<double> > out_data_4(MultiArrayShape<2>::type(5, 8));
+        // ...initialize the array to the test data
+        for (int i = 0; i < 40; ++i)
+            out_data_4.data () [i] = RGBValue<double>(i + 0.1, i + 0.2, i + 0.3);
+
+        //create a file
+        HDF5File file (file_name, HDF5File::New);
+
+        //write one dataset in each group level
+        file.write("/dataset",out_data_1,5);
+        file.write("/group/dataset",out_data_2, MultiArrayShape<4>::type(5,2,3,2));
+        file.write("/group/subgroup1/dataset",out_data_3, MultiArrayShape<2>::type(5,4));
+        file.write("/dataset_rgb",out_data_4, MultiArrayShape<2>::type(5,4));
+
+
+        //create a new dataset
+        MultiArrayShape<3>::type shape (50,50,50);
+        MultiArrayShape<3>::type chunks (10,10,10);
+        unsigned char init = 42;
+        file.createDataset<3,unsigned char>("/newset", shape, init, chunks);
+
+
+        // check if data is really written
+
+        MultiArray<2,int> in_data_1 (MultiArrayShape<2>::type(10, 11));
+        file.read("dataset",in_data_1);
+
+        MultiArray<4,double> in_data_2 (MultiArrayShape<4>::type(10, 2, 3, 4));
+        file.read("/group/dataset",in_data_2);
+
+        MultiArray< 2, TinyVector<double, 4> > in_data_3 (MultiArrayShape<2>::type(5, 8));
+        file.read("/group/subgroup1/dataset",in_data_3);
+
+        MultiArray< 2, RGBValue<double> > in_data_4(MultiArrayShape<2>::type(5,8));
+        file.read("/dataset_rgb", in_data_4);
+
+        MultiArray< 3, unsigned char > in_data_5 (shape);
+        file.read("/newset",in_data_5);
+
+        // compare content
+        // ...data 1
+        should (in_data_1 == out_data_1);
+        // ...data 2
+        should (in_data_2 == out_data_2);
+        // ...data 3
+        should (in_data_3 == out_data_3);
+        // ...data 4
+        should (in_data_4 == out_data_4);
+        // ...data 5
+        should (in_data_5(1,2,3) == init);
+
+    }
+
+
+    void testHDF5FileCompression()
+    {
+        //write some data and read it again. Only spot test general functionality.
+
+        std::string file_name( "testfile_HDF5File_compression.hdf5");
+
+        // data 1: int data in 2 dimensions (partly negative)
+        MultiArray<2,int> out_data_1(MultiArrayShape<2>::type(10, 11));
+        // ...initialize the array to the test data
+        for (int i = 0; i < 110; ++i)
+            out_data_1.data () [i] = i - 55;
+
+        // data 2: double data in 4 dimensions (partly negative)
+        MultiArray<4,double> out_data_2(MultiArrayShape<4>::type(10, 2, 3, 4));
+        // ...initialize the array to the test data
+        for (int i = 0; i < 240; ++i)
+            out_data_2.data () [i] = i + (std::rand() / (double)RAND_MAX) - 120;
+
+        // data 3: 2+1D multi array
+        MultiArray< 2, TinyVector<double, 4> > out_data_3(MultiArrayShape<2>::type(5, 8));
+        // ...initialize the array to the test data
+        for (int i = 0; i < 40; ++i)
+            out_data_3.data () [i] = TinyVector<double, 4>(i + 0.1, i + 0.2, i + 0.3, i + 0.4);
+
+        // data 4: RGB values
+        MultiArray< 2, RGBValue<double> > out_data_4(MultiArrayShape<2>::type(5, 8));
+        // ...initialize the array to the test data
+        for (int i = 0; i < 40; ++i)
+            out_data_4.data () [i] = RGBValue<double>(i + 0.1, i + 0.2, i + 0.3);
+
+        //create a file
+        HDF5File file (file_name, HDF5File::New);
+
+        //write one dataset in each group level
+        file.write("/dataset",out_data_1, 5, 3);
+        file.write("/group/dataset",out_data_2, MultiArrayShape<4>::type(5,2,3,2), 5);
+        file.write("/group/subgroup1/dataset",out_data_3, MultiArrayShape<2>::type(5,4), 7);
+        file.write("/dataset_rgb",out_data_4, MultiArrayShape<2>::type(5,4), 9);
+
+
+        //create a new dataset
+        MultiArrayShape<3>::type shape (50,50,50);
+        MultiArrayShape<3>::type chunks (10,10,10);
+        unsigned char init = 42;
+        file.createDataset<3,unsigned char>("/newset", shape, init, chunks, 5);
+
+        // read block
+        int sz = 10;
+        MultiArray< 3, unsigned char > in_data_block(MultiArrayShape<3>::type(sz, sz, sz));
+        MultiArrayShape<3>::type block_offset (5,5,5);
+        MultiArrayShape<3>::type block_shape (sz,sz,sz);
+
+        file.readBlock("/newset", block_offset, block_shape, in_data_block);
+
+
+        // check if data is really written
+
+        MultiArray<2,int> in_data_1 (MultiArrayShape<2>::type(10, 11));
+        file.read("dataset",in_data_1);
+
+        MultiArray<4,double> in_data_2 (MultiArrayShape<4>::type(10, 2, 3, 4));
+        file.read("/group/dataset",in_data_2);
+
+        MultiArray< 2, TinyVector<double, 4> > in_data_3 (MultiArrayShape<2>::type(5, 8));
+        file.read("/group/subgroup1/dataset",in_data_3);
+
+        MultiArray< 2, RGBValue<double> > in_data_4(MultiArrayShape<2>::type(5,8));
+        file.read("/dataset_rgb", in_data_4);
+
+        MultiArray< 3, unsigned char > in_data_5 (shape);
+        file.read("/newset",in_data_5);
+
+        // compare content
+        // ...data 1
+        should (in_data_1 == out_data_1);
+
+        // ...data 2
+        should (in_data_2 == out_data_2);
+        // ...data 3
+        should (in_data_3 == out_data_3);
+        // ...data 4
+        should (in_data_4 == out_data_4);
+        // ...data 5
+        should (in_data_5(1,2,3) == init);
+        // ...data block
+        should (in_data_block(1,2,3) == 42);
+    }
+
+
 };
+
+
 
 struct HDF5ImportExportTestSuite : public vigra::test_suite
 {
@@ -373,6 +689,14 @@ struct HDF5ImportExportTestSuite : public vigra::test_suite
 		// general tests
 		add(testCase(&HDF5ExportImportTest::testOverwriteExistingDataInHDF5));
 		add(testCase(&HDF5ExportImportTest::testAppendNewDataToHDF5));
+
+        // HDF5File tests
+        add(testCase(&HDF5ExportImportTest::testHDF5FileDataAccess));
+        add(testCase(&HDF5ExportImportTest::testHDF5FileBlockAccess));
+        add(testCase(&HDF5ExportImportTest::testHDF5FileChunks));
+        add(testCase(&HDF5ExportImportTest::testHDF5FileCompression));
+
+ 
 	}
 };
 
