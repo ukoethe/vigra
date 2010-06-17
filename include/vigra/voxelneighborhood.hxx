@@ -109,14 +109,18 @@ inline AtVolumeBorder isAtVolumeBorder(Diff3D const & p, Diff3D const & shape)
         not at te volume border.
     The behavior of the function is undefined if (x,y,z) is not inside the volume.
 */
-inline AtVolumeBorder isAtVolumeBorderCausal(int x, int y, int z, int /* width */, int /* height */, int /* depth */)
+inline AtVolumeBorder isAtVolumeBorderCausal(int x, int y, int z, int width, int height, int /* depth */)
 {
     return static_cast<AtVolumeBorder>((x == 0
                                          ? LeftBorder
-                                         : NotAtBorder) |
+                                         : x == width-1
+                                             ? RightBorder
+                                             : NotAtBorder) |
                                        (y == 0
                                          ? TopBorder
-                                         : NotAtBorder) |
+                                         : y == height-1
+                                             ? BottomBorder
+                                             : NotAtBorder) |
                                        (z == 0
                                          ? FrontBorder
                                          : NotAtBorder));
@@ -129,12 +133,16 @@ inline AtVolumeBorder isAtVolumeBorderCausal(int x, int y, int z, int /* width *
 */
 inline AtVolumeBorder isAtVolumeBorderAntiCausal(int x, int y, int z, int width, int height, int depth)
 {
-    return static_cast<AtVolumeBorder>((x == width-1
-                                         ? RightBorder
-                                         : NotAtBorder) |
-                                       (y == height-1
-                                         ? BottomBorder
-                                         : NotAtBorder) |
+    return static_cast<AtVolumeBorder>((x == 0
+                                         ? LeftBorder
+                                         : x == width-1
+                                             ? RightBorder
+                                             : NotAtBorder) |
+                                       (y == 0
+                                         ? TopBorder
+                                         : y == height-1
+                                             ? BottomBorder
+                                             : NotAtBorder) |
                                        (z == depth-1
                                          ? RearBorder
                                          : NotAtBorder));
@@ -267,16 +275,16 @@ class NeighborCode3D
     static Direction nearBorderDirectionsCausal(AtVolumeBorder b, int index)
     {
         static Direction c[43][3] = {
-            { InFront, North, West},                    // 0 - NotAtBorder -----> should never be used
-            { InFront, North, West},                    // 1 - AtRightBorder -----> should never be used
+            { InFront, North, West},                    // 0 - NotAtBorder
+            { InFront, North, West},                    // 1 - AtRightBorder
             { InFront, North, Error},                   // 2 - AtLeftBorder
             { Error, Error, Error},
             { InFront, West, Error},                    // 4 - AtTopBorder
             { InFront, West, Error},                    // 5 - AtTopRightBorder
             { InFront, Error,Error},                    // 6 - AtTopLeftBorder
             { Error, Error, Error},
-            { InFront, North, West},                    // 8 - AtBottomBorder -----> should never be used
-            { InFront, North, West},                    // 9 - AtBottomRightBorder -----> should never be used
+            { InFront, North, West},                    // 8 - AtBottomBorder
+            { InFront, North, West},                    // 9 - AtBottomRightBorder
             { InFront, North, Error},                   //10- AtBottomLeftBorder
             { Error, Error, Error},
             { Error, Error, Error},
@@ -299,16 +307,16 @@ class NeighborCode3D
             { Error, Error, Error},
             { Error, Error, Error},
             { Error, Error, Error},
-            { InFront, North, West},                    //32 - AtRearBorder -----> should never be used
-            { InFront, North, West},                    //33 - AtRearRightBorder -----> should never be used
+            { InFront, North, West},                    //32 - AtRearBorder
+            { InFront, North, West},                    //33 - AtRearRightBorder
             { InFront, North, Error},                   //34 - AtRearLeftBorder
             { Error, Error, Error},
             { InFront, West, Error},                    //36 - AtTopRearBorder
             { InFront, West, Error},                    //37 - AtTopRightRearBorder
             { InFront, Error, Error},                   //38 - AtTopLeftRearBorder
             { Error, Error, Error},
-            { InFront, North, West},                    //40 - AtBottomRearBorder -----> should never be used
-            { InFront, North, West},                    //41 - AtBottomRightRearBorder -----> should never be used
+            { InFront, North, West},                    //40 - AtBottomRearBorder
+            { InFront, North, West},                    //41 - AtBottomRightRearBorder
             { InFront, North, Error}                    //42 - AtBottomLeftRearBorder
         };
         return c[b][index];
@@ -1038,13 +1046,14 @@ class NeighborCode3D
 
                                   NorthWest,        North,           NorthEast,
                                   West},
-            //1 - AtRightBorder -----> should never be used
-                                { InFrontNorthWest, InFrontNorth,    InFrontNorthEast,
-                                  InFrontWest,      InFront,         InFrontEast,
-                                  InFrontSouthWest, InFrontSouth,    InFrontSouthEast,
+            //1 - AtRightBorder 
+                                { InFrontNorthWest, InFrontNorth,    /* InFrontNorthEast, */
+                                  InFrontWest,      InFront,         /* InFrontEast, */
+                                  InFrontSouthWest, InFrontSouth,    /* InFrontSouthEast, */
 
-                                  NorthWest,        North,           NorthEast,
-                                  West},
+                                  NorthWest,        North,           /* NorthEast, */
+                                  West,
+								  Error, Error, Error, Error},
             //2 - AtLeftBorder
                                 { /*InFrontNorthWest,*/ InFrontNorth,InFrontNorthEast,
                                   /*InFrontWest,*/  InFront,         InFrontEast,
@@ -1081,28 +1090,30 @@ class NeighborCode3D
                                   Error, Error, Error, Error, Error, Error, Error, Error, Error},
             //7 - Nothin'
                                 { Error, Error, Error, Error, Error, Error, Error, Error, Error, Error, Error, Error, Error},
-            //8 - AtBottomBorder -----> should never be used
+            //8 - AtBottomBorder 
                                 { InFrontNorthWest,  InFrontNorth,    InFrontNorthEast,
                                   InFrontWest,       InFront,         InFrontEast,
-                                  InFrontSouthWest,  InFrontSouth,    InFrontSouthEast,
+                                  /* InFrontSouthWest,  InFrontSouth,    InFrontSouthEast, */
 
                                   NorthWest,         North,           NorthEast,
-                                  West},
-            //9 - AtBottomRightBorder -----> should never be used
-                                { InFrontNorthWest, InFrontNorth,    InFrontNorthEast,
-                                  InFrontWest,      InFront,         InFrontEast,
-                                  InFrontSouthWest, InFrontSouth,    InFrontSouthEast,
+                                  West,
+								  Error, Error, Error},
+            //9 - AtBottomRightBorder 
+                                { InFrontNorthWest, InFrontNorth,    /* InFrontNorthEast, */
+                                  InFrontWest,      InFront,         /* InFrontEast, */
+                                  /* InFrontSouthWest, InFrontSouth,    InFrontSouthEast, */
 
-                                  NorthWest,        North,           NorthEast,
-                                  West},
+                                  NorthWest,        North,           /* NorthEast, */
+                                  West,
+								  Error, Error, Error,Error, Error, Error},
             //10 - AtBottomLeftBorder
                                 { /*InFrontNorthWest,*/InFrontNorth, InFrontNorthEast,
                                   /*InFrontWest,*/  InFront,         InFrontEast,
-                                  /*InFrontSouthWest,*/InFrontSouth, InFrontSouthEast,
+                                  /*InFrontSouthWest, InFrontSouth, InFrontSouthEast, */
 
                                   /*NorthWest,*/    North,           NorthEast,
                                   /*West*/
-                                  Error, Error, Error, Error, Error},
+                                  Error, Error, Error, Error, Error, Error, Error},
             //11 - Nothin'
                                 { Error, Error, Error, Error, Error, Error, Error, Error, Error, Error, Error, Error, Error},
             //12 - Nothin'
@@ -1193,14 +1204,14 @@ class NeighborCode3D
                                 { Error, Error, Error, Error, Error, Error, Error, Error, Error, Error, Error, Error, Error},
             //31 - Nothin
                                 { Error, Error, Error, Error, Error, Error, Error, Error, Error, Error, Error, Error, Error},
-            //32 - AtRearBorder -----> should never be used
+            //32 - AtRearBorder
                                 { InFrontNorthWest,   InFrontNorth,  InFrontNorthEast,
                                   InFrontWest,        InFront,       InFrontEast,
                                   InFrontSouthWest,   InFrontSouth,  InFrontSouthEast,
 
                                   NorthWest,          North,         NorthEast,
                                   West},
-            //33 - AtRearRightBorder -----> should never be used
+            //33 - AtRearRightBorder
                                 { InFrontNorthWest,   InFrontNorth,  InFrontNorthEast,
                                   InFrontWest,        InFront,       InFrontEast,
                                   InFrontSouthWest,   InFrontSouth,  InFrontSouthEast,
@@ -1243,14 +1254,14 @@ class NeighborCode3D
                                   Error, Error, Error, Error, Error, Error, Error, Error, Error},
             //39 - Nothin
                                 { Error, Error, Error, Error, Error, Error, Error, Error, Error, Error, Error, Error, Error},
-            //40 - AtBottomRearBorder -----> should never be used
+            //40 - AtBottomRearBorder
                                 { InFrontNorthWest,   InFrontNorth,  InFrontNorthEast,
                                   InFrontWest,        InFront,       InFrontEast,
                                   InFrontSouthWest,   InFrontSouth,  InFrontSouthEast,
 
                                   NorthWest,          North,         NorthEast,
                                   West},
-            //41 - AtBottomRightRearBorder -----> should never be used
+            //41 - AtBottomRightRearBorder
                                 { InFrontNorthWest,  InFrontNorth,   InFrontNorthEast,
                                   InFrontWest,       InFront,        InFrontEast,
                                   InFrontSouthWest,  InFrontSouth,   InFrontSouthEast,

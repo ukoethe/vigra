@@ -172,7 +172,7 @@ unsigned int watershedLabeling3D( SrcIterator s_Iter, SrcShape srcShape, SrcAcce
                 LabelType currentLabel = labels.nextFreeLabel(); // default: new region    
 
                 //queck whether there is a special borde threatment to be used or not
-                AtVolumeBorder atBorder = isAtVolumeBorderCausal(x,y,z,w,h,z);
+                AtVolumeBorder atBorder = isAtVolumeBorderCausal(x,y,z,w,h,d);
                     
                 //We are not at the border!
                 if(atBorder == NotAtBorder)

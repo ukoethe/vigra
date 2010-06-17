@@ -246,8 +246,8 @@ unsigned int labelVolume(SrcIterator s_Iter, SrcShape srcShape, SrcAccessor sa,
                 LabelType currentLabel = label.nextFreeLabel();
 
                 //queck whether there is a special border treatment to be used or not
-                AtVolumeBorder atBorder = isAtVolumeBorderCausal(x,y,z,w,h,z);
-                    
+                AtVolumeBorder atBorder = isAtVolumeBorderCausal(x,y,z,w,h,d);
+
                 //We are not at the border!
                 if(atBorder == NotAtBorder)
                 {
@@ -529,7 +529,7 @@ unsigned int labelVolumeWithBackground(SrcIterator s_Iter, SrcShape srcShape, Sr
                 LabelType currentLabel = label.nextFreeLabel();
 
                 //queck whether there is a special border treatment to be used or not
-                AtVolumeBorder atBorder = isAtVolumeBorderCausal(x,y,z,w,h,z);
+                AtVolumeBorder atBorder = isAtVolumeBorderCausal(x,y,z,w,h,d);
                     
                 //We are not at the border!
                 if(atBorder == NotAtBorder)
