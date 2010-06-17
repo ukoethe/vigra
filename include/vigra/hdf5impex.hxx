@@ -517,8 +517,8 @@ class HDF5File
 
 
     /** Writing data.
-
-     **/
+     *
+     */
 
     // scalar and unstrided multi arrays
     template<unsigned int N, class T>
@@ -591,8 +591,8 @@ class HDF5File
 
 
     /** Reading data.
-
-     **/
+     *
+     */
 
     // scalar and unstrided target multi array
     template<unsigned int N, class T>
@@ -635,7 +635,8 @@ class HDF5File
 
 
     /** Creating a new dataset.
-      */
+     *
+     */
 
     // scalar only: create a new dataset initialized with init
     template<unsigned int N, class T>
