@@ -133,6 +133,7 @@ CONFIGURE_FILE(${PROJECT_SOURCE_DIR}/config/configVersion.hxx.in
 #
 ##################################################
 
+IF(NOT WIN32)
 # vigra-config script for (non-CMake-based) third party packages
 CONFIGURE_FILE(${PROJECT_SOURCE_DIR}/config/vigra-config.in
 		${PROJECT_BINARY_DIR}/bin/vigra-config
@@ -143,6 +144,7 @@ INSTALL(FILES ${PROJECT_BINARY_DIR}/bin/vigra-config
 			OWNER_READ OWNER_WRITE OWNER_EXECUTE
 			GROUP_READ GROUP_EXECUTE
 			WORLD_READ WORLD_EXECUTE)
+ENDIF(NOT WIN32)
 
 ##################################################
 #
