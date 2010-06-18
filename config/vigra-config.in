@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 from optparse import OptionParser
+import sys
 
 hasFFTW = bool('@FFTW3_LIBRARY@')
 
@@ -27,9 +28,14 @@ parser.add_option("--docdir", action = 'store_true',
 
 (op, args) = parser.parse_args()
 
+if len(sys.argv) < 2:
+	sys.stderr.write("ERROR: no parameters given.\n")
+	parser.print_help()
+	sys.exit(1)
+
 # --------------------------------------------------------------------
 
-import sys, os.path
+import os.path
 
 # don't output -L flags for the following dirs (assumed to be compiler
 # built-in):
@@ -58,7 +64,7 @@ if op.cppflags: # was: --cppflags|--cxxincludes|--cxxflags|--cincludes|--cflags
 if op.impex_lib: # was: --impex_lib|--impex-lib|--libs
 	ldflags = []
 
-	libDir = '-L@CMAKE_INSTALL_PREFIX@/lib@LIBDIR_SUFFIX@'
+	libDir = '@CMAKE_INSTALL_PREFIX@/lib@LIBDIR_SUFFIX@'
 	if libDir not in standardLibDirs:
 		ldflags.append('-L' + libDir)
 
