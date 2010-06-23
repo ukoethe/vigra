@@ -380,12 +380,19 @@ public:
 
         //create a file
         HDF5File file (file_name, HDF5File::New);
+        
 
         //write one dataset in each group level
         file.write("/dataset",out_data_1);
+        file.cd_mk("/group/");
         file.write("/group/dataset",out_data_2);
-        file.write("/group/subgroup1/dataset",out_data_3);
+        file.mkdir("subgroup1");
+        file.write("subgroup1/dataset",out_data_3);
+        file.cd("..");
         file.write("/dataset_rgb",out_data_4);
+        file.writeAtomic("/atomicint", (int)-42);
+        file.writeAtomic("/atomicuint", (unsigned int)42);
+        file.writeAtomic("/atomicdouble", (double)3.1);
 
 
         //create a new dataset
@@ -411,6 +418,18 @@ public:
         MultiArray< 3, unsigned char > in_data_5 (shape);
         file.read("/newset",in_data_5);
 
+        int atomicint;
+        file.readAtomic("/atomicint",atomicint);
+        int atomicuint;
+        file.readAtomic("/atomicuint",atomicuint);
+        double atomicdouble;
+        file.readAtomic("/atomicdouble",atomicdouble);
+
+        file.setAttribute("/newset", "attribute", "This is a string attribute!");
+        file.flushToDisk();
+
+        should(file.getAttribute("/newset",  "attribute") == "This is a string attribute!");
+
         // compare content
         // ...data 1
         should (in_data_1 == out_data_1);
@@ -424,9 +443,13 @@ public:
         // ...data 5
         should (in_data_5(1,2,3) == init);
 
+        should (atomicint == -42);
+        should (atomicuint == 42);
+        should (atomicdouble == 3.1);
+
         // overwrite existing dataset
         file.write("/dataset",out_data_2);
-        file.flush_to_disk();
+        file.flushToDisk();
 
         MultiArray<4,double> in_data_overwrite (MultiArrayShape<4>::type(10, 2, 3, 4));
         file.read("/dataset",in_data_overwrite);
@@ -456,7 +479,7 @@ public:
         HDF5File file (file_name, HDF5File::New);
 
         file.write("/dataset",out_data);
-        file.flush_to_disk();
+        file.flushToDisk();
 
 
         int sz = 10;
@@ -483,7 +506,7 @@ public:
         // write the data to different position
         MultiArrayShape<3>::type block_offset_3 (6,2,2);
         file.writeBlock("/dataset", block_offset_3, in_data_2 );
-        file.flush_to_disk();
+        file.flushToDisk();
 
         // now read it again and compare
         MultiArray< 3, double > in_data_3(MultiArrayShape<3>::type(sz, sz, sz));
@@ -528,10 +551,10 @@ public:
         HDF5File file (file_name, HDF5File::New);
 
         //write one dataset in each group level
-        file.write("/dataset",out_data_1,5);
-        file.write("/group/dataset",out_data_2, MultiArrayShape<4>::type(5,2,3,2));
-        file.write("/group/subgroup1/dataset",out_data_3, MultiArrayShape<2>::type(5,4));
-        file.write("/dataset_rgb",out_data_4, MultiArrayShape<2>::type(5,4));
+        file.write("dataset",out_data_1,5);
+        file.write("group/dataset",out_data_2, MultiArrayShape<4>::type(5,2,3,2));
+        file.write("group/subgroup1/dataset",out_data_3, MultiArrayShape<2>::type(5,4));
+        file.write("dataset_rgb",out_data_4, MultiArrayShape<2>::type(5,4));
 
 
         //create a new dataset
@@ -662,6 +685,59 @@ public:
     }
 
 
+    void testHDF5FileBrowsing()
+    {
+        //create groups, change current group, ...
+
+        std::string file_name( "testfile_HDF5File_browsing.hdf5");
+
+        //create a file
+        HDF5File file (file_name, HDF5File::New);
+
+        //we should be in root group in the beginning
+        should(file.pwd() == "/" );
+
+        //create group "group1"
+        file.mkdir("group1");
+        //we should still be in root (only created group)
+        should(file.pwd() == "/" );
+
+        //now change to new group (relative change)
+        file.cd("group1");
+        should(file.pwd() == "/group1" );
+
+        //create a subgroup and change there
+        file.cd_mk("subgroup");
+        should(file.pwd() == "/group1/subgroup" );
+
+        //create a group tree in root group
+        file.mkdir("/group2/subgroup/subsubgroup");
+        should(file.pwd() == "/group1/subgroup" );
+
+        //go to parent group
+        file.cd_up();
+        should(file.pwd() == "/group1" );
+
+        //change to recently created group tree (absolute change)
+        file.cd("/group2/subgroup/subsubgroup");
+        should(file.pwd() == "/group2/subgroup/subsubgroup" );
+
+        //change to parent group
+        file.cd("..");
+        should(file.pwd() == "/group2/subgroup" );
+
+        //change up 2 groups
+        file.cd_up(2);
+        should(file.pwd() == "/" );
+
+        //try to change to parent of root group
+        file.cd_up();
+        should(file.pwd() == "/" );
+    }
+
+
+
+
 };
 
 
@@ -695,7 +771,7 @@ struct HDF5ImportExportTestSuite : public vigra::test_suite
         add(testCase(&HDF5ExportImportTest::testHDF5FileBlockAccess));
         add(testCase(&HDF5ExportImportTest::testHDF5FileChunks));
         add(testCase(&HDF5ExportImportTest::testHDF5FileCompression));
-
+        add(testCase(&HDF5ExportImportTest::testHDF5FileBrowsing));
  
 	}
 };
