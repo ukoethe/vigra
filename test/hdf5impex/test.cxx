@@ -479,17 +479,21 @@ public:
         HDF5File file (file_name, HDF5File::New);
 
         file.write("/dataset",out_data);
+        file.write("/group/dataset2",out_data);
         file.flushToDisk();
 
 
         int sz = 10;
         MultiArray< 3, double > in_data(MultiArrayShape<3>::type(sz, sz, sz));
+        MultiArray< 3, double > in_data_group(MultiArrayShape<3>::type(sz, sz, sz));
         MultiArrayShape<3>::type block_offset (0,0,0);
         MultiArrayShape<3>::type block_shape (sz,sz,sz);
 
         file.readBlock("/dataset", block_offset, block_shape, in_data);
+        file.readBlock("/group/dataset2", block_offset, block_shape, in_data_group);
 
         should(in_data == out_data);
+        should(in_data_group == out_data);
 
         sz = 4;
         MultiArray< 3, double > in_data_2(MultiArrayShape<3>::type(sz, sz, sz));

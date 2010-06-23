@@ -1268,22 +1268,23 @@ class HDF5File
 
         std::string errorMessage = "HDF5File::writeBlock(): Error opening group '" + groupname + "'.";
 
-        HDF5Handle parent;
+        /*HDF5Handle parent;
         if(groupname.size()!=0){
             parent = HDF5Handle(openCreateGroup_(groupname), &H5Gclose, errorMessage.c_str());
         }else{
             parent = HDF5Handle(openCreateGroup_("/"), &H5Gclose, errorMessage.c_str());
-        }
+        }*/
 
-        HDF5Handle datasetHandle;
+        errorMessage = "HDF5File::writeBlock(): Error opening dataset '" + datasetName + "'.";
+        HDF5Handle datasetHandle (getDatasetHandle_(datasetName), &H5Dclose, errorMessage.c_str());
 
-        hid_t id = H5Dopen(parent,setname.c_str(),H5P_DEFAULT);
+        /*hid_t id = H5Dopen(parent,setname.c_str(),H5P_DEFAULT);
         if(id > 0){
             datasetHandle = HDF5Handle(id,&H5Dclose,"Could not open dataset.");
         }else{
             std::cerr << "Error: No dataset available. Create target dataset first.";
             return;
-        }
+        }*/
 
         // hyperslab parameters for position, size, ...
         hsize_t boffset [N];
