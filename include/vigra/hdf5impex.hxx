@@ -885,14 +885,7 @@ class HDF5File
         std::string groupname = SplitString(datasetName).first();
         std::string setname = SplitString(datasetName).last();
 
-        std::string errorMessage = "HDF5File::createDataset(): Error opening group '" + groupname + "'.";
-
-        HDF5Handle parent;
-        if(groupname.size()!=0){
-            parent = HDF5Handle(openCreateGroup_(groupname), &H5Gclose, errorMessage.c_str());
-        }else{
-            parent = HDF5Handle(openCreateGroup_("/"), &H5Gclose, errorMessage.c_str());
-        }
+        hid_t parent = openCreateGroup_(groupname);
 
         // delete the dataset if it already exists
         deleteDataset_(parent, setname);
@@ -934,7 +927,8 @@ class HDF5File
         //create the dataset.
         HDF5Handle datasetHandle ( H5Dcreate(parent, setname.c_str(), detail::getH5DataType<T>(), dataspaceHandle, H5P_DEFAULT, plist, H5P_DEFAULT),
                                   &H5Dclose, "HDF5File::createDataset(): unable to create dataset.");
-
+        if(parent != cGroupHandle_)
+            H5Gclose(parent);
     }
 
     /** \brief Immediately write all data to disk
@@ -947,7 +941,7 @@ class HDF5File
 
   private:
 
-    /** Simple extension of std::string for splitting into two parts
+    /* Simple extension of std::string for splitting into two parts
      *
      *  Strings (in particular: file/dataset paths) will be split into two
      *  parts. The split is made at the last occurance of the delimiter.
@@ -1123,11 +1117,9 @@ class HDF5File
         std::string groupname = SplitString(datasetName).first();
         std::string setname = SplitString(datasetName).last();
 
-        //std::cout << datasetName << " - " << groupname << " - " << setname << "\n";
-
         if(relativePath_(datasetName))
         {
-            if (H5Lexists(cGroupHandle_, datasetName.c_str(), H5P_DEFAULT) == 0)
+            if (H5Lexists(cGroupHandle_, datasetName.c_str(), H5P_DEFAULT) != 1)
             {
                 std::cerr << "HDF5File::getDatasetHandle_(): Dataset '" << datasetName << "' does not exist.\n";
                 return -1;
@@ -1146,7 +1138,7 @@ class HDF5File
         }
         else
         {
-            if (H5Lexists(fileHandle_, datasetName.c_str(), H5P_DEFAULT) == 0)
+            if (H5Lexists(fileHandle_, datasetName.c_str(), H5P_DEFAULT) != 1)
             {
                 std::cerr << "HDF5File::getDatasetHandle_(): Dataset '" << datasetName << "' does not exist.\n";
                 return -1;
@@ -1263,28 +1255,9 @@ class HDF5File
     void writeBlock_(std::string datasetName, typename MultiArrayShape<N>::type &blockOffset, const MultiArrayView<N, T, UnstridedArrayTag> & array, const hid_t datatype, const int numBandsOfType)
     {
         // open dataset if it exists
-        std::string groupname = SplitString(datasetName).first();
-        std::string setname = SplitString(datasetName).last();
-
-        std::string errorMessage = "HDF5File::writeBlock(): Error opening group '" + groupname + "'.";
-
-        /*HDF5Handle parent;
-        if(groupname.size()!=0){
-            parent = HDF5Handle(openCreateGroup_(groupname), &H5Gclose, errorMessage.c_str());
-        }else{
-            parent = HDF5Handle(openCreateGroup_("/"), &H5Gclose, errorMessage.c_str());
-        }*/
-
-        errorMessage = "HDF5File::writeBlock(): Error opening dataset '" + datasetName + "'.";
+        std::string errorMessage = "HDF5File::writeBlock(): Error opening dataset '" + datasetName + "'.";
         HDF5Handle datasetHandle (getDatasetHandle_(datasetName), &H5Dclose, errorMessage.c_str());
 
-        /*hid_t id = H5Dopen(parent,setname.c_str(),H5P_DEFAULT);
-        if(id > 0){
-            datasetHandle = HDF5Handle(id,&H5Dclose,"Could not open dataset.");
-        }else{
-            std::cerr << "Error: No dataset available. Create target dataset first.";
-            return;
-        }*/
 
         // hyperslab parameters for position, size, ...
         hsize_t boffset [N];

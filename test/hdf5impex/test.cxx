@@ -479,7 +479,9 @@ public:
         HDF5File file (file_name, HDF5File::New);
 
         file.write("/dataset",out_data);
-        file.write("/group/dataset2",out_data);
+        file.cd_mk("group");
+        file.write("dataset2",out_data);
+        file.cd("..");
         file.flushToDisk();
 
 
@@ -565,7 +567,7 @@ public:
         MultiArrayShape<3>::type shape (50,50,50);
         MultiArrayShape<3>::type chunks (10,10,10);
         unsigned char init = 42;
-        file.createDataset<3,unsigned char>("/newset", shape, init, chunks);
+        file.createDataset<3,unsigned char>("newset", shape, init, chunks);
 
 
         // check if data is really written
