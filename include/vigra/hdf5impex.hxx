@@ -433,6 +433,10 @@ class HDF5File
 
   public:
     /** \brief Set how a file is opened.
+      OpenMode::New creates a new file. If the file already exists, overwrite it.
+
+      OpenMode::Open opens a file for reading/writing. The file will be created,
+      if nescessary.
     **/
     enum OpenMode {
         New,           // Create new empty file (existing file will be deleted).
@@ -603,7 +607,7 @@ class HDF5File
         HDF5Handle dataspaceHandle(H5Dget_space(datasetHandle), &H5Sclose, errorMessage.c_str());
 
         //get dimension information
-        hssize_t dimensions = H5Sget_simple_extent_ndims(dataspaceHandle);
+        int dimensions = H5Sget_simple_extent_ndims(dataspaceHandle);
 
         ArrayVector<hsize_t> shape(dimensions);
         ArrayVector<hsize_t> maxdims(dimensions);
@@ -652,7 +656,7 @@ class HDF5File
 
         // get the size of the attribute
         HDF5Handle AttrHandle (H5Aopen_by_name(groupHandle,setname.c_str(),attributeName.c_str(),H5P_DEFAULT, H5P_DEFAULT),&H5Aclose, "HDF5File::getAttribute(): Unable to open attribute.");
-        int len = H5Aget_storage_size(AttrHandle);
+        ArrayVector<char>::size_type len = H5Aget_storage_size(AttrHandle);
 
         //read the attribute
         ArrayVector<char> text (len+1,0);
