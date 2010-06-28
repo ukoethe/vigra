@@ -739,6 +739,12 @@ public:
         //try to change to parent of root group
         file.cd_up();
         should(file.pwd() == "/" );
+
+        std::vector<std::string> entries;
+        entries = file.ls();
+        should(entries.size() == 2);
+        should(entries[0] == "group1/");
+        should(entries[1] == "group2/");
     }
 
 

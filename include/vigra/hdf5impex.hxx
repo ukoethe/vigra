@@ -431,6 +431,33 @@ class HDF5File
     // current group handle
     HDF5Handle cGroupHandle_;
 
+
+    // datastructure to hold a list of dataset and group names
+    struct lsOpData
+    {
+        std::vector<std::string> objects;
+    };
+
+    // operator function, used by H5Literate
+    static herr_t opFunc (hid_t loc_id, const char *name, const H5L_info_t *info, void *operator_data)
+    {
+        // get information about object
+        H5O_info_t      infobuf;
+        H5Oget_info_by_name (loc_id, name, &infobuf, H5P_DEFAULT);
+
+        // add name to list, if object is a dataset or a group
+        if(infobuf.type == H5O_TYPE_GROUP)
+        {
+            (*(struct lsOpData *) operator_data).objects.push_back(std::string(name)+"/");
+        }
+        if(infobuf.type == H5O_TYPE_DATASET)
+        {
+            (*(struct lsOpData *) operator_data).objects.push_back(std::string(name));
+        }
+
+        return 0;
+    }
+
   public:
     /** \brief Set how a file is opened.
       OpenMode::New creates a new file. If the file already exists, overwrite it.
@@ -560,14 +587,30 @@ class HDF5File
         cGroupHandle_ = HDF5Handle(openCreateGroup_(groupName.c_str()),&H5Gclose,message.c_str());
     }
 
-    /** \brief Get the current group name.
+
+
+    /** \brief List the content of the current group.
+      The function returns a vector of strings holding the entries of the current
+      group. Only datasets and groups are listed, other objects (e.g. datatypes)
+      are ignored. Group names always have an ending "/".
+     */
+    std::vector<std::string> ls()
+    {
+        lsOpData data;
+        H5Literate(cGroupHandle_,H5_INDEX_NAME,H5_ITER_NATIVE,NULL, &opFunc, (void *) &data);
+
+        return data.objects;
+    }
+
+
+    /** \brief Get the path of the current group.
      */
     std::string pwd()
     {
         return currentGroupName_();
     }
 
-    /** \brief Get the name of the file assigned.
+    /** \brief Get the name of the associated file.
      */
     std::string filename()
     {
@@ -861,6 +904,8 @@ class HDF5File
     /** \brief Create a new dataset.
       This function can be used to create a dataset filled with a default value,
       for example before writing data into it using \ref writeBlock().
+      Attention: only atomic datatypes are provided. For spectral data, add an
+      dimension (case RGB: add one dimension of size 3).
 
       shape determines the dimension and the size of the dataset.
 
