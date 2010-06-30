@@ -607,7 +607,7 @@ MultiArrayShape<2>::type ImageImportInfo::shape() const
 
 bool ImageImportInfo::isGrayscale() const
 {
-    return m_num_bands == 1;
+    return (m_num_bands - m_num_extra_bands) == 1;
 }
 
 bool ImageImportInfo::isColor() const
