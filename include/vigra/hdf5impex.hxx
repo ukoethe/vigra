@@ -411,7 +411,7 @@ structure can be accessed by functions like "cd()" or "mkdir()".
 Write the MultiArray out_multi_array to file. Change the current directory to
 "/group" and read in the same MultiArray as in_multi_array.
 \code
-HDF5File file("/path/to/file",HDF5File::new);
+HDF5File file("/path/to/file",HDF5File::New);
 file.mkdir("group");
 file.write("/group/dataset", out_multi_array);
 
@@ -652,7 +652,7 @@ class HDF5File
         HDF5Handle dataspaceHandle(H5Dget_space(datasetHandle), &H5Sclose, errorMessage.c_str());
 
         //get dimension information
-        int dimensions = H5Sget_simple_extent_ndims(dataspaceHandle);
+		ArrayVector<hsize_t>::size_type dimensions = H5Sget_simple_extent_ndims(dataspaceHandle);
 
         ArrayVector<hsize_t> shape(dimensions);
         ArrayVector<hsize_t> maxdims(dimensions);
@@ -687,7 +687,8 @@ class HDF5File
      */
     std::string getAttribute(std::string datasetName, std::string attributeName)
     {
-        if (H5Lexists(fileHandle_, datasetName.c_str(), H5P_DEFAULT) == 0)
+        typedef ArrayVector<char>::size_type SizeType;
+		if (H5Lexists(fileHandle_, datasetName.c_str(), H5P_DEFAULT) == 0)
         {
             std::cerr << "HDF5File::getAttribute(): Dataset '" << datasetName << "' does not exist.\n";
             return "error - dataset not found";
@@ -701,7 +702,7 @@ class HDF5File
 
         // get the size of the attribute
         HDF5Handle AttrHandle (H5Aopen_by_name(groupHandle,setname.c_str(),attributeName.c_str(),H5P_DEFAULT, H5P_DEFAULT),&H5Aclose, "HDF5File::getAttribute(): Unable to open attribute.");
-        ArrayVector<char>::size_type len = H5Aget_storage_size(AttrHandle);
+		SizeType len = (SizeType)H5Aget_storage_size(AttrHandle);
 
         //read the attribute
         ArrayVector<char> text (len+1,0);
