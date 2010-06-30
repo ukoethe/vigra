@@ -541,15 +541,15 @@ class HDF5File
     }
 
     /** \brief Change the current group to its parent group.
+      returns true if successful, false otherwise.
      */
-    void cd_up()
+    bool cd_up()
     {
         std::string groupName = currentGroupName_();
 
         //do not try to move up if we already in "/"
         if(groupName == "/"){
-            std::cerr << "HDF5File::cd_up(): Could not move up one group. Already reached root group.\n";
-            return;
+            return false;
         }
 
         size_t lastSlash = groupName.find_last_of('/');
@@ -557,6 +557,8 @@ class HDF5File
         std::string parentGroup (groupName.begin(), groupName.begin()+lastSlash+1);
 
         cd(parentGroup);
+
+        return true;
     }
     void cd_up(int levels)
     {
@@ -1286,7 +1288,7 @@ class HDF5File
         int offset = (numBandsOfType > 1);
 
         vigra_precondition(( (N + offset ) ==  MultiArrayIndex(dimensions)), // the object in the HDF5 file may have one additional dimension which we then interpret as the pixel type bands
-            "HDF5File::read(): Array dimension disagrees with data dimension.");
+            "HDF5File::read(): Array dimension disagrees with dataset dimension.");
 
         typename MultiArrayShape<N>::type shape;
         for(int k=offset; k< MultiArrayIndex(dimensions); ++k) {
@@ -1294,7 +1296,7 @@ class HDF5File
         }
 
         vigra_precondition(shape == array.shape(),
-                           "HDF5File::read(): Array shape disagrees with HDF5ImportInfo.");
+                           "HDF5File::read(): Array shape disagrees with dataset shape.");
 
         // simply read in the data as is
         H5Dread( datasetHandle, datatype, H5S_ALL, H5S_ALL, H5P_DEFAULT, array.data() ); // .data() possible since void pointer!

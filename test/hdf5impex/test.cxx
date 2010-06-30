@@ -737,8 +737,7 @@ public:
         should(file.pwd() == "/" );
 
         //try to change to parent of root group
-        file.cd_up();
-        should(file.pwd() == "/" );
+        should( !file.cd_up() );
 
         std::vector<std::string> entries;
         entries = file.ls();
