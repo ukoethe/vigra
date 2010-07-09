@@ -124,7 +124,7 @@ struct ConvolutionTest
         line_kernel.initExplicitly(Diff2D(-2,0), Diff2D(2,0)) = 1, 4,   12,   4, 1 ;
         line_kernel.normalize(1);
         
-		ImageImportInfo info("c:\\ukoethe\\vigra-hg\\vigra\\build\\test\\convolution\\lenna128.xv");
+		ImageImportInfo info("lenna128.xv");
 
         lenna.resize(info.width(), info.height());
         importImage(info, destImage(lenna));
